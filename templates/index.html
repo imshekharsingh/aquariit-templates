@@ -69,7 +69,8 @@
   .arrow{display:none}
   .empty{text-align:center;padding:56px 12px;color:var(--mute);border:1.5px dashed var(--line);border-radius:24px;margin-top:32px}
   .empty svg{width:64px;height:64px;color:var(--accent)}
-  .hint{margin-top:48px;padding:18px 20px;border-radius:18px;background:var(--card);border:1px solid var(--line);font:.9rem/1.5 system-ui,sans-serif;color:var(--mute)}
+  .out{text-align:center;margin-top:36px;font:.85rem system-ui,sans-serif}.out a{color:var(--mute)}
+  .hint{margin-top:20px;padding:18px 20px;border-radius:18px;background:var(--card);border:1px solid var(--line);font:.9rem/1.5 system-ui,sans-serif;color:var(--mute)}
   .hint[hidden]{display:none}
   @media (max-width:520px){li a.row{grid-template-columns:3.6rem 1fr}.m{grid-column:2}.kit{width:44px;padding:0;justify-content:center}.kit .kl{display:none}}
   @media (prefers-reduced-motion:no-preference){.wrap>*{animation:in .6s both}@keyframes in{from{opacity:0;transform:translateY(12px)}}}
@@ -85,6 +86,7 @@
   </header>
   <div id="today"></div>
   <div id="list"></div>
+  <p class="out"><a href="/logout">Sign out</a></p>
   <p class="hint" id="install" hidden>Install this as an app: tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.</p>
 </main>
 <script src="/play/player.js"></script>
@@ -154,7 +156,7 @@
     });
   }
 
-  fetch('/design-log.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(render).catch(function () { render([]); });
+  fetch('/design-log.json', { cache: 'no-cache' }).then(function (r) { if (r.status === 401) { location.replace('/login?next=' + encodeURIComponent(location.pathname + location.search)); throw 0; } return r.json(); }).then(render).catch(function () { render([]); });
 
   var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   if (!standalone) document.getElementById('install').hidden = false;

@@ -44,12 +44,15 @@ the end) while original generated music plays and ends exactly with the scroll.
   layouts: `window.__reel = { scroller, axis, duration, stops }` (see `CLAUDE.md`).
 - Tip: install the app (Add to Home Screen) so the recording has no browser bars; silent switch off, volume up.
 
-## Password protection
-The site is behind HTTP basic auth, enforced by `src/worker.js` (so the Worker now has a script;
-the assets are still static). `/manifest.webmanifest` and `/icons/*` stay public so the PWA can install.
-Credentials are **never in the repo**: add GitHub secrets `BASIC_AUTH_USER` and `BASIC_AUTH_PASS`;
-the deploy job pushes them to the Worker as secrets. If they are missing the deploy stops (the old
-site stays up); if the Worker has none it returns 503 instead of serving openly.
+## Sign-in
+The site is behind a sign-in page (`/login`) and a signed, HttpOnly 30-day session cookie, enforced by `src/worker.js`
+(so the Worker now has a script; the assets are still static). This works inside the installed iPhone/iPad app,
+unlike the browser's Basic-auth popup, and iOS can autofill the form. `/manifest.webmanifest`, `/sw.js`, `/icons/*`
+and `/login` stay public so the PWA can install. **Sign out** is at the bottom of the home page.
+Credentials are **never in the repo**: GitHub secrets `BASIC_AUTH_USER` and `BASIC_AUTH_PASS` (the names are historical)
+are pushed to the Worker by the deploy job. Changing the password signs every device out. If the secrets are missing the
+deploy stops (the old site stays up); if the Worker has none it returns 503 instead of serving openly.
+Scripts can still authenticate with `curl --user`.
 
 ## Pipeline (`.github/workflows/pipeline.yml`)
 `push to template/*` → **checks** (`npm run check`) → **merge** (opens a PR and
@@ -73,7 +76,7 @@ Every template has an "← All templates" link back to the home page.
 npm install
 npm run check                      # also builds templates/social-kits.json
 cd templates && python3 -m http.server 8000   # http://localhost:8000 (no password locally)
-# with the password gate: put BASIC_AUTH_USER / BASIC_AUTH_PASS in .dev.vars (gitignored), then npx wrangler dev
+# with the sign-in gate: put BASIC_AUTH_USER / BASIC_AUTH_PASS in .dev.vars (gitignored), then npx wrangler dev
 ```
 
 ## Structure
@@ -85,7 +88,7 @@ templates/
   404.html  sw.js  manifest.webmanifest  icons/  design-log.json
   ID/index.html           one self-contained template per run (ID = YYYY-MM-DD-HHMM, IST)
 social/ID.md      Instagram kit per template (not deployed)
-src/worker.js             basic-auth gate in front of the assets
+src/worker.js             sign-in gate (login page + session cookie) in front of the assets
 templates/play/player.js  ▶ reel player: countdown, scroll director, generated music
 scripts/build-kits.mjs    social/*.md -> templates/social-kits.json
 scripts/check.mjs         sanity checks (npm run check)

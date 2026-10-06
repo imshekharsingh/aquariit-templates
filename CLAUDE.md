@@ -14,8 +14,9 @@ elegant, highly creative, production-quality, and distinct from all others.
 - Instagram kit: social/ID.md, shown in the app at /kit/?id=ID (a "Post kit" button on
   the home page). scripts/build-kits.mjs turns social/*.md into templates/social-kits.json
   (generated, gitignored, rebuilt by `npm run check` and the deploy job; never hand-edit)
-- The whole site sits behind HTTP basic auth (src/worker.js). Credentials exist only as
-  secrets (GitHub + Worker): BASIC_AUTH_USER / BASIC_AUTH_PASS. NEVER write them into any file.
+- The whole site sits behind a sign-in page + 30-day session cookie (src/worker.js; PWA-friendly,
+  no browser Basic-auth popup). Credentials exist only as secrets (GitHub + Worker):
+  BASIC_AUTH_USER / BASIC_AUTH_PASS. NEVER write them into any file.
   Templates must not link to the kit page (it would appear in recordings).
 - Home (date index): templates/index.html → https://templates.aquariit.com/
 - 404 page: templates/404.html
