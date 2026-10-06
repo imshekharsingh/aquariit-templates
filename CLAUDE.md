@@ -11,7 +11,12 @@ elegant, highly creative, production-quality, and distinct from all others.
   (2026-10-06) is a legacy ID with no time suffix; both forms are valid.
 - Template path: templates/ID/index.html
 - Live URL: https://templates.aquariit.com/ID/
-- Instagram kit: social/ID.md
+- Instagram kit: social/ID.md, shown in the app at /kit/?id=ID (a "Post kit" button on
+  the home page). scripts/build-kits.mjs turns social/*.md into templates/social-kits.json
+  (generated, gitignored, rebuilt by `npm run check` and the deploy job; never hand-edit)
+- The whole site sits behind HTTP basic auth (src/worker.js). Credentials exist only as
+  secrets (GitHub + Worker): BASIC_AUTH_USER / BASIC_AUTH_PASS. NEVER write them into any file.
+  Templates must not link to the kit page (it would appear in recordings).
 - Home (date index): templates/index.html → https://templates.aquariit.com/
 - 404 page: templates/404.html
 
@@ -103,7 +108,7 @@ dark neon → synthwave, Japanese calm → ambient/koto-style, art deco → jazz
   fonts.gstatic.com
 
 ## Site infrastructure (do not modify during daily runs unless asked)
-templates/index.html (home shell), templates/404.html,
+templates/index.html (home shell), templates/kit/index.html, templates/404.html, src/worker.js,
 templates/manifest.webmanifest, templates/sw.js, templates/icons/,
 wrangler.jsonc, scripts/, .github/, .claude/
 

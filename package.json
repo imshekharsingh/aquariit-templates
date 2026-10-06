@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node scripts/check.mjs && html-validate \"templates/**/*.html\"",
+    "build": "node scripts/build-kits.mjs",
+    "check": "node scripts/build-kits.mjs && node scripts/check.mjs && html-validate \"templates/**/*.html\"",
     "icons": "node scripts/make-icons.mjs"
   },
   "devDependencies": {

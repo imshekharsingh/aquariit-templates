@@ -62,22 +62,46 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - name: Require basic-auth secrets
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: |
+          if [ -z "$BASIC_AUTH_USER" ] || [ -z "$BASIC_AUTH_PASS" ]; then
+            echo "::error::Add repository secrets BASIC_AUTH_USER and BASIC_AUTH_PASS (Settings > Secrets and variables > Actions), then re-run this job."
+            exit 1
+          fi
       - uses: cloudflare/wrangler-action@v3
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          secrets: |
+            BASIC_AUTH_USER
+            BASIC_AUTH_PASS
           command: deploy
       - name: Smoke test live site
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
         run: |
-          LATEST=$(node -e "const l=require('./design-log.json');const k=e=>e.id||e.date;console.log(l.length?l.sort((a,b)=>k(a)<k(b)?1:-1).map(k)[0]:'')")
-          for path in "" "design-log.json" "manifest.webmanifest" ${LATEST:+$LATEST/}; do
-            url="https://templates.aquariit.com/$path"
+          B=https://templates.aquariit.com
+          check() { # url, expected status, extra curl args
+            url=$1; want=$2; shift 2
             for i in 1 2 3 4 5 6; do
-              code=$(curl -s -o /dev/null -w '%{http_code}' "$url")
-              [ "$code" = "200" ] && echo "OK $url" && break
-              echo "Attempt $i: $url returned $code"; sleep 10
-              [ $i = 6 ] && exit 1
+              code=$(curl -s -o /dev/null -w '%{http_code}' "$@" "$url")
+              if [ "$code" = "$want" ]; then echo "OK $code $url"; return 0; fi
+              echo "Attempt $i: $url returned $code (want $want)"; sleep 10
             done
+            return 1
+          }
+          LATEST=$(node -e "const l=require('./design-log.json');const k=e=>e.id||e.date;console.log(l.length?l.sort((a,b)=>k(a)<k(b)?1:-1).map(k)[0]:'')")
+          check "$B/" 401 || exit 1                    # the gate must be closed without credentials
+          check "$B/manifest.webmanifest" 200 || exit 1 # public so the PWA can install
+          for path in "" design-log.json social-kits.json kit/ ${LATEST:+$LATEST/}; do
+            check "$B/$path" 200 --user "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" || exit 1
           done
       - name: Summary
         run: echo "Deployed. Home https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"
