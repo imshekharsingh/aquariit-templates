@@ -1,14 +1,21 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git status)", "Bash(git pull:*)", "Bash(git add:*)",
-      "Bash(git commit:*)", "Bash(git push:*)", "Bash(git stash:*)",
-      "Bash(git log:*)", "Bash(git diff:*)", "Bash(gh pr create:*)",
-      "Bash(npx --yes html-validate:*)", "Bash(mkdir:*)", "Bash(ls:*)"
+      "Bash(git status:*)", "Bash(git fetch:*)", "Bash(git pull:*)",
+      "Bash(git add:*)", "Bash(git commit:*)", "Bash(git push:*)",
+      "Bash(git stash:*)", "Bash(git log:*)", "Bash(git diff:*)",
+      "Bash(git show:*)", "Bash(git branch:*)", "Bash(git rev-parse:*)",
+      "Bash(git remote:*)", "Bash(gh pr create:*)",
+      "Bash(npx --yes html-validate:*)", "Bash(mkdir:*)", "Bash(ls:*)",
+      "Bash(cat:*)", "Bash(date:*)"
     ],
     "deny": [
       "Bash(git push --force:*)", "Bash(git push -f:*)",
-      "Bash(git reset --hard:*)", "Bash(rm -rf:*)"
+      "Bash(git push * --force*)", "Bash(git push * -f)",
+      "Bash(git push * --delete*)", "Bash(git push --delete:*)",
+      "Bash(git branch -D:*)", "Bash(git branch -d:*)",
+      "Bash(git branch --delete:*)", "Bash(git commit --amend:*)",
+      "Bash(git rebase:*)", "Bash(git reset --hard:*)", "Bash(rm -rf:*)"
     ]
   }
 }
