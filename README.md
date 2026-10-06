@@ -31,6 +31,19 @@ The home page has a **Post kit** stub on today's card and a **Kit** button on ev
 (search terms), each with tap-to-copy and a sticky **Copy caption + hashtags** button.
 Kits are built from `social/*.md` into `templates/social-kits.json` (generated, not committed).
 
+## Play for recording (▶)
+Every template has a **▶ Play** button (home list, today's card, kit page). Start your screen recording,
+tap ▶, and everything else is automatic: a 5-second countdown, then the template opens in a 9:16 frame and
+scrolls itself like a human camera move (hold on the hero, glide to each section, pause, glide on, hold at
+the end) while original generated music plays and ends exactly with the scroll.
+- **Music** is synthesised in the browser (Web Audio), so there is nothing to license. The mood is picked
+  from the template's theme: Lo-fi, Synthwave, Ambient, Jazz or Playful (override or turn off in ⚙).
+- **⚙ Reel settings** (home header / kit page): length (20–60 s), music, frame (auto/9:16/full), hide the
+  "← All templates" link, plus an 8-second music preview.
+- Templates stay clean: no player UI is injected into them except hiding the back link. Optional hook for odd
+  layouts: `window.__reel = { scroller, axis, duration, stops }` (see `CLAUDE.md`).
+- Tip: install the app (Add to Home Screen) so the recording has no browser bars; silent switch off, volume up.
+
 ## Password protection
 The site is behind HTTP basic auth, enforced by `src/worker.js` (so the Worker now has a script;
 the assets are still static). `/manifest.webmanifest` and `/icons/*` stay public so the PWA can install.
@@ -73,6 +86,7 @@ templates/
   ID/index.html           one self-contained template per run (ID = YYYY-MM-DD-HHMM, IST)
 social/ID.md      Instagram kit per template (not deployed)
 src/worker.js             basic-auth gate in front of the assets
+templates/play/player.js  ▶ reel player: countdown, scroll director, generated music
 scripts/build-kits.mjs    social/*.md -> templates/social-kits.json
 scripts/check.mjs         sanity checks (npm run check)
 scripts/make-icons.mjs    regenerates PNG icons (npm run icons)

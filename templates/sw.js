@@ -1,9 +1,9 @@
 // Aquarii Templates service worker.
 // Network-first: HTML + /design-log.json (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE = `aquarii-${VERSION}`;
-const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/design-log.json', '/social-kits.json', '/kit/', '/icons/icon.svg'];
+const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/design-log.json', '/social-kits.json', '/kit/', '/play/player.js', '/icons/icon.svg'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => Promise.all(SHELL.map((u) => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));

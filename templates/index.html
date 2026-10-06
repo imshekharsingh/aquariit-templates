@@ -21,7 +21,9 @@
   body{margin:0;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;line-height:1.5;
     padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
   .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px}
-  header{padding:48px 0 28px}
+  header{padding:48px 0 28px;position:relative}
+  .gear{position:absolute;top:36px;right:0;width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+  .gear:hover{border-color:var(--accent);color:var(--accent)}.gear svg{width:22px;height:22px}
   .eyebrow{font:600 .8rem/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
   h1{font-size:clamp(2.4rem,9vw,4rem);line-height:1;letter-spacing:-.03em;margin:.4em 0 .3em;font-weight:600}
   .lede{color:var(--mute);font-size:1.15rem;margin:0;max-width:34em}
@@ -40,6 +42,16 @@
   .kit{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:1.5px solid var(--accent);border-radius:999px;color:var(--accent);font:700 .8rem system-ui,sans-serif;text-decoration:none;white-space:nowrap}
   .kit:hover{background:var(--accent);color:var(--bg)}
   .kit svg{width:15px;height:15px}
+  .play{flex:none;width:46px;height:46px;border-radius:50%;border:0;background:var(--accent);color:var(--bg);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 0 -1px rgba(0,0,0,.22);transition:transform .15s}
+  .play:hover{transform:scale(1.07)}.play:active{transform:translateY(2px)}
+  .play svg{width:20px;height:20px;margin-left:2px}
+  .ticket{position:relative}
+  .ticket .play{position:absolute;top:22px;right:20px;width:60px;height:60px;z-index:2;background:linear-gradient(135deg,#2ee6c5,#c6ff3d);color:#042;box-shadow:0 0 0 0 rgba(46,230,197,.6);animation:ping 2.4s infinite}
+  .ticket .play svg{width:26px;height:26px}
+  @keyframes ping{70%{box-shadow:0 0 0 16px rgba(46,230,197,0)}100%{box-shadow:0 0 0 0 rgba(46,230,197,0)}}
+  @media (prefers-reduced-motion:reduce){.ticket .play{animation:none}}
+  .today small{display:block;max-width:calc(100% - 78px);line-height:1.5}
+  .today strong{max-width:calc(100% - 78px)}
   li a:focus-visible,.today:focus-visible,.kit:focus-visible,.stub:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   /* ticket: today's card with a tear-off "Post kit" stub */
   .ticket{margin:24px 0 8px;border-radius:24px;overflow:hidden;background:var(--hero);color:var(--hero-ink)}
@@ -59,13 +71,14 @@
   .empty svg{width:64px;height:64px;color:var(--accent)}
   .hint{margin-top:48px;padding:18px 20px;border-radius:18px;background:var(--card);border:1px solid var(--line);font:.9rem/1.5 system-ui,sans-serif;color:var(--mute)}
   .hint[hidden]{display:none}
-  @media (max-width:520px){li a.row{grid-template-columns:3.6rem 1fr}.m{grid-column:2}}
+  @media (max-width:520px){li a.row{grid-template-columns:3.6rem 1fr}.m{grid-column:2}.kit{width:44px;padding:0;justify-content:center}.kit .kl{display:none}}
   @media (prefers-reduced-motion:no-preference){.wrap>*{animation:in .6s both}@keyframes in{from{opacity:0;transform:translateY(12px)}}}
 </style>
 </head>
 <body>
 <main class="wrap">
   <header>
+    <button class="gear" type="button" id="gear" aria-label="Reel settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <div class="eyebrow">Aquarii Templates</div>
     <h1>One page,<br>every day.</h1>
     <p class="lede">A new original webpage template each day — tap one to explore it.</p>
@@ -74,6 +87,7 @@
   <div id="list"></div>
   <p class="hint" id="install" hidden>Install this as an app: tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.</p>
 </main>
+<script src="/play/player.js"></script>
 <script>
 (function () {
   var today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
@@ -82,6 +96,13 @@
   function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
   function fmt(d, opts) { return new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', Object.assign({ timeZone: 'UTC' }, opts)); }
   function title(e) { return e.name || e.slug.replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }); }
+  var PLAY_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>';
+  function playBtn(id, name) {
+    var b = el('button', 'play'); b.type = 'button'; b.setAttribute('aria-label', 'Play ' + name + ' for screen recording'); b.title = 'Play for screen recording'; b.innerHTML = PLAY_SVG;
+    b.addEventListener('click', function () { if (window.Reel) window.Reel.start(id); });
+    return b;
+  }
+  document.getElementById('gear').addEventListener('click', function () { if (window.Reel) window.Reel.openSettings(); });
   function key(e) { return e.id || e.date; }
   function path(e) { return '/' + key(e) + '/'; }
   function clock(e) {
@@ -99,7 +120,7 @@
       a.appendChild(el('small', null, "Latest today · " + fmt(t.date, { day: 'numeric', month: 'long' }) + (t.time ? ' · ' + clock(t) : '')));
       a.appendChild(el('strong', null, title(t)));
       a.appendChild(el('span', null, t.description));
-      var tk = el('div', 'ticket'); tk.appendChild(a);
+      var tk = el('div', 'ticket'); tk.appendChild(a); tk.appendChild(playBtn(key(t), title(t)));
       var st = el('a', 'stub'); st.href = '/kit/?id=' + encodeURIComponent(key(t));
       var lab = el('span', null, 'Post kit'); lab.appendChild(el('small', null, 'Caption · 5 hashtags · Reel plan · music'));
       st.appendChild(lab); st.appendChild(el('span', null, 'Open →')); tk.appendChild(st);
@@ -129,7 +150,7 @@
       li.appendChild(a);
       var kb = el('a', 'kit'); kb.href = '/kit/?id=' + encodeURIComponent(key(e)); kb.setAttribute('aria-label', 'Post kit for ' + title(e));
       kb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11h6M9 15h4"/></svg>';
-      kb.appendChild(document.createTextNode('Kit')); li.appendChild(kb); ul.appendChild(li);
+      kb.appendChild(el('span', 'kl', 'Kit')); li.appendChild(kb); li.appendChild(playBtn(key(e), title(e))); ul.appendChild(li);
     });
   }
 
