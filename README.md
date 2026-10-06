@@ -9,15 +9,16 @@ Templates generated: **1**
 Latest: [2026-10-06 · Ledgerleaf Press](https://templates.aquariit.com/2026-10-06/)
 
 ## How `/daily-template` works
-Run `/daily-template [hint]` in Claude Code. It computes today's date in
-Asia/Kolkata, creates branch `template/YYYY-MM-DD` from latest `main`, designs
+Run `/daily-template [hint]` in Claude Code, any time, as often as you like. Each run makes
+one new template whose ID is the India date and time (e.g. `2026-10-07-0905`), creates branch
+`template/ID` from latest `main`, designs
 a template that differs from every earlier one (see `CLAUDE.md`), writes the
 Instagram kit, runs `npm run check`, appends to `design-log.json` (mirrored to
 `templates/design-log.json`), and pushes the branch. It never touches `main`
 and never deploys.
 
 ## Instagram kit
-Each template has `social/YYYY-MM-DD.md` (not deployed): a hook line for the
+Each template has `social/ID.md` (not deployed): a hook line for the
 first 2 seconds, a caption, 8–12 SEO keywords, **exactly 5 hashtags** (Instagram's
 per-post limit) plus alternates to rotate, and a music suggestion by mood
 (genre, BPM, audio-search terms, accent sounds), plus a Reel plan (length, shot plan,
@@ -54,8 +55,8 @@ design-log.json           design history (source of truth)
 templates/
   index.html              home / date index (reads /design-log.json)
   404.html  sw.js  manifest.webmanifest  icons/  design-log.json
-  YYYY-MM-DD/index.html   one self-contained template per day
-social/YYYY-MM-DD.md      Instagram kit per template (not deployed)
+  ID/index.html           one self-contained template per run (ID = YYYY-MM-DD-HHMM, IST)
+social/ID.md      Instagram kit per template (not deployed)
 scripts/check.mjs         sanity checks (npm run check)
 scripts/make-icons.mjs    regenerates PNG icons (npm run icons)
 archive/                  pre-pipeline experiments (not deployed)

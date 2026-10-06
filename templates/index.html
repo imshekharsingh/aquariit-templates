@@ -38,6 +38,7 @@
   li a:hover{background:var(--card);padding-inline:14px}
   li a:focus-visible,.today:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   .d{font:600 .95rem system-ui,sans-serif;color:var(--accent);font-variant-numeric:tabular-nums}
+  .d .t{font:500 .72rem system-ui,sans-serif;color:var(--mute)}
   .n{font-size:1.2rem;font-weight:600;letter-spacing:-.01em}
   .m{font:.8rem system-ui,sans-serif;color:var(--mute);text-transform:capitalize;white-space:nowrap}
   .arrow{display:none}
@@ -68,15 +69,21 @@
   function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
   function fmt(d, opts) { return new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', Object.assign({ timeZone: 'UTC' }, opts)); }
   function title(e) { return e.name || e.slug.replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }); }
-  function path(e) { return '/' + e.date + '/'; }
+  function key(e) { return e.id || e.date; }
+  function path(e) { return '/' + key(e) + '/'; }
+  function clock(e) {
+    if (!e.time) return '';
+    var h = +e.time.slice(0, 2), m = e.time.slice(3, 5);
+    return (h % 12 || 12) + ':' + m + ' ' + (h < 12 ? 'am' : 'pm');
+  }
 
   function render(log) {
-    log = (Array.isArray(log) ? log : []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    log = (Array.isArray(log) ? log : []).slice().sort(function (a, b) { return key(a) < key(b) ? 1 : -1; });
     var t = log.filter(function (e) { return e.date === today; })[0];
     todayEl.textContent = '';
     if (t) {
       var a = el('a', 'today'); a.href = path(t);
-      a.appendChild(el('small', null, "Today · " + fmt(t.date, { day: 'numeric', month: 'long' })));
+      a.appendChild(el('small', null, "Latest today · " + fmt(t.date, { day: 'numeric', month: 'long' }) + (t.time ? ' · ' + clock(t) : '')));
       a.appendChild(el('strong', null, title(t)));
       a.appendChild(el('span', null, t.description));
       todayEl.appendChild(a);
@@ -97,7 +104,9 @@
       var m = fmt(e.date, { month: 'long', year: 'numeric' });
       if (m !== month) { month = m; listEl.appendChild(el('h2', null, m)); ul = el('ul'); listEl.appendChild(ul); }
       var li = el('li'), a = el('a'); a.href = path(e);
-      a.appendChild(el('span', 'd', fmt(e.date, { day: '2-digit', month: 'short' })));
+      var d = el('span', 'd', fmt(e.date, { day: '2-digit', month: 'short' }));
+      if (e.time) { d.appendChild(document.createElement('br')); d.appendChild(el('small', 't', clock(e))); }
+      a.appendChild(d);
       a.appendChild(el('span', 'n', title(e)));
       a.appendChild(el('span', 'm', e.theme || ''));
       li.appendChild(a); ul.appendChild(li);

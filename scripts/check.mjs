@@ -8,7 +8,9 @@ const T = join(root, 'templates');
 const errors = [];
 const err = (m) => errors.push(m);
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-const FIELDS = ['date', 'slug', 'url', 'theme', 'layout', 'palette', 'fonts', 'motif', 'animation', 'purpose', 'description'];
+// Template ids are the IST date, optionally followed by the IST time: YYYY-MM-DD or YYYY-MM-DD-HHMM
+const ID_RE = /^(\d{4}-\d{2}-\d{2})(?:-(\d{2})(\d{2}))?$/;
+const FIELDS = ['id', 'date', 'slug', 'url', 'theme', 'layout', 'palette', 'fonts', 'motif', 'animation', 'purpose', 'description'];
 const DIMS = ['layout', 'palette', 'fonts', 'motif', 'animation', 'theme', 'purpose'];
 const BANNED = ['Google', 'Apple', 'Microsoft', 'Amazon', 'Meta', 'Netflix', 'Nike', 'Disney', 'Spotify', 'Airbnb'];
 const ALLOWED_ORIGINS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
@@ -27,34 +29,42 @@ const norm = (v) => Array.isArray(v) ? v.map((x) => String(x).toLowerCase()).sor
 // 1–5: design log
 const logPath = join(root, 'design-log.json');
 const log = readJSON(logPath, 'design-log.json');
-const folders = existsSync(T) ? readdirSync(T).filter((f) => DATE_RE.test(f) && statSync(join(T, f)).isDirectory()) : [];
+const folders = existsSync(T) ? readdirSync(T).filter((f) => ID_RE.test(f) && statSync(join(T, f)).isDirectory()) : [];
 
 if (Array.isArray(log)) {
   log.forEach((e, i) => {
     const id = `design-log.json[${i}]`;
     for (const f of FIELDS) if (e[f] === undefined || e[f] === '' || (Array.isArray(e[f]) && !e[f].length)) err(`${id}: missing field "${f}"`);
     if (e.date && !validDate(e.date)) err(`${id}: invalid date "${e.date}"`);
+    const m = ID_RE.exec(e.id || '');
+    if (e.id && !m) err(`${id}: invalid id "${e.id}" (expected YYYY-MM-DD or YYYY-MM-DD-HHMM, IST)`);
+    if (m) {
+      if (m[1] !== e.date) err(`${id}: id "${e.id}" does not start with date "${e.date}"`);
+      if (m[2] && (+m[2] > 23 || +m[3] > 59)) err(`${id}: id "${e.id}" has an invalid time`);
+      if (m[2] && e.time !== `${m[2]}:${m[3]}`) err(`${id}: time must be "${m[2]}:${m[3]}" to match id "${e.id}"`);
+    }
     if (Array.isArray(e.palette) && !e.palette.every((h) => /^#[0-9a-f]{3,8}$/i.test(h))) err(`${id}: palette must be an array of hex colors`);
-    if (e.date && !existsSync(join(T, e.date, 'index.html'))) err(`${id}: templates/${e.date}/index.html does not exist`);
+    if (e.id && !existsSync(join(T, e.id, 'index.html'))) err(`${id}: templates/${e.id}/index.html does not exist`);
+    if (e.id && e.url !== `https://templates.aquariit.com/${e.id}/`) err(`${id}: url must be https://templates.aquariit.com/${e.id}/`);
   });
   const seen = (key, label) => {
     const m = new Map();
     log.forEach((e) => {
       if (e[key] === undefined) return;
       const k = norm(e[key]);
-      if (m.has(k)) err(`Duplicate ${label}: ${e.date} and ${m.get(k)}`);
-      else m.set(k, e.date);
+      if (m.has(k)) err(`Duplicate ${label}: ${e.id} and ${m.get(k)}`);
+      else m.set(k, e.id);
     });
   };
-  seen('date', 'date'); seen('slug', 'slug'); seen('palette', 'palette'); seen('fonts', 'font pairing');
-  for (const f of folders) if (!log.some((e) => e.date === f)) err(`templates/${f}/ has no design-log.json entry`);
+  seen('id', 'id'); seen('slug', 'slug'); seen('palette', 'palette'); seen('fonts', 'font pairing');
+  for (const f of folders) if (!log.some((e) => e.id === f)) err(`templates/${f}/ has no design-log.json entry`);
 
-  const sorted = [...log].sort((a, b) => (a.date < b.date ? 1 : -1));
+  const sorted = [...log].sort((a, b) => (a.id < b.id ? 1 : -1));
   if (sorted.length > 1) {
     const [newest, ...older] = sorted;
     for (const o of older) {
       const differing = DIMS.filter((d) => norm(newest[d] ?? '') !== norm(o[d] ?? ''));
-      if (differing.length < 5) err(`${newest.date} differs from ${o.date} on only ${differing.length}/7 dimensions (need 5): shared = ${DIMS.filter((d) => !differing.includes(d)).join(', ')}`);
+      if (differing.length < 5) err(`${newest.id} differs from ${o.id} on only ${differing.length}/7 dimensions (need 5): shared = ${DIMS.filter((d) => !differing.includes(d)).join(', ')}`);
     }
   }
   const copy = join(T, 'design-log.json');
