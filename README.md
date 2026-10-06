@@ -18,8 +18,8 @@ Instagram kit, runs `npm run check`, appends to `design-log.json` (mirrored to
 and never deploys.
 
 ## Instagram kit
-Each template has `social/ID.md` (not deployed): a hook line for the
-first 2 seconds, a caption, 8–12 SEO keywords, **exactly 5 hashtags** (Instagram's
+Each template has `social/ID.md` (not deployed): a hook that opens a loop the video's ending closes, a caption that
+ends with a "send this to…" line (shares per reach is a key signal), 8–12 SEO keywords, **exactly 5 hashtags** (Instagram's
 per-post limit) plus alternates to rotate, and a music suggestion by mood
 (genre, BPM, audio-search terms, accent sounds), plus a Reel plan (length, shot plan,
 cover text). `npm run check` enforces it. The account is a creator/personal account,

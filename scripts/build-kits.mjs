@@ -33,6 +33,7 @@ const kits = files.map((f) => {
       length: field(reel, 'Length'),
       beats: shot.split(/\(\d\)\s*/).map((b) => b.replace(/\s*→\s*$/, '').trim()).filter(Boolean),
       cover: field(reel, 'Cover').replace(/^"|"$/g, ''),
+      payoff: field(reel, 'Payoff'),
     },
     music: {
       mood: field(music, 'Mood'), genre: field(music, 'Genre'), bpm: field(music, 'BPM'),

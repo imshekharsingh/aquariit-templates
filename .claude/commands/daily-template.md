@@ -53,8 +53,8 @@ CLAUDE.md.
 
 ## Phase 4b — Instagram social kit
 Create social/ID.md following the "Instagram social kit" section of CLAUDE.md
-(hook, caption, 8–12 keywords, exactly 5 hashtags + alternates, Reel plan with
-length/shot plan/cover text, music suggestion matched to the template's mood). Base keywords on what the page actually shows.
+(hook that opens a loop the ending closes, caption ending with a "Send this to…" share line,
+8–12 keywords, exactly 5 hashtags + alternates, Reel plan with length/shot plan/payoff/cover text, music suggestion matched to the template's mood). Base keywords on what the page actually shows.
 
 ## Phase 5 — Records and push
 1. Append the entry to design-log.json (schema in CLAUDE.md: id=ID, date=DATE,

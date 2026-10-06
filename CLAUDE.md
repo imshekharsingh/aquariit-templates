@@ -103,15 +103,20 @@ Design every template for a **402×715 viewport**, not a desktop page:
 ## Instagram social kit (required for every template)
 Every template ships with social/ID.md (NOT inside templates/, so it is
 never deployed). It is the ready-to-paste kit for the Instagram Reel:
-- `## Hook` — one line of on-screen text for the first 2 seconds
-- `## Caption` — 2–4 short lines; the first line must contain the main
-  search keywords in natural language (Instagram ranks on caption keywords)
+- `## Hook` — one line (≤ 10 words) of on-screen text for the first 2 seconds. It must open a loop the end of the video
+  closes: a question ("Can a website feel like tea? Watch to the end"), a "Wait for …" promise, or a surprising contrast.
+  Never a vague teaser, and never promise something the video does not show. Watch time is what Instagram rewards.
+- `## Caption` — 2–4 short lines; the first line must contain the main search keywords in natural language (Instagram
+  ranks on caption keywords); the LAST line must invite a share ("Send this to someone redesigning their site, and follow for
+  a new template every day") because shares sent per reach is a top ranking signal. Say "send", "share" or "tag".
 - `## Keywords` — 8–12 search phrases (SEO terms for caption, alt text, on-screen text)
 - `## Hashtags` — EXACTLY 5, each starting with # (Instagram's per-post limit
   since Dec 2025): 2 broad, 2 niche, 1 topic-specific; then an `Alternates:` line
   with 5 more to rotate between posts (never all together)
-- `## Reel` — lines `Length:` (7–15 s), `Shot plan:` (2–4 beats of what to screen-record,
-  e.g. hero load → scroll → signature moment → CTA), `Cover:` (3–5 word cover text)
+- `## Reel` — lines `Length:` (20–30 s, matching the ▶ player's length setting; shorter pages = higher completion),
+  `Shot plan:` (2–4 beats of what the ▶ player will show: it only scrolls and plays animations, it never taps),
+  `Payoff:` (the moment near the end that answers the hook and rewards finishing, e.g. a signature animation completing or
+  the final CTA reveal — make sure the template actually has one in its last third), `Cover:` (3–5 word cover text)
 - `## Music` — lines `Mood:`, `Genre:`, `BPM:`, `Search:` (3–5 terms to type into
   Instagram's audio search), `Accent sounds:` (optional SFX), `Avoid:`
 - Format is a vertical 9:16 Reel recorded from the screen (phone-width viewport).

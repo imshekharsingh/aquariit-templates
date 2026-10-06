@@ -111,6 +111,7 @@
     list.forEach(function (t) { var b = el('button', 'chip ' + (cls || ''), t); b.type = 'button'; b.addEventListener('click', function () { copy(t, b, label || 'Copied'); }); w.appendChild(b); });
     return w;
   }
+  function cap(t) { return t ? t.charAt(0).toUpperCase() + t.slice(1) : t; }
   function fmtDate(id) {
     var d = new Date(id.slice(0, 10) + 'T00:00:00Z');
     var s = d.toLocaleDateString('en-GB', { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' });
@@ -153,8 +154,9 @@
     var right = el('div'); right.style.flex = '1'; right.style.minWidth = '220px';
     right.appendChild(el('p', 'sub', 'Cover text')); var cv = el('button', 'chip', k.reel.cover); cv.type = 'button'; cv.addEventListener('click', function () { copy(k.reel.cover, cv, 'Cover text copied'); }); right.appendChild(cv);
     right.appendChild(el('p', 'sub', 'Length')); right.appendChild(el('p', null, k.reel.length));
+    if (k.reel.payoff) { right.appendChild(el('p', 'sub', 'Payoff · what keeps them watching')); right.appendChild(el('p', null, cap(k.reel.payoff))); }
     row.appendChild(right); c.appendChild(row);
-    c.appendChild(el('p', 'sub', 'Shot plan')); var ol = el('ol', 'beats'); k.reel.beats.forEach(function (b) { ol.appendChild(el('li', null, b)); }); c.appendChild(ol); app.appendChild(c);
+    c.appendChild(el('p', 'sub', 'Shot plan')); var ol = el('ol', 'beats'); k.reel.beats.forEach(function (b) { ol.appendChild(el('li', null, cap(b))); }); c.appendChild(ol); app.appendChild(c);
 
     c = card('Music'); var f = el('div', 'facts');
     [['Mood', k.music.mood], ['Genre', k.music.genre], ['BPM', k.music.bpm]].forEach(function (p) { if (p[1]) { var d = el('div', 'fact'); d.appendChild(el('b', null, p[0])); d.appendChild(el('span', null, p[1])); f.appendChild(d); } });
