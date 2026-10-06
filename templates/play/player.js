@@ -188,29 +188,82 @@
   }
   var easeIO = function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
 
+  // Content blocks = the units a viewer reads (heading groups, cards, list items). The planner pauses where a block starts just under
+  // the header and keeps the frame's bottom edge out of the middle of a block. A template can pin the pauses with [data-reel-stop].
+  function contentBlocks(win, doc, vh) {
+    var sy = win.scrollY, out = [];
+    function ok(e) { var cs = win.getComputedStyle(e), r = e.getBoundingClientRect(); return r.height > 8 && r.width > 8 && cs.display !== 'none' && cs.visibility !== 'hidden' && cs.position !== 'fixed' && !/^(SCRIPT|STYLE|CANVAS|LINK|META)$/.test(e.tagName); }
+    function kids(e) { return Array.prototype.filter.call(e.children, ok); }
+    function push(c) { var r = c.getBoundingClientRect(); out.push({ el: c, top: r.top + sy, bottom: r.bottom + sy }); }
+    function descend(e, depth) {
+      var k = kids(e);
+      while (k.length === 1 && depth < 6) { e = k[0]; k = kids(e); depth++; } // skip single-child wrappers (.wrap, article, ...)
+      k.forEach(function (c) {
+        var cs = win.getComputedStyle(c), r = c.getBoundingClientRect();
+        if (kids(c).length > 1 && /grid|flex/.test(cs.display) && r.height > vh * .45 && depth < 5) descend(c, depth + 1); // tall grid/list: its items are the blocks
+        else push(c);
+      });
+    }
+    var pinned = doc.querySelectorAll('[data-reel-stop]');
+    if (pinned.length) Array.prototype.forEach.call(pinned, push);
+    else {
+      var secs = doc.querySelectorAll('main > *, body > section, body > footer'); if (!secs.length) secs = doc.body.children;
+      Array.prototype.filter.call(secs, ok).forEach(function (sec) { var n = out.length; descend(sec, 0); if (out.length === n) push(sec); });
+    }
+    return out.sort(function (a, b) { return a.top - b.top; });
+  }
+  function label(b) { return b.el.tagName.toLowerCase() + (b.el.className && typeof b.el.className === 'string' ? '.' + b.el.className.trim().split(/\s+/)[0] : '') + ' "' + (b.el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 28) + '"'; }
+
+  function planStops(win, doc, vh, max, barH) {
+    var usable = vh - barH, BR = 28, blocks = contentBlocks(win, doc, vh), stops = [], cur = 0;
+    var small = blocks.filter(function (b) { return b.bottom - b.top <= usable * .9; }); // blocks that could fit a frame; bigger ones can't avoid being cut
+    function sliceAt(line) { return small.filter(function (b) { return b.top < line - 8 && b.bottom > line + 8; }); }
+    function amount(list, line) { return list.reduce(function (a, b) { return a + Math.min(vh * .4, line - b.top, b.bottom - line); }, 0); }
+    // a frame is judged on both edges: the bottom edge slicing a block counts fully, a block half-hidden under the header counts less
+    function pen(y) { var bl = y + vh, tl = y + barH + 10; return amount(sliceAt(bl), bl) + .7 * amount(sliceAt(tl), tl); }
+    // candidate pauses: a block starts just under the header, OR the bottom edge sits in the gap after a block
+    var cands = [];
+    blocks.forEach(function (b, i) {
+      cands.push(Math.round(b.top - barH - BR));
+      var next = blocks[i + 1], gapMid = next && next.top > b.bottom ? (b.bottom + next.top) / 2 : b.bottom + 14;
+      cands.push(Math.round(gapMid - vh));
+    });
+    for (var guard = 0; guard < 60 && max - cur > usable * 1.3; guard++) { // close to the end: glide straight to the bottom instead of adding a pause just before it
+      var lo = cur + usable * .5, hi = Math.min(max, cur + usable * .96), best = null;
+      cands.forEach(function (y) {
+        if (y < lo || y > hi) return;
+        var p = pen(y); if (!best || p < best.p - 6 || (Math.abs(p - best.p) <= 6 && y > best.y)) best = { y: y, p: p }; // least cut-off, then farthest
+      });
+      if (!best) best = { y: Math.round(cur + usable * .85) };
+      stops.push(best.y); cur = best.y;
+    }
+    var all = [0].concat(stops, max > 4 ? [max] : []);
+    return { stops: stops, blocks: blocks.length, report: all.map(function (y) { return { y: y, sliced: sliceAt(y + vh).map(label), under: sliceAt(y + barH + 10).map(label) }; }) };
+  }
+
   function buildPlan(win, doc, D) {
     var cfg = win.__reel || {}, vh = win.innerHeight, scroller = null;
     if (cfg.scroller) scroller = doc.querySelector(cfg.scroller);
     var axisX = scroller && cfg.axis === 'x';
     var max = scroller ? Math.max(0, axisX ? scroller.scrollWidth - scroller.clientWidth : scroller.scrollHeight - scroller.clientHeight)
                        : Math.max(0, doc.documentElement.scrollHeight - vh);
-    var pts = [0];
+    var pts = [0], report = [], blocksN = 0, barH = 0;
     if (!scroller) {
-      var barH = 0; // height of a sticky/fixed top bar so section titles don't hide under it
+      // height of a sticky/fixed top bar so section titles don't hide under it
       Array.prototype.some.call(doc.querySelectorAll('header,nav,[class*="bar"]'), function (e) {
         var cs = win.getComputedStyle(e), r = e.getBoundingClientRect();
         if ((cs.position === 'sticky' || cs.position === 'fixed') && r.top < 4 && r.height < 120 && r.width > win.innerWidth * .6) { barH = r.height; return true; }
       });
-      var cand = [];
-      if (cfg.stops) cfg.stops.forEach(function (s) { var e = typeof s === 'string' ? doc.querySelector(s) : null; cand.push(typeof s === 'number' ? s : e ? e.getBoundingClientRect().top + win.scrollY : null); });
-      else Array.prototype.forEach.call(doc.querySelectorAll('main > *, body > section, body > footer, section'), function (e) {
-        var r = e.getBoundingClientRect(); if (r.height > vh * .3) cand.push(r.top + win.scrollY);
-      });
-      cand = cand.filter(function (y) { return y != null; }).map(function (y) { return Math.round(y - barH - 6); }).filter(function (y) { return y > vh * .3 && y < max - vh * .3; }).sort(function (a, b) { return a - b; });
-      var last = 0, kept = [];
-      cand.forEach(function (y) { if (y - last >= vh * .6) { kept.push(y); last = y; } });
-      while (kept.length > 9) kept = kept.filter(function (_, i) { return i % 2 === 0; });
-      pts = pts.concat(kept);
+      var H0x = Math.min(2.8, D * .13), H1x = Math.min(2.6, D * .12), maxStops = Math.max(2, Math.floor((D - H0x - H1x) / 2.2));
+      if (cfg.stops) { // explicit pauses chosen by the template (selectors or pixel offsets)
+        var cand = cfg.stops.map(function (s) { var e = typeof s === 'string' ? doc.querySelector(s) : null; return typeof s === 'number' ? s : e ? e.getBoundingClientRect().top + win.scrollY - barH - 6 : null; });
+        var kept = cand.filter(function (y) { return y != null && y > vh * .3 && y < max - vh * .3; }).sort(function (a, b) { return a - b; });
+        pts = pts.concat(kept);
+      } else {
+        var ps = planStops(win, doc, vh, max, barH), st = ps.stops;
+        while (st.length > maxStops) st = st.filter(function (_, i) { return i % 2 === 1; }); // too many pauses for this length: keep every other one
+        report = ps.report; blocksN = ps.blocks; pts = pts.concat(st);
+      }
     } else {
       var n = Math.max(2, Math.round(max / (axisX ? win.innerWidth : vh))); for (var i = 1; i < n; i++) pts.push(Math.round(max * i / n));
     }
@@ -221,7 +274,7 @@
     var t = H0;
     segs.forEach(function (g, k) { g.t0 = t; g.dur = W * g.w / wsum; g.move = g.dur * (k === segs.length - 1 ? .92 : .74); t += g.dur; });
     return {
-      points: pts, stops: Math.max(0, pts.length - 2), max: max, scroller: scroller, axisX: axisX,
+      points: pts, stops: Math.max(0, pts.length - 2), max: max, scroller: scroller, axisX: axisX, barH: barH, blocks: blocksN, report: report,
       at: function (time) {
         if (!segs.length || time <= H0) return 0;
         for (var k = 0; k < segs.length; k++) { var g = segs[k]; if (time < g.t0 + g.dur) return g.a + (g.b - g.a) * easeIO(clamp((time - g.t0) / g.move, 0, 1)); }
