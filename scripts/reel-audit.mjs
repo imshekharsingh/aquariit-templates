@@ -45,8 +45,8 @@ for (const id of ids) {
   const plan = await page.evaluate((len) => { const p = window.Reel._plan(window, document, len); return { points: p.points, max: p.max, barH: p.barH, blocks: p.blocks, report: p.report, overflowX: document.documentElement.scrollWidth - innerWidth }; }, LEN);
   console.log(`\n== ${id} @402x715  length ${LEN}s  page height ${plan.max + 715}px  header ${Math.round(plan.barH)}px  blocks ${plan.blocks}  pauses ${plan.report.length}`);
   plan.report.forEach((r, i) => {
-    const bad = r.sliced.length; warn += bad; const und = (r.under || []).filter((x) => !r.sliced.includes(x));
-    console.log(`  ${String(i).padStart(2)}  y=${String(Math.round(r.y)).padStart(5)}  ${bad ? 'CUTS at bottom: ' + r.sliced.join(' | ') : 'clean'}${und.length ? '   (under header: ' + und.join(' | ') + ')' : ''}`);
+    const und = i === 0 ? [] : (r.under || []); const bad = r.sliced.length + und.length; warn += bad; // a block half-hidden under the header is a cut too
+    console.log(`  ${String(i).padStart(2)}  y=${String(Math.round(r.y)).padStart(5)}  ${bad ? '' : 'clean'}${r.sliced.length ? 'CUTS at bottom: ' + r.sliced.join(' | ') : ''}${und.length ? (r.sliced.length ? '   ' : '') + 'CUTS under header: ' + und.join(' | ') : ''}`);
   });
   for (let i = 0; i < plan.report.length; i++) {
     await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), plan.report[i].y); await page.waitForTimeout(900);

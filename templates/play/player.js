@@ -194,13 +194,21 @@
     var sy = win.scrollY, out = [];
     function ok(e) { var cs = win.getComputedStyle(e), r = e.getBoundingClientRect(); return r.height > 8 && r.width > 8 && cs.display !== 'none' && cs.visibility !== 'hidden' && cs.position !== 'fixed' && !/^(SCRIPT|STYLE|CANVAS|LINK|META)$/.test(e.tagName); }
     function kids(e) { return Array.prototype.filter.call(e.children, ok); }
-    function push(c) { var r = c.getBoundingClientRect(); out.push({ el: c, top: r.top + sy, bottom: r.bottom + sy }); }
+    function push(c) { // layout position (offsetTop chain) so entrance transforms like translateY(22px) never skew the plan
+      if (typeof c.offsetTop === 'number' && c.offsetParent !== undefined) { var t = 0, n = c; while (n) { t += n.offsetTop; n = n.offsetParent; } out.push({ el: c, top: t, bottom: t + c.offsetHeight }); }
+      else { var r = c.getBoundingClientRect(); out.push({ el: c, top: r.top + sy, bottom: r.bottom + sy }); }
+    }
+    function atomic(e) { // a unit that must stay together: a semantic group, or anything with its own visible box (card, panel, quote block)
+      if (e.hasAttribute('data-reel-block') || /^(FIGURE|ARTICLE|BLOCKQUOTE|LI|DETAILS|FORM|TABLE|UL|OL|DL|PRE|FOOTER)$/.test(e.tagName)) return true;
+      var cs = win.getComputedStyle(e);
+      return (cs.backgroundColor !== 'rgba(0, 0, 0, 0)' && cs.backgroundColor !== 'transparent') || (cs.borderTopStyle !== 'none' && parseFloat(cs.borderTopWidth) > 0) || cs.boxShadow !== 'none';
+    }
     function descend(e, depth) {
       var k = kids(e);
-      while (k.length === 1 && depth < 6) { e = k[0]; k = kids(e); depth++; } // skip single-child wrappers (.wrap, article, ...)
+      while (k.length === 1 && depth < 6 && !atomic(k[0])) { e = k[0]; k = kids(e); depth++; } // skip plain single-child wrappers (.wrap ...) but never a unit (figure, card...)
       k.forEach(function (c) {
         var cs = win.getComputedStyle(c), r = c.getBoundingClientRect();
-        if (kids(c).length > 1 && /grid|flex/.test(cs.display) && r.height > vh * .45 && depth < 5) descend(c, depth + 1); // tall grid/list: its items are the blocks
+        if (kids(c).length > 1 && /grid|flex/.test(cs.display) && r.height > vh * .45 && depth < 5 && !atomic(c)) descend(c, depth + 1); // tall grid/list: its items are the blocks
         else push(c);
       });
     }
@@ -216,29 +224,42 @@
 
   function planStops(win, doc, vh, max, barH) {
     var usable = vh - barH, BR = 28, blocks = contentBlocks(win, doc, vh), stops = [], cur = 0;
-    var small = blocks.filter(function (b) { return b.bottom - b.top <= usable * .9; }); // blocks that could fit a frame; bigger ones can't avoid being cut
-    function sliceAt(line) { return small.filter(function (b) { return b.top < line - 8 && b.bottom > line + 8; }); }
-    function amount(list, line) { return list.reduce(function (a, b) { return a + Math.min(vh * .4, line - b.top, b.bottom - line); }, 0); }
-    // a frame is judged on both edges: the bottom edge slicing a block counts fully, a block half-hidden under the header counts less
-    function pen(y) { var bl = y + vh, tl = y + barH + 10; return amount(sliceAt(bl), bl) + .7 * amount(sliceAt(tl), tl); }
-    // candidate pauses: a block starts just under the header, OR the bottom edge sits in the gap after a block
-    var cands = [];
-    blocks.forEach(function (b, i) {
-      cands.push(Math.round(b.top - barH - BR));
-      var next = blocks[i + 1], gapMid = next && next.top > b.bottom ? (b.bottom + next.top) / 2 : b.bottom + 14;
-      cands.push(Math.round(gapMid - vh));
+    blocks.forEach(function (b, i) { // how much air the bottom edge should leave under a block: half the gap to the next block (6–14px)
+      var n = blocks[i + 1], gap = n && n.top >= b.bottom ? n.top - b.bottom : 40; b.gap = gap; b.need = Math.max(6, Math.min(14, gap / 2 - 1));
     });
-    for (var guard = 0; guard < 60 && max - cur > usable * 1.3; guard++) { // close to the end: glide straight to the bottom instead of adding a pause just before it
-      var lo = cur + usable * .5, hi = Math.min(max, cur + usable * .96), best = null;
-      cands.forEach(function (y) {
-        if (y < lo || y > hi) return;
-        var p = pen(y); if (!best || p < best.p - 6 || (Math.abs(p - best.p) <= 6 && y > best.y)) best = { y: y, p: p }; // least cut-off, then farthest
-      });
-      if (!best) best = { y: Math.round(cur + usable * .85) };
-      stops.push(best.y); cur = best.y;
+    var small = blocks.filter(function (b) { return b.bottom - b.top <= usable * .9; }); // blocks that could fit a frame; bigger ones can't avoid being cut
+    function sliceAt(line) { return small.filter(function (b) { return b.top < line - 8 && b.bottom > line - b.need; }); } // cut through, or hugging the edge without the air it could have had
+    function sliceTop(line) { return small.filter(function (b) { return b.top < line - 8 && b.bottom > line + 8; }); } // half-hidden under the header (a thin sliver of the previous block is fine)
+    function amount(list, line) { return list.length ? list.length * 200 + 2 * list.reduce(function (a, b) { return a + Math.min(vh * .4, Math.abs(line - b.top), Math.abs(b.bottom - line)); }, 0) : 0; } // any cut block costs far more than an extra pause
+    // a frame is judged on both edges: the bottom edge slicing a block counts fully, a block half-hidden under the header counts less
+    function pen(y) { var bl = y + vh, tl = y + barH + 6; return amount(sliceAt(bl), bl) + amount(sliceTop(tl), tl); }
+    // Plan ALL pauses together (shortest path over candidate positions): fewest cut blocks first, then fewest pauses, preferring neat frames
+    // where a block starts under the header or the bottom edge sits in the gap after a block. Each hop is 0.5–0.96 of a frame, so nothing is skipped.
+    var neat = {}, ys = [0], seen = { 0: 1 };
+    function add(y) { y = Math.round(y); if (y > 0 && y < max && !seen[y]) { seen[y] = 1; ys.push(y); } }
+    blocks.forEach(function (b) {
+      var y1 = Math.round(b.top - barH - BR), y2 = Math.round(b.bottom + Math.min(b.gap / 2, 30) - vh);
+      [y1, y2].forEach(function (y) { if (y > 0 && y < max) { neat[y] = 1; add(y); } });
+    });
+    for (var sy = 8; sy < max; sy += 8) add(sy);
+    ys.sort(function (a, b) { return a - b; });
+    var hasEnd = max > 4; if (hasEnd) ys.push(max);
+    var n = ys.length, K = 25, best = [], prev = [], i, j;
+    var cost = ys.map(function (y, k) { return k === 0 || (hasEnd && k === n - 1) ? 0 : pen(y) - (neat[y] ? 5 : 0) + K; });
+    for (i = 0; i < n; i++) best[i] = Infinity; best[0] = 0;
+    for (i = 0; i < n - 1; i++) {
+      if (best[i] === Infinity) continue;
+      for (j = i + 1; j < n; j++) {
+        var d = ys[j] - ys[i], isEnd = hasEnd && j === n - 1;
+        if (d > usable * (isEnd ? 1.3 : .96)) break;
+        if (d < usable * (isEnd ? .4 : .5) && !(isEnd && i === 0)) continue;
+        if (best[i] + cost[j] < best[j]) { best[j] = best[i] + cost[j]; prev[j] = i; }
+      }
     }
+    if (best[n - 1] === Infinity) { for (var f = usable * .85; f < max - usable * .4; f += usable * .85) stops.push(Math.round(f)); } // pages the search can't cover: even spacing
+    else { for (j = prev[n - 1]; j > 0; j = prev[j]) stops.unshift(ys[j]); }
     var all = [0].concat(stops, max > 4 ? [max] : []);
-    return { stops: stops, blocks: blocks.length, report: all.map(function (y) { return { y: y, sliced: sliceAt(y + vh).map(label), under: sliceAt(y + barH + 10).map(label) }; }) };
+    return { stops: stops, blocks: blocks.length, report: all.map(function (y) { var end = max > 4 && y >= max - 1; return { y: y, sliced: end ? [] : sliceAt(y + vh).map(label), under: end ? [] : sliceTop(y + barH + 6).map(label) }; }) }; // the last frame is the end of the page: nothing is cut there
   }
 
   function buildPlan(win, doc, D) {
