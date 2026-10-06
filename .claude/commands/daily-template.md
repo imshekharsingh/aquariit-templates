@@ -40,9 +40,11 @@ CLAUDE.md.
 ## Phase 4 — Sanity checks (must pass before pushing)
 1. `npm install --no-audit --no-fund` (if node_modules is missing).
 2. `npm run check`. Fix every error and re-run until it passes.
-3. Reason through the page at mobile (375px) and desktop (1440px) widths:
-   no horizontal overflow, readable type, working nav, "All templates"
-   link visible and tappable.
+3. Emulate the iPhone Reel frame (402×715 viewport, `<html class="reel">`) and also a
+   plain 402×874 phone: no horizontal overflow, first screen is a finished composition,
+   readable type, header looks right with the "All templates" link hidden, key content
+   outside Instagram's bottom ≈20%. Take screenshots and look at them. Desktop (1440px)
+   must still not break.
 4. Compare against the last 3 templates; if too similar, revise.
 
 ## Phase 4b — Instagram social kit

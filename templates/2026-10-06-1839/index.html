@@ -13,6 +13,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&amp;family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet">
 <style>
+  :root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+  /* Reel mode: the ▶ player (templates/play/player.js) adds html.reel and already frames the page inside the safe area */
+  html.reel{--safe-top:0px;--safe-bottom:0px}
+  .reel .bar .wrap{justify-content:center}
   :root{
     --bg:#05060f; --bg2:#0b0d22; --text:#e8ecff; --mute:#9aa3c7;
     --cyan:#19f0ff; --pink:#ff2fb9; --lime:#c6ff3d; --line:rgba(160,175,255,.18);
@@ -29,7 +33,7 @@
   .mono{font-family:var(--mono)}
   .eyebrow{font:600 .74rem/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--cyan)}
 
-  .bar{position:sticky;top:0;z-index:30;padding-top:env(safe-area-inset-top);background:rgba(5,6,15,.72);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .bar{position:sticky;top:0;z-index:30;padding-top:var(--safe-top);background:rgba(5,6,15,.72);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:60px}
   .back{font:600 .78rem var(--mono);text-decoration:none;padding:9px 14px;border:1px solid var(--cyan);color:var(--cyan);border-radius:999px;white-space:nowrap}
   .back:hover{background:var(--cyan);color:var(--bg)}
@@ -108,7 +112,7 @@
   .plan li{padding:6px 0;border-top:1px dashed var(--line)}
   .final{text-align:center}
   .final h2{font-size:clamp(2.2rem,7vw,4.6rem)}
-  footer{position:relative;z-index:1;padding:34px 22px calc(34px + env(safe-area-inset-bottom));text-align:center;color:var(--mute);font-size:.85rem;border-top:1px solid var(--line)}
+  footer{position:relative;z-index:1;padding:34px 22px calc(34px + var(--safe-bottom));text-align:center;color:var(--mute);font-size:.85rem;border-top:1px solid var(--line)}
   footer a{color:var(--cyan)}
 
   @media(max-width:520px){body{font-size:16px}.node{width:50px;height:50px}.node svg{width:18px;height:18px}.node span{font-size:.56rem}section{padding:60px 0}}

@@ -265,6 +265,23 @@
   function addCss() { if (cssAdded) return; var s = document.createElement('style'); s.textContent = css; document.head.appendChild(s); cssAdded = true; }
   function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
 
+  // iOS paints the status-bar area from the top-level page's colours: match them to the template so the recording looks seamless
+  function pageColor(doc, win) {
+    var c = '', m = doc.querySelector('meta[name="theme-color"]');
+    try { c = win.getComputedStyle(doc.body).backgroundColor; if (!c || /rgba\(.*,\s*0\)|transparent/.test(c)) c = win.getComputedStyle(doc.documentElement).backgroundColor; } catch (e) {}
+    if (!c || /rgba\(.*,\s*0\)|transparent/.test(c)) c = (m && m.content) || '#000';
+    return c;
+  }
+  function tintPage(color) {
+    var root = document.documentElement, meta = document.querySelector('meta[name="theme-color"]'), made = false;
+    if (!meta) { meta = document.createElement('meta'); meta.name = 'theme-color'; document.head.appendChild(meta); made = true; }
+    var prev = { meta: meta.content, bg: root.style.backgroundColor, scheme: root.style.colorScheme };
+    meta.content = color; root.style.backgroundColor = color;
+    var rgb = (color.match(/[\d.]+/g) || [0, 0, 0]).map(Number), lum = (.299 * rgb[0] + .587 * rgb[1] + .114 * rgb[2]) / 255;
+    root.style.colorScheme = lum < .5 ? 'dark' : 'light';
+    return function () { if (made) meta.remove(); else meta.content = prev.meta; root.style.backgroundColor = prev.bg; root.style.colorScheme = prev.scheme; };
+  }
+
   var actx = null, silent = null, logP = null, run = null;
   function ensureAudio() {
     var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
@@ -285,6 +302,7 @@
     if (!r || r.dead) return; r.dead = true;
     if (r.raf) cancelAnimationFrame(r.raf); clearTimeout(r.tm); clearInterval(r.iv);
     if (r.music) r.music.stop(); if (r.lock) try { r.lock.release(); } catch (e) {}
+    if (r.restore) r.restore();
     if (r.node && r.node.parentNode) r.node.parentNode.removeChild(r.node);
     if (silent) try { silent.pause(); } catch (e) {}
     if (run === r) run = null;
@@ -296,11 +314,12 @@
     var st = load(), ctx = ensureAudio(); // must happen inside the tap (iOS needs the user gesture)
     var r = run = { id: id, dead: false };
     var box = el('div'); box.id = 'reel'; r.node = box; document.body.appendChild(box);
-    var probe = el('div'); probe.style.cssText = 'position:fixed;top:0;left:0;visibility:hidden;padding-top:env(safe-area-inset-top)'; document.body.appendChild(probe);
-    var top = parseFloat(getComputedStyle(probe).paddingTop) || 0; probe.remove(); // iPhone installed-app status bar / Dynamic Island
-    box.style.paddingTop = top + 'px';
-    var vw = innerWidth, vh = innerHeight - top, fw = vw, fh = vh;
-    if (st.frame === 'phone' || (st.frame === 'auto' && vw / vh > .66)) fw = Math.min(vw, Math.round(vh * 9 / 16));
+    // Reel frame: the largest 9:16 box that fits the screen, centred. On a tall phone (iPhone 17 Pro is 9:19.5) the bands above and
+    // below hold the status bar / home indicator and are exactly what Instagram's default 9:16 crop trims away.
+    var vw = innerWidth, vh = innerHeight, fw = vw, fh = vh;
+    if (st.frame !== 'full') { fw = Math.min(vw, Math.round(vh * 9 / 16)); fh = Math.min(vh, Math.round(fw * 16 / 9)); }
+    var restore = tintPage('#05080c');
+    r.restore = restore;
     var frame = el('iframe'); frame.style.width = fw + 'px'; frame.style.height = fh + 'px'; frame.setAttribute('title', 'Template preview'); frame.setAttribute('aria-hidden', 'true');
     box.appendChild(frame);
     var cd = el('div', 'cd'), small = el('small', null, 'Recording starts in'), ring = el('div', 'ring');
@@ -323,19 +342,22 @@
       var s = doc.createElement('style'); s.id = '__reel_freeze'; s.textContent = '*,*::before,*::after{animation-play-state:paused!important}';
       var b = doc.createElement('style'); b.id = '__reel_base'; b.textContent = 'html{scroll-behavior:auto!important}'; // our scrolling must never be smoothed by the page
       var host = doc.head || doc.documentElement; host.appendChild(b); host.appendChild(s);
+      doc.documentElement.classList.add('reel'); // templates style this: no safe-area padding (the frame already sits inside it), centred header, etc.
     }
     function hideBack(doc) {
       if (!st.hideBack) return;
-      Array.prototype.forEach.call(doc.querySelectorAll('a[href="/"]'), function (a) { if (/All templates/i.test(a.textContent)) a.style.setProperty('visibility', 'hidden', 'important'); });
+      Array.prototype.forEach.call(doc.querySelectorAll('a[href="/"]'), function (a) { if (/All templates/i.test(a.textContent)) a.style.setProperty('display', 'none', 'important'); });
     }
     function loadFresh() {
-      fresh = true; ready = false; frame.src = 'about:blank';
+      fresh = true; ready = false;
+      try { frame.contentWindow.__reelOld = true; } catch (e) {} // mark the preloaded copy so the poller never mistakes it for the fresh load
+      frame.src = 'about:blank';
       setTimeout(function () { if (r.dead) return; frame.src = url; }, 30);
       clearInterval(r.iv);
       r.iv = setInterval(function () {
         try {
           var d = frame.contentDocument, w = frame.contentWindow;
-          if (d && w && d.URL.indexOf(url) > -1 && d.documentElement) { freeze(d, w); if (d.readyState === 'complete' && !ready) { hideBack(d); var f = d.fonts && d.fonts.ready ? Promise.race([d.fonts.ready, new Promise(function (ok) { setTimeout(ok, 1500); })]) : Promise.resolve(); f.then(function () { setTimeout(function () { ready = true; }, 200); }); ready = 'pending'; clearInterval(r.iv); }
+          if (d && w && !w.__reelOld && d.URL.indexOf(url) > -1 && d.documentElement) { freeze(d, w); if (d.readyState === 'complete' && !ready) { hideBack(d); var f = d.fonts && d.fonts.ready ? Promise.race([d.fonts.ready, new Promise(function (ok) { setTimeout(ok, 1500); })]) : Promise.resolve(); f.then(function () { setTimeout(function () { ready = true; }, 200); }); ready = 'pending'; clearInterval(r.iv); }
           }
         } catch (e) {}
       }, 8);
@@ -360,6 +382,7 @@
       var d = frame.contentDocument, w = frame.contentWindow, fz = d.getElementById('__reel_freeze');
       var cfg = w.__reel || {}; if (cfg.duration) D = clamp(cfg.duration, 6, 120);
       jump(w, 0);
+      var tint = pageColor(d, w); box.style.background = tint; tintPage(tint);
       var plan = buildPlan(w, d, D);
       var clockStart, LEAD = .6, thawed = false; // short lead: overlay fades out and the audio graph is built BEFORE "action", so the first frames don't stutter on phones
       if (ctx && st.music !== 'off') {
@@ -403,7 +426,7 @@
     }
     group('Length of the recording', 'len', [[20, '20 s'], [30, '30 s'], [45, '45 s'], [60, '60 s']]);
     group('Music', 'music', [['auto', 'Auto (matches template)'], ['lofi', 'Lo-fi'], ['synthwave', 'Synthwave'], ['ambient', 'Ambient'], ['jazz', 'Jazz'], ['playful', 'Playful'], ['off', 'Off']]);
-    group('Frame', 'frame', [['auto', 'Auto'], ['phone', 'Phone 9:16'], ['full', 'Full screen']]);
+    group('Frame', 'frame', [['auto', 'Reel 9:16 (recommended)'], ['full', 'Full screen']]);
     group('“← All templates” link', 'hideBack', [['true', 'Hide while recording'], ['false', 'Show']]);
     var pv = el('button', 'c', '🎧 Preview music (8 s)'); pv.type = 'button'; pv.style.marginTop = '14px';
     pv.addEventListener('click', function () {
