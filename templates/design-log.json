@@ -1,0 +1,22 @@
+[
+  {
+    "date": "2026-10-06",
+    "slug": "ledgerleaf-press",
+    "url": "https://templates.aquariit.com/2026-10-06/",
+    "name": "Ledgerleaf Press",
+    "theme": "warm paper/print",
+    "layout": "editorial magazine",
+    "palette": [
+      "#f3ead8",
+      "#1c1a17",
+      "#c2402a",
+      "#5b6b3a",
+      "#d9a441"
+    ],
+    "fonts": "Fraunces + Karla",
+    "motif": "letterpress registration marks and rotating ink-stamp seal",
+    "animation": "scroll-drawn ink line with masked headline reveals",
+    "purpose": "studio",
+    "description": "A warm editorial homepage for a fictional letterpress studio, with an ink line that draws itself as you scroll."
+  }
+]

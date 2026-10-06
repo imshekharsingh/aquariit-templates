@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Not found · Aquarii Templates</title>
+<meta name="theme-color" content="#0b2a3a">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<style>
+  :root{--bg:#f6f2e9;--ink:#10232d;--mute:#5d6b72;--accent:#c4452b}
+  @media (prefers-color-scheme:dark){:root{--bg:#0b1a22;--ink:#eee8da;--mute:#97a8b0;--accent:#ff8a5c}}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:max(24px,env(safe-area-inset-top)) 24px max(24px,env(safe-area-inset-bottom));
+    background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;text-align:center}
+  .num{font-size:clamp(96px,28vw,200px);line-height:1;letter-spacing:-.04em;margin:0}
+  .num span{color:var(--accent);display:inline-block;animation:bob 4s ease-in-out infinite}
+  p{color:var(--mute);font-size:1.15rem;margin:.5rem 0 2rem}
+  a{display:inline-block;padding:14px 26px;border:1.5px solid var(--ink);border-radius:999px;color:var(--ink);text-decoration:none;font:600 1rem system-ui,sans-serif;min-height:48px}
+  a:hover{background:var(--ink);color:var(--bg)}
+  a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+  @keyframes bob{50%{transform:translateY(-.08em)}}
+  @media (prefers-reduced-motion:reduce){.num span{animation:none}}
+</style>
+</head>
+<body>
+<main>
+  <h1 class="num">4<span>0</span>4</h1>
+  <p>This page drifted off the shelf.</p>
+  <a href="/">← All templates</a>
+</main>
+</body>
+</html>

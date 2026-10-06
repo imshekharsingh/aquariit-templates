@@ -1,0 +1,81 @@
+name: Template pipeline
+
+on:
+  push:
+    branches: ['main', 'template/**', 'claude/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: pipeline-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+
+  merge:
+    needs: checks
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BRANCH: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Open PR if needed, then merge
+        run: |
+          if ! gh pr view "$BRANCH" --json number >/dev/null 2>&1; then
+            gh pr create --base main --head "$BRANCH" \
+              --title "Daily template: ${BRANCH##*/}" \
+              --body "Automated daily template. Sanity checks passed in run ${{ github.run_id }}."
+          fi
+          gh pr merge "$BRANCH" --squash --delete-branch
+
+  deploy:
+    needs: [checks, merge]
+    if: >-
+      always() && needs.checks.result == 'success' &&
+      (needs.merge.result == 'success' || github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+      - name: Smoke test live site
+        run: |
+          LATEST=$(node -e "const l=require('./design-log.json');console.log(l.length?l.sort((a,b)=>a.date<b.date?1:-1)[0].date:'')")
+          for path in "" "design-log.json" "manifest.webmanifest" ${LATEST:+$LATEST/}; do
+            url="https://templates.aquariit.com/$path"
+            for i in 1 2 3 4 5 6; do
+              code=$(curl -s -o /dev/null -w '%{http_code}' "$url")
+              [ "$code" = "200" ] && echo "OK $url" && break
+              echo "Attempt $i: $url returned $code"; sleep 10
+              [ $i = 6 ] && exit 1
+            done
+          done
+      - name: Summary
+        run: echo "Deployed. Home https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"

@@ -1,21 +1,23 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git status:*)", "Bash(git fetch:*)", "Bash(git pull:*)",
-      "Bash(git add:*)", "Bash(git commit:*)", "Bash(git push:*)",
-      "Bash(git stash:*)", "Bash(git log:*)", "Bash(git diff:*)",
-      "Bash(git show:*)", "Bash(git branch:*)", "Bash(git rev-parse:*)",
-      "Bash(git remote:*)", "Bash(gh pr create:*)",
+      "Bash(git status)", "Bash(git fetch:*)", "Bash(git pull:*)",
+      "Bash(git switch:*)", "Bash(git checkout:*)", "Bash(git branch:*)",
+      "Bash(git add:*)", "Bash(git commit:*)", "Bash(git push -u origin template/*)",
+      "Bash(git push origin template/*)", "Bash(git stash:*)",
+      "Bash(git log:*)", "Bash(git diff:*)", "Bash(git ls-remote:*)",
+      "Bash(gh run:*)", "Bash(gh pr view:*)", "Bash(gh pr list:*)",
+      "Bash(npm install:*)", "Bash(npm run check)", "Bash(node:*)",
       "Bash(npx --yes html-validate:*)", "Bash(mkdir:*)", "Bash(ls:*)",
-      "Bash(cat:*)", "Bash(date:*)"
+      "Bash(cp design-log.json templates/design-log.json)",
+      "Bash(TZ=Asia/Kolkata date:*)"
     ],
     "deny": [
       "Bash(git push --force:*)", "Bash(git push -f:*)",
-      "Bash(git push * --force*)", "Bash(git push * -f)",
-      "Bash(git push * --delete*)", "Bash(git push --delete:*)",
-      "Bash(git branch -D:*)", "Bash(git branch -d:*)",
-      "Bash(git branch --delete:*)", "Bash(git commit --amend:*)",
-      "Bash(git rebase:*)", "Bash(git reset --hard:*)", "Bash(rm -rf:*)"
+      "Bash(git push origin main:*)", "Bash(git push -u origin main:*)",
+      "Bash(git reset --hard:*)", "Bash(git branch -D:*)",
+      "Bash(npx wrangler deploy:*)", "Bash(wrangler deploy:*)",
+      "Bash(rm -rf:*)"
     ]
   }
 }

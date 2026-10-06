@@ -1,0 +1,13 @@
+{
+  "name": "aquarii-templates",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check.mjs && html-validate \"templates/**/*.html\"",
+    "icons": "node scripts/make-icons.mjs"
+  },
+  "devDependencies": {
+    "html-validate": "^11.16.2",
+    "wrangler": "^4.147.0"
+  }
+}
