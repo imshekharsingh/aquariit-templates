@@ -86,8 +86,18 @@ Design every template for a **402×715 viewport**, not a desktop page:
   without it (e.g. `.reel .bar .wrap{justify-content:center}`).
 - `<meta name="viewport" content="..., viewport-fit=cover">` and `<meta name="theme-color">` = the page's top/background colour
   (the player tints the iOS status area with it). The page's `body` background should be a solid colour.
-- Sections ≤ ~1 frame tall (≈715px) with their own heading, so the auto-scroll can pause on each one; use
-  `scroll-margin-top` for sticky headers. Entrance animations on load/scroll only.
+- **Alignment with the scroll flow.** The player pauses at *content blocks*, not at arbitrary pixels: it stops where a block
+  starts just under the header and keeps the frame's bottom edge in a gap between blocks. Build for that:
+  · Structure: `<main>` → `<section>` → (optional single wrapper) → blocks (heading group, card, list item, quote, CTA row).
+  · Keep blocks ≤ ≈600px tall and leave a visible gap (≥14px) between neighbours; never one giant block. Prefer stacked cards
+    over tall side-by-side columns on mobile. Two or three whole blocks should fit one frame (≈650px under the header).
+  · A heading and the content it introduces should sit within one frame (≈650px) of each other.
+  · Entrance animations on load/scroll only; each section should be "finished" when it is paused on.
+  · To control a pause explicitly add `data-reel-stop` to the elements that should start a frame (then only those are used).
+  · Run `node scripts/reel-audit.mjs <ID>` (needs Playwright; present in cloud sessions). It prints every pause, flags any pause
+    where the bottom edge would slice a block ("CUTS at bottom"), and saves a screenshot per pause in /tmp/reel-audit/.
+    OPEN THE SCREENSHOTS and confirm every pause is a finished frame, especially pause 0 (the first screen). Fix every
+    "CUTS" line by splitting/resizing blocks or pinning pauses, then re-run until it reports "All pauses are clean".
 `scripts/check.mjs` enforces the viewport-fit, theme-color, `html.reel` rule and the `--safe-*` convention.
 
 ## Instagram social kit (required for every template)

@@ -45,6 +45,10 @@ CLAUDE.md.
    readable type, header looks right with the "All templates" link hidden, key content
    outside Instagram's bottom ≈20%. Take screenshots and look at them. Desktop (1440px)
    must still not break.
+3b. Run `node scripts/reel-audit.mjs ID` (see "Alignment with the scroll flow" in CLAUDE.md).
+   Open the screenshots it saves in /tmp/reel-audit/ and fix every "CUTS" line (split or
+   resize blocks, add gaps, or pin pauses with data-reel-stop) until it says all pauses are
+   clean and every pause looks like a finished frame. If Playwright is unavailable, say so.
 4. Compare against the last 3 templates; if too similar, revise.
 
 ## Phase 4b — Instagram social kit
