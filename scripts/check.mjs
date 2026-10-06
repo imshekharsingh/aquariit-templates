@@ -85,7 +85,15 @@ for (const f of folders) {
     [/<main\b/i, '<main>'], [/@media[^{]*prefers-reduced-motion/i, 'prefers-reduced-motion media query'],
     [/<link\b[^>]*rel=["']manifest["'][^>]*href=["']\/manifest\.webmanifest["']|<link\b[^>]*href=["']\/manifest\.webmanifest["'][^>]*rel=["']manifest["']/i, '<link rel="manifest" href="/manifest.webmanifest">'],
   ];
+  need.push(
+    [/<meta\b[^>]*name=["']viewport["'][^>]*viewport-fit=cover/i, 'viewport-fit=cover in the viewport meta (iPhone safe areas)'],
+    [/<meta\b[^>]*name=["']theme-color["'][^>]*content=["']#?[\w(),.% ]+["']/i, '<meta name="theme-color"> matching the page top colour (iOS status area)'],
+    [/html\.reel\s*\{[^}]*--safe-top\s*:\s*0/i, 'Reel-mode rule: html.reel{--safe-top:0px;--safe-bottom:0px} (see CLAUDE.md)'],
+  );
   for (const [re, label] of need) if (!re.test(html)) err(`${id}: missing ${label}`);
+  // safe-area insets must go through --safe-top/--safe-bottom so the Reel player can neutralise them
+  const rawEnv = html.replace(/--safe-(?:top|bottom)\s*:\s*env\([^)]*\)/g, '').match(/env\(\s*safe-area-inset-(?:top|bottom)/g);
+  if (rawEnv) err(`${id}: use var(--safe-top)/var(--safe-bottom) instead of raw env(safe-area-inset-top/bottom) (${rawEnv.length} found)`);
   const back = [...html.matchAll(/<a\b[^>]*\bhref=["']\/["'][^>]*>([\s\S]*?)<\/a>/gi)].some((m) => /All templates/.test(m[1].replace(/<[^>]+>/g, '')));
   if (!back) err(`${id}: missing <a href="/"> whose text includes "All templates"`);
   for (const m of html.matchAll(/<img\b[^>]*>/gi)) if (!/\balt=/i.test(m[0])) err(`${id}: <img> without alt`);

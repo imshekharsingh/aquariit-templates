@@ -38,7 +38,10 @@ scrolls itself like a human camera move (hold on the hero, glide to each section
 the end) while original generated music plays and ends exactly with the scroll.
 - **Music** is synthesised in the browser (Web Audio), so there is nothing to license. The mood is picked
   from the template's theme: Lo-fi, Synthwave, Ambient, Jazz or Playful (override or turn off in ⚙).
-- **⚙ Reel settings** (home header / kit page): length (20–60 s), music, frame (auto/9:16/full), hide the
+- **9:16 frame:** the template is shown in a centred 9:16 box (402×715 on an iPhone 17 Pro). The bands above/below
+  carry the status bar and home indicator in the template's own background colour, and Instagram's default crop of
+  a tall screen recording trims them, so the Reel shows only the template.
+- **⚙ Reel settings** (home header / kit page): length (20–60 s), music, frame (Reel 9:16 / full screen), hide the
   "← All templates" link, plus an 8-second music preview.
 - Templates stay clean: no player UI is injected into them except hiding the back link. Optional hook for odd
   layouts: `window.__reel = { scroller, axis, duration, stops }` (see `CLAUDE.md`).

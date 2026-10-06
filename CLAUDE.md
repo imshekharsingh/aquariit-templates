@@ -70,6 +70,26 @@ theme/mood, page purpose. Never reuse an exact palette or font pairing.
 - Typical sections: nav, hero, features/content, social proof, CTA, footer —
   adapt to the concept
 
+## iPhone Reel frame (the recording target — design for it)
+The owner records with an iPhone 17 Pro (402×874 CSS px, DPR 3, top inset ≈62px with the Dynamic Island, bottom ≈34px),
+using the installed PWA, and posts to Instagram Reels (9:16). The ▶ player therefore shows every template inside a centred
+**402×715 (9:16) frame** — the status bar and home indicator fall in the bands above/below, which Instagram's default crop trims.
+Design every template for a **402×715 viewport**, not a desktop page:
+- First screen (402×715, header included) must be a finished composition: hero headline sized to fit 402px wide, one clear
+  focal visual, no content cut mid-line. Verify at exactly 402×715 (emulate it, with `<html class="reel">`).
+- Instagram's own UI covers the bottom ≈20% and right edge: keep key text/CTAs in the central ≈60% of the height.
+- Safe areas: declare `:root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}` and use only
+  `var(--safe-top)` / `var(--safe-bottom)` (never raw `env(safe-area-inset-top/bottom)`). Sticky headers pad with `var(--safe-top)`
+  and keep their background under the status bar (iOS PWA). Add `html.reel{--safe-top:0px;--safe-bottom:0px}`: the player adds the
+  `reel` class and already frames the page inside the safe area.
+- Reel mode also hides the "← All templates" link (display:none): add a `.reel` rule so the header still looks intentional
+  without it (e.g. `.reel .bar .wrap{justify-content:center}`).
+- `<meta name="viewport" content="..., viewport-fit=cover">` and `<meta name="theme-color">` = the page's top/background colour
+  (the player tints the iOS status area with it). The page's `body` background should be a solid colour.
+- Sections ≤ ~1 frame tall (≈715px) with their own heading, so the auto-scroll can pause on each one; use
+  `scroll-margin-top` for sticky headers. Entrance animations on load/scroll only.
+`scripts/check.mjs` enforces the viewport-fit, theme-color, `html.reel` rule and the `--safe-*` convention.
+
 ## Instagram social kit (required for every template)
 Every template ships with social/ID.md (NOT inside templates/, so it is
 never deployed). It is the ready-to-paste kit for the Instagram Reel:

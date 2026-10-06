@@ -13,6 +13,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&amp;family=Karla:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <style>
+  :root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+  /* Reel mode: the ▶ player (templates/play/player.js) adds html.reel and already frames the page inside the safe area */
+  html.reel{--safe-top:0px;--safe-bottom:0px}
+  .reel .bar .wrap{justify-content:center}
   :root{
     --paper:#f3ead8; --paper2:#eadfc7; --ink:#1c1a17; --mute:#5e574b;
     --red:#c2402a; --olive:#5b6b3a; --ochre:#d9a441; --line:rgba(28,26,23,.18);
@@ -36,7 +40,7 @@
 
   /* top bar */
   .bar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+    border-bottom:1px solid var(--line);padding-top:var(--safe-top)}
   .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px}
   .back{font:700 .8rem var(--sans);letter-spacing:.04em;text-decoration:none;padding:9px 14px;border:1.5px solid var(--ink);border-radius:999px;white-space:nowrap}
   .back:hover{background:var(--ink);color:var(--paper)}
@@ -134,7 +138,7 @@
   .final h2 em{color:var(--ochre)}
   .final p{color:color-mix(in srgb,var(--paper) 70%,transparent);max-width:30em;margin:0 auto 32px}
   .final .btn.solid{background:var(--paper);color:var(--ink);border-color:var(--paper);box-shadow:5px 5px 0 var(--red)}
-  footer{padding:36px 0 calc(36px + env(safe-area-inset-bottom));font-size:.85rem;color:var(--mute)}
+  footer{padding:36px 0 calc(36px + var(--safe-bottom));font-size:.85rem;color:var(--mute)}
   footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 
   @media(max-width:520px){body{font-size:17px}.steps{padding-left:52px}.step::before{left:-44px}section{padding:64px 0}}
