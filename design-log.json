@@ -41,5 +41,27 @@
     "animation": "continuous orbital rotation with pointer-parallax stars and count-up reveals",
     "purpose": "app showcase",
     "description": "A dark-neon app landing page for a fictional focus app, with tappable planets that orbit a glowing core."
+  },
+  {
+    "id": "2026-10-06-2002",
+    "date": "2026-10-06",
+    "time": "20:02",
+    "slug": "shizuku-tea-room",
+    "url": "https://templates.aquariit.com/2026-10-06-2002/",
+    "name": "Shizuku Tea Room",
+    "theme": "Japanese-inspired calm",
+    "layout": "single-column long-form",
+    "palette": [
+      "#e9efe5",
+      "#1d2a22",
+      "#4e6e34",
+      "#c4502a",
+      "#a8c48a"
+    ],
+    "fonts": "Shippori Mincho + Zen Kaku Gothic New",
+    "motif": "enso brush circle with rising steam",
+    "animation": "self-drawing brush stroke, rising steam and soft scroll reveals",
+    "purpose": "restaurant",
+    "description": "A calm single-column page for a fictional tea room, where a brush circle paints itself around a bowl of matcha as steam rises."
   }
 ]
