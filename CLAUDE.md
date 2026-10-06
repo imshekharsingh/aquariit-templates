@@ -59,6 +59,13 @@ theme/mood, page purpose. Never reuse an exact palette or font pairing.
   respect prefers-reduced-motion
 - Fully responsive (mobile → desktop), light/dark aware where it fits
 - Accessible: semantic HTML, sufficient contrast, focus states, alt text
+- Reel-ready: the page is played by templates/play/player.js, which loads it in a 9:16 frame
+  and auto-scrolls it top→bottom (stopping at each <section>) while it is screen-recorded.
+  So: wrap content in <main> with real <section>s, make the first screen impressive without
+  any interaction, trigger entrance animations on load or on scroll (never on hover/click/pointer),
+  and keep a signature moment visible during plain vertical scrolling. If a template scrolls
+  horizontally or inside a custom scroller, define `window.__reel = { scroller: '#track', axis: 'x' }`
+  (optional: `duration` in seconds, `stops` as selectors/pixel offsets).
 - Typical sections: nav, hero, features/content, social proof, CTA, footer —
   adapt to the concept
 
@@ -108,7 +115,7 @@ dark neon → synthwave, Japanese calm → ambient/koto-style, art deco → jazz
   fonts.gstatic.com
 
 ## Site infrastructure (do not modify during daily runs unless asked)
-templates/index.html (home shell), templates/kit/index.html, templates/404.html, src/worker.js,
+templates/index.html (home shell), templates/kit/index.html, templates/play/player.js, templates/404.html, src/worker.js,
 templates/manifest.webmanifest, templates/sw.js, templates/icons/,
 wrangler.jsonc, scripts/, .github/, .claude/
 

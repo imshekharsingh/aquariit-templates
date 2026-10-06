@@ -33,6 +33,11 @@
   .slate h1{font-size:clamp(1.9rem,7vw,2.6rem);line-height:1.05;letter-spacing:-.02em;margin:8px 0 12px}
   .meta{display:flex;gap:8px;flex-wrap:wrap}
   .meta span{font:600 .76rem ui-monospace,Menlo,monospace;padding:5px 10px;border:1px solid rgba(255,255,255,.3);border-radius:6px}
+  .pill.rec{background:var(--accent);border-color:var(--accent);color:var(--bg);gap:8px;padding:0 18px}
+  .pill.rec:hover{filter:brightness(1.08);background:var(--accent);color:var(--bg)}
+  .pill.rec svg{width:16px;height:16px}
+  .pill.ico{width:44px;padding:0;justify-content:center}.pill.ico svg{width:20px;height:20px}
+  .grp{display:flex;gap:8px}
   .open{display:inline-block;margin-top:16px;color:var(--deep-ink);font-weight:700;text-decoration:none;border-bottom:2px solid var(--accent)}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:14px}
@@ -76,12 +81,13 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><a class="pill" href="/">← All templates</a><a class="pill" id="open" href="/" hidden>Open template ↗</a></div>
+  <div class="top"><a class="pill" href="/">← All templates</a><div class="grp"><button class="pill rec" type="button" id="rec" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>Play</button><button class="pill ico" type="button" id="gear" aria-label="Reel settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></div>
   <main id="app"><p class="empty">Loading kit…</p></main>
 </div>
 <div class="bar" id="bar" hidden><div class="in"><button class="main" type="button" id="copyAll">Copy caption + hashtags</button></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="/play/player.js"></script>
 <script>
 (function () {
   var app = document.getElementById('app'), toast = document.getElementById('toast'), tt;
@@ -121,14 +127,15 @@
       location.replace('/kit/?id=' + encodeURIComponent(kits[0].id)); return;
     }
     document.title = 'Post kit · ' + k.name;
-    var open = document.getElementById('open'); open.href = '/' + k.id + '/'; open.hidden = false;
+    var rec = document.getElementById('rec'); rec.hidden = false; rec.onclick = function () { if (window.Reel) window.Reel.start(k.id); };
+    document.getElementById('gear').onclick = function () { if (window.Reel) window.Reel.openSettings(); };
     var allCaption = k.caption + '\n\n' + k.hashtags.join(' ');
 
     var s = el('div', 'slate'); s.appendChild(el('div', 'stripes')); var sb = el('div', 'body');
     sb.appendChild(el('small', null, 'Post kit · Instagram Reel'));
     sb.appendChild(el('h1', 'serif', k.name));
     var m = el('div', 'meta'); [fmtDate(k.id), '9:16', k.reel.length.split(',')[0]].forEach(function (t) { if (t) m.appendChild(el('span', null, t)); });
-    sb.appendChild(m); s.appendChild(sb); app.appendChild(s);
+    sb.appendChild(m); var op = el('a', 'open', 'Open template ↗'); op.href = '/' + k.id + '/'; sb.appendChild(op); s.appendChild(sb); app.appendChild(s);
 
     var c = card('Hook · first 2 seconds', k.hook, 'Hook copied'); c.appendChild(el('p', 'hook serif', k.hook)); app.appendChild(c);
 
