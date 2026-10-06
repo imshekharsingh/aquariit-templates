@@ -69,7 +69,7 @@ jobs:
           command: deploy
       - name: Smoke test live site
         run: |
-          LATEST=$(node -e "const l=require('./design-log.json');console.log(l.length?l.sort((a,b)=>a.date<b.date?1:-1)[0].date:'')")
+          LATEST=$(node -e "const l=require('./design-log.json');const k=e=>e.id||e.date;console.log(l.length?l.sort((a,b)=>k(a)<k(b)?1:-1).map(k)[0]:'')")
           for path in "" "design-log.json" "manifest.webmanifest" ${LATEST:+$LATEST/}; do
             url="https://templates.aquariit.com/$path"
             for i in 1 2 3 4 5 6; do

@@ -4,24 +4,29 @@ Role: senior creative director and front-end engineer. Every template must be
 elegant, highly creative, production-quality, and distinct from all others.
 
 ## Dates and URLs
-- Always compute the date with: TZ=Asia/Kolkata date +%F
-- Template path: templates/YYYY-MM-DD/index.html (one template per date)
-- Live URL: https://templates.aquariit.com/YYYY-MM-DD/
+- Every run (scheduled or manual) creates ONE new template. Its ID is the India
+  date and time of the run, computed with: TZ=Asia/Kolkata date +%F-%H%M
+  (e.g. 2026-10-07-0905). Date alone: TZ=Asia/Kolkata date +%F; time: +%H:%M
+- Several templates per day are allowed; each has its own ID. The first template
+  (2026-10-06) is a legacy ID with no time suffix; both forms are valid.
+- Template path: templates/ID/index.html
+- Live URL: https://templates.aquariit.com/ID/
+- Instagram kit: social/ID.md
 - Home (date index): templates/index.html → https://templates.aquariit.com/
 - 404 page: templates/404.html
 
 ## Git workflow
-- One branch per day: template/YYYY-MM-DD, created from latest main
+- One branch per template: template/ID, created from latest main (never reuse a branch whose PR was merged)
 - Never commit or push directly to main
 - Never run wrangler deploy manually; deployment is owned by
   .github/workflows/pipeline.yml (checks → PR → merge → deploy → smoke test)
-- Commit format: template: YYYY-MM-DD <slug> — <one-line concept>
+- Commit format: template: ID <slug> — <one-line concept>
 
 ## Design log schema (design-log.json)
-Each entry: date, slug, url, theme, layout archetype, color palette
+Each entry: id, date, time (HH:MM IST; omit only for the legacy ID without time), slug, url, theme, layout archetype, color palette
 (hex array), font pairing, signature visual motif, animation style,
 page purpose, one-line description.
-JSON keys: date, slug, url, theme, layout, palette, fonts, motif, animation,
+JSON keys: id, date, time, slug, url, theme, layout, palette, fonts, motif, animation,
 purpose, description.
 After every update, copy design-log.json to templates/design-log.json
 (served at /design-log.json for the home page). Both copies must match.
@@ -53,7 +58,7 @@ theme/mood, page purpose. Never reuse an exact palette or font pairing.
   adapt to the concept
 
 ## Instagram social kit (required for every template)
-Every template ships with social/YYYY-MM-DD.md (NOT inside templates/, so it is
+Every template ships with social/ID.md (NOT inside templates/, so it is
 never deployed). It is the ready-to-paste kit for the Instagram Reel:
 - `## Hook` — one line of on-screen text for the first 2 seconds
 - `## Caption` — 2–4 short lines; the first line must contain the main
