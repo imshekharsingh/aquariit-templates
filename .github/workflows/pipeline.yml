@@ -41,7 +41,9 @@ jobs:
               --title "Daily template: ${BRANCH##*/}" \
               --body "Automated daily template. Sanity checks passed in run ${{ github.run_id }}."
           fi
-          gh pr merge "$BRANCH" --squash --delete-branch
+          gh pr merge "$BRANCH" --squash
+          git push origin --delete "$BRANCH" || true
+
 
   deploy:
     needs: [checks, merge]
