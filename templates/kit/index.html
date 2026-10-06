@@ -177,7 +177,7 @@
   }
 
   var id = new URLSearchParams(location.search).get('id') || '';
-  fetch('/social-kits.json', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (kits) { render(kits, id); })
+  fetch('/social-kits.json', { cache: 'no-cache' }).then(function (r) { if (r.status === 401) { location.replace('/login?next=' + encodeURIComponent(location.pathname + location.search)); throw 0; } if (!r.ok) throw 0; return r.json(); }).then(function (kits) { render(kits, id); })
     .catch(function () { app.textContent = ''; app.appendChild(el('p', 'empty', 'Couldn’t load the kits. Check your connection and reload.')); });
   if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
 })();

@@ -98,10 +98,18 @@ jobs:
             return 1
           }
           LATEST=$(node -e "const l=require('./design-log.json');const k=e=>e.id||e.date;console.log(l.length?l.sort((a,b)=>k(a)<k(b)?1:-1).map(k)[0]:'')")
-          check "$B/" 401 || exit 1                    # the gate must be closed without credentials
-          check "$B/manifest.webmanifest" 200 || exit 1 # public so the PWA can install
-          for path in "" design-log.json social-kits.json kit/ ${LATEST:+$LATEST/}; do
-            check "$B/$path" 200 --user "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" || exit 1
+          J=$(mktemp)
+          check "$B/" 303 -H 'Accept: text/html' || exit 1              # closed: page requests bounce to the sign-in page
+          check "$B/design-log.json" 401 || exit 1                      # closed: data requests are refused (no popup)
+          check "$B/login" 200 || exit 1
+          check "$B/manifest.webmanifest" 200 || exit 1                 # public so the PWA can install
+          check "$B/sw.js" 200 || exit 1
+          check "$B/login" 401 -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=wrong-$RANDOM" || exit 1
+          check "$B/login" 303 -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" || exit 1
+          grep -q aq_session "$J" || { echo "No session cookie was issued"; exit 1; }
+          for path in "" design-log.json social-kits.json kit/ play/player.js ${LATEST:+$LATEST/}; do
+            check "$B/$path" 200 -b "$J" || exit 1                      # signed-in (cookie) access
           done
+          check "$B/design-log.json" 200 --user "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" || exit 1  # scripts can still use a Basic header
       - name: Summary
         run: echo "Deployed. Home https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"

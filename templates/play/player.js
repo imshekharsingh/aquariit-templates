@@ -241,7 +241,7 @@
      UI + RUNTIME
      ===================================================================== */
   var css = '' +
-    '#reel{position:fixed;inset:0;z-index:2147483000;background:#000;display:flex;align-items:center;justify-content:center;cursor:none;touch-action:none;overscroll-behavior:none;font-family:system-ui,-apple-system,sans-serif;color:#fff}' +
+    '#reel{position:fixed;inset:0;box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;z-index:2147483000;background:#000;display:flex;align-items:center;justify-content:center;cursor:none;touch-action:none;overscroll-behavior:none;font-family:system-ui,-apple-system,sans-serif;color:#fff}' +
     '#reel iframe{border:0;background:#fff;display:block;pointer-events:none}' +
     '#reel .cd{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,#12394d,#05080c 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .35s}' +
     '#reel .cd.off{opacity:0;pointer-events:none}' +
@@ -296,7 +296,10 @@
     var st = load(), ctx = ensureAudio(); // must happen inside the tap (iOS needs the user gesture)
     var r = run = { id: id, dead: false };
     var box = el('div'); box.id = 'reel'; r.node = box; document.body.appendChild(box);
-    var vw = innerWidth, vh = innerHeight, fw = vw, fh = vh;
+    var probe = el('div'); probe.style.cssText = 'position:fixed;top:0;left:0;visibility:hidden;padding-top:env(safe-area-inset-top)'; document.body.appendChild(probe);
+    var top = parseFloat(getComputedStyle(probe).paddingTop) || 0; probe.remove(); // iPhone installed-app status bar / Dynamic Island
+    box.style.paddingTop = top + 'px';
+    var vw = innerWidth, vh = innerHeight - top, fw = vw, fh = vh;
     if (st.frame === 'phone' || (st.frame === 'auto' && vw / vh > .66)) fw = Math.min(vw, Math.round(vh * 9 / 16));
     var frame = el('iframe'); frame.style.width = fw + 'px'; frame.style.height = fh + 'px'; frame.setAttribute('title', 'Template preview'); frame.setAttribute('aria-hidden', 'true');
     box.appendChild(frame);
@@ -358,16 +361,16 @@
       var cfg = w.__reel || {}; if (cfg.duration) D = clamp(cfg.duration, 6, 120);
       jump(w, 0);
       var plan = buildPlan(w, d, D);
-      var clockStart;
+      var clockStart, LEAD = .6, thawed = false; // short lead: overlay fades out and the audio graph is built BEFORE "action", so the first frames don't stutter on phones
       if (ctx && st.music !== 'off') {
-        r.music = Music(ctx, style, D, id); var t0 = ctx.currentTime + .08; r.music.start(t0, ctx.destination); clockStart = t0;
+        r.music = Music(ctx, style, D, id); clockStart = ctx.currentTime + LEAD; r.music.start(clockStart, ctx.destination);
       }
       cd.classList.add('off'); xb.style.display = 'none'; hideBack(d);
-      setTimeout(function () { if (fz && fz.parentNode) fz.parentNode.removeChild(fz); }, clockStart ? Math.max(0, (clockStart - ctx.currentTime) * 1000) : 0);
-      var perf0 = performance.now() + (clockStart ? (clockStart - ctx.currentTime) * 1000 : 0), lastCheck = 0;
+      var perf0 = performance.now() + LEAD * 1000, lastCheck = 0;
       (function loop() {
         if (r.dead) return;
         var t = clockStart != null ? ctx.currentTime - clockStart : (performance.now() - perf0) / 1000;
+        if (!thawed && t >= 0) { thawed = true; if (fz && fz.parentNode) fz.parentNode.removeChild(fz); } // animations start exactly with the music
         if (t > lastCheck + 1) { lastCheck = t; var np = buildPlan(w, d, D); if (Math.abs(np.max - plan.max) > 4) { /* layout settled after fonts/images: re-plan */ plan = np; } }
         var y = plan.at(Math.max(0, t));
         if (plan.scroller) jump(plan.scroller, y, plan.axisX); else jump(w, y);
