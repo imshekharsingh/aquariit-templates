@@ -46,8 +46,8 @@ CLAUDE.md.
 
 ## Phase 4b — Instagram social kit
 Create social/DATE.md following the "Instagram social kit" section of CLAUDE.md
-(hook, caption, 8–12 keywords, exactly 5 hashtags + alternates, music suggestion
-matched to the template's mood). Base keywords on what the page actually shows.
+(hook, caption, 8–12 keywords, exactly 5 hashtags + alternates, Reel plan with
+length/shot plan/cover text, music suggestion matched to the template's mood). Base keywords on what the page actually shows.
 
 ## Phase 5 — Records and push
 1. Append the DATE entry to design-log.json (schema in CLAUDE.md, with url

@@ -102,7 +102,7 @@ for (const f of folders) {
   if (!existsSync(p)) { err(`${id}: missing (every template needs an Instagram social kit)`); continue; }
   const md = readFileSync(p, 'utf8');
   const sec = (name) => { const m = md.match(new RegExp(`^## ${name}\\s*\\n([\\s\\S]*?)(?=^## |(?![\\s\\S]))`, 'm')); return m ? m[1].trim() : ''; };
-  for (const n of ['Hook', 'Caption', 'Keywords', 'Hashtags', 'Music']) if (!sec(n)) err(`${id}: missing or empty "## ${n}" section`);
+  for (const n of ['Hook', 'Caption', 'Keywords', 'Hashtags', 'Reel', 'Music']) if (!sec(n)) err(`${id}: missing or empty "## ${n}" section`);
   const main = sec('Hashtags').split('\n').filter((l) => !/^alternates:/i.test(l.trim())).join(' ');
   const tags = main.match(/#[\p{L}\p{N}_]+/gu) || [];
   if (tags.length !== 5) err(`${id}: Hashtags must contain exactly 5 hashtags (found ${tags.length}); Instagram allows max 5 per post`);
@@ -110,6 +110,8 @@ for (const f of folders) {
   if (!/#/.test(alt)) err(`${id}: Hashtags needs an "Alternates:" line`);
   const kw = sec('Keywords').split('\n').filter((l) => l.trim()).length;
   if (kw < 8 || kw > 12) err(`${id}: Keywords needs 8–12 lines (found ${kw})`);
+  const reel = sec('Reel');
+  for (const k of ['Length', 'Shot plan', 'Cover']) if (!new RegExp(`^[-*]?\\s*\\**${k}:`, 'mi').test(reel)) err(`${id}: Reel section missing "${k}:" line`);
   const music = sec('Music');
   for (const k of ['Mood', 'Genre', 'BPM', 'Search', 'Avoid']) if (!new RegExp(`^[-*]?\\s*\\**${k}:`, 'mi').test(music)) err(`${id}: Music section missing "${k}:" line`);
 }

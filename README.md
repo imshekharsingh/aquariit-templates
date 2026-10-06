@@ -20,9 +20,9 @@ and never deploys.
 Each template has `social/YYYY-MM-DD.md` (not deployed): a hook line for the
 first 2 seconds, a caption, 8–12 SEO keywords, **exactly 5 hashtags** (Instagram's
 per-post limit) plus alternates to rotate, and a music suggestion by mood
-(genre, BPM, audio-search terms, accent sounds). `npm run check` enforces it.
-Business accounts can only use Instagram's royalty-free sound collection, so
-pick audio from that tab.
+(genre, BPM, audio-search terms, accent sounds), plus a Reel plan (length, shot plan,
+cover text). `npm run check` enforces it. The account is a creator/personal account,
+so the full audio library works; boosted Reels may lose audio, so keep a royalty-free fallback.
 
 ## Pipeline (`.github/workflows/pipeline.yml`)
 `push to template/*` → **checks** (`npm run check`) → **merge** (opens a PR and
