@@ -128,8 +128,13 @@ for (const f of folders) {
   if (!/#/.test(alt)) err(`${id}: Hashtags needs an "Alternates:" line`);
   const kw = sec('Keywords').split('\n').filter((l) => l.trim()).length;
   if (kw < 8 || kw > 12) err(`${id}: Keywords needs 8–12 lines (found ${kw})`);
+  const words = sec('Hook').replace(/[^\p{L}\p{N}\s'’-]/gu, ' ').split(/\s+/).filter(Boolean).length;
+  if (words > 10) err(`${id}: Hook is ${words} words; keep it to 10 or fewer (it is on-screen text for the first 2 seconds)`);
+  const capLines = sec('Caption').split('\n').map((l) => l.trim()).filter(Boolean);
+  if (capLines.length < 2 || capLines.length > 4) err(`${id}: Caption must be 2–4 lines (found ${capLines.length})`);
+  if (capLines.length && !/\b(send|share|tag)\b/i.test(capLines[capLines.length - 1])) err(`${id}: the last Caption line must invite a share ("Send this to someone …"): shares per reach drive distribution`);
   const reel = sec('Reel');
-  for (const k of ['Length', 'Shot plan', 'Cover']) if (!new RegExp(`^[-*]?\\s*\\**${k}:`, 'mi').test(reel)) err(`${id}: Reel section missing "${k}:" line`);
+  for (const k of ['Length', 'Shot plan', 'Payoff', 'Cover']) if (!new RegExp(`^[-*]?\\s*\\**${k}:`, 'mi').test(reel)) err(`${id}: Reel section missing "${k}:" line`);
   const music = sec('Music');
   for (const k of ['Mood', 'Genre', 'BPM', 'Search', 'Avoid']) if (!new RegExp(`^[-*]?\\s*\\**${k}:`, 'mi').test(music)) err(`${id}: Music section missing "${k}:" line`);
 }
