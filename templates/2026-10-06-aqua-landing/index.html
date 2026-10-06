@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 01 · Aqua Landing</title>
+<style>
+  :root{
+    --bg1:#031c2e; --bg2:#06496b; --accent:#2ee6c5; --accent2:#7aa8ff;
+    --text:#eafcff; --muted:#9cc9d6; --card:rgba(255,255,255,.07);
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    color:var(--text); background:linear-gradient(180deg,var(--bg2),var(--bg1) 70%);
+    background-attachment:fixed; overflow-x:hidden;
+  }
+  /* Recording frame: centred 9:16 column on desktop, full width on phones */
+  .frame{max-width:480px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:2}
+  nav{display:flex;justify-content:space-between;align-items:center;padding:28px 0}
+  .logo{font-weight:800;font-size:22px;letter-spacing:-.5px}
+  .logo span{color:var(--accent)}
+  .pill{padding:8px 16px;border:1px solid rgba(255,255,255,.25);border-radius:99px;font-size:14px}
+
+  section{padding:36px 0}
+  .hero{min-height:78vh;display:flex;flex-direction:column;justify-content:center}
+  .tag{color:var(--accent);font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase}
+  h1{font-size:clamp(44px,13vw,60px);line-height:1.02;letter-spacing:-2px;margin:16px 0}
+  h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:18px;line-height:1.5}
+  .btn{
+    display:inline-block;margin-top:28px;padding:18px 32px;border-radius:99px;border:0;
+    font-size:18px;font-weight:800;color:#032;background:var(--accent);
+    box-shadow:0 0 0 0 rgba(46,230,197,.6);animation:pulse 2s infinite;cursor:pointer
+  }
+  @keyframes pulse{70%{box-shadow:0 0 0 22px rgba(46,230,197,0)}100%{box-shadow:0 0 0 0 rgba(46,230,197,0)}}
+
+  .stats{display:flex;gap:12px}
+  .stat{flex:1;background:var(--card);border-radius:20px;padding:18px 10px;text-align:center;backdrop-filter:blur(8px)}
+  .stat b{display:block;font-size:30px;color:var(--accent)}
+  .stat small{color:var(--muted)}
+
+  h2{font-size:32px;letter-spacing:-1px;margin-bottom:20px}
+  .card{display:flex;gap:16px;align-items:center;background:var(--card);border-radius:22px;padding:20px;margin-bottom:14px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08)}
+  .ico{font-size:34px;width:56px;height:56px;display:grid;place-items:center;border-radius:16px;background:rgba(46,230,197,.15);flex:none}
+  .card h3{font-size:18px;margin-bottom:4px}
+  .card p{color:var(--muted);font-size:15px;line-height:1.4}
+
+  .price{text-align:center;background:linear-gradient(135deg,rgba(46,230,197,.2),rgba(122,168,255,.2));border-radius:28px;padding:36px 20px;border:1px solid rgba(255,255,255,.15)}
+  .price .amt{font-size:64px;font-weight:800;letter-spacing:-2px}
+  .price .amt small{font-size:18px;color:var(--muted);font-weight:500}
+  footer{text-align:center;color:var(--muted);font-size:13px;padding-top:30px}
+
+  /* Entrance animations — .play on <body> triggers them; press R to replay */
+  .rise{opacity:0;transform:translateY(40px)}
+  body.play .rise{animation:rise .8s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i,0)*.15s)}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .reveal{opacity:0;transform:translateY(40px);transition:.8s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0)*.12s)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* Bubbles + waves */
+  .bubbles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+  .bubble{position:absolute;bottom:-60px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55),rgba(255,255,255,.05));animation:float linear infinite}
+  @keyframes float{to{transform:translateY(-115vh) translateX(var(--dx))}}
+  .hint{position:fixed;bottom:10px;right:12px;font-size:11px;color:var(--muted);opacity:.6;z-index:5}
+  body.rec .hint{display:none}
+  body.rec{cursor:none}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rise,.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="bubbles" id="bubbles"></div>
+<div class="frame">
+  <nav class="rise" style="--i:0"><div class="logo">aqua<span>riit</span></div><div class="pill">Menu</div></nav>
+
+  <section class="hero">
+    <div class="tag rise" style="--i:1">Smart aquarium monitor</div>
+    <h1 class="rise" style="--i:2">Your fish,<br><em>always happy.</em></h1>
+    <p class="sub rise" style="--i:3">Track water temperature, pH and feeding from your phone. Get alerts before problems start.</p>
+    <div class="rise" style="--i:4"><button class="btn">Get early access →</button></div>
+  </section>
+
+  <section>
+    <div class="stats">
+      <div class="stat reveal" style="--i:0"><b data-n="12">0</b><small>sensors</small></div>
+      <div class="stat reveal" style="--i:1"><b data-n="24">0</b><small>hr alerts</small></div>
+      <div class="stat reveal" style="--i:2"><b data-n="99">0</b><small>% uptime</small></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="reveal">Why you'll love it</h2>
+    <div class="card reveal" style="--i:0"><div class="ico">🌡️</div><div><h3>Live temperature</h3><p>Instant readings, every 5 seconds.</p></div></div>
+    <div class="card reveal" style="--i:1"><div class="ico">🧪</div><div><h3>pH &amp; water quality</h3><p>Know when it's time for a water change.</p></div></div>
+    <div class="card reveal" style="--i:2"><div class="ico">🍤</div><div><h3>Auto feeding</h3><p>Schedules that never forget.</p></div></div>
+  </section>
+
+  <section>
+    <div class="price reveal">
+      <div class="tag">Launch offer</div>
+      <div class="amt">$49<small> /one-time</small></div>
+      <button class="btn">Join the waitlist</button>
+    </div>
+  </section>
+
+  <footer>© 2026 Aquariit · Day 01 template</footer>
+</div>
+<div class="hint">R = replay · H = hide cursor/hints</div>
+
+<script>
+  // bubbles
+  const bw=document.getElementById('bubbles');
+  for(let i=0;i<22;i++){
+    const b=document.createElement('div'),s=8+Math.random()*34;
+    b.className='bubble';
+    b.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;--dx:${Math.random()*80-40}px;animation-duration:${8+Math.random()*12}s;animation-delay:${-Math.random()*15}s`;
+    bw.appendChild(b);
+  }
+  // count-up numbers
+  function count(el){
+    const n=+el.dataset.n,t0=performance.now();
+    (function f(t){const p=Math.min((t-t0)/1200,1);el.textContent=Math.round(n*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0);
+  }
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('[data-n]').forEach(count);io.unobserve(e.target)}
+  }),{threshold:.3});
+  const watch=()=>document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  function play(){
+    document.body.classList.remove('play');
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.remove('in'));
+    document.querySelectorAll('[data-n]').forEach(el=>el.textContent='0');
+    scrollTo(0,0);void document.body.offsetWidth;
+    document.body.classList.add('play');watch();
+  }
+  // optional auto-scroll for hands-free recording: add ?scroll to the URL
+  function autoScroll(){
+    const max=()=>document.documentElement.scrollHeight-innerHeight;
+    setTimeout(function step(){
+      if(scrollY<max()-2){scrollBy(0,1.4);requestAnimationFrame(step)}
+    },3500);
+  }
+  addEventListener('keydown',e=>{
+    if(e.key==='r'||e.key==='R')play();
+    if(e.key==='h'||e.key==='H')document.body.classList.toggle('rec');
+  });
+  play();
+  if(location.search.includes('scroll'))autoScroll();
+</script>
+</body>
+</html>
