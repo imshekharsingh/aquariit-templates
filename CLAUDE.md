@@ -54,7 +54,7 @@ theme/mood, page purpose. Never reuse an exact palette or font pairing.
 
 ## Instagram social kit (required for every template)
 Every template ships with social/YYYY-MM-DD.md (NOT inside templates/, so it is
-never deployed). It is the ready-to-paste kit for the Instagram Reel/post:
+never deployed). It is the ready-to-paste kit for the Instagram Reel:
 - `## Hook` — one line of on-screen text for the first 2 seconds
 - `## Caption` — 2–4 short lines; the first line must contain the main
   search keywords in natural language (Instagram ranks on caption keywords)
@@ -62,11 +62,16 @@ never deployed). It is the ready-to-paste kit for the Instagram Reel/post:
 - `## Hashtags` — EXACTLY 5, each starting with # (Instagram's per-post limit
   since Dec 2025): 2 broad, 2 niche, 1 topic-specific; then an `Alternates:` line
   with 5 more to rotate between posts (never all together)
+- `## Reel` — lines `Length:` (7–15 s), `Shot plan:` (2–4 beats of what to screen-record,
+  e.g. hero load → scroll → signature moment → CTA), `Cover:` (3–5 word cover text)
 - `## Music` — lines `Mood:`, `Genre:`, `BPM:`, `Search:` (3–5 terms to type into
   Instagram's audio search), `Accent sounds:` (optional SFX), `Avoid:`
-- Music rules: the account may be a business account, so suggest moods/genres
-  and search terms that match Meta's royalty-free Sound Collection. Never name
-  specific copyrighted songs or claim a track is trending.
+- Format is a vertical 9:16 Reel recorded from the screen (phone-width viewport).
+- Account is a Professional/Personal (creator) account, NOT a business account:
+  the full Instagram audio library is available, but audio can be muted if the
+  Reel is boosted/promoted. Suggest moods/genres and search terms, never specific
+  copyrighted songs, and never claim a track is trending. Keep a royalty-free
+  fallback in mind (Instagram's royalty-free tab).
 Music must follow the template's mood (e.g. warm paper → acoustic/lo-fi,
 dark neon → synthwave, Japanese calm → ambient/koto-style, art deco → jazz).
 
