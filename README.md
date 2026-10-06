@@ -1,15 +1,65 @@
-# aquariit-templates
+# Aquarii Templates
 
-One webpage template per day, designed to be screen-recorded for short social videos (9:16).
+One original, copyright-safe webpage template per day, published to
+**https://templates.aquariit.com** as a static-assets-only Cloudflare Worker.
+The home page lists every template by date; the site is an installable PWA.
+Each template also ships with an Instagram kit (caption, keywords, hashtags, music).
 
-Each template lives in `templates/YYYY-MM-DD-name/index.html` — a single self-contained file, no build step.
+Templates generated: **1**
+Latest: [2026-10-06 · Ledgerleaf Press](https://templates.aquariit.com/2026-10-06/)
 
-## Recording tips
-- Open the page, set the browser/devtools to a phone size (e.g. 430×932) or record a 9:16 crop.
-- `R` replays the entrance animations, `H` hides the cursor and hint.
-- Add `?scroll` to the URL for hands-free auto-scroll.
+## How `/daily-template` works
+Run `/daily-template [hint]` in Claude Code. It computes today's date in
+Asia/Kolkata, creates branch `template/YYYY-MM-DD` from latest `main`, designs
+a template that differs from every earlier one (see `CLAUDE.md`), writes the
+Instagram kit, runs `npm run check`, appends to `design-log.json` (mirrored to
+`templates/design-log.json`), and pushes the branch. It never touches `main`
+and never deploys.
 
-## Index
-| Day | Date | Template |
-|-----|------|----------|
-| 01 | 2026-10-06 | `aqua-landing` – animated product landing page |
+## Instagram kit
+Each template has `social/YYYY-MM-DD.md` (not deployed): a hook line for the
+first 2 seconds, a caption, 8–12 SEO keywords, **exactly 5 hashtags** (Instagram's
+per-post limit) plus alternates to rotate, and a music suggestion by mood
+(genre, BPM, audio-search terms, accent sounds). `npm run check` enforces it.
+Business accounts can only use Instagram's royalty-free sound collection, so
+pick audio from that tab.
+
+## Pipeline (`.github/workflows/pipeline.yml`)
+`push to template/*` → **checks** (`npm run check`) → **merge** (opens a PR and
+squash-merges it) → **deploy** (`wrangler deploy` from `main`) → **smoke test**
+(home, `/design-log.json`, manifest and the newest template must return 200).
+Use a new branch name for each change: a branch whose PR was already merged
+can't be reused by the pipeline.
+
+### One-time setup (done)
+- Repo secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`; Environment `production`.
+- Settings → Actions → General: read and write permissions, and allow Actions to create pull requests.
+- The `aquariit.com` zone is on the same Cloudflare account (custom domain `templates.aquariit.com`).
+
+## Install on iPad / iPhone
+Open https://templates.aquariit.com in Safari → **Share** → **Add to Home Screen**.
+Every template has an "← All templates" link back to the home page.
+
+## Run locally
+```
+npm install
+npm run check
+cd templates && python3 -m http.server 8000   # http://localhost:8000
+```
+
+## Structure
+```
+CLAUDE.md                 rules for daily runs
+design-log.json           design history (source of truth)
+templates/
+  index.html              home / date index (reads /design-log.json)
+  404.html  sw.js  manifest.webmanifest  icons/  design-log.json
+  YYYY-MM-DD/index.html   one self-contained template per day
+social/YYYY-MM-DD.md      Instagram kit per template (not deployed)
+scripts/check.mjs         sanity checks (npm run check)
+scripts/make-icons.mjs    regenerates PNG icons (npm run icons)
+archive/                  pre-pipeline experiments (not deployed)
+wrangler.jsonc            assets-only Worker config
+.github/workflows/        pipeline.yml
+.claude/                  /daily-template command and permissions
+```
