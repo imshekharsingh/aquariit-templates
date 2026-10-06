@@ -126,8 +126,10 @@ for (const f of folders) {
   for (const k of ['Mood', 'Genre', 'BPM', 'Search', 'Avoid']) if (!new RegExp(`^[-*]?\\s*\\**${k}:`, 'mi').test(music)) err(`${id}: Music section missing "${k}:" line`);
 }
 
-// 8: site infrastructure
-for (const f of ['index.html', '404.html', 'sw.js', 'manifest.webmanifest']) if (!existsSync(join(T, f))) err(`templates/${f} is missing`);
+// 8: site infrastructure (also the auth Worker that fronts the assets)
+if (!existsSync(join(root, 'src', 'worker.js'))) err('src/worker.js is missing (basic-auth gate)');
+if (!existsSync(join(T, 'social-kits.json'))) err('templates/social-kits.json is missing (run npm run build)');
+for (const f of ['index.html', '404.html', 'sw.js', 'manifest.webmanifest', 'kit/index.html']) if (!existsSync(join(T, f))) err(`templates/${f} is missing`);
 const mp = join(T, 'manifest.webmanifest');
 if (existsSync(mp)) {
   const m = readJSON(mp, 'manifest.webmanifest');

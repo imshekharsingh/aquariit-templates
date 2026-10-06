@@ -2,3 +2,5 @@
 node_modules/
 *.log
 .wrangler/
+templates/social-kits.json
+.dev.vars
