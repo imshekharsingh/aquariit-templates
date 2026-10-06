@@ -44,13 +44,18 @@ CLAUDE.md.
    link visible and tappable.
 4. Compare against the last 3 templates; if too similar, revise.
 
+## Phase 4b — Instagram social kit
+Create social/DATE.md following the "Instagram social kit" section of CLAUDE.md
+(hook, caption, 8–12 keywords, exactly 5 hashtags + alternates, music suggestion
+matched to the template's mood). Base keywords on what the page actually shows.
+
 ## Phase 5 — Records and push
 1. Append the DATE entry to design-log.json (schema in CLAUDE.md, with url
    https://templates.aquariit.com/DATE/).
 2. Copy design-log.json to templates/design-log.json.
 3. Update README.md: template count and latest template link.
 4. Run `npm run check` once more.
-5. Stage only files you created or changed; commit with the CLAUDE.md format.
+5. Stage only files you created or changed (including social/DATE.md); commit with the CLAUDE.md format.
 6. `git push -u origin template/DATE`. If rejected, report and stop.
    Do not merge or deploy yourself; the pipeline does that.
 
@@ -61,6 +66,6 @@ read the logs, fix on the same branch, push again, and re-watch (max 2
 attempts). If `gh` is unavailable, give the user the Actions page link.
 
 ## Phase 7 — Report in chat
-Concept, palette, fonts, signature moment, how it differs from recent
+Concept, palette, fonts, signature moment, the 5 hashtags and music mood, how it differs from recent
 designs, commit hash, pipeline status, and the live URL
 https://templates.aquariit.com/DATE/

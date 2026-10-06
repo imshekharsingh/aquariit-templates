@@ -52,6 +52,24 @@ theme/mood, page purpose. Never reuse an exact palette or font pairing.
 - Typical sections: nav, hero, features/content, social proof, CTA, footer —
   adapt to the concept
 
+## Instagram social kit (required for every template)
+Every template ships with social/YYYY-MM-DD.md (NOT inside templates/, so it is
+never deployed). It is the ready-to-paste kit for the Instagram Reel/post:
+- `## Hook` — one line of on-screen text for the first 2 seconds
+- `## Caption` — 2–4 short lines; the first line must contain the main
+  search keywords in natural language (Instagram ranks on caption keywords)
+- `## Keywords` — 8–12 search phrases (SEO terms for caption, alt text, on-screen text)
+- `## Hashtags` — EXACTLY 5, each starting with # (Instagram's per-post limit
+  since Dec 2025): 2 broad, 2 niche, 1 topic-specific; then an `Alternates:` line
+  with 5 more to rotate between posts (never all together)
+- `## Music` — lines `Mood:`, `Genre:`, `BPM:`, `Search:` (3–5 terms to type into
+  Instagram's audio search), `Accent sounds:` (optional SFX), `Avoid:`
+- Music rules: the account may be a business account, so suggest moods/genres
+  and search terms that match Meta's royalty-free Sound Collection. Never name
+  specific copyrighted songs or claim a track is trending.
+Music must follow the template's mood (e.g. warm paper → acoustic/lo-fi,
+dark neon → synthwave, Japanese calm → ambient/koto-style, art deco → jazz).
+
 ## Required in every template (enforced by scripts/check.mjs)
 - A small, visible link to "/" whose text includes "All templates"
   (e.g., "← All templates"), styled to fit that template's design and
