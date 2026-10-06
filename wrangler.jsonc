@@ -1,0 +1,13 @@
+{
+  "name": "aquarii-templates",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "assets": {
+    "directory": "./templates",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "routes": [
+    { "pattern": "templates.aquariit.com", "custom_domain": true }
+  ]
+}

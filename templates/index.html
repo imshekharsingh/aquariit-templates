@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aquarii Templates — one page, every day</title>
+<meta name="description" content="A new original webpage template every day.">
+<meta name="theme-color" content="#0b2a3a">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Templates">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root{--bg:#f6f2e9;--card:#fffdf8;--ink:#10232d;--mute:#5d6b72;--line:#dcd5c4;--accent:#c4452b;--hero:#0b2a3a;--hero-ink:#f4efe4}
+  @media (prefers-color-scheme:dark){:root{--bg:#081720;--card:#0f2430;--ink:#eee8da;--mute:#97a8b0;--line:#1f3a47;--accent:#ff8a5c;--hero:#0f2f40;--hero-ink:#f4efe4}}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;line-height:1.5;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px}
+  header{padding:48px 0 28px}
+  .eyebrow{font:600 .8rem/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+  h1{font-size:clamp(2.4rem,9vw,4rem);line-height:1;letter-spacing:-.03em;margin:.4em 0 .3em;font-weight:600}
+  .lede{color:var(--mute);font-size:1.15rem;margin:0;max-width:34em}
+  .today{display:block;margin:24px 0 8px;padding:26px 24px;border-radius:24px;background:var(--hero);color:var(--hero-ink);text-decoration:none;position:relative;overflow:hidden;min-height:48px}
+  .today::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,#ff8a5c55,transparent 70%)}
+  .today small{font:600 .75rem/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+  .today strong{display:block;font-size:1.7rem;margin:.35em 0 .15em;letter-spacing:-.02em}
+  .today span{opacity:.8}
+  .today.waiting{background:transparent;border:1.5px dashed var(--line);color:var(--mute)}
+  .today.waiting::after{display:none}
+  h2{font:600 .8rem/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin:40px 0 12px}
+  ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+  li a{display:grid;grid-template-columns:4.5rem 1fr auto;gap:4px 16px;align-items:center;padding:16px 4px;min-height:64px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none;transition:background .2s,padding .2s}
+  li a:hover{background:var(--card);padding-inline:14px}
+  li a:focus-visible,.today:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .d{font:600 .95rem system-ui,sans-serif;color:var(--accent);font-variant-numeric:tabular-nums}
+  .n{font-size:1.2rem;font-weight:600;letter-spacing:-.01em}
+  .m{font:.8rem system-ui,sans-serif;color:var(--mute);text-transform:capitalize;white-space:nowrap}
+  .arrow{display:none}
+  .empty{text-align:center;padding:56px 12px;color:var(--mute);border:1.5px dashed var(--line);border-radius:24px;margin-top:32px}
+  .empty svg{width:64px;height:64px;color:var(--accent)}
+  .hint{margin-top:48px;padding:18px 20px;border-radius:18px;background:var(--card);border:1px solid var(--line);font:.9rem/1.5 system-ui,sans-serif;color:var(--mute)}
+  .hint[hidden]{display:none}
+  @media (max-width:520px){li a{grid-template-columns:3.6rem 1fr}.m{grid-column:2}}
+  @media (prefers-reduced-motion:no-preference){.wrap>*{animation:in .6s both}@keyframes in{from{opacity:0;transform:translateY(12px)}}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="eyebrow">Aquarii Templates</div>
+    <h1>One page,<br>every day.</h1>
+    <p class="lede">A new original webpage template each day — tap one to explore it.</p>
+  </header>
+  <div id="today"></div>
+  <div id="list"></div>
+  <p class="hint" id="install" hidden>Install this as an app: tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.</p>
+</main>
+<script>
+(function () {
+  var today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+  var todayEl = document.getElementById('today'), listEl = document.getElementById('list');
+
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function fmt(d, opts) { return new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', Object.assign({ timeZone: 'UTC' }, opts)); }
+  function title(e) { return e.name || e.slug.replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }); }
+  function path(e) { return '/' + e.date + '/'; }
+
+  function render(log) {
+    log = (Array.isArray(log) ? log : []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    var t = log.filter(function (e) { return e.date === today; })[0];
+    todayEl.textContent = '';
+    if (t) {
+      var a = el('a', 'today'); a.href = path(t);
+      a.appendChild(el('small', null, "Today · " + fmt(t.date, { day: 'numeric', month: 'long' })));
+      a.appendChild(el('strong', null, title(t)));
+      a.appendChild(el('span', null, t.description));
+      todayEl.appendChild(a);
+    } else {
+      var w = el('div', 'today waiting'); w.appendChild(el('small', null, 'Today'));
+      w.appendChild(el('strong', null, "Today's template is on its way"));
+      todayEl.appendChild(w);
+    }
+    listEl.textContent = '';
+    if (!log.length) {
+      var em = el('div', 'empty');
+      em.innerHTML = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><rect x="10" y="10" width="20" height="20" rx="5"/><rect x="34" y="10" width="20" height="20" rx="5"/><rect x="10" y="34" width="20" height="20" rx="5"/><rect x="34" y="34" width="20" height="20" rx="5" stroke-dasharray="4 4"/></svg>';
+      em.appendChild(el('p', null, 'No templates yet. The first one lands soon.'));
+      listEl.appendChild(em); return;
+    }
+    var month = '', ul;
+    log.forEach(function (e) {
+      var m = fmt(e.date, { month: 'long', year: 'numeric' });
+      if (m !== month) { month = m; listEl.appendChild(el('h2', null, m)); ul = el('ul'); listEl.appendChild(ul); }
+      var li = el('li'), a = el('a'); a.href = path(e);
+      a.appendChild(el('span', 'd', fmt(e.date, { day: '2-digit', month: 'short' })));
+      a.appendChild(el('span', 'n', title(e)));
+      a.appendChild(el('span', 'm', e.theme || ''));
+      li.appendChild(a); ul.appendChild(li);
+    });
+  }
+
+  fetch('/design-log.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(render).catch(function () { render([]); });
+
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  if (!standalone) document.getElementById('install').hidden = false;
+  if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+})();
+</script>
+</body>
+</html>
