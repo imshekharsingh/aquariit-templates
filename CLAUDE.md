@@ -16,7 +16,7 @@ elegant, highly creative, production-quality, and distinct from all others.
   (generated, gitignored, rebuilt by `npm run check` and the deploy job; never hand-edit)
 - The whole site sits behind a sign-in page + 30-day session cookie (src/worker.js; PWA-friendly,
   no browser Basic-auth popup). Credentials exist only as secrets (GitHub + Worker):
-  BASIC_AUTH_USER / BASIC_AUTH_PASS. NEVER write them into any file.
+  BASIC_AUTH_USER / BASIC_AUTH_PASS (+ optional second account BASIC_AUTH_USER_2 / BASIC_AUTH_PASS_2). NEVER write them into any file.
   Templates must not link to the kit page (it would appear in recordings).
 - Home (date index): templates/index.html → https://templates.aquariit.com/
 - 404 page: templates/404.html
