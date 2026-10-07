@@ -315,6 +315,8 @@
      UI + RUNTIME
      ===================================================================== */
   var css = '' +
+    'body.reel-lock>*:not(#reel):not(#reelset){visibility:hidden!important}body.reel-lock>*:not(#reel) *{animation-play-state:paused!important}' + // the page behind the player must not keep animating/painting
+    '#reel iframe{transform:translateZ(0)}' +
     '#reel{position:fixed;inset:0;box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;z-index:2147483000;background:#000;display:flex;align-items:center;justify-content:center;cursor:none;touch-action:none;overscroll-behavior:none;font-family:system-ui,-apple-system,sans-serif;color:#fff}' +
     '#reel iframe{border:0;background:#fff;display:block;pointer-events:none}' +
     '#reel .cd{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,#12394d,#05080c 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .35s}' +
@@ -339,6 +341,20 @@
   function addCss() { if (cssAdded) return; var s = document.createElement('style'); s.textContent = css; document.head.appendChild(s); cssAdded = true; }
   function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
 
+  // A translucent, blurred sticky header is very expensive to repaint on every scrolled frame: make it opaque (same look over a solid page colour).
+  function solidifyBar(doc, win, page) {
+    try {
+      Array.prototype.some.call(doc.querySelectorAll('header,nav,[class*="bar"]'), function (e) {
+        var cs = win.getComputedStyle(e), r = e.getBoundingClientRect();
+        if (!((cs.position === 'sticky' || cs.position === 'fixed') && r.top < 4 && r.height < 160 && r.width > win.innerWidth * .6)) return false;
+        var m = /^rgba?\(\s*([\d.]+)[ ,]+([\d.]+)[ ,]+([\d.]+)(?:[ ,/]+([\d.]+))?/.exec(cs.backgroundColor), p = /([\d.]+)[ ,]+([\d.]+)[ ,]+([\d.]+)/.exec(page);
+        var out = page; // unparsable or fully transparent colour: use the page colour
+        if (m && p) { var a = m[4] == null ? 1 : +m[4]; if (a > 0) out = 'rgb(' + [1, 2, 3].map(function (i) { return Math.round(a * m[i] + (1 - a) * p[i]); }).join(',') + ')'; }
+        e.style.setProperty('background-color', out, 'important'); return true;
+      });
+    } catch (e) {}
+  }
+
   // iOS paints the status-bar area from the top-level page's colours: match them to the template so the recording looks seamless
   function pageColor(doc, win) {
     var c = '', m = doc.querySelector('meta[name="theme-color"]');
@@ -360,7 +376,7 @@
   function ensureAudio() {
     var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
     try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
-    if (!actx) actx = new AC();
+    if (!actx) { try { actx = new AC({ latencyHint: 'playback' }); } catch (e) { actx = new AC(); } } // larger audio buffers: fewer wake-ups competing with scrolling
     if (actx.state !== 'running') actx.resume();
     if (!silent) { // keeps iOS audio session in "playback" mode so the mute switch doesn't silence Web Audio
       var rate = 8000, n = rate / 5, b = new ArrayBuffer(44 + n * 2), v = new DataView(b), w = function (o, s) { for (var i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
@@ -376,7 +392,7 @@
     if (!r || r.dead) return; r.dead = true;
     if (r.raf) cancelAnimationFrame(r.raf); clearTimeout(r.tm); clearInterval(r.iv);
     if (r.music) r.music.stop(); if (r.lock) try { r.lock.release(); } catch (e) {}
-    if (r.restore) r.restore();
+    if (r.restore) r.restore(); document.body.classList.remove('reel-lock');
     if (r.node && r.node.parentNode) r.node.parentNode.removeChild(r.node);
     if (silent) try { silent.pause(); } catch (e) {}
     if (run === r) run = null;
@@ -387,7 +403,7 @@
     addCss();
     var st = load(), ctx = ensureAudio(); // must happen inside the tap (iOS needs the user gesture)
     var r = run = { id: id, dead: false };
-    var box = el('div'); box.id = 'reel'; r.node = box; document.body.appendChild(box);
+    var box = el('div'); box.id = 'reel'; r.node = box; document.body.appendChild(box); document.body.classList.add('reel-lock');
     // Reel frame: the largest 9:16 box that fits the screen, centred. On a tall phone (iPhone 17 Pro is 9:19.5) the bands above and
     // below hold the status bar / home indicator and are exactly what Instagram's default 9:16 crop trims away.
     var vw = innerWidth, vh = innerHeight, fw = vw, fh = vh;
@@ -414,7 +430,7 @@
     function freeze(doc, win) { // pause CSS animations until the camera "starts rolling"; optionally hide the back link
       if (doc.getElementById('__reel_freeze')) return;
       var s = doc.createElement('style'); s.id = '__reel_freeze'; s.textContent = '*,*::before,*::after{animation-play-state:paused!important}';
-      var b = doc.createElement('style'); b.id = '__reel_base'; b.textContent = 'html{scroll-behavior:auto!important}'; // our scrolling must never be smoothed by the page
+      var b = doc.createElement('style'); b.id = '__reel_base'; b.textContent = 'html{scroll-behavior:auto!important}*,*::before,*::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}'; // our scrolling must never be smoothed by the page
       var host = doc.head || doc.documentElement; host.appendChild(b); host.appendChild(s);
       doc.documentElement.classList.add('reel'); // templates style this: no safe-area padding (the frame already sits inside it), centred header, etc.
     }
@@ -458,19 +474,27 @@
       jump(w, 0);
       var tint = pageColor(d, w); box.style.background = tint; tintPage(tint);
       var plan = buildPlan(w, d, D);
-      var clockStart, LEAD = .6, thawed = false; // short lead: overlay fades out and the audio graph is built BEFORE "action", so the first frames don't stutter on phones
-      if (ctx && st.music !== 'off') {
-        r.music = Music(ctx, style, D, id); clockStart = ctx.currentTime + LEAD; r.music.start(clockStart, ctx.destination);
-      }
-      cd.classList.add('off'); xb.style.display = 'none'; hideBack(d);
-      var perf0 = performance.now() + LEAD * 1000, lastCheck = 0;
-      (function loop() {
+      var LEAD = .6, thawed = false, tStart, music = null; // short lead: overlay fades out and the audio graph is built BEFORE "action", so the first frames don't stutter on phones
+      if (ctx && st.music !== 'off') music = Music(ctx, style, D, id);
+      solidifyBar(d, w, tint); cd.classList.add('off'); xb.style.display = 'none'; hideBack(d);
+      var c0 = ctx ? ctx.currentTime : 0, p0 = performance.now(); // one reading of both clocks, back to back
+      if (music) { r.music = music; music.start(c0 + LEAD, ctx.destination); }
+      // The SCROLL runs on the screen's own frame clock (rAF timestamps), not the audio clock: audio clocks tick in coarse chunks
+      // (9–20 ms steps on a 16.7 ms frame), which showed up as stutter. The audio clock is used once, to line the start up.
+      var lat = ctx ? Math.min(250, ((ctx.outputLatency || ctx.baseLatency || 0) * 1000)) : 0;
+      tStart = p0 + LEAD * 1000 + lat;
+      var dpr = w.devicePixelRatio || 1, lastY = -1, lastH = d.documentElement.scrollHeight, chk = 0;
+      (function loop(ts) {
         if (r.dead) return;
-        var t = clockStart != null ? ctx.currentTime - clockStart : (performance.now() - perf0) / 1000;
+        ts = ts || performance.now();
+        var t = (ts - tStart) / 1000;
         if (!thawed && t >= 0) { thawed = true; if (fz && fz.parentNode) fz.parentNode.removeChild(fz); } // animations start exactly with the music
-        if (t > lastCheck + 1) { lastCheck = t; var np = buildPlan(w, d, D); if (Math.abs(np.max - plan.max) > 4) { /* layout settled after fonts/images: re-plan */ plan = np; } }
-        var y = plan.at(Math.max(0, t));
-        if (plan.scroller) jump(plan.scroller, y, plan.axisX); else jump(w, y);
+        if (ts - chk > 500) { // layout can settle after fonts/images load: re-plan only if the page height really changed (planning is expensive)
+          chk = ts; var h = d.documentElement.scrollHeight;
+          if (Math.abs(h - lastH) > 4) { lastH = h; setTimeout(function () { if (!r.dead) plan = buildPlan(w, d, D); }, 0); }
+        }
+        var y = Math.round(plan.at(Math.max(0, t)) * dpr) / dpr; // whole device pixels: no blurry half-pixel positions
+        if (y !== lastY) { lastY = y; if (plan.scroller) jump(plan.scroller, y, plan.axisX); else jump(w, y); }
         if (t >= D) { finish(); return; }
         r.raf = requestAnimationFrame(loop);
       })();
