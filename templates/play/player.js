@@ -18,16 +18,33 @@
     synthwave: { name: 'Synthwave', bpm: 108, verb: .22, delay: .30,  gain: 1.05 },
     ambient:   { name: 'Ambient',   bpm: 64,  verb: .50, delay: .22,  gain: .95 },
     jazz:      { name: 'Jazz',      bpm: 100, verb: .26, delay: 0,    gain: .9 },
-    playful:   { name: 'Playful',   bpm: 108, verb: .18, delay: 0,    gain: 1.1 }
+    playful:   { name: 'Playful',   bpm: 108, verb: .18, delay: 0,    gain: 1.2 },
+    chillhop:  { name: 'Chill-hop', bpm: 84,  verb: .26, delay: 0,    gain: .72 },
+    folk:      { name: 'Folk',      bpm: 92,  verb: .22, delay: 0,    gain: 1.3 },
+    ballad:    { name: 'Piano',     bpm: 66,  verb: .45, delay: .10,  gain: 1.7 },
+    funk:      { name: 'Funk',      bpm: 106, verb: .12, delay: 0,    gain: 1.3 },
+    tech:      { name: 'Tech',      bpm: 120, verb: .16, delay: .22,  gain: 1.25 },
+    cinematic: { name: 'Cinematic', bpm: 76,  verb: .55, delay: .15,  gain: 1.0 }
   };
 
-  function styleForTheme(theme) {
-    var t = (theme || '').toLowerCase();
-    if (/neon|cyber|retro|synth|futur/.test(t)) return 'synthwave';
-    if (/japan|calm|zen|ambient|glass|dream/.test(t)) return 'ambient';
-    if (/deco|luxury|jazz|noir|elegan/.test(t)) return 'jazz';
-    if (/pastel|play|fun|bright|kid/.test(t)) return 'playful';
-    return 'lofi'; // warm paper/print, organic, swiss, etc.
+  // Each mood maps to several fitting styles; the template's id picks one deterministically, so similar moods don't all sound alike.
+  var MOODS = [
+    [/neon|cyber|retro|synth|futur/, ['synthwave', 'tech', 'cinematic']],
+    [/paper|print|editorial|vintage|warm/, ['lofi', 'folk', 'ballad', 'chillhop']],
+    [/luxury|premium|refined/, ['ballad', 'jazz', 'cinematic']],
+    [/swiss|mono|minimal|brutal|grid/, ['tech', 'ambient', 'chillhop']],
+    [/japan|calm|zen|ambient|glass|dream/, ['ambient', 'ballad', 'cinematic']],
+    [/deco|jazz|noir|elegan/, ['jazz', 'ballad', 'funk']],
+    [/pastel|play|fun|bright|kid|bold/, ['playful', 'funk', 'folk']],
+    [/organic|botanical|nature|earth|craft|handmade/, ['folk', 'lofi', 'ballad']],
+    [/epic|cinematic|dramatic|hero|launch|event/, ['cinematic', 'synthwave', 'tech']],
+    [/urban|street|hip|agency|portfolio/, ['chillhop', 'funk', 'lofi']]
+  ];
+  function styleForTheme(theme, purpose, seed) {
+    var texts = [String(theme || '').toLowerCase(), String(purpose || '').toLowerCase()], cands = null; // the theme decides first, then the page purpose
+    for (var k = 0; k < texts.length && !cands; k++) for (var i = 0; i < MOODS.length; i++) if (MOODS[i][0].test(texts[k])) { cands = MOODS[i][1]; break; }
+    cands = cands || ['lofi', 'folk', 'ballad', 'chillhop']; // warm paper/print and anything unmatched
+    return cands[hash(String(seed || theme || '')) % cands.length];
   }
 
   function impulse(ctx, secs) {
@@ -36,7 +53,8 @@
     return b;
   }
 
-  function Music(ctx, style, D, seedStr) {
+  function Music(ctx, style, D, seedStr, opts) {
+    opts = opts || {}; // opts.eager: schedule every bar immediately (offline rendering); otherwise a few seconds ahead so building never stalls the screen
     var S = STYLES[style] || STYLES.lofi, R = rng(hash(seedStr + style));
     // fit the grid to the exact duration: whole bars, tempo nudged by a few %
     var n = Math.max(4, Math.round(D * S.bpm / 240)), bpm = n * 240 / D, spb = 60 / bpm;
@@ -92,6 +110,24 @@
     function pad(notes, t, dur, peak, cut, type, wetv) {
       var a = Math.min(1.1, dur * .35);
       notes.forEach(function (m) { tone({ t: t, dur: dur, f: mtof(m), type: type || 'triangle', det: [-8, 8], a: a, d: .6, s: .8, r: 1.4, peak: peak, cut: cut || 1400, wet: wetv == null ? .7 : wetv }); });
+    }
+    function piano(m, t, dur, peak, wet) { // soft piano: three decaying partials + a tiny hammer tick
+      [[1, 1, 1.4], [2, .42, .8], [3, .16, .45]].forEach(function (p) {
+        var o = ctx.createOscillator(), g = ctx.createGain(); o.type = 'sine'; o.frequency.value = mtof(m) * p[0];
+        o.connect(g); adsr(g.gain, t, .004, Math.min(2.2, dur * p[2] + .5), .001, .25, .05, peak * p[1]); o.start(t); o.stop(t + 3); route(g, wet == null ? .5 : wet, 0); nodes.push(o);
+      });
+      noise(t, .02, 'bandpass', 2400, 1, peak * .35, .001, .02, 0);
+    }
+    function pluck(m, t, dur, peak, wet) { // plucked string: one saw through a quickly closing filter
+      tone({ t: t, dur: dur, f: mtof(m), type: 'sawtooth', a: .003, d: .3, s: .04, r: .1, peak: peak, cut: 3400, cutEnd: 650, cutDur: .22, wet: wet == null ? .25 : wet });
+    }
+    function strum(notes, t, gap, down, peak) { (down ? notes : notes.slice().reverse()).forEach(function (m, k) { pluck(m, t + k * gap, .7, peak, .22); }); }
+    function boom(t, v) { var o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(78, t); o.frequency.exponentialRampToValueAtTime(34, t + .5); o.connect(g); adsr(g.gain, t, .004, 1.0, .001, .2, .05, v); o.start(t); o.stop(t + 1.5); route(g, .5, 0); nodes.push(o); noise(t, .12, 'lowpass', 400, .7, v * .5, .001, .12, .3); }
+    function riser(t, dur, peak) { // noise swell that opens up into the final bar
+      var s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = NB; s.loop = true; f.type = 'highpass'; f.Q.value = 1.2;
+      f.frequency.setValueAtTime(500, t); f.frequency.exponentialRampToValueAtTime(6500, t + dur);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + dur); g.gain.linearRampToValueAtTime(0, t + dur + .05);
+      s.connect(f); f.connect(g); route(g, .4, 0); s.start(t); s.stop(t + dur + .1); nodes.push(s);
     }
     var swing = function (b, k, sw) { return (k % 1 ? (Math.floor(k) + sw) : k) * spb; };
 
@@ -160,13 +196,88 @@
       }
     };
 
-    var arr = A[style] || A.lofi;
-    function schedule(t0) {
-      var intro = n >= 8 ? 2 : 1;
-      for (var b = 0; b < n; b++) {
-        var last = b === n - 1, ci = b % arr.chords.length;
-        arr.bar(b, t0 + b * 4 * spb, last ? arr.end : arr.chords[ci], { last: last, intro: b < intro, bassNote: last ? arr.bass[0] : arr.bass[ci], spb: spb });
+    A.cinematic = {
+      chords: [[57, 62, 65, 69], [58, 62, 65, 70], [57, 60, 65, 69], [55, 60, 64, 67]], bass: [38, 34, 41, 36], end: [50, 57, 62, 66, 69],
+      bar: function (b, t, c, i) {
+        pad(c, t, i.last ? spb * 6 : spb * 4.4, i.intro ? .05 : .065, i.intro ? 1000 : 1700, 'sawtooth', .9);
+        tone({ t: t, dur: i.last ? spb * 5 : spb * 4.2, f: mtof(i.bassNote), type: 'sawtooth', a: .6, d: .4, s: .8, r: 1, peak: .12, cut: 380, wet: .4 }); // cello-like drone
+        if (!i.intro && !i.last) { boom(t, .45); boom(t + spb * 2, .28); for (var k = 0; k < 8; k++) piano(c[k % 4] + (k > 3 ? 12 : 0), t + k * spb / 2, spb * .6, .04, .6); }
+        if (i.last) boom(t, .5);
+        if (b === n - 2) riser(t + spb * 2, spb * 2, .05);
       }
+    };
+    A.folk = {
+      chords: [[55, 59, 62, 67], [52, 55, 59, 64], [48, 55, 60, 64], [50, 57, 62, 66]], bass: [43, 40, 36, 38], end: [55, 59, 62, 67, 74],
+      bar: function (b, t, c, i) {
+        var pat = i.last ? [[0, 1]] : i.intro ? [[0, 1], [2.5, 0]] : [[0, 1], [1, 1], [1.5, 0], [2.5, 0], [3, 1], [3.5, 0]];
+        pat.forEach(function (q) { strum(c, t + swing(b, q[0], .55), .016, q[1], i.last ? .08 : .06); });
+        tone({ t: t, dur: spb * 1.8, f: mtof(i.bassNote), type: 'triangle', a: .006, d: .2, s: .5, r: .15, peak: .22, cut: 650 });
+        if (!i.last) tone({ t: t + spb * 2, dur: spb * 1.6, f: mtof(i.bassNote + 7), type: 'triangle', a: .006, d: .2, s: .5, r: .15, peak: .16, cut: 650 });
+        if (!i.intro && !i.last) { kick(t, .28); kick(t + spb * 2, .24); snare(t + spb, .07); snare(t + spb * 3, .07); for (var k = 0; k < 8; k++) hat(t + k * spb / 2, k % 2 ? .022 : .038); if (R() < .7) pluck([67, 69, 71, 74, 76, 79][Math.floor(R() * 6)], t + swing(b, [1.5, 2, 3][Math.floor(R() * 3)], .55), spb * .8, .06, .4); }
+        if (i.last) { kick(t, .25); pad(c, t, spb * 5, .03, 1300, 'triangle', .8); }
+      }
+    };
+    A.chillhop = {
+      chords: [[60, 63, 67, 70], [56, 60, 63, 67], [53, 56, 60, 63], [55, 59, 62, 65]], bass: [36, 32, 41, 43], end: [60, 63, 67, 70, 74],
+      bar: function (b, t, c, i) {
+        c.forEach(function (m, k) { ep(t + k * .012, i.last ? spb * 5 : spb * 2.7, m, i.last ? .07 : .05, .6); });
+        if (!i.last) c.slice(1).forEach(function (m, k) { ep(t + swing(b, 2.5, .6) + k * .01, spb * .8, m, .03, .5); });
+        tone({ t: t, dur: i.last ? spb * 4 : spb * 2.2, f: mtof(i.bassNote), type: 'sine', a: .01, d: .25, s: .85, r: .3, peak: .3, cut: 500 });
+        if (!i.intro && !i.last) {
+          kick(t, .5); kick(t + swing(b, 1.75, .6), .3); kick(t + swing(b, 2.5, .6), .4); snare(t + spb, .2); snare(t + spb * 3, .2);
+          for (var k2 = 0; k2 < 16; k2++) hat(t + swing(b, k2 / 4, .6), k2 % 4 === 2 ? .045 : .02);
+          if (R() < .6) bell(t + swing(b, [1.5, 2.5, 3.5][Math.floor(R() * 3)], .6), [72, 75, 79, 82][Math.floor(R() * 4)], .04, .9);
+        }
+        if (i.last) kick(t, .4);
+      },
+      extra: function (t0) { var s0 = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s0.buffer = NB; s0.loop = true; f.type = 'highpass'; f.frequency.value = 3200; g.gain.value = .007; s0.connect(f); f.connect(g); route(g, 0, 0); s0.start(t0); s0.stop(t0 + D + .5); nodes.push(s0); }
+    };
+    A.funk = {
+      chords: [[52, 55, 59, 62], [57, 61, 64, 67], [52, 55, 59, 62], [59, 63, 66, 69]], bass: [40, 45, 40, 47], end: [52, 55, 59, 62, 66],
+      bar: function (b, t, c, i) {
+        var q = spb / 4;
+        if (!i.last) [0, 3, 6, 8, 11, 14].forEach(function (st) { if (i.intro && st > 0) return; c.slice(1).forEach(function (m) { tone({ t: t + st * q, dur: q * .7, f: mtof(m + 12), type: 'sawtooth', a: .002, d: .08, s: .01, r: .04, peak: i.intro ? .028 : .042, cut: 2600, cutEnd: 900, cutDur: .12, q: 3, wet: .1 }); }); });
+        else c.forEach(function (m) { tone({ t: t, dur: spb * 3, f: mtof(m + 12), type: 'sawtooth', a: .004, d: .3, s: .3, r: .8, peak: .04, cut: 2200, wet: .4 }); });
+        if (!i.last) [0, 2, 3, 6, 8, 10, 11, 14].forEach(function (st, k) { tone({ t: t + st * q, dur: q * (k % 3 === 0 ? 1.8 : .8), f: mtof(i.bassNote + ([0, 12, 0, 7, 0, 12, 0, 10][k])), type: 'sawtooth', a: .003, d: .1, s: .35, r: .05, peak: .2, cut: 700, cutEnd: 350, cutDur: .12, q: 2 }); });
+        else tone({ t: t, dur: spb * 4, f: mtof(i.bassNote), type: 'triangle', a: .01, d: .3, s: .7, r: .5, peak: .25, cut: 600 });
+        if (!i.intro && !i.last) { [0, 7, 10].forEach(function (st) { kick(t + st * q, .4); }); snare(t + 4 * q, .17); snare(t + 12 * q, .17); for (var k2 = 0; k2 < 16; k2++) hat(t + k2 * q, k2 % 4 === 2 ? .05 : .02, k2 === 14); }
+        if (i.last) kick(t, .35);
+      }
+    };
+    A.ballad = {
+      chords: [[48, 55, 60, 64], [47, 55, 59, 62], [45, 52, 57, 60], [41, 48, 53, 57]], bass: [36, 31, 33, 29], end: [48, 55, 60, 64, 74],
+      bar: function (b, t, c, i) {
+        piano(c[0], t, spb * 3.8, .1, .55);
+        if (i.last) { c.forEach(function (m, k) { piano(m, t + k * .02, spb * 5, .06, .7); }); pad(c, t, spb * 6, .035, 1100, 'triangle', .9); return; }
+        [1, 2, 3, 2, 1, 2, 3, 2].forEach(function (idx, k) { if (i.intro && k % 2) return; piano(c[idx] + 12, t + swing(b, k / 2, .52), spb * 1.4, .05 + (k === 0 ? .015 : 0), .6); });
+        if (!i.intro) pad(c, t, spb * 4.4, .03, 1200, 'triangle', .9);
+      }
+    };
+    A.tech = {
+      chords: [[57, 60, 64], [53, 57, 60], [55, 59, 62], [52, 55, 59]], bass: [45, 41, 43, 40], end: [57, 60, 64, 69],
+      bar: function (b, t, c, i) {
+        if (i.last) { kick(t, .4); pad(c, t, spb * 6, .045, 1000, 'sawtooth', .8); tone({ t: t, dur: spb * 4, f: mtof(i.bassNote), type: 'sawtooth', a: .01, d: .3, s: .6, r: .5, peak: .2, cut: 420 }); return; }
+        if (!(i.intro && b === 0)) for (var k = 0; k < 4; k++) { kick(t + k * spb, .42); hat(t + k * spb + spb / 2, .05, k === 3); }
+        for (var k2 = 0; k2 < 4; k2++) tone({ t: t + k2 * spb + spb / 2, dur: spb * .4, f: mtof(i.bassNote), type: 'sawtooth', a: .004, d: .1, s: .4, r: .05, peak: .17, cut: 420, q: 2 });
+        if (!i.intro) { [3, 6, 10, 13].forEach(function (st) { c.forEach(function (m) { tone({ t: t + st * spb / 4, dur: spb * .22, f: mtof(m + 12), type: 'square', a: .002, d: .08, s: .02, r: .05, peak: .02, cut: 2400, cutEnd: 800, cutDur: .1, wet: .3, dly: 1 }); }); }); clap(t + spb, .13); clap(t + spb * 3, .13); }
+        if (i.intro) pad(c, t, spb * 4, .03, 800, 'sawtooth', .8);
+        if (b === n - 2) riser(t + spb * 2, spb * 2, .05);
+      }
+    };
+
+    var arr = A[style] || A.lofi, timer = null;
+    function bar(b, t0) {
+      var intro = n >= 8 ? 2 : 1, last = b === n - 1, ci = b % arr.chords.length;
+      arr.bar(b, t0 + b * 4 * spb, last ? arr.end : arr.chords[ci], { last: last, intro: b < intro, bassNote: last ? arr.bass[0] : arr.bass[ci], spb: spb });
+    }
+    function schedule(t0) {
+      var next = 0;
+      function pump() { // schedule bars up to 5 s ahead of the audio clock (all at once when rendering offline)
+        var horizon = opts.eager ? Infinity : ctx.currentTime + 5;
+        while (next < n && t0 + next * 4 * spb < horizon) bar(next++, t0);
+        if (next >= n && timer) { clearInterval(timer); timer = null; }
+      }
+      pump(); if (next < n) timer = setInterval(pump, 250);
       if (arr.extra) arr.extra(t0);
       // fade in/out on the master so the end lands exactly with the scroll
       var fi = Math.min(1.4, D * .1), fo = Math.min(2.2, D * .14), peak = S.gain * .85;
@@ -176,7 +287,7 @@
     return {
       out: master, bars: n, bpm: bpm,
       start: function (t0, dest) { master.connect(dest); schedule(t0); },
-      stop: function (when) { var t = when || ctx.currentTime; try { master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(0, t + .25); } catch (e) {} setTimeout(function () { try { master.disconnect(); } catch (e) {} }, 400); }
+      stop: function (when) { if (timer) { clearInterval(timer); timer = null; } var t = when || ctx.currentTime; try { master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(0, t + .25); } catch (e) {} setTimeout(function () { try { master.disconnect(); } catch (e) {} }, 400); }
     };
   }
 
@@ -423,7 +534,7 @@
     var url = '/' + id + '/', style = 'lofi', D = clamp(+st.len || 30, 6, 120), fresh = false, ready = false;
     getLog().then(function (log) {
       var e = (log || []).filter(function (x) { return (x.id || x.date) === id; })[0];
-      if (e) { nm.textContent = e.name || e.slug; style = styleForTheme(e.theme); }
+      if (e) { nm.textContent = e.name || e.slug; style = styleForTheme(e.theme, e.purpose, id); }
       if (st.music !== 'auto' && STYLES[st.music]) style = st.music;
     });
 
@@ -523,7 +634,7 @@
         row.appendChild(b); }); sh.appendChild(row);
     }
     group('Length of the recording', 'len', [[20, '20 s'], [30, '30 s'], [45, '45 s'], [60, '60 s']]);
-    group('Music', 'music', [['auto', 'Auto (matches template)'], ['lofi', 'Lo-fi'], ['synthwave', 'Synthwave'], ['ambient', 'Ambient'], ['jazz', 'Jazz'], ['playful', 'Playful'], ['off', 'Off']]);
+    group('Music', 'music', [['auto', 'Auto (matches template)']].concat(Object.keys(STYLES).map(function (k) { return [k, STYLES[k].name]; }), [['off', 'Off']]));
     group('Frame', 'frame', [['auto', 'Reel 9:16 (recommended)'], ['full', 'Full screen']]);
     group('“← All templates” link', 'hideBack', [['true', 'Hide while recording'], ['false', 'Show']]);
     var pv = el('button', 'c', '🎧 Preview music (8 s)'); pv.type = 'button'; pv.style.marginTop = '14px';

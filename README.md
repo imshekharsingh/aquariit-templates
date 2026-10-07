@@ -36,8 +36,10 @@ Every template has a **▶ Play** button (home list, today's card, kit page). St
 tap ▶, and everything else is automatic: a 5-second countdown, then the template opens in a 9:16 frame and
 scrolls itself like a human camera move (hold on the hero, glide to each section, pause, glide on, hold at
 the end) while original generated music plays and ends exactly with the scroll.
-- **Music** is synthesised in the browser (Web Audio), so there is nothing to license. The mood is picked
-  from the template's theme: Lo-fi, Synthwave, Ambient, Jazz or Playful (override or turn off in ⚙).
+- **Music** is synthesised in the browser (Web Audio), so there is nothing to license. There are 11 styles (Lo-fi, Chill-hop,
+  Folk, Piano, Jazz, Funk, Synthwave, Tech, Cinematic, Ambient, Playful). **Auto** maps the template's theme to a few fitting
+  styles and picks one by template id, so similar moods don't all sound alike (override or turn off in ⚙). Bars are scheduled
+  a few seconds ahead of the audio clock so building the music never stalls the screen.
 - **9:16 frame:** the template is shown in a centred 9:16 box (402×715 on an iPhone 17 Pro). The bands above/below
   carry the status bar and home indicator in the template's own background colour, and Instagram's default crop of
   a tall screen recording trims them, so the Reel shows only the template.
