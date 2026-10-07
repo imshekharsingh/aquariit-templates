@@ -136,7 +136,8 @@ never deployed). It is the ready-to-paste kit for the Instagram Reel:
   copyrighted songs, and never claim a track is trending. Keep a royalty-free
   fallback in mind (Instagram's royalty-free tab).
 Music must follow the template's mood (e.g. warm paper → acoustic/lo-fi,
-dark neon → synthwave, Japanese calm → ambient/koto-style, art deco → jazz).
+dark neon → synthwave, Japanese calm → ambient/koto-style, art deco → jazz). This section is for picking Instagram's own audio;
+the ▶ player separately auto-picks one of its 11 generated styles from the theme (see MOODS in templates/play/player.js).
 
 ## Required in every template (enforced by scripts/check.mjs)
 - A small, visible link to "/" whose text includes "All templates"
