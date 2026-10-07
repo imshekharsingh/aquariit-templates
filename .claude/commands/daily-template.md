@@ -49,6 +49,9 @@ CLAUDE.md.
    Open the screenshots it saves in /tmp/reel-audit/ and fix every "CUTS" line (split or
    resize blocks, add gaps, or pin pauses with data-reel-stop) until it says all pauses are
    clean and every pause looks like a finished frame. If Playwright is unavailable, say so.
+3c. Run `node scripts/reel-perf.mjs ID` (smoothness under a simulated slower phone, see "Smooth when
+   auto-scrolled" in CLAUDE.md). It must say "smooth"; if it says CHECK, simplify the heaviest effects
+   (animated blur/box-shadow/filter, big canvases) and re-run. If Playwright is unavailable, say so.
 4. Compare against the last 3 templates; if too similar, revise.
 
 ## Phase 4b — Instagram social kit

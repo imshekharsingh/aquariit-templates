@@ -48,6 +48,9 @@ the end) while original generated music plays and ends exactly with the scroll.
 - **Smart pauses.** The scroll pauses where a content block starts under the header, with the frame's bottom edge in a gap
   between blocks. `node scripts/reel-audit.mjs ID` plans the scroll for a template at 402×715, flags any pause that would
   cut a block in half, and saves a screenshot of every pause (used by the daily run).
+- **Smoothness.** The scroll runs on the screen's own frame clock (not the audio clock), in whole device pixels, with the
+  sticky header made opaque and the page behind the player frozen. `node scripts/reel-perf.mjs ID` replays a template through
+  the player under a simulated slower phone and reports how even the scrolling is.
 - Tip: install the app (Add to Home Screen) so the recording has no browser bars; silent switch off, volume up.
 
 ## Sign-in

@@ -98,6 +98,16 @@ Design every template for a **402×715 viewport**, not a desktop page:
     where the bottom edge would slice a block ("CUTS at bottom"), and saves a screenshot per pause in /tmp/reel-audit/.
     OPEN THE SCREENSHOTS and confirm every pause is a finished frame, especially pause 0 (the first screen). Fix every
     "CUTS" line by splitting/resizing blocks or pinning pauses, then re-run until it reports "All pauses are clean".
+- **Smooth when auto-scrolled.** The player moves the page from JavaScript, so (unlike native scrolling) anything slow on the page's
+  main thread shows up as stutter on a phone. Keep pages light:
+  · Infinite/looping animations: `transform` and `opacity` only. Never animate `filter: blur()`, `box-shadow`, `backdrop-filter`,
+    `width/height/top/left`, or large gradients. Blurred glows may exist but must be static or only moved with `transform`.
+  · Do not rely on `backdrop-filter` (the player removes it and makes the sticky header opaque, so the header must still look right
+    as a plain solid bar over the page colour). Prefer a solid `var(--bg)`-based header background.
+  · Canvas/JS animation: ≤ ~150 moving items, cap `devicePixelRatio` at 2, draw only what changed, no layout reads in the loop.
+  · No heavy work in scroll handlers; use IntersectionObserver for reveals. Keep the DOM modest (a few hundred nodes).
+  · Run `node scripts/reel-perf.mjs <ID>`: it plays the page through the real player under a simulated slower phone (CPU 4×) and must
+    report "smooth" (< 3% irregular frames, no long frames). If it reports CHECK, simplify the heaviest effects and re-run.
 `scripts/check.mjs` enforces the viewport-fit, theme-color, `html.reel` rule and the `--safe-*` convention.
 
 ## Instagram social kit (required for every template)
