@@ -63,5 +63,27 @@
     "animation": "self-drawing brush stroke, rising steam and soft scroll reveals",
     "purpose": "restaurant",
     "description": "A calm single-column page for a fictional tea room, where a brush circle paints itself around a bowl of matcha as steam rises."
+  },
+  {
+    "id": "2026-10-07-0916",
+    "date": "2026-10-07",
+    "time": "09:16",
+    "slug": "tessera",
+    "url": "https://templates.aquariit.com/2026-10-07-0916/",
+    "name": "Tessera",
+    "theme": "Swiss modernist",
+    "layout": "bento grid",
+    "palette": [
+      "#f1f0ea",
+      "#0d0d0d",
+      "#1f3cff",
+      "#ffcf1f",
+      "#ff4d2e"
+    ],
+    "fonts": "Archivo + IBM Plex Mono",
+    "motif": "geometric tile mosaic of circles, quarter-circles and bars",
+    "animation": "staggered tile pop-in with stepped quarter-turn rotation and snap-together finale",
+    "purpose": "SaaS landing",
+    "description": "A Swiss modernist bento-grid landing page for a fictional tile-based planning app, with geometric tiles that pop in, turn and snap into a mosaic."
   }
 ]
