@@ -81,7 +81,7 @@ jobs:
             echo "names<<EOF"
             echo BASIC_AUTH_USER
             echo BASIC_AUTH_PASS
-            if [ -n "$BASIC_AUTH_USER_2" ] && [ -n "$BASIC_AUTH_PASS_2" ]; then echo BASIC_AUTH_USER_2; echo BASIC_AUTH_PASS_2; echo "Second account: enabled"; fi
+            if [ -n "$BASIC_AUTH_USER_2" ] && [ -n "$BASIC_AUTH_PASS_2" ]; then echo BASIC_AUTH_USER_2; echo BASIC_AUTH_PASS_2; fi
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
       - uses: cloudflare/wrangler-action@v3
