@@ -71,21 +71,36 @@ jobs:
             echo "::error::Add repository secrets BASIC_AUTH_USER and BASIC_AUTH_PASS (Settings > Secrets and variables > Actions), then re-run this job."
             exit 1
           fi
+      - name: Choose Worker secrets to publish
+        id: sec
+        env:
+          BASIC_AUTH_USER_2: ${{ secrets.BASIC_AUTH_USER_2 }}
+          BASIC_AUTH_PASS_2: ${{ secrets.BASIC_AUTH_PASS_2 }}
+        run: | # the optional second account is published only when BOTH of its secrets exist
+          {
+            echo "names<<EOF"
+            echo BASIC_AUTH_USER
+            echo BASIC_AUTH_PASS
+            if [ -n "$BASIC_AUTH_USER_2" ] && [ -n "$BASIC_AUTH_PASS_2" ]; then echo BASIC_AUTH_USER_2; echo BASIC_AUTH_PASS_2; echo "Second account: enabled"; fi
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
       - uses: cloudflare/wrangler-action@v3
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+          BASIC_AUTH_USER_2: ${{ secrets.BASIC_AUTH_USER_2 }}
+          BASIC_AUTH_PASS_2: ${{ secrets.BASIC_AUTH_PASS_2 }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          secrets: |
-            BASIC_AUTH_USER
-            BASIC_AUTH_PASS
+          secrets: ${{ steps.sec.outputs.names }}
           command: deploy
       - name: Smoke test live site
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+          BASIC_AUTH_USER_2: ${{ secrets.BASIC_AUTH_USER_2 }}
+          BASIC_AUTH_PASS_2: ${{ secrets.BASIC_AUTH_PASS_2 }}
         run: |
           B=https://templates.aquariit.com
           check() { # url, expected status, extra curl args
@@ -111,5 +126,11 @@ jobs:
             check "$B/$path" 200 -b "$J" || exit 1                      # signed-in (cookie) access
           done
           check "$B/design-log.json" 200 --user "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" || exit 1  # scripts can still use a Basic header
+          if [ -n "$BASIC_AUTH_USER_2" ] && [ -n "$BASIC_AUTH_PASS_2" ]; then                   # optional second account
+            J2=$(mktemp)
+            check "$B/login" 401 -X POST --data-urlencode "username=$BASIC_AUTH_USER_2" --data-urlencode "password=wrong-$RANDOM" || exit 1
+            check "$B/login" 303 -c "$J2" -X POST --data-urlencode "username=$BASIC_AUTH_USER_2" --data-urlencode "password=$BASIC_AUTH_PASS_2" || exit 1
+            check "$B/" 200 -b "$J2" || exit 1
+          fi
       - name: Summary
         run: echo "Deployed. Home https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"

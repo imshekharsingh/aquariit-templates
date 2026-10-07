@@ -61,7 +61,9 @@ The site is behind a sign-in page (`/login`) and a signed, HttpOnly 30-day sessi
 unlike the browser's Basic-auth popup, and iOS can autofill the form. `/manifest.webmanifest`, `/sw.js`, `/icons/*`
 and `/login` stay public so the PWA can install. **Sign out** is at the bottom of the home page.
 Credentials are **never in the repo**: GitHub secrets `BASIC_AUTH_USER` and `BASIC_AUTH_PASS` (the names are historical)
-are pushed to the Worker by the deploy job. Changing the password signs every device out. If the secrets are missing the
+are pushed to the Worker by the deploy job. A **second account** is optional: add `BASIC_AUTH_USER_2` and `BASIC_AUTH_PASS_2`
+(both) and either account can sign in; each session cookie is tied to its own account. The username is case-insensitive, the
+password is exact. Changing the password signs every device out. If the secrets are missing the
 deploy stops (the old site stays up); if the Worker has none it returns 503 instead of serving openly.
 Scripts can still authenticate with `curl --user`.
 
