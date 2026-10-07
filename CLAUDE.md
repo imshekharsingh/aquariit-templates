@@ -145,6 +145,8 @@ the ▶ player separately auto-picks one of its 11 generated styles from the the
   reachable on mobile without scrolling to the very bottom (in the nav, or
   as a fixed corner element using safe-area insets). This is the only way
   back when the site runs as an installed PWA with no address bar.
+- A footer credit line reading exactly "Developed by Aquarii Technologies" (small, muted, last line of the page,
+  styled to fit the design; plain text, no link). The "Developed by" wording is the owner's choice.
 - <link rel="manifest" href="/manifest.webmanifest"> in <head>, so the
   app stays in standalone mode when opening a template.
 

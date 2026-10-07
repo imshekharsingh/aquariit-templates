@@ -104,7 +104,8 @@
   .finale .btn{background:var(--yellow);color:var(--ink);border-color:var(--yellow)}
   .finale .btn:hover{background:var(--bg);border-color:var(--bg)}
   footer{background:var(--ink);color:#9d9d94;padding:8px 0 calc(34px + var(--safe-bottom))}
-  footer .wrap{display:flex;justify-content:space-between;gap:12px;border-top:1px solid #333;padding-top:18px}
+  footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;border-top:1px solid #333;padding-top:18px}
+  .credit{display:block;flex-basis:100%;margin-top:10px;font-size:.78rem;letter-spacing:.06em;opacity:.8;color:inherit}
 
   .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
   .rv.in{opacity:1;transform:none}
@@ -194,7 +195,7 @@
     </div>
   </section>
 </main>
-<footer><div class="wrap"><span class="mono">Tessera · a fictional product</span><span class="mono">© 2026</span></div></footer>
+<footer><div class="wrap"><span class="mono">Tessera · a fictional product</span><span class="mono">© 2026</span><small class="credit">Developed by Aquarii Technologies</small></div></footer>
 
 <script>
 (function(){
