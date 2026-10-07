@@ -5,8 +5,8 @@ One original, copyright-safe webpage template per day, published to
 The home page lists every template by date; the site is an installable PWA.
 Each template also ships with an Instagram kit (caption, keywords, hashtags, music).
 
-Templates generated: **3**
-Latest: [2026-10-06 20:02 · Shizuku Tea Room](https://templates.aquariit.com/2026-10-06-2002/)
+Templates generated: **4**
+Latest: [2026-10-07 09:16 · Tessera](https://templates.aquariit.com/2026-10-07-0916/)
 
 ## How `/daily-template` works
 Run `/daily-template [hint]` in Claude Code, any time, as often as you like. Each run makes
