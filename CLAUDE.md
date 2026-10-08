@@ -67,6 +67,8 @@ theme/mood, page purpose. Never reuse an exact palette or font pairing.
   and keep a signature moment visible during plain vertical scrolling. If a template scrolls
   horizontally or inside a custom scroller, define `window.__reel = { scroller: '#track', axis: 'x' }`
   (optional: `duration` in seconds, `stops` as selectors/pixel offsets).
+- Design advancement: every template introduces ONE new technique from design/playbook.md (not used before, see
+  design/advancements.md), vivid palette (saturated hero colour + unexpected accent); log it in design/advancements.md.
 - Typical sections: nav, hero, features/content, social proof, CTA, footer —
   adapt to the concept
 

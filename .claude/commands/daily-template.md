@@ -32,6 +32,13 @@ creative direction menus in CLAUDE.md. Honor the hint within those rules.
 Before coding, state the direction in 3–4 lines and explain why it is
 distinct from the last 5 log entries.
 
+## Phase 2b — One design advancement
+Read design/playbook.md and design/advancements.md. Choose ONE technique from the playbook that no earlier
+template used (prefer a different playbook group than the last template) and make it the new, visible
+"advancement" of this template, on top of the usual quality bar. State it in the direction summary.
+Palettes must feel vivid: a saturated hero colour plus an unexpected accent. If you invent a strong new
+technique that is not in the playbook, add it there (new line in the matching group).
+
 ## Phase 3 — Build
 Create templates/ID/index.html following the quality bar, the
 "Required in every template" items, and the copyright-safe rules in
@@ -63,6 +70,7 @@ Create social/ID.md following the "Instagram social kit" section of CLAUDE.md
 1. Append the entry to design-log.json (schema in CLAUDE.md: id=ID, date=DATE,
    time=TIME, url https://templates.aquariit.com/ID/).
 2. Copy design-log.json to templates/design-log.json.
+2b. Append one line to design/advancements.md: `- ID — technique (playbook group): what it looks like on the page`.
 3. Update README.md: template count and latest template link.
 4. Run `npm run check` once more.
 5. Stage only files you created or changed (including social/ID.md); commit with the CLAUDE.md format.
