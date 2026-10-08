@@ -85,5 +85,27 @@
     "animation": "staggered tile pop-in with stepped quarter-turn rotation and snap-together finale",
     "purpose": "SaaS landing",
     "description": "A Swiss modernist bento-grid landing page for a fictional tile-based planning app, with geometric tiles that pop in, turn and snap into a mosaic."
+  },
+  {
+    "id": "2026-10-08-0850",
+    "date": "2026-10-08",
+    "time": "08:50",
+    "slug": "maison-vesper",
+    "url": "https://templates.aquariit.com/2026-10-08-0850/",
+    "name": "Maison Vesper",
+    "theme": "art deco",
+    "layout": "full-bleed sections with stacked cards",
+    "palette": [
+      "#0a2421",
+      "#103530",
+      "#f3e6c4",
+      "#d4a843",
+      "#7d1f33"
+    ],
+    "fonts": "Limelight + Josefin Sans",
+    "motif": "gold sunburst rays behind nested deco arches",
+    "animation": "self-drawing arches, rising sun and slow ray rotation with scroll reveals",
+    "purpose": "event",
+    "description": "An art deco event page for a fictional midnight jazz supper club, where gold arches draw themselves around a rising sunburst."
   }
 ]
