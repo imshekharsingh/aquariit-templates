@@ -96,6 +96,7 @@ for (const f of folders) {
   if (rawEnv) err(`${id}: use var(--safe-top)/var(--safe-bottom) instead of raw env(safe-area-inset-top/bottom) (${rawEnv.length} found)`);
   const back = [...html.matchAll(/<a\b[^>]*\bhref=["']\/["'][^>]*>([\s\S]*?)<\/a>/gi)].some((m) => /All templates/.test(m[1].replace(/<[^>]+>/g, '')));
   if (!back) err(`${id}: missing <a href="/"> whose text includes "All templates"`);
+  if (!/Developed by Aquarii Technologies/.test(html)) err(`${id}: missing footer credit "Developed by Aquarii Technologies"`);
   for (const m of html.matchAll(/<img\b[^>]*>/gi)) if (!/\balt=/i.test(m[0])) err(`${id}: <img> without alt`);
   const urls = [
     ...[...html.matchAll(/\b(?:src|href|srcset|poster|action)=["']([^"']+)["']/gi)].map((m) => m[1]),
