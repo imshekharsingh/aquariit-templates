@@ -111,3 +111,9 @@ wrangler.jsonc            assets-only Worker config
 .github/workflows/        pipeline.yml
 .claude/                  /daily-template command and permissions
 ```
+
+## Pipeline safety nets
+
+- The merge step only reuses an **open** pull request, and skips cleanly when a branch has nothing new for `main`.
+- Any failed run opens a GitHub issue ("Pipeline failed: <branch>") so the failure is seen the same day.
+- A daily watchdog (10:00 IST) re-deploys `main` and re-runs the smoke test, so a transient morning failure heals itself.
