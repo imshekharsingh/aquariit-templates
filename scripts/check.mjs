@@ -114,6 +114,12 @@ for (const f of folders) {
   for (const b of BANNED) if (new RegExp(`\\b${b}\\b`).test(body)) err(`${id}: banned brand name "${b}" in text`);
 }
 
+// Design advancement: every template folder is recorded in design/advancements.md
+const advPath = join(root, 'design', 'advancements.md');
+const adv = existsSync(advPath) ? readFileSync(advPath, 'utf8') : '';
+if (!adv) err('design/advancements.md is missing');
+for (const f of folders) if (adv && !new RegExp(`^- ${f} — `, 'm').test(adv)) err(`design/advancements.md: no line "- ${f} — technique (group): what it looks like" for ${f}`);
+
 // Instagram social kit: social/YYYY-MM-DD.md for every template folder
 for (const f of folders) {
   const p = join(root, 'social', `${f}.md`);
