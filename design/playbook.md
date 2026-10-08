@@ -36,3 +36,14 @@ The performance rules in CLAUDE.md still win: loop only transform/opacity, no an
 - A memorable final frame: the CTA reveal that answers the reel hook.
 - Micro-details: custom bullet shapes, hairline rules with tick marks, small caps labels, ornamental dividers.
 - Consistent corner radius or hard-edge system chosen on purpose.
+
+## Atmosphere (inspired by a lo-fi night-scene mood reference)
+The reference is an illustrated rainy-night room: deep violet and indigo with a warm orange glow on the horizon,
+soft cyan window light, and a glowing app-icon tile. Take the *feel*, never the artwork or branding; draw your own.
+- Twilight gradient sky: violet to indigo to magenta, with ONE warm orange/peach glow band at the horizon.
+- Hand-drawn SVG night scene (window, skyline, desk lamp) in flat shapes with a few lit windows as accents.
+- Rain streaks as 20-40 thin SVG lines moved with transform only, low opacity, looping slowly.
+- City-light bokeh: static soft circles in two or three colours, only opacity-twinkled.
+- Glow tile: a dark rounded icon tile whose bottom edge fades into a saturated purple glow (static gradient).
+- Floor/surface reflection: a mirrored, faded copy of the main light at the bottom of a section.
+- Cozy detail layer: small scattered objects (paper scraps, mug, plant) drawn in SVG to make the scene feel lived in.
