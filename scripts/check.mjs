@@ -124,6 +124,13 @@ for (const f of folders) {
   if (line && !/\| hero: .+ \| modules: .+ \| header: .+/.test(line)) err(`design/advancements.md: line for ${f} needs "| hero: X | modules: Y | header: Z"`);
 }
 
+// Cover preview image: every template has templates/covers/ID.jpg (node scripts/make-cover.mjs ID), shown on the ▶ cover card
+for (const f of folders) {
+  const c = join(T, 'covers', `${f}.jpg`);
+  if (!existsSync(c)) err(`templates/covers/${f}.jpg missing (run: node scripts/make-cover.mjs ${f})`);
+  else if (statSync(c).size > 250 * 1024) err(`templates/covers/${f}.jpg is larger than 250 KB`);
+}
+
 // Instagram social kit: social/YYYY-MM-DD.md for every template folder
 for (const f of folders) {
   const p = join(root, 'social', `${f}.md`);

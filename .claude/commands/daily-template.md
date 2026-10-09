@@ -65,6 +65,11 @@ CLAUDE.md.
    (animated blur/box-shadow/filter, big canvases) and re-run. If Playwright is unavailable, say so.
 4. Compare against the last 3 templates; if too similar, revise.
 
+## Phase 4a — Cover preview image
+Run `node scripts/make-cover.mjs ID` (needs Playwright). It writes templates/covers/ID.jpg, the finished first screen shown
+on the ▶ player's opening cover card (the first frame of the recording, used as the Reel cover). Open the image and make
+sure the hero is complete (no half-faded elements); if not, fix the template's entrance timing and re-run. Commit the jpg.
+
 ## Phase 4b — Instagram social kit
 Create social/ID.md following the "Instagram social kit" section of CLAUDE.md
 (hook that opens a loop the ending closes, caption ending with a "Send this to…" share line,
