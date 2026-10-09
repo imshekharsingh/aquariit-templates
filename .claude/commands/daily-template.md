@@ -32,6 +32,10 @@ creative direction menus in CLAUDE.md. Honor the hint within those rules.
 Before coding, state the direction in 3–4 lines and explain why it is
 distinct from the last 5 log entries.
 
+Structure check: read the last three lines of design/advancements.md. Your hero composition, main section
+module and header style must each differ from all three (menus in design/playbook.md). Do not default to
+"eyebrow label, headline, paragraph, centred illustration, buttons, stacked cards".
+
 ## Phase 2b — One design advancement
 Read design/playbook.md and design/advancements.md. Choose ONE technique from the playbook that no earlier
 template used (prefer a different playbook group than the last template) and make it the new, visible
