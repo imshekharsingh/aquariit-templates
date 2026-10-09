@@ -107,5 +107,28 @@
     "animation": "self-drawing arches, rising sun and slow ray rotation with scroll reveals",
     "purpose": "event",
     "description": "An art deco event page for a fictional midnight jazz supper club, where gold arches draw themselves around a rising sunburst."
+  },
+  {
+    "id": "2026-10-09-0850",
+    "date": "2026-10-09",
+    "time": "08:50",
+    "slug": "understory",
+    "url": "https://templates.aquariit.com/2026-10-09-0850/",
+    "name": "Understory",
+    "theme": "organic/botanical",
+    "layout": "layered parallax with stacked cards",
+    "palette": [
+      "#0b6e3b",
+      "#06321d",
+      "#2fb463",
+      "#d6f45a",
+      "#ff4f87",
+      "#f7f2df"
+    ],
+    "fonts": "Young Serif + Outfit",
+    "motif": "layered green hills with growing trees under a pink sun, generated topographic contours",
+    "animation": "circular clip-path reveals, trees growing from the soil and depth parallax on scroll",
+    "purpose": "nonprofit",
+    "description": "A botanical nonprofit page for a fictional reforestation charity, where trees grow from layered hills and cards open with circular reveals."
   }
 ]
