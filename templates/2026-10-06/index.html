@@ -69,6 +69,7 @@
   .btn.ghost:hover{background:var(--paper2)}
   /* ink-stamp seal */
   .seal{width:min(320px,70vw);justify-self:center;color:var(--red);transform:rotate(-8deg)}
+  @media(max-width:899px){.seal{margin-top:40px;width:min(250px,64vw)}.hero{padding-bottom:28px}section{padding:60px 0}.head{margin-bottom:32px}} /* reel frame: the first screen ends after the buttons; the seal opens the next one */
   .seal svg{width:100%;height:auto;display:block}
   .seal .ring{transform-origin:150px 150px;animation:spin 40s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -120,6 +121,7 @@
   @media(min-width:800px){.specimen{grid-template-columns:2fr 1fr 1fr}}
   .tile{border:1.5px solid var(--ink);padding:28px;min-height:240px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
   .tile .big{font:600 clamp(5rem,14vw,9rem)/.8 var(--serif);letter-spacing:-.05em}
+  @media(max-width:799px){.tile{min-height:170px;padding:20px 24px}.tile .big{font-size:4.6rem}}
   .tile.red{background:var(--red);color:#fff7ea;border-color:var(--red)}
   .tile.olive{background:var(--olive);color:#f6f1de;border-color:var(--olive)}
   .tile.ochre{background:var(--ochre);color:#1c1a17;border-color:var(--ochre)}
