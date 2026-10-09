@@ -118,3 +118,4 @@ wrangler.jsonc            assets-only Worker config
 - Any failed run opens a GitHub issue ("Pipeline failed: <branch>") so the failure is seen the same day.
 - A daily watchdog (10:00 IST) re-deploys `main` and re-runs the smoke test, so a transient morning failure heals itself.
 - After every successful deploy a cleanup job deletes any branch whose PR is merged (and has no newer commits), so only `main` and open work remain.
+- **Reel cover:** each template has `templates/covers/ID.jpg` (made by `node scripts/make-cover.mjs ID`). The ▶ player shows it on a 1.3 s cover card (cover text from the kit) at the start of the recording, so that first frame can be picked as the Instagram Reel cover. Toggle it in ⚙ settings.

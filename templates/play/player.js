@@ -418,7 +418,7 @@
   /* =====================================================================
      SETTINGS
      ===================================================================== */
-  var DEF = { len: 30, music: 'auto', frame: 'auto', hideBack: true };
+  var DEF = { len: 30, music: 'auto', frame: 'auto', hideBack: true, cover: true };
   function load() { try { return Object.assign({}, DEF, JSON.parse(localStorage.getItem('reel.settings') || '{}')); } catch (e) { return Object.assign({}, DEF); } }
   function save(s) { try { localStorage.setItem('reel.settings', JSON.stringify(s)); } catch (e) {} }
 
@@ -437,6 +437,12 @@
     '#reel .ring svg{position:absolute;inset:0;transform:rotate(-90deg)}#reel .ring circle{fill:none;stroke-width:6}' +
     '#reel .num{font:800 min(34vw,150px)/1 system-ui,sans-serif;letter-spacing:-.04em}' +
     '#reel .name{font:600 1.1rem system-ui,sans-serif;opacity:.85;text-align:center;padding:0 24px}' +
+    '#reel .cv{position:absolute;box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:opacity .25s}' +
+    '#reel .cv.off{opacity:0;pointer-events:none}' +
+    '#reel .cv .k{font:700 .72rem ui-monospace,monospace;letter-spacing:.24em;text-transform:uppercase;opacity:.75}' +
+    '#reel .cv .t{font:800 1em/1.02 system-ui,-apple-system,sans-serif;letter-spacing:-.03em;margin:.35em 0 0;text-wrap:balance}' +
+    '#reel .cv .pv{display:block;border-radius:22px;box-shadow:0 18px 40px rgba(0,0,0,.35);border:1px solid rgba(128,128,128,.25);background:#fff}' +
+    '#reel .cv .n{font:700 .95rem system-ui,sans-serif;opacity:.85}' +
     '#reel .x{position:absolute;top:calc(env(safe-area-inset-top) + 14px);left:14px;width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(0,0,0,.35);color:#fff;font-size:20px;cursor:pointer}' +
     '#reel .done{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 22px);transform:translate(-50%,30px);opacity:0;transition:.35s;display:flex;gap:10px;align-items:center;padding:10px 12px 10px 18px;border-radius:999px;background:rgba(10,20,28,.92);border:1px solid rgba(255,255,255,.25);font:700 .9rem system-ui,sans-serif;white-space:nowrap;cursor:default}' +
     '#reel .done.on{opacity:1;transform:translate(-50%,0)}#reel .done button{min-height:40px;padding:0 16px;border-radius:999px;border:0;font:700 .85rem system-ui,sans-serif;cursor:pointer;background:#2ee6c5;color:#042}#reel .done button.g{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4)}' +
@@ -499,6 +505,9 @@
   }
   function getLog() { if (!logP) logP = fetch('/design-log.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).catch(function () { return []; }); return logP; }
 
+  var kitsP = null;
+  function getKits() { if (!kitsP) kitsP = fetch('/social-kits.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).catch(function () { return []; }); return kitsP; }
+
   function stop(r) {
     if (!r || r.dead) return; r.dead = true;
     if (r.raf) cancelAnimationFrame(r.raf); clearTimeout(r.tm); clearInterval(r.iv);
@@ -538,6 +547,23 @@
       if (st.music !== 'auto' && STYLES[st.music]) style = st.music;
     });
 
+    var cover = { text: '', name: '', img: null };
+    if (st.cover) {
+      getKits().then(function (ks) { var k = (ks || []).filter(function (x) { return x.id === id; })[0]; if (k) { cover.text = (k.reel && k.reel.cover) || k.hook || ''; cover.name = k.name || ''; } });
+      var im = new Image(); im.onload = function () { cover.img = im; }; im.src = '/covers/' + id + '.jpg'; // decoded now so the cover card is complete on its very first frame
+    }
+    function makeCover(tint) { // the opening card: becomes the first frame of the recording, so Instagram can use it as the Reel cover
+      var rgb = (tint.match(/[\d.]+/g) || [0, 0, 0]).map(Number), dark = (.299 * rgb[0] + .587 * rgb[1] + .114 * rgb[2]) / 255 < .5, ink = dark ? '#fff' : '#111';
+      var cv = el('div', 'cv'); cv.style.left = Math.floor((innerWidth - fw) / 2) + 'px'; cv.style.top = Math.floor((innerHeight - fh) / 2) + 'px'; cv.style.width = fw + 'px'; cv.style.height = fh + 'px'; cv.style.background = tint; cv.style.color = ink; cv.style.padding = Math.round(fh * .07) + 'px ' + Math.round(fw * .08) + 'px';
+      cv.appendChild(el('div', 'k', 'New template · every day'));
+      var t = el('div', 't', cover.text || cover.name); t.style.fontSize = Math.round(fw * (cover.text.length > 22 ? .1 : .12)) + 'px'; cv.appendChild(t);
+      if (cover.img) {
+        var ph = Math.round(fh * (cover.text ? .5 : .62)), pw = Math.round(ph * 402 / 715), pv = el('img', 'pv'); pv.src = cover.img.src; pv.alt = ''; pv.style.width = pw + 'px'; pv.style.height = ph + 'px'; pv.style.margin = Math.round(fh * .035) + 'px 0';
+        cv.appendChild(pv);
+      }
+      if (cover.name) cv.appendChild(el('div', 'n', cover.name + ' · Aquarii'));
+      return cv;
+    }
     function freeze(doc, win) { // pause CSS animations until the camera "starts rolling"; optionally hide the back link
       if (doc.getElementById('__reel_freeze')) return;
       var s = doc.createElement('style'); s.id = '__reel_freeze'; s.textContent = '*,*::before,*::after{animation-play-state:paused!important}';
@@ -585,15 +611,16 @@
       jump(w, 0);
       var tint = pageColor(d, w); box.style.background = tint; tintPage(tint);
       var plan = buildPlan(w, d, D);
-      var LEAD = .6, thawed = false, tStart, music = null; // short lead: overlay fades out and the audio graph is built BEFORE "action", so the first frames don't stutter on phones
+      var LEAD = .6, COV = st.cover && (cover.text || cover.img) ? 1.3 : 0, thawed = false, tStart, music = null; // short lead: overlay fades out and the audio graph is built BEFORE "action", so the first frames don't stutter on phones
       if (ctx && st.music !== 'off') music = Music(ctx, style, D, id);
       solidifyBar(d, w, tint); cd.classList.add('off'); xb.style.display = 'none'; hideBack(d);
+      if (COV) { var cv = makeCover(tint); box.appendChild(cv); setTimeout(function () { cv.classList.add('off'); }, COV * 1000 + 150); setTimeout(function () { if (cv.parentNode) cv.parentNode.removeChild(cv); }, COV * 1000 + 600); }
       var c0 = ctx ? ctx.currentTime : 0, p0 = performance.now(); // one reading of both clocks, back to back
-      if (music) { r.music = music; music.start(c0 + LEAD, ctx.destination); }
+      if (music) { r.music = music; music.start(c0 + COV + LEAD, ctx.destination); }
       // The SCROLL runs on the screen's own frame clock (rAF timestamps), not the audio clock: audio clocks tick in coarse chunks
       // (9–20 ms steps on a 16.7 ms frame), which showed up as stutter. The audio clock is used once, to line the start up.
       var lat = ctx ? Math.min(250, ((ctx.outputLatency || ctx.baseLatency || 0) * 1000)) : 0;
-      tStart = p0 + LEAD * 1000 + lat;
+      tStart = p0 + (COV + LEAD) * 1000 + lat;
       var dpr = w.devicePixelRatio || 1, lastY = -1, lastH = d.documentElement.scrollHeight, chk = 0;
       (function loop(ts) {
         if (r.dead) return;
@@ -635,6 +662,7 @@
     }
     group('Length of the recording', 'len', [[20, '20 s'], [30, '30 s'], [45, '45 s'], [60, '60 s']]);
     group('Music', 'music', [['auto', 'Auto (matches template)']].concat(Object.keys(STYLES).map(function (k) { return [k, STYLES[k].name]; }), [['off', 'Off']]));
+    group('Cover card (first 1.3 s)', 'cover', [['true', 'On — use it as the Reel cover'], ['false', 'Off']]);
     group('Frame', 'frame', [['auto', 'Reel 9:16 (recommended)'], ['full', 'Full screen']]);
     group('“← All templates” link', 'hideBack', [['true', 'Hide while recording'], ['false', 'Show']]);
     var pv = el('button', 'c', '🎧 Preview music (8 s)'); pv.type = 'button'; pv.style.marginTop = '14px';
