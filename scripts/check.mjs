@@ -119,6 +119,10 @@ const advPath = join(root, 'design', 'advancements.md');
 const adv = existsSync(advPath) ? readFileSync(advPath, 'utf8') : '';
 if (!adv) err('design/advancements.md is missing');
 for (const f of folders) if (adv && !new RegExp(`^- ${f} — `, 'm').test(adv)) err(`design/advancements.md: no line "- ${f} — technique (group): what it looks like" for ${f}`);
+for (const f of folders) {
+  const line = adv.split('\n').find((l) => l.startsWith(`- ${f} — `));
+  if (line && !/\| hero: .+ \| modules: .+ \| header: .+/.test(line)) err(`design/advancements.md: line for ${f} needs "| hero: X | modules: Y | header: Z"`);
+}
 
 // Instagram social kit: social/YYYY-MM-DD.md for every template folder
 for (const f of folders) {

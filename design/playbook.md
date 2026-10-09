@@ -47,3 +47,27 @@ soft cyan window light, and a glowing app-icon tile. Take the *feel*, never the 
 - Glow tile: a dark rounded icon tile whose bottom edge fades into a saturated purple glow (static gradient).
 - Floor/surface reflection: a mirrored, faded copy of the main light at the bottom of a section.
 - Cozy detail layer: small scattered objects (paper scraps, mug, plant) drawn in SVG to make the scene feel lived in.
+
+## Composition menus (structure, not skin)
+Palette and fonts are skin. Visitors notice STRUCTURE, so each template must also differ from the previous
+three in hero composition, section module and header style. Name your picks in the advancements line.
+
+Hero compositions (hero:)
+- type-only: giant headline fills the frame, no illustration
+- scene-overlay: full-bleed scene with text laid over it
+- diagonal-split: two colour fields cut at an angle, text on one, art on the other
+- ui-mock: phone/dashboard mock-up built from CSS shapes
+- data-hero: a chart or counter wall is the hero
+- strip: a horizontal band of items sliding past (transform only)
+- collage: overlapping rotated layers
+- poster: framed cover with border, date and tiny print
+- stack-reveal: layers peeling away as the hero loads
+
+Section modules (modules:)
+- big-number stats, horizontal swipe row, timeline, before/after pair, pricing table, quote wall,
+  marquee band, sticky-title list, accordion-look list, checklist, step ladder, map/diagram, gallery grid
+
+Header styles (header:)
+- slim bar, floating pill, bottom bar, wordmark-centred, hidden-until-scroll, side tab
+  (the required "All templates" link stays visible and reachable in every style)
+

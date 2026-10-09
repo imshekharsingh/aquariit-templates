@@ -41,6 +41,8 @@ After every update, copy design-log.json to templates/design-log.json
 Each new design must differ from ALL previous entries on at least 5 of 7
 dimensions: layout archetype, palette, font pairing, motif, animation style,
 theme/mood, page purpose. Never reuse an exact palette or font pairing.
+Structure counts too: versus each of the previous THREE templates, also change the hero composition, the main section
+module and the header style (menus in design/playbook.md; record them in design/advancements.md).
 
 ## Creative direction menus (rotate across these)
 - Layout: editorial magazine, bento grid, asymmetric split, horizontal scroll,
@@ -91,8 +93,8 @@ Design every template for a **402×715 viewport**, not a desktop page:
 - **Alignment with the scroll flow.** The player pauses at *content blocks*, not at arbitrary pixels: it stops where a block
   starts just under the header and keeps the frame's bottom edge in a gap between blocks. Build for that:
   · Structure: `<main>` → `<section>` → (optional single wrapper) → blocks (heading group, card, list item, quote, CTA row).
-  · Keep blocks ≤ ≈600px tall and leave a visible gap (≥14px) between neighbours; never one giant block. Prefer stacked cards
-    over tall side-by-side columns on mobile. Two or three whole blocks should fit one frame (≈650px under the header).
+  · Keep blocks ≤ ≈600px tall and leave a visible gap (≥14px) between neighbours; never one giant block. Stacked cards are fine but not the default:
+    vary the section module (see design/playbook.md); avoid tall side-by-side columns on mobile. Two or three whole blocks should fit one frame (≈650px under the header).
   · A heading and the content it introduces should sit within one frame (≈650px) of each other.
   · Entrance animations on load/scroll only; each section should be "finished" when it is paused on.
   · To control a pause explicitly add `data-reel-stop` to the elements that should start a frame (then only those are used).
