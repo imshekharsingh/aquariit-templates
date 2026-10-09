@@ -24,6 +24,8 @@ elegant, highly creative, production-quality, and distinct from all others.
 ## Git workflow
 - One branch per template: template/ID, created from latest main (never reuse a branch whose PR was merged)
 - Never commit or push directly to main
+- Branch cleanup is automatic: the pipeline deletes a branch right after its PR merges, and a cleanup job sweeps any
+  merged leftovers. Always confirm after a merge that no merged branch remains (never delete branches by hand).
 - Never run wrangler deploy manually; deployment is owned by
   .github/workflows/pipeline.yml (checks → PR → merge → deploy → smoke test)
 - Commit format: template: ID <slug> — <one-line concept>

@@ -155,3 +155,27 @@ jobs:
           gh issue create --repo "${{ github.repository }}" \
             --title "Pipeline failed: ${{ github.ref_name }}" \
             --body "The Template pipeline failed on \`${{ github.ref_name }}\`. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+  cleanup:
+    needs: [deploy]
+    if: always() && needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Delete branches whose pull request is merged and that have no newer commits
+        run: |
+          repo="${{ github.repository }}"
+          for b in $(gh api "repos/$repo/branches" --paginate -q '.[].name'); do
+            [ "$b" = "main" ] && continue
+            [ -n "$(gh pr list --repo "$repo" --head "$b" --state open --json number -q '.[0].number')" ] && continue
+            merged_sha=$(gh pr list --repo "$repo" --head "$b" --state merged --json headRefOid -q '.[0].headRefOid')
+            [ -z "$merged_sha" ] && continue
+            tip=$(gh api "repos/$repo/git/ref/heads/$b" -q .object.sha)
+            if [ "$tip" = "$merged_sha" ]; then
+              echo "Deleting merged branch $b"
+              gh api -X DELETE "repos/$repo/git/refs/heads/$b" || true
+            else
+              echo "Keeping $b: it has commits newer than its merged PR"
+            fi
+          done
