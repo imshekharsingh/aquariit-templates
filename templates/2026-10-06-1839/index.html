@@ -51,6 +51,7 @@
 
   /* signature: orbital system */
   .system{position:relative;width:min(80vw,600px);aspect-ratio:1;margin:44px auto 20px}
+  @media(max-width:560px){.hero{padding-top:32px;padding-bottom:28px}.system{width:min(72vw,280px);margin:30px auto 64px}} /* reel frame: the whole orbit fits the first screen */
   .core{position:absolute;inset:36%;border-radius:50%;display:grid;place-items:center;text-align:center;
     background:radial-gradient(circle at 35% 30%,#fff6 0,var(--pink) 28%,#5b0f7a 62%,#14072b 100%);
     box-shadow:0 0 60px 8px rgba(255,47,185,.55),0 0 140px 30px rgba(25,240,255,.18);animation:pulse 4s ease-in-out infinite}
@@ -121,6 +122,13 @@
     html{scroll-behavior:auto}
     *,*::before,*::after{animation:none!important;transition:none!important}
     .reveal{opacity:1;transform:none}
+  }
+  @media(max-width:799px){ /* reel frame: compact plan cards so the heading and all three fit one frame */
+    section{padding:56px 0}#proof{padding:32px 0}.plans{margin-top:18px;gap:10px}
+    .plan{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 18px;align-items:center}
+    .plan h3{grid-column:1}.plan .p{grid-column:1;font-size:1.8rem}
+    .plan ul{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:2px 14px;font-size:.88rem}.plan li{border:0;padding:0}
+    .plan .btn{grid-column:2;grid-row:1/3;padding:10px 16px;min-height:44px;font-size:.9rem}
   }
 </style>
 </head>
