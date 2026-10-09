@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Understory — Plant a Forest</title>
+<meta name="description" content="Understory is a fictional reforestation nonprofit, shown as a botanical landing page with layered hills, growing trees and circular clip-path reveals.">
+<meta name="theme-color" content="#0b6e3b">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&amp;family=Outfit:wght@300;400;600&amp;display=swap" rel="stylesheet">
+<style>
+  :root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+  html.reel{--safe-top:0px;--safe-bottom:0px}
+  .reel .bar .wrap{justify-content:center}
+  .reel .back{display:none}
+  :root{
+    --bg:#0b6e3b; --deep:#06321d; --mid:#0f8a4a; --leaf:#2fb463; --lime:#d6f45a; --pink:#ff4f87; --cream:#f7f2df; --ink:#0a2616;
+    --disp:"Young Serif",Georgia,serif; --sans:"Outfit",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--cream);font:300 16px/1.55 var(--sans);overflow-x:hidden}
+  :focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+  a{color:inherit}
+  .wrap{max-width:520px;margin:0 auto;padding:0 24px}
+  .eyebrow{font:600 .7rem/1.3 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--lime)}
+  h1,h2,h3{font-family:var(--disp);font-weight:400;line-height:1.05}
+  h2{font-size:clamp(2rem,9.6vw,2.6rem)}
+
+  .bar{position:sticky;top:0;z-index:30;background:var(--bg);padding-top:var(--safe-top);border-bottom:1px solid rgba(214,244,90,.28)}
+  .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:52px}
+  .brand{display:flex;align-items:center;gap:8px;font:400 1.25rem var(--disp);text-decoration:none;color:var(--cream)}
+  .brand svg{width:22px;height:22px}
+  .back{font:600 .68rem var(--sans);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--deep);background:var(--lime);padding:7px 11px;border-radius:99px;white-space:nowrap}
+
+  .hero{padding:16px 0 70px}
+  .hero h1{font-size:clamp(2.45rem,12vw,3.3rem);margin:10px 0 0;color:var(--cream)}
+  .hero h1 span{display:block;overflow:hidden}
+  .hero h1 span b{display:block;font-weight:400;transform:translateY(105%);animation:up .9s cubic-bezier(.2,.8,.2,1) forwards}
+  .hero h1 span:nth-child(2) b{animation-delay:.12s;color:var(--lime)}
+  .hero h1 span:nth-child(3) b{animation-delay:.24s}
+  @keyframes up{to{transform:none}}
+  .scene{position:relative;margin:18px -24px 0;aspect-ratio:400/270}
+  .scene svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+  .sun{clip-path:circle(0% at 50% 50%);animation:disc 1.4s cubic-bezier(.3,.7,.2,1) .5s forwards}
+  @keyframes disc{to{clip-path:circle(75% at 50% 50%)}}
+  .plane{will-change:transform}
+  .tree{transform-box:fill-box;transform-origin:50% 100%;transform:scaleY(0);animation:grow 1.1s cubic-bezier(.2,1.2,.3,1) forwards;animation-delay:calc(.7s + var(--i)*.12s)}
+  @keyframes grow{to{transform:scaleY(1)}}
+  .sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 5s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.7s)}
+  @keyframes sway{from{transform:rotate(-1.6deg)}to{transform:rotate(1.6deg)}}
+  .bird{animation:fly 14s linear infinite}
+  @keyframes fly{from{transform:translateX(-40px)}to{transform:translateX(440px)}}
+  .lede{max-width:30ch;margin-top:20px;font-size:1.05rem;opacity:0;animation:in .8s ease 1.5s forwards}
+  .hero .eyebrow{opacity:0;animation:in .7s ease .2s forwards}
+  @keyframes in{to{opacity:1}}
+
+  .cream{background:var(--cream);color:var(--ink)}
+  .cream .eyebrow{color:#b3114a}
+  section{padding:48px 0}
+  .head{margin-bottom:22px}
+  .head h2{margin:8px 0 10px}
+  .head p{max-width:32ch;opacity:.8}
+
+  .stats{display:grid;gap:14px}
+  .stat{position:relative;overflow:hidden;background:var(--deep);color:var(--cream);border-radius:26px;padding:22px 22px 20px}
+  .stat:nth-child(2){background:var(--pink);color:#fff}
+  .stat:nth-child(3){background:var(--lime);color:var(--deep)}
+  .stat .n{font:400 clamp(2.8rem,15vw,3.9rem)/1 var(--disp)}
+  .stat .n small{font-size:.5em}
+  .stat p{margin-top:6px;font-weight:400;max-width:24ch}
+  .stat svg{position:absolute;right:-14px;bottom:-18px;width:110px;height:110px;opacity:.22}
+
+  .steps{display:grid;gap:14px;list-style:none;padding:0}
+  .step{background:#fff;border:2px solid var(--ink);border-radius:28px 28px 28px 6px;padding:20px 20px 18px;display:grid;grid-template-columns:62px 1fr;gap:16px;align-items:center}
+  .step .ic{width:62px;height:62px;border-radius:50%;background:var(--bg);display:grid;place-items:center}
+  .step .ic svg{width:34px;height:34px}
+  .step:nth-child(2) .ic{background:var(--pink)}
+  .step:nth-child(3) .ic{background:var(--deep)}
+  .step h3{font-size:1.3rem;margin-bottom:3px}
+  .step p{font-size:.93rem;line-height:1.42;opacity:.82}
+  .clip{clip-path:circle(0% at 14% 50%);transition:clip-path .7s cubic-bezier(.3,.7,.2,1)}
+  .clip.in{clip-path:circle(150% at 14% 50%)}
+
+  .map{background:var(--deep);border-radius:30px;padding:22px;position:relative;overflow:hidden}
+  .map svg{display:block;width:100%;height:auto}
+  .map .cl{fill:none;stroke:var(--leaf);stroke-width:1.3;opacity:.7}
+  .map .cl:nth-child(3n){stroke:var(--lime)}
+  .map .cl:nth-child(5n){stroke:var(--pink)}
+  .map .pin{fill:var(--pink);stroke:var(--cream);stroke-width:2}
+  .map .ring{fill:none;stroke:var(--pink);stroke-width:2;transform-box:fill-box;transform-origin:center;animation:ping 2.6s ease-out infinite;animation-delay:calc(var(--i)*.5s)}
+  @keyframes ping{from{transform:scale(.4);opacity:.9}to{transform:scale(2.4);opacity:0}}
+  .map figcaption{margin-top:12px;font:600 .72rem var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--lime)}
+
+  .quote{padding:44px 0}
+  blockquote{font:400 1.55rem/1.22 var(--disp);color:var(--cream)}
+  blockquote em{font-style:normal;color:var(--lime)}
+  blockquote cite{display:block;margin-top:14px;font:600 .7rem var(--sans);font-style:normal;letter-spacing:.2em;text-transform:uppercase;color:var(--cream);opacity:.8}
+
+  .finale{padding:36px 0 80px;text-align:center}
+  .panel{background:var(--pink);color:#fff;border-radius:34px;padding:26px 22px 28px;position:relative;overflow:hidden}
+  .panel .sapling{display:block;width:150px;height:150px;margin:0 auto 6px}
+  .panel .sapling .g{transform-box:fill-box;transform-origin:50% 100%;transform:scale(.12);transition:transform 2s cubic-bezier(.2,.9,.25,1.1) .3s}
+  .panel.in .sapling .g{transform:scale(1)}
+  .panel h2{font-size:clamp(2.2rem,11vw,3rem);margin-bottom:8px}
+  .panel p{max-width:26ch;margin:0 auto 18px}
+  .btn{display:inline-block;background:var(--lime);color:var(--deep);text-decoration:none;font:600 .9rem var(--sans);letter-spacing:.06em;padding:15px 28px;border-radius:99px}
+  .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .rv.in{opacity:1;transform:none}
+
+  footer{background:var(--deep);padding:22px 0 calc(26px + var(--safe-bottom));text-align:center;font-size:.8rem;color:#b5d8c2}
+  footer small{display:block;margin-top:6px;font-size:.78rem;opacity:.85}
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .hero h1 span b,.tree,.lede,.hero .eyebrow,.rv{opacity:1!important;transform:none!important}
+    .sun{clip-path:none}.clip{clip-path:none}
+    .panel .sapling .g{transform:none}
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22V12M12 12C12 6 8 3 3 3c0 6 3 9 9 9zM12 14c0-5 3-8 9-8 0 6-3 8-9 8z" fill="#d6f45a"/></svg>Understory</a>
+    <a class="back" href="/">← All templates</a>
+  </div>
+</header>
+<main id="top">
+  <section class="hero" data-reel-stop>
+    <div class="wrap">
+      <p class="eyebrow">Native forests · planted by hand</p>
+      <h1><span><b>Plant a</b></span><span><b>whole forest,</b></span><span><b>one seed.</b></span></h1>
+      <div class="scene" role="img" aria-label="Layered green hills with small trees growing and a pink sun rising">
+        <svg viewBox="0 0 400 270">
+          <defs>
+            <g id="t1"><rect x="-3" y="-18" width="6" height="20" fill="#06321d"/><path d="M0-82 28-26H-28z" fill="#d6f45a"/><path d="M0-60 34-10H-34z" fill="#2fb463"/></g>
+            <g id="t2"><rect x="-3" y="-16" width="6" height="18" fill="#06321d"/><ellipse cx="0" cy="-42" rx="26" ry="30" fill="#ff4f87"/><ellipse cx="-6" cy="-48" rx="10" ry="14" fill="#ff86ad"/></g>
+          </defs>
+          <g class="plane" data-p=".05">
+            <g class="sun"><circle cx="292" cy="78" r="44" fill="#ff4f87"/></g>
+            <g class="bird"><path d="M0 40q6-9 12 0q6-9 12 0" fill="none" stroke="#f7f2df" stroke-width="2" stroke-linecap="round"/></g>
+          </g>
+          <g class="plane" data-p=".12"><path d="M0 170Q70 110 150 150T300 130T400 160V270H0z" fill="#0f8a4a"/></g>
+          <g class="plane" data-p=".22">
+            <path d="M0 205Q90 150 190 188T400 180V270H0z" fill="#2fb463"/>
+            <g transform="translate(70 176)"><g class="tree" style="--i:0"><g class="sway" style="--i:0"><use href="#t1"/></g></g></g>
+            <g transform="translate(300 170) scale(.9)"><g class="tree" style="--i:1"><g class="sway" style="--i:1"><use href="#t2"/></g></g></g>
+          </g>
+          <g class="plane" data-p=".34">
+            <path d="M0 240Q110 200 210 228T400 218V270H0z" fill="#06321d"/>
+            <g transform="translate(40 244) scale(1.2)"><g class="tree" style="--i:2"><g class="sway" style="--i:2"><use href="#t2"/></g></g></g>
+            <g transform="translate(160 234) scale(1.35)"><g class="tree" style="--i:3"><g class="sway" style="--i:3"><use href="#t1"/></g></g></g>
+            <g transform="translate(262 238) scale(1.1)"><g class="tree" style="--i:4"><g class="sway" style="--i:4"><use href="#t1"/></g></g></g>
+            <g transform="translate(350 236) scale(1.25)"><g class="tree" style="--i:5"><g class="sway" style="--i:5"><use href="#t2"/></g></g></g>
+          </g>
+        </svg>
+      </div>
+      <p class="lede">Understory plants native woodland on land that forgot it, and shows you every tree.</p>
+    </div>
+  </section>
+
+  <section class="cream" id="numbers">
+    <div class="wrap">
+      <div class="head rv"><p class="eyebrow">This season</p><h2>Small seeds, big numbers.</h2></div>
+      <div class="stats">
+        <div class="stat rv"><div class="n"><span data-count="1240000">1,240,000</span></div><p>native trees in the ground</p>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22V12M12 12C12 6 8 3 3 3c0 6 3 9 9 9zM12 14c0-5 3-8 9-8 0 6-3 8-9 8z" fill="currentColor"/></svg></div>
+        <div class="stat rv"><div class="n"><span data-count="86">86</span><small> sites</small></div><p>hillsides now breathing again</p>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg></div>
+        <div class="stat rv"><div class="n"><span data-count="94">94</span><small>%</small></div><p>of saplings alive after year three</p>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21C3 9 9 3 21 3c0 12-6 18-18 18z" fill="currentColor"/></svg></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cream" style="padding-top:8px">
+    <div class="wrap">
+      <div class="head rv"><p class="eyebrow">How it grows</p><h2>Three steps from bare soil.</h2></div>
+      <ol class="steps rv-steps">
+        <li class="step clip"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="13" rx="5" ry="8" fill="#d6f45a" transform="rotate(25 12 13)"/></svg></span><div><h3>Collect</h3><p>Seeds are gathered from healthy local trees, never shipped in.</p></div></li>
+        <li class="step clip"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11M12 11C12 6 9 4 5 4c0 5 2 7 7 7zM12 13c0-4 3-6 7-6 0 5-2 6-7 6z" fill="#fff"/></svg></span><div><h3>Plant</h3><p>Neighbours and crews set each sapling by hand, mixed for resilience.</p></div></li>
+        <li class="step clip"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 9v3h2l-3 5h18l-3-5h2V9z" fill="#ff4f87"/><rect x="11" y="17" width="2" height="4" fill="#ff4f87"/></svg></span><div><h3>Watch</h3><p>Every tree gets a tag and a photo, for three years of check-ins.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="cream" style="padding-top:8px;padding-bottom:56px">
+    <div class="wrap">
+      <figure class="map rv">
+        <svg id="topo" viewBox="0 0 320 210" role="img" aria-label="Contour map of a planting site with three pulsing pins"></svg>
+        <figcaption>Site 41 · the Alder Valley</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="quote">
+    <div class="wrap rv">
+      <blockquote>“We came for the shade. We stayed for the <em>owls</em>.”<cite>— a volunteer, Alder Valley</cite></blockquote>
+    </div>
+  </section>
+
+  <section class="finale">
+    <div class="wrap">
+      <div class="panel" id="panel">
+        <svg class="sapling" viewBox="0 0 150 150" aria-hidden="true"><g class="g"><path d="M75 145V80" stroke="#06321d" stroke-width="6" stroke-linecap="round"/><path d="M75 90C75 55 52 38 20 38c0 36 18 52 55 52z" fill="#d6f45a"/><path d="M75 100c0-30 20-46 55-46 0 32-18 46-55 46z" fill="#2fb463"/></g></svg>
+        <h2>Be the first tree.</h2>
+        <p>Fund a sapling today and follow it for three years.</p>
+        <a class="btn" href="#top">Plant mine</a>
+      </div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">Understory · a fictional forest nonprofit<small>Developed by Aquarii Technologies</small></div></footer>
+<script>
+(function(){
+  /* contour lines generated in code */
+  var svg=document.getElementById('topo'),NS='http://www.w3.org/2000/svg',h='';
+  for(var k=1;k<=11;k++){
+    var r=k*13,pts=[],n=36;
+    for(var i=0;i<n;i++){var a=i/n*6.2832,w=1+.22*Math.sin(a*3+1)+.12*Math.cos(a*5);pts.push([(160+Math.cos(a)*r*1.7*w).toFixed(1),(105+Math.sin(a)*r*w).toFixed(1)])}
+    h+='<path class="cl" d="M'+pts.map(function(p){return p.join(' ')}).join('L')+'Z"/>';
+  }
+  [[110,92],[190,128],[222,76]].forEach(function(p,i){h+='<circle class="ring" style="--i:'+i+'" cx="'+p[0]+'" cy="'+p[1]+'" r="8"/><circle class="pin" cx="'+p[0]+'" cy="'+p[1]+'" r="5"/>'});
+  svg.innerHTML=h;
+
+  var els=document.querySelectorAll('.rv,.rv-steps,#panel');
+  var counts=document.querySelectorAll('[data-count]');
+  function count(el){
+    var to=+el.getAttribute('data-count'),t0=null,fmt=function(v){return Math.round(v).toLocaleString('en-US')};
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+    el.textContent='0';
+    function step(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/1500);p=1-Math.pow(1-p,3);el.textContent=fmt(to*p);if(p<1)requestAnimationFrame(step)}
+    requestAnimationFrame(step);
+  }
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});document.querySelectorAll('.clip').forEach(function(e){e.classList.add('in')});return}
+  var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');x.target.querySelectorAll('.clip').forEach(function(c,i){setTimeout(function(){c.classList.add('in')},i*180)});var c=x.target.querySelector('[data-count]');if(c)count(c);io.unobserve(x.target)}})},{threshold:.1});
+  els.forEach(function(e){io.observe(e)});
+
+  /* layered parallax: transforms only, one rAF per scroll burst */
+  var planes=document.querySelectorAll('.plane'),tick=false;
+  function par(){tick=false;var y=Math.min(window.scrollY,500);planes.forEach(function(p){p.style.transform='translateY('+(y*(+p.dataset.p))+'px)'})}
+  addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(par)}},{passive:true});
+})();
+</script>
+</body>
+</html>
