@@ -130,5 +130,26 @@
     "animation": "circular clip-path reveals, trees growing from the soil and depth parallax on scroll",
     "purpose": "nonprofit",
     "description": "A botanical nonprofit page for a fictional reforestation charity, where trees grow from layered hills and cards open with circular reveals."
+  },
+  {
+    "id": "2026-10-10-0850",
+    "date": "2026-10-10",
+    "time": "08:50",
+    "slug": "loudhaus",
+    "url": "https://templates.aquariit.com/2026-10-10-0850/",
+    "name": "Loudhaus",
+    "theme": "monochrome high-contrast",
+    "layout": "brutalist grid",
+    "palette": [
+      "#ff4b0f",
+      "#0c0c0c",
+      "#f2f2ee",
+      "#7a4dff"
+    ],
+    "fonts": "Bricolage Grotesque + Spline Sans Mono",
+    "motif": "giant outlined and solid letters with hard rules and a sliding ticker",
+    "animation": "per-letter settle with staggered drop, width-contrast headline and sliding marquee",
+    "purpose": "agency",
+    "description": "A brutalist agency page for a fictional branding studio, where giant letters drop into place on a signal-orange hero."
   }
 ]
