@@ -112,6 +112,8 @@
   .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
   .rv.in{opacity:1;transform:none}
 
+  @media (max-width:480px){.wrap{padding:0 30px}.scene{margin-left:-30px;margin-right:-30px}.step{padding:20px 18px 18px;gap:14px}}
+  .off .sway,.off .bird,.off .ring{animation-play-state:paused}
   footer{background:var(--deep);padding:22px 0 calc(26px + var(--safe-bottom));text-align:center;font-size:.8rem;color:#b5d8c2}
   footer small{display:block;margin-top:6px;font-size:.78rem;opacity:.85}
   @media (prefers-reduced-motion:reduce){
@@ -134,7 +136,7 @@
     <div class="wrap">
       <p class="eyebrow">Native forests · planted by hand</p>
       <h1><span><b>Plant a</b></span><span><b>whole forest,</b></span><span><b>one seed.</b></span></h1>
-      <div class="scene" role="img" aria-label="Layered green hills with small trees growing and a pink sun rising">
+      <div class="scene" data-reel-bleed role="img" aria-label="Layered green hills with small trees growing and a pink sun rising">
         <svg viewBox="0 0 400 270">
           <defs>
             <g id="t1"><rect x="-3" y="-18" width="6" height="20" fill="#06321d"/><path d="M0-82 28-26H-28z" fill="#d6f45a"/><path d="M0-60 34-10H-34z" fill="#2fb463"/></g>
@@ -240,6 +242,8 @@
   var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');x.target.querySelectorAll('.clip').forEach(function(c,i){setTimeout(function(){c.classList.add('in')},i*180)});var c=x.target.querySelector('[data-count]');if(c)count(c);io.unobserve(x.target)}})},{threshold:.1});
   els.forEach(function(e){io.observe(e)});
 
+  /* pause looping motion while off-screen */
+  if('IntersectionObserver' in window){[document.querySelector('.scene'),document.querySelector('.map')].forEach(function(e){if(!e)return;new IntersectionObserver(function(es){e.classList.toggle('off',!es[0].isIntersecting)}).observe(e)})}
   /* layered parallax: transforms only, one rAF per scroll burst */
   var planes=document.querySelectorAll('.plane'),tick=false;
   function par(){tick=false;var y=Math.min(window.scrollY,500);planes.forEach(function(p){p.style.transform='translateY('+(y*(+p.dataset.p))+'px)'})}

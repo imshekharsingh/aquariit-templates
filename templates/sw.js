@@ -1,7 +1,7 @@
 // Aquarii Templates service worker.
 // Network-first: HTML + /design-log.json (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v7';
+const VERSION = 'v8';
 const CACHE = `aquarii-${VERSION}`;
 const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/design-log.json', '/social-kits.json', '/kit/', '/play/player.js', '/uploaded.js', '/icons/icon.svg'];
 

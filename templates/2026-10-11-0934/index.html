@@ -16,7 +16,7 @@
   :root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
   html.reel{--safe-top:0px;--safe-bottom:0px}
   .reel .back{display:none}
-  .reel .rail{padding-top:16px}
+  .reel .rail{padding-top:104px}
 
   /* typed integers: the counting numbers run on these, no JS */
   @property --n{syntax:'<integer>';inherits:false;initial-value:0}
@@ -187,7 +187,7 @@
   @keyframes fb2{0%,34%{opacity:1}46%,84%{opacity:0}96%,100%{opacity:1}}
   @keyframes pr{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 
-.fixes{list-style:none;padding:0;margin-top:12px;display:grid;gap:6px}
+.fixes{list-style:none;margin-top:var(--gap);padding:10px;display:grid;gap:6px;border-radius:22px;background:var(--card);color:var(--cardink);box-shadow:0 20px 44px -22px rgba(0,0,0,.7)}
   .fixes li{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.8rem;padding:9px 12px;border-radius:12px;background:rgba(6,38,45,.07)}
   .fixes b{font:600 .74rem/1 var(--mono);background:var(--lime);box-shadow:inset 0 0 0 1px rgba(6,38,45,.28);padding:5px 8px;border-radius:999px}
 
@@ -245,10 +245,58 @@
 
   @media (max-width:480px){
     body{padding-left:46px}
+    /* Instagram safe zones: nothing short sits in the right button column (x > 338) or under the top bar */
+    .hero{min-height:595px;justify-content:flex-start;padding:22px 0 0}
+    .hcta{margin-top:12px}
+    .chart{padding-right:40px}
+    .chart .top{display:grid;grid-template-columns:auto 1fr;align-items:end;gap:2px 10px}
+    .chart .top>div{display:contents}
+    .chart .lab{grid-column:1/-1}
+    .chip{justify-self:start}
+    .hint{justify-content:flex-start;gap:20px}
+    section.f{min-height:0}
+    .bento{grid-template-columns:.9fr 1.1fr}
+    .t-b,.t-c{padding:14px 16px}
+    .t-b .num,.t-c .num{margin:6px 0 4px}
+    .t-b p,.t-c p{font-size:.72rem;line-height:1.25}
+    .t-c{padding-right:36px}
+    .t-a{padding:16px 16px 14px}
+    .t-a svg{height:35px}
+    .t-d{grid-template-columns:80px 1fr;padding:12px 16px;gap:14px}
+    .t-d svg{width:80px;height:80px}
+    .t-d .num{font-size:2.1rem}
+    .t-d p{margin-top:3px}
+    .fun{padding-right:36px}
+    .fixes li{flex-direction:row-reverse;justify-content:flex-end}
+    .step{grid-template-columns:62px 1fr;grid-template-areas:"ico txt" "when txt" "out out";gap:8px 14px;align-items:start}
+    .step svg{grid-area:ico}
+    .step>div{grid-area:txt}
+    .step .when{grid-area:when;justify-self:start}
+    .step .out{grid-area:out}
+    .fun{padding-top:14px;padding-bottom:12px}
+    .prog{margin:8px 0 2px}
+    .st{padding-top:4px}
+    .st li{margin-top:6px}
+    .trk{height:14px;margin-top:4px}
+    .gain{margin-top:8px;padding-top:8px}
+    .fixes{padding:8px}
+    .fixes li{padding:7px 12px}
+    .pk{grid-column:span 2;padding:14px 16px}
+    .pk .price{display:inline-block;margin:6px 8px 0 0}
+    .pk ul{margin-top:8px;gap:5px}
+    .pk.hot{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center;padding:16px}
+    .pk.hot>*{grid-column:1/-1}
+    .pk.hot h3{grid-column:1;grid-row:1}
+    .pk.hot .ribbon{position:static;grid-column:2;grid-row:1;justify-self:start}
+    .pk.hot .price{justify-self:start;margin:8px 0 0}
+    .pk.hot .per{display:block;margin-top:2px}
+    .pk.hot ul{grid-template-columns:1fr}
+    section.pay{padding-bottom:80px}
     .wrap{padding:0 30px 0 12px}
     .rail{width:46px;padding-left:18px}
     .scarce{font-size:.58rem;letter-spacing:.04em}
-    section.q{padding-top:34px}
+    section.q{padding-top:60px}
+    main>section:nth-of-type(3),main>section:nth-of-type(4){padding-top:44px}
     .cta{font-size:.92rem;padding:0 16px;gap:8px}
     .quote blockquote{font-size:.97rem}
     .big{font-size:min(16vw,4.4rem)}
@@ -382,12 +430,12 @@
           <span class="lab">Revenue<br>per month</span>
           <span class="rev" role="img" aria-label="From 11.8 thousand to 43.7 thousand dollars"><b class="rb">$11.8k</b><b class="ra">$43.7k</b></span>
         </div>
-        <ul class="fixes">
-          <li><span>Coupon field bug fixed</span><b>+18%</b></li>
-          <li><span>One-page checkout</span><b>+31%</b></li>
-          <li><span>Free-shipping progress bar</span><b>+9%</b></li>
-        </ul>
       </figure>
+      <ul class="fixes">
+        <li><span>Coupon field bug fixed</span><b>+18%</b></li>
+        <li><span>One-page checkout</span><b>+31%</b></li>
+        <li><span>Free-shipping progress bar</span><b>+9%</b></li>
+      </ul>
     </div>
   </section>
 
@@ -397,26 +445,26 @@
         <p class="tag">How it works</p>
         <h2>Three steps. <em>No mystery.</em></h2>
       </div>
-      <ol class="steps">
-        <li class="step">
+      <div class="steps">
+        <article class="step">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="dr" pathLength="1" cx="10" cy="10" r="6.5"/><path class="dr" pathLength="1" d="M15 15l6 6"/></svg>
           <div><h3>1. Audit</h3><p>We trace every step from ad click to order and rank the leaks by cash.</p></div>
           <span class="when">Week 1</span>
           <span class="out">You get: ranked leak map, in cash</span>
-        </li>
-        <li class="step">
+        </article>
+        <article class="step">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path class="dr" pathLength="1" d="M3 6h18M3 12h18M3 18h18"/><circle class="dr" pathLength="1" cx="8" cy="6" r="2.2"/><circle class="dr" pathLength="1" cx="16" cy="12" r="2.2"/><circle class="dr" pathLength="1" cx="10" cy="18" r="2.2"/></svg>
           <div><h3>2. Fix</h3><p>Tested changes ship in sprints, each one measured against a control.</p></div>
           <span class="when">Wk 2–6</span>
           <span class="out">You get: 6 shipped, measured fixes</span>
-        </li>
-        <li class="step">
+        </article>
+        <article class="step">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path class="dr" pathLength="1" d="M3 18l6-6 4 4 8-9"/><path class="dr" pathLength="1" d="M15 7h6v6"/></svg>
           <div><h3>3. Compound</h3><p>Winning tests become the new baseline, and the next leak is already queued.</p></div>
           <span class="when">Monthly</span>
           <span class="out">You get: live board + next-leak queue</span>
-        </li>
-      </ol>
+        </article>
+      </div>
     </div>
   </section>
 

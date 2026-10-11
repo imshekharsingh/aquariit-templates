@@ -51,9 +51,9 @@
 
   /* hero: enso + bowl + steam */
   .hero{position:relative;padding:22px 0 56px;text-align:center;overflow:hidden}
-  .mist{position:absolute;border-radius:50%;filter:blur(46px);opacity:.55;pointer-events:none;animation:drift 18s ease-in-out infinite alternate}
-  .mist.a{width:300px;height:300px;left:-90px;top:30px;background:var(--matcha-soft)}
-  .mist.b{width:260px;height:260px;right:-100px;top:260px;background:var(--kaki-soft);animation-duration:22s;animation-delay:-6s}
+  .mist{position:absolute;border-radius:50%;opacity:.7;pointer-events:none}
+  .mist.a{width:300px;height:300px;left:-90px;top:30px;background:radial-gradient(closest-side,var(--matcha-soft),transparent)}
+  .mist.b{width:260px;height:260px;right:-100px;top:260px;background:radial-gradient(closest-side,var(--kaki-soft),transparent)}
   @keyframes drift{to{transform:translate(34px,-22px) scale(1.12)}}
   .scene{position:relative;width:min(290px,76vw);aspect-ratio:1;margin:18px auto 6px}
   .scene svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
@@ -62,8 +62,9 @@
   @keyframes brush{to{stroke-dashoffset:0}}
   .bowl{opacity:0;transform:translateY(8px);animation:rise .9s ease 1.3s forwards}
   @keyframes rise{to{opacity:1;transform:none}}
-  .steam path{fill:none;stroke:var(--mute);stroke-width:3;stroke-linecap:round;opacity:0;animation:steam 4.2s ease-in-out infinite}
-  .steam path:nth-child(2){animation-delay:1.2s}.steam path:nth-child(3){animation-delay:2.4s}
+  .steam path{fill:none;stroke:var(--mute);stroke-width:3;stroke-linecap:round}
+  .steam{opacity:0;animation:steam 4.2s ease-in-out infinite;will-change:transform,opacity}
+  .steam:nth-of-type(3){animation-delay:1.2s}.steam:nth-of-type(4){animation-delay:2.4s}
   @keyframes steam{0%{opacity:0;transform:translateY(14px)}30%{opacity:.7}100%{opacity:0;transform:translateY(-34px) translateX(6px)}}
   .jp-big{position:absolute;right:2%;top:4%;font:500 2.4rem var(--serif);color:var(--kaki);writing-mode:vertical-rl;letter-spacing:.2em;opacity:0;animation:rise 1s ease 1.8s forwards}
   h1{font-size:clamp(2rem,9vw,2.9rem);margin:18px 0 12px;letter-spacing:.02em}
@@ -111,10 +112,33 @@
   .reveal{opacity:0;transform:translateY(22px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
   .reveal.on{opacity:1;transform:none}
   @media (min-width:820px){.hero{padding-top:48px}}
+  /* phones: 30px gutters (Instagram crops the sides), prices stacked under titles, nothing short on the right */
+  @media (max-width:480px){
+    .wrap{padding:0 30px}
+    footer{padding-left:30px;padding-right:30px}
+    .course{grid-template-columns:1fr;padding:20px 26px}
+    .course .p{grid-row:auto;margin-top:2px}
+    .step{padding:18px 26px}
+    .hours{padding:12px 26px}
+    .hours div{justify-content:flex-start;gap:16px}
+    section{padding:44px 0}
+    .hero{padding:36px 0 40px}
+    .scene{width:min(236px,62vw);margin:12px auto 0}
+    h1{margin:12px 0 10px}
+    .btn{margin-top:18px}
+    .story{margin-bottom:16px}
+    .facts{grid-template-columns:1fr;gap:8px}
+    .fact{display:flex;align-items:baseline;gap:14px;padding:6px 26px;text-align:left}
+    .fact b{min-width:2.2ch;font-size:1.6rem}
+    .fact span{font-size:.92rem}
+    .jp-big{right:-2%}
+    h1{font-size:clamp(2rem,9vw,2.9rem)}
+    h1 em{display:block}
+  }
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
     *,*::before,*::after{animation:none!important;transition:none!important}
-    .enso path{stroke-dashoffset:0}.bowl,.jp-big{opacity:1;transform:none}.steam path{opacity:.5}.reveal{opacity:1;transform:none}
+    .enso path{stroke-dashoffset:0}.bowl,.jp-big{opacity:1;transform:none}.steam{opacity:.5}.reveal{opacity:1;transform:none}
   }
 </style>
 </head>
@@ -129,7 +153,7 @@
 
 <main>
 <section class="hero">
-  <div class="mist a" aria-hidden="true"></div><div class="mist b" aria-hidden="true"></div>
+  <div class="mist a" aria-hidden="true" data-reel-bleed></div><div class="mist b" aria-hidden="true" data-reel-bleed></div>
   <div class="wrap">
     <p class="eyebrow">Tea room · Fourteen seats</p>
     <div class="scene" role="img" aria-label="A brush-painted circle around a bowl of matcha with rising steam">
@@ -145,8 +169,10 @@
           <path d="M104 238 L112 252 L188 252 L196 238" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
           <circle cx="178" cy="204" r="4" fill="var(--kaki)"/>
         </g></g>
-        <g class="steam" transform="translate(0,-8)"><path d="M130 142 C122 126 140 118 132 100"/><path d="M152 138 C144 120 162 112 154 92"/><path d="M174 142 C166 128 182 120 176 104"/></g>
       </svg>
+      <svg class="steam" viewBox="0 0 300 300" aria-hidden="true"><path d="M130 134 C122 118 140 110 132 92"/></svg>
+      <svg class="steam" viewBox="0 0 300 300" aria-hidden="true"><path d="M152 130 C144 112 162 104 154 84"/></svg>
+      <svg class="steam" viewBox="0 0 300 300" aria-hidden="true"><path d="M174 134 C166 120 182 112 176 96"/></svg>
       <span class="jp-big" lang="ja" aria-hidden="true">静</span>
     </div>
     <h1>A quiet cup, <em>slowly.</em></h1>
@@ -157,15 +183,15 @@
 
 <section id="room">
   <div class="wrap">
-    <div class="head reveal"><p class="eyebrow">The room</p><h2>Rain on the roof, nowhere to be.</h2></div>
-    <p class="story reveal">Shizuku means “a single drop”. Our room is built around that idea: low light, slow service and a bowl made for one pair of hands. Everything is whisked to order.</p>
-    <div class="facts reveal"><div class="fact"><b>14</b><span>seats</span></div><div class="fact"><b>11</b><span>years</span></div><div class="fact"><b>3</b><span>teas daily</span></div></div>
+    <div class="head reveal" data-reel-stop><p class="eyebrow">The room</p><h2>Rain on the roof, nowhere to be.</h2></div>
+    <div class="reveal"><p class="story">Shizuku means “a single drop”. Our room is built around that idea: low light, slow service and a bowl made for one pair of hands. Everything is whisked to order.</p>
+    <div class="facts"><div class="fact"><b>14</b><span>seats</span></div><div class="fact"><b>11</b><span>years</span></div><div class="fact"><b>3</b><span>teas daily</span></div></div></div>
   </div>
 </section>
 
 <section id="menu">
   <div class="wrap">
-    <div class="head reveal"><p class="eyebrow">Today’s table</p><h2>Four ways to slow down.</h2></div>
+    <div class="head reveal" data-reel-stop><p class="eyebrow">Today’s table</p><h2>Four ways to slow down.</h2></div>
     <div class="menu">
       <div class="course reveal"><small>Light</small><h3>Usucha</h3><span class="p">¥900</span><p>Thin tea, whisked to a soft green foam. The everyday bowl.</p></div>
       <div class="course reveal"><small>Deep</small><h3>Koicha set</h3><span class="p">¥2,400</span><p>Thick, velvet tea shared slowly, with a seasonal sweet.</p></div>
@@ -177,7 +203,7 @@
 
 <section id="ritual">
   <div class="wrap">
-    <div class="head reveal"><p class="eyebrow">The ritual</p><h2>Three small gestures.</h2></div>
+    <div class="head reveal" data-reel-stop><p class="eyebrow">The ritual</p><h2>Three small gestures.</h2></div>
     <div class="steps">
       <div class="step reveal"><svg viewBox="0 0 64 64" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M14 30c0 12 8 20 18 20s18-8 18-20z"/><path d="M22 22l22-10" stroke="var(--kaki)"/><path d="M40 14l6 3" stroke="var(--kaki)"/></svg><div><h3>Whisk</h3><p>A bamboo whisk draws the foam up in forty strokes.</p></div></div>
       <div class="step reveal"><svg viewBox="0 0 64 64" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 40c0-9 6-12 6-20M32 42c0-9 6-12 6-22M44 40c0-9 6-12 6-20" stroke="var(--matcha)"/><path d="M12 50h40"/></svg><div><h3>Steep</h3><p>Wait for the bowl to warm your hands, then turn it twice.</p></div></div>
@@ -188,7 +214,7 @@
 
 <section id="voice">
   <div class="wrap">
-    <figure class="quote reveal">
+    <figure class="quote reveal" data-reel-stop>
       <blockquote>I came for ten minutes and stayed for two hours. The room slows your shoulders down.</blockquote>
       <cite>— Aiko M., a regular</cite>
     </figure>
@@ -197,7 +223,7 @@
 
 <section id="visit">
   <div class="wrap">
-    <div class="head reveal"><p class="eyebrow">Visit</p><h2>Come as you are.</h2></div>
+    <div class="head reveal" data-reel-stop><p class="eyebrow">Visit</p><h2>Come as you are.</h2></div>
     <div class="hours reveal"><div><b>Wed – Fri</b><span>10:00 – 17:30</span></div><div><b>Sat – Sun</b><span>9:00 – 18:00</span></div><div><b>Mon – Tue</b><span>Resting</span></div></div>
     <div class="reserve reveal"><p>Fourteen seats. Weekend tables are by reservation.</p><a class="btn" href="mailto:hello@shizuku.example">Reserve a seat</a></div>
   </div>

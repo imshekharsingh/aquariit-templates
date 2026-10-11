@@ -33,7 +33,7 @@
   .mono{font-family:var(--mono)}
   .eyebrow{font:600 .74rem/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--cyan)}
 
-  .bar{position:sticky;top:0;z-index:30;padding-top:var(--safe-top);background:rgba(5,6,15,.72);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .bar{position:sticky;top:0;z-index:30;padding-top:var(--safe-top);background:var(--bg);border-bottom:1px solid var(--line)}
   .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:60px}
   .back{font:600 .78rem var(--mono);text-decoration:none;padding:9px 14px;border:1px solid var(--cyan);color:var(--cyan);border-radius:999px;white-space:nowrap}
   .back:hover{background:var(--cyan);color:var(--bg)}
@@ -56,7 +56,7 @@
     background:radial-gradient(circle at 35% 30%,#fff6 0,var(--pink) 28%,#5b0f7a 62%,#14072b 100%);
     box-shadow:0 0 60px 8px rgba(255,47,185,.55),0 0 140px 30px rgba(25,240,255,.18);animation:pulse 4s ease-in-out infinite}
   .core span{font:700 .78rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#fff}
-  @keyframes pulse{50%{transform:scale(1.05);box-shadow:0 0 80px 14px rgba(255,47,185,.65),0 0 170px 40px rgba(25,240,255,.25)}}
+  @keyframes pulse{50%{transform:scale(1.05)}}
   .ring{position:absolute;border-radius:50%;border:1px dashed var(--line);transform:rotate(var(--a));animation:spin var(--d) linear infinite}
   .system.paused .ring,.system.paused .node{animation-play-state:paused}
   .r1{inset:22%;--d:26s;--a:20deg}.r2{inset:10%;--d:40s;--a:140deg}.r3{inset:0;--d:58s;--a:250deg}
@@ -130,10 +130,31 @@
     .plan ul{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:2px 14px;font-size:.88rem}.plan li{border:0;padding:0}
     .plan .btn{grid-column:2;grid-row:1/3;padding:10px 16px;min-height:44px;font-size:.9rem}
   }
+  @media(max-width:480px){ /* Instagram safe zones: 30px gutters, nothing short on the right button column */
+    .wrap{padding-left:30px;padding-right:30px}
+    footer{padding-left:30px;padding-right:30px}
+    .stats{gap:12px;margin-top:24px}
+    .stat{padding:14px 22px;display:flex;align-items:center;gap:14px}
+    .stat b{font-size:2.4rem;flex:none;min-width:2.4ch}
+    .stat span{font-size:.9rem;line-height:1.35}
+    #signal{padding-top:48px}
+    .plan{display:flex;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:12px 22px}
+    .plan ul,.plan .btn{flex-basis:100%}
+    .plan .p{font-size:1.7rem}
+    .plans{margin-top:14px;gap:10px}
+    .plan ul{max-width:270px;flex:none}
+    .plan .btn{flex-basis:auto;margin-top:2px;min-height:40px;padding:8px 18px;font-size:.9rem}
+    .steps{gap:12px;margin-top:22px}
+    .step{display:grid;grid-template-columns:64px 1fr;column-gap:16px;align-items:center;padding:14px 20px}
+    .step::before{grid-column:2;align-self:end}
+    .step svg{grid-column:1;grid-row:1/4;width:64px;height:64px;margin:0}
+    .step h3{grid-column:2;font-size:1.2rem;margin:0}.step p{grid-column:2;font-size:.92rem;line-height:1.4}
+    #how{padding:40px 0 36px}
+  }
 </style>
 </head>
 <body>
-<canvas id="stars" aria-hidden="true"></canvas>
+<canvas id="stars" aria-hidden="true" data-reel-bleed></canvas>
 
 <header class="bar">
   <div class="wrap">
@@ -144,7 +165,7 @@
 </header>
 
 <main>
-<div class="wrap hero">
+<div class="wrap hero" data-reel-stop>
   <p class="eyebrow">Focus app · Now in open beta</p>
   <h1>Put your day <span>in orbit.</span></h1>
   <p class="lede">Pulsarium arranges deep work, rest and flow into rhythms that circle your calendar — so the important thing always comes back around.</p>
@@ -157,6 +178,7 @@
     <div class="core"><span>Pulsarium</span></div>
   </div>
 
+  <div data-reel-stop>
   <div class="panel" aria-live="polite" id="panel">
     <p class="eyebrow" id="pk">Orbit 01 · Focus</p>
     <h2 id="pt">Deep work, protected.</h2>
@@ -166,9 +188,10 @@
     <button class="btn line" type="button" id="toggle" aria-pressed="false">Pause orbits</button>
     <a class="btn go" href="#plans">Join the beta</a>
   </div>
+  </div>
 </div>
 
-<section id="signal">
+<section id="signal" data-reel-stop>
   <div class="wrap">
     <p class="eyebrow">Signal</p>
     <h2 class="t reveal">Small rhythms, big orbits.</h2>
@@ -181,7 +204,7 @@
   </div>
 </section>
 
-<section id="how">
+<section id="how" data-reel-stop>
   <div class="wrap">
     <p class="eyebrow">How it works</p>
     <h2 class="t reveal">Three rings. That's the whole app.</h2>
@@ -194,13 +217,13 @@
 </section>
 
 <section id="proof">
-  <div class="wrap quote reveal">
+  <div class="wrap quote reveal" data-reel-stop>
     <blockquote>I stopped juggling my to-do list and started following it. My Mondays finally feel like they have gravity.</blockquote>
     <cite>— Naya, product designer · beta crew</cite>
   </div>
 </section>
 
-<section id="plans">
+<section id="plans" data-reel-stop>
   <div class="wrap">
     <p class="eyebrow">Plans</p>
     <h2 class="t reveal">Pick your orbit.</h2>
@@ -212,7 +235,7 @@
   </div>
 </section>
 
-<section class="final">
+<section class="final" data-reel-stop>
   <div class="wrap">
     <h2 class="t reveal">Come back around to <span class="mono" style="color:var(--lime)">what matters.</span></h2>
     <p class="sub reveal" style="margin:0 auto 26px">Open beta is free while we map the stars.</p>
@@ -234,14 +257,16 @@
     cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
     stars = []; for (var i = 0; i < Math.round(W * H / 5500); i++) stars.push({ x: Math.random() * W, y: Math.random() * H, z: Math.random() * 1.6 + .3, p: Math.random() * 6.28, c: Math.random() });
   }
+  var last = 0;
   function draw(t) {
+    if (!reduce) requestAnimationFrame(draw);
+    if (t - last < 60) return; last = t; /* ~16fps twinkle keeps the main thread free while the reel scrolls */
     cx.clearRect(0, 0, W, H);
     for (var i = 0; i < stars.length; i++) {
       var s = stars[i], a = reduce ? .7 : .45 + .45 * Math.sin(t / 900 + s.p);
       cx.fillStyle = s.c > .85 ? 'rgba(255,47,185,' + a + ')' : s.c > .7 ? 'rgba(25,240,255,' + a + ')' : 'rgba(232,236,255,' + a + ')';
       cx.fillRect(((s.x + px * s.z * 12) % W + W) % W, ((s.y + py * s.z * 12) % H + H) % H, s.z, s.z);
     }
-    if (!reduce) requestAnimationFrame(draw);
   }
   size(); addEventListener('resize', size); requestAnimationFrame(draw);
   if (!reduce) addEventListener('pointermove', function (e) { px = e.clientX / W - .5; py = e.clientY / H - .5; }, { passive: true });

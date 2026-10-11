@@ -48,7 +48,7 @@
   .lede{max-width:30ch;font-size:1.02rem;line-height:1.4}
   .mosaic{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:22px 0 22px}
   .tile{aspect-ratio:1;position:relative;overflow:hidden;opacity:0;transform:scale(.4) rotate(-90deg);animation:pop .7s cubic-bezier(.2,.9,.25,1.2) forwards;animation-delay:calc(var(--i)*70ms + 150ms)}
-  .tile svg{display:block;width:100%;height:100%;animation:turn 9s steps(1) infinite;animation-delay:calc(var(--i)*-1.1s - 2s)}
+  .tile svg{will-change:transform;display:block;width:100%;height:100%;animation:turn 9s steps(1) infinite;animation-delay:calc(var(--i)*-1.1s - 2s)}
   @keyframes pop{to{opacity:1;transform:none}}
   @keyframes turn{0%{transform:rotate(0)}25%{transform:rotate(90deg)}50%{transform:rotate(180deg)}75%{transform:rotate(270deg)}100%{transform:rotate(360deg)}}
   .cta-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -113,6 +113,11 @@
     *,*::before,*::after{animation:none!important;transition:none!important}
     .tile,.rv,.finale .tile{opacity:1!important;transform:none!important}
     .mini b{transform:none!important}
+  }
+  @media(max-width:480px){
+    .wrap{padding:0 30px}
+    .quote-s{padding-bottom:46px}
+    footer .wrap{flex-direction:column;align-items:flex-start;gap:8px}
   }
   @media(min-width:760px){
     .wrap{max-width:980px}
@@ -180,15 +185,15 @@
     </div>
   </section>
 
-  <section>
+  <section class="quote-s">
     <div class="wrap">
-      <blockquote class="rv" data-reel-stop>“We deleted our status meeting and nobody noticed. The grid just knew.”<cite>— Ines Varga, ops lead, Hollin &amp; Pyke</cite></blockquote>
+      <blockquote class="rv">“We deleted our status meeting and nobody noticed. The grid just knew.”<cite>— Ines Varga, ops lead, Hollin &amp; Pyke</cite></blockquote>
     </div>
   </section>
 
-  <section class="finale" id="finale" data-reel-stop>
+  <section class="finale" id="finale">
     <div class="wrap">
-      <span class="mono rv">03 — Your move</span>
+      <span class="mono rv" data-reel-stop>03 — Your move</span>
       <h2 class="rv">Fill the<br>grid.</h2>
       <div class="mosaic" id="end-mosaic" role="img" aria-label="Eight tiles snapping into a finished mosaic"></div>
       <div class="cta-row rv"><a class="btn" href="#top">Start free for 14 days</a></div>

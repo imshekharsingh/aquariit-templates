@@ -67,6 +67,7 @@
   .tab .gem{width:8px;height:8px;background:var(--v);transform:rotate(45deg);border-radius:1px;box-shadow:0 0 8px var(--v)}
   .tab.x,.status{display:none}
   @media (max-width:480px){.wrap{padding:0 30px}.bar .wrap{padding:0 18px}}
+  @media (max-width:480px){.cta .row .btn{padding:0 13px;font-size:.84rem}.cta .row{gap:8px}}
   .bar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--v),var(--v2));transform-origin:0 50%;transform:scaleX(0)}
   @supports (animation-timeline:scroll()){
     .bar::after{animation:prog linear both;animation-timeline:scroll(root)}
@@ -113,6 +114,7 @@
   .wtop .fn{margin-left:8px;font-size:.66rem;color:var(--tx)}
   .wtop .fn::before{content:"TS";display:inline-block;margin-right:7px;padding:1px 3px;font-size:.55rem;font-weight:600;color:#07080c;background:var(--amber);border-radius:3px}
   .wtop .live{margin-left:auto;font-size:.6rem;color:var(--v2)}
+  @media (max-width:480px){.wtop .live{margin-left:10px}}
   .code{padding:12px 12px 10px 8px;font-size:clamp(10px,2.85vw,11.5px);line-height:1.95}
   .code .l{display:flex;gap:10px;white-space:pre}
   .code .no{width:14px;text-align:right;color:#4b5068;flex:none}
