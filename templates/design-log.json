@@ -151,5 +151,27 @@
     "animation": "per-letter settle with staggered drop, width-contrast headline and sliding marquee",
     "purpose": "agency",
     "description": "A brutalist agency page for a fictional branding studio, where giant letters drop into place on a signal-orange hero."
+  },
+  {
+    "id": "2026-10-11-0850",
+    "date": "2026-10-11",
+    "time": "08:50",
+    "slug": "quasarine",
+    "url": "https://templates.aquariit.com/2026-10-11-0850/",
+    "name": "Quasarine",
+    "theme": "retro-futurist",
+    "layout": "asymmetric split with diagonal hero and full-bleed sections",
+    "palette": [
+      "#2b2bff",
+      "#fff1d8",
+      "#ff7a1a",
+      "#3ff2c9",
+      "#0d0b3d"
+    ],
+    "fonts": "Unbounded + Familjen Grotesk",
+    "motif": "pocket radio with sweeping dial needle over concentric signal rings",
+    "animation": "rising headline lines, dropping radio, self-ticking checklist, filling progress rings with counters and a dial needle that locks on",
+    "purpose": "product launch",
+    "description": "A retro-futurist launch page for a fictional pocket radio, where progress rings fill and a dial needle swings to lock the signal."
   }
 ]
