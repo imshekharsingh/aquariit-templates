@@ -201,6 +201,16 @@
   @supports (animation-timeline:view()){
     .wipe{animation:wipe linear both;animation-timeline:view();animation-range:entry 0% entry 62%}
   }
+  /* phones: keep content clear of Instagram's side crop */
+  @media (max-width:480px){
+    .wrap{padding-left:30px;padding-right:30px}
+    .stage{margin-right:0}
+    .s1{right:-4px}
+    .s3{right:0}
+    .s2{left:-2px}
+    .quote .st.q{right:18px}
+    .plan .flag{right:2px}
+  }
   /* desktop */
   @media (min-width:900px){
     .wrap{max-width:1040px}

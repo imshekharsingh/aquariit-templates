@@ -243,6 +243,16 @@
   footer{padding:12px 0 calc(22px + var(--safe-bottom));font:400 .7rem/1.5 var(--mono);color:rgba(143,185,184,.8);text-align:center}
   footer small{display:block;margin-top:4px;font-size:.64rem;opacity:.75}
 
+  @media (max-width:480px){
+    body{padding-left:46px}
+    .wrap{padding:0 30px 0 12px}
+    .rail{width:46px;padding-left:18px}
+    .scarce{font-size:.58rem;letter-spacing:.04em}
+    section.q{padding-top:34px}
+    .cta{font-size:.92rem;padding:0 16px;gap:8px}
+    .quote blockquote{font-size:.97rem}
+    .big{font-size:min(16vw,4.4rem)}
+  }
   @media (min-width:700px){
     .wrap{max-width:600px}
     h1{font-size:60px}
@@ -268,7 +278,7 @@
   <section class="hero">
     <div class="wrap">
       <p class="tag"><i></i>Growth analytics consultancy</p>
-      <h1><span class="sr">Turn your traffic into revenue.</span><span class="l" aria-hidden="true">Turn traffic</span><span class="l" aria-hidden="true">into <em>revenue.</em></span></h1>
+      <h1><span class="sr" data-reel-bleed>Turn your traffic into revenue.</span><span class="l" aria-hidden="true">Turn traffic</span><span class="l" aria-hidden="true">into <em>revenue.</em></span></h1>
       <p class="lede">We find the leaks in your funnel and fix them. <b>Average payback: 41 days.</b></p>
       <figure class="chart" data-reel-block>
         <div class="top">
