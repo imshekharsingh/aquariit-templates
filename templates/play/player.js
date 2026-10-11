@@ -373,26 +373,48 @@
     return { stops: stops, blocks: blocks.length, report: all.map(function (y) { var end = max > 4 && y >= max - 1; return { y: y, sliced: end ? [] : sliceAt(y + vh).map(label), under: end ? [] : sliceTop(y + barH + 6).map(label) }; }) }; // the last frame is the end of the page: nothing is cut there
   }
 
+  // Instagram's own top UI (the phone's status bar, the Reels/Friends tabs, back arrow) covers about the top 96 css px of the video, so
+  // content must not start there. barHeight() finds the template's sticky/fixed top bar; topSafe() pushes the first content down so the
+  // first screen and every pause start below 96px (a margin on the first <main>; idempotent, so re-planning is safe).
+  var TOP_SAFE = 96;
+  function barHeight(win, doc) {
+    var h = 0;
+    Array.prototype.some.call(doc.querySelectorAll('header,nav,[class*="bar"]'), function (e) {
+      var cs = win.getComputedStyle(e), r = e.getBoundingClientRect();
+      if ((cs.position === 'sticky' || cs.position === 'fixed') && r.top < 4 && r.height < 120 && r.width > win.innerWidth * .6) { h = r.height; barEl = e; return true; }
+    });
+    return h;
+  }
+  var barEl = null;
+  function topSafe(win, doc, barH) {
+    var extra = Math.max(0, TOP_SAFE - barH), st = doc.getElementById('__reel_top');
+    if (!extra) { if (st) st.remove(); return Math.max(barH, 0); }
+    if (!st) { st = doc.createElement('style'); st.id = '__reel_top'; (doc.head || doc.documentElement).appendChild(st); }
+    // a static fade in the page colour hides the tail of the previous block between the bar and the 96px line (it is under the bar, over the content)
+    var bg = win.getComputedStyle(doc.body).backgroundColor, solid = Math.round(barH / TOP_SAFE * 100);
+    st.textContent = 'html.reel body>main:first-of-type{margin-top:' + extra + 'px!important}' +
+      (barEl && bg && !/rgba\(.*, 0\)|transparent/.test(bg) ? 'html.reel::after{content:"";position:fixed;left:0;right:0;top:0;height:' + TOP_SAFE + 'px;pointer-events:none;z-index:2147483000;background:linear-gradient(to bottom,' + bg + ' ' + solid + '%,transparent 100%)}' : '');
+    if (barEl) barEl.style.setProperty('z-index', '2147483001', 'important');
+    return TOP_SAFE;
+  }
+
   function buildPlan(win, doc, D) {
     var cfg = win.__reel || {}, vh = win.innerHeight, scroller = null;
     if (cfg.scroller) scroller = doc.querySelector(cfg.scroller);
     var axisX = scroller && cfg.axis === 'x';
+    var barH = 0, topEff = 0;
+    if (!scroller) { barH = barHeight(win, doc); topEff = topSafe(win, doc, barH); }
     var max = scroller ? Math.max(0, axisX ? scroller.scrollWidth - scroller.clientWidth : scroller.scrollHeight - scroller.clientHeight)
                        : Math.max(0, doc.documentElement.scrollHeight - vh);
-    var pts = [0], report = [], blocksN = 0, barH = 0;
+    var pts = [0], report = [], blocksN = 0;
     if (!scroller) {
-      // height of a sticky/fixed top bar so section titles don't hide under it
-      Array.prototype.some.call(doc.querySelectorAll('header,nav,[class*="bar"]'), function (e) {
-        var cs = win.getComputedStyle(e), r = e.getBoundingClientRect();
-        if ((cs.position === 'sticky' || cs.position === 'fixed') && r.top < 4 && r.height < 120 && r.width > win.innerWidth * .6) { barH = r.height; return true; }
-      });
       var H0x = Math.min(2.8, D * .13), H1x = Math.min(2.6, D * .12), maxStops = Math.max(2, Math.floor((D - H0x - H1x) / 2.2));
       if (cfg.stops) { // explicit pauses chosen by the template (selectors or pixel offsets)
-        var cand = cfg.stops.map(function (s) { var e = typeof s === 'string' ? doc.querySelector(s) : null; return typeof s === 'number' ? s : e ? e.getBoundingClientRect().top + win.scrollY - barH - 6 : null; });
+        var cand = cfg.stops.map(function (s) { var e = typeof s === 'string' ? doc.querySelector(s) : null; return typeof s === 'number' ? s : e ? e.getBoundingClientRect().top + win.scrollY - topEff - 6 : null; });
         var kept = cand.filter(function (y) { return y != null && y > vh * .3 && y < max - vh * .3; }).sort(function (a, b) { return a - b; });
         pts = pts.concat(kept);
       } else {
-        var ps = planStops(win, doc, vh, max, barH), st = ps.stops;
+        var ps = planStops(win, doc, vh, max, topEff), st = ps.stops;
         while (st.length > maxStops) st = st.filter(function (_, i) { return i % 2 === 1; }); // too many pauses for this length: keep every other one
         report = ps.report; blocksN = ps.blocks; pts = pts.concat(st);
       }
@@ -406,7 +428,7 @@
     var t = H0;
     segs.forEach(function (g, k) { g.t0 = t; g.dur = W * g.w / wsum; g.move = g.dur * (k === segs.length - 1 ? .92 : .74); t += g.dur; });
     return {
-      points: pts, stops: Math.max(0, pts.length - 2), max: max, scroller: scroller, axisX: axisX, barH: barH, blocks: blocksN, report: report,
+      points: pts, stops: Math.max(0, pts.length - 2), max: max, scroller: scroller, axisX: axisX, barH: barH, topEff: topEff, blocks: blocksN, report: report,
       at: function (time) {
         if (!segs.length || time <= H0) return 0;
         for (var k = 0; k < segs.length; k++) { var g = segs[k]; if (time < g.t0 + g.dur) return g.a + (g.b - g.a) * easeIO(clamp((time - g.t0) / g.move, 0, 1)); }

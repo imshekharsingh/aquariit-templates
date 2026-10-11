@@ -272,6 +272,38 @@
   @media (max-width:480px){
     .wrap{padding-left:30px;padding-right:30px}
     .hero-text{padding-left:30px;padding-right:30px}
+    .step h3{flex-direction:column;gap:5px;align-items:flex-start}
+    .pkg .top{flex-direction:column;gap:6px}
+    .pkg{padding:13px 20px 12px}
+    .pkgs{gap:14px}
+    .pkg h3{font-size:1.35rem}
+    .pkg .price{font-size:1.6rem}
+    .pkg ul{margin:8px 0 10px;gap:3px;font-size:.82rem}
+    .pkg .btn2{min-height:40px;font-size:.9rem}
+    .badge{margin-bottom:6px}
+    .plate{grid-template-columns:1fr}
+    .plate div{display:flex;align-items:baseline;gap:14px;padding:11px 20px}
+    .plate div+div::before{left:20px;right:20px;top:0;bottom:auto;width:auto;height:1px}
+    .plate b{flex:none;min-width:5.2rem;font-size:1.8rem}
+    .plate div>span{margin-top:0;font-size:.82rem}
+    .job .meta{flex-direction:column;align-items:flex-start;gap:6px}
+    .job .res{text-align:left}
+    .job .res b{display:inline;font-size:1.15rem;margin-right:6px}
+    .steps{gap:12px}
+    .step{padding:12px 18px}
+    .step .orb{width:46px;height:46px}
+    .proc{padding-top:28px}
+    .pkg .top>div{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:10px}
+    .pkg .top>div .badge{flex:none;align-self:flex-start;margin-right:100%}
+    .pkg .for{margin-top:0}
+    .tq{padding-top:48px}
+    .pk{padding:28px 0 24px}
+    .pkg .price{text-align:left}
+    .pkg .price small{display:inline;margin:0 0 0 8px}
+    .fin{padding-top:36px}
+    .slabs{height:176px;margin-top:16px}
+    .slabs .ws{top:66%}
+    .slab{left:-70px;top:-70px;width:140px;height:140px}
   }
   @media (min-width:700px){
     .hero{max-height:760px}
@@ -370,9 +402,9 @@
 
   <section class="ba-sec">
     <div class="wrap">
-      <p class="kick headin">Before and after</p>
+      <div class="hg" data-reel-block><p class="kick headin">Before and after</p>
       <h2 class="headin">Same words.<br>Three more layers.</h2>
-      <p class="sub headin">Content never changes. What changes is how far it reaches.</p>
+      <p class="sub headin">Content never changes. What changes is how far it reaches.</p></div>
       <div class="ba rise" role="img" aria-label="Before: a flat grey wireframe page. After: the same page with layered cards floating in depth over a blue sky gradient.">
         <div class="before" aria-hidden="true">
           <div class="bw-nav"><i style="width:34px"></i><i style="width:20px"></i><i style="width:20px"></i></div>
@@ -398,8 +430,8 @@
 
   <section class="proc">
     <div class="wrap">
-      <p class="kick headin">How it works</p>
-      <h2 class="headin">Three steps.<br>Four weeks.</h2>
+      <div class="hg" data-reel-block><p class="kick headin">How it works</p>
+      <h2 class="headin">Three steps.<br>Four weeks.</h2></div>
       <ol class="steps">
         <li class="step rise"><span class="orb">1</span><h3>Map the scene <small>Week 1</small></h3><p>We find the one moment your product should own, then storyboard it.</p></li>
         <li class="step rise"><span class="orb">2</span><h3>Build the layers <small>Weeks 2–3</small></h3><p>Real code, real 3D, tuned to run at 60fps on a phone.</p></li>
@@ -410,9 +442,9 @@
 
   <section class="pk">
     <div class="wrap">
-      <p class="kick headin">Packages</p>
+      <div class="hg" data-reel-block><p class="kick headin">Packages</p>
       <h2 class="headin">Pick your altitude.</h2>
-      <p class="sub headin">Fixed prices, fixed dates, no surprise invoices.</p>
+      <p class="sub headin">Fixed prices, fixed dates, no surprise invoices.</p></div>
       <div class="pkgs">
         <article class="pkg rise">
           <div class="top"><div><h3>Layer</h3><p class="for">One-page launch site</p></div><p class="price">$6.8k<small>3 weeks</small></p></div>
@@ -447,11 +479,11 @@
 
   <section class="fin" id="book">
     <div class="wrap">
-      <div class="fin-top" data-reel-block><div class="hg"><p class="kick headin">Your turn</p>
+      <div class="hg" data-reel-block><p class="kick headin">Your turn</p>
       <h2 class="headin">Give your launch a third dimension.</h2></div>
-      <div class="slabs" aria-hidden="true"><div class="ws">
+      <div class="slabs" aria-hidden="true" data-reel-block><div class="ws">
         <span class="slab s0" style="--i:0"></span><span class="slab s1" style="--i:1"></span><span class="slab s2" style="--i:2"></span><span class="slab s3" style="--i:3"></span><span class="slab s4" style="--i:4"></span>
-      </div><span class="shadow-pad"></span></div></div>
+      </div><span class="shadow-pad"></span></div>
       <div class="fin-cta" data-reel-block><p class="urgent"><i></i>Three build slots left for November</p>
       <div><a class="btn" href="#top">Book a free depth review
         <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5L14.5 9 10 13.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>

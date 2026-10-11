@@ -259,8 +259,18 @@
     .step::before{left:calc(-26px - var(--i)*14px)}
     .step::after{left:calc(-13px - var(--i)*14px);width:calc(13px + var(--i)*14px)}
     .stat,.tier{padding-left:22px;padding-right:22px}
-    .duo .stat{padding-left:16px;padding-right:16px}
     .ribbon{left:22px}
+    /* right-hand button column of Instagram (x > 338): keep cards, numbers and prices left of it */
+    .card{width:calc(100% - 58px);padding:12px 12px;column-gap:10px}
+    .card:nth-child(2){--x:20px}.card:nth-child(3){--x:4px}.card:nth-child(4){--x:24px}
+    .card .t{font-size:.82rem}
+    .ticks{gap:4px}.ticks span{font-size:.58rem;padding:3px 6px}
+    .duo{grid-template-columns:1fr}
+    .duo .stat{padding:18px 22px}
+    .duo .stat .num{font-size:3.6rem}
+    .duo .stat p{font-size:.88rem}
+    .tier .top{flex-direction:column;gap:10px}
+    .price{text-align:left}
   }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation:none!important;transition:none!important}
@@ -339,11 +349,11 @@
   <section class="sec" id="process">
     <div class="wrap">
       <div class="head rv"><p class="eyebrow"><i></i>How it works</p><h2>Three steps. <span class="g">Zero jargon.</span></h2></div>
-      <ol class="ladder">
-        <li class="glass step rv" style="--i:0"><span class="sn">01</span><div><h3>Map</h3><p>A free call. We trace one real week of repeat tasks and pick the three worth automating.</p><span class="when">Day 0</span></div></li>
-        <li class="glass step rv" style="--i:1"><span class="sn">02</span><div><h3>Build</h3><p>We wire up the tools you already use and show it working on your own data.</p><span class="when">Days 1 to 9</span></div></li>
-        <li class="glass step rv" style="--i:2"><span class="sn">03</span><div><h3>Run</h3><p>It goes live with you in charge. We watch, tune and fix, so it keeps getting better.</p><span class="when">Every week</span></div></li>
-      </ol>
+      <div class="ladder">
+        <article class="glass step rv" style="--i:0"><span class="sn">01</span><div><h3>Map</h3><p>A free call. We trace one real week of repeat tasks and pick the three worth automating.</p><span class="when">Day 0</span></div></article>
+        <article class="glass step rv" style="--i:1"><span class="sn">02</span><div><h3>Build</h3><p>We wire up the tools you already use and show it working on your own data.</p><span class="when">Days 1 to 9</span></div></article>
+        <article class="glass step rv" style="--i:2"><span class="sn">03</span><div><h3>Run</h3><p>It goes live with you in charge. We watch, tune and fix, so it keeps getting better.</p><span class="when">Every week</span></div></article>
+      </div>
     </div>
   </section>
 

@@ -92,8 +92,12 @@ Design every template for a **402×715 viewport**, not a desktop page:
 - **Side safety (measured on a real phone):** Instagram fills its taller preview/feed area with the 9:16 video, scaling it ≈7–11% and cropping
   ≈14–20 css px off EACH side (Photos crop was fine; the zoom is Instagram's). So at 402px: all text ≥ 26px from each side, icons/buttons/rail dots/badges
   ≥ 18px (prefer 26px), use ≈30px page gutters on phones. Decoration meant to bleed (aurora blobs, marquee strips, shards) is marked `aria-hidden="true"`
-  or `data-reel-bleed`. Also keep headings out of the top ≈90px of the frame when you can (Instagram's top bar covers it) and key text above the bottom ≈22%.
-  `node scripts/reel-audit.mjs <ID>` prints SIDE-TIGHT lines and must end with "side safety: OK".
+  or `data-reel-bleed`. Also keep key text above the bottom ≈22%.
+  **Top and right zones (enforced):** Instagram's status bar + Reels tabs cover the top ≈96 css px, and its button column (like/comment/share) covers the
+  right ≈16% (x > 338px) between ≈50% and ≈90% of the height. The ▶ player already pushes the first content below 96px and fades the tail of the previous
+  block under the bar, so do not add your own extra top padding; never leave short right-aligned items (prices, badges, "per month", status pills, key numbers,
+  right-hand CTAs) in that right zone on phones: left-align, stack or centre them.
+  `node scripts/reel-audit.mjs <ID>` prints SIDE-TIGHT lines (sides, TOP-ZONE, RIGHT-ZONE) and must end with "side safety: OK".
 - Safe areas: declare `:root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}` and use only
   `var(--safe-top)` / `var(--safe-bottom)` (never raw `env(safe-area-inset-top/bottom)`). Sticky headers pad with `var(--safe-top)`
   and keep their background under the status bar (iOS PWA). Add `html.reel{--safe-top:0px;--safe-bottom:0px}`: the player adds the

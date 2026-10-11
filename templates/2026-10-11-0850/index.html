@@ -60,6 +60,7 @@
   @keyframes sweep{from{transform:translateX(0)}to{transform:translateX(98px)}}
   .knob{transform-box:fill-box;transform-origin:center;animation:spin 14s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
+  .hero.off .needle,.hero.off .knob,.hero.off .wave{animation-play-state:paused}
   .wave{opacity:0;animation:wv 2.4s ease-out infinite}
   .wave:nth-child(2){animation-delay:.5s}.wave:nth-child(3){animation-delay:1s}
   @keyframes wv{0%{opacity:0}30%{opacity:.9}100%{opacity:0}}
@@ -124,6 +125,17 @@
 
   footer{background:var(--night);color:var(--cream);padding:6px 0 calc(26px + var(--safe-bottom));text-align:center}
   footer small{display:block;margin-top:4px;font-size:.72rem;opacity:.55;letter-spacing:.04em}
+
+
+  /* phone safe zones (Instagram crop/cover) */
+  @media (max-width:480px){
+    .wrap{padding:0 30px}
+    .rg{grid-template-columns:1fr;gap:12px;text-align:left}
+    .ring{display:grid;grid-template-columns:104px 1fr;gap:16px;align-items:center}
+    .ring>span{margin-top:0;font-size:.95rem}
+    .ring b{right:auto;width:104px;text-align:center}
+    .ring b span{display:inline;margin:0;font-size:inherit;font-weight:inherit}
+  }
 
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation:none!important;transition:none!important}
@@ -249,6 +261,8 @@
     if(!reduce)t.querySelectorAll('[data-count]').forEach(count);
     io.unobserve(t);
   });},{threshold:.4});
+  var hero=document.querySelector('.hero');
+  new IntersectionObserver(function(es){hero.classList.toggle('off',!es[0].isIntersecting)}).observe(hero);
   document.querySelectorAll('.ck li,.rg,#dial').forEach(function(el){io.observe(el)});
 })();
 </script>

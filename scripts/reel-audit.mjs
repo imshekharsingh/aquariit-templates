@@ -55,26 +55,32 @@ for (const id of ids) {
     await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), plan.report[i].y); await page.waitForTimeout(900);
     await page.screenshot({ path: join(out, `${id}-${String(i).padStart(2, "0")}.png`) });
     const tight = await page.evaluate(({ SIDE, EDGE, barH }) => {
+      const TOPZ = 90, RZ = 0.84; // Instagram: top bar covers ~90px; its button column covers the right ~16% between ~50% and ~88% of the height
       const W = innerWidth, H = innerHeight, out = [];
       const hid = (e) => { for (let n = e; n && n !== document.body; n = n.parentElement) { if (n.getAttribute && (n.getAttribute('aria-hidden') === 'true' || n.hasAttribute('data-reel-bleed'))) return true; const cs = getComputedStyle(n); if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity === 0) return true; } return false; };
       const inFrame = (r) => r.width > 1 && r.height > 1 && r.bottom > barH + 4 && r.top < H - 4;
+      const inBar = (e) => { for (let n = e; n && n !== document.body; n = n.parentElement) { const cs = getComputedStyle(n); if ((cs.position === 'sticky' || cs.position === 'fixed') && n.getBoundingClientRect().top < 4) return true; } return false; };
+      // text that belongs to a block already scrolling out under the bar is a "tail" (the player fades it): only blocks that START in the top band count
+      const tail = (e) => { for (let n = e; n && !/^(MAIN|SECTION|BODY)$/.test(n.tagName); n = n.parentElement) { const b = n.getBoundingClientRect(); if (b.top < barH - 1 && b.height < 640 && b.bottom > barH) return true; } return false; };
+      const rzone = (r) => r.top >= H * 0.5 && r.bottom <= H * 0.9 && r.left >= W * 0.5 && r.right > W * RZ;
       const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
       while (tw.nextNode()) {
         const n = tw.currentNode; if (!n.nodeValue.trim()) continue; const el = n.parentElement; if (!el || /^(SCRIPT|STYLE)$/.test(el.tagName) || hid(el)) continue;
         const rg = document.createRange(); rg.selectNodeContents(n);
-        for (const r of rg.getClientRects()) { if (!inFrame(r)) continue; if (r.left < SIDE - 0.5 || r.right > W - SIDE + 0.5) { out.push(`text "${n.nodeValue.trim().slice(0, 26)}" ${r.left < SIDE ? 'left ' + Math.round(r.left) : 'right ' + Math.round(W - r.right)}px`); break; } }
+        for (const r of rg.getClientRects()) { if (!inFrame(r)) continue; if (r.top < TOPZ && r.bottom > 0 && !inBar(el) && !tail(el)) { out.push(`TOP-ZONE text "${n.nodeValue.trim().slice(0, 26)}" at y ${Math.round(r.top)}px (Instagram's top bar covers the top ~${TOPZ}px)`); break; } if (rzone(r) && el.getBoundingClientRect().width < W * 0.5) { out.push(`RIGHT-ZONE text "${n.nodeValue.trim().slice(0, 22)}" (Instagram's button column covers the right ${Math.round((1 - RZ) * 100)}%)`); break; } if (r.left < SIDE - 0.5 || r.right > W - SIDE + 0.5) { out.push(`text "${n.nodeValue.trim().slice(0, 26)}" ${r.left < SIDE ? 'left ' + Math.round(r.left) : 'right ' + Math.round(W - r.right)}px`); break; } }
       }
       document.querySelectorAll('button,a,svg,img,i,b,span,div').forEach((e) => {
         const r = e.getBoundingClientRect(); if (!inFrame(r) || r.width > 150 || r.height > 60 || hid(e)) return;
         const cs = getComputedStyle(e), ink = e.tagName === 'SVG' || e.tagName === 'IMG' || +cs.borderTopWidth > 0 || (cs.backgroundColor && !/rgba\(.*, 0\)|transparent/.test(cs.backgroundColor)) || cs.backgroundImage !== 'none';
         if (!ink) return;
+        if (rzone(r)) { out.push(`RIGHT-ZONE ${e.tagName.toLowerCase()}${e.className && typeof e.className === 'string' ? '.' + e.className.split(' ')[0] : ''} (button column zone)`); return; }
         if (r.left < EDGE - 0.5 || r.right > W - EDGE + 0.5) out.push(`marker/box ${e.tagName.toLowerCase()}${e.className && typeof e.className === 'string' ? '.' + e.className.split(' ')[0] : ''} ${r.left < EDGE ? 'left ' + Math.round(r.left) : 'right ' + Math.round(W - r.right)}px`);
       });
       return [...new Set(out)].slice(0, 5);
     }, { SIDE, EDGE, barH: plan.barH });
-    if (tight.length) { sideBad += tight.length; console.log(`  ${String(i).padStart(2)}  SIDE-TIGHT (Instagram may crop): ${tight.join(' | ')}`); }
+    if (tight.length) { sideBad += tight.length; console.log(`  ${String(i).padStart(2)}  SIDE-TIGHT (Instagram may crop/cover): ${tight.join(' | ')}`); }
   }
-  if (sideBad) console.log(`  side safety: ${sideBad} item(s) closer than ${SIDE}px (text) / ${EDGE}px (icons, buttons) to a side. Inset them, or mark pure decoration aria-hidden / data-reel-bleed.`); else console.log(`  side safety: OK (text >= ${SIDE}px, icons/buttons >= ${EDGE}px from the sides)`);
+  if (sideBad) console.log(`  side safety: ${sideBad} item(s) in Instagram's crop/cover zones (sides ${SIDE}px/${EDGE}px, top 90px, right 16% of the lower half). Move them, or mark pure decoration aria-hidden / data-reel-bleed.`); else console.log(`  side safety: OK (sides, top 90px and the right button column are clear)`);
   sideWarn += sideBad;
   if (errs.length) { warn += errs.length; console.log('  JS errors:', errs.join(' | ')); }
   console.log(`  screenshots: ${join(out, id)}-NN.png  (open them and check every pause looks like a finished frame)`);
