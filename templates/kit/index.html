@@ -38,6 +38,7 @@
   .pill.rec svg{width:16px;height:16px}
   .pill.ico{width:44px;padding:0;justify-content:center}.pill.ico svg{width:20px;height:20px}
   .grp{display:flex;gap:8px}
+  .urow{margin-top:12px;margin-left:-4px;color:var(--deep-ink)}.urow .ru{color:inherit}.urow .bx{border-color:currentColor}
   .open{display:inline-block;margin-top:16px;color:var(--deep-ink);font-weight:700;text-decoration:none;border-bottom:2px solid var(--accent)}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:14px}
@@ -88,6 +89,7 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="/play/player.js"></script>
+<script src="/uploaded.js"></script>
 <script>
 (function () {
   var app = document.getElementById('app'), toast = document.getElementById('toast'), tt;
@@ -136,7 +138,9 @@
     sb.appendChild(el('small', null, 'Post kit · Instagram Reel'));
     sb.appendChild(el('h1', 'serif', k.name));
     var m = el('div', 'meta'); [fmtDate(k.id), '9:16', k.reel.length.split(',')[0]].forEach(function (t) { if (t) m.appendChild(el('span', null, t)); });
-    sb.appendChild(m); var op = el('a', 'open', 'Open template ↗'); op.href = '/' + k.id + '/'; sb.appendChild(op); s.appendChild(sb); app.appendChild(s);
+    sb.appendChild(m); var op = el('a', 'open', 'Open template ↗'); op.href = '/' + k.id + '/'; sb.appendChild(op);
+    if (window.ReelUploaded) { var ur = el('div', 'urow'); ur.appendChild(window.ReelUploaded.make(k.id, { name: k.name, label: true })); sb.appendChild(ur); }
+    s.appendChild(sb); app.appendChild(s);
 
     var c = card('Hook · first 2 seconds', k.hook, 'Hook copied'); c.appendChild(el('p', 'hook serif', k.hook)); app.appendChild(c);
 
