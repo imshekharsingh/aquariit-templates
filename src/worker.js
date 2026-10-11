@@ -112,6 +112,42 @@ ${error ? `<div class="err" role="alert">${esc(error)}</div>` : ''}
 const html = (body, status = 200) => new Response(body, { status, headers: { 'Content-Type': 'text/html; charset=utf-8', ...noStore } });
 const go = (location, extra = {}) => new Response(null, { status: 303, headers: { Location: location, ...noStore, ...extra } });
 
+// ---- Reel-uploaded tracking in D1 (binding "DB"). Without the binding the API answers 501 and the pages fall back to localStorage. ----
+const ID_RE = /^\d{4}-\d{2}-\d{2}(-\d{4})?$/;
+const jsonHeaders = { 'Content-Type': 'application/json', ...noStore };
+const jres = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: jsonHeaders });
+let tableReady = null;
+async function uploadedDb(env) {
+  if (!env.DB) return null;
+  tableReady = tableReady || env.DB.exec('CREATE TABLE IF NOT EXISTS reel_uploaded (id TEXT PRIMARY KEY, at TEXT NOT NULL)').catch((e) => { tableReady = null; throw e; });
+  await tableReady;
+  return env.DB;
+}
+async function uploadedApi(request, env, p) {
+  let db;
+  try { db = await uploadedDb(env); } catch { return jres({ error: 'db-unavailable' }, 503); }
+  if (!db) return jres({ error: 'no-db' }, 501);
+  if (request.method === 'GET' && p === '/api/uploaded') {
+    const { results } = await db.prepare('SELECT id, at FROM reel_uploaded').all();
+    return jres({ ids: Object.fromEntries((results || []).map((r) => [r.id, r.at])) });
+  }
+  if (request.method !== 'GET' && request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403); // simple cross-site requests cannot set this header
+  let body = null;
+  try { body = await request.json(); } catch { /* handled below */ }
+  const m = /^\/api\/uploaded\/(\d{4}-\d{2}-\d{2}(?:-\d{4})?)$/.exec(p);
+  if (request.method === 'PUT' && m && body && typeof body.on === 'boolean') {
+    if (body.on) await db.prepare('INSERT INTO reel_uploaded (id, at) VALUES (?1, ?2) ON CONFLICT(id) DO UPDATE SET at = excluded.at').bind(m[1], new Date().toISOString()).run();
+    else await db.prepare('DELETE FROM reel_uploaded WHERE id = ?1').bind(m[1]).run();
+    return jres({ ok: true });
+  }
+  if (request.method === 'POST' && p === '/api/uploaded/import' && body && body.ids && typeof body.ids === 'object') {
+    const rows = Object.entries(body.ids).filter(([id, at]) => ID_RE.test(id) && typeof at === 'string').slice(0, 500);
+    if (rows.length) await db.batch(rows.map(([id, at]) => db.prepare('INSERT OR IGNORE INTO reel_uploaded (id, at) VALUES (?1, ?2)').bind(id, at.slice(0, 40))));
+    return jres({ ok: true, imported: rows.length });
+  }
+  return jres({ error: 'bad-request' }, 400);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname;
@@ -139,7 +175,9 @@ export default {
     if (PUBLIC(p)) return env.ASSETS.fetch(request); // manifest, service worker and icons must load without a session (PWA install)
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
-    if (await authed(request, env)) return env.ASSETS.fetch(request);
+    const signedIn = await authed(request, env);
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (signedIn) return env.ASSETS.fetch(request);
 
     const wantsPage = request.method === 'GET' && ((request.headers.get('Accept') || '').includes('text/html') || request.headers.get('Sec-Fetch-Mode') === 'navigate');
     if (wantsPage) return go(`/login?next=${encodeURIComponent(p + url.search)}`);
