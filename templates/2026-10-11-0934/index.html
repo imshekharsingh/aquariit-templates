@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vantaris — Revenue Found in Your Data</title>
+<meta name="description" content="Vantaris is a fictional growth analytics consultancy, shown as a bento dashboard landing page with self-drawing charts, CSS-only counting numbers and an auto-playing funnel before and after.">
+<meta name="theme-color" content="#052229">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..800&amp;family=Source+Code+Pro:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+  :root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+  html.reel{--safe-top:0px;--safe-bottom:0px}
+  .reel .back{display:none}
+  .reel .rail{padding-top:16px}
+
+  /* typed integers: the counting numbers run on these, no JS */
+  @property --n{syntax:'<integer>';inherits:false;initial-value:0}
+  @property --w{syntax:'<integer>';inherits:false;initial-value:0}
+  @property --t{syntax:'<integer>';inherits:false;initial-value:0}
+
+  :root{
+    --ink:#052229; --ink2:#0a3039; --ink3:#0e3d48; --card:#f4fbf8; --cardink:#06262d;
+    --lime:#c8f53a; --amber:#ffb524; --mute:#8fb9b8; --line:rgba(255,255,255,.12);
+    --disp:"Lexend",system-ui,"Segoe UI",Arial,sans-serif; --mono:"Source Code Pro",ui-monospace,Menlo,monospace;
+    --gap:14px;
+  }
+  @supports (color:color(display-p3 1 1 1)){
+    :root{--lime:color(display-p3 .8 .97 .2);--amber:color(display-p3 1 .72 .13)}
+  }
+  *{box-sizing:border-box;margin:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--ink);color:#e9f6f2;font:400 16px/1.5 var(--disp);overflow-x:hidden;padding-left:28px}
+  :focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+  a{color:inherit}
+  .wrap{max-width:540px;margin:0 auto;padding:0 18px 0 14px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .tag{font:600 .66rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--lime)}
+  .tag i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lime);margin-right:8px;animation:pulse 1.8s ease-out infinite}
+  @keyframes pulse{0%{transform:scale(.7);opacity:1}70%,100%{transform:scale(1.5);opacity:.35}}
+
+  /* side tab: a fixed ruler rail with the brand and the way back */
+  .rail{position:fixed;z-index:40;left:0;top:0;bottom:0;width:28px;background:var(--ink2);border-right:1px solid var(--line);padding-top:calc(var(--safe-top) + 14px);display:flex;flex-direction:column;align-items:center;gap:14px}
+  .rail::after{content:"";position:absolute;right:0;top:250px;bottom:0;width:7px;background:repeating-linear-gradient(to bottom,rgba(143,185,184,.45) 0 1px,transparent 1px 12px);pointer-events:none}
+  .rail a{text-decoration:none;font:600 .62rem/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+  .rail .mark{display:flex;flex-direction:column;align-items:center;gap:8px;color:#fff;font-size:.66rem}
+  .rail .mark svg{width:16px;height:16px}
+  .rail .mark span,.rail .back{writing-mode:vertical-rl}
+  .rail .back{color:var(--ink);background:var(--lime);padding:10px 5px;border-radius:3px;letter-spacing:.12em}
+
+  /* hero */
+  .hero{position:relative;padding:24px 0 30px;min-height:676px;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:
+    radial-gradient(60% 40% at 100% 0%,rgba(200,245,58,.2),transparent 70%),
+    radial-gradient(70% 36% at 0% 62%,rgba(14,111,125,.5),transparent 70%),var(--ink)}
+  .hero .wrap{width:100%}
+  .hero .tag{opacity:0;animation:rise .6s ease .05s both}
+  h1{font-weight:700;font-size:min(11.2vw,58px);line-height:1.03;letter-spacing:-.025em;margin:12px 0 10px;text-wrap:balance}
+  h1 .l{display:block;opacity:0;transform:translateY(16px);animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+  h1 .l:nth-child(2){animation-delay:.12s}
+  h1 em{font-style:normal;color:var(--lime)}
+  @supports (background-clip:text) or (-webkit-background-clip:text){
+    h1 em{background:linear-gradient(95deg,var(--lime),var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .lede{max-width:34ch;color:var(--mute);font-size:.98rem;line-height:1.45;margin-bottom:16px;opacity:0;animation:rise .7s ease .3s both}
+  .lede b{color:#fff;font-weight:500}
+
+  .chart{border:1px solid var(--line);border-radius:22px;background:linear-gradient(165deg,#0f4552,#082d35);padding:14px 14px 10px;box-shadow:0 18px 40px -20px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.1);opacity:0;animation:rise .8s cubic-bezier(.2,.8,.2,1) .4s both}
+  .chart .top{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+  .chart .lab{font:400 .62rem/1.35 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+  .kpi{display:block;font-size:2.5rem;line-height:1;color:var(--lime);letter-spacing:-.03em;margin-top:2px}
+  .chip{display:inline-block;font:600 .7rem/1 var(--mono);background:var(--amber);color:var(--ink);padding:7px 9px;border-radius:999px;white-space:nowrap}
+  .chart svg{display:block;width:100%;height:auto;margin-top:6px;overflow:visible}
+  .chart text{font:400 8.5px var(--mono);fill:var(--mute);letter-spacing:.06em}
+  .hint{display:flex;gap:12px;justify-content:space-between;font:400 .6rem/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding:4px 2px 2px}
+  .hint span:first-child::before,.hint span:last-child::before{content:"";display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px;background:var(--lime)}
+  .hint span:last-child::before{background:var(--amber)}
+
+  /* shared chart draw + count mechanics */
+  .dr{stroke-dasharray:1 1;stroke-dashoffset:var(--to,0)}
+  .num{font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums;counter-reset:w var(--w) t var(--t) n var(--n)}
+  .num.dec::before{content:var(--pre,"") counter(w) "." counter(t) var(--suf,"")}
+  .num.int::before{content:var(--pre,"") counter(n) var(--suf,"")}
+  @keyframes cnt{from{--n:0;--w:0;--t:0}}
+  @keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:var(--to,0)}}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  @keyframes grow{from{transform:scaleY(0)}to{transform:none}}
+  .cntH{animation:cnt 2.4s cubic-bezier(.3,.6,.2,1) .55s both}
+  .drH{animation:draw 2.4s cubic-bezier(.45,0,.2,1) .55s both}
+  .drH.b{animation-duration:2s}
+  .areaH{animation:fadein 1s ease 2.5s both}
+  .dotH{animation:fadein .4s ease 2.8s both}
+  .mark2{animation:fadein .6s ease 1.1s both}
+  .ring{transform-box:fill-box;transform-origin:50% 50%;animation:pulse 1.8s ease-out 3s infinite}
+
+  /* scroll-driven where supported: the number or line finishes by the time the block is fully in view */
+  @supports (animation-timeline:view()){
+    .cnt{animation:cnt linear both;animation-timeline:view();animation-range:entry 0% entry 100%}
+    .dr{animation:draw linear both;animation-timeline:view();animation-range:entry 0% entry 100%}
+    .gr{animation:grow linear both;animation-timeline:view();animation-range:entry calc(var(--i) * 3%) entry calc(65% + var(--i) * 3%)}
+  }
+  /* without it: finished by default, IntersectionObserver plays them once */
+  @supports not (animation-timeline:view()){
+    html.js .cnt:not(.on),html.js .cntT:not(.on){--n:0;--w:0;--t:0}
+    html.js .dr:not(.on),html.js .drT:not(.on){stroke-dashoffset:1}
+    .cnt.on,.cntT.on{animation:cnt 1.8s ease-out both}
+    .dr.on,.drT.on{animation:draw 1.6s ease-out both}
+  }
+  html.js .cntT:not(.on){--n:0;--w:0;--t:0}
+  html.js .drT:not(.on){stroke-dashoffset:1}
+  .cntT.on{animation:cnt 1.8s cubic-bezier(.2,.7,.2,1) .1s both}
+  .drT.on{animation:draw 1.6s cubic-bezier(.45,0,.2,1) .1s both}
+
+  section{padding:30px 0 30px}
+  .hero{padding-top:24px;padding-bottom:30px}
+  section.f{min-height:684px;padding:30px 0 0}
+  section.q{padding:30px 0 14px}
+  section.pay{padding:0 0 6px}
+  .hd{margin:0 0 18px}
+  h2{font-weight:700;font-size:clamp(1.7rem,8.4vw,2.3rem);line-height:1.08;letter-spacing:-.02em;margin-top:8px;text-wrap:balance}
+  h2 em{font-style:normal;color:var(--lime)}
+  .hd p{margin-top:8px;color:var(--mute);font-size:.94rem;max-width:36ch;line-height:1.45}
+
+  /* bento */
+  .bento{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+  .tile{border-radius:20px;padding:16px;background:var(--card);color:var(--cardink);position:relative;overflow:hidden}
+  .tile .lab{font:600 .62rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+  .tile .num{display:block;line-height:1;letter-spacing:-.04em}
+  .w2{grid-column:span 2}
+  .t-a .num{font-size:3rem;margin:6px 0 4px;color:var(--cardink)}
+  .t-a .sub{font-size:.84rem;opacity:.75;max-width:30ch;line-height:1.35}
+  .t-a svg{display:block;width:100%;height:40px;margin-top:10px}
+  .gr{transform-box:fill-box;transform-origin:50% 100%}
+  .t-b{background:var(--lime)}
+  .t-c{background:var(--amber)}
+  .t-b .num,.t-c .num{font-size:2.5rem;margin:8px 0 6px;white-space:nowrap}
+  .t-b p,.t-c p{font-size:.78rem;line-height:1.3;font-weight:500}
+  .t-d{background:linear-gradient(160deg,var(--ink3),var(--ink2));color:#fff;border:1px solid var(--line);display:grid;grid-template-columns:92px 1fr;gap:16px;align-items:center}
+  .t-d svg{width:92px;height:92px;display:block}
+  .t-d .num{font-size:2.3rem;color:var(--lime)}
+  .t-d p{font-size:.84rem;color:var(--mute);margin-top:6px;line-height:1.35}
+  .t-d .lab{color:var(--mute);opacity:1}
+
+  /* funnel before/after */
+  .fun{border-radius:22px;background:var(--card);color:var(--cardink);padding:16px 16px 14px;box-shadow:0 20px 44px -22px rgba(0,0,0,.7)}
+  .fun .head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .fun .case{font:600 .6rem/1.35 var(--mono);letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+  .state{display:grid;justify-items:end}
+  .state span{grid-area:1/1;font:600 .66rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:7px 10px;border-radius:999px;white-space:nowrap}
+  .state .sb{background:var(--amber);color:var(--ink)}
+  .state .sa{background:var(--ink);color:var(--lime);opacity:0}
+  .prog{height:3px;border-radius:2px;background:rgba(6,38,45,.12);margin:12px 0 4px;overflow:hidden}
+  .prog i{display:block;height:100%;background:var(--ink);transform-origin:0 50%;transform:scaleX(1)}
+  .st{list-style:none;padding:9px 0 0}
+  .st li{margin-top:10px}
+  .st .lab{display:flex;justify-content:space-between;align-items:baseline;font:400 .74rem/1.2 var(--mono)}
+  .st .lab span:first-child{font-family:var(--disp);font-weight:500;font-size:.84rem}
+  .vals{display:grid;justify-items:end}
+  .vals b{grid-area:1/1;font:600 .78rem/1.2 var(--mono)}
+  .vals .vb{opacity:0}
+  .trk{margin-top:5px;height:20px;border-radius:5px;background:rgba(6,38,45,.08);overflow:hidden}
+  .bar{display:block;height:100%;width:100%;border-radius:5px;transform-origin:0 50%;transform:scaleX(var(--a));position:relative;overflow:hidden}
+  .bar u{position:absolute;inset:0;text-decoration:none}
+  .bar .cb{background:var(--amber);opacity:0}
+  .bar .ca{background:var(--lime);box-shadow:inset 0 0 0 1px rgba(6,38,45,.28)}
+  .gain{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px dashed rgba(6,38,45,.25)}
+  .gain .lab{font:600 .62rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+  .rev{display:grid;justify-items:end}
+  .rev b{grid-area:1/1;font:600 1.5rem/1 var(--mono);letter-spacing:-.03em}
+  .rev .rb{color:#b86f00;opacity:0}
+  .rev .ra{color:var(--cardink)}
+  .fun.play .sb{animation:fb 7s ease-in-out infinite}
+  .fun.play .sa{animation:fa 7s ease-in-out infinite}
+  .fun.play .prog i{animation:pr 7s linear infinite}
+  .fun.play .bar{animation:fs 7s cubic-bezier(.6,0,.3,1) infinite;animation-delay:var(--d)}
+  .fun.play .cb,.fun.play .vb,.fun.play .rb{animation:fb2 7s ease-in-out infinite;animation-delay:var(--d)}
+  .fun.play .ca,.fun.play .va,.fun.play .ra{animation:fa 7s ease-in-out infinite;animation-delay:var(--d)}
+  .fun.play .sb,.fun.play .sa,.fun.play .prog i{animation-delay:0s}
+  .fun.play .rb,.fun.play .ra{animation-delay:.3s}
+  @keyframes fs{0%,34%{transform:scaleX(var(--b))}46%,84%{transform:scaleX(var(--a))}96%,100%{transform:scaleX(var(--b))}}
+  @keyframes fa{0%,34%{opacity:0}46%,84%{opacity:1}96%,100%{opacity:0}}
+  @keyframes fb{0%,34%{opacity:1}46%,84%{opacity:0}96%,100%{opacity:1}}
+  @keyframes fb2{0%,34%{opacity:1}46%,84%{opacity:0}96%,100%{opacity:1}}
+  @keyframes pr{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.fixes{list-style:none;padding:0;margin-top:12px;display:grid;gap:6px}
+  .fixes li{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.8rem;padding:9px 12px;border-radius:12px;background:rgba(6,38,45,.07)}
+  .fixes b{font:600 .74rem/1 var(--mono);background:var(--lime);box-shadow:inset 0 0 0 1px rgba(6,38,45,.28);padding:5px 8px;border-radius:999px}
+
+  /* process: step ladder */
+  .steps{list-style:none;padding:0;display:grid;gap:var(--gap)}
+  .step{display:grid;grid-template-columns:48px 1fr auto;gap:10px 14px;align-items:center;padding:16px;border-radius:18px;background:linear-gradient(160deg,var(--ink3),var(--ink2));border:1px solid var(--line)}
+  .step svg{width:48px;height:48px;padding:11px;border-radius:14px;background:var(--ink);border:1px solid var(--line);fill:none;stroke:var(--lime);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+  .step h3{font-weight:600;font-size:1.05rem;line-height:1.15}
+  .step p{font-size:.82rem;color:var(--mute);line-height:1.35;margin-top:3px}
+  .step .out{grid-column:1/-1;font:400 .66rem/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--lime);padding-top:10px;border-top:1px dashed var(--line)}
+  .step .when{font:600 .6rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);background:var(--amber);padding:6px 8px;border-radius:999px;align-self:start}
+
+  /* packages */
+  .pk{border-radius:22px;padding:16px;background:var(--card);color:var(--cardink);position:relative}
+  .pk h3{font-weight:600;font-size:1.02rem;line-height:1.2}
+  .pk .price{display:block;font:600 2rem/1 var(--mono);letter-spacing:-.04em;margin:10px 0 2px}
+  .pk .per{font:400 .64rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+  .pk ul{list-style:none;padding:0;margin-top:12px;display:grid;gap:7px;font-size:.8rem;line-height:1.3}
+  .pk li{padding-left:20px;position:relative}
+  .pk li::before{content:"";position:absolute;left:1px;top:.32em;width:9px;height:5px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg)}
+  .pk.hot{background:var(--lime);grid-column:span 2;padding:18px}
+  .pk.hot .price{font-size:2.8rem}
+  .pk.hot .ribbon{position:absolute;right:16px;top:16px;font:600 .6rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--lime);padding:7px 9px;border-radius:999px}
+  .pk.hot ul{grid-template-columns:1fr 1fr;gap:8px 12px}
+  .pk.hot .roi{margin-top:14px;padding:10px 12px;border-radius:12px;background:rgba(6,38,45,.1);font-size:.78rem;line-height:1.35}
+  .scarce{margin-top:var(--gap);text-align:center;font:600 .66rem/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+
+  /* testimonial */
+  .quote{border-radius:22px;background:var(--card);color:var(--cardink);padding:18px 18px 16px}
+  .quote blockquote{font-size:1.02rem;font-weight:500;line-height:1.35;letter-spacing:-.01em;text-wrap:pretty}
+  .quote blockquote::before{content:"\201C";display:block;font:700 3rem/.6 var(--disp);color:var(--amber);margin-bottom:6px}
+  .quote .by{display:flex;align-items:center;gap:12px;margin-top:12px}
+  .quote .by svg{width:44px;height:44px;flex:none}
+  .quote .by b{display:block;font-weight:600;font-size:.9rem}
+  .quote .by span{font:400 .66rem/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+  .quote .res{display:flex;gap:10px;margin-top:14px}
+  .quote .res div{flex:1;border-radius:12px;padding:10px 12px;background:rgba(6,38,45,.07)}
+  .quote .res .num{font-size:1.4rem;display:block;line-height:1}
+  .quote .res span{font:400 .6rem/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;opacity:.7;display:block;margin-top:5px}
+
+  /* close */
+  .finale{border-radius:26px;padding:18px 18px 16px;border:1px solid rgba(200,245,58,.45);background:
+    radial-gradient(80% 60% at 85% 0%,rgba(200,245,58,.28),transparent 70%),
+    linear-gradient(170deg,var(--ink3),var(--ink2));overflow:hidden}
+  .finale h2{font-size:clamp(1.55rem,7.6vw,2.2rem);margin:8px 0 6px}
+  .big{display:block;font-size:min(18vw,5rem);line-height:1;letter-spacing:-.05em;color:var(--lime);margin:4px 0 2px}
+  .finale svg{display:block;width:100%;height:28px;margin:4px 0 10px;overflow:visible}
+  .finale .sm{font:400 .68rem/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+  .cta{display:flex;align-items:center;justify-content:center;gap:10px;min-height:50px;margin-top:6px;padding:0 20px;border-radius:999px;background:var(--lime);color:var(--ink);font:600 1rem var(--disp);text-decoration:none;box-shadow:0 10px 28px -10px rgba(200,245,58,.55)}
+  .cta svg{width:18px;height:18px;margin:0;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .hcta{margin-top:16px;opacity:0;animation:rise .7s ease 1s both}
+  .fine{display:block;margin-top:10px;text-align:center;font-size:.76rem;color:var(--mute);line-height:1.4}
+  footer{padding:12px 0 calc(22px + var(--safe-bottom));font:400 .7rem/1.5 var(--mono);color:rgba(143,185,184,.8);text-align:center}
+  footer small{display:block;margin-top:4px;font-size:.64rem;opacity:.75}
+
+  @media (min-width:700px){
+    .wrap{max-width:600px}
+    h1{font-size:60px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    html.js .cnt:not(.on),html.js .cntT:not(.on){--n:0;--w:0;--t:0}
+    .hero .tag,h1 .l,.lede,.chart{opacity:1;transform:none}
+    .fun .vb,.fun .cb,.fun .rb,.fun .sa{opacity:0}
+  }
+</style>
+</head>
+<body>
+<nav class="rail" aria-label="Vantaris">
+  <a class="mark" href="#top" aria-label="Vantaris home">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 3l8 14 8-14" fill="none" stroke="#c8f53a" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="10" cy="3" r="2" fill="#ffb524"/></svg>
+    <span>Vantaris</span>
+  </a>
+  <a class="back" href="/">← All templates</a>
+</nav>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <p class="tag"><i></i>Growth analytics consultancy</p>
+      <h1><span class="sr">Turn your traffic into revenue.</span><span class="l" aria-hidden="true">Turn traffic</span><span class="l" aria-hidden="true">into <em>revenue.</em></span></h1>
+      <p class="lede">We find the leaks in your funnel and fix them. <b>Average payback: 41 days.</b></p>
+      <figure class="chart" data-reel-block>
+        <div class="top">
+          <div>
+            <span class="lab">Lantern &amp; Co. · monthly revenue</span>
+            <b class="num dec cntH kpi" style="--w:43;--t:7;--pre:'$';--suf:'k'" role="img" aria-label="43.7 thousand dollars"></b>
+          </div>
+          <span class="chip">▲ <b class="num int cntH" style="--n:271;--suf:'%';font-weight:600" role="img" aria-label="271 percent"></b></span>
+        </div>
+        <svg viewBox="0 0 320 150" role="img" aria-label="Line chart: monthly revenue stays flat until the Vantaris audit in March, then climbs steeply through August">
+          <defs>
+            <linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8f53a" stop-opacity=".45"/><stop offset="1" stop-color="#c8f53a" stop-opacity="0"/></linearGradient>
+          </defs>
+          <g stroke="rgba(255,255,255,.09)" stroke-width="1"><path d="M0 22H320M0 55H320M0 88H320M0 121H320"/></g>
+          <g class="mark2"><path d="M98 12V126" stroke="#ffb524" stroke-width="1" stroke-dasharray="3 3"/><rect x="74" y="1" width="48" height="14" rx="7" fill="#ffb524"/><text x="98" y="11" text-anchor="middle" style="fill:#052229;font-weight:600">AUDIT</text></g>
+          <path class="areaH" d="M14 112C46 108 70 114 98 110C128 106 140 92 170 78S226 52 252 40S292 22 308 16L308 126L14 126Z" fill="url(#ga)"/>
+          <path class="dr drH b" pathLength="1" d="M14 112C50 108 70 114 98 110S150 108 200 106S270 104 308 103" fill="none" stroke="#ffb524" stroke-width="2" stroke-linecap="round"/>
+          <path class="dr drH" pathLength="1" d="M14 112C46 108 70 114 98 110C128 106 140 92 170 78S226 52 252 40S292 22 308 16" fill="none" stroke="#c8f53a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <g class="dotH"><circle class="ring" cx="308" cy="16" r="6" fill="#c8f53a" fill-opacity=".5"/><circle cx="308" cy="16" r="4.5" fill="#c8f53a" stroke="#052229" stroke-width="2"/></g>
+          <g><text x="14" y="143">JAN</text><text x="98" y="143" text-anchor="middle">MAR</text><text x="182" y="143" text-anchor="middle">MAY</text><text x="266" y="143" text-anchor="middle">JUL</text><text x="308" y="143" text-anchor="end">AUG</text></g>
+        </svg>
+        <div class="hint"><span>With Vantaris</span><span>Without</span></div>
+      </figure>
+      <a class="cta hcta" href="#top">Get my free funnel audit <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5"/></svg></a>
+    </div>
+  </section>
+
+  <section class="f">
+    <div class="wrap">
+      <div class="hd" id="h-proof">
+        <p class="tag">Proof, not promises</p>
+        <h2>Numbers our clients <em>can bank.</em></h2>
+      </div>
+      <div class="bento">
+        <article class="tile t-a w2">
+          <span class="lab">Revenue recovered for clients, 2025</span>
+          <b class="num dec cnt" style="--w:4;--t:2;--pre:'$';--suf:'M'" role="img" aria-label="4.2 million dollars"></b>
+          <p class="sub">Across 212 audited funnels in retail, SaaS and services.</p>
+          <svg viewBox="0 0 300 70" preserveAspectRatio="none" role="img" aria-label="Twelve bars of monthly recovered revenue rising through the year">
+            <g fill="#0e3d48">
+              <rect class="gr" style="--i:0" x="2" y="52" width="18" height="18" rx="3" fill="#ffb524"/>
+              <rect class="gr" style="--i:1" x="26.6" y="48" width="18" height="22" rx="3" fill="#ffb524"/>
+              <rect class="gr" style="--i:2" x="51.2" y="46" width="18" height="24" rx="3" fill="#ffb524"/>
+              <rect class="gr" style="--i:3" x="75.8" y="40" width="18" height="30" rx="3"/>
+              <rect class="gr" style="--i:4" x="100.4" y="42" width="18" height="28" rx="3"/>
+              <rect class="gr" style="--i:5" x="125" y="34" width="18" height="36" rx="3"/>
+              <rect class="gr" style="--i:6" x="149.6" y="30" width="18" height="40" rx="3"/>
+              <rect class="gr" style="--i:7" x="174.2" y="26" width="18" height="44" rx="3"/>
+              <rect class="gr" style="--i:8" x="198.8" y="20" width="18" height="50" rx="3"/>
+              <rect class="gr" style="--i:9" x="223.4" y="14" width="18" height="56" rx="3"/>
+              <rect class="gr" style="--i:10" x="248" y="8" width="18" height="62" rx="3"/>
+              <rect class="gr" style="--i:11" x="272.6" y="1" width="18" height="69" rx="3" fill="#c8f53a" stroke="#06262d" stroke-width="1.5"/>
+            </g>
+          </svg>
+        </article>
+        <article class="tile t-b">
+          <span class="lab">Average ROI</span>
+          <b class="num dec cnt" style="--w:3;--t:8;--suf:'×'" role="img" aria-label="3.8 times"></b>
+          <p>return on the fee, measured at day 90</p>
+        </article>
+        <article class="tile t-c">
+          <span class="lab">First lift</span>
+          <b class="num int cnt" style="--n:41;--suf:'d'" role="img" aria-label="41 days"></b>
+          <p>median days to the first measurable uplift</p>
+        </article>
+        <article class="tile t-d w2">
+          <svg viewBox="0 0 100 100" role="img" aria-label="Ring chart at 64 percent">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="12"/>
+            <circle class="dr" pathLength="1" cx="50" cy="50" r="40" fill="none" stroke="#c8f53a" stroke-width="12" stroke-linecap="butt" style="--to:.36" transform="rotate(-90 50 50)"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#ffb524" stroke-width="12" style="stroke-dasharray:.36 1;stroke-dashoffset:-.64" pathLength="1" transform="rotate(-90 50 50)" opacity=".9"/>
+          </svg>
+          <div>
+            <span class="lab">Median checkout lift</span>
+            <b class="num int cnt" style="--n:64;--pre:'+';--suf:'%'" role="img" aria-label="plus 64 percent"></b>
+            <p>after the first 12 weeks, on the same ad budget</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="f">
+    <div class="wrap">
+      <div class="hd" id="h-funnel">
+        <p class="tag">Before / after</p>
+        <h2>Same traffic. <em>Different outcome.</em></h2>
+      </div>
+      <figure class="fun" id="fun" data-reel-block>
+        <div class="head">
+          <span class="case">Case file<br>Lantern &amp; Co. · 10,000 visits</span>
+          <span class="state" aria-hidden="true"><span class="sb">Before audit</span><span class="sa">Week 12</span></span>
+        </div>
+        <div class="prog" aria-hidden="true"><i></i></div>
+        <ul class="st">
+          <li style="--b:1;--a:1;--d:0s"><div class="lab"><span>Visits</span><span class="vals"><b class="vb">10,000</b><b class="va">10,000</b></span></div><div class="trk"><i class="bar"><u class="cb"></u><u class="ca"></u></i></div></li>
+          <li style="--b:.58;--a:.74;--d:.08s"><div class="lab"><span>Product views</span><span class="vals"><b class="vb">4,200 · 42%</b><b class="va">6,100 · 61%</b></span></div><div class="trk"><i class="bar"><u class="cb"></u><u class="ca"></u></i></div></li>
+          <li style="--b:.28;--a:.5;--d:.16s"><div class="lab"><span>Add to cart</span><span class="vals"><b class="vb">610 · 6.1%</b><b class="va">1,830 · 18.3%</b></span></div><div class="trk"><i class="bar"><u class="cb"></u><u class="ca"></u></i></div></li>
+          <li style="--b:.12;--a:.3;--d:.24s"><div class="lab"><span>Orders</span><span class="vals"><b class="vb">140 · 1.4%</b><b class="va">520 · 5.2%</b></span></div><div class="trk"><i class="bar"><u class="cb"></u><u class="ca"></u></i></div></li>
+        </ul>
+        <div class="gain">
+          <span class="lab">Revenue<br>per month</span>
+          <span class="rev" role="img" aria-label="From 11.8 thousand to 43.7 thousand dollars"><b class="rb">$11.8k</b><b class="ra">$43.7k</b></span>
+        </div>
+        <ul class="fixes">
+          <li><span>Coupon field bug fixed</span><b>+18%</b></li>
+          <li><span>One-page checkout</span><b>+31%</b></li>
+          <li><span>Free-shipping progress bar</span><b>+9%</b></li>
+        </ul>
+      </figure>
+    </div>
+  </section>
+
+  <section class="f">
+    <div class="wrap">
+      <div class="hd" id="h-steps">
+        <p class="tag">How it works</p>
+        <h2>Three steps. <em>No mystery.</em></h2>
+      </div>
+      <ol class="steps">
+        <li class="step">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="dr" pathLength="1" cx="10" cy="10" r="6.5"/><path class="dr" pathLength="1" d="M15 15l6 6"/></svg>
+          <div><h3>1. Audit</h3><p>We trace every step from ad click to order and rank the leaks by cash.</p></div>
+          <span class="when">Week 1</span>
+          <span class="out">You get: ranked leak map, in cash</span>
+        </li>
+        <li class="step">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="dr" pathLength="1" d="M3 6h18M3 12h18M3 18h18"/><circle class="dr" pathLength="1" cx="8" cy="6" r="2.2"/><circle class="dr" pathLength="1" cx="16" cy="12" r="2.2"/><circle class="dr" pathLength="1" cx="10" cy="18" r="2.2"/></svg>
+          <div><h3>2. Fix</h3><p>Tested changes ship in sprints, each one measured against a control.</p></div>
+          <span class="when">Wk 2–6</span>
+          <span class="out">You get: 6 shipped, measured fixes</span>
+        </li>
+        <li class="step">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="dr" pathLength="1" d="M3 18l6-6 4 4 8-9"/><path class="dr" pathLength="1" d="M15 7h6v6"/></svg>
+          <div><h3>3. Compound</h3><p>Winning tests become the new baseline, and the next leak is already queued.</p></div>
+          <span class="when">Monthly</span>
+          <span class="out">You get: live board + next-leak queue</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="f">
+    <div class="wrap">
+      <div class="hd" id="h-pack">
+        <p class="tag">Packages</p>
+        <h2>Pick your <em>starting line.</em></h2>
+      </div>
+      <div class="bento">
+        <article class="pk hot">
+          <span class="ribbon">Most booked</span>
+          <h3>Growth Sprint</h3>
+          <b class="price">$7,900</b>
+          <span class="per">6 weeks · fixed fee</span>
+          <ul>
+            <li>Full funnel audit</li>
+            <li>6 tested fixes</li>
+            <li>Weekly revenue report</li>
+            <li>Dashboard you keep</li>
+          </ul>
+          <p class="roi"><b>Typical return: 3.8×</b> the fee by day 90, or week 7 is on us.</p>
+        </article>
+        <article class="pk">
+          <h3>Audit</h3>
+          <b class="price">$1,900</b>
+          <span class="per">5 days · one-off</span>
+          <ul><li>Ranked leak map</li><li>Fee credited to a Sprint</li></ul>
+        </article>
+        <article class="pk">
+          <h3>Retainer</h3>
+          <b class="price">$3,400</b>
+          <span class="per">per month</span>
+          <ul><li>2 tests a month</li><li>Live KPI board</li></ul>
+        </article>
+      </div>
+      <p class="scarce">Only 4 audits a month · 2 slots left for November</p>
+    </div>
+  </section>
+
+  <section class="q">
+    <div class="wrap">
+      <figure class="quote">
+        <blockquote>They found a broken coupon step our own team had walked past for a year. Orders nearly quadrupled by spring, and the dashboard still runs our Monday meeting.</blockquote>
+        <figcaption>
+          <div class="by">
+            <svg viewBox="0 0 44 44" role="img" aria-label="Initials MO on an amber circle"><circle cx="22" cy="22" r="22" fill="#ffb524"/><text x="22" y="27.5" text-anchor="middle" font-family="Lexend,sans-serif" font-weight="600" font-size="15" fill="#052229">MO</text></svg>
+            <div><b>Mara Okonkwo</b><span>COO, Lantern &amp; Co. (fictional)</span></div>
+          </div>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="pay" id="pay">
+    <div class="wrap">
+      <div class="finale" data-reel-block>
+        <p class="tag"><i></i>Your move</p>
+        <h2>Find the revenue <em>hiding in your data.</em></h2>
+        <b class="num dec big cntT" style="--w:31;--t:9;--pre:'+$';--suf:'k'" role="img" aria-label="plus 31.9 thousand dollars"></b>
+        <p class="sm">per month · Lantern &amp; Co., week 12</p>
+        <svg viewBox="0 0 300 44" role="img" aria-label="A rising line that ends in an arrow"><path class="drT" pathLength="1" d="M4 38C40 36 60 38 92 32S150 28 182 20S240 8 288 6" fill="none" stroke="#c8f53a" stroke-width="3.2" stroke-linecap="round"/><path class="drT" pathLength="1" d="M276 2l14 4-9 11" fill="none" stroke="#c8f53a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="animation-delay:1.5s"/></svg>
+        <a class="cta" href="#top">Book my free funnel audit <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5"/></svg></a>
+        <span class="fine">Reply within 1 business day. If the audit finds under 3× its fee, you get it back.</span>
+      </div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">Vantaris · a fictional consultancy<small>Developed by Aquarii Technologies</small></div></footer>
+
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  if(!('IntersectionObserver' in window)){
+    document.querySelectorAll('.cnt,.cntT,.dr,.drT').forEach(function(e){e.classList.add('on')});
+    var f=document.getElementById('fun'); if(f) f.classList.add('play');
+    return;
+  }
+  var once=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('on'); once.unobserve(e.target); } });
+  },{threshold:.3});
+  document.querySelectorAll('.cnt,.cntT,.dr,.drT').forEach(function(e){ if(!e.closest('.hero')) once.observe(e); });
+  var fun=document.getElementById('fun');
+  if(fun){
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){ fun.classList.toggle('play',e.isIntersecting); });
+    },{threshold:.4}).observe(fun);
+  }
+})();
+</script>
+</body>
+</html>

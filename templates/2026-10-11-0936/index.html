@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stratos — Websites With Real Depth</title>
+<meta name="description" content="Stratos is a fictional web studio, shown as a spatial landing page: layered cards in CSS 3D that rotate and settle into depth on scroll, with oklch sky gradients.">
+<meta name="theme-color" content="#eef6ff">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=Urbanist:wght@500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<style>
+  :root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+  html.reel{--safe-top:0px;--safe-bottom:0px}
+  .reel .bar .wrap{display:flex;justify-content:center}
+  .reel .back,.reel .bar .go{display:none}
+
+  :root{
+    /* sRGB first, oklch upgrades inside @supports below */
+    --mist:#eef6ff; --mist2:#dcecff; --ink:#15135c; --indigo:#2f35c9; --azure:#3b72ee; --sky:#5fc8ff; --coral:#ff6a55; --peach:#ffb59f;
+    --text:#2a2c5e; --mute:#5b6192; --line:rgba(21,19,92,.12);
+    --g-plane:linear-gradient(165deg,#1d1f8f,#3a6fe8 58%,#8fdcff);
+    --g-deep:linear-gradient(172deg,#15135c,#2a2fb4 58%,#3b78ee);
+    --g-sky:linear-gradient(180deg,#eef6ff,#cfe7ff);
+    --g-coral:linear-gradient(135deg,#ffa07f,#ff5f68);
+    --g-cta:linear-gradient(176deg,#15135c,#4a35b8 55%,#ff7a62);
+    --disp:"Urbanist","Avenir Next","Segoe UI",system-ui,sans-serif;
+    --body:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+    --spring:linear(0,.009,.035 2.1%,.141 4.4%,.723 12.9%,.938 16.7%,1.017 20.5%,1.077 24.9%,1.098 28.5%,1.1 31%,1.082 35%,1.03 41%,1.002 47%,.99 55%,.997 65%,1);
+    --persp:900px;
+  }
+  @supports (background:linear-gradient(in oklch,red,blue)){
+    :root{
+      --g-plane:linear-gradient(in oklch 165deg,oklch(.36 .19 277),oklch(.58 .19 255) 58%,oklch(.87 .1 225));
+      --g-deep:linear-gradient(in oklch 172deg,oklch(.27 .13 277),oklch(.42 .2 275) 58%,oklch(.6 .19 255));
+      --g-sky:linear-gradient(in oklch 180deg,oklch(.975 .02 240),oklch(.9 .06 240));
+      --g-coral:linear-gradient(in oklch 135deg,oklch(.78 .15 45),oklch(.68 .21 18));
+      --g-cta:linear-gradient(in oklch 176deg,oklch(.27 .13 277),oklch(.46 .22 295) 55%,oklch(.74 .18 35));
+    }
+  }
+  @supports (color:oklch(.5 .2 200)){
+    :root{--indigo:oklch(.46 .22 275);--azure:oklch(.6 .2 258);--sky:oklch(.8 .13 230);--coral:oklch(.72 .19 31);--peach:oklch(.85 .09 40)}
+  }
+
+  *{box-sizing:border-box;margin:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--mist);color:var(--text);font:400 16px/1.5 var(--body);overflow-x:hidden}
+  :focus-visible{outline:3px solid var(--coral);outline-offset:3px;border-radius:6px}
+  a{color:inherit}
+  .wrap{max-width:520px;margin:0 auto;padding:0 20px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  h1,h2,h3{font-family:var(--disp);color:var(--ink);text-wrap:balance}
+  .kick{font:600 .7rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--azure)}
+  .btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;background:var(--g-coral);color:var(--ink);font:800 1rem/1 var(--disp);text-decoration:none;
+       box-shadow:0 10px 24px -8px rgba(255,95,104,.7),inset 0 1px 0 rgba(255,255,255,.55)}
+  .btn svg{width:18px;height:18px}
+
+  /* header: wordmark centred */
+  .bar{position:sticky;top:0;z-index:30;background:var(--mist);padding-top:var(--safe-top);border-bottom:1px solid var(--line)}
+  .bar .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:52px}
+  .back{justify-self:start;font:600 .72rem/1 var(--body);text-decoration:none;color:var(--indigo);padding:8px 10px 8px 0}
+  .brand{display:flex;align-items:center;gap:8px;text-decoration:none;font:800 1.18rem/1 var(--disp);letter-spacing:.2em;color:var(--ink)}
+  .brand svg{width:26px;height:26px}
+  .bar .go{justify-self:end;font:700 .74rem/1 var(--disp);text-decoration:none;color:var(--ink);padding:8px 12px;border-radius:999px;background:var(--mist2)}
+
+  /* ============ hero: two tilted planes ============ */
+  .hero{position:relative;overflow:hidden;height:calc(100svh - 52px - var(--safe-top));min-height:610px;max-height:720px;background:var(--g-sky)}
+  .hero-all{position:absolute;inset:0;perspective:var(--persp)}
+  .hero .plane{position:absolute;pointer-events:none}
+  .plane-a{left:14px;right:14px;top:14px;height:318px;border-radius:30px;background:linear-gradient(160deg,rgba(255,255,255,.92),rgba(255,255,255,.3));border:1px solid rgba(255,255,255,.9);
+           box-shadow:0 30px 50px -28px rgba(40,60,160,.35);transform:rotateX(5deg) rotateY(-5deg) translateZ(-30px);transform-origin:50% 100%}
+  .plane-b{left:-12%;right:-12%;top:300px;bottom:-30px;background:var(--g-plane);clip-path:polygon(0 20%,100% 0,100% 100%,0 100%);transform:rotateX(9deg);transform-origin:50% 100%}
+  .plane-c{left:-12%;right:-12%;top:300px;bottom:-30px;background:var(--g-coral);clip-path:polygon(0 20%,100% 0,100% 2.6%,0 23%);transform:rotateX(9deg);transform-origin:50% 100%}
+  .plane-glow{left:50%;top:430px;width:360px;height:260px;margin-left:-180px;background:radial-gradient(closest-side,rgba(255,255,255,.55),rgba(255,255,255,0));opacity:.8}
+  .hero-text{position:relative;z-index:3;padding:30px 20px 0;max-width:520px;margin:0 auto;transform:rotateX(2deg) rotateY(-3deg);transform-origin:0 0}
+  .tagp{display:inline-flex;align-items:center;gap:8px;padding:7px 12px 7px 9px;border-radius:999px;background:#fff;border:1px solid var(--line);font:600 .72rem/1 var(--body);color:var(--ink);box-shadow:0 6px 16px -8px rgba(40,60,160,.4)}
+  .tagp i{width:9px;height:9px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 4px rgba(255,106,85,.2)}
+  h1{margin:16px 0 0;font-weight:900;font-size:clamp(2.35rem,11.8vw,3.7rem);line-height:.98;letter-spacing:-.035em}
+  h1 em{font-style:normal;background:linear-gradient(100deg,#2f35c9,#3b9cf2 70%);background:linear-gradient(in oklch 100deg,oklch(.46 .24 275),oklch(.68 .16 235) 75%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.04em}
+  .lede{margin:14px 0 18px;max-width:31ch;font-size:1.02rem;line-height:1.45;color:var(--text);text-wrap:pretty}
+  .stage{position:absolute;left:0;right:0;bottom:0;height:340px;z-index:2;perspective:1000px;pointer-events:none}
+  .bob{position:absolute;left:50%;top:70px;width:0;height:0;transform-style:preserve-3d;animation:bob 6s ease-in-out 1.6s infinite alternate}
+  @keyframes bob{to{transform:translateY(-8px)}}
+  .fan{position:absolute;left:0;top:0;transform-style:preserve-3d;transform:rotateX(10deg)}
+  .pc{position:absolute;left:-65px;top:0;width:130px;height:182px;padding:7px;border-radius:18px;background:linear-gradient(170deg,#fff,#eaf4ff);border:1px solid rgba(255,255,255,.95);
+      box-shadow:0 22px 30px -14px rgba(14,16,92,.55),inset 0 1px 0 #fff;
+      transform:translate3d(var(--x),var(--y),var(--z)) rotate(var(--r)) rotateY(var(--ry));
+      animation:fan 1.15s var(--spring) calc(.3s + var(--i)*.09s) backwards}
+  @keyframes fan{from{transform:translate3d(0,70px,-140px) rotate(0deg) rotateY(0deg);opacity:0}30%{opacity:1}}
+  .pc .art{display:block;position:relative;height:108px;border-radius:12px;overflow:hidden;background:linear-gradient(160deg,var(--a),var(--b))}
+  .pc .art::before{content:"";position:absolute;width:74px;height:74px;border-radius:50%;right:-14px;top:-16px;background:rgba(255,255,255,.4)}
+  .pc .art::after{content:"";position:absolute;left:12px;bottom:12px;width:58px;height:34px;border-radius:9px;background:rgba(255,255,255,.88);box-shadow:16px -14px 0 -4px rgba(255,255,255,.5)}
+  .pc .ln{display:block;height:7px;border-radius:4px;margin:10px 4px 0;background:var(--line)}
+  .pc .ln.s{width:52%;margin-top:7px;background:rgba(21,19,92,.07)}
+  .pc.c .art::after{width:46px;height:46px;border-radius:50%;left:14px;bottom:14px;box-shadow:24px -10px 0 -10px rgba(255,255,255,.55)}
+  .pc.d .art::before{border-radius:14px;width:60px;height:60px;transform:rotate(18deg)}
+  .pc.e .art::after{border-radius:4px;height:18px;width:70px;box-shadow:0 -24px 0 0 rgba(255,255,255,.5)}
+  .pc.top{width:142px;height:196px;left:-71px;top:-8px}
+  .pc.top .art{height:122px}
+
+  /* ============ proof ============ */
+  section{position:relative;overflow-x:clip}
+  .proof{padding:22px 0 8px}
+  .plate{display:grid;grid-template-columns:repeat(3,1fr);border-radius:24px;background:linear-gradient(160deg,#fff,#e6f1ff);border:1px solid #fff;box-shadow:0 24px 40px -26px rgba(40,60,160,.45)}
+  .plate div{padding:16px 6px 16px 14px;position:relative}
+  .plate div+div::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:1px;background:var(--line)}
+  .plate b{display:block;font:900 2.1rem/1 var(--disp);color:var(--ink);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .plate b em{font-style:normal;color:var(--coral);font-size:.62em;margin-left:1px}
+  .plate div>span{display:block;margin-top:6px;font-size:.72rem;line-height:1.3;color:var(--mute)}
+  @property --n{syntax:"<integer>";initial-value:0;inherits:true}
+  .num{--n:var(--v)}
+  .num::before{counter-reset:n var(--n);content:counter(n)}
+
+  /* ============ work: staggered card ladder ============ */
+  .work{margin-top:26px;padding:44px 0 50px;background:var(--g-deep);color:#fff;overflow:hidden}
+  .work::before{content:"";position:absolute;right:-90px;top:-70px;width:340px;height:340px;border-radius:50%;background:radial-gradient(closest-side,rgba(95,200,255,.5),rgba(95,200,255,0))}
+  .work .kick{color:var(--sky)}
+  .work h2{color:#fff;font-weight:900;font-size:clamp(2rem,10vw,2.9rem);line-height:1;letter-spacing:-.03em;margin:10px 0 8px}
+  .work .sub{color:#c6d4ff;max-width:34ch;margin-bottom:26px}
+  .ladder{list-style:none;padding:0;display:flex;flex-direction:column;gap:20px}
+  .ladder li{width:84%}
+  .ladder li:nth-child(even){align-self:flex-end}
+  .job{border-radius:24px;overflow:hidden;background:linear-gradient(165deg,#ffffff,#e4f0ff);color:var(--text);border:1px solid #fff;box-shadow:0 30px 40px -22px rgba(4,6,60,.75)}
+  .job svg{display:block;width:100%;height:auto}
+  .job .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;padding:12px 16px 15px}
+  .job h3{font-weight:800;font-size:1.28rem;line-height:1.1;letter-spacing:-.02em}
+  .job p{font-size:.78rem;color:var(--mute);margin-top:3px}
+  .job .res{font:600 .64rem/1.1 var(--body);color:var(--mute);text-align:right;text-transform:uppercase;letter-spacing:.06em}
+  .job .res b{display:block;font:900 1.4rem/1 var(--disp);color:var(--coral);letter-spacing:-.02em;text-transform:none}
+  .fl{animation:fl 5s ease-in-out infinite alternate}
+  .fl2{animation-duration:6.5s;animation-delay:-2s}
+  @keyframes fl{to{transform:translateY(-5px)}}
+
+  /* ============ before / after ============ */
+  .ba-sec{padding:50px 0 24px;background:var(--g-sky)}
+  .ba-sec h2,.proc h2,.pk h2{font-weight:900;font-size:clamp(2rem,10vw,2.9rem);line-height:1;letter-spacing:-.03em;margin:10px 0 8px}
+  .ba-sec .sub,.proc .sub,.pk .sub{color:var(--mute);max-width:36ch;margin-bottom:22px}
+  .ba{position:relative;height:300px;border-radius:26px;overflow:hidden;background:#e3e8ef;border:1px solid #fff;box-shadow:0 30px 44px -28px rgba(40,60,160,.55)}
+  .before{position:absolute;inset:0;padding:18px 16px;background:linear-gradient(180deg,#eceff3,#d9dee5)}
+  .bw-nav{display:flex;gap:7px;align-items:center}
+  .bw-nav i{display:block;height:10px;border-radius:2px;background:#bcc3cd}
+  .bw-t{height:18px;border-radius:2px;background:#aab2be;margin-top:22px;width:64%}
+  .bw-t+.bw-t{margin-top:8px;width:46%}
+  .bw-p{height:8px;border-radius:2px;background:#c3c9d2;margin-top:12px;width:56%}
+  .bw-p+.bw-p{margin-top:7px;width:48%}
+  .bw-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px;width:52%}
+  .bw-g i{display:block;height:54px;background:#c9cfd8;border-radius:2px}
+  .chip{position:absolute;top:14px;padding:6px 10px;border-radius:999px;font:700 .64rem/1 var(--body);letter-spacing:.12em;text-transform:uppercase}
+  .before .chip{left:14px;top:auto;bottom:14px;background:#fff;color:#69707d}
+  .after-wrap{position:absolute;inset:0;transform:translateX(46%)}
+  .after-wrap::before{content:"";position:absolute;left:-1.5px;top:0;bottom:0;width:3px;background:var(--coral);z-index:4}
+  .after-wrap::after{content:"‹ ›";position:absolute;left:-17px;top:50%;margin-top:-17px;width:34px;height:34px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font:800 .8rem/1 var(--disp);letter-spacing:-.05em;z-index:4;box-shadow:0 6px 14px -4px rgba(14,16,92,.5)}
+  .after-clip{position:absolute;inset:0;overflow:hidden}
+  .after-in{position:absolute;inset:0;transform:translateX(-46%);background:var(--g-plane);perspective:600px}
+  .after-in .chip{right:14px;left:auto;top:auto;bottom:14px;background:var(--g-coral);color:var(--ink)}
+  .aw-nav{position:absolute;left:18px;right:16px;top:18px;display:flex;gap:7px;justify-content:flex-end}
+  .aw-nav i{display:block;height:10px;width:26px;border-radius:5px;background:rgba(255,255,255,.55)}
+  .aw-t{position:absolute;right:18px;top:62px;width:42%;height:18px;border-radius:9px;background:#fff}
+  .aw-t+.aw-t{top:88px;width:30%;background:rgba(255,255,255,.6)}
+  .aw-card{position:absolute;border-radius:16px;background:linear-gradient(160deg,rgba(255,255,255,.95),rgba(255,255,255,.55));border:1px solid rgba(255,255,255,.9);box-shadow:0 18px 22px -10px rgba(10,12,90,.55)}
+  .aw-1{right:16px;bottom:78px;width:150px;height:92px;transform:rotateX(18deg) rotateY(-16deg) translateZ(30px)}
+  .aw-2{right:60px;bottom:58px;width:150px;height:92px;background:linear-gradient(160deg,#ffb59f,#ff6a55);transform:rotateX(18deg) rotateY(-16deg) translateZ(0)}
+  .aw-3{right:104px;bottom:38px;width:150px;height:92px;background:linear-gradient(160deg,rgba(255,255,255,.35),rgba(255,255,255,.1));transform:rotateX(18deg) rotateY(-16deg) translateZ(-30px)}
+  .aw-1::after{content:"";position:absolute;left:14px;top:16px;width:54px;height:9px;border-radius:5px;background:var(--line);box-shadow:0 16px 0 rgba(21,19,92,.08),0 32px 0 rgba(21,19,92,.08)}
+  .deltas{display:flex;gap:10px;margin-top:14px}
+  .deltas div{flex:1;padding:12px 14px;border-radius:18px;background:#fff;border:1px solid var(--line)}
+  .deltas b{display:block;font:900 1.5rem/1 var(--disp);color:var(--indigo);letter-spacing:-.02em}
+  .deltas span{font-size:.74rem;color:var(--mute)}
+
+  /* ============ process ============ */
+  .proc{padding:34px 0 24px;background:var(--mist)}
+  .steps{list-style:none;padding:0;display:flex;flex-direction:column;gap:14px}
+  .step{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;padding:16px 18px;border-radius:22px;background:linear-gradient(160deg,#fff,#e8f2ff);border:1px solid #fff;box-shadow:0 20px 30px -22px rgba(40,60,160,.55)}
+  .step .orb{grid-row:span 2;width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font:900 1.25rem/1 var(--disp);color:#fff;
+             background:radial-gradient(circle at 32% 26%,#9fdcff,#3b72ee 55%,#1d1f8f);box-shadow:0 10px 16px -6px rgba(47,53,201,.7),inset 0 -4px 8px rgba(10,12,90,.35)}
+  .step:nth-child(2) .orb{background:radial-gradient(circle at 32% 26%,#ffd0c0,#ff6a55 58%,#c63a52)}
+  .step:nth-child(3) .orb{background:radial-gradient(circle at 32% 26%,#d8d4ff,#7a6bf0 55%,#3a2fb0)}
+  .step h3{font-weight:800;font-size:1.2rem;line-height:1.1;letter-spacing:-.02em;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+  .step h3 small{font:600 .66rem/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--azure)}
+  .step p{font-size:.86rem;line-height:1.4;color:var(--mute)}
+
+  /* ============ packages ============ */
+  .pk{padding:34px 0 30px;background:var(--mist)}
+  .pkgs{display:flex;flex-direction:column;gap:16px}
+  .pkg{padding:17px 20px 15px;border-radius:26px;background:linear-gradient(160deg,#fff,#e6f1ff);border:1px solid #fff;box-shadow:0 26px 36px -26px rgba(40,60,160,.6)}
+  .pkg .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .pkg h3{font-weight:900;font-size:1.5rem;line-height:1;letter-spacing:-.025em}
+  .pkg .for{font-size:.8rem;color:var(--mute);margin-top:5px}
+  .pkg .price{font:900 1.9rem/1 var(--disp);color:var(--ink);letter-spacing:-.03em;text-align:right}
+  .pkg .price small{display:block;font:500 .66rem/1.2 var(--body);letter-spacing:.04em;color:var(--mute);margin-top:3px}
+  .pkg ul{list-style:none;padding:0;margin:11px 0 13px;display:grid;gap:5px;font-size:.88rem}
+  .pkg li{display:flex;gap:9px;align-items:flex-start;line-height:1.35}
+  .pkg li::before{content:"";flex:none;width:16px;height:16px;margin-top:2px;border-radius:50%;background:var(--sky) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.4l2.3 2.3 4.7-5' fill='none' stroke='%2315135c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
+  .pkg .btn2{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:999px;border:1.5px solid var(--ink);font:800 .95rem/1 var(--disp);color:var(--ink);text-decoration:none}
+  .pkg.hot{background:var(--g-plane);border-color:rgba(255,255,255,.4);color:#fff;box-shadow:0 30px 40px -22px rgba(30,40,170,.8)}
+  .pkg.hot h3,.pkg.hot .price{color:#fff}
+  .pkg.hot .for,.pkg.hot .price small{color:#d6e4ff}
+  .pkg.hot li::before{background-color:#fff}
+  .pkg.hot .btn2{border:0;background:var(--g-coral);color:var(--ink);box-shadow:0 10px 22px -8px rgba(255,95,104,.8)}
+  .badge{display:inline-block;margin-bottom:8px;padding:5px 9px;border-radius:999px;background:var(--g-coral);color:var(--ink);font:800 .62rem/1 var(--body);letter-spacing:.12em;text-transform:uppercase}
+
+  /* ============ testimonial ============ */
+  .tq{padding:20px 0 110px;background:var(--mist)}
+  .qwrap{position:relative;padding:0 8px}
+  .qwrap::before,.qwrap::after{content:"";position:absolute;left:20px;right:20px;border-radius:28px;z-index:0}
+  .qwrap::before{top:-14px;height:90%;background:var(--g-coral);opacity:.55;transform:rotate(-3deg)}
+  .qwrap::after{top:-7px;height:92%;background:var(--g-plane);opacity:.7;transform:rotate(2deg)}
+  .quote{position:relative;z-index:1;padding:22px 22px 18px;border-radius:28px;background:linear-gradient(160deg,#fff,#e9f3ff);border:1px solid #fff;box-shadow:0 30px 40px -24px rgba(40,60,160,.65)}
+  .quote svg.q{width:34px;height:26px;margin-bottom:10px}
+  .quote blockquote{font:700 1.28rem/1.28 var(--disp);color:var(--ink);letter-spacing:-.015em;text-wrap:balance}
+  .quote figcaption{display:flex;align-items:center;gap:12px;margin-top:18px;font-size:.82rem;color:var(--mute)}
+  .quote figcaption b{display:block;font:700 .95rem/1.2 var(--disp);color:var(--ink)}
+  .ava{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:800 .95rem/1 var(--disp);color:#fff;background:radial-gradient(circle at 30% 25%,#9fdcff,#2f35c9)}
+
+  /* ============ closing CTA ============ */
+  .fin{padding:44px 0 40px;background:var(--g-cta);color:#fff;overflow:hidden;text-align:center}
+  .fin h2{color:#fff;font-weight:900;font-size:clamp(2.1rem,10.6vw,3.1rem);line-height:.98;letter-spacing:-.035em;margin:12px 0 0}
+  .fin .kick{color:var(--peach)}
+  .slabs{position:relative;height:240px;margin:26px auto 0;perspective:900px}
+  .slabs .ws{position:absolute;left:50%;top:56%;width:0;height:0;transform-style:preserve-3d;transform:rotateX(58deg) rotateZ(-36deg)}
+  .slab{position:absolute;left:-90px;top:-90px;width:180px;height:180px;border-radius:26px;border:1.5px solid rgba(255,255,255,.7);
+        background:linear-gradient(145deg,rgba(255,255,255,.5),rgba(255,255,255,.12));box-shadow:0 0 0 1px rgba(255,255,255,.12) inset;
+        transform:translateZ(calc(var(--i)*26px))}
+  .slab.s0{background:linear-gradient(145deg,#8fdcff,#3b72ee)}
+  .slab.s1{background:linear-gradient(145deg,rgba(143,220,255,.75),rgba(59,114,238,.5))}
+  .slab.s3{background:linear-gradient(145deg,rgba(255,181,159,.7),rgba(255,106,85,.4))}
+  .slab.s4{background:var(--g-coral);border-color:#fff;box-shadow:0 0 36px rgba(255,140,110,.7)}
+  .slab.s4::after{content:"";position:absolute;inset:30%;border-radius:12px;border:3px solid rgba(21,19,92,.85)}
+  .shadow-pad{position:absolute;left:50%;bottom:6px;width:220px;height:34px;margin-left:-110px;border-radius:50%;background:radial-gradient(closest-side,rgba(8,6,60,.5),rgba(8,6,60,0))}
+  .fin .lede2{margin:14px auto 22px;max-width:30ch;color:#ece8ff;font-size:1.02rem;text-wrap:pretty}
+  .urgent{display:inline-flex;align-items:center;gap:8px;margin:0 0 18px;padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);font:600 .76rem/1 var(--body)}
+  .urgent i{width:8px;height:8px;border-radius:50%;background:#ffb59f;animation:pulse 1.8s ease-in-out infinite}
+  @keyframes pulse{50%{transform:scale(1.5);opacity:.5}}
+  .fin .btn{font-size:1.08rem;min-height:54px;padding:0 28px}
+  .fin .reply{margin-top:10px;font-size:.78rem;color:#d9d3ff}
+  footer{background:#0f0e47;color:#b9c3f2;padding:22px 0 calc(22px + var(--safe-bottom));font-size:.78rem;text-align:center}
+  footer small{display:block;margin-top:6px;font-size:.7rem;color:#8e98cf}
+
+  /* ============ scroll-driven 3D settle (progressive enhancement; default = finished flat state) ============ */
+  @keyframes settle{
+    from{opacity:0;transform:perspective(900px) rotateX(40deg) rotateY(var(--ry,-18deg)) translateZ(-170px) translateY(36px)}
+    to{opacity:1;transform:perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0px) translateY(0px)}
+  }
+  @keyframes wipe{from{translate:54% 0}to{translate:0 0}}
+  @keyframes unwipe{from{translate:-54% 0}to{translate:0 0}}
+  @keyframes cnt{from{--n:0}}
+  @keyframes drift{to{translate:0 -34px}}
+  @keyframes driftb{to{translate:0 -18px}}
+  @keyframes assemble{
+    from{transform:translateZ(calc(var(--i)*120px)) rotateZ(calc(var(--i)*14deg - 28deg));opacity:.2}
+    to{transform:translateZ(calc(var(--i)*26px)) rotateZ(0deg);opacity:1}
+  }
+  @keyframes headin{from{opacity:0;translate:0 24px}to{opacity:1;translate:0 0}}
+  @supports (animation-timeline:view()){
+    .rise{animation:settle linear both;animation-timeline:view();animation-range:entry 0% entry 80%;transform-origin:50% 100%}
+    .ladder li:nth-child(odd) .rise{--ry:22deg;transform-origin:0 100%}
+    .ladder li:nth-child(even) .rise{--ry:-22deg;transform-origin:100% 100%}
+    .pkg.rise{--ry:14deg}
+    .step.rise{--ry:-12deg}
+    .headin{animation:headin linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+    .num{animation:cnt linear both;animation-timeline:view();animation-range:entry 20% cover 28%}
+    .after-wrap{animation:wipe linear both;animation-timeline:view();animation-range:entry 30% cover 22%}
+    .after-in{animation:unwipe linear both;animation-timeline:view();animation-range:entry 30% cover 22%}
+    .plane-b,.plane-c{animation:driftb linear both;animation-timeline:scroll(root);animation-range:0 500px}
+    .stage{animation:drift linear both;animation-timeline:scroll(root);animation-range:0 500px}
+    .slab{animation:assemble linear both;animation-timeline:view();animation-range:entry 10% cover 42%}
+  }
+
+  @media (min-width:700px){
+    .hero{max-height:760px}
+    .wrap{max-width:560px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <a class="back" href="/">← All templates</a>
+  <a class="brand" href="#top" aria-label="Stratos home">
+    <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 3l10 5-10 5L3 8z" fill="#5fc8ff"/><path d="M3 12.5l10 5 10-5" fill="none" stroke="#3b72ee" stroke-width="2.4" stroke-linejoin="round"/><path d="M3 17.5l10 5 10-5" fill="none" stroke="#ff6a55" stroke-width="2.4" stroke-linejoin="round"/></svg>
+    STRATOS</a>
+  <a class="go" href="#book">Start</a>
+</div></header>
+
+<main id="top">
+  <section class="hero">
+  <div class="hero-all" data-reel-block>
+    <div class="plane plane-a" aria-hidden="true"></div>
+    <div class="plane plane-b" aria-hidden="true"></div>
+    <div class="plane plane-c" aria-hidden="true"></div>
+    <div class="plane plane-glow" aria-hidden="true"></div>
+    <div class="hero-text">
+      <p class="tagp"><i></i>Web studio · spatial product sites</p>
+      <h1>Websites with <em>real depth.</em></h1>
+      <p class="lede">We build immersive product sites that make visitors stop scrolling and start booking demos.</p>
+      <a class="btn" href="#book">Book a depth review
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5L14.5 9 10 13.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+    <div class="stage" aria-hidden="true"><div class="bob"><div class="fan">
+      <div class="pc" style="--x:-136px;--y:34px;--r:-17deg;--ry:18deg;--z:-60px;--i:0;--a:#ffd0c0;--b:#ff6a55"><span class="art"></span><span class="ln"></span><span class="ln s"></span></div>
+      <div class="pc c" style="--x:-68px;--y:10px;--r:-8deg;--ry:10deg;--z:-30px;--i:1;--a:#c6f0ff;--b:#3b9cf2"><span class="art"></span><span class="ln"></span><span class="ln s"></span></div>
+      <div class="pc e" style="--x:136px;--y:34px;--r:17deg;--ry:-18deg;--z:-60px;--i:0;--a:#d8d4ff;--b:#6a5cf0"><span class="art"></span><span class="ln"></span><span class="ln s"></span></div>
+      <div class="pc d" style="--x:68px;--y:10px;--r:8deg;--ry:-10deg;--z:-30px;--i:1;--a:#fff0c8;--b:#ff9a6b"><span class="art"></span><span class="ln"></span><span class="ln s"></span></div>
+      <div class="pc top" style="--x:0px;--y:-6px;--r:0deg;--ry:0deg;--z:20px;--i:2;--a:#8fdcff;--b:#2f35c9"><span class="art"></span><span class="ln"></span><span class="ln s"></span></div>
+    </div></div></div>
+  </div>
+  </section>
+
+  <section class="proof">
+    <div class="wrap">
+      <div class="plate rise" role="group" aria-label="Results in numbers">
+        <div><b><span class="num" style="--v:212"></span><em>%</em></b><span>more demo requests</span></div>
+        <div><b><span class="num" style="--v:38"></span></b><span>sites shipped in 3D</span></div>
+        <div><b><span class="num" style="--v:98"></span></b><span>mobile speed score</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="work">
+    <div class="wrap">
+      <p class="kick headin">Selected work</p>
+      <h2 class="headin">Cards that <br>climb the page.</h2>
+      <p class="sub headin">Three launches where depth did the selling.</p>
+      <ol class="ladder">
+        <li><article class="job rise">
+          <svg viewBox="0 0 300 140" role="img" aria-label="Stacked glowing rings around a coral sphere">
+            <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb59f"/><stop offset="1" stop-color="#ff5f68"/></linearGradient>
+            <radialGradient id="s1" cx=".32" cy=".28" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#9fdcff"/><stop offset="1" stop-color="#2f35c9"/></radialGradient></defs>
+            <rect width="300" height="140" fill="url(#g1)"/>
+            <g fill="none" stroke="#fff" stroke-width="2"><ellipse cx="150" cy="104" rx="104" ry="24" opacity=".35"/><ellipse cx="150" cy="92" rx="86" ry="20" opacity=".55"/><ellipse cx="150" cy="80" rx="68" ry="16" opacity=".8"/></g>
+            <g class="fl"><circle cx="150" cy="56" r="26" fill="url(#s1)"/><ellipse cx="150" cy="56" rx="44" ry="9" fill="none" stroke="#fff" stroke-width="2.5" opacity=".9"/></g>
+            <circle cx="52" cy="34" r="6" fill="#fff" opacity=".7"/><circle cx="252" cy="108" r="9" fill="#fff" opacity=".5"/>
+          </svg>
+          <div class="meta"><div><h3>Orbitone</h3><p>Speaker launch site</p></div><span class="res"><b>+212%</b>pre-orders</span></div>
+        </article></li>
+        <li><article class="job rise">
+          <svg viewBox="0 6 300 140" role="img" aria-label="A tower of isometric cubes in blue and coral">
+            <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8fdcff"/><stop offset="1" stop-color="#3a3fd6"/></linearGradient></defs>
+            <rect y="6" width="300" height="140" fill="url(#g2)"/>
+            <g id="cubeA"><path d="M150 48l28 16-28 16-28-16z" fill="#fff"/><path d="M122 64l28 16v30l-28-16z" fill="#b9c8ff"/><path d="M178 64l-28 16v30l28-16z" fill="#7d8ef0"/></g>
+            <use href="#cubeA" x="-28" y="16"/><use href="#cubeA" x="28" y="16"/><use href="#cubeA" y="32"/>
+            <g class="fl2 fl"><path d="M150 18l28 16-28 16-28-16z" fill="#ffd0c0"/><path d="M122 34l28 16v30l-28-16z" fill="#ff8a70"/><path d="M178 34l-28 16v30l28-16z" fill="#e8483f"/></g>
+            <circle cx="236" cy="38" r="7" fill="#fff" opacity=".6"/><circle cx="58" cy="112" r="10" fill="#fff" opacity=".35"/>
+          </svg>
+          <div class="meta"><div><h3>Crateway</h3><p>Logistics platform tour</p></div><span class="res"><b>2.6×</b>time on page</span></div>
+        </article></li>
+        <li><article class="job rise">
+          <svg viewBox="0 0 300 140" role="img" aria-label="A phone outline with floating tilted cards">
+            <defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8d4ff"/><stop offset="1" stop-color="#5a4be0"/></linearGradient></defs>
+            <rect width="300" height="140" fill="url(#g3)"/>
+            <rect x="116" y="14" width="68" height="132" rx="14" fill="#15135c"/><rect x="121" y="19" width="58" height="122" rx="10" fill="#2f35c9"/>
+            <rect x="130" y="32" width="40" height="8" rx="4" fill="#fff" opacity=".85"/><rect x="130" y="46" width="26" height="6" rx="3" fill="#fff" opacity=".45"/>
+            <g class="fl"><rect x="34" y="40" width="96" height="46" rx="10" fill="#fff" transform="rotate(-9 82 63)"/><rect x="46" y="54" width="40" height="7" rx="3.5" fill="#bcc3ec" transform="rotate(-9 82 63)"/><rect x="46" y="68" width="24" height="6" rx="3" fill="#d9defa" transform="rotate(-9 82 63)"/></g>
+            <g class="fl fl2"><rect x="172" y="68" width="96" height="46" rx="10" fill="#ff8a70" transform="rotate(8 220 91)"/><circle cx="196" cy="91" r="9" fill="#fff" opacity=".85" transform="rotate(8 220 91)"/><rect x="212" y="85" width="40" height="7" rx="3.5" fill="#fff" opacity=".8" transform="rotate(8 220 91)"/></g>
+          </svg>
+          <div class="meta"><div><h3>Fathom Pay</h3><p>Fintech app showcase</p></div><span class="res"><b>−41%</b>bounce rate</span></div>
+        </article></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="ba-sec">
+    <div class="wrap">
+      <p class="kick headin">Before and after</p>
+      <h2 class="headin">Same words.<br>Three more layers.</h2>
+      <p class="sub headin">Content never changes. What changes is how far it reaches.</p>
+      <div class="ba rise" role="img" aria-label="Before: a flat grey wireframe page. After: the same page with layered cards floating in depth over a blue sky gradient.">
+        <div class="before" aria-hidden="true">
+          <div class="bw-nav"><i style="width:34px"></i><i style="width:20px"></i><i style="width:20px"></i></div>
+          <div class="bw-t"></div><div class="bw-t"></div>
+          <div class="bw-p"></div><div class="bw-p"></div>
+          <div class="bw-g"><i></i><i></i></div>
+          <span class="chip">Before · flat</span>
+        </div>
+        <div class="after-wrap" aria-hidden="true"><div class="after-clip"><div class="after-in">
+          <div class="aw-nav"><i></i><i></i><i style="background:#ff8a70"></i></div>
+          <div class="aw-t"></div><div class="aw-t"></div>
+          <div class="aw-card aw-3"></div><div class="aw-card aw-2"></div><div class="aw-card aw-1"></div>
+          <span class="chip">After · Stratos</span>
+        </div></div></div>
+      </div>
+      <div class="deltas rise">
+        <div><b>−34%</b><span>exit rate</span></div>
+        <div><b>+2.6×</b><span>scroll depth</span></div>
+        <div><b>4.9★</b><span>client rating</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="proc">
+    <div class="wrap">
+      <p class="kick headin">How it works</p>
+      <h2 class="headin">Three steps.<br>Four weeks.</h2>
+      <ol class="steps">
+        <li class="step rise"><span class="orb">1</span><h3>Map the scene <small>Week 1</small></h3><p>We find the one moment your product should own, then storyboard it.</p></li>
+        <li class="step rise"><span class="orb">2</span><h3>Build the layers <small>Weeks 2–3</small></h3><p>Real code, real 3D, tuned to run at 60fps on a phone.</p></li>
+        <li class="step rise"><span class="orb">3</span><h3>Launch and tune <small>Week 4</small></h3><p>We ship, watch the numbers, and polish what visitors touch most.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="pk">
+    <div class="wrap">
+      <p class="kick headin">Packages</p>
+      <h2 class="headin">Pick your altitude.</h2>
+      <p class="sub headin">Fixed prices, fixed dates, no surprise invoices.</p>
+      <div class="pkgs">
+        <article class="pkg rise">
+          <div class="top"><div><h3>Layer</h3><p class="for">One-page launch site</p></div><p class="price">$6.8k<small>3 weeks</small></p></div>
+          <ul><li>One hero scene in 3D</li><li>Up to four sections</li><li>Mobile-first build</li></ul>
+          <a class="btn2" href="#book">Choose Layer</a>
+        </article>
+        <article class="pkg hot rise">
+          <div class="top"><div><span class="badge">Most booked</span><h3>Depth</h3><p class="for">The full spatial site</p></div><p class="price">$14.5k<small>5 weeks</small></p></div>
+          <ul><li>Scroll-driven 3D system</li><li>Eight sections and a product scene</li><li>Launch-week tuning included</li></ul>
+          <a class="btn2" href="#book">Choose Depth</a>
+        </article>
+        <article class="pkg rise">
+          <div class="top"><div><h3>Horizon</h3><p class="for">Multi-product platform</p></div><p class="price">$28k+<small>8 weeks</small></p></div>
+          <ul><li>Shared 3D design system</li><li>Up to five product pages</li><li>A senior team on call</li></ul>
+          <a class="btn2" href="#book">Talk to us</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="tq">
+    <div class="wrap">
+      <div class="qwrap">
+        <figure class="quote rise">
+          <svg class="q" viewBox="0 0 34 26" aria-hidden="true"><path d="M0 26V13C0 5 4 1 12 0v6C8 7 7 9 7 12h6v14zm20 0V13c0-8 4-12 12-13v6c-4 1-5 3-5 6h6v14z" fill="#ff6a55"/></svg>
+          <blockquote>Our launch page finally feels like the product. Demo requests tripled in a month.</blockquote>
+          <figcaption><span class="ava" aria-hidden="true">MO</span><span><b>Maren Ostrow</b>Head of Product, Fathom Pay</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="fin" id="book">
+    <div class="wrap">
+      <div class="fin-top" data-reel-block><div class="hg"><p class="kick headin">Your turn</p>
+      <h2 class="headin">Give your launch a third dimension.</h2></div>
+      <div class="slabs" aria-hidden="true"><div class="ws">
+        <span class="slab s0" style="--i:0"></span><span class="slab s1" style="--i:1"></span><span class="slab s2" style="--i:2"></span><span class="slab s3" style="--i:3"></span><span class="slab s4" style="--i:4"></span>
+      </div><span class="shadow-pad"></span></div></div>
+      <div class="fin-cta" data-reel-block><p class="urgent"><i></i>Three build slots left for November</p>
+      <div><a class="btn" href="#top">Book a free depth review
+        <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9h11M10 4.5L14.5 9 10 13.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+      <p class="reply">We reply within one working day.</p></div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">Stratos · a fictional web studio<small>Developed by Aquarii Technologies</small></div></footer>
+</body>
+</html>
