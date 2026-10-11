@@ -63,6 +63,8 @@ CLAUDE.md.
    Open the screenshots it saves in /tmp/reel-audit/ and fix every "CUTS" line (split or
    resize blocks, add gaps, or pin pauses with data-reel-stop) until it says all pauses are
    clean and every pause looks like a finished frame. If Playwright is unavailable, say so.
+3b2. The same audit prints SIDE-TIGHT lines when text sits closer than 26px (icons/buttons 18px) to a side: Instagram crops ≈14–20px off each side, so
+   inset those (≈30px phone gutters) or mark pure decoration aria-hidden / data-reel-bleed. It must say "side safety: OK".
 3c. Run `node scripts/reel-perf.mjs ID` (smoothness under a simulated slower phone, see "Smooth when
    auto-scrolled" in CLAUDE.md). It must say "smooth"; if it says CHECK, simplify the heaviest effects
    (animated blur/box-shadow/filter, big canvases) and re-run. If Playwright is unavailable, say so.

@@ -246,6 +246,22 @@
     h1{font-size:3.6rem}
     .stack{height:310px}
   }
+  /* phones: keep everything >= 26px from the sides (Instagram crops ~14-20px per side) */
+  @media (max-width:480px){
+    .wrap{padding-left:30px;padding-right:30px}
+    .bar{padding-left:26px;padding-right:26px}
+    .ladder{padding-left:26px;gap:12px}
+    .step p{font-size:.82rem;margin-top:4px}
+    .step .when{margin-top:8px}
+    .sn{font-size:1.7rem}
+    .ladder::before{left:5px}
+    .step{margin-left:calc(var(--i)*14px);padding:14px 14px 14px 12px;gap:10px}
+    .step::before{left:calc(-26px - var(--i)*14px)}
+    .step::after{left:calc(-13px - var(--i)*14px);width:calc(13px + var(--i)*14px)}
+    .stat,.tier{padding-left:22px;padding-right:22px}
+    .duo .stat{padding-left:16px;padding-right:16px}
+    .ribbon{left:22px}
+  }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation:none!important;transition:none!important}
     html{scroll-behavior:auto}
@@ -299,7 +315,7 @@
 
   <section class="belt" aria-label="What we automate">
     <div aria-hidden="true"><span>Inbox triage</span><b>✦</b><span>Invoice chasing</span><b>✦</b><span>Bookings</span><b>✦</b><span>Lead follow-up</span><b>✦</b><span>Weekly reports</span><b>✦</b><span>Inbox triage</span><b>✦</b><span>Invoice chasing</span><b>✦</b><span>Bookings</span><b>✦</b><span>Lead follow-up</span><b>✦</b><span>Weekly reports</span><b>✦</b></div>
-    <p class="sr">Inbox triage, invoice chasing, bookings, lead follow-up and weekly reports.</p>
+    <p class="sr" data-reel-bleed>Inbox triage, invoice chasing, bookings, lead follow-up and weekly reports.</p>
   </section>
 
   <section class="sec" id="proof">

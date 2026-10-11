@@ -59,7 +59,7 @@
   .wrap{max-width:560px;margin:0 auto;padding:0 14px}
   .tag{display:inline-flex;align-items:center;gap:8px;font:400 .7rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--blue)}
   .tag::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--amber);transform:rotate(45deg)}
-  h2{font-weight:800;font-size:clamp(1.9rem,8.6vw,2.6rem);line-height:1;letter-spacing:-.035em;margin:12px 0 10px}
+  h2{font-weight:800;font-size:clamp(1.9rem,8.6vw,2.6rem);line-height:1;letter-spacing:-.035em;margin:12px 0 14px}
   h2 em{font-style:normal;color:var(--blue)}
   .sub{color:var(--mut);font-size:.98rem;max-width:34ch}
   .card{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 14px 30px -18px rgba(20,40,120,.28)}
@@ -141,15 +141,15 @@
     @keyframes par{from{translate:0 0}to{translate:0 var(--py,0px)}}
   }
 
-  main>section{padding-top:32px}
+  main>section{padding-top:34px}
   main>section.hero{padding-top:0}
-  main>section.proof{padding-top:33px}
-  main>section.svc{padding-top:32px}
-  main>section.ba-sec{padding-top:43px}
-  main>section.how{padding-top:37px}
-  main>section.pkgs{padding-top:30px}
-  main>section.love{padding-top:27px}
-  main>section.close{padding-top:26px}
+  main>section.proof{padding-top:34px}
+  main>section.svc{padding-top:34px}
+  main>section.ba-sec{padding-top:34px}
+  main>section.how{padding-top:34px}
+  main>section.pkgs{padding-top:34px}
+  main>section.love{padding-top:34px}
+  main>section.close{padding-top:34px}
 
   /* proof */
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -254,12 +254,12 @@
 
   /* packages */
   .pk{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
-  .pkg{position:relative;border-radius:26px;padding:18px 16px 16px;display:flex;flex-direction:column}
+  .pkg{position:relative;border-radius:26px;padding:16px 16px 14px;display:flex;flex-direction:column}
   .pkg h3{font:400 .72rem/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--blue)}
   .price{margin-top:12px;font-weight:850;font-size:2.15rem;line-height:1;letter-spacing:-.05em}
   .price small{display:block;margin-top:5px;font:400 .58rem/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--mut)}
   .pkg p{margin-top:8px;font-size:.86rem;line-height:1.35;color:var(--mut)}
-  .pkg ul{list-style:none;padding:0;margin:10px 0 12px;display:grid;gap:6px;font-size:.84rem;line-height:1.25;font-weight:500}
+  .pkg ul{list-style:none;padding:0;margin:8px 0 10px;display:grid;gap:5px;font-size:.84rem;line-height:1.25;font-weight:500}
   .pkg li{display:grid;grid-template-columns:16px 1fr;gap:7px}
   .pkg li svg{width:16px;height:16px;margin-top:1px}
   .pbtn{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border-radius:999px;padding:12px 14px;font-weight:700;font-size:.9rem;background:var(--ink);color:#fff}
@@ -271,11 +271,11 @@
   .feat ul{grid-template-columns:1fr 1fr;gap:9px 12px}
   .feat .pbtn{background:#fff;color:var(--ink);padding:14px;font-size:.98rem}
   .badge{position:absolute;top:16px;right:16px;font:400 .6rem/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--amber);color:var(--ink);padding:8px 11px;border-radius:999px;rotate:3deg}
-  .note{margin-top:14px;text-align:center;font:400 .66rem/1.4 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+  .note{margin-top:10px;text-align:center;font:400 .66rem/1.4 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
 
   /* testimonial wall */
-  .wall{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
-  .q{border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:12px}
+  .wall{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .q{border-radius:24px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
   .q blockquote{font-weight:600;font-size:.98rem;line-height:1.3;letter-spacing:-.015em}
   .q cite{font:400 .62rem/1.35 var(--mono);font-style:normal;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
   .q cite b{display:block;font-weight:400;color:var(--ink)}
@@ -323,6 +323,12 @@
   footer{padding:26px 24px calc(28px + var(--safe-bottom));text-align:center;color:var(--mut);font:400 .68rem/1.5 var(--mono);letter-spacing:.04em}
   footer p+p{margin-top:6px;font-size:.62rem;opacity:.85}
 
+  @media (max-width:480px){
+    .wrap{padding:0 26px}
+    .bar{padding-left:20px;padding-right:20px}
+    .final{padding-left:20px;padding-right:20px}
+    .sun2{margin:0 -20px}
+  }
   @media (min-width:700px){
     .hero{max-width:560px;margin-left:auto;margin-right:auto}
     .final{max-width:540px;margin-left:auto;margin-right:auto}
@@ -351,7 +357,7 @@
 </div></header>
 
 <main id="top">
-  <section class="hero" aria-label="Introduction">
+  <section class="hero" aria-label="Introduction" data-reel-stop>
     <div class="bgl" aria-hidden="true"><div class="sun"></div><div class="sea"></div></div>
     <div class="hc">
       <p class="chip up" style="--d:.1s"><i></i>3 build slots left in November</p>
@@ -371,13 +377,13 @@
 
   <section class="proof" aria-label="Proof">
     <div class="wrap">
-      <div class="stats rv stag">
+      <div class="stats rv stag" data-reel-stop>
         <div class="card stat"><b><span data-to="112">112</span><sup>+</sup></b><span>Sites shipped</span></div>
         <div class="card stat"><b><span data-to="14">14</span><sup>d</sup></b><span>Average launch</span></div>
         <div class="card stat"><b><span data-to="4.9">4.9</span><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="#ffb21a" d="M10 1.5l2.5 5.4 5.9.7-4.4 4 1.2 5.8L10 14.5l-5.2 2.9L6 11.6 1.6 7.6l5.9-.7z"/></svg></b><span>Client rating</span></div>
       </div>
-      <div class="logos rv" role="group" aria-label="Recent clients">
-        <div><span>Cedarline Physio</span><span>Brightwell Bikes</span><span>Lumen &amp; Loom</span><span>Harbourfield</span><span>Fernhill Dental</span><span>Cedarline Physio</span><span>Brightwell Bikes</span><span>Lumen &amp; Loom</span><span>Harbourfield</span><span>Fernhill Dental</span></div>
+      <div class="logos rv" data-reel-stop role="group" aria-label="Recent clients">
+        <div data-reel-bleed><span>Cedarline Physio</span><span>Brightwell Bikes</span><span>Lumen &amp; Loom</span><span>Harbourfield</span><span>Fernhill Dental</span><span>Cedarline Physio</span><span>Brightwell Bikes</span><span>Lumen &amp; Loom</span><span>Harbourfield</span><span>Fernhill Dental</span></div>
       </div>
     </div>
   </section>
@@ -385,26 +391,26 @@
   <section class="svc" aria-labelledby="h-svc">
     <div class="wrap">
       <div class="rv">
-        <p class="tag">What you get</p>
-        <h2 id="h-svc">One studio. <em>Three jobs</em> done properly.</h2>
-        <p class="sub">Every package covers all three, so there is nobody else to chase.</p>
+        <p class="tag" data-reel-stop>What you get</p>
+        <h2 id="h-svc" data-reel-stop>One studio. <em>Three jobs</em> done properly.</h2>
+        <p class="sub" data-reel-stop>Every package covers all three, so there is nobody else to chase.</p>
       </div>
       <div class="bento stag">
-        <article class="c c-design rv">
+        <article class="c c-design rv" data-reel-stop>
           <p class="num">01 / Design</p>
           <h3>Design that sells</h3>
           <p>Layouts built around one action: your customer getting in touch.</p>
           <div class="chips"><i>Layout</i><i>Type</i><i>Motion</i></div>
           <svg class="wire" viewBox="0 0 180 140" role="img" aria-label="A wireframe assembling itself"><rect width="180" height="140" rx="14" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.5)"/><rect class="p" style="--k:0" x="12" y="12" width="156" height="12" rx="6" fill="#fff"/><rect class="p" style="--k:1" x="12" y="34" width="92" height="46" rx="9" fill="#fff" opacity=".92"/><rect class="p" style="--k:2" x="112" y="34" width="56" height="46" rx="9" fill="#ffb21a"/><rect class="p" style="--k:3" x="12" y="90" width="50" height="38" rx="9" fill="rgba(255,255,255,.55)"/><rect class="p" style="--k:4" x="70" y="90" width="50" height="38" rx="9" fill="rgba(255,255,255,.55)"/><rect class="p" style="--k:5" x="128" y="90" width="40" height="38" rx="9" fill="#9ae6ff"/></svg>
         </article>
-        <article class="c c-build rv">
+        <article class="c c-build rv" data-reel-stop>
           <p class="num">02 / Build</p>
           <h3>Built to be fast</h3>
           <p>Fast, hand-coded and search-ready.</p>
           <div class="code" aria-hidden="true"><b>main</b> { <u>speed</u>: max; }<br><b>seo</b> { <u>ready</u>: yes; }</div>
           <div class="load" aria-hidden="true"><i></i></div><small>Loads in 0.9s</small>
         </article>
-        <article class="c c-care rv">
+        <article class="c c-care rv" data-reel-stop>
           <p class="num">03 / Care</p>
           <h3>Looked after</h3>
           <p>Hosting, backups, edits and a human on call.</p>
@@ -417,10 +423,10 @@
   <section class="ba-sec" aria-labelledby="h-ba">
     <div class="wrap">
       <div class="rv">
-        <p class="tag">The difference</p>
-        <h2 id="h-ba">Same shop. <em>Very different</em> Monday.</h2>
+        <p class="tag" data-reel-stop>The difference</p>
+        <h2 id="h-ba" data-reel-stop>Same shop. <em>Very different</em> Monday.</h2>
               </div>
-      <figure class="card ba" id="ba">
+      <figure class="card ba" data-reel-stop id="ba">
         <div class="tb"><i></i><i></i><i></i><span>brightwellbikes.example</span></div>
         <div class="stage" role="img" aria-label="A dated website on the right is wiped away by a clean modern site from the left">
           <div class="site old" aria-hidden="true">
@@ -449,14 +455,14 @@
   <section class="how" aria-labelledby="h-how">
     <div class="wrap">
       <div class="rv">
-        <p class="tag">How it works</p>
-        <h2 id="h-how">Three steps. <em>Zero</em> surprises.</h2>
+        <p class="tag" data-reel-stop>How it works</p>
+        <h2 id="h-how" data-reel-stop>Three steps. <em>Zero</em> surprises.</h2>
       </div>
       <div class="faq stag">
-        <div class="card rv"><span class="n">01</span><h3>I ask for a fixed quote.</h3><span class="pm" aria-hidden="true"></span><p>Answer four quick questions. A price and a launch date land in your inbox within 24 hours.</p></div>
-        <div class="card rv"><span class="n">02</span><h3>You approve, we build.</h3><span class="pm" aria-hidden="true"></span><p>Design preview on day 3, a working site by day 10, and two rounds of edits included.</p></div>
-        <div class="card rv"><span class="n">03</span><h3>We launch and look after it.</h3><span class="pm" aria-hidden="true"></span><p>Go live on day 14. Hosting, backups and small edits are covered by Care.</p></div>
-        <div class="card hot rv"><span class="n">?</span><h3>What if the price changes?</h3><span class="pm" aria-hidden="true"></span><p>It cannot. If the scope grows, we absorb it. That is what fixed means.</p></div>
+        <div class="card rv" data-reel-stop><span class="n">01</span><h3>I ask for a fixed quote.</h3><span class="pm" aria-hidden="true"></span><p>Answer four quick questions. A price and a launch date land in your inbox within 24 hours.</p></div>
+        <div class="card rv" data-reel-stop><span class="n">02</span><h3>You approve, we build.</h3><span class="pm" aria-hidden="true"></span><p>Design preview on day 3, a working site by day 10, and two rounds of edits included.</p></div>
+        <div class="card rv" data-reel-stop><span class="n">03</span><h3>We launch and look after it.</h3><span class="pm" aria-hidden="true"></span><p>Go live on day 14. Hosting, backups and small edits are covered by Care.</p></div>
+        <div class="card hot rv" data-reel-stop><span class="n">?</span><h3>What if the price changes?</h3><span class="pm" aria-hidden="true"></span><p>It cannot. If the scope grows, we absorb it. That is what fixed means.</p></div>
       </div>
     </div>
   </section>
@@ -464,11 +470,11 @@
   <section class="pkgs" aria-labelledby="h-pk">
     <div class="wrap">
       <div class="rv">
-        <p class="tag">Packages</p>
-        <h2 id="h-pk">Pick a price. <em>It stays</em> the price.</h2>
+        <p class="tag" data-reel-stop>Packages</p>
+        <h2 id="h-pk" data-reel-stop>Pick a price. <em>It stays</em> the price.</h2>
       </div>
       <div class="pk stag">
-        <article class="card pkg feat rv">
+        <article class="card pkg feat rv" data-reel-stop>
           <span class="badge">Most chosen</span>
           <h3>Growth</h3>
           <div class="price">$3,400<small>Fixed, one payment plan</small></div>
@@ -481,7 +487,7 @@
           </ul>
           <a class="pbtn" href="#quote">Get this fixed quote</a>
         </article>
-        <article class="card pkg rv">
+        <article class="card pkg rv" data-reel-stop>
           <h3>Launch</h3>
           <div class="price">$1,490<small>Fixed</small></div>
           <p>A sharp site, live in 10 days.</p>
@@ -492,7 +498,7 @@
           </ul>
           <a class="pbtn" href="#quote">Quote me</a>
         </article>
-        <article class="card pkg rv">
+        <article class="card pkg rv" data-reel-stop>
           <h3>Scale</h3>
           <div class="price">$6,900<small>Fixed</small></div>
           <p>Custom build for growth.</p>
@@ -511,24 +517,24 @@
   <section class="love" aria-labelledby="h-love">
     <div class="wrap">
       <div class="rv">
-        <p class="tag">Client wall</p>
-        <h2 id="h-love">Owners say it <em>better</em> than we do.</h2>
+        <p class="tag" data-reel-stop>Client wall</p>
+        <h2 id="h-love" data-reel-stop>Owners say it <em>better</em> than we do.</h2>
       </div>
       <div class="wall stag">
-        <figure class="card q q1 rv">
+        <figure class="card q q1 rv" data-reel-stop>
           <div class="stars" role="img" aria-label="5 out of 5 stars"><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="#ffb21a" d="M10 1.5l2.5 5.4 5.9.7-4.4 4 1.2 5.8L10 14.5l-5.2 2.9L6 11.6 1.6 7.6l5.9-.7z"/></svg><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="#ffb21a" d="M10 1.5l2.5 5.4 5.9.7-4.4 4 1.2 5.8L10 14.5l-5.2 2.9L6 11.6 1.6 7.6l5.9-.7z"/></svg><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="#ffb21a" d="M10 1.5l2.5 5.4 5.9.7-4.4 4 1.2 5.8L10 14.5l-5.2 2.9L6 11.6 1.6 7.6l5.9-.7z"/></svg><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="#ffb21a" d="M10 1.5l2.5 5.4 5.9.7-4.4 4 1.2 5.8L10 14.5l-5.2 2.9L6 11.6 1.6 7.6l5.9-.7z"/></svg><svg viewBox="0 0 20 20" aria-hidden="true"><path fill="#ffb21a" d="M10 1.5l2.5 5.4 5.9.7-4.4 4 1.2 5.8L10 14.5l-5.2 2.9L6 11.6 1.6 7.6l5.9-.7z"/></svg></div>
           <blockquote>A quote by breakfast, a finished site in two weeks. <em>Enquiries tripled</em> before the invoice was due.</blockquote>
           <figcaption><cite><b>Priya N.</b>Owner, Cedarline Physio</cite></figcaption>
         </figure>
-        <figure class="q q2 rv">
+        <figure class="q q2 rv" data-reel-stop>
           <blockquote>Fixed price meant no nasty surprises. That alone sold me.</blockquote>
           <figcaption><cite><b>Tomás R.</b>Brightwell Bikes</cite></figcaption>
         </figure>
-        <figure class="q q3 rv">
+        <figure class="q q3 rv" data-reel-stop>
           <blockquote>New look, new speed. Customers keep mentioning it.</blockquote>
           <figcaption><cite><b>Ayesha K.</b>Lumen &amp; Loom</cite></figcaption>
         </figure>
-        <figure class="q q4 rv">
+        <figure class="q q4 rv" data-reel-stop>
           <span class="big">3&times;</span>
           <blockquote>Three studios gave me hourly guesses. Tidemark gave a number and a date, then beat both.</blockquote>
           <figcaption><cite><b>Dan O.</b>Harbourfield Plumbing</cite></figcaption>
@@ -539,16 +545,16 @@
 
   <section class="close" id="quote" aria-labelledby="h-q">
     <div class="final" id="final">
-      <p class="tag">Your turn</p>
+      <p class="tag" data-reel-stop>Your turn</p>
       <h2 id="h-q">Your fixed price is <em>24 hours</em> away.</h2>
-      <div class="ticket" id="ticket">
+      <div class="ticket" id="ticket" data-reel-stop>
         <div class="row"><span>Quote TM-0142</span><span>Growth package</span></div>
         <div class="amt">$<span data-to="3400" data-fmt="1">3,400</span><small>fixed</small></div>
         <hr>
         <div class="row k"><span>Live in 14 days</span><span>2 edit rounds</span></div>
         <span class="stamp" aria-hidden="true">Locked</span>
       </div>
-      <div class="fcta">
+      <div class="fcta" data-reel-stop>
         <a class="go" href="#quote">Get a fixed quote <b aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h11M10.5 5l5 5-5 5"/></svg></b></a>
         <p class="micro" style="margin-bottom:10px"><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M5 8.3l2 2 4-4.3"/></svg>3 slots left in November. Reply in 24h.</p>
       </div>

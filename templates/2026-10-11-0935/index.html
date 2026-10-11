@@ -193,6 +193,12 @@
     .go .big{font-size:140px}
     blockquote{font-size:2.6rem;max-width:22ch}
   }
+  @media (max-width:480px){
+    .wrap{padding:0 30px}
+    .bar .wrap{padding:0 28px;gap:6px}
+    h2{font-size:clamp(2rem,10vw,4rem)}
+    .go h2{font-size:clamp(1.9rem,9.4vw,3.5rem)}
+  }
   @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
     .trk{animation:none!important}
@@ -219,7 +225,7 @@
       <p class="lede">We script, animate and cut the 30-second film your product launch needs. Delivered in 15 days.</p>
       <p class="cta-row"><a class="btn" href="#book">Book a launch film</a><a class="ghost" href="#packs">Packages ↓</a></p>
     </div>
-    <div class="rows" aria-hidden="true">
+    <div class="rows" aria-hidden="true" data-reel-bleed>
       <div class="row r1"><div class="trk">
         <span class="set"><span class="d c-acid" style="font-stretch:150%">Motion</span><i class="sp c-mag"></i><span class="d o c-paper" style="font-stretch:60%">Video</span><i class="sp c-acid"></i></span>
         <span class="set"><span class="d c-acid" style="font-stretch:150%">Motion</span><i class="sp c-mag"></i><span class="d o c-paper" style="font-stretch:60%">Video</span><i class="sp c-acid"></i></span>

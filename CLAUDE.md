@@ -89,6 +89,11 @@ Design every template for a **402×715 viewport**, not a desktop page:
 - First screen (402×715, header included) must be a finished composition: hero headline sized to fit 402px wide, one clear
   focal visual, no content cut mid-line. Verify at exactly 402×715 (emulate it, with `<html class="reel">`).
 - Instagram's own UI covers the bottom ≈20% and right edge: keep key text/CTAs in the central ≈60% of the height.
+- **Side safety (measured on a real phone):** Instagram fills its taller preview/feed area with the 9:16 video, scaling it ≈7–11% and cropping
+  ≈14–20 css px off EACH side (Photos crop was fine; the zoom is Instagram's). So at 402px: all text ≥ 26px from each side, icons/buttons/rail dots/badges
+  ≥ 18px (prefer 26px), use ≈30px page gutters on phones. Decoration meant to bleed (aurora blobs, marquee strips, shards) is marked `aria-hidden="true"`
+  or `data-reel-bleed`. Also keep headings out of the top ≈90px of the frame when you can (Instagram's top bar covers it) and key text above the bottom ≈22%.
+  `node scripts/reel-audit.mjs <ID>` prints SIDE-TIGHT lines and must end with "side safety: OK".
 - Safe areas: declare `:root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}` and use only
   `var(--safe-top)` / `var(--safe-bottom)` (never raw `env(safe-area-inset-top/bottom)`). Sticky headers pad with `var(--safe-top)`
   and keep their background under the status bar (iOS PWA). Add `html.reel{--safe-top:0px;--safe-bottom:0px}`: the player adds the

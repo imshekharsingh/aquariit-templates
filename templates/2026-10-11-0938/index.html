@@ -45,7 +45,7 @@
   a{color:inherit}
   ul,ol{list-style:none;padding:0}
   .wrap{max-width:520px;margin:0 auto;padding:0 16px}
-  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .sr{position:absolute;left:30px;width:300px;height:1px;overflow:hidden;clip-path:inset(50%)}
   .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone}
   h1,h2,h3{font-family:var(--disp);font-weight:700;letter-spacing:-.025em;text-wrap:balance}
 
@@ -283,6 +283,10 @@
     .talk{max-width:560px}
   }
 
+  @media (max-width:480px){
+    .wrap{padding:0 30px}
+  }
+
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation:none!important;transition:none!important}
     .js .rv,.js .seq .m,.js .seq .bk,.js .tail{opacity:1}
@@ -389,10 +393,10 @@
       <div class="tl">
         <span class="fill" aria-hidden="true"></span>
         <ol>
-        <li data-reel-stop class="ti rv"><span class="nd" aria-hidden="true"></span><div class="tb"><time>06:48</time><h3>“Where is my order?”</h3><p>Answered in <b>7s</b>. Tracking link sent.</p></div></li>
-        <li data-reel-stop class="ti rv"><span class="nd" aria-hidden="true"></span><div class="tb"><time>09:15</time><h3>“What does the pro plan cost?”</h3><p>Quote sent. <b>Demo booked</b> for Thursday.</p></div></li>
-        <li data-reel-stop class="ti rv"><span class="nd" aria-hidden="true"></span><div class="tb"><time>17:55</time><h3>“My parcel is late and I am upset.”</h3><p>Apology sent, a human gets the full story.</p></div></li>
-        <li data-reel-stop class="ti rv"><span class="nd" aria-hidden="true"></span><div class="tb"><time>23:40</time><h3>“I cannot log in.”</h3><p>Reset link sent. <b>Nobody woke up.</b></p></div></li>
+        <li class="ti rv"><span class="nd" aria-hidden="true"></span><div class="tb"><time>06:48</time><h3>“Where is my order?”</h3><p>Answered in <b>7s</b>. Tracking link sent.</p></div></li>
+        <li class="ti rv"><span class="nd" aria-hidden="true"></span><div class="tb"><time>09:15</time><h3>“What does the pro plan cost?”</h3><p>Quote sent. <b>Demo booked</b> for Thursday.</p></div></li>
+        <li class="ti rv"><span class="nd" aria-hidden="true"></span><div class="tb"><time>17:55</time><h3>“My parcel is late and I am upset.”</h3><p>Apology sent, a human gets the full story.</p></div></li>
+        <li class="ti rv"><span class="nd" aria-hidden="true"></span><div class="tb"><time>23:40</time><h3>“I cannot log in.”</h3><p>Reset link sent. <b>Nobody woke up.</b></p></div></li>
       </ol>
       </div>
     </div>

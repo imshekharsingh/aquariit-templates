@@ -35,7 +35,7 @@ const server = createServer((q, r) => {
 await new Promise((ok) => server.listen(0, ok));
 const port = server.address().port, out = join(tmpdir(), 'reel-audit'); mkdirSync(out, { recursive: true });
 const browser = await pw.chromium.launch(exe ? { executablePath: exe } : {});
-let warn = 0;
+let warn = 0, sideWarn = 0;
 for (const id of ids) {
   const page = await browser.newPage({ viewport: { width: 402, height: 715 }, deviceScaleFactor: 2 });
   const errs = []; page.on('pageerror', (e) => errs.push(e.message));
@@ -48,13 +48,38 @@ for (const id of ids) {
     const und = i === 0 ? [] : (r.under || []); const bad = r.sliced.length + und.length; warn += bad; // a block half-hidden under the header is a cut too
     console.log(`  ${String(i).padStart(2)}  y=${String(Math.round(r.y)).padStart(5)}  ${bad ? '' : 'clean'}${r.sliced.length ? 'CUTS at bottom: ' + r.sliced.join(' | ') : ''}${und.length ? (r.sliced.length ? '   ' : '') + 'CUTS under header: ' + und.join(' | ') : ''}`);
   });
+  // Side safety: Instagram fills its (taller) preview/feed area with the 9:16 video, which scales it ~7-11% and crops ~14-20 css px off each side.
+  // Text must stay >= SIDE px from the sides, small markers/icons/buttons >= EDGE px. Decoration that is meant to bleed: aria-hidden or data-reel-bleed.
+  const SIDE = 26, EDGE = 18; let sideBad = 0;
   for (let i = 0; i < plan.report.length; i++) {
     await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), plan.report[i].y); await page.waitForTimeout(900);
     await page.screenshot({ path: join(out, `${id}-${String(i).padStart(2, "0")}.png`) });
+    const tight = await page.evaluate(({ SIDE, EDGE, barH }) => {
+      const W = innerWidth, H = innerHeight, out = [];
+      const hid = (e) => { for (let n = e; n && n !== document.body; n = n.parentElement) { if (n.getAttribute && (n.getAttribute('aria-hidden') === 'true' || n.hasAttribute('data-reel-bleed'))) return true; const cs = getComputedStyle(n); if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity === 0) return true; } return false; };
+      const inFrame = (r) => r.width > 1 && r.height > 1 && r.bottom > barH + 4 && r.top < H - 4;
+      const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      while (tw.nextNode()) {
+        const n = tw.currentNode; if (!n.nodeValue.trim()) continue; const el = n.parentElement; if (!el || /^(SCRIPT|STYLE)$/.test(el.tagName) || hid(el)) continue;
+        const rg = document.createRange(); rg.selectNodeContents(n);
+        for (const r of rg.getClientRects()) { if (!inFrame(r)) continue; if (r.left < SIDE - 0.5 || r.right > W - SIDE + 0.5) { out.push(`text "${n.nodeValue.trim().slice(0, 26)}" ${r.left < SIDE ? 'left ' + Math.round(r.left) : 'right ' + Math.round(W - r.right)}px`); break; } }
+      }
+      document.querySelectorAll('button,a,svg,img,i,b,span,div').forEach((e) => {
+        const r = e.getBoundingClientRect(); if (!inFrame(r) || r.width > 150 || r.height > 60 || hid(e)) return;
+        const cs = getComputedStyle(e), ink = e.tagName === 'SVG' || e.tagName === 'IMG' || +cs.borderTopWidth > 0 || (cs.backgroundColor && !/rgba\(.*, 0\)|transparent/.test(cs.backgroundColor)) || cs.backgroundImage !== 'none';
+        if (!ink) return;
+        if (r.left < EDGE - 0.5 || r.right > W - EDGE + 0.5) out.push(`marker/box ${e.tagName.toLowerCase()}${e.className && typeof e.className === 'string' ? '.' + e.className.split(' ')[0] : ''} ${r.left < EDGE ? 'left ' + Math.round(r.left) : 'right ' + Math.round(W - r.right)}px`);
+      });
+      return [...new Set(out)].slice(0, 5);
+    }, { SIDE, EDGE, barH: plan.barH });
+    if (tight.length) { sideBad += tight.length; console.log(`  ${String(i).padStart(2)}  SIDE-TIGHT (Instagram may crop): ${tight.join(' | ')}`); }
   }
+  if (sideBad) console.log(`  side safety: ${sideBad} item(s) closer than ${SIDE}px (text) / ${EDGE}px (icons, buttons) to a side. Inset them, or mark pure decoration aria-hidden / data-reel-bleed.`); else console.log(`  side safety: OK (text >= ${SIDE}px, icons/buttons >= ${EDGE}px from the sides)`);
+  sideWarn += sideBad;
   if (errs.length) { warn += errs.length; console.log('  JS errors:', errs.join(' | ')); }
   console.log(`  screenshots: ${join(out, id)}-NN.png  (open them and check every pause looks like a finished frame)`);
   await page.close();
 }
 await browser.close(); server.close();
 console.log(warn ? `\n${warn} thing(s) to look at: restructure those blocks (smaller blocks, gaps between them) or pin pauses with data-reel-stop.` : '\nAll pauses are clean.');
+if (sideWarn) console.log(`${sideWarn} side-safety item(s) to inset (see SIDE-TIGHT lines).`);
