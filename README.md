@@ -119,13 +119,10 @@ wrangler.jsonc            assets-only Worker config
 - A daily watchdog (10:00 IST) re-deploys `main` and re-runs the smoke test, so a transient morning failure heals itself.
 - After every successful deploy a cleanup job deletes any branch whose PR is merged (and has no newer commits), so only `main` and open work remain.
 - **Reel cover:** each template has `templates/covers/ID.jpg` (made by `node scripts/make-cover.mjs ID`). The ▶ player shows it on a 1.3 s cover card (cover text from the kit) at the start of the recording, so that first frame can be picked as the Instagram Reel cover. Toggle it in ⚙ settings.
-- **Reel uploaded checkbox:** every template row, today's card and each kit page has a "Reel uploaded" tick (`templates/uploaded.js`). It is saved on the device (localStorage), shows "Reels uploaded N of M" with All / To upload / Uploaded filters, and has Backup / Restore (copy and paste) to move ticks between devices.
+- **Reel uploaded checkbox:** every template row, today's card and each kit page has a "Reel uploaded" tick (`templates/uploaded.js`). Ticks are stored remotely in Cloudflare D1 (nothing is kept on the device), shown as "Reels uploaded N of M" with All / To upload / Uploaded filters.
 
-### Reel-uploaded ticks in Cloudflare D1 (one-time setup)
-The ticks sync through `/api/uploaded` (Worker, behind the same sign-in) into a D1 table `reel_uploaded` that the Worker creates itself.
-Until a D1 database is bound the API answers 501 and the pages keep the ticks on the device, so nothing breaks.
-To switch it on:
-1. Cloudflare dashboard → Storage & Databases → D1 → Create database → name it `aquarii-templates` and copy its **Database ID**.
-2. Add to `wrangler.jsonc`: `"d1_databases": [{ "binding": "DB", "database_name": "aquarii-templates", "database_id": "<the ID>" }]` (an ID is not a secret) and merge it through the normal pipeline.
-Ticks already saved on a device are uploaded the first time that device opens the page after the switch.
-
+### Reel-uploaded ticks in Cloudflare D1 (automatic)
+Ticks go through `/api/uploaded` (Worker, behind the same sign-in) into a D1 table `reel_uploaded` that the Worker creates itself.
+The pipeline's deploy job finds or creates the D1 database `aquarii-templates` with the existing Cloudflare token and binds it as `DB` for that deploy
+(not committed). If the token lacks D1 permission that step fails softly (a warning in the run): the site still deploys and the checkboxes say
+"Tracking unavailable". Needs: token permission "D1: Edit". Free plan limits (5M reads/day, 100k writes/day, 5 GB) are far above this use.

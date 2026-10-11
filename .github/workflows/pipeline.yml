@@ -92,6 +92,31 @@ jobs:
             if [ -n "$BASIC_AUTH_USER_2" ] && [ -n "$BASIC_AUTH_PASS_2" ]; then echo BASIC_AUTH_USER_2; echo BASIC_AUTH_PASS_2; fi
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
+      - name: Ensure the D1 database for reel ticks (never blocks the deploy)
+        id: d1
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Finds (or creates) the database "aquarii-templates" and binds it as DB for this deploy only. If the token lacks D1
+          # permission this step fails softly: the site deploys without the binding and the checkboxes say tracking is unavailable.
+          set -e
+          NAME=aquarii-templates
+          find_id() { npx wrangler d1 list --json 2>/dev/null | node -e 'let t="";process.stdin.on("data",d=>t+=d).on("end",()=>{try{const m=t.match(/\[[\s\S]*\]/);const a=JSON.parse(m?m[0]:t);const x=(Array.isArray(a)?a:[]).find(d=>d.name===process.argv[1]);process.stdout.write(x?(x.uuid||x.database_id||x.id||""):"")}catch(e){}})' "$NAME"; }
+          id=$(find_id || true)
+          if [ -z "$id" ]; then
+            echo "Creating D1 database $NAME"
+            npx wrangler d1 create "$NAME" >/dev/null
+            id=$(find_id)
+          fi
+          [ -n "$id" ] || { echo "Could not determine the D1 database id"; exit 1; }
+          node -e 'const fs=require("fs");const c=JSON.parse(fs.readFileSync("wrangler.jsonc","utf8"));c.d1_databases=[{binding:"DB",database_name:process.argv[1],database_id:process.argv[2]}];fs.writeFileSync("wrangler.jsonc",JSON.stringify(c,null,2))' "$NAME" "$id"
+          echo "D1 bound (not committed)"
+      - name: D1 status
+        if: always()
+        run: |
+          if [ "${{ steps.d1.outcome }}" = "success" ]; then echo "D1 reel-tick tracking: ON"; else echo "::warning::D1 reel-tick tracking is OFF (could not find/create the database; check the token has D1 Edit permission). The site still deployed."; fi
       - uses: cloudflare/wrangler-action@v3
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
@@ -140,6 +165,24 @@ jobs:
             check "$B/login" 303 -c "$J2" -X POST --data-urlencode "username=$BASIC_AUTH_USER_2" --data-urlencode "password=$BASIC_AUTH_PASS_2" || exit 1
             check "$B/" 200 -b "$J2" || exit 1
           fi
+      - name: Smoke test reel-tick API
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: |
+          B=https://templates.aquariit.com; J=$(mktemp)
+          curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
+          code=$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/api/uploaded")
+          if [ "$code" = "200" ]; then
+            T=2000-01-01
+            curl -sf -b "$J" -H 'X-Requested-With: reel' -H 'Content-Type: application/json' -X PUT -d '{"on":true}' "$B/api/uploaded/$T" >/dev/null
+            curl -sf -b "$J" "$B/api/uploaded" | grep -q "$T" || { echo "tick did not round-trip"; exit 1; }
+            curl -sf -b "$J" -H 'X-Requested-With: reel' -H 'Content-Type: application/json' -X PUT -d '{"on":false}' "$B/api/uploaded/$T" >/dev/null
+            echo "OK reel-tick API round-trip (D1 live)"
+          else
+            echo "Reel-tick API answered $code (no database bound): checkboxes show 'tracking unavailable'"
+          fi
+          [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/uploaded")" = "401" ] || { echo "API must be closed to signed-out requests"; exit 1; }
       - name: Summary
         run: echo "Deployed. Home https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"
 

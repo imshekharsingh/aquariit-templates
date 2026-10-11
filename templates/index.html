@@ -51,9 +51,8 @@
   .rubar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:32px 0 6px;font:600 .9rem system-ui,sans-serif;color:var(--mute)}
   .rubar b{color:var(--ink)}
   .rubar .sp{flex:1}
-  .rubar .f,.rubar .lk{min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:inherit;font:700 .8rem system-ui,sans-serif;cursor:pointer}
+  .rubar .f{min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:inherit;font:700 .8rem system-ui,sans-serif;cursor:pointer}
   .rubar .f[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-  .rubar .lk{border-style:dashed}
   .ticket .play{position:absolute;top:22px;right:20px;width:60px;height:60px;z-index:2;background:linear-gradient(135deg,#2ee6c5,#c6ff3d);color:#042;box-shadow:0 0 0 0 rgba(46,230,197,.6);animation:ping 2.4s infinite}
   .ticket .play svg{width:26px;height:26px}
   @keyframes ping{70%{box-shadow:0 0 0 16px rgba(46,230,197,0)}100%{box-shadow:0 0 0 0 rgba(46,230,197,0)}}
@@ -123,8 +122,7 @@
   }
 
   var LOG = [], FLT = 'all';
-  try { FLT = localStorage.getItem('reel.filter') || 'all'; } catch (e) {}
-  function setFilter(f) { FLT = f; try { localStorage.setItem('reel.filter', f); } catch (e) {} render(LOG); }
+  function setFilter(f) { FLT = f; render(LOG); }
   function render(log) {
     LOG = Array.isArray(log) ? log : [];
     var U = window.ReelUploaded, all = LOG.slice().sort(function (a, b) { return key(a) < key(b) ? 1 : -1; });
@@ -149,16 +147,12 @@
     }
     listEl.textContent = '';
     if (U && all.length) {
-      var bar = el('div', 'rubar'), n = U.count(all.map(key));
-      var st = el('span'); st.innerHTML = 'Reels uploaded <b>' + n + '</b> of ' + all.length; bar.appendChild(st); bar.appendChild(el('span', 'sp'));
-      [['all', 'All'], ['todo', 'To upload'], ['done', 'Uploaded']].forEach(function (f) { var b = el('button', 'f', f[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(FLT === f[0])); b.addEventListener('click', function () { setFilter(f[0]); }); bar.appendChild(b); });
-      var bk = el('button', 'lk', 'Backup'); bk.type = 'button'; bk.title = 'Copy a backup of your ticks';
-      bk.addEventListener('click', function () {
-        var t = U.backup(), ok = function () { alert('Backup copied. On another device tap Restore and paste it.'); };
-        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function () { prompt('Copy this backup:', t); }); else prompt('Copy this backup:', t);
-      }); bar.appendChild(bk);
-      var rs = el('button', 'lk', 'Restore'); rs.type = 'button'; rs.title = 'Paste a backup to restore your ticks';
-      rs.addEventListener('click', function () { var r = prompt('Paste a backup here:', ''); if (r) alert(U.restore(r) ? 'Restored.' : 'That does not look like a backup.'); }); bar.appendChild(rs);
+      var bar = el('div', 'rubar'), n = U.count(all.map(key)), st = el('span');
+      if (!U.ready()) st.textContent = 'Loading uploads…';
+      else if (!U.available()) st.textContent = 'Upload tracking is unavailable right now';
+      else st.innerHTML = 'Reels uploaded <b>' + n + '</b> of ' + all.length;
+      bar.appendChild(st); bar.appendChild(el('span', 'sp'));
+      if (U.available()) [['all', 'All'], ['todo', 'To upload'], ['done', 'Uploaded']].forEach(function (f) { var b = el('button', 'f', f[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(FLT === f[0])); b.addEventListener('click', function () { setFilter(f[0]); }); bar.appendChild(b); });
       listEl.appendChild(bar);
     }
     if (!log.length) {
