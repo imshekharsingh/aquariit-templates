@@ -36,6 +36,9 @@ Structure check: read the last three lines of design/advancements.md. Your hero 
 module and header style must each differ from all three (menus in design/playbook.md). Do not default to
 "eyebrow label, headline, paragraph, centred illustration, buttons, stacked cards".
 
+Era check: read the era of the previous two templates in design/advancements.md. If either is vintage, yours MUST be modern.
+Prefer modern product-grade looks (design/playbook.md "Modern direction") and today's CSS (the CSS animation catalogue).
+
 ## Phase 2b — One design advancement
 Read design/playbook.md and design/advancements.md. Choose ONE technique from the playbook that no earlier
 template used (prefer a different playbook group than the last template) and make it the new, visible
@@ -79,7 +82,7 @@ Create social/ID.md following the "Instagram social kit" section of CLAUDE.md
 1. Append the entry to design-log.json (schema in CLAUDE.md: id=ID, date=DATE,
    time=TIME, url https://templates.aquariit.com/ID/).
 2. Copy design-log.json to templates/design-log.json.
-2b. Append one line to design/advancements.md: `- ID — technique (playbook group): what it looks like on the page`.
+2b. Append one line to design/advancements.md: `- ID — technique (playbook group): what it looks like | hero: X | modules: Y | header: Z | era: modern|vintage`.
 3. Update README.md: template count and latest template link.
 4. Run `npm run check` once more.
 5. Stage only files you created or changed (including social/ID.md); commit with the CLAUDE.md format.

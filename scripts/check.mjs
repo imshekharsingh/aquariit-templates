@@ -121,7 +121,16 @@ if (!adv) err('design/advancements.md is missing');
 for (const f of folders) if (adv && !new RegExp(`^- ${f} — `, 'm').test(adv)) err(`design/advancements.md: no line "- ${f} — technique (group): what it looks like" for ${f}`);
 for (const f of folders) {
   const line = adv.split('\n').find((l) => l.startsWith(`- ${f} — `));
-  if (line && !/\| hero: .+ \| modules: .+ \| header: .+/.test(line)) err(`design/advancements.md: line for ${f} needs "| hero: X | modules: Y | header: Z"`);
+  if (line && !/\| hero: .+ \| modules: .+ \| header: .+ \| era: (modern|vintage)\s*$/.test(line)) err(`design/advancements.md: line for ${f} needs "| hero: X | modules: Y | header: Z | era: modern|vintage"`);
+}
+// Era balance (from 2026-10-12 on): a vintage/period template may not follow another vintage one within two templates.
+{
+  const eraOf = (f) => ((adv.split('\n').find((l) => l.startsWith(`- ${f} — `)) || '').match(/\| era: (\w+)\s*$/) || [])[1];
+  const sorted = [...folders].sort();
+  sorted.forEach((f, i) => {
+    if (f < '2026-10-12' || eraOf(f) !== 'vintage') return;
+    if (sorted.slice(Math.max(0, i - 2), i).some((g) => eraOf(g) === 'vintage')) err(`${f}: vintage era within two templates of another vintage one (design/playbook.md "Era balance")`);
+  });
 }
 
 // Cover preview image: every template has templates/covers/ID.jpg (node scripts/make-cover.mjs ID), shown on the ▶ cover card

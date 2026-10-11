@@ -43,6 +43,8 @@ After every update, copy design-log.json to templates/design-log.json
 Each new design must differ from ALL previous entries on at least 5 of 7
 dimensions: layout archetype, palette, font pairing, motif, animation style,
 theme/mood, page purpose. Never reuse an exact palette or font pairing.
+Era counts too: log `era: modern|vintage` for every template. A vintage/period template (cream paper, serif display, heritage copy,
+art deco, retro) may not appear within two templates of another vintage one; prefer modern product-grade looks (design/playbook.md).
 Structure counts too: versus each of the previous THREE templates, also change the hero composition, the main section
 module and the header style (menus in design/playbook.md; record them in design/advancements.md).
 
@@ -50,9 +52,9 @@ module and the header style (menus in design/playbook.md; record them in design/
 - Layout: editorial magazine, bento grid, asymmetric split, horizontal scroll,
   single-column long-form, card stack, full-bleed sections, sidebar-anchored,
   radial/orbital, brutalist grid, layered parallax
-- Mood: luxury minimal, retro-futurist, organic/botanical, Swiss modernist,
-  dark neon, warm paper/print, Japanese-inspired calm, art deco,
-  glassmorphism, monochrome high-contrast, pastel playful
+- Mood: MODERN — glassmorphism (faux glass), aurora/mesh gradient, pastel playful, claymorphism/soft 3D, dark UI glow,
+  neo-brutalist pop, luxury minimal, Swiss modernist, bento dashboard, kinetic type, spatial 3D cards, monochrome high-contrast, dark neon.
+  VINTAGE (use sparingly) — warm paper/print, Japanese-inspired calm, art deco, retro-futurist, organic/botanical craft.
 - Purpose: SaaS landing, portfolio, agency, product launch, event,
   restaurant, personal blog, consultancy, app showcase, nonprofit, studio
 
@@ -73,6 +75,9 @@ module and the header style (menus in design/playbook.md; record them in design/
   (optional: `duration` in seconds, `stops` as selectors/pixel offsets).
 - Design advancement: every template introduces ONE new technique from design/playbook.md (not used before, see
   design/advancements.md), vivid palette (saturated hero colour + unexpected accent); log it in design/advancements.md.
+- Vibrancy: use today's CSS (design/playbook.md "CSS animation catalogue"): scroll-driven animations, linear() springs, @property,
+  oklch/display-p3 gradients, view transitions, sibling-index() staggers; always with @supports fallbacks and a finished default state.
+- Service-attracting pages (agency, studio, consultancy, SaaS) include a value promise, proof numbers, a 3-step process, packages and a strong CTA.
 - Typical sections: nav, hero, features/content, social proof, CTA, footer —
   adapt to the concept
 
