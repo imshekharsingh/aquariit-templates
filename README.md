@@ -22,6 +22,11 @@ reels by mood, layout, purpose and era (read from `design-log.json`; free text i
 D1 database as the "Reel uploaded" ticks (tables `ig_account`, `ig_media`, `ig_metrics`, created on first use). Writing is `POST /api/perf/ingest`
 (signed-in session + `X-Requested-With: reel`), reading is `GET /api/perf`. Until the daily collector is connected the page shows a setup checklist.
 
+### Daily collector
+`.github/workflows/ig-collect.yml` runs `scripts/ig-collect.mjs` every day (about 01:45 IST, or by hand: Actions → **Instagram collect**). It reads the account and each
+recent reel from Instagram's official API (read-only, token in the GitHub secret `INSTAGRAM_TOKEN`, never printed), matches reels to templates by the brand name in the
+caption, and stores everything through `/api/perf/ingest`. The token is refreshed weekly. A failure opens one GitHub issue that says what to do.
+
 ## How `/daily-template` works
 Run `/daily-template [hint]` in Claude Code, any time, as often as you like. Each run makes
 one new template whose ID is the India date and time (e.g. `2026-10-07-0905`), creates branch
