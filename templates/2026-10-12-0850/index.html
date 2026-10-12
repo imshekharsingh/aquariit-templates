@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gojigo — Hot. Folded. Gone.</title>
+<meta name="description" content="Gojigo is a fictional hand-folded dumpling bar with 30-minute delivery. A vivid restaurant landing page where a scooter rides a drawn route to the door.">
+<meta name="theme-color" content="#dc0f4a">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&amp;family=Syne:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<script>document.documentElement.className+=' js'</script>
+<style>
+  :root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+  html.reel{--safe-top:0px;--safe-bottom:0px}
+  .reel .back{display:none}
+
+  :root{
+    --goji:#dc0f4a; --gojid:#b00a3a; --blush:#ffe8ee; --blush2:#ffd3df; --plum:#2a0a1a; --plum2:#431329;
+    --pist:#b9f26b; --chili:#ff9f1c; --mut:#6d4556; --line:rgba(42,10,26,.14);
+    --disp:"Syne","Trebuchet MS",system-ui,sans-serif;
+    --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --spring:cubic-bezier(.2,1.3,.3,1);
+  }
+  @supports (animation-timing-function:linear(0,1)){
+    :root{--spring:linear(0,.128,.403,.695,.929,1.076,1.14,1.143,1.111,1.068,1.028,.999,.983,.978,.981,.986,.993,.998,1.001,1.003,1.003,1.002,1.002,1.001,1,1,1,1,1)}
+  }
+  @property --n{syntax:'<integer>';initial-value:0;inherits:false}
+  *{box-sizing:border-box;margin:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--blush);color:var(--plum);font:400 16px/1.5 var(--body);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  :focus-visible{outline:3px solid var(--plum);outline-offset:3px;border-radius:6px}
+  a{color:inherit}
+  ul,ol{list-style:none;padding:0}
+  h1,h2,h3{font-family:var(--disp);font-weight:800;letter-spacing:-.03em;line-height:.98;text-wrap:balance}
+  .wrap{max-width:520px;margin:0 auto;padding:0 30px}
+  .eyebrow{font:700 11.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--gojid)}
+
+  /* header: wordmark-centred on goji */
+  .bar{position:sticky;top:0;z-index:30;background:var(--goji);color:#fff;padding-top:var(--safe-top)}
+  .bar .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:48px}
+  .back{justify-self:start;font:600 12px/1 var(--body);text-decoration:none;padding:9px 0;color:#fff}
+  .brand{display:inline-flex;align-items:center;gap:7px;font:800 21px/1 var(--disp);letter-spacing:-.04em;text-decoration:none}
+  .brand svg{width:26px;height:18px}
+  .eta{justify-self:end;font:700 11px/1 var(--body);letter-spacing:.04em;background:var(--pist);color:var(--plum);padding:6px 9px;border-radius:99px}
+  .reel .eta{visibility:hidden}
+
+  /* hero: type only */
+  .hero{background:var(--goji);color:#fff;padding:22px 0 38px;position:relative;overflow:hidden}
+  .hero .tag{display:inline-flex;gap:8px;align-items:center;font:700 11px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;border:1.5px solid rgba(255,255,255,.55);border-radius:99px;padding:8px 12px}
+  .hero .tag i{width:7px;height:7px;border-radius:50%;background:var(--pist)}
+  h1{font-size:clamp(52px,14.6vw,100px);line-height:.86;margin:20px 0 0;letter-spacing:-.05em;text-wrap:nowrap}
+  h1 .ln{display:block;overflow:hidden;padding:.04em 0 .1em}
+  h1 .ln>span{display:block}
+  h1 .o{color:transparent;-webkit-text-stroke:2px #fff}
+  h1 .p{color:var(--pist)}
+  .stage{position:relative;width:342px;height:128px;margin:6px 0 0}
+  .stage .plate{position:absolute;left:196px;top:100px;width:120px;height:14px;border-radius:50%;background:var(--gojid)}
+  .fly{position:absolute;left:0;top:0;width:64px;height:44px;color:var(--blush);offset-path:path("M-10 110 C 40 -40, 190 -30, 226 76");offset-rotate:0deg;offset-distance:100%;z-index:2}
+  .fly svg{width:100%;height:100%;display:block}
+  .steam{position:absolute;left:226px;top:36px;width:44px;height:36px;opacity:0}
+  .hero p.lead{font:500 17px/1.4 var(--body);max-width:300px;margin-top:2px}
+  .cta{display:inline-flex;align-items:center;gap:10px;margin-top:22px;background:var(--pist);color:var(--plum);font:800 16px/1 var(--disp);letter-spacing:-.01em;text-decoration:none;padding:16px 22px;border-radius:99px;box-shadow:0 5px 0 var(--plum)}
+  .cta svg{width:18px;height:18px}
+  .hero .fine{margin-top:16px;font:500 13px/1.3 var(--body);opacity:.9}
+
+  section{padding:46px 0 0}
+  .hd{margin-bottom:22px}
+  .hd h2{font-size:36px;margin-top:12px}
+  .hd p{margin-top:12px;color:var(--mut);max-width:320px}
+  .dark .hd p{color:#e3b9c7}
+
+  /* menu: accordion-look rows */
+  .menu{display:grid;gap:14px}
+  .dish{display:grid;grid-template-columns:54px 1fr;gap:14px;align-items:start;border:2px solid var(--plum);border-radius:22px;padding:14px;background:#fff7f9}
+  .dish .g{width:54px;height:54px;border-radius:16px;display:grid;place-items:center}
+  .dish .g svg{width:38px;height:27px}
+  .dish h3{font-size:21px;line-height:1.05}
+  .dish p{font-size:14px;color:var(--mut);margin-top:4px;line-height:1.35}
+  .dish .pr{display:flex;gap:8px;align-items:center;margin-top:9px}
+  .dish .pr b{font:800 15px/1 var(--disp)}
+  .dish .pr em{font:700 10.5px/1 var(--body);font-style:normal;letter-spacing:.08em;text-transform:uppercase;padding:5px 8px;border-radius:99px;background:var(--pist)}
+
+  /* steps */
+  .steps{display:grid;gap:14px;counter-reset:s;position:relative}
+  .step{display:grid;grid-template-columns:56px 1fr;gap:16px;align-items:center;padding:6px 0}
+  .step .n{width:56px;height:56px;border-radius:50%;background:var(--goji);color:#fff;display:grid;place-items:center;font:800 26px/1 var(--disp)}
+  .step:nth-child(2) .n{background:var(--chili);color:var(--plum)}
+  .step:nth-child(3) .n{background:var(--plum);color:var(--pist)}
+  .step h3{font-size:24px}
+  .step p{font-size:14.5px;color:var(--mut);margin-top:4px;line-height:1.35}
+
+  /* packages */
+  .pks{display:grid;gap:14px}
+  .pk{border-radius:24px;padding:20px 20px 22px;background:#fff7f9;border:2px solid var(--plum)}
+  .pk.hot{background:var(--goji);color:#fff;border-color:var(--goji);box-shadow:0 6px 0 var(--plum)}
+  .pk h3{font-size:26px}
+  .pk .pr{font:800 34px/1 var(--disp);letter-spacing:-.04em;margin:10px 0 8px}
+  .pk .pr small{font:600 13px/1 var(--body);letter-spacing:0;opacity:.8;margin-left:6px}
+  .pk p{font-size:14.5px;line-height:1.4}
+  .pk .fl{display:inline-block;margin-bottom:10px;font:800 10.5px/1 var(--body);letter-spacing:.1em;background:var(--pist);color:var(--plum);padding:6px 9px;border-radius:99px}
+
+  /* dark stats band */
+  .dark{background:var(--plum);color:var(--blush);margin-top:50px;padding:50px 0 54px}
+  .dark .eyebrow{color:var(--pist)}
+  .stats{display:grid;gap:14px}
+  .stat{border-top:1.5px solid rgba(255,232,238,.25);padding-top:14px;display:grid;gap:4px}
+  .stat b{font:800 62px/.95 var(--disp);letter-spacing:-.05em;color:var(--pist);font-variant-numeric:tabular-nums}
+  .stat:nth-child(2) b{color:var(--chili)}
+  .stat:nth-child(3) b{color:#ff7aa0}
+  .stat>span{font-size:14.5px;color:#e3b9c7}
+  .cnt::after{--n:var(--to);content:counter(n);counter-reset:n var(--n)}
+  .js .stat.in .cnt::after{animation:cnt 1.6s .2s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes cnt{from{--n:0}}
+
+  /* route: signature */
+  .map{position:relative;width:342px;height:420px;border-radius:26px;background:#fff7f9;border:2px solid var(--plum);overflow:hidden}
+  .map svg.base{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .scoot{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:var(--plum);display:grid;place-items:center;color:var(--pist);offset-path:path("M44 372 L44 306 L142 306 L142 238 L88 238 L88 150 L224 150 L224 82 L286 82");offset-rotate:0deg;offset-distance:100%;box-shadow:0 0 0 5px rgba(220,15,74,.22);z-index:3}
+  .scoot svg{width:26px;height:19px}
+  .clock{position:absolute;left:14px;top:14px;z-index:4;background:var(--plum);color:var(--pist);border-radius:16px;padding:9px 13px 10px;display:grid;gap:2px}
+  .clock b{font:800 30px/1 var(--disp);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+  .clock b::after{--n:24;content:counter(n);counter-reset:n var(--n)}
+  .clock small{font:700 9.5px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:#e3b9c7}
+  .stamp{position:absolute;right:14px;bottom:14px;z-index:4;background:var(--pist);color:var(--plum);border:2px solid var(--plum);border-radius:14px;padding:10px 12px;font:800 15px/1 var(--disp);transform:rotate(-5deg);display:flex;align-items:center;gap:7px}
+  .stamp svg{width:16px;height:16px}
+  .map .lbl{position:absolute;font:700 10.5px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;background:#fff;border:1.5px solid var(--plum);padding:5px 7px;border-radius:99px;z-index:3}
+  .l1{left:60px;top:372px}
+  .l2{left:150px;top:46px;background:var(--pist)!important}
+
+  .go .scoot{animation:ride 3.6s .3s cubic-bezier(.45,.05,.45,.95) both}
+  .go svg.base .route{animation:draw 3.6s .3s cubic-bezier(.45,.05,.45,.95) both}
+  .go .clock b::after{animation:tick 3.6s .3s cubic-bezier(.45,.05,.45,.95) both}
+  .go .stamp{animation:stamp .7s 4s var(--spring) both}
+  @keyframes ride{from{offset-distance:0%}}
+  @keyframes draw{from{stroke-dashoffset:1}}
+  @keyframes tick{from{--n:0}}
+  @keyframes stamp{from{opacity:0;transform:rotate(-5deg) scale(2.2)}}
+
+  /* cta */
+  .end{background:var(--goji);color:#fff;margin-top:52px;padding:52px 0 40px}
+  .end h2{font-size:40px}
+  .end h2 span{color:var(--pist)}
+  .end p{margin-top:14px;max-width:310px;font-size:16px}
+  .tix{display:inline-flex;align-items:center;gap:10px;margin-top:22px;border:2px dashed rgba(255,255,255,.7);border-radius:16px;padding:12px 14px;font:700 14px/1.2 var(--body)}
+  .tix svg{width:22px;height:22px;flex:none}
+  .tix b{display:block;font:800 17px/1 var(--disp)}
+
+  footer{background:var(--plum);color:#e3b9c7;padding:22px 0 calc(24px + var(--safe-bottom));font-size:12.5px}
+  footer small{display:block;margin-top:6px;font-size:11.5px;opacity:.8}
+
+  /* motion */
+  .js .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .7s var(--spring);transition-delay:var(--d,0s)}
+  .js .rv.in{opacity:1;transform:none}
+  @keyframes up{from{transform:translateY(105%)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}}
+  @keyframes flyin{from{offset-distance:0%}}
+  @keyframes steam{0%{opacity:0;transform:translateY(8px)}40%{opacity:.8}100%{opacity:0;transform:translateY(-10px)}}
+  @keyframes squash{0%,100%{transform:none}40%{transform:scale(1.18,.78)}70%{transform:scale(.94,1.1)}}
+  .hero .tag{animation:fadeUp .6s .05s both}
+  h1 .ln>span{animation:up .9s var(--spring) both}
+  h1 .ln:nth-child(2)>span{animation-delay:.15s}
+  h1 .ln:nth-child(3)>span{animation-delay:.3s}
+  .fly{animation:flyin 1.3s .5s cubic-bezier(.3,.1,.5,1) both}
+  .fly svg{transform-origin:50% 100%;animation:squash .5s 1.75s both}
+  .steam{animation:steam 2.6s 2.2s ease-out infinite}
+  .hero p.lead{animation:fadeUp .7s .9s both}
+  .hero .cta{animation:fadeUp .7s 1.05s both}
+  .hero .fine{animation:fadeUp .7s 1.2s both}
+  @supports not (offset-path:path("M0 0")){.fly{animation:none;left:196px;top:60px}.scoot{display:none}}
+
+  @media (min-width:700px){
+    .wrap{max-width:560px}
+    .map{margin:0 auto}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .js .rv{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="dm" viewBox="0 0 64 44">
+    <path d="M3 34C3 15 21 4 32 4s29 11 29 30c0 4-4 6-8 6H11c-4 0-8-2-8-6Z" fill="currentColor"/>
+    <path d="M18 12v10M26 8v14M34 8v14M42 10v12M50 14v8" stroke="#2a0a1a" stroke-opacity=".28" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+  </symbol>
+</svg>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="back" href="/">← All templates</a>
+    <a class="brand" href="#top" aria-label="Gojigo home"><svg viewBox="0 0 64 44" aria-hidden="true"><use href="#dm" style="color:#ffe8ee"/></svg>gojigo</a>
+    <span class="eta">24 MIN</span>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="h1" style="padding-top:22px" data-reel-stop>
+    <div class="wrap">
+      <span class="tag"><i></i>Dumpling bar · Late kitchen</span>
+      <h1 id="h1"><span class="ln"><span>Hot.</span></span><span class="ln"><span class="o">Folded.</span></span><span class="ln"><span class="p">Gone.</span></span></h1>
+      <div class="stage" aria-hidden="true" data-reel-bleed>
+        <div class="plate"></div>
+        <svg class="steam" viewBox="0 0 44 36" fill="none" stroke="#ffe8ee" stroke-width="2.4" stroke-linecap="round"><path d="M10 34c-6-8 6-12 0-20M22 34c-6-8 6-12 0-24M34 34c-6-8 6-12 0-20"/></svg>
+        <div class="fly"><svg viewBox="0 0 64 44"><use href="#dm"/></svg></div>
+      </div>
+      <p class="lead">Hand-folded dumplings, steamed to order, at your door in about 24 minutes.</p>
+      <a class="cta" href="#bag">Order a bag <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h13M11 4l6 6-6 6"/></svg></a>
+      <p class="fine">Late? The bag is free.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-menu">
+    <div class="wrap">
+      <div class="hd rv" data-reel-stop><p class="eyebrow">The folding table</p><h2 id="h-menu">Five folds. <br>Zero filler.</h2></div>
+      <ul class="menu">
+        <li class="dish rv" data-reel-stop><span class="g" style="background:#ffd3df"><svg viewBox="0 0 64 44" aria-hidden="true"><use href="#dm" style="color:#dc0f4a"/></svg></span><div><h3>Chili-crisp pork</h3><p>Seared base, lacy skirt, sweet black vinegar.</p><div class="pr"><b>$9</b><em>Best seller</em></div></div></li>
+        <li class="dish rv" style="--d:.05s"><span class="g" style="background:#e3fabd"><svg viewBox="0 0 64 44" aria-hidden="true"><use href="#dm" style="color:#2a0a1a"/></svg></span><div><h3>Brown-butter mushroom</h3><p>Three fungi, toasted sesame, a little smoke.</p><div class="pr"><b>$8</b><em>Veg</em></div></div></li>
+        <li class="dish rv" data-reel-stop style="--d:.1s"><span class="g" style="background:#ffe2b8"><svg viewBox="0 0 64 44" aria-hidden="true"><use href="#dm" style="color:#ff9f1c"/></svg></span><div><h3>Prawn &amp; lemon-leaf</h3><p>Sweet, snappy, bright with citrus oil.</p><div class="pr"><b>$11</b></div></div></li>
+        <li class="dish rv"><span class="g" style="background:#2a0a1a"><svg viewBox="0 0 64 44" aria-hidden="true"><use href="#dm" style="color:#b9f26b"/></svg></span><div><h3>Smoky aubergine</h3><p>Silky, garlicky, finished with crunchy oats.</p><div class="pr"><b>$8</b><em>Veg</em></div></div></li>
+        <li class="dish rv" style="--d:.05s"><span class="g" style="background:#ffd3df"><svg viewBox="0 0 64 44" aria-hidden="true"><use href="#dm" style="color:#2a0a1a"/></svg></span><div><h3>Pistachio-sesame sweet</h3><p>Warm, nutty, dusted with toasted rice sugar.</p><div class="pr"><b>$7</b><em>Dessert</em></div></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-step">
+    <div class="wrap">
+      <div class="hd rv" data-reel-stop><p class="eyebrow">How it works</p><h2 id="h-step">Tap. Fold. Fly.</h2></div>
+      <ol class="steps">
+        <li class="step rv" data-reel-stop><span class="n">1</span><div><h3>Pick your bag</h3><p>Choose a flavour or let us surprise you.</p></div></li>
+        <li class="step rv" data-reel-stop style="--d:.05s"><span class="n">2</span><div><h3>We fold to order</h3><p>Nothing sits in a warmer. Ever.</p></div></li>
+        <li class="step rv" data-reel-stop style="--d:.1s"><span class="n">3</span><div><h3>A scooter flies</h3><p>Sealed, still steaming, at your door.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-bag" id="bag">
+    <div class="wrap">
+      <div class="hd rv" data-reel-stop><p class="eyebrow">Bags</p><h2 id="h-bag">Pick a bag. <br>Share or don’t.</h2><p>Free delivery inside 3 km. Dips included.</p></div>
+      <div class="pks">
+        <article class="pk rv"><h3>Solo</h3><p class="pr">$14<small>12 dumplings</small></p><p>One flavour, one dip, one very good evening.</p></article>
+        <article class="pk hot rv" data-reel-stop><span class="fl">MOST ORDERED</span><h3>Duo</h3><p class="pr">$26<small>24 dumplings</small></p><p>Two flavours, two dips and a chili-oil jar.</p></article>
+        <article class="pk rv"><h3>Party</h3><p class="pr">$62<small>60 dumplings</small></p><p>Six flavours, a hot broth and a fold-it-yourself kit.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="dark" aria-labelledby="h-num">
+    <div class="wrap">
+      <div class="hd rv" data-reel-stop><p class="eyebrow">Proof, by the numbers</p><h2 id="h-num">Small bag. <br>Big receipts.</h2></div>
+      <div class="stats">
+        <div class="stat rv" data-reel-stop style="--to:24"><b><span class="cnt" style="--to:24" aria-hidden="true"></span><span class="sr-only" style="position:absolute;left:30px;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">24</span></b><span>minutes, median door time</span></div>
+        <div class="stat rv" data-reel-stop><b><span class="cnt" style="--to:98" aria-hidden="true"></span>%</b><span>arrive still steaming</span></div>
+        <div class="stat rv" data-reel-stop><b><span class="cnt" style="--to:3200" aria-hidden="true"></span></b><span>bags folded this month</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-route" data-reel-stop>
+    <div class="wrap">
+      <div class="hd rv"><p class="eyebrow">Live route</p><h2 id="h-route">Watch the <br>24 minutes.</h2></div>
+      <figure class="map rv" id="map" role="img" aria-label="A map showing a scooter riding from the Gojigo kitchen through the streets to a customer's door in 24 minutes.">
+        <svg class="base" viewBox="0 0 342 420" aria-hidden="true">
+          <g fill="#ffd3df"><rect x="62" y="20" width="60" height="100" rx="12"/><rect x="246" y="20" width="62" height="40" rx="12"/><rect x="156" y="170" width="56" height="48" rx="12"/><rect x="250" y="100" width="58" height="130" rx="12"/><rect x="20" y="170" width="52" height="46" rx="12"/><rect x="170" y="250" width="110" height="46" rx="12"/><rect x="170" y="330" width="138" height="60" rx="12"/><rect x="82" y="330" width="62" height="60" rx="12" fill="#e3fabd"/></g>
+          <g fill="#b9f26b" stroke="#2a0a1a" stroke-width="1.5"><circle cx="30" cy="260" r="9"/><circle cx="110" cy="190" r="7"/><circle cx="196" cy="116" r="8"/><circle cx="300" cy="258" r="9"/></g>
+          <path d="M44 372 L44 306 L142 306 L142 238 L88 238 L88 150 L224 150 L224 82 L286 82" fill="none" stroke="#2a0a1a" stroke-opacity=".12" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+          <path class="route" d="M44 372 L44 306 L142 306 L142 238 L88 238 L88 150 L224 150 L224 82 L286 82" pathLength="1" stroke-dasharray="1" fill="none" stroke="#dc0f4a" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="44" cy="372" r="10" fill="#dc0f4a" stroke="#2a0a1a" stroke-width="2"/>
+          <path d="M286 62c-9 0-15 6-15 14 0 10 15 26 15 26s15-16 15-26c0-8-6-14-15-14Z" fill="#b9f26b" stroke="#2a0a1a" stroke-width="2"/><circle cx="286" cy="76" r="4.5" fill="#2a0a1a"/>
+        </svg>
+        <div class="clock" aria-hidden="true"><b></b><small>minutes</small></div>
+        <span class="lbl l1">Kitchen</span><span class="lbl l2">Your door</span>
+        <div class="scoot" aria-hidden="true"><svg viewBox="0 0 64 44"><use href="#dm"/></svg></div>
+        <div class="stamp" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5l4.5 4.5L17 5"/></svg>Delivered</div>
+      </figure>
+    </div>
+  </section>
+
+  <section class="end" aria-labelledby="h-end">
+    <div class="wrap">
+      <div class="rv" data-reel-stop><p class="eyebrow" style="color:var(--pist)">Kitchen open till 2 am</p><h2 id="h-end" style="margin-top:12px">Hungry? <br><span>Gone in 24.</span></h2><p>Order now and your first dip jar is on us. If the bag is late, so is the bill.</p>
+        <a class="cta" href="#top" style="margin-top:22px">Order a bag <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h13M11 4l6 6-6 6"/></svg></a>
+      </div>
+      <div class="tix rv" data-reel-stop style="--d:.1s"><svg viewBox="0 0 20 20" fill="none" stroke="#b9f26b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="M6 10.5l3 3 5-6"/></svg><span><b>Delivered in 24:12</b>Order #0481 · still steaming</span></div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">Gojigo · a fictional brand for demonstration<small>Developed by Aquarii Technologies</small></div></footer>
+
+<script>
+(function(){
+  var rv=document.querySelectorAll('.rv,.stat');
+  if(!('IntersectionObserver' in window)){rv.forEach(function(e){e.classList.add('in')});document.getElementById('map').classList.add('go');return}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');if(e.target.id==='map')e.target.classList.add('go');io.unobserve(e.target)}})},{threshold:.35});
+  rv.forEach(function(e){io.observe(e)});
+})();
+</script>
+</body>
+</html>
