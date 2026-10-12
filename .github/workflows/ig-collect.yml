@@ -1,0 +1,61 @@
+name: Instagram collect
+
+# Once a day (about 01:45 IST) reads your Instagram account and every recent reel's numbers (read-only, official API) and stores them in the
+# site's D1 database for /performance/. Nothing is ever posted or changed on Instagram. Run it by hand any time: Actions -> "Instagram collect".
+# Needs the GitHub secrets INSTAGRAM_TOKEN, BASIC_AUTH_USER and BASIC_AUTH_PASS.
+on:
+  schedule:
+    - cron: '14 20 * * *'
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: Read from Instagram and show the result, but do not save it
+        type: boolean
+        default: false
+      refresh:
+        description: Also refresh the token now (it is refreshed weekly automatically)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: ig-collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Collect
+        env:
+          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+          DRY: ${{ inputs.dry }}
+          REFRESH: ${{ inputs.refresh }}
+        run: |
+          node scripts/build-kits.mjs >/dev/null
+          flags=""
+          [ "$DRY" = "true" ] && flags="$flags --dry"
+          [ "$REFRESH" = "true" ] && flags="$flags --refresh"
+          node scripts/ig-collect.mjs $flags 2>&1 | tee collect.log
+      - name: Tell the owner when it fails (one open issue at a time)
+        if: failure()
+        run: |
+          [ -n "$(gh issue list --repo "$REPO" --state open --search 'Instagram collector failed in:title' --json number -q '.[0].number')" ] && exit 0
+          msg=$(grep -E '^✗' collect.log | head -n 1)
+          gh issue create --repo "$REPO" --title "Instagram collector failed" --assignee "${{ github.repository_owner }}" \
+            --body "The daily Instagram collector could not finish. ${msg:-See the run for details.}"$'\n\n'"Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
