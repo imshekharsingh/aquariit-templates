@@ -203,6 +203,7 @@ jobs:
           curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/perf")" = "401" ] || { echo "performance API must be closed to signed-out requests"; exit 1; }
           [ "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' "$B/api/perf/ingest")" = "401" ] || { echo "ingest must be closed to signed-out requests"; exit 1; }
+          [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/perf/token")" = "401" ] || { echo "the stored-token endpoint must be closed to signed-out requests"; exit 1; }
           # a fresh deploy can take a moment to reach every edge location: retry like the live-site check does
           code=000
           for i in 1 2 3 4 5 6; do

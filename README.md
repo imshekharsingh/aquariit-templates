@@ -25,7 +25,7 @@ D1 database as the "Reel uploaded" ticks (tables `ig_account`, `ig_media`, `ig_m
 ### Daily collector
 `.github/workflows/ig-collect.yml` runs `scripts/ig-collect.mjs` every day (about 01:45 IST, or by hand: Actions → **Instagram collect**). It reads the account and each
 recent reel from Instagram's official API (read-only, token in the GitHub secret `INSTAGRAM_TOKEN`, never printed), matches reels to templates by the brand name in the
-caption, and stores everything through `/api/perf/ingest`. The token is refreshed weekly. A failure opens one GitHub issue that says what to do.
+caption, and stores everything through `/api/perf/ingest`. Instagram tokens last 60 days and a refresh issues a new one, so the collector refreshes about weekly and keeps the new token in D1 (`ig_token`, readable only by the primary account via `/api/perf/token`); that stored token is preferred and the GitHub secret is the fallback. A failure opens one GitHub issue that says what to do.
 
 ## How `/daily-template` works
 Run `/daily-template [hint]` in Claude Code, any time, as often as you like. Each run makes

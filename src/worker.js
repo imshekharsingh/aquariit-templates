@@ -60,6 +60,13 @@ function basicOf(request) {
     return i < 0 ? null : { user: text.slice(0, i), pass: text.slice(i + 1) };
   } catch { return null; }
 }
+// Only the primary account (BASIC_AUTH_USER): used for the one thing that must not be visible to the optional second account, the stored Instagram token.
+async function isPrimary(request, env) {
+  const c = cookieOf(request);
+  if (c.startsWith('v1.') && (await validSession(env, c))) return true; // v1 sessions are the primary account's
+  const b = basicOf(request);
+  return !!b && (await matchAccount(b.user, b.pass, env)) === 0;
+}
 async function authed(request, env) {
   if (await validSession(env, cookieOf(request))) return true;
   const b = basicOf(request);
@@ -122,6 +129,7 @@ async function perfDb(env) {
     env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_media (ig_id TEXT PRIMARY KEY, template_id TEXT, permalink TEXT, posted_at TEXT, caption TEXT, kind TEXT, duration_s REAL)'),
     env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_metrics (ig_id TEXT NOT NULL, day TEXT NOT NULL, views INTEGER, reach INTEGER, likes INTEGER, comments INTEGER, saves INTEGER, shares INTEGER, watch_avg_ms INTEGER, watch_total_ms INTEGER, PRIMARY KEY (ig_id, day))'),
     env.DB.prepare('CREATE INDEX IF NOT EXISTS ig_metrics_day ON ig_metrics (day)'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_token (id INTEGER PRIMARY KEY CHECK (id = 1), token TEXT NOT NULL, saved_at TEXT NOT NULL)'),
   ]).catch((e) => { perfReady = null; throw e; });
   await perfReady;
   return env.DB;
@@ -133,6 +141,21 @@ async function perfApi(request, env, p, url) {
   let db;
   try { db = await perfDb(env); } catch { return jres({ error: 'db-unavailable' }, 503); }
   if (!db) return jres({ error: 'no-db' }, 501);
+  if (p === '/api/perf/token') { // the refreshed Instagram token, kept so the daily collector can keep itself alive (a GitHub secret cannot be rewritten by a workflow)
+    if (!(await isPrimary(request, env))) return jres({ error: 'forbidden' }, 403);
+    if (request.method === 'GET') {
+      const row = await db.prepare('SELECT token, saved_at FROM ig_token WHERE id = 1').first();
+      return jres(row ? { token: row.token, saved_at: row.saved_at } : { token: null });
+    }
+    if (request.method === 'PUT') {
+      if (request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403);
+      let b = null; try { b = await request.json(); } catch { /* handled below */ }
+      if (!b || typeof b.token !== 'string' || b.token.length < 20 || b.token.length > 600 || /\s/.test(b.token)) return jres({ error: 'bad-request' }, 400);
+      await db.prepare('INSERT INTO ig_token (id, token, saved_at) VALUES (1, ?1, ?2) ON CONFLICT(id) DO UPDATE SET token = excluded.token, saved_at = excluded.saved_at').bind(b.token, new Date().toISOString()).run();
+      return jres({ ok: true });
+    }
+    return jres({ error: 'bad-request' }, 400);
+  }
   if (request.method === 'GET' && p === '/api/perf') {
     const days = Math.max(7, Math.min(365, Math.round(+url.searchParams.get('days')) || 90));
     const acc = await db.prepare('SELECT day, username, followers, follows, media_count FROM ig_account ORDER BY day DESC LIMIT ?1').bind(days).all();
