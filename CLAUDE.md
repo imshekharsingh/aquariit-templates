@@ -133,7 +133,12 @@ Design every template for a **402×715 viewport**, not a desktop page:
 ## Instagram social kit (required for every template)
 Every template ships with social/ID.md (NOT inside templates/, so it is
 never deployed). It is the ready-to-paste kit for the Instagram Reel:
-- `## Hook` — one line (≤ 10 words) of on-screen text for the first 2 seconds. It must open a loop the end of the video
+**Growth rules (owner-delegated, evidence-driven):** the account exists to attract clients for Aquarii Technologies, so every concept and hook speaks to the buyer
+(a business owner or founder: money, time, results, "what should it cost / where am I losing / can it do X"), not only to designers. The reel starts moving at
+frame 0 (no static title card), shows the hook on screen, runs ~18 s and pays off in its last 4 s. What is being tested, what the numbers said and what to try
+next live in design/experiments.md; the operating rhythm and the do/don't list live in design/growth-playbook.md. Before making a new template, read the latest
+"Instagram collect" workflow log (per-reel table) and favour what the numbers show is working.
+- `## Hook` — one line (≤ 8 words, a question or a surprising contrast) shown ON SCREEN by the renderer for the first ~3 seconds, so it must read at a glance. It must open a loop the end of the video
   closes: a question ("Can a website feel like tea? Watch to the end"), a "Wait for …" promise, or a surprising contrast.
   Never a vague teaser, and never promise something the video does not show. Watch time is what Instagram rewards.
 - `## Caption` — 2–4 short lines; the first line must contain the main search keywords in natural language (Instagram
@@ -143,10 +148,11 @@ never deployed). It is the ready-to-paste kit for the Instagram Reel:
 - `## Hashtags` — EXACTLY 5, each starting with # (Instagram's per-post limit
   since Dec 2025): 2 broad, 2 niche, 1 topic-specific; then an `Alternates:` line
   with 5 more to rotate between posts (never all together)
-- `## Reel` — lines `Length:` (20–30 s, matching the ▶ player's length setting; shorter pages = higher completion),
+- `## Reel` — lines `Length:` (15–20 s: scripts/render-reel.mjs renders reels at ~18 s; shorter = higher completion for cold viewers),
   `Shot plan:` (2–4 beats of what the ▶ player will show: it only scrolls and plays animations, it never taps),
   `Payoff:` (the moment near the end that answers the hook and rewards finishing, e.g. a signature animation completing or
-  the final CTA reveal — make sure the template actually has one in its last third), `Cover:` (3–5 word cover text)
+  the final CTA reveal — make sure the template actually has one in the last 4 seconds of the 18 s reel), `Cover:` (3–5 word cover text; the cover card is its own image,
+  uploaded as the Instagram cover, never the first seconds of the video)
 - `## Music` — lines `Mood:`, `Genre:`, `BPM:`, `Search:` (3–5 terms to type into
   Instagram's audio search), `Accent sounds:` (optional SFX), `Avoid:`
 - Format is a vertical 9:16 Reel recorded from the screen (phone-width viewport).

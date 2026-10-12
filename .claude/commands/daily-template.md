@@ -83,7 +83,7 @@ Create social/ID.md following the "Instagram social kit" section of CLAUDE.md
 8–12 keywords, exactly 5 hashtags + alternates, Reel plan with length/shot plan/payoff/cover text, music suggestion matched to the template's mood). Base keywords on what the page actually shows.
 Reel format B is the current experiment (design/experiments.md): the reel is rendered automatically at about 18 s with the kit's hook shown on screen for the first
 ~3 s, so write `Length: 15–20 s`, make the hook SHORT (a question of at most 8 words, it is read on screen), and plan the shot plan and payoff to land inside 18 s
-(payoff in the last 4 s). Read the latest results table in the "Instagram collect" workflow log and `design/experiments.md` first, and favour what the numbers say is working.
+(payoff in the last 4 s). Read the latest results table in the "Instagram collect" workflow log, `design/experiments.md` and `design/growth-playbook.md` first, and favour what the numbers say is working. Concept and hook speak to the buyer (a business owner or founder: money, time, results), not only to designers.
 
 ## Phase 5 — Records and push
 1. Append the entry to design-log.json (schema in CLAUDE.md: id=ID, date=DATE,

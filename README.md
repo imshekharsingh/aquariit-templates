@@ -26,6 +26,10 @@ advisor reads to give advice. The earlier `/performance/` page was removed (it i
 recent reel from Instagram's official API (read-only, token in the GitHub secret `INSTAGRAM_TOKEN`, never printed), matches reels to templates by the brand name in the
 caption, and stores everything through `/api/perf/ingest`. Instagram tokens last 60 days and a refresh issues a new one, so the collector refreshes about weekly and keeps the new token in D1 (`ig_token`, readable only by the primary account via `/api/perf/token`); that stored token is preferred and the GitHub secret is the fallback. A failure opens one GitHub issue that says what to do.
 
+## Growth (the advisor's files)
+`design/growth-playbook.md` is the standing plan for the Instagram account (audience, content rules, daily/weekly rhythm, decision thresholds, what never to do);
+`design/experiments.md` is the lab notebook (current experiment, baseline, verdicts, queue of next tests). The daily generator reads both before making a template.
+
 ## How `/daily-template` works
 Run `/daily-template [hint]` in Claude Code, any time, as often as you like. Each run makes
 one new template whose ID is the India date and time (e.g. `2026-10-07-0905`), creates branch
