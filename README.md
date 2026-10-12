@@ -11,7 +11,9 @@ Latest: [2026-10-12 08:50 · Gojigo](https://templates.aquariit.com/2026-10-12-0
 ## Rendering a reel (no phone needed)
 `node scripts/render-reel.mjs [ID]` (or `npm run reel -- ID`) plays a template through the real ▶ player in headless Chromium and writes
 `out/reels/ID.mp4`: 1080×1920, H.264 + AAC, cover card first, the player's own generated music (rendered offline, royalty-free), plus
-`ID-cover.jpg` and `ID.json` (timings and capture quality). It needs Playwright and ffmpeg and exits 1 when the capture is choppy.
+`ID-cover.jpg` and `ID.json` (timings and quality). Every frame is rendered at its exact time on a paused virtual clock (30 fps, 3× pixel density),
+so the scroll and animations are perfectly even and text is crisp whatever the speed of the machine; `--realtime` is an older screencast fallback.
+It needs Playwright and ffmpeg and exits 1 when the scroll is not smooth.
 In GitHub: Actions → **Render reel** → Run workflow (empty id = newest) attaches the MP4 to the run as an artifact. Nothing is posted anywhere.
 
 ## How `/daily-template` works
