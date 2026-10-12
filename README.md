@@ -16,6 +16,12 @@ so the scroll and animations are perfectly even and text is crisp whatever the s
 It needs Playwright and ffmpeg and exits 1 when the scroll is not smooth.
 In GitHub: Actions → **Render reel** → Run workflow (empty id = newest) attaches the MP4 to the run as an artifact. Nothing is posted anywhere.
 
+## Instagram performance (D1)
+`/performance/` shows followers over time and, per reel, views, reach, shares and saves, ranked by share rate, with a "what is working" view that groups
+reels by mood, layout, purpose and era (read from `design-log.json`; free text is mapped to the vocabulary of the design menus). Data lives in the same
+D1 database as the "Reel uploaded" ticks (tables `ig_account`, `ig_media`, `ig_metrics`, created on first use). Writing is `POST /api/perf/ingest`
+(signed-in session + `X-Requested-With: reel`), reading is `GET /api/perf`. Until the daily collector is connected the page shows a setup checklist.
+
 ## How `/daily-template` works
 Run `/daily-template [hint]` in Claude Code, any time, as often as you like. Each run makes
 one new template whose ID is the India date and time (e.g. `2026-10-07-0905`), creates branch
