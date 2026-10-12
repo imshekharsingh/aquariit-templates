@@ -22,13 +22,15 @@ console.log(`## 🎬 ${k.name} — your reel is rendered
 ### Post it (about a minute)
 1. Open the kit link above on your iPhone and tap **Save / share to Instagram**, then choose *Save Video* so it lands in Photos (Instagram only sees Photos).  
    If the sheet only offers Files or Drive: save to Files, open Files, press and hold the video → **Share → Save Video**.
-2. In Instagram: **Reel** → pick the video. Keep the first frame as the cover (it is the cover card).
+2. In Instagram: **Reel** → pick the video. This reel starts on the moving page on purpose (no title card), so set the cover yourself: **Edit cover → Add from camera roll** and choose the cover image (kit page → **Save cover image**).
 3. **Add audio** from Instagram's library. Search: ${list(m.search) || '—'}${m.mood ? `  \n   Mood: ${m.mood}${m.genre ? ' · ' + m.genre : ''}${m.bpm ? ' · ' + m.bpm + ' BPM' : ''}.` : ''}  
    Use the volume mixer to turn the video's own (generated) music down or off.
 4. Paste the caption below, then **Share**.
 5. Tick **Reel uploaded** in the app so it is never posted twice.
 
-### Hook (on-screen text, first 2 seconds)
+> **Experiment E1 · format B:** about 18 s, the hook shows on screen for the first 3 seconds, no static intro. Post it as it is (no extra text of your own on top). The results are compared with the first five reels (design/experiments.md).
+
+### Hook (already on the video; use it as the first line of your thinking, not extra text)
 > ${k.hook}
 
 ### Caption + hashtags (copy all)
