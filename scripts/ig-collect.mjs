@@ -103,6 +103,16 @@ for (const m of items) {
 for (const k of Object.keys(supported)) say(`Insight metrics (${k}): ${supported[k].join(', ') || 'none'}${unsupported[k] && unsupported[k].length ? ` | not available: ${unsupported[k].map((n) => `${n} [${firstError[n]}]`).join('; ')}` : ''}`);
 const matched = media.filter((m) => m.template_id).length;
 say(`Matched to a template: ${matched} of ${media.length}`);
+// a compact per-reel table (numbers only, no secrets): this is what the advisor reads to give advice from real results
+{
+  const n = (v) => (v == null ? '-' : String(v)), pc = (a, b) => (b > 0 && a != null ? (100 * a / b).toFixed(1) + '%' : '-');
+  say('\nReels (newest first): date | template | views | reach | shares | saves | likes | comments | avg watch s | share% | save%');
+  for (const m of media.slice().sort((a, b) => String(b.posted_at).localeCompare(String(a.posted_at)))) {
+    const x = m.metrics; say([String(m.posted_at || '').slice(0, 10), m.template_id || 'unmatched', n(x.views), n(x.reach), n(x.shares), n(x.saves), n(x.likes), n(x.comments), x.watch_avg_ms != null ? (x.watch_avg_ms / 1000).toFixed(1) : '-', pc(x.shares, x.reach), pc(x.saves, x.reach)].join(' | '));
+  }
+  const tot = (k) => media.reduce((a, m) => a + (m.metrics[k] || 0), 0);
+  say(`Totals: ${tot('views')} views, ${tot('reach')} reach (sum), ${tot('shares')} shares, ${tot('saves')} saves, ${tot('likes')} likes, ${tot('comments')} comments\n`);
+}
 if (media.length && !Object.values(supported).some((s) => s.length)) say('⚠ No insight metric could be read. The token probably lacks the “instagram_business_manage_insights” permission (or Instagram needs App Review for it). Followers and posts were still collected.');
 
 // 5. token health. Instagram tokens last 60 days and a refresh issues a NEW token, so the new one is stored on the site (only the primary account can read it).
