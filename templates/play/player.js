@@ -440,7 +440,7 @@
   /* =====================================================================
      SETTINGS
      ===================================================================== */
-  var DEF = { len: 30, music: 'auto', frame: 'auto', hideBack: true, cover: true };
+  var DEF = { len: 20, music: 'auto', frame: 'auto', hideBack: true, cover: false }; // growth: short, and no static title card in the first seconds (the cover card is a separate image)
   function load() { try { return Object.assign({}, DEF, JSON.parse(localStorage.getItem('reel.settings') || '{}')); } catch (e) { return Object.assign({}, DEF); } }
   function save(s) { try { localStorage.setItem('reel.settings', JSON.stringify(s)); } catch (e) {} }
 
