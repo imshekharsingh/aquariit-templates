@@ -1,0 +1,96 @@
+name: Reel publish
+
+# After every successful "Template pipeline" run: if the newest template has no rendered reel yet, render it (free, headless Chromium + ffmpeg),
+# keep the MP4 in the "reels" release (persistent, private with the repo), open a "Reel ready" issue for the owner (GitHub emails/notifies) and
+# redeploy once so the site can serve the video behind the sign-in (the deploy job downloads recent reels from the release).
+# Nothing is posted to Instagram: the owner taps Post (semi-auto, so Instagram's own audio can be used).
+on:
+  workflow_run:
+    workflows: ['Template pipeline']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      id:
+        description: Template id (empty = newest in design-log.json)
+        required: false
+        default: ''
+      force:
+        description: Render again even if a reel already exists
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # releases
+  issues: write
+  actions: write    # to start one redeploy
+
+concurrency:
+  group: reel-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Pick the template and see if its reel exists
+        id: pick
+        env:
+          IN_ID: ${{ inputs.id }}
+          IN_FORCE: ${{ inputs.force }}
+        run: |
+          ID="${IN_ID:-$(node -e "const l=require('./design-log.json');const k=e=>e.id||e.date;console.log(l.map(k).sort().reverse()[0])")}"
+          echo "id=$ID" >> "$GITHUB_OUTPUT"
+          if [ "$IN_FORCE" != "true" ] && gh release view reels --repo "$REPO" --json assets -q '.assets[].name' 2>/dev/null | grep -qx "$ID.mp4"; then
+            echo "Reel for $ID already exists: nothing to do."; echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install render tools (free, nothing committed)
+        if: steps.pick.outputs.skip != 'true'
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+          sudo apt-get install -y --no-install-recommends ffmpeg
+      - name: Render the reel
+        if: steps.pick.outputs.skip != 'true'
+        run: |
+          set -o pipefail
+          node scripts/render-reel.mjs "${{ steps.pick.outputs.id }}" --out out/reels 2>&1 | tee render.log
+      - name: Keep it in the reels release
+        if: steps.pick.outputs.skip != 'true'
+        run: |
+          ID="${{ steps.pick.outputs.id }}"
+          gh release view reels --repo "$REPO" >/dev/null 2>&1 || gh release create reels --repo "$REPO" --title "Reels" --latest=false \
+            --notes "Rendered reels (MP4 + cover), one per template. Written by the Reel publish workflow; the site serves recent ones behind the sign-in."
+          gh release upload reels --repo "$REPO" --clobber "out/reels/$ID.mp4" "out/reels/$ID-cover.jpg" "out/reels/$ID.json"
+      - name: Tell the owner (GitHub issue, assigned so it emails and notifies)
+        if: steps.pick.outputs.skip != 'true'
+        run: |
+          ID="${{ steps.pick.outputs.id }}"
+          gh label create reel --repo "$REPO" --color 7C3AED --description "A reel is ready to post" 2>/dev/null || true
+          node scripts/build-kits.mjs >/dev/null
+          node scripts/reel-issue.mjs "$ID" > issue.md
+          gh issue create --repo "$REPO" --title "$(node scripts/reel-issue.mjs "$ID" --title)" --body-file issue.md --label reel --assignee "${{ github.repository_owner }}"
+      - name: Redeploy once so the site serves the new video
+        if: steps.pick.outputs.skip != 'true'
+        run: gh workflow run pipeline.yml --repo "$REPO" --ref main
+      - name: Summary
+        if: always() && steps.pick.outputs.skip != 'true'
+        run: |
+          { echo '### Reel publish'; echo '```'; cat render.log 2>/dev/null; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Report a failed render (so it is seen the same day)
+        if: failure()
+        run: |
+          gh issue create --repo "$REPO" --title "Reel render failed: ${{ steps.pick.outputs.id }}" --assignee "${{ github.repository_owner }}" \
+            --body "The Reel publish workflow failed. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -1,7 +1,7 @@
 // Aquarii Templates service worker.
 // Network-first: HTML + /design-log.json (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v8';
+const VERSION = 'v9';
 const CACHE = `aquarii-${VERSION}`;
 const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/design-log.json', '/social-kits.json', '/kit/', '/play/player.js', '/uploaded.js', '/icons/icon.svg'];
 
@@ -43,6 +43,7 @@ self.addEventListener('fetch', (e) => {
   const fontHost = url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
   if (!fontHost && url.origin !== location.origin) return;
 
+  if (url.pathname.startsWith('/reels/')) return; // large videos with Range requests: straight to the network, never cached
   if (fontHost || url.pathname.startsWith('/icons/')) return e.respondWith(cacheFirst(req));
   if (req.mode === 'navigate' || url.pathname === '/design-log.json' || url.pathname === '/social-kits.json' || url.pathname.endsWith('.html')) {
     return e.respondWith(networkFirst(req, req.mode === 'navigate' ? '/' : null));

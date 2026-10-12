@@ -41,6 +41,12 @@
   .urow{margin-top:12px;margin-left:-4px;color:var(--deep-ink)}.urow .ru{color:inherit}.urow .bx{border-color:currentColor}
   .open{display:inline-block;margin-top:16px;color:var(--deep-ink);font-weight:700;text-decoration:none;border-bottom:2px solid var(--accent)}
 
+  .rvid{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+  .rvid video{width:150px;aspect-ratio:9/16;border-radius:16px;border:2px solid var(--ink);background:#000;object-fit:cover}
+  .rvid .side{flex:1;min-width:190px;display:flex;flex-direction:column;gap:10px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 18px;border-radius:999px;border:0;background:var(--accent);color:#fff;font:700 .98rem system-ui,sans-serif;cursor:pointer;text-decoration:none}
+  .btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn[disabled]{opacity:.6;cursor:progress}
   .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:14px}
   .card h2{display:flex;justify-content:space-between;align-items:center;gap:10px;font:700 .74rem/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
   .copy{font:700 .78rem system-ui,sans-serif;letter-spacing:0;text-transform:none;min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
@@ -122,6 +128,30 @@
     return s;
   }
 
+  function reelCard(k) { // the rendered MP4 (made automatically after each deploy), behind the same sign-in as everything else
+    var url = '/reels/' + encodeURIComponent(k.id) + '.mp4', poster = '/reels/' + encodeURIComponent(k.id) + '-cover.jpg', name = k.id + '-reel.mp4';
+    var c = card('Reel video'), body = el('div', 'rvid'); c.appendChild(body);
+    c.appendChild(el('p', 'hint', 'Checking for the rendered video…')); var hint = c.lastChild;
+    var blob = null, file = null;
+    fetch(url, { method: 'HEAD', cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw 0;
+      var v = el('video'); v.controls = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'metadata'; v.poster = poster; v.src = url; v.setAttribute('aria-label', 'Rendered reel preview'); body.appendChild(v);
+      var side = el('div', 'side'), share = el('button', 'btn', 'Save / share to Instagram'); share.type = 'button';
+      var dl = el('a', 'btn alt', 'Download MP4'); dl.href = url; dl.setAttribute('download', name);
+      side.appendChild(share); side.appendChild(dl); body.appendChild(side);
+      hint.textContent = '1080×1920, about 30 s, with the built-in music. In Instagram, add its own audio and lower this one in the volume mixer.';
+      share.disabled = true; share.textContent = 'Preparing video…';
+      fetch(url).then(function (r) { return r.blob(); }).then(function (b) { // loaded first: iOS only opens the share sheet straight from a tap
+        blob = b; file = new File([b], name, { type: 'video/mp4' }); share.disabled = false; share.textContent = 'Save / share to Instagram';
+      }).catch(function () { share.disabled = false; share.textContent = 'Save / share to Instagram'; });
+      share.addEventListener('click', function () {
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: k.name }).catch(function (e) { if (!e || e.name !== 'AbortError') say('Use Download MP4 instead'); });
+        } else { dl.click(); say('Downloading…'); }
+      });
+    }).catch(function () { hint.textContent = 'The reel video is not ready yet. It renders automatically after each deploy (about 10 minutes) and a “Reel ready” notice arrives on GitHub.'; });
+    return c;
+  }
   function render(kits, id) {
     var k = kits.filter(function (x) { return x.id === id; })[0];
     app.textContent = '';
@@ -141,6 +171,7 @@
     sb.appendChild(m); var op = el('a', 'open', 'Open template ↗'); op.href = '/' + k.id + '/'; sb.appendChild(op);
     if (window.ReelUploaded) { var ur = el('div', 'urow'); ur.appendChild(window.ReelUploaded.make(k.id, { name: k.name, label: true })); sb.appendChild(ur); }
     s.appendChild(sb); app.appendChild(s);
+    app.appendChild(reelCard(k));
 
     var c = card('Hook · first 2 seconds', k.hook, 'Hook copied'); c.appendChild(el('p', 'hook serif', k.hook)); app.appendChild(c);
 
