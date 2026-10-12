@@ -138,7 +138,14 @@
       var v = el('video'); v.controls = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'auto'; v.poster = poster; v.setAttribute('aria-label', 'Rendered reel preview'); body.appendChild(v); // src is set from the downloaded file below: iPhone Safari will not stream video from a server without Range support
       var side = el('div', 'side'), share = el('button', 'btn', 'Save / share to Instagram'); share.type = 'button';
       var dl = el('a', 'btn alt', 'Download MP4'); dl.href = url; dl.setAttribute('download', name);
-      side.appendChild(share); side.appendChild(dl); body.appendChild(side);
+      var cov = el('button', 'btn alt', 'Save cover image'); cov.type = 'button'; cov.hidden = true;
+      side.appendChild(share); side.appendChild(dl); side.appendChild(cov); body.appendChild(side);
+      var coverUrl = '/reels/' + encodeURIComponent(k.id) + '-cover.jpg', coverFile = null; // the cover card as its own image (Instagram: Edit cover → Add from camera roll)
+      fetch(coverUrl).then(function (r) { if (!r.ok) throw 0; return r.blob(); }).then(function (b) { coverFile = new File([b], k.id + '-cover.jpg', { type: 'image/jpeg' }); cov.hidden = false; }).catch(function () {});
+      cov.addEventListener('click', function () {
+        if (coverFile && navigator.canShare && navigator.canShare({ files: [coverFile] })) navigator.share({ files: [coverFile] }).catch(function (e) { if (!e || e.name !== 'AbortError') say('Could not open the share sheet'); });
+        else { var a = el('a'); a.href = coverUrl; a.download = k.id + '-cover.jpg'; a.click(); say('Downloading…'); }
+      });
       hint.textContent = '1080×1920, about 30 s, with the built-in music. In Instagram, add its own audio and lower this one in the volume mixer.';
       var tip = el('p', 'hint'); tip.textContent = 'Instagram only sees your Photos. If the share sheet offers only Files or Drive: save to Files, then in Files press and hold the video → Share → Save Video.'; c.appendChild(tip);
       share.disabled = true; share.textContent = 'Preparing video…';

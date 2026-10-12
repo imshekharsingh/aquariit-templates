@@ -81,6 +81,9 @@ sure the hero is complete (no half-faded elements); if not, fix the template's e
 Create social/ID.md following the "Instagram social kit" section of CLAUDE.md
 (hook that opens a loop the ending closes, caption ending with a "Send this to…" share line,
 8–12 keywords, exactly 5 hashtags + alternates, Reel plan with length/shot plan/payoff/cover text, music suggestion matched to the template's mood). Base keywords on what the page actually shows.
+Reel format B is the current experiment (design/experiments.md): the reel is rendered automatically at about 18 s with the kit's hook shown on screen for the first
+~3 s, so write `Length: 15–20 s`, make the hook SHORT (a question of at most 8 words, it is read on screen), and plan the shot plan and payoff to land inside 18 s
+(payoff in the last 4 s). Read the latest results table in the "Instagram collect" workflow log and `design/experiments.md` first, and favour what the numbers say is working.
 
 ## Phase 5 — Records and push
 1. Append the entry to design-log.json (schema in CLAUDE.md: id=ID, date=DATE,

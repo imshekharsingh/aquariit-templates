@@ -4,7 +4,10 @@
 //            CSS animations are set to that exact time, and a screenshot of the 402×715 reel frame (device scale 3) is taken. The scroll and the
 //            animations are therefore perfectly even, whatever the speed of the machine. `--realtime` falls back to a real-time screencast capture.
 //   audio  = the player's own generated music, rendered offline for the exact length (original, royalty-free), placed where the player starts it
-// Usage: node scripts/render-reel.mjs [ID] [--out DIR] [--len SECONDS] [--no-audio] [--fps 30] [--crf 15] [--realtime]   (default ID: newest template)
+// FORMAT B (default, experiment E1 in design/experiments.md): no static intro (the video starts the moment the page starts moving), the kit's hook as an on-screen line for the
+// first ~2.7 s, 18 s long, and the cover card written separately as ID-cover.jpg to upload as the Instagram cover. FORMAT A (--format A) is the first format: cover card
+// as the first 1.3 s of the video, kit length (24-30 s), no hook line.
+// Usage: node scripts/render-reel.mjs [ID] [--out DIR] [--format A|B] [--len SECONDS] [--no-hook] [--no-audio] [--fps 30] [--crf 15] [--realtime]   (default ID: newest template)
 // Output: DIR/ID.mp4, DIR/ID-cover.jpg (the cover card as a still), DIR/ID.json (timings + quality). Exit code 1 when the capture is not smooth.
 import { createServer } from 'node:http';
 import { readFileSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
@@ -15,8 +18,8 @@ import { spawnSync } from 'node:child_process';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..'), T = join(root, 'templates');
 const args = process.argv.slice(2), opt = (n, d) => { const i = args.indexOf(n); return i > -1 ? args[i + 1] : d; };
-const OUT = opt('--out', join(root, 'out', 'reels')), FPS = +opt('--fps', 30), NOAUDIO = args.includes('--no-audio'), REALTIME = args.includes('--realtime'), CRF = +opt('--crf', 15);
-const valueArgs = new Set(['--out', '--len', '--fps', '--crf']);
+const OUT = opt('--out', join(root, 'out', 'reels')), FPS = +opt('--fps', 30), NOAUDIO = args.includes('--no-audio'), REALTIME = args.includes('--realtime'), CRF = +opt('--crf', 15), FORMAT = String(opt('--format', 'B')).toUpperCase() === 'A' ? 'A' : 'B', HOOK_ON = FORMAT === 'B' && !args.includes('--no-hook');
+const valueArgs = new Set(['--out', '--len', '--fps', '--crf', '--format']);
 let id = args.find((a, i) => !a.startsWith('--') && !valueArgs.has(args[i - 1]));
 const log = JSON.parse(readFileSync(join(root, 'design-log.json'), 'utf8'));
 if (!id) id = log.map((e) => e.id || e.date).sort().reverse()[0];
@@ -26,7 +29,8 @@ if (!id || !existsSync(join(T, id, 'index.html'))) { console.error(`No template 
 spawnSync('node', [join(root, 'scripts', 'build-kits.mjs')], { stdio: 'ignore' }); // the kits file is generated: never trust an old copy (it carries the cover text and length)
 let kit = null; try { kit = JSON.parse(readFileSync(join(T, 'social-kits.json'), 'utf8')).find((k) => k.id === id); } catch { /* no kit */ }
 const lm = kit && kit.reel ? String(kit.reel.length || '').match(/(\d+)\s*(?:[–-]\s*(\d+))?\s*s\b/) : null, kitLen = lm ? +(lm[2] || lm[1]) : 0;
-const LEN = Math.max(6, Math.min(60, +opt('--len', kitLen >= 15 && kitLen <= 60 ? kitLen : 30)));
+const LEN = Math.max(6, Math.min(60, +opt('--len', FORMAT === 'B' ? 18 : kitLen >= 15 && kitLen <= 60 ? kitLen : 30)));
+const HOOK = kit && typeof kit.hook === 'string' ? kit.hook.trim().slice(0, 90) : '';
 
 const require = createRequire(import.meta.url);
 let pw; for (const p of ['playwright', '/opt/node-tools/node_modules/playwright', '/opt/node-tools/node_modules/playwright-core']) { try { pw = require(p); break; } catch { /* next */ } }
@@ -86,7 +90,7 @@ const readState = () => pg.evaluate(() => ({ go: window.__goAt || 0, goPerf: win
 const driveAll = () => Promise.all(pg.frames().map((f) => f.evaluate(() => window.__drive && window.__drive()).catch(() => {})));
 const scrollY = () => pg.evaluate(() => { try { return document.querySelector('#reel iframe').contentWindow.scrollY; } catch { return null; } });
 
-let state = {}, D = LEN, COV = 0, audioAt = 0, videoLen = 0, kept = null, gaps = [], slow = 0, avgFps = 0, maxGap = 0, nFrames = 0, perFrameMs = 0, irregular = 0, moving = 0;
+let startFrame = 0, state = {}, D = LEN, COV = 0, audioAt = 0, videoLen = 0, kept = null, gaps = [], slow = 0, avgFps = 0, maxGap = 0, nFrames = 0, perFrameMs = 0, irregular = 0, moving = 0;
 const LEAD = 0.6;
 
 if (!REALTIME) {
@@ -100,8 +104,19 @@ if (!REALTIME) {
     await pg.clock.runFor(16); await sleep(6);
     state = await readState(); if (state.go) break;
   }
-  await driveAll();
   D = state.D ? Math.max(6, Math.min(120, state.D)) : LEN; COV = state.cover ? 1.3 : 0; videoLen = COV + LEAD + D + 0.35; nFrames = Math.ceil(videoLen * FPS);
+  if (HOOK_ON && HOOK) { // the hook as an on-screen line: it appears when the page starts moving (after the cover card and lead-in, which format B trims) and holds ~2.4 s
+    await pg.evaluate(({ text, delay }) => {
+      const box = document.querySelector('#reel'); if (!box) return;
+      const d = document.createElement('div'); d.setAttribute('aria-hidden', 'true'); d.textContent = text;
+      // inside Instagram's safe area: 30px from the left, clear of the right button column, above the caption zone (bottom edge at y=548 of 715)
+      Object.assign(d.style, { position: 'absolute', left: '30px', right: '64px', bottom: '167px', zIndex: '2147483000', boxSizing: 'border-box', padding: '12px 16px', borderRadius: '16px', background: 'rgba(8,10,14,.78)', color: '#fff',
+        font: '800 22px/1.18 system-ui,-apple-system,"Segoe UI",sans-serif', letterSpacing: '-.01em', textWrap: 'balance', boxShadow: '0 6px 24px rgba(0,0,0,.28)', pointerEvents: 'none', opacity: '0' });
+      d.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)', offset: .1 }, { opacity: 1, transform: 'translateY(0)', offset: .88 }, { opacity: 0, transform: 'translateY(0)' }], { duration: 2700, delay: delay * 1000, fill: 'both' });
+      box.appendChild(d);
+    }, { text: HOOK, delay: COV + LEAD });
+  }
+  await driveAll();
   const ys = [], t1 = Date.now(); let firstPerf = 0;
   for (let n = 0; n < nFrames; n++) {
     if (n > 0) { const step = Math.round((n * 1000) / FPS) - Math.round(((n - 1) * 1000) / FPS); await pg.clock.runFor(step); await driveAll(); }
@@ -111,6 +126,7 @@ if (!REALTIME) {
   }
   perFrameMs = (Date.now() - t1) / nFrames; if (process.env.YLOG) writeFileSync(process.env.YLOG, JSON.stringify(ys));
   audioAt = Math.max(0, COV + LEAD - (firstPerf - state.goPerf) / 1000);
+  if (FORMAT === 'B') { startFrame = Math.round((COV + LEAD) * FPS); audioAt -= startFrame / FPS; } // the video begins the moment the page thaws; the music begins with it (audioAt is now relative to that first frame)
   // evenness of the scroll: frames sit exactly 1/30 s apart, so judder could only come from the scroll position itself. Count "spikes": one frame that steps
   // noticeably more than both neighbours and then falls back (a smooth ease never does that).
   const dys = []; for (let i = 1; i < ys.length; i++) if (ys[i] != null && ys[i - 1] != null) dys.push(ys[i] - ys[i - 1]);
@@ -161,19 +177,23 @@ await browser.close(); server.close();
 
 // ---------- encode ----------
 const mp4 = join(OUT, `${id}.mp4`);
-const inputs = REALTIME ? ['-f', 'concat', '-safe', '0', '-i', join(tmp, 'list.txt')] : ['-framerate', String(FPS), '-i', join(tmp, 'f%05d.jpg')];
-if (!NOAUDIO) inputs.push('-itsoffset', audioAt.toFixed(3), '-i', join(tmp, 'music.wav'));
-const enc = ['-vf', `${REALTIME ? `fps=${FPS},` : ''}scale=1080:1920:flags=lanczos+accurate_rnd+full_chroma_int,format=yuv420p`, '-c:v', 'libx264', '-preset', 'slow', '-crf', String(CRF), '-maxrate', '18M', '-bufsize', '36M', '-profile:v', 'high', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-movflags', '+faststart', '-r', String(FPS), '-t', videoLen.toFixed(2)];
-if (!NOAUDIO) enc.push('-c:a', 'aac', '-b:a', '256k', '-ar', '44100', '-ac', '2', '-af', `afade=t=out:st=${(audioAt + D - 0.05).toFixed(2)}:d=0.35`);
+if (FORMAT === 'B' && !REALTIME && COV) { // the cover card as a still for the Instagram cover (frame ~0.85 s: card fully visible), written before the intro is trimmed away
+  spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', join(tmp, `f${String(Math.round(0.85 * FPS)).padStart(5, '0')}.jpg`), '-vf', 'scale=1080:1920:flags=lanczos', '-q:v', '2', join(OUT, `${id}-cover.jpg`)]);
+}
+const outLen = FORMAT === 'B' && !REALTIME ? D + 0.35 : videoLen;
+const inputs = REALTIME ? ['-f', 'concat', '-safe', '0', '-i', join(tmp, 'list.txt')] : ['-framerate', String(FPS), '-start_number', String(startFrame), '-i', join(tmp, 'f%05d.jpg')];
+if (!NOAUDIO) { if (audioAt >= 0) inputs.push('-itsoffset', audioAt.toFixed(3), '-i', join(tmp, 'music.wav')); else inputs.push('-ss', (-audioAt).toFixed(3), '-i', join(tmp, 'music.wav')); }
+const enc = ['-vf', `${REALTIME ? `fps=${FPS},` : ''}scale=1080:1920:flags=lanczos+accurate_rnd+full_chroma_int,format=yuv420p`, '-c:v', 'libx264', '-preset', 'slow', '-crf', String(CRF), '-maxrate', '18M', '-bufsize', '36M', '-profile:v', 'high', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-movflags', '+faststart', '-r', String(FPS), '-t', outLen.toFixed(2)];
+if (!NOAUDIO) enc.push('-c:a', 'aac', '-b:a', '256k', '-ar', '44100', '-ac', '2', '-af', `afade=t=out:st=${(Math.max(0, audioAt) + D - 0.05).toFixed(2)}:d=0.35`);
 const ff = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', ...inputs, ...enc, mp4], { encoding: 'utf8' });
 if (ff.status !== 0) { console.error('ffmpeg failed:\n' + ff.stderr); process.exit(1); }
-if (COV) spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '1.1', '-i', mp4, '-frames:v', '1', '-q:v', '2', join(OUT, `${id}-cover.jpg`)]);
+if (COV && !(FORMAT === 'B' && !REALTIME)) spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '1.1', '-i', mp4, '-frames:v', '1', '-q:v', '2', join(OUT, `${id}-cover.jpg`)]);
 rmSync(tmp, { recursive: true, force: true });
 
 const pr = JSON.parse(spawnSync('ffprobe', ['-v', 'error', '-print_format', 'json', '-show_format', '-show_streams', mp4], { encoding: 'utf8' }).stdout || '{}');
 const vs = (pr.streams || []).find((s) => s.codec_type === 'video') || {}, as = (pr.streams || []).find((s) => s.codec_type === 'audio');
 const mbps = +((pr.format.size * 8) / pr.format.duration / 1e6).toFixed(1);
-const info = { id, file: mp4, mode: REALTIME ? 'realtime' : 'virtual-time', seconds: +(+pr.format.duration).toFixed(2), width: vs.width, height: vs.height, fps: vs.r_frame_rate, sizeMB: +(pr.format.size / 1e6).toFixed(1), videoMbps: mbps, audio: as ? `${as.codec_name} (${style})` : 'none', cover: !!COV, audioStartsAtSeconds: +audioAt.toFixed(3), frames: nFrames, pageErrors: errs.length,
+const info = { id, format: FORMAT, hook: HOOK_ON ? HOOK : null, file: mp4, mode: REALTIME ? 'realtime' : 'virtual-time', seconds: +(+pr.format.duration).toFixed(2), width: vs.width, height: vs.height, fps: vs.r_frame_rate, sizeMB: +(pr.format.size / 1e6).toFixed(1), videoMbps: mbps, audio: as ? `${as.codec_name} (${style})` : 'none', cover: !!COV, audioStartsAtSeconds: +audioAt.toFixed(3), frames: nFrames, pageErrors: errs.length,
   ...(REALTIME ? { captured: { avgFps: +avgFps.toFixed(1), maxGapMs: Math.round(maxGap * 1000), gapsOver50msWhileScrolling: slow } } : { renderSecondsPerFrame: +(perFrameMs / 1000).toFixed(2), scrollSpikes: irregular, movingFrames: moving }) };
 writeFileSync(join(OUT, `${id}.json`), JSON.stringify(info, null, 2));
 console.log(`${id}: ${info.seconds}s ${info.width}×${info.height} @ ${info.fps}, ${info.sizeMB} MB (${mbps} Mbps), audio ${info.audio}${COV ? ', cover card first' : ''}, ${REALTIME ? 'real-time capture' : 'virtual-time render'}`);
