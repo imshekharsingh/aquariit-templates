@@ -4,3 +4,4 @@ node_modules/
 .wrangler/
 templates/social-kits.json
 .dev.vars
+out/
