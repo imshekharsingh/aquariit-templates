@@ -117,6 +117,17 @@ jobs:
         if: always()
         run: |
           if [ "${{ steps.d1.outcome }}" = "success" ]; then echo "D1 reel-tick tracking: ON"; else echo "::warning::D1 reel-tick tracking is OFF (could not find/create the database; check the token has D1 Edit permission). The site still deployed."; fi
+      - name: Attach recent reels so the site can serve them behind the sign-in (never blocks the deploy)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # the 8 newest reels (video + cover) from the "reels" release; the Reel publish workflow puts them there
+          mkdir -p templates/reels
+          for f in $(gh release view reels --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' 2>/dev/null | grep -E '\.(mp4|jpg)$' | sort -r | head -n 16); do
+            gh release download reels --repo "$GITHUB_REPOSITORY" --pattern "$f" --dir templates/reels --clobber
+          done
+          ls -la templates/reels | tail -n +2 || true
       - uses: cloudflare/wrangler-action@v3
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
@@ -183,6 +194,19 @@ jobs:
             echo "Reel-tick API answered $code (no database bound): checkboxes show 'tracking unavailable'"
           fi
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/uploaded")" = "401" ] || { echo "API must be closed to signed-out requests"; exit 1; }
+      - name: Check the reels are served only to signed-in users
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: |
+          f=$(ls templates/reels/*.mp4 2>/dev/null | sort -r | head -n 1)
+          if [ -z "$f" ]; then echo "No reels attached yet."; exit 0; fi
+          n=$(basename "$f"); B=https://templates.aquariit.com; J=$(mktemp)
+          curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
+          [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n")" != "200" ] || { echo "::error::$n is reachable without signing in"; exit 1; }
+          echo "signed out: $(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n") (good, not public)"
+          echo "signed in, whole file: $(curl -s -o /dev/null -w '%{http_code} %{size_download} bytes' -b "$J" "$B/reels/$n")"
+          echo "signed in, Range 0-99: $(curl -s -o /dev/null -w '%{http_code} %{size_download} bytes' -b "$J" -r 0-99 "$B/reels/$n") (206 = the phone can stream and seek)"
       - name: Summary
         run: echo "Deployed. Home https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"
 
