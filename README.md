@@ -8,6 +8,12 @@ Each template also ships with an Instagram kit (caption, keywords, hashtags, mus
 Templates generated: **19**
 Latest: [2026-10-12 08:50 · Gojigo](https://templates.aquariit.com/2026-10-12-0850/)
 
+## Rendering a reel (no phone needed)
+`node scripts/render-reel.mjs [ID]` (or `npm run reel -- ID`) plays a template through the real ▶ player in headless Chromium and writes
+`out/reels/ID.mp4`: 1080×1920, H.264 + AAC, cover card first, the player's own generated music (rendered offline, royalty-free), plus
+`ID-cover.jpg` and `ID.json` (timings and capture quality). It needs Playwright and ffmpeg and exits 1 when the capture is choppy.
+In GitHub: Actions → **Render reel** → Run workflow (empty id = newest) attaches the MP4 to the run as an artifact. Nothing is posted anywhere.
+
 ## How `/daily-template` works
 Run `/daily-template [hint]` in Claude Code, any time, as often as you like. Each run makes
 one new template whose ID is the India date and time (e.g. `2026-10-07-0905`), creates branch

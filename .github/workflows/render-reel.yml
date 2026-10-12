@@ -1,0 +1,54 @@
+name: Render reel
+
+# Renders a template into a ready-to-post 1080x1920 MP4 (cover card, scrolling, generated music) and attaches it to the run as an artifact.
+# Manual for now: Actions -> "Render reel" -> Run workflow (leave the id empty for the newest template). Nothing is posted anywhere.
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: Template id (empty = newest in design-log.json)
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install render tools (free, nothing committed)
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+          sudo apt-get install -y --no-install-recommends ffmpeg
+      - name: Render
+        id: render
+        env:
+          REEL_ID: ${{ inputs.id }}
+        run: |
+          set -o pipefail
+          node scripts/build-kits.mjs
+          node scripts/render-reel.mjs $REEL_ID --out out/reels 2>&1 | tee render.log
+      - name: Summary
+        if: always()
+        run: |
+          { echo '### Reel render'; echo '```'; cat render.log 2>/dev/null; echo '```'; cat out/reels/*.json 2>/dev/null; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reel
+          path: |
+            out/reels/*.mp4
+            out/reels/*.jpg
+            out/reels/*.json
+          retention-days: 14
