@@ -203,10 +203,22 @@ jobs:
           curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/perf")" = "401" ] || { echo "performance API must be closed to signed-out requests"; exit 1; }
           [ "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' "$B/api/perf/ingest")" = "401" ] || { echo "ingest must be closed to signed-out requests"; exit 1; }
-          code=$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/api/perf")
+          # a fresh deploy can take a moment to reach every edge location: retry like the live-site check does
+          code=000
+          for i in 1 2 3 4 5 6; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/api/perf")
+            if [ "$code" = "200" ] || [ "$code" = "501" ]; then break; fi
+            echo "Attempt $i: /api/perf returned $code (waiting for the new version)"; sleep 10
+          done
           echo "performance API signed in: HTTP $code (200 = database ready, 501 = no database bound)"
           [ "$code" = "200" ] || [ "$code" = "501" ] || { echo "unexpected status"; exit 1; }
-          [ "$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/performance/")" = "200" ] || { echo "/performance/ page missing"; exit 1; }
+          page=000
+          for i in 1 2 3 4 5 6; do
+            page=$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/performance/")
+            [ "$page" = "200" ] && break
+            echo "Attempt $i: /performance/ returned $page"; sleep 10
+          done
+          [ "$page" = "200" ] || { echo "/performance/ page missing"; exit 1; }
       - name: Check the reels are served only to signed-in users
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
