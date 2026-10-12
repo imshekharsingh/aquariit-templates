@@ -140,13 +140,14 @@
       var dl = el('a', 'btn alt', 'Download MP4'); dl.href = url; dl.setAttribute('download', name);
       side.appendChild(share); side.appendChild(dl); body.appendChild(side);
       hint.textContent = '1080×1920, about 30 s, with the built-in music. In Instagram, add its own audio and lower this one in the volume mixer.';
+      var tip = el('p', 'hint'); tip.textContent = 'Instagram only sees your Photos. If the share sheet offers only Files or Drive: save to Files, then in Files press and hold the video → Share → Save Video.'; c.appendChild(tip);
       share.disabled = true; share.textContent = 'Preparing video…';
       fetch(url).then(function (r) { return r.blob(); }).then(function (b) { // loaded first: iOS only opens the share sheet straight from a tap
         blob = b; file = new File([b], name, { type: 'video/mp4' }); v.src = URL.createObjectURL(b); share.disabled = false; share.textContent = 'Save / share to Instagram';
       }).catch(function () { v.src = url; share.disabled = false; share.textContent = 'Save / share to Instagram'; });
       share.addEventListener('click', function () {
         if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-          navigator.share({ files: [file], title: k.name }).catch(function (e) { if (!e || e.name !== 'AbortError') say('Use Download MP4 instead'); });
+          navigator.share({ files: [file] }).catch(function (e) { if (!e || e.name !== 'AbortError') say('Use Download MP4 instead'); }); // the file alone: with a title or text iPhone Safari can drop “Save Video”
         } else { dl.click(); say('Downloading…'); }
       });
     }).catch(function () { hint.textContent = 'The reel video is not ready yet. It renders automatically after each deploy (about 10 minutes) and a “Reel ready” notice arrives on GitHub.'; });
