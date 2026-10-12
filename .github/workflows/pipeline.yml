@@ -206,7 +206,7 @@ jobs:
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n")" != "200" ] || { echo "::error::$n is reachable without signing in"; exit 1; }
           echo "signed out: $(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n") (good, not public)"
           echo "signed in, whole file: $(curl -s -o /dev/null -w '%{http_code} %{size_download} bytes' -b "$J" "$B/reels/$n")"
-          echo "signed in, Range 0-99: $(curl -s -o /dev/null -w '%{http_code} %{size_download} bytes' -b "$J" -r 0-99 "$B/reels/$n") (206 = the phone can stream and seek)"
+          echo "signed in, Range 0-99: $(curl -s -o /dev/null -w '%{http_code} %{size_download} bytes' -b "$J" -r 0-99 "$B/reels/$n") (informational: the kit page downloads the file first, so a 200 here is fine)"
       - name: Summary
         run: echo "Deployed. Home https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"
 

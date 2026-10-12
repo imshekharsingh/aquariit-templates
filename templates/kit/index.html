@@ -135,15 +135,15 @@
     var blob = null, file = null;
     fetch(url, { method: 'HEAD', cache: 'no-cache' }).then(function (r) {
       if (!r.ok) throw 0;
-      var v = el('video'); v.controls = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'metadata'; v.poster = poster; v.src = url; v.setAttribute('aria-label', 'Rendered reel preview'); body.appendChild(v);
+      var v = el('video'); v.controls = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.preload = 'auto'; v.poster = poster; v.setAttribute('aria-label', 'Rendered reel preview'); body.appendChild(v); // src is set from the downloaded file below: iPhone Safari will not stream video from a server without Range support
       var side = el('div', 'side'), share = el('button', 'btn', 'Save / share to Instagram'); share.type = 'button';
       var dl = el('a', 'btn alt', 'Download MP4'); dl.href = url; dl.setAttribute('download', name);
       side.appendChild(share); side.appendChild(dl); body.appendChild(side);
       hint.textContent = '1080×1920, about 30 s, with the built-in music. In Instagram, add its own audio and lower this one in the volume mixer.';
       share.disabled = true; share.textContent = 'Preparing video…';
       fetch(url).then(function (r) { return r.blob(); }).then(function (b) { // loaded first: iOS only opens the share sheet straight from a tap
-        blob = b; file = new File([b], name, { type: 'video/mp4' }); share.disabled = false; share.textContent = 'Save / share to Instagram';
-      }).catch(function () { share.disabled = false; share.textContent = 'Save / share to Instagram'; });
+        blob = b; file = new File([b], name, { type: 'video/mp4' }); v.src = URL.createObjectURL(b); share.disabled = false; share.textContent = 'Save / share to Instagram';
+      }).catch(function () { v.src = url; share.disabled = false; share.textContent = 'Save / share to Instagram'; });
       share.addEventListener('click', function () {
         if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
           navigator.share({ files: [file], title: k.name }).catch(function (e) { if (!e || e.name !== 'AbortError') say('Use Download MP4 instead'); });
