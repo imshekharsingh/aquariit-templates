@@ -401,5 +401,28 @@
     "animation": "scroll-driven parallax windows, clip-path inset before/after wipe, counters and a stamped quote ticket",
     "purpose": "web design studio sales page with fixed-price packages",
     "description": "A conversion-focused studio page: sunrise mesh hero, services bento, auto-wiping before and after, FAQ-look process, three fixed-price packages, testimonial wall and a quote ticket."
+  },
+  {
+    "id": "2026-10-12-0850",
+    "date": "2026-10-12",
+    "time": "08:50",
+    "slug": "gojigo",
+    "url": "https://templates.aquariit.com/2026-10-12-0850/",
+    "name": "Gojigo",
+    "era": "modern",
+    "theme": "Neo-modern food brand, saturated goji red with pistachio and chili accents, playful and loud, restaurant delivery",
+    "layout": "type-only hero with menu rows, dark stats band and route-map finale",
+    "palette": [
+      "#dc0f4a",
+      "#ffe8ee",
+      "#2a0a1a",
+      "#b9f26b",
+      "#ff9f1c"
+    ],
+    "fonts": "Syne + Public Sans",
+    "motif": "hand-folded dumpling glyph and a drawn delivery route map",
+    "animation": "offset-path travel (dumpling arc and scooter ride), route stroke draw, @property clock and counters, linear() springs, masked headline slide-up",
+    "purpose": "Restaurant (dumpling bar with delivery)",
+    "description": "A loud restaurant landing page: outlined giant type, a dumpling that arcs onto its plate, a five-dish menu, three steps, three bags, dark proof numbers and a live route where a scooter rides to the door in 24 minutes."
   }
 ]
