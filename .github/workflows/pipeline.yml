@@ -194,6 +194,19 @@ jobs:
             echo "Reel-tick API answered $code (no database bound): checkboxes show 'tracking unavailable'"
           fi
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/uploaded")" = "401" ] || { echo "API must be closed to signed-out requests"; exit 1; }
+      - name: Smoke test performance API
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: |
+          B=https://templates.aquariit.com; J=$(mktemp)
+          curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
+          [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/perf")" = "401" ] || { echo "performance API must be closed to signed-out requests"; exit 1; }
+          [ "$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' "$B/api/perf/ingest")" = "401" ] || { echo "ingest must be closed to signed-out requests"; exit 1; }
+          code=$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/api/perf")
+          echo "performance API signed in: HTTP $code (200 = database ready, 501 = no database bound)"
+          [ "$code" = "200" ] || [ "$code" = "501" ] || { echo "unexpected status"; exit 1; }
+          [ "$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/performance/")" = "200" ] || { echo "/performance/ page missing"; exit 1; }
       - name: Check the reels are served only to signed-in users
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}

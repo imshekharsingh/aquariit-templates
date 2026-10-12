@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f2e9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#081720" media="(prefers-color-scheme: dark)">
+<meta name="robots" content="noindex">
+<title>Performance · Aquarii Templates</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root{--bg:#f6f2e9;--card:#fffdf8;--ink:#10232d;--mute:#5d6b72;--line:#dcd5c4;--accent:#c4452b;--gray:#8f897a;--deep:#0b2a3a;--deep-ink:#f4efe4;--chip:#efe8d6;--ok:#2f7d4f;--bad:#b3261e}
+  @media (prefers-color-scheme:dark){:root{--bg:#081720;--card:#0f2430;--ink:#eee8da;--mute:#97a8b0;--line:#1f3a47;--accent:#ff8a5c;--gray:#6d8895;--deep:#0f2f40;--deep-ink:#f4efe4;--chip:#14303e;--ok:#6fd49a;--bad:#ff8f86}}
+  *{box-sizing:border-box;margin:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--ink);font:400 17px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 60px}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+  a{color:inherit}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 0}
+  .pill{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1.5px solid var(--ink);border-radius:999px;text-decoration:none;font:700 .85rem system-ui,sans-serif;white-space:nowrap}
+  .pill:hover{background:var(--ink);color:var(--bg)}
+  .stamp{font:600 .76rem ui-monospace,Menlo,monospace;color:var(--mute);text-align:right}
+  .slate{border-radius:20px;overflow:hidden;background:var(--deep);color:var(--deep-ink);margin:6px 0 18px}
+  .slate .stripes{height:22px;background:repeating-linear-gradient(115deg,var(--deep-ink) 0 22px,var(--deep) 22px 44px);opacity:.92}
+  .slate .body{padding:16px 22px 20px}
+  .slate small{font:700 .72rem/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+  .slate h1{font:700 clamp(1.8rem,7vw,2.4rem)/1.05 "Iowan Old Style","Palatino Linotype",Georgia,serif;letter-spacing:-.02em;margin:8px 0 0}
+  /* one filter row above everything it scopes */
+  .filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin:0 0 16px}
+  .seg{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .seg>span{font:700 .72rem system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-right:2px}
+  .seg button{min-height:44px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font:700 .85rem system-ui,sans-serif;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px 12px;min-width:0}
+  .tile .l{font:600 .78rem system-ui,sans-serif;color:var(--mute)}
+  .tile .v{font:700 2rem/1.1 system-ui,sans-serif;letter-spacing:-.02em;margin:4px 0 2px}
+  .tile .d{font:600 .8rem system-ui,sans-serif;color:var(--mute)}
+  .tile .d.up{color:var(--ok)}.tile .d.down{color:var(--bad)}
+  .tile svg{display:block;margin-top:6px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 18px 16px;margin-bottom:14px}
+  .card h2{font:700 .74rem/1.2 ui-monospace,Menlo,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+  .card .sub{font-size:.88rem;color:var(--mute);margin-bottom:12px}
+  .chart{position:relative;width:100%}
+  .chart svg{display:block;width:100%;overflow:visible}
+  .tip{position:absolute;z-index:3;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:10px;padding:8px 11px;font:500 .82rem/1.35 system-ui,sans-serif;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.18);transform:translate(-50%,-100%)}
+  .tip b{display:block;font:700 1.05rem system-ui,sans-serif}
+  .tip i{display:inline-block;width:14px;height:0;border-top:2px solid var(--accent);vertical-align:middle;margin-right:6px}
+  .rk{display:block;text-decoration:none;padding:9px 0 10px;border-top:1px solid var(--line);min-height:44px}
+  .rk:first-of-type{border-top:0}
+  .rk:hover .nm{text-decoration:underline}
+  .rk .nm{display:flex;justify-content:space-between;gap:10px;font:650 .95rem system-ui,sans-serif}
+  .rk .nm span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .rk .nm small{font:600 .76rem ui-monospace,Menlo,monospace;color:var(--mute);flex:none}
+  .rk .bar{display:flex;align-items:center;gap:8px;margin-top:6px}
+  .rk .trk{flex:1;height:14px;min-width:0}
+  .rk .fill{height:14px;border-radius:0 4px 4px 0;background:var(--gray);min-width:2px}
+  .rk.top .fill{background:var(--accent)}
+  .rk .val{font:700 .92rem system-ui,sans-serif;min-width:3.4em;text-align:left}
+  .rk .det{font-size:.8rem;color:var(--mute);margin-top:3px}
+  .rk:hover .fill{filter:brightness(1.12)}
+  .more{margin-top:8px}
+  .more button,.empty button{min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font:700 .85rem system-ui,sans-serif;cursor:pointer}
+  .dim{margin-top:14px}
+  .dim h3{font:700 .72rem system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-bottom:2px}
+  details.tv{margin-top:12px}
+  details.tv summary{cursor:pointer;font:700 .85rem system-ui,sans-serif;min-height:44px;display:flex;align-items:center;color:var(--ink)}
+  .tw{overflow:auto;max-width:100%;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;font-size:.82rem}
+  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  td{font-variant-numeric:tabular-nums}
+  th{font:700 .7rem system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+  .hint{font-size:.85rem;color:var(--mute);margin-top:8px}
+  .empty ol{padding-left:1.2em;margin:10px 0 12px}.empty li{margin:6px 0}
+  .empty code{font:600 .85em ui-monospace,Menlo,monospace;background:var(--chip);padding:1px 6px;border-radius:5px}
+  .dimmed{opacity:.55;transition:opacity .15s}
+  @media (prefers-reduced-motion:reduce){.dimmed{transition:none}}
+  @media (forced-colors:active){.fill{background:Highlight!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top"><a class="pill" href="/">← All templates</a><span class="stamp" id="stamp"></span></div>
+  <section class="slate"><div class="stripes"></div><div class="body"><small>Instagram · results</small><h1>Performance</h1></div></section>
+  <div id="app" aria-live="polite"><p class="hint">Loading…</p></div>
+</main>
+<script>
+(function () {
+  'use strict';
+  var app = document.getElementById('app'), stamp = document.getElementById('stamp'), NS = 'http://www.w3.org/2000/svg';
+  var DATA = null, LOG = {}, state = { range: 30, rank: 'share', all: false }, tip = null;
+
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; } // names and captions are data: textContent only
+  function svg(tag, attrs) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  function fmt(n) { if (n == null || !isFinite(n)) return '–'; var a = Math.abs(n); if (a >= 1e6) return (n / 1e6).toFixed(a >= 1e7 ? 0 : 1).replace(/\.0$/, '') + 'M'; if (a >= 1e3) return (n / 1e3).toFixed(a >= 1e4 ? 0 : 1).replace(/\.0$/, '') + 'K'; return String(Math.round(n)); }
+  function pct(x) { return x == null ? '–' : (x * 100).toFixed(x >= 0.1 ? 0 : 1) + '%'; }
+  function dayMs(d) { return Date.parse(d + 'T00:00:00Z'); }
+  function fmtDay(d) { return new Date(dayMs(d)).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'UTC' }); }
+  function rate(a, b) { return b > 0 && a != null ? a / b : null; }
+  function name(r) { var e = r.template_id && LOG[r.template_id]; return (e && (e.name || e.slug)) || (r.caption ? r.caption.split(/[.\n]/)[0].slice(0, 40) : r.ig_id); }
+
+  function inRange(r) { if (!state.range) return true; if (!r.posted_at) return true; return Date.parse(r.posted_at) >= Date.now() - state.range * 864e5; }
+  function accountRange() { var a = DATA.account; if (!state.range || !a.length) return a; var cut = dayMs(a[a.length - 1].day) - state.range * 864e5; return a.filter(function (x) { return dayMs(x.day) >= cut; }); }
+
+  // ---- stat tiles ----
+  function spark(vals) {
+    var w = 120, h = 28, s = svg('svg', { width: w, height: h, viewBox: '0 0 ' + w + ' ' + h, 'aria-hidden': 'true' }); if (vals.length < 2) return s;
+    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals), sp = mx - mn || 1, pts = vals.map(function (v, i) { return [4 + i * (w - 8) / (vals.length - 1), h - 5 - (v - mn) / sp * (h - 10)]; });
+    s.appendChild(svg('polyline', { points: pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '), fill: 'none', stroke: 'var(--gray)', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+    var l = pts[pts.length - 1]; s.appendChild(svg('circle', { cx: l[0], cy: l[1], r: 4, fill: 'var(--accent)', stroke: 'var(--card)', 'stroke-width': 2 })); return s;
+  }
+  function tile(label, value, delta, cls, sparkVals) {
+    var t = el('div', 'tile'); t.appendChild(el('div', 'l', label)); t.appendChild(el('div', 'v', value)); if (delta) t.appendChild(el('div', 'd ' + (cls || ''), delta)); if (sparkVals) t.appendChild(spark(sparkVals)); return t;
+  }
+  function renderTiles(root, reels) {
+    var acc = accountRange(), g = el('div', 'tiles'), last = acc[acc.length - 1], first = acc[0];
+    var fv = last && last.followers != null ? fmt(last.followers) : '–', dl = null, dc = '';
+    if (acc.length > 1 && last.followers != null && first.followers != null) { var d = last.followers - first.followers; dl = (d > 0 ? '▲ +' : d < 0 ? '▼ ' : '± ') + fmt(d) + ' since ' + fmtDay(first.day); dc = d > 0 ? 'up' : d < 0 ? 'down' : ''; }
+    else if (last) dl = 'first reading ' + fmtDay(last.day);
+    g.appendChild(tile('Followers', fv, dl, dc, acc.map(function (x) { return x.followers; }).filter(function (v) { return v != null; }).slice(-12)));
+    var withReach = reels.filter(function (r) { return r.reach != null; }), sum = function (k, list) { return list.reduce(function (a, r) { return a + (r[k] || 0); }, 0); };
+    g.appendChild(tile('Reels posted', String(reels.length), state.range ? 'in the last ' + state.range + ' days' : 'all time'));
+    g.appendChild(tile('Avg reach per reel', withReach.length ? fmt(sum('reach', withReach) / withReach.length) : '–', withReach.length ? 'accounts reached' : 'no data yet'));
+    g.appendChild(tile('Share rate', pct(rate(sum('shares', withReach), sum('reach', withReach))), 'shares ÷ accounts reached'));
+    g.appendChild(tile('Save rate', pct(rate(sum('saves', withReach), sum('reach', withReach))), 'saves ÷ accounts reached'));
+    root.appendChild(g);
+  }
+
+  // ---- followers line chart (single series: no legend, the title names it) ----
+  function niceStep(span, n) { var raw = span / n, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; }
+  function showTip(wrap, x, y, title, lines) {
+    if (!tip) { tip = el('div', 'tip'); tip.setAttribute('aria-hidden', 'true'); }
+    tip.textContent = ''; var v = el('b', null, title); tip.appendChild(v); lines.forEach(function (l) { var d = el('div'); if (l.key) d.appendChild(el('i')); d.appendChild(document.createTextNode(l.text)); tip.appendChild(d); });
+    wrap.appendChild(tip); tip.style.left = Math.max(60, Math.min(wrap.clientWidth - 60, x)) + 'px'; tip.style.top = Math.max(46, y - 12) + 'px';
+  }
+  function hideTip() { if (tip && tip.parentNode) tip.parentNode.removeChild(tip); }
+  function drawFollowers(wrap, acc) {
+    wrap.textContent = '';
+    var pts = acc.filter(function (a) { return a.followers != null; });
+    if (pts.length < 2) { wrap.appendChild(el('p', 'hint', pts.length ? 'One reading so far (' + fmt(pts[0].followers) + ' followers on ' + fmtDay(pts[0].day) + '). The line appears after the second day.' : 'No follower readings yet.')); return; }
+    var W = Math.max(260, wrap.clientWidth), H = 210, m = { l: 40, r: 46, t: 14, b: 26 }, iw = W - m.l - m.r, ih = H - m.t - m.b;
+    var vals = pts.map(function (p) { return p.followers; }), mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+    var step = niceStep(Math.max(mx - mn, 4), 4), lo = Math.floor(mn / step) * step, hi = Math.ceil(mx / step) * step; if (hi === lo) hi = lo + step;
+    var t0 = dayMs(pts[0].day), t1 = dayMs(pts[pts.length - 1].day), X = function (t) { return m.l + (t1 === t0 ? 0 : (t - t0) / (t1 - t0)) * iw; }, Y = function (v) { return m.t + ih - (v - lo) / (hi - lo) * ih; };
+    var s = svg('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': 'Followers from ' + fmtDay(pts[0].day) + ' (' + vals[0] + ') to ' + fmtDay(pts[pts.length - 1].day) + ' (' + vals[vals.length - 1] + '). A table view follows the chart.' });
+    for (var v = lo; v <= hi + 1e-9; v += step) { var y = Y(v); s.appendChild(svg('line', { x1: m.l, x2: W - m.r, y1: y, y2: y, stroke: 'var(--line)', 'stroke-width': 1 })); var tx = svg('text', { x: m.l - 8, y: y + 4, 'text-anchor': 'end', fill: 'var(--mute)', 'font-size': 11, 'font-family': 'system-ui,sans-serif' }); tx.textContent = fmt(v); s.appendChild(tx); }
+    [0, Math.floor((pts.length - 1) / 2), pts.length - 1].filter(function (v, i, a) { return a.indexOf(v) === i; }).forEach(function (i) { var tx = svg('text', { x: X(dayMs(pts[i].day)), y: H - 6, 'text-anchor': i === 0 ? 'start' : i === pts.length - 1 ? 'end' : 'middle', fill: 'var(--mute)', 'font-size': 11, 'font-family': 'system-ui,sans-serif' }); tx.textContent = fmtDay(pts[i].day); s.appendChild(tx); });
+    var line = pts.map(function (p, i) { return (i ? 'L' : 'M') + X(dayMs(p.day)).toFixed(1) + ' ' + Y(p.followers).toFixed(1); }).join(' ');
+    s.appendChild(svg('path', { d: line + ' L' + X(t1).toFixed(1) + ' ' + (m.t + ih) + ' L' + X(t0).toFixed(1) + ' ' + (m.t + ih) + ' Z', fill: 'var(--accent)', 'fill-opacity': .1 }));
+    s.appendChild(svg('path', { d: line, fill: 'none', stroke: 'var(--accent)', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+    var lp = pts[pts.length - 1]; s.appendChild(svg('circle', { cx: X(t1), cy: Y(lp.followers), r: 4.5, fill: 'var(--accent)', stroke: 'var(--card)', 'stroke-width': 2 }));
+    var lt = svg('text', { x: X(t1) + 9, y: Y(lp.followers) + 4, fill: 'var(--ink)', 'font-size': 13, 'font-weight': 700, 'font-family': 'system-ui,sans-serif' }); lt.textContent = fmt(lp.followers); s.appendChild(lt);
+    var cross = svg('line', { y1: m.t, y2: m.t + ih, stroke: 'var(--mute)', 'stroke-width': 1, opacity: 0 }), dot = svg('circle', { r: 5, fill: 'var(--accent)', stroke: 'var(--card)', 'stroke-width': 2, opacity: 0 });
+    s.appendChild(cross); s.appendChild(dot);
+    var hit = svg('rect', { x: m.l, y: 0, width: iw, height: H, fill: 'transparent', tabindex: 0, 'aria-label': 'Follower readings, use left and right arrow keys' }), idx = pts.length - 1;
+    function at(i) { idx = Math.max(0, Math.min(pts.length - 1, i)); var p = pts[idx], x = X(dayMs(p.day)), y = Y(p.followers), prev = pts[idx - 1], d = prev ? p.followers - prev.followers : null;
+      cross.setAttribute('x1', x); cross.setAttribute('x2', x); cross.setAttribute('opacity', 1); dot.setAttribute('cx', x); dot.setAttribute('cy', y); dot.setAttribute('opacity', 1);
+      showTip(wrap, x, y, fmtDay(p.day), [{ key: true, text: fmt(p.followers) + ' followers' }].concat(d != null ? [{ text: (d >= 0 ? '+' : '') + d + ' vs previous reading' }] : [])); }
+    function nearest(ev) { var r = hit.getBoundingClientRect(), t = t0 + ((ev.clientX - r.left) / r.width) * (t1 - t0), best = 0, bd = Infinity; pts.forEach(function (p, i) { var dd = Math.abs(dayMs(p.day) - t); if (dd < bd) { bd = dd; best = i; } }); return best; }
+    hit.addEventListener('pointermove', function (ev) { at(nearest(ev)); }); hit.addEventListener('pointerdown', function (ev) { at(nearest(ev)); });
+    hit.addEventListener('pointerleave', function () { cross.setAttribute('opacity', 0); dot.setAttribute('opacity', 0); hideTip(); });
+    hit.addEventListener('focus', function () { at(idx); }); hit.addEventListener('blur', function () { cross.setAttribute('opacity', 0); dot.setAttribute('opacity', 0); hideTip(); });
+    hit.addEventListener('keydown', function (ev) { if (ev.key === 'ArrowLeft') { at(idx - 1); ev.preventDefault(); } else if (ev.key === 'ArrowRight') { at(idx + 1); ev.preventDefault(); } });
+    s.appendChild(hit); wrap.appendChild(s);
+  }
+  function followersCard(root) {
+    var c = el('section', 'card'), acc = accountRange(); c.appendChild(el('h2', null, 'Followers')); c.appendChild(el('p', 'sub', 'One reading per day.'));
+    var wrap = el('div', 'chart'); c.appendChild(wrap); root.appendChild(c);
+    drawFollowers(wrap, acc); wrap._acc = acc;
+    var d = el('details', 'tv'); d.appendChild(el('summary', null, 'Table view')); var tw = el('div', 'tw'), tb = el('table'), th = el('thead'), hr = el('tr');
+    ['Day', 'Followers', 'Following', 'Posts'].forEach(function (h) { hr.appendChild(el('th', null, h)); }); th.appendChild(hr); tb.appendChild(th); var bd = el('tbody');
+    acc.slice().reverse().forEach(function (a) { var r = el('tr'); [fmtDay(a.day), a.followers, a.follows, a.media_count].forEach(function (v) { r.appendChild(el('td', null, v == null ? '–' : String(v))); }); bd.appendChild(r); });
+    tb.appendChild(bd); tw.appendChild(tb); d.appendChild(tw); c.appendChild(d); return wrap;
+  }
+
+  // ---- ranked bars: emphasis = best one in the accent, the rest in gray; value at the bar tip ----
+  var METRICS = { share: { label: 'Share rate', get: function (r) { return rate(r.shares, r.reach); }, show: pct }, save: { label: 'Save rate', get: function (r) { return rate(r.saves, r.reach); }, show: pct }, reach: { label: 'Reach', get: function (r) { return r.reach; }, show: fmt } };
+  function rankCard(root, reels) {
+    var M = METRICS[state.rank], rows = reels.map(function (r) { return { r: r, v: M.get(r) }; }).filter(function (x) { return x.v != null; }).sort(function (a, b) { return b.v - a.v; });
+    var c = el('section', 'card'); c.appendChild(el('h2', null, M.label + ' by reel')); c.appendChild(el('p', 'sub', 'Best first. Tap a reel to open its post kit.'));
+    if (!rows.length) { c.appendChild(el('p', 'hint', reels.length ? 'Reach numbers arrive a day or two after posting.' : 'No reels in this period.')); root.appendChild(c); return; }
+    var mx = rows[0].v || 1, shown = state.all ? rows : rows.slice(0, 8);
+    shown.forEach(function (x, i) {
+      var r = x.r, a = el('a', 'rk' + (i === 0 ? ' top' : '')); a.href = r.template_id ? '/kit/?id=' + encodeURIComponent(r.template_id) : (r.permalink || '#');
+      var nm = el('div', 'nm'); nm.appendChild(el('span', null, name(r))); nm.appendChild(el('small', null, r.posted_at ? fmtDay(r.posted_at.slice(0, 10)) : '')); a.appendChild(nm);
+      var bar = el('div', 'bar'), trk = el('div', 'trk'), f = el('div', 'fill'); f.style.width = Math.max(1, x.v / mx * 100) + '%'; trk.appendChild(f); bar.appendChild(trk); bar.appendChild(el('span', 'val', M.show(x.v))); a.appendChild(bar);
+      a.appendChild(el('div', 'det', fmt(r.views) + ' views · ' + fmt(r.reach) + ' reached · ' + fmt(r.shares) + ' shares · ' + fmt(r.saves) + ' saves')); c.appendChild(a);
+    });
+    if (rows.length > 8) { var mo = el('div', 'more'), b = el('button', null, state.all ? 'Show top 8' : 'Show all ' + rows.length); b.type = 'button'; b.addEventListener('click', function () { state.all = !state.all; render(); }); mo.appendChild(b); c.appendChild(mo); }
+    c.appendChild(tableView(reels)); root.appendChild(c);
+  }
+  function tableView(reels) {
+    var d = el('details', 'tv'); d.appendChild(el('summary', null, 'Table view · every metric')); var tw = el('div', 'tw'), tb = el('table'), th = el('thead'), hr = el('tr');
+    ['Reel', 'Posted', 'Views', 'Reach', 'Shares', 'Saves', 'Likes', 'Comments', 'Share rate', 'Avg watch'].forEach(function (h) { hr.appendChild(el('th', null, h)); }); th.appendChild(hr); tb.appendChild(th); var bd = el('tbody');
+    reels.forEach(function (r) { var tr = el('tr'); [name(r), r.posted_at ? fmtDay(r.posted_at.slice(0, 10)) : '–', fmt(r.views), fmt(r.reach), fmt(r.shares), fmt(r.saves), fmt(r.likes), fmt(r.comments), pct(rate(r.shares, r.reach)), r.watch_avg_ms != null ? (r.watch_avg_ms / 1000).toFixed(1) + ' s' : '–'].forEach(function (v) { tr.appendChild(el('td', null, v)); }); bd.appendChild(tr); });
+    tb.appendChild(bd); tw.appendChild(tb); d.appendChild(tw); return d;
+  }
+
+  // ---- what's working: share rate grouped by the design choices (from design-log.json) ----
+  // The design log describes each template in free text, which almost never repeats. Each field is mapped to the standard vocabulary of the design menus
+  // (CLAUDE.md): the keyword that appears FIRST in the text wins, so "bento grid with sticky header and stacked sections" is a Bento grid.
+  var BUCKETS = {
+    theme: [['Glass / aurora / mesh', /glass|aurora|mesh/i], ['Soft 3D / pastel / clay', /pastel|clay|soft 3d|spatial 3d|candy/i], ['Dark UI / neon', /dark ui|dark neon|neon|glow/i], ['Neo-brutalist pop', /brutalist|\bpop\b/i],
+      ['Luxury / Swiss / minimal', /luxury|swiss|minimal/i], ['Bento / dashboard', /bento|dashboard/i], ['Kinetic type', /kinetic/i], ['Monochrome', /monochrome/i],
+      ['Bright product UI', /friendly|product ui|saturated|playful|loud|vivid/i], ['Vintage (paper, deco, retro, calm)', /paper|print|deco|retro|japanese|botanical|organic|heritage/i]],
+    layout: [['Bento grid', /bento/i], ['Asymmetric split', /asymmetric/i], ['Layered parallax', /parallax/i], ['Card stack', /card stack|stacked cards/i], ['Full-bleed sections', /full-bleed/i], ['Single-column long-form', /single-column|long-form/i],
+      ['Brutalist grid', /brutalist/i], ['Sidebar-anchored', /sidebar/i], ['Radial / orbital', /radial|orbital/i], ['Editorial magazine', /editorial|magazine/i], ['Horizontal scroll', /horizontal/i]],
+    purpose: [['SaaS / product / app', /saas|product launch|app showcase|\bapi\b/i], ['Agency / studio / portfolio', /agency|studio|portfolio/i], ['Consultancy', /consult/i], ['Restaurant / event / nonprofit', /restaurant|event|nonprofit|blog/i]]
+  };
+  function classify(dim, e) {
+    if (dim === 'era') { if (e.era) return e.era === 'vintage' ? 'Vintage' : 'Modern'; return classify('theme', e) === 'Vintage (paper, deco, retro, calm)' ? 'Vintage' : 'Modern'; }
+    var text = String(e[dim] || ''), best = null, at = Infinity; if (!text) return null;
+    BUCKETS[dim].forEach(function (b) { var m = b[1].exec(text); if (m && m.index < at) { at = m.index; best = b[0]; } });
+    return best || 'Other';
+  }
+  var DIMS = [['theme', 'Mood'], ['layout', 'Layout'], ['purpose', 'Purpose'], ['era', 'Era']];
+  function insightsCard(root, reels) {
+    var usable = reels.filter(function (r) { return r.reach > 0 && r.template_id && LOG[r.template_id]; }), c = el('section', 'card');
+    c.appendChild(el('h2', null, 'What is working')); c.appendChild(el('p', 'sub', 'Share rate grouped by the design choices behind each reel.'));
+    if (usable.length < 5) { c.appendChild(el('p', 'hint', 'This unlocks at 5 reels with reach data (' + usable.length + ' so far). With fewer, one lucky reel would look like a pattern.')); root.appendChild(c); return; }
+    DIMS.forEach(function (dm) {
+      var g = {}; usable.forEach(function (r) { var k = classify(dm[0], LOG[r.template_id]); if (!k) return; var o = g[k] || (g[k] = { n: 0, sh: 0, re: 0 }); o.n++; o.sh += r.shares || 0; o.re += r.reach; });
+      var list = Object.keys(g).map(function (k) { return { k: k, n: g[k].n, v: g[k].sh / g[k].re }; }).sort(function (a, b) { return b.v - a.v; }).slice(0, 5); if (list.length < 2) return;
+      var box = el('div', 'dim'); box.appendChild(el('h3', null, dm[1])); var mx = list[0].v || 1;
+      var lead = -1; list.forEach(function (x, i) { if (lead < 0 && x.n >= 2) lead = i; }); // the accent goes to the best group backed by at least 2 reels, never to a single lucky one
+      list.forEach(function (x, i) { var a = el('div', 'rk' + (i === lead ? ' top' : '')); a.title = x.k; var nm = el('div', 'nm'); nm.appendChild(el('span', null, x.k)); nm.appendChild(el('small', null, x.n + (x.n === 1 ? ' reel' : ' reels'))); a.appendChild(nm);
+        var bar = el('div', 'bar'), trk = el('div', 'trk'), f = el('div', 'fill'); f.style.width = Math.max(1, x.v / mx * 100) + '%'; trk.appendChild(f); bar.appendChild(trk); bar.appendChild(el('span', 'val', pct(x.v))); a.appendChild(bar); box.appendChild(a); });
+      c.appendChild(box);
+    });
+    c.appendChild(el('p', 'hint', 'Small samples move a lot. Treat this as a hint until each group has several reels.')); root.appendChild(c);
+  }
+
+  // ---- states ----
+  function emptyCard(title, lines, steps) {
+    var c = el('section', 'card empty'); c.appendChild(el('h2', null, title)); lines.forEach(function (t) { c.appendChild(el('p', null, t)); });
+    if (steps) { var ol = el('ol'); steps.forEach(function (s) { var li = el('li'); li.textContent = s; ol.appendChild(li); }); c.appendChild(ol); }
+    return c;
+  }
+  function filterRow() {
+    var f = el('div', 'filters'), r = el('div', 'seg'); r.appendChild(el('span', null, 'Period'));
+    [[7, '7 days'], [30, '30 days'], [90, '90 days'], [0, 'All']].forEach(function (o) { var b = el('button', null, o[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(state.range === o[0])); b.addEventListener('click', function () { state.range = o[0]; state.all = false; render(); }); r.appendChild(b); }); f.appendChild(r);
+    var k = el('div', 'seg'); k.appendChild(el('span', null, 'Rank by'));
+    Object.keys(METRICS).forEach(function (key) { var b = el('button', null, METRICS[key].label); b.type = 'button'; b.setAttribute('aria-pressed', String(state.rank === key)); b.addEventListener('click', function () { state.rank = key; state.all = false; render(); }); k.appendChild(b); }); f.appendChild(k); return f;
+  }
+  var chartWrap = null;
+  function render() {
+    hideTip(); app.textContent = '';
+    if (!DATA) return;
+    if (!DATA.media.length && !DATA.account.length) {
+      app.appendChild(emptyCard('Not connected yet', ['Instagram is not sending data here yet. Once it is, this page fills itself in every day: followers, and for every reel its views, reach, shares and saves, ranked so you can see which kind of template earns shares.'],
+        ['Create a free Meta developer app and add the “Instagram API with Instagram Login” product.', 'Add your Instagram account as an Instagram Tester and accept the invite in the Instagram app.', 'Generate an access token and save it as the GitHub secret INSTAGRAM_TOKEN (never paste it into a chat).', 'The daily collector then reads your account and fills this page.'])); return;
+    }
+    stamp.textContent = DATA.updated ? 'updated ' + fmtDay(DATA.updated) : '';
+    app.appendChild(filterRow());
+    var reels = DATA.media.filter(inRange); renderTiles(app, reels); chartWrap = followersCard(app); rankCard(app, reels); insightsCard(app, reels);
+  }
+  var rt = null; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (chartWrap && chartWrap.isConnected) drawFollowers(chartWrap, chartWrap._acc); }, 120); });
+
+  function login() { location.replace('/login?next=' + encodeURIComponent(location.pathname)); }
+  Promise.all([fetch('/api/perf?days=365', { cache: 'no-cache' }), fetch('/design-log.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; })]).then(function (res) {
+    var r = res[0]; if (r.status === 401) { login(); return; }
+    (res[1] || []).forEach(function (e) { LOG[e.id || e.date] = e; });
+    if (r.status === 501) { app.textContent = ''; app.appendChild(emptyCard('Database not connected', ['Results are stored in the same D1 database as the “Reel uploaded” ticks. Give the Cloudflare token Account → D1 → Edit and redeploy.'])); return; }
+    if (!r.ok) throw 0;
+    return r.json().then(function (d) { DATA = d; render(); });
+  }).catch(function () { app.textContent = ''; app.appendChild(emptyCard('Could not load', ['Check your connection and reload.'])); });
+  if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+})();
+</script>
+</body>
+</html>

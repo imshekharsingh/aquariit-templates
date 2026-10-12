@@ -112,6 +112,63 @@ ${error ? `<div class="err" role="alert">${esc(error)}</div>` : ''}
 const html = (body, status = 200) => new Response(body, { status, headers: { 'Content-Type': 'text/html; charset=utf-8', ...noStore } });
 const go = (location, extra = {}) => new Response(null, { status: 303, headers: { Location: location, ...noStore, ...extra } });
 
+// ---- Instagram performance in D1 (same "DB" binding): daily account snapshots and per-reel metrics. Written once a day by the collector
+// (it signs in like any client and POSTs /api/perf/ingest), read by /performance/. Without the binding the API answers 501. ----
+let perfReady = null;
+async function perfDb(env) {
+  if (!env.DB) return null;
+  perfReady = perfReady || env.DB.batch([
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_account (day TEXT PRIMARY KEY, username TEXT, followers INTEGER, follows INTEGER, media_count INTEGER)'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_media (ig_id TEXT PRIMARY KEY, template_id TEXT, permalink TEXT, posted_at TEXT, caption TEXT, kind TEXT, duration_s REAL)'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_metrics (ig_id TEXT NOT NULL, day TEXT NOT NULL, views INTEGER, reach INTEGER, likes INTEGER, comments INTEGER, saves INTEGER, shares INTEGER, watch_avg_ms INTEGER, watch_total_ms INTEGER, PRIMARY KEY (ig_id, day))'),
+    env.DB.prepare('CREATE INDEX IF NOT EXISTS ig_metrics_day ON ig_metrics (day)'),
+  ]).catch((e) => { perfReady = null; throw e; });
+  await perfReady;
+  return env.DB;
+}
+const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
+const nInt = (v) => (v == null || v === '' || !Number.isFinite(+v) ? null : Math.max(0, Math.min(2e9, Math.round(+v))));
+const nStr = (v, n) => (typeof v === 'string' ? v.slice(0, n) : null);
+async function perfApi(request, env, p, url) {
+  let db;
+  try { db = await perfDb(env); } catch { return jres({ error: 'db-unavailable' }, 503); }
+  if (!db) return jres({ error: 'no-db' }, 501);
+  if (request.method === 'GET' && p === '/api/perf') {
+    const days = Math.max(7, Math.min(365, Math.round(+url.searchParams.get('days')) || 90));
+    const acc = await db.prepare('SELECT day, username, followers, follows, media_count FROM ig_account ORDER BY day DESC LIMIT ?1').bind(days).all();
+    const media = await db.prepare(`SELECT m.ig_id, m.template_id, m.permalink, m.posted_at, m.caption, m.kind, m.duration_s, x.day AS metrics_day,
+      x.views, x.reach, x.likes, x.comments, x.saves, x.shares, x.watch_avg_ms, x.watch_total_ms
+      FROM ig_media m LEFT JOIN ig_metrics x ON x.ig_id = m.ig_id AND x.day = (SELECT MAX(day) FROM ig_metrics WHERE ig_id = m.ig_id)
+      ORDER BY m.posted_at DESC LIMIT 200`).all();
+    const last = await db.prepare('SELECT MAX(day) AS d FROM ig_metrics').first();
+    return jres({ account: (acc.results || []).reverse(), media: media.results || [], updated: (last && last.d) || null });
+  }
+  if (request.method === 'POST' && p === '/api/perf/ingest') {
+    if (request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403); // simple cross-site requests cannot set this header
+    let b = null;
+    try { b = await request.json(); } catch { /* handled below */ }
+    if (!b || typeof b !== 'object') return jres({ error: 'bad-request' }, 400);
+    const day = typeof b.day === 'string' && DAY_RE.test(b.day) ? b.day : new Date().toISOString().slice(0, 10);
+    const st = [];
+    const a = b.account;
+    if (a && typeof a === 'object') st.push(db.prepare('INSERT INTO ig_account (day, username, followers, follows, media_count) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT(day) DO UPDATE SET username = COALESCE(excluded.username, username), followers = COALESCE(excluded.followers, followers), follows = COALESCE(excluded.follows, follows), media_count = COALESCE(excluded.media_count, media_count)')
+      .bind(day, nStr(a.username, 60), nInt(a.followers), nInt(a.follows), nInt(a.media_count)));
+    const list = Array.isArray(b.media) ? b.media.slice(0, 200) : [];
+    for (const m of list) {
+      if (!m || typeof m.ig_id !== 'string' || !/^\d{5,30}$/.test(m.ig_id)) continue;
+      const tid = typeof m.template_id === 'string' && ID_RE.test(m.template_id) ? m.template_id : null;
+      st.push(db.prepare('INSERT INTO ig_media (ig_id, template_id, permalink, posted_at, caption, kind, duration_s) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7) ON CONFLICT(ig_id) DO UPDATE SET template_id = COALESCE(excluded.template_id, template_id), permalink = COALESCE(excluded.permalink, permalink), posted_at = COALESCE(excluded.posted_at, posted_at), caption = COALESCE(excluded.caption, caption), kind = COALESCE(excluded.kind, kind), duration_s = COALESCE(excluded.duration_s, duration_s)')
+        .bind(m.ig_id, tid, nStr(m.permalink, 300), nStr(m.posted_at, 40), nStr(m.caption, 600), nStr(m.kind, 30), Number.isFinite(+m.duration_s) ? +m.duration_s : null));
+      const x = m.metrics;
+      if (x && typeof x === 'object') st.push(db.prepare('INSERT INTO ig_metrics (ig_id, day, views, reach, likes, comments, saves, shares, watch_avg_ms, watch_total_ms) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) ON CONFLICT(ig_id, day) DO UPDATE SET views = excluded.views, reach = excluded.reach, likes = excluded.likes, comments = excluded.comments, saves = excluded.saves, shares = excluded.shares, watch_avg_ms = excluded.watch_avg_ms, watch_total_ms = excluded.watch_total_ms')
+        .bind(m.ig_id, day, nInt(x.views), nInt(x.reach), nInt(x.likes), nInt(x.comments), nInt(x.saves), nInt(x.shares), nInt(x.watch_avg_ms), nInt(x.watch_total_ms)));
+    }
+    for (let i = 0; i < st.length; i += 90) await db.batch(st.slice(i, i + 90));
+    return jres({ ok: true, day, statements: st.length });
+  }
+  return jres({ error: 'bad-request' }, 400);
+}
+
 // ---- Reel-uploaded tracking in D1 (binding "DB"). Without the binding the API answers 501 and the pages fall back to localStorage. ----
 const ID_RE = /^\d{4}-\d{2}-\d{2}(-\d{4})?$/;
 const jsonHeaders = { 'Content-Type': 'application/json', ...noStore };
@@ -176,7 +233,7 @@ export default {
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (signedIn) return env.ASSETS.fetch(request);
 
     const wantsPage = request.method === 'GET' && ((request.headers.get('Accept') || '').includes('text/html') || request.headers.get('Sec-Fetch-Mode') === 'navigate');
