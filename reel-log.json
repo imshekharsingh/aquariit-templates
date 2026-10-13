@@ -67,19 +67,20 @@
     "id": "2026-10-13-1902",
     "date": "2026-10-13",
     "template": "Dantika Dental",
-    "concept": "The Night Shift: a Swiss-precise time-lapse from day to night; the clinic closes, booking doesn't, and the night diary fills on the beats",
-    "motionStyle": "hard cuts and short eased whips on a 100 BPM grid, no tilt, grid-snap reveals; Swiss precision instead of the Hue Dial's springy colour play",
-    "primaryTransition": "shutter wipe (day page covered by a night panel falling from the top, cut underneath, panel lifts to reveal night)",
+    "concept": "After 8: a colour-scripted day-to-night-to-dawn story; the clinic building's windows are the appointment diary, they light up one by one as WhatsApp bookings arrive at night and sunrise turns them gold; dawn returns to frame 0, so the loop is the story",
+    "motionStyle": "layered parallax world (sky, stars, clouds, skyline, building, floating 3D phone, glass UI) on a 100 BPM grid; springy per-letter kinetic type with a variable width axis; scale punch on the sunrise impact",
+    "primaryTransition": "light transition (the sky itself grades golden hour -> dusk -> night -> dawn; no wipes)",
     "transitions": [
-      "shutter wipe",
-      "hard cut on the beat",
-      "whip with vertical motion blur",
-      "red rising wipe into the loop"
+      "neon flicker on the beat (OPEN dies at 8 pm, BOOKING OPEN 24x7 lights)",
+      "phone rises into the dusk and leaves upward",
+      "push into the building at night",
+      "breath dim then sunrise flare and light leak",
+      "OPEN flickers back on at 9 am into the loop"
     ],
-    "typeTreatment": "Archivo condensed uppercase, hook in 4 two-word beats on flat Swiss red; template's own type in the page",
-    "grade": "true colours, light grain, faint vignette that closes only in the breath (light page)",
-    "sound": "effects only at 100 BPM (clicks on words, slot ping, ticks on the checklist, riser into a held silence, impact on the first booking); music by Instagram audio near 100 BPM",
-    "cover": "poster: hook in white Swiss type on red with the filled night diary, safe in 1:1 and 3:4 crops",
+    "typeTreatment": "Archivo 900 uppercase per-letter entries, wdth 125 -> 74-90 on a damped spring; Geist Mono HUD clock and tally; glass toasts",
+    "grade": "colour script mixed in oklch: rose/peach/butter golden hour, violet/magenta/coral dusk, ink/cobalt/electric-indigo night, periwinkle/pink/peach dawn; warm amber window glow (srgb mix), lime neon accent",
+    "sound": "effects only at 100 BPM (word clicks, 8 pm impact, neon sparkle, message clicks, a click+tick per night booking, riser into the held breath, big impact on sunrise); music by Instagram audio near 100 BPM",
+    "cover": "night poster: lit building, moon, clock 11:42 PM and the hook in white type",
     "variants": {
       "A": "type-first open on flat red (owner's choice for the format)"
     },
@@ -88,13 +89,13 @@
       "motionPolish": 8,
       "typography": 8,
       "rhythmAndAudioSync": 8,
-      "fidelityToTemplate": 9,
+      "fidelityToTemplate": 8,
       "originalityVsLog": 9,
       "loopSeamlessness": 9,
-      "safeZones": 8
+      "safeZones": 9
     },
-    "revisionPasses": 2,
-    "notes": "pass 1: the engine hard-coded a dark stage colour (light pages lost their ink text) -> stage uses the page's own background; pass 2: night section made full-frame, vignette lightened, cover moved into the square crop",
+    "revisionPasses": 4,
+    "notes": "v2 after owner feedback (v1 was a page pan in the page's own colours). Style-frame passes: 1) iframe of file:// had no contentDocument -> same-document clone; bookings lit at dawn (story backwards) -> re-timed into the night with glass toasts; hook collided with the sign; flat building -> side face, roof, tank, antenna, mullions; orange golden hour -> rose/butter; last frame did not match the first. 2) zoomed sign inside the IG top zone -> smaller push; toasts overlapped; home windows pink (oklch drift) -> srgb mix; sun hidden behind the building. 3) phone lingered at 9.2 s; impact punch added. 4) OPEN sign relights at 9 am and the clock fades so the loop matches.",
     "music": {
       "brief": {
         "genre": "minimal nocturnal electronic",
@@ -109,6 +110,7 @@
       "chosen": null,
       "provider": null,
       "feedback": null
-    }
+    },
+    "version": 2
   }
 ]
