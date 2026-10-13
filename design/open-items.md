@@ -10,7 +10,7 @@ Every session and every daily run: read this file, ask about the oldest 1-3 open
 | 2 | 13 Oct | E7 style-switch film: one business in 4-5 styles with a numbered list that builds on screen | Yes/no; suggested slot: after the next two daily films |
 | 3 | 13 Oct | E8 comment-keyword CTA ("Comment SITE for the price list"), replies by hand | Yes/no, and whether you can reply to comments within a few hours |
 | 4 | 13 Oct | Add modern styles to the CLAUDE.md mood menu (maximalism, vector art, collage, pixel art, Y2K, surreal, graffiti, handwritten) | Go-ahead (CLAUDE.md is owner-edited) |
-| 5 | 13 Oct | Reels rendered and waiting to be posted: Dantika #76, Tintwell #71, Tidemark #61 | Which are posted? Tick "Reel uploaded" in the app so nothing is posted twice |
+| 5 | 13 Oct | Reels rendered and waiting to be posted: Tintwell #71, Tidemark #61 (Dantika #76 posted 13 Oct) | Will these two be posted, or skipped? Tick "Reel uploaded" in the app for Dantika |
 | 6 | 13 Oct | First experiment verdict (E1/E6) needs 48 h of numbers per reel | Share the per-reel numbers (or confirm the Instagram collect workflow is running) |
 | 7 | 13 Oct | Profile checklist (design/growth-playbook.md): Creator account, name field, bio, link-in-bio page | Status, plus a contact method for the link-in-bio page (WhatsApp / email / booking link) |
 | 8 | 13 Oct | E9 POV-wrapper film (from the studied POV reel) | Yes/no: try it on the next daily film? |
