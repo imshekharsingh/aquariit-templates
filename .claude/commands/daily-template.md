@@ -59,17 +59,7 @@ CLAUDE.md.
    readable type, header looks right with the "All templates" link hidden, key content
    outside Instagram's bottom ≈20%. Take screenshots and look at them. Desktop (1440px)
    must still not break.
-3b. Run `node scripts/reel-audit.mjs ID` (see "Alignment with the scroll flow" in CLAUDE.md).
-   Open the screenshots it saves in /tmp/reel-audit/ and fix every "CUTS" line (split or
-   resize blocks, add gaps, or pin pauses with data-reel-stop) until it says all pauses are
-   clean and every pause looks like a finished frame. If Playwright is unavailable, say so.
-3b2. The same audit prints SIDE-TIGHT lines when text sits closer than 26px (icons/buttons 18px) to a side: Instagram crops ≈14–20px off each side, so
-   inset those (≈30px phone gutters) or mark pure decoration aria-hidden / data-reel-bleed. It also prints TOP-ZONE (a block starting under Instagram's top
-   ≈90px bar; the player already offsets the first content to 96px) and RIGHT-ZONE (short right-aligned prices/badges/numbers/buttons in the right 16% of the lower
-   half, covered by Instagram's button column: left-align, stack or centre them on phones). It must say "side safety: OK".
-3c. Run `node scripts/reel-perf.mjs ID` (smoothness under a simulated slower phone, see "Smooth when
-   auto-scrolled" in CLAUDE.md). It must say "smooth"; if it says CHECK, simplify the heaviest effects
-   (animated blur/box-shadow/filter, big canvases) and re-run. If Playwright is unavailable, say so.
+3b. (Fallback only) `reel-audit.mjs` / `reel-perf.mjs` are not needed: the reel is the film. Run them only if the film failed and the recording will be used.
 4. Compare against the last 3 templates; if too similar, revise.
 
 ## Phase 4a — Cover preview image
@@ -85,29 +75,20 @@ Reel format B is the current experiment (design/experiments.md): the reel is ren
 ~3 s, so write `Length: 15–20 s`, make the hook SHORT (a question of at most 8 words, it is read on screen), and plan the shot plan and payoff to land inside 18 s
 (payoff in the last 4 s). Read the latest results table in the "Instagram collect" workflow log, `design/experiments.md` and `design/growth-playbook.md` first, and favour what the numbers say is working. Concept and hook speak to the buyer (a business owner or founder: money, time, results), not only to designers. Read `design/market.md` (people's choice): pick the business, market and currency from what the audience responds to; never present invented results as Aquarii's own.
 
-## Phase 4c — Directed film (the reel; CLAUDE.md "Directed film" and "Music & Sound"; HOW: design/film-playbook.md, read it all first)
-The owner approved ONE look for films (13 Oct 2026, film/2026-10-13-1902 "After 8" v3 is the reference): the product-film grammar. Non-negotiable:
-- **Built on the film parts** (`scripts/film/parts.js`, window.FilmParts: scene, captions, sentence, card, brackets, phone, chat, scan, hub, payoff, clock, shape, wave).
-  `scripts/check.mjs` fails a film that does not use them or ships the starter unchanged.
-- **A story with a visual metaphor for THIS business** (After 8: the clinic closes at 8, booking does not; the bookings light a night diary and sunrise turns them gold).
-  Write it first in 3 lines: the problem the owner feels, the mechanism the site provides, the payoff image. Never a pan over the page.
-- **One accent glowing on near-black**, material cards, skeleton UI instead of tiny real text, warmth or a second hue ONLY at the payoff.
-- **Captions are the spine** (1-3 words per card at the fixed anchor); a **sentence that builds** for the claim; **pivot words** with their own visual answer; one
-  **recurring brand shape** if it fits (a steam curl for a café, a tooth for a clinic). One idea per ~1.2 s; the last frame returns to the first.
-Steps:
-1. `cp -r film/_starter film/ID` (a working default on any page: hook captions over the lit phone, page scroll, hub + 3 nodes from the page's features, scan bar to the
-   offer, brackets on the CTA, the promise sentence, warm payoff, CTA card, loop). Then rewrite the story around the metaphor: replace the opening image, name the
-   mechanism, choose the pivot words, set the accent (`P.scene({ accent })`), write the captions. Read reel-log.json (last 7 films): change the concept, primary transition and sound direction.
-2. `film/ID/timing.json` (100 BPM default: a beat every 0.6 s; every hit on the grid; `cues` for effects, each motivated by something on screen) and `film/ID/music-brief.json`.
-   `node scripts/audio/brief.mjs ID` must exit 0. Never synthesise music; with no licensed source the film ships with effects only.
-3. **Style frames, at least 3 passes** (this is where the quality comes from): `node scripts/film/render-film.mjs ID --variant A --stills t1,t2,...` at 10-16 times
-   (first frame, every cut, the breath, the peak, the last frame), build a contact sheet in TIME order (`ls still-A-*.png | sort -t- -k3 -g`), LOOK at it and write a critique:
-   story logic, dead air, collisions, text in Instagram's zones (top 96 px, bottom 22%, right column x > 338 between 50-90% height), contrast, the loop. Fix, re-render, repeat.
-   Then view 3-4 key frames at full size. Then `--cover`, and check the cover crops (`*-cover-grid-preview.png`).
-4. Record the film in reel-log.json (concept, motionStyle, primaryTransition, transitions, typeTreatment, grade, sound, cover, rubric, **revisionPasses** and **notes**
-   saying what each pass fixed; the check requires them). Stage film/ID/, audio/<date>/ID/ (brief files only) and reel-log.json with the template.
-The Reel publish workflow renders the full film after the deploy (and falls back to the screen recording if there is none or it fails).
-Budget: about 30-60 minutes for this phase. Do not skip the passes to save time; a weak film costs more than a late one.
+## Phase 4c — Directed film (the reel; CLAUDE.md "Directed film"; how-to design/film-playbook.md)
+1. **Concept first (3 lines):** the problem this business's customer feels, the mechanism the site provides, the payoff image. Every reel is its own brand: pick the ground
+   (black / deep colour / light), the accent and the caption style for THIS business.
+2. **Pick the combination:** read the previous film's `film/*/manifest.json` (newest `made`) and choose, for opener, transition, mechanism, focus, payoff, type, captions and cta,
+   options from scripts/film/parts.js (the header lists them) that differ from it in opener, transition, mechanism and payoff. Read design/inspiration.md and **add one new
+   trick to parts.js** (a new part or option, tagged with `P.use(slot, id)`) and use it in this film.
+3. `cp -r film/_starter film/ID`, then write the story around the concept with those parts. Declare `S.dna = { opening, bigMoment, ground, music }`. End with `P.signoff()`.
+   `film/ID/timing.json`: 100 BPM grid by default (a beat every 0.6 s), effects `cues` that each match something on screen.
+4. **Look and fix (2-3 passes):** `node scripts/film/render-film.mjs ID --variant A --stills t1,t2,...` at every cut + first, breath, peak, last frame; contact sheet in time order
+   (`ls still-A-*.png | sort -t- -k3 -g`). Answer the friend test (CLAUDE.md) honestly; check text against Instagram's zones and for collisions or dead air; fix and look again.
+   Rendering a still also writes film/ID/manifest.json; `npm run check` must pass (variety rules). Then `--cover` and check the crops.
+5. reel-log.json: concept, motionStyle, primaryTransition, typeTreatment, grade, sound, cover, `friendTest` (the four answers), revisionPasses, notes (what each pass fixed),
+   and the new trick added. Stage film/ID/ (with manifest.json), the parts.js change and reel-log.json with the template.
+The Reel publish workflow renders the full film after the deploy. Budget about 30-45 minutes for this phase; it gets faster as the library grows.
 
 ## Phase 5 — Records and push
 1. Append the entry to design-log.json (schema in CLAUDE.md: id=ID, date=DATE,

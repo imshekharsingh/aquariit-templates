@@ -82,6 +82,8 @@ module and the header style (menus in design/playbook.md; record them in design/
   adapt to the concept
 
 ## iPhone Reel frame (the recording target — design for it)
+(Since 2026-10-14 the daily reel is a film, so the player recording below is only the fallback. Keep the page rules (they make a good phone page), but
+`reel-audit.mjs` and `reel-perf.mjs` are no longer required in the daily run; run them only when a film has failed and the recording is used.)
 The owner records with an iPhone 17 Pro (402×874 CSS px, DPR 3, top inset ≈62px with the Dynamic Island, bottom ≈34px),
 using the installed PWA, and posts to Instagram Reels (9:16). The ▶ player therefore shows every template inside a centred
 **402×715 (9:16) frame** — the status bar and home indicator fall in the bands above/below, which Instagram's default crop trims.
@@ -170,13 +172,21 @@ Music must follow the template's mood (e.g. warm paper → acoustic/lo-fi,
 dark neon → synthwave, Japanese calm → ambient/koto-style, art deco → jazz). This section is for picking Instagram's own audio;
 the ▶ player separately auto-picks one of its 11 generated styles from the theme (see MOODS in templates/play/player.js).
 
-## Directed film (the reel format from 2026-10-13; owner chose the type-first open, "variant A")
-The reel is a directed motion film, not a screen recording: a virtual camera over the live page (engine: scripts/film/, per-template story: film/ID/story.js + timing.json),
-18 s, 30 fps, 1080×1920, the hook (≤ 8 words, ≤ 6 per card) building on the beat from frame 0, a held "breath" before the reveal, payoff in the last 4 s, and a last frame that loops into the
-first. The Reel publish workflow renders it when film/ID/story.js exists and falls back to the screen recording otherwise. Every film is logged in reel-log.json (concept, motion style,
-transitions, type treatment, grade, sound direction, cover approach, rubric scores) and must not repeat the concept, primary transition or sound direction of the last 7 films.
-Self-review is mandatory: inspect frames at every cut plus first/peak/last, a contact sheet, score the rubric, fix anything below 8 (at least 3 passes). Guidance: design/film-playbook.md.
-Owner-approved look (13 Oct 2026, reference film/2026-10-13-1902 v3): the product-film grammar, built on scripts/film/parts.js and the kit starter film/_starter (scripts/check.mjs enforces both).
+## Directed film (the ONLY daily reel format from 2026-10-14; owner decision delegated to Claude, 13 Oct 2026)
+Every daily reel is a directed motion film; screen recordings are retired (they averaged 2.5-4.6 s watch time) and stay only as the automatic fallback when a film fails to render.
+Engine: scripts/film/ (engine.js, the parts library parts.js, render-film.mjs); per template: film/ID/story.js + timing.json. 18 s, 30 fps, 1080×1920, the hook building from frame 0,
+a held "breath" before the payoff, payoff in the last 4 s, a last frame that loops into the first, effects-only sound (owner adds Instagram audio). How-to: design/film-playbook.md.
+**Every reel looks like its own brand.** The account showcases range for many clients, so there is no house style. Only these stay constant: captions readable at phone size,
+nothing key under Instagram's UI (top 96 px, bottom 22%, right column), smooth motion, a clean loop, and the small "Made by Aquarii" sign-off (P.signoff) at the end.
+**Variety is enforced, not hoped for.** Stories are built from the parts in scripts/film/parts.js; each part records the slot it fills (opener, transition, mechanism, focus,
+payoff, type, captions, cta, ground) and the renderer writes film/ID/manifest.json automatically, with the story's declared `S.dna = { opening, bigMoment, ground, music }`.
+scripts/check.mjs refuses a film that repeats the previous film in opener, transition, mechanism or payoff, is a near-copy of any of the last 7, or reuses an opening or big moment.
+**Every film adds one new trick to the library** (a new part or a new option of a part in parts.js, with a `P.use` slot tag), so the vocabulary grows every day.
+Ideas come from design/inspiration.md (a weekly study of current design, motion and web-animation work; take techniques, never copy a piece).
+**The friend test decides, not a score.** Watch the stills like a stranger scrolling at night and answer honestly in reel-log.json (`friendTest`):
+would I stop scrolling in the first second? would I watch it to the end? is there one moment I would screenshot? would I send it to a friend who runs this kind of business?
+Any "no" means fix it and look again (usually 2-3 passes); write what each pass fixed in `notes`.
+Speed: review with `--stills` at the cuts (not full previews), reuse parts instead of bespoke code, and stop polishing once the friend test is four yeses.
 
 ## Music & Sound: you are the Music Supervisor and Sound Editor
 

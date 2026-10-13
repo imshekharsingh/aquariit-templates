@@ -1,0 +1,44 @@
+{
+  "id": "2026-10-13-1902",
+  "made": "2026-10-13T15:30:00.000Z",
+  "legacy": "written by hand: this film predates the parts kit",
+  "slots": {
+    "ground": [
+      "black"
+    ],
+    "opener": [
+      "draw-on"
+    ],
+    "device": [
+      "phone"
+    ],
+    "transition": [
+      "scan"
+    ],
+    "mechanism": [
+      "hub",
+      "grid-fill"
+    ],
+    "focus": [
+      "brackets"
+    ],
+    "payoff": [
+      "flood"
+    ],
+    "captions": [
+      "pill"
+    ],
+    "cta": [
+      "card"
+    ],
+    "hud": [
+      "clock"
+    ]
+  },
+  "dna": {
+    "opening": "clinic facade drawn in light, OPEN neon dies at 8 pm",
+    "bigMoment": "sunrise turns the night bookings gold",
+    "ground": "black with lime glow",
+    "music": "calm nocturnal minimal, ~100 BPM"
+  }
+}

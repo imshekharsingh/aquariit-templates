@@ -11,6 +11,7 @@
 (function () {
   const E = window.FilmEngine, T = window.FILM_T, KIT = window.FILM_KIT || {}, P = window.FilmParts, { clamp, lerp, ease } = E, S = (E.story = {});
   S.selfStage = true;
+  S.dna = { opening: 'EDIT: the opening image', bigMoment: 'EDIT: the big moment', ground: 'EDIT: black / deep colour / light', music: 'EDIT: feel + BPM' };
   const sm = P.sm, css = P.css, $$ = E.$$;
   const sat = (c) => { const m = (c.match(/[\d.]+/g) || [0, 0, 0]).map(Number), mx = Math.max(...m.slice(0, 3)), mn = Math.min(...m.slice(0, 3)); return mx ? (mx - mn) / mx : 0; };
   const lum = (c) => { const m = (c.match(/[\d.]+/g) || [0, 0, 0]).map(Number); return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255; };
@@ -99,6 +100,7 @@
     P.scan(ph, off, 9.0, .6);
     if (E.ctaBox) E.brk.snap(E.ctaBox, 9.6, 10.05);
     E.ph.halo.style.zIndex = 0;
+    P.signoff({});
     S.A = A; S.name = name; S.h1 = h1;
     return { ok: true, accent: A, name, feats, cta };
   };
