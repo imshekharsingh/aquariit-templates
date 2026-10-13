@@ -446,5 +446,27 @@
     "animation": "scroll-linked @property hue with oklch-derived swatches and a degree counter, spring swatch fan, CSS counting numbers, hidden-until-scroll header",
     "purpose": "Consultancy / studio (brand colour audit with fixed-price packages)",
     "description": "A brand-colour studio sales page that asks whether your colour is costing you sales, then proves it with a hue that sweeps the wheel."
+  },
+  {
+    "id": "2026-10-13-1902",
+    "date": "2026-10-13",
+    "time": "19:02",
+    "slug": "dantika",
+    "url": "https://templates.aquariit.com/2026-10-13-1902/",
+    "theme": "Swiss modernist, paper white with ink black, display-p3 Swiss red and an acid-yellow accent, a night-navy inversion section; neighbourhood dental clinic",
+    "layout": "single-column Swiss grid: calendar ui-mock hero, night inversion checklist, horizontal fee row, night-diary finale",
+    "palette": [
+      "#f6f5ef",
+      "#121212",
+      "#e3262f",
+      "#eaff3b",
+      "#0f1226"
+    ],
+    "fonts": "Archivo (variable width) + Geist Mono",
+    "motif": "appointment slots: a WhatsApp booking turns a slot red, and a night diary fills itself while the clinic is closed",
+    "animation": "@starting-style entry transitions for inserted booking chips, stroke-dashoffset ticks, scroll-driven fee row, linear() springs",
+    "purpose": "Clinic (dental clinic with 24-hour WhatsApp booking and fixed fees)",
+    "description": "A Swiss-modern dental clinic page where booking stays open all night: pick a slot on WhatsApp, hold it with ₹200 by UPI, and watch the night diary fill.",
+    "era": "modern"
   }
 ]
