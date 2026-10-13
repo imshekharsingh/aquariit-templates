@@ -45,7 +45,7 @@
     E.cards = E.el('div', 'position:absolute;inset:0', fx);                                                   // type cards
     E.sheen = E.el('div', 'position:absolute;left:-60%;top:-10%;width:60%;height:120%;opacity:0;mix-blend-mode:soft-light;background:linear-gradient(100deg,transparent 0,rgba(255,255,255,.0) 20%,rgba(255,255,255,.95) 50%,rgba(255,255,255,0) 80%,transparent 100%)', fx);
     E.vig = E.el('div', 'position:absolute;inset:0;opacity:.45;background:radial-gradient(120% 90% at 50% 46%,transparent 52%,rgba(8,2,20,.78) 100%)', fx);
-    E.grain = E.el('div', 'position:absolute;inset:-40px;opacity:.09;mix-blend-mode:overlay', fx);
+    E.grain = E.el('div', 'position:absolute;inset:-40px;opacity:.06;mix-blend-mode:overlay', fx);
     const c = document.createElement('canvas'); c.width = c.height = 192; const g = c.getContext('2d'), d = g.createImageData(192, 192);
     let s = 1234567; for (let i = 0; i < d.data.length; i += 4) { s = (s * 1664525 + 1013904223) >>> 0; const v = s >>> 24; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
     g.putImageData(d, 0, 0); E.grain.style.backgroundImage = `url(${c.toDataURL()})`; E.grain.style.backgroundSize = '192px 192px';
@@ -70,6 +70,9 @@
     return { x: lerp(a.x, b.x, k), y: lerp(a.y, b.y, k), z: Math.exp(lerp(Math.log(a.z), Math.log(b.z), k)), rx: lerp(a.rx || 0, b.rx || 0, k), ry: lerp(a.ry || 0, b.ry || 0, k), rz: lerp(a.rz || 0, b.rz || 0, k) };
   };
   E.applyCam = (c, blurY) => {
+    // a 3D tilt makes Chromium rasterise the page at LOW resolution once the camera is zoomed in (measured: edge sharpness 4.9 tilted vs 31 flat at z = 2.2), so the tilt fades out between z = 1.0 and 1.35
+    const k = Math.max(0, Math.min(1, (1.35 - c.z) / 0.35)), dz = (a) => (a > 0 ? Math.max(0, a - 1.2) : Math.min(0, a + 1.2));   // ANY non-zero 3D angle resamples the raster (about 35% softer even at 0.1 degrees), so small angles are dead-zoned to exactly 0
+    c = { ...c, rx: dz(c.rx * k), ry: dz(c.ry * k) };
     E.cam.style.transform = `translate3d(${W / 2}px,${H / 2}px,0) rotateX(${c.rx}deg) rotateY(${c.ry}deg) rotateZ(${c.rz}deg) scale(${c.z}) translate3d(${-c.x}px,${-c.y}px,0)`;
     if (blurY > 0.3) { E.mbg.setAttribute('stdDeviation', `0 ${blurY.toFixed(1)}`); E.cam.style.filter = 'url(#mb)'; } else E.cam.style.filter = 'none';
   };

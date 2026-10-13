@@ -67,7 +67,7 @@
     k(T.matchCut, R.big.x + 62, R.big.y + 72, 5.2, { rz: 0 });                                  // MATCH CUT on colour: tangerine -> tangerine, "38°" -> "38°"
     const dy = (z) => 28 / z;                                  // keep key content above the Reels bottom UI: centre a little high
     k(6.0, 201, R.labCy + dy(.9), 0.9, { e: 'outX' });                                           // pull back: the dial and its derived swatches come into frame
-    k(T.whip1[0], 201, R.labCy + dy(.95), .95, { e: 'io3', ry: -6, rx: 3 });
+    k(T.whip1[0], 201, R.labCy + dy(.95), .95, { e: 'io3' });                                  // no tilt while the dial is readable (a tilted camera softens text)
     k(T.whip1[1], 201, R.statsCy + dy(.9), 0.9, { e: 'io3', ry: 0, rx: 0 });                    // whip up to the proof cards
     k(T.cut2, 201, R.statsCy + dy(.96), .96, { e: 'lin' });
     k(T.cut2, 201, R.pkCy + dy(.9), 0.9);                                                        // hard cut on the downbeat to the packages
@@ -161,8 +161,8 @@
     // vignette: loose, closes during the breath, opens on the impact
     let v = .42; if (t < 1) v = .2; if (t >= T.breath[0] && t < T.impact) v = lerp(.42, .9, ease.outX(clamp((t - T.breath[0]) / 1.2))); E.vig.style.opacity = v;
     // focus pull on the hot package during the push: the price stays sharp, everything else falls out of focus
-    const f = ease.io3(clamp((t - T.push[0] - .2) / .7)) * 7;
+    const f = ease.io3(clamp((t - T.push[0] - .2) / .7)) * 3;                // a gentle focus pull: heavy defocus reads as a quality fault on a phone
     $$('.pk.hot h3,.pk.hot ul,.pk.hot .fl,.pk.hot .pr small').forEach((e) => { e.style.filter = f > .05 ? `blur(${f.toFixed(2)}px)` : 'none'; });
-    $$('.pk:not(.hot)').forEach((e) => { e.style.filter = f > .05 ? `blur(${(f * 1.4).toFixed(2)}px)` : 'none'; });
+    $$('.pk:not(.hot)').forEach((e) => { e.style.filter = f > .05 ? `blur(${(f * 1.3).toFixed(2)}px)` : 'none'; });
   };
 })();
