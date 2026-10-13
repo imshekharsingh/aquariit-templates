@@ -1,0 +1,114 @@
+{
+  "id": "2026-10-12-0850",
+  "date": "2026-10-12",
+  "durationSec": 18,
+  "bpm": 100,
+  "beatSec": 0.6,
+  "barSec": 2.4,
+  "mood": "warm, quick, playful urgency that lands in a satisfied, cosy finish",
+  "genre": "upbeat lo-fi funk with a ticking clock groove",
+  "instrumentation": [
+    "muted funk guitar",
+    "clockwork hi-hat ticks",
+    "round warm bass",
+    "short brass stabs on the hits"
+  ],
+  "avoid": [
+    "vocals",
+    "named artists or songs",
+    "aggressive drops"
+  ],
+  "vocals": false,
+  "peak": 12.6,
+  "breath": [
+    12,
+    12.45
+  ],
+  "hits": [
+    {
+      "t": 2.4,
+      "kind": "downbeat",
+      "label": "the phone lights: 9:41 pm"
+    },
+    {
+      "t": 3.6,
+      "kind": "downbeat",
+      "label": "order placed, the stopwatch starts"
+    },
+    {
+      "t": 6,
+      "kind": "downbeat",
+      "label": "the kitchen hub lights"
+    },
+    {
+      "t": 9,
+      "kind": "downbeat",
+      "label": "the scooter sets off"
+    },
+    {
+      "t": 12.6,
+      "kind": "impact",
+      "label": "peak: 24:00, DELIVERED slams, steam bursts"
+    },
+    {
+      "t": 15.6,
+      "kind": "downbeat",
+      "label": "CTA"
+    },
+    {
+      "t": 18,
+      "kind": "downbeat",
+      "label": "loop to the steamer"
+    }
+  ],
+  "sections": [
+    {
+      "name": "intro",
+      "t0": 0,
+      "t1": 2.4,
+      "durationMs": 2400,
+      "energy": "sparse",
+      "style": "sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet"
+    },
+    {
+      "name": "build",
+      "t0": 2.4,
+      "t1": 12,
+      "durationMs": 9600,
+      "energy": "rising",
+      "style": "building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising"
+    },
+    {
+      "name": "breath",
+      "t0": 12,
+      "t1": 12.6,
+      "durationMs": 600,
+      "energy": "silence then riser",
+      "style": "drop to near silence, a held breath, then a tense riser building into the downbeat"
+    },
+    {
+      "name": "peak",
+      "t0": 12.6,
+      "t1": 15.6,
+      "durationMs": 3000,
+      "energy": "high",
+      "style": "peak energy, the full arrangement, a big downbeat impact on the first beat"
+    },
+    {
+      "name": "resolve",
+      "t0": 15.6,
+      "t1": 18,
+      "durationMs": 2400,
+      "energy": "settling",
+      "style": "resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart"
+    }
+  ],
+  "feedbackToApply": [],
+  "problems": [
+    "BPM 100 is within 4 of the previous film's 100"
+  ],
+  "notes": [
+    "duration 18s is not a whole number of bars (7.50): the loop edit will crossfade on a beat"
+  ],
+  "prompt": "Instrumental only, no vocals. warm, quick, playful urgency that lands in a satisfied, cosy finish. upbeat lo-fi funk with a ticking clock groove, 100 BPM, exactly 18 seconds, 7.5 bars of 4/4. muted funk guitar, clockwork hi-hat ticks, round warm bass, short brass stabs on the hits. Energy follows the picture: 0-2.4s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 2.4-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-12.6s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 12.6-15.6s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.6-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 2.4s, 3.6s, 6s, 9s, 12.6s, 15.6s, 18s; near-silence from 12s to 12.45s; the last bar resolves so the track loops."
+}

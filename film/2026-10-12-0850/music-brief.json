@@ -1,0 +1,46 @@
+{
+  "mood": "warm, quick, playful urgency that lands in a satisfied, cosy finish",
+  "genre": "upbeat lo-fi funk with a ticking clock groove",
+  "instrumentation": [
+    "muted funk guitar",
+    "clockwork hi-hat ticks",
+    "round warm bass",
+    "short brass stabs on the hits"
+  ],
+  "avoid": [
+    "vocals",
+    "named artists or songs",
+    "aggressive drops"
+  ],
+  "vocals": false,
+  "interpretations": [
+    {
+      "name": "ticking funk",
+      "instrumentation": [
+        "muted guitar",
+        "clock ticks",
+        "warm bass"
+      ],
+      "energy": "steady build to a brass stab at 12.6"
+    },
+    {
+      "name": "night-market lo-fi",
+      "instrumentation": [
+        "plucked strings",
+        "soft kit",
+        "vinyl crackle",
+        "sub bass"
+      ],
+      "energy": "laid back, the breath is a full stop, then a warm swell"
+    },
+    {
+      "name": "chase synth",
+      "instrumentation": [
+        "arpeggiated synth",
+        "tight drums",
+        "sub pulse"
+      ],
+      "energy": "accelerating through the ride, a big hit at delivery"
+    }
+  ]
+}

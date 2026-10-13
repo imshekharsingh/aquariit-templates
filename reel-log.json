@@ -115,5 +115,38 @@
       "feedback": null
     },
     "version": 3
+  },
+  {
+    "id": "2026-10-12-0850",
+    "date": "2026-10-13",
+    "template": "Gojigo",
+    "version": 2,
+    "concept": "24 minutes: can a dumpling beat the clock? A steamer drawn in light; one tap orders chili-crisp pork and a stopwatch starts; the kitchen hub folds, steams and packs; a scooter rides a glowing route across a dark city with the camera following; a held breath at 23:59; at 24:00 DELIVERED slams down and steam bursts in a warm flood; the steamer returns (loop)",
+    "motionStyle": "product-film grammar on the film parts: springs, hub with data dots, follow-camera on the scooter, stamp slam, steam as the recurring character",
+    "primaryTransition": "follow-camera ride along a drawing route line",
+    "transitions": [
+      "steamer blurs out as the phone rises",
+      "bracket snap on the + button",
+      "phone shrinks into the kitchen system",
+      "system fades to the city map",
+      "follow-camera pull-back for the delivery",
+      "CTA card, steamer returns"
+    ],
+    "typeTreatment": "captions as the spine (Archivo 800), mono stopwatch HUD, stamp in heavy tracked caps",
+    "grade": "near-black with goji red #ff2e66 as the one glow, pistachio only for DELIVERED, warm chili flood only at the payoff",
+    "sound": "effects only at 100 BPM: whoosh as the phone rises, click on the tap, sub on the kitchen hub, clicks on fold/steam/pack, ticks during the ride, riser into the 23:59 breath, big impact on delivery; Instagram audio near 100 BPM",
+    "cover": "night map with the scooter one corner from the door, stopwatch 23:59, the question in white with 'the clock?' in goji red",
+    "rubric": {
+      "firstSecondStoppingPower": 8,
+      "motionPolish": 8,
+      "typography": 8,
+      "rhythmAndAudioSync": 8,
+      "fidelityToTemplate": 8,
+      "originalityVsLog": 9,
+      "loopSeamlessness": 9,
+      "safeZones": 8
+    },
+    "revisionPasses": 3,
+    "notes": "Re-film of the 12 Oct template on the film parts (backlog batch, owner asked for Gojigo). Pass 1: the DELIVERED stamp wrapped, was cut off and sat in Instagram's right column -> centred, bigger, on a dark plate; the map held still for 3 s -> follow camera on the scooter. Pass 2: the stopwatch ran ahead of the story (21 min as the scooter left) -> kitchen 0-9 min, ride 9-23.6, 23:59 in the breath. Pass 3: full-size check of the payoff frames. Music: kept the 100 BPM grid (same as Dantika); brief.mjs flags the repeat, accepted because the owner picks Instagram audio and the genre differs (funk vs nocturnal piano)."
   }
 ]
