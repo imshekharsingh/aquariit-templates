@@ -8,6 +8,11 @@ Engine: `scripts/film/engine.js` (stage, camera, easing, per-word type reveals, 
 Render: `node scripts/film/render-film.mjs ID --variant A` (≈ 3 min on 4 cores; `--stills t1,t2` for single frames, `--frames a-b` for a range, `--cover` for the poster, `--deliver DIR` for the files the workflow uploads).
 The Reel publish workflow renders it automatically when `film/ID/story.js` exists (otherwise the screen recording).
 
+## Starter and preview
+`film/_starter/` is a working generic story (it was tried unchanged on Tidemark and Gojigo and produced a coherent film both times). Copy it to `film/ID/` and bend it. Known limits: it finishes the page's own scroll-driven
+CSS animations at their END state, but cannot replay page JavaScript that reacts to the scroll position (headings that fill as you scroll stay dim), and it assumes a vertical page (horizontal scrollers need a custom story).
+`render-film.mjs ID --preview` renders 540 frames without motion blur or sound in about a minute and writes `preview-sheet-A.png` (a frame every 0.5 s); `--film-dir DIR` renders a story from elsewhere (tests).
+
 ## Authoring a film (the order matters)
 1. Read `reel-log.json` (last 7 films) and design/experiments.md. Do not repeat a concept, primary transition or sound direction.
 2. Write the visual DNA (5 lines), pitch 3 concepts, score them, pick one (see `film/2026-10-13-0851/treatment.md` for the shape).

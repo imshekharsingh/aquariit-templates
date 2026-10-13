@@ -3,18 +3,18 @@
 // Needs film/ID/{story.js,timing.json,audio.mjs}. Every frame is a pure function of the film time, so output is exact and repeatable (no real-time capture).
 // Motion blur = SUB sub-frames per output frame spread over a 180-degree shutter, averaged by ffmpeg (tmix).
 import { readFileSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
 import { spawnSync } from 'node:child_process';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const args = process.argv.slice(2), opt = (n, d) => { const i = args.indexOf(n); return i > -1 ? args[i + 1] : d; };
-const valueArgs = new Set(['--variant', '--out', '--sub', '--shutter', '--workers', '--frames', '--stills', '--crf', '--deliver', '--audio']);
+const valueArgs = new Set(['--variant', '--out', '--sub', '--shutter', '--workers', '--frames', '--stills', '--crf', '--deliver', '--audio', '--film-dir']);
 const id = args.find((a, i) => !a.startsWith('--') && !valueArgs.has(args[i - 1]));
-if (!id || !existsSync(join(root, 'film', id, 'story.js'))) { console.error('usage: render-film.mjs ID  (needs film/ID/story.js)'); process.exit(2); }
-const dir = join(root, 'film', id), T = JSON.parse(readFileSync(join(dir, 'timing.json'), 'utf8'));
-const OUT = opt('--out', join(root, 'out', 'film', id)), VAR = opt('--variant', 'both'), SUB = +opt('--sub', 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = +opt('--crf', 19);
+const FD = (() => { const i = args.indexOf('--film-dir'); return i > -1 ? args[i + 1] : ''; })(), dir = FD || join(root, 'film', id), T = JSON.parse(readFileSync(join(dir, 'timing.json'), 'utf8'));
+if (!id || !existsSync(join(FD || join(root, 'film', id), 'story.js'))) { console.error('usage: render-film.mjs ID  (needs film/ID/story.js)'); process.exit(2); }
+const OUT = resolve(opt('--out', join(root, 'out', 'film', id))), VAR = opt('--variant', 'both'), PREVIEW = args.includes('--preview'), SUB = PREVIEW ? 1 : +opt('--sub', 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = PREVIEW ? 28 : +opt('--crf', 19);
 const FPS = 30, LEN = T.len, NF = LEN * FPS, JOIN_F = Math.round(T.join * FPS), SCALE = 1080 / 402;
 const AUDIO = opt('--audio', ''), only = opt('--frames', ''), stills = opt('--stills', ''), COVER = args.includes('--cover'), DELIVER = opt('--deliver', '');
 
@@ -32,9 +32,10 @@ async function openPage(browser, variant) {
   const pg = await ctx.newPage(); const errs = []; pg.on('pageerror', (e) => errs.push(String(e).slice(0, 200)));
   await pg.goto(tplUrl, { waitUntil: 'networkidle' });
   await pg.evaluate(async () => { await document.fonts.ready; await Promise.all(['900 20px Gabarito', '500 12px "Martian Mono"'].map((f) => document.fonts.load(f))); });
-  await pg.evaluate((t) => { window.FILM_T = t; }, T);
+  let kit = null; try { kit = JSON.parse(readFileSync(join(root, 'templates', 'social-kits.json'), 'utf8')).find((k) => k.id === id) || null; } catch { /* no kit */ }
+  await pg.evaluate(([t, k]) => { window.FILM_T = t; window.FILM_KIT = k; }, [T, kit]);
   await pg.addScriptTag({ content: engineSrc }); await pg.addScriptTag({ content: storySrc });
-  await pg.evaluate((v) => { FilmEngine.stage(); FilmEngine.story.setup(v); }, variant);
+  await pg.evaluate(async (v) => { if (!FilmEngine.story.selfStage) FilmEngine.stage(); await FilmEngine.story.setup(v); }, variant);
   if (errs.length) throw new Error('page error: ' + errs.join(' | '));
   return pg;
 }
@@ -94,10 +95,14 @@ console.log(`rendered ${jobs.length} frames x${SUB} in ${((Date.now() - t0) / 10
 // ---- assemble each variant: sequence = variant head (f < JOIN_F) + shared tail, motion-blurred by averaging each group of SUB sub-frames ----
 const run = (cmd, a, o = {}) => { const r = spawnSync(cmd, a, { encoding: 'utf8', ...o }); if (r.status !== 0) { console.error(cmd, a.join(' ').slice(0, 300), '\n', (r.stderr || '').slice(-1500)); process.exit(1); } return r; };
 // audio: a finished mix made by scripts/audio/produce.mjs (licensed music + effects, mastered) when one exists for this film, otherwise the effects-only track
+if (!T.cues && !only && !PREVIEW) { // stories that compute their own shots hand over their sound cues
+  const b0 = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}) }); const p0 = await openPage(b0, variants[0]);
+  T.cues = await p0.evaluate(() => (FilmEngine.story.cues ? FilmEngine.story.cues() : [])); await b0.close(); console.log('cues from the story:', T.cues.length);
+}
 let audio = join(OUT, 'score.wav');
 const finalMix = (() => { if (AUDIO) return AUDIO; const root2 = join(root, 'audio'); if (!existsSync(root2)) return ''; for (const d of readdirSync(root2).sort().reverse()) { const f = join(root2, d, id, 'final.wav'); if (existsSync(f)) return f; } return ''; })();
 if (finalMix && existsSync(finalMix)) { audio = finalMix; console.log('audio: finished mix', finalMix); }
-else if (!args.includes('--no-audio') && !only) {
+else if (!args.includes('--no-audio') && !only && !PREVIEW) {
   const custom = join(dir, 'audio.mjs'); // optional per-film score; the default is the effects-only track built from timing.json cues
   const m = existsSync(custom) ? await import(pathToFileURL(custom).href) : await import('./sfx.mjs'); console.log('audio:', JSON.stringify(await (m.writeScore || m.writeSfx)(audio, T)));
 }
@@ -110,9 +115,10 @@ for (const v of variants) {
   const mp4 = join(OUT, `${id}-${v}.mp4`);
   // blur (average SUB sub-frames), bloom on highlights, gentle grade, scale to exactly 1080x1920
   const vf = `[0:v]tmix=frames=${SUB},select='not(mod(n+1\\,${SUB}))',setpts=N/(30*TB),scale=1080:1920:flags=lanczos,format=yuv420p,split[a][b];[b]curves=all='0/0 0.62/0 1/1',gblur=sigma=26[bl];[a][bl]blend=all_mode=screen:all_opacity=0.16,eq=contrast=1.04:saturation=1.05[v]`;
-  const haveAudio = existsSync(audio) && !only;
+  const haveAudio = existsSync(audio) && !only && !PREVIEW && !args.includes('--no-audio');
   run('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS * SUB), '-i', join(seq, '%06d.jpg'), ...(haveAudio ? ['-i', audio] : []), '-filter_complex', vf, '-map', '[v]', ...(haveAudio ? ['-map', '1:a', ...(finalMix ? [] : ['-af', 'alimiter=limit=0.66:attack=3:release=40:level=disabled']), '-c:a', 'aac', '-ar', '48000', '-b:a', '192k', '-shortest'] : []), '-r', String(FPS), '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-preset', 'medium', '-crf', String(CRF), '-maxrate', '14M', '-bufsize', '28M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
   console.log('wrote', mp4);
+  if (PREVIEW) { run('ffmpeg', ['-y', '-loglevel', 'error', '-i', mp4, '-vf', 'fps=2,scale=200:356,tile=9x4:padding=4:color=black', '-frames:v', '1', join(OUT, `preview-sheet-${v}.png`)]); console.log('contact sheet', join(OUT, `preview-sheet-${v}.png`)); }
 }
 
 // ---- deliver: the file names the Reel publish workflow and the site expect (ID.mp4, ID-cover.jpg, ID.json) ----

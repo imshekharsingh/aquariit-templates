@@ -13,7 +13,8 @@ if (!id) { console.error('usage: generate.mjs ID --provider elevenlabs | --from 
 const dir = audioDir(id), prompts = readJson(join(dir, 'prompts.json')), plans = readJson(join(dir, 'plans.json')), brief = readJson(join(dir, 'brief.json'));
 if (!prompts) { console.error('run brief.mjs first'); process.exit(2); }
 if (brief.problems?.length) { console.error('the brief has problems; fix them first:\n- ' + brief.problems.join('\n- ')); process.exit(2); }
-const provider = opt('--provider'), from = opt('--from');
+const from = opt('--from'), provider = opt('--provider') || (process.env.ELEVENLABS_API_KEY ? 'elevenlabs' : '');
+if (!provider && !from) { console.error('NO MUSIC SOURCE: no provider key is configured (add ELEVENLABS_API_KEY and MUSIC_LICENCE_NOTE as secrets) and no --from DIR was given. The film ships without a music bed.'); process.exit(3); }
 mkdirSync(dir, { recursive: true });
 
 if (from) {
