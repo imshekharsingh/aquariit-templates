@@ -67,35 +67,38 @@
     "id": "2026-10-13-1902",
     "date": "2026-10-13",
     "template": "Dantika Dental",
-    "concept": "After 8: a colour-scripted day-to-night-to-dawn story; the clinic building's windows are the appointment diary, they light up one by one as WhatsApp bookings arrive at night and sunrise turns them gold; dawn returns to frame 0, so the loop is the story",
-    "motionStyle": "layered parallax world (sky, stars, clouds, skyline, building, floating 3D phone, glass UI) on a 100 BPM grid; springy per-letter kinetic type with a variable width axis; scale punch on the sunrise impact",
-    "primaryTransition": "light transition (the sky itself grades golden hour -> dusk -> night -> dawn; no wipes)",
+    "concept": "After 8 (night-signal cut): the clinic's light-drawn facade goes dark at 8 pm; at 11:42 pm a patient's WhatsApp message lights a phone in the dark, the website answers, the camera pulls back to the system (hub -> slot / deposit / reminder) with data flowing, a scan bar turns the chat into Dantika's slot calendar, brackets lock Thursday 9:30, the phone flies into a night diary that fills, a held breath, sunrise turns the bookings gold, CTA, and the facade relights at 9 am (the loop)",
+    "motionStyle": "product-film grammar: one centred focal object per shot, springs, connector lines drawing on the beat with travelling data dots, counter-rotating hub rings, scan-bar transformation, corner-bracket focus with a small push-in, the phone flying into the next shot's element, scale punch on the sunrise",
+    "primaryTransition": "scan-bar transformation (a bar of light runs down the phone and turns the chat into the slot calendar)",
     "transitions": [
-      "neon flicker on the beat (OPEN dies at 8 pm, BOOKING OPEN 24x7 lights)",
-      "phone rises into the dusk and leaves upward",
-      "push into the building at night",
-      "breath dim then sunrise flare and light leak",
-      "OPEN flickers back on at 9 am into the loop"
+      "neon flicker: OPEN -> CLOSED at 8 pm",
+      "phone rises out of the dark",
+      "pull back to the system (phone shrinks to the top of the diagram)",
+      "scan-bar transformation",
+      "push-in with corner brackets",
+      "phone flies into its diary slot",
+      "breath dim -> sunrise flood",
+      "facade redraws, OPEN flickers on at 9 am"
     ],
-    "typeTreatment": "Archivo 900 uppercase per-letter entries, wdth 125 -> 74-90 on a damped spring; Geist Mono HUD clock and tally; glass toasts",
-    "grade": "colour script mixed in oklch: rose/peach/butter golden hour, violet/magenta/coral dusk, ink/cobalt/electric-indigo night, periwinkle/pink/peach dawn; warm amber window glow (srgb mix), lime neon accent",
-    "sound": "effects only at 100 BPM (word clicks, 8 pm impact, neon sparkle, message clicks, a click+tick per night booking, riser into the held breath, big impact on sunrise); music by Instagram audio near 100 BPM",
-    "cover": "night poster: lit building, moon, clock 11:42 PM and the hook in white type",
+    "typeTreatment": "captions as the spine: Archivo 800 wdth 84, -0.035em, 1-3 words per card on a solid dark pill at one fixed anchor (y 492), one accent word per card; mono HUD clock",
+    "grade": "near-black #050607 with one accent glow (Dantika lime #c8ff3d), material cards with light rims, the brand red only on the booked slot, warm sunrise (amber/coral/violet) only at the payoff",
+    "sound": "effects only at 100 BPM, every cue motivated: impact as the lights die, whoosh as the phone rises, clicks on the message and the reply, sub on the hub, clicks on each node, riser through the scan, impact on Booked, ticks on each diary fill, riser into the breath, big impact on sunrise; music by Instagram audio near 100 BPM",
+    "cover": "night poster: question in white with '8 pm?' in lime glow over the lit diary, inside the 1:1 and 3:4 crops",
     "variants": {
       "A": "type-first open on flat red (owner's choice for the format)"
     },
     "rubric": {
       "firstSecondStoppingPower": 8,
       "motionPolish": 8,
-      "typography": 8,
+      "typography": 9,
       "rhythmAndAudioSync": 8,
       "fidelityToTemplate": 8,
       "originalityVsLog": 9,
       "loopSeamlessness": 9,
       "safeZones": 9
     },
-    "revisionPasses": 4,
-    "notes": "v2 after owner feedback (v1 was a page pan in the page's own colours). Style-frame passes: 1) iframe of file:// had no contentDocument -> same-document clone; bookings lit at dawn (story backwards) -> re-timed into the night with glass toasts; hook collided with the sign; flat building -> side face, roof, tank, antenna, mullions; orange golden hour -> rose/butter; last frame did not match the first. 2) zoomed sign inside the IG top zone -> smaller push; toasts overlapped; home windows pink (oklch drift) -> srgb mix; sun hidden behind the building. 3) phone lingered at 9.2 s; impact punch added. 4) OPEN sign relights at 9 am and the clock fades so the loop matches.",
+    "revisionPasses": 3,
+    "notes": "v3 after the owner shared a reference reel: v2's rainbow colour script read as illustration, not product. Rebuilt in a product-film grammar (see design/film-playbook.md). Passes: 1) brackets hidden behind the CTA card and too small on the slot -> brackets live inside their parent, camera pushes into the slot; diary names clipped; sunrise hidden in Instagram's bottom zone -> raised and widened; hub label crossed the centre line; caption 'Slot.' before its node. 2) push-in ran over the captions -> 1.42x and a more solid pill. 3) the white HUD clock ghosted across the zoomed light screen -> hidden during the push; thicker brackets.",
     "music": {
       "brief": {
         "genre": "minimal nocturnal electronic",
@@ -111,6 +114,6 @@
       "provider": null,
       "feedback": null
     },
-    "version": 2
+    "version": 3
   }
 ]

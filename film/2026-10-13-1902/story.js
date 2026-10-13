@@ -1,224 +1,305 @@
-// Dantika Dental · "After 8" (v2). A colour script, not a page pan: the clinic's clock runs from golden hour through dusk into night and back to dawn.
-// The clinic building's windows are the appointment diary: at night they light up one by one as WhatsApp bookings arrive, and dawn turns them gold.
-// Dawn returns the colours of frame 0, so the loop IS the story (every evening the same thing happens again).
-// Built as a scene of layers (sky, sun, clouds, stars, skyline, the clinic, a floating phone showing the real page, glass message cards, kinetic type),
-// all drawn from film time. Offline rendering means real blur, glass and glow are allowed here (they are not allowed on the live page).
+// Dantika Dental · "After 8" (v3, the night-signal cut). Same story as v2 (the clinic closes at 8, booking does not), retold in a product-film grammar:
+// near-black ground, ONE accent glow (Dantika lime), material cards with light rims, skeleton UI instead of tiny real text, connector lines with travelling
+// data dots to show HOW it works, a scan-bar transformation, corner brackets on the focal element, and captions as the spine (1-3 words, one fixed anchor).
+// Colour script by contrast: warm lit facade -> lime-on-black night -> warm sunrise only at the payoff -> the lit facade again (the loop).
 (function () {
-  const E = window.FilmEngine, T = window.FILM_T, { clamp, lerp, ease, W, H } = E, $ = E.$, $$ = E.$$, S = (E.story = {});
+  const E = window.FilmEngine, T = window.FILM_T, { clamp, lerp, ease } = E, S = (E.story = {});
   S.selfStage = true;
-  const sm = (a, b, t) => ease.io3(clamp((t - a) / (b - a)));          // smooth 0..1 over [a,b]
+  const sm = (a, b, t) => ease.io3(clamp((t - a) / (b - a)));
   const css = (el, o) => { for (const k in o) el.style[k] = o[k]; };
+  const ACC = '#c8ff3d', INK = '#050607', TAU = Math.PI * 2;
+  const MAT = 'background:linear-gradient(160deg,#1e2225,#0b0d0f);box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 0 0 1px rgba(255,255,255,.09),0 14px 30px rgba(0,0,0,.5)';
+  const MONO = '"Geist Mono",ui-monospace,monospace';
+  const TOOTH = '<svg viewBox="0 0 14 18" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M4 1.5C1.8 1.5.8 3.4.8 5.4c0 2.8 1.2 4.1 1.6 7 .3 2.2.8 3.6 1.7 3.6 1 0 1.2-2.2 1.7-4.1.3-1 .5-1.3.9-1.3s.6.3.9 1.3c.5 1.9.7 4.1 1.7 4.1.9 0 1.4-1.4 1.7-3.6.4-2.9 1.6-4.2 1.6-7 0-2-1-3.9-3.2-3.9-1.4 0-1.9.9-2.7.9S5.4 1.5 4 1.5z"/></svg>';
 
-  // ---------- colour script: [top, mid, horizon] per key, mixed in oklch by the browser ----------
-  const SKY = {
-    gold: ['#f59ac0', '#ffc39c', '#fff1cf'],     // golden hour: rose top, peach, butter horizon (not the usual orange)
-    dusk: ['#3d2a92', '#c43b98', '#ff8a6b'],     // dusk: violet, magenta, coral glow
-    night: ['#030622', '#0b1d5c', '#2a2f8f'],    // night: ink, cobalt, electric indigo horizon
-    dawn: ['#3b4aa8', '#ff8fb0', '#ffd1a1'],     // dawn: periwinkle, pink, peach
-  };
-  // weights of each palette over time (sum 1)
-  function skyMix(t) {
-    const w = { gold: 0, dusk: 0, night: 0, dawn: 0 };
-    if (t < 2.4) w.gold = 1;
-    else if (t < 4.8) { const k = sm(2.4, 4.8, t); w.gold = 1 - k; w.dusk = k; }
-    else if (t < 7.2) { const k = sm(4.8, 7.2, t); w.dusk = 1 - k; w.night = k; }
-    else if (t < 12.6) w.night = 1;
-    else if (t < 14.4) { const k = sm(12.6, 14.4, t); w.night = 1 - k; w.dawn = k; }
-    else if (t < 17.9) { const k = sm(14.4, 17.9, t); w.dawn = 1 - k; w.gold = k; }
-    else w.gold = 1;
-    return w;
-  }
-  const mixColor = (w, i) => {                                         // nested color-mix in oklch of the 4 palettes for stop i
-    const parts = Object.entries(w).filter(([, v]) => v > 0.001);
-    if (parts.length === 1) return SKY[parts[0][0]][i];
-    const [[a, wa], [b, wb]] = parts; return `color-mix(in oklch, ${SKY[a][i]} ${(wa / (wa + wb) * 100).toFixed(2)}%, ${SKY[b][i]})`;
-  };
-  const nightness = (t) => { const w = skyMix(t); return w.night + w.dusk * .45; };
+  // the clock in the corner runs the night as a time-lapse
+  const CLOCK = [[2.4, 20 * 60], [3.0, 23 * 60 + 42], [5.4, 23 * 60 + 44], [10.2, 25 * 60 + 15], [11.7, 29 * 60 + 10], [12.0, 29 * 60 + 59], [12.6, 30 * 60], [15.6, 32 * 60 + 45], [17.4, 33 * 60], [18.1, 33 * 60]];
+  function clockAt(t) { let i = 0; while (i < CLOCK.length - 2 && t >= CLOCK[i + 1][0]) i++; const [t0, m0] = CLOCK[i], [t1, m1] = CLOCK[i + 1]; const m = Math.floor(lerp(m0, m1, clamp((t - t0) / (t1 - t0)))) % 1440; const h = Math.floor(m / 60), mm = m % 60; return `${((h + 11) % 12) + 1}:${String(mm).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`; }
 
-  // clock: 7:58 pm -> 8:00 at the cut -> 11:42 pm when the booking lands -> 5:59 in the breath -> 6:00 sunrise -> 9:00 am opening
-  const CLOCK = [[0, 19 * 60 + 58], [2.4, 20 * 60], [5.4, 23 * 60 + 42], [8.4, 24 * 60 + 60], [12.0, 24 * 60 + 5 * 60 + 59], [12.6, 24 * 60 + 6 * 60], [15.6, 24 * 60 + 8 * 60 + 30], [17.4, 24 * 60 + 9 * 60], [18, 24 * 60 + 9 * 60]];
-  function clockAt(t) { let i = 0; while (i < CLOCK.length - 2 && t >= CLOCK[i + 1][0]) i++; const [t0, m0] = CLOCK[i], [t1, m1] = CLOCK[i + 1]; const m = Math.floor(lerp(m0, m1, clamp((t - t0) / (t1 - t0)))) % (24 * 60); const h = Math.floor(m / 60), mm = m % 60, ap = h >= 12 ? 'PM' : 'AM', h12 = ((h + 11) % 12) + 1; return `${h12}:${String(mm).padStart(2, '0')} ${ap}`; }
+  // captions: [in, out, text, size, {word index: colour}] — one anchor (y = 492), narrow (<= 268 px), the eye rests there while the picture changes above
+  const CAPS = [
+    [-0.1, 1.15, 'Missing patients', 34], [1.15, 2.35, 'after 8 pm?', 34, { 1: ACC, 2: ACC }],
+    [2.6, 3.5, '11:42 pm.', 28], [3.5, 4.3, 'A patient asks.', 28], [4.35, 5.35, 'Your website answers.', 28, { 2: ACC }],
+    [5.45, 6.55, 'One system.', 28], [6.6, 7.2, 'Slot.', 30, { 0: ACC }], [7.2, 7.8, 'Deposit.', 30, { 0: ACC }], [7.8, 8.5, 'Reminder.', 30, { 0: ACC }],
+    [8.6, 9.55, 'Thursday, 9:30.', 28], [9.6, 10.4, 'Booked.', 32, { 0: ACC }],
+    [10.5, 11.2, 'While you sleep.', 28], [11.2, 11.95, 'Five patients.', 28, { 0: ACC }],
+    [13.0, 14.25, 'Booked before', 34], [14.25, 15.5, 'you even open.', 34, { 2: '#ffc56b' }],
+    [15.8, 16.95, 'Open 24×7 on WhatsApp', 26, { 1: ACC }],
+  ];
+  const SLOTS = [[0, 1, 'A. Rao'], [2, 0, 'S. Khan'], [1, 2, 'P. Iyer'], [3, 3, 'M. Das'], [4, 1, 'R. Jain']];   // [col, row, name]; the first one is the phone's Thursday 9:30
+  const slotC = (c, r) => ({ x: 49 + c * 62 + 28, y: 170 + r * 44 + 19 });
 
   S.setup = async function () {
     document.documentElement.classList.add('reel');
-    await new Promise((r) => setTimeout(r, 300));
+    await document.fonts.ready;
     E.stage(); E.cam.style.display = 'none';
-    E.stageEl.style.background = '#000';
-    const L = (E.scene = E.el('div', 'position:absolute;inset:0;overflow:hidden', E.stageEl)); E.stageEl.insertBefore(L, E.fx);
-    // sky + sun + clouds
-    E.sky = E.el('div', 'position:absolute;inset:-2px', L);
-    E.sun = E.el('div', 'position:absolute;left:0;top:0;width:260px;height:260px;margin:-130px 0 0 -130px;border-radius:50%;background:radial-gradient(circle,#fff6dc 0 18%,rgba(255,214,150,.85) 24%,rgba(255,170,110,.35) 45%,rgba(255,150,100,0) 70%)', L);
-    E.moon = E.el('div', 'position:absolute;left:300px;top:150px;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#ffffff,#dfe6ff 55%,#b9c4ff 70%);box-shadow:0 0 30px 10px rgba(170,190,255,.35),0 0 90px 30px rgba(120,140,255,.18)', L);
-    E.clouds = [[-40, 190, 260, 60, .55], [170, 250, 300, 70, .45], [40, 330, 220, 46, .35]].map(([x, y, w, h, o]) => { const c = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:50%;filter:blur(18px);opacity:${o}`, L); c.dataset.x = x; return c; });
-    // stars (deterministic): a canvas, 140 stars twinkling by film time
-    const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', L); cv.width = 804; cv.height = 1430; E.starCtx = cv.getContext('2d'); E.starCv = cv;
-    let s = 99991; const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
-    E.stars = Array.from({ length: 140 }, () => ({ x: rnd() * 804, y: rnd() * 900, r: .6 + rnd() * 1.9, p: rnd() * 6.28, f: 1.5 + rnd() * 3 }));
-    // skyline (far) and the clinic (near): SVG, coloured per frame
-    E.city = E.el('div', 'position:absolute;left:0;right:0;bottom:0;height:300px', L);
-    E.city.innerHTML = `<svg viewBox="0 0 402 300" width="402" height="300" preserveAspectRatio="none" aria-hidden="true"><path class="far" d="M0 300V150h28v-30h24v40h18v-62h30v52h22v-34h26v60h20v-90h34v80h16v-40h30v56h22v-70h28v50h20v-28h26v116z"/><path class="far2" d="M0 300V200h40v-20h40v30h50v-16h60v26h40v-36h50v30h60v-18h62v104z"/></svg>`;
-    // the clinic building: windows = the diary
-    const B = (E.bld = E.el('div', 'position:absolute;left:96px;bottom:0;width:210px;height:410px;transform-origin:50% 100%', L));
-    E.bldSide = E.el('div', 'position:absolute;left:100%;top:58px;bottom:0;width:26px;transform:skewY(-28deg);transform-origin:0 0', B);   // a side face: the building has depth
-    E.bldBody = E.el('div', 'position:absolute;inset:44px 0 0 0;border-radius:6px 6px 0 0', B);
-    E.roof = E.el('div', 'position:absolute;left:-8px;right:-8px;top:40px;height:8px;border-radius:2px', B);
-    E.tank = E.el('div', 'position:absolute;right:22px;top:14px;width:30px;height:26px;border-radius:4px 4px 0 0', B);
-    E.ant = E.el('div', 'position:absolute;left:30px;top:-14px;width:2px;height:54px', B); E.antDot = E.el('div', 'position:absolute;left:-2px;top:-3px;width:6px;height:6px;border-radius:50%;background:#ff3b5c', E.ant);
-    E.sign = E.el('div', 'position:absolute;left:0;right:0;top:-34px;height:40px;display:flex;align-items:center;justify-content:center;font:800 15px/1 Archivo,sans-serif;font-variation-settings:"wdth" 125;letter-spacing:.12em;white-space:nowrap', B, '');
-    E.signOpen = E.el('span', 'position:absolute;transition:none', E.sign, 'OPEN');
-    E.signBook = E.el('span', 'position:absolute;transition:none', E.sign, 'BOOKING OPEN 24×7');
-    E.wins = []; const grid = E.el('div', 'position:absolute;left:18px;right:18px;top:70px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px 12px', B);
-    for (let i = 0; i < 24; i++) { const w = E.el('div', 'height:34px;border-radius:3px;position:relative;overflow:hidden', grid); E.el('i', 'position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:rgba(0,0,0,.22)', w); E.el('i', 'position:absolute;left:0;right:0;top:46%;height:2px;background:rgba(0,0,0,.22)', w); E.el('i', 'position:absolute;left:-2px;right:-2px;bottom:-1px;height:3px;background:rgba(0,0,0,.28)', w); w.shine = E.el('i', 'position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.35),rgba(255,255,255,0) 45%)', w); E.wins.push(w); }
-    E.door = E.el('div', 'position:absolute;left:50%;bottom:0;width:46px;height:62px;margin-left:-23px;border-radius:4px 4px 0 0', B);
-    // which windows the night bookings light (and when), plus the ones lit by people at home (warm, random)
-    E.bookWin = [[9, 'A. Rao'], [14, 'S. Khan'], [6, 'P. Iyer'], [19, 'M. Das'], [11, 'R. Jain']];
-    // the phone: a generic device showing the real page in an iframe (no real-device silhouette)
-    const P = (E.phone = E.el('div', 'position:absolute;left:96px;top:236px;width:210px;height:430px;border-radius:34px;background:linear-gradient(160deg,#2a2f4a,#0c0e18 60%);padding:9px;box-shadow:0 30px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.25),inset 0 0 0 1.5px rgba(255,255,255,.08);transform-origin:50% 60%', L));
-    const scr = E.el('div', 'position:relative;width:192px;height:412px;border-radius:26px;overflow:hidden;background:#f6f5ef', P);
-    // the screen shows a frozen clone of the real page (same document, so the page's own CSS applies; clones carry no timers or observers)
-    scr.id = 'phoneScr';
-    const inner = (E.scrIn = E.el('div', 'position:absolute;left:0;top:0;width:402px;transform-origin:0 0', scr));
-    E.cam.querySelectorAll(':scope > header, :scope > main, :scope > .bar').forEach((n) => inner.appendChild(n.cloneNode(true)));
-    const st = E.el('style', null, document.head); st.textContent = '#phoneScr *,#phoneScr *::before,#phoneScr *::after{animation:none!important;transition:none!important} #phoneScr .rv{opacity:1!important;transform:none!important} #phoneScr .row{transform:none!important} #phoneScr header{position:relative!important}';
-    inner.querySelectorAll('.check path').forEach((p) => { p.style.strokeDashoffset = '0'; });
-    const red = inner.querySelector('.grid .s.new'); if (red) { red.className = 's'; red.textContent = '9:30'; } E.thu = [...inner.querySelectorAll('.grid .s')][3];
-    E.glare = E.el('div', 'position:absolute;inset:0;border-radius:26px;background:linear-gradient(115deg,rgba(255,255,255,.22) 0,rgba(255,255,255,0) 32%,rgba(255,255,255,0) 70%,rgba(255,255,255,.08));pointer-events:none', scr);
-    // glass message cards (real backdrop blur: allowed offline)
-    const glass = 'position:absolute;padding:11px 14px;border-radius:18px;background:linear-gradient(140deg,rgba(255,255,255,.34),rgba(255,255,255,.12));border:1px solid rgba(255,255,255,.45);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);box-shadow:0 18px 40px rgba(8,6,40,.35),inset 0 1px 0 rgba(255,255,255,.6);color:#fff;font:600 13.5px/1.3 Archivo,sans-serif';
-    E.b1 = E.el('div', glass + ';left:30px;top:142px;width:238px', L, 'Can I come Thursday morning? Tooth pain since evening.<div style="font:500 9.5px/1 Geist Mono,monospace;opacity:.8;margin-top:6px">11:42 PM</div>');
-    E.b2 = E.el('div', glass + ';left:118px;top:318px;width:222px;background:linear-gradient(140deg,rgba(214,255,70,.9),rgba(160,255,120,.72));color:#13210a;border-color:rgba(240,255,200,.9)', L, 'Booked ✓ Thu, 9:30 am<div style="font:500 9.5px/1.4 Geist Mono,monospace;margin-top:6px">₹200 held by UPI · reminder set</div>');
-    E.b3 = E.el('div', glass + ';left:30px;top:420px;display:flex;align-items:center;gap:8px;font-size:12.5px', L, '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 18s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10z"/><circle cx="10" cy="8" r="2.2"/></svg>Maps pin sent');
-    // night booking toasts: each booking lands as a glass notification under the clock while its window lights
-    E.toastNames = [['A. Rao', 'Thu 9:30 am'], ['S. Khan', 'Thu 11:00 am'], ['P. Iyer', 'Fri 10:30 am'], ['M. Das', 'Sat 9:00 am'], ['R. Jain', 'Sat 12:30 pm']];
-    E.toasts = E.toastNames.map(([n, d]) => E.el('div', glass + ';left:30px;top:222px;width:250px;display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:12.5px;opacity:0', L, `<span style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#d6ff46,#7dffb0);display:grid;place-items:center;color:#13210a;font:800 11px/1 Archivo,sans-serif">✓</span><span><b style="font-weight:800">${n}</b> booked<br><span style="font:500 9.5px/1.3 Geist Mono,monospace;opacity:.85">${d} · ₹200 held</span></span>`));
-    // HUD: the clock + tally
-    E.clock = E.el('div', 'position:absolute;left:30px;top:104px;font:500 13px/1 "Geist Mono",monospace;letter-spacing:.14em;color:#fff;text-shadow:0 0 12px rgba(255,255,255,.55)', L, '');
-    E.tally = E.el('div', 'position:absolute;left:30px;top:124px;font:500 10.5px/1.4 "Geist Mono",monospace;letter-spacing:.08em;color:#fff;opacity:.85;text-transform:uppercase', L, '');
-    // kinetic type layers
-    const kt = 'position:absolute;left:30px;width:350px;color:#fff;font:900 64px/.9 Archivo,sans-serif;text-transform:uppercase;white-space:nowrap';
-    E.k1 = E.el('div', kt + ';top:118px', L); E.k2 = E.el('div', kt + ';top:176px', L); E.k3 = E.el('div', kt + ';top:234px', L);
-    E.split = (el, text) => { el.innerHTML = ''; return [...text].map((ch) => E.el('span', 'display:inline-block;will-change:transform', el, ch === ' ' ? '&nbsp;' : ch)); };
-    E.h1 = E.split(E.k1, 'Missing'); E.h2 = E.split(E.k2, 'patients'); E.h3 = E.split(E.k3, 'after 8 pm?');
-    E.p1 = E.el('div', kt + ';top:118px;font-size:76px', L); E.p2 = E.el('div', kt + ';top:188px;font-size:44px', L); E.p3 = E.el('div', kt + ';top:230px;font-size:44px', L);
-    E.q1 = E.split(E.p1, 'Booked'); E.q2 = E.split(E.p2, 'before you'); E.q3 = E.split(E.p3, 'even open.');
-    // CTA glass
-    E.cta = E.el('div', glass + ';left:30px;top:300px;width:342px;padding:18px 20px;border-radius:24px;color:#22123a', L, '<div style="font:500 10px/1 Geist Mono,monospace;letter-spacing:.12em;text-transform:uppercase;opacity:.8">Dantika Dental · demo clinic</div><div style="font:900 30px/1 Archivo,sans-serif;font-variation-settings:\'wdth\' 78;margin-top:10px;text-transform:uppercase">Booking open 24×7<br>on WhatsApp</div><div style="font:500 11px/1.4 Geist Mono,monospace;margin-top:8px;opacity:.85">Pick a slot · ₹200 held by UPI · reminder the night before</div><div style="display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;border-radius:99px;background:#1b1242;color:#fff;font:800 12px/1 Archivo,sans-serif;letter-spacing:.06em;text-transform:uppercase">Send "Hi" to book</div>');
-    // light: sunrise flare + light leak (screen blend)
-    E.flare = E.el('div', 'position:absolute;inset:-20%;mix-blend-mode:screen;opacity:0;background:radial-gradient(40% 30% at 50% 78%,rgba(255,236,190,1),rgba(255,160,120,.55) 40%,rgba(255,120,160,0) 75%)', L);
-    E.leak = E.el('div', 'position:absolute;inset:0;mix-blend-mode:screen;opacity:0;background:linear-gradient(105deg,rgba(255,120,80,0) 20%,rgba(255,180,120,.9) 45%,rgba(255,90,160,.6) 60%,rgba(255,90,160,0) 80%)', L);
-    E.vig.style.background = 'radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(10,6,30,.65) 100%)';
+    [E.stageEl, document.body, document.documentElement].forEach((e) => { e.style.background = INK; });
+    const L = (E.scene = E.el('div', `position:absolute;inset:0;overflow:hidden;background:${INK}`, E.stageEl)); E.stageEl.insertBefore(L, E.fx);
+    E.el('div', 'position:absolute;inset:0;background:radial-gradient(70% 45% at 50% 40%,rgba(110,140,120,.13),rgba(0,0,0,0) 70%)', L);
+    // sunrise (behind everything else, only at the payoff)
+    E.sunr = E.el('div', 'position:absolute;left:-40%;right:-40%;top:0;height:100%;opacity:0;background:radial-gradient(60% 62% at 50% 86%,rgba(255,206,130,1),rgba(255,140,112,.78) 34%,rgba(160,70,150,.42) 60%,rgba(40,20,60,.2) 78%,rgba(0,0,0,0) 92%)', L);
+    E.rays = E.el('div', 'position:absolute;inset:-30%;opacity:0;mix-blend-mode:screen;background:repeating-conic-gradient(from 0deg at 50% 80%,rgba(255,214,150,.2) 0deg 3deg,rgba(255,214,150,0) 3deg 10deg);-webkit-mask-image:radial-gradient(65% 60% at 50% 80%,#000,transparent 75%);mask-image:radial-gradient(65% 60% at 50% 80%,#000,transparent 75%)', L);
+    // dust (canvas, periodic drift so the loop is seamless) + foreground bokeh (depth)
+    const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', L); cv.width = 804; cv.height = 1430; E.dctx = cv.getContext('2d');
+    let s = 4242; const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+    E.dust = Array.from({ length: 70 }, () => ({ x: rnd() * 804, y: rnd() * 1430, r: .6 + rnd() * 1.6, a: .12 + rnd() * .38, p: rnd() * TAU }));
+    E.bokeh = [[-70, 520, 190, 'rgba(200,255,61,.11)'], [300, 110, 150, 'rgba(255,255,255,.07)'], [250, 610, 170, 'rgba(255,190,120,.10)']].map(([x, y, d, c]) => E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${d}px;height:${d}px;border-radius:50%;background:radial-gradient(circle,${c},rgba(0,0,0,0) 70%);filter:blur(10px)`, L));
+
+    const world = (E.world = E.el('div', 'position:absolute;inset:0;transform-origin:50% 45%', L));
+
+    // ---- A. the clinic facade, drawn in light; lit windows + OPEN neon (evening), dark + CLOSED (night), lit again at 9 am (the loop)
+    E.fac = E.el('div', 'position:absolute;left:51px;top:140px;width:300px;height:290px;transform-origin:50% 60%', world);
+    E.facGlow = E.el('div', 'position:absolute;left:20px;top:150px;width:260px;height:150px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,196,120,.32),rgba(0,0,0,0));filter:blur(8px)', E.fac);
+    E.el('div', 'position:absolute;left:0;top:250px;width:300px;height:1px', E.fac).style.background = 'linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.5),rgba(255,255,255,0))';
+    const svg = E.el('div', 'position:absolute;inset:0', E.fac);
+    svg.innerHTML = `<svg viewBox="0 0 300 260" width="300" height="260" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect class="w" x="62" y="146" width="48" height="58" rx="3"/><rect class="w" x="190" y="146" width="48" height="58" rx="3"/><rect class="w" x="124" y="168" width="52" height="82" rx="3"/>
+      <g stroke="rgba(236,242,238,.66)" stroke-width="1.5">
+        <path d="M40 250V76H260V250"/><path d="M30 76H270M36 64H264V76"/><path d="M54 134H246L236 120H64Z"/>
+        <rect x="62" y="146" width="48" height="58" rx="3"/><rect x="190" y="146" width="48" height="58" rx="3"/><path d="M86 146V204M62 175H110M214 146V204M190 175H238"/>
+        <rect x="124" y="168" width="52" height="82" rx="3"/><path d="M150 168V250M144 212h-3M156 212h3"/>
+        <path d="M232 120V100M226 94h12" stroke-width="1.2"/><circle cx="232" cy="90" r="4"/>
+      </g></svg>`;
+    E.facWins = [...svg.querySelectorAll('.w')];
+    E.sign = E.el('div', `position:absolute;left:84px;top:84px;width:132px;height:30px;border-radius:7px;box-sizing:border-box;border:1.5px solid;display:flex;align-items:center;justify-content:center;gap:7px;font:800 14px/1 Archivo,sans-serif;letter-spacing:.26em;padding-left:.26em`, E.fac, `${TOOTH}<span>OPEN</span>`);
+    E.signTxt = E.sign.querySelector('span');
+
+    // ---- B. the phone: a dark device in the dark, its screen the only light
+    E.halo = E.el('div', 'position:absolute;left:61px;top:90px;width:280px;height:380px;border-radius:50%;background:radial-gradient(closest-side,rgba(200,255,61,.16),rgba(0,0,0,0));filter:blur(14px)', world);
+    E.ph = E.el('div', 'position:absolute;left:111px;top:104px;width:180px;height:352px;border-radius:30px;padding:7px;box-sizing:border-box;background:linear-gradient(160deg,#272b2f,#0a0b0c 55%,#16191b);box-shadow:0 0 0 1px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.18),0 30px 60px rgba(0,0,0,.6);transform-origin:50% 50%', world);
+    const scr = (E.scr = E.el('div', 'position:relative;width:100%;height:100%;border-radius:23px;overflow:hidden;background:#0c0e10', E.ph));
+    const hd = E.el('div', 'position:absolute;left:0;right:0;top:0;height:46px;background:#14171a;border-bottom:1px solid rgba(255,255,255,.06)', scr);
+    E.el('div', `position:absolute;left:12px;top:12px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#14200a;background:linear-gradient(135deg,${ACC},#7dffb0)`, hd, TOOTH);
+    E.el('div', 'position:absolute;left:44px;top:13px;color:#f2f4f2;font:700 10.5px/1 Archivo,sans-serif', hd, 'Dantika Dental');
+    E.el('div', `position:absolute;left:44px;top:28px;color:${ACC};font:500 8px/1 ${MONO};letter-spacing:.06em`, hd, 'replies 24×7');
+    E.el('div', 'position:absolute;left:10px;top:60px;width:96px;height:22px;border-radius:11px;background:#1c2024', scr);
+    E.el('div', 'position:absolute;right:10px;top:90px;width:78px;height:22px;border-radius:11px;background:#1c2024', scr);
+    E.msg = E.el('div', 'position:absolute;left:10px;top:126px;width:126px;box-sizing:border-box;padding:8px 10px;border-radius:14px 14px 14px 4px;background:#eef1ee;color:#101214;font:600 11px/1.3 Archivo,sans-serif;transform-origin:0 100%', scr, `Hi! Can I come Thursday morning? Tooth pain since evening.<div style="font:500 7.5px/1 ${MONO};opacity:.55;margin-top:5px">11:42 PM</div>`);
+    E.typing = E.el('div', 'position:absolute;right:10px;top:212px;width:44px;height:22px;border-radius:11px;background:#1c2024;display:flex;align-items:center;justify-content:center;gap:4px', scr);
+    E.dots = [0, 1, 2].map(() => E.el('i', 'width:5px;height:5px;border-radius:50%;background:#9aa19c', E.typing));
+    E.rep = E.el('div', `position:absolute;right:10px;top:206px;width:134px;box-sizing:border-box;padding:8px 10px;border-radius:14px 14px 4px 14px;background:${ACC};color:#11180a;font:700 11px/1.3 Archivo,sans-serif;transform-origin:100% 100%`, scr, `Thu 9:30 am is free ✓<br>Hold it with ₹200 by UPI?<div style="font:500 7.5px/1 ${MONO};opacity:.6;margin-top:5px">auto-reply · 11:42 PM</div>`);
+    // the scan result: Dantika's own slot calendar (cream, black chips, the brand red), revealed under the scan bar
+    E.cal = E.el('div', 'position:absolute;inset:0;background:#f6f5ef;color:#121212', scr);
+    E.el('div', 'position:absolute;left:12px;top:14px;display:flex;align-items:center;gap:5px;font:800 9px/1 Archivo,sans-serif;letter-spacing:.16em', E.cal, '<i style="width:8px;height:8px;background:#e3262f"></i>DANTIKA');
+    E.el('div', 'position:absolute;left:12px;top:34px;font:900 18px/.98 Archivo,sans-serif;font-variation-settings:"wdth" 78;text-transform:uppercase', E.cal, 'Open 9 to 8.<br><span style="color:#e3262f">Booking open</span><br>all night.');
+    E.el('div', `position:absolute;left:12px;top:100px;font:500 7.5px/1 ${MONO};letter-spacing:.12em;opacity:.6`, E.cal, 'THIS WEEK · SLOTS');
+    const cg = E.el('div', 'position:absolute;left:10px;top:114px;width:146px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px', E.cal);
+    ['MON', 'TUE', 'WED', 'THU'].forEach((d) => E.el('div', `font:500 7px/1 ${MONO};letter-spacing:.08em;text-align:center;opacity:.55`, cg, d));
+    const times = [['9:00', '10:00', '9:00', '9:00'], ['11:30', '12:00', '11:00', '9:30'], ['4:30', '5:00', '6:30', '11:00']];
+    times.forEach((row, r) => row.forEach((tm, c) => { const chip = E.el('div', `height:22px;border-radius:5px;display:grid;place-items:center;font:600 8.5px/1 ${MONO};background:#121212;color:#f6f5ef`, cg, tm); if (r === 1 && c === 3) { E.thu = chip; css(chip, { background: 'transparent', color: '#121212', boxShadow: 'inset 0 0 0 1.5px #121212' }); } }));
+    E.bookedStrip = E.el('div', `position:absolute;left:10px;right:10px;top:212px;padding:8px 9px;border-radius:7px;background:#eaff3b;font:700 9.5px/1.3 Archivo,sans-serif`, E.cal, `Booked: Thu, 9:30 am<div style="font:500 7.5px/1.2 ${MONO};opacity:.7;margin-top:3px">₹200 held · reminder Wed 8 pm</div>`);
+    E.el('div', `position:absolute;left:12px;right:12px;top:268px;font:500 8.5px/1.45 Archivo,sans-serif;opacity:.7`, E.cal, 'A calm neighbourhood clinic. Pick a slot on WhatsApp at any hour; we confirm, remind and keep the chair ready.');
+    E.scan = E.el('div', `position:absolute;left:94px;width:214px;top:0;height:2px;border-radius:2px;background:#fff;box-shadow:0 0 10px 3px rgba(255,255,255,.75),0 0 30px 10px rgba(200,255,61,.45);opacity:0`, world);
+    E.scanWash = E.el('div', 'position:absolute;left:0;right:0;height:40px;background:linear-gradient(180deg,rgba(200,255,61,0),rgba(200,255,61,.28));pointer-events:none', scr);
+
+    // ---- C. the system: the phone (mini) -> the booking hub -> slot / deposit / reminder
+    const P = (E.paths = E.el('div', 'position:absolute;inset:0', world));
+    P.innerHTML = `<svg viewBox="0 0 402 715" width="402" height="715" fill="none" aria-hidden="true" style="overflow:visible;filter:drop-shadow(0 0 4px rgba(200,255,61,.55))">
+      <path id="pl" d="M201 226 L201 245" pathLength="1"/>
+      <path id="n1" d="M188 334 C170 362 100 350 91 374" pathLength="1"/><path id="n2" d="M201 337 L201 374" pathLength="1"/><path id="n3" d="M214 334 C232 362 302 350 311 374" pathLength="1"/>
+      <circle id="d0" r="2.6" fill="#fff"/><circle id="d1" r="2.6" fill="#fff"/><circle id="d2" r="2.6" fill="#fff"/><circle id="d3" r="2.6" fill="#fff"/></svg>`;
+    E.lines = ['pl', 'n1', 'n2', 'n3'].map((id) => { const p = P.querySelector('#' + id); css(p, { stroke: 'rgba(200,255,61,.75)', strokeWidth: '1.4', strokeDasharray: '1', strokeDashoffset: '1' }); return p; });
+    E.ldots = [0, 1, 2, 3].map((i) => P.querySelector('#d' + i));
+    E.hub = E.el('div', 'position:absolute;left:153px;top:242px;width:96px;height:96px', world);
+    E.hubRings = E.el('div', 'position:absolute;inset:0', E.hub, `<svg viewBox="0 0 96 96" width="96" height="96" fill="none" aria-hidden="true"><circle class="r1" cx="48" cy="48" r="45" stroke="rgba(255,255,255,.22)" stroke-width="1.2" stroke-dasharray="70 30 40 143" style="transform-origin:48px 48px"/><circle class="r2" cx="48" cy="48" r="37" stroke="${ACC}" stroke-opacity=".7" stroke-width="1.6" stroke-dasharray="44 20 90 78" style="transform-origin:48px 48px"/></svg>`);
+    E.r1 = E.hubRings.querySelector('.r1'); E.r2 = E.hubRings.querySelector('.r2');
+    E.el('div', `position:absolute;left:22px;top:22px;width:52px;height:52px;border-radius:50%;${MAT}`, E.hub);
+    E.core = E.el('div', `position:absolute;left:34px;top:34px;width:28px;height:28px;border-radius:50%;background:radial-gradient(circle,#fff 0 28%,${ACC} 46%,rgba(200,255,61,0) 72%);box-shadow:0 0 22px 6px rgba(200,255,61,.45)`, E.hub);
+    E.hubLab = E.el('div', `position:absolute;left:258px;width:80px;top:280px;text-align:left;line-height:1.5;font:500 9px/1 ${MONO};letter-spacing:.14em;color:rgba(255,255,255,.55)`, world, 'DANTIKA<br>BOOKING');
+    const ICONS = [
+      '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 15l2.5 2.5L16 13"/>',
+      '<circle cx="12" cy="12" r="9"/><path d="M8.5 8h7M8.5 11h7M8.5 8c4 0 4 6 0 6l5 4"/>',
+      '<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+    ];
+    E.nodes = [[91, 'Thu 9:30'], [201, '₹200 held'], [311, 'Reminder']].map(([x, lab], i) => {
+      const n = E.el('div', `position:absolute;left:${x - 26}px;top:374px;width:52px;height:52px;border-radius:15px;${MAT};display:grid;place-items:center;color:#eef1ee`, world, `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[i]}</svg>`);
+      n.lab = E.el('div', `position:absolute;left:${x - 50}px;width:100px;top:434px;text-align:center;font:500 9.5px/1 ${MONO};letter-spacing:.06em;color:rgba(255,255,255,.75)`, world, lab);
+      return n;
+    });
+
+    // ---- D. corner brackets (selection) with a glowing dot, re-used on the slot and on the CTA button
+    E.mkBrk = (parent) => { const b = E.el('div', 'position:absolute;left:0;top:0;width:0;height:0;opacity:0;z-index:5', parent);
+      b.c = [0, 1, 2, 3].map((i) => E.el('i', `position:absolute;width:12px;height:12px;border-color:${ACC};border-style:solid;border-width:${i < 2 ? '2.5px' : '0'} ${i % 2 ? '2.5px' : '0'} ${i >= 2 ? '2.5px' : '0'} ${i % 2 ? '0' : '2.5px'};filter:drop-shadow(0 0 3px rgba(200,255,61,.8))`, b));
+      b.dot = E.el('i', 'position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(200,255,61,.45),0 0 14px 4px rgba(200,255,61,.6)', b); return b; };
+
+    // ---- E. the night diary (skeleton slots; bookings light them)
+    E.diary = E.el('div', 'position:absolute;left:49px;top:150px;width:304px', world);
+    ['THU', 'FRI', 'SAT', 'MON', 'TUE'].forEach((d, i) => E.el('div', `position:absolute;left:${i * 62}px;top:0;width:56px;text-align:center;font:500 8.5px/1 ${MONO};letter-spacing:.14em;color:rgba(255,255,255,.45)`, E.diary, d));
+    const rowsT = ['9:00', '9:30', '10:30', '11:00'];
+    E.slots = {};
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++) {
+      const sl = E.el('div', `position:absolute;left:${c * 62}px;top:${20 + r * 44}px;width:56px;height:38px;border-radius:9px;${MAT};overflow:hidden`, E.diary);
+      sl.t = E.el('div', `position:absolute;left:0;right:0;top:14px;text-align:center;font:500 8.5px/1 ${MONO};color:rgba(255,255,255,.3)`, sl, rowsT[r]);
+      sl.n = E.el('div', `position:absolute;left:0;right:0;top:8px;text-align:center;color:#11180a;opacity:0;font:800 10px/1.15 Archivo,sans-serif`, sl, '');
+      E.slots[c + ',' + r] = sl;
+    }
+    SLOTS.forEach(([c, r, nm]) => { E.slots[c + ',' + r].n.innerHTML = `${nm}<div style="font:500 8px/1 ${MONO};opacity:.7;margin-top:3px">${rowsT[r]}</div>`; });
+    E.count = E.el('div', `position:absolute;left:0;right:0;top:376px;text-align:center;font:500 10px/1 ${MONO};letter-spacing:.12em;color:rgba(255,255,255,.7);text-transform:uppercase`, world, '');
+
+    // ---- F. the CTA card (morning)
+    E.cta = E.el('div', `position:absolute;left:41px;top:150px;width:320px;box-sizing:border-box;padding:20px 22px;border-radius:24px;${MAT};color:#f2f4f2`, world,
+      `<div style="font:500 9px/1 ${MONO};letter-spacing:.16em;opacity:.65">DANTIKA DENTAL · DEMO CLINIC</div>
+       <div style="font:900 30px/.98 Archivo,sans-serif;font-variation-settings:'wdth' 78;text-transform:uppercase;margin-top:12px">Booking open<br><span style="color:${ACC}">24×7</span> on WhatsApp</div>
+       <div style="font:500 10px/1.45 ${MONO};opacity:.75;margin-top:10px">Pick a slot · ₹200 held by UPI<br>Reminder the night before</div>
+       <div class="btn" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:11px 16px;border-radius:99px;background:${ACC};color:#11180a;font:800 12px/1 Archivo,sans-serif;letter-spacing:.05em;text-transform:uppercase">Send “Hi” to book <span aria-hidden="true">→</span></div>`);
+    E.ctaRim = E.el('div', `position:absolute;left:41px;top:150px;width:320px;border-radius:24px;pointer-events:none;box-shadow:0 0 0 1px rgba(200,255,61,.55),0 0 34px rgba(200,255,61,.25)`, world);
+
+    E.brkPh = E.mkBrk(E.ph); E.brkCta = E.mkBrk(E.cta);
+    // ---- HUD: the clock (outside the world: it does not shake on the impact)
+    E.hud = E.el('div', `position:absolute;left:30px;top:104px;display:flex;align-items:center;gap:7px;font:500 11px/1 ${MONO};letter-spacing:.14em;color:rgba(255,255,255,.8)`, L, `<i style="width:6px;height:6px;border-radius:50%;background:${ACC};box-shadow:0 0 8px ${ACC}"></i><span></span>`);
+    E.hudT = E.hud.querySelector('span'); E.hudDot = E.hud.querySelector('i');
+
+    // ---- captions
+    E.capWrap = E.el('div', 'position:absolute;left:0;right:0;top:492px;height:0', L);
+    E.caps = CAPS.map(([a, b, text, size, acc = {}]) => {
+      const card = E.el('div', `position:absolute;left:201px;top:0;transform:translate(-50%,-50%);white-space:nowrap;padding:6px 13px 8px;border-radius:12px;background:rgba(10,12,14,.82);box-shadow:0 0 0 1px rgba(255,255,255,.07),0 8px 24px rgba(0,0,0,.35);color:#fff;font:800 ${size}px/1.05 Archivo,sans-serif;font-variation-settings:"wdth" 84;letter-spacing:-.035em`, E.capWrap);
+      const words = text.split(' ').map((w, i) => {
+        const m = E.el('span', 'display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 .02em .1em;margin:0 0 -.1em', card);
+        const inner = E.el('span', `display:inline-block;${acc[i] ? `color:${acc[i]}` : ''}`, m, w);
+        if (i) card.insertBefore(document.createTextNode(' '), m);
+        return inner;
+      });
+      if (card.offsetWidth > 280) card.style.fontSize = (size * 280 / card.offsetWidth).toFixed(1) + 'px';   // keep captions narrow: clear of Instagram's button column
+      return { a, b, card, words };
+    });
+
+    // measure targets for the brackets (nothing is transformed yet)
+    const wr = (el) => { const r = el.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; };
+    const rel = (el, par) => { const a = wr(el), b = wr(par); return { x: a.x - b.x, y: a.y - b.y, w: a.w, h: a.h }; };
+    E.thuR = rel(E.thu, E.ph); E.btnR = rel(E.cta.querySelector('.btn'), E.cta); E.thuAbs = wr(E.thu);
     return { ok: true };
   };
 
-  // per-letter kinetic entry: width axis stretches from 125 (wide) to its target while the letter springs up; exit flies up and fades
-  function letters(arr, t, at, out, { wFrom = 125, wTo = 74, stag = .03, dy = 50 } = {}) {
-    arr.forEach((l, i) => {
-      const u = clamp((t - at - i * stag) / .55), v = out == null ? 0 : clamp((t - out - i * .02) / .35);
-      const k = ease.spring(u), o = clamp(u * 3) * (1 - ease.in2(v));
-      l.style.transform = `translateY(${((1 - k) * dy - ease.in2(v) * 60).toFixed(1)}px)`;
-      l.style.opacity = o.toFixed(3);
-      l.style.fontVariationSettings = `"wdth" ${lerp(wFrom, wTo, ease.out3(u)).toFixed(1)}`;
-    });
+  // place the brackets around a box; k (0..1) snaps them in from 14 px outside
+  function brackets(b, box, k, o) {
+    const d = (1 - k) * 14 + 5, { x, y, w, h } = box;
+    [[x - d, y - d], [x + w + d - 12, y - d], [x - d, y + h + d - 12], [x + w + d - 12, y + h + d - 12]].forEach(([px, py], i) => css(b.c[i], { transform: `translate(${px.toFixed(1)}px,${py.toFixed(1)}px)` }));
+    css(b.dot, { transform: `translate(${(x + w + d - 3.5).toFixed(1)}px,${(y - d - 3.5).toFixed(1)}px)` });
+    b.style.opacity = o.toFixed(3);
   }
 
   S.update = function (E, t) {
-    const tf = E.frame / 30, w = skyMix(t), night = nightness(t);
-    // ---- camera (scene-level): a slow drift, a pull into the building for the night diary, a small kick on the peak
-    const zoomB = 1 + .3 * sm(8.4, 9.6, t) - .3 * sm(12.6, 14.0, t);
-    const camY = -6 * Math.sin(t * .5) + (-60 * sm(8.4, 9.6, t) + 60 * sm(12.6, 14.0, t));
-    // ---- sky
-    E.sky.style.background = `linear-gradient(in oklch 180deg, ${mixColor(w, 0)} 0%, ${mixColor(w, 1)} 55%, ${mixColor(w, 2)} 100%)`;
-    const sunY = 372 + 300 * sm(0, 4.6, t) - 300 * sm(12.0, 15.6, t);
-    css(E.sun, { transform: `translate(62px,${(sunY + camY * .2).toFixed(1)}px)`, opacity: String(clamp(1 - night * 1.2)) });
-    css(E.moon, { opacity: String(clamp((w.night - .2) * 1.4)), transform: `translateY(${(camY * .1).toFixed(1)}px)` });
-    E.clouds.forEach((c, i) => { const dx = 46 * Math.sin(2 * Math.PI * t / 18) * (1 + i * .4); c.style.transform = `translate(${dx.toFixed(1)}px,${(camY * (.15 + i * .05)).toFixed(1)}px)`; c.style.background = `color-mix(in oklch, ${mixColor(w, 2)} 60%, ${night > .5 ? '#3a3080' : '#fff3e0'})`; });
-    // stars
-    const g = E.starCtx; g.clearRect(0, 0, 804, 1430); const so = clamp((night - .35) * 1.6);
-    if (so > 0) for (const s of E.stars) { g.globalAlpha = so * (.45 + .55 * (.5 + .5 * Math.sin(s.p + tf * s.f))); g.fillStyle = '#fff'; g.beginPath(); g.arc(s.x, s.y + camY * .2, s.r, 0, 6.283); g.fill(); }
-    // skyline + clinic colours follow the light
-    const ink = `color-mix(in oklch, ${night > .5 ? '#0a0a26' : '#4a2346'} ${(60 + 40 * night).toFixed(0)}%, ${mixColor(w, 1)})`;
-    E.city.querySelector('.far').setAttribute('fill', `color-mix(in oklch, ${mixColor(w, 1)} 55%, ${night > .5 ? '#151446' : '#7a3a5a'})`);
-    E.city.querySelector('.far2').setAttribute('fill', `color-mix(in oklch, ${mixColor(w, 1)} 30%, ${night > .5 ? '#0c0c30' : '#5a2a4a'})`);
-    E.city.style.transform = `translateY(${(camY * .35).toFixed(1)}px)`;
-    E.bldBody.style.background = `linear-gradient(180deg, color-mix(in oklch, ${ink} 85%, #ffffff), ${ink})`;
-    E.bldSide.style.background = `color-mix(in oklch, ${ink} 70%, #000)`; E.roof.style.background = `color-mix(in oklch, ${ink} 80%, #fff)`;
-    E.tank.style.background = `color-mix(in oklch, ${ink} 75%, #fff)`; E.ant.style.background = `color-mix(in oklch, ${ink} 70%, #fff)`;
-    E.antDot.style.opacity = night > .4 ? String(Math.floor(tf * 1.25) % 2 ? .25 : 1) : '.6'; E.antDot.style.boxShadow = night > .4 ? '0 0 10px 3px rgba(255,60,90,.6)' : 'none';
-    E.door.style.background = night > .6 ? '#ffcf7a' : 'color-mix(in oklch, #ffd9a0 50%, transparent)';
-    E.door.style.boxShadow = night > .6 ? '0 0 24px 6px rgba(255,200,110,.45)' : 'none';
-    const bldY = 34 * (1 - sm(2.4, 3.4, t)) + 34 * sm(17.0, 18.0, t) + 20 * sm(8.4, 9.6, t) - 20 * sm(12.6, 14.0, t) - 6 * Math.sin(t * .5) * .6;   // sits low under the hook, settles, rises back into the loop
-    E.bld.style.transform = `translateY(${bldY.toFixed(1)}px) scale(${zoomB.toFixed(4)})`;
-    // windows: dusk -> a few homes lit; night -> the 5 bookings light up on the beats; dawn -> all lit windows turn gold then fade into day
-    const lit = new Set([2, 17, 22]), reset = sm(16.8, 17.7, t);       // reset: booked windows hand back to daylight so the last frame matches frame 0
-    E.wins.forEach((win, i) => {
-      const bk = E.bookWin.findIndex(([n]) => n === i), at = bk >= 0 ? T.fills[bk] : null;
-      let on = 0, gold = sm(12.6, 13.4, t);
-      if (at != null) on = sm(at, at + .25, t) * (1 - reset); else if (lit.has(i)) on = clamp(night * 1.2) * .8;
-      const day = 1 - clamp(night * 1.5);
-      const base = `color-mix(in srgb, #1a1840 ${(70 * (1 - day)).toFixed(0)}%, color-mix(in oklch, ${mixColor(w, 2)} 60%, #ffffff))`;
-      const warm = at == null ? '#c98a3e' : gold > 0 ? `color-mix(in oklch, #ffe066 ${(gold * 100).toFixed(0)}%, #ffb257)` : '#ffb257';
-      win.style.background = on > .02 ? `color-mix(in srgb, ${warm} ${(on * 100).toFixed(0)}%, ${base})` : base;
-      win.style.boxShadow = on > .02 ? `0 0 ${(14 * on).toFixed(1)}px ${(3 * on).toFixed(1)}px rgba(255,180,90,${(.55 * on).toFixed(2)})` : 'none';
-      win.style.transform = at != null && t >= at ? `scale(${lerp(.7, 1, ease.spring(clamp((t - at) / .4))).toFixed(3)})` : 'none';
+    const tf = E.frame / 30, ph = TAU * t / 18;
+    // ---- ambient: dust + bokeh (periodic over 18 s)
+    const g = E.dctx; g.clearRect(0, 0, 804, 1430); g.fillStyle = '#fff';
+    for (const d of E.dust) { g.globalAlpha = d.a * (.6 + .4 * Math.sin(d.p + tf * 1.3)); g.beginPath(); g.arc(d.x + 10 * Math.sin(ph + d.p), d.y + 16 * Math.sin(ph * 2 + d.p * 1.7), d.r, 0, TAU); g.fill(); }
+    E.bokeh.forEach((b, i) => { b.style.transform = `translate(${(14 * Math.sin(ph + i * 2)).toFixed(1)}px,${(10 * Math.cos(ph + i)).toFixed(1)}px)`; });
+    E.bokeh[2].style.opacity = String(.25 + .75 * sm(12.6, 13.6, t) * (1 - sm(16.8, 17.8, t)));
+
+    // ---- world: slow breathing push, the breath dims everything, the sunrise lands as a punch
+    const punch = t >= T.peak ? Math.exp(-(t - T.peak) * 5) * .04 : 0, drift = .012 * Math.sin(ph);
+    const dim = t >= 11.95 && t < 12.6 ? sm(11.95, 12.2, t) * (1 - sm(12.45, 12.6, t)) : 0;
+    css(E.world, { transform: `scale(${(1 + drift + punch).toFixed(4)})`, filter: dim > .01 ? `brightness(${(1 - .7 * dim).toFixed(3)})` : 'none' });
+    E.vig.style.opacity = (.45 + .4 * dim).toFixed(3);
+
+    // ---- A. facade: lights on in the evening, out at 8 pm (2.4), on again at 9 am (17.45)
+    const flick = (t0, len) => { if (t < t0) return 0; const u = (t - t0) / len; if (u >= 1) return 1; return Math.sin(u * 47) * Math.sin(u * 13) > 0 ? 1 : .1; };
+    const lit = t < 2.4 ? 1 : t < 17.45 ? 1 - flick(2.4, .32) : flick(17.45, .35);
+    const facIn = 1 - sm(2.45, 2.85, t), facBack = sm(17.0, 17.5, t), fo = Math.max(facIn, facBack);
+    css(E.fac, { opacity: fo.toFixed(3), transform: `scale(${(t < 9 ? 1 - .08 * sm(2.45, 2.85, t) : 1.06 - .06 * facBack).toFixed(4)})`, filter: fo < .98 ? `blur(${((1 - fo) * 3).toFixed(2)}px)` : 'none' });
+    E.facWins.forEach((w, i) => { w.setAttribute('fill', lit > .5 ? (i === 2 ? 'rgba(255,214,150,.30)' : 'rgba(255,214,150,.42)') : 'rgba(255,255,255,.03)'); });
+    E.facGlow.style.opacity = String(lit > .5 ? 1 : 0);
+    css(E.sign, lit > .5 ? { color: ACC, borderColor: ACC, textShadow: '0 0 6px rgba(200,255,61,.9),0 0 18px rgba(200,255,61,.6)', boxShadow: '0 0 14px rgba(200,255,61,.45),inset 0 0 10px rgba(200,255,61,.25)', filter: `brightness(${(1 + .08 * Math.sin(tf * 3)).toFixed(3)})` }
+      : { color: 'rgba(255,255,255,.3)', borderColor: 'rgba(255,255,255,.22)', textShadow: 'none', boxShadow: 'none', filter: 'none' });
+    E.signTxt.textContent = lit > .5 ? 'OPEN' : 'CLOSED';
+
+    // ---- B. phone: rises at 2.4, message 3.0, typing, auto-reply 4.2, shrinks to the top of the system 5.4-6.0, returns 8.4-9.0, scan, flies into the diary 10.2-10.5
+    const pin = ease.spring(clamp((t - 2.45) / .7)), mini = sm(5.4, 6.0, t) * (1 - sm(8.4, 9.0, t)), fly = sm(10.15, 10.5, t);
+    const tc = { x: slotC(0, 1).x - 201, y: slotC(0, 1).y - 280 };
+    const zk = sm(9.25, 9.75, t) * (1 - sm(9.95, 10.15, t)), zs = 1 + .42 * zk, rel = { x: E.thuAbs.x + E.thuAbs.w / 2 - 201, y: E.thuAbs.y + E.thuAbs.h / 2 - 280 };   // push into Thursday 9:30
+    const px = fly * tc.x - zk * (zs * rel.x), py = (1 - pin) * 90 - 120 * mini + fly * tc.y + zk * (-30 - zs * rel.y), psc = lerp(.9, 1, pin) * lerp(1, .36, mini) * lerp(1, .2, fly) * zs;
+    const pop = t < 2.45 ? 0 : clamp((t - 2.45) / .25) * (1 - sm(10.4, 10.5, t));
+    css(E.ph, { opacity: pop.toFixed(3), transform: `translate(${px.toFixed(1)}px,${py.toFixed(1)}px) scale(${psc.toFixed(4)})` });
+    css(E.halo, { opacity: (pop * (1 - mini) * (1 - fly)).toFixed(3), transform: `translateY(${py.toFixed(1)}px)` });
+    const mIn = ease.spring(clamp((t - 3.0) / .45)), rIn = ease.spring(clamp((t - 4.2) / .45));
+    css(E.msg, { opacity: clamp((t - 3.0) / .12).toFixed(3), transform: `translateY(${((1 - mIn) * 14).toFixed(1)}px) scale(${lerp(.6, 1, mIn).toFixed(3)})` });
+    E.typing.style.opacity = t >= 3.5 && t < 4.2 ? '1' : '0';
+    E.dots.forEach((d, i) => { d.style.transform = `translateY(${(-2.5 * Math.max(0, Math.sin(tf * 9 - i * .9))).toFixed(1)}px)`; });
+    css(E.rep, { opacity: clamp((t - 4.2) / .12).toFixed(3), transform: `translateY(${((1 - rIn) * 14).toFixed(1)}px) scale(${lerp(.6, 1, rIn).toFixed(3)})` });
+    // scan 9.0-9.6: a bar of light runs down the screen; the chat turns into the clinic's slot calendar above it
+    const su = clamp((t - 9.0) / .6), sy = 111 + ease.io3(su) * 338;
+    E.cal.style.clipPath = t < 9.0 ? 'inset(0 0 100% 0)' : `inset(0 0 ${((1 - ease.io3(su)) * 100).toFixed(2)}% 0)`;
+    css(E.scan, { opacity: (t >= 8.95 && t < 9.75 ? clamp((t - 8.95) / .08) * (1 - clamp((t - 9.6) / .15)) : 0).toFixed(3), transform: `translateY(${sy.toFixed(1)}px)` });
+    css(E.scanWash, { top: `${(ease.io3(su) * 338 - 40).toFixed(1)}px`, opacity: (t >= 9.0 && t < 9.7 ? 1 - clamp((t - 9.55) / .15) : 0).toFixed(3) });
+    const booked = t >= 9.6;
+    css(E.thu, booked ? { background: '#e3262f', color: '#fff', boxShadow: '0 0 12px rgba(227,38,47,.6)' } : { background: 'transparent', color: '#121212', boxShadow: 'inset 0 0 0 1.5px #121212' });
+    E.bookedStrip.style.opacity = clamp((t - 9.9) / .15).toFixed(3);
+    E.bookedStrip.style.transform = `translateY(${((1 - ease.spring(clamp((t - 9.9) / .45))) * 10).toFixed(1)}px)`;
+
+    // ---- C. the system (6.0-8.4): lines draw, the hub lights, three nodes on the beats, data dots run
+    const sysO = sm(5.6, 6.0, t) * (1 - sm(8.4, 8.8, t));
+    const draw = [[5.7, 6.0], [6.3, 6.6], [6.9, 7.2], [7.5, 7.8]];
+    E.lines.forEach((p, i) => { p.style.strokeDashoffset = (1 - sm(draw[i][0], draw[i][1], t)).toFixed(4); p.style.opacity = sysO.toFixed(3); });
+    E.ldots.forEach((d, i) => {
+      const p = E.lines[i], st = draw[i][1]; if (t < st || sysO < .02) { d.setAttribute('opacity', '0'); return; }
+      const u = ((t - st) / (i ? .9 : .6)) % 1, L = p.getTotalLength(), pt = p.getPointAtLength(L * u);   // data flows phone -> hub -> nodes
+      d.setAttribute('cx', pt.x.toFixed(1)); d.setAttribute('cy', pt.y.toFixed(1)); d.setAttribute('opacity', (sysO * Math.sin(Math.PI * u)).toFixed(3));
     });
-    // the neon sign: OPEN (coral) flickers off at 8:00, BOOKING OPEN 24×7 (lime) flickers on at dusk; off at full daylight
-    // 9:00 am: OPEN flickers back on at 17.2, so the last frame is the same sign as frame 0
-    const flick = (t0, len) => { if (t < t0) return 0; const u = (t - t0) / len; if (u >= 1) return 1; const f = Math.sin(u * 47) * Math.sin(u * 13); return u < .7 ? (f > 0 ? 1 : .15) : 1; };
-    const openOn = t < 2.4 ? 1 : t >= 17.2 ? flick(17.2, .4) : 1 - flick(2.4, .4), bookOn = flick(3.6, .6) * (1 - sm(16.2, 17.6, t));
-    const neon = (c, a) => `0 0 4px ${c}, 0 0 12px ${c}, 0 0 28px ${c}, 0 0 54px ${c}`.replace(/\)/g, ')') ;
-    css(E.signOpen, { color: openOn > .5 ? '#fff1ea' : '#7a4a50', textShadow: openOn > .5 ? neon('rgba(255,110,90,.95)') : 'none', opacity: String(t > 4.4 && t < 17.4 ? 0 : 1) });
-    css(E.signBook, { color: bookOn > .5 ? '#f6ffd6' : 'rgba(200,220,150,.25)', textShadow: bookOn > .5 ? neon('rgba(200,255,60,.95)') : 'none', opacity: String(t >= 3.6 && t < 17.6 ? 1 : 0), fontSize: '11px' });
-    // ---- the phone: rises at dusk, floats through the booking, exits as the camera goes to the building
-    const pin = ease.spring(clamp((t - 2.9) / .9)), pout = sm(8.2, 8.9, t);
-    const bob = Math.sin(t * 1.6) * 5, ry = -14 + 10 * sm(3.0, 6.0, t) + 8 * pout, rx = 8 - 6 * sm(3.0, 6.0, t);
-    const py = lerp(560, 0, pin) + bob - pout * 620;
-    css(E.phone, { transform: `perspective(900px) translate(${(30 * pout).toFixed(1)}px,${py.toFixed(1)}px) rotateY(${ry.toFixed(2)}deg) rotateX(${rx.toFixed(2)}deg) rotateZ(${(-3 + 3 * sm(3, 6, t)).toFixed(2)}deg)`, opacity: String(t < 2.6 ? 0 : 1 - sm(8.5, 8.9, t)) });
-    E.scrIn.style.transform = `scale(.4776) translateY(${-Math.round(lerp(0, 230, sm(6.3, 7.4, t)))}px)`;
-    if (E.thu) { const r = t >= 6.6; E.thu.style.background = r ? '#e3262f' : ''; E.thu.style.borderColor = r ? '#e3262f' : ''; E.thu.style.color = r ? '#fff' : ''; }
-    E.glare.style.transform = `translateX(${(-40 + 80 * sm(3, 8, t)).toFixed(1)}px)`;
-    // glass cards pop on the beats, drift in depth, leave with the phone
-    const pop = (el, at, x0 = 0) => { const u = clamp((t - at) / .55), k = ease.spring(u), o = clamp(u * 3) * (1 - sm(8.1, 8.6, t)); css(el, { opacity: o.toFixed(3), transform: `translate(${((1 - k) * x0 + Math.sin(t * 1.3 + at) * 3).toFixed(1)}px,${((1 - k) * 24 - sm(8.1, 8.6, t) * 80).toFixed(1)}px) scale(${lerp(.86, 1, k).toFixed(3)})` }); };
-    pop(E.b1, 5.4, -30); pop(E.b2, 6.6, 30); pop(E.b3, 7.2, -30);
-    // ---- night toasts: newest slides in at the top, older ones step down and fade (max 3 visible)
-    E.toasts.forEach((el, i) => {
-      const at = T.fills[i], u = clamp((t - at) / .5), k = ease.spring(u);
-      const later = T.fills.filter((f, j) => j > i && t >= f).length, slot = T.fills.slice(i + 1).reduce((a, f) => a + ease.out3(clamp((t - f) / .35)), 0);
-      const o = clamp(u * 3) * clamp(1 - Math.max(0, slot - 2)) * (1 - sm(11.9, 12.3, t));
-      css(el, { opacity: o.toFixed(3), transform: `translate(${((1 - k) * -40).toFixed(1)}px,${(slot * 58).toFixed(1)}px) scale(${(lerp(.9, 1, k) * (1 - slot * .04)).toFixed(3)})` }); void later;
+    const hk = ease.spring(clamp((t - 6.0) / .55));
+    css(E.hub, { opacity: (sysO * clamp((t - 5.95) / .1)).toFixed(3), transform: `scale(${lerp(.5, 1, hk).toFixed(3)})` });
+    E.r1.style.transform = `rotate(${(t * 40).toFixed(1)}deg)`; E.r2.style.transform = `rotate(${(-t * 65).toFixed(1)}deg)`;
+    E.core.style.transform = `scale(${(1 + .12 * Math.sin(tf * 4)).toFixed(3)})`;
+    E.hubLab.style.opacity = (sysO * clamp((t - 6.2) / .2)).toFixed(3);
+    [6.6, 7.2, 7.8].forEach((at, i) => {
+      const n = E.nodes[i], k = ease.spring(clamp((t - at) / .5)), o = sysO * clamp((t - at) / .1), on = t >= at;
+      css(n, { opacity: o.toFixed(3), transform: `translateY(${((1 - k) * 16).toFixed(1)}px) scale(${lerp(.7, 1, k).toFixed(3)})`, color: on ? ACC : '#eef1ee', boxShadow: on ? `inset 0 1px 0 rgba(255,255,255,.09),0 0 0 1px rgba(200,255,61,.6),0 0 22px rgba(200,255,61,.3)` : '' });
+      n.lab.style.opacity = (o * clamp((t - at - .1) / .2)).toFixed(3);
     });
-    // ---- HUD
-    E.clock.textContent = t >= 2.4 ? clockAt(t) : '';
-    E.clock.style.opacity = String(t < 2.4 || t > 17.75 ? 0 : t > 17.4 ? 1 - sm(17.4, 17.75, t) : (t >= 12.0 && t < 12.6 ? (Math.floor(t * 4) % 2 ? .25 : 1) : 1));
-    const n = E.bookWin.filter((_, i) => tf >= T.fills[i]).length;
-    E.tally.textContent = t >= T.fills[0] - .1 && t < 12.9 ? `${n} booked while closed` : '';
-    // ---- kinetic type: the hook (golden hour), the answer (dawn)
-    letters(E.h1, t, -.15, 2.25); letters(E.h2, t, .45, 2.3); letters(E.h3, t, 1.05, 2.35, { wFrom: 125, wTo: 82 });
-    E.k3.style.color = '#fff'; E.k3.style.fontSize = '50px';
-    letters(E.q1, t, T.answer[0], 17.1, { wFrom: 125, wTo: 70, dy: 70 }); letters(E.q2, t, T.answer[1], 17.15, { wFrom: 125, wTo: 90 }); letters(E.q3, t, T.answer[2], 17.2, { wFrom: 125, wTo: 90 });
-    const glow = '0 2px 0 rgba(80,20,40,.18), 0 0 30px rgba(255,240,220,.45)';
-    [E.k1, E.k2, E.k3].forEach((k) => { k.style.textShadow = glow; });
-    [E.p1, E.p2, E.p3].forEach((k) => { k.style.textShadow = '0 0 26px rgba(255,220,180,.6)'; k.style.color = '#fff'; });
-    // ---- CTA (morning)
-    const cu = clamp((t - T.cta) / .6), ck = ease.spring(cu);
-    css(E.cta, { opacity: (clamp(cu * 3) * (1 - sm(17.3, 17.8, t))).toFixed(3), transform: `translateY(${((1 - ck) * 40).toFixed(1)}px)` });
-    // ---- light: sunrise flare on the peak, a light leak across the cut to dawn, breath = everything dims
-    E.flare.style.opacity = (sm(12.55, 12.8, t) * (1 - sm(13.2, 14.6, t)) * .95).toFixed(3);
-    E.leak.style.opacity = (Math.sin(Math.PI * clamp((t - 12.5) / .9)) * .85).toFixed(3);
-    E.leak.style.transform = `translateX(${lerp(-200, 260, clamp((t - 12.5) / .9)).toFixed(1)}px)`;
-    const dim = t >= 11.9 && t < 12.6 ? sm(11.9, 12.2, t) * (1 - sm(12.45, 12.6, t)) : 0;
-    E.vig.style.opacity = (.35 + .5 * dim).toFixed(3);
-    E.scene.style.filter = dim > .01 ? `brightness(${(1 - .45 * dim).toFixed(3)}) saturate(${(1 - .3 * dim).toFixed(3)})` : 'none';
-    const kick = t >= T.peak ? Math.exp(-(t - T.peak) * 5) * .035 : 0;   // the sunrise lands like a hit: a short scale punch that settles
-    E.scene.style.transform = kick > .0005 ? `scale(${(1 + kick).toFixed(4)})` : 'none';
+
+    // ---- D. brackets: snap onto Thursday 9:30 (9.3-9.6), later onto the CTA button (16.1)
+    brackets(E.brkPh, E.thuR, ease.spring(clamp((t - 9.6) / .45)), t >= 9.55 && t < 10.2 ? clamp((t - 9.55) / .08) * (1 - sm(10.0, 10.15, t)) : 0);
+    brackets(E.brkCta, E.btnR, ease.spring(clamp((t - 16.2) / .45)), t >= 16.15 && t < 17.0 ? clamp((t - 16.15) / .08) : 0);
+
+    // ---- E. diary (10.2-15.5): the phone lands in Thursday 9:30, four more bookings on the eighth notes, sunrise turns them gold
+    const dO = sm(10.15, 10.5, t) * (1 - sm(15.3, 15.7, t));
+    css(E.diary, { opacity: dO.toFixed(3), transform: `translateY(${((1 - sm(10.15, 10.5, t)) * 18 - 30 * sm(15.3, 15.7, t)).toFixed(1)}px)` });
+    const gold = sm(12.6, 13.1, t);
+    let n = 0;
+    SLOTS.forEach(([c, r], i) => {
+      const sl = E.slots[c + ',' + r], at = T.fills[i], on = sm(at, at + .12, t), k = ease.spring(clamp((t - at) / .4));
+      if (tf >= at) n++;
+      sl.style.background = on > .02 ? (gold > .02 ? `linear-gradient(160deg, color-mix(in srgb, #ffe08a ${(gold * 100).toFixed(0)}%, ${ACC}), color-mix(in srgb, #ffae55 ${(gold * 100).toFixed(0)}%, #9fdc2a))` : `linear-gradient(160deg,${ACC},#9fdc2a)`) : '';
+      sl.style.boxShadow = on > .02 ? `0 0 ${(20 * on).toFixed(1)}px ${gold > .5 ? 'rgba(255,190,100,.55)' : 'rgba(200,255,61,.45)'},inset 0 1px 0 rgba(255,255,255,.5)` : '';
+      sl.style.transform = on > .02 ? `scale(${lerp(.8, 1, k).toFixed(3)})` : 'none';
+      sl.n.style.opacity = on.toFixed(3); sl.t.style.opacity = (1 - on).toFixed(3);
+    });
+    E.count.innerHTML = `<b style="font:900 15px/1 Archivo,sans-serif;color:${gold > .5 ? '#ffc56b' : ACC};letter-spacing:0">${n}</b>&nbsp; booked while closed`;
+    E.count.style.opacity = (dO * clamp((t - 10.45) / .1)).toFixed(3);
+
+    // ---- G. sunrise (12.6-17.8)
+    const sun = sm(12.5, 13.4, t) * (1 - sm(16.6, 17.6, t));
+    css(E.sunr, { opacity: sun.toFixed(3), transform: `translateY(${((1 - sm(12.5, 13.6, t)) * 260).toFixed(1)}px)` });
+    css(E.rays, { opacity: (sun * .9).toFixed(3), transform: `rotate(${(t * 1.5).toFixed(2)}deg)` });
+
+    // ---- F. CTA (15.6-17.1)
+    const ck = ease.spring(clamp((t - 15.6) / .55)), co = clamp((t - 15.6) / .15) * (1 - sm(16.85, 17.15, t));
+    css(E.cta, { opacity: co.toFixed(3), transform: `translateY(${((1 - ck) * 26).toFixed(1)}px) scale(${lerp(.94, 1, ck).toFixed(3)})` });
+    css(E.ctaRim, { height: E.cta.offsetHeight + 'px', opacity: (co * (.6 + .4 * Math.sin(tf * 2.4))).toFixed(3), transform: E.cta.style.transform });
+
+    // ---- HUD clock (2.4-17.6)
+    E.hudT.textContent = clockAt(t);
+    const blink = t >= 12.0 && t < 12.6 ? (Math.floor(t * 5) % 2 ? .3 : 1) : 1;
+    E.hud.style.opacity = (sm(2.4, 2.7, t) * (1 - sm(17.3, 17.6, t)) * blink * (1 - sm(9.2, 9.4, t) * (1 - sm(10.0, 10.2, t)))).toFixed(3);   // hides while the phone fills the frame
+    E.hudDot.style.opacity = (.55 + .45 * Math.sin(tf * 4)).toFixed(3);
+
+    // ---- captions: words rise out of a mask on a spring, the card leaves quickly
+    E.caps.forEach(({ a, b, card, words }) => {
+      if (t < a - .05 || t > b + .02) { card.style.opacity = '0'; return; }
+      const out = clamp((t - (b - .12)) / .12);
+      card.style.opacity = (clamp((t - a) / .08 + (a < 0 ? 1 : 0)) * (1 - out)).toFixed(3);
+      card.style.transform = `translate(-50%,calc(-50% - ${(out * 6).toFixed(1)}px))`;
+      words.forEach((w, i) => { const k = ease.spring(clamp((t - a - i * .07) / .42)); w.style.transform = `translateY(${((1 - k) * 105).toFixed(1)}%)`; });
+    });
     E.field.style.opacity = 0;
   };
 
-  // the cover: golden-to-night split poster with the lit building and the question
+  // the cover: the lit night diary under the question (title inside the 1:1 and 3:4 crops), a quiet clock above
   S.cover = function () {
-    S.update(E, 10.9); E.frame = 7;
-    E.tally.textContent = ''; E.clock.textContent = '11:42 PM';
-    const t = E.el('div', 'position:absolute;left:30px;top:150px;width:342px;color:#fff;font:900 58px/.92 Archivo,sans-serif;font-variation-settings:"wdth" 76;text-transform:uppercase;text-shadow:0 0 30px rgba(180,190,255,.55)', E.scene, 'Missing<br>patients<br>after 8 pm?');
-    void t;
+    S.update(E, 11.9); E.frame = 7;
+    E.caps.forEach(({ card }) => { card.style.opacity = '0'; });
+    css(E.diary, { transform: 'translateY(182px)', opacity: '1' }); E.count.style.opacity = '0';
+    E.hudT.textContent = '11:42 PM · CLINIC CLOSED'; css(E.hud, { opacity: '1', top: '170px' });
+    E.el('div', `position:absolute;left:30px;top:192px;width:342px;color:#fff;font:900 44px/.92 Archivo,sans-serif;font-variation-settings:"wdth" 80;letter-spacing:-.02em;text-transform:uppercase`, E.scene, `Missing patients after <span style="color:${ACC};text-shadow:0 0 24px rgba(200,255,61,.5)">8 pm?</span>`);
   };
   S.cues = () => T.cues;
 })();

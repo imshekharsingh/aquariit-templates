@@ -14,13 +14,12 @@
 - 15.6-18 s **resolve**: resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart
 
 ## Hit points
-- 2.4 s downbeat: 8:00 pm, OPEN sign dies
-- 3.6 s downbeat: BOOKING OPEN 24x7 neon lights
-- 6.6 s downbeat: booking confirmed, Thu slot turns red
-- 9 s downbeat: first night window lights
-- 12.6 s impact: peak: sunrise turns the booked windows gold
+- 2.4 s downbeat: 8:00 pm, the OPEN neon dies
+- 6 s downbeat: pull back: the booking hub lights
+- 9.6 s impact: scan done, Thursday 9:30 booked
+- 12.6 s impact: peak: sunrise turns the night bookings gold
 - 15.6 s downbeat: CTA
-- 18 s downbeat: loop to golden hour
+- 18 s downbeat: loop to the lit facade
 - Breath (silence) 12-12.45 s; peak 12.6 s
 
 ## Interpretations (3 candidates)
