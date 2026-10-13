@@ -25,7 +25,7 @@ console.log(`## 🎬 ${k.name} — your reel is rendered
 2. In Instagram: **Reel** → pick the video. This reel starts on the moving page on purpose (no title card), so set the cover yourself: **Edit cover → Add from camera roll** and choose the cover image (kit page → **Save cover image**).
 3. **Add audio** from Instagram's library. Search: ${list(m.search) || '—'}${m.mood ? `  \n   Mood: ${m.mood}${m.genre ? ' · ' + m.genre : ''}${m.bpm ? ' · ' + m.bpm + ' BPM' : ''}.` : ''}  
    Use the volume mixer to turn the video's own (generated) music down or off.
-4. Paste the caption below, then **Share**.
+4. Paste the caption + keywords below, then **Share**.
 5. Tick **Reel uploaded** in the app so it is never posted twice.
 
 > **Experiment E1 · format B:** about 18 s, the hook shows on screen for the first 3 seconds, no static intro. Post it as it is (no extra text of your own on top). The results are compared with the first five reels (design/experiments.md).
@@ -33,16 +33,16 @@ console.log(`## 🎬 ${k.name} — your reel is rendered
 ### Hook (already on the video; use it as the first line of your thinking, not extra text)
 > ${k.hook}
 
-### Caption + hashtags (copy all)
+### Caption + keywords (copy all)
 \`\`\`text
 ${k.caption}
 
-${(k.hashtags || []).join(' ')}
+${(k.keywords || []).slice(0, 6).join(' · ')}
 \`\`\`
 
-<details><summary>More hashtags to rotate · keywords · payoff</summary>
+<details><summary>Optional hashtags · all keywords · payoff</summary>
 
-**Rotate in on other posts (never all at once):** ${(k.alternates || []).join(' ')}
+**Hashtags (optional, 1-2 at most; Instagram's limit is 5):** ${(k.hashtags || []).join(' ')}  ·  more: ${(k.alternates || []).join(' ')}
 
 **Keywords:** ${(k.keywords || []).join(', ')}
 

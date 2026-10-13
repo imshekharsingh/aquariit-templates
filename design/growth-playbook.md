@@ -5,6 +5,7 @@ Update this file whenever an experiment (design/experiments.md) settles somethin
 
 ## Goal and audience
 The account is a shop window for Aquarii Technologies (web design and build). Success = enquiries from business owners and founders, with followers as the means.
+The market is India and the studio is brand new: see design/market.md (₹ prices a beginner can really quote, no invented results, concepts for Indian small businesses).
 So each reel is written for the **buyer**: a small-business owner or founder asking a money / time / results question ("What should a website cost?",
 "Where is your website losing money?"). Designers and developers are a bonus audience, not the target.
 
@@ -18,8 +19,8 @@ So each reel is written for the **buyer**: a small-business owner or founder ask
 1. Moves from frame 0. No static title card, no logo intro.
 2. Hook on screen in the first 3 s: a question of at most 8 words that the ending answers. Never promise what the video does not show.
 3. About 18 s. Payoff (the answer) in the last 4 s. Cut anything that does not serve the hook.
-4. Caption: first line = what it is, in the words a buyer would search; last line asks for a send ("Send this to a founder who...").
-5. Exactly 5 hashtags (2 broad, 2 niche, 1 topic), rotate the alternates. Cover = the cover card image, set in Instagram, not part of the video.
+4. Caption: first line = what it is, in the words a buyer would search; last line asks for a send ("Send this to a founder who..."); then one keyword line (the pasted text is caption + keywords).
+5. Hashtags are optional now (at most 1-2); keywords in the caption do the searching. Cover = the cover card image, set in Instagram, not part of the video.
 6. One idea per reel, one next step (the CTA the template ends on).
 
 ## Operating rhythm
