@@ -120,7 +120,7 @@
     "id": "2026-10-12-0850",
     "date": "2026-10-13",
     "template": "Gojigo",
-    "version": 3,
+    "version": 4,
     "concept": "24 minutes: steam-coloured dots assemble into a giant red 24; whip to the menu, one tap (spotlight), the stopwatch starts; zoom through the order bar into the kitchen (steps rail: folded, steamed, packed); whip to the city, a route draws to the door; a held breath at 23:59; DELIVERED slams with a burst; 24:00 in giant type; the order button gets tapped; the dots scatter back (loop)",
     "motionStyle": "whips with motion blur and a zoom-through, bare uppercase captions, giant numerals, particle assemble/scatter",
     "primaryTransition": "zoom-through the order bar",
@@ -145,7 +145,7 @@
       "safeZones": 8
     },
     "revisionPasses": 3,
-    "notes": "v3 because v2 reused Dantika's building blocks (phone, hub, brackets, warm flood, card); this cut changes opener, transitions, mechanism, focus, payoff, type, captions, CTA and ground (manifest + check). Pass 1: the spotlight blacked out the whole phone -> lighter, wider circle; empty half second after the zoom -> steps start at 5.25; the giant 24:00 collided with the 'Still hot.' caption -> giant leaves at 14.05. Pass 2: full-size check of the tap, kitchen and payoff frames. Pass 3: full render contact sheet (exits at 3.5/4.5 s and the 15.5 s fade read as motion, not dead air). Music: 100 BPM grid kept (brief flags the repeat; the owner picks Instagram audio, genre differs).",
+    "notes": "v3 because v2 reused Dantika's building blocks (phone, hub, brackets, warm flood, card); this cut changes opener, transitions, mechanism, focus, payoff, type, captions, CTA and ground (manifest + check). Pass 1: the spotlight blacked out the whole phone -> lighter, wider circle; empty half second after the zoom -> steps start at 5.25; the giant 24:00 collided with the 'Still hot.' caption -> giant leaves at 14.05. Pass 2: full-size check of the tap, kitchen and payoff frames. Pass 3: full render contact sheet (exits at 3.5/4.5 s and the 15.5 s fade read as motion, not dead air). Music: 100 BPM grid kept (brief flags the repeat; the owner picks Instagram audio, genre differs). v4 (owner: watermark + use the space): Aquarii Web Studio watermark on every frame; phone 290 px wide running off the bottom, 24 fills the width, kitchen steps at 34 px with a ghost '09' bleeding off the right, the city map edge to edge, a long route, 88 px end type and a full-width button. Fill meter: 15 of 20 frames tight -> 8 of 20 (transitions and the breath). Found and fixed a bug: the mono font name broke every inline style that used it (the DELIVERED sub-line rendered huge).",
     "friendTest": {
       "stopScrolling": "yes: dots pulling into a huge red 24 is odd enough to stop on",
       "watchToEnd": "yes: the stopwatch is a countdown, you want to see 24:00",

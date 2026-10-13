@@ -43,7 +43,7 @@
     // ---- stage ----
     const { world } = P.scene({ accent: A });
     // the phone shows a frozen clone of the real page (same document, so its CSS applies)
-    const ph = (E.ph = P.phone(world, {}));
+    const ph = (E.ph = P.phone(world, { x: 111, y: 104, w: 180, h: 352 }));   // the starter keeps a small phone so its pull-back fits; a real film should go big (fill the frame)
     const scrIn = (E.scrIn = E.el('div', 'position:absolute;left:0;top:0;width:402px;transform-origin:0 0', ph.screen));
     [...E.cam.children].filter((n) => /^(HEADER|MAIN|NAV)$/.test(n.tagName) || n.classList.contains('bar')).forEach((n) => scrIn.appendChild(n.cloneNode(true)));
     ph.screen.id = 'phScr';

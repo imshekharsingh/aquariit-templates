@@ -85,6 +85,7 @@ Reel format B is the current experiment (design/experiments.md): the reel is ren
    `film/ID/timing.json`: 100 BPM grid by default (a beat every 0.6 s), effects `cues` that each match something on screen.
 4. **Look and fix (2-3 passes):** `node scripts/film/render-film.mjs ID --variant A --stills t1,t2,...` at every cut + first, breath, peak, last frame; contact sheet in time order
    (`ls still-A-*.png | sort -t- -k3 -g`). Answer the friend test (CLAUDE.md) honestly; check text against Instagram's zones and for collisions or dead air; fix and look again.
+   Run `node scripts/film/fill-meter.mjs <stills dir>`: no more than a third of the frames TIGHT (make subjects bigger, bleed off an edge, fill the ground).
    Rendering a still also writes film/ID/manifest.json; `npm run check` must pass (variety rules). Then `--cover` and check the crops.
 5. reel-log.json: concept, motionStyle, primaryTransition, typeTreatment, grade, sound, cover, `friendTest` (the four answers), revisionPasses, notes (what each pass fixed),
    and the new trick added. Stage film/ID/ (with manifest.json), the parts.js change and reel-log.json with the template.
