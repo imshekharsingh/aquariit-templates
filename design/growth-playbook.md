@@ -5,7 +5,7 @@ Update this file whenever an experiment (design/experiments.md) settles somethin
 
 ## Goal and audience
 The account is a shop window for Aquarii Technologies (web design and build). Success = enquiries from business owners and founders, with followers as the means.
-The market is India and the studio is brand new: see design/market.md (₹ prices a beginner can really quote, no invented results, concepts for Indian small businesses).
+Audience is people's choice (owner, 13 Oct 2026): no fixed market; follow what the numbers and comments show (design/market.md). Never present invented results as Aquarii's own.
 So each reel is written for the **buyer**: a small-business owner or founder asking a money / time / results question ("What should a website cost?",
 "Where is your website losing money?"). Designers and developers are a bonus audience, not the target.
 
