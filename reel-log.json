@@ -4,7 +4,9 @@
     "date": "2026-10-06 .. 2026-10-12",
     "concept": "screen recording of the template scrolling in the 9:16 player (5 reels), static title card first",
     "motionStyle": "auto-scroll with pauses at each section",
-    "transitions": ["none (continuous scroll)"],
+    "transitions": [
+      "none (continuous scroll)"
+    ],
     "typeTreatment": "the template's own type, no added type",
     "grade": "none",
     "sound": "generated music bed from the player (mood-matched), no sound design",
@@ -17,7 +19,9 @@
     "date": "2026-10-12 .. 2026-10-13",
     "concept": "screen recording, no intro card, on-screen hook pill for 3 s, 18 s (experiment E1)",
     "motionStyle": "auto-scroll with pauses",
-    "transitions": ["none (continuous scroll)"],
+    "transitions": [
+      "none (continuous scroll)"
+    ],
     "typeTreatment": "hook pill in system font",
     "grade": "none",
     "sound": "generated music bed",
@@ -32,7 +36,13 @@
     "concept": "The Hue Dial: one turn of a colour dial drives every swatch; the last turn lands on tangerine, last frame = first frame",
     "motionStyle": "virtual camera over the live page (macro push, pull-back, whips, 3D tilt, speed-ramped spin), springs on type, hard cuts on downbeats",
     "primaryTransition": "match cut on colour (tangerine swatch -> tangerine dial read-out)",
-    "transitions": ["match cut on colour", "whip with vertical motion blur", "hard cut on downbeat", "iris wipe from the CTA (loop seam)", "focus pull"],
+    "transitions": [
+      "match cut on colour",
+      "whip with vertical motion blur",
+      "hard cut on downbeat",
+      "iris wipe from the CTA (loop seam)",
+      "focus pull"
+    ],
     "typeTreatment": "template type system (Gabarito 900 / Martian Mono), per-word mask reveals locked to the beat, max 6 words per card",
     "grade": "template colours kept true; grain, vignette that closes in the breath, highlight bloom, contrast 1.04 / saturation 1.05",
     "sound": "120 BPM E-minor pentatonic: kick/hat/clap, plucked bass, marimba arp, one rising bell note per dial tick, J-cut whooshes, riser and impact, 0.8 s of silence before the reveal",
@@ -41,7 +51,64 @@
       "A": "typographic open: hook words slam on flat tangerine on the beats, hard cut to the page on beat 3 (hypothesis: type-first is the stronger stopper for cold viewers)",
       "B": "macro open: tangerine swatch fills the frame and pulls back to the hook (hypothesis: a surprising image beats text for scroll-stopping)"
     },
-    "rubric": { "firstSecondStoppingPower": 8, "motionPolish": 8, "typography": 8, "rhythmAndAudioSync": 8, "fidelityToTemplate": 9, "originalityVsLog": 9, "loopSeamlessness": 9, "safeZones": 8 },
+    "rubric": {
+      "firstSecondStoppingPower": 8,
+      "motionPolish": 8,
+      "typography": 8,
+      "rhythmAndAudioSync": 8,
+      "fidelityToTemplate": 9,
+      "originalityVsLog": 9,
+      "loopSeamlessness": 9,
+      "safeZones": 8
+    },
     "revisionPasses": 3
+  },
+  {
+    "id": "2026-10-13-1902",
+    "date": "2026-10-13",
+    "template": "Dantika Dental",
+    "concept": "The Night Shift: a Swiss-precise time-lapse from day to night; the clinic closes, booking doesn't, and the night diary fills on the beats",
+    "motionStyle": "hard cuts and short eased whips on a 100 BPM grid, no tilt, grid-snap reveals; Swiss precision instead of the Hue Dial's springy colour play",
+    "primaryTransition": "shutter wipe (day page covered by a night panel falling from the top, cut underneath, panel lifts to reveal night)",
+    "transitions": [
+      "shutter wipe",
+      "hard cut on the beat",
+      "whip with vertical motion blur",
+      "red rising wipe into the loop"
+    ],
+    "typeTreatment": "Archivo condensed uppercase, hook in 4 two-word beats on flat Swiss red; template's own type in the page",
+    "grade": "true colours, light grain, faint vignette that closes only in the breath (light page)",
+    "sound": "effects only at 100 BPM (clicks on words, slot ping, ticks on the checklist, riser into a held silence, impact on the first booking); music by Instagram audio near 100 BPM",
+    "cover": "poster: hook in white Swiss type on red with the filled night diary, safe in 1:1 and 3:4 crops",
+    "variants": {
+      "A": "type-first open on flat red (owner's choice for the format)"
+    },
+    "rubric": {
+      "firstSecondStoppingPower": 8,
+      "motionPolish": 8,
+      "typography": 8,
+      "rhythmAndAudioSync": 8,
+      "fidelityToTemplate": 9,
+      "originalityVsLog": 9,
+      "loopSeamlessness": 9,
+      "safeZones": 8
+    },
+    "revisionPasses": 2,
+    "notes": "pass 1: the engine hard-coded a dark stage colour (light pages lost their ink text) -> stage uses the page's own background; pass 2: night section made full-frame, vignette lightened, cover moved into the square crop",
+    "music": {
+      "brief": {
+        "genre": "minimal nocturnal electronic",
+        "instrumentation": [
+          "soft felt piano",
+          "ticking clock-like percussion",
+          "deep warm sub bass",
+          "airy night pads"
+        ],
+        "bpm": 100
+      },
+      "chosen": null,
+      "provider": null,
+      "feedback": null
+    }
   }
 ]

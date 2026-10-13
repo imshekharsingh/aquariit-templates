@@ -1,0 +1,49 @@
+{
+  "mood": "calm, clean, quietly confident and nocturnal: a clinic that keeps working while the street sleeps",
+  "genre": "minimal nocturnal electronic",
+  "instrumentation": [
+    "soft felt piano",
+    "ticking clock-like percussion",
+    "deep warm sub bass",
+    "airy night pads"
+  ],
+  "avoid": [
+    "vocals",
+    "named artists or songs",
+    "cinematic swells",
+    "aggressive drops"
+  ],
+  "vocals": false,
+  "interpretations": [
+    {
+      "name": "felt piano night pulse",
+      "instrumentation": [
+        "soft felt piano",
+        "ticking clock-like percussion",
+        "deep warm sub bass",
+        "airy night pads"
+      ],
+      "energy": "sparse piano motif over a ticking pulse; layers join each bar"
+    },
+    {
+      "name": "lo-fi house after hours",
+      "instrumentation": [
+        "dusty four-on-the-floor kick",
+        "muted chord stabs",
+        "vinyl crackle",
+        "round bass"
+      ],
+      "energy": "steady groove, filter opens into the peak"
+    },
+    {
+      "name": "glass and synth minimal",
+      "instrumentation": [
+        "plucked glass synth",
+        "brushed hats",
+        "pulsing synth bass",
+        "shimmer pad"
+      ],
+      "energy": "precise arpeggio, very clean, peak adds the bass"
+    }
+  ]
+}

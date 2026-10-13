@@ -1,0 +1,32 @@
+[
+  {
+    "name": "felt piano night pulse",
+    "prompt": "Instrumental only, no vocals. calm, clean, quietly confident and nocturnal: a clinic that keeps working while the street sleeps. minimal nocturnal electronic, 100 BPM, exactly 18 seconds, 7.5 bars of 4/4. soft felt piano, ticking clock-like percussion, deep warm sub bass, airy night pads. Energy follows the picture: 0-2.4s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 2.4-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-12.6s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 12.6-15.6s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.6-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 2.4s, 4.8s, 8.4s, 10.8s, 12.6s, 15.6s, 17.4s; near-silence from 12s to 12.45s; the last bar resolves so the track loops. Interpretation 1: felt piano night pulse. Instruments: soft felt piano, ticking clock-like percussion, deep warm sub bass, airy night pads. Feel: sparse piano motif over a ticking pulse; layers join each bar. Do not imitate any existing song or artist.",
+    "instrumentation": [
+      "soft felt piano",
+      "ticking clock-like percussion",
+      "deep warm sub bass",
+      "airy night pads"
+    ]
+  },
+  {
+    "name": "lo-fi house after hours",
+    "prompt": "Instrumental only, no vocals. calm, clean, quietly confident and nocturnal: a clinic that keeps working while the street sleeps. minimal nocturnal electronic, 100 BPM, exactly 18 seconds, 7.5 bars of 4/4. soft felt piano, ticking clock-like percussion, deep warm sub bass, airy night pads. Energy follows the picture: 0-2.4s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 2.4-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-12.6s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 12.6-15.6s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.6-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 2.4s, 4.8s, 8.4s, 10.8s, 12.6s, 15.6s, 17.4s; near-silence from 12s to 12.45s; the last bar resolves so the track loops. Interpretation 2: lo-fi house after hours. Instruments: dusty four-on-the-floor kick, muted chord stabs, vinyl crackle, round bass. Feel: steady groove, filter opens into the peak. Do not imitate any existing song or artist.",
+    "instrumentation": [
+      "dusty four-on-the-floor kick",
+      "muted chord stabs",
+      "vinyl crackle",
+      "round bass"
+    ]
+  },
+  {
+    "name": "glass and synth minimal",
+    "prompt": "Instrumental only, no vocals. calm, clean, quietly confident and nocturnal: a clinic that keeps working while the street sleeps. minimal nocturnal electronic, 100 BPM, exactly 18 seconds, 7.5 bars of 4/4. soft felt piano, ticking clock-like percussion, deep warm sub bass, airy night pads. Energy follows the picture: 0-2.4s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 2.4-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-12.6s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 12.6-15.6s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.6-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 2.4s, 4.8s, 8.4s, 10.8s, 12.6s, 15.6s, 17.4s; near-silence from 12s to 12.45s; the last bar resolves so the track loops. Interpretation 3: glass and synth minimal. Instruments: plucked glass synth, brushed hats, pulsing synth bass, shimmer pad. Feel: precise arpeggio, very clean, peak adds the bass. Do not imitate any existing song or artist.",
+    "instrumentation": [
+      "plucked glass synth",
+      "brushed hats",
+      "pulsing synth bass",
+      "shimmer pad"
+    ]
+  }
+]

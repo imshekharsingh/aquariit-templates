@@ -28,9 +28,10 @@
 
   // ---- stage: #stage (clips) > #cam (the template) + #fx overlays -----------------------------------------------------------------------
   E.stage = function () {
-    document.documentElement.style.cssText = `width:${W}px;height:${H}px;overflow:hidden;background:#1a0933`;
-    document.body.style.cssText = `margin:0;width:${W}px;height:${H}px;overflow:hidden;position:relative;background:#1a0933`;
-    const stage = E.el('div', `position:absolute;left:0;top:0;width:${W}px;height:${H}px;overflow:hidden;perspective:1100px;perspective-origin:50% 50%;background:#1a0933`, document.body);
+    const bg = getComputedStyle(document.body).backgroundColor || '#000';   // the page's own ground colour (never a hard-coded one)
+    document.documentElement.style.cssText = `width:${W}px;height:${H}px;overflow:hidden;background:${bg}`;
+    document.body.style.cssText = `margin:0;width:${W}px;height:${H}px;overflow:hidden;position:relative;background:${bg}`;
+    const stage = E.el('div', `position:absolute;left:0;top:0;width:${W}px;height:${H}px;overflow:hidden;perspective:1100px;perspective-origin:50% 50%;background:${bg}`, document.body);
     stage.id = 'stage';
     const cam = E.el('div', `position:absolute;left:0;top:0;width:${W}px;transform-origin:0 0`, stage);
     cam.id = 'cam';
