@@ -181,6 +181,7 @@ jobs:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
         run: |
+          curl() { command curl --connect-timeout 15 --max-time 60 --retry 4 --retry-all-errors --retry-delay 5 "$@"; } # a stalled TLS handshake once failed a deploy that was fine
           B=https://templates.aquariit.com; J=$(mktemp)
           curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
           code=$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/api/uploaded")
@@ -199,6 +200,7 @@ jobs:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
         run: |
+          curl() { command curl --connect-timeout 15 --max-time 60 --retry 4 --retry-all-errors --retry-delay 5 "$@"; } # a stalled TLS handshake once failed a deploy that was fine
           B=https://templates.aquariit.com; J=$(mktemp)
           curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/perf")" = "401" ] || { echo "performance API must be closed to signed-out requests"; exit 1; }
@@ -213,19 +215,26 @@ jobs:
           done
           echo "performance API signed in: HTTP $code (200 = database ready, 501 = no database bound)"
           [ "$code" = "200" ] || [ "$code" = "501" ] || { echo "unexpected status"; exit 1; }
-      - name: Check the reels are served only to signed-in users
+      - name: Check every attached reel is served to signed-in users only
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
         run: |
-          f=$(ls templates/reels/*.mp4 2>/dev/null | sort -r | head -n 1)
-          if [ -z "$f" ]; then echo "No reels attached yet."; exit 0; fi
-          n=$(basename "$f"); B=https://templates.aquariit.com; J=$(mktemp)
+          curl() { command curl --connect-timeout 15 --max-time 120 --retry 4 --retry-all-errors --retry-delay 5 "$@"; }
+          files=$(ls templates/reels/*.mp4 2>/dev/null | sort -r)
+          if [ -z "$files" ]; then echo "No reels attached yet."; exit 0; fi
+          B=https://templates.aquariit.com; J=$(mktemp); bad=0
           curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
-          [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n")" != "200" ] || { echo "::error::$n is reachable without signing in"; exit 1; }
-          echo "signed out: $(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n") (good, not public)"
-          echo "signed in, whole file: $(curl -s -o /dev/null -w '%{http_code} %{size_download} bytes' -b "$J" "$B/reels/$n")"
-          echo "signed in, Range 0-99: $(curl -s -o /dev/null -w '%{http_code} %{size_download} bytes' -b "$J" -r 0-99 "$B/reels/$n") (informational: the kit page downloads the file first, so a 200 here is fine)"
+          for f in $files; do
+            n=$(basename "$f"); c="${n%.mp4}-cover.jpg"
+            out=$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n"); [ "$out" != "200" ] || { echo "::error::$n is reachable without signing in"; exit 1; }
+            v=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -b "$J" "$B/reels/$n"); i=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -b "$J" "$B/reels/$c")
+            echo "$n: signed out $out | signed in video [$v] cover [$i]"
+            case "$v" in "200 "*) ;; *) bad=1;; esac; case "$i" in "200 "*) ;; *) bad=1;; esac
+          done
+          [ "$bad" = "0" ] || { echo "::error::a reel or its cover is not served to a signed-in user"; exit 1; }
+          kit=$(curl -s -b "$J" "$B/kit/")
+          echo "$kit" | grep -q "Save / share to Instagram" && echo "live kit page has the Save / share button" || { echo "::error::the live kit page is missing the Save / share button"; exit 1; }
       - name: Summary
         run: echo "Deployed. Home https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"
 
