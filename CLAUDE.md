@@ -136,7 +136,10 @@ never deployed). It is the ready-to-paste kit for the Instagram Reel:
 **Growth rules (owner-delegated, evidence-driven):** the account exists to attract clients for Aquarii Technologies, so every concept and hook speaks to the buyer
 (a business owner or founder: money, time, results, "what should it cost / where am I losing / can it do X"), not only to designers. The reel starts moving at
 frame 0 (no static title card), shows the hook on screen, runs ~18 s and pays off in its last 4 s. What is being tested, what the numbers said and what to try
-next live in design/experiments.md; the operating rhythm and the do/don't list live in design/growth-playbook.md. Before making a new template, read the latest
+next live in design/experiments.md; the operating rhythm and the do/don't list live in design/growth-playbook.md.
+**Market (design/market.md):** India first and a brand-new studio: prices in ₹ with Indian grouping (never $), price points a one-person studio can really quote, concepts
+for Indian small businesses (cafés, clinics, coaching centres, salons, D2C sellers, wedding/event services), and NO invented results or numbers the studio could not
+back up (no "+212% leads", no "$31.9k/month"): show what is delivered, how fast and for how much. Before making a new template, read the latest
 "Instagram collect" workflow log (per-reel table) and favour what the numbers show is working.
 - `## Hook` — one line (≤ 8 words, a question or a surprising contrast) shown ON SCREEN by the renderer for the first ~3 seconds, so it must read at a glance. It must open a loop the end of the video
   closes: a question ("Can a website feel like tea? Watch to the end"), a "Wait for …" promise, or a surprising contrast.
@@ -148,6 +151,8 @@ next live in design/experiments.md; the operating rhythm and the do/don't list l
 - `## Hashtags` — EXACTLY 5, each starting with # (Instagram's per-post limit
   since Dec 2025): 2 broad, 2 niche, 1 topic-specific; then an `Alternates:` line
   with 5 more to rotate between posts (never all together)
+  Hashtags are SECONDARY now (owner decision): the text pasted into Instagram is the caption plus one keyword line (the first 6 `## Keywords` joined with ` · `),
+  hashtags stay in the kit as an optional extra. Write the first 6 keywords in order of search value.
 - `## Reel` — lines `Length:` (15–20 s: scripts/render-reel.mjs renders reels at ~18 s; shorter = higher completion for cold viewers),
   `Shot plan:` (2–4 beats of what the ▶ player will show: it only scrolls and plays animations, it never taps),
   `Payoff:` (the moment near the end that answers the hook and rewards finishing, e.g. a signature animation completing or

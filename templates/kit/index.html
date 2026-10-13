@@ -91,7 +91,7 @@
   <div class="top"><a class="pill" href="/">← All templates</a><div class="grp"><button class="pill rec" type="button" id="rec" hidden><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>Play</button><button class="pill ico" type="button" id="gear" aria-label="Reel settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div></div>
   <main id="app"><p class="empty">Loading kit…</p></main>
 </div>
-<div class="bar" id="bar" hidden><div class="in"><button class="main" type="button" id="copyAll">Copy caption + hashtags</button></div></div>
+<div class="bar" id="bar" hidden><div class="in"><button class="main" type="button" id="copyAll">Copy caption + keywords</button></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="/play/player.js"></script>
@@ -170,7 +170,7 @@
     document.title = 'Post kit · ' + k.name;
     var rec = document.getElementById('rec'); rec.hidden = false; rec.onclick = function () { if (window.Reel) window.Reel.start(k.id); };
     document.getElementById('gear').onclick = function () { if (window.Reel) window.Reel.openSettings(); };
-    var allCaption = k.caption + '\n\n' + k.hashtags.join(' ');
+    var kwLine = k.keywords.slice(0, 6).join(' · '), allCaption = k.caption + '\n\n' + kwLine; // keywords instead of hashtags: Instagram search reads the caption, and hashtags matter much less now
 
     var s = el('div', 'slate'); s.appendChild(el('div', 'stripes')); var sb = el('div', 'body');
     sb.appendChild(el('small', null, 'Post kit · Instagram Reel'));
@@ -183,9 +183,9 @@
 
     var c = card('Hook · first 2 seconds', k.hook, 'Hook copied'); c.appendChild(el('p', 'hook serif', k.hook)); app.appendChild(c);
 
-    c = card('Caption', allCaption, 'Caption + hashtags copied'); c.appendChild(el('p', 'caption', k.caption));
-    c.appendChild(el('p', 'sub', 'Hashtags · exactly 5')); c.appendChild(chips(k.hashtags, 'tag', 'Hashtag copied'));
-    c.appendChild(el('p', 'hint', 'The Copy button copies the caption and all 5 hashtags together. Tap a chip to copy a single tag.')); app.appendChild(c);
+    c = card('Caption + keywords', allCaption, 'Caption + keywords copied'); c.appendChild(el('p', 'caption', k.caption)); c.appendChild(el('p', 'caption', kwLine));
+    c.appendChild(el('p', 'hint', 'The Copy button copies the caption and the keyword line together: Instagram search reads your caption. Hashtags are optional now; they are below if you want one or two.'));
+    c.appendChild(el('p', 'sub', 'Optional hashtags · tap one to copy')); c.appendChild(chips(k.hashtags, 'tag', 'Hashtag copied')); app.appendChild(c);
 
     c = card('More hashtags to rotate', k.alternates.join(' '), 'Alternates copied'); c.appendChild(chips(k.alternates, 'tag alt', 'Hashtag copied'));
     c.appendChild(el('p', 'hint', 'Instagram allows 5 per post. Swap these in on other posts; don’t add them all at once.')); app.appendChild(c);
@@ -218,7 +218,7 @@
     }
 
     var bar = document.getElementById('bar'), btn = document.getElementById('copyAll'); bar.hidden = false;
-    btn.onclick = function () { copy(allCaption, btn, 'Caption + hashtags copied'); };
+    btn.onclick = function () { copy(allCaption, btn, 'Caption + keywords copied'); };
   }
 
   var id = new URLSearchParams(location.search).get('id') || '';
