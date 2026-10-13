@@ -26,7 +26,7 @@ console.log(`## 🎬 ${k.name} — your reel is rendered
    If the sheet only offers Files or Drive: save to Files, open Files, press and hold the video → **Share → Save Video**.
 2. In Instagram: **Reel** → pick the video. This reel moves from the first frame on purpose (no title card), so set the cover yourself: **Edit cover → Add from camera roll** and choose the cover image (kit page → **Save cover image**).
 3. **Add audio** from Instagram's library. Search: ${list(m.search) || '—'}${m.mood ? `  \n   Mood: ${m.mood}${m.genre ? ' · ' + m.genre : ''}${film ? ' · about ' + bpm + ' BPM' : m.bpm ? ' · ' + m.bpm + ' BPM' : ''}.` : ''}  
-   ${film ? `The film carries its own sound effects only (whooshes, clicks, impacts) and is cut on a **${bpm} BPM** grid: choose a track near ${bpm} BPM and, in Instagram's audio trim, start it on a downbeat so the cuts land on its beats. Keep the film's own sound at about 30% in the volume mixer: the effects are timed to the cuts.` : 'Use the volume mixer to turn the video\'s own (generated) music down or off.'}
+   ${film && meta.audio !== 'mixed' ? `The film carries its own sound effects only (whooshes, clicks, impacts) and is cut on a **${bpm} BPM** grid: choose a track near ${bpm} BPM and, in Instagram's audio trim, start it on a downbeat so the cuts land on its beats. Keep the film's own sound at about 30% in the volume mixer: the effects are timed to the cuts.` : (meta.audio === 'mixed' ? 'The video already has its music and effects mixed in (licensed source, see the kit); add Instagram audio only if you prefer.' : 'This video has no music of its own: add Instagram\'s audio.')}
 4. Paste the caption + keywords below, then **Share**.
 5. Tick **Reel uploaded** in the app so it is never posted twice.
 

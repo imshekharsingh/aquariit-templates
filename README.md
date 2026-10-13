@@ -16,6 +16,12 @@ so the scroll and animations are perfectly even and text is crisp whatever the s
 It needs Playwright and ffmpeg and exits 1 when the scroll is not smooth.
 In GitHub: Actions → **Render reel** → Run workflow (empty id = newest) attaches the MP4 to the run as an artifact. Nothing is posted anywhere.
 
+## Directed films and the music toolkit
+A template with `film/ID/story.js` is rendered as a directed film (virtual camera, beat-locked type, loop) by `scripts/film/render-film.mjs`; the others as a screen recording.
+How to author and check one: `design/film-playbook.md`. Sound follows CLAUDE.md "Music & Sound": no music is synthesised in code; `scripts/audio/` is the Music Supervisor
+toolkit (brief, generate from a licensed API, evaluate by analysis, edit to picture, mix to −14 LUFS / −1 dBTP, log). `npm run audio:selftest` proves it on stand-in tracks.
+Without a licensed music source the film carries sound effects only (or nothing, for screen recordings) and the owner adds Instagram's own audio when posting.
+
 ## Instagram results (D1)
 There is no results page: the daily collector below stores the account snapshot and every reel's numbers in D1 (tables `ig_account`, `ig_media`, `ig_metrics`,
 created on first use; `GET /api/perf` reads them, `POST /api/perf/ingest` writes them) and prints a per-reel table in each run's log, which is what the
