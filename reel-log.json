@@ -67,34 +67,38 @@
     "id": "2026-10-13-1902",
     "date": "2026-10-13",
     "template": "Dantika Dental",
-    "concept": "The Night Shift: a Swiss-precise time-lapse from day to night; the clinic closes, booking doesn't, and the night diary fills on the beats",
-    "motionStyle": "hard cuts and short eased whips on a 100 BPM grid, no tilt, grid-snap reveals; Swiss precision instead of the Hue Dial's springy colour play",
-    "primaryTransition": "shutter wipe (day page covered by a night panel falling from the top, cut underneath, panel lifts to reveal night)",
+    "concept": "After 8 (night-signal cut): the clinic's light-drawn facade goes dark at 8 pm; at 11:42 pm a patient's WhatsApp message lights a phone in the dark, the website answers, the camera pulls back to the system (hub -> slot / deposit / reminder) with data flowing, a scan bar turns the chat into Dantika's slot calendar, brackets lock Thursday 9:30, the phone flies into a night diary that fills, a held breath, sunrise turns the bookings gold, CTA, and the facade relights at 9 am (the loop)",
+    "motionStyle": "product-film grammar: one centred focal object per shot, springs, connector lines drawing on the beat with travelling data dots, counter-rotating hub rings, scan-bar transformation, corner-bracket focus with a small push-in, the phone flying into the next shot's element, scale punch on the sunrise",
+    "primaryTransition": "scan-bar transformation (a bar of light runs down the phone and turns the chat into the slot calendar)",
     "transitions": [
-      "shutter wipe",
-      "hard cut on the beat",
-      "whip with vertical motion blur",
-      "red rising wipe into the loop"
+      "neon flicker: OPEN -> CLOSED at 8 pm",
+      "phone rises out of the dark",
+      "pull back to the system (phone shrinks to the top of the diagram)",
+      "scan-bar transformation",
+      "push-in with corner brackets",
+      "phone flies into its diary slot",
+      "breath dim -> sunrise flood",
+      "facade redraws, OPEN flickers on at 9 am"
     ],
-    "typeTreatment": "Archivo condensed uppercase, hook in 4 two-word beats on flat Swiss red; template's own type in the page",
-    "grade": "true colours, light grain, faint vignette that closes only in the breath (light page)",
-    "sound": "effects only at 100 BPM (clicks on words, slot ping, ticks on the checklist, riser into a held silence, impact on the first booking); music by Instagram audio near 100 BPM",
-    "cover": "poster: hook in white Swiss type on red with the filled night diary, safe in 1:1 and 3:4 crops",
+    "typeTreatment": "captions as the spine: Archivo 800 wdth 84, -0.035em, 1-3 words per card on a solid dark pill at one fixed anchor (y 492), one accent word per card; mono HUD clock",
+    "grade": "near-black #050607 with one accent glow (Dantika lime #c8ff3d), material cards with light rims, the brand red only on the booked slot, warm sunrise (amber/coral/violet) only at the payoff",
+    "sound": "effects only at 100 BPM, every cue motivated: impact as the lights die, whoosh as the phone rises, clicks on the message and the reply, sub on the hub, clicks on each node, riser through the scan, impact on Booked, ticks on each diary fill, riser into the breath, big impact on sunrise; music by Instagram audio near 100 BPM",
+    "cover": "night poster: question in white with '8 pm?' in lime glow over the lit diary, inside the 1:1 and 3:4 crops",
     "variants": {
       "A": "type-first open on flat red (owner's choice for the format)"
     },
     "rubric": {
       "firstSecondStoppingPower": 8,
       "motionPolish": 8,
-      "typography": 8,
+      "typography": 9,
       "rhythmAndAudioSync": 8,
-      "fidelityToTemplate": 9,
+      "fidelityToTemplate": 8,
       "originalityVsLog": 9,
       "loopSeamlessness": 9,
-      "safeZones": 8
+      "safeZones": 9
     },
-    "revisionPasses": 2,
-    "notes": "pass 1: the engine hard-coded a dark stage colour (light pages lost their ink text) -> stage uses the page's own background; pass 2: night section made full-frame, vignette lightened, cover moved into the square crop",
+    "revisionPasses": 3,
+    "notes": "v3 after the owner shared a reference reel: v2's rainbow colour script read as illustration, not product. Rebuilt in a product-film grammar (see design/film-playbook.md). Passes: 1) brackets hidden behind the CTA card and too small on the slot -> brackets live inside their parent, camera pushes into the slot; diary names clipped; sunrise hidden in Instagram's bottom zone -> raised and widened; hub label crossed the centre line; caption 'Slot.' before its node. 2) push-in ran over the captions -> 1.42x and a more solid pill. 3) the white HUD clock ghosted across the zoomed light screen -> hidden during the push; thicker brackets.",
     "music": {
       "brief": {
         "genre": "minimal nocturnal electronic",
@@ -109,6 +113,7 @@
       "chosen": null,
       "provider": null,
       "feedback": null
-    }
+    },
+    "version": 3
   }
 ]

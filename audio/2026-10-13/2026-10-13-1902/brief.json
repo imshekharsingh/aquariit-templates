@@ -29,37 +29,32 @@
     {
       "t": 2.4,
       "kind": "downbeat",
-      "label": "hook cut to the page"
+      "label": "8:00 pm, the OPEN neon dies"
     },
     {
-      "t": 4.8,
+      "t": 6,
       "kind": "downbeat",
-      "label": "shutter falls: day to night"
+      "label": "pull back: the booking hub lights"
     },
     {
-      "t": 8.4,
-      "kind": "downbeat",
-      "label": "whip to the fees"
-    },
-    {
-      "t": 10.8,
-      "kind": "downbeat",
-      "label": "cut to the empty night diary"
+      "t": 9.6,
+      "kind": "impact",
+      "label": "scan done, Thursday 9:30 booked"
     },
     {
       "t": 12.6,
       "kind": "impact",
-      "label": "peak: the diary starts filling"
+      "label": "peak: sunrise turns the night bookings gold"
     },
     {
       "t": 15.6,
       "kind": "downbeat",
-      "label": "answer card"
+      "label": "CTA"
     },
     {
-      "t": 17.4,
+      "t": 18,
       "kind": "downbeat",
-      "label": "red wipe, the loop"
+      "label": "loop to the lit facade"
     }
   ],
   "sections": [
@@ -109,5 +104,5 @@
   "notes": [
     "duration 18s is not a whole number of bars (7.50): the loop edit will crossfade on a beat"
   ],
-  "prompt": "Instrumental only, no vocals. calm, clean, quietly confident and nocturnal: a clinic that keeps working while the street sleeps. minimal nocturnal electronic, 100 BPM, exactly 18 seconds, 7.5 bars of 4/4. soft felt piano, ticking clock-like percussion, deep warm sub bass, airy night pads. Energy follows the picture: 0-2.4s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 2.4-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-12.6s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 12.6-15.6s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.6-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 2.4s, 4.8s, 8.4s, 10.8s, 12.6s, 15.6s, 17.4s; near-silence from 12s to 12.45s; the last bar resolves so the track loops."
+  "prompt": "Instrumental only, no vocals. calm, clean, quietly confident and nocturnal: a clinic that keeps working while the street sleeps. minimal nocturnal electronic, 100 BPM, exactly 18 seconds, 7.5 bars of 4/4. soft felt piano, ticking clock-like percussion, deep warm sub bass, airy night pads. Energy follows the picture: 0-2.4s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 2.4-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-12.6s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 12.6-15.6s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.6-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 2.4s, 6s, 9.6s, 12.6s, 15.6s, 18s; near-silence from 12s to 12.45s; the last bar resolves so the track loops."
 }

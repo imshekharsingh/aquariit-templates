@@ -14,13 +14,12 @@
 - 15.6-18 s **resolve**: resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart
 
 ## Hit points
-- 2.4 s downbeat: hook cut to the page
-- 4.8 s downbeat: shutter falls: day to night
-- 8.4 s downbeat: whip to the fees
-- 10.8 s downbeat: cut to the empty night diary
-- 12.6 s impact: peak: the diary starts filling
-- 15.6 s downbeat: answer card
-- 17.4 s downbeat: red wipe, the loop
+- 2.4 s downbeat: 8:00 pm, the OPEN neon dies
+- 6 s downbeat: pull back: the booking hub lights
+- 9.6 s impact: scan done, Thursday 9:30 booked
+- 12.6 s impact: peak: sunrise turns the night bookings gold
+- 15.6 s downbeat: CTA
+- 18 s downbeat: loop to the lit facade
 - Breath (silence) 12-12.45 s; peak 12.6 s
 
 ## Interpretations (3 candidates)
