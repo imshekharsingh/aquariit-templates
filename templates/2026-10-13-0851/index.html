@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tintwell — The colour that pays</title>
+<meta name="description" content="Tintwell is a fictional brand-colour studio. A dark, vivid sales page where one hue sweeps the colour wheel on scroll and every swatch is derived from it.">
+<meta name="theme-color" content="#1a0933">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;600;700;800;900&amp;family=Martian+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script>document.documentElement.className+=' js'</script>
+<style>
+  :root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px)}
+  html.reel{--safe-top:0px;--safe-bottom:0px}
+  .reel .back{display:none}
+  .reel .bar .wrap{justify-content:center}
+
+  :root{
+    --bg:#1a0933; --bg2:#25104a; --card:#2c1558; --tang:#ff5a1f; --mint:#2de2c5; --vio:#7a3cff;
+    --ink:#f6f1ff; --mut:#b9a6e6; --line:rgba(246,241,255,.16);
+    --disp:"Gabarito","Trebuchet MS",system-ui,sans-serif;
+    --mono:"Martian Mono",ui-monospace,Menlo,monospace;
+    --spring:cubic-bezier(.2,1.3,.3,1);
+  }
+  @supports (animation-timing-function:linear(0,1)){
+    :root{--spring:linear(0,.128,.403,.695,.929,1.076,1.14,1.143,1.111,1.068,1.028,.999,.983,.978,.981,.986,.993,.998,1.001,1.003,1.003,1.002,1.002,1.001,1,1,1,1,1)}
+  }
+  /* the one live colour: every lab swatch derives from --h */
+  @property --h{syntax:'<number>';initial-value:38;inherits:true}
+  @property --hn{syntax:'<integer>';initial-value:38;inherits:true}
+  @property --n{syntax:'<integer>';initial-value:0;inherits:false}
+  *{box-sizing:border-box;margin:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--ink);font:500 16px/1.5 var(--disp);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  :focus-visible{outline:3px solid var(--mint);outline-offset:3px;border-radius:6px}
+  a{color:inherit}
+  ul,ol{list-style:none;padding:0}
+  h1,h2,h3{font-weight:900;letter-spacing:-.035em;line-height:.95;text-wrap:balance}
+  .wrap{max-width:520px;margin:0 auto;padding:0 30px}
+  .eyebrow{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mint)}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+  /* header: hidden until scroll */
+  .bar{position:fixed;top:0;left:0;right:0;z-index:30;background:var(--bg);padding-top:var(--safe-top);border-bottom:1px solid var(--line);transform:translateY(-110%);transition:transform .4s var(--spring)}
+  .bar.on{transform:none}
+  .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:46px}
+  .back{font:500 11px/1 var(--mono);text-decoration:none;padding:9px 0;color:var(--ink)}
+  .brand{display:inline-flex;align-items:center;gap:8px;font:900 20px/1 var(--disp);letter-spacing:-.04em;text-decoration:none}
+  .brand i{width:16px;height:16px;border-radius:50%;background:conic-gradient(#ff5a1f,#ffd21f,#2de2c5,#7a3cff,#ff3d9a,#ff5a1f)}
+  .chip{display:inline-block;font:500 11px/1 var(--mono);text-decoration:none;color:var(--mut);padding:12px 0 0}
+  .reel .chip{display:none}
+
+  /* hero: swatch fan */
+  .hero{padding:20px 0 78px;position:relative;overflow:hidden;background:radial-gradient(120% 60% at 50% 100%,#3a1a7a 0,transparent 70%),var(--bg)}
+  h1{font-size:clamp(46px,13.4vw,92px);margin-top:14px;letter-spacing:-.05em;line-height:.9}
+  h1 .t{color:var(--tang)}
+  h1 .ln{display:block;overflow:hidden;padding:.03em 0 .09em}
+  h1 .ln>span{display:block}
+  .lead{font:500 17px/1.4 var(--disp);color:var(--mut);margin-top:14px;max-width:310px}
+  .fan{position:relative;height:196px;margin:20px 0 28px}
+  .sw{position:absolute;left:50%;top:6px;width:112px;height:176px;margin-left:-56px;border-radius:22px;transform-origin:50% 130%;
+      background:var(--c);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 10px 24px rgba(0,0,0,.35);
+      transform:rotate(var(--r)) translateX(var(--x))}
+  .sw span{position:absolute;left:12px;bottom:12px;font:500 9.5px/1.25 var(--mono);color:rgba(20,8,40,.8)}
+  .cta{display:inline-flex;align-items:center;gap:10px;margin-top:20px;background:var(--tang);color:#1a0933;font:900 16px/1 var(--disp);letter-spacing:-.01em;text-decoration:none;padding:16px 22px;border-radius:99px;box-shadow:0 0 0 4px rgba(255,90,31,.25)}
+  .cta svg{width:18px;height:18px}
+  .cta.alt{background:var(--mint);box-shadow:0 0 0 4px rgba(45,226,197,.22)}
+
+  section{padding:44px 0 0}
+  .hd{margin-bottom:22px}
+  h2{font-size:clamp(34px,9.6vw,54px)}
+  .hd p{color:var(--mut);margin-top:12px;max-width:320px}
+  .hd .eyebrow{display:block;margin-bottom:12px}
+
+  /* proof: big numbers */
+  .stats{display:grid;gap:14px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px 22px;display:grid;gap:4px}
+  .stat b{font:900 64px/.95 var(--disp);letter-spacing:-.05em;color:var(--tang);font-variant-numeric:tabular-nums}
+  .stat:nth-child(2) b{color:var(--mint)}
+  .stat:nth-child(3) b{color:#c9a7ff}
+  .stat span{color:var(--mut);font-size:15px}
+  .cnt::after{content:counter(n)}
+  .cnt{counter-reset:n var(--n)}
+  .in .cnt{animation:count 1.6s .15s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes count{from{--n:0}to{--n:var(--to)}}
+  .cnt.fin{--n:var(--to)}
+
+  /* process: sticky-title list */
+  .steps{display:grid;gap:14px}
+  .step{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:start;border-top:1px solid var(--line);padding-top:18px}
+  .step .n{font:900 46px/1 var(--disp);color:transparent;-webkit-text-stroke:1.5px var(--tang);letter-spacing:-.04em}
+  .step h3{font-size:25px}
+  .step p{color:var(--mut);margin-top:8px;font-size:15.5px}
+
+  /* packages */
+  .pk{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px 22px 20px;margin-bottom:16px;position:relative}
+  .pk.hot{background:linear-gradient(160deg,#4a1fa0,#2c1558 70%);border-color:rgba(255,90,31,.7)}
+  .pk h3{font-size:28px}
+  .pr{font:900 40px/1 var(--disp);letter-spacing:-.04em;margin:8px 0 2px;color:var(--ink)}
+  .pr small{display:block;font:500 12px/1.4 var(--mono);color:var(--mut);letter-spacing:0;margin-top:6px}
+  .pk ul{margin-top:10px;display:grid;gap:5px;font-size:15px;color:var(--mut)}
+  .pk li::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mint);margin-right:10px}
+  .fl{display:inline-block;font:500 10px/1 var(--mono);letter-spacing:.1em;background:var(--tang);color:#1a0933;padding:6px 9px;border-radius:99px;margin-bottom:12px}
+
+  /* hue lab: the signature moment */
+  .lab{--h:38;--hn:38;background:var(--card);border:1px solid var(--line);border-radius:28px;padding:22px;overflow:hidden}
+  .lab .big{height:150px;border-radius:20px;background:#ff5a1f;background:oklch(.72 .2 var(--h));display:flex;align-items:flex-end;padding:14px 16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+  .lab .big b{font:900 54px/.9 var(--disp);letter-spacing:-.05em;color:rgba(20,8,40,.88);font-variant-numeric:tabular-nums}
+  .hue::after{content:counter(hn) "°"}
+  .hue{counter-reset:hn var(--hn)}
+  .row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+  .row i{display:block;height:64px;border-radius:14px;background:var(--f);background:var(--o);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+  .row .k{font:500 9.5px/1.2 var(--mono);color:var(--mut);margin-top:6px;text-align:left;display:block}
+  .row i:nth-child(1){--f:#ffe5d8;--o:oklch(.93 .06 var(--h))}
+  .verdict{margin-top:16px;font:500 13px/1.45 var(--mono);color:var(--mut)}
+  .verdict b{color:var(--mint);font-weight:500}
+  @supports (animation-timeline:view()){
+    .lab{animation:sweep linear both;animation-timeline:view();animation-range:entry 25% contain 45%}
+    @keyframes sweep{from{--h:38;--hn:38}to{--h:398;--hn:398}}
+  }
+
+  /* end */
+  .endc{background:linear-gradient(160deg,#ff5a1f,#ff3d9a);color:#1a0933;margin-top:44px;padding:36px 0 34px}
+  .endc h2{font-size:clamp(40px,11.4vw,64px)}
+  .endc p{margin-top:14px;font-weight:600;max-width:300px}
+  .endc .cta{background:#1a0933;color:#fff;box-shadow:none}
+  footer{padding:20px 0 calc(24px + var(--safe-bottom));text-align:left;color:var(--mut);font:500 11px/1.5 var(--mono)}
+  footer small{display:block;margin-top:4px;opacity:.8}
+
+  /* entrances */
+  .js .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .8s var(--spring);transition-delay:var(--d,0s)}
+  .js .rv.in{opacity:1;transform:none}
+  .js .sw{animation:fan 1.1s var(--spring) both;animation-delay:calc(.25s + var(--i) * .07s)}
+  @keyframes fan{from{transform:rotate(0) translateX(0)}to{transform:rotate(var(--r)) translateX(var(--x))}}
+  .js h1 .ln>span{animation:up .9s var(--spring) both}
+  .js h1 .ln:nth-child(2)>span{animation-delay:.1s}
+  .js h1 .ln:nth-child(3)>span{animation-delay:.2s}
+  @keyframes up{from{transform:translateY(105%)}to{transform:none}}
+  .js .hero .lead,.js .hero .cta{animation:fade .8s .6s both}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .js .rv{opacity:1;transform:none}
+    .cnt{--n:var(--to)}
+  }
+  @media (min-width:700px){.wrap{max-width:560px}}
+</style>
+</head>
+<body>
+<header class="bar" id="bar">
+  <div class="wrap">
+    <a class="back" href="/">← All templates</a>
+    <a class="brand" href="#top" aria-label="Tintwell home"><i aria-hidden="true"></i>tintwell</a>
+    <span class="back" aria-hidden="true" style="visibility:hidden">·</span>
+  </div>
+</header>
+<span id="sentinel" aria-hidden="true" style="position:absolute;top:90px;height:1px;width:1px"></span>
+
+<main id="top">
+  <section class="hero" aria-labelledby="h1" style="padding-top:46px" data-reel-stop>
+    <div class="wrap">
+      <a class="chip back" href="/">← All templates</a>
+      <h1 id="h1"><span class="ln"><span>Is your</span></span><span class="ln"><span><span class="t">colour</span> costing</span></span><span class="ln"><span>you sales?</span></span></h1>
+      <div class="fan" aria-hidden="true" data-reel-bleed>
+        <div class="sw" style="--i:0;--r:-34deg;--x:0px;--c:#7a3cff"><span>violet<br>285°</span></div>
+        <div class="sw" style="--i:1;--r:-17deg;--x:0px;--c:#2de2c5"><span>mint<br>178°</span></div>
+        <div class="sw" style="--i:2;--r:0deg;--x:0px;--c:#ff5a1f"><span>tangerine<br>38°</span></div>
+        <div class="sw" style="--i:3;--r:17deg;--x:0px;--c:#ffd21f"><span>sun<br>95°</span></div>
+        <div class="sw" style="--i:4;--r:34deg;--x:0px;--c:#ff3d9a"><span>rose<br>355°</span></div>
+      </div>
+      <p class="lead">We pick the one hue that makes buyers click, then build your whole palette from it. In five days.</p>
+      <a class="cta" href="#end">Find my colour <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-proof">
+    <div class="wrap">
+      <div class="hd rv" data-reel-stop><span class="eyebrow">Proof, by the numbers</span><h2 id="h-proof">Colour is not<br>decoration.</h2></div>
+      <div class="stats">
+        <div class="stat rv" data-reel-stop><b><span class="cnt" style="--to:27" aria-hidden="true"></span>%</b><span>average lift in button clicks after a hue change</span><span class="sr">27 percent</span></div>
+        <div class="stat rv" data-reel-stop style="--d:.08s"><b><span class="cnt" style="--to:5" aria-hidden="true"></span> days</b><span>from first call to a finished palette</span><span class="sr">5 days</span></div>
+        <div class="stat rv" data-reel-stop style="--d:.16s"><b><span class="cnt" style="--to:14" aria-hidden="true"></span></b><span>ready-made colour tokens for your site and deck</span><span class="sr">14 tokens</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-steps">
+    <div class="wrap">
+      <div class="hd rv" data-reel-stop><span class="eyebrow">The process</span><h2 id="h-steps">Three steps.<br>One hue.</h2></div>
+      <ol class="steps">
+        <li class="step rv" data-reel-stop><span class="n" aria-hidden="true">1</span><div><h3>Audit</h3><p>We test your current colours against your buyers and your rivals. You see where it leaks.</p></div></li>
+        <li class="step rv" data-reel-stop><span class="n" aria-hidden="true">2</span><div><h3>Mix</h3><p>Three candidate hues, tried on your real button, your real ad and your real invoice.</p></div></li>
+        <li class="step rv" data-reel-stop><span class="n" aria-hidden="true">3</span><div><h3>Ship</h3><p>One palette, fourteen tokens, a one-page guide. Paste it in and go live.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-pk">
+    <div class="wrap">
+      <div class="hd rv" data-reel-stop><span class="eyebrow">Packages</span><h2 id="h-pk">Fixed price.<br>No colour roulette.</h2></div>
+      <article class="pk rv" data-reel-stop><h3>Spark</h3><p class="pr">$900<small>one hue, one week</small></p><ul><li>Colour audit</li><li>3-hue shortlist</li></ul></article>
+      <article class="pk hot rv" data-reel-stop><span class="fl">MOST PICKED</span><h3>Full spectrum</h3><p class="pr">$2,400<small>site, deck and ads</small></p><ul><li>Everything in Spark</li><li>Button and ad A/B plan</li></ul></article>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-lab">
+    <div class="wrap">
+      <div class="hd rv" data-reel-stop><span class="eyebrow">The colour lab</span><h2 id="h-lab">Watch one hue<br>become a system.</h2></div>
+      <div class="lab" data-reel-stop role="img" aria-label="A hue sweeping around the colour wheel and landing on tangerine, with tint, shade and companion swatches derived from it">
+        <div class="big"><b class="hue" aria-hidden="true"></b></div>
+        <div class="row" aria-hidden="true">
+          <div><i></i><span class="k">tint</span></div>
+          <div><i style="--f:#a8330a;--o:oklch(.4 .13 var(--h))"></i><span class="k">shade</span></div>
+          <div><i style="--f:#2de2c5;--o:oklch(.82 .15 calc(var(--h) + 180))"></i><span class="k">pair</span></div>
+          <div><i style="--f:#7a3cff;--o:oklch(.55 .22 calc(var(--h) + 240))"></i><span class="k">accent</span></div>
+        </div>
+        <p class="verdict">Every swatch moves with the hue. <b>It lands on tangerine: your colour found.</b></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="endc" id="end" aria-labelledby="h-end">
+    <div class="wrap">
+      <span class="eyebrow" data-reel-stop style="color:#1a0933">Booking this month</span>
+      <h2 id="h-end" style="margin-top:12px">Yes. Wrong hue<br>costs sales.</h2>
+      <p>Book a free 20-minute colour audit. We show you the leak before you pay a cent.</p>
+      <a class="cta" href="#top">Book my audit <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">Tintwell · a fictional brand for demonstration<small>Developed by Aquarii Technologies</small></div></footer>
+
+<script>
+(function(){
+  var bar=document.getElementById('bar'),s=document.getElementById('sentinel');
+  var rv=document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){bar.classList.add('on');rv.forEach(function(e){e.classList.add('in')});document.querySelectorAll('.cnt').forEach(function(c){c.classList.add('fin')});return}
+  new IntersectionObserver(function(es){bar.classList.toggle('on',!es[0].isIntersecting)}).observe(s);
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.3});
+  rv.forEach(function(e){io.observe(e)});
+})();
+</script>
+</body>
+</html>

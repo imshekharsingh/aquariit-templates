@@ -6,7 +6,7 @@ The home page lists every template by date; the site is an installable PWA.
 Each template also ships with an Instagram kit (caption, keywords, hashtags, music).
 
 Templates generated: **19**
-Latest: [2026-10-12 08:50 · Gojigo](https://templates.aquariit.com/2026-10-12-0850/)
+Latest: [2026-10-13 08:51 · Tintwell](https://templates.aquariit.com/2026-10-13-0851/)
 
 ## Rendering a reel (no phone needed)
 `node scripts/render-reel.mjs [ID]` (or `npm run reel -- ID`) plays a template through the real ▶ player in headless Chromium and writes
