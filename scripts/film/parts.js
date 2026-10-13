@@ -17,7 +17,7 @@
   const E = window.FilmEngine, { clamp, lerp, ease } = E, TAU = Math.PI * 2;
   const sm = (a, b, t) => ease.io3(clamp((t - a) / (b - a)));
   const css = (el, o) => { for (const k in o) el.style[k] = o[k]; };
-  const MONO = '"Geist Mono","JetBrains Mono",ui-monospace,monospace';
+  const MONO = "'Geist Mono','JetBrains Mono',ui-monospace,monospace";   // single quotes: it is used inside style="..." attributes
   const P = (window.FilmParts = { sm, css, MONO, TAU, ups: [], accent: '#c8ff3d', ink: '#050607', len: 18 });
   // the parts' own type (captions, HUD) must not depend on the page's fonts: load Archivo (width axis) + Geist Mono; stories `await P.ready` in setup()
   P.ready = (async () => {
@@ -67,6 +67,7 @@
     const bokeh = [[-70, 520, 190, hexA(accent, .11)], [300, 110, 150, 'rgba(255,255,255,.07)'], [250, 610, 170, 'rgba(255,190,120,.10)']].map(([x, y, d, c]) => E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${d}px;height:${d}px;border-radius:50%;background:radial-gradient(circle,${c},rgba(0,0,0,0) 70%);filter:blur(10px)`, L));
     const world = (P.world = E.el('div', 'position:absolute;inset:0;transform-origin:50% 45%', L));
     P.front = E.el('div', 'position:absolute;inset:0;pointer-events:none', L);   // HUD + captions (they do not shake with the world)
+    P.watermark();
     P.punchAt = null; P.breath = null; P.warmBokeh = null;
     P.on((t, tf) => {
       const ph = TAU * t / len;
@@ -82,6 +83,14 @@
       E.field.style.opacity = 0;
     });
     return { L, world };
+  };
+
+  // ---- watermark: on every reel, all the time (owner, 13 Oct 2026). Top right, below Instagram's top bar and above its button column ----
+  P.watermark = function ({ text = 'Aquarii Web Studio' } = {}) {
+    if (P.wm) return P.wm;
+    P.wm = E.el('div', `position:absolute;right:26px;top:104px;display:flex;align-items:center;gap:6px;font:600 9px/1 ${MONO};letter-spacing:.22em;text-transform:uppercase;color:${hexA(P.light ? '#000000' : '#ffffff', .62)}`, P.front,
+      `<svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M6 1 11 11H1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M3.6 7.5h4.8" stroke="currentColor" stroke-width="1.2"/></svg>${text}`);
+    return P.wm;
   };
 
   // ---- material card ----
@@ -113,7 +122,7 @@
   P.rel = (el, par) => { const a = el.getBoundingClientRect(), b = par.getBoundingClientRect(); return { x: a.left - b.left, y: a.top - b.top, w: a.width, h: a.height }; };
 
   // ---- phone ----
-  P.phone = function (parent, { x = 111, y = 104, w = 180, h = 352 } = {}) {
+  P.phone = function (parent, { x = 66, y = 140, w = 270, h = 600 } = {}) {   // big by default: fills the width and runs off the bottom edge
     P.use('device', 'phone');
     const halo = E.el('div', `position:absolute;left:${x - 50}px;top:${y - 14}px;width:${w + 100}px;height:${h + 28}px;border-radius:50%;background:radial-gradient(closest-side,${hexA(P.accent, .16)},rgba(0,0,0,0));filter:blur(14px)`, parent);
     const el = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:30px;padding:7px;box-sizing:border-box;background:linear-gradient(160deg,#272b2f,#0a0b0c 55%,#16191b);box-shadow:0 0 0 1px rgba(255,255,255,.14),inset 0 1px 0 rgba(255,255,255,.18),0 30px 60px rgba(0,0,0,.6);transform-origin:50% 50%`, parent);
@@ -320,8 +329,9 @@
     return box;
   };
   // assemble: dots fly in from scattered positions and settle into a grid of points sampled from text (the brand word builds itself)
-  P.assemble = function (parent, text, { at = 0, dur = 1.4, y = 300, size = 64, out = 2.3, colour, back = null, backDur = .8 } = {}) {   // back: the dots scatter out again (use it to loop)
+  P.assemble = function (parent, text, { at = 0, dur = 1.4, y = 300, size = 64, fill = 0, out = 2.3, colour, back = null, backDur = .8 } = {}) {   // back: the dots scatter out again (use it to loop)
     P.use('opener', 'assemble');
+    if (fill) { const m = document.createElement('canvas').getContext('2d'); m.font = `900 100px Archivo, sans-serif`; size = Math.floor(100 * fill / m.measureText(text).width); }   // fill: width in px the word should span
     const c = document.createElement('canvas'), W2 = 402, H2 = Math.round(size * 1.4); c.width = W2; c.height = H2; const g = c.getContext('2d');
     g.fillStyle = '#000'; g.font = `900 ${size}px Archivo, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, W2 / 2, H2 / 2);
     const d = g.getImageData(0, 0, W2, H2).data, pts = []; for (let yy = 0; yy < H2; yy += 4) for (let xx = 0; xx < W2; xx += 4) if (d[(yy * W2 + xx) * 4 + 3] > 128) pts.push([xx, yy]);
@@ -395,11 +405,11 @@
     return cells;
   };
   // steps rail: a vertical rail with N steps; a light travels down and each step checks off on its beat
-  P.steps = function (parent, items, { x = 70, y = 170, gap = 74, at = 6, per = .6 } = {}) {
+  P.steps = function (parent, items, { x = 50, y = 160, gap = 100, at = 6, per = .6, size = 30 } = {}) {
     P.use('mechanism', 'steps-rail');
-    const rail = E.el('div', `position:absolute;left:${x}px;top:${y + 14}px;width:2px;height:${gap * (items.length - 1)}px;background:${hexA(P.light ? '#000000' : '#ffffff', .12)}`, parent);
+    const rail = E.el('div', `position:absolute;left:${x + 6}px;top:${y + 20}px;width:2px;height:${gap * (items.length - 1)}px;background:${hexA(P.light ? '#000000' : '#ffffff', .12)}`, parent);
     const fill = E.el('div', `position:absolute;left:0;top:0;width:2px;height:100%;background:${P.accent};box-shadow:0 0 10px ${P.accent};transform-origin:0 0;transform:scaleY(0)`, rail);
-    const rows = items.map((txt, i) => { const r = E.el('div', `position:absolute;left:${x - 13}px;top:${y + i * gap}px;display:flex;align-items:center;gap:14px;color:${P.fg};font:700 19px/1.1 Archivo,sans-serif`, parent, `<span style="width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;${P.MAT};font:700 11px/1 ${MONO}">${i + 1}</span><span>${txt}</span>`); r.dot = r.firstChild; return r; });
+    const rows = items.map((txt, i) => { const r = E.el('div', `position:absolute;left:${x - 13}px;top:${y + i * gap}px;display:flex;align-items:center;gap:16px;width:${380 - x}px;color:${P.fg};font:800 ${size}px/1.02 Archivo,sans-serif;font-variation-settings:"wdth" 80;letter-spacing:-.02em`, parent, `<span style="width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none;${P.MAT};font:700 14px/1 ${MONO}">${i + 1}</span><span>${txt}</span>`); r.dot = r.firstChild; return r; });
     P.on((t) => { fill.style.transform = `scaleY(${ease.io3(clamp((t - at) / (per * (items.length - 1)))).toFixed(4)})`; rows.forEach((r, i) => { const a = at + i * per, k = ease.spring(clamp((t - a + .2) / .45)), on = t >= a; css(r, { opacity: clamp((t - a + .2) / .15).toFixed(3), transform: `translateX(${((1 - k) * -18).toFixed(1)}px)` }); css(r.dot, { background: on ? P.accent : '', color: on ? '#111' : '', boxShadow: on ? `0 0 14px ${hexA(P.accent, .6)}` : '' }); r.dot.textContent = on ? '✓' : String(i + 1); }); });
     return rows;
   };
@@ -411,7 +421,7 @@
     return cards;
   };
   // meter: a half-dial gauge that sweeps to a value with a counting number (speed, minutes, savings shown as example)
-  P.meter = function (parent, { cx = 201, cy = 330, r = 110, at = 6, dur = 1.8, from = 0, to = 24, unit = 'MIN', label = '' } = {}) {
+  P.meter = function (parent, { cx = 201, cy = 360, r = 165, at = 6, dur = 1.8, from = 0, to = 24, unit = 'MIN', label = '' } = {}) {
     P.use('mechanism', 'meter');
     const box = svgEl(parent, `<path d="M${cx - r} ${cy} A${r} ${r} 0 0 1 ${cx + r} ${cy}" stroke="${hexA(P.light ? '#000000' : '#ffffff', .12)}" stroke-width="12" stroke-linecap="round"/><path class="arc" d="M${cx - r} ${cy} A${r} ${r} 0 0 1 ${cx + r} ${cy}" pathLength="1" stroke="${P.accent}" stroke-width="12" stroke-linecap="round" style="stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 8px ${hexA(P.accent, .7)})"/>`);
     const arc = box.querySelector('.arc');
@@ -490,7 +500,7 @@
 
   // ---- TYPE (headline styles; captions stay the spine) ----
   // giant: one huge word fills the frame width and is masked in from below (a number, a verb)
-  P.giant = function (parent, word, { at = 12.6, out = 15.4, y = 250, colour, maxW = 342 } = {}) {
+  P.giant = function (parent, word, { at = 12.6, out = 15.4, y = 250, colour, maxW = 390 } = {}) {   // fills the width (may touch the edges: it is display type, not reading text)
     P.use('type', 'giant');
     const el = E.el('div', `position:absolute;left:0;right:0;top:${y}px;text-align:center;overflow:hidden;color:${colour || P.fg};font:900 200px/.85 Archivo,sans-serif;font-variation-settings:"wdth" 70;letter-spacing:-.04em;white-space:nowrap`, parent);
     const inner = E.el('span', 'display:inline-block', el, word);
@@ -508,9 +518,9 @@
 
   // ---- ENDINGS (CTA) ----
   // tap: a cursor glides onto a button and taps it (ripple), the button confirms
-  P.tap = function (parent, label, { x = 201, y = 330, at = 16.0, done = '✓ Sent', w = 260 } = {}) {
+  P.tap = function (parent, label, { x = 201, y = 380, at = 16.0, done = '✓ Sent', w = 342 } = {}) {
     P.use('cta', 'tap');
-    const btn = E.el('div', `position:absolute;left:${x - w / 2}px;top:${y - 30}px;width:${w}px;height:60px;border-radius:99px;display:grid;place-items:center;background:${P.accent};color:#111;font:800 16px/1 Archivo,sans-serif;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 0 30px ${hexA(P.accent, .45)};overflow:hidden`, parent, label);
+    const btn = E.el('div', `position:absolute;left:${x - w / 2}px;top:${y - 36}px;width:${w}px;height:72px;border-radius:99px;display:grid;place-items:center;background:${P.accent};color:#111;font:800 20px/1 Archivo,sans-serif;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 0 30px ${hexA(P.accent, .45)};overflow:hidden`, parent, label);
     const rip = E.el('div', `position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:rgba(255,255,255,.6);opacity:0`, btn);
     const cur = E.el('div', 'position:absolute;left:0;top:0;width:26px;height:30px;color:#fff;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))', parent, '<svg viewBox="0 0 24 28" width="26" height="30" aria-hidden="true"><path d="M4 2v20l5-5 3.5 8 3-1.3-3.5-7.7H19z" fill="currentColor" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg>');
     P.on((t) => { const k = ease.io3(clamp((t - at + .9) / .8)), press = t >= at && t < at + .15; css(cur, { opacity: (clamp((t - at + 1) / .2) * (1 - sm(at + .8, at + 1, t))).toFixed(3), transform: `translate(${lerp(x + 120, x + 6, k).toFixed(1)}px,${lerp(y + 160, y + 2, k).toFixed(1)}px) scale(${press ? .85 : 1})` });
@@ -530,7 +540,7 @@
   };
   // the studio sign-off: the only constant across all reels (small, last ~1.2 s)
   P.signoff = function ({ at = 16.9, out = 17.75, y = 492 } = {}) {
-    const el = E.el('div', `position:absolute;left:0;right:0;top:${y}px;text-align:center;font:600 10px/1 ${MONO};letter-spacing:.32em;color:${hexA(P.light ? '#000000' : '#ffffff', .6)};text-transform:uppercase`, P.front, 'Made by Aquarii');
+    const el = E.el('div', `position:absolute;left:0;right:0;top:${y}px;text-align:center;font:700 12px/1 ${MONO};letter-spacing:.32em;color:${hexA(P.light ? '#000000' : '#ffffff', .75)};text-transform:uppercase`, P.front, 'Aquarii Web Studio');
     P.on((t) => { el.style.opacity = (sm(at, at + .3, t) * (1 - sm(out, out + .25, t))).toFixed(3); });
     return el;
   };

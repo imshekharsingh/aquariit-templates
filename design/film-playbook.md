@@ -23,6 +23,14 @@ business's metaphor. Shipping it unchanged fails `scripts/check.mjs` (films from
 - Gallery check for new parts: write a tiny story in a scratch folder and render it with `--film-dir DIR --stills ...` on any template.
 - The review question is human: would I stop on it, watch to the end, screenshot a moment, send it to a friend in that business? Log the answers as `friendTest`.
 
+## Use the whole frame (owner feedback, 13 Oct 2026)
+The first films put a small subject in a narrow central column with a lot of empty frame (Gojigo v3 measured 2-18% coverage, 15 of 20 frames TIGHT). Rules now:
+- the subject fills the width (phone 270-290 px wide and running off the bottom edge; numbers and display type 340-390 px wide; buttons full width);
+- grounds go edge to edge (a city map, a grid, a gradient field, a giant outlined ghost number bleeding off a side);
+- compose off-centre (type left-aligned at the 30 px gutter, ghost elements on the right); key text still stays inside the safe zones;
+- measure: `node scripts/film/fill-meter.mjs DIR` on the stills; at most a third TIGHT (Gojigo v4: 8 of 20, all transitions or the breath).
+Gotcha: P.MONO contains font names in quotes; it is single-quoted so it can sit inside style="..." attributes (double quotes broke every inline mono style before).
+
 ## Authoring a film (the order matters)
 1. Read `reel-log.json` (last 7 films) and design/experiments.md. Do not repeat a concept, primary transition or sound direction.
 2. Write the visual DNA (5 lines), pitch 3 concepts, score them, pick one (see `film/2026-10-13-0851/treatment.md` for the shape).
