@@ -53,6 +53,25 @@ Premium does not mean more colours. What made the reference look expensive, and 
 8. **Depth cheaply.** Static blurred bokeh discs moved only by transform, a dust canvas with periodic drift, a soft halo behind the lit object.
 9. **One idea per ~1.2 s, one centred focal object per shot, big negative space.**
 
+### Reference study 2: a "POV: you edited the whole night" reel (owner screen recording, 13 Oct 2026; studied frame by frame, timings at real speed)
+What it is: a phone filming a monitor in a dark room lit by a colour-cycling RGB keyboard; a fixed caption on top ("POV - you edited the whole night"); on the monitor a ~19 s brand
+film. The work is the content, the POV caption is the hook, the filmed room adds texture and constant colour motion. Its edit grammar, and what we take:
+1. **A sentence that builds, not cards that replace.** "Every / great / idea / starts / with a / Spark" appears word by word on ONE line, ~0.5-0.7 s per word, small light-weight
+   type in lots of air; the accent words are coloured. The viewer reads along, so even slow pacing holds. Use it for the claim; keep pill captions for the punchy beats.
+2. **Pivot words alone.** The line clears and single words carry the turns ("But", "Inspiration", "Everywhere", "Nowhere"), and each gets its own world response: a busy burst of
+   UI cards flying in for "Everywhere", sudden emptiness for "Nowhere". Contrast pairs make the problem felt.
+3. **A recurring shape as a character.** A coral asterisk ("spark") enters from the edge, spins beside the words, then flies to the centre and becomes the wipe. One brand shape
+   that travels through the film gives continuity better than unrelated transitions. Also used: a liquid wave wipe from the bottom, a brush-smear reveal.
+4. **Logo, then the claim.** The mark pops in, the name follows, then the promise builds next to it with a highlighter swipe behind the accent words.
+5. **A change of world at about three quarters.** Flat 2D type cuts to a photoreal desk with a monitor, a slow push-in, the screen cycling one wide-tracked word every ~0.6 s
+   (PLACE / ORGANIZED / VISUAL); then the real product panel slides in from the right and fills with content. Show the product only after the idea has landed.
+6. **The ending opens out.** The product's content flies out over a big soft photographic world: the last frame is the largest space in the film.
+7. **Restraint again.** Warm cream, one coral gradient that slowly drifts, one secondary accent used once; no heavy outlines, no pills. Calm, slow (~66 BPM), un-gridded music:
+   this kind of film is cut to the words, not to the beat.
+8. **The opening is a rack focus.** Frame 0 is a huge blurred word in a white flare that pulls back and sharpens into the line: motion and curiosity from the first frame.
+For us: a POV wrapper ("POV: you built a clinic's booking site at 2 am") rendered as a virtual monitor in a night room with slow ambient light cycling in the film's own palette;
+and inside, the sentence-build + pivot words + one brand shape per template (Dantika: a tooth or a clock hand; a café: a steam curl).
+
 ## Sound (Music & Sound in CLAUDE.md, implemented in `scripts/audio/`)
 No music is ever synthesised in code. Music comes from a licensed source; until one is connected a film ships with NO music bed and the owner adds Instagram's own audio (the kit's `## Music` gives BPM and search terms; the film is cut on its BPM grid, so pick a track near it and start it on a downbeat).
 The toolkit (each step is a script; `produce.mjs ID` runs them all):

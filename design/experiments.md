@@ -34,6 +34,9 @@ screen recording of the same page. Owner chose variant A (type-first open: hook 
   Rules: the list speaks to owners (styles as moods: calm, bold, premium, playful), not to designers; original copy and look; the film engine swaps theme tokens, no new page per style.
   Measure saves and shares per reach against the single-template films.
 - E8: comment-keyword CTA ("Comment SITE for the price list"): drives comments; replies by hand at first (no paid DM automation). Measure comments and profile visits.
+- E9 (from an owner-shared POV reel, 13 Oct): a **POV wrapper** ("POV: you built a café's site at 2 am"): the film plays on a virtual monitor in a night room with slow ambient
+  light in the film's palette; inside, a sentence that builds word by word, pivot words with their own world responses, and one brand shape as a recurring character
+  (design/film-playbook.md, Reference study 2). Measure average watch and shares against the plain films.
 - Style menu: the same list has styles our menus lack (maximalism, vector art, collage, pixel art, Y2K, surreal, graffiti, handwritten). Proposal for the owner: add the modern ones to
   the CLAUDE.md mood menu (needs the owner's go-ahead, CLAUDE.md is owner-edited).
 
