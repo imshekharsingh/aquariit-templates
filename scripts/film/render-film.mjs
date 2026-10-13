@@ -10,13 +10,13 @@ import { spawnSync } from 'node:child_process';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const args = process.argv.slice(2), opt = (n, d) => { const i = args.indexOf(n); return i > -1 ? args[i + 1] : d; };
-const valueArgs = new Set(['--variant', '--out', '--sub', '--shutter', '--workers', '--frames', '--stills', '--crf']);
+const valueArgs = new Set(['--variant', '--out', '--sub', '--shutter', '--workers', '--frames', '--stills', '--crf', '--deliver']);
 const id = args.find((a, i) => !a.startsWith('--') && !valueArgs.has(args[i - 1]));
 if (!id || !existsSync(join(root, 'film', id, 'story.js'))) { console.error('usage: render-film.mjs ID  (needs film/ID/story.js)'); process.exit(2); }
 const dir = join(root, 'film', id), T = JSON.parse(readFileSync(join(dir, 'timing.json'), 'utf8'));
 const OUT = opt('--out', join(root, 'out', 'film', id)), VAR = opt('--variant', 'both'), SUB = +opt('--sub', 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = +opt('--crf', 19);
 const FPS = 30, LEN = T.len, NF = LEN * FPS, JOIN_F = Math.round(T.join * FPS), SCALE = 1080 / 402;
-const only = opt('--frames', ''), stills = opt('--stills', ''), COVER = args.includes('--cover');
+const only = opt('--frames', ''), stills = opt('--stills', ''), COVER = args.includes('--cover'), DELIVER = opt('--deliver', '');
 
 const require = createRequire(import.meta.url);
 let pw; for (const p of ['playwright', '/opt/node-tools/node_modules/playwright', '/opt/node-tools/node_modules/playwright-core']) { try { pw = require(p); break; } catch { /* next */ } }
@@ -52,15 +52,18 @@ async function frame(pg, dest, f) {
 
 const browsers = [];
 const variants = VAR === 'both' ? ['A', 'B'] : [VAR];
-if (COVER) { // the cover poster (1080x1920) + a preview of how it crops on the profile grid
+async function makeCover() { // the cover poster (1080x1920) + a preview of how it crops on the profile grid; returns false when the story has no poster
   const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}) }); const pg = await openPage(b, 'A');
-  await pg.evaluate(() => { FilmEngine.story.cover(); FilmEngine.frame = 7; });
-  await pg.screenshot({ path: join(OUT, 'cover-raw.png') }); await b.close();
+  const has = await pg.evaluate(() => { if (typeof FilmEngine.story.cover !== 'function') return false; FilmEngine.story.cover(); FilmEngine.frame = 7; return true; });
+  if (has) await pg.screenshot({ path: join(OUT, 'cover-raw.png') });
+  await b.close(); if (!has) return false;
   const sp = (a) => { const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', ...a], { encoding: 'utf8' }); if (r.status !== 0) { console.error(r.stderr); process.exit(1); } };
   sp(['-i', join(OUT, 'cover-raw.png'), '-vf', 'scale=1080:1920:flags=lanczos', join(OUT, `${id}-cover.png`)]);
+  sp(['-i', join(OUT, `${id}-cover.png`), '-q:v', '3', join(OUT, `${id}-cover.jpg`)]);
   sp(['-i', join(OUT, `${id}-cover.png`), '-filter_complex', '[0]split=3[a][b][c];[a]scale=-2:640[x];[b]crop=1080:1440:0:240,scale=-2:640[y];[c]crop=1080:1080:0:420,scale=-2:640[z];[x][y][z]hstack=3', join(OUT, `${id}-cover-grid-preview.png`)]);
-  console.log('cover written'); process.exit(0);
+  console.log('cover written'); return true;
 }
+if (COVER) { await makeCover(); process.exit(0); }
 if (stills) { // debug: single stills at given film times, variant A (or --variant)
   const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}) }); const pg = await openPage(b, variants[0]);
   for (const s of stills.split(',')) { const t = +s; await pg.evaluate(([tt]) => FilmEngine.render(tt, Math.round(tt * 30)), [t]); await settle(pg); await pg.screenshot({ path: join(OUT, `still-${variants[0]}-${t.toFixed(2)}.png`) }); console.log('still', t); }
@@ -92,7 +95,8 @@ console.log(`rendered ${jobs.length} frames x${SUB} in ${((Date.now() - t0) / 10
 const run = (cmd, a, o = {}) => { const r = spawnSync(cmd, a, { encoding: 'utf8', ...o }); if (r.status !== 0) { console.error(cmd, a.join(' ').slice(0, 300), '\n', (r.stderr || '').slice(-1500)); process.exit(1); } return r; };
 const audio = join(OUT, 'score.wav');
 if (!args.includes('--no-audio') && !only) {
-  const m = await import(pathToFileURL(join(dir, 'audio.mjs')).href); await m.writeScore(audio, T);
+  const custom = join(dir, 'audio.mjs'); // optional per-film score; the default is the effects-only track built from timing.json cues
+  const m = existsSync(custom) ? await import(pathToFileURL(custom).href) : await import('./sfx.mjs'); console.log('audio:', JSON.stringify(await (m.writeScore || m.writeSfx)(audio, T)));
 }
 for (const v of variants) {
   const seq = join(OUT, 'seq-' + v); rmSync(seq, { recursive: true, force: true }); mkdirSync(seq, { recursive: true });
@@ -106,4 +110,16 @@ for (const v of variants) {
   const haveAudio = existsSync(audio) && !only;
   run('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS * SUB), '-i', join(seq, '%06d.jpg'), ...(haveAudio ? ['-i', audio] : []), '-filter_complex', vf, '-map', '[v]', ...(haveAudio ? ['-map', '1:a', '-af', 'alimiter=limit=0.66:attack=3:release=40:level=disabled', '-c:a', 'aac', '-ar', '48000', '-b:a', '192k', '-shortest'] : []), '-r', String(FPS), '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-preset', 'medium', '-crf', String(CRF), '-maxrate', '14M', '-bufsize', '28M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
   console.log('wrote', mp4);
+}
+
+// ---- deliver: the file names the Reel publish workflow and the site expect (ID.mp4, ID-cover.jpg, ID.json) ----
+if (DELIVER && !only) {
+  mkdirSync(DELIVER, { recursive: true });
+  const v = variants[0], { copyFileSync } = await import('node:fs');
+  copyFileSync(join(OUT, `${id}-${v}.mp4`), join(DELIVER, `${id}.mp4`));
+  if (await makeCover()) copyFileSync(join(OUT, `${id}-cover.jpg`), join(DELIVER, `${id}-cover.jpg`));
+  else if (existsSync(join(root, 'templates', 'covers', `${id}.jpg`))) copyFileSync(join(root, 'templates', 'covers', `${id}.jpg`), join(DELIVER, `${id}-cover.jpg`));
+  else { console.error('no cover image'); process.exit(1); }
+  writeFileSync(join(DELIVER, `${id}.json`), JSON.stringify({ id, format: 'film', variant: v, fps: FPS, length: LEN, audio: 'effects-only', bpm: T.bpm || null, note: 'directed film (virtual camera), see film/' + id }, null, 1));
+  console.log('delivered', DELIVER);
 }

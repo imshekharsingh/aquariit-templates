@@ -102,7 +102,7 @@
     const a = inner.animate(kf, { duration: total * 1000, delay: at * 1000, fill: 'both' }); a.pause(); E.anims.push(a); return a;
   };
   // generic element animation driven by film time
-  E.tween = (el, kf, at, dur, easing = SPRING_CSS) => { const a = el.animate(kf, { duration: dur * 1000, delay: at * 1000, fill: 'both', easing }); a.pause(); E.anims.push(a); return a; };
+  E.tween = (el, kf, at, dur, easing = SPRING_CSS, fill = 'both') => { const a = el.animate(kf, { duration: dur * 1000, delay: at * 1000, fill, easing }); a.pause(); E.anims.push(a); return a; };
 
   // ---- one frame --------------------------------------------------------------------------------------------------------------------
   E.render = (t, frame) => {
