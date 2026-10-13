@@ -179,6 +179,23 @@ if (existsSync(mp)) {
   }
 }
 
+// films made from 2026-10-14 on must be built on the film parts (product-film grammar) and must not ship the starter unchanged
+{
+  const FD = join(root, 'film');
+  const starter = existsSync(join(FD, '_starter', 'story.js')) ? readFileSync(join(FD, '_starter', 'story.js'), 'utf8') : '';
+  let rl = []; try { rl = JSON.parse(readFileSync(join(root, 'reel-log.json'), 'utf8')); } catch { /* reported elsewhere */ }
+  for (const id of existsSync(FD) ? readdirSync(FD) : []) {
+    if (!/^\d{4}-\d{2}-\d{2}/.test(id) || id < '2026-10-14') continue;
+    const sp = join(FD, id, 'story.js'); if (!existsSync(sp)) continue;
+    const src = readFileSync(sp, 'utf8');
+    if (!/FilmParts/.test(src)) err(`film/${id}/story.js: must be built on scripts/film/parts.js (window.FilmParts), see design/film-playbook.md`);
+    if (starter && src.trim() === starter.trim()) err(`film/${id}/story.js: is the starter unchanged; bend it around this business's own concept`);
+    const e = rl.find((x) => x.id === id);
+    if (!e) err(`reel-log.json: no entry for the film ${id}`);
+    else if (!(e.revisionPasses >= 2) || !e.notes) err(`reel-log.json ${id}: record the style-frame passes (revisionPasses >= 2 and notes on what each pass fixed)`);
+  }
+}
+
 if (errors.length) {
   console.error(`\n✗ ${errors.length} check(s) failed:\n` + errors.map((e) => `  - ${e}`).join('\n') + '\n');
   process.exit(1);

@@ -24,7 +24,7 @@ if (!pw) { console.error('Playwright not found.'); process.exit(2); }
 const base = process.env.PLAYWRIGHT_BROWSERS_PATH || '/opt/pw-browsers';
 const exe = existsSync(base) ? readdirSync(base).filter((d) => d.startsWith('chromium-')).map((d) => join(base, d, 'chrome-linux', 'chrome')).find(existsSync) : undefined;
 const tplUrl = pathToFileURL(join(root, 'templates', id, 'index.html')).href;
-const engineSrc = readFileSync(join(root, 'scripts', 'film', 'engine.js'), 'utf8'), storySrc = readFileSync(join(dir, 'story.js'), 'utf8');
+const engineSrc = readFileSync(join(root, 'scripts', 'film', 'engine.js'), 'utf8'), partsSrc = readFileSync(join(root, 'scripts', 'film', 'parts.js'), 'utf8'), storySrc = readFileSync(join(dir, 'story.js'), 'utf8');
 mkdirSync(OUT, { recursive: true });
 
 async function openPage(browser, variant) {
@@ -34,7 +34,7 @@ async function openPage(browser, variant) {
   await pg.evaluate(async () => { await document.fonts.ready; await Promise.all(['900 20px Gabarito', '500 12px "Martian Mono"'].map((f) => document.fonts.load(f))); });
   let kit = null; try { kit = JSON.parse(readFileSync(join(root, 'templates', 'social-kits.json'), 'utf8')).find((k) => k.id === id) || null; } catch { /* no kit */ }
   await pg.evaluate(([t, k]) => { window.FILM_T = t; window.FILM_KIT = k; }, [T, kit]);
-  await pg.addScriptTag({ content: engineSrc }); await pg.addScriptTag({ content: storySrc });
+  await pg.addScriptTag({ content: engineSrc }); await pg.addScriptTag({ content: partsSrc }); await pg.addScriptTag({ content: storySrc });
   await pg.evaluate(async (v) => { if (!FilmEngine.story.selfStage) FilmEngine.stage(); await FilmEngine.story.setup(v); }, variant);
   if (errs.length) throw new Error('page error: ' + errs.join(' | '));
   return pg;
