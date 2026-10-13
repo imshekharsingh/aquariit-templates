@@ -1,0 +1,23 @@
+{
+  "bpm": 120,
+  "len": 18,
+  "join": 2.0,
+  "hookCut": 2.0,
+  "iris": [17.0, 17.8],
+  "music": {
+    "bpm": 120, "duration": 18, "peak": 14.0, "breath": [12.0, 12.6],
+    "hits": [
+      { "t": 2.0, "kind": "downbeat", "label": "hook cut to the page" },
+      { "t": 4.0, "kind": "downbeat", "label": "first shot" },
+      { "t": 14.0, "kind": "impact", "label": "peak: the closing shot" },
+      { "t": 17.0, "kind": "downbeat", "label": "iris wipe, the loop" }
+    ],
+    "sections": [
+      { "name": "intro", "t0": 0, "t1": 4, "energy": "sparse" },
+      { "name": "build", "t0": 4, "t1": 12, "energy": "rising" },
+      { "name": "breath", "t0": 12, "t1": 14, "energy": "silence then riser" },
+      { "name": "peak", "t0": 14, "t1": 17, "energy": "high" },
+      { "name": "resolve", "t0": 17, "t1": 18, "energy": "settling" }
+    ]
+  }
+}

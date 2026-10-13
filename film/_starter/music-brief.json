@@ -1,0 +1,12 @@
+{
+  "mood": "EDIT: mood in plain words that matches the template's visual DNA",
+  "genre": "EDIT: a genre that differs from the last 7 films (reel-log.json)",
+  "instrumentation": ["EDIT: 3-5", "specific instruments", "or textures"],
+  "avoid": ["vocals", "named artists or songs"],
+  "vocals": false,
+  "interpretations": [
+    { "name": "EDIT interpretation 1", "instrumentation": ["EDIT"], "energy": "EDIT" },
+    { "name": "EDIT interpretation 2 (meaningfully different)", "instrumentation": ["EDIT"], "energy": "EDIT" },
+    { "name": "EDIT interpretation 3 (meaningfully different)", "instrumentation": ["EDIT"], "energy": "EDIT" }
+  ]
+}
