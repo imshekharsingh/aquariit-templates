@@ -1,0 +1,34 @@
+[
+  {
+    "name": "marimba-led electro-pop",
+    "prompt": "Instrumental only, no vocals. bright, confident, modern and a little playful: a colour studio that knows it is right. bright electro-pop, 120 BPM, exactly 18 seconds, 9 bars of 4/4. plucked marimba, tight kick drum with offbeat hats, round sub bass, airy synth pads, glassy bell accents. Energy follows the picture: 0-3s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 3-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-14s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 14-15.5s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.5-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 1.5s, 4s, 10s, 14s, 15.5s; near-silence from 12s to 12.6s; the last bar resolves so the track loops. Interpretation 1: marimba-led electro-pop. Instruments: plucked marimba, tight kick drum with offbeat hats, round sub bass, airy synth pads, glassy bell accents. Feel: playful and bouncy, melody in the marimba. Do not imitate any existing song or artist.",
+    "instrumentation": [
+      "plucked marimba",
+      "tight kick drum with offbeat hats",
+      "round sub bass",
+      "airy synth pads",
+      "glassy bell accents"
+    ]
+  },
+  {
+    "name": "minimal glass and clicks",
+    "prompt": "Instrumental only, no vocals. bright, confident, modern and a little playful: a colour studio that knows it is right. bright electro-pop, 120 BPM, exactly 18 seconds, 9 bars of 4/4. plucked marimba, tight kick drum with offbeat hats, round sub bass, airy synth pads, glassy bell accents. Energy follows the picture: 0-3s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 3-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-14s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 14-15.5s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.5-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 1.5s, 4s, 10s, 14s, 15.5s; near-silence from 12s to 12.6s; the last bar resolves so the track loops. Interpretation 2: minimal glass and clicks. Instruments: glass percussion, soft clicks and rim shots, warm sub bass, wide pad swells. Feel: sparse and precise, the build comes from layers not volume. Do not imitate any existing song or artist.",
+    "instrumentation": [
+      "glass percussion",
+      "soft clicks and rim shots",
+      "warm sub bass",
+      "wide pad swells"
+    ]
+  },
+  {
+    "name": "driving filtered house",
+    "prompt": "Instrumental only, no vocals. bright, confident, modern and a little playful: a colour studio that knows it is right. bright electro-pop, 120 BPM, exactly 18 seconds, 9 bars of 4/4. plucked marimba, tight kick drum with offbeat hats, round sub bass, airy synth pads, glassy bell accents. Energy follows the picture: 0-3s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 3-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-14s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 14-15.5s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.5-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 1.5s, 4s, 10s, 14s, 15.5s; near-silence from 12s to 12.6s; the last bar resolves so the track loops. Interpretation 3: driving filtered house. Instruments: four-on-the-floor kick, filtered chord stabs, rolling bass, shaker, white-noise sweeps. Feel: propulsive, the filter opens into the peak. Do not imitate any existing song or artist.",
+    "instrumentation": [
+      "four-on-the-floor kick",
+      "filtered chord stabs",
+      "rolling bass",
+      "shaker",
+      "white-noise sweeps"
+    ]
+  }
+]

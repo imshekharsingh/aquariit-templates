@@ -10,13 +10,13 @@ import { spawnSync } from 'node:child_process';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const args = process.argv.slice(2), opt = (n, d) => { const i = args.indexOf(n); return i > -1 ? args[i + 1] : d; };
-const valueArgs = new Set(['--variant', '--out', '--sub', '--shutter', '--workers', '--frames', '--stills', '--crf', '--deliver']);
+const valueArgs = new Set(['--variant', '--out', '--sub', '--shutter', '--workers', '--frames', '--stills', '--crf', '--deliver', '--audio']);
 const id = args.find((a, i) => !a.startsWith('--') && !valueArgs.has(args[i - 1]));
 if (!id || !existsSync(join(root, 'film', id, 'story.js'))) { console.error('usage: render-film.mjs ID  (needs film/ID/story.js)'); process.exit(2); }
 const dir = join(root, 'film', id), T = JSON.parse(readFileSync(join(dir, 'timing.json'), 'utf8'));
 const OUT = opt('--out', join(root, 'out', 'film', id)), VAR = opt('--variant', 'both'), SUB = +opt('--sub', 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = +opt('--crf', 19);
 const FPS = 30, LEN = T.len, NF = LEN * FPS, JOIN_F = Math.round(T.join * FPS), SCALE = 1080 / 402;
-const only = opt('--frames', ''), stills = opt('--stills', ''), COVER = args.includes('--cover'), DELIVER = opt('--deliver', '');
+const AUDIO = opt('--audio', ''), only = opt('--frames', ''), stills = opt('--stills', ''), COVER = args.includes('--cover'), DELIVER = opt('--deliver', '');
 
 const require = createRequire(import.meta.url);
 let pw; for (const p of ['playwright', '/opt/node-tools/node_modules/playwright', '/opt/node-tools/node_modules/playwright-core']) { try { pw = require(p); break; } catch { /* next */ } }
@@ -93,8 +93,11 @@ console.log(`rendered ${jobs.length} frames x${SUB} in ${((Date.now() - t0) / 10
 
 // ---- assemble each variant: sequence = variant head (f < JOIN_F) + shared tail, motion-blurred by averaging each group of SUB sub-frames ----
 const run = (cmd, a, o = {}) => { const r = spawnSync(cmd, a, { encoding: 'utf8', ...o }); if (r.status !== 0) { console.error(cmd, a.join(' ').slice(0, 300), '\n', (r.stderr || '').slice(-1500)); process.exit(1); } return r; };
-const audio = join(OUT, 'score.wav');
-if (!args.includes('--no-audio') && !only) {
+// audio: a finished mix made by scripts/audio/produce.mjs (licensed music + effects, mastered) when one exists for this film, otherwise the effects-only track
+let audio = join(OUT, 'score.wav');
+const finalMix = (() => { if (AUDIO) return AUDIO; const root2 = join(root, 'audio'); if (!existsSync(root2)) return ''; for (const d of readdirSync(root2).sort().reverse()) { const f = join(root2, d, id, 'final.wav'); if (existsSync(f)) return f; } return ''; })();
+if (finalMix && existsSync(finalMix)) { audio = finalMix; console.log('audio: finished mix', finalMix); }
+else if (!args.includes('--no-audio') && !only) {
   const custom = join(dir, 'audio.mjs'); // optional per-film score; the default is the effects-only track built from timing.json cues
   const m = existsSync(custom) ? await import(pathToFileURL(custom).href) : await import('./sfx.mjs'); console.log('audio:', JSON.stringify(await (m.writeScore || m.writeSfx)(audio, T)));
 }
@@ -108,7 +111,7 @@ for (const v of variants) {
   // blur (average SUB sub-frames), bloom on highlights, gentle grade, scale to exactly 1080x1920
   const vf = `[0:v]tmix=frames=${SUB},select='not(mod(n+1\\,${SUB}))',setpts=N/(30*TB),scale=1080:1920:flags=lanczos,format=yuv420p,split[a][b];[b]curves=all='0/0 0.62/0 1/1',gblur=sigma=26[bl];[a][bl]blend=all_mode=screen:all_opacity=0.16,eq=contrast=1.04:saturation=1.05[v]`;
   const haveAudio = existsSync(audio) && !only;
-  run('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS * SUB), '-i', join(seq, '%06d.jpg'), ...(haveAudio ? ['-i', audio] : []), '-filter_complex', vf, '-map', '[v]', ...(haveAudio ? ['-map', '1:a', '-af', 'alimiter=limit=0.66:attack=3:release=40:level=disabled', '-c:a', 'aac', '-ar', '48000', '-b:a', '192k', '-shortest'] : []), '-r', String(FPS), '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-preset', 'medium', '-crf', String(CRF), '-maxrate', '14M', '-bufsize', '28M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
+  run('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS * SUB), '-i', join(seq, '%06d.jpg'), ...(haveAudio ? ['-i', audio] : []), '-filter_complex', vf, '-map', '[v]', ...(haveAudio ? ['-map', '1:a', ...(finalMix ? [] : ['-af', 'alimiter=limit=0.66:attack=3:release=40:level=disabled']), '-c:a', 'aac', '-ar', '48000', '-b:a', '192k', '-shortest'] : []), '-r', String(FPS), '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-preset', 'medium', '-crf', String(CRF), '-maxrate', '14M', '-bufsize', '28M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
   console.log('wrote', mp4);
 }
 
@@ -120,6 +123,6 @@ if (DELIVER && !only) {
   if (await makeCover()) copyFileSync(join(OUT, `${id}-cover.jpg`), join(DELIVER, `${id}-cover.jpg`));
   else if (existsSync(join(root, 'templates', 'covers', `${id}.jpg`))) copyFileSync(join(root, 'templates', 'covers', `${id}.jpg`), join(DELIVER, `${id}-cover.jpg`));
   else { console.error('no cover image'); process.exit(1); }
-  writeFileSync(join(DELIVER, `${id}.json`), JSON.stringify({ id, format: 'film', variant: v, fps: FPS, length: LEN, audio: 'effects-only', bpm: T.bpm || null, note: 'directed film (virtual camera), see film/' + id }, null, 1));
+  writeFileSync(join(DELIVER, `${id}.json`), JSON.stringify({ id, format: 'film', variant: v, fps: FPS, length: LEN, audio: finalMix ? 'mixed' : 'effects-only', bpm: T.bpm || null, note: 'directed film (virtual camera), see film/' + id }, null, 1));
   console.log('delivered', DELIVER);
 }

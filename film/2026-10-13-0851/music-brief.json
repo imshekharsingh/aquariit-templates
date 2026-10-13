@@ -1,0 +1,12 @@
+{
+  "mood": "bright, confident, modern and a little playful: a colour studio that knows it is right",
+  "genre": "bright electro-pop",
+  "instrumentation": ["plucked marimba", "tight kick drum with offbeat hats", "round sub bass", "airy synth pads", "glassy bell accents"],
+  "avoid": ["vocals", "named artists or songs", "heavy distortion", "long ambient intro"],
+  "vocals": false,
+  "interpretations": [
+    { "name": "marimba-led electro-pop", "instrumentation": ["plucked marimba", "tight kick drum with offbeat hats", "round sub bass", "airy synth pads", "glassy bell accents"], "energy": "playful and bouncy, melody in the marimba" },
+    { "name": "minimal glass and clicks", "instrumentation": ["glass percussion", "soft clicks and rim shots", "warm sub bass", "wide pad swells"], "energy": "sparse and precise, the build comes from layers not volume" },
+    { "name": "driving filtered house", "instrumentation": ["four-on-the-floor kick", "filtered chord stabs", "rolling bass", "shaker", "white-noise sweeps"], "energy": "propulsive, the filter opens into the peak" }
+  ]
+}

@@ -63,22 +63,31 @@ jobs:
           npm install --no-save --no-package-lock playwright@1.56.1
           npx playwright install --with-deps chromium
           sudo apt-get install -y --no-install-recommends ffmpeg
+      - name: Music and sound (only when a licensed music source is configured)
+        if: steps.pick.outputs.skip != 'true'
+        continue-on-error: true   # no source / rejected candidates = the film ships without a music bed (owner adds Instagram audio); never blocks the reel
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          MUSIC_LICENCE_NOTE: ${{ secrets.MUSIC_LICENCE_NOTE }}
+        run: |
+          ID="${{ steps.pick.outputs.id }}"
+          if [ -f "film/$ID/music-brief.json" ]; then node scripts/audio/produce.mjs "$ID" || echo "::notice::no music bed for $ID (exit $?)"; else echo "no film/$ID/music-brief.json: effects only"; fi
       - name: Render the reel
         if: steps.pick.outputs.skip != 'true'
         run: |
           set -o pipefail
           ID="${{ steps.pick.outputs.id }}"
           # a directed film (film/ID/story.js: virtual camera, beat-locked type, effects-only sound) when the template has one; otherwise, or if the film render fails,
-          # the screen-recording renderer (so a reel is always produced)
+          # the screen-recording renderer, without its generated music (CLAUDE.md: no music synthesised in code), so a reel is always produced
           if [ -f "film/$ID/story.js" ]; then
             if node scripts/film/render-film.mjs "$ID" --variant A --workers 2 --out out/film --deliver out/reels 2>&1 | tee render.log; then
               echo "format: film"
             else
               echo "::warning::film render failed, falling back to the screen recording"
-              node scripts/render-reel.mjs "$ID" --out out/reels 2>&1 | tee -a render.log
+              node scripts/render-reel.mjs "$ID" --out out/reels --no-audio 2>&1 | tee -a render.log
             fi
           else
-            node scripts/render-reel.mjs "$ID" --out out/reels 2>&1 | tee render.log
+            node scripts/render-reel.mjs "$ID" --out out/reels --no-audio 2>&1 | tee render.log
           fi
       - name: Keep it in the reels release
         if: steps.pick.outputs.skip != 'true'

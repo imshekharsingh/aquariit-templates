@@ -1,0 +1,38 @@
+# Film playbook (directed reels): how a film is made, checked and sounded
+
+Rules live in CLAUDE.md ("Directed film", "Music & Sound"). This file is the how-to. Worked example: `film/2026-10-13-0851/` (Tintwell, "The Hue Dial").
+
+## What a film is
+A virtual camera over the LIVE template page (CSS 3D transform on one wrapper), so every shot is vector-sharp at any zoom. Every frame is a pure function of the film time: no real-time capture, no jitter.
+Engine: `scripts/film/engine.js` (stage, camera, easing, per-word type reveals, tweens). Story (per template): `film/ID/story.js`. Timing table (shared by picture and sound): `film/ID/timing.json`.
+Render: `node scripts/film/render-film.mjs ID --variant A` (≈ 3 min on 4 cores; `--stills t1,t2` for single frames, `--frames a-b` for a range, `--cover` for the poster, `--deliver DIR` for the files the workflow uploads).
+The Reel publish workflow renders it automatically when `film/ID/story.js` exists (otherwise the screen recording).
+
+## Authoring a film (the order matters)
+1. Read `reel-log.json` (last 7 films) and design/experiments.md. Do not repeat a concept, primary transition or sound direction.
+2. Write the visual DNA (5 lines), pitch 3 concepts, score them, pick one (see `film/2026-10-13-0851/treatment.md` for the shape).
+3. Lock the storyboard as `timing.json`: BPM (cuts must sit on beats: `brief.mjs` fails if a hit is more than 25 ms off the grid), cut times, `music` block (peak, breath, hit points, sections), `cues` for sound effects.
+4. Write `story.js`: `setup(variant)` builds the world and the camera keys; `update(E, t)` sets everything that changes (dial values, counters, overlays). Rules that cost hours to learn:
+   - never use `transform-style: preserve-3d` on the camera (it forces a low-resolution raster, text turns to pixels when zoomed): flat compositing only;
+   - the template's own real-time animations fight the film clock: disable them (`animation:none!important`) or drive them (`getAnimations()` + `currentTime`);
+   - read counters/numbers at the frame time, not per motion-blur sub-frame, or two digits ghost on top of each other;
+   - keep key content between y = 96 px and ≈ 560 px of the 715 px frame and inside 30 px gutters (Instagram's UI covers the rest); zoom 0.9 on holds;
+   - give every shot something that moves; a held frame is only for the breath before the reveal; the last frame must equal the first (loop).
+5. Preview: render stills at every cut + first/peak/last, build a contact sheet (ffmpeg `fps=2,tile`), LOOK at it, score the rubric (CLAUDE.md), fix anything below 8, max 3 passes.
+6. Checks that must pass: no frozen frames (`ffmpeg -vf freezedetect`), first and last frame match, 1080×1920 H.264 High 30 fps, loudness per Music & Sound.
+7. Log the film in `reel-log.json` (concept, motion style, transitions, type, grade, sound, cover, rubric, music provenance).
+
+## Sound (Music & Sound in CLAUDE.md, implemented in `scripts/audio/`)
+No music is ever synthesised in code. Music comes from a licensed source; until one is connected a film ships with NO music bed and the owner adds Instagram's own audio (the kit's `## Music` gives BPM and search terms; the film is cut on its BPM grid, so pick a track near it and start it on a downbeat).
+The toolkit (each step is a script; `produce.mjs ID` runs them all):
+| Step | Script | What it does |
+|---|---|---|
+| 1 brief | `brief.mjs` | from `timing.json` "music" + `film/ID/music-brief.json` (mood, genre, 3-5 instruments, avoid, 3 interpretations): duration, BPM on-grid check, energy curve per section, hit points, composition plan, 3 prompts; refuses a brief that repeats the previous film's genre/instrumentation/BPM (reel-log) and applies the owner's past feedback |
+| 2 generate | `generate.mjs` | 3 candidates from a licensed API (`--provider elevenlabs`, needs the secrets `ELEVENLABS_API_KEY` and `MUSIC_LICENCE_NOTE`; adapter is UNVERIFIED against the live service) or `--from DIR` for tracks made elsewhere; saves prompt, plan, model, date, licence next to each file in `audio/<date>/<ID>/` |
+| 3 evaluate | `evaluate.mjs` + `analyze.mjs` | tempo and beat grid, drift, onset alignment with the hit points (ms), energy arc (must rise into the peak, dip in the breath), loudness/dynamics/clipping, phone band; spectrogram and energy plots; rejects bad candidates, picks one, explains in 2 lines |
+| 4 edit | `edit.mjs` | rubberband tempo-fit (≤ 3%), strongest bar line onto the peak frame, bar-boundary cuts/loops only, breath = silence, loop crossfade on a beat, optional stem plan |
+| 5 sound design | `scripts/film/sfx.mjs` | whooshes/risers/impacts/clicks from `timing.json` cues, every one motivated by a picture event. NOTE: these are generated in code (original, no third-party material); CLAUDE.md asks for a licensed source, so treat them as an interim layer and replace them when a licensed SFX source exists |
+| 6 mix | `mix.mjs` | music duck −3 dB under impacts, carve at 2.8 kHz, HPFs, bus compression, −14 LUFS, true peak ≤ −1 dBTP verified AFTER AAC encoding, phone-band check |
+| 7 log | `produce.mjs` | writes the provenance, scores and loudness into reel-log.json; later add the owner's feedback to `music.feedback` |
+`node scripts/audio/selftest.mjs` proves the evaluator rejects drifting/wrong-tempo/flat/clipped tracks, that edit lands the peak within a few ms with the tempo fitted, and that the mix meets −14 LUFS / −1 dBTP (stand-in tracks only; never shipped).
+The renderer uses `audio/<date>/<ID>/final.wav` when it exists (`--audio PATH` to force), otherwise the effects-only track.

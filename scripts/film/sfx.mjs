@@ -13,7 +13,7 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { Bus, V, SR, writeWav, writeIR } from './synth.mjs';
 
-export async function writeSfx(outPath, T) {
+export async function writeSfx(outPath, T, opts = {}) {
   const LEN = T.len + .6, dry = new Bus(LEN), send = new Bus(LEN);
   for (const c of T.cues || []) {
     const g = c.g;
@@ -39,6 +39,7 @@ export async function writeSfx(outPath, T) {
     const wl = i < n ? wb.readInt16LE(off + i * 4) / 32768 : 0, wr = i < n ? wb.readInt16LE(off + i * 4 + 2) / 32768 : 0, f = i > end - 4800 ? (end - i) / 4800 : 1;
     L[i] = Math.tanh((dry.L[i] + wl * .8) * .7) * f; R[i] = Math.tanh((dry.R[i] + wr * .8) * .7) * f;
   }
+  if (opts.raw) { writeWav(outPath, L, R); return { raw: true }; }   // un-normalised stem for the mix (scripts/audio/mix.mjs sets the level)
   writeWav(raw, L, R);
   // effects only: normalise to about -20 LUFS (quiet enough to sit under a music track, loud enough to hear on its own), peaks under -2 dB
   const m = spawnSync('ffmpeg', ['-hide_banner', '-i', raw, '-af', 'loudnorm=I=-20:TP=-3:LRA=15:print_format=json', '-f', 'null', '-'], { encoding: 'utf8' });

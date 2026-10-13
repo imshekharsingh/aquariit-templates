@@ -1,0 +1,208 @@
+[
+  {
+    "positive_global_styles": [
+      "bright electro-pop",
+      "120 bpm",
+      "plucked marimba",
+      "tight kick drum with offbeat hats",
+      "round sub bass",
+      "airy synth pads",
+      "glassy bell accents"
+    ],
+    "negative_global_styles": [
+      "vocals",
+      "lyrics",
+      "vocals",
+      "named artists or songs",
+      "heavy distortion",
+      "long ambient intro"
+    ],
+    "sections": [
+      {
+        "section_name": "intro",
+        "positive_local_styles": [
+          "sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 3000,
+        "lines": []
+      },
+      {
+        "section_name": "build",
+        "positive_local_styles": [
+          "building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 9000,
+        "lines": []
+      },
+      {
+        "section_name": "breath",
+        "positive_local_styles": [
+          "drop to near silence, a held breath, then a tense riser building into the downbeat"
+        ],
+        "negative_local_styles": [
+          "full drums",
+          "melody"
+        ],
+        "duration_ms": 2000,
+        "lines": []
+      },
+      {
+        "section_name": "peak",
+        "positive_local_styles": [
+          "peak energy, the full arrangement, a big downbeat impact on the first beat"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 1500,
+        "lines": []
+      },
+      {
+        "section_name": "resolve",
+        "positive_local_styles": [
+          "resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 2500,
+        "lines": []
+      }
+    ]
+  },
+  {
+    "positive_global_styles": [
+      "bright electro-pop",
+      "120 bpm",
+      "glass percussion",
+      "soft clicks and rim shots",
+      "warm sub bass",
+      "wide pad swells"
+    ],
+    "negative_global_styles": [
+      "vocals",
+      "lyrics",
+      "vocals",
+      "named artists or songs",
+      "heavy distortion",
+      "long ambient intro"
+    ],
+    "sections": [
+      {
+        "section_name": "intro",
+        "positive_local_styles": [
+          "sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 3000,
+        "lines": []
+      },
+      {
+        "section_name": "build",
+        "positive_local_styles": [
+          "building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 9000,
+        "lines": []
+      },
+      {
+        "section_name": "breath",
+        "positive_local_styles": [
+          "drop to near silence, a held breath, then a tense riser building into the downbeat"
+        ],
+        "negative_local_styles": [
+          "full drums",
+          "melody"
+        ],
+        "duration_ms": 2000,
+        "lines": []
+      },
+      {
+        "section_name": "peak",
+        "positive_local_styles": [
+          "peak energy, the full arrangement, a big downbeat impact on the first beat"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 1500,
+        "lines": []
+      },
+      {
+        "section_name": "resolve",
+        "positive_local_styles": [
+          "resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 2500,
+        "lines": []
+      }
+    ]
+  },
+  {
+    "positive_global_styles": [
+      "bright electro-pop",
+      "120 bpm",
+      "four-on-the-floor kick",
+      "filtered chord stabs",
+      "rolling bass",
+      "shaker",
+      "white-noise sweeps"
+    ],
+    "negative_global_styles": [
+      "vocals",
+      "lyrics",
+      "vocals",
+      "named artists or songs",
+      "heavy distortion",
+      "long ambient intro"
+    ],
+    "sections": [
+      {
+        "section_name": "intro",
+        "positive_local_styles": [
+          "sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 3000,
+        "lines": []
+      },
+      {
+        "section_name": "build",
+        "positive_local_styles": [
+          "building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 9000,
+        "lines": []
+      },
+      {
+        "section_name": "breath",
+        "positive_local_styles": [
+          "drop to near silence, a held breath, then a tense riser building into the downbeat"
+        ],
+        "negative_local_styles": [
+          "full drums",
+          "melody"
+        ],
+        "duration_ms": 2000,
+        "lines": []
+      },
+      {
+        "section_name": "peak",
+        "positive_local_styles": [
+          "peak energy, the full arrangement, a big downbeat impact on the first beat"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 1500,
+        "lines": []
+      },
+      {
+        "section_name": "resolve",
+        "positive_local_styles": [
+          "resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart"
+        ],
+        "negative_local_styles": [],
+        "duration_ms": 2500,
+        "lines": []
+      }
+    ]
+  }
+]
