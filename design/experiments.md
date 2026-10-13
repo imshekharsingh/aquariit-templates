@@ -29,6 +29,19 @@ screen recording of the same page. Owner chose variant A (type-first open: hook 
 - E3: audience: show the template as a *result for a business* (before/after) rather than as a design showcase.
 - E4: posting time: 12:30 vs 19:30 IST, same format, 3 reels each.
 - E5: account type Business → Creator (music library): check whether reach changes with licensed music.
+- E7 (from an owner-shared reel, 13 Oct: a numbered "20 graphic design styles" list, 470K saves and 171K shares): **reference value drives saves and shares.** Try a buyer-facing
+  style-switch film: one business (e.g. a café) shown in 4-5 styles on the beat, a numbered list that builds on screen while the picture changes, ending on "Which one is your café?".
+  Rules: the list speaks to owners (styles as moods: calm, bold, premium, playful), not to designers; original copy and look; the film engine swaps theme tokens, no new page per style.
+  Measure saves and shares per reach against the single-template films.
+- E8: comment-keyword CTA ("Comment SITE for the price list"): drives comments; replies by hand at first (no paid DM automation). Measure comments and profile visits.
+- Style menu: the same list has styles our menus lack (maximalism, vector art, collage, pixel art, Y2K, surreal, graffiti, handwritten). Proposal for the owner: add the modern ones to
+  the CLAUDE.md mood menu (needs the owner's go-ahead, CLAUDE.md is owner-edited).
+
+## Backlog (owner: "keep it in todo", 13 Oct)
+- **Re-film the existing templates in the product-film grammar** (design/film-playbook.md, worked example film/2026-10-13-1902). Estimate: a shared film kit from the Dantika story (~2 h, once),
+  then ~45-75 min per film (story, 2-3 still passes, render, cover, log); ~15-20 h for all 19, in sittings of 3-4 films; zero cost (~3 h of Actions minutes).
+  Order: 1) kit + Tintwell redo; 2) market-fit pages: Tidemark, Gojigo, Lumen, Chatwise, Devstream, Halcyon, Kinetika; 3) Stratos, Gumdrop, Tessera, Pulsarium, Loudhaus (quick ₹ check);
+  4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
 (empty: first verdict due after the three format B reels have 48 h of data)
