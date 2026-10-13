@@ -117,3 +117,4 @@ attempts). If `gh` is unavailable, give the user the Actions page link.
 Concept, palette, fonts, signature moment, the 5 hashtags and music mood, how it differs from recent
 designs, commit hash, pipeline status, and the live URL
 https://templates.aquariit.com/ID/
+End with the oldest 1-3 open items from design/open-items.md, one line each, as questions to the owner (owner's standing request).
