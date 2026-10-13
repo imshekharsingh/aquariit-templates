@@ -22,6 +22,15 @@
   const css = (el, o) => { for (const k in o) el.style[k] = o[k]; };
   const MONO = '"Geist Mono","JetBrains Mono",ui-monospace,monospace';
   const P = (window.FilmParts = { sm, css, MONO, TAU, ups: [], accent: '#c8ff3d', ink: '#050607', len: 18 });
+  // the parts' own type (captions, HUD) must not depend on the page's fonts: load Archivo (width axis) + Geist Mono; stories `await P.ready` in setup()
+  P.ready = (async () => {
+    try {
+      const l = document.createElement('link'); l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist+Mono:wght@400..600&display=block';
+      document.head.appendChild(l); await new Promise((ok) => { l.onload = ok; l.onerror = ok; setTimeout(ok, 6000); });
+      await Promise.all(['800 28px Archivo', '900 30px Archivo', '500 11px "Geist Mono"'].map((f) => document.fonts.load(f)));
+    } catch (e) { /* fall back to system fonts */ }
+  })();
   P.on = (fn) => { P.ups.push(fn); return fn; };
   P.update = (t) => { const tf = E.frame / 30; P.ups.forEach((f) => f(t, tf)); };
   const hexA = (hex, a) => { const h = hex.replace('#', ''); const n = parseInt(h.length === 3 ? h.replace(/./g, '$&$&') : h, 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`; };

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "ticking funk",
+    "prompt": "Instrumental only, no vocals. warm, quick, playful urgency that lands in a satisfied, cosy finish. upbeat lo-fi funk with a ticking clock groove, 100 BPM, exactly 18 seconds, 7.5 bars of 4/4. muted funk guitar, clockwork hi-hat ticks, round warm bass, short brass stabs on the hits. Energy follows the picture: 0-2.4s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 2.4-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-12.6s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 12.6-15.6s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.6-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 2.4s, 3.6s, 6s, 9s, 12.6s, 15.6s, 18s; near-silence from 12s to 12.45s; the last bar resolves so the track loops. Interpretation 1: ticking funk. Instruments: muted guitar, clock ticks, warm bass. Feel: steady build to a brass stab at 12.6. Do not imitate any existing song or artist.",
+    "instrumentation": [
+      "muted guitar",
+      "clock ticks",
+      "warm bass"
+    ]
+  },
+  {
+    "name": "night-market lo-fi",
+    "prompt": "Instrumental only, no vocals. warm, quick, playful urgency that lands in a satisfied, cosy finish. upbeat lo-fi funk with a ticking clock groove, 100 BPM, exactly 18 seconds, 7.5 bars of 4/4. muted funk guitar, clockwork hi-hat ticks, round warm bass, short brass stabs on the hits. Energy follows the picture: 0-2.4s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 2.4-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-12.6s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 12.6-15.6s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.6-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 2.4s, 3.6s, 6s, 9s, 12.6s, 15.6s, 18s; near-silence from 12s to 12.45s; the last bar resolves so the track loops. Interpretation 2: night-market lo-fi. Instruments: plucked strings, soft kit, vinyl crackle, sub bass. Feel: laid back, the breath is a full stop, then a warm swell. Do not imitate any existing song or artist.",
+    "instrumentation": [
+      "plucked strings",
+      "soft kit",
+      "vinyl crackle",
+      "sub bass"
+    ]
+  },
+  {
+    "name": "chase synth",
+    "prompt": "Instrumental only, no vocals. warm, quick, playful urgency that lands in a satisfied, cosy finish. upbeat lo-fi funk with a ticking clock groove, 100 BPM, exactly 18 seconds, 7.5 bars of 4/4. muted funk guitar, clockwork hi-hat ticks, round warm bass, short brass stabs on the hits. Energy follows the picture: 0-2.4s intro (sparse and minimal, a soft intro with only a pulse and a light texture, no full drums yet); 2.4-12s build (building energy, add a layer every bar (hats, bass, pads, arpeggio), tension rising); 12-12.6s breath (drop to near silence, a held breath, then a tense riser building into the downbeat); 12.6-15.6s peak (peak energy, the full arrangement, a big downbeat impact on the first beat); 15.6-18s resolve (resolving, thinning out, loop-friendly: it ends on the tonic on a bar boundary so it can restart). Downbeat or impact at 2.4s, 3.6s, 6s, 9s, 12.6s, 15.6s, 18s; near-silence from 12s to 12.45s; the last bar resolves so the track loops. Interpretation 3: chase synth. Instruments: arpeggiated synth, tight drums, sub pulse. Feel: accelerating through the ride, a big hit at delivery. Do not imitate any existing song or artist.",
+    "instrumentation": [
+      "arpeggiated synth",
+      "tight drums",
+      "sub pulse"
+    ]
+  }
+]

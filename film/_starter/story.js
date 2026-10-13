@@ -19,7 +19,7 @@
 
   S.setup = async function () {
     document.documentElement.classList.add('reel');
-    await document.fonts.ready;
+    await P.ready; await document.fonts.ready;
     await new Promise((r) => setTimeout(r, 1500));                       // let the page's own load animations finish before cloning it
     // ---- read the page ----
     let accent = T.accent || ['--accent', '--acc', '--brand', '--primary', '--hot', '--a'].map((v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim()).find((v) => v && !/var\(|gradient/.test(v)) || '', best = accent ? 1 : 0;
