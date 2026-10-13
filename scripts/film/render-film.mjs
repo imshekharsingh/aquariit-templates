@@ -37,6 +37,12 @@ async function openPage(browser, variant) {
   await pg.addScriptTag({ content: engineSrc }); await pg.addScriptTag({ content: partsSrc }); await pg.addScriptTag({ content: storySrc });
   await pg.evaluate(async (v) => { if (!FilmEngine.story.selfStage) FilmEngine.stage(); await FilmEngine.story.setup(v); }, variant);
   if (errs.length) throw new Error('page error: ' + errs.join(' | '));
+  // auto-manifest (no hand upkeep): the parts record the slot each one fills; the story declares its DNA (opening, bigMoment, ground, music)
+  if (!FD) { try {
+    const m = await pg.evaluate(() => ({ used: (window.FilmParts || {}).used || {}, dna: FilmEngine.story.dna || null }));
+    const mp = join(dir, 'manifest.json'); let made = new Date().toISOString(); try { made = JSON.parse(readFileSync(mp, 'utf8')).made || made; } catch { /* first time */ }
+    writeFileSync(mp, JSON.stringify({ id, made, slots: m.used, dna: m.dna }, null, 2) + '\n');
+  } catch (e) { console.error('manifest not written:', String(e).slice(0, 120)); } }
   return pg;
 }
 // give the compositor two frames to re-raster at the new camera zoom (otherwise a big zoom can be captured from a stale, low-resolution raster)

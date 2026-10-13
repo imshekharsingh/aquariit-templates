@@ -193,7 +193,33 @@ if (existsSync(mp)) {
     const e = rl.find((x) => x.id === id);
     if (!e) err(`reel-log.json: no entry for the film ${id}`);
     else if (!(e.revisionPasses >= 2) || !e.notes) err(`reel-log.json ${id}: record the style-frame passes (revisionPasses >= 2 and notes on what each pass fixed)`);
+    if (e && !e.friendTest) err(`reel-log.json ${id}: answer the friend test (friendTest: stop scrolling? watch to the end? a moment to screenshot? send it to a friend?)`);
   }
+}
+
+// variety across reels: every film writes film/ID/manifest.json (auto, from the parts it used) + a declared dna; new films must not repeat the previous film
+// in the four story-defining slots, and must not be a near-copy of any of the last 7 (warnings for partial overlap)
+{
+  const FD = join(root, 'film'), KEY = ['opener', 'transition', 'mechanism', 'payoff'], ALL = ['ground', 'opener', 'transition', 'mechanism', 'focus', 'payoff', 'type', 'captions', 'cta'];
+  const ms = (existsSync(FD) ? readdirSync(FD) : []).filter((d) => /^\d{4}-/.test(d) && existsSync(join(FD, d, 'manifest.json')))
+    .map((d) => { try { return JSON.parse(readFileSync(join(FD, d, 'manifest.json'), 'utf8')); } catch { err(`film/${d}/manifest.json: not valid JSON`); return null; } }).filter(Boolean)
+    .sort((a, b) => String(a.made).localeCompare(String(b.made)));
+  const slot = (m, k) => { const v = (m.slots || {})[k] || []; return v.length ? v.slice().sort().join('+') : (k === 'opener' && m.dna && m.dna.opening ? 'bespoke:' + m.dna.opening.toLowerCase() : ''); };
+  const warns = [];
+  ms.forEach((m, i) => {
+    if (m.legacy) return;                                                  // hand-written manifests of films made before the kit are history, not judged
+    if (!m.dna || ['opening', 'bigMoment', 'ground', 'music'].some((k) => !m.dna[k])) err(`film/${m.id}: story.js must declare S.dna = { opening, bigMoment, ground, music } (written to manifest.json by the renderer)`);
+    const prev = ms[i - 1], last = ms.slice(Math.max(0, i - 7), i);
+    if (prev) KEY.forEach((k) => { const a = (m.slots || {})[k] || [], b = (prev.slots || {})[k] || []; const same = a.filter((x) => b.includes(x)); if (same.length) err(`film/${m.id}: repeats the previous film (${prev.id}) in "${k}": ${same.join(', ')}; pick another option (see scripts/film/parts.js)`); });
+    for (const o of last) {
+      const eq = ALL.filter((k) => slot(m, k) && slot(m, k) === slot(o, k));
+      if (eq.length >= 6) err(`film/${m.id}: near-copy of ${o.id} (same ${eq.join(', ')})`); else if (eq.length >= 4) warns.push(`film/${m.id}: overlaps ${o.id} in ${eq.join(', ')}`);
+      if (m.dna && o.dna) ['opening', 'bigMoment'].forEach((k) => { if (m.dna[k] && o.dna[k] && m.dna[k].toLowerCase().trim() === o.dna[k].toLowerCase().trim()) err(`film/${m.id}: same ${k} as ${o.id}`); });
+    }
+  });
+  if (warns.length) console.warn('⚠ variety warnings (allowed, but say why in reel-log notes):\n' + warns.map((w) => '  - ' + w).join('\n'));
+  // films from 2026-10-14 on must have a manifest (render a still once and it is written)
+  for (const d of existsSync(FD) ? readdirSync(FD) : []) if (/^\d{4}-/.test(d) && d >= '2026-10-14' && existsSync(join(FD, d, 'story.js')) && !existsSync(join(FD, d, 'manifest.json'))) err(`film/${d}: no manifest.json (render at least one still: it is written automatically)`);
 }
 
 if (errors.length) {

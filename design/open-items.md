@@ -14,10 +14,13 @@ Every session and every daily run: read this file, ask about the oldest 1-3 open
 | 6 | 13 Oct | First experiment verdict (E1/E6) needs 48 h of numbers per reel | Share the per-reel numbers (or confirm the Instagram collect workflow is running) |
 | 7 | 13 Oct | Profile checklist (design/growth-playbook.md): Creator account, name field, bio, link-in-bio page | Status, plus a contact method for the link-in-bio page (WhatsApp / email / booking link) |
 | 8 | 13 Oct | E9 POV-wrapper film (from the studied POV reel) | Yes/no: try it on the next daily film? |
+| 9 | 13 Oct | New weekly design-study routine (Sundays 10:07 IST, first run 18 Oct) was created without connectors | Nothing from you unless the first run fails; I will check its result |
 
 ## Closed
 | Raised | Item | Decision |
 |---|---|---|
 | 13 Oct | Directed film format, variant A | Owner chose A (type-first open); pipeline produces films |
 | 13 Oct | Study the owner's POV reel frame by frame | Done from the owner's screen recordings; lessons in design/film-playbook.md (Reference study 2) |
+| 13 Oct | Screen recordings vs films | Decided (owner delegated): films only for daily reels; the recording stays as the automatic fallback |
+| 13 Oct | House style | Decided: no house style, every reel looks like its own brand; constant only readability, safe zones, loop and the Aquarii sign-off |
 | 13 Oct | Licensed music API | Owner: not using anything licensed; films ship effects-only, owner adds Instagram audio |

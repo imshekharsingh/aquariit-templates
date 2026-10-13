@@ -17,6 +17,12 @@ business's metaphor. Shipping it unchanged fails `scripts/check.mjs` (films from
 `render-film.mjs ID --stills t1,t2` renders single frames (the main review tool); `--preview` renders all 540 frames without blur or sound and writes a contact sheet;
 `--film-dir DIR` renders a story from elsewhere (e.g. `--film-dir film/_starter` to see the default on any page).
 
+## Variety and the friend test (13 Oct 2026)
+- The menu of options per slot is at the top of scripts/film/parts.js. Each film picks a combination that differs from the previous film in opener, transition,
+  mechanism and payoff (scripts/check.mjs reads the auto-written film/ID/manifest.json), declares `S.dna`, and adds ONE new option to the library.
+- Gallery check for new parts: write a tiny story in a scratch folder and render it with `--film-dir DIR --stills ...` on any template.
+- The review question is human: would I stop on it, watch to the end, screenshot a moment, send it to a friend in that business? Log the answers as `friendTest`.
+
 ## Authoring a film (the order matters)
 1. Read `reel-log.json` (last 7 films) and design/experiments.md. Do not repeat a concept, primary transition or sound direction.
 2. Write the visual DNA (5 lines), pitch 3 concepts, score them, pick one (see `film/2026-10-13-0851/treatment.md` for the shape).

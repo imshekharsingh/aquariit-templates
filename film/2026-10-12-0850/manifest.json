@@ -1,0 +1,45 @@
+{
+  "id": "2026-10-12-0850",
+  "made": "2026-10-13T18:59:38.748Z",
+  "slots": {
+    "ground": [
+      "deep-colour"
+    ],
+    "opener": [
+      "assemble"
+    ],
+    "device": [
+      "phone"
+    ],
+    "focus": [
+      "spotlight"
+    ],
+    "transition": [
+      "whip",
+      "zoom-through"
+    ],
+    "mechanism": [
+      "steps-rail",
+      "route"
+    ],
+    "payoff": [
+      "stamp",
+      "burst"
+    ],
+    "type": [
+      "giant"
+    ],
+    "cta": [
+      "tap"
+    ],
+    "captions": [
+      "bare"
+    ]
+  },
+  "dna": {
+    "opening": "steam-coloured dots assemble into a giant red 24",
+    "bigMoment": "DELIVERED stamp slams with a burst of steam at 24:00",
+    "ground": "deep plum",
+    "music": "upbeat funk ~100 BPM"
+  }
+}
