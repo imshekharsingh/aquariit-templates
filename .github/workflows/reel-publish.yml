@@ -1,5 +1,6 @@
 name: Reel publish
 
+# (A template with film/ID/story.js is rendered as a directed film, see design/film-playbook.md; the others as a screen recording.)
 # After every successful "Template pipeline" run: if the newest template has no rendered reel yet, render it (free, headless Chromium + ffmpeg),
 # keep the MP4 in the "reels" release (persistent, private with the repo), open a "Reel ready" issue for the owner (GitHub emails/notifies) and
 # redeploy once so the site can serve the video behind the sign-in (the deploy job downloads recent reels from the release).
@@ -66,7 +67,19 @@ jobs:
         if: steps.pick.outputs.skip != 'true'
         run: |
           set -o pipefail
-          node scripts/render-reel.mjs "${{ steps.pick.outputs.id }}" --out out/reels 2>&1 | tee render.log
+          ID="${{ steps.pick.outputs.id }}"
+          # a directed film (film/ID/story.js: virtual camera, beat-locked type, effects-only sound) when the template has one; otherwise, or if the film render fails,
+          # the screen-recording renderer (so a reel is always produced)
+          if [ -f "film/$ID/story.js" ]; then
+            if node scripts/film/render-film.mjs "$ID" --variant A --workers 2 --out out/film --deliver out/reels 2>&1 | tee render.log; then
+              echo "format: film"
+            else
+              echo "::warning::film render failed, falling back to the screen recording"
+              node scripts/render-reel.mjs "$ID" --out out/reels 2>&1 | tee -a render.log
+            fi
+          else
+            node scripts/render-reel.mjs "$ID" --out out/reels 2>&1 | tee render.log
+          fi
       - name: Keep it in the reels release
         if: steps.pick.outputs.skip != 'true'
         run: |
