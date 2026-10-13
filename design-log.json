@@ -424,5 +424,27 @@
     "animation": "offset-path travel (dumpling arc and scooter ride), route stroke draw, @property clock and counters, linear() springs, masked headline slide-up",
     "purpose": "Restaurant (dumpling bar with delivery)",
     "description": "A loud restaurant landing page: outlined giant type, a dumpling that arcs onto its plate, a five-dish menu, three steps, three bags, dark proof numbers and a live route where a scooter rides to the door in 24 minutes."
+  },
+  {
+    "id": "2026-10-13-0851",
+    "date": "2026-10-13",
+    "time": "08:51",
+    "slug": "tintwell",
+    "url": "https://templates.aquariit.com/2026-10-13-0851/",
+    "theme": "Dark UI with vivid colour, deep plum ground, saturated tangerine hero colour and an unexpected mint accent, brand-colour studio",
+    "layout": "swatch-fan hero, proof stats, sticky-number steps, packages and a colour lab finale",
+    "era": "modern",
+    "palette": [
+      "#1a0933",
+      "#ff5a1f",
+      "#2de2c5",
+      "#7a3cff",
+      "#f6f1ff"
+    ],
+    "fonts": "Gabarito + Martian Mono",
+    "motif": "a fan of colour swatch cards and a live hue lab where every swatch derives from one hue",
+    "animation": "scroll-linked @property hue with oklch-derived swatches and a degree counter, spring swatch fan, CSS counting numbers, hidden-until-scroll header",
+    "purpose": "Consultancy / studio (brand colour audit with fixed-price packages)",
+    "description": "A brand-colour studio sales page that asks whether your colour is costing you sales, then proves it with a hue that sweeps the wheel."
   }
 ]
