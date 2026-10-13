@@ -14,7 +14,7 @@ const valueArgs = new Set(['--variant', '--out', '--sub', '--shutter', '--worker
 const id = args.find((a, i) => !a.startsWith('--') && !valueArgs.has(args[i - 1]));
 const FD = (() => { const i = args.indexOf('--film-dir'); return i > -1 ? args[i + 1] : ''; })(), dir = FD || join(root, 'film', id), T = JSON.parse(readFileSync(join(dir, 'timing.json'), 'utf8'));
 if (!id || !existsSync(join(FD || join(root, 'film', id), 'story.js'))) { console.error('usage: render-film.mjs ID  (needs film/ID/story.js)'); process.exit(2); }
-const OUT = resolve(opt('--out', join(root, 'out', 'film', id))), VAR = opt('--variant', 'both'), PREVIEW = args.includes('--preview'), SUB = PREVIEW ? 1 : +opt('--sub', 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = PREVIEW ? 28 : +opt('--crf', 19);
+const OUT = resolve(opt('--out', join(root, 'out', 'film', id))), VAR = opt('--variant', 'both'), PREVIEW = args.includes('--preview'), SUB = PREVIEW ? 1 : +opt('--sub', 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = PREVIEW ? 28 : +opt('--crf', 17);
 const FPS = 30, LEN = T.len, NF = LEN * FPS, JOIN_F = Math.round(T.join * FPS), SCALE = 1080 / 402;
 const AUDIO = opt('--audio', ''), only = opt('--frames', ''), stills = opt('--stills', ''), COVER = args.includes('--cover'), DELIVER = opt('--deliver', '');
 
@@ -114,9 +114,9 @@ for (const v of variants) {
   }
   const mp4 = join(OUT, `${id}-${v}.mp4`);
   // blur (average SUB sub-frames), bloom on highlights, gentle grade, scale to exactly 1080x1920
-  const vf = `[0:v]tmix=frames=${SUB},select='not(mod(n+1\\,${SUB}))',setpts=N/(30*TB),scale=1080:1920:flags=lanczos,format=yuv420p,split[a][b];[b]curves=all='0/0 0.62/0 1/1',gblur=sigma=26[bl];[a][bl]blend=all_mode=screen:all_opacity=0.16,eq=contrast=1.04:saturation=1.05[v]`;
+  const vf = `[0:v]tmix=frames=${SUB},select='not(mod(n+1\\,${SUB}))',setpts=N/(30*TB),scale=1080:1920:flags=lanczos,format=yuv420p,split[a][b];[b]curves=all='0/0 0.62/0 1/1',gblur=sigma=26[bl];[a][bl]blend=all_mode=screen:all_opacity=0.08,eq=contrast=1.04:saturation=1.05[v]`;
   const haveAudio = existsSync(audio) && !only && !PREVIEW && !args.includes('--no-audio');
-  run('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS * SUB), '-i', join(seq, '%06d.jpg'), ...(haveAudio ? ['-i', audio] : []), '-filter_complex', vf, '-map', '[v]', ...(haveAudio ? ['-map', '1:a', ...(finalMix ? [] : ['-af', 'alimiter=limit=0.66:attack=3:release=40:level=disabled']), '-c:a', 'aac', '-ar', '48000', '-b:a', '192k', '-shortest'] : []), '-r', String(FPS), '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-preset', 'medium', '-crf', String(CRF), '-maxrate', '14M', '-bufsize', '28M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
+  run('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS * SUB), '-i', join(seq, '%06d.jpg'), ...(haveAudio ? ['-i', audio] : []), '-filter_complex', vf, '-map', '[v]', ...(haveAudio ? ['-map', '1:a', ...(finalMix ? [] : ['-af', 'alimiter=limit=0.66:attack=3:release=40:level=disabled']), '-c:a', 'aac', '-ar', '48000', '-b:a', '192k', '-shortest'] : []), '-r', String(FPS), '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-preset', 'medium', '-crf', String(CRF), '-maxrate', '18M', '-bufsize', '36M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
   console.log('wrote', mp4);
   if (PREVIEW) { run('ffmpeg', ['-y', '-loglevel', 'error', '-i', mp4, '-vf', 'fps=2,scale=200:356,tile=9x4:padding=4:color=black', '-frames:v', '1', join(OUT, `preview-sheet-${v}.png`)]); console.log('contact sheet', join(OUT, `preview-sheet-${v}.png`)); }
 }

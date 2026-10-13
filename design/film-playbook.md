@@ -18,6 +18,8 @@ CSS animations at their END state, but cannot replay page JavaScript that reacts
 2. Write the visual DNA (5 lines), pitch 3 concepts, score them, pick one (see `film/2026-10-13-0851/treatment.md` for the shape).
 3. Lock the storyboard as `timing.json`: BPM (cuts must sit on beats: `brief.mjs` fails if a hit is more than 25 ms off the grid), cut times, `music` block (peak, breath, hit points, sections), `cues` for sound effects.
 4. Write `story.js`: `setup(variant)` builds the world and the camera keys; `update(E, t)` sets everything that changes (dial values, counters, overlays). Rules that cost hours to learn:
+   - any non-zero 3D tilt (rotateX/rotateY) resamples the raster: held text turns soft (measured 4.9 vs 31 edge sharpness at 2.2x zoom, still 35% softer at 0.1 degrees); the engine fades tilt out above z = 1.0 and dead-zones angles under 1.2 degrees, so tilt only during fast moves and never on a frame people must read;
+   - heavy defocus (focus pull > 3 px) and strong grain/bloom read as a quality fault on a phone: keep them subtle;
    - never use `transform-style: preserve-3d` on the camera (it forces a low-resolution raster, text turns to pixels when zoomed): flat compositing only;
    - the template's own real-time animations fight the film clock: disable them (`animation:none!important`) or drive them (`getAnimations()` + `currentTime`);
    - read counters/numbers at the frame time, not per motion-blur sub-frame, or two digits ghost on top of each other;
