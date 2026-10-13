@@ -82,6 +82,7 @@ Reel format B is the current experiment (design/experiments.md): the reel is ren
    options from scripts/film/parts.js (the header lists them) that differ from it in opener, transition, mechanism and payoff. Read design/inspiration.md and **add one new
    trick to parts.js** (a new part or option, tagged with `P.use(slot, id)`) and use it in this film.
 3. `cp -r film/_starter film/ID`, then write the story around the concept with those parts. Declare `S.dna = { opening, bigMoment, ground, music }`. End with `P.signoff()`.
+   The last caption before the sign-off is a **send line** naming who should get it ("Send this to a café owner who closes at 10"): reach is the bottleneck and sends are the strongest signal (design/experiments.md, 13 Oct).
    `film/ID/timing.json`: 100 BPM grid by default (a beat every 0.6 s), effects `cues` that each match something on screen.
 4. **Look and fix (2-3 passes):** `node scripts/film/render-film.mjs ID --variant A --stills t1,t2,...` at every cut + first, breath, peak, last frame; contact sheet in time order
    (`ls still-A-*.png | sort -t- -k3 -g`). Answer the friend test (CLAUDE.md) honestly; check text against Instagram's zones and for collisions or dead air; fix and look again.
