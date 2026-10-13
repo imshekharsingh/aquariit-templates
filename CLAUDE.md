@@ -137,10 +137,10 @@ never deployed). It is the ready-to-paste kit for the Instagram Reel:
 (a business owner or founder: money, time, results, "what should it cost / where am I losing / can it do X"), not only to designers. The reel starts moving at
 frame 0 (no static title card), shows the hook on screen, runs ~18 s and pays off in its last 4 s. What is being tested, what the numbers said and what to try
 next live in design/experiments.md; the operating rhythm and the do/don't list live in design/growth-playbook.md.
-**Market (design/market.md):** India first and a brand-new studio: prices in ₹ with Indian grouping (never $), price points a one-person studio can really quote, concepts
-for Indian small businesses (cafés, clinics, coaching centres, salons, D2C sellers, wedding/event services), and NO invented results or numbers the studio could not
-back up (no "+212% leads", no "$31.9k/month"): show what is delivered, how fast and for how much. Before making a new template, read the latest
-"Instagram collect" workflow log (per-reel table) and favour what the numbers show is working.
+**Audience: people's choice (design/market.md; owner decision 13 Oct 2026, replaces the India-first market rules):** no fixed country, currency or business list.
+Pick the business type, market and currency per concept from what people respond to: the latest "Instagram collect" workflow log (per-reel reach, watch time, shares,
+saves, comments), audience countries when known, and what commenters ask for. One honesty line stays: never present invented results as Aquarii's own work or
+clients (numbers inside a fictional brand's page are example content, never the hook).
 - `## Hook` — one line (≤ 8 words, a question or a surprising contrast) shown ON SCREEN by the renderer for the first ~3 seconds, so it must read at a glance. It must open a loop the end of the video
   closes: a question ("Can a website feel like tea? Watch to the end"), a "Wait for …" promise, or a surprising contrast.
   Never a vague teaser, and never promise something the video does not show. Watch time is what Instagram rewards.
