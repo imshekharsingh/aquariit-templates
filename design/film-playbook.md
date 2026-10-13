@@ -8,10 +8,14 @@ Engine: `scripts/film/engine.js` (stage, camera, easing, per-word type reveals, 
 Render: `node scripts/film/render-film.mjs ID --variant A` (≈ 3 min on 4 cores; `--stills t1,t2` for single frames, `--frames a-b` for a range, `--cover` for the poster, `--deliver DIR` for the files the workflow uploads).
 The Reel publish workflow renders it automatically when `film/ID/story.js` exists (otherwise the screen recording).
 
-## Starter and preview
-`film/_starter/` is a working generic story (it was tried unchanged on Tidemark and Gojigo and produced a coherent film both times). Copy it to `film/ID/` and bend it. Known limits: it finishes the page's own scroll-driven
-CSS animations at their END state, but cannot replay page JavaScript that reacts to the scroll position (headings that fill as you scroll stay dim), and it assumes a vertical page (horizontal scrollers need a custom story).
-`render-film.mjs ID --preview` renders 540 frames without motion blur or sound in about a minute and writes `preview-sheet-A.png` (a frame every 0.5 s); `--film-dir DIR` renders a story from elsewhere (tests).
+## Parts, starter and preview
+`scripts/film/parts.js` (window.FilmParts, loaded by the renderer after the engine) holds the reusable pieces of the approved look: `scene` (near-black stage, dust, bokeh,
+breathing push, breath dim, impact punch), `captions`, `sentence`, `card`, `brackets`, `phone` + `chat`, `scan`, `hub`, `payoff`, `clock`, `shape`, `wave`, `icons`. Each part
+registers its own per-frame update; the story calls `P.update(t)` at the end of its `update`.
+`film/_starter/` is a working default built only from the parts (it reads the page's name, accent, headline, features and CTA): copy it to `film/ID/` and rewrite it around the
+business's metaphor. Shipping it unchanged fails `scripts/check.mjs` (films from 2026-10-14 on must use FilmParts, differ from the starter and log revisionPasses + notes).
+`render-film.mjs ID --stills t1,t2` renders single frames (the main review tool); `--preview` renders all 540 frames without blur or sound and writes a contact sheet;
+`--film-dir DIR` renders a story from elsewhere (e.g. `--film-dir film/_starter` to see the default on any page).
 
 ## Authoring a film (the order matters)
 1. Read `reel-log.json` (last 7 films) and design/experiments.md. Do not repeat a concept, primary transition or sound direction.

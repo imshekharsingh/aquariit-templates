@@ -85,16 +85,29 @@ Reel format B is the current experiment (design/experiments.md): the reel is ren
 ~3 s, so write `Length: 15–20 s`, make the hook SHORT (a question of at most 8 words, it is read on screen), and plan the shot plan and payoff to land inside 18 s
 (payoff in the last 4 s). Read the latest results table in the "Instagram collect" workflow log, `design/experiments.md` and `design/growth-playbook.md` first, and favour what the numbers say is working. Concept and hook speak to the buyer (a business owner or founder: money, time, results), not only to designers. Read `design/market.md` too and follow it strictly: India first, prices in ₹ at the placeholder tiers (never $), concepts that a brand-new studio can honestly sell to Indian small businesses, no invented results or numbers in the page, hook or kit.
 
-## Phase 4c — Directed film (the reel format; CLAUDE.md "Directed film" and "Music & Sound", how-to in design/film-playbook.md)
-1. `cp -r film/_starter film/ID` (a working generic auto-director: hook words on flat colour → hero → up to 5 shots → closing shot → iris loop). Do NOT ship it unchanged:
-   read reel-log.json (last 7 films) and make this film's concept, primary transition and sound direction different, and bend `story.js` around THIS template's signature moment
-   (see film/2026-10-13-0851/ for a fully bespoke one). Pages with scroll-driven JS (headings that fill on scroll, parallax) need that progress driven from the film clock.
-2. Edit `film/ID/timing.json` (BPM that puts every cut on a beat, hit points, breath) and `film/ID/music-brief.json` (mood, genre, 3-5 instruments, 3 genuinely different interpretations).
-   `node scripts/audio/brief.mjs ID` must exit 0 (it refuses off-grid hits and a genre/instrumentation/BPM that repeats the previous film). Never synthesise music in code; with no licensed music source configured the film ships with effects only.
-3. Preview: `node scripts/film/render-film.mjs ID --variant A --preview` (about a minute) writes out/film/ID/preview-sheet-A.png. OPEN IT and look at every cut, the first frame, the peak and the last frame
-   (the last must equal the first). Score the rubric in CLAUDE.md, fix anything below 8, at most 3 passes. Also `node scripts/film/render-film.mjs ID --variant A --cover` if the story has a `cover()`.
-4. Record the film in reel-log.json (concept, motionStyle, transitions, typeTreatment, grade, sound, cover, rubric). Stage film/ID/, audio/<date>/ID/ (brief files only) and reel-log.json with the template.
-The Reel publish workflow renders the film after the deploy (and falls back to the screen recording if there is none or it fails).
+## Phase 4c — Directed film (the reel; CLAUDE.md "Directed film" and "Music & Sound"; HOW: design/film-playbook.md, read it all first)
+The owner approved ONE look for films (13 Oct 2026, film/2026-10-13-1902 "After 8" v3 is the reference): the product-film grammar. Non-negotiable:
+- **Built on the film parts** (`scripts/film/parts.js`, window.FilmParts: scene, captions, sentence, card, brackets, phone, chat, scan, hub, payoff, clock, shape, wave).
+  `scripts/check.mjs` fails a film that does not use them or ships the starter unchanged.
+- **A story with a visual metaphor for THIS business** (After 8: the clinic closes at 8, booking does not; the bookings light a night diary and sunrise turns them gold).
+  Write it first in 3 lines: the problem the owner feels, the mechanism the site provides, the payoff image. Never a pan over the page.
+- **One accent glowing on near-black**, material cards, skeleton UI instead of tiny real text, warmth or a second hue ONLY at the payoff.
+- **Captions are the spine** (1-3 words per card at the fixed anchor); a **sentence that builds** for the claim; **pivot words** with their own visual answer; one
+  **recurring brand shape** if it fits (a steam curl for a café, a tooth for a clinic). One idea per ~1.2 s; the last frame returns to the first.
+Steps:
+1. `cp -r film/_starter film/ID` (a working default on any page: hook captions over the lit phone, page scroll, hub + 3 nodes from the page's features, scan bar to the
+   offer, brackets on the CTA, the promise sentence, warm payoff, CTA card, loop). Then rewrite the story around the metaphor: replace the opening image, name the
+   mechanism, choose the pivot words, set the accent (`P.scene({ accent })`), write the captions. Read reel-log.json (last 7 films): change the concept, primary transition and sound direction.
+2. `film/ID/timing.json` (100 BPM default: a beat every 0.6 s; every hit on the grid; `cues` for effects, each motivated by something on screen) and `film/ID/music-brief.json`.
+   `node scripts/audio/brief.mjs ID` must exit 0. Never synthesise music; with no licensed source the film ships with effects only.
+3. **Style frames, at least 3 passes** (this is where the quality comes from): `node scripts/film/render-film.mjs ID --variant A --stills t1,t2,...` at 10-16 times
+   (first frame, every cut, the breath, the peak, the last frame), build a contact sheet in TIME order (`ls still-A-*.png | sort -t- -k3 -g`), LOOK at it and write a critique:
+   story logic, dead air, collisions, text in Instagram's zones (top 96 px, bottom 22%, right column x > 338 between 50-90% height), contrast, the loop. Fix, re-render, repeat.
+   Then view 3-4 key frames at full size. Then `--cover`, and check the cover crops (`*-cover-grid-preview.png`).
+4. Record the film in reel-log.json (concept, motionStyle, primaryTransition, transitions, typeTreatment, grade, sound, cover, rubric, **revisionPasses** and **notes**
+   saying what each pass fixed; the check requires them). Stage film/ID/, audio/<date>/ID/ (brief files only) and reel-log.json with the template.
+The Reel publish workflow renders the full film after the deploy (and falls back to the screen recording if there is none or it fails).
+Budget: about 30-60 minutes for this phase. Do not skip the passes to save time; a weak film costs more than a late one.
 
 ## Phase 5 — Records and push
 1. Append the entry to design-log.json (schema in CLAUDE.md: id=ID, date=DATE,

@@ -175,7 +175,8 @@ The reel is a directed motion film, not a screen recording: a virtual camera ove
 18 s, 30 fps, 1080×1920, the hook (≤ 8 words, ≤ 6 per card) building on the beat from frame 0, a held "breath" before the reveal, payoff in the last 4 s, and a last frame that loops into the
 first. The Reel publish workflow renders it when film/ID/story.js exists and falls back to the screen recording otherwise. Every film is logged in reel-log.json (concept, motion style,
 transitions, type treatment, grade, sound direction, cover approach, rubric scores) and must not repeat the concept, primary transition or sound direction of the last 7 films.
-Self-review is mandatory: inspect frames at every cut plus first/peak/last, a contact sheet, score the rubric, fix anything below 8 (max 3 passes). Guidance: design/film-playbook.md.
+Self-review is mandatory: inspect frames at every cut plus first/peak/last, a contact sheet, score the rubric, fix anything below 8 (at least 3 passes). Guidance: design/film-playbook.md.
+Owner-approved look (13 Oct 2026, reference film/2026-10-13-1902 v3): the product-film grammar, built on scripts/film/parts.js and the kit starter film/_starter (scripts/check.mjs enforces both).
 
 ## Music & Sound: you are the Music Supervisor and Sound Editor
 

@@ -1,75 +1,130 @@
-// STARTER story: a generic "auto-director" that works on a simple vertical page and is meant to be COPIED to film/ID/story.js and then bent to the template's own concept
-// (what is the signature moment? what should the camera do with it? see design/film-playbook.md and film/2026-10-13-0851/story.js for a fully bespoke film).
-// Timeline (fixed so the music brief in timing.json stays valid): 0-2 s hook words on a flat accent colour, hard cut to the page at 2.0, hero push to 4.0, up to 5 shots 4.0-12.0
-// (alternating whip / hard cut on the beat), breath 12.0-12.6, closing shot with the impact at 14.0, iris wipe from its button 17.0-17.8 into flat accent = the first frame (loop).
+// STARTER (product-film grammar, built on scripts/film/parts.js). Copy to film/ID/story.js, then BEND IT around this business's own metaphor:
+// it already works on any template (it reads the page's name, accent, headline, features and call to action), but shipping it unchanged is not allowed
+// (scripts/check.mjs refuses a film whose story.js equals this file). Worked example of a fully bespoke film: film/2026-10-13-1902/story.js ("After 8").
+// The default arc (100 BPM, a beat every 0.6 s):
+//   0-2.4   hook captions over the lit phone in the dark (the page's first screen)        -> REPLACE with the business's own opening image (shopfront, product, desk...)
+//   2.4-5.4 the page scrolls on the phone; its headline builds as a sentence above it     -> keep the sentence, make the pivot word land
+//   5.4-8.4 pull back to the system: hub + 3 nodes from the page's features, data flowing -> name the mechanism THIS business sells
+//   8.4-10.2 phone returns, scan bar reveals the offer section, brackets lock the CTA     -> the focal proof
+//   10.2-12 a sentence builds the promise; 12.0-12.45 breath; 12.6 the warm payoff floods in with the answer captions
+//   15.6-17 CTA card (business name + CTA); 17-18 everything returns to the frame-0 state (loop)
 (function () {
-  const E = window.FilmEngine, T = window.FILM_T, KIT = window.FILM_KIT || {}, { clamp, lerp, ease, W, H } = E, $ = E.$, $$ = E.$$, S = (E.story = {});
-  S.selfStage = true;                                                                 // setup() stages the page itself (after the scroll that reveals everything)
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms)), snap = (t) => Math.round(t * 2) / 2;
-  const lum = (c) => { const m = c.match(/[\d.]+/g).map(Number); return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255; };
-  const sat = (c) => { const m = c.match(/[\d.]+/g).map(Number), mx = Math.max(...m.slice(0, 3)), mn = Math.min(...m.slice(0, 3)); return mx ? (mx - mn) / mx : 0; };
+  const E = window.FilmEngine, T = window.FILM_T, KIT = window.FILM_KIT || {}, P = window.FilmParts, { clamp, lerp, ease } = E, S = (E.story = {});
+  S.selfStage = true;
+  const sm = P.sm, css = P.css, $$ = E.$$;
+  const sat = (c) => { const m = (c.match(/[\d.]+/g) || [0, 0, 0]).map(Number), mx = Math.max(...m.slice(0, 3)), mn = Math.min(...m.slice(0, 3)); return mx ? (mx - mn) / mx : 0; };
+  const lum = (c) => { const m = (c.match(/[\d.]+/g) || [0, 0, 0]).map(Number); return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255; };
+  const words = (s, n) => s.replace(/\s+/g, ' ').trim().split(' ').slice(0, n);
+  const short = (s, max = 16) => { const w = s.replace(/\s+/g, ' ').trim().split(' '); let out = ''; for (const x of w) { if ((out + ' ' + x).trim().length > max) break; out = (out + ' ' + x).trim(); } return out || w[0].slice(0, max); };
 
   S.setup = async function () {
-    document.documentElement.classList.add('reel');                                  // the pages' own reel rules (hide the back link, zero safe areas)
-    // 1. let the page reveal everything it reveals on scroll, then settle: finite animations finish, endless ones rest at 0 (deterministic)
-    E.el('style', null, document.head, '*,*::before,*::after{transition:none!important}');   // class changes from the page's scroll observers must apply instantly, never in real time
-    const total = document.documentElement.scrollHeight; for (let y = 0; y <= total; y += 200) { window.scrollTo(0, y); await sleep(70); } window.scrollTo(0, 0); await sleep(700);
-    document.getAnimations().forEach((a) => { try { if (a.timeline !== document.timeline) { a.finish(); return; }   // scroll-/view-driven (e.g. text that fills as you scroll): rest at the END, the revealed state
-      const e = a.effect.getComputedTiming().endTime; if (isFinite(e)) a.finish(); else { a.pause(); a.currentTime = 0; } } catch (e2) { /* ignore */ } });
-    E.el('style', null, document.head, `a[href="/"],.back{display:none!important} *{scroll-behavior:auto!important} header,nav,.bar{position:absolute!important}`);
-    // 2. brand accent: the most saturated solid button/link background; the hook text; contrast ink for the flat field
-    let accent = T.accent || '', best = 0;
-    if (!accent) $$('a,button').forEach((e) => { const bg = getComputedStyle(e).backgroundColor; if (!bg || /rgba\(0, 0, 0, 0\)|transparent/.test(bg)) return; const sv = sat(bg); if (sv > best) { best = sv; accent = bg; } });
-    if (!accent) accent = '#ff5a1f';
-    const ink = (() => { try { const d = E.el('div', `color:${accent}`, document.body); const l = lum(getComputedStyle(d).color); d.remove(); return l > 0.55 ? '#111' : '#fff'; } catch (e2) { return '#111'; } })();
-    const h1 = $('h1') || $('h2'), hook = (T.hook || KIT.hook || (h1 && h1.textContent) || 'Watch this').replace(/\s+/g, ' ').trim();
-    E.stage();
-    // 3. shots from the page's own blocks ([data-reel-stop] if present, else sections' children), grouped like the ▶ player does (<= 560 px tall)
-    const raw = $$('[data-reel-stop]').length ? $$('[data-reel-stop]') : $$('main > section, main > section > *, main > section .wrap > *');
-    let blocks = E.measure(() => raw.map((e) => ({ e, r: E.rect(e) })).filter((b) => b.r.h > 30 && b.r.w > 120 && b.r.y >= 0)).sort((a, b) => a.r.y - b.r.y || a.r.h - b.r.h);
-    blocks = blocks.filter((b, i) => !blocks.slice(0, i).some((p) => b.r.y >= p.r.y - 2 && b.r.b <= p.r.b + 2 && p.r.h > b.r.h * 1.4 && p.e.contains(b.e) && false));
-    const groups = []; blocks.forEach((b) => { const g = groups[groups.length - 1]; if (g && b.r.b - g.y <= 560 && b.r.y - g.b < 80) { g.blocks.push(b); g.b = Math.max(g.b, b.r.b); } else groups.push({ y: b.r.y, b: b.r.b, blocks: [b] }); });
-    const hero = groups[0], last = groups[groups.length - 1], mids = groups.slice(1, -1), pick = mids.length <= 5 ? mids : Array.from({ length: 5 }, (_, i) => mids[Math.round(i * (mids.length - 1) / 4)]);
-    const zFor = (g) => { const h = g.b - g.y, w = Math.max(...g.blocks.map((b) => b.r.w)); return clamp(Math.min(560 / h, 402 / w * 0.98), 0.8, 1.12); };
-    const cyFor = (g, z) => g.y + (g.b - g.y) / 2 + 28 / z;
-    // 4. camera keys + entrance tweens + sound cues
-    const K = [], cues = [], k = (t, x, y, z, o = {}) => K.push(Object.assign({ t, x, y, z }, o)), hc = T.hookCut;
-    const cut = (t, g) => { const z = zFor(g); k(t, 201, cyFor(g, z), z); };
-    k(0, 201, hero.y + (H / 2 - 118), 1.0); k(hc, 201, hero.y + (H / 2 - 118), 1.0); k(4.0, 201, hero.y + (H / 2 - 118) + 20, 1.05, { e: 'io3' });
-    const slot = pick.length ? snap(8 / pick.length) || 1 : 0; let t = 4.0;
-    pick.forEach((g, i) => {
-      const z = zFor(g), cy = cyFor(g, z), whip = i % 2 === 0, t0 = snap(4.0 + i * (8 / pick.length)), t1 = snap(4.0 + (i + 1) * (8 / pick.length));
-      if (whip) { k(t0 - 0.0, 201, K[K.length - 1].y, K[K.length - 1].z); k(t0 + 0.3, 201, cy, z, { e: 'io3', ry: i % 4 === 0 ? -4 : 4, rx: 2 }); cues.push({ k: 'whoosh', t0: t0 - 0.05, t1: t0 + 0.3, g: 0.45, tail: 0.2 }); }
-      else { k(t0, 201, cy, z, { ry: 0, rx: 0 }); cues.push({ k: 'impact', t: t0, g: 0.5 }); }
-      k(t1, 201, cy + 8, z * 1.05, { e: 'lin', ry: 0, rx: 0 });
-      g.blocks.forEach((b, j) => { const at = t0 + (whip ? 0.3 : 0.05) + j * 0.1; E.tween(b.e, [{ opacity: 0, translate: '0 36px', scale: 0.97 }, { opacity: 1, translate: '0 0', scale: 1 }], at, 0.7, E.SPRING_CSS, 'backwards'); if (j < 3) cues.push({ k: 'click', t: at, g: 0.35 }); });
-    });
-    const zl = zFor(last), cyl = cyFor(last, zl), tl = 14.0;
-    k(12.0, 201, K[K.length - 1].y, K[K.length - 1].z, { e: 'lin' }); k(tl - 0.25, 201, K[K.length - 1].y, K[K.length - 1].z * 1.06, { e: 'in2' });
-    k(tl, 201, cyl, zl, { ry: -6, rx: 3 }); k(17.0, 201, cyl + 6, zl * 1.05, { e: 'out3', ry: 0, rx: 0 });
-    last.blocks.forEach((b, j) => E.tween(b.e, [{ opacity: 0, translate: '0 40px', scale: 0.96 }, { opacity: 1, translate: '0 0', scale: 1 }], tl + 0.1 + j * 0.15, 0.8, E.SPRING_CSS, 'backwards'));
-    E.keys = K;
-    const btn = last.blocks.map((b) => b.e).flatMap((e) => [...e.querySelectorAll('a,button'), e]).filter((e) => e.matches('a,button')).sort((a, b) => b.getBoundingClientRect().width - a.getBoundingClientRect().width)[0];
-    const br = btn ? E.measure(() => E.rect(btn)) : { cx: 201, cy: last.y + (last.b - last.y) / 2 };
-    E.irisAt = { x: 201 + (br.cx - 201) * zl * 1.05, y: H / 2 + (br.cy - cyl) * zl * 1.05 };
-    // 5. the hook: words slam in on the beats on a flat accent field, then a hard cut to the page
-    const font = h1 ? getComputedStyle(h1) : { fontFamily: 'system-ui', fontWeight: 900 };
-    const card = E.el('div', `position:absolute;left:30px;top:140px;width:342px;color:${ink};font-family:${font.fontFamily};font-weight:${Math.max(700, +font.fontWeight || 800)};font-size:60px;line-height:.98;letter-spacing:-.035em;text-wrap:balance`, E.cards, hook);
-    const words = E.splitWords(card), per = Math.ceil(words.length / 4);
-    const widest = Math.max(...words.map((w) => w.getBoundingClientRect().width)); if (widest > 342) card.style.fontSize = Math.floor(60 * 342 / widest) + 'px';   // wide display fonts: shrink until the widest word fits the 30 px gutters
-    words.forEach((w, i) => { const at = Math.floor(i / per) * 0.5 - 0.1; E.reveal(w, at, null, 0.55); if (i % per === 0) cues.push({ k: 'click', t: Math.max(0.02, at + 0.1), g: 0.45 }); });
-    E.hookCard = card; E.accent = accent; S._cues = cues.concat([
-      { k: 'whoosh', t0: hc - 0.35, t1: hc, g: 0.3 }, { k: 'impact', t: hc, g: 0.5 }, { k: 'riser', t0: 12.8, t1: 14.0, g: 0.5 }, { k: 'sub', t0: 12.6, t1: 13.1, g: 0.1 },
-      { k: 'impact', t: 14.0, g: 1.4, big: 2 }, { k: 'sparkle', t: 14.4, g: 0.25 }, { k: 'whoosh', t0: 16.9, t1: 17.8, g: 0.45 }]);
-    return { shots: pick.length, hero: !!hero, last: !!last, accent, hook };
+    document.documentElement.classList.add('reel');
+    await document.fonts.ready;
+    await new Promise((r) => setTimeout(r, 1500));                       // let the page's own load animations finish before cloning it
+    // ---- read the page ----
+    let accent = T.accent || ['--accent', '--acc', '--brand', '--primary', '--hot', '--a'].map((v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim()).find((v) => v && !/var\(|gradient/.test(v)) || '', best = accent ? 1 : 0;
+    if (!accent) $$('a,button').forEach((e) => { const bg = getComputedStyle(e).backgroundColor; if (!bg || /rgba\(0, 0, 0, 0\)|transparent/.test(bg)) return; const v = sat(bg) * (lum(bg) > .15 ? 1 : .4); if (v > best) { best = v; accent = bg; } });
+    if (!accent || best < .25) accent = '#c8ff3d';
+    { const pr = E.el('div', `color:${accent}`, document.body); const c = getComputedStyle(pr).color; pr.remove(); if (sat(c) < .25) accent = '#c8ff3d'; }
+    if (lum(accent) < .35) accent = `color-mix(in srgb, ${accent} 70%, #fff)`;       // the accent must glow on black
+    const probe = E.el('div', `color:${accent}`, document.body); accent = getComputedStyle(probe).color; probe.remove();
+    const hex = (c) => '#' + (c.match(/\d+/g) || [200, 255, 61]).slice(0, 3).map((n) => (+n).toString(16).padStart(2, '0')).join('');
+    const A = hex(accent);
+    const name = T.name || (document.title.split(/[—|·:-]/)[0] || 'Studio').trim();
+    const h1 = (document.querySelector('h1') || {}).textContent || name;
+    const hook = (T.hook || KIT.hook || h1).replace(/[?!.]+$/, '') + (/\?\s*$/.test(T.hook || KIT.hook || '') ? '?' : '');
+    const feats = (T.features || $$('main h3').map((h) => h.textContent).filter((x) => x.trim().length > 2).slice(0, 3));
+    while (feats.length < 3) feats.push(['Fast', 'Clear', 'Yours'][feats.length]);
+    const ctaEl = $$('main a, main button').find((e) => hex(getComputedStyle(e).backgroundColor) === A) || $$('main a, main button')[0];
+    const cta = T.cta || (ctaEl ? ctaEl.textContent.replace(/\s+/g, ' ').trim() : 'Get in touch');
+    const mainEl = document.querySelector('main');
+
+    // ---- stage ----
+    const { world } = P.scene({ accent: A });
+    // the phone shows a frozen clone of the real page (same document, so its CSS applies)
+    const ph = (E.ph = P.phone(world, {}));
+    const scrIn = (E.scrIn = E.el('div', 'position:absolute;left:0;top:0;width:402px;transform-origin:0 0', ph.screen));
+    [...E.cam.children].filter((n) => /^(HEADER|MAIN|NAV)$/.test(n.tagName) || n.classList.contains('bar')).forEach((n) => scrIn.appendChild(n.cloneNode(true)));
+    ph.screen.id = 'phScr';
+    E.el('style', null, document.head, '#phScr *,#phScr *::before,#phScr *::after{animation:none!important;transition:none!important} #phScr .rv,#phScr [class*="reveal"]{opacity:1!important;transform:none!important} #phScr header,#phScr nav,#phScr .bar{position:relative!important}');
+    E.pageH = scrIn.scrollHeight;
+    const scale = (ph.w - 14) / 402;
+    // an offer section to reveal with the scan: the section containing the CTA (else the last section)
+    const secs = [...scrIn.querySelectorAll('main > section')];
+    const ctaClone = ctaEl ? [...scrIn.querySelectorAll('main a, main button')].find((e) => e.textContent.replace(/\s+/g, ' ').trim() === cta) : null;
+    const offer = (ctaClone && ctaClone.closest('section')) || secs[secs.length - 1] || secs[0];
+    const offerY = offer ? offer.offsetTop : 0;
+    E.offerTarget = ctaClone;
+
+    // ---- the system ----
+    const icons = ['calendar', 'chat', 'check', 'star', 'cart', 'bell', 'pin', 'clock', 'rupee'];
+    const pickIcon = (s, i) => { const x = s.toLowerCase(); return /book|slot|date|day|calendar|schedule/.test(x) ? 'calendar' : /chat|whatsapp|message|support|talk/.test(x) ? 'chat' : /pay|price|₹|\$|fee|cost|deposit/.test(x) ? 'rupee' : /shop|cart|order|deliver/.test(x) ? 'cart' : /remind|alert|notif/.test(x) ? 'bell' : /map|visit|locat|where/.test(x) ? 'pin' : /fast|time|hour|minute|day/.test(x) ? 'clock' : icons[i % 3 + 2]; };
+    P.hub(world, { cx: 201, cy: 290, from: { x: 201, y: 226 }, label: short(name.toUpperCase(), 12).replace(' ', '<br>'), at: 6.0, out: 8.4,
+      nodes: feats.map((f, i) => ({ x: [91, 201, 311][i], y: 400, icon: pickIcon(f, i), label: short(f, 14), at: [6.6, 7.2, 7.8][i] })) });
+
+    // ---- brackets on the CTA inside the phone, and on the CTA card ----
+    E.brk = P.brackets(ph.el);
+    // ---- sentence: the headline builds while the page scrolls (2.6-5.2); the promise builds in the night (10.3-11.9)
+    const hw = words(h1, 7);
+    E.promise = P.sentence(world, hw, { at: 10.4, per: .26, out: 15.3, y: 250, size: 26, weight: 700, accents: { [hw.length - 1]: A }, highlight: true });   // the promise builds while the phone is away and stays through the payoff
+    // ---- payoff + clock-less HUD label ----
+    P.payoff({ at: 12.6, out: 17.6, breath: [12.0, 12.45] });
+    E.cta = P.card(world, `left:41px;top:170px;width:320px;padding:20px 22px;border-radius:24px`,
+      `<div style="font:500 9px/1 ${P.MONO};letter-spacing:.16em;opacity:.65">${name.toUpperCase()} · DEMO</div>
+       <div style="font:900 30px/.98 Archivo,sans-serif;font-variation-settings:'wdth' 78;text-transform:uppercase;margin-top:12px">${words(h1, 6).join(' ')}</div>
+       <div class="btn" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:11px 16px;border-radius:99px;background:${A};color:#11180a;font:800 12px/1 Archivo,sans-serif;letter-spacing:.05em;text-transform:uppercase">${cta} <span aria-hidden="true">→</span></div>`);
+    E.ctaRim = E.el('div', `position:absolute;left:41px;top:170px;width:320px;border-radius:24px;pointer-events:none;box-shadow:0 0 0 1px ${P.hexA(A, .55)},0 0 34px ${P.hexA(A, .25)}`, world);
+    E.brkCta = P.brackets(E.cta);
+    const btnBox = P.rel(E.cta.querySelector('.btn'), E.cta);
+    E.brkCta.snap(btnBox, 16.2, 16.85);
+    // ---- captions (the spine) ----
+    const hk = words(hook, 9), chunks = []; for (let i = 0; i < hk.length; i += 3) chunks.push(hk.slice(i, i + 3).join(' '));
+    const hookCaps = chunks.map((c, i) => { const d = 2.45 / chunks.length; return [i ? i * d : -0.1, (i + 1) * d - .05, c, 32, i === chunks.length - 1 ? { [c.split(' ').length - 1]: A } : {}]; });
+    const nm = words(name, 3).join(' ');
+    P.captions([
+      ...hookCaps,
+      [5.45, 6.55, 'Here is how.', 28, { 2: A }],
+      [6.6, 7.2, short(feats[0], 18), 28, { 0: A }], [7.2, 7.8, short(feats[1], 18), 28, { 0: A }], [7.8, 8.5, short(feats[2], 18), 28, { 0: A }],
+      [9.6, 10.4, words(cta, 3).join(' ') + '.', 30, { 0: A }],
+      [13.0, 15.5, nm + '.', 34, { 0: A }],
+      [15.8, 16.95, 'Your version next?', 26, { 1: A }],
+    ]);
+    // ---- the frozen page, measured for the scan + brackets ----
+    E.scale = scale; E.offerY = offerY;
+    E.ctaBox = ctaClone ? (() => { const r = P.rel(ctaClone, scrIn), s = scale; return { x: 7 + r.x * s, y: 7 + (r.y - offerY + 40) * s, w: r.w * s, h: r.h * s }; })() : null;
+    // the scan reveals a second copy of the page parked at the offer section
+    const off = (E.off = E.el('div', 'position:absolute;inset:0;overflow:hidden;background:#fff', ph.screen));
+    const offIn = E.el('div', `position:absolute;left:0;top:0;width:402px;transform-origin:0 0;transform:scale(${scale}) translateY(${-(offerY - 40)}px)`, off);
+    offIn.appendChild(scrIn.querySelector('main').cloneNode(true));
+    P.scan(ph, off, 9.0, .6);
+    if (E.ctaBox) E.brk.snap(E.ctaBox, 9.6, 10.05);
+    E.ph.halo.style.zIndex = 0;
+    S.A = A; S.name = name; S.h1 = h1;
+    return { ok: true, accent: A, name, feats, cta };
   };
-  S.cues = () => S._cues || [];
+
   S.update = function (E, t) {
-    const c = E.camAt(t), sp = E.camSpeed(t); E.applyCam(c, clamp((sp.y - 1500) * 0.012, 0, 34));
-    const hc = T.hookCut; let fo = 0, clip = 'none';
-    if (t < hc) fo = 1;
-    if (t >= T.iris[0]) { fo = 1; clip = `circle(${lerp(0, 760, ease.io3(clamp((t - T.iris[0]) / (T.iris[1] - T.iris[0])))).toFixed(1)}px at ${E.irisAt.x}px ${E.irisAt.y}px)`; }
-    E.field.style.opacity = fo; E.field.style.background = E.accent; E.field.style.clipPath = clip; E.hookCard.style.display = t < hc ? 'block' : 'none';
-    let v = 0.4; if (t >= 12 && t < 14) v = lerp(0.4, 0.85, ease.outX(clamp((t - 12) / 1.2))); E.vig.style.opacity = v;
+    const ph = E.ph;
+    // phone: lit at frame 0, scrolls 2.4-5.2, shrinks to the top of the system 5.4-6.0, returns 8.4-9.0, rests, leaves under the payoff, back at 17.2 (loop)
+    const mini = sm(5.4, 6.0, t) * (1 - sm(8.4, 9.0, t)), away = sm(10.2, 10.7, t) * (1 - sm(17.0, 17.6, t));
+    const py = -120 * mini + 40 * away, sc = lerp(1, .36, mini) * lerp(1, .92, away);
+    css(ph.el, { opacity: (1 - away).toFixed(3), transform: `translateY(${py.toFixed(1)}px) scale(${sc.toFixed(4)})` });
+    css(ph.halo, { opacity: ((1 - mini) * (1 - away)).toFixed(3), transform: `translateY(${py.toFixed(1)}px)` });
+    const scroll = lerp(0, Math.min(E.pageH - 700, 900), sm(2.6, 5.2, t) * (1 - sm(17.0, 17.6, t)));
+    E.scrIn.style.transform = `scale(${E.scale}) translateY(${(-scroll).toFixed(1)}px)`;
+    // the promise card (CTA) in the morning
+    const ck = ease.spring(clamp((t - 15.6) / .55)), co = clamp((t - 15.6) / .15) * (1 - sm(16.85, 17.15, t));
+    css(E.cta, { opacity: co.toFixed(3), transform: `translateY(${((1 - ck) * 26).toFixed(1)}px) scale(${lerp(.94, 1, ck).toFixed(3)})` });
+    css(E.ctaRim, { height: E.cta.offsetHeight + 'px', opacity: (co * (.6 + .4 * Math.sin(E.frame / 30 * 2.4))).toFixed(3), transform: E.cta.style.transform });
+    P.update(t);
   };
+
+  S.cover = function () {
+    S.update(E, 1.0); E.frame = 7;
+    P.front.style.opacity = '0';
+    const hookTxt = ((T.hook || KIT.hook || S.h1) + '').replace(/\s+/g, ' ').trim();
+    E.el('div', `position:absolute;left:30px;top:150px;width:342px;color:#fff;font:900 40px/.95 Archivo,sans-serif;font-variation-settings:"wdth" 80;letter-spacing:-.02em;text-transform:uppercase;text-shadow:0 0 24px ${P.hexA(S.A, .35)}`, E.scene, hookTxt);
+    css(E.ph.el, { transform: 'translateY(150px) scale(.8)' }); css(E.ph.halo, { transform: 'translateY(150px)' });
+  };
+  S.cues = () => T.cues || [];
 })();
