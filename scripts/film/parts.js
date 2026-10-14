@@ -28,9 +28,9 @@
   P.ready = (async () => {
     try {
       const l = document.createElement('link'); l.rel = 'stylesheet';
-      l.href = 'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist+Mono:wght@400..600&display=block';
+      l.href = 'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist+Mono:wght@400..700&display=block';
       document.head.appendChild(l); await new Promise((ok) => { l.onload = ok; l.onerror = ok; setTimeout(ok, 6000); });
-      await Promise.all(['800 28px Archivo', '900 30px Archivo', '500 11px "Geist Mono"'].map((f) => document.fonts.load(f)));
+      await Promise.all(['700 28px Archivo', '800 28px Archivo', '900 30px Archivo', '400 11px "Geist Mono"', '500 11px "Geist Mono"', '600 11px "Geist Mono"', '700 11px "Geist Mono"'].map((f) => document.fonts.load(f)));
     } catch (e) { /* fall back to system fonts */ }
   })();
   // =====================================================================================================================================
@@ -301,10 +301,10 @@
     const wrap = E.el('div', `position:absolute;left:0;right:0;top:${y}px;height:0`, P.front);
     const caps = list.map(([a, b, text, size = 28, acc = {}]) => {
       const look = {
-        pill: `padding:6px 13px 8px;border-radius:12px;background:${P.light ? 'rgba(255,255,255,.9)' : 'rgba(10,12,14,.82)'};box-shadow:0 0 0 1px ${P.light ? 'rgba(0,0,0,.08)' : 'rgba(255,255,255,.07)'},0 8px 24px rgba(0,0,0,.2);color:${P.fg};font:800 ${size}px/1.05 Archivo,sans-serif;font-variation-settings:"wdth" 84;letter-spacing:-.035em`,
+        pill: `padding:6px 13px 8px;border-radius:12px;background:${P.light ? 'rgba(255,255,255,.9)' : 'rgba(10,12,14,.82)'};box-shadow:0 0 0 1px ${P.light ? 'rgba(0,0,0,.08)' : 'rgba(255,255,255,.07)'},0 8px 24px rgba(0,0,0,.2);color:${P.fg};font:800 ${size}px/1.05 Archivo,sans-serif;font-variation-settings:"wdth" 92;letter-spacing:-.012em;word-spacing:.08em`,
         bare: `padding:0 4px;color:${P.fg};font:900 ${size * 1.25}px/1 Archivo,sans-serif;font-variation-settings:"wdth" 72;letter-spacing:-.02em;text-transform:uppercase;text-shadow:0 2px 18px ${P.light ? 'rgba(255,255,255,.9)' : 'rgba(0,0,0,.85)'}`,
         underline: `padding:2px 2px 10px;color:${P.fg};font:700 ${size}px/1.05 Archivo,sans-serif;letter-spacing:-.02em;background:linear-gradient(${P.accent},${P.accent}) 0 100%/100% 4px no-repeat`,
-        blur: `padding:7px 14px 9px;border-radius:14px;background:${P.light ? '#0b2a3a' : 'rgba(255,255,255,.94)'};box-shadow:0 10px 26px rgba(0,0,0,.22);color:${P.light ? '#ffffff' : '#0b0d0f'};font:800 ${size}px/1.05 Archivo,sans-serif;font-variation-settings:"wdth" 88;letter-spacing:-.03em`,
+        blur: `padding:7px 14px 9px;border-radius:14px;background:${P.light ? '#0b2a3a' : 'rgba(255,255,255,.94)'};box-shadow:0 10px 26px rgba(0,0,0,.22);color:${P.light ? '#ffffff' : '#0b0d0f'};font:800 ${size}px/1.05 Archivo,sans-serif;font-variation-settings:"wdth" 94;letter-spacing:-.012em;word-spacing:.08em`,
         mono: `padding:7px 12px;border-radius:4px;border:1px solid ${hexA(P.accent, .7)};background:${P.light ? 'rgba(255,255,255,.85)' : 'rgba(0,0,0,.7)'};color:${P.fg};font:600 ${size * .62}px/1.1 ${MONO};letter-spacing:.06em;text-transform:uppercase`,
       }[style] || '';
       const card = E.el('div', `position:absolute;left:201px;top:0;transform:translate(-50%,-50%);white-space:nowrap;${look}`, wrap);

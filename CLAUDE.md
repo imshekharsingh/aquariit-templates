@@ -310,6 +310,8 @@ wrangler.jsonc, scripts/, .github/, .claude/
 Heavy work runs on GitHub, not in the Claude session: full film renders, re-renders and long checks go through the workflows (pipeline, Reel publish), and results
 are reviewed from what they produce. In a session, keep local runs to quick stills and checks; never render whole films locally to "see" them, and never poll or wait
 on long jobs: the owner waits for the issue to show up.
+Effort first (owner, 14 Oct 2026): before any task, tell the owner its size, S (< 15 min) / M (30-60 min) / L (1-3 h) of session work, plus any GitHub render time,
+and wait for a go-ahead on M or bigger unless already approved. Offer the cheaper route when one exists.
 
 ## Never do
 - Force-push, rewrite history, or delete branches yourself
