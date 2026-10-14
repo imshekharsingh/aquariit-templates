@@ -231,6 +231,20 @@ if (existsSync(mp)) {
       if (m.dna && o.dna) ['opening', 'bigMoment'].forEach((k) => { if (m.dna[k] && o.dna[k] && m.dna[k].toLowerCase().trim() === o.dna[k].toLowerCase().trim()) err(`film/${m.id}: same ${k} as ${o.id}`); });
     }
   });
+  // originality (owner, 14 Oct 2026): at most one part from any single reference reel, never as the payoff, and none of a reference's own lines
+  let SRC = { references: {}, bannedPhrases: [] }; try { SRC = JSON.parse(readFileSync(join(root, 'scripts', 'film', 'sources.json'), 'utf8')); } catch { err('scripts/film/sources.json: missing or not valid JSON'); }
+  for (const m of ms) {
+    if (m.legacy || !(m.id >= '2026-10-14')) continue;
+    const used = Object.entries(m.slots || {}).flatMap(([slot, ids]) => ids.map((id) => ({ slot, id })));
+    for (const [ref, r] of Object.entries(SRC.references)) {
+      const hit = used.filter((u) => r.parts.includes(u.id));
+      if (hit.length > 1) err(`film/${m.id}: uses ${hit.length} parts from ${ref} (${hit.map((h) => h.id).join(', ')}); at most one per reference, combine it with our own parts (scripts/film/sources.json)`);
+      if (hit.some((h) => h.slot === 'payoff')) err(`film/${m.id}: its payoff comes from ${ref}; the big moment must be our own`);
+    }
+    const story = existsSync(join(FD, m.id, 'story.js')) ? readFileSync(join(FD, m.id, 'story.js'), 'utf8').replace(/^\s*\/\/.*$/gm, '') : '';
+    const kit = existsSync(join(root, 'social', m.id + '.md')) ? readFileSync(join(root, 'social', m.id + '.md'), 'utf8') : '';
+    for (const ph of SRC.bannedPhrases) if (new RegExp(ph, 'i').test(story + '\n' + kit)) err(`film/${m.id}: uses "${ph}", a line from a reference reel; write our own`);
+  }
   if (warns.length) console.warn('⚠ variety warnings (allowed, but say why in reel-log notes):\n' + warns.map((w) => '  - ' + w).join('\n'));
   // films from 2026-10-14 on must have a manifest (render a still once and it is written)
   for (const d of existsSync(FD) ? readdirSync(FD) : []) if (/^\d{4}-/.test(d) && d >= '2026-10-14' && existsSync(join(FD, d, 'story.js')) && !existsSync(join(FD, d, 'manifest.json'))) err(`film/${d}: no manifest.json (render at least one still: it is written automatically)`);

@@ -1,12 +1,14 @@
-// STARTER (product-film grammar, built on scripts/film/parts.js). Copy to film/ID/story.js, then BEND IT around this business's own metaphor:
+// STARTER (built on scripts/film/parts.js). Copy to film/ID/story.js, then REWRITE it around today's Aquarii service (design/services.md): the protagonist is
+// Aquarii, the page below is only proof ("a site we designed"); the hook, captions and CTA ("DM us or WhatsApp +91 95356 21491") sell our service, never the page's business.
+// Originality: at most one part per reference reel (scripts/film/sources.json); prefer our own metaphor (P.vessel: the water bearer). Default it ships with:
 // it already works on any template (it reads the page's name, accent, headline, features and call to action), but shipping it unchanged is not allowed
 // (scripts/check.mjs refuses a film whose story.js equals this file). Worked example of a fully bespoke film: film/2026-10-13-1902/story.js ("After 8").
 // The default arc (100 BPM, a beat every 0.6 s):
 //   0-2.4   hook captions over the lit phone in the dark (the page's first screen)        -> REPLACE with the business's own opening image (shopfront, product, desk...)
 //   2.4-5.4 the page scrolls on the phone; its headline builds as a sentence above it     -> keep the sentence, make the pivot word land
 //   5.4-8.4 pull back to the system: hub + 3 nodes from the page's features, data flowing -> name the mechanism THIS business sells
-//   8.4-10.2 phone returns, scan bar reveals the offer section, brackets lock the CTA     -> the focal proof
-//   10.2-12 a sentence builds the promise; 12.0-12.45 breath; 12.6 the warm payoff floods in with the answer captions
+//   8.4-10.2 phone returns, an iris opens on the offer section                             -> the focal proof
+//   10.2-12 a sentence builds the promise; 12.0-12.45 breath; 12.6 a bloom with the answer captions
 //   15.6-17 CTA card (business name + CTA); 17-18 everything returns to the frame-0 state (loop)
 (function () {
   const E = window.FilmEngine, T = window.FILM_T, KIT = window.FILM_KIT || {}, P = window.FilmParts, { clamp, lerp, ease } = E, S = (E.story = {});
@@ -64,20 +66,16 @@
       nodes: feats.map((f, i) => ({ x: [91, 201, 311][i], y: 400, icon: pickIcon(f, i), label: short(f, 14), at: [6.6, 7.2, 7.8][i] })) });
 
     // ---- brackets on the CTA inside the phone, and on the CTA card ----
-    E.brk = P.brackets(ph.el);
     // ---- sentence: the headline builds while the page scrolls (2.6-5.2); the promise builds in the night (10.3-11.9)
     const hw = words(h1, 7);
     E.promise = P.sentence(world, hw, { at: 10.4, per: .26, out: 15.3, y: 250, size: 26, weight: 700, accents: { [hw.length - 1]: A }, highlight: true });   // the promise builds while the phone is away and stays through the payoff
     // ---- payoff + clock-less HUD label ----
-    P.payoff({ at: 12.6, out: 17.6, breath: [12.0, 12.45] });
+    P.bloom({ at: 12.6, out: 17.6 }); P.breath = [12.0, 12.45];   // our own payoff (the flood came from a reference reel: scripts/film/sources.json)
     E.cta = P.card(world, `left:41px;top:170px;width:320px;padding:20px 22px;border-radius:24px`,
       `<div style="font:500 9px/1 ${P.MONO};letter-spacing:.16em;opacity:.65">${name.toUpperCase()} · DEMO</div>
        <div style="font:900 30px/.98 Archivo,sans-serif;font-variation-settings:'wdth' 78;text-transform:uppercase;margin-top:12px">${words(h1, 6).join(' ')}</div>
        <div class="btn" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:11px 16px;border-radius:99px;background:${A};color:#11180a;font:800 12px/1 Archivo,sans-serif;letter-spacing:.05em;text-transform:uppercase">${cta} <span aria-hidden="true">→</span></div>`);
     E.ctaRim = E.el('div', `position:absolute;left:41px;top:170px;width:320px;border-radius:24px;pointer-events:none;box-shadow:0 0 0 1px ${P.hexA(A, .55)},0 0 34px ${P.hexA(A, .25)}`, world);
-    E.brkCta = P.brackets(E.cta);
-    const btnBox = P.rel(E.cta.querySelector('.btn'), E.cta);
-    E.brkCta.snap(btnBox, 16.2, 16.85);
     // ---- captions (the spine) ----
     const hk = words(hook, 9), chunks = []; for (let i = 0; i < hk.length; i += 3) chunks.push(hk.slice(i, i + 3).join(' '));
     const hookCaps = chunks.map((c, i) => { const d = 2.45 / chunks.length; return [i ? i * d : -0.1, (i + 1) * d - .05, c, 32, i === chunks.length - 1 ? { [c.split(' ').length - 1]: A } : {}]; });
@@ -97,8 +95,7 @@
     const off = (E.off = E.el('div', 'position:absolute;inset:0;overflow:hidden;background:#fff', ph.screen));
     const offIn = E.el('div', `position:absolute;left:0;top:0;width:402px;transform-origin:0 0;transform:scale(${scale}) translateY(${-(offerY - 40)}px)`, off);
     offIn.appendChild(scrIn.querySelector('main').cloneNode(true));
-    P.scan(ph, off, 9.0, .6);
-    if (E.ctaBox) E.brk.snap(E.ctaBox, 9.6, 10.05);
+    P.iris(off, { at: 9.0, dur: .6, x: ph.cx, y: ph.cy });
     E.ph.halo.style.zIndex = 0;
     P.signoff({});
     S.A = A; S.name = name; S.h1 = h1;

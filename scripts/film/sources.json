@@ -1,0 +1,9 @@
+{
+  "_why": "Owner, 14 Oct 2026: a reel that rebuilds a reference reel almost as-is is plagiarism. Parts that came from studying a specific reel the owner shared are tagged with that reel. check.mjs allows at most ONE such part per reference in a film, never one as the payoff/big moment, and refuses the reference's own lines (bannedPhrases). Learn the timing and the idea, then combine it with our own parts.",
+  "references": {
+    "ref1-product-film": { "about": "owner's reference reel 1 (product film: accent on black, scan bar, hub with data dots, corner brackets, warm flood)", "parts": ["hub", "scan", "brackets", "flood"] },
+    "ref2-pov": { "about": "owner's reference reel 2 (POV: building sentence, recurring brand shape, rack focus)", "parts": ["sentence", "shape", "rack-focus"] },
+    "ref3-14oct": { "about": "owner's reference reels of 14 Oct (flip words, pendulum wipe, black interstitials, radial tour, letter construction, inline icon, orbit collage)", "parts": ["pendulum", "flip-words", "interstitial", "radial-tour", "construct", "inline-icon", "orbit-collage"] }
+  },
+  "bannedPhrases": ["we got you", "screenshot this"]
+}

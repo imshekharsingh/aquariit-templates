@@ -29,7 +29,7 @@ business's metaphor. Shipping it unchanged fails `scripts/check.mjs` (films from
 - Gallery check for new parts: write a tiny story in a scratch folder and render it with `--film-dir DIR --stills ...` on any template.
 - The review question is human: would I stop on it, watch to the end, screenshot a moment, send it to a friend in that business? Log the answers as `friendTest`.
 
-## Reference study 3 (owner's reels, 14 Oct 2026; the phone recordings were at 2x speed, timings doubled)
+## Reference study 3 (study notes, NOT a recipe: rebuilding these is plagiarism; at most one technique per reference per film, see scripts/film/sources.json) (owner's reels, 14 Oct 2026; the phone recordings were at 2x speed, timings doubled)
 1. A framework reel (hub + spokes, the camera tours each spoke while the label types, pivot lines on black, ends on the whole diagram + "Screenshot this"): built to be
    SAVED. Content for buyers that teaches something is a different job from a showcase; both have a place (E10).
 2. A word-per-beat reel: one huge word fills the width, the ground flips between two colours on every beat. Nothing else on screen; rhythm is the whole idea.

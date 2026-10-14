@@ -24,8 +24,8 @@ The daily template still gets made (the site is our portfolio of range), but it 
 - Pick the template's own purpose to suit the service of the day when that helps (e.g. a SaaS status page for `security`, a global shop for `edge`), but keep its range.
 
 ## Formats (rotate; log the format in reel-log `format`)
-1. **Service ad**: "Need X? We got you." (pendulum, flip words) → what you get → DM CTA.
-2. **Cheat sheet**: "5 signs your site is unprotected" / "What a CDN actually does": a radial or list that ends on "Screenshot this" (saves).
+1. **Service ad**: a buyer's problem → our service → what you get → DM CTA, in our own words and our own picture (never a reference's lines or device).
+2. **Cheat sheet**: "5 signs your site is unprotected" / "What a CDN actually does": a list or diagram worth saving, ending on our own save line (e.g. "Save it for your next site review").
 3. **Before / after**: slow vs fast, exposed vs protected, random posts vs a plan (compare, meter).
 4. **Explainer in 15 s**: how a request travels through a CDN and a firewall (route, hub, shield).
 5. **What you get**: the deliverables of one package, built on screen (steps, grid fill, deck).
@@ -37,8 +37,13 @@ The daily template still gets made (the site is our portfolio of range), but it 
 - Demo numbers inside a film (an animated counter of blocked requests) are an illustration and must look like one; never put them in the hook or caption.
 
 ## The CTA
-Every reel ends on Aquarii: the send line names who should get it ("Send this to a founder doing IT alone"), then a CTA to us. Until the owner gives a contact line
-(open item #10), the CTA is "DM us" plus a keyword ("DM 'SITE'", "DM 'SECURE'"), and the owner replies by hand.
+Every reel ends on Aquarii: the send line names who should get it ("Send this to a founder with a leaky site"), then the CTA (owner, 14 Oct 2026):
+**"DM us or WhatsApp +91 95356 21491"**, on screen in the film's last seconds and as the last caption line.
+
+## Originality (owner, 14 Oct 2026)
+A reel that rebuilds a reference reel is plagiarism, even with our text in it. Learn the idea and the timing from references, then build our own picture: our own
+metaphor first (Aquarii is the water bearer: sites as vessels, visitors as water, leaks and patches, pouring, flooding, rising), combined with at most one technique per
+reference. check.mjs enforces it through scripts/film/sources.json (parts per reference, banned lines).
 
 ## If a client hands us their social media (what we would run, and run here first)
 This account is our own test bed: whatever we sell as social media management, we do here first and can show.

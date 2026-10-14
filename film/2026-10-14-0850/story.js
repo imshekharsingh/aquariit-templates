@@ -1,91 +1,90 @@
-// FILM: Aquarii Tech Studio, the studio itself (service: studio). Re-cut 14 Oct 2026: the first cut sold the template's laundry business; the owner's rule
-// (design/services.md) is that every reel sells Aquarii's own services. Format: service ad ("Need X? We got you.") + cheat-sheet tour + one proof moment.
-// Concept: a founder needs a website, then reach, then gets hacked: three vendors, three headaches. One studio covers every layer, and attacks bounce off.
-// Combination (differs from the previous film in opener, transition, mechanism, payoff): pendulum + interstitial transitions, radial-tour mechanism,
-// shield payoff (NEW part, P.shield), underline captions, ring CTA, deep-indigo ground. No page clone: the template is not the subject of this reel.
+// FILM: Aquarii Tech Studio, "the leaky site" (service: studio). Third cut of this slot, 14 Oct 2026: cut 1 sold the template's laundry business, cut 2 rebuilt a
+// reference reel almost as-is (owner: "that's plagiarism"). This one is built on our own metaphor: Aquarii is the water bearer, so a business's website is a vessel and
+// its visitors are the water. Four cracks (slow, old on phones, no posts, hacked) drain it; our four services patch them, water pours back in through the address bar,
+// and what used to leak now rises as enquiries. CTA: DM us or WhatsApp.
+// Combination: leak cold open + vessel mechanism (NEW, ours), headline swap, pill captions, wave flood transition, rise-chips payoff (NEW, ours), contact CTA.
+// No part from any reference reel (scripts/film/sources.json).
 (function () {
   const E = window.FilmEngine, T = window.FILM_T, P = window.FilmParts, { clamp, lerp, ease } = E, S = (E.story = {});
   S.selfStage = true;
   S.dna = {
     service: 'studio',
-    opening: 'a tag with the Aquarius sign swings across NEED A WEBSITE? and wipes it into the answer',
-    bigMoment: 'red attacks fly in from every edge and burst on a mint shield around your site',
-    ground: 'deep indigo with mint, a giant faint wave pattern edge to edge',
-    music: 'confident minimal tech house at 100 BPM (tight kick, muted plucks, sub bass)',
+    opening: 'a browser window full of water already leaking from a crack under the hook',
+    bigMoment: 'the sealed window brims and visitors rise out of it as enquiries',
+    ground: 'deep sea navy with aqua water, lime patches and red leaks',
+    music: 'warm, steady downtempo electronic at 100 BPM (round bass, soft clicks, water-drop plucks)',
   };
   const sm = P.sm, css = P.css;
-  const INK = '#0a0f2c', MINT = '#3dffb5', RED = '#ff4d5e', SOFT = '#c9d2ff';
-  const AQ = '<svg viewBox="0 0 16 12" width="34" height="26" aria-hidden="true"><path d="M1 5 3.5 2.5 6 5 8.5 2.5 11 5 13.5 2.5 15 4M1 10 3.5 7.5 6 10 8.5 7.5 11 10 13.5 7.5 15 9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const INK = '#061722', AQUA = '#1ec8ff', DEEP = '#0a4fd6', LIME = '#d6ff3d', RED = '#ff5a4f';
 
   S.setup = async function () {
     document.documentElement.classList.add('reel');
     await P.ready; await document.fonts.ready;
-    const { world } = P.scene({ accent: MINT, ink: INK, glow: 'rgba(61,255,181,.10)' });
+    const { world } = P.scene({ accent: LIME, ink: INK, glow: 'rgba(30,200,255,.12)' });
 
-    // ---- the brand wave, huge and faint, edge to edge (uses the whole frame; drifts slowly) ----
-    const rows = Array.from({ length: 9 }, (_, i) => { const y = 40 + i * 82; let d = `M-80 ${y}`; for (let x = -80; x < 500; x += 60) d += ` L${x + 30} ${y - 26} L${x + 60} ${y}`; return `<path d="${d}"/>`; }).join('');
-    S.waves = E.el('div', 'position:absolute;left:-60px;top:0;width:522px;height:715px;opacity:.13', world,
-      `<svg viewBox="0 0 522 715" width="522" height="715" fill="none" stroke="${MINT}" stroke-width="3" stroke-linejoin="round" aria-hidden="true">${rows}</svg>`);
-
-    // ---- 0-6: the pendulum: question, then our answer, three times ----
-    const qa = (S.qa = E.el('div', 'position:absolute;inset:0', world));
-    P.pendulum(qa, [['Need a website?', 'We build it.'], ['Need more reach?', 'We run your socials.'], ['Hacked? Down?', 'We guard it.']],
-      { at: 0, period: 1.0, pivot: [201, -70], len: 345, amp: 27, y: 318, size: 52, colour: '#ffffff', alt: MINT, tagHtml: AQ });
-    // which service each answer is (reads as a catalogue, and fills the lower half)
-    [['01 / WEB DESIGN', -1, 2], ['02 / SOCIAL MEDIA', 2, 4], ['03 / SECURITY + CDN', 4, 5.9]].forEach(([txt, a, b]) => {
-      const el = E.el('div', `position:absolute;left:30px;right:30px;top:432px;text-align:center;color:${MINT};font:600 13px/1 ${P.MONO};letter-spacing:.28em`, qa, txt);
-      P.fade(el, a, b, { fi: .2, fo: .2, dy: 8 });
+    // ---- the vessel: the whole story happens in one browser window that fills the width and runs off the bottom ----
+    P.vessel(world, {
+      x: 44, y: 206, w: 314, h: 600, loopAt: 17.43, url: 'yourbusiness.com', water: [AQUA, DEEP], leak: RED, patch: LIME,
+      levels: [[0, .62], [3.4, .52], [5.0, .40], [6.4, .30], [8.5, .13], [8.9, .13], [12.3, .97]],
+      holes: [
+        { side: 'l', y: 470, icon: 'bolt', open: [[-2, 99]], fix: 8.95, fixIcon: 'globe' },
+        { side: 'r', y: 560, icon: 'phone', open: [[3.6, 99]], fix: 9.75, fixIcon: 'spark' },
+        { side: 'l', y: 630, icon: 'chat', open: [[5.0, 99]], fix: 10.55, fixIcon: 'calendar' },
+        { side: 'r', y: 690, icon: 'lock', open: [[6.4, 99]], fix: 11.35, fixIcon: 'lock' },
+      ],
+      pour: [8.95, 12.3],
     });
-    // the loop: the same first line waits on the last frames, tag at its extreme (frame 0 is identical)
-    const qb = (S.qb = E.el('div', 'position:absolute;inset:0;opacity:0', world));
-    P.pendulum(qb, [['Need a website?', 'We build it.']], { at: 18.0, period: 1.0, pivot: [201, -70], len: 345, amp: 27, y: 318, size: 52, colour: '#ffffff', alt: MINT, tagHtml: AQ });
+    // the loop: from 17.43 (under the flood) the vessel replays its frame-0 state (loopAt)
 
-    // ---- 6.0-6.9: the pivot line ----
-    P.interstitial(world, `<div>One studio.<br><span style="color:${INK}">Every layer.</span></div>`, { at: 6.0, out: 6.9, colour: MINT, ink: '#0b0d0f', size: 50 });
+    // ---- the headline zone (top, under Instagram's bar): one line pair per act, swapped with a rising mask ----
+    const heads = [
+      [-1, 2.9, `Is your website<br><span style="color:${RED}">leaking customers?</span>`],
+      [2.9, 8.7, `Here’s where<br>they slip out.`],
+      [8.7, 12.4, `We seal it.<br><span style="color:${LIME}">All four cracks.</span>`],
+      [12.4, 15.5, `Now they<br><span style="color:${AQUA}">stay and ask.</span>`],
+      [17.45, 99, `Is your website<br><span style="color:${RED}">leaking customers?</span>`],
+    ].map(([a, b, html]) => {
+      const box = E.el('div', 'position:absolute;left:30px;right:30px;top:104px;height:84px;overflow:hidden', world);
+      const el = E.el('div', `color:#fff;font:900 35px/1.08 Archivo,sans-serif;font-variation-settings:"wdth" 78;letter-spacing:-.02em;text-transform:none`, box, html);
+      P.on((t) => { const i = ease.out3(clamp((t - a) / .4)), o = ease.in2(clamp((t - b + .25) / .25)); css(el, { transform: `translateY(${((1 - i) * 100 - o * 100).toFixed(1)}%)`, opacity: t < a || t >= b ? '0' : '1' }); });
+      return box;
+    });
+    void heads;
 
-    // ---- 6.9-12.4: the cheat sheet: what we run around your business ----
-    const radG = (S.radG = E.el('div', 'position:absolute;inset:0;opacity:0', world));
-    P.radial(radG, { hub: 'Your business online', labels: ['Website', 'Socials', 'Security', 'CDN', 'Backups'], cx: 201, cy: 300, r: 100, at: 7.0, per: .85, pullback: 11.25, title: 'Screenshot this', zoom: 1.4 });
-    P.wmHide.push([7.0, 7.85]);                                          // the zoomed hub sits on the watermark band on the first spoke
-    P.fade(radG, 6.88, 12.3, { fi: .08, fo: .3 });
+    // ---- payoff: what used to leak now rises as messages ----
+    P.breath = [12.3, 12.8]; P.punchAt = 12.85;
+    P.riseChips(world, ['New enquiry', 'Can you send a quote?', 'Booked for Friday', 'Saw your post, DM’d', 'Call me back?'],
+      { at: 12.85, per: .42, x0: 80, x1: 300, from: () => 480, to: 252, dur: 1.5, out: 15.35, icon: 'chat', right: 336 });   // they rise through the water like bubbles (above the watermark band, clear of Instagram's button column)
 
-    // ---- breath, then the shield (12.9-15.7) ----
-    P.breath = [12.3, 12.8]; P.punchAt = 12.9;
-    P.shield(world, { cx: 201, cy: 292, w: 304, at: 12.9, out: 15.55, threats: 18, label: 'Your site', counter: 'BLOCKED', threat: RED });
+    // ---- 15.35: the water floods the frame, the contact card sits on it ----
+    P.wave(world, { at: 15.35, dur: .5, colour: AQUA, hold: 1.55 });
+    P.use('cta', 'contact-flood');
+    const cta = E.el('div', 'position:absolute;left:30px;right:30px;top:150px;text-align:center;color:#04121a;opacity:0', world,
+      `<div style="font:900 84px/.9 Archivo,sans-serif;font-variation-settings:'wdth' 72;letter-spacing:-.03em">DM us</div>
+       <div style="margin-top:14px;font:700 20px/1 Archivo,sans-serif">or WhatsApp</div>
+       <div style="margin-top:10px;font:800 33px/1 Archivo,sans-serif;letter-spacing:-.01em">+91 95356 21491</div>
+       <div style="margin-top:18px;font:600 11px/1.4 ${P.MONO};letter-spacing:.1em">WEBSITES · SOCIAL MEDIA · SECURITY · CDN</div>`);
+    P.fade(cta, 15.8, 17.3, { fi: .25, fo: .2, dy: 14 });
 
-    // ---- 15.7: the CTA to us ----
-    const ctaG = E.el('div', 'position:absolute;inset:0;opacity:0', world);
-    E.el('div', `position:absolute;left:30px;right:30px;top:118px;text-align:center;color:#fff;font:800 34px/1.02 Archivo,sans-serif;font-variation-settings:"wdth" 82;letter-spacing:-.02em`, ctaG, `Your whole<br><span style="color:${MINT}">tech team.</span>`);
-    P.ring(ctaG, 'WEBSITES · SOCIALS · SECURITY · CDN · ', { x: 201, y: 318, r: 96, at: 15.75, label: 'DM' });
-    P.fade(ctaG, 15.6, 17.4, { fi: .2, fo: .3 });
-
-    // ---- captions (underline style, the spine) ----
-    // on the top and left spokes the zoomed camera pushes the hub down over the usual caption line, so that one caption sits at the top (y 150, below Instagram's top bar)
-    P.captions([[7.0, 7.85, 'Sites built to sell', 28, { 3: MINT }], [10.4, 11.25, 'Backed up nightly', 28, { 2: MINT }]], { style: 'underline', y: 150 });
+    // ---- captions (pill, the spine): the pain at each crack, then the fix ----
     P.captions([
-      [7.85, 8.7, 'Posts that get seen', 28, { 3: MINT }], [8.7, 9.55, 'Patched and watched', 28, { 2: MINT }],
-      [9.55, 10.4, 'Fast everywhere', 28, { 1: MINT }],
-      [11.35, 12.3, 'All one team.', 30, { 2: MINT }],
-      [13.05, 14.3, 'Attacks bounce off.', 30, { 1: MINT }], [14.35, 15.55, 'We take the hits.', 30, { 3: MINT }],
-      [15.7, 16.3, 'Send this to a founder', 28, { 4: MINT }], [16.3, 16.9, 'doing IT alone.', 30, { 1: MINT }],
-    ], { style: 'underline' });
-    P.signoff({});
+      [-0.3, 1.3, 'Visitors come in.', 28], [1.3, 3.5, 'Slow site? They leave.', 28, { 2: RED }],
+      [3.6, 4.95, 'Old on phones? Gone.', 28, { 3: RED }], [5.0, 6.35, 'No posts? Forgotten.', 28, { 2: RED }], [6.4, 8.4, 'Hacked? Shut.', 30, { 1: RED }],
+      [8.95, 9.7, 'We speed it up.', 28, { 3: LIME }], [9.75, 10.5, 'We rebuild it.', 28, { 2: LIME }], [10.55, 11.3, 'We run your posts.', 28, { 3: LIME }], [11.35, 12.25, 'We lock it down.', 28, { 3: LIME }],
+      [15.85, 16.4, 'Send this to a founder', 28], [16.4, 16.95, 'with a leaky site.', 28, { 2: RED }],
+    ], { style: 'pill' });
+    const so = P.signoff({});
+    so.style.color = 'rgba(4,18,26,.8)';                                   // it sits on the aqua flood
     S.name = 'Aquarii Tech Studio';
     return { ok: true };
   };
 
-  S.update = function (E, t) {
-    S.qa.style.opacity = (1 - sm(5.85, 6.0, t)).toFixed(3);
-    S.qb.style.opacity = sm(17.62, 17.9, t).toFixed(3);
-    S.waves.style.transform = `translateX(${(-30 * Math.sin(Math.PI * 2 * t / 18)).toFixed(1)}px)`;
-    S.waves.style.opacity = (t > 6 && t < 17.6 ? .07 : .13).toString();
-    P.update(t);
-  };
+  S.update = function (E, t) { P.update(t); };
 
   S.cover = function () {
-    E.frame = 357; S.update(E, 11.9);
+    E.frame = 360; S.update(E, 12.0);
     P.front.style.opacity = '0';
-    E.el('div', `position:absolute;left:30px;top:452px;width:342px;color:#fff;font:800 44px/.98 Archivo,sans-serif;font-variation-settings:"wdth" 80;letter-spacing:-.02em`, E.scene, `Your whole <span style="color:${MINT}">tech team</span>`);
+    E.el('div', `position:absolute;left:30px;top:96px;width:342px;color:#fff;font:900 46px/.98 Archivo,sans-serif;font-variation-settings:"wdth" 76;letter-spacing:-.02em;background:${INK};box-shadow:0 0 0 40px ${INK}`, E.scene, `Your site is <span style="color:${RED}">leaking</span>`);
   };
   S.cues = () => T.cues || [];
 })();
