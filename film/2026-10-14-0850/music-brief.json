@@ -1,0 +1,12 @@
+{
+  "mood": "bright, bouncy and tidy: a fresh-washed Saturday morning for a business that comes to your door",
+  "genre": "light funk pop",
+  "instrumentation": ["pizzicato strings", "marimba", "finger snaps", "warm round bass", "soft shaker"],
+  "avoid": ["vocals", "named artists or songs", "dark cinematic risers", "heavy drops"],
+  "vocals": false,
+  "interpretations": [
+    { "name": "marimba and pizzicato bounce", "instrumentation": ["marimba", "pizzicato strings", "finger snaps", "round bass"], "energy": "sparse snaps and marimba in the hook, pizzicato joins at the dial, full bounce on the shine" },
+    { "name": "clean lo-fi morning", "instrumentation": ["rhodes chords", "dusty drums", "soft shaker", "warm bass"], "energy": "relaxed pocket groove that lifts a notch at the peak" },
+    { "name": "bubbly synth-pop", "instrumentation": ["plucky synth", "claps", "sub bass", "glassy bells"], "energy": "brighter and faster-feeling with a clap build into the breath" }
+  ]
+}

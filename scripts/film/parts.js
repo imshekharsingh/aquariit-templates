@@ -9,7 +9,7 @@
 //   focus      P.brackets  P.spotlight  P.lens
 //   payoff     P.payoff (warm flood)  P.stamp  P.burst  P.sweep  P.bloom
 //   type       P.sentence (builds word by word)  P.giant (one huge word)  P.typewriter
-//   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' })   the spine: 1-3 words per card at y 492
+//   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' | 'blur' })   the spine: 1-3 words per card at y 492
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
 //   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff (the one constant: "Made by Aquarii")
 // helpers: P.fade, P.pop, P.rel (measure an element), P.icon/P.icons, P.hexA, P.sm, P.css. Gallery of every option: render the test films in design/film-playbook.md.
@@ -238,6 +238,7 @@
         pill: `padding:6px 13px 8px;border-radius:12px;background:${P.light ? 'rgba(255,255,255,.9)' : 'rgba(10,12,14,.82)'};box-shadow:0 0 0 1px ${P.light ? 'rgba(0,0,0,.08)' : 'rgba(255,255,255,.07)'},0 8px 24px rgba(0,0,0,.2);color:${P.fg};font:800 ${size}px/1.05 Archivo,sans-serif;font-variation-settings:"wdth" 84;letter-spacing:-.035em`,
         bare: `padding:0 4px;color:${P.fg};font:900 ${size * 1.25}px/1 Archivo,sans-serif;font-variation-settings:"wdth" 72;letter-spacing:-.02em;text-transform:uppercase;text-shadow:0 2px 18px ${P.light ? 'rgba(255,255,255,.9)' : 'rgba(0,0,0,.85)'}`,
         underline: `padding:2px 2px 10px;color:${P.fg};font:700 ${size}px/1.05 Archivo,sans-serif;letter-spacing:-.02em;background:linear-gradient(${P.accent},${P.accent}) 0 100%/100% 4px no-repeat`,
+        blur: `padding:7px 14px 9px;border-radius:14px;background:${P.light ? '#0b2a3a' : 'rgba(255,255,255,.94)'};box-shadow:0 10px 26px rgba(0,0,0,.22);color:${P.light ? '#ffffff' : '#0b0d0f'};font:800 ${size}px/1.05 Archivo,sans-serif;font-variation-settings:"wdth" 88;letter-spacing:-.03em`,
         mono: `padding:7px 12px;border-radius:4px;border:1px solid ${hexA(P.accent, .7)};background:${P.light ? 'rgba(255,255,255,.85)' : 'rgba(0,0,0,.7)'};color:${P.fg};font:600 ${size * .62}px/1.1 ${MONO};letter-spacing:.06em;text-transform:uppercase`,
       }[style] || '';
       const card = E.el('div', `position:absolute;left:201px;top:0;transform:translate(-50%,-50%);white-space:nowrap;${look}`, wrap);
@@ -250,7 +251,9 @@
       const out = clamp((t - (b - .12)) / .12);
       card.style.opacity = (clamp((t - a) / .08 + (a < 0 ? 1 : 0)) * (1 - out)).toFixed(3);
       card.style.transform = `translate(-50%,calc(-50% - ${(out * 6).toFixed(1)}px))`;
-      words.forEach((w, i) => { const k = ease.spring(clamp((t - a - i * .07) / .42)); w.style.transform = `translateY(${((1 - k) * 105).toFixed(1)}%)`; });
+      words.forEach((w, i) => { const k = ease.spring(clamp((t - a - i * .07) / .42));
+        if (style === 'blur') { const u = ease.out3(clamp((t - a - i * .07) / .38)); css(w, { opacity: clamp(u * 1.6).toFixed(3), filter: u < .98 ? `blur(${((1 - u) * 9).toFixed(2)}px)` : 'none', transform: `translateY(${((1 - k) * 34).toFixed(1)}%) scale(${lerp(1.18, 1, u).toFixed(3)})` }); return; }   // blur reveal: words sharpen out of a blur (new 14 Oct 2026)
+        w.style.transform = `translateY(${((1 - k) * 105).toFixed(1)}%)`; });
     }));
     return { wrap, caps, hideAll: () => caps.forEach(({ card }) => { card.style.opacity = '0'; }) };
   };

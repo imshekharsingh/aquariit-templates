@@ -1,0 +1,42 @@
+{
+  "id": "2026-10-14-0850",
+  "made": "2026-10-14T03:27:37.018Z",
+  "slots": {
+    "ground": [
+      "light"
+    ],
+    "opener": [
+      "rack-focus"
+    ],
+    "device": [
+      "phone"
+    ],
+    "transition": [
+      "blinds"
+    ],
+    "mechanism": [
+      "meter"
+    ],
+    "focus": [
+      "lens"
+    ],
+    "type": [
+      "giant"
+    ],
+    "payoff": [
+      "sweep"
+    ],
+    "cta": [
+      "ring"
+    ],
+    "captions": [
+      "blur"
+    ]
+  },
+  "dna": {
+    "opening": "a giant blurred 7 PM pulls back sharp in front of a closed rolling shutter",
+    "bigMoment": "a stack of folded towels pops up and takes a shine after the 48-hour dial",
+    "ground": "light: foam white-blue with sky blue and hot pink",
+    "music": "bright, bouncy light funk pop at 100 BPM (marimba, pizzicato, finger snaps)"
+  }
+}
