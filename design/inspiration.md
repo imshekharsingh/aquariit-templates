@@ -4,6 +4,10 @@ Fed by a weekly study (a scheduled Claude routine, Sundays) plus anything the ow
 could become. Take techniques, never copy a piece, a brand or a layout. When a daily film builds one of these into scripts/film/parts.js, tick it and name the part.
 
 ## Backlog of techniques (newest first)
+- [x] **Owner's reels, 14 Oct (reference study 3)**, built as parts the same day: flip words (one huge word per beat, the ground flips colour: `P.flipWords`); a
+  swinging tag on a string as the wipe between "Need X?" and "We got you." (`P.pendulum`); black interstitial cards for pivot lines (`P.interstitial`); a radial
+  diagram the camera tours spoke by spoke, ending on the whole diagram with "Screenshot this" (`P.radial`); letters snapping together on guide lines
+  (`P.construct`); an icon that morphs inside a sentence (`P.inlineIcon`); a collage orbiting a line of text (`P.orbit`).
 - [ ] **Type that breaks apart and reforms on the beat** (letters split, slide, re-assemble into the next word). 2026 trend lists put kinetic type first because most
   short video is watched muted. Part idea: `P.morphWord(from, to)` (letters fly to new positions). Sources: graphicdesignjunction.com/2026/01/video-and-motion-creative-trends-2026,
   autoae.online/blog/motion-graphics-trends-2026.

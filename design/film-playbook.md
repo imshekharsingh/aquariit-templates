@@ -23,6 +23,15 @@ business's metaphor. Shipping it unchanged fails `scripts/check.mjs` (films from
 - Gallery check for new parts: write a tiny story in a scratch folder and render it with `--film-dir DIR --stills ...` on any template.
 - The review question is human: would I stop on it, watch to the end, screenshot a moment, send it to a friend in that business? Log the answers as `friendTest`.
 
+## Reference study 3 (owner's reels, 14 Oct 2026; the phone recordings were at 2x speed, timings doubled)
+1. A framework reel (hub + spokes, the camera tours each spoke while the label types, pivot lines on black, ends on the whole diagram + "Screenshot this"): built to be
+   SAVED. Content for buyers that teaches something is a different job from a showcase; both have a place (E10).
+2. A word-per-beat reel: one huge word fills the width, the ground flips between two colours on every beat. Nothing else on screen; rhythm is the whole idea.
+3. An agency's own ad: a tag swinging on a string wipes "Need branding?" into "We got you." over and over, one service per swing. The moving object IS the transition (E11).
+4. A product film: icons inside sentences, a collage orbiting a line, letters spread on guide lines then snapping into a word, a logo growing from a dot, real-world
+   shots mixed with UI. Each idea gets one beat, then the next arrives.
+All seven techniques are parts now (see the menu in scripts/film/parts.js).
+
 ## Use the whole frame (owner feedback, 13 Oct 2026)
 The first films put a small subject in a narrow central column with a lot of empty frame (Gojigo v3 measured 2-18% coverage, 15 of 20 frames TIGHT). Rules now:
 - the subject fills the width (phone 270-290 px wide and running off the bottom edge; numbers and display type 340-390 px wide; buttons full width);
