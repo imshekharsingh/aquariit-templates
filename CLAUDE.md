@@ -306,6 +306,11 @@ templates/index.html (home shell), templates/kit/index.html, templates/play/play
 templates/manifest.webmanifest, templates/sw.js, templates/icons/,
 wrangler.jsonc, scripts/, .github/, .claude/
 
+## Save Claude usage (owner, 14 Oct 2026)
+Heavy work runs on GitHub, not in the Claude session: full film renders, re-renders and long checks go through the workflows (pipeline, Reel publish), and results
+are reviewed from what they produce. In a session, keep local runs to quick stills and checks; never render whole films locally to "see" them, and never poll or wait
+on long jobs: the owner waits for the issue to show up.
+
 ## Never do
 - Force-push, rewrite history, or delete branches yourself
 - Push to main or deploy manually
