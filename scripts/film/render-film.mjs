@@ -2,7 +2,7 @@
 //   node scripts/film/render-film.mjs ID [--variant A|B|both] [--out DIR] [--sub 4] [--shutter .5] [--workers 3] [--frames a-b] [--stills t1,t2,...] [--no-audio] [--crf 16]
 // Needs film/ID/{story.js,timing.json,audio.mjs}. Every frame is a pure function of the film time, so output is exact and repeatable (no real-time capture).
 // Motion blur = SUB sub-frames per output frame spread over a 180-degree shutter, averaged by ffmpeg (tmix).
-import { readFileSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync, symlinkSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync, symlinkSync, copyFileSync, unlinkSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
@@ -37,7 +37,7 @@ async function openPage(browser, variant) {
   await pg.evaluate(async () => { await document.fonts.ready; await Promise.all(['900 20px Gabarito', '500 12px "Martian Mono"'].map((f) => document.fonts.load(f))); });
   let kit = null; try { kit = JSON.parse(readFileSync(join(root, 'templates', 'social-kits.json'), 'utf8')).find((k) => k.id === id) || null; } catch { /* no kit */ }
   await pg.evaluate(([t, k]) => { window.FILM_T = t; window.FILM_KIT = k; }, [T, kit]);
-  if (/\bTHREE\b|P\.three\(/.test(storySrc)) { if (!threeSrc) throw new Error('this film uses 3D: npm install --no-save three@0.180.0'); await pg.addScriptTag({ content: threeSrc }); }
+  if (/\bTHREE\b|P\.three\(|P\.tank3d\(/.test(storySrc)) { if (!threeSrc) throw new Error('this film uses 3D: npm install --no-save three@0.180.0'); await pg.addScriptTag({ content: threeSrc }); }
   await pg.addScriptTag({ content: engineSrc }); await pg.addScriptTag({ content: partsSrc }); await pg.addScriptTag({ content: storySrc });
   await pg.evaluate(async (v) => { if (!FilmEngine.story.selfStage) FilmEngine.stage(); await FilmEngine.story.setup(v); }, variant);
   if (errs.length) throw new Error('page error: ' + errs.join(' | '));
@@ -53,16 +53,21 @@ async function openPage(browser, variant) {
 const settle = (pg) => pg.evaluate(() => new Promise((ok) => requestAnimationFrame(() => requestAnimationFrame(ok))));
 // one output frame = SUB sub-frames across the shutter; file index = f*SUB + k
 async function frame(pg, dest, f) {
+  if (pg.__3d === undefined) pg.__3d = await pg.evaluate(() => !!window.__film3d);
   for (let k = 0; k < SUB; k++) {
-    const t = (f + SHUT * ((k + .5) / SUB - .5)) / FPS;
+    const t = (f + SHUT * ((k + .5) / SUB - .5)) / FPS, nm = join(dest, String(f * SUB + k).padStart(6, '0'));
+    const in3d = pg.__3d && (await pg.evaluate(([tt]) => window.__film3d.active(tt), [t]));
+    // 3D sub-frames are the costly ones: render every other one and reuse it for the next (2-sample blur instead of SUB)
+    if (in3d && SUB > 2 && k % 2 === 1) { copyFileSync(join(dest, String(f * SUB + k - 1).padStart(6, '0') + '.jpg'), nm + '.jpg'); continue; }
     await pg.evaluate(([tt, ff]) => FilmEngine.render(tt, ff), [t, f]);
-    if (pg.__3d === undefined) pg.__3d = await pg.evaluate(() => !!window.__film3d);
-    if (!pg.__3d) await settle(pg);   // a 3D frame is read straight from its canvas (no repaint to wait for); the overlay screenshot composites on its own
-    const nm = join(dest, String(f * SUB + k).padStart(6, '0'));
-    if (pg.__3d) {   // 3D film: the WebGL frame straight from its canvas + a transparent screenshot of the layers above it (3x faster than one screenshot)
-      const url = await pg.evaluate(() => window.__film3d.grab()); writeFileSync(nm + '.jpg', Buffer.from(url.split(',')[1], 'base64'));
-      await pg.evaluate(() => window.__film3d.hide(true)); await pg.screenshot({ path: nm + '.png', omitBackground: true }); await pg.evaluate(() => window.__film3d.hide(false));
-    } else await pg.screenshot({ path: nm + '.jpg', type: 'jpeg', quality: 93 });
+    if (!in3d) { await settle(pg); await pg.screenshot({ path: nm + '.jpg', type: 'jpeg', quality: 93 }); continue; }
+    // 3D: the WebGL frame straight from its canvas (~50 ms) + a transparent screenshot of the layers above it (~1 s), laid together right away
+    // (one screenshot of a page holding a software-GL canvas takes 3-4 s)
+    const url = await pg.evaluate(() => window.__film3d.grab()); writeFileSync(nm + '_gl.jpg', Buffer.from(url.split(',')[1], 'base64'));
+    await pg.evaluate(() => window.__film3d.hide(true)); await pg.screenshot({ path: nm + '_ov.png', omitBackground: true }); await pg.evaluate(() => window.__film3d.hide(false));
+    const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', nm + '_gl.jpg', '-i', nm + '_ov.png', '-filter_complex', '[0:v][1:v]scale2ref[b][o];[b][o]overlay=format=auto,format=yuvj420p', '-q:v', '2', nm + '.jpg']   /* same size and pixel format as the 2D screenshots: a change mid-sequence restarts the blur filter and truncates the film */, { encoding: 'utf8' });
+    if (r.status !== 0) throw new Error('3D composite failed: ' + (r.stderr || '').slice(-400));
+    unlinkSync(nm + '_gl.jpg'); unlinkSync(nm + '_ov.png');
   }
 }
 

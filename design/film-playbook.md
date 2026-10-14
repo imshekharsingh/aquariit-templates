@@ -25,6 +25,18 @@ surface with real normals and foam, depth of field, and lights tuned per mood.
 Things to avoid: mix-blend grain over a transparent overlay (it turns into noise), drops sized for a wide shot in a close-up (they read as pearls), a dark page behind the
 water (refraction then looks murky; a bright page reads as clear water).
 
+## Hybrid films: 3D hero shots + 2D (owner decision, 14 Oct 2026)
+The owner chose hybrid after the 3D lab. A film declares its 3D windows; everything else stays 2D (cheap). First use, the leaky-site film: the opening close-up and
+smash pull-back (0-2.35 s), the refill through the address bar and the push onto the surface (11.62-12.88 s) and the loop return (17.35-18 s), all with `P.tank3d`.
+- `P.tank3d(parent, { active, loopAt, levels, leak(t), sealed(t), pour, camera, puddleSize })` is the leaky vessel in real 3D; `P.three({ active, loopAt })` draws only inside
+  its windows and replays its frame-0 state after loopAt. Hide the 2D twin of the subject during the windows; type, captions and the watermark stay on top.
+- Cut between 3D and 2D where both show the same framing (the 3D pull-back ends on the same wide window the 2D film opens on) or under a flash.
+- The renderer decides per sub-frame: 2D sub-frames screenshot as before; 3D sub-frames take the canvas + a transparent overlay screenshot and composite at once, and
+  render every other sub-frame (2-sample blur), so 3D seconds cost about 3x 2D seconds instead of 10x.
+Water realism pass (same day): a procedural ripple normal map scrolled two ways (fine refraction wobble), caustics as additive light on the page, the tank floor and the
+studio floor, a meniscus line, buoyant bubbles, landing splashes and a puddle, Neutral tone mapping so lime and aqua stay saturated. Still missing for "film" realism:
+real caustic projection from the surface shape, depth of field, a simulated surface for the pour.
+
 ## Easing and spring physics (motion focus, 14 Oct 2026)
 Linear or default ease-in-out motion is the clearest sign of an amateur reel. The toolkit lives at the top of scripts/film/parts.js and every film uses it:
 - `P.cubicBezier(x1, y1, x2, y2)` (Newton-Raphson, 8 iterations, bisection fallback) and presets `P.EASE.glide` (0.16,1,0.3,1), `snap` (0.7,0,0.84,0), `settle`
