@@ -25,6 +25,9 @@ surface with real normals and foam, depth of field, and lights tuned per mood.
 Things to avoid: mix-blend grain over a transparent overlay (it turns into noise), drops sized for a wide shot in a close-up (they read as pearls), a dark page behind the
 water (refraction then looks murky; a bright page reads as clear water).
 
+## Not a water brand (owner, 14 Oct 2026)
+The name Aquarii is only a name: no water, drops, aquariums or water-bearer imagery by default. Metaphors come from the buyer's problem.
+
 ## Design like the motion logo (owner, 14 Oct 2026: "why don't you advance yourself like this when designing my films?")
 The motion logo (design/brand/aquarii-motion-logo.svg) beat every film so far because it is ONE idea (a drop becomes the sign), five moves, every curve chosen,
 pure vector, and was designed as a finished image first. Films were assembled from parts to satisfy rules. From now on:

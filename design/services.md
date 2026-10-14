@@ -41,8 +41,7 @@ Every reel ends on Aquarii: the send line names who should get it ("Send this to
 **"DM us"** (owner, 14 Oct 2026: DM only for now, no phone number anywhere), on screen in the film's last seconds and as the last caption line.
 
 ## Originality (owner, 14 Oct 2026)
-A reel that rebuilds a reference reel is plagiarism, even with our text in it. Learn the idea and the timing from references, then build our own picture: our own
-metaphor first (Aquarii is the water bearer: sites as vessels, visitors as water, leaks and patches, pouring, flooding, rising), combined with at most one technique per
+A reel that rebuilds a reference reel is plagiarism, even with our text in it. Learn the idea and the timing from references, then build our own picture: our own metaphor first (chosen per film from the buyer's problem; NOT water: the name Aquarii is only a name, owner 14 Oct 2026), combined with at most one technique per
 reference. check.mjs enforces it through scripts/film/sources.json (parts per reference, banned lines).
 
 ## If a client hands us their social media (what we would run, and run here first)
@@ -56,3 +55,8 @@ This account is our own test bed: whatever we sell as social media management, w
 7. **Community**: reply to every comment in the first hour; DMs answered the same day; 3-5 genuine comments a day on the audience's posts.
 8. **Numbers**: read nightly (Instagram collect); weekly verdict on one experiment at a time (design/experiments.md); keep what works, drop what does not.
 9. **Report**: a monthly one-page report for the client: what we posted, what grew, what we change next.
+
+## The name is only a name (owner, 14 Oct 2026)
+"Aquarii" is not a water brand. Do not build films, logos or visuals around water, drops, aquariums or the water bearer by default. The leaky-site film used
+water once; that is one film's metaphor, not the brand. Pick each film's metaphor from the buyer's problem and the service.
+
