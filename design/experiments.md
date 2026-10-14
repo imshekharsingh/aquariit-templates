@@ -37,6 +37,11 @@ screen recording of the same page. Owner chose variant A (type-first open: hook 
 - E9 (from an owner-shared POV reel, 13 Oct): a **POV wrapper** ("POV: you built a café's site at 2 am"): the film plays on a virtual monitor in a night room with slow ambient
   light in the film's palette; inside, a sentence that builds word by word, pivot words with their own world responses, and one brand shape as a recurring character
   (design/film-playbook.md, Reference study 2). Measure average watch and shares against the plain films.
+- E10 (owner's "formula for viral content" reel, 14 Oct): **a saveable cheat-sheet reel for buyers**: "The 6 parts of a website that gets bookings" toured on a radial
+  diagram (`P.radial`), pivot lines on black, ending on the whole diagram with "Screenshot this". Saves are a ranking signal and the account has 1 save in 7 posts.
+  Measure saves per reach vs the template films.
+- E11 (owner's agency reel, 14 Oct): **Aquarii's own service ad**: "Need a website? We got you." / "Need bookings? We got you." with a swinging Aquarii tag as the
+  wipe (`P.pendulum`), then flip words and a contact line. One per week between template films; measure profile visits and DMs.
 - Style menu: the same list has styles our menus lack (maximalism, vector art, collage, pixel art, Y2K, surreal, graffiti, handwritten). Proposal for the owner: add the modern ones to
   the CLAUDE.md mood menu (needs the owner's go-ahead, CLAUDE.md is owner-edited).
 

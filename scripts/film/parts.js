@@ -4,11 +4,11 @@
 // THE MENU (pick a different combination every film; add one new option every film):
 //   ground     P.scene({ accent, ink })            black | deep colour (ink like #1a0712) | light (ink like #f4f1ea): cards, captions and dust adapt
 //   opener     P.rackWord  P.drawOn  P.assemble    (or a bespoke opening image, declared in S.dna.opening)
-//   transition P.scan  P.wave  P.iris  P.blinds  P.zoomThrough  P.whip  P.shapeWipe
-//   mechanism  P.hub  P.route  P.gridFill  P.steps  P.deck  P.meter  P.compare  (+ P.chat inside P.phone)
+//   transition P.scan  P.wave  P.iris  P.blinds  P.zoomThrough  P.whip  P.shapeWipe  P.pendulum (a swinging tag is the wipe)  P.interstitial (cut to a pivot line)
+//   mechanism  P.hub  P.route  P.gridFill  P.steps  P.deck  P.meter  P.compare  P.radial (diagram tour + 'Screenshot this')  P.orbit (collage)  (+ P.chat inside P.phone)
 //   focus      P.brackets  P.spotlight  P.lens
 //   payoff     P.payoff (warm flood)  P.stamp  P.burst  P.sweep  P.bloom
-//   type       P.sentence (builds word by word)  P.giant (one huge word)  P.typewriter
+//   type       P.sentence (builds word by word)  P.giant (one huge word)  P.typewriter  P.flipWords (word per beat, ground flips)  P.construct (letters snap together)  P.inlineIcon
 //   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' | 'blur' })   the spine: 1-3 words per card at y 492
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
 //   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff (the one constant: "Made by Aquarii")
@@ -546,5 +546,99 @@
     const el = E.el('div', `position:absolute;left:0;right:0;top:${y}px;text-align:center;font:700 12px/1 ${MONO};letter-spacing:.32em;color:${hexA(P.light ? '#000000' : '#ffffff', .75)};text-transform:uppercase`, P.front, 'Aquarii Web Studio');
     P.on((t) => { el.style.opacity = (sm(at, at + .3, t) * (1 - sm(out, out + .25, t))).toFixed(3); });
     return el;
+  };
+
+  // =====================================================================================================================================
+  // REFERENCE STUDY 3 (owner's screen recordings, 14 Oct 2026): flip words, pendulum wipe, black interstitials, radial diagram tour, word construction,
+  // inline icons, orbiting collage. Techniques only; nothing copied.
+  // =====================================================================================================================================
+  // flip words: one huge word per beat, filling the width; the ground flips between two colours on every word (type IS the picture)
+  P.flipWords = function (parent, words, { at = 0, per = .6, colours = [P.accent, P.ink], y = 330, maxW = 380, out = null } = {}) {
+    P.use('type', 'flip-words');
+    const ground = E.el('div', 'position:absolute;inset:0;opacity:0', parent);
+    const el = E.el('div', `position:absolute;left:0;right:0;top:${y}px;transform:translateY(-50%);text-align:center;white-space:nowrap;font:900 160px/.9 Archivo,sans-serif;font-variation-settings:"wdth" 75;letter-spacing:-.05em`, parent);
+    const sizes = words.map((w) => { const m = document.createElement('canvas').getContext('2d'); m.font = '900 100px Archivo, sans-serif'; return Math.min(200, Math.floor(100 * maxW / Math.max(1, m.measureText(w).width))); });
+    P.on((t) => { const i = Math.floor((t - at) / per); const on = t >= at && i < words.length && (out == null || t < out);
+      ground.style.opacity = on ? '1' : '0'; el.style.opacity = on ? '1' : '0'; if (!on) return;
+      const a = colours[i % 2], b = colours[(i + 1) % 2], k = ease.outX(clamp((t - at - i * per) / .18));
+      ground.style.background = a; el.style.color = b; el.textContent = words[i]; el.style.fontSize = sizes[i] + 'px'; el.style.transform = `translateY(-50%) scale(${lerp(1.18, 1, k).toFixed(3)})`; });
+    return el;
+  };
+  // pendulum: a tag hangs on a string from above the frame and swings; as it passes, the text behind it switches (the swinging object is the wipe)
+  P.pendulum = function (parent, pairs, { at = 0, period = 1.2, pivot = [201, -60], len = 330, amp = 38, tagHtml = '', y = 300, size = 40, colour, alt } = {}) {
+    P.use('transition', 'pendulum');
+    const A = [0, 1].map((i) => E.el('div', `position:absolute;left:30px;right:30px;top:${y}px;transform:translateY(-50%);text-align:center;color:${i ? (alt || P.fg) : (colour || P.fg)};font:900 ${size}px/.95 Archivo,sans-serif;font-variation-settings:"wdth" 80;text-transform:uppercase`, parent));
+    const svgNS = 'http://www.w3.org/2000/svg', box = svgEl(parent, '<line class="str" stroke-width="2" stroke-linecap="round"/>'), str = box.querySelector('.str'); str.setAttribute('stroke', hexA(P.light ? '#000000' : '#ffffff', .7)); void svgNS;
+    const tag = E.el('div', `position:absolute;left:-30px;top:-30px;width:60px;height:60px;border-radius:14px;display:grid;place-items:center;background:${P.ink};color:${P.accent};box-shadow:0 10px 24px rgba(0,0,0,.4),0 0 0 2px ${hexA(P.accent, .5)};font:900 26px/1 Archivo,sans-serif`, parent, tagHtml || '✦');
+    // each half-swing (one segment of `period`) sweeps the tag from one extreme to the other; the part of the frame it has crossed already shows the next line
+    const seq = pairs.flat();
+    P.on((t) => { const u = Math.max(0, (t - at) / period), n = Math.floor(u), f = u - n, ang = amp * Math.cos(Math.PI * u) * (Math.PI / 180);
+      const x = pivot[0] + len * Math.sin(ang), yy = pivot[1] + len * Math.cos(ang);
+      str.setAttribute('x1', pivot[0]); str.setAttribute('y1', pivot[1]); str.setAttribute('x2', x.toFixed(1)); str.setAttribute('y2', (yy - 30).toFixed(1));
+      tag.style.transform = `translate(${x.toFixed(1)}px,${yy.toFixed(1)}px) rotate(${(-ang * 57.3 * .6).toFixed(1)}deg)`;
+      const cur = seq[Math.min(n, seq.length - 1)], nxt = seq[Math.min(n + 1, seq.length - 1)], fromRight = n % 2 === 0, swapping = t >= at && n + 1 < seq.length && f > .03 && f < .97;
+      A[0].textContent = cur; A[1].textContent = nxt;
+      const cut = Math.max(0, Math.min(342, x - 30));
+      A[0].style.clipPath = !swapping ? 'none' : fromRight ? `inset(0 ${(342 - cut).toFixed(1)}px 0 0)` : `inset(0 0 0 ${cut.toFixed(1)}px)`;
+      A[1].style.clipPath = fromRight ? `inset(0 0 0 ${cut.toFixed(1)}px)` : `inset(0 ${(342 - cut).toFixed(1)}px 0 0)`;
+      A[1].style.opacity = swapping ? '1' : '0'; });
+    return { tag, lines: A };
+  };
+  // interstitial: a full-frame cut to solid black (or any colour) with one pivot sentence ("But there's one more thing")
+  P.interstitial = function (parent, text, { at = 6, out = 6.9, colour = '#050505', ink = '#ffffff', size = 34 } = {}) {
+    P.use('transition', 'interstitial');
+    const el = E.el('div', `position:absolute;inset:0;background:${colour};display:grid;place-items:center;padding:0 30px;text-align:center;color:${ink};font:800 ${size}px/1.05 Archivo,sans-serif;letter-spacing:-.02em;opacity:0`, parent, text);
+    P.on((t) => { el.style.opacity = t >= at && t < out ? '1' : '0'; });
+    return el;
+  };
+  // radial diagram: a hub with N labelled spokes; the camera tours the spokes one by one (labels type in), then pulls back to show the whole thing ("Screenshot this")
+  P.radial = function (parent, { hub = 'Formula', labels = [], cx = 201, cy = 330, r = 140, at = 2, per = .9, pullback = null, title = 'Screenshot this' } = {}) {
+    P.use('mechanism', 'radial-tour');
+    const box = E.el('div', 'position:absolute;inset:0;transform-origin:0 0', parent);
+    const n = labels.length, pts = labels.map((_, i) => { const a = -Math.PI / 2 + i * TAU / n; return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), a }; });
+    const lines = svgEl(box, pts.map((p) => `<line x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="${hexA(P.light ? '#000000' : '#ffffff', .35)}" stroke-width="1.4"/><circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="${P.fg}"/>`).join(''));
+    void lines;
+    const poly = (k) => Array.from({ length: 7 }, (_, i) => { const a = -Math.PI / 2 + i * TAU / 7; return `${(50 + k * Math.cos(a)).toFixed(1)}% ${(50 + k * Math.sin(a)).toFixed(1)}%`; }).join(',');
+    E.el('div', `position:absolute;left:${cx - 62}px;top:${cy - 62}px;width:124px;height:124px;clip-path:polygon(${poly(50)});background:${P.light ? '#111' : P.accent};display:grid;place-items:center;text-align:center;color:${P.light ? '#fff' : '#111'};font:800 15px/1.05 Archivo,sans-serif;padding:16px;box-sizing:border-box`, box, hub);
+    const labs = labels.map((txt, i) => { const p = pts[i], right = Math.cos(p.a) > .3, left = Math.cos(p.a) < -.3; const el = E.el('div', `position:absolute;top:${(p.y + (Math.sin(p.a) < -.5 ? -30 : Math.sin(p.a) > .5 ? 10 : -9)).toFixed(1)}px;${right ? `left:${(p.x + 10).toFixed(1)}px` : left ? `right:${(402 - p.x + 10).toFixed(1)}px` : `left:${(p.x - 80).toFixed(1)}px;width:160px;text-align:center`};white-space:nowrap;color:${P.fg};font:700 16px/1 Archivo,sans-serif`, box, ''); el.full = txt; return el; });
+    const head = E.el('div', `position:absolute;left:0;right:0;top:130px;text-align:center;color:${P.fg};font:800 22px/1 Archivo,sans-serif;opacity:0`, box, title);
+    const end = pullback == null ? at + per * n : pullback;
+    P.on((t, tf) => {
+      labs.forEach((el, i) => { const a0 = at + i * per, nchar = Math.floor(clamp((tf - a0) / .35) * el.full.length); el.textContent = el.full.slice(0, nchar) + (tf >= a0 && nchar < el.full.length ? '▌' : ''); });
+      const i = Math.min(n - 1, Math.max(0, Math.floor((t - at) / per))), p = pts[i], tour = t >= at - .3 && t < end ? 1 : 0, k = ease.io3(clamp((t - end) / .6));
+      const Z = 1.55, z = tour ? Z : lerp(Z, 1, k), lx = (p.x + cx) / 2 + (p.x - cx) * .35, ly = (p.y + cy) / 2 + (p.y - cy) * .35, fx = tour ? lx : lerp(lx, cx, k), fy = tour ? ly : lerp(ly, cy, k);   // aim between the hub and the label so both stay in frame
+      const zz = t < at - .3 ? 1 : z, X = t < at - .3 ? cx : fx, Y = t < at - .3 ? cy : fy; void Z;
+      box.style.transform = `translate(${(201 - X * zz).toFixed(1)}px,${(330 - Y * zz).toFixed(1)}px) scale(${zz.toFixed(3)})`;
+      head.style.opacity = sm(end + .3, end + .6, t).toFixed(3);
+    });
+    return box;
+  };
+  // construct word: letters start spread across the frame on guide lines and snap together into the word (typographic construction)
+  P.construct = function (parent, word, { at = 7, dur = .8, y = 330, size = 72, colour } = {}) {
+    P.use('type', 'construct');
+    const guides = svgEl(parent, `<line x1="0" y1="${y - size * .38}" x2="402" y2="${y - size * .38}" stroke="${hexA(P.accent, .5)}" stroke-dasharray="3 5"/><line x1="0" y1="${y + size * .38}" x2="402" y2="${y + size * .38}" stroke="${hexA(P.accent, .5)}" stroke-dasharray="3 5"/>`);
+    const row = E.el('div', `position:absolute;left:0;right:0;top:${y}px;transform:translateY(-50%);text-align:center;white-space:nowrap;color:${colour || P.fg};font:800 ${size}px/1 Archivo,sans-serif;letter-spacing:-.02em`, parent);
+    const ls = [...word].map((ch) => E.el('span', 'display:inline-block', row, ch === ' ' ? '&nbsp;' : ch));
+    const n = ls.length;
+    P.on((t) => { const k = ease.back(clamp((t - at) / dur)), o = clamp((t - at + .2) / .2); row.style.opacity = o.toFixed(3); guides.style.opacity = (o * (1 - sm(at + dur, at + dur + .4, t))).toFixed(3);
+      ls.forEach((l, i) => { const spread = (i - (n - 1) / 2) * 34; l.style.transform = `translateX(${((1 - k) * spread).toFixed(1)}px)`; }); });
+    return row;
+  };
+  // inline icon: a sentence where one slot holds an icon that pops and morphs between icons ("New [icon] product")
+  P.inlineIcon = function (parent, before, icons, after, { at = 4, per = .45, y = 300, size = 30 } = {}) {
+    P.use('type', 'inline-icon');
+    const row = E.el('div', `position:absolute;left:20px;right:20px;top:${y}px;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;gap:12px;color:${P.fg};font:700 ${size}px/1 Archivo,sans-serif;white-space:nowrap`, parent);
+    E.el('span', '', row, before); const slot = E.el('span', `display:inline-grid;place-items:center;width:${size * 1.8}px;height:${size * 1.8}px;border-radius:${size * .45}px;background:${P.accent};color:${P.light ? '#fff' : '#111'};box-shadow:0 0 24px ${hexA(P.accent, .45)}`, row); E.el('span', '', row, after);
+    P.on((t) => { const i = Math.max(0, Math.min(icons.length - 1, Math.floor((t - at) / per))), k = ease.spring(clamp((t - at - i * per) / .35)); slot.innerHTML = P.icon(icons[i], size * 1.15); slot.firstChild.style.transform = `scale(${lerp(.3, 1, k).toFixed(3)}) rotate(${((1 - k) * -40).toFixed(1)}deg)`; row.style.opacity = clamp((t - at + .2) / .2).toFixed(3); });
+    return row;
+  };
+  // orbit collage: cards (HTML snippets) orbit an ellipse around a line of text; they fly in from outside, circle, and leave
+  P.orbit = function (parent, cards, { at = 6, out = 8, cx = 201, cy = 330, rx = 165, ry = 225, speed = .3, w = 104, h = 128 } = {}) {
+    P.use('mechanism', 'orbit-collage');
+    const els = cards.map((html) => P.card(parent, `left:${-w / 2}px;top:${-h / 2}px;width:${w}px;height:${h}px;border-radius:14px;display:grid;place-items:center;padding:10px;text-align:center;font:800 15px/1.15 Archivo,sans-serif;overflow:hidden`, html));
+    P.on((t) => { const inK = ease.out3(clamp((t - at) / .7)), outK = ease.in2(clamp((t - out) / .5)), sc = lerp(2.2, 1, inK) + outK * 1.5;
+      els.forEach((el, i) => { const a = i * TAU / els.length + (t - at) * speed * TAU; const x = cx + rx * sc * Math.cos(a), y = cy + ry * sc * Math.sin(a), depth = (Math.sin(a) + 1) / 2;
+        css(el, { opacity: (clamp((t - at) / .2) * (1 - outK)).toFixed(3), transform: `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) scale(${lerp(.75, 1.05, depth).toFixed(3)}) rotate(${(Math.cos(a) * 8).toFixed(1)}deg)`, zIndex: String(Math.round(depth * 10)) }); }); });
+    return els;
   };
 })();
