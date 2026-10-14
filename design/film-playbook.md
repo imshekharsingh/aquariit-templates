@@ -18,7 +18,7 @@ What exists now:
   and ffmpeg lays one over the other. Breath dims reach the 3D scene through its exposure.
 - Lab shot: film/_lab/leaky-3d (8 s): a glass browser window with refractive water (the page behind it bends through the water), reflective glass, a cracked front pane
   spraying drops at the lens, a lime patch on the bold spring, a pour from the address bar. Render: `render-film.mjs 2026-10-14-0850 --film-dir film/_lab/leaky-3d`.
-Fit against the reel rules: 1080x1920, 30 fps, deterministic, safe zones, watermark, captions, loop and the 25 MiB cap all work the same way. Cost is the catch: ~2.5 s per
+Fit against the reel rules: 1080x1920, 30 fps, deterministic, safe zones, sign-off, captions, loop and the 25 MiB cap all work the same way. Cost is the catch: ~2.5 s per
 3D sub-frame on a 4-core machine (the 2D films are ~0.3 s), so an 18 s film fully in 3D takes ~45 min with 2 sub-frames of blur. Recommended use: 3D for the hero
 shots (3-6 s per reel) and 2D for the rest, which adds ~10-15 min to a render. Next steps for realism: caustics (light through the water onto the floor), a shader water
 surface with real normals and foam, depth of field, and lights tuned per mood.
@@ -41,7 +41,7 @@ The parts library stays as tools, not as the design. Hybrid 3D is for one hero m
 The owner chose hybrid after the 3D lab. A film declares its 3D windows; everything else stays 2D (cheap). First use, the leaky-site film: the opening close-up and
 smash pull-back (0-2.35 s), the refill through the address bar and the push onto the surface (11.62-12.88 s) and the loop return (17.35-18 s), all with `P.tank3d`.
 - `P.tank3d(parent, { active, loopAt, levels, leak(t), sealed(t), pour, camera, puddleSize })` is the leaky vessel in real 3D; `P.three({ active, loopAt })` draws only inside
-  its windows and replays its frame-0 state after loopAt. Hide the 2D twin of the subject during the windows; type, captions and the watermark stay on top.
+  its windows and replays its frame-0 state after loopAt. Hide the 2D twin of the subject during the windows; type, captions and the sign-off stay on top.
 - Cut between 3D and 2D where both show the same framing (the 3D pull-back ends on the same wide window the 2D film opens on) or under a flash.
 - The renderer decides per sub-frame: 2D sub-frames screenshot as before; 3D sub-frames take the canvas + a transparent overlay screenshot and composite at once, and
   render every other sub-frame (2-sample blur), so 3D seconds cost about 3x 2D seconds instead of 10x.
