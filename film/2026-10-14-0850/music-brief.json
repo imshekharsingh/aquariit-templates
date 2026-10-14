@@ -1,50 +1,50 @@
 {
-  "mood": "confident and clean: a calm team that has everything handled, punchy on each answer",
-  "genre": "minimal tech house",
+  "mood": "calm and reassuring with a lift: something draining, then filling back up and overflowing",
+  "genre": "downtempo electronic",
   "instrumentation": [
-    "tight kick",
-    "muted synth plucks",
-    "warm sub bass",
-    "crisp hats",
-    "airy pad"
+    "round sub bass",
+    "soft clicks",
+    "water-drop plucks",
+    "warm pad",
+    "light shaker"
   ],
   "avoid": [
     "vocals",
     "named artists or songs",
-    "cheesy corporate ukulele",
-    "heavy EDM drops"
+    "aggressive drops",
+    "horror tension"
   ],
   "vocals": false,
   "interpretations": [
     {
-      "name": "tight minimal house",
+      "name": "water-drop downtempo",
       "instrumentation": [
-        "tight kick",
-        "muted plucks",
-        "sub bass",
-        "crisp hats"
-      ],
-      "energy": "a hit on every pendulum answer, groove builds through the tour, drop on the shield"
-    },
-    {
-      "name": "dark synth pulse",
-      "instrumentation": [
-        "arpeggiated synth",
-        "sub bass",
-        "snare rolls",
+        "water-drop plucks",
+        "round bass",
+        "soft clicks",
         "pad"
       ],
-      "energy": "pulsing tension that releases on the shield"
+      "energy": "thin and dripping while it drains, warm fill from the first patch, lift on the messages"
     },
     {
-      "name": "bright glitch pop",
+      "name": "lo-fi keys",
       "instrumentation": [
-        "glitch percussion",
-        "bell plucks",
-        "claps",
-        "bass"
+        "rhodes",
+        "dusty drums",
+        "bass",
+        "vinyl texture"
       ],
-      "energy": "playful and quick, clap build into the breath"
+      "energy": "laid-back pocket that brightens at the fix"
+    },
+    {
+      "name": "bright marimba pop",
+      "instrumentation": [
+        "marimba",
+        "claps",
+        "bass",
+        "bells"
+      ],
+      "energy": "playful build into a happy peak"
     }
   ]
 }

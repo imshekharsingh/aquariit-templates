@@ -5,28 +5,30 @@
     "ground": [
       "deep-colour"
     ],
-    "transition": [
-      "pendulum",
-      "interstitial"
-    ],
     "mechanism": [
-      "radial-tour"
+      "leaky-vessel"
+    ],
+    "opener": [
+      "leak-cold-open"
     ],
     "payoff": [
-      "shield-deflect"
+      "rise-chips"
+    ],
+    "transition": [
+      "wave"
     ],
     "cta": [
-      "ring"
+      "contact-flood"
     ],
     "captions": [
-      "underline"
+      "pill"
     ]
   },
   "dna": {
     "service": "studio",
-    "opening": "a tag with the Aquarius sign swings across NEED A WEBSITE? and wipes it into the answer",
-    "bigMoment": "red attacks fly in from every edge and burst on a mint shield around your site",
-    "ground": "deep indigo with mint, a giant faint wave pattern edge to edge",
-    "music": "confident minimal tech house at 100 BPM (tight kick, muted plucks, sub bass)"
+    "opening": "a browser window full of water already leaking from a crack under the hook",
+    "bigMoment": "the sealed window brims and visitors rise out of it as enquiries",
+    "ground": "deep sea navy with aqua water, lime patches and red leaks",
+    "music": "warm, steady downtempo electronic at 100 BPM (round bass, soft clicks, water-drop plucks)"
   }
 }

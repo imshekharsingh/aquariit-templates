@@ -1,13 +1,14 @@
 // Film parts: the reusable vocabulary for the daily films. Loaded by render-film.mjs after engine.js and before the story, as window.FilmParts (P).
 // Every part is a pure function of film time: create it in setup(), then call P.update(t) at the end of the story's update(). Each part records the SLOT it fills
 // (P.use), and the renderer writes film/ID/manifest.json from that; scripts/check.mjs refuses a film that repeats the previous one (CLAUDE.md "Directed film").
-// THE MENU (pick a different combination every film; add one new option every film):
+// THE MENU (pick a different combination every film; add one new option every film). ORIGINALITY: parts learned from a specific reel the owner shared are
+// tagged in scripts/film/sources.json; a film may use at most one per reference and never as its payoff (check.mjs): learn from references, never rebuild one.
 //   ground     P.scene({ accent, ink })            black | deep colour (ink like #1a0712) | light (ink like #f4f1ea): cards, captions and dust adapt
 //   opener     P.rackWord  P.drawOn  P.assemble    (or a bespoke opening image, declared in S.dna.opening)
 //   transition P.scan  P.wave  P.iris  P.blinds  P.zoomThrough  P.whip  P.shapeWipe  P.pendulum (a swinging tag is the wipe)  P.interstitial (cut to a pivot line)
-//   mechanism  P.hub  P.route  P.gridFill  P.steps  P.deck  P.meter  P.compare  P.radial (diagram tour + 'Screenshot this')  P.orbit (collage)  (+ P.chat inside P.phone)
+//   mechanism  P.vessel (OUR metaphor: the site is a vessel, customers the water, pains leak it, services patch it; also an opener)  P.hub  P.route  P.gridFill  P.steps  P.deck  P.meter  P.compare  P.radial (diagram tour + pull-back title)  P.orbit (collage)  (+ P.chat inside P.phone)
 //   focus      P.brackets  P.spotlight  P.lens
-//   payoff     P.payoff (warm flood)  P.stamp  P.burst  P.sweep  P.bloom  P.shield (attacks burst on a shield; also a security/edge mechanism: slot 'mechanism')
+//   payoff     P.riseChips (messages float up: customers who now stay)  P.payoff (warm flood)  P.stamp  P.burst  P.sweep  P.bloom  P.shield (attacks burst on a shield; also a security/edge mechanism: slot 'mechanism')
 //   type       P.sentence (builds word by word)  P.giant (one huge word)  P.typewriter  P.flipWords (word per beat, ground flips)  P.construct (letters snap together)  P.inlineIcon
 //   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' | 'blur' })   the spine: 1-3 words per card at y 492
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
@@ -45,6 +46,10 @@
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
     pin: '<path d="M12 21s7-6 7-11.5a7 7 0 1 0-14 0C5 15 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
     check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.5 9.5"/>',
+    bolt: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+    phone: '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>',
+    lock: '<rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><path d="M12 15v2.5"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/>',
     spark: '<path d="M12 2v6M12 16v6M2 12h6M16 12h6M5 5l4 4M15 15l4 4M19 5l-4 4M9 15l-4 4"/>',
   };
   P.icon = (name, size = 24) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P.icons[name] || name}</svg>`;
@@ -600,7 +605,7 @@
     return el;
   };
   // radial diagram: a hub with N labelled spokes; the camera tours the spokes one by one (labels type in), then pulls back to show the whole thing ("Screenshot this")
-  P.radial = function (parent, { hub = 'Formula', labels = [], cx = 201, cy = 330, r = 140, at = 2, per = .9, pullback = null, title = 'Screenshot this', zoom = 1.55 } = {}) {
+  P.radial = function (parent, { hub = 'Formula', labels = [], cx = 201, cy = 330, r = 140, at = 2, per = .9, pullback = null, title = '', zoom = 1.55 } = {}) {
     P.use('mechanism', 'radial-tour');
     const box = E.el('div', 'position:absolute;inset:0;transform-origin:0 0', parent);
     const n = labels.length, pts = labels.map((_, i) => { const a = -Math.PI / 2 + i * TAU / n; return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), a }; });
@@ -691,5 +696,93 @@
       if (cnt) { cnt.textContent = `${counter} ${String(hits).padStart(2, '0')}`; cnt.style.opacity = (sm(at + .4, at + .7, t) * (1 - sm(out, out + .3, t))).toFixed(3); }
     });
     return { box, inner };
+  };
+
+  // =====================================================================================================================================
+  // OUR OWN (14 Oct 2026, after the owner flagged a reel that copied a reference): the brand's own metaphor. Aquarii = the water bearer, so a business's site is a
+  // vessel and its customers are the water. Leaks are the buyer's pains; our services are the patches.
+  // =====================================================================================================================================
+  // vessel: a browser window holding water. levels: [[t, 0..1]] (eased between keys); holes: [{ side: 'l'|'r', y, open: [[t0, t1], ...], icon, fix: t, fixIcon }]
+  // a hole sprays while open and the water stands above it (jet speed grows with the depth); `fix` pops a patch on it; pour: [t0, t1] fills it through the address bar
+  P.vessel = function (parent, { x = 22, y = 200, w = 358, h = 600, bar = 40, url = 'yourbusiness.com', levels = [[0, .6]], holes = [], pour = null, water = ['#1ec8ff', '#0a4fd6'], leak = '#ff5a4f', patch = P.accent, opener = true, loopAt = null } = {}) {   // loopAt: from then on the vessel replays its frame-0 state (seamless loop)
+    P.use('mechanism', 'leaky-vessel'); if (opener) P.use('opener', 'leak-cold-open');
+    const top = y + bar, bot = y + h, R = 24, IN = 3;
+    const frame = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;box-sizing:border-box;border-radius:${R}px;border:2px solid rgba(255,255,255,.34);background:rgba(255,255,255,.035)`, parent);
+    const barEl = E.el('div', `position:absolute;left:0;right:0;top:0;height:${bar}px;border-bottom:1px solid rgba(255,255,255,.14);display:flex;align-items:center;gap:6px;padding:0 14px`, frame,
+      `<i style="width:8px;height:8px;border-radius:50%;background:#ff6b5e"></i><i style="width:8px;height:8px;border-radius:50%;background:#ffc23d"></i><i style="width:8px;height:8px;border-radius:50%;background:#3ddc84"></i>`);
+    E.el('div', `position:absolute;left:70px;right:70px;top:9px;height:22px;border-radius:11px;background:rgba(255,255,255,.08);display:grid;place-items:center;color:rgba(255,255,255,.7);font:500 10.5px/1 ${MONO};letter-spacing:.06em`, barEl, url);
+    const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', parent); cv.width = 804; cv.height = 1430; const g = cv.getContext('2d'); g.scale(2, 2);
+    const lev = (t) => { let i = 0; while (i < levels.length - 1 && t >= levels[i + 1][0]) i++; const [a, la] = levels[i], [b, lb] = levels[Math.min(i + 1, levels.length - 1)]; return b > a ? lerp(la, lb, ease.io3(clamp((t - a) / (b - a)))) : la; };
+    const surf = (t) => bot - IN - lev(t) * (bot - top - IN);
+    const hx = (hl) => (hl.side === 'l' ? x + 1 : x + w - 1), dir = (hl) => (hl.side === 'l' ? -1 : 1);
+    const isOpen = (hl, t) => (hl.open || []).some(([a, b]) => t >= a && t < b);
+    // patches + hole badges (DOM, crisp)
+    holes.forEach((hl) => {
+      hl.badge = E.el('div', `position:absolute;left:${hx(hl) - 15 - dir(hl) * 22}px;top:${hl.y - 15}px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:${leak};color:#fff;box-shadow:0 0 16px ${hexA(leak, .7)};opacity:0`, parent, P.icon(hl.icon || 'spark', 17));
+      hl.patchEl = E.el('div', `position:absolute;left:${hx(hl) - 21}px;top:${hl.y - 21}px;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:${patch};color:#0b0d0f;box-shadow:0 0 0 3px ${hexA(patch, .3)},0 0 24px ${hexA(patch, .6)};opacity:0`, parent, P.icon(hl.fixIcon || 'check', 22));
+      hl.ring = E.el('div', `position:absolute;left:${hx(hl) - 30}px;top:${hl.y - 30}px;width:60px;height:60px;border-radius:50%;border:2.5px solid ${patch};opacity:0`, parent);
+    });
+    const SP = .016, LIFE = 1.1, G = 950;
+    P.on((t0, tf0) => {
+      const t = loopAt != null && t0 >= loopAt ? t0 - P.len : t0, tf = loopAt != null && t0 >= loopAt ? tf0 - P.len : tf0;
+      g.clearRect(0, 0, 402, 715);
+      // water, clipped to the window's inside
+      const sY = surf(t), slope = Math.abs(lev(t + .05) - lev(t - .05)) * 10, pouring = pour && t >= pour[0] && t < pour[1];
+      const amp = Math.min(11, 3 + slope * 40 + (pouring ? 3 : 0));
+      g.save(); g.beginPath(); g.roundRect(x + IN, top, w - IN * 2, h - bar - IN, [0, 0, R - 3, R - 3]); g.clip();
+      const gr = g.createLinearGradient(0, sY, 0, bot); gr.addColorStop(0, water[0]); gr.addColorStop(1, water[1]);
+      const wy = (px) => sY + amp * .6 * Math.sin(px * .028 + tf * 3.1) + amp * .4 * Math.sin(px * .061 - tf * 2.2);
+      g.beginPath(); g.moveTo(x, bot + 10); for (let px = x; px <= x + w; px += 6) g.lineTo(px, wy(px)); g.lineTo(x + w, bot + 10); g.closePath(); g.fillStyle = gr; g.fill();
+      g.beginPath(); for (let px = x; px <= x + w; px += 6) px === x ? g.moveTo(px, wy(px)) : g.lineTo(px, wy(px)); g.strokeStyle = 'rgba(255,255,255,.75)'; g.lineWidth = 2; g.stroke();
+      // bubbles inside the water
+      g.fillStyle = 'rgba(255,255,255,.22)'; for (let i = 0; i < 14; i++) { const bx = x + 20 + ((i * 97) % (w - 40)), by = bot - ((tf * (26 + i * 3) + i * 61) % (bot - sY + 1)); if (by > sY + 6) { g.beginPath(); g.arc(bx + 4 * Math.sin(tf * 2 + i), by, 1.5 + (i % 3), 0, TAU); g.fill(); } }
+      g.restore();
+      // pour: a stream from the address bar into the surface
+      if (pouring || (pour && t >= pour[1] && t < pour[1] + .4)) {
+        const cx = x + w / 2, k = pouring ? 1 : 1 - (t - pour[1]) / .4, y0 = pouring ? top : lerp(top, sY, 1 - k);
+        g.fillStyle = water[0]; g.beginPath(); for (let yy = y0; yy <= sY; yy += 6) g.lineTo(cx - 6 * k + 1.5 * Math.sin(yy * .09 + tf * 14), yy); for (let yy = sY; yy >= y0; yy -= 6) g.lineTo(cx + 6 * k + 1.5 * Math.sin(yy * .09 + tf * 14 + 1), yy); g.fill();
+        g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 1.6; for (let r = 0; r < 3; r++) { const u = ((tf * 1.8 + r / 3) % 1); g.globalAlpha = (1 - u) * k; g.beginPath(); g.ellipse(cx, sY, 10 + u * 46, 3 + u * 9, 0, 0, TAU); g.stroke(); } g.globalAlpha = 1;
+      }
+      // holes: crack + jet of drops (each drop is a pure function of its spawn time)
+      holes.forEach((hl) => {
+        const open = isOpen(hl, t), fixed = hl.fix != null && t >= hl.fix && !(hl.open || []).some(([a]) => a > hl.fix && t >= a);
+        hl.badge.style.opacity = open && !fixed ? '1' : '0';
+        if (open && !fixed) { g.strokeStyle = leak; g.lineWidth = 2.4; g.beginPath(); const X = hx(hl), d = -dir(hl); g.moveTo(X, hl.y - 16); g.lineTo(X + d * 6, hl.y - 7); g.lineTo(X - d * 2, hl.y); g.lineTo(X + d * 7, hl.y + 8); g.lineTo(X, hl.y + 16); g.stroke(); }
+        const pk = hl.fix == null ? 0 : ease.spring(clamp((t - hl.fix) / .45));
+        css(hl.patchEl, { opacity: (fixed ? clamp((t - hl.fix) / .08) : 0).toFixed(3), transform: `scale(${lerp(1.8, 1, pk).toFixed(3)}) rotate(${((1 - pk) * -30).toFixed(1)}deg)` });
+        const ru = hl.fix == null ? 1 : clamp((t - hl.fix) / .5); css(hl.ring, { opacity: (fixed && ru < 1 ? 1 - ru : 0).toFixed(3), transform: `scale(${(.5 + ru * 1.6).toFixed(3)})` });
+        // the jet: a thick arc along the path of a drop leaving now, then the drops
+        const headNow = hl.y - surf(t);
+        if (open && !fixed && headNow > 2) { const v = 38 + 11 * Math.sqrt(headNow); g.strokeStyle = hexA(water[0], .85); g.lineWidth = Math.min(7, 2 + headNow / 30); g.lineCap = 'round'; g.beginPath();
+          for (let k = 0; k <= 14; k++) { const tau = k * .045, px = hx(hl) + dir(hl) * v * tau, py = hl.y + .5 * G * tau * tau; k ? g.lineTo(px, py) : g.moveTo(px, py); } g.stroke(); }
+        g.fillStyle = water[0];
+        const n0 = Math.ceil((tf - LIFE) / SP), n1 = Math.floor(tf / SP);
+        for (let n = n0; n <= n1; n++) {
+          const s0 = n * SP; if (!isOpen(hl, s0) || (hl.fix != null && s0 >= hl.fix && !(hl.open || []).some(([a]) => a > hl.fix && s0 >= a))) continue;
+          const head = hl.y - surf(s0); if (head <= 2) continue;
+          const tau = tf - s0, jit = ((n * 2654435761) >>> 0) / 4294967296, v = (38 + 11 * Math.sqrt(head)) * (.85 + .3 * jit);
+          const px = hx(hl) + dir(hl) * v * tau, py = hl.y + (jit - .5) * 6 + .5 * G * tau * tau;
+          if (py > 760) continue;
+          g.globalAlpha = .9; g.beginPath(); g.arc(px, py, 2.4 + 3 * jit, 0, TAU); g.fill();
+        }
+        g.globalAlpha = 1;
+      });
+    });
+    return { frame, surf, lev };
+  };
+  // rise chips: message chips pop out of a surface and float up through the frame (customers that now stay: enquiries, bookings)
+  P.riseChips = function (parent, texts, { at = 13, per = .32, x0 = 60, x1 = 342, from = () => 400, to = 110, dur = 2.4, out = 15.4, icon = 'chat', right = 372 } = {}) {
+    P.use('payoff', 'rise-chips');
+    const chips = texts.map((txt, i) => {
+      const el = E.el('div', `position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;padding:8px 13px 8px 9px;border-radius:99px;white-space:nowrap;background:#fff;color:#0b0d0f;font:700 14px/1 Archivo,sans-serif;box-shadow:0 10px 26px rgba(0,0,0,.35);opacity:0`, parent,
+        `<span style="display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:${P.accent};color:#0b0d0f">${P.icon(icon, 13)}</span>${txt}`);
+      return { el, a: at + i * per, cx: lerp(x0, x1, ((i * 0.618) % 1)) };
+    });
+    P.on((t) => chips.forEach(({ el, a, cx }, i) => {
+      const u = clamp((t - a) / dur), k = ease.spring(clamp((t - a) / .45)), w = el.offsetWidth || 120;
+      const left = Math.max(30, Math.min(right - w, cx - w / 2)), yy = lerp(from(a), to + (i % 3) * 38, ease.out3(u));
+      css(el, { opacity: (clamp((t - a) / .1) * (1 - sm(out, out + .3, t)) * (1 - sm(.85, 1, u))).toFixed(3), transform: `translate(${left.toFixed(1)}px,${yy.toFixed(1)}px) scale(${lerp(.4, 1, k).toFixed(3)})` });
+    }));
+    return chips;
   };
 })();

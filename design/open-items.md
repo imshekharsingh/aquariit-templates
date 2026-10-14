@@ -13,13 +13,15 @@ Every session and every daily run: read this file, ask about the oldest 1-3 open
 | 6 | 13 Oct | Reach is the bottleneck (4-113 per reel, 0 shares): post at one fixed evening time, add Instagram audio, share to Stories, DM each reel to 5-10 people in that business | Can you do these four after each post? Which time suits you? |
 | 7 | 13 Oct | Profile checklist (design/growth-playbook.md): Creator account, name field, bio, link-in-bio page | Status, plus a contact method for the link-in-bio page (WhatsApp / email / booking link) |
 | 8 | 13 Oct | E9 POV-wrapper film (from the studied POV reel) | Yes/no: try it on the next daily film? |
-| 11 | 14 Oct | Every reel now ends on a CTA to Aquarii ("DM us 'SITE'"). Which contact should it show: Instagram DM, WhatsApp, email or a booking link? And are the four service lines named right (web design, social media management, website + security management, CDN/security setup)? | The contact line, and any service I named wrong or missed |
-| 10 | 14 Oct | E10 cheat-sheet reel ("The 6 parts of a website that gets bookings", ends on "Screenshot this") and E11 Aquarii's own service ad ("Need a website? We got you.") | Yes/no; and for E11, the contact line to show (WhatsApp / email / DM) |
+| 11 | 14 Oct | Are the four service lines named right (web design, social media management, website + security management, CDN/security setup)? | Owner: check later |
+| 10 | 14 Oct | E10 cheat-sheet reel and E11 service ad, rewritten in our own words and visuals (the reference lines are banned now) | Yes/no; and for E11, the contact line to show (WhatsApp / email / DM) |
 | 9 | 13 Oct | New weekly design-study routine (Sundays 10:07 IST, first run 18 Oct) was created without connectors | Nothing from you unless the first run fails; I will check its result |
 
 ## Closed
 | Raised | Item | Decision |
 |---|---|---|
+| 14 Oct | CTA contact | Owner: "DM us or WhatsApp +91 95356 21491" |
+| 14 Oct | Reel copied a reference (pendulum + 'Need X? We got you.' + 'Screenshot this') | Owner: plagiarism, not allowed. Held #103; originality rule added (sources.json + check.mjs); slot re-made with our own leaky-vessel metaphor |
 | 14 Oct | What the reels sell | Owner: Aquarii's own services, never the template's business. Rules in design/services.md, CLAUDE.md, the daily command and check.mjs; Suddly reel re-cut as the studio ad; Gojigo v4 (food delivery) dropped |
 | 13 Oct | Directed film format, variant A | Owner chose A (type-first open); pipeline produces films |
 | 13 Oct | Study the owner's POV reel frame by frame | Done from the owner's screen recordings; lessons in design/film-playbook.md (Reference study 2) |
