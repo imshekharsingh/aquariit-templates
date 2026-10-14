@@ -39,7 +39,7 @@ All seven techniques are parts now (see the menu in scripts/film/parts.js).
   because each part re-applies its own state every frame.
 
 ## Watermark (owner, 14 Oct 2026)
-The Aquarius sign + AQUARII WEB STUDIO in a soft translucent pill, centred at y ≈ 535-552: the band between the captions (anchor 492) and Instagram's caption area. It is
+The Aquarius sign + AQUARII TECH STUDIO in a soft translucent pill, centred at y ≈ 535-552: the band between the captions (anchor 492) and Instagram's caption area. It is
 added by P.scene to every film and steps aside during P.signoff. Do not put key text in that band.
 
 ## Use the whole frame (owner feedback, 13 Oct 2026)

@@ -36,7 +36,7 @@ Weekly (advisor): read the per-reel table, update design/experiments.md, open a 
 Small samples lie: decide on 3+ reels per variant, never one.
 
 ## Profile checklist (owner does it once; the advisor drafts the text)
-- Account type Creator (check the audio library), clear name + keyword in the name field ("Aquarii | web design studio").
+- Account type Creator (check the audio library), clear name + keyword in the name field ("Aquarii Tech Studio", the final profile name, 14 Oct 2026).
 - Bio: who it is for + the result + the action; link-in-bio goes to a public page with a contact method (to be built: needs the owner's email / WhatsApp / booking link).
 - Profile photo and 3 pinned reels: the best-performing ones, once data exists.
 
