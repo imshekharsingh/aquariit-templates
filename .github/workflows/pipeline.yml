@@ -134,6 +134,8 @@ jobs:
           for f in $(gh release view reels --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' 2>/dev/null | grep -E '\.(mp4|jpg)$' | sort -r | head -n 16); do
             gh release download reels --repo "$GITHUB_REPOSITORY" --pattern "$f" --dir templates/reels --clobber
           done
+          # the site cannot hold a file over 25 MiB (the whole deploy would fail): leave an oversized reel out instead
+          find templates/reels -type f -size +25M -print -delete | sed 's/^/::warning::left out (over 25 MiB): /' || true
           ls -la templates/reels | tail -n +2 || true
       - uses: cloudflare/wrangler-action@v3
         env:
