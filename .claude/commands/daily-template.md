@@ -81,6 +81,7 @@ fictional business: add `## Service` (the line), keep the template's brand name 
 
 ## Phase 4c — Directed film (the reel; CLAUDE.md "Directed film"; how-to design/film-playbook.md)
 0. **Design like the motion logo** (design/film-playbook.md): poster-first (4-6 finished key frames before code), one visual idea that transforms, logo-grade craft, the motion logo as sign-off.
+   **Motion freeze 15-28 Oct (owner, E12 in design/experiments.md):** no new parts and no engine changes; build from existing parts (bug fixes and the approved iso-machine trial excepted). This suspends "every film adds one new trick" until 29 Oct.
    Machines: when the service can be shown as one working object, build it with P.iso (design/film-playbook.md "Isometric machines"). First use (15 Oct 2026): the edge service as a sorting machine; the owner judges that reel before machines become a regular option.
 1. **Concept first (3 lines):** the buyer's pain in today's service line, what Aquarii delivers (the mechanism the film shows), the payoff image. Pick a format from
    design/services.md (service ad, cheat sheet, before/after, explainer, what you get, myth vs fact). Every reel still looks like its own piece: pick the ground

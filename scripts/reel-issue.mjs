@@ -29,6 +29,8 @@ console.log(`## 🎬 ${k.name} — your reel is rendered
    ${film && meta.audio !== 'mixed' ? `The film carries its own sound effects only (whooshes, clicks, impacts) and is cut on a **${bpm} BPM** grid: choose a track near ${bpm} BPM and, in Instagram's audio trim, start it on a downbeat so the cuts land on its beats. Keep the film's own sound at about 30% in the volume mixer: the effects are timed to the cuts.` : (meta.audio === 'mixed' ? 'The video already has its music and effects mixed in (licensed source, see the kit); add Instagram audio only if you prefer.' : 'This video has no music of its own: add Instagram\'s audio.')}
 4. Paste the caption + keywords below, then **Share**.
 5. Tick **Reel uploaded** in the app so it is never posted twice.
+6. **Reach test (15-28 Oct):** post at **19:30 IST**, share the reel to your **Story with a poll sticker**, and **DM it to 5-10 people** who run this kind of business.  
+   Then comment here in one line, e.g. \`posted 19:32 audio y story y dms 7\`, so the stats can be read next to what was done.
 
 ${film ? `> **Experiment E6 · directed film:** about 18 s, motion-directed (virtual camera, beat-locked type) instead of a screen recording; the hook is on screen in the first 3 seconds and the last frame loops into the first. Post it as it is (no extra text of your own on top). Results are compared with the screen-recording reels (design/experiments.md).` : `> **Experiment E1 · format B:** about 18 s, the hook shows on screen for the first 3 seconds, no static intro. Post it as it is (no extra text of your own on top). The results are compared with the first five reels (design/experiments.md).`}
 
