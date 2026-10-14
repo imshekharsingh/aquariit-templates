@@ -157,37 +157,39 @@
   {
     "id": "2026-10-14-0850",
     "date": "2026-10-14",
-    "template": "Suddly",
-    "version": "v2",
-    "concept": "The shop shutter comes down at 7 PM but the customer's evening is just starting; a pickup does not need a shop: book in a tap, a dial counts to 48 hours, a folded stack takes a shine.",
-    "motionStyle": "light ground, rack-focus opener, blinds then iris transitions, dial mechanism, magnifier focus, sweep payoff",
-    "primaryTransition": "blinds",
+    "template": "Suddly (proof only; the reel is about Aquarii)",
+    "version": "v3 (services re-cut)",
+    "service": "studio",
+    "format": "service ad + cheat-sheet tour",
+    "concept": "A founder needs a website, then reach, then gets hacked: three questions, three of our answers on a swinging tag. One studio covers every layer (diagram tour), and attacks bounce off a shield around the site. CTA: DM us.",
+    "motionStyle": "deep indigo ground, pendulum wipes, interstitial cut, radial diagram tour with pull-back, shield payoff, ring CTA",
+    "primaryTransition": "pendulum",
     "transitions": [
-      "blinds",
-      "iris"
+      "pendulum",
+      "interstitial"
     ],
-    "typeTreatment": "blur-reveal captions on dark pills, giant FRESH., Bagel Fat One brand moments",
-    "grade": "foam white-blue ground, sky blue plan scene, hot pink accent, no dark flood",
-    "sound": "effects only at 100 BPM; Instagram audio: bouncy light funk near 100 BPM",
-    "cover": "7 PM over a closed shutter with 'Who skips your laundry?'",
-    "rubric": {
-      "firstSecondStoppingPower": 7,
-      "motionPolish": 8,
-      "typography": 8,
-      "rhythmAndAudioSync": 8,
-      "fidelityToTemplate": 8,
-      "originalityVsLog": 8,
-      "loopSeamlessness": 7,
-      "safeZones": 8
-    },
+    "typeTreatment": "huge uppercase Archivo questions/answers on the pendulum, mono service index (01 / WEB DESIGN), underline captions",
+    "grade": "deep indigo #0a0f2c, mint #3dffb5, red threats #ff4d5e, faint wave pattern edge to edge",
+    "sound": "effects only at 100 BPM (whoosh per swing, clicks per spoke, impact on the shield); Instagram audio: minimal tech house near 100 BPM",
+    "cover": "'Your whole tech team' over the diagram",
     "revisionPasses": 3,
-    "notes": "Pass 1: contact sheet of 16 stills; lens covered the price and printed small text off-centre -> moved to the small print and shrunk its text; '/ week' touched the 4 -> moved right. Cover repeated '7 PM' and wrapped badly -> new cover line. Pass 2: re-rendered plan and cover stills; fill meter 2 of 17 tight (breath and last frame). Not yet reviewed as a full render; the workflow renders it after deploy. Loop: frame 0 and last frame share the shutter and a blurred 7 PM; the first hook caption is mid-reveal at frame 0. Review pass (Claude, 14 Oct morning): frame 0 was a pale full blur with a half-formed caption (nothing to stop on) -> the rack focus starts mid-pull so frame 0 shows a huge, almost sharp 7 PM and a readable hook; the last second was nearly empty and did not match frame 0 -> the sharp 7 PM returns at 17.0 and pushes into the exact frame-0 state (the override runs after P.update, otherwise the part re-hides it).",
+    "notes": "Why re-cut: the owner pointed out the reels sold laundry, food delivery and dentistry instead of Aquarii's own services (design/services.md). Pass 1: tag was off-frame at its extremes (amp 40 -> 27); the two-line interstitial was split by the grid into two rows that sat on the watermark (wrapped in one div); the zoomed radial put the hub under the caption line; the send line shrank to unreadable (split in two captions); last second empty (CTA held to 17.4). Pass 2: captions moved per spoke (top for the top and left spokes, bottom for the rest), radial zoom 1.55 -> 1.4 (new option), watermark steps aside on the first spoke; added a mono service index under the pendulum so the lower half is used and each answer is named as a service. Pass 3: 24 stills, fill meter 7 of 24 tight (breath, interstitial, CTA): OK. Mid-swing frames of the pendulum show half-swapped words by design (they last a few frames).",
     "friendTest": {
-      "stopScrolling": "yes (after the fix): a huge 7 PM over a closed shutter from the very first frame",
-      "watchToEnd": "probably: the dial counting to 48 and the question pull you through",
-      "screenshotMoment": "the folded towel stack with FRESH.",
-      "sendToFriend": "yes, to a laundry or dry-cleaning owner (the send line says so)"
+      "stopScrolling": "yes: a swinging tag and a huge NEED A WEBSITE? from frame 0",
+      "watchToEnd": "yes: three quick question/answer swings, then a diagram tour and the shield",
+      "screenshotMoment": "the pulled-back diagram with 'Screenshot this'",
+      "sendToFriend": "yes, to a founder who does their own website and IT (the send line says so)"
     },
-    "newTrick": "captions style 'blur' (words sharpen out of a blur on a solid pill); manifest slot captions:blur"
+    "newTrick": "P.shield (threats fly in from the edges and burst on a shield; demo counter) + P.radial option zoom",
+    "previous": {
+      "version": "v2",
+      "concept": "The shop shutter comes down at 7 PM but the customer's evening is just starting; a pickup does not need a shop: book in a tap, a dial counts to 48 hours, a folded stack takes a shine.",
+      "friendTest": {
+        "stopScrolling": "yes (after the fix): a huge 7 PM over a closed shutter from the very first frame",
+        "watchToEnd": "probably: the dial counting to 48 and the question pull you through",
+        "screenshotMoment": "the folded towel stack with FRESH.",
+        "sendToFriend": "yes, to a laundry or dry-cleaning owner (the send line says so)"
+      }
+    }
   }
 ]

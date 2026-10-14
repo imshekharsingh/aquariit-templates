@@ -27,6 +27,9 @@ Optional hint from user: $ARGUMENTS
 7. Create and switch to branch template/ID from main.
 
 ## Phase 2 — Choose a fresh direction
+**Service first (owner, 14 Oct 2026):** read design/services.md and the previous film's `film/*/manifest.json` (`dna.service`). Pick today's service line
+(web | social | security | edge; `studio` rarely), never the previous one, and one buyer pain from that line. That pain is the reel; the template is the proof.
+Where it helps, choose a template purpose that suits the service (design/services.md "What the template is for now").
 Read design-log.json. Apply the no-repeat rule and rotate through the
 creative direction menus in CLAUDE.md. Honor the hint within those rules.
 Before coding, state the direction in 3–4 lines and explain why it is
@@ -73,16 +76,18 @@ Create social/ID.md following the "Instagram social kit" section of CLAUDE.md
 8–12 keywords, exactly 5 hashtags + alternates, Reel plan with length/shot plan/payoff/cover text, music suggestion matched to the template's mood). Base keywords on what the page actually shows.
 Reel format B is the current experiment (design/experiments.md): the reel is rendered automatically at about 18 s with the kit's hook shown on screen for the first
 ~3 s, so write `Length: 15–20 s`, make the hook SHORT (a question of at most 8 words, it is read on screen), and plan the shot plan and payoff to land inside 18 s
-(payoff in the last 4 s). Read the latest results table in the "Instagram collect" workflow log, `design/experiments.md` and `design/growth-playbook.md` first, and favour what the numbers say is working. Concept and hook speak to the buyer (a business owner or founder: money, time, results), not only to designers. Read `design/market.md` (people's choice): pick the business, market and currency from what the audience responds to; never present invented results as Aquarii's own.
+(payoff in the last 4 s). Read the latest results table in the "Instagram collect" workflow log, `design/experiments.md` and `design/growth-playbook.md` first, and favour what the numbers say is working. Concept and hook speak to the buyer (a business owner or founder: money, time, results) about OUR service of the day (design/services.md), never about the template's
+fictional business: add `## Service` (the line), keep the template's brand name out of Hook and Caption (check.mjs refuses it), and end on a CTA to us ("DM us 'SITE'"). Read `design/market.md` (people's choice): pick the business, market and currency from what the audience responds to; never present invented results as Aquarii's own.
 
 ## Phase 4c — Directed film (the reel; CLAUDE.md "Directed film"; how-to design/film-playbook.md)
-1. **Concept first (3 lines):** the problem this business's customer feels, the mechanism the site provides, the payoff image. Every reel is its own brand: pick the ground
-   (black / deep colour / light), the accent and the caption style for THIS business.
+1. **Concept first (3 lines):** the buyer's pain in today's service line, what Aquarii delivers (the mechanism the film shows), the payoff image. Pick a format from
+   design/services.md (service ad, cheat sheet, before/after, explainer, what you get, myth vs fact). Every reel still looks like its own piece: pick the ground
+   (black / deep colour / light), the accent and the caption style for THIS film. The template appears only as proof ("a site we designed", "the site we protect").
 2. **Pick the combination:** read the previous film's `film/*/manifest.json` (newest `made`) and choose, for opener, transition, mechanism, focus, payoff, type, captions and cta,
    options from scripts/film/parts.js (the header lists them) that differ from it in opener, transition, mechanism and payoff. Read design/inspiration.md and **add one new
    trick to parts.js** (a new part or option, tagged with `P.use(slot, id)`) and use it in this film.
-3. `cp -r film/_starter film/ID`, then write the story around the concept with those parts. Declare `S.dna = { opening, bigMoment, ground, music }`. End with `P.signoff()`.
-   The last caption before the sign-off is a **send line** naming who should get it ("Send this to a café owner who closes at 10"): reach is the bottleneck and sends are the strongest signal (design/experiments.md, 13 Oct).
+3. `cp -r film/_starter film/ID`, then write the story around the concept with those parts. Declare `S.dna = { service, opening, bigMoment, ground, music }`. End with `P.signoff()`.
+   The last caption before the sign-off is a **send line** naming who should get it ("Send this to a founder doing IT alone"): reach is the bottleneck and sends are the strongest signal (design/experiments.md, 13 Oct).
    `film/ID/timing.json`: 100 BPM grid by default (a beat every 0.6 s), effects `cues` that each match something on screen.
 4. **Look and fix (2-3 passes):** `node scripts/film/render-film.mjs ID --variant A --stills t1,t2,...` at every cut + first, breath, peak, last frame; contact sheet in time order
    (`ls still-A-*.png | sort -t- -k3 -g`). Answer the friend test (CLAUDE.md) honestly; check text against Instagram's zones and for collisions or dead air; fix and look again.

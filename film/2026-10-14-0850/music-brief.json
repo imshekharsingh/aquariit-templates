@@ -1,12 +1,50 @@
 {
-  "mood": "bright, bouncy and tidy: a fresh-washed Saturday morning for a business that comes to your door",
-  "genre": "light funk pop",
-  "instrumentation": ["pizzicato strings", "marimba", "finger snaps", "warm round bass", "soft shaker"],
-  "avoid": ["vocals", "named artists or songs", "dark cinematic risers", "heavy drops"],
+  "mood": "confident and clean: a calm team that has everything handled, punchy on each answer",
+  "genre": "minimal tech house",
+  "instrumentation": [
+    "tight kick",
+    "muted synth plucks",
+    "warm sub bass",
+    "crisp hats",
+    "airy pad"
+  ],
+  "avoid": [
+    "vocals",
+    "named artists or songs",
+    "cheesy corporate ukulele",
+    "heavy EDM drops"
+  ],
   "vocals": false,
   "interpretations": [
-    { "name": "marimba and pizzicato bounce", "instrumentation": ["marimba", "pizzicato strings", "finger snaps", "round bass"], "energy": "sparse snaps and marimba in the hook, pizzicato joins at the dial, full bounce on the shine" },
-    { "name": "clean lo-fi morning", "instrumentation": ["rhodes chords", "dusty drums", "soft shaker", "warm bass"], "energy": "relaxed pocket groove that lifts a notch at the peak" },
-    { "name": "bubbly synth-pop", "instrumentation": ["plucky synth", "claps", "sub bass", "glassy bells"], "energy": "brighter and faster-feeling with a clap build into the breath" }
+    {
+      "name": "tight minimal house",
+      "instrumentation": [
+        "tight kick",
+        "muted plucks",
+        "sub bass",
+        "crisp hats"
+      ],
+      "energy": "a hit on every pendulum answer, groove builds through the tour, drop on the shield"
+    },
+    {
+      "name": "dark synth pulse",
+      "instrumentation": [
+        "arpeggiated synth",
+        "sub bass",
+        "snare rolls",
+        "pad"
+      ],
+      "energy": "pulsing tension that releases on the shield"
+    },
+    {
+      "name": "bright glitch pop",
+      "instrumentation": [
+        "glitch percussion",
+        "bell plucks",
+        "claps",
+        "bass"
+      ],
+      "energy": "playful and quick, clap build into the breath"
+    }
   ]
 }

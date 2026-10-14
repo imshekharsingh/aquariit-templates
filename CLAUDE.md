@@ -56,7 +56,8 @@ module and the header style (menus in design/playbook.md; record them in design/
   neo-brutalist pop, luxury minimal, Swiss modernist, bento dashboard, kinetic type, spatial 3D cards, monochrome high-contrast, dark neon.
   VINTAGE (use sparingly) — warm paper/print, Japanese-inspired calm, art deco, retro-futurist, organic/botanical craft.
 - Purpose: SaaS landing, portfolio, agency, product launch, event,
-  restaurant, personal blog, consultancy, app showcase, nonprofit, studio
+  restaurant, personal blog, consultancy, app showcase, nonprofit, studio; and pages that prove the day's service line (design/services.md):
+  status/uptime page, security dashboard, global storefront, social content hub, booking site for a service business
 
 ## Design quality bar
 - Strong typographic hierarchy, generous whitespace, deliberate grid
@@ -135,20 +136,26 @@ Design every template for a **402×715 viewport**, not a desktop page:
 ## Instagram social kit (required for every template)
 Every template ships with social/ID.md (NOT inside templates/, so it is
 never deployed). It is the ready-to-paste kit for the Instagram Reel:
-**Growth rules (owner-delegated, evidence-driven):** the account exists to attract clients for Aquarii Technologies, so every concept and hook speaks to the buyer
+**What we sell (owner, 14 Oct 2026; design/services.md):** every reel sells Aquarii Tech Studio's own services: web design and development, social media management,
+website + security management, and CDN/security aggregation (we choose and wire CDN, DNS, WAF, bot and DDoS protection into one setup). The protagonist is Aquarii, never
+the fictional business on the template: the template is proof of what we build. The hook comes from a buyer's pain in ONE service line (slow site, no enquiries, no reach,
+hacked, downtime, attacks), the film shows what we deliver, and it ends on a CTA to us. Rotate the service (`S.dna.service` in the film, `## Service` in the kit:
+web | social | security | edge | studio); never the same as the previous film. Never name the template's brand in the kit's Hook or Caption.
+**Growth rules (owner-delegated, evidence-driven):** the account exists to attract clients for Aquarii Tech Studio, so every concept and hook speaks to the buyer
 (a business owner or founder: money, time, results, "what should it cost / where am I losing / can it do X"), not only to designers. The reel starts moving at
 frame 0 (no static title card), shows the hook on screen, runs ~18 s and pays off in its last 4 s. What is being tested, what the numbers said and what to try
 next live in design/experiments.md; the operating rhythm and the do/don't list live in design/growth-playbook.md.
 **Audience: people's choice (design/market.md; owner decision 13 Oct 2026, replaces the India-first market rules):** no fixed country, currency or business list.
-Pick the business type, market and currency per concept from what people respond to: the latest "Instagram collect" workflow log (per-reel reach, watch time, shares,
+Pick the market, currency and the template's business type per concept from what people respond to: the latest "Instagram collect" workflow log (per-reel reach, watch time, shares,
 saves, comments), audience countries when known, and what commenters ask for. One honesty line stays: never present invented results as Aquarii's own work or
 clients (numbers inside a fictional brand's page are example content, never the hook).
 - `## Hook` — one line (≤ 8 words, a question or a surprising contrast) shown ON SCREEN by the renderer for the first ~3 seconds, so it must read at a glance. It must open a loop the end of the video
-  closes: a question ("Can a website feel like tea? Watch to the end"), a "Wait for …" promise, or a surprising contrast.
+  closes: a buyer's question about OUR service ("Is your website actually protected?", "Why is your site slow abroad?"), a "Wait for …" promise, or a surprising contrast.
   Never a vague teaser, and never promise something the video does not show. Watch time is what Instagram rewards.
-- `## Caption` — 2–4 short lines; the first line must contain the main search keywords in natural language (Instagram
-  ranks on caption keywords); the LAST line must invite a share ("Send this to someone redesigning their site, and follow for
-  a new template every day") because shares sent per reach is a top ranking signal. Say "send", "share" or "tag".
+- `## Service` — one of web | social | security | edge | studio (design/services.md), matching the film's `S.dna.service`.
+- `## Caption` — 2–4 short lines; the first line must contain the service's search keywords in natural language (Instagram
+  ranks on caption keywords: "website security for small businesses", not the template's business); the LAST line must invite a share
+  ("Send this to a founder doing IT alone, and DM us 'SECURE'") because shares sent per reach is a top ranking signal. Say "send", "share" or "tag".
 - `## Keywords` — 8–12 search phrases (SEO terms for caption, alt text, on-screen text)
 - `## Hashtags` — EXACTLY 5, each starting with # (Instagram's per-post limit
   since Dec 2025): 2 broad, 2 niche, 1 topic-specific; then an `Alternates:` line

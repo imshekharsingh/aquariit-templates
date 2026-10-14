@@ -1,10 +1,11 @@
-# Growth playbook for @aquarii.webstudio (the advisor's standing plan)
+# Growth playbook for @aquarii.techstudio (the advisor's standing plan)
 
 Owner of the plan: the advisor (Claude). Owner of the account and the daily tap on "Post": the account owner. Budget: zero. Everything here is free.
 Update this file whenever an experiment (design/experiments.md) settles something; old advice that the numbers disproved gets deleted, not kept.
 
 ## Goal and audience
-The account is a shop window for Aquarii Technologies (web design and build). Success = enquiries from business owners and founders, with followers as the means.
+The account is a shop window for Aquarii Tech Studio: web design and development, social media management, website + security management, and CDN/security
+aggregation (design/services.md). Every reel sells one of these; the template on screen is proof, never the subject (owner, 14 Oct 2026). Success = enquiries from business owners and founders, with followers as the means.
 Audience is people's choice (owner, 13 Oct 2026): no fixed market; follow what the numbers and comments show (design/market.md). Never present invented results as Aquarii's own.
 So each reel is written for the **buyer**: a small-business owner or founder asking a money / time / results question ("What should a website cost?",
 "Where is your website losing money?"). Designers and developers are a bonus audience, not the target.
@@ -21,7 +22,7 @@ So each reel is written for the **buyer**: a small-business owner or founder ask
 3. About 18 s. Payoff (the answer) in the last 4 s. Cut anything that does not serve the hook.
 4. Caption: first line = what it is, in the words a buyer would search; last line asks for a send ("Send this to a founder who..."); then one keyword line (the pasted text is caption + keywords).
 5. Hashtags are optional now (at most 1-2); keywords in the caption do the searching. Cover = the cover card image, set in Instagram, not part of the video.
-6. One idea per reel, one next step (the CTA the template ends on).
+6. One idea per reel, one next step: a CTA to Aquarii ("DM us 'SITE'"), never the template's own button.
 
 ## Operating rhythm
 Daily (owner, about 10 min): post the reel from the "Reel ready" issue at a consistent time, tick "Reel uploaded", reply to every comment in the first hour, leave 3-5

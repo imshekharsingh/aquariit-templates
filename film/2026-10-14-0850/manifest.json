@@ -3,40 +3,30 @@
   "made": "2026-10-14T03:27:37.018Z",
   "slots": {
     "ground": [
-      "light"
-    ],
-    "opener": [
-      "rack-focus"
-    ],
-    "device": [
-      "phone"
+      "deep-colour"
     ],
     "transition": [
-      "blinds"
+      "pendulum",
+      "interstitial"
     ],
     "mechanism": [
-      "meter"
-    ],
-    "focus": [
-      "lens"
-    ],
-    "type": [
-      "giant"
+      "radial-tour"
     ],
     "payoff": [
-      "sweep"
+      "shield-deflect"
     ],
     "cta": [
       "ring"
     ],
     "captions": [
-      "blur"
+      "underline"
     ]
   },
   "dna": {
-    "opening": "a giant blurred 7 PM pulls back sharp in front of a closed rolling shutter",
-    "bigMoment": "a stack of folded towels pops up and takes a shine after the 48-hour dial",
-    "ground": "light: foam white-blue with sky blue and hot pink",
-    "music": "bright, bouncy light funk pop at 100 BPM (marimba, pizzicato, finger snaps)"
+    "service": "studio",
+    "opening": "a tag with the Aquarius sign swings across NEED A WEBSITE? and wipes it into the answer",
+    "bigMoment": "red attacks fly in from every edge and burst on a mint shield around your site",
+    "ground": "deep indigo with mint, a giant faint wave pattern edge to edge",
+    "music": "confident minimal tech house at 100 BPM (tight kick, muted plucks, sub bass)"
   }
 }
