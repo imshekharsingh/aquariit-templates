@@ -16,7 +16,7 @@
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
 //   camera     P.camera (keyed camera with shake; films DOM layers + canvases)   texture  P.grain   (and P.dripWord: wet display type)
 //   3D         P.tank3d (the leaky vessel in real 3D, for hero shots)  P.three (WebGL scene, procedural studio light)  P.three.look (keyed 3D camera on springs)  P.three.roundRect
-//   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff  + the watermark (automatic, lower centre at y 540: keep that band clear of key text)
+//   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff (the studio name + DM us, at the end; the always-on watermark was retired 14 Oct 2026, P.watermark() is opt-in only)
 // helpers: P.fade, P.pop, P.rel (measure an element), P.icon/P.icons, P.hexA, P.sm, P.css. Gallery of every option: render the test films in design/film-playbook.md.
 (function () {
   const E = window.FilmEngine, { clamp, lerp, ease } = E, TAU = Math.PI * 2;
@@ -126,7 +126,6 @@
     const bokeh = [[-70, 520, 190, hexA(accent, .11)], [300, 110, 150, 'rgba(255,255,255,.07)'], [250, 610, 170, 'rgba(255,190,120,.10)']].map(([x, y, d, c]) => E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${d}px;height:${d}px;border-radius:50%;background:radial-gradient(circle,${c},rgba(0,0,0,0) 70%);filter:blur(10px)`, L));
     const world = (P.world = E.el('div', 'position:absolute;inset:0;transform-origin:50% 45%', L));
     P.front = E.el('div', 'position:absolute;inset:0;pointer-events:none', L);   // HUD + captions (they do not shake with the world)
-    P.watermark();
     P.punchAt = null; P.breath = null; P.warmBokeh = null;
     P.on((t, tf) => {
       const ph = TAU * t / len;
@@ -609,11 +608,13 @@
     P.on((t) => { const k = ease.spring(clamp((t - at) / .55)); css(box, { opacity: clamp((t - at) / .12).toFixed(3), transform: `scale(${lerp(.6, 1, k).toFixed(3)})` }); svg.style.transform = `rotate(${(t * 30).toFixed(1)}deg)`; core.style.transform = `scale(${(1 + .05 * Math.sin(t * 5)).toFixed(3)})`; });
     return box;
   };
-  // the studio sign-off: the only constant across all reels (small, last ~1.2 s)
-  P.signoff = function ({ at = 16.9, out = 17.75, y = 492 } = {}) {
-    if (P.wmHide) P.wmHide.push([at, out + .25]);                         // the watermark steps aside while the sign-off says the same thing
-    const el = E.el('div', `position:absolute;left:0;right:0;top:${y}px;text-align:center;font:700 12px/1 ${MONO};letter-spacing:.32em;color:${hexA(P.light ? '#000000' : '#ffffff', .75)};text-transform:uppercase`, P.front, 'Aquarii Tech Studio');
-    P.on((t) => { el.style.opacity = (P.springAt(t, at, 'fade') * (1 - P.tween(t, out, .19, 'snap'))).toFixed(3); });
+  // the studio sign-off: the only constant across all reels. Owner, 14 Oct 2026: no watermark during the film; the name appears once, at the end, with the CTA.
+  // It sits at y 540 (the old watermark band: under the captions, above Instagram's caption area), "DM us" in the film's accent colour.
+  P.signoff = function ({ at = 15.4, out = 17.35, y = 540, text = 'Aquarii Tech Studio', cta = 'DM us' } = {}) {
+    if (P.wmHide) P.wmHide.push([at, out + .25]);                         // an opted-in watermark steps aside while the sign-off says the same thing
+    const el = E.el('div', `position:absolute;left:30px;right:30px;top:${y}px;text-align:center;font:700 12px/1 ${MONO};letter-spacing:.24em;color:${hexA(P.light ? '#000000' : '#ffffff', .8)};text-transform:uppercase;white-space:nowrap`, P.front,
+      text + (cta ? ` <span style="opacity:.5">·</span> <span style="color:${P.accent}">${cta}</span>` : ''));
+    P.on((t) => { const k = P.springAt(t, at, 'fade'); el.style.opacity = (k * (1 - P.tween(t, out, .19, 'snap'))).toFixed(3); el.style.transform = `translateY(${((1 - k) * 8).toFixed(1)}px)`; });
     return el;
   };
 

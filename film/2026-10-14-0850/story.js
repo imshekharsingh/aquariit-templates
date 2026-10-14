@@ -77,7 +77,7 @@
       [15.5, 16.4, 'Website security, handled.', 26, { 2: VIO }],
       [16.4, 16.95, 'Send this to a founder', 28], [16.95, 17.4, 'who never checks.', 28, { 2: RED }],
     ], { style: 'pill' });
-    P.signoff({ at: 16.95, out: 17.35 });
+    P.signoff({ at: 15.4, out: 17.35, cta: '' });   // the DM us pill is right above: the sign-off is just the name
 
     S.u = (t, tf) => {
       // the lock: giant (P1) -> into the URL bar (P2) -> giant and shut (P4) -> back into the bar -> giant again for the loop
