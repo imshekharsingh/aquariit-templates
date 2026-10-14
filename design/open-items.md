@@ -13,6 +13,7 @@ Every session and every daily run: read this file, ask about the oldest 1-3 open
 | 6 | 13 Oct | Reach is the bottleneck (4-113 per reel, 0 shares): post at one fixed evening time, add Instagram audio, share to Stories, DM each reel to 5-10 people in that business | Can you do these four after each post? Which time suits you? |
 | 7 | 13 Oct | Profile checklist (design/growth-playbook.md): Creator account, name field, bio, link-in-bio page | Status, plus a contact method for the link-in-bio page (WhatsApp / email / booking link) |
 | 8 | 13 Oct | E9 POV-wrapper film (from the studied POV reel) | Yes/no: try it on the next daily film? |
+| 10 | 14 Oct | E10 cheat-sheet reel ("The 6 parts of a website that gets bookings", ends on "Screenshot this") and E11 Aquarii's own service ad ("Need a website? We got you.") | Yes/no; and for E11, the contact line to show (WhatsApp / email / DM) |
 | 9 | 13 Oct | New weekly design-study routine (Sundays 10:07 IST, first run 18 Oct) was created without connectors | Nothing from you unless the first run fails; I will check its result |
 
 ## Closed
