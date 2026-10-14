@@ -736,10 +736,18 @@
       const sY = surf(t), slope = Math.abs(lev(t + .05) - lev(t - .05)) * 10, pouring = pour && t >= pour[0] && t < pour[1];
       const amp = Math.min(11, 3 + slope * 40 + (pouring ? 3 : 0));
       g.save(); g.beginPath(); g.roundRect(x + IN, top, w - IN * 2, h - bar - IN, [0, 0, R - 3, R - 3]); g.clip();
-      const gr = g.createLinearGradient(0, sY, 0, bot); gr.addColorStop(0, water[0]); gr.addColorStop(1, water[1]);
-      const wy = (px) => sY + amp * .6 * Math.sin(px * .028 + tf * 3.1) + amp * .4 * Math.sin(px * .061 - tf * 2.2);
-      g.beginPath(); g.moveTo(x, bot + 10); for (let px = x; px <= x + w; px += 6) g.lineTo(px, wy(px)); g.lineTo(x + w, bot + 10); g.closePath(); g.fillStyle = gr; g.fill();
-      g.beginPath(); for (let px = x; px <= x + w; px += 6) px === x ? g.moveTo(px, wy(px)) : g.lineTo(px, wy(px)); g.strokeStyle = 'rgba(255,255,255,.75)'; g.lineWidth = 2; g.stroke();
+      const gr = g.createLinearGradient(0, sY - 10, 0, Math.max(bot, sY + 300)); gr.addColorStop(0, '#8ff0ff'); gr.addColorStop(.06, water[0]); gr.addColorStop(.55, water[1]); gr.addColorStop(1, '#04205e');
+      const wy = (px) => sY + amp * .6 * Math.sin(px * .028 + tf * 3.1) + amp * .4 * Math.sin(px * .061 - tf * 2.2) + amp * .15 * Math.sin(px * .19 + tf * 6.3);
+      g.beginPath(); g.moveTo(x, bot + 10); for (let px = x; px <= x + w; px += 4) g.lineTo(px, wy(px)); g.lineTo(x + w, bot + 10); g.closePath(); g.fillStyle = gr; g.fill();
+      g.save(); g.clip();                                                   // light inside the water: slow diagonal bands + soft caustic flecks
+      g.globalCompositeOperation = 'lighter';
+      for (let k = 0; k < 4; k++) { const bx = x - 120 + ((tf * 22 + k * 130) % (w + 240)); const lg = g.createLinearGradient(bx, 0, bx + 70, 0); lg.addColorStop(0, 'rgba(255,255,255,0)'); lg.addColorStop(.5, 'rgba(200,250,255,.10)'); lg.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = lg; g.beginPath(); g.moveTo(bx, sY - 20); g.lineTo(bx + 70, sY - 20); g.lineTo(bx - 60, bot + 40); g.lineTo(bx - 130, bot + 40); g.closePath(); g.fill(); }
+      for (let k = 0; k < 26; k++) { const fx = x + ((k * 73.3 + tf * (8 + k % 5)) % w), fy = sY + 14 + ((k * 41.7) % 120), a2 = .08 + .1 * Math.max(0, Math.sin(tf * 3 + k)); g.strokeStyle = `rgba(220,255,255,${a2.toFixed(3)})`; g.lineWidth = 1.2;
+        g.beginPath(); g.moveTo(fx - 9, fy); g.quadraticCurveTo(fx, fy - 4 * Math.sin(tf * 2 + k), fx + 9, fy + 1); g.stroke(); }
+      g.restore();
+      g.beginPath(); for (let px = x; px <= x + w; px += 4) px === x ? g.moveTo(px, wy(px)) : g.lineTo(px, wy(px)); g.strokeStyle = 'rgba(255,255,255,.95)'; g.lineWidth = 2.2; g.stroke();
+      g.beginPath(); for (let px = x; px <= x + w; px += 4) px === x ? g.moveTo(px, wy(px) + 5) : g.lineTo(px, wy(px) + 5); g.strokeStyle = 'rgba(255,255,255,.25)'; g.lineWidth = 6; g.stroke();
       // bubbles inside the water
       g.fillStyle = 'rgba(255,255,255,.22)'; for (let i = 0; i < 14; i++) { const bx = x + 20 + ((i * 97) % (w - 40)), by = bot - ((tf * (26 + i * 3) + i * 61) % (bot - sY + 1)); if (by > sY + 6) { g.beginPath(); g.arc(bx + 4 * Math.sin(tf * 2 + i), by, 1.5 + (i % 3), 0, TAU); g.fill(); } }
       g.restore();
@@ -763,17 +771,26 @@
         const ru = hl.fix == null ? 1 : clamp((t - hl.fix) / .5); css(hl.ring, { opacity: (fixed && ru < 1 ? 1 - ru : 0).toFixed(3), transform: `scale(${(.5 + ru * 1.6).toFixed(3)})` });
         // the jet: a thick arc along the path of a drop leaving now, then the drops
         const headNow = hl.y - surf(t);
-        if (open && !fixed && headNow > 2) { const v = 38 + 11 * Math.sqrt(headNow); g.strokeStyle = hexA(water[0], .85); g.lineWidth = Math.min(7, 2 + headNow / 30); g.lineCap = 'round'; g.beginPath();
-          for (let k = 0; k <= 14; k++) { const tau = k * .045, px = hx(hl) + dir(hl) * v * tau, py = hl.y + .5 * G * tau * tau; k ? g.lineTo(px, py) : g.moveTo(px, py); } g.stroke(); }
+        if (open && !fixed && headNow > 2) {                               // the unbroken part of the jet: a tapered, wobbling ribbon with a highlight
+          const v = (38 + 11 * Math.sqrt(headNow)) * (1 + .06 * Math.sin(tf * 23)), w0 = Math.min(11, 3 + headNow / 14), TB = .16, N = 16, L = [], R2 = [];
+          for (let k = 0; k <= N; k++) { const tau = TB * k / N, px = hx(hl) + dir(hl) * v * tau, py = hl.y + .5 * G * tau * tau, vx = dir(hl) * v, vy = G * tau, vl = Math.hypot(vx, vy), nx = -vy / vl, ny = vx / vl;
+            const ww = w0 * (1 - .6 * k / N) * (1 + .18 * Math.sin(tf * 31 - k * 1.3)) / 2; L.push([px + nx * ww, py + ny * ww]); R2.push([px - nx * ww, py - ny * ww]); }
+          const jg = g.createLinearGradient(hx(hl), hl.y, hx(hl) + dir(hl) * v * TB, hl.y + 20); jg.addColorStop(0, '#bff6ff'); jg.addColorStop(1, water[0]);
+          g.fillStyle = jg; g.beginPath(); L.forEach(([a1, b1], k) => (k ? g.lineTo(a1, b1) : g.moveTo(a1, b1))); R2.reverse().forEach(([a1, b1]) => g.lineTo(a1, b1)); g.closePath(); g.fill();
+          g.strokeStyle = 'rgba(255,255,255,.8)'; g.lineWidth = 1.2; g.beginPath(); L.forEach(([a1, b1], k) => (k ? g.lineTo(a1, b1 + 1.5) : g.moveTo(a1, b1 + 1.5))); g.stroke(); }
         g.fillStyle = water[0];
         const n0 = Math.ceil((tf - LIFE) / SP), n1 = Math.floor(tf / SP);
         for (let n = n0; n <= n1; n++) {
           const s0 = n * SP; if (!isOpen(hl, s0) || (hl.fix != null && s0 >= hl.fix && !(hl.open || []).some(([a]) => a > hl.fix && s0 >= a))) continue;
           const head = hl.y - surf(s0); if (head <= 2) continue;
-          const tau = tf - s0, jit = ((n * 2654435761) >>> 0) / 4294967296, v = (38 + 11 * Math.sqrt(head)) * (.85 + .3 * jit);
-          const px = hx(hl) + dir(hl) * v * tau, py = hl.y + (jit - .5) * 6 + .5 * G * tau * tau;
+          const tau = tf - s0; if (tau < .15) continue;                      // the ribbon covers the first moments
+          const jit = ((n * 2654435761) >>> 0) / 4294967296, j2 = ((n * 40503) % 1000) / 1000, v = (38 + 11 * Math.sqrt(head)) * (.85 + .3 * jit);
+          const px = hx(hl) + dir(hl) * v * tau + (j2 - .5) * 10 * tau, py = hl.y + (jit - .5) * 6 + .5 * G * tau * tau;
           if (py > 1000) continue;
-          g.globalAlpha = .9; g.beginPath(); g.arc(px, py, 2.4 + 3 * jit, 0, TAU); g.fill();
+          const vx = dir(hl) * v, vy = G * tau, ang = Math.atan2(vy, vx), r = j2 < .25 ? .9 + jit : 1.8 + 3.2 * jit, st = 1 + Math.hypot(vx, vy) * .006;   // stretched along its velocity
+          g.save(); g.translate(px, py); g.rotate(ang); g.globalAlpha = j2 < .25 ? .55 : .95; g.fillStyle = water[0]; g.beginPath(); g.ellipse(0, 0, r * st, r, 0, 0, TAU); g.fill();
+          if (r > 2) { g.fillStyle = 'rgba(255,255,255,.85)'; g.beginPath(); g.ellipse(r * .3, -r * .35, r * .35 * st, r * .25, 0, 0, TAU); g.fill(); }
+          g.restore();
         }
         g.globalAlpha = 1;
       });
@@ -799,13 +816,14 @@
   // ---- CINEMATOGRAPHY (14 Oct 2026, owner: "this looks boring"): a real camera, depth, texture ----
   // camera: keys [[t, { x, y, s, r(deg) }, ease?]]: the world point (x, y) sits at the frame centre, zoomed s, rolled r. ease per segment ('io3' default, 'cut' jumps,
   // 'whip' = fast io with overshoot). shake: [[t0, t1, px]]. Use cam.css(c) on DOM layers (transform-origin 0 0) and the same numbers on canvases (crisp at any zoom).
-  P.camera = function (keys, { shake = [] } = {}) {
+  P.camera = function (keys, { shake = [], handheld = 0 } = {}) {   // handheld: px of slow organic drift (a held camera, never perfectly still)
     P.use('camera', 'keyed-camera');
     const EZ = { io3: ease.io3, lin: (k) => k, out3: ease.out3, in2: ease.in2, whip: (k) => { const b = ease.back(k); return b; }, cut: (k) => (k < 1 ? 0 : 1), ioX: ease.ioX };
     const get = (t) => {
       let i = 0; while (i < keys.length - 1 && t >= keys[i + 1][0]) i++;
       const [a, A] = keys[i], [b, B, ez] = keys[Math.min(i + 1, keys.length - 1)], k = b > a ? (EZ[ez || 'io3'] || ease.io3)(clamp((t - a) / (b - a))) : 1;
       const c = { x: lerp(A.x, B.x, k), y: lerp(A.y, B.y, k), s: lerp(A.s, B.s, k), r: lerp(A.r || 0, B.r || 0, k) * Math.PI / 180 };
+      if (handheld) { c.x += handheld / c.s * (Math.sin(t * 1.3) + .5 * Math.sin(t * 2.9 + 1)); c.y += handheld / c.s * (Math.cos(t * 1.1) + .5 * Math.sin(t * 2.3 + 2)); c.r += handheld * .0012 * Math.sin(t * .9); }
       shake.forEach(([t0, t1, px]) => { if (t >= t0 && t < t1) { const d = Math.exp(-(t - t0) * 7) * px / c.s; c.x += d * Math.sin(t * 91); c.y += d * Math.cos(t * 73); } });
       return c;
     };
@@ -846,11 +864,11 @@
     P.use('payoff', 'underwater-dive');
     const box = E.el('div', `position:absolute;inset:0;overflow:hidden;opacity:0;background:linear-gradient(180deg,${top},${deep} 85%)`, parent);
     const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', box); cv.width = 804; cv.height = 1430; const g = cv.getContext('2d'); g.scale(2, 2);
-    const D = [{ s: .62, v: 230, blur: 1.6, o: .55 }, { s: 1, v: 340, blur: 0, o: 1 }, { s: 1.55, v: 520, blur: 1.2, o: .95 }];
+    const D = [{ s: .75, v: 230, blur: 1.4, o: .6 }, { s: 1.15, v: 330, blur: 0, o: 1 }, { s: 1.7, v: 480, blur: 1.2, o: .95 }];
     const cs = cards.map((txt, i) => { const d = D[[1, 0, 2, 1, 0, 2, 1][i % 7]];
       const el = E.el('div', `position:absolute;left:0;top:0;display:flex;align-items:center;gap:8px;padding:9px 15px 9px 10px;border-radius:99px;white-space:nowrap;background:rgba(255,255,255,.96);color:#0b0d0f;font:700 15px/1 Archivo,sans-serif;box-shadow:0 14px 30px rgba(0,20,60,.45);transform-origin:50% 50%;${d.blur ? `filter:blur(${d.blur}px)` : ''}`, box,
         `<span style="display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:${accent};color:#0b0d0f">${P.icon(icon, 14)}</span>${txt}`);
-      return { el, d, t0: at - .35 + i * .26, x: [70, 250, 150, 300, 40, 200, 110][i % 7] }; });
+      return { el, d, t0: at - 1.1 + i * .38, x: [40, 210, 90, 230, 30, 180, 60][i % 7] }; });
     cs.sort((a, b) => a.d.s - b.d.s).forEach((c) => box.appendChild(c.el));     // far ones behind
     let sd = 17; const rnd = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
     const bub = Array.from({ length: 70 }, () => ({ x: rnd() * 402, d: rnd(), r: 1 + rnd() * 3.5, p: rnd() }));

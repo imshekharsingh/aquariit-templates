@@ -24,35 +24,34 @@
     // ---- the camera (world coordinates of the vessel; 100 BPM, a beat every 0.6 s) ----
     const F0 = { x: 40, y: 455, s: 2.6, r: -5 };
     const cam = P.camera([
-      [0, F0], [1.7, { x: 44, y: 452, s: 3.0, r: -6 }, 'lin'],
-      [2.5, { x: 201, y: 432, s: .97, r: 0 }],                                 // smash pull-back: the whole leaking window
-      [3.3, { x: 201, y: 440, s: 1.0, r: 0 }, 'lin'],
-      [3.55, { x: 100, y: 445, s: 1.75, r: -3 }], [4.45, { x: 96, y: 448, s: 1.9, r: -4 }, 'lin'],        // SLOW (crack 1)
-      [4.72, { x: 318, y: 545, s: 2.1, r: 6 }], [5.65, { x: 314, y: 548, s: 2.28, r: 6 }, 'lin'],        // OUTDATED (crack 2)
-      [5.92, { x: 84, y: 615, s: 2.1, r: -6 }], [6.85, { x: 88, y: 618, s: 2.28, r: -6 }, 'lin'],        // INVISIBLE (crack 3)
-      [7.12, { x: 314, y: 672, s: 2.3, r: 5 }], [7.95, { x: 311, y: 676, s: 2.48, r: 5 }, 'lin'],        // HACKED (crack 4)
-      [8.45, { x: 201, y: 468, s: .95, r: 0 }], [9.05, { x: 201, y: 474, s: .99, r: 0 }, 'lin'],          // the empty glass
+      [0, F0], [1.7, { x: 46, y: 450, s: 3.15, r: -7 }, 'lin'],
+      [2.35, { x: 201, y: 432, s: .97, r: 0 }],                                // smash pull-back: the whole leaking window
+      [2.9, { x: 100, y: 445, s: 1.75, r: -3 }], [4.0, { x: 96, y: 448, s: 1.92, r: -4 }, 'lin'],          // SLOW (crack 1)
+      [4.22, { x: 318, y: 545, s: 2.1, r: 6 }], [5.3, { x: 314, y: 548, s: 2.3, r: 6 }, 'lin'],             // OUTDATED (crack 2)
+      [5.52, { x: 84, y: 615, s: 2.1, r: -6 }], [6.6, { x: 88, y: 618, s: 2.3, r: -6 }, 'lin'],             // INVISIBLE (crack 3)
+      [6.82, { x: 314, y: 672, s: 2.3, r: 5 }], [7.85, { x: 311, y: 676, s: 2.5, r: 5 }, 'lin'],            // HACKED (crack 4)
+      [8.35, { x: 201, y: 468, s: .93, r: 0 }], [9.05, { x: 201, y: 474, s: 1.04, r: 0 }, 'lin'],          // the empty glass, creeping in
       [9.22, { x: 86, y: 470, s: 2.3, r: -4 }], [9.7, { x: 88, y: 470, s: 2.42, r: -4 }, 'lin'],         // patch 1 FAST
       [9.84, { x: 316, y: 560, s: 2.3, r: 5 }], [10.3, { x: 314, y: 560, s: 2.42, r: 5 }, 'lin'],        // patch 2 FRESH
       [10.44, { x: 86, y: 630, s: 2.3, r: -5 }], [10.9, { x: 88, y: 630, s: 2.42, r: -5 }, 'lin'],       // patch 3 SEEN
       [11.04, { x: 316, y: 690, s: 2.3, r: 5 }], [11.45, { x: 314, y: 690, s: 2.42, r: 5 }, 'lin'],      // patch 4 SAFE
       [11.7, { x: 201, y: 236, s: 2.1, r: 0 }],                                                            // tilt up to the address bar
-      [12.0, { x: 201, y: 640, s: 1.55, r: 0 }],                                                           // ride the pour down
-      [12.55, { x: 201, y: 300, s: 1.7, r: 0 }],                                                           // rise with the water
+      [12.0, { x: 201, y: 520, s: 1.15, r: 0 }],                                                           // pull out as it pours
+      [12.55, { x: 201, y: 310, s: 1.6, r: 0 }],                                                           // rise with the water
       [12.9, { x: 201, y: 262, s: 3.4, r: 0 }, 'in2'],                                                     // push into the surface (dive)
       [17.349, { x: 201, y: 262, s: 3.4, r: 0 }, 'lin'],
       [17.35, { x: 40, y: 455, s: 2.3, r: -4 }, 'cut'], [18, F0, 'lin'],                                   // back to the crack: frame 0
-    ], { shake: [[4.72, 5.1, 5], [5.92, 6.3, 5], [7.12, 7.7, 11], [9.25, 9.6, 9], [9.85, 10.2, 9], [10.45, 10.8, 9], [11.05, 11.4, 11]] });
+    ], { handheld: 2.2, shake: [[0, .5, 4], [4.22, 4.6, 6], [5.52, 5.9, 6], [6.82, 7.4, 12], [9.25, 9.6, 9], [9.85, 10.2, 9], [10.45, 10.8, 9], [11.05, 11.4, 11]] });
 
     // ---- the vessel ----
     P.vessel(world, {
       x: 44, y: 206, w: 314, h: 600, url: 'yourbusiness.com', water: [AQUA, DEEP], leak: RED, patch: LIME, loopAt: 17.35, cam,
-      levels: [[0, .74], [3.5, .72], [4.7, .6], [5.9, .47], [7.1, .36], [8.2, .12], [11.6, .12], [12.5, .97]],
+      levels: [[0, .74], [2.9, .72], [4.2, .6], [5.5, .47], [6.8, .36], [8.0, .12], [11.6, .12], [12.5, .97]],
       holes: [
         { side: 'l', y: 470, icon: 'bolt', open: [[-2, 99]], fix: 9.25, fixIcon: 'globe' },
-        { side: 'r', y: 560, icon: 'phone', open: [[4.72, 99]], fix: 9.85, fixIcon: 'spark' },
-        { side: 'l', y: 630, icon: 'chat', open: [[5.92, 99]], fix: 10.45, fixIcon: 'calendar' },
-        { side: 'r', y: 690, icon: 'lock', open: [[7.12, 99]], fix: 11.05, fixIcon: 'lock' },
+        { side: 'r', y: 560, icon: 'phone', open: [[4.22, 99]], fix: 9.85, fixIcon: 'spark' },
+        { side: 'l', y: 630, icon: 'chat', open: [[5.52, 99]], fix: 10.45, fixIcon: 'calendar' },
+        { side: 'r', y: 690, icon: 'lock', open: [[6.82, 99]], fix: 11.05, fixIcon: 'lock' },
       ],
       pour: [11.6, 12.5],
     });
@@ -62,25 +61,27 @@
     S.hook = P.dripWord(world, hook, { x: 30, y: 104, size: 66, drop: AQUA, at: -1, out: 1.85, n: 6 });
     P.dripWord(world, hook, { x: 30, y: 104, size: 66, drop: AQUA, at: 17.42, out: 99, n: 6 });
     const slam = (word, sub, a, b, colour) => {
-      const box = E.el('div', 'position:absolute;left:30px;right:30px;top:100px;height:116px;overflow:hidden', world);
+      // a solid slab behind the word, so it reads on dark glass and on bright water alike
+      const box = E.el('div', 'position:absolute;left:26px;right:26px;top:100px;height:120px;overflow:hidden', world);
       const m = document.createElement('canvas').getContext('2d'); m.font = '900 100px Archivo, sans-serif';
-      const size = Math.min(112, Math.floor(100 * 342 / (m.measureText(word).width * .86)));
-      const el = E.el('div', `position:absolute;left:0;bottom:0;color:${colour};font:900 ${size}px/.86 Archivo,sans-serif;font-variation-settings:"wdth" 70;letter-spacing:-.04em;white-space:nowrap`, box, word);
-      const sb = E.el('div', `position:absolute;left:30px;right:30px;top:226px;color:#fff;font:600 12px/1 ${P.MONO};letter-spacing:.24em`, world, sub);
+      const size = Math.min(100, Math.floor(100 * 318 / (m.measureText(word).width * .86)));
+      const ink = colour === LIME ? '#0b0d0f' : '#ffffff';
+      const el = E.el('div', `position:absolute;left:0;bottom:0;padding:6px 12px 4px;background:${colour};color:${ink};font:900 ${size}px/.86 Archivo,sans-serif;font-variation-settings:"wdth" 70;letter-spacing:-.04em;white-space:nowrap;box-shadow:0 12px 30px rgba(0,0,0,.35)`, box, word);
+      const sb = E.el('div', `position:absolute;left:30px;right:30px;top:230px;color:#fff;font:700 14px/1 ${P.MONO};letter-spacing:.16em;text-shadow:0 2px 10px rgba(0,0,0,.8)`, world, sub);
       P.on((t) => { const i = ease.outX(clamp((t - a) / .28)), o = ease.in2(clamp((t - b + .16) / .16)), on = t >= a && t < b;
         css(el, { opacity: on ? '1' : '0', transform: `translateY(${((1 - i) * 110 - o * 110).toFixed(1)}%)` });
         css(sb, { opacity: on ? (clamp((t - a - .12) / .15) * (1 - o)).toFixed(3) : '0', transform: `translateX(${((1 - ease.out3(clamp((t - a - .12) / .3))) * -20).toFixed(1)}px)` }); });
     };
-    slam('SLOW.', 'PAGES THAT CRAWL', 3.5, 4.66, RED);
-    slam('OUTDATED.', 'BROKEN ON PHONES', 4.72, 5.86, RED);
-    slam('INVISIBLE.', 'POSTS NOBODY SEES', 5.92, 7.06, RED);
-    slam('HACKED.', 'ONE ATTACK. OFFLINE.', 7.12, 8.3, RED);
+    slam('SLOW.', 'PAGES THAT CRAWL', 2.9, 4.16, RED);
+    slam('OUTDATED.', 'BROKEN ON PHONES', 4.22, 5.46, RED);
+    slam('INVISIBLE.', 'POSTS NOBODY SEES', 5.52, 6.76, RED);
+    slam('HACKED.', 'ONE ATTACK. OFFLINE.', 6.82, 8.2, RED);
     slam('FAST.', 'CDN + CACHING', 9.25, 9.81, LIME);
     slam('FRESH.', 'REDESIGNED FOR PHONES', 9.85, 10.41, LIME);
     slam('SEEN.', 'SOCIAL, RUN FOR YOU', 10.45, 11.01, LIME);
     slam('SAFE.', 'FIREWALL · UPDATES · BACKUPS', 11.05, 11.62, LIME);
     const quiet = E.el('div', `position:absolute;left:30px;right:30px;top:300px;text-align:center;color:#fff;font:800 30px/1.1 Archivo,sans-serif;letter-spacing:-.02em`, world, 'Sound familiar?');
-    P.fade(quiet, 8.45, 8.95, { fi: .2, fo: .15, dy: 10 });
+    P.fade(quiet, 8.35, 8.98, { fi: .2, fo: .12, dy: 10 });
 
     // ---- breath, then the dive ----
     P.breath = [12.55, 12.85]; P.punchAt = 12.9;
@@ -97,6 +98,13 @@
     P.dripWord(ctaG, 'DM us', { x: 30, y: 150, size: 132, colour: '#04121a', drop: DEEP, at: 15.45, out: 17.35, n: 6, align: 'center' });
     E.el('div', `position:absolute;left:30px;right:30px;top:318px;text-align:center;color:#04121a;font:600 11px/1.6 ${P.MONO};letter-spacing:.14em`, ctaG, 'WEBSITES · SOCIAL MEDIA<br>SECURITY · CDN');
     P.on((t) => { ctaG.style.opacity = t >= 15.42 && t < 17.35 ? clamp((t - 15.42) / .06).toFixed(3) : '0'; });
+    // the CTA is never still: light ripples across the water ground, the wet type floats, and the camera keeps creeping in
+    const shim = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', ctaG); shim.width = 804; shim.height = 1430; const sg = shim.getContext('2d'); sg.scale(2, 2);
+    ctaG.insertBefore(shim, ctaG.children[1]);
+    const dm = ctaG.querySelector('div[style*="132px"]');
+    P.on((t, tf) => { if (t < 15.4 || t >= 17.35) return; sg.clearRect(0, 0, 402, 715); sg.strokeStyle = 'rgba(255,255,255,.22)'; sg.lineWidth = 2;
+      for (let j = 0; j < 16; j++) { sg.beginPath(); for (let px = -10; px <= 412; px += 8) { const py = 40 + j * 44 + 10 * Math.sin(px * .03 + tf * 1.8 + j * 1.9) + 6 * Math.sin(px * .07 - tf * 2.4 + j); px < 0 ? sg.moveTo(px, py) : sg.lineTo(px, py); } sg.stroke(); }
+      const u = t - 15.45; ctaG.style.transform = `scale(${(1 + .035 * clamp(u / 1.9)).toFixed(4)})`; if (dm) dm.style.transform = `translateY(${(4 * Math.sin(u * 3.2)).toFixed(2)}px) rotate(${(-1.2 * Math.sin(u * 2.1)).toFixed(2)}deg)`; });
     const band = E.el('div', 'position:absolute;left:-20px;right:-20px;height:140px;top:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(235,250,255,.95) 45%,rgba(255,255,255,.9) 55%,rgba(255,255,255,0));opacity:0', world);
     P.on((t) => { const u = clamp((t - 15.2) / .3); css(band, { opacity: (t >= 15.2 && t < 15.55 ? 1 : 0).toString(), transform: `translateY(${lerp(-160, 760, ease.in2(u)).toFixed(1)}px)` }); });
     P.use('cta', 'wet-dm');
