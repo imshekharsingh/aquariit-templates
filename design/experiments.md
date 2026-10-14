@@ -52,6 +52,18 @@ screen recording of the same page. Owner chose variant A (type-first open: hook 
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 14 Oct 2026, 05:16 UTC (@aquarii.techstudio, renamed; 6 followers, 6 posts)
+| posted | template | format | views | reach | avg watch | saves | shares |
+|---|---|---|---|---|---|---|---|
+| 13 Oct | Dantika | film v3 | 11 | 7 | **13.5 s of 18** | 0 | 0 |
+| 12 Oct | Gojigo | recording | 10 | 9 | 2.1 s | 0 | 0 |
+| 12 Oct | Gumdrop | recording | 4 | 3 | 3.7 s | 0 | 0 |
+| 11 Oct | Lumen | recording | 114 | 105 | 2.5 s | 0 | 0 |
+| 9 Oct | Tessera | recording | 70 | 60 | 4.0 s | 1 | 0 |
+**Read:** after ~16 h the film still holds people for 13.5 s on average (about 75% of the reel) against 2-4 s for every recording: the format works for whoever sees it.
+Reach is still tiny (7) and nobody has shared anything yet, so distribution is the whole problem. **Next:** post Suddly tonight at 19:00-20:00 IST with an Instagram track,
+share to Stories and DM it to 5-10 laundry/dry-cleaning owners; keep films only; first E6 verdict when 3 films have 48 h of data (Dantika, Suddly, tomorrow's).
+
 ### 13 Oct 2026, 19:25 UTC (Instagram collect; @aquarii.webstudio, Creator account, 6 followers, 6 posts)
 | posted | template | format | views | reach | avg watch | saves | shares |
 |---|---|---|---|---|---|---|---|
