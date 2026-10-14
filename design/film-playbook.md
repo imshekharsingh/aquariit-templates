@@ -8,6 +8,23 @@ The first films sold laundry, food delivery and dentistry. The owner: "I don't d
 ("a site we designed", "the site we protect"). Useful parts per line: web → phone + scan + compare (old vs new); social → gridFill (a month of posts), steps, chat;
 security → P.shield (attacks bounce off), hub (SSL, backups, updates, firewall around the site), meter; edge → route (a request travels via the nearest edge), radial.
 
+## Real 3D (lab, 14 Oct 2026)
+Why it was not done before: the engine was built on the page's DOM (flat layers moved by a virtual camera), and every film was made inside a 30-45 minute daily budget,
+so we kept adding 2D tricks instead of changing the renderer. Nothing technical was stopping it: WebGL runs in the same headless Chromium (SwiftShader, no GPU needed).
+What exists now:
+- `P.three(parent, opts)`: a three.js scene (MIT library, injected by render-film.mjs when a story uses THREE; the workflow installs it, nothing is committed), lit by a
+  procedural studio baked into a PMREM environment (no images or stock assets). `P.three.look(G, keys)` is a keyed 3D camera on the same springs and eases.
+- Fast capture: a page holding a software-GL canvas screenshots slowly, so the renderer reads the 3D frame straight from the canvas, screenshots only the layers above it,
+  and ffmpeg lays one over the other. Breath dims reach the 3D scene through its exposure.
+- Lab shot: film/_lab/leaky-3d (8 s): a glass browser window with refractive water (the page behind it bends through the water), reflective glass, a cracked front pane
+  spraying drops at the lens, a lime patch on the bold spring, a pour from the address bar. Render: `render-film.mjs 2026-10-14-0850 --film-dir film/_lab/leaky-3d`.
+Fit against the reel rules: 1080x1920, 30 fps, deterministic, safe zones, watermark, captions, loop and the 25 MiB cap all work the same way. Cost is the catch: ~2.5 s per
+3D sub-frame on a 4-core machine (the 2D films are ~0.3 s), so an 18 s film fully in 3D takes ~45 min with 2 sub-frames of blur. Recommended use: 3D for the hero
+shots (3-6 s per reel) and 2D for the rest, which adds ~10-15 min to a render. Next steps for realism: caustics (light through the water onto the floor), a shader water
+surface with real normals and foam, depth of field, and lights tuned per mood.
+Things to avoid: mix-blend grain over a transparent overlay (it turns into noise), drops sized for a wide shot in a close-up (they read as pearls), a dark page behind the
+water (refraction then looks murky; a bright page reads as clear water).
+
 ## Easing and spring physics (motion focus, 14 Oct 2026)
 Linear or default ease-in-out motion is the clearest sign of an amateur reel. The toolkit lives at the top of scripts/film/parts.js and every film uses it:
 - `P.cubicBezier(x1, y1, x2, y2)` (Newton-Raphson, 8 iterations, bisection fallback) and presets `P.EASE.glide` (0.16,1,0.3,1), `snap` (0.7,0,0.84,0), `settle`

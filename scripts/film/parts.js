@@ -15,6 +15,7 @@
 //   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' | 'blur' })   the spine: 1-3 words per card at y 492
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
 //   camera     P.camera (keyed camera with shake; films DOM layers + canvases)   texture  P.grain   (and P.dripWord: wet display type)
+//   3D         P.three (WebGL scene, procedural studio light)  P.three.look (keyed 3D camera on springs)  P.three.roundRect
 //   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff  + the watermark (automatic, lower centre at y 540: keep that band clear of key text)
 // helpers: P.fade, P.pop, P.rel (measure an element), P.icon/P.icons, P.hexA, P.sm, P.css. Gallery of every option: render the test films in design/film-playbook.md.
 (function () {
@@ -136,7 +137,7 @@
       if (P.warmBokeh) bokeh[2].style.opacity = String(.25 + .75 * P.warmBokeh(t));
       const pu = P.punchAt != null && t >= P.punchAt ? (t - P.punchAt) / .09 : 0, punch = pu > 0 ? .04 * pu * Math.exp(1 - pu) : 0,   // smooth impulse: rises from 0, peaks at 90 ms, decays (no jump)
         drift = .012 * Math.sin(ph);
-      const dim = P.breath && t >= P.breath[0] && t < P.breath[1] + .15 ? P.springAt(t, P.breath[0], 'fade') * (1 - P.tween(t, P.breath[1], .16, 'snap')) : 0;
+      const dim = P.dimNow = P.breath && t >= P.breath[0] && t < P.breath[1] + .15 ? P.springAt(t, P.breath[0], 'fade') * (1 - P.tween(t, P.breath[1], .16, 'snap')) : 0;
       css(world, { transform: `scale(${(1 + drift + punch).toFixed(4)})`, filter: dim > .01 ? `brightness(${(1 - .7 * dim).toFixed(3)})` : 'none' });
       E.vig.style.opacity = ((P.light ? .12 : .45) + .4 * dim).toFixed(3);
       E.field.style.opacity = 0;
@@ -954,5 +955,50 @@
         css(c.el, { opacity: (u < 0 ? 0 : P.springAt(t, c.t0, 'fade') * c.d.o).toFixed(3), transform: `translate(${xx.toFixed(1)}px,${yy.toFixed(1)}px) scale(${(c.d.s * lerp(.7, 1, k)).toFixed(3)}) rotate(${(4 * Math.sin(t * 1.3 + c.x)).toFixed(2)}deg)` }); });
     });
     return box;
+  };
+
+  // =====================================================================================================================================
+  // REAL 3D (14 Oct 2026, owner: "why are we not doing 3D?"). A WebGL scene (three.js, MIT; the renderer injects it when a story uses THREE) drawn every film frame.
+  // Lit by a procedural studio (emissive softboxes baked into a PMREM environment): no external images, no stock assets. Pure function of film time like the rest.
+  //   const G = P.three(parent, { bg, exposure, fov, studio })  ->  { T, R, scene, camera, frame(fn) }   fn(t, tf) runs before each render
+  //   P.three.roundRect(T, w, h, r) -> a Shape;  P.three.look(G, t, keys)  keyed 3D camera on the toolkit's springs/eases (summed moves, like P.camera)
+  // =====================================================================================================================================
+  P.three = function (parent, { bg = '#061722', exposure = 1.05, fov = 30, antialias = false, transmissionScale = .5, tone = 'Neutral', studio = [['#ffffff', 7, [0, 7, 2], [10, 4]], ['#38d6ff', 3, [-8, 1, 3], [3, 10]], ['#ffb37a', 2.2, [8, 2, -2], [3, 10]]] } = {}) {
+    P.use('render', 'webgl-3d');
+    const T = window.THREE; if (!T) throw new Error('three.js is not loaded (the renderer injects it when the story uses THREE)');
+    const cv = E.el('canvas', 'position:absolute;left:0;top:0;width:402px;height:715px', parent);
+    const R = new T.WebGLRenderer({ canvas: cv, antialias, preserveDrawingBuffer: true, powerPreference: 'high-performance' });   // software GL: MSAA is costly; the film's sub-frame blur already smooths edges
+    if ('transmissionResolutionScale' in R) R.transmissionResolutionScale = transmissionScale;
+    R.setPixelRatio(1080 / 402); R.setSize(402, 715, false); R.toneMapping = T[tone + 'ToneMapping'] || T.ACESFilmicToneMapping;   // Neutral keeps brand colours saturated (ACES washes lime into pale yellow) R.toneMappingExposure = exposure; R.outputColorSpace = T.SRGBColorSpace;
+    const scene = new T.Scene(); scene.background = new T.Color(bg);
+    const env = new T.Scene(); env.add(new T.Mesh(new T.BoxGeometry(30, 30, 30), new T.MeshBasicMaterial({ color: new T.Color(bg).multiplyScalar(1.6), side: T.BackSide })));
+    studio.forEach(([c, k, pos, size]) => { const m = new T.Mesh(new T.PlaneGeometry(size[0], size[1]), new T.MeshBasicMaterial({ color: new T.Color(c).multiplyScalar(k), side: T.DoubleSide })); m.position.set(...pos); m.lookAt(0, 0, 0); env.add(m); });
+    const pm = new T.PMREMGenerator(R); scene.environment = pm.fromScene(env, .03).texture; pm.dispose();
+    const camera = new T.PerspectiveCamera(fov, 402 / 715, .02, 200);
+    const fns = [], G = { T, R, scene, camera, cv, frame: (fn) => { fns.push(fn); return fn; } };
+    P.on((t, tf) => { fns.forEach((f) => f(t, tf)); R.toneMappingExposure = exposure * (1 - .7 * (P.dimNow || 0)); R.render(scene, camera); });
+    // fast capture (the renderer uses it when present): screenshots of a page with a software-GL canvas are slow (~3-4 s), so the renderer takes the 3D frame straight
+    // from the canvas (~30 ms) and screenshots only the layers above it with everything below hidden (~1 s), then ffmpeg lays one over the other.
+    const below = []; { let n = cv; while (n && n !== document.body) { let sib = n.previousElementSibling; while (sib) { below.push(sib); sib = sib.previousElementSibling; } n = n.parentElement; } }
+    const grounds = [document.documentElement, document.body, E.stageEl, P.L].filter(Boolean);
+    window.__film3d = {
+      grab: () => cv.toDataURL('image/jpeg', .94),
+      hide: (on) => { cv.style.visibility = on ? 'hidden' : ''; below.forEach((e) => { if (e !== P.front && !e.contains(P.front) && e.id !== 'fx') e.style.visibility = on ? 'hidden' : ''; }); grounds.forEach((e) => { if (on) { e.dataset.bg = e.style.background; e.style.background = 'transparent'; } else e.style.background = e.dataset.bg || ''; }); },
+    };
+    return G;
+  };
+  P.three.roundRect = (T, w, h, r) => { const s = new T.Shape(), x = -w / 2, y = -h / 2;
+    s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; };
+  // keyed 3D camera: keys [[t, { p: [x,y,z], at: [x,y,z], fov? }, ease]]: summed moves (springs by name on their own clock, eases over the gap), velocity-continuous
+  P.three.look = function (G, keys, { handheld = 0 } = {}) {
+    P.use('camera', 'keyed-camera-3d');
+    const V = (k) => [...k.p, ...k.at, k.fov || G.camera.fov];
+    const moves = keys.slice(1).map(([t1, B, ez], i) => { const [t0, A] = keys[i], a = V(A), b = V(B), name = ez || 'swing';
+      const f = name === 'cut' ? ((t) => (t >= t1 ? 1 : 0)) : P.SPRING[name] ? ((t) => P.springAt(t, t0, name)) : ((t) => P.tween(t, t0, t1 - t0, name)); return { d: b.map((x, j) => x - a[j]), f }; });
+    const base = V(keys[0][1]);
+    G.frame((t) => { const v = base.slice(); moves.forEach(({ d, f }) => { const k = f(t); if (k) d.forEach((x, j) => { v[j] += x * k; }); });
+      if (handheld) { const w = TAU / P.len; v[0] += handheld * Math.sin(t * 4 * w); v[1] += handheld * .7 * Math.sin(t * 3 * w + 1); }
+      G.camera.position.set(v[0], v[1], v[2]); G.camera.lookAt(v[3], v[4], v[5]); if (G.camera.fov !== v[6]) { G.camera.fov = v[6]; G.camera.updateProjectionMatrix(); } });
   };
 })();

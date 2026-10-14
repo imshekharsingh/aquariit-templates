@@ -60,7 +60,7 @@ jobs:
       - name: Install render tools (free, nothing committed)
         if: steps.pick.outputs.skip != 'true'
         run: |
-          npm install --no-save --no-package-lock playwright@1.56.1
+          npm install --no-save --no-package-lock playwright@1.56.1 three@0.180.0   # three.js (MIT) for films with real 3D scenes
           npx playwright install --with-deps chromium
           sudo apt-get install -y --no-install-recommends ffmpeg
       - name: Music and sound (only when a licensed music source is configured)
