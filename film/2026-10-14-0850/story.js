@@ -43,8 +43,30 @@
       [17.35, { x: 40, y: 455, s: 2.3, r: -4 }, 'cut'], [18, F0, 'swing'],                                   // back to the crack: frame 0
     ], { handheld: 2.2, shake: [[0, .5, 4], [4.22, 4.6, 6], [5.52, 5.9, 6], [6.82, 7.4, 12], [9.25, 9.6, 9], [9.85, 10.2, 9], [10.45, 10.8, 9], [11.05, 11.4, 11]] });
 
-    // ---- the vessel ----
-    P.vessel(world, {
+    // ---- HYBRID: three hero shots in real 3D (P.tank3d), the rest in 2D. The opening close-up and smash pull-back, the refill through the address bar and the
+    // push into the surface, and the loop return. The 2D vessel hides while a 3D shot is on screen; type, captions and the watermark stay on top. ----
+    const SHOTS3D = [[-1, 2.35], [11.62, 12.88], [17.35, 18.01]];   // starts before 0: the first frame's blur samples sit at slightly negative times
+    const in3d = (t) => SHOTS3D.some(([a, b]) => t >= a && t < b);
+    P.tank3d(world, {
+      active: SHOTS3D, loopAt: 17.35,
+      levels: [[-1, .86], [2.35, .8], [11.6, .15], [12.55, .97]], leak: (t) => t < 2.4, sealed: (t) => t >= 11.6, pour: [11.65, 12.55],
+      puddleSize: (t) => .35 + .15 * clamp((t + 1) / 3.4),
+      camera: [
+        [-.65, { p: [-1.75, .76, 3.7], at: [-.55, .1, .5], fov: 30 }],                         // (loop return, remapped to before 0)
+        [0, { p: [-1.45, .62, 3.1], at: [-.55, .1, .5], fov: 30 }, 'swing'],                     // frame 0: close on the spraying crack
+        [1.75, { p: [-.95, .4, 1.85], at: [-.55, .12, .55], fov: 30 }, 'swing'],                 // push in
+        [2.35, { p: [1.0, .55, 8.9], at: [0, -.1, 0], fov: 30 }, 'default'],                     // smash pull-back to the whole window (cuts to 2D framed the same)
+        [11.6, { p: [1.0, .55, 8.9], at: [0, -.1, 0], fov: 30 }, 'swing'],
+        [11.62, { p: [.4, 2.7, 5.4], at: [0, 1.35, 0], fov: 30 }, 'cut'],                        // the sealed window, looking up at the address bar
+        [12.05, { p: [.9, 2.45, 6.2], at: [0, .3, 0], fov: 30 }, 'default'],                     // ride the pour down, staying above the water (crossing the surface height flips the view in one frame)
+        [12.55, { p: [.3, 2.15, 3.7], at: [0, 1.4, 0], fov: 30 }, 'default'],                    // rise with the water, looking down at the surface
+        [12.88, { p: [0, 1.72, 1.15], at: [0, 1.44, -.1], fov: 30 }, 'snap'],                    // push down onto the surface: the dive
+      ],
+    });
+    const scrim = E.el('div', 'position:absolute;left:0;right:0;top:0;height:300px;background:linear-gradient(180deg,rgba(4,16,24,.78),rgba(4,16,24,0));pointer-events:none', world);   // the hook reads over the bright 3D page
+
+    // ---- the vessel (2D) ----
+    const V2 = P.vessel(world, {
       x: 44, y: 206, w: 314, h: 600, url: 'yourbusiness.com', water: [AQUA, DEEP], leak: RED, patch: LIME, loopAt: 17.35, cam,
       levels: [[0, .74], [2.9, .72], [4.2, .6], [5.5, .47], [6.8, .36], [8.0, .12], [11.6, .12], [12.5, .97]],
       holes: [
@@ -55,6 +77,7 @@
       ],
       pour: [11.6, 12.5],
     });
+    P.on((t) => { const hide = in3d(t); [...V2.layers, V2.cv].forEach((e) => { e.style.display = hide ? 'none' : ''; }); scrim.style.display = hide && t < 11 || t >= 17.35 ? '' : 'none'; });
 
     // ---- type: wet hook, giant slam words (pains red, fixes lime), one quiet line in the empty glass ----
     const hook = `Your site<br>is <span style="color:${RED}">leaking.</span>`;

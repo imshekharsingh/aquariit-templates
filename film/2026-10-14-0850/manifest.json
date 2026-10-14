@@ -6,10 +6,15 @@
       "deep-colour"
     ],
     "camera": [
-      "keyed-camera"
+      "keyed-camera",
+      "keyed-camera-3d"
     ],
     "mechanism": [
+      "tank-3d",
       "leaky-vessel"
+    ],
+    "render": [
+      "webgl-3d"
     ],
     "opener": [
       "leak-cold-open"

@@ -15,7 +15,7 @@
 //   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' | 'blur' })   the spine: 1-3 words per card at y 492
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
 //   camera     P.camera (keyed camera with shake; films DOM layers + canvases)   texture  P.grain   (and P.dripWord: wet display type)
-//   3D         P.three (WebGL scene, procedural studio light)  P.three.look (keyed 3D camera on springs)  P.three.roundRect
+//   3D         P.tank3d (the leaky vessel in real 3D, for hero shots)  P.three (WebGL scene, procedural studio light)  P.three.look (keyed 3D camera on springs)  P.three.roundRect
 //   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff  + the watermark (automatic, lower centre at y 540: keep that band clear of key text)
 // helpers: P.fade, P.pop, P.rel (measure an element), P.icon/P.icons, P.hexA, P.sm, P.css. Gallery of every option: render the test films in design/film-playbook.md.
 (function () {
@@ -850,7 +850,7 @@
         g.globalAlpha = 1;
       });
     });
-    return { frame, surf, lev, layers: [L1, L2] };
+    return { frame, surf, lev, layers: [L1, L2], cv };
   };
   // rise chips: message chips pop out of a surface and float up through the frame (customers that now stay: enquiries, bookings)
   P.riseChips = function (parent, texts, { at = 13, per = .32, x0 = 60, x1 = 342, from = () => 400, to = 110, dur = 2.4, out = 15.4, icon = 'chat', right = 372 } = {}) {
@@ -963,7 +963,7 @@
   //   const G = P.three(parent, { bg, exposure, fov, studio })  ->  { T, R, scene, camera, frame(fn) }   fn(t, tf) runs before each render
   //   P.three.roundRect(T, w, h, r) -> a Shape;  P.three.look(G, t, keys)  keyed 3D camera on the toolkit's springs/eases (summed moves, like P.camera)
   // =====================================================================================================================================
-  P.three = function (parent, { bg = '#061722', exposure = 1.05, fov = 30, antialias = false, transmissionScale = .5, tone = 'Neutral', studio = [['#ffffff', 7, [0, 7, 2], [10, 4]], ['#38d6ff', 3, [-8, 1, 3], [3, 10]], ['#ffb37a', 2.2, [8, 2, -2], [3, 10]]] } = {}) {
+  P.three = function (parent, { bg = '#061722', exposure = 1.05, fov = 30, antialias = false, transmissionScale = .5, tone = 'Neutral', active = null, loopAt = null, studio = [['#ffffff', 7, [0, 7, 2], [10, 4]], ['#38d6ff', 3, [-8, 1, 3], [3, 10]], ['#ffb37a', 2.2, [8, 2, -2], [3, 10]]] } = {}) {
     P.use('render', 'webgl-3d');
     const T = window.THREE; if (!T) throw new Error('three.js is not loaded (the renderer injects it when the story uses THREE)');
     const cv = E.el('canvas', 'position:absolute;left:0;top:0;width:402px;height:715px', parent);
@@ -975,15 +975,21 @@
     studio.forEach(([c, k, pos, size]) => { const m = new T.Mesh(new T.PlaneGeometry(size[0], size[1]), new T.MeshBasicMaterial({ color: new T.Color(c).multiplyScalar(k), side: T.DoubleSide })); m.position.set(...pos); m.lookAt(0, 0, 0); env.add(m); });
     const pm = new T.PMREMGenerator(R); scene.environment = pm.fromScene(env, .03).texture; pm.dispose();
     const camera = new T.PerspectiveCamera(fov, 402 / 715, .02, 200);
-    const fns = [], G = { T, R, scene, camera, cv, frame: (fn) => { fns.push(fn); return fn; } };
-    P.on((t, tf) => { fns.forEach((f) => f(t, tf)); R.toneMappingExposure = exposure * (1 - .7 * (P.dimNow || 0)); R.render(scene, camera); });
+    // active: [[t0, t1], ...] windows where the 3D shot is on screen (hybrid films: 3D hero shots, 2D elsewhere); outside them nothing is drawn (fast).
+    // loopAt: from then on the scene replays its frame-0 state (time - film length), so the last frame matches the first.
+    const on = (t) => !active || active.some(([a, b]) => t >= a && t < b);
+    const fns = [], G = { T, R, scene, camera, cv, on, remap: (t) => (loopAt != null && t >= loopAt ? t - P.len : t), frame: (fn) => { fns.push(fn); return fn; } };
+    P.on((t0, tf0) => { const vis = on(t0); cv.style.display = vis ? '' : 'none'; if (!vis) return; const t = G.remap(t0), tf = G.remap(tf0);
+      fns.forEach((f) => f(t, tf)); R.toneMappingExposure = exposure * (1 - .45 * (P.dimNow || 0)); R.render(scene, camera); });
     // fast capture (the renderer uses it when present): screenshots of a page with a software-GL canvas are slow (~3-4 s), so the renderer takes the 3D frame straight
     // from the canvas (~30 ms) and screenshots only the layers above it with everything below hidden (~1 s), then ffmpeg lays one over the other.
     const below = []; { let n = cv; while (n && n !== document.body) { let sib = n.previousElementSibling; while (sib) { below.push(sib); sib = sib.previousElementSibling; } n = n.parentElement; } }
     const grounds = [document.documentElement, document.body, E.stageEl, P.L].filter(Boolean);
     window.__film3d = {
+      active: (t) => on(t),
       grab: () => cv.toDataURL('image/jpeg', .94),
-      hide: (on) => { cv.style.visibility = on ? 'hidden' : ''; below.forEach((e) => { if (e !== P.front && !e.contains(P.front) && e.id !== 'fx') e.style.visibility = on ? 'hidden' : ''; }); grounds.forEach((e) => { if (on) { e.dataset.bg = e.style.background; e.style.background = 'transparent'; } else e.style.background = e.dataset.bg || ''; }); },
+      hide: (on) => { cv.style.visibility = on ? 'hidden' : ''; document.querySelectorAll('canvas').forEach((c) => { if (getComputedStyle(c).mixBlendMode !== 'normal') c.style.visibility = on ? 'hidden' : ''; });   // blend layers (grain) cannot blend over a transparent capture
+        below.forEach((e) => { if (e !== P.front && !e.contains(P.front) && e.id !== 'fx') e.style.visibility = on ? 'hidden' : ''; }); grounds.forEach((e) => { if (on) { e.dataset.bg = e.style.background; e.style.background = 'transparent'; } else e.style.background = e.dataset.bg || ''; }); },
     };
     return G;
   };
@@ -1000,5 +1006,148 @@
     G.frame((t) => { const v = base.slice(); moves.forEach(({ d, f }) => { const k = f(t); if (k) d.forEach((x, j) => { v[j] += x * k; }); });
       if (handheld) { const w = TAU / P.len; v[0] += handheld * Math.sin(t * 4 * w); v[1] += handheld * .7 * Math.sin(t * 3 * w + 1); }
       G.camera.position.set(v[0], v[1], v[2]); G.camera.lookAt(v[3], v[4], v[5]); if (G.camera.fov !== v[6]) { G.camera.fov = v[6]; G.camera.updateProjectionMatrix(); } });
+  };
+
+  // ---- the leaky vessel in REAL 3D (hybrid films: hero shots in 3D, the rest in 2D). Built from the 3D lab (film/_lab/leaky-3d) after the water realism pass:
+  // refractive water with a live surface, scrolled ripple normals, caustics on the page, tank floor and studio floor, a meniscus, rising bubbles, a front-pane crack
+  // spraying drops at the lens, landing splashes and a puddle, lime patches, a pour from the address bar. Everything keyed to film time.
+  //   P.tank3d(parent, { levels, leak(t), sealed(t), patchAt, pour: [t0, t1], camera: keys for P.three.look, active, loopAt, puddleSize(t) })
+  P.tank3d = function (parent, { levels = [[0, .8]], leak = () => false, sealed = () => false, patchAt = null, pour = null, camera, active = null, loopAt = null, puddleSize = () => .5,
+    exposure = 1.15, bg = '#061722', RED = '#ff5a4f', SEALS = [[-.55, .3], [.5, -.25], [-.45, -.9], [.5, -1.4]] } = {}) {
+    P.use('mechanism', 'tank-3d');
+    const G = P.three(parent, { bg, exposure, fov: 28, active, loopAt, studio: [['#ffffff', 6, [0, 7, 3], [8, 3]], ['#1ec8ff', 7, [-8, 1, 3], [2.5, 10]], ['#ff7a45', 4, [8, 2, -1], [2.5, 10]], ['#ffffff', 1.4, [0, 1, 9], [8, 6]]] }), T = G.T, scene = G.scene;
+    const W = 2.4, H = 4.0, D = 1.0, BOT = -H / 2, TOP = H / 2, BAR = .36;
+
+    // ---- studio floor + soft contact shadow ----
+    const floor = new T.Mesh(new T.PlaneGeometry(40, 40), new T.MeshPhysicalMaterial({ color: '#03101a', roughness: .32, metalness: .1, clearcoat: .6, clearcoatRoughness: .25 }));
+    floor.rotation.x = -Math.PI / 2; floor.position.y = BOT - .02; scene.add(floor);
+    const sh = document.createElement('canvas'); sh.width = sh.height = 256; { const g = sh.getContext('2d'), gr = g.createRadialGradient(128, 128, 10, 128, 128, 128); gr.addColorStop(0, 'rgba(0,0,0,.85)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, 256, 256); }
+    const shadow = new T.Mesh(new T.PlaneGeometry(W * 1.9, D * 3.2), new T.MeshBasicMaterial({ map: new T.CanvasTexture(sh), transparent: true, depthWrite: false }));
+    shadow.rotation.x = -Math.PI / 2; shadow.position.y = BOT - .01; scene.add(shadow);
+
+    // ---- the website inside (what the water refracts) ----
+    const ui = document.createElement('canvas'); ui.width = 512; ui.height = 820; { const g = ui.getContext('2d');
+      g.fillStyle = '#e4f1f9'; g.fillRect(0, 0, 512, 820); g.fillStyle = '#071a26'; g.font = '900 64px Archivo, sans-serif'; g.fillText('Your', 40, 150); g.fillText('business,', 40, 215);
+      g.fillStyle = '#0a7fd6'; g.fillText('online.', 40, 280); g.fillStyle = 'rgba(7,26,38,.6)'; g.font = '500 22px Archivo, sans-serif'; g.fillText('Fast pages. Seen posts. Safe site.', 40, 330);
+      g.fillStyle = '#b8ff00'; g.beginPath(); g.roundRect(40, 370, 200, 58, 29); g.fill(); g.fillStyle = '#0b0d0f'; g.font = '800 22px Archivo, sans-serif'; g.fillText('Get started', 70, 407);
+      [[40, 480], [272, 480], [40, 650], [272, 650]].forEach(([x, y], i) => { g.fillStyle = ['#dcebf5', '#e6f1f8', '#e6f1f8', '#dcebf5'][i]; g.beginPath(); g.roundRect(x, y, 200, 150, 18); g.fill(); g.fillStyle = 'rgba(7,26,38,.7)'; g.fillRect(x + 20, y + 24, 90, 12); g.fillStyle = 'rgba(7,26,38,.3)'; g.fillRect(x + 20, y + 48, 140, 8); g.fillRect(x + 20, y + 64, 120, 8); }); }
+    const uiTex = new T.CanvasTexture(ui); uiTex.colorSpace = T.SRGBColorSpace;
+    const back = new T.Mesh(new T.PlaneGeometry(W - .2, H - BAR - .2), new T.MeshBasicMaterial({ map: uiTex })); back.position.set(0, -BAR / 2, -D / 2 + .03); scene.add(back);
+
+    // ---- the browser bar ----
+    const bar = document.createElement('canvas'); bar.width = 1024; bar.height = 150; { const g = bar.getContext('2d'); g.fillStyle = '#0d1b26'; g.fillRect(0, 0, 1024, 150);
+      ['#ff6b5e', '#ffc23d', '#3ddc84'].forEach((c, i) => { g.fillStyle = c; g.beginPath(); g.arc(70 + i * 46, 75, 15, 0, 7); g.fill(); });
+      g.fillStyle = 'rgba(255,255,255,.08)'; g.beginPath(); g.roundRect(260, 40, 620, 70, 35); g.fill(); g.fillStyle = 'rgba(255,255,255,.75)'; g.font = '500 34px "Geist Mono", monospace'; g.textAlign = 'center'; g.fillText('yourbusiness.com', 570, 88); }
+    const barTex = new T.CanvasTexture(bar); barTex.colorSpace = T.SRGBColorSpace;
+    const barBox = new T.Mesh(new T.BoxGeometry(W - .06, BAR, D - .06), [0, 0, 0, 0, 1, 0].map((f) => (f ? new T.MeshPhysicalMaterial({ map: barTex, roughness: .35, clearcoat: .8 }) : new T.MeshPhysicalMaterial({ color: '#0d1b26', roughness: .35 }))));
+    barBox.position.y = TOP - BAR / 2 - .03; scene.add(barBox);
+
+    // ---- water: a box whose top is a live surface (refractive, tinted by depth) ----
+    const WX = 80, WZ = 22, wg = new T.BoxGeometry(W - .1, 1, D - .1, WX, 1, WZ), wpos = wg.attributes.position, base = Float32Array.from(wpos.array);
+    const water = new T.Mesh(wg, new T.MeshPhysicalMaterial({ color: '#f4fdff', transmission: 1, ior: 1.33, thickness: 1.1, roughness: .02, attenuationColor: '#0796ff', attenuationDistance: 1.5, specularIntensity: 1, envMapIntensity: 1.6 }));
+    scene.add(water);
+    // ---- WATER REALISM (pass 1): fine ripples, caustics, meniscus, bubbles, landing splashes, a growing puddle ----
+    // ripples: a procedural height field turned into a normal map, scrolled two ways (no image assets)
+    const NM = 256, nmC = document.createElement('canvas'); nmC.width = nmC.height = NM; { const g = nmC.getContext('2d'), img = g.createImageData(NM, NM), h = new Float32Array(NM * NM);
+      for (let y = 0; y < NM; y++) for (let x = 0; x < NM; x++) { const u = x / NM * Math.PI * 2, v = y / NM * Math.PI * 2; h[y * NM + x] = Math.sin(u * 3 + Math.sin(v * 2) * 1.3) + .6 * Math.sin(v * 5 + Math.cos(u * 3) * 1.1) + .35 * Math.sin((u + v) * 9) + .2 * Math.sin((u * 2 - v) * 13); }
+      for (let y = 0; y < NM; y++) for (let x = 0; x < NM; x++) { const dx = h[y * NM + (x + 1) % NM] - h[y * NM + (x + NM - 1) % NM], dy = h[((y + 1) % NM) * NM + x] - h[((y + NM - 1) % NM) * NM + x], i = (y * NM + x) * 4;
+        img.data[i] = 128 + dx * 40; img.data[i + 1] = 128 + dy * 40; img.data[i + 2] = 255; img.data[i + 3] = 255; } g.putImageData(img, 0, 0); }
+    const nmTex = new T.CanvasTexture(nmC); nmTex.wrapS = nmTex.wrapT = T.RepeatWrapping; nmTex.repeat.set(2.5, 1.2);
+    water.material.normalMap = nmTex; water.material.normalScale = new T.Vector2(.13, .13);
+    // caustics: a bright web (where many waves focus light), drawn once, two copies drifting against each other, added as light on the page, the tank floor and the
+    // studio floor in front of the glass
+    const CS = 512, cC = document.createElement('canvas'); cC.width = cC.height = CS; { const g = cC.getContext('2d'), img = g.createImageData(CS, CS);
+      for (let y = 0; y < CS; y++) for (let x = 0; x < CS; x++) { const u = x / CS * Math.PI * 2, v = y / CS * Math.PI * 2;
+        const w = Math.abs(Math.sin(u * 4 + Math.sin(v * 3) * 1.6) + Math.sin(v * 4 + Math.sin(u * 5) * 1.4) + Math.sin((u - v) * 3 + Math.sin(u * 2)) ) / 3, c = Math.pow(Math.max(0, 1 - w), 6), i = (y * CS + x) * 4;
+        img.data[i] = 150 * c; img.data[i + 1] = 235 * c; img.data[i + 2] = 255 * c; img.data[i + 3] = 255; } g.putImageData(img, 0, 0); }
+    const cTex = () => { const t2 = new T.CanvasTexture(cC); t2.wrapS = t2.wrapT = T.RepeatWrapping; return t2; };
+    const cMat = (o, rep) => { const tx = cTex(); tx.repeat.set(...rep); return new T.MeshBasicMaterial({ map: tx, transparent: true, opacity: o, blending: T.AdditiveBlending, depthWrite: false }); };
+    const caust = [];
+    const addC = (geo, pos, rot, o, rep) => [0, 1].forEach((k) => { const m = new T.Mesh(geo, cMat(o, rep)); m.position.set(...pos); m.rotation.set(...rot); m.renderOrder = 1; scene.add(m); caust.push({ m, k }); });
+    addC(new T.PlaneGeometry(W - .2, 1), [0, 0, -D / 2 + .035], [0, 0, 0], .75, [1.3, .8]);                    // on the page behind the water (height follows the level)
+    addC(new T.PlaneGeometry(W - .12, D - .12), [0, BOT + .052, 0], [-Math.PI / 2, 0, 0], .6, [1.6, .7]);  // on the tank floor
+    addC(new T.PlaneGeometry(W * 1.4, 2.2), [0, BOT - .005, D / 2 + 1.1], [-Math.PI / 2, 0, 0], .2, [1.8, 1.5]);   // thrown onto the studio floor in front
+    // meniscus: the bright line where the surface meets the glass
+    const men = new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3([[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => new T.Vector3(a * (W - .1) / 2, 0, b * (D - .1) / 2)), true, 'catmullrom', 0), 120, .0045, 6, true),
+      new T.MeshBasicMaterial({ color: '#e9fdff', transparent: true, opacity: .45 })); scene.add(men);
+    // bubbles rising inside the water
+    const NB = 70, bub = new T.InstancedMesh(new T.SphereGeometry(1, 10, 8), new T.MeshPhysicalMaterial({ color: '#ffffff', transparent: true, opacity: .55, roughness: 0, envMapIntensity: 3, clearcoat: 1 }), NB);
+    bub.instanceMatrix.setUsage(T.DynamicDrawUsage); scene.add(bub);
+    // where the drops land: splash rings and a puddle that grows while it leaks
+    const NS = 40, spl = new T.InstancedMesh(new T.TorusGeometry(1, .04, 4, 24), new T.MeshBasicMaterial({ color: '#d9f7ff', transparent: true, opacity: .35 }), NS); spl.instanceMatrix.setUsage(T.DynamicDrawUsage); scene.add(spl);
+    const puddle = new T.Mesh(new T.CircleGeometry(1, 48), new T.MeshPhysicalMaterial({ color: '#0d4f8f', roughness: .02, clearcoat: 1, clearcoatRoughness: 0, envMapIntensity: 2.2, transparent: true, opacity: .8 }));
+    puddle.rotation.x = -Math.PI / 2; puddle.position.set(-.62, BOT - .008, 1.25); scene.add(puddle);
+    const lev = (t) => { let i = 0; while (i < levels.length - 1 && t >= levels[i + 1][0]) i++; const [a, la] = levels[i], [b, lb] = levels[Math.min(i + 1, levels.length - 1)]; return b > a ? lerp(la, lb, P.EASE.swing(clamp((t - a) / (b - a)))) : la; };
+    const yTop = (t) => BOT + .05 + lev(t) * (H - BAR - .12);
+
+    // ---- glass: a clear rounded shell (reflective, edge highlights), drawn after the water ----
+    const shell = new T.Mesh(new T.ExtrudeGeometry(P.three.roundRect(T, W - .1, H - .1, .2), { depth: D - .1, bevelEnabled: true, bevelThickness: .05, bevelSize: .05, bevelSegments: 4, curveSegments: 10 }),
+      new T.MeshPhysicalMaterial({ color: '#ffffff', transparent: true, opacity: .05, roughness: .01, metalness: 0, clearcoat: 1, clearcoatRoughness: .02, envMapIntensity: 2.2, depthWrite: false, side: T.DoubleSide }));
+    shell.position.z = -(D - .1) / 2; shell.renderOrder = 2; scene.add(shell);
+
+    // ---- the crack, the jet and the patch ----
+    const HOLE = new T.Vector3(-.55, .3, D / 2 + .03), crack = new T.Group(); scene.add(crack);   // a star of cracks on the front pane
+    const crackMat = new T.MeshBasicMaterial({ color: new T.Color(RED).multiplyScalar(2) });
+    [[.0, .2], [.9, .16], [1.9, .22], [2.7, .14], [3.6, .19], [4.5, .15], [5.4, .2]].forEach(([a, l], i) => { const pts = []; for (let k = 0; k <= 4; k++) { const rr = l * k / 4, aa = a + (k % 2 ? .18 : -.12) * (i % 2 ? 1 : -1); pts.push(new T.Vector3(HOLE.x + rr * Math.cos(aa), HOLE.y + rr * Math.sin(aa), HOLE.z)); }
+      crack.add(new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(pts), 16, .004, 5), crackMat)); });
+    const N = 520, drops = new T.InstancedMesh(new T.SphereGeometry(1, 12, 8), new T.MeshPhysicalMaterial({ color: '#bdeeff', transparent: true, opacity: .9, roughness: 0, metalness: 0, envMapIntensity: 3.2, clearcoat: 1 }), N);   // drops: reflective, not refractive (cheap)
+    drops.instanceMatrix.setUsage(T.DynamicDrawUsage); scene.add(drops);
+    const jet = new T.Mesh(new T.BufferGeometry(), drops.material); scene.add(jet);
+    const patch = new T.Mesh(new T.ExtrudeGeometry(P.three.roundRect(T, .34, .52, .08), { depth: .06, bevelEnabled: true, bevelThickness: .02, bevelSize: .02, bevelSegments: 3 }),
+      new T.MeshPhysicalMaterial({ color: '#b8ff00', roughness: .2, clearcoat: 1, clearcoatRoughness: .05, emissive: new T.Color('#7fd000'), emissiveIntensity: .9 }));
+    scene.add(patch);
+    // the four sealed cracks (shown when `sealed(t)`): lime tiles on the front pane where each pain was
+    const fixed = SEALS.map(([x, y]) => { const m = new T.Mesh(patch.geometry, patch.material); m.position.set(x, y, D / 2 + .02); scene.add(m); return m; });
+    const pourM = new T.Mesh(new T.BufferGeometry(), water.material); scene.add(pourM);
+    const ring = new T.Mesh(new T.TorusGeometry(1, .012, 6, 48), new T.MeshBasicMaterial({ color: '#dff8ff', transparent: true })); ring.rotation.x = Math.PI / 2; scene.add(ring);
+    const m4 = new T.Matrix4(), q = new T.Quaternion(), sc = new T.Vector3(), X = new T.Vector3(1, 0, 0), v3 = new T.Vector3(), G9 = 9.0;
+
+    G.frame((t, tf) => {
+      // water surface
+      const y0 = yTop(t), slosh = .035 + .05 * Math.abs(lev(t + .05) - lev(t - .05)) * 10 + (pour && t > pour[0] && t < pour[1] ? .03 : 0);
+      for (let i = 0; i < wpos.count; i++) { const bx = base[i * 3], by = base[i * 3 + 1], bz = base[i * 3 + 2];
+        wpos.array[i * 3 + 1] = by > 0 ? y0 + slosh * (Math.sin(bx * 3.1 + tf * 2.6) * .6 + Math.sin(bz * 5 - tf * 3.3) * .3 + Math.sin((bx + bz) * 7 + tf * 5) * .15) : BOT + .05; }
+      wpos.needsUpdate = true; wg.computeVertexNormals();
+      nmTex.offset.set(tf * .05, tf * .021);
+      caust.forEach(({ m, k }, i) => { const tx = m.material.map; tx.offset.set((k ? -1 : 1) * tf * .045 + i * .13, (k ? .7 : -.5) * tf * .03); });
+      { const hgt = Math.max(.01, y0 - (BOT + .05)); caust[0].m.scale.y = caust[1].m.scale.y = hgt; caust[0].m.position.y = caust[1].m.position.y = BOT + .05 + hgt / 2; }
+      men.position.y = y0;
+      for (let i = 0; i < NB; i++) { const j = ((i * 2654435761) >>> 0) / 4294967296, span = y0 - (BOT + .1), cyc = ((tf * (.18 + .25 * j) + j * 7) % 1), yy = BOT + .1 + span * Math.pow(cyc, 1.4);
+        v3.set((j - .5) * (W - .35) + .03 * Math.sin(tf * 3 + i), yy, ((i * 7919 % 100) / 100 - .5) * (D - .3)); const rr = .006 + .014 * ((i * 31 % 10) / 10); sc.set(rr, rr, rr); m4.compose(v3, q.identity(), sc); bub.setMatrixAt(i, m4); }
+      bub.instanceMatrix.needsUpdate = true;
+      { let ns = 0; for (let k = 0; k < NS; k++) { const s1 = Math.floor(tf / .045) * .045 - k * .045, u = (tf - s1) / .5; if (u < 0 || u > 1 || !leak(s1 - .35)) continue;
+          const j = ((Math.round(s1 * 1000) * 2654435761) >>> 0) / 4294967296; v3.set(HOLE.x - .1 + (j - .5) * .5, BOT + .002, 1.15 + (((Math.round(s1 * 1000) * 40503) % 1000) / 1000 - .5) * .5);
+          const rr = .02 + .09 * P.EASE.swing(u); sc.set(rr, rr, rr * .6); q.setFromAxisAngle(X, Math.PI / 2); m4.compose(v3, q, sc); spl.setMatrixAt(ns++, m4); }
+        spl.count = ns; spl.instanceMatrix.needsUpdate = true; spl.material.opacity = .32; }
+      { const grow = puddleSize(t); puddle.visible = grow > .01; puddle.scale.set(grow * 1.6, Math.max(.001, grow), 1); }
+      // jet: drops leave the crack while the water stands above it, until the patch
+      const head = Math.max(0, y0 - HOLE.y), open = leak(t);
+      let n = 0;
+      if (head > .02) for (let k = 0; k < N; k++) {
+        const s0 = Math.floor(tf / .007) * .007 - k * .007, tau = tf - s0; if (!leak(s0) || tau > 1.1) continue;
+        const j = ((Math.round(s0 * 1000) * 2654435761) >>> 0) / 4294967296, j2 = ((Math.round(s0 * 1000) * 40503) % 1000) / 1000, v = (1.1 + 1.9 * Math.sqrt(head)) * (.9 + .2 * j);
+        const vx = -.25 + .3 * (j2 - .5), vz = v, vy = -G9 * tau;
+        v3.set(HOLE.x + vx * tau + (j2 - .5) * .03, HOLE.y + .5 * -G9 * tau * tau + (j - .5) * .02, HOLE.z + vz * tau); if (v3.y < BOT) continue;
+        const r = (.0025 + .008 * j * j) * (tau < .12 ? 1.3 : 1), st = 1 + Math.hypot(vx, vy) * .18;
+        q.setFromUnitVectors(X, new T.Vector3(vx, vy, vz).normalize()); sc.set(r * st, r, r); m4.compose(v3, q, sc); drops.setMatrixAt(n++, m4);
+      }
+      drops.count = n; drops.instanceMatrix.needsUpdate = true;
+      // the unbroken part of the jet: a tube along the first 0.14 s of the arc
+      if (open && head > .02) { const v = 1.1 + 1.9 * Math.sqrt(head), pts = []; for (let k = 0; k <= 10; k++) { const tau = .14 * k / 10; pts.push(new T.Vector3(HOLE.x - .25 * tau, HOLE.y - .5 * G9 * tau * tau, HOLE.z + v * tau)); }
+        jet.geometry.dispose(); jet.geometry = new T.TubeGeometry(new T.CatmullRomCurve3(pts), 24, Math.min(.026, .008 + head * .016), 8); jet.visible = true; } else jet.visible = false;
+      crack.visible = leak(t) || (patchAt != null && t < patchAt + .1);
+      fixed.forEach((m) => { m.visible = sealed(t); });
+      // the patch flies in from the lens side and slams on (bold spring: ~5% overshoot, settled in 12 frames)
+      const pk = patchAt == null ? 0 : P.springAt(t, patchAt - .18, 'bold');
+      patch.visible = patchAt != null && t > patchAt - .18; patch.position.set(lerp(-1.6, HOLE.x, pk), lerp(1.2, HOLE.y - .02, pk), lerp(3.4, HOLE.z, pk)); patch.scale.setScalar(lerp(1.7, 1, pk)); patch.rotation.z = (1 - pk) * .9;
+      // the pour from the address bar, with rings on the surface
+      const pouring = pour && t > pour[0] && t < pour[1], pk2 = pouring ? P.springAt(t, pour[0], 'fade') * (1 - P.tween(t, pour[1] - .4, .4, 'snap')) : 0;
+      if (pk2 > .01) { const pts = []; for (let k = 0; k <= 16; k++) { const yy = lerp(TOP - BAR - .02, y0, k / 16); pts.push(new T.Vector3(.03 * Math.sin(yy * 9 + tf * 12), yy, .03 * Math.cos(yy * 7 + tf * 10))); }
+        pourM.geometry.dispose(); pourM.geometry = new T.TubeGeometry(new T.CatmullRomCurve3(pts), 32, .045 * pk2, 8); pourM.visible = true;
+        const u = (tf * 1.6) % 1; ring.visible = true; ring.position.set(0, y0 + .01, 0); ring.scale.setScalar(.06 + P.EASE.swing(u) * .55); ring.material.opacity = (1 - P.EASE.snap(u)) * pk2; } else { pourM.visible = false; ring.visible = false; }
+    });
+
+    if (camera) P.three.look(G, camera, { handheld: .02 });
+    return { G, yTop };
   };
 })();
