@@ -88,7 +88,7 @@
   // ---- watermark: on every reel, all the time (owner, 13 Oct 2026). Top right, below Instagram's top bar and above its button column ----
   // ---- watermark: on every reel, all the time (owner, 14 Oct 2026: lower centre, not the top corner). It sits in the band between the captions (anchor y 492)
   // and Instagram's caption area (bottom 22%), centred. The mark is the Aquarius sign (two waves) + the studio name; a soft shadow keeps it legible on any ground.
-  P.watermark = function ({ text = 'Aquarii Web Studio', y = 540 } = {}) {
+  P.watermark = function ({ text = 'Aquarii Tech Studio', y = 540 } = {}) {
     if (P.wm) return P.wm;
     const ink = P.light ? '#0d1014' : '#ffffff', halo = P.light ? 'rgba(255,255,255,.85)' : 'rgba(0,0,0,.6)';
     P.wm = E.el('div', `position:absolute;left:0;right:0;top:${y}px;display:flex;justify-content:center;pointer-events:none`, P.front);
@@ -551,7 +551,7 @@
   // the studio sign-off: the only constant across all reels (small, last ~1.2 s)
   P.signoff = function ({ at = 16.9, out = 17.75, y = 492 } = {}) {
     if (P.wmHide) P.wmHide.push([at, out + .25]);                         // the watermark steps aside while the sign-off says the same thing
-    const el = E.el('div', `position:absolute;left:0;right:0;top:${y}px;text-align:center;font:700 12px/1 ${MONO};letter-spacing:.32em;color:${hexA(P.light ? '#000000' : '#ffffff', .75)};text-transform:uppercase`, P.front, 'Aquarii Web Studio');
+    const el = E.el('div', `position:absolute;left:0;right:0;top:${y}px;text-align:center;font:700 12px/1 ${MONO};letter-spacing:.32em;color:${hexA(P.light ? '#000000' : '#ffffff', .75)};text-transform:uppercase`, P.front, 'Aquarii Tech Studio');
     P.on((t) => { el.style.opacity = (sm(at, at + .3, t) * (1 - sm(out, out + .25, t))).toFixed(3); });
     return el;
   };
