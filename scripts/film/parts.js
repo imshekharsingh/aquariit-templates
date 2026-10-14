@@ -11,7 +11,7 @@
 //   type       P.sentence (builds word by word)  P.giant (one huge word)  P.typewriter  P.flipWords (word per beat, ground flips)  P.construct (letters snap together)  P.inlineIcon
 //   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' | 'blur' })   the spine: 1-3 words per card at y 492
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
-//   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff (the one constant: "Made by Aquarii")
+//   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff  + the watermark (automatic, lower centre at y 540: keep that band clear of key text)
 // helpers: P.fade, P.pop, P.rel (measure an element), P.icon/P.icons, P.hexA, P.sm, P.css. Gallery of every option: render the test films in design/film-playbook.md.
 (function () {
   const E = window.FilmEngine, { clamp, lerp, ease } = E, TAU = Math.PI * 2;
@@ -86,10 +86,17 @@
   };
 
   // ---- watermark: on every reel, all the time (owner, 13 Oct 2026). Top right, below Instagram's top bar and above its button column ----
-  P.watermark = function ({ text = 'Aquarii Web Studio' } = {}) {
+  // ---- watermark: on every reel, all the time (owner, 14 Oct 2026: lower centre, not the top corner). It sits in the band between the captions (anchor y 492)
+  // and Instagram's caption area (bottom 22%), centred. The mark is the Aquarius sign (two waves) + the studio name; a soft shadow keeps it legible on any ground.
+  P.watermark = function ({ text = 'Aquarii Web Studio', y = 540 } = {}) {
     if (P.wm) return P.wm;
-    P.wm = E.el('div', `position:absolute;right:26px;top:104px;display:flex;align-items:center;gap:6px;font:600 9px/1 ${MONO};letter-spacing:.22em;text-transform:uppercase;color:${hexA(P.light ? '#000000' : '#ffffff', .62)}`, P.front,
-      `<svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M6 1 11 11H1z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M3.6 7.5h4.8" stroke="currentColor" stroke-width="1.2"/></svg>${text}`);
+    const ink = P.light ? '#0d1014' : '#ffffff', halo = P.light ? 'rgba(255,255,255,.85)' : 'rgba(0,0,0,.6)';
+    P.wm = E.el('div', `position:absolute;left:0;right:0;top:${y}px;display:flex;justify-content:center;pointer-events:none`, P.front);
+    E.el('div', `display:flex;align-items:center;gap:7px;padding:5px 11px 5px 9px;border-radius:99px;background:${P.light ? 'rgba(255,255,255,.55)' : 'rgba(0,0,0,.38)'};backdrop-filter:blur(8px) saturate(1.2);-webkit-backdrop-filter:blur(8px);box-shadow:0 0 0 1px ${hexA(ink, .08)};font:600 9.5px/1 ${MONO};letter-spacing:.24em;text-transform:uppercase;color:${hexA(ink, .78)};text-shadow:0 0 6px ${halo}`, P.wm,
+      `<svg viewBox="0 0 16 12" width="15" height="11" aria-hidden="true" style="filter:drop-shadow(0 0 3px ${halo})"><path d="M1 5 3.5 2.5 6 5 8.5 2.5 11 5 13.5 2.5 15 4M1 10 3.5 7.5 6 10 8.5 7.5 11 10 13.5 7.5 15 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>${text}</span>`);
+    P.wm.style.top = (y - 5) + 'px';
+    P.wmHide = [];                                                         // [[t0, t1]] windows where the sign-off replaces it
+    P.on((t) => { let o = 1; P.wmHide.forEach(([a, b]) => { o *= 1 - sm(a - .2, a, t) * (1 - sm(b, b + .2, t)); }); P.wm.style.opacity = o.toFixed(3); });
     return P.wm;
   };
 
@@ -543,6 +550,7 @@
   };
   // the studio sign-off: the only constant across all reels (small, last ~1.2 s)
   P.signoff = function ({ at = 16.9, out = 17.75, y = 492 } = {}) {
+    if (P.wmHide) P.wmHide.push([at, out + .25]);                         // the watermark steps aside while the sign-off says the same thing
     const el = E.el('div', `position:absolute;left:0;right:0;top:${y}px;text-align:center;font:700 12px/1 ${MONO};letter-spacing:.32em;color:${hexA(P.light ? '#000000' : '#ffffff', .75)};text-transform:uppercase`, P.front, 'Aquarii Web Studio');
     P.on((t) => { el.style.opacity = (sm(at, at + .3, t) * (1 - sm(out, out + .25, t))).toFixed(3); });
     return el;
