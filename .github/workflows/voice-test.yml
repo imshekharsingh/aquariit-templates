@@ -1,0 +1,64 @@
+name: Voice test
+# Step 1 of the voice-over pipeline (14 Oct 2026): renders a film WITH an AI voice-over (Kokoro, open-weight, Apache-2.0) as a separate test reel
+# (ID-voice.mp4 in the reels release + an issue), so the normal reel is never replaced. Voice generation runs only here, never in a Claude session.
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: Template/film ID with film/ID/voice.md
+        required: true
+concurrency:
+  group: voice-test
+permissions:
+  contents: write
+  issues: write
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      ID: ${{ inputs.id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: .github/workflows/voice-test.yml
+      - name: Cache the Kokoro model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: kokoro-82m-0.9.4-af_heart
+      - name: Install (pinned)
+        run: |
+          sudo apt-get install -y --no-install-recommends ffmpeg espeak-ng
+          pip install --extra-index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu" "kokoro==0.9.4" "soundfile==0.12.1" "misaki[en]==0.9.4"
+          npm install --no-save --no-package-lock playwright@1.56.1 three@0.180.0
+          npx playwright install --with-deps chromium
+      - name: Voice-over (script check, Kokoro, mix with measured loudness)
+        run: node scripts/film/voice.mjs "$ID" --out out/voice
+      - name: Render the film with the voice mix
+        run: |
+          node scripts/film/render-film.mjs "$ID" --variant A --workers 2 --out out/film --audio out/voice/final.wav --deliver out/reels
+          mkdir -p out/vt && cp "out/reels/$ID.mp4" "out/vt/$ID-voice.mp4"
+          ffmpeg -hide_banner -nostats -i "out/vt/$ID-voice.mp4" -af ebur128=peak=true -f null - 2>&1 | tail -12 | tee out/vt/loudness-after-aac.txt
+      - name: Publish the test reel and tell the owner
+        run: |
+          gh release upload reels --repo "$REPO" --clobber "out/vt/$ID-voice.mp4"
+          URL="https://github.com/$REPO/releases/download/reels/$ID-voice.mp4"
+          { echo "Voice-over test for **$ID** (AI voice: Kokoro, open-weight; label it as AI on Instagram). The normal reel is unchanged."; echo
+            echo "Video: $URL"; echo; echo "Measured (after AAC):"; echo '```'; cat out/vt/loudness-after-aac.txt; echo '```'
+            echo "Script and per-line timing:"; echo '```json'; cat out/voice/voice-report.json; echo '```'
+            echo; echo "Listen and reply: keep the voice / change voice / drop it."; } > body.md
+          gh issue create --repo "$REPO" --title "Voice test ready: $ID" --body-file body.md --assignee "${{ github.repository_owner }}"
+      - name: Report a failure
+        if: failure()
+        run: gh issue create --repo "$REPO" --title "Voice test failed: $ID" --assignee "${{ github.repository_owner }}" --body "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

@@ -8,6 +8,7 @@
   S.selfStage = true;
   S.dna = {
     service: 'security',
+    format: 'tutorial',                                                  // voice-over test (film/ID/voice.md)
     opening: 'a giant padlock under "Is your website actually locked?" pops its shackle open',
     bigMoment: 'the lock snaps shut and the site frame turns violet and bounces every attacker cursor off',
     ground: 'near black with violet, alarm red and a lime check',
