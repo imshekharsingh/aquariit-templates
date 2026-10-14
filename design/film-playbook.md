@@ -32,6 +32,12 @@ business's metaphor. Shipping it unchanged fails `scripts/check.mjs` (films from
    shots mixed with UI. Each idea gets one beat, then the next arrives.
 All seven techniques are parts now (see the menu in scripts/film/parts.js).
 
+## Review lessons from the first kit-built daily film (Suddly, 14 Oct)
+- Look at frame 0 at full size on its own: a rack focus or blur opener must already be readable at t = 0 (start it mid-pull with a negative `at`), and the hook caption
+  must be legible at t = 0 (start its card slightly before 0).
+- Check the last frame against frame 0 side by side. Story code that overrides a part (e.g. bringing a word back for the loop) must run AFTER `P.update(t)`,
+  because each part re-applies its own state every frame.
+
 ## Use the whole frame (owner feedback, 13 Oct 2026)
 The first films put a small subject in a narrow central column with a lot of empty frame (Gojigo v3 measured 2-18% coverage, 15 of 20 frames TIGHT). Rules now:
 - the subject fills the width (phone 270-290 px wide and running off the bottom edge; numbers and display type 340-390 px wide; buttons full width);

@@ -29,7 +29,7 @@
     // ---- 0-2.4: a closed rolling shutter at 7 PM, the 7 PM pulls back sharp ----
     S.shutter = E.el('div', `position:absolute;inset:0;background:repeating-linear-gradient(180deg,#d4edf8 0 38px,#b4dcee 38px 41px);opacity:1`, world);
     E.el('div', 'position:absolute;left:0;right:0;bottom:0;height:150px;background:linear-gradient(180deg,rgba(232,248,255,0),#e8f8ff 80%)', S.shutter);
-    S.seven = P.rackWord(world, '7 PM', { at: 0, dur: 1.1, y: 300, size: 156, out: 2.4, colour: DEEP });
+    S.seven = P.rackWord(world, '7 PM', { at: -0.22, dur: 1.1, y: 300, size: 156, out: 2.4, colour: DEEP });   // frame 0 is already mid-pull: huge, almost sharp (reviewed 14 Oct: a pale blur on frame 0 gave nothing to stop on)
     const sub = E.el('div', `position:absolute;left:0;right:0;top:368px;text-align:center;font:700 12px/1 ${P.MONO};letter-spacing:.3em;color:${INK}`, world, 'SHUTTER DOWN');
     P.fade(sub, .7, 2.1, { fi: .25, fo: .25 });
 
@@ -87,7 +87,7 @@
 
     // ---- captions (blur reveal, the spine) ----
     P.captions([
-      [-0.1, .8, 'Why do busy', 32], [.8, 1.65, 'customers skip', 32], [1.65, 2.45, 'your laundry?', 32, { 1: PINK }],
+      [-0.45, .8, 'Why do busy', 32], [.8, 1.65, 'customers skip', 32], [1.65, 2.45, 'your laundry?', 32, { 1: PINK }],
       [3.0, 4.1, 'Book in a tap.', 30, { 3: PINK }], [4.2, 5.5, 'We collect tonight.', 30, { 2: PINK }],
       [6.6, 7.2, 'Book.', 36, { 0: PINK }], [7.2, 7.8, 'Bag.', 36, { 0: PINK }], [7.8, 8.7, 'Back.', 36, { 0: PINK }],
       [9.6, 10.8, 'One price a week.', 30, { 3: PINK }], [10.9, 11.85, 'Pause any time.', 30, { 2: PINK }],
@@ -111,7 +111,6 @@
     const loopIn = sm(17.1, 17.95, t);
     S.shutter.style.opacity = (t < 2.65 ? 1 : loopIn).toFixed(3);
     // the 7 PM returns blurred and huge in the last second (frame 0 is the same blurred 7 PM)
-    if (t >= 17.0) css(S.seven, { opacity: (.5 * loopIn).toFixed(3), transform: `translateY(-50%) scale(${lerp(1.8, 4.2, loopIn).toFixed(3)})`, filter: `blur(${(loopIn * 14).toFixed(2)}px)` });
     // plan scene: iris open 9.0-9.6, close 11.75-12.15; card springs in; bubbles drift
     const open = ease.io3(clamp((t - 9.0) / .6)), shut = ease.io3(clamp((t - 11.75) / .4));
     S.planL.style.clipPath = open <= 0 || shut >= 1 ? 'circle(0px at 201px 330px)' : `circle(${(open * (1 - shut) * 900).toFixed(1)}px at 201px 330px)`;
@@ -119,6 +118,7 @@
     S.card.style.transform = `translateY(${((1 - ck) * 40).toFixed(1)}px) scale(${lerp(.9, 1, ck).toFixed(3)})`;
     S.bubs.forEach((b, i) => { b.style.transform = `translate(${(10 * Math.sin(t * .9 + i * 2)).toFixed(1)}px,${(16 * Math.sin(t * 1.1 + i)).toFixed(1)}px)`; });
     P.update(t);
+    if (t >= 17.0) { const back = sm(17.0, 17.4, t), push = sm(17.4, 17.98, t); css(S.seven, { opacity: back.toFixed(3), transform: `translateY(-50%) scale(${lerp(1, 1.8, push).toFixed(3)})`, filter: push > .01 ? `blur(${(push * 3.5).toFixed(2)}px)` : 'none' }); }   // sharp 7 PM returns, then pushes into the frame-0 state (seamless loop)
   };
 
   S.cover = function () {
