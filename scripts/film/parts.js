@@ -3,6 +3,8 @@
 // (P.use), and the renderer writes film/ID/manifest.json from that; scripts/check.mjs refuses a film that repeats the previous one (CLAUDE.md "Directed film").
 // THE MENU (pick a different combination every film; add one new option every film). ORIGINALITY: parts learned from a specific reel the owner shared are
 // tagged in scripts/film/sources.json; a film may use at most one per reference and never as its payoff (check.mjs): learn from references, never rebuild one.
+//   easing     P.cubicBezier  P.EASE.glide|snap|settle|swing  P.spring(t, {stiffness,damping,mass})  P.SPRING.default|bouncy|bold|fade  P.tween  P.springAt  P.life
+//              (no linear motion: arrivals ease out from rest, departures ease in 35% faster; check with render-film.mjs ID --motion-check)
 //   ground     P.scene({ accent, ink })            black | deep colour (ink like #1a0712) | light (ink like #f4f1ea): cards, captions and dust adapt
 //   opener     P.rackWord  P.drawOn  P.assemble    (or a bespoke opening image, declared in S.dna.opening)
 //   transition P.scan  P.wave  P.iris  P.blinds  P.zoomThrough  P.whip  P.shapeWipe  P.pendulum (a swinging tag is the wipe)  P.interstitial (cut to a pivot line)
@@ -17,7 +19,7 @@
 // helpers: P.fade, P.pop, P.rel (measure an element), P.icon/P.icons, P.hexA, P.sm, P.css. Gallery of every option: render the test films in design/film-playbook.md.
 (function () {
   const E = window.FilmEngine, { clamp, lerp, ease } = E, TAU = Math.PI * 2;
-  const sm = (a, b, t) => ease.io3(clamp((t - a) / (b - a)));
+  let sm = (a, b, t) => ease.io3(clamp((t - a) / (b - a)));          // replaced by the toolkit's swing below (once P exists)
   const css = (el, o) => { for (const k in o) el.style[k] = o[k]; };
   const MONO = "'Geist Mono','JetBrains Mono',ui-monospace,monospace";   // single quotes: it is used inside style="..." attributes
   const P = (window.FilmParts = { sm, css, MONO, TAU, ups: [], accent: '#c8ff3d', ink: '#050607', len: 18 });
@@ -30,6 +32,56 @@
       await Promise.all(['800 28px Archivo', '900 30px Archivo', '500 11px "Geist Mono"'].map((f) => document.fonts.load(f)));
     } catch (e) { /* fall back to system fonts */ }
   })();
+  // =====================================================================================================================================
+  // EASING TOOLKIT (14 Oct 2026, motion focus: easing + spring physics). Linear or default ease-in-out motion is the clearest sign of an amateur reel.
+  // Every position, scale, opacity and camera move in a film goes through these. Pure functions of film time; each use is tagged P.use('easing', id).
+  //   P.cubicBezier(x1, y1, x2, y2) -> k => eased (Newton-Raphson, max 8 iterations, bisection fallback)
+  //   P.EASE.glide (0.16,1,0.3,1: long soft arrival)  .snap (0.7,0,0.84,0: accelerating departure)  .settle (0.34,1.56,0.64,1: overshoot)  .swing (0.65,0,0.35,1: in-out,
+  //          zero speed at both ends, for drifts and holds)
+  //   P.spring(t, { stiffness, damping, mass }) -> 0..1 step response of a real damped spring started at rest (t in seconds); defaults 170/26/1;
+  //   P.SPRING.fade (1100/66/1: opacity arrivals, full by frame 6, starts at rest)  P.SPRING.default (170/26/1, no overshoot)  .bouncy (220/14/1, ~19% overshoot: cartoon only)  .bold (300/24/1, ~5% overshoot, settles in ~12 frames)
+  //   P.tween(t, t0, dur, name) / P.springAt(t, t0, name)  and  P.life(t, a, b, opts): arrival (ease out) + departure (ease in, 30-40% faster) for one element
+  //   P.easeInfo(name) -> { overshoot (fraction of travel), settleFrames (within 1%) } for the self-check
+  // =====================================================================================================================================
+  P.cubicBezier = (x1, y1, x2, y2) => {
+    const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+    const X = (u) => ((ax * u + bx) * u + cx) * u, Y = (u) => ((ay * u + by) * u + cy) * u, dX = (u) => (3 * ax * u + 2 * bx) * u + cx;
+    return (k) => {
+      if (k <= 0) return 0; if (k >= 1) return 1;
+      let u = k;
+      for (let i = 0; i < 8; i++) { const e = X(u) - k; if (Math.abs(e) < 1e-7) break; const d = dX(u); if (Math.abs(d) < 1e-6) break; u -= e / d; }
+      if (!(u >= 0 && u <= 1) || Math.abs(X(u) - k) > 1e-5) { let lo = 0, hi = 1; u = k; for (let i = 0; i < 30; i++) { if (X(u) < k) lo = u; else hi = u; u = (lo + hi) / 2; } }
+      return Y(u);
+    };
+  };
+  P.EASE = { glide: P.cubicBezier(.16, 1, .3, 1), snap: P.cubicBezier(.7, 0, .84, 0), settle: P.cubicBezier(.34, 1.56, .64, 1), swing: P.cubicBezier(.65, 0, .35, 1) };
+  P.SPRING = { default: { stiffness: 170, damping: 26, mass: 1 }, bouncy: { stiffness: 220, damping: 14, mass: 1 }, bold: { stiffness: 300, damping: 24, mass: 1 }, fade: { stiffness: 1100, damping: 66, mass: 1 } };   // fade: critically damped, 99% by frame 6, starts at rest (opacity arrivals)
+  P.spring = (t, { stiffness = 170, damping = 26, mass = 1 } = {}) => {
+    if (t <= 0) return 0;
+    const w0 = Math.sqrt(stiffness / mass), z = damping / (2 * Math.sqrt(stiffness * mass));
+    if (z < .999) { const wd = w0 * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t)); }
+    if (z <= 1.001) return 1 - Math.exp(-w0 * t) * (1 + w0 * t);
+    const q = Math.sqrt(z * z - 1), r1 = -w0 * (z - q), r2 = -w0 * (z + q);
+    return 1 + (r2 * Math.exp(r1 * t) - r1 * Math.exp(r2 * t)) / (r1 - r2);
+  };
+  sm = (a, b, t) => P.EASE.swing(clamp((t - a) / (b - a))); P.sm = sm;
+  const EASE_USED = (id) => P.use && P.used && P.use('easing', id);
+  P.ease = (name) => { if (typeof name === 'function') return name; EASE_USED(name); if (P.EASE[name]) return P.EASE[name]; throw new Error('unknown ease ' + name); };
+  P.tween = (t, t0, dur, name = 'swing') => P.ease(name)(clamp((t - t0) / dur));
+  P.springAt = (t, t0, name = 'default') => { const cfg = typeof name === 'string' ? P.SPRING[name] : name; if (typeof name === 'string') EASE_USED('spring-' + name); return P.spring(t - t0, cfg); };
+  // one element's life: it arrives at a (shape by `enter`: a spring name or an ease name, over inDur), its opacity is full by frame 6, it leaves before b with an
+  // ease-in that is 35% faster than the arrival. Returns { k (arrival shape, may overshoot), o (opacity), x (departure 0..1) }
+  P.life = (t, a, b, { enter = 'bold', inDur = .45, fade = .2, exitRatio = .65 } = {}) => {
+    const k = P.SPRING[enter] ? P.springAt(t, a, enter) : P.tween(t, a, inDur, enter);
+    const outDur = Math.max(.1, inDur * exitRatio), x = b == null ? 0 : P.tween(t, b - outDur, outDur, 'snap');
+    const o = t < a ? 0 : P.springAt(t, a, 'fade') * (1 - x);
+    return { k, o, x };
+  };
+  P.easeInfo = (name) => {
+    const f = P.SPRING[name] ? (tt) => P.spring(tt, P.SPRING[name]) : (tt) => P.EASE[name](clamp(tt / .5));   // beziers measured over a 0.5 s move
+    let peak = 0, last = 0; for (let i = 0; i <= 900; i++) { const tt = i / 300, v = f(tt); peak = Math.max(peak, v); if (Math.abs(v - 1) > .01) last = tt; }
+    return { overshoot: Math.max(0, peak - 1), settleFrames: Math.ceil(last * 30) };
+  };
   P.used = {};                                                          // auto-manifest: every part records the slot it fills (render-film.mjs writes film/ID/manifest.json)
   P.use = (slot, id) => { (P.used[slot] = P.used[slot] || []).includes(id) || P.used[slot].push(id); };
   P.on = (fn) => { P.ups.push(fn); return fn; };
@@ -82,8 +134,9 @@
     for (const d of dust) { g.globalAlpha = d.a * (.6 + .4 * Math.sin(d.p + tf * 1.3)); g.beginPath(); g.arc(d.x + 10 * Math.sin(ph + d.p), d.y + 16 * Math.sin(ph * 2 + d.p * 1.7), d.r, 0, TAU); g.fill(); }
       bokeh.forEach((b, i) => { b.style.transform = `translate(${(14 * Math.sin(ph + i * 2)).toFixed(1)}px,${(10 * Math.cos(ph + i)).toFixed(1)}px)`; });
       if (P.warmBokeh) bokeh[2].style.opacity = String(.25 + .75 * P.warmBokeh(t));
-      const punch = P.punchAt != null && t >= P.punchAt ? Math.exp(-(t - P.punchAt) * 5) * .04 : 0, drift = .012 * Math.sin(ph);
-      const dim = P.breath && t >= P.breath[0] && t < P.breath[1] + .15 ? sm(P.breath[0], P.breath[0] + .25, t) * (1 - sm(P.breath[1], P.breath[1] + .15, t)) : 0;
+      const pu = P.punchAt != null && t >= P.punchAt ? (t - P.punchAt) / .09 : 0, punch = pu > 0 ? .04 * pu * Math.exp(1 - pu) : 0,   // smooth impulse: rises from 0, peaks at 90 ms, decays (no jump)
+        drift = .012 * Math.sin(ph);
+      const dim = P.breath && t >= P.breath[0] && t < P.breath[1] + .15 ? P.springAt(t, P.breath[0], 'fade') * (1 - P.tween(t, P.breath[1], .16, 'snap')) : 0;
       css(world, { transform: `scale(${(1 + drift + punch).toFixed(4)})`, filter: dim > .01 ? `brightness(${(1 - .7 * dim).toFixed(3)})` : 'none' });
       E.vig.style.opacity = ((P.light ? .12 : .45) + .4 * dim).toFixed(3);
       E.field.style.opacity = 0;
@@ -261,11 +314,11 @@
     });
     P.on((t) => caps.forEach(({ a, b, card, words }) => {
       if (t < a - .05 || t > b + .02) { card.style.opacity = '0'; return; }
-      const out = clamp((t - (b - .12)) / .12);
-      card.style.opacity = (clamp((t - a) / .08 + (a < 0 ? 1 : 0)) * (1 - out)).toFixed(3);
+      const out = P.tween(t, b - .2, .2, 'snap');                          // departure: snap, 35% faster than the ~0.4 s word spring
+      card.style.opacity = ((a < 0 ? 1 : P.springAt(t, a, 'fade')) * (1 - out)).toFixed(3);
       card.style.transform = `translate(-50%,calc(-50% - ${(out * 6).toFixed(1)}px))`;
-      words.forEach((w, i) => { const k = ease.spring(clamp((t - a - i * .07) / .42));
-        if (style === 'blur') { const u = ease.out3(clamp((t - a - i * .07) / .38)); css(w, { opacity: clamp(u * 1.6).toFixed(3), filter: u < .98 ? `blur(${((1 - u) * 9).toFixed(2)}px)` : 'none', transform: `translateY(${((1 - k) * 34).toFixed(1)}%) scale(${lerp(1.18, 1, u).toFixed(3)})` }); return; }   // blur reveal: words sharpen out of a blur (new 14 Oct 2026)
+      words.forEach((w, i) => { const k = a < 0 ? 1 : P.springAt(t, a + i * .07, 'bold');
+        if (style === 'blur') { const u = P.springAt(t, a + i * .07, 'default'); css(w, { opacity: clamp(u * 1.6).toFixed(3), filter: u < .98 ? `blur(${((1 - u) * 9).toFixed(2)}px)` : 'none', transform: `translateY(${((1 - k) * 34).toFixed(1)}%) scale(${lerp(1.18, 1, u).toFixed(3)})` }); return; }   // blur reveal: words sharpen out of a blur (new 14 Oct 2026)
         w.style.transform = `translateY(${((1 - k) * 105).toFixed(1)}%)`; });
     }));
     return { wrap, caps, hideAll: () => caps.forEach(({ card }) => { card.style.opacity = '0'; }) };
@@ -319,8 +372,9 @@
   };
 
   // ---- small helpers stories use a lot ----
-  P.fade = (el, a, b, { fi = .3, fo = .3, dy = 0 } = {}) => P.on((t) => { const o = sm(a, a + fi, t) * (1 - sm(b, b + fo, t)); css(el, { opacity: o.toFixed(3), transform: dy ? `translateY(${((1 - sm(a, a + fi, t)) * dy).toFixed(1)}px)` : el.style.transform }); });
-  P.pop = (el, at, { from = .7, dy = 16, out = null } = {}) => P.on((t) => { const k = ease.spring(clamp((t - at) / .5)), o = clamp((t - at) / .1) * (out == null ? 1 : 1 - sm(out, out + .25, t)); css(el, { opacity: o.toFixed(3), transform: `translateY(${((1 - k) * dy).toFixed(1)}px) scale(${lerp(from, 1, k).toFixed(3)})` }); });
+  P.fade = (el, a, b, { fi = .3, dy = 0 } = {}) => P.on((t) => {   // arrival: glide (opacity) + default spring (position); departure 35% faster, snap
+    const fo = fi * .65, o = P.springAt(t, a, 'fade') * (1 - P.tween(t, b, fo, 'snap')); css(el, { opacity: o.toFixed(3), transform: dy ? `translateY(${((1 - P.springAt(t, a, 'default')) * dy).toFixed(1)}px)` : el.style.transform }); });
+  P.pop = (el, at, { from = .7, dy = 16, out = null } = {}) => P.on((t) => { const k = P.springAt(t, at, 'bold'), o = P.springAt(t, at, 'fade') * (out == null ? 1 : 1 - P.tween(t, out, .26, 'snap')); css(el, { opacity: o.toFixed(3), transform: `translateY(${((1 - k) * dy).toFixed(1)}px) scale(${lerp(from, 1, k).toFixed(3)})` }); });
 
   // =====================================================================================================================================
   // MORE OPTIONS PER JOB (13 Oct 2026, owner: "the animation combination should vary across reels"). Every reel picks per slot; the manifest records it.
@@ -558,7 +612,7 @@
   P.signoff = function ({ at = 16.9, out = 17.75, y = 492 } = {}) {
     if (P.wmHide) P.wmHide.push([at, out + .25]);                         // the watermark steps aside while the sign-off says the same thing
     const el = E.el('div', `position:absolute;left:0;right:0;top:${y}px;text-align:center;font:700 12px/1 ${MONO};letter-spacing:.32em;color:${hexA(P.light ? '#000000' : '#ffffff', .75)};text-transform:uppercase`, P.front, 'Aquarii Tech Studio');
-    P.on((t) => { el.style.opacity = (sm(at, at + .3, t) * (1 - sm(out, out + .25, t))).toFixed(3); });
+    P.on((t) => { el.style.opacity = (P.springAt(t, at, 'fade') * (1 - P.tween(t, out, .19, 'snap'))).toFixed(3); });
     return el;
   };
 
@@ -716,7 +770,7 @@
     E.el('div', `position:absolute;left:70px;right:70px;top:9px;height:22px;border-radius:11px;background:rgba(255,255,255,.08);display:grid;place-items:center;color:rgba(255,255,255,.7);font:500 10.5px/1 ${MONO};letter-spacing:.06em`, barEl, url);
     const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', parent); cv.width = 804; cv.height = 1430; const g = cv.getContext('2d');
     const L2 = E.el('div', 'position:absolute;left:0;top:0;width:402px;height:715px;transform-origin:0 0', parent);
-    const lev = (t) => { let i = 0; while (i < levels.length - 1 && t >= levels[i + 1][0]) i++; const [a, la] = levels[i], [b, lb] = levels[Math.min(i + 1, levels.length - 1)]; return b > a ? lerp(la, lb, ease.io3(clamp((t - a) / (b - a)))) : la; };
+    const lev = (t) => { let i = 0; while (i < levels.length - 1 && t >= levels[i + 1][0]) i++; const [a, la] = levels[i], [b, lb] = levels[Math.min(i + 1, levels.length - 1)]; return b > a ? lerp(la, lb, P.EASE.swing(clamp((t - a) / (b - a)))) : la; };   // swing: the level starts and stops smoothly
     const surf = (t) => bot - IN - lev(t) * (bot - top - IN);
     const hx = (hl) => (hl.side === 'l' ? x + 1 : x + w - 1), dir = (hl) => (hl.side === 'l' ? -1 : 1);
     const isOpen = (hl, t) => (hl.open || []).some(([a, b]) => t >= a && t < b);
@@ -731,7 +785,7 @@
       const t = loopAt != null && t0 >= loopAt ? t0 - P.len : t0, tf = loopAt != null && t0 >= loopAt ? tf0 - P.len : tf0;
       g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 804, 1430); g.setTransform(2, 0, 0, 2, 0, 0);
       if (cam) { const c = cam.get(t0); g.translate(201, 357.5); g.rotate(c.r); g.scale(c.s, c.s); g.translate(-c.x, -c.y); const m = cam.css(c); L1.style.transform = m; L2.style.transform = m; }
-      glint.style.transform = `translateX(${(((tf0 * .35) % 1.6) * 260).toFixed(1)}%) skewX(-18deg)`;
+      { const cyc = (tf0 % 4.6) / 4.6; glint.style.transform = `translateX(${(P.EASE.swing(clamp(cyc / .7)) * 420).toFixed(1)}%) skewX(-18deg)`; }   // a smooth sweep, then rest
       // water, clipped to the window's inside
       const sY = surf(t), slope = Math.abs(lev(t + .05) - lev(t - .05)) * 10, pouring = pour && t >= pour[0] && t < pour[1];
       const amp = Math.min(11, 3 + slope * 40 + (pouring ? 3 : 0));
@@ -741,34 +795,34 @@
       g.beginPath(); g.moveTo(x, bot + 10); for (let px = x; px <= x + w; px += 4) g.lineTo(px, wy(px)); g.lineTo(x + w, bot + 10); g.closePath(); g.fillStyle = gr; g.fill();
       g.save(); g.clip();                                                   // light inside the water: slow diagonal bands + soft caustic flecks
       g.globalCompositeOperation = 'lighter';
-      for (let k = 0; k < 4; k++) { const bx = x - 120 + ((tf * 22 + k * 130) % (w + 240)); const lg = g.createLinearGradient(bx, 0, bx + 70, 0); lg.addColorStop(0, 'rgba(255,255,255,0)'); lg.addColorStop(.5, 'rgba(200,250,255,.10)'); lg.addColorStop(1, 'rgba(255,255,255,0)');
+      for (let k = 0; k < 4; k++) { const bx = x + k * 95 - 40 + 70 * Math.sin(tf * .35 + k * 1.7); const lg = g.createLinearGradient(bx, 0, bx + 70, 0); lg.addColorStop(0, 'rgba(255,255,255,0)'); lg.addColorStop(.5, 'rgba(200,250,255,.10)'); lg.addColorStop(1, 'rgba(255,255,255,0)');
         g.fillStyle = lg; g.beginPath(); g.moveTo(bx, sY - 20); g.lineTo(bx + 70, sY - 20); g.lineTo(bx - 60, bot + 40); g.lineTo(bx - 130, bot + 40); g.closePath(); g.fill(); }
-      for (let k = 0; k < 26; k++) { const fx = x + ((k * 73.3 + tf * (8 + k % 5)) % w), fy = sY + 14 + ((k * 41.7) % 120), a2 = .08 + .1 * Math.max(0, Math.sin(tf * 3 + k)); g.strokeStyle = `rgba(220,255,255,${a2.toFixed(3)})`; g.lineWidth = 1.2;
+      for (let k = 0; k < 26; k++) { const fx = x + ((k * 73.3) % w) + 14 * Math.sin(tf * (.6 + (k % 5) * .1) + k), fy = sY + 14 + ((k * 41.7) % 120), a2 = .08 + .1 * Math.max(0, Math.sin(tf * 3 + k)); g.strokeStyle = `rgba(220,255,255,${a2.toFixed(3)})`; g.lineWidth = 1.2;
         g.beginPath(); g.moveTo(fx - 9, fy); g.quadraticCurveTo(fx, fy - 4 * Math.sin(tf * 2 + k), fx + 9, fy + 1); g.stroke(); }
       g.restore();
       g.beginPath(); for (let px = x; px <= x + w; px += 4) px === x ? g.moveTo(px, wy(px)) : g.lineTo(px, wy(px)); g.strokeStyle = 'rgba(255,255,255,.95)'; g.lineWidth = 2.2; g.stroke();
       g.beginPath(); for (let px = x; px <= x + w; px += 4) px === x ? g.moveTo(px, wy(px) + 5) : g.lineTo(px, wy(px) + 5); g.strokeStyle = 'rgba(255,255,255,.25)'; g.lineWidth = 6; g.stroke();
       // bubbles inside the water
-      g.fillStyle = 'rgba(255,255,255,.22)'; for (let i = 0; i < 14; i++) { const bx = x + 20 + ((i * 97) % (w - 40)), by = bot - ((tf * (26 + i * 3) + i * 61) % (bot - sY + 1)); if (by > sY + 6) { g.beginPath(); g.arc(bx + 4 * Math.sin(tf * 2 + i), by, 1.5 + (i % 3), 0, TAU); g.fill(); } }
+      g.fillStyle = 'rgba(255,255,255,.22)'; for (let i = 0; i < 14; i++) { const span = bot - sY + 1, cyc = ((tf * (26 + i * 3) + i * 61) % span) / span, bx = x + 20 + ((i * 97) % (w - 40)), by = bot - span * Math.pow(cyc, 1.5); if (by > sY + 6) { g.beginPath(); g.arc(bx + 4 * Math.sin(tf * 2 + i), by, 1.5 + (i % 3), 0, TAU); g.fill(); } }
       g.restore();
       // pour: a stream from the address bar into the surface
       if (pouring || (pour && t >= pour[1] && t < pour[1] + .4)) {
-        const cx = x + w / 2, k = pouring ? 1 : 1 - (t - pour[1]) / .4, y0 = pouring ? top : lerp(top, sY, 1 - k);
+        const cx = x + w / 2, k = pouring ? 1 : 1 - P.EASE.swing(clamp((t - pour[1]) / .4)), y0 = pouring ? top : lerp(top, sY, 1 - k);
         g.fillStyle = water[0]; g.beginPath(); for (let yy = y0; yy <= sY; yy += 6) g.lineTo(cx - 6 * k + 1.5 * Math.sin(yy * .09 + tf * 14), yy); for (let yy = sY; yy >= y0; yy -= 6) g.lineTo(cx + 6 * k + 1.5 * Math.sin(yy * .09 + tf * 14 + 1), yy); g.fill();
-        g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 1.6; for (let r = 0; r < 3; r++) { const u = ((tf * 1.8 + r / 3) % 1); g.globalAlpha = (1 - u) * k; g.beginPath(); g.ellipse(cx, sY, 10 + u * 46, 3 + u * 9, 0, 0, TAU); g.stroke(); } g.globalAlpha = 1;
+        g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 1.6; for (let r = 0; r < 3; r++) { const u = ((tf * 1.8 + r / 3) % 1), ge = P.EASE.swing(u); g.globalAlpha = P.EASE.swing(clamp(u / .15)) * (1 - P.EASE.snap(u)) * k; g.beginPath(); g.ellipse(cx, sY, 10 + ge * 46, 3 + ge * 9, 0, 0, TAU); g.stroke(); } g.globalAlpha = 1;
       }
       // holes: crack + jet of drops (each drop is a pure function of its spawn time)
       holes.forEach((hl) => {
         const open = isOpen(hl, t), fixed = hl.fix != null && t >= hl.fix && !(hl.open || []).some(([a]) => a > hl.fix && t >= a);
-        hl.badge.style.opacity = open && !fixed ? '1' : '0';
+        { const oa = (hl.open || []).filter(([a0]) => t >= a0).map(([a0]) => a0).pop(); hl.badge.style.opacity = open && !fixed ? (oa < 0 ? 1 : P.springAt(t, oa, 'fade')).toFixed(3) : '0'; }
         if (shards) (hl.open || []).forEach(([a0]) => { const u = (t - a0) / .9; if (a0 < 0 || u < 0 || u > 1) return;   // glass shards burst out of a fresh crack
           for (let q = 0; q < 12; q++) { const j = ((q * 2654435761 + a0 * 1000) >>> 0) / 4294967296, ang = (dir(hl) > 0 ? 0 : Math.PI) + (j - .5) * 2.2, sp = 90 + 160 * j, tt = u * .9;
             const px = hx(hl) + Math.cos(ang) * sp * tt, py = hl.y + Math.sin(ang) * sp * tt + .5 * 700 * tt * tt, sz = 3 + 6 * ((q * 7919) % 10) / 10;
-            g.save(); g.translate(px, py); g.rotate(j * 9 + tt * (6 + 8 * j)); g.globalAlpha = 1 - u; g.fillStyle = 'rgba(220,240,255,.9)'; g.beginPath(); g.moveTo(-sz, -sz * .4); g.lineTo(sz, -sz * .7); g.lineTo(sz * .2, sz); g.closePath(); g.fill(); g.restore(); } });
+            g.save(); g.translate(px, py); g.rotate(j * 9 + tt * (6 + 8 * j)); g.globalAlpha = 1 - P.EASE.snap(u); g.fillStyle = 'rgba(220,240,255,.9)'; g.beginPath(); g.moveTo(-sz, -sz * .4); g.lineTo(sz, -sz * .7); g.lineTo(sz * .2, sz); g.closePath(); g.fill(); g.restore(); } });
         if (open && !fixed) { g.strokeStyle = leak; g.lineWidth = 2.4; g.beginPath(); const X = hx(hl), d = -dir(hl); g.moveTo(X, hl.y - 16); g.lineTo(X + d * 6, hl.y - 7); g.lineTo(X - d * 2, hl.y); g.lineTo(X + d * 7, hl.y + 8); g.lineTo(X, hl.y + 16); g.stroke(); }
-        const pk = hl.fix == null ? 0 : ease.spring(clamp((t - hl.fix) / .45));
-        css(hl.patchEl, { opacity: (fixed ? clamp((t - hl.fix) / .08) : 0).toFixed(3), transform: `scale(${lerp(1.8, 1, pk).toFixed(3)}) rotate(${((1 - pk) * -30).toFixed(1)}deg)` });
-        const ru = hl.fix == null ? 1 : clamp((t - hl.fix) / .5); css(hl.ring, { opacity: (fixed && ru < 1 ? 1 - ru : 0).toFixed(3), transform: `scale(${(.5 + ru * 1.6).toFixed(3)})` });
+        const pk = hl.fix == null ? 0 : P.springAt(t, hl.fix, 'bold');     // the patch slams on: bold spring (~5% overshoot, settled in 12 frames)
+        css(hl.patchEl, { opacity: (fixed ? P.springAt(t, hl.fix, 'fade') : 0).toFixed(3), transform: `scale(${lerp(1.8, 1, pk).toFixed(3)}) rotate(${((1 - pk) * -30).toFixed(1)}deg)` });
+        const ru = hl.fix == null ? 1 : clamp((t - hl.fix) / .5); css(hl.ring, { opacity: (fixed && ru < 1 ? P.springAt(t, hl.fix, 'fade') * (1 - P.EASE.snap(ru)) : 0).toFixed(3), transform: `scale(${(.5 + P.spring(Math.max(0, t - (hl.fix || 0)), P.SPRING.default) * 1.6).toFixed(3)})` });
         // the jet: a thick arc along the path of a drop leaving now, then the drops
         const headNow = hl.y - surf(t);
         if (open && !fixed && headNow > 2) {                               // the unbroken part of the jet: a tapered, wobbling ribbon with a highlight
@@ -818,13 +872,19 @@
   // 'whip' = fast io with overshoot). shake: [[t0, t1, px]]. Use cam.css(c) on DOM layers (transform-origin 0 0) and the same numbers on canvases (crisp at any zoom).
   P.camera = function (keys, { shake = [], handheld = 0 } = {}) {   // handheld: px of slow organic drift (a held camera, never perfectly still)
     P.use('camera', 'keyed-camera');
-    const EZ = { io3: ease.io3, lin: (k) => k, out3: ease.out3, in2: ease.in2, whip: (k) => { const b = ease.back(k); return b; }, cut: (k) => (k < 1 ? 0 : 1), ioX: ease.ioX };
+    // each key is a MOVE from the previous key: springs (by name) start at rest and settle on their own clock; eases (by name) span the gap; 'cut' is a hard cut.
+    // Moves are ADDED, not chained, so position and speed stay continuous even when a new move starts before the last one has settled.
+    const moves = keys.slice(1).map(([t1, B, ez], i) => { const [t0, A] = keys[i]; const d = { x: B.x - A.x, y: B.y - A.y, s: B.s - A.s, r: (B.r || 0) - (A.r || 0) };
+      const name = ez || 'swing', f = name === 'cut' ? ((t) => (t >= t1 ? 1 : 0)) : P.SPRING[name] ? ((t) => P.springAt(t, t0, name)) : ((t) => P.tween(t, t0, t1 - t0, name));
+      if (name === 'lin') throw new Error('linear camera move at ' + t1 + ': use a spring or an ease'); return { d, f }; });
     const get = (t) => {
-      let i = 0; while (i < keys.length - 1 && t >= keys[i + 1][0]) i++;
-      const [a, A] = keys[i], [b, B, ez] = keys[Math.min(i + 1, keys.length - 1)], k = b > a ? (EZ[ez || 'io3'] || ease.io3)(clamp((t - a) / (b - a))) : 1;
-      const c = { x: lerp(A.x, B.x, k), y: lerp(A.y, B.y, k), s: lerp(A.s, B.s, k), r: lerp(A.r || 0, B.r || 0, k) * Math.PI / 180 };
-      if (handheld) { c.x += handheld / c.s * (Math.sin(t * 1.3) + .5 * Math.sin(t * 2.9 + 1)); c.y += handheld / c.s * (Math.cos(t * 1.1) + .5 * Math.sin(t * 2.3 + 2)); c.r += handheld * .0012 * Math.sin(t * .9); }
-      shake.forEach(([t0, t1, px]) => { if (t >= t0 && t < t1) { const d = Math.exp(-(t - t0) * 7) * px / c.s; c.x += d * Math.sin(t * 91); c.y += d * Math.cos(t * 73); } });
+      const A = keys[0][1], c = { x: A.x, y: A.y, s: A.s, r: A.r || 0 };
+      moves.forEach(({ d, f }) => { const k = f(t); if (k) { c.x += d.x * k; c.y += d.y * k; c.s += d.s * k; c.r += d.r * k; } });
+      c.r *= Math.PI / 180;
+      if (handheld) { const w = TAU / P.len;   // whole cycles per film, so the drift loops seamlessly
+        c.x += handheld / c.s * (Math.sin(t * 4 * w) + .5 * Math.sin(t * 8 * w + 1)); c.y += handheld / c.s * (Math.cos(t * 3 * w) + .5 * Math.sin(t * 7 * w + 2)); c.r += handheld * .0012 * Math.sin(t * 3 * w); }
+      // shake: ~6-7 Hz (a 30 fps film shows at most 15 Hz; faster shakes alias into jitter); envelope and sines start at 0, so no jump
+      shake.forEach(([t0, t1, px]) => { if (t >= t0 && t < t1 + .6) { const u = (t - t0) / .07, env = u * Math.exp(1 - u) * px / c.s; c.x += env * Math.sin((t - t0) * 44); c.y += env * Math.sin((t - t0) * 37) * .8; } });   // envelope x sine both start at 0: no jump in position or speed
       return c;
     };
     const css = (c) => `translate(201px,357.5px) rotate(${c.r.toFixed(4)}rad) scale(${c.s.toFixed(4)}) translate(${(-c.x).toFixed(2)}px,${(-c.y).toFixed(2)}px)`;
@@ -842,16 +902,18 @@
     return cv;
   };
   // drip word: giant display type with drops gathering under the letters and falling (wet type: the brand's water)
-  P.dripWord = function (parent, html, { x = 30, y = 120, size = 96, colour = '#fff', drop = null, at = 0, out = 99, n = 7, w = 342, align = 'left' } = {}) {
+  P.dripWord = function (parent, html, { x = 30, y = 120, size = 96, colour = '#fff', drop = null, at = 0, out = 99, n = 7, w = 342, align = 'left', pop = false } = {}) {   // pop: hero reveal (scale 0.92 -> 1 on the default spring, opacity full by frame 6)
     P.use('type', 'drip-word');
     const box = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;text-align:${align};color:${colour};font:900 ${size}px/.86 Archivo,sans-serif;font-variation-settings:"wdth" 72;letter-spacing:-.035em;white-space:nowrap`, parent, html);
     const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px;pointer-events:none', parent); cv.width = 804; cv.height = 1430; const g = cv.getContext('2d'); g.scale(2, 2);
     const B = () => box.getBoundingClientRect(), pb = parent.getBoundingClientRect(); const bb = B(), left = bb.left - pb.left, right = bb.right - pb.left, base = bb.bottom - pb.top - size * .1;
     const drops = Array.from({ length: n }, (_, i) => ({ x: lerp(left + 8, right - 8, ((i * .618) % 1)), p: .9 + (i % 3) * .35, ph: (i * .37) % 1 }));
     P.on((t, tf) => {
-      const vis = t >= at && t < out ? clamp((t - at) / .15) * (1 - clamp((t - out + .15) / .15)) : 0; box.style.opacity = vis.toFixed(3); g.clearRect(0, 0, 402, 715); if (!vis) return;
+      const vis = t >= at && t < out ? (at < 0 ? 1 : P.springAt(t, at, 'fade')) * (1 - P.tween(t, out - .13, .13, 'snap')) : 0; box.style.opacity = vis.toFixed(3);
+      if (pop) box.style.transform = `scale(${lerp(.92, 1, at < 0 ? 1 : P.springAt(t, at, 'default')).toFixed(4)})`;
+      g.clearRect(0, 0, 402, 715); if (!vis) return;
       g.fillStyle = drop || colour; g.globalAlpha = vis;
-      drops.forEach((d) => { const u = ((tf / d.p) + d.ph) % 1, grow = clamp(u / .55), fall = clamp((u - .55) / .45);
+      drops.forEach((d) => { const u = ((tf / d.p) + d.ph) % 1, grow = P.EASE.swing(clamp(u / .55)), fall = clamp((u - .55) / .45);
         const r = 2 + 4.5 * grow, yy = base + r * .6 + 260 * fall * fall; g.beginPath(); g.ellipse(d.x, yy, r * (1 - fall * .3), r * (1 + fall * .9), 0, 0, TAU); g.fill();
         if (grow < 1 || fall < .05) { g.beginPath(); g.moveTo(d.x - r * .7, base); g.quadraticCurveTo(d.x, yy - r * 1.6, d.x + r * .7, base); g.fill(); } });
       g.globalAlpha = 1;
@@ -873,7 +935,7 @@
     let sd = 17; const rnd = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
     const bub = Array.from({ length: 70 }, () => ({ x: rnd() * 402, d: rnd(), r: 1 + rnd() * 3.5, p: rnd() }));
     P.on((t, tf) => {
-      const on = t >= at && t < out + .3; box.style.opacity = on ? (clamp((t - at) / .12) * (1 - clamp((t - out) / .3))).toFixed(3) : '0'; if (!on) return;
+      const on = t >= at && t < out + .3; box.style.opacity = on ? (P.springAt(t, at, 'fade') * (1 - P.tween(t, out, .2, 'snap'))).toFixed(3) : '0'; if (!on) return;
       g.clearRect(0, 0, 402, 715);
       // god rays
       g.globalCompositeOperation = 'lighter';
@@ -884,12 +946,12 @@
       for (let k = 0; k < 2; k++) for (let j = 0; j < 9; j++) { g.beginPath(); for (let px = -10; px <= 412; px += 8) { const py = j * 34 + 12 * Math.sin(px * .035 + tf * (1.4 + k) + j * 1.7) + 7 * Math.sin(px * .08 - tf * 2 + j); px < 0 ? g.moveTo(px, py) : g.lineTo(px, py); } g.stroke(); }
       g.globalCompositeOperation = 'source-over';
       // bubbles (three depths)
-      bub.forEach((b) => { const sp = 60 + b.d * 220, yy = 760 - (((tf - at) * sp + b.p * 800) % 820), xx = b.x + 8 * Math.sin(tf * 2 + b.p * 9);
+      bub.forEach((b) => { const sp = 60 + b.d * 220, cyc = (((tf - at) * sp + b.p * 800) % 820) / 820, yy = 760 - 820 * Math.pow(cyc, 1.4), xx = b.x + 8 * Math.sin(tf * 2 + b.p * 9);
         g.strokeStyle = `rgba(220,245,255,${(.25 + .5 * b.d).toFixed(2)})`; g.lineWidth = 1 + b.d; g.beginPath(); g.arc(xx, yy, b.r * (.6 + b.d), 0, TAU); g.stroke(); });
       // cards rise with depth parallax
-      cs.forEach((c) => { const u = (t - c.t0), w2 = c.el.offsetWidth || 150, yy = 740 - u * c.d.v, k = ease.spring(clamp(u / .5));
+      cs.forEach((c) => { const u = (t - c.t0), w2 = c.el.offsetWidth || 150, uu = Math.max(0, u), yy = 740 - (c.d.v * .55 * uu + .5 * c.d.v * .5 * uu * uu), k = P.springAt(t, c.t0, 'default');
         const ww = w2 * c.d.s, xx = Math.max(26 + (ww - w2) / 2, Math.min(376 - w2 - (ww - w2) / 2, c.x)) + 8 * Math.sin(t * 1.7 + c.x);   // whole card inside the 26 px side margins
-        css(c.el, { opacity: (u < 0 ? 0 : clamp(u / .15) * c.d.o).toFixed(3), transform: `translate(${xx.toFixed(1)}px,${yy.toFixed(1)}px) scale(${(c.d.s * lerp(.7, 1, k)).toFixed(3)}) rotate(${(4 * Math.sin(t * 1.3 + c.x)).toFixed(2)}deg)` }); });
+        css(c.el, { opacity: (u < 0 ? 0 : P.springAt(t, c.t0, 'fade') * c.d.o).toFixed(3), transform: `translate(${xx.toFixed(1)}px,${yy.toFixed(1)}px) scale(${(c.d.s * lerp(.7, 1, k)).toFixed(3)}) rotate(${(4 * Math.sin(t * 1.3 + c.x)).toFixed(2)}deg)` }); });
     });
     return box;
   };

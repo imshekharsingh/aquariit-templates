@@ -92,6 +92,8 @@ fictional business: add `## Service` (the line), keep the template's brand name 
 4. **Look and fix (2-3 passes):** `node scripts/film/render-film.mjs ID --variant A --stills t1,t2,...` at every cut + first, breath, peak, last frame; contact sheet in time order
    (`ls still-A-*.png | sort -t- -k3 -g`). Answer the friend test (CLAUDE.md) honestly; check text against Instagram's zones and for collisions or dead air; fix and look again.
    Run `node scripts/film/fill-meter.mjs <stills dir>`: no more than a third of the frames TIGHT (make subjects bigger, bleed off an edge, fill the ground).
+   **Easing (14 Oct 2026):** every move uses the toolkit in parts.js (springs or P.EASE, never 'lin'); pick by mood (design/film-playbook.md "Easing and spring
+   physics"). `node scripts/film/render-film.mjs ID --variant A --motion-check` must print no JUMP/LINEAR lines, PASS for every preset and a clean grep.
    **Frame by frame (owner, 14 Oct 2026):** render the whole film once (`render-film.mjs ID --variant A --out DIR`), then
    `python3 -I scripts/film/frame-review.py DIR/ID-A.mp4 DIR/review --every 2 --cuts <your cut times>`. Open motion.png and EVERY sheet: fix every FROZEN
    stretch (dead air), unplanned JUMP, JUDDER and FLASH, plus anything that looks fake or unreadable in any frame; re-render and review again until clean.

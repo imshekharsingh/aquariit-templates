@@ -71,6 +71,45 @@ async function makeCover() { // the cover poster (1080x1920) + a preview of how 
   console.log('cover written'); return true;
 }
 if (COVER) { await makeCover(); process.exit(0); }
+if (args.includes('--motion-check')) { // easing self-check (owner, 14 Oct 2026): sample every scripted element 4x per frame and judge the motion itself
+  const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}) }); const pg = await openPage(b, variants[0]);
+  const HZ = 120, data = await pg.evaluate(async ([LEN, HZ]) => {
+    const els = [...E_ALL()]; function E_ALL() { return document.querySelectorAll('#stage *'); }
+    const track = els.filter((e) => /transform|opacity|translate|rotate/.test(e.getAttribute('style') || '') && e.tagName !== 'CANVAS');
+    const out = track.map(() => []);
+    for (let i = 0; i <= LEN * HZ; i++) { const t = i / HZ; FilmEngine.render(t, Math.round(t * 30));
+      track.forEach((e, k) => { const r = e.getBoundingClientRect(); let o = 1, m = new DOMMatrix(), n = e;
+        while (n && n.nodeType === 1) { const cs = getComputedStyle(n); o *= +cs.opacity; if (cs.transform && cs.transform !== 'none') m = new DOMMatrix(cs.transform).multiply(m); n = n.parentElement; }
+        out[k].push([r.left + r.width / 2, r.top + r.height / 2, Math.hypot(m.a, m.b) * e.offsetWidth, o]); }); }   // size = true scale x width (a rotated box's outline would kink)
+    const name = (e) => (e.textContent || '').trim().slice(0, 24) || e.tagName.toLowerCase();
+    return { names: track.map(name), out, cuts: FilmEngine.story.cuts || [], used: (window.FilmParts.used || {}).easing || [], info: Object.fromEntries(((window.FilmParts.used || {}).easing || []).map((id) => [id, window.FilmParts.easeInfo(id.replace(/^spring-/, ''))])) };
+  }, [LEN, HZ]);
+  await b.close();
+  const near = (t) => data.cuts.some((c) => Math.abs(t - c) < .06), rep = [];
+  data.out.forEach((ser, k) => {
+    const vis = (i) => ser[i][3] > .03 && ser[i][0] > -50 && ser[i][0] < 452 && ser[i][1] > -50 && ser[i][1] < 765;
+    for (const [q, unit, vmin] of [[0, 'px', 20], [1, 'px', 20], [2, 'px', 20], [3, '', .4]]) {
+      const v = ser.map((p, i) => (i ? (p[q] - ser[i - 1][q]) * HZ : 0));
+      let run = 0;
+      for (let i = 2; i < ser.length - 1; i++) {
+        if (!vis(i) || !vis(i - 1) || !vis(i - 2) || !vis(i + 1) || near(i / HZ)) { run = 0; continue; }
+        const dv = Math.abs(v[i] - v[i - 1]), dvn = Math.max(Math.abs(v[i - 1] - v[i - 2]), Math.abs(v[i + 1] - v[i])), big = q === 3 ? 6 : 60;
+        if (dv > big && dv > 4 * dvn) rep.push(`JUMP    ${(i / HZ).toFixed(3)}s  "${data.names[k]}" ${['x', 'y', 'size', 'opacity'][q]}: speed ${v[i - 1].toFixed(0)} -> ${v[i].toFixed(0)}${unit}/s`);
+        run = Math.abs(v[i]) > vmin && Math.abs(v[i] - v[i - 1]) < .004 * Math.abs(v[i]) ? run + 1 : 0;
+        if (run === 18) rep.push(`LINEAR  ${((i - 17) / HZ).toFixed(3)}s  "${data.names[k]}" ${['x', 'y', 'size', 'opacity'][q]} moves at a constant ${v[i].toFixed(1)}${unit}/s`);
+      }
+    }
+  });
+  const uniq = [...new Set(rep)];
+  console.log(`motion check: ${data.out.length} scripted elements x ${data.out[0] ? data.out[0].length : 0} samples (${HZ}/s)`);
+  console.log(uniq.slice(0, 60).join('\n') || 'no jumps, no linear motion in the DOM layers');
+  if (uniq.length > 60) console.log(`... ${uniq.length - 60} more`);
+  console.log('easing used:'); for (const id of data.used) { const f = data.info[id]; const ok = f.overshoot < .08 && f.settleFrames <= 18; console.log(`  ${id.padEnd(16)} overshoot ${(f.overshoot * 100).toFixed(1)}%  settles in ${f.settleFrames} frames  ${ok ? 'PASS' : 'FAIL'}`); }
+  const src = readFileSync(join(dir, 'story.js'), 'utf8').replace(/\/\/.*$/gm, '') + readFileSync(join(dir, 'timing.json'), 'utf8');
+  const lin = src.match(/'lin'|"lin"|linear\(|ease\.(lin|io3|out3|in2|inX|outX|ioX|spring)\b|clamp\(\(t\s*-/g);
+  console.log(lin ? `GREP: linear or untooled curves in the film config: ${[...new Set(lin)].join(', ')}` : 'GREP: no linear or untooled curves in story.js / timing.json');
+  process.exit(uniq.length || lin ? 1 : 0);
+}
 if (stills) { // debug: single stills at given film times, variant A (or --variant)
   const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}) }); const pg = await openPage(b, variants[0]);
   for (const s of stills.split(',')) { const t = +s; await pg.evaluate(([tt]) => FilmEngine.render(tt, Math.round(tt * 30)), [t]); await settle(pg); await pg.screenshot({ path: join(OUT, `still-${variants[0]}-${t.toFixed(2)}.png`) }); console.log('still', t); }
