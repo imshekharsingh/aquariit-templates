@@ -54,7 +54,7 @@
       return { el: mk('path', { d: CUR, fill: RED, stroke: INK, 'stroke-width': 1.5, opacity: 0 }), spark: mk('circle', { cx, cy, r: 4, fill: 'none', stroke: VIO, 'stroke-width': 2, opacity: 0 }), t0: 9.7 + i * .17, sx, sy, cx, cy, ang }; });
 
     // ---- HTML type ----
-    const H = (html, css2) => E.el('div', `position:absolute;left:30px;right:30px;text-align:center;color:${WHITE};font:900 34px/1.02 Archivo,sans-serif;font-variation-settings:"wdth" 82;letter-spacing:-.02em;opacity:0;${css2}`, world, html);
+    const H = (html, css2) => E.el('div', `position:absolute;left:30px;right:30px;text-align:center;color:${WHITE};font:900 34px/1.02 Archivo,sans-serif;font-variation-settings:"wdth" 90;letter-spacing:-.01em;word-spacing:.08em;opacity:0;${css2}`, world, html);
     const hook = H(`Is your website<br><span style="color:${VIO}">actually locked?</span>`, 'top:118px;font-size:38px');
     const tags = [['Outdated plugin', 85, 300, 4.0], ['Weak password', 205, 245, 4.9], ['No backups', 95, 420, 5.8], ['Bot traffic', 215, 470, 6.7]].map(([txt, x, y, t0]) => {
       const el = E.el('div', `position:absolute;left:${x}px;top:${y}px;padding:6px 11px;border-radius:99px;background:${RED};color:#fff;font:800 13px/1 Archivo,sans-serif;white-space:nowrap;opacity:0;transform-origin:0 50%`, world, txt);
