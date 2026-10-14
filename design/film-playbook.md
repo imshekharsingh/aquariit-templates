@@ -8,6 +8,39 @@ The first films sold laundry, food delivery and dentistry. The owner: "I don't d
 ("a site we designed", "the site we protect"). Useful parts per line: web → phone + scan + compare (old vs new); social → gridFill (a month of posts), steps, chat;
 security → P.shield (attacks bounce off), hub (SSL, backups, updates, firewall around the site), meter; edge → route (a request travels via the nearest edge), radial.
 
+## Easing and spring physics (motion focus, 14 Oct 2026)
+Linear or default ease-in-out motion is the clearest sign of an amateur reel. The toolkit lives at the top of scripts/film/parts.js and every film uses it:
+- `P.cubicBezier(x1, y1, x2, y2)` (Newton-Raphson, 8 iterations, bisection fallback) and presets `P.EASE.glide` (0.16,1,0.3,1), `snap` (0.7,0,0.84,0), `settle`
+  (0.34,1.56,0.64,1) and `swing` (0.65,0,0.35,1, in-out with zero speed at both ends).
+- `P.spring(t, { stiffness, damping, mass })`: the closed-form step response of a real damped spring released from rest. `P.SPRING.default` 170/26/1, `bouncy` 220/14/1,
+  `bold` 300/24/1, `fade` 1100/66/1.
+- `P.tween`, `P.springAt`, `P.life` (arrival + a departure 35% faster) and `P.easeInfo` (overshoot and settle frames, for the self-check).
+Measured (P.easeInfo; settle = within 1% of travel): glide 0% / 10 frames, snap 0% / 15, swing 0% / 14, **settle 9.8%** (over the 8% limit: not used), default spring
+0% / 16, **bouncy 18.6%** (cartoon only: not used), bold 4.9% / 12, fade 0% / 6.
+
+Mood map (the film picks by its DNA): calm or luxury: glide or the default spring, 600-900 ms, no overshoot. Playful or bold: the bold spring (4-8% overshoot, settled
+within 18 frames). Technical: short hard-stopping arrivals (200-300 ms, no overshoot). Every element eases OUT on arrival and IN (snap) on departure; departures are 30-40%
+faster than arrivals.
+
+Lessons from applying it to the leaky-site film (bold + technical DNA):
+- **Arrivals must start at rest.** glide and settle start at full speed (their first control point jumps), so speed jumps on the first frame. Positions, scales and the
+  camera therefore arrive on springs (they start at zero speed by construction); opacity arrives on the `fade` spring (critically damped, full by frame 6), so the shape
+  leads and the fade follows. glide stays in the kit for things that arrive from behind a mask, where the first-frame jump cannot be seen.
+- **Camera moves are added, not chained.** Each key is a move from the previous key (a spring on its own clock, or an ease over the gap); the moves are summed, so a whip
+  can start before the last one has settled without any jump in position or speed. A 'lin' key now throws.
+- **Shake must start at zero and stay under ~7 Hz.** An envelope that rises from 0 times sines that start at 0; at 30 fps anything near 15 Hz aliases into jitter.
+- **Impacts are impulses, not steps.** The punch on the big moment is `A * u * e^(1-u)`: it rises from zero, peaks at 90 ms and decays, instead of jumping.
+- Ambient motion (bubbles, light) uses buoyancy (accelerating rise) or slow oscillation, never a constant-speed drift; the handheld drift uses whole cycles per film so
+  the loop stays seamless.
+- Hero reveal: `P.dripWord(..., { pop: true })` scales 0.92 -> 1 on the default spring with opacity on the fade spring (full by frame 6). Used on "DM us" (payoff) and on the
+  hook when the loop returns.
+
+Self-check (`render-film.mjs ID --motion-check`): samples every scripted element 120 times a second and flags JUMP (a speed change much larger than its neighbours,
+outside declared hard cuts `S.cuts`), LINEAR (constant speed for 0.15 s or more) and per-preset overshoot/settle against 8% / 18 frames, then greps story.js and
+timing.json for linear or untooled curves. Canvas content (water, drops, grain) is not measured by it; it is physics (gravity, buoyancy) or oscillation by construction.
+Result on the leaky-site film after three fixes (arrival jumps from glide, a phase offset in the vertical shake, a 14 Hz shake that aliased): no jumps, no linear motion,
+all presets PASS, grep clean.
+
 ## Review every frame, not a few stills (owner, 14 Oct 2026)
 Stills at the cuts miss dead air, stutter and fake-looking moments. After the stills passes, render the full film and run scripts/film/frame-review.py: it measures every
 frame (motion and brightness), flags frozen stretches, unplanned jumps, judder and flashes, draws motion.png and writes contact sheets of every 2nd frame. Look at all of
