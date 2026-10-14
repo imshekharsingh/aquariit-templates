@@ -15,6 +15,7 @@
 //   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' | 'blur' })   the spine: 1-3 words per card at y 492
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
 //   camera     P.camera (keyed camera with shake; films DOM layers + canvases)   texture  P.grain   (and P.dripWord: wet display type)
+//   machine    P.iso (isometric machines: the object IS the explanation; box, cyl, coil, ticks, dot, path; four-tone shading, depth-sorted)
 //   3D         P.tank3d (the leaky vessel in real 3D, for hero shots)  P.three (WebGL scene, procedural studio light)  P.three.look (keyed 3D camera on springs)  P.three.roundRect
 //   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff (the studio name + DM us, at the end; the always-on watermark was retired 14 Oct 2026, P.watermark() is opt-in only)
 // helpers: P.fade, P.pop, P.rel (measure an element), P.icon/P.icons, P.hexA, P.sm, P.css. Gallery of every option: render the test films in design/film-playbook.md.
@@ -1150,5 +1151,99 @@
 
     if (camera) P.three.look(G, camera, { handheld: .02 });
     return { G, yTop };
+  };
+  // =====================================================================================================================================
+  // ISOMETRIC MACHINES (owner, 14 Oct 2026). Method learned from studying isometric explainer skills (technique only; this code is our own):
+  // THE OBJECT IS THE EXPLANATION. Show a service as one precise machine whose working IS the service (edge: a sorting machine that sends each parcel
+  // down the nearest chute and drops the bad ones in a reject bin; security: a pin-tumbler lock; uptime: a dial gauge; social: a small press). Build it from
+  // 40-60 small purposeful parts (base plate on feet, corner screws, rails with tick rulers, bushings, springs, a label plate), four-tone shading, no labels in
+  // the drawing (captions carry the words). Every part is a pure function of film time.
+  //   const I = P.iso(parent, { ox: 201, oy: 400, s: 1, az: 45, el: 30, line: '#0b0d10', light: true })
+  //   I.box(spec)  I.cyl(spec)  I.coil(spec)  I.ticks(spec)  I.dot(spec)  I.path(spec)   spec = object or (t) => object; return null to hide a part
+  //     box  { x, y, z, w, d, h, r = 0, c: '#hex', lw }          (x, y on the floor, z up; r rounds the plan corners)
+  //     cyl  { x, y, z, r, h, c }                               (round sides shade as a gradient, never a staircase)
+  //     coil { x, y, z, r, h, turns, c, lw }                    (a spring: back half behind, front half in front of what it wraps)
+  //     ticks{ x, y, z, len, n, axis: 'x'|'y', major = 5, c }   (a ruler on a top face)
+  //     dot  { x, y, z, r, c }                                  (screw heads, rivets, LEDs)
+  //     path { pts: [[x,y,z]...], c, lw, close, fill }          (cables, belts, arrows built as geometry)
+  //     every spec may carry `k` (depth bias) and `o` (opacity). Order: floor depth + 1.6 x the part's base height, so parts paint after what they rest on;
+//     set z to where a part really sits (on a 12-high plate: z 12), and nudge with k only where two parts genuinely interlock
+  //   I.P(x, y, z) -> [sx, sy] screen point (for placing captions or DOM next to a part)
+  // =====================================================================================================================================
+  const shade = (hex, f) => { const h = hex.replace('#', ''); const n = parseInt(h.length === 3 ? h.replace(/./g, '$&$&') : h, 16);
+    const ch = (v) => Math.round(f >= 0 ? v + (255 - v) * f : v * (1 + f)); return `rgb(${ch((n >> 16) & 255)},${ch((n >> 8) & 255)},${ch(n & 255)})`; };
+  P.iso = function (parent, { ox = 201, oy = 400, s = 1, az = 45, el = 30, line = '#0b0d10', light = true, lw = 1.1 } = {}) {
+    P.use('mechanism', 'iso-machine');
+    const NS = 'http://www.w3.org/2000/svg', A = az * Math.PI / 180, ca = Math.cos(A), sa = Math.sin(A), se = Math.sin(el * Math.PI / 180), ce = Math.cos(el * Math.PI / 180);
+    const wrap = E.el('div', 'position:absolute;inset:0;pointer-events:none', parent);
+    const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', '0 0 402 715'); svg.setAttribute('width', '402'); svg.setAttribute('height', '715');
+    svg.setAttribute('aria-hidden', 'true'); svg.style.cssText = 'position:absolute;inset:0;overflow:visible'; wrap.appendChild(svg);
+    const defs = document.createElementNS(NS, 'defs'); svg.appendChild(defs); const g = document.createElementNS(NS, 'g'); svg.appendChild(g);
+    const Pt = (x, y, z) => { const u = x * ca - y * sa, v = x * sa + y * ca; return [ox + u * s, oy + (v * se - z * ce) * s]; };
+    const depthOf = (x, y, z) => x * sa + y * ca + z * .02;
+    const f2 = (n) => n.toFixed(1), poly = (pts) => 'M' + pts.map((q) => f2(q[0]) + ' ' + f2(q[1])).join('L') + 'Z';
+    // tones: top lightest, left-facing mid, right-facing dark, edges in `line`
+    const tones = (c) => light ? { top: shade(c, .18), left: c, right: shade(c, -.24) } : { top: shade(c, .1), left: shade(c, -.12), right: shade(c, -.38) };
+    // plan outline of a rounded rectangle, counter-clockwise, with outward normals
+    const plan = (x, y, w, d, r, n = 6) => { r = Math.min(r, w / 2, d / 2); const out = [];
+      const cs = [[x + w - r, y + r, -Math.PI / 2], [x + w - r, y + d - r, 0], [x + r, y + d - r, Math.PI / 2], [x + r, y + r, Math.PI]];
+      cs.forEach(([cx, cy, a0]) => { for (let i = 0; i <= (r ? n : 0); i++) { const a = a0 + (Math.PI / 2) * (r ? i / n : .5); out.push([cx + r * Math.cos(a), cy + r * Math.sin(a), Math.cos(a), Math.sin(a)]); } });
+      return out; };
+    const circ = (x, y, r, n = 28) => Array.from({ length: n }, (_, i) => { const a = i / n * TAU; return [x + r * Math.cos(a), y + r * Math.sin(a), Math.cos(a), Math.sin(a)]; });
+    let gid = 0; const items = [];
+    const add = (kind, spec) => { const it = { kind, spec, id: 'iso' + (gid++) }; items.push(it); return it; };
+    // an extruded outline: silhouette in the dark tone, camera-facing left run in the mid tone, the top face, crisp edges
+    const extrude = (out, z, h, c, round, lwi, id) => {
+      const T = tones(c), bot = out.map((q) => Pt(q[0], q[1], z)), top = out.map((q) => Pt(q[0], q[1], z + h)), n = out.length; let html = '';
+      const all = bot.concat(top); const hull = (() => { const p = all.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]), cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+        const lo = [], up = []; p.forEach((q) => { while (lo.length > 1 && cr(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); });
+        p.slice().reverse().forEach((q) => { while (up.length > 1 && cr(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }); return lo.slice(0, -1).concat(up.slice(0, -1)); })();
+      if (round) {
+        const xs = hull.map((q) => q[0]), x0 = Math.min(...xs), x1 = Math.max(...xs);
+        html += `<linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="${f2(x0)}" x2="${f2(x1)}" y1="0" y2="0"><stop offset="0" stop-color="${T.left}"/><stop offset=".35" stop-color="${T.top}"/><stop offset="1" stop-color="${T.right}"/></linearGradient>`;
+        html += `<path d="${poly(hull)}" fill="url(#${id})" stroke="${line}" stroke-width="${lwi}" stroke-linejoin="round"/>`;
+      } else {
+        html += `<path d="${poly(hull)}" fill="${T.right}" stroke="${line}" stroke-width="${lwi}" stroke-linejoin="round"/>`;
+        for (let i = 0; i < n; i++) { const a = out[i], b = out[(i + 1) % n], nx = (a[2] + b[2]) / 2, ny = (a[3] + b[3]) / 2;
+          if (nx * sa + ny * ca > 0.02 && nx * ca - ny * sa < 0) html += `<path d="${poly([bot[i], bot[(i + 1) % n], top[(i + 1) % n], top[i]])}" fill="${T.left}" stroke="${T.left}" stroke-width=".6"/>`; }
+        // the vertical crease where the left run meets the right run
+        for (let i = 0; i < n; i++) { const a = out[i], fa = a[2] * sa + a[3] * ca > 0, sideA = a[2] * ca - a[3] * sa;
+          const b = out[(i + 1) % n], sideB = b[2] * ca - b[3] * sa; if (fa && sideA < 0 && sideB >= 0) html += `<path d="M${f2(bot[(i + 1) % n][0])} ${f2(bot[(i + 1) % n][1])}L${f2(top[(i + 1) % n][0])} ${f2(top[(i + 1) % n][1])}" stroke="${line}" stroke-width="${lwi * .8}" stroke-opacity=".55"/>`; }
+      }
+      html += `<path d="${poly(top)}" fill="${T.top}" stroke="${line}" stroke-width="${lwi}" stroke-linejoin="round"/>`;
+      return html; };
+    const draw = {
+      box: (q, it) => extrude(plan(q.x, q.y, q.w, q.d, q.r || 0), q.z || 0, q.h, q.c || '#9aa3ad', false, q.lw || lw, it.id),
+      cyl: (q, it) => extrude(circ(q.x, q.y, q.r), q.z || 0, q.h, q.c || '#9aa3ad', true, q.lw || lw, it.id),
+      dot: (q) => { const [a, b] = Pt(q.x, q.y, q.z || 0); return `<circle cx="${f2(a)}" cy="${f2(b)}" r="${q.r || 1.6}" fill="${q.c || line}"/>`; },
+      path: (q) => `<path d="${'M' + q.pts.map((p3) => Pt(...p3).map(f2).join(' ')).join('L') + (q.close ? 'Z' : '')}" fill="${q.fill || 'none'}" stroke="${q.c || line}" stroke-width="${q.lw || lw}" stroke-linecap="round" stroke-linejoin="round"/>`,
+      ticks: (q) => { let d = ''; for (let i = 0; i <= q.n; i++) { const f = i / q.n * q.len, L = i % (q.major || 5) === 0 ? 5 : 2.5;
+        const a = q.axis === 'y' ? [q.x, q.y + f, q.z] : [q.x + f, q.y, q.z], b = q.axis === 'y' ? [q.x + L, q.y + f, q.z] : [q.x + f, q.y + L, q.z];
+        d += `M${Pt(...a).map(f2).join(' ')}L${Pt(...b).map(f2).join(' ')}`; } return `<path d="${d}" stroke="${q.c || line}" stroke-width=".8" stroke-opacity=".75"/>`; },
+    };
+    // springs are split: the back half paints before the part it wraps, the front half after
+    const coilHalf = (q, front) => { const N = Math.round((q.turns || 6) * 24); let d = '', on = false;
+      for (let i = 0; i <= N; i++) { const a = i / 24 * TAU, x = q.x + q.r * Math.cos(a), y = q.y + q.r * Math.sin(a), z = (q.z || 0) + q.h * i / N;
+        const isFront = Math.cos(a) * sa + Math.sin(a) * ca > 0, [sx, sy] = Pt(x, y, z);
+        if (isFront === front) { d += (on ? 'L' : 'M') + f2(sx) + ' ' + f2(sy); on = true; } else on = false; }
+      return `<path d="${d}" stroke="${q.c || line}" stroke-width="${q.lw || 1.4}" stroke-linecap="round" stroke-opacity="${front ? 1 : .55}"/>`; };
+    const I = { svg, P: Pt, items, depthOf,
+      box: (s2) => add('box', s2), cyl: (s2) => add('cyl', s2), dot: (s2) => add('dot', s2), path: (s2) => add('path', s2), ticks: (s2) => add('ticks', s2),
+      coil: (s2) => { add('coilB', s2); return add('coilF', s2); } };
+    P.on((t) => {
+      const list = [];
+      items.forEach((it) => { const q = typeof it.spec === 'function' ? it.spec(t) : it.spec; if (!q) return;
+        const cx = q.x + (q.w || 0) / 2, cy = q.y + (q.d || 0) / 2, pts = q.pts ? q.pts[0] : null;
+        const dz = it.kind === 'coilB' ? -40 : it.kind === 'coilF' ? 40 : 0;
+        const key = (pts ? depthOf(...pts) : depthOf(cx, cy, 0)) + (pts ? pts[2] : (q.z || 0)) * 1.6 + dz + (q.k || 0);   // a part resting higher paints after what it rests on
+        list.push([key, it, q]); });
+      list.sort((a, b) => a[0] - b[0]);
+      let defsH = '', html = '';
+      list.forEach(([, it, q]) => { let h = it.kind === 'coilB' ? coilHalf(q, false) : it.kind === 'coilF' ? coilHalf(q, true) : draw[it.kind](q, it);
+        if (h.startsWith('<linearGradient')) { const e = h.indexOf('</linearGradient>') + 17; defsH += h.slice(0, e); h = h.slice(e); }
+        html += q.o != null && q.o < 1 ? `<g opacity="${q.o.toFixed(3)}">${h}</g>` : h; });
+      defs.innerHTML = defsH; g.innerHTML = html;
+    });
+    return I;
   };
 })();

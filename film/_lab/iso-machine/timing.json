@@ -1,0 +1,9 @@
+{
+  "bpm": 100,
+  "len": 6,
+  "join": 0,
+  "peak": 3,
+  "breath": [2.5, 2.9],
+  "cues": [],
+  "accent": "#ffb238"
+}
