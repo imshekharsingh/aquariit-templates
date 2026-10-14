@@ -25,6 +25,15 @@ surface with real normals and foam, depth of field, and lights tuned per mood.
 Things to avoid: mix-blend grain over a transparent overlay (it turns into noise), drops sized for a wide shot in a close-up (they read as pearls), a dark page behind the
 water (refraction then looks murky; a bright page reads as clear water).
 
+## Design like the motion logo (owner, 14 Oct 2026: "why don't you advance yourself like this when designing my films?")
+The motion logo (design/brand/aquarii-motion-logo.svg) beat every film so far because it is ONE idea (a drop becomes the sign), five moves, every curve chosen,
+pure vector, and was designed as a finished image first. Films were assembled from parts to satisfy rules. From now on:
+1. **Poster-first.** Before any code, design 4-6 key frames as finished posters (each must work as a still you would post). The film animates between them.
+2. **One visual idea that transforms.** Shapes become other shapes (a drop becomes a sign, a crack becomes a chart, a cursor becomes a lock); no stacking of unrelated parts.
+3. **Logo-grade craft.** Drawn paths, light sweeps, clip reveals and springs; fewer elements, more precision, more empty space. Ask of every element: does the idea need it?
+4. **The motion logo is the sign-off** of every film.
+The parts library stays as tools, not as the design. Hybrid 3D is for one hero moment at most.
+
 ## Hybrid films: 3D hero shots + 2D (owner decision, 14 Oct 2026)
 The owner chose hybrid after the 3D lab. A film declares its 3D windows; everything else stays 2D (cheap). First use, the leaky-site film: the opening close-up and
 smash pull-back (0-2.35 s), the refill through the address bar and the push onto the surface (11.62-12.88 s) and the loop return (17.35-18 s), all with `P.tank3d`.
