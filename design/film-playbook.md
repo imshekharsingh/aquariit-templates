@@ -37,6 +37,16 @@ pure vector, and was designed as a finished image first. Films were assembled fr
 4. **The motion logo is the sign-off** of every film.
 The parts library stays as tools, not as the design. Hybrid 3D is for one hero moment at most.
 
+## Isometric machines: the object is the explanation (owner approved, 14 Oct 2026)
+Learned from studying isometric explainer skills (method only; P.iso is our own code, never their figures). Show the service as ONE precise machine whose working
+IS the service, so a stranger understands it without words: edge = a sorting machine (each parcel goes down the nearest chute, bad ones drop into a reject bin);
+security = a pin-tumbler lock (pins set one by one, then the plug turns); uptime = a dial gauge that holds steady as load weights stack up; social = a small press
+stamping a post on every beat; web = a typesetting bench setting a homepage. Craft bar: 40-60 parts (base plate on feet, corner screws, rails with tick rulers,
+bushings, springs, a label plate), each sitting on another part; no labels in the drawing (captions carry the words); the machine fills the frame width and may
+crop off an edge; the camera (P.camera) pushes in to the moving part at the big moment. Check: stills at the cuts, then one still zoomed 4x on the busiest joint.
+Toolkit: `P.iso` (box, cyl, coil, ticks, dot, path; four-tone shading; parts paint after what they rest on, so give each part its true z). Test scene:
+`render-film.mjs 2026-10-14-0850 --film-dir film/_lab/iso-machine --stills 1.5`.
+
 ## Hybrid films: 3D hero shots + 2D (owner decision, 14 Oct 2026)
 The owner chose hybrid after the 3D lab. A film declares its 3D windows; everything else stays 2D (cheap). First use, the leaky-site film: the opening close-up and
 smash pull-back (0-2.35 s), the refill through the address bar and the push onto the surface (11.62-12.88 s) and the loop return (17.35-18 s), all with `P.tank3d`.
@@ -126,9 +136,8 @@ All seven techniques are parts now (see the menu in scripts/film/parts.js).
 - Check the last frame against frame 0 side by side. Story code that overrides a part (e.g. bringing a word back for the loop) must run AFTER `P.update(t)`,
   because each part re-applies its own state every frame.
 
-## Watermark (owner, 14 Oct 2026)
-The Aquarius sign + AQUARII TECH STUDIO in a soft translucent pill, centred at y ≈ 535-552: the band between the captions (anchor 492) and Instagram's caption area. It is
-added by P.scene to every film and steps aside during P.signoff. Do not put key text in that band.
+## Watermark (retired 14 Oct 2026)
+No watermark during the film: Instagram already shows the account. The studio name appears once, in P.signoff ("Aquarii Tech Studio · DM us", y 540, from the CTA to the loop).
 
 ## Use the whole frame (owner feedback, 13 Oct 2026)
 The first films put a small subject in a narrow central column with a lot of empty frame (Gojigo v3 measured 2-18% coverage, 15 of 20 frames TIGHT). Rules now:
