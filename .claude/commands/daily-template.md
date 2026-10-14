@@ -80,6 +80,7 @@ Reel format B is the current experiment (design/experiments.md): the reel is ren
 fictional business: add `## Service` (the line), keep the template's brand name out of Hook and Caption (check.mjs refuses it), and end on a CTA to us ("DM us 'SITE'"). Read `design/market.md` (people's choice): pick the business, market and currency from what the audience responds to; never present invented results as Aquarii's own.
 
 ## Phase 4c — Directed film (the reel; CLAUDE.md "Directed film"; how-to design/film-playbook.md)
+0. **Design like the motion logo** (design/film-playbook.md): poster-first (4-6 finished key frames before code), one visual idea that transforms, logo-grade craft, the motion logo as sign-off.
 1. **Concept first (3 lines):** the buyer's pain in today's service line, what Aquarii delivers (the mechanism the film shows), the payoff image. Pick a format from
    design/services.md (service ad, cheat sheet, before/after, explainer, what you get, myth vs fact). Every reel still looks like its own piece: pick the ground
    (black / deep colour / light), the accent and the caption style for THIS film. The template appears only as proof ("a site we designed", "the site we protect").
