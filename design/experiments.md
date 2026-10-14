@@ -79,3 +79,9 @@ verdict, but it supports the switch to films (E6). **The bottleneck is reach, no
 Stories and send it by DM to 5-10 people in that business type (sends are the strongest signal), reply to every comment; (3) give viewers a reason to send it: end on a
 line addressed to a friend ("Send this to a café owner who closes at 10"); (4) trial reels need 1,000+ followers (third-party guides), so not yet;
 (5) re-check Dantika after 24 h and 48 h; first real E6 verdict once 3 films have 48 h of data.
+
+## 14 Oct 2026: services pivot (owner feedback)
+The owner: the reels read as if Aquarii sells laundry, food delivery and dentistry. Every reel from now on sells one Aquarii service line (design/services.md:
+web, social, security, edge; studio for intros) with the template only as proof. First one: the Suddly slot re-cut as the studio ad (pendulum "Need X? We got you."
++ diagram tour + shield). E11 is therefore running; E10 (cheat sheet) is folded into the formats list. What to watch: sends and DMs per reach vs the template-led reels.
+

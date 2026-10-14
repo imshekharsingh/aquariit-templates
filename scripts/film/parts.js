@@ -7,7 +7,7 @@
 //   transition P.scan  P.wave  P.iris  P.blinds  P.zoomThrough  P.whip  P.shapeWipe  P.pendulum (a swinging tag is the wipe)  P.interstitial (cut to a pivot line)
 //   mechanism  P.hub  P.route  P.gridFill  P.steps  P.deck  P.meter  P.compare  P.radial (diagram tour + 'Screenshot this')  P.orbit (collage)  (+ P.chat inside P.phone)
 //   focus      P.brackets  P.spotlight  P.lens
-//   payoff     P.payoff (warm flood)  P.stamp  P.burst  P.sweep  P.bloom
+//   payoff     P.payoff (warm flood)  P.stamp  P.burst  P.sweep  P.bloom  P.shield (attacks burst on a shield; also a security/edge mechanism: slot 'mechanism')
 //   type       P.sentence (builds word by word)  P.giant (one huge word)  P.typewriter  P.flipWords (word per beat, ground flips)  P.construct (letters snap together)  P.inlineIcon
 //   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' | 'blur' })   the spine: 1-3 words per card at y 492
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
@@ -600,7 +600,7 @@
     return el;
   };
   // radial diagram: a hub with N labelled spokes; the camera tours the spokes one by one (labels type in), then pulls back to show the whole thing ("Screenshot this")
-  P.radial = function (parent, { hub = 'Formula', labels = [], cx = 201, cy = 330, r = 140, at = 2, per = .9, pullback = null, title = 'Screenshot this' } = {}) {
+  P.radial = function (parent, { hub = 'Formula', labels = [], cx = 201, cy = 330, r = 140, at = 2, per = .9, pullback = null, title = 'Screenshot this', zoom = 1.55 } = {}) {
     P.use('mechanism', 'radial-tour');
     const box = E.el('div', 'position:absolute;inset:0;transform-origin:0 0', parent);
     const n = labels.length, pts = labels.map((_, i) => { const a = -Math.PI / 2 + i * TAU / n; return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), a }; });
@@ -614,7 +614,7 @@
     P.on((t, tf) => {
       labs.forEach((el, i) => { const a0 = at + i * per, nchar = Math.floor(clamp((tf - a0) / .35) * el.full.length); el.textContent = el.full.slice(0, nchar) + (tf >= a0 && nchar < el.full.length ? '▌' : ''); });
       const i = Math.min(n - 1, Math.max(0, Math.floor((t - at) / per))), p = pts[i], tour = t >= at - .3 && t < end ? 1 : 0, k = ease.io3(clamp((t - end) / .6));
-      const Z = 1.55, z = tour ? Z : lerp(Z, 1, k), lx = (p.x + cx) / 2 + (p.x - cx) * .35, ly = (p.y + cy) / 2 + (p.y - cy) * .35, fx = tour ? lx : lerp(lx, cx, k), fy = tour ? ly : lerp(ly, cy, k);   // aim between the hub and the label so both stay in frame
+      const Z = zoom, z = tour ? Z : lerp(Z, 1, k), lx = (p.x + cx) / 2 + (p.x - cx) * .35, ly = (p.y + cy) / 2 + (p.y - cy) * .35, fx = tour ? lx : lerp(lx, cx, k), fy = tour ? ly : lerp(ly, cy, k);   // aim between the hub and the label so both stay in frame
       const zz = t < at - .3 ? 1 : z, X = t < at - .3 ? cx : fx, Y = t < at - .3 ? cy : fy; void Z;
       box.style.transform = `translate(${(201 - X * zz).toFixed(1)}px,${(330 - Y * zz).toFixed(1)}px) scale(${zz.toFixed(3)})`;
       head.style.opacity = sm(end + .3, end + .6, t).toFixed(3);
@@ -648,5 +648,48 @@
       els.forEach((el, i) => { const a = i * TAU / els.length + (t - at) * speed * TAU; const x = cx + rx * sc * Math.cos(a), y = cy + ry * sc * Math.sin(a), depth = (Math.sin(a) + 1) / 2;
         css(el, { opacity: (clamp((t - at) / .2) * (1 - outK)).toFixed(3), transform: `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) scale(${lerp(.75, 1.05, depth).toFixed(3)}) rotate(${(Math.cos(a) * 8).toFixed(1)}deg)`, zIndex: String(Math.round(depth * 10)) }); }); });
     return els;
+  };
+
+  // =====================================================================================================================================
+  // SERVICES (14 Oct 2026, owner: every reel sells Aquarii's services; design/services.md)
+  // =====================================================================================================================================
+  // shield: a shield draws on, threats (red dots) fly in from the frame edges and burst on its rim; a demo counter ticks the blocked ones (security / edge reels)
+  P.shield = function (parent, { cx = 201, cy = 300, w = 300, at = 13, out = 16, threats = 16, label = 'Your site', counter = 'BLOCKED', slot = 'payoff', threat = '#ff4d5e' } = {}) {
+    P.use(slot, 'shield-deflect');
+    const h = w * 1.18, x0 = cx - w / 2, y0 = cy - h / 2;
+    const d = `M${cx} ${y0} C${cx + w * .28} ${y0 + h * .08} ${cx + w * .4} ${y0 + h * .1} ${x0 + w} ${y0 + h * .12} L${x0 + w} ${y0 + h * .45} C${x0 + w} ${y0 + h * .74} ${cx + w * .22} ${y0 + h * .9} ${cx} ${y0 + h} C${cx - w * .22} ${y0 + h * .9} ${x0} ${y0 + h * .74} ${x0} ${y0 + h * .45} L${x0} ${y0 + h * .12} C${cx - w * .4} ${y0 + h * .1} ${cx - w * .28} ${y0 + h * .08} ${cx} ${y0} Z`;
+    const box = svgEl(parent, `<path class="sf" d="${d}" fill="${hexA(P.accent, .14)}" style="opacity:0"/><path class="ss" d="${d}" pathLength="1" stroke="${P.accent}" stroke-width="4" stroke-linejoin="round" style="stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 10px ${hexA(P.accent, .8)})"/><g class="th"></g>`);
+    const sf = box.querySelector('.sf'), ss = box.querySelector('.ss'), g = box.querySelector('.th');
+    const inner = E.el('div', `position:absolute;left:${x0}px;width:${w}px;top:${cy - 38}px;text-align:center;color:${P.fg};opacity:0`, parent,
+      `<div style="display:inline-grid;place-items:center;width:56px;height:56px;border-radius:50%;background:${P.accent};color:${P.light ? '#fff' : '#0b0d0f'}">${P.icon('check', 34)}</div><div style="margin-top:10px;font:800 26px/1 Archivo,sans-serif;letter-spacing:-.02em">${label}</div>`);
+    const cnt = counter ? E.el('div', `position:absolute;left:${x0}px;width:${w}px;top:${y0 + h * .2}px;text-align:center;font:600 11px/1 ${MONO};letter-spacing:.22em;color:${hexA(P.light ? '#000000' : '#ffffff', .75)};opacity:0`, parent, '') : null;
+    // threats: deterministic starts on the frame edge, aimed at the centre; each stops on the shield's rim (ellipse approximation) and bursts there
+    let sd = 911; const rnd = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
+    const rx = w * .5, ry = h * .47, NS = 'http://www.w3.org/2000/svg';
+    const list = Array.from({ length: threats }, (_, i) => {
+      const a = rnd() * TAU, R = 520, sx = cx + R * Math.cos(a), sy = cy + R * Math.sin(a) * 1.2;
+      const ux = Math.cos(a), uy = Math.sin(a) * 1.2, ul = Math.hypot(ux, uy), k = 1 / Math.sqrt((ux / ul / rx) ** 2 + (uy / ul / ry) ** 2);
+      const ex = cx + ux / ul * k, ey = cy + uy / ul * k, t0 = at + .45 + i * ((out - at - 1.4) / threats) + rnd() * .1;
+      const trail = document.createElementNS(NS, 'line'); trail.setAttribute('stroke', threat); trail.setAttribute('stroke-width', '2.5'); trail.setAttribute('stroke-linecap', 'round'); g.appendChild(trail);
+      const dot = document.createElementNS(NS, 'circle'); dot.setAttribute('r', '5'); dot.setAttribute('fill', threat); g.appendChild(dot);
+      const ring = document.createElementNS(NS, 'circle'); ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', P.accent); ring.setAttribute('stroke-width', '2.5'); g.appendChild(ring);
+      return { sx, sy, ex, ey, t0, dur: .42, trail, dot, ring };
+    });
+    P.on((t, tf) => {
+      const live = clamp((t - at) / .1) * (1 - sm(out, out + .3, t));
+      box.style.opacity = live.toFixed(3);
+      ss.style.strokeDashoffset = (1 - ease.io3(clamp((t - at) / .6))).toFixed(4); sf.style.opacity = sm(at + .3, at + .7, t).toFixed(3);
+      const k = ease.spring(clamp((t - at - .35) / .5)); css(inner, { opacity: (clamp((t - at - .35) / .1) * (1 - sm(out, out + .3, t))).toFixed(3), transform: `scale(${lerp(.6, 1, k).toFixed(3)})` });
+      let hits = 0;
+      list.forEach((q) => { const u = (tf - q.t0) / q.dur, v = (tf - q.t0 - q.dur) / .45;
+        if (u < 0 || v > 1) { q.dot.setAttribute('opacity', '0'); q.trail.setAttribute('opacity', '0'); q.ring.setAttribute('opacity', '0'); if (v > 1) hits++; return; }
+        if (u < 1) { const e = ease.in2(u), x = lerp(q.sx, q.ex, e), y = lerp(q.sy, q.ey, e), e2 = Math.max(0, e - .12), tx = lerp(q.sx, q.ex, e2), ty = lerp(q.sy, q.ey, e2);
+          q.dot.setAttribute('cx', x.toFixed(1)); q.dot.setAttribute('cy', y.toFixed(1)); q.dot.setAttribute('opacity', '1');
+          q.trail.setAttribute('x1', tx.toFixed(1)); q.trail.setAttribute('y1', ty.toFixed(1)); q.trail.setAttribute('x2', x.toFixed(1)); q.trail.setAttribute('y2', y.toFixed(1)); q.trail.setAttribute('opacity', '.55'); q.ring.setAttribute('opacity', '0'); return; }
+        hits++; q.dot.setAttribute('opacity', '0'); q.trail.setAttribute('opacity', '0');
+        q.ring.setAttribute('cx', q.ex.toFixed(1)); q.ring.setAttribute('cy', q.ey.toFixed(1)); q.ring.setAttribute('r', (5 + 22 * ease.out3(v)).toFixed(1)); q.ring.setAttribute('opacity', (1 - v).toFixed(3)); });
+      if (cnt) { cnt.textContent = `${counter} ${String(hits).padStart(2, '0')}`; cnt.style.opacity = (sm(at + .4, at + .7, t) * (1 - sm(out, out + .3, t))).toFixed(3); }
+    });
+    return { box, inner };
   };
 })();

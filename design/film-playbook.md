@@ -2,6 +2,12 @@
 
 Rules live in CLAUDE.md ("Directed film", "Music & Sound"). This file is the how-to. Worked example: `film/2026-10-13-0851/` (Tintwell, "The Hue Dial").
 
+## Sell Aquarii, not the template's business (owner, 14 Oct 2026; read design/services.md first)
+The first films sold laundry, food delivery and dentistry. The owner: "I don't do laundry... by the end we have to sell our own services." The story grammar is now:
+**buyer's pain in one service line → what Aquarii delivers (the mechanism on screen) → the result → send line → CTA to us.** The template appears only as proof
+("a site we designed", "the site we protect"). Useful parts per line: web → phone + scan + compare (old vs new); social → gridFill (a month of posts), steps, chat;
+security → P.shield (attacks bounce off), hub (SSL, backups, updates, firewall around the site), meter; edge → route (a request travels via the nearest edge), radial.
+
 ## What a film is
 A virtual camera over the LIVE template page (CSS 3D transform on one wrapper), so every shot is vector-sharp at any zoom. Every frame is a pure function of the film time: no real-time capture, no jitter.
 Engine: `scripts/film/engine.js` (stage, camera, easing, per-word type reveals, tweens). Story (per template): `film/ID/story.js`. Timing table (shared by picture and sound): `film/ID/timing.json`.

@@ -141,6 +141,7 @@ for (const f of folders) {
 }
 
 // Instagram social kit: social/YYYY-MM-DD.md for every template folder
+const logById = {}; try { for (const e of JSON.parse(readFileSync(join(root, 'design-log.json'), 'utf8'))) logById[e.id || e.date] = e; } catch { /* reported elsewhere */ }
 for (const f of folders) {
   const p = join(root, 'social', `${f}.md`);
   const id = `social/${f}.md`;
@@ -164,6 +165,14 @@ for (const f of folders) {
   for (const k of ['Length', 'Shot plan', 'Payoff', 'Cover']) if (!new RegExp(`^[-*]?\\s*\\**${k}:`, 'mi').test(reel)) err(`${id}: Reel section missing "${k}:" line`);
   const music = sec('Music');
   for (const k of ['Mood', 'Genre', 'BPM', 'Search', 'Avoid']) if (!new RegExp(`^[-*]?\\s*\\**${k}:`, 'mi').test(music)) err(`${id}: Music section missing "${k}:" line`);
+  // reels sell Aquarii's own services, never the template's fictional business (owner, 14 Oct 2026; design/services.md)
+  if (f >= '2026-10-14') {
+    const svc = sec('Service').toLowerCase().match(/\b(web|social|security|edge|studio)\b/);
+    if (!svc) err(`${id}: needs "## Service" with one of web | social | security | edge | studio (design/services.md): every reel sells an Aquarii service`);
+    const brand = (logById[f] || {}).slug;
+    if (brand && brand.length > 2 && new RegExp(`\\b${brand.replace(/[^a-z0-9]/gi, '')}\\b`, 'i').test(sec('Hook') + '\n' + sec('Caption')))
+      err(`${id}: Hook/Caption name the template's brand "${brand}"; the reel sells Aquarii's service, the template is only proof (design/services.md)`);
+  }
 }
 
 // 8: site infrastructure (also the auth Worker that fronts the assets)
@@ -210,6 +219,11 @@ if (existsSync(mp)) {
     if (m.legacy) return;                                                  // hand-written manifests of films made before the kit are history, not judged
     if (!m.dna || ['opening', 'bigMoment', 'ground', 'music'].some((k) => !m.dna[k])) err(`film/${m.id}: story.js must declare S.dna = { opening, bigMoment, ground, music } (written to manifest.json by the renderer)`);
     const prev = ms[i - 1], last = ms.slice(Math.max(0, i - 7), i);
+    if (m.id >= '2026-10-14') {                                            // every film sells one Aquarii service line, never the same as the previous film
+      const sv = m.dna && m.dna.service;
+      if (!['web', 'social', 'security', 'edge', 'studio'].includes(sv)) err(`film/${m.id}: S.dna.service must be web | social | security | edge | studio (design/services.md)`);
+      else if (prev && prev.dna && prev.dna.service === sv) err(`film/${m.id}: same service line as the previous film (${prev.id}: ${sv}); rotate (design/services.md)`);
+    }
     if (prev) KEY.forEach((k) => { const a = (m.slots || {})[k] || [], b = (prev.slots || {})[k] || []; const same = a.filter((x) => b.includes(x)); if (same.length) err(`film/${m.id}: repeats the previous film (${prev.id}) in "${k}": ${same.join(', ')}; pick another option (see scripts/film/parts.js)`); });
     for (const o of last) {
       const eq = ALL.filter((k) => slot(m, k) && slot(m, k) === slot(o, k));
