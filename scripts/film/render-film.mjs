@@ -122,7 +122,7 @@ for (const v of variants) {
   // blur (average SUB sub-frames), bloom on highlights, gentle grade, scale to exactly 1080x1920
   const vf = `[0:v]tmix=frames=${SUB},select='not(mod(n+1\\,${SUB}))',setpts=N/(30*TB),scale=1080:1920:flags=lanczos,format=yuv420p,split[a][b];[b]curves=all='0/0 0.62/0 1/1',gblur=sigma=26[bl];[a][bl]blend=all_mode=screen:all_opacity=0.08,eq=contrast=1.04:saturation=1.05[v]`;
   const haveAudio = existsSync(audio) && !only && !PREVIEW && !args.includes('--no-audio');
-  run('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS * SUB), '-i', join(seq, '%06d.jpg'), ...(haveAudio ? ['-i', audio] : []), '-filter_complex', vf, '-map', '[v]', ...(haveAudio ? ['-map', '1:a', ...(finalMix ? [] : ['-af', 'alimiter=limit=0.66:attack=3:release=40:level=disabled']), '-c:a', 'aac', '-ar', '48000', '-b:a', '192k', '-shortest'] : []), '-r', String(FPS), '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-preset', 'medium', '-crf', String(CRF), '-maxrate', '18M', '-bufsize', '36M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
+  run('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS * SUB), '-i', join(seq, '%06d.jpg'), ...(haveAudio ? ['-i', audio] : []), '-filter_complex', vf, '-map', '[v]', ...(haveAudio ? ['-map', '1:a', ...(finalMix ? [] : ['-af', 'alimiter=limit=0.66:attack=3:release=40:level=disabled']), '-c:a', 'aac', '-ar', '48000', '-b:a', '192k', '-shortest'] : []), '-r', String(FPS), '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-preset', 'medium', '-crf', String(CRF), '-maxrate', '10M', '-bufsize', '20M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
   console.log('wrote', mp4);
   if (PREVIEW) { run('ffmpeg', ['-y', '-loglevel', 'error', '-i', mp4, '-vf', 'fps=2,scale=200:356,tile=9x4:padding=4:color=black', '-frames:v', '1', join(OUT, `preview-sheet-${v}.png`)]); console.log('contact sheet', join(OUT, `preview-sheet-${v}.png`)); }
 }
@@ -132,6 +132,13 @@ if (DELIVER && !only) {
   mkdirSync(DELIVER, { recursive: true });
   const v = variants[0], { copyFileSync } = await import('node:fs');
   copyFileSync(join(OUT, `${id}-${v}.mp4`), join(DELIVER, `${id}.mp4`));
+  // hard cap: the site cannot serve a file over 25 MiB (the deploy fails). Re-encode at a fixed bitrate if a busy film (grain, particles) still came out too big.
+  const { statSync } = await import('node:fs'), dm = join(DELIVER, `${id}.mp4`);
+  if (statSync(dm).size > 24 * 1024 * 1024) {
+    const tmp = join(OUT, `${id}-capped.mp4`);
+    run('ffmpeg', ['-y', '-loglevel', 'error', '-i', dm, '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'slow', '-b:v', '8M', '-maxrate', '9M', '-bufsize', '18M', '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-movflags', '+faststart', tmp]);
+    copyFileSync(tmp, dm); console.log('capped the delivered reel to', (statSync(dm).size / 1048576).toFixed(1), 'MiB (site limit 25 MiB)');
+  }
   if (await makeCover()) copyFileSync(join(OUT, `${id}-cover.jpg`), join(DELIVER, `${id}-cover.jpg`));
   else if (existsSync(join(root, 'templates', 'covers', `${id}.jpg`))) copyFileSync(join(root, 'templates', 'covers', `${id}.jpg`), join(DELIVER, `${id}-cover.jpg`));
   else { console.error('no cover image'); process.exit(1); }
