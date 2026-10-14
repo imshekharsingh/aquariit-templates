@@ -14,7 +14,7 @@ const valueArgs = new Set(['--variant', '--out', '--sub', '--shutter', '--worker
 const id = args.find((a, i) => !a.startsWith('--') && !valueArgs.has(args[i - 1]));
 const FD = (() => { const i = args.indexOf('--film-dir'); return i > -1 ? args[i + 1] : ''; })(), dir = FD || join(root, 'film', id), T = JSON.parse(readFileSync(join(dir, 'timing.json'), 'utf8'));
 if (!id || !existsSync(join(FD || join(root, 'film', id), 'story.js'))) { console.error('usage: render-film.mjs ID  (needs film/ID/story.js)'); process.exit(2); }
-const OUT = resolve(opt('--out', join(root, 'out', 'film', id))), VAR = opt('--variant', 'both'), PREVIEW = args.includes('--preview'), SUB = PREVIEW ? 1 : +opt('--sub', 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = PREVIEW ? 28 : +opt('--crf', 17);
+const OUT = resolve(opt('--out', join(root, 'out', 'film', id))), VAR = opt('--variant', 'both'), PREVIEW = args.includes('--preview'), SUB = PREVIEW ? 1 : +opt('--sub', T.sub || 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = PREVIEW ? 28 : +opt('--crf', 17);
 const FPS = 30, LEN = T.len, NF = LEN * FPS, JOIN_F = Math.round(T.join * FPS), SCALE = 1080 / 402;
 const AUDIO = opt('--audio', ''), only = opt('--frames', ''), stills = opt('--stills', ''), COVER = args.includes('--cover'), DELIVER = opt('--deliver', '');
 
@@ -23,6 +23,9 @@ let pw; for (const p of ['playwright', '/opt/node-tools/node_modules/playwright'
 if (!pw) { console.error('Playwright not found.'); process.exit(2); }
 const base = process.env.PLAYWRIGHT_BROWSERS_PATH || '/opt/pw-browsers';
 const exe = existsSync(base) ? readdirSync(base).filter((d) => d.startsWith('chromium-')).map((d) => join(base, d, 'chrome-linux', 'chrome')).find(existsSync) : undefined;
+// 3D: a story that uses THREE gets three.js (MIT, pinned in the workflow) injected before the parts; WebGL runs on SwiftShader (deterministic, no GPU needed)
+const GL_ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-compositing'];
+let threeSrc = ''; { let tp = ''; try { tp = require.resolve('three', { paths: [root, '/opt/node-tools'] });} catch { /* not installed */ } if (tp) threeSrc = 'var module={exports:{}},exports=module.exports;' + readFileSync(tp, 'utf8') + ';window.THREE=module.exports;'; }
 const tplUrl = pathToFileURL(join(root, 'templates', id, 'index.html')).href;
 const engineSrc = readFileSync(join(root, 'scripts', 'film', 'engine.js'), 'utf8'), partsSrc = readFileSync(join(root, 'scripts', 'film', 'parts.js'), 'utf8'), storySrc = readFileSync(join(dir, 'story.js'), 'utf8');
 mkdirSync(OUT, { recursive: true });
@@ -34,6 +37,7 @@ async function openPage(browser, variant) {
   await pg.evaluate(async () => { await document.fonts.ready; await Promise.all(['900 20px Gabarito', '500 12px "Martian Mono"'].map((f) => document.fonts.load(f))); });
   let kit = null; try { kit = JSON.parse(readFileSync(join(root, 'templates', 'social-kits.json'), 'utf8')).find((k) => k.id === id) || null; } catch { /* no kit */ }
   await pg.evaluate(([t, k]) => { window.FILM_T = t; window.FILM_KIT = k; }, [T, kit]);
+  if (/\bTHREE\b|P\.three\(/.test(storySrc)) { if (!threeSrc) throw new Error('this film uses 3D: npm install --no-save three@0.180.0'); await pg.addScriptTag({ content: threeSrc }); }
   await pg.addScriptTag({ content: engineSrc }); await pg.addScriptTag({ content: partsSrc }); await pg.addScriptTag({ content: storySrc });
   await pg.evaluate(async (v) => { if (!FilmEngine.story.selfStage) FilmEngine.stage(); await FilmEngine.story.setup(v); }, variant);
   if (errs.length) throw new Error('page error: ' + errs.join(' | '));
@@ -52,15 +56,20 @@ async function frame(pg, dest, f) {
   for (let k = 0; k < SUB; k++) {
     const t = (f + SHUT * ((k + .5) / SUB - .5)) / FPS;
     await pg.evaluate(([tt, ff]) => FilmEngine.render(tt, ff), [t, f]);
-    await settle(pg);
-    await pg.screenshot({ path: join(dest, String(f * SUB + k).padStart(6, '0') + '.jpg'), type: 'jpeg', quality: 93 });
+    if (pg.__3d === undefined) pg.__3d = await pg.evaluate(() => !!window.__film3d);
+    if (!pg.__3d) await settle(pg);   // a 3D frame is read straight from its canvas (no repaint to wait for); the overlay screenshot composites on its own
+    const nm = join(dest, String(f * SUB + k).padStart(6, '0'));
+    if (pg.__3d) {   // 3D film: the WebGL frame straight from its canvas + a transparent screenshot of the layers above it (3x faster than one screenshot)
+      const url = await pg.evaluate(() => window.__film3d.grab()); writeFileSync(nm + '.jpg', Buffer.from(url.split(',')[1], 'base64'));
+      await pg.evaluate(() => window.__film3d.hide(true)); await pg.screenshot({ path: nm + '.png', omitBackground: true }); await pg.evaluate(() => window.__film3d.hide(false));
+    } else await pg.screenshot({ path: nm + '.jpg', type: 'jpeg', quality: 93 });
   }
 }
 
 const browsers = [];
 const variants = VAR === 'both' ? ['A', 'B'] : [VAR];
 async function makeCover() { // the cover poster (1080x1920) + a preview of how it crops on the profile grid; returns false when the story has no poster
-  const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}) }); const pg = await openPage(b, 'A');
+  const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}), args: GL_ARGS }); const pg = await openPage(b, 'A');
   const has = await pg.evaluate(() => { if (typeof FilmEngine.story.cover !== 'function') return false; FilmEngine.story.cover(); FilmEngine.frame = 7; return true; });
   if (has) await pg.screenshot({ path: join(OUT, 'cover-raw.png') });
   await b.close(); if (!has) return false;
@@ -72,7 +81,7 @@ async function makeCover() { // the cover poster (1080x1920) + a preview of how 
 }
 if (COVER) { await makeCover(); process.exit(0); }
 if (args.includes('--motion-check')) { // easing self-check (owner, 14 Oct 2026): sample every scripted element 4x per frame and judge the motion itself
-  const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}) }); const pg = await openPage(b, variants[0]);
+  const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}), args: GL_ARGS }); const pg = await openPage(b, variants[0]);
   const HZ = 120, data = await pg.evaluate(async ([LEN, HZ]) => {
     const els = [...E_ALL()]; function E_ALL() { return document.querySelectorAll('#stage *'); }
     const track = els.filter((e) => /transform|opacity|translate|rotate/.test(e.getAttribute('style') || '') && e.tagName !== 'CANVAS');
@@ -111,7 +120,7 @@ if (args.includes('--motion-check')) { // easing self-check (owner, 14 Oct 2026)
   process.exit(uniq.length || lin ? 1 : 0);
 }
 if (stills) { // debug: single stills at given film times, variant A (or --variant)
-  const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}) }); const pg = await openPage(b, variants[0]);
+  const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}), args: GL_ARGS }); const pg = await openPage(b, variants[0]);
   for (const s of stills.split(',')) { const t = +s; await pg.evaluate(([tt]) => FilmEngine.render(tt, Math.round(tt * 30)), [t]); await settle(pg); await pg.screenshot({ path: join(OUT, `still-${variants[0]}-${t.toFixed(2)}.png`) }); console.log('still', t); }
   await b.close(); process.exit(0);
 }
@@ -126,7 +135,7 @@ for (const n of new Set(jobs.map((j) => j.name))) { rmSync(join(OUT, 'f-' + n), 
 const t0 = Date.now(); let done = 0;
 const lanes = Array.from({ length: WORKERS }, () => []); jobs.forEach((j, i) => lanes[i % WORKERS].push(j));
 await Promise.all(lanes.map(async (lane) => {
-  const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}) }); browsers.push(b);
+  const b = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}), args: GL_ARGS }); browsers.push(b);
   const pages = {};
   for (const j of lane) {
     pages[j.v] = pages[j.v] || (await openPage(b, j.v));
@@ -141,7 +150,7 @@ console.log(`rendered ${jobs.length} frames x${SUB} in ${((Date.now() - t0) / 10
 const run = (cmd, a, o = {}) => { const r = spawnSync(cmd, a, { encoding: 'utf8', ...o }); if (r.status !== 0) { console.error(cmd, a.join(' ').slice(0, 300), '\n', (r.stderr || '').slice(-1500)); process.exit(1); } return r; };
 // audio: a finished mix made by scripts/audio/produce.mjs (licensed music + effects, mastered) when one exists for this film, otherwise the effects-only track
 if (!T.cues && !only && !PREVIEW) { // stories that compute their own shots hand over their sound cues
-  const b0 = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}) }); const p0 = await openPage(b0, variants[0]);
+  const b0 = await pw.chromium.launch({ ...(exe ? { executablePath: exe } : {}), args: GL_ARGS }); const p0 = await openPage(b0, variants[0]);
   T.cues = await p0.evaluate(() => (FilmEngine.story.cues ? FilmEngine.story.cues() : [])); await b0.close(); console.log('cues from the story:', T.cues.length);
 }
 let audio = join(OUT, 'score.wav');
@@ -156,12 +165,14 @@ for (const v of variants) {
   for (let f = fa; f <= fb; f++) for (let k = 0; k < SUB; k++) {
     const nm = String(f * SUB + k).padStart(6, '0') + '.jpg', src = join(OUT, 'f-' + (f < JOIN_F ? v : 'S'), nm);
     if (existsSync(src)) symlinkSync(src, join(seq, String((f - fa) * SUB + k).padStart(6, '0') + '.jpg'));
+    const srcP = src.replace(/\.jpg$/, '.png'); if (existsSync(srcP)) symlinkSync(srcP, join(seq, String((f - fa) * SUB + k).padStart(6, '0') + '.png'));
   }
+  const layered = existsSync(join(seq, '000000.png'));   // 3D film: lay the overlay sequence over the WebGL sequence first
   const mp4 = join(OUT, `${id}-${v}.mp4`);
   // blur (average SUB sub-frames), bloom on highlights, gentle grade, scale to exactly 1080x1920
-  const vf = `[0:v]tmix=frames=${SUB},select='not(mod(n+1\\,${SUB}))',setpts=N/(30*TB),scale=1080:1920:flags=lanczos,format=yuv420p,split[a][b];[b]curves=all='0/0 0.62/0 1/1',gblur=sigma=26[bl];[a][bl]blend=all_mode=screen:all_opacity=0.08,eq=contrast=1.04:saturation=1.05[v]`;
+  const vf = `${layered ? '[0:v][1:v]overlay=format=auto[c];[c]' : '[0:v]'}tmix=frames=${SUB},select='not(mod(n+1\\,${SUB}))',setpts=N/(30*TB),scale=1080:1920:flags=lanczos,format=yuv420p,split[a][b];[b]curves=all='0/0 0.62/0 1/1',gblur=sigma=26[bl];[a][bl]blend=all_mode=screen:all_opacity=0.08,eq=contrast=1.04:saturation=1.05[v]`;
   const haveAudio = existsSync(audio) && !only && !PREVIEW && !args.includes('--no-audio');
-  run('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS * SUB), '-i', join(seq, '%06d.jpg'), ...(haveAudio ? ['-i', audio] : []), '-filter_complex', vf, '-map', '[v]', ...(haveAudio ? ['-map', '1:a', ...(finalMix ? [] : ['-af', 'alimiter=limit=0.66:attack=3:release=40:level=disabled']), '-c:a', 'aac', '-ar', '48000', '-b:a', '192k', '-shortest'] : []), '-r', String(FPS), '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-preset', 'medium', '-crf', String(CRF), '-maxrate', '10M', '-bufsize', '20M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
+  run('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS * SUB), '-i', join(seq, '%06d.jpg'), ...(layered ? ['-framerate', String(FPS * SUB), '-i', join(seq, '%06d.png')] : []), ...(haveAudio ? ['-i', audio] : []), '-filter_complex', vf, '-map', '[v]', ...(haveAudio ? ['-map', (layered ? '2' : '1') + ':a', ...(finalMix ? [] : ['-af', 'alimiter=limit=0.66:attack=3:release=40:level=disabled']), '-c:a', 'aac', '-ar', '48000', '-b:a', '192k', '-shortest'] : []), '-r', String(FPS), '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2', '-preset', 'medium', '-crf', String(CRF), '-maxrate', '10M', '-bufsize', '20M', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4]);
   console.log('wrote', mp4);
   if (PREVIEW) { run('ffmpeg', ['-y', '-loglevel', 'error', '-i', mp4, '-vf', 'fps=2,scale=200:356,tile=9x4:padding=4:color=black', '-frames:v', '1', join(OUT, `preview-sheet-${v}.png`)]); console.log('contact sheet', join(OUT, `preview-sheet-${v}.png`)); }
 }
