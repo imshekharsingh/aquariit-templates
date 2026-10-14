@@ -61,4 +61,5 @@ jobs:
           gh issue create --repo "$REPO" --title "Voice test ready: $ID" --body-file body.md --assignee "${{ github.repository_owner }}"
       - name: Report a failure
         if: failure()
-        run: gh issue create --repo "$REPO" --title "Voice test failed: $ID" --assignee "${{ github.repository_owner }}" --body "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: |
+          gh issue create --repo "$REPO" --title "Voice test failed: $ID" --assignee "${{ github.repository_owner }}" --body "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
