@@ -13,7 +13,7 @@ could become. Take techniques, never copy a piece, a brand or a layout. When a d
   autoae.online/blog/motion-graphics-trends-2026.
 - [ ] **Imperfect, handmade texture** (grain, tape strips, cut-paper collage, stamps) as a counter to over-polished AI work. Part idea: `P.collage` (paper cards with torn
   edges and tape that pin onto the frame) and a `ground: 'paper'` option. Source: graphicdesignjunction.com (2026 trends).
-- [ ] **Blur reveal** (text sharpens out of a heavy blur while sliding a few px) and **SVG filter text effects** (turbulence wobble, displacement). Part idea: caption style
+- [x] (caption half built 14 Oct 2026 as captions style `blur`: words sharpen out of a blur on a solid pill; SVG-filter wobble still open) **Blur reveal** (text sharpens out of a heavy blur while sliding a few px) and **SVG filter text effects** (turbulence wobble, displacement). Part idea: caption style
   `blur`, and `P.wobble(el)` with feTurbulence. Source: tympanus.net/codrops (Playground: blurry text reveal, scroll-based SVG filter animations).
 - [ ] **Kinetic-type page transition** (a word fills the frame and becomes the wipe). Part idea: `P.typeWipe(word)`. Source: tympanus.net/codrops (Playground).
 - [ ] **3D text and image parallax on scroll** (layers at different depths). Part idea: `P.depthStack` (3-5 flat layers with parallax, no 3D raster tilt on text).

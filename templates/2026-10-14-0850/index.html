@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Suddly — Laundry Pickup Subscription</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#00a9ec">
+<meta name="description" content="Suddly: book a laundry pickup in one tap, get it back folded in 48 hours. A clay-soft, wobbly-bubble landing page template for local service businesses.">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+  --sky:#00a9ec;--sky-deep:#0087c4;--foam:#e8f8ff;--pink:#ff4f9a;--butter:#ffd84a;--ink:#0b2a3a;--white:#fff;
+  --gut:30px;
+  --disp:"Bagel Fat One","Figtree",system-ui,sans-serif;--body:"Figtree",system-ui,sans-serif;
+  --spring:linear(0,.18 6%,.62 14%,.93 22%,1.05 30%,1.06 36%,1.02 46%,.995 60%,1 100%);
+  --clay:inset 0 -6px 0 rgba(11,42,58,.10),inset 0 4px 0 rgba(255,255,255,.75),0 14px 26px -10px rgba(11,42,58,.35);
+}
+html.reel{--safe-top:0px;--safe-bottom:0px}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{overflow-x:clip}
+body{overflow-x:clip;background:var(--foam);color:var(--ink);font:500 17px/1.5 var(--body);padding-bottom:calc(76px + var(--safe-bottom))}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:6px}
+.wrap{padding:0 var(--gut)}
+h1,h2,h3{font-family:var(--disp);font-weight:400;line-height:.98;letter-spacing:-.01em;text-wrap:balance}
+.eyebrow{font:800 12px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--pink)}
+
+/* dock (bottom bar header) */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--ink);color:#fff;padding:12px var(--gut) calc(12px + var(--safe-bottom));display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dock .back{font:700 13px/1 var(--body);text-decoration:none;opacity:.88;padding:10px 0}
+.dock .mark{font:400 22px/1 var(--disp);color:var(--butter)}
+.dock .go{font:800 13px/1 var(--body);text-decoration:none;background:var(--pink);color:#fff;border-radius:99px;padding:12px 16px}
+.reel .dock .back{display:none}.reel .dock{justify-content:center;gap:18px}
+
+/* hero (strip) */
+.hero{background:var(--sky);color:#fff;position:relative;overflow:hidden;padding:calc(30px + var(--safe-top)) 0 0;border-radius:0 0 44px 44px}
+.hero .brand{display:flex;align-items:center;gap:9px;font:400 26px/1 var(--disp);color:var(--butter)}
+.hero h1{font-size:clamp(46px,13.6vw,64px);margin-top:20px;text-shadow:0 4px 0 rgba(0,70,110,.22)}
+.hero h1 em{font-style:normal;color:var(--butter);display:inline-block}
+.hero .lede{margin-top:16px;max-width:30ch;font-size:17px;font-weight:600;color:#effaff}
+.cta-row{margin-top:20px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--pink);color:#fff;text-decoration:none;font:800 17px/1 var(--body);padding:18px 24px;border-radius:99px;box-shadow:var(--clay)}
+.btn.alt{background:var(--butter);color:var(--ink)}
+.note{font:700 13px/1.2 var(--body);letter-spacing:.04em;color:#dff5ff}
+.strip{margin-top:26px;height:132px;position:relative;overflow:hidden}
+.track{display:flex;gap:22px;width:max-content;padding-left:22px;animation:slide 30s linear infinite}
+.track svg{width:104px;height:104px;flex:none;margin-top:14px;filter:drop-shadow(0 10px 8px rgba(0,60,100,.3))}
+.track svg:nth-child(even){transform:translateY(8px) rotate(4deg)}
+.track svg:nth-child(3n){transform:translateY(-4px) rotate(-5deg)}
+@keyframes slide{to{transform:translateX(-50%)}}
+.bub{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 32% 28%,#fff 0 9%,rgba(255,255,255,.55) 10% 22%,rgba(255,255,255,.12) 52%,rgba(255,255,255,.34) 74%,rgba(255,255,255,.7) 78%,rgba(255,255,255,0) 80%);opacity:.95}
+.b1{width:120px;height:120px;right:-22px;top:62px;filter:url(#wob1);animation:float 9s ease-in-out infinite}
+.b2{width:64px;height:64px;right:20px;top:336px;filter:url(#wob2);animation:float 7s ease-in-out -2s infinite}
+.b3{width:40px;height:40px;right:92px;top:420px;filter:url(#wob1);animation:float 8s ease-in-out -4s infinite}
+.b4{width:84px;height:84px;left:-30px;top:380px;filter:url(#wob2);animation:float 10s ease-in-out -1s infinite}
+@keyframes float{50%{transform:translateY(-16px) scale(1.04)}}
+
+/* band */
+.band{background:var(--ink);color:var(--butter);overflow:hidden;margin:34px 0 0;transform:rotate(-1.6deg) scale(1.04)}
+.band .tk{display:flex;gap:30px;width:max-content;padding:14px 0;font:400 28px/1 var(--disp);white-space:nowrap;animation:slide 24s linear infinite}
+.band span::after{content:"✦";margin-left:30px;color:var(--pink)}
+
+/* sections */
+section{padding:56px 0 0}
+.sec-h{font-size:clamp(34px,10.4vw,46px);margin:12px 0 0}
+.sub{margin-top:12px;max-width:32ch;color:#31576b}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}
+.stat{background:var(--white);border-radius:24px;padding:16px 12px 14px;box-shadow:var(--clay);min-width:0}
+.stat b{display:block;font:400 34px/1 var(--disp);color:var(--sky-deep);letter-spacing:-.01em}
+.stat:nth-child(2) b{color:var(--pink)}.stat:nth-child(3) b{color:#d99a00}
+.stat span{display:block;margin-top:8px;font:700 12px/1.25 var(--body);color:#31576b}
+
+.steps{margin-top:30px;position:relative;display:grid;gap:18px;padding-left:64px}
+.steps::before{content:"";position:absolute;left:23px;top:20px;bottom:20px;width:6px;border-radius:6px;background:linear-gradient(var(--sky),var(--pink));transform-origin:50% 0}
+.step{position:relative;background:var(--white);border-radius:26px;padding:18px 20px 20px;box-shadow:var(--clay)}
+.step .n{position:absolute;left:-64px;top:6px;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--butter);color:var(--ink);font:400 26px/1 var(--disp);box-shadow:var(--clay)}
+.step h3{font-size:25px}.step p{margin-top:8px;font-size:16px;color:#31576b}
+
+.bags{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+.bag{background:var(--white);border-radius:28px;padding:18px 16px 18px;box-shadow:var(--clay);position:relative;min-width:0}
+.bag svg{width:64px;height:64px;display:block}
+.bag h3{font-size:24px;margin-top:10px}
+.bag .price{font:800 15px/1.2 var(--body);margin-top:8px;color:var(--sky-deep)}
+.bag p{font-size:14px;margin-top:6px;color:#31576b;line-height:1.35}
+.bag.hot{background:var(--sky);color:#fff}.bag.hot .price{color:var(--butter)}.bag.hot p{color:#e6f8ff}
+.tag{position:absolute;left:14px;top:-11px;background:var(--pink);color:#fff;font:800 11px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;padding:7px 10px;border-radius:99px}
+
+.quote{margin-top:56px;background:var(--butter);border-radius:34px;padding:26px 24px;box-shadow:var(--clay)}
+.quote p{font:400 27px/1.1 var(--disp)}
+.quote cite{display:block;margin-top:14px;font:800 13px/1.3 var(--body);font-style:normal;letter-spacing:.06em}
+
+.final{padding-bottom:56px}
+.final .box{background:var(--ink);color:#fff;border-radius:38px;padding:32px 26px 30px;position:relative;overflow:hidden}
+.final h2{font-size:clamp(38px,11.4vw,50px);color:var(--butter)}
+.final p{margin-top:14px;color:#cfe6f2}
+.final .btn{margin-top:22px}
+footer{padding:6px var(--gut) 20px;text-align:left;font:600 12px/1.4 var(--body);color:#5a7f93}
+
+/* motion: reveals on load/scroll, never on hover */
+.js .rv{opacity:0;transform:translateY(24px) scale(.97)}
+.js .rv.in{opacity:1;transform:none;transition:opacity .5s ease,transform .8s var(--spring)}
+@supports (animation-timeline:view()){
+  .steps::before{animation:grow linear both;animation-timeline:view();animation-range:entry 10% cover 60%}
+  @keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+}
+@media (min-width:760px){
+  body{font-size:19px}
+  .hero,.band,section>.wrap,footer{max-width:none}
+  .wrap{max-width:760px;margin:0 auto}
+  .hero .wrap{padding-top:10px}
+  .dock{justify-content:center;gap:34px}
+  .bags{grid-template-columns:repeat(4,1fr)}
+}
+@media (prefers-reduced-motion:reduce){
+  .track,.band .tk,.bub{animation:none}
+  .js .rv{opacity:1;transform:none}
+  .steps::before{animation:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob1" x="-25%" y="-25%" width="150%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".02 .026" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="18" xChannelSelector="R" yChannelSelector="G"/></filter>
+    <filter id="wob2" x="-25%" y="-25%" width="150%" height="150%"><feTurbulence type="fractalNoise" baseFrequency=".034 .03" numOctaves="2" seed="21" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="12" xChannelSelector="G" yChannelSelector="R"/></filter>
+    <linearGradient id="gPink" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff86bb"/><stop offset="1" stop-color="#ff4f9a"/></linearGradient>
+    <linearGradient id="gButter" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a0"/><stop offset="1" stop-color="#ffd84a"/></linearGradient>
+    <linearGradient id="gFoam" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cdeeff"/></linearGradient>
+    <linearGradient id="gSky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fd6ff"/><stop offset="1" stop-color="#00a9ec"/></linearGradient>
+    <symbol id="tee" viewBox="0 0 100 100"><path d="M30 14 14 28l8 17 10-5v46h36V40l10 5 8-17-16-14c-3 7-11 11-20 11s-17-4-20-11z" fill="url(#gPink)" stroke="#d92f78" stroke-width="2.5" stroke-linejoin="round"/><path d="M34 22c4 5 10 8 16 8" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="sock" viewBox="0 0 100 100"><path d="M36 10h26v42c0 6 3 8 9 11 11 6 15 12 12 20-3 7-14 8-26 5-14-4-24-10-24-24z" fill="url(#gButter)" stroke="#d9a400" stroke-width="2.5" stroke-linejoin="round"/><rect x="36" y="10" width="26" height="14" rx="4" fill="#fff" fill-opacity=".7"/><path d="M44 36h18M44 44h18" stroke="#d9a400" stroke-width="3" stroke-linecap="round" stroke-opacity=".6"/></symbol>
+    <symbol id="towel" viewBox="0 0 100 100"><rect x="10" y="62" width="80" height="22" rx="8" fill="url(#gSky)" stroke="#007cb5" stroke-width="2.5"/><rect x="16" y="40" width="68" height="22" rx="8" fill="url(#gFoam)" stroke="#8cc9e6" stroke-width="2.5"/><rect x="22" y="18" width="56" height="22" rx="8" fill="url(#gPink)" stroke="#d92f78" stroke-width="2.5"/><path d="M20 73h60" stroke="#fff" stroke-opacity=".5" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round"/></symbol>
+    <symbol id="bottle" viewBox="0 0 100 100"><rect x="30" y="34" width="40" height="56" rx="14" fill="url(#gFoam)" stroke="#8cc9e6" stroke-width="2.5"/><rect x="38" y="18" width="24" height="18" rx="6" fill="url(#gPink)" stroke="#d92f78" stroke-width="2.5"/><rect x="36" y="52" width="28" height="22" rx="8" fill="url(#gSky)"/><circle cx="50" cy="63" r="5" fill="#fff" fill-opacity=".85"/></symbol>
+    <symbol id="bag" viewBox="0 0 100 100"><path d="M26 34h48l8 52H18z" fill="url(#gSky)" stroke="#007cb5" stroke-width="2.5" stroke-linejoin="round"/><path d="M38 34c0-14 24-14 24 0" fill="none" stroke="#007cb5" stroke-width="5" stroke-linecap="round"/><path d="M30 46l3 30" stroke="#fff" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/><circle cx="62" cy="62" r="8" fill="url(#gButter)"/></symbol>
+  </defs>
+</svg>
+
+<main id="top" style="overflow-x:clip">
+  <section class="hero" aria-labelledby="h1" data-reel-stop>
+    <i class="bub b1" aria-hidden="true" data-reel-bleed></i>
+    <i class="bub b2" aria-hidden="true" data-reel-bleed></i>
+    <i class="bub b3" aria-hidden="true" data-reel-bleed></i>
+    <div class="wrap">
+      <p class="brand"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><use href="#bottle"/></svg>suddly</p>
+      <h1 id="h1">Laundry that <em>leaves</em> when you do.</h1>
+      <p class="lede">Tap once. We collect your bag tonight, wash and fold it, and bring it back in 48 hours.</p>
+      <div class="cta-row">
+        <a class="btn" href="#book">Book tonight’s pickup <span aria-hidden="true">→</span></a>
+        <span class="note">PICKUP 7–10 PM · FROM $19 / WEEK</span>
+      </div>
+    </div>
+    <div class="strip" aria-hidden="true" data-reel-bleed>
+      <div class="track">
+        <svg viewBox="0 0 100 100"><use href="#tee"/></svg><svg viewBox="0 0 100 100"><use href="#sock"/></svg><svg viewBox="0 0 100 100"><use href="#towel"/></svg><svg viewBox="0 0 100 100"><use href="#bottle"/></svg><svg viewBox="0 0 100 100"><use href="#bag"/></svg><svg viewBox="0 0 100 100"><use href="#tee"/></svg><svg viewBox="0 0 100 100"><use href="#sock"/></svg><svg viewBox="0 0 100 100"><use href="#towel"/></svg>
+        <svg viewBox="0 0 100 100"><use href="#tee"/></svg><svg viewBox="0 0 100 100"><use href="#sock"/></svg><svg viewBox="0 0 100 100"><use href="#towel"/></svg><svg viewBox="0 0 100 100"><use href="#bottle"/></svg><svg viewBox="0 0 100 100"><use href="#bag"/></svg><svg viewBox="0 0 100 100"><use href="#tee"/></svg><svg viewBox="0 0 100 100"><use href="#sock"/></svg><svg viewBox="0 0 100 100"><use href="#towel"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="band" aria-hidden="true" data-reel-bleed>
+    <div class="tk"><span>Wash</span><span>Dry</span><span>Fold</span><span>Deliver</span><span>Wash</span><span>Dry</span><span>Fold</span><span>Deliver</span><span>Wash</span><span>Dry</span><span>Fold</span><span>Deliver</span></div>
+  </div>
+
+  <section aria-labelledby="proof">
+    <div class="wrap">
+      <p class="eyebrow rv">Why people stay</p>
+      <h2 class="sec-h rv" id="proof">No shop hours. No Sunday trips.</h2>
+      <p class="sub rv">Your week already has enough errands in it. The bag leaves, the clean clothes come back.</p>
+      <div class="stats">
+        <div class="stat rv"><b>48h</b><span>door to door</span></div>
+        <div class="stat rv"><b>7–10</b><span>pm pickup window</span></div>
+        <div class="stat rv"><b>$0</b><span>delivery fee</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="how">
+    <div class="wrap">
+      <p class="eyebrow rv">Three steps</p>
+      <h2 class="sec-h rv" id="how">Book. Bag. Back.</h2>
+      <div class="steps">
+        <article class="step rv"><span class="n" aria-hidden="true">1</span><h3>Tap to book</h3><p>Choose tonight’s 7–10 pm window. That is the only form you fill.</p></article>
+        <article class="step rv"><span class="n" aria-hidden="true">2</span><h3>Bag at your door</h3><p>We tag it, weigh it and are gone in two minutes. You never wait in.</p></article>
+        <article class="step rv"><span class="n" aria-hidden="true">3</span><h3>Back in 48 hours</h3><p>Folded, boxed and left on your doorstep with a message.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="plans">
+    <div class="wrap">
+      <p class="eyebrow rv">Pick your bag</p>
+      <h2 class="sec-h rv" id="plans">One price a week. Pause any time.</h2>
+      <div class="bags">
+        <article class="bag rv"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#bag"/></svg><h3>Solo</h3><p class="price">$19 / week</p><p>One bag, about 6 kg.</p></article>
+        <article class="bag hot rv"><span class="tag">Most picked</span><svg viewBox="0 0 100 100" aria-hidden="true" style="width:78px;height:78px;margin-top:-6px"><use href="#bag"/></svg><h3>Pair</h3><p class="price">$34 / week</p><p>Two bags, shared homes.</p></article>
+        <article class="bag rv"><svg viewBox="0 0 100 100" aria-hidden="true" style="width:86px;height:86px;margin:-10px 0 -12px"><use href="#bag"/></svg><h3>Family</h3><p class="price">$52 / week</p><p>Four bags, towels too.</p></article>
+        <article class="bag rv"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#towel"/></svg><h3>Stays</h3><p class="price">Ask us</p><p>Gyms, salons, rentals.</p></article>
+      </div>
+      <figure class="quote rv"><p>“I stopped carrying laundry on the bus. It is just handled.”</p><cite>— Mira, night-shift nurse (example review)</cite></figure>
+    </div>
+  </section>
+
+  <section class="final" id="book" aria-labelledby="fin">
+    <div class="wrap">
+      <div class="box rv">
+        <p class="eyebrow">Tonight, 7–10 pm</p>
+        <h2 id="fin" style="margin-top:12px">Your bag, our problem.</h2>
+        <p>First pickup is free. Cancel from your phone, any time.</p>
+        <a class="btn alt" href="#top">Book tonight’s pickup <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="dock" aria-label="Quick links">
+  <a class="back" href="/">← All templates</a>
+  <span class="mark" aria-hidden="true">suddly</span>
+  <a class="go" href="#book">Book</a>
+</nav>
+<footer>Developed by Aquarii Technologies</footer>
+
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var els=[].slice.call(document.querySelectorAll('.rv'));
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{rootMargin:'0px 0px -8% 0px',threshold:.08});
+  els.forEach(function(e,i){e.style.transitionDelay=(i%3)*70+'ms';io.observe(e)});
+})();
+</script>
+</body>
+</html>

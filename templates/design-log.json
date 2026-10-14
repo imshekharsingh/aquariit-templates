@@ -468,5 +468,27 @@
     "purpose": "Clinic (dental clinic with 24-hour WhatsApp booking and fixed fees)",
     "description": "A Swiss-modern dental clinic page where booking stays open all night: pick a slot on WhatsApp, hold it with ₹200 by UPI, and watch the night diary fill.",
     "era": "modern"
+  },
+  {
+    "id": "2026-10-14-0850",
+    "date": "2026-10-14",
+    "time": "08:50",
+    "slug": "suddly",
+    "url": "https://templates.aquariit.com/2026-10-14-0850/",
+    "theme": "Soft clay pastel with wobbly soap bubbles, sky blue hero with hot pink and butter accents; laundry pickup subscription",
+    "layout": "strip hero (sliding clay laundry items), marquee band, big-number stats, timeline, 2x2 plan grid, bottom dock bar",
+    "palette": [
+      "#e8f8ff",
+      "#00a9ec",
+      "#ff4f9a",
+      "#ffd84a",
+      "#0b2a3a"
+    ],
+    "fonts": "Bagel Fat One + Figtree",
+    "motif": "wobbly SVG-displaced soap bubbles and clay laundry (tee, sock, towel stack, detergent, bag)",
+    "animation": "static feTurbulence/feDisplacementMap wobble shapes with transform-only drift, linear() spring reveals, scroll-driven timeline line with fallback, slow strip and marquee",
+    "purpose": "Local service (laundry pickup and delivery subscription with weekly plans)",
+    "description": "A clay-soft laundry pickup page: tap once, the bag leaves tonight and returns folded in 48 hours, with weekly Solo, Pair and Family plans.",
+    "era": "modern"
   }
 ]
