@@ -1,5 +1,5 @@
 // STARTER (built on scripts/film/parts.js). Copy to film/ID/story.js, then REWRITE it around today's Aquarii service (design/services.md): the protagonist is
-// Aquarii, the page below is only proof ("a site we designed"); the hook, captions and CTA ("DM us or WhatsApp +91 95356 21491") sell our service, never the page's business.
+// Aquarii, the page below is only proof ("a site we designed"); the hook, captions and CTA ("DM us") sell our service, never the page's business.
 // Originality: at most one part per reference reel (scripts/film/sources.json); prefer our own metaphor (P.vessel: the water bearer). Default it ships with:
 // it already works on any template (it reads the page's name, accent, headline, features and call to action), but shipping it unchanged is not allowed
 // (scripts/check.mjs refuses a film whose story.js equals this file). Worked example of a fully bespoke film: film/2026-10-13-1902/story.js ("After 8").

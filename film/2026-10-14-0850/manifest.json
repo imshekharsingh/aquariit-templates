@@ -5,30 +5,36 @@
     "ground": [
       "deep-colour"
     ],
+    "camera": [
+      "keyed-camera"
+    ],
     "mechanism": [
       "leaky-vessel"
     ],
     "opener": [
       "leak-cold-open"
     ],
-    "payoff": [
-      "rise-chips"
+    "type": [
+      "drip-word"
     ],
-    "transition": [
-      "wave"
+    "payoff": [
+      "underwater-dive"
     ],
     "cta": [
-      "contact-flood"
+      "wet-dm"
     ],
     "captions": [
       "pill"
+    ],
+    "texture": [
+      "grain"
     ]
   },
   "dna": {
     "service": "studio",
-    "opening": "a browser window full of water already leaking from a crack under the hook",
-    "bigMoment": "the sealed window brims and visitors rise out of it as enquiries",
-    "ground": "deep sea navy with aqua water, lime patches and red leaks",
-    "music": "warm, steady downtempo electronic at 100 BPM (round bass, soft clicks, water-drop plucks)"
+    "opening": "extreme close-up of a cracked browser window spraying water under wet type YOUR SITE IS LEAKING",
+    "bigMoment": "the camera dives under the refilled surface and messages rise past the lens at three depths",
+    "ground": "deep sea navy, aqua water, lime patches, red cracks, film grain",
+    "music": "tense-to-warm downtempo electronic at 100 BPM (dripping plucks, sub swells, a drop into the dive)"
   }
 }
