@@ -26,7 +26,9 @@ permissions:
   actions: write    # to start one redeploy
 
 concurrency:
-  group: reel-publish
+  # manual (forced) renders get their own queue: GitHub keeps only one waiting run per group, so an automatic run queued after a merge used to replace a
+  # forced render that was still waiting (14 Oct 2026)
+  group: reel-publish-${{ github.event_name == 'workflow_dispatch' && 'manual' || 'auto' }}
   cancel-in-progress: false
 
 jobs:
