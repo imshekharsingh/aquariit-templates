@@ -177,8 +177,8 @@ Every daily reel is a directed motion film; screen recordings are retired (they 
 Engine: scripts/film/ (engine.js, the parts library parts.js, render-film.mjs); per template: film/ID/story.js + timing.json. 18 s, 30 fps, 1080×1920, the hook building from frame 0,
 a held "breath" before the payoff, payoff in the last 4 s, a last frame that loops into the first, effects-only sound (owner adds Instagram audio). How-to: design/film-playbook.md.
 **Every reel looks like its own brand.** The account showcases range for many clients, so there is no house style. Only these stay constant: captions readable at phone size,
-nothing key under Instagram's UI (top 96 px, bottom 22%, right column), smooth motion, a clean loop, the "Aquarii Web Studio" watermark (top right, the whole reel;
-P.scene adds it) and the sign-off at the end (P.signoff).
+nothing key under Instagram's UI (top 96 px, bottom 22%, right column), smooth motion, a clean loop, the "Aquarii Web Studio" watermark (lower centre at y 540, between the captions and
+Instagram's caption area, the whole reel; P.scene adds it; keep that band free of key text) and the sign-off at the end (P.signoff).
 **Use the whole frame** (owner, 13 Oct 2026: "content feels forced into the centre"): subjects fill the width and may run off an edge or the bottom, grounds go
 edge to edge, display type spans the width. `node scripts/film/fill-meter.mjs <stills dir>` must report at most a third of frames as TIGHT (transitions excepted).
 **Variety is enforced, not hoped for.** Stories are built from the parts in scripts/film/parts.js; each part records the slot it fills (opener, transition, mechanism, focus,

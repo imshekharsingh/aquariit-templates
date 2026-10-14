@@ -38,6 +38,10 @@ All seven techniques are parts now (see the menu in scripts/film/parts.js).
 - Check the last frame against frame 0 side by side. Story code that overrides a part (e.g. bringing a word back for the loop) must run AFTER `P.update(t)`,
   because each part re-applies its own state every frame.
 
+## Watermark (owner, 14 Oct 2026)
+The Aquarius sign + AQUARII WEB STUDIO in a soft translucent pill, centred at y ≈ 535-552: the band between the captions (anchor 492) and Instagram's caption area. It is
+added by P.scene to every film and steps aside during P.signoff. Do not put key text in that band.
+
 ## Use the whole frame (owner feedback, 13 Oct 2026)
 The first films put a small subject in a narrow central column with a lot of empty frame (Gojigo v3 measured 2-18% coverage, 15 of 20 frames TIGHT). Rules now:
 - the subject fills the width (phone 270-290 px wide and running off the bottom edge; numbers and display type 340-390 px wide; buttons full width);
