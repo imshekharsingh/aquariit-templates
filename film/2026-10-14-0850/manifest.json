@@ -5,41 +5,33 @@
     "ground": [
       "deep-colour"
     ],
-    "camera": [
-      "keyed-camera",
-      "keyed-camera-3d"
+    "opener": [
+      "lock-pop"
+    ],
+    "transition": [
+      "blackout-line"
     ],
     "mechanism": [
-      "tank-3d",
-      "leaky-vessel"
-    ],
-    "render": [
-      "webgl-3d"
-    ],
-    "opener": [
-      "leak-cold-open"
-    ],
-    "type": [
-      "drip-word"
+      "cursor-swarm"
     ],
     "payoff": [
-      "underwater-dive"
+      "guarded-frame"
+    ],
+    "type": [
+      "slam-stack"
     ],
     "cta": [
-      "wet-dm"
+      "dm-pill"
     ],
     "captions": [
       "pill"
-    ],
-    "texture": [
-      "grain"
     ]
   },
   "dna": {
-    "service": "studio",
-    "opening": "extreme close-up of a cracked browser window spraying water under wet type YOUR SITE IS LEAKING",
-    "bigMoment": "the camera dives under the refilled surface and messages rise past the lens at three depths",
-    "ground": "deep sea navy, aqua water, lime patches, red cracks, film grain",
-    "music": "tense-to-warm downtempo electronic at 100 BPM (dripping plucks, sub swells, a drop into the dive)"
+    "service": "security",
+    "opening": "a giant padlock under \"Is your website actually locked?\" pops its shackle open",
+    "bigMoment": "the lock snaps shut and the site frame turns violet and bounces every attacker cursor off",
+    "ground": "near black with violet, alarm red and a lime check",
+    "music": "tense low pulse that resolves into a confident, clean beat at 100 BPM"
   }
 }

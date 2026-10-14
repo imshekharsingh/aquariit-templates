@@ -2,333 +2,166 @@
   "bpm": 100,
   "len": 18,
   "join": 2.5,
-  "peak": 12.9,
+  "peak": 8.6,
   "breath": [
-    12.55,
-    12.85
+    7.3,
+    8.35
   ],
   "music": {
     "bpm": 100,
     "duration": 18,
-    "peak": 12.9,
+    "peak": 8.6,
     "breath": [
-      12.55,
-      12.85
+      7.3,
+      8.35
     ],
     "hits": [
       {
-        "t": 0,
+        "t": 1.2,
+        "kind": "impact",
+        "label": "the lock pops open"
+      },
+      {
+        "t": 3.4,
         "kind": "downbeat",
-        "label": "macro on the spraying crack"
+        "label": "the swarm"
       },
       {
-        "t": 1.8,
+        "t": 8.6,
         "kind": "impact",
-        "label": "smash pull-back"
+        "label": "the lock snaps shut"
       },
       {
-        "t": 3.5,
+        "t": 13.9,
         "kind": "downbeat",
-        "label": "SLOW."
+        "label": "LOCKED. WATCHED. HANDLED."
       },
       {
-        "t": 4.72,
-        "kind": "impact",
-        "label": "crack + OUTDATED."
-      },
-      {
-        "t": 5.92,
-        "kind": "impact",
-        "label": "crack + INVISIBLE."
-      },
-      {
-        "t": 7.12,
-        "kind": "impact",
-        "label": "crack + HACKED."
-      },
-      {
-        "t": 8.45,
-        "kind": "silence",
-        "label": "Sound familiar? (empty glass)"
-      },
-      {
-        "t": 9.25,
-        "kind": "impact",
-        "label": "patch FAST."
-      },
-      {
-        "t": 9.85,
-        "kind": "impact",
-        "label": "patch FRESH."
-      },
-      {
-        "t": 10.45,
-        "kind": "impact",
-        "label": "patch SEEN."
-      },
-      {
-        "t": 11.05,
-        "kind": "impact",
-        "label": "patch SAFE."
-      },
-      {
-        "t": 11.6,
+        "t": 15.2,
         "kind": "downbeat",
-        "label": "the pour"
-      },
-      {
-        "t": 12.9,
-        "kind": "impact",
-        "label": "peak: the dive"
-      },
-      {
-        "t": 15.25,
-        "kind": "downbeat",
-        "label": "surface break: DM us"
-      },
-      {
-        "t": 18,
-        "kind": "downbeat",
-        "label": "loop"
+        "label": "DM us"
       }
     ],
     "sections": [
       {
-        "name": "intro",
+        "name": "hook",
         "t0": 0,
-        "t1": 1.8,
-        "energy": "close, dripping"
+        "t1": 3.4,
+        "energy": "tense"
       },
       {
-        "name": "pains",
-        "t0": 1.8,
-        "t1": 8.4,
-        "energy": "tense, hits on each crack"
-      },
-      {
-        "name": "silence",
-        "t0": 8.4,
-        "t1": 9.2,
-        "energy": "near silence"
-      },
-      {
-        "name": "fix",
-        "t0": 9.2,
-        "t1": 12.55,
-        "energy": "rising, four hits"
+        "name": "swarm",
+        "t0": 3.4,
+        "t1": 7.3,
+        "energy": "rising, nervous"
       },
       {
         "name": "breath",
-        "t0": 12.55,
-        "t1": 12.9,
-        "energy": "still"
+        "t0": 7.3,
+        "t1": 8.6,
+        "energy": "near silence"
       },
       {
-        "name": "dive",
-        "t0": 12.9,
-        "t1": 15.25,
-        "energy": "full, airy"
+        "name": "guard",
+        "t0": 8.6,
+        "t1": 13.9,
+        "energy": "confident"
       },
       {
-        "name": "cta",
-        "t0": 15.25,
+        "name": "payoff",
+        "t0": 13.9,
         "t1": 18,
-        "energy": "settling"
+        "energy": "resolved"
       }
     ]
   },
   "cues": [
     {
-      "k": "click",
-      "t": 0.02,
-      "g": 0.2
+      "k": "impact",
+      "t": 1.2,
+      "g": 0.5
     },
     {
       "k": "whoosh",
-      "t0": 1.75,
-      "t1": 2.5,
-      "g": 0.3,
+      "t0": 2.7,
+      "t1": 3.2,
+      "g": 0.25,
       "f0": 3000,
-      "f1": 300,
+      "f1": 400,
       "tail": 0.1
     },
     {
-      "k": "impact",
-      "t": 3.5,
+      "k": "click",
+      "t": 4.0,
       "g": 0.35
     },
     {
-      "k": "whoosh",
-      "t0": 4.44,
-      "t1": 4.72,
-      "g": 0.25,
-      "f0": 300,
-      "f1": 3000,
-      "tail": 0.05
-    },
-    {
-      "k": "impact",
-      "t": 4.72,
-      "g": 0.5
-    },
-    {
-      "k": "whoosh",
-      "t0": 5.64,
-      "t1": 5.92,
-      "g": 0.25,
-      "f0": 300,
-      "f1": 3000,
-      "tail": 0.05
-    },
-    {
-      "k": "impact",
-      "t": 5.92,
-      "g": 0.5
-    },
-    {
-      "k": "whoosh",
-      "t0": 6.84,
-      "t1": 7.12,
-      "g": 0.25,
-      "f0": 300,
-      "f1": 3000,
-      "tail": 0.05
-    },
-    {
-      "k": "impact",
-      "t": 7.12,
-      "g": 0.5
-    },
-    {
-      "k": "whoosh",
-      "t0": 9.05,
-      "t1": 9.25,
-      "g": 0.2,
-      "f0": 400,
-      "f1": 3000,
-      "tail": 0.05
+      "k": "click",
+      "t": 4.9,
+      "g": 0.35
     },
     {
       "k": "click",
-      "t": 9.25,
-      "g": 0.45
-    },
-    {
-      "k": "whoosh",
-      "t0": 9.65,
-      "t1": 9.85,
-      "g": 0.2,
-      "f0": 400,
-      "f1": 3000,
-      "tail": 0.05
+      "t": 5.8,
+      "g": 0.35
     },
     {
       "k": "click",
-      "t": 9.85,
-      "g": 0.45
-    },
-    {
-      "k": "whoosh",
-      "t0": 10.25,
-      "t1": 10.45,
-      "g": 0.2,
-      "f0": 400,
-      "f1": 3000,
-      "tail": 0.05
-    },
-    {
-      "k": "click",
-      "t": 10.45,
-      "g": 0.45
-    },
-    {
-      "k": "whoosh",
-      "t0": 10.85,
-      "t1": 11.05,
-      "g": 0.2,
-      "f0": 400,
-      "f1": 3000,
-      "tail": 0.05
-    },
-    {
-      "k": "click",
-      "t": 11.05,
-      "g": 0.45
-    },
-    {
-      "k": "whoosh",
-      "t0": 11.5,
-      "t1": 12.5,
-      "g": 0.15,
-      "f0": 500,
-      "f1": 1500,
-      "tail": 0.2
+      "t": 6.7,
+      "g": 0.35
     },
     {
       "k": "riser",
-      "t0": 12.2,
-      "t1": 12.85,
+      "t0": 8.0,
+      "t1": 8.55,
       "g": 0.3
     },
     {
       "k": "impact",
-      "t": 12.9,
+      "t": 8.6,
       "g": 1.2,
       "big": 2
     },
     {
-      "k": "sparkle",
-      "t": 13.1,
-      "g": 0.15
-    },
-    {
-      "k": "sparkle",
-      "t": 13.4,
-      "g": 0.15
-    },
-    {
-      "k": "sparkle",
-      "t": 13.7,
-      "g": 0.15
-    },
-    {
-      "k": "sparkle",
-      "t": 14.0,
-      "g": 0.15
-    },
-    {
-      "k": "sparkle",
-      "t": 14.3,
-      "g": 0.15
-    },
-    {
-      "k": "sparkle",
-      "t": 14.6,
-      "g": 0.15
-    },
-    {
-      "k": "whoosh",
-      "t0": 15.1,
-      "t1": 15.5,
-      "g": 0.3,
-      "f0": 250,
-      "f1": 3200,
-      "tail": 0.15
-    },
-    {
-      "k": "impact",
-      "t": 15.45,
+      "k": "click",
+      "t": 9.9,
       "g": 0.4
     },
     {
-      "k": "whoosh",
-      "t0": 17.2,
-      "t1": 17.5,
-      "g": 0.2,
-      "f0": 3000,
-      "f1": 400,
-      "tail": 0.05
+      "k": "click",
+      "t": 10.5,
+      "g": 0.4
+    },
+    {
+      "k": "click",
+      "t": 11.1,
+      "g": 0.4
+    },
+    {
+      "k": "click",
+      "t": 11.7,
+      "g": 0.4
+    },
+    {
+      "k": "impact",
+      "t": 13.9,
+      "g": 0.5
+    },
+    {
+      "k": "impact",
+      "t": 14.3,
+      "g": 0.5
+    },
+    {
+      "k": "impact",
+      "t": 14.7,
+      "g": 0.5
+    },
+    {
+      "k": "click",
+      "t": 15.2,
+      "g": 0.4
     }
   ],
-  "accent": "#d6ff3d"
+  "accent": "#8b7bff"
 }

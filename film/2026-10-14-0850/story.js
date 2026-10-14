@@ -1,157 +1,125 @@
-// FILM: Aquarii Tech Studio, "the leaky site" v2 (service: studio). Our own metaphor (Aquarii = the water bearer): a website is a vessel, visitors are the water.
-// v1 was a single locked-off wide shot (owner: "boring, while it has motion graphics"). v2 is SHOT like a film: a keyed camera that starts in an extreme close-up on
-// the crack, whips crack to crack (each pain a giant word), pulls back to the empty glass, kicks on every patch, tilts up to the address bar and rides the pour down,
-// then DIVES under the surface where messages rise past the lens at three depths, and breaks the surface into "DM us" in wet type. Grain over everything.
-// No part from any reference reel (scripts/film/sources.json). CTA: DM only (owner, 14 Oct 2026).
+// FILM: "Is your website actually locked?" (service: security). Fourth cut of this slot, 14 Oct 2026, made with the new method (design/film-playbook.md "Design like
+// the motion logo"): poster-first, ONE transforming idea, vector, no water (owner: Aquarii is only a name). The idea: a padlock. It pops open, attackers stream in
+// through the gap, then it snaps shut and the site frame turns into a guarded border that bounces every attacker off while the security checklist ticks.
+// Key frames (each a finished poster): 0.0 giant lock + hook | 4.5 the site swarmed by red cursors, pains tagged | 7.8 black, one line | 11.0 the violet frame,
+// cursors bouncing, checks ticking | 14.8 LOCKED. WATCHED. HANDLED. + DM us. Every move on the easing toolkit (springs, swing, snap).
 (function () {
-  const E = window.FilmEngine, T = window.FILM_T, P = window.FilmParts, { clamp, lerp, ease } = E, S = (E.story = {});
+  const E = window.FilmEngine, T = window.FILM_T, P = window.FilmParts, { clamp, lerp } = E, S = (E.story = {});
   S.selfStage = true;
   S.dna = {
-    service: 'studio',
-    opening: 'extreme close-up of a cracked browser window spraying water under wet type YOUR SITE IS LEAKING',
-    bigMoment: 'the camera dives under the refilled surface and messages rise past the lens at three depths',
-    ground: 'deep sea navy, aqua water, lime patches, red cracks, film grain',
-    music: 'tense-to-warm downtempo electronic at 100 BPM (dripping plucks, sub swells, a drop into the dive)',
+    service: 'security',
+    opening: 'a giant padlock under "Is your website actually locked?" pops its shackle open',
+    bigMoment: 'the lock snaps shut and the site frame turns violet and bounces every attacker cursor off',
+    ground: 'near black with violet, alarm red and a lime check',
+    music: 'tense low pulse that resolves into a confident, clean beat at 100 BPM',
   };
-  const sm = P.sm, css = P.css;
-  const INK = '#061722', AQUA = '#1ec8ff', DEEP = '#0a4fd6', LIME = '#d6ff3d', RED = '#ff5a4f';
+  const css = P.css, NS = 'http://www.w3.org/2000/svg';
+  const INK = '#0d0d12', VIO = '#8b7bff', RED = '#ff4d4d', LIME = '#c6ff3d', WHITE = '#f4f4f8';
+  const sp = (t, t0, name = 'bold') => P.springAt(t, t0, name), tw = (t, t0, d, name = 'swing') => P.tween(t, t0, d, name);
+  const life = (t, a, b, inName = 'fade', out = .2) => (t < a ? 0 : P.springAt(t, a, inName) * (1 - P.tween(t, b - out, out, 'snap')));
 
   S.setup = async function () {
     document.documentElement.classList.add('reel');
     await P.ready; await document.fonts.ready;
-    const { world } = P.scene({ accent: LIME, ink: INK, glow: 'rgba(30,200,255,.10)' });
+    const { world } = P.scene({ accent: VIO, ink: INK, glow: 'rgba(139,123,255,.10)' });
+    P.use('opener', 'lock-pop'); P.use('transition', 'blackout-line'); P.use('mechanism', 'cursor-swarm'); P.use('payoff', 'guarded-frame'); P.use('type', 'slam-stack'); P.use('cta', 'dm-pill');
 
-    // ---- the camera (world coordinates of the vessel; 100 BPM, a beat every 0.6 s) ----
-    const F0 = { x: 40, y: 455, s: 2.6, r: -5 };
-    const cam = P.camera([
-      [0, F0], [1.7, { x: 46, y: 450, s: 3.15, r: -7 }, 'swing'],
-      [2.35, { x: 201, y: 432, s: .97, r: 0 }, 'default'],                                // smash pull-back: the whole leaking window
-      [2.9, { x: 100, y: 445, s: 1.75, r: -3 }, 'bold'], [4.0, { x: 96, y: 448, s: 1.92, r: -4 }, 'swing'],          // SLOW (crack 1)
-      [4.22, { x: 318, y: 545, s: 2.1, r: 6 }, 'bold'], [5.3, { x: 314, y: 548, s: 2.3, r: 6 }, 'swing'],             // OUTDATED (crack 2)
-      [5.52, { x: 84, y: 615, s: 2.1, r: -6 }, 'bold'], [6.6, { x: 88, y: 618, s: 2.3, r: -6 }, 'swing'],             // INVISIBLE (crack 3)
-      [6.82, { x: 314, y: 672, s: 2.3, r: 5 }, 'bold'], [7.85, { x: 311, y: 676, s: 2.5, r: 5 }, 'swing'],            // HACKED (crack 4)
-      [8.35, { x: 201, y: 468, s: .93, r: 0 }, 'default'], [9.05, { x: 201, y: 474, s: 1.04, r: 0 }, 'swing'],          // the empty glass, creeping in
-      [9.22, { x: 86, y: 470, s: 2.3, r: -4 }, 'bold'], [9.7, { x: 88, y: 470, s: 2.42, r: -4 }, 'swing'],         // patch 1 FAST
-      [9.84, { x: 316, y: 560, s: 2.3, r: 5 }, 'bold'], [10.3, { x: 314, y: 560, s: 2.42, r: 5 }, 'swing'],        // patch 2 FRESH
-      [10.44, { x: 86, y: 630, s: 2.3, r: -5 }, 'bold'], [10.9, { x: 88, y: 630, s: 2.42, r: -5 }, 'swing'],       // patch 3 SEEN
-      [11.04, { x: 316, y: 690, s: 2.3, r: 5 }, 'bold'], [11.45, { x: 314, y: 690, s: 2.42, r: 5 }, 'swing'],      // patch 4 SAFE
-      [11.7, { x: 201, y: 236, s: 2.1, r: 0 }, 'default'],                                                            // tilt up to the address bar
-      [12.0, { x: 201, y: 520, s: 1.15, r: 0 }, 'default'],                                                           // pull out as it pours
-      [12.55, { x: 201, y: 310, s: 1.6, r: 0 }, 'default'],                                                           // rise with the water
-      [12.9, { x: 201, y: 262, s: 3.4, r: 0 }, 'snap'],                                                     // push into the surface (dive)
-      [17.349, { x: 201, y: 262, s: 3.4, r: 0 }, 'swing'],
-      [17.35, { x: 40, y: 455, s: 2.3, r: -4 }, 'cut'], [18, F0, 'swing'],                                   // back to the crack: frame 0
-    ], { handheld: 2.2, shake: [[0, .5, 4], [4.22, 4.6, 6], [5.52, 5.9, 6], [6.82, 7.4, 12], [9.25, 9.6, 9], [9.85, 10.2, 9], [10.45, 10.8, 9], [11.05, 11.4, 11]] });
+    const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', '0 0 402 715'); svg.setAttribute('width', '402'); svg.setAttribute('height', '715');
+    svg.style.cssText = 'position:absolute;inset:0;overflow:visible'; world.appendChild(svg);
+    const mk = (tag, attrs, parent = svg) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
 
-    // ---- HYBRID: three hero shots in real 3D (P.tank3d), the rest in 2D. The opening close-up and smash pull-back, the refill through the address bar and the
-    // push into the surface, and the loop return. The 2D vessel hides while a 3D shot is on screen; type, captions and the watermark stay on top. ----
-    const SHOTS3D = [[-1, 2.35], [11.62, 12.88], [17.35, 18.01]];   // starts before 0: the first frame's blur samples sit at slightly negative times
-    const in3d = (t) => SHOTS3D.some(([a, b]) => t >= a && t < b);
-    P.tank3d(world, {
-      active: SHOTS3D, loopAt: 17.35,
-      levels: [[-1, .86], [2.35, .8], [11.6, .15], [12.55, .97]], leak: (t) => t < 2.4, sealed: (t) => t >= 11.6, pour: [11.65, 12.55],
-      puddleSize: (t) => .35 + .15 * clamp((t + 1) / 3.4),
-      camera: [
-        [-.65, { p: [-1.75, .76, 3.7], at: [-.55, .1, .5], fov: 30 }],                         // (loop return, remapped to before 0)
-        [0, { p: [-1.45, .62, 3.1], at: [-.55, .1, .5], fov: 30 }, 'swing'],                     // frame 0: close on the spraying crack
-        [1.75, { p: [-.95, .4, 1.85], at: [-.55, .12, .55], fov: 30 }, 'swing'],                 // push in
-        [2.35, { p: [1.0, .55, 8.9], at: [0, -.1, 0], fov: 30 }, 'default'],                     // smash pull-back to the whole window (cuts to 2D framed the same)
-        [11.6, { p: [1.0, .55, 8.9], at: [0, -.1, 0], fov: 30 }, 'swing'],
-        [11.62, { p: [.4, 2.7, 5.4], at: [0, 1.35, 0], fov: 30 }, 'cut'],                        // the sealed window, looking up at the address bar
-        [12.05, { p: [.9, 2.45, 6.2], at: [0, .3, 0], fov: 30 }, 'default'],                     // ride the pour down, staying above the water (crossing the surface height flips the view in one frame)
-        [12.55, { p: [.3, 2.15, 3.7], at: [0, 1.4, 0], fov: 30 }, 'default'],                    // rise with the water, looking down at the surface
-        [12.88, { p: [0, 1.72, 1.15], at: [0, 1.44, -.1], fov: 30 }, 'snap'],                    // push down onto the surface: the dive
-      ],
+    // ---- the site frame (browser window) ----
+    const FX = 30, FY = 118, FW = 342, FH = 470;
+    const glow = mk('rect', { x: FX, y: FY, width: FW, height: FH, rx: 22, fill: 'none', stroke: VIO, 'stroke-width': 10, opacity: 0, filter: 'blur(6px)' });
+    const frame = mk('rect', { x: FX, y: FY, width: FW, height: FH, rx: 22, fill: 'rgba(255,255,255,.025)', stroke: 'rgba(244,244,248,.55)', 'stroke-width': 2, pathLength: 1, 'stroke-dasharray': 1, 'stroke-dashoffset': 1 });
+    const barLine = mk('line', { x1: FX, y1: FY + 46, x2: FX + FW, y2: FY + 46, stroke: 'rgba(244,244,248,.25)', 'stroke-width': 1.5, opacity: 0 });
+    const url = mk('text', { x: FX + 70, y: FY + 29, fill: 'rgba(244,244,248,.75)', 'font-family': "'Geist Mono', monospace", 'font-size': 13, opacity: 0 }); url.textContent = 'yourbusiness.com';
+    const page = mk('g', { opacity: 0 });
+    [[60, 200, 190, 18], [60, 230, 250, 10], [60, 248, 210, 10], [60, 290, 130, 34], [60, 350, 130, 90], [212, 350, 130, 90], [60, 460, 282, 10], [60, 478, 240, 10]].forEach(([x, y, w, h]) => mk('rect', { x, y, width: w, height: h, rx: 5, fill: 'rgba(244,244,248,.09)' }, page));
+
+    // ---- the padlock (the one idea) ----
+    const lock = mk('g', {});
+    const lockGlow = mk('circle', { cx: 0, cy: 12, r: 70, fill: 'none', stroke: RED, 'stroke-width': 3, opacity: 0 }, lock);
+    const shackle = mk('path', { d: 'M-24 -8 V-32 A24 24 0 0 1 24 -32 V-8', fill: 'none', stroke: WHITE, 'stroke-width': 11, 'stroke-linecap': 'round' }, lock);
+    const body = mk('rect', { x: -38, y: -10, width: 76, height: 62, rx: 13, fill: WHITE }, lock);
+    mk('path', { d: 'M0 8 a8 8 0 0 1 4 15 l2 14 h-12 l2 -14 a8 8 0 0 1 4 -15 z', fill: INK }, lock);
+
+    // ---- attacker cursors (deterministic swarm) ----
+    const CUR = 'M0 0 L0 22 L6 16 L10 26 L14 24 L10 14 L18 14 Z';
+    let sd = 7; const rnd = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
+    const swarm = Array.from({ length: 30 }, (_, i) => { const side = i % 3, sx = side === 0 ? -30 : side === 1 ? 432 : 40 + rnd() * 320, sy = side === 2 ? -40 : 140 + rnd() * 460;
+      return { el: mk('path', { d: CUR, fill: RED, stroke: INK, 'stroke-width': 1.5, opacity: 0 }), t0: 3.4 + i * .12, sx, sy, ex: 70 + rnd() * 260, ey: 200 + rnd() * 330, rot: rnd() * 40 - 20 }; });
+    const bounce = Array.from({ length: 22 }, (_, i) => { const ang = rnd() * Math.PI * 2, ex = 201 + Math.cos(ang) * 175, ey = 353 + Math.sin(ang) * 240;
+      const cx = clamp(ex, FX, FX + FW), cy = clamp(ey, FY, FY + FH), sx = 201 + Math.cos(ang) * 420, sy = 353 + Math.sin(ang) * 520;
+      return { el: mk('path', { d: CUR, fill: RED, stroke: INK, 'stroke-width': 1.5, opacity: 0 }), spark: mk('circle', { cx, cy, r: 4, fill: 'none', stroke: VIO, 'stroke-width': 2, opacity: 0 }), t0: 9.7 + i * .17, sx, sy, cx, cy, ang }; });
+
+    // ---- HTML type ----
+    const H = (html, css2) => E.el('div', `position:absolute;left:30px;right:30px;text-align:center;color:${WHITE};font:900 34px/1.02 Archivo,sans-serif;font-variation-settings:"wdth" 82;letter-spacing:-.02em;opacity:0;${css2}`, world, html);
+    const hook = H(`Is your website<br><span style="color:${VIO}">actually locked?</span>`, 'top:118px;font-size:38px');
+    const tags = [['Outdated plugin', 85, 300, 4.0], ['Weak password', 205, 245, 4.9], ['No backups', 95, 420, 5.8], ['Bot traffic', 215, 470, 6.7]].map(([txt, x, y, t0]) => {
+      const el = E.el('div', `position:absolute;left:${x}px;top:${y}px;padding:6px 11px;border-radius:99px;background:${RED};color:#fff;font:800 13px/1 Archivo,sans-serif;white-space:nowrap;opacity:0;transform-origin:0 50%`, world, txt);
+      return { el, t0 };
     });
-    const scrim = E.el('div', 'position:absolute;left:0;right:0;top:0;height:300px;background:linear-gradient(180deg,rgba(4,16,24,.78),rgba(4,16,24,0));pointer-events:none', world);   // the hook reads over the bright 3D page
-
-    // ---- the vessel (2D) ----
-    const V2 = P.vessel(world, {
-      x: 44, y: 206, w: 314, h: 600, url: 'yourbusiness.com', water: [AQUA, DEEP], leak: RED, patch: LIME, loopAt: 17.35, cam,
-      levels: [[0, .74], [2.9, .72], [4.2, .6], [5.5, .47], [6.8, .36], [8.0, .12], [11.6, .12], [12.5, .97]],
-      holes: [
-        { side: 'l', y: 470, icon: 'bolt', open: [[-2, 99]], fix: 9.25, fixIcon: 'globe' },
-        { side: 'r', y: 560, icon: 'phone', open: [[4.22, 99]], fix: 9.85, fixIcon: 'spark' },
-        { side: 'l', y: 630, icon: 'chat', open: [[5.52, 99]], fix: 10.45, fixIcon: 'calendar' },
-        { side: 'r', y: 690, icon: 'lock', open: [[6.82, 99]], fix: 11.05, fixIcon: 'lock' },
-      ],
-      pour: [11.6, 12.5],
+    const quiet = H('One missed update<br>is enough.', 'top:300px;font-size:32px');
+    P.front.appendChild(quiet);                                           // above the breath dim: it is the one bright thing in the dark
+    const checks = [['Updates applied', 9.9], ['Backups taken', 10.5], ['Firewall on', 11.1], ['Uptime watched', 11.7]].map(([txt, t0], i) => {
+      const el = E.el('div', `position:absolute;left:70px;top:${215 + i * 64}px;display:flex;align-items:center;gap:12px;color:${WHITE};font:800 22px/1 Archivo,sans-serif;opacity:0`, world,
+        `<span style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:${LIME};color:#0b0d0f">${P.icon('check', 22)}</span>${txt}`);
+      return { el, t0 };
     });
-    P.on((t) => { const hide = in3d(t); [...V2.layers, V2.cv].forEach((e) => { e.style.display = hide ? 'none' : ''; }); scrim.style.display = hide && t < 11 || t >= 17.35 ? '' : 'none'; });
+    const slam = ['Locked.', 'Watched.', 'Handled.'].map((w, i) => H(w, `top:${150 + i * 74}px;font-size:76px;line-height:1;color:${i === 2 ? LIME : WHITE}`));
+    const dm = E.el('div', 'position:absolute;left:0;right:0;top:420px;display:flex;justify-content:center;opacity:0', world,
+      `<div style="padding:13px 26px;border-radius:99px;background:${VIO};color:#0b0b12;font:900 22px/1 Archivo,sans-serif;letter-spacing:.02em">DM us</div>`);
 
-    // ---- type: wet hook, giant slam words (pains red, fixes lime), one quiet line in the empty glass ----
-    const hook = `Your site<br>is <span style="color:${RED}">leaking.</span>`;
-    S.hook = P.dripWord(world, hook, { x: 30, y: 104, size: 66, drop: AQUA, at: -1, out: 1.85, n: 6 });
-    P.dripWord(world, hook, { x: 30, y: 104, size: 66, drop: AQUA, at: 17.42, out: 99, n: 6, pop: true });   // hero reveal (loop return)
-    const slam = (word, sub, a, b, colour) => {
-      // a solid slab behind the word, so it reads on dark glass and on bright water alike
-      const box = E.el('div', 'position:absolute;left:26px;right:26px;top:100px;height:120px;overflow:hidden', world);
-      const m = document.createElement('canvas').getContext('2d'); m.font = '900 100px Archivo, sans-serif';
-      const size = Math.min(100, Math.floor(100 * 318 / (m.measureText(word).width * .86)));
-      const ink = colour === LIME ? '#0b0d0f' : '#ffffff';
-      const el = E.el('div', `position:absolute;left:0;bottom:0;padding:6px 12px 4px;background:${colour};color:${ink};font:900 ${size}px/.86 Archivo,sans-serif;font-variation-settings:"wdth" 70;letter-spacing:-.04em;white-space:nowrap;box-shadow:0 12px 30px rgba(0,0,0,.35)`, box, word);
-      const sb = E.el('div', `position:absolute;left:30px;right:30px;top:230px;color:#fff;font:700 14px/1 ${P.MONO};letter-spacing:.16em;text-shadow:0 2px 10px rgba(0,0,0,.8)`, world, sub);
-      // bold mood: the slab arrives on the bold spring (~5% overshoot, settled in 12 frames ~ 0.4 s) and leaves on snap in 0.26 s (35% faster)
-      P.on((t) => { const i = P.springAt(t, a, 'bold'), o = P.tween(t, b - .26, .26, 'snap'), on = t >= a && t < b;
-        css(el, { opacity: on ? P.springAt(t, a, 'fade').toFixed(3) : '0', transform: `translateY(${((1 - i) * 110 - o * 110).toFixed(1)}%)` });
-        // technical line (mono): a short, hard-stopping arrival (glide 250 ms, no overshoot), out with the slab
-        css(sb, { opacity: on ? (P.springAt(t, a + .1, 'fade') * (1 - o)).toFixed(3) : '0', transform: `translateX(${((1 - P.springAt(t, a + .1, 'default')) * -20).toFixed(1)}px)` }); });
-    };
-    slam('SLOW.', 'PAGES THAT CRAWL', 2.9, 4.16, RED);
-    slam('OUTDATED.', 'BROKEN ON PHONES', 4.22, 5.46, RED);
-    slam('INVISIBLE.', 'POSTS NOBODY SEES', 5.52, 6.76, RED);
-    slam('HACKED.', 'ONE ATTACK. OFFLINE.', 6.82, 8.2, RED);
-    slam('FAST.', 'CDN + CACHING', 9.25, 9.81, LIME);
-    slam('FRESH.', 'REDESIGNED FOR PHONES', 9.85, 10.41, LIME);
-    slam('SEEN.', 'SOCIAL, RUN FOR YOU', 10.45, 11.01, LIME);
-    slam('SAFE.', 'FIREWALL · UPDATES · BACKUPS', 11.05, 11.62, LIME);
-    const quiet = E.el('div', `position:absolute;left:30px;right:30px;top:300px;text-align:center;color:#fff;font:800 30px/1.1 Archivo,sans-serif;letter-spacing:-.02em`, world, 'Sound familiar?');
-    P.fade(quiet, 8.35, 8.98, { fi: .2, fo: .12, dy: 10 });
-
-    // ---- breath, then the dive ----
-    P.breath = [12.55, 12.85]; P.punchAt = 12.9;
-    const splash = E.el('div', 'position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.95),rgba(190,240,255,.6) 40%,rgba(30,200,255,0) 75%);opacity:0', world);
-    P.on((t) => { splash.style.opacity = (t >= 12.85 && t < 13.25 ? P.springAt(t, 12.85, 'fade') * (1 - P.tween(t, 12.95, .3, 'snap')) : 0).toFixed(3); });
-    const under = P.underwater(world, ['New enquiry', 'Can you send a quote?', 'Booked for Friday', 'Saw your post', 'Call me back?', 'Order placed', 'Is Monday free?'],
-      { at: 12.9, out: 15.3, top: '#0c86e6', deep: '#03173a', accent: LIME });
-    world.appendChild(splash);                                             // the flash sits over the water
-    void under;
-
-    // ---- break the surface into the CTA ----
-    const ctaG = E.el('div', `position:absolute;inset:0;background:${AQUA};opacity:0`, world);
-    E.el('div', 'position:absolute;left:0;right:0;top:0;height:300px;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0))', ctaG);
-    P.dripWord(ctaG, 'DM us', { x: 30, y: 150, size: 132, colour: '#04121a', drop: DEEP, at: 15.45, out: 17.35, n: 6, align: 'center', pop: true });   // hero reveal of the payoff
-    E.el('div', `position:absolute;left:30px;right:30px;top:318px;text-align:center;color:#04121a;font:600 11px/1.6 ${P.MONO};letter-spacing:.14em`, ctaG, 'WEBSITES · SOCIAL MEDIA<br>SECURITY · CDN');
-    P.on((t) => { ctaG.style.opacity = t >= 15.42 && t < 17.35 ? P.springAt(t, 15.42, 'fade').toFixed(3) : '0'; });
-    // the CTA is never still: light ripples across the water ground, the wet type floats, and the camera keeps creeping in
-    const shim = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', ctaG); shim.width = 804; shim.height = 1430; const sg = shim.getContext('2d'); sg.scale(2, 2);
-    ctaG.insertBefore(shim, ctaG.children[1]);
-    const dm = ctaG.querySelector('div[style*="132px"]');
-    P.on((t, tf) => { if (t < 15.4 || t >= 17.35) return; sg.clearRect(0, 0, 402, 715); sg.strokeStyle = 'rgba(255,255,255,.22)'; sg.lineWidth = 2;
-      for (let j = 0; j < 16; j++) { sg.beginPath(); for (let px = -10; px <= 412; px += 8) { const py = 40 + j * 44 + 10 * Math.sin(px * .03 + tf * 1.8 + j * 1.9) + 6 * Math.sin(px * .07 - tf * 2.4 + j); px < 0 ? sg.moveTo(px, py) : sg.lineTo(px, py); } sg.stroke(); }
-      const u = t - 15.45; ctaG.style.transform = `scale(${(1 + .035 * P.tween(t, 15.45, 1.9, 'swing')).toFixed(4)})`; if (dm) { dm.style.translate = `0 ${(4 * Math.sin(u * 3.2)).toFixed(2)}px`; dm.style.rotate = `${(-1.2 * Math.sin(u * 2.1)).toFixed(2)}deg`; } });
-    const band = E.el('div', 'position:absolute;left:-20px;right:-20px;height:140px;top:0;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(235,250,255,.95) 45%,rgba(255,255,255,.9) 55%,rgba(255,255,255,0));opacity:0', world);
-    P.on((t) => { css(band, { opacity: (t >= 15.2 && t < 15.55 ? 1 : 0).toString(), transform: `translateY(${lerp(-160, 760, P.tween(t, 15.2, .3, 'snap')).toFixed(1)}px)` }); });
-    P.use('cta', 'wet-dm');
-
-    // ---- captions: almost none (the type is the picture) ----
+    P.breath = [7.3, 8.35]; P.punchAt = 8.6;
     P.captions([
-      [15.95, 16.6, 'Send this to a founder', 28], [16.6, 17.3, 'with a leaky site.', 28, { 2: RED }],
+      [3.7, 5.4, 'Bots knock on every site.', 26, { 3: RED }], [5.4, 7.1, 'Every day.', 30, { 1: RED }],
+      [15.5, 16.4, 'Website security, handled.', 26, { 2: VIO }],
+      [16.4, 16.95, 'Send this to a founder', 28], [16.95, 17.4, 'who never checks.', 28, { 2: RED }],
     ], { style: 'pill' });
-    const so = P.signoff({ at: 16.7, out: 17.1 });
-    so.style.color = 'rgba(4,18,26,.8)';
-    P.grain({ amount: .025 });
-    S.name = 'Aquarii Tech Studio';
+    P.signoff({ at: 16.95, out: 17.35 });
+
+    S.u = (t, tf) => {
+      // the lock: giant (P1) -> into the URL bar (P2) -> giant and shut (P4) -> back into the bar -> giant again for the loop
+      const big = { x: 201, y: 370, s: 2.3 }, bar = { x: FX + 34, y: FY + 23, s: .26 };
+      const k = clamp(sp(t, 2.75, 'default') - sp(t, 8.3, 'bold') + sp(t, 9.25, 'default') - sp(t, 17.35, 'default'), -.2, 1.2);
+      const lx = lerp(big.x, bar.x, k), ly = lerp(big.y, bar.y, k), ls = lerp(big.s, bar.s, k);
+      lock.setAttribute('transform', `translate(${lx.toFixed(2)} ${ly.toFixed(2)}) scale(${ls.toFixed(4)})`);
+      const open = sp(t, 1.2) - sp(t, 8.55, 'bold');
+      shackle.setAttribute('transform', `translate(24 -8) rotate(${(-32 * open).toFixed(2)}) translate(-24 8) translate(0 ${(-12 * open).toFixed(2)})`);
+      body.setAttribute('fill', open > .5 && t < 8.6 ? '#ffd9d9' : WHITE);
+      lockGlow.setAttribute('opacity', (Math.max(0, open) * (1 - tw(t, 2.5, .3, 'snap')) * .9).toFixed(3));
+      lockGlow.setAttribute('r', (70 + 14 * Math.sin(tf * 6)).toFixed(1));
+      lock.style.opacity = (t > 13.6 && t < 17.35 ? 1 - tw(t, 13.6, .25, 'snap') : 1).toFixed(3);
+      hook.style.opacity = (t < 2.6 ? 1 - tw(t, 2.35, .25, 'snap') : sp(t, 17.5, 'fade')).toFixed(3);
+      hook.style.transform = `translateY(${(t >= 17.5 ? (1 - sp(t, 17.5, 'default')) * 16 : 0).toFixed(1)}px)`;
+      const fo = life(t, 2.8, 13.75, 'fade', .25), fd = tw(t, 2.8, .7);
+      frame.setAttribute('stroke-dashoffset', (1 - fd).toFixed(4)); frame.style.opacity = fo.toFixed(3);
+      const vio = sp(t, 9.3, 'default'); frame.setAttribute('stroke', vio > .5 ? VIO : 'rgba(244,244,248,.55)'); frame.setAttribute('stroke-width', (2 + 2 * vio).toFixed(2));
+      glow.setAttribute('opacity', (vio * fo * (.55 + .2 * Math.sin(tf * 4))).toFixed(3));
+      [barLine, url].forEach((e) => { e.setAttribute('opacity', life(t, 3.2, 13.75, 'fade', .25).toFixed(3)); });
+      page.setAttribute('opacity', (life(t, 3.3, 13.75, 'fade', .25) * .9).toFixed(3));
+      swarm.forEach((c) => { const u = tw(t, c.t0, .9, 'swing'), flee = tw(t, 8.6, .5, 'snap');
+        const mx = (c.sx + c.ex) / 2 + 60, my = (c.sy + c.ey) / 2 - 50, x = (1 - u) * (1 - u) * c.sx + 2 * (1 - u) * u * mx + u * u * c.ex, y = (1 - u) * (1 - u) * c.sy + 2 * (1 - u) * u * my + u * u * c.ey;
+        c.el.setAttribute('transform', `translate(${lerp(x, c.sx, flee).toFixed(1)} ${lerp(y, c.sy, flee).toFixed(1)}) rotate(${(c.rot + 6 * Math.sin(tf * 3 + c.t0 * 7)).toFixed(1)}) scale(.9)`);
+        c.el.setAttribute('opacity', (t < c.t0 ? 0 : sp(t, c.t0, 'fade') * (1 - flee) * (t > 7.2 && t < 8.6 ? .35 : 1)).toFixed(3)); });
+      bounce.forEach((c) => { const a = tw(t, c.t0, .45, 'snap'), b = tw(t, c.t0 + .45, .5, 'swing'), on = t >= c.t0 && t < c.t0 + 1 && t < 13.7;
+        const x = b > 0 ? lerp(c.cx, c.sx, b) : lerp(c.sx, c.cx, a), y = b > 0 ? lerp(c.cy, c.sy, b) : lerp(c.sy, c.cy, a);
+        c.el.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(c.ang * 57.3 + 120 + 160 * b).toFixed(1)})`);
+        c.el.setAttribute('opacity', on ? (sp(t, c.t0, 'fade') * (1 - b)).toFixed(3) : '0');
+        const s = clamp((t - c.t0 - .45) / .4); c.spark.setAttribute('opacity', on && s > 0 && s < 1 ? (1 - P.EASE.snap(s)).toFixed(3) : '0'); c.spark.setAttribute('r', (4 + 18 * P.EASE.swing(s)).toFixed(1)); });
+      tags.forEach(({ el, t0 }) => { const kk = sp(t, t0); css(el, { opacity: life(t, t0, 7.25, 'fade', .2).toFixed(3), transform: `scale(${lerp(.6, 1, kk).toFixed(3)})` }); });
+      quiet.style.opacity = life(t, 7.45, 8.4, 'fade', .2).toFixed(3);
+      checks.forEach(({ el, t0 }) => { const kk = sp(t, t0); css(el, { opacity: life(t, t0, 13.7, 'fade', .22).toFixed(3), transform: `translateX(${((1 - kk) * -24).toFixed(1)}px)` }); });
+      slam.forEach((el, i) => { const t0 = 13.9 + i * .4, kk = sp(t, t0); css(el, { opacity: life(t, t0, 17.3, 'fade', .22).toFixed(3), transform: `translateY(${((1 - kk) * 40).toFixed(1)}px) scale(${lerp(1.15, 1, kk).toFixed(3)})` }); });
+      { const kk = sp(t, 15.2); css(dm, { opacity: life(t, 15.2, 17.3, 'fade', .22).toFixed(3), transform: `scale(${lerp(.7, 1, kk).toFixed(3)})` }); }
+    };
+    S.cuts = [];
+    S.name = 'Is your website actually locked?';
     return { ok: true };
   };
 
-  S.cuts = [12.85, 12.9, 15.2, 15.42, 17.35];                          // hard cuts (the dive flash, the surface break, the loop cut): jumps there are intended
-  S.update = function (E, t) { P.update(t); };
-
-  S.cover = function () {
-    E.frame = 15; S.update(E, .5);
-    P.front.style.opacity = '0'; S.hook.style.display = 'none';            // the square grid crop would cut the top line: the cover line sits in the middle
-    E.el('div', `position:absolute;left:30px;top:250px;width:342px;color:#fff;font:900 64px/.88 Archivo,sans-serif;font-variation-settings:"wdth" 72;letter-spacing:-.035em;text-shadow:0 4px 30px rgba(0,0,0,.6)`, E.scene, `Your site<br>is <span style="color:${RED}">leaking.</span>`);
-  };
+  S.update = function (E, t) { S.u(t, E.frame / 30); P.update(t); };
+  S.cover = function () { E.frame = 0; S.update(E, 0); P.front.style.opacity = '0'; };
   S.cues = () => T.cues || [];
 })();
