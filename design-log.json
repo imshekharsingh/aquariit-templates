@@ -473,22 +473,22 @@
     "id": "2026-10-14-0850",
     "date": "2026-10-14",
     "time": "08:50",
-    "slug": "suddly",
+    "slug": "sentrel",
     "url": "https://templates.aquariit.com/2026-10-14-0850/",
-    "theme": "Soft clay pastel with wobbly soap bubbles, sky blue hero with hot pink and butter accents; laundry pickup subscription",
-    "layout": "strip hero (sliding clay laundry items), marquee band, big-number stats, timeline, 2x2 plan grid, bottom dock bar",
+    "theme": "Dark UI glow, near-black ink with violet signal light, red threat and lime all-clear accents; website security care",
+    "layout": "asymmetric split hero (padlock + status), live-watch radar panel, big-number proof, 3-step process, 3-card plan row, sticky solid header",
     "palette": [
-      "#e8f8ff",
-      "#00a9ec",
-      "#ff4f9a",
-      "#ffd84a",
-      "#0b2a3a"
+      "#0d0d12",
+      "#15151d",
+      "#8b7bff",
+      "#ff4d4d",
+      "#c6ff3d"
     ],
-    "fonts": "Bagel Fat One + Figtree",
-    "motif": "wobbly SVG-displaced soap bubbles and clay laundry (tee, sock, towel stack, detergent, bag)",
-    "animation": "static feTurbulence/feDisplacementMap wobble shapes with transform-only drift, linear() spring reveals, scroll-driven timeline line with fallback, slow strip and marquee",
-    "purpose": "Local service (laundry pickup and delivery subscription with weekly plans)",
-    "description": "A clay-soft laundry pickup page: tap once, the bag leaves tonight and returns folded in 48 hours, with weekly Solo, Pair and Family plans.",
+    "fonts": "Instrument Sans + Martian Mono",
+    "motif": "padlock whose shackle springs shut, conic radar sweep with blocked-threat rows",
+    "animation": "linear() spring shackle close, @property --sweep conic radar, ring pulse, IntersectionObserver reveals",
+    "purpose": "Website security care plans (security service line)",
+    "description": "A dark security-care page: the lock shuts, the radar keeps watching, and Basic, Guarded and Fortress plans keep a small business site updated, backed up and protected.",
     "era": "modern"
   }
 ]
