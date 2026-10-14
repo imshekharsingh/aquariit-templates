@@ -24,6 +24,14 @@ screen recording of the same page. Owner chose variant A (type-first open: hook 
 **Reels:** Tintwell (2026-10-13-0851, film) vs Tidemark (2026-10-11-0939, format B screen recording) and the next daily templates (films). **Measure:** same as E1 (average watch, reach, shares, saves, after ~48 h).
 **Verdict rule:** keep the film if average watch is above the screen-recording reels on at least 2 of 3 films; if equal, drop the film (it costs CPU minutes and authoring time).
 
+## E12 · distribution first, two weeks (owner yes, 14 Oct 2026; runs 15-28 Oct)
+**Why:** films hold viewers (13.5 s of 18) but reach is 4-113 per reel with 0 shares: almost nobody sees them. **What the owner does per post (~10 min):** post at
+19:30 IST, add an Instagram audio track (kit `Search:` terms), share to Stories with a poll sticker, DM it to 5-10 matching people, then comment on the Reel ready
+issue `posted HH:MM audio y/n story y/n dms N`. **Motion freeze:** no engine changes and no new parts during the test (bug fixes and the approved iso-machine trial
+excepted) so a change in reach comes from distribution, not from a different kind of film. **Measure:** Instagram collect (reach, average watch, saves, shares per
+reel) read next to each post's comment. **Verdict (29 Oct):** keep the routine if median reach per reel is at least 3x the 9-14 Oct median and at least one reel
+gets shares; otherwise test the next lever (hook style, posting time). Then decide area 3 of the process review (signature parts).
+
 ## Queue of next ideas
 - E2: hook style: question vs bold claim vs number ("+212% leads").
 - E3: audience: show the template as a *result for a business* (before/after) rather than as a design showcase.
