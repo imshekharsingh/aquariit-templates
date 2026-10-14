@@ -42,6 +42,13 @@ jobs:
           # Only an OPEN pull request counts: a merged one from an earlier push of the same branch name must never be reused.
           n=$(gh pr list --head "$BRANCH" --state open --json number -q '.[0].number')
           if [ -z "$n" ]; then
+            # two quick pushes race: the first run merges the PR and deletes the branch, the second finds no branch. That is fine only if
+            # this run's commit is part of a merged PR (then nothing was lost); otherwise fail loudly.
+            if ! git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null; then
+              merged=$(gh api "repos/${{ github.repository }}/commits/${{ github.sha }}/pulls" -q '[.[] | select(.merged_at != null)] | length')
+              if [ "${merged:-0}" -gt 0 ]; then echo "Already merged by an earlier run of this branch (commit ${{ github.sha }} is in a merged PR)."; exit 0; fi
+              echo "::error::$BRANCH is gone and commit ${{ github.sha }} is not in any merged PR: it may have been lost"; exit 1
+            fi
             ahead=$(gh api "repos/${{ github.repository }}/compare/main...$BRANCH" -q .ahead_by)
             if [ "$ahead" = "0" ]; then echo "Nothing to merge: $BRANCH is already contained in main."; exit 0; fi
             gh pr create --base main --head "$BRANCH" \
