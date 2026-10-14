@@ -8,6 +8,14 @@ The first films sold laundry, food delivery and dentistry. The owner: "I don't d
 ("a site we designed", "the site we protect"). Useful parts per line: web → phone + scan + compare (old vs new); social → gridFill (a month of posts), steps, chat;
 security → P.shield (attacks bounce off), hub (SSL, backups, updates, firewall around the site), meter; edge → route (a request travels via the nearest edge), radial.
 
+## Review every frame, not a few stills (owner, 14 Oct 2026)
+Stills at the cuts miss dead air, stutter and fake-looking moments. After the stills passes, render the full film and run scripts/film/frame-review.py: it measures every
+frame (motion and brightness), flags frozen stretches, unplanned jumps, judder and flashes, draws motion.png and writes contact sheets of every 2nd frame. Look at all of
+them. First use (leaky site v2) found: a 1 s dead hold after the pull-back, red words unreadable on bright water, bead-like jets, unreadable sublines, flat frames while the
+camera rode the water, messages bunched low, and a 2 s motionless ending; all fixed in one pass (v3).
+Realism notes from that pass: liquid reads as liquid when the jet is a tapered ribbon that breaks into drops stretched along their velocity with a highlight; a water body
+needs a depth gradient, light inside it and a bright meniscus; any held shot needs something alive (handheld drift, light moving).
+
 ## What a film is
 A virtual camera over the LIVE template page (CSS 3D transform on one wrapper), so every shot is vector-sharp at any zoom. Every frame is a pure function of the film time: no real-time capture, no jitter.
 Engine: `scripts/film/engine.js` (stage, camera, easing, per-word type reveals, tweens). Story (per template): `film/ID/story.js`. Timing table (shared by picture and sound): `film/ID/timing.json`.
