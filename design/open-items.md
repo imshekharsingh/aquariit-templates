@@ -20,7 +20,7 @@ Every session and every daily run: read this file, ask about the oldest 1-3 open
 ## Closed
 | Raised | Item | Decision |
 |---|---|---|
-| 14 Oct | CTA contact | Owner: "DM us or WhatsApp +91 95356 21491" |
+| 14 Oct | CTA contact | Owner: "DM us" only for now (no phone number) |
 | 14 Oct | Reel copied a reference (pendulum + 'Need X? We got you.' + 'Screenshot this') | Owner: plagiarism, not allowed. Held #103; originality rule added (sources.json + check.mjs); slot re-made with our own leaky-vessel metaphor |
 | 14 Oct | What the reels sell | Owner: Aquarii's own services, never the template's business. Rules in design/services.md, CLAUDE.md, the daily command and check.mjs; Suddly reel re-cut as the studio ad; Gojigo v4 (food delivery) dropped |
 | 13 Oct | Directed film format, variant A | Owner chose A (type-first open); pipeline produces films |

@@ -8,10 +8,11 @@
 //   transition P.scan  P.wave  P.iris  P.blinds  P.zoomThrough  P.whip  P.shapeWipe  P.pendulum (a swinging tag is the wipe)  P.interstitial (cut to a pivot line)
 //   mechanism  P.vessel (OUR metaphor: the site is a vessel, customers the water, pains leak it, services patch it; also an opener)  P.hub  P.route  P.gridFill  P.steps  P.deck  P.meter  P.compare  P.radial (diagram tour + pull-back title)  P.orbit (collage)  (+ P.chat inside P.phone)
 //   focus      P.brackets  P.spotlight  P.lens
-//   payoff     P.riseChips (messages float up: customers who now stay)  P.payoff (warm flood)  P.stamp  P.burst  P.sweep  P.bloom  P.shield (attacks burst on a shield; also a security/edge mechanism: slot 'mechanism')
+//   payoff     P.underwater (dive: caustics, rays, cards rising at three depths)  P.riseChips (messages float up: customers who now stay)  P.payoff (warm flood)  P.stamp  P.burst  P.sweep  P.bloom  P.shield (attacks burst on a shield; also a security/edge mechanism: slot 'mechanism')
 //   type       P.sentence (builds word by word)  P.giant (one huge word)  P.typewriter  P.flipWords (word per beat, ground flips)  P.construct (letters snap together)  P.inlineIcon
 //   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' | 'blur' })   the spine: 1-3 words per card at y 492
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
+//   camera     P.camera (keyed camera with shake; films DOM layers + canvases)   texture  P.grain   (and P.dripWord: wet display type)
 //   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff  + the watermark (automatic, lower centre at y 540: keep that band clear of key text)
 // helpers: P.fade, P.pop, P.rel (measure an element), P.icon/P.icons, P.hexA, P.sm, P.css. Gallery of every option: render the test films in design/film-playbook.md.
 (function () {
@@ -704,28 +705,33 @@
   // =====================================================================================================================================
   // vessel: a browser window holding water. levels: [[t, 0..1]] (eased between keys); holes: [{ side: 'l'|'r', y, open: [[t0, t1], ...], icon, fix: t, fixIcon }]
   // a hole sprays while open and the water stands above it (jet speed grows with the depth); `fix` pops a patch on it; pour: [t0, t1] fills it through the address bar
-  P.vessel = function (parent, { x = 22, y = 200, w = 358, h = 600, bar = 40, url = 'yourbusiness.com', levels = [[0, .6]], holes = [], pour = null, water = ['#1ec8ff', '#0a4fd6'], leak = '#ff5a4f', patch = P.accent, opener = true, loopAt = null } = {}) {   // loopAt: from then on the vessel replays its frame-0 state (seamless loop)
+  P.vessel = function (parent, { x = 22, y = 200, w = 358, h = 600, bar = 40, url = 'yourbusiness.com', levels = [[0, .6]], holes = [], pour = null, water = ['#1ec8ff', '#0a4fd6'], leak = '#ff5a4f', patch = P.accent, opener = true, loopAt = null, cam = null, shards = true } = {}) {   // loopAt: replays its frame-0 state from then on (loop); cam: a P.camera that films it
     P.use('mechanism', 'leaky-vessel'); if (opener) P.use('opener', 'leak-cold-open');
     const top = y + bar, bot = y + h, R = 24, IN = 3;
-    const frame = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;box-sizing:border-box;border-radius:${R}px;border:2px solid rgba(255,255,255,.34);background:rgba(255,255,255,.035)`, parent);
+    const L1 = E.el('div', 'position:absolute;left:0;top:0;width:402px;height:715px;transform-origin:0 0', parent);
+    const frame = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;box-sizing:border-box;border-radius:${R}px;border:2px solid rgba(255,255,255,.34);background:rgba(255,255,255,.035);overflow:hidden`, L1);
+    const glint = E.el('div', 'position:absolute;left:-60%;top:-10%;width:40%;height:120%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.10),rgba(255,255,255,0));transform:skewX(-18deg)', frame);
     const barEl = E.el('div', `position:absolute;left:0;right:0;top:0;height:${bar}px;border-bottom:1px solid rgba(255,255,255,.14);display:flex;align-items:center;gap:6px;padding:0 14px`, frame,
       `<i style="width:8px;height:8px;border-radius:50%;background:#ff6b5e"></i><i style="width:8px;height:8px;border-radius:50%;background:#ffc23d"></i><i style="width:8px;height:8px;border-radius:50%;background:#3ddc84"></i>`);
     E.el('div', `position:absolute;left:70px;right:70px;top:9px;height:22px;border-radius:11px;background:rgba(255,255,255,.08);display:grid;place-items:center;color:rgba(255,255,255,.7);font:500 10.5px/1 ${MONO};letter-spacing:.06em`, barEl, url);
-    const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', parent); cv.width = 804; cv.height = 1430; const g = cv.getContext('2d'); g.scale(2, 2);
+    const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', parent); cv.width = 804; cv.height = 1430; const g = cv.getContext('2d');
+    const L2 = E.el('div', 'position:absolute;left:0;top:0;width:402px;height:715px;transform-origin:0 0', parent);
     const lev = (t) => { let i = 0; while (i < levels.length - 1 && t >= levels[i + 1][0]) i++; const [a, la] = levels[i], [b, lb] = levels[Math.min(i + 1, levels.length - 1)]; return b > a ? lerp(la, lb, ease.io3(clamp((t - a) / (b - a)))) : la; };
     const surf = (t) => bot - IN - lev(t) * (bot - top - IN);
     const hx = (hl) => (hl.side === 'l' ? x + 1 : x + w - 1), dir = (hl) => (hl.side === 'l' ? -1 : 1);
     const isOpen = (hl, t) => (hl.open || []).some(([a, b]) => t >= a && t < b);
     // patches + hole badges (DOM, crisp)
     holes.forEach((hl) => {
-      hl.badge = E.el('div', `position:absolute;left:${hx(hl) - 15 - dir(hl) * 22}px;top:${hl.y - 15}px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:${leak};color:#fff;box-shadow:0 0 16px ${hexA(leak, .7)};opacity:0`, parent, P.icon(hl.icon || 'spark', 17));
-      hl.patchEl = E.el('div', `position:absolute;left:${hx(hl) - 21}px;top:${hl.y - 21}px;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:${patch};color:#0b0d0f;box-shadow:0 0 0 3px ${hexA(patch, .3)},0 0 24px ${hexA(patch, .6)};opacity:0`, parent, P.icon(hl.fixIcon || 'check', 22));
-      hl.ring = E.el('div', `position:absolute;left:${hx(hl) - 30}px;top:${hl.y - 30}px;width:60px;height:60px;border-radius:50%;border:2.5px solid ${patch};opacity:0`, parent);
+      hl.badge = E.el('div', `position:absolute;left:${hx(hl) - 15 - dir(hl) * 22}px;top:${hl.y - 15}px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:${leak};color:#fff;box-shadow:0 0 16px ${hexA(leak, .7)};opacity:0`, L2, P.icon(hl.icon || 'spark', 17));
+      hl.patchEl = E.el('div', `position:absolute;left:${hx(hl) - 21}px;top:${hl.y - 21}px;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:${patch};color:#0b0d0f;box-shadow:0 0 0 3px ${hexA(patch, .3)},0 0 24px ${hexA(patch, .6)};opacity:0`, L2, P.icon(hl.fixIcon || 'check', 22));
+      hl.ring = E.el('div', `position:absolute;left:${hx(hl) - 30}px;top:${hl.y - 30}px;width:60px;height:60px;border-radius:50%;border:2.5px solid ${patch};opacity:0`, L2);
     });
     const SP = .016, LIFE = 1.1, G = 950;
     P.on((t0, tf0) => {
       const t = loopAt != null && t0 >= loopAt ? t0 - P.len : t0, tf = loopAt != null && t0 >= loopAt ? tf0 - P.len : tf0;
-      g.clearRect(0, 0, 402, 715);
+      g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 804, 1430); g.setTransform(2, 0, 0, 2, 0, 0);
+      if (cam) { const c = cam.get(t0); g.translate(201, 357.5); g.rotate(c.r); g.scale(c.s, c.s); g.translate(-c.x, -c.y); const m = cam.css(c); L1.style.transform = m; L2.style.transform = m; }
+      glint.style.transform = `translateX(${(((tf0 * .35) % 1.6) * 260).toFixed(1)}%) skewX(-18deg)`;
       // water, clipped to the window's inside
       const sY = surf(t), slope = Math.abs(lev(t + .05) - lev(t - .05)) * 10, pouring = pour && t >= pour[0] && t < pour[1];
       const amp = Math.min(11, 3 + slope * 40 + (pouring ? 3 : 0));
@@ -747,6 +753,10 @@
       holes.forEach((hl) => {
         const open = isOpen(hl, t), fixed = hl.fix != null && t >= hl.fix && !(hl.open || []).some(([a]) => a > hl.fix && t >= a);
         hl.badge.style.opacity = open && !fixed ? '1' : '0';
+        if (shards) (hl.open || []).forEach(([a0]) => { const u = (t - a0) / .9; if (a0 < 0 || u < 0 || u > 1) return;   // glass shards burst out of a fresh crack
+          for (let q = 0; q < 12; q++) { const j = ((q * 2654435761 + a0 * 1000) >>> 0) / 4294967296, ang = (dir(hl) > 0 ? 0 : Math.PI) + (j - .5) * 2.2, sp = 90 + 160 * j, tt = u * .9;
+            const px = hx(hl) + Math.cos(ang) * sp * tt, py = hl.y + Math.sin(ang) * sp * tt + .5 * 700 * tt * tt, sz = 3 + 6 * ((q * 7919) % 10) / 10;
+            g.save(); g.translate(px, py); g.rotate(j * 9 + tt * (6 + 8 * j)); g.globalAlpha = 1 - u; g.fillStyle = 'rgba(220,240,255,.9)'; g.beginPath(); g.moveTo(-sz, -sz * .4); g.lineTo(sz, -sz * .7); g.lineTo(sz * .2, sz); g.closePath(); g.fill(); g.restore(); } });
         if (open && !fixed) { g.strokeStyle = leak; g.lineWidth = 2.4; g.beginPath(); const X = hx(hl), d = -dir(hl); g.moveTo(X, hl.y - 16); g.lineTo(X + d * 6, hl.y - 7); g.lineTo(X - d * 2, hl.y); g.lineTo(X + d * 7, hl.y + 8); g.lineTo(X, hl.y + 16); g.stroke(); }
         const pk = hl.fix == null ? 0 : ease.spring(clamp((t - hl.fix) / .45));
         css(hl.patchEl, { opacity: (fixed ? clamp((t - hl.fix) / .08) : 0).toFixed(3), transform: `scale(${lerp(1.8, 1, pk).toFixed(3)}) rotate(${((1 - pk) * -30).toFixed(1)}deg)` });
@@ -762,13 +772,13 @@
           const head = hl.y - surf(s0); if (head <= 2) continue;
           const tau = tf - s0, jit = ((n * 2654435761) >>> 0) / 4294967296, v = (38 + 11 * Math.sqrt(head)) * (.85 + .3 * jit);
           const px = hx(hl) + dir(hl) * v * tau, py = hl.y + (jit - .5) * 6 + .5 * G * tau * tau;
-          if (py > 760) continue;
+          if (py > 1000) continue;
           g.globalAlpha = .9; g.beginPath(); g.arc(px, py, 2.4 + 3 * jit, 0, TAU); g.fill();
         }
         g.globalAlpha = 1;
       });
     });
-    return { frame, surf, lev };
+    return { frame, surf, lev, layers: [L1, L2] };
   };
   // rise chips: message chips pop out of a surface and float up through the frame (customers that now stay: enquiries, bookings)
   P.riseChips = function (parent, texts, { at = 13, per = .32, x0 = 60, x1 = 342, from = () => 400, to = 110, dur = 2.4, out = 15.4, icon = 'chat', right = 372 } = {}) {
@@ -784,5 +794,85 @@
       css(el, { opacity: (clamp((t - a) / .1) * (1 - sm(out, out + .3, t)) * (1 - sm(.85, 1, u))).toFixed(3), transform: `translate(${left.toFixed(1)}px,${yy.toFixed(1)}px) scale(${lerp(.4, 1, k).toFixed(3)})` });
     }));
     return chips;
+  };
+
+  // ---- CINEMATOGRAPHY (14 Oct 2026, owner: "this looks boring"): a real camera, depth, texture ----
+  // camera: keys [[t, { x, y, s, r(deg) }, ease?]]: the world point (x, y) sits at the frame centre, zoomed s, rolled r. ease per segment ('io3' default, 'cut' jumps,
+  // 'whip' = fast io with overshoot). shake: [[t0, t1, px]]. Use cam.css(c) on DOM layers (transform-origin 0 0) and the same numbers on canvases (crisp at any zoom).
+  P.camera = function (keys, { shake = [] } = {}) {
+    P.use('camera', 'keyed-camera');
+    const EZ = { io3: ease.io3, lin: (k) => k, out3: ease.out3, in2: ease.in2, whip: (k) => { const b = ease.back(k); return b; }, cut: (k) => (k < 1 ? 0 : 1), ioX: ease.ioX };
+    const get = (t) => {
+      let i = 0; while (i < keys.length - 1 && t >= keys[i + 1][0]) i++;
+      const [a, A] = keys[i], [b, B, ez] = keys[Math.min(i + 1, keys.length - 1)], k = b > a ? (EZ[ez || 'io3'] || ease.io3)(clamp((t - a) / (b - a))) : 1;
+      const c = { x: lerp(A.x, B.x, k), y: lerp(A.y, B.y, k), s: lerp(A.s, B.s, k), r: lerp(A.r || 0, B.r || 0, k) * Math.PI / 180 };
+      shake.forEach(([t0, t1, px]) => { if (t >= t0 && t < t1) { const d = Math.exp(-(t - t0) * 7) * px / c.s; c.x += d * Math.sin(t * 91); c.y += d * Math.cos(t * 73); } });
+      return c;
+    };
+    const css = (c) => `translate(201px,357.5px) rotate(${c.r.toFixed(4)}rad) scale(${c.s.toFixed(4)}) translate(${(-c.x).toFixed(2)}px,${(-c.y).toFixed(2)}px)`;
+    const cam = { get, css, layers: [] };
+    cam.film = (el) => { el.style.transformOrigin = '0 0'; cam.layers.push(el); return el; };
+    P.on((t) => { const c = get(t), m = css(c); cam.layers.forEach((el) => { el.style.transform = m; }); });
+    return cam;
+  };
+  // grain: a light film-grain pass over everything (texture against flat vector look); deterministic per frame
+  P.grain = function ({ amount = .07 } = {}) {
+    P.use('texture', 'grain');
+    const cv = E.el('canvas', `position:absolute;inset:0;width:402px;height:715px;pointer-events:none;mix-blend-mode:overlay;opacity:${amount * 6}`, P.front); cv.width = 201; cv.height = 358; const g = cv.getContext('2d');
+    const img = g.createImageData(201, 358);
+    P.on((t, tf) => { let sd = (Math.round(tf * 30) * 2654435761) >>> 0; for (let i = 0; i < img.data.length; i += 4) { sd = (sd * 1664525 + 1013904223) >>> 0; const v = sd >>> 24; img.data[i] = img.data[i + 1] = img.data[i + 2] = v; img.data[i + 3] = 255; } g.putImageData(img, 0, 0); });
+    return cv;
+  };
+  // drip word: giant display type with drops gathering under the letters and falling (wet type: the brand's water)
+  P.dripWord = function (parent, html, { x = 30, y = 120, size = 96, colour = '#fff', drop = null, at = 0, out = 99, n = 7, w = 342, align = 'left' } = {}) {
+    P.use('type', 'drip-word');
+    const box = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;text-align:${align};color:${colour};font:900 ${size}px/.86 Archivo,sans-serif;font-variation-settings:"wdth" 72;letter-spacing:-.035em;white-space:nowrap`, parent, html);
+    const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px;pointer-events:none', parent); cv.width = 804; cv.height = 1430; const g = cv.getContext('2d'); g.scale(2, 2);
+    const B = () => box.getBoundingClientRect(), pb = parent.getBoundingClientRect(); const bb = B(), left = bb.left - pb.left, right = bb.right - pb.left, base = bb.bottom - pb.top - size * .1;
+    const drops = Array.from({ length: n }, (_, i) => ({ x: lerp(left + 8, right - 8, ((i * .618) % 1)), p: .9 + (i % 3) * .35, ph: (i * .37) % 1 }));
+    P.on((t, tf) => {
+      const vis = t >= at && t < out ? clamp((t - at) / .15) * (1 - clamp((t - out + .15) / .15)) : 0; box.style.opacity = vis.toFixed(3); g.clearRect(0, 0, 402, 715); if (!vis) return;
+      g.fillStyle = drop || colour; g.globalAlpha = vis;
+      drops.forEach((d) => { const u = ((tf / d.p) + d.ph) % 1, grow = clamp(u / .55), fall = clamp((u - .55) / .45);
+        const r = 2 + 4.5 * grow, yy = base + r * .6 + 260 * fall * fall; g.beginPath(); g.ellipse(d.x, yy, r * (1 - fall * .3), r * (1 + fall * .9), 0, 0, TAU); g.fill();
+        if (grow < 1 || fall < .05) { g.beginPath(); g.moveTo(d.x - r * .7, base); g.quadraticCurveTo(d.x, yy - r * 1.6, d.x + r * .7, base); g.fill(); } });
+      g.globalAlpha = 1;
+    });
+    return box;
+  };
+  // underwater: the camera dives under the surface: deep gradient, moving caustic light, god rays, bubbles at three depths, and cards (messages) rising past the
+  // lens at different depths (near ones big and soft, far ones small and dim). The payoff of the vessel story; usable for any "what comes in" moment.
+  P.underwater = function (parent, cards, { at = 13, out = 15.3, top = '#0c86e6', deep = '#03173a', icon = 'chat', accent = P.accent } = {}) {
+    P.use('payoff', 'underwater-dive');
+    const box = E.el('div', `position:absolute;inset:0;overflow:hidden;opacity:0;background:linear-gradient(180deg,${top},${deep} 85%)`, parent);
+    const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', box); cv.width = 804; cv.height = 1430; const g = cv.getContext('2d'); g.scale(2, 2);
+    const D = [{ s: .62, v: 230, blur: 1.6, o: .55 }, { s: 1, v: 340, blur: 0, o: 1 }, { s: 1.55, v: 520, blur: 1.2, o: .95 }];
+    const cs = cards.map((txt, i) => { const d = D[[1, 0, 2, 1, 0, 2, 1][i % 7]];
+      const el = E.el('div', `position:absolute;left:0;top:0;display:flex;align-items:center;gap:8px;padding:9px 15px 9px 10px;border-radius:99px;white-space:nowrap;background:rgba(255,255,255,.96);color:#0b0d0f;font:700 15px/1 Archivo,sans-serif;box-shadow:0 14px 30px rgba(0,20,60,.45);transform-origin:50% 50%;${d.blur ? `filter:blur(${d.blur}px)` : ''}`, box,
+        `<span style="display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:${accent};color:#0b0d0f">${P.icon(icon, 14)}</span>${txt}`);
+      return { el, d, t0: at - .35 + i * .26, x: [70, 250, 150, 300, 40, 200, 110][i % 7] }; });
+    cs.sort((a, b) => a.d.s - b.d.s).forEach((c) => box.appendChild(c.el));     // far ones behind
+    let sd = 17; const rnd = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296; };
+    const bub = Array.from({ length: 70 }, () => ({ x: rnd() * 402, d: rnd(), r: 1 + rnd() * 3.5, p: rnd() }));
+    P.on((t, tf) => {
+      const on = t >= at && t < out + .3; box.style.opacity = on ? (clamp((t - at) / .12) * (1 - clamp((t - out) / .3))).toFixed(3) : '0'; if (!on) return;
+      g.clearRect(0, 0, 402, 715);
+      // god rays
+      g.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < 6; i++) { const cx = 40 + i * 70 + 30 * Math.sin(tf * .6 + i), w2 = 26 + 18 * Math.sin(tf * .9 + i * 2); const gr = g.createLinearGradient(0, 0, 0, 640); gr.addColorStop(0, 'rgba(180,235,255,.20)'); gr.addColorStop(1, 'rgba(180,235,255,0)');
+        g.fillStyle = gr; g.beginPath(); g.moveTo(cx - w2 * .4, -10); g.lineTo(cx + w2 * .4, -10); g.lineTo(cx + w2 * 2 + 60, 640); g.lineTo(cx - w2 * 2 + 60, 640); g.closePath(); g.fill(); }
+      // caustics: two moving sine nets near the top
+      g.strokeStyle = 'rgba(200,245,255,.16)'; g.lineWidth = 2;
+      for (let k = 0; k < 2; k++) for (let j = 0; j < 9; j++) { g.beginPath(); for (let px = -10; px <= 412; px += 8) { const py = j * 34 + 12 * Math.sin(px * .035 + tf * (1.4 + k) + j * 1.7) + 7 * Math.sin(px * .08 - tf * 2 + j); px < 0 ? g.moveTo(px, py) : g.lineTo(px, py); } g.stroke(); }
+      g.globalCompositeOperation = 'source-over';
+      // bubbles (three depths)
+      bub.forEach((b) => { const sp = 60 + b.d * 220, yy = 760 - (((tf - at) * sp + b.p * 800) % 820), xx = b.x + 8 * Math.sin(tf * 2 + b.p * 9);
+        g.strokeStyle = `rgba(220,245,255,${(.25 + .5 * b.d).toFixed(2)})`; g.lineWidth = 1 + b.d; g.beginPath(); g.arc(xx, yy, b.r * (.6 + b.d), 0, TAU); g.stroke(); });
+      // cards rise with depth parallax
+      cs.forEach((c) => { const u = (t - c.t0), w2 = c.el.offsetWidth || 150, yy = 740 - u * c.d.v, k = ease.spring(clamp(u / .5));
+        const ww = w2 * c.d.s, xx = Math.max(26 + (ww - w2) / 2, Math.min(376 - w2 - (ww - w2) / 2, c.x)) + 8 * Math.sin(t * 1.7 + c.x);   // whole card inside the 26 px side margins
+        css(c.el, { opacity: (u < 0 ? 0 : clamp(u / .15) * c.d.o).toFixed(3), transform: `translate(${xx.toFixed(1)}px,${yy.toFixed(1)}px) scale(${(c.d.s * lerp(.7, 1, k)).toFixed(3)}) rotate(${(4 * Math.sin(t * 1.3 + c.x)).toFixed(2)}deg)` }); });
+    });
+    return box;
   };
 })();

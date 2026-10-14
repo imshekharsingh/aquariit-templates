@@ -38,7 +38,7 @@ The daily template still gets made (the site is our portfolio of range), but it 
 
 ## The CTA
 Every reel ends on Aquarii: the send line names who should get it ("Send this to a founder with a leaky site"), then the CTA (owner, 14 Oct 2026):
-**"DM us or WhatsApp +91 95356 21491"**, on screen in the film's last seconds and as the last caption line.
+**"DM us"** (owner, 14 Oct 2026: DM only for now, no phone number anywhere), on screen in the film's last seconds and as the last caption line.
 
 ## Originality (owner, 14 Oct 2026)
 A reel that rebuilds a reference reel is plagiarism, even with our text in it. Learn the idea and the timing from references, then build our own picture: our own
