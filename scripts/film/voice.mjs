@@ -20,9 +20,9 @@ const T = JSON.parse(readFileSync(join(root, 'film', id, 'timing.json'), 'utf8')
 const lines = readFileSync(join(root, 'film', id, 'voice.md'), 'utf8').split('\n').map((l) => l.match(/^- \[([\d.]+)-([\d.]+)\]\s+(.+)$/)).filter(Boolean)
   .map(([, a, b, text]) => ({ t0: +a, t1: +b, text: text.trim(), words: text.trim().split(/\s+/).length }));
 let bad = 0;
-for (const l of lines) { l.wps = +(l.words / (l.t1 - l.t0)).toFixed(2); const flag = l.wps > 2.6 ? 'TOO FAST' : l.wps > 2.2 ? 'brisk' : 'ok';
-  if (l.wps > 2.6 || l.t1 > LEN - .4) bad++; console.log(`  [${l.t0}-${l.t1}] ${l.words} words, ${l.wps} w/s ${flag}: ${l.text}`); }
-if (!lines.length || bad) { console.error('voice.md: fix the lines above (max 2.6 words/s for a calm voice, speech must end before', LEN - .4, 's)'); process.exit(1); }
+for (const l of lines) { l.wps = +(l.words / (l.t1 - l.t0)).toFixed(2); const flag = l.wps > 2.9 ? 'TOO FAST' : l.wps < 1.9 ? 'TOO SPARSE (pause)' : 'ok';
+  if (l.wps > 2.9 || l.wps < 1.9 || l.t1 > LEN - .4) bad++; console.log(`  [${l.t0}-${l.t1}] ${l.words} words, ${l.wps} w/s ${flag}: ${l.text}`); }
+if (!lines.length || bad) { console.error('voice.md: fix the lines above (1.9-2.9 words per second of each line\'s slot: natural pace, no long pauses; speech must end before', LEN - .4, 's)'); process.exit(1); }
 
 // ---- 2. speak ----
 const lj = join(OUT, 'lines.json'), raw = join(OUT, 'voice-raw.wav'), tj = join(OUT, 'voice-timing.json');
@@ -36,6 +36,10 @@ const py = run('python3', [join(root, 'scripts/film/voice_kokoro.py'), lj, raw, 
 const VT = JSON.parse(readFileSync(tj, 'utf8'));
 for (const s of VT.lines) { const l = lines[s.line]; if (s.end > l.t1 + .35) console.log(`::warning::line ${s.line + 1} runs ${(s.end - l.t1).toFixed(2)} s past its shot`); }
 const speechEnd = Math.max(...VT.lines.map((s) => s.end));
+// no noticeable pauses (owner, 15 Oct 2026): a silence of more than 0.6 s between lines fails, except the film's declared breath before the reveal
+const br = T.breath || [0, 0], gaps = [];
+for (let i = 1; i < VT.lines.length; i++) { const a = VT.lines[i - 1].end, b = VT.lines[i].start; if (b - a > .6 && !(a >= br[0] - .9 && b <= br[1] + .9)) gaps.push(`${a.toFixed(2)}-${b.toFixed(2)} s`); }
+if (gaps.length) { console.error('voice: pauses longer than 0.6 s between lines:', gaps.join(', '), '- add words to the line before, or start the next line earlier'); process.exit(1); }
 if (speechEnd > LEN - .2) { console.error('speech overruns the film:', speechEnd, 's'); process.exit(1); }
 
 // ---- 3. mix ----

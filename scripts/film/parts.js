@@ -1283,7 +1283,7 @@
   //   W.chip(x, y, { w, h, color, icon, label, k })   a glossy component (icon: phone | server | dns | edge | shield); k = appear 0..1
   //   W.burst(x, y, k, { color, n, seed })            a particle burst at progress k (bots hitting a shield)
   //   W.at(pts, u) -> [x, y]                          a point on the path
-//   premium (design/brand/premium.md): W.spot(x,y,r) soft light · W.glassNode(x,y,{r,k,coreOn,label,sub}) · W.beam(pts,k) thin light line · W.pulse(pts,u) light pulse with a tail
+//   premium (design/brand/premium.md): W.globe(t,{x,y,r,spin,alpha}) dotted turning globe (depth layer) · W.spot(x,y,r) soft light · W.glassNode(x,y,{r,k,coreOn,label,sub}) · W.beam(pts,k) thin light line · W.pulse(pts,u) light pulse with a tail
   // =====================================================================================================================================
   P.sys = function (parent, { bg = '#060A14', dpr = 2 } = {}) {
     P.use('mechanism', 'system-map');
@@ -1362,6 +1362,20 @@
         for (let i = 0; i < 24; i++) { const a = u - trail * i / 24, b = u - trail * (i + 1) / 24; if (b < 0) break; const [x1, y1] = toS(...at(pts, a)), [x2, y2] = toS(...at(pts, b));
           ctx.globalAlpha = (1 - i / 24) * .8 * W.fade; ctx.strokeStyle = color; ctx.lineWidth = r * cam.s * (1 - i / 30); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
         const [x, y] = toS(...at(pts, u)); ctx.globalAlpha = W.fade; ctx.shadowColor = color; ctx.shadowBlur = 14; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y, r * cam.s * .8, 0, 6.283); ctx.fill(); ctx.restore(); },
+      // a dotted globe (generative: Fibonacci points, a smooth noise mask for land), slowly turning; world space, so the camera moves over it.
+      // The depth layer of a premium frame: rich detail at low contrast behind the subject (premium.md "three layers").
+      globe(t, { x = 201, y = 380, r = 230, spin = .05, alpha = 1, color = '150,175,255', hot = null } = {}) {
+        if (!W._gp) { const N = 900, g = 2.399963; W._gp = [];
+          for (let i = 0; i < N; i++) { const yy = 1 - 2 * (i + .5) / N, rr = Math.sqrt(1 - yy * yy), th = g * i, px = Math.cos(th) * rr, pz = Math.sin(th) * rr;
+            const lat = Math.asin(yy), lon = Math.atan2(pz, px), land = Math.sin(lon * 2.1 + .6) * Math.cos(lat * 3.1) + .6 * Math.sin(lon * 4.7 - lat * 2.3) + .35 * Math.cos(lon * 7.9 + lat * 5.2);
+            W._gp.push([lat, lon, land > .35 ? 1 : land > -.1 ? .42 : .16]); } }
+        const [sx, sy] = toS(x, y), R = r * cam.s, rot = t * spin; ctx.save();
+        const halo = ctx.createRadialGradient(sx, sy, R * .7, sx, sy, R * 1.25); halo.addColorStop(0, 'rgba(60,100,230,0)'); halo.addColorStop(.8, `rgba(${color},${(.10 * alpha).toFixed(3)})`); halo.addColorStop(1, 'rgba(60,100,230,0)');
+        ctx.globalAlpha = W.fade; ctx.fillStyle = halo; ctx.fillRect(sx - R * 1.3, sy - R * 1.3, R * 2.6, R * 2.6);
+        for (const [lat, lon, w] of W._gp) { const l = lon + rot, cx = Math.cos(lat) * Math.cos(l), cz = Math.cos(lat) * Math.sin(l), cy = Math.sin(lat); if (cz < -.15) continue;
+          const d = (cz + .15) / 1.15; ctx.globalAlpha = W.fade * alpha * w * (.15 + .85 * d); ctx.fillStyle = `rgb(${color})`;
+          const q = (1 + 1.1 * w) * Math.max(.7, cam.s) * (.6 + .4 * d); ctx.fillRect(sx + cx * R - q / 2, sy - cy * R - q / 2, q, q); }
+        ctx.restore(); },
       burst(x, y, k, { color = '#FF5A4F', n = 14, seed: sd = 1 } = {}) {
         if (k <= 0 || k >= 1) return; const [sx, sy] = toS(x, y); ctx.save(); glow(color, 12);
         for (let i = 0; i < n; i++) { const a = (i / n) * 6.283 + sd * 1.7, d = (8 + 34 * P.EASE.glide(k)) * (0.6 + ((i * 37 + sd * 11) % 10) / 20) * cam.s;

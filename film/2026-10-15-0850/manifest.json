@@ -3,16 +3,17 @@
   "made": "2026-10-15T03:28:07.228Z",
   "slots": {
     "ground": [
-      "deep-colour"
+      "deep-colour",
+      "dot-globe"
     ],
     "opener": [
-      "spotlight-type"
+      "loading-phone-type"
     ],
     "transition": [
       "calm-glide"
     ],
     "payoff": [
-      "light-path-shrinks"
+      "edges-light-every-city"
     ],
     "type": [
       "premium-minimal"
@@ -33,9 +34,9 @@
   "dna": {
     "service": "edge",
     "format": "problem-fix",
-    "opening": "premium type in a soft spotlight: \"Is your site / slow abroad?\" settling word by word on navy",
-    "bigMoment": "a real 3D glass edge node descends onto a mirror floor and its lime core lights, then the light path shrinks from 7,200 km to next door",
-    "ground": "cinematic navy with soft blue light, glass and one lime accent",
+    "opening": "premium type over a phone stuck loading: \"Is your website / slow abroad?\" with a skeleton page, a spinner and a load timer counting up",
+    "bigMoment": "a real 3D edge node lands on a mirror floor, its lime core lights and six more edge nodes come online around it, then every city gets an edge and the counters snap to fast",
+    "ground": "cinematic navy with a slowly turning dotted globe, soft blue light, glass and one lime accent",
     "music": "warm ambient pads with a soft pulse, rising gently into the edge reveal, about 90 BPM"
   }
 }

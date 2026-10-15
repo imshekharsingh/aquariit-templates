@@ -40,9 +40,19 @@ while i + W15 < n:
     if not any(i / FPS <= c <= (i + W15) / FPS for c in cuts) and np.abs(g[i + W15] - g[i]).mean() > 14 * kc: moves.append(round(i / FPS, 1)); i += W15
     else: i += int(.5 * FPS)
 shots = len(cuts) + len(moves)
+# fullness (owner, 15 Oct 2026: "the component count is really minimum"): once a second, the share of the frame that holds visible detail
+# (16 px tiles at 180x320 with edges in them). A premium frame has a subject, supporting detail and a depth layer; under 25% reads as an empty screen.
+rawf = subprocess.run(['ffmpeg', '-loglevel', 'error', '-i', video, '-vf', 'fps=1,scale=180:320', '-f', 'rawvideo', '-pix_fmt', 'gray', '-'], capture_output=True, check=True).stdout
+ff = np.frombuffer(rawf, np.uint8).reshape(-1, 320, 180).astype(np.float32)
+def cover(f):
+    m = np.hypot(np.abs(np.diff(f, axis=1))[:-1, :], np.abs(np.diff(f, axis=0))[:, :-1]) > 10
+    H, Wd = m.shape; return float((m[:H // 16 * 16, :Wd // 16 * 16].reshape(H // 16, 16, Wd // 16, 16).mean(axis=(1, 3)) > .02).mean())
+covers = [cover(f) for f in ff]
+sparse = [i for i, c in enumerate(covers) if c < .25]
 rules = [
     ('shots', shots >= 6, f'{shots} new pictures ({len(cuts)} cuts + {len(moves)} camera moves; need 6+, one every 1.5-2.5 s)'),
     ('static', longest < (3.5 if dur > 22 else 3.0), f'longest unchanged framing {longest:.1f} s at {at:.1f} s (max {3.5 if dur > 22 else 3.0} s)'),
+    ('fullness', len(sparse) <= .3 * len(covers), f'{len(sparse)} of {len(covers)} seconds look empty (under 25% of the frame holds detail; max 30%){": " + ", ".join(f"{i}s" for i in sparse) if sparse else ""}'),
     ('ending', tail > .5 * avg, f'motion before the ending {tail:.2f} vs film average {avg:.2f} (dead ending if under 50%)'),
 ]
 warn = [('contrast', contrast >= 30, f'contrast {contrast:.0f} (30+ advised; pale reels wash out on phones)')]
@@ -51,6 +61,6 @@ for k, good, msg in rules: print(('PASS ' if good else 'FAIL ') + f'{k:9s} {msg}
 for k, good, msg in warn: print(('PASS ' if good else 'WARN ') + f'{k:9s} {msg}')
 print('GATE:', 'PASS' if ok else 'FAIL', f'({dur:.1f} s, cuts at {cuts})')
 if '--json' in args:
-    json.dump({'pass': ok, 'cuts': cuts, 'moves': moves, 'longestStatic': longest, 'staticAt': at, 'tailMotion': float(tail), 'avgMotion': float(avg), 'contrast': contrast, 'warnings': [m for k, good, m in warn if not good],
+    json.dump({'pass': ok, 'cuts': cuts, 'moves': moves, 'longestStatic': longest, 'staticAt': at, 'tailMotion': float(tail), 'avgMotion': float(avg), 'contrast': contrast, 'fullness': covers, 'warnings': [m for k, good, m in warn if not good],
                'rules': {k: {'pass': bool(good), 'note': msg} for k, good, msg in rules}}, open(args[args.index('--json') + 1], 'w'), indent=1)
 sys.exit(0 if ok else 1)

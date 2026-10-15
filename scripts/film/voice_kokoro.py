@@ -11,11 +11,11 @@ SR, LEN = 24000, float(sys.argv[5]) if len(sys.argv) > 5 else 18.0   # film leng
 buf, words, spans = np.zeros(int(LEN * SR), dtype=np.float32), [], []
 for i, ln in enumerate(lines):
     off = ln['t0']
-    # fit the shot: speak once, and if the line is longer than its shot, say it again a little faster (max 1.3x) so it ends on time
+    # fit the shot: measure the line at 1.0x, then speak it at the pace that fills its slot
     slot = max(.5, ln['t1'] - ln['t0'])
-    probe = sum(len(r.audio) for r in pipe(ln['text'], voice=VOICE, speed=0.95)) / SR       # calm, natural pace (owner: the voice felt rushed)
-    speed = 0.95 if probe <= slot else min(1.05, 0.95 * probe / slot * 1.02)
-    if speed > 1: print(f"line {i + 1}: {probe:.2f} s for a {slot:.2f} s shot -> speed {speed:.2f}")
+    probe = sum(len(r.audio) for r in pipe(ln['text'], voice=VOICE, speed=1.0)) / SR        # natural pace (owner, 15 Oct 2026: 0.95 + short lines left noticeable pauses)
+    speed = min(1.08, max(.92, probe / slot * 1.03))   # fill the slot at a natural pace (0.92-1.08x): no trailing silence, never rushed
+    if abs(speed - 1) > .04: print(f"line {i + 1}: {probe:.2f} s for a {slot:.2f} s shot -> speed {speed:.2f}")
     for r in pipe(ln['text'], voice=VOICE, speed=speed):
         a = r.audio.cpu().numpy() if hasattr(r.audio, 'cpu') else np.asarray(r.audio)
         s = int(off * SR); e = min(len(buf), s + len(a)); buf[s:e] += a[: e - s]
