@@ -13,8 +13,8 @@ speech_end = None
 for i, ln in enumerate(lines):
     # J-cut (owner, 15 Oct 2026: no noticeable pauses): a line starts at most 0.35 s after the previous line's last spoken sound, even if that is a little
     # before its picture beat; a line marked keep (the first line after the breath) waits for its beat
-    # (never more than 0.5 s ahead of its beat, so the voice cannot drift away from the picture)
-    off = ln['t0'] if speech_end is None or ln.get('keep') else max(speech_end + .18, min(ln['t0'], max(speech_end + .35, ln['t0'] - .5)))
+    # (never more than 0.8 s ahead of its beat, so the voice cannot drift away from the picture)
+    off = ln['t0'] if speech_end is None or ln.get('keep') else max(speech_end + .18, min(ln['t0'], max(speech_end + .35, ln['t0'] - .8)))
     # fit the shot: measure the line at 1.0x, then speak it at the pace that fills its slot
     slot = max(.5, ln['t1'] - ln['t0'])
     probe = sum(len(r.audio) for r in pipe(ln['text'], voice=VOICE, speed=1.0)) / SR        # natural pace (owner, 15 Oct 2026: 0.95 + short lines left noticeable pauses)
