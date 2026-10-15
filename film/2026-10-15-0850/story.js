@@ -100,12 +100,12 @@
     const tag = T('Fast everywhere.<br><span style="color:' + B.blue + ';text-shadow:0 0 18px rgba(47,107,255,.6)">Protected everywhere.</span>', 'top:420px;font-size:32px;line-height:1.15');
     P.on((t) => { const k1 = sp(t, 5.75, 'fade'); p1.style.opacity = (k1 * (1 - tw(t, 7.1, .2, 'snap'))).toFixed(3); p1.style.transform = `translateX(${((1 - k1) * -30).toFixed(1)}px)`;
       br.style.opacity = (P.springAt(t, 7.55, 'fade') * (1 - tw(t, 8.4, .15, 'snap'))).toFixed(3);
-      const kb = sp(t, 13.95, 'bold'); big.style.opacity = (clamp(kb * 1.4) * (1 - tw(t, 16.0, .15, 'snap'))).toFixed(3);   // flies from the HUD's corner to centre
+      const kb = sp(t, 13.95, 'bold'); big.style.opacity = (clamp(kb * 1.4) * (1 - tw(t, 15.45, .15, 'snap'))).toFixed(3);   // flies from the HUD's corner to centre
       big.style.transform = `translate(${lerp(120, 0, kb).toFixed(1)}px,${lerp(-150, 0, kb).toFixed(1)}px) scale(${lerp(.14, 1, kb).toFixed(3)})`;
-      const kt = sp(t, 14.6); tag.style.opacity = (clamp(kt * 1.3) * (1 - tw(t, 16.0, .15, 'snap'))).toFixed(3); tag.style.transform = `translateY(${((1 - kt) * 18).toFixed(1)}px)`; });
+      const kt = sp(t, 14.6); tag.style.opacity = (clamp(kt * 1.3) * (1 - tw(t, 15.45, .15, 'snap'))).toFixed(3); tag.style.transform = `translateY(${((1 - kt) * 18).toFixed(1)}px)`; });
 
     P.captions([[2.7, 5.4, 'One far-away server.', 26, { 2: B.coral }], [8.8, 11.8, 'Close to every shopper.', 26, { 3: B.lime }], [12.2, 13.7, 'Bad bots get blocked.', 26, { 1: B.coral }]], { style: 'pill' });
-    P.brandEnd({ at: 16.1, keyword: 'FAST' });
+    P.brandEnd({ at: 15.6, keyword: 'FAST', why: 'What’s slowing your site down?', fit: 'We’ll find the package that fits you.' });
     S.name = 'Kitebox edge v3';
     return { ok: true };
   };
