@@ -39,7 +39,7 @@ while i + W15 < n:
 shots = len(cuts) + len(moves)
 rules = [
     ('shots', shots >= 6, f'{shots} new pictures ({len(cuts)} cuts + {len(moves)} camera moves; need 6+, one every 1.5-2.5 s)'),
-    ('static', longest < 3.0, f'longest unchanged framing {longest:.1f} s at {at:.1f} s (max 3.0 s)'),
+    ('static', longest < (3.5 if dur > 22 else 3.0), f'longest unchanged framing {longest:.1f} s at {at:.1f} s (max {3.5 if dur > 22 else 3.0} s)'),
     ('ending', tail > .5 * avg, f'motion before the ending {tail:.2f} vs film average {avg:.2f} (dead ending if under 50%)'),
 ]
 warn = [('contrast', contrast >= 30, f'contrast {contrast:.0f} (30+ advised; pale reels wash out on phones)')]

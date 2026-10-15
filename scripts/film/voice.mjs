@@ -20,9 +20,9 @@ const T = JSON.parse(readFileSync(join(root, 'film', id, 'timing.json'), 'utf8')
 const lines = readFileSync(join(root, 'film', id, 'voice.md'), 'utf8').split('\n').map((l) => l.match(/^- \[([\d.]+)-([\d.]+)\]\s+(.+)$/)).filter(Boolean)
   .map(([, a, b, text]) => ({ t0: +a, t1: +b, text: text.trim(), words: text.trim().split(/\s+/).length }));
 let bad = 0;
-for (const l of lines) { l.wps = +(l.words / (l.t1 - l.t0)).toFixed(2); const flag = l.wps > 3 ? 'TOO FAST' : l.wps > 2.6 ? 'brisk' : 'ok';
-  if (l.wps > 3 || l.t1 > LEN - .4) bad++; console.log(`  [${l.t0}-${l.t1}] ${l.words} words, ${l.wps} w/s ${flag}: ${l.text}`); }
-if (!lines.length || bad) { console.error('voice.md: fix the lines above (max 3 words/s, speech must end before', LEN - .4, 's)'); process.exit(1); }
+for (const l of lines) { l.wps = +(l.words / (l.t1 - l.t0)).toFixed(2); const flag = l.wps > 2.6 ? 'TOO FAST' : l.wps > 2.2 ? 'brisk' : 'ok';
+  if (l.wps > 2.6 || l.t1 > LEN - .4) bad++; console.log(`  [${l.t0}-${l.t1}] ${l.words} words, ${l.wps} w/s ${flag}: ${l.text}`); }
+if (!lines.length || bad) { console.error('voice.md: fix the lines above (max 2.6 words/s for a calm voice, speech must end before', LEN - .4, 's)'); process.exit(1); }
 
 // ---- 2. speak ----
 const lj = join(OUT, 'lines.json'), raw = join(OUT, 'voice-raw.wav'), tj = join(OUT, 'voice-timing.json');
@@ -44,7 +44,7 @@ const vChain = 'highpass=f=80,deesser=i=0.35:m=0.5:f=0.5,acompressor=threshold=0
 const m = run('ffmpeg', ['-hide_banner', '-i', raw, '-af', `${vChain},loudnorm=I=-16:TP=-1.5:LRA=7:print_format=json`, '-f', 'null', '-'], true);
 const j = JSON.parse(m.stderr.slice(m.stderr.lastIndexOf('{'), m.stderr.lastIndexOf('}') + 1));
 run('ffmpeg', ['-y', '-loglevel', 'error', '-i', raw, '-af', `${vChain},loudnorm=I=-16:TP=-1.5:LRA=7:measured_I=${j.input_i}:measured_TP=${j.input_tp}:measured_LRA=${j.input_lra}:measured_thresh=${j.input_thresh}:offset=${j.target_offset}:linear=true,aresample=48000`, '-ac', '2', '-c:a', 'pcm_f32le', vProc]);
-await writeSfx(sfx, T, { raw: true });
+await writeSfx(sfx, { ...T, id }, { raw: true });
 const duck = VT.lines.map((s) => `between(t,${(s.start - .08).toFixed(2)},${(s.end + .15).toFixed(2)})`).join('+');   // effects -6 dB under speech
 run('ffmpeg', ['-y', '-loglevel', 'error', '-i', vProc, '-i', sfx, '-filter_complex',
   `[1:a]aresample=48000,highpass=f=90,volume=0.45,volume=0.501:enable='${duck}'[s];[0:a][s]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.84:attack=3:release=50:level=disabled,atrim=0:${LEN}[o]`,

@@ -35,7 +35,7 @@ jobs:
   publish:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 55   # 28 s films with 3D hero shots render for ~35-45 min
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
@@ -84,9 +84,21 @@ jobs:
         with:
           path: ~/.cache/huggingface
           key: kokoro-82m-0.9.4-af_heart
+      - name: Cache the licensed sound pack (CC0)
+        if: steps.pick.outputs.skip != 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/aquarii-sfx
+          key: aquarii-sfx-kenney-v1
+      - name: Licensed sound pack (CC0, Kenney; falls back to the film's own effects)
+        if: steps.pick.outputs.skip != 'true'
+        continue-on-error: true
+        run: bash scripts/audio/sfx-pack.sh
       - name: Voice-over (films with film/ID/voice.md; AI voice, owner plan 15 Oct 2026)
         if: steps.pick.outputs.skip != 'true'
-        continue-on-error: true   # a voice failure never blocks the reel: it renders with effects only and the issue says so
+        continue-on-error: true   # a voice failure never blocks the reel
+        env:
+          SFX_DIR: /home/runner/.cache/aquarii-sfx   # a voice failure renders with effects only and the issue says so
         run: |
           ID="${{ steps.pick.outputs.id }}"
           pip install numpy==2.1.3
@@ -97,6 +109,8 @@ jobs:
           else echo "no film/$ID/voice.md: no voice-over"; fi
       - name: Render the reel
         if: steps.pick.outputs.skip != 'true'
+        env:
+          SFX_DIR: /home/runner/.cache/aquarii-sfx
         run: |
           set -o pipefail
           ID="${{ steps.pick.outputs.id }}"

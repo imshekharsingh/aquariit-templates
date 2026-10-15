@@ -12,12 +12,14 @@
 - English captions and AI voice-over (keep the voice; owner wants to hear more voice variations).
 - One recognisable Aquarii look on every reel: one palette, one font, one logo mark, one ending. Replaces "every reel looks like its own brand".
 - New brand kit; the water-wave (zigzag) icon is replaced.
-- Ending: why to DM (talk through your needs / pain points), the DM keyword, then "we'll find the package that fits you" + follow. No prices, no free promises. The owner replies to DMs within a few hours.
+- Ending: why to DM (talk through your needs / pain points), the DM keyword, then "we'll find the package that fits you" + follow; the spoken/on-screen close is "DM us to know more" (owner, 15 Oct 2026). No prices, no free promises. The owner replies to DMs within a few hours.
 - 3-4 reels a week: Mon, Wed, Fri, Sun, posted at 19:30 IST. Templates drop to the same days (one proof page per reel).
 - Weekly mix (rotate): problem -> fix story; mini tutorial with voice; makeover (old site -> modern site); offer (one package explained, no price: "DM us for pricing that fits you").
 - Final gate: the owner watches each reel once and replies "post" or "fix" in the Claude chat.
 
 ## Reel recipe (every film)
+- Premium test (owner, 15 Oct 2026, "go full"): 26-30 s, calm "cinematic tech" look per design/brand/premium.md (one idea per frame, navy/white/lime, glass and light,
+  one 3D hero shot, 1-1.5 s holds), voice af_heart at about 2 words/s, ending "DM us to know more". If the owner approves the 2026-10-15-0850 test, this replaces the 18 s line below.
 - 8-10 shots in 18 s, a cut every 1.5-2.5 s; shot types: wide, push-in, close-up, full-width type card.
 - Hook fills the width in the first second; one visible change per shot; high-contrast palette.
 - Payoff transforms the picture at 13-16 s; CTA 16-18 s; no dead ending.

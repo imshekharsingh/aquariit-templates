@@ -10,13 +10,23 @@
 //   sub    {t0,t1,g?}                 low swell
 import { join, dirname } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { Bus, V, SR, writeWav, writeIR } from './synth.mjs';
 
 export async function writeSfx(outPath, T, opts = {}) {
   const LEN = T.len + .6, dry = new Bus(LEN), send = new Bus(LEN);
+  // licensed sample pack (scripts/audio/sfx-pack.sh, CC0): when present, each cue plays a real sound chosen deterministically from its kind, so reels sound varied
+  const PK = process.env.SFX_DIR && existsSync(join(process.env.SFX_DIR, 'index.json')) ? JSON.parse(readFileSync(join(process.env.SFX_DIR, 'index.json'), 'utf8')) : null;
+  const seed = [...String(T.id || T.len)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7);
+  const play = (kind, at, g, endAt) => { const list = PK && PK[kind]; if (!list) return false;
+    const f = list[(seed + Math.round(at * 1000)) % list.length], r = spawnSync('ffmpeg', ['-loglevel', 'error', '-i', f, '-ac', '2', '-ar', String(SR), '-f', 'f32le', '-'], { maxBuffer: 1 << 26 });
+    if (r.status !== 0) return false; const bytes = r.stdout.length - (r.stdout.length % 8), a = new Float32Array(r.stdout.buffer.slice(r.stdout.byteOffset, r.stdout.byteOffset + bytes)), n = a.length / 2;
+    let pk = 1e-6; for (let i = 0; i < a.length; i++) pk = Math.max(pk, Math.abs(a[i])); const k = (g ?? .4) * .9 / pk, st = Math.round(((endAt != null ? endAt - n / SR : at)) * SR);
+    for (let i = 0; i < n; i++) { const j = st + i; if (j >= 0 && j < dry.n) { dry.L[j] += a[2 * i] * k; dry.R[j] += a[2 * i + 1] * k; if (j < send.n) { send.L[j] += a[2 * i] * k * .25; send.R[j] += a[2 * i + 1] * k * .25; } } }
+    return true; };
   for (const c of T.cues || []) {
     const g = c.g;
+    if (PK && (c.k === 'whoosh' || c.k === 'riser') ? play(c.k, c.t0, g, c.t1) : PK && ['click', 'tick', 'impact', 'sparkle'].includes(c.k) && play(c.k, c.t, g)) continue;
     switch (c.k) {
       case 'whoosh': V.whoosh(dry, c.t0, c.t1, g ?? .4, send, c.f0 ?? 300, c.f1 ?? 5000, c.tail ?? .25); break;
       case 'riser': V.riser(dry, c.t0, c.t1, g ?? .4, send); break;

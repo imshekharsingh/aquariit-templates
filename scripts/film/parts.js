@@ -626,7 +626,8 @@
   P.LOGO = `<defs> <linearGradient id="aqL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8DB8FF"/><stop offset=".45" stop-color="#3F7BFF"/><stop offset="1" stop-color="#1B3FBF"/></linearGradient> <linearGradient id="aqR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2F7FF"/><stop offset=".3" stop-color="#9FC2FF"/><stop offset=".7" stop-color="#4F86FF"/><stop offset="1" stop-color="#2450D8"/></linearGradient> <linearGradient id="aqB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4D84FF"/><stop offset="1" stop-color="#1A3BAE"/></linearGradient> <linearGradient id="aqS" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1B3FBF"/><stop offset=".55" stop-color="#4F86FF"/><stop offset="1" stop-color="#A9CBFF"/></linearGradient> <linearGradient id="aqT" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3F7BFF"/><stop offset="1" stop-color="#7FB0FF"/></linearGradient> <radialGradient id="aqG" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#3F7BFF" stop-opacity=".5"/><stop offset=".6" stop-color="#3F7BFF" stop-opacity=".18"/><stop offset="1" stop-color="#3F7BFF" stop-opacity="0"/></radialGradient> <filter id="aqF" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter> </defs> <ellipse cx="270" cy="160" rx="250" ry="140" fill="url(#aqG)"/> <g filter="url(#aqF)"> <path d="M60 232 L165 92 L198 140 L150 232 Z" fill="url(#aqB)"/> <path d="M165 92 L130 160 L150 150 L176 112 Z" fill="#0A1A4A" opacity=".55"/> <path d="M120 232 L262 20 L300 76 L210 232 Z" fill="url(#aqL)"/> <path d="M262 20 L360 165 L300 210 L250 120 Z" fill="url(#aqR)"/> <path d="M262 20 L274 66 L250 120 L238 70 Z" fill="#FFFFFF"/> <path d="M262 20 L232 96 L250 86 L262 58 Z" fill="#0A1A4A" opacity=".45"/> <path d="M262 20 L300 76" stroke="#FFFFFF" stroke-width="3" opacity=".9"/> <path d="M250 232 L318 150 L372 232 Z" fill="url(#aqB)"/> <path d="M318 150 L334 172" stroke="#CFE0FF" stroke-width="3" opacity=".8"/> <path d="M318 150 L300 190 L322 174 Z" fill="#0A1A4A" opacity=".5"/> <g fill="none" stroke="url(#aqT)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"> <path d="M318 200 L360 168 L408 126 L432 126"/><path d="M340 214 L392 172 L452 172"/><path d="M362 226 L410 212 L432 212"/> </g> <g fill="#071233" stroke="#7FB0FF" stroke-width="9"><circle cx="452" cy="126" r="16"/><circle cx="472" cy="172" r="16"/><circle cx="452" cy="212" r="16"/></g> <path d="M40 262 C150 222 330 214 470 236 C500 242 488 262 452 262 C470 256 474 248 450 245 C330 230 170 240 40 262 Z" fill="url(#aqS)"/> <path d="M110 247 C220 228 330 225 420 233" fill="none" stroke="#DCE9FF" stroke-width="2.5" opacity=".7"/> </g>`;   // design/brand/aquarii-logo.svg (owner, 15 Oct 2026: the peak emblem in the style of the owner's other brand)
   P.brandMark = (size = 64) => `<svg viewBox="0 0 520 300" width="${size * 1.73}" height="${size}" aria-hidden="true">${P.LOGO}</svg>`;
   // the brand ending: an Ink card with the mark, the studio name and "DM us “KEYWORD” · Follow for more" (keyword in Lime). Replaces P.signoff in new films.
-  P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = 'We’ll find the package that fits you.', line = 'Follow for more', out = null } = {}) {
+  P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null } = {}) {
+    if (fit == null) fit = `Send “${keyword}”. We’ll find the package that fits you.`;   // owner, 15 Oct 2026: end on "DM us to know more"; the keyword tells us which reel brought the DM
     P.use('cta', 'brand-end');
     const B = P.BRAND, end = out == null ? P.len - .2 : out;
     const card = E.el('div', `position:absolute;inset:0;background:${B.ink};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0`, P.front);
@@ -635,8 +636,8 @@
       `<div style="margin-top:8px;font:500 12px/1 Montserrat,sans-serif;letter-spacing:.42em;color:${B.slate}">TECH STUDIO</div>`);
     // the why (owner, 15 Oct 2026: "DM us FAST" alone felt abrupt): what to DM about, the keyword, and what happens next. Never a price, never a free promise.
     const w1 = E.el('div', `margin-top:6px;max-width:330px;text-align:center;font:800 21px/1.15 Archivo,sans-serif;color:${B.paper}`, card, why);
-    const cta = E.el('div', `padding:12px 22px;border-radius:99px;background:${B.blue};color:#fff;font:900 24px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92;box-shadow:0 0 24px rgba(47,107,255,.45)`, card, `DM us “<span style="color:${B.lime}">${keyword}</span>”`);
-    const w2 = E.el('div', `max-width:330px;text-align:center;font:600 16px/1.25 Archivo,sans-serif;color:${B.slate}`, card, fit);
+    const cta = E.el('div', `padding:12px 22px;border-radius:99px;background:${B.blue};color:#fff;font:900 24px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92;box-shadow:0 0 24px rgba(47,107,255,.45)`, card, 'DM us to know more');
+    const w2 = E.el('div', `max-width:350px;text-align:center;font:600 14.5px/1.25 Archivo,sans-serif;color:${B.slate}`, card, fit);
     E.el('div', `margin-top:4px;font:600 12px/1 ${MONO};letter-spacing:.12em;color:${B.slate};opacity:.7`, card, line);
     P.on((t) => { const k = P.springAt(t, at, 'fade'), m = P.springAt(t, at + .1, 'bold'), c = P.springAt(t, at + .35, 'bold');
       card.style.opacity = (k * (1 - P.tween(t, end, .2, 'snap'))).toFixed(3);
@@ -1282,6 +1283,7 @@
   //   W.chip(x, y, { w, h, color, icon, label, k })   a glossy component (icon: phone | server | dns | edge | shield); k = appear 0..1
   //   W.burst(x, y, k, { color, n, seed })            a particle burst at progress k (bots hitting a shield)
   //   W.at(pts, u) -> [x, y]                          a point on the path
+//   premium (design/brand/premium.md): W.spot(x,y,r) soft light · W.glassNode(x,y,{r,k,coreOn,label,sub}) · W.beam(pts,k) thin light line · W.pulse(pts,u) light pulse with a tail
   // =====================================================================================================================================
   P.sys = function (parent, { bg = '#060A14', dpr = 2 } = {}) {
     P.use('mechanism', 'system-map');
@@ -1336,6 +1338,30 @@
         if (sub) { ctx.font = `600 ${Math.round(10 * Math.max(.8, s))}px "Geist Mono", monospace`; ctx.fillStyle = '#8A93A6'; ctx.fillText(sub, sx, sy + H2 + 29 * Math.max(.8, s)); }
         ctx.restore();
       },
+      // ---- premium helpers (design/brand/premium.md): glass, light, restraint ----
+      spot(x, y, r, { color = 'rgba(80,120,255,.22)' } = {}) { const [sx, sy] = toS(x, y), R2 = r * cam.s, g = ctx.createRadialGradient(sx, sy, 0, sx, sy, R2);
+        g.addColorStop(0, color); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.save(); ctx.globalAlpha = W.fade; ctx.fillStyle = g; ctx.fillRect(sx - R2, sy - R2, R2 * 2, R2 * 2); ctx.restore(); },
+      glassNode(x, y, { r = 26, k = 1, core = '#C6F432', coreOn = 0, label = '', sub = '' } = {}) {
+        if (k <= 0) return; const [sx, sy] = toS(x, y), R2 = r * cam.s * (.85 + .15 * k);
+        ctx.save(); ctx.globalAlpha = Math.min(1, k) * W.fade;
+        const halo = ctx.createRadialGradient(sx, sy, R2 * .6, sx, sy, R2 * 2.4); halo.addColorStop(0, 'rgba(110,150,255,.20)'); halo.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = halo; ctx.fillRect(sx - R2 * 2.4, sy - R2 * 2.4, R2 * 4.8, R2 * 4.8);
+        const body = ctx.createLinearGradient(sx - R2, sy - R2, sx + R2, sy + R2); body.addColorStop(0, 'rgba(200,220,255,.30)'); body.addColorStop(.5, 'rgba(60,90,170,.18)'); body.addColorStop(1, 'rgba(20,30,70,.45)');
+        ctx.fillStyle = body; ctx.beginPath(); ctx.arc(sx, sy, R2, 0, 6.283); ctx.fill();
+        ctx.strokeStyle = 'rgba(210,225,255,.55)'; ctx.lineWidth = 1.2 * cam.s; ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 2 * cam.s; ctx.beginPath(); ctx.arc(sx, sy, R2 * .82, 3.6, 4.6); ctx.stroke();   // specular edge
+        if (coreOn > 0) { ctx.shadowColor = core; ctx.shadowBlur = 18 * coreOn; ctx.fillStyle = core; ctx.globalAlpha = Math.min(1, k) * W.fade * coreOn; ctx.beginPath(); ctx.arc(sx, sy, R2 * .28, 0, 6.283); ctx.fill(); ctx.shadowBlur = 0; }
+        ctx.globalAlpha = Math.min(1, k) * W.fade; ctx.textAlign = 'center';
+        if (label) { ctx.font = `700 ${Math.round(13 * Math.max(.85, cam.s))}px Archivo, sans-serif`; ctx.fillStyle = '#F3F5F8'; ctx.fillText(label, sx, sy + R2 + 22); }
+        if (sub) { ctx.font = `500 ${Math.round(10.5 * Math.max(.85, cam.s))}px "Geist Mono", monospace`; ctx.fillStyle = 'rgba(160,172,196,.9)'; ctx.fillText(sub, sx, sy + R2 + 37); }
+        ctx.restore(); },
+      beam(pts, k, { color = 'rgba(170,195,255,.55)', width = 1.4, u0 = 0 } = {}) {      // a thin light line drawn from u0 to k along the path
+        if (k <= 0) return; ctx.save(); ctx.globalAlpha = W.fade; ctx.strokeStyle = color; ctx.lineWidth = width * Math.max(.8, cam.s); ctx.lineCap = 'round';
+        ctx.beginPath(); for (let i = 0; i <= 60; i++) { const u = u0 + (k - u0) * i / 60, [x, y] = toS(...at(pts, u)); ctx[i ? 'lineTo' : 'moveTo'](x, y); } ctx.stroke(); ctx.restore(); },
+      pulse(pts, u, { color = '#FFFFFF', r = 3.2, trail = .18 } = {}) {                  // a soft light pulse with a long, fading tail
+        if (u < 0 || u > 1) return; ctx.save(); ctx.lineCap = 'round';
+        for (let i = 0; i < 24; i++) { const a = u - trail * i / 24, b = u - trail * (i + 1) / 24; if (b < 0) break; const [x1, y1] = toS(...at(pts, a)), [x2, y2] = toS(...at(pts, b));
+          ctx.globalAlpha = (1 - i / 24) * .8 * W.fade; ctx.strokeStyle = color; ctx.lineWidth = r * cam.s * (1 - i / 30); ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+        const [x, y] = toS(...at(pts, u)); ctx.globalAlpha = W.fade; ctx.shadowColor = color; ctx.shadowBlur = 14; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x, y, r * cam.s * .8, 0, 6.283); ctx.fill(); ctx.restore(); },
       burst(x, y, k, { color = '#FF5A4F', n = 14, seed: sd = 1 } = {}) {
         if (k <= 0 || k >= 1) return; const [sx, sy] = toS(x, y); ctx.save(); glow(color, 12);
         for (let i = 0; i < n; i++) { const a = (i / n) * 6.283 + sd * 1.7, d = (8 + 34 * P.EASE.glide(k)) * (0.6 + ((i * 37 + sd * 11) % 10) / 20) * cam.s;

@@ -191,7 +191,7 @@ if (DELIVER && !only) {
   const { statSync } = await import('node:fs'), dm = join(DELIVER, `${id}.mp4`);
   if (statSync(dm).size > 24 * 1024 * 1024) {
     const tmp = join(OUT, `${id}-capped.mp4`);
-    run('ffmpeg', ['-y', '-loglevel', 'error', '-i', dm, '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'slow', '-b:v', '8M', '-maxrate', '9M', '-bufsize', '18M', '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-movflags', '+faststart', tmp]);
+    run('ffmpeg', ['-y', '-loglevel', 'error', '-i', dm, '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'slow', '-b:v', Math.min(8, Math.floor(170 / LEN * 10) / 10) + 'M', '-maxrate', Math.min(9, Math.floor(190 / LEN * 10) / 10) + 'M', '-bufsize', '18M', '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-movflags', '+faststart', tmp]);
     copyFileSync(tmp, dm); console.log('capped the delivered reel to', (statSync(dm).size / 1048576).toFixed(1), 'MiB (site limit 25 MiB)');
   }
   if (await makeCover()) copyFileSync(join(OUT, `${id}-cover.jpg`), join(DELIVER, `${id}-cover.jpg`));

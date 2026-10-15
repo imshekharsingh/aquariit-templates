@@ -13,8 +13,8 @@ for i, ln in enumerate(lines):
     off = ln['t0']
     # fit the shot: speak once, and if the line is longer than its shot, say it again a little faster (max 1.3x) so it ends on time
     slot = max(.5, ln['t1'] - ln['t0'])
-    probe = sum(len(r.audio) for r in pipe(ln['text'], voice=VOICE, speed=1.0)) / SR
-    speed = 1.0 if probe <= slot else min(1.3, probe / slot * 1.03)
+    probe = sum(len(r.audio) for r in pipe(ln['text'], voice=VOICE, speed=0.95)) / SR       # calm, natural pace (owner: the voice felt rushed)
+    speed = 0.95 if probe <= slot else min(1.05, 0.95 * probe / slot * 1.02)
     if speed > 1: print(f"line {i + 1}: {probe:.2f} s for a {slot:.2f} s shot -> speed {speed:.2f}")
     for r in pipe(ln['text'], voice=VOICE, speed=speed):
         a = r.audio.cpu().numpy() if hasattr(r.audio, 'cpu') else np.asarray(r.audio)
