@@ -40,3 +40,12 @@ Superseded: process-review areas 2 and 3 (folded into the recipe and quality gat
 
 ## Working rule (owner, 15 Oct): hand over to automation
 Foundations are built once in a session; after that the scheduled runs and GitHub workflows do the work. Sessions stay short.
+
+## Revisit later (owner, 15 Oct 2026)
+- Instagram today: the INSTAGRAM_TOKEN secret is read-only statistics (ig-collect.yml, daily, feeds /performance/). Nothing posts, replies or reads DMs.
+- Add first, when we pick this up: the "Social Media Skills" plugin (Anthropic plugin directory; knowledge only, no account access): reels-script, hook-writer,
+  caption-writer, instagram-seo, social-selling-and-dm, to sharpen hooks, captions and the DM keyword.
+- Later, once DMs arrive often enough that replying by hand is a chore: the "instagram" plugin (official Graph API: read/reply comments and DMs, comment-to-DM,
+  e.g. comment "FAST" -> auto DM). Needs its own Meta app with messaging permissions; the current read-only token cannot do it.
+- Skip for now: Windsor.ai (paid; our collector already covers reach/watch/shares/saves), Posty (auto-publishing loses Instagram's music library),
+  Hyper Marketing / AdWhispr (ads-focused), BlitzReels (we render our own films).
