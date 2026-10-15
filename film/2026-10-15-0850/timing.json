@@ -3,40 +3,150 @@
   "len": 18,
   "join": 2.5,
   "peak": 8.6,
-  "breath": [7.3, 8.4],
+  "breath": [
+    7.3,
+    8.45
+  ],
   "music": {
     "bpm": 100,
     "duration": 18,
     "peak": 8.6,
-    "breath": [7.3, 8.4],
+    "breath": [
+      7.3,
+      8.4
+    ],
     "hits": [
-      { "t": 3.4, "kind": "downbeat", "label": "the timer starts climbing" },
-      { "t": 8.6, "kind": "impact", "label": "the doors drop, the edge goes on" },
-      { "t": 11.4, "kind": "downbeat", "label": "red parcel hits the reject tray" },
-      { "t": 13.9, "kind": "downbeat", "label": "Fast everywhere." },
-      { "t": 15.4, "kind": "downbeat", "label": "sign-off, DM us" }
+      {
+        "t": 3.4,
+        "kind": "downbeat",
+        "label": "the timer starts climbing"
+      },
+      {
+        "t": 8.6,
+        "kind": "impact",
+        "label": "the doors drop, the edge goes on"
+      },
+      {
+        "t": 11.4,
+        "kind": "downbeat",
+        "label": "red parcel hits the reject tray"
+      },
+      {
+        "t": 13.9,
+        "kind": "downbeat",
+        "label": "Fast everywhere."
+      },
+      {
+        "t": 15.4,
+        "kind": "downbeat",
+        "label": "sign-off, DM us"
+      }
     ],
     "sections": [
-      { "name": "hook", "t0": 0, "t1": 3.4, "energy": "dry ticking" },
-      { "name": "wait", "t0": 3.4, "t1": 7.3, "energy": "tense, sparse" },
-      { "name": "breath", "t0": 7.3, "t1": 8.6, "energy": "near silence" },
-      { "name": "sort", "t0": 8.6, "t1": 13.9, "energy": "bright, bouncy" },
-      { "name": "payoff", "t0": 13.9, "t1": 18, "energy": "resolved" }
+      {
+        "name": "hook",
+        "t0": 0,
+        "t1": 3.4,
+        "energy": "dry ticking"
+      },
+      {
+        "name": "wait",
+        "t0": 3.4,
+        "t1": 7.3,
+        "energy": "tense, sparse"
+      },
+      {
+        "name": "breath",
+        "t0": 7.3,
+        "t1": 8.6,
+        "energy": "near silence"
+      },
+      {
+        "name": "sort",
+        "t0": 8.6,
+        "t1": 13.9,
+        "energy": "bright, bouncy"
+      },
+      {
+        "name": "payoff",
+        "t0": 13.9,
+        "t1": 18,
+        "energy": "resolved"
+      }
     ]
   },
   "cues": [
-    { "k": "click", "t": 3.4, "g": 0.3 },
-    { "k": "whoosh", "t0": 2.5, "t1": 3.2, "g": 0.2, "f0": 2500, "f1": 500, "tail": 0.1 },
-    { "k": "riser", "t0": 8.0, "t1": 8.55, "g": 0.3 },
-    { "k": "impact", "t": 8.6, "g": 1.1, "big": 2 },
-    { "k": "click", "t": 9.0, "g": 0.35 },
-    { "k": "click", "t": 9.6, "g": 0.35 },
-    { "k": "click", "t": 10.2, "g": 0.35 },
-    { "k": "impact", "t": 11.4, "g": 0.6 },
-    { "k": "click", "t": 12.0, "g": 0.35 },
-    { "k": "impact", "t": 13.9, "g": 0.5 },
-    { "k": "impact", "t": 14.2, "g": 0.4 },
-    { "k": "click", "t": 15.4, "g": 0.4 }
+    {
+      "k": "click",
+      "t": 1.8,
+      "g": 0.35
+    },
+    {
+      "k": "click",
+      "t": 3.6,
+      "g": 0.35
+    },
+    {
+      "k": "whoosh",
+      "t0": 3.7,
+      "t1": 5.5,
+      "g": 0.18,
+      "f0": 2200,
+      "f1": 600,
+      "tail": 0.1
+    },
+    {
+      "k": "click",
+      "t": 5.6,
+      "g": 0.35
+    },
+    {
+      "k": "riser",
+      "t0": 8.0,
+      "t1": 8.45,
+      "g": 0.3
+    },
+    {
+      "k": "impact",
+      "t": 8.6,
+      "g": 1.0,
+      "big": 2
+    },
+    {
+      "k": "click",
+      "t": 9.0,
+      "g": 0.3
+    },
+    {
+      "k": "click",
+      "t": 9.7,
+      "g": 0.3
+    },
+    {
+      "k": "click",
+      "t": 10.2,
+      "g": 0.35
+    },
+    {
+      "k": "click",
+      "t": 12.0,
+      "g": 0.35
+    },
+    {
+      "k": "click",
+      "t": 13.8,
+      "g": 0.35
+    },
+    {
+      "k": "impact",
+      "t": 14.25,
+      "g": 0.6
+    },
+    {
+      "k": "click",
+      "t": 16.1,
+      "g": 0.4
+    }
   ],
   "accent": "#ff4f6d"
 }
