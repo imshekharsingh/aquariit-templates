@@ -5,8 +5,11 @@ on:
   workflow_dispatch:
     inputs:
       id:
-        description: Template/film ID with film/ID/voice.md
+        description: Template/film ID with film/ID/voice.md (or any text in samples mode)
         required: true
+      mode:
+        description: film (voice the film) or samples (one clip per voice, to pick a voice)
+        default: film
 concurrency:
   group: voice-test
 permissions:
@@ -43,14 +46,26 @@ jobs:
           pip install --extra-index-url https://download.pytorch.org/whl/cpu "torch==2.5.1+cpu" "transformers==4.46.3" "kokoro==0.9.4" "soundfile==0.12.1" "misaki[en]==0.9.4"
           npm install --no-save --no-package-lock playwright@1.56.1 three@0.180.0
           npx playwright install --with-deps chromium
+      - name: Voice samples (mode=samples), one MP3 per voice, published to the reels release
+        if: inputs.mode == 'samples'
+        run: |
+          python3 scripts/film/voice_samples.py out/samples
+          for f in out/samples/*.wav; do ffmpeg -loglevel error -y -i "$f" -af "highpass=f=80,loudnorm=I=-16:TP=-1.5" -b:a 128k "${f%.wav}.mp3"; done
+          gh release upload reels --repo "$REPO" --clobber out/samples/*.mp3
+          { echo "Voice samples: the same line in 6 AI voices. Listen and tell Claude which one to use."; echo
+            for f in out/samples/*.mp3; do n=$(basename "$f"); echo "- $n: https://github.com/$REPO/releases/download/reels/$n"; done; } > body.md
+          gh issue create --repo "$REPO" --title "Voice samples ready" --body-file body.md --assignee "${{ github.repository_owner }}"
       - name: Voice-over (script check, Kokoro, mix with measured loudness)
+        if: inputs.mode != 'samples'
         run: node scripts/film/voice.mjs "$ID" --out out/voice
       - name: Render the film with the voice mix
+        if: inputs.mode != 'samples'
         run: |
           node scripts/film/render-film.mjs "$ID" --variant A --workers 2 --out out/film --audio out/voice/final.wav --deliver out/reels
           mkdir -p out/vt && cp "out/reels/$ID.mp4" "out/vt/$ID-voice.mp4"
           ffmpeg -hide_banner -nostats -i "out/vt/$ID-voice.mp4" -af ebur128=peak=true -f null - 2>&1 | tail -12 | tee out/vt/loudness-after-aac.txt
       - name: Publish the test reel and tell the owner
+        if: inputs.mode != 'samples'
         run: |
           gh release upload reels --repo "$REPO" --clobber "out/vt/$ID-voice.mp4"
           URL="https://github.com/$REPO/releases/download/reels/$ID-voice.mp4"

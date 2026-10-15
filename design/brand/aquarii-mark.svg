@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="t"><title id="t">Aquarii Tech Studio mark</title>
+  <!-- Brand kit v1 (15 Oct 2026; replaces the water-wave icon). A peak: two strokes meet at the top (built, protected, fast), a lime node sits on the
+       base line (the site we look after). Works at 16 px. Ink #0A0E17, Blue #2F6BFF, Lime #C6F432. -->
+  <rect width="64" height="64" rx="14" fill="#0A0E17"/>
+  <path d="M15 48 L32 15 L49 48" fill="none" stroke="#2F6BFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="32" cy="45" r="5" fill="#C6F432"/>
+</svg>

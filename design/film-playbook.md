@@ -2,8 +2,7 @@
 
 Rules live in CLAUDE.md ("Directed film", "Music & Sound"). This file is the how-to. Worked example: `film/2026-10-13-0851/` (Tintwell, "The Hue Dial").
 
-## Motion freeze 15-28 Oct 2026 (owner, E12)
-Two-week distribution test: films are built from existing parts only; no new parts, no engine changes (bug fixes and the approved iso-machine trial excepted).
+## Motion freeze: LIFTED 15 Oct 2026 (owner plan, design/aligned-plan.md: the reel gets better first). Follow the reel recipe and brand kit there.
 
 ## Sell Aquarii, not the template's business (owner, 14 Oct 2026; read design/services.md first)
 The first films sold laundry, food delivery and dentistry. The owner: "I don't do laundry... by the end we have to sell our own services." The story grammar is now:

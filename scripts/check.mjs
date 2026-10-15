@@ -210,6 +210,8 @@ if (existsSync(mp)) {
 // in the four story-defining slots, and must not be a near-copy of any of the last 7 (warnings for partial overlap)
 {
   const FD = join(root, 'film'), KEY = ['opener', 'transition', 'mechanism', 'payoff'], ALL = ['ground', 'opener', 'transition', 'mechanism', 'focus', 'payoff', 'type', 'captions', 'cta'];
+  // brand kit (owner, 15 Oct 2026): ground, captions and the ending are the same on purpose from 16 Oct; only the story slots count for near-copies then
+  const STORY = ['opener', 'transition', 'mechanism', 'focus', 'payoff', 'type'];
   const ms = (existsSync(FD) ? readdirSync(FD) : []).filter((d) => /^\d{4}-/.test(d) && existsSync(join(FD, d, 'manifest.json')))
     .map((d) => { try { return JSON.parse(readFileSync(join(FD, d, 'manifest.json'), 'utf8')); } catch { err(`film/${d}/manifest.json: not valid JSON`); return null; } }).filter(Boolean)
     .sort((a, b) => String(a.made).localeCompare(String(b.made)));
@@ -226,8 +228,8 @@ if (existsSync(mp)) {
     }
     if (prev) KEY.forEach((k) => { const a = (m.slots || {})[k] || [], b = (prev.slots || {})[k] || []; const same = a.filter((x) => b.includes(x)); if (same.length) err(`film/${m.id}: repeats the previous film (${prev.id}) in "${k}": ${same.join(', ')}; pick another option (see scripts/film/parts.js)`); });
     for (const o of last) {
-      const eq = ALL.filter((k) => slot(m, k) && slot(m, k) === slot(o, k));
-      if (eq.length >= 6) err(`film/${m.id}: near-copy of ${o.id} (same ${eq.join(', ')})`); else if (eq.length >= 4) warns.push(`film/${m.id}: overlaps ${o.id} in ${eq.join(', ')}`);
+      const branded = m.id >= '2026-10-16', eq = (branded ? STORY : ALL).filter((k) => slot(m, k) && slot(m, k) === slot(o, k));
+      if (eq.length >= (branded ? 4 : 6)) err(`film/${m.id}: near-copy of ${o.id} (same ${eq.join(', ')})`); else if (eq.length >= (branded ? 3 : 4)) warns.push(`film/${m.id}: overlaps ${o.id} in ${eq.join(', ')}`);
       if (m.dna && o.dna) ['opening', 'bigMoment'].forEach((k) => { if (m.dna[k] && o.dna[k] && m.dna[k].toLowerCase().trim() === o.dna[k].toLowerCase().trim()) err(`film/${m.id}: same ${k} as ${o.id}`); });
     }
   });
