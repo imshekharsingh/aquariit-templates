@@ -9,8 +9,11 @@ VOICE = sys.argv[4] if len(sys.argv) > 4 else 'af_heart'          # chosen by vo
 pipe = KPipeline(lang_code=VOICE[0], repo_id='hexgrad/Kokoro-82M')   # 'a' American, 'b' British voices
 SR, LEN = 24000, float(sys.argv[5]) if len(sys.argv) > 5 else 18.0   # film length from timing.json (voice.mjs passes it)
 buf, words, spans = np.zeros(int(LEN * SR), dtype=np.float32), [], []
+speech_end = None
 for i, ln in enumerate(lines):
-    off = ln['t0']
+    # J-cut (owner, 15 Oct 2026: no noticeable pauses): a line starts at most 0.35 s after the previous line's last spoken sound, even if that is a little
+    # before its picture beat; a line marked keep (the first line after the breath) waits for its beat
+    off = ln['t0'] if speech_end is None or ln.get('keep') else max(speech_end + .18, min(ln['t0'], speech_end + .35))
     # fit the shot: measure the line at 1.0x, then speak it at the pace that fills its slot
     slot = max(.5, ln['t1'] - ln['t0'])
     probe = sum(len(r.audio) for r in pipe(ln['text'], voice=VOICE, speed=1.0)) / SR        # natural pace (owner, 15 Oct 2026: 0.95 + short lines left noticeable pauses)
@@ -22,8 +25,11 @@ for i, ln in enumerate(lines):
         for tk in (r.tokens or []):
             if tk.start_ts is None or not tk.text.strip() or not any(c.isalnum() for c in tk.text): continue
             words.append({'w': tk.text, 'start': round(off + tk.start_ts, 3), 'end': round(off + tk.end_ts, 3), 'line': i})
+        loud = np.nonzero(np.abs(a) > .02 * (np.abs(a).max() + 1e-9))[0]
+        if len(loud): speech_end = off + (loud[-1] + 1) / SR          # the last audible sound, not the model's trailing silence
+        if 'first' not in ln: ln['first'] = off
         off += len(a) / SR
-    spans.append({'line': i, 'start': ln['t0'], 'end': round(off, 3)})
+    spans.append({'line': i, 'start': round(ln['first'], 3), 'end': round(speech_end, 3)})
 sf.write(out_wav, buf, SR)
 json.dump({'engine': 'kokoro', 'voice': VOICE, 'model': 'hexgrad/Kokoro-82M', 'words': words, 'lines': spans}, open(out_words, 'w'), indent=1)
 print(f'kokoro: {len(lines)} lines, {len(words)} words, speech ends {spans[-1]["end"] if spans else 0}s')

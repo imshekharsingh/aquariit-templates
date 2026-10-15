@@ -26,6 +26,7 @@ if (!lines.length || bad) { console.error('voice.md: fix the lines above (1.9-2.
 
 // ---- 2. speak ----
 const lj = join(OUT, 'lines.json'), raw = join(OUT, 'voice-raw.wav'), tj = join(OUT, 'voice-timing.json');
+const br0 = (T.breath || [0, 0])[1]; lines.forEach((l, i) => { if (i && lines[i - 1].t0 < br0 && l.t0 >= br0) l.keep = true; });   // the line after the breath waits for its beat
 writeFileSync(lj, JSON.stringify(lines));
 // voice: af_heart is the one Aquarii voice (owner, 15 Oct 2026: consistency). A `Voice: name` line in voice.md can still pin another for one film.
 const VOICES = ['af_heart'];
