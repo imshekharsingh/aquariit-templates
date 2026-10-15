@@ -33,7 +33,7 @@
   const LONG = CITIES.map((c, i) => path(c.p, SRV, i % 2 ? .18 : -.18)), SHORT = CITIES.map((c) => path(c.p, c.e, .3));
   const LON = CITIES[0];
   // camera keys [t, x, y, s]: the distance beat opens close on London and pulls back to the whole globe; the protection beat pushes in on London's edge
-  const CAM = [[0, 104, 280, 1.8], [3.2, 104, 280, 1.8], [4.1, 112, 290, 1.65], [5.6, 201, 400, 1.0], [7.4, 201, 404, 1.05],
+  const CAM = [[0, 140, 316, 1.45], [3.2, 140, 316, 1.45], [4.1, 150, 330, 1.35], [5.6, 201, 400, 1.0], [7.4, 201, 404, 1.05],
     [15.8, 201, 380, 1.0], [19.2, 201, 386, 1.08], [20.4, 128, 322, 2.2], [23.5, 130, 320, 2.32], [28, 130, 320, 2.32]];
   const camAt = (t) => { let i = 0; while (i < CAM.length - 2 && t > CAM[i + 1][0]) i++; const a = CAM[i], b = CAM[i + 1], k = G_(clamp((t - a[0]) / Math.max(.01, b[0] - a[0])));
     return [lerp(a[1], b[1], k), lerp(a[2], b[2], k), lerp(a[3], b[3], k)]; };
@@ -51,7 +51,7 @@
       c.save(); c.globalAlpha = a * W.fade; c.font = `${weight} ${Math.round(size * Math.max(.85, W.cam.s))}px ${font}`; c.textAlign = 'center'; c.fillStyle = color; c.fillText(txt, x, y); c.restore(); };
     W.draw((c, t) => {
       const [x, y, s] = camAt(t); W.cam.x = x; W.cam.y = y; W.cam.s = s;
-      const hook = IN(t, -1, 3.1, .4), before = IN(t, 3.2, 7.5, .5), after = IN(t, 15.8, 23.4, .5);
+      const hook = IN(t, -1, 3.1, .4), before = IN(t, 2.85, 7.5, .45), after = IN(t, 15.8, 23.4, .5);
       if (hook > 0) { W.fade = hook * .55; W.globe(t, { x: 201, y: 470, r: 260, spin: .04, alpha: .7 }); }
       if (before <= 0 && after <= 0) return;
       W.fade = Math.max(before, after);
@@ -62,10 +62,10 @@
         W.spot(...LON.p, 110, { color: 'rgba(90,130,255,.26)' });
         W.spot(...SRV, 150, { color: `rgba(255,110,90,${(.12 + .3 * arrive).toFixed(3)})` });   // the far server heats up as every request piles onto it
         CITIES.forEach((cty, i) => {
-          const t0 = 3.5 + i * .16, ln = LONG[i];
+          const t0 = 3.2 + i * .14, ln = LONG[i];
           W.beam(ln, G_(clamp((t - t0) / 1.4)), { color: 'rgba(170,195,255,.42)' });
           for (let k = 0; k < 2; k++) W.pulse(ln, P.EASE.swing(clamp((t - t0 - .9 - k * 1.4) / 2.2)), { color: '#FFB4A8', trail: .22 });
-          const kk = sp(t, 3.25 + i * .12); W.glassNode(...cty.p, { k: kk, r: 17, label: cty.n, sub: '' });
+          const kk = sp(t, 2.95 + i * .08); W.glassNode(...cty.p, { k: kk, r: 17, label: cty.n, sub: '' });
           if (kk > .05) { const [cx, cy] = W.toS(...cty.p), v = cty.slow * G_(clamp((t - t0 - .4) / 2.6));
             label(c, cx, cy + 17 * s + 38 * Math.max(.85, s), `${v.toFixed(1)} s`, { size: 11, weight: 600, font: '"Geist Mono", monospace', color: v > 1.5 ? '#FFB4A8' : '#AAB4CC', a: Math.min(1, kk) }); }
         });
@@ -114,7 +114,7 @@
       const lm = new T3.LineBasicMaterial({ color: new T3.Color(B.lime), transparent: true, opacity: 0 }), line = new T3.Line(new T3.BufferGeometry().setFromPoints([new T3.Vector3(0, -.12, 0), new T3.Vector3(Math.cos(a) * d, -.12, Math.sin(a) * d)]), lm); G.scene.add(line);
       return { m, lm, t0: 13.9 + i * .18 }; });
     G.frame((t) => {
-      const land = G_(clamp((t - 11.4) / 1.9)); grp.position.y = lerp(2.4, 0, land); grp.rotation.y = .4 + t * .12;
+      const land = G_(clamp((t - 11.4) / 1.9)); grp.position.y = lerp(1.5, 0, land); grp.rotation.y = .4 + t * .12;
       const lit = G_(clamp((t - 13.5) / .7)); coreM.emissiveIntensity = 2.2 * lit; glowRing.material.opacity = .55 * lit * (1 - clamp((t - 14.4) / 1.4) * .7); glowRing.scale.setScalar(1 + 3.2 * G_(clamp((t - 13.6) / 1.6)));
       sats.forEach((q) => { const k = G_(clamp((t - q.t0) / .45)); q.m.emissiveIntensity = 1.8 * k; q.lm.opacity = .7 * k; });
       const a = .9 + (t - 11.2) * .07, r = lerp(10, 8.3, G_(clamp((t - 11.2) / 4.7))), h = lerp(3.6, 2.6, G_(clamp((t - 11.2) / 4.7)));
@@ -184,7 +184,11 @@
     // the end card is held long enough to read, so it keeps breathing: a slow push-in and a soft blue light rising behind the mark
     const halo = E.el('div', 'position:absolute;left:-40px;right:-40px;top:60px;height:520px;background:radial-gradient(45% 40% at 50% 45%,rgba(47,107,255,.32),rgba(47,107,255,0) 70%);opacity:0;pointer-events:none', endCard);
     endCard.prepend(halo);
-    P.on((t) => { const k = G_(clamp((t - 24.1) / 3.4)); endCard.style.scale = (1 + .07 * k).toFixed(4); halo.style.opacity = (.25 + .75 * k).toFixed(3); halo.style.transform = `translateY(${(40 - 70 * k).toFixed(1)}px) scale(${(.8 + .5 * k).toFixed(3)})`; });
+    const cta = [...endCard.querySelectorAll('div')].find((d) => d.textContent === 'DM us to know more');
+    if (cta) { cta.style.position = 'relative'; cta.style.overflow = 'hidden'; }
+    const shine = cta && E.el('i', 'position:absolute;top:-10px;bottom:-10px;width:44px;left:0;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55),rgba(255,255,255,0));transform:skewX(-20deg);opacity:0', cta);
+    P.on((t) => { const k = G_(clamp((t - 24.1) / 3.4)); endCard.style.scale = (1 + .11 * k).toFixed(4);
+      if (shine) { const u = ((t - 24.4) % 1.6) / 1.6; shine.style.opacity = t > 24.4 && t < 27.6 ? '1' : '0'; shine.style.left = (-60 + 340 * u).toFixed(1) + 'px'; } halo.style.opacity = (.25 + .75 * k).toFixed(3); halo.style.transform = `translateY(${(40 - 70 * k).toFixed(1)}px) scale(${(.8 + .5 * k).toFixed(3)})`; });
     S.name = 'Edge premium v5 (rich)';
     return { ok: true };
   };
