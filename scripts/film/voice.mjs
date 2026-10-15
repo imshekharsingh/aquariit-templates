@@ -1,6 +1,6 @@
 // Voice-over for tutorial films (step 1 of 3, 14 Oct 2026). Runs ONLY in GitHub Actions (.github/workflows/voice-test.yml), never in a Claude session.
 //   node scripts/film/voice.mjs ID [--out DIR]       reads film/ID/voice.md, writes DIR/{voice.wav, voice-timing.json, final.wav, voice-report.json}
-// 1. checks the script: words per shot (target ~2.5/s, fail above 3/s) and that speech fits the 18 s film
+// 1. checks the script: words per shot (target ~2.5/s, fail above 3/s) and that speech fits the film (timing.json len)
 // 2. speaks it with Kokoro (scripts/film/voice_kokoro.py; open-weight, pinned in the workflow); word times come from the model's durations
 // 3. mixes: voice high-passed at 80 Hz, de-essed, gently compressed, loudness -16 LUFS; the film's effects ducked 6 dB under every spoken line;
 //    true peak <= -1 dBTP; leaves headroom for the Instagram music added at posting. Loudness is MEASURED with ffmpeg ebur128, never assumed.
@@ -32,7 +32,7 @@ const VOICES = ['af_heart'];
 const md = readFileSync(join(root, 'film', id, 'voice.md'), 'utf8'), pinned = (md.match(/^Voice:\s*([a-z]{2}_[a-z]+)/m) || [])[1];
 const day = Math.floor(Date.parse(id.slice(0, 10)) / 864e5), voiceName = pinned || VOICES[day % VOICES.length];
 console.log('voice:', voiceName, pinned ? '(pinned in voice.md)' : '(the Aquarii voice)');
-const py = run('python3', [join(root, 'scripts/film/voice_kokoro.py'), lj, raw, tj, voiceName]); process.stdout.write(py.stdout);
+const py = run('python3', [join(root, 'scripts/film/voice_kokoro.py'), lj, raw, tj, voiceName, String(LEN)]); process.stdout.write(py.stdout);
 const VT = JSON.parse(readFileSync(tj, 'utf8'));
 for (const s of VT.lines) { const l = lines[s.line]; if (s.end > l.t1 + .35) console.log(`::warning::line ${s.line + 1} runs ${(s.end - l.t1).toFixed(2)} s past its shot`); }
 const speechEnd = Math.max(...VT.lines.map((s) => s.end));

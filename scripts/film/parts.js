@@ -1351,8 +1351,8 @@
         ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 2 * cam.s; ctx.beginPath(); ctx.arc(sx, sy, R2 * .82, 3.6, 4.6); ctx.stroke();   // specular edge
         if (coreOn > 0) { ctx.shadowColor = core; ctx.shadowBlur = 18 * coreOn; ctx.fillStyle = core; ctx.globalAlpha = Math.min(1, k) * W.fade * coreOn; ctx.beginPath(); ctx.arc(sx, sy, R2 * .28, 0, 6.283); ctx.fill(); ctx.shadowBlur = 0; }
         ctx.globalAlpha = Math.min(1, k) * W.fade; ctx.textAlign = 'center';
-        if (label) { ctx.font = `700 ${Math.round(13 * Math.max(.85, cam.s))}px Archivo, sans-serif`; ctx.fillStyle = '#F3F5F8'; ctx.fillText(label, sx, sy + R2 + 22); }
-        if (sub) { ctx.font = `500 ${Math.round(10.5 * Math.max(.85, cam.s))}px "Geist Mono", monospace`; ctx.fillStyle = 'rgba(160,172,196,.9)'; ctx.fillText(sub, sx, sy + R2 + 37); }
+        if (label) { ctx.font = `700 ${Math.round(13 * Math.max(.85, cam.s))}px Archivo, sans-serif`; ctx.fillStyle = '#F3F5F8'; ctx.fillText(label, sx, sy + R2 + 22 * Math.max(.85, cam.s)); }
+        if (sub) { ctx.font = `500 ${Math.round(10.5 * Math.max(.85, cam.s))}px "Geist Mono", monospace`; ctx.fillStyle = 'rgba(160,172,196,.9)'; ctx.fillText(sub, sx, sy + R2 + 37 * Math.max(.85, cam.s)); }
         ctx.restore(); },
       beam(pts, k, { color = 'rgba(170,195,255,.55)', width = 1.4, u0 = 0 } = {}) {      // a thin light line drawn from u0 to k along the path
         if (k <= 0) return; ctx.save(); ctx.globalAlpha = W.fade; ctx.strokeStyle = color; ctx.lineWidth = width * Math.max(.8, cam.s); ctx.lineCap = 'round';

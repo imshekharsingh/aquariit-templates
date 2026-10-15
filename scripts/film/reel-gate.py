@@ -19,22 +19,25 @@ cuts, last = [], -9
 for i in range(1, n):
     local = np.median(step[max(1, i - 6):min(n, i + 7)])
     if (step[i] > 20 or (step[i] > 6 and step[i] > 4 * max(local, .5))) and i / FPS - last >= .4: cuts.append(round(i / FPS, 1)); last = i / FPS
+# thresholds scale with the film's contrast (premium dark films, 15 Oct 2026): on a sparse navy frame a full reframe moves fewer pixels than on a bright one
+contrast = float(np.median(g.reshape(n, -1).std(axis=1)))
+kc = min(1.0, max(.5, contrast / 30))
 # static: the longest window where the frame stays close to where it started (small motion inside one framing still counts as static)
 L = int(2.5 * FPS)
 longest, at, i = 0.0, 0.0, 0
 while i < n:
     j = i
-    while j + 1 < n and np.abs(g[j + 1] - g[i]).mean() < 9: j += 1
+    ki = min(1.0, max(.4, float(g[i].std()) / 30))   # relative to what is in the window's first frame (a near-empty dark frame changes few pixels)
+    while j + 1 < n and np.abs(g[j + 1] - g[i]).mean() < 9 * ki: j += 1
     if (j - i) / FPS > longest: longest, at = (j - i) / FPS, i / FPS
     i = j + 1
 # dead ending: how much the last 3 s change compared with the film's average
 tail = step[n - 4 * FPS:n - int(1.5 * FPS)].mean() if n > 4 * FPS else 0   # the 2.5 s before the brand ending
 avg = step.mean() + 1e-6
-contrast = float(np.median(g.reshape(n, -1).std(axis=1)))
 # a one-camera film changes the picture by moving, not cutting: count 1.5 s windows (without a cut) where the frame ends far from where it began
 moves, i, W15 = [], 0, int(1.5 * FPS)
 while i + W15 < n:
-    if not any(i / FPS <= c <= (i + W15) / FPS for c in cuts) and np.abs(g[i + W15] - g[i]).mean() > 14: moves.append(round(i / FPS, 1)); i += W15
+    if not any(i / FPS <= c <= (i + W15) / FPS for c in cuts) and np.abs(g[i + W15] - g[i]).mean() > 14 * kc: moves.append(round(i / FPS, 1)); i += W15
     else: i += int(.5 * FPS)
 shots = len(cuts) + len(moves)
 rules = [

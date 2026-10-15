@@ -18,8 +18,8 @@
   const sp = (t, t0, n = 'default') => P.springAt(t, t0, n), tw = (t, t0, d, n = 'glide') => P.tween(t, t0, d, n);
   const PH = [92, 430], SRV = [312, 300], EDGE = [150, 372];
   const LONG = [PH, [140, 230], [250, 170], SRV], SHORT = [PH, [100, 400], [128, 380], EDGE];
-  // slow camera keys [t, x, y, s]: each move takes 1 s or more, then holds
-  const CAM = [[0, 201, 357, 1], [3.2, 201, 357, 1], [4.6, 202, 352, 1.08], [7.4, 205, 350, 1.12], [16.1, 150, 400, 1.35], [19.8, 150, 395, 1.42], [20.6, 150, 380, 1.6], [23.5, 150, 378, 1.66], [28, 150, 378, 1.66]];
+  // slow camera keys [t, x, y, s]: each move takes 1 s or more, then holds; the distance beat opens close on the shopper, pulls back to reveal the far server, then follows the pulse into it
+  const CAM = [[0, 92, 428, 3.0], [3.2, 92, 428, 3.0], [4.2, 98, 422, 2.6], [5.5, 210, 362, 1.1], [7.3, 282, 322, 1.75], [16.1, 120, 404, 1.9], [19.0, 118, 400, 2.05], [20.4, 122, 386, 2.15], [23.5, 123, 383, 2.25], [28, 123, 383, 2.25]];
   const camAt = (t) => { let i = 0; while (i < CAM.length - 2 && t > CAM[i + 1][0]) i++; const a = CAM[i], b = CAM[i + 1], k = P.EASE.glide(clamp((t - a[0]) / Math.max(.01, b[0] - a[0])));
     return [lerp(a[1], b[1], k), lerp(a[2], b[2], k), lerp(a[3], b[3], k)]; };
   const IN = (t, a, b, d = .5) => clamp((t - a) / d) * (1 - clamp((t - b) / d));     // visible from a to b with soft fades
@@ -40,6 +40,8 @@
       W.spot(201, 380, 320, { color: 'rgba(60,100,230,.16)' });
       // the distance (before)
       if (before > 0) { W.fade = before;
+        W.spot(...PH, 120, { color: 'rgba(90,130,255,.26)' });
+        W.spot(...SRV, 130, { color: `rgba(255,120,100,${(.32 * P.EASE.glide(clamp((t - 6.7) / .7))).toFixed(3)})` });   // the far server glows warm as the slow pulse lands
         W.beam(LONG, P.EASE.glide(clamp((t - 4.0) / 1.6)), {});
         W.pulse(LONG, P.EASE.swing(clamp((t - 5.2) / 2.0)), { color: '#FFB4A8' });
         W.glassNode(...PH, { k: sp(t, 3.4), label: 'Your shopper', sub: 'London' });
@@ -77,6 +79,8 @@
     // ---- type (premium: few words, big, calm) ----
     const T = (html, css) => E.el('div', `position:absolute;left:30px;right:30px;text-align:center;color:${B.paper};font:800 40px/1.05 Archivo,sans-serif;font-variation-settings:"wdth" 96;letter-spacing:-.015em;word-spacing:.05em;opacity:0;${css}`, P.front, html);
     const w1 = T('Is your site', 'top:262px;font-size:38px'), w2 = T(`slow <span style="color:${B.coral}">abroad?</span>`, 'top:310px;font-size:54px');
+    const sweep = E.el('div', 'position:absolute;left:-200px;top:-200px;width:420px;height:1200px;background:linear-gradient(90deg,rgba(0,0,0,0),rgba(110,150,255,.22),rgba(0,0,0,0));transform:rotate(18deg);opacity:0', world);
+    const warm = E.el('div', 'position:absolute;inset:-80px;background:radial-gradient(70% 55% at 50% 48%,rgba(255,110,90,.26),rgba(255,110,90,.06) 60%,rgba(0,0,0,0));opacity:0', world);
     const glowSpot = E.el('div', 'position:absolute;left:-60px;right:-60px;top:120px;height:460px;background:radial-gradient(50% 50% at 50% 50%,rgba(90,130,255,.18),rgba(0,0,0,0) 70%);opacity:0', world);
     const c1 = T('Every second,', 'top:268px;font-size:40px'), c2 = T(`people <span style="color:${B.coral}">leave.</span>`, 'top:316px;font-size:52px');
     const meter = E.el('div', `position:absolute;left:0;right:0;top:396px;text-align:center;font:500 22px/1 ${MONO};color:rgba(160,172,196,.9);opacity:0`, P.front);
@@ -86,14 +90,21 @@
     const protT = T('Protected.', 'top:150px;font-size:48px');
     P.on((t) => {
       glowSpot.style.opacity = IN(t, -1, 3.0, .6).toFixed(3);
-      [[w1, .1], [w2, .7]].forEach(([el, a]) => { const k = tw(t, a, 1.0); el.style.opacity = (k * IN(t, -1, 2.9, .5)).toFixed(3); el.style.transform = `translateY(${((1 - k) * 14).toFixed(1)}px)`; });
+      sweep.style.opacity = IN(t, -1, 3.0, .5).toFixed(3); sweep.style.transform = `translateX(${(-260 + 860 * P.EASE.glide(clamp(t / 3.0))).toFixed(1)}px) rotate(18deg)`;
+      warm.style.opacity = (P.EASE.glide(clamp((t - 7.6) / 1.6)) * IN(t, -1, 10.4, .5)).toFixed(3);
+      { const z = 1 + .07 * P.EASE.glide(clamp(t / 3.0)); [w1, w2].forEach((el) => { el.style.scale = z.toFixed(4); }); [c1, c2].forEach((el) => { el.style.scale = (1 + .06 * P.EASE.glide(clamp((t - 7.7) / 2.6))).toFixed(4); }); }
+      [[w1, 0], [w2, .35]].forEach(([el, a]) => { const k = a ? tw(t, a, 1.0) : Math.max(.55, tw(t, a, 1.0)); el.style.opacity = (k * IN(t, -1, 2.9, .5)).toFixed(3); el.style.transform = `translateY(${((1 - k) * 14).toFixed(1)}px)`; });
       [[c1, 7.7], [c2, 8.3]].forEach(([el, a]) => { const k = tw(t, a, 1.0); el.style.opacity = (k * IN(t, -1, 10.3, .5)).toFixed(3); el.style.transform = `translateY(${((1 - k) * 14).toFixed(1)}px)`; });
       meter.style.opacity = (tw(t, 8.9, .8) * IN(t, -1, 10.3, .5)).toFixed(3); meter.textContent = (2.8 * P.EASE.glide(clamp((t - 8.9) / 1.2))).toFixed(1) + ' s to load';
       const ke = tw(t, 14.0, 1.0); edgeT.style.opacity = (ke * IN(t, -1, 16.0, .4)).toFixed(3); edgeT.style.transform = `translateY(${((1 - ke) * 12).toFixed(1)}px)`;
       const kf = tw(t, 18.4, .9); fastT.style.opacity = (kf * IN(t, -1, 20.4, .5)).toFixed(3); fastS.style.opacity = (tw(t, 18.9, .8) * IN(t, -1, 20.4, .5)).toFixed(3);
       const kp = tw(t, 21.0, 1.0); protT.style.opacity = (kp * IN(t, -1, 23.3, .5)).toFixed(3);
     });
-    P.brandEnd({ at: 23.6, keyword: 'FAST', why: 'What’s slowing your site down?', out: 27.8 });
+    const endCard = P.brandEnd({ at: 23.6, keyword: 'FAST', why: 'What’s slowing your site down?', out: 27.8 });
+    // the end card is held long enough to read, so it keeps breathing: a slow push-in and a soft blue light rising behind the mark
+    const halo = E.el('div', 'position:absolute;left:-40px;right:-40px;top:60px;height:520px;background:radial-gradient(45% 40% at 50% 45%,rgba(47,107,255,.32),rgba(47,107,255,0) 70%);opacity:0;pointer-events:none', endCard);
+    endCard.prepend(halo);
+    P.on((t) => { const k = P.EASE.glide(clamp((t - 24.2) / 3.4)); endCard.style.scale = (1 + .07 * k).toFixed(4); halo.style.opacity = (.25 + .75 * k).toFixed(3); halo.style.transform = `translateY(${(40 - 70 * k).toFixed(1)}px) scale(${(.8 + .5 * k).toFixed(3)})`; });
     S.name = 'Edge premium v4';
     return { ok: true };
   };
