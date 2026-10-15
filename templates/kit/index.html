@@ -148,6 +148,13 @@
       });
       hint.textContent = '1080×1920, about 30 s, with the built-in music. In Instagram, add its own audio and lower this one in the volume mixer.';
       var tip = el('p', 'hint'); tip.textContent = 'Instagram only sees your Photos. If the share sheet offers only Files or Drive: save to Files, then in Files press and hold the video → Share → Save Video.'; c.appendChild(tip);
+      // iPhone: the home-screen app and in-app browsers (GitHub, Gmail) get a cut-down share sheet without "Save Video"; real Safari has it.
+      // x-safari-https:// opens this page in Safari itself (iOS 17+). Sign in once there (Safari keeps its own 30-day session).
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        var inSafari = !navigator.standalone && /Version\/[\d.]+.*Safari\//.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS|GSA\//.test(navigator.userAgent);
+        var open = el('a', inSafari ? 'btn alt' : 'btn', 'Open in Safari to save to Photos'); open.href = 'x-safari-' + location.href; side.insertBefore(open, dl);
+        if (!inSafari) { share.className = 'btn alt'; var why = el('p', 'hint'); why.textContent = 'You are in the home-screen app or another app\'s browser, where iPhone hides “Save Video”. Tap “Open in Safari”, then “Save / share to Instagram” → Save Video.'; c.insertBefore(why, tip); }
+      }
       share.disabled = true; share.textContent = 'Preparing video…';
       fetch(url).then(function (r) { return r.blob(); }).then(function (b) { // loaded first: iOS only opens the share sheet straight from a tap
         blob = b; file = new File([b], name, { type: 'video/mp4' }); v.src = URL.createObjectURL(b); share.disabled = false; share.textContent = 'Save / share to Instagram';
