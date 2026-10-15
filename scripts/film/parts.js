@@ -30,9 +30,9 @@
   P.ready = (async () => {
     try {
       const l = document.createElement('link'); l.rel = 'stylesheet';
-      l.href = 'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist+Mono:wght@400..700&display=block';
+      l.href = 'https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist+Mono:wght@400..700&family=Montserrat:wght@500;800&display=block';
       document.head.appendChild(l); await new Promise((ok) => { l.onload = ok; l.onerror = ok; setTimeout(ok, 6000); });
-      await Promise.all(['700 28px Archivo', '800 28px Archivo', '900 30px Archivo', '400 11px "Geist Mono"', '500 11px "Geist Mono"', '600 11px "Geist Mono"', '700 11px "Geist Mono"'].map((f) => document.fonts.load(f)));
+      await Promise.all(['700 28px Archivo', '800 28px Archivo', '900 30px Archivo', '400 11px "Geist Mono"', '500 11px "Geist Mono"', '600 11px "Geist Mono"', '700 11px "Geist Mono"', '800 54px Montserrat', '500 12px Montserrat'].map((f) => document.fonts.load(f)));
     } catch (e) { /* fall back to system fonts */ }
   })();
   // =====================================================================================================================================
@@ -622,14 +622,16 @@
 
   // ---- brand kit v1 (owner, 15 Oct 2026: one recognisable Aquarii look on every reel; design/brand/kit.md) ----
   P.BRAND = { ink: '#0A0E17', paper: '#F3F5F8', blue: '#2F6BFF', lime: '#C6F432', coral: '#FF5A4F', slate: '#8A93A6' };
-  P.brandMark = (size = 64) => `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true"><rect width="64" height="64" rx="14" fill="${P.BRAND.ink}"/><path d="M15 48 L32 15 L49 48" fill="none" stroke="${P.BRAND.blue}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="45" r="5" fill="${P.BRAND.lime}"/></svg>`;
+  P.LOGO = `<defs> <linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5C8DF6"/><stop offset="1" stop-color="#1E46B8"/></linearGradient> <linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9D8FF"/><stop offset=".35" stop-color="#5F8FF5"/><stop offset="1" stop-color="#2452C8"/></linearGradient> <linearGradient id="c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2A5BD7"/><stop offset="1" stop-color="#173C9E"/></linearGradient> <linearGradient id="s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1E46B8"/><stop offset=".6" stop-color="#3D73F0"/><stop offset="1" stop-color="#5C8DF6"/></linearGradient> </defs> <path d="M60 232 L165 92 L198 140 L150 232 Z" fill="url(#c)"/> <path d="M165 92 L130 160 L150 150 L176 112 Z" fill="#0A0E17" opacity=".55"/> <path d="M120 232 L262 20 L300 76 L210 232 Z" fill="url(#a)"/> <path d="M262 20 L360 165 L300 210 L250 120 Z" fill="url(#b)"/> <path d="M262 20 L272 64 L250 118 L240 70 Z" fill="#E8EFFF"/> <path d="M262 20 L232 96 L250 86 L262 58 Z" fill="#0A0E17" opacity=".5"/> <path d="M250 232 L318 150 L372 232 Z" fill="url(#c)"/> <path d="M318 150 L300 190 L322 174 Z" fill="#0A0E17" opacity=".55"/> <g fill="none" stroke="#3D73F0" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"> <path d="M318 200 L360 168 L408 126 L432 126"/> <path d="M340 214 L392 172 L452 172"/> <path d="M362 226 L410 212 L432 212"/> </g> <g fill="#0A0E17" stroke="#3D73F0" stroke-width="9"><circle cx="452" cy="126" r="16"/><circle cx="472" cy="172" r="16"/><circle cx="452" cy="212" r="16"/></g> <path d="M40 262 C150 222 330 214 470 236 C500 242 488 262 452 262 C470 256 474 248 450 245 C330 230 170 240 40 262 Z" fill="url(#s)"/> <path d="M90 250 C200 226 330 222 430 232" fill="none" stroke="#0A0E17" stroke-width="5" opacity=".6"/>`;   // design/brand/aquarii-logo.svg (owner, 15 Oct 2026: the peak emblem in the style of the owner's other brand)
+  P.brandMark = (size = 64) => `<svg viewBox="0 0 520 300" width="${size * 1.73}" height="${size}" aria-hidden="true">${P.LOGO}</svg>`;
   // the brand ending: an Ink card with the mark, the studio name and "DM us “KEYWORD” · Follow for more" (keyword in Lime). Replaces P.signoff in new films.
   P.brandEnd = function ({ at = 16.1, keyword = 'SITE', line = 'Follow for more', out = null } = {}) {
     P.use('cta', 'brand-end');
     const B = P.BRAND, end = out == null ? P.len - .2 : out;
     const card = E.el('div', `position:absolute;inset:0;background:${B.ink};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0`, P.front);
-    const mark = E.el('div', 'transform:scale(.6)', card, P.brandMark(84));
-    E.el('div', `font:800 15px/1 ${MONO};letter-spacing:.28em;text-transform:uppercase;color:${B.paper}`, card, 'Aquarii Tech Studio');
+    const mark = E.el('div', 'transform:scale(.6);display:flex;flex-direction:column;align-items:center', card, P.brandMark(120) +
+      `<div style="margin-top:2px;font:800 54px/1 Montserrat,Archivo,sans-serif;letter-spacing:-.01em;background:linear-gradient(180deg,#4C7FF2,#1E46B8);-webkit-background-clip:text;background-clip:text;color:transparent">Aquarii</div>` +
+      `<div style="margin-top:8px;font:500 12px/1 Montserrat,sans-serif;letter-spacing:.42em;color:${B.slate}">TECH STUDIO</div>`);
     const cta = E.el('div', `margin-top:8px;padding:12px 22px;border-radius:99px;background:${B.blue};color:#fff;font:900 24px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92`, card, `DM us “<span style="color:${B.lime}">${keyword}</span>”`);
     E.el('div', `font:600 14px/1 ${MONO};letter-spacing:.12em;color:${B.slate}`, card, line);
     P.on((t) => { const k = P.springAt(t, at, 'fade'), m = P.springAt(t, at + .1, 'bold'), c = P.springAt(t, at + .35, 'bold');

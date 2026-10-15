@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 300" width="520" height="300">
+  <defs>
+    <linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5C8DF6"/><stop offset="1" stop-color="#1E46B8"/></linearGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C9D8FF"/><stop offset=".35" stop-color="#5F8FF5"/><stop offset="1" stop-color="#2452C8"/></linearGradient>
+    <linearGradient id="c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2A5BD7"/><stop offset="1" stop-color="#173C9E"/></linearGradient>
+    <linearGradient id="s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1E46B8"/><stop offset=".6" stop-color="#3D73F0"/><stop offset="1" stop-color="#5C8DF6"/></linearGradient>
+  </defs>
+  <!-- back-left peak -->
+  <path d="M60 232 L165 92 L198 140 L150 232 Z" fill="url(#c)"/>
+  <path d="M165 92 L130 160 L150 150 L176 112 Z" fill="#0A0E17" opacity=".55"/>
+  <!-- main peak: bright left face, darker right face, a snow-white highlight at the tip -->
+  <path d="M120 232 L262 20 L300 76 L210 232 Z" fill="url(#a)"/>
+  <path d="M262 20 L360 165 L300 210 L250 120 Z" fill="url(#b)"/>
+  <path d="M262 20 L272 64 L250 118 L240 70 Z" fill="#E8EFFF"/>
+  <path d="M262 20 L232 96 L250 86 L262 58 Z" fill="#0A0E17" opacity=".5"/>
+  <!-- front-right peak -->
+  <path d="M250 232 L318 150 L372 232 Z" fill="url(#c)"/>
+  <path d="M318 150 L300 190 L322 174 Z" fill="#0A0E17" opacity=".55"/>
+  <!-- circuit traces with ring nodes -->
+  <g fill="none" stroke="#3D73F0" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M318 200 L360 168 L408 126 L432 126"/>
+    <path d="M340 214 L392 172 L452 172"/>
+    <path d="M362 226 L410 212 L432 212"/>
+  </g>
+  <g fill="#0A0E17" stroke="#3D73F0" stroke-width="9"><circle cx="452" cy="126" r="16"/><circle cx="472" cy="172" r="16"/><circle cx="452" cy="212" r="16"/></g>
+  <!-- swoosh -->
+  <path d="M40 262 C150 222 330 214 470 236 C500 242 488 262 452 262 C470 256 474 248 450 245 C330 230 170 240 40 262 Z" fill="url(#s)"/>
+  <path d="M90 250 C200 226 330 222 430 232" fill="none" stroke="#0A0E17" stroke-width="5" opacity=".6"/>
+</svg>
