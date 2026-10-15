@@ -3,39 +3,36 @@
   "made": "2026-10-15T03:28:07.228Z",
   "slots": {
     "ground": [
-      "light"
+      "deep-colour"
     ],
     "opener": [
-      "tight-pull-back"
+      "slow-hook-card"
     ],
     "transition": [
-      "breath-cut"
-    ],
-    "payoff": [
-      "sort-burst"
-    ],
-    "type": [
-      "stacked-title"
-    ],
-    "cta": [
-      "sign-off"
-    ],
-    "camera": [
-      "keyed-camera"
+      "hard-cuts"
     ],
     "mechanism": [
-      "iso-machine"
+      "edge-route"
+    ],
+    "payoff": [
+      "number-collapse"
+    ],
+    "type": [
+      "full-width-card"
     ],
     "captions": [
-      "blur"
+      "pill"
+    ],
+    "cta": [
+      "brand-end"
     ]
   },
   "dna": {
     "service": "edge",
-    "format": "explainer",
-    "opening": "close on a navy origin tower where parcels creep along a belt under \"Why is your site slow abroad?\"",
-    "bigMoment": "the chute doors drop and pushers sort every parcel into its nearest chute while red ones are shoved into the reject tray",
-    "ground": "light ice blue with navy, cyan, coral and sun yellow",
-    "music": "dry mechanical ticking that opens into a bright, bouncy 100 BPM groove at the sort"
+    "format": "problem-fix",
+    "opening": "full-width SLOW in coral under a spinning loader on ink, \"Why is your site slow abroad?\"",
+    "bigMoment": "edge nodes drop onto the route and the request hops to the nearest one, then 2.8 s collapses into a giant 0.4 s",
+    "ground": "brand ink with blue, lime and coral",
+    "music": "tight ticking pulse that opens into a confident 100 BPM groove when the edge drops in"
   }
 }
