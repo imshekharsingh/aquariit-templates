@@ -32,7 +32,7 @@ excepted) so a change in reach comes from distribution, not from a different kin
 reel) read next to each post's comment. **Verdict (29 Oct):** keep the routine if median reach per reel is at least 3x the 9-14 Oct median and at least one reel
 gets shares; otherwise test the next lever (hook style, posting time). Then decide area 3 of the process review (signature parts).
 
-## E13 · which AI voice (owner, 15 Oct 2026; runs about 3 weeks)
+## E13 · which AI voice: CANCELLED the same day (owner: keep only af_heart for consistency)
 Six Kokoro voices rotate by film date (af_heart, am_michael, bf_emma, am_fenrir, af_bella, bm_george; scripts/film/voice.mjs). Each reel's voice is in its voice
 report. **Measure:** average watch time and shares per reach per voice (Instagram collect). **Verdict:** after each voice has 2+ posted reels, keep the one with the
 best average watch as the single Aquarii voice (pin it with a `Voice:` line or change the default).

@@ -15,8 +15,10 @@ n, dur = len(g), len(g) / FPS
 step = np.r_[0, np.abs(g[1:] - g[:-1]).mean(axis=(1, 2))]
 # cuts: a hard change between two frames 0.1 s apart, at least 0.4 s after the previous cut
 cuts, last = [], -9
+# relative to the local flow, so a cut between two dark shots counts too: a jump well above the motion around it, or any big jump
 for i in range(1, n):
-    if step[i] > 20 and i / FPS - last >= .4: cuts.append(round(i / FPS, 1)); last = i / FPS
+    local = np.median(step[max(1, i - 6):min(n, i + 7)])
+    if (step[i] > 20 or (step[i] > 6 and step[i] > 4 * max(local, .5))) and i / FPS - last >= .4: cuts.append(round(i / FPS, 1)); last = i / FPS
 # static: the longest window where the frame stays close to where it started (small motion inside one framing still counts as static)
 L = int(2.5 * FPS)
 longest, at, i = 0.0, 0.0, 0
