@@ -1,5 +1,5 @@
 // Film renderer: turns a template into a directed 9:16 film (virtual camera, beat-locked type, motion blur, original score) instead of a screen recording.
-//   node scripts/film/render-film.mjs ID [--variant A|B|both] [--out DIR] [--sub 4] [--shutter .5] [--workers 3] [--frames a-b] [--stills t1,t2,...] [--no-audio] [--crf 16]
+//   node scripts/film/render-film.mjs ID [--draft] [--variant A|B|both] [--out DIR] [--sub 4] [--shutter .5] [--workers 3] [--frames a-b] [--stills t1,t2,...] [--no-audio] [--crf 16]
 // Needs film/ID/{story.js,timing.json,audio.mjs}. Every frame is a pure function of the film time, so output is exact and repeatable (no real-time capture).
 // Motion blur = SUB sub-frames per output frame spread over a 180-degree shutter, averaged by ffmpeg (tmix).
 import { readFileSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync, symlinkSync, copyFileSync, unlinkSync } from 'node:fs';
@@ -14,8 +14,9 @@ const valueArgs = new Set(['--variant', '--out', '--sub', '--shutter', '--worker
 const id = args.find((a, i) => !a.startsWith('--') && !valueArgs.has(args[i - 1]));
 const FD = (() => { const i = args.indexOf('--film-dir'); return i > -1 ? args[i + 1] : ''; })(), dir = FD || join(root, 'film', id), T = JSON.parse(readFileSync(join(dir, 'timing.json'), 'utf8'));
 if (!id || !existsSync(join(FD || join(root, 'film', id), 'story.js'))) { console.error('usage: render-film.mjs ID  (needs film/ID/story.js)'); process.exit(2); }
-const OUT = resolve(opt('--out', join(root, 'out', 'film', id))), VAR = opt('--variant', 'both'), PREVIEW = args.includes('--preview'), SUB = PREVIEW ? 1 : +opt('--sub', T.sub || 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = PREVIEW ? 28 : +opt('--crf', 17);
-const FPS = 30, LEN = T.len, NF = LEN * FPS, JOIN_F = Math.round(T.join * FPS), SCALE = 1080 / 402;
+const OUT = resolve(opt('--out', join(root, 'out', 'film', id))), VAR = opt('--variant', 'both'), PREVIEW = args.includes('--preview'), DRAFT = args.includes('--draft'), SUB = PREVIEW || DRAFT ? 1 : +opt('--sub', T.sub || 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = PREVIEW ? 28 : DRAFT ? 26 : +opt('--crf', 17);
+// --draft (owner, 15 Oct 2026): a phone check of motion and voice before the full render: half resolution, no motion blur, voice and effects kept (~16x less work)
+const FPS = 30, LEN = T.len, NF = LEN * FPS, JOIN_F = Math.round(T.join * FPS), SCALE = (DRAFT ? 540 : 1080) / 402;
 const AUDIO = opt('--audio', ''), only = opt('--frames', ''), stills = opt('--stills', ''), COVER = args.includes('--cover'), DELIVER = opt('--deliver', '');
 
 const require = createRequire(import.meta.url);

@@ -131,7 +131,7 @@ jobs:
         run: |
           # the 8 newest reels (video + cover) from the "reels" release; the Reel publish workflow puts them there (test reels such as ID-voice.mp4 stay in the release only: they have no cover and are not for posting)
           mkdir -p templates/reels
-          for f in $(gh release view reels --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' 2>/dev/null | grep -E '\.(mp4|jpg)$' | grep -v -- '-voice' | sort -r | head -n 16); do
+          for f in $(gh release view reels --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' 2>/dev/null | grep -E '\.(mp4|jpg)$' | grep -vE -- '-(voice|draft)' | sort -r | head -n 16); do
             gh release download reels --repo "$GITHUB_REPOSITORY" --pattern "$f" --dir templates/reels --clobber
           done
           # the site cannot hold a file over 25 MiB (the whole deploy would fail): leave an oversized reel out instead

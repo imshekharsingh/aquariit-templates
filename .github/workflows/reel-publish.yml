@@ -19,6 +19,10 @@ on:
         description: Render again even if a reel already exists
         type: boolean
         default: false
+      draft:
+        description: Phone draft (half resolution, no motion blur, with voice) uploaded as ID-draft.mp4; no issue, no redeploy
+        type: boolean
+        default: false
 
 permissions:
   contents: write   # releases
@@ -51,10 +55,12 @@ jobs:
         env:
           IN_ID: ${{ inputs.id }}
           IN_FORCE: ${{ inputs.force }}
+          IN_DRAFT: ${{ inputs.draft }}
         run: |
           ID="${IN_ID:-$(node -e "const l=require('./design-log.json');const k=e=>e.id||e.date;console.log(l.map(k).sort().reverse()[0])")}"
           echo "id=$ID" >> "$GITHUB_OUTPUT"
-          if [ "$IN_FORCE" != "true" ] && gh release view reels --repo "$REPO" --json assets -q '.assets[].name' 2>/dev/null | grep -qx "$ID.mp4"; then
+          echo "draft=${IN_DRAFT:-false}" >> "$GITHUB_OUTPUT"
+          if [ "$IN_FORCE" != "true" ] && [ "$IN_DRAFT" != "true" ] && gh release view reels --repo "$REPO" --json assets -q '.assets[].name' 2>/dev/null | grep -qx "$ID.mp4"; then
             echo "Reel for $ID already exists: nothing to do."; echo "skip=true" >> "$GITHUB_OUTPUT"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -118,6 +124,12 @@ jobs:
           # the screen-recording renderer, without its generated music (CLAUDE.md: no music synthesised in code), so a reel is always produced
           if [ -f "film/$ID/story.js" ]; then
             VO=""; [ -f out/voice/final.wav ] && VO="--audio out/voice/final.wav"
+            if [ "${{ steps.pick.outputs.draft }}" = "true" ]; then
+              node scripts/film/render-film.mjs "$ID" --draft --variant A --workers 2 --out out/film $VO 2>&1 | tee render.log
+              mkdir -p out/reels && cp "out/film/$ID-A.mp4" "out/reels/$ID-draft.mp4"
+              gh release upload reels --repo "$REPO" --clobber "out/reels/$ID-draft.mp4"
+              echo "draft: uploaded $ID-draft.mp4"; exit 0
+            fi
             if node scripts/film/render-film.mjs "$ID" --variant A --workers 2 --out out/film $VO --deliver out/reels 2>&1 | tee render.log; then
               echo "format: film"
             else
@@ -128,14 +140,14 @@ jobs:
             node scripts/render-reel.mjs "$ID" --out out/reels --no-audio 2>&1 | tee render.log
           fi
       - name: Keep it in the reels release
-        if: steps.pick.outputs.skip != 'true'
+        if: steps.pick.outputs.skip != 'true' && steps.pick.outputs.draft != 'true'
         run: |
           ID="${{ steps.pick.outputs.id }}"
           gh release view reels --repo "$REPO" >/dev/null 2>&1 || gh release create reels --repo "$REPO" --title "Reels" --latest=false \
             --notes "Rendered reels (MP4 + cover), one per template. Written by the Reel publish workflow; the site serves recent ones behind the sign-in."
           gh release upload reels --repo "$REPO" --clobber "out/reels/$ID.mp4" "out/reels/$ID-cover.jpg" "out/reels/$ID.json"
       - name: Tell the owner (GitHub issue, assigned so it emails and notifies)
-        if: steps.pick.outputs.skip != 'true'
+        if: steps.pick.outputs.skip != 'true' && steps.pick.outputs.draft != 'true'
         run: |
           ID="${{ steps.pick.outputs.id }}"
           gh label create reel --repo "$REPO" --color 7C3AED --description "A reel is ready to post" 2>/dev/null || true
@@ -158,7 +170,7 @@ jobs:
           else { echo "> Quality gate: PASS"; echo '```'; cat gate.txt; echo '```'; echo; cat issue.md; } > issue2.md; fi
           gh issue create --repo "$REPO" --title "$TITLE" --body-file issue2.md --label reel --assignee "${{ github.repository_owner }}"
       - name: Redeploy once so the site serves the new video
-        if: steps.pick.outputs.skip != 'true'
+        if: steps.pick.outputs.skip != 'true' && steps.pick.outputs.draft != 'true'
         run: gh workflow run pipeline.yml --repo "$REPO" --ref main
       - name: Summary
         if: always() && steps.pick.outputs.skip != 'true'
