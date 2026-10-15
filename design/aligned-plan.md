@@ -13,7 +13,7 @@
 - One recognisable Aquarii look on every reel: one palette, one font, one logo mark, one ending. Replaces "every reel looks like its own brand".
 - New brand kit; the water-wave (zigzag) icon is replaced.
 - Ending: why to DM (talk through your needs / pain points), the DM keyword, then "we'll find the package that fits you" + follow; the spoken/on-screen close is "DM us to know more" (owner, 15 Oct 2026). No prices, no free promises. The owner replies to DMs within a few hours.
-- 3-4 reels a week: Mon, Wed, Fri, Sun, posted at 19:30 IST. Templates drop to the same days (one proof page per reel).
+- 3 reels a week (owner, 15 Oct 2026): Mon, Wed, Fri, posted at 19:30 IST. Templates drop to the same days (one proof page per reel). Move to 4 (add Sun) once two reels in a row pass on the first render.
 - Weekly mix (rotate): problem -> fix story; mini tutorial with voice; makeover (old site -> modern site); offer (one package explained, no price: "DM us for pricing that fits you").
 - Final gate: the owner watches each reel once and replies "post" or "fix" in the Claude chat.
 
@@ -39,7 +39,7 @@ One wide shot for 18 s, a busy object whose story needs captions, small corner t
 2. Brand kit: palette, font, logo mark, ending card (M).
 3. Voice sample pack: 4-6 English voices saying the same line, rendered on GitHub (S).
 4. Reel recipe + quality gate in the film engine and checks (M).
-5. Schedule: daily template routine -> Mon/Wed/Fri/Sun 08:50 IST; posting checklist 19:30 (S).
+5. Schedule: daily template routine -> Mon/Wed/Fri 08:50 IST; posting checklist 19:30 (S).
 6. Rules: owner-approved CLAUDE.md update (lean draft + this plan), lift the motion freeze (S).
 7. First reel on the new system, for Friday 16 Oct (M + GitHub render).
 Superseded: process-review areas 2 and 3 (folded into the recipe and quality gate); the E12 motion freeze is lifted, the 19:30 posting routine stays.
