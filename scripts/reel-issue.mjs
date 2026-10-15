@@ -22,7 +22,7 @@ console.log(`## 🎬 ${k.name} — your reel is rendered
 **Template:** ${site}/${id}/
 
 ### Post it (about a minute)
-1. Open the kit link above on your iPhone and tap **Save / share to Instagram**, then choose *Save Video* so it lands in Photos (Instagram only sees Photos).  
+1. Open the kit link above **in Safari** on your iPhone (the GitHub app and the home-screen app hide *Save Video*; the kit page shows an **Open in Safari** button), tap **Save / share to Instagram**, then choose *Save Video* so it lands in Photos.  
    If the sheet only offers Files or Drive: save to Files, open Files, press and hold the video → **Share → Save Video**.
 2. In Instagram: **Reel** → pick the video. This reel moves from the first frame on purpose (no title card), so set the cover yourself: **Edit cover → Add from camera roll** and choose the cover image (kit page → **Save cover image**).
 3. **Add audio** from Instagram's library. Search: ${list(m.search) || '—'}${m.mood ? `  \n   Mood: ${m.mood}${m.genre ? ' · ' + m.genre : ''}${film ? ' · about ' + bpm + ' BPM' : m.bpm ? ' · ' + m.bpm + ' BPM' : ''}.` : ''}  
