@@ -4,9 +4,9 @@ import json, sys
 import numpy as np, soundfile as sf
 from kokoro import KPipeline
 
-VOICE = 'af_heart'
 lines, out_wav, out_words = json.load(open(sys.argv[1])), sys.argv[2], sys.argv[3]
-pipe = KPipeline(lang_code='a', repo_id='hexgrad/Kokoro-82M')
+VOICE = sys.argv[4] if len(sys.argv) > 4 else 'af_heart'          # chosen by voice.mjs (rotation test, owner 15 Oct 2026)
+pipe = KPipeline(lang_code=VOICE[0], repo_id='hexgrad/Kokoro-82M')   # 'a' American, 'b' British voices
 SR, LEN = 24000, 18.0
 buf, words, spans = np.zeros(int(LEN * SR), dtype=np.float32), [], []
 for i, ln in enumerate(lines):

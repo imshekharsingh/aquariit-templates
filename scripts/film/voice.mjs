@@ -27,7 +27,13 @@ if (!lines.length || bad) { console.error('voice.md: fix the lines above (max 3 
 // ---- 2. speak ----
 const lj = join(OUT, 'lines.json'), raw = join(OUT, 'voice-raw.wav'), tj = join(OUT, 'voice-timing.json');
 writeFileSync(lj, JSON.stringify(lines));
-const py = run('python3', [join(root, 'scripts/film/voice_kokoro.py'), lj, raw, tj]); process.stdout.write(py.stdout);
+// voice: a `Voice: name` line in voice.md wins; otherwise the rotation test (owner, 15 Oct 2026) picks one of six by film date, so consecutive reels differ.
+// Results per voice are compared in design/experiments.md (E13); the winner becomes the one Aquarii voice.
+const VOICES = ['af_heart', 'am_michael', 'bf_emma', 'am_fenrir', 'af_bella', 'bm_george'];
+const md = readFileSync(join(root, 'film', id, 'voice.md'), 'utf8'), pinned = (md.match(/^Voice:\s*([a-z]{2}_[a-z]+)/m) || [])[1];
+const day = Math.floor(Date.parse(id.slice(0, 10)) / 864e5), voiceName = pinned || VOICES[day % VOICES.length];
+console.log('voice:', voiceName, pinned ? '(pinned in voice.md)' : '(rotation)');
+const py = run('python3', [join(root, 'scripts/film/voice_kokoro.py'), lj, raw, tj, voiceName]); process.stdout.write(py.stdout);
 const VT = JSON.parse(readFileSync(tj, 'utf8'));
 for (const s of VT.lines) { const l = lines[s.line]; if (s.end > l.t1 + .35) console.log(`::warning::line ${s.line + 1} runs ${(s.end - l.t1).toFixed(2)} s past its shot`); }
 const speechEnd = Math.max(...VT.lines.map((s) => s.end));
