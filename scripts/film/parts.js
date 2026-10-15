@@ -15,6 +15,7 @@
 //   captions   P.captions(list, { style: 'pill' | 'bare' | 'underline' | 'mono' | 'blur' })   the spine: 1-3 words per card at y 492
 //   cta        P.card (+ P.brackets)  P.tap (cursor taps a button)  P.ring (rotating text badge)
 //   camera     P.camera (keyed camera with shake; films DOM layers + canvases)   texture  P.grain   (and P.dripWord: wet display type)
+//   system map P.sys (game look: neon grid, glowing cables with flowing packets, comets, glossy component chips, bursts; one camera)
 //   machine    P.iso (isometric machines: the object IS the explanation; box, cyl, coil, ticks, dot, path; four-tone shading, depth-sorted)
 //   3D         P.tank3d (the leaky vessel in real 3D, for hero shots)  P.three (WebGL scene, procedural studio light)  P.three.look (keyed 3D camera on springs)  P.three.roundRect
 //   brand      P.BRAND (kit colours)  P.brandMark()  P.brandEnd({ keyword }) (the ending of every new film; design/brand/kit.md)
@@ -1266,5 +1267,79 @@
       defs.innerHTML = defsH; g.innerHTML = html;
     });
     return I;
+  };
+  // =====================================================================================================================================
+  // SYSTEM MAP / GAME LOOK (owner, 15 Oct 2026: "show how it works", "the visual appearance of a game"). One canvas, one camera, world coordinates.
+  // Principles: design/references/2026-10-15-hyperframes-explainer.md (one continuous camera, reveal on the voice, smooth long-tail easing, deterministic).
+  //   const W = P.sys(parent, { bg })                 -> { ctx, cam, draw(fn) }; cam = { x, y, s } (world point at the frame centre, scale); fn(ctx, t, S) draws in world units
+  //   W.grid(t, { color, alpha })                     neon perspective floor + dotted map field (screen space, parallax with the camera)
+  //   W.cable(pts, t, { color, alpha, flow, width })  a glowing cable along a cubic path pts=[p0,p1,p2,p3]; flow = dash speed (packets moving)
+  //   W.comet(pts, u, { color, r, trail })            a packet at u (0..1) with a glowing trail
+  //   W.chip(x, y, { w, h, color, icon, label, k })   a glossy component (icon: phone | server | dns | edge | shield); k = appear 0..1
+  //   W.burst(x, y, k, { color, n, seed })            a particle burst at progress k (bots hitting a shield)
+  //   W.at(pts, u) -> [x, y]                          a point on the path
+  // =====================================================================================================================================
+  P.sys = function (parent, { bg = '#060A14', dpr = 2 } = {}) {
+    P.use('mechanism', 'system-map');
+    const cv = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px', parent); cv.width = 402 * dpr; cv.height = 715 * dpr;
+    const ctx = cv.getContext('2d'), cam = { x: 201, y: 357, s: 1, sx: 0, sy: 0 }, fns = [];
+    const toS = (x, y) => [(x - cam.x) * cam.s + 201 + cam.sx, (y - cam.y) * cam.s + 357 + cam.sy];
+    const at = (p, u) => { const v = 1 - u; return [0, 1].map((i) => v * v * v * p[0][i] + 3 * v * v * u * p[1][i] + 3 * v * u * u * p[2][i] + u * u * u * p[3][i]); };
+    const glow = (c, b) => { ctx.shadowColor = c; ctx.shadowBlur = b; };
+    let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const stars = Array.from({ length: 90 }, () => [rnd() * 900 - 250, rnd() * 1300 - 300, .3 + rnd() * 1.2, rnd()]);
+    const W = { ctx, cam, at, toS, fade: 1,                                  // fade: multiplies every element's opacity (selective focus)
+      draw(fn) { fns.push(fn); },
+      grid(t, { color = '#2F6BFF', alpha = 1 } = {}) {
+        ctx.save(); ctx.globalAlpha = alpha;
+        stars.forEach(([x, y, r, a]) => { const [sx, sy] = [(x - cam.x * .35) + 201, (y - cam.y * .35) + 120]; ctx.fillStyle = `rgba(160,190,255,${(.15 + .35 * a).toFixed(2)})`; ctx.fillRect(sx, sy, r, r); });
+        const hz = 430 + cam.sy * .2, vx = 201 + (201 - cam.x) * .15;            // horizon and vanishing point drift a little with the camera (parallax)
+        const g = ctx.createLinearGradient(0, hz, 0, 715); g.addColorStop(0, 'rgba(47,107,255,0)'); g.addColorStop(1, 'rgba(47,107,255,.10)'); ctx.fillStyle = g; ctx.fillRect(0, hz, 402, 715 - hz);
+        ctx.strokeStyle = color; ctx.lineWidth = 1;
+        for (let i = 0; i < 14; i++) { const f = ((i + (t * .6) % 1) / 14), y = hz + (715 - hz) * f * f; ctx.globalAlpha = alpha * (.08 + .5 * f * f); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(402, y); ctx.stroke(); }
+        for (let i = -10; i <= 10; i++) { ctx.globalAlpha = alpha * .22; ctx.beginPath(); ctx.moveTo(vx + i * 6, hz); ctx.lineTo(vx + i * 70, 715); ctx.stroke(); }
+        ctx.restore();
+      },
+      cable(pts, t, { color = '#2F6BFF', alpha = 1, flow = 60, width = 3, dash = [3, 11] } = {}) {
+        ctx.save(); ctx.globalAlpha = alpha * W.fade; const q = pts.map(([x, y]) => toS(x, y)), lw = width * Math.max(.6, cam.s);
+        ctx.beginPath(); ctx.moveTo(...q[0]); ctx.bezierCurveTo(...q[1], ...q[2], ...q[3]);
+        ctx.strokeStyle = 'rgba(20,30,60,.9)'; ctx.lineWidth = lw + 4; ctx.lineCap = 'round'; ctx.stroke();
+        glow(color, 10); ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.setLineDash(dash.map((d) => d * cam.s)); ctx.lineDashOffset = -t * flow * cam.s; ctx.stroke();
+        ctx.restore();
+      },
+      comet([p0, p1, p2, p3], u, { color = '#C6F432', r = 6, trail = .06 } = {}) {
+        ctx.save(); glow(color, 16);
+        for (let i = 8; i >= 0; i--) { const uu = u - trail * i / 8; if (uu < 0 || uu > 1) continue; const [x, y] = toS(...at([p0, p1, p2, p3], uu)); ctx.globalAlpha = (1 - i / 9) * (i ? .5 : 1) * W.fade; ctx.fillStyle = i ? color : '#ffffff';
+          ctx.beginPath(); ctx.arc(x, y, (i ? r * (1 - i / 10) : r * .55) * cam.s, 0, 6.283); ctx.fill(); if (!i) { ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, r * cam.s * .9, 0, 6.283); ctx.globalAlpha = .55 * W.fade; ctx.fill(); } }
+        ctx.restore();
+      },
+      chip(x, y, { w = 64, h = 64, color = '#2F6BFF', icon = 'server', label = '', sub = '', k = 1, hot = 0 } = {}) {
+        if (k <= 0) return; const [sx, sy] = toS(x, y), s = cam.s * (.6 + .4 * k), W2 = w * s / 2, H2 = h * s / 2;
+        ctx.save(); ctx.globalAlpha = Math.min(1, k * 1.4) * W.fade;
+        glow(color, 18 + 14 * hot); const g = ctx.createLinearGradient(sx, sy - H2, sx, sy + H2); g.addColorStop(0, '#24345E'); g.addColorStop(1, '#0C1430');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.roundRect(sx - W2, sy - H2, W2 * 2, H2 * 2, 14 * s); ctx.fill();
+        ctx.shadowBlur = 0; ctx.strokeStyle = color; ctx.lineWidth = 2 * s; ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.beginPath(); ctx.roundRect(sx - W2 + 3 * s, sy - H2 + 3 * s, W2 * 2 - 6 * s, H2 * .7, 11 * s); ctx.fill();   // glossy top
+        ctx.strokeStyle = '#EAF1FF'; ctx.fillStyle = '#EAF1FF'; ctx.lineWidth = 2.4 * s; ctx.lineJoin = 'round'; glow(color, 8);
+        const u = s * Math.min(w, h) / 64;
+        if (icon === 'phone') { ctx.beginPath(); ctx.roundRect(sx - 11 * u, sy - 19 * u, 22 * u, 38 * u, 5 * u); ctx.stroke(); ctx.fillRect(sx - 4 * u, sy + 13 * u, 8 * u, 2 * u); }
+        if (icon === 'server') for (let i = -1; i <= 1; i++) { ctx.strokeRect(sx - 17 * u, sy + i * 11 * u - 4.5 * u, 34 * u, 9 * u); ctx.fillStyle = i ? '#C6F432' : '#FF5A4F'; ctx.fillRect(sx + 10 * u, sy + i * 11 * u - 1.5 * u, 3 * u, 3 * u); ctx.fillStyle = '#EAF1FF'; }
+        if (icon === 'dns') { ctx.beginPath(); ctx.arc(sx, sy, 15 * u, 0, 6.283); ctx.moveTo(sx - 15 * u, sy); ctx.lineTo(sx + 15 * u, sy); ctx.ellipse(sx, sy, 6 * u, 15 * u, 0, 0, 6.283); ctx.stroke(); }
+        if (icon === 'edge') { ctx.beginPath(); for (let i = 0; i < 6; i++) { const a = i / 6 * 6.283 + .52; ctx[i ? 'lineTo' : 'moveTo'](sx + 16 * u * Math.cos(a), sy + 16 * u * Math.sin(a)); } ctx.closePath(); ctx.stroke(); ctx.beginPath(); ctx.arc(sx, sy, 5 * u, 0, 6.283); ctx.fill(); }
+        if (icon === 'shield') { ctx.beginPath(); ctx.moveTo(sx, sy - 17 * u); ctx.lineTo(sx + 14 * u, sy - 11 * u); ctx.lineTo(sx + 13 * u, sy + 4 * u); ctx.quadraticCurveTo(sx + 8 * u, sy + 14 * u, sx, sy + 18 * u); ctx.quadraticCurveTo(sx - 8 * u, sy + 14 * u, sx - 13 * u, sy + 4 * u); ctx.lineTo(sx - 14 * u, sy - 11 * u); ctx.closePath(); ctx.stroke(); }
+        ctx.shadowBlur = 0;
+        if (label) { ctx.font = `800 ${Math.round(12 * Math.max(.8, s))}px Archivo, sans-serif`; ctx.textAlign = 'center'; ctx.fillStyle = '#F3F5F8'; ctx.fillText(label, sx, sy + H2 + 16 * Math.max(.8, s)); }
+        if (sub) { ctx.font = `600 ${Math.round(10 * Math.max(.8, s))}px "Geist Mono", monospace`; ctx.fillStyle = '#8A93A6'; ctx.fillText(sub, sx, sy + H2 + 29 * Math.max(.8, s)); }
+        ctx.restore();
+      },
+      burst(x, y, k, { color = '#FF5A4F', n = 14, seed: sd = 1 } = {}) {
+        if (k <= 0 || k >= 1) return; const [sx, sy] = toS(x, y); ctx.save(); glow(color, 12);
+        for (let i = 0; i < n; i++) { const a = (i / n) * 6.283 + sd * 1.7, d = (8 + 34 * P.EASE.glide(k)) * (0.6 + ((i * 37 + sd * 11) % 10) / 20) * cam.s;
+          ctx.globalAlpha = (1 - k) * W.fade; ctx.fillStyle = i % 3 ? color : '#FFE0A3'; ctx.fillRect(sx + Math.cos(a) * d - 2, sy + Math.sin(a) * d - 2, 4 * cam.s, 4 * cam.s); }
+        ctx.restore();
+      },
+    };
+    P.on((t) => { W.fade = 1; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = bg; ctx.fillRect(0, 0, 402, 715); fns.forEach((f) => f(ctx, t, W)); });
+    return W;
   };
 })();
