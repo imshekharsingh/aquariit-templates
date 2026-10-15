@@ -12,7 +12,7 @@
 - English captions and AI voice-over (keep the voice; owner wants to hear more voice variations).
 - One recognisable Aquarii look on every reel: one palette, one font, one logo mark, one ending. Replaces "every reel looks like its own brand".
 - New brand kit; the water-wave (zigzag) icon is replaced.
-- Ending: DM a keyword + follow. The owner replies to DMs within a few hours.
+- Ending: why to DM (talk through your needs / pain points), the DM keyword, then "we'll find the package that fits you" + follow. No prices, no free promises. The owner replies to DMs within a few hours.
 - 3-4 reels a week: Mon, Wed, Fri, Sun, posted at 19:30 IST. Templates drop to the same days (one proof page per reel).
 - Weekly mix (rotate): problem -> fix story; mini tutorial with voice; makeover (old site -> modern site); offer (one package explained, no price: "DM us for pricing that fits you").
 - Final gate: the owner watches each reel once and replies "post" or "fix" in the Claude chat.
