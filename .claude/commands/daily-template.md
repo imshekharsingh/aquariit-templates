@@ -10,6 +10,9 @@ You own this repository and follow CLAUDE.md. Work without asking for
 confirmation unless something is destructive or ambiguous.
 Optional hint from user: $ARGUMENTS
 
+## Phase 0: reel days only (owner, 15 Oct 2026)
+Run `TZ=Asia/Kolkata date +%a`. On Tue, Thu or Sat: do nothing else; reply "Not a reel day (Mon/Wed/Fri/Sun only)" and stop.
+
 ## Phase 1 — Repo health and branch
 1. ID = output of `TZ=Asia/Kolkata date +%F-%H%M` (India date + current time, e.g.
    2026-10-07-0905). DATE = first 10 chars of ID; TIME = `HH:MM` from the same
@@ -79,9 +82,17 @@ Reel format B is the current experiment (design/experiments.md): the reel is ren
 (payoff in the last 4 s). Read the latest results table in the "Instagram collect" workflow log, `design/experiments.md` and `design/growth-playbook.md` first, and favour what the numbers say is working. Concept and hook speak to the buyer (a business owner or founder: money, time, results) about OUR service of the day (design/services.md), never about the template's
 fictional business: add `## Service` (the line), keep the template's brand name out of Hook and Caption (check.mjs refuses it), and end on a CTA to us ("DM us 'SITE'"). Read `design/market.md` (people's choice): pick the business, market and currency from what the audience responds to; never present invented results as Aquarii's own.
 
+**READ FIRST (owner plan, 15 Oct 2026): design/aligned-plan.md overrides CLAUDE.md and this file where they differ.** Runs are Mon/Wed/Fri/Sun only.
+Every film: (1) one service, in the plan's order of priority (design + SEO, then CDN/speed/protection, then security + maintenance; still never the same as the previous film);
+(2) one of the four reel types in rotation (problem -> fix, mini tutorial, makeover, offer) and record it as `S.dna.format`; (3) the reel recipe: 8-10 shots in 18 s, a cut
+every 1.5-2.5 s (wide, push-in via P.camera, close-up, full-width type card), hook filling the width in the first second, one visible change per shot, payoff at 13-16 s;
+(4) brand kit: P.BRAND colours, Archivo + Geist Mono, pill captions, and `P.brandEnd({ keyword })` from ~16.1 s instead of P.signoff (design/brand/kit.md); (5) film/ID/voice.md
+(English AI voice, "we", one line per shot, <= 3 words/s, first line = hook, last = "DM us 'KEYWORD'"), voiced on GitHub automatically; (6) never show prices ("DM us for
+pricing that fits your needs") and never invent years, clients, results or testimonials. Before pushing, render 4-6 `--stills` and ask: is there a new picture every 2 s? The
+quality gate on GitHub (scripts/film/reel-gate.py: 6+ cuts, no framing held 3 s, live ending) rejects reels that are not; a rejected reel costs a day.
+
 ## Phase 4c — Directed film (the reel; CLAUDE.md "Directed film"; how-to design/film-playbook.md)
 0. **Design like the motion logo** (design/film-playbook.md): poster-first (4-6 finished key frames before code), one visual idea that transforms, logo-grade craft, the motion logo as sign-off.
-   **Motion freeze 15-28 Oct (owner, E12 in design/experiments.md):** no new parts and no engine changes; build from existing parts (bug fixes and the approved iso-machine trial excepted). This suspends "every film adds one new trick" until 29 Oct.
    Machines: when the service can be shown as one working object, build it with P.iso (design/film-playbook.md "Isometric machines"). First use (15 Oct 2026): the edge service as a sorting machine; the owner judges that reel before machines become a regular option.
 1. **Concept first (3 lines):** the buyer's pain in today's service line, what Aquarii delivers (the mechanism the film shows), the payoff image. Pick a format from
    design/services.md (service ad, cheat sheet, before/after, explainer, what you get, myth vs fact). Every reel still looks like its own piece: pick the ground

@@ -2,18 +2,19 @@
 
 ## The business
 - Clients: small businesses in India first; the look must also win larger clients' trust.
-- Sell, in order: website security + maintenance, website design (+ SEO and related work), CDN/speed/protection setup (the owner's strongest skill).
-- Money: at least INR 25,000 per client per year (about INR 2,000/month). Clients should feel treated like a big company at a small price. Several packages.
+- Sell, in order: (1) website design + SEO, (2) CDN/speed/protection setup (the owner's strongest skill), (3) website security + maintenance.
+- Voice: always "we", a confident, experienced team of specialists. Honesty line: never invent specifics (years in business, client counts, results, testimonials).
+- Money: at least INR 25,000 per client per year (internal floor, never published). Clients should feel treated like a big company at a small price. Several packages (design/packages.md).
+- Prices are NEVER shown. Reels and captions say: "DM us to discuss pricing that fits your needs; we offer competitive prices." (keeps the currency and scope open).
 - Client worries: not known yet; reels rotate the five common ones (hacked, slow, builder disappeared, not found on Google, not sure it is safe) and we do more of whatever brings DMs.
 
 ## The reels
 - English captions and AI voice-over (keep the voice; owner wants to hear more voice variations).
 - One recognisable Aquarii look on every reel: one palette, one font, one logo mark, one ending. Replaces "every reel looks like its own brand".
 - New brand kit; the water-wave (zigzag) icon is replaced.
-- Prices: sometimes (offer reels), not every reel.
 - Ending: DM a keyword + follow. The owner replies to DMs within a few hours.
 - 3-4 reels a week: Mon, Wed, Fri, Sun, posted at 19:30 IST. Templates drop to the same days (one proof page per reel).
-- Weekly mix (rotate): problem -> fix story; mini tutorial with voice; makeover (old site -> modern site); offer (one package explained, sometimes with price).
+- Weekly mix (rotate): problem -> fix story; mini tutorial with voice; makeover (old site -> modern site); offer (one package explained, no price: "DM us for pricing that fits you").
 - Final gate: the owner watches each reel once and replies "post" or "fix" in the Claude chat.
 
 ## Reel recipe (every film)
@@ -34,3 +35,6 @@ One wide shot for 18 s, a busy object whose story needs captions, small corner t
 6. Rules: owner-approved CLAUDE.md update (lean draft + this plan), lift the motion freeze (S).
 7. First reel on the new system, for Friday 16 Oct (M + GitHub render).
 Superseded: process-review areas 2 and 3 (folded into the recipe and quality gate); the E12 motion freeze is lifted, the 19:30 posting routine stays.
+
+## Working rule (owner, 15 Oct): hand over to automation
+Foundations are built once in a session; after that the scheduled runs and GitHub workflows do the work. Sessions stay short.

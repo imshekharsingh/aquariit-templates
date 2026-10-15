@@ -17,6 +17,7 @@
 //   camera     P.camera (keyed camera with shake; films DOM layers + canvases)   texture  P.grain   (and P.dripWord: wet display type)
 //   machine    P.iso (isometric machines: the object IS the explanation; box, cyl, coil, ticks, dot, path; four-tone shading, depth-sorted)
 //   3D         P.tank3d (the leaky vessel in real 3D, for hero shots)  P.three (WebGL scene, procedural studio light)  P.three.look (keyed 3D camera on springs)  P.three.roundRect
+//   brand      P.BRAND (kit colours)  P.brandMark()  P.brandEnd({ keyword }) (the ending of every new film; design/brand/kit.md)
 //   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff (the studio name + DM us, at the end; the always-on watermark was retired 14 Oct 2026, P.watermark() is opt-in only)
 // helpers: P.fade, P.pop, P.rel (measure an element), P.icon/P.icons, P.hexA, P.sm, P.css. Gallery of every option: render the test films in design/film-playbook.md.
 (function () {
@@ -617,6 +618,24 @@
       text + (cta ? ` <span style="opacity:.5">·</span> <span style="color:${P.accent}">${cta}</span>` : ''));
     P.on((t) => { const k = P.springAt(t, at, 'fade'); el.style.opacity = (k * (1 - P.tween(t, out, .19, 'snap'))).toFixed(3); el.style.transform = `translateY(${((1 - k) * 8).toFixed(1)}px)`; });
     return el;
+  };
+
+  // ---- brand kit v1 (owner, 15 Oct 2026: one recognisable Aquarii look on every reel; design/brand/kit.md) ----
+  P.BRAND = { ink: '#0A0E17', paper: '#F3F5F8', blue: '#2F6BFF', lime: '#C6F432', coral: '#FF5A4F', slate: '#8A93A6' };
+  P.brandMark = (size = 64) => `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true"><rect width="64" height="64" rx="14" fill="${P.BRAND.ink}"/><path d="M15 48 L32 15 L49 48" fill="none" stroke="${P.BRAND.blue}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="45" r="5" fill="${P.BRAND.lime}"/></svg>`;
+  // the brand ending: an Ink card with the mark, the studio name and "DM us “KEYWORD” · Follow for more" (keyword in Lime). Replaces P.signoff in new films.
+  P.brandEnd = function ({ at = 16.1, keyword = 'SITE', line = 'Follow for more', out = null } = {}) {
+    P.use('cta', 'brand-end');
+    const B = P.BRAND, end = out == null ? P.len - .2 : out;
+    const card = E.el('div', `position:absolute;inset:0;background:${B.ink};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0`, P.front);
+    const mark = E.el('div', 'transform:scale(.6)', card, P.brandMark(84));
+    E.el('div', `font:800 15px/1 ${MONO};letter-spacing:.28em;text-transform:uppercase;color:${B.paper}`, card, 'Aquarii Tech Studio');
+    const cta = E.el('div', `margin-top:8px;padding:12px 22px;border-radius:99px;background:${B.blue};color:#fff;font:900 24px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92`, card, `DM us “<span style="color:${B.lime}">${keyword}</span>”`);
+    E.el('div', `font:600 14px/1 ${MONO};letter-spacing:.12em;color:${B.slate}`, card, line);
+    P.on((t) => { const k = P.springAt(t, at, 'fade'), m = P.springAt(t, at + .1, 'bold'), c = P.springAt(t, at + .35, 'bold');
+      card.style.opacity = (k * (1 - P.tween(t, end, .2, 'snap'))).toFixed(3);
+      mark.style.transform = `scale(${(.6 + .4 * m).toFixed(3)})`; cta.style.transform = `translateY(${((1 - c) * 18).toFixed(1)}px)`; cta.style.opacity = c.toFixed(3); });
+    return card;
   };
 
   // =====================================================================================================================================
