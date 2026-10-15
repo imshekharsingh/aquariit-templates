@@ -23,7 +23,7 @@
 - Before any full render (owner, 15 Oct 2026): `node scripts/film/storyboard.mjs ID` makes one 8-frame storyboard (the middle of each voice line + the reveal); in a chat session the owner
   approves it ("go") before the GitHub render; in a scheduled run Claude reviews the board itself and the automatic checks guard the render. Claude first reviews every second of the film as stills against: full frame (a subject, supporting detail and
   a depth layer), one focal point, nothing clipped at the sides, the picture matching the words.
-- Automatic checks (fail = "Reel needs fix", never sent): voice pauses over 0.6 s between lines (except the declared breath) and lines outside 2.3-3.2 words/s (Kokoro speaks about 2.9 words/s at 1.0x)
+- Automatic checks (fail = "Reel needs fix", never sent): voice pauses over 0.9 s between lines (0.6-0.9 s warns; the declared breath is exempt; lines may start up to 0.8 s ahead of their picture) and lines outside 2.3-3.2 words/s (Kokoro speaks about 2.9 words/s at 1.0x)
   (scripts/film/voice.mjs); fewer than 6 shots, a framing held over 3.5 s, more than 30% of seconds with under 25% of the frame holding detail ("fullness"),
   a dead ending (scripts/film/reel-gate.py).
 - 8-10 shots in 18 s, a cut every 1.5-2.5 s; shot types: wide, push-in, close-up, full-width type card.

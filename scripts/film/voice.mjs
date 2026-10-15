@@ -37,10 +37,12 @@ const py = run('python3', [join(root, 'scripts/film/voice_kokoro.py'), lj, raw, 
 const VT = JSON.parse(readFileSync(tj, 'utf8'));
 for (const s of VT.lines) { const l = lines[s.line]; if (s.end > l.t1 + .35) console.log(`::warning::line ${s.line + 1} runs ${(s.end - l.t1).toFixed(2)} s past its shot`); }
 const speechEnd = Math.max(...VT.lines.map((s) => s.end));
-// no noticeable pauses (owner, 15 Oct 2026): a silence of more than 0.6 s between lines fails, except the film's declared breath before the reveal
+// no noticeable pauses (owner, 15 Oct 2026): between sentences a natural pause is 0.5-0.8 s; over 0.9 s fails (the complaint was 1.2-2.4 s gaps), 0.6-0.9 s warns.
+// The film's declared breath before the reveal is exempt.
 const br = T.breath || [0, 0], gaps = [];
-for (let i = 1; i < VT.lines.length; i++) { const a = VT.lines[i - 1].end, b = VT.lines[i].start; if (b - a > .6 && !(a < br[1] && b > br[0] && b - a < 2.2)) gaps.push(`${a.toFixed(2)}-${b.toFixed(2)} s`); }
-if (gaps.length) { console.error('voice: pauses longer than 0.6 s between lines:', gaps.join(', '), '- add words to the line before, or start the next line earlier'); process.exit(1); }
+for (let i = 1; i < VT.lines.length; i++) { const a = VT.lines[i - 1].end, b = VT.lines[i].start; if (a < br[1] && b > br[0] && b - a < 2.2) continue;
+  if (b - a > .9) gaps.push(`${a.toFixed(2)}-${b.toFixed(2)} s`); else if (b - a > .6) console.log(`::warning::voice pause ${(b - a).toFixed(2)} s at ${a.toFixed(2)} s (natural, under 0.9 s)`); }
+if (gaps.length) { console.error('voice: pauses longer than 0.9 s between lines:', gaps.join(', '), '- add words to the line before, or start the next line earlier'); process.exit(1); }
 if (speechEnd > LEN - .2) { console.error('speech overruns the film:', speechEnd, 's'); process.exit(1); }
 
 // ---- 3. mix ----
