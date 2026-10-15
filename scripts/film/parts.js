@@ -1226,7 +1226,7 @@
       for (let i = 0; i <= N; i++) { const a = i / 24 * TAU, x = q.x + q.r * Math.cos(a), y = q.y + q.r * Math.sin(a), z = (q.z || 0) + q.h * i / N;
         const isFront = Math.cos(a) * sa + Math.sin(a) * ca > 0, [sx, sy] = Pt(x, y, z);
         if (isFront === front) { d += (on ? 'L' : 'M') + f2(sx) + ' ' + f2(sy); on = true; } else on = false; }
-      return `<path d="${d}" stroke="${q.c || line}" stroke-width="${q.lw || 1.4}" stroke-linecap="round" stroke-opacity="${front ? 1 : .55}"/>`; };
+      return `<path d="${d}" fill="none" stroke="${q.c || line}" stroke-width="${q.lw || 1.4}" stroke-linecap="round" stroke-opacity="${front ? 1 : .55}"/>`; };
     const I = { svg, P: Pt, items, depthOf,
       box: (s2) => add('box', s2), cyl: (s2) => add('cyl', s2), dot: (s2) => add('dot', s2), path: (s2) => add('path', s2), ticks: (s2) => add('ticks', s2),
       coil: (s2) => { add('coilB', s2); return add('coilF', s2); } };

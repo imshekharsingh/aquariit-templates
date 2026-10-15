@@ -5,8 +5,8 @@ One original, copyright-safe webpage template per day, published to
 The home page lists every template by date; the site is an installable PWA.
 Each template also ships with an Instagram kit (caption, keywords, hashtags, music).
 
-Templates generated: **22**
-Latest: [2026-10-14 08:50 · Suddly](https://templates.aquariit.com/2026-10-14-0850/)
+Templates generated: **23**
+Latest: [2026-10-15 08:50 · Kitebox](https://templates.aquariit.com/2026-10-15-0850/)
 
 ## Rendering a reel (no phone needed)
 `node scripts/render-reel.mjs [ID]` (or `npm run reel -- ID`) plays a template through the real ▶ player in headless Chromium and writes
