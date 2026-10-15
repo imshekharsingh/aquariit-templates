@@ -23,6 +23,9 @@
 - Before any full render (owner, 15 Oct 2026): `node scripts/film/storyboard.mjs ID` makes one 8-frame storyboard (the middle of each voice line + the reveal); in a chat session the owner
   approves it ("go") before the GitHub render; in a scheduled run Claude reviews the board itself and the automatic checks guard the render. Claude first reviews every second of the film as stills against: full frame (a subject, supporting detail and
   a depth layer), one focal point, nothing clipped at the sides, the picture matching the words.
+- Phone draft before the full render (owner, 15 Oct 2026): Reel publish with `draft: true` renders half resolution, no motion blur, with the voice (about 6-8 min)
+  and uploads ID-draft.mp4; Claude sends it, the owner checks motion and voice in 30 s, one feedback message (must-fix / nice-to-have), then the full render.
+- Style is locked for 4-6 weeks (v5 cinematic tech); reels change story and content, not the look. Style upgrades happen once a month, on purpose.
 - Automatic checks (fail = "Reel needs fix", never sent): voice pauses over 0.9 s between lines (0.6-0.9 s warns; the declared breath is exempt; lines may start up to 0.8 s ahead of their picture) and lines outside 2.3-3.2 words/s (Kokoro speaks about 2.9 words/s at 1.0x)
   (scripts/film/voice.mjs); fewer than 6 shots, a framing held over 3.5 s, more than 30% of seconds with under 25% of the frame holding detail ("fullness"),
   a dead ending (scripts/film/reel-gate.py).
