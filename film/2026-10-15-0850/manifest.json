@@ -1,0 +1,41 @@
+{
+  "id": "2026-10-15-0850",
+  "made": "2026-10-15T03:28:07.228Z",
+  "slots": {
+    "ground": [
+      "light"
+    ],
+    "opener": [
+      "tight-pull-back"
+    ],
+    "transition": [
+      "breath-cut"
+    ],
+    "payoff": [
+      "sort-burst"
+    ],
+    "type": [
+      "stacked-title"
+    ],
+    "cta": [
+      "sign-off"
+    ],
+    "camera": [
+      "keyed-camera"
+    ],
+    "mechanism": [
+      "iso-machine"
+    ],
+    "captions": [
+      "blur"
+    ]
+  },
+  "dna": {
+    "service": "edge",
+    "format": "explainer",
+    "opening": "close on a navy origin tower where parcels creep along a belt under \"Why is your site slow abroad?\"",
+    "bigMoment": "the chute doors drop and pushers sort every parcel into its nearest chute while red ones are shoved into the reject tray",
+    "ground": "light ice blue with navy, cyan, coral and sun yellow",
+    "music": "dry mechanical ticking that opens into a bright, bouncy 100 BPM groove at the sort"
+  }
+}
