@@ -18,7 +18,7 @@
 - Final gate: the owner watches each reel once and replies "post" or "fix" in the Claude chat.
 
 ## Reel recipe (every film)
-- Premium test (owner, 15 Oct 2026, "go full"): 26-30 s, calm "cinematic tech" look per design/brand/premium.md (one idea per frame, navy/white/lime, glass and light,
+- Premium style (owner, 15 Oct 2026, "go full"; length is Claude's call per content, 15-30 s, see premium.md): calm "cinematic tech" look per design/brand/premium.md (one idea per frame, navy/white/lime, glass and light,
   one 3D hero shot, 1-1.5 s holds), voice af_heart at about 2 words/s, ending "DM us to know more". If the owner approves the 2026-10-15-0850 test, this replaces the 18 s line below.
 - Before any full render (owner, 15 Oct 2026): `node scripts/film/storyboard.mjs ID` makes one 8-frame storyboard (the middle of each voice line + the reveal); in a chat session the owner
   approves it ("go") before the GitHub render; in a scheduled run Claude reviews the board itself and the automatic checks guard the render. Claude first reviews every second of the film as stills against: full frame (a subject, supporting detail and
