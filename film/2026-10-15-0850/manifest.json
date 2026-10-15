@@ -3,25 +3,28 @@
   "made": "2026-10-15T03:28:07.228Z",
   "slots": {
     "ground": [
-      "black"
+      "deep-colour"
     ],
     "opener": [
-      "loader-zoom-through"
+      "spotlight-type"
     ],
     "transition": [
-      "one-camera-world"
+      "calm-glide"
     ],
     "payoff": [
-      "hud-number-handoff"
+      "light-path-shrinks"
     ],
     "type": [
-      "game-hud"
+      "premium-minimal"
+    ],
+    "focus": [
+      "soft-spotlight"
     ],
     "mechanism": [
       "system-map"
     ],
-    "captions": [
-      "pill"
+    "render": [
+      "webgl-3d"
     ],
     "cta": [
       "brand-end"
@@ -30,9 +33,9 @@
   "dna": {
     "service": "edge",
     "format": "problem-fix",
-    "opening": "full-width SLOW over a spinning loader that the camera dives through into a neon system map",
-    "bigMoment": "edge nodes drop in like a power-up, the cable re-wires to the nearest edge and the shield bursts the bots while the HUD latency falls to 0.4s",
-    "ground": "neon game world: ink, electric blue grid, lime and coral",
-    "music": "driving synth pulse that lifts into a bright arcade groove at the power-up, 100 BPM"
+    "opening": "premium type in a soft spotlight: \"Is your site / slow abroad?\" settling word by word on navy",
+    "bigMoment": "a real 3D glass edge node descends onto a mirror floor and its lime core lights, then the light path shrinks from 7,200 km to next door",
+    "ground": "cinematic navy with soft blue light, glass and one lime accent",
+    "music": "warm ambient pads with a soft pulse, rising gently into the edge reveal, about 90 BPM"
   }
 }
