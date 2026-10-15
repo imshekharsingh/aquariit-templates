@@ -7,7 +7,7 @@ from kokoro import KPipeline
 lines, out_wav, out_words = json.load(open(sys.argv[1])), sys.argv[2], sys.argv[3]
 VOICE = sys.argv[4] if len(sys.argv) > 4 else 'af_heart'          # chosen by voice.mjs (rotation test, owner 15 Oct 2026)
 pipe = KPipeline(lang_code=VOICE[0], repo_id='hexgrad/Kokoro-82M')   # 'a' American, 'b' British voices
-SR, LEN = 24000, 18.0
+SR, LEN = 24000, float(sys.argv[5]) if len(sys.argv) > 5 else 18.0   # film length from timing.json (voice.mjs passes it)
 buf, words, spans = np.zeros(int(LEN * SR), dtype=np.float32), [], []
 for i, ln in enumerate(lines):
     off = ln['t0']
