@@ -130,6 +130,8 @@ jobs:
           TITLE="$(node scripts/reel-issue.mjs "$ID" --title)"
           # quality gate (design/aligned-plan.md "Reel recipe"): a failing reel is announced as needing a fix, not as ready to post
           if python3 -I scripts/film/reel-gate.py "out/reels/$ID.mp4" > gate.txt; then GATE=PASS; else GATE=FAIL; fi
+          # a film with a voice script must carry its voice: a missing voice never passes silently
+          if [ -f "film/$ID/voice.md" ] && [ ! -f out/voice/final.wav ]; then GATE=FAIL; echo "FAIL voice     film/$ID/voice.md exists but the voice-over failed (see the Voice-over step log)" >> gate.txt; fi
           cat gate.txt
           if [ "$GATE" = FAIL ]; then TITLE="Reel needs fix: $ID"; { echo "> **Quality gate: FAIL.** Do not post. Reply \"fix\" in the Claude chat."; echo; echo '```'; cat gate.txt; echo '```'; echo; cat issue.md; } > issue2.md
           else { echo "> Quality gate: PASS"; echo '```'; cat gate.txt; echo '```'; echo; cat issue.md; } > issue2.md; fi

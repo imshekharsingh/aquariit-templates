@@ -11,7 +11,12 @@ SR, LEN = 24000, 18.0
 buf, words, spans = np.zeros(int(LEN * SR), dtype=np.float32), [], []
 for i, ln in enumerate(lines):
     off = ln['t0']
-    for r in pipe(ln['text'], voice=VOICE, speed=1.0):
+    # fit the shot: speak once, and if the line is longer than its shot, say it again a little faster (max 1.3x) so it ends on time
+    slot = max(.5, ln['t1'] - ln['t0'])
+    probe = sum(len(r.audio) for r in pipe(ln['text'], voice=VOICE, speed=1.0)) / SR
+    speed = 1.0 if probe <= slot else min(1.3, probe / slot * 1.03)
+    if speed > 1: print(f"line {i + 1}: {probe:.2f} s for a {slot:.2f} s shot -> speed {speed:.2f}")
+    for r in pipe(ln['text'], voice=VOICE, speed=speed):
         a = r.audio.cpu().numpy() if hasattr(r.audio, 'cpu') else np.asarray(r.audio)
         s = int(off * SR); e = min(len(buf), s + len(a)); buf[s:e] += a[: e - s]
         for tk in (r.tokens or []):
