@@ -3,22 +3,22 @@
   "made": "2026-10-15T03:28:07.228Z",
   "slots": {
     "ground": [
-      "deep-colour"
+      "black"
     ],
     "opener": [
-      "slow-hook-card"
+      "loader-zoom-through"
     ],
     "transition": [
-      "hard-cuts"
-    ],
-    "mechanism": [
-      "edge-route"
+      "one-camera-world"
     ],
     "payoff": [
-      "number-collapse"
+      "hud-number-handoff"
     ],
     "type": [
-      "full-width-card"
+      "game-hud"
+    ],
+    "mechanism": [
+      "system-map"
     ],
     "captions": [
       "pill"
@@ -30,9 +30,9 @@
   "dna": {
     "service": "edge",
     "format": "problem-fix",
-    "opening": "full-width SLOW in coral under a spinning loader on ink, \"Why is your site slow abroad?\"",
-    "bigMoment": "edge nodes drop onto the route and the request hops to the nearest one, then 2.8 s collapses into a giant 0.4 s",
-    "ground": "brand ink with blue, lime and coral",
-    "music": "tight ticking pulse that opens into a confident 100 BPM groove when the edge drops in"
+    "opening": "full-width SLOW over a spinning loader that the camera dives through into a neon system map",
+    "bigMoment": "edge nodes drop in like a power-up, the cable re-wires to the nearest edge and the shield bursts the bots while the HUD latency falls to 0.4s",
+    "ground": "neon game world: ink, electric blue grid, lime and coral",
+    "music": "driving synth pulse that lifts into a bright arcade groove at the power-up, 100 BPM"
   }
 }

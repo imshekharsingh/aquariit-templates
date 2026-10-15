@@ -1,126 +1,112 @@
-// FILM v2: "Why is your site slow abroad?" (service: edge). 15 Oct 2026, the first film on the owner's reel recipe (design/aligned-plan.md):
-// 10 shots in 18 s with a hard cut every 1.6-2.3 s, a full-width hook from frame 0, one visible change per shot, payoff at 13.8 s, the brand ending, AI voice (voice.md).
-// Shots: 1 hook card (SLOW fills the width, spinner) | 2 phone close-up, loading bar crawls, timer climbs | 3 route: London shopper -> one server in Mumbai, the request
-// crawls 7,200 km | 4 type card "Each second, people leave." | 5 breath: black, "Now add the edge." | 6 route: edge nodes drop in, the request hops to the nearest one |
-// 7 phone close-up, page snaps in, 0.4 s | 8 shield ring around the edge node bounces bots | 9 payoff: 2.8 s collapses into a giant 0.4 s | 10 brand ending, DM us "FAST".
+// FILM v3: "Why is your site slow abroad?" (service: edge). 15 Oct 2026, owner feedback on v2: show HOW it works with connected components, more moving
+// elements, fluid transitions, the visual appearance of a game. One neon world, one camera (design/references/2026-10-15-hyperframes-explainer.md):
+// 0.0 hook: SLOW fills the width over a spinning loader | 2.3 zoom-through the loader into the world: the shopper's phone, DNS and a far-away server appear as the
+// voice names them, a request crawls the long cable (camera follows it), the HUD latency bar climbs | 5.6 the cable jams, bots ride along, "Each second, people
+// leave." | 7.3 breath, "Now add the edge." | 8.6 POWER-UP: edge nodes drop in with a flash and shake, the cable re-wires to the nearest edge, packets zip |
+// 12.0 the shield ring takes hits, bots burst, the BOTS BLOCKED counter climbs | 13.8 pull back over the healthy map, the HUD number flies to centre: 0.4s |
+// 16.1 brand ending, DM us "FAST".
 (function () {
   const E = window.FilmEngine, P = window.FilmParts, { clamp, lerp } = E, S = (E.story = {});
   S.selfStage = true;
   S.dna = {
     service: 'edge',
     format: 'problem-fix',
-    opening: 'full-width SLOW in coral under a spinning loader on ink, "Why is your site slow abroad?"',
-    bigMoment: 'edge nodes drop onto the route and the request hops to the nearest one, then 2.8 s collapses into a giant 0.4 s',
-    ground: 'brand ink with blue, lime and coral',
-    music: 'tight ticking pulse that opens into a confident 100 BPM groove when the edge drops in',
+    opening: 'full-width SLOW over a spinning loader that the camera dives through into a neon system map',
+    bigMoment: 'edge nodes drop in like a power-up, the cable re-wires to the nearest edge and the shield bursts the bots while the HUD latency falls to 0.4s',
+    ground: 'neon game world: ink, electric blue grid, lime and coral',
+    music: 'driving synth pulse that lifts into a bright arcade groove at the power-up, 100 BPM',
   };
   const B = P.BRAND, MONO = "'Geist Mono',ui-monospace,monospace";
-  const sp = (t, t0, n = 'bold') => P.springAt(t, t0, n), tw = (t, t0, d, n = 'swing') => P.tween(t, t0, d, n);
-  // shot windows (hard cuts)
-  const SH = [[-1, 1.8], [1.8, 3.6], [3.6, 5.6], [5.6, 7.3], [7.3, 8.45], [8.45, 10.2], [10.2, 12.0], [12.0, 13.8], [13.8, 16.1]];
+  const sp = (t, t0, n = 'default') => P.springAt(t, t0, n), tw = (t, t0, d, n = 'glide') => P.tween(t, t0, d, n);
+  // the world: shopper in London (left), DNS, one far-away server in Mumbai (top right), the edge node next to the shopper
+  const PH = [86, 470], DNS = [176, 560], SRV = [318, 250], EDGE = [128, 372];
+  const LONG = [PH, [150, 640], [390, 520], SRV], SHORT = [PH, [96, 430], [112, 396], EDGE], DNSL = [PH, [110, 520], [140, 560], DNS];
+  // camera keys [t, x, y, s] with smooth glide between them; fast moves get the renderer's motion blur
+  const CAM = [[0, 201, 357, 1], [2.3, 201, 357, 1], [2.9, 160, 480, 1.7], [3.6, 170, 520, 1.55], [5.2, 290, 330, 1.35], [5.9, 205, 420, .92], [7.3, 205, 420, .92],
+    [8.5, 205, 420, .92], [9.3, 120, 470, 1.55], [11.8, 130, 455, 1.6], [12.2, 128, 400, 2.0], [13.7, 128, 400, 2.0], [14.5, 205, 410, .95], [18, 205, 410, .95]];
+  const camAt = (t) => { let i = 0; while (i < CAM.length - 2 && t > CAM[i + 1][0]) i++; const a = CAM[i], b = CAM[i + 1], k = P.EASE.swing(clamp((t - a[0]) / Math.max(.01, b[0] - a[0])));
+    return [lerp(a[1], b[1], k), lerp(a[2], b[2], k), lerp(a[3], b[3], k)]; };
 
   S.setup = async function () {
     document.documentElement.classList.add('reel');
     await P.ready; await document.fonts.ready;
-    const { world } = P.scene({ accent: B.blue, ink: B.ink, glow: 'rgba(47,107,255,.16)' });
-    P.use('opener', 'slow-hook-card'); P.use('transition', 'hard-cuts'); P.use('mechanism', 'edge-route'); P.use('payoff', 'number-collapse'); P.use('type', 'full-width-card');
-    // each shot is a layer shown only inside its window, with a slow push-in so no framing is ever held still
-    const shot = (i, push = .05) => { const el = E.el('div', 'position:absolute;inset:0;opacity:0;transform-origin:50% 45%', world);
-      P.on((t) => { const [a, b] = SH[i], on = t >= a && t < b; el.style.opacity = on ? '1' : '0'; if (on) el.style.transform = `scale(${(1 + push * clamp((t - a) / (b - a))).toFixed(4)})`; }); return el; };
-    const txt = (parent, html, css) => E.el('div', `position:absolute;left:30px;right:30px;text-align:center;color:${B.paper};font:900 40px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92;letter-spacing:-.01em;word-spacing:.06em;${css}`, parent, html);
-    const timer = (parent, css) => E.el('div', `position:absolute;left:30px;font:700 64px/1 ${MONO};letter-spacing:-.04em;${css}`, parent);
+    const { world } = P.scene({ accent: B.blue, ink: '#060A14', glow: 'rgba(47,107,255,.10)' });
+    P.use('opener', 'loader-zoom-through'); P.use('transition', 'one-camera-world'); P.use('payoff', 'hud-number-handoff'); P.use('type', 'game-hud');
+    const W = P.sys(world, {}), ctx = W.ctx;
 
-    // 1 hook card
-    const s1 = shot(0, .04);
-    const spin = E.el('div', `position:absolute;left:171px;top:118px;width:60px;height:60px;border-radius:50%;border:7px solid rgba(243,245,248,.15);border-top-color:${B.coral}`, s1);
-    const h1 = txt(s1, 'Why is your site', 'top:212px;font-size:40px'), h2 = txt(s1, 'SLOW', `top:272px;font-size:112px;line-height:.9;color:${B.coral};font-variation-settings:"wdth" 96;white-space:nowrap`), h3 = txt(s1, 'abroad?', 'top:404px;font-size:46px');
-    P.on((t) => { spin.style.transform = `rotate(${(t * 520).toFixed(0)}deg)`;
-      [[h1, -.2], [h2, -.05], [h3, .12]].forEach(([el, a]) => { const k = sp(t, a); el.style.opacity = clamp(k * 1.4).toFixed(3); el.style.transform = `translateY(${((1 - k) * 26).toFixed(1)}px) scale(${lerp(.92, 1, k).toFixed(3)})`; }); });
+    W.draw((c, t) => {
+      const [x, y, s] = camAt(t); W.cam.x = x; W.cam.y = y; W.cam.s = s;
+      const sh = Math.max(0, 1 - (t - 8.6) / .5) * (t > 8.6 ? 1 : 0); W.cam.sx = Math.sin(t * 71) * 7 * sh; W.cam.sy = Math.cos(t * 53) * 6 * sh;   // power-up shake
+      const mapA = clamp((t - 2.25) / .2) * (1 - .75 * tw(t, 7.25, .25, 'snap') * (1 - tw(t, 8.45, .2))) ;                                       // breath dims the world
+      W.grid(t, { alpha: .45 + .55 * mapA });
+      c.save(); c.globalAlpha = mapA;
+      // map dots (a world of places)
+      for (let gx = 20; gx < 400; gx += 18) for (let gy = 200; gy < 660; gy += 18) { const n = Math.sin(gx * .05) * Math.cos(gy * .043) + Math.sin((gx + gy) * .021); if (n < .35) continue;
+        const [sx, sy] = W.toS(gx, gy); c.fillStyle = 'rgba(120,150,230,.22)'; c.fillRect(sx, sy, 2 * s, 2 * s); }
+      const before = t < 8.6, edgeK = sp(t, 8.6, 'bold');
+      const focus = 1 - .5 * (tw(t, 5.7, .3) * (1 - tw(t, 7.1, .2))) - .85 * (tw(t, 11.9, .3) * (1 - tw(t, 13.75, .2))) - .8 * tw(t, 13.8, .3);   // selective focus
+      const dim = mapA * focus, sub = mapA * (t > 13.8 ? focus : 1);   // dim: everything but the subject; sub: the subject (edge + shield)
+      c.globalAlpha = dim; W.fade = dim;
+      // cables: the long trip (red when jammed), the DNS hop, and after the power-up the short path to the edge
+      W.cable(DNSL, t, { color: B.blue, alpha: sp(t, 2.95) * .8, flow: 40 });
+      W.cable(LONG, t, { color: t > 5.5 && before ? B.coral : B.blue, alpha: sp(t, 3.2) * (before ? 1 : .35), flow: before ? 18 : 6 });
+      if (!before) W.cable(SHORT, t, { color: B.lime, alpha: edgeK, flow: 120, width: 4 });
+      // packets
+      if (t > 3.3 && t < 8.6) { const u = ((t - 3.3) / 3.4); W.comet(LONG, Math.min(1, u), { color: u < .5 ? B.lime : B.coral, r: 7 }); }
+      if (t > 4.6 && before) for (let i = 0; i < 3; i++) { const u = ((t - 4.6 - i * .7) / 3.6); if (u > 0 && u < 1) W.comet(LONG, u, { color: B.coral, r: 5, trail: .04 }); }
+      if (!before) for (let i = 0; i < 7; i++) { const u = ((t - 9.0 + i * .23) % .55) / .55; if (t > 9.0 - i * .23) W.comet(SHORT, i % 2 ? u : 1 - u, { color: B.lime, r: 5, trail: .12 }); }
+      // the shield ring around the edge node (after 11.9), bots fly in and burst on it
+      c.globalAlpha = sub; W.fade = sub;
+      if (t > 11.9) { const [ex, ey] = W.toS(...EDGE), rr = 46 * s * sp(t, 11.9, 'bold'), hit = BOTS.reduce((m, b) => Math.max(m, 1 - Math.abs(t - b.hit) / .12), 0);
+        c.save(); c.shadowColor = B.blue; c.shadowBlur = 20 + 30 * hit; c.strokeStyle = hit > .1 ? '#9EC0FF' : B.blue; c.lineWidth = (3 + 4 * hit) * s; c.beginPath(); c.arc(ex, ey, rr, 0, 6.283); c.stroke(); c.restore();
+        BOTS.forEach((b) => { const k = (t - b.t0) / (b.hit - b.t0); if (k > 0 && k < 1) { const d = lerp(170, 46, P.EASE.glide(k)), [bx, by] = W.toS(EDGE[0] + Math.cos(b.a) * d, EDGE[1] + Math.sin(b.a) * d);
+            c.save(); c.shadowColor = B.coral; c.shadowBlur = 12; c.fillStyle = B.coral; c.translate(bx, by); c.rotate(b.a + Math.PI); c.beginPath(); c.moveTo(7 * s, 0); c.lineTo(-5 * s, -5 * s); c.lineTo(-5 * s, 5 * s); c.closePath(); c.fill(); c.restore(); }
+          W.burst(EDGE[0] + Math.cos(b.a) * 46, EDGE[1] + Math.sin(b.a) * 46, (t - b.hit) / .5, { seed: b.i }); }); }
+      // the components, revealed as the voice names them
+      c.globalAlpha = dim; W.fade = dim;
+      W.chip(...PH, { icon: 'phone', label: 'Shopper', sub: 'London', k: sp(t, 2.4), color: B.paper });
+      W.chip(...DNS, { icon: 'dns', label: 'DNS', sub: 'finds the server', k: sp(t, 3.0), w: 52, h: 52 });
+      W.chip(...SRV, { icon: 'server', label: 'Your server', sub: 'Mumbai · 7,200 km', k: sp(t, 3.45), color: before && t > 5.5 ? B.coral : B.blue, hot: t > 5.5 && before ? .6 : 0 });
+      if (!before) { [[EDGE, 0], [[250, 470], .08], [[300, 600], .14], [[60, 250], .2]].forEach(([p, d], i) => {
+          const k = sp(t, 8.6 + d, 'bold') * (i ? clamp((1.35 - s) / .25) : 1), drop = (1 - k) * 220; W.fade = i ? dim : sub; W.chip(p[0], p[1] - drop / Math.max(.5, s), { icon: i ? 'edge' : 'edge', label: i ? '' : 'Edge', sub: i ? '' : '20 km away', k, color: B.lime, w: i ? 40 : 60, h: i ? 40 : 60, hot: 1 - k }); });
+        const fl = Math.max(0, 1 - (t - 8.6) / .35); if (fl > 0) { c.fillStyle = `rgba(198,244,50,${(.35 * fl).toFixed(3)})`; c.fillRect(0, 0, 402, 715); } }
+      c.globalAlpha = sub; W.fade = sub;
+      if (t > 12.0) W.chip(...EDGE, { icon: 'shield', k: sp(t, 12.0), color: B.blue, w: 44, h: 44 });
+      c.restore();
+    });
+    const BOTS = Array.from({ length: 9 }, (_, i) => ({ i, a: -2.6 + i * .62, t0: 12.0 + i * .17, hit: 12.55 + i * .17 }));
 
-    // phone close-up (shots 2 and 7 share the drawing)
-    const phone = (parent, fast) => {
-      const ph = E.el('div', `position:absolute;left:46px;top:150px;width:310px;height:640px;border-radius:42px;background:#121826;box-shadow:0 0 0 3px #2a3247,0 30px 60px rgba(0,0,0,.5);overflow:hidden`, parent);
-      E.el('div', `position:absolute;left:18px;right:18px;top:20px;height:34px;border-radius:17px;background:#1c2436;color:${B.slate};font:500 13px/34px ${MONO};padding-left:16px`, ph, 'yourstore.in');
-      const bar = E.el('div', `position:absolute;left:18px;top:62px;height:4px;border-radius:2px;background:${fast ? B.lime : B.coral};width:0`, ph);
-      const blocks = [[18, 86, 274, 150], [18, 250, 130, 110], [162, 250, 130, 110], [18, 374, 274, 26], [18, 410, 200, 26]].map(([x, y, w, h], i) =>
-        E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:14px;background:${fast ? (i === 0 ? B.blue : i < 3 ? '#26314a' : '#2b3550') : '#1a2132'}`, ph));
-      return { ph, bar, blocks };
-    };
-    const s2 = shot(1, .06), p2 = phone(s2, false), t2 = timer(s2, `top:58px;color:${B.coral}`);
-    E.el('div', `position:absolute;left:30px;top:128px;font:700 13px ${MONO};letter-spacing:.2em;color:${B.slate}`, s2, 'SHOPPER IN LONDON');
-    P.on((t) => { const u = clamp((t - 1.8) / 1.8); p2.bar.style.width = (274 * u * .35).toFixed(0) + 'px'; t2.textContent = (u * 1.8).toFixed(1) + ' s';
-      p2.blocks.forEach((b, i) => { b.style.opacity = (.45 + .35 * Math.sin(t * 6 + i)).toFixed(3); }); });
+    // HUD (game style): latency bar + value, bots blocked; top band below Instagram's bar, left-aligned
+    const hud = E.el('div', `position:absolute;left:30px;right:30px;top:104px;opacity:0;display:flex;flex-direction:column;gap:8px;font:700 12px ${MONO};letter-spacing:.14em;color:${B.slate}`, world);
+    hud.innerHTML = `<div style="display:flex;align-items:center;gap:10px">LATENCY<div style="flex:1;height:10px;border-radius:5px;background:#16203a;overflow:hidden;box-shadow:0 0 0 1px #24345e"><div class="lb" style="height:100%;width:0;border-radius:5px"></div></div><span class="lv" style="width:62px;text-align:right;font-size:18px;letter-spacing:0"></span></div>
+      <div class="bb" style="display:flex;gap:10px;opacity:0">BOTS BLOCKED <span class="bv" style="color:${B.lime};letter-spacing:0;font-size:14px">0</span></div>`;
+    const lb = hud.querySelector('.lb'), lv = hud.querySelector('.lv'), bb = hud.querySelector('.bb'), bv = hud.querySelector('.bv');
+    P.on((t) => { hud.style.opacity = (clamp((t - 2.6) / .3) * (1 - tw(t, 13.95, .2, 'snap')) * (1 - .6 * tw(t, 7.25, .25) * (1 - tw(t, 8.45, .2)))).toFixed(3);
+      const lat = t < 8.6 ? 0.1 + 2.7 * P.EASE.glide(clamp((t - 3.3) / 3.4)) : lerp(2.8, .4, P.EASE.glide(clamp((t - 9.0) / .6)));
+      const bad = lat > 1.2; lb.style.width = (Math.min(1, lat / 3) * 100).toFixed(1) + '%'; lb.style.background = bad ? B.coral : B.lime; lb.style.boxShadow = `0 0 12px ${bad ? B.coral : B.lime}`;
+      lv.textContent = lat.toFixed(1) + 's'; lv.style.color = bad ? B.coral : B.lime;
+      bb.style.opacity = clamp((t - 12.0) / .3).toFixed(3); bv.textContent = String(Math.round(128 * P.EASE.glide(clamp((t - 12.4) / 1.4)))); });
 
-    // route shots (3 and 6): London shopper (left) to one server in Mumbai (right), drawn as a long arc
-    const route = (parent, edge) => {
-      const box = E.el('div', 'position:absolute;inset:0', parent);
-      box.innerHTML = `<svg viewBox="0 0 402 715" width="402" height="715" style="position:absolute;inset:0" aria-hidden="true">
-        <path class="arc" d="M70 420 Q201 120 332 420" fill="none" stroke="rgba(243,245,248,.22)" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>
-        <circle cx="70" cy="420" r="14" fill="${B.paper}"/><circle cx="332" cy="420" r="16" fill="${B.coral}"/><circle class="pk" r="9" fill="${edge ? B.lime : B.coral}"/>
-        ${edge ? `<g class="nodes"></g><path class="hop" fill="none" stroke="${B.lime}" stroke-width="4" stroke-linecap="round"/>` : ''}</svg>`;
-      E.el('div', `position:absolute;left:30px;top:446px;font:700 15px ${MONO};color:${B.paper}`, box, 'Shopper<br><span style="color:' + B.slate + '">London</span>');
-      E.el('div', `position:absolute;right:30px;top:446px;text-align:right;font:700 15px ${MONO};color:${B.coral}`, box, 'Server<br><span style="color:' + B.slate + '">Mumbai</span>');
-      const label = E.el('div', `position:absolute;left:0;right:0;top:150px;text-align:center;font:900 30px Archivo,sans-serif;color:${edge ? B.lime : B.paper}`, box, edge ? 'Edge: 20 km away' : '7,200 km, every click');
-      return { svg: box.querySelector('svg'), pk: box.querySelector('.pk'), label };
-    };
-    const qb = (u) => { const x = (1 - u) * (1 - u) * 70 + 2 * (1 - u) * u * 201 + u * u * 332, y = (1 - u) * (1 - u) * 420 + 2 * (1 - u) * u * 120 + u * u * 420; return [x, y]; };
-    const s3 = shot(2, .05), r3 = route(s3, false), t3 = timer(s3, `top:58px;font-size:40px;color:${B.coral}`);
-    P.on((t) => { const u = clamp((t - 3.7) / 1.8), [x, y] = qb(P.EASE.swing(u)); r3.pk.setAttribute('cx', x.toFixed(1)); r3.pk.setAttribute('cy', y.toFixed(1)); t3.textContent = (1.8 + u).toFixed(1) + ' s'; });
+    // type layers: the hook (0-2.3) dives into the loader; "Each second, people leave."; the breath; the payoff number handed off from the HUD
+    const T = (html, css) => E.el('div', `position:absolute;left:30px;right:30px;text-align:center;color:${B.paper};font:900 40px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92;letter-spacing:-.01em;word-spacing:.06em;opacity:0;${css}`, world, html);
+    const spin = E.el('div', `position:absolute;left:166px;top:150px;width:70px;height:70px;border-radius:50%;border:8px solid rgba(243,245,248,.12);border-top-color:${B.coral};box-shadow:0 0 30px rgba(255,90,79,.35);opacity:0`, world);
+    const h1 = T('Why is your site', 'top:250px'), h2 = T('SLOW', `top:300px;font-size:112px;line-height:.9;color:${B.coral};font-variation-settings:"wdth" 96;white-space:nowrap;text-shadow:0 0 26px rgba(255,90,79,.55)`), h3 = T('abroad?', 'top:410px;font-size:46px');
+    P.on((t) => { const out = tw(t, 2.15, .3, 'snap');
+      spin.style.opacity = (clamp((t + .2) / .2) * (1 - out)).toFixed(3); spin.style.transform = `rotate(${(t * 540).toFixed(0)}deg) scale(${(1 + out * 9).toFixed(3)})`;
+      [[h1, -.2], [h2, -.05], [h3, .12]].forEach(([el, a]) => { const k = sp(t, a, 'fade'); el.style.opacity = (clamp(k * 1.3) * (1 - out)).toFixed(3); el.style.transform = `translateY(${((1 - k) * 22).toFixed(1)}px) scale(${(1 + out * 2.2).toFixed(3)})`; }); });
+    const p1 = T('Each second,<br><span style="color:' + B.coral + ';text-shadow:0 0 22px rgba(255,90,79,.5)">people leave.</span>', 'top:206px;font-size:44px;line-height:1.05');
+    const br = T('Now add <span style="color:' + B.lime + ';text-shadow:0 0 22px rgba(198,244,50,.5)">the edge.</span>', 'top:300px;font-size:46px');
+    const big = E.el('div', `position:absolute;left:0;right:0;top:236px;text-align:center;font:900 150px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92;letter-spacing:-.03em;color:${B.lime};text-shadow:0 0 40px rgba(198,244,50,.55);opacity:0`, world, '0.4s');
+    const tag = T('Fast everywhere.<br><span style="color:' + B.blue + ';text-shadow:0 0 18px rgba(47,107,255,.6)">Protected everywhere.</span>', 'top:420px;font-size:32px;line-height:1.15');
+    P.on((t) => { const k1 = sp(t, 5.75, 'fade'); p1.style.opacity = (k1 * (1 - tw(t, 7.1, .2, 'snap'))).toFixed(3); p1.style.transform = `translateX(${((1 - k1) * -30).toFixed(1)}px)`;
+      br.style.opacity = (P.springAt(t, 7.55, 'fade') * (1 - tw(t, 8.4, .15, 'snap'))).toFixed(3);
+      const kb = sp(t, 13.95, 'bold'); big.style.opacity = (clamp(kb * 1.4) * (1 - tw(t, 16.0, .15, 'snap'))).toFixed(3);   // flies from the HUD's corner to centre
+      big.style.transform = `translate(${lerp(120, 0, kb).toFixed(1)}px,${lerp(-150, 0, kb).toFixed(1)}px) scale(${lerp(.14, 1, kb).toFixed(3)})`;
+      const kt = sp(t, 14.6); tag.style.opacity = (clamp(kt * 1.3) * (1 - tw(t, 16.0, .15, 'snap'))).toFixed(3); tag.style.transform = `translateY(${((1 - kt) * 18).toFixed(1)}px)`; });
 
-    // 4 type card
-    const s4 = shot(3, .05);
-    const c1 = txt(s4, 'Each second,', 'top:228px;font-size:46px;white-space:nowrap'), c2 = txt(s4, 'people leave.', `top:284px;font-size:47px;color:${B.coral};white-space:nowrap`), c3 = timer(s4, `left:0;right:0;text-align:center;top:384px;font-size:44px;color:${B.slate}`);
-    c3.textContent = '2.8 s';
-    P.on((t) => { [[c1, 5.6], [c2, 5.8], [c3, 6.1]].forEach(([el, a]) => { const k = sp(t, a); el.style.opacity = clamp(k * 1.3).toFixed(3); el.style.transform = `translateX(${((1 - k) * -40).toFixed(1)}px)`; }); });
-
-    // 5 breath
-    const s5 = shot(4, .02); s5.style.background = '#000';
-    const bl = txt(s5, 'Now add <span style="color:' + B.blue + '">the edge.</span>', 'top:300px;font-size:44px');
-    P.on((t) => { bl.style.opacity = P.springAt(t, 7.6, 'fade').toFixed(3); });
-
-    // 6 route with edge nodes: nodes drop in on the impact, the request hops to the nearest one and back
-    const s6 = shot(5, .06), r6 = route(s6, true), nodesG = r6.svg.querySelector('.nodes'), hop = r6.svg.querySelector('.hop');
-    const NODES = [[104, 372], [178, 300], [250, 256], [300, 340], [140, 470]];
-    NODES.forEach(() => { const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); c.setAttribute('r', '11'); c.setAttribute('fill', B.blue); c.setAttribute('stroke', B.paper); c.setAttribute('stroke-width', '3'); nodesG.appendChild(c); });
-    P.on((t) => { [...nodesG.children].forEach((c, i) => { const k = sp(t, 8.55 + i * .07); c.setAttribute('cx', NODES[i][0]); c.setAttribute('cy', (NODES[i][1] - (1 - k) * 60).toFixed(1)); c.setAttribute('opacity', clamp(k * 1.5).toFixed(2)); });
-      const u = ((t - 9.0) % .7 + .7) % .7 / .7, go = t > 9.0, a = [70, 420], b = NODES[0], f = u < .5 ? u * 2 : 2 - u * 2;
-      r6.pk.setAttribute('cx', go ? lerp(a[0], b[0], P.EASE.swing(f)).toFixed(1) : a[0]); r6.pk.setAttribute('cy', go ? lerp(a[1], b[1], P.EASE.swing(f)).toFixed(1) : a[1]);
-      hop.setAttribute('d', `M70 420 L${b[0]} ${b[1]}`); hop.setAttribute('opacity', go ? '.9' : '0'); r6.label.style.opacity = sp(t, 9.1).toFixed(3); });
-
-    // 7 phone: the page snaps in, 0.4 s
-    const s7 = shot(6, .06), p7 = phone(s7, true), t7 = timer(s7, `top:58px;color:${B.lime}`);
-    P.on((t) => { const u = clamp((t - 10.25) / .4); p7.bar.style.width = (274 * u).toFixed(0) + 'px'; t7.textContent = (u * .4).toFixed(1) + ' s';
-      p7.blocks.forEach((b, i) => { const k = sp(t, 10.3 + i * .08); b.style.opacity = clamp(k * 1.4).toFixed(3); b.style.transform = `translateY(${((1 - k) * 22).toFixed(1)}px)`; }); });
-
-    // 8 shield: a ring around the edge node, bots fly in and bounce off
-    const s8 = shot(7, .05);
-    s8.innerHTML = `<svg viewBox="0 0 402 715" width="402" height="715" style="position:absolute;inset:0" aria-hidden="true"><circle cx="201" cy="330" r="36" fill="${B.blue}"/>
-      <circle class="ring" cx="201" cy="330" r="96" fill="none" stroke="${B.blue}" stroke-width="5"/><g class="bots"></g></svg>`;
-    const ring = s8.querySelector('.ring'), bots = s8.querySelector('.bots');
-    const BOTS = Array.from({ length: 9 }, (_, i) => { const a = i / 9 * Math.PI * 2 + .3; return { a, t0: 12.05 + (i % 5) * .22 }; });
-    BOTS.forEach(() => { const c = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); c.setAttribute('width', '14'); c.setAttribute('height', '14'); c.setAttribute('rx', '3'); c.setAttribute('fill', B.coral); bots.appendChild(c); });
-    E.el('div', `position:absolute;left:0;right:0;top:150px;text-align:center;font:900 32px Archivo,sans-serif;color:${B.paper}`, s8, 'Bad bots <span style="color:' + B.coral + '">stay out.</span>');
-    P.on((t) => { ring.setAttribute('stroke-width', (5 + 4 * Math.max(0, Math.sin(t * 9))).toFixed(1));
-      [...bots.children].forEach((c, i) => { const bt = BOTS[i], u = (t - bt.t0) / .9, d = u < .5 ? lerp(260, 106, P.EASE.glide(u * 2)) : lerp(106, 300, P.EASE.snap((u - .5) * 2));
-        const x = 201 + Math.cos(bt.a) * d, y = 330 + Math.sin(bt.a) * d; c.setAttribute('x', (x - 7).toFixed(1)); c.setAttribute('y', (y - 7).toFixed(1)); c.setAttribute('opacity', u > 0 && u < 1 ? '1' : '0'); }); });
-
-    // 9 payoff: 2.8 s strikes through and collapses, 0.4 s fills the width
-    const s9 = shot(8, .04);
-    const old = timer(s9, `left:0;right:0;text-align:center;top:190px;font-size:70px;color:${B.coral}`); old.textContent = '2.8 s';
-    const strike = E.el('div', `position:absolute;left:96px;top:226px;height:6px;width:0;background:${B.paper};border-radius:3px`, s9);
-    const nu = timer(s9, `left:0;right:0;text-align:center;top:280px;font-size:148px;color:${B.lime}`); nu.textContent = '0.4s';
-    const tag = txt(s9, 'Fast everywhere.<br><span style="color:' + B.blue + '">Protected everywhere.</span>', 'top:460px;font-size:32px;line-height:1.15');
-    P.on((t) => { strike.style.width = (210 * P.EASE.glide(clamp((t - 14.0) / .35))).toFixed(0) + 'px';
-      const ko = tw(t, 14.4, .3, 'snap'); old.style.opacity = (1 - ko * .6).toFixed(3); old.style.transform = `scale(${lerp(1, .8, ko).toFixed(3)})`;
-      const k = sp(t, 14.25, 'bold'); nu.style.opacity = clamp(k * 1.5).toFixed(3); nu.style.transform = `scale(${lerp(.5, 1, k).toFixed(3)})`;
-      const k2 = sp(t, 14.8); tag.style.opacity = clamp(k2 * 1.4).toFixed(3); tag.style.transform = `translateY(${((1 - k2) * 20).toFixed(1)}px)`; });
-
-    // spoken-line captions on the shots without big type (the voice says the same words)
-    P.captions([[1.9, 3.5, 'One far-away server.', 26, { 2: B.coral }], [3.7, 5.5, 'Every click travels.', 26, { 2: B.coral }],
-      [10.3, 11.9, 'Close to every shopper.', 26, { 3: B.lime }]], { style: 'pill' });
-    // 10 brand ending
+    P.captions([[2.7, 5.4, 'One far-away server.', 26, { 2: B.coral }], [8.8, 11.8, 'Close to every shopper.', 26, { 3: B.lime }], [12.2, 13.7, 'Bad bots get blocked.', 26, { 1: B.coral }]], { style: 'pill' });
     P.brandEnd({ at: 16.1, keyword: 'FAST' });
-    S.name = 'Kitebox edge v2';
+    S.name = 'Kitebox edge v3';
     return { ok: true };
   };
   S.update = function (E, t) { P.update(t); };

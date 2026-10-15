@@ -31,8 +31,14 @@ while i < n:
 tail = step[n - 4 * FPS:n - int(1.5 * FPS)].mean() if n > 4 * FPS else 0   # the 2.5 s before the brand ending
 avg = step.mean() + 1e-6
 contrast = float(np.median(g.reshape(n, -1).std(axis=1)))
+# a one-camera film changes the picture by moving, not cutting: count 1.5 s windows (without a cut) where the frame ends far from where it began
+moves, i, W15 = [], 0, int(1.5 * FPS)
+while i + W15 < n:
+    if not any(i / FPS <= c <= (i + W15) / FPS for c in cuts) and np.abs(g[i + W15] - g[i]).mean() > 14: moves.append(round(i / FPS, 1)); i += W15
+    else: i += int(.5 * FPS)
+shots = len(cuts) + len(moves)
 rules = [
-    ('cuts', len(cuts) >= 6, f'{len(cuts)} cuts (need 6+, a new shot every 1.5-2.5 s)'),
+    ('shots', shots >= 6, f'{shots} new pictures ({len(cuts)} cuts + {len(moves)} camera moves; need 6+, one every 1.5-2.5 s)'),
     ('static', longest < 3.0, f'longest unchanged framing {longest:.1f} s at {at:.1f} s (max 3.0 s)'),
     ('ending', tail > .5 * avg, f'motion before the ending {tail:.2f} vs film average {avg:.2f} (dead ending if under 50%)'),
 ]
@@ -42,6 +48,6 @@ for k, good, msg in rules: print(('PASS ' if good else 'FAIL ') + f'{k:9s} {msg}
 for k, good, msg in warn: print(('PASS ' if good else 'WARN ') + f'{k:9s} {msg}')
 print('GATE:', 'PASS' if ok else 'FAIL', f'({dur:.1f} s, cuts at {cuts})')
 if '--json' in args:
-    json.dump({'pass': ok, 'cuts': cuts, 'longestStatic': longest, 'staticAt': at, 'tailMotion': float(tail), 'avgMotion': float(avg), 'contrast': contrast, 'warnings': [m for k, good, m in warn if not good],
+    json.dump({'pass': ok, 'cuts': cuts, 'moves': moves, 'longestStatic': longest, 'staticAt': at, 'tailMotion': float(tail), 'avgMotion': float(avg), 'contrast': contrast, 'warnings': [m for k, good, m in warn if not good],
                'rules': {k: {'pass': bool(good), 'note': msg} for k, good, msg in rules}}, open(args[args.index('--json') + 1], 'w'), indent=1)
 sys.exit(0 if ok else 1)
