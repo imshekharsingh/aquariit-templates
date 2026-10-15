@@ -82,7 +82,7 @@ Reel format B is the current experiment (design/experiments.md): the reel is ren
 (payoff in the last 4 s). Read the latest results table in the "Instagram collect" workflow log, `design/experiments.md` and `design/growth-playbook.md` first, and favour what the numbers say is working. Concept and hook speak to the buyer (a business owner or founder: money, time, results) about OUR service of the day (design/services.md), never about the template's
 fictional business: add `## Service` (the line), keep the template's brand name out of Hook and Caption (check.mjs refuses it), and end on a CTA to us ("DM us 'SITE'"). Read `design/market.md` (people's choice): pick the business, market and currency from what the audience responds to; never present invented results as Aquarii's own.
 
-**READ FIRST (owner plan, 15 Oct 2026): design/aligned-plan.md overrides CLAUDE.md and this file where they differ.** Runs are Mon/Wed/Fri/Sun only.
+**READ FIRST (owner plan, 15 Oct 2026): design/aligned-plan.md overrides CLAUDE.md and this file where they differ.** Before pushing a film, run `node scripts/film/storyboard.mjs ID` and review it plus 1-per-second stills (design/brand/premium.md "Full, not empty"). Runs are Mon/Wed/Fri/Sun only.
 Every film: (1) one service, in the plan's order of priority (design + SEO, then CDN/speed/protection, then security + maintenance; still never the same as the previous film);
 (2) one of the four reel types in rotation (problem -> fix, mini tutorial, makeover, offer) and record it as `S.dna.format`; (3) the reel recipe: 8-10 shots in 18 s, a cut
 every 1.5-2.5 s (wide, push-in via P.camera, close-up, full-width type card), hook filling the width in the first second, one visible change per shot, payoff at 13-16 s;

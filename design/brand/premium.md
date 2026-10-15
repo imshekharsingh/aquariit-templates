@@ -11,3 +11,8 @@ Goal: every Aquarii reel looks like a premium tech brand's product film. Restrai
 - **Ending.** The brand card: a pain-point question, "DM us to know more", the keyword line, the logo.
 - **Never.** Neon arcade HUDs, particle explosions, screen shake, many colours, crowded frames, rushed speech.
 Parts: P.sys + its premium helpers (glassNode, beam, pulse, spot), P.three for the hero shot, P.brandEnd.
+
+## Full, not empty (owner, 15 Oct 2026, after v4)
+Premium is rich detail kept in order, not an empty screen. Every frame has three layers: the subject (one focal point), supporting detail (labels, counters,
+small UI, people, pulses) and a depth layer (dotted globe, soft light, grid). The voice is near-continuous at a natural pace (about 2.7 words/s); the only
+silence is the short breath before the reveal. Impacts are clean light (a ring flare), never debris.
