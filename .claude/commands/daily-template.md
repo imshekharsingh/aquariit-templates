@@ -74,12 +74,13 @@ Create social/ID.md following the "Instagram social kit" section of CLAUDE.md
 (hook that opens a loop the ending closes, caption ending with a "Send this to…" share line,
 8–12 keywords, exactly 5 hashtags + alternates, Reel plan with length/shot plan/payoff/cover text, music suggestion matched to the template's mood). Base keywords on what the page actually shows.
 ## Phase 4c — The reel (current rules, owner 15-16 Oct 2026; these replace every older reel rule in CLAUDE.md and this file)
-Sources, in this order: design/aligned-plan.md (business, recipe, process), design/brand/premium.md (the locked look), design/brand/kit.md (brand), design/film-playbook.md (how-to).
+Sources, in this order: design/aligned-plan.md (business, recipe, process), design/themes.md (pick today's theme; Rule 1: improve, never override), design/brand/premium.md (theme A's look), design/brand/kit.md (brand), design/film-playbook.md (how-to).
 1. **Service and story.** One Aquarii service, in priority order (website design + SEO, then CDN/speed/protection, then security + maintenance), never the same as the
    previous film (`S.dna.service`). One reel type in rotation (problem -> fix, makeover, mini tutorial, offer; `S.dna.format`). Concept in 3 lines: the buyer's pain, what we
    deliver (shown as a mechanism), the payoff image. The example business on the template changes every reel: never the same kind of business as any of the last 5
    (bakery, clinic, salon, CA firm, gym, boutique, coaching, real estate, restaurant, school ...). The template is only proof; Hook, voice and caption sell Aquarii.
-2. **Look (locked for 4-6 weeks):** premium cinematic tech (premium.md): navy, white, one lime accent, coral only for the problem; three layers in every frame (subject,
+2. **Theme and look.** Pick a ready theme from design/themes.md (`S.dna.theme`; never the previous film's once two or more are ready) and follow that theme's recipe only.
+   Each theme's look stays locked; it changes only by beating its benchmark (themes.md Rule 1). Theme A `collage` (the only ready one on 16 Oct) = premium cinematic tech (premium.md): navy, white, one lime accent, coral only for the problem; three layers in every frame (subject,
    supporting detail, depth layer such as P.sys globe/grid/spot); one 3D or depth hero moment; calm long-tail motion. Length fits the content, 15-30 s (timing.json `len`).
 3. **Show the real work.** When the reel shows a site, use the real template: `node scripts/film/capture-site.mjs ID` writes film/ID/assets/{desk,tab,phone}.jpg; put them
    in device frames that scroll. Never placeholder blocks.

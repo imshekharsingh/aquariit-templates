@@ -36,10 +36,11 @@ We are not close yet. Our reels are collages of flat UI cards and captions; the 
 footage of 3D worlds** (R2). Specifically we lack: soft 3D shading and lighting, character or emotion, colour that moves with the story, real
 footage, and 3D website heroes worth filming. We also use too much text.
 
-## What we take from them (the plan)
+## What we take from them (added as themes, never replacing the current look)
 1. **R1 look in our engine (achievable, 1-2 weeks of gradual upgrades):** a soft-3D shading part (highlight, inner gradient, contact shadow,
    halo), spring/squash motion presets, depth particles, mood colour per beat. Fewer elements, richer hero. Text kept to a title and a line.
 2. **R2 format (needs the owner, cheap):** film one of our own templates on a real screen with the phone (10-15 s), and we add the hook line and
    the end card. For this to wow, templates need a 3D hero (WebGL scene: terrain, globe, product) — a template-side upgrade, not a reel one.
-3. **The gate changes with the look:** the "fullness" rule (25% of tiles with detail) would fail R1. Replace it with a hero-quality check
-   (the subject has highlights, shadow and depth; the ground is a smooth gradient, not flat) before using the R1 look.
+3. **Each reference is a theme, not a replacement** (owner, 16 Oct 2026; design/themes.md). R1 = theme B `soft3d`, R2 = theme C `footage`; our current
+   look stays theme A `collage`. The gate checks per theme: "fullness" keeps judging collage reels and does not apply to soft3d, which gets its own
+   "subject" check instead. Nothing that works today is removed (themes.md Rule 1).

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Reel quality gate (15 Oct 2026, design/aligned-plan.md "Reel recipe"). Runs on GitHub after the render, before the owner sees a reel.
-usage: python3 -I scripts/film/reel-gate.py VIDEO.mp4 [--json OUT.json]   exit 0 = PASS, 1 = FAIL (the reasons are printed)
+usage: python3 -I scripts/film/reel-gate.py VIDEO.mp4 [--theme collage|soft3d|footage] [--json OUT.json]   exit 0 = PASS, 1 = FAIL (the reasons are printed)
+Checks are per theme (design/themes.md, owner 16 Oct 2026): a check made for one theme never judges another. Default theme: collage.
 Measures the motion, not stills: cuts (hard picture changes), the longest stretch where the composition barely changes, a dead ending, and contrast.
 Needs ffmpeg and numpy."""
 import json, subprocess, sys
@@ -8,6 +9,7 @@ import numpy as np
 
 args = sys.argv[1:]
 video = args[0]
+THEME = args[args.index('--theme') + 1] if '--theme' in args else 'collage'
 FPS, W, H = 10, 90, 160
 raw = subprocess.run(['ffmpeg', '-loglevel', 'error', '-i', video, '-vf', f'fps={FPS},scale={W}:{H}', '-f', 'rawvideo', '-pix_fmt', 'gray', '-'], capture_output=True, check=True).stdout
 g = np.frombuffer(raw, np.uint8).reshape(-1, H, W).astype(np.float32)
@@ -49,18 +51,27 @@ def cover(f):
     H, Wd = m.shape; return float((m[:H // 16 * 16, :Wd // 16 * 16].reshape(H // 16, 16, Wd // 16, 16).mean(axis=(1, 3)) > .02).mean())
 covers = [cover(f) for f in ff]
 sparse = [i for i, c in enumerate(covers) if c < .25]
-rules = [
+subjectless = [i for i, c in enumerate(covers) if c < .04]
+ALL_RULES = [
     ('shots', shots >= 6, f'{shots} new pictures ({len(cuts)} cuts + {len(moves)} camera moves; need 6+, one every 1.5-2.5 s)'),
     ('static', longest < (3.5 if dur > 22 else 3.0), f'longest unchanged framing {longest:.1f} s at {at:.1f} s (max {3.5 if dur > 22 else 3.0} s)'),
     ('fullness', len(sparse) <= .3 * len(covers), f'{len(sparse)} of {len(covers)} seconds look empty (under 25% of the frame holds detail; max 30%){": " + ", ".join(f"{i}s" for i in sparse) if sparse else ""}'),
     ('ending', tail > .5 * avg, f'motion before the ending {tail:.2f} vs film average {avg:.2f} (dead ending if under 50%)'),
+    # soft3d (one rich subject on a calm ground): the frame may be mostly empty, but the hero must be on screen every second
+    ('subject', len(subjectless) <= .1 * len(covers), f'{len(subjectless)} of {len(covers)} seconds without a visible subject (under 4% of the frame holds detail; max 10%)'),
+    # footage (our site filmed on a real screen): the rhythm is the point, a new picture at least every 1.2 s
+    ('rhythm', shots >= .8 * dur / 1.2, f'{shots} new pictures in {dur:.0f} s (need {int(.8 * dur / 1.2 + .999)}+, one every 1.2 s or faster)'),
 ]
+# per-theme check profiles (design/themes.md). collage is the 15-16 Oct gate unchanged; add a theme here, never edit another theme's list
+PROFILES = {'collage': ['shots', 'static', 'fullness', 'ending'], 'soft3d': ['shots', 'static', 'ending', 'subject'], 'footage': ['rhythm', 'ending']}
+if THEME not in PROFILES: print(f'unknown theme {THEME!r}; known: {", ".join(PROFILES)}'); sys.exit(2)
+rules = [r for r in ALL_RULES if r[0] in PROFILES[THEME]]
 warn = [('contrast', contrast >= 30, f'contrast {contrast:.0f} (30+ advised; pale reels wash out on phones)')]
 ok = all(r[1] for r in rules)
 for k, good, msg in rules: print(('PASS ' if good else 'FAIL ') + f'{k:9s} {msg}')
 for k, good, msg in warn: print(('PASS ' if good else 'WARN ') + f'{k:9s} {msg}')
-print('GATE:', 'PASS' if ok else 'FAIL', f'({dur:.1f} s, cuts at {cuts})')
+print('GATE:', 'PASS' if ok else 'FAIL', f'(theme {THEME}, {dur:.1f} s, cuts at {cuts})')
 if '--json' in args:
-    json.dump({'pass': ok, 'cuts': cuts, 'moves': moves, 'longestStatic': longest, 'staticAt': at, 'tailMotion': float(tail), 'avgMotion': float(avg), 'contrast': contrast, 'fullness': covers, 'warnings': [m for k, good, m in warn if not good],
+    json.dump({'pass': ok, 'theme': THEME, 'cuts': cuts, 'moves': moves, 'longestStatic': longest, 'staticAt': at, 'tailMotion': float(tail), 'avgMotion': float(avg), 'contrast': contrast, 'fullness': covers, 'warnings': [m for k, good, m in warn if not good],
                'rules': {k: {'pass': bool(good), 'note': msg} for k, good, msg in rules}}, open(args[args.index('--json') + 1], 'w'), indent=1)
 sys.exit(0 if ok else 1)
