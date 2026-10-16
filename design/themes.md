@@ -43,18 +43,18 @@ Premium means **authenticity and a fast rhythm**.
 Checks: cuts (a new picture every ≤ 1.2 s), ending. Runs only when a clip exists; otherwise skipped in the rotation.
 For it to wow, the filmed template needs a 3D hero section (terrain, globe, product): a template-side upgrade.
 
-### D · `sitescroll` — one premium template, scrolled full-frame (reference R3; no filming needed; not built yet)
+### D · `sitescroll` — one premium template, scrolled full-frame (reference R3; no filming needed; benchmark film/2026-10-16-2055, awaiting the owner's yes)
 Our renderer scrolls one of our own templates top to bottom at full frame, with one hook line pinned on top and our end card. No camera, no collage.
 Premium means **the site itself is the show**: a hero light effect (silk-light ribbon), editorial type (sans + italic serif), glass panels, one accent.
-Checks: to define with its benchmark (likely: ending, and a smooth scroll with no stall over 1.5 s; no fullness rule).
-Needs first: a template built to the R3 bar (the template side of the daily run), then a scroll-capture part in the film engine.
+Checks: shots, static, ending (no fullness rule). Parts: `P.siteScroll` (swing-eased stops, optional pull-back into a phone) and `capture-site.mjs ID --tall`.
+The template must be built to the R3 bar first (e.g. 2026-10-16-2055 Quillmint: silk-light canvas hero, editorial type, glass bento, isometric bars).
 Also the closest no-camera stand-in for theme C until the owner can film a clip.
 
 ### Later · `glass` — glossy glass product (Blender pilot, 16 Oct: path tracing too slow on free runners; an engine glass part instead)
 
 ## Rotation
 Mon / Wed / Fri, never the same theme two reels in a row (checked by scripts/check.mjs from 17 Oct). A theme joins the rotation only once its parts
-exist and its benchmark passes; until then the rotation uses the ready ones (today: A only). Each theme's look stays locked while we rotate; it changes
+exist and its benchmark passes; until then the rotation uses the ready ones (16 Oct: A collage, D sitescroll). Each theme's look stays locked while we rotate; it changes
 only through Rule 1.
 
 ## Adding a theme

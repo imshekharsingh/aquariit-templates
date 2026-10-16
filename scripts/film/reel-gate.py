@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Reel quality gate (15 Oct 2026, design/aligned-plan.md "Reel recipe"). Runs on GitHub after the render, before the owner sees a reel.
-usage: python3 -I scripts/film/reel-gate.py VIDEO.mp4 [--theme collage|soft3d|footage] [--json OUT.json]   exit 0 = PASS, 1 = FAIL (the reasons are printed)
+usage: python3 -I scripts/film/reel-gate.py VIDEO.mp4 [--theme collage|soft3d|footage|sitescroll] [--json OUT.json]   exit 0 = PASS, 1 = FAIL (the reasons are printed)
 Checks are per theme (design/themes.md, owner 16 Oct 2026): a check made for one theme never judges another. Default theme: collage.
 Measures the motion, not stills: cuts (hard picture changes), the longest stretch where the composition barely changes, a dead ending, and contrast.
 Needs ffmpeg and numpy."""
@@ -63,7 +63,8 @@ ALL_RULES = [
     ('rhythm', shots >= .8 * dur / 1.2, f'{shots} new pictures in {dur:.0f} s (need {int(.8 * dur / 1.2 + .999)}+, one every 1.2 s or faster)'),
 ]
 # per-theme check profiles (design/themes.md). collage is the 15-16 Oct gate unchanged; add a theme here, never edit another theme's list
-PROFILES = {'collage': ['shots', 'static', 'fullness', 'ending'], 'soft3d': ['shots', 'static', 'ending', 'subject'], 'footage': ['rhythm', 'ending']}
+PROFILES = {'collage': ['shots', 'static', 'fullness', 'ending'], 'soft3d': ['shots', 'static', 'ending', 'subject'], 'footage': ['rhythm', 'ending'],
+            'sitescroll': ['shots', 'static', 'ending']}   # the scroll itself is the motion; a page section may be calm, so no fullness rule
 if THEME not in PROFILES: print(f'unknown theme {THEME!r}; known: {", ".join(PROFILES)}'); sys.exit(2)
 rules = [r for r in ALL_RULES if r[0] in PROFILES[THEME]]
 warn = [('contrast', contrast >= 30, f'contrast {contrast:.0f} (30+ advised; pale reels wash out on phones)')]

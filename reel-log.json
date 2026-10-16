@@ -267,5 +267,34 @@
       "brief": "Warm ambient pads with a soft pulse, lifting into a bright confident beat at the makeover (13.5 s); breath 10.7-11.2 s; instrumental, no vocals; about 90 BPM",
       "provenance": "none yet: no licensed music API connected; film ships with effects only, owner adds Instagram audio"
     }
+  },
+  {
+    "id": "2026-10-16-2055",
+    "date": "2026-10-16",
+    "template": "Quillmint (shown as proof; the reel is about Aquarii)",
+    "version": "theme D sitescroll v1 (benchmark)",
+    "service": "studio",
+    "theme": "sitescroll",
+    "format": "site showcase",
+    "concept": "Buyer pain: my landing page does not look like the premium ones I see. Our own dark editorial SaaS template is scrolled full-frame under a pinned caption band (hook: 'Your landing page could look like this.'), section by section; at the breath the full-bleed view pulls back into a phone and keeps scrolling to the plans; end card DM STUDIO.",
+    "motionStyle": "swing-eased scroll with a pause on each section, glide caption entrances, one glide pull-back into a phone at 11.3 s",
+    "primaryTransition": "pull-back into a phone",
+    "transitions": [
+      "scroll-stop",
+      "pull-back"
+    ],
+    "typeTreatment": "the template's own pairing in the captions: Geist 650 with Instrument Serif italic in solar orange",
+    "grade": "near-black #06070b, white, solar orange #ff6a1a, teal #2ee6c9 (the template's palette)",
+    "sound": "effects only: whooshes on the scroll moves, riser into the pull-back, impact at 11.35 s; AI voice af_heart; Instagram audio: sleek minimal electronic ~96 BPM",
+    "cover": "the hero frame at ~1 s: hook over the italic headline and the silk ribbon",
+    "newTrick": "P.siteScroll (mechanism site-scroll): a full-page capture scrolled with swing-eased stops, plus an optional pull-back into a phone; capture-site.mjs --tall writes the page image",
+    "revisionPasses": 2,
+    "friendTest": {
+      "stopScrolling": "yes: a premium-looking page fills the frame from frame 0 under a direct claim",
+      "watchToEnd": "mostly: each section pauses long enough to read, and the pull-back at 11.3 s is a clear change",
+      "screenshot": "the hero with the italic headline and the silk ribbon",
+      "sendToFriend": "yes, to a founder about to launch"
+    },
+    "notes": "Pass 1: the canvas ribbon was almost invisible behind the hero, made it a brighter, tighter band with a glow pass and moved it behind the headline on phones; the CSS 3D bars rendered as flat tilted slabs, redrawn as SVG isometric prisms. Pass 2: checked the stills at the cuts again (hook, flow panel, numbers, bars, pull-back, plans, end card). Benchmark for theme D: to be confirmed by the owner before the theme joins the rotation."
   }
 ]

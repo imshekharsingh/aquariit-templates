@@ -1,5 +1,6 @@
 // Capture the template's real page at desktop, tablet and phone widths for a film (owner, 16 Oct 2026: show the real site we built, never placeholder blocks).
 //   node scripts/film/capture-site.mjs ID      -> film/ID/assets/{desk,tab,phone}.jpg (small JPEGs, about 90 KB each; the "All templates" link is hidden)
+//   node scripts/film/capture-site.mjs ID --tall -> also film/ID/assets/scroll.jpg: the whole page at phone width (864 px wide) for P.siteScroll (theme D sitescroll)
 // In story.js: <img src="../../film/ID/assets/desk.jpg"> inside a device frame (see film/2026-10-16-0850/story.js "the real bakery site at three widths").
 import { mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -17,15 +18,16 @@ const exe = existsSync(base) ? readdirSync(base).filter((d) => d.startsWith('chr
 const out = join(root, 'film', id, 'assets'); mkdirSync(out, { recursive: true });
 const url = pathToFileURL(join(root, 'templates', id, 'index.html')).href;
 const shots = [['desk', 1280, 800, 1, 700], ['tab', 820, 1180, 1, 420], ['phone', 402, 874, 2, 300]];   // name, viewport w, h, scale, saved width
+if (process.argv.includes('--tall')) shots.push(['scroll', 402, 874, 2.15, 864, true]);                   // full page, not clipped
 const browser = await pw.chromium.launch(exe ? { executablePath: exe } : {});
-for (const [n, w, h, s, keep] of shots) {
+for (const [n, w, h, s, keep, tall] of shots) {
   const pg = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: s, reducedMotion: 'reduce' });
   await pg.goto(url, { waitUntil: 'networkidle' }); await pg.waitForTimeout(2500);
   await pg.addStyleTag({ content: '.back,a[href="/"]{visibility:hidden!important}' });
   const full = await pg.evaluate(() => document.body.scrollHeight), tmp = join(out, `${n}.png`), dst = join(out, `${n}.jpg`);
-  await pg.screenshot({ path: tmp, fullPage: true, clip: { x: 0, y: 0, width: w, height: Math.min(Math.round(h * 2.2), full) } });
+  await pg.screenshot(tall ? { path: tmp, fullPage: true } : { path: tmp, fullPage: true, clip: { x: 0, y: 0, width: w, height: Math.min(Math.round(h * 2.2), full) } });
   await pg.close();
-  const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', tmp, '-vf', `scale=${keep}:-2:flags=lanczos`, '-q:v', '4', dst]);
+  const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', tmp, '-vf', `scale=${keep}:-2:flags=lanczos`, '-q:v', tall ? '5' : '4', dst]);
   spawnSync('rm', ['-f', tmp]); console.log(r.status === 0 ? `wrote ${dst}` : `ffmpeg failed for ${n}`);
 }
 await browser.close();
