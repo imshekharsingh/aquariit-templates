@@ -31,6 +31,23 @@ Why it works:
 - **One hook line, no voice needed.** "Websites in 2026" + emoji sets the frame; the CTA lives in the caption ("Comment UPGRADE").
 - **Shares come from envy:** "send this to someone whose site is old".
 
+## R3 · "Opus 5.5 absolutely cooked" (scroll through one AI-built SaaS site; ~9.3K likes, ~5.7K shares, ~12K saves)
+What is on screen: a full-screen recording of one dark landing page ("Relay") scrolling top to bottom, with one hook line pinned above it.
+The page: near-black ground, a single lime accent; a glowing silk-light ribbon (flowing luminous lines, lime into teal) sweeping behind the hero;
+headline mixing a clean sans with an italic serif ("The handoffs run *themselves*."); dark glass panels with a small workflow diagram; a lime
+rounded-square card; isometric 3D bars; big stat numbers ("60,166"); three pricing cards; a lime CTA card at the end.
+
+Why it works:
+- **The site is the show.** No camera, no character: a page this polished, scrolled smoothly, is the whole reel. Saves are high (people keep it as a reference).
+- **One light effect carries the mood.** The silk ribbon gives depth and motion to every section without clutter.
+- **Editorial type.** Sans + italic serif in one headline reads expensive.
+- **Strict palette.** Near-black, white, one lime. Close to our own navy/white/lime kit.
+- **Hook is about the maker**, not the business: the skill on show is the reason to follow.
+
+For us: **we can make this ourselves without any filming.** Our renderer can scroll our own template full-frame. What it needs is a template built to
+this bar (silk-light WebGL or canvas hero, editorial type pairing, glass panels, 3D bars, big numbers), then the reel is the scroll + one hook line +
+our end card. Added as theme D `sitescroll` (design/themes.md).
+
 ## The gap (honest, 16 Oct 2026)
 We are not close yet. Our reels are collages of flat UI cards and captions; the references show either **one rich, lit subject** (R1) or **real
 footage of 3D worlds** (R2). Specifically we lack: soft 3D shading and lighting, character or emotion, colour that moves with the story, real
