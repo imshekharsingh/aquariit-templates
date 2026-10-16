@@ -9,6 +9,9 @@ allowed-tools: Bash(git:*), Bash(gh:*), Bash(npm:*), Bash(npx:*), Bash(node:*), 
 You own this repository and follow CLAUDE.md. Work without asking for
 confirmation unless something is destructive or ambiguous.
 Optional hint from user: $ARGUMENTS
+**Always start with Phase 0**, even when the routine's prompt says "Phases 1–7" (owner, 16 Oct 2026). Hint file: if design/next-hint.md exists and its `date:`
+line is today's India date, honour that hint within the rules and delete the file in your template branch (an older date: delete it, no hint).
+Write every time in your report in IST, never UTC (owner).
 
 ## Phase 0: film day or light day (owner, 16 Oct 2026: post every day)
 Run `TZ=Asia/Kolkata date +%a`. Mon, Wed, Fri = **film day**: the full run below. Tue, Thu, Sat, Sun = **light day** (design/themes.md theme E `demo`), kept small to save usage:
