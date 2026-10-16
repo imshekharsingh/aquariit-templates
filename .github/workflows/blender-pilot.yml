@@ -27,8 +27,12 @@ jobs:
       REPO: ${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
-      - name: Install Blender (Ubuntu package, Cycles CPU)
-        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends blender ffmpeg && blender --version | head -1
+      - name: Install Blender (official 4.2 LTS build with the OIDN denoiser and AgX, which the Ubuntu apt package lacks)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libxkbcommon0 libsm6
+          curl -fsSL https://download.blender.org/release/Blender4.2/blender-4.2.3-linux-x64.tar.xz | tar -xJ -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/blender-4.2.3-linux-x64" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/blender-4.2.3-linux-x64/blender" --version | head -1
       - name: Render
         env:
           FRAMES: ${{ inputs.frames }}
@@ -36,7 +40,7 @@ jobs:
           SAMPLES: ${{ inputs.samples }}
         run: |
           START=$(date +%s)
-          blender -b -P scripts/blender/hero.py -- --out out/hero --frames "$FRAMES" --res "$RES" --samples "$SAMPLES" 2>&1 | grep -E "rendered frame|Error|error|Traceback|Blender" | tee render.log
+          blender -b -P scripts/blender/hero.py -- --out out/hero --frames "$FRAMES" --res "$RES" --samples "$SAMPLES" 2>&1 | grep -E "rendered frame|denoiser|Error|error|Traceback" | tee render.log
           END=$(date +%s); N=$(ls out/hero/*.png | wc -l)
           echo "frames: $N, seconds: $((END-START)), per frame: $(( (END-START) / (N>0?N:1) ))" | tee -a render.log
       - name: Keep the result in the reels release

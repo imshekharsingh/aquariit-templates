@@ -15,9 +15,12 @@ os.makedirs(OUT, exist_ok=True)
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 sc = bpy.context.scene
-sc.render.engine = 'CYCLES'; sc.cycles.device = 'CPU'; sc.cycles.samples = SAMPLES; sc.cycles.use_denoising = True
-try: sc.cycles.denoiser = 'OPENIMAGEDENOISE'
-except Exception: pass
+sc.render.engine = 'CYCLES'; sc.cycles.device = 'CPU'; sc.cycles.samples = SAMPLES
+OIDN = bool(getattr(bpy.app.build_options, 'openimagedenoise', False))   # distro builds (Ubuntu's apt blender) ship without it
+sc.cycles.use_denoising = OIDN
+if OIDN: sc.cycles.denoiser = 'OPENIMAGEDENOISE'
+else: sc.cycles.samples = max(SAMPLES, 256)                              # no denoiser: more samples instead
+print('Blender', bpy.app.version_string, '| denoiser:', 'OIDN' if OIDN else 'none', '| samples:', sc.cycles.samples, flush=True)
 sc.cycles.max_bounces = 10; sc.cycles.transmission_bounces = 10; sc.cycles.glossy_bounces = 6; sc.cycles.caustics_reflective = False; sc.cycles.caustics_refractive = False
 sc.render.resolution_x = RES; sc.render.resolution_y = int(RES * 16 / 9); sc.render.resolution_percentage = 100
 sc.render.image_settings.file_format = 'PNG'; sc.render.film_transparent = False
