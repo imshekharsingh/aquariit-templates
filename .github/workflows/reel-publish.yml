@@ -169,7 +169,13 @@ jobs:
           TITLE="$(node scripts/reel-issue.mjs "$ID" --title)"
           if [ "$GATE" = FAIL ]; then TITLE="Reel needs fix: $ID"; { echo "> **Quality gate: FAIL.** Not on the site, do not post. Reply \"fix\" in the Claude chat."; echo; echo '```'; cat gate.txt; echo '```'; echo; cat issue.md; } > issue2.md
           else { echo "> Quality gate: PASS"; echo '```'; cat gate.txt; echo '```'; echo; cat issue.md; } > issue2.md; fi
-          gh issue create --repo "$REPO" --title "$TITLE" --body-file issue2.md --label reel --assignee "${{ github.repository_owner }}"
+          URL=$(gh issue create --repo "$REPO" --title "$TITLE" --body-file issue2.md --label reel --assignee "${{ github.repository_owner }}"); echo "$URL"; NEW="${URL##*/}"
+          # tidy (owner, 16 Oct 2026: close issues that are no longer in use): earlier issues for this same reel (needs fix, older ready, render failed)
+          # are superseded by the one just opened; reel issues older than 3 days are past their posting slot
+          OLD=$(date -u -d '3 days ago' +%FT%TZ)
+          [ -n "$NEW" ] && gh issue list --repo "$REPO" --state open --limit 100 --json number,title,createdAt,labels \
+            -q ".[] | select(.number != ${NEW}) | select(((.title | contains(\"$ID\")) and ((.title | startswith(\"Reel \")))) or (((.labels | map(.name) | index(\"reel\")) != null) and .createdAt < \"$OLD\")) | .number" |
+            while read -r n; do gh issue close "$n" --repo "$REPO" --reason completed --comment "Closed automatically: superseded by #${NEW} or past its posting slot. The kit page still works." || true; done
       - name: Redeploy once so the site serves the new video
         if: steps.pick.outputs.skip != 'true' && steps.pick.outputs.draft != 'true' && steps.gate.outputs.gate == 'PASS'
         run: gh workflow run pipeline.yml --repo "$REPO" --ref main
