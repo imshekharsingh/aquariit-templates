@@ -10,6 +10,7 @@ The performance rules in CLAUDE.md still win: loop only transform/opacity, no an
 - Duotone SVG shapes and overprint effects (mix-blend-mode on static elements only).
 - Grain/noise overlay drawn as an inline SVG pattern at low opacity.
 - Light/dark inversion on a section boundary for a dramatic mid-page flip.
+- Silk-light ribbon on canvas: 40-60 thin sine-sum threads, additive `lighter` blending, a wide faint glow pass plus a fine bright pass, two hues across the width; DPR capped at 2, paused off-screen, one static frame for reduced motion (2026-10-16-2055).
 
 ## Type
 - Oversized display type that bleeds off the edge or is clipped by the frame.

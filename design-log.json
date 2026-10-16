@@ -535,5 +535,28 @@
     "animation": "container queries reflow one order card while scroll-driven animation-timeline view() animates its width, linear() spring result climb, sticker spin, scroll-driven rises",
     "purpose": "Local business site with SEO (web design service line: neighbourhood bakery with pickup orders)",
     "description": "A bakery page made to be found: an emerald collage hero where a search result springs from third to first, one order card that re-lays itself out for phone, tablet and desktop as its container grows, then reasons to choose, sample numbers, a bake-day timeline and neighbour quotes."
+  },
+  {
+    "id": "2026-10-16-2055",
+    "date": "2026-10-16",
+    "time": "20:55",
+    "slug": "quillmint",
+    "url": "https://templates.aquariit.com/2026-10-16-2055/",
+    "name": "Quillmint",
+    "era": "modern",
+    "theme": "Dark editorial SaaS: near-black with a live solar-orange-to-teal silk-light ribbon, italic serif accents in the headlines, faux glass panels; built to the R3 reference bar and scrolled whole for the theme D reel",
+    "layout": "full-bleed light-field hero with an editorial headline and a live contract-flow panel, glass bento of product panels, big-number stats with SVG isometric prism bars, plan cards without prices, solar closing card, slim bar header",
+    "palette": [
+      "#06070b",
+      "#11131c",
+      "#ff6a1a",
+      "#2ee6c9",
+      "#f4f1ea"
+    ],
+    "fonts": "Geist + Instrument Serif (italic)",
+    "motif": "a silk-light ribbon of 48 luminous threads drawn live on canvas, flowing behind the hero",
+    "animation": "canvas silk ribbon (two passes, additive 'lighter' blending, DPR capped at 2, paused off-screen, static under reduced motion), linear() spring load-in, scroll-driven rises and isometric bar growth via animation-timeline view() with finished defaults",
+    "purpose": "SaaS landing page (contracts and paperwork automation) shown as studio proof for the sitescroll theme",
+    "description": "Quillmint makes paperwork quiet: a near-black page where a silk-light ribbon flows behind an italic-serif headline and a live contract-flow panel, then a glass bento of what it does, sample numbers with isometric bars, three plans without prices and a solar-orange closing card."
   }
 ]

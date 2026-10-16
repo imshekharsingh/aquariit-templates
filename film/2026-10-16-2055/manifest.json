@@ -1,0 +1,30 @@
+{
+  "id": "2026-10-16-2055",
+  "made": "2026-10-16T15:30:33.337Z",
+  "slots": {
+    "ground": [
+      "black"
+    ],
+    "type": [
+      "editorial-serif-mix"
+    ],
+    "opener": [
+      "site-fullbleed-hook"
+    ],
+    "mechanism": [
+      "site-scroll"
+    ],
+    "cta": [
+      "brand-end"
+    ]
+  },
+  "dna": {
+    "service": "studio",
+    "theme": "sitescroll",
+    "format": "site showcase",
+    "opening": "a dark SaaS landing page with a silk-light ribbon fills the frame under a pinned caption band: \"Your landing page could look like this.\"",
+    "bigMoment": "the full-bleed page pulls back into a phone with a bezel at the breath and keeps scrolling to its plans and closing card",
+    "ground": "near-black with a solar-orange and teal silk light, the template's own palette",
+    "music": "sleek minimal electronic, soft kick entering at the pull-back, about 96 BPM"
+  }
+}

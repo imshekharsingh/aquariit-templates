@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Quillmint — Paperwork, Finally Quiet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06070b">
+<meta name="description" content="Quillmint: a dark, editorial SaaS landing page template. A silk-light ribbon drawn live on canvas behind the hero, glass product panels, big numbers, isometric bars and plan cards.">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#06070b;--panel:#11131c;--line:rgba(255,255,255,.09);--text:#f4f1ea;--mute:#9a9aa6;--sun:#ff6a1a;--teal:#2ee6c9;
+  --gut:30px;--sans:"Geist",system-ui,sans-serif;--serif:"Instrument Serif",Georgia,serif;
+  --spring:linear(0,.22 6%,.66 14%,1.05 25%,1.07 33%,1.01 48%,.995 62%,1 100%);
+}
+@supports (color:color(display-p3 1 1 1)){:root{--sun:color(display-p3 1 .44 .14);--teal:color(display-p3 .3 .9 .79)}}
+html.reel{--safe-top:0px;--safe-bottom:0px}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--text);font:400 16px/1.6 var(--sans)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:8px}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 var(--gut)}
+em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:0}
+
+/* header: slim bar, logo left, back link + one pill right */
+.bar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding-top:var(--safe-top)}
+.bar .wrap{display:flex;align-items:center;gap:18px;height:58px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em}
+.logo svg{width:22px;height:22px}
+.nav{display:none;gap:22px;color:var(--mute);font-size:14px;margin-left:12px}
+.back{margin-left:auto;font-size:13px;color:var(--mute)}
+.pill{padding:8px 15px;border-radius:99px;background:var(--sun);color:#160700;font-weight:650;font-size:14px}
+.reel .back{display:none}.reel .bar .pill{margin-left:auto}
+@media (min-width:860px){.nav{display:flex}}
+
+/* hero: full-bleed light field (canvas silk ribbon) with an editorial headline */
+.hero{position:relative;overflow:hidden;padding:64px 0 56px;min-height:640px}
+#silk{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero::after{content:"";position:absolute;inset:auto 0 0;height:160px;background:linear-gradient(transparent,var(--bg));pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:99px;font-size:13px;color:var(--mute);background:rgba(17,19,28,.7)}
+.chip b{color:var(--teal);font-weight:600}
+h1{margin-top:22px;font-size:clamp(46px,12.5vw,104px);line-height:.98;letter-spacing:-.035em;font-weight:650;max-width:11ch}
+h1 em{color:var(--sun);font-size:1.06em}
+.lede{margin-top:20px;max-width:34ch;color:#c9c6bf;font-size:18px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:12px;font-weight:650}
+.btn.main{background:var(--sun);color:#160700}
+.btn.ghost{border:1px solid var(--line);background:rgba(17,19,28,.6)}
+.flow{margin-top:42px;max-width:560px;padding:18px;border-radius:18px;background:linear-gradient(180deg,rgba(28,31,44,.92),rgba(14,16,24,.92));border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 30px 60px -30px rgba(0,0,0,.8)}
+.flow h2{font-size:13px;font-weight:500;color:var(--mute);display:flex;justify-content:space-between}
+.steps{list-style:none;padding:0;margin-top:14px;display:grid;gap:9px}
+.steps li{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;background:rgba(255,255,255,.03);font-size:14.5px}
+.steps i{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center}
+.steps .done i{background:var(--teal);border-color:var(--teal)}
+.steps .done i::after{content:"";width:8px;height:5px;border:2px solid #04130f;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.steps .now i{border-color:var(--sun);box-shadow:0 0 0 4px rgba(255,106,26,.18)}
+.steps small{color:var(--mute);font-size:12.5px}
+
+section{padding:72px 0}
+.kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+h2.big{margin-top:12px;font-size:clamp(34px,8.6vw,64px);line-height:1.02;letter-spacing:-.03em;font-weight:620;max-width:16ch}
+h2.big em{color:var(--sun)}
+.sub{margin-top:14px;color:var(--mute);max-width:46ch}
+
+/* main module: glass bento of product panels */
+.bento{margin-top:34px;display:grid;gap:14px}
+.glass{position:relative;padding:22px;border-radius:20px;background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.015) 55%);border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);overflow:hidden}
+.glass h3{font-size:20px;font-weight:620;letter-spacing:-.01em}
+.glass p{margin-top:6px;color:var(--mute);font-size:15px}
+.tile{width:62px;height:62px;border-radius:18px;display:grid;place-items:center;background:var(--sun);color:#160700;margin-bottom:16px;box-shadow:0 14px 30px -12px rgba(255,106,26,.7)}
+.tile svg{width:30px;height:30px}
+.tile.t2{background:var(--teal);box-shadow:0 14px 30px -12px rgba(46,230,201,.6)}
+.tile.t3{background:#f4f1ea}
+.doc{margin-top:16px;display:grid;gap:7px}
+.doc span{height:8px;border-radius:4px;background:rgba(255,255,255,.1)}
+.doc span:nth-child(2){width:82%}.doc span:nth-child(3){width:64%}
+.doc .sig{margin-top:6px;height:auto;background:none;font:italic 26px/1 var(--serif);color:var(--teal)}
+@media (min-width:860px){.bento{grid-template-columns:1.3fr 1fr 1fr}.bento .wide{grid-row:span 2}}
+
+/* numbers */
+.nums{margin-top:34px;display:grid;gap:14px}
+.num{padding:22px 0;border-top:1px solid var(--line)}
+.num b{display:block;font-size:clamp(56px,15vw,96px);line-height:1;letter-spacing:-.04em;font-weight:600;font-variant-numeric:tabular-nums}
+.num b em{color:var(--sun)}
+.num span{color:var(--mute);font-size:15px}
+@media (min-width:860px){.nums{grid-template-columns:repeat(3,1fr);gap:28px}}
+
+/* isometric bars: SVG prisms (top, left and right faces) drawn by a few lines of script */
+.iso{display:block;width:100%;max-width:520px;margin:30px auto 0;height:auto}
+.iso text{fill:var(--mute);font:500 12px var(--sans)}
+.isolab{text-align:center;color:var(--mute);font-size:14px;margin-top:6px}
+
+/* plans (no prices on purpose: the page is shown in reels) */
+.plans{margin-top:34px;display:grid;gap:14px}
+.plan{padding:24px;border-radius:20px;border:1px solid var(--line);background:var(--panel)}
+.plan h3{font-size:22px;font-weight:620}
+.plan .who{color:var(--mute);font-size:14px;margin-top:2px}
+.plan ul{list-style:none;padding:0;margin-top:16px;display:grid;gap:8px;font-size:15px}
+.plan li::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--teal);margin-right:10px;vertical-align:2px}
+.plan.hot{background:linear-gradient(170deg,rgba(255,106,26,.16),var(--panel) 55%);border-color:rgba(255,106,26,.45)}
+.plan .btn{margin-top:20px}
+@media (min-width:860px){.plans{grid-template-columns:repeat(3,1fr)}}
+
+/* closing card */
+.close{margin-top:10px;padding:34px 26px;border-radius:28px;background:var(--sun);color:#160700}
+.close h2{font-size:clamp(34px,9vw,60px);line-height:1;letter-spacing:-.03em;font-weight:650}
+.close h2 em{color:#160700}
+.close p{margin-top:12px;max-width:36ch;font-size:17px}
+.close .btn{margin-top:22px;background:#160700;color:var(--text)}
+footer{padding:36px 0 calc(28px + var(--safe-bottom));color:#6d6d78;font-size:13px;text-align:center}
+
+/* entrances: finished by default; scroll-driven rise where supported */
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .rise{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
+    @keyframes rise{from{opacity:0;transform:translateY(34px)}}
+    .iso .bar3{transform-box:fill-box;transform-origin:50% 100%;animation:grow linear both;animation-timeline:view();animation-range:entry 10% cover 40%}
+    @keyframes grow{from{transform:scaleY(.08)}}
+  }
+}
+@media (prefers-reduced-motion:no-preference){
+  .load{animation:in .9s var(--spring) both}.load.d2{animation-delay:.12s}.load.d3{animation-delay:.24s}.load.d4{animation-delay:.36s}
+  @keyframes in{from{opacity:0;transform:translateY(22px)}}
+  .steps .now i{animation:pulse 1.8s ease-in-out infinite}
+  @keyframes pulse{50%{transform:scale(1.15)}}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Quillmint home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20c6-1 11-6 15-15-7 2-12 7-15 15z" fill="#ff6a1a"/><path d="M4 20l7-7" stroke="#2ee6c9" stroke-width="2" stroke-linecap="round"/></svg>Quillmint</a>
+    <nav class="nav" aria-label="Main"><a href="#flow">Product</a><a href="#numbers">Numbers</a><a href="#plans">Plans</a></nav>
+    <a class="back" href="/">← All templates</a>
+    <a class="pill" href="#start">Start free</a>
+  </div>
+</header>
+<main id="top">
+  <section class="hero" aria-labelledby="h">
+    <canvas id="silk" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <span class="chip load"><b>New</b> Contracts file themselves</span>
+      <h1 id="h" class="load d2">Paperwork, <em>finally quiet.</em></h1>
+      <p class="lede load d3">Quillmint drafts, sends, chases and files every contract, so your week goes to the work and not the paper trail.</p>
+      <div class="cta load d3"><a class="btn main" href="#start">Start free</a><a class="btn ghost" href="#flow">See it run →</a></div>
+      <div class="flow load d4" role="group" aria-label="Example contract in progress">
+        <h2><span>Studio retainer · Harbourline</span><span>4 of 5</span></h2>
+        <ol class="steps">
+          <li class="done"><i></i>Drafted from your template<small>09:02</small></li>
+          <li class="done"><i></i>Sent and opened<small>09:05</small></li>
+          <li class="done"><i></i>Signed by both sides<small>11:40</small></li>
+          <li class="now"><i></i>Filing to the client folder<small>now</small></li>
+          <li><i></i>Invoice raised<small>next</small></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="flow" aria-labelledby="f">
+    <div class="wrap">
+      <p class="kicker rise">How it flows</p>
+      <h2 id="f" class="big rise">Three steps you <em>never</em> touch again.</h2>
+      <div class="bento">
+        <article class="glass wide rise">
+          <div class="tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 12h7M9 16h5" stroke="currentColor" stroke-width="2"/></svg></div>
+          <h3>Drafts in your words</h3>
+          <p>Pick a template, the names and dates fill in, and the clauses you always use are already there.</p>
+          <div class="doc" aria-hidden="true"><span></span><span></span><span></span><span class="sig">M. Okafor</span></div>
+        </article>
+        <article class="glass rise">
+          <div class="tile t2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12l7 3 11-11-7 18-3-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <h3>Chases politely</h3>
+          <p>Gentle reminders go out until it is signed. You only hear about it when it is done.</p>
+        </article>
+        <article class="glass rise">
+          <div class="tile t3"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h7l2 2h9v10H3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+          <h3>Files itself</h3>
+          <p>Signed copies land in the right client folder, named the same way every time.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="numbers" aria-labelledby="n">
+    <div class="wrap">
+      <p class="kicker rise">Sample numbers</p>
+      <h2 id="n" class="big rise">Quiet, <em>measured.</em></h2>
+      <div class="nums">
+        <div class="num rise"><b>18,420</b><span>contracts filed in a month (example data)</span></div>
+        <div class="num rise"><b>2<em>.4</em> days</b><span>from draft to signed, on average</span></div>
+        <div class="num rise"><b>6 h</b><span>of admin back each week</span></div>
+      </div>
+      <svg class="iso" viewBox="0 0 360 250" aria-hidden="true"></svg>
+      <p class="isolab rise">Contracts closed per day, one sample week</p>
+    </div>
+  </section>
+
+  <section id="plans" aria-labelledby="p">
+    <div class="wrap">
+      <p class="kicker rise">Plans</p>
+      <h2 id="p" class="big rise">Pick the one your <em>week</em> needs.</h2>
+      <div class="plans">
+        <article class="plan rise"><h3>Solo</h3><p class="who">One person, a few clients</p><ul><li>Unlimited drafts</li><li>E-signature</li><li>Auto-filing</li></ul></article>
+        <article class="plan hot rise"><h3>Studio</h3><p class="who">Small teams</p><ul><li>Everything in Solo</li><li>Reminders that chase</li><li>Shared templates</li><li>Invoice on signature</li></ul><a class="btn main" href="#start">Start free</a></article>
+        <article class="plan rise"><h3>Firm</h3><p class="who">Several teams</p><ul><li>Everything in Studio</li><li>Roles and approvals</li><li>Audit trail</li></ul></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="start" aria-labelledby="s">
+    <div class="wrap">
+      <div class="close rise">
+        <h2 id="s">Make your paperwork <em>quiet.</em></h2>
+        <p>Bring one contract. We will set up the rest with you in a single call.</p>
+        <a class="btn" href="#top">Start free →</a>
+      </div>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">Developed by Aquarii Technologies</div></footer>
+<script>
+// isometric bars: one prism per day (top, left, right faces); Thursday in the accent
+(() => {
+  const svg = document.querySelector('.iso'), a = 22, cy = 205, H = [62, 98, 82, 156, 118], D = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  const pt = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`;
+  svg.innerHTML = H.map((h, i) => {
+    const cx = 60 + i * 60, on = i === 3, t = cy - h;
+    const top = [pt(cx, t - a / 2), pt(cx + a, t), pt(cx, t + a / 2), pt(cx - a, t)].join(' ');
+    const left = [pt(cx - a, t), pt(cx, t + a / 2), pt(cx, cy + a / 2), pt(cx - a, cy)].join(' ');
+    const right = [pt(cx, t + a / 2), pt(cx + a, t), pt(cx + a, cy), pt(cx, cy + a / 2)].join(' ');
+    const [ct, cl, cr] = on ? ['#ffb27a', '#ff6a1a', '#b84100'] : ['#3a3f52', '#232736', '#151822'];
+    return `<g class="bar3"><polygon points="${left}" fill="${cl}"/><polygon points="${right}" fill="${cr}"/><polygon points="${top}" fill="${ct}"/></g><text x="${cx}" y="${cy + 34}" text-anchor="middle">${D[i]}</text>`;
+  }).join('');
+})();
+// silk-light ribbon: ~56 thin luminous lines on one canvas, added with 'lighter' so overlaps glow; DPR capped at 2; static frame when motion is reduced
+(() => {
+  const c = document.getElementById('silk'), x = c.getContext('2d'), N = 48;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w = 0, h = 0, run = true;
+  const size = () => { const d = Math.min(2, devicePixelRatio || 1), r = c.getBoundingClientRect(); w = r.width; h = r.height; c.width = w * d; c.height = h * d; x.setTransform(d, 0, 0, d, 0, 0); };
+  const draw = (t) => {
+    x.clearRect(0, 0, w, h); x.globalCompositeOperation = 'lighter';
+    const g = x.createLinearGradient(0, 0, w, 0); g.addColorStop(0, 'rgba(46,230,201,0)'); g.addColorStop(.25, 'rgba(46,230,201,.55)'); g.addColorStop(.6, 'rgba(255,106,26,.75)'); g.addColorStop(1, 'rgba(255,190,120,.25)');
+    x.strokeStyle = g; const step = Math.max(8, w / 110), base = h * (w < 700 ? .4 : .46), A = h * (w < 700 ? .12 : .16);
+    const yAt = (u, k) => base + Math.sin(u * 3.1 + t * .35 + k * 1.6) * A + Math.sin(u * 7.3 - t * .22 + k * 2.4) * A * .3 + (k - .5) * h * .2 * Math.sin(u * 2.2 + .6);
+    // two passes: a wide soft glow, then the fine bright threads
+    for (const [lw, al] of [[9, .025], [1.3, .3]]) {
+      x.lineWidth = lw;
+      for (let i = 0; i < N; i++) {
+        const k = i / N; x.globalAlpha = al * (.35 + .65 * Math.sin(k * Math.PI)); x.beginPath();
+        for (let px = -20; px <= w + 20; px += step) { const y = yAt(px / w, k); px < 0 ? x.moveTo(px, y) : x.lineTo(px, y); }
+        x.stroke();
+      }
+    }
+    x.globalAlpha = 1;
+  };
+  const loop = (ms) => { if (run) draw(ms / 1000); if (!still) requestAnimationFrame(loop); };
+  size(); addEventListener('resize', () => { size(); if (still) draw(2); });
+  new IntersectionObserver(([e]) => { run = e.isIntersecting; }).observe(c);
+  still ? draw(2) : requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
