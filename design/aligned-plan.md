@@ -45,7 +45,7 @@ One wide shot for 18 s, a busy object whose story needs captions, small corner t
 2. Brand kit: palette, font, logo mark, ending card (M).
 3. Voice sample pack: 4-6 English voices saying the same line, rendered on GitHub (S).
 4. Reel recipe + quality gate in the film engine and checks (M).
-5. Schedule: daily template routine -> Mon/Wed/Fri 08:50 IST; posting checklist 19:30 (S).
+5. Schedule (owner, 16 Oct 2026): the daily routine runs early morning (about 05:15 IST) every day, so the reel is ready when the owner wakes; post it whenever there is time, no fixed 19:30 slot.
 6. Rules: owner-approved CLAUDE.md update (lean draft + this plan), lift the motion freeze (S).
 7. First reel on the new system, for Friday 16 Oct (M + GitHub render).
 Superseded: process-review areas 2 and 3 (folded into the recipe and quality gate); the E12 motion freeze is lifted, the 19:30 posting routine stays.
