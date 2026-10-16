@@ -139,38 +139,37 @@ jobs:
           else
             node scripts/render-reel.mjs "$ID" --out out/reels --no-audio 2>&1 | tee render.log
           fi
-      - name: Keep it in the reels release
+      - name: Check it, keep it in the reels release, tell the owner (GitHub issue, assigned so it emails and notifies)
+        id: gate
         if: steps.pick.outputs.skip != 'true' && steps.pick.outputs.draft != 'true'
         run: |
           ID="${{ steps.pick.outputs.id }}"
+          # quality gate first (design/aligned-plan.md "Reel recipe"; owner, 16 Oct 2026: a failed reel must never reach the site)
+          if python3 -I scripts/film/reel-gate.py "out/reels/$ID.mp4" > gate.txt; then GATE=PASS; else GATE=FAIL; fi
+          # a film with a voice script must carry its voice: a missing voice never passes silently
+          if [ -f "film/$ID/voice.md" ] && [ ! -f out/voice/final.wav ]; then GATE=FAIL; echo "FAIL voice     film/$ID/voice.md exists but the voice-over failed (see the Voice-over step log)" >> gate.txt; fi
+          echo "gate=$GATE" >> "$GITHUB_OUTPUT"
           gh release view reels --repo "$REPO" >/dev/null 2>&1 || gh release create reels --repo "$REPO" --title "Reels" --latest=false \
             --notes "Rendered reels (MP4 + cover), one per template. Written by the Reel publish workflow; the site serves recent ones behind the sign-in."
-          gh release upload reels --repo "$REPO" --clobber "out/reels/$ID.mp4" "out/reels/$ID-cover.jpg" "out/reels/$ID.json"
-      - name: Tell the owner (GitHub issue, assigned so it emails and notifies)
-        if: steps.pick.outputs.skip != 'true' && steps.pick.outputs.draft != 'true'
-        run: |
-          ID="${{ steps.pick.outputs.id }}"
-          gh label create reel --repo "$REPO" --color 7C3AED --description "A reel is ready to post" 2>/dev/null || true
-          node scripts/build-kits.mjs >/dev/null
-          node scripts/reel-issue.mjs "$ID" > issue.md
-          TITLE="$(node scripts/reel-issue.mjs "$ID" --title)"
-          # quality gate (design/aligned-plan.md "Reel recipe"): a failing reel is announced as needing a fix, not as ready to post
-          if python3 -I scripts/film/reel-gate.py "out/reels/$ID.mp4" > gate.txt; then GATE=PASS; else GATE=FAIL; fi
-          # frame-by-frame review (owner, 15 Oct 2026): contact sheets + motion graph, published next to the reel for Claude to read (not deployed: png)
+          if [ "$GATE" = PASS ]; then gh release upload reels --repo "$REPO" --clobber "out/reels/$ID.mp4" "out/reels/$ID-cover.jpg" "out/reels/$ID.json"
+          else cp "out/reels/$ID.mp4" "out/reels/$ID-needsfix.mp4"; gh release upload reels --repo "$REPO" --clobber "out/reels/$ID-needsfix.mp4"; fi   # kept for Claude to inspect; the site skips it
+          # frame-by-frame review: contact sheets + motion graph, published next to the reel for Claude to read (not deployed: png)
           pip install Pillow==11.0.0 >/dev/null 2>&1 || true
           if python3 -I scripts/film/frame-review.py "out/reels/$ID.mp4" out/review --every 3 > review.txt 2>&1; then
             for f in out/review/*.png; do cp "$f" "out/review/$ID-review-$(basename "$f")"; done
             gh release upload reels --repo "$REPO" --clobber out/review/$ID-review-*.png || true
             { echo; echo "Frame review (Claude reads these before you see the reel):"; cat review.txt; } >> gate.txt
           fi
-          # a film with a voice script must carry its voice: a missing voice never passes silently
-          if [ -f "film/$ID/voice.md" ] && [ ! -f out/voice/final.wav ]; then GATE=FAIL; echo "FAIL voice     film/$ID/voice.md exists but the voice-over failed (see the Voice-over step log)" >> gate.txt; fi
           cat gate.txt
-          if [ "$GATE" = FAIL ]; then TITLE="Reel needs fix: $ID"; { echo "> **Quality gate: FAIL.** Do not post. Reply \"fix\" in the Claude chat."; echo; echo '```'; cat gate.txt; echo '```'; echo; cat issue.md; } > issue2.md
+          gh label create reel --repo "$REPO" --color 7C3AED --description "A reel is ready to post" 2>/dev/null || true
+          node scripts/build-kits.mjs >/dev/null
+          node scripts/reel-issue.mjs "$ID" > issue.md
+          TITLE="$(node scripts/reel-issue.mjs "$ID" --title)"
+          if [ "$GATE" = FAIL ]; then TITLE="Reel needs fix: $ID"; { echo "> **Quality gate: FAIL.** Not on the site, do not post. Reply \"fix\" in the Claude chat."; echo; echo '```'; cat gate.txt; echo '```'; echo; cat issue.md; } > issue2.md
           else { echo "> Quality gate: PASS"; echo '```'; cat gate.txt; echo '```'; echo; cat issue.md; } > issue2.md; fi
           gh issue create --repo "$REPO" --title "$TITLE" --body-file issue2.md --label reel --assignee "${{ github.repository_owner }}"
       - name: Redeploy once so the site serves the new video
-        if: steps.pick.outputs.skip != 'true' && steps.pick.outputs.draft != 'true'
+        if: steps.pick.outputs.skip != 'true' && steps.pick.outputs.draft != 'true' && steps.gate.outputs.gate == 'PASS'
         run: gh workflow run pipeline.yml --repo "$REPO" --ref main
       - name: Summary
         if: always() && steps.pick.outputs.skip != 'true'
