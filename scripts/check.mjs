@@ -252,6 +252,21 @@ if (existsSync(mp)) {
   for (const d of existsSync(FD) ? readdirSync(FD) : []) if (/^\d{4}-/.test(d) && d >= '2026-10-14' && existsSync(join(FD, d, 'story.js')) && !existsSync(join(FD, d, 'manifest.json'))) err(`film/${d}: no manifest.json (render at least one still: it is written automatically)`);
 }
 
+// voice script (owner, 16 Oct 2026: a reel shipped silent because voice.md failed the pace rule only on GitHub): the same rule as scripts/film/voice.mjs,
+// checked before the push so the run fixes the script instead of rendering a silent reel
+{
+  const FD = join(root, 'film');
+  for (const d of existsSync(FD) ? readdirSync(FD) : []) {
+    const vf = join(FD, d, 'voice.md'); if (!/^\d{4}-/.test(d) || d < '2026-10-15' || !existsSync(vf)) continue;
+    let len = 18; try { len = JSON.parse(readFileSync(join(FD, d, 'timing.json'), 'utf8')).len || 18; } catch { /* timing.json is checked elsewhere */ }
+    const lines = readFileSync(vf, 'utf8').split('\n').map((l) => l.match(/^- \[([\d.]+)-([\d.]+)\]\s+(.+)$/)).filter(Boolean);
+    if (!lines.length) err(`film/${d}/voice.md: no lines in the form "- [start-end] words"`);
+    for (const [, a, b, txt] of lines) { const w = txt.trim().split(/\s+/).length, wps = w / (b - a);
+      if (wps > 3.2 || wps < 2.3) err(`film/${d}/voice.md: [${a}-${b}] ${w} words = ${wps.toFixed(2)} words/s; keep 2.3-3.2 (shorten the line or widen its slot), or the voice fails on GitHub and the reel ships silent`);
+      if (+b > len - .4) err(`film/${d}/voice.md: [${a}-${b}] ends after ${(len - .4).toFixed(1)} s (film is ${len} s)`); }
+  }
+}
+
 if (errors.length) {
   console.error(`\n✗ ${errors.length} check(s) failed:\n` + errors.map((e) => `  - ${e}`).join('\n') + '\n');
   process.exit(1);
