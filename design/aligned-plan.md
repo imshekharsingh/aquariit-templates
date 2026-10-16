@@ -13,7 +13,9 @@
 - One recognisable Aquarii look on every reel: one palette, one font, one logo mark, one ending. Replaces "every reel looks like its own brand".
 - New brand kit; the water-wave (zigzag) icon is replaced.
 - Ending: why to DM (talk through your needs / pain points), the DM keyword, then "we'll find the package that fits you" + follow; the spoken/on-screen close is "DM us to know more" (owner, 15 Oct 2026). No prices, no free promises. The owner replies to DMs within a few hours.
-- 3 reels a week (owner, 15 Oct 2026): Mon, Wed, Fri, posted at 19:30 IST. Templates drop to the same days (one proof page per reel). Move to 4 (add Sun) once two reels in a row pass on the first render.
+- Post every day (owner, 16 Oct 2026; replaces "3 reels a week"): a blend. Mon/Wed/Fri = a directed film (premium, sells one service; themes.md); the other days =
+  a light real-time piece made from our own pages (an animation shown as it becomes a website, a concept effect, a short how-we-built-it), result first,
+  hook line and word captions, little render time. Consistency and volume let Instagram test us with new people; quality still only goes up (themes.md Rule 1).
 - Weekly mix (rotate): problem -> fix story; mini tutorial with voice; makeover (old site -> modern site); offer (one package explained, no price: "DM us for pricing that fits you").
 - Final gate: the owner watches each reel once and replies "post" or "fix" in the Claude chat.
 

@@ -1,5 +1,9 @@
 # Content experiments (the advisor's lab notebook)
 
+**Scale note (owner, 16 Oct 2026):** the account has about 6 followers, so per-reel averages (watch time, reach) say almost nothing yet. We do not judge,
+keep or drop a format on them; we post daily, keep raising quality by our own bar (design/themes.md) and let Instagram's distribution decide what spreads.
+Read the numbers as signals only once reels reach a few thousand non-followers.
+
 Rule: change one thing at a time where possible, post at least 3 reels per variant, decide with the numbers in the daily collector's log
 (Instagram collect → run log → "Reels" table), write the verdict here. Small samples lie: with a new account every number is noisy, so the bar is
 a clear difference across 3+ reels, not one lucky reel.
