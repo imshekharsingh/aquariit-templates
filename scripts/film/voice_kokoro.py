@@ -1,4 +1,4 @@
-# Kokoro TTS (open-weight, Apache-2.0) for the film voice-over. Runs ONLY in GitHub Actions (voice-test / Reel publish), never in a Claude session.
+# Kokoro TTS (open-weight, Apache-2.0) for the film voice-over. Runs ONLY in GitHub Actions (Reel publish), never in a Claude session.
 # usage: python voice_kokoro.py lines.json out.wav words.json   (lines: [{"t0":..,"text":..}]); 24 kHz mono; word times come from the model's own durations
 import json, sys
 import numpy as np, soundfile as sf

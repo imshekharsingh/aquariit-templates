@@ -60,12 +60,8 @@ CLAUDE.md.
 ## Phase 4 — Sanity checks (must pass before pushing)
 1. `npm install --no-audit --no-fund` (if node_modules is missing).
 2. `npm run check`. Fix every error and re-run until it passes.
-3. Emulate the iPhone Reel frame (402×715 viewport, `<html class="reel">`) and also a
-   plain 402×874 phone: no horizontal overflow, first screen is a finished composition,
-   readable type, header looks right with the "All templates" link hidden, key content
-   outside Instagram's bottom ≈20%. Take screenshots and look at them. Desktop (1440px)
-   must still not break.
-3b. (Fallback only) `reel-audit.mjs` / `reel-perf.mjs` are not needed: the reel is the film. Run them only if the film failed and the recording will be used.
+3. Screenshot the page at 402×874 (phone) and 1440 wide (desktop) and look at both: no horizontal overflow, readable type, a finished first screen.
+   (The reel is a film made in Phase 4c, so no Reel-frame emulation, reel-audit or reel-perf runs are needed.)
 4. Compare against the last 3 templates; if too similar, revise.
 
 ## Phase 4a — Cover preview image
@@ -77,46 +73,25 @@ sure the hero is complete (no half-faded elements); if not, fix the template's e
 Create social/ID.md following the "Instagram social kit" section of CLAUDE.md
 (hook that opens a loop the ending closes, caption ending with a "Send this to…" share line,
 8–12 keywords, exactly 5 hashtags + alternates, Reel plan with length/shot plan/payoff/cover text, music suggestion matched to the template's mood). Base keywords on what the page actually shows.
-Reel format B is the current experiment (design/experiments.md): the reel is rendered automatically at about 18 s with the kit's hook shown on screen for the first
-~3 s, so write `Length: 15–20 s`, make the hook SHORT (a question of at most 8 words, it is read on screen), and plan the shot plan and payoff to land inside 18 s
-(payoff in the last 4 s). Read the latest results table in the "Instagram collect" workflow log, `design/experiments.md` and `design/growth-playbook.md` first, and favour what the numbers say is working. Concept and hook speak to the buyer (a business owner or founder: money, time, results) about OUR service of the day (design/services.md), never about the template's
-fictional business: add `## Service` (the line), keep the template's brand name out of Hook and Caption (check.mjs refuses it), and end on a CTA to us ("DM us 'SITE'"). Read `design/market.md` (people's choice): pick the business, market and currency from what the audience responds to; never present invented results as Aquarii's own.
-
-**READ FIRST (owner plan, 15 Oct 2026): design/aligned-plan.md overrides CLAUDE.md and this file where they differ.** Before pushing a film, run `node scripts/film/storyboard.mjs ID` and review it plus 1-per-second stills (design/brand/premium.md "Full, not empty"). Runs are Mon/Wed/Fri only.
-Every film: (1) one service, in the plan's order of priority (design + SEO, then CDN/speed/protection, then security + maintenance; still never the same as the previous film);
-(2) one of the four reel types in rotation (problem -> fix, mini tutorial, makeover, offer) and record it as `S.dna.format`; (3) the reel recipe: 8-10 shots in 18 s, a cut
-every 1.5-2.5 s (wide, push-in via P.camera, close-up, full-width type card), hook filling the width in the first second, one visible change per shot, payoff at 13-16 s;
-(4) brand kit: P.BRAND colours, Archivo + Geist Mono, pill captions, and `P.brandEnd({ keyword })` from ~16.1 s instead of P.signoff (design/brand/kit.md); (5) film/ID/voice.md
-(English AI voice, "we", one line per shot, <= 3 words/s, first line = hook, last = "DM us 'KEYWORD'"), voiced on GitHub automatically; (6) never show prices ("DM us for
-pricing that fits your needs") and never invent years, clients, results or testimonials. Before pushing, render 4-6 `--stills` and ask: is there a new picture every 2 s? The
-quality gate on GitHub (scripts/film/reel-gate.py: 6+ cuts, no framing held 3 s, live ending) rejects reels that are not; a rejected reel costs a day.
-
-## Phase 4c — Directed film (the reel; CLAUDE.md "Directed film"; how-to design/film-playbook.md)
-0. **Design like the motion logo** (design/film-playbook.md): poster-first (4-6 finished key frames before code), one visual idea that transforms, logo-grade craft, the motion logo as sign-off.
-   Machines: when the service can be shown as one working object, build it with P.iso (design/film-playbook.md "Isometric machines"). First use (15 Oct 2026): the edge service as a sorting machine; the owner judges that reel before machines become a regular option.
-1. **Concept first (3 lines):** the buyer's pain in today's service line, what Aquarii delivers (the mechanism the film shows), the payoff image. Pick a format from
-   design/services.md (service ad, cheat sheet, before/after, explainer, what you get, myth vs fact). Every reel still looks like its own piece: pick the ground
-   (black / deep colour / light), the accent and the caption style for THIS film. The template appears only as proof ("a site we designed", "the site we protect").
-2. **Pick the combination:** read the previous film's `film/*/manifest.json` (newest `made`) and choose, for opener, transition, mechanism, focus, payoff, type, captions and cta,
-   options from scripts/film/parts.js (the header lists them) that differ from it in opener, transition, mechanism and payoff. Read design/inspiration.md and **add one new
-   trick to parts.js** (a new part or option, tagged with `P.use(slot, id)`) and use it in this film.
-3. `cp -r film/_starter film/ID`, then write the story around the concept with those parts. Declare `S.dna = { service, opening, bigMoment, ground, music }`. End with `P.signoff()`.
-   The last caption before the sign-off is a **send line** naming who should get it ("Send this to a founder doing IT alone"): reach is the bottleneck and sends are the strongest signal (design/experiments.md, 13 Oct).
-   `film/ID/timing.json`: 100 BPM grid by default (a beat every 0.6 s), effects `cues` that each match something on screen.
-4. **Look and fix (2-3 passes):** `node scripts/film/render-film.mjs ID --variant A --stills t1,t2,...` at every cut + first, breath, peak, last frame; contact sheet in time order
-   (`ls still-A-*.png | sort -t- -k3 -g`). Answer the friend test (CLAUDE.md) honestly; check text against Instagram's zones and for collisions or dead air; fix and look again.
-   Run `node scripts/film/fill-meter.mjs <stills dir>`: no more than a third of the frames TIGHT (make subjects bigger, bleed off an edge, fill the ground).
-   **Hybrid 3D (owner, 14 Oct 2026):** give each film 1-3 short 3D hero shots (3-6 s in total) with P.three / P.tank3d (`active` windows), the rest 2D; render cost
-   grows about 3x per 3D second, so keep it short. See design/film-playbook.md "Hybrid films".
-   **Easing (14 Oct 2026):** every move uses the toolkit in parts.js (springs or P.EASE, never 'lin'); pick by mood (design/film-playbook.md "Easing and spring
-   physics"). `node scripts/film/render-film.mjs ID --variant A --motion-check` must print no JUMP/LINEAR lines, PASS for every preset and a clean grep.
-   **Frame by frame (owner, 14 Oct 2026):** render the whole film once (`render-film.mjs ID --variant A --out DIR`), then
-   `python3 -I scripts/film/frame-review.py DIR/ID-A.mp4 DIR/review --every 2 --cuts <your cut times>`. Open motion.png and EVERY sheet: fix every FROZEN
-   stretch (dead air), unplanned JUMP, JUDDER and FLASH, plus anything that looks fake or unreadable in any frame; re-render and review again until clean.
-   Rendering a still also writes film/ID/manifest.json; `npm run check` must pass (variety rules). Then `--cover` and check the crops.
-5. reel-log.json: concept, motionStyle, primaryTransition, typeTreatment, grade, sound, cover, `friendTest` (the four answers), revisionPasses, notes (what each pass fixed),
-   and the new trick added. Stage film/ID/ (with manifest.json), the parts.js change and reel-log.json with the template.
-The Reel publish workflow renders the full film after the deploy. Budget about 30-45 minutes for this phase; it gets faster as the library grows.
+## Phase 4c — The reel (current rules, owner 15-16 Oct 2026; these replace every older reel rule in CLAUDE.md and this file)
+Sources, in this order: design/aligned-plan.md (business, recipe, process), design/brand/premium.md (the locked look), design/brand/kit.md (brand), design/film-playbook.md (how-to).
+1. **Service and story.** One Aquarii service, in priority order (website design + SEO, then CDN/speed/protection, then security + maintenance), never the same as the
+   previous film (`S.dna.service`). One reel type in rotation (problem -> fix, makeover, mini tutorial, offer; `S.dna.format`). Concept in 3 lines: the buyer's pain, what we
+   deliver (shown as a mechanism), the payoff image. The example business on the template changes every reel: never the same kind of business as any of the last 5
+   (bakery, clinic, salon, CA firm, gym, boutique, coaching, real estate, restaurant, school ...). The template is only proof; Hook, voice and caption sell Aquarii.
+2. **Look (locked for 4-6 weeks):** premium cinematic tech (premium.md): navy, white, one lime accent, coral only for the problem; three layers in every frame (subject,
+   supporting detail, depth layer such as P.sys globe/grid/spot); one 3D or depth hero moment; calm long-tail motion. Length fits the content, 15-30 s (timing.json `len`).
+3. **Show the real work.** When the reel shows a site, use the real template: `node scripts/film/capture-site.mjs ID` writes film/ID/assets/{desk,tab,phone}.jpg; put them
+   in device frames that scroll. Never placeholder blocks.
+4. **Voice:** film/ID/voice.md, near-continuous, every line 2.3-3.2 words per second of its slot (`npm run check` refuses anything else, or the reel ships silent),
+   one short breath before the reveal, first line = hook, last line ends "DM us to know more". English, "we", AI voice af_heart; never invent clients, years or results; never prices.
+5. **Ending:** `P.brandEnd({ at, keyword, why })` (it breathes by itself: push-in, halo, shine). No other sign-off.
+6. **One new trick** in scripts/film/parts.js per film (`P.use(slot, id)`), as CLAUDE.md asks; reuse parts for everything else.
+7. **Review before pushing (no full renders here; GitHub renders):** `node scripts/film/storyboard.mjs ID`, then 1 still per second (`--stills 0.5,1.5,...`) as one contact
+   sheet. Fix: empty or cut-off frames, text in Instagram's zones, a picture that does not match the words, anything static for 3 s, placeholder content. Look again (2-3
+   passes). The GitHub gate then checks shots, held framing, fullness, a live ending and the voice; a failed reel is kept off the site and opens "Reel needs fix".
+8. **Records:** social/ID.md (Hook, Service, Caption, Keywords, Hashtags, Reel, Music), reel-log.json entry (concept, friendTest, revisionPasses, notes, new trick),
+   film/ID/ with manifest.json (written by any still render). `npm run check` must pass.
 
 ## Phase 5 — Records and push
 1. Append the entry to design-log.json (schema in CLAUDE.md: id=ID, date=DATE,

@@ -180,15 +180,7 @@
       const kq = tw(t, 20.0, .8); protT.style.opacity = (kq * IN(t, -1, 23.3, .4)).toFixed(3); protT.style.transform = `translateY(${((1 - kq) * 12).toFixed(1)}px)`;
       toasts.forEach((el, i) => { const k = tw(t, 20.6 + i * .55, .5); el.style.opacity = (k * IN(t, -1, 23.3, .4)).toFixed(3); el.style.transform = `translateX(${((1 - k) * -24).toFixed(1)}px)`; });
     });
-    const endCard = P.brandEnd({ at: 23.5, keyword: 'FAST', why: 'What’s slowing your site down?', out: 27.8 });
-    // the end card is held long enough to read, so it keeps breathing: a slow push-in and a soft blue light rising behind the mark
-    const halo = E.el('div', 'position:absolute;left:-40px;right:-40px;top:60px;height:520px;background:radial-gradient(45% 40% at 50% 45%,rgba(47,107,255,.32),rgba(47,107,255,0) 70%);opacity:0;pointer-events:none', endCard);
-    endCard.prepend(halo);
-    const cta = [...endCard.querySelectorAll('div')].find((d) => d.textContent === 'DM us to know more');
-    if (cta) { cta.style.position = 'relative'; cta.style.overflow = 'hidden'; }
-    const shine = cta && E.el('i', 'position:absolute;top:-10px;bottom:-10px;width:44px;left:0;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55),rgba(255,255,255,0));transform:skewX(-20deg);opacity:0', cta);
-    P.on((t) => { const k = G_(clamp((t - 24.1) / 3.4)); endCard.style.scale = (1 + .11 * k).toFixed(4);
-      if (shine) { const u = ((t - 24.4) % 1.6) / 1.6; shine.style.opacity = t > 24.4 && t < 27.6 ? '1' : '0'; shine.style.left = (-60 + 340 * u).toFixed(1) + 'px'; } halo.style.opacity = (.25 + .75 * k).toFixed(3); halo.style.transform = `translateY(${(40 - 70 * k).toFixed(1)}px) scale(${(.8 + .5 * k).toFixed(3)})`; });
+    P.brandEnd({ at: 23.5, keyword: 'FAST', why: 'What’s slowing your site down?', out: 27.8 });
     S.name = 'Edge premium v5 (rich)';
     return { ok: true };
   };

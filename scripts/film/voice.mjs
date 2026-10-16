@@ -1,4 +1,4 @@
-// Voice-over for tutorial films (step 1 of 3, 14 Oct 2026). Runs ONLY in GitHub Actions (.github/workflows/voice-test.yml), never in a Claude session.
+// Voice-over for tutorial films (step 1 of 3, 14 Oct 2026). Runs ONLY in GitHub Actions (Reel publish), never in a Claude session.
 //   node scripts/film/voice.mjs ID [--out DIR]       reads film/ID/voice.md, writes DIR/{voice.wav, voice-timing.json, final.wav, voice-report.json}
 // 1. checks the script: words per shot (target ~2.5/s, fail above 3/s) and that speech fits the film (timing.json len)
 // 2. speaks it with Kokoro (scripts/film/voice_kokoro.py; open-weight, pinned in the workflow); word times come from the model's durations
