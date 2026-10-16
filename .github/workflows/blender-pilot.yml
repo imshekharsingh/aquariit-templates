@@ -1,19 +1,19 @@
 name: Blender pilot
-# Pilot (owner, 16 Oct 2026): can a path-traced Blender hero shot (true glass, reflections, soft shadows) render fast enough on a free runner to be one
-# 3-4 s moment per reel? Renders stills or the whole 4 s shot of scripts/blender/hero.py and puts them in the "reels" release as pilot-hero-*.png
-# (stills) or pilot-hero.mp4 (all frames). Manual only; nothing is posted or deployed.
+# Pilot (owner, 16 Oct 2026): can a path-traced Blender hero shot (true glass, reflections, soft shadows) render fast enough on free runners to be one
+# 3 s moment per reel? Renders stills or the whole shot of scripts/blender/hero.py and puts them in the "reels" release as pilot-hero-*.png
+# (stills) or pilot-hero.mp4 (all frames, upscaled to 1080x1920). "all" splits the 72 frames over 6 parallel jobs. Manual only; nothing is posted or deployed.
 on:
   workflow_dispatch:
     inputs:
       frames:
-        description: Frames to render (comma list, or "all" for the 4 s shot = 96 frames)
-        default: '1,48,72,96'
+        description: Frames to render (comma list, or "all" for the 3 s shot = 72 frames over 6 parallel jobs)
+        default: '1,36,54,72'
       res:
-        description: Width in px (height is 16:9 of it); 540 for tests, 1080 for the real shot
-        default: '540'
+        description: Render width in px (height is 16:9 of it); 720 is upscaled to 1080 for the shot
+        default: '720'
       samples:
-        description: Cycles samples (denoised)
-        default: '64'
+        description: Cycles samples (adaptive, denoised)
+        default: '24'
 
 permissions:
   contents: write
@@ -22,37 +22,56 @@ jobs:
   render:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    strategy:
+      matrix:
+        chunk: ${{ fromJSON(inputs.frames == 'all' && '[0,1,2,3,4,5]' || '[0]') }}
     env:
-      GH_TOKEN: ${{ github.token }}
-      REPO: ${{ github.repository }}
+      OF: ${{ inputs.frames == 'all' && '6' || '1' }}
     steps:
       - uses: actions/checkout@v4
       - name: Install Blender (official 4.2 LTS build with the OIDN denoiser and AgX, which the Ubuntu apt package lacks)
         run: |
-          sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libxkbcommon0 libsm6
+          sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libxkbcommon0 libsm6
           curl -fsSL https://download.blender.org/release/Blender4.2/blender-4.2.3-linux-x64.tar.xz | tar -xJ -C "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/blender-4.2.3-linux-x64" >> "$GITHUB_PATH"
-          "$RUNNER_TEMP/blender-4.2.3-linux-x64/blender" --version | head -1
       - name: Render
         env:
           FRAMES: ${{ inputs.frames }}
           RES: ${{ inputs.res }}
           SAMPLES: ${{ inputs.samples }}
+          CHUNK: ${{ matrix.chunk }}
         run: |
           START=$(date +%s)
-          blender -b -P scripts/blender/hero.py -- --out out/hero --frames "$FRAMES" --res "$RES" --samples "$SAMPLES" 2>&1 | grep -E "rendered frame|denoiser|Error|error|Traceback" | tee render.log
+          blender -b -P scripts/blender/hero.py -- --out out/hero --frames "$FRAMES" --res "$RES" --samples "$SAMPLES" --chunk "$CHUNK" --of "$OF" 2>&1 | grep -E "rendered frame|denoiser|Error|error|Traceback" | tee render.log
           END=$(date +%s); N=$(ls out/hero/*.png | wc -l)
-          echo "frames: $N, seconds: $((END-START)), per frame: $(( (END-START) / (N>0?N:1) ))" | tee -a render.log
+          echo "chunk $CHUNK: frames $N, seconds $((END-START)), per frame $(( (END-START) / (N>0?N:1) ))" | tee -a render.log
+          { echo "### Blender pilot, chunk $CHUNK"; echo '```'; cat render.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hero-${{ matrix.chunk }}
+          path: out/hero/*.png
+          retention-days: 3
+
+  publish:
+    needs: render
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: hero-*
+          merge-multiple: true
+          path: hero
       - name: Keep the result in the reels release
         run: |
-          cd out/hero
+          cd hero && ls
           if [ "${{ inputs.frames }}" = "all" ]; then
-            ffmpeg -y -loglevel error -framerate 24 -i hero-%03d.png -c:v libx264 -pix_fmt yuv420p -crf 18 pilot-hero.mp4
+            sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ffmpeg
+            ffmpeg -y -loglevel error -framerate 24 -i hero-%03d.png -vf "scale=1080:1920:flags=lanczos" -c:v libx264 -pix_fmt yuv420p -crf 16 pilot-hero.mp4
             gh release upload reels --repo "$REPO" --clobber pilot-hero.mp4
           else
             for f in hero-*.png; do cp "$f" "pilot-$f"; done
             gh release upload reels --repo "$REPO" --clobber pilot-hero-*.png
           fi
-      - name: Summary
-        if: always()
-        run: '{ echo "### Blender pilot"; echo "\`\`\`"; cat render.log 2>/dev/null; echo "\`\`\`"; } >> "$GITHUB_STEP_SUMMARY"'
