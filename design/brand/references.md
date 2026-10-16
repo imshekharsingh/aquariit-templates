@@ -48,6 +48,21 @@ For us: **we can make this ourselves without any filming.** Our renderer can scr
 this bar (silk-light WebGL or canvas hero, editorial type pairing, glass panels, 3D bars, big numbers), then the reel is the scroll + one hook line +
 our end card. Added as theme D `sitescroll` (design/themes.md).
 
+## R4 · "Noway! Claude did this" (creator how-to over screen recordings; ~78K likes)
+What is on screen: the result first (a product site with a glossy 3D bottle hero on a laptop), then a fast how-to told over screen recordings: an install
+page, an animation library site, a terminal command, a UI skill, a "Black Hole Hero Section" prompt copied and pasted, and the finished surreal 3D-arch
+website. Word-by-word captions in Hinglish ("daal do", "bolo usko", "10 minute") over the creator's face at the bottom.
+
+Why it works:
+- **Result first, then the method.** The wow is shown in second 0; the rest explains how, so people stay to learn and save it.
+- **Cheap to make.** It is mostly screen recordings plus captions; the creator's voice and face carry it.
+- **Word-by-word captions in the audience's own language**, big and centred: easy to follow muted.
+- **The promise is speed and access** ("10 minute"): the viewer imagines doing it.
+
+For us: a **demo** format (result first, then "what this becomes as a website" or "how we built it"), made from recordings of our own animated pages
+plus captions, much lighter than a directed film. Lesson from our own numbers: plain screen recordings averaged 2.5-4.6 s watch time, so the packaging
+(result-first hook, word captions, a fast rhythm, a real wow piece) is what makes it work, not the recording itself.
+
 ## The gap (honest, 16 Oct 2026)
 We are not close yet. Our reels are collages of flat UI cards and captions; the references show either **one rich, lit subject** (R1) or **real
 footage of 3D worlds** (R2). Specifically we lack: soft 3D shading and lighting, character or emotion, colour that moves with the story, real
