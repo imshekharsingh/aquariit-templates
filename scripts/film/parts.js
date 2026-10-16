@@ -8,7 +8,7 @@
 //   ground     P.scene({ accent, ink })            black | deep colour (ink like #1a0712) | light (ink like #f4f1ea): cards, captions and dust adapt
 //   opener     P.rackWord  P.drawOn  P.assemble    (or a bespoke opening image, declared in S.dna.opening)
 //   transition P.scan  P.wave  P.iris  P.blinds  P.zoomThrough  P.whip  P.shapeWipe  P.pendulum (a swinging tag is the wipe)  P.interstitial (cut to a pivot line)
-//   mechanism  P.vessel (OUR metaphor: the site is a vessel, customers the water, pains leak it, services patch it; also an opener)  P.hub  P.route  P.gridFill  P.steps  P.deck  P.meter  P.compare  P.radial (diagram tour + pull-back title)  P.orbit (collage)  (+ P.chat inside P.phone)
+//   mechanism  P.serpClimb (a search result climbs from #7 to #1 and restyles; web/SEO)  P.vessel (OUR metaphor: the site is a vessel, customers the water, pains leak it, services patch it; also an opener)  P.hub  P.route  P.gridFill  P.steps  P.deck  P.meter  P.compare  P.radial (diagram tour + pull-back title)  P.orbit (collage)  (+ P.chat inside P.phone)
 //   focus      P.brackets  P.spotlight  P.lens
 //   payoff     P.underwater (dive: caustics, rays, cards rising at three depths)  P.riseChips (messages float up: customers who now stay)  P.payoff (warm flood)  P.stamp  P.burst  P.sweep  P.bloom  P.shield (attacks burst on a shield; also a security/edge mechanism: slot 'mechanism')
 //   type       P.sentence (builds word by word)  P.giant (one huge word)  P.typewriter  P.flipWords (word per beat, ground flips)  P.construct (letters snap together)  P.inlineIcon
@@ -646,6 +646,38 @@
     return card;
   };
 
+
+  // ---- serpClimb (16 Oct 2026, new trick): a search-results card; our result starts far down in a dated look, then climbs to #1 on a spring, the rows it passes shift down,
+  //      the rank badge counts 7 → 1 and the row restyles to the modern look. `windows` are the times the card is on screen; before `climbAt` the old state shows.
+  P.serpClimb = function (parent, { x = 30, y = 150, w = 342, query = 'bakery near me', windows = [[7.4, 10.7]], climbAt = null, others = ['Corner Loaf Co.', 'Daily Crumb', 'Flour & Fork', 'Crust House', 'Rye & Co.', 'Bun Lane'],
+    oldRow = ['Oventide Bakery', 'Home Page - Welcome to our website'], newRow = ['Oventide Bakery ★ 4.9', 'Open now · 300 m · order for pickup'], from = 7, rowH = 50, hue = '#C6F432', ink = '#08241A' } = {}) {
+    P.use('mechanism', 'serp-climb');
+    const n = others.length, B = P.BRAND;
+    const card = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;padding:14px 14px 12px;border-radius:26px;background:linear-gradient(160deg,rgba(235,242,255,.96),rgba(205,218,246,.92));box-shadow:0 30px 70px rgba(0,0,0,.5),inset 0 1px 0 #fff;opacity:0;color:#0A0E17`, parent);
+    E.el('div', `display:flex;align-items:center;gap:9px;height:38px;border-radius:19px;background:#fff;padding:0 14px;font:600 15px/1 Archivo,sans-serif;box-shadow:inset 0 0 0 1.5px rgba(10,14,23,.14)`, card,
+      `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#0A0E17" stroke-width="2"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg><span class="qt"></span>`);
+    const qt = card.querySelector('.qt');
+    const list = E.el('div', `position:relative;margin-top:12px;height:${(n + 1) * rowH}px`, card);
+    const rows = others.map((nm, i) => E.el('div', `position:absolute;left:0;right:0;top:0;height:${rowH - 8}px;border-radius:13px;background:rgba(255,255,255,.7);padding:0 12px;display:flex;flex-direction:column;justify-content:center;font:600 11.5px/1.25 Archivo,sans-serif;color:#5b6678`, list, `<b style="font:800 14px/1.2 Archivo,sans-serif;color:#0A0E17">${nm}</b>${(i + .8).toFixed(1)} km · ${i % 2 ? 'opens 9:00' : 'opens 8:00'}`));
+    const me = E.el('div', `position:absolute;left:0;right:0;top:0;height:${rowH - 8}px;border-radius:13px;padding:0 12px;display:flex;flex-direction:column;justify-content:center;font:600 11.5px/1.25 Archivo,sans-serif;z-index:3`, list);
+    const rank = E.el('div', `position:absolute;left:-8px;top:-14px;z-index:5;min-width:50px;height:50px;border-radius:25px;padding:0 10px;display:grid;place-items:center;background:#FF5A4F;color:#fff;font:900 24px/1 Archivo,sans-serif;font-variation-settings:'wdth' 90;box-shadow:0 8px 20px rgba(0,0,0,.35)`, card, '#7');
+    const ca = climbAt == null ? 1e9 : climbAt;
+    P.on((t) => {
+      const win = windows.find(([a, b]) => t >= a - .6 && t <= b + .6);
+      const on = win ? clamp((t - win[0]) / .5) * (1 - clamp((t - win[1]) / .5)) : 0;
+      const [a0] = win || [0], k = P.springAt(t, ca, 'default'), kk = t >= ca ? k : 0, pop = P.springAt(t, a0, 'bold');
+      card.style.opacity = on.toFixed(3); card.style.transform = `translateY(${((1 - pop) * 36).toFixed(1)}px) scale(${(.96 + .04 * pop).toFixed(4)})`;
+      const typed = Math.min(query.length, Math.max(0, Math.floor((t - a0 - .1) * 24))); qt.textContent = query.slice(0, win ? typed : query.length);
+      rows.forEach((r, i) => { r.style.transform = `translateY(${((i + kk) * rowH).toFixed(1)}px)`; r.style.opacity = P.tween(t, a0 + .15 + i * .05, .4, 'glide').toFixed(3); });
+      me.style.transform = `translateY(${(from * rowH * (1 - kk)).toFixed(1)}px)`;
+      const fresh = t >= ca + .25; me.style.opacity = P.tween(t, a0 + .3, .4, 'glide').toFixed(3);
+      me.style.background = fresh ? hue : 'rgba(255,255,255,.55)'; me.style.color = fresh ? ink : '#7a8497'; me.style.boxShadow = fresh ? `0 0 0 2px ${ink}, 0 10px 24px rgba(198,244,50,.4)` : 'none';
+      const r = fresh ? newRow : oldRow; me.innerHTML = `<b style="font:${fresh ? 900 : 500} ${fresh ? 15 : 13}px/1.2 ${fresh ? 'Archivo,sans-serif' : "'Times New Roman',serif"};color:${fresh ? ink : '#2233cc'};${fresh ? '' : 'text-decoration:underline'}">${r[0]}</b>${r[1]}`;
+      const pos = Math.max(1, Math.round(from * (1 - kk)) + 1); rank.textContent = '#' + (t >= ca ? Math.max(1, Math.round((from + 1) * (1 - kk))) : from + 1);
+      rank.style.background = t >= ca + .6 ? hue : '#FF5A4F'; rank.style.color = t >= ca + .6 ? ink : '#fff'; rank.style.transform = `scale(${(1 + .25 * Math.max(0, 1 - Math.abs(t - ca - .7) * 4)).toFixed(3)})`;
+    });
+    return card;
+  };
   // =====================================================================================================================================
   // REFERENCE STUDY 3 (owner's screen recordings, 14 Oct 2026): flip words, pendulum wipe, black interstitials, radial diagram tour, word construction,
   // inline icons, orbiting collage. Techniques only; nothing copied.

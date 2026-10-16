@@ -512,5 +512,28 @@
     "purpose": "Global storefront (edge / CDN service line)",
     "description": "A bright gadget shop template: a parcel strip, a speed card that morphs from origin-only to behind-the-edge, four products and a city network that keeps the store next door to every shopper.",
     "era": "modern"
+  },
+  {
+    "id": "2026-10-16-0850",
+    "date": "2026-10-16",
+    "time": "08:50",
+    "slug": "oventide",
+    "url": "https://templates.aquariit.com/2026-10-16-0850/",
+    "name": "Oventide Bakery",
+    "era": "modern",
+    "theme": "Pastel-playful pop, saturated emerald hero with bubblegum pink and yolk-yellow accents on a mint-white ground; neighbourhood bakery site built to be found on search",
+    "layout": "collage hero (search card, tilted phone and sticker), reflowing order card, numbered list, dark proof band, timeline, quote wall, wordmark-centred emerald header",
+    "palette": [
+      "#f4fff9",
+      "#0a8f55",
+      "#ff7ab8",
+      "#ffe14d",
+      "#08241a"
+    ],
+    "fonts": "Dela Gothic One + Plus Jakarta Sans",
+    "motif": "a search result that climbs to number one beside a tilted phone and a rotating 'fresh at 7 am' sticker",
+    "animation": "container queries reflow one order card while scroll-driven animation-timeline view() animates its width, linear() spring result climb, sticker spin, scroll-driven rises",
+    "purpose": "Local business site with SEO (web design service line: neighbourhood bakery with pickup orders)",
+    "description": "A bakery page made to be found: an emerald collage hero where a search result springs from third to first, one order card that re-lays itself out for phone, tablet and desktop as its container grows, then reasons to choose, sample numbers, a bake-day timeline and neighbour quotes."
   }
 ]

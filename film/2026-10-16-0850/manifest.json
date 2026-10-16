@@ -1,0 +1,40 @@
+{
+  "id": "2026-10-16-0850",
+  "made": "2026-10-16T03:25:48.161Z",
+  "slots": {
+    "ground": [
+      "deep-colour"
+    ],
+    "opener": [
+      "dated-site-phone"
+    ],
+    "payoff": [
+      "makeover-scan-bloom",
+      "bloom"
+    ],
+    "type": [
+      "premium-minimal"
+    ],
+    "device": [
+      "phone"
+    ],
+    "transition": [
+      "scan",
+      "scan-makeover"
+    ],
+    "mechanism": [
+      "serp-climb"
+    ],
+    "cta": [
+      "brand-end"
+    ]
+  },
+  "dna": {
+    "service": "web",
+    "format": "makeover",
+    "opening": "premium type over a dated 2000s-style website on a big phone: tiled grey ground, rainbow marquee, hit counter, \"Does your website / look outdated?\"",
+    "bigMoment": "a lime scan sweeps down the phone and the dated page becomes a modern emerald-and-pink site, then the search result climbs from #7 to #1",
+    "ground": "cinematic navy with soft blue light, a lime scan and one coral problem colour",
+    "music": "warm ambient pads with a soft pulse lifting into a bright, confident beat at the makeover, about 90 BPM"
+  }
+}
