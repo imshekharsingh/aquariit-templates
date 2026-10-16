@@ -226,6 +226,13 @@ if (existsSync(mp)) {
       if (!['web', 'social', 'security', 'edge', 'studio'].includes(sv)) err(`film/${m.id}: S.dna.service must be web | social | security | edge | studio (design/services.md)`);
       else if (prev && prev.dna && prev.dna.service === sv) err(`film/${m.id}: same service line as the previous film (${prev.id}: ${sv}); rotate (design/services.md)`);
     }
+    if (m.id >= '2026-10-17') {                                            // themes (design/themes.md, owner 16 Oct 2026): each reel wears one theme
+      // THEMES: every known theme; READY: the ones whose parts and benchmark exist (only these may be used). Add a theme here when it is ready, never remove one.
+      const th = m.dna && m.dna.theme, THEMES = ['collage', 'soft3d', 'footage'], READY = ['collage'], pth = (prev && prev.dna && prev.dna.theme) || 'collage';
+      if (!THEMES.includes(th)) err(`film/${m.id}: S.dna.theme must be ${THEMES.join(' | ')} (design/themes.md)`);
+      else if (!READY.includes(th)) err(`film/${m.id}: theme ${th} is not ready yet (parts + benchmark first; design/themes.md "Adding a theme")`);
+      else if (READY.length > 1 && prev && pth === th) err(`film/${m.id}: same theme as the previous film (${prev.id}: ${th}); rotate (design/themes.md)`);
+    }
     if (prev) KEY.forEach((k) => { const a = (m.slots || {})[k] || [], b = (prev.slots || {})[k] || []; const same = a.filter((x) => b.includes(x)); if (same.length) err(`film/${m.id}: repeats the previous film (${prev.id}) in "${k}": ${same.join(', ')}; pick another option (see scripts/film/parts.js)`); });
     for (const o of last) {
       const branded = m.id >= '2026-10-16', eq = (branded ? STORY : ALL).filter((k) => slot(m, k) && slot(m, k) === slot(o, k));
