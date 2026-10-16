@@ -235,5 +235,37 @@
       "brief": "Dry mechanical ticking opening into a bright, bouncy 100 BPM groove at the sort; peak 8.6 s, breath 7.3-8.4 s; instrumental, no vocals",
       "provenance": "none yet: no licensed music API connected; film ships with effects only, owner adds Instagram audio"
     }
+  },
+  {
+    "id": "2026-10-16-0850",
+    "date": "2026-10-16",
+    "template": "Oventide (shown as proof: the modern 'after'; the reel is about Aquarii)",
+    "version": "v5 premium makeover",
+    "service": "web",
+    "format": "makeover (old site -> modern site)",
+    "concept": "Buyer pain: my website looks outdated and nobody finds it. A dated 2000s-style page on a phone gets coral flags (looks dated, breaks on phones, hard to trust), the search card shows it at #7, then a lime scan turns it into a modern site and the result climbs to #1; one site re-flows on every screen; end card DM SITE.",
+    "motionStyle": "calm cinematic-tech: springs for pops and the climb, glide for type, one scan sweep and a bloom at 13.5 s",
+    "primaryTransition": "lime scan makeover",
+    "transitions": [
+      "scan",
+      "breath-cut"
+    ],
+    "typeTreatment": "Archivo 800 premium-minimal, coral problem word, lime answer word",
+    "grade": "navy #070B16, white, lime #C6F432, coral #FF5A4F, blue; the page shows emerald/pink/yolk as the client's own look",
+    "sound": "effects only: clicks, impacts on the flags, riser into the scan, impact at the makeover and at #1; AI voice af_heart; Instagram audio: ambient tech pulse ~90 BPM",
+    "cover": "frame at ~1 s: hook over the dated phone",
+    "revisionPasses": 2,
+    "friendTest": {
+      "stopScrolling": "yes: an unmistakably dated page under a direct question",
+      "watchToEnd": "yes: the scan makeover and the #7 to #1 climb pay it off",
+      "screenshot": "yes: the same phone before and after the scan, and the #1 result",
+      "sendToFriend": "yes: a local business owner with an old site"
+    },
+    "notes": "Pass 1 (stills): hook and 'the competition.' type touched the 26 px side margin -> 46/42 px; Modern. and Fast. Found. overlapped at 13 s -> staggered; rank badge sat in the right zone -> moved left; Modern/Fast/Found chips and the tablet/phone row sat in the bottom 22% -> moved up/compressed; the search beat had no change after 7.4 s -> added the 'Nobody scrolls this far.' pill at 9.1 s. Pass 2: motion-check opacity JUMPs on flags/chips -> glide-smoothed. Remaining JUMP at 13.5 s is the planned punch-in at the makeover. Fill meter 0 of 9 tight. Not rendered in full locally (usage rule); the Reel publish workflow renders it.",
+    "newTrick": "P.serpClimb (parts.js): a search-results card where our result climbs from #7 to #1 on a spring and restyles from a dated row to a modern one (slot: mechanism 'serp-climb').",
+    "music": {
+      "brief": "Warm ambient pads with a soft pulse, lifting into a bright confident beat at the makeover (13.5 s); breath 10.7-11.2 s; instrumental, no vocals; about 90 BPM",
+      "provenance": "none yet: no licensed music API connected; film ships with effects only, owner adds Instagram audio"
+    }
   }
 ]
