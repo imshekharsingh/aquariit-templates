@@ -25,6 +25,14 @@
     // the real page, frozen, is the "after" (cloned before the scene takes over)
     const pageNodes = [...document.body.children].filter((n) => /^(HEADER|MAIN)$/.test(n.tagName)).map((n) => n.cloneNode(true));
     const { world } = P.scene({ accent: B.lime, ink: INK, glow: 'rgba(60,100,230,.10)', len: 28 });
+    // depth layer (premium.md "three layers"): a faint dot grid drifting slowly and a soft spotlight that follows the focus of each beat
+    const grid = E.el('div', 'position:absolute;left:-80px;top:-80px;width:560px;height:880px;background-image:radial-gradient(rgba(150,175,255,.22) 1.1px,transparent 1.5px);background-size:22px 22px;-webkit-mask:radial-gradient(70% 60% at 50% 50%,#000,transparent);mask:radial-gradient(70% 60% at 50% 50%,#000,transparent)', world);
+    const spot = E.el('div', 'position:absolute;left:-120px;top:0;width:640px;height:640px;border-radius:50%;background:radial-gradient(closest-side,rgba(70,110,255,.20),rgba(70,110,255,0))', world);
+    world.prepend(spot); world.prepend(grid);
+    const SPOT = [[0, 201, 430], [7.4, 201, 400], [11, 201, 470], [15.6, 201, 420], [19.6, 201, 380], [23.5, 201, 357]];
+    P.on((t) => { grid.style.transform = `translate(${(-(t * 3.2) % 22).toFixed(1)}px,${(-(t * 5.5) % 22).toFixed(1)}px)`;
+      let i = 0; while (i < SPOT.length - 2 && t > SPOT[i + 1][0]) i++; const a = SPOT[i], b = SPOT[i + 1], k = G_(clamp((t - a[0]) / Math.max(.01, b[0] - a[0])));
+      spot.style.transform = `translate(${(lerp(a[1], b[1], k) - 201).toFixed(1)}px,${(lerp(a[2], b[2], k) - 320).toFixed(1)}px)`; grid.style.opacity = (t > 23.4 ? .25 : .7).toString(); });
     P.use('opener', 'dated-site-phone'); P.use('payoff', 'makeover-scan-bloom'); P.use('type', 'premium-minimal'); P.use('ground', 'deep-colour');
 
     // ---- the phone: old page underneath, the new page revealed by the scan ----
@@ -53,21 +61,18 @@
     P.serpClimb(world, { x: 30, y: 196, windows: [[7.4, 10.7], [15.6, 19.5]], climbAt: 16.5, from: 6, rowH: 50, others: ['Corner Loaf Co.', 'Daily Crumb', 'Flour & Fork', 'Crust House', 'Rye & Co.', 'Bun Lane'] });
 
     // ---- one site, three screens (19.6-23.3): desktop, tablet and phone re-flow the same blocks ----
-    const GREEN = '#0a8f55', PINK = '#ff7ab8', YOLK = '#ffe14d', MINT = '#f4fff9';
-    const dev = (cls, css, inner) => E.el('div', `position:absolute;opacity:0;${css}`, P.front, inner);
-    const block = (bg, h = 30, r = 6) => `<i style="display:block;height:${h}px;border-radius:${r}px;background:${bg}"></i>`;
-    const screen = (w, h, rad, cols, big) => `<div style="width:${w}px;height:${h}px;border-radius:${rad}px;background:${MINT};border:5px solid #0b1020;box-shadow:0 0 0 1.5px rgba(210,225,255,.45),0 24px 50px rgba(0,0,0,.5);overflow:hidden;position:relative">
-      <div style="height:${big ? 22 : 15}px;background:${GREEN}"></div>
-      <div style="margin:${big ? 10 : 7}px ${big ? 12 : 8}px 0;display:grid;gap:${big ? 7 : 5}px">${block(YOLK, big ? 34 : 22, 8)}<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:${big ? 7 : 5}px">${block(PINK, big ? 44 : 26)}${block('#bfe9d2', big ? 44 : 26)}${cols > 1 ? block('#bfe9d2', big ? 44 : 26) : ''}${cols > 2 ? block(PINK, big ? 44 : 26) : ''}</div>${block('#0a8f55', big ? 16 : 11, 99)}</div></div>`;
-    const dDesk = dev('d', 'left:36px;top:160px', screen(330, 188, 14, 3, true) + `<div style="width:90px;height:8px;margin:0 auto;background:#9aa8c6;border-radius:0 0 8px 8px"></div>`);
-    const dTab = dev('t', 'left:36px;top:394px', screen(176, 164, 16, 2, false));
-    const dPh = dev('p', 'left:232px;top:394px', screen(104, 164, 18, 1, false));
-    const labels = [['DESKTOP', 36, 362], ['TABLET', 36, 378], ['PHONE', 232, 378]].map(([tx, x, y]) => E.el('div', `position:absolute;left:${x}px;top:${y}px;opacity:0;font:600 11px/1 ${MONO};letter-spacing:.16em;color:#AFC0EA`, P.front, tx));
-
+    // the real bakery site at three widths (film/ID/assets/*.jpg, captured from templates/ID at 1280, 820 and 402 px), each scrolling inside its frame
+    const A = '../../film/2026-10-16-0850/assets/';
+    const dev = (img, x, y, w, h, rad, bez, iw) => { const el = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:${rad}px;padding:${bez}px;box-sizing:border-box;background:linear-gradient(160deg,#d9e2f7,#6f7fa6 40%,#1b2340);box-shadow:0 0 0 1px rgba(220,230,255,.35),0 30px 60px rgba(0,0,0,.55),0 0 50px rgba(80,120,255,.18);opacity:0`, P.front,
+      `<div style="width:100%;height:100%;border-radius:${Math.max(3, rad - bez)}px;overflow:hidden;background:#f4fff9;position:relative"><img src="${A}${img}.jpg" alt="" style="position:absolute;left:0;top:0;width:100%;display:block"></div>`);
+      return { el, img: el.querySelector('img'), h: h - 2 * bez }; };
+    const dDesk = dev('desk', 30, 168, 342, 236, 12, 6), dTab = dev('tab', 30, 432, 186, 258, 18, 7), dPh = dev('phone', 236, 432, 136, 258, 24, 6);
+    const stand = E.el('div', 'position:absolute;left:171px;top:404px;width:60px;height:14px;opacity:0;background:linear-gradient(#8e9bbd,#3a4566);clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)', P.front);
+    const labels = [];
     // ---- type ----
     const T = (html, css) => E.el('div', `position:absolute;left:30px;right:30px;text-align:center;color:${B.paper};font:800 40px/1.05 Archivo,sans-serif;font-variation-settings:"wdth" 96;letter-spacing:-.015em;opacity:0;${css}`, P.front, html);
     const h1 = T('Does your website', 'top:104px;font-size:34px'), h2 = T(`look <span style="color:${B.coral}">outdated?</span>`, 'top:144px;font-size:46px;white-space:nowrap');
-    const j1 = T('Customers judge', 'top:100px;font-size:36px'), j2 = T(`in a <span style="color:${B.coral}">blink.</span>`, 'top:142px;font-size:52px');
+    const j1 = T('Customers decide', 'top:100px;font-size:36px'), j2 = T(`<span style="color:${B.coral}">fast.</span>`, 'top:142px;font-size:56px');
     const s1 = T('Far below', 'top:104px;font-size:36px'), s2 = T(`the <span style="color:${B.coral}">competition.</span>`, 'top:146px;font-size:42px;white-space:nowrap');
     const m1 = T(`<span style="color:${B.lime}">Modern.</span>`, 'top:100px;font-size:50px');
     const m2 = T(`Fast. <span style="color:${B.lime}">Found.</span>`, 'top:100px;font-size:50px');
@@ -95,7 +100,7 @@
       ph.el.style.transform = `translateY(${(ky + bob + (1 - kk) * 30).toFixed(1)}px) scale(${(grow * (t >= 11 && t < 15.4 ? 1 + .045 * G_(clamp((t - 13.5) / 1.9)) : 1)).toFixed(4)})`;
       ph.halo.style.transform = `translateY(${ky.toFixed(1)}px)`;
       // the dated page scrolls slowly; the new page scrolls after the scan
-      oldPg.style.transform = `translateY(${(-(Math.max(0, t - 1.2) * 28 + (t > 11 ? 0 : 0))).toFixed(1)}px)`;
+      oldPg.style.transform = `translateY(${(t < 11 ? -Math.min(Math.max(0, t - 1.2), 6) * 26 : -40).toFixed(1)}px)`;   // stops when it leaves; back near the top for the makeover
       newPg.style.transform = `scale(${newScale}) translateY(${(-(Math.max(0, t - 13.6) * 95)).toFixed(1)}px)`;
       mq.style.transform = `translateX(${(-((t * 90) % 360)).toFixed(1)}px)`;
       // hook
@@ -113,14 +118,19 @@
       // climb type
       [[f1, 15.8], [f2, 16.1]].forEach(([el, a]) => { const k = tw(t, a, .9); el.style.opacity = (k * IN(t, -1, 19.5, .4)).toFixed(3); el.style.transform = `translateY(${((1 - k) * 12).toFixed(1)}px)`; });
       // three screens
-      [[dDesk, 19.8], [dTab, 20.4], [dPh, 20.9]].forEach(([el, a]) => { const k = sp(t, a, 'bold'); el.style.opacity = (G_(clamp(k * 1.6)) * IN(t, 19.6, 23.2, .4)).toFixed(3); el.style.transform = `translateY(${((1 - k) * 40).toFixed(1)}px) scale(${(.94 + .06 * k).toFixed(3)})`; });
-      labels.forEach((l, i) => { l.style.opacity = (tw(t, 20.2 + i * .5, .5) * IN(t, 19.6, 23.2, .4)).toFixed(3); });
+      [[dDesk, 19.7], [dTab, 20.2], [dPh, 20.6]].forEach(([d, a]) => { const k = sp(t, a, 'bold'); d.el.style.opacity = (G_(clamp(k * 1.6)) * IN(t, 19.6, 23.3, .4)).toFixed(3); d.el.style.transform = `translateY(${((1 - k) * 46).toFixed(1)}px) scale(${(.92 + .08 * k).toFixed(3)})`;
+        const ih = d.img.offsetHeight || 0; d.img.style.transform = `translateY(${(-Math.max(0, ih - d.h) * .55 * G_(clamp((t - a - .5) / 2.6))).toFixed(1)}px)`; });
+      stand.style.opacity = (G_(clamp(sp(t, 19.7, 'bold') * 1.6)) * IN(t, 19.6, 23.3, .4)).toFixed(3);
       [[e1, 19.7], [e2, 20.0]].forEach(([el, a]) => { const k = tw(t, a, .9); el.style.opacity = (k * IN(t, -1, 23.3, .4)).toFixed(3); el.style.transform = `translateY(${((1 - k) * 12).toFixed(1)}px)`; });
     });
     const endCard = P.brandEnd({ at: 23.5, keyword: 'SITE', why: 'Does your website feel outdated?', out: 27.8 });
     const halo = E.el('div', 'position:absolute;left:-40px;right:-40px;top:60px;height:520px;background:radial-gradient(45% 40% at 50% 45%,rgba(47,107,255,.32),rgba(47,107,255,0) 70%);opacity:0;pointer-events:none', endCard);
     endCard.prepend(halo);
-    P.on((t) => { const k = G_(clamp((t - 24.1) / 3.4)); endCard.style.scale = (1 + .11 * k).toFixed(4); halo.style.opacity = (.25 + .75 * k).toFixed(3); halo.style.transform = `translateY(${(40 - 70 * k).toFixed(1)}px) scale(${(.8 + .5 * k).toFixed(3)})`; });
+    const cta = [...endCard.querySelectorAll('div')].find((d) => d.textContent === 'DM us to know more');
+    if (cta) { cta.style.position = 'relative'; cta.style.overflow = 'hidden'; }
+    const shine = cta && E.el('i', 'position:absolute;top:-10px;bottom:-10px;width:44px;left:0;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55),rgba(255,255,255,0));transform:skewX(-20deg);opacity:0', cta);
+    P.on((t) => { const k = G_(clamp((t - 24.1) / 3.4)); endCard.style.scale = (1 + .11 * k).toFixed(4);
+      if (shine) { const u = ((t - 24.4) % 1.6) / 1.6; shine.style.opacity = t > 24.4 && t < 27.6 ? '1' : '0'; shine.style.left = (-60 + 340 * u).toFixed(1) + 'px'; } halo.style.opacity = (.25 + .75 * k).toFixed(3); halo.style.transform = `translateY(${(40 - 70 * k).toFixed(1)}px) scale(${(.8 + .5 * k).toFixed(3)})`; });
     S.name = 'Makeover premium v5';
     return { ok: true };
   };
