@@ -32,7 +32,7 @@
     const SPOT = [[0, 201, 430], [7.4, 201, 400], [11, 201, 470], [15.6, 201, 420], [19.6, 201, 380], [23.5, 201, 357]];
     P.on((t) => { grid.style.transform = `translate(${(-(t * 3.2) % 22).toFixed(1)}px,${(-(t * 5.5) % 22).toFixed(1)}px)`;
       let i = 0; while (i < SPOT.length - 2 && t > SPOT[i + 1][0]) i++; const a = SPOT[i], b = SPOT[i + 1], k = G_(clamp((t - a[0]) / Math.max(.01, b[0] - a[0])));
-      spot.style.transform = `translate(${(lerp(a[1], b[1], k) - 201).toFixed(1)}px,${(lerp(a[2], b[2], k) - 320).toFixed(1)}px)`; grid.style.opacity = (t > 23.4 ? .25 : .7).toString(); });
+      spot.style.transform = `translate(${(lerp(a[1], b[1], k) - 201).toFixed(1)}px,${(lerp(a[2], b[2], k) - 320).toFixed(1)}px)`; grid.style.opacity = (t > 25.0 ? .25 : .7).toString(); });
     P.use('opener', 'dated-site-phone'); P.use('payoff', 'makeover-scan-bloom'); P.use('type', 'premium-minimal'); P.use('ground', 'deep-colour');
 
     // ---- the phone: old page underneath, the new page revealed by the scan ----
@@ -118,12 +118,13 @@
       // climb type
       [[f1, 15.8], [f2, 16.1]].forEach(([el, a]) => { const k = tw(t, a, .9); el.style.opacity = (k * IN(t, -1, 19.5, .4)).toFixed(3); el.style.transform = `translateY(${((1 - k) * 12).toFixed(1)}px)`; });
       // three screens
-      [[dDesk, 19.7], [dTab, 20.2], [dPh, 20.6]].forEach(([d, a]) => { const k = sp(t, a, 'bold'); d.el.style.opacity = (G_(clamp(k * 1.6)) * IN(t, 19.6, 23.3, .4)).toFixed(3); d.el.style.transform = `translateY(${((1 - k) * 46).toFixed(1)}px) scale(${(.92 + .08 * k).toFixed(3)})`;
-        const ih = d.img.offsetHeight || 0; d.img.style.transform = `translateY(${(-Math.max(0, ih - d.h) * .55 * G_(clamp((t - a - .5) / 2.6))).toFixed(1)}px)`; });
-      stand.style.opacity = (G_(clamp(sp(t, 19.7, 'bold') * 1.6)) * IN(t, 19.6, 23.3, .4)).toFixed(3);
+      [[dDesk, 19.7], [dTab, 20.2], [dPh, 20.6]].forEach(([d, a]) => { const k = sp(t, a, 'bold'); d.el.style.opacity = (G_(clamp(k * 1.6)) * IN(t, 19.6, 25.0, .3)).toFixed(3); const pu = G_(clamp((t - 22.6) / 2.4));   // the screens stay alive under the question, then push in to the end card
+        d.el.style.transform = `translateY(${((1 - k) * 46 - 26 * pu).toFixed(1)}px) scale(${((.92 + .08 * k) * (1 + .1 * pu)).toFixed(3)})`;
+        const ih = d.img.offsetHeight || 0; d.img.style.transform = `translateY(${(-Math.max(0, ih - d.h) * .7 * G_(clamp((t - a - .5) / 4.2))).toFixed(1)}px)`; });
+      stand.style.opacity = (G_(clamp(sp(t, 19.7, 'bold') * 1.6)) * IN(t, 19.6, 25.0, .3)).toFixed(3);
       [[e1, 19.7], [e2, 20.0]].forEach(([el, a]) => { const k = tw(t, a, .9); el.style.opacity = (k * IN(t, -1, 23.3, .4)).toFixed(3); el.style.transform = `translateY(${((1 - k) * 12).toFixed(1)}px)`; });
     });
-    P.brandEnd({ at: 23.5, keyword: 'SITE', why: 'Does your website feel outdated?', out: 27.8 });
+    P.brandEnd({ at: 25.0, keyword: 'SITE', why: 'Does your website feel outdated?', out: 27.8 });
     S.name = 'Makeover premium v5';
     return { ok: true };
   };

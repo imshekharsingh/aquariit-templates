@@ -649,7 +649,7 @@
       const halo = E.el('div', 'position:absolute;left:-40px;right:-40px;top:60px;height:520px;background:radial-gradient(45% 40% at 50% 45%,rgba(47,107,255,.32),rgba(47,107,255,0) 70%);opacity:0;pointer-events:none', card); card.prepend(halo);
       cta.style.position = 'relative'; cta.style.overflow = 'hidden';
       const shine = E.el('i', 'position:absolute;top:-10px;bottom:-10px;width:44px;left:0;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55),rgba(255,255,255,0));transform:skewX(-20deg);opacity:0', cta);
-      P.on((t) => { const k = P.EASE.glide(Math.min(1, Math.max(0, (t - at - .6) / 3.4))); card.style.scale = (1 + .11 * k).toFixed(4); halo.style.opacity = (.25 + .75 * k).toFixed(3);
+      P.on((t) => { const k = P.EASE.swing(Math.min(1, Math.max(0, (t - at - .3) / Math.max(1.5, end - at - .3))));   // even push through the whole hold (glide finished in a second and the gate saw a dead ending) card.style.scale = (1 + .11 * k).toFixed(4); halo.style.opacity = (.25 + .75 * k).toFixed(3);
         halo.style.transform = `translateY(${(40 - 70 * k).toFixed(1)}px) scale(${(.8 + .5 * k).toFixed(3)})`;
         const u = ((t - at - .9) % 1.6) / 1.6; shine.style.opacity = t > at + .9 && t < end - .2 ? '1' : '0'; shine.style.left = (-60 + 340 * u).toFixed(1) + 'px'; });
     }
