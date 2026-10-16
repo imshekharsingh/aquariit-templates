@@ -137,7 +137,7 @@ jobs:
               node scripts/render-reel.mjs "$ID" --out out/reels --no-audio 2>&1 | tee -a render.log
             fi
           else
-            node scripts/render-reel.mjs "$ID" --out out/reels --no-audio 2>&1 | tee render.log
+            node scripts/render-reel.mjs "$ID" --out out/reels --no-audio --light 2>&1 | tee render.log   # a light day: recording + hook + end card (themes.md E)
           fi
       - name: Check it, keep it in the reels release, tell the owner (GitHub issue, assigned so it emails and notifies)
         id: gate
@@ -147,6 +147,7 @@ jobs:
           # quality gate first (design/aligned-plan.md "Reel recipe"; owner, 16 Oct 2026: a failed reel must never reach the site)
           # checks are per theme (design/themes.md): the film's S.dna.theme from its manifest, collage when it has none
           THEME=$(python3 -I -c "import json,sys; print((json.load(open(sys.argv[1])).get('dna') or {}).get('theme') or 'collage')" "film/$ID/manifest.json" 2>/dev/null || echo collage)
+          [ -f "film/$ID/story.js" ] || THEME=demo   # no film: a light-day recording
           if python3 -I scripts/film/reel-gate.py "out/reels/$ID.mp4" --theme "$THEME" > gate.txt; then GATE=PASS; else GATE=FAIL; fi
           # a film with a voice script must carry its voice: a missing voice never passes silently
           if [ -f "film/$ID/voice.md" ] && [ ! -f out/voice/final.wav ]; then GATE=FAIL; echo "FAIL voice     film/$ID/voice.md exists but the voice-over failed (see the Voice-over step log)" >> gate.txt; fi

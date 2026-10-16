@@ -10,8 +10,14 @@ You own this repository and follow CLAUDE.md. Work without asking for
 confirmation unless something is destructive or ambiguous.
 Optional hint from user: $ARGUMENTS
 
-## Phase 0: reel days only (owner, 15 Oct 2026)
-Run `TZ=Asia/Kolkata date +%a`. On Tue, Thu, Sat or Sun: do nothing else; reply "Not a reel day (Mon/Wed/Fri only)" and stop.
+## Phase 0: film day or light day (owner, 16 Oct 2026: post every day)
+Run `TZ=Asia/Kolkata date +%a`. Mon, Wed, Fri = **film day**: the full run below. Tue, Thu, Sat, Sun = **light day** (design/themes.md theme E `demo`), kept small to save usage:
+- Build a compact template (all "Required in every template" items, design log, advancements line, cover, kit as usual) around ONE striking animated effect
+  that is finished and moving in the first second (a hero effect from the playbook or design/brand/references.md: light ribbons, 3D-feeling shapes,
+  kinetic type). 3-4 sections, not a full long page. The effect is the post: "this is what an animation looks like as a real website".
+- No film folder, no voice, no storyboard: the Reel publish workflow records the page (`render-reel.mjs --light`: 15 s, the kit's Hook on screen, Aquarii
+  end card) and checks it with the demo profile. The kit's `## Reel` says Length: 15 s and puts the payoff on the effect itself.
+- Skip Phase 4c. Everything else (checks, records, push) as usual.
 
 ## Phase 1 — Repo health and branch
 1. ID = output of `TZ=Asia/Kolkata date +%F-%H%M` (India date + current time, e.g.
