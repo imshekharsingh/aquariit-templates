@@ -50,11 +50,17 @@ Checks: shots, static, ending (no fullness rule). Parts: `P.siteScroll` (swing-e
 The template must be built to the R3 bar first (e.g. 2026-10-16-2055 Quillmint: silk-light canvas hero, editorial type, glass bento, isometric bars).
 Also the closest no-camera stand-in for theme C until the owner can film a clip.
 
+### E · `demo` — light day: one of our pages recorded as it is (owner, 16 Oct 2026: post every day; reference R4 for the approach)
+Tue/Thu/Sat/Sun. A compact template built around one striking animated effect, recorded through the player (`render-reel.mjs --light`: 15 s, the kit's
+hook on screen, Aquarii end card). Result first: the effect is moving in the first second. Little render time, a small session.
+Premium means **one effect worth stopping for, shown as a real website**. Checks: shots, static, ending (no fullness rule; the workflow picks `demo`
+for any template without a film). Ready.
+
 ### Later · `glass` — glossy glass product (Blender pilot, 16 Oct: path tracing too slow on free runners; an engine glass part instead)
 
 ## Rotation
 Mon / Wed / Fri, never the same theme two reels in a row (checked by scripts/check.mjs from 17 Oct). A theme joins the rotation only once its parts
-exist and its benchmark passes; until then the rotation uses the ready ones (16 Oct: A collage, D sitescroll). Each theme's look stays locked while we rotate; it changes
+exist and its benchmark passes; until then the rotation uses the ready ones (16 Oct: A collage, D sitescroll on film days; E demo on light days). Each theme's look stays locked while we rotate; it changes
 only through Rule 1.
 
 ## Adding a theme
