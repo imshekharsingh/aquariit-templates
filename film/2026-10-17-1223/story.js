@@ -147,6 +147,9 @@
       ry += lerp(0, 6, io(seg(t, 4.8, 8)));
       const orb3 = io(seg(t, 8.2, 10.2)) * (1 - io(seg(t, 10.6, 11.8)));
       ry += -32 * orb3; rx += 6 * orb3; tz += -170 * orb3;
+      // 13.6-17.2 push-in on the features, 17.4-20 dolly to the dashboard (no framing holds over 3 s)
+      const p1 = io(seg(t, 13.6, 15.8)) * (1 - io(seg(t, 16.3, 17.2))); ry += -9 * p1; rx += -2 * p1; tz += 150 * p1;
+      const p2 = io(seg(t, 17.4, 19.4)) * (1 - io(seg(t, 20, 21.6))); ry += 7 * p2; tz += 120 * p2; ty += 10 * p2;
       const pb = io(seg(t, 20, 21.6)); tz += -260 * pb; ry += 10 * pb; ty += -60 * pb; sc = 1;
       frame.style.transform = `translate3d(0,${ty.toFixed(1)}px,${tz.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale(${sc})`;
       frame.style.opacity = (seg(t, 2.95, 3.4) * (1 - seg(t, 22.45, 22.6))).toFixed(3);
