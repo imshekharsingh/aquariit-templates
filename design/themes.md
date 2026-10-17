@@ -30,12 +30,14 @@ Real sites in device frames, UI layers, problem → makeover → proof. Navy, wh
 Premium means **rich, ordered detail across the frame**.
 Checks: shots, static, fullness, ending (+ contrast warning). Benchmark: film/2026-10-16-0850.
 
-### B · `soft3d` — one soft 3D hero (reference R1, design/brand/references.md; not built yet)
+### B · `soft3d` — one soft 3D hero (reference R1, design/brand/references.md; ready 17 Oct 2026, benchmark film/2026-10-17-1336 Bun/Plumpaw)
 One character or object, fully rendered, on a calm dark ground with a coloured halo; it changes mood or state every 1-1.5 s; colour follows the mood;
 squash/stretch and springs; depth particles; a title and one line of text at most.
 Premium means **a rich subject in a calm frame**.
-Checks: shots, static, ending, subject (the hero is visible every second; no fullness rule). Benchmark: the first soft3d film.
-Needs first: a soft-3D shading part (highlight, inner gradient, contact shadow, halo), squash/stretch presets, depth particles.
+Checks: shots, static, ending, subject (the hero is visible every second; no fullness rule). Benchmark: film/2026-10-17-1336 (Bun, the website with moods).
+Parts (17 Oct 2026): `P.clay` (soft-3D shading: per-mood tint, gloss, inner shade, rim light, contact shadow, mood halo; 8 expressions with blinks;
+squash/stretch on drops, hops and every mood change; depth particles via `.fx`: hearts, sparkles, zzz, sweat, notes) and `P.dome` (a glass hex shield).
+Finish it like the Aurelia benchmark: mood-coloured key light and floor pool, bokeh, light leaks on the cuts, grade, vignette, live grain, handheld camera.
 
 ### C · `footage` — our site filmed on a real screen (reference R2; needs the owner's clip)
 The owner films one of our templates on a desk screen with the phone (10-15 s, hand on the mouse), we add one hook line and the end card.
@@ -64,7 +66,7 @@ labelled layers, features and data come alive, a phone joins; numbered captions 
 
 ## Rotation
 Mon / Wed / Fri, never the same theme two reels in a row (checked by scripts/check.mjs from 17 Oct). A theme joins the rotation only once its parts
-exist and its benchmark passes; until then the rotation uses the ready ones (16 Oct: A collage, D sitescroll on film days; E demo on light days). Each theme's look stays locked while we rotate; it changes
+exist and its benchmark passes; until then the rotation uses the ready ones (16 Oct: A collage, D sitescroll on film days; E demo on light days; 17 Oct: + G cinema, B soft3d). Each theme's look stays locked while we rotate; it changes
 only through Rule 1.
 
 ## How we match a reference (owner, 17 Oct 2026: "even if I keep sharing references, you build something nowhere matching")

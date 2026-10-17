@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Plumpaw — Happy pups, booked in two taps</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0b14">
+<meta name="description" content="Plumpaw: a playful, soft-3D booking site for a fictional pet daycare and grooming house, hosted by Bun, a clay mascot whose mood changes as you scroll.">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500..800&family=Geologica:wght@300..700&display=swap" rel="stylesheet">
+<style>
+:root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#0d0b14;--surf:#191426;--surf2:#221b33;--ink:#fff4ea;--mute:#b3a8c2;--line:rgba(255,236,220,.1);
+  --clay:#ff9466;--gold:#ffc56b;--mint:#4df0b8;--lilac:#a68bff;--alert:#ff4d6a;
+  --disp:"Baloo 2",ui-rounded,system-ui,sans-serif;--text:"Geologica",system-ui,sans-serif;
+  --spring:linear(0,.128,.403,.695,.929,1.076,1.14,1.143,1.111,1.068,1.028,.999,.983,.978,.981,.986,.993,.998,1.001,1.003,1.003,1.002,1.001,1)}
+@supports (color:color(display-p3 1 1 1)){:root{--clay:color(display-p3 1 .6 .42);--mint:color(display-p3 .4 .95 .74);--gold:color(display-p3 1 .78 .44)}}
+html.reel{--safe-top:0px;--safe-bottom:0px}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--text);padding-bottom:calc(86px + var(--safe-bottom))}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--mint);outline-offset:3px;border-radius:10px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 30px}
+h1,h2,h3{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;line-height:.98}
+h2{font-size:clamp(34px,8vw,58px)}
+.kick{display:inline-flex;align-items:center;gap:8px;font:600 12px/1 var(--text);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.kick::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+.lede{color:var(--mute);max-width:46ch}
+section{position:relative;padding:64px 0}
+
+/* ---------- the bottom bar (header) ---------- */
+.bbar{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:0 14px calc(12px + var(--safe-bottom));background:linear-gradient(transparent,var(--bg) 40%)}
+.bbar nav{max-width:640px;margin:0 auto;display:flex;align-items:center;gap:10px;height:60px;padding:0 10px 0 18px;border-radius:22px;background:var(--surf);border:1px solid var(--line);box-shadow:0 18px 40px -18px #000,inset 0 1px 0 rgba(255,255,255,.07)}
+.mark{display:flex;align-items:center;gap:8px;font:800 21px/1 var(--disp);letter-spacing:-.01em}
+.mark i{width:22px;height:20px;border-radius:50% 50% 46% 46%/58% 58% 42% 42%;background:radial-gradient(circle at 34% 30%,#ffd9c4,var(--clay) 50%,#d9573a);box-shadow:inset -3px -3px 5px rgba(120,30,20,.35)}
+.bbar .links{display:none;gap:18px;color:var(--mute);font-size:14px;margin-left:12px}
+.back{margin-left:auto;font-size:12.5px;color:var(--mute);padding:8px 6px}
+.book{padding:11px 16px;border-radius:15px;background:var(--mint);color:#06281d;font:700 14px/1 var(--text);box-shadow:0 8px 20px -8px var(--mint)}
+.reel .back{display:none}.reel .bbar .book{margin-left:auto}
+@media (min-width:760px){.bbar .links{display:flex}}
+
+/* ---------- Bun, the clay mascot (static shading; only transform/opacity move) ---------- */
+.bun{--s:220px;position:relative;width:var(--s);height:calc(var(--s)*.92);margin:0 auto}
+.bun .halo{position:absolute;inset:-45%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,148,102,.55),rgba(255,148,102,.12) 55%,transparent);pointer-events:none}
+.bun .halo.h2{background:radial-gradient(closest-side,rgba(255,111,168,.5),rgba(255,111,168,.1) 55%,transparent);opacity:0}
+.bun .halo.h3{background:radial-gradient(closest-side,rgba(166,139,255,.55),rgba(166,139,255,.12) 55%,transparent);opacity:0}
+.bun .shadow{position:absolute;left:12%;right:12%;bottom:-7%;height:14%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.75),transparent)}
+.bun .body{position:absolute;inset:0;transform-origin:50% 100%}
+.bun .ear{position:absolute;top:-6%;width:30%;height:40%;border-radius:50% 50% 45% 45%;background:radial-gradient(circle at 40% 30%,#ffc9ad,var(--clay) 55%,#c94f33);box-shadow:inset -6px -8px 14px rgba(110,25,15,.35);overflow:hidden}
+.bun .ear.l{left:6%;rotate:-18deg}.bun .ear.r{right:6%;rotate:18deg}
+.bun .blob{position:absolute;inset:8% 0 0;border-radius:50% 50% 44% 44%/58% 58% 42% 42%;overflow:hidden;
+  background:radial-gradient(circle at 32% 26%,#ffe2d2 0,#ffb08a 22%,var(--clay) 48%,#e0603d 78%,#a8391f 100%);
+  box-shadow:inset -18px -24px 40px rgba(110,25,15,.45),inset 14px 16px 30px rgba(255,255,255,.28),0 30px 60px -24px rgba(255,120,80,.5)}
+.bun .tint{position:absolute;inset:0;opacity:0;background:radial-gradient(circle at 32% 26%,#fff0f4 0,#ffc0d2 24%,#ff7fa6 52%,#c43a6a 100%)}
+.bun .tint.t3{background:radial-gradient(circle at 32% 26%,#f1ecff 0,#c9b8ff 24%,#9b7dff 52%,#5d3fc4 100%)}
+.bun .gloss{position:absolute;left:20%;top:13%;width:26%;height:16%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.85),rgba(255,255,255,0));rotate:-24deg}
+.bun svg.face{position:absolute;left:18%;top:36%;width:64%;height:42%;overflow:visible}
+.bun .f{opacity:0}.bun .f.f1{opacity:1}
+.bun .cheek{fill:#ff5d7a;opacity:.55}
+
+/* ---------- hero: Bun on a stage with orbiting mood chips ---------- */
+.hero{padding:calc(40px + var(--safe-top)) 0 30px;text-align:center;overflow:hidden}
+.hero .stage{position:relative;height:330px;display:grid;place-items:center;margin-top:6px}
+.hero .floor{position:absolute;left:50%;bottom:16px;width:520px;height:120px;translate:-50% 0;border-radius:50%;background:radial-gradient(closest-side,rgba(255,197,107,.18),transparent);pointer-events:none}
+.orbit{position:absolute;inset:0;pointer-events:none}
+.chip{position:absolute;left:50%;top:50%;display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:14px;background:var(--surf2);border:1px solid var(--line);font:600 12.5px/1 var(--text);white-space:nowrap;box-shadow:0 14px 30px -16px #000;translate:-50% -50%}
+.chip b{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chip.c1{--c:var(--mint);margin:-118px 0 0 -102px}.chip.c2{--c:var(--gold);margin:-70px 0 0 116px}.chip.c3{--c:var(--lilac);margin:112px 0 0 -96px}.chip.c4{--c:var(--clay);margin:100px 0 0 112px}
+h1{font-size:clamp(46px,12.4vw,96px);margin-top:4px}
+h1 em{font-style:normal;background:linear-gradient(100deg,var(--gold),var(--clay) 60%,#ff6fa8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lede{margin:14px auto 0;max-width:30ch}
+.hero .row{display:flex;justify-content:center;gap:10px;margin-top:22px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;border-radius:18px;font:700 15px/1 var(--text)}
+.btn.p{background:var(--mint);color:#06281d;box-shadow:0 12px 30px -10px var(--mint)}
+.btn.g{background:var(--surf);border:1px solid var(--line)}
+
+/* hero entrance: a sequenced title card (load, not scroll) */
+@keyframes rise{from{opacity:0;translate:0 26px}to{opacity:1;translate:0 0}}
+@keyframes drop{0%{translate:0 -140px;scale:.9 1.12}55%{translate:0 0;scale:1.14 .84}75%{scale:.95 1.06}100%{translate:0 0;scale:1 1}}
+@keyframes pop{from{opacity:0;scale:.6}to{opacity:1;scale:1}}
+.hero .bun .body{animation:drop 1s var(--spring) .1s both}
+.hero .chip{animation:pop .7s var(--spring) both,bob 3.2s ease-in-out infinite}
+.chip.c1{animation-delay:.7s,0s}.chip.c2{animation-delay:.85s,-.8s}.chip.c3{animation-delay:1s,-1.6s}.chip.c4{animation-delay:1.15s,-2.4s}
+.hero h1,.hero .lede,.hero .row{animation:rise .8s var(--spring) both}
+.hero h1{animation-delay:.35s}.hero .lede{animation-delay:.55s}.hero .row{animation-delay:.7s}
+
+/* Bun's moods: idle squash-and-stretch + a 12 s cycle of faces, tints and halos (opacity only) */
+@keyframes breathe{0%,100%{scale:1 1}50%{scale:1.035 .965}}
+@keyframes hop{0%,78%,100%{translate:0 0}84%{translate:0 -16px}90%{translate:0 0}93%{translate:0 -5px}}
+@keyframes m1{0%,22%{opacity:1}26%,96%{opacity:0}100%{opacity:1}}
+@keyframes m2{0%,22%{opacity:0}26%,47%{opacity:1}51%,100%{opacity:0}}
+@keyframes m3{0%,47%{opacity:0}51%,72%{opacity:1}76%,100%{opacity:0}}
+@keyframes m4{0%,72%{opacity:0}76%,96%{opacity:1}100%{opacity:0}}
+@keyframes ear{0%,100%{rotate:var(--r)}50%{rotate:calc(var(--r) * 1.4)}}
+.hero .bun .blob,.hero .bun .ear{animation:breathe 2.4s ease-in-out infinite}
+.hero .bun{animation:hop 3s ease-in-out 1.2s infinite}
+.hero .bun .ear.l{--r:-18deg;animation:ear 3s ease-in-out infinite}.hero .bun .ear.r{--r:18deg;animation:ear 3s ease-in-out .3s infinite}
+.hero .bun .f1{animation:m1 12s linear 1.4s infinite}.hero .bun .f2{animation:m2 12s linear 1.4s infinite}.hero .bun .f3{animation:m3 12s linear 1.4s infinite}.hero .bun .f4{animation:m4 12s linear 1.4s infinite}
+.hero .bun .t2,.hero .bun .h2{animation:m2 12s linear 1.4s infinite}.hero .bun .t3,.hero .bun .h3{animation:m3 12s linear 1.4s infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.sparks{position:absolute;inset:0;pointer-events:none}
+.sparks i{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);opacity:.7;animation:float 6s ease-in-out infinite}
+.sparks i:nth-child(2){left:20%;top:30%;background:var(--mint);animation-delay:-2s}.sparks i:nth-child(1){left:76%;top:22%}.sparks i:nth-child(3){left:14%;top:70%;width:4px;height:4px;animation-delay:-4s}.sparks i:nth-child(4){left:84%;top:66%;background:var(--lilac);animation-delay:-1s}
+@keyframes float{0%,100%{translate:0 0;opacity:.3}50%{translate:0 -22px;opacity:.9}}
+
+/* ---------- scroll-driven entrances for every section below the fold (finished by default) ---------- */
+/* the advancement: a porthole reveal, two mask layers (a growing circle + a rising band) composited with mask-composite: add */
+@property --r{syntax:'<percentage>';inherits:false;initial-value:150%}
+@property --b{syntax:'<percentage>';inherits:false;initial-value:0%}
+@keyframes port{from{--r:0%;--b:100%}to{--r:150%;--b:0%}}
+@keyframes up{from{opacity:0;translate:0 40px;scale:.96}to{opacity:1;translate:0 0;scale:1}}
+.port{-webkit-mask:radial-gradient(circle at 50% 100%,#000 var(--r),transparent calc(var(--r) + 1%)),linear-gradient(#000,#000) 0 var(--b)/100% 100% no-repeat;mask:radial-gradient(circle at 50% 100%,#000 var(--r),transparent calc(var(--r) + 1%)),linear-gradient(#000,#000) 0 var(--b)/100% 100% no-repeat;-webkit-mask-composite:source-over;mask-composite:add}
+@supports (animation-timeline:view()){
+  .rv{animation:up linear both;animation-timeline:view();animation-range:entry 0% cover 30%}
+  .port{animation:port linear both;animation-timeline:view();animation-range:entry 5% cover 38%}
+}
+
+/* ---------- moods = services (accordion-look list) ---------- */
+.list{margin-top:28px;display:grid;gap:14px}
+.row-s{display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:center;padding:18px;border-radius:24px;background:var(--surf);border:1px solid var(--line)}
+.row-s.open{background:linear-gradient(160deg,var(--surf2),var(--surf));box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 24px 50px -30px rgba(255,148,102,.5)}
+.row-s h3{font-size:26px}
+.row-s p{color:var(--mute);font-size:14.5px;margin-top:4px}
+.row-s .meta{grid-column:2;display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.row-s .meta span{font-size:12px;padding:5px 9px;border-radius:9px;background:rgba(255,255,255,.05);color:var(--ink)}
+.mini{--s:58px;position:relative;width:58px;height:54px}
+.mini .blob{position:absolute;inset:6% 0 0;border-radius:50% 50% 44% 44%/58% 58% 42% 42%;background:radial-gradient(circle at 32% 26%,#fff 0,var(--c2) 30%,var(--c) 62%,var(--c3) 100%);box-shadow:inset -5px -7px 12px rgba(0,0,0,.3)}
+.mini svg{position:absolute;left:18%;top:36%;width:64%;height:42%}
+.mini{animation:breathe 2.6s ease-in-out infinite;transform-origin:50% 100%}
+.row-s:nth-child(2) .mini{animation-delay:-.6s}.row-s:nth-child(3) .mini{animation-delay:-1.2s}.row-s:nth-child(4) .mini{animation-delay:-1.8s}
+
+/* ---------- before / after ---------- */
+.pair{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pair figure{position:relative;padding:20px 14px 16px;border-radius:26px;background:var(--surf);border:1px solid var(--line);text-align:center;overflow:hidden}
+.pair figure.after{background:radial-gradient(80% 60% at 50% 40%,rgba(77,240,184,.18),transparent),var(--surf)}
+.pair figcaption{margin-top:14px;font:700 15px/1.2 var(--text)}
+.pair small{display:block;color:var(--mute);font-weight:400;margin-top:3px}
+.pair .bun{--s:116px}
+.mud .blob{background:radial-gradient(circle at 32% 26%,#e4c6a8 0,#b78a63 40%,#7d5637 80%,#4d321e 100%)}
+.mud .ear{background:radial-gradient(circle at 40% 30%,#c9a07a,#8a6040 60%,#5a3a22)}
+.mud .spot{position:absolute;border-radius:50%;background:#4a2f1b;opacity:.75}
+.fluff .blob{background:radial-gradient(circle at 32% 26%,#fff 0,#ffe3d2 30%,#ffb894 62%,#e58460 100%)}
+.bubbles i{position:absolute;bottom:20px;width:12px;height:12px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6);background:rgba(255,255,255,.08);animation:bub 3.6s ease-in infinite}
+.bubbles i:nth-child(1){left:16%}.bubbles i:nth-child(2){left:70%;animation-delay:-1.2s;width:8px;height:8px}.bubbles i:nth-child(3){left:44%;animation-delay:-2.4s}
+@keyframes bub{0%{translate:0 0;opacity:0}20%{opacity:1}100%{translate:0 -150px;opacity:0}}
+.mud .bun{animation:shiver .5s ease-in-out infinite}
+@keyframes shiver{0%,100%{rotate:-1.5deg}50%{rotate:1.5deg}}
+.fluff .bun{animation:hop 2.4s ease-in-out infinite}
+
+/* ---------- a day at Plumpaw (checklist) ---------- */
+.check{margin-top:26px;display:grid;gap:12px}
+.check li{list-style:none;display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:20px;background:var(--surf);border:1px solid var(--line)}
+.check li svg{flex:none;margin-top:2px}
+.check b{display:block;font-weight:650}
+.check span{color:var(--mute);font-size:14px}
+.check .tick{stroke-dasharray:1;stroke-dashoffset:0}
+@supports (animation-timeline:view()){.check .tick{animation:draw linear both;animation-timeline:view();animation-range:entry 20% cover 40%}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.ul{padding:0}
+
+/* ---------- pricing table ---------- */
+.table{margin-top:26px;border-radius:26px;background:var(--surf);border:1px solid var(--line);overflow:hidden}
+.tr{display:grid;grid-template-columns:1fr auto;gap:6px 14px;padding:18px 20px;border-top:1px solid var(--line)}
+.tr:first-child{border-top:0}
+.tr h3{font-size:24px}
+.tr p{grid-column:1/-1;color:var(--mute);font-size:14px}
+.tr .pr{font:800 22px/1 var(--disp);color:var(--gold);align-self:center}
+.tr .pr small{font:400 12px var(--text);color:var(--mute);margin-left:4px}
+.tr.hot{background:linear-gradient(120deg,rgba(255,148,102,.16),rgba(255,197,107,.05))}
+.tr.hot .tag{grid-column:1/-1;justify-self:start;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#2a1206;background:var(--gold);padding:4px 8px;border-radius:7px}
+
+/* ---------- quotes ---------- */
+.quotes{margin-top:26px;display:grid;gap:14px}
+.quotes blockquote{padding:18px 20px;border-radius:22px;background:var(--surf);border:1px solid var(--line);font-size:15px}
+.quotes cite{display:block;margin-top:8px;font-style:normal;color:var(--mute);font-size:13px}
+
+/* ---------- booking CTA with a mini calendar ---------- */
+.cta{border-radius:32px;padding:30px 24px;background:radial-gradient(70% 70% at 80% 10%,rgba(255,197,107,.25),transparent 60%),radial-gradient(60% 60% at 10% 100%,rgba(77,240,184,.2),transparent 60%),var(--surf2);border:1px solid var(--line);text-align:center;overflow:hidden}
+.cta h2{font-size:clamp(34px,8.6vw,56px)}
+.cal{margin:22px auto 0;max-width:300px;display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal i{aspect-ratio:1;border-radius:9px;background:rgba(255,255,255,.05);display:grid;place-items:center;font:500 11px/1 var(--text);font-style:normal;color:var(--mute)}
+.cal i.free{background:rgba(77,240,184,.16);color:var(--mint)}
+.cal i.pick{background:var(--mint);color:#06281d;font-weight:700;animation:beat 1.6s ease-in-out infinite}
+@keyframes beat{0%,100%{scale:1}50%{scale:1.12}}
+.cta .btn{margin-top:22px}
+.safe{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:16px;color:var(--mute);font-size:13px}
+
+footer{padding:30px 0 20px;color:var(--mute);font-size:13px;text-align:center}
+footer .credit{margin-top:10px;font-size:12px;opacity:.7}
+
+@media (min-width:900px){
+  .hero .stage{height:400px}.bun.big{--s:280px}
+  .list{grid-template-columns:1fr 1fr}.quotes{grid-template-columns:repeat(3,1fr)}.check{grid-template-columns:1fr 1fr}
+  .pair .bun{--s:170px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important}
+  .bun .f{opacity:0}.bun .f.f1{opacity:1}
+}
+</style>
+</head>
+<body>
+<header class="bbar">
+  <nav aria-label="Main">
+    <a class="mark" href="#top"><i aria-hidden="true"></i>plumpaw</a>
+    <div class="links"><a href="#moods">Days</a><a href="#spa">Spa</a><a href="#plans">Plans</a></div>
+    <a class="back" href="/">← All templates</a>
+    <a class="book" href="#book">Book</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap">
+      <span class="kick">Daycare · Spa · Sleepovers</span>
+      <div class="stage">
+        <div class="floor" aria-hidden="true"></div>
+        <div class="sparks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="bun big" role="img" aria-label="Bun, the Plumpaw clay mascot, changing moods: happy, in love, sleepy, winking">
+          <div class="halo"></div><div class="halo h2"></div><div class="halo h3"></div>
+          <div class="shadow"></div>
+          <div class="body">
+            <div class="ear l"><div class="tint t2"></div><div class="tint t3"></div></div><div class="ear r"><div class="tint t2"></div><div class="tint t3"></div></div>
+            <div class="blob"><div class="tint t2"></div><div class="tint t3"></div><div class="gloss"></div></div>
+            <svg class="face" viewBox="0 0 100 60" aria-hidden="true">
+              <g class="f f1"><path d="M22 22q8-10 16 0M62 22q8-10 16 0" fill="none" stroke="#2a0f14" stroke-width="5" stroke-linecap="round"/><path d="M38 36q12 14 24 0z" fill="#2a0f14"/><path d="M44 42q6 4 12 0" fill="#ff7a8e"/><ellipse class="cheek" cx="16" cy="36" rx="8" ry="5"/><ellipse class="cheek" cx="84" cy="36" rx="8" ry="5"/></g>
+              <g class="f f2"><path d="M30 26c-6-6-14 0-8 7l8 7 8-7c6-7-2-13-8-7zM70 26c-6-6-14 0-8 7l8 7 8-7c6-7-2-13-8-7z" fill="#ff3d6e"/><path d="M42 44q8 7 16 0" fill="none" stroke="#2a0f14" stroke-width="4.5" stroke-linecap="round"/><ellipse class="cheek" cx="14" cy="40" rx="8" ry="5"/><ellipse class="cheek" cx="86" cy="40" rx="8" ry="5"/></g>
+              <g class="f f3"><path d="M20 28q10 6 20 0M60 28q10 6 20 0" fill="none" stroke="#24123a" stroke-width="5" stroke-linecap="round"/><ellipse cx="50" cy="44" rx="5" ry="4" fill="#24123a"/><text x="82" y="6" font-size="14" font-weight="800" fill="#fff" font-family="Baloo 2">z</text><text x="92" y="-6" font-size="10" font-weight="800" fill="#fff" font-family="Baloo 2">z</text></g>
+              <g class="f f4"><ellipse cx="30" cy="24" rx="6" ry="8" fill="#2a0f14"/><circle cx="32" cy="21" r="2.4" fill="#fff"/><path d="M62 24q8-6 16 0" fill="none" stroke="#2a0f14" stroke-width="5" stroke-linecap="round"/><path d="M38 38q12 10 24 0" fill="none" stroke="#2a0f14" stroke-width="5" stroke-linecap="round"/><ellipse class="cheek" cx="16" cy="36" rx="8" ry="5"/><ellipse class="cheek" cx="84" cy="36" rx="8" ry="5"/></g>
+            </svg>
+          </div>
+        </div>
+        <div class="orbit" aria-hidden="true">
+          <span class="chip c1"><b></b>Zoomies 10:00</span>
+          <span class="chip c2"><b></b>Bath at 2</span>
+          <span class="chip c3"><b></b>Nap, sound asleep</span>
+          <span class="chip c4"><b></b>Photo sent 📸</span>
+        </div>
+      </div>
+      <h1 id="h1">Happy pups, <em>booked in two taps.</em></h1>
+      <p class="lede">Daycare, spa and sleepovers for dogs who like a busy day and a soft landing. Pick a day, we send photos.</p>
+      <div class="row"><a class="btn p" href="#book">Book a day</a><a class="btn g" href="#moods">See a day</a></div>
+    </div>
+  </section>
+
+  <section id="moods" aria-labelledby="moods-h">
+    <div class="wrap">
+      <div class="rv"><span class="kick">Every mood, looked after</span><h2 id="moods-h" style="margin-top:12px">Four kinds of day.</h2></div>
+      <div class="list">
+        <article class="row-s open rv"><div class="mini" style="--c:#ff9466;--c2:#ffc9ad;--c3:#c94f33"><div class="blob"></div><svg viewBox="0 0 100 60" aria-hidden="true"><path d="M22 22q8-10 16 0M62 22q8-10 16 0" fill="none" stroke="#2a0f14" stroke-width="6" stroke-linecap="round"/><path d="M38 36q12 14 24 0z" fill="#2a0f14"/></svg></div>
+          <div><h3>Playful</h3><p>Small-group daycare: fetch lawn, splash pad, two long walks.</p></div><div class="meta"><span>7:30–19:00</span><span>Groups of 8</span></div></article>
+        <article class="row-s rv"><div class="mini" style="--c:#9b7dff;--c2:#d9ceff;--c3:#5d3fc4"><div class="blob"></div><svg viewBox="0 0 100 60" aria-hidden="true"><path d="M20 28q10 6 20 0M60 28q10 6 20 0" fill="none" stroke="#24123a" stroke-width="6" stroke-linecap="round"/><ellipse cx="50" cy="44" rx="5" ry="4" fill="#24123a"/></svg></div>
+          <div><h3>Sleepy</h3><p>Sleepovers in quiet suites with a bedtime story and a night carer.</p></div></article>
+        <article class="row-s rv"><div class="mini" style="--c:#3fd9a3;--c2:#c4fbe7;--c3:#1f9c74"><div class="blob"></div><svg viewBox="0 0 100 60" aria-hidden="true"><ellipse cx="30" cy="24" rx="6" ry="8" fill="#0b3226"/><path d="M62 24q8-6 16 0" fill="none" stroke="#0b3226" stroke-width="6" stroke-linecap="round"/><path d="M38 38q12 10 24 0" fill="none" stroke="#0b3226" stroke-width="6" stroke-linecap="round"/></svg></div>
+          <div><h3>Fresh</h3><p>Spa groom: warm bath, blow-dry, nail trim and a bandana.</p></div></article>
+        <article class="row-s rv"><div class="mini" style="--c:#ffc56b;--c2:#fff0cc;--c3:#d18a1f"><div class="blob"></div><svg viewBox="0 0 100 60" aria-hidden="true"><path d="M30 26c-6-6-14 0-8 7l8 7 8-7c6-7-2-13-8-7zM70 26c-6-6-14 0-8 7l8 7 8-7c6-7-2-13-8-7z" fill="#ff3d6e"/><path d="M42 44q8 7 16 0" fill="none" stroke="#3a2306" stroke-width="5" stroke-linecap="round"/></svg></div>
+          <div><h3>Loved</h3><p>Puppy class on Saturdays: sit, stay, and a lot of praise.</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="spa" aria-labelledby="spa-h">
+    <div class="wrap">
+      <div class="rv"><span class="kick">The spa</span><h2 id="spa-h" style="margin-top:12px">Muddy in. Fluffy out.</h2></div>
+      <div class="pair port">
+        <figure class="mud"><div class="bun" role="img" aria-label="A muddy clay pup before the groom"><div class="shadow"></div><div class="body"><div class="ear l"></div><div class="ear r"></div><div class="blob"><i class="spot" style="left:20%;top:30%;width:22%;height:16%"></i><i class="spot" style="left:62%;top:58%;width:18%;height:14%"></i></div>
+          <svg class="face" viewBox="0 0 100 60" aria-hidden="true"><ellipse cx="30" cy="24" rx="5" ry="6" fill="#2a160b"/><ellipse cx="70" cy="24" rx="5" ry="6" fill="#2a160b"/><path d="M40 44q10-6 20 0" fill="none" stroke="#2a160b" stroke-width="5" stroke-linecap="round"/></svg></div></div>
+          <figcaption>9:00<small>after the puddle</small></figcaption></figure>
+        <figure class="after fluff"><div class="bubbles" aria-hidden="true"><i></i><i></i><i></i></div><div class="bun" role="img" aria-label="The same pup, clean and fluffy after the groom"><div class="halo" style="opacity:.6"></div><div class="shadow"></div><div class="body"><div class="ear l"></div><div class="ear r"></div><div class="blob"><div class="gloss"></div></div>
+          <svg class="face" viewBox="0 0 100 60" aria-hidden="true"><path d="M22 22q8-10 16 0M62 22q8-10 16 0" fill="none" stroke="#2a0f14" stroke-width="5" stroke-linecap="round"/><path d="M38 36q12 14 24 0z" fill="#2a0f14"/><ellipse class="cheek" cx="16" cy="36" rx="8" ry="5"/><ellipse class="cheek" cx="84" cy="36" rx="8" ry="5"/></svg></div></div>
+          <figcaption>11:30<small>bath, blow-dry, bandana</small></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="day-h">
+    <div class="wrap">
+      <div class="rv"><span class="kick">In every booking</span><h2 id="day-h" style="margin-top:12px">What a day includes.</h2></div>
+      <ul class="check ul">
+        <li class="rv"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(77,240,184,.15)"/><path class="tick" pathLength="1" d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#4df0b8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Photo updates every two hours</b><span>Straight to your phone, no app to install.</span></div></li>
+        <li class="rv"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(77,240,184,.15)"/><path class="tick" pathLength="1" d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#4df0b8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>A vet on call, all day</b><span>Ten minutes away, with your dog's notes.</span></div></li>
+        <li class="rv"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(77,240,184,.15)"/><path class="tick" pathLength="1" d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#4df0b8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Safe booking and payment</b><span>Encrypted checkout; your card never sits on our site.</span></div></li>
+        <li class="rv"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(77,240,184,.15)"/><path class="tick" pathLength="1" d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#4df0b8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Free cancel until 8 pm</b><span>Plans change. Dogs understand.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="plans" aria-labelledby="plans-h">
+    <div class="wrap">
+      <div class="rv"><span class="kick">Plans</span><h2 id="plans-h" style="margin-top:12px">Pick a pace.</h2></div>
+      <div class="table port">
+        <div class="tr"><h3>Day pass</h3><span class="pr">$34<small>/day</small></span><p>One full day, two walks, photo updates.</p></div>
+        <div class="tr hot"><span class="tag">Most booked</span><h3>Pack of ten</h3><span class="pr">$310</span><p>Ten days to use in three months, one free spa wash.</p></div>
+        <div class="tr"><h3>Spa groom</h3><span class="pr">$48<small>from</small></span><p>Bath, blow-dry, nails, ears and a bandana.</p></div>
+        <div class="tr"><h3>Sleepover</h3><span class="pr">$58<small>/night</small></span><p>Quiet suite, night carer, breakfast walk.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="q-h">
+    <div class="wrap">
+      <div class="rv"><span class="kick">Owners say</span><h2 id="q-h" style="margin-top:12px">Tails, wagging.</h2></div>
+      <div class="quotes">
+        <blockquote class="rv">“The 2 pm photo of Miso asleep on a beanbag made my whole meeting.”<cite>Ana, owner of Miso</cite></blockquote>
+        <blockquote class="rv">“Booked Saturday class from the bus in about ten seconds.”<cite>Kofi, owner of Pepper</cite></blockquote>
+        <blockquote class="rv">“He comes home tired, clean and weirdly proud of himself.”<cite>Lena, owner of Biscuit</cite></blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section id="book" aria-labelledby="book-h">
+    <div class="wrap">
+      <div class="cta rv">
+        <span class="kick">This week</span>
+        <h2 id="book-h" style="margin-top:12px">Bun saved you a spot.</h2>
+        <div class="cal" role="group" aria-label="Free days this week">
+          <i>M</i><i>T</i><i>W</i><i>T</i><i>F</i><i>S</i><i>S</i>
+          <i>14</i><i class="free">15</i><i class="free">16</i><i>17</i><i class="pick">18</i><i class="free">19</i><i>20</i>
+        </div>
+        <a class="btn p" href="#book">Book Friday 18 →</a>
+        <p class="safe"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>Secure checkout · free cancel until 8 pm</p>
+      </div>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>Plumpaw is a fictional pet daycare made as a design concept.</p>
+    <p class="credit">Developed by Aquarii Technologies</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -326,5 +326,36 @@
       "sendToFriend": "yes, to a founder planning a launch"
     },
     "notes": "Pass 1: the exploded view leaked the rest of the page below the frame (base layer clipped to the viewport) and the click ripple missed the button (moved onto it). Pass 2: stills at every shot checked: logo, fly-in, build, split, features, dashboard, click, phone, end cards. Built in one pass (owner, 17 Oct: drive the content, no over-engineering)."
+  },
+  {
+    "id": "2026-10-17-1336",
+    "date": "2026-10-17",
+    "template": "Plumpaw (shown as the site we protect; the reel is about Aquarii)",
+    "version": "soft3d v1 (theme benchmark)",
+    "service": "security",
+    "theme": "soft3d",
+    "format": "problem -> fix",
+    "concept": "Your website is a clay creature with feelings. Bun drops in happy; at 3 a.m. bots hit it and it turns scared, worried and grey; Aquarii draws a mint glass shield round it and the bots burst on it; badges orbit (SSL renewed, updates, daily backups, firewall); the real site in a phone takes a booking and Bun falls in love; proud close-up, then the DM card.",
+    "motionStyle": "squash and stretch on drops, hops and every mood change (bouncy spring), bold springs for captions and chips, swing camera with hard cuts every 2.4-2.7 s, handheld noise",
+    "primaryTransition": "mood colour cut (tint, halo, key light and a light leak change together)",
+    "transitions": [
+      "mood-colour-cut",
+      "light-leak",
+      "breath dim",
+      "mint flash"
+    ],
+    "typeTreatment": "Baloo 2 one line per shot under a Geologica numbered kicker, top third",
+    "grade": "plum-black studio (#0d0b14), mood-coloured key light and floor pool (peach, steel, moss, mint, lilac, rose, gold), warm/violet grade, grain, vignette",
+    "sound": "voice af_heart + effects (boing, clicks, riser, impacts, sparkles); owner adds Instagram audio",
+    "cover": "the mint shield round the determined mascot at ~8.4 s (or the hook frame)",
+    "newTrick": "P.clay (soft-3D clay character: per-mood tint/halo cross-fades, 8 expressions with blinks, squash and stretch on drops, hops and mood changes, three-depth particles) + P.dome (glass hex shield with hit ripples) + brandEnd grade 'clay'; theme B soft3d made ready",
+    "revisionPasses": 2,
+    "friendTest": {
+      "stopScrolling": "yes: a glossy clay creature lands with a squash in frame 0 under a question about your website",
+      "watchToEnd": "yes: it changes mood and colour every 1-1.5 s; you wait to see it saved",
+      "screenshot": "the mint glass shield round the determined mascot, bots bursting on it",
+      "sendToFriend": "yes, to a founder who runs their own website"
+    },
+    "notes": "Pass 1 (18 stills, one per beat): warning chips hid behind the mascot (brought to the front, moved above it), bot sparks too small (14 -> 22 px), scared brows read as angry (inner ends raised), hook faded in after frame 0 (now on from frame 0) and the mascot fell through the hook (drop retimed so it lands at frame 0, squash in motion). Pass 2: opening frames clean, chips readable, every shot finished; matches the Aurelia finish (key light, leaks, grain, handheld)."
   }
 ]

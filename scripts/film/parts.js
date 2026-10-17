@@ -17,6 +17,7 @@
 //   camera     P.camera (keyed camera with shake; films DOM layers + canvases)   texture  P.grain   (and P.dripWord: wet display type)
 //   system map P.sys (game look: neon grid, glowing cables with flowing packets, comets, glossy component chips, bursts; one camera)
 //   machine    P.iso (isometric machines: the object IS the explanation; box, cyl, coil, ticks, dot, path; four-tone shading, depth-sorted)
+//   soft3d     P.clay (a clay character: moods with colour, squash and stretch, blinks, depth particles via .fx)  P.dome (a glass hex shield drawn on round a subject; hits ripple)
 //   3D         P.tank3d (the leaky vessel in real 3D, for hero shots)  P.three (WebGL scene, procedural studio light)  P.three.look (keyed 3D camera on springs)  P.three.roundRect
 //   brand      P.BRAND (kit colours)  P.brandMark()  P.brandEnd({ keyword }) (the ending of every new film; design/brand/kit.md)
 //   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff (the studio name + DM us, at the end; the always-on watermark was retired 14 Oct 2026, P.watermark() is opt-in only)
@@ -650,6 +651,7 @@
   // grade (owner, 17 Oct 2026: "colour grade our logo to the video's theme"): the end card can wear the film's palette. Default 'blue' = the brand kit as before.
   P.GRADES = {
     blue: { mark: '', word: 'linear-gradient(180deg,#B5D0FF 0%,#5C8FFF 45%,#2450D8 100%)', wglow: 'rgba(79,134,255,.55)', btn: null, bglow: 'rgba(47,107,255,.45)', halo: '47,107,255' },
+    clay: { mark: 'grayscale(1) sepia(1) saturate(4) hue-rotate(-28deg) brightness(1.12)', word: 'linear-gradient(180deg,#FFE2D2 0%,#FF9466 50%,#E0603D 100%)', wglow: 'rgba(255,148,102,.6)', btn: 'linear-gradient(135deg,#7DF5CB,#3FD9A3)', bglow: 'rgba(77,240,184,.5)', halo: '255,148,102', ink: '#06281d' },
     amber: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(-14deg) brightness(1.08)', word: 'linear-gradient(180deg,#FFE7C2 0%,#FFB35C 45%,#FF6A2C 100%)', wglow: 'rgba(255,150,70,.6)', btn: 'linear-gradient(135deg,#FFB35C,#FF6A2C)', bglow: 'rgba(255,120,50,.55)', halo: '255,140,60', ink: '#1a0900' },
   };
   P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null, breathe = true, grade = 'blue' } = {}) {
@@ -1454,5 +1456,152 @@
     };
     P.on((t) => { W.fade = 1; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = bg; ctx.fillRect(0, 0, 402, 715); fns.forEach((f) => f(ctx, t, W)); });
     return W;
+  };
+  // =====================================================================================================================================
+  // THEME B soft3d (17 Oct 2026, new trick; reference R1 in design/brand/references.md): P.clay, a soft-3D clay character drawn from shading alone
+  // (base gradient, per-mood tint layers, top-left gloss, inner shade, rim light, contact shadow, coloured halo), with expressions, colour that
+  // follows the mood, squash-and-stretch physics and depth particles. Pure function of film time.
+  //   const c = P.clay(parent, { x, y, size, moods: [[t, 'happy'], [2.6, 'scared'], ...], hops: [{ t, h, dur }], drop: { t, h } })
+  //   c.place(keys)  keys = [[t, { x, y, s }], ...] moves/scales the character (swing-eased between keys)
+  //   c.fx(kind, at, out, { n, spread })  depth particles round it: hearts | sparkles | zzz | sweat | notes
+  //   c.mood(t) -> current mood name; c.colour(t) -> current halo colour (for the story's own light)
+  // moods: happy, scared, worried, determined, wink, love, proud, sleepy. A mood change is itself a beat: tint and halo cross-fade, the face swaps
+  // and the body pops (a bold-spring squash), so every change reads as a cut.
+  P.CLAY_MOODS = {
+    happy:      { tint: ['#ffe2d2', '#ffb08a', '#ff9466', '#e0603d', '#a8391f'], halo: '#ff9466' },
+    scared:     { tint: ['#e8f0ff', '#a9bde6', '#7387b8', '#45537e', '#262d4a'], halo: '#ff4d6a' },
+    worried:    { tint: ['#eef0e2', '#c3c9ab', '#949b7d', '#646a52', '#3b3f30'], halo: '#8d86a8' },
+    determined: { tint: ['#e8fff6', '#9af7d6', '#3fd9a3', '#1f9c74', '#0d5c44'], halo: '#4df0b8' },
+    wink:       { tint: ['#f1ecff', '#c9b8ff', '#9b7dff', '#6a4ad6', '#3c2690'], halo: '#a68bff' },
+    love:       { tint: ['#fff0f4', '#ffc0d2', '#ff7fa6', '#e04a7c', '#9c2452'], halo: '#ff6fa8' },
+    proud:      { tint: ['#fff6dc', '#ffe08f', '#ffc04d', '#e08a1a', '#9c5508'], halo: '#ffc56b' },
+    sleepy:     { tint: ['#eef2ff', '#bcc8f2', '#8a9ad8', '#5a68a8', '#323a6a'], halo: '#7f8fe0' },
+  };
+  const FACES = {   // viewBox 0 0 100 60; eyes near (30,24) and (70,24), mouth near (50,42). The .ey group blinks.
+    happy: '<g class="ey"><path d="M22 24q8-10 16 0M62 24q8-10 16 0" stroke="#2a0f14" stroke-width="5" stroke-linecap="round" fill="none"/></g><path d="M38 37q12 14 24 0z" fill="#2a0f14"/><path d="M44 43q6 4 12 0" fill="#ff7a8e"/>',
+    scared: '<path d="M20 15l14-6M80 15l-14-6" stroke="#1a1230" stroke-width="4" stroke-linecap="round"/><g class="ey"><circle cx="30" cy="25" r="9" fill="#fff"/><circle cx="70" cy="25" r="9" fill="#fff"/><circle cx="31" cy="26" r="3.6" fill="#1a1230"/><circle cx="69" cy="26" r="3.6" fill="#1a1230"/></g><path d="M38 46q4-5 8 0t8 0t8 0" stroke="#1a1230" stroke-width="4" stroke-linecap="round" fill="none"/>',
+    worried: '<path d="M21 16l13-4M79 16l-13-4" stroke="#262a1c" stroke-width="4" stroke-linecap="round"/><g class="ey"><ellipse cx="30" cy="26" rx="5" ry="6" fill="#262a1c"/><ellipse cx="70" cy="26" rx="5" ry="6" fill="#262a1c"/><circle cx="31.5" cy="23.5" r="1.8" fill="#fff"/><circle cx="71.5" cy="23.5" r="1.8" fill="#fff"/></g><path d="M40 47q10-8 20 0" stroke="#262a1c" stroke-width="4.5" stroke-linecap="round" fill="none"/>',
+    determined: '<path d="M19 13l15 6M81 13l-15 6" stroke="#06281d" stroke-width="5" stroke-linecap="round"/><g class="ey"><ellipse cx="30" cy="27" rx="5.5" ry="6.5" fill="#06281d"/><ellipse cx="70" cy="27" rx="5.5" ry="6.5" fill="#06281d"/><circle cx="32" cy="24.5" r="2" fill="#fff"/><circle cx="72" cy="24.5" r="2" fill="#fff"/></g><path d="M38 42q12 6 24 0" stroke="#06281d" stroke-width="5" stroke-linecap="round" fill="none"/>',
+    wink: '<g class="ey"><ellipse cx="30" cy="24" rx="6" ry="8" fill="#20123f"/><circle cx="32" cy="21" r="2.4" fill="#fff"/></g><path d="M62 25q8-7 16 0" stroke="#20123f" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M38 38q12 10 24 0" stroke="#20123f" stroke-width="5" stroke-linecap="round" fill="none"/>',
+    love: '<g class="ey"><path d="M30 18c-6-6-14 0-8 7l8 7 8-7c6-7-2-13-8-7zM70 18c-6-6-14 0-8 7l8 7 8-7c6-7-2-13-8-7z" fill="#ff2d62"/><path d="M25 21q2-2 4-1M65 21q2-2 4-1" stroke="#fff" stroke-width="1.6" stroke-linecap="round" fill="none"/></g><path d="M42 42q8 7 16 0" stroke="#4a0c22" stroke-width="4.5" stroke-linecap="round" fill="none"/>',
+    proud: '<g class="ey"><path d="M22 24q8-10 16 0M62 24q8-10 16 0" stroke="#3a2306" stroke-width="5" stroke-linecap="round" fill="none"/></g><path d="M34 36q16 18 32 0z" fill="#3a2306"/><path d="M42 44q8 5 16 0" fill="#ff7a5e"/>',
+    sleepy: '<g class="ey"><path d="M20 27q10 6 20 0M60 27q10 6 20 0" stroke="#1d2348" stroke-width="5" stroke-linecap="round" fill="none"/></g><ellipse cx="50" cy="44" rx="5" ry="4" fill="#1d2348"/>',
+  };
+  const FX = {
+    hearts: (c) => `<svg viewBox="0 0 24 22" width="100%" height="100%"><path d="M12 21C5 15 1 11 1 6.5A5.5 5.5 0 0 1 12 4a5.5 5.5 0 0 1 11 2.5C23 11 19 15 12 21z" fill="${c || '#ff4d84'}"/><path d="M6 6q2-2 4-1" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".8"/></svg>`,
+    sparkles: (c) => `<svg viewBox="0 0 24 24" width="100%" height="100%"><path d="M12 0c1 7 5 11 12 12-7 1-11 5-12 12-1-7-5-11-12-12 7-1 11-5 12-12z" fill="${c || '#ffe08f'}"/></svg>`,
+    zzz: (c) => `<svg viewBox="0 0 24 24" width="100%" height="100%"><text x="2" y="20" font-size="22" font-weight="800" font-family="Archivo,sans-serif" fill="${c || '#cfd8ff'}">z</text></svg>`,
+    sweat: (c) => `<svg viewBox="0 0 16 22" width="100%" height="100%"><path d="M8 0C11 7 15 11 15 15a7 7 0 0 1-14 0C1 11 5 7 8 0z" fill="${c || '#9fd8ff'}"/><path d="M5 14q0 3 3 4" stroke="#fff" stroke-width="1.5" fill="none" opacity=".8"/></svg>`,
+    notes: (c) => `<svg viewBox="0 0 20 24" width="100%" height="100%"><path d="M7 3l12-3v15a3.5 3.5 0 1 1-2-3.2V5L9 7v11a3.5 3.5 0 1 1-2-3.2z" fill="${c || '#c9b8ff'}"/></svg>`,
+  };
+  P.clay = function (parent, { x = 201, y = 380, size = 250, moods = [[0, 'happy']], hops = [], drop = null, blinks = null, palette = P.CLAY_MOODS } = {}) {
+    P.use('character', 'clay-mascot');
+    const W = size, H = size * .92, root = E.el('div', `position:absolute;left:0;top:0;width:${W}px;height:${H}px;margin:${-H}px 0 0 ${-W / 2}px;transform-origin:50% 100%`, parent);
+    // behind: halo (one layer per mood, cross-faded) and the floor light + contact shadow
+    const haloBox = E.el('div', `position:absolute;left:${-W * .6}px;top:${-H * .7}px;width:${W * 2.2}px;height:${W * 2.2}px;pointer-events:none`, root);
+    const names = Object.keys(palette);
+    const halos = Object.fromEntries(names.map((n) => [n, E.el('div', `position:absolute;inset:0;border-radius:50%;opacity:0;background:radial-gradient(closest-side,${hexA(palette[n].halo, .5)},${hexA(palette[n].halo, .14)} 50%,${hexA(palette[n].halo, 0)})`, haloBox)]));
+    const pool = E.el('div', `position:absolute;left:${-W * .25}px;right:${-W * .25}px;bottom:${-H * .2}px;height:${H * .4}px;border-radius:50%;opacity:0;pointer-events:none`, root);
+    const shadow = E.el('div', `position:absolute;left:12%;right:12%;bottom:${-H * .06}px;height:${H * .13}px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.8),rgba(0,0,0,0));transform-origin:50% 50%`, root);
+    const fxBack = E.el('div', 'position:absolute;inset:0;pointer-events:none', root);
+    const body = E.el('div', 'position:absolute;inset:0;transform-origin:50% 100%', root);
+    const ear = (side) => {
+      const e = E.el('div', `position:absolute;top:-4%;${side}:7%;width:30%;height:40%;border-radius:50% 50% 45% 45%;overflow:hidden;transform-origin:50% 90%;box-shadow:inset -${W * .025}px -${W * .035}px ${W * .06}px rgba(40,10,10,.4)`, body);
+      return { e, layers: Object.fromEntries(names.map((n) => { const c = palette[n].tint; return [n, E.el('div', `position:absolute;inset:0;opacity:0;background:radial-gradient(circle at 40% 30%,${c[1]},${c[2]} 55%,${c[3]})`, e)]; })) };
+    };
+    const ears = [ear('left'), ear('right')];
+    const blob = E.el('div', `position:absolute;inset:8% 0 0;border-radius:50% 50% 44% 44%/58% 58% 42% 42%;overflow:hidden;box-shadow:0 ${W * .1}px ${W * .22}px -${W * .1}px rgba(0,0,0,.6)`, body);
+    const tints = Object.fromEntries(names.map((n) => { const c = palette[n].tint; return [n, E.el('div', `position:absolute;inset:0;opacity:0;background:radial-gradient(circle at 32% 26%,${c[0]} 0,${c[1]} 22%,${c[2]} 48%,${c[3]} 78%,${c[4]} 100%)`, blob)]; }));
+    // shading over the tint: inner shade bottom-right, subsurface warmth, rim light, gloss
+    E.el('div', `position:absolute;inset:0;border-radius:inherit;box-shadow:inset -${W * .07}px -${W * .1}px ${W * .16}px rgba(30,8,20,.42),inset ${W * .05}px ${W * .06}px ${W * .12}px rgba(255,255,255,.26)`, blob);
+    const rim = E.el('div', `position:absolute;inset:0;border-radius:inherit;background:radial-gradient(120% 90% at 85% 95%,rgba(255,255,255,0) 60%,rgba(255,255,255,.35) 72%,rgba(255,255,255,0) 80%);mix-blend-mode:screen`, blob);
+    E.el('div', 'position:absolute;left:19%;top:12%;width:27%;height:17%;border-radius:50%;transform:rotate(-24deg);background:radial-gradient(closest-side,rgba(255,255,255,.9),rgba(255,255,255,0))', blob);
+    E.el('div', 'position:absolute;left:58%;top:16%;width:7%;height:5%;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(1px)', blob);
+    const cheeks = E.el('div', 'position:absolute;inset:0', body, `<i style="position:absolute;left:12%;top:58%;width:15%;height:9%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,80,120,.65),rgba(255,80,120,0))"></i><i style="position:absolute;right:12%;top:58%;width:15%;height:9%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,80,120,.65),rgba(255,80,120,0))"></i>`);
+    const faceBox = E.el('div', 'position:absolute;left:18%;top:36%;width:64%;height:42%', body);
+    const faces = Object.fromEntries(Object.keys(FACES).map((n) => { const d = E.el('div', 'position:absolute;inset:0;opacity:0;transform-origin:50% 60%', faceBox, `<svg viewBox="0 0 100 60" width="100%" height="100%" style="overflow:visible">${FACES[n]}</svg>`); return [n, { d, ey: d.querySelector('.ey') }]; }));
+    const fxFront = E.el('div', 'position:absolute;inset:0;pointer-events:none', root);
+    const M = moods.slice().sort((a, b) => a[0] - b[0]);
+    const moodAt = (t) => { let i = 0; while (i < M.length - 1 && t >= M[i + 1][0]) i++; return i; };
+    let place = [[0, { x, y, s: 1 }]];
+    const posAt = (t) => { const K = place; if (t <= K[0][0]) return K[0][1]; for (let i = 0; i < K.length - 1; i++) { const [t0, a] = K[i], [t1, b] = K[i + 1]; if (t <= t1) { const k = P.EASE.swing(clamp((t - t0) / Math.max(.01, t1 - t0))); return { x: lerp(a.x, b.x, k), y: lerp(a.y, b.y, k), s: lerp(a.s, b.s, k) }; } } return K[K.length - 1][1]; };
+    const parts = [];
+    // a jump: anticipation squash, stretch in the air (parabola), landing squash on the bold spring
+    const hopAt = (t) => {
+      let lift = 0, sx = 1, sy = 1;
+      for (const h of hops) { const d = h.dur || .7, u = (t - h.t) / d;
+        if (t > h.t - .14 && t < h.t) { const a = Math.sin(Math.PI * (t - h.t + .14) / .14) * .5 + .5 * clamp((t - h.t + .14) / .07); sx *= 1 + .12 * a; sy *= 1 - .12 * a; }
+        if (u >= 0 && u <= 1) { lift += h.h * 4 * u * (1 - u); const st = .14 * (1 - Math.abs(2 * u - 1)); sx *= 1 - st * .6; sy *= 1 + st; }
+        if (u > 1 && u < 2.2) { const k = P.spring(t - h.t - d, P.SPRING.bouncy); const sq = (1 - k) * .3; sx *= 1 + sq; sy *= 1 - sq; } }
+      if (drop) { const d = drop.dur || .55, u = (t - drop.t) / d;
+        if (u < 1) { lift += drop.h * (1 - u * u); sx *= .88; sy *= 1.16; }
+        else if (u < 4) { const k = P.spring(t - drop.t - d, P.SPRING.bouncy), sq = (1 - k) * .42; sx *= 1 + sq; sy *= 1 - sq; } }
+      return { lift, sx, sy };
+    };
+    const bl = blinks || Array.from({ length: 30 }, (_, i) => 1.1 + i * 1.9 + (i % 3) * .4);
+    P.on((t) => {
+      const i = moodAt(t), cur = M[i][1], prev = i > 0 ? M[i - 1][1] : cur, kx = i > 0 ? P.springAt(t, M[i][0], 'fade') : 1;
+      names.forEach((n) => { const w = (n === cur ? kx : 0) + (n === prev && n !== cur ? 1 - kx : 0); tints[n].style.opacity = w.toFixed(3); halos[n].style.opacity = w.toFixed(3); ears.forEach((e) => { e.layers[n].style.opacity = w.toFixed(3); }); });
+      const fk = i > 0 ? clamp((t - M[i][0]) / .1) : 1;
+      Object.keys(faces).forEach((n) => { faces[n].d.style.opacity = (n === cur ? fk : n === prev && n !== cur ? 1 - fk : 0).toFixed(3); });
+      const blink = bl.some((b) => t > b && t < b + .14) ? .12 : 1; const ey = faces[cur].ey; if (ey) ey.setAttribute('transform', `translate(0 ${(24 * (1 - blink)).toFixed(1)}) scale(1 ${blink})`);
+      cheeks.style.opacity = ['happy', 'love', 'wink', 'proud'].includes(cur) ? kx.toFixed(3) : (1 - kx).toFixed(3) * (['happy', 'love', 'wink', 'proud'].includes(prev) ? 1 : 0);
+      // the pop on every mood change + breathing + the hops
+      const pk = i > 0 ? P.spring(t - M[i][0], P.SPRING.bouncy) : 1, pop = (1 - pk) * .22;
+      const br = .022 * Math.sin(t * 2.6), { lift, sx, sy } = hopAt(t), shake = cur === 'scared' ? Math.sin(t * 46) * 2.2 : cur === 'worried' ? Math.sin(t * 3) * 3 : 0;
+      body.style.transform = `translate(${shake.toFixed(2)}px,${(-lift).toFixed(1)}px) scale(${(sx * (1 + pop * .8) * (1 + br)).toFixed(4)},${(sy * (1 - pop) * (1 - br)).toFixed(4)})`;
+      ears.forEach((e, j) => { const s = j ? 1 : -1, droop = ['worried', 'sleepy', 'scared'].includes(cur) ? 26 : 0; e.e.style.transform = `rotate(${(s * (18 + droop * kx + 6 * Math.sin(t * 3 + j)) + s * pop * 40).toFixed(2)}deg)`; });
+      const sh = 1 / (1 + lift / 90); shadow.style.transform = `scale(${(sh * sx).toFixed(3)},${sh.toFixed(3)})`; shadow.style.opacity = (.35 + .65 * sh).toFixed(3);
+      const hc = palette[cur].halo; pool.style.background = `radial-gradient(closest-side,${hexA(hc, .45)},${hexA(hc, 0)})`; pool.style.opacity = '1';
+      rim.style.opacity = (.6 + .4 * Math.sin(t * .8)).toFixed(3);
+      haloBox.style.transform = `scale(${(1 + .06 * Math.sin(t * 1.3) + pop * .6).toFixed(3)})`;
+      const p = posAt(t); root.style.transform = `translate(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px) scale(${p.s.toFixed(4)})`;
+      parts.forEach((f) => f(t));
+    });
+    const api = {
+      el: root, body,
+      place(keys) { place = keys.slice().sort((a, b) => a[0] - b[0]); return api; },
+      mood: (t) => M[moodAt(t)][1], colour: (t) => palette[M[moodAt(t)][1]].halo,
+      // depth particles: three depths (behind: small, soft, slow; front: big, soft, fast), each rising from round the body on its own curve
+      fx(kind, at, out, { n = 9, spread = 1, colour = null } = {}) {
+        P.use('particles', 'clay-depth-' + kind);
+        const ps = Array.from({ length: n }, (_, j) => { const depth = j % 3, front = depth === 2, sz = [14, 22, 34][depth] * (kind === 'zzz' ? 1.2 : 1);
+          const el = E.el('div', `position:absolute;width:${sz}px;height:${sz}px;opacity:0;${depth !== 1 ? `filter:blur(${front ? 2.2 : 1.2}px)` : ''}`, front ? fxFront : fxBack, FX[kind](colour));
+          return { el, depth, a: (j / n) * TAU + j * 1.37, d: 0.75 + ((j * 53) % 10) / 22, t0: at + (j / n) * Math.min(1.2, (out - at) * .5), life: 1.3 + (j % 4) * .25 }; });
+        parts.push((t) => ps.forEach((q) => { const u = (t - q.t0) / q.life; if (u < 0 || t > out + q.life) { q.el.style.opacity = '0'; return; }
+          const uu = u % 1, cyc = Math.floor(u); if (q.t0 + cyc * q.life > out) { q.el.style.opacity = '0'; return; }
+          const rx = Math.cos(q.a + cyc) * W * .58 * q.d * spread, ry = -H * .3 - uu * H * (.55 + .2 * q.depth) * spread, wob = Math.sin(uu * 7 + q.a) * 8;
+          const sc = P.EASE.glide(clamp(uu * 4)) * (1 - .3 * uu);
+          q.el.style.transform = `translate(${(W / 2 + rx + wob - 12).toFixed(1)}px,${(H + ry).toFixed(1)}px) rotate(${(Math.sin(uu * 5 + q.a) * 18).toFixed(1)}deg) scale(${sc.toFixed(3)})`;
+          q.el.style.opacity = (clamp(uu * 6) * (1 - clamp((uu - .7) / .3)) * (q.depth === 0 ? .6 : 1)).toFixed(3); }));
+        return api;
+      },
+    };
+    return api;
+  };
+  // the dome: a glass shield drawn on round a subject (stroke draw-on, hex cells, inner glare); hits = [[t, angle]] flash a ripple where a threat strikes it
+  P.dome = function (parent, { x = 201, y = 330, r = 170, at = 8, colour = '#4df0b8', hits = [], out = null } = {}) {
+    P.use('mechanism', 'shield-dome');
+    const box = E.el('div', `position:absolute;left:${x - r - 20}px;top:${y - r - 20}px;width:${2 * r + 40}px;height:${2 * r + 40}px;pointer-events:none;opacity:0`, parent);
+    const c = r + 20, hex = [];
+    for (let q = -4; q <= 4; q++) for (let s = -4; s <= 4; s++) { const hx = c + q * r * .26 + (s % 2) * r * .13, hy = c + s * r * .225; if (Math.hypot(hx - c, hy - c) < r * .92) hex.push([hx, hy]); }
+    const hp = (cx, cy, k) => { const a = r * .12 * k; return Array.from({ length: 6 }, (_, i) => `${(cx + a * Math.cos(i * Math.PI / 3 + Math.PI / 6)).toFixed(1)},${(cy + a * Math.sin(i * Math.PI / 3 + Math.PI / 6)).toFixed(1)}`).join(' '); };
+    box.innerHTML = `<svg width="${2 * c}" height="${2 * c}" viewBox="0 0 ${2 * c} ${2 * c}" style="overflow:visible"><defs><radialGradient id="dmF" cx=".38" cy=".3" r=".75"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".55" stop-color="${colour}" stop-opacity=".06"/><stop offset=".92" stop-color="${colour}" stop-opacity=".22"/><stop offset="1" stop-color="${colour}" stop-opacity=".5"/></radialGradient></defs>
+      <circle class="fill" cx="${c}" cy="${c}" r="${r}" fill="url(#dmF)" opacity="0"/>
+      <g class="hx" stroke="${colour}" stroke-width="1.2" fill="none">${hex.map(([a, b]) => `<polygon points="${hp(a, b, 1)}" opacity="0"/>`).join('')}</g>
+      <circle class="ring" cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${colour}" stroke-width="3.5" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" style="filter:drop-shadow(0 0 8px ${colour}) drop-shadow(0 0 22px ${colour})" transform="rotate(-90 ${c} ${c})"/>
+      <path d="M${c - r * .62} ${c - r * .5} A${r * .85} ${r * .85} 0 0 1 ${c + r * .1} ${c - r * .8}" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".35"/>
+      ${hits.map(() => `<circle class="hit" r="10" fill="none" stroke="#fff" stroke-width="3" opacity="0"/>`).join('')}</svg>`;
+    const ring = box.querySelector('.ring'), fill = box.querySelector('.fill'), polys = [...box.querySelectorAll('.hx polygon')], hitEls = [...box.querySelectorAll('.hit')];
+    P.on((t) => {
+      const on = t >= at - .05 && (out == null || t < out + .4); box.style.opacity = on ? (out == null ? 1 : 1 - clamp((t - out) / .35)).toFixed(3) : '0'; if (!on) return;
+      ring.setAttribute('stroke-dashoffset', (1 - P.EASE.glide(clamp((t - at) / .7))).toFixed(4));
+      fill.setAttribute('opacity', P.EASE.glide(clamp((t - at - .4) / .6)).toFixed(3));
+      polys.forEach((p, i) => { const [hx, hy] = hex[i], d = Math.hypot(hx - c, hy - c) / r, k = clamp((t - at - .3 - d * .5) / .3), shim = .08 + .1 * Math.max(0, Math.sin(t * 2.4 - d * 5)); p.setAttribute('opacity', (k * (1 - k * .55) * 1.4 + shim * k).toFixed(3)); });
+      box.style.transform = `scale(${(.9 + .1 * P.spring(t - at, P.SPRING.bold) + .012 * Math.sin(t * 3)).toFixed(4)})`;
+      hits.forEach(([ht, ang], i) => { const u = (t - ht) / .5, el = hitEls[i]; if (u < 0 || u > 1) { el.setAttribute('opacity', '0'); return; }
+        el.setAttribute('cx', (c + r * Math.cos(ang)).toFixed(1)); el.setAttribute('cy', (c + r * Math.sin(ang)).toFixed(1)); el.setAttribute('r', (6 + 40 * P.EASE.glide(u)).toFixed(1)); el.setAttribute('opacity', (1 - u).toFixed(3)); });
+    });
+    return box;
   };
 })();

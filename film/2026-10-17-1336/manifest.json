@@ -1,0 +1,49 @@
+{
+  "id": "2026-10-17-1336",
+  "made": "2026-10-17T08:16:44.350Z",
+  "slots": {
+    "ground": [
+      "deep-colour"
+    ],
+    "opener": [
+      "clay-drop"
+    ],
+    "transition": [
+      "mood-colour-cut"
+    ],
+    "payoff": [
+      "mood-bloom"
+    ],
+    "type": [
+      "kicker-line-rounded"
+    ],
+    "focus": [
+      "mood-key-light"
+    ],
+    "character": [
+      "clay-mascot"
+    ],
+    "particles": [
+      "clay-depth-sparkles",
+      "clay-depth-sweat",
+      "clay-depth-zzz",
+      "clay-depth-hearts"
+    ],
+    "mechanism": [
+      "shield-dome"
+    ],
+    "cta": [
+      "brand-end-clay",
+      "brand-end"
+    ]
+  },
+  "dna": {
+    "service": "security",
+    "theme": "soft3d",
+    "format": "problem -> fix",
+    "opening": "a clay mascot drops into a dark studio mid-fall, squashes on landing and smiles while the hook reads \"Your website has moods\"",
+    "bigMoment": "a mint glass hex shield draws itself round the scared clay mascot and red bot sparks burst on it while the mascot turns mint and determined",
+    "ground": "plum-black studio with a key light and floor pool that change colour with the mascot mood, dust and bokeh at three depths, grain and vignette",
+    "music": "playful soft electronic with plucks and a bouncy bass, tension in the bot section, a riser into the shield and a warm resolve, about 112 BPM"
+  }
+}
