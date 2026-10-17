@@ -661,6 +661,7 @@
     clay: { mark: 'grayscale(1) sepia(1) saturate(4) hue-rotate(-28deg) brightness(1.12)', word: 'linear-gradient(180deg,#FFE2D2 0%,#FF9466 50%,#E0603D 100%)', wglow: 'rgba(255,148,102,.6)', btn: 'linear-gradient(135deg,#7DF5CB,#3FD9A3)', bglow: 'rgba(77,240,184,.5)', halo: '255,148,102', ink: '#06281d' },
     sapphire: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(195deg) brightness(1.1)', word: 'linear-gradient(180deg,#FFE0EF 0%,#FF7DB5 40%,#6C7BFF 100%)', wglow: 'rgba(255,79,154,.5)', btn: 'linear-gradient(135deg,#F2EEE8,#D9DEFF)', bglow: 'rgba(110,125,255,.55)', halo: '74,92,255', ink: '#07080f' },
     electric: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(178deg) brightness(1.15)', word: 'linear-gradient(180deg,#F4F7FB 0%,#9FD8FF 40%,#2F6BFF 100%)', wglow: 'rgba(47,107,255,.6)', btn: 'linear-gradient(135deg,#5CD0FF,#2F6BFF)', bglow: 'rgba(47,107,255,.55)', halo: '47,107,255', ink: '#fff' },
+    lime: { mark: 'grayscale(1) sepia(1) saturate(4) hue-rotate(38deg) brightness(1.18)', word: 'linear-gradient(180deg,#F6FFE0 0%,#C6F432 50%,#7DB51A 100%)', wglow: 'rgba(198,244,50,.45)', btn: 'linear-gradient(135deg,#DAFF6A,#A9DE1E)', bglow: 'rgba(198,244,50,.5)', halo: '120,170,255', ink: '#0A0E17' },   // navy + lime (theme A collage, 17 Oct 2026)
     amber: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(-14deg) brightness(1.08)', word: 'linear-gradient(180deg,#FFE7C2 0%,#FFB35C 45%,#FF6A2C 100%)', wglow: 'rgba(255,150,70,.6)', btn: 'linear-gradient(135deg,#FFB35C,#FF6A2C)', bglow: 'rgba(255,120,50,.55)', halo: '255,140,60', ink: '#1a0900' },
   };
   P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null, breathe = true, grade = 'blue' } = {}) {
@@ -1649,5 +1650,28 @@
         el.setAttribute('cx', (c + r * Math.cos(ang)).toFixed(1)); el.setAttribute('cy', (c + r * Math.sin(ang)).toFixed(1)); el.setAttribute('r', (6 + 40 * P.EASE.glide(u)).toFixed(1)); el.setAttribute('opacity', (1 - u).toFixed(3)); });
     });
     return box;
+  };
+
+  // ---- tileFlip (17 Oct 2026, new trick, transition slot 'tile-flip-wave'): a makeover as a wave of tiles. The area (w x h) is cut into cols x rows tiles;
+  //      each tile is a small 3D card whose front shows its piece of `front()` and whose back shows its piece of `back()` (factories that return a fresh node
+  //      laid out at w x h). From `at` the tiles flip about Y in a diagonal wave (top-left first, `spread` s from first to last), lifting towards the lens
+  //      mid-flip with a lime edge glint. Pure function of t. Returns { el, done } (done = time the last tile lands); hide the box after it to swap in a live layer.
+  P.tileFlip = function (parent, { w, h, cols = 6, rows = 5, at = 9, dur = .7, spread = 1, front, back, edge = '#C6F432', x = 0, y = 0 } = {}) {
+    P.use('transition', 'tile-flip-wave');
+    const box = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px`, parent), tw = w / cols, th = h / rows, tiles = [];
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const L = c * tw, T = r * th;
+      const cell = E.el('div', `position:absolute;left:${L.toFixed(2)}px;top:${T.toFixed(2)}px;width:${(tw + .6).toFixed(2)}px;height:${(th + .6).toFixed(2)}px;perspective:520px`, box);
+      const card = E.el('div', 'position:absolute;inset:0;transform-style:preserve-3d', cell);
+      const face = (fn, flip) => { const f = E.el('div', `position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden${flip ? ';transform:rotateY(180deg)' : ''}`, card);
+        const n = fn(), sh = E.el('div', `position:absolute;left:${-L}px;top:${-T}px;width:${w}px;height:${h}px`, f); sh.appendChild(n); return f; };   // offset on a plain wrapper (a zoomed node would scale its own left/top)
+      face(front, false); face(back, true);
+      const glint = E.el('i', `position:absolute;inset:0;box-shadow:inset 0 0 0 1.5px ${edge},0 0 18px ${hexA(edge, .7)};opacity:0`, cell);
+      tiles.push({ card, glint, cell, d: (c / Math.max(1, cols - 1) + r / Math.max(1, rows - 1)) / 2 });
+    }
+    P.on((t) => tiles.forEach((o) => { const u = clamp((t - at - o.d * spread) / dur), k = P.EASE.swing(u), lift = Math.sin(Math.PI * k);
+      o.card.style.transform = `translateZ(${(lift * 46).toFixed(1)}px) rotateY(${(k * 180).toFixed(2)}deg)`; o.cell.style.zIndex = lift > .05 ? '2' : '1';
+      o.glint.style.opacity = (lift * .95).toFixed(3); }));
+    return { el: box, done: at + spread + dur };
   };
 })();

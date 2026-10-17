@@ -419,5 +419,36 @@
       "sendToFriend": "yes, to a founder selling abroad whose site crawls overseas"
     },
     "notes": "Pass 1 (13 stills): the globe showed during the opener (its state lagged one frame; fixed with a drive(t) option on the part), the site never scrolled (renamed clone ids broke the #specs lookup; fixed), the wireframe drone read faint (raised), the fly-by drone crossed the caption (path lowered). Pass 2 (12 stills + 7.2 s): globe enters on the breath, arcs brightened and thicker, specs and hubs sections scroll into view, phone and fly-by clear of captions. Overlap with the G1 benchmark (Aurelia) only in focus (dof-glass-glare); opener, transition, mechanism, payoff and type are new."
+  },
+  {
+    "id": "2026-10-17-1522",
+    "date": "2026-10-17",
+    "template": "Fernhollow House (fictional six-room guesthouse on a ridge; the reel sells Aquarii's website design + SEO: a booking site guests finish on a phone)",
+    "version": "collage v6 (A1 look)",
+    "service": "web",
+    "theme": "collage",
+    "format": "makeover",
+    "concept": "Buyer pain: the website quietly loses bookings. A dated guesthouse page (book by email, photo coming soon, visitor counter) in a tilted glass browser under 'Is your website losing you bookings?'; close-up with three coral flags; the page squeezed into a phone, a pinch, 'Tab closed'; breath; the page flips over in a diagonal wave of 3D tiles into the new dawn-ridge site; it scrolls with a search snippet and speed / mobile chips floating in; a calendar layer comes out of the phone, two taps, 'Booked. Two nights.'; desktop and phone together; Aquarii DM card graded lime.",
+    "motionStyle": "cubic in-out camera on every object per shot (push-in, pan, swivel, dolly, pull-back), new framing at least every 2.9 s, bold springs for flags and UI, swing-eased tile flips with lift",
+    "primaryTransition": "tile flip wave (P.tileFlip)",
+    "transitions": [
+      "light leak on each cut",
+      "breath dim",
+      "tile-flip-wave",
+      "lime wash"
+    ],
+    "typeTreatment": "Archivo stacked lines in the top third over a navy scrim, coral for the problem, lime for the answer",
+    "grade": "navy ink #070B16, blue perspective floor grid, dot field, blue spot, lime/blue light leaks, cool soft-light grade, vignette, grain .03",
+    "sound": "voice af_heart + effects from timing.json cues; owner adds Instagram audio",
+    "cover": "templates/covers/2026-10-17-1522.jpg (the dawn hero) with 'Losing bookings? Fixed.'",
+    "newTrick": "P.tileFlip (transition slot 'tile-flip-wave'): any area cut into cols x rows 3D tiles whose fronts and backs show two layers, flipping in a diagonal wave with lift and a lime edge glint; plus P.GRADES.lime",
+    "revisionPasses": 2,
+    "friendTest": {
+      "stopScrolling": "yes: a loud 2000s guesthouse page under a question every owner who takes bookings asks",
+      "watchToEnd": "yes: three flags and a lost tab set up the problem, the tile wave pays it off, and the calendar booking shows it working",
+      "screenshot": "the tile wave mid-flip, half old page, half dawn site with lime glints (9.6-10.2 s)",
+      "sendToFriend": "yes, to a friend who runs a guesthouse or a studio that still books by email"
+    },
+    "notes": "Pass 1 (9 stills): tile backs showed scrambled copies (a zoomed node scales its own left/top; the part now offsets a plain wrapper), the close-up ran under the caption (frame lowered, old page pans instead, navy scrim under the top type), calendar taps were one day off (fixed). Pass 2 (12 stills + 1:1 crop): the zoomed page inside the browser was pixelated at full size because the subjects sat in a preserve-3d rig and were rasterised small; the rig is now flat and each subject carries perspective() in its own transform, and the headings are crisp at 1:1. Overlaps the A1 benchmark (Oventide) only in service and format; opener, transition, mechanism, payoff and type are new."
   }
 ]

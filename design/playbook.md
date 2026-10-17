@@ -51,6 +51,7 @@ soft cyan window light, and a glowing app-icon tile. Take the *feel*, never the 
 - Glow tile: a dark rounded icon tile whose bottom edge fades into a saturated purple glow (static gradient).
 - Floor/surface reflection: a mirrored, faded copy of the main light at the bottom of a section.
 - Cozy detail layer: small scattered objects (paper scraps, mug, plant) drawn in SVG to make the scene feel lived in.
+- Procedural mist: an SVG `feTurbulence` (fractalNoise, wide x / tight y frequency) + alpha `feColorMatrix` filter on a rect, baked once into static bands that drift between layered ridge silhouettes with transform only (never animate the filter itself).
 
 ## Composition menus (structure, not skin)
 Palette and fonts are skin. Visitors notice STRUCTURE, so each template must also differ from the previous
