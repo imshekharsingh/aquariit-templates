@@ -25,6 +25,9 @@
   .gear{position:absolute;top:36px;right:0;width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer}
   .gear:hover{border-color:var(--accent);color:var(--accent)}.gear svg{width:22px;height:22px}
   .libln{display:inline-block;margin-top:14px;padding:8px 14px;border-radius:99px;border:1px solid currentColor;color:var(--accent);font:600 .9rem/1 system-ui,sans-serif;text-decoration:none}
+  .styles{display:flex;gap:12px;overflow-x:auto;margin:6px -20px 18px;padding:4px 20px 10px;scroll-snap-type:x mandatory;scroll-padding-left:20px;-webkit-overflow-scrolling:touch}
+  .styles a{flex:0 0 132px;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:flex-end;height:150px;padding:12px;border-radius:18px;background:var(--g);color:#fff;text-decoration:none;font:600 .85rem/1.2 system-ui,sans-serif;box-shadow:inset 0 -60px 50px -30px rgba(0,0,0,.55)}
+  .styles b{font:800 1.3rem/1 system-ui,sans-serif;letter-spacing:.02em}.styles span{margin-top:4px}.styles i{font-style:normal;font-weight:500;opacity:.8;font-size:.75rem;margin-top:2px}
   .eyebrow{font:600 .8rem/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
   h1{font-size:clamp(2.4rem,9vw,4rem);line-height:1;letter-spacing:-.03em;margin:.4em 0 .3em;font-weight:600}
   .lede{color:var(--mute);font-size:1.15rem;margin:0;max-width:34em}
@@ -93,6 +96,14 @@
     <p class="lede">A new original webpage template each day — tap one to explore it.</p>
     <a class="libln" href="/styles/">Style library →</a>
   </header>
+  <nav class="styles" aria-label="Style library">
+    <a href="/styles/f1/" style="--g:linear-gradient(160deg,#dcdbe5,#9aa0b3)"><b>F1</b><span>Misty peaks</span><i>live scene</i></a>
+    <a href="/styles/#b1" style="--g:radial-gradient(circle at 40% 35%,#ffffff,#bfeee0 45%,#1b1f2a 75%)"><b>B1</b><span>Clay character</span><i>live</i></a>
+    <a href="/2026-10-16-2055/" style="--g:linear-gradient(160deg,#06070b 40%,#ff6a1a 70%,#2ee6c9)"><b>D1</b><span>Silk-light scroll</span><i>Quillmint</i></a>
+    <a href="/2026-10-17-0851/" style="--g:linear-gradient(160deg,#5b3cf5,#ff8fb0 60%,#ffd23f)"><b>E1</b><span>Clay page</span><i>Pillowpost</i></a>
+    <a href="/2026-10-16-0850/" style="--g:linear-gradient(160deg,#0a8f55,#ff7ab8 70%,#ffe14d)"><b>A1</b><span>Makeover collage</span><i>Oventide</i></a>
+    <a href="/styles/" style="--g:linear-gradient(160deg,#2a2f3d,#141720)"><b>All</b><span>Style library</span><i>codes &amp; notes</i></a>
+  </nav>
   <div id="today"></div>
   <div id="list"></div>
   <p class="out"><a href="/logout">Sign out</a></p>
