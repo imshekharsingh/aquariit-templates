@@ -660,6 +660,7 @@
     blue: { mark: '', word: 'linear-gradient(180deg,#B5D0FF 0%,#5C8FFF 45%,#2450D8 100%)', wglow: 'rgba(79,134,255,.55)', btn: null, bglow: 'rgba(47,107,255,.45)', halo: '47,107,255' },
     clay: { mark: 'grayscale(1) sepia(1) saturate(4) hue-rotate(-28deg) brightness(1.12)', word: 'linear-gradient(180deg,#FFE2D2 0%,#FF9466 50%,#E0603D 100%)', wglow: 'rgba(255,148,102,.6)', btn: 'linear-gradient(135deg,#7DF5CB,#3FD9A3)', bglow: 'rgba(77,240,184,.5)', halo: '255,148,102', ink: '#06281d' },
     sapphire: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(195deg) brightness(1.1)', word: 'linear-gradient(180deg,#FFE0EF 0%,#FF7DB5 40%,#6C7BFF 100%)', wglow: 'rgba(255,79,154,.5)', btn: 'linear-gradient(135deg,#F2EEE8,#D9DEFF)', bglow: 'rgba(110,125,255,.55)', halo: '74,92,255', ink: '#07080f' },
+    electric: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(178deg) brightness(1.15)', word: 'linear-gradient(180deg,#F4F7FB 0%,#9FD8FF 40%,#2F6BFF 100%)', wglow: 'rgba(47,107,255,.6)', btn: 'linear-gradient(135deg,#5CD0FF,#2F6BFF)', bglow: 'rgba(47,107,255,.55)', halo: '47,107,255', ink: '#fff' },
     amber: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(-14deg) brightness(1.08)', word: 'linear-gradient(180deg,#FFE7C2 0%,#FFB35C 45%,#FF6A2C 100%)', wglow: 'rgba(255,150,70,.6)', btn: 'linear-gradient(135deg,#FFB35C,#FF6A2C)', bglow: 'rgba(255,120,50,.55)', halo: '255,140,60', ink: '#1a0900' },
   };
   P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null, breathe = true, grade = 'blue' } = {}) {
@@ -693,6 +694,43 @@
     return card;
   };
 
+
+  // ---- edgeGlobe (17 Oct 2026, new trick, payoff slot 'edge-globe-arcs'): a silver wireframe globe on canvas (orthographic, meridians + parallels, back
+  //      half faint), spinning; from `at` its edge nodes light up one by one (front side only, a ring pulse each) and shoot arcs to a target point
+  //      (e.g. the browser on screen) with a bright travelling head. Everything is a pure function of t. Returns { el, set(o) } (o: x, y, d, op, tx, ty);
+  //      or pass drive(t) -> o to compute the state in the same frame.
+  P.edgeGlobe = function (parent, { x = 201, y = 520, d = 380, at = 6, spin = .22, tilt = .32, color = '#c9d3e0', hot = '#5cd0ff', target = [201, 300],
+    nodes = [[52, 4], [35, -95], [1, 104], [-23, -46], [35, 139], [-33, 151], [40, 77], [51, 0], [19, -99], [25, 55]], drive = null } = {}) {
+    P.use('payoff', 'edge-globe-arcs');
+    const R = 2, cv = E.el('canvas', `position:absolute;left:0;top:0;width:${d}px;height:${d}px;pointer-events:none`, parent); cv.width = cv.height = d * R;
+    const g = cv.getContext('2d'), st = { x, y, d, op: 1, tx: target[0], ty: target[1] }, rad = Math.PI / 180;
+    const proj = (lat, lon, rot) => { const la = lat * rad, lo = lon * rad + rot, cx = Math.cos(la) * Math.sin(lo), cy = Math.sin(la), cz = Math.cos(la) * Math.cos(lo);
+      const yy = cy * Math.cos(tilt) - cz * Math.sin(tilt), zz = cy * Math.sin(tilt) + cz * Math.cos(tilt); return [cx, -yy, zz]; };
+    P.on((t) => {
+      if (drive) Object.assign(st, drive(t));
+      css(cv, { left: (st.x - st.d / 2).toFixed(1) + 'px', top: (st.y - st.d / 2).toFixed(1) + 'px', width: st.d + 'px', height: st.d + 'px', opacity: String(st.op) });
+      const W = d * R, r = W * .46, c = W / 2, rot = t * spin; g.clearRect(0, 0, W, W); if (st.op <= 0) return;
+      const glow = g.createRadialGradient(c, c, r * .2, c, c, r * 1.15); glow.addColorStop(0, 'rgba(47,107,255,.28)'); glow.addColorStop(1, 'rgba(47,107,255,0)'); g.fillStyle = glow; g.fillRect(0, 0, W, W);
+      const line = (pts) => { for (let i = 1; i < pts.length; i++) { const [a, b] = [pts[i - 1], pts[i]], front = a[2] + b[2] > 0; g.globalAlpha = front ? .55 : .12; g.beginPath(); g.moveTo(c + a[0] * r, c + a[1] * r); g.lineTo(c + b[0] * r, c + b[1] * r); g.stroke(); } };
+      g.strokeStyle = color; g.lineWidth = 1.2 * R;
+      for (let lon = 0; lon < 180; lon += 20) line(Array.from({ length: 73 }, (_, i) => proj(-90 + i * 2.5, lon, rot)).concat(Array.from({ length: 73 }, (_, i) => proj(90 - i * 2.5, lon + 180, rot))));
+      for (let lat = -60; lat <= 60; lat += 30) line(Array.from({ length: 91 }, (_, i) => proj(lat, i * 4, rot)));
+      g.globalAlpha = .8; g.strokeStyle = hexA(color, .7); g.beginPath(); g.arc(c, c, r, 0, TAU); g.stroke();
+      const tx = (st.tx - st.x + st.d / 2) / st.d * W, ty = (st.ty - st.y + st.d / 2) / st.d * W;
+      nodes.forEach(([la, lo], i) => {
+        const a = at + i * .14, k = P.springAt(t, a, 'bold'); if (t < a) return; const [px, py, pz] = proj(la, lo, rot); if (pz < -.05) return;
+        const nx = c + px * r, ny = c + py * r, vis = Math.min(1, (pz + .05) * 4);
+        const u = ((t - a) % 1.4) / 1.4; g.globalAlpha = (1 - u) * .7 * vis; g.strokeStyle = hot; g.lineWidth = 1.5 * R; g.beginPath(); g.arc(nx, ny, (4 + 22 * u) * R, 0, TAU); g.stroke();
+        g.globalAlpha = vis; g.fillStyle = '#fff'; g.shadowColor = hot; g.shadowBlur = 16 * R; g.beginPath(); g.arc(nx, ny, 3.4 * R * Math.min(1.3, k), 0, TAU); g.fill(); g.shadowBlur = 0;
+        const f = P.EASE.glide(clamp((t - a - .05) / .7)), mx = (nx + tx) / 2, my = Math.min(ny, ty) - 60 * R - 40 * R * (i % 3);
+        const pt = (q) => [(1 - q) * (1 - q) * nx + 2 * (1 - q) * q * mx + q * q * tx, (1 - q) * (1 - q) * ny + 2 * (1 - q) * q * my + q * q * ty];
+        g.strokeStyle = hexA(hot, .9); g.lineWidth = 2.2 * R; g.globalAlpha = vis; g.beginPath(); g.moveTo(nx, ny); for (let s = 1; s <= 24; s++) { const [qx, qy] = pt(f * s / 24); g.lineTo(qx, qy); } g.stroke();
+        if (f < 1) { const [hx, hy] = pt(f); g.fillStyle = '#fff'; g.shadowColor = hot; g.shadowBlur = 12 * R; g.beginPath(); g.arc(hx, hy, 2.6 * R, 0, TAU); g.fill(); g.shadowBlur = 0; }
+      });
+      g.globalAlpha = 1;
+    });
+    return { el: cv, set: (o) => Object.assign(st, o) };
+  };
 
   // ---- serpClimb (16 Oct 2026, new trick): a search-results card; our result starts far down in a dated look, then climbs to #1 on a spring, the rows it passes shift down,
   //      the rank badge counts 7 → 1 and the row restyles to the modern look. `windows` are the times the card is on screen; before `climbAt` the old state shows.

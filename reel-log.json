@@ -388,5 +388,36 @@
       "sendToFriend": "yes, to a founder whose brand is premium but whose site is not"
     },
     "notes": "Pass 1 (18 stills, one per second): hook, scroll stops and captions read cleanly; no frame holds longer than ~1.5 s; the phone after the pull-back was small with a large empty band below it (scale .70 -> .78). Pass 2 (stills at 11.2 and 13): phone fills the width and stays clear of the caption band. Overlap with the D1 benchmark only in the site-scroll mechanism (opener, payoff, type, focus, transition are new). Note: P.brandEnd's built-in breathing halo has a quoting bug (its background never renders) and its push-in is commented out; this film adds its own push-in on the returned card instead of changing the shared part (Rule 1)."
+  },
+  {
+    "id": "2026-10-17-1443",
+    "date": "2026-10-17",
+    "template": "Nimbra (fictional foldable camera drone sold worldwide; the reel sells Aquarii's edge service: CDN + DNS + WAF + bot/DDoS as one setup)",
+    "version": "cinema v2 (G2 look)",
+    "service": "edge",
+    "theme": "cinema",
+    "format": "problem -> fix",
+    "concept": "Buyer pain: the site is slow and exposed for customers abroad. A silver drone rises as a wireframe under the hook 'Why is your site slow abroad?'; a chroma scan cuts to our Nimbra store stuck on skeletons while a request crawls from Tokyo to a far origin; breath; the camera pulls back and a silver wireframe globe rises, edge nodes light and fire arcs into the browser until the page snaps in ('served from the nearest city'); the live store, spec dials; a shield ring locks on and bot sparks burst (WAF / BOTS / DDOS); a phone swings in and the drone flies across; Aquarii DM card graded electric.",
+    "motionStyle": "expo-out arrivals, cubic in-out camera moves every 1.4-1.8 s (fly-in, push, pull-back, orbit, push-in, dolly, pull-back), bold springs for UI, handheld noise",
+    "primaryTransition": "chroma scan wipe (RGB-split scan band)",
+    "transitions": [
+      "chroma-scan-wipe",
+      "breath dim",
+      "camera pull-back",
+      "blue flash"
+    ],
+    "typeTreatment": "Chakra Petch numbered captions in the top third (01 THE WAIT ... 05 EVERYWHERE), coral for the problem, ice and emerald for the fix",
+    "grade": "graphite ink #04060b, cold silver beams, electric blue and ice glows, blue floor pool, cold soft-light grade, vignette, live grain",
+    "sound": "voice af_heart + effects from timing.json cues; owner adds Instagram audio",
+    "cover": "templates/covers/2026-10-17-1443.jpg (the drone hero) with 'Slow abroad? Fixed.'",
+    "newTrick": "P.edgeGlobe (payoff slot 'edge-globe-arcs'): a silver wireframe globe on canvas whose edge nodes light one by one and fire arcs with travelling heads into a target point, state driven per frame via drive(t); plus P.GRADES.electric",
+    "revisionPasses": 2,
+    "friendTest": {
+      "stopScrolling": "yes: a glowing wireframe drone rising into cold light under a question every exporter asks",
+      "watchToEnd": "yes: the stuck page sets up a wait, and the globe firing arcs pays it off; numbered steps pull to 05",
+      "screenshot": "the globe with blue arcs feeding the browser (7-8 s)",
+      "sendToFriend": "yes, to a founder selling abroad whose site crawls overseas"
+    },
+    "notes": "Pass 1 (13 stills): the globe showed during the opener (its state lagged one frame; fixed with a drive(t) option on the part), the site never scrolled (renamed clone ids broke the #specs lookup; fixed), the wireframe drone read faint (raised), the fly-by drone crossed the caption (path lowered). Pass 2 (12 stills + 7.2 s): globe enters on the breath, arcs brightened and thicker, specs and hubs sections scroll into view, phone and fly-by clear of captions. Overlap with the G1 benchmark (Aurelia) only in focus (dof-glass-glare); opener, transition, mechanism, payoff and type are new."
   }
 ]
