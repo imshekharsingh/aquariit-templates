@@ -628,5 +628,31 @@
     "animation": "WebGL fragment shader (ray-sphere planet, 3D-noise continents and clouds, ocean glint, warm terminator, point-cell city lights, two-shell atmosphere rim, stars) with a scroll-driven camera flight and a sun that rises in the first 2.6 s; scroll-driven rises (animation-timeline view()) on every section, sibling-index() staggers, transform-only loops (marquee, satellite, clock glow, ring pulses, light sweep)",
     "purpose": "App showcase for a global live-classes service (edge service line: one site that has to be fast in every time zone)",
     "description": "Veloria runs live language classes around the clock: a planet turns under a sunrise from orbit, then the camera flies to the night side's city lights, round to the terminator and back out to the whole blue world, past live clocks for four cities, three steps, three ways to learn and a countdown to the next class."
+  },
+  {
+    "id": "2026-10-17-1336",
+    "date": "2026-10-17",
+    "time": "13:36",
+    "slug": "plumpaw",
+    "url": "https://templates.aquariit.com/2026-10-17-1336/",
+    "name": "Plumpaw",
+    "era": "modern",
+    "theme": "Soft 3D clay character on a calm plum-black stage (theme B soft3d film day): one radiant clay mascot whose colour and face follow its mood; a pet daycare booking site shown as the site Aquarii protects",
+    "layout": "mascot-stage hero (clay character on a halo with floating schedule chips), accordion-look mood list, before/after pair, checklist, pricing table, quote column, calendar booking card, fixed bottom bar header",
+    "palette": [
+      "#0d0b14",
+      "#191426",
+      "#ff9466",
+      "#ffc56b",
+      "#4df0b8",
+      "#a68bff",
+      "#ff4d6a",
+      "#fff4ea"
+    ],
+    "fonts": "Baloo 2 + Geologica",
+    "motif": "Bun, a clay mascot with ears: soft-3D from shading only (gloss, inner shade, mood tint, contact shadow, coloured halo), heart eyes, sleepy eyes, wink",
+    "animation": "mascot drops in with squash and stretch, breathes and hops; a 12 s opacity cycle of faces, tints and halos; porthole reveals (two mask layers with mask-composite: add, @property radius driven by animation-timeline view()); scroll-driven rises on every section; transform-only bobs, bubbles and calendar beat",
+    "purpose": "Booking site for a service business (fictional pet daycare and grooming), shown as the site we protect in a security-service film",
+    "description": "Plumpaw books dog daycare, spa grooms and sleepovers: Bun the clay mascot drops onto a glowing stage and cycles through moods, then four kinds of day, a muddy-to-fluffy spa pair, what every booking includes, plans and a this-week calendar."
   }
 ]
