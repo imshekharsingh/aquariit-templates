@@ -188,9 +188,9 @@ if (DELIVER && !only) {
   mkdirSync(DELIVER, { recursive: true });
   const v = variants[0], { copyFileSync } = await import('node:fs');
   copyFileSync(join(OUT, `${id}-${v}.mp4`), join(DELIVER, `${id}.mp4`));
-  // hard cap: the site cannot serve a file over 25 MiB (the deploy fails). Re-encode at a fixed bitrate if a busy film (grain, particles) still came out too big.
+  // safety cap: re-encode at a fixed bitrate only if a film comes out absurdly big (the site no longer holds the videos: owner, 17 Oct 2026)
   const { statSync } = await import('node:fs'), dm = join(DELIVER, `${id}.mp4`);
-  if (statSync(dm).size > 24 * 1024 * 1024) {
+  if (statSync(dm).size > 95 * 1024 * 1024) {   // videos now stream from the reels release (src/worker.js), so only a runaway file is capped
     const tmp = join(OUT, `${id}-capped.mp4`);
     run('ffmpeg', ['-y', '-loglevel', 'error', '-i', dm, '-c:v', 'libx264', '-profile:v', 'high', '-preset', 'slow', '-b:v', Math.min(8, Math.floor(170 / LEN * 10) / 10) + 'M', '-maxrate', Math.min(9, Math.floor(190 / LEN * 10) / 10) + 'M', '-bufsize', '18M', '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-movflags', '+faststart', tmp]);
     copyFileSync(tmp, dm); console.log('capped the delivered reel to', (statSync(dm).size / 1048576).toFixed(1), 'MiB (site limit 25 MiB)');
