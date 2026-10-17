@@ -58,8 +58,8 @@
        <div style="margin-left:10px;flex:1;height:14px;border-radius:5px;background:rgba(255,255,255,.07);display:flex;align-items:center;padding:0 8px;font:500 9.5px/1 Inter,sans-serif;color:#d9d6cf;position:relative;overflow:hidden"><span class="url"></span><i class="caret" style="width:1px;height:10px;background:#fff;margin-left:1px"></i><i class="lb" style="position:absolute;left:0;bottom:0;height:2px;width:0;background:linear-gradient(90deg,${A1},${A2})"></i></div>`);
     const url = bar.querySelector('.url'), caret = bar.querySelector('.caret'), lb = bar.querySelector('.lb');
     const vp = E.el('div', `position:absolute;left:1px;right:1px;top:${TB}px;bottom:1px;overflow:hidden;border-radius:0 0 15px 15px;background:#07080d`, frame);
-    const mk = (w) => { const c = srcSite.cloneNode(true); c.style.cssText = `position:absolute;left:0;top:0;width:${w}px;transform-origin:0 0;transform:scale(${BW / w * .995})`; c.querySelectorAll('*').forEach((n) => { n.style.animation = 'none'; }); return c; };
-    const PW = 1280, site = mk(PW); vp.appendChild(site);
+    const mk = (w) => { const c = srcSite.cloneNode(true); c.style.cssText = `position:absolute;left:0;top:0;width:${w}px;transform-origin:0 0;zoom:${BW / w * .995}`   /* zoom, not scale: the text is laid out at its final size, so it stays crisp inside the 3D frame */; c.querySelectorAll('*').forEach((n) => { n.style.animation = 'none'; }); return c; };
+    const PW = 1024, site = mk(PW); vp.appendChild(site);
     const K = BW / PW * .995;                                                         // page px -> frame px
     const q = (s) => site.querySelector(s), qa = (s) => [...site.querySelectorAll(s)];
     const top = (el) => { let y = 0; while (el && el !== site) { y += el.offsetTop; el = el.offsetParent; } return y; };
@@ -99,7 +99,7 @@
     const leak = E.el('div', `position:absolute;inset:-20%;background:radial-gradient(40% 35% at 20% 30%,rgba(255,170,90,.9),rgba(255,120,50,0) 70%),radial-gradient(35% 30% at 85% 70%,rgba(139,108,255,.6),rgba(139,108,255,0) 70%);mix-blend-mode:screen;opacity:0`, P.front);
     E.el('div', 'position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,170,90,.10),rgba(0,0,0,0) 45%,rgba(56,140,255,.10));mix-blend-mode:soft-light', P.front);
     E.el('div', 'position:absolute;inset:0;background:radial-gradient(80% 65% at 50% 48%,rgba(0,0,0,0),rgba(0,0,0,.6))', P.front);
-    const gc = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px;opacity:.07;mix-blend-mode:overlay', P.front); gc.width = 201; gc.height = 358; const gx = gc.getContext('2d'), gimg = gx.createImageData(201, 358);
+    const gc = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px;opacity:.035;mix-blend-mode:overlay', P.front); gc.width = 201; gc.height = 358; const gx = gc.getContext('2d'), gimg = gx.createImageData(201, 358);
     const flash = E.el('div', 'position:absolute;inset:0;background:radial-gradient(60% 50% at 50% 45%,#fff3df,#ffb35c 60%,#ff6a2c);opacity:0', P.front);
     const CAP = [[3.6, 7.8, '01 — BUILD', 'Every pixel,', 'in motion.'], [8.1, 11.8, '02 — DECONSTRUCT', 'Every layer,', 'on purpose.'], [12.2, 16.3, '03 — EXPLORE', 'Features that', 'feel alive.'],
       [16.6, 19.9, '04 — INTERACT', 'Data you can', 'feel.'], [20.2, 22.4, '05 — EVERYWHERE', 'Desktop', 'to pocket.']];
@@ -178,7 +178,7 @@
 
       // 12-16.5 features: scroll, heading, cards flip, live visuals, cursor
       const scroll1 = io(seg(t, 12, 13)) * yFeat, scroll2 = io(seg(t, 16.3, 17.2)) * (yLive - yFeat);
-      site.style.transform = `translateY(${(-(scroll1 + scroll2) * K).toFixed(1)}px) scale(${K})`;
+      site.style.transform = `translateY(${(-(scroll1 + scroll2)).toFixed(1)}px)`;   // page px (the clone is zoomed by K)
       pop(fH, 12.6, 22);
       feats.forEach((f, i) => { const k = P.springAt(t, 13 + i * .32, 'bold'); f.style.transform = `rotateX(${((1 - k) * 85).toFixed(1)}deg) translateY(${(-hover(i) * 8).toFixed(1)}px)`; f.style.transformOrigin = '50% 100%'; f.style.opacity = clamp(k * 1.8).toFixed(3);
         f.style.boxShadow = hover(i) > .05 ? `0 0 ${(24 * hover(i)).toFixed(0)}px rgba(255,179,92,${(.45 * hover(i)).toFixed(2)}),inset 0 1px 0 rgba(255,255,255,.12)` : '';

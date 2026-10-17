@@ -34,6 +34,9 @@ Run `TZ=Asia/Kolkata date +%a` (a hint saying "film day" or "light day" override
   that is finished and moving in the first second (a hero effect from the playbook or design/brand/references.md: light ribbons, 3D-feeling shapes,
   kinetic type). 3-4 sections, not a full long page. The effect is the post: "this is what an animation looks like as a real website".
   Add `<script>window.__reel = { hold: 3.0 }</script>` so the recording stays on the effect for 3 s before it scrolls (result first; the demo gate allows at most 3.0 s in one framing, so never more).
+  Every reel speaks (owner, 17 Oct 2026): also write film/ID/voice.md (4 lines `- [t0-t1] text`, 2.3-3.2 words/s, ending before 15.0 s: the hook,
+  what the page shows, what we deliver, "DM us" over the end card from 12.3 s) and film/ID/timing.json `{"len": 15.4, "cues": [...]}`; no story.js.
+  The Reel publish workflow speaks it and lays it under the recording.
 - No film folder, no voice, no storyboard: the Reel publish workflow records the page (`render-reel.mjs --light`: 15 s, the kit's Hook on screen, Aquarii
   end card) and checks it with the demo profile. The kit's `## Reel` says Length: 15 s and puts the payoff on the effect itself.
 - Skip Phase 4c. Everything else (checks, records, push) as usual.
