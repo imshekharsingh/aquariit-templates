@@ -558,5 +558,28 @@
     "animation": "canvas silk ribbon (two passes, additive 'lighter' blending, DPR capped at 2, paused off-screen, static under reduced motion), linear() spring load-in, scroll-driven rises and isometric bar growth via animation-timeline view() with finished defaults",
     "purpose": "SaaS landing page (contracts and paperwork automation) shown as studio proof for the sitescroll theme",
     "description": "Quillmint makes paperwork quiet: a near-black page where a silk-light ribbon flows behind an italic-serif headline and a live contract-flow panel, then a glass bento of what it does, sample numbers with isometric bars, three plans without prices and a solar-orange closing card."
+  },
+  {
+    "id": "2026-10-17-0851",
+    "date": "2026-10-17",
+    "time": "08:51",
+    "slug": "pillowpost",
+    "url": "https://templates.aquariit.com/2026-10-17-0851/",
+    "name": "Pillowpost",
+    "era": "modern",
+    "theme": "Claymorphism / soft 3D on electric violet with tangerine, bubblegum, mint and butter-yellow clay; social content studio (light-day demo, theme E)",
+    "layout": "clay-pile stack-reveal hero, six-tile clay week grid, step ladder with proof numbers, plan cards, dark closing pile, side-tab back link",
+    "palette": [
+      "#5a3cf0",
+      "#f0ebff",
+      "#ff8a3d",
+      "#ff5fa8",
+      "#1b1340"
+    ],
+    "fonts": "Rubik + Hanken Grotesk",
+    "motif": "soft clay shapes (play, heart, comment, star) with highlight, inner shade and contact shadow that drop in with squash-and-stretch and keep breathing",
+    "animation": "animation-composition: add layers an endless breathe (translate, rotate) over a linear() spring drop; scroll-driven rises with finished defaults",
+    "purpose": "Social content hub (social media management service line)",
+    "description": "A soft clay-3D content studio page: shapes spring in and breathe, a week of six post types, three steps, three plans without prices."
   }
 ]
