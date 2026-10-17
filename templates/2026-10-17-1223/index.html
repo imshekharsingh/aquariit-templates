@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Aurelia — Sound, sculpted</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07080d">
+<meta name="description" content="Aurelia: a dark, cinematic product site for a fictional sculpted speaker. Amber light, a glowing product orb with orbiting rings, glass cards, live feature visuals and a dashboard.">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..800&display=swap" rel="stylesheet">
+<style>
+:root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#07080d;--ink:#f3f1ec;--mute:#9a9cab;--line:rgba(255,255,255,.1);--a1:#FFB35C;--a2:#FF6A2C;--vio:#8b6cff;--cy:#38e1ff;
+  --disp:"Inter",system-ui,sans-serif;--spring:linear(0,.24 7%,.7 16%,1.06 27%,1.06 35%,1.01 50%,1 100%)}
+@supports (color:color(display-p3 1 1 1)){:root{--a2:color(display-p3 1 .44 .2);--cy:color(display-p3 .3 .87 1)}}
+html.reel{--safe-top:0px;--safe-bottom:0px}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--disp)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--a1);outline-offset:3px;border-radius:8px}
+/* the whole site sits in a size container, so a copy placed at any width (desktop frame or phone, e.g. in the film) lays itself out for that width */
+.site{container-type:inline-size;position:relative;overflow:hidden;background:radial-gradient(60% 40% at 70% 18%,rgba(255,140,60,.16),transparent 70%),radial-gradient(50% 40% at 10% 60%,rgba(139,108,255,.12),transparent 70%),var(--bg)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+h1,h2,.num{font-variation-settings:"opsz" 32;letter-spacing:-.035em}
+.nav{position:sticky;top:0;z-index:5;background:rgba(7,8,13,.92);border-bottom:1px solid var(--line);padding-top:var(--safe-top)}
+.nav .wrap{display:flex;align-items:center;gap:20px;height:60px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.24em;font-size:14px}
+.logo i{width:22px;height:22px;border-radius:50%;border:2px solid var(--a1);box-shadow:0 0 14px rgba(255,179,92,.6),inset 0 0 8px rgba(255,179,92,.5)}
+.links{display:none;gap:22px;color:var(--mute);font-size:14px;margin-left:10px}
+.back{margin-left:auto;font-size:13px;color:var(--mute)}
+.reel .back{display:none}.reel .nav .cta{margin-left:auto}
+.cta{padding:9px 16px;border-radius:99px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#1a0900;font-weight:650;font-size:14px}
+.hero{padding:56px 0 40px}
+.hero .wrap{display:grid;gap:30px}
+.badge{display:inline-flex;gap:8px;align-items:center;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-size:13px;color:var(--mute)}
+.badge b{color:var(--a1);font-weight:600}
+h1{margin-top:18px;font-size:clamp(46px,12cqi,92px);line-height:.96;font-weight:650}
+h1 span{display:block}
+h1 .glow{background:linear-gradient(100deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{margin-top:18px;color:#c9c8c4;max-width:34ch;font-size:17px}
+.btns{margin-top:24px;display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:14px;font-weight:650}
+.btn.main{background:linear-gradient(135deg,var(--a1),var(--a2));color:#1a0900;box-shadow:0 12px 30px -10px rgba(255,106,44,.7)}
+.btn.ghost{border:1px solid var(--line);background:rgba(255,255,255,.04)}
+.stage{position:relative;height:340px}
+.orb{position:absolute;left:50%;top:50%;width:170px;height:170px;margin:-85px 0 0 -85px;border-radius:50%;
+  background:radial-gradient(circle at 34% 28%,#fff5e6 0,#ffd29a 14%,#ff9a3c 38%,#c4400f 66%,#3a0f05 100%);
+  box-shadow:0 0 60px rgba(255,140,60,.55),0 0 140px rgba(255,106,44,.35),inset -18px -22px 40px rgba(0,0,0,.45)}
+.ring{position:absolute;left:50%;top:50%;border-radius:50%;border:1.5px solid rgba(255,190,120,.55)}
+.ring.r1{width:280px;height:96px;margin:-48px 0 0 -140px;transform:rotate(-14deg)}
+.ring.r2{width:236px;height:236px;margin:-118px 0 0 -118px;border-color:rgba(56,225,255,.35);transform:rotateX(70deg) rotate(24deg)}
+.sat{position:absolute;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--cy));box-shadow:0 0 12px var(--cy)}
+.sat.s1{left:calc(50% + 128px);top:calc(50% - 30px)}.sat.s2{left:calc(50% - 104px);top:calc(50% + 40px);background:radial-gradient(circle at 35% 30%,#fff,var(--a1));box-shadow:0 0 12px var(--a1)}
+.card{position:absolute;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 20px 40px -20px rgba(0,0,0,.8);font-size:12px;color:var(--mute);min-width:140px}
+.card b{display:block;color:var(--ink);font-size:14px;font-weight:650}
+.card.eq{left:0;top:18px}.card.bat{right:0;bottom:10px}
+.tog{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.tog i{width:30px;height:17px;border-radius:99px;background:var(--a2);position:relative}.tog i::after{content:"";position:absolute;right:2px;top:2px;width:13px;height:13px;border-radius:50%;background:#fff}
+.sl{margin-top:8px;height:4px;border-radius:2px;background:rgba(255,255,255,.12)}.sl i{display:block;width:66%;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--a1),var(--a2))}
+.bars{display:flex;align-items:flex-end;gap:4px;height:28px;margin-top:8px}.bars i{flex:1;border-radius:2px;background:linear-gradient(var(--cy),rgba(56,225,255,.2))}
+section{padding:64px 0}
+.kick{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--a1)}
+h2{margin-top:10px;font-size:clamp(32px,8cqi,58px);line-height:1.02;font-weight:620;max-width:15ch}
+.feats{margin-top:30px;display:grid;gap:14px}
+.feat{padding:20px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02));box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.feat svg{width:30px;height:30px;color:var(--a1)}
+.feat h3{margin-top:12px;font-size:18px;font-weight:620;letter-spacing:-.01em}
+.feat p{margin-top:4px;color:var(--mute);font-size:14px}
+.viz{margin-top:14px;height:40px;position:relative}
+.dash{margin-top:30px;padding:20px;border-radius:22px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.dash svg{width:100%;height:150px;display:block}
+.stats{margin-top:18px;display:grid;gap:12px}
+.stat{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.num{font-size:34px;font-weight:650}
+.stat span{color:var(--mute);font-size:13px}
+.pb{margin-top:8px;height:4px;border-radius:2px;background:rgba(255,255,255,.1)}.pb i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--a1),var(--a2))}
+.order{margin-top:22px}
+footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6c6e7c;font-size:13px}
+@container (min-width:720px){
+  .links{display:flex}
+  .hero .wrap{grid-template-columns:1.05fr .95fr;align-items:center}
+  .feats{grid-template-columns:repeat(4,1fr)}
+  .stats{grid-template-columns:repeat(3,1fr)}
+}
+@media (prefers-reduced-motion:no-preference){
+  .ring.r1{animation:spinA 14s linear infinite}.ring.r2{animation:spinB 18s linear infinite}
+  @keyframes spinA{to{transform:rotate(346deg)}}@keyframes spinB{to{transform:rotateX(70deg) rotate(384deg)}}
+  .load{animation:in .9s var(--spring) both}.d2{animation-delay:.12s}.d3{animation-delay:.24s}
+  @keyframes in{from{opacity:0;transform:translateY(20px)}}
+}
+</style>
+</head>
+<body>
+<div class="site">
+<header class="nav"><div class="wrap">
+  <a class="logo" href="#top"><i></i>AURELIA</a>
+  <nav class="links" aria-label="Main"><a href="#features">Features</a><a href="#live">Live</a><a href="#order">Order</a></nav>
+  <a class="back" href="/">← All templates</a>
+  <a class="cta" href="#order">Pre-order</a>
+</div></header>
+<main id="top">
+  <section class="hero" aria-labelledby="h"><div class="wrap">
+    <div>
+      <span class="badge load"><b>New</b> Aurelia One</span>
+      <h1 id="h" class="load d2"><span>Sound,</span><span>sculpted from</span><span class="glow">silence.</span></h1>
+      <p class="lede load d3">A speaker shaped by the room it plays in. It listens, tunes itself and fills the space evenly, from a whisper to a full house.</p>
+      <div class="btns load d3"><a class="btn main" href="#order">Pre-order</a><a class="btn ghost" href="#features">Hear how it works</a></div>
+    </div>
+    <div class="stage" aria-hidden="true">
+      <div class="ring r2"></div><div class="orb"></div><div class="ring r1"></div><i class="sat s1"></i><i class="sat s2"></i>
+      <div class="card eq"><b>Living room</b>Room EQ<div class="tog"><span>Adaptive</span><i></i></div><div class="sl"><i></i></div></div>
+      <div class="card bat"><b>40 h</b>Battery, sample week<div class="bars"><i style="height:40%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:90%"></i><i style="height:65%"></i><i style="height:80%"></i></div></div>
+    </div>
+  </div></section>
+
+  <section id="features" aria-labelledby="f"><div class="wrap">
+    <p class="kick">Features</p>
+    <h2 id="f">Every room, tuned to you.</h2>
+    <div class="feats">
+      <article class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h3l3-7 4 14 3-9 2 2h5"/></svg><h3>Room EQ</h3><p>Hears the walls and corrects itself.</p><svg class="viz" viewBox="0 0 160 40"><path d="M0 20 Q20 2 40 20 T80 20 T120 20 T160 20" fill="none" stroke="#FFB35C" stroke-width="2"/></svg></article>
+      <article class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7" opacity=".6"/><circle cx="12" cy="12" r="11" opacity=".3"/></svg><h3>Spatial audio</h3><p>Sound that fills the room evenly.</p><svg class="viz" viewBox="0 0 160 40"><circle cx="80" cy="20" r="6" fill="#38e1ff"/><circle cx="80" cy="20" r="14" fill="none" stroke="#38e1ff" opacity=".5"/><circle cx="80" cy="20" r="19" fill="none" stroke="#38e1ff" opacity=".25"/></svg></article>
+      <article class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h16M14 7l5 5-5 5"/></svg><h3>Adaptive volume</h3><p>Steady level as the room gets busy.</p><svg class="viz" viewBox="0 0 160 40"><rect x="0" y="18" width="160" height="4" rx="2" fill="rgba(255,255,255,.12)"/><rect x="0" y="18" width="104" height="4" rx="2" fill="#FF6A2C"/><circle cx="104" cy="20" r="7" fill="#fff"/></svg></article>
+      <article class="feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 11v2"/></svg><h3>All-day power</h3><p>Forty hours from one charge.</p><svg class="viz" viewBox="0 0 160 40"><g fill="#8b6cff"><rect x="10" y="16" width="16" height="24" rx="2"/><rect x="40" y="8" width="16" height="32" rx="2"/><rect x="70" y="20" width="16" height="20" rx="2"/><rect x="100" y="4" width="16" height="36" rx="2"/><rect x="130" y="12" width="16" height="28" rx="2"/></g></svg></article>
+    </div>
+  </div></section>
+
+  <section id="live" aria-labelledby="l"><div class="wrap">
+    <p class="kick">Live</p>
+    <h2 id="l">Your sound, live.</h2>
+    <div class="dash">
+      <svg viewBox="0 0 400 150" role="img" aria-label="Sample chart: listening level over 24 hours">
+        <defs><linearGradient id="fillg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB35C" stop-opacity=".45"/><stop offset="1" stop-color="#FFB35C" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0 120 C40 118 60 96 90 90 S140 40 180 46 S240 100 280 70 S350 20 400 30 L400 150 L0 150Z" fill="url(#fillg)"/>
+        <path class="line" d="M0 120 C40 118 60 96 90 90 S140 40 180 46 S240 100 280 70 S350 20 400 30" fill="none" stroke="#FFB35C" stroke-width="3"/>
+      </svg>
+      <div class="stats">
+        <div class="stat"><div class="num">32 h</div><span>played this week (sample)</span><div class="pb"><i style="width:74%"></i></div></div>
+        <div class="stat"><div class="num">1.2M</div><span>rooms tuned (sample)</span><div class="pb"><i style="width:88%"></i></div></div>
+        <div class="stat"><div class="num">99.9%</div><span>update uptime (sample)</span><div class="pb"><i style="width:99%"></i></div></div>
+      </div>
+    </div>
+    <div class="order" id="order"><a class="btn main" href="#top">Pre-order Aurelia One</a></div>
+  </div></section>
+</main>
+<footer>Developed by Aquarii Technologies</footer>
+</div>
+</body>
+</html>
