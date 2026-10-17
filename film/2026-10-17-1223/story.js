@@ -31,14 +31,16 @@
     P.use('transition', 'light-leak'); P.use('type', 'inter-display-captions'); P.use('focus', 'dof-glass-glare');
 
     // ---------- studio: glows, beams, floor ----------
-    const glows = [[A2, -120, 120, 420, .5], [VIO, 160, 260, 380, .42], [CY, -60, 470, 360, .3]].map(([c, x, y, d, o]) => ({ el: E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${d}px;height:${d}px;border-radius:50%;background:radial-gradient(closest-side,${c}66,${c}00);opacity:${o}`, world), x, y, o }));
-    const beams = [[40, -14, .5], [170, -6, .7], [300, 8, .45]].map(([x, r, o]) => ({ el: E.el('div', `position:absolute;left:${x}px;top:-120px;width:120px;height:760px;transform-origin:50% 0;background:linear-gradient(rgba(255,190,120,.42),rgba(255,160,80,.12) 55%,rgba(255,150,70,0));filter:blur(6px);opacity:${o};mix-blend-mode:screen`, world), r, o }));
+    E.el('div', 'position:absolute;left:-200px;top:-260px;width:802px;height:760px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,170,90,.55),rgba(255,130,60,.22) 45%,rgba(255,120,50,0));pointer-events:none', world);
+    E.el('div', 'position:absolute;left:-160px;top:470px;width:722px;height:420px;border-radius:50%;background:radial-gradient(closest-side,rgba(110,80,255,.42),rgba(110,80,255,0));pointer-events:none', world);
+    const glows = [[A2, -120, 80, 420, .45], [VIO, 160, 420, 380, .38], [CY, -60, 520, 300, .18]].map(([c, x, y, d, o]) => ({ el: E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${d}px;height:${d}px;border-radius:50%;background:radial-gradient(closest-side,${c}66,${c}00);opacity:${o}`, world), x, y, o }));
+    const beams = [[10, -12, .5], [140, -4, .75], [270, 9, .5]].map(([x, r, o]) => ({ el: E.el('div', `position:absolute;left:${x}px;top:-120px;width:200px;height:800px;transform-origin:50% 0;background:linear-gradient(rgba(255,196,130,.5),rgba(255,160,80,.16) 55%,rgba(255,150,70,0));filter:blur(14px);opacity:${o};mix-blend-mode:screen`, world), r, o }));
     const view = E.el('div', 'position:absolute;inset:0;perspective:880px;perspective-origin:50% 44%', world);
     const rig = E.el('div', 'position:absolute;inset:0;transform-style:preserve-3d', view);
-    const floor = E.el('div', `position:absolute;left:-300px;top:520px;width:1002px;height:700px;transform-origin:50% 0;transform:rotateX(78deg);
+    const floor = E.el('div', `position:absolute;left:-300px;top:516px;width:1002px;height:700px;transform-origin:50% 0;transform:rotateX(78deg);
       background-image:linear-gradient(rgba(56,225,255,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(56,225,255,.16) 1px,transparent 1px);background-size:44px 44px;
       -webkit-mask:radial-gradient(50% 45% at 50% 0,#000,transparent);mask:radial-gradient(50% 45% at 50% 0,#000,transparent);opacity:.55`, rig);
-    const pool = E.el('div', 'position:absolute;left:41px;top:540px;width:320px;height:70px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,150,70,.55),rgba(255,150,70,0));filter:blur(6px)', rig);
+    const pool = E.el('div', 'position:absolute;left:21px;top:492px;width:360px;height:80px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,150,70,.55),rgba(255,150,70,0));filter:blur(6px)', rig);
 
     // ---------- logo intro ----------
     const logo = E.el('div', 'position:absolute;left:0;right:0;top:250px;text-align:center;transform-style:preserve-3d', rig,
@@ -48,17 +50,17 @@
     const ring = logo.querySelector('circle'), core = logo.querySelectorAll('circle')[1], letters = [...logo.querySelectorAll('.lw span')], tag = logo.querySelector('.tg'), lw = logo.querySelector('.lw');
 
     // ---------- the glass browser with the live site inside ----------
-    const BX = 21, BY = 178, BW = 360, BH = 392, TB = 28;
+    const BX = 14, BY = 262, BW = 374, BH = 252, TB = 22;
     const frame = E.el('div', `position:absolute;left:${BX}px;top:${BY}px;width:${BW}px;height:${BH}px;border-radius:16px;transform-style:preserve-3d;
       background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.22);box-shadow:0 40px 80px -30px rgba(0,0,0,.9),0 0 60px -20px rgba(255,140,60,.35)`, rig);
     const bar = E.el('div', `position:absolute;left:0;right:0;top:0;height:${TB}px;display:flex;align-items:center;gap:6px;padding:0 10px;border-bottom:1px solid rgba(255,255,255,.12);border-radius:16px 16px 0 0;background:rgba(10,12,18,.75)`, frame,
       `<i style="width:7px;height:7px;border-radius:50%;background:#ff5f57"></i><i style="width:7px;height:7px;border-radius:50%;background:#febc2e"></i><i style="width:7px;height:7px;border-radius:50%;background:#28c840"></i>
-       <div style="margin-left:10px;flex:1;height:17px;border-radius:6px;background:rgba(255,255,255,.07);display:flex;align-items:center;padding:0 8px;font:500 9.5px/1 Inter,sans-serif;color:#d9d6cf;position:relative;overflow:hidden"><span class="url"></span><i class="caret" style="width:1px;height:10px;background:#fff;margin-left:1px"></i><i class="lb" style="position:absolute;left:0;bottom:0;height:2px;width:0;background:linear-gradient(90deg,${A1},${A2})"></i></div>`);
+       <div style="margin-left:10px;flex:1;height:14px;border-radius:5px;background:rgba(255,255,255,.07);display:flex;align-items:center;padding:0 8px;font:500 9.5px/1 Inter,sans-serif;color:#d9d6cf;position:relative;overflow:hidden"><span class="url"></span><i class="caret" style="width:1px;height:10px;background:#fff;margin-left:1px"></i><i class="lb" style="position:absolute;left:0;bottom:0;height:2px;width:0;background:linear-gradient(90deg,${A1},${A2})"></i></div>`);
     const url = bar.querySelector('.url'), caret = bar.querySelector('.caret'), lb = bar.querySelector('.lb');
     const vp = E.el('div', `position:absolute;left:1px;right:1px;top:${TB}px;bottom:1px;overflow:hidden;border-radius:0 0 15px 15px;background:#07080d`, frame);
     const mk = (w) => { const c = srcSite.cloneNode(true); c.style.cssText = `position:absolute;left:0;top:0;width:${w}px;transform-origin:0 0;transform:scale(${BW / w * .995})`; c.querySelectorAll('*').forEach((n) => { n.style.animation = 'none'; }); return c; };
-    const site = mk(720); vp.appendChild(site);
-    const K = BW / 720 * .995;                                                         // page px -> frame px
+    const PW = 1280, site = mk(PW); vp.appendChild(site);
+    const K = BW / PW * .995;                                                         // page px -> frame px
     const q = (s) => site.querySelector(s), qa = (s) => [...site.querySelectorAll(s)];
     const top = (el) => { let y = 0; while (el && el !== site) { y += el.offsetTop; el = el.offsetParent; } return y; };
     const nav = q('.nav'), badge = q('.badge'), h1s = qa('h1 span'), lede = q('.lede'), btns = q('.btns'), orb = q('.orb'), r1 = q('.ring.r1'), r2 = q('.ring.r2'), sats = qa('.sat'), cEq = q('.card.eq'), cBat = q('.card.bat');
@@ -74,18 +76,18 @@
     const LAY = [['base', null, 0], ['HEADER · NAV', nav, 40], ['H1 · INTER DISPLAY 92', q('h1'), 120], ['TEXT · 17 / 1.55', lede, 80], ['BUTTONS · SPRING', btns, 150], ['3D · PRODUCT RENDER', q('.stage'), 200], ['CARD · GLASS', cEq, 260], ['CARD · LIVE DATA', cBat, 230]];
     const layers = LAY.map(([label, el, z], i) => {
       const plane = E.el('div', 'position:absolute;inset:0;transform-style:preserve-3d', exp);
-      const copy = mk(720); plane.appendChild(copy);
+      const copy = mk(PW); plane.appendChild(copy);
       if (!el) { copy.style.filter = 'brightness(.7)'; copy.style.clipPath = `inset(0 0 calc(100% - ${((BH - TB - 1) / K).toFixed(1)}px) 0 round 0 0 30px 30px)`; return { plane, z, i }; }
-      const r = rel(el); copy.style.clipPath = `inset(${r.y / K}px ${(720 - (r.x + r.w) / K)}px calc(100% - ${(r.y + r.h) / K}px) ${r.x / K}px)`;
+      const r = rel(el); copy.style.clipPath = `inset(${r.y / K}px ${(PW - (r.x + r.w) / K)}px calc(100% - ${(r.y + r.h) / K}px) ${r.x / K}px)`;
       E.el('div', `position:absolute;left:${r.x - 2}px;top:${r.y - 2}px;width:${r.w + 4}px;height:${r.h + 4}px;border:1px solid ${CY};box-shadow:0 0 10px ${CY}66;border-radius:4px`, plane);
       E.el('div', `position:absolute;left:${r.x}px;top:${r.y - 13}px;font:600 7.5px/1 'Geist Mono',ui-monospace,monospace;letter-spacing:.08em;color:${CY};white-space:nowrap`, plane, label);
       return { plane, z, i };
     });
 
     // ---------- phone with the mobile site ----------
-    const phone = E.el('div', `position:absolute;left:236px;top:300px;width:142px;height:290px;border-radius:26px;background:#0b0c11;border:2px solid rgba(255,255,255,.2);box-shadow:0 30px 60px -20px rgba(0,0,0,.9),0 0 40px -10px rgba(255,140,60,.4);overflow:hidden;opacity:0;transform-style:preserve-3d`, rig);
+    const phone = E.el('div', `position:absolute;left:262px;top:388px;width:116px;height:236px;border-radius:22px;background:#0b0c11;border:2px solid rgba(255,255,255,.2);box-shadow:0 30px 60px -20px rgba(0,0,0,.9),0 0 40px -10px rgba(255,140,60,.4);overflow:hidden;opacity:0;transform-style:preserve-3d`, rig);
     const pvp = E.el('div', 'position:absolute;inset:6px;border-radius:20px;overflow:hidden;background:#07080d', phone);
-    const msite = srcSite.cloneNode(true); msite.style.cssText = 'position:absolute;left:0;top:0;width:360px;transform-origin:0 0;transform:scale(.3611)'; msite.querySelectorAll('*').forEach((n) => { n.style.animation = 'none'; }); pvp.appendChild(msite);
+    const msite = srcSite.cloneNode(true); msite.style.cssText = 'position:absolute;left:0;top:0;width:360px;transform-origin:0 0;transform:scale(.2889)'; msite.querySelectorAll('*').forEach((n) => { n.style.animation = 'none'; }); pvp.appendChild(msite);
 
     // ---------- cursor, ripple, popup ----------
     const cur = E.el('div', 'position:absolute;left:0;top:0;width:18px;height:18px;opacity:0;z-index:5', frame, `<svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 2l15 10-7 1.5L9 21z" fill="#fff" stroke="#111" stroke-width="1.2"/></svg>`);
@@ -93,16 +95,16 @@
     const popup = E.el('div', `position:absolute;right:12px;top:${TB + 12}px;padding:9px 12px;border-radius:12px;background:rgba(20,22,30,.92);border:1px solid rgba(255,179,92,.5);font:600 11px/1 Inter,sans-serif;color:#f6efe4;opacity:0;box-shadow:0 10px 30px -10px rgba(255,140,60,.6)`, frame, `<span style="color:${A1}">●</span>&nbsp; Reserved · Aurelia One`);
 
     // ---------- front: bokeh dust, light leaks, grade, vignette, grain, captions ----------
-    const bok = Array.from({ length: 9 }, (_, i) => ({ el: E.el('div', `position:absolute;width:${30 + (i % 4) * 16}px;height:${30 + (i % 4) * 16}px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,210,160,${.18 + (i % 3) * .06}),rgba(255,210,160,0));filter:blur(${3 + (i % 3) * 2}px)`, P.front), x: (i * 97) % 402, y: (i * 173) % 715, s: .4 + (i % 5) * .15 }));
+    const bok = Array.from({ length: 5 }, (_, i) => ({ el: E.el('div', `position:absolute;width:${30 + (i % 4) * 16}px;height:${30 + (i % 4) * 16}px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,210,160,${.18 + (i % 3) * .06}),rgba(255,210,160,0));filter:blur(${3 + (i % 3) * 2}px)`, P.front), x: (i * 97) % 402, y: (i * 173) % 715, s: .4 + (i % 5) * .15 }));
     const leak = E.el('div', `position:absolute;inset:-20%;background:radial-gradient(40% 35% at 20% 30%,rgba(255,170,90,.9),rgba(255,120,50,0) 70%),radial-gradient(35% 30% at 85% 70%,rgba(139,108,255,.6),rgba(139,108,255,0) 70%);mix-blend-mode:screen;opacity:0`, P.front);
     E.el('div', 'position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,170,90,.10),rgba(0,0,0,0) 45%,rgba(56,140,255,.10));mix-blend-mode:soft-light', P.front);
     E.el('div', 'position:absolute;inset:0;background:radial-gradient(80% 65% at 50% 48%,rgba(0,0,0,0),rgba(0,0,0,.6))', P.front);
     const gc = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px;opacity:.07;mix-blend-mode:overlay', P.front); gc.width = 201; gc.height = 358; const gx = gc.getContext('2d'), gimg = gx.createImageData(201, 358);
     const flash = E.el('div', 'position:absolute;inset:0;background:radial-gradient(60% 50% at 50% 45%,#fff3df,#ffb35c 60%,#ff6a2c);opacity:0', P.front);
-    const CAP = [[3.6, 7.8, '01 — BUILD', 'Every pixel, in motion.'], [8.1, 11.8, '02 — DECONSTRUCT', 'Every layer, on purpose.'], [12.2, 16.3, '03 — EXPLORE', 'Features that feel alive.'],
-      [16.6, 19.9, '04 — INTERACT', 'Data you can feel.'], [20.2, 22.4, '05 — EVERYWHERE', 'Desktop to pocket.']];
-    const caps = CAP.map(([a, b, k, l]) => ({ a, b, el: E.el('div', 'position:absolute;left:30px;right:30px;top:104px;opacity:0', P.front,
-      `<div style="font:600 10.5px/1 Inter,sans-serif;letter-spacing:.22em;color:${A1}">${k}</div><div style="margin-top:7px;font:650 25px/1.1 Inter,sans-serif;font-variation-settings:'opsz' 32;letter-spacing:-.03em;color:#f6efe4">${l}</div>`) }));
+    const CAP = [[3.6, 7.8, '01 — BUILD', 'Every pixel,', 'in motion.'], [8.1, 11.8, '02 — DECONSTRUCT', 'Every layer,', 'on purpose.'], [12.2, 16.3, '03 — EXPLORE', 'Features that', 'feel alive.'],
+      [16.6, 19.9, '04 — INTERACT', 'Data you can', 'feel.'], [20.2, 22.4, '05 — EVERYWHERE', 'Desktop', 'to pocket.']];
+    const caps = CAP.map(([a, b, k, l1, l2]) => ({ a, b, el: E.el('div', 'position:absolute;left:30px;right:30px;top:112px;text-align:center;opacity:0', P.front,
+      `<div style="font:600 9.5px/1 Inter,sans-serif;letter-spacing:.3em;color:rgba(255,200,150,.75)">${k}</div><div style="margin-top:10px;font:600 27px/1.08 Inter,sans-serif;font-variation-settings:'opsz' 32;letter-spacing:-.03em;color:#f6efe4">${l1}<br><span style="background:linear-gradient(100deg,${A1},${A2});-webkit-background-clip:text;background-clip:text;color:transparent">${l2}</span></div><i style="display:block;width:44px;height:1px;margin:14px auto 0;background:linear-gradient(90deg,transparent,${A1},transparent)"></i>`) }));
     // the end: Aurelia mark and wordmark with a light sweep, then the Aquarii sign-off
     const end = E.el('div', 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:90px;background:#06070b;opacity:0', P.front,
       `<svg width="84" height="84" viewBox="0 0 120 120" style="overflow:visible"><circle cx="60" cy="60" r="44" fill="none" stroke="${A1}" stroke-width="4" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" style="filter:drop-shadow(0 0 10px ${A1})"/></svg>
@@ -112,6 +114,10 @@
     const eRing = end.querySelector('circle'), eW = end.querySelector('.ew'), eSweep = eW.querySelector('i'), eT = end.querySelector('.et'), eP = end.querySelector('.ep');
     P.brandEnd({ at: 23.7, keyword: 'SITE', why: 'Want your website to move like this?', out: 24.85 });
 
+    // cursor targets measured from the page itself (frame px, after the page has scrolled to its section)
+    const at = (el, yScroll) => { const r = rel(el); return [r.x + r.w * .55, r.y - yScroll * K + TB + r.h * .5]; };
+    const FC = feats.map((f) => at(f, yFeat)), CLICK = at(order, yLive);
+    const CURP = [[13.6, FC[0][0] - 30, FC[0][1] + 40], [14.3, ...FC[0]], [14.9, ...FC[1]], [15.5, ...FC[2]], [16.1, ...FC[3]], [18.9, CLICK[0] + 60, CLICK[1] - 30], [19.3, ...CLICK]];
     const path = line.getTotalLength ? line : null, LEN = path ? path.getTotalLength() : 1;
     const tip = E.el('div', `position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:#fff;box-shadow:0 0 10px ${A1},0 0 22px ${A2};opacity:0`, vp);
     const lineBox = () => { const r = line.getBoundingClientRect(), v = vp.getBoundingClientRect(); return { x: r.left - v.left, y: r.top - v.top, sx: r.width / 400, sy: r.height / 150 }; };
@@ -188,11 +194,11 @@
       pbs.forEach((b) => { b.style.transform = `scaleX(${cnt.toFixed(3)})`; b.style.transformOrigin = '0 50%'; });
 
       // cursor path: hovers the feature cards, then clicks Pre-order
-      const CUR = [[13.6, 60, 330], [14.3, 112, 300], [14.9, 200, 300], [15.5, 290, 300], [16.3, 250, 260], [18.9, 140, 300], [19.3, 72, 322]];
+      const CUR = CURP;
       const cOn = win(t, 13.5, 19.9, .3); cur.style.opacity = cOn.toFixed(3);
       if (cOn > 0) { let i = 0; while (i < CUR.length - 2 && t > CUR[i + 1][0]) i++; const a = CUR[i], b = CUR[i + 1], k = io(seg(t, a[0], b[0])); cur.style.transform = `translate(${lerp(a[1], b[1], k).toFixed(1)}px,${lerp(a[2], b[2], k).toFixed(1)}px) scale(${t > 19.3 && t < 19.45 ? .85 : 1})`; }
       const press = win(t, 19.3, 19.5, .08); order.style.transform = `scale(${(1 - .06 * press).toFixed(3)})`;
-      const rp = seg(t, 19.35, 19.95); ripple.style.left = '68px'; ripple.style.top = '318px'; ripple.style.opacity = (rp > 0 && rp < 1 ? 1 - rp : 0).toFixed(3); ripple.style.transform = `scale(${(1 + rp * 5).toFixed(2)})`;
+      const rp = seg(t, 19.35, 19.95); ripple.style.left = `${CLICK[0]}px`; ripple.style.top = `${CLICK[1]}px`; ripple.style.opacity = (rp > 0 && rp < 1 ? 1 - rp : 0).toFixed(3); ripple.style.transform = `scale(${(1 + rp * 5).toFixed(2)})`;
       { const k = P.springAt(t, 19.55, 'bold'); popup.style.opacity = (clamp(k * 1.6) * (1 - seg(t, 21.6, 22))).toFixed(3); popup.style.transform = `translateX(${((1 - k) * 40).toFixed(1)}px)`; }
 
       // 20-22.5 the phone swings in
