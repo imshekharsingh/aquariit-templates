@@ -6,7 +6,7 @@ The home page lists every template by date; the site is an installable PWA.
 Each template also ships with an Instagram kit (caption, keywords, hashtags, music).
 
 Templates generated: **25**
-Latest: [2026-10-16 20:55 · Quillmint](https://templates.aquariit.com/2026-10-16-2055/)
+Latest: [2026-10-17 08:51 · Pillowpost](https://templates.aquariit.com/2026-10-17-0851/)
 
 ## Rendering a reel (no phone needed)
 `node scripts/render-reel.mjs [ID]` (or `npm run reel -- ID`) plays a template through the real ▶ player in headless Chromium and writes

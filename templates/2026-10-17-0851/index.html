@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pillowpost — Posts You Want to Squish</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5a3cf0">
+<meta name="description" content="Pillowpost: a soft clay-3D content studio template. Springy clay shapes drop in and keep breathing, a clay week of posts, a three-step process and plan cards.">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..900&family=Hanken+Grotesk:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+  --violet:#5a3cf0;--violet-d:#3b22b8;--lilac:#f0ebff;--ink:#1b1340;--mute:#5d5486;--white:#fff;
+  --gut:30px;--head:"Rubik",system-ui,sans-serif;--body:"Hanken Grotesk",system-ui,sans-serif;
+  --spring:linear(0,.18 5%,.52 11%,.92 19%,1.14 27%,1.16 33%,1.05 44%,.97 56%,1.01 72%,1 100%);
+}
+@supports (color:color(display-p3 1 1 1)){:root{--violet:color(display-p3 .35 .22 .95)}}
+html.reel{--safe-top:0px;--safe-bottom:0px}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{background:var(--lilac);color:var(--ink);font:400 17px/1.55 var(--body)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid #ffd84d;outline-offset:3px;border-radius:10px}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 var(--gut)}
+h1,h2,h3{font-family:var(--head);letter-spacing:-.03em;line-height:1}
+
+/* side tab: the way back, always on screen */
+.tab{position:fixed;left:0;top:calc(var(--safe-top) + 14px);z-index:30;padding:9px 14px 9px 12px;border-radius:0 99px 99px 0;background:#fff;color:var(--violet-d);
+  font:600 13px/1 var(--body);box-shadow:inset 0 -3px 6px rgba(59,34,184,.18),0 8px 16px -6px rgba(27,19,64,.4)}
+.reel .tab{display:none}
+
+/* clay material: three tones per shape, inset light and shade, a static contact shadow */
+.clay{--c1:#ffb27a;--c2:#ff8a3d;--c3:#d9591a;--s:120px;font-size:calc(var(--s) / 10);width:var(--s);height:var(--s);position:absolute;border-radius:50%;
+  background:radial-gradient(120% 120% at 30% 22%,var(--c1) 0,var(--c2) 46%,var(--c3) 100%);
+  box-shadow:inset 0 -.9em 1.5em rgba(0,0,0,.2),inset 0 .7em 1.2em rgba(255,255,255,.5),0 1.6em 2em -1em rgba(14,6,60,.55);display:grid;place-items:center}
+.clay::before{content:"";position:absolute;left:18%;top:12%;width:34%;height:20%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.85),rgba(255,255,255,0));transform:rotate(-24deg)}
+.clay svg{width:44%;height:44%;fill:#fff;filter:drop-shadow(0 .15em .1em rgba(0,0,0,.25));position:relative}
+.sq{border-radius:34%}
+.pill{border-radius:99px;height:calc(var(--s) * .52)}
+.pink{--c1:#ffb0d3;--c2:#ff5fa8;--c3:#c92a78}
+.mint{--c1:#a6f5d8;--c2:#33d4a0;--c3:#0d9a6c}
+.sun{--c1:#fff0a0;--c2:#ffd23f;--c3:#e6a30a}
+.sky{--c1:#a8dcff;--c2:#3da9ff;--c3:#1a68c9}
+.lav{--c1:#e5d8ff;--c2:#b79bff;--c3:#7a55e8}
+
+/* Advancement: animation-composition. The entrance drop (translate, scale, rotate) and the never-ending breath (translate, rotate)
+   are two separate animations on the same properties; "add" layers the breath on top of the landed spring instead of replacing it. */
+@keyframes drop{0%{translate:0 -170%;scale:.7 1.35;rotate:-16deg}100%{translate:0 0;scale:1 1;rotate:0deg}}
+@keyframes breathe{0%,100%{translate:0 0;rotate:0deg}50%{translate:0 calc(var(--amp,9px) * -1);rotate:calc(var(--tilt,3deg))}}
+.drop{animation:drop 1.15s var(--spring) both,breathe var(--dur,4.2s) ease-in-out infinite;animation-composition:replace,add;
+  animation-delay:calc(var(--i,0) * 110ms),calc(1.3s + var(--i,0) * 110ms)}
+
+/* hero */
+.hero{background:var(--violet);color:#fff;position:relative;overflow:hidden;padding:58px 0 0}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 40% at 80% 78%,rgba(255,95,168,.5),transparent 70%),radial-gradient(50% 36% at 8% 56%,rgba(255,210,63,.28),transparent 70%)}
+.hero .wrap{position:relative}
+.kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 13px 7px 9px;border-radius:99px;background:rgba(255,255,255,.16);font:600 13px/1 var(--body);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.kicker i{width:11px;height:11px;border-radius:50%;background:#ffd23f;box-shadow:inset 0 -2px 3px rgba(0,0,0,.25)}
+h1{margin-top:18px;font-size:clamp(50px,14.2vw,112px);font-weight:900;line-height:.95}
+h1 em{font-style:normal;color:#ffd84d}
+.lede{margin-top:14px;max-width:30ch;color:#e6e0ff;font-size:17px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.btn{display:inline-flex;align-items:center;padding:13px 22px;border-radius:99px;font:700 16px/1 var(--head);box-shadow:inset 0 -4px 8px rgba(0,0,0,.2),inset 0 3px 6px rgba(255,255,255,.55),0 10px 18px -8px rgba(14,6,60,.6)}
+.btn.main{background:#ffd23f;color:var(--ink)}
+.btn.alt{background:rgba(255,255,255,.18);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.stage{position:relative;height:330px;margin-top:6px}
+.stage .clay:nth-child(1){--s:168px;left:-34px;top:66px}
+.stage .clay:nth-child(2){--s:132px;left:150px;top:6px}
+.stage .clay:nth-child(3){--s:210px;left:128px;top:178px;rotate:-10deg}
+.stage .clay:nth-child(4){--s:92px;left:44px;top:236px}
+.stage .clay:nth-child(5){--s:116px;left:268px;top:92px}
+.stage .clay:nth-child(6){--s:70px;left:302px;top:240px}
+
+/* sections */
+section{padding:64px 0}
+.sec h2{font-size:clamp(34px,9.4vw,64px);font-weight:800;max-width:14ch}
+.sec .sub{margin-top:12px;color:var(--mute);max-width:36ch}
+.week{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.day{position:relative;padding:18px 16px 18px;border-radius:30px;min-height:152px;background:linear-gradient(160deg,var(--t1),var(--t2));
+  box-shadow:inset 0 -8px 14px rgba(0,0,0,.12),inset 0 6px 10px rgba(255,255,255,.6),0 16px 22px -14px rgba(27,19,64,.5)}
+.day b{font:800 14px/1 var(--head);letter-spacing:.04em;text-transform:uppercase;opacity:.7}
+.day h3{margin-top:30px;font-size:22px;font-weight:800;line-height:1.05}
+.day p{margin-top:6px;font-size:14px;line-height:1.35;color:rgba(27,19,64,.78)}
+.day .clay{--s:44px;right:14px;top:14px;position:absolute}
+.d1{--t1:#ffd6bd;--t2:#ffb27a}.d2{--t1:#ffd0e6;--t2:#ff9bc9}.d3{--t1:#c9f7e6;--t2:#79e5bd}.d4{--t1:#fff2b0;--t2:#ffd957}.d5{--t1:#cde8ff;--t2:#7cc4ff}.d6{--t1:#e6dcff;--t2:#bfa6ff}
+
+.steps{list-style:none;padding:0;margin-top:30px;display:grid;gap:18px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:start}
+.steps .clay{--s:64px;position:relative;font:800 26px/1 var(--head);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.2)}
+.steps h3{font-size:24px;font-weight:800;padding-top:4px}
+.steps p{margin-top:5px;color:var(--mute);font-size:16px}
+.nums{display:flex;gap:14px;margin-top:34px}
+.nums div{flex:1;padding:16px 14px;border-radius:26px;background:#fff;box-shadow:inset 0 -6px 10px rgba(90,60,240,.1),0 14px 20px -14px rgba(27,19,64,.5)}
+.nums strong{display:block;font:900 40px/1 var(--head);letter-spacing:-.04em;color:var(--violet)}
+.nums span{display:block;margin-top:6px;font-size:13px;line-height:1.25;color:var(--mute)}
+
+.plans{display:grid;gap:16px;margin-top:28px}
+.plan{padding:22px 22px 24px;border-radius:32px;background:#fff;box-shadow:inset 0 -8px 12px rgba(90,60,240,.08),0 18px 26px -16px rgba(27,19,64,.55)}
+.plan.hot{background:var(--violet);color:#fff}
+.plan h3{font-size:26px;font-weight:800}
+.plan .tag{display:inline-block;margin-bottom:12px;padding:6px 12px;border-radius:99px;font:700 12px/1 var(--head);letter-spacing:.05em;text-transform:uppercase;background:var(--lilac);color:var(--violet-d)}
+.plan.hot .tag{background:#ffd23f;color:var(--ink)}
+.plan ul{list-style:none;padding:0;margin-top:12px;display:grid;gap:7px;font-size:16px}
+.plan li{display:flex;gap:10px;align-items:flex-start}
+.plan li::before{content:"";flex:none;width:12px;height:12px;margin-top:6px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#ff5fa8 55%,#c92a78);box-shadow:inset 0 -2px 3px rgba(0,0,0,.2)}
+
+.final{background:var(--ink);color:#fff;text-align:left;overflow:hidden;position:relative}
+.final h2{font-size:clamp(38px,11vw,76px);font-weight:900;max-width:11ch}
+.final .stage{height:210px;margin-top:20px}
+.final .stage .clay:nth-child(1){--s:130px;left:-26px;top:50px}
+.final .stage .clay:nth-child(2){--s:96px;left:122px;top:0}
+.final .stage .clay:nth-child(3){--s:170px;left:150px;top:72px;rotate:8deg}
+.final .stage .clay:nth-child(4){--s:84px;left:292px;top:20px}
+footer{background:var(--ink);color:#8d82c4;text-align:center;font-size:13px;padding:0 var(--gut) calc(26px + var(--safe-bottom))}
+
+/* scroll-driven rise with a finished default state */
+@keyframes rise{from{opacity:0;translate:0 44px;scale:.9}to{opacity:1;translate:0 0;scale:1}}
+@supports (animation-timeline:view()){
+  .rise{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+}
+
+@media (min-width:860px){
+  :root{--gut:48px}
+  .hero{padding:84px 0 70px}
+  h1{font-size:clamp(64px,7vw,98px)}
+  .hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+  .hero .stage{height:520px;transform:scale(1.35);transform-origin:30% 40%}
+  .week{grid-template-columns:repeat(3,1fr)}
+  .plans{grid-template-columns:repeat(3,1fr)}
+  .steps{grid-template-columns:repeat(3,1fr)}
+  .steps li{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){.drop,.rise{animation:none!important}}
+</style>
+</head>
+<body>
+<a class="tab" href="/">← All templates</a>
+<main>
+<section class="hero" aria-label="Pillowpost">
+  <div class="wrap">
+    <div>
+      <span class="kicker"><i></i>Pillowpost · social content studio</span>
+      <h1>Posts<br>you want<br><em>to squish.</em></h1>
+      <p class="lede">A month of reels, carousels and stories, made soft, posted daily.</p>
+      <div class="cta"><a class="btn main" href="#plans">Pick a plan</a><a class="btn alt" href="#week">See a week</a></div>
+    </div>
+    <div class="stage" aria-hidden="true">
+      <div class="clay sq drop" style="--i:0;--dur:4.6s"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></div>
+      <div class="clay pink drop" style="--i:1;--dur:3.8s;--tilt:-4deg"><svg viewBox="0 0 24 24"><path d="M12 20.5C5 15.5 3 12 3 8.8 3 6.2 5 4.5 7.3 4.5c1.9 0 3.7 1.1 4.7 2.9 1-1.8 2.8-2.9 4.7-2.9C19 4.5 21 6.2 21 8.8c0 3.2-2 6.7-9 11.7z"/></svg></div>
+      <div class="clay mint pill drop" style="--i:2;--dur:5s;--amp:12px"><svg viewBox="0 0 24 24" style="width:28%;height:70%"><circle cx="5" cy="12" r="2.4"/><circle cx="12" cy="12" r="2.4"/><circle cx="19" cy="12" r="2.4"/></svg></div>
+      <div class="clay sun drop" style="--i:3;--dur:3.4s;--amp:7px"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.8 6.3.8-4.6 4.4 1.2 6.3L12 17.2 6.4 20.3l1.2-6.3L3 9.6l6.3-.8z"/></svg></div>
+      <div class="clay sky sq drop" style="--i:4;--dur:4.2s;--tilt:5deg"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div>
+      <div class="clay lav drop" style="--i:5;--dur:3.6s"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="week" aria-labelledby="wk">
+  <div class="wrap">
+    <h2 id="wk" class="rise">A full week, already posted.</h2>
+    <p class="sub rise">One plan, six kinds of post, so your feed never goes quiet.</p>
+    <div class="week">
+      <article class="day d1 rise"><b>Mon</b><div class="clay sq"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></div><h3>Reel</h3><p>Fifteen seconds that stop the thumb.</p></article>
+      <article class="day d2 rise"><b>Tue</b><div class="clay pink"><svg viewBox="0 0 24 24"><path d="M4 5h7v14H4zM13 5h7v14h-7z"/></svg></div><h3>Carousel</h3><p>Swipe-through tips worth saving.</p></article>
+      <article class="day d3 rise"><b>Wed</b><div class="clay mint"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg></div><h3>Story</h3><p>Behind the scenes, in a day.</p></article>
+      <article class="day d4 rise"><b>Thu</b><div class="clay sun"><svg viewBox="0 0 24 24"><path d="M5 18V9h3v9zM10.5 18V5h3v13zM16 18v-6h3v6z"/></svg></div><h3>Poll</h3><p>Ask once, learn what sells.</p></article>
+      <article class="day d5 rise"><b>Fri</b><div class="clay sky sq"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></div><h3>Reel</h3><p>The week's best idea, remade.</p></article>
+      <article class="day d6 rise"><b>Sat–Sun</b><div class="clay lav"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div><h3>Replies</h3><p>Every comment and DM answered.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="pr" style="padding-top:8px">
+  <div class="wrap">
+    <h2 id="pr" class="rise">Three soft steps.</h2>
+    <ol class="steps">
+      <li class="rise"><div class="clay pink">1</div><div><h3>Listen</h3><p>One call: your goal, your buyer, what already works.</p></div></li>
+      <li class="rise"><div class="clay sun">2</div><div><h3>Make</h3><p>A month planned, shot and edited ahead of time.</p></div></li>
+      <li class="rise"><div class="clay mint">3</div><div><h3>Post and read</h3><p>Posted daily, numbers reviewed weekly, ideas sharpened.</p></div></li>
+    </ol>
+    <div class="nums rise">
+      <div><strong>30</strong><span>posts planned in a typical month</span></div>
+      <div><strong>4</strong><span>weekly number reviews</span></div>
+      <div><strong>1</strong><span>inbox, answered by us</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="plans" aria-labelledby="pl" style="background:#e7defd">
+  <div class="wrap">
+    <h2 id="pl" class="rise">Plans that fit a small brand.</h2>
+    <div class="plans">
+      <article class="plan rise"><span class="tag">Start</span><h3>Starter</h3><ul><li>12 posts a month</li><li>Two reels a week</li><li>Monthly numbers recap</li></ul></article>
+      <article class="plan hot rise"><span class="tag">Most picked</span><h3>Studio</h3><ul><li>30 posts a month</li><li>Daily stories and replies</li><li>Weekly numbers review</li></ul></article>
+      <article class="plan rise"><span class="tag">All in</span><h3>Everything</h3><ul><li>Everything in Studio</li><li>Launch campaigns</li><li>Site and ads handled with you</li></ul></article>
+    </div>
+  </div>
+</section>
+
+<section class="final" aria-labelledby="fn">
+  <div class="wrap">
+    <h2 id="fn" class="rise">Let's make your feed soft.</h2>
+    <div class="cta"><a class="btn main" href="#week">Start your first week</a></div>
+    <div class="stage" aria-hidden="true">
+      <div class="clay pink drop" style="--i:0"></div>
+      <div class="clay sun drop" style="--i:1;--dur:3.6s"></div>
+      <div class="clay mint sq drop" style="--i:2;--dur:4.8s"></div>
+      <div class="clay sky drop" style="--i:3"></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>Developed by Aquarii Technologies</footer>
+</body>
+</html>
