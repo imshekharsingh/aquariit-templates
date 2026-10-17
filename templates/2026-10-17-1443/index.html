@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nimbra Air One — Fly further</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05070c">
+<meta name="description" content="Nimbra: a cinematic global storefront for a fictional foldable camera drone. Brushed silver, electric blue light, an emerald status LED, spinning rotor discs, spec dials and a live wireframe globe of delivery hubs.">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Onest:wght@300..700&display=swap" rel="stylesheet">
+<style>
+:root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#05070c;--ink:#eef2f8;--mute:#93a0b4;--line:rgba(200,215,235,.12);--silver:#c9d3e0;--blue:#2f6bff;--ice:#5cd0ff;--led:#19f5a0;
+  --disp:"Chakra Petch",system-ui,sans-serif;--body:"Onest",system-ui,sans-serif;--spring:linear(0,.24 7%,.7 16%,1.06 27%,1.06 35%,1.01 50%,1 100%)}
+@supports (color:color(display-p3 1 1 1)){:root{--blue:color(display-p3 .2 .42 1);--led:color(display-p3 .2 .97 .62)}}
+html.reel{--safe-top:0px;--safe-bottom:0px}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--body)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--ice);outline-offset:3px;border-radius:6px}
+/* the whole site sits in a size container, so a copy placed at any width (the film's desktop frame or phone) lays itself out for that width */
+.site{container-type:inline-size;position:relative;overflow:hidden;background:radial-gradient(70% 38% at 50% 14%,rgba(47,107,255,.2),transparent 70%),radial-gradient(50% 30% at 90% 55%,rgba(92,208,255,.08),transparent 70%),var(--bg)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 30px}
+h1,h2,.num,.logo{font-family:var(--disp)}
+/* header: split bar with a live hub-status chip */
+.nav{position:sticky;top:0;z-index:5;background:#05070c;border-bottom:1px solid var(--line);padding-top:var(--safe-top)}
+.nav .wrap{display:flex;align-items:center;gap:16px;height:58px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:.28em;font-size:14px}
+.logo svg{width:22px;height:22px}
+.links{display:none;gap:22px;color:var(--mute);font-size:14px;margin-left:12px}
+.chip{display:none;align-items:center;gap:7px;font:500 12px/1 var(--disp);letter-spacing:.08em;color:var(--silver);padding:6px 10px;border:1px solid var(--line);border-radius:6px}
+.chip i,.led{width:7px;height:7px;border-radius:50%;background:var(--led);box-shadow:0 0 10px var(--led)}
+.back{margin-left:auto;font-size:13px;color:var(--mute)}
+.reel .back{display:none}.reel .nav .cta{margin-left:auto}
+.cta{padding:9px 15px;border-radius:8px;background:var(--blue);color:#fff;font:600 14px/1 var(--disp);letter-spacing:.04em;box-shadow:0 0 24px -6px var(--blue)}
+/* hero: object-centred, rotor discs spinning, spec callouts on hairlines */
+.hero{padding:44px 0 30px;text-align:center}
+.tag{display:inline-flex;gap:8px;align-items:center;font:500 12px/1 var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--silver)}
+h1{margin-top:16px;font-size:clamp(44px,12.4cqi,104px);line-height:.94;font-weight:700;letter-spacing:-.02em;text-transform:uppercase}
+h1 em{font-style:normal;background:linear-gradient(100deg,#fff 0%,var(--ice) 45%,var(--blue) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{margin:16px auto 0;color:#b9c3d2;max-width:36ch;font-size:16px;text-wrap:pretty}
+.stage{position:relative;height:300px;margin-top:10px}
+.ghost{position:absolute;left:50%;top:50%;translate:-50% -50%;font:700 clamp(92px,30cqi,250px)/1 var(--disp);letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1px rgba(201,211,224,.16);white-space:nowrap;pointer-events:none}
+.pool{position:absolute;left:50%;bottom:6px;width:260px;height:46px;margin-left:-130px;border-radius:50%;background:radial-gradient(closest-side,rgba(47,107,255,.55),rgba(47,107,255,0))}
+.drone{position:absolute;left:50%;top:50%;width:226px;height:226px;margin:-113px 0 0 -113px}
+.drone>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.prop{position:absolute;width:86px;height:86px;margin:-43px 0 0 -43px;border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(220,232,255,.55),rgba(220,232,255,0) 22%,rgba(220,232,255,0) 50%,rgba(220,232,255,.55) 50%,rgba(220,232,255,0) 72%,rgba(220,232,255,0));
+  -webkit-mask:radial-gradient(closest-side,transparent 13%,#000 15%,#000 96%,transparent);mask:radial-gradient(closest-side,transparent 13%,#000 15%,#000 96%,transparent)}
+.prop.p1{left:16%;top:16%}.prop.p2{left:84%;top:16%}.prop.p3{left:16%;top:84%}.prop.p4{left:84%;top:84%}
+.call{position:absolute;font:600 12px/1.2 var(--disp);letter-spacing:.06em;color:var(--silver);text-align:left}
+.call b{display:block;font-size:19px;color:#fff;letter-spacing:0}
+.call::before{content:"";position:absolute;top:8px;width:34px;height:1px;background:linear-gradient(90deg,var(--ice),transparent)}
+.call.c1{left:0;top:6px}.call.c2{right:0;top:60px;text-align:right}.call.c3{left:0;bottom:30px}
+.call.c1::before,.call.c3::before{left:calc(100% + 6px)}.call.c2::before{right:calc(100% + 6px);transform:scaleX(-1)}
+.btns{margin-top:18px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:10px;font:600 15px/1 var(--disp);letter-spacing:.03em}
+.btn.main{background:var(--blue);color:#fff;box-shadow:0 14px 30px -12px var(--blue),inset 0 1px 0 rgba(255,255,255,.3)}
+.btn.line{border:1px solid rgba(201,211,224,.3);color:var(--silver)}
+section{padding:60px 0}
+.kick{display:flex;align-items:center;gap:10px;font:600 12px/1 var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--ice)}
+.kick::after{content:"";flex:0 0 60px;height:1px;background:linear-gradient(90deg,var(--ice),transparent)}
+h2{margin-top:12px;font-size:clamp(30px,8.4cqi,60px);line-height:1;font-weight:700;letter-spacing:-.01em;max-width:16ch}
+.sub{margin-top:12px;color:var(--mute);max-width:42ch}
+/* spec dials */
+.dials{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.dial{padding:16px 6px 14px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(170deg,rgba(201,211,224,.08),rgba(201,211,224,.01));text-align:center}
+.dial svg{width:74px;height:74px;display:block;margin:0 auto;transform:rotate(-90deg)}
+.dial circle{fill:none;stroke-width:5}.dial .tr{stroke:rgba(201,211,224,.12)}.dial .ar{stroke:url(#dg);stroke-linecap:round}
+.num{margin-top:8px;font-size:24px;font-weight:700}
+.dial span{display:block;font-size:12px;color:var(--mute);line-height:1.3}
+/* hubs + CSS 3D wireframe globe */
+.world{margin-top:26px;display:grid;gap:18px}
+.globe{position:relative;height:280px;perspective:900px}
+.sphere{position:absolute;left:50%;top:50%;width:230px;height:230px;margin:-115px 0 0 -115px;transform-style:preserve-3d;transform:rotateX(-16deg) rotateZ(8deg)}
+.spin{position:absolute;inset:0;transform-style:preserve-3d}
+.mer{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(201,211,224,.28)}
+.par{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(92,208,255,.22)}
+.hub{position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:var(--ice);box-shadow:0 0 12px var(--ice)}
+.halo{position:absolute;left:50%;top:50%;width:300px;height:300px;margin:-150px;border-radius:50%;background:radial-gradient(closest-side,rgba(47,107,255,.32),rgba(47,107,255,0))}
+.rows{display:grid;gap:10px}
+.row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;border:1px solid var(--line);background:rgba(201,211,224,.03)}
+.row b{font:600 15px/1.2 var(--disp);letter-spacing:.02em}
+.row small{display:block;color:var(--mute);font-size:12.5px}
+.row em{margin-left:auto;font:600 13px/1 var(--disp);font-style:normal;color:var(--led)}
+/* kits */
+.swatches{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}
+.sw{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 8px;border-radius:99px;border:1px solid var(--line);font-size:13px;color:var(--silver)}
+.sw i{width:20px;height:20px;border-radius:50%}
+.kits{margin-top:18px;display:grid;gap:12px}
+.kit{position:relative;padding:20px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(165deg,rgba(201,211,224,.07),rgba(201,211,224,.01))}
+.kit.pick{border-color:rgba(92,208,255,.55);box-shadow:0 0 0 1px rgba(92,208,255,.25),0 20px 40px -24px var(--blue)}
+.kit h3{font:700 19px/1.1 var(--disp);letter-spacing:.02em}
+.kit .pr{margin-top:6px;font:600 26px/1 var(--disp)}
+.kit ul{margin-top:12px;padding:0;list-style:none;display:grid;gap:6px;color:#b9c3d2;font-size:14px}
+.kit li{display:flex;gap:8px;align-items:center}.kit li::before{content:"";width:6px;height:6px;border-radius:1px;background:var(--ice);transform:rotate(45deg)}
+.flag{position:absolute;top:18px;right:18px;font:600 11px/1 var(--disp);letter-spacing:.14em;color:var(--led)}
+/* closing card */
+.close{padding:34px 26px;border-radius:22px;text-align:center;background:radial-gradient(80% 90% at 50% 0,rgba(47,107,255,.45),rgba(47,107,255,0) 70%),#0a0f1c;border:1px solid rgba(92,208,255,.3);position:relative;overflow:hidden}
+.close h2{margin:12px auto 0}.close .sub{margin:12px auto 0}.close .btns{margin-top:22px}
+.scan{position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--ice),transparent);opacity:.8}
+footer{padding:34px 0 calc(28px + var(--safe-bottom));text-align:center;color:#66718a;font-size:13px}
+@container (min-width:720px){
+  .links,.chip{display:flex}
+  .hero{padding-top:70px}
+  .stage{height:420px}.drone{width:340px;height:340px;margin:-170px 0 0 -170px}.prop{width:130px;height:130px;margin:-65px 0 0 -65px}
+  .call.c1{left:8%}.call.c2{right:8%}.call.c3{left:12%}
+  .world{grid-template-columns:1fr 1fr;align-items:center}.globe{height:380px}.sphere{width:320px;height:320px;margin:-160px 0 0 -160px}
+  .kits{grid-template-columns:repeat(3,1fr)}
+}
+/* every section moves: scroll-driven entrances below the fold (finished by default), plus transform/opacity loops in the live visuals */
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .kick,h2,.sub,.row,.kit,.close,.swatches{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
+    .dial{animation:pop linear both;animation-timeline:view();animation-range:entry 5% entry 60%}
+    .dial .ar{animation:arc linear both;animation-timeline:view();animation-range:entry 15% cover 45%}
+    .globe{animation:tilt linear both;animation-timeline:view();animation-range:entry 0% cover 50%}
+    @keyframes rise{from{opacity:0;transform:translateY(36px)}}
+    @keyframes pop{from{opacity:0;transform:scale(.86) translateY(20px)}}
+    @keyframes arc{from{stroke-dashoffset:1}}
+    @keyframes tilt{from{opacity:0;transform:scale(.8) rotate(-8deg)}}
+  }
+}
+@media (prefers-reduced-motion:no-preference){
+  .prop{animation:rotor .32s linear infinite}.prop.p2,.prop.p3{animation-direction:reverse}
+  @keyframes rotor{to{transform:rotate(360deg)}}
+  .drone{animation:hover 3.2s ease-in-out infinite}@keyframes hover{50%{transform:translateY(-10px) rotate(1.2deg)}}
+  .pool{animation:poolp 3.2s ease-in-out infinite}@keyframes poolp{50%{transform:scale(.86);opacity:.7}}
+  .led,.chip i{animation:blink 1.6s steps(1) infinite}@keyframes blink{50%{opacity:.25}}
+  .spin{animation:globe 26s linear infinite}@keyframes globe{to{transform:rotateY(360deg)}}
+  .scan{animation:scan 3.6s ease-in-out infinite}@keyframes scan{50%{transform:translateY(300px);opacity:.2}}
+  .load{animation:in .9s var(--spring) both}.d2{animation-delay:.1s}.d3{animation-delay:.22s}.d4{animation-delay:.34s}
+  @keyframes in{from{opacity:0;transform:translateY(22px)}}
+  .call{animation:in .8s var(--spring) .5s both}.call.c2{animation-delay:.65s}.call.c3{animation-delay:.8s}
+}
+</style>
+</head>
+<body>
+<div class="site">
+<header class="nav"><div class="wrap">
+  <a class="logo" href="#top"><svg viewBox="0 0 24 24" fill="none" stroke="#c9d3e0" stroke-width="1.8" aria-hidden="true"><circle cx="5" cy="5" r="3"/><circle cx="19" cy="5" r="3"/><circle cx="5" cy="19" r="3"/><circle cx="19" cy="19" r="3"/><path d="M7.5 7.5l9 9M16.5 7.5l-9 9"/><circle cx="12" cy="12" r="2" fill="#19f5a0" stroke="none"/></svg>NIMBRA</a>
+  <nav class="links" aria-label="Main"><a href="#specs">Specs</a><a href="#hubs">Shipping</a><a href="#kits">Kits</a></nav>
+  <span class="chip"><i></i>6 hubs online</span>
+  <a class="back" href="/">← All templates</a>
+  <a class="cta" href="#kits">Order</a>
+</div></header>
+<main id="top">
+  <section class="hero" aria-labelledby="h"><div class="wrap">
+    <p class="tag load"><i class="led"></i>Nimbra Air One · foldable 4K drone</p>
+    <h1 id="h" class="load d2">Fly further.<br><em>Land anywhere.</em></h1>
+    <div class="stage" aria-hidden="true">
+      <div class="ghost">AIR ONE</div>
+      <div class="pool"></div>
+      <div class="drone">
+        <svg viewBox="0 0 250 250">
+          <defs>
+            <linearGradient id="al" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f7fb"/><stop offset=".45" stop-color="#aeb9c9"/><stop offset="1" stop-color="#4b5567"/></linearGradient>
+            <linearGradient id="arm" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d5dde8"/><stop offset="1" stop-color="#5a6476"/></linearGradient>
+            <radialGradient id="lens" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#9fe3ff"/><stop offset=".35" stop-color="#2f6bff"/><stop offset="1" stop-color="#050913"/></radialGradient>
+          </defs>
+          <g stroke="url(#arm)" stroke-width="11" stroke-linecap="round"><path d="M40 40 L102 102M210 40 L148 102M40 210 L102 148M210 210 L148 148"/></g>
+          <g fill="#1a2030" stroke="#c9d3e0" stroke-width="1.5"><circle cx="40" cy="40" r="11"/><circle cx="210" cy="40" r="11"/><circle cx="40" cy="210" r="11"/><circle cx="210" cy="210" r="11"/></g>
+          <path d="M98 78 Q125 66 152 78 L170 112 Q172 150 152 172 Q125 184 98 172 Q78 150 80 112Z" fill="url(#al)" stroke="rgba(255,255,255,.6)" stroke-width="1"/>
+          <path d="M104 92 Q125 84 146 92 L156 116 Q125 126 94 116Z" fill="rgba(5,7,12,.55)"/>
+          <path d="M112 104 Q125 98 138 104" fill="none" stroke="#5cd0ff" stroke-width="2" stroke-linecap="round" opacity=".9"/>
+          <circle cx="125" cy="170" r="13" fill="#0b0f18" stroke="#c9d3e0" stroke-width="1.5"/><circle cx="125" cy="170" r="8" fill="url(#lens)"/><circle cx="122" cy="167" r="2.2" fill="#fff" opacity=".85"/>
+          <circle class="led" cx="125" cy="140" r="3.5" fill="#19f5a0"/>
+        </svg>
+        <i class="prop p1"></i><i class="prop p2"></i><i class="prop p3"></i><i class="prop p4"></i>
+      </div>
+      <div class="call c1"><b>249 g</b>No licence class</div>
+      <div class="call c2"><b>4K · 60</b>10-bit colour</div>
+      <div class="call c3"><b>38 min</b>Per battery</div>
+    </div>
+    <p class="lede load d3">A camera drone that folds to the size of a phone, holds steady in wind and ships from the hub closest to you.</p>
+    <div class="btns load d4"><a class="btn main" href="#kits">Order Air One</a><a class="btn line" href="#specs">See the specs</a></div>
+  </div></section>
+
+  <section id="specs" aria-labelledby="s"><div class="wrap">
+    <p class="kick">01 · Specs</p>
+    <h2 id="s">Small enough to carry. Sharp enough to sell.</h2>
+    <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5cd0ff"/><stop offset="1" stop-color="#2f6bff"/></linearGradient></defs></svg>
+    <div class="dials">
+      <div class="dial"><svg viewBox="0 0 80 80" aria-hidden="true"><circle class="tr" cx="40" cy="40" r="33"/><circle class="ar" cx="40" cy="40" r="33" pathLength="1" stroke-dasharray="1" stroke-dashoffset=".08"/></svg><div class="num">4K</div><span>60 fps video</span></div>
+      <div class="dial"><svg viewBox="0 0 80 80" aria-hidden="true"><circle class="tr" cx="40" cy="40" r="33"/><circle class="ar" cx="40" cy="40" r="33" pathLength="1" stroke-dasharray="1" stroke-dashoffset=".24"/></svg><div class="num">38′</div><span>flight per battery</span></div>
+      <div class="dial"><svg viewBox="0 0 80 80" aria-hidden="true"><circle class="tr" cx="40" cy="40" r="33"/><circle class="ar" cx="40" cy="40" r="33" pathLength="1" stroke-dasharray="1" stroke-dashoffset=".4"/></svg><div class="num">12 km</div><span>video range</span></div>
+    </div>
+  </div></section>
+
+  <section id="hubs" aria-labelledby="w"><div class="wrap">
+    <p class="kick">02 · Shipping</p>
+    <h2 id="w">Shipped from the hub nearest you.</h2>
+    <p class="sub">Six hubs, one store. Order in your language and currency; your drone leaves from the closest shelf.</p>
+    <div class="world">
+      <div class="globe" aria-hidden="true">
+        <div class="halo"></div>
+        <div class="sphere"><div class="spin">
+          <i class="mer"></i><i class="mer" style="transform:rotateY(30deg)"></i><i class="mer" style="transform:rotateY(60deg)"></i><i class="mer" style="transform:rotateY(90deg)"></i><i class="mer" style="transform:rotateY(120deg)"></i><i class="mer" style="transform:rotateY(150deg)"></i>
+          <i class="par" style="width:100%;height:100%;margin:-50%;transform:rotateX(90deg)"></i><i class="par" style="width:86%;height:86%;margin:-43%;transform:rotateX(90deg) translateZ(57px)"></i><i class="par" style="width:86%;height:86%;margin:-43%;transform:rotateX(90deg) translateZ(-57px)"></i><i class="par" style="width:50%;height:50%;margin:-25%;transform:rotateX(90deg) translateZ(100px)"></i>
+          <i class="hub" style="transform:rotateY(-10deg) rotateX(40deg) translateZ(115px)"></i><i class="hub" style="transform:rotateY(70deg) rotateX(-10deg) translateZ(115px)"></i><i class="hub" style="transform:rotateY(140deg) rotateX(25deg) translateZ(115px)"></i>
+          <i class="hub" style="transform:rotateY(200deg) rotateX(-30deg) translateZ(115px)"></i><i class="hub" style="transform:rotateY(260deg) rotateX(35deg) translateZ(115px)"></i><i class="hub" style="transform:rotateY(310deg) rotateX(-5deg) translateZ(115px)"></i>
+        </div></div>
+      </div>
+      <div class="rows">
+        <div class="row"><i class="led"></i><div><b>Rotterdam</b><small>Europe, UK</small></div><em>1–2 days</em></div>
+        <div class="row"><i class="led"></i><div><b>Singapore</b><small>Southeast Asia, India</small></div><em>2 days</em></div>
+        <div class="row"><i class="led"></i><div><b>Osaka</b><small>Japan, Korea</small></div><em>1 day</em></div>
+        <div class="row"><i class="led"></i><div><b>Dallas</b><small>North America</small></div><em>2 days</em></div>
+      </div>
+    </div>
+  </div></section>
+
+  <section id="kits" aria-labelledby="k"><div class="wrap">
+    <p class="kick">03 · Kits</p>
+    <h2 id="k">Pick a finish. Pick a kit.</h2>
+    <div class="swatches"><span class="sw"><i style="background:linear-gradient(135deg,#f4f7fb,#9aa6b8)"></i>Silver</span><span class="sw"><i style="background:linear-gradient(135deg,#5a6476,#1a2030)"></i>Graphite</span><span class="sw"><i style="background:linear-gradient(135deg,#bfefff,#2f6bff)"></i>Glacier</span></div>
+    <div class="kits">
+      <article class="kit"><h3>Solo</h3><p class="pr">€649</p><ul><li>Air One + 1 battery</li><li>Remote with screen clip</li></ul></article>
+      <article class="kit pick"><span class="flag">● MOST CHOSEN</span><h3>Fly More</h3><p class="pr">€829</p><ul><li>3 batteries + charging hub</li><li>Shoulder case</li><li>Spare rotors</li></ul></article>
+      <article class="kit"><h3>Creator</h3><p class="pr">€1,049</p><ul><li>Fly More, plus ND filters</li><li>Screen remote</li></ul></article>
+    </div>
+  </div></section>
+
+  <section aria-labelledby="c"><div class="wrap">
+    <div class="close"><i class="scan" aria-hidden="true"></i>
+      <p class="kick" style="justify-content:center">Ready to fly</p>
+      <h2 id="c">Your Air One leaves the nearest hub tomorrow.</h2>
+      <p class="sub">Free returns for 30 days, in every country we ship to.</p>
+      <div class="btns"><a class="btn main" href="#kits">Order now</a><a class="btn line" href="/">← All templates</a></div>
+    </div>
+  </div></section>
+</main>
+<footer>Developed by Aquarii Technologies</footer>
+</div>
+</body>
+</html>

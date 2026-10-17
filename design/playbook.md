@@ -27,6 +27,7 @@ The performance rules in CLAUDE.md still win: loop only transform/opacity, no an
 - Clip-path reveals (circle, polygon wipes) triggered on scroll.
 - Sticker/badge elements that rotate slowly (transform only).
 - Pattern fills generated in code (dots, stripes, topographic lines, truchet tiles).
+- CSS 3D wireframe globe: 6 meridian rings (rotateY steps) + parallels (rotateX 90deg + translateZ) inside one preserve-3d sphere spun by a single rotateY loop; hub dots placed with rotateY(lon) rotateX(lat) translateZ(r). Rotor/prop blur as a masked conic-gradient disc spun with transform.
 
 ## Motion
 - CSS scroll-driven animations (animation-timeline: view()) with a graceful fallback.

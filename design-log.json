@@ -677,5 +677,29 @@
     "purpose": "Booking site for a made-to-order fine jewellery maker (private sittings), shown as Aquarii web-design proof in a theme D site-scroll film",
     "description": "Halcyra: a dark editorial jewellery site where a cut sapphire throws a live spectral fan over the headline, scrolled whole for a reel that answers 'what makes a website look expensive?'",
     "era": "modern"
+  },
+  {
+    "id": "2026-10-17-1443",
+    "date": "2026-10-17",
+    "time": "14:43",
+    "slug": "nimbra",
+    "url": "https://templates.aquariit.com/2026-10-17-1443/",
+    "theme": "Cinematic cold tech (theme G cinema, second look): graphite ink, brushed silver and electric blue light, one emerald status LED; a foldable camera drone sold worldwide",
+    "layout": "object-centred hero (drone with spinning rotor discs over an outlined ghost word, spec callouts on hairlines), spec dial row, CSS 3D wireframe globe beside hub rows, finish swatches + kit cards, scanning closing card, split bar header with a live hub chip",
+    "palette": [
+      "#05070c",
+      "#0a0f1c",
+      "#c9d3e0",
+      "#f4f7fb",
+      "#2f6bff",
+      "#5cd0ff",
+      "#19f5a0"
+    ],
+    "fonts": "Chakra Petch + Onest",
+    "motif": "rotor discs as conic-gradient motion blur and a wireframe globe of delivery hubs",
+    "animation": "transform-only rotor spin, hover bob and globe rotation; scroll-driven entrances and dial draws (view() with @supports fallback); LED blink in steps()",
+    "purpose": "Global storefront (edge / CDN + security service line), shown as proof in a cinema film for Aquarii's edge service",
+    "description": "Nimbra Air One: a cold silver-and-blue drone store that ships from the nearest hub, filmed as the site a CDN and firewall make fast and safe abroad.",
+    "era": "modern"
   }
 ]

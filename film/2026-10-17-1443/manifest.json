@@ -1,0 +1,40 @@
+{
+  "id": "2026-10-17-1443",
+  "made": "2026-10-17T09:21:04.346Z",
+  "slots": {
+    "ground": [
+      "black"
+    ],
+    "opener": [
+      "drone-wire-scan-rise"
+    ],
+    "transition": [
+      "chroma-scan-wipe"
+    ],
+    "mechanism": [
+      "request-crawl-to-edge"
+    ],
+    "type": [
+      "chakra-hud-captions"
+    ],
+    "focus": [
+      "dof-glass-glare"
+    ],
+    "payoff": [
+      "edge-globe-arcs"
+    ],
+    "cta": [
+      "brand-end-electric",
+      "brand-end"
+    ]
+  },
+  "dna": {
+    "service": "edge",
+    "theme": "cinema",
+    "format": "problem -> fix",
+    "opening": "a silver camera drone rises into a dark studio as a glowing blue wireframe, rotors spinning, and a scan line turns it solid under the hook \"Why is your site slow abroad?\"",
+    "bigMoment": "the camera pulls back from a stuck browser, a silver wireframe globe rises beneath it and edge nodes light one by one, firing blue arcs into the page until it snaps in",
+    "ground": "graphite studio with cold silver beams, electric blue and ice glows, an ice grid floor with a blue pool, dust and bokeh, cold grade",
+    "music": "cold cinematic electronic with a ticking pulse, a held breath, a bright synth swell on the globe and a clean resolve, about 110 BPM"
+  }
+}
