@@ -96,7 +96,8 @@ Sources, in this order: design/aligned-plan.md (business, recipe, process), desi
    in device frames that scroll. Never placeholder blocks.
 4. **Voice:** film/ID/voice.md, near-continuous, every line 2.3-3.2 words per second of its slot (`npm run check` refuses anything else, or the reel ships silent),
    one short breath before the reveal, first line = hook, last line ends "DM us to know more". English, "we", AI voice af_heart; never invent clients, years or results; never prices.
-5. **Ending:** `P.brandEnd({ at, keyword, why })` (it breathes by itself: push-in, halo, shine). No other sign-off.
+5. **Ending:** `P.brandEnd({ at, keyword, why, grade })` (it breathes by itself: push-in, halo, shine). No other sign-off. `grade` colours the Aquarii logo,
+   wordmark and button to the film's palette (owner, 17 Oct 2026; presets in parts.js `P.GRADES`, add one when a film's palette has none).
 6. **One new trick** in scripts/film/parts.js per film (`P.use(slot, id)`), as CLAUDE.md asks; reuse parts for everything else.
 7. **Review before pushing (no full renders here; GitHub renders):** `node scripts/film/storyboard.mjs ID`, then 1 still per second (`--stills 0.5,1.5,...`) as one contact
    sheet. Fix: empty or cut-off frames, text in Instagram's zones, a picture that does not match the words, anything static for 3 s, placeholder content. Look again (2-3
