@@ -459,7 +459,7 @@
     "service": "social",
     "theme": "cinema",
     "format": "tiny story",
-    "concept": "Hook as a statement, not a question: 'One climbing session. Thirty posts.' A chalked hand climbs magenta holds on a night wall, each grab throws chalk; in close-up every grab peels a post card off the wall; a chalk burst wipes to a phone whose feed grid fills with the posts; breath; the camera whips back to the whole wall: thirty numbered holds ignite floor to top while a day counter runs to 30; comments answered and a weekly review; the Kruxa site scrolls to the same month wall; site and phone together; Aquarii DM card graded magenta.",
+    "concept": "Hook as a statement, not a question: 'One climbing session. Thirty posts.' A chalked hand climbs magenta holds on a night wall, each grab throws chalk; in close-up every grab peels a post card off the wall; a chalk burst wipes to a phone whose feed grid fills with the posts; breath; the camera whips back to the whole wall: thirty numbered holds ignite floor to top while a day counter runs to 30; comments answered and a weekly review; the Kruxa site scrolls to the same month wall; site and phone together; Aquarii end card graded magenta: Comment \"AQUARII\" (E8, owner 17 Oct).",
     "combo": "climbing route as the content plan (P.holdRoute) + chalk-dust particles as texture and transition (P.chalk) + a camera travelling a 1000x1400 wall to a pull-back calendar reveal, with condensed kinetic type spanning the width",
     "motionStyle": "swing-eased camera keys over a giant wall (three-quarter, close-up, whip pull-back), bold springs for holds and cards, closed-form chalk physics, new framing at least every 2.4 s",
     "primaryTransition": "chalk burst wipe (P.chalk.wipe)",
@@ -482,6 +482,6 @@
       "screenshot": "the pulled-back wall with thirty numbered holds lit and 'A month, mapped.' (9.6-10.4 s)",
       "sendToFriend": "yes, to a friend who runs a gym or studio and posts only when they remember"
     },
-    "notes": "Pass 1 (13 stills): the frame-filling chalk wipe stayed white until 5.4 s (particle life now scaled by .42 for the wipe), 'A month, mapped.' ran off the right edge (58 -> 50 px). Pass 2 (7 stills + 1:1 crop of the phone feed): headings and the feed are crisp at 1:1; the second hook line was faint at frame 0 (hook now starts at -0.7 s); the wall SVG clipped at its bottom edge showed a dark band (overflow visible). Site and reel share the effects: hand-climbed route with chalk puffs, holds lighting, the 30-hold month wall, post cards."
+    "notes": "Pass 1 (13 stills): the frame-filling chalk wipe stayed white until 5.4 s (particle life now scaled by .42 for the wipe), 'A month, mapped.' ran off the right edge (58 -> 50 px). Pass 2 (7 stills + 1:1 crop of the phone feed): headings and the feed are crisp at 1:1; the second hook line was faint at frame 0 (hook now starts at -0.7 s); the wall SVG clipped at its bottom edge showed a dark band (overflow visible). Site and reel share the effects: hand-climbed route with chalk puffs, holds lighting, the 30-hold month wall, post cards. Follow-up after merge: switched the ending to Comment \"AQUARII\" (owner decision E8, PR #246): voice last line, caption last line, end-card keyword."
   }
 ]

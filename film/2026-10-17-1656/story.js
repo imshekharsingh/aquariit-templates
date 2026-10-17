@@ -14,7 +14,7 @@
 //  peels a post card off the wall into a fan | 4.65 chalk burst wipe | 4.8-6.3 a phone rises, the three posts fly into its feed grid | 6.3-7.8 push into
 //  the grid while six more posts land | breath 7.8-8.4 (dim) | 8.4-10.8 whip pull-back: the whole wall, holds 7-30 ignite floor to top, day counter to 30 |
 //  10.8-13.2 the phone: comments answered, a weekly review fills | 13.2-15.4 a glass browser with the Kruxa site scrolling to its month wall |
-//  15.4-17.3 pull back, browser and phone together | 17.3-20 brand end (magenta grade).
+//  15.4-17.3 pull back, browser and phone together | 17.3-20 brand end (magenta grade, Comment "AQUARII").
 (function () {
   const E = window.FilmEngine, P = window.FilmParts, { clamp, lerp } = E, S = (E.story = {});
   S.selfStage = true;
@@ -33,7 +33,8 @@
   const track = (segs, t) => { const s = segs.find(([a, b]) => t >= a && t < b); if (!s) return null; const k = io(seg(t, s[0], s[1])), o = {};
     for (const key of new Set([...Object.keys(s[2]), ...Object.keys(s[3])])) o[key] = lerp(s[2][key] ?? 0, s[3][key] ?? s[2][key] ?? 0, k); return o; };
   const place = (el, v) => { if (!v) { el.style.opacity = '0'; return; } el.style.opacity = (v.o ?? 1).toFixed(3);
-    el.style.transform = `translate(${(v.x || 0).toFixed(1)}px,${(v.y || 0).toFixed(1)}px) perspective(900px) rotateX(${(v.rx || 0).toFixed(2)}deg) rotateY(${(v.ry || 0).toFixed(2)}deg) scale(${(v.s || 1).toFixed(4)})`; };
+    // a 2D camera for anything with readable type (Chrome rasters text in a 3D-tilted layer at low resolution, PR #248): the turn is a slight skew, the tilt a slight squash
+    el.style.transform = `translate(${(v.x || 0).toFixed(1)}px,${(v.y || 0).toFixed(1)}px) skewY(${(-(v.ry || 0) * .22).toFixed(3)}deg) scale(${((v.s || 1) * (1 - Math.abs(v.ry || 0) * .004)).toFixed(4)},${((v.s || 1) * (1 - Math.abs(v.rx || 0) * .006)).toFixed(4)})`; };
 
   S.setup = async function () {
     document.documentElement.classList.add('reel');
@@ -149,7 +150,7 @@
     E.el('div', 'position:absolute;inset:0;background:linear-gradient(135deg,rgba(56,224,200,.07),rgba(0,0,0,0) 45%,rgba(255,43,214,.06));mix-blend-mode:soft-light', P.front);
     E.el('div', 'position:absolute;inset:0;background:radial-gradient(85% 70% at 50% 48%,rgba(0,0,0,0),rgba(0,0,0,.5))', P.front);
     const gc = E.el('canvas', 'position:absolute;inset:0;width:402px;height:715px;opacity:.022;mix-blend-mode:overlay', P.front); gc.width = 201; gc.height = 358; const gx = gc.getContext('2d'), gimg = gx.createImageData(201, 358);
-    P.brandEnd({ at: 17.3, keyword: 'MONTH', why: 'One climbing session. Thirty posts.', grade: 'magenta' });
+    P.brandEnd({ at: 17.3, keyword: 'AQUARII', why: 'One climbing session. Thirty posts.', grade: 'magenta' });
 
     // ---------- placements ----------
     const PH = [
