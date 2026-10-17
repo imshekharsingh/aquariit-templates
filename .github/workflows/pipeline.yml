@@ -129,9 +129,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # the 8 newest reels (video + cover) from the "reels" release; the Reel publish workflow puts them there (test reels such as ID-voice.mp4 stay in the release only: they have no cover and are not for posting)
+          # covers only (owner, 17 Oct 2026): the videos stream from the "reels" release through src/worker.js at full quality, so no 25 MiB squeeze;
+          # the 30 newest covers from the release (test reels such as ID-voice.mp4 have no cover and are not for posting)
           mkdir -p templates/reels
-          for f in $(gh release view reels --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' 2>/dev/null | grep -E '\.(mp4|jpg)$' | grep -E '^[0-9]{4}-' | grep -vE -- '-(voice|draft|needsfix)' | sort -r | head -n 16); do
+          for f in $(gh release view reels --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' 2>/dev/null | grep -E '\.jpg$' | grep -E '^[0-9]{4}-' | grep -vE -- '-(voice|draft|needsfix)' | sort -r | head -n 30); do
             gh release download reels --repo "$GITHUB_REPOSITORY" --pattern "$f" --dir templates/reels --clobber
           done
           # the site cannot hold a file over 25 MiB (the whole deploy would fail): leave an oversized reel out instead
@@ -230,16 +231,17 @@ jobs:
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
         run: |
           curl() { command curl --connect-timeout 15 --max-time 120 --retry 4 --retry-all-errors --retry-delay 5 "$@"; }
-          files=$(ls templates/reels/*.mp4 2>/dev/null | sort -r)
+          # videos stream from the reels release through the Worker; check the newest 3 (first KiB only) plus their covers
+          files=$(ls templates/reels/*-cover.jpg 2>/dev/null | sort -r | head -n 3 | sed 's/-cover\.jpg$/.mp4/')
           if [ -z "$files" ]; then echo "No reels attached yet."; exit 0; fi
           B=https://templates.aquariit.com; J=$(mktemp); bad=0
           curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
           for f in $files; do
             n=$(basename "$f"); c="${n%.mp4}-cover.jpg"
             out=$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n"); [ "$out" != "200" ] || { echo "::error::$n is reachable without signing in"; exit 1; }
-            v=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -b "$J" "$B/reels/$n"); i=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -b "$J" "$B/reels/$c")
+            v=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -H 'Range: bytes=0-1023' -b "$J" "$B/reels/$n"); i=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -b "$J" "$B/reels/$c")
             echo "$n: signed out $out | signed in video [$v] cover [$i]"
-            case "$v" in "200 "*) ;; *) bad=1;; esac; case "$i" in "200 "*) ;; *) bad=1;; esac
+            case "$v" in "200 "*|"206 "*) ;; *) bad=1;; esac; case "$i" in "200 "*) ;; *) bad=1;; esac
           done
           [ "$bad" = "0" ] || { echo "::error::a reel or its cover is not served to a signed-in user"; exit 1; }
           kit=$(curl -s -b "$J" "$B/kit/")

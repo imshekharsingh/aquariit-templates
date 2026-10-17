@@ -228,6 +228,29 @@ async function uploadedApi(request, env, p) {
   return jres({ error: 'bad-request' }, 400);
 }
 
+// reel videos stream from the GitHub "reels" release (owner, 17 Oct 2026: the site's 25 MiB per-file cap squeezed the films), behind the same sign-in.
+// Range requests pass through so phones can seek. A public repo needs no key; if it goes private, add a read-only token as the Worker secret GH_READ_TOKEN.
+const REPO = 'imshekharsingh/aquariit-templates', REEL = /^\/reels\/(\d{4}-\d{2}-\d{2}(?:-\d{4})?\.mp4)$/;
+async function reelVideo(request, env, name) {
+  const ua = { 'User-Agent': 'aquarii-templates' };
+  let src = `https://github.com/${REPO}/releases/download/reels/${name}`, first = { ...ua };
+  if (env.GH_READ_TOKEN) {
+    const auth = { ...ua, Authorization: `Bearer ${env.GH_READ_TOKEN}` };
+    const r = await fetch(`https://api.github.com/repos/${REPO}/releases/tags/reels`, { headers: { ...auth, Accept: 'application/vnd.github+json' } });
+    const a = r.ok ? ((await r.json()).assets || []).find((x) => x.name === name) : null;
+    if (!a) return null;
+    src = a.url; first = { ...auth, Accept: 'application/octet-stream' };
+  }
+  const range = request.headers.get('Range');
+  // follow GitHub's redirect by hand so the key never travels to the storage host
+  let up = await fetch(src, { method: request.method === 'HEAD' ? 'HEAD' : 'GET', headers: { ...first, ...(range ? { Range: range } : {}) }, redirect: 'manual' });
+  if (up.status >= 300 && up.status < 400 && up.headers.get('Location')) up = await fetch(up.headers.get('Location'), { method: request.method === 'HEAD' ? 'HEAD' : 'GET', headers: { ...ua, ...(range ? { Range: range } : {}) } });
+  if (up.status !== 200 && up.status !== 206) return null;
+  const h = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': 'private, max-age=3600' });
+  for (const k of ['Content-Length', 'Content-Range', 'ETag', 'Last-Modified']) if (up.headers.get(k)) h.set(k, up.headers.get(k));
+  return new Response(request.method === 'HEAD' ? null : up.body, { status: up.status, headers: h });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname;
@@ -257,7 +280,11 @@ export default {
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
     if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
-    if (signedIn) return env.ASSETS.fetch(request);
+    if (signedIn) {
+      const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
+      if (m) { try { const v = await reelVideo(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }
+      return env.ASSETS.fetch(request);
+    }
 
     const wantsPage = request.method === 'GET' && ((request.headers.get('Accept') || '').includes('text/html') || request.headers.get('Sec-Fetch-Mode') === 'navigate');
     if (wantsPage) return go(`/login?next=${encodeURIComponent(p + url.search)}`);

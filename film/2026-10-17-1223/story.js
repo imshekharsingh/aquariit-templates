@@ -59,13 +59,13 @@
     const url = bar.querySelector('.url'), caret = bar.querySelector('.caret'), lb = bar.querySelector('.lb');
     const vp = E.el('div', `position:absolute;left:1px;right:1px;top:${TB}px;bottom:1px;overflow:hidden;border-radius:0 0 15px 15px;background:#07080d`, frame);
     const mk = (w) => { const c = srcSite.cloneNode(true); c.style.cssText = `position:absolute;left:0;top:0;width:${w}px;transform-origin:0 0;zoom:${BW / w * .995}`   /* zoom, not scale: the text is laid out at its final size, so it stays crisp inside the 3D frame */; c.querySelectorAll('*').forEach((n) => { n.style.animation = 'none'; }); return c; };
-    const PW = 1024, site = mk(PW); vp.appendChild(site);
+    const PW = 860, site = mk(PW); vp.appendChild(site);
     const K = BW / PW * .995;                                                         // page px -> frame px
     const q = (s) => site.querySelector(s), qa = (s) => [...site.querySelectorAll(s)];
     const top = (el) => { let y = 0; while (el && el !== site) { y += el.offsetTop; el = el.offsetParent; } return y; };
     const nav = q('.nav'), badge = q('.badge'), h1s = qa('h1 span'), lede = q('.lede'), btns = q('.btns'), orb = q('.orb'), r1 = q('.ring.r1'), r2 = q('.ring.r2'), sats = qa('.sat'), cEq = q('.card.eq'), cBat = q('.card.bat');
     const feats = qa('.feat'), featsBox = q('.feats'), fH = q('#features h2'), lH = q('#live h2'), line = q('.dash .line'), fill = q('.dash path'), nums = qa('.num'), pbs = qa('.pb i'), order = q('.order .btn');
-    const yFeat = top(q('#features')) - 20, yLive = top(q('#live')) - 10;
+    const yFeat = top(q('#features')) - 20, yLive = Math.max(top(q('#live')) - 10, top(order) + order.offsetHeight + 40 - (BH - TB - 1) / K);   // keep Pre-order inside the window at any page width
     featsBox.style.perspective = '700px';
     const glare = E.el('div', 'position:absolute;inset:0;border-radius:16px;overflow:hidden;pointer-events:none', frame, `<i style="position:absolute;top:-40%;left:0;width:90px;height:180%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.16),rgba(255,255,255,0));transform:rotate(18deg)"></i>`).firstChild;
 
@@ -148,7 +148,7 @@
       const orb3 = io(seg(t, 8.2, 10.2)) * (1 - io(seg(t, 10.6, 11.8)));
       ry += -32 * orb3; rx += 6 * orb3; tz += -170 * orb3;
       // 13.6-17.2 push-in on the features, 17.4-20 dolly to the dashboard (no framing holds over 3 s)
-      const p1 = io(seg(t, 13.6, 15.8)) * (1 - io(seg(t, 16.3, 17.2))); ry += -9 * p1; rx += -2 * p1; tz += 150 * p1;
+      const p1 = io(seg(t, 13.6, 15.8)) * (1 - io(seg(t, 16.3, 17.2))); ry += 2 * p1; rx += -2 * p1; tz += 140 * p1;
       const p2 = io(seg(t, 17.4, 19.4)) * (1 - io(seg(t, 20, 21.6))); ry += 7 * p2; tz += 120 * p2; ty += 10 * p2;
       const pb = io(seg(t, 20, 21.6)); tz += -260 * pb; ry += 10 * pb; ty += -60 * pb; sc = 1;
       frame.style.transform = `translate3d(0,${ty.toFixed(1)}px,${tz.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale(${sc})`;
