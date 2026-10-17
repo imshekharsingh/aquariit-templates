@@ -80,7 +80,7 @@ Premium content first, a blend of everything (playful included, nothing dropped)
 4. **Ask after delivery:** if the owner says it is not there, ask what is missing with specific options; never assume.
 
 ## Style library (owner, 17 Oct 2026)
-Codes so far: G1 cinema product film (Aurelia), A1 makeover collage, B1 clay character, C1 our site on a real screen, D1 silk-light site scroll, E1 clay page, F1 misty peaks, F2 planet from orbit (Veloria) (theme F `world`:
+Codes so far: G1 cinema product film (Aurelia), A1 makeover collage, B1 clay character, C1 our site on a real screen, D1 silk-light site scroll, D2 spectral-light site scroll (Halcyra), E1 clay page, F1 misty peaks, F2 planet from orbit (Veloria) (theme F `world`:
 living GPU scenes after reference R2).
 https://templates.aquariit.com/styles/ (templates/styles/index.html, linked from the home page) shows every look with a code (A1, B1, D1 ...) and a live
 example, so the owner can ask for one by code ("tomorrow in B1"). Every new reference or theme adds its entry there, and a card in the home page's style strip (templates/index.html `.styles`), the same day; a code, once given, is kept.

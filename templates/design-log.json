@@ -654,5 +654,28 @@
     "animation": "mascot drops in with squash and stretch, breathes and hops; a 12 s opacity cycle of faces, tints and halos; porthole reveals (two mask layers with mask-composite: add, @property radius driven by animation-timeline view()); scroll-driven rises on every section; transform-only bobs, bubbles and calendar beat",
     "purpose": "Booking site for a service business (fictional pet daycare and grooming), shown as the site we protect in a security-service film",
     "description": "Plumpaw books dog daycare, spa grooms and sleepovers: Bun the clay mascot drops onto a glowing stage and cycles through moods, then four kinds of day, a muddy-to-fluffy spa pair, what every booking includes, plans and a this-week calendar."
+  },
+  {
+    "id": "2026-10-17-1420",
+    "date": "2026-10-17",
+    "time": "14:20",
+    "slug": "halcyra",
+    "url": "https://templates.aquariit.com/2026-10-17-1420/",
+    "theme": "Dark editorial luxury (theme D sitescroll film day): blue-black ink and bone type, colour arriving only as light: a cut sapphire throws a live spectral fan (spinel into violet) over a framed poster; made-to-order fine jewellery",
+    "layout": "framed poster hero (hairline frame, corner ticks, tiny print row, stone + spectral fan), editorial roman-numeral index of pieces, drop-cap statement with a drawn stone cross-section and three numbers, vertical light-line commission steps, serif quote panel, closing sitting card with time chips, wordmark-centred thin header",
+    "palette": [
+      "#07080f",
+      "#10121c",
+      "#4a5cff",
+      "#ff4f9a",
+      "#f2eee8",
+      "#cfd8ff"
+    ],
+    "fonts": "Host Grotesk + Bodoni Moda (italic)",
+    "motif": "a brilliant-cut sapphire splitting light into a spectral fan (conic wedge + breathing rays) with twinkling four-point sparkles",
+    "animation": "transform-only fan sweep, breathing rays, twinkling sparkles and a bobbing stone; scroll-driven view() entrances on every section, stroke-draw of the stone cross-section and the commission light line, linear() spring on the hero",
+    "purpose": "Booking site for a made-to-order fine jewellery maker (private sittings), shown as Aquarii web-design proof in a theme D site-scroll film",
+    "description": "Halcyra: a dark editorial jewellery site where a cut sapphire throws a live spectral fan over the headline, scrolled whole for a reel that answers 'what makes a website look expensive?'",
+    "era": "modern"
   }
 ]

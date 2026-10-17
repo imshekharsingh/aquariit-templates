@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07080f">
+<title>Halcyra · Fine jewellery, made to order</title>
+<meta name="description" content="Halcyra makes fine jewellery to order: one stone, cut and set by hand in six weeks. Book a private sitting.">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Host+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+  --ink:#07080f;--panel:#10121c;--line:rgba(223,230,255,.14);--bone:#f2eee8;--muted:#9096ad;
+  --sapph:#4a5cff;--spinel:#ff4f9a;--ice:#cfd8ff;
+  --serif:'Bodoni Moda',Didot,Georgia,serif;--sans:'Host Grotesk',system-ui,sans-serif;
+  --gut:30px;--spring:linear(0,.22 8%,.6 18%,.92 30%,1.05 40%,1.03 52%,.995 66%,1);
+}
+@supports (color:color(display-p3 1 1 1)){:root{--sapph:color(display-p3 .30 .37 1);--spinel:color(display-p3 1 .32 .6)}}
+html.reel{--safe-top:0px;--safe-bottom:0px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--ink);-webkit-text-size-adjust:100%}
+body{background:#07080f;color:var(--bone);font:400 16px/1.55 var(--sans);overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--spinel);outline-offset:3px;border-radius:4px}
+em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:0}
+.wrap{width:min(1120px,100% - 2*var(--gut));margin-inline:auto}
+.lab{font:500 11px/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
+
+/* header: wordmark centred, thin solid bar */
+.bar{position:sticky;top:0;z-index:20;background:var(--ink);padding-top:var(--safe-top);border-bottom:1px solid var(--line)}
+.bar .wrap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:56px}
+.back{justify-self:start;white-space:nowrap;font:500 12px/1 var(--sans);letter-spacing:.04em;color:var(--muted);text-decoration:none;padding:8px 0}
+.back:hover{color:var(--bone)}
+.mark{font:500 22px/1 var(--serif);letter-spacing:.32em;text-transform:uppercase;padding-left:.32em}
+.ask{justify-self:end;white-space:nowrap;font:600 12px/1 var(--sans);letter-spacing:.06em;text-decoration:none;padding:9px 14px;border:1px solid rgba(255,79,154,.55);border-radius:99px;color:var(--bone)}
+.reel .bar .wrap{grid-template-columns:1fr}
+@media (max-width:520px){.mark{font-size:17px;letter-spacing:.26em;padding-left:.26em}.ask{padding:8px 11px;font-size:11px}.back{font-size:11px}}
+.reel .back,.reel .ask{display:none}
+.reel .mark{justify-self:center}
+
+/* hero: a framed poster with a cut stone throwing a spectral fan */
+.hero{padding:18px 0 30px}
+.poster{position:relative;border:1px solid var(--line);border-radius:4px;padding:22px 22px 26px;overflow:hidden;isolation:isolate;min-height:600px;display:flex;flex-direction:column}
+.poster::before,.poster::after{content:"";position:absolute;width:14px;height:14px;border:1px solid var(--ice);opacity:.5}
+.poster::before{left:8px;top:8px;border-right:0;border-bottom:0}
+.poster::after{right:8px;bottom:8px;border-left:0;border-top:0}
+.print{display:flex;justify-content:space-between;gap:12px}
+.hero h1{margin-top:22px;font:600 clamp(50px,13.6vw,128px)/.92 var(--sans);letter-spacing:-.05em;text-wrap:balance;position:relative;z-index:2}
+.hero h1 em{font-size:1.1em;letter-spacing:-.02em;background:linear-gradient(100deg,#ffd6ea 0%,var(--spinel) 40%,#b9c2ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.06em}
+.stage{position:relative;flex:1;min-height:250px;margin:6px -22px 0}
+.glow{position:absolute;left:50%;top:62%;width:420px;height:300px;translate:-50% -50%;border-radius:50%;background:radial-gradient(closest-side,rgba(74,92,255,.55),rgba(74,92,255,.12) 55%,rgba(7,8,15,0));pointer-events:none}
+.fan{position:absolute;left:50%;top:66%;width:0;height:0;z-index:0}
+.fan .wedge{position:absolute;left:-330px;top:-330px;width:660px;height:660px;border-radius:50%;
+  background:conic-gradient(from -58deg at 50% 50%,rgba(0,0,0,0) 0deg,rgba(255,79,154,.0) 2deg,rgba(255,79,154,.5) 12deg,rgba(255,170,90,.42) 24deg,rgba(250,240,140,.38) 34deg,rgba(90,240,190,.38) 46deg,rgba(80,170,255,.46) 58deg,rgba(110,92,255,.5) 72deg,rgba(110,92,255,0) 84deg,rgba(0,0,0,0) 360deg);
+  -webkit-mask:radial-gradient(closest-side,transparent 9%,#000 13%,rgba(0,0,0,.55) 55%,transparent 100%);mask:radial-gradient(closest-side,transparent 9%,#000 13%,rgba(0,0,0,.55) 55%,transparent 100%);
+  mix-blend-mode:screen;opacity:.9}
+.fan .ray{position:absolute;left:-1px;top:-300px;width:2px;height:300px;transform-origin:50% 100%;transform:rotate(var(--r));background:linear-gradient(to top,rgba(255,255,255,.9),rgba(255,255,255,0));mix-blend-mode:screen;opacity:.45}
+.gem{position:absolute;left:50%;top:66%;width:150px;translate:-50% -38%;z-index:3;filter:drop-shadow(0 18px 30px rgba(0,0,0,.6))}
+.spark{position:absolute;width:14px;height:14px;z-index:4;opacity:.9}
+.spark::before,.spark::after{content:"";position:absolute;inset:0;background:#fff;clip-path:polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%)}
+.spark::after{filter:blur(3px);opacity:.8}
+.hero-foot{position:relative;z-index:3;display:flex;flex-direction:column;gap:16px}
+.hero-foot p{max-width:30ch;color:#c9cde0;font-size:15px}
+.cta{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;padding:14px 20px;border-radius:99px;background:var(--bone);color:var(--ink);font:600 14px/1 var(--sans);text-decoration:none}
+.cta svg{width:16px;height:16px}
+
+/* the pieces: an editorial index */
+section{padding:52px 0}
+.head{display:flex;flex-direction:column;gap:12px;margin-bottom:26px}
+.head h2{font:500 clamp(34px,9vw,64px)/1 var(--sans);letter-spacing:-.04em;text-wrap:balance}
+.index{list-style:none;border-top:1px solid var(--line)}
+.index li{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.index .no{font:400 13px/1 var(--serif);font-style:italic;color:var(--muted);width:28px}
+.index h3{font:500 25px/1.05 var(--sans);letter-spacing:-.03em}
+.index h3 em{color:var(--ice)}
+.index p{margin-top:5px;font-size:13px;color:var(--muted)}
+.index svg{width:58px;height:58px}
+.index li:nth-child(2) .tw{animation-delay:-1.4s}.index li:nth-child(3) .tw{animation-delay:-2.6s}.index li:nth-child(4) .tw{animation-delay:-3.7s}
+
+/* craft: drop-cap statement + a drawn stone section + numbers */
+.craft .statement{font:400 clamp(22px,5.7vw,34px)/1.3 var(--sans);letter-spacing:-.015em;color:#e4e6f2;max-width:28ch}
+.craft .statement::first-letter{initial-letter:3;-webkit-initial-letter:3;font:500 1em/1 var(--serif);font-style:italic;color:var(--spinel);margin-right:.12em}
+.cut{display:block;width:100%;max-width:420px;margin:30px auto 0}
+.cut path,.cut line{fill:none;stroke:var(--ice);stroke-width:1;vector-effect:non-scaling-stroke}
+.cut .hot{stroke:var(--spinel);stroke-width:1.5}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:28px}
+.nums div{border-top:1px solid var(--line);padding-top:12px}
+.nums b{display:block;font:500 34px/1 var(--sans);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.nums b small{font:italic 400 20px/1 var(--serif);color:var(--ice)}
+.nums span{display:block;margin-top:6px;font-size:12px;color:var(--muted);line-height:1.35}
+
+/* commission: three numbered steps on a vertical light line */
+.steps{list-style:none;position:relative;padding-left:34px}
+.steps::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:linear-gradient(var(--spinel),var(--sapph) 60%,rgba(74,92,255,0))}
+.steps li{position:relative;padding:4px 0 26px}
+.steps li::before{content:"";position:absolute;left:-33px;top:9px;width:13px;height:13px;border-radius:50%;background:var(--ink);border:1px solid var(--ice);box-shadow:0 0 0 4px var(--ink)}
+.steps .wk{font:italic 400 14px/1 var(--serif);color:var(--spinel)}
+.steps h3{margin-top:8px;font:500 24px/1.1 var(--sans);letter-spacing:-.03em}
+.steps p{margin-top:6px;color:var(--muted);font-size:14.5px;max-width:34ch}
+
+/* voice */
+.quote figure{border:1px solid var(--line);border-radius:4px;padding:28px 24px;background:linear-gradient(160deg,rgba(74,92,255,.13),rgba(255,79,154,.05) 60%,rgba(16,18,28,0))}
+.quote blockquote{font:italic 400 clamp(26px,7vw,40px)/1.15 var(--serif);letter-spacing:-.01em}
+.quote figcaption{margin-top:18px;font-size:13px;color:var(--muted)}
+
+/* sitting: closing card */
+.sit .card{position:relative;overflow:hidden;isolation:isolate;border-radius:4px;padding:38px 24px 32px;background:radial-gradient(120% 90% at 50% 120%,rgba(74,92,255,.55),rgba(74,92,255,0) 60%),var(--panel);border:1px solid var(--line);text-align:center}
+.sit .fan{top:112%}
+.sit .fan .wedge{opacity:.55}
+.sit h2{position:relative;font:500 clamp(38px,10.5vw,72px)/.98 var(--sans);letter-spacing:-.045em}
+.sit p{position:relative;margin:14px auto 22px;max-width:30ch;color:#c9cde0;font-size:15px}
+.sit .cta{position:relative;align-self:auto}
+.sit .slots{position:relative;display:flex;justify-content:center;gap:8px;margin-top:20px;flex-wrap:wrap}
+.sit .slots span{font:500 12px/1 var(--sans);padding:9px 12px;border:1px solid var(--line);border-radius:99px;color:#c9cde0}
+.sit .slots span.on{border-color:var(--spinel);color:var(--bone)}
+footer{padding:26px 0 calc(28px + var(--safe-bottom));border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-direction:column;gap:10px}
+footer .row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.credit{font-size:11px;color:#6d7288;letter-spacing:.04em}
+
+/* motion: the stone turns, rays breathe, sparkles twinkle (transform/opacity only) */
+@keyframes sweep{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+@keyframes breathe{0%,100%{opacity:.25;transform:rotate(var(--r)) scaleY(.82)}50%{opacity:.6;transform:rotate(var(--r)) scaleY(1)}}
+@keyframes tw{0%,100%{opacity:.15;transform:scale(.5) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes inset{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+.fan .wedge{animation:sweep 9s cubic-bezier(.45,0,.55,1) infinite}
+.fan .ray{animation:breathe 4.2s ease-in-out infinite}
+.gem{animation:bob 6s ease-in-out infinite}
+.tw{animation:tw 3.6s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+.hero h1,.print,.hero-foot{animation:rise .9s var(--spring) both}
+.print{animation-delay:.05s}.hero h1{animation-delay:.12s}.hero-foot{animation-delay:.35s}
+.stage{animation:rise 1.2s cubic-bezier(.16,1,.3,1) .2s both}
+/* every section below the fold enters on scroll; finished by default where view timelines are missing */
+@supports (animation-timeline:view()){
+  .rv{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+  .cut path,.cut line{stroke-dasharray:1;animation:draw linear both;animation-timeline:view();animation-range:entry 10% cover 45%}
+  .steps::before{animation:inset linear both;animation-timeline:view();animation-range:entry 0% cover 50%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .cut path,.cut line{stroke-dasharray:none}
+}
+
+@media (min-width:860px){
+  :root{--gut:48px}
+  .poster{min-height:640px;padding:34px}
+  .stage{position:absolute;right:0;bottom:0;width:52%;height:78%;margin:0}
+  .hero h1{max-width:9ch}
+  .hero-foot{margin-top:auto;max-width:44%}
+  .index li{grid-template-columns:60px 1fr 1.3fr auto;padding:24px 0}
+  .index h3{font-size:32px}
+  .craft .grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+  .cut{margin:0}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;padding-left:0}
+  .steps::before,.steps li::before{display:none}
+  .steps li{border-top:1px solid var(--line);padding-top:20px}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="back" href="/">← All templates</a>
+    <span class="mark">Halcyra</span>
+    <a class="ask" href="#sit">Book a sitting</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap">
+      <div class="poster">
+        <div class="print"><span class="lab">Collection Nº 07</span><span class="lab">Made to order</span></div>
+        <h1 id="h1">Light, <em>held</em> by hand.</h1>
+        <div class="stage" aria-hidden="true">
+          <div class="glow"></div>
+          <div class="fan">
+            <div class="wedge"></div>
+            <i class="ray" style="--r:-46deg;animation-delay:-.4s"></i><i class="ray" style="--r:-28deg;animation-delay:-1.6s"></i><i class="ray" style="--r:-12deg;animation-delay:-2.4s"></i>
+            <i class="ray" style="--r:6deg;animation-delay:-.9s"></i><i class="ray" style="--r:22deg;animation-delay:-3.1s"></i><i class="ray" style="--r:40deg;animation-delay:-2s"></i>
+          </div>
+          <svg class="gem" viewBox="0 0 160 120" role="img" aria-label="A brilliant-cut sapphire">
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9d1ff"/><stop offset=".5" stop-color="#5a6bff"/><stop offset="1" stop-color="#1b1f7a"/></linearGradient>
+              <linearGradient id="g2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8e9bff"/><stop offset="1" stop-color="#20248f"/></linearGradient>
+              <linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a46d8"/><stop offset="1" stop-color="#0c0e3d"/></linearGradient>
+            </defs>
+            <polygon points="30,34 52,14 108,14 130,34" fill="url(#g1)"/>
+            <polygon points="52,14 80,34 108,14" fill="#e9edff" opacity=".7"/>
+            <polygon points="30,34 52,14 80,34" fill="url(#g2)"/>
+            <polygon points="80,34 108,14 130,34" fill="#7e8cff"/>
+            <polygon points="30,34 80,112 55,34" fill="url(#g3)"/>
+            <polygon points="55,34 80,112 105,34" fill="#4352f0"/>
+            <polygon points="105,34 80,112 130,34" fill="#141766"/>
+            <polyline points="30,34 130,34" stroke="#fff" stroke-opacity=".6" stroke-width="1" fill="none"/>
+            <polygon points="62,40 80,92 70,40" fill="#fff" opacity=".22"/>
+          </svg>
+          <i class="spark tw" style="left:calc(50% + 46px);top:calc(66% - 64px)"></i>
+          <i class="spark tw" style="left:calc(50% - 78px);top:calc(66% - 22px);width:9px;height:9px;animation-delay:-1.3s"></i>
+          <i class="spark tw" style="left:calc(50% + 92px);top:calc(66% + 4px);width:8px;height:8px;animation-delay:-2.4s"></i>
+        </div>
+        <div class="hero-foot">
+          <p>One stone, cut and set by hand for one person. Six weeks from a first sketch to your hand.</p>
+          <a class="cta" href="#sit">Book a private sitting <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pieces" aria-labelledby="h2p">
+    <div class="wrap">
+      <div class="head rv"><span class="lab">The pieces · four forms</span><h2 id="h2p">Four forms. <em>Your</em> stone.</h2></div>
+      <ol class="index">
+        <li class="rv"><span class="no">i.</span><div><h3>Meridian <em>ring</em></h3><p>Solitaire, low claw setting · platinum</p></div>
+          <svg viewBox="0 0 58 58" aria-hidden="true"><circle cx="29" cy="36" r="15" fill="none" stroke="#cfd8ff" stroke-width="1.2"/><polygon points="22,18 29,11 36,18 29,27" fill="#4a5cff"/><polygon points="22,18 29,11 29,27" fill="#9aa6ff"/><path class="tw" d="M42 12l1.5 4 4 1.5-4 1.5L42 23l-1.5-4-4-1.5 4-1.5z" fill="#fff"/></svg></li>
+        <li class="rv"><span class="no">ii.</span><div><h3>Tidewater <em>pendant</em></h3><p>Pear cut on a fine trace chain · white gold</p></div>
+          <svg viewBox="0 0 58 58" aria-hidden="true"><path d="M8 6c8 10 34 10 42 0" fill="none" stroke="#cfd8ff" stroke-width="1.2" stroke-dasharray="2 2"/><path d="M29 14c7 9 10 15 10 21a10 10 0 0 1-20 0c0-6 3-12 10-21z" fill="#ff4f9a"/><path d="M29 14c-7 9-10 15-10 21a10 10 0 0 0 10 10z" fill="#ff9cc8"/><path class="tw" d="M44 30l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2z" fill="#fff"/></svg></li>
+        <li class="rv"><span class="no">iii.</span><div><h3>Halo <em>cuffs</em></h3><p>Pavé crescent for one ear · yellow gold</p></div>
+          <svg viewBox="0 0 58 58" aria-hidden="true"><path d="M17 44a17 17 0 1 1 24 0" fill="none" stroke="#e8d38f" stroke-width="3" stroke-linecap="round"/><g fill="#cfd8ff"><circle cx="13" cy="30" r="2.2"/><circle cx="16" cy="20" r="2.2"/><circle cx="23" cy="13" r="2.2"/><circle cx="33" cy="12" r="2.2"/><circle cx="41" cy="17" r="2.2"/><circle cx="45" cy="27" r="2.2"/></g><path class="tw" d="M29 26l1.4 3.6 3.6 1.4-3.6 1.4L29 36l-1.4-3.6-3.6-1.4 3.6-1.4z" fill="#fff"/></svg></li>
+        <li class="rv"><span class="no">iv.</span><div><h3>Vesper <em>band</em></h3><p>Channel-set baguettes · rose gold</p></div>
+          <svg viewBox="0 0 58 58" aria-hidden="true"><ellipse cx="29" cy="31" rx="21" ry="12" fill="none" stroke="#f1b9a4" stroke-width="5"/><g fill="#7b8bff"><rect x="12" y="25" width="5" height="9" rx="1"/><rect x="20" y="20" width="5" height="9" rx="1"/><rect x="28" y="19" width="5" height="9" rx="1"/><rect x="36" y="20" width="5" height="9" rx="1"/></g><path class="tw" d="M46 10l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2z" fill="#fff"/></svg></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="craft" aria-labelledby="h2c">
+    <div class="wrap">
+      <div class="head rv"><span class="lab">The cut</span><h2 id="h2c">Cut to <em>throw</em> light.</h2></div>
+      <div class="grid">
+        <p class="statement rv">Every stone is cut for the hand that wears it: angled so the light that enters the crown leaves through the table, split into colour.</p>
+        <svg class="cut rv" viewBox="0 0 360 200" role="img" aria-label="A stone in cross-section with light entering the crown and leaving the table">
+          <path pathLength="1" d="M40 70 L90 30 L270 30 L320 70 L180 186 Z"/>
+          <line pathLength="1" x1="40" y1="70" x2="320" y2="70"/>
+          <path pathLength="1" d="M90 30 L130 70 L180 30 L230 70 L270 30"/>
+          <path pathLength="1" d="M130 70 L180 186 L230 70"/>
+          <path class="hot" pathLength="1" d="M70 0 L150 70 L180 150 L215 70 L250 0"/>
+          <path class="hot" pathLength="1" d="M250 0 L262 -8 M250 0 L238 -10" style="stroke:#7ab8ff"/>
+        </svg>
+      </div>
+      <div class="nums rv">
+        <div><b>58</b><span>facets, polished by hand</span></div>
+        <div><b>6<small>wk</small></b><span>from first sketch to your hand</span></div>
+        <div><b>1</b><span>maker on your piece, start to end</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="commission" aria-labelledby="h2s">
+    <div class="wrap">
+      <div class="head rv"><span class="lab">A commission</span><h2 id="h2s">Three <em>sittings,</em> one piece.</h2></div>
+      <ol class="steps">
+        <li class="rv"><span class="wk">Week one</span><h3>Sit with the maker</h3><p>We talk about who it is for, how they live, and what the piece should hold.</p></li>
+        <li class="rv"><span class="wk">Weeks two to three</span><h3>Choose the stone</h3><p>Three stones on the table under daylight; a wax model of your form to try on.</p></li>
+        <li class="rv"><span class="wk">Weeks four to six</span><h3>Set by hand</h3><p>Cut, set and polished at one bench, then handed over in person.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="quote" aria-label="A client's words">
+    <div class="wrap">
+      <figure class="rv">
+        <blockquote>“It catches the light before anyone sees the ring.”</blockquote>
+        <figcaption>A Meridian commission · example client words</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sit" id="sit" aria-labelledby="h2b">
+    <div class="wrap">
+      <div class="card rv">
+        <div class="fan" aria-hidden="true"><div class="wedge"></div></div>
+        <span class="lab" style="position:relative">Private sittings</span>
+        <h2 id="h2b" style="margin-top:14px">Book a <em>sitting.</em></h2>
+        <p>An hour with the maker, at the studio or on a call. No obligation to commission.</p>
+        <a class="cta" href="#sit">Choose a time <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="slots" role="group" aria-label="Next open times"><span>Thu 11:00</span><span class="on">Fri 15:30</span><span>Sat 10:00</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="row"><span class="mark" style="font-size:15px">Halcyra</span><span>Fine jewellery, made to order</span></div>
+    <p class="credit">Developed by Aquarii Technologies</p>
+  </div>
+</footer>
+</body>
+</html>

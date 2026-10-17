@@ -1,0 +1,40 @@
+{
+  "id": "2026-10-17-1420",
+  "made": "2026-10-17T08:57:03.404Z",
+  "slots": {
+    "ground": [
+      "black"
+    ],
+    "type": [
+      "grotesk-bodoni-numbered"
+    ],
+    "opener": [
+      "site-poster-question"
+    ],
+    "transition": [
+      "spectral-light-leak"
+    ],
+    "mechanism": [
+      "site-scroll"
+    ],
+    "focus": [
+      "live-page-overlay"
+    ],
+    "payoff": [
+      "phone-pullback-swivel"
+    ],
+    "cta": [
+      "brand-end-sapphire",
+      "brand-end"
+    ]
+  },
+  "dna": {
+    "service": "web",
+    "theme": "sitescroll",
+    "format": "mini tutorial",
+    "opening": "a dark jewellery poster site fills the frame, a sapphire throws a live spectral fan over \"Light, held by hand.\" under the pinned question \"What makes a website look expensive?\"",
+    "bigMoment": "at the breath the full-bleed page pulls back into a phone that swivels in 3D over a sapphire floor pool while it keeps scrolling to the booking card",
+    "ground": "blue-black ink with a sapphire glow and a spinel-to-violet spectral fan, the template's own palette",
+    "music": "elegant minimal electronic with a soft pluck, a low riser into the pull-back and a warm pad at the end, about 104 BPM"
+  }
+}
