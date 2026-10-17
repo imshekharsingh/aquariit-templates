@@ -9,7 +9,7 @@
 // as the first 1.3 s of the video, kit length (24-30 s), no hook line.
 // Usage: node scripts/render-reel.mjs [ID] [--out DIR] [--format A|B] [--len SECONDS] [--no-hook] [--no-audio] [--fps 30] [--crf 15] [--realtime] [--light]   (default ID: newest template)
 // --light (owner, 16 Oct 2026: post every day; light days are recordings of our own pages, design/themes.md theme E demo): 15 s by default and an Aquarii
-// end card over the last 2.8 s ("DM us to know more"). Without --light nothing changes.
+// end card over the last 2.8 s ("Comment AQUARII", owner 17 Oct 2026; was "DM us to know more"). Without --light nothing changes.
 // Output: DIR/ID.mp4, DIR/ID-cover.jpg (the cover card as a still), DIR/ID.json (timings + quality). Exit code 1 when the capture is not smooth.
 import { createServer } from 'node:http';
 import { readFileSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
@@ -128,7 +128,7 @@ if (!REALTIME) {
       const d = document.createElement('div'); d.setAttribute('aria-hidden', 'true');
       d.innerHTML = '<div style="font:800 40px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.02em;background:linear-gradient(180deg,#B5D0FF,#5C8FFF 45%,#2450D8);-webkit-background-clip:text;background-clip:text;color:transparent">Aquarii</div>'
         + '<div style="margin-top:6px;font:600 11px/1 system-ui,sans-serif;letter-spacing:.42em;color:#8d94a8">TECH STUDIO</div>'
-        + '<div style="margin-top:22px;padding:12px 22px;border-radius:99px;background:#2F6BFF;color:#fff;font:800 22px/1 system-ui,sans-serif">DM us to know more</div>'
+        + '<div style="margin-top:22px;padding:12px 22px;border-radius:99px;background:#2F6BFF;color:#fff;font:800 22px/1 system-ui,sans-serif">Comment “AQUARII”</div>'
         + '<div style="margin-top:12px;font:600 14px/1.3 system-ui,sans-serif;color:#aab1c4">' + line + '</div>';
       Object.assign(d.style, { position: 'absolute', inset: '0', zIndex: '2147483001', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingBottom: '120px',
         background: '#070B16', pointerEvents: 'none', opacity: '0', textAlign: 'center' });

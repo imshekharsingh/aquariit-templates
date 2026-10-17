@@ -50,7 +50,7 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   style-switch film: one business (e.g. a café) shown in 4-5 styles on the beat, a numbered list that builds on screen while the picture changes, ending on "Which one is your café?".
   Rules: the list speaks to owners (styles as moods: calm, bold, premium, playful), not to designers; original copy and look; the film engine swaps theme tokens, no new page per style.
   Measure saves and shares per reach against the single-template films.
-- E8: comment-keyword CTA ("Comment SITE for the price list"): drives comments; replies by hand at first (no paid DM automation). Measure comments and profile visits.
+- E8: comment-keyword CTA: **started 17 Oct 2026, owner: "Comment AQUARII"** on every reel (end card, voice, caption); replies by hand within a few hours (no paid DM automation). Measure comments and profile visits.
 - E9 (from an owner-shared POV reel, 13 Oct): a **POV wrapper** ("POV: you built a café's site at 2 am"): the film plays on a virtual monitor in a night room with slow ambient
   light in the film's palette; inside, a sentence that builds word by word, pivot words with their own world responses, and one brand shape as a recurring character
   (design/film-playbook.md, Reference study 2). Measure average watch and shares against the plain films.

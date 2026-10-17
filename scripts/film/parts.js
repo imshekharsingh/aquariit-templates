@@ -614,7 +614,7 @@
   };
   // the studio sign-off: the only constant across all reels. Owner, 14 Oct 2026: no watermark during the film; the name appears once, at the end, with the CTA.
   // It sits at y 540 (the old watermark band: under the captions, above Instagram's caption area), "DM us" in the film's accent colour.
-  P.signoff = function ({ at = 15.4, out = 17.35, y = 540, text = 'Aquarii Tech Studio', cta = 'DM us' } = {}) {
+  P.signoff = function ({ at = 15.4, out = 17.35, y = 540, text = 'Aquarii Tech Studio', cta = 'Comment AQUARII' } = {}) {   // was 'DM us' (owner, 17 Oct 2026: E8)
     if (P.wmHide) P.wmHide.push([at, out + .25]);                         // an opted-in watermark steps aside while the sign-off says the same thing
     const el = E.el('div', `position:absolute;left:30px;right:30px;top:${y}px;text-align:center;font:700 12px/1 ${MONO};letter-spacing:.24em;color:${hexA(P.light ? '#000000' : '#ffffff', .8)};text-transform:uppercase;white-space:nowrap`, P.front,
       text + (cta ? ` <span style="opacity:.5">·</span> <span style="color:${P.accent}">${cta}</span>` : ''));
@@ -664,9 +664,10 @@
     lime: { mark: 'grayscale(1) sepia(1) saturate(4) hue-rotate(38deg) brightness(1.18)', word: 'linear-gradient(180deg,#F6FFE0 0%,#C6F432 50%,#7DB51A 100%)', wglow: 'rgba(198,244,50,.45)', btn: 'linear-gradient(135deg,#DAFF6A,#A9DE1E)', bglow: 'rgba(198,244,50,.5)', halo: '120,170,255', ink: '#0A0E17' },   // navy + lime (theme A collage, 17 Oct 2026)
     amber: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(-14deg) brightness(1.08)', word: 'linear-gradient(180deg,#FFE7C2 0%,#FFB35C 45%,#FF6A2C 100%)', wglow: 'rgba(255,150,70,.6)', btn: 'linear-gradient(135deg,#FFB35C,#FF6A2C)', bglow: 'rgba(255,120,50,.55)', halo: '255,140,60', ink: '#1a0900' },
   };
-  P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null, breathe = true, grade = 'blue' } = {}) {
+  P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null, breathe = true, grade = 'blue', ask = 'comment' } = {}) {
     const G = P.GRADES[grade] || P.GRADES.blue; if (grade !== 'blue') P.use('cta', 'brand-end-' + grade);
-    if (fit == null) fit = `Send “${keyword}”. We’ll find the package that fits you.`;   // owner, 15 Oct 2026: end on "DM us to know more"; the keyword tells us which reel brought the DM
+    // ask (owner, 17 Oct 2026, experiment E8): 'comment' = "Comment AQUARII" (comments lift reach; we reply by hand), 'dm' = the earlier "DM us to know more"
+    if (fit == null) fit = ask === 'dm' ? `Send “${keyword}”. We’ll find the package that fits you.` : 'We’ll reply with the package that fits you.';   // owner, 15 Oct 2026: end on "DM us to know more"; the keyword tells us which reel brought the DM
     P.use('cta', 'brand-end');
     const B = P.BRAND, end = out == null ? P.len - .2 : out;
     const card = E.el('div', `position:absolute;inset:0;background:${B.ink};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0`, P.front);
@@ -675,7 +676,7 @@
       `<div style="margin-top:8px;font:500 12px/1 Montserrat,sans-serif;letter-spacing:.42em;color:${B.slate}">TECH STUDIO</div>`);
     // the why (owner, 15 Oct 2026: "DM us FAST" alone felt abrupt): what to DM about, the keyword, and what happens next. Never a price, never a free promise.
     const w1 = E.el('div', `margin-top:6px;max-width:330px;text-align:center;font:800 21px/1.15 Archivo,sans-serif;color:${B.paper}`, card, why);
-    const cta = E.el('div', `padding:12px 22px;border-radius:99px;background:${G.btn || B.blue};color:${G.ink || '#fff'};font:900 24px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92;box-shadow:0 0 24px ${G.bglow}`, card, 'DM us to know more');
+    const cta = E.el('div', `padding:12px 22px;border-radius:99px;background:${G.btn || B.blue};color:${G.ink || '#fff'};font:900 24px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92;box-shadow:0 0 24px ${G.bglow}`, card, ask === 'dm' ? 'DM us to know more' : 'Comment “AQUARII”');
     const w2 = E.el('div', `max-width:350px;text-align:center;font:600 14.5px/1.25 Archivo,sans-serif;color:${B.slate}`, card, fit);
     E.el('div', `margin-top:4px;font:600 12px/1 ${MONO};letter-spacing:.12em;color:${B.slate};opacity:.7`, card, line);
     P.on((t) => { const k = P.springAt(t, at, 'fade'), m = P.springAt(t, at + .1, 'bold'), c = P.springAt(t, at + .35, 'bold');
