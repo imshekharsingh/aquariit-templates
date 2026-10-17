@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>F1 Misty peaks · Style library</title>
+<meta name="theme-color" content="#c9c9d6">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--ink:#3f4656;--soft:#6b7283}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#c9c9d6}
+body{color:var(--ink);font:300 15px/1.5 Inter,system-ui,sans-serif;overflow:hidden}
+#sky{position:fixed;inset:0;width:100%;height:100%;display:block;background:linear-gradient(#b9bccb,#dcdbe5 55%,#cfcfdb)}
+.ui{position:fixed;inset:0;display:flex;flex-direction:column;padding:calc(18px + var(--safe-top)) 28px calc(26px + var(--safe-bottom));pointer-events:none}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--soft);pointer-events:auto}
+.top a{text-decoration:none;color:inherit}
+.mid{margin:auto 0 12vh;text-align:center}
+.word{font:400 clamp(30px,9vw,64px)/1 "Cormorant Garamond",Georgia,serif;letter-spacing:.42em;margin-right:-.42em;color:#4a5162;opacity:0;animation:in 2.4s .4s cubic-bezier(.16,1,.3,1) forwards}
+.line{margin-top:18px;font-size:11px;letter-spacing:.36em;text-transform:uppercase;color:var(--soft);opacity:0;animation:in 2.4s 1s cubic-bezier(.16,1,.3,1) forwards}
+.foot{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--soft)}
+.tick{width:1px;height:34px;margin:0 auto;background:linear-gradient(var(--soft),transparent);animation:drop 2.4s ease-in-out infinite}
+@keyframes in{from{opacity:0;transform:translateY(10px);letter-spacing:.6em}to{opacity:1;transform:none}}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media (prefers-reduced-motion:reduce){.word,.line{animation:none;opacity:1}.tick{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<main class="ui">
+  <div class="top"><a href="/styles/">← Style library</a><span>F1 · Misty peaks</span></div>
+  <section class="mid" aria-label="Example brand">
+    <h1 class="word">HALDEN</h1>
+    <p class="line">Patient capital for long climbs</p>
+  </section>
+  <div class="foot"><span>Est. in the clouds</span><div class="tick" aria-hidden="true"></div><span>Scroll</span></div>
+</main>
+<script>
+// F1 misty peaks: one full-screen fragment shader (our own code). Layers, far to near: pearl sky, distant ridges in haze, a central snow peak with
+// lit and shaded faces, a low cloud sea, cloud banks rushing past the camera (the fly-through), thin falling light lines, grain.
+(() => {
+  const c = document.getElementById('sky'), gl = c.getContext('webgl', { antialias: false, premultipliedAlpha: false });
+  if (!gl) return;                                                         // the CSS gradient stays as the fallback
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+  const fs = `precision highp float;uniform vec2 R;uniform float T;
+float h1(float n){return fract(sin(n)*43758.5453);}
+float h2(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h2(i),h2(i+vec2(1,0)),f.x),mix(h2(i+vec2(0,1)),h2(i+vec2(1,1)),f.x),f.y);}
+float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<5;i++){s+=a*vn(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return s;}
+float ridge(float x){float a=.5,s=0.,f=1.;for(int i=0;i<5;i++){float n=vn(vec2(x*f,f*3.1));s+=a*(1.-abs(n*2.-1.));f*=2.1;a*=.5;}return s;}
+// mountain height at x for a layer: a sharp peak envelope (narrow, for a portrait frame) plus fine ridged detail
+float mh(float x,float base,float amp,float w,float seed){return base+amp*(exp(-abs(x-.04*sin(seed))*w)*(.66+.34*ridge(x*3.+seed))+.12*ridge(x*6.+seed*1.7)-.1);}
+vec3 mountain(vec2 uv,float x,float base,float amp,float w,float seed,vec3 rock,vec3 snow,out float inside){
+  float h=mh(x,base,amp,w,seed);inside=smoothstep(.0025,-.0025,uv.y-h);
+  float e=.003,dh=(mh(x+e,base,amp,w,seed)-mh(x-e,base,amp,w,seed))/(2.*e);
+  float lit=clamp(.72-dh*.32,.38,1.12);                                  // faces turned to the light (left) are brighter
+  float dpt=h-uv.y;                                                      // depth below the ridge line
+  float gully=fbm(vec2(x*9.+dpt*7.*sign(dh+1e-4),dpt*3.5))*.7+fbm(vec2(x*22.+dpt*15.*sign(dh+1e-4),dpt*8.))*.3;   // diagonal snow ribs down the faces
+  float sn=smoothstep(.52,.64,gully*1.05+lit*.22-dpt*1.4+.12);             // snow on the upper, lit faces; rock in the gullies lower down
+  return mix(rock,snow,sn)*mix(.82,1.08,lit-.38);}
+void main(){
+  vec2 uv=(gl_FragCoord.xy-.5*R)/R.y;float t=T;
+  vec2 q=uv/(1.+.07*(.5-.5*cos(t*.07)));                              // the camera eases slowly in and back out (no jump)
+  vec3 sky=mix(vec3(.80,.81,.86),vec3(.73,.74,.80),smoothstep(-.1,.6,uv.y));
+  vec3 fogc=vec3(.86,.86,.90);vec3 col=sky;float ins;
+  // distant ridges, deep in haze
+  vec3 m=mountain(q,q.x+.9+t*.003,-.04,.18,3.,3.,vec3(.5,.52,.6),vec3(.9,.91,.95),ins);col=mix(col,mix(m,fogc,.6),ins);
+  // a second, smaller peak lower right (as in the reference)
+  m=mountain(q,(q.x-.2)*1.25,-.12,.2,7.,11.,vec3(.36,.38,.46),vec3(.93,.94,.97),ins);col=mix(col,mix(m,fogc,.3),ins);
+  // the main peak, nearer and crisper
+  m=mountain(q,q.x+.03,-.06,.36,4.6,27.,vec3(.3,.32,.4),vec3(.95,.96,.99),ins);col=mix(col,mix(m,fogc,.1),ins);
+  // haze thickening towards the horizon
+  col=mix(col,fogc,smoothstep(.15,-.25,q.y)*.55);
+  // low cloud sea drifting across the base of the peaks
+  float sea=fbm(vec2(q.x*1.6+t*.025,q.y*5.5-t*.01))+fbm(vec2(q.x*3.4-t*.04,q.y*9.))*.5;
+  float seaM=smoothstep(.55,1.05,sea+smoothstep(.0,-.4,q.y)*.75);
+  float shade=fbm(vec2(q.x*2.2-t*.03,q.y*6.+.3));                        // grey undersides and folds in the cloud sea
+  vec3 seaC=mix(vec3(.95,.95,.97),vec3(.66,.68,.75),smoothstep(.45,.85,shade)*.75);
+  col=mix(col,seaC,seaM*.92);
+  // cloud banks rushing past the camera: four layers that grow from far to near and fade, then start again (the fly-through)
+  for(int i=0;i<4;i++){float fi=float(i);float ph=fract(t*.045+fi*.25);float s=mix(.55,3.2,ph*ph);
+    vec2 cp=uv/s+vec2(fi*3.7+t*.01,fi*1.3);float d=fbm(cp*1.6)+.5*fbm(cp*3.4+t*.02);
+    float a=smoothstep(.62,1.02,d)*smoothstep(0.,.25,ph)*(1.-smoothstep(.62,1.,ph));
+    vec3 cc=mix(vec3(.95,.95,.97),vec3(.62,.65,.72),smoothstep(.95,1.25,d)*.6);   // denser cores read a touch darker, like storm cloud
+    col=mix(col,cc,a*.9);}
+  // thin vertical light lines falling slowly
+  float cx=floor(uv.x*28.);float hv=h1(cx*7.13);
+  if(hv>.72){float lx=abs(fract(uv.x*28.)-.5)/28.;float seg=fract(uv.y*.35+t*(.04+.05*h1(cx))+hv*5.);
+    col=mix(col,vec3(1.),smoothstep(.0012,0.,lx)*smoothstep(0.,.35,seg)*(1.-smoothstep(.55,1.,seg))*.55);}
+  // grain and a soft vignette
+  col+=(h2(gl_FragCoord.xy+fract(t)*91.)-.5)*.025;col*=1.-.18*dot(uv*.8,uv*.8);
+  gl_FragColor=vec4(col,1.);}`;
+  const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr); gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const uR = gl.getUniformLocation(pr, 'R'), uT = gl.getUniformLocation(pr, 'T');
+  const size = () => { const d = Math.min(1.5, devicePixelRatio || 1); c.width = Math.round(innerWidth * d); c.height = Math.round(innerHeight * d); gl.viewport(0, 0, c.width, c.height); };
+  size(); addEventListener('resize', size);
+  const draw = (s) => { gl.uniform2f(uR, c.width, c.height); gl.uniform1f(uT, s); gl.drawArrays(gl.TRIANGLES, 0, 3); };
+  const loop = (ms) => { if (!document.hidden) draw(8 + ms / 1000); requestAnimationFrame(loop); };
+  still ? draw(14) : requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

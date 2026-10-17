@@ -63,7 +63,19 @@ Mon / Wed / Fri, never the same theme two reels in a row (checked by scripts/che
 exist and its benchmark passes; until then the rotation uses the ready ones (16 Oct: A collage, D sitescroll on film days; E demo on light days). Each theme's look stays locked while we rotate; it changes
 only through Rule 1.
 
+## How we match a reference (owner, 17 Oct 2026: "even if I keep sharing references, you build something nowhere matching")
+Premium content first, a blend of everything (playful included, nothing dropped), and never static.
+1. **Match sheet before building:** pull 2-3 frames of the reference; write its palette (sampled from the frames, not invented), light, depth layers,
+   what moves and how much of the frame moves, and its type. Our old "vivid saturated palette" default does not apply to a reference look.
+2. **Build the scene, not a page with decoration:** the whole frame lives (drift, camera ease, particles, light), from the first second. Use GPU shaders
+   (our own code) for atmosphere, terrain, clouds, light fields when the reference has them.
+3. **Side by side before the owner sees it:** our frames next to the reference at matching moments; score palette, light, depth, motion, realism.
+   Measure motion: at least a quarter of the frame should change every 2-3 s in a hero. Fix gaps, or say plainly which gap remains and why.
+4. **Ask after delivery:** if the owner says it is not there, ask what is missing with specific options; never assume.
+
 ## Style library (owner, 17 Oct 2026)
+Codes so far: A1 makeover collage, B1 clay character, C1 our site on a real screen, D1 silk-light site scroll, E1 clay page, F1 misty peaks (theme F `world`:
+living GPU scenes after reference R2).
 https://templates.aquariit.com/styles/ (templates/styles/index.html, linked from the home page) shows every look with a code (A1, B1, D1 ...) and a live
 example, so the owner can ask for one by code ("tomorrow in B1"). Every new reference or theme adds its entry there the same day; a code, once given, is kept.
 
