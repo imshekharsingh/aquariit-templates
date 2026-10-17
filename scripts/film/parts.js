@@ -647,17 +647,23 @@
     });
     return { box, img, pageH };
   };
-  P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null, breathe = true } = {}) {
+  // grade (owner, 17 Oct 2026: "colour grade our logo to the video's theme"): the end card can wear the film's palette. Default 'blue' = the brand kit as before.
+  P.GRADES = {
+    blue: { mark: '', word: 'linear-gradient(180deg,#B5D0FF 0%,#5C8FFF 45%,#2450D8 100%)', wglow: 'rgba(79,134,255,.55)', btn: null, bglow: 'rgba(47,107,255,.45)', halo: '47,107,255' },
+    amber: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(-14deg) brightness(1.08)', word: 'linear-gradient(180deg,#FFE7C2 0%,#FFB35C 45%,#FF6A2C 100%)', wglow: 'rgba(255,150,70,.6)', btn: 'linear-gradient(135deg,#FFB35C,#FF6A2C)', bglow: 'rgba(255,120,50,.55)', halo: '255,140,60', ink: '#1a0900' },
+  };
+  P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null, breathe = true, grade = 'blue' } = {}) {
+    const G = P.GRADES[grade] || P.GRADES.blue; if (grade !== 'blue') P.use('cta', 'brand-end-' + grade);
     if (fit == null) fit = `Send “${keyword}”. We’ll find the package that fits you.`;   // owner, 15 Oct 2026: end on "DM us to know more"; the keyword tells us which reel brought the DM
     P.use('cta', 'brand-end');
     const B = P.BRAND, end = out == null ? P.len - .2 : out;
     const card = E.el('div', `position:absolute;inset:0;background:${B.ink};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0`, P.front);
-    const mark = E.el('div', 'transform:scale(.6);display:flex;flex-direction:column;align-items:center', card, P.brandMark(120) +
-      `<div style="margin-top:2px;font:800 54px/1 Montserrat,Archivo,sans-serif;letter-spacing:-.01em;background:linear-gradient(180deg,#B5D0FF 0%,#5C8FFF 45%,#2450D8 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(79,134,255,.55))">Aquarii</div>` +
+    const mark = E.el('div', 'transform:scale(.6);display:flex;flex-direction:column;align-items:center', card, `<div style="filter:${G.mark || 'none'}">${P.brandMark(120)}</div>` +
+      `<div style="margin-top:2px;font:800 54px/1 Montserrat,Archivo,sans-serif;letter-spacing:-.01em;background:${G.word};-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px ${G.wglow})">Aquarii</div>` +
       `<div style="margin-top:8px;font:500 12px/1 Montserrat,sans-serif;letter-spacing:.42em;color:${B.slate}">TECH STUDIO</div>`);
     // the why (owner, 15 Oct 2026: "DM us FAST" alone felt abrupt): what to DM about, the keyword, and what happens next. Never a price, never a free promise.
     const w1 = E.el('div', `margin-top:6px;max-width:330px;text-align:center;font:800 21px/1.15 Archivo,sans-serif;color:${B.paper}`, card, why);
-    const cta = E.el('div', `padding:12px 22px;border-radius:99px;background:${B.blue};color:#fff;font:900 24px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92;box-shadow:0 0 24px rgba(47,107,255,.45)`, card, 'DM us to know more');
+    const cta = E.el('div', `padding:12px 22px;border-radius:99px;background:${G.btn || B.blue};color:${G.ink || '#fff'};font:900 24px/1 Archivo,sans-serif;font-variation-settings:"wdth" 92;box-shadow:0 0 24px ${G.bglow}`, card, 'DM us to know more');
     const w2 = E.el('div', `max-width:350px;text-align:center;font:600 14.5px/1.25 Archivo,sans-serif;color:${B.slate}`, card, fit);
     E.el('div', `margin-top:4px;font:600 12px/1 ${MONO};letter-spacing:.12em;color:${B.slate};opacity:.7`, card, line);
     P.on((t) => { const k = P.springAt(t, at, 'fade'), m = P.springAt(t, at + .1, 'bold'), c = P.springAt(t, at + .35, 'bold');
@@ -667,7 +673,7 @@
     // the card is held long enough to read, so it keeps breathing (owner, 15-16 Oct 2026; also keeps the gate's "live ending"): a slow push-in,
     // a soft blue light rising behind the mark and a light sweep across the DM button
     if (breathe) {
-      const halo = E.el('div', 'position:absolute;left:-40px;right:-40px;top:60px;height:520px;background:radial-gradient(45% 40% at 50% 45%,rgba(47,107,255,.32),rgba(47,107,255,0) 70%);opacity:0;pointer-events:none', card); card.prepend(halo);
+      const halo = E.el('div', 'position:absolute;left:-40px;right:-40px;top:60px;height:520px;background:radial-gradient(45% 40% at 50% 45%,rgba(${G.halo},.32),rgba(${G.halo},0) 70%);opacity:0;pointer-events:none', card); card.prepend(halo);
       cta.style.position = 'relative'; cta.style.overflow = 'hidden';
       const shine = E.el('i', 'position:absolute;top:-10px;bottom:-10px;width:44px;left:0;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.55),rgba(255,255,255,0));transform:skewX(-20deg);opacity:0', cta);
       P.on((t) => { const k = P.EASE.swing(Math.min(1, Math.max(0, (t - at - .3) / Math.max(1.5, end - at - .3))));   // even push through the whole hold (glide finished in a second and the gate saw a dead ending) card.style.scale = (1 + .11 * k).toFixed(4); halo.style.opacity = (.25 + .75 * k).toFixed(3);

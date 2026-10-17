@@ -112,7 +112,7 @@
        <div class="et" style="margin-top:14px;font:400 14px/1.3 Inter,sans-serif;color:#c9b9a4">Sound, sculpted from silence.</div>
        <div class="ep" style="margin-top:16px;padding:8px 16px;border-radius:99px;border:1px solid rgba(255,179,92,.6);font:600 13px/1 Inter,sans-serif;color:${A1}">aurelia.audio →</div>`);
     const eRing = end.querySelector('circle'), eW = end.querySelector('.ew'), eSweep = eW.querySelector('i'), eT = end.querySelector('.et'), eP = end.querySelector('.ep');
-    P.brandEnd({ at: 23.7, keyword: 'SITE', why: 'Want your website to move like this?', out: 24.85 });
+    P.brandEnd({ at: 23.7, keyword: 'SITE', why: 'Want your website to move like this?', out: 24.85, grade: 'amber' });
 
     // cursor targets measured from the page itself (frame px, after the page has scrolled to its section)
     const at = (el, yScroll) => { const r = rel(el); return [r.x + r.w * .55, r.y - yScroll * K + TB + r.h * .5]; };
