@@ -49,7 +49,9 @@ h1 .glow{background:linear-gradient(100deg,var(--a1),var(--a2));-webkit-backgrou
 .stage{position:relative;height:340px}
 .orb{position:absolute;left:50%;top:50%;width:170px;height:170px;margin:-85px 0 0 -85px;border-radius:50%;
   background:radial-gradient(circle at 34% 28%,#fff5e6 0,#ffd29a 14%,#ff9a3c 38%,#c4400f 66%,#3a0f05 100%);
-  box-shadow:0 0 60px rgba(255,140,60,.55),0 0 140px rgba(255,106,44,.35),inset -18px -22px 40px rgba(0,0,0,.45)}
+  box-shadow:0 0 28px rgba(255,140,60,.45),inset -18px -22px 40px rgba(0,0,0,.45)}
+/* the glow is its own round gradient that fades out before its edge (a big box-shadow got cut square once the hero moved) */
+.halo{position:absolute;left:50%;top:50%;width:440px;height:440px;margin:-220px 0 0 -220px;border-radius:50%;pointer-events:none;background:radial-gradient(closest-side,rgba(255,150,70,.42),rgba(255,106,44,.16) 45%,rgba(255,106,44,0) 100%)}
 .ring{position:absolute;left:50%;top:50%;border-radius:50%;border:1.5px solid rgba(255,190,120,.55)}
 .ring.r1{width:280px;height:96px;margin:-48px 0 0 -140px;transform:rotate(-14deg)}
 .ring.r2{width:236px;height:236px;margin:-118px 0 0 -118px;border-color:rgba(56,225,255,.35);transform:rotateX(70deg) rotate(24deg)}
@@ -119,7 +121,7 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
   background:radial-gradient(50% 50% at 50% 30%,rgba(255,140,60,.34),rgba(139,108,255,.12) 55%,transparent 75%);filter:blur(6px)}
 .stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:38%;opacity:.5;
   background:linear-gradient(transparent,rgba(7,8,13,.4)),repeating-linear-gradient(90deg,rgba(255,180,110,.10) 0 1px,transparent 1px 36px),repeating-linear-gradient(0deg,rgba(255,180,110,.08) 0 1px,transparent 1px 22px);
-  transform:perspective(300px) rotateX(58deg);transform-origin:50% 100%;-webkit-mask:linear-gradient(transparent,#000 70%);mask:linear-gradient(transparent,#000 70%)}
+  transform:perspective(300px) rotateX(58deg);transform-origin:50% 100%;-webkit-mask:radial-gradient(60% 90% at 50% 100%,#000 30%,transparent 72%);mask:radial-gradient(60% 90% at 50% 100%,#000 30%,transparent 72%)}
 .card{overflow:hidden}.feat,.dash,.cta-card{position:relative;overflow:hidden}.dev{overflow:hidden}
 .card::after,.feat::after,.cta-card::after{content:"";position:absolute;top:-40%;bottom:-40%;width:38%;left:-60%;transform:skewX(-18deg);
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);pointer-events:none}
@@ -172,7 +174,7 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
   .nav .wrap{gap:12px}.logo{letter-spacing:.18em}
   .hero{padding-top:18px}.hero .wrap{gap:8px}
   .hero .stage{order:-1;height:250px}
-  .stage .orb{width:140px;height:140px;margin:-70px 0 0 -70px}.ring.r1{width:240px;height:80px;margin:-40px 0 0 -120px}.ring.r2{width:196px;height:196px;margin:-98px 0 0 -98px}
+  .stage .orb{width:140px;height:140px;margin:-70px 0 0 -70px}.halo{width:340px;height:340px;margin:-170px 0 0 -170px}.ring.r1{width:240px;height:80px;margin:-40px 0 0 -120px}.ring.r2{width:196px;height:196px;margin:-98px 0 0 -98px}
   .sat.s1{left:calc(50% + 110px)}.card{transform:scale(.86)}.card.eq{left:-6px;top:6px;transform-origin:0 0}.card.bat{right:-6px;bottom:0;transform-origin:100% 100%}
   h1{margin-top:12px}
 }
@@ -196,7 +198,7 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
   /* the product is alive: sound waves leave it, a sheen turns on its surface, two moons orbit, the cards' controls work by themselves */
   .wave{position:absolute;left:50%;top:50%;width:170px;height:170px;margin:-85px 0 0 -85px;border-radius:50%;border:1.5px solid rgba(255,170,90,.55);opacity:0;animation:wave 3.6s ease-out infinite}
   .wave.w2{animation-delay:1.2s}.wave.w3{animation-delay:2.4s}@keyframes wave{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(2.3)}}
-  .orb{overflow:hidden}.sheen{position:absolute;inset:-30%;background:conic-gradient(from 0deg,transparent 0 20%,rgba(255,240,220,.35) 28%,transparent 40% 70%,rgba(255,200,140,.25) 78%,transparent 90%);mix-blend-mode:overlay;animation:spin 7s linear infinite}
+  .sheen{position:absolute;inset:-30%;clip-path:circle(31% at 50% 50%);background:conic-gradient(from 0deg,transparent 0 20%,rgba(255,240,220,.35) 28%,transparent 40% 70%,rgba(255,200,140,.25) 78%,transparent 90%);opacity:.55;animation:spin 7s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   .sat.s1{animation:orbit 7s linear infinite}.sat.s2{animation:orbit2 9s linear infinite}
   @keyframes orbit{0%{translate:0 0}12.5%{translate:-37px 28px}25%{translate:-128px 40px}37.5%{translate:-219px 28px}50%{translate:-256px 0}62.5%{translate:-219px -28px}75%{translate:-128px -40px}87.5%{translate:-37px -28px}100%{translate:0 0}}
@@ -292,7 +294,7 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
       <div class="btns load d3"><a class="btn main" href="#order">Pre-order</a><a class="btn ghost" href="#features">Hear how it works</a></div>
     </div>
     <div class="stage" aria-hidden="true">
-      <i class="wave w1"></i><i class="wave w2"></i><i class="wave w3"></i><div class="ring r2"></div><div class="orb"><i class="sheen"></i></div><div class="ring r1"></div><i class="sat s1"></i><i class="sat s2"></i>
+      <i class="wave w1"></i><i class="wave w2"></i><i class="wave w3"></i><i class="halo"></i><div class="ring r2"></div><div class="orb"><i class="sheen"></i></div><div class="ring r1"></div><i class="sat s1"></i><i class="sat s2"></i>
       <div class="card eq"><b>Living room</b>Room EQ<div class="tog"><span>Adaptive</span><i></i></div><div class="sl"><i></i></div></div>
       <div class="card bat"><b>40 h</b>Battery, sample week<div class="bars"><i style="height:40%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:90%"></i><i style="height:65%"></i><i style="height:80%"></i></div></div>
     </div>
