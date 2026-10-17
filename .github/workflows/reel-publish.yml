@@ -138,6 +138,10 @@ jobs:
             fi
           else
             node scripts/render-reel.mjs "$ID" --out out/reels --no-audio --light 2>&1 | tee render.log   # a light day: recording + hook + end card (themes.md E)
+            if [ -f out/voice/final.wav ]; then   # a light day with film/ID/voice.md + timing.json: lay the voice story under the recording (owner, 17 Oct 2026)
+              ffmpeg -y -loglevel error -i "out/reels/$ID.mp4" -i out/voice/final.wav -filter_complex '[1:a]apad[a]' -map 0:v -map '[a]' -c:v copy -c:a aac -ar 48000 -b:a 192k -shortest -movflags +faststart "out/reels/$ID-vo.mp4"
+              mv "out/reels/$ID-vo.mp4" "out/reels/$ID.mp4"; echo "voice-over laid under the light-day recording"
+            fi
           fi
       - name: Check it, keep it in the reels release, tell the owner (GitHub issue, assigned so it emails and notifies)
         id: gate

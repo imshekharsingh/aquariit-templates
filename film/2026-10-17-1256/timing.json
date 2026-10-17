@@ -1,0 +1,8 @@
+{
+ "len": 15.4,
+ "note": "light day (no story.js): only the voice-over uses this; cues are the hero sparkle and the end-card impact",
+ "cues": [
+  {"k": "sparkle", "g": 0.14, "t": 0.4},
+  {"k": "impact", "g": 0.24, "t": 12.25}
+ ]
+}

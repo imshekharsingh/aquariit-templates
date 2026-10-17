@@ -16,7 +16,7 @@ const FD = (() => { const i = args.indexOf('--film-dir'); return i > -1 ? args[i
 if (!id || !existsSync(join(FD || join(root, 'film', id), 'story.js'))) { console.error('usage: render-film.mjs ID  (needs film/ID/story.js)'); process.exit(2); }
 const OUT = resolve(opt('--out', join(root, 'out', 'film', id))), VAR = opt('--variant', 'both'), PREVIEW = args.includes('--preview'), DRAFT = args.includes('--draft'), SUB = PREVIEW || DRAFT ? 1 : +opt('--sub', T.sub || 4), SHUT = +opt('--shutter', .5), WORKERS = +opt('--workers', 3), CRF = PREVIEW ? 28 : DRAFT ? 26 : +opt('--crf', 17);
 // --draft (owner, 15 Oct 2026): a phone check of motion and voice before the full render: half resolution, no motion blur, voice and effects kept (~16x less work)
-const FPS = 30, LEN = T.len, NF = LEN * FPS, JOIN_F = Math.round(T.join * FPS), SCALE = (DRAFT ? 540 : 1080) / 402;
+const FPS = 30, LEN = T.len, NF = LEN * FPS, JOIN_F = Math.round(T.join * FPS), SCALE = (DRAFT ? 540 : 1080) / 402 * (DRAFT ? 1 : +(T.ss || 1));   // T.ss (timing.json, default 1): supersample, then lanczos down to 1080x1920 (crisper small type inside 3D frames)
 const AUDIO = opt('--audio', ''), only = opt('--frames', ''), stills = opt('--stills', ''), COVER = args.includes('--cover'), DELIVER = opt('--deliver', '');
 
 const require = createRequire(import.meta.url);
