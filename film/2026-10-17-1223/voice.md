@@ -7,4 +7,4 @@ Near-continuous narration over the shots. The only silence is the breath (7.7-8.
 - [12.2-16.0] Features that feel alive, with motion that guides the eye.
 - [16.6-19.9] Live data, smooth interactions, and a checkout that converts.
 - [20.1-22.0] Desktop to pocket, it just works.
-- [22.3-24.6] Want yours? DM us to know more.
+- [22.3-24.6] Want yours? Comment Aquarii, we will reply.
