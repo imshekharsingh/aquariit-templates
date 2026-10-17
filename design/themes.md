@@ -3,6 +3,10 @@
 A reference the owner likes becomes a **theme**: one more look the account can wear on a given day. It never replaces another theme.
 Each reel picks one theme; the theme's own recipe and checks apply to that reel only.
 
+**Imagination first (owner, 17 Oct 2026, evening):** a theme is a format, never a look to reproduce. No piece is compared with or copied from a
+benchmark (Aurelia, Veloria, a reference); each is invented from its own idea, combines techniques that have never met in our work, and is judged on its
+own merit (light, depth, a lit hero, wide motion, confident type, a finish). "Benchmark" below only means the regression check for shared engine parts (Rule 1).
+
 ## How we work (owner, 16 Oct 2026)
 - **Hand in hand, daily.** Every reference the owner shares, and anything Claude comes across that fits, goes into this system the same day
   (design/brand/references.md + a theme, a part or a check). The system gets a little better every day and never worse.

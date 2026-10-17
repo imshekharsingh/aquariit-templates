@@ -13,33 +13,40 @@ Optional hint from user: $ARGUMENTS
 line is today's India date, honour that hint within the rules and delete the file in your template branch (an older date: delete it, no hint).
 Write every time in your report in IST, never UTC (owner).
 
-## The approach (owner, 17 Oct 2026; read first, it wins over anything older below)
-You drive Aquarii's social content. One-pass, premium, never static. Do not ask the owner anything; design, build, render and report.
-1. **Pick the look** from design/themes.md (rotation, never the previous film's theme) or the hint. Benchmarks to match or beat: film/2026-10-17-1223
-   (theme G cinema, Aurelia) and the owner's references in design/brand/references.md. Range is the point: each piece looks like its own brand.
-2. **Write the brief yourself first** (like a creative director): brand, palette (restrained base + radiant light, never flat candy colour), type, a shot list
-   with timings and easing, the hero object, the atmosphere layers (light, glows, particles, depth, grain, grade). Put it at the top of film/ID/story.js.
-3. **Build the website sample for the theme** (templates/ID): premium, and EVERY section moves: scroll-driven entrances (animation-timeline view() with
-   @supports fallback) for every section below the fold, plus small transform-only loops in live visuals, all finished by default and off for reduced motion.
-4. **Build the film in one composition** (film/ID/story.js) at full finish, using what exists (P.siteScroll, the Aurelia cinema kit in film/2026-10-17-1223,
-   P.brandEnd with `grade` matching the film's palette). Voice: film/ID/voice.md telling the film's story, 2.3-3.2 words/s, last line "DM us to know more".
-5. **Review once against the benchmark** with `--stills` at every shot; fix what is clearly weaker (atmosphere, hero size, legibility, empty frames). Two passes
-   at most; then records, push, and let GitHub render.
-6. **Add the look to the Style library** (templates/styles/index.html row + home strip card in templates/index.html) when it is a new theme or a new code.
+## The approach (owner, 17 Oct 2026, revised the same evening; read first, it wins over anything older below)
+You drive Aquarii's social content. Imagination first, premium, never static. Do not ask the owner anything; design, build, render and report.
+**No benchmark to copy or compare against.** Past pieces (Aurelia, Veloria, the references) are not targets: invent today's piece from its own idea.
+Premium is judged on the piece's own merit, never by how close it is to something we made before.
+1. **Invent the concept.** A business, a world and one idea worth stopping for. Read the last 7 film/*/manifest.json `dna` and design-log.json entries
+   first, only to stay away from them: never repeat an opening, a hero object, a big moment or a combination of techniques. A theme from design/themes.md
+   (or the hint) is a starting format, not a look to reproduce.
+2. **Combine, don't repeat.** Every piece joins at least 3 techniques that have never appeared together in our work (e.g. a GPU shader world + kinetic type
+   + a physical UI object; a clay character + live data + a camera orbit; light refraction + scroll-built 3D + particles). Name the combination in
+   `S.dna.combo` and in design/advancements.md, and add at least one technique the library has never had (new part or option in scripts/film/parts.js,
+   or a new web technique in the template).
+3. **Write the brief yourself** (like a creative director): brand, palette (restrained base + radiant light), type, the hero, the atmosphere layers,
+   a shot list with timings and easing. Put it at the top of film/ID/story.js (or the template's head comment on a light day).
+4. **One idea, two outputs at the same level.** The website (templates/ID) and the reel are the same product: every effect the reel shows exists on the
+   website, and the website's best moment is in the reel. EVERY section of the site moves (scroll-driven entrances with @supports fallback, transform-only
+   loops in live visuals, finished by default, off for reduced motion).
+5. **The reel is directed, on film days and light days alike:** camera moves (push-ins, orbits, reveals), close-ups on the best effect, a build to one
+   payoff, a voice story (film/ID/voice.md, 2.3-3.2 words/s, ending "DM us"), the graded sign-off (P.brandEnd `grade` in the piece's own palette).
+   Light days use the same engine at lighter cost (e.g. P.siteScroll with push-ins over the live site), not a plain recording.
+6. **Self-check on its own merit**, with `--stills` at every shot and a 1:1 crop (headings crisp). Ask of every still: is there light, depth and a lit hero?
+   does something move across a large part of the frame? is the type confident? is there a finish (glow, reflection, grain)? would I screenshot it?
+   Fix what fails; two passes at most; then records, push, and let GitHub render.
+7. **Add the look to the Style library** (templates/styles/index.html row + home strip card in templates/index.html) when it is a new look.
 A hint like "film day: <theme>" makes today a film day whatever the weekday; "light day" makes it a light day.
 
 ## Phase 0: film day or light day (owner, 16 Oct 2026: post every day)
 Run `TZ=Asia/Kolkata date +%a` (a hint saying "film day" or "light day" overrides the weekday). Mon, Wed, Fri = **film day**: the full run below. Tue, Thu, Sat, Sun = **light day** (design/themes.md theme E `demo`), kept small to save usage:
-- Build a compact template (all "Required in every template" items, design log, advancements line, cover, kit as usual) around ONE striking animated effect
-  that is finished and moving in the first second (a hero effect from the playbook or design/brand/references.md: light ribbons, 3D-feeling shapes,
-  kinetic type). 3-4 sections, not a full long page. The effect is the post: "this is what an animation looks like as a real website".
-  Add `<script>window.__reel = { hold: 3.0 }</script>` so the recording stays on the effect for 3 s before it scrolls (result first; the demo gate allows at most 3.0 s in one framing, so never more).
-  Every reel speaks (owner, 17 Oct 2026): also write film/ID/voice.md (4 lines `- [t0-t1] text`, 2.3-3.2 words/s, ending before 15.0 s: the hook,
-  what the page shows, what we deliver, "DM us" over the end card from 12.3 s) and film/ID/timing.json `{"len": 15.4, "cues": [...]}`; no story.js.
-  The Reel publish workflow speaks it and lays it under the recording.
-- No film folder, no voice, no storyboard: the Reel publish workflow records the page (`render-reel.mjs --light`: 15 s, the kit's Hook on screen, Aquarii
-  end card) and checks it with the demo profile. The kit's `## Reel` says Length: 15 s and puts the payoff on the effect itself.
-- Skip Phase 4c. Everything else (checks, records, push) as usual.
+- Build a compact template (all "Required in every template" items, design log, advancements line, cover, kit as usual) around ONE striking animated idea
+  that is finished and moving in the first second, imagined fresh (approach steps 1-2). 3-4 sections, not a full long page; every section moves.
+- The reel is a SHORT DIRECTED FILM of that page (owner, 17 Oct 2026: a plain recording undersells the site): film/ID/story.js (~15 s, `len` in timing.json),
+  built on the page itself (`node scripts/film/capture-site.mjs ID --tall` + `P.siteScroll`, or live captures of the effect) with real camera moves: a push-in
+  on the effect, a close-up, a reveal, a pull-back; the voice story (film/ID/voice.md) and P.brandEnd. Phase 4c applies in a light form: one pass, stills at
+  the cuts. The plain recording (`render-reel.mjs --light`) is only the automatic fallback when the film fails.
+- Everything else (checks, records, push) as usual.
 
 ## Phase 1 — Repo health and branch
 1. ID = output of `TZ=Asia/Kolkata date +%F-%H%M` (India date + current time, e.g.
@@ -108,7 +115,7 @@ Sources, in this order: design/aligned-plan.md (business, recipe, process), desi
    deliver (shown as a mechanism), the payoff image. The example business on the template changes every reel: never the same kind of business as any of the last 5
    (bakery, clinic, salon, CA firm, gym, boutique, coaching, real estate, restaurant, school ...). The template is only proof; Hook, voice and caption sell Aquarii.
 2. **Theme and look.** Pick a ready theme from design/themes.md (`S.dna.theme`; never the previous film's once two or more are ready) and follow that theme's recipe only.
-   Each theme's look stays locked; it changes only by beating its benchmark (themes.md Rule 1). Theme A `collage` (the only ready one on 16 Oct) = premium cinematic tech (premium.md): navy, white, one lime accent, coral only for the problem; three layers in every frame (subject,
+   A theme is a format, not a look to reproduce (owner, 17 Oct 2026: imagination first, no benchmark copying). Theme A `collage` (the only ready one on 16 Oct) = premium cinematic tech (premium.md): navy, white, one lime accent, coral only for the problem; three layers in every frame (subject,
    supporting detail, depth layer such as P.sys globe/grid/spot); one 3D or depth hero moment; calm long-tail motion. Length fits the content, 15-30 s (timing.json `len`).
 3. **Show the real work.** When the reel shows a site, use the real template: `node scripts/film/capture-site.mjs ID` writes film/ID/assets/{desk,tab,phone}.jpg; put them
    in device frames that scroll. Never placeholder blocks.
