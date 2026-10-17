@@ -41,50 +41,68 @@ section p{margin-top:12px;max-width:32ch;color:var(--soft)}
 </main>
 <p class="hint" id="hint">Scroll to fly · drag to look around</p>
 <script>
-// F1 misty peaks, 3D: a ray-marched mountain range (our own shader). Scroll flies the camera forward through the cloud sea towards the main peak;
-// drag (or tilt the phone) turns the view; when nobody touches it, the camera keeps a slow sway, the clouds drift and light lines fall.
+// F1 misty peaks, 3D, Level 1 finish (17 Oct 2026). A ray-marched mountain range, all our own code: eroded terrain (noise with derivatives),
+// silhouettes refined by bisection, soft sun shadows, crevice occlusion, warm sun / cool sky light, sun-tinted haze, a film tone curve, and a light
+// temporal anti-aliasing (each frame is jittered by a fraction of a pixel and blended with the previous one) for clean cliff edges.
+// Scroll flies the camera forward and up towards the peak; drag (or tilt the phone) looks around; untouched, it sways and the clouds drift.
 (() => {
-  const c = document.getElementById('sky'), gl = c.getContext('webgl', { antialias: false });
+  const c = document.getElementById('sky'), gl = c.getContext('webgl', { antialias: false, preserveDrawingBuffer: false });
   const fades = [...document.querySelectorAll('.fade')];
   const io = new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('in', e.isIntersecting)), { threshold: .2 }); fades.forEach((f) => io.observe(f));
   if (!gl) return;                                                         // the CSS gradient stays as the fallback
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-  const fs = `precision highp float;uniform vec2 R;uniform float T,Z,YW,PT;
+  const fs = `precision highp float;uniform vec2 R,J;uniform float T,Z,YW,PT,A;uniform sampler2D PV;
 const mat2 M=mat2(.8,-.6,.6,.8);
+vec3 L(vec3 c){return c*c;}                                                // display colour -> roughly linear light
 float h2(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h2(i),h2(i+vec2(1,0)),f.x),mix(h2(i+vec2(0,1)),h2(i+vec2(1,1)),f.x),f.y);}
+vec3 nd(vec2 x){vec2 i=floor(x),f=fract(x),u=f*f*(3.-2.*f),du=6.*f*(1.-f);float a=h2(i),b=h2(i+vec2(1,0)),c=h2(i+vec2(0,1)),d=h2(i+vec2(1,1));
+  return vec3(a+(b-a)*u.x+(c-a)*u.y+(a-b-c+d)*u.x*u.y,du*(vec2(b-a,c-a)+(a-b-c+d)*u.yx));}
 float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*vn(p);p=M*p*2.03;a*=.5;}return s;}
-// terrain: ridged noise (sharp crests) plus a big peak straight ahead and a second one to the right
-float terr(vec2 p,int oct){vec2 q=p*.28;float a=.55,h=0.;for(int i=0;i<7;i++){if(i>=oct)break;float n=1.-abs(vn(q)*2.-1.);h+=a*n*n;q=M*q*2.04;a*=.48;}
+// terrain: sharp ridged crests for the silhouette + an eroded layer (detail damped where the slope is steep, like real erosion) + two big peaks
+float terr(vec2 p,int oct){
+  vec2 q=p*.28;float a=.55,r=0.;for(int i=0;i<5;i++){float n=1.-abs(vn(q)*2.-1.);r+=a*n*n;q=M*q*2.04;a*=.48;}
+  vec2 e=p*.4;float b=1.,s=0.;vec2 d=vec2(0);for(int i=0;i<9;i++){if(i>=oct)break;vec3 n=nd(e);n=vec3(n.x*2.-1.,n.yz*2.);d+=n.yz;s+=b*n.x/(1.+dot(d,d));b*=.5;e=M*e*2.;}
   vec2 d1=p-vec2(.4,15.),d2=p-vec2(5.,11.);
-  return h*2.1-1.1+3.4*exp(-dot(d1,d1)*.035)*(.75+.35*h)+1.9*exp(-dot(d2,d2)*.06)*(.7+.4*h);}
-vec3 nrm(vec3 p){float e=.015;return normalize(vec3(terr(p.xz-vec2(e,0),7)-terr(p.xz+vec2(e,0),7),2.*e,terr(p.xz-vec2(0,e),7)-terr(p.xz+vec2(0,e),7)));}
+  float h=r*1.8-1.05+s*.55;
+  return h+3.4*exp(-dot(d1,d1)*.035)*(.75+.3*r)+1.9*exp(-dot(d2,d2)*.06)*(.7+.35*r);}
+vec3 nrm(vec3 p,float t){float e=.0015+.0012*t;return normalize(vec3(terr(p.xz-vec2(e,0),9)-terr(p.xz+vec2(e,0),9),2.*e,terr(p.xz-vec2(0,e),9)-terr(p.xz+vec2(0,e),9)));}
+float shadow(vec3 p,vec3 l){float r=1.,s=.06;for(int i=0;i<22;i++){vec3 q=p+l*s;float h=q.y-terr(q.xz,4);r=min(r,9.*h/s);s+=clamp(h,.06,.5);if(r<.01||s>10.)break;}r=clamp(r,0.,1.);return r*r*(3.-2.*r);}
+vec3 aces(vec3 x){return clamp(x*(2.51*x+.03)/(x*(2.43*x+.59)+.14),0.,1.);}
 void main(){
-  vec2 uv=(gl_FragCoord.xy-.5*R)/R.y;float t=T;
+  vec2 fc=gl_FragCoord.xy+J,uv=(fc-.5*R)/R.y;float t=T;
   float yaw=YW+.08*sin(t*.11),pit=-.06+PT+.025*sin(t*.07);
-  vec3 ro=vec3(.3*sin(t*.05),1.35+Z*.17+.1*sin(t*.09),Z);
-  ro.y=max(ro.y,terr(ro.xz,5)+.8);                                         // rise as we travel, never into the rock
+  vec3 ro=vec3(.3*sin(t*.05),1.35+Z*.17+.1*sin(t*.09),Z);ro.y=max(ro.y,terr(ro.xz,5)+.8);
   vec3 fw=normalize(vec3(sin(yaw),pit,cos(yaw))),rt=normalize(cross(vec3(0,1,0),fw)),up=cross(fw,rt);
   vec3 rd=normalize(fw+uv.x*rt*.9+uv.y*up*.9);
-  vec3 sun=normalize(vec3(-.55,.55,.35)),fogc=vec3(.86,.86,.9);
-  vec3 sky=mix(vec3(.8,.81,.86),vec3(.7,.71,.78),smoothstep(-.05,.5,rd.y));
-  // march the height field
-  float d=.2,hit=0.;vec3 p;
-  for(int i=0;i<110;i++){p=ro+rd*d;float h=p.y-terr(p.xz,5);if(h<.002*d){hit=1.;break;}d+=max(.02,h*.45);if(d>42.)break;}
+  vec3 sun=normalize(vec3(-.62,.3,.4));
+  float sa=max(dot(rd,sun),0.);
+  vec3 fogc=mix(L(vec3(.84,.85,.9)),L(vec3(1.,.96,.9)),pow(sa,6.)*.7);
+  vec3 sky=mix(L(vec3(.8,.81,.87)),L(vec3(.66,.68,.77)),smoothstep(-.05,.5,rd.y))+L(vec3(1.,.95,.86))*pow(sa,24.)*.35;
+  // march, then refine the hit by bisection so silhouettes are crisp
+  float d=.2,pd=.2,hit=0.;vec3 p;
+  for(int i=0;i<120;i++){p=ro+rd*d;float h=p.y-terr(p.xz,6);if(h<.0012*d){hit=1.;break;}pd=d;d+=max(.012,h*.42);if(d>42.)break;}
+  if(hit>.5){float a=pd,b=d;for(int i=0;i<6;i++){float m=.5*(a+b);vec3 q=ro+rd*m;if(q.y-terr(q.xz,6)<0.)b=m;else a=m;}d=b;p=ro+rd*d;}
   vec3 col=sky;
-  if(hit>.5){vec3 n=nrm(p);float h=terr(p.xz,7);
-    float dif=clamp(dot(n,sun),0.,1.),amb=.55+.45*n.y;
-    float snow=smoothstep(.55,.8,n.y+.25*fbm(p.xz*4.))*smoothstep(.2,1.,h)+smoothstep(2.1,2.8,h);   // snow on flatter, higher ground
-    vec3 rock=mix(vec3(.3,.32,.4),vec3(.42,.44,.52),fbm(p.xz*9.));
-    col=mix(rock,vec3(.96,.97,.99),clamp(snow,0.,1.))*(.35*amb+.85*dif);
-    col=mix(col,fogc,1.-exp(-d*.075));}                                  // distance haze
+  if(hit>.5){vec3 n=nrm(p,d);float h=terr(p.xz,6);
+    float dif=max(dot(n,sun),0.),sh=dif>.001?shadow(p+n*.01,sun):0.;
+    float occ=0.;for(int i=1;i<5;i++){float hr=.07*float(i);vec3 q=p+n*hr;occ+=max(0.,hr-(q.y-terr(q.xz,5)))*(1./float(i));}
+    float ao=clamp(1.-occ*3.,.25,1.);
+    float strata=.85+.15*sin(p.y*22.+fbm(p.xz*3.)*5.);
+    vec3 rock=L(mix(vec3(.2,.21,.25),vec3(.36,.36,.4),fbm(p.xz*7.)))*strata;
+    float snow=smoothstep(.72,.9,n.y+.2*fbm(p.xz*5.)-.15*(1.-smoothstep(.3,1.6,h)))+smoothstep(2.6,3.2,h)*.4;
+    vec3 alb=mix(rock,L(vec3(.93,.94,.97)),clamp(snow,0.,1.));
+    vec3 lin=L(vec3(1.,.95,.86))*2.6*dif*sh+L(vec3(.62,.68,.8))*(.35+.45*n.y)*ao*.6+L(vec3(.55,.55,.6))*.15*clamp(-n.y+.5,0.,1.)*ao;
+    col=alb*lin;
+    col=mix(col,fogc,1.-exp(-d*.05));}
   // the cloud sea: thick fog below a soft ceiling, drifting
   float ceil=.85+.3*fbm(vec2(p.x*.3+t*.03,p.z*.3));
   float low=hit>.5?smoothstep(ceil,ceil-.9,p.y):smoothstep(.0,-.25,rd.y);
   float wisp=fbm(vec2(rd.x*3.+t*.02,rd.y*9.+Z*.15));
-  col=mix(col,mix(vec3(.94,.94,.96),vec3(.72,.74,.8),smoothstep(.45,.85,wisp)*.6),clamp(low*(.75+.35*wisp),0.,1.));
-  // cloud banks the camera flies through (their phase follows the camera, so scrolling moves through them)
+  col=mix(col,mix(L(vec3(.94,.94,.96)),L(vec3(.74,.76,.82)),smoothstep(.45,.85,wisp)*.6),clamp(low*(.75+.35*wisp),0.,1.));
+  col=pow(aces(col*.9),vec3(.4545));
+  // cloud banks the camera flies through (their phase follows the camera)
   for(int i=0;i<3;i++){float fi=float(i);float ph=fract(Z*.09+t*.012+fi*.333);float s=mix(.5,3.,ph*ph);
     vec2 cp=uv/s+vec2(fi*3.7+yaw*1.5,fi*1.3);float cd=fbm(cp*1.7)+.5*fbm(cp*3.6+t*.02);
     float a=smoothstep(.62,1.,cd)*smoothstep(0.,.3,ph)*(1.-smoothstep(.6,1.,ph));col=mix(col,vec3(.95,.95,.97),a*.85);}
@@ -92,16 +110,27 @@ void main(){
   float cx=floor(uv.x*26.);float hv=h2(vec2(cx,3.));
   if(hv>.74){float lx=abs(fract(uv.x*26.)-.5)/26.;float seg=fract(uv.y*.35+t*(.04+.05*hv)+hv*5.);
     col=mix(col,vec3(1.),smoothstep(.0013,0.,lx)*smoothstep(0.,.35,seg)*(1.-smoothstep(.55,1.,seg))*.45);}
-  col+=(h2(gl_FragCoord.xy+fract(t)*91.)-.5)*.02;col*=1.-.15*dot(uv,uv);
-  gl_FragColor=vec4(col,1.);}`;
+  col*=1.-.13*dot(uv,uv);
+  vec3 prev=texture2D(PV,gl_FragCoord.xy/R).rgb;
+  gl_FragColor=vec4(mix(prev,col,A),1.);}`;
+  const blitFs = 'precision mediump float;uniform sampler2D S;uniform vec2 R;float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}void main(){vec3 c=texture2D(S,gl_FragCoord.xy/R).rgb;c+=(h(gl_FragCoord.xy)-.5)*.018;gl_FragColor=vec4(c,1.);}';
   const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
-  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr); gl.useProgram(pr);
+  const prog = (f) => { const p = gl.createProgram(); gl.attachShader(p, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, f)); gl.linkProgram(p); return p; };
+  const scene = prog(fs), blit = prog(blitFs);
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const U = (n) => gl.getUniformLocation(pr, n), uR = U('R'), uT = U('T'), uZ = U('Z'), uY = U('YW'), uP = U('PT');
+  const attr = (p) => { const l = gl.getAttribLocation(p, 'p'); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, 2, gl.FLOAT, false, 0, 0); };
+  const U = (p, n) => gl.getUniformLocation(p, n);
+  const u = { R: U(scene, 'R'), J: U(scene, 'J'), T: U(scene, 'T'), Z: U(scene, 'Z'), Y: U(scene, 'YW'), P: U(scene, 'PT'), A: U(scene, 'A'), PV: U(scene, 'PV') }, ub = { S: U(blit, 'S'), R: U(blit, 'R') };
+  // two render targets, ping-ponged: the scene reads the previous frame and blends into the other
+  let tex = [], fbo = [], cur = 0, fresh = true;
+  const target = () => { tex.forEach((x) => gl.deleteTexture(x)); fbo.forEach((x) => gl.deleteFramebuffer(x)); tex = []; fbo = [];
+    for (let i = 0; i < 2; i++) { const tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, c.width, c.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+      [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER].forEach((k) => gl.texParameteri(gl.TEXTURE_2D, k, gl.LINEAR)); [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach((k) => gl.texParameteri(gl.TEXTURE_2D, k, gl.CLAMP_TO_EDGE));
+      const fb = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, fb); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tx, 0); tex.push(tx); fbo.push(fb); }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); fresh = true; };
   // render below screen resolution (ray marching is heavy) and let CSS scale it up; drop further if frames get slow
   let scale = Math.min(.9, .6 * (devicePixelRatio || 1));
-  const size = () => { c.width = Math.round(innerWidth * scale); c.height = Math.round(innerHeight * scale); gl.viewport(0, 0, c.width, c.height); };
+  const size = () => { c.width = Math.max(64, Math.round(innerWidth * scale)); c.height = Math.max(64, Math.round(innerHeight * scale)); target(); };
   size(); addEventListener('resize', size);
   // camera controls: scroll = forward, drag / tilt = look around (eased)
   let yaw = 0, pit = 0, tyaw = 0, tpit = 0, z = 0, drag = null;
@@ -111,13 +140,23 @@ void main(){
   addEventListener('deviceorientation', (e) => { if (drag || e.gamma == null) return; tyaw = Math.max(-.6, Math.min(.6, e.gamma * .012)); tpit = Math.max(-.2, Math.min(.15, (e.beta - 45) * -.004)); });
   const hintEl = document.getElementById('hint'); const hint = () => { hintEl.style.opacity = 0; };
   addEventListener('scroll', () => { if (scrollY > 40) hint(); }, { passive: true });
-  let last = performance.now(), slow = 0;
+  const J8 = [[.25, .75], [.75, .25], [.125, .375], [.625, .875], [.375, .125], [.875, .625], [.5, .5], [0, 0]];   // sub-pixel jitter pattern
+  let last = performance.now(), slow = 0, n = 0;
   const frame = (ms) => {
     const dt = Math.min(.1, (ms - last) / 1000); last = ms;
     if (dt > .045 && ++slow > 20 && scale > .38) { scale *= .85; size(); slow = 0; }
-    const max = Math.max(1, document.documentElement.scrollHeight - innerHeight), target = (scrollY / max) * 8.5;
-    z += (target - z) * Math.min(1, dt * 3); yaw += (tyaw - yaw) * Math.min(1, dt * 4); pit += (tpit - pit) * Math.min(1, dt * 4);
-    gl.uniform2f(uR, c.width, c.height); gl.uniform1f(uT, 8 + ms / 1000); gl.uniform1f(uZ, z); gl.uniform1f(uY, yaw); gl.uniform1f(uP, pit);
+    const max = Math.max(1, document.documentElement.scrollHeight - innerHeight), goal = (scrollY / max) * 8.5;
+    const dz = (goal - z) * Math.min(1, dt * 3), dy = (tyaw - yaw) * Math.min(1, dt * 4);
+    z += dz; yaw += dy; pit += (tpit - pit) * Math.min(1, dt * 4);
+    const moving = Math.abs(dz) + Math.abs(dy) > .004, j = J8[n++ % 8];
+    gl.useProgram(scene); attr(scene);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo[1 - cur]); gl.viewport(0, 0, c.width, c.height);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex[cur]); gl.uniform1i(u.PV, 0);
+    gl.uniform2f(u.R, c.width, c.height); gl.uniform2f(u.J, j[0] - .5, j[1] - .5); gl.uniform1f(u.T, 8 + ms / 1000);
+    gl.uniform1f(u.Z, z); gl.uniform1f(u.Y, yaw); gl.uniform1f(u.P, pit); gl.uniform1f(u.A, fresh ? 1 : moving ? .55 : .22);
+    gl.drawArrays(gl.TRIANGLES, 0, 3); cur = 1 - cur; fresh = false;
+    gl.useProgram(blit); attr(blit); gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, c.width, c.height);
+    gl.bindTexture(gl.TEXTURE_2D, tex[cur]); gl.uniform1i(ub.S, 0); gl.uniform2f(ub.R, c.width, c.height);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     if (!still) requestAnimationFrame(frame);
   };
