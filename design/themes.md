@@ -63,11 +63,16 @@ Mon / Wed / Fri, never the same theme two reels in a row (checked by scripts/che
 exist and its benchmark passes; until then the rotation uses the ready ones (16 Oct: A collage, D sitescroll on film days; E demo on light days). Each theme's look stays locked while we rotate; it changes
 only through Rule 1.
 
+## Style library (owner, 17 Oct 2026)
+https://templates.aquariit.com/styles/ (templates/styles/index.html, linked from the home page) shows every look with a code (A1, B1, D1 ...) and a live
+example, so the owner can ask for one by code ("tomorrow in B1"). Every new reference or theme adds its entry there the same day; a code, once given, is kept.
+
 ## Adding a theme
 1. The owner sends a reference. Study it in design/brand/references.md (what is on screen, why it is premium; technique only, never copy).
 2. Add a section here: name, look, what premium means for it, its checks, its benchmark, what must be built first.
 3. Build the parts as new options in scripts/film/parts.js; add the theme's check profile to reel-gate.py (`PROFILES`).
 4. Make its benchmark film, get the owner's yes, then add it to the rotation.
+5. Add its card to the Style library page with a code and a live example (or a link to its example template).
 
 ## Learning by theme
 reel-log.json and the Instagram numbers are compared per theme (reach, watch time, shares, DMs), with the owner's 1-5 scores for look, motion and story.
