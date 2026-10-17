@@ -77,7 +77,7 @@ Premium content first, a blend of everything (playful included, nothing dropped)
 Codes so far: A1 makeover collage, B1 clay character, C1 our site on a real screen, D1 silk-light site scroll, E1 clay page, F1 misty peaks (theme F `world`:
 living GPU scenes after reference R2).
 https://templates.aquariit.com/styles/ (templates/styles/index.html, linked from the home page) shows every look with a code (A1, B1, D1 ...) and a live
-example, so the owner can ask for one by code ("tomorrow in B1"). Every new reference or theme adds its entry there the same day; a code, once given, is kept.
+example, so the owner can ask for one by code ("tomorrow in B1"). Every new reference or theme adds its entry there, and a card in the home page's style strip (templates/index.html `.styles`), the same day; a code, once given, is kept.
 
 ## Adding a theme
 1. The owner sends a reference. Study it in design/brand/references.md (what is on screen, why it is premium; technique only, never copy).
