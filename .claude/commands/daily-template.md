@@ -53,7 +53,8 @@ Premium is judged on the piece's own merit, never by how close it is to somethin
 7. **Self-check on its own merit**, with `--stills` at every shot and a 1:1 crop (headings crisp). Ask of every still: is there light, depth and a lit hero?
    does something move across a large part of the frame? is the type confident? is there a finish (glow, reflection, grain)? would I screenshot it?
    Never put small readable text inside a 3D-tilted layer (Chrome rasters it at low resolution): true 3D for fly-ins and exploded views, a 2D camera
-   (scale, translate, slight skew) for any shot where text is read (PR #248). A slower voice needs shorter lines: speech must end before the film does.
+   (scale, translate, slight skew) for any shot where text is read (PR #248). A film that copies the live page must first remove the site's own
+   motion (e.g. `document.documentElement.classList.remove('js')` in setup), or the page's reveal/scroll states freeze into the film (blank blocks). A slower voice needs shorter lines: speech must end before the film does.
    Fix what fails; two passes at most; then records, push, and let GitHub render.
 8. **Add the look to the Style library** (templates/styles/index.html row + home strip card in templates/index.html) when it is a new look.
 A hint like "film day: <theme>" makes today a film day whatever the weekday; "light day" makes it a light day.

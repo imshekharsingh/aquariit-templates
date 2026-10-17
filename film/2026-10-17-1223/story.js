@@ -23,6 +23,8 @@
 
   S.setup = async function () {
     document.documentElement.classList.add('reel');
+    // the site's own load/scroll/reveal motion (html.js) must not leak into the film's copies of the page: the film animates them itself
+    document.documentElement.classList.remove('js');
     await P.ready; await document.fonts.ready;
     await new Promise((r) => setTimeout(r, 1200));
     const srcSite = document.querySelector('.site');
