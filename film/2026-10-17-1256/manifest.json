@@ -1,0 +1,47 @@
+{
+  "id": "2026-10-17-1256",
+  "made": "2026-10-17T13:33:08.580Z",
+  "slots": {
+    "ground": [
+      "black"
+    ],
+    "opener": [
+      "sunrise-limb-close"
+    ],
+    "transition": [
+      "atmosphere-dive"
+    ],
+    "mechanism": [
+      "edge-node-rings"
+    ],
+    "payoff": [
+      "phone-over-world"
+    ],
+    "focus": [
+      "pinned-city-tags"
+    ],
+    "type": [
+      "stacked-lines-gradient"
+    ],
+    "captions": [
+      "top-third-lines"
+    ],
+    "render": [
+      "glsl-shader-scene"
+    ],
+    "cta": [
+      "brand-end-electric",
+      "brand-end"
+    ]
+  },
+  "dna": {
+    "service": "edge",
+    "theme": "sitescroll",
+    "format": "world tour",
+    "combo": "the template's own GLSL planet reused live in the film and patched with edge-node rings + HUD tags pinned to shader-space cities found by a probe pass + a camera dive through the atmosphere into the live DOM website on the same shader, then a pull-back into a phone over the whole world",
+    "opening": "close on a planet's limb in deep space, the sun clears the horizon and runs gold along the atmosphere while city lights glitter below, under the hook \"Morning in Tokyo. Midnight in Berlin. Same speed.\"",
+    "bigMoment": "after a held breath over the night side the camera dives through the glowing atmosphere in a white-blue flash and lands inside the live website, the same planet now its hero",
+    "ground": "the template's own GPU planet: deep space with stars, a gold sunrise rim, warm city sparks on the night side, electric-blue edge rings, vignette and light grain",
+    "music": "cinematic ambient electronic, airy pads over a soft pulse that starts at the orbit, a held breath, a bright swell on the dive and a calm resolve, 84 BPM"
+  }
+}

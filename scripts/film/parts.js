@@ -18,6 +18,7 @@
 //   system map P.sys (game look: neon grid, glowing cables with flowing packets, comets, glossy component chips, bursts; one camera)
 //   machine    P.iso (isometric machines: the object IS the explanation; box, cyl, coil, ticks, dot, path; four-tone shading, depth-sorted)
 //   soft3d     P.clay (a clay character: moods with colour, squash and stretch, blinks, depth particles via .fx)  P.dome (a glass hex shield drawn on round a subject; hits ripple)
+//   shader     P.glsl (a template's own GPU fragment shader, driven by film time, patched, extra passes into 2D canvases; P.glsl.fromPage reads it from the live page)
 //   3D         P.tank3d (the leaky vessel in real 3D, for hero shots)  P.three (WebGL scene, procedural studio light)  P.three.look (keyed 3D camera on springs)  P.three.roundRect
 //   brand      P.BRAND (kit colours)  P.brandMark()  P.brandEnd({ keyword }) (the ending of every new film; design/brand/kit.md)
 //   other      P.phone  P.clock  P.shape (a recurring brand shape)  P.signoff (the studio name + DM us, at the end; the always-on watermark was retired 14 Oct 2026, P.watermark() is opt-in only)
@@ -1743,4 +1744,43 @@
     });
     return { el: box, pos: (i) => pts[i], litAt, holds };
   };
+  // ---- glsl (17 Oct 2026, new trick, render slot 'glsl-shader-scene'): a full-frame GPU fragment shader driven by film time. Reuse a template's OWN shader
+  //      (P.glsl.fromPage pulls the GLSL out of the live page's script, so the film always matches the site), patch it with extra effects, render it at an
+  //      internal resolution (res x 402 by res x 715), and draw extra passes into 2D canvases (e.g. the same world inside a phone screen).
+  //      Uses the renderer's fast 3D capture (canvas grab + transparent overlay screenshot), so a software-GL frame costs about what a P.three frame does.
+  //   const W = P.glsl(parent, { frag, patch: [[find, replace], ...], res: 1.8, drive: (t, dim) => ({ uniformName: number | [x,y(,z,w)] | [[x,y,z], ...] }) })
+  //   W.pass(ctx2d, w, h, uniforms)  draws the shader at w x h and copies it into a 2D canvas (call it inside drive or a P.on, before the main draw)
+  //   W.probe(mainBody, w, h)        one-off read-back of a custom main() over the same helpers (e.g. an equirect map of where the land and cities are)
+  P.glsl = function (parent, { frag, patch = [], res = 1.8, drive = () => ({}), active = null, loopAt = null, before = null } = {}) {
+    P.use('render', 'glsl-shader-scene');
+    patch.forEach(([a, b]) => { if (!frag.includes(a)) throw new Error('P.glsl patch: not found in the shader: ' + a.slice(0, 60)); frag = frag.replace(a, b); });
+    const cv = E.el('canvas', 'position:absolute;left:0;top:0;width:402px;height:715px', parent); cv.width = Math.round(402 * res); cv.height = Math.round(715 * res);
+    const gl = cv.getContext('webgl', { antialias: false, preserveDrawingBuffer: true }); if (!gl) throw new Error('P.glsl: no WebGL');
+    const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+    const compile = (src) => { const sh = (ty, s) => { const o = gl.createShader(ty); gl.shaderSource(o, s); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error('P.glsl: ' + gl.getShaderInfoLog(o)); return o; };
+      const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, src)); gl.linkProgram(pr); return pr; };
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const progs = new Map();
+    const use = (pr) => { gl.useProgram(pr); const l = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, 2, gl.FLOAT, false, 0, 0);
+      if (!progs.has(pr)) progs.set(pr, {}); return progs.get(pr); };
+    const main = compile(frag);
+    const set = (pr, cache, k, v) => { const loc = k in cache ? cache[k] : (cache[k] = gl.getUniformLocation(pr, k) || gl.getUniformLocation(pr, k + '[0]')); if (loc == null) return;
+      if (typeof v === 'number') gl.uniform1f(loc, v); else if (Array.isArray(v[0])) gl['uniform' + v[0].length + 'fv'](loc, new Float32Array(v.flat())); else gl['uniform' + v.length + 'f'](loc, ...v); };
+    const draw = (pr, w, h, u) => { const cache = use(pr); gl.viewport(0, 0, w, h); set(pr, cache, 'R', [w, h]); for (const k in u) set(pr, cache, k, u[k]); gl.drawArrays(gl.TRIANGLES, 0, 3); };
+    const W = { cv, gl, frag,
+      pass: (ctx, w, h, u) => { draw(main, w, h, u); ctx.drawImage(cv, 0, cv.height - h, w, h, 0, 0, ctx.canvas.width, ctx.canvas.height); },
+      probe: (body, w, h) => { const head = frag.slice(0, frag.indexOf('void main(')); const pr = compile(head + body); draw(pr, w, h, {}); const px = new Uint8Array(w * h * 4); gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px); return px; } };
+    const on = (t) => !active || active.some(([a, b]) => t >= a && t < b);
+    P.on((t0) => { const vis = on(t0); cv.style.display = vis ? '' : 'none'; if (!vis) return; const t = loopAt != null && t0 >= loopAt ? t0 - P.len : t0;
+      if (before) before(t, W); draw(main, cv.width, cv.height, drive(t, P.dimNow || 0)); });
+    // fast capture, as P.three: the renderer grabs this canvas and screenshots only the layers above it
+    const below = []; { let n = cv; while (n && n !== document.body) { let sib = n.previousElementSibling; while (sib) { below.push(sib); sib = sib.previousElementSibling; } n = n.parentElement; } }
+    const grounds = [document.documentElement, document.body, E.stageEl, P.L].filter(Boolean);
+    window.__film3d = { active: on, grab: () => cv.toDataURL('image/jpeg', .95),
+      hide: (h) => { cv.style.visibility = h ? 'hidden' : ''; document.querySelectorAll('canvas').forEach((c) => { if (getComputedStyle(c).mixBlendMode !== 'normal') c.style.visibility = h ? 'hidden' : ''; });
+        below.forEach((e) => { if (e !== P.front && !e.contains(P.front) && e.id !== 'fx') e.style.visibility = h ? 'hidden' : ''; }); grounds.forEach((e) => { if (h) { e.dataset.bg = e.style.background; e.style.background = 'transparent'; } else e.style.background = e.dataset.bg || ''; }); } };
+    return W;
+  };
+  // the GLSL inside one of the page's own scripts: the first template literal assigned to `name` (default fs)
+  P.glsl.fromPage = (name = 'fs') => { const re = new RegExp('const\\s+' + name + '\\s*=\\s*`([\\s\\S]*?)`'); for (const s of document.scripts) { const m = (s.textContent || '').match(re); if (m) return m[1]; } throw new Error('P.glsl.fromPage: no shader named ' + name); };
 })();
