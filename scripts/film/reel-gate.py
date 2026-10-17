@@ -65,7 +65,8 @@ ALL_RULES = [
 # per-theme check profiles (design/themes.md). collage is the 15-16 Oct gate unchanged; add a theme here, never edit another theme's list
 PROFILES = {'collage': ['shots', 'static', 'fullness', 'ending'], 'soft3d': ['shots', 'static', 'ending', 'subject'], 'footage': ['rhythm', 'ending'],
             'sitescroll': ['shots', 'static', 'ending'],
-            'demo': ['shots', 'static', 'ending']}   # light-day recordings of our own pages (themes.md E)   # the scroll itself is the motion; a page section may be calm, so no fullness rule
+            'demo': ['shots', 'static', 'ending'],
+            'cinema': ['shots', 'static', 'ending']}   # cinematic product films: a dark studio frame is calm by design, so no fullness rule   # light-day recordings of our own pages (themes.md E)   # the scroll itself is the motion; a page section may be calm, so no fullness rule
 if THEME not in PROFILES: print(f'unknown theme {THEME!r}; known: {", ".join(PROFILES)}'); sys.exit(2)
 rules = [r for r in ALL_RULES if r[0] in PROFILES[THEME]]
 warn = [('contrast', contrast >= 30, f'contrast {contrast:.0f} (30+ advised; pale reels wash out on phones)')]

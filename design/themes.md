@@ -56,6 +56,10 @@ hook on screen, Aquarii end card). Result first: the effect is moving in the fir
 Premium means **one effect worth stopping for, shown as a real website**. Checks: shots, static, ending (no fullness rule; the workflow picks `demo`
 for any template without a film). Ready.
 
+### G · `cinema` — cinematic product film of our own website (17 Oct 2026; ready; benchmark film/2026-10-17-1223 Aurelia)
+Dark studio, beams, glows, dust, reflective floor, glass glare, light leaks, grain, handheld camera; a glass browser flies in, the site builds, explodes into
+labelled layers, features and data come alive, a phone joins; numbered captions in the top third. Checks: shots, static, ending.
+
 ### Later · `glass` — glossy glass product (Blender pilot, 16 Oct: path tracing too slow on free runners; an engine glass part instead)
 
 ## Rotation

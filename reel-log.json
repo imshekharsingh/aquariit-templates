@@ -296,5 +296,35 @@
       "sendToFriend": "yes, to a founder about to launch"
     },
     "notes": "Pass 1: the canvas ribbon was almost invisible behind the hero, made it a brighter, tighter band with a glow pass and moved it behind the headline on phones; the CSS 3D bars rendered as flat tilted slabs, redrawn as SVG isometric prisms. Pass 2: checked the stills at the cuts again (hook, flow panel, numbers, bars, pull-back, plans, end card). Benchmark for theme D: to be confirmed by the owner before the theme joins the rotation."
+  },
+  {
+    "id": "2026-10-17-1223",
+    "date": "2026-10-17",
+    "template": "Aurelia (shown as proof; the reel is about Aquarii)",
+    "version": "cinema v1",
+    "service": "web",
+    "theme": "cinema",
+    "format": "product film",
+    "concept": "A 25 s cinematic product film of our own website: logo ring draws and the camera flies through it; a glass browser flies in tilted and the site builds; the page explodes into labelled layers while the camera circles; features flip up with live visuals; the dashboard counts up and the cursor reserves; a phone swings in; Aurelia end card, then the Aquarii DM card.",
+    "motionStyle": "expo-out arrivals and cubic in-out camera moves, springs for page elements, handheld shake, engine motion blur",
+    "primaryTransition": "light leak",
+    "transitions": [
+      "fly-through",
+      "light-leak",
+      "flash"
+    ],
+    "typeTreatment": "Inter display optical size; numbered captions in the top third",
+    "grade": "navy-black studio, amber #FFB35C to #FF6A2C, violet and cyan accents, warm/cool grade, grain, vignette",
+    "sound": "effects only (whooshes, clicks, riser into the layer split, impacts); owner adds Instagram audio",
+    "cover": "the exploded-layers frame at ~9.6 s",
+    "newTrick": "cinema look kit inside one story: studio beams, colour glows, bokeh dust, reflective grid floor, glass glare, light leaks, grain canvas, handheld camera; exploded layers built from clipped copies of the live page",
+    "revisionPasses": 2,
+    "friendTest": {
+      "stopScrolling": "yes: a glowing logo and a 3D browser flying in from frame 0",
+      "watchToEnd": "yes: a new move every 3-4 s (build, split, flip, count, phone)",
+      "screenshot": "the exploded layers with cyan labels",
+      "sendToFriend": "yes, to a founder planning a launch"
+    },
+    "notes": "Pass 1: the exploded view leaked the rest of the page below the frame (base layer clipped to the viewport) and the click ripple missed the button (moved onto it). Pass 2: stills at every shot checked: logo, fly-in, build, split, features, dashboard, click, phone, end cards. Built in one pass (owner, 17 Oct: drive the content, no over-engineering)."
   }
 ]

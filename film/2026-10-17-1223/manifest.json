@@ -1,0 +1,39 @@
+{
+  "id": "2026-10-17-1223",
+  "made": "2026-10-17T06:57:17.935Z",
+  "slots": {
+    "ground": [
+      "black"
+    ],
+    "opener": [
+      "logo-ring-flythrough"
+    ],
+    "mechanism": [
+      "browser-build-3d"
+    ],
+    "payoff": [
+      "exploded-layers-orbit"
+    ],
+    "transition": [
+      "light-leak"
+    ],
+    "type": [
+      "inter-display-captions"
+    ],
+    "focus": [
+      "dof-glass-glare"
+    ],
+    "cta": [
+      "brand-end"
+    ]
+  },
+  "dna": {
+    "service": "web",
+    "theme": "cinema",
+    "format": "product film",
+    "opening": "a glowing amber ring draws itself on in a dark studio, AURELIA sharpens letter by letter, and the camera flies through the ring",
+    "bigMoment": "the live website splits into floating layers with cyan wireframes and labels while the camera circles around them, then snaps back together",
+    "ground": "dark navy studio with amber light beams, amber-violet-cyan glows, drifting dust and a faint reflective grid floor",
+    "music": "cinematic minimal electronic with a deep pulse, a riser into the layer split and a warm swell at the end, about 100 BPM"
+  }
+}

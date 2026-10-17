@@ -581,5 +581,28 @@
     "animation": "animation-composition: add layers an endless breathe (translate, rotate) over a linear() spring drop; scroll-driven rises with finished defaults",
     "purpose": "Social content hub (social media management service line)",
     "description": "A soft clay-3D content studio page: shapes spring in and breathe, a week of six post types, three steps, three plans without prices."
+  },
+  {
+    "id": "2026-10-17-1223",
+    "date": "2026-10-17",
+    "time": "12:23",
+    "slug": "aurelia",
+    "url": "https://templates.aquariit.com/2026-10-17-1223/",
+    "name": "Aurelia",
+    "era": "modern",
+    "theme": "Cinematic dark product site: deep navy-black, amber-to-ember gradient, violet and cyan accents, a glowing product orb with orbiting rings, glass cards; made to be filmed as a studio 3D render",
+    "layout": "split hero (headline left, product orb stage with floating glass cards right), four glass feature cards with live visuals, a live dashboard (gradient line chart, three stat tiles), solid sticky nav; built on a size container so any copy lays itself out for its own width",
+    "palette": [
+      "#07080d",
+      "#FFB35C",
+      "#FF6A2C",
+      "#8b6cff",
+      "#38e1ff"
+    ],
+    "fonts": "Inter (display optical size)",
+    "motif": "a glowing amber product orb with two orbiting rings and satellites, between floating glass cards",
+    "animation": "container queries drive the whole layout (a copy at 720 px is the desktop site, at 360 px the phone site, in the same film); ring spins; spring load-in; in the film every element is driven frame by frame",
+    "purpose": "Product launch site (fictional sculpted speaker) shown as Aquarii web-design proof in a cinematic product film",
+    "description": "Aurelia sells a speaker that tunes itself to the room: a dark cinematic page with an amber orb and orbiting rings, glass cards for room EQ and battery, four live feature cards and a dashboard of sample numbers, built so the same page can play in a desktop frame and a phone."
   }
 ]
