@@ -23,7 +23,7 @@ body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--disp)}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid var(--a1);outline-offset:3px;border-radius:8px}
 /* the whole site sits in a size container, so a copy placed at any width (desktop frame or phone, e.g. in the film) lays itself out for that width */
-.site{container-type:inline-size;position:relative;overflow:hidden;background:radial-gradient(60% 40% at 70% 18%,rgba(255,140,60,.16),transparent 70%),radial-gradient(50% 40% at 10% 60%,rgba(139,108,255,.12),transparent 70%),var(--bg)}
+.site{container-type:inline-size;position:relative;overflow:clip;background:radial-gradient(60% 40% at 70% 18%,rgba(255,140,60,.16),transparent 70%),radial-gradient(50% 40% at 10% 60%,rgba(139,108,255,.12),transparent 70%),var(--bg)}
 .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
 h1,h2,.num{font-variation-settings:"opsz" 32;letter-spacing:-.035em}
 .nav{position:sticky;top:0;z-index:5;background:rgba(7,8,13,.92);border-bottom:1px solid var(--line);padding-top:var(--safe-top)}
@@ -191,7 +191,7 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
   .js .stage .orb{animation:orbIn 1.4s var(--spring) .5s both,breathe 4s ease-in-out 2s infinite}@keyframes orbIn{from{opacity:0;transform:scale(.25)}}
   .js .ring.r1{animation:ringIn 1.2s ease .9s both,spinA 14s linear 2.1s infinite}.js .ring.r2{animation:ringIn2 1.2s ease .8s both,spinB 18s linear 2s infinite}
   @keyframes ringIn{from{opacity:0;transform:rotate(-14deg) scale(.4)}}@keyframes ringIn2{from{opacity:0;transform:rotateX(70deg) rotate(24deg) scale(.4)}}
-  .js .card.eq{animation:inL 1s var(--spring) 1.1s both,bob 5s ease-in-out 2.2s infinite}.js .card.bat{animation:inR 1s var(--spring) 1.25s both,bob 5.6s ease-in-out 2.4s infinite reverse}
+  .js .card.eq{animation:inL 1s var(--spring) 1.1s both}.js .card.bat{animation:inR 1s var(--spring) 1.25s both}
   @keyframes inL{from{opacity:0;translate:-40px 0}}@keyframes inR{from{opacity:0;translate:40px 0}}@keyframes bob{50%{translate:0 -8px}}
   /* the product is alive: sound waves leave it, a sheen turns on its surface, two moons orbit, the cards' controls work by themselves */
   .wave{position:absolute;left:50%;top:50%;width:170px;height:170px;margin:-85px 0 0 -85px;border-radius:50%;border:1.5px solid rgba(255,170,90,.55);opacity:0;animation:wave 3.6s ease-out infinite}
@@ -221,7 +221,6 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
   .feat:nth-child(2)::before{animation-delay:2s}.feat:nth-child(3)::before{animation-delay:4s}.feat:nth-child(4)::before{animation-delay:6s}
   @keyframes hot{0%,8%,30%,100%{opacity:0}12%,24%{opacity:1}}
   /* live: the chart draws, a glowing tip runs along it, numbers count, and a demo cursor pre-orders (ripple + "Reserved" toast) */
-  .js .dash .line{stroke-dasharray:640;stroke-dashoffset:640;transition:stroke-dashoffset 2.2s cubic-bezier(.3,.7,.2,1) .2s}.js .dash.in .line{stroke-dashoffset:0}
   .js .pb i{transform-origin:0 50%;transform:scaleX(0);transition:transform 1.6s cubic-bezier(.3,.7,.2,1) .5s}.js .in .pb i{transform:none}
   .order{position:relative;display:inline-block}
   .cur2{right:-30px;bottom:-40px;animation:press 7s ease-in-out infinite}
@@ -233,12 +232,12 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
     background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04));border:1px solid rgba(255,179,92,.45);opacity:0;animation:toast 7s ease infinite}
   .toast b{color:var(--a1)}@keyframes toast{0%,50%{opacity:0;transform:translateX(-10px)}56%,86%{opacity:1;transform:none}94%,100%{opacity:0}}
   /* layers: the product opens on arrival, then keeps breathing; each label lights in turn with its plate */
-  .js .stack{--gap:4px;transition:--gap 1.8s cubic-bezier(.3,.7,.2,1)}.js .stack.in{--gap:52px;animation:breath 4s ease-in-out 2s infinite alternate}@keyframes breath{to{--gap:36px}}
-  .parts li{position:relative}.parts li::before,.pl::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;animation:lit 5s ease-in-out infinite}
+  .parts li{position:relative}.parts li::before,.pl::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s}
   .parts li::before{box-shadow:inset 0 0 0 1px rgba(56,225,255,.7);background:rgba(56,225,255,.08)}
   .pl::after{inset:-2px;box-shadow:0 0 0 2px rgba(56,225,255,.9),0 0 26px rgba(56,225,255,.7);background:rgba(56,225,255,.12)}
-  .parts li:nth-child(2)::before,.pl.l3::after{animation-delay:1s}.parts li:nth-child(3)::before,.pl.l2::after{animation-delay:2s}.parts li:nth-child(4)::before,.pl.l1::after{animation-delay:3s}.parts li:nth-child(5)::before,.pl.l0::after{animation-delay:4s}
-  @keyframes lit{0%,24%,100%{opacity:0}6%,16%{opacity:1}}
+  .js [data-on="1"] .parts li:nth-child(1)::before,.js [data-on="1"] .pl.l4::after,.js [data-on="2"] .parts li:nth-child(2)::before,.js [data-on="2"] .pl.l3::after,
+  .js [data-on="3"] .parts li:nth-child(3)::before,.js [data-on="3"] .pl.l2::after,.js [data-on="4"] .parts li:nth-child(4)::before,.js [data-on="4"] .pl.l1::after,
+  .js [data-on="5"] .parts li:nth-child(5)::before,.js [data-on="5"] .pl.l0::after{opacity:1}
   /* devices: the screens change by themselves (home -> live view), the phone floats */
   .scr2{position:absolute;inset:0;padding:inherit;opacity:0;animation:swap 8s ease-in-out infinite;background:#0b0c12}
   .scr2 svg{width:100%;height:60%;margin-top:6px}.scr2 path{stroke:var(--a1);stroke-width:3;fill:none;stroke-dasharray:400;animation:redraw 8s ease-in-out infinite}
@@ -249,6 +248,31 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
 @keyframes visitD{0%,100%{transform:translate(0,30px)}12%,22%{transform:translate(9cqi,90px)}37%,47%{transform:translate(32cqi,90px)}62%,72%{transform:translate(55cqi,90px)}87%,97%{transform:translate(78cqi,90px)}}
 @container (min-width:720px){.cur1{animation-name:visitD}}
 @media (prefers-reduced-motion:reduce){.js .cur1,.js .cur2,.js .toast,.js .ripple,.js .wave,.js .sheen{display:none}.js .rv{opacity:1;transform:none}.js .dash .line{stroke-dashoffset:0}.js .pb i{transform:none}.js .stack{--gap:40px}}
+
+/* ===== SCROLL DEPTH (owner, 17 Oct 2026: "components should move when we scroll"). One rAF loop writes a progress value per block
+   (--s: 0..1 over the first screen; --p: +1 below the view centre, 0 at it, -1 above; --q: 0..1 through the pinned layers section);
+   CSS turns it into depth with the individual translate/rotate/scale properties, so it composes with the entrance and loop animations. */
+@media (prefers-reduced-motion:no-preference){
+  .js .hero .wrap>div:first-child{translate:0 calc(var(--s,0) * -70px);opacity:calc(1 - var(--s,0) * .9)}
+  .js .hero .stage{translate:0 calc(var(--s,0) * 150px);scale:calc(1 + var(--s,0) * .28)}
+  .js .ring.r1{rotate:calc(var(--s,0) * -70deg)}
+  .js .card.eq{translate:calc(var(--s,0) * -70px) calc(var(--s,0) * -60px)}.js .card.bat{translate:calc(var(--s,0) * 70px) calc(var(--s,0) * 110px)}
+  .js .atmo .beam{translate:0 calc(var(--y,0) * -14vh)}
+  .feats{perspective:1000px}
+  .js .feat{rotate:x calc(var(--p,0) * 24deg);translate:0 calc(var(--p,0) * var(--dz,0px))}
+  .feat:nth-child(2){--dz:40px}.feat:nth-child(3){--dz:80px}.feat:nth-child(4){--dz:120px}
+  #live .wrap{perspective:1100px}
+  .js .dash{rotate:x calc(max(var(--p,0), 0) * 32deg);transform-origin:50% 100%}
+  .js .dash .line{stroke-dasharray:640;stroke-dashoffset:calc(640px * clamp(0, var(--p,0) * 2 + .3, 1))}
+  .js .stat{translate:0 calc(var(--p,0) * var(--dz,0px))}.stat:nth-child(2){--dz:50px}.stat:nth-child(3){--dz:100px}
+  .js #layers{height:230vh}.js #layers .wrap{position:sticky;top:64px}
+  .js .stack{--gap:calc(4px + var(--q,1) * 64px)}
+  .js .stack-in{scale:calc(.9 + var(--q,1) * .15);rotate:z calc(var(--q,1) * 24deg)}
+  .js .dev.desk{translate:0 calc(var(--p,0) * 50px)}
+  .js .dev.phone{translate:calc(var(--p,0) * 60px) calc(var(--p,0) * -150px)}
+  .js .cta-card{scale:calc(1 - max(var(--p,0), 0) * .14)}
+}
+@media (prefers-reduced-motion:no-preference) and (max-width:719px){.js #layers{height:260vh}.js #layers .wrap{top:58px}.js #layers .sub{display:none}.js #layers .layers{margin-top:8px;gap:6px}.js .stack{height:250px}.js .stack-in{width:170px;height:170px;margin:-85px 0 0 -85px}.js #layers .parts{gap:6px}.js #layers .parts li{padding:8px 12px}.js #layers .parts small{display:none}.js .stack{--gap:calc(4px + var(--q,1) * 40px)}.js .stack-in{top:60%}}
 </style>
 </head>
 <body>
@@ -353,6 +377,21 @@ els.forEach(function(e){if(e.classList.contains('rv'))io.observe(e)});
 function count(n){var m=n.textContent.match(/^([\d.]+)(.*)$/);if(!m)return;var to=parseFloat(m[1]),dec=(m[1].split('.')[1]||'').length,suf=m[2],t0=performance.now();
   (function f(t){var k=Math.min(1,(t-t0)/1600),v=to*(1-Math.pow(1-k,3));n.textContent=v.toFixed(dec)+suf;if(k<1)requestAnimationFrame(f)})(t0)}
 })();
+</script>
+<script>
+/* scroll depth: positions are cached (re-measured on resize/load), the loop only reads scrollY and writes custom properties */
+(function(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+var hero=document.querySelector('.hero'),atmo=document.querySelector('.atmo'),lay=document.getElementById('layers'),parts=lay&&lay.querySelector('.layers'),
+  els=[].slice.call(document.querySelectorAll('.feat,.dash,.stat,.dev.desk,.dev.phone,.cta-card')),box=[],L={t:0,h:1},vh=innerHeight,ticking=false,last=-1;
+function measure(){vh=innerHeight;var y=scrollY;box=els.map(function(e){var r=e.getBoundingClientRect();return{t:r.top+y,h:r.height}});
+  if(lay){var r=lay.getBoundingClientRect();L={t:r.top+y,h:r.height}}frame()}
+function frame(){ticking=false;var y=scrollY;if(y===last)return;last=y;
+  hero.style.setProperty('--s',Math.min(1,y/vh).toFixed(3));atmo.style.setProperty('--y',(y/vh).toFixed(3));
+  for(var i=0;i<els.length;i++){var b=box[i],p=((b.t+b.h/2)-(y+vh/2))/(vh/2+b.h/2);p=p<-1?-1:p>1?1:p;els[i].style.setProperty('--p',p.toFixed(3))}
+  if(lay){var q=(y-L.t+64)/(L.h-vh);q=q<0?0:q>1?1:q;lay.style.setProperty('--q',q.toFixed(3));parts.setAttribute('data-on',q<.06?0:Math.min(5,1+Math.floor(q*5)))}}
+addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(frame)}},{passive:true});
+addEventListener('resize',function(){last=-1;measure()});addEventListener('load',function(){last=-1;measure()});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){last=-1;measure()});measure()})();
 </script>
 <script>
 /* drifting dust in the beams: 46 motes, devicePixelRatio capped at 2, nothing read from the layout inside the loop */
