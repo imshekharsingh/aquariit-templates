@@ -8,4 +8,4 @@ Energetic, close and confident: a coach between attempts, not an announcer. The 
 - [8.4-10.6] Thirty days, mapped before the month begins.
 - [10.9-13.1] We post, reply, and check what works.
 - [13.3-16.8] And your website matches the feed, built by one team.
-- [17.0-19.6] Want this month? DM us to know more.
+- [17.0-19.6] Comment Aquarii and we'll plan yours.
