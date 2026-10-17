@@ -12,6 +12,7 @@ The performance rules in CLAUDE.md still win: loop only transform/opacity, no an
 - Light/dark inversion on a section boundary for a dramatic mid-page flip.
 - Silk-light ribbon on canvas: 40-60 thin sine-sum threads, additive `lighter` blending, a wide faint glow pass plus a fine bright pass, two hues across the width; DPR capped at 2, paused off-screen, one static frame for reduced motion (2026-10-16-2055).
 - GPU planet from orbit (theme F): one fragment shader, ray-sphere hit, 3D-noise continents and clouds, ocean glint, warm terminator, city lights as one random point per noise cell (sharp sparks, not blocks), a thin bright atmosphere shell plus a soft haze coloured by the sun, and a scroll-driven camera; render below DPR, drop scale when frames are slow (2026-10-17-1256).
+- Spectral dispersion fan: a conic-gradient spectrum wedge (pink, gold, mint, blue, violet) masked to a ring with a radial mask, `mix-blend-mode: screen`, swept a few degrees with transform only from a cut stone or prism; add 5-7 thin white rays that breathe (opacity + scaleY) out of phase. Reads as light, not paint, on a near-black ground.
 
 ## Type
 - Oversized display type that bleeds off the edge or is clipped by the frame.

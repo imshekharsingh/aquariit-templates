@@ -357,5 +357,36 @@
       "sendToFriend": "yes, to a founder who runs their own website"
     },
     "notes": "Pass 1 (18 stills, one per beat): warning chips hid behind the mascot (brought to the front, moved above it), bot sparks too small (14 -> 22 px), scared brows read as angry (inner ends raised), hook faded in after frame 0 (now on from frame 0) and the mascot fell through the hook (drop retimed so it lands at frame 0, squash in motion). Pass 2: opening frames clean, chips readable, every shot finished; matches the Aurelia finish (key light, leaks, grain, handheld)."
+  },
+  {
+    "id": "2026-10-17-1420",
+    "date": "2026-10-17",
+    "template": "Halcyra (fictional made-to-order jeweller; the reel sells Aquarii web design)",
+    "version": "sitescroll v2",
+    "service": "web",
+    "theme": "sitescroll",
+    "format": "mini tutorial",
+    "concept": "A three-point mini tutorial answering 'What actually makes a website look expensive?' over our own Halcyra site scrolled full frame: 01 one light that moves (the sapphire's live spectral fan), 02 type with a voice (drop cap, Bodoni italic, the drawn cut, numbers), breath, then 03 one clear way to enquire as the page pulls back into a phone that swivels in 3D over a sapphire floor pool and scrolls to the booking card; Aquarii end card in a sapphire grade.",
+    "motionStyle": "swing-eased scroll stops every 1.0-1.5 s, glide push-in on the hook, glide pull-back with a 3D swivel, live rays and sparkles in page coordinates",
+    "primaryTransition": "spectral light leak across the pull-back",
+    "transitions": [
+      "scroll swing",
+      "breath dim",
+      "spectral-light-leak",
+      "phone-pullback-swivel"
+    ],
+    "typeTreatment": "pinned top band: Host Grotesk with one Bodoni Moda italic gradient word, numbered pill 01-03",
+    "grade": "blue-black ink (#07080f), sapphire halo and floor pool, spinel-violet light leak, vignette, dust and bokeh",
+    "sound": "voice af_heart + effects (sparkle, whooshes on scroll moves, riser and impact at the pull-back); owner adds Instagram audio",
+    "cover": "the poster hero with the spectral fan (templates/covers/2026-10-17-1420.jpg) with 'Looks expensive. Why?'",
+    "newTrick": "P.siteScroll options overlay (live elements in page coordinates that scroll with the captured still, so the page's light keeps moving) and shrink.swivel (3D turn during the pull-back into the phone) + P.GRADES.sapphire",
+    "revisionPasses": 2,
+    "friendTest": {
+      "stopScrolling": "yes: a spectral fan of light pours out of a sapphire in frame 0 under a question every owner asks",
+      "watchToEnd": "yes: it is a numbered three-point list, so you wait for point 3",
+      "screenshot": "the hero with the live spectral fan, and the phone mid-swivel",
+      "sendToFriend": "yes, to a founder whose brand is premium but whose site is not"
+    },
+    "notes": "Pass 1 (18 stills, one per second): hook, scroll stops and captions read cleanly; no frame holds longer than ~1.5 s; the phone after the pull-back was small with a large empty band below it (scale .70 -> .78). Pass 2 (stills at 11.2 and 13): phone fills the width and stays clear of the caption band. Overlap with the D1 benchmark only in the site-scroll mechanism (opener, payoff, type, focus, transition are new). Note: P.brandEnd's built-in breathing halo has a quoting bug (its background never renders) and its push-in is commented out; this film adds its own push-in on the returned card instead of changing the shared part (Rule 1)."
   }
 ]

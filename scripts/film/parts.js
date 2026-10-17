@@ -631,19 +631,26 @@
   // screen recording would show it, but deterministic. src = film/ID/assets/scroll.jpg (capture-site.mjs --tall). stops = [[t, pageY], ...] in page CSS px
   // (402-wide page); between stops the scroll eases (swing: zero speed at each stop, so every section is readable when it is paused on).
   // shrink = { at, dur, scale, y }: the full-bleed view pulls back into a phone (rounded corners, bezel, shadow) while it keeps scrolling: the big moment.
-  P.siteScroll = async function (parent, { src, x = 0, y = 0, w = 402, h = 715, stops = [[0, 0]], shrink = null, radius = 44 } = {}) {
+  // overlay (17 Oct 2026, new trick): fn(layer, { pageH }) builds live elements in page coordinates (a layer the size of the page that scrolls with the
+  // screenshot), so the captured still gets its moving light back (rays, sparkles) exactly where the template has it. Default null = as before.
+  // shrink.swivel (17 Oct 2026, new trick): degrees of a 3D turn while the view pulls back into the phone (peaks mid-pull, settles at a fifth of it). Default 0 = flat, as before.
+  P.siteScroll = async function (parent, { src, x = 0, y = 0, w = 402, h = 715, stops = [[0, 0]], shrink = null, radius = 44, overlay = null } = {}) {
     P.use('mechanism', 'site-scroll');
     const box = E.el('div', `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;overflow:hidden;transform-origin:50% 0;background:#000`, parent);
     const img = E.el('img', `position:absolute;left:0;top:0;width:${w}px;display:block`, box); img.alt = ''; img.src = src;
     try { await img.decode(); } catch (e) { /* the still shows a blank box; the storyboard review catches it */ }
     const k = (img.naturalHeight / img.naturalWidth) || 1, pageH = w * k, maxY = Math.max(0, pageH - h);
+    const layer = overlay ? E.el('div', `position:absolute;left:0;top:0;width:${w}px;height:${pageH.toFixed(0)}px;pointer-events:none`, box) : null;
+    if (layer) { P.use('focus', 'live-page-overlay'); overlay(layer, { pageH }); }
+    if (shrink && shrink.swivel) P.use('payoff', 'phone-pullback-swivel');
     const S2 = stops.slice().sort((a, b) => a[0] - b[0]);
     const at = (t) => { if (t <= S2[0][0]) return S2[0][1]; for (let i = 0; i < S2.length - 1; i++) { const [t0, y0] = S2[i], [t1, y1] = S2[i + 1]; if (t <= t1) return y0 + (y1 - y0) * P.EASE.swing((t - t0) / Math.max(.01, t1 - t0)); } return S2[S2.length - 1][1]; };
     const SH = '0 0 0 9px #0b0c10,0 0 0 10px rgba(255,255,255,.14),0 40px 80px -20px rgba(0,0,0,.9)';   // the bezel appears with the pull-back
     P.on((t) => {
-      img.style.transform = `translateY(${(-Math.min(maxY, Math.max(0, at(t)))).toFixed(1)}px)`;
+      img.style.transform = `translateY(${(-Math.min(maxY, Math.max(0, at(t)))).toFixed(1)}px)`; if (layer) layer.style.transform = img.style.transform;
       if (shrink) { const q = P.EASE.glide(Math.min(1, Math.max(0, (t - shrink.at) / (shrink.dur || 1.2)))), sc = 1 + ((shrink.scale || .66) - 1) * q;
-        box.style.transform = `translateY(${(((shrink.y || 0) - y) * q).toFixed(1)}px) scale(${sc.toFixed(4)})`; box.style.borderRadius = `${(radius * q / sc).toFixed(1)}px`;
+        const sw = shrink.swivel ? ` perspective(1100px) rotateY(${(shrink.swivel * (.8 * Math.sin(Math.PI * q) + .2 * q)).toFixed(2)}deg) rotateX(${(4 * q).toFixed(2)}deg)` : '';
+        box.style.transform = `translateY(${(((shrink.y || 0) - y) * q).toFixed(1)}px)${sw} scale(${sc.toFixed(4)})`; box.style.borderRadius = `${(radius * q / sc).toFixed(1)}px`;
         box.style.boxShadow = q > 0 ? SH : 'none'; }
     });
     return { box, img, pageH };
@@ -652,6 +659,7 @@
   P.GRADES = {
     blue: { mark: '', word: 'linear-gradient(180deg,#B5D0FF 0%,#5C8FFF 45%,#2450D8 100%)', wglow: 'rgba(79,134,255,.55)', btn: null, bglow: 'rgba(47,107,255,.45)', halo: '47,107,255' },
     clay: { mark: 'grayscale(1) sepia(1) saturate(4) hue-rotate(-28deg) brightness(1.12)', word: 'linear-gradient(180deg,#FFE2D2 0%,#FF9466 50%,#E0603D 100%)', wglow: 'rgba(255,148,102,.6)', btn: 'linear-gradient(135deg,#7DF5CB,#3FD9A3)', bglow: 'rgba(77,240,184,.5)', halo: '255,148,102', ink: '#06281d' },
+    sapphire: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(195deg) brightness(1.1)', word: 'linear-gradient(180deg,#FFE0EF 0%,#FF7DB5 40%,#6C7BFF 100%)', wglow: 'rgba(255,79,154,.5)', btn: 'linear-gradient(135deg,#F2EEE8,#D9DEFF)', bglow: 'rgba(110,125,255,.55)', halo: '74,92,255', ink: '#07080f' },
     amber: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(-14deg) brightness(1.08)', word: 'linear-gradient(180deg,#FFE7C2 0%,#FFB35C 45%,#FF6A2C 100%)', wglow: 'rgba(255,150,70,.6)', btn: 'linear-gradient(135deg,#FFB35C,#FF6A2C)', bglow: 'rgba(255,120,50,.55)', halo: '255,140,60', ink: '#1a0900' },
   };
   P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null, breathe = true, grade = 'blue' } = {}) {
