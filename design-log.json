@@ -701,5 +701,30 @@
     "purpose": "Global storefront (edge / CDN + security service line), shown as proof in a cinema film for Aquarii's edge service",
     "description": "Nimbra Air One: a cold silver-and-blue drone store that ships from the nearest hub, filmed as the site a CDN and firewall make fast and safe abroad.",
     "era": "modern"
+  },
+  {
+    "id": "2026-10-17-1522",
+    "date": "2026-10-17",
+    "time": "15:22",
+    "slug": "fernhollow",
+    "url": "https://templates.aquariit.com/2026-10-17-1522/",
+    "theme": "Dawn above the clouds (modern, light): an apricot-to-lilac sunrise sky over five pine ridges with procedural mist, white glass-like UI and one electric lilac-to-rose gradient; a small guesthouse that takes direct bookings",
+    "layout": "scene-overlay hero (full-bleed dawn ridges, headline and a booking bar laid over it), room window cards, split booking section with a live calendar mock, travelling-light timeline of the day, guest quote cards, gradient closing card; floating pill header",
+    "palette": [
+      "#f4f7f5",
+      "#0c1f1b",
+      "#0f3b33",
+      "#2f7a63",
+      "#ff7a3d",
+      "#ff5e7e",
+      "#6d5cff",
+      "#ffd9bd"
+    ],
+    "fonts": "Bricolage Grotesque + Figtree",
+    "motif": "layered ridge silhouettes in morning mist, room windows that each frame their own sunrise",
+    "animation": "sunrise and ridge rise on load (linear() spring), mist and ridges drift with transform only, calendar range pulse, timeline light travels, scroll-driven entrances on every section (view() with @supports fallback)",
+    "purpose": "Booking site for a hospitality business (a six-room guesthouse), shown as Aquarii web-design proof in a theme A makeover film",
+    "description": "Fernhollow House: a guesthouse whose old 'email us to book' page becomes a dawn-lit site that takes a booking in two taps.",
+    "era": "modern"
   }
 ]

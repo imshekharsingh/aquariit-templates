@@ -222,3 +222,8 @@ The toolkit (each step is a script; `produce.mjs ID` runs them all):
 | 7 log | `produce.mjs` | writes the provenance, scores and loudness into reel-log.json; later add the owner's feedback to `music.feedback` |
 `node scripts/audio/selftest.mjs` proves the evaluator rejects drifting/wrong-tempo/flat/clipped tracks, that edit lands the peak within a few ms with the tempo fitted, and that the mix meets −14 LUFS / −1 dBTP (stand-in tracks only; never shipped).
 The renderer uses `audio/<date>/<ID>/final.wav` when it exists (`--audio PATH` to force), otherwise the effects-only track.
+
+## Crisp pages inside device frames (17 Oct 2026, Fernhollow)
+`zoom` lays the page out at its final size, but it only stays crisp if the frame is not inside a `transform-style: preserve-3d` rig: Chromium rasterises
+3D-context layers small and scales them up (pixelated headings at 1:1). Keep the rig flat and give each subject `perspective(900px)` inside its own transform.
+Also: `left`/`top` on a zoomed node are scaled by its zoom; offset a plain wrapper instead (P.tileFlip does).
