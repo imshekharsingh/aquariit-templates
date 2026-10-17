@@ -144,4 +144,6 @@ attempts). If `gh` is unavailable, give the user the Actions page link.
 Concept, palette, fonts, signature moment, the 5 hashtags and music mood, how it differs from recent
 designs, commit hash, pipeline status, and the live URL
 https://templates.aquariit.com/ID/
+GitHub Actions usage (owner, 17 Oct 2026): run `python3 -I scripts/actions-usage.py` and add its first line (minutes this month, left of 2,000 if the repo
+were private). If today's run used more than 60 minutes, say which workflow and why.
 End with the oldest 1-3 open items from design/open-items.md, one line each, as questions to the owner (owner's standing request).
