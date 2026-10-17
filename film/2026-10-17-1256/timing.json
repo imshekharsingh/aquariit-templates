@@ -1,8 +1,25 @@
 {
- "len": 15.4,
- "note": "light day (no story.js): only the voice-over uses this; cues are the hero sparkle and the end-card impact",
+ "bpm": 84,
+ "len": 19,
+ "ss": 1.25,
+ "join": 0,
+ "peak": 8.57,
+ "breath": [7.14, 7.55],
+ "note": "84 BPM (a beat every 0.714 s): orbit 3.57, pings 4.29/5.00/5.71/6.43, breath 7.14, dive 7.57, website 8.57 (impact), Berlin midnight 11.43, pull-back 12.86, brand end 15.71",
  "cues": [
-  {"k": "sparkle", "g": 0.14, "t": 0.4},
-  {"k": "impact", "g": 0.24, "t": 12.25}
- ]
+  {"k": "sparkle", "g": 0.16, "t": 1.6},
+  {"k": "whoosh", "g": 0.1, "t0": 3.3, "t1": 3.9, "f0": 500, "f1": 1200, "tail": 0.3},
+  {"k": "click", "g": 0.12, "t": 4.29}, {"k": "click", "g": 0.12, "t": 5.0}, {"k": "click", "g": 0.12, "t": 5.71}, {"k": "click", "g": 0.12, "t": 6.43},
+  {"k": "riser", "g": 0.16, "t0": 6.5, "t1": 7.14},
+  {"k": "whoosh", "g": 0.16, "t0": 7.57, "t1": 8.57, "f0": 400, "f1": 2200, "tail": 0.3},
+  {"k": "impact", "g": 0.4, "t": 8.57, "big": 1},
+  {"k": "click", "g": 0.1, "t": 9.05},
+  {"k": "whoosh", "g": 0.1, "t0": 10.0, "t1": 10.85, "f0": 1200, "f1": 600, "tail": 0.2},
+  {"k": "click", "g": 0.1, "t": 11.0}, {"k": "click", "g": 0.1, "t": 11.18}, {"k": "click", "g": 0.1, "t": 11.36}, {"k": "click", "g": 0.14, "t": 11.43},
+  {"k": "whoosh", "g": 0.13, "t0": 12.86, "t1": 13.6, "f0": 1500, "f1": 500, "tail": 0.3},
+  {"k": "sparkle", "g": 0.16, "t": 13.3},
+  {"k": "impact", "g": 0.24, "t": 15.71},
+  {"k": "sparkle", "g": 0.18, "t": 16.3}
+ ],
+ "accent": "#7CC4FF"
 }

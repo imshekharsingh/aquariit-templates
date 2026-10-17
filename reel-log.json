@@ -483,5 +483,36 @@
       "sendToFriend": "yes, to a friend who runs a gym or studio and posts only when they remember"
     },
     "notes": "Pass 1 (13 stills): the frame-filling chalk wipe stayed white until 5.4 s (particle life now scaled by .42 for the wipe), 'A month, mapped.' ran off the right edge (58 -> 50 px). Pass 2 (7 stills + 1:1 crop of the phone feed): headings and the feed are crisp at 1:1; the second hook line was faint at frame 0 (hook now starts at -0.7 s); the wall SVG clipped at its bottom edge showed a dark band (overflow visible). Site and reel share the effects: hand-climbed route with chalk puffs, holds lighting, the 30-hold month wall, post cards. Follow-up after merge: switched the ending to Comment \"AQUARII\" (owner decision E8, PR #246): voice last line, caption last line, end-card keyword."
-  }
+  },
+ {
+  "id": "2026-10-17-1256",
+  "date": "2026-10-17",
+  "template": "Veloria (fictional live language classes in every time zone; the site's hero is a live GPU planet. The reel sells Aquarii's edge line: CDN, DNS and firewall wired into one setup so the site is fast in every country)",
+  "version": "sitescroll v1 (F2 planet from orbit, directed film; replaces the light-day screen recording)",
+  "service": "edge",
+  "theme": "sitescroll",
+  "format": "world tour",
+  "concept": "Hook as a contrast, not a question: 'Morning in Tokyo. Midnight in Berlin. Same speed.' The film renders the site's OWN planet shader (pulled from the live page) driven by film time: close on the limb as the sun clears the horizon; a slow orbit across the night side while Tokyo, Mumbai, Berlin and New York ping with blue edge rings and latency tags; breath; the camera dives through the rings into the atmosphere, a white-blue flash, and lands inside the real website on the same planet ('Loaded in 0.4 s, served from the Tokyo edge'); scroll to the city clocks with latency chips, Berlin turns 00:00 on the beat; the page pulls back into a phone in front of the whole blue world while edge nodes light round the globe; electric Aquarii end card: Comment \"AQUARII\".",
+  "combo": "the template's own GLSL planet reused live in the film and patched with edge-node rings + HUD tags pinned to shader-space cities found by a probe pass + a dive through the atmosphere into the live DOM website on the same shader, then a pull-back into a phone over the whole world",
+  "motionStyle": "Catmull-Rom camera through keyed orbit states (distance, pitch, yaw, roll, sun) so the camera never stops mid-move, default/bold springs for the type, tags and chips, swing-eased page scroll, the site pull-back on the default spring",
+  "primaryTransition": "atmosphere dive (camera into the limb, exposure flash, cut under the flash to the website)",
+  "transitions": [
+   "atmosphere-dive",
+   "breath dim",
+   "phone pull-back"
+  ],
+  "typeTreatment": "Figtree 700 34 px lines in the top third over a soft scrim, the accent line in Michroma (the site's display face) with the site's gold-to-sky gradient",
+  "grade": "deep space #04060d, gold sunrise rim, warm city sparks, electric-blue edge rings #7cc4ff, white-blue dive flash, shader vignette, grain .035, electric brand end",
+  "sound": "voice bf_emma + effects from timing.json cues (84 BPM grid); owner adds Instagram audio",
+  "cover": "templates/covers/2026-10-17-1256.jpg with 'Same speed, every time zone'",
+  "newTrick": "P.glsl (render slot 'glsl-shader-scene'): any full-frame fragment shader driven by film time, with P.glsl.fromPage (reuse a template's own GLSL from the live page), string patches, extra passes copied into 2D canvases (the same world inside a phone screen), a probe read-back (an equirect map of land and cities) and the renderer's fast canvas capture",
+  "revisionPasses": 3,
+  "friendTest": {
+   "stopScrolling": "yes: frame 0 is a planet's limb with the sun breaking over it and a contrast hook that is about every business with overseas customers",
+   "watchToEnd": "yes: four cities ping on the beat, a held breath, then a dive through the atmosphere into a real website; the pull-back to the whole world pays it off",
+   "screenshot": "the dive at 7.9-8.3 s: the camera falling through concentric blue edge rings into the gold limb, or the phone over the whole blue world at 14.6 s",
+   "sendToFriend": "yes, to a founder who sells to customers in other countries and has never thought about where their site is served from"
+  },
+  "notes": "Pass 1 (15 stills): the sun never cleared the limb, the edge rings never showed (city search found no qualifying points: the probe map was too coarse for a close orbit and its maxima sat on saturated plateaus; now a dense probe), the clock heading sat in Instagram's top band (scroll stop lowered). Pass 2 (20 stills + fill meter, 0 of 20 tight): rings were fuzzy white discs that grew to the horizon (sharper, slower double ring + small core), two tags stacked (de-overlap, each tag lives 1.7 s), the sun was a blown bump on the limb (lower elevation keys: a soft disk peeking). Pass 3 (1:1 crops + a 30-frame real render through the fast GL capture): page type and tags crisp at 1:1; the orbit's rings leaked into the site's planet (rings off during the site). Full render measured at ~2.1 s per frame on 4 cores (~20 min on GitHub)."
+ }
 ]
