@@ -1,0 +1,44 @@
+{
+  "id": "2026-10-17-1656",
+  "made": "2026-10-17T11:39:23.479Z",
+  "slots": {
+    "ground": [
+      "deep-colour"
+    ],
+    "opener": [
+      "night-wall-hand-climb"
+    ],
+    "payoff": [
+      "wall-calendar-ignite"
+    ],
+    "type": [
+      "condensed-route-tape"
+    ],
+    "focus": [
+      "sulphur-beam-rake"
+    ],
+    "captions": [
+      "two-line-condensed"
+    ],
+    "mechanism": [
+      "hold-route"
+    ],
+    "transition": [
+      "chalk-burst-wipe"
+    ],
+    "cta": [
+      "brand-end-magenta",
+      "brand-end"
+    ]
+  },
+  "dna": {
+    "service": "social",
+    "theme": "cinema",
+    "format": "tiny story",
+    "combo": "a climbing route as the content plan (hand-climbed holds that light up and emit posts) + physical chalk-dust particles as texture and as the transition + a camera travelling a giant wall to a pull-back calendar reveal, with condensed kinetic type spanning the width",
+    "opening": "a night-lit teal climbing wall fills the frame, a chalked hand grabs magenta holds one by one, each grab throwing a chalk puff, under the hook \"One climbing session. Thirty posts.\" in huge condensed type",
+    "bigMoment": "after a held breath the camera whips back to the whole wall: thirty numbered holds ignite from the floor to the top-out in a wave of chalk while a day counter runs to 30, the route becomes a month of posts",
+    "ground": "teal-black climbing wall with a T-nut dot grid and panel seams, a moving sulphur light beam, chalk dust, magenta and sulphur light leaks, vignette and light grain",
+    "music": "driving indie-electronic with a taut bass pulse and hand claps, a held breath, a bright lift on the ignite wave and a tight resolve, about 100 BPM"
+  }
+}

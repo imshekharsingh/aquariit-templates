@@ -726,5 +726,29 @@
     "purpose": "Booking site for a hospitality business (a six-room guesthouse), shown as Aquarii web-design proof in a theme A makeover film",
     "description": "Fernhollow House: a guesthouse whose old 'email us to book' page becomes a dawn-lit site that takes a booking in two taps.",
     "era": "modern"
+  },
+  {
+    "id": "2026-10-17-1656",
+    "date": "2026-10-17",
+    "time": "16:56",
+    "slug": "kruxa",
+    "url": "https://templates.aquariit.com/2026-10-17-1656/",
+    "theme": "Night-lit bouldering hall: teal-black wall, magenta route, sulphur light, chalk dust (dark UI glow meets kinetic condensed type)",
+    "layout": "diagonal-split hero (type field above, the climbing wall cut at an angle below), a 30-hold month wall with a timeline-scope day counter, auto-sliding post-format strip, big-number stats with meters, a three-hold step ladder, pass table, quote wall, route closing card, slim solid bar header",
+    "palette": [
+      "#071416",
+      "#0e2226",
+      "#143740",
+      "#ff2bd6",
+      "#ffd23a",
+      "#f3efe6",
+      "#38e0c8"
+    ],
+    "fonts": "Big Shoulders Display + Funnel Sans",
+    "motif": "climbing holds as posts: a chalked hand climbs a magenta route, chalk puffs on every grab, and a wall of thirty numbered holds that is the month's content calendar",
+    "animation": "route draw-on, holds lighting on linear() springs, a hand riding the route with chalk-puff particles (canvas), scroll-driven day counter and progress tape via timeline-scope, auto-sliding strip, counters and meter fills, climbing dot on the ladder",
+    "purpose": "Social content hub for a bouldering gym (fictional), shown as proof of Aquarii's social media management in a directed film",
+    "description": "Kruxa Bouldering: a night climbing wall where every hold is one day's post, built to show a month of social content planned like a route.",
+    "era": "modern"
   }
 ]
