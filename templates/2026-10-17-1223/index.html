@@ -116,6 +116,92 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
   .load{animation:in .9s var(--spring) both}.d2{animation-delay:.12s}.d3{animation-delay:.24s}
   @keyframes in{from{opacity:0;transform:translateY(20px)}}
 }
+
+/* ===== film-level atmosphere (owner, 17 Oct 2026: the site must match the film's vibe). A lens layer over the page, outside .site so the film's
+   clone of the page is unchanged: amber haze, swaying light beams, drifting dust (canvas), film grain, vignette. Transform/opacity loops only. */
+@property --gap{syntax:"<length>";inherits:true;initial-value:34px}
+.atmo{position:fixed;inset:0;z-index:20;pointer-events:none;overflow:hidden}
+.atmo .beam{position:absolute;top:-20%;width:34vmax;height:150%;left:var(--x);transform-origin:50% 0;transform:rotate(var(--r));
+  background:linear-gradient(90deg,transparent,rgba(255,170,90,var(--o)) 50%,transparent);mix-blend-mode:screen;filter:blur(18px)}
+.atmo .b1{--x:8%;--r:-18deg;--o:.10}.atmo .b2{--x:46%;--r:-26deg;--o:.07}.atmo .b3{--x:70%;--r:-14deg;--o:.06}
+.atmo canvas{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:screen}
+.atmo .grain{position:absolute;inset:-50%;opacity:.06;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+.atmo .vig{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(0,0,0,.55))}
+/* hero: a reflective studio floor and a light pool under the product, and a glare sweep across the glass cards */
+.stage::before{content:"";position:absolute;left:-10%;right:-10%;bottom:-6%;height:46%;border-radius:50%;
+  background:radial-gradient(50% 50% at 50% 30%,rgba(255,140,60,.34),rgba(139,108,255,.12) 55%,transparent 75%);filter:blur(6px)}
+.stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:38%;opacity:.5;
+  background:linear-gradient(transparent,rgba(7,8,13,.4)),repeating-linear-gradient(90deg,rgba(255,180,110,.10) 0 1px,transparent 1px 36px),repeating-linear-gradient(0deg,rgba(255,180,110,.08) 0 1px,transparent 1px 22px);
+  transform:perspective(300px) rotateX(58deg);transform-origin:50% 100%;-webkit-mask:linear-gradient(transparent,#000 70%);mask:linear-gradient(transparent,#000 70%)}
+.card{overflow:hidden}.feat,.dash,.cta-card{position:relative;overflow:hidden}.dev{overflow:hidden}
+.card::after,.feat::after,.cta-card::after{content:"";position:absolute;top:-40%;bottom:-40%;width:38%;left:-60%;transform:skewX(-18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);pointer-events:none}
+/* layers: the product opened up, plate by plate (the film's big moment, on the page) */
+.sub{margin-top:14px;color:var(--mute);max-width:46ch}
+.layers{margin-top:34px;display:grid;gap:26px;align-items:center}
+.stack{position:relative;height:360px;perspective:1300px}
+.stack-in{position:absolute;left:50%;top:52%;width:220px;height:220px;margin:-110px 0 0 -110px;transform-style:preserve-3d;transform:rotateX(58deg) rotateZ(-38deg)}
+.pl{position:absolute;inset:0;border-radius:28px;transform:translateZ(calc(var(--i) * var(--gap)));border:1px solid rgba(56,225,255,.55);
+  box-shadow:0 0 22px rgba(56,225,255,.18),inset 0 0 30px rgba(56,225,255,.08)}
+.pl.l0{background:repeating-radial-gradient(circle at 50% 50%,#191a22 0 3px,#0c0d12 3px 7px)}
+.pl.l1{background:radial-gradient(circle at 50% 50%,#2a1408 0 22%,#ff8a3d 23% 26%,#1a0c05 27% 48%,rgba(255,138,61,.5) 49% 50%,transparent 51%),#0d0d13}
+.pl.l2{background:linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,.03));backdrop-filter:none}
+.pl.l3{background:linear-gradient(160deg,rgba(255,179,92,.22),rgba(255,106,44,.06));border-color:rgba(255,179,92,.7);box-shadow:0 0 30px rgba(255,140,60,.3)}
+.pl.l4{inset:22%;border-radius:50%;background:radial-gradient(circle at 34% 28%,#fff5e6 0,#ffd29a 14%,#ff9a3c 38%,#c4400f 66%,#3a0f05 100%);border:0;box-shadow:0 0 50px rgba(255,140,60,.6)}
+.parts{list-style:none;padding:0;display:grid;gap:10px}
+.parts li{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:baseline;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.parts b{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.12em;color:var(--cy)}
+.parts span{font-weight:600}.parts small{display:block;color:var(--mute);font-size:13px;font-weight:400;margin-top:2px}
+/* everywhere: the same site, desktop to pocket */
+.devs{position:relative;margin-top:34px;height:330px}
+.dev.desk{position:absolute;left:0;right:16%;top:0;height:250px;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:#0b0c12;box-shadow:0 40px 80px -30px rgba(0,0,0,.9),0 0 60px -20px rgba(255,140,60,.4)}
+.dev .bar{height:26px;display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid var(--line)}.dev .bar i{width:8px;height:8px;border-radius:50%;background:#3a3c48}.dev .bar i:first-child{background:#ff5f57}.dev .bar i:nth-child(2){background:#febc2e}.dev .bar i:nth-child(3){background:#28c840}
+.mini{position:relative;padding:20px 22px;height:calc(100% - 26px);background:radial-gradient(60% 60% at 75% 40%,rgba(255,140,60,.22),transparent 70%)}
+.mini h4{font-size:clamp(20px,5cqi,34px);line-height:1;letter-spacing:-.03em;font-weight:650;max-width:9ch}.mini h4 em{font-style:normal;color:var(--a1)}
+.mini .mo{position:absolute;right:12%;top:26%;width:30%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 34% 28%,#fff5e6 0,#ffd29a 14%,#ff9a3c 38%,#c4400f 66%,#3a0f05 100%);box-shadow:0 0 40px rgba(255,140,60,.5)}
+.dev.phone{position:absolute;right:0;bottom:0;width:132px;height:250px;border-radius:26px;border:2px solid rgba(255,255,255,.2);background:#0b0c12;box-shadow:0 30px 60px -20px rgba(0,0,0,.9),0 0 40px -10px rgba(255,140,60,.45)}
+.dev.phone .mini{height:100%;padding:34px 12px 12px}.dev.phone .mini h4{font-size:20px}.dev.phone .mo{right:auto;left:18%;top:52%;width:64%}
+.dev.phone::before{content:"";position:absolute;left:50%;top:8px;width:46px;height:12px;margin-left:-23px;border-radius:99px;background:#000;z-index:2}
+/* closing card */
+.cta-card{padding:40px 26px;border-radius:28px;text-align:center;border:1px solid rgba(255,179,92,.35);
+  background:radial-gradient(70% 90% at 50% 0%,rgba(255,140,60,.28),transparent 70%),linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.01))}
+.cta-card h2{margin:10px auto 0;max-width:14ch}.cta-card p{margin:14px auto 0;color:var(--mute);max-width:40ch}.cta-card .btns{justify-content:center}
+@container (min-width:720px){.layers{grid-template-columns:1.1fr .9fr}.stack{height:440px}.stack-in{width:280px;height:280px;margin:-140px 0 0 -140px}.devs{height:420px}.dev.desk{height:340px}.dev.phone{width:160px;height:300px}}
+@media (prefers-reduced-motion:no-preference){
+  .atmo .beam{animation:sway 9s ease-in-out infinite alternate}.atmo .b2{animation-duration:12s;animation-delay:-4s}.atmo .b3{animation-duration:10s;animation-delay:-7s}
+  @keyframes sway{to{transform:rotate(calc(var(--r) + 7deg)) translateX(3vw)}}
+  .atmo .grain{animation:grain 1s steps(6) infinite}@keyframes grain{20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-5%)}60%{transform:translate(-6%,-2%)}80%{transform:translate(5%,4%)}}
+  .card::after,.feat::after,.cta-card::after{animation:glare 6s ease-in-out infinite}.card.bat::after{animation-delay:-3s}
+  .feat:nth-child(2)::after{animation-delay:-1.5s}.feat:nth-child(3)::after{animation-delay:-3s}.feat:nth-child(4)::after{animation-delay:-4.5s}
+  @keyframes glare{0%,62%{transform:translateX(0) skewX(-18deg)}100%{transform:translateX(560%) skewX(-18deg)}}
+  .stack-in{animation:turn 16s ease-in-out infinite alternate}@keyframes turn{to{transform:rotateX(58deg) rotateZ(-22deg)}}
+  .dev.phone{animation:float 5s ease-in-out infinite}@keyframes float{50%{transform:translateY(-12px)}}
+  .mini .mo{animation:breathe 4s ease-in-out infinite}
+}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .stack{animation:open linear both;animation-timeline:view();animation-range:entry 10% cover 55%}
+    @keyframes open{from{--gap:4px}to{--gap:52px}}
+    .parts li{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+    .sub,.devs,.cta-card{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
+    .dev.desk{animation:tiltin linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
+    @keyframes tiltin{from{opacity:.2;transform:perspective(900px) rotateY(16deg) scale(.92)}}
+    .stage{animation:drift linear both;animation-timeline:scroll();animation-range:0 600px}@keyframes drift{to{transform:translateY(60px) scale(.94);opacity:.6}}
+  }
+}
+@media (prefers-reduced-motion:reduce){.atmo canvas{display:none}}
+.cta,.back{white-space:nowrap}
+.mini .mo{width:22%;top:22%;right:14%}
+@container (max-width:719px){
+  .nav .wrap{gap:12px}.logo{letter-spacing:.18em}
+  .hero{padding-top:18px}.hero .wrap{gap:8px}
+  .hero .stage{order:-1;height:250px}
+  .stage .orb{width:140px;height:140px;margin:-70px 0 0 -70px}.ring.r1{width:240px;height:80px;margin:-40px 0 0 -120px}.ring.r2{width:196px;height:196px;margin:-98px 0 0 -98px}
+  .sat.s1{left:calc(50% + 110px)}.card{transform:scale(.86)}.card.eq{left:-6px;top:6px;transform-origin:0 0}.card.bat{right:-6px;bottom:0;transform-origin:100% 100%}
+  h1{margin-top:12px}
+}
+@container (min-width:720px){.stack-in{width:340px;height:340px;margin:-170px 0 0 -170px}.stack{height:500px}}
 </style>
 </head>
 <body>
@@ -169,8 +255,53 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
     </div>
     <div class="order" id="order"><a class="btn main" href="#top">Pre-order Aurelia One</a></div>
   </div></section>
+
+  <section id="layers" aria-labelledby="ly"><div class="wrap">
+    <p class="kick">Inside</p>
+    <h2 id="ly">Built in layers.</h2>
+    <p class="sub">Five layers, each tuned with the others: open it up and every part has a job.</p>
+    <div class="layers">
+      <div class="stack" aria-hidden="true"><div class="stack-in"><i class="pl l0" style="--i:0"></i><i class="pl l1" style="--i:1"></i><i class="pl l2" style="--i:2"></i><i class="pl l3" style="--i:3"></i><i class="pl l4" style="--i:4"></i></div></div>
+      <ol class="parts">
+        <li><b>05</b><span>Sculpted shell<small>Warm, cast in one piece, glows when it listens.</small></span></li>
+        <li><b>04</b><span>Touch ring<small>Turn to set the level, tap to pause.</small></span></li>
+        <li><b>03</b><span>Glass diffuser<small>Spreads sound evenly to every corner.</small></span></li>
+        <li><b>02</b><span>Driver array<small>Three drivers, tuned to the room.</small></span></li>
+        <li><b>01</b><span>Acoustic base<small>Keeps the bass deep and the table still.</small></span></li>
+      </ol>
+    </div>
+  </div></section>
+
+  <section id="everywhere" aria-labelledby="ev"><div class="wrap">
+    <p class="kick">Everywhere</p>
+    <h2 id="ev">Desktop to pocket.</h2>
+    <p class="sub">Pair it, tune it and follow it live from any screen.</p>
+    <div class="devs" aria-hidden="true">
+      <div class="dev desk"><div class="bar"><i></i><i></i><i></i></div><div class="mini"><h4>Sound, sculpted from <em>silence.</em></h4><i class="mo"></i></div></div>
+      <div class="dev phone"><div class="mini"><h4>Your sound, <em>live.</em></h4><i class="mo"></i></div></div>
+    </div>
+  </div></section>
+
+  <section id="cta" aria-labelledby="ct"><div class="wrap">
+    <div class="cta-card">
+      <p class="kick">Aurelia One</p>
+      <h2 id="ct">Hear it in your room.</h2>
+      <p>Thirty nights at home. If it does not fill your room, send it back.</p>
+      <div class="btns"><a class="btn main" href="#top">Pre-order Aurelia One</a><a class="btn ghost" href="#features">See the features</a></div>
+    </div>
+  </div></section>
 </main>
 <footer>Developed by Aquarii Technologies</footer>
 </div>
+<div class="atmo" aria-hidden="true"><i class="beam b1"></i><i class="beam b2"></i><i class="beam b3"></i><canvas id="dust"></canvas><i class="grain"></i><i class="vig"></i></div>
+<script>
+/* drifting dust in the beams: 46 motes, devicePixelRatio capped at 2, nothing read from the layout inside the loop */
+(function(){var c=document.getElementById('dust');if(!c||!c.getContext)return;var x=c.getContext('2d'),W,H,D=Math.min(2,window.devicePixelRatio||1),P=[];
+function size(){W=c.clientWidth;H=c.clientHeight;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0)}size();addEventListener('resize',size);
+for(var i=0;i<46;i++)P.push({x:Math.random(),y:Math.random(),r:.6+Math.random()*1.8,v:.008+Math.random()*.02,p:Math.random()*6.28,a:i%3?'255,186,120':'176,150,255'});
+var still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function draw(t){x.clearRect(0,0,W,H);for(var i=0;i<P.length;i++){var m=P[i],y=((m.y-t*m.v/1000)%1+1)%1,px=m.x*W+Math.sin(t/1600+m.p)*14,o=.25+.35*Math.sin(t/900+m.p*3)**2;
+x.beginPath();x.arc(px,y*H,m.r,0,6.283);x.fillStyle='rgba('+m.a+','+o.toFixed(2)+')';x.fill()}if(!still)requestAnimationFrame(draw)}requestAnimationFrame(draw)})();
+</script>
 </body>
 </html>
