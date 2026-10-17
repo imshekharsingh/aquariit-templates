@@ -18,6 +18,7 @@ Run `TZ=Asia/Kolkata date +%a`. Mon, Wed, Fri = **film day**: the full run below
 - Build a compact template (all "Required in every template" items, design log, advancements line, cover, kit as usual) around ONE striking animated effect
   that is finished and moving in the first second (a hero effect from the playbook or design/brand/references.md: light ribbons, 3D-feeling shapes,
   kinetic type). 3-4 sections, not a full long page. The effect is the post: "this is what an animation looks like as a real website".
+  Add `<script>window.__reel = { hold: 4.5 }</script>` so the recording stays on the effect for 4.5 s before it scrolls (result first).
 - No film folder, no voice, no storyboard: the Reel publish workflow records the page (`render-reel.mjs --light`: 15 s, the kit's Hook on screen, Aquarii
   end card) and checks it with the demo profile. The kit's `## Reel` says Length: 15 s and puts the payoff on the effect itself.
 - Skip Phase 4c. Everything else (checks, records, push) as usual.
