@@ -58,7 +58,7 @@ h1 .glow{background:linear-gradient(100deg,var(--a1),var(--a2));-webkit-backgrou
 .sat{position:absolute;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--cy));box-shadow:0 0 12px var(--cy)}
 .sat.s1{left:calc(50% + 128px);top:calc(50% - 30px)}.sat.s2{left:calc(50% - 104px);top:calc(50% + 40px);background:radial-gradient(circle at 35% 30%,#fff,var(--a1));box-shadow:0 0 12px var(--a1)}
 .orb::before{content:"";position:absolute;left:18%;top:12%;width:34%;height:22%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.95),rgba(255,255,255,0));filter:blur(1px)}
-.orb::after{content:"";position:absolute;inset:-2px;border-radius:50%;box-shadow:inset 6px -8px 14px rgba(255,220,180,.35),inset -2px 2px 1px rgba(255,255,255,.25)}
+.orb::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:inset 8px -10px 18px rgba(255,220,180,.28)}
 .card{position:absolute;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03));box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 20px 40px -20px rgba(0,0,0,.8);font-size:12px;color:var(--mute);min-width:140px}
 .card b{display:block;color:var(--ink);font-size:14px;font-weight:650}
 .card.eq{left:0;top:18px}.card.bat{right:0;bottom:10px}
@@ -198,7 +198,7 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
   /* the product is alive: sound waves leave it, a sheen turns on its surface, two moons orbit, the cards' controls work by themselves */
   .wave{position:absolute;left:50%;top:50%;width:170px;height:170px;margin:-85px 0 0 -85px;border-radius:50%;border:1.5px solid rgba(255,170,90,.55);opacity:0;animation:wave 3.6s ease-out infinite}
   .wave.w2{animation-delay:1.2s}.wave.w3{animation-delay:2.4s}@keyframes wave{0%{opacity:.6;transform:scale(1)}100%{opacity:0;transform:scale(2.3)}}
-  .sheen{position:absolute;inset:-30%;clip-path:circle(31% at 50% 50%);background:conic-gradient(from 0deg,transparent 0 20%,rgba(255,240,220,.35) 28%,transparent 40% 70%,rgba(255,200,140,.25) 78%,transparent 90%);opacity:.55;animation:spin 7s linear infinite}
+  .sheen{position:absolute;inset:-30%;clip-path:circle(29% at 50% 50%);background:conic-gradient(from 0deg,transparent 0 20%,rgba(255,240,220,.28) 28%,transparent 40% 70%,rgba(255,200,140,.25) 78%,transparent 90%);opacity:.55;animation:spin 7s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   .sat.s1{animation:orbit 7s linear infinite}.sat.s2{animation:orbit2 9s linear infinite}
   @keyframes orbit{0%{translate:0 0}12.5%{translate:-37px 28px}25%{translate:-128px 40px}37.5%{translate:-219px 28px}50%{translate:-256px 0}62.5%{translate:-219px -28px}75%{translate:-128px -40px}87.5%{translate:-37px -28px}100%{translate:0 0}}
@@ -275,6 +275,12 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
   .js .cta-card{scale:calc(1 - max(var(--p,0), 0) * .14)}
 }
 @media (prefers-reduced-motion:no-preference) and (max-width:719px){.js #layers{height:260vh}.js #layers .wrap{top:58px}.js #layers .sub{display:none}.js #layers .layers{margin-top:8px;gap:6px}.js .stack{height:250px}.js .stack-in{width:170px;height:170px;margin:-85px 0 0 -85px}.js #layers .parts{gap:6px}.js #layers .parts li{padding:8px 12px}.js #layers .parts small{display:none}.js .stack{--gap:calc(4px + var(--q,1) * 40px)}.js .stack-in{top:60%}}
+
+@media (prefers-reduced-motion:no-preference) and (max-width:719px){
+  .js .hero .stage{translate:0 calc(var(--s,0) * -30px);scale:calc(1 - var(--s,0) * .08);opacity:calc(1 - var(--s,0) * .7)}
+  .js .card.eq{translate:calc(var(--s,0) * -40px) 0}.js .card.bat{translate:calc(var(--s,0) * 40px) 0}
+  .js .hero .wrap>div:first-child{translate:0 calc(var(--s,0) * -30px)}
+}
 </style>
 </head>
 <body>
@@ -294,7 +300,7 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
       <div class="btns load d3"><a class="btn main" href="#order">Pre-order</a><a class="btn ghost" href="#features">Hear how it works</a></div>
     </div>
     <div class="stage" aria-hidden="true">
-      <i class="wave w1"></i><i class="wave w2"></i><i class="wave w3"></i><i class="halo"></i><div class="ring r2"></div><div class="orb"><i class="sheen"></i></div><div class="ring r1"></div><i class="sat s1"></i><i class="sat s2"></i>
+      <i class="wave w1"></i><i class="wave w2"></i><i class="wave w3"></i><i class="halo"></i><div class="ring r2"></div><div class="ring r1"></div><div class="orb"><i class="sheen"></i></div><i class="sat s1"></i><i class="sat s2"></i>
       <div class="card eq"><b>Living room</b>Room EQ<div class="tog"><span>Adaptive</span><i></i></div><div class="sl"><i></i></div></div>
       <div class="card bat"><b>40 h</b>Battery, sample week<div class="bars"><i style="height:40%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:90%"></i><i style="height:65%"></i><i style="height:80%"></i></div></div>
     </div>
