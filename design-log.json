@@ -604,5 +604,29 @@
     "animation": "container queries drive the whole layout (a copy at 720 px is the desktop site, at 360 px the phone site, in the same film); ring spins; spring load-in; in the film every element is driven frame by frame",
     "purpose": "Product launch site (fictional sculpted speaker) shown as Aquarii web-design proof in a cinematic product film",
     "description": "Aurelia sells a speaker that tunes itself to the room: a dark cinematic page with an amber orb and orbiting rings, glass cards for room EQ and battery, four live feature cards and a dashboard of sample numbers, built so the same page can play in a desktop frame and a phone."
+  },
+  {
+    "id": "2026-10-17-1256",
+    "date": "2026-10-17",
+    "time": "12:56",
+    "slug": "veloria",
+    "url": "https://templates.aquariit.com/2026-10-17-1256/",
+    "name": "Veloria",
+    "era": "modern",
+    "theme": "Living GPU world (theme F): a planet seen from orbit, sunrise over a crisp atmosphere limb, night-side city lights, blue day side by the end; deep space black with gold sun, sky-blue atmosphere and a mint live accent; live language classes in every time zone",
+    "layout": "scene-overlay hero over a full-screen live planet, glass time-zone clock grid with day arcs, marquee proof band, orbit-line timeline with a travelling satellite, plan rows table, countdown closing card, floating centred pill header",
+    "palette": [
+      "#04060d",
+      "#0c1630",
+      "#4fa8ff",
+      "#ffb45a",
+      "#62f5c0",
+      "#eef3ff"
+    ],
+    "fonts": "Michroma + Figtree",
+    "motif": "a planet from orbit: the sun rises over the limb, gold scattering on the rim, sparks of city light on the night side, clouds drifting",
+    "animation": "WebGL fragment shader (ray-sphere planet, 3D-noise continents and clouds, ocean glint, warm terminator, point-cell city lights, two-shell atmosphere rim, stars) with a scroll-driven camera flight and a sun that rises in the first 2.6 s; scroll-driven rises (animation-timeline view()) on every section, sibling-index() staggers, transform-only loops (marquee, satellite, clock glow, ring pulses, light sweep)",
+    "purpose": "App showcase for a global live-classes service (edge service line: one site that has to be fast in every time zone)",
+    "description": "Veloria runs live language classes around the clock: a planet turns under a sunrise from orbit, then the camera flies to the night side's city lights, round to the terminator and back out to the whole blue world, past live clocks for four cities, three steps, three ways to learn and a countdown to the next class."
   }
 ]
