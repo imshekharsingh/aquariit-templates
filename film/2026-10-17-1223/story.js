@@ -142,7 +142,7 @@
 
       // 3-4.8 browser flies in, tilted, out of focus -> sharp
       const fi = expo(seg(t, 2.9, 4.8));
-      let ry = lerp(34, -6, fi), rx = lerp(16, 4, fi), tz = lerp(-1500, 0, fi), ty = 0, sc = 1;
+      let ry = lerp(34, 0, fi), rx = lerp(16, 0, fi), tz = lerp(-1500, 0, fi), ty = 0, sc = 1;   // lands square, so the 2D camera below takes over seamlessly
       // the camera keeps easing while the page builds, then the 8-12 orbit, then the 20-22.5 pull-back
       ry += lerp(0, 6, io(seg(t, 4.8, 8)));
       const orb3 = io(seg(t, 8.2, 10.2)) * (1 - io(seg(t, 10.6, 11.8)));
@@ -151,7 +151,12 @@
       const p1 = io(seg(t, 13.6, 15.8)) * (1 - io(seg(t, 16.3, 17.2))); ry += 2 * p1; rx += -2 * p1; tz += 140 * p1;
       const p2 = io(seg(t, 17.4, 19.4)) * (1 - io(seg(t, 20, 21.6))); ry += 7 * p2; tz += 120 * p2; ty += 10 * p2;
       const pb = io(seg(t, 20, 21.6)); tz += -260 * pb; ry += 10 * pb; ty += -60 * pb; sc = 1;
-      frame.style.transform = `translate3d(0,${ty.toFixed(1)}px,${tz.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale(${sc})`;
+      // a 3D tilt makes Chrome raster the page's type at low resolution, so true 3D only for the fly-in and the exploded view;
+      // the page shots use an equivalent 2D camera (perspective scale about the vanishing point, skew for the turn): crisp type
+      const cam3d = t < 4.9 || (t > 8.05 && t < 11.75);
+      if (cam3d) frame.style.transform = `translate3d(0,${ty.toFixed(1)}px,${tz.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale(${sc})`;
+      else { const s2 = 880 / (880 - tz), dy = (BY + BH / 2 - 715 * .44) * (s2 - 1) + ty * s2;
+        frame.style.transform = `translate(0,${dy.toFixed(1)}px) scale(${(s2 * sc).toFixed(4)},${(s2 * sc * Math.cos(rx * Math.PI / 180)).toFixed(4)}) skewY(${(ry * .15).toFixed(2)}deg)`; }
       frame.style.opacity = (seg(t, 2.95, 3.4) * (1 - seg(t, 22.45, 22.6))).toFixed(3);
       frame.style.filter = t < 4.9 ? `blur(${((1 - fi) * 7).toFixed(2)}px)` : 'none';
       pool.style.opacity = (seg(t, 3.6, 4.8) * .9 * (1 - seg(t, 22.4, 22.6))).toFixed(3);
