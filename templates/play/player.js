@@ -408,7 +408,7 @@
                        : Math.max(0, doc.documentElement.scrollHeight - vh);
     var pts = [0], report = [], blocksN = 0;
     if (!scroller) {
-      var H0x = Math.min(2.8, D * .13), H1x = Math.min(2.6, D * .12), maxStops = Math.max(2, Math.floor((D - H0x - H1x) / 2.2));
+      var H0x = cfg.hold > 0 ? Math.min(cfg.hold, D * .4) : Math.min(2.8, D * .13), H1x = Math.min(2.6, D * .12), maxStops = Math.max(2, Math.floor((D - H0x - H1x) / 2.2));
       if (cfg.stops) { // explicit pauses chosen by the template (selectors or pixel offsets)
         var cand = cfg.stops.map(function (s) { var e = typeof s === 'string' ? doc.querySelector(s) : null; return typeof s === 'number' ? s : e ? e.getBoundingClientRect().top + win.scrollY - topEff - 6 : null; });
         var kept = cand.filter(function (y) { return y != null && y > vh * .3 && y < max - vh * .3; }).sort(function (a, b) { return a - b; });
@@ -422,7 +422,7 @@
       var n = Math.max(2, Math.round(max / (axisX ? win.innerWidth : vh))); for (var i = 1; i < n; i++) pts.push(Math.round(max * i / n));
     }
     if (max > 4) pts.push(max);
-    var H0 = Math.min(2.8, D * .13), H1 = Math.min(2.6, D * .12), W = Math.max(1, D - H0 - H1);
+    var H0 = cfg.hold > 0 ? Math.min(cfg.hold, D * .4) : Math.min(2.8, D * .13), H1 = Math.min(2.6, D * .12), W = Math.max(1, D - H0 - H1);   // cfg.hold (16 Oct 2026, light days): seconds on the first screen
     var segs = [], wsum = 0;
     for (var s = 1; s < pts.length; s++) { var dist = pts[s] - pts[s - 1], w = Math.pow(dist / vh, .75) + .35; segs.push({ a: pts[s - 1], b: pts[s], w: w }); wsum += w; }
     var t = H0;

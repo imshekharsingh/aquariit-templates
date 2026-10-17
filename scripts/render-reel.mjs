@@ -32,6 +32,9 @@ spawnSync('node', [join(root, 'scripts', 'build-kits.mjs')], { stdio: 'ignore' }
 let kit = null; try { kit = JSON.parse(readFileSync(join(T, 'social-kits.json'), 'utf8')).find((k) => k.id === id); } catch { /* no kit */ }
 const lm = kit && kit.reel ? String(kit.reel.length || '').match(/(\d+)\s*(?:[–-]\s*(\d+))?\s*s\b/) : null, kitLen = lm ? +(lm[2] || lm[1]) : 0;
 const LIGHT = args.includes('--light');
+// the end card's last line follows the kit's service line (a social reel must not promise websites)
+let SVC = ''; try { SVC = ((readFileSync(join(root, 'social', `${id}.md`), 'utf8').match(/## Service\s*\n\s*([a-z]+)/) || [])[1] || ''); } catch { /* no kit */ }
+const ENDLINE = { social: 'We plan, make and post content like this.', security: 'We build and protect websites like this.', edge: 'We make websites this fast, everywhere.' }[SVC] || 'We design, build and run websites like this.';
 const LEN = Math.max(6, Math.min(60, +opt('--len', LIGHT ? 15 : FORMAT === 'B' ? 18 : kitLen >= 15 && kitLen <= 60 ? kitLen : 30)));
 const HOOK = kit && typeof kit.hook === 'string' ? kit.hook.trim().slice(0, 90) : '';
 
@@ -120,18 +123,18 @@ if (!REALTIME) {
     }, { text: HOOK, delay: COV + LEAD });
   }
   if (LIGHT) { // light-day end card: Aquarii sign-off over the last 2.8 s, centred, clear of Instagram's bottom and right zones
-    await pg.evaluate(({ at }) => {
+    await pg.evaluate(({ at, line }) => {
       const box = document.querySelector('#reel'); if (!box) return;
       const d = document.createElement('div'); d.setAttribute('aria-hidden', 'true');
       d.innerHTML = '<div style="font:800 40px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.02em;background:linear-gradient(180deg,#B5D0FF,#5C8FFF 45%,#2450D8);-webkit-background-clip:text;background-clip:text;color:transparent">Aquarii</div>'
         + '<div style="margin-top:6px;font:600 11px/1 system-ui,sans-serif;letter-spacing:.42em;color:#8d94a8">TECH STUDIO</div>'
         + '<div style="margin-top:22px;padding:12px 22px;border-radius:99px;background:#2F6BFF;color:#fff;font:800 22px/1 system-ui,sans-serif">DM us to know more</div>'
-        + '<div style="margin-top:12px;font:600 14px/1.3 system-ui,sans-serif;color:#aab1c4">We design, build and run websites like this.</div>';
+        + '<div style="margin-top:12px;font:600 14px/1.3 system-ui,sans-serif;color:#aab1c4">' + line + '</div>';
       Object.assign(d.style, { position: 'absolute', inset: '0', zIndex: '2147483001', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingBottom: '120px',
         background: '#070B16', pointerEvents: 'none', opacity: '0', textAlign: 'center' });
       d.animate([{ opacity: 0, transform: 'scale(1.04)' }, { opacity: 1, transform: 'scale(1)', offset: .15 }, { opacity: 1, transform: 'scale(1.03)' }], { duration: 2800, delay: at * 1000, fill: 'forwards', easing: 'cubic-bezier(.16,1,.3,1)' });
       box.appendChild(d);
-    }, { at: Math.max(0, videoLen - 2.8) });
+    }, { at: Math.max(0, videoLen - 2.8), line: ENDLINE });
   }
   await driveAll();
   const ys = [], t1 = Date.now(); let firstPerf = 0;
