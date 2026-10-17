@@ -13,6 +13,15 @@ Optional hint from user: $ARGUMENTS
 line is today's India date, honour that hint within the rules and delete the file in your template branch (an older date: delete it, no hint).
 Write every time in your report in IST, never UTC (owner).
 
+## Website first, then the video (owner, 17 Oct 2026 evening; wins over every older step that builds the film in the same run)
+Two runs per piece, never one:
+1. **Website run.** Build the template to its FINAL level in one pass (approach steps 1-4, 7 below: concept, combination, every section moving, a lit hero,
+   phone first screen a finished composition, desktop and phone both checked with screenshots) plus the kit, design-log, advancements entries. No film folder.
+   Push; the pipeline deploys it; no reel is rendered (the Reel publish workflow skips templates without film/ID/story.js). Report the live URL.
+2. **Owner review.** The owner looks at the website and approves or asks for changes; fix the website until approved. Never start the film before the OK.
+3. **Video run** (after the OK, started by the managing session with "video run: ID"): build film/ID (story.js, timing.json, voice.md) from the approved
+   website, at its final level, in one pass (approach steps 5-7). Push; the reel renders automatically. A piece on hold has film/ID/HOLD (no render).
+
 ## The call to action (owner, 17 Oct 2026, experiment E8; wins over every older "DM us" rule in CLAUDE.md and below)
 Every reel ends on **Comment "AQUARII"**: the end card (P.brandEnd default `ask: 'comment'`, P.signoff, the light-day card), the voice's last line
 ("Comment Aquarii and we'll …"), and the caption's last line ("Send this to a founder who … and comment AQUARII"). No other keyword; no "DM us".

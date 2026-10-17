@@ -62,6 +62,11 @@ jobs:
           echo "draft=${IN_DRAFT:-false}" >> "$GITHUB_OUTPUT"
           if [ "$IN_FORCE" != "true" ] && [ "$IN_DRAFT" != "true" ] && gh release view reels --repo "$REPO" --json assets -q '.assets[].name' 2>/dev/null | grep -qx "$ID.mp4"; then
             echo "Reel for $ID already exists: nothing to do."; echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ -f "film/$ID/HOLD" ] && [ "$IN_FORCE" != "true" ]; then
+            echo "$ID is on hold (film/$ID/HOLD): no render."; echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ -z "$IN_ID" ] && [ ! -f "film/$ID/story.js" ]; then
+            # website first (owner, 17 Oct 2026): a new template waits for the owner's OK; its film (film/ID/story.js) is made after that, and only then rendered
+            echo "$ID has no film yet (website first, awaiting the owner's OK): no render."; echo "skip=true" >> "$GITHUB_OUTPUT"
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
