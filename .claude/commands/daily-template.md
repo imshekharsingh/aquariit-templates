@@ -13,8 +13,23 @@ Optional hint from user: $ARGUMENTS
 line is today's India date, honour that hint within the rules and delete the file in your template branch (an older date: delete it, no hint).
 Write every time in your report in IST, never UTC (owner).
 
+## The approach (owner, 17 Oct 2026; read first, it wins over anything older below)
+You drive Aquarii's social content. One-pass, premium, never static. Do not ask the owner anything; design, build, render and report.
+1. **Pick the look** from design/themes.md (rotation, never the previous film's theme) or the hint. Benchmarks to match or beat: film/2026-10-17-1223
+   (theme G cinema, Aurelia) and the owner's references in design/brand/references.md. Range is the point: each piece looks like its own brand.
+2. **Write the brief yourself first** (like a creative director): brand, palette (restrained base + radiant light, never flat candy colour), type, a shot list
+   with timings and easing, the hero object, the atmosphere layers (light, glows, particles, depth, grain, grade). Put it at the top of film/ID/story.js.
+3. **Build the website sample for the theme** (templates/ID): premium, and EVERY section moves: scroll-driven entrances (animation-timeline view() with
+   @supports fallback) for every section below the fold, plus small transform-only loops in live visuals, all finished by default and off for reduced motion.
+4. **Build the film in one composition** (film/ID/story.js) at full finish, using what exists (P.siteScroll, the Aurelia cinema kit in film/2026-10-17-1223,
+   P.brandEnd with `grade` matching the film's palette). Voice: film/ID/voice.md telling the film's story, 2.3-3.2 words/s, last line "DM us to know more".
+5. **Review once against the benchmark** with `--stills` at every shot; fix what is clearly weaker (atmosphere, hero size, legibility, empty frames). Two passes
+   at most; then records, push, and let GitHub render.
+6. **Add the look to the Style library** (templates/styles/index.html row + home strip card in templates/index.html) when it is a new theme or a new code.
+A hint like "film day: <theme>" makes today a film day whatever the weekday; "light day" makes it a light day.
+
 ## Phase 0: film day or light day (owner, 16 Oct 2026: post every day)
-Run `TZ=Asia/Kolkata date +%a`. Mon, Wed, Fri = **film day**: the full run below. Tue, Thu, Sat, Sun = **light day** (design/themes.md theme E `demo`), kept small to save usage:
+Run `TZ=Asia/Kolkata date +%a` (a hint saying "film day" or "light day" overrides the weekday). Mon, Wed, Fri = **film day**: the full run below. Tue, Thu, Sat, Sun = **light day** (design/themes.md theme E `demo`), kept small to save usage:
 - Build a compact template (all "Required in every template" items, design log, advancements line, cover, kit as usual) around ONE striking animated effect
   that is finished and moving in the first second (a hero effect from the playbook or design/brand/references.md: light ribbons, 3D-feeling shapes,
   kinetic type). 3-4 sections, not a full long page. The effect is the post: "this is what an animation looks like as a real website".

@@ -88,7 +88,29 @@ footer{padding:36px 0 calc(28px + var(--safe-bottom));text-align:center;color:#6
   .feats{grid-template-columns:repeat(4,1fr)}
   .stats{grid-template-columns:repeat(3,1fr)}
 }
+/* every section moves (owner, 17 Oct 2026: "only the top moves, the rest looks static"): scroll-driven entrances below the fold, plus small
+   transform-only loops in the live visuals; all finished by default and switched off for reduced motion */
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .kick,h2,.dash,.order{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
+    .feat{animation:flip linear both;animation-timeline:view();animation-range:entry 5% entry 70%;transform-origin:50% 100%}
+    .feat:nth-child(2){animation-range:entry 12% entry 77%}.feat:nth-child(3){animation-range:entry 19% entry 84%}.feat:nth-child(4){animation-range:entry 26% entry 91%}
+    .dash .line{stroke-dasharray:640;animation:draw linear both;animation-timeline:view();animation-range:entry 20% cover 45%}
+    .pb i{transform-origin:0 50%;animation:fillx linear both;animation-timeline:view();animation-range:entry 20% cover 45%}
+    @keyframes rise{from{opacity:0;transform:translateY(40px)}}
+    @keyframes flip{from{opacity:0;transform:perspective(700px) rotateX(70deg) translateY(30px)}}
+    @keyframes draw{from{stroke-dashoffset:640}to{stroke-dashoffset:0}}
+    @keyframes fillx{from{transform:scaleX(0)}}
+  }
+}
 @media (prefers-reduced-motion:no-preference){
+  .feat:nth-child(1) .viz path{animation:wave 2s linear infinite}@keyframes wave{to{transform:translateX(-40px)}}
+  .feat:nth-child(2) .viz circle{transform-box:fill-box;transform-origin:50% 50%;animation:ping 1.8s ease-in-out infinite}.feat:nth-child(2) .viz circle:nth-child(2){animation-delay:.3s}.feat:nth-child(2) .viz circle:nth-child(3){animation-delay:.6s}
+  @keyframes ping{50%{transform:scale(1.25);opacity:.4}}
+  .feat:nth-child(3) .viz circle{animation:knob 3s ease-in-out infinite alternate}@keyframes knob{from{transform:translateX(-40px)}}
+  .feat:nth-child(4) .viz rect{transform-box:fill-box;transform-origin:50% 100%;animation:bounce 1.2s ease-in-out infinite alternate}.feat:nth-child(4) .viz rect:nth-child(2n){animation-delay:.4s}
+  @keyframes bounce{to{transform:scaleY(.55)}}
+  .orb{animation:breathe 4s ease-in-out infinite}@keyframes breathe{50%{transform:scale(1.04)}}
   .ring.r1{animation:spinA 14s linear infinite}.ring.r2{animation:spinB 18s linear infinite}
   @keyframes spinA{to{transform:rotate(346deg)}}@keyframes spinB{to{transform:rotateX(70deg) rotate(384deg)}}
   .load{animation:in .9s var(--spring) both}.d2{animation-delay:.12s}.d3{animation-delay:.24s}
