@@ -8,7 +8,6 @@ Every session and every daily run: read this file, ask about the oldest 1-3 open
 |---|---|---|---|
 | 1 | 13 Oct | Re-film the 19 older templates. Changed 14 Oct: re-filming them as they were would sell their fictional businesses again; proposal is to use them only as proof inside new service reels (design/services.md), not as their own reels | Agree to drop the per-template re-films? |
 | 2 | 13 Oct | E7 style-switch film: one business in 4-5 styles with a numbered list that builds on screen | Yes/no; suggested slot: after the next two daily films |
-| 3 | 13 Oct | E8 comment-keyword CTA ("Comment SITE for the price list"), replies by hand | Yes/no, and whether you can reply to comments within a few hours |
 | 4 | 13 Oct | Add modern styles to the CLAUDE.md mood menu (maximalism, vector art, collage, pixel art, Y2K, surreal, graffiti, handwritten) | Go-ahead (CLAUDE.md is owner-edited) |
 | 7 | 13 Oct | Profile checklist (design/growth-playbook.md): Creator account, name field, bio, link-in-bio page | Status, plus a contact method for the link-in-bio page (WhatsApp / email / booking link) |
 | 8 | 13 Oct | E9 POV-wrapper film (from the studied POV reel) | Yes/no: try it on the next daily film? |
@@ -17,6 +16,7 @@ Every session and every daily run: read this file, ask about the oldest 1-3 open
 | 9 | 13 Oct | New weekly design-study routine (Sundays 10:07 IST, first run 18 Oct) was created without connectors | Nothing from you unless the first run fails; I will check its result |
 
 ## Closed
+- 17 Oct 2026 · #3 E8 comment-keyword CTA: **yes, "Comment AQUARII"** on every reel (end card, voice, caption); the owner replies to comments.
 | Raised | Item | Decision |
 |---|---|---|
 | 13 Oct | Reach actions (#6) | Owner: yes, from 15 Oct at 19:30 IST (E12) |
