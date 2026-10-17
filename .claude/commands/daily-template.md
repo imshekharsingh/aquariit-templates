@@ -32,10 +32,15 @@ Premium is judged on the piece's own merit, never by how close it is to somethin
 5. **The reel is directed, on film days and light days alike:** camera moves (push-ins, orbits, reveals), close-ups on the best effect, a build to one
    payoff, a voice story (film/ID/voice.md, 2.3-3.2 words/s, ending "DM us"), the graded sign-off (P.brandEnd `grade` in the piece's own palette).
    Light days use the same engine at lighter cost (e.g. P.siteScroll with push-ins over the live site), not a plain recording.
-6. **Self-check on its own merit**, with `--stills` at every shot and a 1:1 crop (headings crisp). Ask of every still: is there light, depth and a lit hero?
+6. **Vary the words and the sound** (owner, 17 Oct 2026: "not everything starts with 'is your site slow abroad'"). Read the last 10 `## Hook` lines in
+   social/*.md and the first lines of the last 5 film/*/voice.md: never reuse their wording or their shape. Rotate the hook's form: a bold statement, a
+   surprising contrast, a number, an instruction, a tiny story ("At 2 a.m. a bakery's site went dark…"), a sound-led open. No question hook if the previous
+   reel's hook was a question. The voice's first line does not just read the on-screen hook; it adds to it. Pick the voice for the piece's mood with a
+   `Voice: <name>` line in voice.md (Kokoro: af_heart, af_bella, af_nicole, am_michael, am_fenrir, bf_emma, bm_george, bm_fable), not the same as the previous reel.
+7. **Self-check on its own merit**, with `--stills` at every shot and a 1:1 crop (headings crisp). Ask of every still: is there light, depth and a lit hero?
    does something move across a large part of the frame? is the type confident? is there a finish (glow, reflection, grain)? would I screenshot it?
    Fix what fails; two passes at most; then records, push, and let GitHub render.
-7. **Add the look to the Style library** (templates/styles/index.html row + home strip card in templates/index.html) when it is a new look.
+8. **Add the look to the Style library** (templates/styles/index.html row + home strip card in templates/index.html) when it is a new look.
 A hint like "film day: <theme>" makes today a film day whatever the weekday; "light day" makes it a light day.
 
 ## Phase 0: film day or light day (owner, 16 Oct 2026: post every day)
