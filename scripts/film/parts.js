@@ -662,6 +662,7 @@
     sapphire: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(195deg) brightness(1.1)', word: 'linear-gradient(180deg,#FFE0EF 0%,#FF7DB5 40%,#6C7BFF 100%)', wglow: 'rgba(255,79,154,.5)', btn: 'linear-gradient(135deg,#F2EEE8,#D9DEFF)', bglow: 'rgba(110,125,255,.55)', halo: '74,92,255', ink: '#07080f' },
     electric: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(178deg) brightness(1.15)', word: 'linear-gradient(180deg,#F4F7FB 0%,#9FD8FF 40%,#2F6BFF 100%)', wglow: 'rgba(47,107,255,.6)', btn: 'linear-gradient(135deg,#5CD0FF,#2F6BFF)', bglow: 'rgba(47,107,255,.55)', halo: '47,107,255', ink: '#fff' },
     lime: { mark: 'grayscale(1) sepia(1) saturate(4) hue-rotate(38deg) brightness(1.18)', word: 'linear-gradient(180deg,#F6FFE0 0%,#C6F432 50%,#7DB51A 100%)', wglow: 'rgba(198,244,50,.45)', btn: 'linear-gradient(135deg,#DAFF6A,#A9DE1E)', bglow: 'rgba(198,244,50,.5)', halo: '120,170,255', ink: '#0A0E17' },   // navy + lime (theme A collage, 17 Oct 2026)
+    magenta: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(-78deg) brightness(1.15)', word: 'linear-gradient(180deg,#FFE6F8 0%,#FF2BD6 50%,#A3159A 100%)', wglow: 'rgba(255,43,214,.55)', btn: 'linear-gradient(135deg,#FF5BE0,#FF2BD6)', bglow: 'rgba(255,43,214,.5)', halo: '255,43,214', ink: '#1A0216' },   // teal-black + magenta route (Kruxa, 17 Oct 2026)
     amber: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(-14deg) brightness(1.08)', word: 'linear-gradient(180deg,#FFE7C2 0%,#FFB35C 45%,#FF6A2C 100%)', wglow: 'rgba(255,150,70,.6)', btn: 'linear-gradient(135deg,#FFB35C,#FF6A2C)', bglow: 'rgba(255,120,50,.55)', halo: '255,140,60', ink: '#1a0900' },
   };
   P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null, breathe = true, grade = 'blue' } = {}) {
@@ -1673,5 +1674,72 @@
       o.card.style.transform = `translateZ(${(lift * 46).toFixed(1)}px) rotateY(${(k * 180).toFixed(2)}deg)`; o.cell.style.zIndex = lift > .05 ? '2' : '1';
       o.glint.style.opacity = (lift * .95).toFixed(3); }));
     return { el: box, done: at + spread + dur };
+  };
+
+  // ---- chalk (17 Oct 2026, new trick, Kruxa): chalk-dust puffs as a pure function of film time. Each burst throws n soft particles from (x, y) with drag and a
+  //      little gravity (closed form, no state), so any frame renders the same. P.chalk(parent, { color }) returns { burst(t0, x, y, n, power), wipe(t0, x, y) };
+  //      wipe() is a transition: one huge burst whose particles grow until they cover the frame, then thin out (slot transition 'chalk-burst-wipe').
+  P.chalk = function (parent, { color = '#f3efe6', w = 402, h = 715 } = {}) {
+    const cv = E.el('canvas', `position:absolute;left:0;top:0;width:${w}px;height:${h}px;pointer-events:none`, parent); cv.width = w * 2; cv.height = h * 2;
+    const g = cv.getContext('2d'), bursts = [];
+    const mk = (t0, x, y, n, power, grow, seed, life = 1) => { let s = seed >>> 0; const r = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+      bursts.push({ t0, x, y, grow, ps: Array.from({ length: n }, () => { const a = r() * TAU, v = power * (.35 + r() * .9); return { vx: Math.cos(a) * v, vy: Math.sin(a) * v * .8 - power * .25, r: 2 + r() * 6, max: (.9 + r() * .9) * life }; }) }); };
+    const api = { el: cv, burst(t0, x, y, n = 16, power = 90) { mk(t0, x, y, n, power, 1, Math.round(t0 * 997 + x * 13 + y)); return api; },
+      wipe(t0, x = w / 2, y = h * .55) { P.use('transition', 'chalk-burst-wipe'); mk(t0, x, y, 70, 520, 9, 4242 + Math.round(t0 * 100), .42); return api; } };
+    const K = 3.2, GR = 34;   // drag (1/s) and gravity (px/s^2)
+    P.on((t) => { g.setTransform(2, 0, 0, 2, 0, 0); g.clearRect(0, 0, w, h); g.fillStyle = color;
+      for (const b of bursts) { const tau = t - b.t0; if (tau < 0 || tau > 2.2) continue; const ex = (1 - Math.exp(-K * tau)) / K;
+        for (const p of b.ps) { if (tau > p.max * (b.grow > 1 ? 1.1 : 1)) continue; const k = tau / p.max, x = b.x + p.vx * ex, y = b.y + p.vy * ex + .5 * GR * tau * tau * .4;
+          const rad = p.r * (1 + k * 1.8) * (b.grow > 1 ? 1 + b.grow * P.EASE.glide(Math.min(1, tau / .5)) * 2.4 : 1);
+          g.globalAlpha = (b.grow > 1 ? .9 : .6) * Math.min(1, tau * 14) * (1 - k) * (1 - k * .3);
+          const gr = g.createRadialGradient(x, y, 0, x, y, rad); gr.addColorStop(0, color); gr.addColorStop(1, P.hexA(color, 0)); g.fillStyle = gr; g.beginPath(); g.arc(x, y, rad, 0, TAU); g.fill(); } }
+      g.globalAlpha = 1; });
+    return api;
+  };
+  // ---- holdRoute (17 Oct 2026, new trick, Kruxa; mechanism slot 'hold-route'): a climbing route as a content plan. Holds (soft-shaded blobs with a bolt and an
+  //      optional day number) sit on a wall; a chalked hand climbs them on a schedule (grab times), each grab lights the hold, draws the route up to it and throws
+  //      a chalk puff; ignite(at, step) then lights every remaining hold in order from the floor up (a calendar filling). Pure function of t.
+  //      P.holdRoute(parent, { pts: [[x, y, colour, label]], grabs: [t...], ignite: [at, step], chalk, w, h }) -> { el, pos(i), litAt(i) }
+  P.holdRoute = function (parent, { pts, grabs = [], ignite = null, chalk = null, w = 402, h = 715, r = 17, route = '#ff2bd6', dimTo = .38, hs = 40 } = {}) {
+    P.use('mechanism', 'hold-route');
+    const NS = 'http://www.w3.org/2000/svg', box = E.el('div', `position:absolute;left:0;top:0;width:${w}px;height:${h}px`, parent);
+    const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('width', w); svg.setAttribute('height', h); svg.style.cssText = 'position:absolute;left:0;top:0;overflow:visible'; box.appendChild(svg);
+    const el = (n, a, p) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; };
+    let s = 77; const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+    const blob = (rr) => { const n = 7, q = []; for (let i = 0; i < n; i++) { const a = i / n * TAU, k = rr * (.72 + rnd() * .45); q.push([Math.cos(a) * k, Math.sin(a) * k * .82]); }
+      let d = `M${q[0][0].toFixed(1)},${q[0][1].toFixed(1)}`; for (let i = 0; i < n; i++) { const p0 = q[(i - 1 + n) % n], p1 = q[i], p2 = q[(i + 1) % n], p3 = q[(i + 2) % n];
+        d += `C${(p1[0] + (p2[0] - p0[0]) / 6).toFixed(1)},${(p1[1] + (p2[1] - p0[1]) / 6).toFixed(1)} ${(p2[0] - (p3[0] - p1[0]) / 6).toFixed(1)},${(p2[1] - (p3[1] - p1[1]) / 6).toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`; } return d + 'Z'; };
+    let d = `M${pts[0][0]},${pts[0][1]}`; for (let i = 1; i < pts.length; i++) { const a = pts[i - 1], b = pts[i], my = (a[1] + b[1]) / 2; d += ` C${a[0]},${my} ${b[0]},${my} ${b[0]},${b[1]}`; }
+    el('path', { d, fill: 'none', stroke: 'rgba(243,239,230,.16)', 'stroke-width': 1.6, 'stroke-dasharray': '3 5' }, svg);
+    const glow = el('path', { d, fill: 'none', stroke: route, 'stroke-width': 9, 'stroke-linecap': 'round', opacity: .25, pathLength: 1, 'stroke-dasharray': 1 }, svg);
+    const line = el('path', { d, fill: 'none', stroke: route, 'stroke-width': 3.4, 'stroke-linecap': 'round', pathLength: 1, 'stroke-dasharray': 1 }, svg);
+    const segLen = []; { const tmp = el('path', { d: '' }, svg); for (let i = 1; i < pts.length; i++) { tmp.setAttribute('d', d.split(' C').slice(0, i).join(' C')); segLen.push(tmp.getTotalLength()); } tmp.remove(); }
+    const total = line.getTotalLength(), frac = (i) => (i <= 0 ? 0 : segLen[i - 1] / total);
+    const holds = pts.map(([x, y, c, label], i) => { const g = el('g', { transform: `translate(${x} ${y})` }, svg), bd = blob(r);
+      const halo = el('circle', { r: r * 1.5, fill: c, opacity: 0 }, g), h2 = el('g', {}, g);
+      el('path', { d: bd, fill: '#000', opacity: .45, transform: 'translate(3 5)' }, h2); el('path', { d: bd, fill: c }, h2);
+      el('path', { d: bd, fill: '#fff', opacity: .32, transform: `translate(${-r * .18} ${-r * .2}) scale(.55)` }, h2); el('path', { d: bd, fill: '#000', opacity: .16, transform: `translate(${r * .16} ${r * .18}) scale(.6)` }, h2);
+      if (label != null) { const tx = el('text', { 'text-anchor': 'middle', y: 5, fill: /f3efe6|ffd23a|38e0c8/i.test(c) ? '#0b1a1d' : '#fff', style: `font:800 ${Math.round(r * .78)}px Archivo,sans-serif` }, h2); tx.textContent = label; }
+      else el('circle', { r: 2.4, fill: '#0b1a1d' }, h2);
+      return { g: h2, halo, x, y }; });
+    // when each hold lights: its grab, or its turn in the ignite wave
+    const litAt = (i) => (i < grabs.length ? grabs[i] : ignite ? ignite[0] + (i - grabs.length) * ignite[1] : Infinity);
+    if (chalk) pts.forEach(([x, y], i) => { const t0 = litAt(i); if (isFinite(t0)) chalk.burst(t0, x, y, i < grabs.length ? 18 : 7, i < grabs.length ? 95 : 60); });
+    const hand = E.el('div', `position:absolute;left:0;top:0;width:${hs}px;height:${hs}px;margin:${-hs / 2}px 0 0 ${-hs / 2}px;filter:drop-shadow(0 0 10px rgba(243,239,230,.65));opacity:0`, box,
+      `<svg viewBox="0 0 34 34" width="${hs}" height="${hs}"><path d="M10 31c-3-3-5-8-5-12 0-2 2-3 3-1l2 4V7c0-2 3-2 3 0v8-10c0-2 3-2 3 0v10-9c0-2 3-2 3 0v10-7c0-2 3-2 3 0v12c0 6-3 10-8 11z" fill="#f3efe6"/></svg>`);
+    P.on((t) => {
+      let reach = 0; holds.forEach((o, i) => { const t0 = litAt(i), k = t < t0 ? 0 : P.springAt(t, t0, 'bold'), on = t >= t0;
+        o.g.style.transformOrigin = '0 0'; o.g.style.transform = `scale(${(on ? .8 + .2 * k + .12 * Math.sin(Math.PI * Math.min(1, (t - t0) / .35)) : .92).toFixed(3)})`;
+        o.g.style.opacity = on ? '1' : String(dimTo); o.halo.setAttribute('opacity', on ? (.2 + .06 * Math.sin(t * 3 + i)).toFixed(3) : '0'); if (on) reach = i; });
+      // the route reaches the last lit hold, easing along the segment it is drawing
+      const next = reach + 1 < pts.length ? litAt(reach + 1) : Infinity, lead = isFinite(next) ? Math.min(.45, next - litAt(reach)) : 0;
+      const segK = isFinite(next) && t >= litAt(0) ? P.EASE.swing(clamp((t - (next - lead)) / Math.max(.05, lead))) : 0;
+      const f = t < litAt(0) ? 0 : frac(reach) + (reach + 1 < pts.length ? (frac(reach + 1) - frac(reach)) * segK : 0); line.style.strokeDashoffset = (1 - f).toFixed(4); glow.style.strokeDashoffset = (1 - f).toFixed(4);
+      // the hand: rests on the hold it grabbed, travels to the next grab on an arc
+      if (grabs.length) { let i = 0; while (i < grabs.length - 1 && t >= grabs[i + 1] - .45) i++; const a = pts[Math.max(0, i - (t < grabs[i] ? 1 : 0))], b = pts[i];
+        const u = t < grabs[i] ? P.EASE.swing(clamp((t - (grabs[i] - .45)) / .45)) : 1, x = lerp(a[0], b[0], u), y = lerp(a[1], b[1], u) - hs * .35 - hs * .55 * Math.sin(Math.PI * u);
+        const end = ignite ? ignite[0] - .1 : Infinity; hand.style.opacity = t < grabs[0] - .6 || t > end ? '0' : '1'; hand.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(-14 + 28 * u).toFixed(1)}deg) scale(${(t >= grabs[i] && t < grabs[i] + .14 ? .9 : 1)})`; }
+    });
+    return { el: box, pos: (i) => pts[i], litAt, holds };
   };
 })();
