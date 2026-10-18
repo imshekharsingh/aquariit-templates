@@ -638,7 +638,7 @@
     "name": "Plumpaw",
     "era": "modern",
     "theme": "Soft 3D clay character on a calm plum-black stage (theme B soft3d film day): one radiant clay mascot whose colour and face follow its mood; a pet daycare booking site shown as the site Aquarii protects",
-    "layout": "mascot-stage hero (clay character on a halo with floating schedule chips), accordion-look mood list, before/after pair, checklist, pricing table, quote column, calendar booking card, fixed bottom bar header",
+    "layout": "turntable hero (rigged clay pup on a lit plinth, schedule chips orbiting in depth), pinned scroll-scrubbed day scene (sky, sun/moon arm, three hill layers, clock card, animation timeline with keyframes), bento of promises with live mini-scenes, plan tablets, talking pups, booking card the mascot lands on; fixed bottom bar header",
     "palette": [
       "#0d0b14",
       "#191426",
@@ -650,10 +650,10 @@
       "#fff4ea"
     ],
     "fonts": "Baloo 2 + Geologica",
-    "motif": "Bun, a clay mascot with ears: soft-3D from shading only (gloss, inner shade, mood tint, contact shadow, coloured halo), heart eyes, sleepy eyes, wink",
-    "animation": "mascot drops in with squash and stretch, breathes and hops; a 12 s opacity cycle of faces, tints and halos; porthole reveals (two mask layers with mask-composite: add, @property radius driven by animation-timeline view()); scroll-driven rises on every section; transform-only bobs, bubbles and calendar beat",
+    "motif": "Bun, a rigged clay pup (ears on spring pivots, tail, paws, eyes that look and blink, six faces, mood colours that blend via registered custom properties, clay grain); a whole day played on the scroll like an After Effects comp",
+    "animation": "spring-physics character rig: anticipation squat, launch, stretch, apex mood swap, landing squash with ear follow-through; the landing jolts the headline letter by letter and dips the turntable; idle blinks, ear twitches, tail wag, pointer look; scroll as playhead for the day (sky crossfades, sun/moon arm, hill parallax trucking, run cycle, mud, suds wave, nap, walk home), timeline playhead and keyframes; fluid WebGL field, word springs, magnetic buttons, scroll-speed stretch",
     "purpose": "Booking site for a service business (fictional pet daycare and grooming), shown as the site we protect in a security-service film",
-    "description": "Plumpaw books dog daycare, spa grooms and sleepovers: Bun the clay mascot drops onto a glowing stage and cycles through moods, then four kinds of day, a muddy-to-fluffy spa pair, what every booking includes, plans and a this-week calendar."
+    "description": "Plumpaw books dog daycare, spa grooms and sleepovers: Bun, a rigged clay pup, drops onto a turntable and jolts the headline; scrolling plays Bun's whole day (zoomies, mud and suds, nap, home by moonlight) on a timeline; then promises, plans, owners' pups and a booking card Bun lands on."
   },
   {
     "id": "2026-10-17-1420",
