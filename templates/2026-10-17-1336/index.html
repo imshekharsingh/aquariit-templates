@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#0d0b14">
 <meta name="description" content="Plumpaw: a playful, soft-3D booking site for a fictional pet daycare and grooming house, hosted by Bun, a clay mascot whose mood changes as you scroll.">
 <link rel="manifest" href="/manifest.webmanifest">
+<script>document.documentElement.classList.add("js")</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500..800&family=Geologica:wght@300..700&display=swap" rel="stylesheet">
@@ -200,9 +201,107 @@ footer .credit{margin-top:10px;font-size:12px;opacity:.7}
   *,*::before,*::after{animation:none!important}
   .bun .f{opacity:0}.bun .f.f1{opacity:1}
 }
+
+/* =====================================================================================================================
+   NEXT LEVEL (owner, 18 Oct 2026: website first, at the level of its film). A clay world behind the page, a pinned mood
+   scene where Bun changes mood as you scroll, a scroll wipe from muddy to fluffy, and every block moving with the scroll.
+   One rAF loop writes progress values (--s, --p, --q, --w); CSS turns them into depth. Loops animate transform/opacity only.
+   ===================================================================================================================== */
+main,footer{position:relative;z-index:1}
+.world{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.world .glow{position:absolute;border-radius:50%;filter:blur(40px);opacity:.55}
+.world .g1{width:70vmax;height:70vmax;left:-25vmax;top:-20vmax;background:radial-gradient(closest-side,rgba(255,148,102,.35),transparent)}
+.world .g2{width:60vmax;height:60vmax;right:-25vmax;top:30vh;background:radial-gradient(closest-side,rgba(166,139,255,.3),transparent)}
+.world .g3{width:55vmax;height:55vmax;left:10vw;bottom:-30vmax;background:radial-gradient(closest-side,rgba(77,240,184,.22),transparent)}
+.toy{position:absolute;left:var(--x);top:var(--t);width:var(--z);height:var(--z);translate:0 calc(var(--y,0) * var(--sp) * -1vh)}
+.toy>i{position:absolute;inset:0;display:block}
+.toy.ball>i{border-radius:50%;background:radial-gradient(circle at 34% 28%,#fff 0,var(--c2) 22%,var(--c) 55%,var(--c3) 100%);box-shadow:inset -6px -8px 14px rgba(0,0,0,.25)}
+.toy.bone>i{border-radius:40%;background:radial-gradient(circle at 34% 28%,#fff 0,#fff4e6 30%,#f2d3b4 70%,#c99c74 100%);clip-path:path('M8 20a7 7 0 1 1 6-11h28a7 7 0 1 1 6 11a7 7 0 1 1-6 11H14a7 7 0 1 1-6-11z')}
+.toy.paw>i{background:radial-gradient(circle at 40% 30%,#fff 0,var(--c2) 40%,var(--c) 100%);clip-path:path('M20 46c-8 0-14-5-14-10s7-12 14-12 14 7 14 12-6 10-14 10zM7 22a5 6 0 1 1 0.1 0M17 13a5 6 0 1 1 0.1 0M30 13a5 6 0 1 1 0.1 0M40 22a5 6 0 1 1 0.1 0z');opacity:.5}
+#bub{position:absolute;inset:0;width:100%;height:100%}
+/* hero depth */
+.js .hero .stage{translate:0 calc(var(--s,0) * -40px);scale:calc(1 + var(--s,0) * .12)}
+.js .hero .chip.c1{translate:calc(-50% - var(--s,0) * 80px) calc(-50% - var(--s,0) * 60px)}.js .hero .chip.c2{translate:calc(-50% + var(--s,0) * 80px) calc(-50% - var(--s,0) * 50px)}
+.js .hero .chip.c3{translate:calc(-50% - var(--s,0) * 70px) calc(-50% + var(--s,0) * 40px)}.js .hero .chip.c4{translate:calc(-50% + var(--s,0) * 70px) calc(-50% + var(--s,0) * 40px)}
+.js .hero h1,.js .hero .lede,.js .hero .row{translate:0 calc(var(--s,0) * -26px)}
+/* ---- the mood scene: pinned while you scroll, Bun changes mood four times ---- */
+.mstage,.wash,#mpart{display:none}
+.js #moods{height:400vh;padding:0}
+.js #moods>.wrap{position:sticky;top:0;height:100vh;height:100svh;display:grid;align-content:center;gap:14px;padding-top:calc(18px + var(--safe-top));padding-bottom:calc(96px + var(--safe-bottom))}
+.js #moods .rv{opacity:1;transform:none;translate:none}
+.js .wash{display:block;position:absolute;inset:0;z-index:-1;pointer-events:none}
+.wash i{position:absolute;inset:0;opacity:0;transition:opacity .7s ease}
+.wash i:nth-child(1){background:radial-gradient(60% 45% at 50% 38%,rgba(255,148,102,.32),transparent 70%)}
+.wash i:nth-child(2){background:radial-gradient(60% 45% at 50% 38%,rgba(155,125,255,.36),transparent 70%)}
+.wash i:nth-child(3){background:radial-gradient(60% 45% at 50% 38%,rgba(63,217,163,.32),transparent 70%)}
+.wash i:nth-child(4){background:radial-gradient(60% 45% at 50% 38%,rgba(255,197,107,.34),transparent 70%)}
+[data-m="1"] .wash i:nth-child(1),[data-m="2"] .wash i:nth-child(2),[data-m="3"] .wash i:nth-child(3),[data-m="4"] .wash i:nth-child(4){opacity:1}
+.js .mstage{display:grid;place-items:center;position:relative;height:210px}
+.js #mpart{display:block;position:absolute;inset:-20px -30px;width:calc(100% + 60px);height:calc(100% + 40px);pointer-events:none}
+.mstage .bun{--s:170px}
+.bun .tint.t4{background:radial-gradient(circle at 32% 26%,#eafff7 0,#b6f7df 24%,#3fd9a3 52%,#1f9c74 100%)}
+.bun .tint.t5{background:radial-gradient(circle at 32% 26%,#fffaf0 0,#fff0cc 24%,#ffc56b 52%,#d18a1f 100%)}
+.bun .halo.h4{background:radial-gradient(closest-side,rgba(63,217,163,.5),rgba(63,217,163,.1) 55%,transparent);opacity:0}
+.bun .halo.h5{background:radial-gradient(closest-side,rgba(255,197,107,.55),rgba(255,197,107,.12) 55%,transparent);opacity:0}
+.mstage .tint,.mstage .halo,.mstage .f{transition:opacity .45s ease}
+.mstage .halo:not(.h2):not(.h3):not(.h4):not(.h5){opacity:1}
+[data-m="2"] .mstage .t3,[data-m="2"] .mstage .h3,[data-m="2"] .mstage .f3,
+[data-m="3"] .mstage .t4,[data-m="3"] .mstage .h4,[data-m="3"] .mstage .f4,
+[data-m="4"] .mstage .t5,[data-m="4"] .mstage .h5,[data-m="4"] .mstage .f2{opacity:1}
+[data-m="2"] .mstage .f1,[data-m="3"] .mstage .f1,[data-m="4"] .mstage .f1{opacity:0}
+.mstage .bun .blob,.mstage .bun .ear{animation:breathe 2.4s ease-in-out infinite}
+.mstage .bun.bump .body{animation:squash .7s var(--spring)}
+@keyframes squash{0%{scale:1.2 .78}40%{scale:.9 1.14}70%{scale:1.05 .96}100%{scale:1 1}}
+[data-m="2"] .mstage .bun .body{rotate:-6deg;translate:0 6px}
+/* the list follows the mood: the current day opens, the others fold to a line */
+.js #moods .list{margin-top:4px;gap:8px}
+.js #moods .row-s{transition:opacity .4s,background .4s,translate .5s var(--spring);opacity:.5;padding:10px 14px;grid-template-columns:44px 1fr}
+.js #moods .row-s .mini{width:44px;height:41px}
+.js #moods .row-s h3{font-size:21px}
+.js #moods .row-s p,.js #moods .row-s .meta{display:none}
+.js #moods [data-m="1"] .row-s:nth-child(1),.js #moods [data-m="2"] .row-s:nth-child(2),.js #moods [data-m="3"] .row-s:nth-child(3),.js #moods [data-m="4"] .row-s:nth-child(4){opacity:1;translate:8px 0;background:linear-gradient(160deg,var(--surf2),var(--surf));box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.js #moods [data-m="1"] .row-s:nth-child(1) p,.js #moods [data-m="2"] .row-s:nth-child(2) p,.js #moods [data-m="3"] .row-s:nth-child(3) p,.js #moods [data-m="4"] .row-s:nth-child(4) p{display:block}
+.js #moods .row-s.open{box-shadow:none}
+@media (min-width:900px){
+  .js #moods>.wrap{grid-template-columns:1fr 1fr;align-items:center;column-gap:40px}
+  .js #moods>.wrap>.rv{grid-column:1}.js .mstage{grid-column:1;grid-row:2;height:330px}.js #moods .list{grid-column:2;grid-row:1/3;grid-template-columns:1fr}
+  .mstage .bun{--s:250px}.js #moods .row-s .meta{display:none}
+}
+/* ---- spa: a scroll wipe cleans the muddy pup into the fluffy one ---- */
+.js .pair{display:block;position:relative}
+.js .pair figure{min-height:250px}
+.js .pair figure.after{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--w,100%)) 0 0)}
+.js .pair .bun{--s:150px}
+.wipe{display:none}
+.js .wipe{display:block;position:absolute;top:0;bottom:0;left:var(--w,100%);width:3px;margin-left:-1.5px;z-index:2;background:linear-gradient(transparent,var(--mint),transparent);box-shadow:0 0 18px var(--mint);pointer-events:none}
+.wipe i{position:absolute;left:-7px;width:16px;height:16px;border-radius:50%;border:1.5px solid rgba(255,255,255,.75);background:rgba(255,255,255,.12);animation:bub 2.4s ease-in infinite}
+.wipe i:nth-child(1){top:70%}.wipe i:nth-child(2){top:50%;left:4px;width:10px;height:10px;animation-delay:-.8s}.wipe i:nth-child(3){top:85%;left:-12px;animation-delay:-1.6s}
+.js .pair .mud figcaption,.js .pair .after figcaption{position:absolute;bottom:14px;margin:0}
+.js .pair .mud figcaption{left:18px;text-align:left}.js .pair .after figcaption{right:18px;text-align:right}
+@media (min-width:900px){.js .pair figure{min-height:340px}.js .pair .bun{--s:210px}}
+/* ---- reveals (every browser), checklist ticks, depth on rows, drifting quotes, calendar pop ---- */
+.js .rv,.js .port,.js .check .tick{animation:none}
+.js .rv:not(#moods .rv){opacity:0;translate:0 40px;transition:opacity .8s ease,translate 1s var(--spring)}
+.js .rv.in:not(#moods .rv){opacity:1;translate:0 0}
+.js .check li:nth-child(odd).rv{translate:-30px 20px}.js .check li:nth-child(even).rv{translate:30px 20px}.js .check li.rv.in{translate:0 0}
+.js .check .tick{stroke-dashoffset:1;transition:stroke-dashoffset .7s ease .35s}.js .check li.in .tick{stroke-dashoffset:0}
+.js .tr{translate:0 calc(var(--p,0) * var(--dz,0px))}.tr:nth-child(2){--dz:30px}.tr:nth-child(3){--dz:60px}.tr:nth-child(4){--dz:90px}
+.tr.hot{position:relative;overflow:hidden}
+.tr.hot::after{content:"";position:absolute;top:-20%;bottom:-20%;width:30%;left:-40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transform:skewX(-18deg);animation:shine 4s ease-in-out infinite}
+@keyframes shine{0%,55%{transform:translateX(0) skewX(-18deg)}100%{transform:translateX(480%) skewX(-18deg)}}
+.js .quotes blockquote{translate:calc(var(--p,0) * var(--dx,0px)) 0}.quotes blockquote:nth-child(1){--dx:-40px}.quotes blockquote:nth-child(2){--dx:40px}.quotes blockquote:nth-child(3){--dx:-30px}
+.js .cta{position:relative;overflow:visible;scale:calc(1 - max(var(--p,0), 0) * .1)}
+.peek{display:none}
+.js .peek{display:block;position:absolute;left:50%;top:-58px;margin-left:-40px;--s:80px;animation:hop 2.6s ease-in-out infinite}
+.js .peek .blob,.js .peek .ear{animation:breathe 2.4s ease-in-out infinite}
+.js .cal i{opacity:0;scale:.4;transition:opacity .4s,scale .6s var(--spring)}.js .cta.in .cal i{opacity:1;scale:1}
+.js .cta.in .cal i:nth-child(1){transition-delay:0.000s}.js .cta.in .cal i:nth-child(2){transition-delay:0.035s}.js .cta.in .cal i:nth-child(3){transition-delay:0.070s}.js .cta.in .cal i:nth-child(4){transition-delay:0.105s}.js .cta.in .cal i:nth-child(5){transition-delay:0.140s}.js .cta.in .cal i:nth-child(6){transition-delay:0.175s}.js .cta.in .cal i:nth-child(7){transition-delay:0.210s}.js .cta.in .cal i:nth-child(8){transition-delay:0.245s}.js .cta.in .cal i:nth-child(9){transition-delay:0.280s}.js .cta.in .cal i:nth-child(10){transition-delay:0.315s}.js .cta.in .cal i:nth-child(11){transition-delay:0.350s}.js .cta.in .cal i:nth-child(12){transition-delay:0.385s}.js .cta.in .cal i:nth-child(13){transition-delay:0.420s}.js .cta.in .cal i:nth-child(14){transition-delay:0.455s}
+.js .cta{padding-top:44px}
+@media (prefers-reduced-motion:reduce){.world .toy,#bub,#mpart{display:none}.js #moods{height:auto}.js #moods>.wrap{position:static;height:auto}.js .rv{opacity:1;translate:none}.js .pair figure.after{clip-path:none;position:relative}.js .pair{display:grid}.js .wipe{display:none}.js .cal i{opacity:1;scale:1}.js .check .tick{stroke-dashoffset:0}}
 </style>
 </head>
 <body>
+<div class="world" aria-hidden="true"><i class="glow g1"></i><i class="glow g2"></i><i class="glow g3"></i><span class="toy ball" style="--x:8%;--t:14vh;--z:38px;--sp:.6;--c:#ff9466;--c2:#ffc9ad;--c3:#c94f33"><i></i></span><span class="toy bone" style="--x:78%;--t:22vh;--z:54px;--sp:1.1;--c:;--c2: ;--c3:"><i></i></span><span class="toy ball" style="--x:86%;--t:58vh;--z:26px;--sp:.4;--c:#4df0b8;--c2:#c4fbe7;--c3:#1f9c74"><i></i></span><span class="toy paw" style="--x:12%;--t:64vh;--z:46px;--sp:.8;--c:#a68bff;--c2:#d9ceff;--c3:"><i></i></span><span class="toy ball" style="--x:52%;--t:88vh;--z:30px;--sp:1.4;--c:#ffc56b;--c2:#fff0cc;--c3:#d18a1f"><i></i></span><span class="toy bone" style="--x:30%;--t:120vh;--z:46px;--sp:1.7;--c:;--c2:;--c3:"><i></i></span><span class="toy paw" style="--x:70%;--t:140vh;--z:40px;--sp:1.2;--c:#ff9466;--c2:#ffc9ad;--c3:"><i></i></span><span class="toy ball" style="--x:18%;--t:170vh;--z:34px;--sp:2;--c:#a68bff;--c2:#d9ceff;--c3:#5d3fc4"><i></i></span><canvas id="bub"></canvas></div>
 <header class="bbar">
   <nav aria-label="Main">
     <a class="mark" href="#top"><i aria-hidden="true"></i>plumpaw</a>
@@ -248,7 +347,22 @@ footer .credit{margin-top:10px;font-size:12px;opacity:.7}
 
   <section id="moods" aria-labelledby="moods-h">
     <div class="wrap">
+      <div class="wash" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       <div class="rv"><span class="kick">Every mood, looked after</span><h2 id="moods-h" style="margin-top:12px">Four kinds of day.</h2></div>
+      <div class="mstage" aria-hidden="true"><canvas id="mpart"></canvas><div class="bun" role="img" aria-label="Bun changes mood with each kind of day">
+          <div class="halo"></div><div class="halo h2"></div><div class="halo h3"></div><div class="halo h4"></div><div class="halo h5"></div>
+          <div class="shadow"></div>
+          <div class="body">
+            <div class="ear l"><div class="tint t2"></div><div class="tint t3"></div><div class="tint t4"></div><div class="tint t5"></div></div><div class="ear r"><div class="tint t2"></div><div class="tint t3"></div><div class="tint t4"></div><div class="tint t5"></div></div>
+            <div class="blob"><div class="tint t2"></div><div class="tint t3"></div><div class="tint t4"></div><div class="tint t5"></div><div class="gloss"></div></div>
+            <svg class="face" viewBox="0 0 100 60" aria-hidden="true">
+              <g class="f f1"><path d="M22 22q8-10 16 0M62 22q8-10 16 0" fill="none" stroke="#2a0f14" stroke-width="5" stroke-linecap="round"/><path d="M38 36q12 14 24 0z" fill="#2a0f14"/><path d="M44 42q6 4 12 0" fill="#ff7a8e"/><ellipse class="cheek" cx="16" cy="36" rx="8" ry="5"/><ellipse class="cheek" cx="84" cy="36" rx="8" ry="5"/></g>
+              <g class="f f2"><path d="M30 26c-6-6-14 0-8 7l8 7 8-7c6-7-2-13-8-7zM70 26c-6-6-14 0-8 7l8 7 8-7c6-7-2-13-8-7z" fill="#ff3d6e"/><path d="M42 44q8 7 16 0" fill="none" stroke="#2a0f14" stroke-width="4.5" stroke-linecap="round"/><ellipse class="cheek" cx="14" cy="40" rx="8" ry="5"/><ellipse class="cheek" cx="86" cy="40" rx="8" ry="5"/></g>
+              <g class="f f3"><path d="M20 28q10 6 20 0M60 28q10 6 20 0" fill="none" stroke="#24123a" stroke-width="5" stroke-linecap="round"/><ellipse cx="50" cy="44" rx="5" ry="4" fill="#24123a"/><text x="82" y="6" font-size="14" font-weight="800" fill="#fff" font-family="Baloo 2">z</text><text x="92" y="-6" font-size="10" font-weight="800" fill="#fff" font-family="Baloo 2">z</text></g>
+              <g class="f f4"><ellipse cx="30" cy="24" rx="6" ry="8" fill="#2a0f14"/><circle cx="32" cy="21" r="2.4" fill="#fff"/><path d="M62 24q8-6 16 0" fill="none" stroke="#2a0f14" stroke-width="5" stroke-linecap="round"/><path d="M38 38q12 10 24 0" fill="none" stroke="#2a0f14" stroke-width="5" stroke-linecap="round"/><ellipse class="cheek" cx="16" cy="36" rx="8" ry="5"/><ellipse class="cheek" cx="84" cy="36" rx="8" ry="5"/></g>
+            </svg>
+          </div>
+        </div></div>
       <div class="list">
         <article class="row-s open rv"><div class="mini" style="--c:#ff9466;--c2:#ffc9ad;--c3:#c94f33"><div class="blob"></div><svg viewBox="0 0 100 60" aria-hidden="true"><path d="M22 22q8-10 16 0M62 22q8-10 16 0" fill="none" stroke="#2a0f14" stroke-width="6" stroke-linecap="round"/><path d="M38 36q12 14 24 0z" fill="#2a0f14"/></svg></div>
           <div><h3>Playful</h3><p>Small-group daycare: fetch lawn, splash pad, two long walks.</p></div><div class="meta"><span>7:30–19:00</span><span>Groups of 8</span></div></article>
@@ -265,7 +379,7 @@ footer .credit{margin-top:10px;font-size:12px;opacity:.7}
   <section id="spa" aria-labelledby="spa-h">
     <div class="wrap">
       <div class="rv"><span class="kick">The spa</span><h2 id="spa-h" style="margin-top:12px">Muddy in. Fluffy out.</h2></div>
-      <div class="pair port">
+      <div class="pair port"><span class="wipe" aria-hidden="true"><i></i><i></i><i></i></span>
         <figure class="mud"><div class="bun" role="img" aria-label="A muddy clay pup before the groom"><div class="shadow"></div><div class="body"><div class="ear l"></div><div class="ear r"></div><div class="blob"><i class="spot" style="left:20%;top:30%;width:22%;height:16%"></i><i class="spot" style="left:62%;top:58%;width:18%;height:14%"></i></div>
           <svg class="face" viewBox="0 0 100 60" aria-hidden="true"><ellipse cx="30" cy="24" rx="5" ry="6" fill="#2a160b"/><ellipse cx="70" cy="24" rx="5" ry="6" fill="#2a160b"/><path d="M40 44q10-6 20 0" fill="none" stroke="#2a160b" stroke-width="5" stroke-linecap="round"/></svg></div></div>
           <figcaption>9:00<small>after the puddle</small></figcaption></figure>
@@ -313,7 +427,7 @@ footer .credit{margin-top:10px;font-size:12px;opacity:.7}
 
   <section id="book" aria-labelledby="book-h">
     <div class="wrap">
-      <div class="cta rv">
+      <div class="cta rv"><div class="bun peek" aria-hidden="true"><div class="shadow"></div><div class="body"><div class="ear l"></div><div class="ear r"></div><div class="blob"><div class="gloss"></div></div><svg class="face" viewBox="0 0 100 60"><g class="f f1"><path d="M22 22q8-10 16 0M62 22q8-10 16 0" fill="none" stroke="#2a0f14" stroke-width="5" stroke-linecap="round"/><path d="M38 36q12 14 24 0z" fill="#2a0f14"/></g></svg></div></div>
         <span class="kick">This week</span>
         <h2 id="book-h" style="margin-top:12px">Bun saved you a spot.</h2>
         <div class="cal" role="group" aria-label="Free days this week">
@@ -332,5 +446,37 @@ footer .credit{margin-top:10px;font-size:12px;opacity:.7}
     <p class="credit">Developed by Aquarii Technologies</p>
   </div>
 </footer>
+<script>
+/* scroll engine: cached positions, one rAF per scroll, writes progress values only */
+(function(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+var hero=document.querySelector('.hero'),world=document.querySelector('.world'),moods=document.getElementById('moods'),mw=moods.querySelector('.wrap'),sb=moods.querySelector('.mstage .bun'),
+  pair=document.querySelector('.pair'),els=[].slice.call(document.querySelectorAll('.tr,.quotes blockquote,.cta')),box=[],M={t:0,h:1},P={t:0,h:1},vh=innerHeight,last=-1,tick=false,mood=0;
+function measure(){vh=innerHeight;var y=scrollY;box=els.map(function(e){var r=e.getBoundingClientRect();return{t:r.top+y,h:r.height}});
+  var r=moods.getBoundingClientRect();M={t:r.top+y,h:r.height};r=pair.getBoundingClientRect();P={t:r.top+y,h:r.height};last=-1;frame()}
+function frame(){tick=false;var y=scrollY;if(y===last)return;last=y;
+  hero.style.setProperty('--s',Math.min(1,y/vh).toFixed(3));world.style.setProperty('--y',(y/vh).toFixed(3));
+  for(var i=0;i<els.length;i++){var b=box[i],p=((b.t+b.h/2)-(y+vh/2))/(vh/2+b.h/2);els[i].style.setProperty('--p',(p<-1?-1:p>1?1:p).toFixed(3))}
+  var q=(y-M.t)/(M.h-vh);q=q<0?0:q>1?1:q;var m=Math.min(4,1+Math.floor(q*4));if(m!==mood){mood=m;mw.setAttribute('data-m',m);sb.classList.remove('bump');void sb.offsetWidth;sb.classList.add('bump')}
+  var w=((y+vh*.62)-(P.t+P.h*.2))/(P.h*.65);w=w<0?0:w>1?1:w;pair.style.setProperty('--w',(w*100).toFixed(1)+'%')}
+addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(frame)}},{passive:true});
+addEventListener('resize',measure);addEventListener('load',measure);if(document.fonts)document.fonts.ready.then(measure);mw.setAttribute('data-m',1);mood=1;measure();
+/* reveals */
+var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}})},{threshold:.15});
+[].forEach.call(document.querySelectorAll('.rv'),function(e){io.observe(e)});
+/* particles: bubbles drifting in the world; mood particles around Bun (sparks, z's, bubbles, hearts) */
+function layer(c,n,draw){var x=c.getContext('2d'),W,H,D=Math.min(2,devicePixelRatio||1),ps=[];function sz(){W=c.clientWidth;H=c.clientHeight;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0)}sz();addEventListener('resize',sz);
+  for(var i=0;i<n;i++)ps.push({x:Math.random(),y:Math.random(),r:Math.random(),v:.4+Math.random(),ph:Math.random()*6.28});var on=true;
+  new IntersectionObserver(function(e){on=e[0].isIntersecting},{}).observe(c);(function f(t){if(on){x.clearRect(0,0,W,H);for(var i=0;i<ps.length;i++)draw(x,ps[i],t,W,H)}requestAnimationFrame(f)})(0)}
+layer(document.getElementById('bub'),26,function(x,b,t,W,H){var y=((b.y-t*b.v*.00002)%1+1)%1,px=b.x*W+Math.sin(t/1700+b.ph)*16,r=2+b.r*5;x.beginPath();x.arc(px,y*H,r,0,6.283);x.strokeStyle='rgba(255,240,230,'+(.12+b.r*.18).toFixed(2)+')';x.lineWidth=1.2;x.stroke()});
+var COL=[0,['#ffc56b','#4df0b8','#ff9466','#a68bff'],['#c9b8ff'],['#b6f7df'],['#ff7fa6','#ffc56b']];
+layer(document.getElementById('mpart'),22,function(x,b,t,W,H){var m=mood||1,cs=COL[m],c=cs[Math.floor(b.r*cs.length)%cs.length],k=((t*b.v*.00012+b.ph)%1),px=W*(.15+b.x*.7)+Math.sin(t/900+b.ph)*10,py=H*(.95-k*.9),a=Math.sin(k*3.14);
+  x.globalAlpha=a*.9;x.fillStyle=c;x.strokeStyle=c;
+  if(m===1){x.save();x.translate(px,py);x.rotate(t/400+b.ph);x.fillRect(-3,-5,6,10);x.restore()}
+  else if(m===2){x.font='800 '+(12+b.r*10|0)+'px "Baloo 2",sans-serif';x.fillText('z',px,py)}
+  else if(m===3){x.beginPath();x.arc(px,py,3+b.r*6,0,6.283);x.lineWidth=1.5;x.stroke()}
+  else{var s=5+b.r*5;x.beginPath();x.moveTo(px,py+s*.9);x.bezierCurveTo(px-s*1.6,py-s*.2,px-s*.6,py-s*1.4,px,py-s*.4);x.bezierCurveTo(px+s*.6,py-s*1.4,px+s*1.6,py-s*.2,px,py+s*.9);x.fill()}
+  x.globalAlpha=1});
+})();
+</script>
 </body>
 </html>
