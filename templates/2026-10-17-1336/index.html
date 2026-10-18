@@ -298,6 +298,32 @@ main,footer{position:relative;z-index:1}
 .js .cta.in .cal i:nth-child(1){transition-delay:0.000s}.js .cta.in .cal i:nth-child(2){transition-delay:0.035s}.js .cta.in .cal i:nth-child(3){transition-delay:0.070s}.js .cta.in .cal i:nth-child(4){transition-delay:0.105s}.js .cta.in .cal i:nth-child(5){transition-delay:0.140s}.js .cta.in .cal i:nth-child(6){transition-delay:0.175s}.js .cta.in .cal i:nth-child(7){transition-delay:0.210s}.js .cta.in .cal i:nth-child(8){transition-delay:0.245s}.js .cta.in .cal i:nth-child(9){transition-delay:0.280s}.js .cta.in .cal i:nth-child(10){transition-delay:0.315s}.js .cta.in .cal i:nth-child(11){transition-delay:0.350s}.js .cta.in .cal i:nth-child(12){transition-delay:0.385s}.js .cta.in .cal i:nth-child(13){transition-delay:0.420s}.js .cta.in .cal i:nth-child(14){transition-delay:0.455s}
 .js .cta{padding-top:44px}
 @media (prefers-reduced-motion:reduce){.world .toy,#bub,#mpart{display:none}.js #moods{height:auto}.js #moods>.wrap{position:static;height:auto}.js .rv{opacity:1;translate:none}.js .pair figure.after{clip-path:none;position:relative}.js .pair{display:grid}.js .wipe{display:none}.js .cal i{opacity:1;scale:1}.js .check .tick{stroke-dashoffset:0}}
+
+/* ===== LAYERS + POINTER (owner, 18 Oct 2026: "more layering and cursor-tracked motion"). --mx/--my (-1..1) follow the cursor or the finger,
+   eased in one rAF loop; with no pointer for a few seconds they wander on their own. Each layer moves by its own depth. */
+.js .world .glow{translate:calc(var(--mx,0) * -24px) calc(var(--my,0) * -18px)}
+.js .toy{translate:calc(var(--mx,0) * var(--sp) * -16px) calc(var(--y,0) * var(--sp) * -1vh + var(--my,0) * var(--sp) * -12px)}
+.js .hero .bun.big{rotate:calc(var(--mx,0) * 7deg);translate:calc(var(--mx,0) * 10px) calc(var(--my,0) * 6px)}
+.js .bun svg.face{translate:calc(var(--mx,0) * 7px) calc(var(--my,0) * 5px)}
+.js .bun .gloss{translate:calc(var(--mx,0) * -6px) calc(var(--my,0) * -4px)}
+.js .bun .ear.l{translate:0 calc(var(--my,0) * -3px)}.js .bun .ear.r{translate:0 calc(var(--my,0) * 3px)}
+.js .hero .orbit{translate:calc(var(--mx,0) * 22px) calc(var(--my,0) * 16px)}
+.js .hero .floor{margin-left:calc(var(--mx,0) * -18px)}
+.js .hero .sparks{translate:calc(var(--mx,0) * 34px) calc(var(--my,0) * 24px)}
+.fg{display:none}
+.js .fg{display:block;position:absolute;pointer-events:none;border-radius:50%;filter:blur(4px);z-index:3;
+  background:radial-gradient(circle at 34% 28%,#fff 0,var(--c2) 22%,var(--c) 55%,var(--c3) 100%);
+  translate:calc(var(--mx,0) * 46px) calc(var(--my,0) * 34px + var(--s,0) * -120px)}
+.fg.f1{width:54px;height:54px;left:4%;top:62%;--c:#4df0b8;--c2:#c4fbe7;--c3:#1f9c74}
+.fg.f2{width:34px;height:34px;right:6%;top:8%;--c:#ff9466;--c2:#ffc9ad;--c3:#c94f33;filter:blur(3px)}
+.fg.f3{width:22px;height:22px;right:18%;bottom:6%;--c:#a68bff;--c2:#d9ceff;--c3:#5d3fc4;filter:blur(2px)}
+.js .mstage .bun{rotate:calc(var(--mx,0) * 6deg);translate:calc(var(--mx,0) * 8px) calc(var(--my,0) * 5px)}
+/* cards lean toward the pointer, with a light that follows it */
+.tilt{transform:perspective(900px) rotateX(calc(var(--ty,0) * -5deg)) rotateY(calc(var(--tx,0) * 6deg));transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.tilt::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:var(--tl,0);transition:opacity .4s;
+  background:radial-gradient(240px circle at calc(50% + var(--tx,0) * 50%) calc(50% + var(--ty,0) * 50%),rgba(255,240,220,.14),transparent 70%)}
+.row-s,.check li,.quotes blockquote,.pair figure.mud{position:relative}
+@media (prefers-reduced-motion:reduce){.fg{display:none!important}.tilt{transform:none}}
 </style>
 </head>
 <body>
@@ -316,7 +342,7 @@ main,footer{position:relative;z-index:1}
     <div class="wrap">
       <span class="kick">Daycare · Spa · Sleepovers</span>
       <div class="stage">
-        <div class="floor" aria-hidden="true"></div>
+        <div class="floor" aria-hidden="true"></div><i class="fg f1" aria-hidden="true"></i><i class="fg f2" aria-hidden="true"></i><i class="fg f3" aria-hidden="true"></i>
         <div class="sparks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         <div class="bun big" role="img" aria-label="Bun, the Plumpaw clay mascot, changing moods: happy, in love, sleepy, winking">
           <div class="halo"></div><div class="halo h2"></div><div class="halo h3"></div>
@@ -476,6 +502,20 @@ layer(document.getElementById('mpart'),22,function(x,b,t,W,H){var m=mood||1,cs=C
   else if(m===3){x.beginPath();x.arc(px,py,3+b.r*6,0,6.283);x.lineWidth=1.5;x.stroke()}
   else{var s=5+b.r*5;x.beginPath();x.moveTo(px,py+s*.9);x.bezierCurveTo(px-s*1.6,py-s*.2,px-s*.6,py-s*1.4,px,py-s*.4);x.bezierCurveTo(px+s*.6,py-s*1.4,px+s*1.6,py-s*.2,px,py+s*.9);x.fill()}
   x.globalAlpha=1});
+})();
+</script>
+<script>
+/* pointer depth: cursor or finger drives --mx/--my on the layered areas (eased); idle -> a slow wander; cards tilt toward the pointer */
+(function(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+var tg=[document.querySelector('.hero'),document.querySelector('.world'),document.querySelector('.mstage'),document.querySelector('.cta')].filter(Boolean),
+  tx=0,ty=0,x=0,y=0,lastMove=-1e9;
+addEventListener('pointermove',function(e){tx=e.clientX/innerWidth*2-1;ty=e.clientY/innerHeight*2-1;lastMove=performance.now()},{passive:true});
+(function loop(t){if(t-lastMove>2500){tx=Math.sin(t/2100)*.45;ty=Math.cos(t/2900)*.3}
+  var nx=x+(tx-x)*.08,ny=y+(ty-y)*.08;if(Math.abs(nx-x)+Math.abs(ny-y)>.0005){x=nx;y=ny;for(var i=0;i<tg.length;i++){tg[i].style.setProperty('--mx',x.toFixed(3));tg[i].style.setProperty('--my',y.toFixed(3))}}
+  requestAnimationFrame(loop)})(0);
+if(matchMedia('(hover: hover)').matches){[].forEach.call(document.querySelectorAll('.row-s,.check li,.quotes blockquote,.tr,.pair figure.mud'),function(c){c.classList.add('tilt');
+  c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--tx',((e.clientX-r.left)/r.width*2-1).toFixed(3));c.style.setProperty('--ty',((e.clientY-r.top)/r.height*2-1).toFixed(3));c.style.setProperty('--tl',1)});
+  c.addEventListener('pointerleave',function(){c.style.setProperty('--tx',0);c.style.setProperty('--ty',0);c.style.setProperty('--tl',0)})})}
 })();
 </script>
 </body>
