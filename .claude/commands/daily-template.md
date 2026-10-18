@@ -22,6 +22,15 @@ Two runs per piece, never one:
 3. **Video run** (after the OK, started by the managing session with "video run: ID"): build film/ID (story.js, timing.json, voice.md) from the approved
    website, at its final level, in one pass (approach steps 5-7). Push; the reel renders automatically. A piece on hold has film/ID/HOLD (no render).
 
+## The baseline level (owner, 18 Oct 2026: "realism, dynamism, flow"; reference: Aurelia, Veloria, Plumpaw sites)
+Every website ships with, in its own style: (1) **realism**: the hero is a real lit 3D subject in our own WebGL (ray-marched or shader-rendered:
+wrap/subsurface light, rim, specular, soft contact shadow), never flat CSS shapes; (2) **flow**: a living fluid/silk field behind the page that swirls
+with the pointer/finger and the scroll speed; (3) **dynamism**: physics, not fixed tweens: scroll-velocity stretch and settle, word/letter spring
+entrances, magnetic buttons, the hero reacting to scroll speed; (4) **layers + pointer depth**: 4-5 depth planes (incl. a blurred foreground) that
+move by depth with the cursor/finger (idle wander on phones), cards that lean toward the pointer; (5) **scroll motion**: one pinned scroll scene
+that is the film's big moment, plus scroll-linked depth in every section. Always: WebGL/IO fallbacks, reduced motion = finished still page,
+no large hard shadows that clip, phones checked frame by frame, DPR capped at 2.
+
 ## The call to action (owner, 17 Oct 2026, experiment E8; wins over every older "DM us" rule in CLAUDE.md and below)
 Every reel ends on **Comment "AQUARII"**: the end card (P.brandEnd default `ask: 'comment'`, P.signoff, the light-day card), the voice's last line
 ("Comment Aquarii and we'll …"), and the caption's last line ("Send this to a founder who … and comment AQUARII"). No other keyword; no "DM us".
