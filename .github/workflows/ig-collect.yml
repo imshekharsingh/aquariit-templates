@@ -42,6 +42,7 @@ jobs:
       - name: Collect
         env:
           INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+          INSTAGRAM_TOKEN_2: ${{ secrets.INSTAGRAM_TOKEN_2 }}
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
           DRY: ${{ inputs.dry }}
@@ -51,7 +52,14 @@ jobs:
           flags=""
           [ "$DRY" = "true" ] && flags="$flags --dry"
           [ "$REFRESH" = "true" ] && flags="$flags --refresh"
-          node scripts/ig-collect.mjs $flags 2>&1 | tee collect.log
+          set -o pipefail   # a failed collect must fail the run, or the owner is never told (the log goes through tee)
+          ok=0
+          node scripts/ig-collect.mjs $flags 2>&1 | tee collect.log || ok=1
+          if [ -n "$INSTAGRAM_TOKEN_2" ]; then   # the second account (owner, 21 Oct 2026)
+            echo; echo "---- second account ----"
+            INSTAGRAM_TOKEN="$INSTAGRAM_TOKEN_2" node scripts/ig-collect.mjs $flags --slot 2 2>&1 | tee -a collect.log || ok=1
+          fi
+          exit $ok
       - name: Tell the owner when it fails (one open issue at a time)
         if: failure()
         run: |
