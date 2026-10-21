@@ -69,6 +69,30 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 21 Oct 2026, verdict (numbers from the last good Instagram collect, 18 Oct 03:44 IST; @aquarii.techstudio, 9 followers, 10 posts)
+The collector has failed every night since 19 Oct: Instagram invalidated the token (code 190, "session invalidated", usually a password change or a Meta security reset).
+The run still shows green because the log is piped through `tee`, so the failure alert never fired. Numbers below are frozen at 18 Oct.
+| posted | reel | format | views | reach | avg watch | likes | comments | saves | shares |
+|---|---|---|---|---|---|---|---|---|---|
+| 17 Oct | (unmatched) | film | 47 | 31 | **7.1 s** | 3 | 1 | 0 | 0 |
+| 16 Oct | (unmatched) | film | 27 | 14 | 4.3 s | 4 | 0 | 0 | 0 |
+| 15 Oct | (unmatched) | film | 132 | 114 | **5.6 s** | 7 | 0 | 0 | 0 |
+| 14 Oct | (unmatched) | film | 22 | 11 | **10.2 s** | 7 | 0 | 0 | 0 |
+| 13 Oct | Dantika | film v3 | 24 | 13 | **8.4 s** | 5 | 0 | 0 | 0 |
+| 12 Oct | Gojigo | recording | 21 | 14 | 2.4 s | 5 | 0 | 0 | 0 |
+| 12 Oct | Gumdrop | recording | 10 | 7 | 3.0 s | 3 | 0 | 0 | 0 |
+| 11 Oct | Lumen | recording | 121 | 109 | 2.5 s | 6 | 0 | 0 | 0 |
+| 10 Oct | (unmatched) | recording | 30 | 23 | 3.5 s | 4 | 0 | 0 | 0 |
+| 9 Oct | Tessera | recording | 75 | 63 | 4.1 s | 5 | 0 | 1 | 0 |
+**E6 verdict: keep films.** 3+ films have 48 h of data (13, 14, 15 Oct). Average watch on films: 8.4, 10.2, 5.6, 4.3, 7.1 s (median 7.1) against 2.4-4.1 s
+(median 3.0) for every screen recording, so 4 of 5 films beat the best recording (the rule needed 2 of 3).
+**E1 verdict: format B recordings did not lift watch time** (2.4-3.5 s, inside the 2.5-4.6 s baseline). Closed; films replaced them.
+**Still the bottleneck: distribution.** Median reach is 31 for films from 15-17 Oct against about 18 for 9-14 Oct (about 1.7x; E12 needs 3x by 29 Oct).
+Shares are 0 on all 10 posts, saves 1, and the first comment arrived on 17 Oct.
+**Next:** (1) the owner regenerates INSTAGRAM_TOKEN; (2) films only, each with Comment "AQUARII" and a line written to be sent to a friend;
+(3) after the website redesigns, re-post the strongest sites (Aurelia, Veloria, Plumpaw, Halcyra) as films at 19:30 IST Mon/Wed/Fri, with an Instagram track,
+shared to Stories and sent by DM to 5-10 owners of that kind of business; (4) re-check on 29 Oct for the E12 verdict.
+
 ### 14 Oct 2026, 05:16 UTC (@aquarii.techstudio, renamed; 6 followers, 6 posts)
 | posted | template | format | views | reach | avg watch | saves | shares |
 |---|---|---|---|---|---|---|---|
