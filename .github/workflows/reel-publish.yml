@@ -5,10 +5,9 @@ name: Reel publish
 # keep the MP4 in the "reels" release (persistent, private with the repo), open a "Reel ready" issue for the owner (GitHub emails/notifies) and
 # redeploy once so the site can serve the video behind the sign-in (the deploy job downloads recent reels from the release).
 # Nothing is posted to Instagram: the owner taps Post (semi-auto, so Instagram's own audio can be used).
+# Since 21 Oct 2026 (owner: clean up what we no longer run) this no longer starts after every pipeline run; daily films are retired in favour of
+# showreels (showreel.yml). It stays available by hand for a one-off film.
 on:
-  workflow_run:
-    workflows: ['Template pipeline']
-    types: [completed]
   workflow_dispatch:
     inputs:
       id:

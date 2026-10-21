@@ -1,0 +1,72 @@
+{
+  "name": "showreel-02-halcyra",
+  "fps": 30,
+  "pad": 6,
+  "bpm": 120,
+  "layout": "device",
+  "caption": "A rough stone becomes a ring, on scroll. 💎\n\nEvery facet is code: 57 faces, real reflections, no images, no video.\nWould you put this on a jewellery site? 👇\n\n#webdesign #creativecoding #scrollanimation #webgl #jewellerydesign",
+  "segments": [
+    {
+      "id": "2026-10-17-1420",
+      "label": "The page wakes up",
+      "note": "light sweeps in · the gem flares",
+      "from": 0.0,
+      "dur": 3
+    },
+    {
+      "id": "2026-10-17-1420",
+      "label": "Scroll: the rough stone",
+      "note": "a crystal, picked by eye",
+      "from": 1.2,
+      "dur": 3,
+      "in": "zoom",
+      "scroll": {
+        "sel": "#make",
+        "q0": 0.0,
+        "q1": 0.24,
+        "ease": "linear"
+      }
+    },
+    {
+      "id": "2026-10-17-1420",
+      "label": "58 facets, cut on scroll",
+      "note": "the counter is the scroll",
+      "from": 1.2,
+      "dur": 3.5,
+      "in": "cut",
+      "scroll": {
+        "sel": "#make",
+        "q0": 0.24,
+        "q1": 0.5,
+        "ease": "linear"
+      }
+    },
+    {
+      "id": "2026-10-17-1420",
+      "label": "Set in four claws",
+      "note": "band and claws in 3D",
+      "from": 1.2,
+      "dur": 3.5,
+      "in": "cut",
+      "scroll": {
+        "sel": "#make",
+        "q0": 0.5,
+        "q1": 0.74,
+        "ease": "linear"
+      }
+    },
+    {
+      "id": "2026-10-17-1420",
+      "label": "Light in, colour out",
+      "note": "the payoff, still on scroll",
+      "from": 1.2,
+      "dur": 5,
+      "in": "flash",
+      "scroll": {
+        "sel": "#make",
+        "q0": 0.74,
+        "q1": 0.98
+      }
+    }
+  ]
+}
