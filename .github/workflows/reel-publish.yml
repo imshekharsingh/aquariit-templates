@@ -38,7 +38,7 @@ concurrency:
 jobs:
   publish:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # Playwright 1.56 has no Chromium build for ubuntu-latest (26.04) yet
     timeout-minutes: 80   # 28 s films with 3D hero shots render for ~35-45 min; supersampled films (timing.json ss 1.5) take ~50 min
     env:
       GH_TOKEN: ${{ github.token }}
