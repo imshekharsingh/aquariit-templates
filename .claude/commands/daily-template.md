@@ -31,10 +31,10 @@ move by depth with the cursor/finger (idle wander on phones), cards that lean to
 that is the film's big moment, plus scroll-linked depth in every section. Always: WebGL/IO fallbacks, reduced motion = finished still page,
 no large hard shadows that clip, phones checked frame by frame, DPR capped at 2.
 
-## The ending (owner, 21 Oct 2026; replaces the Comment "AQUARII" rule of 17 Oct and every older "DM us" rule in CLAUDE.md and below)
-No keyword call to action: the account grows as an individual creator's account. Reels end on the brand card (P.brandEnd default `ask: 'none'`, P.signoff
-without a CTA, the light-day card without a pill), a voice line that closes the story naturally, and a caption whose last line invites a share
-("Send this to a founder who …"). Never "Comment …" or "DM us".
+## The ending (owner, 21 Oct 2026; replaces the Comment "AQUARII" rule, the Aquarii sign-off and every older "DM us" rule in CLAUDE.md and below)
+Nothing at the end: just the reel. No brand card, no sign-off, no studio name, no call to action (P.brandEnd and P.signoff draw nothing unless a story sets
+P.BRAND_END = true; the light-day recording gets no end card). The account grows as an individual creator's account. Hold the payoff to the last frame and loop
+cleanly into the opening; the voice closes the story naturally; the caption's last line may still invite a share ("Send this to a founder who …").
 
 ## The approach (owner, 17 Oct 2026, revised the same evening; read first, it wins over anything older below)
 You drive Aquarii's social content. Imagination first, premium, never static. Do not ask the owner anything; design, build, render and report.
