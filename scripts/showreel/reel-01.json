@@ -1,5 +1,5 @@
 {
-  "name": "showreel-01",
+  "name": "showreel-01-v2",
   "fps": 30,
   "pad": 6,
   "bpm": 120,
@@ -9,8 +9,9 @@
       "id": "2026-10-17-1420",
       "label": "A gem in our own 3D",
       "note": "57 facets · canvas · no images",
-      "from": 0.9,
-      "dur": 3
+      "from": 0.55,
+      "dur": 3,
+      "rate": 2.2
     },
     {
       "id": "2026-10-17-1336",

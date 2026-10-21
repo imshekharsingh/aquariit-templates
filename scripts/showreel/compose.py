@@ -59,11 +59,11 @@ def transition(kind, A, B, p):
     return B if p >= .5 else A
 
 overlays = [np.asarray(Image.open(os.path.join(FR, f'overlay-{k + 1:02d}.png')).convert('RGBA'), dtype=np.float32) for k in range(NS)]
-LY = R.get('labelY', 1310); BAR_Y, BAR_X0, BAR_X1, GAP = LY - 44, 72, W - 72, 12
+LY = R.get('labelY', 1310); BAR_Y, BAR_X0, BAR_X1, GAP = LY - 46, 96, W - 96, 10
 segw = (BAR_X1 - BAR_X0 - GAP * (NS - 1)) / NS
 
 def overlay(a, k, f):
-    o = overlays[k]; al = o[:, :, 3:4] / 255 * min(1, (f - starts[k]) / 6 + .0001) if f >= starts[k] else o[:, :, 3:4] * 0
+    o = overlays[k]; al = o[:, :, 3:4] / 255 * min(1, f / 8 + .0001)          # the panel stays put; only its words change on each cut
     a = a * (1 - al) + o[:, :, :3] * al
     for j in range(NS):                                     # segmented progress bar
         x0 = int(BAR_X0 + j * (segw + GAP)); x1 = int(x0 + segw)
@@ -131,6 +131,7 @@ enc = subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', 
 for f in range(TOTAL):
     k = max(j for j in range(NS) if starts[j] <= f); i = PAD + (f - starts[k])
     img = frame(k, i)
+    if f < 14: img = scale(img, 1 + .16 * (1 - f / 14) ** 2)                     # the reel opens moving: a fast push-in
     if k > 0 and f - starts[k] < 6: img = scale(img, 1 + .045 * (1 - (f - starts[k]) / 6) ** 2)                 # beat punch after each cut
     for c_i, c in enumerate(cuts):                          # transitions straddle each cut
         j = f - c
