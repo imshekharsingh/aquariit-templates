@@ -1,5 +1,5 @@
 {
-  "name": "showreel-01-v2",
+  "name": "showreel-01-v3",
   "fps": 30,
   "pad": 6,
   "bpm": 120,
@@ -69,5 +69,6 @@
         "q1": 0.97
       }
     }
-  ]
+  ],
+  "layout": "device"
 }
