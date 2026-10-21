@@ -47,6 +47,8 @@
 (function(){
   var list = document.getElementById('list'), caps = fetch('/showreels/captions.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; });
   function el(t, c, txt){ var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; }
+  // what gets pasted into Instagram: the caption, one line of niche search keywords, then exactly 5 niche hashtags (owner, 22 Oct 2026)
+  function postText(j){ var t = j.caption.trim(); if (j.keywords && j.keywords.length) t += '\n\n' + j.keywords.slice(0, 6).join(' · '); if (j.hashtags && j.hashtags.length) t += '\n\n' + j.hashtags.slice(0, 5).join(' '); return t; }
   function mb(n){ return (n / 1048576).toFixed(1) + ' MB'; }
   fetch('/api/showreels', { credentials: 'same-origin' }).then(function(r){ return r.json(); }).then(function(d){
     var items = (d && d.showreels) || []; list.textContent = '';
@@ -57,12 +59,12 @@
       v.setAttribute('aria-label', 'Showreel ' + s.name);
       var b = el('div', 'body'); b.appendChild(el('div', 'name', s.name.replace(/^showreel-/, 'Showreel ')));
       b.appendChild(el('div', 'meta', new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size)));
-      var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy caption'), dl = el('a', 'btn g', 'Download');
+      var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('a', 'btn g', 'Download');
       copy.type = 'button'; copy.disabled = true; dl.href = s.video; dl.setAttribute('download', s.name + '.mp4');
-      copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy caption'; copy.classList.remove('done'); }, 1800); }, function(){}); });
+      copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
       row.appendChild(copy); row.appendChild(dl);
       // the caption comes with the reel (NAME.json in the release); captions.json (edited in the repo) wins, so a caption can be fixed after the render
-      caps.then(function(c){ return c[s.name] || (s.info ? fetch(s.info, { credentials: 'same-origin' }).then(function(r){ return r.json(); }) : null); }).then(function(j){ if (j && j.caption) { cap.textContent = j.caption; b.insertBefore(cap, row); copy.disabled = false; } }).catch(function(){});
+      caps.then(function(c){ return c[s.name] || (s.info ? fetch(s.info, { credentials: 'same-origin' }).then(function(r){ return r.json(); }) : null); }).then(function(j){ if (j && j.caption) { cap.textContent = postText(j); b.insertBefore(cap, row); copy.disabled = false; } }).catch(function(){});
       b.appendChild(row); card.appendChild(v); card.appendChild(b); list.appendChild(card);
     });
   }).catch(function(){ list.textContent = ''; list.appendChild(el('p', 'empty', 'Could not load the list right now.')); });

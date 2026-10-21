@@ -4,7 +4,7 @@
   "pad": 6,
   "bpm": 120,
   "layout": "device",
-  "caption": "A rough stone becomes a ring, on scroll. 💎\n\nEvery facet is code: 57 faces, real reflections, no images, no video.\nWould you put this on a jewellery site? 👇\n\n#webdesign #creativecoding #scrollanimation #webgl #jewellerydesign",
+  "caption": "A rough stone becomes a ring, on scroll. 💎\n\nEvery facet is code: 57 faces, real reflections, no images, no video.\nWould you put this on a jewellery site? 👇",
   "segments": [
     {
       "id": "2026-10-17-1420",
@@ -68,5 +68,20 @@
         "q1": 0.98
       }
     }
+  ],
+  "keywords": [
+    "jewellery website design",
+    "luxury website",
+    "scroll animation",
+    "3D product website",
+    "WebGL website",
+    "creative web design"
+  ],
+  "hashtags": [
+    "#creativecoding",
+    "#scrollanimation",
+    "#webgl",
+    "#luxurywebdesign",
+    "#jewelrywebsite"
   ]
 }
