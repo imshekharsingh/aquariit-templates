@@ -662,7 +662,7 @@
     "slug": "halcyra",
     "url": "https://templates.aquariit.com/2026-10-17-1420/",
     "theme": "Dark editorial luxury (theme D sitescroll film day): blue-black ink and bone type, colour arriving only as light: a cut sapphire throws a live spectral fan (spinel into violet) over a framed poster; made-to-order fine jewellery",
-    "layout": "framed poster hero (hairline frame, corner ticks, tiny print row, stone + spectral fan), editorial roman-numeral index of pieces, drop-cap statement with a drawn stone cross-section and three numbers, vertical light-line commission steps, serif quote panel, closing sitting card with time chips, wordmark-centred thin header",
+    "layout": "framed poster hero (hairline frame, corner ticks, print row, a live 3D stone throwing a spectral fan), pinned 'from rough to light' scene (roman-numeral chapters, a facet counter to 58 on a light rail), index of four forms with living stones, statement with light-metered numbers, commission steps on a line of light, glinting serif quote, sitting card; wordmark-centred thin header",
     "palette": [
       "#07080f",
       "#10121c",
@@ -672,10 +672,10 @@
       "#cfd8ff"
     ],
     "fonts": "Host Grotesk + Bodoni Moda (italic)",
-    "motif": "a brilliant-cut sapphire splitting light into a spectral fan (conic wedge + breathing rays) with twinkling four-point sparkles",
-    "animation": "transform-only fan sweep, breathing rays, twinkling sparkles and a bobbing stone; scroll-driven view() entrances on every section, stroke-draw of the stone cross-section and the commission light line, linear() spring on the hero",
+    "motif": "a brilliant-cut sapphire rendered by our own 3D code (57 facets, back facets seen through the front, environment reflections, specular glints, fire), cut from a rough crystal and set in four platinum claws on a band",
+    "animation": "scroll as the cutter's wheel: the rough crystal morphs into the cut stone under a sweeping cutting line while the facet counter runs to 58, polish flare, band and claws rise around it in 3D, a beam enters the crown and leaves as a fan of colour; hero beam and headline light-sweep on load, stone leans to the pointer; caustic WebGL field; word springs, count-ups, magnetic buttons, scroll-speed skew",
     "purpose": "Booking site for a made-to-order fine jewellery maker (private sittings), shown as Aquarii web-design proof in a theme D site-scroll film",
-    "description": "Halcyra: a dark editorial jewellery site where a cut sapphire throws a live spectral fan over the headline, scrolled whole for a reel that answers 'what makes a website look expensive?'",
+    "description": "Halcyra makes fine jewellery to order: a faceted sapphire turns on a framed poster, then the scroll cuts a rough crystal into 58 facets, sets it in claws and splits light into colour; four forms with living stones, the cut, three sittings and a booking card.",
     "era": "modern"
   },
   {
