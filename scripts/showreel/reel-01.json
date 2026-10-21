@@ -1,0 +1,72 @@
+{
+  "name": "showreel-01",
+  "fps": 30,
+  "pad": 6,
+  "bpm": 120,
+  "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇\n\n#webdesign #motiondesign #webgl #creativecoding #uidesign #interactiondesign #webanimation #frontenddevelopment #awwwards #3dwebdesign #scrollanimation #designinspiration",
+  "segments": [
+    {
+      "id": "2026-10-17-1420",
+      "label": "A gem in our own 3D",
+      "note": "57 facets · canvas · no images",
+      "from": 0.9,
+      "dur": 3
+    },
+    {
+      "id": "2026-10-17-1336",
+      "label": "A rigged clay character",
+      "note": "spring physics · squash & stretch",
+      "from": 0.1,
+      "dur": 3,
+      "in": "whip"
+    },
+    {
+      "id": "2026-10-17-1256",
+      "label": "A planet in a shader",
+      "note": "WebGL · light that moves",
+      "from": 0.4,
+      "dur": 3,
+      "in": "zoom"
+    },
+    {
+      "id": "2026-10-17-1336",
+      "label": "Scroll as a timeline",
+      "note": "morning to night, scrubbed",
+      "from": 0.5,
+      "dur": 3,
+      "in": "glitch",
+      "scroll": {
+        "sel": "#day",
+        "q0": 0.0,
+        "q1": 0.96,
+        "ease": "linear"
+      }
+    },
+    {
+      "id": "2026-10-17-1223",
+      "label": "Layers that open on scroll",
+      "note": "pinned scene · depth",
+      "from": 0.5,
+      "dur": 3,
+      "in": "flash",
+      "scroll": {
+        "sel": "#layers",
+        "q0": 0.0,
+        "q1": 1.0
+      }
+    },
+    {
+      "id": "2026-10-17-1420",
+      "label": "Rough stone to ring",
+      "note": "58 facets · scroll-scrubbed",
+      "from": 0.5,
+      "dur": 5,
+      "in": "iris",
+      "scroll": {
+        "sel": "#make",
+        "q0": 0.1,
+        "q1": 0.97
+      }
+    }
+  ]
+}
