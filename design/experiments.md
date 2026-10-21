@@ -69,6 +69,24 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 21 Oct 2026, 17:44 IST audit (new token; @aquarii.techstudio, 12 followers (9 on 18 Oct), 13 posts)
+| posted | format | views | reach | avg watch | likes | comments | saves | shares |
+|---|---|---|---|---|---|---|---|---|
+| 19 Oct | film | 28 | 22 | 2.5 s | 4 | 0 | 0 | 0 |
+| 18 Oct | film | 48 | 32 | 3.2 s | 5 | 0 | 0 | 0 |
+| 18 Oct | film | **329** | **277** | 4.5 s | 11 | 1 | **8** | 0 |
+| 17 Oct | film | 73 | 48 | 4.7 s | 5 | 1 | 0 | 0 |
+| 16 Oct | film | 28 | 15 | 4.2 s | 5 | 0 | 0 | 0 |
+| 15 Oct | film | 133 | 115 | 5.5 s | 8 | 0 | 0 | 0 |
+| 14 Oct | film | 23 | 12 | 9.8 s | 8 | 0 | 0 | 0 |
+| 13 Oct | film (Dantika) | 26 | 14 | 8.1 s | 6 | 0 | 0 | 0 |
+| 9-12 Oct | 5 recordings | 12-122 | 9-110 | 2.4-4.0 s | 5-7 | 0 | 1 | 0 |
+**Read:** (1) the 18 Oct film is the best post so far: 277 reach (2.5x the old best) and 8 saves (2.9% of reach, the first real save signal). (2) Reach is moving:
+the median since 15 Oct is 40 against 15 for 9-14 Oct (2.7x; E12 wants 3x by 29 Oct). Followers went from 9 to 12. (3) **Watch time is sliding on the newest films:**
+4.5, 3.2 and 2.5 s on 18-19 Oct against 8.1-9.8 s for the first films; the newest ones are longer (voiced, about 24 s) and open slower. (4) Shares are still 0 on all 13 posts.
+**Next:** films back to about 18 s with the hook moving in the first second; keep the voice short; end on a line made to be sent to a friend plus Comment "AQUARII";
+find which reel made the 18 Oct jump (the collector cannot match it to a template) and repeat its hook and subject. Token refreshed and stored for 60 days.
+
 ### 21 Oct 2026, verdict (numbers from the last good Instagram collect, 18 Oct 03:44 IST; @aquarii.techstudio, 9 followers, 10 posts)
 The collector has failed every night since 19 Oct: Instagram invalidated the token (code 190, "session invalidated", usually a password change or a Meta security reset).
 The run still shows green because the log is piped through `tee`, so the failure alert never fired. Numbers below are frozen at 18 Oct.
