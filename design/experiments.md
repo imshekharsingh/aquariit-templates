@@ -86,6 +86,10 @@ the median since 15 Oct is 40 against 15 for 9-14 Oct (2.7x; E12 wants 3x by 29 
 4.5, 3.2 and 2.5 s on 18-19 Oct against 8.1-9.8 s for the first films; the newest ones are longer (voiced, about 24 s) and open slower. (4) Shares are still 0 on all 13 posts.
 **Next:** films back to about 18 s with the hook moving in the first second; keep the voice short; end on a line made to be sent to a friend plus Comment "AQUARII";
 find which reel made the 18 Oct jump (the collector cannot match it to a template) and repeat its hook and subject. Token refreshed and stored for 60 days.
+**Which reel (collector now prints links and captions):** the 18 Oct jump is "6 motion styles. 20 seconds. One reel. ⚡" (posted 14:20 IST,
+https://www.instagram.com/reel/DeoSjGQJfrY/): a numbered showcase of styles, not a service pitch, posted in the afternoon. Its 8 saves say people keep it as a reference.
+This is the E7 style-switch idea (open item #2) working in the wild: make it a series. 17 Oct 21:21 and 18 Oct 22:14 are the same Veloria/CDN film posted twice
+(48 and 32 reach); 19 Oct 18:31 is the Aurelia launch film (22 reach, 2.5 s).
 
 ### 21 Oct 2026, verdict (numbers from the last good Instagram collect, 18 Oct 03:44 IST; @aquarii.techstudio, 9 followers, 10 posts)
 The collector has failed every night since 19 Oct: Instagram invalidated the token (code 190, "session invalidated", usually a password change or a Meta security reset).
