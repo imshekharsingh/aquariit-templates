@@ -230,7 +230,19 @@ async function uploadedApi(request, env, p) {
 
 // reel videos stream from the GitHub "reels" release (owner, 17 Oct 2026: the site's 25 MiB per-file cap squeezed the films), behind the same sign-in.
 // Range requests pass through so phones can seek. A public repo needs no key; if it goes private, add a read-only token as the Worker secret GH_READ_TOKEN.
-const REPO = 'imshekharsingh/aquariit-templates', REEL = /^\/reels\/(\d{4}-\d{2}-\d{2}(?:-\d{4})?\.mp4)$/;
+// showreels (owner, 21 Oct 2026): showreel-NAME.mp4 plus its cover .jpg and caption .json come from the same release, listed by /api/showreels
+const REPO = 'imshekharsingh/aquariit-templates', REEL = /^\/reels\/(\d{4}-\d{2}-\d{2}(?:-\d{4})?\.mp4|showreel-[a-z0-9-]{1,60}\.(?:mp4|jpg|json))$/;
+const TYPES = { mp4: 'video/mp4', jpg: 'image/jpeg', json: 'application/json; charset=utf-8' };
+async function showreelList(env) {
+  const h = { 'User-Agent': 'aquarii-templates', Accept: 'application/vnd.github+json', ...(env.GH_READ_TOKEN ? { Authorization: `Bearer ${env.GH_READ_TOKEN}` } : {}) };
+  const r = await fetch(`https://api.github.com/repos/${REPO}/releases/tags/reels`, { headers: h, cf: { cacheTtl: 300, cacheEverything: true } });
+  if (!r.ok) return jres({ error: 'upstream', status: r.status }, 502);
+  const assets = (await r.json()).assets || [], names = new Set(assets.map((a) => a.name));
+  const list = assets.filter((a) => /^showreel-[a-z0-9-]{1,60}\.mp4$/.test(a.name)).map((a) => { const n = a.name.slice(0, -4);
+    return { name: n, video: '/reels/' + a.name, cover: names.has(n + '-cover.jpg') ? `/reels/${n}-cover.jpg` : null, info: names.has(n + '.json') ? `/reels/${n}.json` : null, size: a.size, at: a.updated_at }; })
+    .sort((x, y) => String(y.at).localeCompare(String(x.at)));
+  return jres({ showreels: list });
+}
 async function reelVideo(request, env, name) {
   const ua = { 'User-Agent': 'aquarii-templates' };
   let src = `https://github.com/${REPO}/releases/download/reels/${name}`, first = { ...ua };
@@ -246,7 +258,7 @@ async function reelVideo(request, env, name) {
   let up = await fetch(src, { method: request.method === 'HEAD' ? 'HEAD' : 'GET', headers: { ...first, ...(range ? { Range: range } : {}) }, redirect: 'manual' });
   if (up.status >= 300 && up.status < 400 && up.headers.get('Location')) up = await fetch(up.headers.get('Location'), { method: request.method === 'HEAD' ? 'HEAD' : 'GET', headers: { ...ua, ...(range ? { Range: range } : {}) } });
   if (up.status !== 200 && up.status !== 206) return null;
-  const h = new Headers({ 'Content-Type': 'video/mp4', 'Accept-Ranges': 'bytes', 'Cache-Control': 'private, max-age=3600' });
+  const h = new Headers({ 'Content-Type': TYPES[name.split('.').pop()] || 'application/octet-stream', 'Accept-Ranges': 'bytes', 'Cache-Control': 'private, max-age=3600' });
   for (const k of ['Content-Length', 'Content-Range', 'ETag', 'Last-Modified']) if (up.headers.get(k)) h.set(k, up.headers.get(k));
   return new Response(request.method === 'HEAD' ? null : up.body, { status: up.status, headers: h });
 }
@@ -279,7 +291,7 @@ export default {
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (signedIn) {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
       if (m) { try { const v = await reelVideo(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }
