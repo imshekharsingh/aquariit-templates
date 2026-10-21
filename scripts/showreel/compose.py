@@ -79,6 +79,10 @@ def transition(kind, A, B, p):
         return o
     if kind == 'flash':
         X = A if p < .5 else B; f = math.sin(math.pi * p) ** 1.5; return X * (1 - f) + 255 * f
+    if kind == 'wipe':                                      # before -> after: a lit edge sweeps across and the new version is underneath
+        s = ease(p); xe = int(s * W); o = A.copy(); o[:, :xe] = B[:, :xe]
+        g = np.exp(-((np.arange(W) - xe) / 10.0) ** 2)[None, :, None]; o = o + (255 - o) * g * .9
+        return o
     if kind == 'iris':
         r = ease(p) * DIAG * 1.08; d = np.hypot(xx - W / 2, yy - H * .55)
         m = np.clip((r - d) / 6 + .5, 0, 1)[..., None]; ring = np.clip(1 - abs(d - r) / 5, 0, 1)[..., None] * (1 - p)
@@ -161,10 +165,10 @@ for f in range(TOTAL):
     if f < 14: img = scale(img, 1 + .16 * (1 - f / 14) ** 2)                     # the reel opens moving: a fast push-in
     if k > 0 and f - starts[k] < 6: img = scale(img, 1 + .045 * (1 - (f - starts[k]) / 6) ** 2)                 # beat punch after each cut
     for c_i, c in enumerate(cuts):                          # transitions straddle each cut
-        j = f - c
-        if -TL // 2 <= j < TL // 2:
+        j = f - c; tl = SEG[c_i + 1].get('tl', TL)
+        if -tl // 2 <= j < tl // 2:
             A = frame(c_i, PAD + round(SEG[c_i]['dur'] * FPS) + j); B = frame(c_i + 1, PAD + j)
-            img = transition(SEG[c_i + 1].get('in', 'cut'), A, B, (j + TL // 2 + .5) / TL); k = c_i if j < 0 else c_i + 1
+            img = transition(SEG[c_i + 1].get('in', 'cut'), A, B, (j + tl // 2 + .5) / tl); k = c_i if j < 0 else c_i + 1
     img = overlay(img, k, f)
     enc.stdin.write(img.clip(0, 255).astype(np.uint8).tobytes())
     if f % 60 == 0: print(f'frame {f}/{TOTAL}', flush=True)
