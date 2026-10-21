@@ -18,7 +18,7 @@ Every session and every daily run: read this file, ask about the oldest 1-3 open
 ## Closed
 | Raised | Item | Decision |
 |---|---|---|
-| 13 Oct | E8 comment-keyword CTA (#3) | Owner, 17 Oct: yes, "Comment AQUARII" on every reel (end card, voice, caption); the owner replies to comments |
+| 13 Oct | E8 comment-keyword CTA (#3) | Owner, 17 Oct: yes, "Comment AQUARII" on every reel. **Reversed 21 Oct (owner): no keyword CTA; the account grows as an individual creator** (end card, sign-off, light card and routine updated) |
 | 13 Oct | Reach actions (#6) | Owner: yes, from 15 Oct at 19:30 IST (E12) |
 | 14 Oct | Process review (#134) | Owner: yes to 5 (2-week distribution test + motion freeze, E12), 4 (reference library), 1 (lean CLAUDE.md: owner applies design/proposals/CLAUDE.proposed.md); 3 (signature set) after the 2 weeks; 2 (independent reviewer) later |
 | 14 Oct | CTA contact | Owner: "DM us" only for now (no phone number) |

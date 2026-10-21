@@ -110,6 +110,11 @@ say(`Matched to a template: ${matched} of ${media.length}`);
   for (const m of media.slice().sort((a, b) => String(b.posted_at).localeCompare(String(a.posted_at)))) {
     const x = m.metrics; say([String(m.posted_at || '').slice(0, 10), m.template_id || 'unmatched', n(x.views), n(x.reach), n(x.shares), n(x.saves), n(x.likes), n(x.comments), x.watch_avg_ms != null ? (x.watch_avg_ms / 1000).toFixed(1) : '-', pc(x.shares, x.reach), pc(x.saves, x.reach)].join(' | '));
   }
+  say('\nPosts (newest first): posted IST | reach | link | caption (first line)');
+  for (const m of media.slice().sort((a, b) => String(b.posted_at).localeCompare(String(a.posted_at)))) {
+    const ist = m.posted_at ? new Date(new Date(m.posted_at).getTime() + 5.5 * 3600e3).toISOString().slice(0, 16).replace('T', ' ') : '-';
+    say([ist, n(m.metrics.reach), m.permalink || '-', String(m.caption || '').split('\n')[0].slice(0, 110)].join(' | '));
+  }
   const tot = (k) => media.reduce((a, m) => a + (m.metrics[k] || 0), 0);
   say(`Totals: ${tot('views')} views, ${tot('reach')} reach (sum), ${tot('shares')} shares, ${tot('saves')} saves, ${tot('likes')} likes, ${tot('comments')} comments\n`);
 }
