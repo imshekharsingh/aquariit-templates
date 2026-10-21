@@ -61,8 +61,8 @@
       copy.type = 'button'; copy.disabled = true; dl.href = s.video; dl.setAttribute('download', s.name + '.mp4');
       copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy caption'; copy.classList.remove('done'); }, 1800); }, function(){}); });
       row.appendChild(copy); row.appendChild(dl);
-      // the caption comes with the reel (NAME.json in the release); reels made before that keep theirs in captions.json
-      (s.info ? fetch(s.info, { credentials: 'same-origin' }).then(function(r){ return r.json(); }) : caps.then(function(c){ return c[s.name]; })).then(function(j){ if (j && j.caption) { cap.textContent = j.caption; b.insertBefore(cap, row); copy.disabled = false; } }).catch(function(){});
+      // the caption comes with the reel (NAME.json in the release); captions.json (edited in the repo) wins, so a caption can be fixed after the render
+      caps.then(function(c){ return c[s.name] || (s.info ? fetch(s.info, { credentials: 'same-origin' }).then(function(r){ return r.json(); }) : null); }).then(function(j){ if (j && j.caption) { cap.textContent = j.caption; b.insertBefore(cap, row); copy.disabled = false; } }).catch(function(){});
       b.appendChild(row); card.appendChild(v); card.appendChild(b); list.appendChild(card);
     });
   }).catch(function(){ list.textContent = ''; list.appendChild(el('p', 'empty', 'Could not load the list right now.')); });

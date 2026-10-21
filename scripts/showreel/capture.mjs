@@ -41,8 +41,11 @@ for (const S of R.segments) {
   const focus = [];
   const sel = S.scroll && S.scroll.sel, box = sel ? await p.evaluate((s) => { const r = document.querySelector(s).getBoundingClientRect(); return { t: r.top + scrollY, h: r.height }; }, sel) : null;
   const rate = S.rate || 1, dt = 1000 / FPS * rate, n = Math.round(S.dur * FPS) + 2 * PAD, t0 = (S.from || 0) * 1000 - PAD * dt;   // from = page time
+  if (box) await p.evaluate(({ y }) => window.scrollTo(0, y), { y: box.t + S.scroll.q0 * (box.h - H) });   // settle at the scene's first scroll position first (no stale chapter text)
   // run the clock up to the segment's start (the page's own entrance plays out first), in coarse steps
-  await p.evaluate(({ t0 }) => { let k = 0; while (k < t0) { window.__step(Math.min(50, t0 - k)); k += 50; } }, { t0: Math.max(0, t0) });
+  // (in short chunks with real pauses between, so IntersectionObservers and layout can catch up: scenes that only run while visible get to set their state)
+  await p.waitForTimeout(300);
+  for (let k = 0, T = Math.max(0, t0); k < T; k += 200) { await p.evaluate((d) => { for (let j = 0; j < d; j += 50) window.__step(50); }, Math.min(200, T - k)); await p.waitForTimeout(25); }
   for (let i = 0; i < n; i++) {
     if (box) { const u = Math.min(1, Math.max(0, (i - PAD) / Math.max(1, n - 2 * PAD - 1))), e = S.scroll.ease === 'linear' ? u : u * u * (3 - 2 * u), q = S.scroll.q0 + (S.scroll.q1 - S.scroll.q0) * e;
       await p.evaluate(({ y }) => window.scrollTo(0, y), { y: box.t + q * (box.h - H) }); }
