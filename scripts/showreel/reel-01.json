@@ -3,7 +3,7 @@
   "fps": 30,
   "pad": 6,
   "bpm": 120,
-  "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇\n\n#webdesign #creativecoding #webgl #webanimation #motiondesign",
+  "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
   "segments": [
     {
       "id": "2026-10-17-1420",
@@ -70,5 +70,22 @@
       }
     }
   ],
-  "layout": "device"
+  "layout": "device",
+  "keywords": [
+    "creative website design",
+    "website animation",
+    "scroll animation",
+    "3D website",
+    "WebGL website",
+    "interactive web design",
+    "frontend developer",
+    "motion web design"
+  ],
+  "hashtags": [
+    "#creativecoding",
+    "#webanimation",
+    "#scrollanimation",
+    "#creativedeveloper",
+    "#interactivedesign"
+  ]
 }
