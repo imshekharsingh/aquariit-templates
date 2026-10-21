@@ -5,7 +5,8 @@
 //         BASIC_AUTH_USER / BASIC_AUTH_PASS      the site sign-in (GitHub secrets, same ones the pipeline uses)
 //         SITE_BASE (default https://templates.aquariit.com), IG_API_BASE (default https://graph.instagram.com)   -- overridable for tests
 //   The token is kept alive by itself: a refreshed token is stored on the site (primary account only) and preferred from then on; the GitHub secret is the fallback.
-// Usage: node scripts/ig-collect.mjs [--dry] [--no-refresh] [--refresh] [--limit 50]
+// Usage: node scripts/ig-collect.mjs [--dry] [--no-refresh] [--refresh] [--limit 50] [--slot N]
+//   --slot N      which account (1 = the main one, the default; 2 = the second account, its token in INSTAGRAM_TOKEN_2). Each slot keeps its own refreshed token on the site.
 //   --dry         read from Instagram and print the result, but do not write to the site
 //   --no-refresh  never refresh the token this run;  --refresh  refresh it now (normally: when no stored token exists or it is over 6 days old)
 // Exit code 1 on any problem the owner must know about (bad token, missing permission, site refused); the message says what to do.
@@ -16,13 +17,13 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2), has = (f) => args.includes(f), opt = (n, d) => { const i = args.indexOf(n); return i > -1 ? args[i + 1] : d; };
 const ENV_TOKEN = process.env.INSTAGRAM_TOKEN || '', IG = (process.env.IG_API_BASE || 'https://graph.instagram.com').replace(/\/$/, ''), SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, '');
-const DRY = has('--dry'), LIMIT = Math.max(1, Math.min(100, +opt('--limit', 50)));
+const DRY = has('--dry'), LIMIT = Math.max(1, Math.min(100, +opt('--limit', 50))), SLOT = Math.max(1, Math.min(9, +opt('--slot', 1) || 1)), SECRET = SLOT === 1 ? 'INSTAGRAM_TOKEN' : 'INSTAGRAM_TOKEN_' + SLOT;
 const out = [], say = (m) => { out.push(m); console.log(m); };
 const summary = (md) => { if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, md + '\n'); };
 const die = (m) => { console.error('\n✗ ' + m); summary('### Instagram collector\n\n**Failed:** ' + m); process.exit(1); };
 
 let TOKEN = ENV_TOKEN;
-if (!ENV_TOKEN) die('The GitHub secret INSTAGRAM_TOKEN is missing or empty. Add it under Settings → Secrets and variables → Actions (never paste the token into a chat or a file).');
+if (!ENV_TOKEN) die('The GitHub secret ' + SECRET + ' is missing or empty. Add it under Settings → Secrets and variables → Actions (never paste the token into a chat or a file).');
 
 // ---- Instagram calls. The token travels in the query string, so URLs are never logged and error text is scrubbed. ----
 async function ig(path, params = {}) {
@@ -43,7 +44,7 @@ if (U && P) {
   cookie = (login.headers.getSetCookie ? login.headers.getSetCookie() : []).map((c) => c.split(';')[0]).join('; ');
   if (login.status !== 303 || !cookie) { cookie = ''; if (!DRY) die(`The site refused the sign-in (HTTP ${login.status}). Check the BASIC_AUTH_USER / BASIC_AUTH_PASS secrets.`); }
 }
-if (cookie) { try { const r = await fetch(SITE + '/api/perf/token', { headers: { Cookie: cookie } }); if (r.ok) { const j = await r.json(); if (j && j.token) stored = j; } } catch { /* the secret is the fallback */ } }
+if (cookie) { try { const r = await fetch(SITE + '/api/perf/token?slot=' + SLOT, { headers: { Cookie: cookie } }); if (r.ok) { const j = await r.json(); if (j && j.token) stored = j; } } catch { /* the secret is the fallback */ } }
 const candidates = [...new Set([stored && stored.token, ENV_TOKEN].filter(Boolean))];
 
 // 1. account
@@ -55,7 +56,7 @@ for (const c of candidates) {
 }
 if (!me.ok) {
   const e = me.error, bad = e.code === 190 || me.status === 401;
-  die(bad ? `Instagram rejected the token: ${errText(e)}. Generate a new one (Meta app → Instagram → API setup with Instagram Login → Generate token) and update the GitHub secret INSTAGRAM_TOKEN.`
+  die(bad ? `Instagram rejected the token: ${errText(e)}. Generate a new one (Meta app → Instagram → API setup with Instagram Login → Generate token) and update the GitHub secret ${SECRET}.`
           : `Could not read the account: ${errText(e)}. If this mentions permissions, the token needs the “instagram_business_basic” permission.`);
 }
 const A = me.json;
@@ -131,7 +132,7 @@ if (!has('--no-refresh') && (has('--refresh') || ageDays > 6)) {
     if (DRY) tokenNote += `; a refresh would give a token valid ${days} days (dry run: not stored)`;
     else if (!cookie) tokenNote += '; refreshed but no site sign-in to store it';
     else {
-      const put = await fetch(SITE + '/api/perf/token', { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel', Cookie: cookie }, body: JSON.stringify({ token: r.json.access_token }) });
+      const put = await fetch(SITE + '/api/perf/token?slot=' + SLOT, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel', Cookie: cookie }, body: JSON.stringify({ token: r.json.access_token }) });
       tokenNote += put.ok ? `; refreshed and stored (valid ${days} days)` : `; ⚠ refreshed (valid ${days} days) but storing it failed (HTTP ${put.status}), so the new token was lost; the current one still works`;
     }
   } else tokenNote += `; refresh not possible now: ${errText(r.error || {})} (normal for a token under 24 hours old)`;
@@ -140,7 +141,7 @@ say(`Token: ${tokenNote}`);
 
 // 6. send everything to the site
 const day = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10); // IST day
-const body = { day, account: { username: A.username, followers: A.followers_count, follows: A.follows_count, media_count: A.media_count }, media };
+const body = { day, slot: SLOT, account: { username: A.username, followers: A.followers_count, follows: A.follows_count, media_count: A.media_count }, media };
 if (DRY) { say(`Dry run: would send ${media.length} posts for ${day}. Nothing written.`); summary('### Instagram collector (dry run)\n\n```\n' + out.join('\n') + '\n```'); process.exit(0); }
 if (!U || !P || !cookie) die('BASIC_AUTH_USER / BASIC_AUTH_PASS are not set or not accepted, so the results cannot be saved to the site.');
 const post = await fetch(SITE + '/api/perf/ingest', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel', Cookie: cookie }, body: JSON.stringify(body) });
