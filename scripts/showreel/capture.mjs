@@ -37,6 +37,8 @@ for (const S of R.segments) {
   await p.goto('file://' + resolve('templates', S.id, 'index.html'));
   await p.evaluate(() => document.fonts && document.fonts.ready);
   await p.evaluate(() => { document.documentElement.classList.add('reel'); document.querySelectorAll('.bbar,.bar,header').forEach((e) => { if (e.matches('header,.bbar')) e.style.display = 'none'; }); });
+  if (R.layout === 'crop' && S.hideText !== false) await p.addStyleTag({ content: 'main h1,main h2,main h3,main p,main .lede,main .row,main .cta,main .btn,main .kick,main .print,main .hero-foot,main .chs,main .card2,main .tl,main .meter,main .mhead,main .orbit,main .lab,main ol,main ul,main .head{visibility:hidden!important}' });
+  const focus = [];
   const sel = S.scroll && S.scroll.sel, box = sel ? await p.evaluate((s) => { const r = document.querySelector(s).getBoundingClientRect(); return { t: r.top + scrollY, h: r.height }; }, sel) : null;
   const rate = S.rate || 1, dt = 1000 / FPS * rate, n = Math.round(S.dur * FPS) + 2 * PAD, t0 = (S.from || 0) * 1000 - PAD * dt;   // from = page time
   // run the clock up to the segment's start (the page's own entrance plays out first), in coarse steps
@@ -45,22 +47,26 @@ for (const S of R.segments) {
     if (box) { const u = Math.min(1, Math.max(0, (i - PAD) / Math.max(1, n - 2 * PAD - 1))), e = S.scroll.ease === 'linear' ? u : u * u * (3 - 2 * u), q = S.scroll.q0 + (S.scroll.q1 - S.scroll.q0) * e;
       await p.evaluate(({ y }) => window.scrollTo(0, y), { y: box.t + q * (box.h - H) }); }
     await p.evaluate((d) => window.__step(d), dt);
+    if (S.focus) focus.push(await p.evaluate((s) => { const e = document.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; }, S.focus));
     if (i % every === 0) await p.screenshot({ path: join(dir, String(i).padStart(4, '0') + '.jpg'), type: 'jpeg', quality: 92 });
   }
+  if (S.focus) (await import('fs')).writeFileSync(join(dir, 'focus.json'), JSON.stringify(focus));
   await ctx.close(); console.log(`segment ${si} ${S.id}: ${n} frames`);
 }
 // overlays: one transparent label card per segment (Google font, rendered by the same Chromium)
 { const ctx = await b.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 }), p = await ctx.newPage(), N = R.segments.length;
   for (let k = 0; k < N; k++) { const S = R.segments[k];
     // a compact lower-third panel: the progress bar (drawn by compose.py) sits on its top edge, so nothing of the site shows through behind the words
-    const LY = R.labelY || 1310;
-    await p.setContent(`<html><head><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet"><style>
-      html,body{margin:0;background:transparent}
-      .panel{position:absolute;left:60px;right:60px;top:${LY - 78}px;height:226px;border-radius:30px;background:rgba(9,10,18,.9);border:1.5px solid rgba(255,255,255,.12);box-shadow:0 20px 60px rgba(0,0,0,.45)}
-      .tag{position:absolute;left:96px;top:${LY - 6}px;display:flex;align-items:center;gap:20px;font:600 50px/1 'Space Grotesk',sans-serif;color:#fff;letter-spacing:-.01em;white-space:nowrap}
-      .n{font:700 32px/1 'Space Grotesk',sans-serif;padding:9px 14px;border-radius:999px;background:#fff;color:#0a0b12;letter-spacing:.02em}
-      .note{position:absolute;left:98px;top:${LY + 76}px;font:500 34px/1 'Space Grotesk',sans-serif;color:rgba(255,255,255,.7);letter-spacing:.01em}
-      </style></head><body><div class="panel"></div><div class="tag"><span class="n">${String(k + 1).padStart(2, '0')}/${String(N).padStart(2, '0')}</span>${S.label}</div><div class="note">${S.note || ''}</div></body></html>`);
+    const LY = R.labelY || 1310, L = R.layout || 'full', num = String(k + 1).padStart(2, '0'), tot = String(N).padStart(2, '0');
+    const css = L === 'device'
+      ? `.n{position:absolute;left:72px;top:300px;font:700 40px/1 'Space Grotesk',sans-serif;color:rgba(255,255,255,.62);letter-spacing:.04em}.l{position:absolute;left:72px;top:356px;font:700 66px/1.05 'Space Grotesk',sans-serif;color:#fff;letter-spacing:-.02em}.s{position:absolute;left:74px;top:444px;font:500 36px/1 'Space Grotesk',sans-serif;color:rgba(255,255,255,.75)}`
+      : L === 'crop'
+      ? `.fade{position:absolute;left:0;right:0;top:${LY - 420}px;height:760px;background:linear-gradient(rgba(5,6,12,0),rgba(5,6,12,.78) 62%,rgba(5,6,12,.86))}.n{position:absolute;left:72px;top:${LY - 30}px;font:700 104px/1 'Space Grotesk',sans-serif;color:#fff;letter-spacing:-.03em}.l{position:absolute;left:72px;top:${LY + 86}px;font:700 62px/1.05 'Space Grotesk',sans-serif;color:#fff;letter-spacing:-.02em}.s{position:absolute;left:74px;top:${LY + 166}px;font:500 34px/1 'Space Grotesk',sans-serif;color:rgba(255,255,255,.78)}`
+      : `.panel{position:absolute;left:60px;right:60px;top:${LY - 78}px;height:226px;border-radius:30px;background:rgba(9,10,18,.9);border:1.5px solid rgba(255,255,255,.12)}.tag{position:absolute;left:96px;top:${LY - 6}px;display:flex;align-items:center;gap:20px;font:600 50px/1 'Space Grotesk',sans-serif;color:#fff;white-space:nowrap}.tag .n{font:700 32px/1 'Space Grotesk',sans-serif;padding:9px 14px;border-radius:999px;background:#fff;color:#0a0b12}.s{position:absolute;left:98px;top:${LY + 76}px;font:500 34px/1 'Space Grotesk',sans-serif;color:rgba(255,255,255,.7)}`;
+    const body = L === 'device' ? `<div class="n">${num} / ${tot}</div><div class="l">${S.label}</div><div class="s">${S.note || ''}</div>`
+      : L === 'crop' ? `<div class="fade"></div><div class="n">${num}</div><div class="l">${S.label}</div><div class="s">${S.note || ''}</div>`
+      : `<div class="panel"></div><div class="tag"><span class="n">${num}/${tot}</span>${S.label}</div><div class="s">${S.note || ''}</div>`;
+    await p.setContent(`<html><head><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet"><style>html,body{margin:0;background:transparent}${css}</style></head><body>${body}</body></html>`);
     await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(300);
     await p.screenshot({ path: join(out, `overlay-${String(k + 1).padStart(2, '0')}.png`), omitBackground: true });
   }

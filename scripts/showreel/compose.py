@@ -14,8 +14,35 @@ for s in SEG[:-1]: starts.append(starts[-1] + round(s['dur'] * FPS))
 TOTAL = starts[-1] + round(SEG[-1]['dur'] * FPS)
 TL = 10                                                     # transition length in frames, centred on the cut
 
+LAYOUT = R.get('layout', 'full')
+FOC = {}
+def focus(k, i):
+    if k not in FOC:
+        fp = os.path.join(FR, f'{k + 1:02d}', 'focus.json'); raw = json.load(open(fp)) if os.path.exists(fp) else []
+        sm, prev = [], None
+        for v in raw:                                          # an eased camera: it follows the subject, it does not jitter with it
+            v = v or prev or [201, 300]; prev = v if prev is None else [prev[0] + (v[0] - prev[0]) * .25, prev[1] + (v[1] - prev[1]) * .25]; sm.append(prev)
+        FOC[k] = sm
+    f = FOC[k]; return f[max(0, min(len(f) - 1, i))] if f else [201, 300]
+def layout(k, i, a):
+    if LAYOUT == 'crop':
+        z = SEG[k].get('zoom', 1.55); cx, cy = [v * W / 402 for v in focus(k, i)]; cw, ch = W / z, H / z
+        x0 = min(max(0, cx - cw / 2), W - cw); y0 = min(max(0, cy - ch * .42), H - ch)
+        im = Image.fromarray(a.astype(np.uint8)).crop((int(x0), int(y0), int(x0 + cw), int(y0 + ch))).resize((W, H), Image.BICUBIC); return np.asarray(im, dtype=np.float32)
+    if LAYOUT == 'device':
+        im = Image.fromarray(a.astype(np.uint8)); bg = im.resize((W // 10, H // 10), Image.BILINEAR).filter(ImageFilter.GaussianBlur(2)).resize((W, H), Image.BILINEAR)
+        bg = Image.blend(bg, Image.new('RGB', (W, H), (6, 7, 12)), .5); s = .66; pw, ph = int(W * s), int(H * s); x, y = (W - pw) // 2, 600
+        from PIL import ImageDraw
+        d = ImageDraw.Draw(bg); d.rounded_rectangle([x - 14, y - 14, x + pw + 14, y + ph + 14], 64, fill=(14, 15, 22), outline=(70, 74, 90), width=3)
+        m = Image.new('L', (pw, ph), 0); ImageDraw.Draw(m).rounded_rectangle([0, 0, pw, ph], 52, fill=255); bg.paste(im.resize((pw, ph), Image.BICUBIC), (x, y), m)
+        return np.asarray(bg, dtype=np.float32)
+    return a
+
 def frame(k, i):
-    d = os.path.join(FR, f'{k + 1:02d}'); n = len(os.listdir(d)); i = max(0, min(n - 1, i))
+    return layout(k, i, raw_frame(k, i))
+
+def raw_frame(k, i):
+    d = os.path.join(FR, f'{k + 1:02d}'); n = len([x for x in os.listdir(d) if x.endswith('.jpg')]); i = max(0, min(n - 1, i))
     im = Image.open(os.path.join(d, f'{i:04d}.jpg')).convert('RGB')
     if im.size != (W, H): im = im.resize((W, im.height * W // im.width)).crop((0, 0, W, H))
     return np.asarray(im, dtype=np.float32)
@@ -59,7 +86,7 @@ def transition(kind, A, B, p):
     return B if p >= .5 else A
 
 overlays = [np.asarray(Image.open(os.path.join(FR, f'overlay-{k + 1:02d}.png')).convert('RGBA'), dtype=np.float32) for k in range(NS)]
-LY = R.get('labelY', 1310); BAR_Y, BAR_X0, BAR_X1, GAP = LY - 46, 96, W - 96, 10
+LY = R.get('labelY', 1310); BAR_Y, BAR_X0, BAR_X1, GAP = (262, 72, W - 72, 10) if LAYOUT == 'device' else (LY - 70, 72, W - 72, 10) if LAYOUT == 'crop' else (LY - 46, 96, W - 96, 10)
 segw = (BAR_X1 - BAR_X0 - GAP * (NS - 1)) / NS
 
 def overlay(a, k, f):
