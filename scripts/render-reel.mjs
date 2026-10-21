@@ -122,7 +122,7 @@ if (!REALTIME) {
       box.appendChild(d);
     }, { text: HOOK, delay: COV + LEAD });
   }
-  if (LIGHT) { // light-day end card: Aquarii sign-off over the last 2.8 s, centred, clear of Instagram's bottom and right zones
+  if (LIGHT && process.env.REEL_END_CARD === '1') { // light-day end card: off since 21 Oct 2026 (owner: just the reel, nothing at the end): Aquarii sign-off over the last 2.8 s, centred, clear of Instagram's bottom and right zones
     await pg.evaluate(({ at, line }) => {
       const box = document.querySelector('#reel'); if (!box) return;
       const d = document.createElement('div'); d.setAttribute('aria-hidden', 'true');

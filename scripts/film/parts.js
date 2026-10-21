@@ -615,7 +615,11 @@
   };
   // the studio sign-off: the only constant across all reels. Owner, 14 Oct 2026: no watermark during the film; the name appears once, at the end, with the CTA.
   // It sits at y 540 (the old watermark band: under the captions, above Instagram's caption area), "DM us" in the film's accent colour.
+  // owner, 21 Oct 2026: reels end on the reel itself, no brand card, no sign-off, no name. P.signoff and P.brandEnd stay callable (old stories) but draw nothing
+  // unless a story sets P.BRAND_END = true. New stories hold the payoff to the end and loop back to the opening instead.
+  P.BRAND_END = false;
   P.signoff = function ({ at = 15.4, out = 17.35, y = 540, text = 'Aquarii Tech Studio', cta = '' } = {}) {   // owner, 21 Oct 2026: no keyword CTA, the account grows as an individual creator (was 'Comment AQUARII', E8)
+    if (!P.BRAND_END) return E.el('div', 'display:none', P.front);
     if (P.wmHide) P.wmHide.push([at, out + .25]);                         // an opted-in watermark steps aside while the sign-off says the same thing
     const el = E.el('div', `position:absolute;left:30px;right:30px;top:${y}px;text-align:center;font:700 12px/1 ${MONO};letter-spacing:.24em;color:${hexA(P.light ? '#000000' : '#ffffff', .8)};text-transform:uppercase;white-space:nowrap`, P.front,
       text + (cta ? ` <span style="opacity:.5">·</span> <span style="color:${P.accent}">${cta}</span>` : ''));
@@ -667,6 +671,7 @@
     amber: { mark: 'grayscale(1) sepia(1) saturate(5) hue-rotate(-14deg) brightness(1.08)', word: 'linear-gradient(180deg,#FFE7C2 0%,#FFB35C 45%,#FF6A2C 100%)', wglow: 'rgba(255,150,70,.6)', btn: 'linear-gradient(135deg,#FFB35C,#FF6A2C)', bglow: 'rgba(255,120,50,.55)', halo: '255,140,60', ink: '#1a0900' },
   };
   P.brandEnd = function ({ at = 16.1, keyword = 'SITE', why = 'What’s holding your site back?', fit = null, line = 'Follow for more', out = null, breathe = true, grade = 'blue', ask = 'none' } = {}) {
+    if (!P.BRAND_END) return E.el('div', 'display:none', P.front);
     const G = P.GRADES[grade] || P.GRADES.blue; if (grade !== 'blue') P.use('cta', 'brand-end-' + grade);
     // ask: 'none' (default, owner 21 Oct 2026: no keyword CTA, individual creator account) = mark, name, the why and the follow line only;
     // 'comment' = "Comment AQUARII" (E8, retired), 'dm' = the earlier "DM us to know more"
