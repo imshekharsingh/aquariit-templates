@@ -31,9 +31,10 @@ move by depth with the cursor/finger (idle wander on phones), cards that lean to
 that is the film's big moment, plus scroll-linked depth in every section. Always: WebGL/IO fallbacks, reduced motion = finished still page,
 no large hard shadows that clip, phones checked frame by frame, DPR capped at 2.
 
-## The call to action (owner, 17 Oct 2026, experiment E8; wins over every older "DM us" rule in CLAUDE.md and below)
-Every reel ends on **Comment "AQUARII"**: the end card (P.brandEnd default `ask: 'comment'`, P.signoff, the light-day card), the voice's last line
-("Comment Aquarii and we'll …"), and the caption's last line ("Send this to a founder who … and comment AQUARII"). No other keyword; no "DM us".
+## The ending (owner, 21 Oct 2026; replaces the Comment "AQUARII" rule of 17 Oct and every older "DM us" rule in CLAUDE.md and below)
+No keyword call to action: the account grows as an individual creator's account. Reels end on the brand card (P.brandEnd default `ask: 'none'`, P.signoff
+without a CTA, the light-day card without a pill), a voice line that closes the story naturally, and a caption whose last line invites a share
+("Send this to a founder who …"). Never "Comment …" or "DM us".
 
 ## The approach (owner, 17 Oct 2026, revised the same evening; read first, it wins over anything older below)
 You drive Aquarii's social content. Imagination first, premium, never static. Do not ask the owner anything; design, build, render and report.
@@ -52,7 +53,7 @@ Premium is judged on the piece's own merit, never by how close it is to somethin
    website, and the website's best moment is in the reel. EVERY section of the site moves (scroll-driven entrances with @supports fallback, transform-only
    loops in live visuals, finished by default, off for reduced motion).
 5. **The reel is directed, on film days and light days alike:** camera moves (push-ins, orbits, reveals), close-ups on the best effect, a build to one
-   payoff, a voice story (film/ID/voice.md, 2.3-3.2 words/s, ending on "Comment Aquarii"), the graded sign-off (P.brandEnd `grade` in the piece's own palette).
+   payoff, a voice story (film/ID/voice.md, 2.3-3.2 words/s, ending on a natural closing line, no CTA), the graded sign-off (P.brandEnd `grade` in the piece's own palette).
    Light days use the same engine at lighter cost (e.g. P.siteScroll with push-ins over the live site), not a plain recording.
 6. **Vary the words and the sound** (owner, 17 Oct 2026: "not everything starts with 'is your site slow abroad'"). Read the last 10 `## Hook` lines in
    social/*.md and the first lines of the last 5 film/*/voice.md: never reuse their wording or their shape. Rotate the hook's form: a bold statement, a
@@ -150,7 +151,7 @@ Sources, in this order: design/aligned-plan.md (business, recipe, process), desi
 3. **Show the real work.** When the reel shows a site, use the real template: `node scripts/film/capture-site.mjs ID` writes film/ID/assets/{desk,tab,phone}.jpg; put them
    in device frames that scroll. Never placeholder blocks.
 4. **Voice:** film/ID/voice.md, near-continuous, every line 2.3-3.2 words per second of its slot (`npm run check` refuses anything else, or the reel ships silent),
-   one short breath before the reveal, first line = hook, last line ends "Comment Aquarii". English, "we", AI voice af_heart; never invent clients, years or results; never prices.
+   one short breath before the reveal, first line = hook, last line closes the story (no "Comment …" or "DM us"). English, "we", AI voice af_heart; never invent clients, years or results; never prices.
 5. **Ending:** `P.brandEnd({ at, keyword, why, grade })` (it breathes by itself: push-in, halo, shine). No other sign-off. `grade` colours the Aquarii logo,
    wordmark and button to the film's palette (owner, 17 Oct 2026; presets in parts.js `P.GRADES`, add one when a film's palette has none).
 6. **One new trick** in scripts/film/parts.js per film (`P.use(slot, id)`), as CLAUDE.md asks; reuse parts for everything else.
