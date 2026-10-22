@@ -17,7 +17,7 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-24.04   # Playwright 1.56 has no Chromium build for ubuntu-latest (26.04) yet
-    timeout-minutes: 40
+    timeout-minutes: 75   # shader scenes render on a software GPU (~0.6 s a frame) and motion blur multiplies frames
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}

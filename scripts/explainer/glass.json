@@ -1,0 +1,27 @@
+{
+  "name": "showreel-09-liquid-glass",
+  "seek": "scripts/explainer/glass.html",
+  "dur": 17,
+  "fps": 30,
+  "blur": 4,
+  "shutter": 0.5,
+  "grain": 4,
+  "vignette": true,
+  "cover": 8.8,
+  "caption": "Liquid glass UI, rendered in code. 💧\n\nReal refraction, light that moves, glass that splits and merges like a drop of water. No 3D app, no images: one WebGL shader and a music player underneath.\nSave it for your next interface, or send it to the designer who loves glass.",
+  "keywords": [
+    "liquid glass UI",
+    "glassmorphism",
+    "glass UI design",
+    "WebGL shader",
+    "UI animation",
+    "motion design"
+  ],
+  "hashtags": [
+    "#liquidglass",
+    "#glassmorphism",
+    "#webgl",
+    "#uianimation",
+    "#motiondesign"
+  ]
+}

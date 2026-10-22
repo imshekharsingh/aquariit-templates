@@ -18,7 +18,7 @@ const vf = [];
 if (K > 1) vf.push(`tmix=frames=${K}`, `select='eq(mod(n\\,${K})\\,${K - 1})'`, `setpts=N/(${FPS}*TB)`);
 if (R.grain) vf.push(`noise=alls=${R.grain}:allf=t`);
 if (R.vignette) vf.push('vignette=angle=PI/12');
-const b = await chromium.launch();
+const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });   // software WebGL for shader scenes
 const p = await (await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1080 / W })).newPage();
 const errs = []; p.on('pageerror', (e) => errs.push(e.message));
 await p.goto('file://' + resolve(R.seek)); await p.waitForSelector('html[data-ready]', { timeout: 30000 });
