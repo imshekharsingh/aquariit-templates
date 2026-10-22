@@ -1,0 +1,66 @@
+{
+  "name": "showreel-04-hover",
+  "fps": 30,
+  "pad": 6,
+  "bpm": 120,
+  "layout": "plain",
+  "segments": [
+    {
+      "page": "scripts/showreel/scenes/hover.html?fx=1",
+      "label": "",
+      "from": 0,
+      "dur": 3.3
+    },
+    {
+      "page": "scripts/showreel/scenes/hover.html?fx=2",
+      "label": "",
+      "from": 0,
+      "dur": 3.3,
+      "in": "whip"
+    },
+    {
+      "page": "scripts/showreel/scenes/hover.html?fx=3",
+      "label": "",
+      "from": 0,
+      "dur": 3.3,
+      "in": "zoom"
+    },
+    {
+      "page": "scripts/showreel/scenes/hover.html?fx=4",
+      "label": "",
+      "from": 0,
+      "dur": 3.3,
+      "in": "glitch"
+    },
+    {
+      "page": "scripts/showreel/scenes/hover.html?fx=5",
+      "label": "",
+      "from": 0,
+      "dur": 3.3,
+      "in": "flash"
+    },
+    {
+      "page": "scripts/showreel/scenes/hover.html?fx=6",
+      "label": "",
+      "from": 0,
+      "dur": 3.5,
+      "in": "iris"
+    }
+  ],
+  "caption": "1 button. 6 hover effects. 20 seconds. ✨\n\nMagnetic → liquid fill → glitch → 3D tilt → ripple → particle burst. All built in code.\nWhich one goes on your next site? 👇",
+  "keywords": [
+    "button hover effect",
+    "hover animation",
+    "CSS hover effects",
+    "micro interactions",
+    "UI animation",
+    "web design inspiration"
+  ],
+  "hashtags": [
+    "#hovereffect",
+    "#microinteractions",
+    "#uianimation",
+    "#creativecoding",
+    "#cssanimation"
+  ]
+}
