@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One shape, six behaviours</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Unbounded:wght@900&display=swap" rel="stylesheet">
+<style>
+/* Showreel scene (owner, 22 Oct 2026: "go with A"): one shape, six behaviours, full frame. Each behaviour starts and ends as the same
+   circle, so every cut is a match cut. Drawn on one canvas in 1080x1920 units, driven by performance.now() (the capture steps it);
+   ?t=SECONDS draws one still. */
+*{margin:0}html,body{height:100%;background:#12052e;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="One shape morphing through six behaviours"></canvas>
+<script>
+(function(){
+var W = 1080, H = 1920, CX = 540, CY = 1060, R = 340, SEG = 3;
+var cv = document.getElementById('c'), x = cv.getContext('2d');
+var q = new URLSearchParams(location.search), still = q.has('t') ? +q.get('t') : null;
+function size(){ cv.width = Math.round(innerWidth * devicePixelRatio); cv.height = Math.round(innerHeight * devicePixelRatio); }
+size();
+var cl = function(v, a, b){ return v < a ? a : v > b ? b : v; }, mix = function(a, b, t){ return a + (b - a) * t; };
+var sat = function(v){ return cl(v, 0, 1); }, ss = function(a, b, v){ v = sat((v - a) / (b - a)); return v * v * (3 - 2 * v); };
+var eo3 = function(t){ t = sat(t); return 1 - Math.pow(1 - t, 3); }, ei3 = function(t){ t = sat(t); return t * t * t; };
+var eio = function(t){ t = sat(t); return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+function rng(s){ return function(){ s |= 0; s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function hash(i, j){ var h = Math.imul(i, 374761393) + Math.imul(j, 668265263) | 0; h = Math.imul(h ^ h >>> 13, 1274126177); return ((h ^ h >>> 16) >>> 0) / 4294967295; }
+function noise(px, py){ var i = Math.floor(px), j = Math.floor(py), fx = px - i, fy = py - j; fx = fx * fx * (3 - 2 * fx); fy = fy * fy * (3 - 2 * fy);
+  return mix(mix(hash(i, j), hash(i + 1, j), fx), mix(hash(i, j + 1), hash(i + 1, j + 1), fx), fy); }
+function bg(c0, c1){ var g = x.createRadialGradient(CX, CY - 200, 60, CX, CY, 1300); g.addColorStop(0, c0); g.addColorStop(1, c1); x.fillStyle = g; x.fillRect(-20, -20, W + 40, H + 40); }
+
+var STY = [
+  { name: 'LIQUID', bg: ['#4a12b0', '#12052e'], ink: '#fff' },
+  { name: 'SILK',   bg: ['#2340ff', '#060b5e'], ink: '#fff' },
+  { name: 'FERRO',  bg: ['#f2ff4d', '#b9e600'], ink: '#0b0b0b' },
+  { name: 'JELLY',  bg: ['#5cffd6', '#0fb48e'], ink: '#062a22' },
+  { name: 'SMOKE',  bg: ['#1d1450', '#05060f'], ink: '#fff' },
+  { name: 'GLASS',  bg: ['#0f1a33', '#020308'], ink: '#fff' }
+];
+
+/* 1 liquid: metaballs (conserved volume: the droplets leave the body and come back), lit from their own field gradient */
+var LQ = document.createElement('canvas'); LQ.width = 540; LQ.height = 960; var lq = LQ.getContext('2d'), LD = lq.createImageData(540, 960);
+function liquid(u){
+  var e = Math.sin(Math.PI * sat(u / 2.8)), balls = [], k, dr = [112, 64, 96, 78, 104, 58, 88], sum = 0;
+  for (k = 0; k < 7; k++) sum += dr[k] * dr[k];
+  var mr = Math.sqrt(R * R - sum);
+  balls.push([CX + 26 * Math.sin(u * 3.1) * e, CY + 20 * Math.cos(u * 2.4) * e, mr]);
+  for (k = 0; k < 7; k++) {
+    var a = k * 2 * Math.PI / 7 + (k % 2 ? 1 : -1) * u * .9 + .4, d = e * (330 + 170 * Math.sin(u * 2.1 + k * 1.7));
+    balls.push([CX + Math.cos(a) * d * 1.05, CY + Math.sin(a) * d * 1.35, dr[k] * (1 + .12 * e * Math.sin(u * 5 + k))]);
+  }
+  var D = LD.data, n = balls.length, T = Math.pow(1 - 1 / 2.89, 3), Lx = -.45, Ly = -.62, Lz = .64, Hx = Lx, Hy = Ly, Hz = Lz + 1, hl = Math.hypot(Hx, Hy, Hz); Hx /= hl; Hy /= hl; Hz /= hl;
+  for (b = 0; b < n; b++) balls[b][3] = 1 / (2.89 * balls[b][2] * balls[b][2]);
+  for (var py = 0; py < 960; py++) { var Y = py * 2 + 1;
+    for (var px = 0; px < 540; px++) { var X = px * 2 + 1, f = 0, gx = 0, gy = 0;
+      for (var b = 0; b < n; b++) { var B = balls[b], dx = X - B[0], dy = Y - B[1], q = (dx * dx + dy * dy) * B[3]; if (q >= 1) continue; var w = 1 - q; f += w * w * w; var g = -6 * w * w * B[3]; gx += g * dx; gy += g * dy; }
+      var o = (py * 540 + px) * 4, gl = Math.hypot(gx, gy) * 2 + 1e-6, al = sat((f - T) / gl + .5);
+      if (al <= 0) { D[o + 3] = 0; continue; }
+      var hv = Math.sqrt(Math.max(.002, f - T)), nx = -gx * 130 / hv, ny = -gy * 130 / hv, nl = Math.hypot(nx, ny, 1); nx /= nl; ny /= nl; var nz = 1 / nl;
+      var di = Math.max(0, nx * Lx + ny * Ly + nz * Lz), sp = Math.pow(Math.max(0, nx * Hx + ny * Hy + nz * Hz), 90), sp2 = Math.pow(Math.max(0, .55 * nx + .5 * ny + .67 * nz), 30) * .35, rim = Math.pow(1 - nz, 2.2);
+      var tY = Y / H + .12 * nx, cg = mix(30, 150, tY), cb = mix(170, 40, tY), L = .38 + .78 * di, hi = 255 * (sp + sp2);
+      D[o] = cl(255 * L + hi + 90 * rim, 0, 255); D[o + 1] = cl(cg * L + hi + 40 * rim, 0, 255); D[o + 2] = cl(cb * L + hi + 230 * rim, 0, 255); D[o + 3] = 255 * al;
+    } }
+  lq.putImageData(LD, 0, 0); x.imageSmoothingEnabled = true; x.drawImage(LQ, 0, 0, W, H);
+}
+
+/* 2 silk: a sheet that unfolds from the circle to full bleed and billows; quads shaded from the analytic wave normal */
+var SK = document.createElement('canvas'); SK.width = 540; SK.height = 960; var sk = SK.getContext('2d'), SD = sk.createImageData(540, 960);
+// folds run along one direction and drift slowly, so the sheen forms long streaks like satin
+function sz(X, Y, t){ var a = X * .74 + Y * .67, v = -X * .67 + Y * .74;
+  return 120 * Math.sin(.0058 * a + .9 * Math.sin(.0021 * v - 1.1 * t) - 1.9 * t) + 46 * Math.sin(.0125 * a + 1.3 * Math.sin(.0034 * v + .8 * t) + 2.7 * t) + 14 * Math.sin(.026 * a + .6 * Math.sin(.005 * v) - 3.3 * t); }
+function silk(u){
+  var m = eo3(u / .8) * (1 - eio((u - 2.2) / .8)), t = u + 3, amp = .3 + .7 * m, rm = mix(R, 760, m), D = SD.data;
+  var Lx = -.35, Ly = -.7, Lz = .62, Hx = Lx, Hy = Ly, Hz = Lz + 1, hl = Math.hypot(Hx, Hy, Hz); Hx /= hl; Hy /= hl; Hz /= hl;
+  for (var py = 0; py < 960; py++) { var Y = py * 2 + 1;
+    for (var px = 0; px < 540; px++) { var X = px * 2 + 1, o = (py * 540 + px) * 4, dx = X - CX, dy = Y - CY, th = Math.atan2(dy, dx);
+      var edge = rm * (1 + m * (.13 * Math.sin(3 * th + 2.6 * u) + .06 * Math.sin(7 * th - 4.1 * u) + .03 * Math.sin(13 * th + 6 * u))), al = sat((edge - Math.hypot(dx, dy)) / 2 + .5);
+      if (al <= 0) { D[o + 3] = 0; continue; }
+      var zx = amp * (sz(X + 2, Y, t) - sz(X - 2, Y, t)) / 4, zy = amp * (sz(X, Y + 2, t) - sz(X, Y - 2, t)) / 4;
+      var nx = -zx * 1.5, ny = -zy * 1.5, nl = Math.hypot(nx, ny, 1); nx /= nl; ny /= nl; var nz = 1 / nl;
+      var di = Math.max(0, nx * Lx + ny * Ly + nz * Lz), sp = Math.pow(Math.max(0, nx * Hx + ny * Hy + nz * Hz), 34), g = Y / H, L = .3 + .8 * Math.pow(di, 1.3), fr = 1 - nz;
+      D[o] = cl(255 * L + 255 * sp + 60 * fr, 0, 255); D[o + 1] = cl(mix(70, 150, g) * L + 240 * sp + 40 * fr, 0, 255); D[o + 2] = cl(mix(110, 60, g) * L + 230 * sp + 120 * fr, 0, 255); D[o + 3] = 255 * al;
+    } }
+  sk.putImageData(SD, 0, 0); x.drawImage(SK, 0, 0, W, H);
+}
+
+/* 3 ferrofluid: black spikes that lean and grow toward a magnet sweeping around the frame */
+function ferro(u){
+  var env = eo3(u / .45) * (1 - eio((u - 2.35) / .6)), phi = -2.3 + u * 1.55, MD = 640;
+  var mx = CX + Math.cos(phi) * MD * .78, my = CY + Math.sin(phi) * MD;
+  var ox = CX + Math.cos(phi) * 50 * env, oy = CY + Math.sin(phi) * 50 * env, N = 44, w = 2 * Math.PI / N, pts = [], s;
+  function rad(th){
+    var r = R * (1 - .12 * env) * (1 + .1 * env * Math.pow(Math.max(0, Math.cos(th - phi)), 2)), best = 0;
+    var k = Math.round((th - u * .15) / w), lo = k - 1, hi = k + 1, kk;
+    for (kk = lo; kk <= hi; kk++) {
+      var c = kk * w + u * .15, dd = Math.abs(th - c), al = Math.cos(c - phi), A = env * (70 + 260 * Math.pow(Math.max(0, al), 2.4)) * (.85 + .3 * hash(((kk % N) + N) % N, 7));
+      var h = A * Math.pow(Math.max(0, 1 - dd / (w * .62)), 1.7); if (h > best) best = h;
+      var c2 = c + w / 2, d2 = Math.abs(th - c2), h2 = .5 * A * Math.pow(Math.max(0, 1 - d2 / (w * .45)), 1.7); if (h2 > best) best = h2;
+    }
+    return r + best;
+  }
+  for (s = 0; s < 1100; s++) { var th = s / 1100 * 2 * Math.PI - Math.PI, rr = rad(th); pts.push([ox + Math.cos(th) * rr, oy + Math.sin(th) * rr]); }
+  // shadow pool
+  x.fillStyle = 'rgba(40,60,0,.28)'; x.beginPath(); x.ellipse(CX, CY + R + 150, R * 1.1, 60, 0, 0, 7); x.fill();
+  x.beginPath(); pts.forEach(function(p, i){ i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1]); }); x.closePath();
+  var g = x.createRadialGradient(ox - 120, oy - 140, 20, ox, oy, R * 1.5); g.addColorStop(0, '#3a3a44'); g.addColorStop(.35, '#0c0c10'); g.addColorStop(1, '#000');
+  x.fillStyle = g; x.fill();
+  x.save(); x.clip(); var hg = x.createRadialGradient(ox - 110, oy - 150, 4, ox - 110, oy - 150, 150); hg.addColorStop(0, 'rgba(255,255,255,.75)'); hg.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = hg; x.beginPath(); x.ellipse(ox - 110, oy - 150, 150, 90, -.6, 0, 7); x.fill(); x.restore();
+  x.lineCap = 'round'; x.lineWidth = 4;
+  for (s = 0; s < pts.length; s++) { var p = pts[s], nq = pts[(s + 1) % pts.length], ex = nq[0] - p[0], ey = nq[1] - p[1], el = Math.hypot(ex, ey) || 1, nx = ey / el, ny = -ex / el;
+    var li = Math.pow(Math.max(0, -.55 * nx - .83 * ny), 6); if (li < .04) continue;
+    x.strokeStyle = 'rgba(255,255,255,' + (li * .9).toFixed(3) + ')'; x.beginPath(); x.moveTo(p[0] - nx * 7, p[1] - ny * 7); x.lineTo(nq[0] - nx * 7, nq[1] - ny * 7); x.stroke(); }
+  // the magnet
+  x.save(); x.translate(mx, my); x.rotate(phi + Math.PI / 2); x.globalAlpha = env; x.lineCap = 'butt';
+  x.lineWidth = 58; x.strokeStyle = '#ff2d3a'; x.beginPath(); x.arc(0, 40, 70, Math.PI, 0, true); x.stroke();
+  x.fillStyle = '#e9edf2'; x.fillRect(-99, 34, 58, 46); x.fillRect(41, 34, 58, 46); x.fillStyle = '#9aa3ad'; x.fillRect(-99, 70, 58, 10); x.fillRect(41, 70, 58, 10);
+  x.restore();
+}
+
+/* 4 jelly: hops, squashes on landing, wobbles on two modes; translucent with lagging bubbles */
+var HOPS = [[.12, .86, 430], [.94, 1.56, 240], [1.62, 2.02, 95]];
+function jelly(u){
+  var y = 0, sq = 0, wob = 0, i, lag = 0;
+  for (i = 0; i < HOPS.length; i++) { var h = HOPS[i], p = (u - h[0]) / (h[1] - h[0]);
+    if (p > 0 && p < 1) { y = h[2] * Math.sin(Math.PI * p); sq -= .12 * Math.exp(-p * 9) * (h[2] / 430); lag = Math.cos(Math.PI * p) * h[2] / 430; }
+    var tl = u - h[1]; if (tl > 0) { var amp = h[2] / 430; sq += .3 * amp * Math.exp(-tl * 6) * Math.cos(tl * 26); wob += .07 * amp * Math.exp(-tl * 4.5) * Math.sin(tl * 19); } }
+  var t0 = u - .02; if (t0 > 0 && t0 < .12) sq += .16 * Math.sin(Math.PI * t0 / .12);
+  var sy = 1 - sq, sx = 1 / Math.sqrt(Math.max(.4, sy)), base = CY + R, cy = base - y - R * sy;
+  var sh = 1 - y / 600; x.fillStyle = 'rgba(0,70,55,' + (.35 * sh).toFixed(3) + ')'; x.beginPath(); x.ellipse(CX, base + 18, R * sx * (.6 + .4 * sh), 40 * sh + 8, 0, 0, 7); x.fill();
+  var pts = [], s;
+  for (s = 0; s < 240; s++) { var th = s / 240 * 2 * Math.PI, r = R * (1 + wob * Math.cos(2 * th) + wob * .6 * Math.sin(3 * th + u * 4));
+    var px = Math.cos(th) * r * sx, py = Math.sin(th) * r * sy; if (py > 0 && y < 2) py = Math.min(py, R * sy); pts.push([CX + px, cy + py]); }
+  x.beginPath(); pts.forEach(function(p, k){ k ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1]); }); x.closePath();
+  var g = x.createRadialGradient(CX - 90, cy - 120, 30, CX, cy, R * 1.25); g.addColorStop(0, 'rgba(214,150,255,.96)'); g.addColorStop(.55, 'rgba(140,40,255,.9)'); g.addColorStop(1, 'rgba(70,0,170,.95)');
+  x.fillStyle = g; x.fill();
+  x.save(); x.clip();
+  var rb = rng(4); for (i = 0; i < 14; i++) { var bx = CX + (rb() - .5) * R * 1.3 * sx, by = cy + (rb() - .5) * R * 1.2 * sy + lag * 60 * (1 + rb()), br = 10 + rb() * 26;
+    x.fillStyle = 'rgba(255,255,255,.16)'; x.beginPath(); x.arc(bx, by, br, 0, 7); x.fill(); x.fillStyle = 'rgba(255,255,255,.55)'; x.beginPath(); x.arc(bx - br * .35, by - br * .35, br * .25, 0, 7); x.fill(); }
+  x.lineWidth = 34; x.strokeStyle = 'rgba(255,220,255,.22)'; x.beginPath(); pts.forEach(function(p, k){ k ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1]); }); x.closePath(); x.stroke();
+  x.fillStyle = 'rgba(255,255,255,.8)'; x.beginPath(); x.ellipse(CX - R * .42 * sx, cy - R * .52 * sy, 70 * sx, 34 * sy, -.55, 0, 7); x.fill();
+  x.fillStyle = 'rgba(255,255,255,.9)'; x.beginPath(); x.arc(CX - R * .12 * sx, cy - R * .7 * sy, 13, 0, 7); x.fill();
+  x.restore();
+}
+
+/* 5 smoke: the disc dissolves from its rim inward into curl-noise smoke, then condenses back */
+var NP = 2400, home = [], rel = [], hue = [], sim = null;
+(function(){ var r = rng(11); for (var i = 0; i < NP; i++) { var a = r() * 2 * Math.PI, d = Math.sqrt(r()) * R; home.push([CX + Math.cos(a) * d, CY + Math.sin(a) * d]); rel.push(.08 + .95 * (1 - d / R) + r() * .08); hue.push(r()); } })();
+function psi(px, py, t){ return noise(px + t * .35, py) + .5 * noise(px * 2.1 - t * .3, py * 2.1 + 17.3); }
+function stepSmoke(h, u){ var e = .3, i;
+  for (i = 0; i < NP; i++) { if (u < rel[i]) continue; var X = sim.x[i] * .0032, Y = sim.y[i] * .0032;
+    var vx = (psi(X, Y + e, u) - psi(X, Y - e, u)) / (2 * e), vy = -(psi(X + e, Y, u) - psi(X - e, Y, u)) / (2 * e), age = u - rel[i];
+    var ox = home[i][0] - CX, oy = home[i][1] - CY, ol = Math.hypot(ox, oy) || 1, burst = 260 * Math.exp(-age * 3);
+    sim.x[i] += (vx * 520 + ox / ol * burst) * h; sim.y[i] += (vy * 520 + oy / ol * burst - 110) * h; } }
+var DOT = []; ['255,120,200', '120,230,255'].forEach(function(c){ var d = document.createElement('canvas'); d.width = d.height = 64; var g = d.getContext('2d'), rg = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  rg.addColorStop(0, 'rgba(' + c + ',1)'); rg.addColorStop(.4, 'rgba(' + c + ',.35)'); rg.addColorStop(1, 'rgba(' + c + ',0)'); g.fillStyle = rg; g.fillRect(0, 0, 64, 64); DOT.push(d); });
+function smoke(u){
+  var h = 1 / 60, i;
+  if (!sim || u < sim.u - 1e-6) { sim = { u: 0, x: new Float32Array(NP), y: new Float32Array(NP) }; for (i = 0; i < NP; i++) { sim.x[i] = home[i][0]; sim.y[i] = home[i][1]; } }
+  while (sim.u + h <= u + 1e-6) { sim.u += h; stepSmoke(h, sim.u); }
+  var back = eio((u - 2.15) / .85), rs = R * (1 - sat((u - .08) / .95)), solid = Math.max(sat(1 - (u - .08) / .95) > 0 ? 1 : 0, 0), fin = ss(2.7, 3, u);
+  var gr = function(rad, a){ var g = x.createRadialGradient(CX - 60, CY - 80, 10, CX, CY, rad); g.addColorStop(0, 'rgba(255,190,235,' + a + ')'); g.addColorStop(.6, 'rgba(160,140,255,' + a * .85 + ')'); g.addColorStop(1, 'rgba(90,220,255,' + a * .7 + ')'); return g; };
+  if (rs > 1 && solid) { x.fillStyle = gr(rs, .95); x.beginPath(); x.arc(CX, CY, rs, 0, 7); x.fill(); }
+  x.globalCompositeOperation = 'lighter';
+  for (i = 0; i < NP; i++) { var age = Math.max(0, u - rel[i]), px = mix(sim.x[i], home[i][0], back), py = mix(sim.y[i], home[i][1], back);
+    var sz = 30 + Math.min(age, 1.5) * 50 * (1 - back), a = (age > 0 ? .2 * Math.exp(-age * .3) : .12) * (1 - .3 * back);
+    x.globalAlpha = a; x.drawImage(DOT[hue[i] < .5 ? 0 : 1], px - sz / 2, py - sz / 2, sz, sz); }
+  x.globalAlpha = 1; x.globalCompositeOperation = 'source-over';
+  if (fin > 0) { x.fillStyle = gr(R, .95 * fin); x.beginPath(); x.arc(CX, CY, R, 0, 7); x.fill(); }
+}
+
+/* 6 glass: a lens that refracts the lines behind it, cracks from an impact, a held breath, shatters, then rewinds into the circle */
+var SH = [], IMP = [CX - 40, CY - 70];
+(function(){ var r = rng(23), rings = [0, 92, 186, 268, R], cnt = [6, 10, 14, 19];
+  function rr(k, th){ return k === rings.length - 1 ? R : rings[k] + 14 * Math.sin(th * (3 + k) + k * 2.1) + 8 * Math.sin(th * (7 + k) + k); }
+  for (var k = 1; k < rings.length; k++) { var n = cnt[k - 1], off = r() * 6.28, ang = [];
+    for (var i = 0; i < n; i++) ang.push(off + (i + (r() - .5) * .5) / n * 2 * Math.PI);
+    for (i = 0; i < n; i++) { var a0 = ang[i], a1 = i + 1 < n ? ang[i + 1] : ang[0] + 2 * Math.PI, poly = [], s;
+      for (s = 0; s <= 3; s++) { var th = mix(a0, a1, s / 3); poly.push([CX + Math.cos(th) * rr(k, th), CY + Math.sin(th) * rr(k, th)]); }
+      if (k === 1) poly.push(IMP.slice()); else for (s = 3; s >= 0; s--) { th = mix(a0, a1, s / 3); poly.push([CX + Math.cos(th) * rr(k - 1, th), CY + Math.sin(th) * rr(k - 1, th)]); }
+      var cx = 0, cy = 0; poly.forEach(function(p){ cx += p[0]; cy += p[1]; }); cx /= poly.length; cy /= poly.length;
+      var dx = cx - IMP[0], dy = cy - IMP[1], dl = Math.hypot(dx, dy) || 1, sp = 900 + r() * 1300;
+      SH.push({ p: poly, c: [cx, cy], v: [dx / dl * sp, dy / dl * sp * 1.1 - 120], spin: (r() - .5) * 7, d: dl, tint: r() }); } } })();
+function lines(scale){ x.strokeStyle = 'rgba(120,170,255,.16)'; x.lineWidth = 3; x.beginPath();
+  for (var k = -40; k < 40; k++) { var o = k * 92; x.moveTo(CX + (o - 1400) * scale, CY + (-1400) * scale); x.lineTo(CX + (o + 1400) * scale, CY + 1400 * scale); } x.stroke(); }
+function glass(u){
+  var tau = 0, imp = 1.2;
+  if (u > imp) { var a = u - imp, out = (1 - Math.exp(-a * 3.2)) / 3.2, peak = (1 - Math.exp(-.95 * 3.2)) / 3.2; tau = a < .95 ? out : peak * (1 - eio((a - .95) / .85)); }
+  var shake = u > .9 && u < imp ? Math.sin(u * 140) * 3 * (u - .9) / .3 : 0;
+  lines(1);
+  x.save(); x.translate(shake, 0);
+  var crack = function(sh){ return sat((u - .5) * 3.2 - sh.d / 330); };
+  SH.forEach(function(sh){
+    var px = sh.c[0] + sh.v[0] * tau, py = sh.c[1] + sh.v[1] * tau + 420 * tau * tau, rot = sh.spin * tau, sc = 1 + tau * .5 * (.5 + sh.tint);
+    x.save(); x.translate(px, py); x.rotate(rot); x.scale(sc, sc); x.translate(-sh.c[0], -sh.c[1]);
+    x.beginPath(); sh.p.forEach(function(p, i){ i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1]); }); x.closePath();
+    var path = function(){ x.beginPath(); sh.p.forEach(function(p, i){ i ? x.lineTo(p[0], p[1]) : x.moveTo(p[0], p[1]); }); x.closePath(); };
+    x.save(); x.clip(); x.translate(CX, CY); x.scale(1.22, 1.22); x.translate(-CX, -CY); x.rotate(.05); lines(1); x.restore(); path();
+    var g = x.createLinearGradient(sh.c[0] - 200, sh.c[1] - 200, sh.c[0] + 200, sh.c[1] + 200);
+    g.addColorStop(0, 'rgba(200,245,255,' + (.2 + .12 * sh.tint) + ')'); g.addColorStop(1, 'rgba(120,180,255,.06)'); x.fillStyle = g; x.fill();
+    var cr = crack(sh); if (cr > 0 || tau > 0) { x.lineWidth = 2.5 / sc; x.strokeStyle = 'rgba(235,250,255,' + Math.min(1, Math.max(cr, tau * 3)).toFixed(3) + ')'; x.stroke(); }
+    x.restore(); });
+  var whole = 1 - sat(tau * 12);
+  if (whole > 0) { x.globalAlpha = whole;
+    x.lineWidth = 7; x.strokeStyle = 'rgba(220,250,255,.95)'; x.beginPath(); x.arc(CX, CY, R, 0, 7); x.stroke();
+    var sw = ((u * .6) % 1.4) - .2; x.save(); x.beginPath(); x.arc(CX, CY, R, 0, 7); x.clip();
+    var sg = x.createLinearGradient(CX - R + sw * 2 * R - 140, 0, CX - R + sw * 2 * R + 140, 0); sg.addColorStop(0, 'rgba(255,255,255,0)'); sg.addColorStop(.5, 'rgba(255,255,255,.45)'); sg.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = sg; x.translate(CX, CY); x.rotate(-.5); x.translate(-CX, -CY); x.fillRect(CX - R - 300, CY - R - 300, 2 * R + 600, 2 * R + 600); x.restore(); x.globalAlpha = 1; }
+  if (u > imp - .02 && u < imp + .35) { x.globalCompositeOperation = 'lighter'; var fl = 1 - (u - imp) / .35; var fg = x.createRadialGradient(IMP[0], IMP[1], 0, IMP[0], IMP[1], 900);
+    fg.addColorStop(0, 'rgba(220,245,255,' + (.9 * fl) + ')'); fg.addColorStop(1, 'rgba(220,245,255,0)'); x.fillStyle = fg; x.fillRect(0, 0, W, H); x.globalCompositeOperation = 'source-over'; }
+  x.restore();
+}
+
+var FX = [liquid, silk, ferro, jelly, smoke, glass];
+function label(i, u, ink){
+  x.fillStyle = ink; x.textBaseline = 'alphabetic';
+  x.font = '700 34px "Space Grotesk"'; x.letterSpacing = '5px'; x.globalAlpha = .82; x.fillText('ONE SHAPE · SIX BEHAVIOURS', 84, 300); x.globalAlpha = 1;
+  for (var k = 0; k < 6; k++) { x.globalAlpha = k === i ? 1 : k < i ? .55 : .2; x.fillRect(84 + k * 154, 326, 140, 7);
+    if (k === i) { x.globalAlpha = .35; } } x.globalAlpha = 1;
+  x.fillRect(84 + i * 154, 326, 140 * sat(u / SEG), 7);
+  x.font = '900 168px Unbounded'; x.letterSpacing = '-4px';
+  var name = STY[i].name, cx = 80;
+  x.save(); x.beginPath(); x.rect(0, 360, W, 210); x.clip();
+  for (var c = 0; c < name.length; c++) { var p = eo3((u - c * .045) / .42), q2 = ei3((u - 2.72 - c * .02) / .26), dy = (1 - p) * 200 - q2 * 200;
+    x.fillText(name[c], cx, 530 + dy); cx += x.measureText(name[c]).width - 4; }
+  x.restore(); x.letterSpacing = '0px';
+  x.font = '700 30px "Space Grotesk"'; x.globalAlpha = .8 * ss(.15, .5, u) * (1 - ss(2.7, 2.95, u)); x.fillText('0' + (i + 1) + ' / 06', 84, 610); x.globalAlpha = 1;
+}
+function frame(t){
+  t = ((t % (SEG * 6)) + SEG * 6) % (SEG * 6);
+  var i = Math.min(5, Math.floor(t / SEG)), u = t - i * SEG, S = STY[i];
+  x.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+  bg(S.bg[0], S.bg[1]);
+  var punch = i ? 1 + .07 * Math.exp(-u * 9) : 1;
+  x.save(); x.translate(CX, CY); x.scale(punch, punch); x.translate(-CX, -CY); FX[i](u); x.restore();
+  label(i, u, S.ink);
+  if (i && u < .12) { x.fillStyle = 'rgba(255,255,255,' + (.35 * (1 - u / .12)) + ')'; x.fillRect(0, 0, W, H); }
+}
+window.__frame = frame;
+document.fonts.load('900 168px Unbounded').then(function(){ return document.fonts.load('700 34px "Space Grotesk"'); }).catch(function(){}).then(function(){
+  if (still != null) { frame(still); document.documentElement.dataset.ready = 1; return; }
+  (function loop(){ frame(Math.max(0, performance.now() / 1000)); requestAnimationFrame(loop); })();
+});
+})();
+</script>
+</body>
+</html>
