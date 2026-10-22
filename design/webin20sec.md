@@ -42,6 +42,8 @@ Every reel should be something a designer saves for reference or sends to the pe
 ## Post text
 The first caption line holds the search words in plain language. Then one line with the six keywords joined by ` · `, then exactly five niche hashtags.
 No call to action and nothing at the end of the reel (owner, 21 Oct); the caption may invite a send.
+The owner gets it as one block to copy whole, with no labels (owner, 22 Oct): on the Showreels page (Copy post text), in the Showreel ready issue, and in the chat message.
+Keywords and hashtags are chosen for reach: what people type into Instagram search for this kind of reel, the most specific first; no broad tags.
 
 ## Measure and decide
 - The daily audit records per reel: reach, average watch, saves, shares, and the series it belongs to, next to @techin20sec's numbers.
