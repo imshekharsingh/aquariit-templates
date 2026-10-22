@@ -48,7 +48,6 @@ jobs:
           DRY: ${{ inputs.dry }}
           REFRESH: ${{ inputs.refresh }}
         run: |
-          node scripts/build-kits.mjs >/dev/null
           flags=""
           [ "$DRY" = "true" ] && flags="$flags --dry"
           [ "$REFRESH" = "true" ] && flags="$flags --refresh"

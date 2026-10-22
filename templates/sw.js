@@ -1,9 +1,9 @@
-// Aquarii Templates service worker.
+// webin20sec app service worker (home = Showreels, /archive/ = the old templates).
 // Network-first: HTML + /design-log.json (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v9';
+const VERSION = 'v10';
 const CACHE = `aquarii-${VERSION}`;
-const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/design-log.json', '/social-kits.json', '/kit/', '/play/player.js', '/uploaded.js', '/icons/icon.svg'];
+const SHELL = ['/', '/archive/', '/404.html', '/manifest.webmanifest', '/design-log.json', '/showreels/captions.json', '/icons/icon.svg'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => Promise.all(SHELL.map((u) => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));
@@ -25,7 +25,7 @@ const put = (req, res) => {
 const networkFirst = async (req, fallbackUrl) => {
   try { return put(req, await fetch(req)); }
   catch {
-    return (await caches.match(req, { ignoreSearch: new URL(req.url).pathname === '/kit/' })) || (fallbackUrl && (await caches.match(fallbackUrl))) ||
+    return (await caches.match(req)) || (fallbackUrl && (await caches.match(fallbackUrl))) ||
       new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
   }
 };
@@ -45,7 +45,7 @@ self.addEventListener('fetch', (e) => {
 
   if (url.pathname.startsWith('/reels/')) return; // large videos with Range requests: straight to the network, never cached
   if (fontHost || url.pathname.startsWith('/icons/')) return e.respondWith(cacheFirst(req));
-  if (req.mode === 'navigate' || url.pathname === '/design-log.json' || url.pathname === '/social-kits.json' || url.pathname.endsWith('.html')) {
+  if (req.mode === 'navigate' || url.pathname === '/design-log.json' || url.pathname === '/showreels/captions.json' || url.pathname.endsWith('.html')) {
     return e.respondWith(networkFirst(req, req.mode === 'navigate' ? '/' : null));
   }
   e.respondWith(networkFirst(req, null));

@@ -1,14 +1,10 @@
 {
-  "name": "aquarii-templates",
+  "name": "webin20sec",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/build-kits.mjs",
-    "check": "node scripts/build-kits.mjs && node --check templates/play/player.js && node scripts/check.mjs && html-validate \"templates/**/*.html\"",
-    "icons": "node scripts/make-icons.mjs",
-    "reel": "node scripts/render-reel.mjs",
-    "audio:selftest": "node scripts/audio/selftest.mjs",
-    "film": "node scripts/film/render-film.mjs"
+    "check": "node scripts/check.mjs && html-validate \"templates/**/*.html\"",
+    "icons": "node scripts/make-icons.mjs"
   },
   "devDependencies": {
     "html-validate": "^11.16.2",

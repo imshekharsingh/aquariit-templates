@@ -124,20 +124,6 @@ jobs:
         if: always()
         run: |
           if [ "${{ steps.d1.outcome }}" = "success" ]; then echo "D1 reel-tick tracking: ON"; else echo "::warning::D1 reel-tick tracking is OFF (could not find/create the database; check the token has D1 Edit permission). The site still deployed."; fi
-      - name: Attach recent reels so the site can serve them behind the sign-in (never blocks the deploy)
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # covers only (owner, 17 Oct 2026): the videos stream from the "reels" release through src/worker.js at full quality, so no 25 MiB squeeze;
-          # the 30 newest covers from the release (test reels such as ID-voice.mp4 have no cover and are not for posting)
-          mkdir -p templates/reels
-          for f in $(gh release view reels --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' 2>/dev/null | grep -E '\.jpg$' | grep -E '^[0-9]{4}-' | grep -vE -- '-(voice|draft|needsfix)' | sort -r | head -n 30); do
-            gh release download reels --repo "$GITHUB_REPOSITORY" --pattern "$f" --dir templates/reels --clobber
-          done
-          # the site cannot hold a file over 25 MiB (the whole deploy would fail): leave an oversized reel out instead
-          find templates/reels -type f -size +25M -print -delete | sed 's/^/::warning::left out (over 25 MiB): /' || true
-          ls -la templates/reels | tail -n +2 || true
       - uses: cloudflare/wrangler-action@v3
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
@@ -176,7 +162,7 @@ jobs:
           check "$B/login" 401 -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=wrong-$RANDOM" || exit 1
           check "$B/login" 303 -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" || exit 1
           grep -q aq_session "$J" || { echo "No session cookie was issued"; exit 1; }
-          for path in "" design-log.json social-kits.json kit/ play/player.js ${LATEST:+$LATEST/}; do
+          for path in "" archive/ design-log.json showreels/captions.json ${LATEST:+$LATEST/}; do
             check "$B/$path" 200 -b "$J" || exit 1                      # signed-in (cookie) access
           done
           check "$B/design-log.json" 200 --user "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" || exit 1  # scripts can still use a Basic header
@@ -225,29 +211,23 @@ jobs:
           done
           echo "performance API signed in: HTTP $code (200 = database ready, 501 = no database bound)"
           [ "$code" = "200" ] || [ "$code" = "501" ] || { echo "unexpected status"; exit 1; }
-      - name: Check every attached reel is served to signed-in users only
+      - name: Check the newest showreel is served to signed-in users only
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
         run: |
           curl() { command curl --connect-timeout 15 --max-time 120 --retry 4 --retry-all-errors --retry-delay 5 "$@"; }
-          # videos stream from the reels release through the Worker; check the newest 3 (first KiB only) plus their covers
-          files=$(ls templates/reels/*-cover.jpg 2>/dev/null | sort -r | head -n 3 | sed 's/-cover\.jpg$/.mp4/')
-          if [ -z "$files" ]; then echo "No reels attached yet."; exit 0; fi
-          B=https://templates.aquariit.com; J=$(mktemp); bad=0
+          # videos stream from the "reels" release through the Worker (src/worker.js); check the newest one (first KiB only)
+          B=https://templates.aquariit.com; J=$(mktemp)
           curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
-          for f in $files; do
-            n=$(basename "$f"); c="${n%.mp4}-cover.jpg"
-            out=$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n"); [ "$out" != "200" ] || { echo "::error::$n is reachable without signing in"; exit 1; }
-            v=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -H 'Range: bytes=0-1023' -b "$J" "$B/reels/$n"); i=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -b "$J" "$B/reels/$c")
-            echo "$n: signed out $out | signed in video [$v] cover [$i]"
-            case "$v" in "200 "*|"206 "*) ;; *) bad=1;; esac; case "$i" in "200 "*) ;; *) bad=1;; esac
-          done
-          [ "$bad" = "0" ] || { echo "::error::a reel or its cover is not served to a signed-in user"; exit 1; }
-          kit=$(curl -s -b "$J" "$B/kit/")
-          echo "$kit" | grep -q "Save / share to Instagram" && echo "live kit page has the Save / share button" || { echo "::error::the live kit page is missing the Save / share button"; exit 1; }
+          n=$(curl -s -b "$J" "$B/api/showreels" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{try{const s=JSON.parse(d).showreels||[];console.log(s.length?s[0].name:"")}catch{console.log("")}})')
+          if [ -z "$n" ]; then echo "::warning::/api/showreels listed nothing"; exit 0; fi
+          out=$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n.mp4"); [ "$out" != "200" ] || { echo "::error::$n.mp4 is reachable without signing in"; exit 1; }
+          v=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -H 'Range: bytes=0-1023' -b "$J" "$B/reels/$n.mp4")
+          echo "$n.mp4: signed out $out | signed in [$v]"
+          case "$v" in "200 "*|"206 "*) ;; *) echo "::error::$n.mp4 is not served to a signed-in user"; exit 1;; esac
       - name: Summary
-        run: echo "Deployed. Home https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"
+        run: echo "Deployed. Showreels https://templates.aquariit.com/ · Archive https://templates.aquariit.com/archive/" >> "$GITHUB_STEP_SUMMARY"
 
   notify:
     needs: [checks, merge, deploy]

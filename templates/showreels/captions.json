@@ -17,7 +17,8 @@
    "#scrollanimation",
    "#creativedeveloper",
    "#interactivedesign"
-  ]
+  ],
+  "hidden": true
  },
  "showreel-01-v2": {
   "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
@@ -37,7 +38,8 @@
    "#scrollanimation",
    "#creativedeveloper",
    "#interactivedesign"
-  ]
+  ],
+  "hidden": true
  },
  "showreel-01": {
   "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
@@ -57,7 +59,8 @@
    "#scrollanimation",
    "#creativedeveloper",
    "#interactivedesign"
-  ]
+  ],
+  "hidden": true
  },
  "showreel-02-halcyra": {
   "caption": "A rough stone becomes a ring, on scroll. 💎\n\nEvery facet is code: 57 faces, real reflections, no images, no video.\nWould you put this on a jewellery site? 👇",
@@ -75,7 +78,8 @@
    "#webgl",
    "#luxurywebdesign",
    "#jewelrywebsite"
-  ]
+  ],
+  "hidden": true
  },
  "showreel-03-before-after": {
   "caption": "Same website. Without motion → with motion. ✨\n\nA gem that turns, a day that plays as you scroll, a product that opens layer by layer. All built in code.\nWhich one changed the most? 👇",
@@ -93,7 +97,8 @@
    "#creativecoding",
    "#interactivedesign",
    "#motionui"
-  ]
+  ],
+  "hidden": true
  },
  "showreel-04-hover": {
   "caption": "1 button. 6 hover effects. 20 seconds. ✨\n\nMagnetic → liquid fill → glitch → 3D tilt → ripple → particle burst. All built in code.\nWhich one goes on your next site? 👇",
@@ -111,6 +116,10 @@
    "#uianimation",
    "#creativecoding",
    "#cssanimation"
-  ]
+  ],
+  "hidden": true
+ },
+ "showreel-06-easing": {
+  "hidden": true
  }
 }

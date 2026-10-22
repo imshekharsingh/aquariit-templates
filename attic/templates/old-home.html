@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aquarii Templates — one page, every day</title>
+<meta name="description" content="A new original webpage template every day.">
+<meta name="theme-color" content="#0b2a3a">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Templates">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root{--bg:#f6f2e9;--card:#fffdf8;--ink:#10232d;--mute:#5d6b72;--line:#dcd5c4;--accent:#c4452b;--hero:#0b2a3a;--hero-ink:#f4efe4}
+  @media (prefers-color-scheme:dark){:root{--bg:#081720;--card:#0f2430;--ink:#eee8da;--mute:#97a8b0;--line:#1f3a47;--accent:#ff8a5c;--hero:#0f2f40;--hero-ink:#f4efe4}}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;line-height:1.5;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px}
+  header{padding:48px 0 28px;position:relative}
+  .gear{position:absolute;top:36px;right:0;width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+  .gear:hover{border-color:var(--accent);color:var(--accent)}.gear svg{width:22px;height:22px}
+  .libln{display:inline-block;margin-top:14px;padding:8px 14px;border-radius:99px;border:1px solid currentColor;color:var(--accent);font:600 .9rem/1 system-ui,sans-serif;text-decoration:none}
+  .styles{display:flex;gap:12px;overflow-x:auto;margin:6px -20px 18px;padding:4px 20px 10px;scroll-snap-type:x mandatory;scroll-padding-left:20px;-webkit-overflow-scrolling:touch}
+  .styles a{flex:0 0 132px;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:flex-end;height:150px;padding:12px;border-radius:18px;background:var(--g);color:#fff;text-decoration:none;font:600 .85rem/1.2 system-ui,sans-serif;box-shadow:inset 0 -60px 50px -30px rgba(0,0,0,.55)}
+  .styles b{font:800 1.3rem/1 system-ui,sans-serif;letter-spacing:.02em}.styles span{margin-top:4px}.styles i{font-style:normal;font-weight:500;opacity:.8;font-size:.75rem;margin-top:2px}
+  .eyebrow{font:600 .8rem/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+  h1{font-size:clamp(2.4rem,9vw,4rem);line-height:1;letter-spacing:-.03em;margin:.4em 0 .3em;font-weight:600}
+  .lede{color:var(--mute);font-size:1.15rem;margin:0;max-width:34em}
+  .today{display:block;margin:24px 0 8px;padding:26px 24px;border-radius:24px;background:var(--hero);color:var(--hero-ink);text-decoration:none;position:relative;overflow:hidden;min-height:48px}
+  .today::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,#ff8a5c55,transparent 70%)}
+  .today small{font:600 .75rem/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+  .today strong{display:block;font-size:1.7rem;margin:.35em 0 .15em;letter-spacing:-.02em}
+  .today span{opacity:.8}
+  .today.waiting{background:transparent;border:1.5px dashed var(--line);color:var(--mute)}
+  .today.waiting::after{display:none}
+  h2{font:600 .8rem/1 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin:40px 0 12px}
+  ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+  li{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}
+  li a.row{flex:1;min-width:0;display:grid;grid-template-columns:4.5rem 1fr auto;gap:4px 16px;align-items:center;padding:16px 4px;min-height:64px;color:inherit;text-decoration:none;transition:background .2s,padding .2s}
+  li a.row:hover{background:var(--card);padding-inline:14px}
+  .kit{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:1.5px solid var(--accent);border-radius:999px;color:var(--accent);font:700 .8rem system-ui,sans-serif;text-decoration:none;white-space:nowrap}
+  .kit:hover{background:var(--accent);color:var(--bg)}
+  .kit svg{width:15px;height:15px}
+  .play{flex:none;width:46px;height:46px;border-radius:50%;border:0;background:var(--accent);color:var(--bg);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 0 -1px rgba(0,0,0,.22);transition:transform .15s}
+  .play:hover{transform:scale(1.07)}.play:active{transform:translateY(2px)}
+  .play svg{width:20px;height:20px;margin-left:2px}
+  .ticket{position:relative}
+  li.posted a.row{opacity:.5}li.posted a.row:hover{opacity:.9}
+  .ticket .tkrow{display:flex;align-items:center;padding:0 14px 12px;color:var(--hero-ink)}.ticket .tkrow .ru{color:inherit}.ticket .tkrow .bx{border-color:currentColor}
+  .rubar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:32px 0 6px;font:600 .9rem system-ui,sans-serif;color:var(--mute)}
+  .rubar b{color:var(--ink)}
+  .rubar .sp{flex:1}
+  .rubar .f{min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:inherit;font:700 .8rem system-ui,sans-serif;cursor:pointer}
+  .rubar .f[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .ticket .play{position:absolute;top:22px;right:20px;width:60px;height:60px;z-index:2;background:linear-gradient(135deg,#2ee6c5,#c6ff3d);color:#042;box-shadow:0 0 0 0 rgba(46,230,197,.6);animation:ping 2.4s infinite}
+  .ticket .play svg{width:26px;height:26px}
+  @keyframes ping{70%{box-shadow:0 0 0 16px rgba(46,230,197,0)}100%{box-shadow:0 0 0 0 rgba(46,230,197,0)}}
+  @media (prefers-reduced-motion:reduce){.ticket .play{animation:none}}
+  .today small{display:block;max-width:calc(100% - 78px);line-height:1.5}
+  .today strong{max-width:calc(100% - 78px)}
+  li a:focus-visible,.today:focus-visible,.kit:focus-visible,.stub:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  /* ticket: today's card with a tear-off "Post kit" stub */
+  .ticket{margin:24px 0 8px;border-radius:24px;overflow:hidden;background:var(--hero);color:var(--hero-ink)}
+  .ticket .today{margin:0;border-radius:0;background:transparent}
+  .stub{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 24px;min-height:56px;border-top:2px dashed rgba(244,239,228,.35);color:var(--hero-ink);text-decoration:none;font:700 .95rem system-ui,sans-serif;position:relative}
+  .stub::before,.stub::after{content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:var(--bg)}
+  .stub::before{left:-10px}.stub::after{right:-10px}
+  .stub>span:last-child{white-space:nowrap}
+  .stub:hover{background:rgba(255,255,255,.08)}
+  .stub small{display:block;font:500 .78rem system-ui,sans-serif;opacity:.75;letter-spacing:0;text-transform:none}
+  .d{font:600 .95rem system-ui,sans-serif;color:var(--accent);font-variant-numeric:tabular-nums}
+  .d .t{font:500 .72rem system-ui,sans-serif;color:var(--mute)}
+  .n{font-size:1.2rem;font-weight:600;letter-spacing:-.01em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .m{font:.8rem system-ui,sans-serif;color:var(--mute);text-transform:capitalize;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .arrow{display:none}
+  .empty{text-align:center;padding:56px 12px;color:var(--mute);border:1.5px dashed var(--line);border-radius:24px;margin-top:32px}
+  .empty svg{width:64px;height:64px;color:var(--accent)}
+  .out{text-align:center;margin-top:36px;font:.85rem system-ui,sans-serif}.out a{color:var(--mute)}
+  .hint{margin-top:20px;padding:18px 20px;border-radius:18px;background:var(--card);border:1px solid var(--line);font:.9rem/1.5 system-ui,sans-serif;color:var(--mute)}
+  .hint[hidden]{display:none}
+  @media (max-width:520px){li{gap:2px}li a.row{grid-template-columns:3.4rem minmax(0,1fr);gap:4px 10px;padding-inline:0}.m{grid-column:2}.kit{width:44px;padding:0;justify-content:center}.kit .kl{display:none}}
+  @media (prefers-reduced-motion:no-preference){.wrap>*{animation:in .6s both}@keyframes in{from{opacity:0;transform:translateY(12px)}}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <button class="gear" type="button" id="gear" aria-label="Reel settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    <div class="eyebrow">Aquarii Templates</div>
+    <h1>One page,<br>every day.</h1>
+    <p class="lede">A new original webpage template each day — tap one to explore it.</p>
+    <a class="libln" href="/styles/">Style library →</a> <a class="libln" href="/showreels/">Showreels →</a>
+  </header>
+  <nav class="styles" aria-label="Style library">
+    <a href="/2026-10-17-1223/" style="--g:radial-gradient(circle at 60% 30%,#ffb35c,#ff6a2c 30%,#1a1030 70%,#05060a)"><b>G1</b><span>Cinema film</span><i>Aurelia</i></a>
+    <a href="/2026-10-17-1656/" style="--g:radial-gradient(circle at 30% 70%,#ff2bd6,#7a0a68 22%,#143740 55%,#071416)"><b>G3</b><span>Route-wall film</span><i>Kruxa</i></a>
+    <a href="/2026-10-17-1443/" style="--g:radial-gradient(circle at 50% 75%,#5cd0ff,#2f6bff 25%,#0a1430 60%,#04060b)"><b>G2</b><span>Edge cinema film</span><i>Nimbra</i></a>
+    <a href="/2026-10-17-1256/" style="--g:radial-gradient(130% 70% at 50% 115%,#0c1630 0 46%,#ffb45a 48%,#3a2a20 56%,#04060d 75%)"><b>F2</b><span>Planet from orbit</span><i>live scene</i></a>
+    <a href="/styles/f1/" style="--g:linear-gradient(160deg,#dcdbe5,#9aa0b3)"><b>F1</b><span>Misty peaks</span><i>live scene</i></a>
+    <a href="/styles/#b1" style="--g:radial-gradient(circle at 40% 35%,#ffffff,#bfeee0 45%,#1b1f2a 75%)"><b>B1</b><span>Clay character</span><i>live</i></a>
+    <a href="/2026-10-17-1420/" style="--g:conic-gradient(from 200deg at 50% 80%,#07080f 0 20%,#ff4f9a 30%,#ffd28a 36%,#5af0be 42%,#4a5cff 50%,#07080f 62%)"><b>D2</b><span>Spectral-light scroll</span><i>Halcyra</i></a>
+    <a href="/2026-10-16-2055/" style="--g:linear-gradient(160deg,#06070b 40%,#ff6a1a 70%,#2ee6c9)"><b>D1</b><span>Silk-light scroll</span><i>Quillmint</i></a>
+    <a href="/2026-10-17-0851/" style="--g:linear-gradient(160deg,#5b3cf5,#ff8fb0 60%,#ffd23f)"><b>E1</b><span>Clay page</span><i>Pillowpost</i></a>
+    <a href="/2026-10-16-0850/" style="--g:linear-gradient(160deg,#0a8f55,#ff7ab8 70%,#ffe14d)"><b>A1</b><span>Makeover collage</span><i>Oventide</i></a>
+    <a href="/styles/" style="--g:linear-gradient(160deg,#2a2f3d,#141720)"><b>All</b><span>Style library</span><i>codes &amp; notes</i></a>
+  </nav>
+  <div id="today"></div>
+  <div id="list"></div>
+  <p class="out"><a href="/logout">Sign out</a></p>
+  <p class="hint" id="install" hidden>Install this as an app: tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.</p>
+</main>
+<script src="/play/player.js"></script>
+<script src="/uploaded.js"></script>
+<script>
+(function () {
+  var today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+  var todayEl = document.getElementById('today'), listEl = document.getElementById('list');
+
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function fmt(d, opts) { return new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', Object.assign({ timeZone: 'UTC' }, opts)); }
+  function title(e) { return e.name || e.slug.replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }); }
+  var PLAY_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>';
+  function playBtn(id, name) {
+    var b = el('button', 'play'); b.type = 'button'; b.setAttribute('aria-label', 'Play ' + name + ' for screen recording'); b.title = 'Play for screen recording'; b.innerHTML = PLAY_SVG;
+    b.addEventListener('click', function () { if (window.Reel) window.Reel.start(id); });
+    return b;
+  }
+  document.getElementById('gear').addEventListener('click', function () { if (window.Reel) window.Reel.openSettings(); });
+  function key(e) { return e.id || e.date; }
+  function path(e) { return '/' + key(e) + '/'; }
+  function clock(e) {
+    if (!e.time) return '';
+    var h = +e.time.slice(0, 2), m = e.time.slice(3, 5);
+    return (h % 12 || 12) + ':' + m + ' ' + (h < 12 ? 'am' : 'pm');
+  }
+
+  var LOG = [], FLT = 'all';
+  function setFilter(f) { FLT = f; render(LOG); }
+  function render(log) {
+    LOG = Array.isArray(log) ? log : [];
+    var U = window.ReelUploaded, all = LOG.slice().sort(function (a, b) { return key(a) < key(b) ? 1 : -1; });
+    log = all.filter(function (e) { return FLT === 'all' || (FLT === 'done') === !!(U && U.has(key(e))); });
+    var t = all.filter(function (e) { return e.date === today; })[0];
+    todayEl.textContent = '';
+    if (t) {
+      var a = el('a', 'today'); a.href = path(t);
+      a.appendChild(el('small', null, "Latest today · " + fmt(t.date, { day: 'numeric', month: 'long' }) + (t.time ? ' · ' + clock(t) : '')));
+      a.appendChild(el('strong', null, title(t)));
+      a.appendChild(el('span', null, t.description));
+      var tk = el('div', 'ticket'); tk.appendChild(a); tk.appendChild(playBtn(key(t), title(t)));
+      if (window.ReelUploaded) { var tr = el('div', 'tkrow'); tr.appendChild(window.ReelUploaded.make(key(t), { name: title(t), label: true })); tk.appendChild(tr); }
+      var st = el('a', 'stub'); st.href = '/kit/?id=' + encodeURIComponent(key(t));
+      var lab = el('span', null, 'Post kit'); lab.appendChild(el('small', null, 'Caption · 5 hashtags · Reel plan · music'));
+      st.appendChild(lab); st.appendChild(el('span', null, 'Open →')); tk.appendChild(st);
+      todayEl.appendChild(tk);
+    } else {
+      var w = el('div', 'today waiting'); w.appendChild(el('small', null, 'Today'));
+      w.appendChild(el('strong', null, "Today's template is on its way"));
+      todayEl.appendChild(w);
+    }
+    listEl.textContent = '';
+    if (U && all.length) {
+      var bar = el('div', 'rubar'), n = U.count(all.map(key)), st = el('span');
+      if (!U.ready()) st.textContent = 'Loading uploads…';
+      else if (!U.available()) st.textContent = 'Upload tracking is unavailable right now';
+      else st.innerHTML = 'Reels uploaded <b>' + n + '</b> of ' + all.length;
+      bar.appendChild(st); bar.appendChild(el('span', 'sp'));
+      if (U.available()) [['all', 'All'], ['todo', 'To upload'], ['done', 'Uploaded']].forEach(function (f) { var b = el('button', 'f', f[1]); b.type = 'button'; b.setAttribute('aria-pressed', String(FLT === f[0])); b.addEventListener('click', function () { setFilter(f[0]); }); bar.appendChild(b); });
+      listEl.appendChild(bar);
+    }
+    if (!log.length) {
+      var em = el('div', 'empty');
+      em.innerHTML = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><rect x="10" y="10" width="20" height="20" rx="5"/><rect x="34" y="10" width="20" height="20" rx="5"/><rect x="10" y="34" width="20" height="20" rx="5"/><rect x="34" y="34" width="20" height="20" rx="5" stroke-dasharray="4 4"/></svg>';
+      em.appendChild(el('p', null, all.length ? (FLT === 'todo' ? 'Everything is uploaded. Nice.' : 'Nothing is marked uploaded yet.') : 'No templates yet. The first one lands soon.'));
+      listEl.appendChild(em); return;
+    }
+    var month = '', ul;
+    log.forEach(function (e) {
+      var m = fmt(e.date, { month: 'long', year: 'numeric' });
+      if (m !== month) { month = m; listEl.appendChild(el('h2', null, m)); ul = el('ul'); listEl.appendChild(ul); }
+      var li = el('li', U && U.has(key(e)) ? 'posted' : ''), a = el('a', 'row'); a.href = path(e);
+      if (U) li.appendChild(U.make(key(e), { name: title(e) }));
+      var d = el('span', 'd', fmt(e.date, { day: '2-digit', month: 'short' }));
+      if (e.time) { d.appendChild(document.createElement('br')); d.appendChild(el('small', 't', clock(e))); }
+      a.appendChild(d);
+      a.appendChild(el('span', 'n', title(e)));
+      a.appendChild(el('span', 'm', e.theme || ''));
+      li.appendChild(a);
+      var kb = el('a', 'kit'); kb.href = '/kit/?id=' + encodeURIComponent(key(e)); kb.setAttribute('aria-label', 'Post kit for ' + title(e));
+      kb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11h6M9 15h4"/></svg>';
+      kb.appendChild(el('span', 'kl', 'Kit')); li.appendChild(kb); li.appendChild(playBtn(key(e), title(e))); ul.appendChild(li);
+    });
+  }
+
+  window.addEventListener('reel-uploaded', function () { if (LOG.length) render(LOG); });
+  fetch('/design-log.json', { cache: 'no-cache' }).then(function (r) { if (r.status === 401) { location.replace('/login?next=' + encodeURIComponent(location.pathname + location.search)); throw 0; } return r.json(); }).then(render).catch(function () { render([]); });
+
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  if (!standalone) document.getElementById('install').hidden = false;
+  if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+})();
+</script>
+</body>
+</html>
