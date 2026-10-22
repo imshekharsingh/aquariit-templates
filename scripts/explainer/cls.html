@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Layout shift explainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* 30 s explainer: why a button jumps under your thumb (layout shift / CLS). Stage is 540x960 CSS px (rendered at 2x = 1080x1920).
+   Every frame is a pure function of t: window.seek(t) sets every style; nothing runs on its own clock.
+   Facts: web.dev/articles/cls (score = impact fraction x distance fraction; good <= 0.1, poor > 0.25),
+   HTTP Archive Web Almanac 2025, Performance chapter (62% of mobile pages leave at least one image unsized).
+   Five colours: paper, ink (and its tints), shift blue (anything measured), red (the wrong tap), green (good). One typeface. */
+:root{
+  --paper:#f2f1ec; --ink:#151515; --shift:#3b5bfd; --bad:#e2412e; --good:#18935a;
+  --mute:rgba(21,21,21,.5); --line:rgba(21,21,21,.12); --tint:rgba(21,21,21,.06);
+  --f:'Geist',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--f);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.abs{position:absolute}
+#cap{left:34px;right:34px;top:126px;height:124px;overflow:hidden}
+#cap p{position:absolute;left:0;right:0;top:0;font:600 35px/1.06 var(--f);letter-spacing:-.03em;text-wrap:balance}
+#src{left:34px;top:246px;height:24px;overflow:hidden}
+#src span{display:block;font:500 13px/24px var(--f);color:var(--mute)}
+/* the phone screen: 380x680 CSS px is the viewport used for the CLS math */
+#screen{left:0;top:0;width:380px;height:680px;background:#fff;border-radius:34px;overflow:hidden;transform-origin:0 0;box-shadow:0 0 0 1px var(--line),0 40px 70px -40px rgba(21,21,21,.45)}
+#hdr{left:0;top:0;width:380px;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--line)}
+#hdr b{font:700 17px/1 var(--f);letter-spacing:-.03em}
+#hdr span{font:500 13px/1 var(--f);color:var(--mute)}
+#banner{left:0;top:56px;width:380px;height:0;overflow:hidden}
+#ph{position:absolute;left:16px;right:16px;top:12px;height:119px;border-radius:14px;background:var(--tint);display:flex;align-items:center;justify-content:center;font:500 13px/1 var(--f);color:var(--mute)}
+#img{position:absolute;left:16px;right:16px;top:12px;height:119px;border-radius:14px;background:var(--ink);color:var(--paper);padding:18px 20px;display:flex;flex-direction:column;justify-content:space-between}
+#img small{font:500 12px/1 var(--f);opacity:.6;letter-spacing:.06em;text-transform:uppercase}
+#img b{font:700 26px/1 var(--f);letter-spacing:-.035em}
+#img i{font:600 12px/1 var(--f);font-style:normal;border:1px solid rgba(242,241,236,.35);border-radius:999px;padding:6px 10px;align-self:flex-start}
+#content{left:0;top:56px;width:380px;height:306px}
+.row{position:absolute;left:22px;right:22px;display:flex;align-items:center;gap:12px;font:500 15px/1.25 var(--f)}
+.row small{display:block;color:var(--mute);font-size:12px}
+.thumb{width:50px;height:50px;border-radius:12px;background:var(--tint);flex:none;position:relative;overflow:hidden}
+.thumb:after{content:"";position:absolute;inset:14px 10px;border-radius:6px;background:rgba(21,21,21,.1)}
+.row .r{margin-left:auto;font-weight:600}
+.btn{position:absolute;left:22px;right:22px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font:600 16px/1 var(--f);letter-spacing:-.01em}
+#cancel{top:120px;background:#fff;box-shadow:inset 0 0 0 1.5px var(--line)}
+#pay{top:254px;background:var(--ink);color:#fff}
+#note{top:186px;justify-content:center;color:var(--mute);font-size:13px}
+#flash{left:0;top:56px;width:380px;height:624px;background:#fff;opacity:0}
+/* measuring overlays live inside the screen, so they move and scale with it */
+#impact{left:0;top:56px;width:380px;height:0;background:rgba(59,91,253,.13);box-shadow:inset 0 0 0 2px var(--shift);opacity:0}
+#impact span{position:absolute;left:12px;top:8px;font:600 11px/1 var(--f);color:var(--shift);letter-spacing:.06em;text-transform:uppercase}
+#ghost{left:22px;width:336px;height:52px;border:2px dashed var(--ink);border-radius:14px;top:310px;opacity:0}
+#dist{left:12px;width:2px;top:336px;height:0;background:var(--shift);opacity:0}
+#dist:before,#dist:after{content:"";position:absolute;left:-6px;width:14px;height:2px;background:var(--shift)}
+#dist:before{top:0}#dist:after{bottom:0}
+#dlab{left:24px;top:0;font:600 13px/1 var(--f);color:#fff;background:var(--shift);border-radius:6px;padding:5px 7px;opacity:0}
+#tap{left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(21,21,21,.16);box-shadow:0 0 0 2px rgba(21,21,21,.5);opacity:0}
+/* the right-hand column */
+#calc{left:312px;top:296px;width:180px}
+.ln{font:500 14px/1 var(--f);color:var(--mute);margin-bottom:22px;opacity:0}
+.ln b{display:block;font:700 42px/1 var(--f);letter-spacing:-.04em;color:var(--ink);margin-top:7px}
+.ln b.k{color:var(--shift)}
+#meter{left:312px;top:600px;width:140px;opacity:0}
+#meter .bar{position:relative;height:8px;display:flex;gap:3px}
+#meter .bar i{display:block;height:100%;border-radius:2px}
+#meter .lab{position:relative;height:12px;margin-top:8px;font:500 11px/1 var(--f);color:var(--mute)}
+#meter .lab span{position:absolute;top:0;transform:translateX(-50%)}
+#needle{position:absolute;top:-9px;width:3px;margin-left:-1.5px;height:26px;border-radius:2px;background:var(--ink)}
+#verdict{font:600 14px/1 var(--f);margin-top:12px}
+#code{left:332px;width:176px;top:300px;background:var(--ink);color:var(--paper);border-radius:16px;padding:16px 16px;font:500 14px/1.55 var(--f);white-space:pre;opacity:0}
+#code .add{color:#9db0ff}
+#score{left:332px;top:300px;width:150px;background:#fff;border-radius:16px;padding:16px;box-shadow:0 0 0 1px var(--line);opacity:0}
+#score small{display:block;font:500 12px/1 var(--f);color:var(--mute)}
+#score b{display:block;font:700 44px/1 var(--f);letter-spacing:-.04em;margin:8px 0 10px}
+#score span{display:flex;align-items:center;gap:8px;font:600 14px/1 var(--f);color:var(--good)}
+#score span:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--good)}
+</style>
+</head>
+<body>
+<div id="cap" class="abs"></div>
+<div id="src" class="abs"><span></span></div>
+<div id="screen" class="abs">
+  <div id="hdr" class="abs"><b>Fernlot</b><span>Checkout · 2 of 2</span></div>
+  <div id="banner" class="abs"><div id="ph">1200 × 450 reserved</div><div id="img"><small>Autumn edit</small><b>20% off all linen</b><i>Shop the edit</i></div></div>
+  <div id="content" class="abs">
+    <div class="row" style="top:16px"><div class="thumb"></div><div>Linen throw<small>Oat · 130 × 170 cm</small></div><div class="r">$48.00</div></div>
+    <div class="row" style="top:84px;color:var(--mute)"><div>Total</div><div class="r" style="color:var(--ink)">$48.00</div></div>
+    <div id="cancel" class="btn">Cancel order</div>
+    <div id="note" class="row">Delivery Thu 24 Oct · Free</div>
+    <div id="pay" class="btn">Pay $48.00</div>
+  </div>
+  <div id="flash" class="abs"></div>
+  <div id="impact" class="abs"><span>Moved area</span></div>
+  <div id="ghost" class="abs"></div>
+  <div id="dist" class="abs"></div>
+  <div id="dlab" class="abs">143 px</div>
+  <div id="tap" class="abs"></div>
+</div>
+<div id="calc" class="abs">
+  <div class="ln" id="l1">Impact fraction<b class="k">0.66</b></div>
+  <div class="ln" id="l2">× Distance fraction<b class="k">0.21</b></div>
+  <div class="ln" id="l3">= Layout shift<b>0.14</b></div>
+</div>
+<div id="meter" class="abs">
+  <div class="bar"><i style="width:40px;background:var(--good)"></i><i style="width:57px;background:rgba(21,21,21,.18)"></i><i style="flex:1;background:var(--bad)"></i><span id="needle"></span></div>
+  <div class="lab"><span style="left:0;transform:none">0</span><span style="left:41px">0.1</span><span style="left:101px">0.25</span></div>
+  <div id="verdict">Needs improvement</div>
+</div>
+<div id="code" class="abs">&lt;img
+  src="banner.jpg"<span class="add" id="attr"></span>&gt;</div>
+<div id="score" class="abs"><small>Layout shift</small><b>0.00</b><span>Good</span></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); };
+  var mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, fi, fo){ return out(P(t, a, a + fi)) * (1 - io(P(t, b - fo, b))); };   // in at a, out by b
+  // the shift itself: a layout jump, fast with a small settle
+  var snap = function(k){ return k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-7 * k) * Math.cos(9 * k) * (1 - k); };
+  var SHIFT = 143, PAYY = 56 + 254 + 26, CAPS = [
+    [0, 'Why did I just cancel my order?'],
+    [5.4, 'The page moved under your thumb.'],
+    [9.4, 'Google scores that movement.'],
+    [15.6, '62% of mobile pages still leave an image unsized.'],
+    [18.6, 'The fix: tell the browser the size.'],
+    [24.6, 'Reserve the space. Nothing jumps.']
+  ], SRC = [[6.3, 8.9, 'Replay · ¼ speed'], [9.4, 15.6, 'Cumulative Layout Shift · web.dev'], [15.6, 18.6, 'HTTP Archive · Web Almanac 2025'], [20.7, 22.2, 'Same page, image has a size']];
+  var cap = $('cap'); CAPS.forEach(function(c){ var p = document.createElement('p'); p.textContent = c[1]; cap.appendChild(p); c.el = p; });
+  function caption(t){
+    for (var i = 0; i < CAPS.length; i++) {
+      var a = CAPS[i][0], b = i + 1 < CAPS.length ? CAPS[i + 1][0] : 29.6, inK = i === 0 ? 1 : out(P(t, a, a + .5)), outK = io(P(t, b - .32, b));
+      CAPS[i].el.style.transform = 'translateY(' + ((1 - inK) * 124 - outK * 124) + 'px)'; CAPS[i].el.style.visibility = t >= a && t < b ? 'visible' : 'hidden';
+    }
+    if (t >= 29.6) { var k = out(P(t, 29.6, 30)); CAPS[0].el.style.visibility = 'visible'; CAPS[0].el.style.transform = 'translateY(' + ((1 - k) * 124) + 'px)'; }
+    var s = $('src').firstChild, txt = '', y = 24;
+    SRC.forEach(function(r){ if (t >= r[0] && t < r[1]) { txt = r[2]; y = (1 - out(P(t, r[0], r[0] + .4))) * 24 - io(P(t, r[1] - .25, r[1])) * 24; } });
+    s.textContent = txt; s.style.transform = 'translateY(' + y + 'px)';
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(30, t));
+    caption(t);
+    // banner height: the late image shifts the page (4.6), a fast rewind and a slow replay (6.4-7.9), the measuring beat,
+    // a rewind (18), then the fixed page reloads with the space already reserved (20.7), and everything returns to frame 0
+    var bh = 0;
+    if (t >= 4.6 && t < 5.9) bh = SHIFT * snap(P(t, 4.6, 4.78));
+    else if (t >= 5.9 && t < 6.4) bh = SHIFT * (1 - io(P(t, 5.9, 6.3)));
+    else if (t >= 6.4 && t < 18) bh = SHIFT * io(P(t, 6.4, 7.9));
+    else if (t >= 18 && t < 20.7) bh = SHIFT * (1 - io(P(t, 18, 18.8)));
+    else if (t >= 20.7 && t < 29.4) bh = SHIFT;
+    else if (t >= 29.4) bh = SHIFT * (1 - io(P(t, 29.4, 30)));
+    var fixed = t >= 20.7;
+    $('banner').style.height = bh + 'px';
+    $('ph').style.visibility = fixed ? 'visible' : 'hidden';
+    $('img').style.opacity = fixed ? out(P(t, 22, 22.4)) : 1;
+    $('content').style.transform = 'translateY(' + bh + 'px)';
+    $('flash').style.opacity = t >= 20.5 && t < 21.2 ? out(P(t, 20.5, 20.65)) * (1 - out(P(t, 20.75, 21.15))) : 0;
+    // camera: close-up (question, hook) -> wide to measure -> mid shot for the fix and payoff -> close-up again (loop)
+    var A = [1.24, 270 - 190 * 1.24, 278], B = [.7, 26, 282], C = [.78, 26, 272], k1 = io(P(t, 9, 9.9)), k2 = io(P(t, 18.9, 19.7)), k3 = io(P(t, 29.4, 30));
+    var cs = [0, 1, 2].map(function(i){ return mix(mix(mix(A[i], B[i], k1), C[i], k2), A[i], k3); });
+    $('screen').style.transform = 'translate(' + cs[1] + 'px,' + cs[2] + 'px) scale(' + cs[0] + ')';
+    // the finger: comes in and taps where Pay is; in the replay it waits there; later it taps again on the fixed page
+    var tx = 190, ty = PAYY, ta = 0, press = 0;
+    if (t >= 1.4 && t < 9.4) { var k = io(P(t, 1.4, 4.5)); tx = mix(330, 190, k); ty = mix(640, PAYY, k); ta = P(t, 1.4, 1.7) * (1 - P(t, 8.9, 9.3));
+      press = Math.max(P(t, 4.62, 4.7) * (1 - P(t, 4.8, 4.95)), P(t, 7.82, 7.9) * (1 - P(t, 8, 8.15))); }
+    if (t >= 22.6 && t < 25.4) { var k2b = io(P(t, 22.6, 24.1)); tx = mix(330, 190, k2b); ty = mix(640, PAYY + SHIFT, k2b); ta = P(t, 22.6, 22.9) * (1 - P(t, 24.9, 25.3)); press = P(t, 24.1, 24.18) * (1 - P(t, 24.3, 24.45)); }
+    $('tap').style.opacity = ta; $('tap').style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + (1 - .22 * press) + ')';
+    // the wrong tap: Cancel order is under the finger when it lands
+    var hit = (t >= 4.7 && t < 5.9) || (t >= 7.9 && t < 18), cc = $('cancel');
+    cc.style.background = hit ? 'var(--bad)' : '#fff'; cc.style.color = hit ? '#fff' : 'var(--ink)'; cc.style.boxShadow = hit ? 'none' : ''; cc.textContent = hit ? 'Order cancelled' : 'Cancel order';
+    // replay annotation: where Pay was, and how far everything moved
+    $('ghost').style.opacity = win(t, 6.3, 18.3, .3, .3);
+    var d = $('dist'); d.style.opacity = t >= 6.4 && t < 18.3 ? 1 - io(P(t, 18, 18.3)) : 0; d.style.height = Math.max(0, bh) + 'px';
+    var dl = $('dlab'), dk = win(t, 7.9, 18.3, .3, .3); dl.style.opacity = dk; dl.style.top = (PAYY + SHIFT - 62) + 'px'; dl.style.transform = 'translateX(' + (dk - 1) * 8 + 'px)';
+    // proof: the moved area (union of before and after), the formula, the threshold
+    var im = $('impact'); im.style.opacity = win(t, 10.1, 18.3, .3, .3); im.style.height = (306 + SHIFT) * io(P(t, 10.1, 10.8)) + 'px';
+    [['l1', 11.2], ['l2', 12.2], ['l3', 13.2]].forEach(function(l){ var e = $(l[0]), k = win(t, l[1], 18.3, .45, .3); e.style.opacity = k; e.style.transform = 'translateY(' + (1 - k) * 18 + 'px)'; });
+    var mk = win(t, 14, 18.3, .4, .3); $('meter').style.opacity = mk; $('meter').style.transform = 'translateY(' + (1 - mk) * 18 + 'px)';
+    $('needle').style.left = mix(0, 140 * .14 / .35, io(P(t, 14.3, 15.3))) + 'px';
+    // turn: the code gains a size
+    var c = $('code'), ck = win(t, 19.3, 24.6, .45, .35); c.style.opacity = ck; c.style.transform = 'translateY(' + (1 - ck) * 20 + 'px)';
+    var add = '\n  width="1200"\n  height="450"'; $('attr').textContent = add.slice(0, Math.round(add.length * P(t, 19.8, 20.5)));
+    // payoff: the tap lands on Pay
+    var paid = t >= 24.2 && t < 29.6, pb = $('pay'); pb.textContent = paid ? 'Paid ✓' : 'Pay $48.00'; pb.style.background = paid ? 'var(--good)' : 'var(--ink)';
+    var sk = win(t, 24.9, 29.5, .45, .35); $('score').style.opacity = sk; $('score').style.transform = 'translateY(' + (1 - sk) * 20 + 'px)';
+  }
+  window.seek = seek; window.DURATION = 30;
+  document.fonts.ready.then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
