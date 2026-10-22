@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080"><title>@techin20sec logo: a stopwatch dial, lime arc a third of the way round, 20 SEC</title><style>@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@900&amp;family=Space+Grotesk:wght@700&amp;display=swap");</style>
+<defs><radialGradient id="bgA" cx=".5" cy=".42" r=".7"><stop offset="0" stop-color="#151a2b"/><stop offset="1" stop-color="#05060b"/></radialGradient>
+<linearGradient id="arcA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e9ff6a"/><stop offset="1" stop-color="#7dff4f"/></linearGradient>
+<filter id="glowA" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18"/></filter></defs>
+<rect width="1080" height="1080" fill="url(#bgA)"/>
+<g transform="translate(540 540)">
+<circle r="330" fill="none" stroke="#1f2538" stroke-width="44"/>
+<g stroke="#2c3350" stroke-width="10" stroke-linecap="round">
+ <line x1="0" y1="-392" x2="0" y2="-366"/><line x1="0" y1="392" x2="0" y2="366"/><line x1="392" y1="0" x2="366" y2="0"/><line x1="-392" y1="0" x2="-366" y2="0"/></g>
+<path d="M0 -330 A330 330 0 0 1 285.8 165" fill="none" stroke="url(#arcA)" stroke-width="44" stroke-linecap="round" filter="url(#glowA)" opacity=".75"/>
+<path d="M0 -330 A330 330 0 0 1 285.8 165" fill="none" stroke="url(#arcA)" stroke-width="44" stroke-linecap="round"/>
+<circle cx="285.8" cy="165" r="34" fill="#fff"/><circle cx="285.8" cy="165" r="70" fill="#e9ff6a" opacity=".25" filter="url(#glowA)"/>
+<rect x="-34" y="-468" width="68" height="62" rx="16" fill="#2c3350"/>
+<text x="0" y="78" text-anchor="middle" font-family="Unbounded" font-weight="900" font-size="300" fill="#fff" letter-spacing="-12">20</text>
+<text x="0" y="168" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="70" fill="#e9ff6a" letter-spacing="18">SEC</text>
+</g></svg>
