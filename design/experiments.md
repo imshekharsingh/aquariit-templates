@@ -69,6 +69,14 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 22 Oct 2026, 08:55 IST audit (collect 04:44 IST; @webin20sec 12 followers (+0 since 21 Oct), 14 posts; @techin20sec 4 followers (+2), 5 posts)
+Studio, last 7 days (posted IST, reach, avg watch, saves, shares): 21 Oct 23:21 "6 website heroes. 20 seconds. All built in code." 11, 4.9 s, 0, 0 (5 h old) · 19 Oct 18:31 launch film 22, 2.5 s, 0, 0 ·
+18 Oct 22:14 CDN film 32, 3.2 s, 0, 0 · 18 Oct 14:20 "6 motion styles" **277**, 4.7 s, **8**, 0 · 17 Oct 21:21 CDN film 48, 4.9 s, 0, 0 · 16 Oct 17:31 "outdated website" 15, 4.1 s, 0, 0 · 15 Oct 23:22 "slow abroad" 115, 5.5 s, 0, 0.
+techin20sec: 21 Oct 23:41 quantum 108, 4.0 s, 0, 0 · 21 Oct 09:19 "Can a webpage hijack your AI agent?" 114, 4.8 s, 2, **2** · 21 Oct 00:51 RAM prices 118, 5.8 s, 0, 0 · 20 Oct 15:03 AI models 110, 3.7 s, 2, 0 · 19 Oct 14:47 AI agents 29, 3.7 s, 0, 1.
+**Best of 24 h:** the prompt-injection reel (techin20sec): a yes/no question with a threat in it ("hijack"), answered "Yes" at once, gets sends (2 shares, 1.8%); the studio account has 0 shares in 14 posts.
+techin20sec holds a steady 108-118 reach per reel with 4 followers; the studio's late-night posts (22:00-23:30) sit at 11-48. The style series repeat (23:21) has not repeated the 14:20 result yet: re-check at 48 h.
+**Milestone:** 12/100 followers; best studio reel 277/1,000 reach. **Next:** 14:00 IST studio post = a threat-question hook on a buyer's risk ("Can a bot take your site down?"), answered in second 1, ending on a send-to-a-founder line.
+
 ### 21 Oct 2026, 17:44 IST audit (new token; @aquarii.techstudio, 12 followers (9 on 18 Oct), 13 posts)
 | posted | format | views | reach | avg watch | likes | comments | saves | shares |
 |---|---|---|---|---|---|---|---|---|
