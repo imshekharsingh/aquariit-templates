@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Easing explainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* 20 s reel: "Same animation. Which one feels expensive?" Three identical notifications, three easing curves (linear, ease-in-out, spring).
+   Stage 540x960 CSS px (rendered at 2x). Every frame is a pure function of t through window.seek(t).
+   The spring is the CSS linear() function: the stops printed in the code card are the same stops that move card C.
+   Fact: linear() easing ships in Chrome 113, Firefox 112, Safari 17.2 (Baseline since Dec 2023, MDN).
+   Five colours: cool paper, ink, white, orange (the spring, the answer), ink tint for muted text. One typeface. */
+:root{--bg:#e8ebf1;--ink:#0d1321;--card:#fff;--hot:#ff5a1f;--mute:rgba(13,19,33,.5);--line:rgba(13,19,33,.14);--f:'Instrument Sans',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.abs{position:absolute}
+#cap{left:30px;right:30px;top:120px;height:130px;overflow:hidden}
+#cap p{position:absolute;left:0;right:0;top:0;font:700 37px/1.04 var(--f);letter-spacing:-.035em;text-wrap:balance}
+#cap p em{font-style:normal;color:var(--hot)}
+#src{left:30px;top:252px;height:22px;overflow:hidden}
+#src span{display:block;font:500 13px/22px var(--f);color:var(--mute)}
+.lane{left:0;width:540px;height:150px}
+.chip{position:absolute;left:30px;top:0;height:28px;display:flex;align-items:center;gap:10px;font:600 15px/1 var(--f);letter-spacing:.01em}
+.chip b{width:28px;height:28px;border-radius:8px;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 15px/1 var(--f)}
+.chip span{color:var(--mute);overflow:hidden;white-space:nowrap}
+.lane.c .chip b{background:var(--hot)}
+.card{position:absolute;left:30px;top:38px;width:400px;height:80px;border-radius:22px;background:var(--card);box-shadow:0 1px 0 var(--line),0 14px 30px -18px rgba(13,19,33,.45);display:flex;align-items:center;gap:14px;padding:0 18px}
+.ico{width:46px;height:46px;border-radius:12px;background:var(--ink);flex:none;position:relative}
+.ico:before{content:"";position:absolute;left:12px;top:14px;width:22px;height:18px;border:2px solid #fff;border-radius:3px}
+.ico:after{content:"";position:absolute;left:12px;top:20px;width:22px;height:2px;background:#fff}
+.txt{min-width:0;flex:1}
+.txt small{display:flex;justify-content:space-between;font:500 13px/1 var(--f);color:var(--mute);letter-spacing:.01em}
+.txt div{font:600 19px/1.2 var(--f);margin-top:6px;letter-spacing:-.01em}
+.plot{position:absolute;left:30px;top:128px;width:220px;height:34px}
+.plot svg{display:block;overflow:visible}
+#code{left:30px;top:480px;width:400px;background:var(--ink);color:#e8ebf1;border-radius:18px;padding:18px 18px 16px;font:500 14px/1.6 var(--f);opacity:0}
+#code .k{color:var(--hot)}
+#code small{display:block;margin-top:10px;font:500 12px/1.3 var(--f);color:rgba(232,235,241,.55)}
+#over{position:absolute;left:0;top:38px;height:80px;width:2px;border-left:2px dashed var(--hot);opacity:0}
+#overlab{position:absolute;top:8px;font:700 13px/1 var(--f);color:var(--hot);opacity:0}
+</style>
+</head>
+<body>
+<div id="cap" class="abs"></div>
+<div id="src" class="abs"><span></span></div>
+<div id="lanes"></div>
+<div id="code" class="abs"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, inc = function(k){ return k * k * k; }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  // cubic-bezier(.42,0,.58,1) = CSS ease-in-out, solved numerically
+  function bez(x1, y1, x2, y2){ return function(x){ var lo = 0, hi = 1, s = .5; for (var i = 0; i < 30; i++) { s = (lo + hi) / 2; var bx = 3 * (1 - s) * (1 - s) * s * x1 + 3 * (1 - s) * s * s * x2 + s * s * s; if (bx < x) lo = s; else hi = s; }
+    return 3 * (1 - s) * (1 - s) * s * y1 + 3 * (1 - s) * s * s * y2 + s * s * s; }; }
+  var easeInOut = bez(.42, 0, .58, 1);
+  // the spring: a damped oscillator (zeta .62) sampled into CSS linear() stops; card C moves by exactly these stops
+  var spring = function(k){ var z = .62, w = 13.5, T = k * .9, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * T) * (Math.cos(wd * T) + z * w / wd * Math.sin(wd * T)); };
+  var AT = [0, 6, 12, 18, 25, 33, 42, 55, 70, 100], STOPS = AT.map(function(p){ return [Math.round(spring(p / 100) * 100) / 100, p]; }); STOPS[STOPS.length - 1][0] = 1;
+  function lin(k){ for (var i = 1; i < STOPS.length; i++) { var a = STOPS[i - 1], b = STOPS[i]; if (k * 100 <= b[1]) return mix(a[0], b[0], (k * 100 - a[1]) / (b[1] - a[1])); } return 1; }
+  var PEAK = Math.max.apply(null, STOPS.map(function(s){ return s[0]; }));
+  var EASE = [function(k){ return k; }, easeInOut, lin], NAME = ['Linear', 'Ease-in-out', 'Spring'];
+  $('code').innerHTML = '<span class="k">transition</span>: transform .8s<br>&nbsp;&nbsp;linear(' + STOPS.map(function(s, i){ return (i % 3 === 0 && i ? '<br>&nbsp;&nbsp;&nbsp;&nbsp;' : '') + s[0] + (s[1] && s[1] < 100 ? ' ' + s[1] + '%' : ''); }).join(', ') + ');<small>linear() · Chrome 113, Firefox 112, Safari 17.2</small>';
+  // lanes
+  var LY = [290, 455, 620], L = [];
+  for (var i = 0; i < 3; i++) {
+    var d = document.createElement('div'); d.className = 'lane abs' + (i === 2 ? ' c' : ''); d.style.top = LY[i] + 'px';
+    d.innerHTML = '<div class="chip"><b>' + 'ABC'[i] + '</b><span></span></div><div class="card"><div class="ico"></div><div class="txt"><small><span>Fernlot</span><span>now</span></small><div>Your order is on its way</div></div></div>'
+      + '<div class="plot"><svg width="220" height="34"><line x1="0" y1="0" x2="220" y2="0" stroke="rgba(13,19,33,.18)" stroke-dasharray="3 4"/><line x1="0" y1="34" x2="220" y2="34" stroke="rgba(13,19,33,.18)"/><polyline fill="none" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/><circle r="4.5"/></svg></div>'
+      + (i === 2 ? '<div id="over"></div><div id="overlab">+' + Math.round((PEAK - 1) * 100) + '% past the mark</div>' : '');
+    $('lanes').appendChild(d);
+    var col = i === 2 ? 'var(--hot)' : 'var(--ink)'; d.querySelector('polyline').setAttribute('stroke', col); d.querySelector('circle').setAttribute('fill', col);
+    L.push({ el: d, card: d.querySelector('.card'), name: d.querySelector('.chip span'), plot: d.querySelector('.plot'), pl: d.querySelector('polyline'), dot: d.querySelector('circle'), letter: d.querySelector('.chip b') });
+  }
+  var OFF = -470, CYCLE = 1.8, PH = .24;   // card travel: from off the left edge to its resting place
+  // one cycle: in (0-.8, the lane's own easing), hold, out to the left (1.44-1.8, accelerating)
+  function cyc(tt, ease){ var ph = ((tt + PH) % CYCLE + CYCLE) % CYCLE; if (ph < .8) return ease(ph / .8); if (ph < 1.44) return 1; return 1 - inc((ph - 1.44) / .36); }
+  var CAPS = [[0, 'Same animation. Which one feels <em>expensive</em>?'], [3.4, 'Slow it down.'], [8.6, 'Real things speed up, then settle.'], [10.8, 'One line of CSS gets you there.'], [14.2, 'Spring everything. It’s <em>C</em>.']];
+  var cap = $('cap'); CAPS.forEach(function(c){ var p = document.createElement('p'); p.innerHTML = c[1]; cap.appendChild(p); c.el = p; });
+  var SRC = [[3.4, 8.6, 'Replay · ¼ speed'], [10.8, 14.2, 'Shown: the exact stops moving card C']];
+  function caption(t){
+    for (var i = 0; i < CAPS.length; i++) { var a = CAPS[i][0], b = i + 1 < CAPS.length ? CAPS[i + 1][0] : 19.6, inK = i === 0 ? 1 : out(P(t, a, a + .45)), oK = io(P(t, b - .3, b));
+      CAPS[i].el.style.transform = 'translateY(' + ((1 - inK) * 130 - oK * 130) + 'px)'; CAPS[i].el.style.visibility = t >= a && t < b ? 'visible' : 'hidden'; }
+    if (t >= 19.6) { var k = out(P(t, 19.6, 20)); CAPS[0].el.style.visibility = 'visible'; CAPS[0].el.style.transform = 'translateY(' + ((1 - k) * 130) + 'px)'; }
+    var s = $('src').firstChild, txt = '', y = 22; SRC.forEach(function(r){ if (t >= r[0] && t < r[1]) { txt = r[2]; y = (1 - out(P(t, r[0], r[0] + .4))) * 22 - io(P(t, r[1] - .25, r[1])) * 22; } });
+    s.textContent = txt; s.style.transform = 'translateY(' + y + 'px)';
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(20, t)); caption(t);
+    var slowK = P(t, 3.6, 6.8);   // the slow replay (0.8 s of motion over 3.2 s)
+    for (var i = 0; i < 3; i++) {
+      var l = L[i], x = 0, op = 1, plotK = 0, nameK = 0, ease = EASE[i];
+      if (t < 3.36) x = cyc(t, ease);
+      else if (t < 8.8) { x = t < 3.6 ? 0 : ease(slowK); plotK = slowK; nameK = out(P(t, 6.9, 7.4)); }
+      else if (t < 14.2) {   // turn: A and B leave, C keeps showing the spring
+        nameK = 1; plotK = 1;
+        if (i < 2) { x = 1 - inc(P(t, 8.8 + i * .08, 9.25 + i * .08)); plotK = 1 - P(t, 8.8, 9.1); }
+        else x = t < 9.2 ? 1 : cyc(t - 9.2 + 1.2, ease);
+      } else if (t < 19.4) {   // payoff: all three come back on the spring, in step, a hair apart
+        ease = lin; nameK = 1; var tt = t - 14.5 - i * .07;
+        x = tt < 0 ? (i < 2 ? 0 : 1 - inc(P(t, 14.2, 14.5))) : cyc(tt - PH, lin);
+        if (t >= 17.1 + i * .07) x = 1;
+      } else { x = cyc(t - 20, EASE[i]); nameK = 1 - P(t, 19.4, 19.6); }
+      var whole = i < 2 && t >= 8.8 && t < 19.4;   // A and B: the lane (label and card) moves as one in the turn and payoff
+      l.card.style.transform = 'translateX(' + (whole ? 0 : (1 - x) * OFF) + 'px)';
+      l.el.style.transform = 'translateX(' + (whole ? (1 - x) * OFF : 0) + 'px)';
+      if (i === 2) l.el.style.top = mix(mix(LY[2], LY[0], io(P(t, 9.0, 9.7))), LY[2], io(P(t, 14.0, 14.6))) + 'px';
+      // label: the letter, then its curve's name; in the payoff all three say Spring
+      var nm = t >= 14.2 && t < 19.6 ? 'Spring' : NAME[i]; l.name.textContent = nm; l.name.style.maxWidth = (nameK * 120) + 'px';
+      l.letter.style.background = (t >= 14.6 + i * .07 && t < 19.5) || i === 2 ? 'var(--hot)' : 'var(--ink)';
+      // the plot: position over time, drawn as the replay runs
+      var pts = [], n = Math.round(plotK * 60); for (var j = 0; j <= n; j++) { var kk = j / 60; pts.push((kk * 220).toFixed(1) + ',' + (34 - EASE[i](kk) * 34).toFixed(1)); }
+      l.pl.setAttribute('points', pts.join(' ')); var lk = n / 60; l.dot.setAttribute('cx', lk * 220); l.dot.setAttribute('cy', 34 - EASE[i](lk) * 34);
+      l.plot.style.opacity = t >= 3.4 && t < 14.2 ? (i < 2 ? 1 - P(t, 8.8, 9.1) : 1 - P(t, 13.8, 14.2)) : 0;
+    }
+    // turn: the overshoot mark on C, then the code card where A and B were
+    var ok = t >= 9.6 && t < 13.9 ? out(P(t, 9.6, 9.9)) * (1 - P(t, 13.6, 13.9)) : 0, ov = $('over'), ol = $('overlab');
+    ov.style.left = (30 + 400) + 'px'; ov.style.opacity = ok; ol.style.left = '266px'; ol.style.opacity = ok; ol.style.top = '138px';
+    var ck = out(P(t, 10.8, 11.25)) * (1 - inc(P(t, 13.8, 14.2))); $('code').style.opacity = ck; $('code').style.transform = 'translateY(' + (1 - ck) * 24 + 'px)';
+  }
+  window.seek = seek; window.DURATION = 20;
+  document.fonts.ready.then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
