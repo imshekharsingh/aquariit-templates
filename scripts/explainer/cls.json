@@ -1,0 +1,23 @@
+{
+  "name": "showreel-05-layout-shift",
+  "seek": "scripts/explainer/cls.html",
+  "dur": 30,
+  "fps": 60,
+  "cover": 8.4,
+  "caption": "Why did I just cancel my order? 😤\n\nLayout shift: an image without a size loads late and pushes your buttons down. Google scores it (CLS), and 62% of mobile pages still leave an image unsized.\nThe fix is one line. Send this to the person who builds your site.",
+  "keywords": [
+    "layout shift",
+    "cumulative layout shift",
+    "CLS core web vitals",
+    "website speed",
+    "web design tips",
+    "frontend tips"
+  ],
+  "hashtags": [
+    "#corewebvitals",
+    "#webperformance",
+    "#frontenddev",
+    "#uxdesign",
+    "#webdesigntips"
+  ]
+}
