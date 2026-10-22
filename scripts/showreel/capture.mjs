@@ -37,10 +37,10 @@ for (const S of R.segments) {
   const p = await ctx.newPage(); await p.addInitScript(SHIM);
   if (S.still) await p.emulateMedia({ reducedMotion: 'reduce' });   // 'without motion': the page's own reduced-motion version (before / after reels)
   // rev: play an older version of the page straight from git history (before / after reels; templates are single self-contained files)
-  let page = resolve('templates', S.id, 'index.html');
+  let page = S.page ? resolve(S.page.split('?')[0]) : resolve('templates', S.id, 'index.html');   // page: a scene made for the reel (scripts/showreel/scenes/)
   if (S.rev) { const d = resolve(out, '_rev', S.rev, S.id); mkdirSync(d, { recursive: true }); page = join(d, 'index.html');
     writeFileSync(page, execFileSync('git', ['show', `${S.rev}:templates/${S.id}/index.html`])); }
-  await p.goto('file://' + page);
+  await p.goto('file://' + page + (S.page && S.page.includes('?') ? '?' + S.page.split('?')[1] : ''));
   await p.evaluate(() => document.fonts && document.fonts.ready);
   await p.evaluate(() => { document.documentElement.classList.add('reel'); document.querySelectorAll('.bbar,.bar,header').forEach((e) => { if (e.matches('header,.bbar')) e.style.display = 'none'; }); });
   if (R.layout === 'crop' && S.hideText !== false) await p.addStyleTag({ content: 'main h1,main h2,main h3,main p,main .lede,main .row,main .cta,main .btn,main .kick,main .print,main .hero-foot,main .chs,main .card2,main .tl,main .meter,main .mhead,main .orbit,main .lab,main ol,main ul,main .head{visibility:hidden!important}' });
@@ -62,8 +62,8 @@ for (const S of R.segments) {
   if (S.focus) (await import('fs')).writeFileSync(join(dir, 'focus.json'), JSON.stringify(focus));
   await ctx.close(); console.log(`segment ${si} ${S.id}: ${n} frames`);
 }
-// overlays: one transparent label card per segment (Google font, rendered by the same Chromium)
-{ const ctx = await b.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 }), p = await ctx.newPage(), N = R.segments.length;
+// overlays: one transparent label card per segment (Google font, rendered by the same Chromium); layout 'plain' = the scene draws its own labels
+if (R.layout !== 'plain') { const ctx = await b.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 }), p = await ctx.newPage(), N = R.segments.length;
   for (let k = 0; k < N; k++) { const S = R.segments[k];
     // a compact lower-third panel: the progress bar (drawn by compose.py) sits on its top edge, so nothing of the site shows through behind the words
     const LY = R.labelY || 1310, L = R.layout || 'full', num = String(k + 1).padStart(2, '0'), tot = String(N).padStart(2, '0'), tag = S.tag;

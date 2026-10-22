@@ -89,7 +89,7 @@ def transition(kind, A, B, p):
         return A * (1 - m) + B * m + 255 * ring
     return B if p >= .5 else A
 
-overlays = [np.asarray(Image.open(os.path.join(FR, f'overlay-{k + 1:02d}.png')).convert('RGBA'), dtype=np.float32) for k in range(NS)]
+overlays = [] if LAYOUT == 'plain' else [np.asarray(Image.open(os.path.join(FR, f'overlay-{k + 1:02d}.png')).convert('RGBA'), dtype=np.float32) for k in range(NS)]
 LY = R.get('labelY', 1310); BAR_Y, BAR_X0, BAR_X1, GAP = (262, 72, W - 72, 10) if LAYOUT == 'device' else (LY - 70, 72, W - 72, 10) if LAYOUT == 'crop' else (LY - 46, 96, W - 96, 10)
 segw = (BAR_X1 - BAR_X0 - GAP * (NS - 1)) / NS
 
@@ -169,7 +169,7 @@ for f in range(TOTAL):
         if -tl // 2 <= j < tl // 2:
             A = frame(c_i, PAD + round(SEG[c_i]['dur'] * FPS) + j); B = frame(c_i + 1, PAD + j)
             img = transition(SEG[c_i + 1].get('in', 'cut'), A, B, (j + tl // 2 + .5) / tl); k = c_i if j < 0 else c_i + 1
-    img = overlay(img, k, f)
+    if LAYOUT != 'plain': img = overlay(img, k, f)
     enc.stdin.write(img.clip(0, 255).astype(np.uint8).tobytes())
     if f % 60 == 0: print(f'frame {f}/{TOTAL}', flush=True)
 enc.stdin.close(); enc.wait()
