@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Archive · webin20sec</title>
+<meta name="theme-color" content="#0b0d14">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  /* the templates built before the showreel plan (6-17 Oct 2026): still live at their own URLs, kept here out of the way */
+  :root{--bg:#0b0d14;--card:#141724;--ink:#f1efe9;--mute:#9aa0b2;--line:#252a3b;--accent:#7c8cff}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font:400 16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+  .wrap{max-width:720px;margin:0 auto;padding:0 18px 80px}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 0}
+  .pill{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1.5px solid var(--line);border-radius:999px;text-decoration:none;font:700 .85rem system-ui,sans-serif}
+  h1{font:800 2rem/1.05 system-ui,sans-serif;letter-spacing:-.02em;margin:8px 0 6px}
+  .lede{color:var(--mute)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-top:22px;padding:0;list-style:none}
+  .grid a{display:block;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .grid img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;background:#000}
+  .grid span{display:block;padding:10px 12px 12px;font:700 .85rem/1.25 system-ui,sans-serif}
+  .grid small{display:block;color:var(--mute);font-weight:500;font-size:.75rem;margin-top:2px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top"><a class="pill" href="/">← Showreels</a><a class="pill" href="/archive/styles/">Style library</a></div>
+  <h1>Archive</h1>
+  <p class="lede">The templates built before the showreel plan. Each one is still live; tap to open it.</p>
+  <ul class="grid" id="grid"></ul>
+</main>
+<script>
+(function(){
+  var g = document.getElementById('grid');
+  fetch('/design-log.json', { credentials: 'same-origin' }).then(function(r){ return r.json(); }).then(function(log){
+    log.sort(function(a, b){ return (a.id || a.date) < (b.id || b.date) ? 1 : -1; }).forEach(function(e){
+      var id = e.id || e.date, li = document.createElement('li'), a = document.createElement('a'), img = document.createElement('img'), s = document.createElement('span'), sm = document.createElement('small');
+      a.href = '/' + id + '/'; img.src = '/covers/' + id + '.jpg'; img.alt = ''; img.loading = 'lazy';
+      s.textContent = (e.slug || id).replace(/-/g, ' '); sm.textContent = e.date; s.appendChild(sm);
+      a.appendChild(img); a.appendChild(s); li.appendChild(a); g.appendChild(li);
+    });
+  }).catch(function(){ g.textContent = 'Could not load the archive right now.'; });
+})();
+</script>
+</body>
+</html>

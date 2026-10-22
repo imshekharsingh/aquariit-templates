@@ -3,90 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Showreels · Aquarii Templates</title>
-<meta name="theme-color" content="#0b0d14">
+<title>Showreels · webin20sec</title>
+<meta http-equiv="refresh" content="0; url=/">
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<style>
-  :root{--bg:#0b0d14;--card:#141724;--ink:#f1efe9;--mute:#9aa0b2;--line:#252a3b;--accent:#7c8cff;--ok:#6fd49a}
-  *{box-sizing:border-box;margin:0}
-  html{-webkit-text-size-adjust:100%}
-  body{background:var(--bg);color:var(--ink);font:400 16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
-  .wrap{max-width:560px;margin:0 auto;padding:0 18px 120px}
-  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
-  a{color:inherit}
-  .top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 0}
-  .pill{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1.5px solid var(--line);border-radius:999px;text-decoration:none;font:700 .85rem system-ui,sans-serif}
-  h1{font:800 2rem/1.05 system-ui,sans-serif;letter-spacing:-.02em;margin:8px 0 6px}
-  .lede{color:var(--mute)}
-  .reel{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden}
-  .reel video{display:block;width:100%;aspect-ratio:9/16;background:#000;object-fit:cover}
-  .body{padding:16px 16px 18px}
-  .name{font:700 1rem system-ui,sans-serif}
-  .meta{color:var(--mute);font-size:.85rem;margin-top:2px}
-  .cap{white-space:pre-wrap;margin-top:12px;padding:12px 14px;border-radius:14px;background:#0e1019;border:1px solid var(--line);font-size:.9rem;color:#d9d7d0}
-  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:var(--ink);color:var(--bg);font:700 .9rem system-ui,sans-serif;text-decoration:none;cursor:pointer}
-  .btn.g{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
-  .btn.done{background:var(--ok);color:#06200f}
-  .empty{margin-top:30px;color:var(--mute)}
-</style>
+<style>body{background:#0b0d14;color:#f1efe9;font:16px system-ui,sans-serif;padding:24px}a{color:inherit}</style>
 </head>
 <body>
-<main class="wrap">
-  <div class="top"><a class="pill" href="/">← All templates</a></div>
-  <h1>Showreels</h1>
-  <p class="lede">Short reels cut from our own templates. Play, copy the caption, save the video, post.</p>
-  <div id="list"><p class="empty">Loading…</p></div>
-</main>
-<script>
-(function(){
-  var list = document.getElementById('list'), caps = fetch('/showreels/captions.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; });
-  function el(t, c, txt){ var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; }
-  // what gets pasted into Instagram: the caption, one line of niche search keywords, then exactly 5 niche hashtags (owner, 22 Oct 2026)
-  function postText(j){ var t = j.caption.trim(); if (j.keywords && j.keywords.length) t += '\n\n' + j.keywords.slice(0, 6).join(' · '); if (j.hashtags && j.hashtags.length) t += '\n\n' + j.hashtags.slice(0, 5).join(' '); return t; }
-  // never navigate to the mp4: in the installed iOS app that opens a file viewer with no way back. Fetch it, then hand it to the share sheet ("Save Video"),
-  // or download it from a blob URL where sharing files is not supported
-  function save(s, btn){
-    if (btn.file) return share(btn);
-    if (btn.disabled) return; btn.disabled = true; btn.textContent = 'Preparing…';
-    fetch(s.video, { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.blob(); }).then(function(blob){
-      var f = new File([blob], s.name + '.mp4', { type: 'video/mp4' }); btn.disabled = false;
-      if (navigator.canShare && navigator.canShare({ files: [f] })) { btn.file = f; return share(btn); }
-      var u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function(){ URL.revokeObjectURL(u); }, 60000); flash(btn, 'Downloaded');
-    }).catch(function(){ btn.disabled = false; flash(btn, 'Try again'); });
-  }
-  // the share sheet needs a fresh tap: if the download took too long, the file is kept and the next tap opens it straight away
-  function share(btn){
-    navigator.share({ files: [btn.file] }).then(function(){ flash(btn, 'Saved'); }, function(e){ btn.textContent = e && e.name === 'NotAllowedError' ? 'Ready: tap to save' : 'Save video'; });
-  }
-  function flash(btn, t){ btn.textContent = t; setTimeout(function(){ if (btn.textContent === t) btn.textContent = 'Save video'; }, 1800); }
-  function mb(n){ return (n / 1048576).toFixed(1) + ' MB'; }
-  fetch('/api/showreels', { credentials: 'same-origin' }).then(function(r){ return r.json(); }).then(function(d){
-    var items = (d && d.showreels) || []; list.textContent = '';
-    if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No showreels yet.')); return; }
-    items.forEach(function(s){
-      var card = el('article', 'reel'), v = document.createElement('video');
-      v.src = s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover;
-      v.setAttribute('aria-label', 'Showreel ' + s.name);
-      var b = el('div', 'body'); b.appendChild(el('div', 'name', s.name.replace(/^showreel-/, 'Showreel ')));
-      b.appendChild(el('div', 'meta', new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size)));
-      var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video');
-      copy.type = 'button'; copy.disabled = true; dl.type = 'button';
-      dl.addEventListener('click', function(){ save(s, dl); });
-      copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
-      row.appendChild(copy); row.appendChild(dl);
-      // the caption comes with the reel (NAME.json in the release); captions.json (edited in the repo) wins, so a caption can be fixed after the render
-      caps.then(function(c){ return c[s.name] || (s.info ? fetch(s.info, { credentials: 'same-origin' }).then(function(r){ return r.json(); }) : null); }).then(function(j){ if (j && j.caption) { cap.textContent = postText(j); b.insertBefore(cap, row); copy.disabled = false; } }).catch(function(){});
-      b.appendChild(row); card.appendChild(v); card.appendChild(b); list.appendChild(card);
-    });
-  }).catch(function(){ list.textContent = ''; list.appendChild(el('p', 'empty', 'Could not load the list right now.')); });
-})();
-</script>
+<main><p>Showreels moved to the home screen. <a href="/">Open showreels</a></p></main>
 </body>
 </html>
