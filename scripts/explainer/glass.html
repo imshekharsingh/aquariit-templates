@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Liquid glass</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, series "Material": liquid glass over a living app. A WebGL2 renderer written for this reel: the app (a fictional player,
+   Tidepool) is drawn on a 2D canvas every frame and used as a texture; glass shapes are signed-distance fields joined with a smooth union,
+   so they stretch, split and merge like liquid. Per pixel: a rounded bevel gives the normal, the app is refracted through it with a little
+   dispersion (R, G and B bend by different amounts), frosted inside, lit by a moving light (specular + Fresnel rim), and the glass casts a
+   soft shadow on the app. Every frame is a pure function of t (window.seek). One typeface: Hanken Grotesk. */
+*{margin:0}html,body{width:540px;height:960px;overflow:hidden;background:#140f1a}
+canvas{position:absolute;left:0;top:0;width:540px;height:960px}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<canvas id="ui"></canvas>
+<script>
+(function(){
+  var W = 540, H = 960, S = 2, PW = W * S, PH = H * S;   // CSS units and the 2x pixel grid
+  var cl = function(v, a, b){ return v < a ? a : v > b ? b : v; }, P = function(t, a, b){ return cl((t - a) / (b - a), 0, 1); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var spr = function(s, w){ if (s <= 0) return 0; w = w || 11; var z = .55, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
+  // ---------- the app underneath, drawn in 2D every frame ----------
+  var app = document.createElement('canvas'); app.width = PW; app.height = PH; var a = app.getContext('2d');
+  var F = "'Hanken Grotesk', system-ui, sans-serif";
+  var TR = [['Low Tide', 'Mara Ilves', '3:41'], ['Salt Glass', 'The Quiet Hours', '4:02'], ['Under Lanterns', 'Oda Venn', '2:58'], ['Kelp Forest', 'Mara Ilves', '5:13'], ['Night Ferry', 'Halvard', '3:27'], ['Pale Coast', 'The Quiet Hours', '4:45'], ['Low Tide (live)', 'Mara Ilves', '3:55']];
+  function blob(x, y, r, c0){ var g = a.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, c0); g.addColorStop(1, 'rgba(0,0,0,0)'); a.fillStyle = g; a.fillRect(x - r, y - r, 2 * r, 2 * r); }
+  function art(x, y, w, h, t, rad){   // album art: a slow colour field
+    a.save(); a.beginPath(); a.roundRect(x, y, w, h, rad); a.clip();
+    a.fillStyle = '#2a1640'; a.fillRect(x, y, w, h);
+    blob(x + w * (.3 + .1 * Math.sin(t * .6)), y + h * (.35 + .08 * Math.cos(t * .5)), w * .75, 'rgba(255,106,43,.95)');
+    blob(x + w * (.78 + .06 * Math.cos(t * .45)), y + h * (.3 + .1 * Math.sin(t * .7)), w * .6, 'rgba(224,57,143,.9)');
+    blob(x + w * (.55 + .12 * Math.sin(t * .35 + 1)), y + h * (.85 + .05 * Math.sin(t * .8)), w * .7, 'rgba(48,70,255,.95)');
+    blob(x + w * (.15 + .05 * Math.cos(t * .9)), y + h * .95, w * .4, 'rgba(255,214,120,.55)');
+    if (w > 200) {   // the record's tide lines: fine detail that shows how the glass bends light
+      a.lineWidth = 1.6; for (var k = 0; k < 14; k++) { a.strokeStyle = 'rgba(255,238,214,' + (.16 + .14 * (k % 3 === 0)) + ')'; a.beginPath();
+        for (var xx = x; xx <= x + w; xx += 6) { var yy = y + h * (.12 + k * .062) + 9 * Math.sin(xx * .018 + t * .7 + k * .6) + 4 * Math.sin(xx * .041 - t * .9); xx === x ? a.moveTo(xx, yy) : a.lineTo(xx, yy); } a.stroke(); }
+      a.fillStyle = 'rgba(255,238,214,.9)'; a.beginPath(); a.arc(x + w * .72, y + h * .2, w * .07, 0, 7); a.fill(); }
+    a.restore();
+  }
+  function drawApp(t){
+    a.setTransform(S, 0, 0, S, 0, 0);
+    var g = a.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1d1426'); g.addColorStop(1, '#0d0a12'); a.fillStyle = g; a.fillRect(0, 0, W, H);
+    blob(270, 380, 420, 'rgba(255,106,43,.16)'); blob(420, 260, 300, 'rgba(224,57,143,.12)');   // the art's glow on the page
+    a.fillStyle = 'rgba(244,239,230,.55)'; a.font = '600 13px ' + F; a.letterSpacing = '2px'; a.fillText('NOW PLAYING', 30, 128); a.letterSpacing = '0px';
+    a.font = '500 13px ' + F; a.textAlign = 'right'; a.fillText('Tidepool', 510, 128); a.textAlign = 'left';
+    art(30, 150, 480, 480, t, 30);
+    a.fillStyle = '#f4efe6'; a.font = '800 44px ' + F; a.fillText('Low Tide', 30, 690);
+    a.fillStyle = 'rgba(244,239,230,.6)'; a.font = '500 19px ' + F; a.fillText('Mara Ilves · Saltwater Sessions', 30, 720);
+    var pr = ((t * .06) % 1); a.fillStyle = 'rgba(244,239,230,.18)'; a.fillRect(30, 746, 480, 4); a.fillStyle = '#f4efe6'; a.fillRect(30, 746, 480 * (.18 + pr * .3), 4);
+    // the queue scrolls underneath the glass
+    var off = -(t * 14) % 82;
+    a.save(); a.beginPath(); a.rect(0, 770, W, H - 770); a.clip();
+    for (var i = 0; i < 9; i++) { var y = 790 + i * 82 + off, tr = TR[(i + Math.floor(t * 14 / 82)) % TR.length];
+      art(30, y, 58, 58, t + i * 2.1, 12); a.fillStyle = '#f4efe6'; a.font = '700 18px ' + F; a.fillText(tr[0], 104, y + 26);
+      a.fillStyle = 'rgba(244,239,230,.55)'; a.font = '500 15px ' + F; a.fillText(tr[1], 104, y + 48); a.textAlign = 'right'; a.fillText(tr[2], 510, y + 37); a.textAlign = 'left'; }
+    a.restore();
+  }
+  // ---------- WebGL2: refraction, frost, light, shadow ----------
+  var gc = document.getElementById('gl'); gc.width = PW; gc.height = PH;
+  var gl = gc.getContext('webgl2', { preserveDrawingBuffer: true, antialias: false });
+  var VS = '#version 300 es\nin vec2 p; out vec2 v; void main(){ v = p * .5 + .5; gl_Position = vec4(p, 0., 1.); }';
+  var FS = [
+    '#version 300 es', 'precision highp float;', 'in vec2 v; out vec4 o;',
+    'uniform sampler2D tex; uniform vec2 res; uniform vec4 R[3]; uniform vec3 Rr; uniform float K; uniform vec2 L; uniform float frost; uniform float dof;',
+    // rounded box SDF in CSS px; R[i] = (cx, cy, half w, half h), Rr = corner radii
+    'float box(vec2 p, vec4 b, float r){ vec2 q = abs(p - b.xy) - b.zw + r; return length(max(q, 0.)) + min(max(q.x, q.y), 0.) - r; }',
+    'float smin(float a, float b, float k){ float h = max(k - abs(a - b), 0.) / k; return min(a, b) - h * h * k * .25; }',
+    'float scene(vec2 p){ float d = box(p, R[0], Rr.x); d = smin(d, box(p, R[1], Rr.y), K); d = smin(d, box(p, R[2], Rr.z), K); return d; }',
+    'vec3 bg(vec2 p, float lod){ return textureLod(tex, vec2(p.x / 540., p.y / 960.), lod).rgb; }',
+    'void main(){',
+    '  vec2 p = vec2(v.x * 540., (1. - v.y) * 960.);',
+    '  float d = scene(p);',
+    '  vec3 base = bg(p, dof);',
+    // soft shadow of the glass on the app, cast away from the light
+    '  float sd = scene(p + L * 26.);',
+    '  base *= 1. - .38 * (1. - smoothstep(-18., 34., sd));',
+    '  if (d > 1.) { o = vec4(base, 1.); return; }',
+    // the bevel: height rises over 30 px from the edge (a quarter circle), so the normal tilts most at the rim
+    '  float e = 1.2; vec2 gr = vec2(scene(p + vec2(e, 0.)) - scene(p - vec2(e, 0.)), scene(p + vec2(0., e)) - scene(p - vec2(0., e))) / (2. * e);',
+    '  float B = 30., u = clamp(-d / B, 0., 1.), dz = (1. - u) / max(sqrt(1. - (1. - u) * (1. - u)), .08);',
+    '  vec3 n = normalize(vec3(-gr * min(dz, 6.) * .55, 1.));',
+    // refraction with dispersion, then frost (a few taps on a blurred level)
+    '  vec2 off = n.xy * 70.;',
+    '  vec3 c = vec3(0.);',
+    '  for (int i = 0; i < 8; i++) { float a = float(i) * 2.39996; vec2 j = vec2(cos(a), sin(a)) * sqrt(float(i) + .5) * frost;',
+    '    c += vec3(bg(p - off * 1.00 + j, 2.6).r, bg(p - off * 1.04 + j, 2.6).g, bg(p - off * 1.09 + j, 2.6).b); }',
+    '  c /= 8.;',
+    '  c = mix(c, vec3(1.), .07) * 1.06;',   // a faint milky body
+    // light: specular from the moving light, a Fresnel rim, and a thin bright line where the bevel meets the face
+    '  vec3 Ld = normalize(vec3(L, .55)); vec3 h = normalize(Ld + vec3(0., 0., 1.));',
+    '  float spec = pow(max(dot(n, h), 0.), 90.) * 1.4 + pow(max(dot(n, h), 0.), 12.) * .12;',
+    '  float fres = pow(1. - n.z, 2.2) * .55;',
+    '  float edge = smoothstep(-2.5, -.5, d) * (1. - smoothstep(-.5, 1., d));',
+    '  float lip = exp(-pow((-d - 2.) / 1.6, 2.)) * .35 * (.6 + .4 * dot(normalize(-gr + 1e-5), L));',
+    '  c += spec + fres + lip;',
+    '  c *= 1. - .25 * edge;',
+    '  float aa = 1. - smoothstep(-.6, .6, d);',
+    '  o = vec4(mix(base, c, aa), 1.);',
+    '}'].join('\n');
+  function sh(type, src){ var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
+  var pg = gl.createProgram(); gl.attachShader(pg, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pg, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pg); gl.useProgram(pg);
+  var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(pg, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  var tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  var U = {}; ['tex', 'res', 'R', 'Rr', 'K', 'L', 'frost', 'dof'].forEach(function(n){ U[n] = gl.getUniformLocation(pg, n); });
+  // ---------- glyphs on the glass (drawn above it, they move with the shapes) ----------
+  var uc = document.getElementById('ui'); uc.width = PW; uc.height = PH; var u = uc.getContext('2d');
+  function play(x, y, s, al){ u.fillStyle = 'rgba(255,255,255,' + al + ')'; u.beginPath(); u.moveTo(x - s * .38, y - s * .5); u.lineTo(x + s * .52, y); u.lineTo(x - s * .38, y + s * .5); u.closePath(); u.fill(); }
+  function bars(x, y, s, al){ u.fillStyle = 'rgba(255,255,255,' + al + ')'; u.beginPath(); u.roundRect(x - s * .42, y - s * .5, s * .28, s, 3); u.roundRect(x + s * .14, y - s * .5, s * .28, s, 3); u.fill(); }
+  function skip(x, y, s, dir, al){ u.fillStyle = 'rgba(255,255,255,' + al + ')'; u.save(); u.translate(x, y); u.scale(dir, 1); u.beginPath(); u.moveTo(-s * .5, -s * .4); u.lineTo(0, 0); u.lineTo(-s * .5, s * .4); u.closePath(); u.fill();
+    u.beginPath(); u.moveTo(0, -s * .4); u.lineTo(s * .5, 0); u.lineTo(0, s * .4); u.closePath(); u.fill(); u.fillRect(s * .5, -s * .4, s * .12, s * .8); u.restore(); }
+  // ---------- the choreography ----------
+  // shape 0 is the player bar; shape 1 the play button that splits off; shape 2 the volume drop. Loop: 17 s, frame 0 = the bar mid-rise.
+  function shapes(t){
+    var rise = spr(t + .35, 9) * (1 - io(P(t, 15.9, 16.9))), y0 = mix(1060, 560, rise);
+    var grow = io(P(t, 2.6, 4.4)) * (1 - io(P(t, 12.4, 14.2)));                         // bar -> card
+    var w0 = mix(170, 232, grow), h0 = mix(40, 128, grow), r0 = mix(40, 44, grow);
+    var cy = mix(y0, 476, grow);
+    var sp = io(P(t, 5.4, 7.4)) * (1 - io(P(t, 11.0, 12.8)));                            // play button splits off downward
+    var b1 = [270 + 0, cy + mix(0, 214, sp), mix(10, 58, Math.min(1, sp * 1.6)), mix(10, 58, Math.min(1, sp * 1.6))];
+    var vp = io(P(t, 7.6, 9.4)) * (1 - io(P(t, 10.6, 12.2)));                            // a second drop runs to the right
+    var b2 = [mix(270, 430, vp), cy + mix(0, 214, vp), mix(8, 40, Math.min(1, vp * 1.6)), mix(8, 40, Math.min(1, vp * 1.6))];
+    var wob = Math.sin(t * 2.2) * 6 * grow;                                              // the card breathes a little
+    return { R: [270, cy, w0 + wob * .5, h0 - wob * .3], r: [r0, 58, 40], b1: b1, b2: b2, grow: grow, sp: sp, vp: vp, cy: cy };
+  }
+  function seek(t){
+    t = cl(t, 0, 17);
+    drawApp(t);
+    gl.bindTexture(gl.TEXTURE_2D, tx); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, app); gl.generateMipmap(gl.TEXTURE_2D);
+    var s = shapes(t), la = -2.3 + t * .32;                                              // the light circles slowly
+    gl.viewport(0, 0, PW, PH);
+    gl.uniform1i(U.tex, 0); gl.uniform2f(U.res, W, H);
+    gl.uniform4fv(U.R, [s.R[0], s.R[1], s.R[2], s.R[3], s.b1[0], s.b1[1], s.b1[2], s.b1[3], s.b2[0], s.b2[1], s.b2[2], s.b2[3]]);
+    gl.uniform3f(U.Rr, s.r[0], Math.min(s.b1[2], s.b1[3]), Math.min(s.b2[2], s.b2[3]));
+    gl.uniform1f(U.K, 46); gl.uniform2f(U.L, Math.cos(la), Math.sin(la)); gl.uniform1f(U.frost, 3.2); gl.uniform1f(U.dof, 0);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    // glyphs ride on the glass and fade while it is changing shape
+    u.setTransform(1, 0, 0, 1, 0, 0); u.clearRect(0, 0, PW, PH); u.setTransform(S, 0, 0, S, 0, 0);
+    var g1 = 1 - Math.min(1, Math.abs(s.grow - .5) < .45 ? 1 : 0) * 0, bar = (1 - s.grow) * (1 - s.sp), card = s.grow;
+    if (bar > .05) { var al = .92 * Math.pow(bar, 3); skip(206, s.cy, 20, -1, al); play(270, s.cy, 26, al); skip(334, s.cy, 20, 1, al); }
+    if (card > .05) { var al2 = .92 * Math.pow(card, 3); u.fillStyle = 'rgba(255,255,255,' + al2 + ')'; u.font = "700 22px 'Hanken Grotesk'"; u.fillText('Low Tide', 66, s.cy - 34);
+      u.fillStyle = 'rgba(255,255,255,' + (al2 * .7) + ')'; u.font = "500 16px 'Hanken Grotesk'"; u.fillText('Mara Ilves', 66, s.cy - 10);
+      skip(150, s.cy + 52, 22, -1, al2); skip(390, s.cy + 52, 22, 1, al2); bars(270, s.cy + 52, 28, al2 * (1 - P(s.sp, 0, .3))); }
+    if (s.sp > .6) { var al3 = .95 * P(s.sp, .6, 1); play(s.b1[0] + 3, s.b1[1], 34, al3); }
+    if (s.vp > .6) { var al4 = .9 * P(s.vp, .6, 1); u.strokeStyle = 'rgba(255,255,255,' + al4 + ')'; u.lineWidth = 3; u.lineCap = 'round';
+      u.beginPath(); u.arc(s.b2[0], s.b2[1], 16, -2.4, -2.4 + 4.8 * (.35 + .3 * Math.sin(t)), false); u.stroke(); }
+  }
+  window.seek = seek; window.DURATION = 17;
+  document.fonts.load("800 44px 'Hanken Grotesk'").then(function(){ return document.fonts.ready; }).then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

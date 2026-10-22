@@ -16,13 +16,16 @@ The owner's brief: design and define the content, keep it relevant, push the pre
 Premium web motion, built in code, in 20 seconds. Audience: designers, front-end developers and founders who care how a site feels.
 Every reel should be something a designer saves for reference or sends to the person building their site.
 
-## Three series (rotate; never the same series twice in a row)
+## Four series (rotate; never the same series twice in a row)
 1. **Built in 20 s.** One fictional brand's site builds itself: grid, type, imagery, UI, scroll, a page opening, a pull-back. A timer counts to 20.
    Each one has a different industry and art direction (first: Halden, Swiss modernist, scripts/explainer/built.html).
 2. **Six ways.** One element (hero, button, loader, card, menu, text reveal, page transition) in six premium treatments, numbered, full frame.
    The proven saver (277 reach, 8 saves). It must look premium, not like a demo: one art direction holds all six together.
 3. **Steal this.** One premium technique shown full frame, then the one to three lines of real CSS/JS that make it, on screen.
    Facts are checked (browser support, specs) and cited on screen.
+4. **Material.** Interface rendered as a real object: glass that refracts, metal that reflects, soft shadows, light that moves.
+   A WebGL renderer written per reel (first: scripts/explainer/glass.html, liquid glass over a music app). Renders on a software GPU,
+   so these run at 30 fps with 4 blur sub-frames.
 
 ## Craft bar (every reel)
 - Film look on every reel from 22 Oct (owner: "we are missing motion design"): in the config, `"blur": 12, "shutter": 0.45` (real motion blur from 12 sub-frames per frame),
