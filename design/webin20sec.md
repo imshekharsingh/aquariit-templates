@@ -29,7 +29,7 @@ Every reel should be something a designer saves for reference or sends to the pe
 
 ## Craft bar (every reel)
 - Film look on every reel from 22 Oct (owner: "we are missing motion design"): in the config, `"blur": 12, "shutter": 0.45` (real motion blur from 12 sub-frames per frame),
-  `"grain": 6`, `"vignette": true`. The scene itself still owns camera language: depth layers, dolly and rack focus, light that reacts to motion.
+  `"grain": 6`, and `"vignette": true` on dark grounds only (on light grounds it greys the corners). The scene itself still owns camera language: depth layers, dolly and rack focus, light that reacts to motion.
 - One art direction: at most five colours, one type family, a real grid. No glows, gradient title cards, floating particles, or everything fading in.
 - Frame 0 is already a finished, cover-quality composition, and it is already moving; something completes inside 1.5 s.
 - Real interface over illustration; images drawn in code; fictional brands only.
@@ -62,3 +62,4 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 | 22 Oct | showreel-07-built-in-20s | Built in 20 s | first of the series; Halden, Swiss modernist |
 | 22 Oct | showreel-08-six-transitions | Six ways | Tinta paint studio; each page's circle is the next colour; zoom-through payoff loops to frame 0 |
 | 22 Oct | showreel-08-six-transitions v2 | Six ways | 17 s, transition every ~2.5 s, liquid wipe replaces push, motion between transitions, promise on screen from frame 0 |
+| 22 Oct | showreel-07-built-film | Built in 20 s | the film-look re-cut replaces the original (motion blur on the word drops, scroll and card open) |
