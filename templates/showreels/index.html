@@ -40,7 +40,7 @@
 <main class="wrap">
   <div class="top"><a class="pill" href="/">← All templates</a></div>
   <h1>Showreels</h1>
-  <p class="lede">Short reels cut from our own templates. Play, copy the caption, download, post.</p>
+  <p class="lede">Short reels cut from our own templates. Play, copy the caption, save the video, post.</p>
   <div id="list"><p class="empty">Loading…</p></div>
 </main>
 <script>
@@ -49,6 +49,23 @@
   function el(t, c, txt){ var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; }
   // what gets pasted into Instagram: the caption, one line of niche search keywords, then exactly 5 niche hashtags (owner, 22 Oct 2026)
   function postText(j){ var t = j.caption.trim(); if (j.keywords && j.keywords.length) t += '\n\n' + j.keywords.slice(0, 6).join(' · '); if (j.hashtags && j.hashtags.length) t += '\n\n' + j.hashtags.slice(0, 5).join(' '); return t; }
+  // never navigate to the mp4: in the installed iOS app that opens a file viewer with no way back. Fetch it, then hand it to the share sheet ("Save Video"),
+  // or download it from a blob URL where sharing files is not supported
+  function save(s, btn){
+    if (btn.file) return share(btn);
+    if (btn.disabled) return; btn.disabled = true; btn.textContent = 'Preparing…';
+    fetch(s.video, { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.blob(); }).then(function(blob){
+      var f = new File([blob], s.name + '.mp4', { type: 'video/mp4' }); btn.disabled = false;
+      if (navigator.canShare && navigator.canShare({ files: [f] })) { btn.file = f; return share(btn); }
+      var u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(u); }, 60000); flash(btn, 'Downloaded');
+    }).catch(function(){ btn.disabled = false; flash(btn, 'Try again'); });
+  }
+  // the share sheet needs a fresh tap: if the download took too long, the file is kept and the next tap opens it straight away
+  function share(btn){
+    navigator.share({ files: [btn.file] }).then(function(){ flash(btn, 'Saved'); }, function(e){ btn.textContent = e && e.name === 'NotAllowedError' ? 'Ready: tap to save' : 'Save video'; });
+  }
+  function flash(btn, t){ btn.textContent = t; setTimeout(function(){ if (btn.textContent === t) btn.textContent = 'Save video'; }, 1800); }
   function mb(n){ return (n / 1048576).toFixed(1) + ' MB'; }
   fetch('/api/showreels', { credentials: 'same-origin' }).then(function(r){ return r.json(); }).then(function(d){
     var items = (d && d.showreels) || []; list.textContent = '';
@@ -59,8 +76,9 @@
       v.setAttribute('aria-label', 'Showreel ' + s.name);
       var b = el('div', 'body'); b.appendChild(el('div', 'name', s.name.replace(/^showreel-/, 'Showreel ')));
       b.appendChild(el('div', 'meta', new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size)));
-      var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('a', 'btn g', 'Download');
-      copy.type = 'button'; copy.disabled = true; dl.href = s.video; dl.setAttribute('download', s.name + '.mp4');
+      var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video');
+      copy.type = 'button'; copy.disabled = true; dl.type = 'button';
+      dl.addEventListener('click', function(){ save(s, dl); });
       copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
       row.appendChild(copy); row.appendChild(dl);
       // the caption comes with the reel (NAME.json in the release); captions.json (edited in the repo) wins, so a caption can be fixed after the render
