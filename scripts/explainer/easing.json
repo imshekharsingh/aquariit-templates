@@ -1,0 +1,23 @@
+{
+  "name": "showreel-06-easing",
+  "seek": "scripts/explainer/easing.html",
+  "dur": 20,
+  "fps": 60,
+  "cover": 8.0,
+  "caption": "CSS animation easing: linear vs ease-in-out vs spring. Same notification, same 0.8 s. Which one feels expensive? 👇\n\nThe spring is one line of CSS: linear() with the stops on screen (Chrome 113+, Firefox 112+, Safari 17.2+).\nSend this to the person who animates your site.",
+  "keywords": [
+    "CSS animation easing",
+    "spring animation CSS",
+    "CSS linear easing",
+    "UI animation",
+    "micro interactions",
+    "motion design for web"
+  ],
+  "hashtags": [
+    "#cssanimation",
+    "#uianimation",
+    "#microinteractions",
+    "#motiondesign",
+    "#frontenddev"
+  ]
+}
