@@ -25,6 +25,8 @@ Every reel should be something a designer saves for reference or sends to the pe
    Facts are checked (browser support, specs) and cited on screen.
 
 ## Craft bar (every reel)
+- Film look on every reel from 22 Oct (owner: "we are missing motion design"): in the config, `"blur": 12, "shutter": 0.45` (real motion blur from 12 sub-frames per frame),
+  `"grain": 6`, `"vignette": true`. The scene itself still owns camera language: depth layers, dolly and rack focus, light that reacts to motion.
 - One art direction: at most five colours, one type family, a real grid. No glows, gradient title cards, floating particles, or everything fading in.
 - Frame 0 is already a finished, cover-quality composition, and it is already moving; something completes inside 1.5 s.
 - Real interface over illustration; images drawn in code; fictional brands only.
