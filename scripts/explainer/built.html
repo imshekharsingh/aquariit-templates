@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>A website, built in 20 seconds</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec motion piece: a website builds itself in 20 seconds. Pure motion, no captions; the site's own type carries it.
+   Stage 540x960 CSS px (rendered at 2x). Every frame is a pure function of t through window.seek(t).
+   Palette: bone, ink, cobalt, vermilion (+ ink tints). One typeface: Archivo, whose width axis animates. Fictional studio: Halden. */
+:root{--bone:#f1eee6;--ink:#111111;--co:#2340ff;--ver:#ff4a1c;--mute:rgba(17,17,17,.5);--hair:rgba(17,17,17,.14);--f:'Archivo',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--bone);color:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.abs{position:absolute}
+#world{left:0;top:0;width:540px;height:960px;transform-origin:270px 520px}
+#grid{left:0;top:0;width:540px;height:960px;pointer-events:none}
+#grid i{position:absolute;top:0;width:1px;background:var(--hair);height:960px;transform-origin:top}
+#timer{right:30px;top:128px;font:600 15px/1 var(--f);font-variation-settings:'wdth' 100;letter-spacing:.02em;z-index:9}
+#timer b{font-weight:800}
+#view{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#page{left:0;top:0;width:540px;height:2400px}
+/* nav */
+#nav{left:30px;right:30px;top:120px;height:48px;display:flex;align-items:center;overflow:hidden}
+#logo{font:900 20px/1 var(--f);font-variation-settings:'wdth' 125;letter-spacing:.02em}
+/* headline */
+#h1{left:30px;top:186px;width:480px}
+.ln{display:block;overflow:hidden;height:112px}
+.w{display:inline-block;font:800 136px/.98 var(--f);letter-spacing:-.05em;transform-origin:0 100%;will-change:transform}
+#meta{left:30px;top:648px;display:flex;gap:16px;align-items:center;font:500 13px/1 var(--f);color:var(--mute);z-index:2}
+#cta{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;background:var(--ink);color:var(--bone);font:700 14px/1 var(--f);font-variation-settings:'wdth' 110}
+/* hero panel with the facade */
+#hero{left:0;top:704px;width:540px;height:420px;background:var(--co);overflow:hidden}
+.fac{position:absolute;left:0;bottom:0;width:100%;height:100%}
+.sun{position:absolute;border-radius:50%;background:var(--ver)}
+.bld{position:absolute;bottom:0;transform-origin:50% 100%}
+.win{position:absolute;inset:14px 10px 0 10px;background-image:repeating-linear-gradient(to right,var(--wc) 0 7px,transparent 7px 13px),repeating-linear-gradient(to bottom,transparent 0 6px,var(--bg) 6px 14px);background-blend-mode:normal}
+/* below the fold */
+#stats{left:30px;right:30px;top:1160px;display:flex;justify-content:space-between}
+.st b{display:block;font:800 64px/1 var(--f);letter-spacing:-.04em}
+.st span{display:block;margin-top:6px;font:500 13px/1 var(--f);color:var(--mute)}
+#lab{left:30px;top:1272px;font:700 13px/1 var(--f);letter-spacing:.12em;text-transform:uppercase}
+.card{position:absolute;overflow:hidden;border-radius:4px}
+.card .cap{position:absolute;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;font:700 13px/1 var(--f);z-index:2}
+#proj{left:0;top:0;width:540px;height:960px;overflow:hidden;opacity:0;z-index:5}
+#proj .num{position:absolute;left:30px;top:186px;font:900 150px/1 var(--f);letter-spacing:-.05em;color:var(--bone)}
+#proj .tt{position:absolute;left:30px;top:350px;font:800 46px/1 var(--f);letter-spacing:-.035em;color:var(--bone)}
+#proj .sub{position:absolute;left:30px;top:404px;font:500 14px/1 var(--f);color:rgba(241,238,230,.75)}
+#side{left:0;top:0;width:540px;height:960px;pointer-events:none}
+.scr{position:absolute;width:540px;height:960px;overflow:hidden;transform-origin:0 0;background:var(--bone);box-shadow:0 0 0 1px var(--hair),0 30px 60px -30px rgba(17,17,17,.4);opacity:0}
+</style>
+</head>
+<body>
+<div id="grid" class="abs"></div>
+<div id="side" class="abs"></div>
+<div id="world" class="abs">
+  <div id="view" class="abs">
+    <div id="page" class="abs">
+      <div id="nav" class="abs"><span id="logo">HALDEN</span></div>
+      <div id="h1" class="abs"></div>
+      <div id="meta" class="abs"><span id="cta">See projects →</span><span id="est">Architects · Oslo · since 2014</span></div>
+      <div id="hero" class="abs"></div>
+      <div id="stats" class="abs"><div class="st"><b id="n1">0</b><span>buildings</span></div><div class="st"><b id="n2">0</b><span>cities</span></div><div class="st"><b id="n3">0</b><span>shortcuts</span></div></div>
+      <div id="lab" class="abs">Selected work</div>
+    </div>
+    <div id="proj" class="abs"></div>
+  </div>
+</div>
+<div id="timer" class="abs"><b>00.0</b> s</div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 4); }, inc = function(k){ return k * k * k; }, io = function(k){ return k < .5 ? 8 * k * k * k * k : 1 - Math.pow(-2 * k + 2, 4) / 2; };
+  // spring over seconds since start (critically under-damped: one honest overshoot)
+  var spr = function(s, w){ if (s <= 0) return 0; w = w || 15; var z = .5, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
+  function rng(s){ return function(){ s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  var COL = { bone: '#f1eee6', ink: '#111111', co: '#2340ff', ver: '#ff4a1c' };
+
+  // grid: 6 columns inside 30 px margins
+  var G = []; for (var i = 0; i <= 6; i++) { var g = document.createElement('i'); g.style.left = (30 + i * 80) + 'px'; $('grid').appendChild(g); G.push(g); }
+  // headline, one word per line
+  var WORDS = ['Slow', 'cities.', 'Built', 'well.'], W = [];
+  WORDS.forEach(function(w, i){ var ln = document.createElement('span'); ln.className = 'ln'; var s = document.createElement('span'); s.className = 'w'; s.textContent = w;
+    if (i === 3) s.style.color = 'var(--co)'; ln.appendChild(s); $('h1').appendChild(ln); W.push(s); });
+  // a facade: buildings rise, windows light from the ground up, a sun rises behind
+  function facade(host, seed, w, h, pal){
+    var r = rng(seed), f = document.createElement('div'); f.className = 'fac'; host.appendChild(f);
+    var sun = document.createElement('div'); sun.className = 'sun'; var sr = h * .2; sun.style.width = sun.style.height = 2 * sr + 'px'; sun.style.left = (w * (.55 + r() * .2)) + 'px'; sun.style.background = pal.sun; f.appendChild(sun);
+    var B = [], x = -10;
+    while (x < w) { var bw = 50 + r() * 70, bh = h * (.35 + r() * .5), b = document.createElement('div'); b.className = 'bld';
+      b.style.left = x + 'px'; b.style.width = bw + 'px'; b.style.height = bh + 'px'; var c = pal.b[B.length % pal.b.length]; b.style.background = c;
+      var wn = document.createElement('div'); wn.className = 'win'; wn.style.setProperty('--wc', pal.win); wn.style.setProperty('--bg', c); b.appendChild(wn); f.appendChild(b);
+      B.push({ el: b, win: wn, d: r() * .25 + B.length * .07 }); x += bw - 2; }
+    return { sun: sun, sr: sr, h: h, B: B,
+      at: function(s){   // s = seconds since this facade started building
+        sun.style.transform = 'translateY(' + mix(h, h * .18, out(P(s, 0, 1.2))) + 'px)';
+        B.forEach(function(o){ var k = spr(s - o.d, 13); o.el.style.transform = 'scaleY(' + Math.max(0, k) + ')'; var wk = P(s - o.d, .45, 1.1); o.win.style.clipPath = 'inset(' + ((1 - wk) * 100) + '% 0 0 0)'; }); } };
+  }
+  var HERO = facade($('hero'), 7, 540, 420, { sun: COL.ver, b: ['#1a2fd1', '#0f1f9e', '#3552ff', '#111111'], win: 'rgba(241,238,230,.85)' });
+  // project cards
+  var CARDS = [
+    { x: 30, y: 1300, w: 480, h: 280, bg: COL.ink, pal: { sun: COL.ver, b: ['#222', '#2b2b2b', '#1a1a1a'], win: 'rgba(255,74,28,.9)' }, name: 'Vær House', yr: '2025', seed: 3 },
+    { x: 30, y: 1596, w: 232, h: 300, bg: COL.ver, pal: { sun: COL.bone, b: ['#d93a12', '#ff6a40', '#111'], win: 'rgba(241,238,230,.9)' }, name: 'Kestrel Library', yr: '2024', seed: 11 },
+    { x: 278, y: 1596, w: 232, h: 300, bg: COL.bone, pal: { sun: COL.co, b: ['#111', '#d9d4c7', '#2340ff'], win: 'rgba(255,74,28,.85)' }, name: 'Fjell Baths', yr: '2023', seed: 19 }
+  ];
+  CARDS.forEach(function(c){ var d = document.createElement('div'); d.className = 'card'; d.style.cssText = 'left:' + c.x + 'px;top:' + c.y + 'px;width:' + c.w + 'px;height:' + c.h + 'px;background:' + c.bg + (c.bg === COL.bone ? ';box-shadow:inset 0 0 0 1px var(--hair)' : '');
+    $('page').appendChild(d); c.el = d; c.f = facade(d, c.seed, c.w, c.h - 34, c.pal);
+    var cp = document.createElement('div'); cp.className = 'cap'; cp.style.color = c.bg === COL.bone ? COL.ink : COL.bone; cp.innerHTML = '<span>' + c.name + '</span><span>' + c.yr + '</span>'; d.appendChild(cp); });
+  // the project page that the Kestrel card opens into
+  var PJ = $('proj'); PJ.style.background = COL.ver; var PF = facade(PJ, 11, 540, 520, CARDS[1].pal);
+  PJ.insertAdjacentHTML('beforeend', '<div class="num">02</div><div class="tt">Kestrel Library</div><div class="sub">Bergen · 2024 · 4,800 m²</div>');
+  // two more screens for the pull-back: the home hero, and the contact page
+  function screen(html, bg){ var s = document.createElement('div'); s.className = 'scr'; s.style.background = bg; s.innerHTML = html; $('side').appendChild(s); return s; }
+  var S1 = screen('<div style="position:absolute;left:30px;top:120px;font:900 20px/48px var(--f);font-variation-settings:\'wdth\' 125">HALDEN</div><div style="position:absolute;left:30px;top:186px;font:800 112px/98px var(--f);letter-spacing:-.045em">Slow<br>cities.<br>Built<br><span style="color:var(--co)">well.</span></div><div style="position:absolute;left:0;top:650px;width:540px;height:310px;background:var(--co)"></div><div style="position:absolute;left:340px;top:700px;width:168px;height:168px;border-radius:50%;background:var(--ver)"></div>', COL.bone);
+  var S3 = screen('<div style="position:absolute;left:30px;top:120px;font:900 20px/48px var(--f);font-variation-settings:\'wdth\' 125;color:var(--bone)">HALDEN</div><div style="position:absolute;left:30px;top:200px;font:800 96px/.9 var(--f);letter-spacing:-.045em;color:var(--bone)">Let’s<br>build<br>slowly.</div><div style="position:absolute;left:30px;top:520px;height:56px;padding:0 26px;border-radius:999px;background:var(--ver);color:var(--ink);font:700 20px/56px var(--f)">hello@halden.studio</div><div style="position:absolute;left:30px;top:620px;font:500 18px/1.5 var(--f);color:rgba(241,238,230,.7)">Tollbugata 12<br>0152 Oslo</div>', COL.ink);
+
+  function seek(t){
+    t = Math.max(0, Math.min(20, t));
+    $('timer').firstChild.textContent = (t < 10 ? '0' : '') + t.toFixed(1);
+    // A · grid draws from the top (and retracts at the end, so frame 0 follows the last frame)
+    G.forEach(function(g, i){ var k = t < 19.2 ? out(P(t, -.15 + i * .05, .9 + i * .05)) : 1 - io(P(t, 19.35 + (6 - i) * .03, 19.95)); g.style.transform = 'scaleY(' + k + ')'; });
+    // B · headline: each word rises, its width stretches from condensed to wide and settles (Archivo's width axis)
+    W.forEach(function(w, i){ var s = t - (.3 + i * .28), k = spr(s, 12), wd = mix(62, 125, out(P(s, 0, .9))) + 22 * Math.exp(-4 * Math.max(0, s - .25)) * Math.sin(Math.max(0, s - .25) * 9);
+      w.style.transform = 'translateY(' + ((1 - Math.min(1.08, k)) * 110) + '%)'; w.style.fontVariationSettings = "'wdth' " + Math.min(125, wd) + ", 'wght' " + mix(300, 800, out(P(s, 0, .7))); });
+    // C · hero panel rises from the bottom, the facade builds inside it
+    var hk = io(P(t, 3.3, 4.2)); $('hero').style.clipPath = 'inset(' + ((1 - hk) * 100) + '% 0 0 0)'; HERO.at(t - 3.9);
+    // D · nav, CTA and meta snap in
+    var nk = spr(t - 6.2, 14); $('logo').style.transform = 'translateY(' + (1 - nk) * -60 + 'px)'; $('logo').style.fontVariationSettings = "'wdth' " + mix(62, 125, out(P(t, 6.2, 7))) + ", 'wght' 900";
+    var ck = spr(t - 6.6, 14); $('cta').style.transform = 'scale(' + Math.max(0, ck) + ')'; $('cta').style.transformOrigin = '0 50%';
+    var ek = out(P(t, 6.9, 7.5)); $('est').style.clipPath = 'inset(0 ' + ((1 - ek) * 100) + '% 0 0)';
+    // E · the page scrolls itself: stats count up, the work section builds
+    var sy = mix(0, -990, io(P(t, 8.3, 9.5))); sy = mix(sy, -1360, io(P(t, 10.5, 11.6)));
+    $('page').style.transform = 'translateY(' + sy + 'px)';
+    [['n1', 12], ['n2', 4], ['n3', 0]].forEach(function(n, i){ var k = out(P(t, 9.0 + i * .12, 10.2 + i * .12)); $(n[0]).textContent = n[1] ? Math.round(n[1] * k) : '0'; $(n[0]).parentNode.style.transform = 'translateY(' + (1 - out(P(t, 8.9 + i * .1, 9.6 + i * .1))) * 40 + 'px)'; });
+    $('lab').style.clipPath = 'inset(0 ' + ((1 - out(P(t, 9.4, 10))) * 100) + '% 0 0)';
+    CARDS.forEach(function(c, i){ var st = i === 0 ? 9.5 : 10.9 + (i - 1) * .18, k = io(P(t, st, st + .6)); c.el.style.clipPath = 'inset(' + ((1 - k) * 100) + '% 0 0 0)'; c.f.at(t - st - .2); });
+    // F · the Kestrel card opens into its own page (the card's rectangle grows to the screen)
+    var c1 = CARDS[1], fk = io(P(t, 12.3, 13.1)), r0 = { x: c1.x, y: c1.y + sy, w: c1.w, h: c1.h }, r1 = { x: 0, y: 0, w: 540, h: 960 };
+    var showP = t >= 12.3 && t < 19.2;
+    PJ.style.opacity = showP ? 1 : 0;
+    PJ.style.clipPath = 'inset(' + mix(r0.y, r1.y, fk) + 'px ' + (540 - mix(r0.x + r0.w, 540, fk)) + 'px ' + (960 - mix(r0.y + r0.h, 960, fk)) + 'px ' + mix(r0.x, 0, fk) + 'px round ' + mix(4, 0, fk) + 'px)';
+    PF.at(showP ? t - 12.6 : -1);
+    var pt = PJ.querySelectorAll('.num,.tt,.sub'); for (var j = 0; j < pt.length; j++) { var kk = spr(t - (13.0 + j * .15), 13); pt[j].style.transform = 'translateY(' + (1 - Math.min(1, kk)) * 80 + 'px)'; pt[j].style.clipPath = 'inset(0 0 ' + ((1 - cl(kk)) * 100) + '% 0)'; }
+    // G · pull back: the project page shrinks into the middle of three screens
+    var gk = io(P(t, 15.0, 16.2)), sc = mix(1, .46, gk);
+    $('world').style.transform = 'translateY(' + mix(0, 40, gk) + 'px) scale(' + sc + ')';
+    var side = [S1, S3]; side.forEach(function(s, i){ var k = io(P(t, 15.4 + i * .12, 16.4 + i * .12)), dir = i ? 1 : -1, ss = .38;
+      var x = 270 + dir * mix(60, 168, k) - 540 * ss / 2, y = 560 - 960 * ss / 2 + mix(30, 0, k);
+      s.style.opacity = t >= 15.4 && t < 19.2 ? 1 : 0; s.style.transform = 'translate(' + x + 'px,' + y + 'px) rotate(' + dir * mix(0, 4, k) + 'deg) scale(' + ss + ')'; });
+    // H · everything drops away, the grid retracts, and we are back at frame 0
+    var hk2 = inc(P(t, 18.4, 19.2));
+    $('world').style.transform += ' translateY(' + hk2 * 1700 + 'px)';
+    side.forEach(function(s, i){ s.style.transform += ' translateY(' + inc(P(t, 18.3 + i * .08, 19.1 + i * .08)) * 1900 + 'px)'; });
+    $('world').style.opacity = t >= 19.2 ? 0 : 1;
+    if (t >= 19.2) { $('page').style.transform = 'none'; }
+  }
+  window.seek = seek; window.DURATION = 20;
+  document.fonts.ready.then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
