@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Six page transitions</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, series "Six ways": six page transitions on one site. Tinta, a fictional paint studio: every page is one paint colour,
+   and each page's big circle is the next page's colour, so every transition is a way of arriving at the colour you were shown.
+   Stage 540x960 CSS px (rendered at 2x). Every frame is a pure function of t through window.seek(t). One typeface: Bricolage Grotesque. */
+:root{--f:'Bricolage Grotesque',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-family:var(--f);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.pg{position:absolute;left:0;top:0;width:540px;height:960px;overflow:hidden;transform-origin:0 0}
+.pg .nav{position:absolute;left:30px;right:30px;top:124px;display:flex;justify-content:space-between;align-items:baseline;font:700 20px/1 var(--f);font-variation-settings:'wdth' 75,'opsz' 24;letter-spacing:.02em}
+.pg .nav span{font:500 14px/1 var(--f);opacity:.7;letter-spacing:.01em}
+.pg .name{position:absolute;left:26px;top:166px;white-space:nowrap;overflow:hidden;padding-bottom:6px}
+.pg .name i{display:inline-block;font-style:normal;font-weight:800;font-variation-settings:'wdth' 90,'opsz' 96;letter-spacing:-.035em;line-height:.92}
+.pg .blob{position:absolute;border-radius:50%}
+.pg .det{position:absolute;left:30px;top:458px;font:500 16px/1.45 var(--f);font-variation-settings:'opsz' 16}
+.pg .det b{display:block;font:700 30px/1 var(--f);font-variation-settings:'opsz' 32;letter-spacing:-.02em;margin-bottom:10px}
+.pg .buy{position:absolute;left:30px;top:590px;height:52px;padding:0 24px;border-radius:999px;display:flex;align-items:center;gap:10px;font:700 17px/1 var(--f);font-variation-settings:'opsz' 18}
+.dim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+#tiles{position:absolute;left:0;top:0;width:540px;height:960px;pointer-events:none}
+#tiles i{position:absolute;width:91px;height:88px}
+#chip{position:absolute;left:30px;top:680px;height:46px;display:flex;align-items:center;gap:12px;padding:0 18px 0 6px;border-radius:999px;font:700 17px/1 var(--f);font-variation-settings:'opsz' 18;z-index:20;overflow:hidden}
+#chip b{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:800 14px/1 var(--f)}
+#chip .lab{position:relative;height:20px;min-width:150px;overflow:hidden}
+#chip .lab span{position:absolute;left:0;top:0;white-space:nowrap;line-height:20px}
+#bar{position:absolute;left:30px;top:740px;width:200px;height:4px;display:flex;gap:4px;z-index:20}
+#bar i{flex:1;border-radius:2px}
+#tap{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;z-index:21;opacity:0;background:rgba(20,20,20,.18);box-shadow:0 0 0 2px rgba(20,20,20,.55)}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="tiles"></div>
+<div id="tap"></div>
+<div id="chip"><b>01</b><div class="lab"></div></div>
+<div id="bar"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 4); }, inc = function(k){ return k * k * k; }, io = function(k){ return k < .5 ? 8 * k * k * k * k : 1 - Math.pow(-2 * k + 2, 4) / 2; };
+  var ioe = function(k){ return k === 0 ? 0 : k === 1 ? 1 : k < .5 ? Math.pow(2, 20 * k - 10) / 2 : (2 - Math.pow(2, -20 * k + 10)) / 2; };   // expo in-out for the zoom
+  // the paints; page 7 is page 1 again, so the reel loops
+  var C = [
+    { n: 'Bone', bg: '#efe9dd', ink: '#141414', hex: '#EFE9DD', m: 'Chalk matte' },
+    { n: 'Cobalt', bg: '#2340ff', ink: '#efe9dd', hex: '#2340FF', m: 'Silk sheen' },
+    { n: 'Vermilion', bg: '#ff4a1c', ink: '#141414', hex: '#FF4A1C', m: 'Eggshell' },
+    { n: 'Moss', bg: '#3e5a2b', ink: '#efe9dd', hex: '#3E5A2B', m: 'Chalk matte' },
+    { n: 'Ink', bg: '#141414', ink: '#efe9dd', hex: '#141414', m: 'Flat' },
+    { n: 'Blush', bg: '#f4b9a7', ink: '#141414', hex: '#F4B9A7', m: 'Eggshell' }
+  ];
+  var LAB = ['Circle reveal', 'Push', 'Blinds', 'Split type', 'Tile cascade', 'Zoom through'];
+  var BX = 30 + 75, BY = 590 + 26;   // the Add-to-cart button centre (the tap)
+  var BC = { x: 420, y: 790, r: 230 };   // each page's big circle: the next colour
+  var PG = [];
+  for (var i = 0; i < 7; i++) {
+    var c = C[i % 6], nx = C[(i + 1) % 6], d = document.createElement('div'); d.className = 'pg'; d.style.background = c.bg; d.style.color = c.ink;
+    d.innerHTML = '<div class="blob" style="left:' + (BC.x - BC.r) + 'px;top:' + (BC.y - BC.r) + 'px;width:' + 2 * BC.r + 'px;height:' + 2 * BC.r + 'px;background:' + nx.bg + (nx.bg === c.bg ? ';box-shadow:inset 0 0 0 2px ' + c.ink : '') + '"></div>'
+      + '<div class="nav"><span style="font:700 20px/1 var(--f);font-variation-settings:\'wdth\' 75,\'opsz\' 24;opacity:1;letter-spacing:.06em">TINTA</span><span>No. 0' + (i % 6 + 1) + ' / 06</span></div>'
+      + '<div class="name">' + c.n.split('').map(function(ch){ return '<i>' + ch + '</i>'; }).join('') + '</div>'
+      + '<div class="det"><b>' + c.hex + '</b>' + c.m + ' · 2.5 L<br>Covers 30 m² · dries in 2 h</div>'
+      + '<div class="buy" style="background:' + c.ink + ';color:' + c.bg + '">Add to cart · $38</div><div class="dim"></div>';
+    $('stage').appendChild(d); PG.push({ el: d, c: c, name: d.querySelector('.name'), L: [].slice.call(d.querySelectorAll('.name i')), det: d.querySelector('.det'), buy: d.querySelector('.buy'), dim: d.querySelector('.dim') });
+  }
+  // tiles for the cascade (6 x 11)
+  var TL = []; for (var r = 0; r < 11; r++) for (var q = 0; q < 6; q++) { var ti = document.createElement('i'); ti.style.left = q * 90 + 'px'; ti.style.top = r * 87.3 + 'px'; $('tiles').appendChild(ti); TL.push({ el: ti, d: (q + r) * .034 }); }
+  // label chip and progress
+  LAB.forEach(function(l, i){ var s = document.createElement('span'); s.textContent = l; $('chip').querySelector('.lab').appendChild(s); });
+  for (var b = 0; b < 6; b++) $('bar').appendChild(document.createElement('i'));
+  var T = [0.55, 3.75, 6.95, 10.15, 13.35, 16.55], D = [1.05, .95, 1.1, 1.25, 1.15, 1.6];
+  function fit(){ PG.forEach(function(p){ p.el.style.display = 'block'; p.name.style.fontSize = '100px'; var w = p.name.scrollWidth; p.name.style.fontSize = Math.min(290, 100 * 486 / w) + 'px'; p.el.style.display = 'none'; }); }
+  function reset(p){ p.el.style.display = 'none'; p.el.style.transform = ''; p.el.style.clipPath = ''; p.el.style.zIndex = 1; p.dim.style.opacity = 0; p.det.style.transform = ''; p.buy.style.transform = '';
+    p.L.forEach(function(l){ l.style.transform = ''; }); }
+  function seek(t){
+    t = Math.max(0, Math.min(20, t));
+    PG.forEach(reset); TL.forEach(function(x){ x.el.style.transform = 'scale(0)'; });
+    var i = -1; for (var j = 0; j < 6; j++) if (t >= T[j]) i = j;   // i = the last transition that has started
+    var cur = i < 0 ? 0 : i, k = i < 0 ? 0 : P(t, T[i], T[i] + D[i]);
+    if (i < 0 || k >= 1) { var p = PG[i < 0 ? 0 : i + 1]; p.el.style.display = 'block'; }
+    else {
+      var A = PG[i], B = PG[i + 1], s = t - T[i]; A.el.style.display = B.el.style.display = 'block'; B.el.style.zIndex = 2;
+      if (i === 0) {   // circle reveal from the tapped button
+        B.el.style.clipPath = 'circle(' + (io(k) * 1150) + 'px at ' + BX + 'px ' + BY + 'px)';
+        A.buy.style.transform = 'scale(' + (1 - .06 * Math.sin(Math.PI * P(s, 0, .2))) + ')';
+      } else if (i === 1) {   // push: the new page slides over, the old one recedes
+        var e = io(k); B.el.style.transform = 'translateX(' + (1 - e) * 540 + 'px)'; B.el.style.boxShadow = '-30px 0 60px rgba(0,0,0,' + .35 * (1 - e) + ')';
+        A.el.style.transform = 'translate(' + (-e * 150 + 270 * .08 * e) + 'px,' + (480 * .08 * e) + 'px) scale(' + (1 - .08 * e) + ')'; A.dim.style.opacity = .5 * e;
+      } else if (i === 2) {   // blinds: six strips drop in turn
+        var pts = []; for (var sj = 0; sj < 6; sj++) { var x0 = sj * 90, x1 = x0 + 90 + .5, h = 960 * io(P(s, sj * .08, sj * .08 + .62)); pts.push(x0 + 'px 0', x0 + 'px ' + h + 'px', x1 + 'px ' + h + 'px', x1 + 'px 0'); }
+        B.el.style.clipPath = 'polygon(' + pts.join(',') + ')';
+      } else if (i === 3) {   // split type: the name leaves letter by letter, the colour rises, the new name arrives letter by letter
+        A.L.forEach(function(l, j){ l.style.transform = 'translateY(' + (-115 * inc(P(s, j * .035, j * .035 + .4))) + '%)'; });
+        B.el.style.clipPath = 'inset(' + (1 - io(P(s, .25, .85))) * 100 + '% 0 0 0)';
+        B.L.forEach(function(l, j){ l.style.transform = 'translateY(' + (115 * (1 - out(P(s, .55 + j * .04, .95 + j * .04)))) + '%)'; });
+        var dk = out(P(s, .7, 1.2)); B.det.style.transform = B.buy.style.transform = 'translateY(' + (1 - dk) * 40 + 'px)';
+      } else if (i === 4) {   // tile cascade: tiles in the new colour flip in on a diagonal, then the page is there
+        var cover = s < .95; B.el.style.display = cover ? 'none' : 'block';
+        TL.forEach(function(x){ var tk = P(s, x.d, x.d + .38), e2 = out(tk); x.el.style.background = B.c.bg; x.el.style.transform = cover ? 'perspective(400px) rotateY(' + (1 - e2) * 90 + 'deg) scale(' + (e2 * 1.02) + ')' : 'scale(0)'; });
+        var dk2 = out(P(s, .95, 1.15)); B.det.style.transform = B.buy.style.transform = 'translateY(' + (1 - dk2) * 30 + 'px)';
+        B.L.forEach(function(l, j){ l.style.transform = 'translateY(' + (100 * (1 - out(P(s, .9 + j * .03, 1.15 + j * .03)))) + '%)'; });
+      } else {   // zoom through the circle into the next colour
+        var z = ioe(k), sc = Math.pow(14, z);
+        A.el.style.transformOrigin = BC.x + 'px ' + BC.y + 'px'; A.el.style.transform = 'scale(' + sc + ')';
+        B.el.style.clipPath = 'circle(' + (BC.r * sc) + 'px at ' + BC.x + 'px ' + BC.y + 'px)';
+        B.el.style.transformOrigin = BC.x + 'px ' + BC.y + 'px'; B.el.style.transform = 'scale(' + mix(1.5, 1, out(P(s, .55, 1.6))) + ')';
+      }
+    }
+    // the tap before the circle reveal
+    var tp = $('tap'), ta = (1 - P(t, .9, 1.2)), tk = out(P(t, 0, .5)); tp.style.opacity = t < 1.2 ? ta : 0;
+    tp.style.transform = 'translate(' + mix(320, BX + 40, tk) + 'px,' + mix(820, BY, tk) + 'px) scale(' + (1 - .25 * Math.sin(Math.PI * P(t, .5, .72))) + ')';
+    // chip and bar take the colours of whatever page is on screen
+    var on = PG[(i < 0 ? 0 : (k > .5 ? i + 1 : i))].c, dark = on.ink === '#efe9dd';
+    var chip = $('chip'); chip.style.background = on.ink; chip.style.color = on.bg; chip.querySelector('b').style.background = on.bg; chip.querySelector('b').style.color = on.ink;
+    var li = 0; for (var m = 0; m < 6; m++) if (t >= T[m] - .45) li = m; if (t >= 19.55) li = 0;
+    var num = chip.querySelector('b'); num.textContent = '0' + (li + 1);
+    [].forEach.call(chip.querySelectorAll('.lab span'), function(sp, m){ var a = m === 0 ? (t >= 19.55 ? 19.55 : -1) : T[m] - .45, nb = m < 5 ? T[m + 1] - .45 : 19.55;
+      var inK = a < 0 ? 1 : out(P(t, a, a + .35)), oK = io(P(t, nb - .25, nb)), vis = (m === li);
+      sp.style.transform = 'translateY(' + ((1 - inK) * 22 - (m === 0 && t < 19.55 ? oK : (m === li ? 0 : oK)) * 22) + 'px)'; sp.style.visibility = vis ? 'visible' : 'hidden'; });
+    [].forEach.call($('bar').children, function(x, m){ x.style.background = on.ink; x.style.opacity = m < li ? .55 : m === li ? 1 : .2; });
+  }
+  window.seek = seek; window.DURATION = 20;
+  document.fonts.load('800 100px "Bricolage Grotesque"').then(function(){ return document.fonts.ready; }).then(function(){ fit(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
