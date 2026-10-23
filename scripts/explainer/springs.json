@@ -1,0 +1,28 @@
+{
+ "name": "showreel-11-springs",
+ "seek": "scripts/explainer/springs.html",
+ "dur": 22,
+ "fps": 30,
+ "cover": 1.6,
+ "voice": {
+  "text": "Why do some buttons feel expensive? Same button. Same duration. This one eases in and stops dead. This one springs: it overshoots a touch, then settles, like a real object. CSS does this natively now, with linear(). Chrome, Firefox and Safari have all supported it since 2023. One line. Everything feels more physical.",
+  "voice": "af_heart",
+  "speed": 1.05
+ },
+ "caption": "Why do some buttons feel expensive? 🫧\n\nSame button, same duration. One eases and stops dead; the other springs: it overshoots a touch and settles, like a real object. CSS does this natively with linear(), in Chrome, Firefox and Safari since 2023.\nSave it for your next interface, or send it to whoever builds your buttons.",
+ "keywords": [
+  "CSS spring animation",
+  "CSS linear easing",
+  "button animation",
+  "UI micro interactions",
+  "CSS animation",
+  "motion design"
+ ],
+ "hashtags": [
+  "#cssanimation",
+  "#microinteractions",
+  "#uianimation",
+  "#frontenddev",
+  "#motiondesign"
+ ]
+}

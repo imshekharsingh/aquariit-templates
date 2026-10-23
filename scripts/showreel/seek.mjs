@@ -22,6 +22,10 @@ const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-un
 const p = await (await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1080 / W })).newPage();
 const errs = []; p.on('pageerror', (e) => errs.push(e.message));
 await p.goto('file://' + resolve(R.seek)); await p.waitForSelector('html[data-ready]', { timeout: 30000 });
+if (process.env.VOICE_WORDS) {   // narrated reels: the scene times its beats and captions to the real voice (scripts/showreel/voice.py)
+  const vw = JSON.parse(readFileSync(process.env.VOICE_WORDS, 'utf8'));
+  await p.evaluate((vw) => window.setVoice && window.setVoice(vw), vw);
+}
 const cues = await p.evaluate(() => window.CUES || null);   // sound cues for scripts/showreel/sound.py (owner, 23 Oct: sound supports the hook)
 if (cues) writeFileSync(out.replace(/\.mp4$/, '.cues.json'), JSON.stringify(Object.assign(cues, { dur: Math.min(cues.dur || DUR, DUR) })));
 const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS * K), '-c:v', 'mjpeg', '-i', '-',

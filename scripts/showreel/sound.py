@@ -2,7 +2,7 @@
 # The reel study (scripts/study-reels.mjs) showed what holds people: sound from frame 0, a voice reading the hook, a quiet bed,
 # and a hit or whoosh on every cut, all dense and loud (-14 LUFS). Here every sound is made in code from the scene's own cue list
 # (window.CUES, written next to the MP4 by seek.mjs), so sound and picture share one timeline.
-# Usage: python3 scripts/showreel/sound.py <cues.json> <out.wav>
+# Usage: python3 scripts/showreel/sound.py <cues.json> <out.wav> [narration.wav]
 #   cues.json: { dur, bed: { bpm, origin, chords }, cues: [ { t, k, g?, p?, d?, text?, voice?, speed? } ] }
 #   k: whoosh (d = length), hit, boom, pop (p = pitch step), tick, click, shimmer, riser (d), voice (text; Kokoro, Apache-2.0, runs on the runner)
 # Seeded noise only, so the same cues always give the same sound. The workflow levels the mix to -14 LUFS when it muxes.
@@ -134,7 +134,7 @@ def reverb(x, sec=1.4, mix=.18):
     return x + mix * y / (np.abs(y).max() + 1e-9) * np.abs(x).max()
 
 
-def main(cues_path, out_path):
+def main(cues_path, out_path, narration=None):
     C = json.load(open(cues_path)); dur = float(C['dur']); n = int(dur * SR)
     sfx = np.zeros((2, n + SR * 2)); vox = np.zeros((2, n + SR * 4))
     def put(buf, s, t):
@@ -151,6 +151,9 @@ def main(cues_path, out_path):
         elif k == 'boom': s = hit(g, p, True)
         else: s = {'hit': hit, 'pop': pop, 'tick': tick, 'click': click, 'shimmer': shimmer}[k](g, p)
         put(sfx, s, t)
+    if narration:   # the whole-reel voice from voice.py, from frame 0; the bed ducks under it
+        with wave.open(narration) as w: v = np.frombuffer(w.readframes(w.getnframes()), '<i2').reshape(-1, w.getnchannels()).T / 32767
+        put(vox, v[:2] if v.shape[0] > 1 else np.vstack([v, v]), 0)
     sfx, vox = sfx[:, :n], vox[:, :n]
     B = C.get('bed')
     b = bed(dur, B['bpm'], B['origin'], B['chords']) if B else np.zeros((2, n))
@@ -165,4 +168,4 @@ def main(cues_path, out_path):
 
 
 if __name__ == '__main__':
-    main(*sys.argv[1:3])
+    main(*sys.argv[1:4])

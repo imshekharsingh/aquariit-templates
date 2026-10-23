@@ -43,6 +43,15 @@ jobs:
           npx playwright install --with-deps chromium
           sudo apt-get install -y --no-install-recommends ffmpeg
           pip install numpy==2.1.3 Pillow==11.0.0
+      - name: Narration
+        # explainer reels (owner, 23 Oct): a voice for the whole reel, with a timestamp per word for the captions and beats
+        run: |
+          python3 -I -c "import json,sys; sys.exit(0 if json.load(open(sys.argv[1])).get('voice') else 1)" "$CFG" || exit 0
+          sudo apt-get install -y --no-install-recommends espeak-ng
+          pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+          pip install kokoro==0.9.4 soundfile==0.12.1
+          mkdir -p out && python3 scripts/showreel/voice.py "$CFG" out/narration.wav out/words.json
+          echo "VOICE_WORDS=out/words.json" >> "$GITHUB_ENV"
       - name: Capture and compose
         run: |
           set -o pipefail
@@ -75,7 +84,7 @@ jobs:
         # every sound comes from the scene's cues (scripts/showreel/sound.py), levelled to -14 LUFS like the reels that hold attention
         if: hashFiles('out/*.cues.json') != ''
         run: |
-          python3 scripts/showreel/sound.py "out/$NAME.cues.json" out/sound.wav
+          python3 scripts/showreel/sound.py "out/$NAME.cues.json" out/sound.wav $( [ -f out/narration.wav ] && echo out/narration.wav )
           # two passes: measure, then the exact gain to -14 LUFS and a limiter on the peaks (one-pass loudnorm stayed near -16)
           EQ="highpass=f=55,equalizer=f=200:t=q:w=1.2:g=-3,equalizer=f=3000:t=q:w=1:g=2"
           IN=$(ffmpeg -hide_banner -i out/sound.wav -af "$EQ,ebur128" -f null - 2>&1 | grep -E "^\s+I:" | tail -1 | awk '{print $2}')
@@ -89,6 +98,7 @@ jobs:
         run: |
           gh release view study --repo "$REPO" >/dev/null 2>&1 || gh release create study --repo "$REPO" --title "Study" --latest=false --notes "Reel study and previews"
           gh release upload study --repo "$REPO" --clobber "out/$NAME.mp4"
+          if [ -f out/words.json ]; then cp out/words.json "out/$NAME-words.json"; gh release upload study --repo "$REPO" --clobber "out/$NAME-words.json"; fi
           echo "https://github.com/$REPO/releases/download/study/$NAME.mp4"
       - name: Keep it and tell the owner
         if: inputs.seconds == ''
