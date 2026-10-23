@@ -1,0 +1,55 @@
+name: Reel study
+
+# Downloads the latest reels of both accounts (read-only, official API) and measures them: loudness and dynamics, silences,
+# a spectrogram (voice / music / effects), and the first three seconds as frames. Results go to the "study" release for Claude to read.
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: Reels per account
+        default: '3'
+
+permissions:
+  contents: write
+
+jobs:
+  study:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+      BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tools
+        run: sudo apt-get install -y --no-install-recommends ffmpeg
+      - name: Download
+        env:
+          T1: ${{ secrets.INSTAGRAM_TOKEN }}
+          T2: ${{ secrets.INSTAGRAM_TOKEN_2 }}
+        run: |
+          INSTAGRAM_TOKEN="$T1" node scripts/study-reels.mjs --slot 1 --limit "${{ inputs.limit }}" --out out/study
+          INSTAGRAM_TOKEN="$T2" node scripts/study-reels.mjs --slot 2 --limit "${{ inputs.limit }}" --out out/study
+      - name: Measure
+        run: |
+          cd out/study
+          for f in *.mp4; do n="${f%.mp4}"
+            { echo "== $n"; ffprobe -v error -show_entries stream=codec_type,codec_name,width,height,r_frame_rate,sample_rate,channels -show_entries format=duration -of compact "$f"
+              ffmpeg -nostats -i "$f" -af ebur128=peak=true -f null - 2>&1 | grep -A12 "Summary:" | grep -E "I:|LRA:|Peak:"
+              echo "silences:"; ffmpeg -nostats -i "$f" -af silencedetect=noise=-40dB:d=0.25 -f null - 2>&1 | grep -E "silence_(start|end)" | head -20
+              echo "loudness per 0.5 s (dB RMS):"; ffmpeg -nostats -i "$f" -af "asetnsamples=22050,astats=metadata=1:reset=1,ametadata=print:key=lavfi.astats.Overall.RMS_level" -f null - 2>&1 | grep RMS_level | awk -F= '{printf "%.0f ", $2}' | head -c 600; echo
+            } >> report.txt 2>&1
+            ffmpeg -y -v error -i "$f" -lavfi "showspectrumpic=s=1200x500:legend=1:scale=log:fscale=log" "$n-spectrum.png" || true
+            ffmpeg -y -v error -i "$f" -vf "select='lt(t\,3)',fps=4,scale=270:-1,tile=6x2" -frames:v 1 "$n-first3s.png" || true
+            ffmpeg -y -v error -i "$f" -vf "fps=1,scale=180:-1,tile=10x3" -frames:v 1 "$n-all.png" || true
+          done
+          cat report.txt
+      - name: Publish
+        run: |
+          gh release view study --repo "$REPO" >/dev/null 2>&1 || gh release create study --repo "$REPO" --title "Reel study" --latest=false --notes "Reel measurements for Claude"
+          cd out/study && gh release upload study --repo "$REPO" --clobber report.txt *.json *.png
