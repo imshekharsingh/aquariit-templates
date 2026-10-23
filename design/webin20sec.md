@@ -32,6 +32,8 @@ Every reel should be something a designer saves for reference or sends to the pe
   `"grain": 6`, and `"vignette": true` on dark grounds only (on light grounds it greys the corners). The scene itself still owns camera language: depth layers, dolly and rack focus, light that reacts to motion.
 - One art direction: at most five colours, one type family, a real grid. No glows, gradient title cards, floating particles, or everything fading in.
 - Frame 0 is already a finished, cover-quality composition, and it is already moving; something completes inside 1.5 s.
+- A hook line on screen from frame 0 (audit 23 Oct: Built in 20 s held 2.8 s of 20 with no words; every @techin20sec reel opens on a question
+  or a claim): a question, a paradox or a bold claim in at most 8 words, readable in a second, that the reel then answers.
 - Real interface over illustration; images drawn in code; fictional brands only.
 - Motion with intent: springs, masks, variable-font axes, match cuts. Every move has a reason.
 - 15-20 s, payoff in the last 3 s, a seamless loop (the last frame leads into the first).

@@ -28,6 +28,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
 #chip b{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:800 14px/1 var(--f)}
 #chip .lab{position:relative;height:20px;min-width:150px;overflow:hidden}
 #chip .lab span{position:absolute;left:0;top:0;white-space:nowrap;line-height:20px}
+#hook{position:absolute;left:24px;right:24px;top:446px;z-index:30;overflow:hidden;border-radius:22px}
+#hook span{display:block;padding:18px 22px;background:#141414;color:#efe9dd;font:800 34px/1.05 var(--f);font-variation-settings:'wdth' 85,'opsz' 48;letter-spacing:-.02em}
 #ttl{position:absolute;left:30px;top:654px;z-index:20;font:800 21px/1 var(--f);font-variation-settings:'wdth' 75,'opsz' 18;letter-spacing:.12em;text-transform:uppercase}
 #bar{position:absolute;left:30px;top:744px;width:200px;height:4px;display:flex;gap:4px;z-index:20}
 #bar i{flex:1;border-radius:2px}
@@ -38,6 +40,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
 <div id="stage"></div>
 <div id="tiles"></div>
 <div id="tap"></div>
+<div id="hook"><span>Which page transition<br>would you ship?</span></div>
 <div id="ttl">6 page transitions</div>
 <div id="chip"><b>01</b><div class="lab"></div></div>
 <div id="bar"></div>
@@ -121,6 +124,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
     tp.style.transform = 'translate(' + mix(320, BX + 40, tk) + 'px,' + mix(820, BY, tk) + 'px) scale(' + (1 - .25 * Math.sin(Math.PI * P(t, .5, .72))) + ')';
     // chip and bar take the colours of whatever page is on screen
     var on = PG[(i < 0 ? 0 : (k > .5 ? i + 1 : i))].c, dark = on.ink === '#efe9dd';
+    // the hook (audit 23 Oct: open on a question): on screen at frame 0, it slides away as the first transition lands and returns for the loop
+    var hk = (1 - io(P(t, 1.25, 1.65))) + io(P(t, 16.45, 16.95)); $('hook').firstChild.style.transform = 'translateY(' + (t < 8 ? -(1 - hk) * 130 : (1 - hk) * 130) + '%)';
     $('ttl').style.color = on.ink; var chip = $('chip'); chip.style.background = on.ink; chip.style.color = on.bg; chip.querySelector('b').style.background = on.bg; chip.querySelector('b').style.color = on.ink;
     var li = 0; for (var m = 0; m < 6; m++) if (t >= T[m] - .45) li = m; if (t >= 16.55) li = 0;
     var num = chip.querySelector('b'); num.textContent = '0' + (li + 1);
