@@ -1,143 +1,143 @@
 {
- "showreel-01-v3": {
-  "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
-  "keywords": [
-   "creative website design",
-   "website animation",
-   "scroll animation",
-   "3D website",
-   "WebGL website",
-   "interactive web design",
-   "frontend developer",
-   "motion web design"
-  ],
-  "hashtags": [
-   "#creativecoding",
-   "#webanimation",
-   "#scrollanimation",
-   "#creativedeveloper",
-   "#interactivedesign"
-  ],
-  "hidden": true
- },
- "showreel-01-v2": {
-  "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
-  "keywords": [
-   "creative website design",
-   "website animation",
-   "scroll animation",
-   "3D website",
-   "WebGL website",
-   "interactive web design",
-   "frontend developer",
-   "motion web design"
-  ],
-  "hashtags": [
-   "#creativecoding",
-   "#webanimation",
-   "#scrollanimation",
-   "#creativedeveloper",
-   "#interactivedesign"
-  ],
-  "hidden": true
- },
- "showreel-01": {
-  "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
-  "keywords": [
-   "creative website design",
-   "website animation",
-   "scroll animation",
-   "3D website",
-   "WebGL website",
-   "interactive web design",
-   "frontend developer",
-   "motion web design"
-  ],
-  "hashtags": [
-   "#creativecoding",
-   "#webanimation",
-   "#scrollanimation",
-   "#creativedeveloper",
-   "#interactivedesign"
-  ],
-  "hidden": true
- },
- "showreel-02-halcyra": {
-  "caption": "A rough stone becomes a ring, on scroll. 💎\n\nEvery facet is code: 57 faces, real reflections, no images, no video.\nWould you put this on a jewellery site? 👇",
-  "keywords": [
-   "jewellery website design",
-   "luxury website",
-   "scroll animation",
-   "3D product website",
-   "WebGL website",
-   "creative web design"
-  ],
-  "hashtags": [
-   "#creativecoding",
-   "#scrollanimation",
-   "#webgl",
-   "#luxurywebdesign",
-   "#jewelrywebsite"
-  ],
-  "hidden": true
- },
- "showreel-03-before-after": {
-  "caption": "Same website. Without motion → with motion. ✨\n\nA gem that turns, a day that plays as you scroll, a product that opens layer by layer. All built in code.\nWhich one changed the most? 👇",
-  "keywords": [
-   "website animation",
-   "web design with motion",
-   "scroll animation",
-   "interactive website",
-   "creative website design",
-   "motion web design"
-  ],
-  "hashtags": [
-   "#webanimation",
-   "#scrollanimation",
-   "#creativecoding",
-   "#interactivedesign",
-   "#motionui"
-  ],
-  "hidden": true
- },
- "showreel-04-hover": {
-  "caption": "1 button. 6 hover effects. 20 seconds. ✨\n\nMagnetic → liquid fill → glitch → 3D tilt → ripple → particle burst. All built in code.\nWhich one goes on your next site? 👇",
-  "keywords": [
-   "button hover effect",
-   "hover animation",
-   "CSS hover effects",
-   "micro interactions",
-   "UI animation",
-   "web design inspiration"
-  ],
-  "hashtags": [
-   "#hovereffect",
-   "#microinteractions",
-   "#uianimation",
-   "#creativecoding",
-   "#cssanimation"
-  ],
-  "hidden": true
- },
- "showreel-06-easing": {
-  "hidden": true
- },
- "showreel-07-built-in-20s": {
-  "hidden": true
- },
- "showreel-05-layout-shift": {
-  "postOn": "2026-10-22"
- },
- "showreel-07-built-film": {
-  "postOn": "2026-10-23"
- },
- "showreel-08-six-transitions": {
-  "postOn": "2026-10-24"
- },
- "showreel-09-liquid-glass": {
-  "postOn": "2026-10-25"
- },
- "showreel-10-zero-js-transition": {
-  "postOn": "2026-10-26"
- }
+  "showreel-01-v3": {
+    "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
+    "keywords": [
+      "creative website design",
+      "website animation",
+      "scroll animation",
+      "3D website",
+      "WebGL website",
+      "interactive web design",
+      "frontend developer",
+      "motion web design"
+    ],
+    "hashtags": [
+      "#creativecoding",
+      "#webanimation",
+      "#scrollanimation",
+      "#creativedeveloper",
+      "#interactivedesign"
+    ],
+    "hidden": true
+  },
+  "showreel-01-v2": {
+    "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
+    "keywords": [
+      "creative website design",
+      "website animation",
+      "scroll animation",
+      "3D website",
+      "WebGL website",
+      "interactive web design",
+      "frontend developer",
+      "motion web design"
+    ],
+    "hashtags": [
+      "#creativecoding",
+      "#webanimation",
+      "#scrollanimation",
+      "#creativedeveloper",
+      "#interactivedesign"
+    ],
+    "hidden": true
+  },
+  "showreel-01": {
+    "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
+    "keywords": [
+      "creative website design",
+      "website animation",
+      "scroll animation",
+      "3D website",
+      "WebGL website",
+      "interactive web design",
+      "frontend developer",
+      "motion web design"
+    ],
+    "hashtags": [
+      "#creativecoding",
+      "#webanimation",
+      "#scrollanimation",
+      "#creativedeveloper",
+      "#interactivedesign"
+    ],
+    "hidden": true
+  },
+  "showreel-02-halcyra": {
+    "caption": "A rough stone becomes a ring, on scroll. 💎\n\nEvery facet is code: 57 faces, real reflections, no images, no video.\nWould you put this on a jewellery site? 👇",
+    "keywords": [
+      "jewellery website design",
+      "luxury website",
+      "scroll animation",
+      "3D product website",
+      "WebGL website",
+      "creative web design"
+    ],
+    "hashtags": [
+      "#creativecoding",
+      "#scrollanimation",
+      "#webgl",
+      "#luxurywebdesign",
+      "#jewelrywebsite"
+    ],
+    "hidden": true
+  },
+  "showreel-03-before-after": {
+    "caption": "Same website. Without motion → with motion. ✨\n\nA gem that turns, a day that plays as you scroll, a product that opens layer by layer. All built in code.\nWhich one changed the most? 👇",
+    "keywords": [
+      "website animation",
+      "web design with motion",
+      "scroll animation",
+      "interactive website",
+      "creative website design",
+      "motion web design"
+    ],
+    "hashtags": [
+      "#webanimation",
+      "#scrollanimation",
+      "#creativecoding",
+      "#interactivedesign",
+      "#motionui"
+    ],
+    "hidden": true
+  },
+  "showreel-04-hover": {
+    "caption": "1 button. 6 hover effects. 20 seconds. ✨\n\nMagnetic → liquid fill → glitch → 3D tilt → ripple → particle burst. All built in code.\nWhich one goes on your next site? 👇",
+    "keywords": [
+      "button hover effect",
+      "hover animation",
+      "CSS hover effects",
+      "micro interactions",
+      "UI animation",
+      "web design inspiration"
+    ],
+    "hashtags": [
+      "#hovereffect",
+      "#microinteractions",
+      "#uianimation",
+      "#creativecoding",
+      "#cssanimation"
+    ],
+    "hidden": true
+  },
+  "showreel-06-easing": {
+    "hidden": true
+  },
+  "showreel-07-built-in-20s": {
+    "hidden": true
+  },
+  "showreel-05-layout-shift": {
+    "postOn": "2026-10-22"
+  },
+  "showreel-07-built-film": {
+    "postOn": "2026-10-23"
+  },
+  "showreel-08-six-transitions": {
+    "hidden": true
+  },
+  "showreel-09-liquid-glass": {
+    "hidden": true
+  },
+  "showreel-10-zero-js-transition": {
+    "postOn": "2026-10-26"
+  }
 }
