@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Zero-JavaScript page transition</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, series "Steal this": a page transition with zero JavaScript (CSS cross-document view transitions).
+   Hook in frame 0, the morph both ways, the three lines of CSS typed out under a live preview, support badges, then the payoff.
+   Facts (MDN browser-compat-data, css.at-rules.view-transition): Chrome 126, Edge 126, Safari 18.2; Firefox not yet.
+   Fictional shop: Ombra Ceramics. Stage 540x960 CSS px; every frame is a pure function of t (window.seek). One type family: Geist (+ Geist Mono). */
+:root{--clay:#e9e0d2;--ink:#1b1714;--terra:#c4553a;--celadon:#8db6a0;--cobalt:#2f4fb5;--mute:rgba(27,23,20,.55);--f:'Geist',system-ui,sans-serif;--m:'Geist Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--clay);color:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.abs{position:absolute}
+#page{left:0;top:0;width:540px;height:960px;transform-origin:270px 0;overflow:hidden;background:var(--clay)}
+#nav{left:30px;right:30px;top:120px;display:flex;justify-content:space-between;align-items:center;font:800 18px/1 var(--f);letter-spacing:.14em}
+#nav span{font:600 13px/1 var(--f);letter-spacing:.02em;color:var(--mute)}
+#h{left:30px;top:268px;font:700 40px/1 var(--f);letter-spacing:-.035em}
+.c{border-radius:22px;overflow:hidden}
+.nm{font:600 17px/1.15 var(--f);letter-spacing:-.01em;white-space:nowrap;transform-origin:0 0}
+.pr{font:500 15px/1 var(--f);color:var(--mute);transform-origin:0 0}
+#back{left:30px;top:118px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.75);display:grid;place-items:center;font:700 20px/1 var(--f);opacity:0}
+.det{left:30px;font:500 16px/1.45 var(--f);color:var(--mute);opacity:0}
+#buy{left:30px;top:850px;height:54px;padding:0 28px;border-radius:999px;background:var(--ink);color:var(--clay);display:flex;align-items:center;font:700 17px/1 var(--f);opacity:0}
+#hook{left:30px;right:30px;top:150px;height:100px;overflow:hidden;z-index:20}
+#hook p{font:800 40px/1.02 var(--f);letter-spacing:-.04em}
+#hook b{color:var(--terra)}
+#tap{left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(27,23,20,.18);box-shadow:0 0 0 2px rgba(27,23,20,.55);opacity:0;z-index:21}
+#steal{left:30px;top:120px;font:800 15px/1 var(--f);letter-spacing:.16em;color:var(--terra);opacity:0;z-index:20}
+#code{left:24px;right:24px;top:560px;background:var(--ink);color:#e9e0d2;border-radius:22px;padding:20px 20px 18px;font:500 15.5px/1.6 var(--m);white-space:pre;opacity:0;z-index:20}
+#code .k{color:#f0a48c}#code .s{color:#9fd3b8}#code .cm{color:rgba(233,224,210,.45)}
+#badges{left:30px;top:850px;display:flex;flex-wrap:wrap;gap:8px;z-index:20}
+#badges span{height:32px;padding:0 13px;border-radius:999px;background:#fff;display:flex;align-items:center;font:600 13px/1 var(--f);opacity:0}
+#badges span.no{background:transparent;box-shadow:inset 0 0 0 1.5px rgba(27,23,20,.25);color:var(--mute)}
+#src{left:30px;top:892px;font:500 12px/1 var(--f);color:var(--mute);opacity:0;z-index:20}
+#ring{border:2px dashed var(--terra);border-radius:16px;opacity:0;z-index:15}
+#ringlab{font:600 12px/1 var(--m);color:#fff;background:var(--terra);padding:4px 7px;border-radius:6px;opacity:0;z-index:16}
+</style>
+</head>
+<body>
+<div id="page" class="abs">
+  <div id="nav" class="abs"><b>OMBRA</b><span>Bag · 0</span></div>
+  <div id="h" class="abs">New glazes</div>
+  <div id="cards"></div>
+  <div id="back" class="abs">←</div>
+  <div id="d1" class="det abs" style="top:700px">Thrown by hand in stoneware, dipped twice in a<br>celadon glaze that pools darker at the rim.</div>
+  <div id="d2" class="det abs" style="top:770px">22 cm · 1.4 L · food safe</div>
+  <div id="buy" class="abs">Add to bag</div>
+  <div id="ring" class="abs"></div><div id="ringlab" class="abs">jar</div>
+</div>
+<div id="hook" class="abs"><p>This transition uses <b>zero JavaScript.</b></p></div>
+<div id="tap" class="abs"></div>
+<div id="steal" class="abs">STEAL THIS</div>
+<div id="code" class="abs"></div>
+<div id="badges" class="abs"><span>Chrome 126</span><span>Edge 126</span><span>Safari 18.2</span><span class="no">Firefox: not yet</span></div>
+<div id="src" class="abs">Support: MDN browser-compat-data</div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var spr = function(s){ if (s <= 0) return 0; var w = 11, z = .62, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
+  // a vase drawn in SVG: a lathe profile with a moving highlight, so it reads as glazed stoneware
+  var SHAPES = [
+    'M38 8 C30 8 30 16 34 20 C14 32 6 64 14 96 C20 118 34 128 50 128 C66 128 80 118 86 96 C94 64 86 32 66 20 C70 16 70 8 62 8 Z',
+    'M30 6 L70 6 C70 14 64 18 64 26 C92 40 96 84 84 110 C76 124 62 130 50 130 C38 130 24 124 16 110 C4 84 8 40 36 26 C36 18 30 14 30 6 Z',
+    'M44 4 L56 4 L56 40 C80 52 92 76 88 100 C84 122 68 130 50 130 C32 130 16 122 12 100 C8 76 20 52 44 40 Z',
+    'M20 10 L80 10 C82 40 92 70 86 100 C82 120 68 130 50 130 C32 130 18 120 14 100 C8 70 18 40 20 10 Z'];
+  var P4 = [
+    { n: 'Tide Jar', p: '$68', bg: '#cfe0d4', glaze: ['#a9cdb9', '#5f8f78', '#2f5747'], shape: 0, d: 'Thrown by hand in stoneware, dipped twice in a<br>celadon glaze that pools darker at the rim.', m: '22 cm · 1.4 L · food safe' },
+    { n: 'Ember Vase', p: '$84', bg: '#f0cbbd', glaze: ['#e88a6c', '#c4553a', '#7a2b1c'], shape: 1 },
+    { n: 'Night Bottle', p: '$72', bg: '#cdd5f0', glaze: ['#6f86d6', '#2f4fb5', '#18286a'], shape: 2, d: 'A narrow neck and a deep cobalt glaze that turns<br>almost black where the clay is thickest.', m: '26 cm · 0.9 L · one stem' },
+    { n: 'Dune Cup', p: '$38', bg: '#eadcc0', glaze: ['#e9d3a5', '#c9a868', '#8a6a33'], shape: 3 }];
+  var GRID = [[30, 330, 232, 300], [278, 330, 232, 300], [30, 646, 232, 300], [278, 646, 232, 300]];
+  var HERO = [0, 0, 540, 640];
+  var C = P4.map(function(pr, i){
+    var bg = document.createElement('div'); bg.className = 'c abs'; bg.style.background = pr.bg; $('cards').appendChild(bg);
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('viewBox', '0 0 100 136'); svg.setAttribute('class', 'abs'); svg.style.overflow = 'visible';
+    svg.innerHTML = '<defs><linearGradient id="g' + i + '" x1="0" x2="1"><stop offset="0" stop-color="' + pr.glaze[2] + '"/><stop class="hi" offset=".38" stop-color="' + pr.glaze[0] + '"/><stop offset="1" stop-color="' + pr.glaze[2] + '"/></linearGradient>'
+      + '<radialGradient id="r' + i + '" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="rgba(0,0,0,.28)"/><stop offset="1" stop-color="rgba(0,0,0,0)"/></radialGradient></defs>'
+      + '<ellipse cx="50" cy="132" rx="44" ry="7" fill="url(#r' + i + ')"/><path d="' + SHAPES[pr.shape] + '" fill="url(#g' + i + ')"/>'
+      + '<path d="' + SHAPES[pr.shape] + '" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1"/>';
+    $('cards').appendChild(svg);
+    var nm = document.createElement('div'); nm.className = 'nm abs'; nm.textContent = pr.n; $('cards').appendChild(nm);
+    var pc = document.createElement('div'); pc.className = 'pr abs'; pc.textContent = pr.p; $('cards').appendChild(pc);
+    return { bg: bg, svg: svg, hi: svg.querySelector('.hi'), nm: nm, pc: pc };
+  });
+  var place = function(el, x, y, w, h){ el.style.left = x + 'px'; el.style.top = y + 'px'; if (w != null) el.style.width = w + 'px'; if (h != null) el.style.height = h + 'px'; };
+  // the code, typed line by line
+  var LINES = [['cm', '/* on both pages */'], ['', '<span class="k">@view-transition</span> { navigation: <span class="s">auto</span>; }'], ['', ''],
+    ['cm', '/* the element that morphs */'], ['', '.card img { <span class="k">view-transition-name</span>: <span class="s">jar</span>; }'], ['', '.hero img { <span class="k">view-transition-name</span>: <span class="s">jar</span>; }']];
+  var plain = LINES.map(function(l){ return l[1].replace(/<[^>]+>/g, ''); });
+  function typed(t){   // reveal characters in order across lines, keeping the colour spans intact
+    var total = plain.join('').length, n = Math.round(total * P(t, 7.5, 11.2)), html = [];
+    LINES.forEach(function(l, i){ var len = plain[i].length, show = Math.max(0, Math.min(len, n)); n -= len;
+      var out = '', seen = 0, src = l[1]; for (var j = 0; j < src.length && seen < show; j++) { if (src[j] === '<') { var e = src.indexOf('>', j); out += src.slice(j, e + 1); j = e; } else { out += src[j]; seen++; } }
+      if ((out.match(/<span/g) || []).length > (out.match(/<\/span>/g) || []).length) out += '</span>';
+      html.push(l[0] ? '<span class="' + l[0] + '">' + out + '</span>' : out); });
+    return html.join('\n');
+  }
+  // morph state between the grid (0) and the product page (1) for one card
+  function morph(i, k){
+    var g = GRID[i], c = C[i], e = k;
+    var x = mix(g[0], HERO[0], e), y = mix(g[1], HERO[1], e), w = mix(g[2], HERO[2], e), h = mix(g[3] - 70, HERO[3], e);
+    place(c.bg, x, y, w, h); c.bg.style.borderRadius = mix(22, 0, e) + 'px'; c.bg.style.zIndex = 5;
+    var vs = mix(.92, 2.6, e), vw = 100 * vs, vh = 136 * vs; place(c.svg, x + w / 2 - vw / 2, y + h / 2 - vh / 2 + mix(6, 40, e), vw, vh); c.svg.style.zIndex = 6;
+    c.nm.style.zIndex = c.pc.style.zIndex = 6;
+    var ns = mix(1, 3.4, e); place(c.nm, mix(g[0] + 4, 30, e), mix(g[1] + g[3] - 58, 568, e)); c.nm.style.transform = 'scale(' + ns + ')'; c.nm.style.letterSpacing = mix(-.01, -.045, e) + 'em';
+    place(c.pc, mix(g[0] + 4, 30, e), mix(g[1] + g[3] - 34, 650, e)); c.pc.style.transform = 'scale(' + mix(1, 1.5, e) + ')';
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(16, t));
+    // which card is opening, and how far: card 0 (tap at 1.4, open, back at 4.7), card 2 (payoff at 13.6), all closed for the code section
+    var open = -1, k = 0;
+    if (t >= 1.5 && t < 6.0) { open = 0; k = io(P(t, 1.5, 2.6)) * (1 - io(P(t, 4.8, 5.9))); }
+    if (t >= 13.4 && t < 16) { open = 2; k = io(P(t, 13.6, 14.4)) * (1 - io(P(t, 15.0, 15.8))); }
+    var bob = function(i){ return Math.sin(t * 1.6 + i * 1.3) * 3; };
+    C.forEach(function(c, i){
+      if (i === open) { morph(i, k); }
+      else { var g = GRID[i]; morph(i, 0); c.bg.style.zIndex = c.svg.style.zIndex = c.nm.style.zIndex = c.pc.style.zIndex = 2;
+        var y0 = g[1] + bob(i); c.bg.style.top = y0 + 'px'; c.svg.style.top = (parseFloat(c.svg.style.top) + bob(i)) + 'px'; }
+      var others = open >= 0 && i !== open ? 1 - out(P(k, 0, .6)) : 1;   // the rest of the old page cross-fades (the default view transition)
+      [c.bg, c.svg, c.nm, c.pc].forEach(function(el){ el.style.opacity = i === open ? 1 : others; });
+      c.hi.setAttribute('offset', (.3 + .16 * Math.sin(t * 1.1 + i)).toFixed(3));   // the glaze highlight drifts: the vase turns
+    });
+    var pk = open >= 0 ? k : 0; var pd = P4[open >= 0 ? open : 0]; $('d1').innerHTML = pd.d; $('d2').textContent = pd.m;
+    $('h').style.opacity = 1 - out(P(pk, 0, .5)); $('nav').style.opacity = 1 - out(P(pk, 0, .4));
+    $('back').style.opacity = P(pk, .7, 1);
+    $('d1').style.opacity = P(pk, .75, 1); $('d1').style.transform = 'translateY(' + (1 - P(pk, .75, 1)) * 20 + 'px)';
+    $('d2').style.opacity = P(pk, .85, 1); $('buy').style.opacity = P(pk, .9, 1); $('buy').style.transform = 'translateY(' + (1 - P(pk, .9, 1)) * 24 + 'px)';
+    // the hook: on screen at frame 0, leaves as the morph starts, returns for the loop
+    var hk = (1 - io(P(t, 1.45, 1.85))) + io(P(t, 15.55, 15.95)), hp = $('hook').firstChild;
+    hp.style.transform = 'translateY(' + (t < 8 ? -(1 - hk) * 110 : (1 - hk) * 110) + 'px)';
+    // taps: the card at 1.4, back at 4.7
+    var tp = $('tap'), ta = 0, tx = 0, ty = 0, pr = 0;
+    if (t < 1.75) { var tk = out(P(t, 0, 1.2)); tx = mix(380, 146, tk); ty = mix(840, 470, tk); ta = 1 - P(t, 1.5, 1.75); pr = Math.sin(Math.PI * P(t, 1.25, 1.45)); }
+    else if (t > 3.9 && t < 5.1) { var bk = out(P(t, 3.9, 4.6)); tx = mix(300, 52, bk); ty = mix(520, 140, bk); ta = P(t, 3.9, 4.1) * (1 - P(t, 4.85, 5.1)); pr = Math.sin(Math.PI * P(t, 4.6, 4.8)); }
+    tp.style.opacity = ta; tp.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + (1 - .22 * pr) + ')';
+    // steal this: the page shrinks into a preview, the code types under it, the morph loops small, then the badges
+    var sk = io(P(t, 6.4, 7.2)) * (1 - io(P(t, 12.9, 13.5)));
+    $('page').style.transform = 'translateY(' + mix(0, 150, sk) + 'px) scale(' + mix(1, .4, sk) + ')'; $('page').style.borderRadius = mix(0, 40, sk) + 'px';
+    $('page').style.boxShadow = '0 30px 60px rgba(27,23,20,' + .3 * sk + ')';
+    $('steal').style.opacity = sk; $('steal').style.transform = 'translateY(' + (1 - sk) * -20 + 'px)';
+    var ck = out(P(t, 7.0, 7.5)) * (1 - io(P(t, 12.8, 13.3))); $('code').style.opacity = ck; $('code').style.transform = 'translateY(' + (1 - ck) * 60 + 'px)'; $('code').innerHTML = typed(t);
+    if (t >= 7.6 && t < 12.9) {   // the small preview keeps morphing card 0 while the code is typed
+      $('d1').innerHTML = P4[0].d; $('d2').textContent = P4[0].m; var lk = ((t - 7.6) % 2.6) / 2.6, kk = io(P(lk, 0, .35)) * (1 - io(P(lk, .62, .97))); morph(0, kk);
+      C.forEach(function(c, i){ var o = i === 0 ? 1 : 1 - out(P(kk, 0, .6)); [c.bg, c.svg, c.nm, c.pc].forEach(function(el){ el.style.opacity = o; }); });
+      $('h').style.opacity = 1 - out(P(kk, 0, .5)); $('nav').style.opacity = 1 - out(P(kk, 0, .4)); $('back').style.opacity = P(kk, .7, 1);
+      $('d1').style.opacity = P(kk, .75, 1); $('d2').style.opacity = P(kk, .85, 1); $('buy').style.opacity = P(kk, .9, 1);
+      var r = C[0].svg, rr = $('ring'), rl = $('ringlab'), ra = P(t, 9.4, 9.8) * (1 - P(t, 12.4, 12.8));
+      rr.style.opacity = ra; rl.style.opacity = ra; place(rr, parseFloat(r.style.left) - 10, parseFloat(r.style.top) - 10, parseFloat(r.style.width) + 20, parseFloat(r.style.height) + 20);
+      place(rl, parseFloat(r.style.left) - 10, parseFloat(r.style.top) - 34); rl.style.transform = 'scale(' + 2.5 + ')'; rl.style.transformOrigin = '0 100%';
+    } else { $('ring').style.opacity = 0; $('ringlab').style.opacity = 0; }
+    [].forEach.call($('badges').children, function(b, i){ var bk2 = spr(t - 11.4 - i * .12) * (1 - io(P(t, 12.8, 13.2))); b.style.opacity = Math.min(1, bk2); b.style.transform = 'scale(' + Math.max(0, bk2) + ')'; });
+    $('src').style.opacity = P(t, 11.9, 12.2) * (1 - P(t, 12.8, 13.1));
+  }
+  window.seek = seek; window.DURATION = 16;
+  document.fonts.load("800 40px 'Geist'").then(function(){ return document.fonts.ready; }).then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

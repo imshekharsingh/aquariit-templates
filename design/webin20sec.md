@@ -83,3 +83,4 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 | 22 Oct | showreel-07-built-film | Built in 20 s | the film-look re-cut replaces the original (motion blur on the word drops, scroll and card open) |
 | 23 Oct | showreel-09-liquid-glass v2 | Material | four worlds on the beat (music night, wallet, weather noon, map macro), light and frost per world, payoff = macro lens + drop split |
 | 23 Oct | showreel-09-liquid-glass v3 | Material | the glass is the transition (next app inside the glass, then floods out); every element animates in |
+| 23 Oct | showreel-10-zero-js-transition | Steal this | paradox hook in frame 0 (audit lesson), real CSS view transitions both ways, code typed under a live preview, MDN support badges |

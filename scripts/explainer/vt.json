@@ -1,0 +1,26 @@
+{
+  "name": "showreel-10-zero-js-transition",
+  "seek": "scripts/explainer/vt.html",
+  "dur": 16,
+  "fps": 60,
+  "blur": 12,
+  "shutter": 0.45,
+  "grain": 5,
+  "cover": 0.5,
+  "caption": "This page transition uses zero JavaScript. 🤯\n\nCSS view transitions: tag the element on both pages with the same view-transition-name, add @view-transition { navigation: auto; } and the browser morphs it for you. Chrome 126, Edge 126, Safari 18.2.\nSave it for your next build, or send it to a developer who still writes this in JS.",
+  "keywords": [
+    "CSS view transitions",
+    "page transition CSS",
+    "view-transition-name",
+    "no JavaScript animation",
+    "web animation",
+    "frontend tips"
+  ],
+  "hashtags": [
+    "#viewtransitions",
+    "#cssanimation",
+    "#frontenddev",
+    "#webanimation",
+    "#csstips"
+  ]
+}
