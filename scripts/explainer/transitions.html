@@ -105,7 +105,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
     var k0 = P(t, a[0], a[0] + .36), k1 = P(t, a[1], a[1] + .4), k2 = P(t, a[2], a[2] + .32), k4 = P(t, a[4], a[4] + .3);
     var show = t < 2.3;
     [].forEach.call(document.querySelectorAll('.q'), function(q){
-      q.style.visibility = show ? 'visible' : 'hidden'; if (!show) return;
+      q.style.visibility = q.nextSibling.style.visibility = show ? 'visible' : 'hidden'; if (!show) return;
       var w = q.querySelectorAll('.w');
       w[0].style.clipPath = 'circle(' + (io(k0) * 85) + '% at 30% 60%)'; w[0].style.transform = 'translateY(' + (1 - back(k0)) * 40 + 'px)';
       var e = io(k1), amp = 14 * Math.sin(Math.PI * k1), wv = ['0% 0%'];
