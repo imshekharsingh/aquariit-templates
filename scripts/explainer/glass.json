@@ -1,14 +1,14 @@
 {
   "name": "showreel-09-liquid-glass",
   "seek": "scripts/explainer/glass.html",
-  "dur": 17,
+  "dur": 18.6,
   "fps": 30,
   "blur": 4,
   "shutter": 0.5,
   "grain": 4,
   "vignette": true,
-  "cover": 3.75,
-  "caption": "Liquid glass UI, rendered in code. 💧\n\nThe glass is the transition: each next app appears inside it, then floods out across the screen. Music at night, a wallet, weather at noon, a map under a lens. Real refraction, light that changes with every scene.\nSave it for your next interface, or send it to the designer who loves glass.",
+  "cover": 1.0,
+  "caption": "Is this glass real? 💧\n\nIt's code: liquid glass rendered in WebGL. The glass is the transition: each next app appears inside it, then floods out across the screen. Music at night, a wallet, weather at noon, a map under a lens. Real refraction, light that changes with every scene.\nSave it for your next interface, or send it to the designer who loves glass.",
   "keywords": [
     "liquid glass UI",
     "glassmorphism",

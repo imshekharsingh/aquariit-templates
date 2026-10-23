@@ -76,7 +76,12 @@ jobs:
         if: hashFiles('out/*.cues.json') != ''
         run: |
           python3 scripts/showreel/sound.py "out/$NAME.cues.json" out/sound.wav
-          ffmpeg -y -loglevel error -i "out/$NAME.mp4" -i out/sound.wav -map 0:v -map 1:a -c:v copy -af "highpass=f=55,equalizer=f=200:t=q:w=1.2:g=-3,equalizer=f=3000:t=q:w=1:g=2,loudnorm=I=-14:TP=-1.5:LRA=7" -ar 48000 -c:a aac -b:a 192k -shortest out/muxed.mp4
+          # two passes: measure, then the exact gain to -14 LUFS and a limiter on the peaks (one-pass loudnorm stayed near -16)
+          EQ="highpass=f=55,equalizer=f=200:t=q:w=1.2:g=-3,equalizer=f=3000:t=q:w=1:g=2"
+          IN=$(ffmpeg -hide_banner -i out/sound.wav -af "$EQ,ebur128" -f null - 2>&1 | grep -E "^\s+I:" | tail -1 | awk '{print $2}')
+          GAIN=$(python3 -I -c "import sys; print(round(-13.8 - float(sys.argv[1]), 2))" "$IN")
+          echo "mix measured $IN LUFS, gain $GAIN dB"
+          ffmpeg -y -loglevel error -i "out/$NAME.mp4" -i out/sound.wav -map 0:v -map 1:a -c:v copy -af "$EQ,volume=${GAIN}dB,alimiter=limit=0.8:attack=5:release=60:level=false" -ar 48000 -c:a aac -b:a 192k -shortest out/muxed.mp4
           mv out/muxed.mp4 "out/$NAME.mp4"
           ffmpeg -hide_banner -i "out/$NAME.mp4" -af ebur128 -f null - 2>&1 | grep -E "^\s+(I|LRA):" | tail -2
       - name: Keep the preview

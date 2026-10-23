@@ -94,4 +94,5 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 | 23 Oct | showreel-09-liquid-glass v3 | Material | the glass is the transition (next app inside the glass, then floods out); every element animates in |
 | 23 Oct | reel study | (both accounts) | scripts/study-reels.mjs: theirs = voice + bed + a hit per cut at -14 LUFS, a full-frame word-by-word question; ours = silence or a loose beat, the hook as small text |
 | 23 Oct | showreel-08-six-transitions v3 | Six ways | full-frame question on Ink, each word arriving by one of the six transitions, doors open onto the first page; first reel with sound (effects on every cut, bed, hook voice); 17.85 s = seven bars, so sound loops with picture |
+| 23 Oct | showreel-09-liquid-glass v4 | Material | hook = "Is this glass real?" drawn into the app, the glass rises through it and bends the words, the music floods out of the glass; sound from cues; the last app dims to the hook's ground for the loop |
 | 23 Oct | showreel-10-zero-js-transition | Steal this | paradox hook in frame 0 (audit lesson), real CSS view transitions both ways, code typed under a live preview, MDN support badges |
