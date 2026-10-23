@@ -69,6 +69,14 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 23 Oct 2026, 08:52 IST audit (collect 04:48 IST; @webin20sec 12 followers (+0), 15 posts; @techin20sec 7 followers (+3), 6 posts)
+Studio, 7 days (posted IST, series, reach, avg watch, saves, shares): 22 Oct 16:20 "Why did I just cancel my order?" (other: layout-shift explainer) 10, 5.7 s, 0, 0 · 21 Oct 23:21 heroes (Six ways) 19, 3.8 s, 0, 0 ·
+19 Oct 18:31 launch (other) 22, 2.5 s · 18 Oct 22:14 CDN (other) 32, 3.2 s · 18 Oct 14:20 "6 motion styles" (Six ways) **278**, 4.7 s, **8**, 0 · 17 Oct 21:21 CDN (other) 48, 4.9 s · 16 Oct 17:31 outdated (other) 15, 4.1 s. 0 shares in 15 posts.
+techin20sec: 22 Oct 16:43 "Why steal data you can't even read?" 118, **7.2 s**, 0, 0 · 21 Oct 23:41 quantum 112, 4.2 s · 21 Oct 09:19 AI-agent hijack 118, 4.7 s, 2, **2** · 21 Oct 00:51 RAM 121, 5.7 s · 20 Oct 15:03 AI models 113, 3.7 s, 2, 0 · 19 Oct 14:47 agents 33, 3.9 s, 0, 1.
+**Median reach per reel, 7 days:** studio 22 vs techin20sec 115.5. **Best of 24 h:** techin20sec's encryption reel, a paradox question ("steal data you can't read?") that makes the viewer wait for the answer: its best watch yet (7.2 s).
+Studio's only post (16:20, afternoon) reached 10: moving off late night did not lift reach, so time is not the main lever; techin20sec gets ~115 on every reel whatever the topic, studio's floor is 10-50.
+Heroes (Six ways) at 33 h: 19 vs 278 for motion styles: the series name alone does not repeat the result; the first frame and the element do.
+**Milestone:** 12/100 followers; best studio reel 278/1,000 reach. **Next:** post Built in 20 s (showreel-07, ready, never posted; Six ways and an explainer just ran) with a question hook in second 1, 14:00-17:00 IST.
 ### 22 Oct 2026, 08:55 IST audit (collect 04:44 IST; @webin20sec 12 followers (+0 since 21 Oct), 14 posts; @techin20sec 4 followers (+2), 5 posts)
 Studio, last 7 days (posted IST, reach, avg watch, saves, shares): 21 Oct 23:21 "6 website heroes. 20 seconds. All built in code." 11, 4.9 s, 0, 0 (5 h old) · 19 Oct 18:31 launch film 22, 2.5 s, 0, 0 ·
 18 Oct 22:14 CDN film 32, 3.2 s, 0, 0 · 18 Oct 14:20 "6 motion styles" **277**, 4.7 s, **8**, 0 · 17 Oct 21:21 CDN film 48, 4.9 s, 0, 0 · 16 Oct 17:31 "outdated website" 15, 4.1 s, 0, 0 · 15 Oct 23:22 "slow abroad" 115, 5.5 s, 0, 0.
