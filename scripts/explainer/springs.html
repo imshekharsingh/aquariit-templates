@@ -63,15 +63,19 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s; return 99; }
   function idx(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return i; return -1; }
   var A = {};
+  // the voice's words come without punctuation: take each word's written form (with its comma or full stop) from the script, in order
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
   function anchors(){
+    align();
     A = { same: at('same'), this1: at('this'), eases: at('eases'), dead: at('dead'), this2: at('this', 2), springs: at('springs'), over: at('overshoots'), settles: at('settles'),
       real: at('real'), css: at('css'), linear: at('linear'), chrome: at('chrome'), firefox: at('firefox'), safari: at('safari'), y2023: at('2023'), one: at('one', 3), every: at('everything'), physical: at('physical') };
     A.end = WORDS[WORDS.length - 1].e;
     // phrases for the captions: the script's sentences, cut at commas and colons too, so a caption never runs past two lines
     // captions: one sentence at a time; a long one splits at its comma or colon nearest the middle (2-7 words a caption)
     PH = []; var cur = [];
-    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.w) || i === WORDS.length - 1) {
-      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:]$/.test(WORDS[j].w) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
         if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
       else PH.push(cur);
       cur = []; } });
@@ -155,7 +159,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     for (var i = 0; i < PH.length; i++) { var f = PH[i][0], l = PH[i][PH[i].length - 1]; if (t >= WORDS[f].s - .1 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - .1)) ph = PH[i]; }
     var html = '';
     if (ph && ph[0] > 5 && t < DUR - .5) ph.forEach(function(j){ var w = WORDS[j], on = t >= w.s - .04, k = out(P(t, w.s - .04, w.s + .16)), acc = /expensive|springs|physical|linear/i.test(w.w);
-      html += '<span style="opacity:' + (on ? 1 : 0) + ';transform:translateY(' + (1 - k) * 14 + 'px);color:' + (acc ? 'var(--violet)' : 'var(--paper)') + '">' + w.w.replace(/</g, '') + '</span>'; });
+      html += '<span style="opacity:' + (on ? 1 : 0) + ';transform:translateY(' + (1 - k) * 14 + 'px);color:' + (acc ? 'var(--violet)' : 'var(--paper)') + '">' + w.d.replace(/</g, '') + '</span>'; });
     cap.innerHTML = html;
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
