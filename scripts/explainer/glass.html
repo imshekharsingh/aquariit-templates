@@ -212,7 +212,7 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     [13.4, [300, 450, 118, 118, 118], [300, 450, 8], [300, 450, 8]],
     [14.2, [300, 440, 108, 108, 108], [160, 640, 40], [440, 650, 32]],   // two drops split off: zoom and locate (then all three show the music inside)
     [15.3, [300, 440, 108, 108, 108], [160, 640, 40], [440, 650, 32]],
-    [16.0, [270, 700, 170, 40, 40],  [270, 700, 8],  [270, 700, 8]],     // back into the bar
+    [16.0, [270, 560, 170, 40, 40],  [270, 560, 8],  [270, 560, 8]],     // back into the bar, over the art (not over the title)
     [16.9, [270, 1040, 170, 40, 40], [270, 1040, 8], [270, 1040, 8]],    // and it sinks out: frame 0 has it rising again
     [17,   [270, 1040, 170, 40, 40], [270, 1040, 8], [270, 1040, 8]]];
   function pose(t){
@@ -230,7 +230,7 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     return { ang: mix(A[0], B[0], kk) + .25 * Math.sin(t * .5), col: [0, 1, 2].map(function(j){ return mix(A[1][j], B[1][j], kk); }), refr: mix(A[2], B[2], kk), sh: mix(A[3], B[3], kk), fr: mix(mix(A[4], B[4], kk), .7, ph.inside * (1 - kk)), fl: mix(mix(A[5], B[5], kk), .3, ph.inside * (1 - kk)) }; }   // the portal is clear glass so the next app reads through it
   function seek(t){
     t = cl(t, 0, 17);
-    var hk = (1 - io(P(t, 1.7, 2.1))) + io(P(t, 16.5, 16.95)); document.getElementById('hook').firstChild.style.transform = 'translateY(' + (t < 8 ? -(1 - hk) * 115 : (1 - hk) * 115) + '%)';   // the hook (audit 23 Oct)
+    var hk = (1 - io(P(t, 1.7, 2.1))) + io(P(t, 16.5, 16.95)); document.getElementById('hook').firstChild.style.transform = 'translateY(' + (t < 8 ? -(1 - hk) * 125 : (1 - hk) * 125) + 'px)';   // px, so no sliver of the line stays in view   // the hook (audit 23 Oct)
     var ph = phase(t); drawWorld(aA, ph.A, t); if (ph.B !== ph.A) drawWorld(aB, ph.B, t);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, txB); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ph.B !== ph.A ? appB : app); gl.generateMipmap(gl.TEXTURE_2D);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tx); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, app); gl.generateMipmap(gl.TEXTURE_2D);
@@ -244,6 +244,7 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     // glyphs ride on the glass (same camera), each set only while its pose holds
     u.setTransform(1, 0, 0, 1, 0, 0); u.clearRect(0, 0, PW, PH);
+    u.fillStyle = 'rgba(0,0,0,0.004)'; u.fillRect(0, 0, 1, 1);   // never leave this layer empty: Chromium can show a stale copy of an emptied canvas on alternate frames (stray glyphs)
     u.setTransform(S * c[2], 0, 0, S * c[2], S * (270 - c[0] * c[2]), S * (480 - c[1] * c[2]));
     var win = function(a0, a1, b0, b1){ return P(t, a0, a1) * (1 - P(t, b0, b1)); }, x = m[0], y = m[1];
     var bar = win(.7, 1.1, 1.6, 1.9);

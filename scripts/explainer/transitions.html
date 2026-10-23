@@ -82,14 +82,17 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
   function reset(p){ p.el.style.display = 'none'; p.el.style.transform = ''; p.el.style.clipPath = ''; p.el.style.zIndex = 1; p.dim.style.opacity = 0; p.det.style.transform = ''; p.buy.style.transform = '';
     p.L.forEach(function(l){ l.style.transform = ''; l.style.fontVariationSettings = ''; }); p.blob.style.transform = ''; }
   function seek(t){
-    t = Math.max(0, Math.min(17, t));
+    t = Math.max(0, Math.min(16, t));
     PG.forEach(reset); TL.forEach(function(x){ x.el.style.transform = 'scale(0)'; });
     var i = -1; for (var j = 0; j < 6; j++) if (t >= T[j]) i = j;   // i = the last transition that has started
     var cur = i < 0 ? 0 : i, k = i < 0 ? 0 : P(t, T[i], T[i] + D[i]);
     if (i < 0 || k >= 1) { var p = PG[i < 0 ? 0 : i + 1]; p.el.style.display = 'block';
       // between transitions the page keeps moving: the name stretches into its width and the next colour swells into place
       if (i >= 0) { var sa = t - T[i] - D[i]; p.L.forEach(function(l, j){ l.style.fontVariationSettings = "'wdth' " + mix(75, 90, out(P(sa, j * .03, .7 + j * .03))) + ",'opsz' 96"; });
-        p.blob.style.transform = 'scale(' + mix(.82, 1, out(P(sa, .1, 1.1))) + ')'; } }
+        p.blob.style.transform = 'scale(' + mix(.82, 1, out(P(sa, .1, 1.1))) + ')'; }
+      var br = Math.sin(t * 2.4);   // between transitions nothing freezes: the name breathes on its width axis, the circle drifts
+      if (i < 0 || t - T[i] - D[i] > .7) p.L.forEach(function(l, j){ l.style.fontVariationSettings = "'wdth' " + (86 + 4 * Math.sin(t * 2.4 - j * .5)) + ",'opsz' 96"; });
+      p.blob.style.transform = (p.blob.style.transform || '') + ' translate(' + (10 * Math.sin(t * .9)) + 'px,' + (8 * Math.cos(t * .7)) + 'px) scale(' + (1 + .03 * br) + ')'; }
     else {
       var A = PG[i], B = PG[i + 1], s = t - T[i]; A.el.style.display = B.el.style.display = 'block'; B.el.style.zIndex = 2;
       if (i === 0) {   // circle reveal from the tapped button
@@ -106,7 +109,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
         A.L.forEach(function(l, j){ l.style.transform = 'translateY(' + (-115 * inc(P(s, j * .035, j * .035 + .4))) + '%)'; });
         B.el.style.clipPath = 'inset(' + (1 - io(P(s, .25, .85))) * 100 + '% 0 0 0)';
         B.L.forEach(function(l, j){ l.style.transform = 'translateY(' + (115 * (1 - out(P(s, .55 + j * .04, .95 + j * .04)))) + '%)'; });
-        var dk = out(P(s, .7, 1.2)); B.det.style.transform = B.buy.style.transform = 'translateY(' + (1 - dk) * 40 + 'px)';
+        var dk = out(P(s, .7, 1.2)); B.det.style.transform = B.buy.style.transform = 'translateY(' + (1 - dk) * 14 + 'px)';
       } else if (i === 4) {   // tile cascade: tiles in the new colour flip in on a diagonal, then the page is there
         var cover = s < .95; B.el.style.display = cover ? 'none' : 'block';
         TL.forEach(function(x){ var tk = P(s, x.d, x.d + .38), e2 = out(tk); x.el.style.background = B.c.bg; x.el.style.transform = cover ? 'perspective(400px) rotateY(' + (1 - e2) * 90 + 'deg) scale(' + (e2 * 1.02) + ')' : 'scale(0)'; });
@@ -125,16 +128,16 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
     // chip and bar take the colours of whatever page is on screen
     var on = PG[(i < 0 ? 0 : (k > .5 ? i + 1 : i))].c, dark = on.ink === '#efe9dd';
     // the hook (audit 23 Oct: open on a question): on screen at frame 0, it slides away as the first transition lands and returns for the loop
-    var hk = (1 - io(P(t, 1.25, 1.65))) + io(P(t, 16.45, 16.95)); $('hook').firstChild.style.transform = 'translateY(' + (t < 8 ? -(1 - hk) * 130 : (1 - hk) * 130) + '%)';
+    var hk = (1 - io(P(t, 1.25, 1.65))) + io(P(t, 15.5, 15.95)); $('hook').firstChild.style.transform = 'translateY(' + (t < 8 ? -(1 - hk) * 130 : (1 - hk) * 130) + '%)';
     $('ttl').style.color = on.ink; var chip = $('chip'); chip.style.background = on.ink; chip.style.color = on.bg; chip.querySelector('b').style.background = on.bg; chip.querySelector('b').style.color = on.ink;
-    var li = 0; for (var m = 0; m < 6; m++) if (t >= T[m] - .45) li = m; if (t >= 16.55) li = 0;
+    var li = 0; for (var m = 0; m < 6; m++) if (t >= T[m] - .45) li = m; if (t >= 15.6) li = 0;
     var num = chip.querySelector('b'); num.textContent = '0' + (li + 1);
-    [].forEach.call(chip.querySelectorAll('.lab span'), function(sp, m){ var a = m === 0 ? (t >= 16.55 ? 16.55 : -1) : T[m] - .45, nb = m < 5 ? T[m + 1] - .45 : 16.55;
+    [].forEach.call(chip.querySelectorAll('.lab span'), function(sp, m){ var a = m === 0 ? (t >= 15.6 ? 15.6 : -1) : T[m] - .45, nb = m < 5 ? T[m + 1] - .45 : 15.6;
       var inK = a < 0 ? 1 : out(P(t, a, a + .35)), oK = io(P(t, nb - .25, nb)), vis = (m === li);
-      sp.style.transform = 'translateY(' + ((1 - inK) * 22 - (m === 0 && t < 16.55 ? oK : (m === li ? 0 : oK)) * 22) + 'px)'; sp.style.visibility = vis ? 'visible' : 'hidden'; });
+      sp.style.transform = 'translateY(' + ((1 - inK) * 22 - (m === 0 && t < 15.6 ? oK : (m === li ? 0 : oK)) * 22) + 'px)'; sp.style.visibility = vis ? 'visible' : 'hidden'; });
     [].forEach.call($('bar').children, function(x, m){ x.style.background = on.ink; x.style.opacity = m < li ? .55 : m === li ? 1 : .2; });
   }
-  window.seek = seek; window.DURATION = 17;
+  window.seek = seek; window.DURATION = 16;
   document.fonts.load('800 100px "Bricolage Grotesque"').then(function(){ return document.fonts.ready; }).then(function(){ fit(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 </script>
