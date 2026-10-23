@@ -1,12 +1,12 @@
 // Seekable scenes (owner, 22 Oct 2026: explainer brief): a page that exposes window.seek(t) and draws every frame as a pure function of t.
-// Steps t in 1/fps increments in headless Chromium and pipes the frames straight into ffmpeg (no audio; the owner adds Instagram audio).
+// Steps t in 1/fps increments in headless Chromium and pipes the frames straight into ffmpeg (sound comes after, from the page's window.CUES: scripts/showreel/sound.py).
 // Usage: node scripts/showreel/seek.mjs <config.json> <out.mp4> [--seconds S]
 //   config: { seek: "path/to/page.html", dur, fps, width, height, blur, shutter, grain, vignette }
 // Film look (owner, 22 Oct 2026: "we are missing motion design"): blur = sub-frames per frame (real motion blur: the page is drawn at
 // several instants inside the shutter and ffmpeg averages them), shutter = fraction of a frame the shutter is open (0.5 = 180 degrees),
 // grain = temporal film grain strength (0-20), vignette = a soft edge falloff. All off by default, so older configs render as before.
 import { createRequire } from 'module';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { spawn } from 'child_process';
 import { join, resolve } from 'path';
 const require = createRequire(process.env.PW_FROM || join(process.cwd(), 'node_modules/'));
@@ -22,6 +22,8 @@ const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-un
 const p = await (await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1080 / W })).newPage();
 const errs = []; p.on('pageerror', (e) => errs.push(e.message));
 await p.goto('file://' + resolve(R.seek)); await p.waitForSelector('html[data-ready]', { timeout: 30000 });
+const cues = await p.evaluate(() => window.CUES || null);   // sound cues for scripts/showreel/sound.py (owner, 23 Oct: sound supports the hook)
+if (cues) writeFileSync(out.replace(/\.mp4$/, '.cues.json'), JSON.stringify(Object.assign(cues, { dur: Math.min(cues.dur || DUR, DUR) })));
 const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS * K), '-c:v', 'mjpeg', '-i', '-',
   ...(vf.length ? ['-vf', vf.join(',')] : []), '-r', String(FPS), '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
 const done = new Promise((ok, no) => ff.on('close', (c) => c === 0 ? ok() : no(new Error('ffmpeg exited ' + c))));

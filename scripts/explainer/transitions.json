@@ -1,10 +1,13 @@
 {
   "name": "showreel-08-six-transitions",
   "seek": "scripts/explainer/transitions.html",
-  "dur": 16,
+  "dur": 17.85,
   "fps": 60,
-  "cover": 0.9,
-  "caption": "6 page transitions for your next website. 🎨\n\nCircle reveal → liquid wipe → blinds → split type → tile cascade → zoom through. One paint studio, six colours, each page's circle is the next colour.\nSave it for your next build, or send it to the person designing your site.",
+  "blur": 8,
+  "shutter": 0.45,
+  "grain": 5,
+  "cover": 1.3,
+  "caption": "Which page transition would you ship? 🎨\n\nCircle reveal → liquid wipe → blinds → split type → tile cascade → zoom through. Six ways to move between pages, one paint studio, each page's circle is the next colour.\nSave it for your next build, or send it to the person designing your site.",
   "keywords": [
     "page transitions",
     "website transitions",

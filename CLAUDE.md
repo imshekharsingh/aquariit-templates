@@ -27,7 +27,7 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 The whole site sits behind a sign-in page + 30-day session cookie (src/worker.js). Credentials exist only as secrets (GitHub + Worker):
 BASIC_AUTH_USER / BASIC_AUTH_PASS (+ optional second account BASIC_AUTH_USER_2 / BASIC_AUTH_PASS_2). NEVER write them into any file.
 Credentials for any music or sound API exist only as secrets (GitHub Actions / local environment), exactly like the site credentials: NEVER write a key into any file.
-Reels ship silent; the owner adds Instagram audio when posting.
+Reels carry their own sound from 23 Oct (owner: audio supports the hook): effects, bed and hook voice made in code from the scene's window.CUES (scripts/showreel/sound.py, on GitHub); the owner may add an Instagram track under it.
 
 ## Git and deploy
 - One branch per change, from latest main (`claude/<topic>`); never reuse a branch whose PR was merged.
