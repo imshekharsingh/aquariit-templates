@@ -34,6 +34,13 @@ Every reel should be something a designer saves for reference or sends to the pe
 - Frame 0 is already a finished, cover-quality composition, and it is already moving; something completes inside 1.5 s.
 - A hook line on screen from frame 0 (audit 23 Oct: Built in 20 s held 2.8 s of 20 with no words; every @techin20sec reel opens on a question
   or a claim): a question, a paradox or a bold claim in at most 8 words, readable in a second, that the reel then answers.
+- The hook is the shot, not a caption on the demo (reel study, 23 Oct: every @techin20sec reel opens on one question, full frame,
+  word by word, key word in an accent colour, a small "IN 20 SECONDS" tag; ours sat as small text over a busy page and lost the first second).
+  Ours does it as motion design: each word arrives with a move from the reel itself, then the question opens into the content.
+- Sound from frame 0 (reel study, 23 Oct: theirs = a voice reading the hook, a quiet bed and a whoosh or hit on every cut, -14 LUFS, no silence;
+  ours opened on 1-2 s of silence or none at all). Every scene exports `window.CUES`; scripts/showreel/sound.py makes the effects, the bed
+  (in time with the cuts, looping with the picture) and the hook voice (Kokoro, open licence) on GitHub; the mix is levelled to -14 LUFS.
+  The owner can still lay an Instagram track under it.
 - Real interface over illustration; images drawn in code; fictional brands only.
 - Motion with intent: springs, masks, variable-font axes, match cuts. Every move has a reason.
 - 15-20 s, payoff in the last 3 s, a seamless loop (the last frame leads into the first).
@@ -85,4 +92,6 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 | 22 Oct | showreel-07-built-film | Built in 20 s | the film-look re-cut replaces the original (motion blur on the word drops, scroll and card open) |
 | 23 Oct | showreel-09-liquid-glass v2 | Material | four worlds on the beat (music night, wallet, weather noon, map macro), light and frost per world, payoff = macro lens + drop split |
 | 23 Oct | showreel-09-liquid-glass v3 | Material | the glass is the transition (next app inside the glass, then floods out); every element animates in |
+| 23 Oct | reel study | (both accounts) | scripts/study-reels.mjs: theirs = voice + bed + a hit per cut at -14 LUFS, a full-frame word-by-word question; ours = silence or a loose beat, the hook as small text |
+| 23 Oct | showreel-08-six-transitions v3 | Six ways | full-frame question on Ink, each word arriving by one of the six transitions, doors open onto the first page; first reel with sound (effects on every cut, bed, hook voice); 17.85 s = seven bars, so sound loops with picture |
 | 23 Oct | showreel-10-zero-js-transition | Steal this | paradox hook in frame 0 (audit lesson), real CSS view transitions both ways, code typed under a live preview, MDN support badges |

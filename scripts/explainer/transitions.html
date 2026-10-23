@@ -28,8 +28,18 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
 #chip b{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:800 14px/1 var(--f)}
 #chip .lab{position:relative;height:20px;min-width:150px;overflow:hidden}
 #chip .lab span{position:absolute;left:0;top:0;white-space:nowrap;line-height:20px}
-#hook{position:absolute;left:24px;right:24px;top:446px;z-index:30;overflow:hidden;border-radius:22px}
-#hook span{display:block;padding:18px 22px;background:#141414;color:#efe9dd;font:800 34px/1.05 var(--f);font-variation-settings:'wdth' 85,'opsz' 48;letter-spacing:-.02em}
+/* the hook (study 23 Oct: the hook is the shot, not a caption on the demo): one question, full frame, each word arriving by one of the
+   six transitions, on Ink. It opens like a pair of doors onto the first page and closes again at the end, so the reel loops. */
+.door{position:absolute;left:0;width:540px;height:480px;overflow:hidden;background:#141414;z-index:40}
+.door .in{position:absolute;left:0;width:540px;height:960px}
+.q{position:absolute;left:34px;top:206px;color:#efe9dd;font-weight:800;font-variation-settings:'wdth' 85,'opsz' 96;letter-spacing:-.04em;line-height:.94}
+.q .ln{white-space:nowrap}
+.q .w{display:inline-block;vertical-align:top;padding-bottom:.06em}
+.q .w3{overflow:hidden}
+.q .w3 i{display:inline-block;font-style:normal}
+.q .acc{color:#ff4a1c}
+.q .w4{transform-origin:0 80%}
+.tag{position:absolute;left:36px;font:700 15px/1 var(--f);font-variation-settings:'wdth' 75,'opsz' 18;letter-spacing:.3em;color:rgba(239,233,221,.62);white-space:nowrap}
 #ttl{position:absolute;left:30px;top:654px;z-index:20;font:800 21px/1 var(--f);font-variation-settings:'wdth' 75,'opsz' 18;letter-spacing:.12em;text-transform:uppercase}
 #bar{position:absolute;left:30px;top:744px;width:200px;height:4px;display:flex;gap:4px;z-index:20}
 #bar i{flex:1;border-radius:2px}
@@ -40,7 +50,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
 <div id="stage"></div>
 <div id="tiles"></div>
 <div id="tap"></div>
-<div id="hook"><span>Which page transition<br>would you ship?</span></div>
+<div class="door" id="dt"></div>
+<div class="door" id="db" style="top:480px"></div>
 <div id="ttl">6 page transitions</div>
 <div id="chip"><b>01</b><div class="lab"></div></div>
 <div id="bar"></div>
@@ -60,6 +71,13 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
     { n: 'Blush', bg: '#f4b9a7', ink: '#141414', hex: '#F4B9A7', m: 'Eggshell' }
   ];
   var LAB = ['Circle reveal', 'Liquid wipe', 'Blinds', 'Split type', 'Tile cascade', 'Zoom through'];
+  // the hook, built twice (one copy per door half)
+  var HQ = '<div class="q"><div class="ln"><span class="w w0">Which</span></div><div class="ln"><span class="w w1 acc">transition</span></div>'
+    + '<div class="ln"><span class="w w2">would</span> <span class="w w3"><i>y</i><i>o</i><i>u</i></span></div><div class="ln"><span class="w w4">ship?</span></div></div>'
+    + '<div class="tag">6 WAYS · IN 18 SECONDS</div>';
+  $('dt').innerHTML = '<div class="in" style="top:0">' + HQ + '</div>'; $('db').innerHTML = '<div class="in" style="top:-480px">' + HQ + '</div>';
+  var OFF = 1.6, DUR = 17.85;   // the pages run 1.6 s later than v2; 17.85 s = seven bars of the bed, so sound and picture loop together
+  var back = function(k){ var c = 1.6; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
   var BX = 30 + 75, BY = 590 + 26;   // the Add-to-cart button centre (the tap)
   var BC = { x: 420, y: 790, r: 230 };   // each page's big circle: the next colour
   var PG = [];
@@ -78,11 +96,38 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
   LAB.forEach(function(l, i){ var s = document.createElement('span'); s.textContent = l; $('chip').querySelector('.lab').appendChild(s); });
   for (var b = 0; b < 6; b++) $('bar').appendChild(document.createElement('i'));
   var T = [0.45, 3.0, 5.55, 8.1, 10.65, 13.3], D = [1.0, 1.0, 1.05, 1.2, 1.1, 1.7];   // v2: 17 s, a transition every ~2.55 s
+  function fitHook(){ [].forEach.call(document.querySelectorAll('.q'), function(q){ q.style.fontSize = '100px'; var w = 0;
+      [].forEach.call(q.querySelectorAll('.ln'), function(l){ w = Math.max(w, l.scrollWidth); }); var fs = Math.min(126, 100 * 470 / w); q.style.fontSize = fs + 'px';
+      q.nextSibling.style.top = (206 + 4 * .94 * fs + 26) + 'px'; }); }
+  function hook(t){
+    // each word lands with one of the reel's transitions: circle, liquid wipe, blinds, split type, zoom
+    var a = [-.2, .08, .32, .5, .66];
+    var k0 = P(t, a[0], a[0] + .36), k1 = P(t, a[1], a[1] + .4), k2 = P(t, a[2], a[2] + .32), k4 = P(t, a[4], a[4] + .3);
+    var show = t < 2.3;
+    [].forEach.call(document.querySelectorAll('.q'), function(q){
+      q.style.visibility = show ? 'visible' : 'hidden'; if (!show) return;
+      var w = q.querySelectorAll('.w');
+      w[0].style.clipPath = 'circle(' + (io(k0) * 85) + '% at 30% 60%)'; w[0].style.transform = 'translateY(' + (1 - back(k0)) * 40 + 'px)';
+      var e = io(k1), amp = 14 * Math.sin(Math.PI * k1), wv = ['0% 0%'];
+      for (var y = 0; y <= 100; y += 10) wv.push((e * 112 - 6 + amp * Math.sin(y * .09 + t * 14)) + '% ' + y + '%');
+      wv.push('0% 100%'); w[1].style.clipPath = 'polygon(' + wv.join(',') + ')'; w[1].style.transform = 'translateX(' + (1 - back(k1)) * -30 + 'px)';
+      w[1].style.fontVariationSettings = "'wdth' " + (85 + 6 * io(P(t, 1.0, 1.5)) * Math.sin(Math.PI * P(t, 1.0, 1.9))) + ",'opsz' 96";
+      var pts = []; for (var sj = 0; sj < 5; sj++) { var x0 = sj * 20, x1 = x0 + 20.5, h = 100 * io(P(t, a[2] + sj * .04, a[2] + sj * .04 + .2)); pts.push(x0 + '% 0%', x0 + '% ' + h + '%', x1 + '% ' + h + '%', x1 + '% 0%'); }
+      w[2].style.clipPath = 'polygon(' + pts.join(',') + ')';
+      [].forEach.call(w[3].children, function(l, j){ l.style.transform = 'translateY(' + (110 * (1 - back(P(t, a[3] + j * .045, a[3] + j * .045 + .3)))) + '%)'; });
+      w[4].style.opacity = cl(k4 * 3); w[4].style.transform = 'scale(' + mix(2.6, 1, back(k4)) + ')';
+      var tg = q.nextSibling, tk = out(P(t, .95, 1.4)); tg.style.opacity = tk; tg.style.letterSpacing = mix(.7, .3, tk) + 'em';
+      q.style.transform = 'translateY(' + (-10 * P(t, 0, 1.55)) + 'px)';   // a slow push so the hold never freezes
+    });
+    // the doors: open onto the first page, close again at the end (the loop)
+    var d = io(P(t, 1.5, 1.98)) - io(P(t, DUR - .42, DUR));
+    $('dt').style.transform = 'translateY(' + (-d * 500) + 'px)'; $('db').style.transform = 'translateY(' + (d * 500) + 'px)';
+  }
   function fit(){ PG.forEach(function(p){ p.el.style.display = 'block'; p.name.style.fontSize = '100px'; var w = p.name.scrollWidth; p.name.style.fontSize = Math.min(290, 100 * 486 / w) + 'px'; p.el.style.display = 'none'; }); }
   function reset(p){ p.el.style.display = 'none'; p.el.style.transform = ''; p.el.style.clipPath = ''; p.el.style.zIndex = 1; p.dim.style.opacity = 0; p.det.style.transform = ''; p.buy.style.transform = '';
     p.L.forEach(function(l){ l.style.transform = ''; l.style.fontVariationSettings = ''; }); p.blob.style.transform = ''; }
   function seek(t){
-    t = Math.max(0, Math.min(16, t));
+    t = Math.max(0, Math.min(DUR, t)); hook(t); t = Math.max(0, t - OFF);
     PG.forEach(reset); TL.forEach(function(x){ x.el.style.transform = 'scale(0)'; });
     var i = -1; for (var j = 0; j < 6; j++) if (t >= T[j]) i = j;   // i = the last transition that has started
     var cur = i < 0 ? 0 : i, k = i < 0 ? 0 : P(t, T[i], T[i] + D[i]);
@@ -127,8 +172,6 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
     tp.style.transform = 'translate(' + mix(320, BX + 40, tk) + 'px,' + mix(820, BY, tk) + 'px) scale(' + (1 - .25 * Math.sin(Math.PI * P(t, .5, .72))) + ')';
     // chip and bar take the colours of whatever page is on screen
     var on = PG[(i < 0 ? 0 : (k > .5 ? i + 1 : i))].c, dark = on.ink === '#efe9dd';
-    // the hook (audit 23 Oct: open on a question): on screen at frame 0, it slides away as the first transition lands and returns for the loop
-    var hk = (1 - io(P(t, 1.25, 1.65))) + io(P(t, 15.5, 15.95)); $('hook').firstChild.style.transform = 'translateY(' + (t < 8 ? -(1 - hk) * 130 : (1 - hk) * 130) + '%)';
     $('ttl').style.color = on.ink; var chip = $('chip'); chip.style.background = on.ink; chip.style.color = on.bg; chip.querySelector('b').style.background = on.bg; chip.querySelector('b').style.color = on.ink;
     var li = 0; for (var m = 0; m < 6; m++) if (t >= T[m] - .45) li = m; if (t >= 15.6) li = 0;
     var num = chip.querySelector('b'); num.textContent = '0' + (li + 1);
@@ -137,8 +180,25 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
       sp.style.transform = 'translateY(' + ((1 - inK) * 22 - (m === 0 && t < 15.6 ? oK : (m === li ? 0 : oK)) * 22) + 'px)'; sp.style.visibility = vis ? 'visible' : 'hidden'; });
     [].forEach.call($('bar').children, function(x, m){ x.style.background = on.ink; x.style.opacity = m < li ? .55 : m === li ? 1 : .2; });
   }
-  window.seek = seek; window.DURATION = 16;
-  document.fonts.load('800 100px "Bricolage Grotesque"').then(function(){ return document.fonts.ready; }).then(function(){ fit(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+  // sound cues (scripts/showreel/sound.py): every sound is tied to something moving on screen
+  var Q = [{ t: 0, k: 'voice', text: 'Which transition would you ship?', speed: 1.15 }, { t: 0, k: 'hit', g: .5, p: -.3 },
+    { t: .1, k: 'pop', p: 0 }, { t: .33, k: 'whoosh', d: .35, g: .5, p: .6 }, { t: .5, k: 'pop', p: 3 }, { t: .62, k: 'tick', p: 0 }, { t: .66, k: 'tick', p: 2 }, { t: .71, k: 'tick', p: 4 },
+    { t: .85, k: 'hit', g: .9 }, { t: 1.0, k: 'shimmer', g: .8 }, { t: 1.82, k: 'whoosh', d: .6, g: .8, p: -.4 }, { t: 1.98, k: 'hit', g: .45, p: -.5 },
+    { t: OFF + .55, k: 'click', g: 1 }];
+  var SW = [{ g: .9, p: 0 }, { g: 1, p: -.3 }, null, { g: .7, p: .4 }, null, null];
+  T.forEach(function(x, j){ var s = OFF + x;
+    if (SW[j]) Q.push({ t: s + D[j] * .55, k: 'whoosh', d: D[j] * .9, g: SW[j].g, p: SW[j].p });
+    if (j === 2) for (var b2 = 0; b2 < 6; b2++) Q.push({ t: s + b2 * .08 + .35, k: 'tick', p: b2 * 2, g: .9 });   // blinds: one tick per strip
+    if (j === 3) { Q.push({ t: s + .3, k: 'whoosh', d: .5, g: .6, p: .5 }); for (var l3 = 0; l3 < PG[4].L.length; l3++) Q.push({ t: s + .75 + l3 * .04, k: 'tick', p: 7 + l3, g: .6 }); }
+    if (j === 4) for (var dg = 0; dg < 16; dg += 2) Q.push({ t: s + dg * .034 + .2, k: 'tick', p: dg, g: .7 });   // tile cascade: the diagonal
+    if (j === 5) { Q.push({ t: s + .85, k: 'riser', d: 1.6, g: .8 }); Q.push({ t: s + .85, k: 'boom', g: 1 }); }
+    else Q.push({ t: s + D[j] * .85, k: 'hit', g: .5, p: j * .1 }); });
+  Q.push({ t: DUR - .05, k: 'whoosh', d: .5, g: .7, p: -.6 });
+  // the bed: 94.1 bpm, a bar every 2.55 s with its downbeat on each transition; seven chords, so bar -1 and bar 6 match and the loop is seamless
+  window.CUES = { dur: DUR, cues: Q, bed: { bpm: 60 / .6375, origin: OFF + T[0], chords: [[38, 53, 57, 60, 64], [34, 50, 53, 57, 62], [31, 46, 50, 53, 57], [33, 50, 52, 55, 61],
+    [38, 53, 57, 60, 65], [34, 50, 53, 57, 60], [33, 49, 52, 55, 57]] } };
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load('800 100px "Bricolage Grotesque"').then(function(){ return document.fonts.ready; }).then(function(){ fit(); fitHook(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 </script>
 </body>

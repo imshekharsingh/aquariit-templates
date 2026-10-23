@@ -9,6 +9,10 @@ on:
       config:
         description: Reel config
         default: scripts/showreel/reel-01.json
+      seconds:
+        description: Preview only, this many seconds with sound (goes to the "study" release, no issue). Empty = the whole reel.
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -22,6 +26,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
       CFG: ${{ inputs.config }}
+      SECS: ${{ inputs.seconds }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,20 +47,46 @@ jobs:
         run: |
           set -o pipefail
           NAME=$(python3 -I -c "import json,sys; print(json.load(open(sys.argv[1]))['name'])" "$CFG")
+          if [ -n "$SECS" ]; then NAME="$NAME-preview"; fi
           echo "NAME=$NAME" >> "$GITHUB_ENV"
           mkdir -p out
           SEEK=$(python3 -I -c "import json,sys; print(json.load(open(sys.argv[1])).get('seek',''))" "$CFG")
           COVER=$(python3 -I -c "import json,sys; print(json.load(open(sys.argv[1])).get('cover',1.6))" "$CFG")
           if [ -n "$SEEK" ]; then
-            # a seekable scene (window.seek(t)): frames straight to MP4, 60 fps, silent
-            node scripts/showreel/seek.mjs "$CFG" "out/$NAME.mp4" 2>&1 | tee capture.log
+            # a seekable scene (window.seek(t)): frames straight to MP4; its window.CUES become the sound below
+            node scripts/showreel/seek.mjs "$CFG" "out/$NAME.mp4" ${SECS:+--seconds "$SECS"} 2>&1 | tee capture.log
           else
             node scripts/showreel/capture.mjs "$CFG" out/frames 2>&1 | tee capture.log
             python3 scripts/showreel/compose.py "$CFG" out/frames "out/$NAME.mp4" 2>&1 | tail -3
           fi
           ffmpeg -y -loglevel error -ss "$COVER" -i "out/$NAME.mp4" -frames:v 1 -q:v 3 "out/$NAME-cover.jpg"
           mkdir -p out/review && ffmpeg -y -loglevel error -i "out/$NAME.mp4" -vf "fps=2,scale=270:-1,tile=8x5" -frames:v 1 "out/$NAME-review.png"
+      - name: Voice model
+        # the hook voice (owner, 23 Oct: "audio similar to techin20sec"): Kokoro-82M, Apache-2.0, CPU only, no key.
+        # If it cannot install, sound.py skips the voice and the reel keeps its effects and bed.
+        if: hashFiles('out/*.cues.json') != ''
+        continue-on-error: true
+        run: |
+          grep -q '"k":"voice"' out/*.cues.json || exit 0
+          sudo apt-get install -y --no-install-recommends espeak-ng
+          pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install kokoro==0.9.4 soundfile==0.12.1
+      - name: Sound
+        # every sound comes from the scene's cues (scripts/showreel/sound.py), levelled to -14 LUFS like the reels that hold attention
+        if: hashFiles('out/*.cues.json') != ''
+        run: |
+          python3 scripts/showreel/sound.py "out/$NAME.cues.json" out/sound.wav
+          ffmpeg -y -loglevel error -i "out/$NAME.mp4" -i out/sound.wav -map 0:v -map 1:a -c:v copy -af "loudnorm=I=-14:TP=-1.5:LRA=7" -ar 48000 -c:a aac -b:a 192k -shortest out/muxed.mp4
+          mv out/muxed.mp4 "out/$NAME.mp4"
+          ffmpeg -hide_banner -i "out/$NAME.mp4" -af ebur128 -f null - 2>&1 | grep -E "^\s+(I|LRA):" | tail -2
+      - name: Keep the preview
+        if: inputs.seconds != ''
+        run: |
+          gh release view study --repo "$REPO" >/dev/null 2>&1 || gh release create study --repo "$REPO" --title "Study" --latest=false --notes "Reel study and previews"
+          gh release upload study --repo "$REPO" --clobber "out/$NAME.mp4"
+          echo "https://github.com/$REPO/releases/download/study/$NAME.mp4"
       - name: Keep it and tell the owner
+        if: inputs.seconds == ''
         run: |
           gh release view reels --repo "$REPO" >/dev/null 2>&1 || gh release create reels --repo "$REPO" --title "Reels" --latest=false --notes "Rendered reels"
           cp "$CFG" "out/$NAME.json"
