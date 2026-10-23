@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why do some buttons feel expensive?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 01 (owner picked B, 23 Oct 2026): "Why do some buttons feel expensive?"
+   The voice runs the whole reel (scripts/showreel/voice.py); every beat and caption is anchored to a spoken word, so window.setVoice(words)
+   re-times the scene to the real narration. Stage 540x960 CSS px (rendered at 2x). Every frame is a pure function of t (window.seek). */
+:root{--ink:#121110;--paper:#f2efe8;--dim:#8d877c;--line:#2c2a27;--violet:#8b6cff;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hook{left:34px;top:200px;font-weight:800;font-size:76px;line-height:.96;letter-spacing:-.045em;font-variation-settings:'wdth' 85,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--violet)}
+.btn{width:300px;height:84px;border-radius:999px;display:grid;place-items:center;font:700 30px/1 var(--f);font-variation-settings:'opsz' 32;transform-origin:50% 50%}
+#bA{background:var(--paper);color:var(--ink)}
+#bB{background:var(--violet);color:#fff}
+#tag{font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap}
+#graph{left:40px;top:430px;width:460px;height:230px}
+#code{left:36px;top:230px;font:500 25px/1.6 var(--m);white-space:pre;color:var(--paper)}
+#code b{font-weight:500;color:var(--violet)}
+.chip{left:36px;height:48px;padding:0 20px;border-radius:999px;background:#24222a;display:flex;align-items:center;gap:10px;font:700 21px/1 var(--m);transform-origin:0 50%}
+.chip i{width:10px;height:10px;border-radius:50%;background:#3ddc84;font-style:normal}
+#cap{left:36px;right:36px;top:676px;font:700 36px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+.ui{background:#1f1d22;border-radius:26px}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 01 · MOTION</div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>do</span> <span>some</span></span><span class="ln"><span>buttons</span> <span>feel</span></span><span class="ln"><span class="acc">expensive?</span></span></div>
+<div id="bA" class="a btn">Pay $48</div>
+<div id="bB" class="a btn">Pay $48</div>
+<div id="tag" class="a"></div>
+<canvas id="graph" class="a" width="920" height="460"></canvas>
+<div id="code" class="a"></div>
+<div id="c1" class="a chip"><i></i>Chrome 113</div>
+<div id="c2" class="a chip"><i></i>Firefox 112</div>
+<div id="c3" class="a chip"><i></i>Safari 17.2</div>
+<div id="c4" class="a chip" style="background:transparent;border:2px solid #3a3644;color:var(--dim)">Baseline 2023</div>
+<div id="tog" class="a ui" style="width:150px;height:76px;border-radius:999px;background:var(--violet)"><div class="a" style="right:8px;top:8px;width:60px;height:60px;border-radius:50%;background:#fff"></div></div>
+<div id="card" class="a ui" style="width:468px;height:190px"><div class="a" style="left:28px;top:34px;width:200px;height:22px;border-radius:11px;background:#34303c"></div><div class="a" style="left:28px;top:76px;width:330px;height:22px;border-radius:11px;background:#34303c"></div><div class="a" style="left:28px;top:118px;width:260px;height:22px;border-radius:11px;background:#34303c"></div></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  // a real damped spring (zeta .55, omega 12): overshoots about 12%, settles in ~0.8 s
+  var spring = function(s){ if (s <= 0) return 0; var z = .55, w = 12, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
+  var easeOut = function(s, d){ return out(cl(s / d)); };
+  var TEXT = 'Why do some buttons feel expensive? Same button. Same duration. This one eases in and stops dead. This one springs: it overshoots a touch, then settles, like a real object. CSS does this natively now, with linear(). Chrome, Firefox and Safari have all supported it since 2023. One line. Everything feels more physical.';
+  // words until the real narration arrives: an estimate at 2.8 words a second, so the scene can be previewed without a voice
+  var WORDS = [], DUR = 22;
+  (function(){ var t = .15; TEXT.split(/\s+/).forEach(function(w){ var d = .16 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,]$/.test(w) ? .22 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s; return 99; }
+  function idx(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return i; return -1; }
+  var A = {};
+  function anchors(){
+    A = { same: at('same'), this1: at('this'), eases: at('eases'), dead: at('dead'), this2: at('this', 2), springs: at('springs'), over: at('overshoots'), settles: at('settles'),
+      real: at('real'), css: at('css'), linear: at('linear'), chrome: at('chrome'), firefox: at('firefox'), safari: at('safari'), y2023: at('2023'), one: at('one', 3), every: at('everything'), physical: at('physical') };
+    A.end = WORDS[WORDS.length - 1].e;
+    // phrases for the captions: the script's sentences, cut at commas and colons too, so a caption never runs past two lines
+    // captions: one sentence at a time; a long one splits at its comma or colon nearest the middle (2-7 words a caption)
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.w) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:]$/.test(WORDS[j].w) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  var PH = [];
+  // ---------- the curve graph ----------
+  var g = $('graph').getContext('2d');
+  function graph(kind, prog, alpha, col){
+    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 920, 460); g.fillStyle = 'rgba(0,0,0,0.004)'; g.fillRect(0, 0, 1, 1);   // never leave the layer empty (stale-canvas bug)
+    if (alpha <= 0) return; g.globalAlpha = alpha; g.setTransform(2, 0, 0, 2, 0, 0);
+    var X = function(x){ return 10 + x * 430; }, Y = function(y){ return 200 - y * 150; };
+    g.strokeStyle = '#2c2a27'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(X(1), Y(0)); g.stroke();
+    g.setLineDash([6, 6]); g.beginPath(); g.moveTo(X(0), Y(1)); g.lineTo(X(1), Y(1)); g.stroke(); g.setLineDash([]);
+    g.fillStyle = '#8d877c'; g.font = "500 13px 'JetBrains Mono'"; g.fillText('target', X(1) - 52, Y(1) - 10); g.fillText('time →', X(0), Y(0) + 22);
+    var f = kind === 'spring' ? function(x){ return spring(x * .9); } : function(x){ return out(cl(x / .55)); };
+    g.strokeStyle = col; g.lineWidth = 4; g.lineCap = 'round'; g.beginPath();
+    for (var i = 0; i <= 120 * prog; i++) { var x = i / 120; i ? g.lineTo(X(x), Y(f(x))) : g.moveTo(X(x), Y(f(x))); } g.stroke();
+    var px = prog; g.fillStyle = col; g.beginPath(); g.arc(X(px), Y(f(px)), 8, 0, 7); g.fill();
+    g.globalAlpha = 1;
+  }
+  // ---------- the code ----------
+  var CODE = 'transition: scale .6s\n  <b>linear(0, .55 10%,\n    1.12 30%, .98 55%,\n    1.01 75%, 1)</b>;';
+  var CODE_TXT = CODE.replace(/<\/?b>/g, '');
+  function code(n){   // the first n characters, keeping the violet span
+    var out = '', k = 0, inB = false;
+    for (var i = 0; i < CODE.length && k < n; i++) { if (CODE.substr(i, 3) === '<b>') { out += '<b>'; inB = true; i += 2; continue; } if (CODE.substr(i, 4) === '</b>') { out += '</b>'; inB = false; i += 3; continue; } out += CODE[i]; k++; }
+    return out + (inB ? '</b>' : '');
+  }
+  function place(el, x, y, s, o){ el.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')'; el.style.opacity = o; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    // ---- beat 1: the hook, each word lands as it is spoken; "expensive?" springs ----
+    var hw = $('hook').querySelectorAll('span span, span.acc'), gone = io(P(t, A.same - .25, A.same + .2));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - .08 : 0, k = i === 5 ? spring(t - s) : out(P(t, s, s + .28)), back = io(P(t, DUR - .5, DUR));
+      sp.style.opacity = cl((t - s) * 8) * (1 - gone);
+      sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 120) + 'px) scale(' + (i === 5 ? .6 + .4 * k : 1) + ')';
+    });
+    $('lbl').style.opacity = 1 - io(P(t, A.end + .3, A.end + .8));
+    // ---- the two buttons: ghosts under the hook, then the comparison ----
+    var bA = $('bA'), bB = $('bB');
+    // states: ghosts under the hook → "same button, same duration" side by side → A alone (ease) → match cut to B (spring) → gone at "CSS"
+    var eA = easeOut(t - A.eases, .55), eB = spring(t - A.springs);
+    var pair = out(P(t, A.same - .1, A.same + .4)), soloA = 0, soloB = 0;
+    var plain = function(el){ el.style.background = ''; el.style.color = ''; };
+    if (t < A.same) { var gh = .3 * out(P(t, .5, 1.1)) * (1 - P(t, A.same - .25, A.same));
+      bA.style.background = bB.style.background = '#2a2826'; bA.style.color = bB.style.color = '#8d877c';
+      place(bA, -10, 640, .58, gh); place(bB, 250, 640, .58, gh); }
+    else if (t < A.this1) { plain(bA); plain(bB); place(bA, -10, mix(640, 300, pair), .58, 1); place(bB, 250, mix(640, 300, pair), .58, 1); }
+    else if (t < A.this2) { plain(bA); soloA = 1; var mv = io(P(t, A.this1, A.this1 + .3));
+      place(bA, mix(-10, 120, mv), 300, t < A.eases ? mix(.58, 0, mv) : eA, 1); place(bB, mix(250, 560, mv), 300, .58, 1 - mv); }
+    else if (t < A.css) { plain(bB); soloB = 1; bA.style.opacity = 0; place(bB, 120, 300, t < A.springs ? 0 : eB, 1); }
+    else { bA.style.opacity = 0; bB.style.opacity = 0; }
+    soloA *= 1 - P(t, A.this2 - .15, A.this2); soloB *= 1 - io(P(t, A.css - .1, A.css + .3));
+    // the tag above the button names the motion
+    var tg = $('tag');
+    if (soloB > 0) { tg.textContent = 'SPRING'; tg.style.color = 'var(--violet)'; tg.style.opacity = soloB; }
+    else if (soloA > 0) { tg.textContent = 'EASE-OUT · 0.6 S'; tg.style.color = 'var(--dim)'; tg.style.opacity = soloA; }
+    else if (t >= A.same && t < A.this1) { tg.textContent = 'SAME BUTTON · SAME DURATION'; tg.style.color = 'var(--dim)'; tg.style.opacity = out(P(t, A.same + .9, A.same + 1.2)) * pair; }
+    else tg.style.opacity = 0;
+    tg.style.transform = 'translate(36px,230px)';
+    // the graph draws in time with each move
+    if (soloB > 0) graph('spring', cl((t - A.springs) / 1.4), soloB, '#8b6cff');
+    else if (soloA > 0) graph('ease', cl((t - A.eases) / 1.4), soloA, '#f2efe8');
+    else graph('ease', 0, 0, '#000');
+    // ---- beat 4: the code types itself, the browsers pop in as they are named ----
+    var cd = P(t, A.css - .1, A.css + .3) * (1 - io(P(t, A.every - .2, A.every + .2)));
+    var nch = Math.floor(CODE_TXT.length * P(t, A.css, A.linear + 1.0));
+    $('code').innerHTML = code(nch); $('code').style.opacity = cd; $('code').style.transform = 'translateY(' + (1 - out(cd)) * 30 + 'px)';
+    [['c1', A.chrome, 420], ['c2', A.firefox, 480], ['c3', A.safari, 540], ['c4', A.y2023, 600]].forEach(function(c){
+      var k = spring(t - c[1] + .05), o = cl((t - c[1] + .05) * 6) * (1 - io(P(t, A.every - .2, A.every + .2)));
+      $(c[0]).style.transform = 'translate(0,' + c[2] + 'px) scale(' + (.5 + .5 * k) + ')'; $(c[0]).style.opacity = o; });
+    // ---- beat 5: everything on springs ----
+    var pay = [['tog', 36, 230, A.every], ['card', 36, 330, A.every + .14], ['bB', 120, 552, A.every + .28]];
+    var outK = io(P(t, DUR - .55, DUR - .1));
+    pay.forEach(function(p){ var k = spring(t - p[3]); if (t < p[3] - .05 && p[0] === 'bB') return; if (t < p[3] - .05) { $(p[0]).style.opacity = 0; return; }
+      $(p[0]).style.opacity = cl((t - p[3]) * 8) * (1 - outK); $(p[0]).style.transform = 'translate(' + p[1] + 'px,' + (p[2] + (1 - k) * 60 + outK * 40) + 'px) scale(' + (.6 + .4 * k) + ')'; });
+    // ---- captions: the current phrase, word by word; the spoken word is bright, the rest wait (none during the hook) ----
+    var cap = $('cap'), ph = null;
+    for (var i = 0; i < PH.length; i++) { var f = PH[i][0], l = PH[i][PH[i].length - 1]; if (t >= WORDS[f].s - .1 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - .1)) ph = PH[i]; }
+    var html = '';
+    if (ph && ph[0] > 5 && t < DUR - .5) ph.forEach(function(j){ var w = WORDS[j], on = t >= w.s - .04, k = out(P(t, w.s - .04, w.s + .16)), acc = /expensive|springs|physical|linear/i.test(w.w);
+      html += '<span style="opacity:' + (on ? 1 : 0) + ';transform:translateY(' + (1 - k) * 14 + 'px);color:' + (acc ? 'var(--violet)' : 'var(--paper)') + '">' + w.w.replace(/</g, '') + '</span>'; });
+    cap.innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  // ---------- sound cues (scripts/showreel/sound.py), anchored to the same words ----------
+  function buildCues(){
+    var Q = [{ t: 0, k: 'hit', g: .4, p: -.4 }];
+    for (var i = 0; i < 6 && i < WORDS.length; i++) Q.push(i === 5 ? { t: WORDS[i].s, k: 'pop', p: 7, g: 1 } : { t: WORDS[i].s, k: 'pop', p: i * 2, g: .55 });
+    Q.push({ t: A.same, k: 'whoosh', d: .5, g: .6, p: .2 }, { t: A.this1 + .2, k: 'whoosh', d: .4, g: .5 }, { t: A.eases, k: 'click', g: 1 }, { t: A.eases + .55, k: 'hit', g: .35, p: -.6 });   // stops dead
+    Q.push({ t: A.this2, k: 'whoosh', d: .4, g: .5, p: .4 }, { t: A.springs, k: 'click', g: 1 }, { t: A.springs + .18, k: 'pop', p: 12, g: .7 }, { t: A.springs + .45, k: 'tick', p: 5, g: .5 });   // the overshoot and the settle
+    Q.push({ t: A.css, k: 'whoosh', d: .5, g: .6, p: -.2 });
+    for (var c = 0; c < 14; c++) Q.push({ t: A.css + c * (A.linear + 1 - A.css) / 14, k: 'tick', p: (c * 5) % 9, g: .35 });   // typing
+    [A.chrome, A.firefox, A.safari].forEach(function(x, j){ Q.push({ t: x, k: 'pop', p: 4 + j * 3, g: .8 }); }); Q.push({ t: A.y2023, k: 'tick', p: 12, g: .7 });
+    Q.push({ t: A.every, k: 'riser', d: .7, g: .45 }, { t: A.every, k: 'pop', p: 0 }, { t: A.every + .14, k: 'pop', p: 4 }, { t: A.every + .28, k: 'pop', p: 7 }, { t: A.physical, k: 'hit', g: .7 });
+    Q.push({ t: DUR - .3, k: 'whoosh', d: .5, g: .4, p: -.6 });
+    // the bed: eight bars that fill the reel exactly, so it loops with the picture
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, chords: [[33, 57, 60, 64, 71], [29, 57, 60, 64, 69], [36, 55, 59, 62, 64], [31, 55, 59, 62, 64]] } };
+  }
+  anchors();
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 76px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 25px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
