@@ -228,7 +228,7 @@ async function uploadedApi(request, env, p) {
   if (request.method !== 'GET' && request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403); // simple cross-site requests cannot set this header
   let body = null;
   try { body = await request.json(); } catch { /* handled below */ }
-  const m = /^\/api\/uploaded\/(\d{4}-\d{2}-\d{2}(?:-\d{4})?)$/.exec(p);
+  const m = /^\/api\/uploaded\/(\d{4}-\d{2}-\d{2}(?:-\d{4})?|showreel-[a-z0-9-]{1,60})$/.exec(p);   // templates (old) and showreels (owner, 23 Oct)
   if (request.method === 'PUT' && m && body && typeof body.on === 'boolean') {
     if (body.on) await db.prepare('INSERT INTO reel_uploaded (id, at) VALUES (?1, ?2) ON CONFLICT(id) DO UPDATE SET at = excluded.at').bind(m[1], new Date().toISOString()).run();
     else await db.prepare('DELETE FROM reel_uploaded WHERE id = ?1').bind(m[1]).run();
