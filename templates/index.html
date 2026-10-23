@@ -40,6 +40,12 @@
   .when.now{background:var(--accent);color:#0b0d14}
   .when.ok{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ok);color:var(--ok)}
   .reel.posted video{opacity:.55}
+  .tile{display:flex;align-items:center;gap:14px;width:100%;margin-top:12px;padding:10px 14px 10px 10px;background:var(--card);border:1px solid var(--line);border-radius:18px;color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+  .tile .th{flex:none;width:54px;aspect-ratio:9/16;border-radius:10px;background:#000 center/cover no-repeat}
+  .tile .tx{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+  .tile .when{margin:0;min-height:26px;font-size:.75rem}
+  .tile .chev{font:700 1.6rem/1 system-ui,sans-serif;color:var(--mute)}
+  .tile.posted .th{opacity:.55}
   .empty{margin-top:30px;color:var(--mute)}
 </style>
 </head>
@@ -47,7 +53,7 @@
 <main class="wrap">
   <div class="top"><span class="brand">webin20sec</span><a class="pill" href="/archive/">Archive</a></div>
   <h1>Showreels</h1>
-  <p class="lede">Newest first. Play it, copy the post text, save the video, post at 14:00 IST.</p>
+  <p class="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post at 14:00 IST, then mark it uploaded.</p>
   <div id="list"><p class="empty">Loading…</p></div>
 </main>
 <script>
@@ -85,15 +91,25 @@
   function load(){ return fetch('/api/uploaded', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ ticks = j.ids || {}; }).catch(function(){ trackOk = false; }); }
   function mark(name, on){ return fetch('/api/uploaded/' + encodeURIComponent(name), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: on }) })
     .then(function(r){ if (!r.ok) throw 0; if (on) ticks[name] = new Date().toISOString(); else delete ticks[name]; }); }
-  var DATA = null;
+  var DATA = null, openName = null;
   function render(){
     var d = DATA.d, c = DATA.c, items = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }); list.textContent = '';
     if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No showreels yet.')); return; }
     // to post first (by date), then the uploaded ones (newest upload first)
     items.sort(function(x, y){ var ux = !!ticks[x.name], uy = !!ticks[y.name]; if (ux !== uy) return ux ? 1 : -1;
       if (ux) return ticks[x.name] < ticks[y.name] ? 1 : -1; var px = (c[x.name] || {}).postOn || '9999', py = (c[y.name] || {}).postOn || '9999'; return px < py ? -1 : px > py ? 1 : 0; });
+    if (!openName || !items.some(function(s){ return s.name === openName; })) openName = items[0].name;
     items.forEach(function(s){
       var meta = c[s.name] || {}, up = ticks[s.name];
+      if (s.name !== openName) {   // collapsed tile: cover, name, date or uploaded mark; tap to open it
+        var tl = el('button', 'tile' + (up ? ' posted' : '')); tl.type = 'button'; tl.setAttribute('aria-label', 'Open ' + s.name);
+        var th = el('span', 'th'); if (s.cover) th.style.backgroundImage = 'url(' + s.cover + ')'; tl.appendChild(th);
+        var tx = el('span', 'tx'); tx.appendChild(el('span', 'name', s.name.replace(/^showreel-/, 'Showreel ')));
+        tx.appendChild(el('span', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) : when(meta.postOn)));
+        tl.appendChild(tx); tl.appendChild(el('span', 'chev', '›'));
+        tl.addEventListener('click', function(){ openName = s.name; render(); var o = list.querySelector('.reel'); if (o) o.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+        list.appendChild(tl); return;
+      }
       var card = el('article', 'reel' + (up ? ' posted' : '')), v = document.createElement('video');
       v.src = s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover;
       v.setAttribute('aria-label', 'Showreel ' + s.name);
