@@ -34,6 +34,12 @@
   .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:var(--ink);color:var(--bg);font:700 .9rem system-ui,sans-serif;text-decoration:none;cursor:pointer}
   .btn.g{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
   .btn.done{background:var(--ok);color:#06200f}
+  .btn.tick.on{background:var(--ok);color:#06200f;border-color:var(--ok)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .when{display:inline-flex;align-items:center;min-height:30px;padding:0 12px;margin-bottom:10px;border-radius:999px;background:#1d2133;font:700 .8rem system-ui,sans-serif;color:var(--ink)}
+  .when.now{background:var(--accent);color:#0b0d14}
+  .when.ok{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ok);color:var(--ok)}
+  .reel.posted video{opacity:.55}
   .empty{margin-top:30px;color:var(--mute)}
 </style>
 </head>
@@ -68,27 +74,47 @@
   }
   function flash(btn, t){ btn.textContent = t; setTimeout(function(){ if (btn.textContent === t) btn.textContent = 'Save video'; }, 1800); }
   function mb(n){ return (n / 1048576).toFixed(1) + ' MB'; }
-  fetch('/api/showreels', { credentials: 'same-origin' }).then(function(r){ return r.json(); }).then(function(d){
-    // reels that are not for posting are hidden ("hidden": true in captions.json); the API lists every showreel in the release
-    return caps.then(function(c){ var items = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }); list.textContent = '';
+  // the posting plan (owner, 23 Oct): each reel carries the IST date to post it ("postOn" in captions.json, set by Claude) and an
+  // "Uploaded" marker stored on the server (D1, /api/uploaded/<name>), so it is the same on every device
+  var DAY = 864e5, IST = 5.5 * 36e5;
+  function istToday(){ return new Date(Date.now() + IST).toISOString().slice(0, 10); }
+  function nice(d){ return new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }); }
+  function when(d){ if (!d) return 'Not scheduled'; var diff = Math.round((Date.parse(d) - Date.parse(istToday())) / DAY);
+    return diff === 0 ? 'Post today · 14:00 IST' : diff === 1 ? 'Post tomorrow · 14:00 IST' : diff < 0 ? 'Was due ' + nice(d) + ' · post next' : 'Post ' + nice(d) + ' · 14:00 IST'; }
+  var ticks = {}, trackOk = true;
+  function load(){ return fetch('/api/uploaded', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ ticks = j.ids || {}; }).catch(function(){ trackOk = false; }); }
+  function mark(name, on){ return fetch('/api/uploaded/' + encodeURIComponent(name), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: on }) })
+    .then(function(r){ if (!r.ok) throw 0; if (on) ticks[name] = new Date().toISOString(); else delete ticks[name]; }); }
+  var DATA = null;
+  function render(){
+    var d = DATA.d, c = DATA.c, items = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }); list.textContent = '';
     if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No showreels yet.')); return; }
+    // to post first (by date), then the uploaded ones (newest upload first)
+    items.sort(function(x, y){ var ux = !!ticks[x.name], uy = !!ticks[y.name]; if (ux !== uy) return ux ? 1 : -1;
+      if (ux) return ticks[x.name] < ticks[y.name] ? 1 : -1; var px = (c[x.name] || {}).postOn || '9999', py = (c[y.name] || {}).postOn || '9999'; return px < py ? -1 : px > py ? 1 : 0; });
     items.forEach(function(s){
-      var card = el('article', 'reel'), v = document.createElement('video');
+      var meta = c[s.name] || {}, up = ticks[s.name];
+      var card = el('article', 'reel' + (up ? ' posted' : '')), v = document.createElement('video');
       v.src = s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover;
       v.setAttribute('aria-label', 'Showreel ' + s.name);
-      var b = el('div', 'body'); b.appendChild(el('div', 'name', s.name.replace(/^showreel-/, 'Showreel ')));
-      b.appendChild(el('div', 'meta', new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size)));
-      var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video');
-      copy.type = 'button'; copy.disabled = true; dl.type = 'button';
+      var b = el('div', 'body');
+      b.appendChild(el('div', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) + (meta.postOn ? ' · planned ' + nice(meta.postOn) : '') : when(meta.postOn)));
+      b.appendChild(el('div', 'name', s.name.replace(/^showreel-/, 'Showreel ')));
+      b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size)));
+      var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), tick = el('button', 'btn g tick' + (up ? ' on' : ''), up ? 'Uploaded ✓' : 'Mark uploaded');
+      copy.type = 'button'; copy.disabled = true; dl.type = 'button'; tick.type = 'button'; tick.disabled = !trackOk; if (!trackOk) tick.title = 'Upload tracking is unavailable right now';
       dl.addEventListener('click', function(){ save(s, dl); });
+      tick.addEventListener('click', function(){ tick.disabled = true; mark(s.name, !up).then(render, function(){ tick.disabled = false; tick.textContent = 'Try again'; }); });
       copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
-      row.appendChild(copy); row.appendChild(dl);
-      // the caption comes with the reel (NAME.json in the release); captions.json (edited in the repo) wins, so a caption can be fixed after the render
-      caps.then(function(c){ return c[s.name] || (s.info ? fetch(s.info, { credentials: 'same-origin' }).then(function(r){ return r.json(); }) : null); }).then(function(j){ if (j && j.caption) { cap.textContent = postText(j); b.insertBefore(cap, row); copy.disabled = false; } }).catch(function(){});
+      row.appendChild(copy); row.appendChild(dl); row.appendChild(tick);
+      // the caption comes with the reel (NAME.json in the release); fields in captions.json (edited in the repo) win, so a caption can be fixed after the render
+      (s.info ? fetch(s.info, { credentials: 'same-origin' }).then(function(r){ return r.json(); }).catch(function(){ return {}; }) : Promise.resolve({})).then(function(j){
+        var m = Object.assign({}, j, meta); if (m.caption) { cap.textContent = postText(m); b.insertBefore(cap, row); copy.disabled = false; } });
       b.appendChild(row); card.appendChild(v); card.appendChild(b); list.appendChild(card);
     });
-    });
-  }).catch(function(){ list.textContent = ''; list.appendChild(el('p', 'empty', 'Could not load the list right now.')); });
+  }
+  Promise.all([fetch('/api/showreels', { credentials: 'same-origin' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){ DATA = { d: r[0], c: r[1] }; render(); })
+    .catch(function(){ list.textContent = ''; list.appendChild(el('p', 'empty', 'Could not load the list right now.')); });
 })();
 </script>
 </body>

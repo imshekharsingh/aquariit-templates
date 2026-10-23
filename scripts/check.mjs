@@ -58,6 +58,8 @@ if (m) {
 // 4. post text: whatever the owner copies has a caption, 6+ keywords and exactly 5 hashtags (Instagram's limit)
 const postText = (j, label) => {
   if (!j || j.hidden) return;
+  if (j.postOn !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(j.postOn)) err(`${label}: postOn must be YYYY-MM-DD (IST)`);
+  if (j.caption === undefined && !j.keywords && !j.hashtags) return;   // schedule-only entry; the caption comes from the render's json
   if (!j.caption || !String(j.caption).trim()) err(`${label}: caption is empty`);
   if (!Array.isArray(j.keywords) || j.keywords.length < 6) err(`${label}: needs at least 6 keywords (the first 6 go into the post text)`);
   const tags = Array.isArray(j.hashtags) ? j.hashtags : [];
