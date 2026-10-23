@@ -14,11 +14,15 @@
    soft shadow on the app. Every frame is a pure function of t (window.seek). One typeface: Hanken Grotesk. */
 *{margin:0}html,body{width:540px;height:960px;overflow:hidden;background:#140f1a}
 canvas{position:absolute;left:0;top:0;width:540px;height:960px}
+#hook{position:absolute;left:30px;right:30px;top:142px;height:110px;overflow:hidden;z-index:5}
+#hook p{font:800 40px/1.04 'Hanken Grotesk',system-ui,sans-serif;letter-spacing:-.03em;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.55)}
+#hook b{color:#ffb38a}
 </style>
 </head>
 <body>
 <canvas id="gl"></canvas>
 <canvas id="ui"></canvas>
+<div id="hook"><p>This glass is pure code.<br><b>No 3D app.</b></p></div>
 <script>
 (function(){
   var W = 540, H = 960, S = 2, PW = W * S, PH = H * S;   // CSS units and the 2x pixel grid
@@ -48,8 +52,9 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
   function music(t, lt){
     var g = a.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1d1426'); g.addColorStop(1, '#0d0a12'); a.fillStyle = g; a.fillRect(0, 0, W, H);
     blob(270, 380, 420, 'rgba(255,106,43,.16)'); blob(420, 260, 300, 'rgba(224,57,143,.12)');
+    a.globalAlpha = P(lt, 4.6, 5.0);   // the header waits until the hook line has left
     a.fillStyle = 'rgba(244,239,230,.55)'; a.font = '600 13px ' + F; a.letterSpacing = '2px'; a.fillText('NOW PLAYING', 30, 128); a.letterSpacing = '0px';
-    a.font = '500 13px ' + F; a.textAlign = 'right'; a.fillText('Tidepool', 510, 128); a.textAlign = 'left';
+    a.font = '500 13px ' + F; a.textAlign = 'right'; a.fillText('Tidepool', 510, 128); a.textAlign = 'left'; a.globalAlpha = 1;
     var as = mix(1.08, 1, out(P(lt, 0, 1))); a.save(); a.translate(270, 390); a.scale(as, as); a.translate(-270, -390); art(30, 150, 480, 480, t, 30); a.restore();
     a.save(); a.beginPath(); a.rect(0, 640, W, 120); a.clip();
     a.fillStyle = '#f4efe6'; a.font = '800 44px ' + F; a.fillText('Low Tide', 30, 690 + (1 - out(P(lt, .25, .85))) * 60);
@@ -225,6 +230,7 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     return { ang: mix(A[0], B[0], kk) + .25 * Math.sin(t * .5), col: [0, 1, 2].map(function(j){ return mix(A[1][j], B[1][j], kk); }), refr: mix(A[2], B[2], kk), sh: mix(A[3], B[3], kk), fr: mix(mix(A[4], B[4], kk), .7, ph.inside * (1 - kk)), fl: mix(mix(A[5], B[5], kk), .3, ph.inside * (1 - kk)) }; }   // the portal is clear glass so the next app reads through it
   function seek(t){
     t = cl(t, 0, 17);
+    var hk = (1 - io(P(t, 1.7, 2.1))) + io(P(t, 16.5, 16.95)); document.getElementById('hook').firstChild.style.transform = 'translateY(' + (t < 8 ? -(1 - hk) * 115 : (1 - hk) * 115) + '%)';   // the hook (audit 23 Oct)
     var ph = phase(t); drawWorld(aA, ph.A, t); if (ph.B !== ph.A) drawWorld(aB, ph.B, t);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, txB); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ph.B !== ph.A ? appB : app); gl.generateMipmap(gl.TEXTURE_2D);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tx); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, app); gl.generateMipmap(gl.TEXTURE_2D);
