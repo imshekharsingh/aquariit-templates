@@ -69,7 +69,7 @@ jobs:
         run: |
           grep -q '"k":"voice"' out/*.cues.json || exit 0
           sudo apt-get install -y --no-install-recommends espeak-ng
-          pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
           pip install kokoro==0.9.4 soundfile==0.12.1
       - name: Sound
         # every sound comes from the scene's cues (scripts/showreel/sound.py), levelled to -14 LUFS like the reels that hold attention
