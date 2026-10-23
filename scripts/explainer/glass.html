@@ -14,15 +14,11 @@
    soft shadow on the app. Every frame is a pure function of t (window.seek). One typeface: Hanken Grotesk. */
 *{margin:0}html,body{width:540px;height:960px;overflow:hidden;background:#140f1a}
 canvas{position:absolute;left:0;top:0;width:540px;height:960px}
-#hook{position:absolute;left:30px;right:30px;top:142px;height:110px;overflow:hidden;z-index:5}
-#hook p{font:800 40px/1.04 'Hanken Grotesk',system-ui,sans-serif;letter-spacing:-.03em;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.55)}
-#hook b{color:#ffb38a}
 </style>
 </head>
 <body>
 <canvas id="gl"></canvas>
 <canvas id="ui"></canvas>
-<div id="hook"><p>This glass is pure code.<br><b>No 3D app.</b></p></div>
 <script>
 (function(){
   var W = 540, H = 960, S = 2, PW = W * S, PH = H * S;   // CSS units and the 2x pixel grid
@@ -47,12 +43,24 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
       a.fillStyle = 'rgba(255,238,214,.9)'; a.beginPath(); a.arc(x + w * .72, y + h * .2, w * .07, 0, 7); a.fill(); }
     a.restore();
   }
+  // the hook (study 23 Oct: the hook is the shot): the question is drawn into the app itself, so the glass rises through it and bends it,
+  // then the first app appears inside the glass and floods out over the question
+  function nightBg(){ var g = a.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1d1426'); g.addColorStop(1, '#0d0a12'); a.fillStyle = g; a.fillRect(0, 0, W, H);
+    blob(270, 380, 420, 'rgba(255,106,43,.16)'); blob(420, 260, 300, 'rgba(224,57,143,.12)'); }
+  var HQ = [['Is this', 96, 300, -.15, '#f4efe6'], ['glass', 156, 446, .12, '#f4efe6'], ['real?', 156, 596, .34, '#ffb38a']];
+  function hookW(t){
+    nightBg();
+    HQ.forEach(function(q){ var k = spr(t - q[3], 12), y = q[2] + (1 - k) * q[1] * .9;
+      a.save(); a.beginPath(); a.rect(0, q[2] - q[1] * .95, W, q[1] * 1.15); a.clip();
+      a.fillStyle = q[4]; a.font = '800 ' + q[1] + 'px ' + F; a.letterSpacing = (-.045 * q[1] + 10 * (1 - Math.min(1, k))) + 'px'; a.fillText(q[0], 26, y); a.letterSpacing = '0px'; a.restore(); });
+    var tk = out(P(t, .85, 1.3)); a.globalAlpha = tk; a.fillStyle = 'rgba(244,239,230,.62)'; a.font = '700 14px ' + F; a.letterSpacing = mix(9, 4, tk) + 'px';
+    a.fillText('LIQUID GLASS · IN 18 SECONDS', 32, 652); a.letterSpacing = '0px'; a.globalAlpha = 1;
+  }
   // every world takes (t, lt): t drives the ambient motion, lt (seconds since the world began to appear) drives its entrance
   var spr2 = function(x){ return x <= 0 ? 0 : spr(x, 10); };
   function music(t, lt){
-    var g = a.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1d1426'); g.addColorStop(1, '#0d0a12'); a.fillStyle = g; a.fillRect(0, 0, W, H);
-    blob(270, 380, 420, 'rgba(255,106,43,.16)'); blob(420, 260, 300, 'rgba(224,57,143,.12)');
-    a.globalAlpha = P(lt, 4.6, 5.0);   // the header waits until the hook line has left
+    nightBg();
+    a.globalAlpha = P(lt, 1.1, 1.5);   // the header arrives once the flood has passed
     a.fillStyle = 'rgba(244,239,230,.55)'; a.font = '600 13px ' + F; a.letterSpacing = '2px'; a.fillText('NOW PLAYING', 30, 128); a.letterSpacing = '0px';
     a.font = '500 13px ' + F; a.textAlign = 'right'; a.fillText('Tidepool', 510, 128); a.textAlign = 'left'; a.globalAlpha = 1;
     var as = mix(1.08, 1, out(P(lt, 0, 1))); a.save(); a.translate(270, 390); a.scale(as, as); a.translate(-270, -390); art(30, 150, 480, 480, t, 30); a.restore();
@@ -120,8 +128,10 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
       a.textAlign = 'right'; a.fillStyle = r[1][0] === '+' ? '#7dffb6' : '#e9fff3'; a.fillText(r[1], 510, y); a.textAlign = 'left'; a.restore(); });
   }
   // the glass is the transition: before each cut the next world appears inside the glass (portal), then floods out from the glass shape
-  var WORLDS = [music, wallet, weather, map, music], CUT = [3.8, 6.6, 9.8, 15.4], PRE = .8, REV = [-.2, .45];
-  var START = [-2.4, CUT[0] - PRE, CUT[1] - PRE, CUT[2] - PRE, CUT[3] - PRE];   // when each world begins to appear (lt = 0); world 0 is already in place at frame 0
+  // v4: the hook comes first, so everything after it runs OFF seconds later than v3
+  var OFF = 1.6, DUR = 18.6;
+  var WORLDS = [hookW, music, wallet, weather, map, music], CUT = [2.1, 3.8 + OFF, 6.6 + OFF, 9.8 + OFF, 15.4 + OFF], PRE = .8, REV = [-.2, .45];
+  var START = [-10].concat(CUT.map(function(c){ return c - PRE; }));   // when each world begins to appear (lt = 0)
   function phase(t){   // which worlds are on screen, how much of B shows inside the glass, and how far the flood has spread
     for (var i = 0; i < CUT.length; i++) { var c = CUT[i];
       if (t >= c - PRE && t < c + REV[1]) return { A: i, B: i + 1, inside: P(t, c - PRE, c - PRE + .35), reveal: t < c + REV[0] ? -1 : io(P(t, c + REV[0], c + REV[1])) * 1300 }; }
@@ -129,7 +139,9 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     return { A: w, B: w, inside: 0, reveal: -1 };
   }
   var appB = document.createElement('canvas'); appB.width = PW; appB.height = PH; var aA = a, aB = appB.getContext('2d');
-  function drawWorld(ctx, w, t){ a = ctx; a.setTransform(S, 0, 0, S, 0, 0); a.save(); WORLDS[w](t, w === 4 && t < 1 ? t + 2.4 : t - START[w]); a.restore(); }
+  function drawWorld(ctx, w, t){ a = ctx; a.setTransform(S, 0, 0, S, 0, 0); a.save(); WORLDS[w](t, t - START[w]);
+    if (w === 5 && t > DUR - .6) { a.globalAlpha = io(P(t, DUR - .6, DUR - .1)); nightBg(); a.globalAlpha = 1; }   // the last app dims to the hook's bare ground: the loop
+    a.restore(); }
   function worldAt(t){ return phase(t).A; }
   // ---------- WebGL2: refraction, frost, light, shadow ----------
   var gc = document.getElementById('gl'); gc.width = PW; gc.height = PH;
@@ -198,9 +210,12 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
   // ---------- the choreography ----------
   // key poses: [time, main shape (cx, cy, half w, half h, radius), drop 1 (cx, cy, r), drop 2 (cx, cy, r)]; between poses the glass eases (io),
   // and the drops sit inside the main shape (radius 8) until they split off, so the smooth union reads as liquid.
-  var POSE = [
+  var POSE0 = [
     [0,    [270, 1040, 170, 40, 40], [270, 1040, 8], [270, 1040, 8]],
-    [1.0,  [270, 560, 170, 40, 40],  [270, 560, 8],  [270, 560, 8]],     // music at night: the player bar rises
+    [1.15, [270, 392, 226, 66, 44],  [270, 392, 8],  [270, 392, 8]],     // the hook: the bar rises through the question and settles over "glass"
+    [1.75, [270, 392, 226, 66, 44],  [270, 392, 8],  [270, 392, 8]],     // the music appears inside it, then floods out
+    [2.9,  [270, 560, 170, 40, 40],  [270, 560, 8],  [270, 560, 8]]];    // music at night: it becomes the player bar
+  var POSE = [
     [1.5,  [270, 560, 170, 40, 40],  [270, 560, 8],  [270, 560, 8]],
     [2.6,  [270, 476, 232, 128, 44], [270, 476, 8],  [270, 476, 8]],     // and opens into a card, which becomes the portal to the wallet
     [3.7,  [270, 476, 232, 128, 44], [270, 476, 8],  [270, 476, 8]],
@@ -215,22 +230,23 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     [16.0, [270, 560, 170, 40, 40],  [270, 560, 8],  [270, 560, 8]],     // back into the bar, over the art (not over the title)
     [16.9, [270, 1040, 170, 40, 40], [270, 1040, 8], [270, 1040, 8]],    // and it sinks out: frame 0 has it rising again
     [17,   [270, 1040, 170, 40, 40], [270, 1040, 8], [270, 1040, 8]]];
+  POSE = POSE0.concat(POSE.map(function(p){ return [p[0] + OFF].concat(p.slice(1)); }));
   function pose(t){
     var i = 0; while (i < POSE.length - 2 && t > POSE[i + 1][0]) i++;
     var A = POSE[i], B = POSE[i + 1], k = io(P(t, A[0], B[0])), L = function(x, y){ return x.map(function(v, j){ return mix(v, y[j], k); }); };
     return { m: L(A[1], B[1]), d1: L(A[2], B[2]), d2: L(A[3], B[3]) };
   }
   // camera [focus x, focus y, zoom]: wide, a slow push at noon, a macro on the lens edge over the map, a pull-back on the wallet
-  var CAM = [[0, 270, 480, 1], [3.6, 270, 480, 1], [4.2, 270, 620, 1.22], [6.2, 270, 480, 1], [6.8, 270, 480, 1], [9.5, 270, 520, 1.08], [10.2, 270, 480, 1], [10.9, 270, 480, 1], [11.8, 392, 452, 2.35], [13.2, 392, 452, 2.35], [14.0, 270, 480, 1], [17, 270, 480, 1]];
+  var CAM = [[1.6, 270, 480, 1], [3.6, 270, 480, 1], [4.2, 270, 620, 1.22], [6.2, 270, 480, 1], [6.8, 270, 480, 1], [9.5, 270, 520, 1.08], [10.2, 270, 480, 1], [10.9, 270, 480, 1], [11.8, 392, 452, 2.35], [13.2, 392, 452, 2.35], [14.0, 270, 480, 1], [17, 270, 480, 1]].map(function(c){ return [c[0] + OFF].concat(c.slice(1)); });
+  CAM = [[0, 270, 470, 1.07]].concat(CAM);   // the hook: a slow pull-back while the words land
   function camAt(t){ var i = 0; while (i < CAM.length - 2 && t > CAM[i + 1][0]) i++; var A = CAM[i], B = CAM[i + 1], k = io(P(t, A[0], B[0])); return [mix(A[1], B[1], k), mix(A[2], B[2], k), mix(A[3], B[3], k)]; }
   // light per world: angle, colour, refraction strength, shadow strength (night warm and soft, noon white and hard, map cool, wallet green-gold)
   // [angle, colour, refraction px, shadow, frost px, frost blur level]
-  var LIGHT = [[-2.3, [1, .86, .72], 70, .38, 3.2, 2.6], [-.6, [.9, 1, .82], 70, .45, 2.4, 2.0], [-1.1, [1, 1, 1], 80, .5, 1.2, .8], [-2.0, [.95, .98, 1], 110, .3, .6, .2], [-2.3, [1, .86, .72], 70, .38, 3.2, 2.6]];
+  var LIGHT = [[-2.1, [1, .9, .8], 96, .3, .5, .25], [-2.3, [1, .86, .72], 70, .38, 3.2, 2.6], [-.6, [.9, 1, .82], 70, .45, 2.4, 2.0], [-1.1, [1, 1, 1], 80, .5, 1.2, .8], [-2.0, [.95, .98, 1], 110, .3, .6, .2], [-2.3, [1, .86, .72], 70, .38, 3.2, 2.6]];
   function lightAt(t){ var ph = phase(t), kk = ph.reveal < 0 ? 0 : ph.reveal / 1300, A = LIGHT[ph.A], B = LIGHT[ph.B];
     return { ang: mix(A[0], B[0], kk) + .25 * Math.sin(t * .5), col: [0, 1, 2].map(function(j){ return mix(A[1][j], B[1][j], kk); }), refr: mix(A[2], B[2], kk), sh: mix(A[3], B[3], kk), fr: mix(mix(A[4], B[4], kk), .7, ph.inside * (1 - kk)), fl: mix(mix(A[5], B[5], kk), .3, ph.inside * (1 - kk)) }; }   // the portal is clear glass so the next app reads through it
   function seek(t){
-    t = cl(t, 0, 17);
-    var hk = (1 - io(P(t, 1.7, 2.1))) + io(P(t, 16.5, 16.95)); document.getElementById('hook').firstChild.style.transform = 'translateY(' + (t < 8 ? -(1 - hk) * 125 : (1 - hk) * 125) + 'px)';   // px, so no sliver of the line stays in view   // the hook (audit 23 Oct)
+    t = cl(t, 0, DUR);
     var ph = phase(t); drawWorld(aA, ph.A, t); if (ph.B !== ph.A) drawWorld(aB, ph.B, t);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, txB); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ph.B !== ph.A ? appB : app); gl.generateMipmap(gl.TEXTURE_2D);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tx); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, app); gl.generateMipmap(gl.TEXTURE_2D);
@@ -246,8 +262,8 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     u.setTransform(1, 0, 0, 1, 0, 0); u.clearRect(0, 0, PW, PH);
     u.fillStyle = 'rgba(0,0,0,0.004)'; u.fillRect(0, 0, 1, 1);   // never leave this layer empty: Chromium can show a stale copy of an emptied canvas on alternate frames (stray glyphs)
     u.setTransform(S * c[2], 0, 0, S * c[2], S * (270 - c[0] * c[2]), S * (480 - c[1] * c[2]));
-    var win = function(a0, a1, b0, b1){ return P(t, a0, a1) * (1 - P(t, b0, b1)); }, x = m[0], y = m[1];
-    var bar = win(.7, 1.1, 1.6, 1.9);
+    var win = function(a0, a1, b0, b1){ return P(t - OFF, a0, a1) * (1 - P(t - OFF, b0, b1)); }, x = m[0], y = m[1];   // glyph times are v3's
+    var bar = P(t, 2.75, 3.0) * (1 - P(t, 3.2, 3.5));
     if (bar > .02) { skip(x - 64, y, 20, -1, .92 * bar); play(x, y, 26, .92 * bar); skip(x + 64, y, 20, 1, .92 * bar); }
     var card = win(2.5, 2.8, 2.85, 3.1);
     if (card > .02) { u.fillStyle = 'rgba(255,255,255,' + .92 * card + ')'; u.font = "700 22px 'Hanken Grotesk'"; u.fillText('Low Tide', x - 204, y - 34);
@@ -260,11 +276,24 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
       u.beginPath(); u.moveTo(s.d1[0] - 12, s.d1[1]); u.lineTo(s.d1[0] + 12, s.d1[1]); u.moveTo(s.d1[0], s.d1[1] - 12); u.lineTo(s.d1[0], s.d1[1] + 12); u.stroke();
       u.fillStyle = 'rgba(255,255,255,' + .95 * dr + ')'; u.beginPath(); u.moveTo(s.d2[0], s.d2[1] - 12); u.lineTo(s.d2[0] + 9, s.d2[1] + 10); u.lineTo(s.d2[0], s.d2[1] + 5); u.lineTo(s.d2[0] - 9, s.d2[1] + 10); u.closePath(); u.fill(); }
     var dial = win(4.6, 4.9, 5.75, 5.95);
-    if (dial > .02) { var hold = P(t, 4.9, 5.5); u.strokeStyle = 'rgba(255,255,255,' + .25 * dial + ')'; u.lineWidth = 5; u.beginPath(); u.arc(x, y, 70, 0, 7); u.stroke();
+    if (dial > .02) { var hold = P(t - OFF, 4.9, 5.5); u.strokeStyle = 'rgba(255,255,255,' + .25 * dial + ')'; u.lineWidth = 5; u.beginPath(); u.arc(x, y, 70, 0, 7); u.stroke();
       u.strokeStyle = 'rgba(125,255,182,' + .95 * dial + ')'; u.lineCap = 'round'; u.beginPath(); u.arc(x, y, 70, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * io(hold)); u.stroke();
       u.fillStyle = 'rgba(255,255,255,' + .95 * dial + ')'; u.font = "800 22px 'Hanken Grotesk'"; u.textAlign = 'center'; u.fillText(hold < 1 ? 'Hold to pay' : 'Paid ✓', x, y + 8); u.textAlign = 'left'; }
   }
-  window.seek = seek; window.DURATION = 17;
+  // sound cues (scripts/showreel/sound.py): every sound is tied to something on screen
+  var Q = [{ t: 0, k: 'voice', text: 'Is this glass real?', speed: 1.05 }, { t: 0, k: 'hit', g: .45, p: -.4 },
+    { t: .05, k: 'pop', p: 0 }, { t: .3, k: 'pop', p: 3 }, { t: .52, k: 'hit', g: .8, p: .1 }, { t: .95, k: 'shimmer', g: .7 },
+    { t: 1.05, k: 'whoosh', d: 1.0, g: .7, p: -.2 }];   // the glass rising through the words
+  CUT.forEach(function(c, i){ Q.push({ t: c - PRE + .1, k: 'shimmer', g: .55, p: i * 2 }); Q.push({ t: c + .05, k: 'whoosh', d: .7, g: .9, p: -.3 + i * .15 }); Q.push({ t: c + .3, k: 'hit', g: .55, p: i * .1 }); });
+  Q.push({ t: 4.9 + OFF, k: 'riser', d: .6, g: .5, p: .4 }, { t: 5.5 + OFF, k: 'pop', p: 7, g: 1.1 });   // hold to pay, paid
+  for (var hi = 0; hi < 6; hi++) Q.push({ t: START[3] + .7 + hi * .09, k: 'tick', p: hi * 2, g: .8 });   // the hourly forecast pops in
+  Q.push({ t: START[4] + .55, k: 'pop', p: -2 }, { t: START[4] + .75, k: 'pop', p: 0 });   // map pins drop
+  Q.push({ t: 11.8 + OFF, k: 'riser', d: .9, g: .6, p: -.3 }, { t: 11.8 + OFF, k: 'boom', g: .7, p: .2 });   // the macro push
+  Q.push({ t: 14.2 + OFF, k: 'pop', p: 5 }, { t: 14.3 + OFF, k: 'pop', p: 9 });   // two drops split off
+  Q.push({ t: DUR - .15, k: 'whoosh', d: .8, g: .6, p: -.7 });   // the glass sinks: back to frame 0
+  // the bed: six bars of 3.1 s (the reel's length), downbeat on the first flood, so the bed loops with the picture
+  window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / 3.1, origin: CUT[0], chords: [[33, 57, 60, 64, 71], [29, 57, 60, 64, 69], [36, 55, 59, 62, 64], [31, 55, 59, 62, 64], [33, 57, 60, 64, 67], [28, 55, 59, 62, 67]] } };
+  window.seek = seek; window.DURATION = DUR;
   document.fonts.load("800 44px 'Hanken Grotesk'").then(function(){ return document.fonts.ready; }).then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 </script>
