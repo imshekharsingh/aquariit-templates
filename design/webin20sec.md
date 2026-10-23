@@ -36,6 +36,21 @@ Every reel should be something a designer saves for reference or sends to the pe
 - Motion with intent: springs, masks, variable-font axes, match cuts. Every move has a reason.
 - 15-20 s, payoff in the last 3 s, a seamless loop (the last frame leads into the first).
 - Text only where it carries the idea; key text clear of Instagram's UI (top 96 px, bottom 22%, the right-hand column).
+- Variation (owner, 23 Oct: "where's the variation?"): something big changes at least every ~3 s: the scene, the colour world, the scale
+  or the camera. One look held for 17 s is a still with motion, not a reel.
+
+## Self-review before the owner sees anything (owner, 23 Oct: "where's the accountability?")
+Claude reviews every draft as a critical creative director before sending it, and does not wait to be asked to improve it.
+1. Watch the stills at every beat and the GIF, then answer in writing:
+   - Does something big change at least every ~3 s (scene, colour, scale, camera)?
+   - Is frame 0 cover-quality and already moving? Would a stranger stop in the first second?
+   - Does it use the whole frame? Is key text clear of Instagram's UI?
+   - What is the one moment someone would screenshot or send? Is it strong enough, and does it land in the last 3 s?
+   - Is it premium (light, material, motion blur, type), or does it read as a demo?
+   - Is it clearly different from the last three reels (series, palette, motion, layout)?
+   - Does the loop close cleanly?
+2. Fix every "no" that is small before sending. Name anything bigger as the next improvement and say whether it was done.
+3. Every draft message to the owner includes "Self-review": what was checked, what was changed because of it, and what would still make it better.
 
 ## How a reel is made
 1. Scene: `scripts/explainer/<slug>.html` exposes `window.seek(t)`; every frame is a pure function of t (seeded randomness only).
@@ -63,3 +78,4 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 | 22 Oct | showreel-08-six-transitions | Six ways | Tinta paint studio; each page's circle is the next colour; zoom-through payoff loops to frame 0 |
 | 22 Oct | showreel-08-six-transitions v2 | Six ways | 17 s, transition every ~2.5 s, liquid wipe replaces push, motion between transitions, promise on screen from frame 0 |
 | 22 Oct | showreel-07-built-film | Built in 20 s | the film-look re-cut replaces the original (motion blur on the word drops, scroll and card open) |
+| 23 Oct | showreel-09-liquid-glass v2 | Material | four worlds on the beat (music night, wallet, weather noon, map macro), light and frost per world, payoff = macro lens + drop split |
