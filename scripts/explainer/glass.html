@@ -43,94 +43,115 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
       a.fillStyle = 'rgba(255,238,214,.9)'; a.beginPath(); a.arc(x + w * .72, y + h * .2, w * .07, 0, 7); a.fill(); }
     a.restore();
   }
-  function music(t){
+  // every world takes (t, lt): t drives the ambient motion, lt (seconds since the world began to appear) drives its entrance
+  var spr2 = function(x){ return x <= 0 ? 0 : spr(x, 10); };
+  function music(t, lt){
     var g = a.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1d1426'); g.addColorStop(1, '#0d0a12'); a.fillStyle = g; a.fillRect(0, 0, W, H);
     blob(270, 380, 420, 'rgba(255,106,43,.16)'); blob(420, 260, 300, 'rgba(224,57,143,.12)');
     a.fillStyle = 'rgba(244,239,230,.55)'; a.font = '600 13px ' + F; a.letterSpacing = '2px'; a.fillText('NOW PLAYING', 30, 128); a.letterSpacing = '0px';
     a.font = '500 13px ' + F; a.textAlign = 'right'; a.fillText('Tidepool', 510, 128); a.textAlign = 'left';
-    art(30, 150, 480, 480, t, 30);
-    a.fillStyle = '#f4efe6'; a.font = '800 44px ' + F; a.fillText('Low Tide', 30, 690);
-    a.fillStyle = 'rgba(244,239,230,.6)'; a.font = '500 19px ' + F; a.fillText('Mara Ilves · Saltwater Sessions', 30, 720);
-    var pr = ((t * .06) % 1); a.fillStyle = 'rgba(244,239,230,.18)'; a.fillRect(30, 746, 480, 4); a.fillStyle = '#f4efe6'; a.fillRect(30, 746, 480 * (.18 + pr * .3), 4);
+    var as = mix(1.08, 1, out(P(lt, 0, 1))); a.save(); a.translate(270, 390); a.scale(as, as); a.translate(-270, -390); art(30, 150, 480, 480, t, 30); a.restore();
+    a.save(); a.beginPath(); a.rect(0, 640, W, 120); a.clip();
+    a.fillStyle = '#f4efe6'; a.font = '800 44px ' + F; a.fillText('Low Tide', 30, 690 + (1 - out(P(lt, .25, .85))) * 60);
+    a.fillStyle = 'rgba(244,239,230,.6)'; a.font = '500 19px ' + F; a.fillText('Mara Ilves · Saltwater Sessions', 30, 720 + (1 - out(P(lt, .35, .95))) * 60); a.restore();
+    var pr = ((t * .06) % 1); a.fillStyle = 'rgba(244,239,230,.18)'; a.fillRect(30, 746, 480, 4); a.fillStyle = '#f4efe6'; a.fillRect(30, 746, 480 * (.18 + pr * .3) * out(P(lt, .4, 1.2)), 4);
     var off = -(t * 14) % 82;
     a.save(); a.beginPath(); a.rect(0, 770, W, H - 770); a.clip();
-    for (var i = 0; i < 9; i++) { var y = 790 + i * 82 + off, tr = TR[(i + Math.floor(t * 14 / 82)) % TR.length];
-      art(30, y, 58, 58, t + i * 2.1, 12); a.fillStyle = '#f4efe6'; a.font = '700 18px ' + F; a.fillText(tr[0], 104, y + 26);
-      a.fillStyle = 'rgba(244,239,230,.55)'; a.font = '500 15px ' + F; a.fillText(tr[1], 104, y + 48); a.textAlign = 'right'; a.fillText(tr[2], 510, y + 37); a.textAlign = 'left'; }
+    for (var i = 0; i < 9; i++) { var y = 790 + i * 82 + off, tr = TR[(i + Math.floor(t * 14 / 82)) % TR.length], dx = (1 - out(P(lt, .45 + i * .07, 1.05 + i * .07))) * 300;
+      a.save(); a.translate(dx, 0); art(30, y, 58, 58, t + i * 2.1, 12); a.fillStyle = '#f4efe6'; a.font = '700 18px ' + F; a.fillText(tr[0], 104, y + 26);
+      a.fillStyle = 'rgba(244,239,230,.55)'; a.font = '500 15px ' + F; a.fillText(tr[1], 104, y + 48); a.textAlign = 'right'; a.fillText(tr[2], 510, y + 37); a.textAlign = 'left'; a.restore(); }
     a.restore();
   }
-  function weather(t){   // noon: hard light, bright sky, big white type
+  function weather(t, lt){   // noon: the sun climbs, the temperature counts up, the forecast pops in hour by hour
     var g = a.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#2f8cff'); g.addColorStop(.6, '#8cc8ff'); g.addColorStop(1, '#e8f4ff'); a.fillStyle = g; a.fillRect(0, 0, W, H);
-    blob(400, 250, 260, 'rgba(255,250,214,.9)'); a.fillStyle = '#fffbe8'; a.beginPath(); a.arc(400, 250, 62, 0, 7); a.fill();
-    for (var c = 0; c < 4; c++) { var cx = ((c * 190 + t * 22) % 760) - 110, cy = 420 + c * 46; a.fillStyle = 'rgba(255,255,255,.85)';
+    var sy = 250 + (1 - out(P(lt, 0, 1.4))) * 160;
+    blob(400, sy, 260, 'rgba(255,250,214,.9)'); a.fillStyle = '#fffbe8'; a.beginPath(); a.arc(400, sy, 62, 0, 7); a.fill();
+    for (var c = 0; c < 4; c++) { var cx = ((c * 190 + t * 34) % 760) - 110, cy = 420 + c * 46; a.fillStyle = 'rgba(255,255,255,.85)';
       a.beginPath(); a.ellipse(cx, cy, 70, 22, 0, 0, 7); a.ellipse(cx + 40, cy - 14, 44, 24, 0, 0, 7); a.ellipse(cx - 36, cy - 6, 34, 18, 0, 0, 7); a.fill(); }
     a.fillStyle = 'rgba(255,255,255,.85)'; a.font = '600 13px ' + F; a.letterSpacing = '2px'; a.fillText('HARBOUR CITY · NOW', 30, 128); a.letterSpacing = '0px';
-    a.fillStyle = '#fff'; a.font = '800 190px ' + F; a.letterSpacing = '-8px'; a.fillText('24°', 22, 330); a.letterSpacing = '0px';
-    a.font = '600 22px ' + F; a.fillText('Clear · H 27°  L 18°', 30, 372);
+    a.fillStyle = '#fff'; a.font = '800 190px ' + F; a.letterSpacing = '-8px'; a.fillText(Math.round(24 * out(P(lt, .1, 1.1))) + '°', 22, 330); a.letterSpacing = '0px';
+    a.save(); a.beginPath(); a.rect(0, 340, W, 46); a.clip(); a.font = '600 22px ' + F; a.fillText('Clear · H 27°  L 18°', 30, 372 + (1 - out(P(lt, .5, 1.0))) * 40); a.restore();
     var hrs = ['Now', '15', '16', '17', '18', '19']; var tm = [24, 26, 25, 23, 21, 19];
-    for (var i = 0; i < 6; i++) { var x = 46 + i * 84; a.fillStyle = 'rgba(13,40,80,.85)'; a.font = '600 16px ' + F; a.textAlign = 'center'; a.fillText(hrs[i], x + 10, 668);
-      a.fillStyle = i < 4 ? '#ffd23d' : '#fff'; a.beginPath(); a.arc(x + 10, 700, 13, 0, 7); a.fill(); a.fillStyle = 'rgba(13,40,80,.9)'; a.font = '700 20px ' + F; a.fillText(tm[i] + '°', x + 10, 746); a.textAlign = 'left'; }
+    for (var i = 0; i < 6; i++) { var x = 46 + i * 84, k = spr2(lt - .55 - i * .09), bob = Math.sin(t * 2 + i) * 2;
+      a.save(); a.translate(x + 10, 706); a.scale(Math.max(0, k), Math.max(0, k)); a.translate(-(x + 10), -706);
+      a.fillStyle = 'rgba(13,40,80,.85)'; a.font = '600 16px ' + F; a.textAlign = 'center'; a.fillText(hrs[i], x + 10, 668);
+      a.fillStyle = i < 4 ? '#ffd23d' : '#fff'; a.beginPath(); a.arc(x + 10, 700 + bob, 13, 0, 7); a.fill(); a.fillStyle = 'rgba(13,40,80,.9)'; a.font = '700 20px ' + F; a.fillText(tm[i] + '°', x + 10, 746); a.textAlign = 'left'; a.restore(); }
     a.fillStyle = 'rgba(13,40,80,.55)'; a.font = '600 14px ' + F; a.fillText('UV 7 · Wind 12 km/h · Humidity 41%', 30, 800);
   }
-  function map(t){   // daytime map: fine lines that the glass lens magnifies
-    a.fillStyle = '#ece6d6'; a.fillRect(0, 0, W, H);
+  function map(t, lt){   // daytime map: drifts slowly, pins drop in, the route draws itself
+    a.save(); a.translate(-lt * 7, lt * 4);
+    a.fillStyle = '#ece6d6'; a.fillRect(-60, -60, W + 120, H + 120);
     a.fillStyle = '#c4dca8'; a.beginPath(); a.moveTo(40, 200); a.lineTo(220, 170); a.lineTo(260, 330); a.lineTo(80, 360); a.closePath(); a.fill();
-    a.beginPath(); a.moveTo(330, 620); a.lineTo(520, 600); a.lineTo(540, 780); a.lineTo(360, 800); a.closePath(); a.fill();
-    a.strokeStyle = '#8fcfd1'; a.lineWidth = 46; a.lineCap = 'round'; a.beginPath(); a.moveTo(-40, 520); a.bezierCurveTo(140, 430, 260, 640, 600, 470); a.stroke();
+    a.beginPath(); a.moveTo(330, 620); a.lineTo(520, 600); a.lineTo(560, 780); a.lineTo(360, 800); a.closePath(); a.fill();
+    a.strokeStyle = '#8fcfd1'; a.lineWidth = 46; a.lineCap = 'round'; a.beginPath(); a.moveTo(-80, 520); a.bezierCurveTo(140, 430, 260, 640, 640, 470); a.stroke();
     a.strokeStyle = '#fff'; a.lineCap = 'butt';
-    for (var i = -2; i < 14; i++) { a.lineWidth = i % 3 ? 5 : 10; a.beginPath(); a.moveTo(i * 52 + 10, 0); a.lineTo(i * 52 - 120, H); a.stroke(); }
-    for (var j = 0; j < 20; j++) { a.lineWidth = j % 4 ? 4 : 9; a.beginPath(); a.moveTo(0, j * 56 + 20); a.lineTo(W, j * 56 - 30); a.stroke(); }
+    for (var i = -3; i < 15; i++) { a.lineWidth = i % 3 ? 5 : 10; a.beginPath(); a.moveTo(i * 52 + 10, -60); a.lineTo(i * 52 - 140, H + 60); a.stroke(); }
+    for (var j = -1; j < 21; j++) { a.lineWidth = j % 4 ? 4 : 9; a.beginPath(); a.moveTo(-60, j * 56 + 20); a.lineTo(W + 60, j * 56 - 30); a.stroke(); }
     a.fillStyle = 'rgba(60,60,60,.7)'; a.font = '600 11px ' + F; ['Harbour St', 'Kiln Rd', 'Mill Lane', 'Rope Walk', 'Quay Ave'].forEach(function(n, k){ a.fillText(n, 40 + (k * 97) % 420, 250 + k * 117); });
-    var rk = P(t % 17, 10.2, 13.0); a.strokeStyle = '#ff5a1f'; a.lineWidth = 7; a.lineJoin = 'round'; a.setLineDash([]); a.beginPath(); a.moveTo(120, 760);
+    var rk = P(lt, 1.0, 3.8); a.strokeStyle = '#ff5a1f'; a.lineWidth = 7; a.lineJoin = 'round'; a.beginPath(); a.moveTo(120, 760);
     var pts = [[120, 760], [180, 610], [260, 560], [300, 470], [380, 420], [430, 300]], n = 1 + rk * (pts.length - 1);
     for (var q = 1; q < n; q++) { var f = Math.min(1, n - q), A = pts[q - 1], B = pts[q]; a.lineTo(mix(A[0], B[0], f), mix(A[1], B[1], f)); } a.stroke();
-    a.fillStyle = '#ff5a1f'; a.beginPath(); a.arc(430, 300, 13, 0, 7); a.fill(); a.fillStyle = '#fff'; a.beginPath(); a.arc(430, 300, 5, 0, 7); a.fill();
-    a.fillStyle = 'rgba(20,20,20,.85)'; a.font = '700 15px ' + F; a.textAlign = 'right'; a.fillText('8 min walk', 412, 288); a.textAlign = 'left';
+    [[120, 760, .3], [430, 300, .5]].forEach(function(pn){ var k = spr2(lt - pn[2]), y = pn[1] - (1 - k) * 90;
+      a.fillStyle = 'rgba(0,0,0,' + .18 * Math.min(1, k) + ')'; a.beginPath(); a.ellipse(pn[0], pn[1] + 4, 12, 4, 0, 0, 7); a.fill();
+      a.fillStyle = '#ff5a1f'; a.beginPath(); a.arc(pn[0], y, 13, 0, 7); a.fill(); a.fillStyle = '#fff'; a.beginPath(); a.arc(pn[0], y, 5, 0, 7); a.fill(); });
+    a.save(); a.beginPath(); a.rect(300, 266, 120, 30); a.clip(); a.fillStyle = 'rgba(20,20,20,.85)'; a.font = '700 15px ' + F; a.textAlign = 'right'; a.fillText('8 min walk', 412, 288 + (1 - out(P(lt, 3.6, 4.1))) * 30); a.textAlign = 'left'; a.restore();
+    a.restore();
   }
-  function wallet(t){   // night green: a card, a balance, a list
+  function wallet(t, lt){   // night green: the card flies in, the balance counts up, the history slides in
     var g = a.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0f3a2e'); g.addColorStop(1, '#06140f'); a.fillStyle = g; a.fillRect(0, 0, W, H);
     blob(150, 300, 360, 'rgba(120,255,190,.12)');
-    a.save(); a.translate(270, 300); a.rotate(-.06); var cg = a.createLinearGradient(-220, -130, 220, 130); cg.addColorStop(0, '#c9f2d8'); cg.addColorStop(.5, '#6fd3a4'); cg.addColorStop(1, '#2c8f68');
+    var ck = spr2(lt - .05);
+    a.save(); a.translate(270, 300 + (1 - ck) * 260); a.rotate(mix(-.42, -.06, ck) + .015 * Math.sin(t * 1.3)); var cg = a.createLinearGradient(-220, -130, 220, 130); cg.addColorStop(0, '#c9f2d8'); cg.addColorStop(.5, '#6fd3a4'); cg.addColorStop(1, '#2c8f68');
     a.fillStyle = cg; a.beginPath(); a.roundRect(-220, -135, 440, 270, 26); a.fill();
-    a.strokeStyle = 'rgba(255,255,255,.35)'; a.lineWidth = 1.5; for (var k = 0; k < 9; k++) { a.beginPath(); a.arc(140, -40, 30 + k * 16, 0, 7); a.stroke(); }
+    var sh = ((t * .35) % 1.6) - .3; var hg = a.createLinearGradient(-220 + sh * 440 - 80, 0, -220 + sh * 440 + 80, 0); hg.addColorStop(0, 'rgba(255,255,255,0)'); hg.addColorStop(.5, 'rgba(255,255,255,.35)'); hg.addColorStop(1, 'rgba(255,255,255,0)');
+    a.save(); a.clip(); a.fillStyle = hg; a.fillRect(-220, -135, 440, 270); a.restore();
+    a.strokeStyle = 'rgba(255,255,255,.35)'; a.lineWidth = 1.5; for (var k = 0; k < 9; k++) { a.beginPath(); a.arc(140, -40, 30 + k * 16 + 4 * Math.sin(t * 2 - k * .5), 0, 7); a.stroke(); }
     a.fillStyle = 'rgba(8,40,30,.85)'; a.font = '700 22px ' + F; a.fillText('Fernpay', -190, -88); a.font = '600 24px ' + F; a.fillText('•••• •••• •••• 4821', -190, 70); a.font = '500 15px ' + F; a.fillText('M. ILVES', -190, 105); a.restore();
     a.fillStyle = 'rgba(220,255,236,.6)'; a.font = '600 13px ' + F; a.letterSpacing = '2px'; a.fillText('BALANCE', 30, 500); a.letterSpacing = '0px';
-    a.fillStyle = '#e9fff3'; a.font = '800 64px ' + F; a.fillText('$2,480.50', 30, 560);
+    var bal = 2480.5 * out(P(lt, .3, 1.4)); a.fillStyle = '#e9fff3'; a.font = '800 64px ' + F; a.fillText('$' + bal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), 30, 560);
     var rows = [['Corner Bakery', '−$6.40'], ['Ferry pass', '−$32.00'], ['Refund · Kiln Co.', '+$58.20'], ['Night Market', '−$14.75']];
-    rows.forEach(function(r, i){ var y = 760 + i * 62; a.fillStyle = 'rgba(220,255,236,.12)'; a.beginPath(); a.arc(52, y - 6, 20, 0, 7); a.fill(); a.fillStyle = '#e9fff3'; a.font = '700 18px ' + F; a.fillText(r[0], 86, y);
-      a.textAlign = 'right'; a.fillStyle = r[1][0] === '+' ? '#7dffb6' : '#e9fff3'; a.fillText(r[1], 510, y); a.textAlign = 'left'; });
+    rows.forEach(function(r, i){ var y = 760 + i * 62, dx = (1 - out(P(lt, .5 + i * .1, 1.1 + i * .1))) * 320; a.save(); a.translate(dx, 0);
+      a.fillStyle = 'rgba(220,255,236,.12)'; a.beginPath(); a.arc(52, y - 6, 20, 0, 7); a.fill(); a.fillStyle = '#e9fff3'; a.font = '700 18px ' + F; a.fillText(r[0], 86, y);
+      a.textAlign = 'right'; a.fillStyle = r[1][0] === '+' ? '#7dffb6' : '#e9fff3'; a.fillText(r[1], 510, y); a.textAlign = 'left'; a.restore(); });
   }
-  var WORLDS = [music, wallet, weather, map, music], CUT = [3.4, 6.6, 9.8, 15.4];
-  function worldAt(t){ var w = 0; for (var i = 0; i < CUT.length; i++) if (t >= CUT[i] - .25) w = i + 1; return w; }
-  function drawApp(t){
-    a.setTransform(S, 0, 0, S, 0, 0);
-    // between worlds the app swipes sideways (the glass rides across the cut)
-    var w = 0, k = 0; for (var i = 0; i < CUT.length; i++) { if (t >= CUT[i] - .25) { w = i; k = io(P(t, CUT[i] - .25, CUT[i] + .3)); } }
-    if (t < CUT[0] - .25) { WORLDS[0](t); return; }
-    if (k >= 1) { a.save(); WORLDS[w + 1](t); a.restore(); return; }
-    a.save(); a.translate(-k * W, 0); WORLDS[w](t); a.restore();
-    a.save(); a.translate((1 - k) * W, 0); WORLDS[w + 1](t); a.restore();
+  // the glass is the transition: before each cut the next world appears inside the glass (portal), then floods out from the glass shape
+  var WORLDS = [music, wallet, weather, map, music], CUT = [3.8, 6.6, 9.8, 15.4], PRE = .8, REV = [-.2, .45];
+  var START = [-2.4, CUT[0] - PRE, CUT[1] - PRE, CUT[2] - PRE, CUT[3] - PRE];   // when each world begins to appear (lt = 0); world 0 is already in place at frame 0
+  function phase(t){   // which worlds are on screen, how much of B shows inside the glass, and how far the flood has spread
+    for (var i = 0; i < CUT.length; i++) { var c = CUT[i];
+      if (t >= c - PRE && t < c + REV[1]) return { A: i, B: i + 1, inside: P(t, c - PRE, c - PRE + .35), reveal: t < c + REV[0] ? -1 : io(P(t, c + REV[0], c + REV[1])) * 1300 }; }
+    var w = 0; for (var j = 0; j < CUT.length; j++) if (t >= CUT[j] + REV[1]) w = j + 1;
+    return { A: w, B: w, inside: 0, reveal: -1 };
   }
+  var appB = document.createElement('canvas'); appB.width = PW; appB.height = PH; var aA = a, aB = appB.getContext('2d');
+  function drawWorld(ctx, w, t){ a = ctx; a.setTransform(S, 0, 0, S, 0, 0); a.save(); WORLDS[w](t, w === 4 && t < 1 ? t + 2.4 : t - START[w]); a.restore(); }
+  function worldAt(t){ return phase(t).A; }
   // ---------- WebGL2: refraction, frost, light, shadow ----------
   var gc = document.getElementById('gl'); gc.width = PW; gc.height = PH;
   var gl = gc.getContext('webgl2', { preserveDrawingBuffer: true, antialias: false });
   var VS = '#version 300 es\nin vec2 p; out vec2 v; void main(){ v = p * .5 + .5; gl_Position = vec4(p, 0., 1.); }';
   var FS = [
     '#version 300 es', 'precision highp float;', 'in vec2 v; out vec4 o;',
-    'uniform sampler2D tex; uniform vec2 res; uniform vec4 R[3]; uniform vec3 Rr; uniform float K; uniform vec2 L; uniform float frost; uniform float dof; uniform vec3 cam; uniform vec3 lc; uniform float refr; uniform float shK; uniform float flod;',
+    'uniform sampler2D tex; uniform sampler2D texB; uniform float inside; uniform float reveal; uniform vec2 res; uniform vec4 R[3]; uniform vec3 Rr; uniform float K; uniform vec2 L; uniform float frost; uniform float dof; uniform vec3 cam; uniform vec3 lc; uniform float refr; uniform float shK; uniform float flod;',
     // rounded box SDF in CSS px; R[i] = (cx, cy, half w, half h), Rr = corner radii
     'float box(vec2 p, vec4 b, float r){ vec2 q = abs(p - b.xy) - b.zw + r; return length(max(q, 0.)) + min(max(q.x, q.y), 0.) - r; }',
     'float smin(float a, float b, float k){ float h = max(k - abs(a - b), 0.) / k; return min(a, b) - h * h * k * .25; }',
     'float scene(vec2 p){ float d = box(p, R[0], Rr.x); d = smin(d, box(p, R[1], Rr.y), K); d = smin(d, box(p, R[2], Rr.z), K); return d; }',
-    'vec3 bg(vec2 p, float lod){ return textureLod(tex, vec2(p.x / 540., p.y / 960.), lod).rgb; }',
+    'vec3 bgA(vec2 p, float lod){ return textureLod(tex, vec2(p.x / 540., p.y / 960.), lod).rgb; }',
+    'vec3 bgB(vec2 p, float lod){ return textureLod(texB, vec2(p.x / 540., p.y / 960.), lod).rgb; }',
+    'float flood = 0.;',
+    'vec3 bg(vec2 p, float lod){ return mix(bgA(p, lod), bgB(p, lod), flood); }',
     'void main(){',
     '  vec2 p = (vec2(v.x * 540., (1. - v.y) * 960.) - vec2(270., 480.)) / cam.z + cam.xy;',
     '  float d = scene(p);',
-    '  vec3 base = bg(p, dof);',
+    '  float fr = reveal < 0. ? 0. : 1. - smoothstep(-1.5, 1.5, d - reveal);',
+    '  flood = fr; vec3 base = bg(p, dof);',
     // soft shadow of the glass on the app, cast away from the light
     '  float sd = scene(p + L * 26.);',
     '  base *= 1. - shK * (1. - smoothstep(-18., 34., sd));',
-    '  if (d > 1.) { o = vec4(base, 1.); return; }',
+    '  float front = reveal < 0. ? 0. : exp(-pow((d - reveal) / 3.5, 2.)) * (1. - reveal / 1300.);',
+    '  if (d > 1.) { o = vec4(base + front * .55 * lc, 1.); return; }',
+    '  flood = max(fr, inside);',
     // the bevel: height rises over 30 px from the edge (a quarter circle), so the normal tilts most at the rim
     '  float e = 1.2; vec2 gr = vec2(scene(p + vec2(e, 0.)) - scene(p - vec2(e, 0.)), scene(p + vec2(0., e)) - scene(p - vec2(0., e))) / (2. * e);',
     '  float B = 30., u = clamp(-d / B, 0., 1.), dz = (1. - u) / max(sqrt(1. - (1. - u) * (1. - u)), .08);',
@@ -157,10 +178,12 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
   var pg = gl.createProgram(); gl.attachShader(pg, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pg, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pg); gl.useProgram(pg);
   var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
   var loc = gl.getAttribLocation(pg, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  var tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
+  var txB = gl.createTexture(); gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, txB);
+  [gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR, gl.TEXTURE_MAG_FILTER, gl.LINEAR, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE].forEach(function(v, i, A){ if (i % 2 === 0) gl.texParameteri(gl.TEXTURE_2D, v, A[i + 1]); });
+  gl.activeTexture(gl.TEXTURE0); var tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  var U = {}; ['tex', 'res', 'R', 'Rr', 'K', 'L', 'frost', 'dof', 'cam', 'lc', 'refr', 'shK', 'flod'].forEach(function(n){ U[n] = gl.getUniformLocation(pg, n); });
+  var U = {}; ['tex', 'texB', 'inside', 'reveal', 'res', 'R', 'Rr', 'K', 'L', 'frost', 'dof', 'cam', 'lc', 'refr', 'shK', 'flod'].forEach(function(n){ U[n] = gl.getUniformLocation(pg, n); });
   // ---------- glyphs on the glass (drawn above it, they move with the shapes) ----------
   var uc = document.getElementById('ui'); uc.width = PW; uc.height = PH; var u = uc.getContext('2d');
   function play(x, y, s, al){ u.fillStyle = 'rgba(255,255,255,' + al + ')'; u.beginPath(); u.moveTo(x - s * .38, y - s * .5); u.lineTo(x + s * .52, y); u.lineTo(x - s * .38, y + s * .5); u.closePath(); u.fill(); }
@@ -174,17 +197,17 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     [0,    [270, 1040, 170, 40, 40], [270, 1040, 8], [270, 1040, 8]],
     [1.0,  [270, 560, 170, 40, 40],  [270, 560, 8],  [270, 560, 8]],     // music at night: the player bar rises
     [1.5,  [270, 560, 170, 40, 40],  [270, 560, 8],  [270, 560, 8]],
-    [2.6,  [270, 476, 232, 128, 44], [270, 476, 8],  [270, 476, 8]],     // and opens into a card
-    [3.1,  [270, 476, 232, 128, 44], [270, 476, 8],  [270, 476, 8]],
-    [4.2,  [270, 690, 92, 92, 92],   [270, 690, 8],  [270, 690, 8]],     // wallet: the card pulls into a dial (hold to pay)
-    [6.1,  [270, 690, 92, 92, 92],   [270, 690, 8],  [270, 690, 8]],
+    [2.6,  [270, 476, 232, 128, 44], [270, 476, 8],  [270, 476, 8]],     // and opens into a card, which becomes the portal to the wallet
+    [3.7,  [270, 476, 232, 128, 44], [270, 476, 8],  [270, 476, 8]],
+    [4.6,  [270, 690, 92, 92, 92],   [270, 690, 8],  [270, 690, 8]],     // wallet: the card pulls into a dial (hold to pay)
+    [6.4,  [270, 690, 92, 92, 92],   [270, 690, 8],  [270, 690, 8]],
     [7.4,  [270, 705, 238, 74, 36],  [270, 705, 8],  [270, 705, 8]],     // weather at noon: a clear lens over the hourly strip
-    [9.4,  [270, 705, 238, 74, 36],  [270, 705, 8],  [270, 705, 8]],
+    [9.6,  [270, 705, 238, 74, 36],  [270, 705, 8],  [270, 705, 8]],
     [10.6, [300, 450, 118, 118, 118], [300, 450, 8], [300, 450, 8]],     // map: a round lens over the route, then the macro
     [13.4, [300, 450, 118, 118, 118], [300, 450, 8], [300, 450, 8]],
-    [14.4, [300, 440, 108, 108, 108], [160, 640, 40], [440, 650, 32]],   // two drops split off: zoom and locate
-    [15.0, [300, 440, 108, 108, 108], [160, 640, 40], [440, 650, 32]],
-    [15.8, [270, 700, 170, 40, 40],  [270, 700, 8],  [270, 700, 8]],     // back into the bar as the music swipes in
+    [14.2, [300, 440, 108, 108, 108], [160, 640, 40], [440, 650, 32]],   // two drops split off: zoom and locate (then all three show the music inside)
+    [15.3, [300, 440, 108, 108, 108], [160, 640, 40], [440, 650, 32]],
+    [16.0, [270, 700, 170, 40, 40],  [270, 700, 8],  [270, 700, 8]],     // back into the bar
     [16.9, [270, 1040, 170, 40, 40], [270, 1040, 8], [270, 1040, 8]],    // and it sinks out: frame 0 has it rising again
     [17,   [270, 1040, 170, 40, 40], [270, 1040, 8], [270, 1040, 8]]];
   function pose(t){
@@ -193,21 +216,21 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     return { m: L(A[1], B[1]), d1: L(A[2], B[2]), d2: L(A[3], B[3]) };
   }
   // camera [focus x, focus y, zoom]: wide, a slow push at noon, a macro on the lens edge over the map, a pull-back on the wallet
-  var CAM = [[0, 270, 480, 1], [3.2, 270, 480, 1], [3.7, 270, 620, 1.22], [5.8, 270, 480, 1], [6.6, 270, 480, 1], [9.5, 270, 520, 1.08], [10.2, 270, 480, 1], [10.9, 270, 480, 1], [11.8, 392, 452, 2.35], [13.4, 392, 452, 2.35], [14.3, 270, 480, 1], [17, 270, 480, 1]];
+  var CAM = [[0, 270, 480, 1], [3.6, 270, 480, 1], [4.2, 270, 620, 1.22], [6.2, 270, 480, 1], [6.8, 270, 480, 1], [9.5, 270, 520, 1.08], [10.2, 270, 480, 1], [10.9, 270, 480, 1], [11.8, 392, 452, 2.35], [13.2, 392, 452, 2.35], [14.0, 270, 480, 1], [17, 270, 480, 1]];
   function camAt(t){ var i = 0; while (i < CAM.length - 2 && t > CAM[i + 1][0]) i++; var A = CAM[i], B = CAM[i + 1], k = io(P(t, A[0], B[0])); return [mix(A[1], B[1], k), mix(A[2], B[2], k), mix(A[3], B[3], k)]; }
   // light per world: angle, colour, refraction strength, shadow strength (night warm and soft, noon white and hard, map cool, wallet green-gold)
   // [angle, colour, refraction px, shadow, frost px, frost blur level]
   var LIGHT = [[-2.3, [1, .86, .72], 70, .38, 3.2, 2.6], [-.6, [.9, 1, .82], 70, .45, 2.4, 2.0], [-1.1, [1, 1, 1], 80, .5, 1.2, .8], [-2.0, [.95, .98, 1], 110, .3, .6, .2], [-2.3, [1, .86, .72], 70, .38, 3.2, 2.6]];
-  function lightAt(t){ var w = worldAt(t), k = 0, prev = w; for (var i = 0; i < CUT.length; i++) if (t >= CUT[i] - .25 && t < CUT[i] + .3) { k = io(P(t, CUT[i] - .25, CUT[i] + .3)); prev = i; }
-    var A = LIGHT[k > 0 && k < 1 ? prev : w], B = LIGHT[k > 0 && k < 1 ? prev + 1 : w], kk = k > 0 && k < 1 ? k : 0;
-    return { ang: mix(A[0], B[0], kk) + .25 * Math.sin(t * .5), col: [0, 1, 2].map(function(j){ return mix(A[1][j], B[1][j], kk); }), refr: mix(A[2], B[2], kk), sh: mix(A[3], B[3], kk), fr: mix(A[4], B[4], kk), fl: mix(A[5], B[5], kk) }; }
+  function lightAt(t){ var ph = phase(t), kk = ph.reveal < 0 ? 0 : ph.reveal / 1300, A = LIGHT[ph.A], B = LIGHT[ph.B];
+    return { ang: mix(A[0], B[0], kk) + .25 * Math.sin(t * .5), col: [0, 1, 2].map(function(j){ return mix(A[1][j], B[1][j], kk); }), refr: mix(A[2], B[2], kk), sh: mix(A[3], B[3], kk), fr: mix(mix(A[4], B[4], kk), .7, ph.inside * (1 - kk)), fl: mix(mix(A[5], B[5], kk), .3, ph.inside * (1 - kk)) }; }   // the portal is clear glass so the next app reads through it
   function seek(t){
     t = cl(t, 0, 17);
-    drawApp(t);
-    gl.bindTexture(gl.TEXTURE_2D, tx); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, app); gl.generateMipmap(gl.TEXTURE_2D);
+    var ph = phase(t); drawWorld(aA, ph.A, t); if (ph.B !== ph.A) drawWorld(aB, ph.B, t);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, txB); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ph.B !== ph.A ? appB : app); gl.generateMipmap(gl.TEXTURE_2D);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tx); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, app); gl.generateMipmap(gl.TEXTURE_2D);
     var s = pose(t), c = camAt(t), lt = lightAt(t), m = s.m, wob = Math.sin(t * 2.2) * 4;
     gl.viewport(0, 0, PW, PH);
-    gl.uniform1i(U.tex, 0); gl.uniform2f(U.res, W, H);
+    gl.uniform1i(U.tex, 0); gl.uniform1i(U.texB, 1); gl.uniform1f(U.inside, ph.inside); gl.uniform1f(U.reveal, ph.reveal); gl.uniform2f(U.res, W, H);
     gl.uniform4fv(U.R, [m[0], m[1], m[2] + wob * .5, m[3] - wob * .3, s.d1[0], s.d1[1], s.d1[2], s.d1[2], s.d2[0], s.d2[1], s.d2[2], s.d2[2]]);
     gl.uniform3f(U.Rr, Math.min(m[4], m[2], m[3]), s.d1[2], s.d2[2]);
     gl.uniform1f(U.K, 46); gl.uniform2f(U.L, Math.cos(lt.ang), Math.sin(lt.ang)); gl.uniform1f(U.frost, lt.fr); gl.uniform1f(U.flod, lt.fl); gl.uniform1f(U.dof, 0);
@@ -219,18 +242,18 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     var win = function(a0, a1, b0, b1){ return P(t, a0, a1) * (1 - P(t, b0, b1)); }, x = m[0], y = m[1];
     var bar = win(.7, 1.1, 1.6, 1.9);
     if (bar > .02) { skip(x - 64, y, 20, -1, .92 * bar); play(x, y, 26, .92 * bar); skip(x + 64, y, 20, 1, .92 * bar); }
-    var card = win(2.5, 2.8, 3.15, 3.4);
+    var card = win(2.5, 2.8, 2.85, 3.1);
     if (card > .02) { u.fillStyle = 'rgba(255,255,255,' + .92 * card + ')'; u.font = "700 22px 'Hanken Grotesk'"; u.fillText('Low Tide', x - 204, y - 34);
       u.fillStyle = 'rgba(255,255,255,' + .64 * card + ')'; u.font = "500 16px 'Hanken Grotesk'"; u.fillText('Mara Ilves', x - 204, y - 10);
       skip(x - 120, y + 52, 22, -1, .92 * card); bars(x, y + 52, 28, .92 * card); skip(x + 120, y + 52, 22, 1, .92 * card); }
-    var wx = win(7.4, 7.7, 9.3, 9.6);
+    var wx = win(7.4, 7.7, 8.8, 9.05);
     if (wx > .02) { u.fillStyle = 'rgba(13,40,80,' + .9 * wx + ')'; u.font = "800 15px 'Hanken Grotesk'"; u.letterSpacing = '2px'; u.fillText('NEXT 6 HOURS', x - 214, y - 46); u.letterSpacing = '0px'; }
-    var dr = win(14.3, 14.6, 15.1, 15.4);
+    var dr = win(14.2, 14.5, 14.55, 14.8);
     if (dr > .02) { u.strokeStyle = 'rgba(255,255,255,' + .95 * dr + ')'; u.lineWidth = 3.5; u.lineCap = 'round';
       u.beginPath(); u.moveTo(s.d1[0] - 12, s.d1[1]); u.lineTo(s.d1[0] + 12, s.d1[1]); u.moveTo(s.d1[0], s.d1[1] - 12); u.lineTo(s.d1[0], s.d1[1] + 12); u.stroke();
       u.fillStyle = 'rgba(255,255,255,' + .95 * dr + ')'; u.beginPath(); u.moveTo(s.d2[0], s.d2[1] - 12); u.lineTo(s.d2[0] + 9, s.d2[1] + 10); u.lineTo(s.d2[0], s.d2[1] + 5); u.lineTo(s.d2[0] - 9, s.d2[1] + 10); u.closePath(); u.fill(); }
-    var dial = win(4.2, 4.5, 6.1, 6.4);
-    if (dial > .02) { var hold = P(t, 4.5, 5.8); u.strokeStyle = 'rgba(255,255,255,' + .25 * dial + ')'; u.lineWidth = 5; u.beginPath(); u.arc(x, y, 70, 0, 7); u.stroke();
+    var dial = win(4.6, 4.9, 5.75, 5.95);
+    if (dial > .02) { var hold = P(t, 4.9, 5.5); u.strokeStyle = 'rgba(255,255,255,' + .25 * dial + ')'; u.lineWidth = 5; u.beginPath(); u.arc(x, y, 70, 0, 7); u.stroke();
       u.strokeStyle = 'rgba(125,255,182,' + .95 * dial + ')'; u.lineCap = 'round'; u.beginPath(); u.arc(x, y, 70, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * io(hold)); u.stroke();
       u.fillStyle = 'rgba(255,255,255,' + .95 * dial + ')'; u.font = "800 22px 'Hanken Grotesk'"; u.textAlign = 'center'; u.fillText(hold < 1 ? 'Hold to pay' : 'Paid ✓', x, y + 8); u.textAlign = 'left'; }
   }
