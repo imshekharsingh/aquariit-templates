@@ -36,6 +36,9 @@ Every reel should be something a designer saves for reference or sends to the pe
 - Motion with intent: springs, masks, variable-font axes, match cuts. Every move has a reason.
 - 15-20 s, payoff in the last 3 s, a seamless loop (the last frame leads into the first).
 - Text only where it carries the idea; key text clear of Instagram's UI (top 96 px, bottom 22%, the right-hand column).
+- Flow (owner, 23 Oct: "add more animation, flow, transition to elements"): every element enters with motion (staggers, counters,
+  springs, a drifting camera), and every change of scene is motivated by an element on screen (a portal through a shape, a match cut,
+  an element that carries over). Never a plain cut or a plain swipe.
 - Variation (owner, 23 Oct: "where's the variation?"): something big changes at least every ~3 s: the scene, the colour world, the scale
   or the camera. One look held for 17 s is a still with motion, not a reel.
 
@@ -79,3 +82,4 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 | 22 Oct | showreel-08-six-transitions v2 | Six ways | 17 s, transition every ~2.5 s, liquid wipe replaces push, motion between transitions, promise on screen from frame 0 |
 | 22 Oct | showreel-07-built-film | Built in 20 s | the film-look re-cut replaces the original (motion blur on the word drops, scroll and card open) |
 | 23 Oct | showreel-09-liquid-glass v2 | Material | four worlds on the beat (music night, wallet, weather noon, map macro), light and frost per world, payoff = macro lens + drop split |
+| 23 Oct | showreel-09-liquid-glass v3 | Material | the glass is the transition (next app inside the glass, then floods out); every element animates in |
