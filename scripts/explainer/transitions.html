@@ -107,7 +107,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:#efe9dd;font-famil
     [].forEach.call(document.querySelectorAll('.q'), function(q){
       q.style.visibility = q.nextSibling.style.visibility = show ? 'visible' : 'hidden'; if (!show) return;
       var w = q.querySelectorAll('.w');
-      w[0].style.clipPath = 'circle(' + (io(k0) * 85) + '% at 30% 60%)'; w[0].style.transform = 'translateY(' + (1 - back(k0)) * 40 + 'px)';
+      w[0].style.clipPath = k0 >= 1 ? 'none' : 'circle(' + (io(k0) * 150) + '% at 30% 60%)'; w[0].style.transform = 'translateY(' + (1 - back(k0)) * 40 + 'px)';
       var e = io(k1), amp = 14 * Math.sin(Math.PI * k1), wv = ['0% 0%'];
       for (var y = 0; y <= 100; y += 10) wv.push((e * 112 - 6 + amp * Math.sin(y * .09 + t * 14)) + '% ' + y + '%');
       wv.push('0% 100%'); w[1].style.clipPath = 'polygon(' + wv.join(',') + ')'; w[1].style.transform = 'translateX(' + (1 - back(k1)) * -30 + 'px)';

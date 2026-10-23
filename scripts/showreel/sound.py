@@ -118,7 +118,7 @@ def bed(dur, bpm, origin, chords):
         f = hz(notes[0]); kk = kb[sel] * 4 % 2 * beat   # seconds since beat 1 or 3
         sub = np.sin(2 * np.pi * f * tt[sel]) * np.exp(-kk / .55)
         kick = np.sin(2 * np.pi * (48 + 110 * np.exp(-kk / .03)) * kk) * np.exp(-kk / .16)
-        pad[sel] += .5 * sub + .55 * kick
+        pad[sel] += .28 * sub + .42 * kick   # light low end: phone speakers turn a heavy sub into mud under the voice
     out += pan(pad, 0) * .9
     hk = ((tt - origin) / (beat / 2)); hi = np.floor(hk).astype(int); hs = (hk - hi) * beat / 2
     nz = np.diff(rng.standard_normal(n + 1)) * .5

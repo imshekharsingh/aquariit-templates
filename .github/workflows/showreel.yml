@@ -76,7 +76,7 @@ jobs:
         if: hashFiles('out/*.cues.json') != ''
         run: |
           python3 scripts/showreel/sound.py "out/$NAME.cues.json" out/sound.wav
-          ffmpeg -y -loglevel error -i "out/$NAME.mp4" -i out/sound.wav -map 0:v -map 1:a -c:v copy -af "loudnorm=I=-14:TP=-1.5:LRA=7" -ar 48000 -c:a aac -b:a 192k -shortest out/muxed.mp4
+          ffmpeg -y -loglevel error -i "out/$NAME.mp4" -i out/sound.wav -map 0:v -map 1:a -c:v copy -af "highpass=f=55,equalizer=f=200:t=q:w=1.2:g=-3,equalizer=f=3000:t=q:w=1:g=2,loudnorm=I=-14:TP=-1.5:LRA=7" -ar 48000 -c:a aac -b:a 192k -shortest out/muxed.mp4
           mv out/muxed.mp4 "out/$NAME.mp4"
           ffmpeg -hide_banner -i "out/$NAME.mp4" -af ebur128 -f null - 2>&1 | grep -E "^\s+(I|LRA):" | tail -2
       - name: Keep the preview
