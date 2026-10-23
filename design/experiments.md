@@ -69,6 +69,13 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 23 Oct 2026, 20:25 IST audit (collect 20:23 IST; @webin20sec 12 followers (+0), 16 posts; @techin20sec 8 followers (+1), 8 posts)
+Studio: 23 Oct 13:23 "A website, built in 20 seconds" (Built in 20 s, film look) **54 reach, 2.8 s avg watch**, 0 saves, 0 shares (7 h old) · 22 Oct 16:20 layout shift 14, 4.6 s · 21 Oct 23:21 heroes 19, 3.8 s.
+techin20sec: 23 Oct 14:12 weak-key flaw 102, 4.7 s, 1 save · 23 Oct 11:52 MCP explained 107, 4.1 s, 1 save · 22 Oct 16:43 "Why steal data you can't even read?" 119, 7.2 s.
+**Head to head (median reach, 7 days):** studio 32 vs techin20sec 113. Built in 20 s reached more than our last four, but 2.8 s of 20 s watched: its first second (grid lines on bone, the headline still arriving) states nothing.
+**Lesson:** every techin20sec reel opens with a question or a claim on screen; ours open on a picture. **Action:** a hook line on screen from frame 0 on every reel (done for showreel-10; added to 08 and 09 before they post).
+**Milestone:** 12/100 followers; best reel 278/1,000.
+
 ### 23 Oct 2026, 08:52 IST audit (collect 04:48 IST; @webin20sec 12 followers (+0), 15 posts; @techin20sec 7 followers (+3), 6 posts)
 Studio, 7 days (posted IST, series, reach, avg watch, saves, shares): 22 Oct 16:20 "Why did I just cancel my order?" (other: layout-shift explainer) 10, 5.7 s, 0, 0 · 21 Oct 23:21 heroes (Six ways) 19, 3.8 s, 0, 0 ·
 19 Oct 18:31 launch (other) 22, 2.5 s · 18 Oct 22:14 CDN (other) 32, 3.2 s · 18 Oct 14:20 "6 motion styles" (Six ways) **278**, 4.7 s, **8**, 0 · 17 Oct 21:21 CDN (other) 48, 4.9 s · 16 Oct 17:31 outdated (other) 15, 4.1 s. 0 shares in 15 posts.
