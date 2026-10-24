@@ -3,40 +3,186 @@
  "topic": "AI shopping",
  "voice": "af_heart",
  "speed": 1.05,
- "say": {"AI": "A I"},
- "hook": ["Can an AI", "shop Walmart", "for you?"],
+ "say": {
+  "AI": "A I"
+ },
+ "hook": [
+  "Can an AI",
+  "shop Walmart",
+  "for you?"
+ ],
  "lines": [
-  {"text": "Can an AI shop Walmart for you?"},
-  {"text": "Walmart says outside AI agents can, soon.",
-   "scene": {"label": "THE NEWS", "tint": "blue", "kind": "portal",
-             "params": {"icon": "store", "pills": ["Walmart.com", "Sam's Club"], "guest": "bot", "guest_tint": "green", "n": 3, "open": "outside"}}},
-  {"text": "They connect through a new gateway, in beta.",
-   "scene": {"label": "THE GATEWAY", "tint": "purple", "kind": "flow",
-             "params": {"sources": ["ChatGPT", "Gemini"], "source_note": "FOR EXAMPLE", "source_tint": "cyan", "hub": {"label": "AGENT GATEWAY", "tag": "BETA", "icon": "gate"},
-                        "target": {"icon": "store", "label": "Walmart"}, "target_tint": "blue", "hub_cue": "gateway"}}},
-  {"text": "Each agent gets its own profile.",
-   "scene": {"label": "THE PROFILE", "tint": "green", "kind": "nest",
-             "params": {"outer": {"title": "Your account", "sub": "your own orders", "icon": "user"}, "inner": {"title": "Agent profile", "sub": "its orders, kept apart", "icon": "bot"}, "inner_cue": "profile"}}},
-  {"text": "You approve orders, or set a spending cap.",
-   "scene": {"label": "THE LIMITS", "tint": "amber", "kind": "choice",
-             "params": {"a": {"title": "Approve each order", "cue": "approve"}, "b": {"title": "Spending cap", "ticks": ["$50", "$100", "$200"], "note": "e.g.", "cue": "spending"}}}},
-  {"text": "Agents never see your card.",
-   "scene": {"label": "THE GUARDRAIL", "tint": "red", "kind": "guard",
-             "params": {"object": {"icon": "card", "label": "Your card"}, "attacker": "bot", "stop_cue": "never", "badge": "NO CARD DETAILS"}}},
-  {"text": "Set a limit, then check what it bought.",
-   "scene": {"label": "THE TAKEAWAY", "tint": "green", "kind": "checklist",
-             "params": {"items": [{"text": "Set a limit first", "cue": "limit"}, {"text": "Check what it bought", "cue": "check"}]}}}
+  {
+   "text": "Can an AI shop Walmart for you?"
+  },
+  {
+   "text": "Walmart says outside AI agents will soon shop for you.",
+   "scene": {
+    "label": "THE NEWS",
+    "tint": "blue",
+    "kind": "portal",
+    "params": {
+     "icon": "store",
+     "pills": [
+      "Walmart.com",
+      "Sam's Club"
+     ],
+     "guest": "bot",
+     "guest_tint": "green",
+     "n": 3,
+     "open": "outside"
+    }
+   }
+  },
+  {
+   "text": "They connect through a new Agent Gateway, starting as a beta.",
+   "scene": {
+    "label": "THE GATEWAY",
+    "tint": "purple",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "ChatGPT",
+      "Gemini"
+     ],
+     "source_note": "FOR EXAMPLE",
+     "source_tint": "cyan",
+     "hub": {
+      "label": "AGENT GATEWAY",
+      "tag": "BETA",
+      "icon": "gate"
+     },
+     "target": {
+      "icon": "store",
+      "label": "Walmart"
+     },
+     "target_tint": "blue",
+     "hub_cue": "gateway"
+    }
+   }
+  },
+  {
+   "text": "Each agent gets its own profile, so its orders stay apart.",
+   "scene": {
+    "label": "THE PROFILE",
+    "tint": "green",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Your account",
+      "sub": "your own orders",
+      "icon": "user"
+     },
+     "inner": {
+      "title": "Agent profile",
+      "sub": "its orders, kept apart",
+      "icon": "bot"
+     },
+     "inner_cue": "profile"
+    }
+   }
+  },
+  {
+   "text": "You approve every order, or set a spending cap.",
+   "scene": {
+    "label": "THE LIMITS",
+    "tint": "amber",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Approve each order",
+      "cue": "approve"
+     },
+     "b": {
+      "title": "Spending cap",
+      "ticks": [
+       "$50",
+       "$100",
+       "$200"
+      ],
+      "note": "e.g.",
+      "cue": "spending"
+     }
+    }
+   }
+  },
+  {
+   "text": "Per Walmart, agents never see your card or change how you pay.",
+   "scene": {
+    "label": "THE GUARDRAIL",
+    "tint": "red",
+    "kind": "guard",
+    "params": {
+     "object": {
+      "icon": "card",
+      "label": "Your card"
+     },
+     "attacker": "bot",
+     "stop_cue": "never",
+     "badge": "NO CARD DETAILS"
+    }
+   },
+   "chunks": [
+    7,
+    5
+   ]
+  },
+  {
+   "text": "So set a limit first, and check what your agent bought.",
+   "scene": {
+    "label": "THE TAKEAWAY",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Set a limit first",
+       "cue": "limit"
+      },
+      {
+       "text": "Check what it bought",
+       "cue": "check"
+      }
+     ]
+    }
+   }
+  }
  ],
  "post": {
   "title": "Walmart opens its store to outside AI shopping agents",
   "caption": "Can an AI shop Walmart for you? 🛒🤖\n\nWalmart says outside AI agents will soon be able to shop Walmart.com and Sam's Club for you, through a new Agent Gateway that starts as a beta for developers. Each agent gets its own profile in your account: you approve every order, or set a spending cap (Walmart's examples: $50, $100, $200). Per Walmart, agents never get your card details and can't change how you pay. Rollout is expected within about a month. ⏳\n\nWould you let an agent shop for you? Tell me below, and send this to the friend who'd try it first. 👇",
-  "keywords": ["Walmart AI agents", "agentic commerce", "AI shopping agent", "Walmart Agent Gateway", "AI agent spending limits", "AI explained"],
-  "hashtags": ["#agenticcommerce", "#aiagents", "#walmart", "#aishopping", "#techexplained"],
+  "keywords": [
+   "Walmart AI agents",
+   "agentic commerce",
+   "AI shopping agent",
+   "Walmart Agent Gateway",
+   "AI agent spending limits",
+   "AI explained"
+  ],
+  "hashtags": [
+   "#agenticcommerce",
+   "#aiagents",
+   "#walmart",
+   "#aishopping",
+   "#techexplained"
+  ],
   "sources": [
-   {"url": "https://www.digitalcommerce360.com/2026/10/23/walmart-unveils-ai-agent-shopping-controls-spending-limits/", "note": "news, trade press"},
-   {"url": "https://thenextweb.com/news/walmart-ai-agents-shop-agent-profiles", "note": "news"},
-   {"url": "https://chainstoreage.com/walmart-lets-ai-agents-shop-customers-sets-guardrails", "note": "news, retail trade press"},
-   {"url": "https://qz.com/walmart-ai-agents-shop-customers-agent-gateway-102226", "note": "news"}
+   {
+    "url": "https://www.digitalcommerce360.com/2026/10/23/walmart-unveils-ai-agent-shopping-controls-spending-limits/",
+    "note": "news, trade press"
+   },
+   {
+    "url": "https://thenextweb.com/news/walmart-ai-agents-shop-agent-profiles",
+    "note": "news"
+   },
+   {
+    "url": "https://chainstoreage.com/walmart-lets-ai-agents-shop-customers-sets-guardrails",
+    "note": "news, retail trade press"
+   },
+   {
+    "url": "https://qz.com/walmart-ai-agents-shop-customers-agent-gateway-102226",
+    "note": "news"
+   }
   ]
  }
 }
