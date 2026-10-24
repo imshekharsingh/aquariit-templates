@@ -1,7 +1,7 @@
 """Voiceover: Kokoro TTS (open licence, CPU, no key), generated line by line with a start and end time for every displayed word.
 The topic's "say" map gives pronunciation overrides: display word -> spoken words, or Kokoro phoneme markup for letters and brands,
-e.g. "AI": "[AI](/ˌAˈI/)" (plain "A I" can be read as "uh I": the phonemizer may take a lone A for the article). Every line's phonemes
-are kept in vo.json and listed in qa.txt so the pronunciation can be checked. The spoken text may not contain
+e.g. "AI": "[AI](/ˌAˈI/)". Spelling letters with spaces ("A I") makes two separately stressed words ("AY. EYE."), which sounds
+choppy (measured 24 Oct). Every line's phonemes are kept in vo.json and listed in qa.txt so the pronunciation can be checked. The spoken text may not contain
 digits or hyphens; the whole voice must end by 19.4 s (the speed is nudged up a little if needed, then it fails and asks for a trim)."""
 import json
 import re
