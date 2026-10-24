@@ -54,8 +54,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
   var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
   var spring = function(s){ if (s <= 0) return 0; var z = .55, w = 12, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
-  var TEXT = "Your site loads fast. So why does it feel slow? Tap Add to cart. Nothing happens for six hundred milliseconds. That's INP: tap to next frame. Google calls over five hundred poor. The cause: one long JavaScript task. Split it¦ so the browser can paint in between. Under two hundred feels instant.";
-  var WORDS = [], DUR = 22;
+  var TEXT = "Your site loads fast. So why does it feel slow? Tap a button: nothing, for six hundred milliseconds. That's INP. Google calls over five hundred poor. The fix: split long JavaScript tasks¦ so the browser can paint in between. Under two hundred feels instant.";
+  var WORDS = [], DUR = 18;   // audit 24 Oct: people leave Nº 01 at ~8 s, so the answer comes by ~10 s and the reel ends at 18 s
   (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .16 + w.length * .03; WORDS.push({ w: w.replace('¦', ''), s: t, e: t + d }); t += d + (/[.?:,]$/.test(w) ? .22 : .06); }); })();
   var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
   function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s; return 99; }
@@ -64,8 +64,9 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   var A = {}, PH = [];
   function anchors(){
     align();
-    A = { fast: at('fast'), so: at('so'), slow: at('slow'), tap: at('tap'), nothing: at('nothing'), ms: at('milliseconds'), thats: at('thats'), inp: at('inp'), tap2: at('tap', 2), next: at('next'), frame: at('frame'),
-      google: at('google'), poor: at('poor'), cause: at('cause'), long: at('long'), task: at('task'), split: at('split'), paint: at('paint'), between: at('between'), under: at('under'), instant: at('instant') };
+    A = { fast: at('fast'), so: at('so'), slow: at('slow'), tap: at('tap'), nothing: at('nothing'), ms: at('milliseconds'), thats: at('thats'), inp: at('inp'),
+      google: at('google'), poor: at('poor'), cause: at('fix'), long: at('long'), task: at('tasks'), split: at('split'), paint: at('paint'), between: at('between'), under: at('under'), instant: at('instant') };
+    A.tap2 = A.inp + .15; A.next = A.inp + .4; A.frame = A.inp + .65;   // the timeline builds itself right after "INP" 
     A.end = WORDS[WORDS.length - 1].e;
     PH = []; var cur = [];
     WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || w.brk || i === WORDS.length - 1) {
@@ -139,7 +140,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     // ---- 5. "The cause: one long JavaScript task.": the main thread, one long block; the tap waits ----
     var mt = P(t, A.cause - .1, A.cause + .25) * (1 - io(P(t, A.under - .25, A.under + .05)));
     if (mt > 0) { c.save(); c.globalAlpha = mt;
-      var y2 = 360, x2 = 36, W2 = 468, grow = out(P(t, A.long - .1, A.task + .3)), split = P(t, A.split - .05, A.split + .45);
+      var y2 = 360, x2 = 36, W2 = 468, grow = out(P(t, A.cause - .05, A.cause + .5)), split = P(t, A.task, A.task + .45);   // the long block fills on "The fix", splits on "tasks"
       c.fillStyle = '#2c2a27'; rr(x2, y2 - 6, W2, 92, 18); c.fill();
       if (split <= 0) { rr(x2 + 10, y2 + 6, (W2 - 20) * grow, 68, 12); c.fillStyle = '#ffb020'; c.fill();
         if (grow > .6) { c.font = "800 24px 'Bricolage Grotesque'"; c.fillStyle = '#121110'; c.fillText('1 long task', x2 + 28, y2 + 48); } }
