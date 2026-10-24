@@ -1,0 +1,45 @@
+name: Tech reel
+
+# Tech explainer reels (owner, 24 Oct 2026): python3 techreel/make.py <slug> renders the voice, frames, sound and QA for one topic file.
+# The MP4, contact sheet, QA report and word timings land in the "techreel" release. Run by hand: Actions -> Tech reel -> slug.
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Topic file in techreel/topics (without .json)
+        default: walmart-agents
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      SLUG: ${{ inputs.slug }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-inter espeak-ng
+          pip install numpy==2.1.3 scipy==1.14.1 Pillow==11.0.0 soundfile==0.12.1
+          pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+          pip install kokoro==0.9.4
+      - name: Render
+        run: |
+          set -o pipefail
+          python3 techreel/make.py "$SLUG" 2>&1 | grep -v "^frame " | tee render.log
+      - name: Keep it
+        run: |
+          D="out/techreel/$SLUG"
+          gh release view techreel --repo "$REPO" >/dev/null 2>&1 || gh release create techreel --repo "$REPO" --title "Tech reels" --latest=false --notes "Tech explainer reels (techreel/)"
+          cp "$D/contact.png" "$D/$SLUG-contact.png"; cp "$D/qa.txt" "$D/$SLUG-qa.txt"; cp "$D/vo.json" "$D/$SLUG-vo.json"
+          gh release upload techreel --repo "$REPO" --clobber "$D/$SLUG.mp4" "$D/$SLUG-contact.png" "$D/$SLUG-qa.txt" "$D/$SLUG-vo.json"
+          cat "$D/qa.txt"
