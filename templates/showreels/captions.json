@@ -141,9 +141,41 @@
   "postOn": "2026-10-26"
  },
  "showreel-11-springs": {
-  "postOn": "2026-10-24"
+  "postOn": "2026-10-24",
+  "caption": "Why do some buttons feel expensive? 🫧\n\nSame button, same duration. One eases and stops dead; the other springs: it overshoots a touch and settles, like a real object. CSS does this natively with linear(), in Chrome, Firefox and Safari since 2023.\nSave it for your next interface, or send it to whoever builds your buttons.",
+  "keywords": [
+   "CSS spring animation",
+   "CSS linear easing",
+   "button animation",
+   "UI micro interactions",
+   "CSS animation",
+   "motion design"
+  ],
+  "hashtags": [
+   "#cssanimation",
+   "#microinteractions",
+   "#uianimation",
+   "#frontenddev",
+   "#motiondesign"
+  ]
  },
  "showreel-12-inp": {
-  "postOn": "2026-10-25"
+  "postOn": "2026-10-25",
+  "caption": "Your site loads fast. So why does it feel slow? ⚡\n\nIt's probably INP, Interaction to Next Paint: the time from a tap to the next frame on screen. Google rates over 500 ms as poor and 200 ms or less as good. The usual cause is one long JavaScript task blocking the main thread. Split it up so the browser can paint in between.\nSave it for your next speed check, or send it to whoever owns your site's performance.",
+  "keywords": [
+   "INP",
+   "Interaction to Next Paint",
+   "Core Web Vitals",
+   "website performance",
+   "JavaScript long tasks",
+   "web performance tips"
+  ],
+  "hashtags": [
+   "#corewebvitals",
+   "#webperformance",
+   "#javascript",
+   "#frontenddev",
+   "#webdev"
+  ]
  }
 }
