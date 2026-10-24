@@ -1,8 +1,10 @@
 {
  "name": "showreel-11-springs",
  "seek": "scripts/explainer/springs.html",
- "dur": 22,
- "fps": 30,
+ "dur": 23,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
  "cover": 1.6,
  "voice": {
   "text": "Why do some buttons feel expensive? Same button. Same duration. This one eases in and stops dead. This one springs: it overshoots a touch, then settles, like a real object. CSS does this natively now, with linear(). Chrome, Firefox and Safari have all supported it since 2023. One line. Everything feels more physical.",

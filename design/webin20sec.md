@@ -16,6 +16,16 @@ The owner's brief: design and define the content, keep it relevant, push the pre
 Premium web motion, built in code, in 20 seconds. Audience: designers, front-end developers and founders who care how a site feels.
 Every reel should be something a designer saves for reference or sends to the person building their site.
 
+## The format from 24 Oct: narrated explainers (owner, 23-24 Oct)
+08 and 09 were well made but gave the viewer nothing to keep, and the voice stopped after the hook; the owner did not post them.
+The zero-JS tip (a real technique, a hook, sound) held 13.4 s on average, the best since 13 Oct. So every reel now:
+- answers one real question our audience has, in about 20 s: problem, why, fix, payoff; facts checked and cited, example numbers labelled;
+- has a voice for the whole reel (scripts/showreel/voice.py, Kokoro, open licence) with a timestamp per word; the scene anchors every
+  beat, caption and sound to a spoken word (window.setVoice), and captions show one sentence at a time, accent words in colour;
+- keeps sound under the voice: quiet taps, soft air on cuts, a low bed (owner, 24 Oct: no big funky pops);
+- is made in three steps the owner sees: script + storyboard (stills), a rough cut (real voice over rough frames), then the full build.
+The four series below still name the subjects; the narrated explainer is how each is told.
+
 ## Four series (rotate; never the same series twice in a row)
 1. **Built in 20 s.** One fictional brand's site builds itself: grid, type, imagery, UI, scroll, a page opening, a pull-back. A timer counts to 20.
    Each one has a different industry and art direction (first: Halden, Swiss modernist, scripts/explainer/built.html).
@@ -95,4 +105,5 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 | 23 Oct | reel study | (both accounts) | scripts/study-reels.mjs: theirs = voice + bed + a hit per cut at -14 LUFS, a full-frame word-by-word question; ours = silence or a loose beat, the hook as small text |
 | 23 Oct | showreel-08-six-transitions v3 | Six ways | full-frame question on Ink, each word arriving by one of the six transitions, doors open onto the first page; first reel with sound (effects on every cut, bed, hook voice); 17.85 s = seven bars, so sound loops with picture |
 | 23 Oct | showreel-09-liquid-glass v4 | Material | hook = "Is this glass real?" drawn into the app, the glass rises through it and bends the words, the music floods out of the glass; sound from cues; the last app dims to the hook's ground for the loop |
+| 24 Oct | showreel-11-springs (Nº 01) | narrated explainer | "Why do some buttons feel expensive?": ease vs spring on a checkout card, the curve drawn live, linear() with MDN-checked support; storyboard → rough cut → full build; 08 and 09 dropped |
 | 23 Oct | showreel-10-zero-js-transition | Steal this | paradox hook in frame 0 (audit lesson), real CSS view transitions both ways, code typed under a live preview, MDN support badges |

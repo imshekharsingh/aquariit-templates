@@ -4,7 +4,7 @@
 # (window.CUES, written next to the MP4 by seek.mjs), so sound and picture share one timeline.
 # Usage: python3 scripts/showreel/sound.py <cues.json> <out.wav> [narration.wav]
 #   cues.json: { dur, bed: { bpm, origin, chords }, cues: [ { t, k, g?, p?, d?, text?, voice?, speed? } ] }
-#   k: whoosh (d = length), hit, boom, pop (p = pitch step), tick, click, shimmer, riser (d), voice (text; Kokoro, Apache-2.0, runs on the runner)
+#   k: whoosh (d = length), swish (d; soft, for narrated reels), hit, boom, pop (p = pitch step), tap, thud, tick, click, shimmer, riser (d), voice (text; Kokoro, Apache-2.0, runs on the runner)
 # Seeded noise only, so the same cues always give the same sound. The workflow levels the mix to -14 LUFS when it muxes.
 import json, sys, wave
 import numpy as np
@@ -65,6 +65,25 @@ def pop(g=1, p=0):   # a word landing: woody pitched blip
     m = (np.sin(2 * np.pi * np.cumsum(f) / SR) + .3 * np.sin(4 * np.pi * np.cumsum(f) / SR)) * env_exp(n, .045)
     m += .3 * rng.standard_normal(n) * env_exp(n, .003)
     return pan(m * g * .8, (p % 5 - 2) * .12)
+
+
+def tap(g=1, p=0):   # a quiet UI tap (owner, 24 Oct: the pops were "big funky"): a soft, low-passed click with a short body
+    n = int(.06 * SR); tt = np.arange(n) / SR
+    nz = np.convolve(rng.standard_normal(n), np.ones(9) / 9, 'same') * env_exp(n, .004)
+    m = .6 * nz + .5 * np.sin(2 * np.pi * 820 * 2 ** (p / 12) * tt) * env_exp(n, .012)
+    return pan(m * g * .35, 0)
+
+
+def thud(g=1, p=0):   # a soft stop: a low, short body, no click
+    n = int(.25 * SR); tt = np.arange(n) / SR
+    m = np.sin(2 * np.pi * (70 * 2 ** (p / 12) + 40 * np.exp(-tt / .03)) * tt) * env_exp(n, .07) * np.clip(tt / .004, 0, 1)
+    return pan(m * g * .6, 0)
+
+
+def swish(d=.4, g=1, p=0):   # a gentle air move for a cut under a voice: low, wide, no whistle
+    n = int(d * SR); k = np.linspace(0, 1, n); e = np.sin(np.pi * k) ** 2
+    m = bandpass_sweep(rng.standard_normal(n), 250 * 2 ** p, 1400 * 2 ** p, .7) * e
+    return pan(m / (np.abs(m).max() + 1e-9) * .35 * g, np.linspace(-.4, .4, n))
 
 
 def tick(g=1, p=0):
@@ -147,9 +166,10 @@ def main(cues_path, out_path, narration=None):
             if v is not None: put(vox, v * g, t)
             continue
         if k == 'whoosh': s = whoosh(c.get('d', .6), g, p); t -= .68 * c.get('d', .6)   # peak lands on the cue
+        elif k == 'swish': s = swish(c.get('d', .4), g, p); t -= .5 * c.get('d', .4)
         elif k == 'riser': s = riser(c.get('d', 1), g, p); t -= c.get('d', 1)   # ends on the cue
         elif k == 'boom': s = hit(g, p, True)
-        else: s = {'hit': hit, 'pop': pop, 'tick': tick, 'click': click, 'shimmer': shimmer}[k](g, p)
+        else: s = {'hit': hit, 'pop': pop, 'tick': tick, 'click': click, 'shimmer': shimmer, 'tap': tap, 'thud': thud}[k](g, p)
         put(sfx, s, t)
     if narration:   # the whole-reel voice from voice.py, from frame 0; the bed ducks under it
         with wave.open(narration) as w: v = np.frombuffer(w.readframes(w.getnframes()), '<i2').reshape(-1, w.getnchannels()).T / 32767
@@ -158,7 +178,7 @@ def main(cues_path, out_path, narration=None):
     B = C.get('bed')
     b = bed(dur, B['bpm'], B['origin'], B['chords']) if B else np.zeros((2, n))
     duck = np.convolve(np.abs(vox[0]), np.ones(2400) / 2400, 'same'); duck = 1 - .55 * np.clip(duck / (duck.max() + 1e-9) * 3, 0, 1)
-    mix = .5 * b * duck + .75 * reverb(sfx) + 1.0 * vox
+    mix = B.get('gain', .5) * b * duck + .75 * reverb(sfx) + 1.0 * vox if B else .75 * reverb(sfx) + 1.0 * vox
     mix = np.tanh(1.3 * mix) * .8
     fade = int(.004 * SR); mix[:, :fade] *= np.linspace(0, 1, fade); mix[:, -fade:] *= np.linspace(1, 0, fade)
     pcm = (np.clip(mix, -1, 1) * 32767).astype('<i2').T.copy()
