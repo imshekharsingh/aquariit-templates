@@ -50,7 +50,7 @@ animation lands on the word that says it.
 - Accuracy first: at least two sources, cross-checked; vendor research, news and government statements are kept apart; when they disagree,
   the script hedges ("per Microsoft", "reported", "attempts") and never states an unverified number. No sources inside the video; a short
   qualifier is fine.
-- The script is plain spoken words: numbers spelled out, no hyphenated words, overrides for brand names and acronyms. About 3.2 words a second.
+- The script is plain spoken words: numbers spelled out, no hyphenated words, overrides for brand names and acronyms. Kokoro speaks about 3.9 words a second at 1.05; aim for 70 to 75 spoken words. A line longer than two caption rows is shown in chunks (automatic, or `"chunks": [word counts]` on the line).
 - Shapes only: no stock footage, no real logos. Company and product names appear as text pills.
 - QA before posting: read the contact sheet (a frame at every word onset) and `qa.txt` (text that overflows its box, captions over two lines,
   blank stretches over 0.3 s, loudness and true peak).

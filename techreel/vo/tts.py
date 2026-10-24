@@ -11,7 +11,7 @@ SR = 48000
 GAP = .14          # silence between lines
 FIRST = .08        # the first line starts here
 MAX_END = 19.4
-WPS = 3.2          # estimate used by --fake-vo (and to warn early)
+WPS = 3.9          # Kokoro af_heart at 1.05 speaks about 3.9 words a second (measured 24 Oct); used by --fake-vo
 
 
 def core(w):

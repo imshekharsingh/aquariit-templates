@@ -93,8 +93,8 @@ def draw(t, topic, vo, hook_out, scenes):
         B.header(fr, topic['topic'], B.prog(t, hook_out, DUR - .4), ha)
     # scenes: the current one, and the previous one sliding up and fading for 0.25 s after the cut
     for s in scenes:
-        if s.start - .02 <= t < s.end + .25:
-            out = B.prog(t, s.end - .05, s.end + .25) if s is not scenes[-1] else 0
+        if s.start - .02 <= t < s.end + .1:
+            out = B.prog(t, s.end - .14, s.end + .1) if s is not scenes[-1] else 0   # a quick handover: the old scene is gone 0.1 s into the next
             fr.alpha, fr.dy = 1 - out, -60 * B.ease_io(out)
             B.chip(fr, s.label, s.tint, B.prog(t, s.start, s.start + .4))
             KINDS[s.kind](fr, s, t)
@@ -103,9 +103,38 @@ def draw(t, topic, vo, hook_out, scenes):
     for li, line in enumerate(vo['lines'][1:], start=1):
         nxt = vo['lines'][li + 1]['start'] if li + 1 < len(vo['lines']) else DUR - .3
         if line['start'] - .1 <= t < nxt - .1:
-            B.captions(fr, line['words'], t, list(range(len(line['words']))))
+            ch = chunks(line, topic['lines'][li].get('chunks'))
+            cur = 0
+            for ci, c in enumerate(ch):
+                if t >= line['words'][c[0]]['s'] - .08:
+                    cur = ci
+            B.captions(fr, line['words'], t, ch[cur])
     fade = 1 - B.prog(t, DUR - .4, DUR)
     return fr, fr.finish(fade=fade)
+
+
+def chunks(line, counts=None):
+    """Caption chunks for a line: from the topic file (word counts), or as many words as fit two caption rows, breaking after a comma when it can."""
+    words = [w['d'] for w in line['words']]
+    if counts:
+        out, i = [], 0
+        for c in counts:
+            out.append(list(range(i, min(len(words), i + c))))
+            i += c
+        return [c for c in out if c]
+    out, cur = [], []
+    for i, w in enumerate(words):
+        if cur and len(B.wrap([words[j] for j in cur + [i]], 72, 860, 800)) > 2:
+            # break after the last comma in the chunk if there is one late enough, else here
+            k = max((n for n, j in enumerate(cur) if words[j].endswith(',') and n >= 2), default=None)
+            if k is not None and k < len(cur) - 1:
+                out.append(cur[:k + 1]); cur = cur[k + 1:]
+            else:
+                out.append(cur); cur = []
+        cur.append(i)
+    if cur:
+        out.append(cur)
+    return out
 
 
 _bgb = {}
