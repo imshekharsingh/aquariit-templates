@@ -30,6 +30,7 @@
   .name{font:700 1rem system-ui,sans-serif}
   .meta{color:var(--mute);font-size:.85rem;margin-top:2px}
   .cap{white-space:pre-wrap;margin-top:12px;padding:12px 14px;border-radius:14px;background:#0e1019;border:1px solid var(--line);font-size:.9rem;color:#d9d7d0}
+  .cap.wait{color:#8e8a80}
   .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
   .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:var(--ink);color:var(--bg);font:700 .9rem system-ui,sans-serif;text-decoration:none;cursor:pointer}
   .btn.g{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
@@ -123,9 +124,15 @@
       tick.addEventListener('click', function(){ tick.disabled = true; mark(s.name, !up).then(render, function(){ tick.disabled = false; tick.textContent = 'Try again'; }); });
       copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
       row.appendChild(copy); row.appendChild(dl); row.appendChild(tick);
-      // the caption comes with the reel (NAME.json in the release); fields in captions.json (edited in the repo) win, so a caption can be fixed after the render
-      (s.info ? fetch(s.info, { credentials: 'same-origin' }).then(function(r){ return r.json(); }).catch(function(){ return {}; }) : Promise.resolve({})).then(function(j){
-        var m = Object.assign({}, j, meta); if (m.caption) { cap.textContent = postText(m); b.insertBefore(cap, row); copy.disabled = false; } });
+      // the post text sits on the card, above the buttons (owner, 24 Oct: "Where?"). It comes from the reel's NAME.json in the release, asked for
+      // even when the list did not link it (a re-render can briefly hide it from a cached list), with one retry; fields in captions.json win
+      cap.textContent = 'Loading post text…'; cap.classList.add('wait'); b.appendChild(cap);
+      var info = s.info || '/reels/' + s.name + '.json';
+      var get = function(){ return fetch(info, { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw r.status; return r.json(); }); };
+      get().catch(function(){ return new Promise(function(ok){ setTimeout(ok, 1500); }).then(get); }).catch(function(){ return {}; }).then(function(j){
+        var m = Object.assign({}, j, meta);
+        if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false; }
+        else { cap.textContent = 'No post text for this reel yet.'; } });
       b.appendChild(row); card.appendChild(v); card.appendChild(b); list.appendChild(card);
     });
   }
