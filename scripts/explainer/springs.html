@@ -6,180 +6,209 @@
 <title>Why do some buttons feel expensive?</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-/* @webin20sec, narrated explainer Nº 01 (owner picked B, 23 Oct 2026): "Why do some buttons feel expensive?"
-   The voice runs the whole reel (scripts/showreel/voice.py); every beat and caption is anchored to a spoken word, so window.setVoice(words)
-   re-times the scene to the real narration. Stage 540x960 CSS px (rendered at 2x). Every frame is a pure function of t (window.seek). */
-:root{--ink:#121110;--paper:#f2efe8;--dim:#8d877c;--line:#2c2a27;--violet:#8b6cff;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+/* @webin20sec, narrated explainer Nº 01 (owner picked storyboard B on 23 Oct and the narrated route on 24 Oct 2026): "Why do some buttons feel expensive?"
+   The voice runs the whole reel (scripts/showreel/voice.py). Every beat, caption and sound is anchored to a spoken word, so window.setVoice(words)
+   re-times the scene to the real narration. Stage 540x960 CSS px (rendered at 2x). Every frame is a pure function of t (window.seek).
+   Craft: one idea per beat, text at 22 px and up, the demo as the hero (a checkout card, its button riding its own motion curve). */
+:root{--ink:#121110;--paper:#f2efe8;--dim:#8d877c;--line:#2c2a27;--surface:#1c1a1f;--rule:#34303c;--violet:#8b6cff;--good:#3ddc84;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
 *{box-sizing:border-box;margin:0}
 html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
 .a{position:absolute}
 #lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
-#hook{left:34px;top:200px;font-weight:800;font-size:76px;line-height:.96;letter-spacing:-.045em;font-variation-settings:'wdth' 85,'opsz' 96}
+#hook{left:34px;top:206px;font-weight:800;font-size:78px;line-height:.96;letter-spacing:-.045em;font-variation-settings:'wdth' 85,'opsz' 96}
 #hook .ln{display:block;white-space:nowrap}
-#hook span{display:inline-block;transform-origin:0 80%}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
 #hook .acc{color:var(--violet)}
-.btn{width:300px;height:84px;border-radius:999px;display:grid;place-items:center;font:700 30px/1 var(--f);font-variation-settings:'opsz' 32;transform-origin:50% 50%}
-#bA{background:var(--paper);color:var(--ink)}
-#bB{background:var(--violet);color:#fff}
-#tag{font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap}
-#graph{left:40px;top:430px;width:460px;height:230px}
-#code{left:36px;top:230px;font:500 25px/1.6 var(--m);white-space:pre;color:var(--paper)}
-#code b{font-weight:500;color:var(--violet)}
-.chip{left:36px;height:48px;padding:0 20px;border-radius:999px;background:#24222a;display:flex;align-items:center;gap:10px;font:700 21px/1 var(--m);transform-origin:0 50%}
-.chip i{width:10px;height:10px;border-radius:50%;background:#3ddc84;font-style:normal}
-#cap{left:36px;right:36px;top:676px;font:700 36px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap}
+/* the checkout card: the demo object */
+.card{left:36px;top:206px;width:468px;height:222px;border-radius:30px;background:var(--surface);transform-origin:0 0}
+.card .sw{left:28px;top:28px;width:60px;height:60px;border-radius:16px}
+.card .nm{left:106px;top:32px;font:700 24px/1 var(--f);font-variation-settings:'opsz' 24}
+.card .sub{left:106px;top:66px;font:500 14px/1 var(--m);color:var(--dim)}
+.card .pr{right:28px;top:32px;font:700 24px/1 var(--f);font-variation-settings:'opsz' 24}
+.card .pay{left:32px;top:118px;width:404px;height:76px;border-radius:999px;display:grid;place-items:center;font:700 26px/1 var(--f);font-variation-settings:'opsz' 28;transform-origin:50% 50%}
+#cA .pay{background:var(--paper);color:var(--ink)}
+#cB .pay{background:var(--violet);color:#fff}
+.card .ab{right:28px;top:66px;font:700 14px/1 var(--m);letter-spacing:.1em;color:var(--dim)}
+#timer{left:106px;top:580px;width:328px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+#timer i{display:block;height:100%;width:0;background:var(--dim)}
+#timerL{left:106px;top:600px;font:700 15px/1 var(--m);letter-spacing:.1em;color:var(--dim)}
+#graph{left:36px;top:446px;width:468px;height:200px}
+/* the code */
+#codebox{left:36px;top:206px;width:468px;border-radius:30px;background:var(--surface);padding:30px 30px 30px;font:500 22px/1.6 var(--m);white-space:pre;color:var(--paper);transform-origin:50% 0}
+#codebox b{font-weight:500;color:var(--violet)}
+#codebox .dim{color:var(--dim)}
+#one{left:36px;top:300px;width:468px;padding:26px 28px;border-radius:24px;border:2px solid var(--violet);font:500 21px/1.5 var(--m);white-space:nowrap;color:var(--paper);transform-origin:50% 50%}
+#one b{font-weight:500;color:var(--violet)}
+#chips{left:36px;top:500px;display:flex;gap:10px}
+.chip{height:44px;padding:0 14px;border-radius:999px;background:#24222a;display:flex;align-items:center;gap:8px;font:700 17px/1 var(--m);transform-origin:0 50%;white-space:nowrap}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--good)}
+#base{left:36px;top:562px;height:42px;padding:0 16px;border-radius:999px;border:2px solid var(--rule);display:flex;align-items:center;font:700 16px/1 var(--m);color:var(--dim);letter-spacing:.06em;transform-origin:0 50%}
+/* the payoff */
+#tog{left:36px;top:206px;width:150px;height:78px;border-radius:999px;background:var(--rule)}
+#tog i{position:absolute;left:9px;top:9px;width:60px;height:60px;border-radius:50%;background:#fff}
+#list{left:36px;top:308px;width:468px;height:178px;border-radius:30px;background:var(--surface)}
+#list i{position:absolute;left:30px;height:22px;border-radius:11px;background:var(--rule)}
+#pay3{left:36px;top:510px;width:468px;height:80px;border-radius:999px;background:var(--violet);color:#fff;display:grid;place-items:center;font:700 27px/1 var(--f);transform-origin:50% 50%}
+#cap{left:36px;right:36px;top:668px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
 #cap span{display:inline-block;margin-right:.24em}
-.ui{background:#1f1d22;border-radius:26px}
 </style>
 </head>
 <body>
 <div id="lbl" class="a">Nº 01 · MOTION</div>
 <div id="hook" class="a"><span class="ln"><span>Why</span> <span>do</span> <span>some</span></span><span class="ln"><span>buttons</span> <span>feel</span></span><span class="ln"><span class="acc">expensive?</span></span></div>
-<div id="bA" class="a btn">Pay $48</div>
-<div id="bB" class="a btn">Pay $48</div>
 <div id="tag" class="a"></div>
-<canvas id="graph" class="a" width="920" height="460"></canvas>
-<div id="code" class="a"></div>
-<div id="c1" class="a chip"><i></i>Chrome 113</div>
-<div id="c2" class="a chip"><i></i>Firefox 112</div>
-<div id="c3" class="a chip"><i></i>Safari 17.2</div>
-<div id="c4" class="a chip" style="background:transparent;border:2px solid #3a3644;color:var(--dim)">Baseline 2023</div>
-<div id="tog" class="a ui" style="width:150px;height:76px;border-radius:999px;background:var(--violet)"><div class="a" style="right:8px;top:8px;width:60px;height:60px;border-radius:50%;background:#fff"></div></div>
-<div id="card" class="a ui" style="width:468px;height:190px"><div class="a" style="left:28px;top:34px;width:200px;height:22px;border-radius:11px;background:#34303c"></div><div class="a" style="left:28px;top:76px;width:330px;height:22px;border-radius:11px;background:#34303c"></div><div class="a" style="left:28px;top:118px;width:260px;height:22px;border-radius:11px;background:#34303c"></div></div>
+<div id="cA" class="a card"><div class="a sw" style="background:linear-gradient(135deg,#e9e2d3,#b9ad97)"></div><div class="a nm">Linen tote</div><div class="a sub">1 item · free delivery</div><div class="a pr">$48</div><div class="a ab">A</div><div class="a pay">Pay $48</div></div>
+<div id="cB" class="a card"><div class="a sw" style="background:linear-gradient(135deg,#e9e2d3,#b9ad97)"></div><div class="a nm">Linen tote</div><div class="a sub">1 item · free delivery</div><div class="a pr">$48</div><div class="a ab">B</div><div class="a pay">Pay $48</div></div>
+<div id="timer" class="a"><i></i></div><div id="timerL" class="a">BOTH 0.6 S</div>
+<canvas id="graph" class="a" width="936" height="400"></canvas>
+<div id="codebox" class="a"></div>
+<div id="one" class="a">transition: scale .6s <b>linear(…)</b>;</div>
+<div id="chips" class="a"><div id="c1" class="chip"><i></i>Chrome 113</div><div id="c2" class="chip"><i></i>Firefox 112</div><div id="c3" class="chip"><i></i>Safari 17.2</div></div>
+<div id="base" class="a">BASELINE 2023</div>
+<div id="tog" class="a"><i></i></div>
+<div id="list" class="a"><i style="top:36px;width:210px"></i><i style="top:78px;width:340px"></i><i style="top:120px;width:270px"></i></div>
+<div id="pay3" class="a">Pay $48</div>
 <div id="cap" class="a"></div>
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
   var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
   var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
-  // a real damped spring (zeta .55, omega 12): overshoots about 12%, settles in ~0.8 s
+  // a real damped spring (zeta .55, omega 12): overshoots about 12%, settles in ~0.8 s; the ease-out runs 0.6 s and stops dead
   var spring = function(s){ if (s <= 0) return 0; var z = .55, w = 12, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
-  var easeOut = function(s, d){ return out(cl(s / d)); };
-  var TEXT = 'Why do some buttons feel expensive? Same button. Same duration. This one eases in and stops dead. This one springs: it overshoots a touch, then settles, like a real object. CSS does this natively now, with linear(). Chrome, Firefox and Safari have all supported it since 2023. One line. Everything feels more physical.';
-  // words until the real narration arrives: an estimate at 2.8 words a second, so the scene can be previewed without a voice
-  var WORDS = [], DUR = 22;
-  (function(){ var t = .15; TEXT.split(/\s+/).forEach(function(w){ var d = .16 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,]$/.test(w) ? .22 : .06); }); })();
+  var ease = function(s){ return out(cl(s / .6)); };
+  // the script; "¦" marks a caption break that is not spoken
+  var TEXT = 'Why do some buttons feel expensive? Same button. Same duration. This one eases in and stops dead. This one springs: it overshoots a touch, then settles, like a real object. CSS does this natively now, with linear(). Chrome, Firefox and Safari¦ have all supported it since 2023. One line. Everything feels more physical.';
+  var WORDS = [], DUR = 23;
+  // until the real narration arrives: an estimate, so the scene can be previewed without a voice
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .16 + w.length * .03; WORDS.push({ w: w.replace('¦', ''), s: t, e: t + d }); t += d + (/[.?:,]$/.test(w) ? .22 : .06); }); })();
   var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
   function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s; return 99; }
-  function idx(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return i; return -1; }
-  var A = {};
-  // the voice's words come without punctuation: take each word's written form (with its comma or full stop) from the script, in order
+  // the voice's words come without punctuation: take each word's written form (and any caption break) from the script, in order
   function align(){ var T = TEXT.split(/\s+/), j = 0;
-    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+    WORDS.forEach(function(w){ w.d = w.w; w.brk = false; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k].replace('¦', ''); w.brk = T[k].indexOf('¦') >= 0; j = k + 1; break; } }); }
+  var A = {}, PH = [];
   function anchors(){
     align();
-    A = { same: at('same'), this1: at('this'), eases: at('eases'), dead: at('dead'), this2: at('this', 2), springs: at('springs'), over: at('overshoots'), settles: at('settles'),
-      real: at('real'), css: at('css'), linear: at('linear'), chrome: at('chrome'), firefox: at('firefox'), safari: at('safari'), y2023: at('2023'), one: at('one', 3), every: at('everything'), physical: at('physical') };
+    A = { same: at('same'), dur: at('duration'), this1: at('this'), eases: at('eases'), dead: at('dead'), this2: at('this', 2), springs: at('springs'), over: at('overshoots'), settles: at('settles'),
+      css: at('css'), linear: at('linear'), chrome: at('chrome'), firefox: at('firefox'), safari: at('safari'), y2023: at('2023'), one: at('one', 3), every: at('everything'), physical: at('physical') };
     A.end = WORDS[WORDS.length - 1].e;
-    // phrases for the captions: the script's sentences, cut at commas and colons too, so a caption never runs past two lines
-    // captions: one sentence at a time; a long one splits at its comma or colon nearest the middle (2-7 words a caption)
+    // captions: one sentence at a time, or up to a marked break; a long sentence splits at its comma nearest the middle
     PH = []; var cur = [];
-    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || w.brk || i === WORDS.length - 1) {
       if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
         if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
       else PH.push(cur);
       cur = []; } });
     buildCues();
   }
-  var PH = [];
-  // ---------- the curve graph ----------
+  // ---------- the motion curve: the button's scale over time, drawn as it happens ----------
   var g = $('graph').getContext('2d');
-  function graph(kind, prog, alpha, col){
-    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 920, 460); g.fillStyle = 'rgba(0,0,0,0.004)'; g.fillRect(0, 0, 1, 1);   // never leave the layer empty (stale-canvas bug)
+  function graph(kind, prog, alpha, col, notes){
+    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, 936, 400); g.fillStyle = 'rgba(0,0,0,0.004)'; g.fillRect(0, 0, 1, 1);   // never leave the layer empty (stale-canvas bug)
     if (alpha <= 0) return; g.globalAlpha = alpha; g.setTransform(2, 0, 0, 2, 0, 0);
-    var X = function(x){ return 10 + x * 430; }, Y = function(y){ return 200 - y * 150; };
-    g.strokeStyle = '#2c2a27'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(X(1), Y(0)); g.stroke();
-    g.setLineDash([6, 6]); g.beginPath(); g.moveTo(X(0), Y(1)); g.lineTo(X(1), Y(1)); g.stroke(); g.setLineDash([]);
-    g.fillStyle = '#8d877c'; g.font = "500 13px 'JetBrains Mono'"; g.fillText('target', X(1) - 52, Y(1) - 10); g.fillText('time →', X(0), Y(0) + 22);
-    var f = kind === 'spring' ? function(x){ return spring(x * .9); } : function(x){ return out(cl(x / .55)); };
-    g.strokeStyle = col; g.lineWidth = 4; g.lineCap = 'round'; g.beginPath();
-    for (var i = 0; i <= 120 * prog; i++) { var x = i / 120; i ? g.lineTo(X(x), Y(f(x))) : g.moveTo(X(x), Y(f(x))); } g.stroke();
-    var px = prog; g.fillStyle = col; g.beginPath(); g.arc(X(px), Y(f(px)), 8, 0, 7); g.fill();
+    var X = function(x){ return 4 + x * 440; }, Y = function(y){ return 172 - y * 130; };
+    g.strokeStyle = '#2c2a27'; g.lineWidth = 2; g.beginPath(); g.moveTo(X(0), Y(0)); g.lineTo(X(1), Y(0)); g.stroke();
+    g.setLineDash([7, 7]); g.beginPath(); g.moveTo(X(0), Y(1)); g.lineTo(X(1), Y(1)); g.stroke(); g.setLineDash([]);
+    g.fillStyle = '#8d877c'; g.font = "700 14px 'JetBrains Mono'"; g.fillText('FULL SIZE', X(0), Y(1) - 12); g.fillText('TIME →', X(0), Y(0) + 24);
+    var f = kind === 'spring' ? function(x){ return spring(x * 1.2); } : function(x){ return ease(x * 1.2); };
+    g.strokeStyle = col; g.lineWidth = 5; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath();
+    for (var i = 0; i <= 160 * prog; i++) { var x = i / 160; i ? g.lineTo(X(x), Y(f(x))) : g.moveTo(X(x), Y(f(x))); } g.stroke();
+    g.fillStyle = col; g.beginPath(); g.arc(X(prog), Y(f(prog)), 9, 0, 7); g.fill();
+    (notes || []).forEach(function(n){ if (n.k <= 0) return; g.globalAlpha = alpha * n.k; g.fillStyle = n.c; g.font = "700 16px 'JetBrains Mono'"; g.fillText(n.s, X(n.x), Y(n.y)); g.globalAlpha = alpha; });
     g.globalAlpha = 1;
   }
-  // ---------- the code ----------
-  var CODE = 'transition: scale .6s\n  <b>linear(0, .55 10%,\n    1.12 30%, .98 55%,\n    1.01 75%, 1)</b>;';
-  var CODE_TXT = CODE.replace(/<\/?b>/g, '');
-  function code(n){   // the first n characters, keeping the violet span
-    var out = '', k = 0, inB = false;
-    for (var i = 0; i < CODE.length && k < n; i++) { if (CODE.substr(i, 3) === '<b>') { out += '<b>'; inB = true; i += 2; continue; } if (CODE.substr(i, 4) === '</b>') { out += '</b>'; inB = false; i += 3; continue; } out += CODE[i]; k++; }
-    return out + (inB ? '</b>' : '');
+  // ---------- the code, typed ----------
+  var CODE = '<span class="dim">.pay {</span>\n  transition: scale .6s\n    <b>linear(0, .55 10%,\n    1.12 30%, .98 55%,\n    1.01 75%, 1)</b>;\n<span class="dim">}</span>';
+  var CODE_TXT = CODE.replace(/<[^>]+>/g, '');
+  function typed(n){   // the first n visible characters, tags kept balanced
+    var o = '', k = 0, open = [];
+    for (var i = 0; i < CODE.length; i++) { if (CODE[i] === '<') { var e = CODE.indexOf('>', i), tag = CODE.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += CODE[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>';
+    return o;
   }
-  function place(el, x, y, s, o){ el.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')'; el.style.opacity = o; }
+  function tf(el, x, y, s, o){ el.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')'; el.style.opacity = o; }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t));
-    // ---- beat 1: the hook, each word lands as it is spoken; "expensive?" springs ----
-    var hw = $('hook').querySelectorAll('span span, span.acc'), gone = io(P(t, A.same - .25, A.same + .2));
+    var ex = io(P(t, DUR - .6, DUR - .1));   // the exit: everything drops away so the loop starts on bare ink
+    // ---- 1. the hook: each word lands as it is spoken; "expensive?" springs ----
+    var gone = io(P(t, A.same - .3, A.same + .15));
     [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
-      var s = WORDS[i] ? WORDS[i].s - .08 : 0, k = i === 5 ? spring(t - s) : out(P(t, s, s + .28)), back = io(P(t, DUR - .5, DUR));
-      sp.style.opacity = cl((t - s) * 8) * (1 - gone);
-      sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 120) + 'px) scale(' + (i === 5 ? .6 + .4 * k : 1) + ')';
+      var s = WORDS[i] ? WORDS[i].s - .08 : 0, k = i === 5 ? spring(t - s) : out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone);
+      sp.style.transform = 'translateY(' + ((1 - k) * 44 - gone * 90) + 'px) scale(' + (i === 5 ? .55 + .45 * k : 1) + ')';
     });
-    $('lbl').style.opacity = 1 - io(P(t, A.end + .3, A.end + .8));
-    // ---- the two buttons: ghosts under the hook, then the comparison ----
-    var bA = $('bA'), bB = $('bB');
-    // states: ghosts under the hook → "same button, same duration" side by side → A alone (ease) → match cut to B (spring) → gone at "CSS"
-    var eA = easeOut(t - A.eases, .55), eB = spring(t - A.springs);
-    var pair = out(P(t, A.same - .1, A.same + .4)), soloA = 0, soloB = 0;
-    var plain = function(el){ el.style.background = ''; el.style.color = ''; };
-    if (t < A.same) { var gh = .3 * out(P(t, .5, 1.1)) * (1 - P(t, A.same - .25, A.same));
-      bA.style.background = bB.style.background = '#2a2826'; bA.style.color = bB.style.color = '#8d877c';
-      place(bA, -10, 640, .58, gh); place(bB, 250, 640, .58, gh); }
-    else if (t < A.this1) { plain(bA); plain(bB); place(bA, -10, mix(640, 300, pair), .58, 1); place(bB, 250, mix(640, 300, pair), .58, 1); }
-    else if (t < A.this2) { plain(bA); soloA = 1; var mv = io(P(t, A.this1, A.this1 + .3));
-      place(bA, mix(-10, 120, mv), 300, t < A.eases ? mix(.58, 0, mv) : eA, 1); place(bB, mix(250, 560, mv), 300, .58, 1 - mv); }
-    else if (t < A.css) { plain(bB); soloB = 1; bA.style.opacity = 0; place(bB, 120, 300, t < A.springs ? 0 : eB, 1); }
-    else { bA.style.opacity = 0; bB.style.opacity = 0; }
-    soloA *= 1 - P(t, A.this2 - .15, A.this2); soloB *= 1 - io(P(t, A.css - .1, A.css + .3));
-    // the tag above the button names the motion
-    var tg = $('tag');
-    if (soloB > 0) { tg.textContent = 'SPRING'; tg.style.color = 'var(--violet)'; tg.style.opacity = soloB; }
-    else if (soloA > 0) { tg.textContent = 'EASE-OUT · 0.6 S'; tg.style.color = 'var(--dim)'; tg.style.opacity = soloA; }
-    else if (t >= A.same && t < A.this1) { tg.textContent = 'SAME BUTTON · SAME DURATION'; tg.style.color = 'var(--dim)'; tg.style.opacity = out(P(t, A.same + .9, A.same + 1.2)) * pair; }
-    else tg.style.opacity = 0;
-    tg.style.transform = 'translate(36px,230px)';
-    // the graph draws in time with each move
-    if (soloB > 0) graph('spring', cl((t - A.springs) / 1.4), soloB, '#8b6cff');
-    else if (soloA > 0) graph('ease', cl((t - A.eases) / 1.4), soloA, '#f2efe8');
+    $('lbl').style.opacity = 1 - ex;
+    // ---- 2. "Same button. Same duration.": two checkout cards side by side, one timer for both ----
+    var cA = $('cA'), cB = $('cB'), payA = cA.querySelector('.pay'), payB = cB.querySelector('.pay'), tag = $('tag');
+    var pairIn = out(P(t, A.same - .15, A.same + .35)), solo = io(P(t, A.this1 - .05, A.this1 + .4)), toB = P(t, A.this2 - .12, A.this2 + .02), codeIn = io(P(t, A.css - .2, A.css + .3));
+    var sc = mix(.7, 1, solo);   // stacked at 70% (big enough to read), then A full width and B slides away
+    tf(cA, mix(70, 0, solo), mix(40 * (1 - pairIn), 0, solo), sc, (t < A.same - .15 ? 0 : pairIn) * (1 - toB));
+    tf(cB, mix(70, 540, solo), 182 + 40 * (1 - pairIn), .7, (t < A.same - .15 ? 0 : pairIn) * (1 - solo));
+    var tmK = P(t, A.dur, A.dur + .6), tmO = out(P(t, A.dur - .1, A.dur + .1)) * (1 - solo);
+    $('timer').firstChild.style.width = tmK * 100 + '%'; $('timer').style.opacity = tmO; $('timerL').style.opacity = tmO;
+    // both Pay buttons pop in on "Same duration" with the same timing, so they look identical
+    var pairPop = t < A.dur ? 1 : ease(t - A.dur);
+    payA.style.transform = 'scale(' + (solo > 0 ? (t < A.eases ? 1 - P(t, A.this1, A.this1 + .25) : ease(t - A.eases)) : pairPop) + ')';
+    payB.style.transform = 'scale(' + pairPop + ')';
+    // ---- 3. A alone, easing; 4. the match cut to B, springing (same framing) ----
+    var showB = toB > 0 && t < A.css + .3;
+    if (showB) { tf(cB, 0, 0, 1, 1 - codeIn); payB.style.transform = 'scale(' + (t < A.springs ? 0 : spring(t - A.springs)) + ')'; }
+    if (t < A.same - .2) { tag.style.opacity = 0; }
+    else if (t < A.this1) { tag.textContent = 'SAME BUTTON · SAME TIMING'; tag.style.color = 'var(--dim)'; tag.style.opacity = pairIn; }
+    else if (!showB) { tag.textContent = 'A · EASE-OUT'; tag.style.color = 'var(--dim)'; tag.style.opacity = solo; }
+    else { tag.textContent = 'B · SPRING'; tag.style.color = 'var(--violet)'; tag.style.opacity = 1 - codeIn; }
+    if (t >= A.css + .3) tag.style.opacity = 0;
+    // the curve under the card: drawn as the button grows; for the spring, the overshoot and the settle are called out as they are said
+    if (showB) graph('spring', cl((t - A.springs) / 1.1), 1 - codeIn, '#8b6cff', [{ s: '+12%', x: .23, y: 1.2, c: '#8b6cff', k: out(P(t, A.over, A.over + .3)) }, { s: 'settles', x: .62, y: 1.16, c: '#8d877c', k: out(P(t, A.settles, A.settles + .3)) }]);
+    else if (solo > 0) graph('ease', cl((t - A.eases) / 1.1), solo * (1 - toB), '#f2efe8', [{ s: 'stops dead', x: .52, y: 1.16, c: '#8d877c', k: out(P(t, A.dead, A.dead + .3)) }]);
     else graph('ease', 0, 0, '#000');
-    // ---- beat 4: the code types itself, the browsers pop in as they are named ----
-    var cd = P(t, A.css - .1, A.css + .3) * (1 - io(P(t, A.every - .2, A.every + .2)));
-    var nch = Math.floor(CODE_TXT.length * P(t, A.css, A.linear + 1.0));
-    $('code').innerHTML = code(nch); $('code').style.opacity = cd; $('code').style.transform = 'translateY(' + (1 - out(cd)) * 30 + 'px)';
-    [['c1', A.chrome, 420], ['c2', A.firefox, 480], ['c3', A.safari, 540], ['c4', A.y2023, 600]].forEach(function(c){
-      var k = spring(t - c[1] + .05), o = cl((t - c[1] + .05) * 6) * (1 - io(P(t, A.every - .2, A.every + .2)));
-      $(c[0]).style.transform = 'translate(0,' + c[2] + 'px) scale(' + (.5 + .5 * k) + ')'; $(c[0]).style.opacity = o; });
-    // ---- beat 5: everything on springs ----
-    var pay = [['tog', 36, 230, A.every], ['card', 36, 330, A.every + .14], ['bB', 120, 552, A.every + .28]];
-    var outK = io(P(t, DUR - .55, DUR - .1));
-    pay.forEach(function(p){ var k = spring(t - p[3]); if (t < p[3] - .05 && p[0] === 'bB') return; if (t < p[3] - .05) { $(p[0]).style.opacity = 0; return; }
-      $(p[0]).style.opacity = cl((t - p[3]) * 8) * (1 - outK); $(p[0]).style.transform = 'translate(' + p[1] + 'px,' + (p[2] + (1 - k) * 60 + outK * 40) + 'px) scale(' + (.6 + .4 * k) + ')'; });
-    // ---- captions: the current phrase, word by word; the spoken word is bright, the rest wait (none during the hook) ----
-    var cap = $('cap'), ph = null;
-    for (var i = 0; i < PH.length; i++) { var f = PH[i][0], l = PH[i][PH[i].length - 1]; if (t >= WORDS[f].s - .1 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - .1)) ph = PH[i]; }
+    // ---- 5. the code types itself; the browsers pop in as they are named ----
+    var oneK = io(P(t, A.one - .1, A.one + .35)), payoffIn = P(t, A.every - .25, A.every);
+    var nch = Math.floor(CODE_TXT.length * P(t, A.css + .05, A.linear + .8));
+    $('codebox').innerHTML = typed(nch);
+    tf($('codebox'), 0, (1 - codeIn) * 40, mix(1, .9, oneK), codeIn * (1 - oneK));
+    [['c1', A.chrome], ['c2', A.firefox], ['c3', A.safari]].forEach(function(c){ var k = spring(t - c[1] + .05);
+      $(c[0]).style.transform = 'scale(' + (.5 + .5 * k) + ')'; $(c[0]).style.opacity = cl((t - c[1] + .05) * 7) * (1 - payoffIn); });
+    var bk = spring(t - A.y2023 + .05); $('base').style.transform = 'scale(' + (.5 + .5 * bk) + ')'; $('base').style.opacity = cl((t - A.y2023 + .05) * 7) * (1 - payoffIn);
+    // ---- 6. "One line.": the code collapses into the single line that matters ----
+    var oneOut = io(P(t, A.every - .3, A.every));
+    tf($('one'), 0, (1 - oneK) * -40, mix(.92, 1, spring(t - A.one)), oneK * (1 - oneOut));
+    // ---- 7. "Everything feels more physical.": a toggle, a card and the button spring in; on "physical" they all move once more ----
+    var ph = A.physical, items = [['tog', A.every], ['list', A.every + .14], ['pay3', A.every + .28]];
+    items.forEach(function(it, i){ var el = $(it[0]), k = spring(t - it[1]), o = cl((t - it[1]) * 8) * (1 - ex);
+      var second = i === 2 ? 1 - .06 * Math.sin(Math.PI * P(t, ph, ph + .16)) + .06 * (spring(t - ph - .16) - 1) * (t > ph + .16 ? 1 : 0) : 1;
+      el.style.opacity = t < it[1] ? 0 : o; el.style.transform = 'translateY(' + ((1 - k) * 70 + ex * 60) + 'px) scale(' + ((.7 + .3 * k) * second) + ')'; });
+    var tk = spring(t - ph); $('tog').style.background = t >= ph ? 'var(--violet)' : 'var(--rule)'; $('tog').firstChild.style.transform = 'translateX(' + (72 * (t >= ph ? tk : 0)) + 'px)';
+    var lk = spring(t - ph - .08); $('list').style.boxShadow = '0 ' + (18 * lk) + 'px ' + (40 * lk) + 'px rgba(0,0,0,' + (.45 * lk) + ')';
+    // ---- captions: the current phrase, word by word, the accent words in violet (none during the hook) ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - .1 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - .1)) ph0 = PH[i]; }
     var html = '';
-    if (ph && ph[0] > 5 && t < DUR - .5) ph.forEach(function(j){ var w = WORDS[j], on = t >= w.s - .04, k = out(P(t, w.s - .04, w.s + .16)), acc = /expensive|springs|physical|linear/i.test(w.w);
-      html += '<span style="opacity:' + (on ? 1 : 0) + ';transform:translateY(' + (1 - k) * 14 + 'px);color:' + (acc ? 'var(--violet)' : 'var(--paper)') + '">' + w.d.replace(/</g, '') + '</span>'; });
-    cap.innerHTML = html;
+    if (ph0 && ph0[0] > 5 && t < DUR - .5) ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - .04, k = out(P(t, w.s - .04, w.s + .16)), acc = /expensive|springs|physical|linear/i.test(w.d);
+      html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + (acc ? 'var(--violet)' : 'var(--paper)') + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
-  // ---------- sound cues (scripts/showreel/sound.py), anchored to the same words ----------
+  // ---------- sound (scripts/showreel/sound.py): the voice leads; quiet taps and soft air under it (owner, 24 Oct: no big funky pops) ----------
   function buildCues(){
-    var Q = [{ t: 0, k: 'hit', g: .4, p: -.4 }];
-    for (var i = 0; i < 6 && i < WORDS.length; i++) Q.push(i === 5 ? { t: WORDS[i].s, k: 'pop', p: 7, g: 1 } : { t: WORDS[i].s, k: 'pop', p: i * 2, g: .55 });
-    Q.push({ t: A.same, k: 'whoosh', d: .5, g: .6, p: .2 }, { t: A.this1 + .2, k: 'whoosh', d: .4, g: .5 }, { t: A.eases, k: 'click', g: 1 }, { t: A.eases + .55, k: 'hit', g: .35, p: -.6 });   // stops dead
-    Q.push({ t: A.this2, k: 'whoosh', d: .4, g: .5, p: .4 }, { t: A.springs, k: 'click', g: 1 }, { t: A.springs + .18, k: 'pop', p: 12, g: .7 }, { t: A.springs + .45, k: 'tick', p: 5, g: .5 });   // the overshoot and the settle
-    Q.push({ t: A.css, k: 'whoosh', d: .5, g: .6, p: -.2 });
-    for (var c = 0; c < 14; c++) Q.push({ t: A.css + c * (A.linear + 1 - A.css) / 14, k: 'tick', p: (c * 5) % 9, g: .35 });   // typing
-    [A.chrome, A.firefox, A.safari].forEach(function(x, j){ Q.push({ t: x, k: 'pop', p: 4 + j * 3, g: .8 }); }); Q.push({ t: A.y2023, k: 'tick', p: 12, g: .7 });
-    Q.push({ t: A.every, k: 'riser', d: .7, g: .45 }, { t: A.every, k: 'pop', p: 0 }, { t: A.every + .14, k: 'pop', p: 4 }, { t: A.every + .28, k: 'pop', p: 7 }, { t: A.physical, k: 'hit', g: .7 });
-    Q.push({ t: DUR - .3, k: 'whoosh', d: .5, g: .4, p: -.6 });
-    // the bed: eight bars that fill the reel exactly, so it loops with the picture
-    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, chords: [[33, 57, 60, 64, 71], [29, 57, 60, 64, 69], [36, 55, 59, 62, 64], [31, 55, 59, 62, 64]] } };
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.end > 0 ? WORDS[5].s : 1, k: 'tap', g: .8, p: 0 }];
+    Q.push({ t: A.same, k: 'swish', d: .4, g: .7 }, { t: A.dur, k: 'tap', g: .6, p: -2 });
+    Q.push({ t: A.this1, k: 'swish', d: .4, g: .6, p: .2 }, { t: A.eases, k: 'tap', g: .8 }, { t: A.eases + .6, k: 'thud', g: .45 });   // stops dead
+    Q.push({ t: A.this2, k: 'swish', d: .35, g: .6, p: .4 }, { t: A.springs, k: 'tap', g: .8, p: 3 }, { t: A.springs + .22, k: 'tick', g: .18, p: 7 });   // the overshoot, felt not heard
+    Q.push({ t: A.css, k: 'swish', d: .45, g: .7, p: -.2 });
+    var t0 = A.css + .05, t1 = A.linear + .8; for (var c = 0; t0 + c * .11 < t1; c++) Q.push({ t: t0 + c * .11, k: 'tick', g: .1, p: (c * 5) % 7 });   // typing, barely there
+    [A.chrome, A.firefox, A.safari, A.y2023].forEach(function(x, j){ Q.push({ t: x, k: 'tap', g: .55, p: j * 2 }); });
+    Q.push({ t: A.one, k: 'tap', g: .7, p: 5 }, { t: A.every, k: 'swish', d: .5, g: .6 }, { t: A.every, k: 'tap', g: .45 }, { t: A.every + .14, k: 'tap', g: .45, p: 2 }, { t: A.every + .28, k: 'tap', g: .45, p: 4 });
+    Q.push({ t: A.physical, k: 'tap', g: .8, p: 7 }, { t: DUR - .4, k: 'swish', d: .6, g: .5, p: -.6 });
+    // a quiet bed: eight bars that fill the reel exactly, so it loops with the picture
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[33, 57, 60, 64, 71], [29, 57, 60, 64, 69], [36, 55, 59, 62, 64], [31, 55, 59, 62, 64]] } };
   }
   anchors();
   window.seek = seek; window.DURATION = DUR;
-  document.fonts.load("800 76px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 25px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+  document.fonts.load("800 78px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
     .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 </script>
