@@ -54,13 +54,13 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
   var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
   var spring = function(s){ if (s <= 0) return 0; var z = .55, w = 12, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
-  var TEXT = "Your site loads fast. So why does it feel slow? Tap Add to cart. Nothing happens for six hundred milliseconds. That's INP: tap to next frame. Google calls over five hundred poor. The cause: one long JavaScript task. Split it so the browser can paint in between. Under two hundred feels instant.";
+  var TEXT = "Your site loads fast. So why does it feel slow? Tap Add to cart. Nothing happens for six hundred milliseconds. That's INP: tap to next frame. Google calls over five hundred poor. The cause: one long JavaScript task. Split it¦ so the browser can paint in between. Under two hundred feels instant.";
   var WORDS = [], DUR = 22;
-  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .16 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,]$/.test(w) ? .22 : .06); }); })();
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .16 + w.length * .03; WORDS.push({ w: w.replace('¦', ''), s: t, e: t + d }); t += d + (/[.?:,]$/.test(w) ? .22 : .06); }); })();
   var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
   function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s; return 99; }
   function align(){ var T = TEXT.split(/\s+/), j = 0;
-    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+    WORDS.forEach(function(w){ w.d = w.w; w.brk = false; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k].replace('¦', ''); w.brk = T[k].indexOf('¦') >= 0; j = k + 1; break; } }); }
   var A = {}, PH = [];
   function anchors(){
     align();
@@ -68,7 +68,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
       google: at('google'), poor: at('poor'), cause: at('cause'), long: at('long'), task: at('task'), split: at('split'), paint: at('paint'), between: at('between'), under: at('under'), instant: at('instant') };
     A.end = WORDS[WORDS.length - 1].e;
     PH = []; var cur = [];
-    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || w.brk || i === WORDS.length - 1) {
       if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
         if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
       else PH.push(cur);
