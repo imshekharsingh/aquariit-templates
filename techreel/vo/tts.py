@@ -10,7 +10,7 @@ import wave
 import numpy as np
 
 SR = 48000
-GAP = .14          # silence between lines
+GAP = .04          # extra silence between lines (each line already keeps 50 ms before and 110 ms after its sound)
 FIRST = .08        # the first line starts here
 MAX_END = 19.4
 WPS = 3.9          # Kokoro af_heart at 1.05 speaks about 3.9 words a second (measured 24 Oct); used by --fake-vo
@@ -95,12 +95,12 @@ def generate(topic, wav_path, fake=False):
         for l, pr in zip(lines, pairs):
             text = ' '.join(' '.join(sp) for _, sp in pr) + ('.' if not re.search(r'[.?!]$', l) else l[-1])
             a, toks, ph = _speak(pipe, text, topic.get('voice', 'af_heart'), speed)
-            # trim the model's leading and trailing silence, but gently: a low threshold, 60 ms kept before the first sound and
-            # 140 ms after the last, with short fades, so soft onsets ("So", "Per") and final consonants ("bought") survive
+            # trim the model's leading and trailing silence, but gently: a low threshold, 50 ms kept before the first sound and
+            # 110 ms after the last, with short fades, so soft onsets ("So", "Per") and final consonants ("bought") survive
             env = np.convolve(np.abs(a), np.ones(240) / 240, 'same')
             nz = np.flatnonzero(env > .004 * env.max())
-            i0 = max(0, nz[0] - int(.06 * 24000)) if len(nz) else 0
-            i1 = min(len(a), nz[-1] + int(.14 * 24000)) if len(nz) else len(a)
+            i0 = max(0, nz[0] - int(.05 * 24000)) if len(nz) else 0
+            i1 = min(len(a), nz[-1] + int(.11 * 24000)) if len(nz) else len(a)
             lead = i0 / 24000
             a = a[i0:i1].copy()
             f = min(len(a) // 4, 240); a[:f] *= np.linspace(0, 1, f); a[-f:] *= np.linspace(1, 0, f)

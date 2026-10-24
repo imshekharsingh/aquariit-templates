@@ -62,7 +62,7 @@
    }
   },
   {
-   "text": "Each agent gets its own profile, so its orders stay apart.",
+   "text": "Each agent gets its own profile, kept apart.",
    "scene": {
     "label": "THE PROFILE",
     "tint": "green",
@@ -128,7 +128,7 @@
    ]
   },
   {
-   "text": "So set a limit first, and check what your agent bought.",
+   "text": "Set a limit first, and check what it bought.",
    "scene": {
     "label": "THE TAKEAWAY",
     "tint": "green",
