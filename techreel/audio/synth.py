@@ -126,12 +126,23 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
     active = venv > .02 * venv.max()
     vo *= 10 ** ((-15.6 - rms_db(vo[active])) / 20)
     # duck: music sits at about -25 dB RMS while the voice plays, and rises about 5 dB in the gaps
-    act = np.convolve(active.astype(float), np.ones(int(.12 * SR)) / int(.12 * SR), 'same')
+    # slow duck: the music only rises in pauses longer than about half a second, so it does not pump between lines
+    act = np.convolve(active.astype(float), np.ones(int(.6 * SR)) / int(.6 * SR), 'same')
     bed *= 10 ** ((-25 - rms_db(bed[active])) / 20) if active.any() else 1
     bed *= 1 + (10 ** (5 / 20) - 1) * (1 - np.clip(act, 0, 1))
     mix = vo + bed
     fade = int(.35 * SR); mix[-fade:] *= np.linspace(1, 0, fade)
-    mix = np.tanh(mix * 1.1) / 1.1
+    # a look-ahead peak limiter at -1.5 dBFS instead of saturation (tanh bent the voice's loudest syllables)
+    thr = 10 ** (-1.5 / 20)
+    need = np.minimum(1, thr / (np.abs(mix) + 1e-9))
+    la = int(.004 * SR)
+    from scipy.ndimage import minimum_filter1d
+    g = minimum_filter1d(need, size=2 * la + 1)
+    rel = np.exp(-1 / (.08 * SR)); out_g = np.empty_like(g); cur = 1.0
+    for i in range(len(g)):
+        cur = g[i] if g[i] < cur else cur * rel + g[i] * (1 - rel)
+        out_g[i] = cur
+    mix = mix * out_g
     st = (np.clip(np.stack([mix, mix]).T, -1, 1) * 32767).astype('<i2')
     with wave.open(out_wav, 'wb') as w:
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(st.tobytes())

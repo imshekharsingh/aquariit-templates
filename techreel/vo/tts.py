@@ -1,5 +1,7 @@
 """Voiceover: Kokoro TTS (open licence, CPU, no key), generated line by line with a start and end time for every displayed word.
-The topic's "say" map gives pronunciation overrides (display word -> spoken words, e.g. "AI": "A I"). The spoken text may not contain
+The topic's "say" map gives pronunciation overrides: display word -> spoken words, or Kokoro phoneme markup for letters and brands,
+e.g. "AI": "[AI](/ˌAˈI/)" (plain "A I" can be read as "uh I": the phonemizer may take a lone A for the article). Every line's phonemes
+are kept in vo.json and listed in qa.txt so the pronunciation can be checked. The spoken text may not contain
 digits or hyphens; the whole voice must end by 19.4 s (the speed is nudged up a little if needed, then it fails and asks for a trim)."""
 import json
 import re
@@ -26,22 +28,23 @@ def spoken_words(line, say):
         rep = say.get(c, say.get(c.lower(), c))
         sp = rep.split()
         for s in sp:
-            if re.search(r'\d', s) or '-' in s:
+            if re.search(r'\d', s) or ('-' in s and not s.startswith('[')):
                 raise SystemExit(f'spoken text must spell numbers out and avoid hyphens: "{s}" in "{line}" (add it to "say")')
         out.append((w, sp))
     return out
 
 
 def _speak(pipe, text, voice, speed):
-    audio, toks, off = [], [], 0.0
+    audio, toks, off, ps = [], [], 0.0, []
     for r in pipe(text, voice=voice, speed=speed):
+        ps.append(r.phonemes or '')
         a = np.asarray(r.audio, dtype=np.float32).reshape(-1)
         for k in (r.tokens or []):
             if re.search(r'\w', k.text or '') and k.start_ts is not None:
                 toks.append((k.text, off + k.start_ts, off + (k.end_ts if k.end_ts is not None else k.start_ts + .2)))
         audio.append(a)
         off += len(a) / 24000
-    return np.concatenate(audio), toks
+    return np.concatenate(audio), toks, ' '.join(ps)
 
 
 def _assign(pairs, toks, dur):
@@ -80,17 +83,30 @@ def generate(topic, wav_path, fake=False):
     from kokoro import KPipeline
     pipe = KPipeline(lang_code='a', repo_id='hexgrad/Kokoro-82M')
     speed = topic.get('speed', 1.05)
+    # how the phonemizer reads each overridden word on its own, spelled with spaces, and with the override (for QA)
+    checks = {}
+    for k, v in say.items():
+        try:
+            checks[k] = {form: pipe.g2p(f'Can an {form} shop?')[0] for form in (k, ' '.join(k), v)}
+        except Exception as e:
+            checks[k] = {'error': str(e)}
     while True:
         res, chunks, cur = [], [], FIRST
         for l, pr in zip(lines, pairs):
             text = ' '.join(' '.join(sp) for _, sp in pr) + ('.' if not re.search(r'[.?!]$', l) else l[-1])
-            a, toks = _speak(pipe, text, topic.get('voice', 'af_heart'), speed)
-            nz = np.flatnonzero(np.abs(a) > .01 * np.abs(a).max())   # trim the model's leading and trailing silence
-            lead = nz[0] / 24000 if len(nz) else 0
-            a = a[nz[0]:nz[-1] + 1] if len(nz) else a
+            a, toks, ph = _speak(pipe, text, topic.get('voice', 'af_heart'), speed)
+            # trim the model's leading and trailing silence, but gently: a low threshold, 60 ms kept before the first sound and
+            # 140 ms after the last, with short fades, so soft onsets ("So", "Per") and final consonants ("bought") survive
+            env = np.convolve(np.abs(a), np.ones(240) / 240, 'same')
+            nz = np.flatnonzero(env > .004 * env.max())
+            i0 = max(0, nz[0] - int(.06 * 24000)) if len(nz) else 0
+            i1 = min(len(a), nz[-1] + int(.14 * 24000)) if len(nz) else len(a)
+            lead = i0 / 24000
+            a = a[i0:i1].copy()
+            f = min(len(a) // 4, 240); a[:f] *= np.linspace(0, 1, f); a[-f:] *= np.linspace(1, 0, f)
             dur = len(a) / 24000
             ws = _assign(pr, [(x, s - lead, e - lead) for x, s, e in toks], dur)
-            res.append({'text': l, 'start': round(cur, 3), 'end': round(cur + dur, 3), 'words': [dict(w, s=round(max(0, w['s']) + cur, 3), e=round(min(dur, w['e']) + cur, 3)) for w in ws]})
+            res.append({'phonemes': ph, 'text': l, 'start': round(cur, 3), 'end': round(cur + dur, 3), 'words': [dict(w, s=round(max(0, w['s']) + cur, 3), e=round(min(dur, w['e']) + cur, 3)) for w in ws]})
             chunks.append((cur, a))
             cur += dur + GAP
         end = cur - GAP
@@ -105,12 +121,13 @@ def generate(topic, wav_path, fake=False):
     for st, a in chunks:
         i = int(st * 24000)
         out[i:i + len(a)] += a
-    out = np.interp(np.arange(0, len(out) * 2) / 2, np.arange(len(out)), out)   # 24 kHz -> 48 kHz
+    from scipy.signal import resample_poly
+    out = resample_poly(out, 2, 1)   # 24 kHz -> 48 kHz with a proper low-pass (linear interpolation added a metallic edge)
     out = out / (np.abs(out).max() + 1e-9) * .9
     with wave.open(wav_path, 'wb') as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
         w.writeframes((out * 32767).astype('<i2').tobytes())
-    return {'dur': round(end, 3), 'lines': res, 'speed': speed}
+    return {'dur': round(end, 3), 'lines': res, 'speed': speed, 'say_checks': checks}
 
 
 if __name__ == '__main__':
