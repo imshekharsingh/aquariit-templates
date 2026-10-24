@@ -69,6 +69,14 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 24 Oct 2026, 08:55 IST audit (collect 04:36 IST; @webin20sec 12 followers (+0), 17 posts; @techin20sec 8 followers (+0), 9 posts)
+Studio, 7 days: 23 Oct 21:21 "This page transition uses zero JavaScript" (Steal this, showreel-10) **12 reach, 13.4 s avg watch** (5 h old) · 23 Oct 13:23 Built in 20 s 102, 2.5 s, 2 saves · 22 Oct 16:20 layout shift (other) 14, 4.6 s · 21 Oct 23:21 heroes (Six ways) 19, 3.8 s · 19 Oct 18:31 launch site (other) 22, 2.5 s · 18 Oct 22:14 CDN (other) 32, 3.2 s · 18 Oct 14:20 6 motion styles (Six ways) 278, 4.8 s, 8 saves · 17 Oct 21:21 CDN (other) 49, 4.9 s. 0 shares all week.
+techin20sec, 7 days: 24 Oct 00:04 PHP bugs 109, 3.8 s · 23 Oct 14:12 weak-key flaw 129, 4.4 s, 1 save · 23 Oct 11:52 MCP 112, 4.0 s, 1 save · 22 Oct 16:43 encrypted data 119, 7.1 s · 21 Oct quantum 113, 4.1 s; AI-agent hijack 119, 4.7 s, 2 saves, 2 shares · 20 Oct RAM 121, 5.7 s; giant models 114, 3.7 s · 19 Oct AI agents 33.
+**Head to head:** median reach per reel 27 (studio, 8 reels) vs 114 (techin20sec, 9 reels). Best of 24 h: studio Built in 20 s (102, 2 saves, nearly doubled overnight); techin20sec weak-key flaw (129), a news claim that is answered in the first line.
+**Read:** showreel-10 (paradox hook + sound, closest to the narrated format) held 13.4 s, the account's best hold since the 13 Oct film, but Instagram had shown it to 12 people; Built in 20 s got reach (102) yet held 2.5 s. Hook + voice keeps people; distribution still does not.
+techin20sec's floor is ~110 reach per reel with only 8 followers: a question or claim in the first words, posted daily. **Milestone:** 12/100 followers; best reel 278/1,000 reach.
+**Next:** Nº 01 "Why do some buttons feel expensive?" (narrated explainer) as soon as the rough cut passes review; re-check showreel-10 at 24 h and 48 h as its baseline.
+
 ### 23 Oct 2026, 20:25 IST audit (collect 20:23 IST; @webin20sec 12 followers (+0), 16 posts; @techin20sec 8 followers (+1), 8 posts)
 Studio: 23 Oct 13:23 "A website, built in 20 seconds" (Built in 20 s, film look) **54 reach, 2.8 s avg watch**, 0 saves, 0 shares (7 h old) · 22 Oct 16:20 layout shift 14, 4.6 s · 21 Oct 23:21 heroes 19, 3.8 s.
 techin20sec: 23 Oct 14:12 weak-key flaw 102, 4.7 s, 1 save · 23 Oct 11:52 MCP explained 107, 4.1 s, 1 save · 22 Oct 16:43 "Why steal data you can't even read?" 119, 7.2 s.
