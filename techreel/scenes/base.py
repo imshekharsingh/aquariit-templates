@@ -167,9 +167,9 @@ class Frame:
         """Downsamples the sharp layer, adds the blurred glow, applies a fade to black; returns an RGB uint8 array."""
         base = np.asarray(self.img.resize((W, H), Image.LANCZOS), dtype=np.float32)
         g = np.asarray(self.glow, dtype=np.float32)
-        g = gaussian_filter(g, sigma=(2.6, 2.6, 0)) * 1.6 + gaussian_filter(g, sigma=(7, 7, 0)) * 1.2
+        g = gaussian_filter(g, sigma=(2.2, 2.2, 0)) * 1.3   # one tight halo; the wide bloom read as "shiny" (owner, 24 Oct)
         g = np.asarray(Image.fromarray(np.clip(g, 0, 255).astype(np.uint8)).resize((W, H), Image.BILINEAR), dtype=np.float32)
-        out = base + g * .55 * glow_strength
+        out = base + g * .2 * glow_strength
         out = np.clip(out * fade, 0, 255).astype(np.uint8)
         return out
 
@@ -180,7 +180,7 @@ def background(tint):
     yy, xx = np.mgrid[0:H * SS, 0:W * SS].astype(np.float32) / SS
     c = np.array(NEON.get(tint, NEON['blue']), dtype=np.float32)
     d = np.sqrt(((xx - W / 2) / W) ** 2 + ((yy - 820) / H) ** 2)
-    wash = np.clip(1 - d * 1.9, 0, 1) ** 2 * .16
+    wash = np.clip(1 - d * 1.9, 0, 1) ** 2 * .09
     img = np.array(BG, dtype=np.float32)[None, None, :] * (1 - wash[..., None]) + c[None, None, :] * wash[..., None]
     vign = np.clip(1 - (np.sqrt(((xx - W / 2) / W) ** 2 + ((yy - H / 2) / H) ** 2) - .35) * .9, .55, 1)
     img *= vign[..., None]
@@ -202,7 +202,7 @@ def header(fr, topic, p, alpha=1.0):
     a = int(255 * alpha)
     fr.rect(140, 260, 800, 6, r=3, fill=GRID + (a,))
     if p > 0:
-        fr.rect(140, 260, 800 * p, 6, r=3, fill=NEON['green'] + (a,), glow=NEON['green'], glow_a=.5 * alpha)
+        fr.rect(140, 260, 800 * p, 6, r=3, fill=NEON['green'] + (a,))
     fr.text(W / 2, 300, f'{topic.upper()} · EXPLAINED', 28, color=DIM + (a,), weight=700, anchor='mm', tracking=5)
 
 
@@ -216,7 +216,7 @@ def chip(fr, label, tint, k):
     ww, hh = w * s, 58 * s
     x, y = W / 2 - ww / 2, 392 - hh / 2
     a = int(255 * min(1, k * 3))
-    fr.rect(x, y, ww, hh, r=hh / 2, fill=c + (int(36 * min(1, k * 3)),), outline=c + (a,), width=2.5, glow=c, glow_a=.8 * min(1, k * 3))
+    fr.rect(x, y, ww, hh, r=hh / 2, fill=c + (int(30 * min(1, k * 3)),), outline=c + (int(a * .7),), width=2, glow=c, glow_a=.25 * min(1, k * 3))
     if s > .9:
         fr.text(W / 2, 392, label, 26, color=c + (a,), weight=800, anchor='mm', tracking=6)
 
@@ -238,7 +238,7 @@ def hook_card(fr, title_lines, t, t_out, accent='green'):
             col = (NEON[accent] if w.endswith('?') or w.strip('?.,!').isupper() and len(w) > 1 else TEXT)
             a = int(255 * k * (1 - out))
             fr.text(x, y0 + li * lh + (1 - k) * 40, w, size, color=col + (a,), weight=800, anchor='lm',
-                    glow=col if col != TEXT else None, glow_a=.35 * k * (1 - out))
+                    glow=col if col != TEXT else None, glow_a=.15 * k * (1 - out))
             x += text_w(w + ' ', size, 800)
             n += 1
     k = ease_out(prog(t, .6, 1.0))
@@ -268,5 +268,5 @@ def captions(fr, words, t, line_words, size=72, y=1290, max_w=860):
             col = NEON['green'] if cur else TEXT if done else (110, 122, 150)
             a = 255 if (cur or done) else 150
             yy = y + r * lh - (6 if cur else 0)
-            fr.text(x, yy, w['d'], size, color=col + (a,), weight=800, anchor='lm', glow=NEON['green'] if cur else None, glow_a=.45)
+            fr.text(x, yy, w['d'], size, color=col + (a,), weight=800, anchor='lm', glow=NEON['green'] if cur else None, glow_a=.25)
             x += text_w(w['d'] + ' ', size, 800)

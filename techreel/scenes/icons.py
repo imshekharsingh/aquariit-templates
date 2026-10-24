@@ -25,7 +25,7 @@ def _sw(size):
 
 def bot(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.rect(cx - s * .36, cy - s * .22, s * .72, s * .52, r=s * .14, outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.rect(cx - s * .36, cy - s * .22, s * .72, s * .52, r=s * .14, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     fr.circle(cx - s * .14, cy + s * .02, s * .06, fill=_c(col, a))
     fr.circle(cx + s * .14, cy + s * .02, s * .06, fill=_c(col, a))
     fr.line([(cx, cy - s * .22), (cx, cy - s * .38)], _c(col, a), w)
@@ -36,7 +36,7 @@ def bot(fr, cx, cy, s, col, a):
 def store(fr, cx, cy, s, col, a, doors=0.0):
     """A storefront; doors 0 (closed) .. 1 (open)."""
     w = _sw(s)
-    fr.rect(cx - s * .44, cy - s * .18, s * .88, s * .6, r=s * .04, outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.rect(cx - s * .44, cy - s * .18, s * .88, s * .6, r=s * .04, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     # awning: a row of scallops
     for i in range(5):
         x0 = cx - s * .46 + i * s * .184
@@ -50,21 +50,21 @@ def store(fr, cx, cy, s, col, a, doors=0.0):
 
 def cart(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.line([(cx - s * .42, cy - s * .3), (cx - s * .3, cy - s * .3), (cx - s * .2, cy + s * .14), (cx + s * .32, cy + s * .14), (cx + s * .4, cy - s * .18), (cx - s * .26, cy - s * .18)], _c(col, a), w, glow=col, glow_a=a)
+    fr.line([(cx - s * .42, cy - s * .3), (cx - s * .3, cy - s * .3), (cx - s * .2, cy + s * .14), (cx + s * .32, cy + s * .14), (cx + s * .4, cy - s * .18), (cx - s * .26, cy - s * .18)], _c(col, a), w, glow=col, glow_a=a * .5)
     fr.circle(cx - s * .14, cy + s * .3, s * .07, outline=_c(col, a), width=w)
     fr.circle(cx + s * .24, cy + s * .3, s * .07, outline=_c(col, a), width=w)
 
 
 def card(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.rect(cx - s * .44, cy - s * .28, s * .88, s * .56, r=s * .08, outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.rect(cx - s * .44, cy - s * .28, s * .88, s * .56, r=s * .08, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     fr.rect(cx - s * .44, cy - s * .14, s * .88, s * .11, fill=_c(col, a * .7))
     fr.rect(cx - s * .32, cy + s * .08, s * .24, s * .1, r=s * .03, fill=_c(col, a * .8))
 
 
 def lock(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.rect(cx - s * .3, cy - s * .04, s * .6, s * .44, r=s * .08, outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.rect(cx - s * .3, cy - s * .04, s * .6, s * .44, r=s * .08, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     fr_arc(fr, (cx - s * .2, cy - s * .38, cx + s * .2, cy + s * .02), 180, 360, _c(col, a), int(w * SS))
     fr.line([(cx - s * .2, cy - s * .18), (cx - s * .2, cy - s * .04)], _c(col, a), w)
     fr.line([(cx + s * .2, cy - s * .18), (cx + s * .2, cy - s * .04)], _c(col, a), w)
@@ -74,7 +74,7 @@ def lock(fr, cx, cy, s, col, a):
 def shield(fr, cx, cy, s, col, a, fill=0.0):
     w = _sw(s)
     pts = [(cx, cy - s * .44), (cx + s * .36, cy - s * .3), (cx + s * .32, cy + s * .1), (cx, cy + s * .44), (cx - s * .32, cy + s * .1), (cx - s * .36, cy - s * .3)]
-    fr.poly(pts, fill=_c(col, a * fill * .25) if fill else None, outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.poly(pts, fill=_c(col, a * fill * .25) if fill else None, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
 
 
 def check(fr, cx, cy, s, col, a, k=1.0):
@@ -83,30 +83,30 @@ def check(fr, cx, cy, s, col, a, k=1.0):
     p1, p2, p3 = (cx - s * .3, cy), (cx - s * .08, cy + s * .22), (cx + s * .34, cy - s * .24)
     if k <= .4:
         e = k / .4
-        fr.line([p1, (p1[0] + (p2[0] - p1[0]) * e, p1[1] + (p2[1] - p1[1]) * e)], _c(col, a), w, glow=col, glow_a=a)
+        fr.line([p1, (p1[0] + (p2[0] - p1[0]) * e, p1[1] + (p2[1] - p1[1]) * e)], _c(col, a), w, glow=col, glow_a=a * .5)
     else:
         e = (k - .4) / .6
-        fr.line([p1, p2, (p2[0] + (p3[0] - p2[0]) * e, p2[1] + (p3[1] - p2[1]) * e)], _c(col, a), w, glow=col, glow_a=a)
+        fr.line([p1, p2, (p2[0] + (p3[0] - p2[0]) * e, p2[1] + (p3[1] - p2[1]) * e)], _c(col, a), w, glow=col, glow_a=a * .5)
 
 
 def cross(fr, cx, cy, s, col, a, k=1.0):
     w = _sw(s) * 1.4
     e = min(1, k * 2)
-    fr.line([(cx - s * .3, cy - s * .3), (cx - s * .3 + s * .6 * e, cy - s * .3 + s * .6 * e)], _c(col, a), w, glow=col, glow_a=a)
+    fr.line([(cx - s * .3, cy - s * .3), (cx - s * .3 + s * .6 * e, cy - s * .3 + s * .6 * e)], _c(col, a), w, glow=col, glow_a=a * .5)
     if k > .5:
         e = (k - .5) * 2
-        fr.line([(cx + s * .3, cy - s * .3), (cx + s * .3 - s * .6 * e, cy - s * .3 + s * .6 * e)], _c(col, a), w, glow=col, glow_a=a)
+        fr.line([(cx + s * .3, cy - s * .3), (cx + s * .3 - s * .6 * e, cy - s * .3 + s * .6 * e)], _c(col, a), w, glow=col, glow_a=a * .5)
 
 
 def user(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.circle(cx, cy - s * .16, s * .16, outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.circle(cx, cy - s * .16, s * .16, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     fr_arc(fr, (cx - s * .32, cy + s * .06, cx + s * .32, cy + s * .62), 180, 360, _c(col, a), int(w * SS))
 
 
 def chat(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.rect(cx - s * .4, cy - s * .3, s * .8, s * .48, r=s * .14, outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.rect(cx - s * .4, cy - s * .3, s * .8, s * .48, r=s * .14, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     fr.poly([(cx - s * .2, cy + s * .18), (cx - s * .3, cy + s * .36), (cx - s * .02, cy + s * .18)], fill=_c(col, a))
     for i in range(3):
         fr.circle(cx - s * .16 + i * s * .16, cy - s * .06, s * .045, fill=_c(col, a))
@@ -115,49 +115,49 @@ def chat(fr, cx, cy, s, col, a):
 def gate(fr, cx, cy, s, col, a, k=1.0):
     """An arch with a scanning bar: the gateway."""
     w = _sw(s)
-    fr.line([(cx - s * .38, cy + s * .42), (cx - s * .38, cy - s * .1)], _c(col, a), w * 1.3, glow=col, glow_a=a)
-    fr.line([(cx + s * .38, cy + s * .42), (cx + s * .38, cy - s * .1)], _c(col, a), w * 1.3, glow=col, glow_a=a)
+    fr.line([(cx - s * .38, cy + s * .42), (cx - s * .38, cy - s * .1)], _c(col, a), w * 1.3, glow=col, glow_a=a * .5)
+    fr.line([(cx + s * .38, cy + s * .42), (cx + s * .38, cy - s * .1)], _c(col, a), w * 1.3, glow=col, glow_a=a * .5)
     fr_arc(fr, (cx - s * .38, cy - s * .48, cx + s * .38, cy + s * .28), 180, 360, _c(col, a), int(w * 1.3 * SS))
     yb = cy - s * .05 + s * .42 * (.5 + .5 * math.sin(k * math.tau))
-    fr.line([(cx - s * .3, yb), (cx + s * .3, yb)], _c(col, a * .8), w * .8, glow=col, glow_a=a)
+    fr.line([(cx - s * .3, yb), (cx + s * .3, yb)], _c(col, a * .8), w * .8, glow=col, glow_a=a * .5)
 
 
 def coin(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.circle(cx, cy, s * .36, outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.circle(cx, cy, s * .36, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     fr.text(cx, cy, '$', s * .44, color=_c(col, a), weight=800, anchor='mm')
 
 
 def doc(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.rect(cx - s * .3, cy - s * .4, s * .6, s * .8, r=s * .06, outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.rect(cx - s * .3, cy - s * .4, s * .6, s * .8, r=s * .06, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     for i in range(4):
         fr.line([(cx - s * .18, cy - s * .2 + i * s * .14), (cx + s * (.18 if i < 3 else .02), cy - s * .2 + i * s * .14)], _c(col, a * .8), w * .8)
 
 
 def bolt(fr, cx, cy, s, col, a):
     fr.poly([(cx + s * .06, cy - s * .44), (cx - s * .24, cy + s * .06), (cx - s * .02, cy + s * .06), (cx - s * .08, cy + s * .44), (cx + s * .24, cy - s * .08), (cx + s * .02, cy - s * .08)],
-            fill=_c(col, a * .3), outline=_c(col, a), width=_sw(s), glow=col, glow_a=a)
+            fill=_c(col, a * .3), outline=_c(col, a), width=_sw(s), glow=col, glow_a=a * .5)
 
 
 def warning(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.poly([(cx, cy - s * .4), (cx + s * .42, cy + s * .34), (cx - s * .42, cy + s * .34)], outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.poly([(cx, cy - s * .4), (cx + s * .42, cy + s * .34), (cx - s * .42, cy + s * .34)], outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     fr.line([(cx, cy - s * .12), (cx, cy + s * .12)], _c(col, a), w * 1.2)
     fr.circle(cx, cy + s * .22, s * .035, fill=_c(col, a))
 
 
 def key(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.circle(cx - s * .2, cy, s * .16, outline=_c(col, a), width=w, glow=col, glow_a=a)
-    fr.line([(cx - s * .04, cy), (cx + s * .4, cy)], _c(col, a), w, glow=col, glow_a=a)
+    fr.circle(cx - s * .2, cy, s * .16, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
+    fr.line([(cx - s * .04, cy), (cx + s * .4, cy)], _c(col, a), w, glow=col, glow_a=a * .5)
     fr.line([(cx + s * .28, cy), (cx + s * .28, cy + s * .14)], _c(col, a), w)
     fr.line([(cx + s * .38, cy), (cx + s * .38, cy + s * .1)], _c(col, a), w)
 
 
 def chip(fr, cx, cy, s, col, a):
     w = _sw(s)
-    fr.rect(cx - s * .28, cy - s * .28, s * .56, s * .56, r=s * .06, outline=_c(col, a), width=w, glow=col, glow_a=a)
+    fr.rect(cx - s * .28, cy - s * .28, s * .56, s * .56, r=s * .06, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     fr.rect(cx - s * .12, cy - s * .12, s * .24, s * .24, fill=_c(col, a * .6))
     for i in range(3):
         o = -s * .16 + i * s * .16
@@ -169,7 +169,7 @@ def chip(fr, cx, cy, s, col, a):
 def cloud(fr, cx, cy, s, col, a):
     w = _sw(s)
     for (dx, dy, r) in [(-.18, .04, .2), (.06, -.08, .26), (.26, .06, .18)]:
-        fr.circle(cx + s * dx, cy + s * dy, s * r, outline=_c(col, a), width=w, glow=col, glow_a=a)
+        fr.circle(cx + s * dx, cy + s * dy, s * r, outline=_c(col, a), width=w, glow=col, glow_a=a * .5)
     fr.rect(cx - s * .38, cy + s * .04, s * .82, s * .2, fill=_c((8, 13, 28), a))
     fr.line([(cx - s * .38, cy + s * .24), (cx + s * .44, cy + s * .24)], _c(col, a), w)
 
@@ -178,7 +178,7 @@ def eye(fr, cx, cy, s, col, a):
     w = _sw(s)
     fr_chord(fr, (cx - s * .44, cy - s * .32, cx + s * .44, cy + s * .32), 200, 340, _c(col, a), int(w * SS))
     fr_chord(fr, (cx - s * .44, cy - s * .32, cx + s * .44, cy + s * .32), 20, 160, _c(col, a), int(w * SS))
-    fr.circle(cx, cy, s * .12, fill=_c(col, a), glow=col, glow_a=a)
+    fr.circle(cx, cy, s * .12, fill=_c(col, a), glow=col, glow_a=a * .5)
 
 
 ICONS = {f.__name__: f for f in (bot, store, cart, card, lock, shield, check, cross, user, chat, gate, coin, doc, bolt, warning, key, chip, cloud, eye)}

@@ -7,7 +7,8 @@ import math
 from .base import W, NEON, TEXT, DIM, CONTENT_TOP, CONTENT_BOTTOM, prog, ease_out, ease_io, spring, mix, text_w
 from .icons import icon
 
-SURFACE = (16, 24, 46)
+SURFACE = (18, 26, 48)
+EDGE = .55   # outline strength: borders are quiet, the content carries the colour
 
 
 def _a(c, a):
@@ -17,13 +18,13 @@ def _a(c, a):
 def pill(fr, cx, cy, label, col, a, size=30, solid=False, max_w=420):
     w = min(max_w, text_w(label, size, 800) + size * 1.4)
     h = size * 1.9
-    fr.rect(cx - w / 2, cy - h / 2, w, h, r=h / 2, fill=_a(col, a * (.9 if solid else .14)), outline=_a(col, a), width=2.5, glow=col, glow_a=a * .8)
+    fr.rect(cx - w / 2, cy - h / 2, w, h, r=h / 2, fill=_a(col, a * (.9 if solid else .12)), outline=_a(col, a * EDGE), width=2, glow=col, glow_a=a * .2)
     fr.text(cx, cy, label, size, color=_a((8, 13, 28) if solid else TEXT, a), weight=800, anchor='mm', max_w=max_w - size)
     return w
 
 
 def box(fr, x, y, w, h, col, a, r=28):
-    fr.rect(x, y, w, h, r=r, fill=_a(SURFACE, a * .92), outline=_a(col, a), width=2.5, glow=col, glow_a=a * .7)
+    fr.rect(x, y, w, h, r=r, fill=_a(SURFACE, a * .95), outline=_a(col, a * EDGE), width=2, glow=col, glow_a=a * .15)
 
 
 def appear(t, t0, d=.35):

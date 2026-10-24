@@ -223,6 +223,8 @@ def main():
         if run == int(.3 * FPS) + 1:
             qa.append(f'blank stretch over 0.3 s near {f / FPS:.2f} s')
     qa += [f'{t:5.2f}s  {w}' for w, t in sorted(warns.items(), key=lambda x: x[1])]
+    qa += ['override readings (in "Can an ___ shop?"):'] + [f'  {k}: ' + ' | '.join(f'{f} -> {p}' for f, p in v.items()) for k, v in vo.get('say_checks', {}).items()]
+    qa += ['pronunciation (phonemes as spoken):'] + [f'  {l["text"]}  ->  {l.get("phonemes", "?")}' for l in vo['lines']]
     open(os.path.join(out, 'qa.txt'), 'w').write('\n'.join(qa) + '\n')
     contact_sheet(thumbs, os.path.join(out, 'contact.png'))
     print('\n'.join(qa))
