@@ -1,0 +1,30 @@
+{
+ "name": "showreel-12-inp",
+ "seek": "scripts/explainer/inp.html",
+ "dur": 22,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.6,
+ "voice": {
+  "text": "Your site loads fast. So why does it feel slow? Tap Add to cart. Nothing happens for six hundred milliseconds. That's [INP](/ˌIˌɛnpˈi/): tap to next frame. Google calls over five hundred poor. The cause: one long JavaScript task. Split it so the browser can paint in between. Under two hundred feels instant.",
+  "voice": "af_heart",
+  "speed": 1.05
+ },
+ "caption": "Your site loads fast. So why does it feel slow? ⚡\n\nIt's probably INP, Interaction to Next Paint: the time from a tap to the next frame on screen. Google rates over 500 ms as poor and 200 ms or less as good. The usual cause is one long JavaScript task blocking the main thread. Split it up so the browser can paint in between.\nSave it for your next speed check, or send it to whoever owns your site's performance.",
+ "keywords": [
+  "INP",
+  "Interaction to Next Paint",
+  "Core Web Vitals",
+  "website performance",
+  "JavaScript long tasks",
+  "web performance tips"
+ ],
+ "hashtags": [
+  "#corewebvitals",
+  "#webperformance",
+  "#javascript",
+  "#frontenddev",
+  "#webdev"
+ ]
+}

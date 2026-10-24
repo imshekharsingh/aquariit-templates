@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Your site loads fast. So why does it feel slow?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 02 (storyboard A, 23 Oct 2026): "Your site loads fast. So why does it feel slow?" (INP).
+   Same system as Nº 01 (springs.html): the voice runs the whole reel, every beat, caption and sound is anchored to a spoken word
+   (window.setVoice), stage 540x960 CSS px at 2x, every frame a pure function of t. Facts: INP thresholds from Google's web-vitals library
+   (good <= 200 ms, poor > 500 ms); the 600 ms and 120 ms are labelled examples. */
+:root{--ink:#121110;--paper:#f2efe8;--dim:#8d877c;--line:#2c2a27;--surface:#1c1a1f;--rule:#34303c;--red:#ff4d3d;--amber:#ffb020;--green:#3ddc84;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#loaded{left:36px;top:200px;height:40px;padding:0 16px;border-radius:999px;background:rgba(61,220,132,.14);color:var(--green);display:flex;align-items:center;gap:8px;font:700 16px/1 var(--m);letter-spacing:.08em;transform-origin:0 50%;white-space:nowrap}
+#loaded i{width:9px;height:9px;border-radius:50%;background:var(--green)}
+#hook{left:34px;top:270px;font-weight:800;font-size:72px;line-height:.98;letter-spacing:-.045em;font-variation-settings:'wdth' 85,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .red{color:var(--red)}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+.card{left:36px;top:206px;width:468px;height:222px;border-radius:30px;background:var(--surface)}
+.card .sw{left:28px;top:28px;width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,#d9c8b4,#9c8466)}
+.card .nm{left:106px;top:32px;font:700 24px/1 var(--f)}
+.card .sub{left:106px;top:66px;font:500 14px/1 var(--m);color:var(--dim)}
+.card .pr{right:28px;top:32px;font:700 24px/1 var(--f)}
+#add{left:32px;top:118px;width:404px;height:76px;border-radius:999px;display:grid;place-items:center;font:700 26px/1 var(--f);background:var(--paper);color:var(--ink);transform-origin:50% 50%}
+#ring{left:0;top:0;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;border:4px solid var(--paper)}
+#count{left:36px;top:470px;font:800 150px/1 var(--f);font-variation-settings:'wdth' 80,'opsz' 96;letter-spacing:-.05em;font-variant-numeric:tabular-nums;white-space:nowrap}
+#count small{font-size:44px;letter-spacing:0;margin-left:10px}
+#ex{left:40px;top:640px;font:700 14px/1 var(--m);letter-spacing:.14em;color:var(--dim)}
+#viz{left:0;top:0;width:540px;height:960px}
+#cap{left:36px;right:36px;top:668px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<canvas id="viz" class="a" width="1080" height="1920"></canvas>
+<div id="lbl" class="a">Nº 02 · PERFORMANCE</div>
+<div id="loaded" class="a"><i></i>LOADED IN 0.9 S</div>
+<div id="hook" class="a"><span class="ln"><span>Your</span> <span>site</span> <span>loads</span> <span>fast.</span></span><span class="ln"><span>So</span> <span>why</span> <span>does</span> <span>it</span></span><span class="ln"><span>feel</span> <span class="red">slow?</span></span></div>
+<div id="tag" class="a"></div>
+<div id="card" class="a card"><div class="a sw"></div><div class="a nm">Stone mug</div><div class="a sub">1 item · in stock</div><div class="a pr">$24</div><div id="add" class="a">Add to cart</div></div>
+<div id="ring" class="a"></div>
+<div id="count" class="a"></div>
+<div id="ex" class="a">EXAMPLE</div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var spring = function(s){ if (s <= 0) return 0; var z = .55, w = 12, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
+  var TEXT = "Your site loads fast. So why does it feel slow? Tap Add to cart. Nothing happens for six hundred milliseconds. That's INP: tap to next frame. Google calls over five hundred poor. The cause: one long JavaScript task. Split it so the browser can paint in between. Under two hundred feels instant.";
+  var WORDS = [], DUR = 22;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .16 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,]$/.test(w) ? .22 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { fast: at('fast'), so: at('so'), slow: at('slow'), tap: at('tap'), nothing: at('nothing'), ms: at('milliseconds'), thats: at('thats'), inp: at('inp'), tap2: at('tap', 2), next: at('next'), frame: at('frame'),
+      google: at('google'), poor: at('poor'), cause: at('cause'), long: at('long'), task: at('task'), split: at('split'), paint: at('paint'), between: at('between'), under: at('under'), instant: at('instant') };
+    A.end = WORDS[WORDS.length - 1].e;
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  var c = $('viz').getContext('2d');
+  function rr(x, y, w, h, r){ c.beginPath(); c.roundRect(x, y, Math.max(0, w), h, r); }
+  function mono(s, x, y, col, size, align){ c.font = '700 ' + (size || 15) + "px 'JetBrains Mono'"; c.fillStyle = col; c.textAlign = align || 'left'; c.letterSpacing = '2px'; c.fillText(s, x, y); c.letterSpacing = '0px'; c.textAlign = 'left'; }
+  // the gauge: three bands, 0-200 good, 200-500 needs work, over 500 poor (Google's thresholds), on a 0-800 ms dial
+  function gauge(alpha, ms, cy){
+    if (alpha <= 0) return; c.save(); c.globalAlpha = alpha;
+    var cx = 270, r = 170, A0 = Math.PI, ang = function(v){ return A0 + Math.PI * Math.min(800, Math.max(0, v)) / 800; };
+    [[0, 200, '#3ddc84'], [200, 500, '#ffb020'], [500, 800, '#ff4d3d']].forEach(function(b){ c.beginPath(); c.lineWidth = 26; c.strokeStyle = b[2]; c.arc(cx, cy, r, ang(b[0]) + .012, ang(b[1]) - .012); c.stroke(); });
+    [200, 500].forEach(function(v){ var a = ang(v); mono(String(v), cx + Math.cos(a) * (r + 34), cy + Math.sin(a) * (r + 34) + 5, '#8d877c', 16, 'center'); });
+    mono('MS', cx, cy + 46, '#8d877c', 14, 'center');
+    var a = ang(ms); c.strokeStyle = '#f2efe8'; c.lineWidth = 7; c.lineCap = 'round'; c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + Math.cos(a) * (r - 30), cy + Math.sin(a) * (r - 30)); c.stroke();
+    c.fillStyle = '#f2efe8'; c.beginPath(); c.arc(cx, cy, 12, 0, 7); c.fill();
+    c.restore();
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    c.setTransform(2, 0, 0, 2, 0, 0); c.clearRect(0, 0, 540, 960); c.fillStyle = 'rgba(0,0,0,0.004)'; c.fillRect(0, 0, 1, 1);   // never leave the layer empty (stale-canvas bug)
+    // ---- 1. the hook: "loaded" pops on "fast"; the question lands word by word; "slow?" arrives late and stutters ----
+    var gone = io(P(t, A.tap - .35, A.tap - .05));
+    var lk = spring(t - A.fast + .05); $('loaded').style.opacity = cl((t - A.fast + .05) * 8) * (1 - gone); $('loaded').style.transform = 'scale(' + (.6 + .4 * lk) + ')';
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - .06 : 0, slow = i === 9, k = slow ? cl((t - s - .12) * 7) : out(P(t, s, s + .24));
+      var jit = slow && k > 0 && k < 1 ? (Math.floor(t * 30) % 2 ? 6 : -6) : 0;   // the late word judders in, like a janky frame
+      sp.style.opacity = (slow ? (k > 0 ? 1 : 0) : cl((t - s) * 9)) * (1 - gone);
+      sp.style.transform = 'translate(' + jit + 'px,' + ((1 - k) * (slow ? 0 : 40) - gone * 80) + 'px)';
+    });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- 2. "Tap Add to cart. Nothing happens for six hundred milliseconds." ----
+    var cardIn = out(P(t, A.tap - .08, A.tap + .2)), cardOut = io(P(t, A.thats - .2, A.thats + .15)), back = out(P(t, A.under - .2, A.under + .2)), backOut = ex;
+    var cardA = Math.max(cardIn * (1 - cardOut), back * (1 - backOut));
+    $('card').style.opacity = cardA; $('card').style.transform = 'translateY(' + (1 - cardIn) * 40 + 'px)';
+    var add = $('add'), frozen = t >= A.tap + .1 && t < A.under;
+    var press = t >= A.tap && t < A.tap + .3 ? 1 - .05 * Math.sin(Math.PI * P(t, A.tap, A.tap + .3)) : 1;
+    var added = t >= A.instant - .1;
+    add.textContent = added ? 'Added ✓' : 'Add to cart';
+    add.style.background = added ? 'var(--green)' : frozen ? '#3a3733' : 'var(--paper)'; add.style.color = added ? 'var(--ink)' : frozen ? '#8d877c' : 'var(--ink)';
+    add.style.transform = 'scale(' + (added ? .9 + .1 * spring(t - A.instant + .1) : press) + ')';
+    var ring = $('ring'), rk = P(t, A.tap, A.tap + .5); ring.style.opacity = t >= A.tap && t < A.tap + .5 ? (1 - rk) : (t >= A.under + .25 && t < A.under + .75 ? 1 - P(t, A.under + .25, A.under + .75) : 0);
+    var rs = t < A.tap + .5 ? rk : P(t, A.under + .25, A.under + .75); ring.style.transform = 'translate(300px,365px) scale(' + (.6 + .8 * rs) + ')';
+    $('tag').textContent = t < A.thats ? 'TAP → …' : t < A.google ? 'INP = TAP → NEXT FRAME' : t < A.cause ? "GOOGLE'S THRESHOLDS" : t < A.split ? 'MAIN THREAD' : t < A.under ? 'SPLIT THE LONG TASK' : 'TAP → NEXT FRAME';
+    $('tag').style.opacity = cl((t - A.tap + .2) * 4) * (1 - ex);
+    var cnt = $('count'), ms;
+    if (t < A.under) { ms = 600 * out(P(t, A.nothing, A.ms + .4)); cnt.style.color = 'var(--red)'; cnt.style.opacity = cl((t - A.nothing + .1) * 6) * (1 - cardOut); }
+    else { ms = 120 * out(P(t, A.under + .3, A.under + .9)); cnt.style.color = 'var(--green)'; cnt.style.opacity = P(t, A.under + .2, A.under + .4) * (1 - ex); }
+    cnt.innerHTML = Math.round(ms) + '<small>ms</small>'; cnt.style.top = (t < A.under ? 470 : 470) + 'px';
+    $('ex').style.opacity = cnt.style.opacity;
+    // ---- 3. "That's INP: tap to next frame.": the 600 ms stretches into a timeline ----
+    var tl = P(t, A.thats - .1, A.thats + .3) * (1 - io(P(t, A.google - .2, A.google + .15)));
+    if (tl > 0) { c.save(); c.globalAlpha = tl;
+      var y = 330, x0 = 36, W = 468, seg = [[A.tap2, 'INPUT', .14, '#8d877c'], [A.next, 'PROCESSING', .64, '#ffb020'], [A.frame, 'NEXT FRAME', .22, '#3ddc84']], x = x0;
+      seg.forEach(function(s, i){ var k = out(P(t, s[0] - .05, s[0] + .25)), w = W * s[2] - 6; rr(x, y, w * k, 64, 12); c.fillStyle = s[3]; c.globalAlpha = tl * (k > 0 ? 1 : 0); c.fill();
+        c.globalAlpha = tl * k; mono(s[1], x + 4, y + 100, s[3], 14); x += W * s[2]; });
+      var bk = out(P(t, A.inp - .05, A.inp + .3)); c.globalAlpha = tl * bk; c.strokeStyle = '#f2efe8'; c.lineWidth = 3; c.beginPath(); c.moveTo(x0, y - 18); c.lineTo(x0, y - 34); c.lineTo(x0 + W * bk, y - 34); c.lineTo(x0 + W * bk, y - 18); c.stroke();
+      c.font = "800 64px 'Bricolage Grotesque'"; c.fillStyle = '#f2efe8'; c.fillText('INP', x0, y - 60);
+      c.restore(); }
+    // ---- 4. "Google calls over five hundred poor.": the gauge, the needle swings into the red ----
+    var gIn = P(t, A.google - .15, A.google + .25), gOut = io(P(t, A.cause - .2, A.cause + .15));
+    var needle = mix(0, 600, spring(t - A.poor + .25) * (t > A.poor - .25 ? 1 : 0));
+    var gBack = out(P(t, A.under - .1, A.under + .3)), gBackOut = ex;
+    if (t < A.under - .1) gauge(gIn * (1 - gOut), needle, 470);
+    // ---- 5. "The cause: one long JavaScript task.": the main thread, one long block; the tap waits ----
+    var mt = P(t, A.cause - .1, A.cause + .25) * (1 - io(P(t, A.under - .25, A.under + .05)));
+    if (mt > 0) { c.save(); c.globalAlpha = mt;
+      var y2 = 360, x2 = 36, W2 = 468, grow = out(P(t, A.long - .1, A.task + .3)), split = P(t, A.split - .05, A.split + .45);
+      c.fillStyle = '#2c2a27'; rr(x2, y2 - 6, W2, 92, 18); c.fill();
+      if (split <= 0) { rr(x2 + 10, y2 + 6, (W2 - 20) * grow, 68, 12); c.fillStyle = '#ffb020'; c.fill();
+        if (grow > .6) { c.font = "800 24px 'Bricolage Grotesque'"; c.fillStyle = '#121110'; c.fillText('1 long task', x2 + 28, y2 + 48); } }
+      else { var n = 5, gap = 16 * io(split), wseg = ((W2 - 20) - gap * (n - 1)) / n;
+        for (var i = 0; i < n; i++) { var sx = x2 + 10 + i * (wseg + gap); rr(sx, y2 + 6, wseg, 68, 12); c.fillStyle = '#ffb020'; c.fill();
+          if (i < n - 1) { var pk = out(P(t, A.paint - .05 + i * .07, A.paint + .2 + i * .07)); c.fillStyle = '#3ddc84'; rr(sx + wseg + 3, y2 + 6 + 68 * (1 - pk), Math.max(0, gap - 6), 68 * pk, 3); c.fill(); } } }
+      // the tap waits above the thread; once the task is split it is handled in the first gap
+      var handled = out(P(t, A.paint + .05, A.paint + .45)), tx = mix(x2 + 60, x2 + 10 + (W2 - 20) / 5 + 2, handled), ty = mix(y2 - 70, y2 + 40, handled);
+      c.fillStyle = handled > .9 ? '#3ddc84' : '#f2efe8'; c.beginPath(); c.arc(tx, ty, 13, 0, 7); c.fill();
+      mono(handled > .9 ? 'TAP HANDLED' : 'TAP WAITING…', x2 + 90, y2 - 64, handled > .9 ? '#3ddc84' : '#8d877c', 15);
+      mono('MAIN THREAD', x2, y2 + 130, '#8d877c', 14);
+      c.restore(); }
+    // ---- 7. "Under two hundred feels instant.": the gauge returns, the needle drops into the green ----
+    // the card comes back on top and the gauge sits under it; the counter stays off so the frame holds two things only
+    if (t >= A.under - .1) gauge(gBack * (1 - gBackOut), mix(600, 120, out(P(t, A.under + .1, A.under + .8))), 630);
+    if (t >= A.under) { $('count').style.opacity = 0; $('ex').style.opacity = 0; }
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - .1 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - .1)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] > 9 && t < DUR - .5) ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - .04, k = out(P(t, w.s - .04, w.s + .16));
+      var col = /^(INP|poor\.?)/.test(w.d) ? 'var(--red)' : /instant|split/i.test(w.d) ? 'var(--green)' : /^INP/.test(w.d) ? 'var(--amber)' : 'var(--paper)';
+      html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.fast, k: 'tap', g: .7, p: 7 }, { t: A.slow + .12, k: 'thud', g: .5 }];
+    Q.push({ t: A.tap - .2, k: 'swish', d: .4, g: .6 }, { t: A.tap, k: 'tap', g: 1 });
+    for (var i = 0; i < 12; i++) Q.push({ t: A.nothing + i * (A.ms + .4 - A.nothing) / 12, k: 'tick', g: .12, p: 2 });   // the counter ticking while nothing happens
+    Q.push({ t: A.thats, k: 'swish', d: .4, g: .6, p: .2 }, { t: A.tap2, k: 'tap', g: .5 }, { t: A.next, k: 'tap', g: .5, p: 3 }, { t: A.frame, k: 'tap', g: .6, p: 7 }, { t: A.inp, k: 'tap', g: .7, p: 5 });
+    Q.push({ t: A.google, k: 'swish', d: .4, g: .6, p: -.2 }, { t: A.poor, k: 'thud', g: .7 });
+    Q.push({ t: A.cause, k: 'swish', d: .4, g: .6 }, { t: A.long, k: 'tap', g: .5, p: -3 });
+    Q.push({ t: A.split, k: 'swish', d: .35, g: .5, p: .4 });
+    for (var j = 0; j < 4; j++) Q.push({ t: A.paint + j * .07, k: 'tap', g: .45, p: 4 + j * 2 });
+    Q.push({ t: A.under, k: 'swish', d: .45, g: .6, p: .3 }, { t: A.instant - .1, k: 'tap', g: .9, p: 12 }, { t: DUR - .4, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[38, 57, 60, 62, 65], [34, 53, 57, 60, 62], [41, 57, 60, 64, 67], [36, 55, 59, 62, 67]] } };
+  }
+  anchors();
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("700 15px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
