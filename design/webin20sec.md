@@ -84,7 +84,7 @@ Claude reviews every draft as a critical creative director before sending it, an
 ## Post text
 The first caption line holds the search words in plain language. Then one line with the six keywords joined by ` · `, then exactly five niche hashtags.
 No call to action and nothing at the end of the reel (owner, 21 Oct); the caption may invite a send.
-The owner gets it as one block to copy whole, with no labels (owner, 22 Oct): on the Showreels page (Copy post text), in the Showreel ready issue, and in the chat message.
+The owner gets it as one block to copy whole, with no labels (owner, 22 Oct): on the Showreels page with the video (Copy post text) and in the Showreel ready issue. Not repeated in chat unless the owner asks (owner, 24 Oct).
 Keywords and hashtags are chosen for reach: what people type into Instagram search for this kind of reel, the most specific first; no broad tags.
 
 ## Measure and decide
