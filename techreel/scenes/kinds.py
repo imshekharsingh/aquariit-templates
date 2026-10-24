@@ -193,7 +193,10 @@ def checklist(fr, sc, t):
     for i, it in enumerate(items):
         ct = sc.cue(it.get('cue'))
         k = spring(t - ct + .15)
-        if t < ct - .15:
+        if t < ct - .15:   # each step waits as a faint outline until it is said, so the frame is never empty
+            g = appear(t, sc.start + .1 + i * .1) * .35
+            fr.rect(120, y0 + i * 200, 840, 160, r=28, outline=_a(col, g), width=2)
+            fr.circle(210, y0 + i * 200 + 80, 46, outline=_a(col, g), width=3)
             continue
         y = y0 + i * 200 + (1 - k) * 50
         box(fr, 120, y, 840, 160, col, min(1, k * 2))
