@@ -7,9 +7,9 @@
  "vignette": true,
  "cover": 2.4,
  "voice": {
-  "text": "Why does your popup just snap in? CSS can't animate from display none, so it pops in on one frame. The fix: starting style. Give it a first state, and it glides in. Every major browser, since 2024. One block, no JavaScript.",
+  "text": "Why does your popup just snap in? CSS can't animate from display none, so it pops in on one frame. The fix: starting style. Give it a first state, and it glides in. Works in every major browser since 2024. One block for every menu, toast and sheet. No JavaScript.",
   "voice": "af_heart",
-  "speed": 1.05
+  "speed": 1.15
  },
  "caption": "Why does your popup just snap in? ✨\n\nCSS can't transition from display: none, so a popup appears on a single frame. @starting-style gives it a first state (opacity 0, scale .9) to animate from, so it glides in. Works in Chrome, Firefox and Safari (Baseline 2024). One block, no JavaScript.\nSave it for your next modal, or send it to whoever builds your UI.",
  "keywords": [
