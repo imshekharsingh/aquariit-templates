@@ -8,45 +8,51 @@
 <style>
 /* @webin20sec, narrated explainer Nº 04, a motion tip: "Why does your list feel so flat?"
    Every row runs the same entrance at the same moment, so the list lands as one block; the same animation with each row 40 ms after
-   the last (animation-delay from a custom property) reads top to bottom. No browser facts on screen: the code is plain CSS animations.
-   Same system as Nº 01-03: the voice runs the reel, every beat, caption and sound is anchored to a spoken word (window.setVoice);
-   stage 540x960 CSS px at 2x; every frame a pure function of t. */
-:root{--ink:#121110;--paper:#f2efe8;--dim:#8d877c;--surface:#1c1a1f;--rule:#34303c;--acc:#ffb547;--red:#ff4d3d}
+   the last (animation-delay from an index, --i) reads top to bottom. Plain CSS animations, no browser versions on screen.
+   Flow (owner, 25 Oct, on Nº 03: "it feels as if blocks are placed"): one screen holds the list for the whole reel and only moves and
+   scales; one panel under it changes shape (timing diagram, code, timing diagram, one line). Every spoken line has its picture;
+   beats and captions lead the voice by 0.15 s (window.setVoice); stage 540x960 CSS px at 2x; every frame a pure function of t. */
+:root{--ink:#121110;--paper:#f2efe8;--dim:#8d877c;--surface:#1c1a1f;--rule:#34303c;--row:#24222a;--acc:#ffb547;--red:#ff4d3d;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
 *{box-sizing:border-box;margin:0}
-html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:'Bricolage Grotesque',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
 .a{position:absolute}
-.m{font-family:'JetBrains Mono',ui-monospace,monospace}
-#lbl{left:36px;top:120px;font:700 15px/1 'JetBrains Mono',monospace;letter-spacing:.14em;color:var(--dim);white-space:nowrap}
-#hud{right:36px;top:120px;font:700 15px/1 'JetBrains Mono',monospace;letter-spacing:.14em;white-space:nowrap;color:var(--dim);text-align:right}
-#hud b{font-weight:700}
-#tag{left:36px;top:170px;font:700 15px/1 'JetBrains Mono',monospace;letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
 #hook{left:34px;top:250px;font-weight:800;font-size:78px;line-height:.96;letter-spacing:-.045em;font-variation-settings:'wdth' 85,'opsz' 96}
 #hook .ln{display:block;white-space:nowrap}
 #hook .ln > span{display:inline-block;transform-origin:0 80%}
 #hook .acc{color:var(--acc)}
-/* the demo: a list of five rows (an inbox, a feed: any list) */
-#list{left:36px;top:206px;width:468px;height:286px;border-radius:30px;background:var(--surface);padding:14px}
-.row{position:absolute;left:14px;right:14px;height:44px;border-radius:14px;background:#24222a}
+/* the screen: five rows (an inbox, a feed: any list); later the same screen holds a grid and a menu */
+#scr{left:36px;top:206px;width:468px;height:286px;border-radius:30px;background:var(--surface);overflow:hidden;transform-origin:50% 0}
+.row{position:absolute;left:14px;right:14px;height:44px;border-radius:14px;background:var(--row)}
 .row .av{position:absolute;left:10px;top:8px;width:28px;height:28px;border-radius:50%}
 .row .l1{position:absolute;left:52px;top:10px;height:10px;border-radius:5px;background:#4a4555}
 .row .l2{position:absolute;left:52px;top:26px;height:8px;border-radius:4px;background:var(--rule)}
-.row .pl{position:absolute;right:12px;top:14px;width:46px;height:16px;border-radius:8px;background:var(--rule)}
-/* the timing diagram: one bar per row, time runs left to right */
-#tl{left:36px;top:510px;width:468px;height:104px;border-radius:18px;background:var(--surface);overflow:hidden}
-#tl .bar{position:absolute;height:12px;border-radius:6px}
-#tl .bar b{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
+.row .pl{position:absolute;right:12px;top:12px;width:46px;height:20px;border-radius:10px;background:var(--rule)}
+.row .ix{position:absolute;right:12px;top:12px;height:20px;padding:0 9px;border-radius:10px;background:rgba(255,181,71,.16);font:700 12px/20px var(--m);color:var(--acc);white-space:nowrap}
+#eye{left:6px;top:14px;width:4px;height:44px;border-radius:2px;background:var(--acc)}
+.card{position:absolute;width:136px;height:118px;border-radius:18px;background:var(--row);overflow:hidden}
+.card .im{position:absolute;left:10px;top:10px;right:10px;height:58px;border-radius:10px;opacity:.6}
+.card .l1{position:absolute;left:12px;top:80px;width:84px;height:10px;border-radius:5px;background:#4a4555}
+.card .l2{position:absolute;left:12px;top:96px;width:56px;height:8px;border-radius:4px;background:var(--rule)}
+#menu{left:24px;top:18px;width:250px;height:250px;border-radius:20px;background:#26232c;border:1.5px solid #3c3846;transform-origin:0 0;overflow:hidden}
+#menu .hd{position:absolute;left:18px;top:16px;font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim)}
+#menu .it{position:absolute;left:10px;right:10px;height:38px;border-radius:10px;font:600 19px/38px var(--f);padding-left:12px}
+#menu .hl{position:absolute;left:10px;right:10px;height:38px;border-radius:10px;background:rgba(255,181,71,.14)}
+/* the deck: one panel under the screen that changes shape (timing diagram, code, timing diagram, one line) */
+#deck{left:36px;width:468px;border-radius:20px;background:var(--surface);overflow:hidden}
+#deck > .lay{position:absolute;left:0;top:0;right:0;bottom:0}
+.bar{position:absolute;height:12px;border-radius:6px}
+.bar b{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
 #ph{top:0;bottom:0;width:2px;background:var(--paper)}
-#tlL{left:36px;top:630px;font:700 15px/1 'JetBrains Mono',monospace;letter-spacing:.12em;white-space:nowrap}
-#codebox{left:36px;top:206px;width:468px;border-radius:30px;background:var(--surface);padding:26px 28px;font:500 22px/1.55 'JetBrains Mono',monospace;white-space:pre;color:var(--paper)}
-#codebox b{font-weight:500;color:var(--acc)}
-#codebox .dim{color:var(--dim)}
-/* the payoff: a grid of cards, staggered on the diagonal, each showing its --i */
-#grid{left:36px;top:206px;width:468px;height:420px}
-.card{position:absolute;width:146px;height:130px;border-radius:22px;background:var(--surface);overflow:hidden}
-.card .im{position:absolute;left:12px;top:12px;right:12px;height:62px;border-radius:12px}
-.card .l1{position:absolute;left:14px;top:88px;width:90px;height:10px;border-radius:5px;background:#4a4555}
-.card .i{position:absolute;left:14px;top:106px;font:700 13px/1 'JetBrains Mono',monospace;color:var(--acc)}
-#cap{left:36px;right:36px;top:676px;font:700 34px/1.12 'Bricolage Grotesque',sans-serif;font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cd{padding:18px 22px;font:500 19px/1.45 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#ol{padding:0 22px;display:flex;align-items:center;font:500 17.5px/1 var(--m);white-space:pre;color:var(--paper)}
+#ol b{font-weight:500;color:var(--acc);border-radius:6px;padding:4px 2px}
+#deckL{left:36px;font:700 15px/1 var(--m);letter-spacing:.12em;white-space:nowrap}
+#cap{left:36px;right:36px;top:672px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
 #cap span{display:inline-block;margin-right:.24em}
 </style>
 </head>
@@ -55,57 +61,55 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 <div id="hud" class="a"></div>
 <div id="tag" class="a"></div>
 <div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>list</span> <span>feel</span></span><span class="ln"><span class="acc">so</span> <span class="acc">flat?</span></span></div>
-<div id="list" class="a"></div>
-<div id="tl" class="a"><div id="ph" class="a"></div></div>
-<div id="tlL" class="a"></div>
-<div id="codebox" class="a"></div>
-<div id="grid" class="a"></div>
+<div id="scr" class="a"><div id="eye" class="a"></div><div id="menu" class="a"><div class="hd">SORT BY</div><i class="hl"></i></div></div>
+<div id="deck" class="a"><div id="tl" class="lay"><div id="ph" class="a"></div></div><div id="cd" class="lay"></div><div id="ol" class="lay">animation-delay: <b>calc(var(--i) * 40ms)</b>;</div></div>
+<div id="deckL" class="a"></div>
 <div id="cap" class="a"></div>
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
   var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
   var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };   // 1 inside [a, b], fading over f at both ends
   // the script ("¦" marks an unspoken caption break)
-  var TEXT = "Why does your list feel so flat? Every item lands at once,¦ so the whole thing hits like a wall. The fix: stagger. Same animation, each item 40 milliseconds after the last. Now the eye flows top to bottom. One variable, one delay, pure CSS.";
+  var TEXT = "Why does your list feel so flat? Every item lands at once,¦ so it hits like a wall. The fix: stagger. Same animation, each item 40 milliseconds later. Now the eye flows top to bottom. Give each row an index;¦ one line delays it. Works on lists, grids and menus.";
   var WORDS = [], DUR = 17, LEAD = .15;   // beats and caption words land 0.15 s before the word is spoken (study, 25 Oct)
-  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .16 + w.length * .03; WORDS.push({ w: w.replace('¦', ''), s: t, e: t + d }); t += d + (/[.?:,]$/.test(w) ? .22 : .06); }); })();
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .028; WORDS.push({ w: w.replace('¦', ''), s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .2 : .05); }); })();
   var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
   function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
   function align(){ var T = TEXT.split(/\s+/), j = 0;
     WORDS.forEach(function(w){ w.d = w.w; w.brk = false; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k].replace('¦', ''); w.brk = T[k].indexOf('¦') >= 0; j = k + 1; break; } }); }
-  var A = {}, PH = [];
+  var A = {}, PH = [], RUNS = [];
   function anchors(){
     align();
-    A = { flat: at('flat'), every: at('every'), once: at('once'), wall: at('wall'), fix: at('fix'), stagger: at('stagger'), same: at('same'), each: at('each'),
-      ms: at('milliseconds'), now: at('now'), flows: at('flows'), bottom: at('bottom'), one: at('one'), variable: at('variable'), delay: at('delay'), pure: at('pure'), css: at('css') };
+    A = { flat: at('flat'), every: at('every'), once: at('once'), wall: at('wall'), fix: at('fix'), stagger: at('stagger'), same: at('same'), each: at('each'), now: at('now'),
+      flows: at('flows'), bottom: at('bottom'), give: at('give'), index: at('index'), line: at('line'), delays: at('delays'), works: at('works'), lists: at('lists'), grids: at('grids'), menus: at('menus') };
     A.end = WORDS[WORDS.length - 1].e;
     PH = []; var cur = [];
     WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || w.brk || i === WORDS.length - 1) {
-      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
         if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
       else PH.push(cur);
       cur = []; } });
-    // the three runs of the list: all at once, the stagger 3x slower, the stagger at real speed (40 ms apart, 0.4 s each)
-    RUNS = [{ t0: A.once - .15, gap: 0, d: .4 }, { t0: A.each, gap: .12, d: 1.2 }, { t0: A.now - .05, gap: .04, d: .4 }];
+    // the runs of the list: flat under the hook, all at once, the stagger 3x slower, at real speed (40 ms apart, 0.4 s each), on "delays", on "lists"
+    RUNS = [{ t0: A.flat, gap: 0, d: .4, until: A.every - .1 }, { t0: A.once - .15, gap: 0, d: .4, until: A.fix }, { t0: A.each, gap: .12, d: 1.2, until: A.now - .05 },
+      { t0: A.now - .05, gap: .04, d: .4, until: A.delays - .05 }, { t0: A.delays, gap: .04, d: .4, until: A.lists - .05 }, { t0: A.lists, gap: .04, d: .4, until: 99 }];
     buildCues();
   }
-  var RUNS = [];
-  // build the list rows and the bars once
-  var HUES = ['#ff8a5c', '#7aa7ff', '#52d6a4', '#c792ff', '#ffd166'], W1 = [190, 150, 220, 170, 130], W2 = [260, 220, 180, 240, 200];
-  (function(){ var L = $('list'), T = $('tl');
+  // build the rows, the bars, the cards and the menu items once
+  var HUES = ['#ff8a5c', '#7aa7ff', '#52d6a4', '#c792ff', '#ffd166'], W1 = [190, 150, 220, 170, 130], W2 = [260, 220, 180, 240, 200], ITEMS = ['Newest', 'Popular', 'A to Z', 'Price', 'Rating'];
+  (function(){ var S = $('scr'), T = $('tl'), M = $('menu');
     for (var i = 0; i < 5; i++) {
       var r = document.createElement('div'); r.className = 'row'; r.style.top = (14 + i * 52) + 'px';
-      r.innerHTML = '<i class="av" style="background:' + HUES[i] + '"></i><i class="l1" style="width:' + W1[i] + 'px"></i><i class="l2" style="width:' + W2[i] + 'px"></i><i class="pl"></i>';
-      L.appendChild(r);
-      var b = document.createElement('div'); b.className = 'bar'; b.style.top = (12 + i * 17) + 'px'; b.innerHTML = '<b></b>'; T.appendChild(b); }
-    var G = $('grid');
+      r.innerHTML = '<i class="av" style="background:' + HUES[i] + '"></i><i class="l1" style="width:' + W1[i] + 'px"></i><i class="l2" style="width:' + W2[i] + 'px"></i><i class="pl"></i><span class="ix">--i: ' + i + '</span>';
+      S.insertBefore(r, $('eye'));
+      var b = document.createElement('div'); b.className = 'bar'; b.style.top = (14 + i * 17) + 'px'; b.innerHTML = '<b></b>'; T.appendChild(b);
+      var it = document.createElement('div'); it.className = 'it'; it.style.top = (40 + i * 41) + 'px'; it.textContent = ITEMS[i]; M.appendChild(it); }
     for (var k = 0; k < 6; k++) { var c = document.createElement('div'); c.className = 'card';
-      c.style.left = (k % 3) * 161 + 'px'; c.style.top = Math.floor(k / 3) * 146 + 'px';
-      c.innerHTML = '<i class="im" style="background:' + HUES[(k + 1) % 5] + ';opacity:.55"></i><i class="l1"></i><div class="i">--i: ' + (Math.floor(k / 3) + k % 3) + '</div>';
-      G.appendChild(c); }
+      c.style.left = (16 + (k % 3) * 150) + 'px'; c.style.top = (16 + Math.floor(k / 3) * 132) + 'px';
+      c.innerHTML = '<i class="im" style="background:' + HUES[(k + 1) % 5] + '"></i><i class="l1"></i><i class="l2"></i>'; S.insertBefore(c, M); }
   })();
-  var CODE = '<span class="dim">.item {</span>\n  animation: rise .4s both;\n  <b>animation-delay:\n    calc(var(--i) * 40ms);</b>\n<span class="dim">}</span>';
+  var CODE = '<span class="dim">.row {</span>\n  animation: rise .4s both;\n  <b>animation-delay:\n    calc(var(--i) * 40ms);</b>\n<span class="dim">}</span>';
   var CODE_TXT = CODE.replace(/<[^>]+>/g, '');
   function typed(n){ var o = '', k = 0, open = [];
     for (var i = 0; i < CODE.length; i++) { if (CODE[i] === '<') { var e = CODE.indexOf('>', i), tag = CODE.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
@@ -115,77 +119,98 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   function seek(t){
     t = Math.max(0, Math.min(DUR, t));
     var ex = io(P(t, DUR - .6, DUR - .1));
-    // ---- 1. the hook: words land as spoken; "so flat?" lands flat (both words at once, no easing): the problem, acted out ----
-    var gone = io(P(t, A.every - .3, A.every + .05)), flatT = WORDS[5] ? WORDS[5].s - LEAD : 0;
+    // ---- the hook: words land as spoken; "so flat?" lands flat (both words at once, no easing); under it the rows land the same way ----
+    var gone = io(P(t, A.every - .35, A.every + .05)), flatT = WORDS[5] ? WORDS[5].s - LEAD : 0;
     [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
       var hard = i >= 5, s = hard ? flatT : (WORDS[i] ? WORDS[i].s - LEAD : 0), k = hard ? (t >= s ? 1 : 0) : out(P(t, s, s + .26));
       sp.style.opacity = (hard ? k : cl((t - s) * 9)) * (1 - gone);
       sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)';
     });
     $('lbl').style.opacity = 1 - ex;
-    // ---- 2. the list: in on "Every", out for the code on "fix", back on "Same", out for the grid on "One" ----
-    var lIn = out(P(t, A.every - .05, A.every + .3)), lOut = io(P(t, A.fix - .2, A.fix + .15)), lBack = out(P(t, A.same - .2, A.same + .15)), lOut2 = io(P(t, A.one - .2, A.one + .15));
-    var la = Math.max(lIn * (1 - lOut), lBack * (1 - lOut2));
-    show($('list'), la, (1 - lIn) * 30);
-    var run = t < A.fix ? RUNS[0] : t < A.now - .05 ? RUNS[1] : RUNS[2], ri = RUNS.indexOf(run);
-    // before the slowed run the rows wait as ghosts, so the panel is never empty
-    [].forEach.call($('list').children, function(r, i){ var s = run.t0 + i * run.gap, k = out(P(t, s, s + run.d));
-      r.style.opacity = Math.max(ri === 1 ? .16 : 0, cl(k * 1.6)); r.style.transform = 'translateY(' + (1 - k) * 26 + 'px)'; });
-    // on "wall" the block of rows lands with a small jolt (all of it at once)
-    var jolt = ri === 0 ? Math.sin(P(t, A.wall - .05, A.wall + .3) * Math.PI * 3) * (1 - P(t, A.wall - .05, A.wall + .3)) * 6 : 0;
-    $('list').style.transform += ' translateY(' + jolt + 'px)';
-    // the timing diagram: bars start where each row starts; the playhead runs across while the run plays
-    var tA = Math.max(P(t, A.once - .2, A.once + .1) * (1 - lOut), P(t, A.each - .3, A.each) * (1 - lOut2));
-    $('tl').style.opacity = tA;
-    var span = run.gap * 4 + run.d, X0 = 24, XW = 420, pk = P(t, run.t0, run.t0 + span);
+    // ---- the screen never leaves: small under the hook, full for the problem, smaller while the rule is typed, full again ----
+    var rise = io(P(t, A.every - .35, A.every + .1)), m1 = io(P(t, A.fix - .2, A.fix + .3)), m2 = io(P(t, A.same - .3, A.same + .15)), shrink = m1 * (1 - m2);
+    var drift = Math.sin(t * .9) * 3 * (1 - rise);
+    show($('scr'), out(P(t, .05, .4)) * (1 - ex), (1 - rise) * 340 + drift + ex * 20, mix(.62, 1, rise) * mix(1, .62, shrink));
+    // the rows: one run at a time; before the slowed run they wait as ghosts; on "grids" they leave, staggered
+    var run = RUNS[0]; for (var q = 0; q < RUNS.length; q++) if (t < RUNS[q].until) { run = RUNS[q]; break; }
+    var ri = RUNS.indexOf(run), gOut = function(i){ return io(P(t, A.grids - .1 + i * .03, A.grids + .15 + i * .03)); };
+    var jolt = ri === 1 ? Math.sin(P(t, A.wall - .05, A.wall + .3) * Math.PI * 3) * (1 - P(t, A.wall - .05, A.wall + .3)) * 6 : 0;
+    [].forEach.call($('scr').querySelectorAll('.row'), function(r, i){ var s = run.t0 + i * run.gap, k = out(P(t, s, s + run.d)), go = gOut(i);
+      r.style.opacity = Math.max(.16 * cl(t * 3), cl(k * 1.6)) * (1 - go);   // between runs the rows wait as ghosts, so the screen is never blank r.style.transform = 'translateY(' + ((1 - k) * 26 + jolt - go * 14) + 'px)';
+      // "Give each row an index": the right-hand pill turns into the row's --i, top to bottom
+      var ik = out(P(t, A.index + i * .07, A.index + i * .07 + .25)); r.querySelector('.pl').style.opacity = 1 - ik; var ix = r.querySelector('.ix'); ix.style.opacity = ik; ix.style.transform = 'scale(' + mix(.7, 1, ik) + ')'; });
+    // "Now the eye flows top to bottom": a marker runs down the rows
+    var ek = io(P(t, A.flows - .05, A.flows + .65));
+    $('eye').style.opacity = win(t, A.flows - .05, A.bottom + .5, .15); $('eye').style.transform = 'translateY(' + ek * 208 + 'px)';
+    // "grids": a card grid staggers in on the diagonal; "menus": a sort menu drops in and its items stagger; a highlight steps through them
+    var mOn = out(P(t, A.menus - .05, A.menus + .3));
+    [].forEach.call($('scr').querySelectorAll('.card'), function(c, k){ var d = Math.floor(k / 3) + k % 3, s = A.grids + .05 + d * .07, gk = out(P(t, s, s + .45));
+      c.style.opacity = cl(gk * 1.6) * (1 - io(P(t, A.menus - .2 + d * .03, A.menus + .05 + d * .03))); c.style.transform = 'translateY(' + (1 - gk) * 26 + 'px) scale(' + mix(.92, 1, gk) + ')'; });
+    show($('menu'), mOn, (1 - mOn) * -10, mix(.92, 1, mOn));
+    [].forEach.call($('menu').querySelectorAll('.it'), function(it, i){ var s = A.menus + .1 + i * .04, k = out(P(t, s, s + .4)); it.style.opacity = cl(k * 1.6); it.style.transform = 'translateY(' + (1 - k) * 18 + 'px)'; });
+    var step = Math.max(0, t - A.menus - .8), hi = Math.floor(step / .45), pos = hi < 1 ? 0 : Math.min(4, hi - 1 + out(cl((step - hi * .45) / .2)));
+    $('menu').querySelector('.hl').style.top = (40 + pos * 41) + 'px'; $('menu').querySelector('.hl').style.opacity = P(t, A.menus + .6, A.menus + .8);
+    // ---- the deck: timing diagram (top 510, 104) → code (396, 204) → timing diagram → one line (510, 84) → gone on "Works" ----
+    var dIn = out(P(t, A.once - .2, A.once + .1)), m3 = io(P(t, A.line - .3, A.line + .1)), m4 = io(P(t, A.works - .2, A.works + .2));
+    var dTop = 510 + (396 - 510) * shrink, dH = 104 + 100 * shrink - 20 * m3, dk = $('deck');
+    dk.style.top = dTop + 'px'; dk.style.height = dH + 'px'; dk.style.opacity = dIn * (1 - m4); dk.style.transform = 'translateY(' + ((1 - dIn) * 30 + m4 * 30) + 'px)';
+    // the timing diagram: bars start where each row starts; the playhead runs while a run plays
+    var tlA = Math.max(win(t, A.once - .15, A.fix - .15, .15), win(t, A.same - .1, A.line - .25, .15));
+    $('tl').style.opacity = tlA;
+    var dr = ri < 1 ? RUNS[1] : ri > 3 ? RUNS[3] : run, span = dr.gap * 4 + dr.d, X0 = 24, XW = 420, pk = P(t, dr.t0, dr.t0 + span), redR = dr === RUNS[1];
     [].forEach.call($('tl').querySelectorAll('.bar'), function(b, i){
-      var x = X0 + XW * (i * run.gap) / (span || 1), w = XW * run.d / (span || 1);
-      b.style.left = x + 'px'; b.style.width = w + 'px'; b.style.background = ri === 0 ? 'rgba(255,77,61,.18)' : 'rgba(255,181,71,.16)';
-      var fill = cl((t - run.t0 - i * run.gap) / run.d); b.firstChild.style.width = fill * 100 + '%'; b.firstChild.style.background = ri === 0 ? '#ff4d3d' : '#ffb547'; });
+      b.style.left = (X0 + XW * (i * dr.gap) / span) + 'px'; b.style.width = (XW * dr.d / span) + 'px'; b.style.background = redR ? 'rgba(255,77,61,.18)' : 'rgba(255,181,71,.16)';
+      b.firstChild.style.width = cl((t - dr.t0 - i * dr.gap) / dr.d) * 100 + '%'; b.firstChild.style.background = redR ? '#ff4d3d' : '#ffb547'; });
     $('ph').style.left = (X0 + XW * pk) + 'px'; $('ph').style.opacity = pk > 0 && pk < 1 ? .8 : 0;
-    var tl = $('tlL'); tl.style.opacity = tA * (t >= A.once - .1 ? 1 : 0);
-    tl.textContent = ri === 0 ? 'ALL AT ONCE: ONE BLOCK' : ri === 1 ? '+40 MS EACH · 3× SLOWER' : '+40 MS EACH · REAL SPEED'; tl.style.color = ri === 0 ? '#ff4d3d' : '#ffb547';
-    // the tag line above
+    var dl = $('deckL'); dl.style.top = (dTop + dH + 14) + 'px';
+    dl.textContent = redR ? 'ALL AT ONCE: ONE BLOCK' : dr === RUNS[2] ? '+40 MS EACH · 3× SLOWER' : '+40 MS EACH · REAL SPEED'; dl.style.color = redR ? '#ff4d3d' : '#ffb547';
+    dl.style.opacity = tlA * (t >= A.once - .1 ? 1 : 0) * (t >= A.same - .1 && t < A.each - .1 ? 0 : 1);
+    // the rule: types itself while the screen is small
+    var cdA = win(t, A.fix + .05, A.same - .25, .2);
+    $('cd').style.opacity = cdA; $('cd').innerHTML = typed(Math.floor(CODE_TXT.length * P(t, A.fix + .1, A.same - .35)));
+    // "one line delays it": the deck becomes the one line; the calc lights up on "delays"
+    $('ol').style.opacity = win(t, A.line - .1, A.works - .1, .15);
+    var lit = P(t, A.delays - .05, A.delays + .15); $('ol').lastElementChild.style.background = 'rgba(255,181,71,' + (.18 * lit) + ')';
+    // ---- the readout top right: what the list is doing right now ----
+    var H, shown = 0; for (var g = 0; g < 5; g++) if (t >= A.index + g * .07 + .1) shown = g;
+    var nT = Math.floor(CODE_TXT.length * P(t, A.fix + .1, A.same - .35)), lines = CODE_TXT.slice(0, nT).split('\n').length;
+    if (t < A.every - .1) H = 'LIST · <b>5 ROWS</b>';
+    else if (t < A.fix - .2) H = 'DELAY <b class="r">0 MS</b>';
+    else if (t < A.same - .2) H = 'CSS <b>' + Math.max(1, lines) + '/5 LINES</b>';
+    else if (t < A.now - .05) H = '+40 MS · <b class="y">0.33×</b>';
+    else if (t < A.index - .1) H = '+40 MS · <b class="y">1×</b>';
+    else if (t < A.line - .1) H = '--i <b class="y">0 → ' + shown + '</b>';
+    else if (t < A.works - .1) H = 'DELAY <b class="y">--i × 40 MS</b>';
+    else H = (t < A.grids ? '<b class="y">LISTS</b>' : 'LISTS') + ' · ' + (t >= A.grids && t < A.menus ? '<b class="y">GRIDS</b>' : 'GRIDS') + ' · ' + (t >= A.menus ? '<b class="y">MENUS</b>' : 'MENUS');
+    $('hud').innerHTML = H; $('hud').style.opacity = 1 - ex;
     var tg = $('tag'); tg.style.opacity = (t >= A.every - .1 ? 1 : 0) * (1 - ex);
-    tg.textContent = t < A.fix ? 'FIVE ROWS, ONE START' : t < A.same - .2 ? 'ONE CSS RULE' : t < A.one - .2 ? 'WITH A STAGGER' : 'ANY LIST, ANY GRID';
-    // the readout top right (study, 25 Oct): a live value that changes with each beat, so the frame moves even when the picture holds
-    var nTyped = Math.floor(CODE_TXT.length * P(t, A.fix, A.same - .3)), lines = CODE_TXT.slice(0, nTyped).split('\n').length;
-    var shown = 0; for (var g = 0; g < 4; g++) if (t >= A.one - .05 + g * .07 + .2) shown = g;
-    var hud = t < A.every - .1 ? 'LIST · <b style="color:var(--paper)">5 ROWS</b>' : t < A.fix ? 'DELAY <b style="color:var(--red)">0 MS</b>'
-      : t < A.same - .2 ? 'CSS <b style="color:var(--paper)">' + Math.max(1, lines) + '/6 LINES</b>' : t < A.now - .05 ? '+40 MS · <b style="color:var(--acc)">0.33×</b>'
-      : t < A.one - .2 ? '+40 MS · <b style="color:var(--acc)">1×</b>' : '--i <b style="color:var(--acc)">0 → ' + shown + '</b>';
-    $('hud').innerHTML = hud; $('hud').style.opacity = 1 - ex;
-    // ---- 3. "The fix: stagger." the rule types itself; the delay lines are the accent ----
-    var cdIn = P(t, A.fix - .1, A.fix + .2), cdOut = io(P(t, A.same - .25, A.same + .05));
-    $('codebox').innerHTML = typed(Math.floor(CODE_TXT.length * P(t, A.fix, A.same - .3)));
-    show($('codebox'), cdIn * (1 - cdOut), (1 - cdIn) * 30);
-    // ---- 5. "One variable, one delay, pure CSS.": a grid staggers in on the diagonal; on "delay" each card shows its --i ----
-    [].forEach.call($('grid').children, function(c, k){ var d = Math.floor(k / 3) + k % 3, s = A.one - .05 + d * .07, q = out(P(t, s, s + .45));
-      var wv = t - A.css - .3 - d * .07, lift = wv > 0 ? Math.sin(Math.PI * cl((wv % 1.1) / .45)) * 10 : 0;   // after "CSS" a wave runs through the grid every 1.1 s
-      c.style.opacity = cl(q * 1.6) * (1 - ex); c.style.transform = 'translateY(' + ((1 - q) * 30 + ex * 20 - lift) + 'px) scale(' + mix(.94, 1, q) * mix(1, .94, ex) + ')';
-      var ik = out(P(t, A.delay + d * .07, A.delay + d * .07 + .3)); c.lastChild.style.opacity = ik; c.lastChild.style.transform = 'translateY(' + (1 - ik) * 8 + 'px)'; });
+    tg.textContent = t < A.fix - .2 ? 'FIVE ROWS, ONE START' : t < A.same - .2 ? 'THE FIX' : t < A.give - .1 ? 'WITH A STAGGER' : t < A.works - .1 ? 'ONE INDEX PER ROW' : 'ANY LIST, ANY GRID';
     // ---- captions ----
     var ph0 = null;
     for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
     var html = '';
     if (ph0 && ph0[0] > 6 && t < DUR - .5)   // words 0-6 are the hook question, shown as the title instead
       ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2));
-      var col = /^(stagger|40|milliseconds|flows)/i.test(w.d) ? 'var(--acc)' : /^(once|wall)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+      var col = /^(stagger|40|milliseconds|flows|index|lists|grids|menus)/i.test(w.d) ? 'var(--acc)' : /^(once|wall)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
       html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
     $('cap').innerHTML = html;
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
-  // sound under the voice: the flat list is one thud; the staggered list is a rising run of taps, one per row
+  // sound under the voice: the flat list is one thud; each staggered run is a rising run of taps, one per row
   function buildCues(){
-    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: WORDS[5] ? WORDS[5].s - LEAD : .9, k: 'thud', g: .6 }, { t: A.every - .1, k: 'swish', d: .4, g: .6 }];
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.flat, k: 'thud', g: .6 }, { t: A.every - .35, k: 'swish', d: .45, g: .6 }];
     Q.push({ t: A.once + .2, k: 'thud', g: .7 }, { t: A.wall, k: 'tick', g: .25, p: 2 });
-    Q.push({ t: A.fix - .1, k: 'swish', d: .4, g: .6, p: .2 });
-    for (var c = 0, t0 = A.fix, t1 = A.same - .3; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
-    Q.push({ t: A.same - .15, k: 'swish', d: .35, g: .5, p: .4 });
-    for (var r = 0; r < 5; r++) { Q.push({ t: RUNS[1].t0 + r * RUNS[1].gap + .1, k: 'tap', g: .5, p: r * 2 }); Q.push({ t: RUNS[2].t0 + r * RUNS[2].gap + .06, k: 'tick', g: .3, p: 4 + r * 2 }); }
-    Q.push({ t: A.one - .1, k: 'swish', d: .4, g: .5, p: .3 });
-    for (var d = 0; d < 4; d++) Q.push({ t: A.one + d * .07 + .05, k: 'tap', g: .4, p: 3 + d * 2 });
-    Q.push({ t: A.delay, k: 'tick', g: .2, p: 6 }, { t: A.pure, k: 'tap', g: .5, p: 5 }, { t: A.css, k: 'tap', g: .7, p: 9 });
+    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .6, p: .2 });
+    for (var c = 0, t0 = A.fix + .1, t1 = A.same - .35; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.same - .3, k: 'swish', d: .45, g: .55, p: .4 });
+    for (var r = 0; r < 5; r++) {
+      Q.push({ t: RUNS[2].t0 + r * RUNS[2].gap + .1, k: 'tap', g: .5, p: r * 2 }, { t: RUNS[3].t0 + r * RUNS[3].gap + .06, k: 'tick', g: .3, p: 4 + r * 2 });
+      Q.push({ t: A.index + r * .07, k: 'tick', g: .18, p: 6 + r }, { t: RUNS[4].t0 + r * .04 + .06, k: 'tick', g: .25, p: 4 + r * 2 }); }
+    Q.push({ t: A.flows - .05, k: 'swish', d: .6, g: .4, p: .1 }, { t: A.line - .3, k: 'swish', d: .4, g: .45, p: .3 }, { t: A.delays, k: 'tap', g: .5, p: 5 });
+    Q.push({ t: A.works - .2, k: 'swish', d: .35, g: .4, p: -.2 }, { t: A.lists, k: 'tap', g: .45, p: 3 });
+    for (var d = 0; d < 4; d++) Q.push({ t: A.grids + .05 + d * .07 + .05, k: 'tap', g: .4, p: 3 + d * 2 });
+    Q.push({ t: A.menus, k: 'swish', d: .35, g: .45, p: .3 });
+    for (var m = 0; m < 5; m++) Q.push({ t: A.menus + .1 + m * .04 + .05, k: 'tick', g: .25, p: 5 + m });
     Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
     window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
   }
