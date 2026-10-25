@@ -60,6 +60,18 @@ The four series below still name the subjects; the narrated explainer is how eac
   an element that carries over). Never a plain cut or a plain swipe.
 - Variation (owner, 23 Oct: "where's the variation?"): something big changes at least every ~3 s: the scene, the colour world, the scale
   or the camera. One look held for 17 s is a still with motion, not a reel.
+- Density (study of an AI-animated "system" reel the owner shared, 25 Oct; 3 screen recordings, ~39 s, measured frame by frame;
+  techniques only, never its look, host character or copy):
+  - Voice wall to wall: about 5 words a second (ours ~3.9) and one pause over 0.25 s in 39 s. Lines are short claims, not explanations.
+  - A visual event about every 0.5-1.3 s, on the stressed word, and a literal picture for almost every noun phrase ("fills up fast" =
+    seats filling, "first come, first served" = a take-a-number ticket, "221 files" = a counter rolling up as files burst out).
+    Its own stated rules, worth holding ourselves to: hook within 1.5 s, an event on every stressed word, nothing still for more than 1.2 s.
+  - The caption word and its key visual land about 0.15 s before the word is spoken, so the eye is ready when the ear arrives.
+  - A live readout in a corner (a mono counter that changes with each beat: seats left, followers, files, a timing offset): the frame changes
+    even when the main picture holds.
+  - Numbers as proof: counters that run up, then a hand-drawn ring around the final figure; stamps that slam in with a hit.
+  - Fixed zones: caption block top-left (2-3 lines, accent word coloured), the picture in the middle, nothing over the bottom UI.
+  - Not for us: the cartoon host, the light-paper look as a copy, income and follower claims, "comment X" giveaways (we end on the reel itself).
 
 ## Self-review before the owner sees anything (owner, 23 Oct: "where's the accountability?")
 Claude reviews every draft as a critical creative director before sending it, and does not wait to be asked to improve it.
