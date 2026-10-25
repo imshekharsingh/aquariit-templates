@@ -21,6 +21,9 @@
   a{color:inherit}
   .top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 0}
   .brand{font:800 1rem system-ui,sans-serif;letter-spacing:-.01em}
+  .tr{display:flex;gap:8px}
+  button.pill{background:transparent;color:var(--ink);cursor:pointer}
+  button.pill:disabled{opacity:.6;cursor:default}
   .pill{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1.5px solid var(--line);border-radius:999px;text-decoration:none;font:700 .85rem system-ui,sans-serif}
   h1{font:800 2rem/1.05 system-ui,sans-serif;letter-spacing:-.02em;margin:8px 0 6px}
   .lede{color:var(--mute)}
@@ -52,7 +55,7 @@
 </head>
 <body>
 <main class="wrap">
-  <div class="top"><span class="brand">webin20sec</span><a class="pill" href="/archive/">Archive</a></div>
+  <div class="top"><span class="brand">webin20sec</span><span class="tr"><button class="pill" id="refresh" type="button">Refresh</button><a class="pill" href="/archive/">Archive</a></span></div>
   <h1>Showreels</h1>
   <p class="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post at 14:00 IST, then mark it uploaded.</p>
   <div id="list"><p class="empty">Loading…</p></div>
@@ -60,6 +63,15 @@
 <script>
 (function(){
   var list = document.getElementById('list'), caps = fetch('/showreels/captions.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; });
+  // refresh (owner, 25 Oct): the installed app can resume an old copy of this page and never reload on its own. The button drops the
+  // offline copies, asks for a new service worker if there is one and reloads; after 15 minutes in the background the app reloads itself
+  var rb = document.getElementById('refresh'), hiddenAt = 0;
+  function refresh(){ rb.disabled = true; rb.textContent = 'Refreshing…';
+    var sw = 'serviceWorker' in navigator ? navigator.serviceWorker.getRegistration().then(function(r){ return r && r.update(); }) : Promise.resolve();
+    var cl = window.caches ? caches.keys().then(function(ks){ return Promise.all(ks.filter(function(k){ return k.indexOf('aquarii-') === 0; }).map(function(k){ return caches.delete(k); })); }) : Promise.resolve();
+    Promise.all([sw, cl]).catch(function(){}).then(function(){ location.reload(); }); }
+  rb.addEventListener('click', refresh);
+  document.addEventListener('visibilitychange', function(){ if (document.hidden) hiddenAt = Date.now(); else if (hiddenAt && Date.now() - hiddenAt > 15 * 60 * 1000) refresh(); });
   function el(t, c, txt){ var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; }
   // what gets pasted into Instagram: the caption, one line of niche search keywords, then exactly 5 niche hashtags (owner, 22 Oct 2026)
   function postText(j){ var t = j.caption.trim(); if (j.keywords && j.keywords.length) t += '\n\n' + j.keywords.slice(0, 6).join(' · '); if (j.hashtags && j.hashtags.length) t += '\n\n' + j.hashtags.slice(0, 5).join(' '); return t; }
@@ -136,7 +148,10 @@
       b.appendChild(row); card.appendChild(v); card.appendChild(b); list.appendChild(card);
     });
   }
-  Promise.all([fetch('/api/showreels', { credentials: 'same-origin' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){ DATA = { d: r[0], c: r[1] }; render(); })
+  Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
+    // a re-render keeps the file name, so the video and cover URLs carry the release's update time: the phone never plays a cached older cut
+    (r[0].showreels || []).forEach(function(s){ var v = '?v=' + encodeURIComponent(s.at || ''); s.video += v; if (s.cover) s.cover += v; });
+    DATA = { d: r[0], c: r[1] }; render(); })
     .catch(function(){ list.textContent = ''; list.appendChild(el('p', 'empty', 'Could not load the list right now.')); });
 })();
 </script>
