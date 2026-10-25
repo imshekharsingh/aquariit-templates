@@ -35,7 +35,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #strip .f i{position:absolute;left:22%;top:24%;width:56%;height:52%;border-radius:8px;background:#3a3644}
 #stripL{left:36px;top:640px;font:700 15px/1 var(--m);letter-spacing:.12em;white-space:nowrap}
 #codebox{left:36px;top:206px;width:468px;border-radius:30px;background:var(--surface);padding:26px 28px;font:500 22px/1.55 var(--m);white-space:pre;color:var(--paper)}
-#codebox b{font-weight:500;color:var(--teal)}
+#codebox b{font-weight:500;color:var(--paper)}
+#codebox.lit b{color:var(--teal)}
 #codebox .dim{color:var(--dim)}
 #chips{left:36px;top:540px;display:flex;flex-direction:column;gap:12px}
 .chip{height:56px;padding:0 20px;border-radius:999px;background:#24222a;display:flex;align-items:center;gap:10px;font:700 22px/1 var(--m);transform-origin:0 50%;white-space:nowrap}
@@ -47,22 +48,49 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #sheet{left:284px;top:206px;width:220px;height:300px;border-radius:24px;background:#26232c;border:1.5px solid #3c3846;transform-origin:50% 100%}
 #sheet i{position:absolute;left:22px;height:18px;border-radius:9px;background:#3c3846}
 #toast{left:36px;top:430px;width:230px;height:76px;border-radius:999px;background:var(--teal);color:var(--ink);display:flex;align-items:center;justify-content:center;font:700 21px/1 var(--f);transform-origin:50% 50%}
+/* clarity pass (owner, 25 Oct: the voice says "display none" and the screen must show it): a dashed ghost where the popup would be,
+   the popup's live CSS state top right, the first state drawn before the glide, "one block" and "no JavaScript" as pictures */
+#ghost{left:84px;top:54px;width:300px;height:192px;border-radius:24px;border:2px dashed rgba(242,239,232,.5);background:rgba(18,17,16,.72);z-index:2;display:grid;place-content:center;justify-items:center;gap:14px}
+#ghost .k{font:700 30px/1 var(--m);color:var(--red);transform-origin:50% 50%}
+#ghost .n{position:relative;font:500 17px/1 var(--m);color:var(--dim)}
+#ghost .n i{position:absolute;left:-6px;top:50%;height:3px;margin-top:-1px;border-radius:2px;background:var(--red)}
+#gtag{z-index:3;left:84px;top:40px;padding:6px 12px;border-radius:999px;background:var(--ink);font:700 13px/1 var(--m);letter-spacing:.06em;color:var(--teal);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.04em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}
+#hud .r{color:var(--red)}#hud .g{color:var(--teal)}
+#blk{left:36px;top:206px;width:300px;height:196px;border-radius:26px;background:var(--surface);padding:22px 24px;font:500 21px/1.5 var(--m);white-space:pre;color:var(--teal);transform-origin:0 0}
+#blk .h{font:700 13px/1 var(--m);letter-spacing:.14em;color:var(--dim);margin-bottom:12px}
+#js{left:356px;top:206px;width:148px;height:196px;border-radius:26px;background:var(--surface);overflow:hidden;transform-origin:50% 50%}
+#js .f{position:absolute;left:47px;top:34px;width:54px;height:68px;border-radius:8px;border:2.5px solid var(--dim)}
+#js .f:after{content:"";position:absolute;right:-2px;top:-2px;width:16px;height:16px;background:var(--surface);border-left:2.5px solid var(--dim);border-bottom:2.5px solid var(--dim);border-bottom-left-radius:5px}
+#js .nm{position:absolute;left:0;right:0;top:118px;text-align:center;font:700 17px/1 var(--m)}
+#js .z{position:absolute;left:0;right:0;top:146px;text-align:center;font:700 14px/1 var(--m);color:var(--red);letter-spacing:.06em}
+#js .x{position:absolute;left:14px;top:96px;height:4px;border-radius:2px;background:var(--red);transform-origin:0 50%;transform:rotate(-38deg)}
+#codebox b{transition:none}
+#codebox.lit b{background:rgba(46,230,200,.12);border-radius:6px}
 #cap{left:36px;right:36px;top:668px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
 #cap span{display:inline-block;margin-right:.24em}
 </style>
 </head>
 <body>
 <div id="lbl" class="a">Nº 03 · MOTION</div>
+<div id="hud" class="a"></div>
 <div id="tag" class="a"></div>
 <div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>popup</span> <span>just</span></span><span class="ln"><span class="acc">snap</span> <span class="acc">in?</span></span></div>
 <div id="screen" class="a"><div class="ln" style="top:34px;width:240px"></div><div class="ln" style="top:72px;width:380px"></div><div class="ln" style="top:110px;width:320px"></div><div class="ln" style="top:148px;width:200px"></div>
   <div id="share" class="a">Share</div><div id="scrim" class="a"></div>
+  <div id="ghost" class="a"><div class="k">display: none</div><div class="n">fade: opacity 0 → 1<i></i></div></div><div id="gtag" class="a">FIRST STATE · opacity 0 · scale .9</div>
   <div id="pop" class="a"><div class="t">Share this page</div><div class="s">3 people · link copied</div><div class="b">Send</div></div></div>
 <div id="strip" class="a"><div class="f"><i></i></div><div class="f"><i></i></div><div class="f"><i></i></div><div class="f"><i></i></div><div class="f"><i></i></div></div>
 <div id="stripL" class="a"></div>
 <div id="codebox" class="a"></div>
 <div id="chips" class="a"><div id="c1" class="chip"><i></i>Chrome 117</div><div id="c2" class="chip"><i></i>Firefox 129</div><div id="c3" class="chip"><i></i>Safari 17.5</div></div>
 <div id="base" class="a">BASELINE 2024</div>
+<div id="blk" class="a"><div class="h">ONE BLOCK</div>@starting-style {
+  opacity: 0;
+  scale: .9;
+}</div>
+<div id="js" class="a"><i class="f"></i><div class="nm">app.js</div><div class="z">0 LINES</div><i class="x"></i></div>
 <div id="menu" class="a"><i style="top:30px;width:150px"></i><i style="top:72px;width:180px"></i><i style="top:114px;width:120px"></i><i style="top:156px;width:160px"></i></div>
 <div id="sheet" class="a"><i style="top:30px;width:120px"></i><i style="top:72px;width:170px"></i><i style="top:114px;width:140px"></i></div>
 <div id="toast" class="a">Link copied ✓</div>
@@ -75,16 +103,16 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   var spring = function(s){ if (s <= 0) return 0; var z = .62, w = 13, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
   // the script ("¦" marks an unspoken caption break); the voice says "starting style", the code shows @starting-style
   var TEXT = "Why does your popup just snap in? CSS can't animate from display none,¦ so it pops in on one frame. The fix: starting style. Give it a first state, and it glides in. Every major browser, since 2024. One block, no JavaScript.";
-  var WORDS = [], DUR = 18;
+  var WORDS = [], DUR = 18, LEAD = .15;   // beats and caption words land 0.15 s before the word is spoken (study, 25 Oct)
   (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .16 + w.length * .03; WORDS.push({ w: w.replace('¦', ''), s: t, e: t + d }); t += d + (/[.?:,]$/.test(w) ? .22 : .06); }); })();
   var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
-  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s; return 99; }
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
   function align(){ var T = TEXT.split(/\s+/), j = 0;
     WORDS.forEach(function(w){ w.d = w.w; w.brk = false; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k].replace('¦', ''); w.brk = T[k].indexOf('¦') >= 0; j = k + 1; break; } }); }
   var A = {}, PH = [];
   function anchors(){
     align();
-    A = { snap: at('snap'), css: at('css'), display: at('display'), pops: at('pops'), frame: at('frame'), fix: at('fix'), starting: at('starting'), give: at('give'), first: at('first'), glides: at('glides'),
+    A = { animate: at('animate'), none: at('none'), snap: at('snap'), css: at('css'), display: at('display'), pops: at('pops'), frame: at('frame'), fix: at('fix'), starting: at('starting'), give: at('give'), first: at('first'), glides: at('glides'),
       every: at('every'), major: at('major'), browser: at('browser'), y2024: at('2024'), one2: at('one', 2), block: at('block'), no: at('no'), js: at('javascript') };
     A.end = WORDS[WORDS.length - 1].e;
     PH = []; var cur = [];
@@ -108,19 +136,38 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     // ---- 1. the hook: words land as spoken; "snap in?" snaps (no easing at all), the joke of the reel ----
     var gone = io(P(t, A.css - .3, A.css + .05));
     [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
-      var s = WORDS[i] ? WORDS[i].s - .06 : 0, hard = i >= 5, k = hard ? (t >= s ? 1 : 0) : out(P(t, s, s + .26));
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, hard = i >= 5, k = hard ? (t >= s ? 1 : 0) : out(P(t, s, s + .26));
       sp.style.opacity = (hard ? k : cl((t - s) * 9)) * (1 - gone);
       sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)';
     });
     $('lbl').style.opacity = 1 - ex;
     // ---- 2. "CSS can't animate from display none, so it pops in on one frame." (the screen, the tap, the snap, the filmstrip) ----
-    var scrIn = out(P(t, A.css - .05, A.css + .3)), scrOut = io(P(t, A.fix - .2, A.fix + .15)), scrBack = out(P(t, A.give - .2, A.give + .15)), scrOut2 = io(P(t, A.every - .2, A.every + .15));
+    var scrIn = out(P(t, .1, .45)), rise = io(P(t, A.css - .3, A.css + .1)), scrOut = io(P(t, A.fix - .2, A.fix + .15)), scrBack = out(P(t, A.give - .2, A.give + .15)), scrOut2 = io(P(t, A.every - .2, A.every + .15));
     var scrA = Math.max(scrIn * (1 - scrOut), scrBack * (1 - scrOut2));
-    show($('screen'), scrA, (1 - scrIn) * 30);
-    var phase2 = t < A.fix, popT = phase2 ? A.pops : A.glides;
+    show($('screen'), scrA, (1 - rise) * 297 + (1 - scrIn) * 30, mix(.62, 1, rise));
+    var hook = t < A.css, phase2 = t < A.fix, popT = hook ? A.snap : phase2 ? A.pops : A.glides;
     var pk = phase2 ? (t >= popT ? 1 : 0) : out(P(t, popT, popT + .45));   // snap: on one frame; glide: 0.45 s ease
-    $('scrim').style.opacity = pk * .9; show($('pop'), pk, 0, phase2 ? 1 : mix(.9, 1, pk));
+    var first = !phase2 && t >= A.give - .1 && t < A.glides;   // "Give it a first state": the popup drawn faintly at opacity 0, scale .9
+    $('scrim').style.opacity = pk * .9; show($('pop'), first ? .22 : phase2 ? pk : mix(.22, 1, pk), 0, phase2 ? 1 : mix(.9, 1, pk));
+    // "CSS can't animate from display none": the ghost where the popup would be; the fade it wants, struck out on "none"
+    var gA = t >= A.animate - .1 && t < A.pops ? 1 : 0, kIn = spring(t - A.display + .05);
+    $('ghost').style.opacity = gA; $('ghost').style.borderColor = 'rgba(242,239,232,.5)';
+    var gk = $('ghost').firstChild, gn = $('ghost').lastChild;
+    gk.style.opacity = cl((t - A.display + .05) * 8); gk.style.transform = 'scale(' + (.6 + .4 * kIn) + ')';
+    gn.style.opacity = cl((t - A.animate + .05) * 8); gn.lastChild.style.width = (out(P(t, A.none, A.none + .25)) * (gn.offsetWidth + 12)) + 'px';
+    var gt = $('gtag'); gt.style.opacity = first ? cl((t - A.give + .1) * 8) : 0;
+    $('ghost').style.opacity = Math.max(gA, first ? 1 : 0); $('ghost').style.background = first ? 'transparent' : 'rgba(18,17,16,.72)';
+    if (first) { $('ghost').style.borderColor = 'rgba(46,230,200,.7)'; gk.style.opacity = 0; gn.style.opacity = 0; }
     $('share').style.transform = 'scale(' + (t >= popT - .25 && t < popT - .05 ? .94 : 1) + ')';
+    // the popup's live CSS state, top right: what the browser has right now
+    var f2 = function(v){ return v.toFixed(2).replace(/^0/, ''); }, H;
+    if (t < A.fix) H = t < popT ? 'display: <b class="r">none</b>' : 'display: <b>block</b>' + (hook ? '' : ' · <b class="r">1 frame</b>');
+    else if (t < A.give - .1) H = '<b class="g">@starting-style</b>';
+    else if (t < A.every - .2) H = 'opacity <b class="g">' + (first ? '0' : f2(pk)) + '</b> · scale <b class="g">' + (first ? '.9' : f2(mix(.9, 1, pk))) + '</b>';
+    else if (t < A.one2 - .2) H = 'BASELINE <b>2024</b>';
+    else if (t < A.end + .2) H = '<b class="g">1</b> block · <b class="r">0</b> lines of JS';
+    else H = 'every popup · <b class="g">glides</b>';
+    $('hud').innerHTML = H; $('hud').style.opacity = 1 - ex;
     // the filmstrip: five frames of the same moment; first time the popup is simply there in frame 2, second time it grows across them
     var stA = Math.max(P(t, A.frame - .15, A.frame + .2) * (1 - scrOut), P(t, A.glides + .3, A.glides + .6) * (1 - scrOut2));
     $('strip').style.opacity = stA;
@@ -130,10 +177,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var sl = $('stripL'); sl.style.opacity = stA; sl.textContent = phase2 ? 'ONE FRAME: NOTHING → EVERYTHING' : 'FRAME BY FRAME: IT GLIDES'; sl.style.color = phase2 ? '#ff4d3d' : '#2ee6c8';
     // the tag line above
     var tg = $('tag'); tg.style.opacity = (t >= A.css - .1 ? 1 : 0) * (1 - ex);
-    tg.textContent = t < A.fix ? 'DISPLAY: NONE → BLOCK' : t < A.give ? 'ONE CSS BLOCK' : t < A.every ? 'WITH @STARTING-STYLE' : t < A.one2 ? 'SUPPORT' : 'MENUS · SHEETS · TOASTS';
+    tg.textContent = t < A.fix ? 'DISPLAY: NONE → BLOCK' : t < A.give ? 'ONE CSS BLOCK' : t < A.every ? 'WITH @STARTING-STYLE' : t < A.one2 - .2 ? 'SUPPORT' : t < A.end + .2 ? 'ONE BLOCK · NO JS' : 'MENUS · SHEETS · TOASTS';
     // ---- 3. "The fix: starting style." the code types itself; the @starting-style block lands on "starting" ----
     var cdIn = P(t, A.fix - .1, A.fix + .2), cdOut = io(P(t, A.give - .25, A.give + .05));
-    $('codebox').innerHTML = typed(Math.floor(CODE_TXT.length * P(t, A.fix, A.first - .1)));
+    $('codebox').innerHTML = typed(Math.floor(CODE_TXT.length * P(t, A.fix, A.first - .1))); $('codebox').className = 'a' + (t >= A.starting ? ' lit' : '');
     show($('codebox'), cdIn * (1 - cdOut), (1 - cdIn) * 30);
     // ---- 5. "Every major browser, since 2024." ----
     [['c1', A.every], ['c2', A.major], ['c3', A.browser]].forEach(function(c){ var k = spring(t - c[1] + .05);
@@ -141,29 +188,36 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var bk = spring(t - A.y2024 + .05); $('base').style.opacity = cl((t - A.y2024 + .05) * 7) * (1 - io(P(t, A.one2 - .25, A.one2 + .05))); $('base').style.transform = 'scale(' + (.5 + .5 * bk) + ')';
     $('chips').style.top = '230px'; $('base').style.top = '450px';
     // ---- 6. "One block, no JavaScript.": a menu, a sheet and a toast glide in, the same way; at the end they glide out (the loop) ----
-    [['menu', A.one2, 'm'], ['sheet', A.block, 's'], ['toast', A.no, 't']].forEach(function(p){ var k = out(P(t, p[1] - .05, p[1] + .45));
+    var bOut = io(P(t, A.end + .05, A.end + .35)), bk2 = spring(t - A.one2 + .05), jk = spring(t - A.no + .05);
+    $('blk').style.opacity = cl((t - A.one2 + .05) * 7) * (1 - bOut); $('blk').style.transform = 'translateY(' + (-bOut * 30) + 'px) scale(' + (.7 + .3 * bk2) + ')';
+    $('js').style.opacity = cl((t - A.no + .05) * 7) * (1 - bOut); $('js').style.transform = 'translateY(' + (-bOut * 30) + 'px) scale(' + (.7 + .3 * jk) + ')';
+    $('js').lastChild.style.width = out(P(t, A.js, A.js + .25)) * 160 + 'px';
+    [['menu', A.end + .25, 'm'], ['sheet', A.end + .85, 's'], ['toast', A.end + 1.45, 't']].forEach(function(p){ var k = out(P(t, p[1] - .05, p[1] + .45));
       var o = k * (1 - ex), s = mix(.9, 1, k) * mix(1, .92, ex);
       show($(p[0]), t < p[1] - .05 ? 0 : o, (1 - k) * 16 + ex * 20, s); });
     // ---- captions ----
     var ph0 = null;
-    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - .1 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - .1)) ph0 = PH[i]; }
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
     var html = '';
     if (ph0 && ph0[0] > 6 && t < DUR - .5)   // words 0-6 are the hook question, shown as the title instead
-      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - .04, k = out(P(t, w.s - .04, w.s + .16));
-      var col = /^(starting|style|glides|javascript)/i.test(w.d) ? 'var(--teal)' : /^(pops|snap)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
-      html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2));
+      var col = /^(starting|style|glides|javascript)/i.test(w.d) ? 'var(--teal)' : /^(pops|snap|display|none)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+      var code = /^(display|none|starting|style)/i.test(w.d) ? ';font-family:var(--m);font-size:.84em;letter-spacing:-.02em' : '';
+      html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + code + '">' + w.d.replace(/</g, '') + '</span>'; });
     $('cap').innerHTML = html;
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
   // sound under the voice (owner, 24 Oct: quiet taps and soft air, no funky pops): the snap is a hard click, the glide a soft swish
   function buildCues(){
     var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.snap, k: 'click', g: 1 }, { t: A.css - .1, k: 'swish', d: .4, g: .6 }];
+    Q.push({ t: A.animate, k: 'tap', g: .4, p: 2 }, { t: A.display, k: 'click', g: .7 }, { t: A.none, k: 'tick', g: .35, p: -2 });
     Q.push({ t: A.pops - .2, k: 'tap', g: .7 }, { t: A.pops, k: 'thud', g: .55 }, { t: A.frame, k: 'tick', g: .25, p: 4 });
     Q.push({ t: A.fix - .1, k: 'swish', d: .4, g: .6, p: .2 });
     for (var c = 0, t0 = A.fix, t1 = A.first - .1; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
     Q.push({ t: A.give - .15, k: 'swish', d: .35, g: .5, p: .4 }, { t: A.glides - .2, k: 'tap', g: .6 }, { t: A.glides, k: 'swish', d: .5, g: .7, p: .6 });
     [A.every, A.major, A.browser, A.y2024].forEach(function(x, j){ Q.push({ t: x, k: 'tap', g: .5, p: j * 2 }); });
-    Q.push({ t: A.one2, k: 'swish', d: .4, g: .5, p: .3 }, { t: A.one2, k: 'tap', g: .45 }, { t: A.block, k: 'tap', g: .45, p: 3 }, { t: A.no, k: 'tap', g: .5, p: 5 }, { t: A.js, k: 'tap', g: .7, p: 9 });
+    Q.push({ t: A.one2, k: 'swish', d: .4, g: .5, p: .3 }, { t: A.one2, k: 'tap', g: .5 }, { t: A.no, k: 'tap', g: .5, p: 5 }, { t: A.js, k: 'click', g: .7 });
+    [A.end + .25, A.end + .85, A.end + 1.45].forEach(function(x, j){ Q.push({ t: x, k: 'swish', d: .35, g: .45, p: .3 + j * .2 }, { t: x + .1, k: 'tap', g: .4, p: 4 + j * 2 }); });
     Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
     window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
   }
