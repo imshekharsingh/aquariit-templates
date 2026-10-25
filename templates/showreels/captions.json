@@ -177,5 +177,24 @@
    "#frontenddev",
    "#webdev"
   ]
+ },
+ "showreel-13-popup": {
+  "postOn": "2026-10-25",
+  "caption": "Why does your popup just snap in? ✨\n\nCSS can't transition from display: none, so a popup appears on a single frame. @starting-style gives it a first state (opacity 0, scale .9) to animate from, so it glides in. Works in Chrome, Firefox and Safari (Baseline 2024). One block, no JavaScript.\nSave it for your next modal, or send it to whoever builds your UI.",
+  "keywords": [
+   "CSS starting-style",
+   "popup animation",
+   "CSS transition display none",
+   "modal animation CSS",
+   "UI micro interactions",
+   "CSS animation"
+  ],
+  "hashtags": [
+   "#cssanimation",
+   "#css",
+   "#microinteractions",
+   "#frontenddev",
+   "#uianimation"
+  ]
  }
 }

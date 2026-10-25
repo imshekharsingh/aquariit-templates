@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does your popup just snap in?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 03, a motion tip (owner, 25 Oct: back to tips like Nº 01): "Why does your popup just snap in?"
+   CSS cannot transition from display: none, so an element appears on one frame; @starting-style gives it a first state to transition from.
+   Support (MDN browser-compat-data): Chrome 117, Firefox 129, Safari 17.5, so Baseline 2024. Same system as Nº 01/02: the voice runs the reel,
+   every beat, caption and sound is anchored to a spoken word (window.setVoice); stage 540x960 CSS px at 2x; every frame a pure function of t. */
+:root{--ink:#121110;--paper:#f2efe8;--dim:#8d877c;--line:#2c2a27;--surface:#1c1a1f;--rule:#34303c;--teal:#2ee6c8;--red:#ff4d3d;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:250px;font-weight:800;font-size:78px;line-height:.96;letter-spacing:-.045em;font-variation-settings:'wdth' 85,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--teal)}
+/* the demo screen: a page with a Share button; the popup opens over a scrim */
+#screen{left:36px;top:206px;width:468px;height:300px;border-radius:30px;background:var(--surface);overflow:hidden}
+#screen .ln{position:absolute;left:30px;height:20px;border-radius:10px;background:var(--rule)}
+#share{left:30px;top:206px;width:170px;height:62px;border-radius:999px;background:var(--paper);color:var(--ink);display:grid;place-items:center;font:700 22px/1 var(--f)}
+#scrim{left:0;top:0;width:468px;height:300px;background:rgba(0,0,0,.55)}
+#pop{left:84px;top:54px;width:300px;height:192px;border-radius:24px;background:#26232c;border:1.5px solid #3c3846;transform-origin:50% 60%}
+#pop .t{position:absolute;left:24px;top:26px;font:700 24px/1 var(--f)}
+#pop .s{position:absolute;left:24px;top:62px;font:500 14px/1 var(--m);color:var(--dim)}
+#pop .b{position:absolute;left:24px;right:24px;bottom:22px;height:52px;border-radius:999px;background:var(--teal);color:var(--ink);display:grid;place-items:center;font:700 20px/1 var(--f)}
+/* the filmstrip: what the eye actually gets, frame by frame */
+#strip{left:36px;top:530px;width:468px;display:flex;gap:10px}
+#strip .f{flex:1;height:96px;border-radius:12px;background:var(--surface);position:relative;overflow:hidden}
+#strip .f i{position:absolute;left:22%;top:24%;width:56%;height:52%;border-radius:8px;background:#3a3644}
+#stripL{left:36px;top:640px;font:700 15px/1 var(--m);letter-spacing:.12em;white-space:nowrap}
+#codebox{left:36px;top:206px;width:468px;border-radius:30px;background:var(--surface);padding:26px 28px;font:500 22px/1.55 var(--m);white-space:pre;color:var(--paper)}
+#codebox b{font-weight:500;color:var(--teal)}
+#codebox .dim{color:var(--dim)}
+#chips{left:36px;top:540px;display:flex;flex-direction:column;gap:12px}
+.chip{height:56px;padding:0 20px;border-radius:999px;background:#24222a;display:flex;align-items:center;gap:10px;font:700 22px/1 var(--m);transform-origin:0 50%;white-space:nowrap}
+.chip i{width:9px;height:9px;border-radius:50%;background:#3ddc84}
+#base{left:36px;top:600px;height:50px;padding:0 20px;border-radius:999px;border:2px solid var(--rule);display:flex;align-items:center;font:700 19px/1 var(--m);color:var(--dim);letter-spacing:.06em;transform-origin:0 50%}
+/* the payoff: a menu, a sheet and a toast, all gliding in */
+#menu{left:36px;top:206px;width:230px;height:200px;border-radius:24px;background:var(--surface);transform-origin:0 0}
+#menu i{position:absolute;left:22px;height:18px;border-radius:9px;background:var(--rule)}
+#sheet{left:284px;top:206px;width:220px;height:300px;border-radius:24px;background:#26232c;border:1.5px solid #3c3846;transform-origin:50% 100%}
+#sheet i{position:absolute;left:22px;height:18px;border-radius:9px;background:#3c3846}
+#toast{left:36px;top:430px;width:230px;height:76px;border-radius:999px;background:var(--teal);color:var(--ink);display:flex;align-items:center;justify-content:center;font:700 21px/1 var(--f);transform-origin:50% 50%}
+#cap{left:36px;right:36px;top:668px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 03 · MOTION</div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>popup</span> <span>just</span></span><span class="ln"><span class="acc">snap</span> <span class="acc">in?</span></span></div>
+<div id="screen" class="a"><div class="ln" style="top:34px;width:240px"></div><div class="ln" style="top:72px;width:380px"></div><div class="ln" style="top:110px;width:320px"></div><div class="ln" style="top:148px;width:200px"></div>
+  <div id="share" class="a">Share</div><div id="scrim" class="a"></div>
+  <div id="pop" class="a"><div class="t">Share this page</div><div class="s">3 people · link copied</div><div class="b">Send</div></div></div>
+<div id="strip" class="a"><div class="f"><i></i></div><div class="f"><i></i></div><div class="f"><i></i></div><div class="f"><i></i></div><div class="f"><i></i></div></div>
+<div id="stripL" class="a"></div>
+<div id="codebox" class="a"></div>
+<div id="chips" class="a"><div id="c1" class="chip"><i></i>Chrome 117</div><div id="c2" class="chip"><i></i>Firefox 129</div><div id="c3" class="chip"><i></i>Safari 17.5</div></div>
+<div id="base" class="a">BASELINE 2024</div>
+<div id="menu" class="a"><i style="top:30px;width:150px"></i><i style="top:72px;width:180px"></i><i style="top:114px;width:120px"></i><i style="top:156px;width:160px"></i></div>
+<div id="sheet" class="a"><i style="top:30px;width:120px"></i><i style="top:72px;width:170px"></i><i style="top:114px;width:140px"></i></div>
+<div id="toast" class="a">Link copied ✓</div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var spring = function(s){ if (s <= 0) return 0; var z = .62, w = 13, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
+  // the script ("¦" marks an unspoken caption break); the voice says "starting style", the code shows @starting-style
+  var TEXT = "Why does your popup just snap in? CSS can't animate from display none,¦ so it pops in on one frame. The fix: starting style. Give it a first state, and it glides in. Every major browser, since 2024. One block, no JavaScript.";
+  var WORDS = [], DUR = 18;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .16 + w.length * .03; WORDS.push({ w: w.replace('¦', ''), s: t, e: t + d }); t += d + (/[.?:,]$/.test(w) ? .22 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; w.brk = false; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k].replace('¦', ''); w.brk = T[k].indexOf('¦') >= 0; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { snap: at('snap'), css: at('css'), display: at('display'), pops: at('pops'), frame: at('frame'), fix: at('fix'), starting: at('starting'), give: at('give'), first: at('first'), glides: at('glides'),
+      every: at('every'), major: at('major'), browser: at('browser'), y2024: at('2024'), one2: at('one', 2), block: at('block'), no: at('no'), js: at('javascript') };
+    A.end = WORDS[WORDS.length - 1].e;
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || w.brk || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  var CODE = '<span class="dim">.popup {</span>\n  transition: opacity .3s,\n              scale .3s;\n  <b>@starting-style {\n    opacity: 0;\n    scale: .9;\n  }</b>\n<span class="dim">}</span>';
+  var CODE_TXT = CODE.replace(/<[^>]+>/g, '');
+  function typed(n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < CODE.length; i++) { if (CODE[i] === '<') { var e = CODE.indexOf('>', i), tag = CODE.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += CODE[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function show(el, o, y, s){ el.style.opacity = o; el.style.transform = 'translateY(' + (y || 0) + 'px) scale(' + (s === undefined ? 1 : s) + ')'; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    // ---- 1. the hook: words land as spoken; "snap in?" snaps (no easing at all), the joke of the reel ----
+    var gone = io(P(t, A.css - .3, A.css + .05));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - .06 : 0, hard = i >= 5, k = hard ? (t >= s ? 1 : 0) : out(P(t, s, s + .26));
+      sp.style.opacity = (hard ? k : cl((t - s) * 9)) * (1 - gone);
+      sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)';
+    });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- 2. "CSS can't animate from display none, so it pops in on one frame." (the screen, the tap, the snap, the filmstrip) ----
+    var scrIn = out(P(t, A.css - .05, A.css + .3)), scrOut = io(P(t, A.fix - .2, A.fix + .15)), scrBack = out(P(t, A.give - .2, A.give + .15)), scrOut2 = io(P(t, A.every - .2, A.every + .15));
+    var scrA = Math.max(scrIn * (1 - scrOut), scrBack * (1 - scrOut2));
+    show($('screen'), scrA, (1 - scrIn) * 30);
+    var phase2 = t < A.fix, popT = phase2 ? A.pops : A.glides;
+    var pk = phase2 ? (t >= popT ? 1 : 0) : out(P(t, popT, popT + .45));   // snap: on one frame; glide: 0.45 s ease
+    $('scrim').style.opacity = pk * .9; show($('pop'), pk, 0, phase2 ? 1 : mix(.9, 1, pk));
+    $('share').style.transform = 'scale(' + (t >= popT - .25 && t < popT - .05 ? .94 : 1) + ')';
+    // the filmstrip: five frames of the same moment; first time the popup is simply there in frame 2, second time it grows across them
+    var stA = Math.max(P(t, A.frame - .15, A.frame + .2) * (1 - scrOut), P(t, A.glides + .3, A.glides + .6) * (1 - scrOut2));
+    $('strip').style.opacity = stA;
+    [].forEach.call($('strip').children, function(f, i){ var r = phase2 ? (i === 0 ? 0 : 1) : Math.min(1, i / 4), ic = f.firstChild;
+      ic.style.opacity = r; ic.style.transform = 'scale(' + (phase2 ? 1 : mix(.9, 1, r)) + ')'; ic.style.background = phase2 ? '#ff4d3d' : '#2ee6c8';
+      f.style.boxShadow = phase2 && i === 1 ? 'inset 0 0 0 2px #ff4d3d' : 'none'; });
+    var sl = $('stripL'); sl.style.opacity = stA; sl.textContent = phase2 ? 'ONE FRAME: NOTHING → EVERYTHING' : 'FRAME BY FRAME: IT GLIDES'; sl.style.color = phase2 ? '#ff4d3d' : '#2ee6c8';
+    // the tag line above
+    var tg = $('tag'); tg.style.opacity = (t >= A.css - .1 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.fix ? 'DISPLAY: NONE → BLOCK' : t < A.give ? 'ONE CSS BLOCK' : t < A.every ? 'WITH @STARTING-STYLE' : t < A.one2 ? 'SUPPORT' : 'MENUS · SHEETS · TOASTS';
+    // ---- 3. "The fix: starting style." the code types itself; the @starting-style block lands on "starting" ----
+    var cdIn = P(t, A.fix - .1, A.fix + .2), cdOut = io(P(t, A.give - .25, A.give + .05));
+    $('codebox').innerHTML = typed(Math.floor(CODE_TXT.length * P(t, A.fix, A.first - .1)));
+    show($('codebox'), cdIn * (1 - cdOut), (1 - cdIn) * 30);
+    // ---- 5. "Every major browser, since 2024." ----
+    [['c1', A.every], ['c2', A.major], ['c3', A.browser]].forEach(function(c){ var k = spring(t - c[1] + .05);
+      $(c[0]).style.opacity = cl((t - c[1] + .05) * 7) * (1 - io(P(t, A.one2 - .25, A.one2 + .05))); $(c[0]).style.transform = 'scale(' + (.5 + .5 * k) + ')'; });
+    var bk = spring(t - A.y2024 + .05); $('base').style.opacity = cl((t - A.y2024 + .05) * 7) * (1 - io(P(t, A.one2 - .25, A.one2 + .05))); $('base').style.transform = 'scale(' + (.5 + .5 * bk) + ')';
+    $('chips').style.top = '230px'; $('base').style.top = '450px';
+    // ---- 6. "One block, no JavaScript.": a menu, a sheet and a toast glide in, the same way; at the end they glide out (the loop) ----
+    [['menu', A.one2, 'm'], ['sheet', A.block, 's'], ['toast', A.no, 't']].forEach(function(p){ var k = out(P(t, p[1] - .05, p[1] + .45));
+      var o = k * (1 - ex), s = mix(.9, 1, k) * mix(1, .92, ex);
+      show($(p[0]), t < p[1] - .05 ? 0 : o, (1 - k) * 16 + ex * 20, s); });
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - .1 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - .1)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] > 6 && t < DUR - .5)   // words 0-6 are the hook question, shown as the title instead
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - .04, k = out(P(t, w.s - .04, w.s + .16));
+      var col = /^(starting|style|glides|javascript)/i.test(w.d) ? 'var(--teal)' : /^(pops|snap)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+      html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  // sound under the voice (owner, 24 Oct: quiet taps and soft air, no funky pops): the snap is a hard click, the glide a soft swish
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.snap, k: 'click', g: 1 }, { t: A.css - .1, k: 'swish', d: .4, g: .6 }];
+    Q.push({ t: A.pops - .2, k: 'tap', g: .7 }, { t: A.pops, k: 'thud', g: .55 }, { t: A.frame, k: 'tick', g: .25, p: 4 });
+    Q.push({ t: A.fix - .1, k: 'swish', d: .4, g: .6, p: .2 });
+    for (var c = 0, t0 = A.fix, t1 = A.first - .1; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.give - .15, k: 'swish', d: .35, g: .5, p: .4 }, { t: A.glides - .2, k: 'tap', g: .6 }, { t: A.glides, k: 'swish', d: .5, g: .7, p: .6 });
+    [A.every, A.major, A.browser, A.y2024].forEach(function(x, j){ Q.push({ t: x, k: 'tap', g: .5, p: j * 2 }); });
+    Q.push({ t: A.one2, k: 'swish', d: .4, g: .5, p: .3 }, { t: A.one2, k: 'tap', g: .45 }, { t: A.block, k: 'tap', g: .45, p: 3 }, { t: A.no, k: 'tap', g: .5, p: 5 }, { t: A.js, k: 'tap', g: .7, p: 9 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  anchors();
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 78px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
