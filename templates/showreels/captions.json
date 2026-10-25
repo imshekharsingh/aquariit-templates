@@ -196,5 +196,24 @@
    "#frontenddev",
    "#uianimation"
   ]
+ },
+ "showreel-14-stagger": {
+  "postOn": "2026-10-26",
+  "caption": "Why does your list feel so flat? 🧱\n\nWhen every row runs the same entrance at the same moment, the list lands as one block. Keep the animation and delay each row a little: animation-delay: calc(var(--i) * 40ms), with --i set to the row's index. Now the eye reads it top to bottom. Works on lists, menus, feeds and card grids. Pure CSS, no library.\nSave it for your next list, or send it to whoever builds your UI.",
+  "keywords": [
+   "CSS stagger animation",
+   "staggered list animation",
+   "animation-delay CSS",
+   "list animation CSS",
+   "UI micro interactions",
+   "CSS animation"
+  ],
+  "hashtags": [
+   "#cssanimation",
+   "#css",
+   "#microinteractions",
+   "#frontenddev",
+   "#uianimation"
+  ]
  }
 }
