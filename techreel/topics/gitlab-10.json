@@ -2,23 +2,22 @@
  "slug": "gitlab-10",
  "topic": "GitLab security",
  "voice": "af_heart",
- "speed": 0.9,
- "max_speed": 0.9,
- "gap": 0.45,
- "dur": 21,
- "max_end": 20.4,
+ "speed": 0.95,
+ "max_speed": 1.0,
+ "dur": 21.5,
+ "max_end": 20.6,
  "say": {},
  "hook": [
-  "GitLab patched",
+  "GitLab just fixed",
   "a flaw rated",
   "10 out of 10"
  ],
  "lines": [
   {
-   "text": "GitLab patched a flaw rated ten out of ten."
+   "text": "GitLab just fixed a flaw rated ten out of ten."
   },
   {
-   "text": "A crafted pattern runs code on your server, no login.",
+   "text": "One crafted pattern lets anyone run code on your server, with no login.",
    "scene": {
     "label": "THE FLAW",
     "tint": "red",
@@ -44,7 +43,7 @@
    }
   },
   {
-   "text": "GitLab's own cloud is already patched.",
+   "text": "GitLab's own cloud is already patched,",
    "scene": {
     "label": "WHO IS SAFE",
     "tint": "green",
@@ -63,7 +62,7 @@
    }
   },
   {
-   "text": "If you host your own, check your version.",
+   "text": "but if you host it yourself, check your version.",
    "scene": {
     "label": "CHECK",
     "tint": "blue",
@@ -110,7 +109,7 @@
    }
   },
   {
-   "text": "There's no workaround, so upgrade.",
+   "text": "There's no workaround, so the only fix is to upgrade.",
    "scene": {
     "label": "THE FIX",
     "tint": "green",
@@ -127,7 +126,7 @@
    }
   },
   {
-   "text": "Check it, then upgrade today.",
+   "text": "Check your version and upgrade today.",
    "scene": {
     "label": "DO THIS NOW",
     "tint": "green",
@@ -179,5 +178,6 @@
     "note": "the 12 Oct patch (19.4.2, a different CVE), older than the 21 Oct fix"
    }
   ]
- }
+ },
+ "flow": true
 }
