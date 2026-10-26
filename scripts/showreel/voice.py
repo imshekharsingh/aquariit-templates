@@ -2,7 +2,9 @@
 # Speaks the config's voice.text with Kokoro-82M (Apache-2.0, CPU, no key) and writes the audio plus a timestamp for every word,
 # so the scene times its beats and captions to the real voice (seek.mjs hands the words to window.setVoice before rendering).
 # Usage: python3 scripts/showreel/voice.py <config.json> <out.wav> <words.json>
-#   config.voice: { text, voice? (default af_heart), speed? (default 1.0) }
+#   config.voice: { text, voice? (default af_heart), speed? (default 1.0), gap? (seconds of silence after each sentence, default none) }
+#   gap (owner, 26 Oct: "each statement should be clear and long enough to understand"): each sentence is spoken on its own and
+#   followed by that much silence, so every statement gets a breath before the next one starts
 import json, re, sys, wave
 import numpy as np
 
@@ -14,15 +16,20 @@ def main(cfg_path, wav_path, words_path):
     from kokoro import KPipeline
     pipe = KPipeline(lang_code='a', repo_id='hexgrad/Kokoro-82M')
     audio, words, off = [], [], 0.0
-    for r in pipe(V['text'], voice=V.get('voice', 'af_heart'), speed=V.get('speed', 1.0)):
-        a = np.asarray(r.audio, dtype=float).reshape(-1)
-        toks = [k for k in (r.tokens or []) if re.search(r'\w', k.text or '')]
-        if toks and all(k.start_ts is not None for k in toks):
-            for k in toks: words.append({'w': k.text, 's': round(off + k.start_ts, 3), 'e': round(off + (k.end_ts or k.start_ts + .2), 3)})
-        else:   # no timestamps from the model: spread the chunk's words by length (good enough for captions)
-            ws = r.graphemes.split(); L = sum(len(w) for w in ws) or 1; c = off
-            for w in ws: d = len(a) / 24000 * len(w) / L; words.append({'w': w, 's': round(c, 3), 'e': round(c + d, 3)}); c += d
-        audio.append(a); off += len(a) / 24000
+    gap = float(V.get('gap', 0))
+    parts = [x.strip() for x in re.findall(r'[^.?!]+[.?!]?', V['text']) if x.strip()] if gap else [V['text']]
+    for n, part in enumerate(parts):
+        for r in pipe(part, voice=V.get('voice', 'af_heart'), speed=V.get('speed', 1.0)):
+            a = np.asarray(r.audio, dtype=float).reshape(-1)
+            toks = [k for k in (r.tokens or []) if re.search(r'\w', k.text or '')]
+            if toks and all(k.start_ts is not None for k in toks):
+                for k in toks: words.append({'w': k.text, 's': round(off + k.start_ts, 3), 'e': round(off + (k.end_ts or k.start_ts + .2), 3)})
+            else:   # no timestamps from the model: spread the chunk's words by length (good enough for captions)
+                ws = r.graphemes.split(); L = sum(len(w) for w in ws) or 1; c = off
+                for w in ws: d = len(a) / 24000 * len(w) / L; words.append({'w': w, 's': round(c, 3), 'e': round(c + d, 3)}); c += d
+            audio.append(a); off += len(a) / 24000
+        if gap and n < len(parts) - 1:   # the breath after a sentence
+            audio.append(np.zeros(int(gap * 24000))); off += gap
     a = np.concatenate(audio)
     a = np.interp(np.arange(0, len(a) * 2) / 2, np.arange(len(a)), a)   # 24 kHz -> 48 kHz
     a = a / (np.abs(a).max() + 1e-9) * .9
