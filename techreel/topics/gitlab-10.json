@@ -5,7 +5,7 @@
  "speed": 0.95,
  "max_speed": 1.0,
  "dur": 21.5,
- "max_end": 20.6,
+ "max_end": 20.8,
  "say": {},
  "hook": [
   "GitLab just fixed",
@@ -17,7 +17,7 @@
    "text": "GitLab just fixed a flaw rated ten out of ten."
   },
   {
-   "text": "One crafted pattern lets anyone run code on your server, with no login.",
+   "text": "One crafted pattern lets anyone take over your server, with no login.",
    "scene": {
     "label": "THE FLAW",
     "tint": "red",
@@ -35,7 +35,7 @@
      },
      "target": {
       "icon": "warning",
-      "label": "Code runs"
+      "label": "Taken over"
      },
      "target_tint": "red",
      "hub_cue": "server"
@@ -109,7 +109,7 @@
    }
   },
   {
-   "text": "There's no workaround, so the only fix is to upgrade.",
+   "text": "There's no workaround; you have to upgrade.",
    "scene": {
     "label": "THE FIX",
     "tint": "green",
