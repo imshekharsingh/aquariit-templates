@@ -48,6 +48,12 @@ def main(cfg_path, wav_path, report=None):
             for x in words(w.word):
                 heard.append((x, w.start, w.probability, w.end))
     want = words(script)
+    # a compound said as two words ("pass key") counts as the script's one word ("passkey"); a wrong split ("past key") still shows
+    ws, k = set(want), 0
+    while k < len(heard) - 1:
+        if heard[k][0] + heard[k + 1][0] in ws and heard[k][0] not in ws:
+            heard[k:k + 2] = [(heard[k][0] + heard[k + 1][0], heard[k][1], min(heard[k][2], heard[k + 1][2]), heard[k + 1][3])]
+        k += 1
     got = [h[0] for h in heard]
     rows = []
     for op, a0, a1, b0, b1 in difflib.SequenceMatcher(a=want, b=got, autojunk=False).get_opcodes():
