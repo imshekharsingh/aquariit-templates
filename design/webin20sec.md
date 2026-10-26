@@ -76,6 +76,14 @@ The four series below still name the subjects; the narrated explainer is how eac
   - Fixed zones: caption block top-left (2-3 lines, accent word coloured), the picture in the middle, nothing over the bottom UI.
   - Not for us: the cartoon host, the light-paper look as a copy, income and follower claims, "comment X" giveaways (we end on the reel itself).
 
+## Apply on the next reels (owner, 26 Oct, on the PHP2Shell cover and voice; not to re-do posted reels)
+- Cover text looks shrunk: the hook title uses the condensed width ('wdth' 85) with tight tracking (-0.045em), which reads squeezed
+  as a cover. For the cover frame use the normal width, looser tracking and a larger, simpler title, and pick a cover time where the
+  title stands alone (check it as Instagram's cover crop, both the 9:16 cover and the 3:4 profile grid).
+- Audio should sound more natural: the per-sentence voice with equal 0.8 s breaths reads as stilted. Try varied pauses (shorter
+  inside a thought, longer between ideas), speed 0.95-1.0, other Kokoro voices (A/B two on the same script), and a light room tone
+  under the voice; keep the voice check's pacing limits.
+
 ## Self-review before the owner sees anything (owner, 23 Oct: "where's the accountability?")
 Claude reviews every draft as a critical creative director before sending it, and does not wait to be asked to improve it.
 1. Watch the stills at every beat and the GIF, then answer in writing:
