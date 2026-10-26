@@ -1,0 +1,37 @@
+{
+ "name": "showreel-t01-passkeys",
+ "seek": "scripts/explainer/passkeys.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Can a fake login page steal your passkey? No. A password works on any page you type it into. So a lookalike just takes it. A passkey only works on the site it was made for. On a fake address, there's nothing to give. Turn passkeys on.",
+  "voice": "af_heart",
+  "speed": 0.95,
+  "gap": 0.55
+ },
+ "caption": "Can a fake login page steal your passkey? 🔑\n\nNo. A password works on any page you type it into, so a lookalike site (one wrong letter in the address) simply keeps it. A passkey is tied to the site it was made for: on a fake address your phone or browser has nothing to offer, and the real site only ever stores a public key. Turn passkeys on wherever your bank, email and apps offer them.\nSend this to someone who still uses one password everywhere.",
+ "keywords": [
+  "passkeys explained",
+  "passkey vs password",
+  "phishing protection",
+  "what is a passkey",
+  "fake login page",
+  "cybersecurity tips"
+ ],
+ "hashtags": [
+  "#passkeys",
+  "#phishing",
+  "#cybersecurity",
+  "#infosec",
+  "#techexplained"
+ ],
+ "sources": [
+  {
+   "url": "https://github.com/w3c/webauthn/blob/main/index.bs",
+   "note": "W3C Web Authentication spec source: the RP ID determines the set of origins on which the credential may be exercised; the private key is never exposed; the site receives only the public key"
+  }
+ ]
+}
