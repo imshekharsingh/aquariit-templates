@@ -215,5 +215,24 @@
    "#frontenddev",
    "#uianimation"
   ]
+ },
+ "showreel-15-transform": {
+  "postOn": "2026-10-27",
+  "caption": "Why does your animation stutter? 🐢\n\nAnimating left (or width, top, margin) makes the browser redo layout and paint on every frame. Miss the ~16.7 ms frame budget and frames drop. Move it with transform instead: it's handled in compositing, so layout and paint are skipped. Same move, smooth. (Opacity works the same way.)\nSave it for your next animation, or send it to whoever builds your UI.",
+  "keywords": [
+   "CSS animation performance",
+   "transform vs left",
+   "janky animation fix",
+   "smooth CSS animation",
+   "web performance tips",
+   "CSS animation"
+  ],
+  "hashtags": [
+   "#cssanimation",
+   "#webperformance",
+   "#css",
+   "#frontenddev",
+   "#uianimation"
+  ]
  }
 }
