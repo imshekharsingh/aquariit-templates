@@ -63,6 +63,9 @@ The four series below still name the subjects; the narrated explainer is how eac
 - Density (study of an AI-animated "system" reel the owner shared, 25 Oct; 3 screen recordings, ~39 s, measured frame by frame;
   techniques only, never its look, host character or copy):
   - Voice wall to wall: about 5 words a second (ours ~3.9) and one pause over 0.25 s in 39 s. Lines are short claims, not explanations.
+    Correction (owner, 26 Oct, on Nº 04 at voice speed 1.15 in 17 s: "too rushed", words lost): density comes from cutting words, not
+    from speaking faster. Keep the voice at speed 1.0-1.05, give a reel up to 20 s, and let the voice check (Showreel workflow) catch
+    any word the recogniser cannot make out.
   - A visual event about every 0.5-1.3 s, on the stressed word, and a literal picture for almost every noun phrase ("fills up fast" =
     seats filling, "first come, first served" = a take-a-number ticket, "221 files" = a counter rolling up as files burst out).
     Its own stated rules, worth holding ourselves to: hook within 1.5 s, an event on every stressed word, nothing still for more than 1.2 s.

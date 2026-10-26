@@ -94,6 +94,14 @@ jobs:
           ffmpeg -y -loglevel error -i "out/$NAME.mp4" -i out/sound.wav -map 0:v -map 1:a -c:v copy -af "$EQ,volume=${GAIN}dB,alimiter=limit=0.8:attack=5:release=60:level=false" -ar 48000 -c:a aac -b:a 192k -shortest out/muxed.mp4
           mv out/muxed.mp4 "out/$NAME.mp4"
           ffmpeg -hide_banner -i "out/$NAME.mp4" -af ebur128 -f null - 2>&1 | grep -E "^\s+(I|LRA):" | tail -2
+      - name: Voice check
+        # the narration transcribed by an open recogniser and compared with the script, word by word (owner, 26 Oct: some words
+        # could not be understood); lists wrong, missing and unsure words with their times in the log and the run summary
+        if: hashFiles('out/narration.wav') != ''
+        continue-on-error: true
+        run: |
+          pip install faster-whisper==1.1.1
+          python3 scripts/showreel/voicecheck.py "$CFG" out/narration.wav "$GITHUB_STEP_SUMMARY"
       - name: Keep the preview
         if: inputs.seconds != ''
         run: |
