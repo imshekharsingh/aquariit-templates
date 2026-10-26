@@ -5,7 +5,7 @@
  "fps": 60,
  "grain": 4,
  "vignette": true,
- "cover": 2.4,
+ "cover": 1.4,
  "voice": {
   "text": "Why does your animation stutter? You're moving it with left. Every frame, the browser has to redo layout and paint. Miss the sixteen millisecond budget, and frames drop. Move it with transform instead. It's handled in compositing, so layout and paint are skipped. Same move, smooth.",
   "voice": "af_heart",
