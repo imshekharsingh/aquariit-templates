@@ -26,13 +26,19 @@ def spell(n):
     return ' '.join(ONES[int(d)] for d in str(n))
 
 
+def plain(text):
+    """The script as spoken: pronunciation markup such as [INP](/ˌIˌɛnpˈi/) reads as its word."""
+    return re.sub(r'\[([^\]]+)\]\(/[^)]*/\)', r'\1', text)
+
+
 def words(text):
+    text = plain(text)
     text = re.sub(r'\d+', lambda m: ' ' + spell(m.group()) + ' ', text.lower())
     return [w for w in re.sub(r"[^a-z' ]", ' ', text.replace('-', ' ')).split() if w]
 
 
 def main(cfg_path, wav_path, report=None):
-    script = json.load(open(cfg_path))['voice']['text']
+    script = plain(json.load(open(cfg_path))['voice']['text'])
     from faster_whisper import WhisperModel
     model = WhisperModel('small.en', device='cpu', compute_type='int8')
     segs, _ = model.transcribe(wav_path, word_timestamps=True, beam_size=5)   # no prompt: priming it with the script would hide the very errors we look for
