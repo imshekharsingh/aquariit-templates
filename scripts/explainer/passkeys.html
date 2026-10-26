@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Can a fake login page steal your passkey?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @techin20sec, tech explainer Nº 01 built the @webin20sec way (owner, 26 Oct: "see if it helps with growth there as well"):
+   "Can a fake login page steal your passkey?" A password works on any page it is typed into, so a lookalike site keeps it; a passkey
+   is scoped to its site (W3C WebAuthn: the RP ID "determines the set of origins on which the public key credential may be exercised";
+   the credential private key "is expected to never be exposed to any other party"). Kestrel Bank is invented.
+   One screen holds the sign-in page for the whole reel; one panel under it shows what the site receives. Every spoken line has its
+   picture; beats and captions lead the voice by 0.15 s (window.setVoice); every frame a pure function of t. */
+:root{--ink:#0d1015;--paper:#eef1f6;--dim:#8a93a3;--surface:#171b23;--rule:#2a303c;--card:#1d222c;--blue:#5aa9ff;--red:#ff4d3d;--green:#3ddc84;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700}#hud .r{color:var(--red)}#hud .g{color:var(--green)}#hud .b{color:var(--blue)}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:250px;font-weight:800;font-size:76px;line-height:.96;letter-spacing:-.045em;font-variation-settings:'wdth' 85,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--blue)}#hook .bad{color:var(--red)}
+/* the screen: a sign-in page in a browser; it stays for the whole reel */
+#scr{left:36px;top:206px;width:468px;height:330px;border-radius:30px;background:var(--surface);overflow:hidden;transform-origin:50% 0}
+#bar{left:16px;top:16px;right:16px;height:46px;border-radius:14px;background:var(--card);border:2px solid transparent}
+#lock{left:16px;top:13px;width:16px;height:14px;border-radius:3px}
+#lock:before{content:"";position:absolute;left:3px;top:-8px;width:10px;height:10px;border:2.5px solid currentColor;border-bottom:0;border-radius:6px 6px 0 0;box-sizing:border-box}
+#dom{left:44px;top:12px;font:700 19px/1 var(--m);white-space:nowrap}
+#dom .one{color:var(--red)}
+#warn{left:300px;top:14px;padding:4px 9px;border-radius:999px;background:rgba(255,77,61,.16);font:700 12px/1 var(--m);letter-spacing:.08em;color:var(--red)}
+#page{left:0;top:62px;right:0;bottom:0}
+#brand{left:26px;top:22px;display:flex;align-items:center;gap:10px;font:800 22px/1 var(--f)}
+#brand i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#5aa9ff,#2a6fd8)}
+#signin{left:26px;top:62px;font:700 28px/1 var(--f)}
+#field{left:26px;right:26px;top:106px;height:54px;border-radius:14px;background:var(--card);border:1.5px solid var(--rule)}
+#field .lb{position:absolute;left:16px;top:-9px;padding:0 6px;background:var(--surface);font:600 13px/18px var(--f);color:var(--dim)}
+#dots{left:18px;top:16px;font:700 22px/1 var(--m);letter-spacing:.12em;white-space:nowrap}
+#btn{left:26px;right:26px;top:178px;height:52px;border-radius:999px;background:var(--blue);color:var(--ink);display:grid;place-items:center;font:700 20px/1 var(--f)}
+/* the passkey prompt: slides up over the page */
+#sheet{left:0;right:0;top:118px;height:150px;border-radius:24px 24px 0 0;background:#232936;border-top:1.5px solid #343c4b}
+#key{left:24px;top:26px;width:52px;height:52px;border-radius:16px;background:rgba(90,169,255,.16);display:grid;place-items:center}
+#key svg{width:30px;height:30px}
+#sh1{left:92px;top:28px;font:700 20px/1.1 var(--f)}
+#sh2{left:92px;top:56px;font:700 16px/1 var(--m)}
+#sh3{left:24px;right:24px;top:96px;height:40px;border-radius:999px;background:var(--blue);color:var(--ink);display:grid;place-items:center;font:700 17px/1 var(--f)}
+#wire{left:0;top:0;width:468px;height:330px;pointer-events:none}
+/* the payoff: the setting */
+#set{left:0;top:62px;right:0;bottom:0}
+#set .h{position:absolute;left:26px;top:22px;font:600 15px/1 var(--m);color:var(--dim);letter-spacing:.06em}
+#set .row{position:absolute;left:26px;right:26px;top:60px;height:76px;border-radius:18px;background:var(--card);display:flex;align-items:center;padding:0 20px;font:700 23px/1 var(--f)}
+#sw{position:absolute;right:20px;top:20px;width:66px;height:36px;border-radius:999px;background:var(--rule)}
+#sw i{position:absolute;left:4px;top:4px;width:28px;height:28px;border-radius:50%;background:var(--paper)}
+#saved{left:26px;top:214px;height:34px;padding:0 14px;border-radius:999px;background:rgba(61,220,132,.16);color:var(--green);font:700 14px/34px var(--m);white-space:nowrap}
+#set .sub{position:absolute;left:26px;right:26px;top:152px;font:500 16px/1.4 var(--f);color:var(--dim)}
+/* the deck: what the site receives */
+#deck{left:36px;top:556px;width:468px;height:96px;border-radius:22px;background:var(--surface)}
+#dl{left:22px;top:16px;font:700 13px/1 var(--m);letter-spacing:.14em;color:var(--dim)}
+#dv{left:22px;top:46px;font:700 25px/1 var(--m);white-space:nowrap}
+#chip{right:18px;top:40px;height:34px;padding:0 13px;border-radius:999px;font:700 13px/34px var(--m);letter-spacing:.06em;white-space:nowrap;transform-origin:100% 50%}
+#cap{left:36px;right:36px;top:676px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">TECH Nº 01 · SECURITY</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Can</span> <span>a</span> <span class="bad">fake</span></span><span class="ln"><span>login</span> <span>page</span> <span>steal</span></span><span class="ln"><span>your</span> <span class="acc">passkey?</span></span></div>
+<div id="scr" class="a">
+  <div id="bar" class="a"><i id="lock" class="a"></i><div id="dom" class="a"></div><div id="warn" class="a">LOOKALIKE</div></div>
+  <div id="page" class="a"><div id="brand" class="a"><i></i>Kestrel Bank</div><div id="signin" class="a">Sign in</div>
+    <div id="field" class="a"><span class="lb">Password</span><div id="dots" class="a"></div></div><div id="btn" class="a">Sign in</div></div>
+  <div id="set" class="a"><div class="h">SETTINGS › SIGN-IN</div><div class="row">Use passkeys<span id="sw"><i></i></span></div><div class="sub">Sign in with your face, fingerprint or screen lock. Nothing to type, nothing to steal.</div><div id="saved" class="a">✓ Passkey saved for kestrelbank.com</div></div>
+  <div id="sheet" class="a"><div id="key" class="a"><svg viewBox="0 0 30 30"><circle cx="10" cy="15" r="6" fill="none" stroke="#5aa9ff" stroke-width="3"/><path d="M16 15h11M23 15v5M27 15v4" stroke="#5aa9ff" stroke-width="3" stroke-linecap="round" fill="none"/></svg></div>
+    <div id="sh1" class="a"></div><div id="sh2" class="a"></div><div id="sh3" class="a">Continue</div></div>
+  <svg id="wire" class="a" viewBox="0 0 468 330"><path id="wp" d="M 50 170 C 30 120, 30 80, 60 52" fill="none" stroke="#5aa9ff" stroke-width="2.5" stroke-dasharray="4 5"/></svg>
+</div>
+<div id="deck" class="a"><div id="dl" class="a">THE SITE RECEIVES</div><div id="dv" class="a"></div><div id="chip" class="a"></div></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var spring = function(s){ if (s <= 0) return 0; var z = .62, w = 13, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  // the script; spoken a sentence at a time with a breath after each (voice.gap), paced against webin20sec Nº 01
+  var TEXT = "Can a fake login page steal your passkey? No. A password works on any page you type it into. So a lookalike just takes it. A passkey only works on the site it was made for. On a fake address, there's nothing to give. Turn passkeys on.";
+  var WORDS = [], DUR = 20, LEAD = .15;   // beats and caption words land 0.15 s before the word is spoken
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .028; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?!]$/.test(w) ? .75 : /,$/.test(w) ? .2 : .05); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { fake: at('fake'), passkey: at('passkey'), no: at('no'), password: at('password'), type: at('type'), into: at('into'), lookalike: at('lookalike'), takes: at('takes'),
+      passkey2: at('passkey', 2), only: at('only'), made: at('made'), fake2: at('fake', 2), address: at('address'), nothing: at('nothing'), give: at('give'), turn: at('turn'), passkeys: at('passkeys') };
+    A.end = WORDS[WORDS.length - 1].e;
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/,$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  var PASS = 'maple-tree-19';
+  var dom = function(fake, warn){ return fake ? 'kestre<span class="one">1</span>bank.com' : 'kestrelbank.com'; };
+  function show(el, o, y, s){ el.style.opacity = o; el.style.transform = 'translateY(' + (y || 0) + 'px) scale(' + (s === undefined ? 1 : s) + ')'; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    // ---- the hook: words land as spoken; under it the sign-in page, on a lookalike address ----
+    var gone = io(P(t, A.no - .35, A.no + .05));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the screen never leaves: small under the hook, full from "No." ----
+    var rise = io(P(t, A.no - .35, A.no + .1)), drift = Math.sin(t * .9) * 3 * (1 - rise);
+    show($('scr'), out(P(t, .05, .4)) * (1 - ex), (1 - rise) * 340 + drift + ex * 20, mix(.6, 1, rise));
+    // which site the page is on: fake until "A passkey only works…", real for that sentence, fake again from "On a fake address", real for the setting
+    var real = (t >= A.passkey2 - .1 && t < A.fake2 - .1) || t >= A.turn - .1, fakeNow = !real;
+    $('dom').innerHTML = dom(fakeNow); $('lock').style.color = real ? '#3ddc84' : '#8a93a3'; $('lock').style.background = 'transparent'; $('lock').style.border = '2.5px solid ' + (real ? '#3ddc84' : '#8a93a3');
+    // the lookalike is called out on "fake" (hook), "lookalike" and "fake address"
+    var flag = Math.max(t >= A.fake && t < A.no - .2 ? 1 : 0, t >= A.lookalike - .05 && t < A.passkey2 - .1 ? 1 : 0, t >= A.fake2 && t < A.turn - .1 ? 1 : 0);
+    var pulse = flag ? .5 + .5 * Math.sin((t - A.lookalike) * 7) : 0;
+    $('bar').style.borderColor = flag ? 'rgba(255,77,61,' + (.5 + .4 * pulse) + ')' : real ? 'rgba(61,220,132,.45)' : 'transparent';
+    $('warn').style.opacity = flag; $('warn').style.transform = 'scale(' + (flag ? .9 + .1 * spring(t - Math.max(A.lookalike, A.fake2 > t ? A.lookalike : A.fake2)) : 1) + ')';
+    // "A password works on any page you type it into.": the password types into the lookalike page
+    var typed = Math.floor(PASS.length * P(t, A.password + .1, A.into + .25)), pageA = 1 - io(P(t, A.passkey2 - .25, A.passkey2 + .05));
+    $('dots').textContent = '•'.repeat(typed); $('page').style.opacity = pageA * (1 - io(P(t, A.turn - .25, A.turn + .05)));
+    $('btn').style.transform = 'scale(' + (t >= A.lookalike - .3 && t < A.lookalike - .1 ? .96 : 1) + ')';
+    // the passkey prompt: offered for the real site ("made for"), refused on the fake one ("nothing to give")
+    var shIn = out(P(t, A.passkey2 - .1, A.passkey2 + .35)), shOut = io(P(t, A.turn - .25, A.turn + .05));
+    show($('sheet'), shIn * (1 - shOut), (1 - shIn) * 150, 1);
+    var refused = t >= A.fake2 - .1;
+    $('sh1').textContent = refused ? 'No passkey for this site' : 'Use your passkey'; $('sh1').style.color = refused ? '#8a93a3' : '#eef1f6';
+    $('sh2').innerHTML = refused ? dom(true) : 'for kestrelbank.com'; $('sh2').style.color = refused ? '#8a93a3' : '#5aa9ff';
+    $('sh3').style.opacity = refused ? .25 : 1; $('key').style.opacity = refused ? .35 : 1; $('key').style.filter = refused ? 'grayscale(1)' : 'none';
+    // the passkey is drawn bound to the address it was made for
+    var wk = out(P(t, A.made - .1, A.made + .35)); $('wire').style.opacity = (t < A.fake2 - .1 ? 1 : 0) * shIn * (1 - shOut);
+    var wp = $('wp'), L = 160; wp.style.strokeDasharray = (L * wk) + ' ' + L;
+    // "Turn passkeys on.": the setting, and the switch flips on
+    var sIn = out(P(t, A.turn - .1, A.turn + .3)), swk = spring(t - A.passkeys - .2);
+    $('set').style.opacity = sIn; $('set').style.transform = 'translateY(' + (1 - sIn) * 20 + 'px)';
+    var sv = out(P(t, A.passkeys + .9, A.passkeys + 1.3)); $('saved').style.opacity = sv; $('saved').style.transform = 'translateY(' + (1 - sv) * 12 + 'px)';   // the hold after the switch still moves
+    var on = cl(swk); $('sw').style.background = on > .5 ? '#3ddc84' : '#2a303c'; $('sw').firstChild.style.transform = 'translateX(' + 30 * swk + 'px)';
+    // ---- the deck: what the site receives ----
+    var dIn = out(P(t, A.password - .15, A.password + .2)), dOut = io(P(t, A.turn - .2, A.turn + .15));
+    $('deck').style.opacity = dIn * (1 - dOut); $('deck').style.transform = 'translateY(' + ((1 - dIn) * 24 + dOut * 24) + 'px)';
+    var dv = $('dv'), chip = $('chip'), ck;
+    if (t < A.passkey2 - .1) { dv.textContent = PASS.slice(0, typed) || ' '; dv.style.color = t >= A.takes - .05 ? '#ff4d3d' : '#eef1f6';
+      ck = spring(t - A.takes); chip.textContent = 'KEPT BY THE FAKE SITE'; chip.style.background = 'rgba(255,77,61,.16)'; chip.style.color = '#ff4d3d'; chip.style.opacity = t >= A.takes - .05 ? 1 : 0; }
+    else if (t < A.fake2 - .1) { dv.textContent = 'a signature'; dv.style.color = '#5aa9ff';
+      ck = spring(t - A.made); chip.textContent = 'ONLY FOR KESTRELBANK.COM'; chip.style.background = 'rgba(90,169,255,.16)'; chip.style.color = '#5aa9ff'; chip.style.opacity = t >= A.made - .05 ? 1 : 0; }
+    else { dv.textContent = 'nothing'; dv.style.color = '#8a93a3';
+      ck = spring(t - A.nothing); chip.textContent = 'NOTHING TO STEAL'; chip.style.background = 'rgba(61,220,132,.16)'; chip.style.color = '#3ddc84'; chip.style.opacity = t >= A.nothing - .05 ? 1 : 0; }
+    chip.style.transform = 'scale(' + (.6 + .4 * ck) + ')';
+    // ---- the readout top right and the tag ----
+    var H;
+    if (t < A.no - .2) H = 'kestre<b class="r">1</b>bank.com';
+    else if (t < A.lookalike - .05) H = 'PASSWORD · <b>' + typed + '/' + PASS.length + '</b>';
+    else if (t < A.passkey2 - .1) H = 'PASSWORD · <b class="r">STOLEN</b>';
+    else if (t < A.fake2 - .1) H = 'PASSKEY · <b class="b">SITE-BOUND</b>';
+    else if (t < A.turn - .1) H = 'PASSKEY · <b class="g">NOT OFFERED</b>';
+    else H = 'PASSKEYS · <b class="g">' + (on > .5 ? 'ON' : 'OFF') + '</b>';
+    $('hud').innerHTML = H; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.no - .1 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.passkey2 - .1 ? 'A LOOKALIKE SIGN-IN PAGE' : t < A.fake2 - .1 ? 'THE REAL SITE' : t < A.turn - .1 ? 'THE LOOKALIKE AGAIN' : 'THE FIX';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] > 7 && t < DUR - .5)   // words 0-7 are the hook question, shown as the title instead
+      ph0.forEach(function(j){ var w = WORDS[j], on2 = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2));
+      var col = /^(passkey|passkeys)/i.test(w.d) ? 'var(--blue)' : /^(lookalike|takes|fake)/i.test(w.d) ? 'var(--red)' : /^(nothing|no\.)/i.test(w.d) ? 'var(--green)' : 'var(--paper)';
+      html += '<span style="opacity:' + (on2 ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  // sound under the voice: typing ticks, a hard click when the fake site keeps the password, soft air for the passkey
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.fake, k: 'tick', g: .3, p: -2 }, { t: A.no - .35, k: 'swish', d: .45, g: .6 }, { t: A.no, k: 'tap', g: .6 }];
+    for (var c = 0; c < PASS.length; c++) Q.push({ t: A.password + .1 + (A.into + .15 - A.password) * c / PASS.length, k: 'tick', g: .14, p: (c * 5) % 7 });
+    Q.push({ t: A.lookalike, k: 'tick', g: .3, p: 3 }, { t: A.takes, k: 'thud', g: .6 }, { t: A.takes + .02, k: 'click', g: .6 });
+    Q.push({ t: A.passkey2 - .1, k: 'swish', d: .5, g: .6, p: .4 }, { t: A.made, k: 'tap', g: .5, p: 5 });
+    Q.push({ t: A.fake2 - .1, k: 'tick', g: .3, p: -2 }, { t: A.nothing, k: 'tap', g: .55, p: 7 });
+    Q.push({ t: A.turn - .2, k: 'swish', d: .4, g: .5, p: .2 }, { t: A.passkeys + .25, k: 'click', g: .8 }, { t: A.passkeys + .9, k: 'tap', g: .45, p: 7 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  anchors();
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 76px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
