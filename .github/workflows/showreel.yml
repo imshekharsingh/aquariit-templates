@@ -38,6 +38,9 @@ jobs:
         with:
           python-version: '3.11'
       - name: Tools
+        # GitHub's Ubuntu mirror sometimes crawls (26 Oct: two renders stalled here for 20+ minutes): give up after 8 minutes, so a
+        # stalled install fails fast and can be re-run, instead of burning the job's time
+        timeout-minutes: 8
         run: |
           npm install --no-save --no-package-lock playwright@1.56.1
           npx playwright install --with-deps chromium
