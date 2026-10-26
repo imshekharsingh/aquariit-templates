@@ -3,8 +3,8 @@
 # so the scene times its beats and captions to the real voice (seek.mjs hands the words to window.setVoice before rendering).
 # Usage: python3 scripts/showreel/voice.py <config.json> <out.wav> <words.json>
 #   config.voice: { text, voice? (default af_heart), speed? (default 1.0), gap? (seconds of silence after each sentence, default none) }
-#   gap (owner, 26 Oct: "each statement should be clear and long enough to understand"): each sentence is spoken on its own and
-#   followed by that much silence, so every statement gets a breath before the next one starts
+#   gap (owner, 26 Oct: "each statement should be clear and long enough to understand"): each sentence is spoken on its own, its
+#   own leading and trailing silence trimmed, and followed by exactly that much silence: a breath before the next statement
 import json, re, sys, wave
 import numpy as np
 
@@ -19,15 +19,23 @@ def main(cfg_path, wav_path, words_path):
     gap = float(V.get('gap', 0))
     parts = [x.strip() for x in re.findall(r'[^.?!]+[.?!]?', V['text']) if x.strip()] if gap else [V['text']]
     for n, part in enumerate(parts):
+        pa, pw, po = [], [], 0.0   # this sentence's audio and words, timed from its own start
         for r in pipe(part, voice=V.get('voice', 'af_heart'), speed=V.get('speed', 1.0)):
             a = np.asarray(r.audio, dtype=float).reshape(-1)
             toks = [k for k in (r.tokens or []) if re.search(r'\w', k.text or '')]
             if toks and all(k.start_ts is not None for k in toks):
-                for k in toks: words.append({'w': k.text, 's': round(off + k.start_ts, 3), 'e': round(off + (k.end_ts or k.start_ts + .2), 3)})
+                for k in toks: pw.append({'w': k.text, 's': po + k.start_ts, 'e': po + (k.end_ts or k.start_ts + .2)})
             else:   # no timestamps from the model: spread the chunk's words by length (good enough for captions)
-                ws = r.graphemes.split(); L = sum(len(w) for w in ws) or 1; c = off
-                for w in ws: d = len(a) / 24000 * len(w) / L; words.append({'w': w, 's': round(c, 3), 'e': round(c + d, 3)}); c += d
-            audio.append(a); off += len(a) / 24000
+                ws = r.graphemes.split(); L = sum(len(w) for w in ws) or 1; c = po
+                for w in ws: d = len(a) / 24000 * len(w) / L; pw.append({'w': w, 's': c, 'e': c + d}); c += d
+            pa.append(a); po += len(a) / 24000
+        pa = np.concatenate(pa); lead = 0.0
+        if gap:   # spoken one sentence at a time: trim the model's own silence (40 ms kept before, 90 ms after) so the pause is the gap
+            env = np.convolve(np.abs(pa), np.ones(240) / 240, 'same'); nz = np.flatnonzero(env > .004 * env.max())
+            if len(nz):
+                i0, i1 = max(0, nz[0] - 960), min(len(pa), nz[-1] + 2160); lead = i0 / 24000; pa = pa[i0:i1]
+        for w in pw: words.append({'w': w['w'], 's': round(off + max(0, w['s'] - lead), 3), 'e': round(off + max(0, w['e'] - lead), 3)})
+        audio.append(pa); off += len(pa) / 24000
         if gap and n < len(parts) - 1:   # the breath after a sentence
             audio.append(np.zeros(int(gap * 24000))); off += gap
     a = np.concatenate(audio)
