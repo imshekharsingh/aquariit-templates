@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Attackers have started trying PHP2Shell</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @techin20sec news reel Nº 02, built the @webin20sec way (owner, 26 Oct: tech news, not evergreen): "Attackers have started trying
+   PHP2Shell." Facts: PHP's own NEWS files (php/php-src): 21-22 Oct 2026, PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35 fix
+   CVE-2026-109618 and CVE-2026-109619; CISA: unauthenticated remote code execution; exploit attempts reported by security firms
+   (watchTowr, Cloudflare, Patchstack), no confirmed successes per the UK NCSC at the time. Server and addresses are examples
+   (shop.example, documentation IP ranges). One terminal stays on screen; one panel under it lists the fixed releases.
+   Beats and captions lead the voice by 0.15 s (window.setVoice); every frame a pure function of t. */
+:root{--ink:#0d1015;--paper:#eef1f6;--dim:#8a93a3;--surface:#171b23;--rule:#2a303c;--term:#0a0d12;--blue:#5aa9ff;--red:#ff4d3d;--green:#3ddc84;--amber:#ffb547;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700}#hud .r{color:var(--red)}#hud .g{color:var(--green)}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:250px;font-weight:800;font-size:80px;line-height:.96;letter-spacing:-.045em;font-variation-settings:'wdth' 85,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .bad{color:var(--red)}
+/* the terminal: a server's live access log; it stays for the whole reel */
+#scr{left:36px;top:206px;width:468px;height:330px;border-radius:24px;background:var(--term);border:1.5px solid var(--rule);overflow:hidden;transform-origin:50% 0}
+#th{left:0;top:0;right:0;height:40px;background:var(--surface);border-bottom:1.5px solid var(--rule)}
+#th i{position:absolute;top:15px;width:11px;height:11px;border-radius:50%;background:#3a4150}
+#tt{left:66px;top:12px;font:600 14px/1 var(--m);color:var(--dim)}
+#badge{right:12px;top:8px;height:24px;padding:0 10px;border-radius:999px;font:700 12px/24px var(--m);letter-spacing:.08em;transform-origin:100% 50%}
+#term{left:16px;right:12px;top:52px;bottom:12px;font:500 14.5px/1.55 var(--m);white-space:pre;overflow:hidden}
+#term div{height:22.5px}
+/* the deck: the fixed releases */
+#deck{left:36px;top:552px;width:468px;height:108px;border-radius:22px;background:var(--surface)}
+#dl{left:20px;top:15px;font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim)}
+#yours{right:18px;top:11px;height:22px;padding:0 9px;border-radius:999px;background:rgba(255,77,61,.16);color:var(--red);font:700 12px/22px var(--m);letter-spacing:.06em}
+#vs{left:16px;right:16px;top:46px;display:flex;gap:8px}
+.v{flex:1;height:46px;border-radius:14px;background:#202634;display:grid;place-items:center;font:700 18px/1 var(--m);transform-origin:50% 60%}
+#cap{left:36px;right:36px;top:684px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">TECH NEWS · SECURITY</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Attackers</span> <span>have</span></span><span class="ln"><span>started</span> <span>trying</span></span><span class="ln"><span class="bad">PHP2Shell.</span></span></div>
+<div id="scr" class="a"><div id="th" class="a"><i style="left:16px"></i><i style="left:32px"></i><i style="left:48px"></i><div id="tt" class="a">shop.example — access log</div><div id="badge" class="a"></div></div><div id="term" class="a"></div></div>
+<div id="deck" class="a"><div id="dl" class="a">FIXED IN (21–22 OCT)</div><div id="yours" class="a">YOURS: 8.4.26</div>
+  <div id="vs" class="a"><div class="v">8.5.12</div><div class="v">8.4.27</div><div class="v">8.3.36</div><div class="v">8.2.35</div></div></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var spring = function(s){ if (s <= 0) return 0; var z = .62, w = 13, wd = w * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + z * w / wd * Math.sin(wd * s)); };
+  // the script; spoken a sentence at a time with a breath after each (voice.gap)
+  var TEXT = "Attackers have started trying PHP2Shell. It lets anyone run code on a PHP server, no login needed. Check your PHP version. Below the fixed release on screen? Then you're exposed. Update today, and the attempts bounce off.";
+  var WORDS = [], DUR = 20, LEAD = .15;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .028; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?!]$/.test(w) ? .9 : /,$/.test(w) ? .2 : .05); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { trying: at('trying'), shell: at('php2shell'), lets: at('lets'), anyone: at('anyone'), run: at('run'), code: at('code'), login: at('login'), check: at('check'), version: at('version'),
+      below: at('below'), fixed: at('fixed'), exposed: at('exposed'), update: at('update'), today: at('today'), attempts: at('attempts'), bounce: at('bounce') };
+    A.end = WORDS[WORDS.length - 1].e;
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/,$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildEvents(); buildCues();
+  }
+  // the log: what the server prints, each line with the time it appears (documentation addresses, an example server)
+  var IPS = ['203.0.113.7 ', '198.51.100.23', '203.0.113.81', '198.51.100.4 ', '203.0.113.142'], EV = [];
+  function buildEvents(){
+    EV = []; var k = 0;
+    for (var t0 = .3; t0 < A.lets - .2; t0 += .42) EV.push({ t: t0, s: IPS[k++ % 5] + '  POST /index.php  php2shell attempt', c: '#ff4d3d', o: .85 });
+    EV.push({ t: A.run, s: '  └ exploit runs:  whoami', c: '#ff4d3d' }, { t: A.code + .15, s: '  └ www-data', c: '#ff4d3d' }, { t: A.login, s: '  └ no password was asked', c: '#ffb547' });
+    EV.push({ t: A.check, s: '$ php -v', c: '#eef1f6', type: [A.check, A.version - .05] }, { t: A.version + .05, s: 'PHP 8.4.26 (cli)', c: '#eef1f6', tail: [A.below, '  ← older than 8.4.27', '#ff4d3d'] });
+    EV.push({ t: A.update, s: '$ update php', c: '#eef1f6', type: [A.update, A.update + .45] }, { t: A.update + .5, s: 'updating ', c: '#8a93a3', bar: [A.update + .5, A.today + .45] },
+      { t: A.today + .5, s: 'PHP 8.4.27 (cli)  ✓ patched', c: '#3ddc84' });
+    k = 1; for (var t1 = A.attempts - .05; t1 < DUR; t1 += .38) EV.push({ t: t1, s: IPS[k++ % 5] + '  POST /index.php  ✗ blocked', c: '#3ddc84', o: .9 });
+  }
+  function lineText(e, t){
+    var s = e.s;
+    if (e.type) s = s.slice(0, Math.max(2, Math.round(s.length * P(t, e.type[0], e.type[1])))) + (t < e.type[1] + .2 && Math.floor(t * 4) % 2 ? '▌' : '');
+    if (e.bar) { var n = Math.round(14 * P(t, e.bar[0], e.bar[1])); s += '█'.repeat(n) + '░'.repeat(14 - n); }
+    return s;
+  }
+  function show(el, o, y, s){ el.style.opacity = o; el.style.transform = 'translateY(' + (y || 0) + 'px) scale(' + (s === undefined ? 1 : s) + ')'; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    // ---- the hook: words land as spoken; under it the log already fills with attempts ----
+    var gone = io(P(t, A.lets - .35, A.lets + .05));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the terminal never leaves: small under the hook, full from "It lets anyone…" ----
+    var rise = io(P(t, A.lets - .35, A.lets + .1)), drift = Math.sin(t * .9) * 3 * (1 - rise);
+    show($('scr'), out(P(t, .05, .35)) * (1 - ex), (1 - rise) * 345 + drift + ex * 20, mix(.6, 1, rise));
+    // the log: the last 12 lines that have appeared, newest sliding in
+    var shown = EV.filter(function(e){ return e.t <= t; }).slice(-12), html = '';
+    shown.forEach(function(e){ var k = out(P(t, e.t, e.t + .2)), tail = e.tail && t >= e.tail[0] ? '<span style="color:' + e.tail[2] + '">' + e.tail[1] + '</span>' : '';
+      html += '<div style="color:' + e.c + ';opacity:' + (k * (e.o || 1)) + ';transform:translateX(' + (1 - k) * 10 + 'px)">' + lineText(e, t).replace(/</g, '&lt;') + tail + '</div>'; });
+    $('term').innerHTML = html;
+    // the badge in the title bar: under attack → exposed → patched
+    var b = $('badge'), patched = t >= A.today + .5, exposed = t >= A.exposed - .05;
+    b.textContent = patched ? '✓ PATCHED' : exposed ? 'EXPOSED' : 'UNDER ATTEMPTS';
+    b.style.background = patched ? 'rgba(61,220,132,.16)' : 'rgba(255,77,61,.16)'; b.style.color = patched ? '#3ddc84' : '#ff4d3d';
+    var bk = spring(t - (patched ? A.today + .5 : exposed ? A.exposed - .05 : .3)); b.style.transform = 'scale(' + (.7 + .3 * bk) + ')';
+    $('scr').style.borderColor = patched ? 'rgba(61,220,132,.5)' : exposed ? 'rgba(255,77,61,' + (.45 + .35 * Math.sin(t * 8) * (1 - P(t, A.exposed + 1.2, A.exposed + 1.6))) + ')' : '#2a303c';
+    // ---- the deck: the fixed releases; on "Below the fixed release" your branch's fix lights up against your version ----
+    var dIn = out(P(t, A.below - .15, A.below + .2));
+    $('deck').style.opacity = dIn * (1 - ex); $('deck').style.transform = 'translateY(' + (1 - dIn) * 24 + 'px)';
+    [].forEach.call($('vs').children, function(v, i){ var k = spring(t - A.below + .1 - i * .07), mine = i === 1, lit = mine && t >= A.fixed - .05;
+      v.style.transform = 'scale(' + (.6 + .4 * k) + ')'; v.style.opacity = cl((t - A.below + .1 - i * .07) * 6);
+      v.style.background = mine && patched ? 'rgba(61,220,132,.18)' : lit ? 'rgba(90,169,255,.2)' : '#202634'; v.style.color = mine && patched ? '#3ddc84' : lit ? '#5aa9ff' : '#eef1f6';
+      v.style.boxShadow = lit ? 'inset 0 0 0 2px ' + (patched ? '#3ddc84' : '#5aa9ff') : 'none'; });
+    var y = $('yours'); y.textContent = patched ? 'YOURS: 8.4.27 ✓' : 'YOURS: 8.4.26'; y.style.background = patched ? 'rgba(61,220,132,.16)' : 'rgba(255,77,61,.16)'; y.style.color = patched ? '#3ddc84' : '#ff4d3d';
+    y.style.opacity = cl((t - A.fixed) * 5);
+    // ---- the readout and the tag ----
+    var attempts = EV.filter(function(e){ return e.t <= t && /attempt|blocked/.test(e.s); }).length, H;
+    if (t < A.check - .1) H = 'ATTEMPTS · <b class="r">' + attempts + '</b>';
+    else if (t < A.update - .1) H = 'PHP 8.4.26 · <b class="r">' + (exposed ? 'EXPOSED' : 'CHECKING') + '</b>';
+    else if (!patched) H = 'UPDATING · <b>' + Math.round(100 * P(t, A.update + .5, A.today + .45)) + '%</b>';
+    else H = 'PHP 8.4.27 · <b class="g">PATCHED</b>';
+    $('hud').innerHTML = H; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.lets - .1 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.check - .1 ? 'WHAT IT ALLOWS' : t < A.update - .1 ? 'YOUR VERSION' : 'THE FIX';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var ch = '';
+    if (ph0 && ph0[0] > 4 && t < DUR - .5)   // words 0-4 are the hook, shown as the title instead
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2));
+      var col = /^(php2shell|anyone|exposed)/i.test(w.d) ? 'var(--red)' : /^(update|today|bounce)/i.test(w.d) ? 'var(--green)' : /^(fixed|version)/i.test(w.d) ? 'var(--blue)' : 'var(--paper)';
+      ch += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = ch;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  // sound under the voice: a soft tick per attempt, a thud when the exploit runs, typing ticks, a click on "exposed", soft air for the fix
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.lets - .35, k: 'swish', d: .45, g: .6 }];
+    EV.forEach(function(e, i){ if (/attempt/.test(e.s)) Q.push({ t: e.t, k: 'tick', g: .14, p: -2 + (i % 3) }); if (/blocked/.test(e.s) && e.t < DUR - .7) Q.push({ t: e.t, k: 'tap', g: .3, p: 5 + (i % 3) }); });
+    Q.push({ t: A.run, k: 'thud', g: .6 }, { t: A.login, k: 'tick', g: .3, p: 2 });
+    for (var c = 0, t0 = A.check, t1 = A.version; t0 + c * .09 < t1; c++) Q.push({ t: t0 + c * .09, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.below - .1, k: 'swish', d: .4, g: .45, p: .3 }, { t: A.fixed, k: 'tap', g: .5, p: 4 }, { t: A.exposed - .05, k: 'click', g: .8 });
+    Q.push({ t: A.update, k: 'swish', d: .5, g: .5, p: .2 }, { t: A.today + .5, k: 'tap', g: .6, p: 8 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  anchors();
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 80px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
