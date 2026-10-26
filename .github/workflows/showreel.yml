@@ -100,7 +100,7 @@ jobs:
         if: hashFiles('out/narration.wav') != ''
         continue-on-error: true
         run: |
-          pip install faster-whisper==1.1.1
+          pip install faster-whisper==1.1.1 requests
           python3 scripts/showreel/voicecheck.py "$CFG" out/narration.wav "$GITHUB_STEP_SUMMARY"
       - name: Keep the preview
         if: inputs.seconds != ''
