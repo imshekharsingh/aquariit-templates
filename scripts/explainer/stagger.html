@@ -72,8 +72,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
   var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };   // 1 inside [a, b], fading over f at both ends
   // the script ("¦" marks an unspoken caption break)
-  var TEXT = "Why does your list feel so flat? Every item lands at once,¦ so it hits like a wall. The fix: stagger. Same animation, each item 40 milliseconds later. Now the eye flows top to bottom. Give each row an index;¦ one line delays it. Works on lists, grids and menus.";
-  var WORDS = [], DUR = 17, LEAD = .15;   // beats and caption words land 0.15 s before the word is spoken (study, 25 Oct)
+  var TEXT = "Why does your list feel so flat? Every item lands at once,¦ so it hits like a wall. The fix: stagger. Same animation, each item 40 milliseconds later. Now the eye flows top to bottom. Give each row an index. One line delays it. Works on lists, grids and menus.";
+  // 20 s with the voice at speed 1.0 (owner, 26 Oct: 17 s at 1.15 felt rushed and some words were lost);
+  // beats and caption words land 0.15 s before the word is spoken (study, 25 Oct)
+  var WORDS = [], DUR = 20, LEAD = .15;
   (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .028; WORDS.push({ w: w.replace('¦', ''), s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .2 : .05); }); })();
   var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
   function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
