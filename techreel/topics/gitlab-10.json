@@ -1,0 +1,183 @@
+{
+ "slug": "gitlab-10",
+ "topic": "GitLab security",
+ "voice": "af_heart",
+ "speed": 0.95,
+ "max_speed": 0.95,
+ "gap": 0.45,
+ "dur": 21,
+ "max_end": 20.4,
+ "say": {},
+ "hook": [
+  "GitLab patched",
+  "a flaw rated",
+  "10 out of 10"
+ ],
+ "lines": [
+  {
+   "text": "GitLab patched a flaw rated ten out of ten."
+  },
+  {
+   "text": "One crafted pattern runs code on your server, no login.",
+   "scene": {
+    "label": "THE FLAW",
+    "tint": "red",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "Anyone",
+      "No login"
+     ],
+     "source_tint": "red",
+     "hub": {
+      "label": "GITLAB SERVER",
+      "tag": "SELF-HOSTED",
+      "icon": "chip"
+     },
+     "target": {
+      "icon": "warning",
+      "label": "Code runs"
+     },
+     "target_tint": "red",
+     "hub_cue": "server"
+    }
+   }
+  },
+  {
+   "text": "GitLab's own cloud is already patched.",
+   "scene": {
+    "label": "WHO IS SAFE",
+    "tint": "green",
+    "kind": "portal",
+    "params": {
+     "icon": "cloud",
+     "pills": [
+      "GitLab.com",
+      "Dedicated"
+     ],
+     "guest": "shield",
+     "guest_tint": "green",
+     "n": 3,
+     "open": "patched"
+    }
+   }
+  },
+  {
+   "text": "Self-hosted? Check your version.",
+   "scene": {
+    "label": "CHECK",
+    "tint": "blue",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Your GitLab",
+      "sub": "Help page",
+      "icon": "chip"
+     },
+     "inner": {
+      "title": "GitLab 19.4.2",
+      "sub": "the 12 Oct patch",
+      "icon": "warning"
+     },
+     "inner_cue": "version"
+    }
+   }
+  },
+  {
+   "text": "Below the fix, even the October twelfth patch, you're exposed.",
+   "scene": {
+    "label": "FIXED RELEASES",
+    "tint": "red",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "On a fixed release: safe",
+      "cue": "fix"
+     },
+     "b": {
+      "title": "Older: exposed. Fixed in",
+      "ticks": [
+       "19.5.1",
+       "19.4.3",
+       "19.3.6",
+       "19.2.9"
+      ],
+      "cue": "exposed",
+      "icon": "warning",
+      "meter": false
+     }
+    }
+   }
+  },
+  {
+   "text": "No workaround. Just upgrade.",
+   "scene": {
+    "label": "THE FIX",
+    "tint": "green",
+    "kind": "guard",
+    "params": {
+     "object": {
+      "icon": "chip",
+      "label": "Upgraded server"
+     },
+     "attacker": "bot",
+     "stop_cue": "upgrade",
+     "badge": "BLOCKED"
+    }
+   }
+  },
+  {
+   "text": "Check your version, then upgrade today.",
+   "scene": {
+    "label": "DO THIS NOW",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Check your GitLab version",
+       "cue": "check"
+      },
+      {
+       "text": "Upgrade today",
+       "cue": "upgrade"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "GitLab patched a flaw rated 10 out of 10",
+  "caption": "GitLab patched a flaw rated 10 out of 10. 🚨\n\nCVE-2026-110264 is an integer overflow in GitLab's regular expression compiler: a crafted pattern can let someone run code on a self-hosted GitLab server without logging in. GitLab.com and GitLab Dedicated are already patched. The fixes shipped 21 Oct: 19.5.1, 19.4.3, 19.3.6, 19.2.9, 19.1.9, 19.0.10 and 18.11.13. There's no workaround, and servers on the 12 Oct patch are still exposed. Check your version and upgrade today.\nSend this to whoever runs your GitLab.",
+  "keywords": [
+   "GitLab vulnerability",
+   "CVE-2026-110264",
+   "GitLab security update",
+   "self-hosted GitLab",
+   "DevOps security",
+   "cybersecurity news"
+  ],
+  "hashtags": [
+   "#gitlab",
+   "#cybersecurity",
+   "#devops",
+   "#infosec",
+   "#technews"
+  ],
+  "sources": [
+   {
+    "url": "https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-5-1-released/",
+    "note": "GitLab's critical patch release, 21 Oct 2026: 19.5.1, 19.4.3, 19.3.6, 19.2.9, 19.1.9, 19.0.10, 18.11.13; CVE-2026-110264 integer overflow in the regular expression compiler; GitLab.com and Dedicated already patched"
+   },
+   {
+    "url": "https://cert.europa.eu/publications/security-advisories/2026-019/",
+    "note": "CERT-EU advisory: critical, unauthenticated code execution, upgrade"
+   },
+   {
+    "url": "https://docs.gitlab.com/releases/patches/patch-release-gitlab-19-4-2-released/",
+    "note": "the 12 Oct patch (19.4.2, a different CVE), older than the 21 Oct fix"
+   }
+  ]
+ }
+}
