@@ -127,7 +127,8 @@ def nest(fr, sc, t):
 
 
 def choice(fr, sc, t):
-    """Two ways to stay in control, A or B. params: a{title,icon,cue}, b{title,ticks[],cue,note}."""
+    """Two ways to stay in control, A or B. params: a{title,icon,cue}, b{title,icon?,ticks[],cue,note,meter?}.
+    b.meter false shows the ticks as a plain list (e.g. version numbers) instead of a cap meter that fills to the first one."""
     p = sc.params
     col = NEON[sc.tint]
     a_t, b_t = sc.cue(p['a'].get('cue')), sc.cue(p['b'].get('cue'))
@@ -144,12 +145,17 @@ def choice(fr, sc, t):
     if t >= b_t - .1:
         x, y = 120, 800 + (1 - bk) * 50
         box(fr, x, y, 840, 330, col, min(1, bk * 2))
-        icon(fr, 'coin', x + 100, y + 90, 110, col, min(1, bk * 2))
+        icon(fr, p['b'].get('icon', 'coin'), x + 100, y + 90, 110, col, min(1, bk * 2))
         fr.text(x + 190, y + 90, p['b']['title'], 44, color=_a(TEXT, min(1, bk * 2)), weight=800, anchor='lm', max_w=620)
         # the cap meter: a bar that fills to the first example limit and stops there
         mx, my, mw = x + 70, y + 210, 700
-        fr.rect(mx, my, mw, 16, r=8, fill=_a((40, 52, 86), min(1, bk * 2)))
         ticks = p['b'].get('ticks', [])
+        if p['b'].get('meter', True) is False:   # a plain list: each item springs in, all in the same colour
+            for i, tk in enumerate(ticks):
+                ik = spring(t - b_t - .2 - i * .12)
+                pill(fr, mx + mw * (i + .5) / len(ticks), my + 20, tk, TEXT, min(1, ik * 2), size=30)
+            return
+        fr.rect(mx, my, mw, 16, r=8, fill=_a((40, 52, 86), min(1, bk * 2)))
         fill = ease_io(prog(t, b_t + .3, b_t + 1.1)) * (1 / max(1, len(ticks)))
         fr.rect(mx, my, max(16, mw * fill), 16, r=8, fill=_a(col, min(1, bk * 2)), glow=col)
         for i, tk in enumerate(ticks):

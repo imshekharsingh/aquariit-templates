@@ -1,5 +1,6 @@
 """Icon library: simple neon line icons built from shapes (no images, no brand marks). Every icon is icon(fr, name, cx, cy, size, color, a)
 where size is the icon's box in output pixels and a is opacity 0..1. Add an icon by writing one function and listing it in ICONS."""
+import inspect
 import math
 
 from .base import SS, TEXT
@@ -187,4 +188,6 @@ ICONS = {f.__name__: f for f in (bot, store, cart, card, lock, shield, check, cr
 def icon(fr, name, cx, cy, size, color, a=1.0, **kw):
     if a <= 0.01:
         return
-    ICONS[name](fr, cx, cy, size, color, a, **kw)
+    f = ICONS[name]
+    ok = inspect.signature(f).parameters   # a scene may animate any icon (k=...); icons without that motion just draw still
+    f(fr, cx, cy, size, color, a, **{x: v for x, v in kw.items() if x in ok})

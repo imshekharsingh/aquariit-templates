@@ -78,8 +78,8 @@ def generate(topic, wav_path, fake=False):
             dur = n / WPS
             ws = _assign(pr, [], dur)
             res.append({'text': l, 'start': round(cur, 3), 'end': round(cur + dur, 3), 'words': [dict(w, s=round(w['s'] + cur, 3), e=round(w['e'] + cur, 3)) for w in ws]})
-            cur += dur + GAP
-        return {'dur': round(cur - GAP, 3), 'lines': res, 'fake': True}
+            cur += dur + float(topic.get('gap', GAP))
+        return {'dur': round(cur - float(topic.get('gap', GAP)), 3), 'lines': res, 'fake': True}
     from kokoro import KPipeline
     pipe = KPipeline(lang_code='a', repo_id='hexgrad/Kokoro-82M')
     speed = topic.get('speed', 1.05)
@@ -90,6 +90,8 @@ def generate(topic, wav_path, fake=False):
             checks[k] = {form: pipe.g2p(f'Can an {form} shop?')[0] for form in (k, ' '.join(k), v)}
         except Exception as e:
             checks[k] = {'error': str(e)}
+    gap = float(topic.get('gap', GAP))           # the breath between lines (owner, 26 Oct: each statement long enough to understand)
+    max_end = float(topic.get('max_end', MAX_END))
     while True:
         res, chunks, cur = [], [], FIRST
         for l, pr in zip(lines, pairs):
@@ -108,15 +110,15 @@ def generate(topic, wav_path, fake=False):
             ws = _assign(pr, [(x, s - lead, e - lead) for x, s, e in toks], dur)
             res.append({'phonemes': ph, 'text': l, 'start': round(cur, 3), 'end': round(cur + dur, 3), 'words': [dict(w, s=round(max(0, w['s']) + cur, 3), e=round(min(dur, w['e']) + cur, 3)) for w in ws]})
             chunks.append((cur, a))
-            cur += dur + GAP
-        end = cur - GAP
+            cur += dur + gap
+        end = cur - gap
         print(f'voice at speed {speed:.2f}: ends at {end:.2f} s')
-        if end <= MAX_END:
+        if end <= max_end:
             break
-        if speed < 1.14:
+        if speed < float(topic.get('max_speed', 1.14)) - .001:   # a topic can forbid speeding up (owner, 26 Oct: rushed voice is lost)
             speed = round(speed + .03, 2)
             continue
-        raise SystemExit(f'the voice ends at {end:.2f} s; trim the script to end by {MAX_END} s (about {int(MAX_END * WPS)} words)')
+        raise SystemExit(f'the voice ends at {end:.2f} s; trim the script to end by {max_end} s (about {int(max_end * WPS)} words)')
     out = np.zeros(int((end + .2) * 24000), dtype=np.float32)
     for st, a in chunks:
         i = int(st * 24000)
