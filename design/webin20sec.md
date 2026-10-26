@@ -86,6 +86,13 @@ The four series below still name the subjects; the narrated explainer is how eac
   inside a thought, longer between ideas), speed 0.95-1.0, other Kokoro voices (A/B two on the same script), and a light room tone
   under the voice; keep the voice check's pacing limits.
 
+## @techin20sec reels (owner, 26 Oct)
+- Keep that account's own look on its profile: make its reels with the tech-reel generator (techreel/: hook card with IN 20
+  SECONDS, TOPIC · EXPLAINED header and progress bar, a tinted label chip per scene, glowing icon scenes, karaoke captions), not
+  with the webin20sec scene system. The PHP2Shell and passkey reels (showreel-t01/t02) used the webin20sec look by mistake.
+- Carry over only the approach: news from the last day or two (it is a news account), one concrete picture per spoken line, a
+  takeaway worth saving or sending, and the voice check (words and pacing against Nº 01) with breaths between statements.
+
 ## Self-review before the owner sees anything (owner, 23 Oct: "where's the accountability?")
 Claude reviews every draft as a critical creative director before sending it, and does not wait to be asked to improve it.
 1. Watch the stills at every beat and the GIF, then answer in writing:
