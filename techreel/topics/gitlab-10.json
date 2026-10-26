@@ -8,16 +8,16 @@
  "max_end": 20.8,
  "say": {},
  "hook": [
-  "GitLab just fixed",
-  "a flaw rated",
-  "10 out of 10"
+  "Anyone can",
+  "take over your",
+  "GitLab server"
  ],
  "lines": [
   {
-   "text": "GitLab just fixed a flaw rated ten out of ten."
+   "text": "Anyone can take over your GitLab server, with no login."
   },
   {
-   "text": "One crafted pattern lets anyone take over your server, with no login.",
+   "text": "One crafted pattern does it, and GitLab rates it ten out of ten.",
    "scene": {
     "label": "THE FLAW",
     "tint": "red",
@@ -38,7 +38,7 @@
       "label": "Taken over"
      },
      "target_tint": "red",
-     "hub_cue": "server"
+     "hub_cue": "pattern"
     }
    }
   },
@@ -147,8 +147,8 @@
   }
  ],
  "post": {
-  "title": "GitLab patched a flaw rated 10 out of 10",
-  "caption": "GitLab patched a flaw rated 10 out of 10. 🚨\n\nCVE-2026-110264 is an integer overflow in GitLab's regular expression compiler: a crafted pattern can let someone run code on a self-hosted GitLab server without logging in. GitLab.com and GitLab Dedicated are already patched. The fixes shipped 21 Oct: 19.5.1, 19.4.3, 19.3.6, 19.2.9, 19.1.9, 19.0.10 and 18.11.13. There's no workaround, and servers on the 12 Oct patch are still exposed. Check your version and upgrade today.\nSend this to whoever runs your GitLab.",
+  "title": "Anyone can take over your GitLab server",
+  "caption": "Anyone can take over a self-hosted GitLab server, with no login. 🚨\n\nGitLab rates it 10 out of 10.\n\nCVE-2026-110264 is an integer overflow in GitLab's regular expression compiler: a crafted pattern can let someone run code on a self-hosted GitLab server without logging in. GitLab.com and GitLab Dedicated are already patched. The fixes shipped 21 Oct: 19.5.1, 19.4.3, 19.3.6, 19.2.9, 19.1.9, 19.0.10 and 18.11.13. There's no workaround, and servers on the 12 Oct patch are still exposed. Check your version and upgrade today.\nSend this to whoever runs your GitLab.",
   "keywords": [
    "GitLab vulnerability",
    "CVE-2026-110264",
