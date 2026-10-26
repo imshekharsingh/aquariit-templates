@@ -7,9 +7,10 @@
  "vignette": true,
  "cover": 2.4,
  "voice": {
-  "text": "Why does your list feel so flat? Every item lands at once, so it hits like a wall. The fix: stagger. Same animation, each item 40 milliseconds later. Now the eye flows top to bottom. Give each row an index. One line delays it. Works on lists, grids and menus.",
+  "text": "Why does your list feel so flat? Every row lands at once, like a wall. The fix: stagger. Same animation, each row 40 milliseconds later. Now the eye flows top to bottom. Give each row an index. One line delays it. Works on lists, grids and menus.",
   "voice": "af_heart",
-  "speed": 1.0
+  "speed": 1.0,
+  "gap": 0.3
  },
  "caption": "Why does your list feel so flat? 🧱\n\nWhen every row runs the same entrance at the same moment, the list lands as one block. Keep the animation and delay each row by its index: animation-delay: calc(var(--i) * 40ms), with --i set to 0, 1, 2… on each row. Now the eye reads it top to bottom. Works on lists, grids and menus. Pure CSS, no library.\nSave it for your next list, or send it to whoever builds your UI.",
  "keywords": [

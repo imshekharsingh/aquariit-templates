@@ -6,8 +6,11 @@
 # Usage: python3 scripts/showreel/voicecheck.py <config.json> <narration.wav> [report.md]
 import difflib, json, re, sys
 
-MAX_WPS = 3.0     # a sentence spoken faster than this is hard to follow (calibrated on Nº 01)
-MIN_PAUSE = .45   # the breath after a sentence, before the next idea starts
+# limits from Nº 01, the reel the owner liked (measured 26 Oct: 2.65 words a second overall, sentences up to ~4.4 words a second
+# from first to last word, pauses mostly 0.56-0.86 s); the recogniser's sentence times run first word to last, so they read fast
+MAX_WPS = 4.0       # a sentence spoken faster than this is hard to follow
+MIN_PAUSE = .55     # the breath after a sentence, before the next idea starts
+MAX_OVERALL = 2.7   # words a second across the whole voice, pauses included
 
 ONES = 'zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen'.split()
 TENS = 'twenty thirty forty fifty sixty seventy eighty ninety'.split()
@@ -68,7 +71,9 @@ def main(cfg_path, wav_path, report=None):
         flags += bool(bad)
         prow.append(f"| {st:5.2f} s | {sent} | {dur:.2f} s | {a1 - a0} | {wps:.2f} | {'end' if pause is None else f'{pause:.2f} s'} | {', '.join(bad) or 'ok'} |")
     total = (times[-1][1] - times[0][0]) if times else 0
-    pacing = (f"### Pacing: {len(want)} words in {total:.1f} s of voice = {len(want) / max(total, .01):.2f} words a second overall; "
+    overall = len(want) / max(total, .01)
+    pacing = (f"### Pacing: {len(want)} words in {total:.1f} s of voice = {overall:.2f} words a second overall "
+              f"({'too dense' if overall > MAX_OVERALL else 'ok'}, limit {MAX_OVERALL}); "
               f"{flags} of {len(prow)} sentences flagged (limits: at most {MAX_WPS} words a second, a pause of at least {MIN_PAUSE} s after)\n\n"
               "| at | sentence | spoken | words | words/s | pause after | flag |\n|---|---|---|---|---|---|---|\n" + '\n'.join(prow))
     out = [f"### Voice check: {len(want)} words in the script, {len(got)} heard",
