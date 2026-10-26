@@ -7,10 +7,10 @@
  "vignette": true,
  "cover": 2.4,
  "voice": {
-  "text": "Can a fake login page steal your passkey? No. A password works on any page you type it into. So a lookalike just takes it. A passkey only works on the site it was made for. On a fake address, there's nothing to give. Turn passkeys on.",
+  "text": "Can a fake login page steal your [passkey](/pˈæskˌi/)? No. A password works on any page you type it into. So a lookalike just takes it. A [passkey](/pˈæskˌi/) only works on the site it was made for. On a fake address, there's nothing to give. Turn [passkeys](/pˈæskˌiz/) on.",
   "voice": "af_heart",
-  "speed": 0.95,
-  "gap": 0.55
+  "speed": 0.92,
+  "gap": 0.8
  },
  "caption": "Can a fake login page steal your passkey? 🔑\n\nNo. A password works on any page you type it into, so a lookalike site (one wrong letter in the address) simply keeps it. A passkey is tied to the site it was made for: on a fake address your phone or browser has nothing to offer, and the real site only ever stores a public key. Turn passkeys on wherever your bank, email and apps offer them.\nSend this to someone who still uses one password everywhere.",
  "keywords": [
