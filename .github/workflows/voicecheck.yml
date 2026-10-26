@@ -1,0 +1,32 @@
+name: Voice check
+# Re-check a reel already in the "reels" release, without re-rendering it: its narration transcribed and compared with the script,
+# and each sentence timed for pace and pauses (scripts/showreel/voicecheck.py; the Showreel workflow runs the same check on every render).
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: "Reel config, e.g. scripts/explainer/stagger.json"
+        required: true
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      CFG: ${{ inputs.config }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check
+        run: |
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          pip install faster-whisper==1.1.1
+          NAME=$(python3 -I -c "import json,sys; print(json.load(open(sys.argv[1]))['name'])" "$CFG")
+          gh release download reels --repo "$REPO" --pattern "$NAME.mp4" --dir out
+          ffmpeg -y -loglevel error -i "out/$NAME.mp4" -vn -ac 1 -ar 16000 out/voice.wav
+          python3 scripts/showreel/voicecheck.py "$CFG" out/voice.wav "$GITHUB_STEP_SUMMARY"
