@@ -80,6 +80,8 @@ The four series below still name the subjects; the narrated explainer is how eac
 - Cover text looks shrunk: the hook title uses the condensed width ('wdth' 85) with tight tracking (-0.045em), which reads squeezed
   as a cover. For the cover frame use the normal width, looser tracking and a larger, simpler title, and pick a cover time where the
   title stands alone (check it as Instagram's cover crop, both the 9:16 cover and the 3:4 profile grid).
+- Length (owner, 26 Oct): aim for 20 s, but a reel may run to about 21 s when the information needs it or the video needs room
+  to breathe; never cut a relevant line or a beat's hold just to hit 20.
 - Audio should sound more natural: the per-sentence voice with equal 0.8 s breaths reads as stilted. Try varied pauses (shorter
   inside a thought, longer between ideas), speed 0.95-1.0, other Kokoro voices (A/B two on the same script), and a light room tone
   under the voice; keep the voice check's pacing limits.
