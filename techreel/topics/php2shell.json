@@ -1,0 +1,186 @@
+{
+ "slug": "php2shell",
+ "topic": "PHP security",
+ "voice": "af_heart",
+ "speed": 0.95,
+ "max_speed": 0.95,
+ "gap": 0.6,
+ "dur": 21,
+ "max_end": 20.2,
+ "say": {
+  "PHP2Shell": "[PHPtoShell](/pˌiˌeɪʧpˈitəʃˈɛl/)",
+  "v": "dash v"
+ },
+ "hook": [
+  "Attackers have",
+  "started trying",
+  "PHP2Shell"
+ ],
+ "lines": [
+  {
+   "text": "Attackers have started trying PHP2Shell."
+  },
+  {
+   "text": "It lets anyone run code on a PHP server, with no login.",
+   "scene": {
+    "label": "THE FLAW",
+    "tint": "red",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "Anyone",
+      "No login"
+     ],
+     "source_tint": "red",
+     "hub": {
+      "label": "PHP SERVER",
+      "tag": "UNPATCHED",
+      "icon": "chip"
+     },
+     "target": {
+      "icon": "warning",
+      "label": "Code runs"
+     },
+     "target_tint": "red",
+     "hub_cue": "server"
+    }
+   }
+  },
+  {
+   "text": "Security firms now see attempts hitting servers.",
+   "scene": {
+    "label": "THE NEWS",
+    "tint": "amber",
+    "kind": "portal",
+    "params": {
+     "icon": "cloud",
+     "pills": [
+      "watchTowr",
+      "Cloudflare"
+     ],
+     "guest": "bot",
+     "guest_tint": "red",
+     "n": 3,
+     "open": "attempts"
+    }
+   }
+  },
+  {
+   "text": "Check your PHP version.",
+   "scene": {
+    "label": "CHECK",
+    "tint": "blue",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Your server",
+      "sub": "php -v",
+      "icon": "chip"
+     },
+     "inner": {
+      "title": "PHP 8.4.26",
+      "sub": "older than its fix",
+      "icon": "warning"
+     },
+     "inner_cue": "version"
+    }
+   }
+  },
+  {
+   "text": "Older than the fixed release? You are exposed.",
+   "scene": {
+    "label": "FIXED RELEASES",
+    "tint": "red",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "On a fixed release: safe",
+      "cue": "fixed"
+     },
+     "b": {
+      "title": "Older: exposed. Fixed in",
+      "ticks": [
+       "8.5.12",
+       "8.4.27",
+       "8.3.36",
+       "8.2.35"
+      ],
+      "cue": "exposed",
+      "icon": "warning",
+      "meter": false
+     }
+    }
+   }
+  },
+  {
+   "text": "Update today, and the attempts bounce off.",
+   "scene": {
+    "label": "THE FIX",
+    "tint": "green",
+    "kind": "guard",
+    "params": {
+     "object": {
+      "icon": "chip",
+      "label": "Patched server"
+     },
+     "attacker": "bot",
+     "stop_cue": "bounce",
+     "badge": "BLOCKED"
+    }
+   }
+  },
+  {
+   "text": "Run php -v, then update.",
+   "scene": {
+    "label": "DO THIS NOW",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Run php -v",
+       "cue": "run"
+      },
+      {
+       "text": "Update to the fixed release",
+       "cue": "update"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "Attackers have started trying PHP2Shell",
+  "caption": "Attackers have started trying PHP2Shell. 🚨\n\nThe two critical PHP flaws (CVE-2026-109618 and CVE-2026-109619) let someone run code on a PHP server without logging in. Security firms report exploit attempts hitting the internet since the patches landed; the UK's NCSC had not confirmed successful attacks yet. The fixes shipped 21–22 Oct: PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35. Run php -v, and if you're below your branch's fix, update today.\nSend this to whoever runs your website.",
+  "keywords": [
+   "PHP2Shell",
+   "PHP vulnerability",
+   "CVE-2026-109618",
+   "update PHP",
+   "web server security",
+   "cybersecurity news"
+  ],
+  "hashtags": [
+   "#php",
+   "#cybersecurity",
+   "#infosec",
+   "#webdev",
+   "#technews"
+  ],
+  "sources": [
+   {
+    "url": "https://github.com/php/php-src/blob/PHP-8.4/NEWS",
+    "note": "PHP's own changelog: 8.4.27 (22 Oct 2026) fixes CVE-2026-109618/-109619; same entry in 8.5.12, 8.3.36, 8.2.35"
+   },
+   {
+    "url": "https://www.cisa.gov/news-events/alerts/2026/10/21/critical-vulnerabilities-php-require-immediate-patching",
+    "note": "CISA alert, unauthenticated remote code execution"
+   },
+   {
+    "url": "https://securityweek.com/php2shell-patches-land-as-first-exploitation-attempts-hit-sensors",
+    "note": "news: first exploitation attempts seen by watchTowr; NCSC had no confirmed exploitation (Techzine)"
+   }
+  ]
+ }
+}

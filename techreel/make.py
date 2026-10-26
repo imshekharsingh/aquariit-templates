@@ -164,6 +164,9 @@ def main():
     slug = sys.argv[1]
     fake = '--fake-vo' in sys.argv
     topic = json.load(open(os.path.join(HERE, 'topics', slug + '.json')))
+    # a topic may run a little past 20 s when its lines need room to breathe (owner, 26 Oct: up to about 21 s)
+    global DUR, N
+    DUR = float(topic.get('dur', DUR)); N = int(FPS * DUR)
     out = os.path.join('out', 'techreel', slug)
     os.makedirs(out, exist_ok=True)
     vo_wav, vo_json = os.path.join(out, 'vo.wav'), os.path.join(out, 'vo.json')

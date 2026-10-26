@@ -26,9 +26,17 @@ jobs:
         with:
           python-version: '3.11'
       - name: Tools
+        # GitHub's Ubuntu mirror sometimes crawls (26 Oct: renders stalled 15-20 minutes): apt gets a few minutes, then each tool
+        # comes from a source that does not need it (a static ffmpeg from PyPI, Inter's own release, misaki's bundled espeak-ng)
+        timeout-minutes: 15
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ffmpeg fonts-inter espeak-ng
+          if ! timeout 240 sh -c 'sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg fonts-inter espeak-ng'; then
+            pip install imageio-ffmpeg==0.6.0
+            sudo ln -sf "$(python3 -I -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')" /usr/local/bin/ffmpeg
+            curl -sSL -o /tmp/inter.zip https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip
+            sudo mkdir -p /usr/share/fonts/truetype/inter && sudo unzip -oj -q /tmp/inter.zip 'extras/ttf/Inter-*.ttf' -d /usr/share/fonts/truetype/inter
+          fi
+          ffmpeg -hide_banner -version | head -1
           pip install numpy==2.1.3 scipy==1.14.1 Pillow==11.0.0 soundfile==0.12.1
           pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
           pip install kokoro==0.9.4 preshed==3.0.13 cymem==2.0.13 murmurhash==1.0.15 srsly==2.5.4 spacy==3.8.16 thinc==8.3.13 blis==1.3.3
@@ -36,6 +44,13 @@ jobs:
         run: |
           set -o pipefail
           python3 techreel/make.py "$SLUG" 2>&1 | grep -v "^frame " | tee render.log
+      - name: Voice check
+        # the narration transcribed and compared with the script, and each line timed for pace and breaths (scripts/showreel/voicecheck.py)
+        continue-on-error: true
+        run: |
+          pip install faster-whisper==1.1.1 requests
+          python3 -I -c "import json,sys; t=json.load(open(sys.argv[1])); json.dump({'voice': {'text': ' '.join(l['text'] for l in t['lines'])}}, open('vc.json','w'))" "techreel/topics/$SLUG.json"
+          python3 scripts/showreel/voicecheck.py vc.json "out/techreel/$SLUG/vo.wav" "$GITHUB_STEP_SUMMARY"
       - name: Keep it
         run: |
           D="out/techreel/$SLUG"
@@ -43,3 +58,8 @@ jobs:
           cp "$D/contact.png" "$D/$SLUG-contact.png"; cp "$D/qa.txt" "$D/$SLUG-qa.txt"; cp "$D/vo.json" "$D/$SLUG-vo.json"
           gh release upload techreel --repo "$REPO" --clobber "$D/$SLUG.mp4" "$D/$SLUG-contact.png" "$D/$SLUG-qa.txt" "$D/$SLUG-vo.json"
           cat "$D/qa.txt"
+          # also on the Showreels page with its post text (owner, 26 Oct), as showreel-tech-<slug>
+          N="showreel-tech-$SLUG"; cp "$D/$SLUG.mp4" "$D/$N.mp4"
+          python3 -I -c "import json,sys; t=json.load(open(sys.argv[1])); p=t.get('post',{}); json.dump({'name': sys.argv[2], 'caption': p.get('caption',''), 'keywords': p.get('keywords',[]), 'hashtags': p.get('hashtags',[])}, open(sys.argv[3],'w'), ensure_ascii=False, indent=1)" "techreel/topics/$SLUG.json" "$N" "$D/$N.json"
+          ffmpeg -y -loglevel error -ss 2 -i "$D/$N.mp4" -frames:v 1 -q:v 3 "$D/$N-cover.jpg"
+          gh release upload reels --repo "$REPO" --clobber "$D/$N.mp4" "$D/$N.json" "$D/$N-cover.jpg"
