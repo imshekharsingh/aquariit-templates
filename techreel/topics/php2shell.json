@@ -4,9 +4,9 @@
  "voice": "af_heart",
  "speed": 0.95,
  "max_speed": 0.95,
- "gap": 0.6,
+ "gap": 0.45,
  "dur": 21,
- "max_end": 20.2,
+ "max_end": 20.4,
  "say": {
   "PHP2Shell": "[PHPtoShell](/pˌiˌeɪʧpˈitəʃˈɛl/)",
   "v": "dash v"
@@ -47,7 +47,7 @@
    }
   },
   {
-   "text": "Security firms now see attempts hitting servers.",
+   "text": "Security firms now see attempts.",
    "scene": {
     "label": "THE NEWS",
     "tint": "amber",
