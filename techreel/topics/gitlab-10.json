@@ -18,7 +18,7 @@
    "text": "GitLab patched a flaw rated ten out of ten."
   },
   {
-   "text": "One crafted pattern runs code on your server, no login.",
+   "text": "A crafted pattern runs code on your server, no login.",
    "scene": {
     "label": "THE FLAW",
     "tint": "red",
@@ -63,7 +63,7 @@
    }
   },
   {
-   "text": "Self-hosted? Check your version.",
+   "text": "If you host your own, check your version.",
    "scene": {
     "label": "CHECK",
     "tint": "blue",
@@ -84,15 +84,15 @@
    }
   },
   {
-   "text": "Below the fix, even the October twelfth patch, you're exposed.",
+   "text": "Even the October twelfth patch is still exposed.",
    "scene": {
     "label": "FIXED RELEASES",
     "tint": "red",
     "kind": "choice",
     "params": {
      "a": {
-      "title": "On a fixed release: safe",
-      "cue": "fix"
+      "title": "On the 21 Oct fix: safe",
+      "cue": "even"
      },
      "b": {
       "title": "Older: exposed. Fixed in",
@@ -110,7 +110,7 @@
    }
   },
   {
-   "text": "No workaround. Just upgrade.",
+   "text": "There's no workaround, so upgrade.",
    "scene": {
     "label": "THE FIX",
     "tint": "green",
@@ -127,7 +127,7 @@
    }
   },
   {
-   "text": "Check your version, then upgrade today.",
+   "text": "Check it, then upgrade today.",
    "scene": {
     "label": "DO THIS NOW",
     "tint": "green",
