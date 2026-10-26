@@ -1,0 +1,44 @@
+{
+ "name": "showreel-15-transform",
+ "seek": "scripts/explainer/transform.html",
+ "dur": 21,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why does your animation stutter? You're moving it with left. Every frame, the browser has to redo layout and paint. Miss the sixteen millisecond budget, and frames drop. Move it with transform instead. It's handled in compositing, so layout and paint are skipped. Same move, smooth.",
+  "voice": "af_heart",
+  "speed": 0.97,
+  "gap": [
+   0.55,
+   0.45,
+   0.75,
+   0.5,
+   0.45,
+   0.6
+  ]
+ },
+ "caption": "Why does your animation stutter? 🐢\n\nAnimating left (or width, top, margin) makes the browser redo layout and paint on every frame. Miss the ~16.7 ms frame budget and frames drop. Move it with transform instead: it's handled in compositing, so layout and paint are skipped. Same move, smooth. (Opacity works the same way.)\nSave it for your next animation, or send it to whoever builds your UI.",
+ "keywords": [
+  "CSS animation performance",
+  "transform vs left",
+  "janky animation fix",
+  "smooth CSS animation",
+  "web performance tips",
+  "CSS animation"
+ ],
+ "hashtags": [
+  "#cssanimation",
+  "#webperformance",
+  "#css",
+  "#frontenddev",
+  "#uianimation"
+ ],
+ "sources": [
+  {
+   "url": "https://github.com/mdn/content/blob/main/files/en-us/web/performance/guides/animation_performance_and_frame_rate/index.md",
+   "note": "MDN: left triggers layout and repaint; transform and opacity are handled in composition; 16.7 ms a frame at 60 fps"
+  }
+ ]
+}

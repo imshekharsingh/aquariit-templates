@@ -2,7 +2,8 @@
 # Speaks the config's voice.text with Kokoro-82M (Apache-2.0, CPU, no key) and writes the audio plus a timestamp for every word,
 # so the scene times its beats and captions to the real voice (seek.mjs hands the words to window.setVoice before rendering).
 # Usage: python3 scripts/showreel/voice.py <config.json> <out.wav> <words.json>
-#   config.voice: { text, voice? (default af_heart), speed? (default 1.0), gap? (seconds of silence after each sentence, default none) }
+#   config.voice: { text, voice? (default af_heart), speed? (default 1.0), gap? (seconds of silence after each sentence, or a list
+#   with one value per sentence; default none) }
 #   gap (owner, 26 Oct: "each statement should be clear and long enough to understand"): each sentence is spoken on its own, its
 #   own leading and trailing silence trimmed, and followed by exactly that much silence: a breath before the next statement
 import json, re, sys, wave
@@ -16,7 +17,8 @@ def main(cfg_path, wav_path, words_path):
     from kokoro import KPipeline
     pipe = KPipeline(lang_code='a', repo_id='hexgrad/Kokoro-82M')
     audio, words, off = [], [], 0.0
-    gap = float(V.get('gap', 0))
+    gaps = V.get('gap', 0)   # one number for every breath, or a list: one breath per sentence (owner, 26 Oct: pauses that follow the thought)
+    gap = (max(gaps) if gaps else 0) if isinstance(gaps, list) else float(gaps)
     parts = [x.strip() for x in re.findall(r'[^.?!]+[.?!]?', V['text']) if x.strip()] if gap else [V['text']]
     for n, part in enumerate(parts):
         pa, pw, po = [], [], 0.0   # this sentence's audio and words, timed from its own start
@@ -37,7 +39,8 @@ def main(cfg_path, wav_path, words_path):
         for w in pw: words.append({'w': w['w'], 's': round(off + max(0, w['s'] - lead), 3), 'e': round(off + max(0, w['e'] - lead), 3)})
         audio.append(pa); off += len(pa) / 24000
         if gap and n < len(parts) - 1:   # the breath after a sentence
-            audio.append(np.zeros(int(gap * 24000))); off += gap
+            g = float(gaps[min(n, len(gaps) - 1)]) if isinstance(gaps, list) else gap
+            audio.append(np.zeros(int(g * 24000))); off += g
     a = np.concatenate(audio)
     a = np.interp(np.arange(0, len(a) * 2) / 2, np.arange(len(a)), a)   # 24 kHz -> 48 kHz
     a = a / (np.abs(a).max() + 1e-9) * .9

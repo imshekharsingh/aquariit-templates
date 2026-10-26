@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does your animation stutter?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 05, a motion tip: "Why does your animation stutter?"
+   Facts (MDN, Animation performance and frame rate, mdn/content): properties that change geometry or position, like left, trigger
+   style recalculation, layout and repaint; transform and opacity, rendered in their own layer, "don't even trigger a repaint, because
+   the update is handled in composition"; 60 frames a second leaves 16.7 ms a frame. The stutter shown is drawn, not measured: the left
+   version only moves on a seeded schedule of 1-4 frame holds, the transform version moves every frame.
+   One screen holds the moving card for the whole reel; one panel under it shows the browser's steps and the frame budget.
+   Owner notes, 26 Oct: the hook title at the font's normal width (it read squeezed as a cover); up to ~21 s; natural pauses. */
+:root{--ink:#111214;--paper:#f2f1ec;--dim:#8b8a85;--surface:#1b1c20;--rule:#2f3138;--card:#24262c;--lime:#a6e35a;--red:#ff5545;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700}#hud .r{color:var(--red)}#hud .g{color:var(--lime)}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+/* the hook at the font's normal width and looser tracking (owner, 26 Oct: the condensed title read squeezed as a cover) */
+#hook{left:36px;top:246px;font-weight:800;font-size:70px;line-height:1;letter-spacing:-.02em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--red)}
+/* the screen: a page with a card sliding back and forth */
+#scr{left:36px;top:206px;width:468px;height:300px;border-radius:28px;background:var(--surface);overflow:hidden;transform-origin:50% 0}
+#code{left:20px;top:18px;height:34px;padding:0 14px;border-radius:999px;font:700 17px/34px var(--m);white-space:nowrap}
+#track{left:24px;right:24px;top:150px;height:2px;background:var(--rule)}
+#cardw{left:24px;top:92px;width:150px;height:118px}
+#cardx{left:0;top:0;width:150px;height:118px;border-radius:20px;background:var(--card);border:1.5px solid #3a3d46}
+#cardx i{position:absolute;left:14px;right:14px;top:14px;height:52px;border-radius:12px;background:linear-gradient(135deg,#ff9a5c,#ff5d8f)}
+#cardx b{position:absolute;left:14px;top:78px;width:84px;height:10px;border-radius:5px;background:#4a4d57}
+#cardx s{position:absolute;left:14px;top:96px;width:56px;height:8px;border-radius:4px;background:var(--rule)}
+#ghosts{left:24px;top:92px;width:420px;height:118px}
+#ghosts i{position:absolute;top:0;width:150px;height:118px;border-radius:20px;border:1.5px solid var(--lime)}
+#fps{left:20px;bottom:16px;font:700 14px/1 var(--m);letter-spacing:.08em}
+/* the deck: the browser's steps for each frame, and the frame budget */
+#deck{left:36px;top:524px;width:468px;height:136px;border-radius:22px;background:var(--surface)}
+#steps{left:14px;right:14px;top:14px;display:flex;gap:8px}
+.st{flex:1;height:44px;border-radius:12px;background:#22242a;display:grid;place-items:center;font:700 13px/1 var(--m);letter-spacing:.08em;color:var(--dim);position:relative}
+.st s{position:absolute;left:10px;right:10px;top:50%;height:2px;background:var(--dim)}
+#bud{left:14px;right:14px;top:70px;height:52px}
+#bud .bar{position:absolute;bottom:0;width:22px;border-radius:5px 5px 2px 2px}
+#bline{left:0;right:0;height:1.5px;background:rgba(242,241,236,.5)}
+#blab{right:0;font:700 11px/1 var(--m);color:var(--dim);letter-spacing:.06em}
+#cap{left:36px;right:36px;top:684px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 05 · MOTION</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>animation</span></span><span class="ln"><span class="acc">stutter?</span></span></div>
+<div id="scr" class="a"><div id="code" class="a"></div><div id="track" class="a"></div><div id="ghosts" class="a"></div>
+  <div id="cardw" class="a"><div id="cardx" class="a"><i></i><b></b><s></s></div></div><div id="fps" class="a"></div></div>
+<div id="deck" class="a"><div id="steps" class="a"><div class="st">STYLE</div><div class="st">LAYOUT<s></s></div><div class="st">PAINT<s></s></div><div class="st">COMPOSITE</div></div>
+  <div id="bud" class="a"><div id="bline" class="a"></div><div id="blab" class="a">16.7 MS</div></div></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  // the script; spoken a sentence at a time with breaths that follow the thought (voice.gap per sentence)
+  var TEXT = "Why does your animation stutter? You're moving it with left. Every frame, the browser has to redo layout and paint. Miss the sixteen millisecond budget, and frames drop. Move it with transform instead. It's handled in compositing, so layout and paint are skipped. Same move, smooth.";
+  var WORDS = [], DUR = 21, LEAD = .15;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .028; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?!]$/.test(w) ? .7 : /,$/.test(w) ? .2 : .05); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { stutter: at('stutter'), moving: at('moving'), left: at('left'), every: at('every'), layout: at('layout'), paint: at('paint'), miss: at('miss'), budget: at('budget'), drop: at('drop'),
+      move: at('move'), transform: at('transform'), compositing: at('compositing'), skipped: at('skipped'), same: at('same'), smooth: at('smooth') };
+    A.end = WORDS[WORDS.length - 1].e;
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/,$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  // the dropped-frame schedule for the left version: each shown frame holds for 1-4 refreshes (seeded, so every render is the same)
+  var HOLD = [], F = 1 / 60;
+  (function(){ var s = 7, t = 0; while (t < 30) { s = (s * 1103515245 + 12345) % 2147483648; var r = s / 2147483648, h = r < .45 ? 1 : r < .7 ? 2 : r < .9 ? 3 : 4; HOLD.push([t, h]); t += h * F; } })();
+  function shownAt(t){ var lo = 0, hi = HOLD.length - 1; while (lo < hi) { var m = (lo + hi + 1) >> 1; if (HOLD[m][0] <= t) lo = m; else hi = m - 1; } return HOLD[lo]; }
+  var TRAVEL = 270, PER = 1.5;
+  var pos = function(t){ var ph = (t / PER) % 2, u = ph < 1 ? ph : 2 - ph; return io(u) * TRAVEL; };
+  function show(el, o, y, s){ el.style.opacity = o; el.style.transform = 'translateY(' + (y || 0) + 'px) scale(' + (s === undefined ? 1 : s) + ')'; }
+  (function(){ var B = $('bud'); for (var i = 0; i < 16; i++) { var b = document.createElement('div'); b.className = 'bar'; b.style.left = (i * 27) + 'px'; B.appendChild(b); } })();
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    var smooth = t >= A.transform - .05;   // from "transform" on, the card moves every frame
+    // ---- the hook: words land as spoken; "stutter?" lands in two jerks ----
+    var gone = io(P(t, A.moving - .35, A.moving + .05));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = i === 4 ? (t < s ? 0 : t < s + .12 ? .5 : 1) : out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the screen never leaves: small under the hook, full from "You're moving it with left." ----
+    var rise = io(P(t, A.moving - .35, A.moving + .1));
+    show($('scr'), out(P(t, .05, .35)) * (1 - ex), (1 - rise) * 330 + ex * 20, mix(.6, 1, rise));
+    // the card: with left it jumps on the dropped-frame schedule; with transform it moves every frame (and a faint trail shows it)
+    var tt = smooth ? t : shownAt(t)[0];
+    $('cardx').style.transform = 'translateX(' + pos(tt) + 'px)';
+    var gh = $('ghosts'), gk = P(t, A.compositing, A.compositing + .4) * (1 - ex), gx = '';
+    if (gk > 0) for (var g = 1; g <= 4; g++) gx += '<i style="left:' + pos(t - g * .06) + 'px;opacity:' + (.22 - g * .045) * gk + '"></i>';
+    gh.innerHTML = gx;
+    var cd = $('code'), ck = out(P(t, A.left - .05, A.left + .25)), tk = out(P(t, A.transform - .05, A.transform + .25));
+    cd.textContent = smooth ? 'transform: translateX(270px)' : 'left: 270px';
+    cd.style.background = smooth ? 'rgba(166,227,90,.14)' : 'rgba(255,85,69,.14)'; cd.style.color = smooth ? '#a6e35a' : '#ff5545';
+    cd.style.opacity = smooth ? tk : ck; cd.style.transform = 'translateY(' + (1 - (smooth ? tk : ck)) * -10 + 'px)';
+    // ---- the deck: the steps for each frame and the frame budget ----
+    var dIn = out(P(t, A.every - .15, A.every + .2));
+    $('deck').style.opacity = dIn * (1 - ex); $('deck').style.transform = 'translateY(' + (1 - dIn) * 24 + 'px)';
+    var cur = shownAt(t), flash = smooth ? 0 : Math.max(0, 1 - (t - cur[0]) / .12);   // each shown frame flashes its steps
+    var sts = $('steps').children, lit = [t >= A.every, t >= A.layout - .05, t >= A.paint - .05, true];
+    [].forEach.call(sts, function(el, i){
+      var skipped = smooth && (i === 1 || i === 2) && t >= A.skipped - .1, onC = smooth && i === 3 && t >= A.compositing - .05;
+      var hot = !smooth && lit[i] && (i === 1 || i === 2);
+      el.style.background = onC ? 'rgba(166,227,90,.22)' : hot ? 'rgba(255,85,69,' + (.15 + .35 * flash) + ')' : '#22242a';
+      el.style.color = onC ? '#a6e35a' : hot ? '#ff5545' : skipped ? '#55565c' : '#8b8a85';
+      el.style.opacity = skipped ? .55 : 1;
+      var sk = el.querySelector('s'); if (sk) sk.style.width = (skipped ? out(P(t, A.skipped - .1, A.skipped + .2)) * 100 : 0) + '%'; });
+    // the budget: one bar per recent frame, its height the time it took; over the line is a dropped frame
+    var bud = $('bud'), H = 52, LINE = 30; $('bline').style.bottom = LINE + 'px'; $('blab').style.bottom = (LINE + 4) + 'px';
+    var bA = P(t, A.miss - .1, A.miss + .2) * (1 - ex), idx = HOLD.indexOf(cur);
+    [].forEach.call(bud.querySelectorAll('.bar'), function(b, i){
+      var fr = smooth ? null : HOLD[Math.max(0, idx - 15 + i)], ms = smooth ? 9 + 3 * Math.sin(i * 1.7 + Math.floor(t * 60) * .3) : fr[1] * 16.7 * .9;
+      var h = Math.min(H, ms / 16.7 * LINE), over = ms > 16.7;
+      b.style.height = h + 'px'; b.style.background = over ? '#ff5545' : '#a6e35a'; b.style.opacity = bA * (smooth ? 1 : (over ? 1 : .7)); });
+    $('bline').style.opacity = bA; $('blab').style.opacity = bA;
+    // ---- the frame counter on the screen, the readout and the tag ----
+    var shownPerSec = smooth ? 60 : Math.round(60 * (HOLD.filter(function(h){ return h[0] > t - 1 && h[0] <= t; }).length) / 60);
+    var fps = $('fps'); fps.textContent = (smooth ? 60 : shownPerSec) + ' FPS'; fps.style.color = smooth ? '#a6e35a' : '#ff5545'; fps.style.opacity = P(t, A.miss - .1, A.miss + .2) * (1 - ex);
+    var dropped = HOLD.filter(function(h){ return h[0] <= Math.min(t, A.transform) && h[0] >= A.miss - .1 && h[1] > 1; }).length, Hh;
+    if (t < A.moving - .1) Hh = 'FRAME · <b>16.7 MS</b>';
+    else if (t < A.miss - .1) Hh = 'left · <b class="r">LAYOUT + PAINT</b>';
+    else if (!smooth) Hh = 'DROPPED · <b class="r">' + dropped + '</b>';
+    else if (t < A.skipped - .1) Hh = 'transform · <b class="g">COMPOSITE</b>';
+    else Hh = 'DROPPED · <b class="g">0</b>';
+    $('hud').innerHTML = Hh; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.moving - .1 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.every - .1 ? 'ANIMATING LEFT' : !smooth ? 'EVERY FRAME' : t < A.same - .1 ? 'ANIMATING TRANSFORM' : 'SAME MOVE';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] > 4 && t < DUR - .5)   // words 0-4 are the hook question, shown as the title instead
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2));
+      var col = /^(transform|compositing|skipped|smooth)/i.test(w.d) ? 'var(--lime)' : /^(left|layout|paint|drop|stutter)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+      var code = /^(left|transform)/i.test(w.d) ? ';font-family:var(--m);font-size:.86em' : '';
+      html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + code + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  // sound under the voice: a dry tick on every shown frame of the stuttering card (they come unevenly), soft air once it is smooth
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.moving - .35, k: 'swish', d: .45, g: .6 }];
+    HOLD.forEach(function(h){ if (h[0] > A.miss - .1 && h[0] < A.transform - .1 && h[1] > 2) Q.push({ t: h[0], k: 'tick', g: .18, p: -3 }); });
+    Q.push({ t: A.layout, k: 'tap', g: .45, p: -1 }, { t: A.paint, k: 'tap', g: .45, p: 0 }, { t: A.drop, k: 'thud', g: .5 });
+    Q.push({ t: A.transform - .05, k: 'swish', d: .6, g: .6, p: .5 }, { t: A.compositing, k: 'tap', g: .5, p: 6 }, { t: A.skipped, k: 'tick', g: .3, p: 4 }, { t: A.smooth, k: 'swish', d: .8, g: .5, p: .8 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  anchors();
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 70px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
