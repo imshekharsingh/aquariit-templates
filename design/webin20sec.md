@@ -152,3 +152,17 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 | 24 Oct | showreel-12-inp (Nº 02) | narrated explainer | "Your site loads fast. So why does it feel slow?": a frozen Add to cart, the 600 ms counter (example), INP as a timeline, Google's 200/500 ms gauge, one long task split so paint can happen; built on Nº 01's system |
 | 24 Oct | showreel-11-springs (Nº 01) | narrated explainer | "Why do some buttons feel expensive?": ease vs spring on a checkout card, the curve drawn live, linear() with MDN-checked support; storyboard → rough cut → full build; 08 and 09 dropped |
 | 23 Oct | showreel-10-zero-js-transition | Steal this | paradox hook in frame 0 (audit lesson), real CSS view transitions both ways, code typed under a live preview, MDN support badges |
+
+## Automation roadmap (owner, 27 Oct 2026: "gradually automate this whole activity")
+Rule: each piece of work moves one step down this list; nothing is built ahead of need. Done items stay listed so the next session knows the state.
+1. Done: post text, posting date and "uploaded" mark in the app, one tab per channel; nightly collect of both accounts; daily audit as a scheduled task.
+2. Done (techreel): preview estimates the one-take voice length and flags overflowing text. Next, with the next webin20sec reel: the same check in
+   scripts/showreel, plus a blank-frame check in the preview, so a render is dispatched only when the preview is clean.
+3. Next: one daily routine per channel that writes the script, renders stills and a GIF to a private review page and stops; the owner approves,
+   the routine renders once. Replaces the old daily reel routine (to-do).
+4. Then: a topic shortlist for @techin20sec from primary sources (vendor newsrooms, security advisories, release notes), made on GitHub
+   each morning: 3 candidates with sources and a viewer-stake hook each; mixed topics, not only security.
+5. Then: the audit writes its signals as data (best posting window, winning hook shape, reel-to-follower pairing per day) and the routines read it,
+   so the plan updates itself from results instead of by hand.
+6. Later, owner's call: posting through Instagram's content publishing API (needs the permission and Meta's review); until then the owner posts.
+

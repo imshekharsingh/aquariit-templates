@@ -30,6 +30,8 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 - Pushes: batch a change into one push; every push to a claude/ branch is merged and deployed by the pipeline. No follow-up pushes for things
   that could have been checked before the first one.
 - Say the check you ran when reporting; if a check is impossible in the session, say so before acting, not after.
+- Automate as we go (owner, 27 Oct 2026): any step done by hand twice becomes a script, check or workflow step in the same change that repeats it.
+  The roadmap is in design/webin20sec.md, "Automation roadmap".
 
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN and INSTAGRAM_TOKEN_2 (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.
