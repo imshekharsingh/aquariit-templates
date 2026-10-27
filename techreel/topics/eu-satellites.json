@@ -41,7 +41,7 @@
      },
      "target": {
       "icon": "cloud",
-      "label": "Satellite airwaves"
+      "label": "Airwaves"
      },
      "target_tint": "blue",
      "hub_cue": "joint"
@@ -78,7 +78,7 @@
     "params": {
      "a": {
       "title": "Ground network: the four",
-      "cue": "ground"
+      "cue": "they'd"
      },
      "b": {
       "title": "Satellites: a partner, later",
