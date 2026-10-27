@@ -1,0 +1,48 @@
+name: Actions usage
+
+# Once a day (about 02:10 IST) counts this month's GitHub Actions minutes the way GitHub bills them, for the meter in the Showreels app,
+# and removes the MP4 of any reel marked uploaded more than 30 days ago (cover and post text stay). About a minute a day.
+# The allowance is the repo variable ACTIONS_MINUTES_ALLOWANCE (default 2000, GitHub Free; set 3000 for Pro).
+on:
+  schedule:
+    - cron: '40 20 * * *'
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: Count only; list what the clean-up would remove without removing it
+        type: boolean
+        default: false
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: actions-usage
+  cancel-in-progress: false
+
+jobs:
+  usage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Count and clean up
+        env:
+          ALLOWANCE: ${{ vars.ACTIONS_MINUTES_ALLOWANCE }}
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+          DRY: ${{ inputs.dry }}
+        run: |
+          gh release download reels --repo "$REPO" -p showreel-usage-actions.json -O prev.json 2>/dev/null || true
+          flags="--cleanup"; [ "$DRY" = "true" ] && flags="$flags --dry"
+          node scripts/actions-usage.mjs $flags | tee -a "$GITHUB_STEP_SUMMARY"
+          gh release upload reels --repo "$REPO" --clobber showreel-usage-actions.json

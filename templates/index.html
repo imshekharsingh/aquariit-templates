@@ -64,6 +64,19 @@
   .tab.tech{--tc:#3ee08f}
   .tab .due{color:var(--tc)}
   .reel{border-top:3px solid var(--accent)}
+  /* GitHub Actions minutes this month (owner, 27 Oct 2026), from the nightly "Actions usage" workflow */
+  .use{margin:4px 0 16px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:16px;font-size:.8rem;color:var(--mute)}
+  .use summary{display:flex;justify-content:space-between;gap:10px;cursor:pointer;list-style:none;color:var(--ink);font-weight:700}
+  .use summary::-webkit-details-marker{display:none}
+  .bar{height:8px;margin:9px 0 6px;border-radius:99px;background:#1d2133;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:99px;background:var(--ok)}
+  .bar.warn i{background:#f2c14e}
+  .bar.over i{background:#ff6b6b}
+  .use ul{margin:8px 0 0;padding:0;list-style:none}
+  .use li{display:flex;justify-content:space-between;padding:3px 0;border-top:1px solid var(--line)}
+  /* posted more than 7 days ago: folded at the bottom (owner, 27 Oct 2026); MP4s go 30 days after upload, cover and post text stay */
+  .old{margin-top:22px}
+  .old summary{cursor:pointer;color:var(--mute);font:700 .85rem system-ui,sans-serif;min-height:44px;display:flex;align-items:center}
 </style>
 </head>
 <body>
@@ -73,6 +86,7 @@
     <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
     <button class="tab tech" role="tab" type="button" data-ch="tech" aria-selected="false"><b>@techin20sec</b><span>Tech news</span></button>
   </div>
+  <details class="use" id="use" hidden><summary><span>GitHub minutes</span><span id="use-n"></span></summary><div class="bar" id="use-bar"><i></i></div><div id="use-note"></div><ul id="use-list"></ul></details>
   <h1 id="title">Showreels</h1>
   <p class="lede" id="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, then mark it uploaded.</p>
   <div id="list"><p class="empty">Loading…</p></div>
@@ -147,7 +161,12 @@
     items.sort(function(x, y){ var ux = !!ticks[x.name], uy = !!ticks[y.name]; if (ux !== uy) return ux ? 1 : -1;
       if (ux) return ticks[x.name] < ticks[y.name] ? 1 : -1; var px = (c[x.name] || {}).postOn || '9999', py = (c[y.name] || {}).postOn || '9999'; return px < py ? -1 : px > py ? 1 : 0; });
     if (!openName[ch] || !items.some(function(s){ return s.name === openName[ch]; })) openName[ch] = items[0].name;
+    var fold = null, weekAgo = Date.now() - 7 * DAY;
     items.forEach(function(s){
+      var into = list;
+      if (ticks[s.name] && Date.parse(ticks[s.name]) < weekAgo && s.name !== openName[ch]) {
+        if (!fold) { fold = el('details', 'old'); fold.appendChild(el('summary', null, 'Posted more than a week ago')); list.appendChild(fold); }
+        into = fold; }
       var meta = c[s.name] || {}, up = ticks[s.name];
       if (s.name !== openName[ch]) {   // collapsed tile: cover, name, date or uploaded mark; tap to open it
         var tl = el('button', 'tile' + (up ? ' posted' : '')); tl.type = 'button'; tl.setAttribute('aria-label', 'Open ' + s.name);
@@ -156,7 +175,7 @@
         tx.appendChild(el('span', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) : when(meta.postOn)));
         tl.appendChild(tx); tl.appendChild(el('span', 'chev', '›'));
         tl.addEventListener('click', function(){ openName[ch] = s.name; render(); var o = list.querySelector('.reel'); if (o) o.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
-        list.appendChild(tl); return;
+        into.appendChild(tl); return;
       }
       var card = el('article', 'reel' + (up ? ' posted' : '')), v = document.createElement('video');
       v.src = s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover;
@@ -184,6 +203,17 @@
     });
   }
   paint();
+  // the minutes meter: used / allowance this month, the pace to month end, and the biggest workflows
+  fetch('/reels/showreel-usage-actions.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(u){
+    if (!u || !u.allowance) return;
+    var pct = Math.round(100 * u.used / u.allowance), bar = document.getElementById('use-bar'), n = u.used.toLocaleString('en-IN'), a = u.allowance.toLocaleString('en-IN');
+    document.getElementById('use-n').textContent = n + ' / ' + a + ' min · ' + pct + '%';
+    bar.firstChild.style.width = Math.min(100, pct) + '%'; bar.className = 'bar' + (u.pace > u.allowance ? ' over' : u.pace > .8 * u.allowance ? ' warn' : '');
+    document.getElementById('use-note').textContent = 'On pace for ' + u.pace.toLocaleString('en-IN') + ' by month end · last 7 days ' + u.last7.toLocaleString('en-IN') +
+      ' · counted ' + new Date(u.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + (u.allowance === 2000 ? ' · limit: GitHub Free' : '');
+    var ul = document.getElementById('use-list');
+    (u.workflows || []).slice(0, 5).forEach(function(w){ var li = el('li'); li.appendChild(el('span', null, w.name)); li.appendChild(el('span', null, w.minutes + ' min · ' + w.runs + ' runs')); ul.appendChild(li); });
+    document.getElementById('use').hidden = false; }).catch(function(){});
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
     // a re-render keeps the file name, so the video and cover URLs carry the release's update time: the phone never plays a cached older cut
     (r[0].showreels || []).forEach(function(s){ var v = '?v=' + encodeURIComponent(s.at || ''); s.video += v; if (s.cover) s.cover += v; });
