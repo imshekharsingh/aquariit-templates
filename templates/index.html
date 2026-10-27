@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Showreels · webin20sec</title>
+<title>Showreels · Studio</title>
 <meta name="theme-color" content="#0b0d14">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
@@ -51,13 +51,30 @@
   .tile .chev{font:700 1.6rem/1 system-ui,sans-serif;color:var(--mute)}
   .tile.posted .th{opacity:.55}
   .empty{margin-top:30px;color:var(--mute)}
+  /* two channels (owner, 27 Oct 2026): one tab each, its own accent, posting window and queue */
+  body[data-ch="web"]{--accent:#7c8cff}
+  body[data-ch="tech"]{--accent:#3ee08f}
+  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0 14px;padding:5px;background:var(--card);border:1px solid var(--line);border-radius:18px}
+  .tab{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:56px;padding:9px 12px;border:0;border-radius:13px;background:transparent;color:var(--mute);text-align:left;cursor:pointer;font:inherit}
+  .tab b{font:800 .95rem system-ui,sans-serif;color:var(--ink);letter-spacing:-.01em}
+  .tab span{font:600 .75rem system-ui,sans-serif}
+  .tab[aria-selected="true"]{background:#1d2133;box-shadow:inset 0 0 0 1.5px var(--tc)}
+  .tab[aria-selected="true"] span{color:var(--tc)}
+  .tab.web{--tc:#7c8cff}
+  .tab.tech{--tc:#3ee08f}
+  .tab .due{color:var(--tc)}
+  .reel{border-top:3px solid var(--accent)}
 </style>
 </head>
 <body>
 <main class="wrap">
-  <div class="top"><span class="brand">webin20sec</span><span class="tr"><button class="pill" id="refresh" type="button">Refresh</button><a class="pill" href="/archive/">Archive</a></span></div>
-  <h1>Showreels</h1>
-  <p class="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post at 14:00 IST, then mark it uploaded.</p>
+  <div class="top"><span class="brand">Studio</span><span class="tr"><button class="pill" id="refresh" type="button">Refresh</button><a class="pill" href="/archive/">Archive</a></span></div>
+  <div class="tabs" role="tablist" aria-label="Channel">
+    <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
+    <button class="tab tech" role="tab" type="button" data-ch="tech" aria-selected="false"><b>@techin20sec</b><span>Tech news</span></button>
+  </div>
+  <h1 id="title">Showreels</h1>
+  <p class="lede" id="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, then mark it uploaded.</p>
   <div id="list"><p class="empty">Loading…</p></div>
 </main>
 <script>
@@ -98,29 +115,47 @@
   var DAY = 864e5, IST = 5.5 * 36e5;
   function istToday(){ return new Date(Date.now() + IST).toISOString().slice(0, 10); }
   function nice(d){ return new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }); }
-  function when(d){ if (!d) return 'Not scheduled'; var diff = Math.round((Date.parse(d) - Date.parse(istToday())) / DAY);
-    return diff === 0 ? 'Post today · 14:00 IST' : diff === 1 ? 'Post tomorrow · 14:00 IST' : diff < 0 ? 'Was due ' + nice(d) + ' · post next' : 'Post ' + nice(d) + ' · 14:00 IST'; }
+  // each channel has its own reels, posting window and look (owner, 27 Oct 2026). A reel belongs to @techin20sec when its name starts with
+  // showreel-tech- or showreel-t<digit> (the tech reels), or when captions.json says "channel": "tech"; everything else is @webin20sec
+  var CH = { web: { name: '@webin20sec', slot: '12:30–13:30 IST' }, tech: { name: '@techin20sec', slot: '15:00–19:00 IST' } };
+  function chOf(s, c){ var m = c[s.name] || {}; return m.channel === 'tech' || m.channel === 'web' ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : 'web'; }
+  function label(s){ return s.name.replace(/^showreel-(tech-)?/, '').replace(/-/g, ' '); }
+  var ch = 'web';
+  try { var saved = localStorage.getItem('studio-ch'); if (saved === 'web' || saved === 'tech') ch = saved; } catch (e) {}
+  if (location.hash === '#tech' || location.hash === '#web') ch = location.hash.slice(1);
+  function when(d){ if (!d) return 'Not scheduled'; var diff = Math.round((Date.parse(d) - Date.parse(istToday())) / DAY), t = CH[ch].slot;
+    return diff === 0 ? 'Post today · ' + t : diff === 1 ? 'Post tomorrow · ' + t : diff < 0 ? 'Was due ' + nice(d) + ' · post next' : 'Post ' + nice(d) + ' · ' + t; }
   var ticks = {}, trackOk = true;
   function load(){ return fetch('/api/uploaded', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ ticks = j.ids || {}; }).catch(function(){ trackOk = false; }); }
   function mark(name, on){ return fetch('/api/uploaded/' + encodeURIComponent(name), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: on }) })
     .then(function(r){ if (!r.ok) throw 0; if (on) ticks[name] = new Date().toISOString(); else delete ticks[name]; }); }
-  var DATA = null, openName = null;
+  var DATA = null, openName = { web: null, tech: null }, tabs = document.querySelectorAll('.tab');
+  Array.prototype.forEach.call(tabs, function(t){ t.addEventListener('click', function(){ ch = t.getAttribute('data-ch'); try { localStorage.setItem('studio-ch', ch); } catch (e) {} if (DATA) render(); else paint(); }); });
+  function paint(counts){
+    document.body.setAttribute('data-ch', ch); document.getElementById('title').textContent = CH[ch].name;
+    Array.prototype.forEach.call(tabs, function(t){ var k = t.getAttribute('data-ch'), n = counts && counts[k], sp = t.querySelector('span');
+      t.setAttribute('aria-selected', k === ch ? 'true' : 'false');
+      sp.textContent = (k === 'web' ? 'Web fixes' : 'Tech news') + (n ? ' · ' + n + ' to post' : ''); sp.className = n ? 'due' : ''; });
+  }
   function render(){
-    var d = DATA.d, c = DATA.c, items = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }); list.textContent = '';
-    if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No showreels yet.')); return; }
+    var d = DATA.d, c = DATA.c, all = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }), counts = { web: 0, tech: 0 };
+    all.forEach(function(s){ if (!ticks[s.name]) counts[chOf(s, c)]++; });
+    paint(counts);
+    var items = all.filter(function(s){ return chOf(s, c) === ch; }); list.textContent = '';
+    if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No reels for ' + CH[ch].name + ' yet.')); return; }
     // to post first (by date), then the uploaded ones (newest upload first)
     items.sort(function(x, y){ var ux = !!ticks[x.name], uy = !!ticks[y.name]; if (ux !== uy) return ux ? 1 : -1;
       if (ux) return ticks[x.name] < ticks[y.name] ? 1 : -1; var px = (c[x.name] || {}).postOn || '9999', py = (c[y.name] || {}).postOn || '9999'; return px < py ? -1 : px > py ? 1 : 0; });
-    if (!openName || !items.some(function(s){ return s.name === openName; })) openName = items[0].name;
+    if (!openName[ch] || !items.some(function(s){ return s.name === openName[ch]; })) openName[ch] = items[0].name;
     items.forEach(function(s){
       var meta = c[s.name] || {}, up = ticks[s.name];
-      if (s.name !== openName) {   // collapsed tile: cover, name, date or uploaded mark; tap to open it
+      if (s.name !== openName[ch]) {   // collapsed tile: cover, name, date or uploaded mark; tap to open it
         var tl = el('button', 'tile' + (up ? ' posted' : '')); tl.type = 'button'; tl.setAttribute('aria-label', 'Open ' + s.name);
         var th = el('span', 'th'); if (s.cover) th.style.backgroundImage = 'url(' + s.cover + ')'; tl.appendChild(th);
-        var tx = el('span', 'tx'); tx.appendChild(el('span', 'name', s.name.replace(/^showreel-/, 'Showreel ')));
+        var tx = el('span', 'tx'); tx.appendChild(el('span', 'name', label(s)));
         tx.appendChild(el('span', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) : when(meta.postOn)));
         tl.appendChild(tx); tl.appendChild(el('span', 'chev', '›'));
-        tl.addEventListener('click', function(){ openName = s.name; render(); var o = list.querySelector('.reel'); if (o) o.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+        tl.addEventListener('click', function(){ openName[ch] = s.name; render(); var o = list.querySelector('.reel'); if (o) o.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
         list.appendChild(tl); return;
       }
       var card = el('article', 'reel' + (up ? ' posted' : '')), v = document.createElement('video');
@@ -128,7 +163,7 @@
       v.setAttribute('aria-label', 'Showreel ' + s.name);
       var b = el('div', 'body');
       b.appendChild(el('div', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) + (meta.postOn ? ' · planned ' + nice(meta.postOn) : '') : when(meta.postOn)));
-      b.appendChild(el('div', 'name', s.name.replace(/^showreel-/, 'Showreel ')));
+      b.appendChild(el('div', 'name', label(s)));
       b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size)));
       var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), tick = el('button', 'btn g tick' + (up ? ' on' : ''), up ? 'Uploaded ✓' : 'Mark uploaded');
       copy.type = 'button'; copy.disabled = true; dl.type = 'button'; tick.type = 'button'; tick.disabled = !trackOk; if (!trackOk) tick.title = 'Upload tracking is unavailable right now';
@@ -148,6 +183,7 @@
       b.appendChild(row); card.appendChild(v); card.appendChild(b); list.appendChild(card);
     });
   }
+  paint();
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
     // a re-render keeps the file name, so the video and cover URLs carry the release's update time: the phone never plays a cached older cut
     (r[0].showreels || []).forEach(function(s){ var v = '?v=' + encodeURIComponent(s.at || ''); s.video += v; if (s.cover) s.cover += v; });
