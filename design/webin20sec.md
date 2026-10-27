@@ -14,7 +14,8 @@ The owner's brief: design and define the content, keep it relevant, push the pre
 - Nº 05 (stutter) held less (8.9 s vs 11.3 s, saves 1.8% vs 3.0%): the fix is subtle on a phone. Next reels: before/after side by side by ~8 s,
   the line of code on screen at least 3 s, fixes you can see at a glance (layout, spacing, motion) over invisible ones (performance).
 - Reach does not turn into followers yet (about 9 follows from ~6,000 reach). Profile (owner, 27 Oct): bio "One Web fix a day, in 20 seconds. Save it, ship it.",
-  Nº 04 and Nº 03 pinned. The collector now reads follows and profile visits per reel, so the audit can say which reel brings followers.
+  Nº 04 and Nº 03 pinned. Instagram does not give follows or profile visits per reel (tried 27 Oct); the collector reads last-day reach split by followers vs
+  non-followers instead (27 Oct: 6,020 reach, 99.6% non-followers), and the audit pairs each day's follower change with that day's reel.
 - Series rotation: the winning format leads; a "Six ways" reel told the same way (question hook, narrated) is the contrast every few days.
 
 ## Goal
