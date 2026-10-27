@@ -1,0 +1,166 @@
+{
+ "slug": "eu-satellites",
+ "topic": "Satellite phones",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.95,
+ "max_speed": 1.0,
+ "dur": 21.5,
+ "max_end": 20.8,
+ "say": {
+  "Telefónica": "Telefonica",
+  "Deutsche": "[Deutsche](/dˈɔɪʧə/)"
+ },
+ "hook": [
+  "Europe wants",
+  "its own",
+  "Starlink rival"
+ ],
+ "lines": [
+  {
+   "text": "Europe's biggest phone networks want their own answer to Starlink."
+  },
+  {
+   "text": "Deutsche Telekom, Orange, Telefónica and Vodafone plan a joint bid for satellite airwaves.",
+   "scene": {
+    "label": "THE NEWS",
+    "tint": "blue",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "Telekom",
+      "Orange",
+      "Telefónica",
+      "Vodafone"
+     ],
+     "source_tint": "purple",
+     "hub": {
+      "label": "JOINT BID",
+      "tag": "19 OCT",
+      "icon": "doc"
+     },
+     "target": {
+      "icon": "cloud",
+      "label": "Satellite airwaves"
+     },
+     "target_tint": "blue",
+     "hub_cue": "joint"
+    }
+   }
+  },
+  {
+   "text": "The goal: your phone reaches satellites where there's no tower.",
+   "scene": {
+    "label": "THE GOAL",
+    "tint": "green",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Your phone",
+      "sub": "no tower in range",
+      "icon": "user"
+     },
+     "inner": {
+      "title": "Satellite link",
+      "sub": "direct to device",
+      "icon": "cloud"
+     },
+     "inner_cue": "satellites"
+    }
+   }
+  },
+  {
+   "text": "They'd build the ground network; a satellite partner comes later.",
+   "scene": {
+    "label": "WHO BUILDS WHAT",
+    "tint": "amber",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Ground network: the four",
+      "cue": "ground"
+     },
+     "b": {
+      "title": "Satellites: a partner, later",
+      "ticks": [],
+      "cue": "partner",
+      "icon": "cloud",
+      "meter": false
+     }
+    }
+   }
+  },
+  {
+   "text": "And any mobile network could rent access.",
+   "scene": {
+    "label": "OPEN TO ALL",
+    "tint": "green",
+    "kind": "portal",
+    "params": {
+     "icon": "cloud",
+     "pills": [
+      "Open",
+      "Equal terms"
+     ],
+     "guest": "user",
+     "guest_tint": "green",
+     "n": 3,
+     "open": "any"
+    }
+   }
+  },
+  {
+   "text": "It's early, so watch who they pick.",
+   "scene": {
+    "label": "WHAT'S NEXT",
+    "tint": "blue",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Plan signed",
+       "cue": "early"
+      },
+      {
+       "text": "Satellite partner: next",
+       "cue": "pick"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "Europe wants its own Starlink rival",
+  "caption": "Europe wants its own Starlink rival. 🛰️\n\nOn 19 Oct, Deutsche Telekom, Orange, Telefónica and Vodafone signed a letter of intent to explore a joint bid for Europe's mobile satellite spectrum. The idea is direct-to-device: your normal phone connects to satellites where there's no tower. The four would build the ground network and coordination in Europe, while a satellite partner, not chosen yet, would run the constellation. Any mobile operator could buy access on open, equal terms. It's early: a plan to bid, not satellites in orbit.\nSend this to someone who's always out of signal.",
+  "keywords": [
+   "Starlink alternative Europe",
+   "direct to device satellite",
+   "satellite phone signal",
+   "Vodafone Orange Telefonica Deutsche Telekom",
+   "European satellite network",
+   "tech news"
+  ],
+  "hashtags": [
+   "#starlink",
+   "#satellite",
+   "#telecom",
+   "#5g",
+   "#technews"
+  ],
+  "sources": [
+   {
+    "url": "https://www.vodafone.com/news/newsroom/technology/four-european-operators-sign-letter-of-intent-to-explore-a-joint-bid-for-mobile-satellite-services",
+    "note": "joint press release, 19 Oct 2026: letter of intent to explore a joint bid for Mobile Satellite Services spectrum; open, non-discriminatory wholesale direct-to-device access; ground infrastructure in Europe, satellite partner to be selected"
+   },
+   {
+    "url": "https://www.telekom.com/en/newsroom/latest-updates/news/2026/10/deutsche-telekom-orange-telefonica-and-vodafone-have-signed-a-letter-of-intent",
+    "note": "same release, Deutsche Telekom newsroom"
+   },
+   {
+    "url": "https://www.lightreading.com/satellite/europe-s-big-telcos-explore-joint-satellite-spectrum-bid-to-rival-starlink",
+    "note": "news coverage: Starlink rival framing"
+   }
+  ]
+ }
+}
