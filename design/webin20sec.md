@@ -156,6 +156,7 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 ## Automation roadmap (owner, 27 Oct 2026: "gradually automate this whole activity")
 Rule: each piece of work moves one step down this list; nothing is built ahead of need. Done items stay listed so the next session knows the state.
 1. Done: post text, posting date and "uploaded" mark in the app, one tab per channel; nightly collect of both accounts; daily audit as a scheduled task.
+   Done 27 Oct: GitHub minutes meter in the app (before the repo goes private), posted reels fold after 7 days, MP4s removed 30 days after upload.
 2. Done (techreel): preview estimates the one-take voice length and flags overflowing text. Next, with the next webin20sec reel: the same check in
    scripts/showreel, plus a blank-frame check in the preview, so a render is dispatched only when the preview is clean.
 3. Next: one daily routine per channel that writes the script, renders stills and a GIF to a private review page and stops; the owner approves,

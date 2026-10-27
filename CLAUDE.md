@@ -17,6 +17,9 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   Keywords and hashtags are chosen for reach (what people search for this kind of reel, most specific first, niche tags only).
 - Reels end on the reel itself: no brand card, sign-off or call to action in the video (owner, 21 Oct). Captions may invite a save or a send.
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
+- Archiving (owner, 27 Oct 2026): reels marked uploaded more than 7 days ago fold into "Posted more than a week ago" in the app; 30 days after
+  upload the nightly "Actions usage" workflow removes the reel's MP4 from the releases (cover and post text stay). Replaced code moves to attic/
+  in the change that replaces it. The app's GitHub minutes meter comes from the same workflow; set the repo variable ACTIONS_MINUTES_ALLOWANCE for Pro (3000).
 - `attic/` holds the retired tooling (films, recordings, kits, the daily-template routine). Nothing in it runs or deploys; don't build on it.
 
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
