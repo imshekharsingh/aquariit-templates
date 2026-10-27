@@ -8,6 +8,15 @@ The owner's brief: design and define the content, keep it relevant, push the pre
 - @webin20sec: 11-48 reach on most reels; one outlier, "6 motion styles" (18 Oct 14:20 IST): 277 reach, 8 saves. Posts at 22:00-23:30 IST did worst.
 - Both: average watch 4-6 s. The first second decides the reel; the rest is for the few who stay (and for saves).
 
+## Where we stand (audits 26-27 Oct 2026)
+- Goal 1 and the 1,000-reach milestone are met: Nº 04 "Why does your list feel so flat?" 4,062 reach and 151 saves at 29 h; Nº 03 1,141. Median 147 vs @techin20sec 117.
+- What works: a "Why does your X...?" question over a flaw you can see, then one line to copy. Instagram keeps pushing these a day later.
+- Nº 05 (stutter) held less (8.9 s vs 11.3 s, saves 1.8% vs 3.0%): the fix is subtle on a phone. Next reels: before/after side by side by ~8 s,
+  the line of code on screen at least 3 s, fixes you can see at a glance (layout, spacing, motion) over invisible ones (performance).
+- Reach does not turn into followers yet (about 9 follows from ~6,000 reach). Profile (owner, 27 Oct): bio "One Web fix a day, in 20 seconds. Save it, ship it.",
+  Nº 04 and Nº 03 pinned. The collector now reads follows and profile visits per reel, so the audit can say which reel brings followers.
+- Series rotation: the winning format leads; a "Six ways" reel told the same way (question hook, narrated) is the contrast every few days.
+
 ## Goal
 1. Beat @techin20sec's median reach per reel (about 110) within two weeks.
 2. Then the milestone: 100 followers or one reel at 1,000 reach.
