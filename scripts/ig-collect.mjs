@@ -69,7 +69,8 @@ const items = (list.json.data || []).filter((m) => m && m.id);
 say(`Posts read: ${items.length}`);
 
 // 3. per-post insights. Metric names differ by media type and API version, so the first post is probed metric by metric and the supported set is reused.
-const CANDIDATES = { REELS: ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions', 'ig_reels_avg_watch_time', 'ig_reels_video_view_total_time'], OTHER: ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions'] };
+// follows / profile_visits / profile_activity (owner, 27 Oct 2026: which reel brings followers); unsupported ones are dropped by the probe and listed in the log
+const CANDIDATES = { REELS: ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions', 'ig_reels_avg_watch_time', 'ig_reels_video_view_total_time', 'follows', 'profile_visits', 'profile_activity'], OTHER: ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions', 'follows', 'profile_visits', 'profile_activity'] };
 const supported = {}, unsupported = {}, firstError = {};
 async function insightsFor(m) {
   const kind = m.media_product_type === 'REELS' ? 'REELS' : 'OTHER', want = CANDIDATES[kind], got = {};
@@ -98,7 +99,8 @@ for (const m of items) {
   media.push({
     ig_id: m.id, template_id: templateFor(m.caption), permalink: m.permalink || null, posted_at: m.timestamp || null, caption: m.caption || null, kind: m.media_product_type || m.media_type || null,
     metrics: { views: x.views ?? null, reach: x.reach ?? null, likes: x.likes ?? m.like_count ?? null, comments: x.comments ?? m.comments_count ?? null, saves: x.saved ?? null, shares: x.shares ?? null,
-      watch_avg_ms: x.ig_reels_avg_watch_time ?? null, watch_total_ms: x.ig_reels_video_view_total_time ?? null },
+      watch_avg_ms: x.ig_reels_avg_watch_time ?? null, watch_total_ms: x.ig_reels_video_view_total_time ?? null,
+      follows: x.follows ?? null, profile_visits: x.profile_visits ?? null, profile_activity: x.profile_activity ?? null },
   });
 }
 for (const k of Object.keys(supported)) say(`Insight metrics (${k}): ${supported[k].join(', ') || 'none'}${unsupported[k] && unsupported[k].length ? ` | not available: ${unsupported[k].map((n) => `${n} [${firstError[n]}]`).join('; ')}` : ''}`);
@@ -107,17 +109,34 @@ say(`Matched to a template: ${matched} of ${media.length}`);
 // a compact per-reel table (numbers only, no secrets): this is what the advisor reads to give advice from real results
 {
   const n = (v) => (v == null ? '-' : String(v)), pc = (a, b) => (b > 0 && a != null ? (100 * a / b).toFixed(1) + '%' : '-');
-  say('\nReels (newest first): date | template | views | reach | shares | saves | likes | comments | avg watch s | share% | save%');
+  say('\nReels (newest first): date | template | views | reach | shares | saves | likes | comments | avg watch s | share% | save% | follows | profile visits');
   for (const m of media.slice().sort((a, b) => String(b.posted_at).localeCompare(String(a.posted_at)))) {
-    const x = m.metrics; say([String(m.posted_at || '').slice(0, 10), m.template_id || 'unmatched', n(x.views), n(x.reach), n(x.shares), n(x.saves), n(x.likes), n(x.comments), x.watch_avg_ms != null ? (x.watch_avg_ms / 1000).toFixed(1) : '-', pc(x.shares, x.reach), pc(x.saves, x.reach)].join(' | '));
+    const x = m.metrics; say([String(m.posted_at || '').slice(0, 10), m.template_id || 'unmatched', n(x.views), n(x.reach), n(x.shares), n(x.saves), n(x.likes), n(x.comments), x.watch_avg_ms != null ? (x.watch_avg_ms / 1000).toFixed(1) : '-', pc(x.shares, x.reach), pc(x.saves, x.reach), n(x.follows), n(x.profile_visits)].join(' | '));
   }
-  say('\nPosts (newest first): posted IST | reach | link | caption (first line)');
+  say('\nPosts (newest first): posted IST | reach | follows | profile visits | link | caption (first line)');
   for (const m of media.slice().sort((a, b) => String(b.posted_at).localeCompare(String(a.posted_at)))) {
     const ist = m.posted_at ? new Date(new Date(m.posted_at).getTime() + 5.5 * 3600e3).toISOString().slice(0, 16).replace('T', ' ') : '-';
-    say([ist, n(m.metrics.reach), m.permalink || '-', String(m.caption || '').split('\n')[0].slice(0, 110)].join(' | '));
+    say([ist, n(m.metrics.reach), n(m.metrics.follows), n(m.metrics.profile_visits), m.permalink || '-', String(m.caption || '').split('\n')[0].slice(0, 110)].join(' | '));
   }
   const tot = (k) => media.reduce((a, m) => a + (m.metrics[k] || 0), 0);
   say(`Totals: ${tot('views')} views, ${tot('reach')} reach (sum), ${tot('shares')} shares, ${tot('saves')} saves, ${tot('likes')} likes, ${tot('comments')} comments\n`);
+}
+// account-level, last day (owner, 27 Oct 2026): how much reach comes from non-followers, follows vs unfollows, profile link taps. Each metric is asked on its own,
+// so one Instagram does not offer just shows as unavailable. Where viewers come from (feed, Explore, Reels tab) is not offered by the API at all.
+{
+  const asks = [['reach', 'follow_type'], ['follows_and_unfollows', 'follow_type'], ['profile_links_taps', null], ['views', 'follow_type']];
+  const rows = [];
+  for (const [metric, breakdown] of asks) {
+    const q = { metric, period: 'day', metric_type: 'total_value' }; if (breakdown) q.breakdown = breakdown;
+    let r = await ig('/me/insights', q);
+    if (!r.ok && breakdown) { delete q.breakdown; r = await ig('/me/insights', q); }
+    if (!r.ok) { rows.push(`${metric}: not available [${errText(r.error).slice(0, 120)}]`); continue; }
+    const row = (r.json.data || [])[0] || {}, tv = row.total_value || {};
+    const parts = ((tv.breakdowns || [])[0] || {}).results || [];
+    const split = parts.map((p) => `${(p.dimension_values || []).join('/') || '?'} ${p.value}`).join(', ');
+    rows.push(`${metric}: ${tv.value ?? '-'}${split ? ` (${split})` : ''}`);
+  }
+  say('Account, last day: ' + rows.join(' | '));
 }
 if (media.length && !Object.values(supported).some((s) => s.length)) say('⚠ No insight metric could be read. The token probably lacks the “instagram_business_manage_insights” permission (or Instagram needs App Review for it). Followers and posts were still collected.');
 
