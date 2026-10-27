@@ -6,7 +6,7 @@
  "speed": 0.95,
  "max_speed": 1.0,
  "dur": 21.5,
- "max_end": 20.8,
+ "max_end": 21.0,
  "say": {
   "Telefónica": "Telefonica",
   "Deutsche": "[Deutsche](/dˈɔɪʧə/)"
@@ -18,7 +18,7 @@
  ],
  "lines": [
   {
-   "text": "Europe's biggest phone networks want their own answer to Starlink."
+   "text": "Europe's phone giants want their own Starlink rival."
   },
   {
    "text": "Deutsche Telekom, Orange, Telefónica and Vodafone plan a joint bid for satellite airwaves.",
@@ -70,7 +70,7 @@
    }
   },
   {
-   "text": "They'd build the ground network; a satellite partner comes later.",
+   "text": "They'd build the ground network; a partner flies the satellites.",
    "scene": {
     "label": "WHO BUILDS WHAT",
     "tint": "amber",
@@ -91,7 +91,7 @@
    }
   },
   {
-   "text": "And any mobile network could rent access.",
+   "text": "Any mobile network could rent access.",
    "scene": {
     "label": "OPEN TO ALL",
     "tint": "green",
@@ -110,7 +110,7 @@
    }
   },
   {
-   "text": "It's early, so watch who they pick.",
+   "text": "It's early: watch who they pick.",
    "scene": {
     "label": "WHAT'S NEXT",
     "tint": "blue",
