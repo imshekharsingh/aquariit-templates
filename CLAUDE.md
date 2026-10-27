@@ -19,6 +19,18 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
 - `attic/` holds the retired tooling (films, recordings, kits, the daily-template routine). Nothing in it runs or deploys; don't build on it.
 
+## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
+Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
+- Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel)
+  and clear all of it: the PREFLIGHT voice line must say "fits", no "text wider than its box", and stills at every beat checked for empty frames.
+  Owner review of the stills comes before the render (as in "Review" above), for tech reels too. Re-render only for a real defect in the output.
+- Workflows: read the workflow file first (which ref it checks out, its inputs, what it uploads). Most check out main, so a branch must be merged
+  before a run can test it; never dispatch to test code that is not on the ref the workflow runs.
+- External APIs and features: check the documentation, or the result of an earlier run, that the thing exists before building on it.
+- Pushes: batch a change into one push; every push to a claude/ branch is merged and deployed by the pipeline. No follow-up pushes for things
+  that could have been checked before the first one.
+- Say the check you ran when reporting; if a check is impossible in the session, say so before acting, not after.
+
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN and INSTAGRAM_TOKEN_2 (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.
 - The "Instagram collect" workflow reads both accounts nightly; the daily audit (scheduled task, 08:52 IST) writes the Results log.
