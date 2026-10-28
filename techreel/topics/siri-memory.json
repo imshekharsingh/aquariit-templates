@@ -1,0 +1,161 @@
+{
+ "slug": "siri-memory",
+ "topic": "Your iPhone",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.95,
+ "max_speed": 1.0,
+ "dur": 21,
+ "max_end": 20.4,
+ "say": {},
+ "hook": [
+  "Siri now",
+  "remembers",
+  "your chats"
+ ],
+ "lines": [
+  {
+   "text": "Siri can now remember your past chats."
+  },
+  {
+   "text": "Ask about something it told you before, like last week's restaurant picks.",
+   "scene": {
+    "label": "THE NEWS",
+    "tint": "blue",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "You",
+      "Last week"
+     ],
+     "source_tint": "purple",
+     "hub": {
+      "label": "SIRI",
+      "tag": "iOS 27.2",
+      "icon": "chat"
+     },
+     "target": {
+      "icon": "doc",
+      "label": "Old answers"
+     },
+     "target_tint": "blue",
+     "hub_cue": "ask"
+    }
+   }
+  },
+  {
+   "text": "It also reads your Messages photos and Safari history.",
+   "scene": {
+    "label": "WHAT IT READS",
+    "tint": "amber",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Siri",
+      "sub": "reads more of your phone",
+      "icon": "chat"
+     },
+     "inner": {
+      "title": "Messages photos",
+      "sub": "and Safari history",
+      "icon": "eye"
+     },
+     "inner_cue": "photos"
+    }
+   }
+  },
+  {
+   "text": "Don't want an app in there? Add it to Excluded Apps.",
+   "scene": {
+    "label": "YOUR CONTROL",
+    "tint": "green",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Included: Siri can use it",
+      "cue": "want"
+     },
+     "b": {
+      "title": "Excluded Apps: kept out",
+      "ticks": [],
+      "cue": "excluded",
+      "icon": "lock",
+      "meter": false
+     }
+    }
+   }
+  },
+  {
+   "text": "Every app starts out included.",
+   "scene": {
+    "label": "BY DEFAULT",
+    "tint": "red",
+    "kind": "portal",
+    "params": {
+     "icon": "lock",
+     "pills": [
+      "All apps",
+      "Included"
+     ],
+     "guest": "doc",
+     "guest_tint": "amber",
+     "n": 3,
+     "open": "every"
+    }
+   }
+  },
+  {
+   "text": "Update, then pick what Siri can see.",
+   "scene": {
+    "label": "DO THIS NOW",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Update to iOS 27.2",
+       "cue": "update"
+      },
+      {
+       "text": "Siri › Excluded Apps",
+       "cue": "pick"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "Siri now remembers your chats",
+  "caption": "Siri now remembers your past chats. 🧠\n\nWith iOS 27.2 (out 26 Oct), Siri AI can recall earlier conversations, so you can ask about something it told you before, like last week's restaurant suggestions. It also draws on more of your phone, including photos attached in Messages and your Safari history. Every app is included by default; to keep one out, go to Settings › Siri › Excluded Apps. Siri AI is in beta and not available in the EU at launch.\nSend this to someone who uses Siri every day.",
+  "keywords": [
+   "iOS 27.2",
+   "Siri memory",
+   "Siri AI update",
+   "iPhone privacy settings",
+   "Siri excluded apps",
+   "iPhone tips"
+  ],
+  "hashtags": [
+   "#ios27",
+   "#siri",
+   "#iphonetips",
+   "#privacy",
+   "#technews"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/149076",
+    "note": "Apple, About iOS 27 Updates: iOS 27.2, Siri AI recalls past conversations (example: restaurants it suggested last week), more personal sources incl. Messages photos and Safari history"
+   },
+   {
+    "url": "https://support.apple.com/guide/iphone/change-siri-settings-iphc28624b81abc/ios",
+    "note": "Apple iPhone guide: Settings > Siri > Excluded Apps; all apps included by default"
+   },
+   {
+    "url": "https://9to5mac.com/2026/10/26/apple-releases-ios-27-2-heres-whats-new/",
+    "note": "release date 26 Oct 2026"
+   }
+  ]
+ }
+}

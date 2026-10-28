@@ -1,0 +1,50 @@
+{
+ "name": "showreel-16-balance",
+ "seek": "scripts/explainer/balance.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.0,
+ "voice": {
+  "text": "Why does your headline break so badly? One word hangs alone on the last line. That's an orphan, and it looks like a mistake. The fix: text-wrap balance. The browser evens out the lines for you. One line of CSS, on every heading. Works in every major browser, on short headings.",
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "Why does your headline break so badly? ✍️\n\nWhen a heading wraps, the browser fills each line as far as it can, so one word often ends up alone on the last line. Add text-wrap: balance and the browser evens out the line lengths instead. One line of CSS on your h1, h2 and h3; works in every major browser, for headings up to six lines in Chromium (ten in Firefox).\nSave it for your next landing page, or send it to whoever builds your UI.",
+ "keywords": [
+  "text-wrap balance",
+  "CSS text-wrap",
+  "balanced headings CSS",
+  "headline orphan word",
+  "CSS typography tips",
+  "web typography"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#webtypography",
+  "#css",
+  "#frontenddev",
+  "#webdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-wrap",
+   "note": "MDN text-wrap: balance evens line lengths; limited to six lines or less in Chromium, ten or less in Firefox"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/properties/text-wrap-style.json",
+   "note": "browser support: balance in Chrome, Firefox and Safari"
+  }
+ ],
+ "tip": {
+  "title": "Why does your headline break so badly?",
+  "why": "When a heading wraps, the browser fills each line as far as it can, so one word can end up alone on the last line. text-wrap: balance makes the browser even out the line lengths instead. It works on headings up to six lines in Chromium (ten in Firefox), so use it on titles, not paragraphs.",
+  "code": "h1, h2, h3 {\n  text-wrap: balance;\n}",
+  "demo": "balance",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-wrap",
+   "label": "MDN, text-wrap"
+  }
+ }
+}

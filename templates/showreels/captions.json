@@ -234,5 +234,24 @@
    "#frontenddev",
    "#uianimation"
   ]
+ },
+ "showreel-16-balance": {
+  "postOn": "2026-10-28",
+  "caption": "Why does your headline break so badly? ✍️\n\nWhen a heading wraps, the browser fills each line as far as it can, so one word often ends up alone on the last line. Add text-wrap: balance and the browser evens out the line lengths instead. One line of CSS on your h1, h2 and h3; works in every major browser, for headings up to six lines in Chromium (ten in Firefox).\nSave it for your next landing page, or send it to whoever builds your UI.",
+  "keywords": [
+   "text-wrap balance",
+   "CSS text-wrap",
+   "balanced headings CSS",
+   "headline orphan word",
+   "CSS typography tips",
+   "web typography"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#webtypography",
+   "#css",
+   "#frontenddev",
+   "#webdesign"
+  ]
  }
 }

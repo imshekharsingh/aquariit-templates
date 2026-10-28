@@ -27,7 +27,7 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
 Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
-- Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel)
+- Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel; `node scripts/showreel/preflight.mjs <config>` plus stills for showreels)
   and clear all of it: the PREFLIGHT voice line must say "fits", no "text wider than its box", and stills at every beat checked for empty frames.
   Owner review of the stills comes before the render (as in "Review" above), for tech reels too. Re-render only for a real defect in the output.
 - Workflows: read the workflow file first (which ref it checks out, its inputs, what it uploads). Most check out main, so a branch must be merged
