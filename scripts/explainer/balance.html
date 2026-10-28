@@ -115,8 +115,11 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var L = $('ln'); for (var i = 0; i < 3; i++) { var b = document.createElement('div'); b.className = 'bar'; b.style.top = (20 + i * 26) + 'px'; b.style.width = '420px'; b.innerHTML = '<b></b>'; L.appendChild(b); }
   }
   // k 0 → 1 moves every word from the wrapped to the balanced layout, the first word a little ahead of the last
-  function place(h, k, red){ h.spans.forEach(function(s, i){ var a = h.A[i], b = h.B[i], kk = io(cl(k * 1.4 - i * .4 / h.spans.length));
-      s.style.transform = 'translate(' + mix(a.x, b.x, kk) + 'px,' + mix(a.y, b.y, kk) + 'px)';
+  // a word that keeps its place stays put; a word that changes place fades out where it was and fades in where it goes (never sliding
+  // across other words: owner, 28 Oct, on the review stills), the first words a little ahead of the last
+  function place(h, k, red){ h.spans.forEach(function(s, i){ var a = h.A[i], b = h.B[i], kk = cl(k * 1.4 - i * .4 / h.spans.length), moves = a.x !== b.x || a.y !== b.y;
+      var o = !moves ? 1 : kk < .5 ? 1 - out(kk * 2) : out(kk * 2 - 1), p = !moves || kk < .5 ? a : b, dy = !moves ? 0 : kk < .5 ? -8 * out(kk * 2) : 8 * (1 - out(kk * 2 - 1));
+      s.style.transform = 'translate(' + p.x + 'px,' + (p.y + dy) + 'px)'; s.style.opacity = o;
       s.style.color = red && i === h.spans.length - 1 ? 'var(--red)' : 'var(--paper)'; }); }
   var CODE = '<span class="dim">h1, h2, h3 {</span>\n  <b>text-wrap: balance;</b>\n<span class="dim">}</span>';
   var CODE_TXT = CODE.replace(/<[^>]+>/g, '');
@@ -157,7 +160,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var dIn = out(P(t, A.orphan - .2, A.orphan + .1)), m3 = io(P(t, A.one2 - .3, A.one2 + .1));
     var dTop = 510 + (396 - 510) * shrink, dH = 100 + 30 * shrink - 22 * m3, dk = $('deck');
     dk.style.top = dTop + 'px'; dk.style.height = dH + 'px'; dk.style.opacity = dIn * (1 - ex); dk.style.transform = 'translateY(' + ((1 - dIn) * 30) + 'px)';
-    var lnA = Math.max(win(t, A.orphan - .15, A.fix - .15, .15), win(t, A.browser - .1, A.one2 - .25, .15));
+    var lnA = Math.max(win(t, A.orphan - .15, A.fix + .15, .15), win(t, A.browser - .1, A.one2 - .25, .15));
     $('ln').style.opacity = lnA;
     var bk = io(P(t, A.evens - .05, A.evens + .9));
     [].forEach.call($('ln').querySelectorAll('.bar'), function(b, i){ var w = mix(H.LA[i] || 0, H.LB[i] || 0, bk) / H.w, short = i === 2 && bk < .5;
@@ -166,7 +169,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var lens = function(L){ return L.map(function(v){ return pct(v, H.w) + '%'; }).join(' · '); };
     dl.textContent = t < A.fix - .2 ? 'LINE LENGTHS ' + lens(H.LA) : t < A.browser - .2 ? 'ONE RULE' : t < A.one2 - .2 ? 'LINE LENGTHS ' + lens(bk > .5 ? H.LB : H.LA) : t < A.works - .1 ? 'h1 · h2 · h3' : 'EVERY MAJOR BROWSER · UP TO 6 LINES';
     dl.style.color = t < A.fix - .2 ? '#ff4d3d' : '#ffb547'; dl.style.opacity = dIn * (1 - ex);
-    var cdA = win(t, A.fix + .05, A.browser - .25, .2);
+    var cdA = win(t, A.fix + .15, A.browser - .25, .15);
     $('cd').style.opacity = cdA; $('cd').innerHTML = typed(Math.floor(CODE_TXT.length * P(t, A.fix + .1, A.balance + .5)));
     $('ol').style.opacity = win(t, A.one2 - .1, DUR, .15);
     var lit = P(t, A.css - .05, A.css + .15); $('ol').lastElementChild.style.background = 'rgba(255,181,71,' + (.18 * lit) + ')';
