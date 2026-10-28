@@ -41,8 +41,10 @@ const walk = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); if
 walk(T);
 for (const p of pages) {
   const id = p.slice(root.length + 1), html = readFileSync(p, 'utf8');
-  for (const [u, host] of externalHosts(html)) if (!ALLOWED_ORIGINS.includes(host)) err(`${id}: external URL not allowed: ${u}`);
-  if (!/rel=["']manifest["']/i.test(html) && !/404\.html$/.test(p)) err(`${id}: missing <link rel="manifest" href="/manifest.webmanifest">`);
+  // the public tips page (owner, 27 Oct 2026) may LINK out (sources, the reels: <a href> only, never loaded); it is not part of the installable app
+  const tips = /templates[\\/]tips[\\/]/.test(p), links = tips ? new Set([...html.matchAll(/<a\b[^>]*\bhref=["']([^"']+)["']/gi)].map((m) => m[1])) : new Set();
+  for (const [u, host] of externalHosts(html)) if (!ALLOWED_ORIGINS.includes(host) && !links.has(u)) err(`${id}: external URL not allowed: ${u}`);
+  if (!/rel=["']manifest["']/i.test(html) && !/404\.html$/.test(p) && !tips) err(`${id}: missing <link rel="manifest" href="/manifest.webmanifest">`);
   if (statSync(p).size > 500 * 1024) err(`${id}: larger than 500 KB`);
 }
 

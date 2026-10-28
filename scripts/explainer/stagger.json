@@ -27,5 +27,16 @@
   "#microinteractions",
   "#frontenddev",
   "#uianimation"
- ]
+ ],
+ "tip": {
+  "title": "Why does your list feel so flat?",
+  "why": "When every row runs the same entrance at the same moment, the list lands as one block. Keep the animation and delay each row by its index, and the eye reads it top to bottom.",
+  "code": ".row {\n  animation: rise .45s ease-out both;\n  animation-delay: calc(var(--i) * 40ms);\n}\n\n<!-- one index per row -->\n<li class=\"row\" style=\"--i: 0\">…</li>\n<li class=\"row\" style=\"--i: 1\">…</li>",
+  "demo": "stagger",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-delay",
+   "label": "MDN, animation-delay"
+  },
+  "reel": "https://www.instagram.com/reel/De8zdCQBBXG/"
+ }
 }

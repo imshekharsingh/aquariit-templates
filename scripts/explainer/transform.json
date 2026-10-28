@@ -40,5 +40,16 @@
    "url": "https://github.com/mdn/content/blob/main/files/en-us/web/performance/guides/animation_performance_and_frame_rate/index.md",
    "note": "MDN: left triggers layout and repaint; transform and opacity are handled in composition; 16.7 ms a frame at 60 fps"
   }
- ]
+ ],
+ "tip": {
+  "title": "Why does your animation stutter?",
+  "why": "Animating left (or width, top, margin) makes the browser redo layout and paint on every frame; miss the ~16.7 ms frame budget and frames drop. Move it with transform: it is handled in compositing, so layout and paint are skipped. Opacity works the same way.",
+  "code": "/* stutters: layout and paint on every frame */\n@keyframes slide-left {\n  to { left: 240px; }\n}\n\n/* smooth: compositing only */\n@keyframes slide {\n  to { transform: translateX(240px); }\n}",
+  "demo": "transform",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Animation_performance_and_frame_rate",
+   "label": "MDN, Animation performance and frame rate"
+  },
+  "reel": "https://www.instagram.com/reel/De_SR4GucpS/"
+ }
 }
