@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does your headline break so badly?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 06, a type tip: "Why does your headline break so badly?"
+   A headline wraps with one word alone on its last line (an orphan); text-wrap: balance makes the browser even out the lines.
+   The words are real text: the scene lays the headline out twice off screen (wrap and balance) and moves each word from one layout
+   to the other, so what you see is what the browser does. Flow as Nº 04/05: one screen that only moves and scales, one panel under it
+   that changes shape (line lengths, code, line lengths, one line). Beats and captions lead the voice by 0.15 s; every frame a pure function of t. */
+:root{--ink:#121110;--paper:#f2efe8;--dim:#8d877c;--surface:#1c1a1f;--rule:#34303c;--row:#24222a;--acc:#ffb547;--red:#ff4d3d;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:250px;font-weight:800;font-size:76px;line-height:.96;letter-spacing:-.045em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--acc)}
+/* the screen: a landing page whose headline is real text, then two cards with titles of their own */
+#scr{left:36px;top:206px;width:468px;height:286px;border-radius:30px;background:var(--surface);overflow:hidden;transform-origin:50% 0}
+#nav{left:24px;top:20px;right:24px;height:14px}
+#nav i{position:absolute;top:0;height:14px;border-radius:7px;background:var(--rule)}
+#box{left:24px;top:50px;width:360px;height:150px;border-right:2px dashed rgba(242,239,232,.28)}
+#hole{border-radius:8px;background:repeating-linear-gradient(135deg,rgba(255,77,61,.22) 0 6px,rgba(255,77,61,.06) 6px 12px);box-shadow:inset 0 0 0 2px rgba(255,77,61,.7)}
+.hl{position:absolute;left:0;top:0;font:800 44px/1.02 var(--f);letter-spacing:-.03em;white-space:nowrap}
+#cta{left:24px;top:222px;width:132px;height:40px;border-radius:20px;background:var(--acc);color:var(--ink);font:800 16px/40px var(--f);text-align:center}
+.card{position:absolute;top:146px;width:210px;height:134px;border-radius:18px;background:var(--row);overflow:hidden}
+.card .im{position:absolute;left:10px;top:10px;right:10px;height:36px;border-radius:10px;opacity:.65}
+.card .tt{position:absolute;left:12px;top:54px;width:182px}
+.card .hl{font:800 22px/1.1 var(--f);letter-spacing:-.03em}
+/* measuring copies, off screen: the browser's own layouts, wrap and balance */
+.ms{position:absolute;left:-2000px;top:0;visibility:hidden}
+.ms.b{text-wrap:balance}
+/* the deck: line lengths → code → line lengths → one line */
+#deck{left:36px;width:468px;border-radius:20px;background:var(--surface);overflow:hidden}
+#deck > .lay{position:absolute;left:0;top:0;right:0;bottom:0}
+.bar{position:absolute;left:24px;height:14px;border-radius:7px;background:rgba(242,239,232,.08)}
+.bar b{position:absolute;left:0;top:0;bottom:0;border-radius:7px}
+#cd{padding:18px 22px;font:500 21px/1.45 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#ol{padding:0 22px;display:flex;align-items:center;font:500 21px/1 var(--m);white-space:pre;color:var(--paper)}
+#ol b{font-weight:500;color:var(--acc);border-radius:6px;padding:4px 2px}
+#deckL{left:36px;font:700 15px/1 var(--m);letter-spacing:.12em;white-space:nowrap}
+#cap{left:36px;right:36px;top:672px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 06 · TYPE</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>headline</span> <span>break</span></span><span class="ln"><span class="acc">so</span> <span class="acc">badly?</span></span></div>
+<div id="scr" class="a">
+  <div id="nav" class="a"><i style="left:0;width:26px;background:var(--acc)"></i><i style="left:250px;width:44px"></i><i style="left:304px;width:44px"></i><i style="left:358px;width:62px"></i></div>
+  <div id="box" class="a"><div id="hole" class="a"></div><div id="hl" class="hl"></div></div>
+  <div id="cta" class="a">Get started</div>
+  <div class="card" id="c1" style="left:12px"><i class="im" style="background:#7aa7ff"></i><div class="tt"><div class="hl"></div></div></div>
+  <div class="card" id="c2" style="left:246px"><i class="im" style="background:#52d6a4"></i><div class="tt"><div class="hl"></div></div></div>
+</div>
+<div id="deck" class="a"><div id="ln" class="lay"></div><div id="cd" class="lay"></div><div id="ol" class="lay">text-wrap: <b>balance</b>;</div></div>
+<div id="deckL" class="a"></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why does your headline break so badly? One word hangs alone on the last line. That's an orphan, and it looks like a mistake. The fix: text-wrap balance. The browser evens out the lines for you. One line of CSS, on every heading. Works in every major browser, on short headings.";
+  // 20 s, the whole script in one take (owner, 26-27 Oct: no stitched sentences); beats and caption words land 0.15 s before the word
+  var WORDS = [], DUR = 20, LEAD = .15;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { badly: at('badly'), one: at('one'), alone: at('alone'), last: at('last'), orphan: at('orphan'), mistake: at('mistake'), fix: at('fix'), wrap: at('textwrap') < 99 ? at('textwrap') : at('text'),
+      balance: at('balance'), browser: at('browser'), evens: at('evens'), lines: at('lines'), one2: at('one', 2), css: at('css'), every: at('every'), heading: at('heading'),
+      works: at('works'), major: at('major'), short: at('short'), headings: at('headings') };
+    A.end = WORDS[WORDS.length - 1].e;
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  // ---- the headlines: each laid out twice off screen by the browser itself (wrap, balance); the visible words move between the two ----
+  var HEADS = [{ el: $('hl'), text: 'A website that works as hard as you', w: 360 }, { el: $('c1').querySelector('.hl'), text: 'Get started in under five minutes', w: 182 },
+    { el: $('c2').querySelector('.hl'), text: 'Pricing that grows with your team', w: 182 }];
+  function layout(){
+    HEADS.forEach(function(h){
+      var spans = h.text.split(' ').map(function(x){ var s = document.createElement('span'); s.textContent = x; s.style.position = 'absolute'; h.el.appendChild(s); return s; });
+      var lay = function(bal){ var m = document.createElement('div'); m.className = h.el.className + ' ms' + (bal ? ' b' : ''); m.style.width = h.w + 'px'; m.style.whiteSpace = 'normal';
+        m.innerHTML = h.text.split(' ').map(function(x){ return '<span>' + x + '</span>'; }).join(' '); h.el.parentNode.appendChild(m);
+        var r = [].map.call(m.children, function(c){ return { x: c.offsetLeft, y: c.offsetTop, w: c.offsetWidth }; }); m.remove(); return r; };
+      h.A = lay(false); h.B = lay(true); h.spans = spans;
+      var lines = function(L){ var o = {}; L.forEach(function(p){ o[p.y] = Math.max(o[p.y] || 0, p.x + p.w); }); return Object.keys(o).sort(function(a, b){ return a - b; }).map(function(y){ return o[y]; }); };
+      h.LA = lines(h.A); h.LB = lines(h.B);
+    });
+    var H = HEADS[0], last = H.A[H.A.length - 1];   // the empty run after the orphan: from its end to the box edge
+    H.hole = { x: last.x + last.w + 10, y: last.y + 4, w: H.w - (last.x + last.w) - 10, h: 40 };
+    var hole = $('hole'); hole.style.left = H.hole.x + 'px'; hole.style.top = H.hole.y + 'px'; hole.style.width = H.hole.w + 'px'; hole.style.height = H.hole.h + 'px';
+    var L = $('ln'); for (var i = 0; i < 3; i++) { var b = document.createElement('div'); b.className = 'bar'; b.style.top = (20 + i * 26) + 'px'; b.style.width = '420px'; b.innerHTML = '<b></b>'; L.appendChild(b); }
+  }
+  // k 0 → 1 moves every word from the wrapped to the balanced layout, the first word a little ahead of the last
+  // a word that keeps its place stays put; a word that changes place fades out where it was and fades in where it goes (never sliding
+  // across other words: owner, 28 Oct, on the review stills), the first words a little ahead of the last
+  function place(h, k, red){ h.spans.forEach(function(s, i){ var a = h.A[i], b = h.B[i], kk = cl(k * 1.4 - i * .4 / h.spans.length), moves = a.x !== b.x || a.y !== b.y;
+      var o = !moves ? 1 : kk < .5 ? 1 - out(kk * 2) : out(kk * 2 - 1), p = !moves || kk < .5 ? a : b, dy = !moves ? 0 : kk < .5 ? -8 * out(kk * 2) : 8 * (1 - out(kk * 2 - 1));
+      s.style.transform = 'translate(' + p.x + 'px,' + (p.y + dy) + 'px)'; s.style.opacity = o;
+      s.style.color = red && i === h.spans.length - 1 ? 'var(--red)' : 'var(--paper)'; }); }
+  var CODE = '<span class="dim">h1, h2, h3 {</span>\n  <b>text-wrap: balance;</b>\n<span class="dim">}</span>';
+  var CODE_TXT = CODE.replace(/<[^>]+>/g, '');
+  function typed(n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < CODE.length; i++) { if (CODE[i] === '<') { var e = CODE.indexOf('>', i), tag = CODE.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += CODE[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function show(el, o, y, s){ el.style.opacity = o; el.style.transform = 'translateY(' + (y || 0) + 'px) scale(' + (s === undefined ? 1 : s) + ')'; }
+  function pct(v, w){ return Math.round(100 * v / w); }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    // ---- the hook ----
+    var gone = io(P(t, A.one - .35, A.one + .05));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the screen never leaves: small under the hook, full for the problem, smaller while the rule is typed, full again ----
+    var rise = io(P(t, A.one - .35, A.one + .1)), m1 = io(P(t, A.fix - .2, A.fix + .3)), m2 = io(P(t, A.browser - .35, A.browser + .1)), shrink = m1 * (1 - m2);
+    var drift = Math.sin(t * .9) * 3 * (1 - rise), jolt = Math.sin(P(t, A.mistake - .05, A.mistake + .3) * Math.PI * 3) * (1 - P(t, A.mistake - .05, A.mistake + .3)) * 5;
+    show($('scr'), out(P(t, .05, .4)) * (1 - ex), (1 - rise) * 340 + drift + ex * 20, mix(.62, 1, rise) * mix(1, .62, shrink));
+    $('scr').style.transform += ' translateX(' + jolt + 'px)';
+    // the hero headline: wrapped (one word alone) until "evens", then each word moves to the browser's balanced layout
+    var H = HEADS[0], bal = P(t, A.evens - .05, A.evens + .9), cards = io(P(t, A.every - .3, A.every + .15));
+    place(H, bal, t >= A.alone && bal < .5);
+    var orphanK = out(P(t, A.alone - .05, A.alone + .25)) * (1 - P(t, A.evens - .1, A.evens + .2));
+    H.spans[H.spans.length - 1].style.textDecoration = orphanK > .5 ? 'underline 4px var(--red)' : 'none';
+    $('hole').style.opacity = out(P(t, A.last - .05, A.last + .3)) * (1 - P(t, A.evens - .1, A.evens + .25));
+    $('box').style.borderRightColor = 'rgba(242,239,232,' + (.28 * Math.max(P(t, A.last - .05, A.last + .3), 1 - cards) * (1 - cards)) + ')';
+    // "on every heading": the hero moves up and shrinks; two cards come in with their own wrapped titles, and balance on "heading"
+    $('box').style.transform = 'translateY(' + (-cards * 30) + 'px) scale(' + mix(1, .62, cards) + ')'; $('box').style.transformOrigin = '0 0';
+    $('cta').style.opacity = 1 - cards; $('nav').style.opacity = 1 - cards;
+    ['c1', 'c2'].forEach(function(id, i){ var c = $(id), k = out(P(t, A.every - .1 + i * .08, A.every + .35 + i * .08)), h = HEADS[i + 1];
+      c.style.opacity = cl(k * 1.6); c.style.transform = 'translateY(' + (1 - k) * 26 + 'px)';
+      place(h, P(t, A.heading - .05 + i * .18, A.heading + .7 + i * .18), t < A.heading + i * .18 + .3); });
+    // ---- the deck: line lengths (top 510) → code (396) → line lengths → one line → gone at the end ----
+    var dIn = out(P(t, A.orphan - .2, A.orphan + .1)), m3 = io(P(t, A.one2 - .3, A.one2 + .1));
+    var dTop = 510 + (396 - 510) * shrink, dH = 100 + 30 * shrink - 22 * m3, dk = $('deck');
+    dk.style.top = dTop + 'px'; dk.style.height = dH + 'px'; dk.style.opacity = dIn * (1 - ex); dk.style.transform = 'translateY(' + ((1 - dIn) * 30) + 'px)';
+    var lnA = Math.max(win(t, A.orphan - .15, A.fix + .15, .15), win(t, A.browser - .1, A.one2 - .25, .15));
+    $('ln').style.opacity = lnA;
+    var bk = io(P(t, A.evens - .05, A.evens + .9));
+    [].forEach.call($('ln').querySelectorAll('.bar'), function(b, i){ var w = mix(H.LA[i] || 0, H.LB[i] || 0, bk) / H.w, short = i === 2 && bk < .5;
+      b.firstChild.style.width = (w * 100) + '%'; b.firstChild.style.background = short ? '#ff4d3d' : bk > .5 ? '#ffb547' : '#8d877c'; });
+    var dl = $('deckL'); dl.style.top = (dTop + dH + 14) + 'px';
+    var lens = function(L){ return L.map(function(v){ return pct(v, H.w) + '%'; }).join(' · '); };
+    dl.textContent = t < A.fix - .2 ? 'LINE LENGTHS ' + lens(H.LA) : t < A.browser - .2 ? 'ONE RULE' : t < A.one2 - .2 ? 'LINE LENGTHS ' + lens(bk > .5 ? H.LB : H.LA) : t < A.works - .1 ? 'h1 · h2 · h3' : 'EVERY MAJOR BROWSER · UP TO 6 LINES';
+    dl.style.color = t < A.fix - .2 ? '#ff4d3d' : '#ffb547'; dl.style.opacity = dIn * (1 - ex);
+    var cdA = win(t, A.fix + .15, A.browser - .25, .15);
+    $('cd').style.opacity = cdA; $('cd').innerHTML = typed(Math.floor(CODE_TXT.length * P(t, A.fix + .1, A.balance + .5)));
+    $('ol').style.opacity = win(t, A.one2 - .1, DUR, .15);
+    var lit = P(t, A.css - .05, A.css + .15); $('ol').lastElementChild.style.background = 'rgba(255,181,71,' + (.18 * lit) + ')';
+    // ---- the readout top right ----
+    var Hh;
+    if (t < A.one - .1) Hh = 'HEADLINE · <b>' + H.LA.length + ' LINES</b>';
+    else if (t < A.fix - .2) Hh = 'LAST LINE · <b class="r">1 WORD</b>';
+    else if (t < A.browser - .2) Hh = 'CSS <b>' + Math.max(1, CODE_TXT.slice(0, Math.floor(CODE_TXT.length * P(t, A.fix + .1, A.balance + .5))).split('\n').length) + '/3 LINES</b>';
+    else if (t < A.evens + .4) Hh = 'LAST LINE · <b class="r">1 WORD</b>';
+    else if (t < A.every - .1) Hh = 'LAST LINE · <b class="y">2 WORDS</b>';
+    else if (t < A.works - .1) Hh = 'HEADINGS · <b class="y">' + (t < A.heading + .5 ? 1 : t < A.heading + .7 ? 2 : 3) + '/3 EVEN</b>';
+    else Hh = '<b class="y">NO SCRIPT</b> · CSS ONLY';
+    $('hud').innerHTML = Hh; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.one - .1 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.orphan - .1 ? 'ONE WORD, ALONE' : t < A.fix - .2 ? 'AN ORPHAN' : t < A.browser - .2 ? 'THE FIX' : t < A.every - .1 ? 'BALANCED' : t < A.works - .1 ? 'ON EVERY HEADING' : 'SHORT HEADINGS';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] > 6 && t < DUR - .5)   // words 0-6 are the hook question, shown as the title instead
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2));
+        var col = /^(text-wrap|balance|evens|heading)/i.test(w.d) ? 'var(--acc)' : /^(alone|orphan|mistake)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  // sound under the voice: the orphan is a dull thud; balancing is a soft run of taps, one per word as it moves
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.one - .35, k: 'swish', d: .45, g: .6 }];
+    Q.push({ t: A.alone, k: 'thud', g: .6 }, { t: A.last, k: 'tick', g: .25, p: 2 }, { t: A.mistake, k: 'thud', g: .5 });
+    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .6, p: .2 });
+    for (var c = 0, t0 = A.fix + .1, t1 = A.balance + .5; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.browser - .3, k: 'swish', d: .45, g: .55, p: .4 });
+    for (var r = 0; r < 7; r++) Q.push({ t: A.evens + .1 + r * .1, k: 'tap', g: .4, p: r * 2 });
+    Q.push({ t: A.one2 - .3, k: 'swish', d: .4, g: .45, p: .3 }, { t: A.css, k: 'tap', g: .5, p: 5 }, { t: A.every - .3, k: 'swish', d: .4, g: .45, p: .2 });
+    for (var h = 0; h < 2; h++) Q.push({ t: A.heading + h * .18 + .2, k: 'tap', g: .4, p: 3 + h * 3 });
+    Q.push({ t: A.works - .2, k: 'swish', d: .35, g: .4, p: -.2 }, { t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 76px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ layout(); anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

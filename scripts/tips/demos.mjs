@@ -31,6 +31,21 @@ export const demos = {
 <button class="play" type="button">Play</button>`,
     js: `function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.pane').forEach(function(p){ p.classList.remove('run'); void p.offsetWidth; p.classList.add('run'); }); btn.textContent = 'Replay'; }); }`,
   },
+  balance: {
+    css: `
+#balance .pane{min-height:170px;padding:34px 12px 12px}
+#balance .hd{font:800 21px/1.12 system-ui,sans-serif;letter-spacing:-.02em;color:#f1efe9}
+#balance .fix.on .hd{text-wrap:balance}
+#balance .pane .hd{width:100%}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span><div class="hd">A website that works as hard as you do</div></div>
+  <div class="pane fix"><span class="tag ok">text-wrap: balance</span><div class="hd">A website that works as hard as you do</div></div>
+</div>
+<button class="play" type="button">Balance it</button>
+<p class="note">Narrow the window to see it on different widths: the left heading keeps leaving words alone, the right one stays even.</p>`,
+    js: `function(root, btn){ btn.addEventListener('click', function(){ var f = root.querySelector('.fix'), on = !f.classList.contains('on'); f.classList.toggle('on', on); btn.textContent = on ? 'Unbalance it' : 'Balance it'; }); }`,
+  },
   transform: {
     css: `
 #transform .pane{height:96px}

@@ -44,6 +44,10 @@
 #stagger .run .row{animation:tip-rise .45s ease-out both}
 #stagger .fix.run .row{animation-delay:calc(var(--i) * 40ms)}
 @keyframes tip-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+#balance .pane{min-height:170px;padding:34px 12px 12px}
+#balance .hd{font:800 21px/1.12 system-ui,sans-serif;letter-spacing:-.02em;color:#f1efe9}
+#balance .fix.on .hd{text-wrap:balance}
+#balance .pane .hd{width:100%}
 #transform .pane{height:96px}
 #transform .dot{position:absolute;top:44px;left:12px;width:34px;height:34px;border-radius:10px;background:#7c8cff}
 #transform .run .dot{animation:tip-left 2s ease-in-out infinite alternate}
@@ -59,6 +63,23 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="balance">
+  <p class="no">Nº 06</p>
+  <h2>Why does your headline break so badly?</h2>
+  <p class="why">When a heading wraps, the browser fills each line as far as it can, so one word can end up alone on the last line. text-wrap: balance makes the browser even out the line lengths instead. It works on headings up to six lines in Chromium (ten in Firefox), so use it on titles, not paragraphs.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span><div class="hd">A website that works as hard as you do</div></div>
+  <div class="pane fix"><span class="tag ok">text-wrap: balance</span><div class="hd">A website that works as hard as you do</div></div>
+</div>
+<button class="play" type="button">Balance it</button>
+<p class="note">Narrow the window to see it on different widths: the left heading keeps leaving words alone, the right one stays even.</p></div>
+  <div class="code"><pre><code>h1, h2, h3 {
+  text-wrap: balance;
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-wrap" rel="noopener">Source: MDN, text-wrap</a></p>
+</article>
 
 <article class="tip" id="transform">
   <p class="no">Nº 05</p>
@@ -128,11 +149,12 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>3 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>4 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "balance": function(root, btn){ btn.addEventListener('click', function(){ var f = root.querySelector('.fix'), on = !f.classList.contains('on'); f.classList.toggle('on', on); btn.textContent = on ? 'Unbalance it' : 'Balance it'; }); },
     "transform": function(root, btn){ btn.addEventListener('click', function(){ if (btn.disabled) return; btn.disabled = true;
   var panes = root.querySelectorAll('.pane'); panes.forEach(function(p){ p.style.setProperty('--w', p.clientWidth + 'px'); p.classList.add('run'); });
   var end = performance.now() + 4000;
