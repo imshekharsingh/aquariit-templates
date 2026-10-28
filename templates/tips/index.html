@@ -48,6 +48,11 @@
 #balance .hd{font:800 21px/1.12 system-ui,sans-serif;letter-spacing:-.02em;color:#f1efe9}
 #balance .fix.on .hd{text-wrap:balance}
 #balance .pane .hd{width:100%}
+#smooth .box{position:absolute;left:8px;right:8px;top:30px;bottom:8px;overflow-y:auto;border-radius:10px}
+#smooth .fix .box{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){#smooth .fix .box{scroll-behavior:auto}}
+#smooth .sec{height:120px;margin-bottom:8px;border-radius:10px;padding:10px;font:800 15px/1.2 system-ui,sans-serif;color:#0b0d14}
+#smooth .pane{height:190px}
 #transform .pane{height:96px}
 #transform .dot{position:absolute;top:44px;left:12px;width:34px;height:34px;border-radius:10px;background:#7c8cff}
 #transform .run .dot{animation:tip-left 2s ease-in-out infinite alternate}
@@ -63,6 +68,25 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="smooth">
+  <p class="no">Nº 07</p>
+  <h2>Why does your page jump when you tap a link?</h2>
+  <p class="why">An in-page link teleports the page by default: no motion, so people lose their place. scroll-behavior: smooth on the root makes the browser glide to the section. Wrap it in a prefers-reduced-motion query so anyone who turns motion off keeps the instant jump.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span><div class="box"><div class="sec" style="background:#7aa7ff">Top</div><div class="sec" style="background:#52d6a4">Features</div><div class="sec" style="background:#ffb547">Pricing</div></div></div>
+  <div class="pane fix"><span class="tag ok">scroll-behavior: smooth</span><div class="box"><div class="sec" style="background:#7aa7ff">Top</div><div class="sec" style="background:#52d6a4">Features</div><div class="sec" style="background:#ffb547">Pricing</div></div></div>
+</div>
+<button class="play" type="button">Go to Pricing</button>
+<p class="note">Both boxes get the same jump to Pricing. With motion turned off on your device, the right box jumps too, as it should.</p></div>
+  <div class="code"><pre><code>@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-behavior" rel="noopener">Source: MDN, scroll-behavior</a></p>
+</article>
 
 <article class="tip" id="balance">
   <p class="no">Nº 06</p>
@@ -149,11 +173,13 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>4 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>5 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "smooth": function(root, btn){ btn.addEventListener('click', function(){ var down = btn.textContent.indexOf('Pricing') > -1;
+  root.querySelectorAll('.box').forEach(function(b){ b.scrollTo({ top: down ? b.scrollHeight : 0 }); }); btn.textContent = down ? 'Back to top' : 'Go to Pricing'; }); },
     "balance": function(root, btn){ btn.addEventListener('click', function(){ var f = root.querySelector('.fix'), on = !f.classList.contains('on'); f.classList.toggle('on', on); btn.textContent = on ? 'Unbalance it' : 'Balance it'; }); },
     "transform": function(root, btn){ btn.addEventListener('click', function(){ if (btn.disabled) return; btn.disabled = true;
   var panes = root.querySelectorAll('.pane'); panes.forEach(function(p){ p.style.setProperty('--w', p.clientWidth + 'px'); p.classList.add('run'); });

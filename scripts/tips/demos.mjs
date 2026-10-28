@@ -46,6 +46,23 @@ export const demos = {
 <p class="note">Narrow the window to see it on different widths: the left heading keeps leaving words alone, the right one stays even.</p>`,
     js: `function(root, btn){ btn.addEventListener('click', function(){ var f = root.querySelector('.fix'), on = !f.classList.contains('on'); f.classList.toggle('on', on); btn.textContent = on ? 'Unbalance it' : 'Balance it'; }); }`,
   },
+  smooth: {
+    css: `
+#smooth .box{position:absolute;left:8px;right:8px;top:30px;bottom:8px;overflow-y:auto;border-radius:10px}
+#smooth .fix .box{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){#smooth .fix .box{scroll-behavior:auto}}
+#smooth .sec{height:120px;margin-bottom:8px;border-radius:10px;padding:10px;font:800 15px/1.2 system-ui,sans-serif;color:#0b0d14}
+#smooth .pane{height:190px}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span><div class="box"><div class="sec" style="background:#7aa7ff">Top</div><div class="sec" style="background:#52d6a4">Features</div><div class="sec" style="background:#ffb547">Pricing</div></div></div>
+  <div class="pane fix"><span class="tag ok">scroll-behavior: smooth</span><div class="box"><div class="sec" style="background:#7aa7ff">Top</div><div class="sec" style="background:#52d6a4">Features</div><div class="sec" style="background:#ffb547">Pricing</div></div></div>
+</div>
+<button class="play" type="button">Go to Pricing</button>
+<p class="note">Both boxes get the same jump to Pricing. With motion turned off on your device, the right box jumps too, as it should.</p>`,
+    js: `function(root, btn){ btn.addEventListener('click', function(){ var down = btn.textContent.indexOf('Pricing') > -1;
+  root.querySelectorAll('.box').forEach(function(b){ b.scrollTo({ top: down ? b.scrollHeight : 0 }); }); btn.textContent = down ? 'Back to top' : 'Go to Pricing'; }); }`,
+  },
   transform: {
     css: `
 #transform .pane{height:96px}

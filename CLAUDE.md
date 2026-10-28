@@ -12,7 +12,7 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   seeded randomness only), plus `scripts/explainer/<slug>.json` (name `showreel-NN-<slug>`, dur, fps 60, cover time, caption, 6+ keywords, exactly 5 hashtags).
 - **Render**: always on GitHub (Actions, "Showreel" workflow, config = the json). The MP4, cover and contact sheet land in the "reels" release,
   the Showreels page lists them, and a "Showreel ready" issue carries the post text. Never render whole videos in the session.
-- **Review**: before a render the owner gets stills at every beat and a GIF on a private page (Artifact). Fix what the stills show first.
+- **Review**: Claude reviews stills at every beat itself before the render (see Ownership below); the owner reviews the finished reel. Fix what the stills show first.
 - **Post text**: one block the owner copies whole, no labels: caption, a blank line, the first 6 keywords joined by " · ", a blank line, the 5 hashtags.
   Keywords and hashtags are chosen for reach (what people search for this kind of reel, most specific first, niche tags only).
 - Reels end on the reel itself: no brand card, sign-off or call to action in the video (owner, 21 Oct). Captions may invite a save or a send.
@@ -29,7 +29,12 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
 - Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel; `node scripts/showreel/preflight.mjs <config>` plus stills for showreels)
   and clear all of it: the PREFLIGHT voice line must say "fits", no "text wider than its box", and stills at every beat checked for empty frames.
-  Owner review of the stills comes before the render (as in "Review" above), for tech reels too. Re-render only for a real defect in the output.
+  Re-render only for a real defect in the output.
+- Ownership (owner, 28 Oct 2026): Claude decides the topics for both channels, runs every check, renders and delivers; the owner watches and posts.
+  Nothing is parked for the owner. The bar is the owner's: every reel feels premium, nothing looks broken, every spoken line is shown and
+  finished (no half-relayed statement), and every reel teaches one concrete, useful thing. Claude reviews its own stills at every beat against
+  that bar before the one render (no overlapping or clipped text, no empty frames, the hook fits, the cover shows the title) and checks the
+  render's voice check and contact sheet before telling the owner it is ready. Advise the owner only on what Claude cannot do itself.
 - Workflows: read the workflow file first (which ref it checks out, its inputs, what it uploads). Most check out main, so a branch must be merged
   before a run can test it; never dispatch to test code that is not on the ref the workflow runs.
 - External APIs and features: check the documentation, or the result of an earlier run, that the thing exists before building on it.
@@ -66,7 +71,7 @@ Reels carry their own sound from 23 Oct (owner: audio supports the hook): effect
 ## Save Claude usage (owner, 14 Oct 2026)
 Heavy work runs on GitHub. In a session keep to quick stills and checks; never poll long jobs (one check-in after ~12 minutes is enough).
 Before any task, tell the owner its size, S (< 15 min) / M (30-60 min) / L (1-3 h) of session work, and wait for a go-ahead on M or bigger unless already approved.
-The daily reel routine (scheduled task, 09:41 IST) is approved standing work.
+The daily reels routine (scheduled task, 09:41 IST, after the 08:52 audit) makes that day's @webin20sec and @techin20sec reels; approved standing work.
 
 ## Never do
 - Force-push, rewrite history, or delete branches yourself

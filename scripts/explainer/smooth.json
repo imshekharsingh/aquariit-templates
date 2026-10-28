@@ -1,0 +1,54 @@
+{
+ "name": "showreel-17-smooth",
+ "seek": "scripts/explainer/smooth.html",
+ "dur": 21,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.2,
+ "voice": {
+  "text": "Why does your page jump when you tap a link? It teleports, and you lose your place. The fix: scroll behavior, smooth. One line of CSS. Now the page glides to the section, so you see where you went. Wrap it in a reduced motion query, so people who turn motion off still jump. Every link, one line.",
+  "voice": "af_heart",
+  "speed": 0.92
+ },
+ "caption": "Why does your page jump when you tap a link? 🪂\n\nAn in-page link (#pricing, #faq) teleports the page by default, so people lose their place. Add scroll-behavior: smooth to html and the page glides to the section instead. Put it inside @media (prefers-reduced-motion: no-preference) so anyone who turns motion off keeps the instant jump. One line of CSS, works in every major browser.\nSave it for your next landing page, or send it to whoever builds your UI.",
+ "keywords": [
+  "scroll-behavior smooth",
+  "CSS smooth scroll",
+  "smooth scrolling anchor links",
+  "prefers-reduced-motion",
+  "CSS scroll tips",
+  "web animation"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#cssanimation",
+  "#css",
+  "#frontenddev",
+  "#webdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-behavior",
+   "note": "MDN scroll-behavior: smooth scrolls with a user-agent-defined easing; applies to navigation and CSSOM scrolls"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/properties/scroll-behavior.json",
+   "note": "support: Chrome 61, Firefox 36, Safari 15.4 (iOS mirrors)"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion",
+   "note": "prefers-reduced-motion media feature"
+  }
+ ],
+ "tip": {
+  "title": "Why does your page jump when you tap a link?",
+  "why": "An in-page link teleports the page by default: no motion, so people lose their place. scroll-behavior: smooth on the root makes the browser glide to the section. Wrap it in a prefers-reduced-motion query so anyone who turns motion off keeps the instant jump.",
+  "code": "@media (prefers-reduced-motion: no-preference) {\n  html {\n    scroll-behavior: smooth;\n  }\n}",
+  "demo": "smooth",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-behavior",
+   "label": "MDN, scroll-behavior"
+  }
+ }
+}
