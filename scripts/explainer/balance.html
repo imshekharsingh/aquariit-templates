@@ -191,7 +191,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var html = '';
     if (ph0 && ph0[0] > 6 && t < DUR - .5)   // words 0-6 are the hook question, shown as the title instead
       ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2));
-        var col = /^(text-wrap|balance|evens|heading)/i.test(w.d) ? 'var(--acc)' : /^(alone|orphan|mistake)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        var col = /^(text-wrap|text|wrap|balance|evens|heading)/i.test(w.d) ? 'var(--acc)' : /^(alone|orphan|mistake)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
         html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
     $('cap').innerHTML = html;
   }

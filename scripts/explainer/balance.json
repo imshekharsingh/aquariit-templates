@@ -7,9 +7,9 @@
  "vignette": true,
  "cover": 2.0,
  "voice": {
-  "text": "Why does your headline break so badly? One word hangs alone on the last line. That's an orphan, and it looks like a mistake. The fix: text-wrap balance. The browser evens out the lines for you. One line of CSS, on every heading. Works in every major browser, on short headings.",
+  "text": "Why does your headline break so badly? One word hangs alone on the last line. That's an orphan, and it looks like a mistake. The fix: text wrap balance. The browser evens out the lines for you. One line of CSS, on every heading. Works in every major browser, on short headings.",
   "voice": "af_heart",
-  "speed": 0.95
+  "speed": 0.9
  },
  "caption": "Why does your headline break so badly? ✍️\n\nWhen a heading wraps, the browser fills each line as far as it can, so one word often ends up alone on the last line. Add text-wrap: balance and the browser evens out the line lengths instead. One line of CSS on your h1, h2 and h3; works in every major browser, for headings up to six lines in Chromium (ten in Firefox).\nSave it for your next landing page, or send it to whoever builds your UI.",
  "keywords": [
