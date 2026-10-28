@@ -26,5 +26,16 @@
   "#microinteractions",
   "#frontenddev",
   "#uianimation"
- ]
+ ],
+ "tip": {
+  "title": "Why does your popup just snap in?",
+  "why": "CSS doesn't run transitions when an element goes from display: none to shown, so the popup appears on a single frame. @starting-style gives it a first state to animate from, so it glides in. No JavaScript.",
+  "code": ".popup {\n  transition: opacity .3s, transform .3s;\n}\n.popup.open {\n  display: block;\n}\n@starting-style {\n  .popup.open {\n    opacity: 0;\n    transform: scale(.9);\n  }\n}",
+  "demo": "popup",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style",
+   "label": "MDN, @starting-style"
+  },
+  "reel": "https://www.instagram.com/reel/De6oisZRkWG/"
+ }
 }

@@ -158,6 +158,7 @@ jobs:
           check "$B/design-log.json" 401 || exit 1                      # closed: data requests are refused (no popup)
           check "$B/login" 200 || exit 1
           check "$B/manifest.webmanifest" 200 || exit 1                 # public so the PWA can install
+          check "$B/tips/" 200 -H 'Accept: text/html' || exit 1         # public: the reels' fixes (owner, 27 Oct 2026)
           check "$B/sw.js" 200 || exit 1
           check "$B/login" 401 -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=wrong-$RANDOM" || exit 1
           check "$B/login" 303 -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" || exit 1

@@ -16,6 +16,9 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 - **Post text**: one block the owner copies whole, no labels: caption, a blank line, the first 6 keywords joined by " · ", a blank line, the 5 hashtags.
   Keywords and hashtags are chosen for reach (what people search for this kind of reel, most specific first, niche tags only).
 - Reels end on the reel itself: no brand card, sign-off or call to action in the video (owner, 21 Oct). Captions may invite a save or a send.
+- Every @webin20sec reel config carries a "tip" block (title, why, code, demo, source, reel link once posted) with its live demo in
+  scripts/tips/demos.mjs: it becomes an entry on the public page /tips/ (scripts/build-tips.mjs; npm run check fails if the page is stale).
+  /tips/ is the only public path (src/worker.js PUBLIC): static, no data, no API calls.
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
 - Archiving (owner, 27 Oct 2026): reels marked uploaded more than 7 days ago fold into "Posted more than a week ago" in the app; 30 days after
   upload the nightly "Actions usage" workflow removes the reel's MP4 from the releases (cover and post text stay). Replaced code moves to attic/

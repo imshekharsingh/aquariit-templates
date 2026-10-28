@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Web fixes · webin20sec</title>
+<meta name="description" content="Every fix from the webin20sec reels: the problem, a live demo and the code to copy.">
+<meta name="theme-color" content="#0b0d14">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<style>
+  :root{--bg:#0b0d14;--card:#141724;--ink:#f1efe9;--mute:#9aa0b2;--line:#252a3b;--accent:#7c8cff;--ok:#6fd49a}
+  *{box-sizing:border-box;margin:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--ink);font:400 16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{max-width:640px;margin:0 auto;padding:28px 16px 80px}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
+  a{color:var(--accent)}
+  header .handle{font:800 .95rem system-ui,sans-serif;color:var(--mute)}
+  h1{font:800 2.1rem/1.05 system-ui,sans-serif;letter-spacing:-.02em;margin:8px 0 10px}
+  header p{color:var(--mute)}
+  .tip{margin-top:30px;padding:20px 18px;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:20px}
+  .no{font:800 .8rem system-ui,sans-serif;letter-spacing:.08em;color:var(--accent)}
+  h2{font:800 1.45rem/1.15 system-ui,sans-serif;letter-spacing:-.01em;margin:6px 0 8px}
+  .why{color:#d9d7d0}
+  .demo{margin-top:16px}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pane{position:relative;min-height:150px;padding-top:34px;border-radius:14px;background:#0e1019;border:1px solid var(--line);overflow:hidden}
+  .tag{position:absolute;top:9px;left:10px;font:700 .72rem system-ui,sans-serif;color:var(--mute)}
+  .tag.ok{color:var(--ok)}
+  .play,.copy{min-height:44px;padding:0 16px;border:1.5px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);font:700 .85rem system-ui,sans-serif;cursor:pointer}
+  .play{margin-top:10px}
+  .play:disabled{opacity:.6;cursor:default}
+  .note{margin-top:8px;font-size:.82rem;color:var(--mute)}
+  .code{position:relative;margin-top:14px}
+  pre{overflow-x:auto;padding:48px 14px 14px;border-radius:14px;background:#0e1019;border:1px solid var(--line);font:500 .85rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#d9d7d0}
+  .copy{position:absolute;top:8px;right:8px;min-height:34px;background:var(--card)}
+  .links{margin-top:12px;font-size:.85rem;color:var(--mute)}
+  footer{margin-top:40px;color:var(--mute);font-size:.85rem}
+#popup .pane{position:relative;height:150px}
+#popup .pop{display:none;position:absolute;inset:auto 10px 10px;padding:14px;border-radius:14px;background:#262b40;color:#f1efe9;font-weight:700;opacity:1;transform:none;transition:opacity .3s,transform .3s}
+#popup .pop.open{display:block}
+@starting-style{#popup .fix .pop.open{opacity:0;transform:scale(.9)}}
+#stagger .row{height:18px;margin:6px 10px;border-radius:6px;background:#3a4160;opacity:0}
+#stagger .run .row{animation:tip-rise .45s ease-out both}
+#stagger .fix.run .row{animation-delay:calc(var(--i) * 40ms)}
+@keyframes tip-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+#transform .pane{height:96px}
+#transform .dot{position:absolute;top:44px;left:12px;width:34px;height:34px;border-radius:10px;background:#7c8cff}
+#transform .run .dot{animation:tip-left 2s ease-in-out infinite alternate}
+#transform .fix.run .dot{animation-name:tip-move}
+@keyframes tip-left{to{left:calc(100% - 46px)}}
+@keyframes tip-move{to{transform:translateX(calc(var(--w) - 58px))}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <p class="handle">@webin20sec</p>
+    <h1>One web fix a day, in 20 seconds</h1>
+    <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
+  </header>
+
+<article class="tip" id="transform">
+  <p class="no">Nº 05</p>
+  <h2>Why does your animation stutter?</h2>
+  <p class="why">Animating left (or width, top, margin) makes the browser redo layout and paint on every frame; miss the ~16.7 ms frame budget and frames drop. Move it with transform: it is handled in compositing, so layout and paint are skipped. Opacity works the same way.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Animating left</span><div class="dot"></div></div>
+  <div class="pane fix"><span class="tag ok">Animating transform</span><div class="dot"></div></div>
+</div>
+<button class="play" type="button">Play on a busy page (4 s)</button>
+<p class="note">The button also keeps the page busy, like a heavy app does. The left box can only move when the page has a moment; the transform box keeps moving.</p></div>
+  <div class="code"><pre><code>/* stutters: layout and paint on every frame */
+@keyframes slide-left {
+  to { left: 240px; }
+}
+
+/* smooth: compositing only */
+@keyframes slide {
+  to { transform: translateX(240px); }
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Animation_performance_and_frame_rate" rel="noopener">Source: MDN, Animation performance and frame rate</a> · <a href="https://www.instagram.com/reel/De_SR4GucpS/" rel="noopener">Watch the reel</a></p>
+</article>
+
+<article class="tip" id="stagger">
+  <p class="no">Nº 04</p>
+  <h2>Why does your list feel so flat?</h2>
+  <p class="why">When every row runs the same entrance at the same moment, the list lands as one block. Keep the animation and delay each row by its index, and the eye reads it top to bottom.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span><div class="row" style="--i:0"></div><div class="row" style="--i:1"></div><div class="row" style="--i:2"></div><div class="row" style="--i:3"></div><div class="row" style="--i:4"></div></div>
+  <div class="pane fix"><span class="tag ok">Staggered</span><div class="row" style="--i:0"></div><div class="row" style="--i:1"></div><div class="row" style="--i:2"></div><div class="row" style="--i:3"></div><div class="row" style="--i:4"></div></div>
+</div>
+<button class="play" type="button">Play</button></div>
+  <div class="code"><pre><code>.row {
+  animation: rise .45s ease-out both;
+  animation-delay: calc(var(--i) * 40ms);
+}
+
+&lt;!-- one index per row --&gt;
+&lt;li class=&quot;row&quot; style=&quot;--i: 0&quot;&gt;…&lt;/li&gt;
+&lt;li class=&quot;row&quot; style=&quot;--i: 1&quot;&gt;…&lt;/li&gt;</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-delay" rel="noopener">Source: MDN, animation-delay</a> · <a href="https://www.instagram.com/reel/De8zdCQBBXG/" rel="noopener">Watch the reel</a></p>
+</article>
+
+<article class="tip" id="popup">
+  <p class="no">Nº 03</p>
+  <h2>Why does your popup just snap in?</h2>
+  <p class="why">CSS doesn't run transitions when an element goes from display: none to shown, so the popup appears on a single frame. @starting-style gives it a first state to animate from, so it glides in. No JavaScript.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span><div class="pop">Saved to your list</div></div>
+  <div class="pane fix"><span class="tag ok">With @starting-style</span><div class="pop">Saved to your list</div></div>
+</div>
+<button class="play" type="button">Open both</button></div>
+  <div class="code"><pre><code>.popup {
+  transition: opacity .3s, transform .3s;
+}
+.popup.open {
+  display: block;
+}
+@starting-style {
+  .popup.open {
+    opacity: 0;
+    transform: scale(.9);
+  }
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
+</article>
+  <footer>3 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+</main>
+<script>
+(function(){
+  var wire = {
+    "transform": function(root, btn){ btn.addEventListener('click', function(){ if (btn.disabled) return; btn.disabled = true;
+  var panes = root.querySelectorAll('.pane'); panes.forEach(function(p){ p.style.setProperty('--w', p.clientWidth + 'px'); p.classList.add('run'); });
+  var end = performance.now() + 4000;
+  (function busy(){ var t = performance.now(); while (performance.now() - t < 40) {} if (t < end) requestAnimationFrame(busy); else { panes.forEach(function(p){ p.classList.remove('run'); }); btn.disabled = false; } })(); }); },
+    "stagger": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.pane').forEach(function(p){ p.classList.remove('run'); void p.offsetWidth; p.classList.add('run'); }); btn.textContent = 'Replay'; }); },
+    "popup": function(root, btn){ btn.addEventListener('click', function(){ var pops = root.querySelectorAll('.pop'), open = !pops[0].classList.contains('open');
+  pops.forEach(function(p){ p.classList.toggle('open', open); }); btn.textContent = open ? 'Close both' : 'Open both'; }); }
+  };
+  Object.keys(wire).forEach(function(id){ var root = document.getElementById(id); if (root) wire[id](root.querySelector('.demo'), root.querySelector('.play')); });
+  document.querySelectorAll('.copy').forEach(function(b){ b.addEventListener('click', function(){ var t = b.previousElementSibling.textContent;
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ b.textContent = 'Copied'; setTimeout(function(){ b.textContent = 'Copy'; }, 1600); }, function(){}); }); });
+})();
+</script>
+</body>
+</html>

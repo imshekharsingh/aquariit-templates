@@ -3,7 +3,8 @@
 // BASIC_AUTH_USER_2 / BASIC_AUTH_PASS_2 (either account can sign in). Fails closed if no account is configured.
 // HTTP Basic headers are still accepted so scripts/CI can authenticate with curl --user.
 const COOKIE = 'aq_session', TTL = 60 * 60 * 24 * 30; // 30 days
-const PUBLIC = (p) => p === '/login' || p === '/logout' || p === '/manifest.webmanifest' || p === '/sw.js' || p.startsWith('/icons/');
+// /tips/ (owner, 27 Oct 2026) is the one public page: the reels' fixes with live demos, static only (no data, no API calls)
+const PUBLIC = (p) => p === '/login' || p === '/logout' || p === '/manifest.webmanifest' || p === '/sw.js' || p.startsWith('/icons/') || p === '/tips' || p === '/tips/' || p === '/tips/index.html';
 const enc = new TextEncoder();
 
 const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
