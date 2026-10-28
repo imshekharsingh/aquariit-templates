@@ -253,5 +253,24 @@
    "#frontenddev",
    "#webdesign"
   ]
+ },
+ "showreel-17-smooth": {
+  "postOn": "2026-10-29",
+  "caption": "Why does your page jump when you tap a link? 🪂\n\nAn in-page link (#pricing, #faq) teleports the page by default, so people lose their place. Add scroll-behavior: smooth to html and the page glides to the section instead. Put it inside @media (prefers-reduced-motion: no-preference) so anyone who turns motion off keeps the instant jump. One line of CSS, works in every major browser.\nSave it for your next landing page, or send it to whoever builds your UI.",
+  "keywords": [
+   "scroll-behavior smooth",
+   "CSS smooth scroll",
+   "smooth scrolling anchor links",
+   "prefers-reduced-motion",
+   "CSS scroll tips",
+   "web animation"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#cssanimation",
+   "#css",
+   "#frontenddev",
+   "#webdesign"
+  ]
  }
 }
