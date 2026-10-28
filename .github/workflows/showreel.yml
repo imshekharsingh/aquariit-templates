@@ -78,6 +78,7 @@ jobs:
             node scripts/showreel/capture.mjs "$CFG" out/frames 2>&1 | tee capture.log
             python3 scripts/showreel/compose.py "$CFG" out/frames "out/$NAME.mp4" 2>&1 | tail -3
           fi
+          [ -s "out/$NAME.cover.txt" ] && COVER=$(cat "out/$NAME.cover.txt") && echo "cover at $COVER s (from the scene: its title is fully on screen)"
           ffmpeg -y -loglevel error -ss "$COVER" -i "out/$NAME.mp4" -frames:v 1 -q:v 3 "out/$NAME-cover.jpg"
           mkdir -p out/review && ffmpeg -y -loglevel error -i "out/$NAME.mp4" -vf "fps=2,scale=270:-1,tile=8x5" -frames:v 1 "out/$NAME-review.png"
       - name: Voice model
