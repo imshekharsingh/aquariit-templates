@@ -12,4 +12,7 @@ const gaps = Array.isArray(v.gap) ? v.gap.slice(0, sentences - 1).reduce((a, b) 
 const est = .2 + letters * (gaps ? .068 : .0765) / speed + gaps, limit = (+c.dur || 20) - .6;
 const verdict = est <= limit - .2 ? 'fits' : est <= limit ? 'tight (within 0.2 s): trim a word to be safe' : `TOO LONG: trim about ${Math.ceil((est - limit + .3) * speed / .0765)} letters`;
 console.log(`PREFLIGHT voice: ${letters} letters, ${sentences} sentences, about ${est.toFixed(1)} s at speed ${speed}${gaps ? ` with ${gaps.toFixed(2)} s of breaths` : ' in one take'} (reel ${c.dur} s, voice must end by ${limit.toFixed(1)} s): ${verdict}`);
+// words the voice is known to misread (28 Oct: "text-wrap" was heard as "text strap"): hyphenated terms and code-like words; spell them as spoken
+const risky = [...new Set((text.match(/\b[\w]+(?:-[\w]+)+\b|\b\w*[A-Z]\w*[A-Z]\w*\b|\b\w+\.\w+\b/g) || []))];
+if (risky.length) console.log(`PREFLIGHT words: check how these are spoken (write them as heard, e.g. "text wrap"): ${risky.join(', ')}`);
 process.exit(est <= limit ? 0 : 1);
