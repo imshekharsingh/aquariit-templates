@@ -26,6 +26,10 @@ if (process.env.VOICE_WORDS) {   // narrated reels: the scene times its beats an
   const vw = JSON.parse(readFileSync(process.env.VOICE_WORDS, 'utf8'));
   await p.evaluate((vw) => window.setVoice && window.setVoice(vw), vw);
 }
+// the cover (owner, 28 Oct: a cover that missed the title, three times): a scene may say when its title is fully on screen (window.COVER,
+// from the real voice timings); the workflow then takes that frame instead of the config's fixed "cover"
+{ const cov = await p.evaluate(() => window.COVER); if (typeof cov === 'number' && cov > 0) writeFileSync(out.replace(/\.mp4$/, '.cover.txt'), cov.toFixed(2));
+}
 const cues = await p.evaluate(() => window.CUES || null);   // sound cues for scripts/showreel/sound.py (owner, 23 Oct: sound supports the hook)
 if (cues) writeFileSync(out.replace(/\.mp4$/, '.cues.json'), JSON.stringify(Object.assign(cues, { dur: Math.min(cues.dur || DUR, DUR) })));
 const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS * K), '-c:v', 'mjpeg', '-i', '-',

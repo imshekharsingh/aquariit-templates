@@ -7,9 +7,9 @@
  "vignette": true,
  "cover": 2.2,
  "voice": {
-  "text": "Why does your page jump when you tap a link? It teleports, and you lose your place. The fix: scroll behavior, smooth. One line of CSS. Now the page glides to the section, so you see where you went. Wrap it in a reduced motion query, so people who turn motion off still jump. Every link, one line.",
+  "text": "Why does your page jump when you tap a link? It teleports, and you lose your place. The fix: scroll behavior, smooth, in one line of CSS. Now the page glides there, so you see where you went. Wrap it in a reduced motion query, so people who turn motion off still jump. Every link, one line.",
   "voice": "af_heart",
-  "speed": 0.92
+  "speed": 0.87
  },
  "caption": "Why does your page jump when you tap a link? 🪂\n\nAn in-page link (#pricing, #faq) teleports the page by default, so people lose their place. Add scroll-behavior: smooth to html and the page glides to the section instead. Put it inside @media (prefers-reduced-motion: no-preference) so anyone who turns motion off keeps the instant jump. One line of CSS, works in every major browser.\nSave it for your next landing page, or send it to whoever builds your UI.",
  "keywords": [

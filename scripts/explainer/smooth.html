@@ -70,7 +70,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
   var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
   var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
-  var TEXT = "Why does your page jump when you tap a link? It teleports, and you lose your place. The fix: scroll-behavior smooth. One line of CSS. Now the page glides to the section, so you see where you went. Wrap it in a reduced-motion query, so people who turn motion off still jump. Every link, one line.";
+  var TEXT = "Why does your page jump when you tap a link? It teleports, and you lose your place. The fix: scroll-behavior smooth, in one line of CSS. Now the page glides there, so you see where you went. Wrap it in a reduced-motion query, so people who turn motion off still jump. Every link, one line.";
   // 21 s, the whole script in one take; beats and caption words land 0.15 s before the word
   var WORDS = [], DUR = 21, LEAD = .15;
   (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
@@ -83,9 +83,12 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   function anchors(){
     align();
     A = { link: at('link'), tele: at('it'), lose: at('lose'), place: at('place'), broken: at('place'), fix: at('fix'), smooth: at('smooth'), line: at('line'), css: at('css'),
-      now: at('now'), glides: at('glides'), section: at('section'), went: at('went'), wrap: at('wrap'), reduced: first(at('reducedmotion'), at('reduced')), off: at('off'), jumps: at('jump', 2),
+      now: at('now'), glides: at('glides'), went: at('went'), wrap: at('wrap'), reduced: first(at('reducedmotion'), at('reduced')), off: at('off'), jumps: at('jump', 2),
       every: at('every'), menu: at('menu'), one: at('one', 2) };
     A.end = WORDS[WORDS.length - 1].e;
+    // the title holds until its last word is in, then leaves; the cover is that moment (window.COVER, read by scripts/showreel/seek.mjs)
+    A.hookIn = (WORDS[9] ? WORDS[9].s - LEAD : 2) + .3; A.leave = Math.max(A.tele - .3, A.hookIn + .35); A.tele = Math.max(first(at('teleports'), A.tele), A.leave + .5);   // the jump lands on "teleports", once the page is up A.codeEnd = Math.min(A.css, A.now - .4);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
     PH = []; var cur = [];
     WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
       if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
@@ -124,13 +127,13 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     t = Math.max(0, Math.min(DUR, t));
     var ex = io(P(t, DUR - .6, DUR - .1));
     // ---- the hook ----
-    var gone = io(P(t, A.tele - .5, A.tele - .1));
+    var gone = io(P(t, A.leave, A.leave + .35));
     [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
       var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26)), hard = i === 4;
       sp.style.opacity = (hard ? (t >= s ? 1 : 0) : cl((t - s) * 9)) * (1 - gone); sp.style.transform = 'translateY(' + ((hard ? (t >= s ? 0 : 1) : (1 - k)) * 40 - gone * 80) + 'px)'; });
     $('lbl').style.opacity = 1 - ex;
     // ---- the screen: small under the hook, full for the jump, smaller while the rule is typed, full again ----
-    var rise = io(P(t, A.tele - .55, A.tele - .1)), m1 = io(P(t, A.fix - .2, A.fix + .3)), m2 = io(P(t, A.now - .45, A.now - .1)), m3 = io(P(t, A.wrap - .2, A.wrap + .3)), m4 = io(P(t, A.every - .45, A.every - .15));
+    var rise = io(P(t, A.leave - .05, A.leave + .4)), m1 = io(P(t, A.fix - .2, A.fix + .3)), m2 = io(P(t, A.now - .45, A.now - .1)), m3 = io(P(t, A.wrap - .2, A.wrap + .3)), m4 = io(P(t, A.every - .45, A.every - .15));
     var shrink = Math.max(m1 * (1 - m2), m3 * (1 - m4));
     var drift = Math.sin(t * .9) * 3 * (1 - rise), jolt = Math.sin(P(t, A.broken - .05, A.broken + .3) * Math.PI * 3) * (1 - P(t, A.broken - .05, A.broken + .3)) * 5;
     show($('scr'), out(P(t, .05, .4)) * (1 - ex), (1 - rise) * 340 + drift + ex * 20, mix(.62, 1, rise) * mix(1, .62, shrink));
@@ -168,7 +171,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     dl.style.color = t < A.fix - .15 ? '#ff4d3d' : '#ffb547'; dl.style.opacity = dIn * (1 - m5) * (1 - ex);
     var cdA = Math.max(win(t, A.fix, A.now - .15, .12), win(t, A.wrap + .05, A.every - .25, .15));
     $('cd').style.opacity = cdA;
-    $('cd').innerHTML = t < A.wrap ? typed(CODE, 6 + Math.floor((CODE_TXT.length - 6) * P(t, A.fix + .2, A.css))) : typed(CODE2, Math.floor(CODE2.replace(/<[^>]+>/g, '').length * P(t, A.wrap + .1, A.off)));
+    $('cd').innerHTML = t < A.wrap ? typed(CODE, 6 + Math.floor((CODE_TXT.length - 6) * P(t, A.fix + .2, A.codeEnd))) : typed(CODE2, Math.floor(CODE2.replace(/<[^>]+>/g, '').length * P(t, A.wrap + .1, A.off)));
     // ---- the readout top right ----
     var H;
     if (t < A.tele - .1) H = 'SCROLL · <b>4 SECTIONS</b>';
@@ -193,10 +196,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
   // sound under the voice: the jump is a hard cut (thud, no swish); each glide is a soft swish that follows the scroll
   function buildCues(){
-    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.tele - .5, k: 'swish', d: .4, g: .5 }];
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
     Q.push({ t: A.tele - .3, k: 'tick', g: .35, p: 4 }, { t: A.tele, k: 'thud', g: .7 }, { t: A.broken, k: 'thud', g: .45 });
     Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
-    for (var c = 0, t0 = A.fix + .2, t1 = A.css; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    for (var c = 0, t0 = A.fix + .2, t1 = A.codeEnd; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
     SC.forEach(function(s, i){ if (s.smooth && i !== 1) Q.push({ t: s.t - .3, k: 'tick', g: .3, p: 4 }, { t: s.t, k: 'swish', d: .8, g: .55, p: .3 }); });
     for (var r = 0, t2 = A.wrap + .1, t3 = A.off; t2 + r * .1 < t3; r++) Q.push({ t: t2 + r * .1, k: 'tick', g: .08, p: (r * 3) % 7 });
     Q.push({ t: A.jumps, k: 'tap', g: .4, p: 2 }, { t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
