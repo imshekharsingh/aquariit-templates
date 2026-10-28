@@ -69,6 +69,14 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 28 Oct 2026, audit (collect 05:13 IST; @webin20sec 44 followers (+6 since 18:50), 22 posts; @techin20sec 9 followers (+0), 24 posts)
+Studio, 7 days (9 reels): **27 Oct 12:38 Nº 05 "Why does your animation stutter?" (Steal this) 2,276 reach, 8.9 s, 45 saves, 4 shares at 16.6 h** · 26 Oct 13:31 Nº 04 list (Steal this) 4,249 (+187), 13.1 s, 161 saves, 17 shares · 25 Oct Nº 03 popup (Steal this) 1,147, 8.0 s, 32 saves · Nº 02 INP (other) 153 · Nº 01 springs (other) 164 · zero-JS (Steal this) 53 · Built in 20 s 113, 2.7 s · cancel order (other) 23 · heroes (Six ways) 27. Median 153; 246 saves, 24 shares.
+techin20sec, 7 days (21 reels): **27 Oct 15:30 Wero 59 reach, 3.7 s at 13.7 h** (Starlink rival 11:35: 7, 1.4 s) · Amazon AI cloud 173, 7.0 s · PHP2Shell 146 · CA weak keys 136. Median 117; 5 saves, 2 shares.
+Account, last day: @webin20sec reach 6,227 (non-followers 6,211, followers 29), views 8,860 (non-followers 8,733); @techin20sec reach 506 (498 / 8), views 779 (634 / 145).
+Head to head: median 153 vs 117 (Goal 1 holds). Follows: +6 overnight on the day of Nº 05 + Nº 04's tail, still ~1 follow per 1,000 reach.
+Why Nº 05 worked: same "Why does your X?" hook as Nº 04, posted midday, but it decays faster (2,276 at 17 h vs Nº 04 3,025 at 9 h): an invisible fix saves less (2.0% vs 3.8%).
+Milestone: 44/100 followers; reel reach met (best 4,249/1,000). **Next:** a Six ways reel told as a question with a visible before/after (three Steal this in a row).
+
 ### 27 Oct 2026, 18:50 IST audit (collect 18:45 IST; @webin20sec 38 followers (+7 since 05:19), 22 posts; @techin20sec 9 followers (+0), 24 posts)
 Studio, 7 days (9 reels): **27 Oct 12:38 Nº 05 "Why does your animation stutter?" 2,132 reach, 8.9 s, 39 saves, 4 shares at 6.1 h** (Nº 04 at 9.3 h: 3,025, 11.3 s, 91 saves, 12 shares) · 26 Oct 13:31 Nº 04 4,062 (+477 since 05:19), 13.1 s, 151 saves, 16 shares at 29 h · Nº 03 1,141, 32 saves · Nº 02 147 · Nº 01 157 · zero-JS 51 · Built in 20 s 110 · layout shift 22 · heroes 26. Median 147; 229 saves, 23 shares.
 techin20sec, 7 days (22 reels): **27 Oct 11:35 Europe Starlink rival 7 reach, 1.5 s at 7.2 h** (GitLab at 6.0 h: 65, 4.3 s; PHP2Shell at 10.1 h: 144, 3.0 s) · 15:30 Wero 36, 3.2 s at 3.3 h · GitLab now 118, 3.7 s, 1 save · PHP2Shell 145 (+1). Median 117; 7 saves, 3 shares in 24 posts.
