@@ -63,6 +63,22 @@ export const demos = {
     js: `function(root, btn){ btn.addEventListener('click', function(){ var down = btn.textContent.indexOf('Pricing') > -1;
   root.querySelectorAll('.box').forEach(function(b){ b.scrollTo({ top: down ? b.scrollHeight : 0 }); }); btn.textContent = down ? 'Back to top' : 'Go to Pricing'; }); }`,
   },
+  overscroll: {
+    css: `
+#overscroll .pane{height:220px;padding:0}
+#overscroll .page{position:absolute;inset:30px 8px 8px;overflow-y:auto;border-radius:10px;background:repeating-linear-gradient(180deg,#232633 0 40px,#1b1e29 40px 80px)}
+#overscroll .page .tall{height:600px}
+#overscroll .pop{position:absolute;left:14%;right:14%;top:24px;height:120px;overflow-y:auto;border-radius:12px;background:#2f2b36;border:1.5px solid #3c3846}
+#overscroll .fix .pop{overscroll-behavior:contain}
+#overscroll .pop div{height:34px;margin:6px;border-radius:8px;background:#3a3644;font:600 13px/34px system-ui,sans-serif;color:#d9d6ce;padding-left:10px}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span><div class="page"><div class="tall"></div><div class="pop">${['Starter', 'Basic', 'Plus', 'Team', 'Pro', 'Studio'].map((x) => `<div>${x}</div>`).join('')}</div></div></div>
+  <div class="pane fix"><span class="tag ok">overscroll-behavior: contain</span><div class="page"><div class="tall"></div><div class="pop">${['Starter', 'Basic', 'Plus', 'Team', 'Pro', 'Studio'].map((x) => `<div>${x}</div>`).join('')}</div></div></div>
+</div>
+<p class="note">Scroll each list to its end and keep going: on the left the striped page behind starts moving, on the right it stays put.</p>`,
+    js: `function(root, btn){}`,
+  },
   transform: {
     css: `
 #transform .pane{height:96px}

@@ -53,6 +53,12 @@
 @media (prefers-reduced-motion: reduce){#smooth .fix .box{scroll-behavior:auto}}
 #smooth .sec{height:120px;margin-bottom:8px;border-radius:10px;padding:10px;font:800 15px/1.2 system-ui,sans-serif;color:#0b0d14}
 #smooth .pane{height:190px}
+#overscroll .pane{height:220px;padding:0}
+#overscroll .page{position:absolute;inset:30px 8px 8px;overflow-y:auto;border-radius:10px;background:repeating-linear-gradient(180deg,#232633 0 40px,#1b1e29 40px 80px)}
+#overscroll .page .tall{height:600px}
+#overscroll .pop{position:absolute;left:14%;right:14%;top:24px;height:120px;overflow-y:auto;border-radius:12px;background:#2f2b36;border:1.5px solid #3c3846}
+#overscroll .fix .pop{overscroll-behavior:contain}
+#overscroll .pop div{height:34px;margin:6px;border-radius:8px;background:#3a3644;font:600 13px/34px system-ui,sans-serif;color:#d9d6ce;padding-left:10px}
 #transform .pane{height:96px}
 #transform .dot{position:absolute;top:44px;left:12px;width:34px;height:34px;border-radius:10px;background:#7c8cff}
 #transform .run .dot{animation:tip-left 2s ease-in-out infinite alternate}
@@ -68,6 +74,23 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="overscroll">
+  <p class="no">Nº 08</p>
+  <h2>Why does the page scroll, behind your popup?</h2>
+  <p class="why">Scroll to the end of a list inside a modal or bottom sheet and the scroll passes on to the page underneath (scroll chaining). overscroll-behavior: contain on the popup's scrolling element stops the scroll at its edge, so the page stays put. It only applies to an element that actually scrolls.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span><div class="page"><div class="tall"></div><div class="pop"><div>Starter</div><div>Basic</div><div>Plus</div><div>Team</div><div>Pro</div><div>Studio</div></div></div></div>
+  <div class="pane fix"><span class="tag ok">overscroll-behavior: contain</span><div class="page"><div class="tall"></div><div class="pop"><div>Starter</div><div>Basic</div><div>Plus</div><div>Team</div><div>Pro</div><div>Studio</div></div></div></div>
+</div>
+<p class="note">Scroll each list to its end and keep going: on the left the striped page behind starts moving, on the right it stays put.</p></div>
+  <div class="code"><pre><code>.popup {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overscroll-behavior" rel="noopener">Source: MDN, overscroll-behavior</a></p>
+</article>
 
 <article class="tip" id="smooth">
   <p class="no">Nº 07</p>
@@ -173,11 +196,12 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>5 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>6 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "overscroll": function(root, btn){},
     "smooth": function(root, btn){ btn.addEventListener('click', function(){ var down = btn.textContent.indexOf('Pricing') > -1;
   root.querySelectorAll('.box').forEach(function(b){ b.scrollTo({ top: down ? b.scrollHeight : 0 }); }); btn.textContent = down ? 'Back to top' : 'Go to Pricing'; }); },
     "balance": function(root, btn){ btn.addEventListener('click', function(){ var f = root.querySelector('.fix'), on = !f.classList.contains('on'); f.classList.toggle('on', on); btn.textContent = on ? 'Unbalance it' : 'Balance it'; }); },

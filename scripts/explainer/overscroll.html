@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does the page scroll, behind your popup?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 08, a motion tip: "Why does the page scroll, behind your popup?"
+   Scroll to the end of a list inside a popup and the page underneath starts moving (scroll chaining); overscroll-behavior: contain on
+   the popup keeps the scroll inside it. Flow as Nº 04-07: one screen (a page with a popup sheet whose list really scrolls) that only moves
+   and scales, one panel under it (a chain diagram, code, the chain blocked, where it applies). Beats and captions lead the voice by 0.15 s;
+   the title holds until it is complete and the cover is that moment (window.COVER); every frame a pure function of t. */
+:root{--ink:#121110;--paper:#f2efe8;--dim:#8d877c;--surface:#1c1a1f;--rule:#34303c;--row:#24222a;--acc:#ffb547;--red:#ff4d3d;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:236px;font-weight:800;font-size:72px;line-height:.96;letter-spacing:-.045em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--acc)}
+/* the screen: a page (it can scroll) with a popup sheet over it; the sheet's list scrolls inside it */
+#scr{left:36px;top:206px;width:468px;height:286px;border-radius:30px;background:var(--surface);overflow:hidden;transform-origin:50% 0}
+#page{left:0;right:0;top:0}
+#page .blk{position:absolute;left:22px;right:22px;border-radius:14px}
+#page .ln{position:absolute;left:22px;height:12px;border-radius:6px;background:#3a3644}
+#dim{left:0;top:0;right:0;bottom:0;background:rgba(10,9,12,.38)}
+#pagebar{right:8px;top:12px;bottom:12px;width:5px;border-radius:3px;background:rgba(242,239,232,.06)}
+#pagethumb{left:0;width:5px;height:70px;border-radius:3px;background:var(--dim)}
+#sheet{left:104px;width:260px;top:44px;height:260px;border-radius:22px 22px 0 0;background:#26232c;border:1.5px solid #3c3846;overflow:hidden}
+#sheet .hd{position:absolute;left:20px;top:16px;font:800 20px/1 var(--f);letter-spacing:-.01em}
+#sheet .grip{position:absolute;left:50%;top:6px;width:40px;height:4px;margin-left:-20px;border-radius:2px;background:#4a4555}
+#lv{left:12px;right:12px;top:48px;bottom:0;overflow:hidden}
+#lst{left:0;right:0;top:0}
+.it{position:absolute;left:0;right:0;height:38px;border-radius:10px;background:#2f2b36;font:600 17px/38px var(--f);padding-left:14px;color:#d9d6ce}
+.it i{position:absolute;right:12px;top:12px;width:14px;height:14px;border-radius:50%;border:2px solid #5a5466}
+#finger{width:40px;height:40px;border-radius:50%;background:rgba(242,239,232,.18);border:2.5px solid var(--paper);margin:-20px 0 0 -20px;z-index:5}
+#edge{left:12px;right:12px;height:4px;border-radius:2px;background:var(--acc)}
+/* the deck: chain diagram → code → chain blocked → where it applies */
+#deck{left:36px;width:468px;border-radius:20px;background:var(--surface);overflow:hidden}
+#deck > .lay{position:absolute;left:0;top:0;right:0;bottom:0}
+.node{position:absolute;top:34px;width:132px;height:56px;border-radius:14px;border:2px solid var(--rule);font:800 16px/52px var(--m);letter-spacing:.08em;text-align:center}
+#arrow{left:176px;top:58px;width:116px;height:8px}
+#arrow b{position:absolute;left:0;top:0;height:8px;border-radius:4px}
+#block{left:222px;top:36px;width:24px;height:52px;border-radius:6px}
+#cd{padding:18px 22px;font:500 20px/1.45 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#uses{display:flex;gap:12px;align-items:center;padding:0 22px}
+#uses span{height:40px;padding:0 16px;border-radius:20px;background:rgba(255,181,71,.12);color:var(--acc);font:700 17px/40px var(--f);white-space:nowrap}
+#deckL{left:36px;font:700 15px/1 var(--m);letter-spacing:.12em;white-space:nowrap}
+#cap{left:36px;right:36px;top:672px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 08 · MOTION</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>the</span></span><span class="ln"><span>page</span> <span class="acc">scroll,</span></span><span class="ln"><span>behind</span> <span>your</span></span><span class="ln"><span>popup?</span></span></div>
+<div id="scr" class="a">
+  <div id="page" class="a"></div>
+  <div id="pagebar" class="a"><div id="pagethumb" class="a"></div></div>
+  <div id="dim" class="a"></div>
+  <div id="sheet" class="a"><i class="grip"></i><div class="hd">Choose a plan</div><div id="lv" class="a"><div id="lst" class="a"></div></div><div id="edge" class="a"></div></div>
+  <div id="finger" class="a"></div>
+</div>
+<div id="deck" class="a">
+  <div id="ch" class="lay"><div class="node" id="nPop" style="left:40px">POPUP</div><div id="arrow" class="a"><b></b></div><div id="block" class="a"></div><div class="node" id="nPage" style="left:296px">PAGE</div></div>
+  <div id="cd" class="lay"></div>
+  <div id="uses" class="lay"><span>Menus</span><span>Sheets</span><span>Chat windows</span></div>
+</div>
+<div id="deckL" class="a"></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why does the page scroll, behind your popup? You reach the end of the list, and the page underneath starts moving. That's scroll chaining. The fix: overscroll-behavior contain, on the popup. Now the scroll stops at the edge, and the page stays put. Works on menus, sheets and chat windows.";
+  // 21 s, the whole script in one take; beats and caption words land 0.15 s before the word
+  var WORDS = [], DUR = 21, LEAD = .15, HOOK_N = 8;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function first(){ for (var i = 0; i < arguments.length; i++) if (arguments[i] < 99) return arguments[i]; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { you: at('you'), reach: at('reach'), end: at('end'), underneath: at('underneath'), moving: at('moving'), chaining: at('chaining'), fix: at('fix'),
+      overscroll: first(at('overscrollbehavior'), at('overscroll')), contain: at('contain'), popup: at('popup', 2), now: at('now'), stops: at('stops'), edge: at('edge'),
+      stays: at('stays'), put: at('put'), works: at('works'), menus: at('menus'), sheets: at('sheets'), chat: at('chat') };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.you - .3, A.hookIn + .35);
+    A.codeEnd = Math.min(A.popup + .2, A.now - .4);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    // two drags: before the fix the list hits its end and the page keeps going; after it the list stops (a small give) and the page stays
+    D1 = { t0: Math.max(A.reach - .1, A.leave + .5), list: .9, chain: Math.max(A.underneath, A.reach + 1) };
+    D2 = { t0: Math.max(A.now - .1, A.fix + .5), list: .9 };
+    buildCues();
+  }
+  var D1 = {}, D2 = {};
+  // ---- the page (behind) and the list (in the sheet) ----
+  var ITEMS = ['Starter', 'Basic', 'Plus', 'Team', 'Business', 'Pro', 'Studio', 'Enterprise'], IH = 44, LVH = 210, LMAX = ITEMS.length * IH - 6 - LVH, PMAX = 150;
+  (function(){ var pg = $('page'), lst = $('lst'), cols = ['#7aa7ff', '#52d6a4', '#c792ff', '#ffb547'];
+    for (var i = 0; i < 6; i++) { var b = document.createElement('i'); b.className = 'blk'; b.style.top = (20 + i * 110) + 'px'; b.style.height = '62px'; b.style.background = cols[i % 4]; b.style.opacity = '.5'; pg.appendChild(b);
+      var l = document.createElement('i'); l.className = 'ln'; l.style.top = (92 + i * 110) + 'px'; l.style.width = [260, 300, 220, 280, 240, 310][i] + 'px'; pg.appendChild(l); }
+    ITEMS.forEach(function(n, i){ var d = document.createElement('div'); d.className = 'it'; d.style.top = (i * IH) + 'px'; d.innerHTML = n + '<i></i>'; lst.appendChild(d); });
+  })();
+  // list and page offsets at t, plus the finger: a drag pushes the list to its end; before the fix the rest of the drag moves the page
+  function scrollState(t){
+    var fixed = t >= A.fix, ly = 0, py = 0, give = 0;
+    if (!fixed) {
+      ly = LMAX * io(P(t, D1.t0, D1.t0 + D1.list));
+      py = PMAX * io(P(t, D1.chain, D1.chain + 1.1));
+    } else {
+      var back = io(P(t, A.fix - .1, A.fix + .7));   // while the rule types, both return to the top
+      ly = LMAX * (1 - back); py = PMAX * (1 - back);
+      if (t >= D2.t0) { ly = LMAX * io(P(t, D2.t0, D2.t0 + D2.list)); py = 0;
+        var g = P(t, D2.t0 + D2.list - .05, D2.t0 + D2.list + .6); give = Math.sin(g * Math.PI) * 12 * (1 - g * .5); }
+    }
+    return { ly: ly, py: py, give: give, fixed: fixed };
+  }
+  var CODE = '<span class="dim">.popup {</span>\n  <b>overscroll-behavior: contain;</b>\n<span class="dim">}</span>';
+  var CODE_TXT = CODE.replace(/<[^>]+>/g, '');
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function show(el, o, y, s){ el.style.opacity = o; el.style.transform = 'translateY(' + (y || 0) + 'px) scale(' + (s === undefined ? 1 : s) + ')'; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    // ---- the title: holds until it is complete, then leaves ----
+    var gone = io(P(t, A.leave, A.leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the screen: small under the title, full for the problem, smaller while the rule is typed, full again ----
+    var rise = io(P(t, A.leave - .05, A.leave + .4)), m1 = io(P(t, A.fix - .2, A.fix + .3)), m2 = io(P(t, D2.t0 - .45, D2.t0 - .1)), shrink = m1 * (1 - m2);
+    var drift = Math.sin(t * .9) * 3 * (1 - rise);
+    show($('scr'), out(P(t, .05, .4)) * (1 - ex), (1 - rise) * 340 + drift + ex * 20, mix(.62, 1, rise) * mix(1, .62, shrink));
+    var st = scrollState(t);
+    $('page').style.transform = 'translateY(' + (-st.py) + 'px)';
+    $('pagethumb').style.top = (st.py / PMAX * 120) + 'px';
+    var pageMoving = !st.fixed && t >= D1.chain - .05 && t < D1.chain + 1.2;
+    $('pagethumb').style.background = pageMoving ? '#ff4d3d' : '#8d877c';
+    $('dim').style.boxShadow = pageMoving ? 'inset 0 0 0 3px rgba(255,77,61,' + (.9 * Math.sin(P(t, D1.chain - .05, D1.chain + 1.2) * Math.PI)) + ')' : 'none';
+    $('lst').style.transform = 'translateY(' + (-st.ly + st.give) + 'px)';
+    // the list's bottom edge glows when it is reached; after the fix that is where the scroll stops
+    var atEnd = st.ly >= LMAX - 1 && t > D1.t0;
+    $('edge').style.top = (48 + LVH - 4) + 'px'; $('edge').style.opacity = atEnd ? (st.fixed ? 1 : .5) : 0; $('edge').style.background = st.fixed ? 'var(--acc)' : 'var(--red)';
+    // the finger: drags up inside the sheet during each drag
+    var fg = $('finger'), dr = !st.fixed ? [D1.t0 - .2, D1.chain + 1.2] : [D2.t0 - .2, D2.t0 + D2.list + .5];
+    var fk = P(t, dr[0], dr[1]), on = t >= dr[0] && t < dr[1] + .2;
+    fg.style.left = '234px'; fg.style.top = (250 - 150 * io(fk)) + 'px'; fg.style.opacity = on ? Math.min(1, Math.sin(Math.min(1, fk * 1.05) * Math.PI) * 3) : 0;
+    // ---- the deck: chain (top 510) → code (396) → chain blocked (510) → uses → gone at the end ----
+    var dIn = out(P(t, A.chaining - .25, A.chaining + .05)), m4 = io(P(t, A.works - .3, A.works + .1));
+    var dTop = 510 + (396 - 510) * shrink, dH = 122 + 10 * shrink - 30 * m4, dk = $('deck');
+    dk.style.top = dTop + 'px'; dk.style.height = dH + 'px'; dk.style.opacity = dIn * (1 - ex); dk.style.transform = 'translateY(' + ((1 - dIn) * 30) + 'px)';
+    var chA = Math.max(win(t, A.chaining - .15, A.fix - .12, .12), win(t, D2.t0 - .05, A.works - .15, .12));
+    $('ch').style.opacity = chA;
+    var after = t >= A.fix, flow = after ? out(P(t, D2.t0 + .3, D2.t0 + .9)) : out(P(t, A.chaining - .1, A.chaining + .5));
+    var ar = $('arrow').firstChild; ar.style.width = (after ? 46 * flow : 116 * flow) + 'px'; ar.style.background = after ? 'var(--acc)' : 'var(--red)';
+    $('block').style.opacity = after ? out(P(t, D2.t0 + .6, D2.t0 + 1)) : 0; $('block').style.background = 'var(--acc)';
+    $('nPage').style.borderColor = after ? 'var(--rule)' : flow > .9 ? 'var(--red)' : 'var(--rule)'; $('nPage').style.color = !after && flow > .9 ? 'var(--red)' : 'var(--paper)';
+    $('nPop').style.borderColor = after ? 'var(--acc)' : 'var(--rule)';
+    $('cd').style.opacity = win(t, A.fix, D2.t0 - .15, .12);
+    $('cd').innerHTML = typed(CODE, 9 + Math.floor((CODE_TXT.length - 9) * P(t, A.fix + .2, A.codeEnd)));
+    var uA = win(t, A.works - .05, DUR, .15); $('uses').style.opacity = uA;
+    [A.menus, A.sheets, A.chat].forEach(function(a, i){ var s = $('uses').children[i], k = out(P(t, a - .05, a + .25)); s.style.opacity = k; s.style.transform = 'translateY(' + (1 - k) * 10 + 'px)'; });
+    var dl = $('deckL'); dl.style.top = (dTop + dH + 14) + 'px';
+    dl.textContent = t < A.fix - .12 ? 'THE SCROLL PASSES TO THE PAGE' : t < D2.t0 - .15 ? 'ONE RULE, ON THE POPUP' : t < A.works - .15 ? 'IT STOPS AT THE POPUP' : 'ANYTHING THAT SCROLLS';
+    dl.style.color = t < A.fix - .12 ? '#ff4d3d' : '#ffb547'; dl.style.opacity = dIn * (1 - ex);
+    // ---- the readout top right ----
+    var H;
+    if (t < D1.t0) H = 'POPUP · <b>OPEN</b>';
+    else if (t < A.fix - .2) H = 'PAGE · ' + (st.py > 2 ? '<b class="r">MOVING</b>' : '<b>STILL</b>');
+    else if (t < D2.t0 - .2) H = 'CSS <b>1 LINE</b>';
+    else if (t < A.works - .1) H = 'PAGE · <b class="y">STAYS PUT</b>';
+    else H = '<b class="y">CONTAIN</b> · EVERY POPUP';
+    $('hud').innerHTML = H; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.chaining - .1 ? 'SCROLL THE LIST' : t < A.fix - .2 ? 'SCROLL CHAINING' : t < D2.t0 - .2 ? 'THE FIX' : t < A.works - .1 ? 'CONTAINED' : 'MENUS · SHEETS · CHATS';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)   // the title words are the question, shown as the title instead
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2));
+        var col = /^(overscroll|behavior|contain|stops|stays)/i.test(w.d) ? 'var(--acc)' : /^(underneath|moving|chaining)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  // sound: the list ticks as it scrolls; the chained page is a low drag; after the fix the edge is a soft tap
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
+    for (var r = 0; r < 6; r++) Q.push({ t: D1.t0 + r * .14, k: 'tick', g: .18, p: 3 + r });
+    Q.push({ t: D1.chain, k: 'swish', d: 1.1, g: .5, p: -.4 }, { t: D1.chain + .1, k: 'thud', g: .45 });
+    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
+    for (var c = 0, t0 = A.fix + .2, t1 = A.codeEnd; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: D2.t0 - .4, k: 'swish', d: .4, g: .45, p: .3 });
+    for (var q = 0; q < 6; q++) Q.push({ t: D2.t0 + q * .14, k: 'tick', g: .18, p: 3 + q });
+    Q.push({ t: D2.t0 + D2.list, k: 'tap', g: .5, p: 5 }, { t: A.works - .2, k: 'swish', d: .35, g: .4, p: -.2 });
+    [A.menus, A.sheets, A.chat].forEach(function(a, i){ Q.push({ t: a, k: 'tap', g: .4, p: 3 + i * 2 }); });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
