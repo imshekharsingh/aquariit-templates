@@ -1,0 +1,161 @@
+{
+ "slug": "discord-web",
+ "topic": "Your privacy",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.92,
+ "max_speed": 0.98,
+ "dur": 21,
+ "max_end": 20.4,
+ "say": {},
+ "hook": [
+  "Your Discord",
+  "messages,",
+  "on Google?"
+ ],
+ "lines": [
+  {
+   "text": "Your Discord messages could soon show up on Google."
+  },
+  {
+   "text": "From mid December, big public servers go on the web, for search engines.",
+   "scene": {
+    "label": "THE NEWS",
+    "tint": "blue",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "Public servers",
+      "Your messages"
+     ],
+     "source_tint": "purple",
+     "hub": {
+      "label": "WEB PAGES",
+      "tag": "MID DEC",
+      "icon": "doc"
+     },
+     "target": {
+      "icon": "eye",
+      "label": "Search engines"
+     },
+     "target_tint": "blue",
+     "hub_cue": "web"
+    }
+   }
+  },
+  {
+   "text": "Only servers in Discovery, not DMs or private servers.",
+   "scene": {
+    "label": "WHICH ONES",
+    "tint": "amber",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "DMs, private: not included",
+      "cue": "only"
+     },
+     "b": {
+      "title": "Discovery: on the web",
+      "ticks": [],
+      "cue": "discovery",
+      "icon": "eye",
+      "meter": false
+     }
+    }
+   }
+  },
+  {
+   "text": "To opt out, switch it off in Data and Privacy.",
+   "scene": {
+    "label": "YOUR CONTROL",
+    "tint": "green",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "User Settings",
+      "sub": "Data & Privacy",
+      "icon": "user"
+     },
+     "inner": {
+      "title": "Web messages",
+      "sub": "switch it off",
+      "icon": "lock"
+     },
+     "inner_cue": "switch"
+    }
+   }
+  },
+  {
+   "text": "Messages already shown can stay, and search engines keep copies.",
+   "scene": {
+    "label": "THE CATCH",
+    "tint": "red",
+    "kind": "portal",
+    "params": {
+     "icon": "cloud",
+     "pills": [
+      "Already shown",
+      "Cached copies"
+     ],
+     "guest": "doc",
+     "guest_tint": "red",
+     "n": 3,
+     "open": "copies"
+    }
+   }
+  },
+  {
+   "text": "Switch it off before December.",
+   "scene": {
+    "label": "DO THIS NOW",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Open Data & Privacy",
+       "cue": "switch"
+      },
+      {
+       "text": "Turn off web messages",
+       "cue": "december"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "Your Discord messages, on Google?",
+  "caption": "Your Discord messages could soon show up on Google. 🔎\n\nDiscord is giving Discoverable Servers (the big public ones listed in Server Discovery) public web pages: AI summaries of selected channels from 16 Nov, and messages that search engines can find from mid-December. DMs and private servers aren't included. To keep your messages off: User Settings › Data & Privacy › turn off \"Show my message content from Discoverable channels on web pages\". Messages already shown can stay, and search engines may keep cached copies, so switch it off before December. Server admins: Server Settings › Web Presence.\nSend this to a friend who lives on Discord.",
+  "keywords": [
+   "Discord messages Google",
+   "Discord privacy settings",
+   "Discord web presence",
+   "Discord opt out",
+   "Discord Server Discovery",
+   "tech news"
+  ],
+  "hashtags": [
+   "#discord",
+   "#privacy",
+   "#onlineprivacy",
+   "#techtips",
+   "#technews"
+  ],
+  "sources": [
+   {
+    "url": "https://discord.com/blog/making-content-from-discoverable-servers-easier-to-discover",
+    "note": "Discord blog: Discoverable Servers get web pages; summaries 16 Nov, messages mid-December; on by default; admin controls"
+   },
+   {
+    "url": "https://support.discord.com/hc/en-us/articles/44302319454359-Discoverable-Content-on-the-Web",
+    "note": "Discord support: user setting under Data & Privacy; already-shown messages can remain; search engines may keep cached copies"
+   },
+   {
+    "url": "https://support.discord.com/hc/en-us/articles/44049845164823-Discoverable-Server-Web-Presence",
+    "note": "Discord support: admin controls in Server Settings > Web Presence"
+   }
+  ]
+ }
+}
