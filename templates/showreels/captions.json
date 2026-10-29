@@ -272,5 +272,24 @@
    "#frontenddev",
    "#webdesign"
   ]
+ },
+ "showreel-18-overscroll": {
+  "postOn": "2026-10-30",
+  "caption": "Why does the page scroll, behind your popup? 📜\n\nScroll to the end of a list inside a modal, menu or bottom sheet and the scroll passes on to the page underneath. That's scroll chaining. Add overscroll-behavior: contain to the popup's scrolling element and the scroll stops at its edge; the page stays put. One line of CSS, in every major browser. (It only applies to an element that actually scrolls.)\nSave it for your next modal, or send it to whoever builds your UI.",
+  "keywords": [
+   "overscroll-behavior contain",
+   "scroll chaining CSS",
+   "modal scroll page behind",
+   "bottom sheet scroll CSS",
+   "CSS tips",
+   "UI design"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#uidesign",
+   "#frontenddev",
+   "#webdesign"
+  ]
  }
 }
