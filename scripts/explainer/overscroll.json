@@ -7,9 +7,9 @@
  "vignette": true,
  "cover": 2.4,
  "voice": {
-  "text": "Why does the page scroll, behind your popup? You reach the end of the list, and the page underneath starts moving. That's scroll chaining. The fix: overscroll behavior, contain, on the popup. Now the scroll stops at the edge, and the page stays put. Works on menus, sheets and chat windows.",
+  "text": "Why does the page scroll, behind your popup? You reach the end of the list. Then the page underneath starts moving. That's scroll chaining. The fix: overscroll behavior, contain, on the popup. Now the scroll stops at the edge. The page stays put. Works on menus, sheets and chat windows.",
   "voice": "af_heart",
-  "speed": 0.9
+  "speed": 0.86
  },
  "caption": "Why does the page scroll, behind your popup? 📜\n\nScroll to the end of a list inside a modal, menu or bottom sheet and the scroll passes on to the page underneath. That's scroll chaining. Add overscroll-behavior: contain to the popup's scrolling element and the scroll stops at its edge; the page stays put. One line of CSS, in every major browser. (It only applies to an element that actually scrolls.)\nSave it for your next modal, or send it to whoever builds your UI.",
  "keywords": [
