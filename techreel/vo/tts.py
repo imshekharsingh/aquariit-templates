@@ -105,11 +105,11 @@ def generate(topic, wav_path, fake=False):
         # render would, and say plainly whether it fits, so a script that cannot fit is trimmed before anything is dispatched.
         letters = len(re.sub(r'[^A-Za-z]', '', re.sub(r'\[([^\]]+)\]\(/[^)]*/\)', r'\1', ' '.join(' '.join(w for _, sp in pr for w in sp) for pr in pairs))))
         sp0, top, lim = float(topic.get('speed', 1.05)), float(topic.get('max_speed', 1.14)), float(topic.get('max_end', MAX_END))
-        est = lambda v: FIRST + letters * .0765 / v
+        est = lambda v: FIRST + letters * .079 / v   # .079 s a letter at speed 1: the slowest take so far (29 Oct, Discord: 20.6 s for 256 letters at 0.98)
         v = sp0
         while est(v) > lim and v < top - .001:
             v = round(v + .03, 2)
-        verdict = 'fits' if est(v) <= lim - .2 else 'TOO LONG: trim about %d letters' % (int((est(v) - lim + .3) * v / .0765) + 1) if est(v) > lim else 'tight (within 0.2 s): trim a word to be safe'
+        verdict = 'fits' if est(v) <= lim - .3 else 'TOO LONG: trim about %d letters' % (int((est(v) - lim + .3) * v / .0765) + 1) if est(v) > lim else 'tight (within 0.3 s): trim a word to be safe'
         print(f'PREFLIGHT voice: {letters} letters, about {est(v):.1f} s at speed {v:.2f} (limit {lim}): {verdict}')
     if fake:   # estimate at 3.2 words a second, no audio; for local stills
         res, cur = [], FIRST
