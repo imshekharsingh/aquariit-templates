@@ -81,7 +81,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
   var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
   var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
-  var TEXT = "Why does the page scroll, behind your popup? You reach the end of the list, and the page underneath starts moving. That's scroll chaining. The fix: overscroll-behavior contain, on the popup. Now the scroll stops at the edge, and the page stays put. Works on menus, sheets and chat windows.";
+  var TEXT = "Why does the page scroll, behind your popup? You reach the end of the list. Then the page underneath starts moving. That's scroll chaining. The fix: overscroll-behavior contain, on the popup. Now the scroll stops at the edge. The page stays put. Works on menus, sheets and chat windows.";
   // 21 s, the whole script in one take; beats and caption words land 0.15 s before the word
   var WORDS = [], DUR = 21, LEAD = .15, HOOK_N = 8;
   (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
@@ -106,7 +106,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
       else PH.push(cur);
       cur = []; } });
     // two drags: before the fix the list hits its end and the page keeps going; after it the list stops (a small give) and the page stays
-    D1 = { t0: Math.max(A.reach - .1, A.leave + .5), list: .9, chain: Math.max(A.underneath, A.reach + 1) };
+    D1 = { t0: Math.max(A.reach - .1, A.leave + .75), list: .9, chain: Math.max(A.underneath, A.reach + 1) };
     D2 = { t0: Math.max(A.now - .1, A.fix + .5), list: .9 };
     buildCues();
   }
@@ -149,7 +149,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
       sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
     $('lbl').style.opacity = 1 - ex;
     // ---- the screen: small under the title, full for the problem, smaller while the rule is typed, full again ----
-    var rise = io(P(t, A.leave - .05, A.leave + .4)), m1 = io(P(t, A.fix - .2, A.fix + .3)), m2 = io(P(t, D2.t0 - .45, D2.t0 - .1)), shrink = m1 * (1 - m2);
+    var rise = io(P(t, A.leave + .25, A.leave + .7)), m1 = io(P(t, A.fix - .35, A.fix + .15)), m2 = io(P(t, D2.t0 - .45, D2.t0 - .1)), shrink = m1 * (1 - m2);
     var drift = Math.sin(t * .9) * 3 * (1 - rise);
     show($('scr'), out(P(t, .05, .4)) * (1 - ex), (1 - rise) * 340 + drift + ex * 20, mix(.62, 1, rise) * mix(1, .62, shrink));
     var st = scrollState(t);
@@ -170,7 +170,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var dIn = out(P(t, A.chaining - .25, A.chaining + .05)), m4 = io(P(t, A.works - .3, A.works + .1));
     var dTop = 510 + (396 - 510) * shrink, dH = 122 + 10 * shrink - 30 * m4, dk = $('deck');
     dk.style.top = dTop + 'px'; dk.style.height = dH + 'px'; dk.style.opacity = dIn * (1 - ex); dk.style.transform = 'translateY(' + ((1 - dIn) * 30) + 'px)';
-    var chA = Math.max(win(t, A.chaining - .15, A.fix - .12, .12), win(t, D2.t0 - .05, A.works - .15, .12));
+    var chA = Math.max(win(t, A.chaining - .15, A.fix - .12, .12), win(t, D2.t0 - .05, A.menus - .05, .12));
     $('ch').style.opacity = chA;
     var after = t >= A.fix, flow = after ? out(P(t, D2.t0 + .3, D2.t0 + .9)) : out(P(t, A.chaining - .1, A.chaining + .5));
     var ar = $('arrow').firstChild; ar.style.width = (after ? 46 * flow : 116 * flow) + 'px'; ar.style.background = after ? 'var(--acc)' : 'var(--red)';
@@ -179,10 +179,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     $('nPop').style.borderColor = after ? 'var(--acc)' : 'var(--rule)';
     $('cd').style.opacity = win(t, A.fix, D2.t0 - .15, .12);
     $('cd').innerHTML = typed(CODE, 9 + Math.floor((CODE_TXT.length - 9) * P(t, A.fix + .2, A.codeEnd)));
-    var uA = win(t, A.works - .05, DUR, .15); $('uses').style.opacity = uA;
+    var uA = win(t, A.menus - .08, DUR, .12); $('uses').style.opacity = uA;
     [A.menus, A.sheets, A.chat].forEach(function(a, i){ var s = $('uses').children[i], k = out(P(t, a - .05, a + .25)); s.style.opacity = k; s.style.transform = 'translateY(' + (1 - k) * 10 + 'px)'; });
     var dl = $('deckL'); dl.style.top = (dTop + dH + 14) + 'px';
-    dl.textContent = t < A.fix - .12 ? 'THE SCROLL PASSES TO THE PAGE' : t < D2.t0 - .15 ? 'ONE RULE, ON THE POPUP' : t < A.works - .15 ? 'IT STOPS AT THE POPUP' : 'ANYTHING THAT SCROLLS';
+    dl.textContent = t < A.fix - .12 ? 'THE SCROLL PASSES TO THE PAGE' : t < D2.t0 - .15 ? 'ONE RULE, ON THE POPUP' : t < A.menus - .08 ? 'IT STOPS AT THE POPUP' : 'ANYTHING THAT SCROLLS';
     dl.style.color = t < A.fix - .12 ? '#ff4d3d' : '#ffb547'; dl.style.opacity = dIn * (1 - ex);
     // ---- the readout top right ----
     var H;
