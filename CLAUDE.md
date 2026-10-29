@@ -27,7 +27,7 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
 Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
-- Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel; `node scripts/showreel/preflight.mjs <config>` plus stills for showreels)
+- Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel; `node scripts/showreel/preflight.mjs <config>` plus `node scripts/showreel/stills.mjs <config> <out>` for showreels, one sheet to review)
   and clear all of it: the PREFLIGHT voice line must say "fits", no "text wider than its box", and stills at every beat checked for empty frames.
   Re-render only for a real defect in the output.
 - Ownership (owner, 28 Oct 2026): Claude decides the topics for both channels, runs every check, renders and delivers; the owner watches and posts.
@@ -71,7 +71,9 @@ Reels carry their own sound from 23 Oct (owner: audio supports the hook): effect
 ## Save Claude usage (owner, 14 Oct 2026)
 Heavy work runs on GitHub. In a session keep to quick stills and checks; never poll long jobs (one check-in after ~12 minutes is enough).
 Before any task, tell the owner its size, S (< 15 min) / M (30-60 min) / L (1-3 h) of session work, and wait for a go-ahead on M or bigger unless already approved.
-The daily reels routine (scheduled task, 09:41 IST, after the 08:52 audit) makes that day's @webin20sec and @techin20sec reels; approved standing work.
+The daily studio run (scheduled task, 08:52 IST, a fresh session each day) does the audit, then that day's @webin20sec and @techin20sec reels; approved standing work.
+Lean by default (owner, 29 Oct 2026): scheduled work starts a fresh session, never a long-running one; review one stills sheet and one contact sheet
+per reel, not separate frames; read the voice check and qa.txt as text; at most one check-in per render, inside the same session; no subagents.
 
 ## Never do
 - Force-push, rewrite history, or delete branches yourself
