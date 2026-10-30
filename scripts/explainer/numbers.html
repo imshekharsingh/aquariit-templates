@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why do your numbers wiggle when they change?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 09, a type tip: "Why do your numbers wiggle when they change?"
+   A live timer in a proportional font: a 1 is narrow and a 0 is wide, so every tick moves the line's right edge (the trail of edges shows it);
+   font-variant-numeric: tabular-nums gives every digit one width (the timer really switches to the font's tnum figures, measured in the page).
+   Flow as Nº 04-08: one screen that only moves and scales, one panel under it (digit widths, code, the same digits tabular, where it applies).
+   Beats and captions lead the voice by 0.15 s; the title holds until it is complete and the cover is that moment (window.COVER);
+   every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--rule:#33343c;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:236px;font-weight:800;font-size:72px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--acc)}
+/* the screen: a live timer; its right edge is marked, with the last few edges as a fading trail */
+#scr{left:36px;top:206px;width:468px;height:286px;border-radius:30px;background:var(--surface);overflow:hidden;transform-origin:50% 0}
+#scr .hd{position:absolute;left:28px;top:24px;font:700 14px/1 var(--m);letter-spacing:.14em;color:var(--dim)}
+#scr .hd i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:0}
+#row{left:28px;top:52px;white-space:nowrap}
+#num{font:800 112px/1 var(--f);font-variation-settings:'opsz' 96;letter-spacing:0}
+#num span{display:inline-block}
+#unit{font:700 30px/1 var(--m);color:var(--dim);margin-left:10px}
+#trail i{position:absolute;top:60px;width:3px;height:104px;border-radius:2px}
+#cells i{position:absolute;top:58px;height:108px;border:2px solid var(--acc);border-radius:8px}
+.mini{position:absolute;left:28px;right:28px;height:40px;border-top:1.5px solid var(--rule);font:700 26px/40px var(--f);display:flex;justify-content:space-between}
+.mini span:first-child{font:700 14px/40px var(--m);letter-spacing:.12em;color:var(--dim)}
+/* the deck: digit widths → code → the same digits, one width → where it applies */
+#deck{left:36px;width:468px;border-radius:20px;background:var(--surface);overflow:hidden}
+#deck > .lay{position:absolute;left:0;top:0;right:0;bottom:0}
+.tile{position:absolute;top:14px;height:104px}
+.tile .g{position:absolute;left:0;top:0;font:800 80px/1 var(--f);font-variation-settings:'opsz' 96;color:var(--paper)}
+.tile .br{position:absolute;left:0;top:88px;height:10px;border:2.5px solid var(--red);border-top:0;border-radius:0 0 4px 4px}
+.tile .w{position:absolute;top:30px;font:700 22px/1 var(--m);white-space:nowrap}
+#cd{padding:16px 22px;font:500 20px/1.4 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#uses{display:flex;gap:12px;align-items:center;padding:0 22px}
+#uses span{height:40px;padding:0 16px;border-radius:20px;background:rgba(124,240,182,.12);color:var(--acc);font:700 17px/40px var(--f);white-space:nowrap}
+#deckL{left:36px;font:700 15px/1 var(--m);letter-spacing:.12em;white-space:nowrap}
+#cap{left:36px;right:36px;top:672px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+#ms{visibility:hidden;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 09 · TYPE</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>do</span> <span>your</span></span><span class="ln"><span>numbers</span></span><span class="ln"><span class="acc">wiggle</span> <span>when</span></span><span class="ln"><span>they</span> <span>change?</span></span></div>
+<div id="scr" class="a">
+  <div class="hd"><i></i>LAP TIME</div>
+  <div id="trail" class="a" style="left:0;top:0"></div>
+  <div id="cells" class="a" style="left:0;top:0"></div>
+  <div id="row" class="a"><span id="num"></span><span id="unit">sec</span></div>
+  <div class="mini" id="m1" style="top:190px"><span>TOTAL</span><span id="price"></span></div>
+  <div class="mini" id="m2" style="top:232px"><span>SCORE</span><span id="score"></span></div>
+</div>
+<div id="deck" class="a">
+  <div id="tl" class="lay"><div class="tile" id="t1" style="left:40px"><div class="g">1</div><div class="br"></div><div class="w"></div></div><div class="tile" id="t0" style="left:250px"><div class="g">0</div><div class="br"></div><div class="w"></div></div></div>
+  <div id="cd" class="lay"></div>
+  <div id="uses" class="lay"><span>Timers</span><span>Prices</span><span>Scores</span></div>
+</div>
+<div id="deckL" class="a"></div>
+<div id="cap" class="a"></div>
+<span id="ms" class="a"></span>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why do your numbers wiggle when they change? Each digit has its own width. A one is narrow, a zero is wide. So every tick, the line shifts. The fix: font variant numeric, tabular nums. Now every digit takes the same width. Timers, prices and scores hold still.";
+  // 21 s, the whole script in one take; beats and caption words land 0.15 s before the word
+  var WORDS = [], DUR = 21, LEAD = .15, HOOK_N = 8;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { each: at('each'), one: at('one'), narrow: at('narrow'), zero: at('zero'), wide: at('wide'), tick: at('tick'), shifts: at('shifts'), fix: at('fix'),
+      font: at('font'), tabular: at('tabular'), nums: at('nums'), now: at('now'), same: at('same'), timers: at('timers'), prices: at('prices'), scores: at('scores'), still: at('still') };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.each - .3, A.hookIn + .35);
+    A.codeEnd = Math.min(A.nums + .3, A.now - .4);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  // ---- the numbers: a lap timer ticking ten times a second (digits chosen so 1s come and go), a total and a score ----
+  var STEP = .1;
+  function lap(t){ var n = Math.floor(t / STEP); return (10 + n * .173 + ((n * 7919) % 13) * .01).toFixed(2); }
+  function price(t){ var n = Math.floor(t / .15); return '$' + (1000 + n * 11.11 + (n * 37 % 9)).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'); }
+  function score(t){ var n = Math.floor(t / .5); return (10 + (n * 3 % 11)) + ' : ' + (9 + (n * 5 % 12)); }
+  // widths come from the real font in this page: proportional figures, or tabular ones (font-variant-numeric: tabular-nums)
+  var ms = $('ms'), WCACHE = {};
+  function width(s, tab, size){ var k = s + (tab ? 't' : 'p') + size; if (WCACHE[k] === undefined) {
+    ms.style.font = '800 ' + size + "px/1 'Bricolage Grotesque'"; ms.style.fontVariationSettings = "'opsz' 96"; ms.style.fontVariantNumeric = tab ? 'tabular-nums' : 'normal';
+    ms.textContent = s; WCACHE[k] = ms.getBoundingClientRect().width; } return WCACHE[k]; }
+  var CODE = '<span class="dim">.timer {</span>\n  <b>font-variant-numeric:</b>\n    <b>tabular-nums;</b>\n<span class="dim">}</span>';
+  var CODE_TXT = CODE.replace(/<[^>]+>/g, '');
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function show(el, o, y, s){ el.style.opacity = o; el.style.transform = 'translateY(' + (y || 0) + 'px) scale(' + (s === undefined ? 1 : s) + ')'; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    // ---- the title: holds until it is complete, then leaves ----
+    var gone = io(P(t, A.leave, A.leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the screen: small under the title, full for the problem, smaller while the rule is typed, full again ----
+    var rise = io(P(t, A.leave + .25, A.leave + .7)), m1 = io(P(t, A.fix - .35, A.fix + .15)), m2 = io(P(t, A.now - .45, A.now - .1)), shrink = m1 * (1 - m2);
+    var drift = Math.sin(t * .9) * 3 * (1 - rise);
+    show($('scr'), out(P(t, .05, .4)) * (1 - ex), (1 - rise) * 340 + drift + ex * 20, mix(.62, 1, rise) * mix(1, .62, shrink));
+    var tab = t >= A.now - .1, v = lap(t), num = $('num');
+    num.style.fontVariantNumeric = tab ? 'tabular-nums' : 'normal';
+    num.innerHTML = v.split('').map(function(c){ return '<span>' + c + '</span>'; }).join('');
+    // the trail: where the right edge was on the last six ticks (red while it moves, one green line once it holds)
+    var x0 = 28, tr = '', lo = 1e9, hi = -1e9;
+    for (var k = 5; k >= 0; k--) { var tt = t - k * STEP; if (tt < 0) continue; var x = x0 + width(lap(tt), tab, 112); lo = Math.min(lo, x); hi = Math.max(hi, x);
+      var a = k === 0 ? 1 : .55 - k * .08; tr += '<i style="left:' + (x + 2).toFixed(1) + 'px;opacity:' + a.toFixed(2) + ';background:' + (tab ? 'var(--acc)' : 'var(--red)') + '"></i>'; }
+    var showTrail = t > .3;
+    $('trail').innerHTML = showTrail ? tr : '';
+    // the cells: one equal box per digit, shown when "the same width" is said
+    var cA = win(t, A.same - .1, A.timers - .1, .15), ch = '';
+    if (cA > 0) { var cx = x0; v.split('').forEach(function(c){ var w = width(c, true, 112); if (/\d/.test(c)) ch += '<i style="left:' + (cx + 2).toFixed(1) + 'px;width:' + (w - 4).toFixed(1) + 'px;opacity:' + cA + '"></i>'; cx += w; }); }
+    $('cells').innerHTML = ch;
+    // the total and the score tick along with it (and wiggle too); each lights up when it is named
+    [[$('m1'), A.prices, price(t)], [$('m2'), A.scores, score(t)]].forEach(function(m){ var k = out(P(t, m[1] - .05, m[1] + .3)), v2 = m[0].lastChild;
+      v2.textContent = m[2]; v2.style.fontVariantNumeric = tab ? 'tabular-nums' : 'normal'; v2.style.color = k > .5 ? 'var(--acc)' : 'var(--paper)';
+      m[0].firstChild.style.color = k > .5 ? 'var(--acc)' : 'var(--dim)'; m[0].style.transform = 'translateX(' + Math.sin(k * Math.PI) * 6 + 'px)'; });
+    // ---- the deck: digit widths (top 510) → code (396) → the same digits, one width (510) → uses → gone at the end ----
+    var dIn = out(P(t, A.each - .25, A.each + .05)), m4 = io(P(t, A.timers - .3, A.timers + .1));
+    var dTop = 510 + (396 - 510) * shrink, dH = 132 + 16 * shrink - 40 * m4, dk = $('deck');
+    dk.style.top = dTop + 'px'; dk.style.height = dH + 'px'; dk.style.opacity = dIn * rise * (1 - ex); dk.style.transform = 'translateY(' + ((1 - dIn) * 30) + 'px)';
+    $('tl').style.opacity = Math.max(win(t, A.each - .15, A.fix - .12, .12), win(t, A.now - .05, A.timers - .05, .12));
+    [['t1', A.one, A.narrow, '1'], ['t0', A.zero, A.wide, '0']].forEach(function(d){
+      var el = $(d[0]), g = el.children[0], br = el.children[1], wl = el.children[2], aft = t >= A.fix;
+      var k = aft ? 1 : mix(.25, 1, out(P(t, d[1] - .05, d[1] + .25))), kb = aft ? out(P(t, A.same - .05, A.same + .3)) : out(P(t, d[2] - .05, d[2] + .3));
+      var tb = aft && t >= A.same - .05, w = width(d[3], tb, 80);
+      g.style.fontVariantNumeric = tb ? 'tabular-nums' : 'normal';
+      el.style.opacity = k; el.style.transform = 'translateY(' + (1 - k) * 14 + 'px)';
+      br.style.width = w + 'px'; br.style.borderColor = tb ? 'var(--acc)' : 'var(--red)'; br.style.opacity = aft && !tb ? .35 : kb;
+      wl.style.left = (w + 22) + 'px'; wl.style.color = tb ? 'var(--acc)' : 'var(--red)'; wl.style.opacity = aft && !tb ? .35 : kb;
+      wl.textContent = Math.round(w) + ' px'; });
+    $('cd').style.opacity = win(t, A.fix, A.now - .15, .12);
+    $('cd').innerHTML = typed(CODE, 9 + Math.floor((CODE_TXT.length - 9) * P(t, A.fix + .2, A.codeEnd)));
+    var uA = win(t, A.timers - .08, DUR, .12); $('uses').style.opacity = uA;
+    [A.timers, A.prices, A.scores].forEach(function(a, i){ var s = $('uses').children[i], k = out(P(t, a - .05, a + .25)); s.style.opacity = k; s.style.transform = 'translateY(' + (1 - k) * 10 + 'px)'; });
+    var dl = $('deckL'); dl.style.top = (dTop + dH + 14) + 'px';
+    dl.textContent = t < A.fix - .12 ? 'EACH DIGIT, ITS OWN WIDTH' : t < A.now - .15 ? 'ONE RULE, ON THE NUMBER' : t < A.timers - .08 ? 'EVERY DIGIT, ONE WIDTH' : 'ANYWHERE NUMBERS CHANGE';
+    dl.style.color = t < A.fix - .12 ? '#ff5a4a' : '#7cf0b6'; dl.style.opacity = dIn * rise * (1 - ex);
+    // ---- the readout top right: how far the edge moved over the last six ticks ----
+    var H, shift = Math.round(hi - lo);
+    if (t < A.leave + .2) H = 'TIMER · <b>LIVE</b>';
+    else if (t < A.fix - .2) H = 'EDGE MOVES · <b class="r">' + shift + ' PX</b>';
+    else if (t < A.now - .2) H = 'CSS <b>1 RULE</b>';
+    else if (t < A.timers - .1) H = 'EDGE MOVES · <b class="y">' + shift + ' PX</b>';
+    else H = '<b class="y">TABULAR</b> · EVERY NUMBER';
+    $('hud').innerHTML = H; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.tick - .1 ? 'PROPORTIONAL DIGITS' : t < A.fix - .2 ? 'WATCH THE EDGE' : t < A.now - .2 ? 'THE FIX' : t < A.timers - .1 ? 'TABULAR DIGITS' : 'TIMERS · PRICES · SCORES';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)   // the title words are the question, shown as the title instead
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2));
+        var col = /^(font|variant|numeric|tabular|nums|same|still)/i.test(w.d) ? 'var(--acc)' : /^(narrow|wide|shifts)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  // sound: a quiet tick with the timer while it wiggles, taps on the one and the zero, keys for the rule, a soft lock when the edge holds
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
+    for (var r = 0; A.leave + .6 + r * .4 < A.fix - .3; r++) Q.push({ t: A.leave + .6 + r * .4, k: 'tick', g: .12, p: 2 + (r * 3) % 5 });
+    Q.push({ t: A.one, k: 'tap', g: .45, p: 7 }, { t: A.zero, k: 'tap', g: .45, p: 2 }, { t: A.shifts, k: 'thud', g: .35 });
+    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
+    for (var c = 0, t0 = A.fix + .2, t1 = A.codeEnd; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.now - .4, k: 'swish', d: .4, g: .45, p: .3 }, { t: A.same, k: 'tap', g: .5, p: 5 }, { t: A.timers - .2, k: 'swish', d: .35, g: .4, p: -.2 });
+    [A.timers, A.prices, A.scores].forEach(function(a, i){ Q.push({ t: a, k: 'tap', g: .4, p: 3 + i * 2 }); });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

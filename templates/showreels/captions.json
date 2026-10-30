@@ -291,5 +291,24 @@
    "#frontenddev",
    "#webdesign"
   ]
+ },
+ "showreel-19-numbers": {
+  "postOn": "2026-10-31",
+  "caption": "Why do your numbers wiggle when they change? ⏱️\n\nMost fonts give each digit its own width: a 1 is narrow, a 0 is wide. So a live timer, price or score shifts sideways every time a digit changes. Add font-variant-numeric: tabular-nums and every digit takes the same width, so the number holds still. One line of CSS, in every major browser. (It uses the font's tabular figures, so the font needs them; most UI fonts have them.)\nSave it for your next dashboard, or send it to whoever builds your UI.",
+  "keywords": [
+   "font-variant-numeric tabular-nums",
+   "tabular numbers CSS",
+   "CSS numbers jumping",
+   "CSS timer layout shift",
+   "CSS typography tips",
+   "UI design"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#typography",
+   "#uidesign",
+   "#frontenddev"
+  ]
  }
 }

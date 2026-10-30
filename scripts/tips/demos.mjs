@@ -79,6 +79,24 @@ export const demos = {
 <p class="note">Scroll each list to its end and keep going: on the left the striped page behind starts moving, on the right it stays put.</p>`,
     js: `function(root, btn){}`,
   },
+  numbers: {
+    css: `
+#numbers .pane{height:110px}
+#numbers .n{position:absolute;left:14px;top:40px;font:800 44px/1 system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:proportional-nums;white-space:nowrap}
+#numbers .n i{font:700 14px/1 ui-monospace,monospace;font-style:normal;color:#8a8780;margin-left:6px}
+#numbers .fix .n{font-variant-numeric:tabular-nums}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">Proportional digits</span><div class="n"><span>10.00</span><i>sec</i></div></div>
+  <div class="pane fix"><span class="tag ok">font-variant-numeric: tabular-nums</span><div class="n"><span>10.00</span><i>sec</i></div></div>
+</div>
+<button class="play" type="button">Run the timers (4 s)</button>
+<p class="note">Watch the word "sec": on the left it shifts every time a digit changes; on the right it holds still. (Some fonts already use tabular digits by default; the left side forces proportional ones so you can compare.)</p>`,
+    js: `function(root, btn){ btn.addEventListener('click', function(){ if (btn.disabled) return; btn.disabled = true;
+  var ns = root.querySelectorAll('.n span'), t0 = performance.now();
+  (function tick(){ var e = (performance.now() - t0) / 1000, n = Math.floor(e * 10), v = (10 + n * .173 + (n * 7919 % 13) * .01).toFixed(2);
+    ns.forEach(function(s){ s.textContent = v; }); if (e < 4) requestAnimationFrame(tick); else btn.disabled = false; })(); }); }`,
+  },
   transform: {
     css: `
 #transform .pane{height:96px}
