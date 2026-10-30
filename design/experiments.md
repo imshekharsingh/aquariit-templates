@@ -69,6 +69,12 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 30 Oct 2026, 08:52 IST audit (collect 05:25 IST; @webin20sec 56 followers (+5), 24 posts; @techin20sec 9 followers (+0), 26 posts)
+Studio, 7 days (9 reels): **29 Oct 12:32 Nº 07 "Why does your page jump when you tap a link?" 160 reach, 7.8 s, 2 saves at 11.4 h** (Nº 06 had 300 at 6.5 h) · 28 Oct Nº 06 headline 1,376, 12.5 s, 43 saves · 27 Oct Nº 05 2,379 · 26 Oct Nº 04 4,645, 186 saves · 25 Oct Nº 03 1,157 · others 63-176. Median 176; 285 saves, 32 shares. Account, last day: reach 1,772 (35 followers), views 2,694.
+techin20sec, 7 days (20 reels): **29 Oct 15:36 "Your Discord messages could soon show up on Google" 31 reach, 2.6 s at 8.3 h** · best of the week Amazon cloud 173 · PHP2Shell 147. Median 115.5; 3 saves, 0 shares. Account, last day: reach 46, views 84.
+Head to head: median reach 176 vs 115.5 (1.5x). No new milestone (Nº 06 passed 1,000 on 29 Oct; 100 followers not yet).
+Lesson: a fix most devs already know (smooth scroll) starts slow; the non-obvious fixes (text-wrap: balance, stagger) earn the saves. Pick tips people have not seen. Tech: today a gadget launch (touchscreen MacBook Pro) to test a buying-decision stake against the security run.
+
 ### 29 Oct 2026, 08:52 IST audit (collect 05:28 IST; @webin20sec 51 followers (+7 since 19:10), 23 posts; @techin20sec 9 followers (+0), 25 posts)
 Studio, 7 days (9 reels): **28 Oct 12:33 Nº 06 "Why does your headline break so badly?" (Steal this) 1,202 reach, 12.6 s of 20, 34 saves, 3 shares at 16.9 h** (was 300 at 6.5 h) · 27 Oct Nº 05 stutter (Steal this) 2,357, 8.9 s, 46 saves, 4 shares · 26 Oct Nº 04 list (Steal this) 4,525, 14.2 s, 180 saves, 22 shares · 25 Oct Nº 03 popup (Steal this) 1,152, 8.1 s · Nº 02 INP (other) 157 · 24 Oct Nº 01 springs (other) 170 · 23 Oct zero-JS (Steal this) 59 · Built in 20 s 116 · 22 Oct cancel order (other) 26. Median 170; 271 saves, 32 shares. Account, last day: reach 3,757 (36 followers), views 5,520.
 techin20sec, 7 days (20 reels): **28 Oct 12:57 "Siri now remembers your past chats" 6 reach, 3.6 s at 16.5 h** · 27 Oct Wero 67, 3.9 s · Starlink rival 8 · best of the week Amazon cloud 173, 7.0 s (25 Oct 15:20) · PHP2Shell 146. Median 116.5; 4 saves, 2 shares. Account, last day: reach 70, views 138.
