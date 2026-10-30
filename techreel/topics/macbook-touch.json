@@ -1,0 +1,185 @@
+{
+ "slug": "macbook-touch",
+ "topic": "Your next laptop",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.92,
+ "max_speed": 0.98,
+ "dur": 21,
+ "max_end": 20.4,
+ "say": {
+  "OLED": "oh led",
+  "2899": "twenty eight ninety nine dollars",
+  "6": "sixth"
+ },
+ "hook": [
+  "The MacBook",
+  "Pro now has",
+  "a touchscreen"
+ ],
+ "lines": [
+  {
+   "text": "The MacBook Pro now has a touchscreen."
+  },
+  {
+   "text": "The new one has an OLED screen you touch.",
+   "scene": {
+    "label": "THE NEWS",
+    "tint": "blue",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "OLED screen",
+      "Touch input"
+     ],
+     "source_tint": "purple",
+     "hub": {
+      "label": "MACBOOK PRO",
+      "tag": "NEW",
+      "icon": "chip"
+     },
+     "target": {
+      "icon": "user",
+      "label": "You"
+     },
+     "target_tint": "blue",
+     "hub_cue": "screen"
+    }
+   }
+  },
+  {
+   "text": "Scroll, pinch and draw right on it.",
+   "scene": {
+    "label": "WHAT CHANGES",
+    "tint": "purple",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Scroll and pinch",
+       "cue": "scroll"
+      },
+      {
+       "text": "Draw on the screen",
+       "cue": "draw"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "Spotlight and Siri sit in a Dynamic Island.",
+   "scene": {
+    "label": "ALSO NEW",
+    "tint": "amber",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Dynamic Island",
+      "sub": "top of the screen",
+      "icon": "eye"
+     },
+     "inner": {
+      "title": "Spotlight, Siri",
+      "sub": "live up top",
+      "icon": "chat"
+     },
+     "inner_cue": "island"
+    }
+   }
+  },
+  {
+   "text": "It starts at $2,899, out November 6.",
+   "scene": {
+    "label": "THE PRICE",
+    "tint": "red",
+    "kind": "portal",
+    "params": {
+     "icon": "store",
+     "pills": [
+      "From $2,899",
+      "Out Nov 6"
+     ],
+     "guest": "coin",
+     "guest_tint": "amber",
+     "n": 3,
+     "open": "starts"
+    }
+   }
+  },
+  {
+   "text": "The model without touch still sells for less.",
+   "scene": {
+    "label": "THE CATCH",
+    "tint": "amber",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "No touch: still sold",
+      "cue": "without"
+     },
+     "b": {
+      "title": "Touch: costs more",
+      "ticks": [],
+      "cue": "less",
+      "icon": "coin",
+      "meter": false
+     }
+    }
+   }
+  },
+  {
+   "text": "Try one in a store before paying extra.",
+   "scene": {
+    "label": "DO THIS FIRST",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Try it in a store",
+       "cue": "store"
+      },
+      {
+       "text": "Then pay for touch",
+       "cue": "paying"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "The MacBook Pro now has a touchscreen",
+  "caption": "The MacBook Pro now has a touchscreen. 💻\n\nApple's new MacBook Pro with PROLED XDR Display has a tandem OLED screen you can scroll, pinch and draw on, plus a Dynamic Island at the top for Spotlight, Live Activities and Siri. It comes with M5 Pro or M5 Max, starts at $2,899 (14-inch) and $3,399 (16-inch) in the US, and arrives from 6 November. The MacBook Pro without touch is still on sale for less, so try the touch model in a store before you pay extra.\nSend this to a friend who's about to buy a Mac.",
+  "keywords": [
+   "touchscreen MacBook Pro",
+   "MacBook Pro OLED",
+   "MacBook Pro PROLED XDR",
+   "MacBook Pro price",
+   "Apple new MacBook",
+   "tech news"
+  ],
+  "hashtags": [
+   "#macbookpro",
+   "#apple",
+   "#macbook",
+   "#technews",
+   "#laptop"
+  ],
+  "sources": [
+   {
+    "url": "https://www.apple.com/newsroom/2026/10/apple-unveils-groundbreaking-macbook-pro-with-proled-xdr-display/",
+    "note": "Apple newsroom, 28 Oct: tandem OLED with touch, Dynamic Island (Spotlight, Live Activities, Siri), M5 Pro/M5 Max, $2,899 / $3,399, pre-orders 28 Oct, arrives 6 Nov"
+   },
+   {
+    "url": "https://www.apple.com/macbook-pro/proled-xdr-display/compare/",
+    "note": "Apple compare page: PROLED XDR and Liquid Retina XDR (non-touch) models both on sale"
+   },
+   {
+    "url": "https://techcrunch.com/2026/10/28/apples-touchscreen-macbook-pro-pushes-laptop-pricing-to-a-new-extreme/",
+    "note": "TechCrunch: touch models cost more than the non-touch M5 Pro models"
+   }
+  ]
+ }
+}
