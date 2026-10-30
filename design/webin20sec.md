@@ -102,6 +102,16 @@ The four series below still name the subjects; the narrated explainer is how eac
   with the webin20sec scene system. The PHP2Shell and passkey reels (showreel-t01/t02) used the webin20sec look by mistake.
 - Carry over only the approach: news from the last day or two (it is a news account), one concrete picture per spoken line, a
   takeaway worth saving or sending, and the voice check (words and pacing against Nº 01) with breaths between statements.
+- **7-day test from 31 Oct to 6 Nov (owner, 30 Oct): "Tech, explained in 20 s" replaces daily news.** Why: a week flat at 9
+  followers, median reach ~115 (Instagram's first test pool), 2.6-4 s watched of 20, 3 saves and 0 shares in 20 reels; news is
+  stale by our 15:00-19:00 slot. The two best reels (encryption 7.2 s, Amazon cloud 7.0 s) opened on a puzzle and explained a mechanism.
+  - Topic: how everyday tech actually works (why charging stops at 80%, how a passkey logs you in, why Wi-Fi is slower one room over).
+    Evergreen, one mechanism per reel, every claim checked in a primary source (vendor docs, standards, specs). No repeats of
+    topics @webin20sec covers.
+  - Hook: a puzzle or paradox the viewer already half-knows, on screen from frame 0 ("Why does your phone stop at 80%?").
+  - Picture: same techreel look; the middle scenes show the mechanism step by step; the last line is a takeaway worth saving.
+  - Pass by 6 Nov (any one): median reach over 300, average watch over 6 s, or 20 followers. Fail: pause @techin20sec and put its
+    usage into @webin20sec. The 6 Nov audit reports the verdict to the owner.
 
 ## Self-review before the owner sees anything (owner, 23 Oct: "where's the accountability?")
 Claude reviews every draft as a critical creative director before sending it, and does not wait to be asked to improve it.
