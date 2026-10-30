@@ -59,6 +59,10 @@
 #overscroll .pop{position:absolute;left:14%;right:14%;top:24px;height:120px;overflow-y:auto;border-radius:12px;background:#2f2b36;border:1.5px solid #3c3846}
 #overscroll .fix .pop{overscroll-behavior:contain}
 #overscroll .pop div{height:34px;margin:6px;border-radius:8px;background:#3a3644;font:600 13px/34px system-ui,sans-serif;color:#d9d6ce;padding-left:10px}
+#numbers .pane{height:110px}
+#numbers .n{position:absolute;left:14px;top:40px;font:800 44px/1 system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:proportional-nums;white-space:nowrap}
+#numbers .n i{font:700 14px/1 ui-monospace,monospace;font-style:normal;color:#8a8780;margin-left:6px}
+#numbers .fix .n{font-variant-numeric:tabular-nums}
 #transform .pane{height:96px}
 #transform .dot{position:absolute;top:44px;left:12px;width:34px;height:34px;border-radius:10px;background:#7c8cff}
 #transform .run .dot{animation:tip-left 2s ease-in-out infinite alternate}
@@ -74,6 +78,23 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="numbers">
+  <p class="no">Nº 09</p>
+  <h2>Why do your numbers wiggle when they change?</h2>
+  <p class="why">Most fonts use proportional digits: a 1 is narrower than a 0, so a live timer, price or score shifts sideways whenever a digit changes. font-variant-numeric: tabular-nums switches to the font's tabular figures, where every digit has the same width, so the number holds still. The font needs tabular figures (OpenType tnum); most UI fonts have them.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Proportional digits</span><div class="n"><span>10.00</span><i>sec</i></div></div>
+  <div class="pane fix"><span class="tag ok">font-variant-numeric: tabular-nums</span><div class="n"><span>10.00</span><i>sec</i></div></div>
+</div>
+<button class="play" type="button">Run the timers (4 s)</button>
+<p class="note">Watch the word "sec": on the left it shifts every time a digit changes; on the right it holds still. (Some fonts already use tabular digits by default; the left side forces proportional ones so you can compare.)</p></div>
+  <div class="code"><pre><code>.timer {
+  font-variant-numeric: tabular-nums;
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/font-variant-numeric" rel="noopener">Source: MDN, font-variant-numeric</a></p>
+</article>
 
 <article class="tip" id="overscroll">
   <p class="no">Nº 08</p>
@@ -196,11 +217,15 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>6 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>7 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "numbers": function(root, btn){ btn.addEventListener('click', function(){ if (btn.disabled) return; btn.disabled = true;
+  var ns = root.querySelectorAll('.n span'), t0 = performance.now();
+  (function tick(){ var e = (performance.now() - t0) / 1000, n = Math.floor(e * 10), v = (10 + n * .173 + (n * 7919 % 13) * .01).toFixed(2);
+    ns.forEach(function(s){ s.textContent = v; }); if (e < 4) requestAnimationFrame(tick); else btn.disabled = false; })(); }); },
     "overscroll": function(root, btn){},
     "smooth": function(root, btn){ btn.addEventListener('click', function(){ var down = btn.textContent.indexOf('Pricing') > -1;
   root.querySelectorAll('.box').forEach(function(b){ b.scrollTo({ top: down ? b.scrollHeight : 0 }); }); btn.textContent = down ? 'Back to top' : 'Go to Pricing'; }); },
