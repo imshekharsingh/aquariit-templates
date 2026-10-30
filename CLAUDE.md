@@ -44,6 +44,13 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 - Automate as we go (owner, 27 Oct 2026): any step done by hand twice becomes a script, check or workflow step in the same change that repeats it.
   The roadmap is in design/webin20sec.md, "Automation roadmap".
 
+## @techin20sec test, 31 Oct-6 Nov 2026 (owner, 30 Oct; overrides any daily-run instruction to pick "the freshest tech story")
+- @techin20sec makes "Tech, explained in 20 s" reels, not news: design/webin20sec.md, "@techin20sec reels", has the brief and the pass/fail targets.
+  The 6 Nov audit gives the owner the verdict (keep the format, or pause the channel).
+- Before the first test render, fix in techreel/ (same push): qa.txt prints the old 19.4 s voice limit (read the real one), and scenes
+  open with only their label for about 0.4 s (content must arrive with the label).
+- Primary sources apple.com, developer.apple.com, blog.google, developer.chrome.com and webkit.org are allowed in the environment: read them directly.
+
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN and INSTAGRAM_TOKEN_2 (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.
 - The "Instagram collect" workflow reads both accounts nightly; the daily audit (scheduled task, 08:52 IST) writes the Results log.
