@@ -1,13 +1,13 @@
 {
  "web": {
-  "name": "@webin20sec",
+  "name": "Web in 20 Sec",
   "username": "@webin20sec",
   "bio": "One Web fix a day, in 20 seconds. Save it, ship it.",
   "slot": "12:30–13:30 IST",
   "logo": "/channels/webin20sec-logo.png"
  },
  "tech": {
-  "name": "@techin20sec",
+  "name": "Tech in 20 Sec",
   "username": "@techin20sec",
   "bio": "How everyday tech actually works, in 20 seconds.",
   "slot": "15:00–19:00 IST",
