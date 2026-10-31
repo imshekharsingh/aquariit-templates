@@ -66,8 +66,9 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, preflight says "fits", one stills sheet.
 
 ## Accounts and data
-- Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN and INSTAGRAM_TOKEN_2 (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.
-- The "Instagram collect" workflow reads both accounts nightly; the daily audit (scheduled task, 08:52 IST) writes the Results log.
+- Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN, INSTAGRAM_TOKEN_2 and INSTAGRAM_TOKEN_3 (Turns Out, @itturns.out) (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.
+- The "Instagram collect" workflow reads all three accounts nightly (slot 3 only once INSTAGRAM_TOKEN_3 exists); the daily audit (scheduled task, 08:52 IST) writes the Results log
+  and, once slot 3 has data, adds a Turns Out line: followers, last-7-day reels (reach, avg watch, saves, shares, pattern used), best reel and one lesson.
 
 ## Sign-in and secrets
 The whole site sits behind a sign-in page + 30-day session cookie (src/worker.js). Credentials exist only as secrets (GitHub + Worker):
