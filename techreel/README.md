@@ -14,7 +14,7 @@ for the whole reel with karaoke captions, and synthesized sound. A new topic nee
 | path | what it does |
 |---|---|
 | `make.py` | runs everything: voice → timeline → frames piped to ffmpeg (libx264, 8 Mbps) → sound → mux (AAC 192k, two-pass loudness to about -14.5 LUFS, true peak ≤ -1) → QA |
-| `vo/tts.py` | Kokoro `af_heart` at about 1.05, line by line, with a start and end for every word; pronunciation overrides; refuses digits and hyphens; must end by 19.4 s |
+| `vo/tts.py` | Kokoro `af_heart` at about 1.05, line by line, with a start and end for every word; pronunciation overrides; refuses digits and hyphens; must end by 19.4 s, or the topic's `max_end` |
 | `scenes/base.py` | canvas (2x supersampling + a blurred glow layer), palette, easing and springs, background grid, header, progress bar, label chip, hook card, karaoke captions |
 | `scenes/icons.py` | icon library built from shapes (bot, store, cart, card, lock, shield, check, cross, user, chat, gate, coin, doc, bolt, warning, key, chip, cloud, eye) |
 | `scenes/kinds.py` | scene kinds (visual metaphors): `portal`, `flow`, `nest`, `choice`, `guard`, `checklist` |

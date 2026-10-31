@@ -218,7 +218,7 @@ def main():
     lufs = re.search(r'I:\s+(-?[\d.]+) LUFS', summ)
     tp = re.search(r'Peak:\s+(-?[\d.]+) dBFS', summ)
     # QA: blank stretches in the content band (after the hook), layout warnings, loudness
-    qa = [f'voice ends at {vo["dur"]:.2f} s (limit {tts.MAX_END}); speed {vo.get("speed")}', f'levels in the mix: {lv}',
+    qa = [f'voice ends at {vo["dur"]:.2f} s (limit {topic.get("max_end", tts.MAX_END)}); speed {vo.get("speed")}', f'levels in the mix: {lv}',
           f'loudness: {lufs.group(1) if lufs else "?"} LUFS integrated, true peak {tp.group(1) if tp else "?"} dBFS (target -14 to -15, <= -1)']
     run = 0
     for f in range(int(hook_out * FPS), N - int(.4 * FPS)):

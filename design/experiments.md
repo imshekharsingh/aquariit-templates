@@ -69,6 +69,12 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 31 Oct 2026, 08:52 IST audit (collect 05:11 IST; @webin20sec 69 followers (+13), 25 posts; @techin20sec 9 followers (+0), 27 posts)
+Studio, 7 days (8 reels): **30 Oct 13:28 Nº 08 "Why does the page scroll, behind your popup?" 2,518 reach, 9.0 s, 80 saves, 12 shares at ~10 h** (milestone: a fourth reel over 1,000) · Nº 04 4,704 · Nº 05 2,401 · Nº 06 1,422 · Nº 03 1,168 · Nº 07 182 · others 166-182. Median 1,295 (was 176); 411 saves, 43 shares. Account, last day: reach 2,963 (98% non-followers), views 4,032.
+techin20sec, 7 days (19 reels): 30 Oct 18:45 "The MacBook Pro now has a touchscreen" 24 reach, 3.0 s · best Amazon cloud 173. Median 113; 2 saves, 0 shares. Account, last day: reach 62. Head-to-head median 1,295 vs 113.
+Lesson: Nº 07 (182) and Nº 08 (2,518) are the same series and shape; Nº 08 fixes an annoyance every phone user has felt this week (the page scrolling behind a popup). Pick fixes people feel, not ones they must imagine.
+Today: Nº 09 tabular-nums (rendered 30 Oct); @techin20sec test day 1, "Why does your iPhone stop at 80%?" (Apple Support 108055), a mechanism, not news.
+
 ### 30 Oct 2026, 08:52 IST audit (collect 05:25 IST; @webin20sec 56 followers (+5), 24 posts; @techin20sec 9 followers (+0), 26 posts)
 Studio, 7 days (9 reels): **29 Oct 12:32 Nº 07 "Why does your page jump when you tap a link?" 160 reach, 7.8 s, 2 saves at 11.4 h** (Nº 06 had 300 at 6.5 h) · 28 Oct Nº 06 headline 1,376, 12.5 s, 43 saves · 27 Oct Nº 05 2,379 · 26 Oct Nº 04 4,645, 186 saves · 25 Oct Nº 03 1,157 · others 63-176. Median 176; 285 saves, 32 shares. Account, last day: reach 1,772 (35 followers), views 2,694.
 techin20sec, 7 days (20 reels): **29 Oct 15:36 "Your Discord messages could soon show up on Google" 31 reach, 2.6 s at 8.3 h** · best of the week Amazon cloud 173 · PHP2Shell 147. Median 115.5; 3 saves, 0 shares. Account, last day: reach 46, views 84.
