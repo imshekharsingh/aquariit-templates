@@ -36,7 +36,7 @@ def portal(fr, sc, t):
     """A place opens its doors and agents walk in. params: icon, pills[], guest, n, open (cue word)."""
     p = sc.params
     col = NEON[sc.tint]
-    k = spring(t - sc.start - .05)
+    k = spring(t - sc.start + .05)
     s = 330 * (.6 + .4 * k)
     cy = 740
     doors = ease_io(prog(t, sc.cue(p.get('open')) , sc.cue(p.get('open')) + .5))
@@ -44,7 +44,7 @@ def portal(fr, sc, t):
     for i, label in enumerate(p.get('pills', [])):
         n = len(p['pills'])
         x = W / 2 + (i - (n - 1) / 2) * 330
-        pill(fr, x, 1010, label, col, appear(t, sc.start + .25 + i * .12), size=32, max_w=310)
+        pill(fr, x, 1010, label, col, appear(t, sc.start + .1 + i * .1), size=32, max_w=310)
     # guests walk in from the left, one after another, and shrink into the doorway
     g0 = sc.cue(p.get('open')) + .1
     for i in range(p.get('n', 3)):
@@ -64,10 +64,10 @@ def flow(fr, sc, t):
     hub_t = sc.cue(p.get('hub_cue'))
     hx, hy, tx, ty = W / 2, 760, 880, 760
     if p.get('source_note'):
-        fr.text(190, 760 - (len(srcs) - 1) / 2 * 150 - 90, p['source_note'], 20, color=_a(DIM, appear(t, sc.start + .1)), weight=700, anchor='mm', tracking=3)
+        fr.text(190, 760 - (len(srcs) - 1) / 2 * 150 - 90, p['source_note'], 20, color=_a(DIM, appear(t, sc.start)), weight=700, anchor='mm', tracking=3)
     for i, s in enumerate(srcs):
         y = 760 + (i - (len(srcs) - 1) / 2) * 150
-        a = appear(t, sc.start + .1 + i * .12)
+        a = appear(t, sc.start + i * .08)
         pill(fr, 190, y, s, NEON[p.get('source_tint', 'purple')], a, size=34, max_w=300)
         lk = ease_io(prog(t, hub_t, hub_t + .45))
         if lk > 0:
@@ -78,7 +78,7 @@ def flow(fr, sc, t):
                 if lk >= 1:
                     fr.circle(mix(330, hx - 120, u), mix(y, hy, u), 7, fill=_a(col, 1), glow=col)
     # before the hub is named, its place and the target wait as faint outlines, so the frame is never empty
-    ghost = appear(t, sc.start + .2) * (1 - prog(t, hub_t - .05, hub_t + .1))
+    ghost = appear(t, sc.start) * (1 - prog(t, hub_t - .05, hub_t + .1))
     if ghost > 0:
         fr.rect(hx - 120, hy - 150, 240, 300, r=28, outline=_a(col, .35 * ghost), width=2)
         fr.text(hx, hy, '?', 90, color=_a(col, .5 * ghost), weight=800, anchor='mm')
@@ -106,7 +106,7 @@ def nest(fr, sc, t):
     """A container gets a separate compartment for a guest. params: outer{title,sub,icon}, inner{title,sub,icon}, inner_cue."""
     p = sc.params
     col = NEON[sc.tint]
-    oa = spring(t - sc.start - .05)
+    oa = spring(t - sc.start + .05)
     x, y, w, h = 120, 470, 840, 330
     if oa > 0:
         box(fr, x, y + (1 - oa) * 60, w, h, NEON['blue'], min(1, oa * 2))
@@ -132,6 +132,7 @@ def choice(fr, sc, t):
     p = sc.params
     col = NEON[sc.tint]
     a_t, b_t = sc.cue(p['a'].get('cue')), sc.cue(p['b'].get('cue'))
+    a_t = min(a_t, sc.start + .05)   # the first option arrives with the label, so the scene never opens on its chip alone
     ak = spring(t - a_t + .1)
     if t >= a_t - .1:
         x, y = 120, 470 + (1 - ak) * 50
@@ -171,7 +172,7 @@ def guard(fr, sc, t):
     """Something precious sits behind a shield; an agent reaches for it and is stopped. params: object{icon,label}, attacker, stop_cue, badge."""
     p = sc.params
     col = NEON[sc.tint]
-    k = spring(t - sc.start - .05)
+    k = spring(t - sc.start + .05)
     cx, cy = W / 2 + 120, 780
     stop = sc.cue(p.get('stop_cue'))
     sh = ease_out(prog(t, stop - .1, stop + .3))
@@ -200,10 +201,11 @@ def checklist(fr, sc, t):
     for i, it in enumerate(items):
         ct = sc.cue(it.get('cue'))
         k = spring(t - ct + .15)
-        if t < ct - .15:   # each step waits as a faint outline until it is said, so the frame is never empty
-            g = appear(t, sc.start + .1 + i * .1) * .35
-            fr.rect(120, y0 + i * 200, 840, 160, r=28, outline=_a(col, g), width=2)
-            fr.circle(210, y0 + i * 200 + 80, 46, outline=_a(col, g), width=3)
+        if t < ct - .15:   # each step waits, dimmed, until it is said; it arrives with the label so the frame is never empty
+            g = appear(t, sc.start + i * .08)
+            fr.rect(120, y0 + i * 200 + (1 - g) * 30, 840, 160, r=28, fill=_a(col, .06 * g), outline=_a(col, .45 * g), width=2)
+            fr.circle(210, y0 + i * 200 + 80 + (1 - g) * 30, 46, outline=_a(col, .45 * g), width=3)
+            fr.text(290, y0 + i * 200 + 80 + (1 - g) * 30, it['text'], 46, color=_a(DIM, .7 * g), weight=800, anchor='lm', max_w=620)
             continue
         y = y0 + i * 200 + (1 - k) * 50
         box(fr, 120, y, 840, 160, col, min(1, k * 2))

@@ -1,0 +1,184 @@
+{
+ "slug": "charge-80",
+ "topic": "Phone charging",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.92,
+ "max_speed": 0.98,
+ "dur": 21,
+ "max_end": 20.4,
+ "say": {
+  "80%": "eighty percent",
+  "80": "eighty",
+  "15": "fifteen"
+ },
+ "hook": [
+  "Why does your",
+  "iPhone stop",
+  "at 80%?"
+ ],
+ "lines": [
+  {
+   "text": "Why does your iPhone stop charging at 80%?"
+  },
+  {
+   "text": "Batteries wear out faster while they sit full.",
+   "scene": {
+    "label": "THE REASON",
+    "tint": "red",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Less time at 100%",
+      "cue": "wear"
+     },
+     "b": {
+      "title": "Hours at 100%: more wear",
+      "ticks": [],
+      "cue": "sit",
+      "icon": "warning",
+      "meter": false
+     }
+    }
+   }
+  },
+  {
+   "text": "So your iPhone learns when you usually unplug.",
+   "scene": {
+    "label": "STEP 1: IT LEARNS",
+    "tint": "purple",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Your iPhone",
+      "sub": "learns on the device",
+      "icon": "chip"
+     },
+     "inner": {
+      "title": "Your routine",
+      "sub": "when you unplug",
+      "icon": "user"
+     },
+     "inner_cue": "learns"
+    }
+   }
+  },
+  {
+   "text": "Expecting a long charge, it pauses at 80.",
+   "scene": {
+    "label": "STEP 2: IT WAITS",
+    "tint": "amber",
+    "kind": "portal",
+    "params": {
+     "icon": "bolt",
+     "pills": [
+      "Long charge",
+      "Pause at 80%"
+     ],
+     "guest": "coin",
+     "guest_tint": "amber",
+     "n": 0,
+     "open": "pauses"
+    }
+   }
+  },
+  {
+   "text": "Then it aims to be full as you unplug.",
+   "scene": {
+    "label": "STEP 3: IT FINISHES",
+    "tint": "blue",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "Paused at 80%",
+      "Your routine"
+     ],
+     "source_tint": "purple",
+     "hub": {
+      "label": "TOP UP",
+      "tag": "100%",
+      "icon": "bolt"
+     },
+     "target": {
+      "icon": "user",
+      "label": "Full for you"
+     },
+     "target_tint": "green",
+     "hub_cue": "full"
+    }
+   }
+  },
+  {
+   "text": "iPhone 15 and later can also cap it at 80.",
+   "scene": {
+    "label": "ALSO",
+    "tint": "purple",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "iPhone 15 and later",
+      "cue": "iPhone"
+     },
+     "b": {
+      "title": "Charge Limit",
+      "ticks": [
+       "80%",
+       "85%",
+       "90%",
+       "95%",
+       "100%"
+      ],
+      "cue": "cap",
+      "icon": "bolt",
+      "meter": false
+     }
+    }
+   }
+  },
+  {
+   "text": "Keep it on. Rushed? Tap Charge Now.",
+   "scene": {
+    "label": "DO THIS",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Keep it switched on",
+       "cue": "keep"
+      },
+      {
+       "text": "Rushed? Charge Now",
+       "cue": "charge"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "Why does your iPhone stop charging at 80%?",
+  "caption": "Why does your iPhone stop charging at 80%? 🔋\n\nA lithium-ion battery wears faster the longer it sits fully charged. With Optimized Battery Charging, your iPhone learns your daily charging routine on the device, and when it expects a long charge it holds at 80% and aims to be full right when you unplug. On iPhone 15 and later you can also set a Charge Limit from 80% to 100%. Leave it on; if you need a full battery sooner, touch and hold the notification and tap Charge Now.\nSave this for the next time your phone stops at 80.",
+  "keywords": [
+   "iPhone stops charging at 80",
+   "Optimized Battery Charging",
+   "iPhone charge limit 80",
+   "iPhone battery health",
+   "how phone charging works",
+   "battery tips"
+  ],
+  "hashtags": [
+   "#iphonetips",
+   "#batteryhealth",
+   "#iphonebattery",
+   "#techexplained",
+   "#iphonehacks"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/108055",
+    "note": "Apple Support, About Optimized Battery Charging: on-device learning of the daily charging routine; delays charging past 80% when it predicts a long charge; aims to be fully charged when unplugged; reduces time spent fully charged to reduce wear; Charge Now; iPhone 15 and later: Charge Limit 80-100% in 5% steps"
+   }
+  ]
+ }
+}
