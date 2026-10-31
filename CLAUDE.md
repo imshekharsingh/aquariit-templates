@@ -51,6 +51,11 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 - Before the first test render, fix in techreel/ (same push): qa.txt prints the old 19.4 s voice limit (read the real one), and scenes
   open with only their label for about 0.4 s (content must arrive with the label).
 - Primary sources apple.com, developer.apple.com, blog.google, developer.chrome.com and webkit.org are allowed in the environment: read them directly.
+- 1 Nov 2026 (owner, 31 Oct): that day's @techin20sec reel is the passkey reel, remade. showreel-t01-passkeys (scripts/explainer/passkeys.*) was
+  never posted and uses the webin20sec look by mistake: rebuild it as a techreel/ topic in the test format ("How does a passkey log you in
+  without a password?": the mechanism step by step, a takeaway worth saving; facts from the FIDO Alliance and W3C WebAuthn pages), shaped by
+  that morning's audit (hook, length, pacing from what the first test reel showed). Once the remake is rendered and checked, hide
+  showreel-t01-passkeys in captions.json and move its scene to attic/.
 
 ## Turns Out: true stories (owner, 31 Oct 2026; was "Channel 3")
 - Promise: "The true story behind something everyone knows." Plan, never-list, fact rules and the pattern library: design/channel3.md.
