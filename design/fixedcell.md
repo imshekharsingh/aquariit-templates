@@ -88,7 +88,7 @@ Notes in brackets say where Excel and Google Sheets differ; check each against t
 
 ### Lookups
 21. ✅ 31 Oct, showreel-fc01-lookup-column: Why does your lookup break when you add a column? (VLOOKUP's column number; XLOOKUP points at the column)
-22. ✅ 2 Nov, showreel-fc03-trim-space: Why does your lookup miss a name that's right there? (a trailing space; TRIM inside the lookup)
+22. ✅ 2 Nov, showreel-fc03-trim-space: Why does your lookup miss a name that's right there? (a trailing space; TRIM inside the lookup; Sheets trims typed text, so there the space comes from pastes and imports)
 23. Why does your lookup find the wrong row? (VLOOKUP's last argument left out = approximate match; use FALSE / XLOOKUP's exact default)
 24. Why can't VLOOKUP look to the left? (it only returns columns right of the key; XLOOKUP or INDEX + MATCH)
 25. Why does your lookup fail on numbers that look the same? (a number vs a number stored as text: 1001 vs "1001")
