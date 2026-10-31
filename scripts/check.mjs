@@ -82,6 +82,11 @@ for (const dir of ['scripts/explainer', 'scripts/showreel', 'scripts/channel3'])
       else if (!/window\.seek\s*=/.test(readFileSync(join(root, j.seek), 'utf8'))) err(`${label}: ${j.seek} must expose window.seek(t)`);
     }
     postText(j, label);
+    // Channel 3 (owner, 31 Oct 2026: true stories, every claim in two sources): the sources the app lists and copies as a comment
+    if (dir === 'scripts/channel3') {
+      const src = Array.isArray(j.sources) ? j.sources : [];
+      if (src.length < 2 || !src.every((x) => x && String(x.title || '').trim() && /^https:\/\/\S+$/.test(x.url || ''))) err(`${label}: needs a "sources" list of at least 2 entries, each { title, url (https) }`);
+    }
   }
 }
 

@@ -51,19 +51,19 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   open with only their label for about 0.4 s (content must arrive with the label).
 - Primary sources apple.com, developer.apple.com, blog.google, developer.chrome.com and webkit.org are allowed in the environment: read them directly.
 
-## Channel 3 pilots (owner, 31 Oct 2026)
-- Fixed Cell (spreadsheets) is retired: its reels are hidden, its plan, logo and scenes are in attic/. The third Instagram channel is
-  undecided; the app's "Channel 3" tab shows a placeholder profile and three pilot reels, one per concept, for the owner to pick from.
-- Pilots are narrated (owner, 31 Oct, on the silent first set: "no audio, how do we expect the audience to connect to the story?"):
-  a hook question on screen and in the voice from frame 0, a story in full sentences (about 2.3-2.6 words/s), every sentence shown as a
-  caption, effects and bed under the voice (window.CUES); a big change every ~3 s (cuts, pushes, close-ups), payoff or cliffhanger in the
-  last 3 s; matte look (flat colour, crisp edges, paper grain, hard small shadows; no glow); invented characters and nations only.
-  Scenes `scripts/channel3/<slug>.html` + `.json` (name `showreel-c3-<slug>`, `"channel": "c3"` in captions.json, a "concept" and "about"
-  line for the app), rendered by the Showreel workflow. Physics is precomputed on load at a fixed step with seeded randomness; seek reads it.
-  The voice is timed to the scene: the scene sets window.VOICE = { text, at } (one start time per sentence) and the config's voice must match.
-  Before the one render: `node scripts/channel3/qa.mjs <config> --write` (copies the voice in) then clean (voice matches, every sentence on
-  screen, text inside the frame, outcome as scripted), `node scripts/showreel/preflight.mjs <config>` says "fits", and one stills sheet.
-  The silent first pilots (The Drop, Maze escape, Salt Wars) are hidden and their scenes are in attic/scripts/channel3/.
+## Channel 3: true stories (owner, 31 Oct 2026)
+- Promise: "The true story behind something everyone knows." Plan, never-list, fact rules and the pattern library: design/channel3.md.
+  Name undecided: the app's "Channel 3" tab shows a placeholder profile and the pilots, one per animation pattern.
+- Fixed Cell and the fictional pilots (rivals, pick-one, velmora and the silent first set) are retired: hidden, scenes in attic/.
+- Topics: general knowledge, recognisable on every continent (4+ continents a week), simple English, metric + imperial, universal dates.
+  Never: religion, active wars or disputed borders, living politicians, "which country is better", health and diet claims,
+  tragedies as entertainment, anything an official body disputes.
+- Facts: every claim in two reliable sources, not a known myth, no apocryphal quotes; a short credit on the last frame; the config's
+  "sources" list (2+, title + https url; npm run check fails without it) is shown in the app with "Copy as comment".
+- Narrated: hook question on screen and in the voice from frame 0, full sentences at about 2.3-2.6 words/s overall, every sentence shown,
+  a big change every ~3 s, payoff in the last 3 s, 25-35 s, matte look (no glow), every frame a pure function of t.
+  Scenes `scripts/channel3/<slug>.html` + `.json` (name `showreel-c3-<slug>`), entry in captions.json (`"channel": "c3"`, "concept", "about").
+  Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, preflight says "fits", one stills sheet.
 
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN and INSTAGRAM_TOKEN_2 (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.
@@ -88,6 +88,8 @@ Reels carry their own sound from 23 Oct (owner: audio supports the hook): effect
 - Images: code only (inline SVG, CSS, canvas). Fonts: open-licensed Google Fonts or system fonts. Icons: hand-drawn inline SVG.
 - Scenes are single self-contained files; the only external origins allowed are fonts.googleapis.com and fonts.gstatic.com.
 - Facts shown on screen are checked against a primary source and cited.
+- Exception (owner, 31 Oct 2026), Channel 3 only: real historical figures who died 50+ years ago may appear, drawn as friendly cartoon
+  figures recognised by props and setting, never caricatured faces; no living or recently dead people, politicians in office or religious figures.
 
 ## Save Claude usage (owner, 14 Oct 2026)
 Heavy work runs on GitHub. In a session keep to quick stills and checks; never poll long jobs (one check-in after ~12 minutes is enough).

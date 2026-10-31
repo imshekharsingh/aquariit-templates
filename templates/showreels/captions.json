@@ -343,17 +343,32 @@
  },
  "showreel-c3-rivals": {
   "channel": "c3",
-  "concept": "A · Character cast: Four friends, one race",
-  "about": "Zing the show-off, Wob the worrier, Snick the schemer and sleepy Pip, introduced one by one by a narrator, then a peg-board race the narrator calls; a new challenge each episode, viewers pick favourites and the next challenge. 29.7 s."
+  "hidden": true,
+  "superseded": "31 Oct: fictional concepts rejected; replaced by the true-story pilots"
  },
  "showreel-c3-pick-one": {
   "channel": "c3",
-  "concept": "B · Guess before it ends: Four balls, one exit",
-  "about": "The narrator sets the stakes (\"Pick yours now\"), a countdown runs from frame 0, the maze keeps turning, the answer lands on the last second; viewers comment their guess. 22.9 s."
+  "hidden": true,
+  "superseded": "31 Oct: fictional concepts rejected; replaced by the true-story pilots"
  },
  "showreel-c3-velmora": {
   "channel": "c3",
-  "concept": "C · Invented world history: The Salt Wars of Velmora",
-  "about": "An invented continent and thirty years of invented war over one salt mine, told by a narrator in shots: the queen who starts it, each front, a year counter, and black sails as the cliffhanger. 27.6 s."
+  "hidden": true,
+  "superseded": "31 Oct: fictional concepts rejected; replaced by the true-story pilots"
+ },
+ "showreel-c3-eiffel-tower": {
+  "channel": "c3",
+  "concept": "Pattern 1 · Storybook cut-out: How the Eiffel Tower was nearly torn down",
+  "about": "Paper layers, a camera that dollies through them, cut-out figures (Gustave Eiffel, an army radio operator). History: the 20-year permit, the radio antenna that saved it."
+ },
+ "showreel-c3-blue-sky": {
+  "channel": "c3",
+  "concept": "Pattern 2 · One continuous zoom: Why the sky is blue but sunsets are red",
+  "about": "One unbroken camera move through scales, no cuts: a hill, a sunbeam's colours, air molecules, one molecule scattering blue, the planet at sunset, back to the hill. Science."
+ },
+ "showreel-c3-lost-day": {
+  "channel": "c3",
+  "concept": "Pattern 3 · Living globe: The sailors who lost a day",
+  "about": "A turning paper globe, a small fleet inking its route, kinetic dates and cards. History and geography: Pigafetta's diary said Wednesday, Cape Verde said Thursday (1522)."
  }
 }

@@ -1,0 +1,61 @@
+{
+ "name": "showreel-c3-eiffel-tower",
+ "seek": "scripts/channel3/eiffel-tower.html",
+ "dur": 34.4,
+ "fps": 60,
+ "blur": 4,
+ "shutter": 0.45,
+ "grain": 4,
+ "voice": {
+  "text": "Why was the Eiffel Tower almost torn down? It was built for the 1889 World's Fair. At 300 metres, it was the tallest structure on Earth. But Eiffel's permit lasted only twenty years. In 1909, the city could tear it down. So Eiffel found it a new job. In 1903, he let the army test radio from the top. Soon its signals crossed the Mediterranean. Too useful to lose, it was saved in 1910. And it is still on air today.",
+  "at": [
+   0,
+   3.06,
+   6.65,
+   10.96,
+   14.19,
+   17.69,
+   19.71,
+   23.82,
+   27.1,
+   30.82
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "In 1909, Paris could have torn down the Eiffel Tower. A radio antenna saved it. 📻\n\nWhich famous landmark should we explain next? Tell us in the comments 👇",
+ "keywords": [
+  "Eiffel Tower history",
+  "why the Eiffel Tower was not demolished",
+  "Eiffel Tower radio antenna",
+  "Gustave Eiffel",
+  "1889 World's Fair Paris",
+  "history explained",
+  "Paris history facts"
+ ],
+ "hashtags": [
+  "#eiffeltowerhistory",
+  "#parishistory",
+  "#gustaveeiffel",
+  "#historyexplained",
+  "#historyfacts"
+ ],
+ "sources": [
+  {
+   "title": "Why was the Eiffel Tower kept? (Eiffel Tower official site)",
+   "url": "https://www.toureiffel.paris/en/news/130-years/how-did-radio-save-tower"
+  },
+  {
+   "title": "The Eiffel Tower laboratory (Eiffel Tower official site)",
+   "url": "https://www.toureiffel.paris/en/the-monument/eiffel-tower-and-science"
+  },
+  {
+   "title": "How the Eiffel Tower survived (History.com)",
+   "url": "https://www.history.com/articles/eiffel-tower-survival"
+  },
+  {
+   "title": "Tallest iron structure (Guinness World Records)",
+   "url": "https://www.guinnessworldrecords.com/world-records/513002-tallest-iron-structure"
+  }
+ ]
+}
