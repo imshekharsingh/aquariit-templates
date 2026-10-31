@@ -313,14 +313,32 @@
  },
  "showreel-fc01-lookup-column": {
   "channel": "fc",
+  "hidden": true,
   "postOn": "2026-10-31"
  },
  "showreel-fc02-sum-text": {
   "channel": "fc",
+  "hidden": true,
   "postOn": "2026-11-01"
  },
  "showreel-fc03-trim-space": {
   "channel": "fc",
+  "hidden": true,
   "postOn": "2026-11-02"
+ },
+ "showreel-c3-the-drop": {
+  "channel": "c3",
+  "concept": "1 · Character cast: The Drop",
+  "about": "Four invented friends (show-off, worrier, schemer, lucky one) race down a peg board; a new physics challenge each episode, viewers pick favourites."
+ },
+ "showreel-c3-maze-escape": {
+  "channel": "c3",
+  "concept": "2 · Guess before it ends",
+  "about": "Four numbered balls in a turning maze and a countdown: guess which escapes first; the answer lands in the last two seconds."
+ },
+ "showreel-c3-salt-wars": {
+  "channel": "c3",
+  "concept": "3 · Invented world history",
+  "about": "Velmora, a made-up continent: one war-torn era of invented nations in 25 seconds, borders moving on the map, ending on a cliffhanger."
  }
 }

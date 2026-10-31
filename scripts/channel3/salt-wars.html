@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>The Salt Wars</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Channel 3 pilot "Invented world history": Velmora, a made-up continent, and 27 years of its made-up wars in 25 seconds.
+   Everything is generated on load from fixed seeds: the coastline (warped value noise), about 150 provinces (warped nearest-seed
+   cells), six starting nations (grown from their capitals over the province graph) and the scripted era below (EVENTS): who takes
+   which provinces, in which order, at what time. seek(t) only reads that timeline, so every frame is a pure function of t.
+   The map is drawn per pixel into one offscreen image (nation fill x terrain shade, nation borders, faint province lines, coast)
+   and placed with a slow camera that leans toward each event. Ends on a cliffhanger: black sails land in the west. No voice. */
+*{margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:#0b1422}
+canvas{display:block;width:540px;height:960px}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+(function(){
+  var DUR = 25, SEED = 4, FS = "'Cinzel',Georgia,serif", FI = "'Inter Tight',system-ui,sans-serif";
+  var MY = 236, MW = 540, MH = 480, RW = 1080, RH = 960;   // the map's box on screen (CSS px) and its raster (device px)
+  function rnd(s){ return function(){ s |= 0; s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function cl(x, a, b){ return x < a ? a : x > b ? b : x; }
+  function P(t, a, b){ return cl((t - a) / (b - a), 0, 1); }
+  function eo(k){ return 1 - Math.pow(1 - k, 3); }
+  function eio(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+  function eb(k){ var c = 1.5; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); }
+  // value noise
+  function H(i, j, s){ var h = Math.imul(i, 374761393) + Math.imul(j, 668265263) + Math.imul(s, 1442695041); h = Math.imul(h ^ h >>> 13, 1274126177); return ((h ^ h >>> 16) >>> 0) / 4294967296; }
+  function vn(x, y, s){ var i = Math.floor(x), j = Math.floor(y), fx = x - i, fy = y - j, u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy);
+    var a = H(i, j, s), b = H(i + 1, j, s), c = H(i, j + 1, s), d = H(i + 1, j + 1, s); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; }
+  function fbm(x, y, s, o){ var v = 0, a = .5, f = 1; for (var k = 0; k < o; k++){ v += a * vn(x * f, y * f, s + k * 17); a *= .5; f *= 2.03; } return v; }
+
+  // ---- the continent: land where warped noise beats an elliptical falloff ----
+  var N = RW * RH, LAND = new Uint8Array(N), SHADE = new Uint8Array(N);
+  (function(){
+    for (var y = 0; y < RH; y++) for (var x = 0; x < RW; x++){
+      var u = x / RW, v = y / RH, wx = u + .09 * (fbm(u * 3, v * 3, SEED + 50, 3) - .5), wy = v + .09 * (fbm(u * 3 + 9, v * 3, SEED + 60, 3) - .5);
+      var dx = (wx - .5) / .47, dy = (wy - .5) / .47, r = Math.sqrt(dx * dx + dy * dy), n = fbm(wx * 4.2, wy * 4.2, SEED, 5);
+      var e = n + .62 - r * .78, i = y * RW + x; LAND[i] = e > .5 ? 1 : 0;
+      SHADE[i] = cl(200 + (fbm(u * 14, v * 14, SEED + 90, 4) - .5) * 120 + (e - .5) * 70, 150, 255);
+    }
+  })();
+  // ---- provinces: jittered seeds on land, each pixel to its nearest seed after a small warp (organic borders) ----
+  var SEEDS = [], PID = new Int16Array(N).fill(-1);
+  (function(){
+    var r = rnd(SEED * 7 + 1), step = 74;
+    for (var gy = step / 2; gy < RH; gy += step) for (var gx = step / 2; gx < RW; gx += step){
+      var sx = Math.round(gx + (r() - .5) * step * .8), sy = Math.round(gy + (r() - .5) * step * .8);
+      if (sx >= 0 && sx < RW && sy >= 0 && sy < RH && LAND[sy * RW + sx]) SEEDS.push([sx, sy]);
+    }
+    var B = 80, gw = Math.ceil(RW / B), gh = Math.ceil(RH / B), grid = []; for (var k = 0; k < gw * gh; k++) grid.push([]);
+    SEEDS.forEach(function(s, k){ grid[Math.floor(s[1] / B) * gw + Math.floor(s[0] / B)].push(k); });
+    for (var y = 0; y < RH; y++) for (var x = 0; x < RW; x++){
+      var i = y * RW + x; if (!LAND[i]) continue;
+      var u = x + (vn(x / 38, y / 38, SEED + 7) - .5) * 46, v = y + (vn(x / 38 + 5, y / 38, SEED + 8) - .5) * 46, cx = Math.floor(u / B), cy = Math.floor(v / B), best = -1, bd = 1e12;
+      for (var j = cy - 2; j <= cy + 2; j++) for (var q = cx - 2; q <= cx + 2; q++){ if (j < 0 || q < 0 || j >= gh || q >= gw) continue;
+        var L = grid[j * gw + q]; for (var m = 0; m < L.length; m++){ var s = SEEDS[L[m]], d = (s[0] - u) * (s[0] - u) + (s[1] - v) * (s[1] - v); if (d < bd) { bd = d; best = L[m]; } } }
+      PID[i] = best;
+    }
+  })();
+  var NP = SEEDS.length, AREA = new Float64Array(NP), CX = new Float64Array(NP), CY = new Float64Array(NP), ADJ = [], NB = new Int16Array(N).fill(-1);
+  for (var k0 = 0; k0 < NP; k0++) ADJ.push({});
+  (function(){
+    for (var y = 0; y < RH; y++) for (var x = 0; x < RW; x++){
+      var i = y * RW + x, p = PID[i]; if (p < 0) continue; AREA[p]++; CX[p] += x; CY[p] += y;
+      for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++){ var xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= RW || yy >= RH) continue;
+        var q = PID[yy * RW + xx]; if (q === p) continue; if (q < 0) { NB[i] = -2; } else { if (NB[i] === -1) NB[i] = q; ADJ[p][q] = (ADJ[p][q] || 0) + 1; } }
+    }
+    for (var p = 0; p < NP; p++) if (AREA[p]) { CX[p] /= AREA[p]; CY[p] /= AREA[p]; }
+  })();
+  // slivers (under 900 px) join the neighbour they share most border with, so no enclave is left behind by the events
+  (function(){
+    var to = []; for (var p = 0; p < NP; p++){ to.push(p); if (AREA[p] && AREA[p] < 900) { var b = -1, bc = 0; for (var q in ADJ[p]) if (ADJ[p][q] > bc && AREA[q] >= 900) { bc = ADJ[p][q]; b = +q; } if (b >= 0) to[p] = b; } }
+    for (var i = 0; i < N; i++) if (PID[i] >= 0) PID[i] = to[PID[i]];
+    AREA.fill(0); CX.fill(0); CY.fill(0); NB.fill(-1); ADJ = []; for (p = 0; p < NP; p++) ADJ.push({});
+    for (var y = 0; y < RH; y++) for (var x = 0; x < RW; x++){
+      i = y * RW + x; p = PID[i]; if (p < 0) continue; AREA[p]++; CX[p] += x; CY[p] += y;
+      for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++){ var xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= RW || yy >= RH) continue;
+        var q2 = PID[yy * RW + xx]; if (q2 === p) continue; if (q2 < 0) { NB[i] = -2; } else { if (NB[i] === -1) NB[i] = q2; ADJ[p][q2] = (ADJ[p][q2] || 0) + 1; } }
+    }
+    for (p = 0; p < NP; p++) if (AREA[p]) { CX[p] /= AREA[p]; CY[p] /= AREA[p]; }
+  })();
+  ADJ = ADJ.map(function(a){ return Object.keys(a).filter(function(q){ return a[q] > 6; }).map(Number); });
+  // islands: a sea lane to the nearest province, so every province can be reached
+  for (var pi = 0; pi < NP; pi++) if (AREA[pi] && !ADJ[pi].length) { var nb0 = -1, nd = 1e12; for (var qi = 0; qi < NP; qi++) if (qi !== pi && AREA[qi]) { var dd = Math.hypot(CX[pi] - CX[qi], CY[pi] - CY[qi]); if (dd < nd) { nd = dd; nb0 = qi; } } if (nb0 >= 0) { ADJ[pi].push(nb0); ADJ[nb0].push(pi); } }
+  function nearestProv(fx, fy){ var b = -1, bd = 1e12; for (var p = 0; p < NP; p++){ if (!AREA[p]) continue; var d = (CX[p] - fx * RW) * (CX[p] - fx * RW) + (CY[p] - fy * RH) * (CY[p] - fy * RH); if (d < bd) { bd = d; b = p; } } return b; }
+  // graph distance (Dijkstra, centroid gaps) from a set of provinces
+  function dist(from){ var D = new Float64Array(NP).fill(1e9), done = new Uint8Array(NP); from.forEach(function(p){ D[p] = 0; });
+    for (;;) { var u = -1, ud = 1e9; for (var p = 0; p < NP; p++) if (!done[p] && D[p] < ud) { ud = D[p]; u = p; } if (u < 0) break; done[u] = 1;
+      ADJ[u].forEach(function(q){ var d = ud + Math.hypot(CX[u] - CX[q], CY[u] - CY[q]); if (d < D[q]) D[q] = d; }); }
+    return D; }
+
+  // ---- nations ----
+  var NAT = [
+    { name: 'KAEL', col: [228, 87, 79], at: [.27, .46] },
+    { name: 'OSSARY', col: [79, 143, 228], at: [.5, .2] },
+    { name: 'THREN', col: [240, 180, 60], at: [.76, .4] },
+    { name: 'MIREVALE', col: [79, 196, 138], at: [.66, .76] },
+    { name: 'DUSKAR', col: [155, 107, 224], at: [.32, .78] },
+    { name: 'PELL', col: [63, 198, 198], at: [.8, .14] },
+    { name: 'ASHEN', col: [218, 208, 192], at: [0, 0] },
+    { name: '???', col: [24, 20, 30], at: [0, 0] }];
+  var OWN0 = new Int8Array(NP).fill(0), CAP = NAT.slice(0, 6).map(function(n){ return nearestProv(n.at[0], n.at[1]); });
+  (function(){   // grow the six from their capitals: each province goes to the nearest capital by graph distance, a little seeded noise in the weights
+    var r = rnd(SEED * 13), w = []; for (var p = 0; p < NP; p++) w.push(.8 + r() * .4);
+    var Ds = CAP.map(function(c){ return dist([c]); });
+    for (p = 0; p < NP; p++){ if (!AREA[p]) continue; var b = -1, bd = 1e9; for (var n = 0; n < 6; n++){ var d = Ds[n][p] * w[p] * (n === 5 ? 1.5 : 1); if (d < bd) { bd = d; b = n; } } OWN0[p] = b; }
+  })();
+  var MINE = nearestProv(.5, .47);
+
+  // ---- the era: each event flips provinces one after another over its length ----
+  // FLIPS[p] = [[t, owner], ...] in time order; NAMES: a nation's label can change (Thren becomes THE PACT)
+  var FLIPS = []; for (var p0 = 0; p0 < NP; p0++) FLIPS.push([]);
+  var cur = Array.prototype.slice.call(OWN0), FOCUS = [];
+  function owned(n){ var o = []; for (var p = 0; p < NP; p++) if (cur[p] === n) o.push(p); return o; }
+  function take(t, len, to, list){ list.forEach(function(p, k){ var tt = t + len * k / Math.max(1, list.length); FLIPS[p].push([tt, to]); cur[p] = to; });
+    var fx = 0, fy = 0; list.forEach(function(p){ fx += CX[p]; fy += CY[p]; }); FOCUS.push([t, list.length ? fx / list.length : RW / 2, list.length ? fy / list.length : RH / 2]); }
+  function byDist(list, from){ var D = dist(from); return list.filter(function(p){ return D[p] < 1e9; }).sort(function(a, b){ return D[a] - D[b]; }); }
+  var EVENTS = [
+    { t: 0, year: 1204, text: 'SIX NATIONS. ONE SALT MINE.' },
+    { t: 2.8, year: 1206, text: 'KAEL SEIZES THE MINE', run: function(e){ var D = dist([MINE]); var L = []; for (var p = 0; p < NP; p++) if (AREA[p] && cur[p] !== 0) L.push(p);
+      L.sort(function(a, b){ return D[a] - D[b]; }); take(e.t, 1.5, 0, byDist(L.slice(0, 7), owned(0))); } },
+    { t: 5.8, year: 1210, text: 'OSSARY FALLS', run: function(e){ take(e.t, 1.9, 0, byDist(owned(1), owned(0))); } },
+    { t: 8.8, year: 1214, text: 'THREN + MIREVALE = THE PACT', rename: [2, 'THE PACT'], run: function(e){ take(e.t, 1.6, 2, byDist(owned(3), owned(2))); } },
+    { t: 11.8, year: 1218, text: 'THE PACT TAKES THE MINE BACK', run: function(e){ var L = byDist(owned(0), owned(2)); var D = dist([MINE]); L = L.slice(0, 14).sort(function(a, b){ return D[a] - D[b]; }).slice(0, 10); take(e.t, 1.6, 2, byDist(L, owned(2))); } },
+    { t: 14.8, year: 1222, text: "KAEL'S NORTH BREAKS AWAY", run: function(e){ var L = owned(0).sort(function(a, b){ return CY[a] - CY[b]; }); take(e.t, 1.4, 6, L.slice(0, Math.round(L.length * .42)).sort(function(a, b){ return CX[a] - CX[b]; })); } },
+    { t: 17.8, year: 1226, text: 'DUSKAR MARCHES NORTH', run: function(e){ take(e.t, 1.6, 4, byDist(owned(0), owned(4)).slice(0, 7)); } },
+    { t: 20.8, year: 1231, text: 'BLACK SAILS IN THE WEST', run: function(e){ var coast = []; for (var p = 0; p < NP; p++) if (AREA[p] && cur[p] >= 0 && CX[p] < RW * .3) coast.push(p);
+      coast.sort(function(a, b){ return CX[a] - CX[b]; }); take(22.9, 1.2, 7, coast.slice(0, 3)); } }];
+  EVENTS.forEach(function(e){ if (e.run) e.run(e); });
+  window.OUTCOME = { ok: cur.indexOf(1) < 0 && cur.indexOf(3) < 0 && cur.indexOf(7) >= 0 && cur.indexOf(6) >= 0, provinces: NP, start: [0, 1, 2, 3, 4, 5].map(function(n){ return OWN0.filter(function(o){ return o === n; }).length; }), end: [0, 1, 2, 3, 4, 5, 6, 7].map(function(n){ return cur.filter(function(o){ return o === n; }).length; }) };
+  function ownerAt(p, t){ var o = OWN0[p], f = FLIPS[p]; for (var k = 0; k < f.length; k++) if (f[k][0] <= t) o = f[k][1]; return o; }
+  function nameOf(n, t){ var s = NAT[n].name; EVENTS.forEach(function(e){ if (e.rename && e.rename[0] === n && t >= e.t + .8) s = e.rename[1]; }); return s; }
+
+  // ---- drawing ----
+  var cv = document.getElementById('c'), x = cv.getContext('2d'), off = document.createElement('canvas'); off.width = RW; off.height = RH;
+  var ox = off.getContext('2d'), img = ox.createImageData(RW, RH), px = new Uint32Array(img.data.buffer), SEA = new Uint32Array(N);
+  function pack(r, g, b){ return (255 << 24 | (b > 255 ? 255 : b < 0 ? 0 : b) << 16 | (g > 255 ? 255 : g < 0 ? 0 : g) << 8 | (r > 255 ? 255 : r < 0 ? 0 : r)) >>> 0; }   // clamped: a shaded yellow must not wrap past 255
+  (function(){   // the sea: deep blue, lighter in the shallows near the coast (distance by a cheap two-pass chamfer)
+    var D = new Float32Array(N).fill(1e6); for (var i = 0; i < N; i++) if (LAND[i]) D[i] = 0;
+    for (var y = 0; y < RH; y++) for (var x = 0; x < RW; x++){ var i2 = y * RW + x; if (x) D[i2] = Math.min(D[i2], D[i2 - 1] + 1); if (y) D[i2] = Math.min(D[i2], D[i2 - RW] + 1); }
+    for (y = RH - 1; y >= 0; y--) for (x = RW - 1; x >= 0; x--){ i2 = y * RW + x; if (x < RW - 1) D[i2] = Math.min(D[i2], D[i2 + 1] + 1); if (y < RH - 1) D[i2] = Math.min(D[i2], D[i2 + RW] + 1); }
+    for (i = 0; i < N; i++){ var d = D[i], k = Math.exp(-d / 26), ring = d > 7 && d < 10 ? .5 : 0, n = (fbm((i % RW) / 90, Math.floor(i / RW) / 90, SEED + 3, 3) - .5) * 14;
+      var fade = Math.min(1, d / 60); n *= 1 - fade * .8;
+      SEA[i] = pack(11 + 30 * k + n + ring * 20, 20 + 52 * k + n + ring * 30, 34 + 62 * k + n + ring * 34); }
+  })();
+  var PC = new Int32Array(NP * 3), PO = new Int8Array(NP);
+  function paint(t){
+    for (var p = 0; p < NP; p++){
+      var f = FLIPS[p], o = OWN0[p], po = o, tf = -9; for (var k = 0; k < f.length; k++) if (f[k][0] <= t) { po = o; o = f[k][1]; tf = f[k][0]; }
+      var b = P(t, tf, tf + .45), fl = b > 0 && b < 1 ? Math.sin(b * Math.PI) * .55 : 0, A = NAT[po].col, Bc = NAT[o].col, ap = P(t, .05 + (OWN0[p] * .09), .5 + OWN0[p] * .09);
+      if (o === 7) fl *= .4;
+      for (var c = 0; c < 3; c++){ var v = A[c] + (Bc[c] - A[c]) * eio(b); v = v + (255 - v) * fl; v = 60 + (v - 60) * ap; PC[p * 3 + c] = v; }
+      PO[p] = o;
+    }
+    for (var i = 0; i < N; i++){
+      var q = PID[i]; if (q < 0) { px[i] = SEA[i]; continue; }
+      var nb = NB[i], s = SHADE[i] / 230;
+      if (nb === -2) { px[i] = pack(28, 24, 38); continue; }
+      if (nb >= 0 && PO[nb] !== PO[q]) { px[i] = PO[q] === 7 || PO[nb] === 7 ? pack(255, 70, 70) : pack(30, 24, 40); continue; }
+      if (nb >= 0) s *= .84;
+      px[i] = pack(PC[q * 3] * s, PC[q * 3 + 1] * s, PC[q * 3 + 2] * s);
+    }
+    ox.putImageData(img, 0, 0);
+  }
+  // layout probe for scripts/channel3/qa.mjs: every text drawn in the last seek, as its box on screen (CSS px)
+  var BOXES = []; window.__boxes = function(){ return BOXES; };
+  function probe(s, X, Y, al){ if (x.globalAlpha < .05) return; var w = x.measureText(s).width, l = al === 'left' ? X : al === 'right' ? X - w : X - w / 2, m = x.getTransform();
+    var a = m.transformPoint(new DOMPoint(l, Y - 10)), b = m.transformPoint(new DOMPoint(l + w, Y)); BOXES.push([s, a.x / 2, b.x / 2, a.y / 2, b.y / 2]); }
+  function txt(s, X, Y, size, font, col, al, sp, stroke){ var w = font.split(' '); x.font = w[0] + ' ' + size + 'px ' + w.slice(1).join(' '); x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px';
+    if (stroke) { x.lineJoin = 'round'; x.lineWidth = stroke; x.strokeStyle = 'rgba(12,10,20,.75)'; x.strokeText(s, X, Y); } x.fillStyle = col; probe(s, X, Y, x.textAlign); x.fillText(s, X, Y); x.letterSpacing = '0px'; }
+  // the camera leans toward each event: scale and centre eased between keys
+  function camera(t){
+    var keys = [[0, 1, RW / 2, RH / 2]]; FOCUS.forEach(function(f){ var fx = RW / 2 + (f[1] - RW / 2) * .4, fy = RH / 2 + (f[2] - RH / 2) * .4; keys.push([f[0] - .3, 1.1, fx, fy]); keys.push([f[0] + 2.2, 1.04, fx, fy]); });
+    keys.push([20.4, 1, RW / 2, RH / 2]); keys.push([21.8, 1.06, RW * .46, RH * .5]); keys.push([25, 1.09, RW * .46, RH * .5]);
+    keys.sort(function(a, b){ return a[0] - b[0]; });
+    var i = 0; while (i < keys.length - 1 && t >= keys[i + 1][0]) i++;
+    var a = keys[i], b = keys[Math.min(i + 1, keys.length - 1)], k = b === a ? 0 : eio(P(t, a[0], b[0]));
+    return [a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k, a[3] + (b[3] - a[3]) * k];
+  }
+  function seek(t){
+    x.setTransform(2, 0, 0, 2, 0, 0); BOXES.length = 0;
+    paint(t);
+    x.fillStyle = '#0b1422'; x.fillRect(0, 0, 540, 960);
+    var C = camera(t), s = C[0], cx = C[1] / 2, cy = C[2] / 2;   // map units: CSS px inside the map box
+    var tr = function(mx, my){ return [270 + (mx - cx) * s, MY + MH / 2 + (my - cy) * s]; };
+    x.save(); x.beginPath(); x.rect(0, MY - 6, 540, MH + 12); x.clip();
+    var o0 = tr(0, 0); x.imageSmoothingEnabled = true; x.drawImage(off, o0[0], o0[1], MW * s, MH * s);
+    // the salt mine: a white crystal that pulses until it changes hands
+    var m = tr(CX[MINE] / 2, CY[MINE] / 2), pu = .5 + .5 * Math.sin(t * 5);
+    x.fillStyle = 'rgba(255,255,255,' + (.18 + .18 * pu) + ')'; x.beginPath(); x.arc(m[0], m[1], 13 * s, 0, 6.2832); x.fill();
+    x.save(); x.translate(m[0], m[1]); x.scale(s, s); x.fillStyle = '#fff'; x.strokeStyle = '#1e1830'; x.lineWidth = 1.6;
+    x.beginPath(); x.moveTo(0, -9); x.lineTo(6, 0); x.lineTo(0, 9); x.lineTo(-6, 0); x.closePath(); x.fill(); x.stroke(); x.restore();
+    // the fleet: dark sails crossing the western sea from 20.8 s, landing at 22.9 s
+    if (t > 20.6) { var fk = P(t, 20.8, 22.9);
+      for (var k = 0; k < 7; k++){ var lx = (20 + (k % 3) * 22 + fk * 70) , ly = 150 + k * 34 + Math.sin(t * 2 + k) * 3, sp = tr(lx, ly); if (fk >= 1 && k > 3) continue;
+        x.save(); x.translate(sp[0], sp[1]); x.scale(s * (.9 + (k % 2) * .2), s * (.9 + (k % 2) * .2)); x.globalAlpha = P(t, 20.6 + k * .08, 21 + k * .08);
+        x.fillStyle = '#0d0a14'; x.beginPath(); x.moveTo(-9, 4); x.lineTo(9, 4); x.lineTo(6, 8); x.lineTo(-6, 8); x.closePath(); x.fill();
+        x.beginPath(); x.moveTo(0, -12); x.lineTo(8, 2); x.lineTo(0, 2); x.closePath(); x.fill(); x.beginPath(); x.moveTo(-1, -9); x.lineTo(-7, 2); x.lineTo(-1, 2); x.closePath(); x.fill();
+        x.strokeStyle = 'rgba(255,80,80,.7)'; x.lineWidth = 1; x.stroke(); x.restore(); }
+      x.globalAlpha = 1; }
+    // nation labels: at the area-weighted centre of what each holds now, sized by area
+    var L = []; for (var n = 0; n < 8; n++) L.push([0, 0, 0]);
+    for (var p = 0; p < NP; p++){ var f = FLIPS[p], o = OWN0[p], po = o, tf = -9; for (k = 0; k < f.length; k++) if (f[k][0] <= t) { po = o; o = f[k][1]; tf = f[k][0]; }
+      var b = eio(P(t, tf, tf + .6)); if (o < 0) continue; L[o][0] += AREA[p] * b; L[o][1] += CX[p] * AREA[p] * b; L[o][2] += CY[p] * AREA[p] * b;
+      if (po !== o && po >= 0) { L[po][0] += AREA[p] * (1 - b); L[po][1] += CX[p] * AREA[p] * (1 - b); L[po][2] += CY[p] * AREA[p] * (1 - b); } }
+    for (n = 0; n < 8; n++){ var a = L[n][0]; if (a < 2500) continue; var lp = tr(L[n][1] / a / 2, L[n][2] / a / 2), size = cl(8 + Math.sqrt(a) / 28, 11, 24) * Math.sqrt(s);
+      var al = n < 6 ? P(t, .1 + n * .06, .4 + n * .06) : P(a, 2500, 6000); x.globalAlpha = al;
+      if (n === 7) size = 20;
+      x.font = '800 ' + size + 'px ' + (n === 7 ? FI : FS); var hw = x.measureText(nameOf(n, t)).width / 2 + 4; lp[0] = cl(lp[0], 14 + hw, 526 - hw);   // never cut at the frame's edge
+      txt(nameOf(n, t), lp[0], lp[1] + size * .35, size, '800 ' + (n === 7 ? FI : FS), n === 7 ? '#ff5a5a' : '#fff', 'center', 1.5, 4); x.globalAlpha = 1; }
+    x.restore();
+    // ---- header: the era's title, the year, the event ----
+    var ev = 0; for (k = 0; k < EVENTS.length; k++) if (t >= EVENTS[k].t) ev = k;
+    var E0 = EVENTS[ev], E1 = EVENTS[Math.min(ev + 1, EVENTS.length - 1)], yk = ev + 1 < EVENTS.length ? eio(P(t, E0.t, Math.min(E1.t, E0.t + 1.2))) : 1;
+    var year = ev + 1 < EVENTS.length && t > E1.t - 1.2 ? Math.floor(E0.year + (E1.year - E0.year) * eio(P(t, E1.t - 1.2, E1.t))) : E0.year;
+    txt('THE SALT WARS', 270, 100, 17, '700 ' + FI, '#ffcf7a', 'center', 5);
+    var tk = eb(P(t, 0, .45)); x.save(); x.translate(270, 166); x.scale(tk, tk); txt(String(year), 0, 0, 74, '800 ' + FS, '#fff', 'center', 2); x.restore();
+    // the event line: the new one rises in as the old one leaves
+    var ek = P(t, E0.t + .05, E0.t + .4); x.globalAlpha = ek; txt(E0.text, 270, 212 + (1 - eo(ek)) * 10, 21, '800 ' + FI, '#fff', 'center', .5); x.globalAlpha = 1;
+    // the cliffhanger lines
+    if (t > 23.4) { var ck = P(t, 23.4, 23.8); x.globalAlpha = ck; x.fillStyle = 'rgba(8,6,12,.72)'; x.beginPath(); x.roundRect(110, 650, 320, 46, 23); x.fill();
+      txt('WHO ARE THEY?', 270, 680, 20, '800 ' + FI, '#ff6b6b', 'center', 3); x.globalAlpha = 1; }
+    // a thin timeline under the map: 1204 to 1231
+    var tl = cl(t / 20.8, 0, 1); x.fillStyle = 'rgba(255,255,255,.12)'; x.fillRect(60, 734, 420, 3); x.fillStyle = '#ffcf7a'; x.fillRect(60, 734, 420 * tl, 3);
+    EVENTS.forEach(function(e){ var ex = 60 + 420 * cl(e.t / 20.8, 0, 1); x.fillStyle = t >= e.t ? '#ffcf7a' : 'rgba(255,255,255,.3)'; x.beginPath(); x.arc(ex, 735.5, 3.5, 0, 6.2832); x.fill(); });
+  }
+  // sound: a low boom with the title, ticks as the years roll, a hit and a swish for every event, soft taps as provinces fall,
+  // a riser into the sails, a deep boom when they land
+  function cues(){
+    var Q = [{ t: 0, k: 'boom', g: .7 }, { t: .05, k: 'swish', d: .6, g: .5 }];
+    EVENTS.forEach(function(e, i){ if (!i) return; Q.push({ t: e.t, k: 'hit', g: .55, p: -.2 }, { t: e.t - .05, k: 'swish', d: .5, g: .45 });
+      for (var y = 1; y < Math.min(5, e.year - EVENTS[i - 1].year); y++) Q.push({ t: e.t - 1.2 + y * 1.2 / Math.min(5, e.year - EVENTS[i - 1].year), k: 'tick', g: .25, p: y }); });
+    var last = -1; var all = []; FLIPS.forEach(function(f){ f.forEach(function(q){ all.push(q[0]); }); }); all.sort(function(a, b){ return a - b; });
+    all.forEach(function(tt){ if (tt - last > .14 && tt < 22.8) { Q.push({ t: +tt.toFixed(3), k: 'tap', g: .25, p: Math.round(tt * 7) % 12 }); last = tt; } });
+    Q.push({ t: 22.9, k: 'riser', d: 2, g: .5 }, { t: 22.9, k: 'boom', g: .9 }, { t: 23.4, k: 'thud', g: .6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 96, origin: 0, gain: .34, chords: [[38, 50, 57, 62, 65], [34, 50, 53, 58, 62], [36, 48, 55, 60, 64], [33, 45, 52, 57, 61]] } };
+  }
+  cues();
+  window.seek = seek; window.DURATION = DUR; window.COVER = .8;
+  Promise.all([document.fonts.load("800 70px 'Cinzel'"), document.fonts.load("800 18px 'Inter Tight'")]).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

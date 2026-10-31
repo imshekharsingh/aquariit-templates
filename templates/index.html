@@ -51,10 +51,10 @@
   .tile .chev{font:700 1.6rem/1 system-ui,sans-serif;color:var(--mute)}
   .tile.posted .th{opacity:.55}
   .empty{margin-top:30px;color:var(--mute)}
-  /* one tab per channel (owner, 27 Oct 2026; Fixed Cell added 31 Oct): its own accent, posting window and queue */
+  /* one tab per channel (owner, 27 Oct 2026; Channel 3 pilots 31 Oct): its own accent, posting window and queue */
   body[data-ch="web"]{--accent:#7c8cff}
   body[data-ch="tech"]{--accent:#3ee08f}
-  body[data-ch="fc"]{--accent:#efe9dc}
+  body[data-ch="c3"]{--accent:#ffb454}
   .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:6px 0 14px;padding:5px;background:var(--card);border:1px solid var(--line);border-radius:18px}
   .tab{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;min-height:56px;padding:9px 8px;border:0;border-radius:13px;background:transparent;color:var(--mute);text-align:left;cursor:pointer;font:inherit}
   .tab b{font:800 .8rem system-ui,sans-serif;color:var(--ink);letter-spacing:-.02em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -63,12 +63,14 @@
   .tab[aria-selected="true"] span{color:var(--tc)}
   .tab.web{--tc:#7c8cff}
   .tab.tech{--tc:#3ee08f}
-  .tab.fc{--tc:#efe9dc}
+  .tab.c3{--tc:#ffb454}
   /* the channel's profile (owner, 31 Oct 2026): what goes on its Instagram profile, one Copy button per field, the logo to download */
   .prof{margin:0 0 14px;background:var(--card);border:1px solid var(--line);border-radius:18px}
   .prof summary{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 14px;cursor:pointer;list-style:none}
   .prof summary::-webkit-details-marker{display:none}
-  .prof summary img{flex:none;width:44px;height:44px;border-radius:50%;background:#fff}
+  .prof summary img,.prof summary .ph{flex:none;width:44px;height:44px;border-radius:50%;background:#fff}
+  .prof summary .ph{display:grid;place-items:center;background:#1d2133;box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent);font:800 1.1rem system-ui,sans-serif}
+  .about{margin:-2px 0 8px;color:var(--mute);font-size:.85rem}
   .prof .who{flex:1;min-width:0;display:flex;flex-direction:column}
   .prof .who b{font:800 .95rem system-ui,sans-serif}
   .prof .who span{color:var(--mute);font-size:.8rem}
@@ -103,7 +105,7 @@
   <div class="tabs" role="tablist" aria-label="Channel">
     <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
     <button class="tab tech" role="tab" type="button" data-ch="tech" aria-selected="false"><b>@techin20sec</b><span>Tech news</span></button>
-    <button class="tab fc" role="tab" type="button" data-ch="fc" aria-selected="false"><b>Fixed Cell</b><span>Spreadsheet fixes</span></button>
+    <button class="tab c3" role="tab" type="button" data-ch="c3" aria-selected="false"><b>Channel 3</b><span>Pilots</span></button>
   </div>
   <details class="prof" id="prof" hidden><summary>Profile</summary></details>
   <details class="use" id="use" hidden><summary><span>GitHub minutes</span><span id="use-n"></span></summary><div class="bar" id="use-bar"><i></i></div><div id="use-note"></div><ul id="use-list"></ul></details>
@@ -150,22 +152,22 @@
   function istToday(){ return new Date(Date.now() + IST).toISOString().slice(0, 10); }
   function nice(d){ return new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }); }
   // each channel has its own reels, posting window and look (owner, 27 Oct 2026). A reel belongs to @techin20sec when its name starts with
-  // showreel-tech- or showreel-t<digit> (the tech reels), to Fixed Cell when it starts with showreel-fc<digit> (31 Oct), or to the channel
-  // captions.json names ("channel": "tech" / "fc" / "web"); everything else is @webin20sec
+  // showreel-tech- or showreel-t<digit> (the tech reels), to Channel 3 when it starts with showreel-c3- (31 Oct: pilots, the owner picks one
+  // concept), or to the channel captions.json names ("channel": "tech" / "c3" / "web"); everything else is @webin20sec
   var CH = { web: { name: '@webin20sec', slot: '12:30–13:30 IST', sub: 'Web fixes' }, tech: { name: '@techin20sec', slot: '15:00–19:00 IST', sub: 'Tech news' },
-    fc: { name: '@fixedcell', slot: '18:00–20:00 IST', sub: 'Spreadsheet fixes' } };
-  function chOf(s, c){ var m = c[s.name] || {}; return CH[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : /^showreel-fc\d/.test(s.name) ? 'fc' : 'web'; }
-  function label(s){ return s.name.replace(/^showreel-(tech-|fc(?=\d))?/, '').replace(/-/g, ' '); }
+    c3: { name: 'Channel 3', slot: 'to be decided', sub: 'Pilots' } };
+  function chOf(s, c){ var m = c[s.name] || {}; return CH[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : /^showreel-c3-/.test(s.name) ? 'c3' : 'web'; }
+  function label(s){ return s.name.replace(/^showreel-(tech-|c3-)?/, '').replace(/-/g, ' '); }
   var ch = 'web';
   try { var saved = localStorage.getItem('studio-ch'); if (CH[saved]) ch = saved; } catch (e) {}
   if (CH[location.hash.slice(1)]) ch = location.hash.slice(1);
-  function when(d){ if (!d) return 'Not scheduled'; var diff = Math.round((Date.parse(d) - Date.parse(istToday())) / DAY), t = CH[ch].slot;
+  function when(d){ if (!d) return ch === 'c3' ? 'Pilot' : 'Not scheduled'; var diff = Math.round((Date.parse(d) - Date.parse(istToday())) / DAY), t = CH[ch].slot;
     return diff === 0 ? 'Post today · ' + t : diff === 1 ? 'Post tomorrow · ' + t : diff < 0 ? 'Was due ' + nice(d) + ' · post next' : 'Post ' + nice(d) + ' · ' + t; }
   var ticks = {}, trackOk = true;
   function load(){ return fetch('/api/uploaded', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ ticks = j.ids || {}; }).catch(function(){ trackOk = false; }); }
   function mark(name, on){ return fetch('/api/uploaded/' + encodeURIComponent(name), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: on }) })
     .then(function(r){ if (!r.ok) throw 0; if (on) ticks[name] = new Date().toISOString(); else delete ticks[name]; }); }
-  var DATA = null, openName = { web: null, tech: null, fc: null }, tabs = document.querySelectorAll('.tab');
+  var LEDE = document.getElementById('lede').textContent, DATA = null, openName = { web: null, tech: null, c3: null }, tabs = document.querySelectorAll('.tab');
   Array.prototype.forEach.call(tabs, function(t){ t.addEventListener('click', function(){ ch = t.getAttribute('data-ch'); try { localStorage.setItem('studio-ch', ch); } catch (e) {} if (DATA) render(); else paint(); }); });
   // the profile card: one entry per channel in /channels/channels.json (logo, name, username, bio, posting window); a channel without one shows no card
   var PROF = {}, prof = document.getElementById('prof');
@@ -175,12 +177,12 @@
   function field(name, text, btn){ var f = el('div', 'f'), d = el('div'); d.appendChild(el('small', null, name)); d.appendChild(el('p', null, text)); f.appendChild(d); f.appendChild(btn || copyBtn(text)); return f; }
   function profile(){ var p = PROF[ch]; prof.textContent = ''; prof.hidden = !p; if (!p) return;
     var sm = el('summary'), img = document.createElement('img'), who = el('span', 'who');
-    img.src = p.logo; img.alt = ''; sm.appendChild(img); who.appendChild(el('b', null, p.name)); who.appendChild(el('span', null, p.username + ' · posts ' + p.slot)); sm.appendChild(who); sm.appendChild(el('span', 'chev', 'Profile'));
+    if (p.logo) { img.src = p.logo; img.alt = ''; sm.appendChild(img); } else sm.appendChild(el('span', 'ph', '?'));   // no logo yet: a placeholder who.appendChild(el('b', null, p.name)); who.appendChild(el('span', null, p.logo ? p.username + ' · posts ' + p.slot : 'Name, username and bio to be decided')); sm.appendChild(who); sm.appendChild(el('span', 'chev', 'Profile'));
     var inn = el('div', 'in'), dl = el('button', 'btn g', 'Download logo'); dl.type = 'button';
     dl.addEventListener('click', function(){ saveFile(p.logo, p.username.replace(/^@/, '') + '-logo.png', 'image/png', dl, 'Download logo'); });
     inn.appendChild(field('Name', p.name)); inn.appendChild(field('Username', p.username + (p.fallbacks ? ' (if taken: ' + p.fallbacks.join(', ') + ')' : ''), copyBtn(p.username)));
-    inn.appendChild(field('Bio', p.bio)); inn.appendChild(field('Post', 'Daily, ' + p.slot, el('span')));
-    inn.appendChild(field('Profile picture', '1080 × 1080 PNG', dl));
+    inn.appendChild(field('Bio', p.bio)); inn.appendChild(field('Post', p.logo ? 'Daily, ' + p.slot : p.slot, el('span')));
+    inn.appendChild(field('Profile picture', p.logo ? '1080 × 1080 PNG' : 'to be decided', p.logo ? dl : el('span')));
     prof.appendChild(sm); prof.appendChild(inn); }
   // the logo goes to the share sheet ("Save Image") where files can be shared, otherwise it downloads
   function saveFile(url, name, type, btn, idle){ if (btn.disabled) return; btn.disabled = true;
@@ -191,19 +193,20 @@
   fetch('/channels/channels.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }).then(function(j){ PROF = j || {}; profile(); });
   function paint(counts){
     document.body.setAttribute('data-ch', ch); document.getElementById('title').textContent = CH[ch].name; profile();
+    document.getElementById('lede').textContent = ch === 'c3' ? 'Three pilot reels, one per concept for the third channel. Watch them and pick the one to make daily.' : LEDE;
     Array.prototype.forEach.call(tabs, function(t){ var k = t.getAttribute('data-ch'), n = counts && counts[k], sp = t.querySelector('span');
       t.setAttribute('aria-selected', k === ch ? 'true' : 'false');
       sp.textContent = CH[k].sub + (n ? ' · ' + n + ' to post' : ''); sp.className = n ? 'due' : ''; });
   }
   function render(){
-    var d = DATA.d, c = DATA.c, all = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }), counts = { web: 0, tech: 0, fc: 0 };
-    all.forEach(function(s){ if (!ticks[s.name]) counts[chOf(s, c)]++; });
+    var d = DATA.d, c = DATA.c, all = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }), counts = { web: 0, tech: 0, c3: 0 };
+    all.forEach(function(s){ var k = chOf(s, c); if (!ticks[s.name] && k !== 'c3') counts[k]++; });   // pilots are not a posting queue
     paint(counts);
     var items = all.filter(function(s){ return chOf(s, c) === ch; }); list.textContent = '';
     if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No reels for ' + CH[ch].name + ' yet.')); return; }
     // to post first (by date), then the uploaded ones (newest upload first)
     items.sort(function(x, y){ var ux = !!ticks[x.name], uy = !!ticks[y.name]; if (ux !== uy) return ux ? 1 : -1;
-      if (ux) return ticks[x.name] < ticks[y.name] ? 1 : -1; var px = (c[x.name] || {}).postOn || '9999', py = (c[y.name] || {}).postOn || '9999'; return px < py ? -1 : px > py ? 1 : 0; });
+      if (ux) return ticks[x.name] < ticks[y.name] ? 1 : -1; var px = (c[x.name] || {}).postOn || '9999', py = (c[y.name] || {}).postOn || '9999'; if (px !== py) return px < py ? -1 : 1; var cx = (c[x.name] || {}).concept || '', cy = (c[y.name] || {}).concept || ''; return cx < cy ? -1 : cx > cy ? 1 : 0; });   // unscheduled pilots in concept order
     if (!openName[ch] || !items.some(function(s){ return s.name === openName[ch]; })) openName[ch] = items[0].name;
     var fold = null, weekAgo = Date.now() - 7 * DAY;
     items.forEach(function(s){
@@ -215,7 +218,7 @@
       if (s.name !== openName[ch]) {   // collapsed tile: cover, name, date or uploaded mark; tap to open it
         var tl = el('button', 'tile' + (up ? ' posted' : '')); tl.type = 'button'; tl.setAttribute('aria-label', 'Open ' + s.name);
         var th = el('span', 'th'); if (s.cover) th.style.backgroundImage = 'url(' + s.cover + ')'; tl.appendChild(th);
-        var tx = el('span', 'tx'); tx.appendChild(el('span', 'name', label(s)));
+        var tx = el('span', 'tx'); tx.appendChild(el('span', 'name', meta.concept || label(s)));
         tx.appendChild(el('span', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) : when(meta.postOn)));
         tl.appendChild(tx); tl.appendChild(el('span', 'chev', '›'));
         tl.addEventListener('click', function(){ openName[ch] = s.name; render(); var o = list.querySelector('.reel'); if (o) o.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
@@ -226,7 +229,8 @@
       v.setAttribute('aria-label', 'Showreel ' + s.name);
       var b = el('div', 'body');
       b.appendChild(el('div', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) + (meta.postOn ? ' · planned ' + nice(meta.postOn) : '') : when(meta.postOn)));
-      b.appendChild(el('div', 'name', label(s)));
+      b.appendChild(el('div', 'name', meta.concept || label(s)));
+      if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a pilot's one-line description
       b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size)));
       var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), tick = el('button', 'btn g tick' + (up ? ' on' : ''), up ? 'Uploaded ✓' : 'Mark uploaded');
       copy.type = 'button'; copy.disabled = true; dl.type = 'button'; tick.type = 'button'; tick.disabled = !trackOk; if (!trackOk) tick.title = 'Upload tracking is unavailable right now';

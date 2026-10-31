@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Which ball escapes first?</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Channel 3 pilot "Guess before it ends": four numbered balls in a turning three-ring maze; which one gets out first?
+   The physics runs once on load (fixed 480 Hz step, seeded maze, no randomness after that) and seek(t) reads the recorded state, so every
+   frame is a pure function of t. SEED was picked by a one-off search (window.__sim) for a race that ends at the countdown's zero with a
+   close second and a winner who was not ahead five seconds before. The last 0.6 s of the race plays in slow motion; the answer lands in
+   the final two seconds. Language-free: numbers and colours, one short question, no voice. */
+*{margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:#0a0d1a}
+canvas{display:block;width:540px;height:960px}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+(function(){
+  var DUR = 20.6, SEED = 216, EV, F = "'Space Grotesk',system-ui,sans-serif";
+  var C = { x: 270, y: 462 }, RB = 11, HW = 4, RINGS = [62, 122, 182], G = 900, STEP = 1 / 480;
+  var COL = ['#ff5a64', '#ffd23f', '#3fa7ff', '#3ee08f'], NAME = ['RED', 'YELLOW', 'BLUE', 'GREEN'];
+  function rnd(s){ return function(){ s |= 0; s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function cl(x, a, b){ return x < a ? a : x > b ? b : x; }
+  function P(t, a, b){ return cl((t - a) / (b - a), 0, 1); }
+  function eo(k){ return 1 - Math.pow(1 - k, 3); }
+  function eb(k){ var c = 1.7; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); }
+
+  // ---- the maze: gaps (angle, half-width) per ring and spokes (angle, from ring i to i+1), all seeded ----
+  // every sector between two spokes has a way on (or back), so no ball is trapped for good; the maze is redrawn until that holds
+  function sector(sp, a){ var t = sp.slice().sort(function(p, q){ return p - q; }), m = ((a % 6.2832) + 6.2832) % 6.2832;
+    for (var i = 0; i < t.length; i++) if (m < t[i]) return i; return 0; }
+  function maze(r){
+    for (;;) {
+      var M = { gaps: [], spokes: [] }, a0 = r() * 6.283, g1 = r() * 6.283, g2 = g1 + 2.2 + r() * 1.9, g3 = r() * 6.283;
+      var c = [r() * 6.283], d = [r() * 6.283]; c.push(c[0] + 2.4 + r() * 1.5); d.push(d[0] + 2.4 + r() * 1.5);
+      c = c.map(function(v){ return v % 6.2832; }); d = d.map(function(v){ return v % 6.2832; });
+      M.gaps = [[[a0, .34]], [[g1, .19], [g2, .19]], [[g3, .15]]];
+      M.spokes = [[c[0], 0], [c[1], 0], [d[0], 1], [d[1], 1]];
+      var ok = sector(c, g1) !== sector(c, g2) && sector(d, g1) !== sector(d, g2);
+      [g1, g2].forEach(function(g){ [c, d].forEach(function(sp){ var k = sector(sp, g), z = sector(sp, g + .19), y = sector(sp, g - .19); if (k !== z || k !== y) ok = false; }); });
+      if (sector(d, g3) !== sector(d, g3 + .16) || sector(d, g3) !== sector(d, g3 - .16) || sector(c, a0) !== sector(c, a0 + .35) || sector(c, a0) !== sector(c, a0 - .35)) ok = false;
+      M.w0 = .9 + r() * .5; M.s1 = 5 + r() * 5; M.s2 = M.s1 + 3 + r() * 4;
+      if (ok) return M;
+    }
+  }
+  function omega(M, s){   // turns one way, eases into the other, then back
+    var k = cl(s / .8, 0, 1), dir = 1 - Math.tanh((s - M.s1) * 2.5) + Math.tanh((s - M.s2) * 2.5);   // +1 before s1, -1 between, +1 after s2
+    return M.w0 * k * cl(dir, -1, 1);
+  }
+  function inGap(gs, phi){ for (var i = 0; i < gs.length; i++){ var d = Math.abs(((phi - gs[i][0]) % 6.2832 + 9.4248) % 6.2832 - 3.1416); if (d < gs[i][1]) return true; } return false; }
+  // contacts in the maze's own frame: returns [nx, ny, pen] or null for each feature
+  function contacts(M, qx, qy, out){
+    var r = Math.hypot(qx, qy), phi = Math.atan2(qy, qx), i, j;
+    for (i = 0; i < 3; i++){
+      var R = RINGS[i], d = r - R;
+      if (Math.abs(d) < RB + HW && r > 1e-6 && !inGap(M.gaps[i], phi)) { var sg = d >= 0 ? 1 : -1; out.push([sg * qx / r, sg * qy / r, RB + HW - Math.abs(d)]); }
+      for (j = 0; j < M.gaps[i].length; j++) for (var e = -1; e <= 1; e += 2){
+        var ang = M.gaps[i][j][0] + e * M.gaps[i][j][1], px = R * Math.cos(ang), py = R * Math.sin(ang), dx = qx - px, dy = qy - py, dd = Math.hypot(dx, dy);
+        if (dd < RB + HW && dd > 1e-6) out.push([dx / dd, dy / dd, RB + HW - dd]);
+      }
+    }
+    for (i = 0; i < M.spokes.length; i++){
+      var s = M.spokes[i], ux = Math.cos(s[0]), uy = Math.sin(s[0]), r0 = RINGS[s[1]], r1 = RINGS[s[1] + 1];
+      var pr = cl(qx * ux + qy * uy, r0, r1), cx = ux * pr, cy = uy * pr, dx2 = qx - cx, dy2 = qy - cy, d2 = Math.hypot(dx2, dy2);
+      if (d2 < RB + HW && d2 > 1e-6) out.push([dx2 / d2, dy2 / d2, RB + HW - d2]);
+    }
+  }
+  // ---- the simulation: fixed step, recorded at 240 Hz ----
+  function sim(seed, until){
+    var r = rnd(seed), M = maze(r), B = [], th = 0, rec = [], hits = [], esc = [null, null, null, null];
+    for (var i = 0; i < 4; i++){ var a = i * 1.5708 + r() * .5, rr = 18 + r() * 14; B.push({ x: C.x + rr * Math.cos(a), y: C.y + rr * Math.sin(a), vx: 0, vy: 0 }); }
+    var n = Math.ceil(until / STEP), buf = [];
+    for (var k = 0; k <= n; k++){
+      var s = k * STEP, w = omega(M, s), ct = Math.cos(th), st = Math.sin(th);
+      if (k % 2 === 0) { var fr = [th]; B.forEach(function(b){ fr.push(b.x, b.y); }); rec.push(fr); }
+      for (i = 0; i < 4; i++){
+        var b = B[i]; b.vy += G * STEP; b.x += b.vx * STEP; b.y += b.vy * STEP;
+        if (esc[i] !== null) continue;
+        var px = b.x - C.x, py = b.y - C.y, qx = ct * px + st * py, qy = -st * px + ct * py;
+        buf.length = 0; contacts(M, qx, qy, buf);
+        for (var j = 0; j < buf.length; j++){
+          var c = buf[j], nx = ct * c[0] - st * c[1], ny = st * c[0] + ct * c[1];
+          b.x += nx * c[2]; b.y += ny * c[2];
+          var cx = b.x - nx * RB - C.x, cy = b.y - ny * RB - C.y, wx = -w * cy, wy = w * cx;
+          var rx = b.vx - wx, ry = b.vy - wy, vn = rx * nx + ry * ny;
+          if (vn < 0) { if (-vn > 140) hits.push([s, i, -vn]); rx -= 1.45 * vn * nx; ry -= 1.45 * vn * ny; var tx = rx - (rx * nx + ry * ny) * nx, ty = ry - (rx * nx + ry * ny) * ny; rx -= .04 * tx; ry -= .04 * ty; b.vx = rx + wx; b.vy = ry + wy; }
+        }
+        if (Math.hypot(b.x - C.x, b.y - C.y) > RINGS[2] + HW + RB + 6) esc[i] = s;
+      }
+      for (i = 0; i < 4; i++) for (j = i + 1; j < 4; j++){
+        var A = B[i], Bb = B[j], dx = Bb.x - A.x, dy = Bb.y - A.y, d = Math.hypot(dx, dy);
+        if (d < 2 * RB && d > 1e-6) { var nx2 = dx / d, ny2 = dy / d, pe = (2 * RB - d) / 2; A.x -= nx2 * pe; A.y -= ny2 * pe; Bb.x += nx2 * pe; Bb.y += ny2 * pe;
+          var vr = (Bb.vx - A.vx) * nx2 + (Bb.vy - A.vy) * ny2; if (vr < 0) { var im = -.8 * vr; A.vx -= im * nx2; A.vy -= im * ny2; Bb.vx += im * nx2; Bb.vy += im * ny2; if (-vr > 160) hits.push([s, i, -vr * .6]); } }
+      }
+      th += w * STEP;
+    }
+    return { M: M, rec: rec, hits: hits, esc: esc };
+  }
+  // how good a race is (for the one-off seed search): ends in the window, close second, the winner was not ahead 5 s before
+  function judge(S){
+    var first = -1, E = 1e9; S.esc.forEach(function(e, i){ if (e !== null && e < E) { E = e; first = i; } });
+    if (first < 0) return { ok: false, E: null };
+    var at = function(s){ var f = S.rec[cl(Math.round(s * 240), 0, S.rec.length - 1)]; return [0, 1, 2, 3].map(function(i){ return Math.hypot(f[1 + 2 * i] - C.x, f[2 + 2 * i] - C.y); }); };
+    var rE = at(E - .02), r5 = at(E - 5), second = Math.max.apply(null, rE.filter(function(_, i){ return i !== first; }));
+    var lead5 = r5.indexOf(Math.max.apply(null, r5));
+    return { ok: E > 14.8 && E < 17.6 && second > RINGS[1] + 8 && lead5 !== first, E: E, first: first, second: second, lead5: lead5 };
+  }
+  window.__sim = function(seed){ return judge(sim(seed, 18)); };
+
+  // ---- one race, and video time -> race time (frozen guess, real time, 0.6 s of race over 1.5 s, then 60 %) ----
+  var S = sim(SEED, 19.4), J = judge(S), E = J.ok ? J.E : 16, I = 1.3, TA = I + E - .6; EV = TA + 1.5;   // the guess: 1.3 s frozen
+  window.OUTCOME = J;
+  function race(t){ if (t < I) return 0; if (t < TA) return t - I; if (t < EV) return E - .6 + (t - TA) * .4; return Math.min(E + (t - EV) * .6, S.rec.length / 240 - .01); }
+  function state(s){ var f = s * 240, i = Math.floor(f), k = f - i, a = S.rec[Math.min(i, S.rec.length - 1)], b = S.rec[Math.min(i + 1, S.rec.length - 1)];
+    return a.map(function(v, j){ return v + (b[j] - v) * k; }); }
+
+  // ---- drawing ----
+  var cv = document.getElementById('c'), x = cv.getContext('2d');
+  var stars = (function(){ var r = rnd(7), a = []; for (var i = 0; i < 70; i++) a.push([r() * 540, r() * 960, .4 + r() * 1.2, r() * 6]); return a; })();
+  // layout probe for scripts/channel3/qa.mjs: every text drawn in the last seek, as its box on screen (CSS px)
+  var BOXES = []; window.__boxes = function(){ return BOXES; };
+  function probe(s, X, Y, al){ if (x.globalAlpha < .05) return; var w = x.measureText(s).width, l = al === 'left' ? X : al === 'right' ? X - w : X - w / 2, m = x.getTransform();
+    var a = m.transformPoint(new DOMPoint(l, Y - 10)), b = m.transformPoint(new DOMPoint(l + w, Y)); BOXES.push([s, a.x / 2, b.x / 2, a.y / 2, b.y / 2]); }
+  function txt(s, px, py, size, wgt, col, al, sp){ x.font = wgt + ' ' + size + 'px ' + F; x.fillStyle = col; x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px'; probe(s, px, py, x.textAlign); x.fillText(s, px, py); x.letterSpacing = '0px'; }
+  function rrect(px, py, w, h, r){ x.beginPath(); x.roundRect(px, py, w, h, r); }
+  function drawMaze(th, glowK){
+    x.save(); x.translate(C.x, C.y); x.rotate(th);
+    x.lineCap = 'round'; x.strokeStyle = '#e8ecff'; x.lineWidth = HW * 2; x.shadowColor = 'rgba(120,150,255,.55)'; x.shadowBlur = 14;
+    RINGS.forEach(function(R, i){
+      var gs = S.M.gaps[i].map(function(g){ return [g[0] - g[1], g[0] + g[1]]; }).sort(function(a, b){ return ((a[0] % 6.2832) + 6.2832) % 6.2832 - (((b[0] % 6.2832) + 6.2832) % 6.2832); });
+      for (var j = 0; j < gs.length; j++){ var from = gs[j][1], to = gs[(j + 1) % gs.length][0]; while (to <= from) to += 6.2832; x.beginPath(); x.arc(0, 0, R, from, to); x.stroke(); }
+    });
+    S.M.spokes.forEach(function(sp){ var r0 = RINGS[sp[1]], r1 = RINGS[sp[1] + 1]; x.beginPath(); x.moveTo(r0 * Math.cos(sp[0]), r0 * Math.sin(sp[0])); x.lineTo(r1 * Math.cos(sp[0]), r1 * Math.sin(sp[0])); x.stroke(); });
+    // the exit: a warm glow and a small arrow just outside the outer gap
+    var g = S.M.gaps[2][0][0], R3 = RINGS[2]; x.shadowBlur = 0;
+    x.save(); x.rotate(g); x.globalAlpha = .55 + .45 * glowK;
+    var gr = x.createRadialGradient(R3 + 4, 0, 0, R3 + 4, 0, 46); gr.addColorStop(0, 'rgba(255,190,90,.55)'); gr.addColorStop(1, 'rgba(255,190,90,0)'); x.fillStyle = gr; x.beginPath(); x.arc(R3 + 4, 0, 46, 0, 6.2832); x.fill();
+    x.fillStyle = '#ffbe5a'; x.beginPath(); x.moveTo(R3 + 30, 0); x.lineTo(R3 + 18, -8); x.lineTo(R3 + 18, 8); x.closePath(); x.fill();
+    x.restore(); x.restore();
+  }
+  function ball(px, py, i, sc){
+    x.save(); x.translate(px, py); x.scale(sc, sc);
+    x.shadowColor = COL[i]; x.shadowBlur = 16; x.fillStyle = COL[i]; x.beginPath(); x.arc(0, 0, RB, 0, 6.2832); x.fill(); x.shadowBlur = 0;
+    var hl = x.createRadialGradient(-4, -5, 1, 0, 0, RB); hl.addColorStop(0, 'rgba(255,255,255,.55)'); hl.addColorStop(.5, 'rgba(255,255,255,0)'); hl.addColorStop(1, 'rgba(0,0,0,.25)');
+    x.fillStyle = hl; x.beginPath(); x.arc(0, 0, RB, 0, 6.2832); x.fill();
+    x.font = '700 14px ' + F; x.fillStyle = '#0a0d1a'; x.textAlign = 'center'; x.fillText(String(i + 1), 0, 5); x.restore();   // a ball's number moves with the ball: not a layout text
+  }
+  function seek(t){
+    x.setTransform(2, 0, 0, 2, 0, 0); BOXES.length = 0;
+    var s = race(t), f = state(s), th = f[0], W = J.first, rev = P(t, EV, EV + .35), shake = 0;
+    // ground: deep blue with a soft pool of light under the maze and drifting dust
+    var bg = x.createRadialGradient(C.x, C.y, 40, C.x, C.y, 620); bg.addColorStop(0, '#1a2150'); bg.addColorStop(.55, '#0d1129'); bg.addColorStop(1, '#070914');
+    x.fillStyle = bg; x.fillRect(0, 0, 540, 960);
+    if (rev > 0) { var fl = x.createRadialGradient(C.x, C.y, 0, C.x, C.y, 560); fl.addColorStop(0, COL[W] + '55'); fl.addColorStop(1, COL[W] + '00'); x.globalAlpha = rev * (1 - .5 * P(t, EV + .4, EV + 1.6)); x.fillStyle = fl; x.fillRect(0, 0, 540, 960); x.globalAlpha = 1; }
+    stars.forEach(function(p){ x.globalAlpha = .25 + .25 * Math.sin(t * 1.3 + p[3]); x.fillStyle = '#aab6ff'; x.beginPath(); x.arc(p[0], (p[1] - t * 6 * p[2] + 960) % 960, p[2], 0, 6.2832); x.fill(); }); x.globalAlpha = 1;
+    if (t >= EV && t < EV + .3) shake = (1 - P(t, EV, EV + .3)) * 5;
+    var zoom = .97 + .03 * eo(P(t, I, I + .6)) + .05 * eo(P(t, TA, EV)) - .05 * eo(P(t, EV + .2, EV + 1.2));
+    x.save(); x.translate(C.x + Math.sin(t * 90) * shake, C.y + Math.cos(t * 77) * shake); x.scale(zoom * 1.17, zoom * 1.17); x.translate(-C.x, -C.y);
+    drawMaze(th, .5 + .5 * Math.sin(t * 5));
+    // trails: the last 0.3 s of race time
+    for (var i = 0; i < 4; i++){
+      x.strokeStyle = COL[i]; x.lineCap = 'round';
+      for (var k = 12; k > 0; k--){ var a = state(Math.max(0, s - k * .025)), b = state(Math.max(0, s - (k - 1) * .025));
+        x.globalAlpha = .28 * (1 - k / 12); x.lineWidth = RB * 1.4 * (1 - k / 14); x.beginPath(); x.moveTo(a[1 + 2 * i], a[2 + 2 * i]); x.lineTo(b[1 + 2 * i], b[2 + 2 * i]); x.stroke(); }
+      x.globalAlpha = 1;
+    }
+    // after its escape the winner stays where it got out and grows; the others play on
+    var e1 = state(E);
+    for (i = 0; i < 4; i++) if (!(i === W && t >= EV)) ball(f[1 + 2 * i], f[2 + 2 * i], i, 1);
+    if (t >= EV) ball(e1[1 + 2 * W], e1[2 + 2 * W], W, 1 + 1.1 * eb(rev));
+    // the winner's burst: seeded sparks thrown from the exit point, a pure function of time since EV
+    if (t >= EV) { var e0 = state(E), ex = e0[1 + 2 * W], ey = e0[2 + 2 * W], pr = rnd(11), dt = t - EV;
+      for (k = 0; k < 46; k++){ var an = pr() * 6.2832, sp = 120 + pr() * 260, life = .7 + pr() * .8; if (dt > life) continue;
+        var px = ex + Math.cos(an) * sp * dt, py = ey + Math.sin(an) * sp * dt + 300 * dt * dt; x.globalAlpha = 1 - dt / life; x.fillStyle = k % 3 ? COL[W] : '#fff';
+        x.beginPath(); x.arc(px, py, 2.6 * (1 - dt / life) + .6, 0, 6.2832); x.fill(); }
+      x.globalAlpha = 1; }
+    x.restore();
+    // ---- the question (from frame 0), the countdown, the four picks ----
+    var q = 1 - rev;
+    if (q > 0) { x.globalAlpha = q;
+      var ky = 132 + (1 - eo(P(t, 0, .35))) * 14;
+      txt('GUESS NOW', 270, 102, 18, 700, '#ffbe5a', 'center', 4);
+      txt('Which ball', 270, ky + 20, 50, 700, '#fff', 'center', -1.5);
+      txt('escapes first?', 270, ky + 72, 50, 700, '#fff', 'center', -1.5);
+      x.globalAlpha = 1; }
+    if (rev > 0) { var rk = eb(P(t, EV + .05, EV + .45)), yy = 168;
+      x.save(); x.translate(270, yy); x.scale(rk, rk);
+      txt(NAME[W], 0, -6, 64, 700, COL[W], 'center', -1); txt('GETS OUT FIRST', 0, 34, 22, 700, '#fff', 'center', 3); x.restore(); }
+    // countdown: whole seconds to the end of the race, under the maze, with a ring that drains
+    var left = Math.max(0, EV - t), sec = Math.ceil(left - 1e-6), last = sec <= 3 && t >= I;
+    var cy = 724, pulse = last ? 1 + .18 * Math.max(0, 1 - ((sec - left) > 0 ? (1 - (sec - left)) : 1) * 4) : 1;
+    if (t < EV) {
+      x.save(); x.translate(270, cy); x.scale(pulse, pulse);
+      x.lineWidth = 5; x.strokeStyle = 'rgba(255,255,255,.12)'; x.beginPath(); x.arc(0, 0, 30, 0, 6.2832); x.stroke();
+      x.strokeStyle = last ? '#ff5a64' : '#ffbe5a'; x.lineCap = 'round'; x.beginPath(); x.arc(0, 0, 30, -1.5708, -1.5708 + 6.2832 * left / EV); x.stroke();
+      txt(String(sec), 0, 11, 30, 700, last ? '#ff5a64' : '#fff'); x.restore();
+    }
+    // the picks: four chips either side of the timer; the winner's chip lights at the reveal
+    for (i = 0; i < 4; i++){
+      var px = [62, 142, 398, 478][i], on = i === W ? rev : 0, dim = rev * (i === W ? 0 : .6);
+      x.globalAlpha = (1 - dim) * eo(P(t, .1 + i * .06, .4 + i * .06));
+      rrect(px - 34, cy - 24, 68, 48, 24); x.fillStyle = on ? COL[i] : 'rgba(255,255,255,.07)'; x.fill();
+      x.lineWidth = 2; x.strokeStyle = COL[i]; x.stroke();
+      x.fillStyle = on ? '#0a0d1a' : COL[i]; x.beginPath(); x.arc(px - 12, cy, 7, 0, 6.2832); x.fill();
+      txt(String(i + 1), px + 10, cy + 8, 22, 700, on ? '#0a0d1a' : '#fff');
+    }
+    x.globalAlpha = 1;
+  }
+  // sound: a swish at the start, a soft tick each second and a sharper one for the last three, taps for the hardest knocks,
+  // a riser into the slow motion, a hit and a shimmer on the escape
+  function cues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5 }, { t: I, k: 'whoosh', d: .5, g: .45 }];
+    for (var sct = Math.ceil(EV) - 1; sct >= 1; sct--){ var tt = EV - sct; if (tt > .2) Q.push({ t: tt, k: 'tick', g: sct <= 3 ? .5 : .18, p: sct <= 3 ? 7 : 0 }); }
+    var lastT = -1;
+    S.hits.slice().sort(function(a, b){ return a[0] - b[0]; }).forEach(function(h){ var vt = h[0] + I; if (h[0] > E - .6) return; if (vt - lastT > .12 && h[2] > 220) { Q.push({ t: +vt.toFixed(3), k: 'tap', g: Math.min(.4, h[2] / 1500), p: (h[1] * 3) % 12 }); lastT = vt; } });
+    Q.push({ t: EV, k: 'riser', d: 1.5, g: .5 }, { t: EV, k: 'boom', g: .8 }, { t: EV + .02, k: 'shimmer', g: .55 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 112, origin: 0, gain: .3, chords: [[45, 57, 60, 64], [41, 57, 60, 65], [43, 55, 59, 62], [40, 55, 59, 64]] } };
+  }
+  cues();
+  window.seek = seek; window.DURATION = DUR; window.COVER = .6;
+  document.fonts.load("700 50px 'Space Grotesk'").then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
