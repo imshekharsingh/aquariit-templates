@@ -43,6 +43,7 @@ jobs:
         env:
           INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
           INSTAGRAM_TOKEN_2: ${{ secrets.INSTAGRAM_TOKEN_2 }}
+          INSTAGRAM_TOKEN_3: ${{ secrets.INSTAGRAM_TOKEN_3 }}
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
           DRY: ${{ inputs.dry }}
@@ -57,6 +58,10 @@ jobs:
           if [ -n "$INSTAGRAM_TOKEN_2" ]; then   # the second account (owner, 21 Oct 2026)
             echo; echo "---- second account ----"
             INSTAGRAM_TOKEN="$INSTAGRAM_TOKEN_2" node scripts/ig-collect.mjs $flags --slot 2 2>&1 | tee -a collect.log || ok=1
+          fi
+          if [ -n "$INSTAGRAM_TOKEN_3" ]; then   # the third account, Turns Out @itturns.out (owner, 31 Oct 2026)
+            echo; echo "---- third account ----"
+            INSTAGRAM_TOKEN="$INSTAGRAM_TOKEN_3" node scripts/ig-collect.mjs $flags --slot 3 2>&1 | tee -a collect.log || ok=1
           fi
           exit $ok
       - name: Tell the owner when it fails (one open issue at a time)
