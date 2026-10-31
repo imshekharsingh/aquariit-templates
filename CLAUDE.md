@@ -7,7 +7,8 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 
 ## What this repo is now
 - **The app** (https://templates.aquariit.com/, an installed PWA behind a sign-in): home = **Showreels** (templates/index.html):
-  play a reel, copy its post text, save the video. **Archive** (/archive/) lists the templates built 6-17 Oct 2026; they stay live and frozen.
+  play a reel, copy its post text, save the video. One tab per channel, all built the same way from templates/channels/channels.json (profile card)
+  and the reel list (owner, 31 Oct 2026: the tabs must look consistent). The 6-17 Oct templates, their Archive and Style Library were deleted (owner, 31 Oct 2026).
 - **Reels**: one seekable scene per reel, `scripts/explainer/<slug>.html` exposing `window.seek(t)` (every frame a pure function of t,
   seeded randomness only), plus `scripts/explainer/<slug>.json` (name `showreel-NN-<slug>`, dur, fps 60, cover time, caption, 6+ keywords, exactly 5 hashtags).
 - **Render**: always on GitHub (Actions, "Showreel" workflow, config = the json). The MP4, cover and contact sheet land in the "reels" release,
@@ -105,5 +106,4 @@ per reel, not separate frames; read the voice check and qa.txt as text; at most 
 ## Never do
 - Force-push, rewrite history, or delete branches yourself
 - Push to main or deploy manually
-- Modify the archived templates (templates/YYYY-MM-DD*/) unless fixing a broken page
 - Commit secrets, large binaries, or files outside this project

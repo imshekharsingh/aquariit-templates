@@ -1,9 +1,9 @@
-// webin20sec app service worker (home = Showreels, /archive/ = the old templates).
-// Network-first: HTML + /design-log.json (cache fallback => offline revisits work).
+// studio app service worker (home = Showreels).
+// Network-first: HTML + the reel and channel lists (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v11';
+const VERSION = 'v12';
 const CACHE = `aquarii-${VERSION}`;
-const SHELL = ['/', '/archive/', '/404.html', '/manifest.webmanifest', '/design-log.json', '/showreels/captions.json', '/icons/icon.svg'];
+const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/channels/channels.json', '/showreels/captions.json', '/icons/icon.svg'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => Promise.all(SHELL.map((u) => c.add(u).catch(() => {})))).then(() => self.skipWaiting()));
@@ -45,7 +45,7 @@ self.addEventListener('fetch', (e) => {
 
   if (url.pathname.startsWith('/reels/')) return; // large videos with Range requests: straight to the network, never cached
   if (fontHost || url.pathname.startsWith('/icons/')) return e.respondWith(cacheFirst(req));
-  if (req.mode === 'navigate' || url.pathname === '/design-log.json' || url.pathname === '/showreels/captions.json' || url.pathname.endsWith('.html')) {
+  if (req.mode === 'navigate' || url.pathname === '/channels/channels.json' || url.pathname === '/showreels/captions.json' || url.pathname.endsWith('.html')) {
     return e.respondWith(networkFirst(req, req.mode === 'navigate' ? '/' : null));
   }
   e.respondWith(networkFirst(req, null));

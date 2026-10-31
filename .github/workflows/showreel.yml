@@ -1,14 +1,13 @@
 name: Showreel
 
-# "N styles, one reel" (owner, 21 Oct 2026): plays our own templates frame by frame (scripts/showreel/capture.mjs), cuts them together with
-# transitions, labels and a beat-synced score made in code (compose.py; owner chose code-made sound for showreels), keeps the MP4 in the
-# "reels" release and opens an issue for the owner. Run by hand: Actions -> Showreel -> config (default scripts/showreel/reel-01.json).
+# Renders one seekable scene (window.seek(t)) to MP4 with its code-made sound and voice, keeps it in the "reels" release and opens an issue
+# for the owner. The older template-capture reels were retired with the template archive (owner, 31 Oct 2026). Run by hand: Actions -> Showreel -> config.
 on:
   workflow_dispatch:
     inputs:
       config:
         description: Reel config
-        default: scripts/showreel/reel-01.json
+        default: scripts/explainer/overscroll.json
       seconds:
         description: Preview only, this many seconds with sound (goes to the "study" release, no issue). Empty = the whole reel.
         required: false
@@ -71,13 +70,9 @@ jobs:
           mkdir -p out
           SEEK=$(python3 -I -c "import json,sys; print(json.load(open(sys.argv[1])).get('seek',''))" "$CFG")
           COVER=$(python3 -I -c "import json,sys; print(json.load(open(sys.argv[1])).get('cover',1.6))" "$CFG")
-          if [ -n "$SEEK" ]; then
-            # a seekable scene (window.seek(t)): frames straight to MP4; its window.CUES become the sound below
-            node scripts/showreel/seek.mjs "$CFG" "out/$NAME.mp4" ${SECS:+--seconds "$SECS"} 2>&1 | tee capture.log
-          else
-            node scripts/showreel/capture.mjs "$CFG" out/frames 2>&1 | tee capture.log
-            python3 scripts/showreel/compose.py "$CFG" out/frames "out/$NAME.mp4" 2>&1 | tail -3
-          fi
+          [ -n "$SEEK" ] || { echo "::error::$CFG has no \"seek\" scene; template-capture reels were retired on 31 Oct 2026"; exit 1; }
+          # a seekable scene (window.seek(t)): frames straight to MP4; its window.CUES become the sound below
+          node scripts/showreel/seek.mjs "$CFG" "out/$NAME.mp4" ${SECS:+--seconds "$SECS"} 2>&1 | tee capture.log
           [ -s "out/$NAME.cover.txt" ] && COVER=$(cat "out/$NAME.cover.txt") && echo "cover at $COVER s (from the scene: its title is fully on screen)"
           ffmpeg -y -loglevel error -ss "$COVER" -i "out/$NAME.mp4" -frames:v 1 -q:v 3 "out/$NAME-cover.jpg"
           mkdir -p out/review && ffmpeg -y -loglevel error -i "out/$NAME.mp4" -vf "fps=2,scale=270:-1,tile=8x5" -frames:v 1 "out/$NAME-review.png"

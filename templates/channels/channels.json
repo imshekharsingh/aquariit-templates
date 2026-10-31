@@ -6,6 +6,13 @@
   "slot": "12:30–13:30 IST",
   "logo": "/channels/webin20sec-logo.png"
  },
+ "tech": {
+  "name": "@techin20sec",
+  "username": "@techin20sec",
+  "bio": "How everyday tech actually works, in 20 seconds.",
+  "slot": "15:00–19:00 IST",
+  "logo": "/channels/techin20sec-logo.png"
+ },
  "c3": {
   "name": "Turns Out",
   "username": "@itturns.out",
