@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <!-- Turns Out, option F "The other side": a gold coin caught mid-turn, its rim showing as it comes round; no type, pure mark -->
+  <defs>
+    <radialGradient id="bg" cx=".4" cy=".3" r=".95"><stop offset="0" stop-color="#1f3a34"/><stop offset=".6" stop-color="#132723"/><stop offset="1" stop-color="#0a1614"/></radialGradient>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e4b2"/><stop offset=".45" stop-color="#d6ae66"/><stop offset="1" stop-color="#9a743b"/></linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6e4f24"/><stop offset=".5" stop-color="#a98143"/><stop offset="1" stop-color="#7a5a2a"/></linearGradient>
+    <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="12" dy="28" stdDeviation="28" flood-color="#000" flood-opacity=".5"/></filter>
+  </defs>
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <g filter="url(#sh)">
+    <ellipse cx="572" cy="540" rx="196" ry="300" fill="url(#rim)"/>
+    <ellipse cx="540" cy="540" rx="196" ry="300" fill="url(#face)"/>
+  </g>
+  <ellipse cx="540" cy="540" rx="162" ry="252" fill="none" stroke="#8a6630" stroke-width="3" opacity=".55"/>
+  <path d="M478 470 Q478 410 540 410 Q602 410 602 466 Q602 504 566 522 Q540 536 540 572 V590" fill="none" stroke="#8a6630" stroke-width="22" stroke-linecap="round" opacity=".55" transform="translate(540 540) scale(.75 1) translate(-540 -540)"/>
+  <circle cx="540" cy="652" r="15" fill="#8a6630" opacity=".55"/>
+</svg>

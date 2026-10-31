@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <!-- Turns Out, option E "Serif question": one fine italic serif question mark whose dot is gold, inside a hairline ring, on midnight ink -->
+  <style>@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&amp;display=block");</style>
+  <defs>
+    <radialGradient id="bg" cx=".38" cy=".3" r=".95"><stop offset="0" stop-color="#232a3a"/><stop offset=".65" stop-color="#151a26"/><stop offset="1" stop-color="#0c0f17"/></radialGradient>
+    <linearGradient id="au" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3dea8"/><stop offset=".5" stop-color="#cfa65c"/><stop offset="1" stop-color="#9a7638"/></linearGradient>
+    <clipPath id="top"><rect width="1080" height="700"/></clipPath>
+  </defs>
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <circle cx="540" cy="540" r="452" fill="none" stroke="url(#au)" stroke-width="3" opacity=".7"/>
+  <text clip-path="url(#top)" x="548" y="790" font-family="Fraunces" font-size="760" font-weight="400" font-style="italic" fill="#f4ecdc" text-anchor="middle" style="font-variation-settings:'opsz' 144">?</text>
+  <circle cx="472" cy="753" r="43" fill="url(#au)"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080"><title>Turns Out, family option L "Story book": a dark book with an amber ribbon bookmark, a big question mark, TURNS OUT</title>
+<style>@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@900&amp;family=Space+Grotesk:wght@700&amp;display=block");</style>
+<defs><radialGradient id="bg" cx=".5" cy=".42" r=".7"><stop offset="0" stop-color="#151a2b"/><stop offset="1" stop-color="#05060b"/></radialGradient>
+<linearGradient id="ac" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset="1" stop-color="#ff7a45"/></linearGradient>
+<filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="20" stdDeviation="24" flood-color="#000" flood-opacity=".55"/></filter></defs>
+<rect width="1080" height="1080" fill="url(#bg)"/>
+<g filter="url(#sh)"><rect x="250" y="190" width="580" height="700" rx="44" fill="#141827"/><rect x="250" y="190" width="70" height="700" rx="0" fill="#1d2236"/><rect x="250" y="190" width="580" height="700" rx="44" fill="none" stroke="#262c44" stroke-width="6"/></g>
+<path d="M700 190 V420 L742 384 L784 420 V190 Z" fill="url(#ac)"/>
+<text x="560" y="690" text-anchor="middle" font-family="Unbounded" font-weight="900" font-size="420" fill="#fff">?</text>
+<text x="560" y="800" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="62" fill="#ffc46b" letter-spacing="14">TURNS OUT</text>
+</svg>

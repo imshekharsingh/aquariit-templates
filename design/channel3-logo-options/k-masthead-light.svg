@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <!-- K "Masthead, light": the D masthead in ink on warm paper, an oxblood full stop -->
+  <style>@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&amp;family=Inter+Tight:wght@600&amp;display=block");</style>
+  <defs><radialGradient id="bg" cx=".38" cy=".3" r=".95"><stop offset="0" stop-color="#fbf6ea"/><stop offset="1" stop-color="#ebdfc6"/></radialGradient></defs>
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <circle cx="540" cy="540" r="452" fill="none" stroke="#7a2a22" stroke-width="3" opacity=".5"/>
+  <g font-family="Fraunces" fill="#1d1a22" text-anchor="middle" style="font-variation-settings:'opsz' 144">
+    <text x="540" y="520" font-size="250" font-weight="500" letter-spacing="-6">Turns</text>
+    <text x="548" y="745" font-size="250" font-weight="400" font-style="italic" letter-spacing="-6">out<tspan fill="#a3362b" font-style="normal" font-weight="600">.</tspan></text>
+  </g>
+</svg>

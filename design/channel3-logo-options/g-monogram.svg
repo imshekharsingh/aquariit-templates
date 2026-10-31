@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <!-- G "Monogram": a serif T and an italic o set as one monogram, the o in gold, on midnight ink -->
+  <style>@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&amp;family=Inter+Tight:wght@600&amp;display=block");</style>
+  <defs><radialGradient id="bg" cx=".38" cy=".3" r=".95"><stop offset="0" stop-color="#232a3a"/><stop offset=".65" stop-color="#151a26"/><stop offset="1" stop-color="#0c0f17"/></radialGradient><linearGradient id="au" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3dea8"/><stop offset=".5" stop-color="#cfa65c"/><stop offset="1" stop-color="#9a7638"/></linearGradient></defs>
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <g font-family="Fraunces" style="font-variation-settings:'opsz' 144">
+    <text x="470" y="770" font-size="620" font-weight="500" fill="#f4ecdc" text-anchor="middle">T</text>
+    <text x="668" y="770" font-size="430" font-weight="400" font-style="italic" fill="url(#au)" text-anchor="middle">o</text>
+  </g>
+</svg>

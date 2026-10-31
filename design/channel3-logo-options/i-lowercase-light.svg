@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <!-- I "Lowercase, light": a heavy serif "to" in ink on warm paper, the o's counter in gold; quiet, bookish -->
+  <style>@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&amp;family=Inter+Tight:wght@600&amp;display=block");</style>
+  <defs><radialGradient id="bg" cx=".38" cy=".3" r=".95"><stop offset="0" stop-color="#fbf6ea"/><stop offset="1" stop-color="#ebdfc6"/></radialGradient><linearGradient id="au" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3dea8"/><stop offset=".5" stop-color="#cfa65c"/><stop offset="1" stop-color="#9a7638"/></linearGradient></defs>
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <text x="540" y="700" font-family="Fraunces" font-size="520" font-weight="700" fill="#1d1a22" text-anchor="middle" letter-spacing="-2" style="font-variation-settings:'opsz' 144">t<tspan fill="#7a2a22">o</tspan></text>
+</svg>
