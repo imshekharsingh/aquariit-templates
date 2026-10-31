@@ -1,0 +1,43 @@
+{
+ "name": "showreel-c3-pick-one",
+ "seek": "scripts/channel3/pick-one.html",
+ "dur": 22.91,
+ "fps": 60,
+ "blur": 6,
+ "shutter": 0.45,
+ "grain": 4,
+ "vignette": true,
+ "cover": 0.5,
+ "voice": {
+  "text": "Four balls, one exit. Pick yours now. The maze starts to turn, and every wall turns with it. Blue takes the lead. Now the maze turns back the other way. Still happy with your pick? It comes down to the last second. Green gets out first! Did you call it?",
+  "at": [
+   0,
+   null,
+   2.75,
+   6.6,
+   9.8,
+   13.21,
+   16.21,
+   19.61,
+   21.16
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "Four balls, one exit, and the maze never stops turning. 🔴🟡🔵🟢\n\nPick your colour in the comments before the timer hits zero. No rewinding 👇",
+ "keywords": [
+  "guess the winner",
+  "marble maze race",
+  "rotating maze animation",
+  "which ball escapes",
+  "satisfying physics",
+  "pick a colour"
+ ],
+ "hashtags": [
+  "#marblerace",
+  "#guessthewinner",
+  "#physicsanimation",
+  "#satisfyingvideo",
+  "#mazegame"
+ ]
+}

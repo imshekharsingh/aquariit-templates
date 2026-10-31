@@ -54,10 +54,16 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 ## Channel 3 pilots (owner, 31 Oct 2026)
 - Fixed Cell (spreadsheets) is retired: its reels are hidden, its plan, logo and scenes are in attic/. The third Instagram channel is
   undecided; the app's "Channel 3" tab shows a placeholder profile and three pilot reels, one per concept, for the owner to pick from.
-- Pilots are language-free (no voice, short simple English on screen, sound from window.CUES only), invented characters and nations only.
+- Pilots are narrated (owner, 31 Oct, on the silent first set: "no audio, how do we expect the audience to connect to the story?"):
+  a hook question on screen and in the voice from frame 0, a story in full sentences (about 2.3-2.6 words/s), every sentence shown as a
+  caption, effects and bed under the voice (window.CUES); a big change every ~3 s (cuts, pushes, close-ups), payoff or cliffhanger in the
+  last 3 s; matte look (flat colour, crisp edges, paper grain, hard small shadows; no glow); invented characters and nations only.
   Scenes `scripts/channel3/<slug>.html` + `.json` (name `showreel-c3-<slug>`, `"channel": "c3"` in captions.json, a "concept" and "about"
   line for the app), rendered by the Showreel workflow. Physics is precomputed on load at a fixed step with seeded randomness; seek reads it.
-  Before the one render: `node scripts/channel3/qa.mjs <config>` clean (text inside the frame, outcome as scripted) and one stills sheet.
+  The voice is timed to the scene: the scene sets window.VOICE = { text, at } (one start time per sentence) and the config's voice must match.
+  Before the one render: `node scripts/channel3/qa.mjs <config> --write` (copies the voice in) then clean (voice matches, every sentence on
+  screen, text inside the frame, outcome as scripted), `node scripts/showreel/preflight.mjs <config>` says "fits", and one stills sheet.
+  The silent first pilots (The Drop, Maze escape, Salt Wars) are hidden and their scenes are in attic/scripts/channel3/.
 
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN and INSTAGRAM_TOKEN_2 (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.

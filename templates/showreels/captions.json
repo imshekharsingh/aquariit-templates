@@ -328,17 +328,32 @@
  },
  "showreel-c3-the-drop": {
   "channel": "c3",
-  "concept": "1 · Character cast: The Drop",
-  "about": "Four invented friends (show-off, worrier, schemer, lucky one) race down a peg board; a new physics challenge each episode, viewers pick favourites."
+  "hidden": true,
+  "superseded": "31 Oct: silent first pilots, replaced by the narrated ones"
  },
  "showreel-c3-maze-escape": {
   "channel": "c3",
-  "concept": "2 · Guess before it ends",
-  "about": "Four numbered balls in a turning maze and a countdown: guess which escapes first; the answer lands in the last two seconds."
+  "hidden": true,
+  "superseded": "31 Oct: silent first pilots, replaced by the narrated ones"
  },
  "showreel-c3-salt-wars": {
   "channel": "c3",
-  "concept": "3 · Invented world history",
-  "about": "Velmora, a made-up continent: one war-torn era of invented nations in 25 seconds, borders moving on the map, ending on a cliffhanger."
+  "hidden": true,
+  "superseded": "31 Oct: silent first pilots, replaced by the narrated ones"
+ },
+ "showreel-c3-rivals": {
+  "channel": "c3",
+  "concept": "A · Character cast: Four friends, one race",
+  "about": "Zing the show-off, Wob the worrier, Snick the schemer and sleepy Pip, introduced one by one by a narrator, then a peg-board race the narrator calls; a new challenge each episode, viewers pick favourites and the next challenge. 29.7 s."
+ },
+ "showreel-c3-pick-one": {
+  "channel": "c3",
+  "concept": "B · Guess before it ends: Four balls, one exit",
+  "about": "The narrator sets the stakes (\"Pick yours now\"), a countdown runs from frame 0, the maze keeps turning, the answer lands on the last second; viewers comment their guess. 22.9 s."
+ },
+ "showreel-c3-velmora": {
+  "channel": "c3",
+  "concept": "C · Invented world history: The Salt Wars of Velmora",
+  "about": "An invented continent and thirty years of invented war over one salt mine, told by a narrator in shots: the queen who starts it, each front, a year counter, and black sails as the cliffhanger. 27.6 s."
  }
 }

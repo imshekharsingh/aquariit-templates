@@ -1,0 +1,43 @@
+{
+ "name": "showreel-c3-velmora",
+ "seek": "scripts/channel3/velmora.html",
+ "dur": 27.6,
+ "fps": 60,
+ "blur": 4,
+ "shutter": 0.45,
+ "grain": 4,
+ "cover": 0.7,
+ "voice": {
+  "text": "How did one salt mine start thirty years of war? Queen Ysra of Kael took it first. Then her army swallowed Ossary whole. So Thren and Mirevale joined forces. They called it the Pact. The Pact marched on the mine, and took it back. Then Kael itself split in two. For one quiet year, there was peace. Then black sails appeared in the west. Nobody knew whose ships they were.",
+  "at": [
+   0,
+   3.2,
+   5.8,
+   9.3,
+   null,
+   13.8,
+   17,
+   19.2,
+   21.7,
+   24.4
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "Velmora, 1201-1231: six nations, one salt mine, thirty years of war. Then black sails. ⚔️\n\nNone of it is real. Whose ships are they? Best theory in the comments 👇",
+ "keywords": [
+  "fictional map animation",
+  "alternate history map",
+  "fantasy map borders",
+  "every year map animation",
+  "invented countries",
+  "map war timeline"
+ ],
+ "hashtags": [
+  "#mapping",
+  "#fantasymap",
+  "#alternatehistory",
+  "#worldbuilding",
+  "#mapanimation"
+ ]
+}
