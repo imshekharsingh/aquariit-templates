@@ -53,34 +53,37 @@ accounts read as siblings.
 - The hook question on screen and in the voice from frame 0; the cover shows it fully lit.
 - Narrated in one natural take, full sentences with breaths, about 2.3-2.6 words/s overall; every spoken sentence on screen.
 - A big change every ~3 s; one clear turning point; the payoff in the last 3 s.
-- Matte, premium: see "Premium rules" below. No glow, no neon, no bloom.
+- Real 3D, documentary look: see "Quality bar" below. No glow, no neon, no bloom.
 - 25-35 s. Every frame a pure function of t (seeded randomness only).
 
-## Premium rules (owner, 31 Oct 2026: "slightly cleaner, better flow, a premium touch and realism")
-Every reel inherits these; the shared core in each scene already does the ones marked (core).
-- **Cleaner**: one focal point per beat; at most about 5 elements in a shot besides the caption; generous negative space. Text is centred on
-  x = 270 or sits on a clear column; stroke widths come from the subject's size (`lw = h * f`), so one object keeps one weight at every
-  zoom; every person uses the same figure rig and proportions.
-- **Flow**: nothing pops and nothing hard-fades.
-  - (core) The caption is ONE card that changes shape from sentence to sentence; the old line slides up and out before the new one rises in.
-  - (core) `arrive(es(k))`: a tag, sign or card travels in (rises, grows from 86 %, fades up) and settles on a soft spring; cards slide in
-    from their side of the frame, never past the 12 px margin.
-  - The camera never stops between beats: a cut-out shot arrives already moving forward as the old one is pushed through; zooms and
-    globe turns ease in and out; secondary motion follows the main one (a sign swings after it lands, the crane's ball lags the arm).
-  - Motion blur comes from the render (config `"blur": 4, "shutter": .45`); keep fast moves fast enough to blur.
-- **Premium and realism**:
-  - (core) One key light from the upper left: soft contact shadows fall down and a little right (`paper()`), never hard offset copies.
-  - Large surfaces get gentle gradients (skies from a deeper zenith to a pale, warmer horizon; ground lit at the top; clouds lit on top,
-    shaded underneath; spheres and globes lit from the key light, darker at the edges). Small pieces stay flat.
-  - Atmosphere: haze in front of far layers and near the horizon; far layers slightly out of focus (blur about 2 px, depth of field).
-  - Materials: say what a thing is made of (the tower is a riveted iron lattice with the sky showing through; the ocean is deep with
-    paler shallow shelves along the coasts; air is a gradient band, labelled when drawn thicker than it is).
-  - (core) Film grain stays subtle (scene grain alpha 13 of 255, plus the render's grain 4).
-  - Caption highlights may take a colour per word (`STYLE.hlFor`), so "reds" is never highlighted in blue.
-- **Sound**: a soft pad bed (`bed.soft: true`: no kick or hats, chords crossfade over 2 s, a held low note, warm low-pass) at gain about
-  .3; effects soft (gain .1-.3) and few, placed in the breaths between sentences or on a visual moment, never a run of ticks under words.
+## Quality bar (owner, 31 Oct 2026: replaces the "Premium rules"; real-time 3D from now on)
+The three 2D pilots were hidden: flat shapes read as a school diagram, frames were mostly empty, a caption card stood empty, grain was
+doubled. Polish cannot fix a cheap base style, so the channel moves to real-time 3D in the browser (three.js inlined into the scene,
+scripts/channel3/three-inline.mjs). The bar, for a channel that tells true stories to a global audience with a documentary-explainer feel:
+1. **Documentary still.** Every frame could be a still from a high-end documentary title sequence: real 3D, one motivated key light with
+   soft shadows, believable materials (iron, stone, water, sky, paper), atmospheric haze for depth, gentle depth of field.
+2. **Full frames.** Edge to edge: 3+ depth layers (foreground, subject, background), one focal point, no flat untextured area larger than
+   about 15 % of the frame, no empty backgrounds.
+3. **The camera always moves** (slow dolly, orbit, crane); cuts are motivated; a new shot every 2.5-3.5 s; flow from shot to shot (match
+   cuts, the camera carries through), never pops or empty fades.
+4. **Type.** One editorial serif for the hook and payoff (Playfair Display), one clean sans for captions (Inter); captions in one
+   consistent lower third, at most 2 lines, never an empty caption box; dates and numbers as type set into the 3D space.
+5. **One colour grade per reel** (warm golden hour, cool dawn, ...), no neon or glow; grain at most once and subtle (the render's grain 4, none in the scene).
+6. **People**: stylised 3D miniature or clay figures recognised by props and setting, never caricatured faces (CLAUDE.md exception rules).
+7. **Sound**: a score bed that lifts into the payoff; a clear voice; effects tied to on-screen motion.
+8. **Frame 0 is cover quality**: the hook question over a finished, lit shot.
+9. **The check before any render**: score every beat of the stills sheet against points 1-8; any failure is fixed first. Ask of each
+   frame: "would this look at home on a premium documentary or museum channel watched worldwide?" If not, it is not ready.
 
-## Pattern library
+### 3D craft notes (from the test shot, scripts/channel3/eiffel-3d.html)
+- One self-contained file: three.js r170 between `/*three:begin*/` and `/*three:end*/` (`node scripts/channel3/three-inline.mjs <scene> <three.module.min.js>`).
+- `window.seek(t)` sets camera, light and any motion from t, then renders: scene into a 4x MSAA half-float target, then one final pass
+  (depth of field from the depth buffer, ACES tone, the grade, vignette). Renderer with `preserveDrawingBuffer: true` so frames capture.
+- Headless Chromium renders it on SwiftShader (CPU WebGL; seek.mjs and stills.mjs launch it with the SwiftShader flags).
+- Cost: about 3-3.5 s a frame at 1080x1920 locally (tower lattice 10k beams, 6k leaf clusters, 3.6k city blocks; MSAA alone about 1 s).
+  Draw the sky last (renderOrder) so only open sky pays for the clouds; keep instanced meshes; shadow map 2048 over the subject only.
+
+## Pattern library (2D, retired with the pilots on 31 Oct 2026; kept for the story ideas, rebuilt in 3D)
 Rotate patterns so the feed never shows the same look two days running. Each entry is a reusable recipe; a new pattern gets an entry here
 before its first reel.
 
@@ -128,7 +131,7 @@ consecutive days, and no more than 3 of one pattern in a week. Spread continents
 - `story([[sentence, breath before it], ...])` sets one start time per sentence from the same estimate preflight uses (0.07 s a letter at
   speed 1, a digit as 4 letters) and window.VOICE; beats key off `A[i]` (sentence i's start).
 - Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, `node scripts/showreel/preflight.mjs <config>` says
-  "fits", one stills sheet (`node scripts/showreel/stills.mjs <config> <out> 15`) reviewed against the bar. Then the Showreel workflow.
+  "fits", one stills sheet (`node scripts/showreel/stills.mjs <config> <out> 15`) scored beat by beat against the Quality bar. Then the Showreel workflow.
 
 ## The three pilots (31 Oct 2026; premium pass and re-render the same day)
 | Pattern | Topic | Length | Sources |
