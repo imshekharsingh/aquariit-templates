@@ -20,10 +20,17 @@ const ENV_TOKEN = process.env.INSTAGRAM_TOKEN || '', IG = (process.env.IG_API_BA
 const DRY = has('--dry'), LIMIT = Math.max(1, Math.min(100, +opt('--limit', 50))), SLOT = Math.max(1, Math.min(9, +opt('--slot', 1) || 1)), SECRET = SLOT === 1 ? 'INSTAGRAM_TOKEN' : 'INSTAGRAM_TOKEN_' + SLOT;
 const out = [], say = (m) => { out.push(m); console.log(m); };
 const summary = (md) => { if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, md + '\n'); };
-const die = (m) => { console.error('\n✗ ' + m); summary('### Instagram collector\n\n**Failed:** ' + m); process.exit(1); };
+// a failure is also posted to the site, where the app shows it as a red banner until the next good run (owner, 31 Oct 2026: GitHub issues go unseen)
+let alertCookie = '';
+const die = async (m) => {
+  console.error('\n✗ ' + m); summary('### Instagram collector\n\n**Failed:** ' + m);
+  if (alertCookie && !DRY) { const secret = /BASIC_AUTH/.test(m) ? 'BASIC_AUTH' : /D1|refused the data/.test(m) ? 'SITE' : SECRET;
+    await fetch(SITE + '/api/perf/alert?slot=' + SLOT, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel', Cookie: alertCookie }, body: JSON.stringify({ secret, message: m.slice(0, 400) }) }).catch(() => {}); }
+  process.exit(1);
+};
 
 let TOKEN = ENV_TOKEN;
-if (!ENV_TOKEN) die('The GitHub secret ' + SECRET + ' is missing or empty. Add it under Settings → Secrets and variables → Actions (never paste the token into a chat or a file).');
+if (!ENV_TOKEN) await die('The GitHub secret ' + SECRET + ' is missing or empty. Add it under Settings → Secrets and variables → Actions (never paste the token into a chat or a file).');
 
 // ---- Instagram calls. The token travels in the query string, so URLs are never logged and error text is scrubbed. ----
 async function ig(path, params = {}) {
@@ -42,8 +49,9 @@ let cookie = '', stored = null;
 if (U && P) {
   const login = await fetch(SITE + '/login', { method: 'POST', redirect: 'manual', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ username: U, password: P }) });
   cookie = (login.headers.getSetCookie ? login.headers.getSetCookie() : []).map((c) => c.split(';')[0]).join('; ');
-  if (login.status !== 303 || !cookie) { cookie = ''; if (!DRY) die(`The site refused the sign-in (HTTP ${login.status}). Check the BASIC_AUTH_USER / BASIC_AUTH_PASS secrets.`); }
+  if (login.status !== 303 || !cookie) { cookie = ''; if (!DRY) await die(`The site refused the sign-in (HTTP ${login.status}). Check the BASIC_AUTH_USER / BASIC_AUTH_PASS secrets.`); }
 }
+alertCookie = cookie;
 if (cookie) { try { const r = await fetch(SITE + '/api/perf/token?slot=' + SLOT, { headers: { Cookie: cookie } }); if (r.ok) { const j = await r.json(); if (j && j.token) stored = j; } } catch { /* the secret is the fallback */ } }
 const candidates = [...new Set([stored && stored.token, ENV_TOKEN].filter(Boolean))];
 
@@ -56,7 +64,7 @@ for (const c of candidates) {
 }
 if (!me.ok) {
   const e = me.error, bad = e.code === 190 || me.status === 401;
-  die(bad ? `Instagram rejected the token: ${errText(e)}. Generate a new one (Meta app → Instagram → API setup with Instagram Login → Generate token) and update the GitHub secret ${SECRET}.`
+  await die(bad ? `Instagram rejected the token: ${errText(e)}. Generate a new one (Meta app → Instagram → API setup with Instagram Login → Generate token) and update the GitHub secret ${SECRET}.`
           : `Could not read the account: ${errText(e)}. If this mentions permissions, the token needs the “instagram_business_basic” permission.`);
 }
 const A = me.json;
@@ -64,7 +72,7 @@ say(`Account: @${A.username} (${A.account_type}), ${A.followers_count} followers
 
 // 2. recent media
 const list = await ig('/me/media', { fields: 'id,caption,media_type,media_product_type,permalink,timestamp,like_count,comments_count', limit: String(LIMIT) });
-if (!list.ok) die(`Could not list posts: ${errText(list.error)}`);
+if (!list.ok) await die(`Could not list posts: ${errText(list.error)}`);
 const items = (list.json.data || []).filter((m) => m && m.id);
 say(`Posts read: ${items.length}`);
 
@@ -161,9 +169,10 @@ say(`Token: ${tokenNote}`);
 const day = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10); // IST day
 const body = { day, slot: SLOT, account: { username: A.username, followers: A.followers_count, follows: A.follows_count, media_count: A.media_count }, media };
 if (DRY) { say(`Dry run: would send ${media.length} posts for ${day}. Nothing written.`); summary('### Instagram collector (dry run)\n\n```\n' + out.join('\n') + '\n```'); process.exit(0); }
-if (!U || !P || !cookie) die('BASIC_AUTH_USER / BASIC_AUTH_PASS are not set or not accepted, so the results cannot be saved to the site.');
+if (!U || !P || !cookie) await die('BASIC_AUTH_USER / BASIC_AUTH_PASS are not set or not accepted, so the results cannot be saved to the site.');
 const post = await fetch(SITE + '/api/perf/ingest', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel', Cookie: cookie }, body: JSON.stringify(body) });
-if (post.status === 501) die('The site has no D1 database bound, so results cannot be stored. Give the Cloudflare token Account → D1 → Edit and redeploy.');
-if (!post.ok) die(`The site refused the data (HTTP ${post.status}).`);
+if (post.status === 501) await die('The site has no D1 database bound, so results cannot be stored. Give the Cloudflare token Account → D1 → Edit and redeploy.');
+if (!post.ok) await die(`The site refused the data (HTTP ${post.status}).`);
 say(`Saved to the site for ${day}: ${media.length} posts + the account snapshot.`);
+await fetch(SITE + '/api/perf/alert?slot=' + SLOT, { method: 'DELETE', headers: { 'X-Requested-With': 'reel', Cookie: cookie } }).catch(() => {}); // a good run clears this account's banner
 summary('### Instagram collector\n\n```\n' + out.join('\n') + '\n```');
