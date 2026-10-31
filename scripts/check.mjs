@@ -71,7 +71,7 @@ const caps = existsSync(join(T, 'showreels', 'captions.json')) ? readJSON(join(T
 if (caps) for (const [name, j] of Object.entries(caps)) postText(j, `captions.json ${name}`);
 
 // 5. reel configs: a showreel name, a scene that exists, and post text
-for (const dir of ['scripts/explainer', 'scripts/showreel']) {
+for (const dir of ['scripts/explainer', 'scripts/showreel', 'scripts/fixedcell']) {
   const D = join(root, dir);
   for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.json')) : []) {
     const label = `${dir}/${f}`, j = readJSON(join(D, f), label);

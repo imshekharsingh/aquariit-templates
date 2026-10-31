@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does your lookup miss a name that's right there?</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Fixed Cell Nº 03, text cleanup: "Why does your lookup miss a name that's right there?"
+   "Lamp" is in the list, yet the lookup says #N/A: the name typed in A7 carries a trailing space. The cell opens to show it,
+   "Lamp " is not "Lamp", and TRIM( ) is typed in around A7 inside the lookup; the space goes, the name matches, the price comes back.
+   (TRIM changes the value the lookup searches for, not the cell itself, so A7 keeps its space on screen.)
+   Fixed Cell look (design/fixedcell.md): paper white, ink, one green accent (the fill handle), red only for what is broken, a crisp grid,
+   a monospace formula bar and a pointer. Engine shared by every Fixed Cell scene: sheet(), fx(), cam(), captions; this reel's part is
+   below "THIS REEL". Every frame a pure function of t; beats and caption words lead the voice by 0.15 s; the title shows in full from
+   frame 0 (ghosted) and lights word by word with the voice; the cover is the moment it is complete (window.COVER). */
+:root{--paper:#fbfaf6;--ink:#16181d;--dim:#8b8a84;--line:#e3e1d9;--head:#f1efe8;--acc:#138a4b;--accbg:#e3f3e9;--red:#d4382c;--redbg:#fcebe9;
+  --f:'Inter Tight',system-ui,sans-serif;--m:'IBM Plex Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#bg{left:-90px;top:-30px;width:720px;height:1020px;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:90px 30px;opacity:.55}
+#lbl{left:36px;top:104px;font:600 13px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:104px;font:600 13px/1 var(--m);letter-spacing:.08em;color:var(--dim);white-space:nowrap;text-align:right}
+#hud b{font-weight:600}#hud .r{color:var(--red)}#hud .g{color:var(--acc)}
+#hook{left:34px;top:132px;width:472px;font-weight:800;font-size:50px;line-height:1.04;letter-spacing:-.025em}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#cap{left:36px;top:136px;width:468px;font:700 33px/1.13 var(--f);letter-spacing:-.018em}
+#cap span{display:inline-block;margin-right:.24em;white-space:nowrap}
+#view{left:36px;width:468px;height:418px;overflow:hidden}
+#cam{left:0;top:0;width:468px;transform-origin:0 0}
+#fbar{left:0;top:0;width:468px;height:54px;border:1.5px solid #d6d4cb;border-radius:10px;background:#fff;display:flex;align-items:center;overflow:hidden}
+#nbox{flex:none;width:52px;height:100%;border-right:1.5px solid var(--line);font:600 17px/51px var(--m);text-align:center}
+#fxl{flex:none;width:30px;font:italic 600 17px/51px var(--f);color:var(--dim);text-align:center}
+#fx{flex:1;font:500 18px/51px var(--m);white-space:nowrap;overflow:hidden;letter-spacing:-.01em}
+#fx .k{color:var(--ink);font-weight:600}#fx .g{color:var(--acc);font-weight:600}#fx .r{color:var(--red);font-weight:600}#fx .d{color:var(--dim)}
+#fx .hl{background:var(--redbg);border-radius:4px;box-shadow:0 0 0 2px var(--redbg)}
+#fx .hg{background:var(--accbg);border-radius:4px;box-shadow:0 0 0 2px var(--accbg)}
+.caret{display:inline-block;width:2px;height:22px;background:var(--ink);vertical-align:-5px;margin-left:1px}
+#sheet{left:0;top:66px;width:468px;border:1.5px solid #d6d4cb;border-radius:10px;background:#fff;overflow:hidden}
+#sheet .c{position:absolute;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0 10px;font:500 20px/39px var(--f);white-space:nowrap;overflow:hidden}
+#sheet .h{background:var(--head);font:600 14px/29px var(--m);color:var(--dim);text-align:center;padding:0}
+#sheet .h.on{background:#e4e2da;color:var(--ink)}
+#sheet .b{font-weight:700}
+#sheet .n{text-align:right;font-variant-numeric:tabular-nums}
+#sheet .bad{color:var(--red);background:var(--redbg)}
+#sheet .bad::after{content:'';position:absolute;right:0;top:0;border-style:solid;border-width:0 9px 9px 0;border-color:transparent var(--red) transparent transparent}
+#sheet .ok{color:var(--acc);background:var(--accbg)}
+#sheet .new{background:#f5f8f5}
+#sheet .skip{color:#b4b2aa;text-decoration:line-through;text-decoration-thickness:2px}
+#sheet .c > i{display:inline-block;font-style:normal}
+#ovl{left:0;top:0;width:468px;height:400px;pointer-events:none}
+.sel{position:absolute;border:2.5px solid var(--acc);border-radius:2px}
+.sel i{position:absolute;right:-7px;bottom:-7px;width:11px;height:11px;background:var(--acc);border:1.5px solid #fff}
+.rng{position:absolute;border:2px dashed var(--ink);border-radius:3px}
+.rng.g{border-color:var(--acc);background:rgba(19,138,75,.07)}
+.rng.r{border-color:var(--red);background:rgba(212,56,44,.06)}
+.badge{position:absolute;height:24px;min-width:24px;padding:0 7px;border-radius:12px;font:600 14px/24px var(--m);text-align:center;color:#fff;background:var(--ink);white-space:nowrap}
+.badge.g{background:var(--acc)}.badge.r{background:var(--red)}
+.menu{position:absolute;width:214px;padding:5px;border-radius:10px;background:#fff;box-shadow:0 10px 30px rgba(22,24,29,.18),0 0 0 1px #dedcd4}
+.menu div{padding:0 12px;height:36px;border-radius:7px;font:600 17px/36px var(--f);color:var(--ink);white-space:nowrap}
+.menu .on{background:var(--accbg);color:var(--acc)}
+#ptr{left:0;top:0;width:24px;height:30px}
+#ring{width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:2px solid var(--acc)}
+#note{left:36px;width:468px;height:42px;display:flex;gap:10px;align-items:center}
+#note span{height:40px;padding:0 15px;border-radius:20px;font:600 15px/40px var(--m);letter-spacing:.02em;white-space:nowrap;background:#fff;box-shadow:0 0 0 1.5px #d6d4cb}
+#note .g{background:var(--accbg);color:var(--acc);box-shadow:0 0 0 1.5px #bfe0cb}
+#note .r{background:var(--redbg);color:var(--red);box-shadow:0 0 0 1.5px #f2c6c1}
+#ms{visibility:hidden;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="bg" class="a"></div>
+<div id="lbl" class="a">FIXED CELL · Nº 03 · TEXT CLEANUP</div>
+<div id="hud" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>lookup</span> <span class="x">miss</span> <span>a</span> <span>name</span></span><span class="ln"><span>that's</span> <span>right</span> <span>there?</span></span></div>
+<div id="cap" class="a"></div>
+<div id="view" class="a">
+  <div id="cam" class="a">
+    <div id="fbar" class="a"><div id="nbox"></div><div id="fxl">fx</div><div id="fx"></div></div>
+    <div id="sheet" class="a"><div id="cells"></div><div id="ovl" class="a"></div></div>
+  </div>
+</div>
+<div id="note" class="a"></div>
+<div id="ring" class="a"></div>
+<svg id="ptr" class="a" viewBox="0 0 24 30" aria-hidden="true"><path d="M2 2 L2 24 L8 18.5 L12.2 27.5 L16 25.8 L11.9 17 L20 17 Z" fill="#16181d" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+<span id="ms" class="a"></span>
+<script>
+(function(){
+  // ======== ENGINE (same in every Fixed Cell scene) ========
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  var WORDS = [], A = {}, PH = [], LEAD = .15;
+  function fakeWords(){ var t = .2; WORDS = []; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?!]$/.test(w) ? .6 : /[,:;]$/.test(w) ? .25 : .06); }); }
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  // captions: one sentence at a time (long ones split at a comma), the title's words are shown as the title instead
+  function phrases(){ PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 8) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } }); }
+  function captions(t, ex){ var ph = null, html = '';
+    for (var i = 0; i < PH.length; i++) if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph = PH[i];
+    if (ph && ph[0] >= HOOK_N) for (var q = 0; q < ph.length; q++) { var j = ph[q], w = WORDS[j], d = w.d, nx = WORDS[ph[q + 1]];
+      if (JOIN[norm(d)] && nx && norm(nx.d) === JOIN[norm(d)][0]) { d = JOIN[norm(d)][1] + nx.d.replace(/^[a-z]+/i, ''); q++; }   // "V lookup" spoken, VLOOKUP shown
+      else if (DISP[norm(d)]) d = d.replace(/^[a-z]+/i, DISP[norm(d)]);   // "sum" spoken (not spelled out), SUM shown
+      var on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2)), col = GREEN.test(d) ? 'var(--acc)' : RED.test(d) ? 'var(--red)' : 'var(--ink)';
+      html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + ((1 - k) * 12).toFixed(1) + 'px);color:' + col + '">' + d.replace(/</g, '') + '</span>'; }
+    $('cap').innerHTML = html; }
+  // the title: in full from frame 0 (pale), each word inks in as it is spoken; leaves when the next line starts
+  function title(t, leave){ var gone = io(P(t, leave, leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){ var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .22));
+      var red = sp.className === 'x', c0 = [200, 198, 190], c1 = red ? [212, 56, 44] : [22, 24, 29];
+      sp.style.color = 'rgb(' + c0.map(function(v, n){ return Math.round(mix(v, c1[n], k)); }).join(',') + ')';
+      sp.style.opacity = 1 - gone; sp.style.transform = 'translateY(' + (-(1 - k) * 0 - gone * 60 - Math.sin(k * Math.PI) * 6).toFixed(1) + 'px)'; }); }
+  // the sheet: cols [{k, w, head}] (w animates an insert), rows of { colKey: cell } where cell = text or { v, c (classes), n (number) }
+  var G = 34, HH = 30, RH = 40, SW = 468, VH = 418, STH = 66 + 30 + 8 * 40, GEO = {};
+  function sheet(cols, rows, nRows, hi){ var h = '', x = G, L = 'ABCDEFGH', li = 0;
+    GEO = { x: {}, w: {} };
+    h += '<div class="c h" style="left:0;top:0;width:' + G + 'px;height:' + HH + 'px"></div>';
+    cols.forEach(function(c, i){ GEO.x[c.k] = x; GEO.w[c.k] = c.w; if (c.w > .5)
+      h += '<div class="c h' + (hi && hi[c.k] ? ' on' : '') + '" style="left:' + x.toFixed(1) + 'px;top:0;width:' + c.w.toFixed(1) + 'px;height:' + HH + 'px">' + (c.w > 14 ? L[li] : '') + '</div>'; if (c.w > .5) li++; x += c.w; });
+    var fw = SW - x; if (fw > 1) h += '<div class="c h" style="left:' + x.toFixed(1) + 'px;top:0;width:' + fw + 'px;height:' + HH + 'px">' + L[li] + '</div>';
+    for (var r = 1; r <= nRows; r++) { var y = HH + (r - 1) * RH, row = rows[r] || {};
+      h += '<div class="c h" style="left:0;top:' + y + 'px;width:' + G + 'px;height:' + RH + 'px;line-height:39px">' + r + '</div>';
+      cols.forEach(function(c){ if (c.w <= .5) return; var v = row[c.k], o = v && typeof v === 'object' ? v : { v: v };
+        h += '<div class="c' + (o.c ? ' ' + o.c : '') + (o.n ? ' n' : '') + (c.cls ? ' ' + c.cls : '') + '" style="left:' + GEO.x[c.k].toFixed(1) + 'px;top:' + y + 'px;width:' + c.w.toFixed(1) + 'px;height:' + RH + 'px">' + (o.v == null || c.w < 20 ? '' : o.v) + '</div>'; });
+      if (fw > 1) h += '<div class="c" style="left:' + x.toFixed(1) + 'px;top:' + y + 'px;width:' + fw + 'px;height:' + RH + 'px"></div>'; }
+    $('cells').innerHTML = h; $('sheet').style.height = (HH + nRows * RH + 1.5) + 'px'; }
+  function box(k0, r0, k1, r1){ var x0 = GEO.x[k0], x1 = GEO.x[k1 || k0] + GEO.w[k1 || k0]; return { x: x0, y: HH + (r0 - 1) * RH, w: x1 - x0, h: ((r1 || r0) - r0 + 1) * RH }; }
+  function rect(b, cls, a, inner){ return '<div class="' + cls + '" style="left:' + (b.x - 1).toFixed(1) + 'px;top:' + (b.y - 1) + 'px;width:' + (b.w + 1).toFixed(1) + 'px;height:' + (b.h + 1) + 'px;opacity:' + a.toFixed(2) + '">' + (inner || '') + '</div>'; }
+  // the formula bar: segments [text, class], typed up to n characters, with a blinking caret while editing
+  function fx(cell, segs, n, caret, t, at){ var o = '', k = 0, c = caret ? '<i class="caret"' + (Math.floor(t * 2.2) % 2 ? ' style="opacity:0"' : '') + '></i>' : '';
+    for (var i = 0; i < segs.length && k < n; i++) { var s = segs[i][0].slice(0, n - k); k += s.length; o += segs[i][1] ? '<span class="' + segs[i][1] + '">' + s + '</span>' : s; if (i === at) o += c; }
+    $('nbox').textContent = cell; $('fx').innerHTML = o + (at === undefined ? c : ''); }   // at: the caret sits after that segment (typing inside a formula)
+  var flen = function(segs){ return segs.reduce(function(a, s){ return a + s[0].length; }, 0); };
+  // the camera: keyframes [t, scale, focusX, focusY] in sheet-stage coordinates; the focus point sits at the view's centre line
+  function cam(t, K){ var i = 0; while (i < K.length - 1 && t >= K[i + 1][0]) i++;
+    var b = K[i], a = K[Math.max(0, i - 1)], k = io(P(t, b[0], b[0] + .55));   // each keyframe is reached 0.55 s after its time
+    var s = mix(a[1], b[1], k), fx_ = mix(a[2], b[2], k), fy = mix(a[3], b[3], k);
+    var tx = Math.min(0, Math.max(SW - SW * s, SW / 2 - fx_ * s)), ty = Math.max(VH - STH * s, Math.min(0, 200 - fy * s));
+    return { s: s, tx: tx, ty: ty }; }
+  function place(id, x, y, a){ var e = $(id); e.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)'; e.style.opacity = a; }
+  function readout(html){ $('hud').innerHTML = html; }
+
+  // ======== THIS REEL ========
+  var TEXT = "Why does your lookup miss a name that's right there? Look closer: there's a space after it. To a lookup, that's a different name. Wrap the name in trim. Trim cuts the extra spaces. Now the name matches, and the price comes back.";
+  var DUR = 17, HOOK_N = 10, JOIN = {}, DISP = { trim: 'TRIM' };
+  var GREEN = /^(TRIM|cuts|matches|price|back)/i, RED = /^(space|different)/i;
+  var ITEMS = [['Mug', 12], ['Lamp', 40], ['Chair', 85]];   // example data
+  var SP = '<i style="display:inline-block;width:10px;height:22px;margin-left:2px;vertical-align:-4px;border-radius:3px;background:var(--redbg);box-shadow:inset 0 0 0 1.5px var(--red)"></i>';
+  var XF = function(tr){ return [['=XLOOKUP(', 'g'], [tr ? 'TRIM(' : '', 'hg'], ['A7', ''], [tr ? ')' : '', 'hg'], [',', 'd'], ['A2:A4', 'k'], [',', 'd'], ['B2:B4', 'g'], [')', 'g']]; };
+  function anchors(){
+    align(); phrases();
+    A = { look: at('look'), closer: at('closer'), space: at('space'), after: at('after'), to: at('to'), different: at('different'), wrap: at('wrap'), trim: at('trim', 1), trim2: at('trim', 2),
+      cuts: at('cuts'), extra: at('extra'), now: at('now'), matches: at('matches'), price: at('price'), back: at('back') };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.look - .3, A.hookIn + .3);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    A.type0 = A.wrap + .05; A.type1 = Math.min(A.trim + .45, A.trim2 - .2);
+    cues();
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = 0;
+    title(t, A.leave);
+    var after = io(P(t, A.leave, A.leave + .5));
+    $('view').style.top = mix(318, 252, after) + 'px';
+    // ---- state: "Lamp " (a trailing space) is not found → TRIM(A7) inside the lookup → found ----
+    var fixed = t >= A.now - .1, spA = t >= A.space - .1, editA = t >= A.closer - .15 && t < A.wrap - .15;
+    var cols = [{ k: 'a', w: 150 }, { k: 'b', w: 130 }];
+    var rows = { 1: { a: { v: 'Item', c: 'b' }, b: { v: 'Price', c: 'b n' } } };
+    var flash = fixed ? win(t, A.now - .1, A.now + .9, .1) : 0;
+    ITEMS.forEach(function(it, i){ var hit = it[0] === 'Lamp' && flash > .5; rows[i + 2] = { a: { v: it[0], c: hit ? 'ok' : '' }, b: { v: it[1], n: 1, c: hit ? 'ok' : '' } }; });
+    rows[6] = { a: { v: 'Find', c: 'b' }, b: { v: 'Price', c: 'b n' } };
+    rows[7] = { a: { v: 'Lamp' + (spA ? SP : ''), c: spA && !fixed ? 'bad' : '' }, b: fixed ? { v: 40, n: 1, c: t > A.now + .2 ? 'ok' : '' } : { v: '#N/A', n: 1, c: 'bad' } };
+    rows[8] = { a: 'Chair', b: { v: 85, n: 1 } };
+    sheet(cols, rows, 8, {});
+    // ---- overlays: the selected cell, the lookup range, the one that misses ----
+    var o = '', rA = win(t, A.to - .1, A.wrap - .1, .15);
+    if (rA > 0) { o += rect(box('a', 2, 'a', 4), 'rng', rA); o += rect(box('a', 7), 'rng r', rA); }
+    if (t >= A.now - .1) { o += rect(box('a', 2, 'a', 4), 'rng', win(t, A.now - .1, A.back + .4, .15)); o += rect(box('a', 3, 'b', 3), 'rng g', win(t, A.now - .1, A.back + .6, .15)); }
+    o += rect(editA ? box('a', 7) : box('b', 7), 'sel', 1, '<i></i>');
+    if (spA) { var b = box('a', 7), k = out(P(t, A.space - .1, A.space + .2)) * (1 - P(t, A.wrap - .3, A.wrap));
+      o += '<div class="badge r" style="left:' + (b.x + 76) + 'px;top:' + (b.y + 8 - (1 - k) * 6).toFixed(1) + 'px;opacity:' + k.toFixed(2) + '">SPACE</div>'; }
+    $('ovl').innerHTML = o;
+    // ---- the formula bar: the lookup, then A7's own text with its space, then TRIM( … ) typed in around A7 ----
+    if (editA) { $('nbox').textContent = 'A7'; $('fx').innerHTML = 'Lamp' + (spA ? '<span class="hl">&nbsp;</span>' : '&nbsp;') + (Math.floor(t * 2.2) % 2 === 0 ? '<i class="caret"></i>' : '<i class="caret" style="opacity:0"></i>'); }
+    else if (t < A.type0) fx('B7', XF(false), 99, false, t);
+    else { var segs = XF(true), n = Math.floor(6 * P(t, A.type0, A.type1)), tr = segs.map(function(s){ return s.slice(); });
+      tr[1][0] = 'TRIM('.slice(0, Math.min(5, n)); tr[3][0] = n >= 6 ? ')' : '';
+      fx('B7', tr, 99, t < A.type1 + .5, t, n >= 6 ? 3 : 1); }
+    // ---- the camera ----
+    var K = [[0, 1, 234, 200], [A.to - .2, 1.12, 160, 250], [A.wrap - .3, 1, 234, 200], [A.now - .2, 1.12, 160, 300], [A.back + .2, 1, 234, 200]];
+    var C = cam(t, K); $('cam').style.transform = 'translate(' + C.tx.toFixed(1) + 'px,' + C.ty.toFixed(1) + 'px) scale(' + C.s.toFixed(4) + ')';
+    var vt = parseFloat($('view').style.top), sx = function(x){ return 36 + C.tx + x * C.s; }, sy = function(y){ return vt + C.ty + (66 + y) * C.s; };
+    var path = [[0, 250, HH + 6.6 * RH], [A.closer - .4, 250, HH + 6.6 * RH], [A.closer - .2, 120, HH + 6.6 * RH], [A.wrap - .5, 120, HH + 6.6 * RH], [A.wrap - .2, 250, HH + 6.6 * RH],
+      [A.now - .3, 250, HH + 6.6 * RH], [A.now, 330, HH + 5.2 * RH], [DUR, 330, HH + 5.2 * RH]];
+    var pi = 0; while (pi < path.length - 1 && t >= path[pi + 1][0]) pi++;
+    var p0 = path[pi], p1 = path[Math.min(pi + 1, path.length - 1)], pk = p1 === p0 ? 0 : io(P(t, p0[0], Math.min(p1[0], p0[0] + .4)));
+    var px = mix(p0[1], p1[1], pk) + Math.sin(t * 1.7) * 2, py = mix(p0[2], p1[2], pk) + Math.cos(t * 1.3) * 2;
+    place('ptr', sx(px) - 2, sy(py) - 2, 1);
+    var rr = 0, rk2 = 0; [A.closer - .2, A.wrap - .2].forEach(function(c){ var k = P(t, c, c + .4); if (k > 0 && k < 1) { rr = 1 - k; rk2 = k; } });
+    place('ring', sx(px), sy(py), rr * .9); $('ring').style.transform += ' scale(' + (.4 + rk2).toFixed(2) + ')';
+    // ---- notes under the sheet ----
+    var N = '', cut = out(P(t, A.cuts, A.cuts + .4));
+    if (t >= A.leave + .2 && t < A.to - .1) N = '<span>CHAIR ✓ 85</span><span class="r">LAMP ✗ #N/A</span>';
+    else if (t >= A.to - .1 && t < A.wrap - .1) N = '<span class="r">"Lamp' + SP.replace('margin-left:2px', 'margin-left:1px').replace('height:22px', 'height:18px') + '"</span><span>≠</span><span>"Lamp"</span>';
+    else if (t >= A.wrap - .1 && t < A.cuts - .1) N = '<span class="g">TRIM</span><span>EXCEL · SHEETS</span>';
+    else if (t >= A.cuts - .1 && t < A.now - .1) N = '<span>"Lamp<i style="display:inline-block;width:' + (10 * (1 - cut)).toFixed(1) + 'px;height:18px;vertical-align:-4px;border-radius:3px;background:var(--redbg);box-shadow:inset 0 0 0 ' + (1.5 * (1 - cut)).toFixed(2) + 'px var(--red)"></i>"</span><span>→</span><span class="g">"Lamp"</span>';
+    else if (t >= A.now - .1) N = '<span class="g">LAMP ✓ 40</span><span>FOUND 2 OF 2</span>';
+    var nt = $('note'); nt.innerHTML = N; nt.style.top = (252 + VH + 10) + 'px'; nt.style.opacity = P(t, A.leave + .35, A.leave + .55);
+    readout(!fixed ? 'FOUND · <b class="r">1 OF 2</b>' : 'FOUND · <b class="g">2 OF 2</b>');
+    captions(t, ex);
+    $('bg').style.transform = 'translate(' + (-(t * 3) % 90).toFixed(1) + 'px,' + (-(t * 1.5) % 30).toFixed(1) + 'px)';
+  }
+  // sound: a click to open the cell, a tap on the space, a thud on "different", keys for TRIM, a soft tick as the space goes, a shimmer when it is found
+  function cues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .45, p: -.4 }, { t: A.leave, k: 'swish', d: .45, g: .5 }, { t: A.closer - .2, k: 'click', g: .4, p: 3 }, { t: A.space, k: 'tap', g: .45, p: 6 },
+      { t: A.different, k: 'thud', g: .4 }, { t: A.wrap - .2, k: 'click', g: .4, p: 3 }];
+    for (var c = 0; c < 6; c++) Q.push({ t: A.type0 + (A.type1 - A.type0) * c / 6, k: 'tick', g: .12, p: (c * 5) % 7 });
+    Q.push({ t: A.cuts + .1, k: 'tick', g: .25, p: 8 }, { t: A.now, k: 'shimmer', g: .35 }, { t: A.price, k: 'tap', g: .4, p: 5 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .26, chords: [[48, 60, 64, 67, 71], [45, 57, 60, 64, 69], [41, 57, 60, 65, 69], [43, 55, 62, 67, 71]] } };
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  window.seek = seek; window.DURATION = DUR;
+  fakeWords();
+  document.fonts.load("800 50px 'Inter Tight'").then(function(){ return document.fonts.load("500 15px 'IBM Plex Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+name: Sources
+
+# Fetches the primary sources cited by reel configs and prints them as text in the log (scripts/showreel/sources.py), for the
+# fact check before a render when the session's network cannot reach the documentation hosts. Run by hand: Actions -> Sources.
+on:
+  workflow_dispatch:
+    inputs:
+      configs:
+        description: Reel configs (space-separated paths or globs)
+        default: scripts/fixedcell/*.json
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and print
+        env:
+          CONFIGS: ${{ inputs.configs }}
+        run: python3 scripts/showreel/sources.py $CONFIGS

@@ -51,6 +51,15 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   open with only their label for about 0.4 s (content must arrive with the label).
 - Primary sources apple.com, developer.apple.com, blog.google, developer.chrome.com and webkit.org are allowed in the environment: read them directly.
 
+## Fixed Cell (owner, 31 Oct 2026)
+- A third Instagram channel: **Fixed Cell** (@fixedcell), one spreadsheet fix a day, before → after. Plan, look, craft bar, post-text rules
+  and the topic backlog: **design/fixedcell.md** (mark topics ✅ as they ship). Posted by a team member of the owner, 18:00-20:00 IST,
+  from the app's Fixed Cell tab (profile card with Copy buttons and the logo; data in templates/channels/channels.json).
+- Scenes `scripts/fixedcell/<slug>.html` + `.json` (name `showreel-fcNN-<slug>`, `"channel": "fc"`), rendered by the Showreel workflow.
+  Before the one render: preflight "fits", `node scripts/fixedcell/qa.mjs <config>` clean, one stills sheet, and the cited function pages
+  read (Actions → Sources prints them; support.microsoft.com and support.google.com are blocked in the session).
+- Weekly batch: a Sunday session makes, checks, renders and schedules (postOn in captions.json) the next 7 reels.
+
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN and INSTAGRAM_TOKEN_2 (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.
 - The "Instagram collect" workflow reads both accounts nightly; the daily audit (scheduled task, 08:52 IST) writes the Results log.
