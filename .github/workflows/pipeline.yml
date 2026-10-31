@@ -152,10 +152,9 @@ jobs:
             done
             return 1
           }
-          LATEST=$(node -e "const l=require('./design-log.json');const k=e=>e.id||e.date;console.log(l.length?l.sort((a,b)=>k(a)<k(b)?1:-1).map(k)[0]:'')")
           J=$(mktemp)
           check "$B/" 303 -H 'Accept: text/html' || exit 1              # closed: page requests bounce to the sign-in page
-          check "$B/design-log.json" 401 || exit 1                      # closed: data requests are refused (no popup)
+          check "$B/showreels/captions.json" 401 || exit 1             # closed: data requests are refused (no popup)
           check "$B/login" 200 || exit 1
           check "$B/manifest.webmanifest" 200 || exit 1                 # public so the PWA can install
           check "$B/tips/" 200 -H 'Accept: text/html' || exit 1         # public: the reels' fixes (owner, 27 Oct 2026)
@@ -163,10 +162,10 @@ jobs:
           check "$B/login" 401 -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=wrong-$RANDOM" || exit 1
           check "$B/login" 303 -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" || exit 1
           grep -q aq_session "$J" || { echo "No session cookie was issued"; exit 1; }
-          for path in "" archive/ design-log.json showreels/captions.json ${LATEST:+$LATEST/}; do
+          for path in "" showreels/captions.json channels/channels.json; do
             check "$B/$path" 200 -b "$J" || exit 1                      # signed-in (cookie) access
           done
-          check "$B/design-log.json" 200 --user "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" || exit 1  # scripts can still use a Basic header
+          check "$B/showreels/captions.json" 200 --user "$BASIC_AUTH_USER:$BASIC_AUTH_PASS" || exit 1  # scripts can still use a Basic header
           if [ -n "$BASIC_AUTH_USER_2" ] && [ -n "$BASIC_AUTH_PASS_2" ]; then                   # optional second account
             J2=$(mktemp)
             check "$B/login" 401 -X POST --data-urlencode "username=$BASIC_AUTH_USER_2" --data-urlencode "password=wrong-$RANDOM" || exit 1
@@ -228,7 +227,7 @@ jobs:
           echo "$n.mp4: signed out $out | signed in [$v]"
           case "$v" in "200 "*|"206 "*) ;; *) echo "::error::$n.mp4 is not served to a signed-in user"; exit 1;; esac
       - name: Summary
-        run: echo "Deployed. Showreels https://templates.aquariit.com/ · Archive https://templates.aquariit.com/archive/" >> "$GITHUB_STEP_SUMMARY"
+        run: echo "Deployed. Showreels https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"
 
   notify:
     needs: [checks, merge, deploy]

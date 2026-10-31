@@ -1,6 +1,6 @@
 // Dependency-free repo sanity checks (run by `npm run check` and the pipeline). Exits non-zero with an itemized list.
-// Since 22 Oct 2026 the app is the @webin20sec showreel studio: home = Showreels, /archive/ = the templates built 6-17 Oct (frozen),
-// reels = seekable scenes in scripts/explainer (or capture configs in scripts/showreel) rendered by the Showreel workflow.
+// The app is the showreel studio: home = Showreels (the 6-17 Oct templates and their archive were deleted, owner 31 Oct 2026);
+// reels = seekable scenes rendered by the Showreel workflow.
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -21,20 +21,6 @@ const externalHosts = (html) => [
   ...[...html.matchAll(/@import\s+["']([^"']+)["']/gi)].map((m) => m[1]),
 ].filter((u) => /^(https?:)?\/\//i.test(u)).map((u) => { try { return [u, new URL(u.startsWith('//') ? 'https:' + u : u).hostname]; } catch { return [u, '']; } });
 
-// 1. the archive: every template folder has a log entry and the other way round; the served copy of the log matches
-const log = readJSON(join(root, 'design-log.json'), 'design-log.json');
-const folders = readdirSync(T).filter((f) => ID_RE.test(f) && statSync(join(T, f)).isDirectory());
-if (Array.isArray(log)) {
-  for (const e of log) {
-    const id = e.id || e.date;
-    if (!existsSync(join(T, id, 'index.html'))) err(`design-log.json: templates/${id}/index.html does not exist`);
-    if (!existsSync(join(T, 'covers', id + '.jpg'))) err(`templates/covers/${id}.jpg is missing (the archive grid shows it)`);
-  }
-  for (const f of folders) if (!log.some((e) => (e.id || e.date) === f)) err(`templates/${f}/ has no design-log.json entry`);
-  const copy = join(T, 'design-log.json');
-  if (!existsSync(copy) || readFileSync(copy, 'utf8') !== readFileSync(join(root, 'design-log.json'), 'utf8')) err('templates/design-log.json must be an exact copy of design-log.json');
-} else if (log !== null) err('design-log.json must be an array');
-
 // 2. every page we serve stays self-contained (Google Fonts only) and installable
 const pages = [];
 const walk = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) walk(p); else if (f.endsWith('.html')) pages.push(p); } };
@@ -50,7 +36,7 @@ for (const p of pages) {
 
 // 3. the app shell
 if (!existsSync(join(root, 'src', 'worker.js'))) err('src/worker.js is missing (sign-in gate, reels and APIs)');
-for (const f of ['index.html', 'archive/index.html', 'showreels/captions.json', '404.html', 'sw.js', 'manifest.webmanifest']) if (!existsSync(join(T, f))) err(`templates/${f} is missing`);
+for (const f of ['index.html', 'showreels/captions.json', 'channels/channels.json', '404.html', 'sw.js', 'manifest.webmanifest']) if (!existsSync(join(T, f))) err(`templates/${f} is missing`);
 const m = existsSync(join(T, 'manifest.webmanifest')) ? readJSON(join(T, 'manifest.webmanifest'), 'manifest.webmanifest') : null;
 if (m) {
   for (const k of ['name', 'start_url', 'display', 'icons']) if (!m[k]) err(`manifest.webmanifest: missing "${k}"`);
@@ -94,4 +80,4 @@ if (errors.length) {
   console.error(`✗ ${errors.length} problem(s):\n` + errors.map((e) => '  - ' + e).join('\n'));
   process.exit(1);
 }
-console.log(`✓ checks passed — ${folders.length} archived templates, ${pages.length} pages, app shell and reel configs OK`);
+console.log(`✓ checks passed — ${pages.length} pages, app shell and reel configs OK`);

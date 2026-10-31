@@ -111,17 +111,17 @@
 </head>
 <body>
 <main class="wrap">
-  <div class="top"><span class="brand">Studio</span><span class="tr"><button class="pill" id="refresh" type="button">Refresh</button><a class="pill" href="/archive/">Archive</a></span></div>
+  <div class="top"><span class="brand">Studio</span><span class="tr"><button class="pill" id="refresh" type="button">Refresh</button></span></div>
   <div class="tabs" role="tablist" aria-label="Channel">
     <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
-    <button class="tab tech" role="tab" type="button" data-ch="tech" aria-selected="false"><b>@techin20sec</b><span>Tech news</span></button>
-    <button class="tab c3" role="tab" type="button" data-ch="c3" aria-selected="false"><b>Turns Out</b><span>True stories</span></button>
+    <button class="tab tech" role="tab" type="button" data-ch="tech" aria-selected="false"><b>@techin20sec</b><span>Tech explained</span></button>
+    <button class="tab c3" role="tab" type="button" data-ch="c3" aria-selected="false"><b>@itturns.out</b><span>True stories</span></button>
   </div>
   <div class="alert" id="alert" role="alert" hidden></div>
   <details class="prof" id="prof" hidden><summary>Profile</summary></details>
   <details class="use" id="use" hidden><summary><span>GitHub minutes</span><span id="use-n"></span></summary><div class="bar" id="use-bar"><i></i></div><div id="use-note"></div><ul id="use-list"></ul></details>
   <h1 id="title">Showreels</h1>
-  <p class="lede" id="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, then mark it uploaded.</p>
+  <p class="lede" id="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, paste its sources as the first comment when it has them, then mark it uploaded.</p>
   <div id="list"><p class="empty">Loading…</p></div>
 </main>
 <script>
@@ -171,10 +171,13 @@
   // each channel has its own reels, posting window and look (owner, 27 Oct 2026). A reel belongs to @techin20sec when its name starts with
   // showreel-tech- or showreel-t<digit> (the tech reels), to Turns Out (internal id c3) when it starts with showreel-c3- (owner, 31 Oct 2026:
   // the channel's name), or to the channel captions.json names ("channel": "tech" / "c3" / "web"); everything else is @webin20sec
-  var CH = { web: { name: '@webin20sec', slot: '12:30–13:30 IST', sub: 'Web fixes' }, tech: { name: '@techin20sec', slot: '15:00–19:00 IST', sub: 'Tech news' },
-    c3: { name: 'Turns Out', slot: '21:00–22:00 IST', sub: 'True stories' } };
+  var CH = { web: { name: '@webin20sec', slot: '12:30–13:30 IST', sub: 'Web fixes' }, tech: { name: '@techin20sec', slot: '15:00–19:00 IST', sub: 'Tech explained' },
+    c3: { name: '@itturns.out', slot: '21:00–22:00 IST', sub: 'True stories' } };
   function chOf(s, c){ var m = c[s.name] || {}; return CH[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : /^showreel-c3-/.test(s.name) ? 'c3' : 'web'; }
-  function label(s){ return s.name.replace(/^showreel-(tech-|c3-)?/, '').replace(/-/g, ' '); }
+  // a reel's title, the same way on every tab: its concept, else the first line of its caption (once loaded), else its name made readable
+  var TITLES = {};
+  function label(s){ if (TITLES[s.name]) return TITLES[s.name]; var t = s.name.replace(/^showreel-(tech-|c3-|t\d+-)?(\d+-)?/, '').replace(/-/g, ' '); return t.charAt(0).toUpperCase() + t.slice(1); }
+  function firstLine(c){ return String(c).split('\n')[0].replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu, '').trim(); }
   var ch = 'web';
   try { var saved = localStorage.getItem('studio-ch'); if (CH[saved]) ch = saved; } catch (e) {}
   if (CH[location.hash.slice(1)]) ch = location.hash.slice(1);
@@ -184,7 +187,7 @@
   function load(){ return fetch('/api/uploaded', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ ticks = j.ids || {}; }).catch(function(){ trackOk = false; }); }
   function mark(name, on){ return fetch('/api/uploaded/' + encodeURIComponent(name), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: on }) })
     .then(function(r){ if (!r.ok) throw 0; if (on) ticks[name] = new Date().toISOString(); else delete ticks[name]; }); }
-  var LEDE = document.getElementById('lede').textContent, DATA = null, openName = { web: null, tech: null, c3: null }, tabs = document.querySelectorAll('.tab');
+  var DATA = null, openName = { web: null, tech: null, c3: null }, tabs = document.querySelectorAll('.tab');
   Array.prototype.forEach.call(tabs, function(t){ t.addEventListener('click', function(){ ch = t.getAttribute('data-ch'); try { localStorage.setItem('studio-ch', ch); } catch (e) {} if (DATA) render(); else paint(); }); });
   // the profile card: one entry per channel in /channels/channels.json (logo, name, username, bio, posting window); a channel without one shows no card
   var PROF = {}, prof = document.getElementById('prof');
@@ -211,7 +214,6 @@
   fetch('/channels/channels.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }).then(function(j){ PROF = j || {}; profile(); });
   function paint(counts){
     document.body.setAttribute('data-ch', ch); document.getElementById('title').textContent = CH[ch].name; profile();
-    document.getElementById('lede').textContent = ch === 'c3' ? 'The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, paste its sources as the first comment (Copy as comment), then mark it uploaded.' : LEDE;
     Array.prototype.forEach.call(tabs, function(t){ var k = t.getAttribute('data-ch'), n = counts && counts[k], sp = t.querySelector('span');
       t.setAttribute('aria-selected', k === ch ? 'true' : 'false');
       sp.textContent = CH[k].sub + (n ? ' · ' + n + ' to post' : ''); sp.className = n ? 'due' : ''; });
@@ -247,7 +249,7 @@
       v.setAttribute('aria-label', 'Showreel ' + s.name);
       var b = el('div', 'body');
       b.appendChild(el('div', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) + (meta.postOn ? ' · planned ' + nice(meta.postOn) : '') : when(meta.postOn)));
-      b.appendChild(el('div', 'name', meta.concept || label(s)));
+      var nm = el('div', 'name', meta.concept || label(s)); b.appendChild(nm);
       if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a reel's one-line description
       b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size)));
       var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), tick = el('button', 'btn g tick' + (up ? ' on' : ''), up ? 'Uploaded ✓' : 'Mark uploaded');
@@ -264,7 +266,8 @@
       var get = function(){ return fetch(info, { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw r.status; return r.json(); }); };
       get().catch(function(){ return new Promise(function(ok){ setTimeout(ok, 1500); }).then(get); }).catch(function(){ return {}; }).then(function(j){
         var m = Object.assign({}, j, meta);
-        if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false; }
+        if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false;
+          if (!meta.concept) { TITLES[s.name] = firstLine(m.caption); nm.textContent = TITLES[s.name]; } }
         else { cap.textContent = 'No post text for this reel yet.'; }
         if (Array.isArray(m.sources) && m.sources.length) sources(src, m.sources); });
       b.appendChild(row); card.appendChild(v); card.appendChild(b); list.appendChild(card);
@@ -299,7 +302,11 @@
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
     // a re-render keeps the file name, so the video and cover URLs carry the release's update time: the phone never plays a cached older cut
     (r[0].showreels || []).forEach(function(s){ var v = '?v=' + encodeURIComponent(s.at || ''); s.video += v; if (s.cover) s.cover += v; });
-    DATA = { d: r[0], c: r[1] }; render(); })
+    DATA = { d: r[0], c: r[1] }; render();
+    // titles for the collapsed tiles too: each reel's caption first line (one small request per reel), then one re-render
+    Promise.all((r[0].showreels || []).filter(function(s){ return !(r[1][s.name] || {}).concept; }).map(function(s){
+      return fetch(s.info || '/reels/' + s.name + '.json', { credentials: 'same-origin' }).then(function(x){ return x.ok ? x.json() : {}; }).then(function(j){ if (j && j.caption) TITLES[s.name] = firstLine(j.caption); }).catch(function(){}); }))
+      .then(function(){ render(); }); })
     .catch(function(){ list.textContent = ''; list.appendChild(el('p', 'empty', 'Could not load the list right now.')); });
 })();
 </script>
