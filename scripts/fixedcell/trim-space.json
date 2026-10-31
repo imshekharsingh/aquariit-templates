@@ -14,7 +14,7 @@
   "speed": 1.0,
   "gap": [0.6, 0.55, 0.6, 0.5, 0.6]
  },
- "caption": "Why does your lookup miss a name that's right there? 🔍\n\n\"Lamp\" is in the list, but the lookup says #N/A. Click the cell: there's a space after the name, typed or pasted in by accident. To a lookup, \"Lamp \" and \"Lamp\" are different names.\nFix: =XLOOKUP(TRIM(A7), A2:A4, B2:B4). TRIM removes the spaces before and after the text (and squeezes double spaces inside it to one), so the name matches. It works the same way inside VLOOKUP, in Excel and Google Sheets.\nIf the spaces are in the list itself, clean that column once with =TRIM() in a helper column.\nSave it for the next #N/A.",
+ "caption": "Why does your lookup miss a name that's right there? 🔍\n\n\"Lamp\" is in the list, but the lookup says #N/A. Click the cell: there's a space after the name, usually from a paste or an import (Google Sheets trims what you type, Excel keeps it). To a lookup, \"Lamp \" and \"Lamp\" are different names.\nFix: =XLOOKUP(TRIM(A7), A2:A4, B2:B4). TRIM removes the spaces before and after the text (and squeezes double spaces inside it to one), so the name matches. It works the same way inside VLOOKUP, in Excel and Google Sheets.\nIf the spaces are in the list itself, clean that column once with =TRIM() in a helper column.\nSave it for the next #N/A.",
  "keywords": [
   "lookup returns n/a but value exists",
   "trim function spaces",
@@ -37,7 +37,7 @@
   },
   {
    "url": "https://support.google.com/docs/answer/3094140",
-   "note": "Google Sheets TRIM: removes leading, trailing and repeated spaces in text"
+   "note": "Google Sheets TRIM: removes leading, trailing and repeated spaces in text; Sheets trims text typed into cells by default"
   },
   {
    "url": "https://support.microsoft.com/en-us/office/xlookup-function-b7fd680e-6d10-43e6-84f9-88eae8bf5929",

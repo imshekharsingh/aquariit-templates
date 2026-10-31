@@ -39,6 +39,8 @@ def main(args):
                 print(f'FETCH FAILED: {e}'); continue
             p = Text(); p.feed(raw)
             txt = re.sub(r'[ \t\r\f\v]+', ' ', ''.join(p.out)); txt = re.sub(r'\n\s*\n+', '\n', txt).strip()
+            # Microsoft's pages open with a menu of every function name (one per line): drop it so the article fits in N characters
+            txt = '\n'.join(l for l in txt.split('\n') if not re.fullmatch(r'\s*(?:[A-Z][A-Z0-9.]*|True|False|[A-Z.]+\.MD|×)\s*', l))
             print(txt[:n])
 
 
