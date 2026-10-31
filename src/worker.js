@@ -134,6 +134,8 @@ async function perfDb(env) {
     // more than one account (owner, 21 Oct 2026: a second account for the audit): per-account snapshots and token slots 2+; slot 1 stays in ig_token
     env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_accounts (day TEXT NOT NULL, username TEXT NOT NULL, followers INTEGER, follows INTEGER, media_count INTEGER, PRIMARY KEY (day, username))'),
     env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_tokens (slot INTEGER PRIMARY KEY CHECK (slot BETWEEN 2 AND 9), token TEXT NOT NULL, saved_at TEXT NOT NULL)'),
+    // collector failures shown as a banner in the app (owner, 31 Oct 2026: GitHub issues go unseen); one row per account slot, cleared on the next good run
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_alerts (slot INTEGER PRIMARY KEY CHECK (slot BETWEEN 1 AND 9), secret TEXT NOT NULL, message TEXT NOT NULL, at TEXT NOT NULL)'),
   ]).then(() => env.DB.prepare('ALTER TABLE ig_media ADD COLUMN username TEXT').run().catch(() => {}))   // already there after the first run
     .catch((e) => { perfReady = null; throw e; });
   await perfReady;
@@ -162,6 +164,25 @@ async function perfApi(request, env, p, url) {
       return jres({ ok: true });
     }
     return jres({ error: 'bad-request' }, 400);
+  }
+  if (p === '/api/perf/alert') { // the collector reports a failing account (PUT) or clears it after a good run (DELETE)
+    if (!(await isPrimary(request, env)) || request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403);
+    const slot = Math.max(1, Math.min(9, Math.round(+url.searchParams.get('slot')) || 1));
+    if (request.method === 'DELETE') { await db.prepare('DELETE FROM ig_alerts WHERE slot = ?1').bind(slot).run(); return jres({ ok: true }); }
+    if (request.method === 'PUT') {
+      let b = null; try { b = await request.json(); } catch { /* handled below */ }
+      const secret = b && nStr(b.secret, 40), message = b && nStr(b.message, 400);
+      if (!secret || !/^INSTAGRAM_TOKEN(_\d)?$|^BASIC_AUTH|^SITE$/.test(secret) || !message) return jres({ error: 'bad-request' }, 400);
+      await db.prepare('INSERT INTO ig_alerts (slot, secret, message, at) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(slot) DO UPDATE SET secret = excluded.secret, message = excluded.message, at = excluded.at')
+        .bind(slot, secret, message, new Date().toISOString()).run();
+      return jres({ ok: true });
+    }
+    return jres({ error: 'bad-request' }, 400);
+  }
+  if (request.method === 'GET' && p === '/api/perf/status') { // for the app's banner: open alerts and the last day each account was saved
+    const alerts = await db.prepare('SELECT slot, secret, message, at FROM ig_alerts ORDER BY slot').all();
+    const last = await db.prepare('SELECT username, MAX(day) AS day FROM ig_accounts GROUP BY username').all();
+    return jres({ alerts: alerts.results || [], last: last.results || [] });
   }
   if (request.method === 'GET' && p === '/api/perf') {
     const days = Math.max(7, Math.min(365, Math.round(+url.searchParams.get('days')) || 90));
