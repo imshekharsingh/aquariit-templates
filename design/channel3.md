@@ -10,19 +10,20 @@
 | Username | **@itturns.out** |
 | Bio | True stories behind things everyone knows. Sources in the comments. |
 | Post window | daily, 21:00-22:00 IST (evening in Europe, morning to afternoon in the Americas) |
-| Logo | design/brand/accounts/turnsout-logo.svg (+ 1080 PNG and 320 profile PNG; the app serves templates/channels/turnsout-logo.png) |
+| Logo | design/brand/accounts/turnsout-logo.svg, option M2 (see below) |
 
 In code the channel keeps its internal id `c3`: scenes in scripts/channel3/, reels named `showreel-c3-<slug>`, `"channel": "c3"` in captions.json.
 
-### Logo (31 Oct 2026)
-Three options, drawn in code (inline SVG, no fonts), checked at 1080 px and as a 110 px round avatar on light and dark:
-- **B, "The question turns" (chosen)**: a red question mark whose hook turns, in one stroke, into the ink stem and dot of an exclamation mark,
-  on warm cream. It is the channel's format in one glyph (every reel opens on a question and turns it into a surprising answer), it is
-  the most distinctive of the three, and at 110 px it still reads as one bold mark. Red, ink and cream are the reels' own palette.
-- A, "Turned page" (design/channel3-logo-options/a-turned-page.svg): a page whose corner turns over; clear, but it reads as a generic
-  document icon and the question mark gets small at 110 px.
-- C, "The lens" (design/channel3-logo-options/c-lens.svg): a reading lens over an exclamation mark; legible, but a lens is the
-  universal search icon, so it says "search", not "story".
+### Logo (owner chose M2, 31 Oct 2026)
+**M2, "The turn"**: an amber arrow turning three quarters round a dark ring (the @techin20sec dial's sibling), with TURNS in white and OUT
+in amber set large inside, in Unbounded on the same dark ink. It matches the family of the other two logos (one object, heavy Unbounded
+type, one bright accent on ink), the arrow says "turns", and the name stays readable as a 110 px avatar. The owner asked for no question
+mark in it. Source: design/brand/accounts/turnsout-logo.svg (+ 1080 PNG and 320 PNG; the app serves templates/channels/turnsout-logo.png).
+
+Every option drawn on the way is in design/channel3-logo-options/: A-C (first round: turned page, the question that turns, lens), D-K
+(premium serif round: masthead, serif question, coin, monogram, seal, lowercase, page turn, light masthead), L, M1, N (family round:
+story book, the turn with "!", folded card). The owner found the first round not premium; the family round was preferred so the three
+accounts read as siblings.
 
 ## Audience and topics
 - Global: a topic must be recognisable on every continent. Over any week, the reels cover at least 4 continents.

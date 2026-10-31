@@ -6,3 +6,4 @@ templates/social-kits.json
 .dev.vars
 out/
 templates/reels/
+__pycache__/
