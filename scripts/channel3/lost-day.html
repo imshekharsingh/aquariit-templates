@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>The sailors who lost a day</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Channel 3 pilot, pattern "Living globe" (design/channel3.md): the first voyage around the world (1519-1522) and the day its sailors
+   lost. A rotating paper globe (hand-drawn coarse coastlines rasterised once into a land mask, drawn per pixel in orthographic projection,
+   flat day and night halves, crisp coast lines), the route inking itself as a small cartoon fleet sails it, kinetic dates, and cards for
+   the diary and the shore. The camera (centre longitude, tilt, globe size) is a function of t; the fleet's position is a function of t.
+   Facts (two sources each): Linda Hall Library "Antonio Pigafetta" (scientist of the day); R. H. van Gent (Utrecht University), "The
+   discovery of the calendrical date line"; National Geographic, "Magellan got the credit, but this man was first to sail around the
+   world": five ships left Spain (Sanlucar) in September 1519 sailing west; Pigafetta kept a daily journal; in July 1522 the Victoria
+   reached the Cape Verde islands, where the journal said Wednesday 9 July and the people on shore said Thursday; sailing westward around
+   the world costs one day; the International Date Line is where that day is added back today. Route waypoints are approximate. */
+*{margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:#efe4cc}
+canvas{display:block;width:540px;height:960px}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+(function(){
+  // ---- shared core of the Channel 3 scenes (design/channel3.md): timing, voice, captions, hook, text probes, grain ----
+  var c = document.getElementById('c'), x = c.getContext('2d');
+  var FD = "'Fraunces',Georgia,serif", FI = "'Inter Tight',system-ui,sans-serif";
+  function rnd(s){ return function(){ s |= 0; s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function cl(v, a, b){ return v < a ? a : v > b ? b : v; }
+  function P(t, a, b){ return cl((t - a) / (b - a), 0, 1); }
+  function mix(a, b, k){ return a + (b - a) * k; }
+  function eo(k){ return 1 - Math.pow(1 - k, 3); }
+  function eio(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+  function eb(k){ var q = 1.6; return 1 + (q + 1) * Math.pow(k - 1, 3) + q * Math.pow(k - 1, 2); }
+  function win(t, a, b, f){ f = f || .25; return P(t, a, a + f) * (1 - P(t, b - f, b)); }   // 0 -> 1 -> 0 over [a, b]
+  // every text drawn in the last seek, as its box on screen (CSS px), for scripts/channel3/qa.mjs
+  var BOXES = []; window.__boxes = function(){ return BOXES; };
+  function probe(s, X, Y, al, size){ if (x.globalAlpha < .05) return; var w = x.measureText(s).width, l = al === 'left' ? X : al === 'right' ? X - w : X - w / 2, m = x.getTransform();
+    var a = m.transformPoint(new DOMPoint(l, Y - size * .75)), b = m.transformPoint(new DOMPoint(l + w, Y + size * .2)); BOXES.push([s, Math.min(a.x, b.x) / 2, Math.max(a.x, b.x) / 2, Math.min(a.y, b.y) / 2, Math.max(a.y, b.y) / 2]); }
+  function font(size, f){ var w = f.split(' '); return w[0] + ' ' + size + 'px ' + w.slice(1).join(' '); }
+  function txt(s, X, Y, size, f, col, al, sp){ x.font = font(size, f); x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px';
+    x.fillStyle = col; probe(s, X, Y, x.textAlign, size); x.fillText(s, X, Y); x.letterSpacing = '0px'; }
+  function tw(s, size, f, sp){ x.font = font(size, f); x.letterSpacing = (sp || 0) + 'px'; var w = x.measureText(s).width; x.letterSpacing = '0px'; return w; }
+  // a paper piece: hard small shadow, flat fill, crisp edge
+  function paper(path, col, sh, edge){ x.save(); x.translate(sh == null ? 2.5 : sh, sh == null ? 3.5 : sh * 1.4); x.fillStyle = 'rgba(30,24,36,.2)'; path(); x.fill(); x.restore();
+    x.fillStyle = col; path(); x.fill(); if (edge) { x.strokeStyle = edge; x.lineWidth = 1.2; x.stroke(); } }
+  function rr(X, Y, w, h, r){ return function(){ x.beginPath(); x.roundRect(X, Y, w, h, r); }; }
+  function tag(s, X, Y, size, f, col, bg, sp){ var w = tw(s, size, f, sp) + size * 1.1, h = size * 1.75;
+    paper(rr(X - w / 2, Y - h / 2, w, h, h * .22), bg); txt(s, X, Y + size * .36, size, f, col, 'center', sp); }
+  var GRAIN = (function(){ var g0 = document.createElement('canvas'); g0.width = 1080; g0.height = 1920; var g = g0.getContext('2d'), im = g.createImageData(1080, 1920), r = rnd(77);
+    for (var i = 0; i < im.data.length; i += 4){ var v = r(); im.data[i] = im.data[i + 1] = im.data[i + 2] = v < .5 ? 30 : 255; im.data[i + 3] = Math.abs(v - .5) > .4 ? 22 : 0; }
+    g.putImageData(im, 0, 0); return g0; })();
+
+  // ---- the story: one start time per sentence, from an estimate of each sentence's length (scripts/showreel/preflight.mjs uses the same
+  // rate: 0.07 s a letter at speed 1, a digit as 4 letters since "1889" is spoken as "eighteen eighty nine"), then a breath ----
+  var SPEED = .95, lt = function(w){ return w.replace(/[^A-Za-z]/g, '').length + 4 * w.replace(/[^0-9]/g, '').length; };
+  var A = [], CAPS = [];
+  function story(lines){   // lines: [[text, breath before it]]
+    var t = 0;
+    lines.forEach(function(L, i){ if (i) t += L[1]; var at = +t.toFixed(2), ws = L[0].split(/\s+/), w0 = at + .05, n = 0;
+      var words = ws.map(function(w){ var o = { d: w, s: w0, e: w0 + lt(w) * .07 / SPEED }; w0 = o.e; n += lt(w); return o; });
+      A.push(at); CAPS.push({ text: L[0], at: at, s: at, e: at + .1 + n * .07 / SPEED, words: words }); t = CAPS[i].e; });
+    window.VOICE = { text: CAPS.map(function(L){ return L.text; }).join(' '), at: A.slice() };
+  }
+  var norm = function(w){ return String(w).toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  window.setVoice = function(v){ if (!v || !v.words || !v.words.length) return; var V = v.words, j = 0;
+    CAPS.forEach(function(L){ L.words.forEach(function(w){ for (var k = j; k < Math.min(V.length, j + 4); k++) if (norm(V[k].w) === norm(w.d)) { w.s = V[k].s; w.e = V[k].e; j = k + 1; return; } }); L.s = L.words[0].s; L.e = L.words[L.words.length - 1].e; }); };
+  var CAPI = -1; window.__cap = function(){ return CAPI; };
+  window.__caps = function(){ return CAPS.map(function(L){ return [L.at, +L.s.toFixed(2), +L.e.toFixed(2), L.text]; }); };
+  // a sentence stays up until the next one starts (no empty caption between them), at most 2.5 s after it is spoken
+  function capAt(t){ for (var i = CAPS.length - 1; i >= 0; i--) if (t >= CAPS[i].s - .12) return t < CAPS[i].e + 2.5 ? i : -1; return -1; }
+  function wrap(words, size, f, maxW){ x.font = font(size, f); var sp = x.measureText(' ').width, lines = [[]], lw = [0];
+    words.forEach(function(w){ var ww = x.measureText(w.d).width, n = lines.length - 1; if (lw[n] && lw[n] + sp + ww > maxW) { lines.push([]); lw.push(0); n++; } lines[n].push([w, ww]); lw[n] += (lw[n] ? sp : 0) + ww; });
+    return { lines: lines, lw: lw, sp: sp }; }
+  // HOOK = { y, col, hl, hlCol, size }: the question, big, at the top while it is spoken (it is sentence 1's caption); then it lifts away
+  // STYLE = { hl: /words in accent/, hlCol, ink, panel }: the caption strip for every other sentence
+  function drawHook(t){
+    var L = CAPS[0], out = P(t, A[1] - .35, A[1] + .1); if (out >= 1) return;
+    var W = wrap(L.words, HOOK.size, '800 ' + FD, 480), lh = HOOK.size * 1.08, y0 = HOOK.y - (W.lines.length - 1) * lh / 2 - eo(out) * 30;
+    x.save(); x.globalAlpha = 1 - out;
+    if (HOOK.label) { var lk = P(t, 0, .3); x.globalAlpha = (1 - out) * lk; tag(HOOK.label, 270, y0 + eo(out) * 30 - HOOK.size - 14, 12, '800 ' + FI, HOOK.labelCol || '#fff', HOOK.labelBg || '#23202b', 2.5); }
+    W.lines.forEach(function(ln, r){ var xx = 270 - W.lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .1, w.s + .12)), hl = HOOK.hl && HOOK.hl.test(w.d);
+        x.globalAlpha = (1 - out) * (.5 + .5 * k); x.save(); x.translate(xx + q[1] / 2, y0 + r * lh); var sc = 1 + .06 * (1 - k); x.scale(sc, sc);
+        if (HOOK.shadow) { x.globalAlpha *= .9; txt(w.d, 2, 3, HOOK.size, '800 ' + FD, HOOK.shadow, 'center', -.6); x.globalAlpha = (1 - out) * (.5 + .5 * k); }
+        txt(w.d, 0, 0, HOOK.size, '800 ' + FD, hl ? HOOK.hlCol : HOOK.col, 'center', -.6); x.restore(); xx += q[1] + W.sp; }); });
+    x.restore();
+  }
+  function drawCaption(t){
+    var i = capAt(t); CAPI = i; if (i < 0) return; if (i === 0) { drawHook(t); return; }
+    var L = CAPS[i], size = 27, W = wrap(L.words, size, '700 ' + FI, 452), lh = 35, n = W.lines.length, base = 716 - (n - 1) * lh / 2;
+    var inK = eo(P(t, L.s - .12, L.s + .12)), next = i + 1 < CAPS.length ? CAPS[i + 1].s - .12 : 1e9, outK = P(t, Math.min(next, L.e + 2.5) - .12, Math.min(next, L.e + 2.5));
+    var pw = Math.max.apply(null, W.lw) + 34, ph = n * lh + 18, py = base - size * .8 - 10 + (1 - inK) * 8;
+    x.save(); x.globalAlpha = inK * (1 - outK);
+    paper(rr(270 - pw / 2, py, pw, ph, 12), STYLE.panel || '#fbf6ea', 3);
+    W.lines.forEach(function(ln, r){ var xx = 270 - W.lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .1, w.s + .08)), hl = STYLE.hl && STYLE.hl.test(w.d);
+        x.globalAlpha = inK * (1 - outK) * (.3 + .7 * k); txt(w.d, xx, base + r * lh + (1 - inK) * 8 - (1 - k) * 3, size, '700 ' + FI, hl ? STYLE.hlCol : (STYLE.ink || '#23202b'), 'left', -.3); xx += q[1] + W.sp; }); });
+    x.restore();
+  }
+  // the source credit (owner, 31 Oct: a short credit on the last frame): a small paper tag at the top for the last 3 s
+  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.6); if (k <= 0) return; x.save(); x.globalAlpha = k; tag(CREDIT, 270, 92, 11.5, '700 ' + FI, '#23202b', '#fbf6ea', .6); x.restore(); }
+  Object.defineProperty(window, 'COVER', { configurable: true, get: function(){ return +Math.min(CAPS[0].e + .25, A[1] - .3).toFixed(2); } });   // the question fully lit
+  var INK = '#23202b', CREAM = '#fbf6ea', RED = '#c8452f', PAPER = '#efe4cc', NAVY = '#2d3e6b';
+  story([['Why did the first sailors around the world lose a whole day?', 0], ['In 1519, five ships left Spain, sailing west.', .45], ['Antonio Pigafetta wrote down every day.', .4],
+    ['Three years later, one ship, the Victoria, was nearly home.', .4], ['In July 1522, they reached Cape Verde.', .45], ['The diary said Wednesday.', .35], ['On shore, it was Thursday.', .3],
+    ['Sailing west, they chased the sun, so each day was a little longer.', .45], ['One lap of the planet cost them one sunrise.', .4], ['Today, the International Date Line puts that day back.', .45]]);
+  var DUR = +(CAPS[CAPS.length - 1].e + 1.8).toFixed(1);
+  var HOOK = { y: 174, size: 38, col: INK, hl: /^(lose|whole|day)/i, hlCol: RED, label: 'THE TRUE STORY', labelBg: INK, labelCol: PAPER };
+  var STYLE = { hl: /^(1519|five|west|pigafetta|every|three|victoria|1522|cape|verde|wednesday|thursday|sun|longer|lap|sunrise|international|date|line)/i, hlCol: RED };
+  var CREDIT = 'SOURCES: LINDA HALL LIBRARY · UTRECHT UNIVERSITY · NAT GEO';
+  function T(i){ return A[i]; }
+
+  // ---- the land: coarse coastlines [lon, lat], drawn by hand; rasterised once into a mask (with coast and grid lines) ----
+  var LAND = [
+    [[-168,66],[-162,70],[-156,71.3],[-140,69.6],[-128,70],[-115,68.5],[-95,72],[-85,69.5],[-82,66],[-88,64],[-93,59],[-87,55.5],[-80,52],[-79,55],[-77,60],[-72,62],[-64,60],[-61,56],[-56,52],[-60,47],[-66,44.5],[-70,42],[-74,40.5],[-76,37],[-76,35],[-80,32],[-81,30],[-80,26],[-81,25.2],[-82.5,28],[-84,30],[-89,30.2],[-94,29.5],[-97,27.5],[-97.5,22],[-96,19],[-91,18.5],[-90,21],[-87,21.5],[-88,16],[-84,15.5],[-83.5,11],[-80,9],[-77.5,8],[-79.5,7.5],[-82,8],[-86,11.5],[-91,13.8],[-95,16],[-101,17.5],[-105.5,20],[-105.5,23],[-110,24],[-112.5,29],[-114.5,31],[-114,28],[-110,23],[-109.5,23.2],[-112,26],[-115,29.5],[-117,32.5],[-120.5,34.5],[-122.5,37.5],[-124,40.5],[-124,46],[-123,48.5],[-127,50.5],[-130,54.5],[-134,58],[-140,60],[-147,60.5],[-152,59],[-158,57],[-162,55],[-158,58.5],[-162,60],[-165,62.5],[-166,64.5]],
+    [[-73,78],[-60,82],[-35,83.5],[-20,82],[-18,77],[-20,72],[-22,70],[-30,68],[-40,65],[-43,60],[-48,61],[-52,65],[-54,68],[-56,72],[-66,76]],
+    [[-80,73.5],[-68,70.5],[-62,66.5],[-65,62],[-72,63],[-78,64.5],[-73,68],[-80,70],[-90,72]], [[-120,74],[-95,73],[-80,76],[-62,82],[-90,82],[-118,77]],
+    [[-80,9],[-77,8.5],[-75,11],[-71,12.5],[-64,10.5],[-60,8.5],[-57,6],[-52,5],[-50,1.5],[-48,-1],[-44,-2.5],[-38,-4],[-35,-6],[-35,-9],[-38,-13],[-39,-18],[-41,-22],[-44,-23],[-48,-26],[-49,-29],[-51,-31],[-53,-34],[-57,-35.5],[-57,-38],[-62,-39],[-65,-41],[-64,-43],[-65.5,-45],[-67.5,-46.5],[-66,-48],[-68.5,-51],[-68.5,-52.5],[-66,-55],[-71,-55.5],[-74,-52],[-75,-48],[-74,-44],[-73.5,-40],[-73,-36],[-71.5,-30],[-70.5,-23],[-70,-18],[-75,-15],[-77,-12],[-79.5,-7],[-81,-5],[-80,-2],[-80,1],[-78.5,2.5],[-77.5,4],[-77.5,7]],
+    [[-9,43],[-9.5,39],[-9,37],[-6,36.5],[-5.5,36],[-2,36.7],[0,38.5],[0,40],[3,42],[3.2,43.3],[6,43],[8,44],[10,44],[12.5,42],[15.5,40],[16,38],[16.5,39.5],[18.5,40],[17,41],[14,42.5],[12.3,44.5],[13.5,45.7],[14.5,45],[19,42],[20,39.5],[22,37],[23,38],[24,40.5],[26,40.8],[26,39],[27.5,37],[30,36.2],[33,36.2],[36,36.7],[36,35],[35,33],[34.5,31.5],[34.5,29.5],[35,28],[37,25],[39,21.5],[41,17],[43,13],[45,12.8],[49,14],[52,16],[55,17.5],[57,19],[58.5,21],[59.8,22.5],[57,24],[56,26.3],[54,24],[51.5,24.5],[51,26],[50,27],[48.5,29.5],[50,30],[52,27.5],[56.5,27],[58,25.7],[61.5,25.2],[66.5,25.4],[68,23.5],[70,22.5],[72.7,21],[72.8,19],[73.5,16],[74.7,13],[76,10],[77.5,8],[78.2,9],[80,10.5],[80.3,13.5],[80,15.5],[82.3,16.6],[85,19.5],[87,21.5],[89,22],[91.8,22.4],[92.5,21],[94.5,18],[94.3,16],[97.5,16.5],[98.5,13],[98.5,10],[98.3,8.5],[100.3,6.5],[100.5,4],[103.4,1.4],[104.2,1.4],[103.5,4],[103,5.6],[101.5,6.9],[100.3,8.5],[99.2,10.5],[100,13.4],[101,12.7],[102.5,12],[104.5,10.5],[105,8.7],[106.8,10.4],[109,11.5],[109.3,13.4],[108.6,15.3],[106.5,17.5],[105.7,19],[106.7,20.7],[108,21.5],[110,21],[110.5,20.3],[111,21.5],[113.5,22.3],[116,22.8],[119.5,25.8],[121.5,28.5],[122,30.8],[121,32.5],[120,34.5],[119.2,35],[120.8,36.6],[122.5,37.4],[121,37.8],[118.8,37.5],[117.8,38.5],[118,39.2],[121,40.8],[121.6,40],[124.3,40],[126.6,37.5],[126.4,34.6],[129.3,35.3],[129.4,37],[128.5,38.6],[127.5,39.8],[129.7,41],[130.6,42.4],[132,43.3],[135.5,43.8],[138,46.5],[140.3,48.5],[140.5,51.5],[141.3,53],[137,54],[135.2,54.8],[137.5,56.5],[140.5,57.8],[143.5,59.3],[148,59.4],[152,59],[155,59.3],[156.8,61.6],[160,61],[163.5,62.5],[163,61],[160.3,59.6],[158.4,58],[156,57],[155.7,52.5],[156.6,51],[158.4,52.9],[160,54],[162,56.2],[163.3,58],[166,60],[170,60],[174,61.8],[178,63],[180,65],[185,65.5],[190.3,66],[187,67.5],[182,69],[180,69],[170,70],[160,69.7],[150,71.5],[140,72.5],[130,71],[128,72.5],[120,73],[113,73.7],[110,76.5],[105,77.5],[100,76],[90,75.5],[80,73.5],[72,72.8],[69,73],[68,69],[66,69.5],[60,68.5],[55,68],[50,67.5],[44,68.5],[40,66],[36,64.5],[33,66.5],[36,69],[30,70],[25,71],[19,70],[14,68],[12,65],[10,63.5],[5,62],[5,59],[7,58],[10.5,59.5],[11,58.8],[12,56],[14,55.4],[16,56.5],[18.5,59.5],[17,61],[21,64.5],[25,65.6],[22,63.5],[21,61],[23,60],[28,60.5],[29.5,60],[24,59.3],[23.5,57.5],[21,57],[21,55.5],[19,54.4],[14,54],[11,54],[10,55],[8.6,57.1],[8,55.5],[8.6,53.9],[7,53.6],[5,53],[4,51.5],[1.6,50.9],[1.5,50],[-1.5,49.7],[-1.9,48.6],[-4.7,48.5],[-2.3,47.2],[-1.2,46],[-1.5,43.5],[-4,43.5],[-8,43.7]],
+    [[-17,21],[-16.5,24],[-14.5,26],[-13,27.8],[-10,29.5],[-9.7,31],[-8.5,33.3],[-6,35.8],[-2,35.1],[3,36.8],[8,37],[10.3,37.3],[11,35.5],[10,34],[11.5,33],[15,32.4],[19,30.3],[20,31],[20,32.8],[22.5,32.8],[25,31.6],[29,30.9],[32.3,31.3],[34,31.2],[34.8,29.5],[33.5,27.5],[35.5,24],[37,21],[38.5,18],[40,15.7],[42,13.5],[43.3,12.5],[44,11],[45.5,10.6],[49,11.3],[51.2,11.8],[51,10],[50,7.5],[48,4.5],[46,2],[43,-1],[40.5,-2.5],[39.3,-5],[39.5,-8],[40.4,-10.5],[40.5,-15],[37,-17.5],[35.2,-21],[35.5,-24],[32.9,-26],[32.4,-29],[30,-31.5],[27.5,-33.5],[25,-34],[22,-34.2],[19.8,-34.8],[18.4,-34.1],[18,-32],[17,-29],[15,-26.5],[14.5,-22.5],[13,-20],[11.8,-17],[12.2,-13.5],[13.7,-10.7],[12.5,-6],[11.5,-3.5],[9.5,-1],[9.8,3],[8.7,4.5],[6,4.3],[3,6.3],[1,6],[-2,4.8],[-4.5,5.2],[-7.5,4.4],[-9.5,5.5],[-12,7.3],[-13.3,9],[-15,11],[-16.7,12.5],[-17.2,14.7],[-16.3,19]],
+    [[44,-25],[47,-25],[50.4,-15.5],[49.3,-12],[48,-13.5],[44.3,-16.5],[43.5,-21]],
+    [[114,-22],[113.5,-26],[115,-34],[118,-35],[123.5,-34],[126,-32.3],[131,-31.5],[135,-34.8],[138,-35.5],[139.5,-37.5],[143.5,-38.8],[146.4,-39.1],[150,-37.5],[151.5,-33],[153.5,-28],[153,-25],[150.5,-22.5],[149,-20.5],[146,-18],[145.4,-15],[143.5,-14],[142.5,-10.7],[141.5,-13.5],[141.5,-17],[139.5,-17.5],[135.5,-15],[136.8,-12.2],[132.5,-11.5],[130,-13],[129.5,-15],[126,-14],[122.5,-17],[121,-19.5],[117,-20.7]],
+    [[130,31.5],[131.5,31.5],[132.5,34],[135,33.7],[136.8,34.3],[139,34.8],[140.8,35.7],[141,38],[142,39.5],[141.5,41.4],[140,40.7],[139.8,38],[138.5,37.5],[136.8,37.2],[133,35.5],[130.9,34.3],[130,33]], [[140,41.5],[141.5,42.5],[143.3,42],[145.5,43.3],[144.5,44],[141.8,45.4],[141.4,43.5],[140,42.8]],
+    [[-5.7,50],[-3,50.6],[1.4,51.2],[1.7,52.7],[0,53.5],[-1.5,55],[-2,56],[-3.3,57.9],[-5,58.6],[-6.2,57.5],[-5.5,56.3],[-4.8,55],[-3,54.4],[-3.3,53.3],[-4.6,53.2],[-5.3,51.7],[-4,51.5]], [[-10,51.6],[-6,52],[-6,54],[-8,55.3],[-10,54]], [[-24,65.5],[-18,66.5],[-13.5,65.2],[-18,63.4],[-22.5,63.8]],
+    [[95.3,5.5],[97.5,5.2],[100.4,2.2],[104,-1],[106,-3.2],[105.8,-5.8],[104.5,-5.8],[101,-2.5],[98.6,1.7]], [[105.2,-6.8],[108,-6.3],[111,-6.5],[114.5,-7.7],[114.4,-8.7],[111,-8.2],[106.5,-7.4]],
+    [[109,1.5],[109.6,-1],[110.3,-3],[114.5,-4],[116.3,-3.8],[116.5,-1],[118,1],[119,5],[117,7],[115,5],[111,2]], [[119.5,-5.5],[120.5,-2],[121,1.3],[124.8,1.5],[121.5,.5],[121.2,-1],[123,-1],[121.5,-2],[122.5,-4.5],[120.8,-3.5],[120.5,-5.6]],
+    [[131,-1.5],[134,-.8],[138,-1.7],[141,-2.6],[145,-4.5],[147.5,-6],[147.8,-8],[150.5,-10.5],[146,-8.5],[143.5,-9],[141,-9.2],[138,-8.3],[137.5,-5],[133,-4],[132,-2.7]], [[124,-9.4],[125.5,-8.5],[127.2,-8.4],[125,-9.7],[124,-10.2]],
+    [[120,18.5],[122.2,18.5],[122,16],[121.5,14.2],[124,13],[124,12.5],[121.5,13.5],[120.6,14.5],[120,16]], [[122,7],[123.5,8.3],[125.5,9.7],[126.5,7.5],[126,6.2],[125.3,5.6],[124,6.4]], [[122,10.5],[124,11.6],[125,11.2],[124,10],[122.5,9.3]],
+    [[172.7,-34.5],[174.5,-36],[178.5,-37.7],[177,-39.5],[175,-41.5],[174.5,-40],[173.8,-39],[174.5,-37]], [[172.5,-40.5],[174.3,-41.3],[173,-43.5],[171.3,-44.5],[169,-46.6],[166.5,-46],[168.3,-44],[171,-42]],
+    [[-180,-90],[-180,-78],[-160,-77],[-150,-76],[-140,-75],[-120,-73.5],[-100,-73],[-80,-73],[-68,-70],[-62,-64],[-58,-63.5],[-60,-66],[-62,-70],[-60,-75],[-45,-78],[-30,-77],[-20,-73],[-10,-71],[0,-70],[20,-70],[40,-69],[55,-67],[70,-68],[80,-66.5],[100,-66],[120,-66.5],[140,-66.5],[160,-70],[170,-72],[180,-78],[180,-90]],
+    [[-85,21.8],[-81,23.1],[-77,22],[-74.2,20.2],[-77.5,19.9],[-80,21.6]], [[-74.4,18.5],[-72,19.9],[-68.5,18.6],[-70,18.2]], [[79.8,6.2],[80,9.8],[81.9,7.5],[81.2,6]],
+    [[-23.8,15.3],[-23.4,15.3],[-23.1,14.9],[-23.6,14.9]], [[-25.3,17.1],[-24.9,17.2],[-24.9,16.9],[-25.3,16.9]], [[-22.9,16.85],[-22.7,16.85],[-22.7,16.55],[-22.95,16.55]]];
+  var MW = 2048, MH = 1024, MASK = (function(){
+    var cv = document.createElement('canvas'); cv.width = MW; cv.height = MH; var g = cv.getContext('2d'); g.fillStyle = '#fff';
+    LAND.forEach(function(poly){ [-MW, 0, MW].forEach(function(off){ g.beginPath(); poly.forEach(function(p, i){ var X = (p[0] + 180) / 360 * MW + off, Y = (90 - p[1]) / 180 * MH; if (i) g.lineTo(X, Y); else g.moveTo(X, Y); }); g.closePath(); g.fill(); }); });
+    var d = g.getImageData(0, 0, MW, MH).data, m = new Uint8Array(MW * MH), i, j;
+    for (i = 0; i < MW * MH; i++) m[i] = d[i * 4] > 127 ? 1 : 0;
+    var out = new Uint8Array(MW * MH);   // 0 sea, 1 land, 2 coast, 3 sea grid
+    for (j = 0; j < MH; j++) for (i = 0; i < MW; i++){ var k = j * MW + i, v = m[k];
+      if (v) { var e = (i > 1 && !m[k - 2]) || (i < MW - 2 && !m[k + 2]) || (j > 1 && !m[k - 2 * MW]) || (j < MH - 2 && !m[k + 2 * MW]); out[k] = e ? 2 : 1; }
+      else { var lon = i / MW * 360 - 180, lat = 90 - j / MH * 180, gl = Math.abs(((lon + 180) % 30 + 30) % 30), gt = Math.abs(((lat + 90) % 30 + 30) % 30);
+        out[k] = (gl < .3 || gl > 29.7 || gt < .3 || gt > 29.7) ? 3 : 0; } }
+    return out; })();
+  function hx(h){ return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+  var PAL = [hx('#4f8db5'), hx('#e6d5a8'), hx('#8c7650'), hx('#6aa0c3')], NIGHT = .58;
+  var PK = [0, 1].map(function(n){ return PAL.map(function(c){ var s = n ? NIGHT : 1, r = Math.round(c[0] * s), g = Math.round(c[1] * s), b = Math.round(c[2] * s * (n ? 1.08 : 1)); return (255 << 24) | (Math.min(255, b) << 16) | (g << 8) | r; }); });
+
+  // ---- the voyage: waypoints [lon (unwrapped, west is more negative), lat, day since 20 Sep 1519] ----
+  var WP = [[-6.35, 36.78, 0], [-16.5, 28.2, 6], [-17, 12, 30], [-25, 0, 55], [-43.2, -22.9, 84], [-56, -35.5, 110], [-67.7, -49.3, 182], [-67.7, -49.31, 339], [-68.4, -52.4, 397], [-74.5, -52.7, 435],
+    [-80, -30, 452], [-110, -18, 475], [-150, -5, 500], [-190, 10, 520], [-215.2, 13.4, 533], [-234.3, 10.7, 543], [-236.1, 10.3, 565], [-245, 5, 650], [-232.6, .7, 780], [-235.5, -9.5, 845],
+    [-260, -30, 880], [-300, -38, 935], [-341, -36.5, 972], [-355, -15, 1000], [-370, 0, 1012], [-383.5, 15, 1023], [-375, 28, 1045], [-366.35, 36.78, 1082]];
+  var D2R = Math.PI / 180, ROUTE = (function(){ var pts = [], s = 0;
+    function v3(lon, lat){ return [Math.cos(lat * D2R) * Math.sin(lon * D2R), Math.sin(lat * D2R), Math.cos(lat * D2R) * Math.cos(lon * D2R)]; }
+    for (var i = 0; i + 1 < WP.length; i++){ var a = WP[i], b = WP[i + 1], va = v3(a[0], a[1]), vb = v3(b[0], b[1]), om = Math.acos(cl(va[0] * vb[0] + va[1] * vb[1] + va[2] * vb[2], -1, 1)), n = Math.max(2, Math.ceil(om / D2R));
+      for (var j = 0; j < n; j++){ var f = j / n, w0 = om > 1e-6 ? Math.sin((1 - f) * om) / Math.sin(om) : 1 - f, w1 = om > 1e-6 ? Math.sin(f * om) / Math.sin(om) : f, p = [va[0] * w0 + vb[0] * w1, va[1] * w0 + vb[1] * w1, va[2] * w0 + vb[2] * w1];
+        var lon = Math.atan2(p[0], p[2]) / D2R, lat = Math.asin(cl(p[1], -1, 1)) / D2R, ul = mix(a[0], b[0], f); lon += Math.round((ul - lon) / 360) * 360;
+        if (pts.length) s += Math.acos(cl(Math.sin(lat * D2R) * Math.sin(pts[pts.length - 1][1] * D2R) + Math.cos(lat * D2R) * Math.cos(pts[pts.length - 1][1] * D2R) * Math.cos((lon - pts[pts.length - 1][0]) * D2R), -1, 1));
+        pts.push([lon, lat, mix(a[2], b[2], f), s]); } }
+    var L = WP[WP.length - 1]; pts.push([L[0], L[1], L[2], s + .001]); return pts; })();
+  var CV = ROUTE.reduce(function(best, p, i){ return Math.abs(p[2] - 1023) < Math.abs(ROUTE[best][2] - 1023) ? i : best; }, 0), STRAIT = ROUTE.reduce(function(best, p, i){ return Math.abs(p[2] - 435) < Math.abs(ROUTE[best][2] - 435) ? i : best; }, 0);
+  // where the fleet is: a route index (fractional) as a function of t
+  function shipIdx(t){ if (t < T(1) + .4) return 0;
+    if (t < T(3)) return eio(P(t, T(1) + .4, T(3))) * STRAIT;
+    return mix(STRAIT, CV, eio(P(t, T(3), T(4) + .3))); }
+  function at(idx){ var i = Math.min(ROUTE.length - 2, Math.floor(idx)), f = idx - i, a = ROUTE[i], b = ROUTE[i + 1]; return [mix(a[0], b[0], f), mix(a[1], b[1], f), mix(a[2], b[2], f)]; }
+  var MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  function dateOf(day){ var d = new Date(Date.UTC(1519, 8, 20) + Math.round(day) * 864e5); return [d.getUTCDate(), MON[d.getUTCMonth()], d.getUTCFullYear()]; }
+
+  // ---- the camera: centre longitude and tilt, globe radius and centre on screen ----
+  function camera(t){
+    var s = at(shipIdx(t)), lon = s[0] - 12, lat = cl(s[1] * .55 + 12, -25, 30), r = 200, cy = 470;
+    if (t < T(1) + .4) { lon = -10 - t * 4; lat = 22; r = 196; cy = 462; }
+    var zk = eio(P(t, T(4), T(4) + 1.4)) * (1 - eio(P(t, T(7) - .2, T(7) + 1.2)));   // the close-up on Cape Verde
+    var cvLon = -383.5, cvLat = 15; lon = mix(lon, cvLon, zk); lat = mix(lat, cvLat, zk); r = mix(r, 640, zk); cy = mix(cy, 470, zk);
+    var sp = eio(P(t, T(7) - .2, T(8) + 1.4)), dl = eio(P(t, T(9) - .3, T(9) + 1.6));   // then a full turn west with the sun, then to the date line
+    if (t > T(7) - .2) { lon = mix(cvLon, cvLon - 360, sp) * (1 - dl) + (-900) * dl; lat = mix(cvLat, 12, sp) * (1 - dl) + 8 * dl; r = mix(r, 205, sp); r = mix(r, 230, dl); }
+    return { lon: lon, lat: lat, r: r, cx: 270, cy: cy }; }
+  function proj(C, lon, lat){ var dl = (lon - C.lon) * D2R, la = lat * D2R, c0 = Math.cos(C.lat * D2R), s0 = Math.sin(C.lat * D2R);
+    var xp = Math.cos(la) * Math.sin(dl), yp = Math.sin(la), zp = Math.cos(la) * Math.cos(dl), v = yp * c0 - zp * s0, w = yp * s0 + zp * c0;
+    return [C.cx + xp * C.r, C.cy - v * C.r, w]; }
+  // the sun: its longitude (night is the far half); it only moves once the story turns to it
+  function sunLon(t){ return -383.5 + 60 - 360 * 1.25 * eio(P(t, T(7) - .2, T(8) + 1.4)) + (t < T(7) ? 0 : 0); }
+  function nightOn(t){ return P(t, T(7) - .3, T(7) + .4) * (1 - P(t, T(9) - .3, T(9) + .6)); }
+
+  var gc = document.createElement('canvas'), gx = gc.getContext('2d');
+  function globe(t, C){
+    var R2 = C.r * 2, x0 = Math.max(0, Math.floor((C.cx - C.r) * 2)), x1 = Math.min(1080, Math.ceil((C.cx + C.r) * 2)), y0 = Math.max(0, Math.floor((C.cy - C.r) * 2)), y1 = Math.min(1920, Math.ceil((C.cy + C.r) * 2));
+    var w = x1 - x0, h = y1 - y0; if (w <= 0 || h <= 0) return;
+    if (gc.width !== w || gc.height !== h) { gc.width = w; gc.height = h; }
+    var img = gx.createImageData(w, h), px = new Uint32Array(img.data.buffer), c0 = Math.cos(C.lat * D2R), s0 = Math.sin(C.lat * D2R), L0 = C.lon * D2R;
+    var nk = nightOn(t), sl = sunLon(t) * D2R, sx = Math.cos(0) * Math.sin(sl), sz = Math.cos(sl);   // the sun over the equator
+    for (var j = 0; j < h; j++){ var v = -((y0 + j + .5) / 2 - C.cy) / C.r, row = j * w;
+      for (var i = 0; i < w; i++){ var u = ((x0 + i + .5) / 2 - C.cx) / C.r, q = 1 - u * u - v * v; if (q <= 0) continue; var wz = Math.sqrt(q);
+        var yp = v * c0 + wz * s0, zp = -v * s0 + wz * c0, lat = Math.asin(yp), lon = L0 + Math.atan2(u, zp);
+        var mi = (((lon / 6.283185307 + .5) % 1 + 1) % 1 * MW) | 0, mj = ((.5 - lat / Math.PI) * MH) | 0; if (mj >= MH) mj = MH - 1;
+        var kind = MASK[mj * MW + mi], night = 0;
+        if (nk > 0) { var cl0 = Math.cos(lat), d = cl0 * Math.sin(lon) * sx + cl0 * Math.cos(lon) * sz; night = d < 0 ? 1 : 0; }
+        px[row + i] = PK[night][kind]; } }
+    gx.putImageData(img, 0, 0); x.save(); x.setTransform(1, 0, 0, 1, 0, 0);
+    x.fillStyle = 'rgba(30,24,36,.2)'; x.beginPath(); x.arc(C.cx * 2 + 8, C.cy * 2 + 12, C.r * 2, 0, 6.2832); x.fill();
+    x.save(); x.beginPath(); x.arc(C.cx * 2, C.cy * 2, C.r * 2 - .5, 0, 6.2832); x.clip(); x.drawImage(gc, x0, y0); x.restore();
+    x.strokeStyle = INK; x.lineWidth = 3; x.beginPath(); x.arc(C.cx * 2, C.cy * 2, C.r * 2, 0, 6.2832); x.stroke(); x.restore();
+  }
+  function routeLine(C, upto, col0, lw, dash){ x.save(); x.strokeStyle = col0; x.lineWidth = lw; x.lineCap = 'round'; x.lineJoin = 'round'; if (dash) x.setLineDash(dash);
+    x.beginPath(); var pen = false, n = Math.floor(upto);
+    for (var i = 0; i <= n + 1 && i < ROUTE.length; i++){ var p = i <= n ? ROUTE[i] : at(upto), q = proj(C, p[0], p[1]); if (q[2] > .02) { if (pen) x.lineTo(q[0], q[1]); else x.moveTo(q[0], q[1]); pen = true; } else pen = false; }
+    x.stroke(); x.restore(); }
+  // a small carrack: hull, three masts, sails, flag, and three tiny sailors on deck; faces its heading
+  function ship(X, Y, s, dirX, t, i){ x.save(); x.translate(X, Y + Math.sin(t * 3 + i) * 1.2 * s); x.scale(s * (dirX < 0 ? -1 : 1), s); x.rotate(Math.sin(t * 2.2 + i) * .05);
+    x.fillStyle = 'rgba(30,24,36,.22)'; x.beginPath(); x.ellipse(2, 9, 16, 3, 0, 0, 6.2832); x.fill();
+    x.fillStyle = '#7a4a2e'; x.beginPath(); x.moveTo(-15, 0); x.lineTo(15, 0); x.lineTo(11, 7); x.lineTo(-11, 7); x.closePath(); x.fill(); x.fillRect(-15, -4, 6, 4); x.fillRect(9, -3, 6, 3);
+    x.strokeStyle = INK; x.lineWidth = 1.2; x.beginPath(); x.moveTo(-6, 0); x.lineTo(-6, -17); x.moveTo(2, 0); x.lineTo(2, -22); x.moveTo(9, 0); x.lineTo(9, -13); x.stroke();
+    x.fillStyle = CREAM; [[-6, -15, 9, 11], [2, -20, 11, 14], [9, -11, 7, 8]].forEach(function(q){ x.beginPath(); x.moveTo(q[0] - q[2] / 2, q[1]); x.quadraticCurveTo(q[0] + q[2] * .2, q[1] + q[3] / 2, q[0] - q[2] / 2, q[1] + q[3]); x.lineTo(q[0] + q[2] / 2, q[1] + q[3]); x.quadraticCurveTo(q[0] + q[2] * .7, q[1] + q[3] / 2, q[0] + q[2] / 2, q[1]); x.closePath(); x.fill(); });
+    x.fillStyle = RED; x.beginPath(); x.moveTo(2, -22); x.lineTo(8, -20.5 + Math.sin(t * 8) * .6); x.lineTo(2, -19); x.fill();
+    x.fillStyle = '#e8b98f'; [-11, -1, 6].forEach(function(cx0, k){ x.beginPath(); x.arc(cx0 + Math.sin(t * 2 + k) * .6, -2.5, 1.6, 0, 6.2832); x.fill(); });
+    x.restore(); }
+  function card(X, Y, w, h, rot, k, draw){ if (k <= 0) return; x.save(); x.translate(X, Y); x.rotate(rot); var s = eb(k); x.scale(s, s); x.globalAlpha *= cl(k * 3, 0, 1);
+    paper(rr(-w / 2, -h / 2, w, h, 10), CREAM, 3); draw(); x.restore(); }
+  // the chronicler: a friendly cut-out with a feathered cap, a quill and a book
+  function writer(X, Y, s, t){ x.save(); x.translate(X, Y); x.scale(s, s); x.lineCap = 'round';
+    x.fillStyle = '#5b3b5e'; x.beginPath(); x.roundRect(-16, -84, 32, 48, 10); x.fill(); x.strokeStyle = '#2b2733'; x.lineWidth = 9; x.beginPath(); x.moveTo(-6, -40); x.lineTo(-6, -2); x.moveTo(6, -40); x.lineTo(6, -2); x.stroke();
+    var wr = Math.sin(t * 9) * .15; x.strokeStyle = '#5b3b5e'; x.beginPath(); x.moveTo(-13, -76); x.lineTo(-14, -56); x.lineTo(2, -54); x.moveTo(13, -76); x.lineTo(20, -58); x.lineTo(8 + wr * 12, -50); x.stroke();
+    x.fillStyle = '#7a3b2e'; x.fillRect(-12, -62, 26, 16); x.fillStyle = CREAM; x.fillRect(-10, -61, 22, 13);
+    x.strokeStyle = INK; x.lineWidth = 1.4; x.beginPath(); x.moveTo(8 + wr * 12, -50); x.lineTo(20 + wr * 12, -72); x.stroke();
+    x.fillStyle = '#e8b98f'; x.beginPath(); x.arc(0, -99, 14, 0, 6.2832); x.fill(); x.fillStyle = INK; x.beginPath(); x.arc(-2, -97, 1.8, 0, 6.2832); x.arc(6, -97, 1.8, 0, 6.2832); x.fill();
+    x.strokeStyle = '#7a3b2e'; x.lineWidth = 1.6; x.beginPath(); x.arc(2, -92, 4, .4, 2.7); x.stroke();
+    x.fillStyle = '#2d3e6b'; x.beginPath(); x.ellipse(0, -112, 18, 6, -.1, 0, 6.2832); x.fill(); x.fillStyle = RED; x.beginPath(); x.ellipse(-12, -122, 3, 12, -.6, 0, 6.2832); x.fill();
+    x.restore(); }
+
+  function seek(t){
+    t = cl(t, 0, DUR); x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1; BOXES.length = 0;
+    x.fillStyle = PAPER; x.fillRect(0, 0, 540, 960);
+    var C = camera(t), idx = shipIdx(t), S = at(idx);
+    globe(t, C);
+    // the route: the whole way faint once it is known, the sailed part in ink
+    x.save(); x.beginPath(); x.arc(C.cx, C.cy, C.r, 0, 6.2832); x.clip();
+    if (t > T(7) - .3) routeLine(C, ROUTE.length - 1.01, 'rgba(35,32,43,.35)', 2, [5, 5]);
+    routeLine(C, t > T(7) - .3 ? CV : idx, RED, 3, null);
+    // the date line, at the end: 180 degrees, west is a day ahead
+    var dk = P(t, T(9) + .4, T(9) + 1.3); if (dk > 0) { x.strokeStyle = INK; x.lineWidth = 3; x.setLineDash([9, 6]); x.beginPath(); var pen = false;
+      for (var la = -80; la <= 80 * dk; la += 2){ var q = proj(C, 180, la); if (q[2] > 0) { if (pen) x.lineTo(q[0], q[1]); else x.moveTo(q[0], q[1]); pen = true; } } x.stroke(); x.setLineDash([]); }
+    x.restore();
+    // Cape Verde pin
+    var pk = win(t, T(4) + .7, T(7) + .3, .3); if (pk > 0) { var cv = proj(C, -383.5, 15); x.save(); x.globalAlpha = pk; paper(function(){ x.beginPath(); x.arc(cv[0], cv[1] - 26, 11, Math.PI * .8, Math.PI * .2); x.lineTo(cv[0], cv[1]); x.closePath(); }, RED, 2);
+      x.fillStyle = CREAM; x.beginPath(); x.arc(cv[0], cv[1] - 26, 4.5, 0, 6.2832); x.fill(); tag('CAPE VERDE', cv[0], cv[1] + 28, 14, '800 ' + FI, CREAM, INK, 2.5); x.restore(); }
+    // the fleet: five ships that become one
+    var sv = proj(C, S[0], S[1]), ahead = proj(C, at(Math.min(ROUTE.length - 1, idx + 1.5))[0], at(Math.min(ROUTE.length - 1, idx + 1.5))[1]), dirX = t < T(1) + .4 ? -1 : ahead[0] - sv[0];
+    var fleetOn = 1 - P(t, T(7) - .4, T(7)), shrink = mix(1, .8, P(C.r, 300, 640));
+    if (sv[2] > .05 && fleetOn > 0) { x.save(); x.globalAlpha = fleetOn; var sc = (C.r / 200) * .95 * shrink;
+      for (var k = 4; k >= 0; k--){ var gone = k ? P(t, T(3) + .1 + (k - 1) * .35, T(3) + .45 + (k - 1) * .35) : 0; if (gone >= 1) continue; var Pk = at(Math.max(0, idx - k * 1.2)), pk2 = proj(C, Pk[0], Pk[1]);
+        if (t < T(1) + .4) pk2 = [sv[0] + 14 * k, sv[1] + (k % 2 ? 9 : -6) * (k ? 1 : 0), 1];
+        x.globalAlpha = fleetOn * (1 - gone); if (pk2[2] > .05) ship(pk2[0], pk2[1] - 8 * sc, sc * (k ? .75 : 1), dirX, t, k); }
+      x.restore();
+      var vk = win(t, T(3) + 1.6, T(4) + .3, .3); if (vk > 0) { x.save(); x.globalAlpha = vk; tag('VICTORIA', sv[0], sv[1] - 46 * sc, 13, '800 ' + FI, CREAM, RED, 2.5); x.restore(); } }
+    // the chase: a ship at sea and the sun both heading west round the globe
+    var ck = win(t, T(7) + .2, T(9) + .1, .35); if (ck > 0) { var so = proj(C, sunLon(t) + 10, 0), shL = mix(-383.5, -383.5 - 360, eio(P(t, T(7) - .2, T(8) + 1.4))) - 25, sh = proj(C, shL, 4);
+      x.save(); x.globalAlpha = ck; if (sh[2] > .05) ship(sh[0], sh[1] - 8, .95, -1, t, 9);
+      // the sun as a disc beside the globe, on the side where it shines from
+      var sa = (sunLon(t) - C.lon) * D2R, sxp = Math.sin(sa), szp = Math.cos(sa), sdx = sxp, sdy = -.15; var sl = Math.hypot(sdx, sdy) || 1, sR = C.r + 46;
+      var spx = C.cx + sdx / sl * sR * Math.min(1, Math.abs(sxp) * 3), spy = C.cy - 150 + szp * 0; paper(function(){ x.beginPath(); x.arc(cl(spx, 40, 500), C.cy - C.r - 30, 22, 0, 6.2832); }, '#f6c453', 2);
+      x.restore(); }
+    // ---- cards and kinetic text ----
+    // the hook's two calendars
+    var hk = 1 - P(t, T(1) - .4, T(1)); if (hk > 0) { var hk0 = P(t, .5, .9), hk1 = P(t, 1.1, 1.5);
+      x.save(); x.globalAlpha = hk; card(96, 300, 112, 74, -.07, hk0, function(){ txt('SHIP', 0, -14, 11, '800 ' + FI, '#7a7480', 'center', 2.5); txt('WED', 0, 22, 34, '800 ' + FD, INK, 'center', 1); });
+      card(444, 300, 112, 74, .07, hk1, function(){ txt('SHORE', 0, -14, 11, '800 ' + FI, '#7a7480', 'center', 2.5); txt('THU', 0, 22, 34, '800 ' + FD, RED, 'center', 1); }); x.restore(); }
+    // the date while they sail
+    var dk2 = win(t, T(1) + .1, T(4) + 1.2, .3); if (dk2 > 0) { var dt = dateOf(S[2]); x.save(); x.globalAlpha = dk2;
+      paper(rr(150, 104, 240, 66, 12), CREAM, 3); txt(dt[1] + ' ' + dt[2], 270, 152, 40, '800 ' + FD, INK, 'center', 1); x.restore(); }
+    // the chronicler and his diary, a page for every day
+    var wk = win(t, T(2) - .1, T(3) + .2, .35); if (wk > 0) { x.save(); x.globalAlpha = wk; var wx0 = mix(-80, 0, eo(P(t, T(2) - .1, T(2) + .4))) - 60 * eo(P(t, T(3) - .2, T(3) + .2));
+      writer(70 + wx0, 652, 1.2, t); card(170 + wx0, 600, 128, 78, -.05, P(t, T(2) + .2, T(2) + .5), function(){ var dt = dateOf(S[2]);
+        txt('DIARY', 0, -18, 11, '800 ' + FI, '#7a7480', 'center', 2.5); txt(dt[0] + ' ' + dt[1], 0, 14, 26, '800 ' + FD, INK, 'center', .5); txt(String(dt[2]), 0, 30, 11, '700 ' + FI, '#7a7480', 'center', 1.5); }); x.restore(); }
+    // Cape Verde: the diary against the shore
+    var ak = 1 - P(t, T(7) - .4, T(7)); if (ak > 0 && t > T(5) - .3) { x.save(); x.globalAlpha = ak;
+      card(160, 250, 206, 112, -.06, P(t, T(5) - .1, T(5) + .25), function(){ txt("PIGAFETTA'S DIARY", 0, -28, 11, '800 ' + FI, '#7a7480', 'center', 2); txt('Wednesday', 0, 10, 34, '800 ' + FD, INK, 'center', 0); txt('9 JULY 1522', 0, 36, 13, '700 ' + FI, '#7a7480', 'center', 2); });
+      card(388, 286, 206, 112, .06, P(t, T(6) - .05, T(6) + .25), function(){ txt('ON SHORE', 0, -28, 11, '800 ' + FI, '#7a7480', 'center', 2); txt('Thursday', 0, 10, 34, '800 ' + FD, RED, 'center', 0); txt('10 JULY 1522', 0, 36, 13, '700 ' + FI, '#7a7480', 'center', 2); });
+      x.restore(); }
+    var lk = win(t, T(7) + .5, T(8) + .1, .3); if (lk > 0) { x.save(); x.globalAlpha = lk; x.translate(270, 150); tag('SHIP AND SUN BOTH GO WEST', 0, 0, 14, '800 ' + FI, CREAM, INK, 2); x.restore(); }
+    var mk = win(t, T(8) + .1, T(9) + .2, .3); if (mk > 0) { x.save(); x.globalAlpha = mk; x.translate(270, 166); x.rotate(-.06); var ms = eb(P(t, T(8) + .1, T(8) + .45)); x.scale(ms, ms);
+      x.fillStyle = 'rgba(251,246,234,.95)'; x.beginPath(); x.roundRect(-150, -44, 300, 80, 12); x.fill(); x.strokeStyle = RED; x.lineWidth = 4; x.stroke(); txt('−1 SUNRISE', 0, 16, 46, '800 ' + FD, RED, 'center', 1); x.restore(); }
+    var zk = P(t, T(9) + 1, T(9) + 1.5); if (zk > 0) { x.save(); x.globalAlpha = zk; var dlp = proj(C, 180, 10);
+      tag('INTERNATIONAL DATE LINE', 270, 150, 14, '800 ' + FI, CREAM, INK, 2);
+      card(dlp[0] - 92, 216, 150, 70, -.05, P(t, T(9) + 1.2, T(9) + 1.5), function(){ txt('WEST OF IT', 0, -14, 10, '800 ' + FI, '#7a7480', 'center', 2); txt('Thursday', 0, 18, 26, '800 ' + FD, RED, 'center', 0); });
+      card(dlp[0] + 92, 216, 150, 70, .05, P(t, T(9) + 1.4, T(9) + 1.7), function(){ txt('EAST OF IT', 0, -14, 10, '800 ' + FI, '#7a7480', 'center', 2); txt('Wednesday', 0, 18, 26, '800 ' + FD, INK, 'center', 0); }); x.restore(); }
+    x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1;
+    drawCaption(t); drawCredit(t);
+    x.setTransform(1, 0, 0, 1, 0, 0); x.drawImage(GRAIN, 0, 0);
+  }
+
+  // sound: a boom and swish with the question, two taps for the hook's calendars, sails (swishes) as the fleet leaves, ticks as the dates
+  // roll, a long whoosh across the Pacific, pops for the cards, a hit on Thursday, a whoosh for the turn west, a boom for the date line
+  (function(){
+    var Q = [{ t: 0, k: 'boom', g: .55 }, { t: .05, k: 'swish', d: .6, g: .4 }, { t: .6, k: 'tap', g: .35 }, { t: 1.2, k: 'tap', g: .35, p: 3 }];
+    Q.push({ t: T(1) + .4, k: 'swish', d: .8, g: .4 });
+    for (var m = 0; m < 14; m++) Q.push({ t: +(T(1) + .6 + m * .45).toFixed(2), k: 'tick', g: .14, p: m % 5 });
+    Q.push({ t: T(2) + .3, k: 'pop', g: .4 }, { t: T(3) + .1, k: 'whoosh', d: 1.6, g: .32 });
+    for (m = 0; m < 4; m++) Q.push({ t: +(T(3) + .3 + m * .35).toFixed(2), k: 'tap', g: .22, p: m });
+    Q.push({ t: T(4) + .1, k: 'riser', d: 1.2, g: .3 }, { t: T(4) + 1.2, k: 'thud', g: .4 }, { t: T(5), k: 'pop', g: .45 }, { t: T(6) + .05, k: 'hit', g: .55 },
+      { t: T(7) + .2, k: 'whoosh', d: 1.4, g: .3 }, { t: T(8) + .15, k: 'hit', g: .5 }, { t: T(9) + .3, k: 'whoosh', d: 1.2, g: .3 }, { t: T(9) + 1.25, k: 'boom', g: .5 }, { t: T(9) + 1.5, k: 'pop', g: .4 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 88, origin: 0, gain: .26, chords: [[45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [43, 50, 55, 59, 62], [40, 47, 52, 55, 59]] } };
+  })();
+  window.seek = seek; window.DURATION = DUR;
+  Promise.all([document.fonts.load("800 38px 'Fraunces'"), document.fonts.load("800 18px 'Inter Tight'"), document.fonts.load("700 27px 'Inter Tight'")]).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

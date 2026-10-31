@@ -1,0 +1,60 @@
+{
+ "name": "showreel-c3-blue-sky",
+ "seek": "scripts/channel3/blue-sky.html",
+ "dur": 30.1,
+ "fps": 60,
+ "blur": 4,
+ "shutter": 0.45,
+ "grain": 4,
+ "voice": {
+  "text": "Why is the sky blue, but sunsets red? Sunlight carries every colour of the rainbow. Our air is full of tiny molecules, mostly nitrogen and oxygen. Blue light hits them and scatters everywhere. Red light mostly passes straight through. So blue reaches your eyes from all over the sky. At sunset, the light crosses far more air. The blue is scattered away on the journey. Only reds and oranges make it through.",
+  "at": [
+   0,
+   2.61,
+   5.91,
+   10.09,
+   13.39,
+   16.52,
+   19.87,
+   22.8,
+   25.86
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "Same sunlight, two colours: why the sky is blue at noon and red at sunset, in one zoom. 🌅\n\nWhat everyday thing should we explain next? Comment below 👇",
+ "keywords": [
+  "why is the sky blue",
+  "why are sunsets red",
+  "Rayleigh scattering explained",
+  "sky colour science",
+  "sunset science",
+  "physics explained",
+  "light scattering"
+ ],
+ "hashtags": [
+  "#rayleighscattering",
+  "#whyistheskyblue",
+  "#sunsetscience",
+  "#physicsexplained",
+  "#sciencefacts"
+ ],
+ "sources": [
+  {
+   "title": "Why is the sky blue? (Met Office)",
+   "url": "https://weather.metoffice.gov.uk/learn-about/weather/optical-effects/why-is-the-sky-blue"
+  },
+  {
+   "title": "Why is the sky blue? (NOAA NESDIS)",
+   "url": "https://www.nesdis.noaa.gov/about/k-12-education/atmosphere/why-the-sky-blue"
+  },
+  {
+   "title": "Why is the sky blue? (NASA Space Place)",
+   "url": "https://spaceplace.nasa.gov/blue-sky/en/"
+  },
+  {
+   "title": "Why is the sky blue? (Royal Museums Greenwich)",
+   "url": "https://www.rmg.co.uk/discover/explore/why-is-the-sky-blue"
+  }
+ ]
+}

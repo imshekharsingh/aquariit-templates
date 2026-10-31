@@ -95,6 +95,11 @@
   .use ul{margin:8px 0 0;padding:0;list-style:none}
   .use li{display:flex;justify-content:space-between;padding:3px 0;border-top:1px solid var(--line)}
   /* posted more than 7 days ago: folded at the bottom (owner, 27 Oct 2026); MP4s go 30 days after upload, cover and post text stay */
+  .src{margin-top:12px;padding:10px 14px 12px;border:1px solid var(--line);border-radius:14px;font-size:.85rem}
+  .src small{display:block;color:var(--mute);font:700 .7rem system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase}
+  .src ol{margin:6px 0 10px;padding-left:18px}
+  .src li{margin:3px 0}
+  .src a{color:#d9d7d0;overflow-wrap:anywhere}
   .old{margin-top:22px}
   .old summary{cursor:pointer;color:var(--mute);font:700 .85rem system-ui,sans-serif;min-height:44px;display:flex;align-items:center}
 </style>
@@ -105,7 +110,7 @@
   <div class="tabs" role="tablist" aria-label="Channel">
     <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
     <button class="tab tech" role="tab" type="button" data-ch="tech" aria-selected="false"><b>@techin20sec</b><span>Tech news</span></button>
-    <button class="tab c3" role="tab" type="button" data-ch="c3" aria-selected="false"><b>Channel 3</b><span>Pilots</span></button>
+    <button class="tab c3" role="tab" type="button" data-ch="c3" aria-selected="false"><b>Channel 3</b><span>True stories</span></button>
   </div>
   <details class="prof" id="prof" hidden><summary>Profile</summary></details>
   <details class="use" id="use" hidden><summary><span>GitHub minutes</span><span id="use-n"></span></summary><div class="bar" id="use-bar"><i></i></div><div id="use-note"></div><ul id="use-list"></ul></details>
@@ -146,6 +151,12 @@
   }
   function flash(btn, t){ btn.textContent = t; setTimeout(function(){ if (btn.textContent === t) btn.textContent = 'Save video'; }, 1800); }
   function mb(n){ return (n / 1048576).toFixed(1) + ' MB'; }
+  // a reel's sources (Channel 3, owner 31 Oct 2026: every fact in two sources): listed on the card, and one comment text to paste under the post
+  function sources(box, list){ box.textContent = ''; box.hidden = false; box.appendChild(el('small', null, 'Sources'));
+    var ol = el('ol'); list.forEach(function(x){ var li = el('li'), a = el('a', null, x.title); a.href = x.url; a.target = '_blank'; a.rel = 'noopener'; li.appendChild(a); ol.appendChild(li); }); box.appendChild(ol);
+    var text = 'Sources:\n' + list.map(function(x, i){ return (i + 1) + '. ' + x.title + ': ' + x.url; }).join('\n'), b = el('button', 'btn g', 'Copy as comment'); b.type = 'button';
+    b.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function(){ b.textContent = 'Copied'; b.classList.add('done'); setTimeout(function(){ b.textContent = 'Copy as comment'; b.classList.remove('done'); }, 1800); }, function(){}); });
+    box.appendChild(b); }
   // the posting plan (owner, 23 Oct): each reel carries the IST date to post it ("postOn" in captions.json, set by Claude) and an
   // "Uploaded" marker stored on the server (D1, /api/uploaded/<name>), so it is the same on every device
   var DAY = 864e5, IST = 5.5 * 36e5;
@@ -155,7 +166,7 @@
   // showreel-tech- or showreel-t<digit> (the tech reels), to Channel 3 when it starts with showreel-c3- (31 Oct: pilots, the owner picks one
   // concept), or to the channel captions.json names ("channel": "tech" / "c3" / "web"); everything else is @webin20sec
   var CH = { web: { name: '@webin20sec', slot: '12:30–13:30 IST', sub: 'Web fixes' }, tech: { name: '@techin20sec', slot: '15:00–19:00 IST', sub: 'Tech news' },
-    c3: { name: 'Channel 3', slot: 'to be decided', sub: 'Pilots' } };
+    c3: { name: 'Channel 3', slot: 'to be decided', sub: 'True stories' } };
   function chOf(s, c){ var m = c[s.name] || {}; return CH[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : /^showreel-c3-/.test(s.name) ? 'c3' : 'web'; }
   function label(s){ return s.name.replace(/^showreel-(tech-|c3-)?/, '').replace(/-/g, ' '); }
   var ch = 'web';
@@ -177,7 +188,8 @@
   function field(name, text, btn){ var f = el('div', 'f'), d = el('div'); d.appendChild(el('small', null, name)); d.appendChild(el('p', null, text)); f.appendChild(d); f.appendChild(btn || copyBtn(text)); return f; }
   function profile(){ var p = PROF[ch]; prof.textContent = ''; prof.hidden = !p; if (!p) return;
     var sm = el('summary'), img = document.createElement('img'), who = el('span', 'who');
-    if (p.logo) { img.src = p.logo; img.alt = ''; sm.appendChild(img); } else sm.appendChild(el('span', 'ph', '?'));   // no logo yet: a placeholder who.appendChild(el('b', null, p.name)); who.appendChild(el('span', null, p.logo ? p.username + ' · posts ' + p.slot : 'Name, username and bio to be decided')); sm.appendChild(who); sm.appendChild(el('span', 'chev', 'Profile'));
+    if (p.logo) { img.src = p.logo; img.alt = ''; sm.appendChild(img); } else sm.appendChild(el('span', 'ph', '?'));   // no logo yet: a placeholder
+    who.appendChild(el('b', null, p.name)); who.appendChild(el('span', null, p.logo ? p.username + ' · posts ' + p.slot : 'Name, username and bio to be decided')); sm.appendChild(who); sm.appendChild(el('span', 'chev', 'Profile'));
     var inn = el('div', 'in'), dl = el('button', 'btn g', 'Download logo'); dl.type = 'button';
     dl.addEventListener('click', function(){ saveFile(p.logo, p.username.replace(/^@/, '') + '-logo.png', 'image/png', dl, 'Download logo'); });
     inn.appendChild(field('Name', p.name)); inn.appendChild(field('Username', p.username + (p.fallbacks ? ' (if taken: ' + p.fallbacks.join(', ') + ')' : ''), copyBtn(p.username)));
@@ -193,7 +205,7 @@
   fetch('/channels/channels.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }).then(function(j){ PROF = j || {}; profile(); });
   function paint(counts){
     document.body.setAttribute('data-ch', ch); document.getElementById('title').textContent = CH[ch].name; profile();
-    document.getElementById('lede').textContent = ch === 'c3' ? 'Three pilot reels, one per concept for the third channel. Watch them and pick the one to make daily.' : LEDE;
+    document.getElementById('lede').textContent = ch === 'c3' ? 'The true story behind something everyone knows. Three pilots, one per animation pattern; the channel rotates the patterns. Each lists its sources, ready to paste as a comment.' : LEDE;
     Array.prototype.forEach.call(tabs, function(t){ var k = t.getAttribute('data-ch'), n = counts && counts[k], sp = t.querySelector('span');
       t.setAttribute('aria-selected', k === ch ? 'true' : 'false');
       sp.textContent = CH[k].sub + (n ? ' · ' + n + ' to post' : ''); sp.className = n ? 'due' : ''; });
@@ -241,12 +253,14 @@
       // the post text sits on the card, above the buttons (owner, 24 Oct: "Where?"). It comes from the reel's NAME.json in the release, asked for
       // even when the list did not link it (a re-render can briefly hide it from a cached list), with one retry; fields in captions.json win
       cap.textContent = 'Loading post text…'; cap.classList.add('wait'); b.appendChild(cap);
+      var src = el('div', 'src'); src.hidden = true; b.appendChild(src);
       var info = s.info || '/reels/' + s.name + '.json';
       var get = function(){ return fetch(info, { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw r.status; return r.json(); }); };
       get().catch(function(){ return new Promise(function(ok){ setTimeout(ok, 1500); }).then(get); }).catch(function(){ return {}; }).then(function(j){
         var m = Object.assign({}, j, meta);
         if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false; }
-        else { cap.textContent = 'No post text for this reel yet.'; } });
+        else { cap.textContent = 'No post text for this reel yet.'; }
+        if (Array.isArray(m.sources) && m.sources.length) sources(src, m.sources); });
       b.appendChild(row); card.appendChild(v); card.appendChild(b); list.appendChild(card);
     });
   }

@@ -1,0 +1,57 @@
+{
+ "name": "showreel-c3-lost-day",
+ "seek": "scripts/channel3/lost-day.html",
+ "dur": 35,
+ "fps": 60,
+ "blur": 4,
+ "shutter": 0.45,
+ "grain": 4,
+ "voice": {
+  "text": "Why did the first sailors around the world lose a whole day? In 1519, five ships left Spain, sailing west. Antonio Pigafetta wrote down every day. Three years later, one ship, the Victoria, was nearly home. In July 1522, they reached Cape Verde. The diary said Wednesday. On shore, it was Thursday. Sailing west, they chased the sun, so each day was a little longer. One lap of the planet cost them one sunrise. Today, the International Date Line puts that day back.",
+  "at": [
+   0,
+   4.09,
+   8.05,
+   10.98,
+   14.92,
+   18.46,
+   20.41,
+   22.43,
+   26.76,
+   29.89
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "The first sailors to go around the world came back a day behind the calendar. Here's where that day went. 🌍\n\nWhere in the world are you watching from? Tell us below 👇",
+ "keywords": [
+  "first voyage around the world",
+  "Magellan Elcano voyage",
+  "Pigafetta diary lost day",
+  "International Date Line explained",
+  "why we lose a day crossing the Pacific",
+  "history explained",
+  "circumnavigation 1522"
+ ],
+ "hashtags": [
+  "#circumnavigation",
+  "#internationaldateline",
+  "#explorationhistory",
+  "#historyexplained",
+  "#historyfacts"
+ ],
+ "sources": [
+  {
+   "title": "Antonio Pigafetta, scientist of the day (Linda Hall Library)",
+   "url": "https://www.lindahall.org/about/news/scientist-of-the-day/antonio-pigafetta"
+  },
+  {
+   "title": "The discovery of the calendrical date line (R. H. van Gent, Utrecht University)",
+   "url": "https://webspace.science.uu.nl/~gent0113/idl/idl_discovery.htm"
+  },
+  {
+   "title": "Magellan got the credit, but this man was first to sail around the world (National Geographic)",
+   "url": "https://www.nationalgeographic.com/history/history-magazine/article/this-man-was-actually-first-to-sail-around-the-world"
+  }
+ ]
+}

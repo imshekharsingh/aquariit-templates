@@ -5,14 +5,16 @@
 import { readFileSync } from 'node:fs';
 const c = JSON.parse(readFileSync(process.argv[2], 'utf8')), v = c.voice || {};
 if (!v.text) { console.log('PREFLIGHT voice: no voice in this config'); process.exit(0); }
-const text = v.text.replace(/\[([^\]]+)\]\(\/[^)]*\/\)/g, '$1'), letters = (text.match(/[A-Za-z]/g) || []).length, speed = +v.speed || 1;
+// a digit counts as 4 letters (31 Oct: "1889" is spoken "eighteen eighty nine"; letters alone made years free)
+const spoken = (x) => (x.match(/[A-Za-z]/g) || []).length + 4 * (x.match(/\d/g) || []).length;
+const text = v.text.replace(/\[([^\]]+)\]\(\/[^)]*\/\)/g, '$1'), letters = spoken(text), speed = +v.speed || 1;
 const parts = (text.match(/[^.?!]+[.?!]?/g) || []).map((x) => x.trim()).filter(Boolean), sentences = parts.length;
 // voice.at (Channel 3, 31 Oct): every sentence starts at its own time; each must end 0.15 s before the next one starts
 if (Array.isArray(v.at)) {
   if (v.at.length !== sentences) { console.log(`PREFLIGHT voice: TOO LONG/SHORT: voice.at has ${v.at.length} times for ${sentences} sentences`); process.exit(1); }
   const words = text.split(/\s+/).filter(Boolean).length, limit = (+c.dur || 20) - .6, bad = [];
   let end = 0;
-  const slots = parts.map((x, i) => { const s = v.at[i] ?? end + (+v.gap || .25), d = .1 + (x.match(/[A-Za-z]/g) || []).length * .07 / speed; end = Math.max(s, end + (i ? .12 : 0)) + d; return [s, end]; });
+  const slots = parts.map((x, i) => { const s = v.at[i] ?? end + (+v.gap || .25), d = .1 + spoken(x) * .07 / speed; end = Math.max(s, end + (i ? .12 : 0)) + d; return [s, end]; });
   slots.forEach(([s, e], i) => { const next = i + 1 < sentences ? (v.at[i + 1] ?? e + .25) - .15 : limit; if (e > next) bad.push(`sentence ${i + 1} ("${parts[i].slice(0, 30)}") ends about ${e.toFixed(1)} s, ${(e - next).toFixed(1)} s past its slot`); });
   const talk = slots.reduce((a, [s, e]) => a + e - s, 0);
   console.log(`PREFLIGHT voice: ${sentences} timed sentences, ${words} words, voice ends about ${end.toFixed(1)} s (reel ${c.dur} s, must end by ${limit.toFixed(1)} s), ${(words / talk).toFixed(1)} words/s while speaking, ${(words / end).toFixed(1)} overall: ${bad.length ? 'TOO LONG: ' + bad.join('; ') : 'fits'}`);
