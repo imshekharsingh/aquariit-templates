@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Four friends, one race</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Channel 3 pilot A, "Character cast": four invented friends and a peg-board race, told by a narrator.
+   Zing (the show-off), Wob (the worrier), Snick (the schemer: he jumps before GO) and Pip (the lucky one: asleep the whole way, and he wins).
+   The physics runs once on load (fixed 480 Hz step, seeded peg jitter) and seek(t) reads the recorded run, so every frame is a pure function of t;
+   SEED comes from a one-off search (window.__sim) for a run where Zing leads early, Snick finishes last and Pip wins.
+   The story is told in cuts: a wide hook, one close-up per character while the narrator introduces them, the start, then the camera
+   cuts between the leader, the worrier and the sleeper, the finish in the cup, and a last close-up. Every sentence the voice says is on
+   screen (the captions follow the real voice once the render hands it over: window.setVoice). The voice is timed to the run:
+   window.VOICE = { text, at } is what the config's voice must say and when (scripts/channel3/qa.mjs checks they match).
+   Look (owner, 31 Oct): matte. Flat colour, crisp outlines, a paper grain, small hard-edged shadows for depth; no glow, no gradients. */
+*{margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:#f1e7d3}
+canvas{display:block;width:540px;height:960px}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+(function(){
+  var SEED = 1403, F = "'Fredoka',system-ui,sans-serif", STEP = 1 / 480, G = 950, R = 19, PR = 5, GOS = .8, CHEAT = .55;
+  var INK = '#2a2140', PAPER = '#f1e7d3';
+  var CAST = [
+    { name: 'ZING', trait: 'THE SHOW-OFF', col: '#f6b928', dark: '#b97a00', x: 100 },
+    { name: 'WOB', trait: 'THE WORRIER', col: '#5fb4ef', dark: '#2a78b8', x: 160 },
+    { name: 'SNICK', trait: 'THE SCHEMER', col: '#9a72e8', dark: '#5f3db0', x: 220 },
+    { name: 'PIP', trait: 'THE LUCKY ONE', col: '#5cc77f', dark: '#2a8a4a', x: 280 }];
+  var WL = 20, WR = 360, TOP = 230, ROW0 = 320, ROWS = 14, DY = 58, DX = 62, F0 = ROW0 + ROWS * DY + 30, F1 = F0 + 150, FIN = F1 + 26, CUP = F1 + 190;
+  function rnd(s){ return function(){ s |= 0; s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function cl(x, a, b){ return x < a ? a : x > b ? b : x; }
+  function P(t, a, b){ return cl((t - a) / (b - a), 0, 1); }
+  function mix(a, b, k){ return a + (b - a) * k; }
+  function eo(k){ return 1 - Math.pow(1 - k, 3); }
+  function eio(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+  function eb(k){ var c = 1.7; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); }
+
+  // ---- the board and the run (sim time s; video time t = s + OFF) ----
+  function board(r){
+    var rows = [], segs = [];
+    for (var i = 0; i < ROWS; i++) { rows.push([]); for (var x = (i % 2 ? 40 + DX / 2 : 40); x < 345; x += DX) rows[i].push([x + (r() - .5) * 8, ROW0 + i * DY + (r() - .5) * 6]); }
+    segs.push([WL, 0, WL, F0], [WR, 0, WR, F0], [WL, F0, 149, F1], [WR, F0, 231, F1], [149, F1, 149, F1 + 30], [231, F1, 231, F1 + 30],
+      [80, F1 + 60, 80, CUP], [300, F1 + 60, 300, CUP], [80, CUP, 300, CUP]);
+    return { rows: rows, segs: segs };
+  }
+  function sim(seed, until){
+    var r = rnd(seed), Bd = board(r), B = [], rec = [], hits = [], fin = [null, null, null, null], n = Math.ceil(until / STEP), still = [0, 0, 0, 0];
+    CAST.forEach(function(c, i){ B.push({ x: c.x + (r() - .5) * 10, y: TOP, vx: 0, vy: 0, go: i === 2 ? GOS - CHEAT : GOS }); });
+    function col(b, px, py, pr, e, i, s){
+      var dx = b.x - px, dy = b.y - py, d = Math.hypot(dx, dy);
+      if (d < R + pr && d > 1e-6) { var nx = dx / d, ny = dy / d; b.x += nx * (R + pr - d); b.y += ny * (R + pr - d);
+        var vn = b.vx * nx + b.vy * ny; if (vn < 0) { b.vx -= (1 + e) * vn * nx; b.vy -= (1 + e) * vn * ny; b.vx *= .985; if (-vn > 160) hits.push([s, i, -vn, 'peg']); } }
+    }
+    for (var k = 0; k <= n; k++){
+      var s = k * STEP;
+      if (k % 2 === 0) { var fr = []; B.forEach(function(b){ fr.push(b.x, b.y); }); rec.push(fr); }
+      for (var i = 0; i < 4; i++){
+        var b = B[i];
+        if (s < b.go) { b.y = TOP; b.vx = b.vy = 0; continue; }
+        if (s < b.go + STEP * 1.5) { b.vx = (i === 2 ? 60 : (r() - .5) * 40); b.vy = -60; }
+        b.vy += G * STEP; b.x += b.vx * STEP; b.y += b.vy * STEP;
+        var gy = Math.floor((b.y - ROW0) / DY);
+        for (var row = gy - 1; row <= gy + 1; row++){ if (row < 0 || row >= ROWS) continue;
+          for (var j = 0; j < Bd.rows[row].length; j++) { var pg = Bd.rows[row][j]; if (Math.abs(pg[0] - b.x) < R + PR + 1) col(b, pg[0], pg[1], PR, .55, i, s); } }
+        for (j = 0; j < Bd.segs.length; j++){ var sg = Bd.segs[j], ux = sg[2] - sg[0], uy = sg[3] - sg[1], kk = cl(((b.x - sg[0]) * ux + (b.y - sg[1]) * uy) / (ux * ux + uy * uy), 0, 1); col(b, sg[0] + ux * kk, sg[1] + uy * kk, 3, .35, i, s); }
+        if (fin[i] === null && b.y > FIN) fin[i] = s;
+        // a body that has moved less than 4 px in 0.4 s (balanced on a peg, wedged at a wall) gets a seeded hop toward the middle
+        if (b.y < FIN) { if (!b.ax || Math.hypot(b.x - b.ax, b.y - b.ay) > 4) { b.ax = b.x; b.ay = b.y; still[i] = 0; } else if ((still[i] += STEP) > .4) { b.vx += (b.x < 190 ? 1 : -1) * (90 + r() * 60); b.vy -= 140; still[i] = 0; b.ax = 0; } }
+      }
+      for (i = 0; i < 4; i++) for (j = i + 1; j < 4; j++){
+        var A = B[i], C2 = B[j]; if (s < A.go || s < C2.go) continue;
+        var dx = C2.x - A.x, dy = C2.y - A.y, d = Math.hypot(dx, dy);
+        if (d < 2 * R && d > 1e-6) { var nx = dx / d, ny = dy / d, pe = (2 * R - d) / 2; A.x -= nx * pe; A.y -= ny * pe; C2.x += nx * pe; C2.y += ny * pe;
+          var vr = (C2.vx - A.vx) * nx + (C2.vy - A.vy) * ny; if (vr < 0) { var im = -.75 * vr; A.vx -= im * nx; A.vy -= im * ny; C2.vx += im * nx; C2.vy += im * ny; if (-vr > 120) hits.push([s, i, -vr, 'bump']); } }
+      }
+    }
+    return { Bd: Bd, rec: rec, hits: hits, fin: fin };
+  }
+  function order(fin){ return [0, 1, 2, 3].filter(function(i){ return fin[i] !== null; }).sort(function(a, b){ return fin[a] - fin[b]; }); }
+  function leaderAt(S, s){ var f = S.rec[cl(Math.round(s * 240), 0, S.rec.length - 1)], b = 0; for (var i = 1; i < 4; i++) if (f[2 * i + 1] > f[2 * b + 1]) b = i; return b; }
+  // the run the story needs: Zing in front 1.9-3.6 s after GO, Pip wins 7-9.5 s after GO, Snick last, everyone in within 4 s of the win
+  function judge(S){
+    var o = order(S.fin); if (o.length < 4) return { ok: false, fin: S.fin };
+    var w = S.fin[o[0]] - GOS, lead = [1.9, 2.4, 2.9, 3.4].map(function(d){ return leaderAt(S, GOS + d); });
+    return { ok: o[0] === 3 && o[3] === 2 && lead.every(function(l){ return l === 0; }) && w > 7 && w < 9.5 && S.fin[o[3]] - S.fin[o[0]] < 4, order: o, win: +w.toFixed(2), lead: lead, fin: S.fin };
+  }
+  window.__sim = function(seed){ return judge(sim(seed, 13)); };
+
+  // ---- the story: what the narrator says and when (video seconds); the race lines are timed to the run ----
+  var IN = [3.1, 6.4, 9.4, 12.4], START = 14.6, GO = 16.4, OFF = GO - GOS, S = sim(SEED, 13), J = judge(S), O = order(S.fin), W = S.fin[O[0]] + OFF;
+  var LINES = [
+    { at: 0, text: 'Four friends, one race: who do you think wins?' },
+    { at: IN[0], text: 'Zing, the show-off. He never loses, just ask him.' },
+    { at: IN[1], text: 'Wob, the worrier. Scared of everything.' },
+    { at: IN[2], text: 'Snick, the schemer. He never plays fair.' },
+    { at: IN[3], text: 'And Pip? Pip is fast asleep.' },
+    { at: START, text: 'Ready, set, and Snick jumps early!' },
+    { at: GO + 1.9, text: 'Zing takes the lead, of course.' },
+    { at: GO + 4.1, text: 'Wob just wants it to be over.' },
+    { at: W - 2.1, text: "But look who's rolling in." },
+    { at: W + .3, text: 'Pip wins. In his sleep.' },
+    { at: W + 2.9, text: 'Zing wants a rematch.' }];
+  var DUR = +(W + 5.2).toFixed(2);
+  // one entry per sentence, as the voice splits them (scripts/showreel/voice.py): a later sentence in the same line follows after a breath
+  LINES = [].concat.apply([], LINES.map(function(L){ return L.text.match(/[^.?!]+[.?!]?/g).map(function(s, k){ return { at: k ? null : +L.at.toFixed(2), text: s.trim() }; }); }));
+  window.VOICE = { text: LINES.map(function(L){ return L.text; }).join(' '), at: LINES.map(function(L){ return L.at; }) };
+  window.OUTCOME = J;
+
+  // ---- captions: every spoken sentence on screen, word by word (estimated, then the real voice's times) ----
+  // the estimate is the preflight's (scripts/showreel/preflight.mjs): 0.1 s + 70 ms a letter at speed 1, spread over the words by letters
+  var SPEED = .95, CAPS = LINES, lt = function(w){ return w.replace(/[^A-Za-z]/g, '').length; };
+  (function(){ var end = 0; CAPS.forEach(function(L, i){ var s = L.at !== null ? Math.max(L.at, end + (i ? .12 : 0)) : end + .25, ws = L.text.split(/\s+/), t = s + .05, n = 0;
+    ws.forEach(function(w){ n += lt(w); }); var d = (n * .07 / SPEED) / n;
+    L.words = ws.map(function(w){ var o = { d: w, s: t, e: t + lt(w) * d }; t = o.e; return o; });
+    L.s = s; L.e = s + .1 + n * .07 / SPEED; end = L.e; }); })();
+  var norm = function(w){ return String(w).toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  window.setVoice = function(v){ if (!v || !v.words || !v.words.length) return; var V = v.words, j = 0;
+    CAPS.forEach(function(L){ L.words.forEach(function(w){ for (var k = j; k < Math.min(V.length, j + 4); k++) if (norm(V[k].w) === norm(w.d)) { w.s = V[k].s; w.e = V[k].e; j = k + 1; return; } }); L.s = L.words[0].s; L.e = L.words[L.words.length - 1].e; });
+    cues(); };
+  var CAPI = -1; window.__cap = function(){ return CAPI; }; window.__caps = function(){ return CAPS.map(function(L){ return [L.at, +L.s.toFixed(2), +L.e.toFixed(2), L.text]; }); };
+  function capAt(t){ for (var i = CAPS.length - 1; i >= 0; i--) if (t >= CAPS[i].s - .15) return t < CAPS[i].e + 1.8 ? i : -1; return -1; }
+
+  // ---- reading the run ----
+  var NREC = S.rec.length;
+  function state(t){ var f = cl(t - OFF, 0, 99) * 240, i = Math.min(Math.floor(f), NREC - 1), k = f - i, a = S.rec[i], b = S.rec[Math.min(i + 1, NREC - 1)]; return a.map(function(v, j){ return v + (b[j] - v) * k; }); }
+  function vel(t, i){ var a = state(t - .02), b = state(t + .02); return [(b[2 * i] - a[2 * i]) / .04, (b[2 * i + 1] - a[2 * i + 1]) / .04]; }
+  // smoothed tracks (forward and back) for the camera, so a close-up rides with a body without shaking
+  var TR = [0, 1, 2, 3].map(function(i){ var ox = new Float32Array(NREC), oy = new Float32Array(NREC), ax = S.rec[0][2 * i], ay = S.rec[0][2 * i + 1], n;
+    for (n = 0; n < NREC; n++){ ax += (S.rec[n][2 * i] - ax) * .05; ay += (S.rec[n][2 * i + 1] - ay) * .05; ox[n] = ax; oy[n] = ay; }
+    for (n = NREC - 1; n >= 0; n--){ ax += (ox[n] - ax) * .05; ay += (oy[n] - ay) * .05; ox[n] = ax; oy[n] = ay; }
+    return [ox, oy]; });
+  function track(t, i){ var n = cl(Math.round((t - OFF) * 240), 0, NREC - 1); return [TR[i][0][n], TR[i][1][n]]; }
+  function pack(t){ var ys = [0, 1, 2, 3].map(function(i){ return track(t, i)[1]; }).sort(function(a, b){ return b - a; }); return [190, Math.min((ys[0] + ys[1] + ys[2]) / 3 + 60, CUP - 180)]; }
+  // ---- the shots: [start, target(t) -> world point, zoom, screen y of that point] ----
+  var CUPC = [190, F1 + 120];
+  function on(i, dy){ return function(t){ var p = track(t, i); return [p[0], p[1] + (dy || 0)]; }; }
+  var SHOTS = [
+    [0, function(){ return [190, 330]; }, 1.3, 440],
+    [IN[0], on(0), 3.2, 430], [IN[1], on(1), 3.2, 430], [IN[2], on(2), 3.2, 430], [IN[3], on(3), 3.4, 430],
+    [START, function(){ return [190, 290]; }, 1.75, 420],
+    [GO + .5, pack, 1.3, 440],
+    [GO + 1.9, on(0), 2.3, 420], [GO + 4.1, on(1), 2.3, 420], [GO + 6.2, pack, 1.3, 440], [W - 2.1, on(3), 2.3, 420],
+    [W - .5, function(){ return CUPC; }, 1.75, 450], [W + 1.6, on(3), 3.3, 430], [W + 2.9, on(0), 3.3, 430]];
+  function camera(t){
+    var i = 0; while (i < SHOTS.length - 1 && t >= SHOTS[i + 1][0]) i++;
+    var a = SHOTS[Math.max(0, i - 1)], b = SHOTS[i], k = i ? eio(P(t, b[0] - .05, b[0] + .45)) : 1, pa = a[1](t), pb = b[1](t);
+    var push = 1 + .035 * P(t, b[0], b[0] + 3);   // a slow push inside every shot: the frame never holds still
+    return { x: mix(pa[0], pb[0], k), y: mix(pa[1], pb[1], k), z: Math.exp(mix(Math.log(a[2]), Math.log(b[2]), k)) * push, sy: mix(a[3], b[3], k), shot: i };
+  }
+
+  // ---- drawing ----
+  var cv = document.getElementById('c'), x = cv.getContext('2d');
+  var BOXES = []; window.__boxes = function(){ return BOXES; };   // every text drawn in the last seek, as its box on screen (CSS px), for qa.mjs
+  function probe(s, X, Y, al){ if (x.globalAlpha < .05) return; var w = x.measureText(s).width, l = al === 'left' ? X : al === 'right' ? X - w : X - w / 2, m = x.getTransform();
+    var a = m.transformPoint(new DOMPoint(l, Y - 10)), b = m.transformPoint(new DOMPoint(l + w, Y)); BOXES.push([s, a.x / 2, b.x / 2, a.y / 2, b.y / 2]); }
+  function txt(s, px, py, size, wgt, col, al, sp){ x.font = wgt + ' ' + size + 'px ' + F; x.fillStyle = col; x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px'; probe(s, px, py, x.textAlign); x.fillText(s, px, py); x.letterSpacing = '0px'; }
+  function circ(px, py, r, col){ x.fillStyle = col; x.beginPath(); x.arc(px, py, r, 0, 6.2832); x.fill(); }
+  function rrect(px, py, w, h, r){ x.beginPath(); x.roundRect(px, py, w, h, r); }
+  function plate(px, py, w, h){ rrect(px, py, w, h, 20); x.fillStyle = PAPER; x.fill(); x.lineWidth = 2; x.strokeStyle = INK; x.stroke(); }   // a paper card behind titles over the board
+  // paper grain: one seeded speckle layer, drawn last at low strength
+  var GRAIN = (function(){ var c = document.createElement('canvas'); c.width = 540; c.height = 960; var g = c.getContext('2d'), im = g.createImageData(540, 960), r = rnd(77);
+    for (var i = 0; i < im.data.length; i += 4){ var v = r(), d = v < .5; im.data[i] = im.data[i + 1] = im.data[i + 2] = d ? 40 : 255; im.data[i + 3] = Math.abs(v - .5) > .38 ? 34 : 0; }
+    g.putImageData(im, 0, 0); return c; })();
+  function blink(t, i){ var p = (t + i * 1.37) % 3.1; return p < .12 ? 1 - Math.abs(p - .06) / .06 : 0; }
+  function mood(t, i){
+    if (t >= W + 2.75 && i === 0) return 'mad';
+    if (t >= W) return i === O[0] ? 'won' : 'lost';
+    if (t < GO - (i === 2 ? CHEAT : 0)) return 'idle';
+    return leaderAt(S, t - OFF) === i ? 'lead' : 'race';
+  }
+  function face(i, px, py, t, md, v){
+    var c = CAST[i], sq = cl(1 + v[1] / 4000, .9, 1.12), sx = 1 / Math.sqrt(sq), bl = blink(t, i);
+    if (i === 1 && md !== 'won') px += Math.sin(t * 61) * (md === 'idle' ? 1 : .6);   // Wob trembles
+    // a small hard shadow under the body (depth, no blur)
+    x.fillStyle = 'rgba(42,33,64,.16)'; x.beginPath(); x.ellipse(px + 3, py + 4, R * sx, R * sq, 0, 0, 6.2832); x.fill();
+    x.save(); x.translate(px, py); x.scale(sx, sq);
+    x.fillStyle = c.col; x.strokeStyle = INK; x.lineWidth = 2.2; x.lineJoin = 'round';
+    if (i === 0) { x.beginPath(); x.moveTo(-9, -R + 3); x.lineTo(-5, -R - 10); x.lineTo(0, -R + 1); x.lineTo(5, -R - 13); x.lineTo(9, -R + 3); x.closePath(); x.fill(); x.stroke(); }
+    if (i === 2) { [-1, 1].forEach(function(s){ x.beginPath(); x.moveTo(s * 7, -R + 4); x.lineTo(s * 14, -R - 9); x.lineTo(s * 16, -R + 8); x.closePath(); x.fill(); x.stroke(); }); }
+    if (i === 1) { x.beginPath(); x.moveTo(0, -R); x.quadraticCurveTo(4, -R - 12, 12 + Math.sin(t * 7) * 2, -R - 8); x.stroke(); circ(12 + Math.sin(t * 7) * 2, -R - 8, 3.2, c.dark); }
+    if (i === 3) { x.beginPath(); x.moveTo(0, -R + 1); x.lineTo(0, -R - 7); x.stroke(); [[-4, -R - 10], [4, -R - 10]].forEach(function(p){ x.beginPath(); x.ellipse(p[0], p[1], 4.5, 2.6, p[0] < 0 ? .5 : -.5, 0, 6.2832); x.fillStyle = c.dark; x.fill(); }); }
+    x.fillStyle = c.col; x.beginPath(); x.arc(0, 0, R, 0, 6.2832); x.fill(); x.stroke();
+    x.fillStyle = 'rgba(255,255,255,.28)'; x.beginPath(); x.arc(-6, -7, 6, 0, 6.2832); x.fill();   // a flat highlight, not a gradient
+    var look = [cl(v[0] / 600, -1, 1) * 2, cl(v[1] / 900, -1, 1) * 2];
+    x.strokeStyle = INK; x.lineWidth = 2.2; x.lineCap = 'round';
+    if (i === 3 && md !== 'won') {   // Pip sleeps: closed arcs, a small smile
+      [-7, 7].forEach(function(ex){ x.beginPath(); x.arc(ex, -2, 4, Math.PI * 1.1, Math.PI * 1.9); x.stroke(); });
+      x.beginPath(); x.arc(0, 6, 3, 0, Math.PI); x.stroke();
+    } else if (i === 3) {   // after the win: one eye opens
+      var o1 = P(t, W + 1.9, W + 2.2);
+      x.beginPath(); x.arc(-7, -2, 4, Math.PI * 1.1, Math.PI * 1.9); x.stroke();
+      if (o1 > 0) { circ(7, -2, 5.6 * o1, '#fff'); circ(7.5, -2, 2.8 * o1, INK); } else { x.beginPath(); x.arc(7, -2, 4, Math.PI * 1.1, Math.PI * 1.9); x.stroke(); }
+      x.beginPath(); x.arc(0, 7, 2.6, 0, 6.2832); x.stroke();
+    } else {
+      var er = i === 1 ? 7 : 5.8, pr = i === 1 ? 2.2 : 2.9, lid = i === 2 ? .45 : md === 'mad' ? .35 : 0;
+      [-7.5, 7.5].forEach(function(ex){
+        circ(ex, -3, er, '#fff');
+        var lx = look[0], ly = look[1]; if (i === 2) lx += Math.sin(t * 2.3) * 2.2;   // Snick's shifty side glance
+        circ(ex + lx, -3 + ly, pr, INK);
+        if (lid + bl > 0) { x.fillStyle = c.col; x.fillRect(ex - er - 1, -3 - er - 1, er * 2 + 2, (er * 2 + 2) * cl(lid + bl, 0, 1)); }
+      });
+      x.beginPath();
+      if (i === 1) { x.moveTo(-12, -13); x.lineTo(-4, -15); x.moveTo(12, -13); x.lineTo(4, -15); }
+      if (i === 2) { x.moveTo(-13, -12); x.lineTo(-3, -9); x.moveTo(13, -14); x.lineTo(3, -11); }
+      if (i === 0) { if (md === 'mad') { x.moveTo(-13, -14); x.lineTo(-3, -9); x.moveTo(13, -14); x.lineTo(3, -9); } else { x.moveTo(-12, -11); x.lineTo(-4, -13); x.moveTo(12, -11); x.lineTo(4, -13); } }
+      x.stroke(); x.beginPath();
+      if (md === 'mad') { x.moveTo(-6, 10); x.lineTo(6, 8); x.stroke(); }
+      else if (i === 0) { x.arc(0, 5, 7, .15 * Math.PI, .85 * Math.PI); x.stroke(); }
+      else if (i === 1) { x.moveTo(-6, 10); x.quadraticCurveTo(-3, 7, 0, 10); x.quadraticCurveTo(3, 13, 6, 10); x.stroke(); }
+      else if (i === 2) { x.moveTo(-6, 8); x.quadraticCurveTo(2, 12, 8, 5); x.stroke(); }
+    }
+    x.restore();
+    // personality extras, flat shapes
+    if (i === 0 && (md === 'lead' || md === 'idle')) for (var k = 0; k < 3; k++){ var ph = (t * 1.6 + k / 3) % 1, a = k * 2.1 + t * .5; star(px + Math.cos(a) * (R + 10 + ph * 8), py + Math.sin(a) * (R + 10 + ph * 8) - 4, 4 * Math.sin(ph * Math.PI), c.dark); }
+    if (i === 1 && md !== 'won') { var dp = (t * .9) % 1; x.globalAlpha = 1 - dp; drop(px + 16, py - 10 + dp * 12); x.globalAlpha = 1; }
+    if (i === 3 && md !== 'won') for (k = 0; k < 2; k++){ var zp = (t * .55 + k * .5) % 1; x.globalAlpha = Math.sin(zp * Math.PI); x.font = '700 ' + (12 + zp * 8) + 'px ' + F; x.fillStyle = INK; x.textAlign = 'center'; x.fillText('z', px + 16 + zp * 12, py - 18 - zp * 26); x.globalAlpha = 1; }
+  }
+  function star(px, py, r, col){ if (r <= 0) return; x.fillStyle = col; x.beginPath(); for (var k = 0; k < 8; k++){ var a = k * Math.PI / 4, rr = k % 2 ? r * .35 : r; x.lineTo(px + Math.cos(a) * rr, py + Math.sin(a) * rr); } x.closePath(); x.fill(); }
+  function drop(px, py){ x.fillStyle = '#5fb4ef'; x.strokeStyle = INK; x.lineWidth = 1; x.beginPath(); x.moveTo(px, py - 6); x.quadraticCurveTo(px + 5, py + 1, px, py + 4); x.quadraticCurveTo(px - 5, py + 1, px, py - 6); x.fill(); x.stroke(); }
+
+  var PEG = ['#e8735a', '#e9a93b', '#4f9fd8', '#8a68d8', '#4bb06c'];
+  function drawCaption(t){
+    var i = capAt(t); CAPI = i; if (i < 0) return;
+    var L = CAPS[i], fade = 1 - P(t, L.e + 1.5, L.e + 1.8), size = 31, maxW = 462, lines = [[]], lw = [0];
+    x.font = '600 ' + size + 'px ' + F; var sp = x.measureText(' ').width;
+    L.words.forEach(function(w){ var ww = x.measureText(w.d).width, n = lines.length - 1; if (lw[n] && lw[n] + sp + ww > maxW) { lines.push([]); lw.push(0); n++; } lines[n].push([w, ww]); lw[n] += (lw[n] ? sp : 0) + ww; });
+    var y0 = 690 - (lines.length - 1) * 38 / 2, pad = 16, top = y0 - 30 - pad / 2, h = lines.length * 38 + pad;
+    x.globalAlpha = fade * eo(P(t, L.s - .15, L.s + .05)); rrect(270 - Math.max.apply(null, lw) / 2 - 18, top, Math.max.apply(null, lw) + 36, h, 18); x.fillStyle = PAPER; x.fill(); x.lineWidth = 2; x.strokeStyle = INK; x.stroke();
+    lines.forEach(function(ln, r){ var xx = 270 - lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .12, w.s + .1)), who = CAST.filter(function(c){ return norm(c.name) === norm(w.d); })[0];
+        x.globalAlpha = fade * (.3 + .7 * k); txt(w.d, xx, y0 + r * 38 - (1 - k) * 4, size, 600, who ? who.dark : INK, 'left'); xx += q[1] + sp; }); });
+    x.globalAlpha = 1;
+  }
+  function seek(t){
+    t = cl(t, 0, DUR); x.setTransform(2, 0, 0, 2, 0, 0); BOXES.length = 0;
+    var C = camera(t), f = state(t), z = C.z;
+    x.fillStyle = PAPER; x.fillRect(0, 0, 540, 960);
+    x.save(); x.translate(270, C.sy); x.scale(z, z); x.translate(-C.x, -C.y);
+    var vy0 = C.y - C.sy / z - 30, vy1 = C.y + (960 - C.sy) / z + 30;
+    // the board: a flat panel, pegs coloured by row with a small hard shadow
+    x.fillStyle = '#e7dcc4'; x.beginPath(); x.moveTo(WL, -400); x.lineTo(WR, -400); x.lineTo(WR, F0); x.lineTo(231, F1); x.lineTo(149, F1); x.lineTo(WL, F0); x.closePath(); x.fill();
+    S.Bd.rows.forEach(function(row, k){ var c = PEG[k % PEG.length]; row.forEach(function(p){ if (p[1] < vy0 || p[1] > vy1) return; circ(p[0] + 1.5, p[1] + 2, PR, 'rgba(42,33,64,.18)'); circ(p[0], p[1], PR, c); }); });
+    x.strokeStyle = INK; x.lineWidth = 5; x.lineCap = 'round';
+    S.Bd.segs.forEach(function(sg){ x.beginPath(); x.moveTo(sg[0], sg[1]); x.lineTo(sg[2], sg[3]); x.stroke(); });
+    // the start ledge: one plank per racer that drops away at their own start
+    CAST.forEach(function(c, i){ var go = i === 2 ? GO - CHEAT : GO, k = P(t, go, go + .45); if (k >= 1) return;
+      x.save(); x.globalAlpha = 1 - k; x.translate(c.x, TOP + R + 4 + 120 * k * k); x.rotate((i % 2 ? -1 : 1) * k * .9); x.fillStyle = INK; rrect(-26, -3, 52, 7, 3.5); x.fill(); x.restore(); });
+    for (var k = 0; k < 10; k++){ x.fillStyle = k % 2 ? INK : '#fff'; x.fillRect(149 + k * 8.2, FIN - 3, 8.2, 3); x.fillStyle = k % 2 ? '#fff' : INK; x.fillRect(149 + k * 8.2, FIN, 8.2, 3); }
+    var ys = [f[1], f[3], f[5], f[7]];
+    [0, 1, 2, 3].sort(function(a, b){ return ys[a] - ys[b]; }).forEach(function(i){ face(i, f[2 * i], f[2 * i + 1], t, mood(t, i), vel(t, i)); });
+    // the "!" over the other three when Snick slips off early
+    var ch = P(t, GO - CHEAT, GO - CHEAT + .12) * (1 - P(t, GO + .3, GO + .6));
+    if (ch > 0) { x.globalAlpha = ch; [0, 1, 3].forEach(function(i){ var s3 = eb(P(t, GO - CHEAT, GO - CHEAT + .25)); x.save(); x.translate(f[2 * i], f[2 * i + 1] - 34); x.scale(s3 * .7, s3 * .7); x.font = '700 32px ' + F; x.fillStyle = '#d6453a'; x.textAlign = 'center'; x.fillText('!', 0, 0); x.restore(); }); x.globalAlpha = 1; }
+    x.restore();
+    // ---- titles (screen space): the hook, one name card per close-up, the start count, the result ----
+    var hk = 1 - P(t, IN[0] - .25, IN[0] + .05);
+    if (hk > 0) { x.globalAlpha = hk; txt('4 FRIENDS · 1 RACE', 270, 112, 17, 700, '#d6453a', 'center', 4);
+      var ts = eb(P(t, 0, .45)); x.save(); x.translate(270, 182); x.scale(ts, ts); txt('Who wins?', 0, 0, 68, 700, INK, 'center', -.5); x.restore(); x.globalAlpha = 1; }
+    [[IN[0], IN[1] - .2, 0], [IN[1], IN[2] - .2, 1], [IN[2], IN[3] - .2, 2], [IN[3], START - .2, 3]].forEach(function(q){ var a = P(t, q[0] + .05, q[0] + .3) * (1 - P(t, q[1], q[1] + .2)); if (a <= 0) return;
+      var c = CAST[q[2]], s2 = eb(P(t, q[0] + .05, q[0] + .45)); x.globalAlpha = a;
+      txt(c.trait, 270, 118, 17, 700, INK, 'center', 4); x.save(); x.translate(270, 190); x.scale(s2, s2); txt(c.name, 0, 0, 72, 700, c.dark, 'center', 2); x.restore(); x.globalAlpha = 1; });
+    [['READY', START, START + .65], ['SET', START + .65, GO - CHEAT], ['HEY!', GO - CHEAT, GO + .5]].forEach(function(q){ var a = P(t, q[1], q[1] + .1) * (1 - P(t, q[2] - .1, q[2])); if (a <= 0) return;
+      var s4 = eb(P(t, q[1], q[1] + .3)); x.globalAlpha = a; x.save(); x.translate(270, 180); x.scale(s4, s4); txt(q[0], 0, 0, 70, 700, q[0] === 'HEY!' ? '#d6453a' : INK, 'center', 2); x.restore(); x.globalAlpha = 1; });
+    // during the race: who is in front, top centre
+    var lk = P(t, GO + .6, GO + .9) * (1 - P(t, W - .2, W));
+    if (lk > 0) { var li = leaderAt(S, t - OFF); x.globalAlpha = lk; plate(180, 86, 180, 80); txt('IN FRONT', 270, 108, 15, 700, INK, 'center', 4); txt(CAST[li].name, 270, 150, 40, 700, CAST[li].dark, 'center', 2); x.globalAlpha = 1; }
+    if (t >= W) {
+      var wk = eb(P(t, W, W + .45)), done = 1 - P(t, W + 2.8, W + 3.0);
+      if (done > 0) { x.globalAlpha = done; plate(40, 112, 460, 154); x.save(); x.translate(270, 178); x.scale(wk, wk); txt('PIP WINS', 0, 0, 66, 700, CAST[3].dark, 'center', 2); x.restore();
+        O.forEach(function(i, k){ var at = S.fin[i] + OFF; if (t < at) return; var a = eo(P(t, at, at + .3)), xx = 84 + k * 124;
+          x.globalAlpha = a * done; rrect(xx - 56, 214, 112, 36, 18); x.fillStyle = k === 0 ? CAST[i].col : PAPER; x.fill(); x.lineWidth = 2; x.strokeStyle = INK; x.stroke();
+          txt((k + 1) + '. ' + CAST[i].name, xx, 238, 17, 700, INK); }); x.globalAlpha = 1; }
+      var rk = P(t, W + 2.9, W + 3.15); if (rk > 0) { x.globalAlpha = rk; plate(90, 122, 360, 84); x.save(); var s5 = eb(P(t, W + 2.9, W + 3.3)); x.translate(270, 182); x.scale(s5, s5); txt('REMATCH?', 0, 0, 66, 700, CAST[0].dark, 'center', 2); x.restore(); x.globalAlpha = 1; }
+    }
+    drawCaption(t);
+    x.globalAlpha = .9; x.drawImage(GRAIN, 0, 0); x.globalAlpha = 1;
+  }
+  // sound: a swish on every cut, a pop for each name, ticks for READY and SET, a click when Snick slips, soft taps for the hardest knocks,
+  // a riser into the finish, a hit and shimmer for the win, a thud for the rematch; a bed under the voice
+  function cues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5 }, { t: .15, k: 'pop', g: .35, p: 0 }];
+    SHOTS.forEach(function(s, i){ if (i) Q.push({ t: s[0] - .05, k: 'swish', d: .45, g: .42, p: (i % 3) * .2 - .2 }); });
+    IN.forEach(function(a, i){ Q.push({ t: a + .1, k: 'pop', g: .38, p: [0, 3, 7, 12][i] }); });
+    Q.push({ t: START, k: 'tick', g: .45, p: 0 }, { t: START + .65, k: 'tick', g: .45, p: 0 }, { t: GO - CHEAT, k: 'click', g: .5 }, { t: GO - CHEAT + .05, k: 'thud', g: .5 }, { t: GO, k: 'whoosh', d: .5, g: .55 });
+    var last = -1; S.hits.slice().sort(function(a, b){ return a[0] - b[0]; }).forEach(function(h){ var tt = h[0] + OFF; if (tt - last > .12 && h[2] > 260 && tt < W) { Q.push({ t: +tt.toFixed(3), k: h[3] === 'bump' ? 'pop' : 'tap', g: Math.min(.3, h[2] / 1800), p: [0, 5, 8, 12][h[1]] }); last = tt; } });
+    Q.push({ t: W - 1.2, k: 'riser', d: 1.2, g: .4 }, { t: W, k: 'hit', g: .7 }, { t: W + .05, k: 'shimmer', g: .45 });
+    O.slice(1).forEach(function(i, k){ Q.push({ t: S.fin[i] + OFF, k: 'pop', g: .3, p: 7 - k * 3 }); });
+    Q.push({ t: W + 2.9, k: 'thud', g: .6 }, { t: DUR - .4, k: 'swish', d: .5, g: .4, p: -.5 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 112, origin: 0, gain: .26, chords: [[48, 60, 64, 67], [53, 60, 65, 69], [45, 57, 60, 64], [55, 59, 62, 67]] } };
+  }
+  cues();
+  window.seek = seek; window.DURATION = DUR; window.COVER = .6;
+  document.fonts.load("700 60px 'Fredoka'").then(function(){ return document.fonts.load("600 30px 'Fredoka'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

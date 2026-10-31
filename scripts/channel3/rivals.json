@@ -1,0 +1,49 @@
+{
+ "name": "showreel-c3-rivals",
+ "seek": "scripts/channel3/rivals.html",
+ "dur": 29.74,
+ "fps": 60,
+ "blur": 6,
+ "shutter": 0.45,
+ "grain": 4,
+ "cover": 0.6,
+ "voice": {
+  "text": "Four friends, one race: who do you think wins? Zing, the show-off. He never loses, just ask him. Wob, the worrier. Scared of everything. Snick, the schemer. He never plays fair. And Pip? Pip is fast asleep. Ready, set, and Snick jumps early! Zing takes the lead, of course. Wob just wants it to be over. But look who's rolling in. Pip wins. In his sleep. Zing wants a rematch.",
+  "at": [
+   0,
+   3.1,
+   null,
+   6.4,
+   null,
+   9.4,
+   null,
+   12.4,
+   null,
+   14.6,
+   18.3,
+   20.5,
+   22.44,
+   24.84,
+   null,
+   27.44
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "Zing showed off. Wob panicked. Snick cheated. Pip slept, and won. 😴\n\nWho's your favourite? Pick one in the comments 👇 and tell us the next challenge.",
+ "keywords": [
+  "marble race animation",
+  "physics race",
+  "cute characters animation",
+  "plinko race",
+  "satisfying physics",
+  "who will win"
+ ],
+ "hashtags": [
+  "#marblerace",
+  "#physicsanimation",
+  "#plinko",
+  "#satisfyingvideo",
+  "#characteranimation"
+ ]
+}

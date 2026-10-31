@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>The Salt Wars of Velmora</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Channel 3 pilot C, "Invented world history": Velmora, a made-up continent, and the thirty years of made-up war over its one salt mine,
+   told by a narrator. Everything is generated on load from fixed seeds: the coastline (warped value noise), about 150 provinces (warped
+   nearest-seed cells), six starting nations (grown from their capitals over the province graph) and the scripted era (EVENTS): who takes
+   which provinces, in which order, at what time. seek(t) only reads that timeline, so every frame is a pure function of t.
+   Told in shots, not one map that fades (owner, 31 Oct): the camera pushes into the mine, pans to each front, cuts to the queen who starts
+   it, pulls wide for the peace and rides the black sails in; a new event every ~3 s, a year counter that rolls between them, a cliffhanger.
+   Every spoken sentence is on screen (window.VOICE = { text, at }: what the voice says and when; scripts/channel3/qa.mjs checks the config).
+   Look (owner, 31 Oct: "too glowy"): a printed atlas. Parchment page, muted flat nation colours with a faint terrain grain, ink borders,
+   a sea in three flat depth bands, crisp vector icons and portraits, a paper grain over all; no glow, no flashes, no gradients. */
+*{margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:#ece2cc}
+canvas{display:block;width:540px;height:960px}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+(function(){
+  var SEED = 4, FS = "'Cinzel',Georgia,serif", FI = "'Inter Tight',system-ui,sans-serif", PAPER = '#ece2cc', INK = '#2b2433';
+  var MW = 540, MH = 480, RW = 1080, RH = 960, WY0 = 226, WY1 = 664, WCY = (WY0 + WY1) / 2;   // the map (map units = CSS px at zoom 1), its raster, the window on screen
+  function rnd(s){ return function(){ s |= 0; s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function cl(x, a, b){ return x < a ? a : x > b ? b : x; }
+  function P(t, a, b){ return cl((t - a) / (b - a), 0, 1); }
+  function mix(a, b, k){ return a + (b - a) * k; }
+  function eo(k){ return 1 - Math.pow(1 - k, 3); }
+  function eio(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+  function eb(k){ var c = 1.5; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); }
+  // value noise
+  function H(i, j, s){ var h = Math.imul(i, 374761393) + Math.imul(j, 668265263) + Math.imul(s, 1442695041); h = Math.imul(h ^ h >>> 13, 1274126177); return ((h ^ h >>> 16) >>> 0) / 4294967296; }
+  function vn(x, y, s){ var i = Math.floor(x), j = Math.floor(y), fx = x - i, fy = y - j, u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy);
+    var a = H(i, j, s), b = H(i + 1, j, s), c = H(i, j + 1, s), d = H(i + 1, j + 1, s); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; }
+  function fbm(x, y, s, o){ var v = 0, a = .5, f = 1; for (var k = 0; k < o; k++){ v += a * vn(x * f, y * f, s + k * 17); a *= .5; f *= 2.03; } return v; }
+
+  // ---- the continent: land where warped noise beats an elliptical falloff ----
+  var N = RW * RH, LAND = new Uint8Array(N), SHADE = new Uint8Array(N);
+  (function(){
+    for (var y = 0; y < RH; y++) for (var x = 0; x < RW; x++){
+      var u = x / RW, v = y / RH, wx = u + .09 * (fbm(u * 3, v * 3, SEED + 50, 3) - .5), wy = v + .09 * (fbm(u * 3 + 9, v * 3, SEED + 60, 3) - .5);
+      var dx = (wx - .5) / .47, dy = (wy - .5) / .47, r = Math.sqrt(dx * dx + dy * dy), n = fbm(wx * 4.2, wy * 4.2, SEED, 5);
+      var e = n + .62 - r * .78, i = y * RW + x; LAND[i] = e > .5 ? 1 : 0;
+      SHADE[i] = cl(200 + (fbm(u * 14, v * 14, SEED + 90, 4) - .5) * 120 + (e - .5) * 70, 150, 255);
+    }
+  })();
+  // ---- provinces: jittered seeds on land, each pixel to its nearest seed after a small warp (organic borders) ----
+  var SEEDS = [], PID = new Int16Array(N).fill(-1);
+  (function(){
+    var r = rnd(SEED * 7 + 1), step = 74;
+    for (var gy = step / 2; gy < RH; gy += step) for (var gx = step / 2; gx < RW; gx += step){
+      var sx = Math.round(gx + (r() - .5) * step * .8), sy = Math.round(gy + (r() - .5) * step * .8);
+      if (sx >= 0 && sx < RW && sy >= 0 && sy < RH && LAND[sy * RW + sx]) SEEDS.push([sx, sy]);
+    }
+    var B = 80, gw = Math.ceil(RW / B), gh = Math.ceil(RH / B), grid = []; for (var k = 0; k < gw * gh; k++) grid.push([]);
+    SEEDS.forEach(function(s, k){ grid[Math.floor(s[1] / B) * gw + Math.floor(s[0] / B)].push(k); });
+    for (var y = 0; y < RH; y++) for (var x = 0; x < RW; x++){
+      var i = y * RW + x; if (!LAND[i]) continue;
+      var u = x + (vn(x / 38, y / 38, SEED + 7) - .5) * 46, v = y + (vn(x / 38 + 5, y / 38, SEED + 8) - .5) * 46, cx = Math.floor(u / B), cy = Math.floor(v / B), best = -1, bd = 1e12;
+      for (var j = cy - 2; j <= cy + 2; j++) for (var q = cx - 2; q <= cx + 2; q++){ if (j < 0 || q < 0 || j >= gh || q >= gw) continue;
+        var L = grid[j * gw + q]; for (var m = 0; m < L.length; m++){ var s = SEEDS[L[m]], d = (s[0] - u) * (s[0] - u) + (s[1] - v) * (s[1] - v); if (d < bd) { bd = d; best = L[m]; } } }
+      PID[i] = best;
+    }
+  })();
+  var NP = SEEDS.length, AREA = new Float64Array(NP), CX = new Float64Array(NP), CY = new Float64Array(NP), ADJ = [], NB = new Int16Array(N).fill(-1);
+  for (var k0 = 0; k0 < NP; k0++) ADJ.push({});
+  (function(){
+    for (var y = 0; y < RH; y++) for (var x = 0; x < RW; x++){
+      var i = y * RW + x, p = PID[i]; if (p < 0) continue; AREA[p]++; CX[p] += x; CY[p] += y;
+      for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++){ var xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= RW || yy >= RH) continue;
+        var q = PID[yy * RW + xx]; if (q === p) continue; if (q < 0) { NB[i] = -2; } else { if (NB[i] === -1) NB[i] = q; ADJ[p][q] = (ADJ[p][q] || 0) + 1; } }
+    }
+    for (var p = 0; p < NP; p++) if (AREA[p]) { CX[p] /= AREA[p]; CY[p] /= AREA[p]; }
+  })();
+  // slivers (under 900 px) join the neighbour they share most border with, so no enclave is left behind by the events
+  (function(){
+    var to = []; for (var p = 0; p < NP; p++){ to.push(p); if (AREA[p] && AREA[p] < 900) { var b = -1, bc = 0; for (var q in ADJ[p]) if (ADJ[p][q] > bc && AREA[q] >= 900) { bc = ADJ[p][q]; b = +q; } if (b >= 0) to[p] = b; } }
+    for (var i = 0; i < N; i++) if (PID[i] >= 0) PID[i] = to[PID[i]];
+    AREA.fill(0); CX.fill(0); CY.fill(0); NB.fill(-1); ADJ = []; for (p = 0; p < NP; p++) ADJ.push({});
+    for (var y = 0; y < RH; y++) for (var x = 0; x < RW; x++){
+      i = y * RW + x; p = PID[i]; if (p < 0) continue; AREA[p]++; CX[p] += x; CY[p] += y;
+      for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++){ var xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= RW || yy >= RH) continue;
+        var q2 = PID[yy * RW + xx]; if (q2 === p) continue; if (q2 < 0) { NB[i] = -2; } else { if (NB[i] === -1) NB[i] = q2; ADJ[p][q2] = (ADJ[p][q2] || 0) + 1; } }
+    }
+    for (p = 0; p < NP; p++) if (AREA[p]) { CX[p] /= AREA[p]; CY[p] /= AREA[p]; }
+  })();
+  ADJ = ADJ.map(function(a){ return Object.keys(a).filter(function(q){ return a[q] > 6; }).map(Number); });
+  // islands: a sea lane to the nearest province, so every province can be reached
+  for (var pi = 0; pi < NP; pi++) if (AREA[pi] && !ADJ[pi].length) { var nb0 = -1, nd = 1e12; for (var qi = 0; qi < NP; qi++) if (qi !== pi && AREA[qi]) { var dd = Math.hypot(CX[pi] - CX[qi], CY[pi] - CY[qi]); if (dd < nd) { nd = dd; nb0 = qi; } } if (nb0 >= 0) { ADJ[pi].push(nb0); ADJ[nb0].push(pi); } }
+  function nearestProv(fx, fy){ var b = -1, bd = 1e12; for (var p = 0; p < NP; p++){ if (!AREA[p]) continue; var d = (CX[p] - fx * RW) * (CX[p] - fx * RW) + (CY[p] - fy * RH) * (CY[p] - fy * RH); if (d < bd) { bd = d; b = p; } } return b; }
+  // graph distance (Dijkstra, centroid gaps) from a set of provinces
+  function dist(from){ var D = new Float64Array(NP).fill(1e9), done = new Uint8Array(NP); from.forEach(function(p){ D[p] = 0; });
+    for (;;) { var u = -1, ud = 1e9; for (var p = 0; p < NP; p++) if (!done[p] && D[p] < ud) { ud = D[p]; u = p; } if (u < 0) break; done[u] = 1;
+      ADJ[u].forEach(function(q){ var d = ud + Math.hypot(CX[u] - CX[q], CY[u] - CY[q]); if (d < D[q]) D[q] = d; }); }
+    return D; }
+
+  // ---- nations ----
+  var NAT = [
+    { name: 'KAEL', col: [196, 86, 74], at: [.27, .46] },
+    { name: 'OSSARY', col: [84, 122, 176], at: [.5, .2] },
+    { name: 'THREN', col: [214, 164, 70], at: [.76, .4] },
+    { name: 'MIREVALE', col: [98, 156, 112], at: [.66, .76] },
+    { name: 'DUSKAR', col: [136, 108, 170], at: [.32, .78] },
+    { name: 'PELL', col: [86, 160, 160], at: [.8, .14] },
+    { name: 'ASHEN', col: [190, 178, 156], at: [0, 0] },
+    { name: '???', col: [32, 28, 38], at: [0, 0] }];
+  var OWN0 = new Int8Array(NP).fill(0), CAP = NAT.slice(0, 6).map(function(n){ return nearestProv(n.at[0], n.at[1]); });
+  (function(){   // grow the six from their capitals: each province goes to the nearest capital by graph distance, a little seeded noise in the weights
+    var r = rnd(SEED * 13), w = []; for (var p = 0; p < NP; p++) w.push(.8 + r() * .4);
+    var Ds = CAP.map(function(c){ return dist([c]); });
+    for (p = 0; p < NP; p++){ if (!AREA[p]) continue; var b = -1, bd = 1e9; for (var n = 0; n < 6; n++){ var d = Ds[n][p] * w[p] * (n === 5 ? 1.5 : 1); if (d < bd) { bd = d; b = n; } } OWN0[p] = b; }
+  })();
+  var MINE = nearestProv(.5, .47);
+
+  // ---- the era: each event flips provinces one after another over its length (video seconds) ----
+  var FLIPS = []; for (var p0 = 0; p0 < NP; p0++) FLIPS.push([]);
+  var cur = Array.prototype.slice.call(OWN0), FOCUS = {};
+  function owned(n){ var o = []; for (var p = 0; p < NP; p++) if (cur[p] === n) o.push(p); return o; }
+  function take(key, t, len, to, list){ list.forEach(function(p, k){ var tt = t + len * k / Math.max(1, list.length); FLIPS[p].push([tt, to]); cur[p] = to; });
+    var fx = 0, fy = 0; list.forEach(function(p){ fx += CX[p]; fy += CY[p]; }); FOCUS[key] = list.length ? [fx / list.length / 2, fy / list.length / 2] : [MW / 2, MH / 2]; }
+  function byDist(list, from){ var D = dist(from); return list.filter(function(p){ return D[p] < 1e9; }).sort(function(a, b){ return D[a] - D[b]; }); }
+  var T = { kael: 3.2, ossary: 5.8, pact: 9.3, back: 13.8, split: 17.0, peace: 19.2, sails: 21.7, land: 24.0, end: 24.4 };
+  var EVENTS = [
+    { t: 0, year: 1201, text: 'SIX NATIONS · ONE SALT MINE' },
+    { t: T.kael, year: 1204, text: 'KAEL TAKES THE MINE', run: function(e){ var D = dist([MINE]); var L = []; for (var p = 0; p < NP; p++) if (AREA[p] && cur[p] !== 0) L.push(p);
+      L.sort(function(a, b){ return D[a] - D[b]; }); take('kael', e.t + .4, 1.5, 0, byDist(L.slice(0, 7), owned(0))); } },
+    { t: T.ossary, year: 1208, text: 'OSSARY FALLS', run: function(e){ take('ossary', e.t + .2, 2.2, 0, byDist(owned(1), owned(0))); } },
+    { t: T.pact, year: 1214, text: 'THREN + MIREVALE = THE PACT', rename: [2, 'THE PACT'], run: function(e){ take('pact', e.t + .4, 1.8, 2, byDist(owned(3), owned(2))); } },
+    { t: T.back, year: 1219, text: 'THE PACT RETAKES THE MINE', run: function(e){ var L = byDist(owned(0), owned(2)); var D = dist([MINE]); L = L.slice(0, 14).sort(function(a, b){ return D[a] - D[b]; }).slice(0, 10); take('back', e.t + .3, 1.8, 2, byDist(L, owned(2))); } },
+    { t: T.split, year: 1224, text: 'KAEL SPLITS IN TWO', run: function(e){ var L = owned(0).sort(function(a, b){ return CY[a] - CY[b]; }); take('split', e.t + .3, 1.4, 6, L.slice(0, Math.round(L.length * .42)).sort(function(a, b){ return CX[a] - CX[b]; })); } },
+    { t: T.peace, year: 1230, text: 'ONE YEAR OF PEACE' },
+    { t: T.sails, year: 1231, text: 'BLACK SAILS IN THE WEST', run: function(e){ var coast = []; for (var p = 0; p < NP; p++) if (AREA[p] && cur[p] >= 0 && CX[p] < RW * .3) coast.push(p);
+      coast.sort(function(a, b){ return CX[a] - CX[b]; }); take('land', T.land, 1.2, 7, coast.slice(0, 3)); } }];
+  EVENTS.forEach(function(e){ if (e.run) e.run(e); });
+  window.OUTCOME = { ok: cur.indexOf(1) < 0 && cur.indexOf(3) < 0 && cur.indexOf(7) >= 0 && cur.indexOf(6) >= 0, provinces: NP, start: [0, 1, 2, 3, 4, 5].map(function(n){ return OWN0.filter(function(o){ return o === n; }).length; }), end: [0, 1, 2, 3, 4, 5, 6, 7].map(function(n){ return cur.filter(function(o){ return o === n; }).length; }) };
+  function nameOf(n, t){ var s = NAT[n].name; EVENTS.forEach(function(e){ if (e.rename && e.rename[0] === n && t >= e.t + 1.4) s = e.rename[1]; }); return s; }
+  var DUR = 27.6, MINEP = [CX[MINE] / 2, CY[MINE] / 2];
+
+  // ---- the story ----
+  var LINES = [
+    { at: 0, text: 'How did one salt mine start thirty years of war?' },
+    { at: T.kael, text: 'Queen Ysra of Kael took it first.' },
+    { at: T.ossary, text: 'Then her army swallowed Ossary whole.' },
+    { at: T.pact, text: 'So Thren and Mirevale joined forces. They called it the Pact.' },
+    { at: T.back, text: 'The Pact marched on the mine, and took it back.' },
+    { at: T.split, text: 'Then Kael itself split in two.' },
+    { at: T.peace, text: 'For one quiet year, there was peace.' },
+    { at: T.sails, text: 'Then black sails appeared in the west.' },
+    { at: T.end, text: 'Nobody knew whose ships they were.' }];
+  LINES = [].concat.apply([], LINES.map(function(L){ return L.text.match(/[^.?!]+[.?!]?/g).map(function(s, k){ return { at: k ? null : +L.at.toFixed(2), text: s.trim() }; }); }));
+  window.VOICE = { text: LINES.map(function(L){ return L.text; }).join(' '), at: LINES.map(function(L){ return L.at; }) };
+  var SPEED = .95, CAPS = LINES, lt = function(w){ return w.replace(/[^A-Za-z]/g, '').length; };
+  (function(){ var end = 0; CAPS.forEach(function(L, i){ var s = L.at !== null ? Math.max(L.at, end + (i ? .12 : 0)) : end + .25, ws = L.text.split(/\s+/), t = s + .05, n = 0;
+    ws.forEach(function(w){ n += lt(w); }); var d = .07 / SPEED;
+    L.words = ws.map(function(w){ var o = { d: w, s: t, e: t + lt(w) * d }; t = o.e; return o; });
+    L.s = s; L.e = s + .1 + n * .07 / SPEED; end = L.e; }); })();
+  var norm = function(w){ return String(w).toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  window.setVoice = function(v){ if (!v || !v.words || !v.words.length) return; var V = v.words, j = 0;
+    CAPS.forEach(function(L){ L.words.forEach(function(w){ for (var k = j; k < Math.min(V.length, j + 4); k++) if (norm(V[k].w) === norm(w.d)) { w.s = V[k].s; w.e = V[k].e; j = k + 1; return; } }); L.s = L.words[0].s; L.e = L.words[L.words.length - 1].e; }); };
+  var CAPI = -1; window.__cap = function(){ return CAPI; }; window.__caps = function(){ return CAPS.map(function(L){ return [L.at, +L.s.toFixed(2), +L.e.toFixed(2), L.text]; }); };
+  function capAt(t){ for (var i = CAPS.length - 1; i >= 0; i--) if (t >= CAPS[i].s - .15) return t < CAPS[i].e + 1.8 ? i : -1; return -1; }
+
+  // ---- the shots: [start, map point, zoom] ----
+  var FLEET = function(t){ var fk = P(t, T.sails, T.land); return [40 + fk * 60, 230]; };
+  var SHOTS = [[0, [MW / 2, MH / 2], 1.0], [T.kael, MINEP, 2.1], [T.ossary, FOCUS.ossary, 1.55], [T.pact, FOCUS.pact, 1.9], [T.pact + 2.3, [mix(FOCUS.pact[0], MW / 2, .5), mix(FOCUS.pact[1], MH / 2, .5)], 1.3],
+    [T.back, MINEP, 2.1], [T.split, FOCUS.split, 1.6], [T.peace, [MW / 2, MH / 2], 1.0], [T.sails, FLEET, 1.7], [T.end, FOCUS.land, 2.3]];
+  function camera(t){
+    var i = 0; while (i < SHOTS.length - 1 && t >= SHOTS[i + 1][0]) i++;
+    var a = SHOTS[Math.max(0, i - 1)], b = SHOTS[i], k = i ? eio(P(t, b[0] - .1, b[0] + .6)) : 1, pt = function(q){ return typeof q[1] === 'function' ? q[1](t) : q[1]; }, pa = pt(a), pb = pt(b);
+    var push = 1 + .04 * P(t, b[0], b[0] + 3.2), z = Math.exp(mix(Math.log(a[2]), Math.log(b[2]), k)) * push;
+    var cx = mix(pa[0], pb[0], k), cy = mix(pa[1], pb[1], k), hw = 270 / z, hh = (WY1 - WY0) / 2 / z;   // never show past the map's edge
+    return [z, cl(cx, Math.min(hw, MW / 2), Math.max(MW - hw, MW / 2)), cl(cy, Math.min(hh, MH / 2), Math.max(MH - hh, MH / 2))];
+  }
+
+  // ---- drawing ----
+  var cv = document.getElementById('c'), x = cv.getContext('2d'), off = document.createElement('canvas'); off.width = RW; off.height = RH;
+  var ox = off.getContext('2d'), img = ox.createImageData(RW, RH), px = new Uint32Array(img.data.buffer), SEA = new Uint32Array(N);
+  function pack(r, g, b){ return (255 << 24 | (b > 255 ? 255 : b < 0 ? 0 : b) << 16 | (g > 255 ? 255 : g < 0 ? 0 : g) << 8 | (r > 255 ? 255 : r < 0 ? 0 : r)) >>> 0; }
+  (function(){   // the sea: three flat depth bands and one contour line, by distance from the coast (two-pass chamfer)
+    var D = new Float32Array(N).fill(1e6); for (var i = 0; i < N; i++) if (LAND[i]) D[i] = 0;
+    for (var y = 0; y < RH; y++) for (var x2 = 0; x2 < RW; x2++){ var i2 = y * RW + x2; if (x2) D[i2] = Math.min(D[i2], D[i2 - 1] + 1); if (y) D[i2] = Math.min(D[i2], D[i2 - RW] + 1); }
+    for (y = RH - 1; y >= 0; y--) for (x2 = RW - 1; x2 >= 0; x2--){ i2 = y * RW + x2; if (x2 < RW - 1) D[i2] = Math.min(D[i2], D[i2 + 1] + 1); if (y < RH - 1) D[i2] = Math.min(D[i2], D[i2 + RW] + 1); }
+    for (i = 0; i < N; i++){ var d = D[i] + (vn((i % RW) / 50, Math.floor(i / RW) / 50, SEED + 3) - .5) * 10;
+      SEA[i] = d < 12 ? pack(150, 178, 186) : d < 34 ? pack(126, 156, 168) : (d > 37 && d < 39.5) ? pack(126, 156, 168) : pack(104, 134, 150); }
+  })();
+  var PC = new Int32Array(NP * 3), PO = new Int8Array(NP);
+  function paint(t){
+    for (var p = 0; p < NP; p++){
+      var f = FLIPS[p], o = OWN0[p], po = o, tf = -9; for (var k = 0; k < f.length; k++) if (f[k][0] <= t) { po = o; o = f[k][1]; tf = f[k][0]; }
+      var b = eio(P(t, tf, tf + .35)), A = NAT[po].col, Bc = NAT[o].col;
+      for (var c = 0; c < 3; c++) PC[p * 3 + c] = A[c] + (Bc[c] - A[c]) * b;
+      PO[p] = o;
+    }
+    for (var i = 0; i < N; i++){
+      var q = PID[i]; if (q < 0) { px[i] = SEA[i]; continue; }
+      var nb = NB[i];
+      if (nb === -2) { px[i] = pack(43, 36, 51); continue; }   // the coast, in ink
+      if (nb >= 0 && PO[nb] !== PO[q]) { px[i] = PO[q] === 7 || PO[nb] === 7 ? pack(178, 52, 46) : pack(43, 36, 51); continue; }   // nation borders, in ink
+      var s = .9 + (SHADE[i] - 150) / 105 * .12; if (nb >= 0) s *= .9;   // a faint terrain grain; province lines a shade darker
+      px[i] = pack(PC[q * 3] * s, PC[q * 3 + 1] * s, PC[q * 3 + 2] * s);
+    }
+    ox.putImageData(img, 0, 0);
+  }
+  var BOXES = []; window.__boxes = function(){ return BOXES; };   // every text drawn in the last seek, as its box on screen (CSS px), for qa.mjs
+  function probe(s, X, Y, al){ if (x.globalAlpha < .05) return; var w = x.measureText(s).width, l = al === 'left' ? X : al === 'right' ? X - w : X - w / 2, m = x.getTransform();
+    var a = m.transformPoint(new DOMPoint(l, Y - 10)), b = m.transformPoint(new DOMPoint(l + w, Y)); BOXES.push([s, a.x / 2, b.x / 2, a.y / 2, b.y / 2]); }
+  function txt(s, X, Y, size, font, col, al, sp, stroke){ var w = font.split(' '); x.font = w[0] + ' ' + size + 'px ' + w.slice(1).join(' '); x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px';
+    if (stroke) { x.lineJoin = 'round'; x.lineWidth = stroke; x.strokeStyle = INK; x.strokeText(s, X, Y); } x.fillStyle = col; probe(s, X, Y, x.textAlign); x.fillText(s, X, Y); x.letterSpacing = '0px'; }
+  var GRAIN = (function(){ var c = document.createElement('canvas'); c.width = 540; c.height = 960; var g = c.getContext('2d'), im = g.createImageData(540, 960), r = rnd(77);
+    for (var i = 0; i < im.data.length; i += 4){ var v = r(), d = v < .5; im.data[i] = im.data[i + 1] = im.data[i + 2] = d ? 40 : 255; im.data[i + 3] = Math.abs(v - .5) > .38 ? 30 : 0; }
+    g.putImageData(im, 0, 0); return c; })();
+  function rgb(c){ return 'rgb(' + c.join(',') + ')'; }
+  // portraits: flat vector busts in a medallion (crisp at any size); who = 'ysra' (the queen of Kael) or 'hood' (the stranger)
+  function portrait(who, cx, cy, r, k, t){
+    if (k <= 0) return; var s = eb(k);
+    x.save(); x.translate(cx, cy); x.scale(s, s); x.globalAlpha = cl(k * 3, 0, 1);
+    x.fillStyle = 'rgba(43,36,51,.22)'; x.beginPath(); x.arc(4, 5, r, 0, 6.2832); x.fill();
+    x.fillStyle = who === 'hood' ? '#3a3342' : '#e9dcc0'; x.strokeStyle = INK; x.lineWidth = 3; x.beginPath(); x.arc(0, 0, r, 0, 6.2832); x.fill(); x.stroke();
+    x.save(); x.beginPath(); x.arc(0, 0, r - 1.5, 0, 6.2832); x.clip(); x.scale(r / 60, r / 60); x.lineWidth = 2.2; x.lineJoin = 'round'; x.lineCap = 'round';
+    if (who === 'ysra') {
+      x.fillStyle = '#3b2a2e'; x.beginPath(); x.moveTo(-26, 4); x.quadraticCurveTo(-30, -34, 0, -36); x.quadraticCurveTo(30, -34, 26, 4); x.lineTo(30, 40); x.lineTo(-30, 40); x.closePath(); x.fill();   // hair
+      x.fillStyle = rgb(NAT[0].col); x.beginPath(); x.moveTo(-52, 64); x.quadraticCurveTo(-46, 28, -14, 24); x.lineTo(14, 24); x.quadraticCurveTo(46, 28, 52, 64); x.closePath(); x.fill(); x.stroke();   // robe
+      x.fillStyle = '#e2b48c'; x.fillRect(-7, 10, 14, 16); x.beginPath(); x.ellipse(0, -6, 18, 22, 0, 0, 6.2832); x.fill(); x.stroke();   // neck, face
+      x.fillStyle = '#d6a446'; x.beginPath(); x.moveTo(-17, -24); x.lineTo(-17, -40); x.lineTo(-9, -31); x.lineTo(0, -44); x.lineTo(9, -31); x.lineTo(17, -40); x.lineTo(17, -24); x.closePath(); x.fill(); x.stroke();   // crown
+      x.strokeStyle = INK; x.beginPath(); x.moveTo(-12, -12); x.lineTo(-3, -9); x.moveTo(12, -12); x.lineTo(3, -9); x.stroke();   // brows, set hard
+      x.fillStyle = INK; var bl = (t % 2.7) < .1 ? .2 : 1; [-7.5, 7.5].forEach(function(e){ x.beginPath(); x.ellipse(e, -4, 2.4, 2.4 * bl, 0, 0, 6.2832); x.fill(); });
+      x.beginPath(); x.moveTo(-6, 9); x.quadraticCurveTo(1, 12, 8, 7); x.stroke();   // a thin smile
+    } else {
+      x.fillStyle = '#16131b'; x.beginPath(); x.moveTo(-56, 70); x.quadraticCurveTo(-46, -46, 0, -48); x.quadraticCurveTo(46, -46, 56, 70); x.closePath(); x.fill();   // hood
+      x.fillStyle = '#060508'; x.beginPath(); x.ellipse(0, 0, 22, 28, 0, 0, 6.2832); x.fill();   // the dark under it
+      var on = P(t, T.end + 1.1, T.end + 1.4); x.fillStyle = '#b2342e'; [-8, 8].forEach(function(e){ x.beginPath(); x.ellipse(e, -2, 3, 1.6 * on, 0, 0, 6.2832); x.fill(); });   // two eyes open
+    }
+    x.restore(); x.restore();
+  }
+  function mineIcon(mx, my, s, owner){
+    x.save(); x.translate(mx, my); x.scale(s, s); x.lineJoin = 'round';
+    x.strokeStyle = INK; x.lineWidth = 1.6; x.beginPath(); x.moveTo(9, 2); x.lineTo(9, -22); x.stroke();   // a flag in the owner's colour
+    x.fillStyle = rgb(NAT[owner].col); x.beginPath(); x.moveTo(9, -22); x.lineTo(23, -17); x.lineTo(9, -12); x.closePath(); x.fill(); x.stroke();
+    x.fillStyle = '#fbf7ee'; x.beginPath(); x.moveTo(0, -11); x.lineTo(7, 0); x.lineTo(0, 9); x.lineTo(-7, 0); x.closePath(); x.fill(); x.stroke();   // the salt crystal
+    x.beginPath(); x.moveTo(-7, 0); x.lineTo(7, 0); x.moveTo(0, -11); x.lineTo(0, 9); x.lineWidth = .8; x.stroke();
+    x.restore();
+  }
+  function ownerAt(p, t){ var o = OWN0[p], f = FLIPS[p]; for (var k = 0; k < f.length; k++) if (f[k][0] <= t) o = f[k][1]; return o; }
+  function drawCaption(t){
+    var i = capAt(t); CAPI = i; if (i < 0) return;
+    var L = CAPS[i], fade = 1 - P(t, L.e + 1.5, L.e + 1.8), size = 29, maxW = 470, lines = [[]], lw = [0];
+    x.font = '700 ' + size + 'px ' + FI; var sp = x.measureText(' ').width;
+    L.words.forEach(function(w){ var ww = x.measureText(w.d).width, n = lines.length - 1; if (lw[n] && lw[n] + sp + ww > maxW) { lines.push([]); lw.push(0); n++; } lines[n].push([w, ww]); lw[n] += (lw[n] ? sp : 0) + ww; });
+    var y0 = 712 - (lines.length - 1) * 36 / 2, NAMES = { kael: 0, ysra: 0, ossary: 1, thren: 2, pact: 2, mirevale: 3 };
+    lines.forEach(function(ln, r){ var xx = 270 - lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .12, w.s + .1)), n = NAMES[norm(w.d)], col = n !== undefined ? rgb(NAT[n].col.map(function(v){ return Math.round(v * .78); })) : /^(black|sails|nobody)/i.test(w.d) ? '#b2342e' : INK;
+        x.globalAlpha = fade * (.28 + .72 * k); txt(w.d, xx, y0 + r * 36 - (1 - k) * 4, size, '700 ' + FI, col, 'left', -.3); xx += q[1] + sp; }); });
+    x.globalAlpha = 1;
+  }
+  function seek(t){
+    t = cl(t, 0, DUR); x.setTransform(2, 0, 0, 2, 0, 0); BOXES.length = 0;
+    paint(t);
+    x.fillStyle = PAPER; x.fillRect(0, 0, 540, 960);
+    var C = camera(t), s = C[0], cx = C[1], cy = C[2], tr = function(mx, my){ return [270 + (mx - cx) * s, WCY + (my - cy) * s]; };
+    // the map window: a plate with an ink frame and a hard shadow
+    x.fillStyle = 'rgba(43,36,51,.18)'; x.fillRect(18, WY0 + 6, 512, WY1 - WY0);
+    x.save(); x.beginPath(); x.rect(12, WY0, 516, WY1 - WY0); x.clip();
+    var o0 = tr(0, 0); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(off, o0[0], o0[1], MW * s, MH * s);
+    var m = tr(MINEP[0], MINEP[1]); mineIcon(m[0], m[1], Math.sqrt(s) * 1.1, ownerAt(MINE, t));
+    // the fleet: seven black ships crossing the western sea, three land
+    if (t > T.sails - .2) { var fk = P(t, T.sails, T.land);
+      for (var k = 0; k < 7; k++){ var lx = 22 + (k % 3) * 20 + fk * 62, ly = 160 + k * 24 + Math.sin(t * 2 + k) * 2, sp = tr(lx, ly); if (fk >= 1 && k > 3) continue;
+        x.save(); x.translate(sp[0], sp[1]); x.scale(s * .9, s * .9); x.globalAlpha = P(t, T.sails - .2 + k * .08, T.sails + .2 + k * .08);
+        x.fillStyle = 'rgba(43,36,51,.25)'; x.beginPath(); x.ellipse(1, 9, 10, 2.4, 0, 0, 6.2832); x.fill();
+        x.fillStyle = '#16131b'; x.strokeStyle = '#b2342e'; x.lineWidth = .9;
+        x.beginPath(); x.moveTo(-9, 4); x.lineTo(9, 4); x.lineTo(6, 8); x.lineTo(-6, 8); x.closePath(); x.fill();
+        x.beginPath(); x.moveTo(0, -12); x.lineTo(8, 2); x.lineTo(0, 2); x.closePath(); x.fill(); x.stroke(); x.beginPath(); x.moveTo(-1, -9); x.lineTo(-7, 2); x.lineTo(-1, 2); x.closePath(); x.fill(); x.stroke(); x.restore(); }
+      x.globalAlpha = 1; }
+    // nation labels at the area-weighted centre of what each holds now
+    var PV = P(t, T.kael + .1, T.kael + .3) * (1 - P(t, T.ossary - .1, T.ossary)) + P(t, T.end + .2, T.end + .4);
+    var L = []; for (var n = 0; n < 8; n++) L.push([0, 0, 0]);
+    for (var p = 0; p < NP; p++){ var f = FLIPS[p], o = OWN0[p], po = o, tf = -9; for (k = 0; k < f.length; k++) if (f[k][0] <= t) { po = o; o = f[k][1]; tf = f[k][0]; }
+      var b = eio(P(t, tf, tf + .6)); L[o][0] += AREA[p] * b; L[o][1] += CX[p] * AREA[p] * b; L[o][2] += CY[p] * AREA[p] * b;
+      if (po !== o) { L[po][0] += AREA[p] * (1 - b); L[po][1] += CX[p] * AREA[p] * (1 - b); L[po][2] += CY[p] * AREA[p] * (1 - b); } }
+    for (n = 0; n < 8; n++){ var a = L[n][0]; if (a < 2500) continue; var lp = tr(L[n][1] / a / 2, L[n][2] / a / 2), size = cl(8 + Math.sqrt(a) / 28, 11, 22) * Math.sqrt(s);
+      if (lp[1] < WY0 + 16 || lp[1] > WY1 - 4) continue;
+      x.globalAlpha = n < 6 ? P(t, .1 + n * .06, .4 + n * .06) : P(a, 2500, 6000);
+      if (n === 7) size = 30;
+      var nm = n === 7 ? '?' : nameOf(n, t); x.font = '800 ' + size + 'px ' + FS; var hw = x.measureText(nm).width / 2 + 4; lp[0] = cl(lp[0], 16 + hw, 524 - hw);
+      if (PV > 0 && lp[0] + hw > 340 && lp[1] - size < WY0 + 216) continue;   // never half hidden behind a portrait or its name card
+      txt(nm, lp[0], lp[1] + size * .35, size, '800 ' + FS, n === 7 ? '#b2342e' : '#fbf7ee', 'center', 1.5, 3.5); x.globalAlpha = 1; }
+    x.restore();
+    x.strokeStyle = INK; x.lineWidth = 2; x.strokeRect(12, WY0, 516, WY1 - WY0);
+    // the queen, as she takes the mine; the stranger, at the end
+    portrait('ysra', 418, WY0 + 92, 64, P(t, T.kael + .1, T.kael + .5) * (1 - P(t, T.ossary - .3, T.ossary)), t);
+    if (t > T.kael + .2 && t < T.ossary) { x.globalAlpha = P(t, T.kael + .3, T.kael + .6) * (1 - P(t, T.ossary - .3, T.ossary)); x.fillStyle = PAPER; x.beginPath(); x.roundRect(350, WY0 + 164, 136, 46, 8); x.fill(); x.strokeStyle = INK; x.lineWidth = 1.5; x.stroke();
+      txt('QUEEN YSRA', 418, WY0 + 184, 14, '800 ' + FS, INK, 'center', 1); txt('OF KAEL', 418, WY0 + 202, 11, '700 ' + FI, rgb(NAT[0].col), 'center', 2.5); x.globalAlpha = 1; }
+    portrait('hood', 418, WY0 + 92, 64, P(t, T.end + .2, T.end + .6), t);
+    // ---- header: the era, the year (rolls between events), the event ----
+    var ev = 0; for (k = 0; k < EVENTS.length; k++) if (t >= EVENTS[k].t) ev = k;
+    var E0 = EVENTS[ev], E1 = EVENTS[Math.min(ev + 1, EVENTS.length - 1)];
+    var year = ev + 1 < EVENTS.length && t > E1.t - .9 ? Math.floor(E0.year + (E1.year - E0.year) * eio(P(t, E1.t - .9, E1.t))) : E0.year;
+    txt('THE SALT WARS OF VELMORA', 270, 96, 15, '700 ' + FI, '#9c4a3f', 'center', 4);
+    var tk = eb(P(t, 0, .45)); x.save(); x.translate(270, 162); x.scale(tk, tk); txt(String(year), 0, 0, 70, '800 ' + FS, INK, 'center', 3); x.restore();
+    var ek = P(t, E0.t + .05, E0.t + .4); x.globalAlpha = ek; txt(E0.text, 270, 206 + (1 - eo(ek)) * 8, 18, '800 ' + FI, E0.t >= T.sails ? '#b2342e' : INK, 'center', 1.5); x.globalAlpha = 1;
+    drawCaption(t);
+    x.drawImage(GRAIN, 0, 0);
+  }
+  // sound: a low boom with the question, ticks as the years roll, a hit and a swish for every event, soft taps as provinces fall,
+  // a riser into the sails, a deep boom when they land, a thud when the stranger looks up
+  function cues(){
+    var Q = [{ t: 0, k: 'boom', g: .6 }, { t: .05, k: 'swish', d: .6, g: .45 }];
+    EVENTS.forEach(function(e, i){ if (!i) return; Q.push({ t: e.t, k: i === EVENTS.length - 1 ? 'boom' : 'hit', g: .5, p: -.2 }, { t: e.t - .05, k: 'swish', d: .5, g: .42 });
+      var n = Math.min(5, e.year - EVENTS[i - 1].year); for (var y = 1; y < n; y++) Q.push({ t: e.t - .9 + y * .9 / n, k: 'tick', g: .22, p: y }); });
+    SHOTS.forEach(function(sh){ if (EVENTS.every(function(e){ return Math.abs(e.t - sh[0]) > .3; }) && sh[0] > 0) Q.push({ t: sh[0], k: 'swish', d: .45, g: .35 }); });
+    var last = -1, all = []; FLIPS.forEach(function(f){ f.forEach(function(q){ all.push(q[0]); }); }); all.sort(function(a, b){ return a - b; });
+    all.forEach(function(tt){ if (tt - last > .14 && tt < T.land) { Q.push({ t: +tt.toFixed(3), k: 'tap', g: .22, p: Math.round(tt * 7) % 12 }); last = tt; } });
+    Q.push({ t: T.land - 1.5, k: 'riser', d: 1.5, g: .45 }, { t: T.land, k: 'boom', g: .8 }, { t: T.end + 1.1, k: 'thud', g: .6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 92, origin: 0, gain: .28, chords: [[38, 50, 57, 62, 65], [34, 50, 53, 58, 62], [36, 48, 55, 60, 64], [33, 45, 52, 57, 61]] } };
+  }
+  cues();
+  window.seek = seek; window.DURATION = DUR; window.COVER = .7;
+  Promise.all([document.fonts.load("800 70px 'Cinzel'"), document.fonts.load("800 18px 'Inter Tight'"), document.fonts.load("700 29px 'Inter Tight'")]).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

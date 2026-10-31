@@ -6,6 +6,10 @@
 #   with one value per sentence; default none) }
 #   gap (owner, 26 Oct: "each statement should be clear and long enough to understand"): each sentence is spoken on its own, its
 #   own leading and trailing silence trimmed, and followed by exactly that much silence: a breath before the next statement
+#   at (Channel 3 pilots, 31 Oct: the story is told over a physics run whose events happen at fixed times): one start time per
+#   sentence, in seconds from the reel's start (null = a breath of `gap`, default 0.25 s, after the previous one); each sentence is
+#   spoken on its own, trimmed, and placed at its time, so the voice lands on the scene's events. The scene is the source of truth
+#   (window.VOICE = { text, at }); scripts/channel3/qa.mjs checks that the config matches it, preflight.mjs that every sentence fits its slot.
 import json, re, sys, wave
 import numpy as np
 
@@ -19,8 +23,15 @@ def main(cfg_path, wav_path, words_path):
     audio, words, off = [], [], 0.0
     gaps = V.get('gap', 0)   # one number for every breath, or a list: one breath per sentence (owner, 26 Oct: pauses that follow the thought)
     gap = (max(gaps) if gaps else 0) if isinstance(gaps, list) else float(gaps)
-    parts = [x.strip() for x in re.findall(r'[^.?!]+[.?!]?', V['text']) if x.strip()] if gap else [V['text']]
+    at = V.get('at')
+    parts = [x.strip() for x in re.findall(r'[^.?!]+[.?!]?', V['text']) if x.strip()] if gap or at else [V['text']]
+    if at and len(at) != len(parts): sys.exit(f'voice.at has {len(at)} times for {len(parts)} sentences')
     for n, part in enumerate(parts):
+        if at:   # placed at its own time: silence up to it (at least 0.12 s after the previous sentence)
+            want = at[n] if at[n] is not None else off + (gap or .25)
+            pad = max(want - off, .12 if n else 0)
+            if pad > want - off + .01: print(f'voice: sentence {n + 1} starts {pad - (want - off):.2f} s late ({want:.2f} s wanted): the previous one ran long')
+            if pad > 0: audio.append(np.zeros(int(pad * 24000))); off += pad
         pa, pw, po = [], [], 0.0   # this sentence's audio and words, timed from its own start
         for r in pipe(part, voice=V.get('voice', 'af_heart'), speed=V.get('speed', 1.0)):
             a = np.asarray(r.audio, dtype=float).reshape(-1)
@@ -32,13 +43,14 @@ def main(cfg_path, wav_path, words_path):
                 for w in ws: d = len(a) / 24000 * len(w) / L; pw.append({'w': w, 's': c, 'e': c + d}); c += d
             pa.append(a); po += len(a) / 24000
         pa = np.concatenate(pa); lead = 0.0
-        if gap:   # spoken one sentence at a time: trim the model's own silence (40 ms kept before, 90 ms after) so the pause is the gap
+        if gap or at:   # spoken one sentence at a time: trim the model's own silence (40 ms kept before, 90 ms after) so the pause is the gap
             env = np.convolve(np.abs(pa), np.ones(240) / 240, 'same'); nz = np.flatnonzero(env > .004 * env.max())
             if len(nz):
                 i0, i1 = max(0, nz[0] - 960), min(len(pa), nz[-1] + 2160); lead = i0 / 24000; pa = pa[i0:i1]
         for w in pw: words.append({'w': w['w'], 's': round(off + max(0, w['s'] - lead), 3), 'e': round(off + max(0, w['e'] - lead), 3)})
         audio.append(pa); off += len(pa) / 24000
-        if gap and n < len(parts) - 1:   # the breath after a sentence
+        if at: print(f'voice: sentence {n + 1} at {off - len(pa) / 24000:.2f}-{off:.2f} s: {part}')
+        if gap and not at and n < len(parts) - 1:   # the breath after a sentence
             g = float(gaps[min(n, len(gaps) - 1)]) if isinstance(gaps, list) else gap
             audio.append(np.zeros(int(g * 24000))); off += g
     a = np.concatenate(audio)

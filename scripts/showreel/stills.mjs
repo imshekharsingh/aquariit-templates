@@ -8,8 +8,10 @@ import { createRequire } from 'node:module';
 const { chromium } = createRequire(process.env.PW_FROM || join(process.cwd(), 'node_modules/'))('playwright');
 const [cfgPath, out = 'stills', n = '11'] = process.argv.slice(2);
 const cfg = JSON.parse(readFileSync(cfgPath, 'utf8')), scene = cfgPath.replace(/\.json$/, '.html'), sp = +cfg.voice?.speed || 1;
-let t = .1;
-const words = (cfg.voice?.text || '').split(/\s+/).filter(Boolean).map((w) => {
+let t = .1, si = 0;
+const AT = cfg.voice?.at;   // timed sentences (voice.at): each sentence's words start at its own time
+const words = (cfg.voice?.text || '').split(/\s+/).filter(Boolean).map((w, i, all) => {
+  if (AT && (i === 0 || /[.?!]$/.test(all[i - 1]))) { if (AT[si] != null) t = Math.max(t, AT[si]); si++; }
   const d = w.replace(/[^A-Za-z]/g, '').length * .0765 / sp * .62, o = { w, s: t, e: t + d };
   t += d + (/[.?!]$/.test(w) ? .55 : /,$/.test(w) ? .3 : .06); return o;
 });
