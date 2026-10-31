@@ -310,5 +310,17 @@
    "#uidesign",
    "#frontenddev"
   ]
+ },
+ "showreel-fc01-lookup-column": {
+  "channel": "fc",
+  "postOn": "2026-10-31"
+ },
+ "showreel-fc02-sum-text": {
+  "channel": "fc",
+  "postOn": "2026-11-01"
+ },
+ "showreel-fc03-trim-space": {
+  "channel": "fc",
+  "postOn": "2026-11-02"
  }
 }

@@ -1,0 +1,55 @@
+{
+ "name": "showreel-fc02-sum-text",
+ "seek": "scripts/fixedcell/sum-text.html",
+ "channel": "fc",
+ "dur": 17,
+ "fps": 60,
+ "blur": 4,
+ "shutter": 0.45,
+ "grain": 3,
+ "cover": 2.6,
+ "voice": {
+  "text": "Why does sum skip some of your numbers? Look at the edges: these ones hug the left. They're stored as text, and sum ignores text. Wrap the range: sum product, two minus signs. The double minus turns text into numbers. Now every row counts.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": [0.6, 0.55, 0.6, 0.55, 0.6]
+ },
+ "caption": "Why does SUM skip some of your numbers? 🔢\n\nLook at the edges. Numbers sit on the right of a cell, text on the left. A number pasted from a bank export, a form or a web page often arrives as text that only looks like a number, and SUM ignores text in a range, so the total comes up short with no error.\nFix: =SUMPRODUCT(--B2:B6). The double minus turns each value into a real number before it is added, so every row counts. Works in Excel and Google Sheets. (A cell with real words in it, like \"n/a\", gives #VALUE!; clean those first.)\nSave it for your next budget sheet.",
+ "keywords": [
+  "sum not adding all numbers",
+  "numbers stored as text",
+  "sumproduct double minus",
+  "spreadsheet total wrong",
+  "excel sum tips",
+  "google sheets sum"
+ ],
+ "hashtags": [
+  "#exceltips",
+  "#googlesheetstips",
+  "#excelformulas",
+  "#spreadsheettips",
+  "#budgetspreadsheet"
+ ],
+ "sources": [
+  {
+   "url": "https://support.microsoft.com/en-us/office/sum-function-043e1c7d-7726-4e80-8f32-07b23e057f89",
+   "note": "SUM: text in a referenced range is ignored"
+  },
+  {
+   "url": "https://support.microsoft.com/en-us/office/sumproduct-function-16753e75-9f68-4874-94ac-4d2145a2fd2e",
+   "note": "SUMPRODUCT: multiplies and sums arrays; an array operation such as --range is evaluated element by element"
+  },
+  {
+   "url": "https://support.microsoft.com/en-us/office/convert-numbers-stored-as-text-to-numbers-40105f2a-fda5-4ca0-a9b0-9d5d3e7e0b6c",
+   "note": "Numbers stored as text: left-aligned, not used in calculations"
+  },
+  {
+   "url": "https://support.google.com/docs/answer/3093669",
+   "note": "Google Sheets SUM"
+  },
+  {
+   "url": "https://support.google.com/docs/answer/3094294",
+   "note": "Google Sheets SUMPRODUCT"
+  }
+ ]
+}

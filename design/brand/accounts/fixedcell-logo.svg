@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080"><title>Fixed Cell logo: one selected cell reading $A$1, a green fill-handle square at its corner</title><style>@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@600&amp;display=swap");</style>
+<rect width="1080" height="1080" fill="#fbfaf6"/>
+<g stroke="#e6e4dc" stroke-width="4">
+ <line x1="0" y1="250" x2="1080" y2="250"/><line x1="0" y1="400" x2="1080" y2="400"/><line x1="0" y1="680" x2="1080" y2="680"/><line x1="0" y1="830" x2="1080" y2="830"/>
+ <line x1="170" y1="0" x2="170" y2="1080"/><line x1="910" y1="0" x2="910" y2="1080"/></g>
+<rect x="170" y="400" width="740" height="280" fill="#ffffff"/>
+<rect x="170" y="400" width="740" height="280" fill="none" stroke="#138a4b" stroke-width="16"/>
+<text x="540" y="590" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600" font-size="170" letter-spacing="-4" fill="#16181d"><tspan fill="#9a9890">$</tspan>A<tspan fill="#9a9890">$</tspan>1</text>
+<rect x="874" y="644" width="72" height="72" fill="#138a4b" stroke="#fbfaf6" stroke-width="12"/>
+</svg>

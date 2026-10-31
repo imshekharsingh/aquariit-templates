@@ -51,17 +51,35 @@
   .tile .chev{font:700 1.6rem/1 system-ui,sans-serif;color:var(--mute)}
   .tile.posted .th{opacity:.55}
   .empty{margin-top:30px;color:var(--mute)}
-  /* two channels (owner, 27 Oct 2026): one tab each, its own accent, posting window and queue */
+  /* one tab per channel (owner, 27 Oct 2026; Fixed Cell added 31 Oct): its own accent, posting window and queue */
   body[data-ch="web"]{--accent:#7c8cff}
   body[data-ch="tech"]{--accent:#3ee08f}
-  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0 14px;padding:5px;background:var(--card);border:1px solid var(--line);border-radius:18px}
-  .tab{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:56px;padding:9px 12px;border:0;border-radius:13px;background:transparent;color:var(--mute);text-align:left;cursor:pointer;font:inherit}
-  .tab b{font:800 .95rem system-ui,sans-serif;color:var(--ink);letter-spacing:-.01em}
-  .tab span{font:600 .75rem system-ui,sans-serif}
+  body[data-ch="fc"]{--accent:#efe9dc}
+  .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:6px 0 14px;padding:5px;background:var(--card);border:1px solid var(--line);border-radius:18px}
+  .tab{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;min-height:56px;padding:9px 8px;border:0;border-radius:13px;background:transparent;color:var(--mute);text-align:left;cursor:pointer;font:inherit}
+  .tab b{font:800 .8rem system-ui,sans-serif;color:var(--ink);letter-spacing:-.02em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tab span{font:600 .7rem system-ui,sans-serif}
   .tab[aria-selected="true"]{background:#1d2133;box-shadow:inset 0 0 0 1.5px var(--tc)}
   .tab[aria-selected="true"] span{color:var(--tc)}
   .tab.web{--tc:#7c8cff}
   .tab.tech{--tc:#3ee08f}
+  .tab.fc{--tc:#efe9dc}
+  /* the channel's profile (owner, 31 Oct 2026): what goes on its Instagram profile, one Copy button per field, the logo to download */
+  .prof{margin:0 0 14px;background:var(--card);border:1px solid var(--line);border-radius:18px}
+  .prof summary{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 14px;cursor:pointer;list-style:none}
+  .prof summary::-webkit-details-marker{display:none}
+  .prof summary img{flex:none;width:44px;height:44px;border-radius:50%;background:#fff}
+  .prof .who{flex:1;min-width:0;display:flex;flex-direction:column}
+  .prof .who b{font:800 .95rem system-ui,sans-serif}
+  .prof .who span{color:var(--mute);font-size:.8rem}
+  .prof .chev{color:var(--mute);font:700 .8rem system-ui,sans-serif}
+  .prof[open] .chev{color:var(--accent)}
+  .prof .in{padding:0 14px 14px}
+  .prof .f{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+  .prof .f div{flex:1;min-width:0}
+  .prof .f small{display:block;color:var(--mute);font:700 .7rem system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase}
+  .prof .f p{overflow-wrap:anywhere;font-size:.9rem}
+  .prof .f .btn{flex:none;min-height:40px;padding:0 14px;font-size:.8rem}
   .tab .due{color:var(--tc)}
   .reel{border-top:3px solid var(--accent)}
   /* GitHub Actions minutes this month (owner, 27 Oct 2026), from the nightly "Actions usage" workflow */
@@ -85,7 +103,9 @@
   <div class="tabs" role="tablist" aria-label="Channel">
     <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
     <button class="tab tech" role="tab" type="button" data-ch="tech" aria-selected="false"><b>@techin20sec</b><span>Tech news</span></button>
+    <button class="tab fc" role="tab" type="button" data-ch="fc" aria-selected="false"><b>Fixed Cell</b><span>Spreadsheet fixes</span></button>
   </div>
+  <details class="prof" id="prof" hidden><summary>Profile</summary></details>
   <details class="use" id="use" hidden><summary><span>GitHub minutes</span><span id="use-n"></span></summary><div class="bar" id="use-bar"><i></i></div><div id="use-note"></div><ul id="use-list"></ul></details>
   <h1 id="title">Showreels</h1>
   <p class="lede" id="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, then mark it uploaded.</p>
@@ -130,29 +150,53 @@
   function istToday(){ return new Date(Date.now() + IST).toISOString().slice(0, 10); }
   function nice(d){ return new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }); }
   // each channel has its own reels, posting window and look (owner, 27 Oct 2026). A reel belongs to @techin20sec when its name starts with
-  // showreel-tech- or showreel-t<digit> (the tech reels), or when captions.json says "channel": "tech"; everything else is @webin20sec
-  var CH = { web: { name: '@webin20sec', slot: '12:30–13:30 IST' }, tech: { name: '@techin20sec', slot: '15:00–19:00 IST' } };
-  function chOf(s, c){ var m = c[s.name] || {}; return m.channel === 'tech' || m.channel === 'web' ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : 'web'; }
-  function label(s){ return s.name.replace(/^showreel-(tech-)?/, '').replace(/-/g, ' '); }
+  // showreel-tech- or showreel-t<digit> (the tech reels), to Fixed Cell when it starts with showreel-fc<digit> (31 Oct), or to the channel
+  // captions.json names ("channel": "tech" / "fc" / "web"); everything else is @webin20sec
+  var CH = { web: { name: '@webin20sec', slot: '12:30–13:30 IST', sub: 'Web fixes' }, tech: { name: '@techin20sec', slot: '15:00–19:00 IST', sub: 'Tech news' },
+    fc: { name: '@fixedcell', slot: '18:00–20:00 IST', sub: 'Spreadsheet fixes' } };
+  function chOf(s, c){ var m = c[s.name] || {}; return CH[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : /^showreel-fc\d/.test(s.name) ? 'fc' : 'web'; }
+  function label(s){ return s.name.replace(/^showreel-(tech-|fc(?=\d))?/, '').replace(/-/g, ' '); }
   var ch = 'web';
-  try { var saved = localStorage.getItem('studio-ch'); if (saved === 'web' || saved === 'tech') ch = saved; } catch (e) {}
-  if (location.hash === '#tech' || location.hash === '#web') ch = location.hash.slice(1);
+  try { var saved = localStorage.getItem('studio-ch'); if (CH[saved]) ch = saved; } catch (e) {}
+  if (CH[location.hash.slice(1)]) ch = location.hash.slice(1);
   function when(d){ if (!d) return 'Not scheduled'; var diff = Math.round((Date.parse(d) - Date.parse(istToday())) / DAY), t = CH[ch].slot;
     return diff === 0 ? 'Post today · ' + t : diff === 1 ? 'Post tomorrow · ' + t : diff < 0 ? 'Was due ' + nice(d) + ' · post next' : 'Post ' + nice(d) + ' · ' + t; }
   var ticks = {}, trackOk = true;
   function load(){ return fetch('/api/uploaded', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ ticks = j.ids || {}; }).catch(function(){ trackOk = false; }); }
   function mark(name, on){ return fetch('/api/uploaded/' + encodeURIComponent(name), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: on }) })
     .then(function(r){ if (!r.ok) throw 0; if (on) ticks[name] = new Date().toISOString(); else delete ticks[name]; }); }
-  var DATA = null, openName = { web: null, tech: null }, tabs = document.querySelectorAll('.tab');
+  var DATA = null, openName = { web: null, tech: null, fc: null }, tabs = document.querySelectorAll('.tab');
   Array.prototype.forEach.call(tabs, function(t){ t.addEventListener('click', function(){ ch = t.getAttribute('data-ch'); try { localStorage.setItem('studio-ch', ch); } catch (e) {} if (DATA) render(); else paint(); }); });
+  // the profile card: one entry per channel in /channels/channels.json (logo, name, username, bio, posting window); a channel without one shows no card
+  var PROF = {}, prof = document.getElementById('prof');
+  function copyBtn(text){ var b = el('button', 'btn g', 'Copy'); b.type = 'button';
+    b.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function(){ b.textContent = 'Copied'; b.classList.add('done'); setTimeout(function(){ b.textContent = 'Copy'; b.classList.remove('done'); }, 1800); }, function(){}); });
+    return b; }
+  function field(name, text, btn){ var f = el('div', 'f'), d = el('div'); d.appendChild(el('small', null, name)); d.appendChild(el('p', null, text)); f.appendChild(d); f.appendChild(btn || copyBtn(text)); return f; }
+  function profile(){ var p = PROF[ch]; prof.textContent = ''; prof.hidden = !p; if (!p) return;
+    var sm = el('summary'), img = document.createElement('img'), who = el('span', 'who');
+    img.src = p.logo; img.alt = ''; sm.appendChild(img); who.appendChild(el('b', null, p.name)); who.appendChild(el('span', null, p.username + ' · posts ' + p.slot)); sm.appendChild(who); sm.appendChild(el('span', 'chev', 'Profile'));
+    var inn = el('div', 'in'), dl = el('button', 'btn g', 'Download logo'); dl.type = 'button';
+    dl.addEventListener('click', function(){ saveFile(p.logo, p.username.replace(/^@/, '') + '-logo.png', 'image/png', dl, 'Download logo'); });
+    inn.appendChild(field('Name', p.name)); inn.appendChild(field('Username', p.username + (p.fallbacks ? ' (if taken: ' + p.fallbacks.join(', ') + ')' : ''), copyBtn(p.username)));
+    inn.appendChild(field('Bio', p.bio)); inn.appendChild(field('Post', 'Daily, ' + p.slot, el('span')));
+    inn.appendChild(field('Profile picture', '1080 × 1080 PNG', dl));
+    prof.appendChild(sm); prof.appendChild(inn); }
+  // the logo goes to the share sheet ("Save Image") where files can be shared, otherwise it downloads
+  function saveFile(url, name, type, btn, idle){ if (btn.disabled) return; btn.disabled = true;
+    fetch(url, { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.blob(); }).then(function(blob){ var f = new File([blob], name, { type: type }); btn.disabled = false;
+      if (navigator.canShare && navigator.canShare({ files: [f] })) return navigator.share({ files: [f] }).catch(function(){});
+      var u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); }, 60000);
+    }).catch(function(){ btn.disabled = false; btn.textContent = 'Try again'; setTimeout(function(){ btn.textContent = idle; }, 1800); }); }
+  fetch('/channels/channels.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }).then(function(j){ PROF = j || {}; profile(); });
   function paint(counts){
-    document.body.setAttribute('data-ch', ch); document.getElementById('title').textContent = CH[ch].name;
+    document.body.setAttribute('data-ch', ch); document.getElementById('title').textContent = CH[ch].name; profile();
     Array.prototype.forEach.call(tabs, function(t){ var k = t.getAttribute('data-ch'), n = counts && counts[k], sp = t.querySelector('span');
       t.setAttribute('aria-selected', k === ch ? 'true' : 'false');
-      sp.textContent = (k === 'web' ? 'Web fixes' : 'Tech news') + (n ? ' · ' + n + ' to post' : ''); sp.className = n ? 'due' : ''; });
+      sp.textContent = CH[k].sub + (n ? ' · ' + n + ' to post' : ''); sp.className = n ? 'due' : ''; });
   }
   function render(){
-    var d = DATA.d, c = DATA.c, all = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }), counts = { web: 0, tech: 0 };
+    var d = DATA.d, c = DATA.c, all = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }), counts = { web: 0, tech: 0, fc: 0 };
     all.forEach(function(s){ if (!ticks[s.name]) counts[chOf(s, c)]++; });
     paint(counts);
     var items = all.filter(function(s){ return chOf(s, c) === ch; }); list.textContent = '';

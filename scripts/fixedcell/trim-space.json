@@ -1,0 +1,51 @@
+{
+ "name": "showreel-fc03-trim-space",
+ "seek": "scripts/fixedcell/trim-space.html",
+ "channel": "fc",
+ "dur": 17,
+ "fps": 60,
+ "blur": 4,
+ "shutter": 0.45,
+ "grain": 3,
+ "cover": 2.8,
+ "voice": {
+  "text": "Why does your lookup miss a name that's right there? Look closer: there's a space after it. To a lookup, that's a different name. Wrap the name in trim. Trim cuts the extra spaces. Now the name matches, and the price comes back.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": [0.6, 0.55, 0.6, 0.5, 0.6]
+ },
+ "caption": "Why does your lookup miss a name that's right there? 🔍\n\n\"Lamp\" is in the list, but the lookup says #N/A. Click the cell: there's a space after the name, typed or pasted in by accident. To a lookup, \"Lamp \" and \"Lamp\" are different names.\nFix: =XLOOKUP(TRIM(A7), A2:A4, B2:B4). TRIM removes the spaces before and after the text (and squeezes double spaces inside it to one), so the name matches. It works the same way inside VLOOKUP, in Excel and Google Sheets.\nIf the spaces are in the list itself, clean that column once with =TRIM() in a helper column.\nSave it for the next #N/A.",
+ "keywords": [
+  "lookup returns n/a but value exists",
+  "trim function spaces",
+  "xlookup n/a error fix",
+  "vlookup not finding match",
+  "excel n/a error",
+  "google sheets trim"
+ ],
+ "hashtags": [
+  "#exceltips",
+  "#googlesheetstips",
+  "#xlookup",
+  "#excelformulas",
+  "#spreadsheettips"
+ ],
+ "sources": [
+  {
+   "url": "https://support.microsoft.com/en-us/office/trim-function-410388fa-c5df-49c6-b16c-9e5630b479f9",
+   "note": "TRIM removes all spaces from text except for single spaces between words"
+  },
+  {
+   "url": "https://support.google.com/docs/answer/3094140",
+   "note": "Google Sheets TRIM: removes leading, trailing and repeated spaces in text"
+  },
+  {
+   "url": "https://support.microsoft.com/en-us/office/xlookup-function-b7fd680e-6d10-43e6-84f9-88eae8bf5929",
+   "note": "XLOOKUP returns #N/A when no match is found (if_not_found omitted)"
+  },
+  {
+   "url": "https://support.google.com/docs/answer/12405947",
+   "note": "Google Sheets XLOOKUP: #N/A when the search key is not found"
+  }
+ ]
+}

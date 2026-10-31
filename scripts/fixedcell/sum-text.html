@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does SUM skip some of your numbers?</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Fixed Cell Nº 02, sums: "Why does SUM skip some of your numbers?"
+   A spending list totals 1,025 instead of 1,455: two amounts are numbers stored as text, which sit on the left edge of their cells.
+   SUM ignores text in a range; =SUMPRODUCT(--B2:B6) turns each into a number first (the text amounts slide over to the right edge),
+   and every row counts.
+   Fixed Cell look (design/fixedcell.md): paper white, ink, one green accent (the fill handle), red only for what is broken, a crisp grid,
+   a monospace formula bar and a pointer. Engine shared by every Fixed Cell scene: sheet(), fx(), cam(), captions; this reel's part is
+   below "THIS REEL". Every frame a pure function of t; beats and caption words lead the voice by 0.15 s; the title shows in full from
+   frame 0 (ghosted) and lights word by word with the voice; the cover is the moment it is complete (window.COVER). */
+:root{--paper:#fbfaf6;--ink:#16181d;--dim:#8b8a84;--line:#e3e1d9;--head:#f1efe8;--acc:#138a4b;--accbg:#e3f3e9;--red:#d4382c;--redbg:#fcebe9;
+  --f:'Inter Tight',system-ui,sans-serif;--m:'IBM Plex Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#bg{left:-90px;top:-30px;width:720px;height:1020px;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:90px 30px;opacity:.55}
+#lbl{left:36px;top:104px;font:600 13px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:104px;font:600 13px/1 var(--m);letter-spacing:.08em;color:var(--dim);white-space:nowrap;text-align:right}
+#hud b{font-weight:600}#hud .r{color:var(--red)}#hud .g{color:var(--acc)}
+#hook{left:34px;top:132px;width:472px;font-weight:800;font-size:50px;line-height:1.04;letter-spacing:-.025em}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#cap{left:36px;top:136px;width:468px;font:700 33px/1.13 var(--f);letter-spacing:-.018em}
+#cap span{display:inline-block;margin-right:.24em;white-space:nowrap}
+#view{left:36px;width:468px;height:418px;overflow:hidden}
+#cam{left:0;top:0;width:468px;transform-origin:0 0}
+#fbar{left:0;top:0;width:468px;height:54px;border:1.5px solid #d6d4cb;border-radius:10px;background:#fff;display:flex;align-items:center;overflow:hidden}
+#nbox{flex:none;width:52px;height:100%;border-right:1.5px solid var(--line);font:600 17px/51px var(--m);text-align:center}
+#fxl{flex:none;width:30px;font:italic 600 17px/51px var(--f);color:var(--dim);text-align:center}
+#fx{flex:1;font:500 18px/51px var(--m);white-space:nowrap;overflow:hidden;letter-spacing:-.01em}
+#fx .k{color:var(--ink);font-weight:600}#fx .g{color:var(--acc);font-weight:600}#fx .r{color:var(--red);font-weight:600}#fx .d{color:var(--dim)}
+#fx .hl{background:var(--redbg);border-radius:4px;box-shadow:0 0 0 2px var(--redbg)}
+#fx .hg{background:var(--accbg);border-radius:4px;box-shadow:0 0 0 2px var(--accbg)}
+.caret{display:inline-block;width:2px;height:22px;background:var(--ink);vertical-align:-5px;margin-left:1px}
+#sheet{left:0;top:66px;width:468px;border:1.5px solid #d6d4cb;border-radius:10px;background:#fff;overflow:hidden}
+#sheet .c{position:absolute;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0 10px;font:500 20px/39px var(--f);white-space:nowrap;overflow:hidden}
+#sheet .h{background:var(--head);font:600 14px/29px var(--m);color:var(--dim);text-align:center;padding:0}
+#sheet .h.on{background:#e4e2da;color:var(--ink)}
+#sheet .b{font-weight:700}
+#sheet .n{text-align:right;font-variant-numeric:tabular-nums}
+#sheet .bad{color:var(--red);background:var(--redbg)}
+#sheet .bad::after{content:'';position:absolute;right:0;top:0;border-style:solid;border-width:0 9px 9px 0;border-color:transparent var(--red) transparent transparent}
+#sheet .ok{color:var(--acc);background:var(--accbg)}
+#sheet .new{background:#f5f8f5}
+#sheet .skip{color:#b4b2aa;text-decoration:line-through;text-decoration-thickness:2px}
+#sheet .c > i{display:inline-block;font-style:normal}
+#ovl{left:0;top:0;width:468px;height:400px;pointer-events:none}
+.sel{position:absolute;border:2.5px solid var(--acc);border-radius:2px}
+.sel i{position:absolute;right:-7px;bottom:-7px;width:11px;height:11px;background:var(--acc);border:1.5px solid #fff}
+.rng{position:absolute;border:2px dashed var(--ink);border-radius:3px}
+.rng.g{border-color:var(--acc);background:rgba(19,138,75,.07)}
+.rng.r{border-color:var(--red);background:rgba(212,56,44,.06)}
+.badge{position:absolute;height:24px;min-width:24px;padding:0 7px;border-radius:12px;font:600 14px/24px var(--m);text-align:center;color:#fff;background:var(--ink);white-space:nowrap}
+.badge.g{background:var(--acc)}.badge.r{background:var(--red)}
+.menu{position:absolute;width:214px;padding:5px;border-radius:10px;background:#fff;box-shadow:0 10px 30px rgba(22,24,29,.18),0 0 0 1px #dedcd4}
+.menu div{padding:0 12px;height:36px;border-radius:7px;font:600 17px/36px var(--f);color:var(--ink);white-space:nowrap}
+.menu .on{background:var(--accbg);color:var(--acc)}
+#ptr{left:0;top:0;width:24px;height:30px}
+#ring{width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:2px solid var(--acc)}
+#note{left:36px;width:468px;height:42px;display:flex;gap:10px;align-items:center}
+#note span{height:40px;padding:0 15px;border-radius:20px;font:600 15px/40px var(--m);letter-spacing:.02em;white-space:nowrap;background:#fff;box-shadow:0 0 0 1.5px #d6d4cb}
+#note .g{background:var(--accbg);color:var(--acc);box-shadow:0 0 0 1.5px #bfe0cb}
+#note .r{background:var(--redbg);color:var(--red);box-shadow:0 0 0 1.5px #f2c6c1}
+#ms{visibility:hidden;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="bg" class="a"></div>
+<div id="lbl" class="a">FIXED CELL · Nº 02 · SUMS</div>
+<div id="hud" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>SUM</span></span><span class="ln"><span class="x">skip</span> <span>some</span> <span>of</span></span><span class="ln"><span>your</span> <span>numbers?</span></span></div>
+<div id="cap" class="a"></div>
+<div id="view" class="a">
+  <div id="cam" class="a">
+    <div id="fbar" class="a"><div id="nbox"></div><div id="fxl">fx</div><div id="fx"></div></div>
+    <div id="sheet" class="a"><div id="cells"></div><div id="ovl" class="a"></div></div>
+  </div>
+</div>
+<div id="note" class="a"></div>
+<div id="ring" class="a"></div>
+<svg id="ptr" class="a" viewBox="0 0 24 30" aria-hidden="true"><path d="M2 2 L2 24 L8 18.5 L12.2 27.5 L16 25.8 L11.9 17 L20 17 Z" fill="#16181d" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+<span id="ms" class="a"></span>
+<script>
+(function(){
+  // ======== ENGINE (same in every Fixed Cell scene) ========
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  var WORDS = [], A = {}, PH = [], LEAD = .15;
+  function fakeWords(){ var t = .2; WORDS = []; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?!]$/.test(w) ? .6 : /[,:;]$/.test(w) ? .25 : .06); }); }
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  // captions: one sentence at a time (long ones split at a comma), the title's words are shown as the title instead
+  function phrases(){ PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 8) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } }); }
+  function captions(t, ex){ var ph = null, html = '';
+    for (var i = 0; i < PH.length; i++) if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph = PH[i];
+    if (ph && ph[0] >= HOOK_N) for (var q = 0; q < ph.length; q++) { var j = ph[q], w = WORDS[j], d = w.d, nx = WORDS[ph[q + 1]];
+      if (JOIN[norm(d)] && nx && norm(nx.d) === JOIN[norm(d)][0]) { d = JOIN[norm(d)][1] + nx.d.replace(/^[a-z]+/i, ''); q++; }   // "V lookup" spoken, VLOOKUP shown
+      else if (DISP[norm(d)]) d = d.replace(/^[a-z]+/i, DISP[norm(d)]);   // "sum" spoken (not spelled out), SUM shown
+      var on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2)), col = GREEN.test(d) ? 'var(--acc)' : RED.test(d) ? 'var(--red)' : 'var(--ink)';
+      html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + ((1 - k) * 12).toFixed(1) + 'px);color:' + col + '">' + d.replace(/</g, '') + '</span>'; }
+    $('cap').innerHTML = html; }
+  // the title: in full from frame 0 (pale), each word inks in as it is spoken; leaves when the next line starts
+  function title(t, leave){ var gone = io(P(t, leave, leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){ var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .22));
+      var red = sp.className === 'x', c0 = [200, 198, 190], c1 = red ? [212, 56, 44] : [22, 24, 29];
+      sp.style.color = 'rgb(' + c0.map(function(v, n){ return Math.round(mix(v, c1[n], k)); }).join(',') + ')';
+      sp.style.opacity = 1 - gone; sp.style.transform = 'translateY(' + (-(1 - k) * 0 - gone * 60 - Math.sin(k * Math.PI) * 6).toFixed(1) + 'px)'; }); }
+  // the sheet: cols [{k, w, head}] (w animates an insert), rows of { colKey: cell } where cell = text or { v, c (classes), n (number) }
+  var G = 34, HH = 30, RH = 40, SW = 468, VH = 418, STH = 66 + 30 + 8 * 40, GEO = {};
+  function sheet(cols, rows, nRows, hi){ var h = '', x = G, L = 'ABCDEFGH', li = 0;
+    GEO = { x: {}, w: {} };
+    h += '<div class="c h" style="left:0;top:0;width:' + G + 'px;height:' + HH + 'px"></div>';
+    cols.forEach(function(c, i){ GEO.x[c.k] = x; GEO.w[c.k] = c.w; if (c.w > .5)
+      h += '<div class="c h' + (hi && hi[c.k] ? ' on' : '') + '" style="left:' + x.toFixed(1) + 'px;top:0;width:' + c.w.toFixed(1) + 'px;height:' + HH + 'px">' + (c.w > 14 ? L[li] : '') + '</div>'; if (c.w > .5) li++; x += c.w; });
+    var fw = SW - x; if (fw > 1) h += '<div class="c h" style="left:' + x.toFixed(1) + 'px;top:0;width:' + fw + 'px;height:' + HH + 'px">' + L[li] + '</div>';
+    for (var r = 1; r <= nRows; r++) { var y = HH + (r - 1) * RH, row = rows[r] || {};
+      h += '<div class="c h" style="left:0;top:' + y + 'px;width:' + G + 'px;height:' + RH + 'px;line-height:39px">' + r + '</div>';
+      cols.forEach(function(c){ if (c.w <= .5) return; var v = row[c.k], o = v && typeof v === 'object' ? v : { v: v };
+        h += '<div class="c' + (o.c ? ' ' + o.c : '') + (o.n ? ' n' : '') + (c.cls ? ' ' + c.cls : '') + '" style="left:' + GEO.x[c.k].toFixed(1) + 'px;top:' + y + 'px;width:' + c.w.toFixed(1) + 'px;height:' + RH + 'px">' + (o.v == null || c.w < 20 ? '' : o.v) + '</div>'; });
+      if (fw > 1) h += '<div class="c" style="left:' + x.toFixed(1) + 'px;top:' + y + 'px;width:' + fw + 'px;height:' + RH + 'px"></div>'; }
+    $('cells').innerHTML = h; $('sheet').style.height = (HH + nRows * RH + 1.5) + 'px'; }
+  function box(k0, r0, k1, r1){ var x0 = GEO.x[k0], x1 = GEO.x[k1 || k0] + GEO.w[k1 || k0]; return { x: x0, y: HH + (r0 - 1) * RH, w: x1 - x0, h: ((r1 || r0) - r0 + 1) * RH }; }
+  function rect(b, cls, a, inner){ return '<div class="' + cls + '" style="left:' + (b.x - 1).toFixed(1) + 'px;top:' + (b.y - 1) + 'px;width:' + (b.w + 1).toFixed(1) + 'px;height:' + (b.h + 1) + 'px;opacity:' + a.toFixed(2) + '">' + (inner || '') + '</div>'; }
+  // the formula bar: segments [text, class], typed up to n characters, with a blinking caret while editing
+  function fx(cell, segs, n, caret, t, at){ var o = '', k = 0, c = caret ? '<i class="caret"' + (Math.floor(t * 2.2) % 2 ? ' style="opacity:0"' : '') + '></i>' : '';
+    for (var i = 0; i < segs.length && k < n; i++) { var s = segs[i][0].slice(0, n - k); k += s.length; o += segs[i][1] ? '<span class="' + segs[i][1] + '">' + s + '</span>' : s; if (i === at) o += c; }
+    $('nbox').textContent = cell; $('fx').innerHTML = o + (at === undefined ? c : ''); }   // at: the caret sits after that segment (typing inside a formula)
+  var flen = function(segs){ return segs.reduce(function(a, s){ return a + s[0].length; }, 0); };
+  // the camera: keyframes [t, scale, focusX, focusY] in sheet-stage coordinates; the focus point sits at the view's centre line
+  function cam(t, K){ var i = 0; while (i < K.length - 1 && t >= K[i + 1][0]) i++;
+    var b = K[i], a = K[Math.max(0, i - 1)], k = io(P(t, b[0], b[0] + .55));   // each keyframe is reached 0.55 s after its time
+    var s = mix(a[1], b[1], k), fx_ = mix(a[2], b[2], k), fy = mix(a[3], b[3], k);
+    var tx = Math.min(0, Math.max(SW - SW * s, SW / 2 - fx_ * s)), ty = Math.max(VH - STH * s, Math.min(0, 200 - fy * s));
+    return { s: s, tx: tx, ty: ty }; }
+  function place(id, x, y, a){ var e = $(id); e.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)'; e.style.opacity = a; }
+  function readout(html){ $('hud').innerHTML = html; }
+
+  // ======== THIS REEL ========
+  var TEXT = "Why does sum skip some of your numbers? Look at the edges: these ones hug the left. They're stored as text, and sum ignores text. Wrap the range: sum product, two minus signs. The double minus turns text into numbers. Now every row counts.";
+  var DUR = 17, HOOK_N = 8, JOIN = { sum: ['product', 'SUMPRODUCT'] }, DISP = { sum: 'SUM' };
+  var GREEN = /^(SUMPRODUCT|two|minus|double|numbers|every|counts)/i, RED = /^(left|text|ignores)/i;
+  var ROWS = [['Rent', 950, 0], ['Power', 120, 1], ['Phone', 45, 0], ['Food', 310, 1], ['Gym', 30, 0]];   // item, amount, stored as text (example data)
+  var SUMF = [['=SUM(', 'k'], ['B2:B6', ''], [')', 'k']], SPF = [['=SUMPRODUCT(', 'g'], ['--', 'hg'], ['B2:B6', ''], [')', 'g']];
+  var fmt = function(n){ return String(n).replace(/\B(?=(\d{3})+$)/g, ','); }, ms = $('ms'), TW = {};
+  function tw(s){ if (TW[s] === undefined) { ms.style.font = "500 20px 'Inter Tight'"; ms.textContent = s; TW[s] = ms.getBoundingClientRect().width; } return TW[s]; }
+  function anchors(){
+    align(); phrases();
+    A = { look: at('look'), edges: at('edges'), these: at('these'), left: at('left'), stored: at('stored'), text: at('text'), ignores: at('ignores'), wrap: at('wrap'),
+      sp: at('sum', 3), two: at('two'), minus: at('minus'), double: at('double'), turns: at('turns'), numbers: at('numbers'), now: at('now'), every: at('every'), counts: at('counts') };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.look - .3, A.hookIn + .3);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    A.type0 = A.wrap + .1; A.type1 = Math.min(A.minus + .3, A.double - .2);
+    cues();
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = 0;
+    title(t, A.leave);
+    var after = io(P(t, A.leave, A.leave + .5));
+    $('view').style.top = mix(318, 252, after) + 'px';
+    // ---- state: text numbers sit left and are skipped → the double minus turns them into numbers (they slide right) → every row counts ----
+    var fixed = t >= A.now - .1, edge = win(t, A.these - .05, A.turns, .15), skip = t >= A.ignores - .05 && t < A.now - .1;
+    var cols = [{ k: 'a', w: 150 }, { k: 'b', w: 150 }];
+    var rows = { 1: { a: { v: 'Item', c: 'b' }, b: { v: 'Amount', c: 'b n' } } };
+    ROWS.forEach(function(r, i){ var v = String(r[1]), c = '';
+      if (r[2]) { var k = out(P(t, A.turns + i * .08, A.turns + i * .08 + .45)), dx = (150 - 20 - tw(v)) * k;
+        if (t < A.turns + .3) c = edge > .5 ? 'bad' : ''; if (skip && k < .5) c += ' skip';
+        rows[i + 2] = { a: r[0], b: { v: '<i style="transform:translateX(' + dx.toFixed(1) + 'px)">' + v + '</i>', c: c + (fixed && win(t, A.every + i * .12, A.every + i * .12 + .5, .1) > .5 ? ' ok' : '') } }; }
+      else rows[i + 2] = { a: r[0], b: { v: v, n: 1, c: fixed && win(t, A.every + i * .12, A.every + i * .12 + .5, .1) > .5 ? 'ok' : '' } }; });
+    var tot = !fixed ? 1025 : Math.round(1025 + 430 * out(P(t, A.now - .1, A.now + .6)));
+    rows[8] = { a: { v: 'Total', c: 'b' }, b: { v: fmt(tot), n: 1, c: 'b' + (!fixed ? ' bad' : t > A.now + .5 ? ' ok' : '') } };
+    sheet(cols, rows, 8, t >= A.look - .1 && t < A.now ? { b: 1 } : {});
+    // ---- overlays: left-edge marks, TEXT / NUMBER tags in column C, the selected total ----
+    var o = '';
+    if (edge > 0) ROWS.forEach(function(r, i){ var b = box('b', i + 2), k = out(P(t, A.these + i * .07, A.these + i * .07 + .25)) * edge;
+      o += '<div style="position:absolute;left:' + (r[2] ? b.x + 2 : b.x + b.w - 6) + 'px;top:' + (b.y + 6) + 'px;width:4px;height:' + (RH - 12) + 'px;border-radius:2px;background:' + (r[2] ? 'var(--red)' : '#c9c7bf') + ';opacity:' + k.toFixed(2) + '"></div>'; });
+    var tA = win(t, A.stored - .05, A.now + .8, .15);
+    if (tA > 0) ROWS.forEach(function(r, i){ var b = box('b', i + 2), conv = r[2] && t >= A.turns + i * .08 + .3, k = out(P(t, A.stored + i * .06, A.stored + i * .06 + .25));
+      var cls = r[2] && !conv ? 'r' : conv ? 'g' : '', lab = r[2] && !conv ? 'TEXT' : 'NUMBER';
+      o += '<div class="badge ' + cls + '" style="left:' + (b.x + b.w + 12) + 'px;top:' + (b.y + 8 - (1 - k) * 6).toFixed(1) + 'px;opacity:' + (k * tA).toFixed(2) + '">' + lab + '</div>'; });
+    o += rect(box('b', 8), 'sel', 1, '<i></i>');
+    if (t >= A.wrap - .1) o += rect(box('b', 2, 'b', 6), 'rng g', win(t, A.wrap - .1, A.counts + .6, .15));
+    $('ovl').innerHTML = o;
+    // ---- the formula bar ----
+    if (t < A.type0) fx('B8', SUMF, 99, false, t);
+    else { var del = P(t, A.type0, A.type0 + .25), nT = Math.floor(flen(SPF) * P(t, A.type0 + .25, A.type1));
+      if (del < 1) fx('B8', SUMF, Math.floor(flen(SUMF) * (1 - del)), true, t); else fx('B8', SPF, nT, t < A.type1 + .5, t); }
+    // ---- the camera: the total when it is wrong, the column while it is explained, the total again when it is right ----
+    var K = [[0, 1, 234, 200], [A.ignores - .2, 1.12, 234, 396], [A.wrap - .3, 1, 234, 200], [A.now - .25, 1.12, 234, 396], [A.counts + .2, 1, 234, 200]];
+    var C = cam(t, K); $('cam').style.transform = 'translate(' + C.tx.toFixed(1) + 'px,' + C.ty.toFixed(1) + 'px) scale(' + C.s.toFixed(4) + ')';
+    // ---- the pointer: rests by the total, points along the left edges, clicks into the formula bar, rests by the total ----
+    var vt = parseFloat($('view').style.top), sx = function(x){ return 36 + C.tx + x * C.s; }, sy = function(y){ return vt + C.ty + (66 + y) * C.s; };
+    var path = [[0, 300, HH + 7.6 * RH], [A.these - .2, 300, HH + 7.6 * RH], [A.these, 205, HH + 1.6 * RH], [A.left - .1, 205, HH + 3.6 * RH], [A.wrap - .3, 300, -38],
+      [A.turns - .1, 300, -38], [A.turns + .1, 380, HH + 2.6 * RH], [A.now - .2, 300, HH + 7.7 * RH], [DUR, 300, HH + 7.7 * RH]];
+    var pi = 0; while (pi < path.length - 1 && t >= path[pi + 1][0]) pi++;
+    var p0 = path[pi], p1 = path[Math.min(pi + 1, path.length - 1)], pk = p1 === p0 ? 0 : io(P(t, p0[0], Math.min(p1[0], p0[0] + .5)));
+    var px = mix(p0[1], p1[1], pk) + Math.sin(t * 1.7) * 2, py = mix(p0[2], p1[2], pk) + Math.cos(t * 1.3) * 2;
+    place('ptr', sx(px) - 2, sy(py) - 2, 1);
+    var rr = 0, rk2 = 0; [A.wrap - .05].forEach(function(c){ var k = P(t, c, c + .4); if (k > 0 && k < 1) { rr = 1 - k; rk2 = k; } });
+    place('ring', sx(px), sy(py), rr * .9); $('ring').style.transform += ' scale(' + (.4 + rk2).toFixed(2) + ')';
+    // ---- notes under the sheet ----
+    var N = '';
+    if (t >= A.leave + .2 && t < A.stored - .1) N = '<span class="r">LEFT = TEXT</span><span>RIGHT = NUMBER</span>';
+    else if (t >= A.stored - .1 && t < A.wrap - .1) N = '<span>SUM COUNTS 950 + 45 + 30</span><span class="r">= 1,025</span>';
+    else if (t >= A.wrap - .1 && t < A.now - .1) N = '<span class="g">-- TEXT → NUMBER</span><span>EXCEL · SHEETS</span>';
+    else if (t >= A.now - .1) N = '<span class="g">1,455 ✓</span><span>EVERY ROW COUNTS</span>';
+    var nt = $('note'); nt.innerHTML = N; nt.style.top = (252 + VH + 10) + 'px'; nt.style.opacity = P(t, A.leave + .35, A.leave + .55);
+    readout(!fixed ? 'SHOULD BE · <b>1,455</b>' : 'TOTAL · <b class="g">' + fmt(tot) + '</b>');
+    captions(t, ex);
+    $('bg').style.transform = 'translate(' + (-(t * 3) % 90).toFixed(1) + 'px,' + (-(t * 1.5) % 30).toFixed(1) + 'px)';
+  }
+  // sound: taps on the left edges, a thud when SUM skips, keys while the fix is typed, ticks as the numbers slide over, a shimmer when it adds up
+  function cues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .45, p: -.4 }, { t: A.leave, k: 'swish', d: .45, g: .5 }];
+    [1, 3].forEach(function(i, n){ Q.push({ t: A.these + i * .07, k: 'tap', g: .35, p: 2 + n * 2 }); });
+    Q.push({ t: A.ignores, k: 'thud', g: .45 }, { t: A.wrap - .05, k: 'click', g: .4, p: 3 });
+    for (var c = 0, t0 = A.type0 + .25; t0 + c * .09 < A.type1; c++) Q.push({ t: t0 + c * .09, k: 'tick', g: .1, p: (c * 5) % 7 });
+    [1, 3].forEach(function(i, n){ Q.push({ t: A.turns + i * .08 + .2, k: 'swish', d: .3, g: .3, p: .2 + n * .2 }); });
+    Q.push({ t: A.now, k: 'shimmer', g: .35 });
+    for (var r = 0; r < 5; r++) Q.push({ t: A.every + r * .12, k: 'tap', g: .3, p: 3 + r });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .26, chords: [[48, 60, 64, 67, 71], [45, 57, 60, 64, 69], [41, 57, 60, 65, 69], [43, 55, 62, 67, 71]] } };
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  window.seek = seek; window.DURATION = DUR;
+  fakeWords();
+  document.fonts.load("800 50px 'Inter Tight'").then(function(){ return document.fonts.load("500 15px 'IBM Plex Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

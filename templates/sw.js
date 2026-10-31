@@ -1,7 +1,7 @@
 // webin20sec app service worker (home = Showreels, /archive/ = the old templates).
 // Network-first: HTML + /design-log.json (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v10';
+const VERSION = 'v11';
 const CACHE = `aquarii-${VERSION}`;
 const SHELL = ['/', '/archive/', '/404.html', '/manifest.webmanifest', '/design-log.json', '/showreels/captions.json', '/icons/icon.svg'];
 

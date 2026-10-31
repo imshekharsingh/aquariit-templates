@@ -6,6 +6,7 @@ No Aquarii name on either account (owner, 21 Oct): both grow as an individual cr
 |---|---|---|---|---|
 | @webin20sec | @aquarii.techstudio | premium web motion built in code, in 20 s (plan: design/webin20sec.md) | webin20sec-logo.png: a browser window, page reads 20 SEC, scroll bar a third full (20 of 60 s) | blue #5b8cff → pink #ff4fd8 on ink #0b0b18 |
 | @techin20sec | @aquarii.techminutes | one current tech story in 20 s | techin20sec-logo.png: a stopwatch dial, lime arc a third of the way round (20 of 60 s), 20 SEC | lime #e9ff6a → #7dff4f on ink #05060b |
+| Fixed Cell (@fixedcell) | new, 31 Oct 2026 | one spreadsheet fix a day, before → after (plan: design/fixedcell.md) | fixedcell-logo.png: one selected cell reading $A$1, green fill-handle square at its corner (IBM Plex Mono, OFL); also in templates/channels/ for the app | green #138a4b on paper #fbfaf6, ink #16181d |
 
 Final logos (owner chose @techin20sec option A on 21 Oct and @webin20sec option B on 22 Oct). Per account:
 - `<account>-logo.svg`: the source, drawn in code (Unbounded + Space Grotesk from Google Fonts, OFL); edit this one.

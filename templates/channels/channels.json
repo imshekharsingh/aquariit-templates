@@ -1,0 +1,17 @@
+{
+ "web": {
+  "name": "@webin20sec",
+  "username": "@webin20sec",
+  "bio": "One Web fix a day, in 20 seconds. Save it, ship it.",
+  "slot": "12:30–13:30 IST",
+  "logo": "/channels/webin20sec-logo.png"
+ },
+ "fc": {
+  "name": "Fixed Cell",
+  "username": "@fixedcell",
+  "fallbacks": ["@fixedcell.daily", "@thefixedcell"],
+  "bio": "Broken spreadsheet? One fix a day, shown before → after. Save it for when yours breaks.",
+  "slot": "18:00–20:00 IST",
+  "logo": "/channels/fixedcell-logo.png"
+ }
+}

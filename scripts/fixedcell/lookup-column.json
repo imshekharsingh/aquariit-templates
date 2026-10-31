@@ -1,0 +1,55 @@
+{
+ "name": "showreel-fc01-lookup-column",
+ "seek": "scripts/fixedcell/lookup-column.html",
+ "channel": "fc",
+ "dur": 18,
+ "fps": 60,
+ "blur": 4,
+ "shutter": 0.45,
+ "grain": 3,
+ "cover": 3.4,
+ "voice": {
+  "text": "Why does your lookup break when you add a column? V lookup counts columns: price is column two. Insert a column, and two becomes Color. Your total drops to zero. Use X lookup. Point at the price column itself. Now it follows the column wherever it moves.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": [0.6, 0.55, 0.6, 0.55, 0.45, 0.6]
+ },
+ "caption": "Why does your lookup break when you add a column? 🧩\n\nVLOOKUP counts columns. Its third argument is a number (\"price is column 2\"), so when someone inserts a column inside the table, column 2 is suddenly Color and every price turns into a word. SUM skips text, so your total quietly drops to 0.\nFix: =XLOOKUP(A6, $A$2:$A$4, $C$2:$C$4). It points at the Price column itself, so the range moves with the column, wherever it goes.\nXLOOKUP works in Google Sheets and Excel 2021 / Microsoft 365. On older Excel, INDEX + MATCH does the same job.\nSave it for the next time your lookup goes weird.",
+ "keywords": [
+  "vlookup wrong value after inserting column",
+  "xlookup vs vlookup",
+  "vlookup column index",
+  "spreadsheet formula fix",
+  "excel lookup tips",
+  "google sheets lookup"
+ ],
+ "hashtags": [
+  "#xlookup",
+  "#vlookup",
+  "#exceltips",
+  "#googlesheetstips",
+  "#spreadsheettips"
+ ],
+ "sources": [
+  {
+   "url": "https://support.microsoft.com/en-us/office/vlookup-function-0bbc8083-26fe-4963-8ab8-93a18ad188a1",
+   "note": "VLOOKUP: col_index_num is the column number in table_array (first column = 1) that contains the return value"
+  },
+  {
+   "url": "https://support.microsoft.com/en-us/office/xlookup-function-b7fd680e-6d10-43e6-84f9-88eae8bf5929",
+   "note": "XLOOKUP(lookup_value, lookup_array, return_array): exact match by default; Microsoft 365, Excel 2021 and later"
+  },
+  {
+   "url": "https://support.google.com/docs/answer/12405947",
+   "note": "Google Sheets XLOOKUP(search_key, lookup_range, result_range)"
+  },
+  {
+   "url": "https://support.google.com/docs/answer/3093318",
+   "note": "Google Sheets VLOOKUP: index is the column number in the range, first column = 1"
+  },
+  {
+   "url": "https://support.microsoft.com/en-us/office/sum-function-043e1c7d-7726-4e80-8f32-07b23e057f89",
+   "note": "SUM: text in a referenced range is ignored"
+  }
+ ]
+}
