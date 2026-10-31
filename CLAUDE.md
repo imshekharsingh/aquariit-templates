@@ -51,14 +51,13 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   open with only their label for about 0.4 s (content must arrive with the label).
 - Primary sources apple.com, developer.apple.com, blog.google, developer.chrome.com and webkit.org are allowed in the environment: read them directly.
 
-## Fixed Cell (owner, 31 Oct 2026)
-- A third Instagram channel: **Fixed Cell** (@fixedcell), one spreadsheet fix a day, before → after. Plan, look, craft bar, post-text rules
-  and the topic backlog: **design/fixedcell.md** (mark topics ✅ as they ship). Posted by a team member of the owner, 18:00-20:00 IST,
-  from the app's Fixed Cell tab (profile card with Copy buttons and the logo; data in templates/channels/channels.json).
-- Scenes `scripts/fixedcell/<slug>.html` + `.json` (name `showreel-fcNN-<slug>`, `"channel": "fc"`), rendered by the Showreel workflow.
-  Before the one render: preflight "fits", `node scripts/fixedcell/qa.mjs <config>` clean, one stills sheet, and the cited function pages
-  read (Actions → Sources prints them; support.microsoft.com and support.google.com are blocked in the session).
-- Weekly batch: a Sunday session makes, checks, renders and schedules (postOn in captions.json) the next 7 reels.
+## Channel 3 pilots (owner, 31 Oct 2026)
+- Fixed Cell (spreadsheets) is retired: its reels are hidden, its plan, logo and scenes are in attic/. The third Instagram channel is
+  undecided; the app's "Channel 3" tab shows a placeholder profile and three pilot reels, one per concept, for the owner to pick from.
+- Pilots are language-free (no voice, short simple English on screen, sound from window.CUES only), invented characters and nations only.
+  Scenes `scripts/channel3/<slug>.html` + `.json` (name `showreel-c3-<slug>`, `"channel": "c3"` in captions.json, a "concept" and "about"
+  line for the app), rendered by the Showreel workflow. Physics is precomputed on load at a fixed step with seeded randomness; seek reads it.
+  Before the one render: `node scripts/channel3/qa.mjs <config>` clean (text inside the frame, outcome as scripted) and one stills sheet.
 
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN and INSTAGRAM_TOKEN_2 (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.

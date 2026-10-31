@@ -1,0 +1,27 @@
+{
+ "name": "showreel-c3-maze-escape",
+ "seek": "scripts/channel3/maze-escape.html",
+ "dur": 20.6,
+ "fps": 60,
+ "blur": 6,
+ "shutter": 0.45,
+ "grain": 4,
+ "vignette": true,
+ "cover": 0.6,
+ "caption": "Pick one before it ends 👇 Red, yellow, blue or green?\n\nFour balls, one way out, the maze keeps turning. Comment your colour before the countdown hits zero, no rewinding.",
+ "keywords": [
+  "guess which ball escapes",
+  "rotating maze puzzle",
+  "marble race",
+  "physics simulation",
+  "satisfying ball escape",
+  "guess the winner"
+ ],
+ "hashtags": [
+  "#marblerace",
+  "#physicssimulation",
+  "#ballescape",
+  "#guessthewinner",
+  "#satisfyingvideos"
+ ]
+}

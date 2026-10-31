@@ -7,7 +7,7 @@ on:
     inputs:
       configs:
         description: Reel configs (space-separated paths or globs)
-        default: scripts/fixedcell/*.json
+        default: scripts/explainer/*.json
 
 permissions:
   contents: read
