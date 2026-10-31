@@ -89,9 +89,12 @@
   .alert b{display:block;color:#fff;font-size:.95rem;margin-bottom:4px}
   .alert p{margin:6px 0 0}
   .alert small{display:block;margin-top:8px;color:#ffb3b3}
-  /* GitHub Actions minutes this month (owner, 27 Oct 2026), from the nightly "Actions usage" workflow */
+  /* GitHub Actions minutes this month (owner, 27 Oct 2026), from the nightly "Actions usage" workflow; at the top above the tabs, the bar always visible (owner, 31 Oct 2026: it is the same for every channel) */
   .use{margin:4px 0 16px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:16px;font-size:.8rem;color:var(--mute)}
-  .use summary{display:flex;justify-content:space-between;gap:10px;cursor:pointer;list-style:none;color:var(--ink);font-weight:700}
+  .use summary{display:block;cursor:pointer;list-style:none;color:var(--ink);font-weight:700}
+  .use summary .r{display:flex;justify-content:space-between;gap:10px}
+  .use .bar{display:block;margin-bottom:0}
+  .use[open] .bar{margin-bottom:6px}
   .use summary::-webkit-details-marker{display:none}
   .bar{height:8px;margin:9px 0 6px;border-radius:99px;background:#1d2133;overflow:hidden}
   .bar i{display:block;height:100%;border-radius:99px;background:var(--ok)}
@@ -112,14 +115,14 @@
 <body>
 <main class="wrap">
   <div class="top"><span class="brand">Studio</span><span class="tr"><button class="pill" id="refresh" type="button">Refresh</button></span></div>
+  <div class="alert" id="alert" role="alert" hidden></div>
+  <details class="use" id="use" hidden><summary><span class="r"><span>GitHub minutes</span><span id="use-n"></span></span><span class="bar" id="use-bar"><i></i></span></summary><div id="use-note"></div><ul id="use-list"></ul></details>
   <div class="tabs" role="tablist" aria-label="Channel">
     <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
     <button class="tab tech" role="tab" type="button" data-ch="tech" aria-selected="false"><b>@techin20sec</b><span>Tech explained</span></button>
     <button class="tab c3" role="tab" type="button" data-ch="c3" aria-selected="false"><b>@itturns.out</b><span>True stories</span></button>
   </div>
-  <div class="alert" id="alert" role="alert" hidden></div>
   <details class="prof" id="prof" hidden><summary>Profile</summary></details>
-  <details class="use" id="use" hidden><summary><span>GitHub minutes</span><span id="use-n"></span></summary><div class="bar" id="use-bar"><i></i></div><div id="use-note"></div><ul id="use-list"></ul></details>
   <h1 id="title">Showreels</h1>
   <p class="lede" id="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, paste its sources as the first comment when it has them, then mark it uploaded.</p>
   <div id="list"><p class="empty">Loading…</p></div>
