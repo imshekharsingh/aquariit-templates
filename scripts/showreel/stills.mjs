@@ -16,7 +16,7 @@ const words = (cfg.voice?.text || '').split(/\s+/).filter(Boolean).map((w, i, al
   t += d + (/[.?!]$/.test(w) ? .55 : /,$/.test(w) ? .3 : .06); return o;
 });
 mkdirSync(out, { recursive: true });
-const b = await chromium.launch(), p = await b.newPage({ viewport: { width: 540, height: 960 } }), errors = [];
+const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] }), p = await b.newPage({ viewport: { width: 540, height: 960 } }), errors = [];
 p.on('pageerror', (e) => errors.push(e.message));
 await p.goto('file://' + resolve(scene)); await p.waitForSelector('html[data-ready]');
 const cover = await p.evaluate((ws) => { if (ws.length && window.setVoice) window.setVoice({ words: ws }); return window.COVER ?? 0; }, words);

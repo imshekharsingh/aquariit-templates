@@ -1,0 +1,36 @@
+{
+ "name": "showreel-c3-eiffel-3d",
+ "seek": "scripts/channel3/eiffel-3d.html",
+ "dur": 3,
+ "fps": 60,
+ "blur": 2,
+ "shutter": 0.45,
+ "grain": 4,
+ "cover": 0,
+ "caption": "Test shot for the 3D look (not for posting): the Eiffel Tower at golden hour.\n\nWhich famous landmark should we explain next? Tell us in the comments 👇",
+ "keywords": [
+  "Eiffel Tower history",
+  "why the Eiffel Tower was not demolished",
+  "Eiffel Tower radio antenna",
+  "Gustave Eiffel",
+  "1889 World's Fair Paris",
+  "history explained"
+ ],
+ "hashtags": [
+  "#eiffeltowerhistory",
+  "#parishistory",
+  "#gustaveeiffel",
+  "#historyexplained",
+  "#historyfacts"
+ ],
+ "sources": [
+  {
+   "title": "The Eiffel Tower in figures (Eiffel Tower official site)",
+   "url": "https://www.toureiffel.paris/en/the-monument/key-figures"
+  },
+  {
+   "title": "Why was the Eiffel Tower kept? (Eiffel Tower official site)",
+   "url": "https://www.toureiffel.paris/en/news/130-years/how-did-radio-save-tower"
+  }
+ ]
+}
