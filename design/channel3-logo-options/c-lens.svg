@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <!-- Turns Out, logo option C "The lens": a reading lens that shows the exclamation hidden in an ordinary line (drawn in code, no fonts) -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2733"/><stop offset="1" stop-color="#1c1a22"/></linearGradient>
+    <radialGradient id="gl" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#fbf6ea"/><stop offset="1" stop-color="#e6d9bb"/></radialGradient>
+  </defs>
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <path d="M660 660 L820 820" stroke="#8a6a4d" stroke-width="80" stroke-linecap="round"/>
+  <circle cx="480" cy="480" r="250" fill="url(#gl)"/>
+  <circle cx="480" cy="480" r="250" fill="none" stroke="#c8452f" stroke-width="44"/>
+  <path d="M480 360 V520" stroke="#23202b" stroke-width="64" stroke-linecap="round"/>
+  <circle cx="480" cy="610" r="38" fill="#23202b"/>
+</svg>
