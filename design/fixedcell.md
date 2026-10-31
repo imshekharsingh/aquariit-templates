@@ -67,6 +67,12 @@
 - Hashtags: 5 niche ones chosen for reach, most specific first: the function (#xlookup, #vlookup, #sumproduct), then #exceltips,
   #googlesheetstips, #excelformulas, #spreadsheettips, or a use (#budgetspreadsheet). Never broad tags (#excel alone, #tech, #viral).
 
+## Lessons from the first renders (31 Oct: fc01-fc03)
+- Pacing: the voice check read 2.73-2.92 words a second against its 2.7 limit (43-47 words in 14.7-17 s), and every hook is flagged
+  "fast". Next scripts: at most 40 words for a 16-17 s reel, and cut a word from the hook rather than speed anything up.
+- The recogniser hears "sum" as "some" (same sound): not a defect; the captions show SUM.
+- The cover frame's pointer sits on the error cell (fc02, fc03): park the pointer beside the error until the title is complete.
+
 ## Weekly batch
 A Sunday session makes the next 7 reels from the backlog below (strongest hooks first, never two from the same group in a row), runs
 every check, renders each once and schedules them (postOn) for the coming week. The team member posts daily at 18:00-20:00 IST.
