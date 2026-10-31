@@ -51,7 +51,7 @@
   .tile .chev{font:700 1.6rem/1 system-ui,sans-serif;color:var(--mute)}
   .tile.posted .th{opacity:.55}
   .empty{margin-top:30px;color:var(--mute)}
-  /* one tab per channel (owner, 27 Oct 2026; Channel 3 pilots 31 Oct): its own accent, posting window and queue */
+  /* one tab per channel (owner, 27 Oct 2026; Turns Out from 31 Oct): its own accent, posting window and queue */
   body[data-ch="web"]{--accent:#7c8cff}
   body[data-ch="tech"]{--accent:#3ee08f}
   body[data-ch="c3"]{--accent:#ffb454}
@@ -110,7 +110,7 @@
   <div class="tabs" role="tablist" aria-label="Channel">
     <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
     <button class="tab tech" role="tab" type="button" data-ch="tech" aria-selected="false"><b>@techin20sec</b><span>Tech news</span></button>
-    <button class="tab c3" role="tab" type="button" data-ch="c3" aria-selected="false"><b>Channel 3</b><span>True stories</span></button>
+    <button class="tab c3" role="tab" type="button" data-ch="c3" aria-selected="false"><b>Turns Out</b><span>True stories</span></button>
   </div>
   <details class="prof" id="prof" hidden><summary>Profile</summary></details>
   <details class="use" id="use" hidden><summary><span>GitHub minutes</span><span id="use-n"></span></summary><div class="bar" id="use-bar"><i></i></div><div id="use-note"></div><ul id="use-list"></ul></details>
@@ -151,7 +151,7 @@
   }
   function flash(btn, t){ btn.textContent = t; setTimeout(function(){ if (btn.textContent === t) btn.textContent = 'Save video'; }, 1800); }
   function mb(n){ return (n / 1048576).toFixed(1) + ' MB'; }
-  // a reel's sources (Channel 3, owner 31 Oct 2026: every fact in two sources): listed on the card, and one comment text to paste under the post
+  // a reel's sources (Turns Out, owner 31 Oct 2026: every fact in two sources): listed on the card, and one comment text to paste under the post
   function sources(box, list){ box.textContent = ''; box.hidden = false; box.appendChild(el('small', null, 'Sources'));
     var ol = el('ol'); list.forEach(function(x){ var li = el('li'), a = el('a', null, x.title); a.href = x.url; a.target = '_blank'; a.rel = 'noopener'; li.appendChild(a); ol.appendChild(li); }); box.appendChild(ol);
     var text = 'Sources:\n' + list.map(function(x, i){ return (i + 1) + '. ' + x.title + ': ' + x.url; }).join('\n'), b = el('button', 'btn g', 'Copy as comment'); b.type = 'button';
@@ -163,16 +163,16 @@
   function istToday(){ return new Date(Date.now() + IST).toISOString().slice(0, 10); }
   function nice(d){ return new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }); }
   // each channel has its own reels, posting window and look (owner, 27 Oct 2026). A reel belongs to @techin20sec when its name starts with
-  // showreel-tech- or showreel-t<digit> (the tech reels), to Channel 3 when it starts with showreel-c3- (31 Oct: pilots, the owner picks one
-  // concept), or to the channel captions.json names ("channel": "tech" / "c3" / "web"); everything else is @webin20sec
+  // showreel-tech- or showreel-t<digit> (the tech reels), to Turns Out (internal id c3) when it starts with showreel-c3- (owner, 31 Oct 2026:
+  // the channel's name), or to the channel captions.json names ("channel": "tech" / "c3" / "web"); everything else is @webin20sec
   var CH = { web: { name: '@webin20sec', slot: '12:30–13:30 IST', sub: 'Web fixes' }, tech: { name: '@techin20sec', slot: '15:00–19:00 IST', sub: 'Tech news' },
-    c3: { name: 'Channel 3', slot: 'to be decided', sub: 'True stories' } };
+    c3: { name: 'Turns Out', slot: '21:00–22:00 IST', sub: 'True stories' } };
   function chOf(s, c){ var m = c[s.name] || {}; return CH[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : /^showreel-c3-/.test(s.name) ? 'c3' : 'web'; }
   function label(s){ return s.name.replace(/^showreel-(tech-|c3-)?/, '').replace(/-/g, ' '); }
   var ch = 'web';
   try { var saved = localStorage.getItem('studio-ch'); if (CH[saved]) ch = saved; } catch (e) {}
   if (CH[location.hash.slice(1)]) ch = location.hash.slice(1);
-  function when(d){ if (!d) return ch === 'c3' ? 'Pilot' : 'Not scheduled'; var diff = Math.round((Date.parse(d) - Date.parse(istToday())) / DAY), t = CH[ch].slot;
+  function when(d){ if (!d) return 'Not scheduled'; var diff = Math.round((Date.parse(d) - Date.parse(istToday())) / DAY), t = CH[ch].slot;
     return diff === 0 ? 'Post today · ' + t : diff === 1 ? 'Post tomorrow · ' + t : diff < 0 ? 'Was due ' + nice(d) + ' · post next' : 'Post ' + nice(d) + ' · ' + t; }
   var ticks = {}, trackOk = true;
   function load(){ return fetch('/api/uploaded', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ ticks = j.ids || {}; }).catch(function(){ trackOk = false; }); }
@@ -205,14 +205,14 @@
   fetch('/channels/channels.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }).then(function(j){ PROF = j || {}; profile(); });
   function paint(counts){
     document.body.setAttribute('data-ch', ch); document.getElementById('title').textContent = CH[ch].name; profile();
-    document.getElementById('lede').textContent = ch === 'c3' ? 'The true story behind something everyone knows. Three pilots, one per animation pattern; the channel rotates the patterns. Each lists its sources, ready to paste as a comment.' : LEDE;
+    document.getElementById('lede').textContent = ch === 'c3' ? 'The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, paste its sources as the first comment (Copy as comment), then mark it uploaded.' : LEDE;
     Array.prototype.forEach.call(tabs, function(t){ var k = t.getAttribute('data-ch'), n = counts && counts[k], sp = t.querySelector('span');
       t.setAttribute('aria-selected', k === ch ? 'true' : 'false');
       sp.textContent = CH[k].sub + (n ? ' · ' + n + ' to post' : ''); sp.className = n ? 'due' : ''; });
   }
   function render(){
     var d = DATA.d, c = DATA.c, all = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }), counts = { web: 0, tech: 0, c3: 0 };
-    all.forEach(function(s){ var k = chOf(s, c); if (!ticks[s.name] && k !== 'c3') counts[k]++; });   // pilots are not a posting queue
+    all.forEach(function(s){ var k = chOf(s, c); if (!ticks[s.name]) counts[k]++; });
     paint(counts);
     var items = all.filter(function(s){ return chOf(s, c) === ch; }); list.textContent = '';
     if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No reels for ' + CH[ch].name + ' yet.')); return; }
@@ -242,7 +242,7 @@
       var b = el('div', 'body');
       b.appendChild(el('div', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) + (meta.postOn ? ' · planned ' + nice(meta.postOn) : '') : when(meta.postOn)));
       b.appendChild(el('div', 'name', meta.concept || label(s)));
-      if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a pilot's one-line description
+      if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a reel's one-line description
       b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size)));
       var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), tick = el('button', 'btn g tick' + (up ? ' on' : ''), up ? 'Uploaded ✓' : 'Mark uploaded');
       copy.type = 'button'; copy.disabled = true; dl.type = 'button'; tick.type = 'button'; tick.disabled = !trackOk; if (!trackOk) tick.title = 'Upload tracking is unavailable right now';

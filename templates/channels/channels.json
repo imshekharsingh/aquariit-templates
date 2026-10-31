@@ -7,9 +7,10 @@
   "logo": "/channels/webin20sec-logo.png"
  },
  "c3": {
-  "name": "Channel 3",
-  "username": "to be decided",
-  "bio": "to be decided",
-  "slot": "to be decided"
+  "name": "Turns Out",
+  "username": "@itturns.out",
+  "bio": "True stories behind things everyone knows. Sources in the comments.",
+  "slot": "21:00–22:00 IST",
+  "logo": "/channels/turnsout-logo.png"
  }
 }

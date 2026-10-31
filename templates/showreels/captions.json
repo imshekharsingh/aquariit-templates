@@ -358,17 +358,20 @@
  },
  "showreel-c3-eiffel-tower": {
   "channel": "c3",
-  "concept": "Pattern 1 · Storybook cut-out: How the Eiffel Tower was nearly torn down",
-  "about": "Paper layers, a camera that dollies through them, cut-out figures (Gustave Eiffel, an army radio operator). History: the 20-year permit, the radio antenna that saved it."
+  "postOn": "2026-11-01",
+  "concept": "How the Eiffel Tower was nearly torn down",
+  "about": "Storybook cut-out: paper layers, a camera that carries through them, cut-out figures (Gustave Eiffel, an army radio operator). The 20-year permit and the radio antenna that saved the tower."
  },
  "showreel-c3-blue-sky": {
   "channel": "c3",
-  "concept": "Pattern 2 · One continuous zoom: Why the sky is blue but sunsets are red",
-  "about": "One unbroken camera move through scales, no cuts: a hill, a sunbeam's colours, air molecules, one molecule scattering blue, the planet at sunset, back to the hill. Science."
+  "postOn": "2026-11-02",
+  "concept": "Why the sky is blue but sunsets are red",
+  "about": "One continuous zoom, no cuts: a hill, a sunbeam's colours, air molecules, one molecule scattering blue, the planet at sunset, back to the hill."
  },
  "showreel-c3-lost-day": {
   "channel": "c3",
-  "concept": "Pattern 3 · Living globe: The sailors who lost a day",
-  "about": "A turning paper globe, a small fleet inking its route, kinetic dates and cards. History and geography: Pigafetta's diary said Wednesday, Cape Verde said Thursday (1522)."
+  "postOn": "2026-11-03",
+  "concept": "The sailors who lost a day",
+  "about": "Living globe: a lit, turning globe, a small fleet inking its route, the diary against the shore. Pigafetta's diary said Wednesday, Cape Verde said Thursday (1522)."
  }
 }

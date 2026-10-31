@@ -120,9 +120,11 @@ def voice(text, speed=1.1, name='af_heart'):
     return pan(a * .95, 0)
 
 
-def bed(dur, bpm, origin, chords):
-    # a quiet bed in time with the cuts: pad chord per bar, a soft sub on 1 and 3, closed hats on the offbeats
+def bed(dur, bpm, origin, chords, soft=False):
+    # a quiet bed in time with the cuts: pad chord per bar, a soft sub on 1 and 3, closed hats on the offbeats.
+    # soft (Turns Out, owner 31 Oct 2026: "smoother bed"): pad only, chords crossfade over a second, a held low note, no kick or hats
     n = int(dur * SR); out = np.zeros((2, n)); beat = 60 / bpm; bar = 4 * beat
+    if soft: return soft_bed(n, bar, origin, chords)
     tt = np.arange(n) / SR; ph = (tt - origin) / bar; bi = np.floor(ph).astype(int); kb = ph - bi
     hz = lambda m: 440 * 2 ** ((m - 69) / 12)
     pad = np.zeros(n)
@@ -144,6 +146,25 @@ def bed(dur, bpm, origin, chords):
     hat = nz * np.exp(-hs / .025) * np.where(hi % 2 == 1, .16, .06)
     out += pan(hat, .25)
     return out
+
+
+def soft_bed(n, bar, origin, chords):
+    tt = np.arange(n) / SR; hz = lambda m: 440 * 2 ** ((m - 69) / 12); pad = np.zeros(n)
+    nb = int(np.ceil((tt[-1] - origin) / bar)) + 2
+    for b in range(-1, nb):
+        t0 = origin + b * bar; sel = (tt > t0 - 1.2) & (tt < t0 + bar + 1.2)
+        if not sel.any(): continue
+        k = tt[sel] - t0; e = np.clip((k + 1.0) / 2.0, 0, 1) * np.clip((bar + 1.0 - k) / 2.0, 0, 1); e = e * e * (3 - 2 * e)   # smooth 2 s crossfades
+        notes = chords[b % len(chords)]
+        for j, m in enumerate(notes[1:]):
+            for det in (-.002, .002):
+                for h in (1, 2):
+                    pad[sel] += np.sin(2 * np.pi * hz(m) * (1 + det) * h * tt[sel] + j * 1.3 + h) / h ** 2.2 * e * .07
+        pad[sel] += np.sin(2 * np.pi * hz(notes[0]) * tt[sel]) * e * .13
+    trem = 1 + .06 * np.sin(2 * np.pi * .18 * tt)   # a slow breath in the pad
+    y = pad * trem; fr = np.fft.rfftfreq(n, 1 / SR)   # a gentle low-pass in the frequency domain: warm, no fizz on phone speakers
+    z = np.fft.irfft(np.fft.rfft(y) / np.sqrt(1 + (fr / 2200) ** 4), n)
+    return pan(z, 0) * .95
 
 
 def reverb(x, sec=1.4, mix=.18):
@@ -176,7 +197,7 @@ def main(cues_path, out_path, narration=None):
         put(vox, v[:2] if v.shape[0] > 1 else np.vstack([v, v]), 0)
     sfx, vox = sfx[:, :n], vox[:, :n]
     B = C.get('bed')
-    b = bed(dur, B['bpm'], B['origin'], B['chords']) if B else np.zeros((2, n))
+    b = bed(dur, B['bpm'], B['origin'], B['chords'], B.get('soft', False)) if B else np.zeros((2, n))
     duck = np.convolve(np.abs(vox[0]), np.ones(2400) / 2400, 'same'); duck = 1 - .55 * np.clip(duck / (duck.max() + 1e-9) * 3, 0, 1)
     mix = B.get('gain', .5) * b * duck + .75 * reverb(sfx) + 1.0 * vox if B else .75 * reverb(sfx) + 1.0 * vox
     mix = np.tanh(1.3 * mix) * .8

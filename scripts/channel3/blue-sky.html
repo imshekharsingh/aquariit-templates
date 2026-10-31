@@ -11,7 +11,9 @@
    the air's molecules (160x), onto one molecule as blue light scatters off it (600x), back out over many molecules, back to the person,
    out past the planet as the sun sinks (1/26x), and back down to the hill at sunset. Everything lives in one world (units = CSS px at
    1x); the camera is a focus point and a zoom, interpolated in log scale, so every frame is a pure function of t. Flat colours, crisp
-   edges, hard small shadows, paper grain; no glow, no gradients (the sky is flat bands).
+   edges, soft contact shadows, fine grain. Premium pass (owner, 31 Oct): the sky is a real gradient from horizon to zenith (and seen from
+   space a band of air fading into space), the ocean is shaded by one key light, the molecules are lit spheres, fewer rings and dashes;
+   no glow.
    Facts (two sources each): Met Office "Why is the sky blue?" and "Why is the sunset red?"; NOAA NESDIS "Why is the sky blue?";
    NASA Space Place "Why is the sky blue?": sunlight holds all colours; air is mostly nitrogen and oxygen molecules, far smaller than
    light's wavelength; they scatter short (blue) wavelengths much more than long (red) ones; at sunset light crosses much more air,
@@ -44,14 +46,21 @@ canvas{display:block;width:540px;height:960px}
   function txt(s, X, Y, size, f, col, al, sp){ x.font = font(size, f); x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px';
     x.fillStyle = col; probe(s, X, Y, x.textAlign, size); x.fillText(s, X, Y); x.letterSpacing = '0px'; }
   function tw(s, size, f, sp){ x.font = font(size, f); x.letterSpacing = (sp || 0) + 'px'; var w = x.measureText(s).width; x.letterSpacing = '0px'; return w; }
-  // a paper piece: hard small shadow, flat fill, crisp edge
-  function paper(path, col, sh, edge){ x.save(); x.translate(sh == null ? 2.5 : sh, sh == null ? 3.5 : sh * 1.4); x.fillStyle = 'rgba(30,24,36,.2)'; path(); x.fill(); x.restore();
-    x.fillStyle = col; path(); x.fill(); if (edge) { x.strokeStyle = edge; x.lineWidth = 1.2; x.stroke(); } }
+  function es(k){ k = cl(k, 0, 1); var q = .7; return 1 + (q + 1) * Math.pow(k - 1, 3) + q * Math.pow(k - 1, 2); }   // a soft spring: eases in, settles with a small overshoot
+  // arrive(k): an element travels in (rises 12 px, grows from 86 %, fades up) instead of popping; k from es() so it settles like a spring
+  function arrive(k){ x.globalAlpha *= cl(k * 2.2, 0, 1); var s = mix(.86, 1, k); x.translate(0, (1 - cl(k, 0, 1)) * 12); x.scale(s, s); }
+  function lg(x0, y0, x1, y1, st){ var g = x.createLinearGradient(x0, y0, x1, y1); st.forEach(function(s){ g.addColorStop(s[0], s[1]); }); return g; }
+  function rgb(h){ return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+  function tone(h, f, to){ var a = rgb(h), b = to ? rgb(to) : [0, 0, 0]; return 'rgb(' + a.map(function(v, i){ return Math.round(to ? mix(v, b[i], f) : Math.min(255, v * f)); }).join(',') + ')'; }
+  // a paper piece: one key light from the upper left, so a soft contact shadow falls down and a little right; flat or gradient fill, crisp edge
+  function paper(path, col, sh, edge){ var m = x.getTransform(), k = Math.hypot(m.a, m.b), d = sh == null ? 2.5 : sh; x.save();
+    if (d > 0) { x.shadowColor = 'rgba(40,28,24,.22)'; x.shadowBlur = d * 2.6 * k; x.shadowOffsetX = d * .35 * k; x.shadowOffsetY = d * 1.25 * k; }
+    x.fillStyle = col; path(); x.fill(); x.restore(); if (edge) { x.strokeStyle = edge; x.lineWidth = 1.2; x.stroke(); } }
   function rr(X, Y, w, h, r){ return function(){ x.beginPath(); x.roundRect(X, Y, w, h, r); }; }
   function tag(s, X, Y, size, f, col, bg, sp){ var w = tw(s, size, f, sp) + size * 1.1, h = size * 1.75;
     paper(rr(X - w / 2, Y - h / 2, w, h, h * .22), bg); txt(s, X, Y + size * .36, size, f, col, 'center', sp); }
   var GRAIN = (function(){ var g0 = document.createElement('canvas'); g0.width = 1080; g0.height = 1920; var g = g0.getContext('2d'), im = g.createImageData(1080, 1920), r = rnd(77);
-    for (var i = 0; i < im.data.length; i += 4){ var v = r(); im.data[i] = im.data[i + 1] = im.data[i + 2] = v < .5 ? 30 : 255; im.data[i + 3] = Math.abs(v - .5) > .4 ? 22 : 0; }
+    for (var i = 0; i < im.data.length; i += 4){ var v = r(); im.data[i] = im.data[i + 1] = im.data[i + 2] = v < .5 ? 30 : 255; im.data[i + 3] = Math.abs(v - .5) > .4 ? 13 : 0; }
     g.putImageData(im, 0, 0); return g0; })();
 
   // ---- the story: one start time per sentence, from an estimate of each sentence's length (scripts/showreel/preflight.mjs uses the same
@@ -89,20 +98,28 @@ canvas{display:block;width:540px;height:960px}
         txt(w.d, 0, 0, HOOK.size, '800 ' + FD, hl ? HOOK.hlCol : HOOK.col, 'center', -.6); x.restore(); xx += q[1] + W.sp; }); });
     x.restore();
   }
+  // the caption card (premium pass, 31 Oct): ONE card that stays up and changes shape from sentence to sentence (no fade out and in);
+  // the old line slides up out of it as the new one rises in word by word
+  function capLay(i){ var size = 27, W = wrap(CAPS[i].words, size, '700 ' + FI, 452), lh = 35, n = W.lines.length, base = 716 - (n - 1) * lh / 2;
+    return { W: W, base: base, pw: Math.max.apply(null, W.lw) + 34, ph: n * lh + 18, py: base - size * .8 - 10, lh: lh, size: size }; }
+  function capWords(C, t, a, dy, lit){ C.W.lines.forEach(function(ln, r){ var xx = 270 - C.W.lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = lit ? 1 : eo(P(t, w.s - .1, w.s + .08)), hl = STYLE.hl && STYLE.hl.test(w.d);
+        x.globalAlpha = a * (.3 + .7 * k); txt(w.d, xx, C.base + r * C.lh + dy - (1 - k) * 3, C.size, '700 ' + FI, hl ? (STYLE.hlFor ? STYLE.hlFor(w.d) : STYLE.hlCol) : (STYLE.ink || '#23202b'), 'left', -.3); xx += q[1] + C.W.sp; }); }); }
   function drawCaption(t){
     var i = capAt(t); CAPI = i; if (i < 0) return; if (i === 0) { drawHook(t); return; }
-    var L = CAPS[i], size = 27, W = wrap(L.words, size, '700 ' + FI, 452), lh = 35, n = W.lines.length, base = 716 - (n - 1) * lh / 2;
-    var inK = eo(P(t, L.s - .12, L.s + .12)), next = i + 1 < CAPS.length ? CAPS[i + 1].s - .12 : 1e9, outK = P(t, Math.min(next, L.e + 2.5) - .12, Math.min(next, L.e + 2.5));
-    var pw = Math.max.apply(null, W.lw) + 34, ph = n * lh + 18, py = base - size * .8 - 10 + (1 - inK) * 8;
-    x.save(); x.globalAlpha = inK * (1 - outK);
-    paper(rr(270 - pw / 2, py, pw, ph, 12), STYLE.panel || '#fbf6ea', 3);
-    W.lines.forEach(function(ln, r){ var xx = 270 - W.lw[r] / 2;
-      ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .1, w.s + .08)), hl = STYLE.hl && STYLE.hl.test(w.d);
-        x.globalAlpha = inK * (1 - outK) * (.3 + .7 * k); txt(w.d, xx, base + r * lh + (1 - inK) * 8 - (1 - k) * 3, size, '700 ' + FI, hl ? STYLE.hlCol : (STYLE.ink || '#23202b'), 'left', -.3); xx += q[1] + W.sp; }); });
-    x.restore();
+    var L = CAPS[i], cur = capLay(i), prev = i > 1 && t < L.s + .4 ? capLay(i - 1) : null, mk = P(t, L.s - .14, L.s + .3), m = es(mk);
+    var inK = i > 1 ? 1 : eo(P(t, L.s - .14, L.s + .22)), next = i + 1 < CAPS.length ? CAPS[i + 1].s - .14 : 1e9, outK = eio(P(t, Math.min(next, L.e + 2.5) - .2, Math.min(next, L.e + 2.5)));
+    if (i + 1 < CAPS.length && next < L.e + 2.5) outK = 0;   // the next sentence morphs the card; it never empties
+    var pw = prev ? mix(prev.pw, cur.pw, m) : cur.pw, ph = prev ? mix(prev.ph, cur.ph, m) : cur.ph, cy = (prev ? mix(prev.py + prev.ph / 2, cur.py + cur.ph / 2, m) : cur.py + cur.ph / 2) + (1 - inK) * 18;
+    var A0 = inK * (1 - outK); x.save(); x.globalAlpha = A0;
+    paper(rr(270 - pw / 2, cy - ph / 2, pw, ph, 12), STYLE.panel || '#fbf6ea', 3);
+    x.save(); x.beginPath(); x.rect(270 - pw / 2, cy - ph / 2, pw, ph); x.clip();
+    if (prev && mk < 1) capWords(prev, t, A0 * (1 - eo(P(mk, 0, .32))), (cy - prev.py - prev.ph / 2) - eo(mk) * 16, true);
+    capWords(cur, t, A0 * (prev ? eo(P(mk, .36, .8)) : 1), (cy - cur.py - cur.ph / 2) + (prev ? (1 - eo(P(mk, .3, 1))) * 10 : 0), false);
+    x.restore(); x.restore();
   }
   // the source credit (owner, 31 Oct: a short credit on the last frame): a small paper tag at the top for the last 3 s
-  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.6); if (k <= 0) return; x.save(); x.globalAlpha = k; tag(CREDIT, 270, 92, 11.5, '700 ' + FI, '#23202b', '#fbf6ea', .6); x.restore(); }
+  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.5); if (k <= 0) return; k = eo(k); x.save(); x.globalAlpha = k; tag(CREDIT, 270, 92 - (1 - k) * 10, 11.5, '700 ' + FI, '#23202b', '#fbf6ea', .6); x.restore(); }
   Object.defineProperty(window, 'COVER', { configurable: true, get: function(){ return +Math.min(CAPS[0].e + .25, A[1] - .3).toFixed(2); } });   // the question fully lit
   var INK = '#23202b', CREAM = '#fbf6ea', SPACE = '#161a2c', BLUE = '#2f6fd0', RED = '#d8442f';
   story([['Why is the sky blue, but sunsets red?', 0], ['Sunlight carries every colour of the rainbow.', .45], ['Our air is full of tiny molecules, mostly nitrogen and oxygen.', .4],
@@ -110,7 +127,7 @@ canvas{display:block;width:540px;height:960px}
     ['At sunset, the light crosses far more air.', .45], ['The blue is scattered away on the journey.', .4], ['Only reds and oranges make it through.', .45]]);
   var DUR = +(CAPS[CAPS.length - 1].e + 1.9).toFixed(1);
   var HOOK = { y: 176, size: 44, col: CREAM, shadow: 'rgba(35,32,43,.35)', hl: /^(blue|red|sunsets)/i, hlCol: '#ffd27a', label: 'THE TRUE STORY', labelBg: CREAM, labelCol: INK };
-  var STYLE = { hl: /^(colour|rainbow|molecules|nitrogen|oxygen|blue|scatters|red|straight|everywhere|sky|sunset|more|reds|oranges)/i, hlCol: BLUE };
+  var STYLE = { hl: /^(colour|rainbow|molecules|nitrogen|oxygen|blue|scatters|red|straight|everywhere|sky|sunset|more|reds|oranges)/i, hlCol: BLUE, hlFor: function(w){ return /^(red|reds|oranges|sunset)/i.test(w) ? '#c8452f' : BLUE; } };
   var CREDIT = 'SOURCES: MET OFFICE · NOAA · NASA SPACE PLACE';
 
   // ---- the world ----
@@ -170,28 +187,32 @@ canvas{display:block;width:540px;height:960px}
       var sx = 270 + (cx - CAM[1]) * Z, sy = 420 + (cy - CAM[2]) * Z; if (sx < -80 || sx > 620 || sy < -80 || sy > 1040) return;
       x.globalAlpha = alpha;
       // scatter: rings leave the molecules that sit on the short-wave strands, once the story gets there
-      var sk = SCAT[m.on] || 0, on = P(t, T(3) - .4, T(3) + .2) * sk; if (on > 0) { x.strokeStyle = STR[m.on][0]; x.lineWidth = 4.5 / Z;
-        for (var q = 0; q < 3; q++){ var k = (((t - T(3)) * .9 + q / 3 + m.ph) % 1 + 1) % 1; x.globalAlpha = alpha * on * (1 - k); x.beginPath(); x.arc(cx, cy, .1 + k * 1.15, 0, 6.2832); x.stroke(); } x.globalAlpha = alpha; }
-      x.fillStyle = 'rgba(30,24,36,.22)'; x.beginPath(); x.arc(cx + ux + 2.5 / Z, cy + uy + 3.5 / Z, r, 0, 6.2832); x.arc(cx - ux + 2.5 / Z, cy - uy + 3.5 / Z, r, 0, 6.2832); x.fill();
-      x.fillStyle = m.n2 ? '#d5dbe6' : '#f08a6c'; x.strokeStyle = INK; x.lineWidth = 1.4 / Z;
-      [1, -1].forEach(function(sd){ x.beginPath(); x.arc(cx + ux * sd, cy + uy * sd, r, 0, 6.2832); x.fill(); x.stroke(); });
-      x.fillStyle = 'rgba(255,255,255,.35)'; x.beginPath(); x.arc(cx + ux - r * .3, cy + uy - r * .3, r * .35, 0, 6.2832); x.fill(); });
+      var sk = SCAT[m.on] || 0, on = P(t, T(3) - .4, T(3) + .2) * sk; if (on > 0) { x.strokeStyle = STR[m.on][0]; x.lineWidth = 3 / Z;
+        for (var q = 0; q < 2; q++){ var k = (((t - T(3)) * .7 + q / 2 + m.ph) % 1 + 1) % 1; x.globalAlpha = alpha * on * (1 - k) * (1 - k) * .8; x.beginPath(); x.arc(cx, cy, .1 + k * 1.15, 0, 6.2832); x.stroke(); } x.globalAlpha = alpha; }
+      x.fillStyle = 'rgba(20,24,40,.14)'; x.beginPath(); x.arc(cx + ux + r * .25, cy + uy + r * .35, r * 1.02, 0, 6.2832); x.arc(cx - ux + r * .25, cy - uy + r * .35, r * 1.02, 0, 6.2832); x.fill();
+      var c1 = m.n2 ? ['#f3f6fb', '#c9d1df', '#8d97ab'] : ['#ffd2c0', '#ef8768', '#b2523d'];
+      [1, -1].forEach(function(sd){ var ax = cx + ux * sd, ay = cy + uy * sd, g = x.createRadialGradient(ax - r * .38, ay - r * .42, r * .08, ax, ay, r);   // lit from the upper left
+        g.addColorStop(0, c1[0]); g.addColorStop(.55, c1[1]); g.addColorStop(1, c1[2]); x.fillStyle = g; x.beginPath(); x.arc(ax, ay, r, 0, 6.2832); x.fill(); }); });
     x.globalAlpha = 1; }
   var T0 = 0;
   function earth(t, Z){ T0 = t;
     x.lineWidth = 1 / Z;
-    [[R + H, 2], [R + H * .34, 1], [R + H * .14, 0]].forEach(function(q){ x.fillStyle = band(t, q[1]); x.beginPath(); x.arc(EC[0], EC[1], q[0], 0, 6.2832); x.fill(); });
-    x.fillStyle = '#3f6f93'; x.beginPath(); x.arc(EC[0], EC[1], R, 0, 6.2832); x.fill();
-    x.save(); x.clip(); x.fillStyle = '#5f8f4f'; [[0, -3550, 1500, 700], [-2300, -1200, 900, 1300], [1900, -600, 1100, 1500], [-700, 1500, 1300, 900], [2000, 2300, 700, 600]].forEach(function(q){ x.beginPath(); x.ellipse(EC[0] + q[0], EC[1] + q[1], q[2], q[3], 0, 0, 6.2832); x.fill(); }); x.restore();
-    x.fillStyle = '#5a8a4c'; x.beginPath(); x.ellipse(60, 615, 260, 40, 0, Math.PI, 0); x.ellipse(520, 618, 240, 36, 0, Math.PI, 0); x.fill();
-    [[70, 318, 1], [480, 262, .7], [215, 372, .65]].forEach(function(q){ x.fillStyle = col('#fbf6ea', '#f7c9a0', bandMix(T0, 1) * GROUND); x.beginPath(); x.ellipse(q[0], q[1], 46 * q[2], 15 * q[2], 0, 0, 6.2832); x.ellipse(q[0] - 16 * q[2], q[1] - 10 * q[2], 20 * q[2], 15 * q[2], 0, 0, 6.2832); x.ellipse(q[0] + 12 * q[2], q[1] - 13 * q[2], 24 * q[2], 17 * q[2], 0, 0, 6.2832); x.fill(); });
-    x.fillStyle = '#6f9d5b'; x.beginPath(); x.ellipse(300, 640, 190, 52, 0, Math.PI, 0); x.fill(); x.fillStyle = '#4f7a40'; x.beginPath(); x.ellipse(120, 618, 26, 34, 0, 0, 6.2832); x.fill(); x.fillStyle = '#6b4e3a'; x.fillRect(117, 640, 6, 18);
+    var ag = x.createRadialGradient(EC[0], EC[1], R, EC[0], EC[1], R + H); ag.addColorStop(0, band(t, 0)); ag.addColorStop(.18, band(t, 1)); ag.addColorStop(.42, band(t, 2)); ag.addColorStop(1, band(t, 2));
+    x.fillStyle = ag; x.beginPath(); x.arc(EC[0], EC[1], R + H, 0, 6.2832); x.fill();
+    var og = x.createRadialGradient(EC[0] - R * .45, EC[1] - R * .5, R * .1, EC[0], EC[1], R); og.addColorStop(0, '#5f93b8'); og.addColorStop(.7, '#3b6c92'); og.addColorStop(1, '#294f70');
+    x.fillStyle = og; x.beginPath(); x.arc(EC[0], EC[1], R, 0, 6.2832); x.fill();
+    x.save(); x.clip(); x.fillStyle = lg(0, EC[1] - R, 0, EC[1] + R, [[0, '#6f9e5c'], [1, '#4d7a40']]); [[0, -3550, 1500, 700], [-2300, -1200, 900, 1300], [1900, -600, 1100, 1500], [-700, 1500, 1300, 900], [2000, 2300, 700, 600]].forEach(function(q){ x.beginPath(); x.ellipse(EC[0] + q[0], EC[1] + q[1], q[2], q[3], 0, 0, 6.2832); x.fill(); }); x.restore();
+    x.fillStyle = lg(0, 575, 0, 620, [[0, '#6c9a5a'], [1, '#527f45']]); x.beginPath(); x.ellipse(60, 615, 260, 40, 0, Math.PI, 0); x.ellipse(520, 618, 240, 36, 0, Math.PI, 0); x.fill();
+    [[70, 318, 1], [480, 262, .7], [215, 372, .65]].forEach(function(q){ var c0 = col('#fbf6ea', '#f7c9a0', bandMix(T0, 1) * GROUND); x.fillStyle = lg(0, q[1] - 30 * q[2], 0, q[1] + 15 * q[2], [[0, '#fffdf8'], [.6, c0], [1, tone(c0.replace(/rgb\((\d+),(\d+),(\d+)\)/, function(m, a, b, d){ return '#' + [a, b, d].map(function(v){ return (+v).toString(16).padStart(2, '0'); }).join(''); }), .86)]]); x.beginPath(); x.ellipse(q[0], q[1], 46 * q[2], 15 * q[2], 0, 0, 6.2832); x.ellipse(q[0] - 16 * q[2], q[1] - 10 * q[2], 20 * q[2], 15 * q[2], 0, 0, 6.2832); x.ellipse(q[0] + 12 * q[2], q[1] - 13 * q[2], 24 * q[2], 17 * q[2], 0, 0, 6.2832); x.fill(); });
+    x.fillStyle = lg(0, 588, 0, 640, [[0, '#7eab69'], [1, '#5f8c4d']]); x.beginPath(); x.ellipse(300, 640, 190, 52, 0, Math.PI, 0); x.fill();
+    x.fillStyle = 'rgba(40,28,24,.16)'; x.beginPath(); x.ellipse(EYE[0] + 2, 600.5, 10, 2, 0, 0, 6.2832); x.fill();   // the person's contact shadow x.fillStyle = '#4f7a40'; x.beginPath(); x.ellipse(120, 618, 26, 34, 0, 0, 6.2832); x.fill(); x.fillStyle = '#6b4e3a'; x.fillRect(117, 640, 6, 18);
   }
   function seek(t){
     t = cl(t, 0, DUR); x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1; BOXES.length = 0;
     var C = camera(t), Z = C[0]; CAM = C; var lz = Math.log(Z), sun = sunset(t), dir = dirAt(t); GROUND = P(lz, Math.log(.12), Math.log(.5));
     var ws = function(p){ return [270 + (p[0] - C[1]) * Z, 420 + (p[1] - C[2]) * Z]; };
     var fd = Math.hypot(C[1] - EC[0], C[2] - EC[1]) - R; x.fillStyle = Z > 6 ? band(t, fd < H * .14 ? 0 : fd < H * .34 ? 1 : 2) : SPACE; x.fillRect(0, 0, 540, 960);
+    if (Z > 6) { x.fillStyle = lg(0, 0, 0, 960, [[0, 'rgba(20,30,60,.12)'], [.6, 'rgba(255,255,255,0)'], [1, 'rgba(255,250,240,.12)']]); x.fillRect(0, 0, 540, 960); }
     if (Z > 6) { x.fillStyle = 'rgba(29,42,74,' + (.38 * P(lz, Math.log(6), Math.log(200))).toFixed(3) + ')'; x.fillRect(0, 0, 540, 960); }   // deeper in, the air turns to night-blue
     x.save(); x.translate(270, 420); x.scale(Z, Z); x.translate(-C[1], -C[2]);
     if (Z <= 6) { earth(t, Z); person(t, Z); }
@@ -203,14 +224,14 @@ canvas{display:block;width:540px;height:960px}
     x.restore();
     var eye = ws(EYE);
     // blue from all over the sky: dashes flying into the eye from every direction
-    var bk = win(t, T(5) + 1.2, T(6) + 1, .4); if (bk > 0) { x.save(); x.globalAlpha = bk; x.strokeStyle = BLUE; x.lineWidth = 3.5; x.lineCap = 'round';
-      for (var i = 0; i < 13; i++){ var a = Math.PI * (1.08 + i * .84 / 12), rr0 = 330, sx = eye[0] + Math.cos(a) * rr0, sy = eye[1] + Math.sin(a) * rr0;
-        for (var q = 0; q < 3; q++){ var k = ((t * .8 + q / 3 + i * .13) % 1), p0 = mix(1, .12, k), p1 = Math.max(.08, p0 - .1); x.beginPath(); x.moveTo(mix(eye[0], sx, p0), mix(eye[1], sy, p0)); x.lineTo(mix(eye[0], sx, p1), mix(eye[1], sy, p1)); x.stroke(); } }
+    var bk = win(t, T(5) + 1.2, T(6) + 1, .4); if (bk > 0) { x.save(); x.globalAlpha = bk * .85; x.strokeStyle = BLUE; x.lineWidth = 3; x.lineCap = 'round';
+      for (var i = 0; i < 9; i++){ var a = Math.PI * (1.08 + i * .84 / 8), rr0 = 330, sx = eye[0] + Math.cos(a) * rr0, sy = eye[1] + Math.sin(a) * rr0;
+        for (var q = 0; q < 2; q++){ var k = ((t * .7 + q / 2 + i * .13) % 1), p0 = mix(1, .12, k), p1 = Math.max(.08, p0 - .1); x.beginPath(); x.moveTo(mix(eye[0], sx, p0), mix(eye[1], sy, p0)); x.lineTo(mix(eye[0], sx, p1), mix(eye[1], sy, p1)); x.stroke(); } }
       x.restore(); }
     // the sun: far away, so it sits on screen in the light's direction, kept inside the frame
     var dS = Math.min(Z < .5 ? 250 : 215, (500 - eye[0]) / Math.max(.05, dir[0])), sp = [eye[0] + dir[0] * dS, eye[1] + dir[1] * dS];
     if (t > T(5) + 1.5 && Z > .4) { x.save(); x.globalAlpha = P(lz, Math.log(.4), Math.log(.9)); x.strokeStyle = col('#fbf6ea', '#f5843f', sun); x.lineWidth = 7; x.lineCap = 'round'; x.beginPath(); x.moveTo(eye[0] + dir[0] * 10, eye[1] + dir[1] * 10); x.lineTo(sp[0], sp[1]); x.stroke(); x.restore(); }
-    if (Z < 3) { var sa = 1 - P(lz, Math.log(1.6), Math.log(3)); x.save(); x.globalAlpha = sa; paper(function(){ x.beginPath(); x.arc(sp[0], sp[1], 26, 0, 6.2832); }, col('#fde7a6', '#f59a4a', sun), 2); x.restore(); }
+    if (Z < 3) { var sa = 1 - P(lz, Math.log(1.6), Math.log(3)); x.save(); x.globalAlpha = sa; var sg = x.createRadialGradient(sp[0] - 6, sp[1] - 6, 2, sp[0], sp[1], 26); sg.addColorStop(0, col('#fffbe9', '#ffd29a', sun)); sg.addColorStop(1, col('#fbd98a', '#ec7f3c', sun)); x.fillStyle = sg; x.beginPath(); x.arc(sp[0], sp[1], 26, 0, 6.2832); x.fill(); x.restore(); }
     // the planet: the light's path through the air from the sun to you, its length on a bar, the blue peeling off it
     var pk = P(lz, Math.log(.2), Math.log(.07)); if (pk > 0) { x.save(); x.globalAlpha = pk;
       var ex = EYE[0] - EC[0], ey = EYE[1] - EC[1], bq = ex * dir[0] + ey * dir[1], cq = ex * ex + ey * ey - (R + H) * (R + H), Lp = -bq + Math.sqrt(bq * bq - cq);
@@ -231,7 +252,7 @@ canvas{display:block;width:540px;height:960px}
       tag(s, cl(p[0], 90, 450), p[1] - 58, 13, '800 ' + FI, CREAM, c0, 2); x.restore(); }
     pin(TAGN, 'NITROGEN', '#5d6678', win(t, T(2) + 1.5, T(3) + .4, .25) * P(lz, Math.log(120), Math.log(160)));
     pin(TAGO, 'OXYGEN', '#a8513c', win(t, T(2) + 1.8, T(3) + .4, .25) * P(lz, Math.log(120), Math.log(160)));
-    var lg = win(t, T(4) + 1.2, T(5) + .6, .3); if (lg > 0) { x.save(); x.globalAlpha = lg; x.fillStyle = 'rgba(251,246,234,.94)'; x.beginPath(); x.roundRect(130, 110, 280, 78, 12); x.fill();
+    var lgk = win(t, T(4) + 1.2, T(5) + .6, .3); if (lgk > 0) { x.save(); x.globalAlpha = lgk; x.fillStyle = 'rgba(251,246,234,.94)'; x.beginPath(); x.roundRect(130, 110, 280, 78, 12); x.fill();
       x.fillStyle = BLUE; x.fillRect(150, 130, 26, 6); txt('BLUE: SCATTERS', 188, 138, 15, '800 ' + FI, INK, 'left', 1.5);
       x.fillStyle = '#e0473c'; x.fillRect(150, 162, 26, 6); txt('RED: PASSES THROUGH', 188, 170, 15, '800 ' + FI, INK, 'left', 1.5); x.restore(); }
     var sk = win(t, T(1) + 1.6, T(2) + .2, .3); if (sk > 0) { x.save(); x.globalAlpha = sk; x.fillStyle = 'rgba(251,246,234,.94)'; x.beginPath(); x.roundRect(150, 112, 240, 44, 12); x.fill();
@@ -242,16 +263,14 @@ canvas{display:block;width:540px;height:960px}
   }
   var CAM = [1, 270, 420];
 
-  // sound: a soft boom and swish with the question, a riser into each dive, taps as the molecules appear, ticks for the scattering,
-  // whooshes as the camera pulls out, a low hit when the planet comes into view, a thud on the last line
+  // sound (premium pass): a soft low hit and an air swish with the question, one long soft riser per dive (ending in the breath), quiet
+  // whooshes as the camera pulls out, one low hit when the planet comes into view, a smooth pad bed with no drums under the voice
   (function(){
-    var Q = [{ t: 0, k: 'boom', g: .5 }, { t: .05, k: 'swish', d: .6, g: .4 }];
-    [[T(1), 'riser', 1.4], [T(2), 'riser', 1.3], [T(3), 'riser', 1.2]].forEach(function(q){ Q.push({ t: +(q[0] + q[2]).toFixed(2), k: q[1], d: q[2], g: .3 }); });
-    for (var m = 0; m < 7; m++) Q.push({ t: +(T(2) + .9 + m * .11).toFixed(2), k: 'tap', g: .18, p: m });
-    for (m = 0; m < 6; m++) Q.push({ t: +(T(3) + 1.3 + m * .5).toFixed(2), k: 'tick', g: .16, p: m });
-    Q.push({ t: T(4) + .6, k: 'whoosh', d: .9, g: .3 }, { t: T(5) + .8, k: 'whoosh', d: 1, g: .32 }, { t: T(6) + 1.2, k: 'whoosh', d: 1.1, g: .32 }, { t: T(6) + 1.9, k: 'boom', g: .4 },
-      { t: T(7) + .5, k: 'shimmer', g: .22 }, { t: T(8) + 1.1, k: 'whoosh', d: 1, g: .3 }, { t: T(8) + 1.9, k: 'thud', g: .45 });
-    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 84, origin: 0, gain: .26, chords: [[50, 57, 62, 66, 69], [47, 54, 59, 62, 66], [43, 50, 55, 59, 62], [45, 52, 57, 61, 64]] } };
+    var Q = [{ t: 0, k: 'boom', g: .3 }, { t: .05, k: 'swish', d: .7, g: .22 }];
+    [[T(1), 1.4], [T(2), 1.3], [T(3), 1.2]].forEach(function(q){ Q.push({ t: +(q[0] + q[1]).toFixed(2), k: 'riser', d: q[1], g: .16 }); });
+    Q.push({ t: T(3) + 1.4, k: 'shimmer', g: .1 }, { t: T(4) + .6, k: 'whoosh', d: 1, g: .16 }, { t: T(5) + .8, k: 'whoosh', d: 1.1, g: .16 }, { t: T(6) + 1.2, k: 'whoosh', d: 1.2, g: .18 }, { t: T(6) + 1.9, k: 'boom', g: .24 },
+      { t: T(7) + .5, k: 'shimmer', g: .12 }, { t: T(8) + 1.1, k: 'whoosh', d: 1.1, g: .16 }, { t: T(8) + 1.9, k: 'thud', g: .24 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 66, origin: 0, gain: .3, soft: true, chords: [[50, 57, 62, 66, 69], [47, 54, 59, 62, 66], [43, 50, 55, 59, 62], [45, 52, 57, 61, 64]] } };
   })();
   window.seek = seek; window.DURATION = DUR;
   Promise.all([document.fonts.load("800 44px 'Fraunces'"), document.fonts.load("800 18px 'Inter Tight'"), document.fonts.load("700 27px 'Inter Tight'")]).then(function(){ return document.fonts.ready; })

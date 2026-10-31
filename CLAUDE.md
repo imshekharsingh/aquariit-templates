@@ -51,9 +51,11 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   open with only their label for about 0.4 s (content must arrive with the label).
 - Primary sources apple.com, developer.apple.com, blog.google, developer.chrome.com and webkit.org are allowed in the environment: read them directly.
 
-## Channel 3: true stories (owner, 31 Oct 2026)
+## Turns Out: true stories (owner, 31 Oct 2026; was "Channel 3")
 - Promise: "The true story behind something everyone knows." Plan, never-list, fact rules and the pattern library: design/channel3.md.
-  Name undecided: the app's "Channel 3" tab shows a placeholder profile and the pilots, one per animation pattern.
+  Instagram **@itturns.out**, display name **Turns Out**, bio "True stories behind things everyone knows. Sources in the comments."
+  Posts daily 21:00-22:00 IST. Logo: design/brand/accounts/turnsout-logo.svg (the question mark that turns into an exclamation).
+  The app's "Turns Out" tab has the profile card and the reels. Internal ids stay `c3` (scripts/channel3/, `showreel-c3-*`, `"channel": "c3"`).
 - Fixed Cell and the fictional pilots (rivals, pick-one, velmora and the silent first set) are retired: hidden, scenes in attic/.
 - Topics: general knowledge, recognisable on every continent (4+ continents a week), simple English, metric + imperial, universal dates.
   Never: religion, active wars or disputed borders, living politicians, "which country is better", health and diet claims,
@@ -62,6 +64,7 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   "sources" list (2+, title + https url; npm run check fails without it) is shown in the app with "Copy as comment".
 - Narrated: hook question on screen and in the voice from frame 0, full sentences at about 2.3-2.6 words/s overall, every sentence shown,
   a big change every ~3 s, payoff in the last 3 s, 25-35 s, matte look (no glow), every frame a pure function of t.
+  Premium bar (owner, 31 Oct: "cleaner, better flow, a premium touch and realism"): the rules in design/channel3.md, "Premium rules", apply to every reel.
   Scenes `scripts/channel3/<slug>.html` + `.json` (name `showreel-c3-<slug>`), entry in captions.json (`"channel": "c3"`, "concept", "about").
   Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, preflight says "fits", one stills sheet.
 
@@ -88,7 +91,7 @@ Reels carry their own sound from 23 Oct (owner: audio supports the hook): effect
 - Images: code only (inline SVG, CSS, canvas). Fonts: open-licensed Google Fonts or system fonts. Icons: hand-drawn inline SVG.
 - Scenes are single self-contained files; the only external origins allowed are fonts.googleapis.com and fonts.gstatic.com.
 - Facts shown on screen are checked against a primary source and cited.
-- Exception (owner, 31 Oct 2026), Channel 3 only: real historical figures who died 50+ years ago may appear, drawn as friendly cartoon
+- Exception (owner, 31 Oct 2026), Turns Out only: real historical figures who died 50+ years ago may appear, drawn as friendly cartoon
   figures recognised by props and setting, never caricatured faces; no living or recently dead people, politicians in office or religious figures.
 
 ## Save Claude usage (owner, 14 Oct 2026)
