@@ -110,6 +110,10 @@
   .card h3{margin:12px 0 0;font:800 .72rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--cc,var(--mute))}
   .card .row{justify-content:flex-end;margin-top:10px}
   .card .btn{min-height:40px;font-size:.82rem}
+  .card.spare{border-left-color:#f2c14e}
+  .card.spare p{margin-top:6px;color:var(--ink)}
+  .notify{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:10px 14px;border:1px dashed var(--line);border-radius:16px;font-size:.82rem;color:var(--mute)}
+  .notify .btn{flex:none;min-height:40px;font-size:.82rem}
   /* the Posted list (owner, 1 Nov 2026): one compact row per posted reel, newest first, numbers from the nightly collector */
   .posted-list{margin-top:30px}
   .posted-list h2{font:800 .8rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 4px}
@@ -133,6 +137,7 @@
   <div class="top"><span class="brand">Studio</span><span class="tr"><button class="pill" id="refresh" type="button">Refresh</button></span></div>
   <div class="alert" id="alert" role="alert" hidden></div>
   <div id="cards"></div>
+  <div class="notify" id="notify" hidden><span>Get the Tuesday 9 PM reminder on this phone.</span><button class="btn g" id="notify-on" type="button">Turn on notifications</button></div>
   <details class="use" id="use" hidden><summary><span class="r"><span>GitHub minutes</span><span id="use-n"></span></span><span class="bar" id="use-bar"><i></i></span></summary><div id="use-note"></div><ul id="use-list"></ul></details>
   <div class="tabs" role="tablist" aria-label="Channel">
     <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
@@ -341,6 +346,37 @@
     row.appendChild(b); box.appendChild(row); return box; }
   fetch('/api/cards', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
     .then(function(j){ (j.cards || []).forEach(function(cd){ if (cd && cd.id && cd.day) cardsBox.appendChild(cardEl(cd)); }); }).catch(function(){});
+  // spare-usage night (owner, 1 Nov 2026): from Tuesday 21:00 IST until the weekly reset (Wednesday 04:30 IST) one card with a "Use it" switch for that week
+  fetch('/api/spare', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(sp){
+    if (!sp.show) return;
+    var box = el('section', 'card spare'), hd = el('div', 'hd'), row = el('div', 'row'), b = el('button', 'btn g tick', ''); b.type = 'button';
+    hd.appendChild(el('b', null, 'Spare usage tonight?')); hd.appendChild(el('span', null, 'until 4:30 AM')); box.appendChild(hd);
+    box.appendChild(el('p', null, 'Weekly reset at 4:30 AM. Spare usage left? Check Settings > Usage in Claude.'));
+    function show(on){ sp.on = on; b.textContent = on ? 'Using it tonight ✓ (tap to undo)' : 'Use it'; b.classList.toggle('on', on); }
+    b.addEventListener('click', function(){ b.disabled = true;
+      fetch('/api/spare', { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: !sp.on }) })
+        .then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ show(j.on); }).catch(function(){ b.textContent = 'Try again'; }).then(function(){ b.disabled = false; }); });
+    show(!!sp.on); row.appendChild(b); box.appendChild(row); cardsBox.insertBefore(box, cardsBox.firstChild);
+    var left = Date.parse(sp.until) - Date.now(); if (left > 0) setTimeout(function(){ box.remove(); }, Math.min(left, 2e9));   // gone at the reset
+  }).catch(function(){});
+  // notifications: the service worker (offline copies + push), and a one-time "Turn on notifications" button while this device has no subscription.
+  // iPhone: iOS 16.4+ and the app added to the Home Screen (Safari in a tab has no push)
+  var nBox = document.getElementById('notify'), nBtn = document.getElementById('notify-on');
+  function keyBytes(k){ var s = atob(k.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((k.length + 3) % 4)), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').then(function(){ return navigator.serviceWorker.ready; }).then(function(reg){
+    if (!reg.pushManager || !('Notification' in window) || Notification.permission === 'denied') return;
+    return Promise.all([reg.pushManager.getSubscription(), fetch('/api/push/key', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; })]).then(function(x){
+      var sub = x[0], key = x[1] && x[1].key; if (!key) return;
+      function save(s){ return fetch('/api/push/subscribe', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify(s) }).then(function(r){ if (!r.ok) throw 0; }); }
+      if (sub && Notification.permission === 'granted') return;   // already on for this device
+      nBox.hidden = false;
+      nBtn.addEventListener('click', function(){ nBtn.disabled = true; nBtn.textContent = 'Turning on…';
+        Notification.requestPermission().then(function(p){ if (p !== 'granted') throw 0;
+          return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(key) }); })
+          .then(function(s){ return save(s.toJSON()); }).then(function(){ nBox.textContent = 'Notifications are on for this device.'; setTimeout(function(){ nBox.hidden = true; }, 4000); })
+          .catch(function(){ nBtn.disabled = false; nBtn.textContent = Notification.permission === 'denied' ? 'Blocked in settings' : 'Try again'; }); });
+    });
+  }).catch(function(){});
   // Instagram collector health: an open alert per account, or no new numbers for 36+ hours (the run itself failed or stopped)
   fetch('/api/perf/status', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(st){
     var ACC = { 1: '@webin20sec', 2: '@techin20sec', 3: '@itturns.out' }, box = document.getElementById('alert'), lines = [];

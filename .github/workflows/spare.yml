@@ -1,0 +1,26 @@
+name: Spare check
+
+# Is tonight a spare-usage night? (owner, 1 Nov 2026) Reads this week's "Use it" flag from the app (the card shown Tuesday 21:00 to
+# Wednesday 04:30 IST) and prints SPARE=yes or SPARE=no. The Tuesday-night Claude session dispatches it and reads the result. A few seconds.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Read this week's flag
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: |
+          curl() { command curl --connect-timeout 15 --max-time 30 --retry 3 --retry-all-errors --retry-delay 3 "$@"; }
+          B=https://templates.aquariit.com; J=$(mktemp)
+          curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
+          j=$(curl -sf -b "$J" "$B/api/spare") || { echo "::error::could not read /api/spare"; echo "SPARE=no"; exit 1; }
+          v=$(echo "$j" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const j=JSON.parse(d);console.log((j.on?"SPARE=yes":"SPARE=no")+" week="+j.week)})')
+          echo "$v"; echo "$v" >> "$GITHUB_STEP_SUMMARY"

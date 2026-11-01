@@ -91,12 +91,15 @@ jobs:
         env:
           BASIC_AUTH_USER_2: ${{ secrets.BASIC_AUTH_USER_2 }}
           BASIC_AUTH_PASS_2: ${{ secrets.BASIC_AUTH_PASS_2 }}
-        run: | # the optional second account is published only when BOTH of its secrets exist
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+        run: | # the optional second account (and the Web Push keys) are published only when BOTH of their secrets exist
           {
             echo "names<<EOF"
             echo BASIC_AUTH_USER
             echo BASIC_AUTH_PASS
             if [ -n "$BASIC_AUTH_USER_2" ] && [ -n "$BASIC_AUTH_PASS_2" ]; then echo BASIC_AUTH_USER_2; echo BASIC_AUTH_PASS_2; fi
+            if [ -n "$VAPID_PUBLIC_KEY" ] && [ -n "$VAPID_PRIVATE_KEY" ]; then echo VAPID_PUBLIC_KEY; echo VAPID_PRIVATE_KEY; fi   # Web Push (owner adds both)
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
       - name: Ensure the D1 database for reel ticks (never blocks the deploy)
@@ -130,6 +133,8 @@ jobs:
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
           BASIC_AUTH_USER_2: ${{ secrets.BASIC_AUTH_USER_2 }}
           BASIC_AUTH_PASS_2: ${{ secrets.BASIC_AUTH_PASS_2 }}
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -213,6 +218,8 @@ jobs:
           [ "$code" = "200" ] || [ "$code" = "501" ] || { echo "unexpected status"; exit 1; }
           # the app's cards (owner, 1 Nov 2026): closed when signed out; with D1 a test card round-trips and is deleted again
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/cards")" = "401" ] || { echo "cards API must be closed to signed-out requests"; exit 1; }
+          [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/spare")" = "401" ] || { echo "spare API must be closed to signed-out requests"; exit 1; }
+          if [ "$code" = "200" ]; then command curl -sf -b "$J" "$B/api/spare" | grep -q '"week"' || { echo "spare API did not answer"; exit 1; }; echo "OK spare API"; fi
           if [ "$code" = "200" ]; then
             H=(-b "$J" -H 'X-Requested-With: reel' -H 'Content-Type: application/json')
             command curl -sf "${H[@]}" -X PUT -d '{"kind":"note","day":"2000-01-01","points":["smoke test"]}' "$B/api/cards/smoke-test" >/dev/null || { echo "card PUT failed"; exit 1; }
