@@ -25,4 +25,4 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 
 ## Done
 - 1 Nov 2026: Posted list per channel with numbers; MP4s removed 15 days after upload; audit cards in the app; spare-usage night card,
-  push reminder and "Spare check" workflow.
+  push reminder and "Spare check" workflow; Growth step 1 (followers and reach-per-reel charts per channel, light and dark).
