@@ -2,6 +2,8 @@
 // Credentials live ONLY in Worker secrets, never in the repo: BASIC_AUTH_USER / BASIC_AUTH_PASS, plus an optional second account
 // BASIC_AUTH_USER_2 / BASIC_AUTH_PASS_2 (either account can sign in). Fails closed if no account is configured.
 // HTTP Basic headers are still accepted so scripts/CI can authenticate with curl --user.
+import { sendPush, PUSH_HOST } from './push.js';
+
 const COOKIE = 'aq_session', TTL = 60 * 60 * 24 * 30; // 30 days
 // /tips/ (owner, 27 Oct 2026) is the one public page: the reels' fixes with live demos, static only (no data, no API calls)
 const PUBLIC = (p) => p === '/login' || p === '/logout' || p === '/manifest.webmanifest' || p === '/sw.js' || p.startsWith('/icons/') || p === '/tips' || p === '/tips/' || p === '/tips/index.html';
@@ -269,6 +271,74 @@ async function cardsApi(request, env, p) {
   return jres({ error: 'bad-request' }, 400);
 }
 
+// ---- Spare-usage night (owner, 1 Nov 2026): the owner's weekly Claude limit resets Wednesday 04:30 IST. From Tuesday 21:00 IST the app shows a card
+// with one "Use it" button (a flag for that week, stored here); the "Spare check" workflow reads the flag for the night's session. The Worker's cron
+// sends a Web Push reminder at 21:00 IST on Tuesdays to every subscribed device (VAPID keys: Worker secrets VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY).
+const IST_MS = 5.5 * 3600e3, DAY_MS = 864e5;
+function spareWindow(now = Date.now()) {   // the next reset (Wed 04:30 IST) and whether its card is showing (from Tue 21:00 IST)
+  const ist = now + IST_MS, midnight = ist - (ist % DAY_MS), dow = new Date(ist).getUTCDay();
+  let reset = midnight + ((3 - dow + 7) % 7) * DAY_MS + 4.5 * 3600e3;
+  if (reset <= ist) reset += 7 * DAY_MS;
+  return { week: new Date(reset).toISOString().slice(0, 10), show: ist >= reset - 7.5 * 3600e3, until: new Date(reset - IST_MS).toISOString() };
+}
+let spareReady = null;
+async function spareDb(env) {
+  if (!env.DB) return null;
+  spareReady = spareReady || env.DB.batch([
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS spare_week (week TEXT PRIMARY KEY, at TEXT NOT NULL)'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS push_subs (endpoint TEXT PRIMARY KEY, p256dh TEXT NOT NULL, auth TEXT NOT NULL, at TEXT NOT NULL)'),
+  ]).catch((e) => { spareReady = null; throw e; });
+  await spareReady;
+  return env.DB;
+}
+async function spareApi(request, env, p, url) {
+  if (p === '/api/push/key' && request.method === 'GET') return jres({ key: env.VAPID_PUBLIC_KEY || null });
+  let db;
+  try { db = await spareDb(env); } catch { return jres({ error: 'db-unavailable' }, 503); }
+  if (!db) return jres({ error: 'no-db' }, 501);
+  if (request.method !== 'GET' && request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403);
+  if (p === '/api/spare') {
+    const w = spareWindow(), week = DAY_RE.test(url.searchParams.get('week') || '') ? url.searchParams.get('week') : w.week;
+    if (request.method === 'PUT') {
+      let b = null; try { b = await request.json(); } catch { /* handled below */ }
+      if (!b || typeof b.on !== 'boolean') return jres({ error: 'bad-request' }, 400);
+      if (b.on) await db.prepare('INSERT INTO spare_week (week, at) VALUES (?1, ?2) ON CONFLICT(week) DO UPDATE SET at = excluded.at').bind(w.week, new Date().toISOString()).run();
+      else await db.prepare('DELETE FROM spare_week WHERE week = ?1').bind(w.week).run();
+    }
+    const row = await db.prepare('SELECT at FROM spare_week WHERE week = ?1').bind(week).first();
+    return jres({ ...w, week, on: !!row, at: row ? row.at : null });
+  }
+  if (p === '/api/push/subscribe') {
+    let b = null; try { b = await request.json(); } catch { /* handled below */ }
+    const ep = b && typeof b.endpoint === 'string' && b.endpoint.length < 1000 && PUSH_HOST.test(b.endpoint) ? b.endpoint : null;
+    if (!ep) return jres({ error: 'bad-request' }, 400);
+    if (request.method === 'DELETE') { await db.prepare('DELETE FROM push_subs WHERE endpoint = ?1').bind(ep).run(); return jres({ ok: true }); }
+    const k = b.keys || {};
+    if (request.method !== 'POST' || !/^[\w-]{80,100}$/.test(k.p256dh || '') || !/^[\w-]{16,30}$/.test(k.auth || '')) return jres({ error: 'bad-request' }, 400);
+    await db.prepare('INSERT INTO push_subs (endpoint, p256dh, auth, at) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(endpoint) DO UPDATE SET p256dh = excluded.p256dh, auth = excluded.auth, at = excluded.at')
+      .bind(ep, k.p256dh, k.auth, new Date().toISOString()).run();
+    if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return jres({ ok: true, sent: null });
+    const status = await sendPush({ endpoint: ep, keys: k }, { title: 'Notifications are on', body: 'You will get the Tuesday 9 PM spare-usage reminder here.', url: '/' }, env, 600).catch(() => 0);
+    return jres({ ok: true, sent: status });
+  }
+  return jres({ error: 'bad-request' }, 400);
+}
+async function sparePush(env) {   // the cron runs daily at 15:30 UTC (21:00 IST); it only sends on Tuesdays (IST)
+  const w = spareWindow(Date.now() + 120e3);   // a cron may fire a moment early
+  if (!w.show || !env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return { sent: 0, skipped: true };
+  const db = await spareDb(env);
+  if (!db) return { sent: 0 };
+  const { results } = await db.prepare('SELECT endpoint, p256dh, auth FROM push_subs').all();
+  let sent = 0;
+  for (const r of results || []) {
+    const status = await sendPush({ endpoint: r.endpoint, keys: { p256dh: r.p256dh, auth: r.auth } },
+      { title: 'Weekly reset at 4:30 AM', body: 'Spare usage left? Check Settings > Usage in Claude. Tap to open the app.', url: '/' }, env).catch(() => 0);
+    if (status === 404 || status === 410) await db.prepare('DELETE FROM push_subs WHERE endpoint = ?1').bind(r.endpoint).run();   // unsubscribed device
+    else if (status >= 200 && status < 300) sent++;
+  }
+  return { sent };
+}
+
 // ---- Reel-uploaded tracking in D1 (binding "DB"). Without the binding the API answers 501 and the pages fall back to localStorage. ----
 const ID_RE = /^\d{4}-\d{2}-\d{2}(-\d{4})?$/;
 const jsonHeaders = { 'Content-Type': 'application/json', ...noStore };
@@ -343,6 +413,7 @@ async function reelVideo(request, env, name) {
 }
 
 export default {
+  async scheduled(controller, env, ctx) { ctx.waitUntil(sparePush(env)); },
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname;
     const configured = accounts(env).length > 0;
@@ -370,7 +441,7 @@ export default {
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p === '/api/showreels' ? showreelList(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (signedIn) {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
       if (m) { try { const v = await reelVideo(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }

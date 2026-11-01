@@ -1,7 +1,7 @@
 // studio app service worker (home = Showreels).
 // Network-first: HTML + the reel and channel lists (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v12';
+const VERSION = 'v13';
 const CACHE = `aquarii-${VERSION}`;
 const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/channels/channels.json', '/showreels/captions.json', '/icons/icon.svg'];
 
@@ -49,4 +49,19 @@ self.addEventListener('fetch', (e) => {
     return e.respondWith(networkFirst(req, req.mode === 'navigate' ? '/' : null));
   }
   e.respondWith(networkFirst(req, null));
+});
+
+// Web Push (owner, 1 Nov 2026: the Tuesday 9 PM spare-usage reminder). The Worker sends {title, body, url}; a tap opens (or focuses) the app.
+self.addEventListener('push', (e) => {
+  let m = {};
+  try { m = e.data ? e.data.json() : {}; } catch { m = { body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(m.title || 'Studio', { body: m.body || '', icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: m.url || '/' }, tag: 'studio' }));
+});
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const url = new URL((e.notification.data && e.notification.data.url) || '/', self.location.origin).href;
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+    for (const c of list) if (new URL(c.url).origin === self.location.origin && 'focus' in c) { if ('navigate' in c && c.url !== url) c.navigate(url).catch(() => {}); return c.focus(); }
+    return self.clients.openWindow(url);
+  }));
 });
