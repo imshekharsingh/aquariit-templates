@@ -1,0 +1,622 @@
+<!doctype html>
+<!--
+  Turns Out: "Why was the Eiffel Tower almost torn down?" in 2.5D, one continuous camera (owner, 1 Nov 2026: a second version of the
+  3D reel showreel-c3-eiffel-saved, to compare; same story, voice, timing, caption and sources).
+  - Facts (two sources each; the pilot's checked set, unchanged): toureiffel.paris "Why was the Eiffel Tower kept?" and "The Eiffel Tower
+    laboratory"; history.com "How the Eiffel Tower survived"; Guinness World Records "Tallest iron structure". Built for the 1889 Exposition
+    Universelle; 300 m, the tallest structure in the world until 1930; Eiffel's concession ran 20 years (to 1909), after which the City of
+    Paris could have it dismantled; radio trials with Captain Ferrie's army team from 1903; the naval base at Bizerte (Tunisia), across the
+    Mediterranean, reached soon after (no year on screen: accounts say 1904-1907); the concession renewed for 70 years from 1 January 1910;
+    the tower still carries radio and TV transmitters.
+  - Look (design/channel3.md, "2.5D toolkit"): flat engraved layers (ink linework, cross-hatching that stays the same size on screen at any
+    zoom, old paper with fibres, one amber accent) at real depths in front of ONE pinhole camera that never stops and never cuts. The camera
+    flies through the tower's arch into the 1889 crowd, cranes up a measuring rod, pulls back until the tower is the drawing on Eiffel's
+    permit, flies through the "0" of 1909 into the tower at dusk, cranes to the top, follows the radio rings out to a map of the
+    Mediterranean, and comes back in for the stamp and the payoff.
+  - The tower is drawn from its published proportions (toureiffel.paris: base 125 m square, floors at 57, 115 and 276 m); approximate.
+    The permit sheet, the crane with the wrecking ball (what demolition would have meant; it never came), the antenna wires and the
+    radio set are illustrations, not records. The map coastline is hand-traced and approximate.
+  - People: Gustave Eiffel (top hat, grey beard, frock coat) and an army radio operator (kepi, tunic, headphones, telegraph key) as clean
+    illustrated figures recognised by props and setting, never a likeness or a caricature (CLAUDE.md exception for Turns Out).
+  - Every frame is a pure function of t; randomness is seeded (mulberry32). 2D canvas only; no external origin but Google Fonts.
+-->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=540">
+<title>Why the Eiffel Tower was almost torn down (2.5D)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@600;700;800&display=block" rel="stylesheet">
+<style>
+html,body{margin:0;width:540px;height:960px;overflow:hidden;background:#eee2c8}
+canvas{position:absolute;left:0;top:0;width:540px;height:960px}
+</style></head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+(function(){
+  // ---- shared core of the Channel 3 scenes (design/channel3.md): timing, voice, captions, hook, text probes (no scene grain in 3D: the render adds it once) ----
+  var c = document.getElementById('c'), x = c.getContext('2d');   // the 2D layer over the 3D canvas: hook, captions, credit, payoff
+  var FD = "'Playfair Display',Georgia,serif", FI = "'Inter',system-ui,sans-serif";
+  function rnd(s){ return function(){ s |= 0; s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function cl(v, a, b){ return v < a ? a : v > b ? b : v; }
+  function P(t, a, b){ return cl((t - a) / (b - a), 0, 1); }
+  function mix(a, b, k){ return a + (b - a) * k; }
+  function eo(k){ return 1 - Math.pow(1 - k, 3); }
+  function eio(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+  function eb(k){ var q = 1.6; return 1 + (q + 1) * Math.pow(k - 1, 3) + q * Math.pow(k - 1, 2); }
+  function win(t, a, b, f){ f = f || .25; return P(t, a, a + f) * (1 - P(t, b - f, b)); }   // 0 -> 1 -> 0 over [a, b]
+  // every text drawn in the last seek, as its box on screen (CSS px), for scripts/channel3/qa.mjs
+  var BOXES = []; window.__boxes = function(){ return BOXES; };
+  function probe(s, X, Y, al, size){ if (x.globalAlpha < .05) return; var w = x.measureText(s).width, l = al === 'left' ? X : al === 'right' ? X - w : X - w / 2, m = x.getTransform();
+    var a = m.transformPoint(new DOMPoint(l, Y - size * .75)), b = m.transformPoint(new DOMPoint(l + w, Y + size * .2)); BOXES.push([s, Math.min(a.x, b.x) / 2, Math.max(a.x, b.x) / 2, Math.min(a.y, b.y) / 2, Math.max(a.y, b.y) / 2]); }
+  function font(size, f){ var w = f.split(' '); return w[0] + ' ' + size + 'px ' + w.slice(1).join(' '); }
+  function txt(s, X, Y, size, f, col, al, sp){ x.font = font(size, f); x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px';
+    x.fillStyle = col; probe(s, X, Y, x.textAlign, size); x.fillText(s, X, Y); x.letterSpacing = '0px'; }
+  function tw(s, size, f, sp){ x.font = font(size, f); x.letterSpacing = (sp || 0) + 'px'; var w = x.measureText(s).width; x.letterSpacing = '0px'; return w; }
+  function es(k){ k = cl(k, 0, 1); var q = .7; return 1 + (q + 1) * Math.pow(k - 1, 3) + q * Math.pow(k - 1, 2); }   // a soft spring: eases in, settles with a small overshoot
+  // arrive(k): an element travels in (rises 12 px, grows from 86 %, fades up) instead of popping; k from es() so it settles like a spring
+  function arrive(k){ x.globalAlpha *= cl(k * 2.2, 0, 1); var s = mix(.86, 1, k); x.translate(0, (1 - cl(k, 0, 1)) * 12); x.scale(s, s); }
+  function lg(x0, y0, x1, y1, st){ var g = x.createLinearGradient(x0, y0, x1, y1); st.forEach(function(s){ g.addColorStop(s[0], s[1]); }); return g; }
+  function rgb(h){ return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+  function tone(h, f, to){ var a = rgb(h), b = to ? rgb(to) : [0, 0, 0]; return 'rgb(' + a.map(function(v, i){ return Math.round(to ? mix(v, b[i], f) : Math.min(255, v * f)); }).join(',') + ')'; }
+  // a paper piece: one key light from the upper left, so a soft contact shadow falls down and a little right; flat or gradient fill, crisp edge
+  function paper(path, col, sh, edge){ var m = x.getTransform(), k = Math.hypot(m.a, m.b), d = sh == null ? 2.5 : sh; x.save();
+    if (d > 0) { x.shadowColor = 'rgba(40,28,24,.22)'; x.shadowBlur = d * 2.6 * k; x.shadowOffsetX = d * .35 * k; x.shadowOffsetY = d * 1.25 * k; }
+    x.fillStyle = col; path(); x.fill(); x.restore(); if (edge) { x.strokeStyle = edge; x.lineWidth = 1.2; x.stroke(); } }
+  function rr(X, Y, w, h, r){ return function(){ x.beginPath(); x.roundRect(X, Y, w, h, r); }; }
+  function tag(s, X, Y, size, f, col, bg, sp){ var w = tw(s, size, f, sp) + size * 1.1, h = size * 1.75;
+    paper(rr(X - w / 2, Y - h / 2, w, h, h * .22), bg); txt(s, X, Y + size * .36, size, f, col, 'center', sp); }
+  // ---- the story: one start time per sentence, from an estimate of each sentence's length (scripts/showreel/preflight.mjs uses the same
+  // rate: 0.07 s a letter at speed 1, a digit as 4 letters since "1889" is spoken as "eighteen eighty nine"), then a breath ----
+  var SPEED = .95, lt = function(w){ return w.replace(/[^A-Za-z]/g, '').length + 4 * w.replace(/[^0-9]/g, '').length; };
+  var A = [], CAPS = [];
+  function story(lines){   // lines: [[text, breath before it]]
+    var t = 0;
+    lines.forEach(function(L, i){ if (i) t += L[1]; var at = +t.toFixed(2), ws = L[0].split(/\s+/), w0 = at + .05, n = 0;
+      var words = ws.map(function(w){ var o = { d: w, s: w0, e: w0 + lt(w) * .07 / SPEED }; w0 = o.e; n += lt(w); return o; });
+      A.push(at); CAPS.push({ text: L[0], at: at, s: at, e: at + .1 + n * .07 / SPEED, words: words }); t = CAPS[i].e; });
+    window.VOICE = { text: CAPS.map(function(L){ return L.text; }).join(' '), at: A.slice() };
+  }
+  var norm = function(w){ return String(w).toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  window.setVoice = function(v){ if (!v || !v.words || !v.words.length) return; var V = v.words, j = 0;
+    CAPS.forEach(function(L){ L.words.forEach(function(w){ for (var k = j; k < Math.min(V.length, j + 4); k++) if (norm(V[k].w) === norm(w.d)) { w.s = V[k].s; w.e = V[k].e; j = k + 1; return; } }); L.s = L.words[0].s; L.e = L.words[L.words.length - 1].e; }); };
+  var CAPI = -1; window.__cap = function(){ return CAPI; };
+  window.__caps = function(){ return CAPS.map(function(L){ return [L.at, +L.s.toFixed(2), +L.e.toFixed(2), L.text]; }); };
+  // a sentence stays up until the next one starts (no empty caption between them), at most 2.5 s after it is spoken
+  function capAt(t){ for (var i = CAPS.length - 1; i >= 0; i--) if (t >= CAPS[i].s - .12) return t < CAPS[i].e + 2.5 ? i : -1; return -1; }
+  function wrap(words, size, f, maxW){ x.font = font(size, f); var sp = x.measureText(' ').width, lines = [[]], lw = [0];
+    words.forEach(function(w){ var ww = x.measureText(w.d).width, n = lines.length - 1; if (lw[n] && lw[n] + sp + ww > maxW) { lines.push([]); lw.push(0); n++; } lines[n].push([w, ww]); lw[n] += (lw[n] ? sp : 0) + ww; });
+    return { lines: lines, lw: lw, sp: sp }; }
+  // HOOK = { y, col, hl, hlCol, size }: the question, big, at the top while it is spoken (it is sentence 1's caption); then it lifts away
+  // STYLE = { hl: /words in accent/, hlCol, ink, panel }: the caption strip for every other sentence
+  function drawHook(t){
+    var L = CAPS[0], out = P(t, A[1] - .35, A[1] + .1); if (out >= 1) return;
+    var W = wrap(L.words, HOOK.size, '800 ' + FD, 480), lh = HOOK.size * 1.08, y0 = HOOK.y - (W.lines.length - 1) * lh / 2 - eo(out) * 30;
+    x.save(); x.globalAlpha = 1 - out;
+    if (HOOK.label) { var lk = P(t, 0, .3); x.globalAlpha = (1 - out) * lk; tag(HOOK.label, 270, y0 + eo(out) * 30 - HOOK.size - 14, 12, '800 ' + FI, HOOK.labelCol || '#fff', HOOK.labelBg || '#23202b', 2.5); }
+    W.lines.forEach(function(ln, r){ var xx = 270 - W.lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .1, w.s + .12)), hl = HOOK.hl && HOOK.hl.test(w.d);
+        x.globalAlpha = (1 - out) * (.5 + .5 * k); x.save(); x.translate(xx + q[1] / 2, y0 + r * lh); var sc = 1 + .06 * (1 - k); x.scale(sc, sc);
+        if (HOOK.shadow) { x.globalAlpha *= .9; txt(w.d, 2, 3, HOOK.size, '800 ' + FD, HOOK.shadow, 'center', -.6); x.globalAlpha = (1 - out) * (.5 + .5 * k); }
+        txt(w.d, 0, 0, HOOK.size, '800 ' + FD, hl ? HOOK.hlCol : HOOK.col, 'center', -.6); x.restore(); xx += q[1] + W.sp; }); });
+    x.restore();
+  }
+  // the caption card (premium pass, 31 Oct): ONE card that stays up and changes shape from sentence to sentence (no fade out and in);
+  // the old line slides up out of it as the new one rises in word by word
+  function capLay(i){ var size = 27, W = wrap(CAPS[i].words, size, '700 ' + FI, 452), lh = 35, n = W.lines.length, base = 716 - (n - 1) * lh / 2;
+    return { W: W, base: base, pw: Math.max.apply(null, W.lw) + 34, ph: n * lh + 18, py: base - size * .8 - 10, lh: lh, size: size }; }
+  function capWords(C, t, a, dy, lit){ C.W.lines.forEach(function(ln, r){ var xx = 270 - C.W.lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = lit ? 1 : eo(P(t, w.s - .1, w.s + .08)), hl = STYLE.hl && STYLE.hl.test(w.d);
+        x.globalAlpha = a * (.3 + .7 * k); txt(w.d, xx, C.base + r * C.lh + dy - (1 - k) * 3, C.size, '700 ' + FI, hl ? (STYLE.hlFor ? STYLE.hlFor(w.d) : STYLE.hlCol) : (STYLE.ink || '#23202b'), 'left', -.3); xx += q[1] + C.W.sp; }); }); }
+  function drawCaption(t){
+    var i = capAt(t); CAPI = i; if (i < 0) return; if (i === 0) { drawHook(t); return; }
+    var L = CAPS[i], cur = capLay(i), prev = i > 1 && t < L.s + .4 ? capLay(i - 1) : null, mk = P(t, L.s - .14, L.s + .3), m = es(mk);
+    var inK = i > 1 ? 1 : eo(P(t, L.s - .14, L.s + .22)), next = i + 1 < CAPS.length ? CAPS[i + 1].s - .14 : 1e9, outK = eio(P(t, Math.min(next, L.e + 2.5) - .2, Math.min(next, L.e + 2.5)));
+    if (i + 1 < CAPS.length && next < L.e + 2.5) outK = 0;   // the next sentence morphs the card; it never empties
+    var pw = prev ? mix(prev.pw, cur.pw, m) : cur.pw, ph = prev ? mix(prev.ph, cur.ph, m) : cur.ph, cy = (prev ? mix(prev.py + prev.ph / 2, cur.py + cur.ph / 2, m) : cur.py + cur.ph / 2) + (1 - inK) * 18;
+    var A0 = inK * (1 - outK); x.save(); x.globalAlpha = A0;
+    paper(rr(270 - pw / 2, cy - ph / 2, pw, ph, 12), STYLE.panel || '#fbf6ea', 3);
+    x.save(); x.beginPath(); x.rect(270 - pw / 2, cy - ph / 2, pw, ph); x.clip();
+    if (prev && mk < 1) capWords(prev, t, A0 * (1 - eo(P(mk, 0, .32))), (cy - prev.py - prev.ph / 2) - eo(mk) * 16, true);
+    capWords(cur, t, A0 * (prev ? eo(P(mk, .36, .8)) : 1), (cy - cur.py - cur.ph / 2) + (prev ? (1 - eo(P(mk, .3, 1))) * 10 : 0), false);
+    x.restore(); x.restore();
+  }
+  // the source credit (owner, 31 Oct: a short credit on the last frame): a small paper tag at the top for the last 3 s
+  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.5); if (k <= 0) return; k = eo(k); x.save(); x.globalAlpha = k; tag(CREDIT, 270, 92 - (1 - k) * 10, 13, '700 ' + FI, CREAM, 'rgba(17,14,12,.8)', .6); x.restore(); }
+  Object.defineProperty(window, 'COVER', { configurable: true, get: function(){ return +Math.min(CAPS[0].e + .25, A[1] - .3).toFixed(2); } });   // the question fully lit
+  /*kit25:begin*/
+// ---- Turns Out 2.5D toolkit (scripts/channel3/kit25d.js; design/channel3.md, "2.5D toolkit"), inlined after the shared core of the
+// scene (it uses the core's x, cl, P, mix, eo, es, rnd, font, txt, probe) by node scripts/channel3/kit-inline.mjs <scene.html> ----
+// Flat engraved layers at real depths in front of ONE pinhole camera: a layer at depth Z draws in metres (y up) at F / (Z - cz) px per
+// metre, so every move has true parallax. The camera never stops: keys are eased with a little speed left at each key.
+var K25 = (function(){
+  var F = 810, CUR = { s: 1, cam: { x: 0, y: 0, z: -810 } }, OX = 0, OY = 0;
+  // track(keys)(t): keys [t, x, y, cz, f]; between two keys the distance to plane f (the next key's, default 0) moves in log space and
+  // x, y follow it (so a long zoom keeps its target in frame: the centre moves with 1/zoom); short moves ease. Speed never drops to 0.
+  function track(keys){ return function(t){
+    if (t <= keys[0][0]) return { x: keys[0][1], y: keys[0][2], z: keys[0][3] };
+    for (var i = 0; i + 1 < keys.length; i++) { var a = keys[i], b = keys[i + 1]; if (t <= b[0] || i + 2 === keys.length) {
+      var k = cl((t - a[0]) / (b[0] - a[0]), 0, 1), e = .3 * k + .7 * k * k * (3 - 2 * k), f = b[4] || 0, d0 = f - a[3], d1 = f - b[3];
+      var d = Math.exp(mix(Math.log(d0), Math.log(d1), e)), w = Math.abs(Math.log(d1 / d0)) > 1.5 ? (d - d0) / (d1 - d0) : e;
+      return { x: mix(a[1], b[1], w), y: mix(a[2], b[2], w), z: f - d }; } }
+  }; }
+  // off(ox, oy): shift the whole picture on screen (a world seen through a hole); use(cam, Z): metres at depth Z, y up; returns px per metre (0 = behind)
+  function off(ox, oy){ OX = ox; OY = oy; }
+  function use(cam, Z){ var dz = Z - cam.z; if (dz < .05) return 0; var s = F / dz; CUR.s = s; CUR.cam = cam;
+    x.setTransform(2 * s, 0, 0, -2 * s, 2 * (270 + OX - cam.x * s), 2 * (480 + OY + cam.y * s)); return s; }
+  function screen(){ x.setTransform(2, 0, 0, 2, 0, 0); }
+  function proj(cam, X, Y, Z){ var dz = Z - cam.z; if (dz < .05) return null; var s = F / dz; return { x: 270 + OX + (X - cam.x) * s, y: 480 + OY - (Y - cam.y) * s, s: s }; }
+  // the part of the current layer on screen, in metres (plus a margin in px)
+  // the current drawing scale (px per unit, any extra translate or scale included) and what is on screen in the current units
+  function cs(){ var m = x.getTransform(); return Math.hypot(m.a, m.b) / 2; }
+  function vis(m){ var I = x.getTransform().inverse(), s = cs(), r = { x0: 1e18, x1: -1e18, y0: 1e18, y1: -1e18 }; m = (m || 0) / s;
+    [[0, 0], [1080, 0], [0, 1920], [1080, 1920]].forEach(function(q){ var p = I.transformPoint(new DOMPoint(q[0], q[1])); r.x0 = Math.min(r.x0, p.x - m); r.x1 = Math.max(r.x1, p.x + m); r.y0 = Math.min(r.y0, p.y - m); r.y1 = Math.max(r.y1, p.y + m); }); return r; }
+  function px(v){ return v / cs(); }   // a size on screen (CSS px) in the current layer's metres
+  // hatch: engraved lines at angle a across a box (metres), spaced about sp px on screen at any zoom: lines are fixed to the layer at a
+  // power-of-two spacing and every other one fades out as the zoom halves them (no swimming, no popping)
+  function hatch(x0, y0, x1, y1, a, sp, col, lw){ var V = vis(4); x0 = Math.max(x0, V.x0); x1 = Math.min(x1, V.x1); y0 = Math.max(y0, V.y0); y1 = Math.min(y1, V.y1); if (x1 <= x0 || y1 <= y0) return;
+    var s = cs(), l2 = Math.log2(sp / s), n = Math.floor(l2), base = Math.pow(2, n), fr = l2 - n, dx = Math.cos(a), dy = Math.sin(a), nx = -dy, ny = dx;
+    var nmin = 1e18, nmax = -1e18, umin = 1e18, umax = -1e18;
+    [[x0, y0], [x1, y0], [x0, y1], [x1, y1]].forEach(function(p){ var q = p[0] * nx + p[1] * ny, u = p[0] * dx + p[1] * dy; nmin = Math.min(nmin, q); nmax = Math.max(nmax, q); umin = Math.min(umin, u); umax = Math.max(umax, u); });
+    var i0 = Math.floor(nmin / base), i1 = Math.ceil(nmax / base); if (i1 - i0 > 900) return;
+    x.lineWidth = (lw || .8) / s; x.strokeStyle = col; var ga = x.globalAlpha;
+    for (var pass = 0; pass < 2; pass++) { x.beginPath(); for (var i = i0; i <= i1; i++) { if ((i & 1) !== pass) continue; var o = i * base; x.moveTo(nx * o + dx * umin, ny * o + dy * umin); x.lineTo(nx * o + dx * umax, ny * o + dy * umax); }
+      if (pass) x.globalAlpha = ga * (1 - fr); x.stroke(); x.globalAlpha = ga; }
+  }
+  function path(pts, close){ x.beginPath(); pts.forEach(function(p, i){ if (i) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); }); if (close) x.closePath(); }
+  function ink(w, col){ x.lineWidth = w / cs(); x.strokeStyle = col || '#2a1f17'; x.lineJoin = 'round'; x.lineCap = 'round'; x.stroke(); }
+  function fill(col){ x.fillStyle = col; x.fill(); }
+  function seg(a, b, c0, d){ x.moveTo(a, b); x.lineTo(c0, d); }
+  // a world text (not a caption): drawn upright in the layer, size in metres; not reported to qa (it may sit half off screen while the camera passes)
+  function wtxt(s, X, Y, size, f, col, al, sp){ x.save(); x.translate(X, Y); x.scale(1, -1); x.font = font(size, f); x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px'; x.fillStyle = col; x.fillText(s, 0, 0); x.restore(); }
+  // paper: fibres, mottling, specks and a warm vignette on white, laid over the frame with 'multiply' (static: it is the paper, not film grain)
+  function paperTex(seed){ var cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1920; var g = cv.getContext('2d'), r = rnd(seed), i;
+    g.fillStyle = '#fff'; g.fillRect(0, 0, 1080, 1920);
+    for (i = 0; i < 70; i++) { var X = r() * 1080, Y = r() * 1920, R = 80 + r() * 280, gr = g.createRadialGradient(X, Y, 0, X, Y, R); gr.addColorStop(0, 'rgba(150,118,78,' + (.02 + r() * .035).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(150,118,78,0)'); g.fillStyle = gr; g.fillRect(X - R, Y - R, 2 * R, 2 * R); }
+    g.lineCap = 'round';
+    for (i = 0; i < 6000; i++) { var X2 = r() * 1080, Y2 = r() * 1920, a = r() * Math.PI, L = 3 + r() * 13; g.strokeStyle = 'rgba(125,98,62,' + (.04 + r() * .07).toFixed(3) + ')'; g.lineWidth = .6 + r() * .7;
+      g.beginPath(); g.moveTo(X2, Y2); g.quadraticCurveTo(X2 + Math.cos(a) * L * .5 + (r() - .5) * 3, Y2 + Math.sin(a) * L * .5 + (r() - .5) * 3, X2 + Math.cos(a) * L, Y2 + Math.sin(a) * L); g.stroke(); }
+    for (i = 0; i < 2200; i++) { g.fillStyle = 'rgba(92,70,45,' + (.05 + r() * .1).toFixed(3) + ')'; g.fillRect(r() * 1080, r() * 1920, 1 + r() * 1.3, 1 + r() * 1.3); }
+    var v = g.createRadialGradient(540, 880, 520, 540, 880, 1280); v.addColorStop(0, 'rgba(110,80,50,0)'); v.addColorStop(1, 'rgba(110,80,50,.3)'); g.fillStyle = v; g.fillRect(0, 0, 1080, 1920);
+    return cv; }
+  // ---- kinetic type (screen space, reported to qa) ----
+  // roll: the digits roll up into place one column after another (an odometer); letters fade up; k 0 -> 1. knock: a paper outline behind dark type
+  function roll(s, X, Y, size, f, col, k, knock){ if (k <= 0) return; x.save(); x.font = font(size, f); x.textAlign = 'left'; x.letterSpacing = '0px';
+    var w = x.measureText(s).width, xx = X - w / 2, n = s.length; x.globalAlpha *= cl(k * 3, 0, 1); probe(s, X, Y, 'center', size);
+    for (var i = 0; i < n; i++) { var ch = s[i], cw = x.measureText(ch).width, kc = eo(cl((k - i * .08) / .7, 0, 1));
+      if (/[0-9]/.test(ch)) { var o = (1 - kc) * 4, v = +ch; x.save(); x.beginPath(); x.rect(xx - 4, Y - size * .95, cw + 8, size * 1.25); x.clip();
+        for (var j = Math.max(0, Math.floor(o) - 1); j <= Math.ceil(o) + 1; j++) { var yy = Y - (j - o) * size * 1.05; if (knock) { x.strokeStyle = knock; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(String((v + j * 7) % 10), xx, yy); } x.fillStyle = col; x.fillText(String((v + j * 7) % 10), xx, yy); }
+        x.restore(); }
+      else if (ch !== ' ') { x.save(); x.globalAlpha *= kc; if (knock) { x.strokeStyle = knock; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(ch, xx, Y + (1 - kc) * 10); } x.fillStyle = col; x.fillText(ch, xx, Y + (1 - kc) * 10); x.restore(); }
+      xx += cw; }
+    x.restore(); }
+  // label: small spaced capitals that slide in from the left edge of their own box as k goes 0 -> 1
+  function label(s, X, Y, size, f, col, k, sp, knock){ if (k <= 0) return; x.save(); x.globalAlpha *= cl(k * 2, 0, 1); var w = tw(s, size, f, sp);
+    x.beginPath(); x.rect(X - w / 2 - 6, Y - size * 1.1, (w + 12) * eo(k), size * 1.6); x.clip();
+    if (knock) { x.font = font(size, f); x.letterSpacing = sp + 'px'; x.textAlign = 'center'; x.strokeStyle = knock; x.lineWidth = size * .35; x.lineJoin = 'round'; x.strokeText(s, X, Y); x.letterSpacing = '0px'; }
+    txt(s, X, Y, size, f, col, 'center', sp); x.restore(); }
+  // stamp: a rubber stamp that lands (scale 1.5 -> 1 with a settle), ink-coloured frame and letters on a pale wash, rotated a little
+  function stamp(lines, X, Y, rot, col, k, wash){ if (k <= 0) return; var sc = mix(1.5, 1, es(k)); x.save(); x.translate(X, Y); x.rotate(rot); x.scale(sc, sc); x.globalAlpha *= cl(k * 3, 0, 1);
+    var W0 = 0, H0 = 0; lines.forEach(function(L){ W0 = Math.max(W0, tw(L[0], L[1], L[2], L[3] || 0)); H0 += L[1] * 1.08; }); W0 += 46; H0 += 26;
+    x.fillStyle = wash || 'rgba(244,234,212,.86)'; x.beginPath(); x.roundRect(-W0 / 2, -H0 / 2, W0, H0, 8); x.fill();
+    x.strokeStyle = col; x.lineWidth = 4; x.stroke(); x.lineWidth = 1.5; x.beginPath(); x.roundRect(-W0 / 2 + 7, -H0 / 2 + 7, W0 - 14, H0 - 14, 4); x.stroke();
+    var yy = -H0 / 2 + 13; lines.forEach(function(L){ yy += L[1] * .95; if (L[4] == null || L[4] > 0) { x.save(); x.globalAlpha *= L[4] == null ? 1 : cl(L[4] * 2.5, 0, 1); txt(L[0], 0, yy, L[1], L[2], col, 'center', L[3] || 0); x.restore(); } yy += L[1] * .13; });
+    x.restore(); }
+  // rings(cam, X, Y, Z, t, t0, every, col): radio rings from a point, each growing exp(3 * age) metres from 12 m: on screen they keep
+  // spreading at any zoom (Paris to Tunisia, about 1,400 km, in about 3.9 s)
+  function rings(cam, X, Y, Z, t, t0, t1, every, col){ var c0 = proj(cam, X, Y, Z); if (!c0) return; screen();
+    for (var e = t0; e <= Math.min(t, t1); e += every) { var age = t - e, r = 12 * Math.exp(3 * age) * c0.s; if (r < 2 || r > 1400) continue;
+      var a = P(r, 2, 14) * (1 - P(r, 700, 1400)) * (1 - P(age, 4.6, 5.6)); if (a <= 0) continue;
+      x.save(); x.globalAlpha *= a; x.strokeStyle = col; x.lineWidth = 2.2; x.beginPath(); x.arc(c0.x, c0.y, r, 0, 7); x.stroke();
+      x.globalAlpha *= .45; x.lineWidth = 1; x.beginPath(); x.arc(c0.x, c0.y, r * .93, 0, 7); x.stroke(); x.restore(); } }
+  // ---- the scenery ----
+  // ground(cam, col, line): the y = 0 plane in perspective (rows every 20 m fixed to the ground, paths given as x positions)
+  function ground(cam, col, line, paths, zFrom, zTo){ var hz = 480 + OY; if (cam.y <= .05) return; screen();
+    x.fillStyle = col; x.fillRect(0, hz, 540, 960 - hz + 1);
+    x.strokeStyle = line; x.lineWidth = .8; var z0 = Math.ceil((cam.z + 1) / 20) * 20;
+    for (var Z = z0; Z < cam.z + 30000; Z += Z - cam.z > 2000 ? 160 : Z - cam.z > 500 ? 40 : 20) { var p = proj(cam, 0, 0, Z), q = proj(cam, 0, 0, Z + 20); if (!p || p.y > 980) continue; var gap = p.y - q.y;
+      if (gap < 1.2) break; x.globalAlpha = cl((gap - 1.2) / 3, 0, 1) * .5; x.beginPath(); x.moveTo(0, p.y); x.lineTo(540, p.y); x.stroke(); }
+    x.globalAlpha = 1; (paths || []).forEach(function(px0){ var a = proj(cam, px0, 0, Math.max(zFrom, cam.z + 1)), b = proj(cam, px0, 0, zTo); if (!a || !b) return; x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x, b.y); x.globalAlpha = .55; x.stroke(); });
+    x.globalAlpha = 1; }
+  // city(Z, seed, tone, o): an endless row of Paris blocks at depth Z (six storeys, zinc mansards, chimneys, a dome now and then)
+  function city(Z, seed, tone, o){ var s = cs(), V = vis(20), cw = 30, dark = o.dark || 'rgba(42,31,23,.55)';
+    for (var i = Math.floor(V.x0 / cw) - 1; i <= Math.ceil(V.x1 / cw); i++) { var r = rnd(seed * 7919 + i * 104729), b0 = i * cw, w = cw * (.7 + r() * .3), h = (o.h || 20) * (.8 + r() * .45), m = 4 + r() * 3;
+      x.beginPath(); x.moveTo(b0, -3); x.lineTo(b0, h); x.lineTo(b0 + 2, h + m); x.lineTo(b0 + w - 2, h + m); x.lineTo(b0 + w, h); x.lineTo(b0 + w, -3); x.closePath(); x.fillStyle = tone; x.fill();
+      if (s * h > 14) { x.lineWidth = .7 / s; x.strokeStyle = dark; x.stroke(); }
+      for (var c0 = 0; c0 < 2; c0++) { var cx0 = b0 + w * (.2 + c0 * .55) + r() * 2; x.fillStyle = tone; x.fillRect(cx0, h + m - 1, 2, 3.5); if (s * 3 > 4) { x.lineWidth = .6 / s; x.strokeRect(cx0, h + m - 1, 2, 3.5); } }
+      if (s * 1.4 > 2.2) { x.fillStyle = dark; var fl = Math.floor(h / 3.3); x.globalAlpha *= .8; for (var f0 = 1; f0 < fl; f0++) for (var wx = b0 + 2.2; wx < b0 + w - 2.5; wx += 3.6) x.fillRect(wx, f0 * 3.3, 1.2, 1.9); x.globalAlpha /= .8;
+        x.save(); x.beginPath(); x.moveTo(b0, h); x.lineTo(b0 + 2, h + m); x.lineTo(b0 + w - 2, h + m); x.lineTo(b0 + w, h); x.closePath(); x.clip(); hatch(b0, h, b0 + w, h + m, Math.PI / 2, 3.2, dark, .6); x.restore(); }
+      if (o.domes && r() < .05) { var dx = b0 + w / 2, dh = h + m + 8; x.beginPath(); x.moveTo(dx - 9, dh - 6); x.lineTo(dx - 9, dh); x.arc(dx, dh, 9, Math.PI, 0, true); x.lineTo(dx + 9, dh - 6); x.closePath(); x.fillStyle = tone; x.fill(); x.lineWidth = .7 / s; x.strokeStyle = dark; x.stroke(); x.fillRect(dx - .6, dh + 9, 1.2, 6); }
+    } }
+  // tree(X, Z-scale, seed, tone): an engraved tree on its layer: a trunk and a crown of overlapping lobes, shaded on the right with hatching
+  function tree(X, h, seed, tone, ink){ var r = rnd(seed), s = cs(); x.fillStyle = ink; x.fillRect(X - h * .03, 0, h * .06, h * .45);
+    var lobes = []; for (var i = 0; i < 9; i++) lobes.push([X + (r() - .5) * h * .55, h * (.55 + r() * .35), h * (.16 + r() * .1)]);
+    x.beginPath(); lobes.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.arc(L[0], L[1], L[2], 0, 7); }); x.fillStyle = tone; x.fill();
+    if (s * h > 30) { x.save(); x.clip(); hatch(X - h * .5, h * .3, X + h * .5, h * 1.2, -.9, 3.4, ink, .7); x.restore();
+      x.save(); x.beginPath(); lobes.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.arc(L[0], L[1], L[2], 0, 7); }); x.clip(); x.beginPath(); x.rect(X - h * .05, 0, h, h * 2); x.clip(); hatch(X - h * .05, h * .3, X + h * .5, h * 1.2, .9, 2.6, ink, .7); x.restore(); }
+    x.beginPath(); lobes.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.arc(L[0], L[1], L[2], 0, 7); }); x.lineWidth = .8 / s; x.strokeStyle = ink; x.globalAlpha *= .6; x.stroke(); x.globalAlpha /= .6; }
+  // ---- people: clean illustrated figures in metres (feet at 0, facing +x), recognised by props, no facial detail beyond an eye dot ----
+  // person(o): o.h height, o.coat/o.trousers/o.skin/o.hair colours, o.hat 'top'|'bowler'|'kepi'|'lady'|'', o.beard colour, o.stache,
+  // o.dress (long skirt), o.sit (seated on a chair), o.arms [[hx, hy], [hx, hy]] hand targets (back arm, front arm; two-bone reach),
+  // o.phones (headphones), o.buttons colour, o.chain (watch chain colour), o.detail (0 = silhouette for far crowds)
+  function reach(sx, sy, tx, ty, l1, l2, bend){ var dx = tx - sx, dy = ty - sy, d = Math.min(Math.hypot(dx, dy), l1 + l2 - 1e-4), a = Math.atan2(dy, dx), c0 = cl((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d), -1, 1), e = a + (bend || 1) * Math.acos(c0);
+    return [sx + Math.cos(e) * l1, sy + Math.sin(e) * l1, sx + Math.cos(a) * d, sy + Math.sin(a) * d]; }
+  function limb(pts, w, col, outline){ x.beginPath(); x.moveTo(pts[0], pts[1]); for (var i = 2; i < pts.length; i += 2) x.lineTo(pts[i], pts[i + 1]); x.lineCap = 'round'; x.lineJoin = 'round';
+    if (outline) { x.lineWidth = w + 1.6 / cs(); x.strokeStyle = outline; x.stroke(); } x.lineWidth = w; x.strokeStyle = col; x.stroke(); }
+  function person(o){ var h = o.h || 1.78, k = h / 1.78, OL = o.detail === 0 ? null : (o.ink || 'rgba(30,22,16,.85)'), sit = !!o.sit;
+    x.save(); x.scale(k, k);
+    var hipY = sit ? .5 : .93, sh = sit ? 1.2 : 1.44, hy = sh + .17, arms = o.arms || [[-.05, sit ? .75 : .85], [.08, sit ? .75 : .85]];
+    if (sit) { x.fillStyle = o.chair || '#5a4330'; x.fillRect(-.24, .44, .36, .04); x.fillRect(-.24, 0, .03, .46); x.fillRect(.08, 0, .03, .46); x.fillRect(-.26, .44, .03, .55); }
+    var ah = function(i){ var tgt = arms[i], s0 = [i ? .06 : -.06, sh - .04], j = reach(s0[0], s0[1], tgt[0] / k, tgt[1] / k, .3, .29, i ? -1 : -1); return [s0[0], s0[1], j[0], j[1], j[2], j[3]]; };
+    var A0 = ah(0); limb(A0, .085, o.coat2 || o.coat, OL); x.beginPath(); x.arc(A0[4], A0[5], .04, 0, 7); fill(o.skin);
+    // legs
+    if (sit) { limb([-.04, hipY, .36, hipY + .02, .38, .02], .13, o.trousers, OL); limb([.02, hipY, .42, hipY + .02, .44, .02], .13, o.trousers, OL);
+      x.beginPath(); x.ellipse(.47, .03, .1, .04, 0, 0, 7); fill(o.shoes || '#1d1713'); }
+    else if (o.dress) { path([[-.16, sh - .02], [.12, sh - .02], [.16, .9], [.3, .02], [-.28, .02], [-.18, .9]], true); fill(o.dress); if (OL) ink(.9, OL); }
+    else { limb([-.03, hipY, -.06, .05], .12, o.trousers, OL); limb([.05, hipY, .1, .05], .12, o.trousers, OL);
+      x.beginPath(); x.ellipse(-.02, .03, .1, .035, 0, 0, 7); x.ellipse(.15, .03, .1, .035, 0, 0, 7); fill(o.shoes || '#1d1713'); }
+    // body: a frock coat to the knee, a tunic to the hip
+    if (!o.dress) { var hem = sit ? hipY - .02 : (o.long ? .52 : .82);
+      path([[-.14, sh], [-.02, sh + .05], [.1, sh], [.15, sh - .2], [.12, hipY + .08], [o.long ? .17 : .14, hem], [o.long ? -.19 : -.15, hem], [-.15, hipY + .1]], true); fill(o.coat); if (OL) ink(.9, OL);
+      if (o.detail !== 0) { x.save(); path([[-.14, sh], [-.02, sh + .05], [.1, sh], [.15, sh - .2], [.12, hipY + .08], [.17, hem], [-.19, hem], [-.15, hipY + .1]], true); x.clip();
+          hatch(-.2, hem, -.02, sh + .1, 1.1, 3, 'rgba(0,0,0,.35)', .6); x.restore();
+        if (o.shirt) { path([[-.02, sh + .05], [.08, sh + .01], [.05, sh - .18]], true); fill(o.shirt); path([[-.02, sh + .05], [.1, sh], [.13, sh - .14], [.06, sh - .3]]); ink(.9, 'rgba(0,0,0,.45)'); x.beginPath(); x.ellipse(.03, sh + .01, .03, .015, 0, 0, 7); fill('#1b1511'); }
+        if (o.buttons) { for (var b = 0; b < 4; b++) { x.beginPath(); x.arc(.1 - b * .005, sh - .1 - b * .1, .012, 0, 7); fill(o.buttons); } }
+        if (o.chain) { x.beginPath(); x.moveTo(.11, hipY + .2); x.quadraticCurveTo(.03, hipY + .12, -.04, hipY + .2); ink(1.2, o.chain); }
+        if (o.belt) { x.fillStyle = o.belt; x.fillRect(-.15, hipY + .1, .29, .045); } } }
+    // head
+    x.fillStyle = o.skin; x.fillRect(-.03, sh, .07, .08);
+    x.beginPath(); x.ellipse(.02, hy, .095, .115, 0, 0, 7); fill(o.skin); if (OL) ink(.9, OL);
+    if (o.detail !== 0) {
+      if (o.hair) { x.beginPath(); x.ellipse(-.035, hy + .02, .06, .085, -.2, 0, 7); fill(o.hair); }
+      x.beginPath(); x.ellipse(-.005, hy, .022, .032, 0, 0, 7); fill(o.ear || 'rgba(150,95,70,.55)');
+      if (o.beard) { path([[-.02, hy - .01], [.0, hy - .1], [.06, hy - .16], [.115, hy - .09], [.117, hy - .04], [.08, hy - .055], [.03, hy - .04]], true); fill(o.beard); if (OL) ink(.7, 'rgba(40,30,22,.6)'); }
+      if (o.stache || o.beard) { x.beginPath(); x.ellipse(.095, hy - .04, .035, .014, -.15, 0, 7); fill(o.stache || o.beard); }
+      x.beginPath(); x.arc(.075, hy + .025, .011, 0, 7); fill('#1b1511');
+      x.beginPath(); x.moveTo(.105, hy + .02); x.lineTo(.125, hy - .015); x.lineTo(.1, hy - .02); fill(o.skin); }
+    // hats
+    if (o.hat === 'top') { x.beginPath(); x.ellipse(.02, hy + .095, .15, .024, 0, 0, 7); fill(o.hatc || '#1b1613'); path([[-.075, hy + .095], [-.085, hy + .33], [.125, hy + .33], [.115, hy + .095]], true); fill(o.hatc || '#1b1613'); if (o.band) { x.fillStyle = o.band; x.fillRect(-.078, hy + .1, .196, .035); } }
+    else if (o.hat === 'bowler') { x.beginPath(); x.ellipse(.02, hy + .085, .14, .022, 0, 0, 7); x.ellipse(.02, hy + .1, .1, .1, 0, Math.PI, 0, true); fill(o.hatc || '#2a221c'); }
+    else if (o.hat === 'kepi') { path([[-.07, hy + .07], [-.06, hy + .2], [.1, hy + .21], [.105, hy + .07]], true); fill(o.hatc || '#2f3546'); x.fillStyle = o.kepiTop || '#7b3a2b'; x.fillRect(-.062, hy + .14, .165, .07);
+      path([[.08, hy + .075], [.17, hy + .055], [.1, hy + .09]], true); fill('#14100d'); if (OL) { path([[-.07, hy + .07], [-.06, hy + .2], [.1, hy + .21], [.105, hy + .07]], true); ink(.8, OL); } }
+    else if (o.hat === 'lady') { x.beginPath(); x.ellipse(.02, hy + .08, .17, .03, -.08, 0, 7); fill(o.hatc || '#6b4a35'); x.beginPath(); x.ellipse(.01, hy + .12, .08, .06, 0, 0, 7); fill(o.hatc || '#6b4a35'); x.beginPath(); x.arc(.09, hy + .13, .025, 0, 7); fill(o.flower || '#c97a26'); }
+    if (o.phones) { x.beginPath(); x.ellipse(-.005, hy, .035, .045, 0, 0, 7); fill('#1d1916'); x.beginPath(); x.moveTo(-.005, hy + .04); x.quadraticCurveTo(-.02, hy + .26, .02, hy + .26); ink(1.4, '#1d1916'); }
+    if (o.parasol) { var pt = [.32, 1.05]; x.beginPath(); x.moveTo(pt[0], pt[1]); x.lineTo(pt[0] - .05, 1.95); ink(1, '#2a1f17'); x.beginPath(); x.ellipse(pt[0] - .05, 1.92, .42, .14, 0, Math.PI, 0, true); fill(o.parasol); if (OL) ink(.8, OL); }
+    // front arm last
+    var A1 = ah(1); limb(A1, .085, o.coat, OL); x.beginPath(); x.arc(A1[4], A1[5], .042, 0, 7); fill(o.skin);
+    if (o.cuff) { x.beginPath(); x.arc(A1[2] + (A1[4] - A1[2]) * .85, A1[3] + (A1[5] - A1[3]) * .85, .045, 0, 7); fill(o.cuff); x.beginPath(); x.arc(A1[4], A1[5], .04, 0, 7); fill(o.skin); }
+    x.restore(); }
+  return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
+    paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, city: city, tree: tree, person: person, reach: reach, limb: limb };
+})();
+/*kit25:end*/
+
+  // ---- the story (the facts and voice of the 3D reel, unchanged; see the header) ----
+  story([['Why was the Eiffel Tower almost torn down?', 0], ["It was built for the 1889 World's Fair.", .45], ['At 300 metres, it was the tallest structure on Earth.', .4],
+    ["But Eiffel's permit lasted only twenty years.", .45], ['In 1909, the city could tear it down.', .4], ['So Eiffel found it a new job.', .45],
+    ['In 1903, he let the army test radio from the top.', .3], ['Soon its signals crossed the Mediterranean.', .4], ['Too useful to lose, it was saved in 1910.', .45],
+    ['And it is still on air today.', .45]]);
+  var DUR = +(CAPS[CAPS.length - 1].e + 1.9).toFixed(1);
+  var CREAM = '#fbf1e1', AMBER = '#f2b46a', INK = '#2a1f17', AMBD = '#a3561a', PAPER = '#eee2c8';
+  var HOOK = { y: 196, size: 44, col: INK, hl: /^(eiffel|tower|torn|down)/i, hlCol: AMBD, label: 'THE TRUE STORY', labelBg: 'rgba(30,22,16,.88)', labelCol: AMBER };
+  var STYLE = { hl: /^(1889|300|twenty|1909|job|radio|army|1903|mediterranean|saved|1910|air)/i, hlCol: AMBER, ink: CREAM, panel: 'rgba(30,22,16,.86)' };
+  var CREDIT = 'SOURCES: TOUR EIFFEL OFFICIAL SITE · HISTORY.COM';
+  var PAYOFF = 'Saved by radio.';
+  function WT(i, re){ var w = CAPS[i].words; for (var j = 0; j < w.length; j++) if (re.test(w[j].d)) return w[j].s; return CAPS[i].s; }   // when a word is spoken
+
+  // ================= the 2.5D world: engraved layers at real depths, one camera (kit25d.js, inlined above) =================
+  var Kt = K25, use = Kt.use, hatch = Kt.hatch, path = Kt.path, inkL = Kt.ink, fillP = Kt.fill, proj = Kt.proj;
+  var SKY0 = '#e4d0a6', SKY1 = '#f3e6c9', GROUND = '#e2d2ae', LINE = 'rgba(70,52,36,.6)', WASH = 'rgba(60,44,30,.10)';
+  var PAPERTEX = null;
+
+  // the camera: one track until it flies through the "0" of 1909 (A), then one from inside the 0 to the end (B). Keys [t, x, y, cz, plane]
+  var camA = Kt.track([
+    [0, 0, 150, -820], [2.75, 0, 142, -610],                                // the hook: the whole tower, a slow push in
+    [4.35, 1.2, 1.7, 7.4, 14],                                              // through the arch into the 1889 crowd
+    [5.75, 4.6, 1.85, 6.4, 14],                                             // a slow track along the crowd
+    [6.75, -30, 16, -62, 14],                                               // back out through the arch, rising
+    [9.45, -32, 282, -158], [10.95, 0, 165, -640],                          // up the leg beside the measure; pull back to the whole tower
+    [12.3, -150, 40, -1500],                                                // ... it is the drawing on Eiffel's permit
+    [14.35, 0, -190, -600], [14.85, 0, -196, -470],                                                 // push in to "20"
+    [15.85, 0, -205, -4]                                                    // through the 0 of 1909 (x, y set at load)
+  ]);
+  var camB = Kt.track([
+    [14.5, 10, 130, -2700], [15.9, -12, 112, -520], [17.55, -6, 140, -450],  // inside the 0: the tower at dusk, a crane and its wrecking ball
+    [19.45, -1.0, 277.4, -8.9, -4.2],                                     // up to the top: Eiffel
+    [20.6, 1.75, 277.15, -8.4, -3.4],                                       // across to the army's radio operator
+    [22.35, 1.1, 284, -26, -3.4], [23.85, 0, 304, -135],                    // up the wire to the antenna, the rings start
+    [24.55, 0, 260, -5000], [25.3, 330000, -900000, -2500000], [27.1, 352000, -925000, -2350000],   // out to the map: Paris to Bizerte
+    [27.75, 0, 0, -9000], [28.95, 0, 150, -720], [30.85, 0, 168, -560],                           // back in to the tower, saved
+    [32.7, 0, 238, -350], [34.4, 0, 232, -430]                              // up to today's antennas, a last pull back
+  ]);
+  var HOLE = { x: 0, y: -205, rx: 10, ry: 30 };   // the counter of the "0" in 1909 on the permit (measured from the font at load)
+
+  // ---------- the tower (metres, from its published proportions; approximate) ----------
+  function hw(y){ return 5.5 + 57 * Math.exp(-y / 72); }                                    // half width of the outer edge
+  function xi(y){ return y >= 185 ? 0 : hw(y) * .6 * Math.pow(1 - y / 185, 1.3); }          // half width of the gap between the legs
+  var LEV = (function(){ var L = [0], y = 0; while (y < 273) { y = Math.min(273, y + Math.max(3.2, (hw(y) - xi(y)) * .85)); L.push(y); } return L; })();
+  function edge(f, y0, y1, sg){ var pts = []; for (var y = y0; y <= y1 + .01; y += (y1 - y0) / 40) pts.push([sg * f(y), y]); return pts; }
+  function lattice(ya, yb, oa, ob, ia, ib, s, V){   // a panel from (oa..ia at ya) to (ob..ib at yb): the big X, then finer diamonds as it grows on screen
+    if (yb < V.y0 || ya > V.y1) return;
+    x.beginPath(); Kt.seg(oa, ya, ib, yb); Kt.seg(ia, ya, ob, yb); Kt.seg(oa, ya, ia, ya); inkL(.9, 'rgba(42,31,23,.85)');
+    var hp = (yb - ya) * s;
+    for (var L = 1; L <= 4; L++) { var n = Math.pow(2, L), a = cl((hp / n - 30) / 50, 0, 1); if (a <= 0) break; x.save(); x.globalAlpha *= a * .8; x.beginPath();
+      for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) { var v0 = i / n, v1 = (i + 1) / n, u0 = j / n, u1 = (j + 1) / n, y0 = mix(ya, yb, v0), y1 = mix(ya, yb, v1);
+        var p00 = mix(mix(oa, ob, v0), mix(ia, ib, v0), u0), p01 = mix(mix(oa, ob, v0), mix(ia, ib, v0), u1), p10 = mix(mix(oa, ob, v1), mix(ia, ib, v1), u0), p11 = mix(mix(oa, ob, v1), mix(ia, ib, v1), u1);
+        Kt.seg(p00, y0, p11, y1); Kt.seg(p01, y0, p10, y1); }
+      inkL(.6, 'rgba(42,31,23,.7)'); x.restore(); }
+  }
+  function tower(s, o){ o = o || {}; var V = Kt.vis(30), top = o.back ? 58 : 276, close = cl((s - 16) / 10, 0, 1);
+    // stone piers
+    [-1, 1].forEach(function(sg){ path([[sg * 64, 0], [sg * 64, 5], [sg * (xi(5) - 1), 5], [sg * (xi(0) - 1.5), 0]], true); fillP('#d6c49f'); inkL(1, 'rgba(42,31,23,.8)'); });
+    // the legs: a pale wash, the shaded leg hatched, then the iron
+    [-1, 1].forEach(function(sg){ var out = edge(hw, 0, Math.min(top, 185), sg), inn = edge(xi, 0, Math.min(top, 185), sg).reverse(); path(out.concat(inn), true); fillP(WASH);
+      if (sg > 0 && s > .4) { x.save(); x.clip(); hatch(0, 0, 70, 190, 1.05, 4.2, 'rgba(42,31,23,.28)', .7); x.restore(); } });
+    if (!o.back) { path(edge(hw, 185, 276, -1).concat(edge(hw, 185, 276, 1).reverse()), true); fillP(WASH); x.save(); x.clip(); hatch(0, 185, 20, 276, 1.05, 4.2, 'rgba(42,31,23,.28)', .7); x.restore(); }
+    for (var i = 0; i + 1 < LEV.length && LEV[i] < top; i++) { var ya = LEV[i], yb = Math.min(top, LEV[i + 1]);
+      if (xi(yb) > .3) [-1, 1].forEach(function(sg){ lattice(ya, yb, sg * hw(ya), sg * hw(yb), sg * xi(ya), sg * xi(yb), s, V); });
+      else lattice(ya, yb, -hw(ya), -hw(yb), hw(ya), hw(yb), s, V); }
+    [-1, 1].forEach(function(sg){ path(edge(hw, 0, top, sg)); inkL(2, INK); path(edge(function(y){ return hw(y) - (hw(y) - xi(y)) * .07; }, 0, Math.min(top, 185), sg)); inkL(.9, INK); path(edge(xi, 0, Math.min(top, 160), sg)); inkL(1.4, INK); });
+    // the arch and its lattice spandrels
+    x.save(); x.beginPath(); x.rect(-xi(4), 4, 2 * xi(4), 46); x.ellipse(0, 4, 34.4, 35, 0, 0, Math.PI, false); x.clip('evenodd');
+    x.beginPath(); x.rect(-40, 4, 80, 46); fillP('rgba(60,44,30,.13)'); hatch(-40, 4, 40, 50, .7, 5, 'rgba(42,31,23,.32)', .6); hatch(-40, 4, 40, 50, -.7, 5, 'rgba(42,31,23,.32)', .6); x.restore();
+    x.beginPath(); x.ellipse(0, 4, 34.4, 35, 0, 0, Math.PI, false); inkL(1.6, INK); x.beginPath(); x.ellipse(0, 4, 31.6, 32.2, 0, 0, Math.PI, false); inkL(1, INK);
+    x.beginPath(); for (var a = .06; a < Math.PI; a += .07) Kt.seg(Math.cos(a) * 31.6, 4 + Math.sin(a) * 32.2, Math.cos(a + .035) * 34.4, 4 + Math.sin(a + .035) * 35); inkL(.6, 'rgba(42,31,23,.7)');
+    // the floors
+    function floor(y0, y1, w, arches){ x.beginPath(); x.rect(-w, y0, 2 * w, y1 - y0); fillP('#d9c8a5'); inkL(1.3, INK);
+      if (arches && s * (y1 - y0) > 5) { x.beginPath(); var n = 18, dw = 2 * w / n; for (var j = 0; j < n; j++) { var cx0 = -w + dw * (j + .5); x.moveTo(cx0 - dw * .38, y0 + 1); x.lineTo(cx0 - dw * .38, y0 + (y1 - y0) * .45); x.arc(cx0, y0 + (y1 - y0) * .45, dw * .38, Math.PI, 0, true); x.lineTo(cx0 + dw * .38, y0 + 1); } inkL(.7, 'rgba(42,31,23,.8)'); }
+      x.beginPath(); Kt.seg(-w, y1 + 1.2, w, y1 + 1.2); for (var q = -w; q <= w; q += Math.max(1.2, 2 * w / 40)) Kt.seg(q, y1, q, y1 + 1.2); inkL(.6, 'rgba(42,31,23,.8)'); }
+    floor(50, 58, hw(57) + 3, true);
+    if (o.back) return;
+    floor(112, 116.5, hw(115) + 2, false);
+    var topA = 1 - close; if (topA > 0) { x.save(); x.globalAlpha *= topA;
+      floor(273, 276, hw(276) + 2.5, false);
+      x.beginPath(); x.rect(-5, 276, 10, 8); fillP('#d6c39d'); inkL(1, INK); x.beginPath(); for (var wx = -4; wx < 4.5; wx += 1.6) { x.rect(wx, 278, .9, 3.4); } fillP('rgba(42,31,23,.45)');
+      path([[-2.8, 284], [-1.6, 296], [1.6, 296], [2.8, 284]], true); fillP('#d0bd96'); inkL(1, INK); x.beginPath(); x.arc(0, 296, 1.7, 0, Math.PI); fillP('#cbb68f'); inkL(1, INK);
+      mastTop(s, o); x.restore(); }
+  }
+  function mastTop(s, o){   // the flagpole of 1889, the antenna mast of 1903, today's antennas
+    if (o.today) { x.beginPath(); x.rect(-.9, 296, 1.8, 34); fillP('#cdb894'); inkL(1, INK); x.beginPath(); for (var y = 298; y < 330; y += 2.4) { Kt.seg(-.9, y, .9, y + 2.4); Kt.seg(.9, y, -.9, y + 2.4); } inkL(.5, 'rgba(42,31,23,.7)');
+      x.beginPath(); [[302, 3.2], [310, 2.6], [318, 2.2], [325, 1.6]].forEach(function(e){ Kt.seg(-e[1], e[0], e[1], e[0]); }); inkL(1.2, INK); [[-1.6, 306], [1.7, 314]].forEach(function(d){ x.beginPath(); x.ellipse(d[0], d[1], .9, 1.3, 0, 0, 7); fillP('#e8dcc0'); inkL(.9, INK); }); }
+    else { x.beginPath(); Kt.seg(0, 296, 0, 318); inkL(1.6, INK); if (o.flag) { path([[0, 317], [6, 315.6], [5.2, 314.2], [6.2, 312.6], [0, 313]], true); fillP('#c97a26'); inkL(.8, INK); } }
+  }
+
+  // ---------- the top of the tower, close up (1903): floor, cabin, mast, railing, Eiffel and the radio operator ----------
+  var EIF = { h: 1.78, coat: '#2d2621', coat2: '#262019', trousers: '#4a4038', skin: '#e3c4a0', hair: '#8e877d', beard: '#8f877c', hat: 'top', band: '#5b3c22', shirt: '#efe6d4', chain: '#c98a2e', buttons: '#1a1410', long: true, cuff: '#efe6d4' };
+  var OPR = { h: 1.76, coat: '#343a4a', coat2: '#2c3140', trousers: '#7b3a2b', skin: '#e0bf98', hat: 'kepi', kepiTop: '#7b3a2b', stache: '#4a382a', buttons: '#c98a2e', belt: '#3a2a1c', phones: true, sit: true };
+  function topClose(cam, t, a){ if (a <= 0) return; x.save(); x.globalAlpha *= a;
+    var s;
+    // the cabin wall and the mast behind
+    if ((s = use(cam, 2.5))) { x.beginPath(); x.rect(-6, 276, 12, 8.4); fillP('#d8c6a2'); inkL(1.2, INK); x.save(); x.clip(); hatch(-6, 276, 6, 284.4, 1.57, 5.5, 'rgba(42,31,23,.18)', .6); x.restore();
+      for (var wx = -5.2; wx < 5; wx += 1.75) { x.beginPath(); x.rect(wx, 278.2, 1.15, 3.6); fillP('rgba(240,230,205,.85)'); inkL(.9, INK); x.beginPath(); Kt.seg(wx + .575, 278.2, wx + .575, 281.8); Kt.seg(wx, 280, wx + 1.15, 280); inkL(.5, 'rgba(42,31,23,.7)'); }
+      x.beginPath(); x.rect(-6.3, 284.4, 12.6, .5); fillP('#c9b48e'); inkL(.9, INK);
+      path([[-2.8, 284.9], [-1.6, 296], [1.6, 296], [2.8, 284.9]], true); fillP('#d0bd96'); inkL(1, INK); x.beginPath(); for (var y = 286; y < 296; y += 1.4) Kt.seg(-2.6 + (y - 285) * .1, y, 2.6 - (y - 285) * .1, y); inkL(.5, 'rgba(42,31,23,.6)');
+      mastTop(s, { today: t > 29.5 }); }
+    // the floor, in perspective, planks running away from us
+    var fl = [proj(cam, -7, 276, -6.2), proj(cam, 7, 276, -6.2), proj(cam, 7, 276, 2.5), proj(cam, -7, 276, 2.5)];
+    if (fl[0] && fl[2]) { Kt.screen(); path(fl.map(function(p){ return [p.x, p.y]; }), true); x.fillStyle = '#cdb894'; x.fill();
+      x.beginPath(); for (var px0 = -7; px0 <= 7; px0 += .35) { var p = proj(cam, px0, 276, -6.2), q = proj(cam, px0, 276, 2.5); Kt.seg(p.x, p.y, q.x, q.y); } x.lineWidth = .7; x.strokeStyle = 'rgba(42,31,23,.35)'; x.stroke(); }
+    // the radio set, the table and the operator (1903, from his first words on)
+    if ((s = use(cam, -3.4))) { x.save(); x.translate(1.15, 276);
+      x.fillStyle = '#6b4f35'; x.fillRect(.45, 0, .04, .76); x.fillRect(1.2, 0, .04, .76); x.beginPath(); x.rect(.4, .74, .9, .05); fillP('#7a5a3c'); inkL(.9, INK);
+      x.beginPath(); x.rect(.82, .79, .42, .3); fillP('#8a6a45'); inkL(.9, INK); x.save(); x.clip(); hatch(.82, .79, 1.24, 1.09, .3, 3, 'rgba(42,31,23,.3)', .5); x.restore();
+      [[.92, .97], [1.05, .97], [1.16, .9]].forEach(function(d){ x.beginPath(); x.arc(d[0], d[1], .035, 0, 7); fillP('#e9dcc0'); inkL(.8, INK); });
+      x.beginPath(); x.rect(1.02, 1.09, .1, .2); fillP('#b98a52'); inkL(.8, INK); x.beginPath(); for (var cy = 1.11; cy < 1.28; cy += .025) Kt.seg(1.02, cy, 1.12, cy + .012); inkL(.5, 'rgba(42,31,23,.8)');
+      var tap = Math.max(0, Math.sin(t * 15)) * (t > 20.4 && t < 23.4 ? 1 : 0);
+      x.beginPath(); x.rect(.55, .79, .2, .02); fillP('#3a2c20'); x.save(); x.translate(.58, .82); x.rotate(-.06 * tap); x.beginPath(); x.rect(0, 0, .16, .012); fillP('#b98a52'); x.beginPath(); x.arc(.16, .02, .022, 0, 7); fillP('#1d1713'); x.restore();
+      Kt.person(Object.assign({ arms: [[.45, .8], [.74, .86 - .015 * tap]] }, OPR)); x.restore(); }
+    // Eiffel, pointing up to the mast as he finds the tower its new job
+    if ((s = use(cam, -4.2))) { var pk = eo(P(t, WT(5, /new/) - .3, WT(5, /new/) + .5)); x.save(); x.translate(-1.35, 276);
+      Kt.person(Object.assign({ arms: [[-.05, .86], [mix(.12, .5, pk), mix(.95, 1.95, pk)]] }, EIF)); x.restore(); }
+    // the railing in front
+    if ((s = use(cam, -6.2))) { x.beginPath(); Kt.seg(-8, 277.1, 8, 277.1); Kt.seg(-8, 276.5, 8, 276.5); inkL(1.6, INK); x.beginPath(); for (var rx = -8; rx < 8; rx += 1) { Kt.seg(rx, 276, rx, 277.1); Kt.seg(rx, 276.5, rx + 1, 277.1); Kt.seg(rx + 1, 276.5, rx, 277.1); } inkL(.9, 'rgba(42,31,23,.85)'); }
+    x.restore(); }
+
+  // ---------- the 1889 fair under the tower: five rows of visitors, bunting, flags ----------
+  var CROWD = [], ROWS = [[14, -6, 10, 1.35], [24, -14, 17, 1.25], [40, -26, 30, 1.15], [64, -34, 36, 1.1], [95, -36, 36, 1.05]];
+  (function(){ var r = rnd(1889), COATS = ['#2d2621', '#3b332c', '#4a3b2f', '#2f3542', '#5a4634'], DRESS = ['#6b4a3a', '#7d6248', '#4d4a5c', '#8a6b4c', '#5e3f33'], PAR = ['#e7dcc4', '#c97a26', '#d8c7a6'];
+    ROWS.forEach(function(R, ri){ for (var xx = R[1]; xx < R[2]; xx += R[3] * (.75 + r() * .7)) { var ty = r(), lady = ty < .38, kid = ty > .9;
+      CROWD.push({ Z: R[0] + (r() - .5) * 3, x: xx, row: ri, o: { h: kid ? 1.15 : 1.62 + r() * .2, coat: COATS[Math.floor(r() * 5)], trousers: '#3a322b', skin: ['#e3c4a0', '#d4a983', '#b98a62', '#e8cdb0'][Math.floor(r() * 4)],
+        hat: lady ? 'lady' : r() < .5 ? 'top' : 'bowler', dress: lady ? DRESS[Math.floor(r() * 5)] : null, parasol: lady && r() < .45 ? PAR[Math.floor(r() * 3)] : null, beard: !lady && !kid && r() < .4 ? '#6d6257' : null,
+        hair: lady ? '#4a3527' : null, arms: [[-.06 + r() * .1, .86], [.06 + r() * .1, .86]], long: !lady && r() < .5 }, ph: r() * 6, flip: r() < .4 }); } }); })();
+  function crowdRow(cam, ri, t, a){ var s = use(cam, ROWS[ri][0]); if (!s) return; var fade = cl((ROWS[ri][0] - cam.z - 2) / 4, 0, 1) * a; if (fade <= 0) return;
+    var tone = ['rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(238,226,200,.18)', 'rgba(238,226,200,.38)', 'rgba(238,226,200,.55)'][ri];
+    CROWD.forEach(function(c){ if (c.row !== ri || !(s = use(cam, c.Z))) return; x.save(); x.globalAlpha *= fade; x.translate(c.x, 0); if (c.flip) x.scale(-1, 1); x.rotate(.012 * Math.sin(t * 1.3 + c.ph));
+      Kt.person(Object.assign({ detail: s > 25 ? 1 : 0 }, c.o)); x.restore(); });
+    if (ri >= 2) { use(cam, ROWS[ri][0]); x.save(); x.globalAlpha *= fade; x.fillStyle = tone; x.fillRect(ROWS[ri][1] - 3, -.2, ROWS[ri][2] - ROWS[ri][1] + 6, 2.4); x.restore(); } }
+  function bunting(cam, t, a){ var s = use(cam, 30); if (!s || a <= 0) return; x.save(); x.globalAlpha *= a * cl((30 - cam.z - 2) / 4, 0, 1);
+    [[-30, 30, 9, 2.2], [-30, 30, 12.5, 2.8]].forEach(function(B, bi){ var pts = []; for (var u = 0; u <= 1.0001; u += 1 / 40) pts.push([mix(B[0], B[1], u), B[2] - B[3] * 4 * u * (1 - u) + .15 * Math.sin(t * 2 + u * 9)]);
+      path(pts); inkL(.8, INK); for (var j = 1; j < 40; j += 2) { var p = pts[j], q = pts[j + 1], c0 = ['#c97a26', '#efe6d4', '#5b4a3a'][(j + bi) % 3]; path([[p[0], p[1]], [q[0], q[1]], [(p[0] + q[0]) / 2 + .1 * Math.sin(t * 3 + j), (p[1] + q[1]) / 2 - 1.1]], true); fillP(c0); inkL(.5, INK); } });
+    x.restore();
+    if ((s = use(cam, 50))) { x.save(); x.globalAlpha *= a; [-22, 22].forEach(function(px0, k){ x.beginPath(); Kt.seg(px0, 0, px0, 16); inkL(1.2, INK); var wv = Math.sin(t * 2.2 + k) * .4; path([[px0, 15.6], [px0 + 4, 15.2 + wv], [px0 + 8, 15.4], [px0 + 8, 12.6], [px0 + 4, 12.4 + wv], [px0, 12.8]], true); fillP(k ? '#c97a26' : '#efe6d4'); inkL(.7, INK); }); x.restore(); } }
+
+  // ---------- the measure for "300 metres" ----------
+  function ruler(cam, t, a){ var s = use(cam, -20); if (!s || a <= 0) return; var hgt = cl(cam.y + 34, 0, 300), X = -54; x.save(); x.globalAlpha *= a;
+    x.beginPath(); x.rect(X - .9, 0, 1.8, hgt); fillP('#efe6d4'); inkL(1.2, INK); x.beginPath(); for (var y = 0; y <= hgt; y += 10) Kt.seg(X + .9, y, X + (y % 50 ? 3 : 6), y); inkL(1, INK);
+    for (var y2 = 50; y2 <= Math.min(250, hgt - 12); y2 += 50) Kt.wtxt(y2 + ' m', X + 7.5, y2 - Kt.px(5), Kt.px(14), '700 ' + FI, INK, 'left');
+    path([[X - 2.6, hgt + .2], [X + 2.6, hgt + .2], [X, hgt - 3.4]], true); fillP('#c97a26'); inkL(.9, INK); x.restore(); }
+
+  // ---------- the crane and its wrecking ball (1909: what tearing it down would have meant; it never came) ----------
+  function crane(cam, t, a){ var s = use(cam, -60); if (!s || a <= 0) return; x.save(); x.globalAlpha *= a; var X = -96, Hm = 84;
+    x.beginPath(); x.rect(X - 2.2, 0, 4.4, Hm); fillP('rgba(42,31,23,.12)'); inkL(1.4, INK); x.beginPath(); for (var y = 0; y < Hm; y += 4.4) { Kt.seg(X - 2.2, y, X + 2.2, y + 4.4); Kt.seg(X + 2.2, y, X - 2.2, y + 4.4); } inkL(.7, INK);
+    path([[X - 2.2, Hm], [X + 52, Hm + 6], [X + 52, Hm + 8], [X - 2.2, Hm + 4.4]], true); fillP('rgba(42,31,23,.18)'); inkL(1.2, INK); x.beginPath(); for (var u = X; u < X + 52; u += 3.5) { var y0 = Hm + (u - X + 2.2) * 6 / 54.2; Kt.seg(u, y0, u + 3.5, y0 + 2.3); } inkL(.6, INK);
+    x.beginPath(); x.rect(X - 14, Hm - 1, 12, 5); fillP('#3a2c20'); x.beginPath(); x.rect(X - 6, Hm - 9, 8, 7); fillP('#4a3a2c'); inkL(.8, INK);
+    var th = .42 * Math.sin(1.7 * (t - 15.2)) + .12, L0 = 40, tx0 = X + 50, ty0 = Hm + 5.6, bx = tx0 + Math.sin(th) * L0, by = ty0 - Math.cos(th) * L0;
+    x.beginPath(); Kt.seg(tx0, ty0, bx, by); inkL(1, INK); x.beginPath(); x.arc(bx, by - 3.2, 3.2, 0, 7); fillP('#2a211b'); inkL(1, INK); x.beginPath(); x.arc(bx - 1, by - 2.2, 1.1, 0, 7); fillP('rgba(240,225,200,.25)'); x.restore(); }
+
+  // ---------- the antenna wires of 1903 (illustrative), drawn down from the top as the army's radio arrives ----------
+  var WIRES = [[-230, 0, -420], [230, 0, -420], [-120, 0, -650], [120, 0, -650]];
+  function wires(cam, t, a, k){ if (a <= 0 || k <= 0) return; Kt.screen(); x.save(); x.globalAlpha *= a * .75; x.strokeStyle = INK; x.lineWidth = .9; x.beginPath();
+    WIRES.forEach(function(W){ var started = false; for (var u = 0; u <= k + 1e-6; u += 1 / 48) { var p = proj(cam, W[0] * u, 318 - 318 * u + W[1], 2.5 + (W[2] - 2.5) * u); if (!p || Math.abs(p.x) > 4000 || Math.abs(p.y) > 4000) { started = false; continue; } if (started) x.lineTo(p.x, p.y); else { x.moveTo(p.x, p.y); started = true; } } });
+    x.stroke(); x.restore(); }
+
+  // ---------- the sky, the clouds, the city round the Champ de Mars, the trees ----------
+  var CLOUDS = (function(){ var r = rnd(1903), C = []; for (var i = 0; i < 16; i++) { var cx0 = -9000 + r() * 18000, cy0 = 900 + r() * 5200, L = []; for (var j = 0; j < 6; j++) L.push([cx0 + (j - 2.5) * (220 + r() * 120), cy0 + r() * 160, 260 + r() * 260]); C.push(L); } return C; })();
+  function sky(cam, a){ Kt.screen(); var g = x.createLinearGradient(0, 0, 0, 480); g.addColorStop(0, SKY0); g.addColorStop(1, SKY1); x.fillStyle = g; x.fillRect(0, 0, 540, 960);
+    var s = use(cam, 14000); if (!s) return; var V = Kt.vis(10);
+    x.save(); x.beginPath(); x.rect(V.x0, V.y0, V.x1 - V.x0, V.y1 - V.y0); CLOUDS.forEach(function(C){ C.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.ellipse(L[0], L[1], L[2], L[2] * .42, 0, 0, 7); }); }); x.clip('evenodd');
+    x.globalAlpha *= a; hatch(V.x0, 0, V.x1, V.y1, 0, 5.2, 'rgba(120,92,58,.32)', .7); hatch(V.x0, 3400, V.x1, V.y1, 0, 2.6, 'rgba(120,92,58,.2)', .6); x.restore();
+    x.save(); x.globalAlpha *= a; CLOUDS.forEach(function(C){ x.beginPath(); C.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.ellipse(L[0], L[1], L[2], L[2] * .42, 0, 0, 7); }); x.lineWidth = .8 / s; x.strokeStyle = 'rgba(110,84,54,.45)'; x.stroke(); }); x.restore(); }
+  var TREES = (function(){ var r = rnd(1910), T0 = []; for (var Z = -760; Z < 420; Z += 42 + r() * 14) [-1, 1].forEach(function(sg){ T0.push({ Z: Z + r() * 12, x: sg * (78 + r() * 10), h: 14 + r() * 5, seed: Math.floor(r() * 1e6) }); }); return T0; })();
+
+  // ---------- the permit (1889-1909): a sheet at Z = 0 round the tower itself, Eiffel holding it, his study wall behind ----------
+  function doc(cam, t, a){ if (a <= 0) return; x.save(); x.globalAlpha *= a; var s;
+    if ((s = use(cam, 900))) { var V = Kt.vis(10); x.beginPath(); x.rect(V.x0, V.y0, V.x1 - V.x0, V.y1 - V.y0); fillP('#c4ab84'); hatch(V.x0, V.y0, V.x1, V.y1, 1.57, 4.2, 'rgba(60,44,30,.3)', .8);
+      x.beginPath(); x.rect(V.x0, -900, V.x1 - V.x0, 14); fillP('#8a6f50'); x.beginPath(); x.rect(V.x0, -1600, V.x1 - V.x0, 700); fillP('#a88e6a'); hatch(V.x0, -1600, V.x1, -900, .5, 5, 'rgba(60,44,30,.3)', .7);
+      x.beginPath(); x.rect(330, 60, 380, 520); fillP('#e6d8b8'); inkL(3, '#2a1f17'); x.beginPath(); x.rect(352, 82, 336, 476); inkL(1, '#2a1f17'); x.save(); x.translate(520, 120); x.scale(.95, 1.25); x.beginPath(); x.ellipse(0, 0, 130, 230, 0, 0, Math.PI); inkL(1.2, 'rgba(42,31,23,.7)'); x.beginPath(); x.ellipse(0, 0, 118, 210, 0, 0, Math.PI); inkL(.8, 'rgba(42,31,23,.6)'); x.restore();
+      x.beginPath(); x.rect(-1500, -120, 360, 620); fillP('#e9c98e'); inkL(3, '#2a1f17'); x.beginPath(); Kt.seg(-1320, -120, -1320, 500); Kt.seg(-1500, 190, -1140, 190); inkL(3, '#2a1f17'); }
+    if ((s = use(cam, 0))) { x.save(); x.shadowColor = 'rgba(20,14,10,.45)'; x.shadowBlur = 24; x.shadowOffsetX = 10; x.shadowOffsetY = 14; x.beginPath(); x.rect(-265, -385, 530, 815); fillP('#efe4c9'); x.restore();
+      x.beginPath(); x.rect(-249, -369, 498, 783); inkL(1.6, INK); x.beginPath(); x.rect(-242, -362, 484, 769); inkL(.8, INK);
+      [[-242, 407], [242, 407], [-242, -362], [242, -362]].forEach(function(p){ x.beginPath(); x.arc(p[0], p[1], 9, 0, 7); inkL(.8, INK); });
+      Kt.wtxt('CITY OF PARIS', 0, 386, 14, '800 ' + FI, '#5b4a3a', 'center', 5); var pk = eo(P(t, WT(3, /permit/) - .2, WT(3, /permit/) + .4));
+      x.save(); x.globalAlpha *= .25 + .75 * pk; Kt.wtxt('PERMIT', 0, 336 + 6 * (1 - pk), 40, '800 ' + FD, INK, 'center', 4); x.restore(); }
+    x.restore(); }
+  function docFront(cam, t, a){ if (a <= 0) return; var s = use(cam, 0); if (!s) return; x.save(); x.globalAlpha *= a;
+    x.beginPath(); Kt.seg(-200, -18, 200, -18); inkL(1, INK); Kt.wtxt('GRANTED TO GUSTAVE EIFFEL FOR THE TOWER', 0, -46, 13, '700 ' + FI, '#4a3a2c', 'center', 2); Kt.wtxt('ON THE CHAMP DE MARS', 0, -66, 13, '700 ' + FI, '#4a3a2c', 'center', 2);
+    var k20 = es(P(t, WT(3, /twenty/) - .1, WT(3, /twenty/) + .5)), km = P(t, WT(4, /1909/) - .15, WT(4, /1909/) + .55);
+    // "20 YEARS" stamps in when spoken; then it rolls over to 1909 (1889 + 20)
+    if (km < 1) { x.save(); x.globalAlpha *= cl(k20 * 2, 0, 1) * (1 - eo(cl(km * 2.5, 0, 1))); x.translate(0, -205 + eo(km) * 40); var sc = mix(1.35, 1, k20); x.scale(sc, sc);
+      x.font = font(150, '800 ' + FD); var w20 = x.measureText('20').width; x.font = font(40, '800 ' + FI); x.letterSpacing = '4px'; var wy = x.measureText('YEARS').width; x.letterSpacing = '0px'; var x0 = -(w20 + 16 + wy) / 2;
+      Kt.wtxt('20', x0, 0, 150, '800 ' + FD, '#a3561a', 'left'); Kt.wtxt('YEARS', x0 + w20 + 16, 0, 40, '800 ' + FI, INK, 'left', 4); x.restore(); }
+    if (km > 0) { x.save(); x.translate(0, -205); x.scale(1, -1); x.font = font(150, '800 ' + FD); x.textAlign = 'left'; var w = x.measureText('1909').width, xx = -w / 2;
+      for (var i = 0; i < 4; i++) { var ch = '1909'[i], cw = x.measureText(ch).width, kc = eo(cl((km - i * .1) / .6, 0, 1)), o = 1 - kc; x.save(); x.beginPath(); x.rect(xx - 4, -125, cw + 8, 170); x.clip();
+        x.fillStyle = INK; x.globalAlpha *= cl(kc * 2, 0, 1); x.fillText(ch, xx, o * 60); x.restore(); xx += cw; }
+      x.restore(); }
+    Kt.wtxt('1889 – 1909', 0, -288, 30, '700 ' + FD, '#4a3a2c', 'center', 1);
+    x.beginPath(); x.moveTo(-215, -335); x.bezierCurveTo(-185, -307, -165, -362, -135, -329); x.bezierCurveTo(-115, -312, -105, -347, -100, -335); inkL(1.4, INK);
+    x.beginPath(); x.arc(178, -312, 34, 0, 7); fillP('#b8661e'); x.beginPath(); x.arc(178, -312, 25, 0, 7); inkL(1.2, 'rgba(60,30,10,.7)'); path([[166, -330], [178, -292], [190, -330]]); inkL(1.6, 'rgba(60,30,10,.75)');
+    x.restore(); }
+  function eiffelBig(cam, t, a){ if (a <= 0) return; var s = use(cam, -150); if (!s) return; x.save(); x.globalAlpha *= a; x.translate(-450, -385); x.scale(420, 420);
+    Kt.person(Object.assign({ arms: [[.05, .9], [.42 + .006 * Math.sin(t * 2), 1.08 + .004 * Math.sin(t * 1.7)]] }, EIF)); x.restore(); }
+
+  // ---------- the map (Paris to Bizerte across the Mediterranean; hand-traced, approximate), at Z = 0 in metres round Paris ----------
+  function ll(p){ return [(p[0] - 2.35) * 77330, (p[1] - 48.86) * 110950]; }
+  var LAND = [
+    [[25, 58], [8.5, 58], [8.5, 54], [7, 53.6], [5, 53.4], [4.5, 52.5], [3.5, 51.4], [2.5, 51.1], [1.6, 50.2], [.1, 49.5], [-1.1, 49.4], [-1.6, 49.65], [-1.4, 48.65], [-2, 48.65], [-3, 48.8], [-4.7, 48.4], [-4.3, 47.8], [-2.5, 47.3], [-2.2, 47], [-1.2, 46.2], [-1.1, 45.5], [-1.25, 44.6], [-1.5, 43.5],
+      [-3.8, 43.45], [-5.8, 43.6], [-8, 43.7], [-9.3, 43], [-8.8, 41], [-9.5, 38.8], [-8.9, 37], [-7.4, 37.2], [-6.3, 36.5], [-5.35, 36.1], [-4.4, 36.7], [-2.4, 36.8], [-2, 36.7], [-1, 37.6], [-.5, 38.3], [.2, 38.8], [-.3, 39.5], [.5, 40.5], [2.2, 41.4], [3.2, 41.9],
+      [3.1, 42.5], [3, 43.2], [3.9, 43.5], [5.4, 43.3], [6, 43.1], [7.3, 43.7], [8.9, 44.4], [10.2, 43.9], [10.3, 43.5], [11.1, 42.4], [12.2, 41.7], [13.6, 41.2], [14.3, 40.8], [15.6, 40], [15.7, 38.2], [16.1, 38], [16.6, 38.5], [17.1, 39], [16.6, 40.1], [17.2, 40.5], [18.5, 40.1], [18, 40.6],
+      [16.9, 41.1], [16.2, 41.9], [14, 42.6], [13.5, 43.6], [12.6, 44.1], [12.3, 45.4], [13.7, 45.6], [14.5, 45.2], [15.2, 44.2], [16.4, 43.5], [18, 42.6], [19, 42], [19.5, 41], [19.3, 40.4], [20, 39.6], [21, 38.5], [21.6, 37], [22.6, 36.4], [23.2, 37.4], [24, 38], [25, 40], [25, 58]],
+    [[1.4, 51.2], [.9, 50.9], [-1, 50.7], [-3.5, 50.3], [-5.7, 50], [-4.5, 51.2], [-3, 51.5], [-5, 51.8], [-4.5, 53.3], [-3, 53.4], [-3, 56], [0, 56], [.3, 53.6], [1.7, 52.7], [1.6, 52], [.9, 51.6]],
+    [[9.4, 43], [9.55, 42.1], [9.2, 41.4], [8.6, 41.7], [8.7, 42.6]],
+    [[9.6, 41.2], [9.8, 40], [9.6, 39.1], [8.9, 38.9], [8.4, 39.1], [8.4, 40.5], [8.2, 40.9]],
+    [[12.4, 38.1], [13.3, 38.2], [15.6, 38.3], [15.1, 37.2], [15.1, 36.7], [14.3, 37], [12.5, 37.6]],
+    [[2.4, 39.6], [3.2, 39.9], [3.4, 39.5], [2.7, 39.3]],
+    [[-12, 35.8], [-6, 35.8], [-5.3, 35.9], [-4.4, 35.2], [-2.9, 35.3], [-1.9, 35.1], [-.6, 35.7], [1, 36.5], [3, 36.8], [5.1, 36.7], [6.6, 37], [7.8, 36.9], [8.8, 36.95], [9.87, 37.27], [10.3, 37.1], [11.05, 37.05], [10.6, 36.4], [10.6, 35.8], [11.1, 35.2], [10.8, 34.7], [10.1, 33.9],
+      [10.9, 33.6], [11.6, 33.1], [13.2, 32.9], [15.2, 32.3], [15.6, 31.5], [18, 30.8], [20, 31], [25, 31.6], [25, 20], [-12, 20]]
+  ].map(function(P0){ return P0.map(ll); });
+  var BIZ = ll([9.87, 37.27]);
+  var RIVERS = [[[.1, 49.45], [.7, 49.4], [1.1, 49.3], [1.5, 49.1], [2, 49], [2.2, 48.92], [2.35, 48.86], [2.6, 48.6], [3.3, 48.45], [4.1, 48.3], [4.6, 48]],
+    [[4.8, 43.5], [4.8, 44.1], [4.85, 44.9], [4.83, 45.76], [5.6, 45.9], [6.1, 46.2]], [[-2.2, 47.28], [-1.5, 47.25], [.7, 47.4], [1.9, 47.9], [2.9, 47.6], [3, 46.9], [4, 46], [4.1, 45.2]]].map(function(L){ return L.map(ll); });
+  function mapLayer(cam, t, a){ if (a <= 0) return; var s = use(cam, 0); if (!s) return; x.save(); x.globalAlpha *= a; var V = Kt.vis(10);
+    x.beginPath(); x.rect(V.x0, V.y0, V.x1 - V.x0, V.y1 - V.y0); fillP('#e3d5b5'); hatch(V.x0, V.y0, V.x1, V.y1, 0, 4.2, 'rgba(90,70,48,.3)', .7);
+    function land(){ x.beginPath(); LAND.forEach(function(L){ L.forEach(function(p, i){ if (i) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); }); x.closePath(); }); }
+    [[30, .07], [21, .08], [13, .1], [6, .14]].forEach(function(w){ land(); x.lineWidth = w[0] / s; x.strokeStyle = 'rgba(80,62,42,' + w[1] + ')'; x.lineJoin = 'round'; x.stroke(); land(); x.lineWidth = (w[0] - 3) / s; x.strokeStyle = '#e3d5b5'; x.stroke(); });
+    land(); fillP('#efe4c8'); x.save(); land(); x.clip(); hatch(V.x0, V.y0, V.x1, V.y1, .8, 7, 'rgba(110,84,54,.13)', .6); x.restore(); land(); inkL(1.3, 'rgba(42,31,23,.85)');
+    x.beginPath(); RIVERS.forEach(function(L){ L.forEach(function(p, i){ if (i) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); }); }); inkL(1.4, 'rgba(70,52,36,.7)');
+    x.beginPath(); for (var lon = -10; lon <= 25; lon += 5) { var a0 = ll([lon, 25]), b0 = ll([lon, 58]); Kt.seg(a0[0], a0[1], b0[0], b0[1]); } for (var lat = 30; lat <= 55; lat += 5) { var c0 = ll([-12, lat]), d0 = ll([26, lat]); Kt.seg(c0[0], c0[1], d0[0], d0[1]); } inkL(.6, 'rgba(90,70,48,.3)');
+    x.restore(); }
+  function mapLabels(cam, t, a){ if (a <= 0) return; Kt.screen(); x.save(); x.globalAlpha *= a;
+    var p = proj(cam, 0, 0, 0), b = proj(cam, BIZ[0], BIZ[1], 0), m = proj(cam, ll([5.6, 40.2])[0], ll([5.6, 40.2])[1], 0), arrive = 22.4 + Math.log(Math.hypot(BIZ[0], BIZ[1] - 318) / 12) / 3;
+    x.beginPath(); x.arc(p.x, p.y, 5, 0, 7); x.fillStyle = '#c97a26'; x.fill(); x.lineWidth = 1.4; x.strokeStyle = INK; x.stroke();
+    // a small engraved tower over Paris, so the zoom between map and tower always has its subject
+    x.save(); x.translate(p.x, p.y - 7); x.beginPath(); x.moveTo(-9, 0); x.quadraticCurveTo(-3, -12, -1, -34); x.lineTo(1, -34); x.quadraticCurveTo(3, -12, 9, 0); x.lineTo(5, 0); x.quadraticCurveTo(0, -8, -5, 0); x.closePath();
+    x.fillStyle = 'rgba(42,31,23,.25)'; x.fill(); x.lineWidth = 1.2; x.strokeStyle = INK; x.stroke(); x.beginPath(); x.moveTo(-6.5, -6); x.lineTo(6.5, -6); x.moveTo(-3.5, -15); x.lineTo(3.5, -15); x.moveTo(0, -34); x.lineTo(0, -40); x.stroke(); x.restore();
+    x.font = font(15, '800 ' + FI); x.letterSpacing = '3px'; x.textAlign = 'left'; x.fillStyle = INK; x.fillText('PARIS', p.x + 11, p.y + 5);
+    var km = eo(P(t, WT(7, /mediterranean/i) - .1, WT(7, /mediterranean/i) + .9)); if (km > 0) { x.save(); x.globalAlpha *= km; x.font = font(17, '700 ' + FD); x.letterSpacing = mix(14, 6, km) + 'px'; x.textAlign = 'center'; x.fillStyle = '#5b4a3a'; x.fillText('MEDITERRANEAN SEA', m.x, m.y); x.restore(); }
+    var kb = es(P(t, arrive - .05, arrive + .5)); if (kb > 0) { x.save(); x.globalAlpha *= cl(kb * 2, 0, 1); x.beginPath(); x.arc(b.x, b.y, 5 + 9 * (1 - kb), 0, 7); x.fillStyle = '#c97a26'; x.fill(); x.lineWidth = 1.4; x.strokeStyle = INK; x.stroke();
+      x.font = font(15, '800 ' + FI); x.letterSpacing = '3px'; x.textAlign = 'left'; x.fillStyle = INK; x.fillText('BIZERTE', b.x + 11, b.y + 1); x.font = font(11, '700 ' + FI); x.fillStyle = '#5b4a3a'; x.fillText('TUNISIA', b.x + 11, b.y + 16); x.restore(); }
+    x.letterSpacing = '0px'; x.restore(); }
+
+  // ---------- one world, one camera: draw everything at its depth ----------
+  function world(cam, t, o){   // the tower world (sky, clouds, city, ground, trees, crowd, tower, top, props) and the map, by zoom
+    var d = Math.max(1, -cam.z), mapA = P(Math.log(d), Math.log(3500), Math.log(14000)), A0 = 1 - mapA, s;
+    if (A0 > 0) {
+      x.save(); x.globalAlpha = A0; sky(cam, 1);
+      Kt.ground(cam, GROUND, LINE, [-60, -12, 12, 60], -1400, 0);
+      if ((s = use(cam, 6000))) Kt.city(6000, 11, '#dccaa6', { h: 26, domes: true, dark: 'rgba(90,70,48,.35)' });
+      if ((s = use(cam, 3000))) Kt.city(3000, 12, '#d3bf98', { h: 24, domes: true, dark: 'rgba(80,60,40,.45)' });
+      if ((s = use(cam, 1500))) Kt.city(1500, 13, '#c9b38a', { h: 22, domes: true, dark: 'rgba(60,44,30,.5)' });
+      if ((s = use(cam, 800))) Kt.city(800, 14, '#bea67c', { h: 21, dark: 'rgba(50,36,24,.55)' });
+      var far = TREES.filter(function(T0){ return T0.Z > 125; }), near = TREES.filter(function(T0){ return T0.Z <= 125; });
+      far.sort(function(p, q){ return q.Z - p.Z; }).forEach(function(T0){ if ((s = use(cam, T0.Z))) Kt.tree(T0.x, T0.h, T0.seed, '#b9a37a', 'rgba(50,36,24,.75)'); });
+      if ((s = use(cam, 125))) tower(s, { back: true });
+      var crA = 1 - P(t, 7.2, 7.8); if (crA > 0) { for (var ri = ROWS.length - 1; ri >= 0; ri--) { crowdRow(cam, ri, t, crA); if (ri === 2) bunting(cam, t, crA); } }
+      near.sort(function(p, q){ return q.Z - p.Z; }).forEach(function(T0){ if (T0.Z > 0 && (s = use(cam, T0.Z))) Kt.tree(T0.x, T0.h, T0.seed, '#b09872', 'rgba(42,31,23,.8)'); });
+      if ((s = use(cam, 0))) { x.save(); x.globalAlpha *= cl((0 - cam.z - 3) / 10, 0, 1); tower(s, { flag: t < 20, today: t > 29.5 }); x.restore(); }
+      var close = o.top || 0; if (close > 0) topClose(cam, t, close);
+      near.forEach(function(T0){ if (T0.Z <= 0 && (s = use(cam, T0.Z))) { x.save(); x.globalAlpha *= cl((T0.Z - cam.z - 3) / 12, 0, 1); Kt.tree(T0.x, T0.h, T0.seed, '#a88f69', 'rgba(42,31,23,.85)'); x.restore(); } });
+      if (o.ruler) ruler(cam, t, o.ruler);
+      if (o.crane) crane(cam, t, o.crane);
+      if (o.wires) wires(cam, t, o.wires, o.wireK);
+      x.restore(); }
+    if (mapA > 0) { mapLayer(cam, t, mapA); }
+    if (o.rings) Kt.rings(cam, 0, 318, 2.5, t, 22.45, 34, .5, '#b8661e');
+    if (mapA > 0) mapLabels(cam, t, mapA);
+  }
+  function opts(t){ return { ruler: P(t, 6.3, 6.8) * (1 - P(t, 10.3, 10.9)), crane: P(t, 14.4, 15.2) * (1 - P(t, 18.2, 19)), top: P(t, 17.6, 18.6) * (1 - P(t, 23.2, 24)),
+    wires: P(t, 20.4, 20.8) * (1 - P(t, 30.4, 31.2)), wireK: eo(P(t, WT(6, /radio/) - .5, WT(6, /radio/) + 1.4)), rings: t > 22.4 }; }
+
+  // ---------- the frame ----------
+  function frame(t){
+    Kt.off(0, 0); var o = opts(t), dk = P(t, 10.25, 11.1);
+    x.setTransform(2, 0, 0, 2, 0, 0); x.fillStyle = PAPER; x.fillRect(0, 0, 540, 960);
+    if (t < 14.5) { var cA = camA(t); world(cA, t, o); if (dk > 0) { doc(cA, t, dk); var s0 = use(cA, 0); if (s0) { x.save(); x.globalAlpha = dk; tower(s0, { flag: true }); x.restore(); } docFront(cA, t, dk); eiffelBig(cA, t, dk); } return; }
+    var a = camA(t), b = camB(t), c0 = proj(a, HOLE.x, HOLE.y, 0), rx = c0 ? HOLE.rx * c0.s : 1e9, ry = c0 ? HOLE.ry * c0.s : 1e9;
+    var covered = !c0 || [[0, 0], [540, 0], [0, 960], [540, 960]].every(function(q){ return Math.pow((q[0] - c0.x) / rx, 2) + Math.pow((q[1] - c0.y) / ry, 2) < 1; });
+    if (!covered) { doc(a, t, 1); var s1 = use(a, 0); if (s1) tower(s1, { flag: true }); docFront(a, t, 1); eiffelBig(a, t, 1);
+      Kt.screen(); x.save(); x.beginPath(); x.ellipse(c0.x, c0.y, rx, ry, 0, 0, 7); x.clip(); var fk = P(ry, 150, 900); Kt.off((c0.x - 270) * (1 - fk), (c0.y - 480) * (1 - fk)); x.setTransform(2, 0, 0, 2, 0, 0); x.fillStyle = PAPER; x.fillRect(0, 0, 540, 960); world(b, t, o); dusk(t); Kt.off(0, 0); x.restore(); return; }
+    world(b, t, o); dusk(t);
+  }
+  function dusk(t){ var k = P(t, 14.5, 15.6) * (1 - P(t, 17.4, 18.8)); if (k <= 0) return; Kt.screen(); x.save(); x.globalCompositeOperation = 'multiply'; x.globalAlpha = .55 * k;
+    var g = x.createLinearGradient(0, 0, 0, 960); g.addColorStop(0, '#8a7a8c'); g.addColorStop(.55, '#b59a88'); g.addColorStop(1, '#7e6a62'); x.fillStyle = g; x.fillRect(0, 0, 540, 960); x.restore(); }
+
+  // ---------- type over the picture: the hook, the kinetic dates, captions, the stamp, credit, payoff ----------
+  function wash(a, y0, y1){ if (a <= 0) return; x.save(); x.globalAlpha = a; var g = x.createLinearGradient(0, y0, 0, y1); g.addColorStop(0, 'rgba(240,228,204,0)'); g.addColorStop(.25, 'rgba(240,228,204,.82)'); g.addColorStop(.75, 'rgba(240,228,204,.82)'); g.addColorStop(1, 'rgba(240,228,204,0)'); x.fillStyle = g; x.fillRect(0, y0, 540, y1 - y0); x.restore(); }
+  function kinetic(t){ var KN = 'rgba(244,234,212,.95)', SUB = AMBD;
+    var k1 = P(t, WT(1, /1889/) - .12, WT(1, /1889/) + .55), o1 = 1 - P(t, A[2] - .45, A[2] - .1);
+    if (k1 > 0 && o1 > 0) { x.save(); x.globalAlpha = o1; Kt.roll('1889', 270, 318, 112, '800 ' + FD, INK, k1, KN); Kt.label("WORLD'S FAIR · PARIS", 270, 366, 18, '800 ' + FI, SUB, P(t, WT(1, /world/i) - .1, WT(1, /world/i) + .5), 4, KN); x.restore(); }
+    var k3 = P(t, WT(2, /300/) - .12, WT(2, /300/) + .6), o3 = 1 - P(t, 10.1, 10.5);
+    if (k3 > 0 && o3 > 0) { x.save(); x.globalAlpha = o3; Kt.roll('300 m', 270, 258, 104, '800 ' + FD, INK, k3, KN); Kt.label('984 FT', 270, 302, 22, '800 ' + FI, INK, P(t, WT(2, /metres/) - .1, WT(2, /metres/) + .4), 5, KN);
+      Kt.label('TALLEST ON EARTH', 270, 340, 18, '800 ' + FI, SUB, P(t, WT(2, /tallest/) - .1, WT(2, /tallest/) + .5), 4, KN); x.restore(); }
+    var k7 = P(t, WT(6, /1903/) - .12, WT(6, /1903/) + .55), o7 = 1 - P(t, A[7] - .5, A[7] - .1);
+    if (k7 > 0 && o7 > 0) { x.save(); x.globalAlpha = o7; Kt.roll('1903', 270, 236, 112, '800 ' + FD, INK, k7, KN); Kt.label('ARMY RADIO TESTS', 270, 284, 18, '800 ' + FI, SUB, P(t, WT(6, /army/) - .1, WT(6, /army/) + .5), 4, KN); x.restore(); }
+    var ks = P(t, WT(8, /saved/) - .08, WT(8, /saved/) + .5), kn = P(t, WT(8, /1910/) - .1, WT(8, /1910/) + .4), o9 = 1 - P(t, A[9] + .3, A[9] + .7);
+    if (ks > 0 && o9 > 0) { x.save(); x.globalAlpha = o9; Kt.stamp([['SAVED', 56, '800 ' + FD, 6], ['1910', 30, '800 ' + FI, 8, kn]], 270, 262, -.09, '#9c4f17', ks); x.restore(); }
+  }
+  function drawPayoff(t){ var k = es(P(t, DUR - 2.9, DUR - 2.2)); if (k <= 0) return; x.save(); x.globalAlpha = cl(k * 1.6, 0, 1); x.translate(270, 214); arrive(k);
+    x.font = font(50, '700 ' + FD); x.textAlign = 'center'; x.strokeStyle = 'rgba(244,234,212,.95)'; x.lineWidth = 7; x.lineJoin = 'round'; x.strokeText(PAYOFF, 0, 0); txt(PAYOFF, 0, 0, 50, '700 ' + FD, INK, 'center', -.5); x.restore(); }
+  function seek(t){
+    t = cl(t, 0, DUR); BOXES.length = 0; x.globalAlpha = 1; frame(t);
+    Kt.screen(); x.globalAlpha = 1;
+    if (PAPERTEX) { x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'multiply'; x.drawImage(PAPERTEX, 0, 0); x.restore(); }
+    x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1; x.letterSpacing = '0px';
+    wash(Math.max(1 - P(t, A[1] - .35, A[1] + .1), P(t, DUR - 3.2, DUR - 2.4)), 90, 300);
+    kinetic(t); drawCaption(t); drawCredit(t); drawPayoff(t);
+  }
+
+  // sound: a low hit and an air move with the question, a whoosh with every big move of the camera, effects tied to what moves, a bed that lifts into the payoff
+  (function(){
+    var Q = [{ t: 0, k: 'boom', g: .32 }, { t: .05, k: 'swish', d: .7, g: .2 }, { t: 2.9, k: 'whoosh', d: 1.3, g: .2, p: -.1 }, { t: 6.1, k: 'whoosh', d: 1, g: .14, p: .2 },
+      { t: 7.4, k: 'riser', d: 1.8, g: .1 }, { t: 10.2, k: 'swish', d: .9, g: .16, p: -.2 }, { t: WT(3, /twenty/), k: 'thud', g: .26 }, { t: WT(4, /1909/), k: 'tick', g: .16 }, { t: 14.7, k: 'whoosh', d: 1.1, g: .22 },
+      { t: 15.9, k: 'thud', g: .22 }, { t: 16.9, k: 'thud', g: .18 }, { t: 17.7, k: 'riser', d: 1.6, g: .12 }, { t: 19.75, k: 'swish', d: .6, g: .15, p: .3 }, { t: WT(6, /1903/), k: 'tick', g: .14 },
+      { t: 20.6, k: 'click', g: .1 }, { t: 21, k: 'click', g: .08 }, { t: 21.4, k: 'click', g: .1 }, { t: 22.5, k: 'shimmer', g: .12 }, { t: 23.9, k: 'whoosh', d: 1.6, g: .2 }, { t: 26.3, k: 'shimmer', g: .14 },
+      { t: 27.2, k: 'whoosh', d: 1.5, g: .2, p: -.1 }, { t: WT(8, /saved/), k: 'hit', g: .26 }, { t: A[9] + .1, k: 'swish', d: .7, g: .14 }, { t: A[9] + .5, k: 'shimmer', g: .16 }, { t: DUR - 2.4, k: 'thud', g: .2 }];
+    Q.forEach(function(q){ q.t = +q.t.toFixed(2); });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 72, origin: 0, gain: .3, soft: true, lift: +(A[8] - .2).toFixed(2), chords: [[48, 55, 60, 64, 67], [45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [43, 50, 55, 59, 62]] } };
+  })();
+  window.seek = seek; window.DURATION = DUR;
+  // the counter of the "0" (the hole the camera flies through), measured from the font: scan the glyph's middle row and column
+  function measureZero(){ var cv = document.createElement('canvas'); cv.width = 400; cv.height = 400; var g = cv.getContext('2d'); g.font = font(300, '800 ' + FD); g.textBaseline = 'alphabetic'; g.fillStyle = '#000'; g.fillText('0', 100, 320);
+    var d = g.getImageData(0, 0, 400, 400).data, on = function(px0, py){ return d[(py * 400 + px0) * 4 + 3] > 128; }, x0 = 400, x1 = 0, y0 = 400, y1 = 0;
+    for (var py = 0; py < 400; py++) for (var px0 = 0; px0 < 400; px0++) if (on(px0, py)) { x0 = Math.min(x0, px0); x1 = Math.max(x1, px0); y0 = Math.min(y0, py); y1 = Math.max(y1, py); }
+    var cx0 = Math.round((x0 + x1) / 2), cy0 = Math.round((y0 + y1) / 2), l = cx0, r = cx0, u = cy0, b = cy0;
+    while (l > x0 && !on(l, cy0)) l--; while (r < x1 && !on(r, cy0)) r++; while (u > y0 && !on(cx0, u)) u--; while (b < y1 && !on(cx0, b)) b++;
+    var k = 150 / 300; g.font = font(150, '800 ' + FD); var w = g.measureText('1909').width, w19 = g.measureText('19').width, w0 = g.measureText('0').width;
+    HOLE.x = -w / 2 + w19 + ((l + r) / 2 - 100) * k; HOLE.y = -205 + (320 - (u + b) / 2) * k; HOLE.rx = (r - l) / 2 * k * .92; HOLE.ry = (b - u) / 2 * k * .92;
+    return [w0, HOLE]; }
+  Promise.all([document.fonts.load("800 44px 'Playfair Display'"), document.fonts.load("700 44px 'Playfair Display'"), document.fonts.load("700 27px 'Inter'"), document.fonts.load("800 18px 'Inter'"), document.fonts.load("600 18px 'Inter'")]).then(function(){ return document.fonts.ready; })
+    .then(function(){
+      measureZero(); camA = (function(base){ return function(t){ var c1 = base(t); if (t > 14.85) { var k = cl((t - 14.85) / 1.0, 0, 1), w = cl(k * 4, 0, 1); c1.x = mix(0, HOLE.x, w); c1.y = mix(-196, HOLE.y, w); } return c1; }; })(camA);
+      PAPERTEX = Kt.paperTex(1889);
+      window.SCENE_INFO = { hole: HOLE };
+      seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>

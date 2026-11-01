@@ -124,6 +124,37 @@ review flaws; the sky and lost-day reels reuse it.
   by area so the camera skips what it cannot see; streets are grey paving (the scene's ground), parks lay their own gravel and lawns.
 - Cost (Eiffel reel, 1 Nov): about 1.6-2 s a frame locally at 1080x1920 (the reel before the kit: 1.6 s); render it split in 2 parts.
 
+### 2.5D toolkit (scripts/channel3/kit25d.js, owner 1 Nov 2026: "2.5D, continuous flow", the lighter alternative to real-time 3D)
+Why: the 3D reel costs about 50 GitHub minutes, its people read as toys and its ten hard-cut shots hold the camera mostly still; flow,
+not model detail, holds viewers. The 2.5D look: flat engraved layers (ink linework, cross-hatching, old paper, one amber accent, matte,
+no glow) at real depths in front of ONE pinhole camera that never stops and never cuts. 2D canvas only: about 0.01-0.5 s a frame, parts 1.
+Pilot: scripts/channel3/eiffel-flow.html (showreel-c3-eiffel-flow). The kit sits inside the scene's main script after the shared core
+(it uses the core's helpers), between `/*kit25:begin*/` and `/*kit25:end*/`; `node scripts/channel3/kit-inline.mjs <scene.html>` copies
+it in (the same command inlines kit3d.js), npm run check fails on a stale copy. In the scene: `var Kt = K25`.
+- **Camera** `Kt.track([[t, x, y, cz, plane], ...])(t)` -> `{ x, y, z }`: metres, y up, looking along +Z. Between keys the distance to
+  `plane` moves in log space and x, y follow 1/zoom, so a zoom from the tower (300 m) to a map (2,500 km) keeps its target in frame;
+  every key keeps some speed (the camera never stops). Fly-throughs are real: put the next scene behind a plane and pass through a hole
+  in it (the tower's arch). A match cut to another world: draw the new world inside a clip (the counter of the "0" in 1909, measured
+  from the font at load) with its own track and `Kt.off(dx, dy)`, easing the offset to 0 as the hole covers the frame.
+- **Layers** `Kt.use(cam, Z)` sets the canvas to metres at depth Z (returns px per metre, 0 when behind the camera); `Kt.proj(cam, X, Y, Z)`
+  for things that span depths (wires, a floor in perspective); `Kt.vis()` is what is on screen; sort items far to near; fade an item
+  as the camera reaches it (`(Z - cam.z - 3) / 10`). `Kt.ground(cam, col, line, paths, z0, z1)`: the y = 0 plane with rows fixed to it.
+- **Engraving** `Kt.hatch(x0, y0, x1, y1, angle, px, col, lw)`: lines fixed to the layer at a power-of-two spacing, every other one fading
+  as the zoom halves them, so they stay about `px` apart on screen at any zoom with no swimming or popping. Lattice and fine detail fade in
+  by size on screen (the tower's diamonds subdivide as the camera closes in). `Kt.paperTex(seed)` once at load, laid over each frame
+  with 'multiply' (fibres, mottling, specks, warm vignette; static, so it is paper, not a second grain; the render's grain 4 stays).
+- **Scenery** `Kt.city(Z, seed, tone, { h, domes, dark })` an endless row of Paris blocks; `Kt.tree(x, h, seed, tone, ink)`.
+- **People** `Kt.person({ h, coat, trousers, skin, hair, beard, stache, hat: 'top'|'bowler'|'kepi'|'lady', dress, parasol, sit, arms: [[hx, hy],
+  [hx, hy]], phones, buttons, chain, belt, long, detail })`: clean illustrated figures in metres (feet at 0, facing +x), hands placed by a
+  two-bone reach, one eye dot and no other facial detail, recognised by props; scale them with the canvas (outlines stay in px).
+- **Kinetic type** `Kt.roll(s, X, Y, size, font, col, k, knock)` (digits roll up into place), `Kt.label(...)` (spaced capitals wiped in),
+  `Kt.stamp(lines, X, Y, rot, col, k)` (a rubber stamp that lands); key `k` to the word's spoken time (`WT(sentence, /word/)`), not the
+  sentence's. Dark type on paper gets a paper `knock` outline; no glow. `Kt.rings(cam, X, Y, Z, t, t0, t1, every, col)`: radio rings
+  that grow exp(3 x age) metres, so they keep spreading on screen through any zoom.
+- Learned on the pilot's stills (1 Nov): a log of a negative distance (the camera past Z = 0) silently blanks the frame; outlines on a
+  figure scaled 400x must use the canvas's real scale (`cs()`), not the layer's; a rolled number must not show its neighbours; long
+  zooms over featureless land are empty, so pass them in about 0.4 s and keep a subject (rings, the tower glyph on Paris) on screen.
+
 ## Pattern library (2D, retired with the pilots on 31 Oct 2026; kept for the story ideas, rebuilt in 3D)
 Rotate patterns so the feed never shows the same look two days running. Each entry is a reusable recipe; a new pattern gets an entry here
 before its first reel.
@@ -186,6 +217,7 @@ consecutive days, and no more than 3 of one pattern in a week. Spread continents
 | Reel | Topic | Length | Render |
 |---|---|---|---|
 | showreel-c3-eiffel-saved (scripts/channel3/eiffel-saved.html) | Why the Eiffel Tower was almost torn down: the pilot's facts and voice, ten 3D shots | 34.4 s | 30 fps, one job: 41 GitHub minutes (capture 38.5 min, about 2.2 s a frame; 1.3x the local time). Rendered and checked 1 Nov, posts Mon 2 Nov. Polish pass the same day (miniature figures, titles on a soft haze, a closer cover, Bizerte re-checked), re-rendered in place. Second pass the same day on the 3D toolkit (clay figures, matte title plates, real trees, a Haussmann city), re-rendered in place split in 2 parts |
+| showreel-c3-eiffel-flow (scripts/channel3/eiffel-flow.html) | The same story, voice and sources in 2.5D (engraved layers, one continuous camera, no cuts), made 1 Nov to compare with the 3D version for that night's post | 34.4 s | 30 fps, parts 1 (2D canvas) |
 The flat 2D Eiffel pilot and the 3-second 3D test are in attic/scripts/channel3/.
 Learned from its render (fix in the shared core before the next 3D reel): at a cut the caption card stays up empty for about 0.2 s
 while it changes shape (seen at 3 cuts); the voice check counts a year as four words, so its "too dense" pacing flag misreads
