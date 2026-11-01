@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why is your button cut off on phones?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 11, a layout tip: "Why is your button cut off on phones?"
+   100vh is the large viewport (MDN: vh = lvh, the height with the browser bars retracted), so with the bars showing,
+   the bottom of a full-screen hero sits under them. 100dvh follows the bars. A portrait phone this time (Nº 09-10 used a
+   landscape screen): the hero, its button, the browser bar; beside it a column with the numbers live, then the code.
+   Beats and captions lead the voice by 0.15 s; the title holds until it is complete and the cover is that moment (window.COVER);
+   every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--rule:#33343c;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:166px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:236px;font-weight:800;font-size:72px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--red)}
+/* the phone: status bar, the page (a full-screen hero), the browser's bottom bar */
+#ph{left:0;top:0;width:250px;height:470px;border-radius:38px;background:#2a2b31;padding:8px;transform-origin:0 0}
+#scr{position:absolute;left:8px;top:8px;right:8px;bottom:8px;border-radius:31px;overflow:hidden;background:#d9d5cc}
+#sb{position:absolute;left:0;right:0;top:0;height:26px;background:var(--paper);font:700 11px/26px var(--m);padding:0 18px;color:var(--ink);z-index:3}
+#hero{position:absolute;left:0;right:0;top:26px;background:var(--paper);color:var(--ink);overflow:visible}
+#hero .br{position:absolute;left:18px;top:16px;font:700 11px/1 var(--m);letter-spacing:.16em}
+#hero .h{position:absolute;left:18px;top:52px;font:800 40px/.94 var(--f);font-variation-settings:'opsz' 72;letter-spacing:-.02em}
+#hero .s{position:absolute;left:18px;top:184px;font:600 14px/1.3 var(--f);color:#5d5a54;width:180px}
+#cta{position:absolute;left:18px;right:18px;height:46px;border-radius:23px;background:var(--ink);color:var(--paper);font:800 18px/46px var(--f);text-align:center}
+#lost{position:absolute;left:4px;right:4px;border:2.5px dashed var(--red);border-radius:10px;background:rgba(255,90,74,.16);z-index:6}
+#tb{position:absolute;left:0;right:0;height:58px;background:rgba(38,39,45,.86);z-index:5;padding:10px 14px}
+#tb div{height:36px;border-radius:12px;background:#3a3b42;font:600 13px/36px var(--f);color:#cfccc4;text-align:center}
+#ok{position:absolute;left:12px;right:12px;height:58px;border-radius:29px;border:3px solid var(--acc);z-index:6}
+/* the column: the numbers, live → the code → the numbers, fixed */
+#col{left:306px;top:206px;width:198px;height:460px}
+.blk{position:absolute;left:0;right:0;height:96px;border-top:1.5px solid var(--rule)}
+.blk span{display:block;white-space:nowrap}
+.blk .k{font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim);margin-top:14px}
+.blk .v{font:800 40px/1 var(--f);font-variation-settings:'opsz' 72;margin-top:12px;letter-spacing:-.01em}
+#cd{position:absolute;left:0;right:0;top:0;padding:16px 14px;border-radius:18px;background:var(--surface);font:500 18px/1.45 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}#cd s{text-decoration:line-through;color:var(--red)}
+#cap{left:36px;right:36px;top:700px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 11 · LAYOUT</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>is</span> <span>your</span></span><span class="ln"><span>button</span> <span class="acc">cut</span></span><span class="ln"><span class="acc">off</span> <span>on</span></span><span class="ln"><span>phones?</span></span></div>
+<div id="ph" class="a">
+  <div id="scr">
+    <div id="sb">9:41</div>
+    <div id="hero"><div class="br">ORRIN &amp; CO</div><div class="h">Summer<br>linen,<br>made slow.</div><div class="s">Shirts, totes and throws in washed linen.</div><div id="cta">Shop now</div></div>
+    <div id="lost"></div>
+    <div id="tb"><div>orrin.shop</div></div>
+    <div id="ok"></div>
+  </div>
+</div>
+<div id="col" class="a">
+  <div id="rows"><div class="blk" style="top:0"><span class="k">HERO HEIGHT</span><span class="v" id="v1"></span></div><div class="blk" style="top:104px"><span class="k">YOU CAN SEE</span><span class="v" id="v2"></span></div><div class="blk" style="top:208px"><span class="k">UNDER THE BAR</span><span class="v" id="v3"></span></div></div>
+  <div id="cd"></div>
+</div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why is your button cut off on phones? Your full screen hero is a hundred V H. That's the screen with the browser bars hidden. With the bars showing, the bottom slides under them. The fix: a hundred D V H. It fits the screen you can actually see.";
+  var WORDS = [], DUR = 20, LEAD = .15, HOOK_N = 8;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { your: at('your', 2), hundred: at('hundred'), thats: at('thats'), hidden: at('hidden'), showing: at('showing'), bottom: at('bottom'), slides: at('slides'), under: at('under'),
+      fix: at('fix'), hundred2: at('hundred', 2), d: at('d'), fits: at('fits'), actually: at('actually'), see: at('see') };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.your - .3, A.hookIn + .35);
+    A.codeEnd = Math.min(A.d + .5, A.fits - .3);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  // the phone's screen is 454 px tall: 26 px status bar, then the large viewport (428 px); the bottom bar takes 58 px of it when shown
+  var LV = 428, BAR = 58, SV = LV - BAR, SCALE = 2;   // the numbers in the column are shown at 2x (a real phone's CSS pixels)
+  // how far the bar is shown (1 = showing) at time t: shown in the hook, hidden on "hidden", back on "showing", and after the fix
+  // it hides and shows again once on "actually see" (the dvh hero follows it)
+  function bar(t){
+    var b = 1 - io(P(t, A.thats + .1, A.hidden + .1)) + io(P(t, A.showing - .2, A.showing + .25));
+    b -= io(P(t, A.actually - .35, A.actually + .1)) * (1 - io(P(t, A.see + .5, A.see + .95)));
+    return cl(b);
+  }
+  var CODE = '<span class="dim">.hero {</span>\n  height:\n    <s>100vh</s>;\n<span class="dim">}</span>';
+  var CODE2 = '<span class="dim">.hero {</span>\n  height:\n    <b>100dvh</b>;\n<span class="dim">}</span>';
+  var CODE_TXT = CODE2.replace(/<[^>]+>/g, '');
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    var gone = io(P(t, A.leave, A.leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the phone: small and centred under the title, then full height on the left ----
+    var rise = io(P(t, A.leave + .2, A.leave + .7)), s = mix(.56, 1, rise), x = mix((540 - 250 * .56) / 2, 36, rise), y = mix(538 + Math.sin(t * .9) * 3, 206, rise);
+    var ph = $('ph'); ph.style.opacity = out(P(t, 0, .3)) * (1 - ex); ph.style.transform = 'translate(' + x + 'px,' + (y + ex * 20) + 'px) scale(' + s + ')';
+    // ---- the hero: 100vh (the large viewport) until the fix lands on "D V H", then 100dvh (what you can see) ----
+    var b = bar(t), fixK = io(P(t, A.d - .1, A.d + .35)), visible = LV - BAR * b;
+    var H = mix(LV, visible, fixK);
+    var hero = $('hero'); hero.style.height = H + 'px';
+    $('cta').style.top = (H - 46 - 22) + 'px';
+    var tb = $('tb'); tb.style.top = (26 + LV - BAR * b) + 'px';
+    // the part of the hero under the bar: dashed red while it hides the button (before the fix)
+    var under = Math.max(0, 26 + H - (26 + visible)), lostA = (1 - fixK) * win(t, A.showing + .1, A.fix, .2);
+    var lo = $('lost'); lo.style.top = (26 + visible) + 'px'; lo.style.height = under + 'px'; lo.style.opacity = lostA;
+    // the button, back in view: a green ring once the fix lands, and again when the bar moves
+    var ok = $('ok'); ok.style.top = (26 + H - 46 - 22 - 6) + 'px'; ok.style.opacity = Math.max(win(t, A.d + .25, A.fits + .2, .15), win(t, A.see + .7, DUR - .7, .15)) * (1 - ex);
+    // ---- the column: the numbers live (problem) → the code → the numbers fixed ----
+    var cIn = out(P(t, A.leave + .3, A.leave + .7)), col = $('col');
+    col.style.opacity = cIn * (1 - ex); col.style.transform = 'translateY(' + (1 - cIn) * 24 + 'px)';
+    var codeOn = win(t, A.fix - .1, A.fits - .15, .15);
+    $('rows').style.opacity = 1 - codeOn; $('cd').style.opacity = codeOn;
+    var n = t < A.d - .1 ? Math.floor(9 + (CODE.replace(/<[^>]+>/g, '').length - 9) * P(t, A.fix + .1, A.hundred2)) : 1e9;
+    $('cd').innerHTML = t < A.d - .1 ? typed(CODE, n) : CODE2;
+    var hpx = Math.round(H * SCALE), seen = Math.round(Math.min(H, visible) * SCALE), hid = Math.round(under * SCALE);
+    $('v1').textContent = fixK > .5 ? '100dvh' : '100vh'; $('v1').style.color = fixK > .5 ? 'var(--acc)' : 'var(--paper)';
+    $('v2').textContent = seen + ' px';
+    $('v3').textContent = hid + ' px'; $('v3').style.color = hid > 4 ? 'var(--red)' : fixK > .5 ? 'var(--acc)' : 'var(--paper)';
+    // ---- HUD and tag ----
+    var Hd;
+    if (t < A.leave + .2) Hd = 'BUTTON · <b class="r">UNDER THE BAR</b>';
+    else if (t < A.fix - .2) Hd = 'HERO · <b>' + hpx + ' PX</b> · SEEN <b class="' + (hid > 4 ? 'r' : '') + '">' + seen + '</b>';
+    else if (t < A.fits - .2) Hd = 'CSS <b>1 UNIT</b>';
+    else Hd = 'BUTTON · <b class="y">IN VIEW</b>';
+    $('hud').innerHTML = Hd; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.thats - .1 ? '100VH = THE LARGE VIEWPORT' : t < A.showing - .2 ? 'BROWSER BARS HIDDEN' : t < A.fix - .2 ? 'BROWSER BARS SHOWING' : t < A.fits - .2 ? 'THE FIX' : 'DVH FOLLOWS THE BARS';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2)), aft = w.s >= A.fix;
+        var col2 = aft && /^(d|v|h|fits|see)/i.test(w.d) ? 'var(--acc)' : !aft && /^(slides|under|hidden)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col2 + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
+    Q.push({ t: A.hundred, k: 'tap', g: .4, p: 3 }, { t: A.thats + .1, k: 'swish', d: .4, g: .35, p: -.3 }, { t: A.showing - .2, k: 'swish', d: .4, g: .35, p: .3 }, { t: A.slides, k: 'thud', g: .35 });
+    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
+    for (var c = 0, t0 = A.fix + .1, t1 = A.hundred2; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.d, k: 'tap', g: .5, p: 6 }, { t: A.actually - .35, k: 'swish', d: .4, g: .35, p: -.2 }, { t: A.see + .5, k: 'swish', d: .4, g: .35, p: .2 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

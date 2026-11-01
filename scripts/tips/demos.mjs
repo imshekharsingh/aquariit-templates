@@ -112,6 +112,25 @@ export const demos = {
 <p class="note">Open this on a phone and tap both buttons: the left one can stay lit after your finger lifts, until you tap somewhere else; the right one only presses. With a mouse both light up on hover.</p>`,
     js: `function(){}`,
   },
+  dvh: {
+    css: `
+#dvh .pane{height:110px;display:flex;align-items:flex-end;padding:10px}
+#dvh .open{width:100%;min-height:44px;border-radius:22px;border:1.5px solid #f2efe8;background:transparent;color:#f2efe8;font:700 15px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}
+#dvh .sheet{display:none;position:fixed;left:0;right:0;top:0;z-index:50;background:#f2efe8;color:#111214;padding:24px;font:800 28px/1.1 system-ui,-apple-system,"Segoe UI",sans-serif}
+#dvh .sheet.on{display:block}
+#dvh .vh{height:100vh}#dvh .dv{height:100dvh}
+#dvh .sheet button{position:absolute;left:24px;right:24px;bottom:24px;min-height:52px;border:0;border-radius:26px;background:#111214;color:#f2efe8;font:800 17px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">height: 100vh</span><button class="open" type="button" data-s="vh">Open full screen</button></div>
+  <div class="pane fix"><span class="tag ok">height: 100dvh</span><button class="open" type="button" data-s="dv">Open full screen</button></div>
+</div>
+<div class="sheet vh">100vh<button type="button">Close (bottom button)</button></div>
+<div class="sheet dv">100dvh<button type="button">Close (bottom button)</button></div>
+<p class="note">Open both on a phone with the browser bars showing: the 100vh screen can put its bottom button under the bars; the 100dvh one fits what you can see. On a laptop both look the same.</p>`,
+    js: `function(root){ root.querySelectorAll('.open').forEach(function(b){ b.addEventListener('click', function(){ root.querySelector('.sheet.' + b.dataset.s).classList.add('on'); }); });
+  root.querySelectorAll('.sheet button').forEach(function(b){ b.addEventListener('click', function(){ b.parentNode.classList.remove('on'); }); }); }`,
+  },
   transform: {
     css: `
 #transform .pane{height:96px}

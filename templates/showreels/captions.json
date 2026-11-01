@@ -395,5 +395,24 @@
    "#frontenddev",
    "#webdesign"
   ]
+ },
+ "showreel-21-dvh": {
+  "postOn": "2026-11-02",
+  "caption": "Why is your button cut off on phones? 📱\n\nA full-screen hero set to height: 100vh is sized for the large viewport: the screen with the browser's address and tool bars hidden. When the bars are showing (as they are when a page first loads), the bottom of the hero sits under them, and so does your button. Use 100dvh instead: the dynamic viewport height follows the bars, so the hero fits the screen you can actually see. In every major browser since 2022. (dvh resizes as the bars move while scrolling; if that jump bothers you, 100svh is the stable, always-visible size.)\nSave it for your next landing page, or send it to whoever builds your site.",
+  "keywords": [
+   "100vh vs 100dvh",
+   "dvh CSS",
+   "100vh mobile address bar",
+   "button hidden behind browser bar",
+   "CSS viewport units",
+   "responsive design"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#responsivedesign",
+   "#frontenddev",
+   "#webdesign"
+  ]
  }
 }
