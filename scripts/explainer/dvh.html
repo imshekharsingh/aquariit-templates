@@ -74,7 +74,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
   var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
   var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
-  var TEXT = "Why is your button cut off on phones? Your full screen hero is a hundred V H. That's the screen with the browser bars hidden. With the bars showing, the bottom slides under them. The fix: a hundred D V H. It fits the screen you can actually see.";
+  var TEXT = "Why is your button cut off on phones? Your hero is a hundred V H. That's the screen with the bars hidden. With the bars showing, the bottom slides under them. The fix: a hundred D V H. It fits the screen you can actually see.";
   var WORDS = [], DUR = 20, LEAD = .15, HOOK_N = 8;
   (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
   var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };

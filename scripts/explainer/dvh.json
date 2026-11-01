@@ -7,9 +7,16 @@
  "vignette": true,
  "cover": 2.4,
  "voice": {
-  "text": "Why is your button cut off on phones? Your full screen hero is a hundred V H. That's the screen with the browser bars hidden. With the bars showing, the bottom slides under them. The fix: a hundred D V H. It fits the screen you can actually see.",
+  "text": "Why is your button cut off on phones? Your hero is a hundred V H. That's the screen with the bars hidden. With the bars showing, the bottom slides under them. The fix: a hundred D V H. It fits the screen you can actually see.",
   "voice": "af_heart",
-  "speed": 0.86
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.7,
+   0.85,
+   0.75,
+   0.7
+  ]
  },
  "caption": "Why is your button cut off on phones? 📱\n\nA full-screen hero set to height: 100vh is sized for the large viewport: the screen with the browser's address and tool bars hidden. When the bars are showing (as they are when a page first loads), the bottom of the hero sits under them, and so does your button. Use 100dvh instead: the dynamic viewport height follows the bars, so the hero fits the screen you can actually see. In every major browser since 2022. (dvh resizes as the bars move while scrolling; if that jump bothers you, 100svh is the stable, always-visible size.)\nSave it for your next landing page, or send it to whoever builds your site.",
  "keywords": [
