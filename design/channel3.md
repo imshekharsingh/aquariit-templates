@@ -157,8 +157,11 @@ consecutive days, and no more than 3 of one pattern in a week. Spread continents
 ## 3D reels (from 1 Nov 2026)
 | Reel | Topic | Length | Render |
 |---|---|---|---|
-| showreel-c3-eiffel-saved (scripts/channel3/eiffel-saved.html) | Why the Eiffel Tower was almost torn down: the pilot's facts and voice, ten 3D shots | 34.4 s | 30 fps, one job (~45 GitHub minutes estimated from 1.6-1.7 s a frame locally) |
-The flat 2D Eiffel pilot and the 3-second 3D test are in attic/scripts/channel3/. The sky and the lost day are next in 3D (step 3).
+| showreel-c3-eiffel-saved (scripts/channel3/eiffel-saved.html) | Why the Eiffel Tower was almost torn down: the pilot's facts and voice, ten 3D shots | 34.4 s | 30 fps, one job: 41 GitHub minutes (capture 38.5 min, about 2.2 s a frame; 1.3x the local time). Rendered and checked 1 Nov, posts Mon 2 Nov |
+The flat 2D Eiffel pilot and the 3-second 3D test are in attic/scripts/channel3/.
+Learned from its render (fix in the shared core before the next 3D reel): at a cut the caption card stays up empty for about 0.2 s
+while it changes shape (seen at 3 cuts); the voice check counts a year as four words, so its "too dense" pacing flag misreads
+year-heavy scripts (81 script words in 32.1 s = 2.5 words/s). The sky and the lost day are next in 3D (step 3).
 
 ## Launch order (31 Oct 2026)
 The three pilots, after the premium pass, are the first three posts, 21:00-22:00 IST: Eiffel Tower (1 Nov), the sky (2 Nov), the lost day (3 Nov).
