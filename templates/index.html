@@ -201,11 +201,11 @@
   function profile(){ var p = PROF[ch]; prof.textContent = ''; prof.hidden = !p; if (!p) return;
     var sm = el('summary'), img = document.createElement('img'), who = el('span', 'who');
     if (p.logo) { img.src = p.logo; img.alt = ''; sm.appendChild(img); } else sm.appendChild(el('span', 'ph', '?'));   // no logo yet: a placeholder
-    who.appendChild(el('b', null, p.name)); who.appendChild(el('span', null, p.logo ? p.username + ' · posts ' + p.slot : 'Name, username and bio to be decided')); sm.appendChild(who); sm.appendChild(el('span', 'chev', 'Profile'));
+    who.appendChild(el('b', null, p.name)); who.appendChild(el('span', null, p.logo ? p.username + ' · posts ' + (p.days ? p.days + ', ' : '') + p.slot : 'Name, username and bio to be decided')); sm.appendChild(who); sm.appendChild(el('span', 'chev', 'Profile'));
     var inn = el('div', 'in'), dl = el('button', 'btn g', 'Download logo'); dl.type = 'button';
     dl.addEventListener('click', function(){ saveFile(p.logo, p.username.replace(/^@/, '') + '-logo.png', 'image/png', dl, 'Download logo'); });
     inn.appendChild(field('Name', p.name)); inn.appendChild(field('Username', p.username + (p.fallbacks ? ' (if taken: ' + p.fallbacks.join(', ') + ')' : ''), copyBtn(p.username)));
-    inn.appendChild(field('Bio', p.bio)); inn.appendChild(field('Post', p.logo ? 'Daily, ' + p.slot : p.slot, el('span')));
+    inn.appendChild(field('Bio', p.bio)); inn.appendChild(field('Post', p.logo ? (p.days || 'Daily') + ', ' + p.slot : p.slot, el('span')));
     inn.appendChild(field('Profile picture', p.logo ? '1080 × 1080 PNG' : 'to be decided', p.logo ? dl : el('span')));
     prof.appendChild(sm); prof.appendChild(inn); }
   // the logo goes to the share sheet ("Save Image") where files can be shared, otherwise it downloads
