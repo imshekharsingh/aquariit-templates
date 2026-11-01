@@ -94,8 +94,15 @@ scripts/channel3/three-inline.mjs). The bar, for a channel that tells true stori
 - Cost: render at 30 fps with no motion blur; the 3D layer at 1.4x (756x1344, upscaled; type stays at 2x); one shadow map for the whole reel
   (`shadowMap.autoUpdate = false`; nothing that casts a shadow moves); no environment map (it cost 0.7 s a frame); leaf clusters as
   icosahedra of detail 1; far city blocks at double size without chimneys; 20-tap depth of field.
-- People: clay miniatures from capsules, spheres and cylinders (scripts/channel3/eiffel-saved.html, `figure()`), a soft blob shadow under
-  each; light them from the side the sun is on, or they read as black shapes.
+- People (rebuilt 1 Nov after the contact sheet: the capsule peg dolls looked cheap next to the lit world): diorama miniatures in
+  scripts/channel3/eiffel-saved.html, `figure()`: turned (lathe) coats, tunics and dresses (with a bustle), legs and shoes, arms with an
+  elbow and a hand with a thumb, a bump map for cloth folds, a simple face (two dark eyes, a nose, ears, hair; a beard and moustache where
+  the prop needs it), lathe top hats with a curled brim and band, a kepi with visor, lady's hats with flowers; a soft contact shadow under
+  each. Keep them to mid and wide shots (the figure about a third of the frame height), clear of the caption band; light them from the
+  side the sun is on, or they read as black shapes.
+- Titles in 3D: dark bronze type (no glow) on a soft pale haze plane behind it (a shader falloff, not a canvas texture: the canvas alpha
+  texture rendered nothing under SwiftShader); it does not write depth, so the depth of field softens its edge. Light titles on the iron
+  lattice were unreadable; this reads on iron, city and sky. Keep a title inside the frame's middle 80 % (the Bizerte subtitle was cut).
 
 ## Pattern library (2D, retired with the pilots on 31 Oct 2026; kept for the story ideas, rebuilt in 3D)
 Rotate patterns so the feed never shows the same look two days running. Each entry is a reusable recipe; a new pattern gets an entry here
@@ -150,14 +157,14 @@ consecutive days, and no more than 3 of one pattern in a week. Spread continents
 ## The three pilots (31 Oct 2026; premium pass and re-render the same day)
 | Pattern | Topic | Length | Sources |
 |---|---|---|---|
-| Storybook cut-out | How the Eiffel Tower was nearly torn down (1889 fair, 20-year permit, army radio from 1903, Bizerte 1904, saved 1910) | 34.4 s | Eiffel Tower official site (2 pages), History.com, Guinness World Records |
+| Storybook cut-out | How the Eiffel Tower was nearly torn down (1889 fair, 20-year permit, army radio from 1903, Bizerte soon after (no year: sources say 1904-1907), saved 1910) | 34.4 s | Eiffel Tower official site (2 pages), History.com, Guinness World Records |
 | One continuous zoom | Why the sky is blue but sunsets are red (scattering by nitrogen and oxygen, longer path at sunset) | 30.1 s | Met Office, NOAA NESDIS, NASA Space Place, Royal Museums Greenwich |
 | Living globe | The sailors who lost a day (Pigafetta's Wednesday, Cape Verde's Thursday, July 1522; the date line) | 35 s | Linda Hall Library, Utrecht University (van Gent), National Geographic |
 
 ## 3D reels (from 1 Nov 2026)
 | Reel | Topic | Length | Render |
 |---|---|---|---|
-| showreel-c3-eiffel-saved (scripts/channel3/eiffel-saved.html) | Why the Eiffel Tower was almost torn down: the pilot's facts and voice, ten 3D shots | 34.4 s | 30 fps, one job: 41 GitHub minutes (capture 38.5 min, about 2.2 s a frame; 1.3x the local time). Rendered and checked 1 Nov, posts Mon 2 Nov |
+| showreel-c3-eiffel-saved (scripts/channel3/eiffel-saved.html) | Why the Eiffel Tower was almost torn down: the pilot's facts and voice, ten 3D shots | 34.4 s | 30 fps, one job: 41 GitHub minutes (capture 38.5 min, about 2.2 s a frame; 1.3x the local time). Rendered and checked 1 Nov, posts Mon 2 Nov. Polish pass the same day (miniature figures, titles on a soft haze, a closer cover, Bizerte re-checked), re-rendered in place |
 The flat 2D Eiffel pilot and the 3-second 3D test are in attic/scripts/channel3/.
 Learned from its render (fix in the shared core before the next 3D reel): at a cut the caption card stays up empty for about 0.2 s
 while it changes shape (seen at 3 cuts); the voice check counts a year as four words, so its "too dense" pacing flag misreads
