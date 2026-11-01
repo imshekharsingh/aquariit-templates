@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does your button stay lit after tapping?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 10, an interaction tip: "Why does your button stay lit after tapping?"
+   On a touchscreen a tap counts as a hover, and the :hover state can stay on after the finger lifts, until the next tap somewhere else
+   (MDN, :hover note). The fix: put the hover rule inside @media (hover: hover), so only a device that can really hover gets it.
+   Flow as Nº 04-09: one screen that only moves and scales (a shop card in a phone, a finger, later a mouse), one panel under it
+   (the button's state live: pointer, :hover, stuck for; then the code; then the same rows, clean).
+   Beats and captions lead the voice by 0.15 s; the title holds until it is complete and the cover is that moment (window.COVER);
+   every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--rule:#33343c;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:170px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:236px;font-weight:800;font-size:72px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--acc)}
+/* the screen: a shop card on a phone, its button, a finger (and later a mouse pointer) */
+#scr{left:36px;top:206px;width:468px;height:286px;border-radius:30px;background:var(--surface);overflow:hidden;transform-origin:50% 0}
+#scr .hd{position:absolute;left:28px;top:24px;font:700 14px/1 var(--m);letter-spacing:.14em;color:var(--dim)}
+#sw{position:absolute;left:28px;top:56px;width:96px;height:96px;border-radius:20px;background:#2a2b31}
+#sw svg{position:absolute;left:18px;top:16px}
+#nm{position:absolute;left:146px;top:66px;font:800 34px/1 var(--f);font-variation-settings:'opsz' 48;letter-spacing:-.01em;white-space:nowrap}
+#pr{position:absolute;left:146px;top:114px;font:700 22px/1 var(--m);color:var(--dim);white-space:nowrap}
+#btn{position:absolute;left:28px;right:28px;top:182px;height:76px;border-radius:38px;border:2.5px solid var(--paper);font:800 30px/71px var(--f);text-align:center;letter-spacing:-.005em;white-space:nowrap}
+#ring{position:absolute;left:20px;right:20px;top:174px;height:92px;border-radius:46px;border:3px solid var(--red)}
+#fg{position:absolute;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;background:rgba(138,135,128,.6);border:2.5px solid var(--paper);box-shadow:0 0 0 2.5px var(--ink),0 6px 14px rgba(0,0,0,.35)}
+#rp{position:absolute;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;border:2.5px solid var(--paper)}
+#cur{position:absolute;width:34px;height:44px}
+/* the deck: the button's state, live → the code → the same rows, clean */
+#deck{left:36px;width:468px;border-radius:20px;background:var(--surface);overflow:hidden}
+#deck > .lay{position:absolute;left:0;top:0;right:0;bottom:0}
+.row{position:absolute;left:22px;right:22px;height:40px;font:700 24px/40px var(--f);display:flex;justify-content:space-between;white-space:nowrap}
+.row + .row{border-top:1.5px solid var(--rule)}
+.row span:first-child{font:700 14px/40px var(--m);letter-spacing:.12em;color:var(--dim)}
+#cd{padding:16px 22px;font:500 20px/1.4 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#deckL{left:36px;font:700 15px/1 var(--m);letter-spacing:.12em;white-space:nowrap}
+#cap{left:36px;right:36px;top:672px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 10 · TOUCH</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>button</span> <span class="acc">stay</span></span><span class="ln"><span class="acc">lit</span> <span>after</span></span><span class="ln"><span>tapping?</span></span></div>
+<div id="scr" class="a">
+  <div class="hd">ORRIN &amp; CO · SHOP</div>
+  <div id="sw"><svg width="60" height="64" viewBox="0 0 60 64" fill="none" stroke="#f2efe8" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"><path d="M8 22h44l-4 38H12z"/><path d="M20 22v-6a10 10 0 0 1 20 0v6"/></svg></div>
+  <div id="nm">Canvas tote</div>
+  <div id="pr">$48 · IN STOCK</div>
+  <div id="ring"></div>
+  <div id="btn">Add to bag</div>
+  <div id="rp"></div>
+  <div id="fg"></div>
+  <svg id="cur" viewBox="0 0 34 44"><path d="M3 3v32l9-8 6 14 7-3-6-14h12z" fill="#f2efe8" stroke="#111214" stroke-width="2.5" stroke-linejoin="round"/></svg>
+</div>
+<div id="deck" class="a">
+  <div id="st" class="lay"><div class="row" style="top:6px"><span>POINTER</span><span id="v1"></span></div><div class="row" style="top:46px"><span>:HOVER</span><span id="v2"></span></div><div class="row" style="top:86px"><span>STUCK FOR</span><span id="v3"></span></div></div>
+  <div id="cd" class="lay"></div>
+</div>
+<div id="deckL" class="a"></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why does your button stay lit after tapping? Phones fake a hover when you tap. And it sticks, until you tap somewhere else. The fix: wrap your hover rule in at media, hover, hover. Now only a mouse gets the hover. On a phone, a tap is just a tap.";
+  // ~20 s, the whole script in one take; beats and caption words land 0.15 s before the word
+  var WORDS = [], DUR = 20, LEAD = .15, HOOK_N = 8;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { phones: at('phones'), fake: at('fake'), hover1: at('hover'), tap1: at('tap'), sticks: at('sticks'), until: at('until'), tap2: at('tap', 2), somewhere: at('somewhere'), els: at('else'),
+      fix: at('fix'), wrap: at('wrap'), media: at('media'), hover4: at('hover', 4), now: at('now'), only: at('only'), mouse: at('mouse'), hover5: at('hover', 5),
+      on: at('on'), phone: at('phone'), tap3: at('tap', 3), just: at('just'), tap4: at('tap', 4) };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.phones - .3, A.hookIn + .35);
+    A.codeEnd = Math.min(A.hover4 + .35, A.now - .4);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  // ---- the touches: each {down, up, x, y}; the finger glides between them; a tap on the button turns :hover on (before the fix) ----
+  var BX = 234, BY = 220, EX = 404, EY = 34, REST = [470, 330];
+  function taps(){ return [
+    { d: .3, u: .62, x: BX, y: BY, on: true },                       // the hook: tap, lift, still lit
+    { d: A.hover1 - .05, u: A.tap1 + .1, x: BX - 40, y: BY + 6, on: true },   // "Phones fake a hover when you tap"
+    { d: A.somewhere - .05, u: A.somewhere + .25, x: EX, y: EY, on: false, clear: true },   // "until you tap somewhere else"
+    { d: A.tap3 - .05, u: A.tap3 + .22, x: BX + 30, y: BY + 4, on: false, clean: true },    // after the fix: a tap is just a tap
+    { d: A.tap4 - .05, u: A.tap4 + .22, x: BX - 50, y: BY - 4, on: false, clean: true },
+    { d: Math.min(A.tap4 + 1.1, DUR - 1.3), u: Math.min(A.tap4 + 1.32, DUR - 1.08), x: BX + 10, y: BY + 2, on: false, clean: true } ]; }
+  function finger(t){
+    var T = taps(), x = REST[0], y = REST[1], vis = 0, down = 0, rip = null;
+    for (var i = 0; i < T.length; i++) { var a = T[i];
+      var inS = a.d - .45, outE = a.u + .5, prev = T[i - 1], next = T[i + 1];
+      if (t < inS || t > outE) continue;
+      // arrive from the previous tap's point if it was close in time, else from the rest point; leave the same way
+      var from = prev && a.d - prev.u < 1.2 ? [prev.x, prev.y] : REST, to = next && next.d - a.u < 1.2 ? null : REST;
+      var k = io(P(t, inS, a.d)); x = mix(from[0], a.x, k); y = mix(from[1], a.y, k);
+      if (to && t > a.u) { var k2 = io(P(t, a.u + .05, outE)); x = mix(a.x, to[0], k2); y = mix(a.y, to[1], k2); }
+      vis = 1; down = t >= a.d && t < a.u ? 1 : 0;
+      if (t >= a.d && t < a.d + .5) rip = { x: a.x, y: a.y, k: P(t, a.d, a.d + .5) };
+    }
+    return { x: x, y: y, vis: vis, down: down, rip: rip };
+  }
+  // the button's :hover state from the touches (before the fix) and the mouse (after it)
+  function state(t){
+    var T = taps(), lit = 0, since = -1, stuckFor = 0, last = 0;
+    T.forEach(function(a){ if (a.on && t >= a.d) { lit = 1; since = a.u; } if (a.clear && t >= a.d) { if (lit) last = a.d - since; lit = 0; since = -1; } });
+    var m = mouse(t); if (m.over) lit = 1;
+    if (lit && since >= 0 && t > since) stuckFor = t - since;
+    return { lit: lit, stuck: stuckFor, last: last, mouse: m };
+  }
+  // the mouse pointer: arrives on "only", rests on the button through "the hover", leaves before "On a phone"
+  function mouse(t){
+    var a = A.only - .25, b = A.mouse + .05, c = A.hover5 + .35, d = A.on - .1;
+    if (t < a || t > d + .2) return { vis: 0, over: 0, x: 500, y: 300 };
+    var k = io(P(t, a, b)), k2 = io(P(t, c, d)), x = mix(mix(500, 300, k), 520, k2), y = mix(mix(320, 224, k), 120, k2);
+    return { vis: 1, x: x, y: y, over: t >= b - .05 && t < c + .15 ? 1 : 0 };
+  }
+  var CODE = '<b>@media (hover: hover) {</b>\n  <span class="dim">.btn:hover {</span>\n    <span class="dim">background: #fff;</span>\n  <span class="dim">}</span>\n<b>}</b>';
+  var CODE_TXT = CODE.replace(/<[^>]+>/g, '');
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function show(el, o, y, s){ el.style.opacity = o; el.style.transform = 'translateY(' + (y || 0) + 'px) scale(' + (s === undefined ? 1 : s) + ')'; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    // ---- the title: holds until it is complete, then leaves ----
+    var gone = io(P(t, A.leave, A.leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the screen: small under the title, full for the problem, smaller while the rule is typed, full again ----
+    var rise = io(P(t, A.leave + .25, A.leave + .7)), m1 = io(P(t, A.fix - .35, A.fix + .15)), m2 = io(P(t, A.now - .45, A.now - .1)), shrink = m1 * (1 - m2);
+    var drift = Math.sin(t * .9) * 3 * (1 - rise);
+    show($('scr'), out(P(t, .02, .3)) * (1 - ex), (1 - rise) * 340 + drift + ex * 20, mix(.62, 1, rise) * mix(1, .62, shrink));
+    // the hook's lit button resets while the screen rises, so the story starts clean
+    var S = state(t), reset = t >= A.leave - .1 && t < A.hover1 - .05, lit = reset ? (1 - P(t, A.leave - .1, A.leave + .2)) : S.lit;
+    var f = finger(t), b = $('btn'), press = f.down && Math.abs(f.y - BY) < 50 ? 1 : 0;
+    b.style.background = 'rgba(242,239,232,' + lit + ')'; b.style.color = lit > .5 ? '#111214' : '#f2efe8';
+    b.style.transform = 'scale(' + (press ? .965 : 1) + ')';
+    var fixed = t >= A.fix - .2;
+    var ringA = !fixed && S.stuck > .25 && !reset ? (.55 + .45 * Math.sin(t * 9)) : 0;
+    $('ring').style.opacity = ringA;
+    var fg = $('fg'); fg.style.opacity = f.vis * (1 - ex); fg.style.left = f.x + 'px'; fg.style.top = f.y + 'px'; fg.style.transform = 'scale(' + (f.down ? .82 : 1) + ')';
+    var rp = $('rp'); if (f.rip) { rp.style.left = f.rip.x + 'px'; rp.style.top = f.rip.y + 'px'; rp.style.opacity = (1 - f.rip.k) * .8; rp.style.transform = 'scale(' + (1 + f.rip.k * 1.6) + ')'; } else rp.style.opacity = 0;
+    var cu = $('cur'), m = S.mouse; cu.style.opacity = m.vis; cu.style.left = m.x + 'px'; cu.style.top = m.y + 'px';
+    // ---- the deck: the button's state (top 510) → code (396) → the same rows, clean (510) → gone at the end ----
+    var dIn = out(P(t, A.phones - .25, A.phones + .05));
+    var dTop = 510 + (380 - 510) * shrink, dH = 132 + 50 * shrink, dk = $('deck');
+    dk.style.top = dTop + 'px'; dk.style.height = dH + 'px'; dk.style.opacity = dIn * rise * (1 - ex); dk.style.transform = 'translateY(' + ((1 - dIn) * 30) + 'px)';
+    $('st').style.opacity = Math.max(win(t, A.phones - .15, A.fix - .12, .12), win(t, A.now - .05, DUR, .12));
+    var v1 = m.vis ? 'MOUSE' : f.vis ? (f.down ? 'FINGER · DOWN' : 'FINGER · LIFTED') : '—';
+    var v2 = lit > .5 ? 'ON' : 'OFF', bad = !fixed && lit > .5 && S.stuck > .1, st = fixed ? 0 : S.lit ? S.stuck : S.last;
+    $('v1').textContent = v1;
+    $('v2').textContent = v2; $('v2').style.color = bad ? 'var(--red)' : lit > .5 ? 'var(--acc)' : 'var(--paper)';
+    $('v3').textContent = st.toFixed(1) + ' s'; $('v3').style.color = fixed ? 'var(--acc)' : st > .1 ? 'var(--red)' : 'var(--paper)';
+    $('cd').style.opacity = win(t, A.fix, A.now - .15, .12);
+    $('cd').innerHTML = typed(CODE, 6 + Math.floor((CODE_TXT.length - 6) * P(t, A.wrap - .1, A.codeEnd)));
+    var dl = $('deckL'); dl.style.top = (dTop + dH + 14) + 'px';
+    dl.textContent = t < A.fix - .12 ? 'TAP · LIFT · STILL HOVERED' : t < A.now - .15 ? 'HOVER ONLY WHERE IT EXISTS' : t < A.on - .1 ? 'A MOUSE STILL GETS IT' : 'A TAP IS JUST A TAP';
+    dl.style.color = t < A.fix - .12 ? '#ff5a4a' : '#7cf0b6'; dl.style.opacity = dIn * rise * (1 - ex);
+    // ---- the readout top right ----
+    var H;
+    if (t < A.leave + .2) H = 'BUTTON · <b class="r">STILL LIT</b>';
+    else if (t < A.fix - .2) H = 'HOVER STUCK · <b class="r">' + st.toFixed(1) + ' S</b>';
+    else if (t < A.now - .2) H = 'CSS <b>1 MEDIA QUERY</b>';
+    else H = 'HOVER STUCK · <b class="y">0.0 S</b>';
+    $('hud').innerHTML = H; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.sticks - .1 ? 'ON A TOUCHSCREEN' : t < A.fix - .2 ? 'WATCH THE BUTTON' : t < A.now - .2 ? 'THE FIX' : t < A.on - .1 ? 'ON A LAPTOP' : 'ON A PHONE';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)   // the title words are the question, shown as the title instead
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2)), aft = w.s >= A.fix;
+        var col = aft && /^(at|media|hover|mouse|just)/i.test(w.d) ? 'var(--acc)' : !aft && /^(fake|hover|sticks)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  // sound: a tap on every touch, a low thud when the hover sticks, keys for the rule, a soft click for the mouse, clean taps at the end
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
+    taps().forEach(function(a, i){ Q.push({ t: a.d, k: 'tap', g: .45, p: a.clean ? 6 : 2 + i }); });
+    Q.push({ t: A.sticks, k: 'thud', g: .35 });
+    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
+    for (var c = 0, t0 = A.wrap, t1 = A.codeEnd; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.now - .4, k: 'swish', d: .4, g: .45, p: .3 }, { t: A.mouse, k: 'tap', g: .35, p: 4 }, { t: A.on - .3, k: 'swish', d: .35, g: .4, p: -.2 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

@@ -376,5 +376,24 @@
   "concept": "The sailors who lost a day",
   "about": "Living globe: a lit, turning globe, a small fleet inking its route, the diary against the shore. Pigafetta's diary said Wednesday, Cape Verde said Thursday (1522).",
   "hidden": true
+ },
+ "showreel-20-hover": {
+  "postOn": "2026-11-01",
+  "caption": "Why does your button stay lit after tapping? 👆\n\nOn a phone there's no mouse, so a tap counts as a hover. In some mobile browsers the :hover style then sticks after your finger lifts, until you tap somewhere else. Wrap your hover styles in @media (hover: hover) and only devices that can really hover (a mouse, a trackpad) get them; on a phone, a tap is just a tap. One media query, in every major browser. (A few Android phones report hover wrongly; add and (pointer: fine) to be safe. Keep an :active style for tap feedback.)\nSave it for your next button, or send it to whoever builds your UI.",
+  "keywords": [
+   "hover media query",
+   "sticky hover mobile",
+   "CSS hover on touch devices",
+   "button stays highlighted after tap",
+   "CSS tips",
+   "UI design"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#uidesign",
+   "#frontenddev",
+   "#webdesign"
+  ]
  }
 }

@@ -1,0 +1,54 @@
+{
+ "name": "showreel-20-hover",
+ "seek": "scripts/explainer/hover.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why does your button stay lit after tapping? Phones fake a hover when you tap. And it sticks, until you tap somewhere else. The fix: wrap your hover rule in at media, hover, hover. Now only a mouse gets the hover. On a phone, a tap is just a tap.",
+  "voice": "af_heart",
+  "speed": 0.86
+ },
+ "caption": "Why does your button stay lit after tapping? 👆\n\nOn a phone there's no mouse, so a tap counts as a hover. In some mobile browsers the :hover style then sticks after your finger lifts, until you tap somewhere else. Wrap your hover styles in @media (hover: hover) and only devices that can really hover (a mouse, a trackpad) get them; on a phone, a tap is just a tap. One media query, in every major browser. (A few Android phones report hover wrongly; add and (pointer: fine) to be safe. Keep an :active style for tap feedback.)\nSave it for your next button, or send it to whoever builds your UI.",
+ "keywords": [
+  "hover media query",
+  "sticky hover mobile",
+  "CSS hover on touch devices",
+  "button stays highlighted after tap",
+  "CSS tips",
+  "UI design"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#css",
+  "#uidesign",
+  "#frontenddev",
+  "#webdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:hover",
+   "note": "MDN :hover: on touchscreens it may never match, match only for a moment, or keep matching after the touch ends until the user touches another element"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/hover",
+   "note": "MDN hover media feature: hover = the primary input can conveniently hover; none = many mobile devices only emulate hovering"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/at-rules/media.json",
+   "note": "@media (hover): Chrome 38, Chrome Android 50, Firefox 64, Safari 9; some Samsung Android devices may wrongly match (hover: hover) (crbug 41445959)"
+  }
+ ],
+ "tip": {
+  "title": "Why does your button stay lit after tapping?",
+  "why": "On a touchscreen there is no pointer resting on the page, so mobile browsers emulate hover on tap, and depending on the browser the :hover style can stay on after the finger lifts, until the user touches something else (MDN). Put hover styles inside @media (hover: hover): only devices whose main input can really hover (a mouse, a trackpad) get them, and on a phone a tap is just a tap. A few Android devices report hover wrongly, so add and (pointer: fine) if you need to be sure, and keep an :active style for tap feedback.",
+  "code": "@media (hover: hover) {\n  .btn:hover {\n    background: #fff;\n  }\n}",
+  "demo": "hover",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/hover",
+   "label": "MDN, hover media feature"
+  }
+ }
+}
