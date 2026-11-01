@@ -228,6 +228,47 @@ async function perfApi(request, env, p, url) {
   return jres({ error: 'bad-request' }, 400);
 }
 
+// ---- Cards at the top of the app (owner, 1 Nov 2026: "the app should show me everything"): the daily audit, the spare-usage night's report.
+// Primary account only. Written by the "Audit card" workflow (scripts/post-card.mjs signs in with the BASIC_AUTH secrets), deleted for good by "Mark read".
+let cardsReady = null;
+async function cardsDb(env) {
+  if (!env.DB) return null;
+  cardsReady = cardsReady || env.DB.exec('CREATE TABLE IF NOT EXISTS app_cards (id TEXT PRIMARY KEY, kind TEXT NOT NULL, day TEXT NOT NULL, body TEXT NOT NULL, at TEXT NOT NULL)').catch((e) => { cardsReady = null; throw e; });
+  await cardsReady;
+  return env.DB;
+}
+const CARD_ID = /^\/api\/cards\/([a-z0-9-]{1,60})$/, CHANNELS = ['web', 'tech', 'c3'];
+const lines = (v, n, len) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string' && x.trim()).slice(0, n).map((x) => x.trim().slice(0, len)) : []);
+function cleanCard(b) {
+  if (!b || typeof b !== 'object' || !DAY_RE.test(b.day || '')) return null;
+  const kind = ['audit', 'spare', 'note'].includes(b.kind) ? b.kind : 'audit', channels = {};
+  for (const k of CHANNELS) { const l = lines(b.channels && b.channels[k], 12, 300); if (l.length) channels[k] = l; }
+  const card = { kind, day: b.day, title: nStr(b.title, 120) || (kind === 'spare' ? 'Spare-usage night' : 'Daily audit'), points: lines(b.points, 12, 300), channels };
+  return card.points.length || Object.keys(channels).length ? card : null;
+}
+async function cardsApi(request, env, p) {
+  if (!(await isPrimary(request, env))) return request.method === 'GET' ? jres({ cards: [] }) : jres({ error: 'forbidden' }, 403);
+  let db;
+  try { db = await cardsDb(env); } catch { return jres({ error: 'db-unavailable' }, 503); }
+  if (!db) return jres({ error: 'no-db' }, 501);
+  if (request.method === 'GET' && p === '/api/cards') {
+    const { results } = await db.prepare('SELECT id, body, at FROM app_cards ORDER BY day DESC, at DESC LIMIT 30').all();
+    return jres({ cards: (results || []).map((r) => { let b = {}; try { b = JSON.parse(r.body); } catch { /* skip */ } return { id: r.id, ...b, at: r.at }; }) });
+  }
+  const m = CARD_ID.exec(p);
+  if (!m || request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403);
+  if (request.method === 'DELETE') { await db.prepare('DELETE FROM app_cards WHERE id = ?1').bind(m[1]).run(); return jres({ ok: true }); }
+  if (request.method === 'PUT') {
+    let b = null; try { b = await request.json(); } catch { /* handled below */ }
+    const card = cleanCard(b);
+    if (!card) return jres({ error: 'bad-request' }, 400);
+    await db.prepare('INSERT INTO app_cards (id, kind, day, body, at) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT(id) DO UPDATE SET kind = excluded.kind, day = excluded.day, body = excluded.body, at = excluded.at')
+      .bind(m[1], card.kind, card.day, JSON.stringify(card), new Date().toISOString()).run();
+    return jres({ ok: true, id: m[1] });
+  }
+  return jres({ error: 'bad-request' }, 400);
+}
+
 // ---- Reel-uploaded tracking in D1 (binding "DB"). Without the binding the API answers 501 and the pages fall back to localStorage. ----
 const ID_RE = /^\d{4}-\d{2}-\d{2}(-\d{4})?$/;
 const jsonHeaders = { 'Content-Type': 'application/json', ...noStore };
@@ -329,7 +370,7 @@ export default {
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p === '/api/showreels' ? showreelList(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (signedIn) {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
       if (m) { try { const v = await reelVideo(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }

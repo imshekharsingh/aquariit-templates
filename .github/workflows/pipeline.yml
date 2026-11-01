@@ -211,6 +211,15 @@ jobs:
           done
           echo "performance API signed in: HTTP $code (200 = database ready, 501 = no database bound)"
           [ "$code" = "200" ] || [ "$code" = "501" ] || { echo "unexpected status"; exit 1; }
+          # the app's cards (owner, 1 Nov 2026): closed when signed out; with D1 a test card round-trips and is deleted again
+          [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/cards")" = "401" ] || { echo "cards API must be closed to signed-out requests"; exit 1; }
+          if [ "$code" = "200" ]; then
+            H=(-b "$J" -H 'X-Requested-With: reel' -H 'Content-Type: application/json')
+            command curl -sf "${H[@]}" -X PUT -d '{"kind":"note","day":"2000-01-01","points":["smoke test"]}' "$B/api/cards/smoke-test" >/dev/null || { echo "card PUT failed"; exit 1; }
+            command curl -sf -b "$J" "$B/api/cards" | grep -q '"smoke-test"' || { echo "card did not round-trip"; exit 1; }
+            command curl -sf "${H[@]}" -X DELETE "$B/api/cards/smoke-test" >/dev/null || { echo "card DELETE failed"; exit 1; }
+            echo "OK cards API round-trip"
+          fi
       - name: Check the newest showreel is served to signed-in users only
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}

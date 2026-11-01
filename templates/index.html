@@ -100,6 +100,16 @@
   .bar.over i{background:#ff6b6b}
   .use ul{margin:8px 0 0;padding:0;list-style:none}
   .use li{display:flex;justify-content:space-between;padding:3px 0;border-top:1px solid var(--line)}
+  /* cards (owner, 1 Nov 2026): the daily audit and the spare-usage night's report, under the alert; "Mark read" deletes one for good */
+  .card{margin:0 0 14px;padding:14px 16px 12px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:16px;font-size:.88rem}
+  .card .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .card .hd b{font:800 .95rem system-ui,sans-serif}
+  .card .hd span{color:var(--mute);font-size:.78rem;white-space:nowrap}
+  .card ul{margin:6px 0 0;padding-left:18px}
+  .card li{margin:3px 0}
+  .card h3{margin:12px 0 0;font:800 .72rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--cc,var(--mute))}
+  .card .row{justify-content:flex-end;margin-top:10px}
+  .card .btn{min-height:40px;font-size:.82rem}
   /* the Posted list (owner, 1 Nov 2026): one compact row per posted reel, newest first, numbers from the nightly collector */
   .posted-list{margin-top:30px}
   .posted-list h2{font:800 .8rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 4px}
@@ -122,6 +132,7 @@
 <main class="wrap">
   <div class="top"><span class="brand">Studio</span><span class="tr"><button class="pill" id="refresh" type="button">Refresh</button></span></div>
   <div class="alert" id="alert" role="alert" hidden></div>
+  <div id="cards"></div>
   <details class="use" id="use" hidden><summary><span class="r"><span>GitHub minutes</span><span id="use-n"></span></span><span class="bar" id="use-bar"><i></i></span></summary><div id="use-note"></div><ul id="use-list"></ul></details>
   <div class="tabs" role="tablist" aria-label="Channel">
     <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
@@ -315,6 +326,21 @@
     });
   }
   paint();
+  // cards: one per daily audit (and the spare-usage night's report), newest first; "Mark read" deletes the card for good (no archive)
+  var cardsBox = document.getElementById('cards'), CC = { web: '#7c8cff', tech: '#3ee08f', c3: '#ffb454' };
+  function cardEl(cd){ var box = el('section', 'card'), hd = el('div', 'hd');
+    hd.appendChild(el('b', null, cd.title || 'Daily audit')); hd.appendChild(el('span', null, nice(cd.day))); box.appendChild(hd);
+    function ul(a){ var u = el('ul'); a.forEach(function(t){ u.appendChild(el('li', null, t)); }); return u; }
+    if (cd.points && cd.points.length) box.appendChild(ul(cd.points));
+    ['web', 'tech', 'c3'].forEach(function(k){ var a = cd.channels && cd.channels[k]; if (!a || !a.length) return;
+      var h = el('h3', null, CH[k].name + ' · last 7 days'); h.style.setProperty('--cc', CC[k]); box.appendChild(h); box.appendChild(ul(a)); });
+    var row = el('div', 'row'), b = el('button', 'btn g', 'Mark read'); b.type = 'button';
+    b.addEventListener('click', function(){ b.disabled = true;
+      fetch('/api/cards/' + encodeURIComponent(cd.id), { method: 'DELETE', credentials: 'same-origin', headers: { 'X-Requested-With': 'reel' } })
+        .then(function(r){ if (!r.ok) throw 0; box.remove(); }).catch(function(){ b.disabled = false; b.textContent = 'Try again'; }); });
+    row.appendChild(b); box.appendChild(row); return box; }
+  fetch('/api/cards', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
+    .then(function(j){ (j.cards || []).forEach(function(cd){ if (cd && cd.id && cd.day) cardsBox.appendChild(cardEl(cd)); }); }).catch(function(){});
   // Instagram collector health: an open alert per account, or no new numbers for 36+ hours (the run itself failed or stopped)
   fetch('/api/perf/status', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(st){
     var ACC = { 1: '@webin20sec', 2: '@techin20sec', 3: '@itturns.out' }, box = document.getElementById('alert'), lines = [];
