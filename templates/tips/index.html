@@ -63,6 +63,11 @@
 #numbers .n{position:absolute;left:14px;top:40px;font:800 44px/1 system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:proportional-nums;white-space:nowrap}
 #numbers .n i{font:700 14px/1 ui-monospace,monospace;font-style:normal;color:#8a8780;margin-left:6px}
 #numbers .fix .n{font-variant-numeric:tabular-nums}
+#hover .pane{height:120px}
+#hover .b{position:absolute;left:14px;width:calc(100% - 28px);top:46px;height:52px;border-radius:26px;border:2px solid #f2efe8;background:transparent;color:#f2efe8;font:700 17px/48px system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center;cursor:pointer;transition:background .15s,color .15s}
+#hover .b:active{transform:scale(.97)}
+#hover .pane:not(.fix) .b:hover{background:#f2efe8;color:#111214}
+@media (hover: hover){#hover .fix .b:hover{background:#f2efe8;color:#111214}}
 #transform .pane{height:96px}
 #transform .dot{position:absolute;top:44px;left:12px;width:34px;height:34px;border-radius:10px;background:#7c8cff}
 #transform .run .dot{animation:tip-left 2s ease-in-out infinite alternate}
@@ -78,6 +83,24 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="hover">
+  <p class="no">Nº 10</p>
+  <h2>Why does your button stay lit after tapping?</h2>
+  <p class="why">On a touchscreen there is no pointer resting on the page, so mobile browsers emulate hover on tap, and depending on the browser the :hover style can stay on after the finger lifts, until the user touches something else (MDN). Put hover styles inside @media (hover: hover): only devices whose main input can really hover (a mouse, a trackpad) get them, and on a phone a tap is just a tap. A few Android devices report hover wrongly, so add and (pointer: fine) if you need to be sure, and keep an :active style for tap feedback.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Plain :hover</span><button class="b" type="button">Add to bag</button></div>
+  <div class="pane fix"><span class="tag ok">Inside @media (hover: hover)</span><button class="b" type="button">Add to bag</button></div>
+</div>
+<p class="note">Open this on a phone and tap both buttons: the left one can stay lit after your finger lifts, until you tap somewhere else; the right one only presses. With a mouse both light up on hover.</p></div>
+  <div class="code"><pre><code>@media (hover: hover) {
+  .btn:hover {
+    background: #fff;
+  }
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/hover" rel="noopener">Source: MDN, hover media feature</a></p>
+</article>
 
 <article class="tip" id="numbers">
   <p class="no">Nº 09</p>
@@ -217,11 +240,12 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>7 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>8 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "hover": function(){},
     "numbers": function(root, btn){ btn.addEventListener('click', function(){ if (btn.disabled) return; btn.disabled = true;
   var ns = root.querySelectorAll('.n span'), t0 = performance.now();
   (function tick(){ var e = (performance.now() - t0) / 1000, n = Math.floor(e * 10), v = (10 + n * .173 + (n * 7919 % 13) * .01).toFixed(2);

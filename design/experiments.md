@@ -69,6 +69,13 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+### 1 Nov 2026, 08:52 IST audit (collect 04:49 IST; @webin20sec 257 followers (+188), 26 posts; @techin20sec 9 followers (+0), 28 posts)
+Studio, 7 days (8 reels): **31 Oct 13:21 Nº 09 "Why do your numbers wiggle when they change?" 79,496 reach, 14.3 s of 21, 2,296 saves, 370 shares at ~15.5 h** · Nº 04 5,117 · Nº 08 3,471 · Nº 05 2,504 · Nº 06 1,514 · Nº 03 1,238 · others 208-284. Median 2,009 (was 1,295); 2,800 saves, 417 shares. Account, last day: reach 81,707 (99.9% non-followers), +14 follows in the day's window, +188 since 31 Oct.
+techin20sec, 7 days (16 reels): **31 Oct 17:04 test day 1 "Why does your iPhone stop charging at 80%?" 8 reach, 3.6 s at ~12 h** · best Amazon cloud 173. Median 108.5; 1 save, 0 shares. Account, last day: reach 30. Head-to-head median 2,009 vs 108.5.
+**Milestone: 100 followers passed (257); Nº 09 is the first reel past 10,000 reach.**
+Lesson: Nº 09 is the "something everyone has seen but never named" shape (a jittering timer), a one-line fix and a 14.3 s hold; keep picking annoyances people see daily. Tech's first explainer got 8 reach: Instagram is not testing the account's reels at all (3.6 s watch from 8 people), so the passkey remake opens harder: the answer's first step on screen inside 2 s, shorter (~18 s).
+Today: Nº 10 sticky hover on phones (@media (hover: hover)); @techin20sec day 2, the passkey remake in the techreel format.
+
 ### 31 Oct 2026, 08:52 IST audit (collect 05:11 IST; @webin20sec 69 followers (+13), 25 posts; @techin20sec 9 followers (+0), 27 posts)
 Studio, 7 days (8 reels): **30 Oct 13:28 Nº 08 "Why does the page scroll, behind your popup?" 2,518 reach, 9.0 s, 80 saves, 12 shares at ~10 h** (milestone: a fourth reel over 1,000) · Nº 04 4,704 · Nº 05 2,401 · Nº 06 1,422 · Nº 03 1,168 · Nº 07 182 · others 166-182. Median 1,295 (was 176); 411 saves, 43 shares. Account, last day: reach 2,963 (98% non-followers), views 4,032.
 techin20sec, 7 days (19 reels): 30 Oct 18:45 "The MacBook Pro now has a touchscreen" 24 reach, 3.0 s · best Amazon cloud 173. Median 113; 2 saves, 0 shares. Account, last day: reach 62. Head-to-head median 1,295 vs 113.

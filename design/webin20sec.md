@@ -147,6 +147,7 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 ## Log
 | date | reel | series | notes |
 |---|---|---|---|
+| 1 Nov | showreel-20-hover (Nº 10) | narrated touch tip | "Why does your button stay lit after tapping?": a shop card's button lights on a tap and stays lit (red ring, a stuck-for counter) until a tap elsewhere, @media (hover: hover) typed, a mouse still hovers, taps stay clean; MDN :hover touchscreen note + BCD (Samsung quirk in the caption); 20 s |
 | 22 Oct | showreel-05-layout-shift | (explainer, owner brief) | 30 s; too slow in the middle; first second barely moved |
 | 22 Oct | showreel-07-built-in-20s | Built in 20 s | first of the series; Halden, Swiss modernist |
 | 22 Oct | showreel-08-six-transitions | Six ways | Tinta paint studio; each page's circle is the next colour; zoom-through payoff loops to frame 0 |

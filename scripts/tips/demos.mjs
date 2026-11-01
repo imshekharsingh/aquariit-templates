@@ -97,6 +97,21 @@ export const demos = {
   (function tick(){ var e = (performance.now() - t0) / 1000, n = Math.floor(e * 10), v = (10 + n * .173 + (n * 7919 % 13) * .01).toFixed(2);
     ns.forEach(function(s){ s.textContent = v; }); if (e < 4) requestAnimationFrame(tick); else btn.disabled = false; })(); }); }`,
   },
+  hover: {
+    css: `
+#hover .pane{height:120px}
+#hover .b{position:absolute;left:14px;width:calc(100% - 28px);top:46px;height:52px;border-radius:26px;border:2px solid #f2efe8;background:transparent;color:#f2efe8;font:700 17px/48px system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center;cursor:pointer;transition:background .15s,color .15s}
+#hover .b:active{transform:scale(.97)}
+#hover .pane:not(.fix) .b:hover{background:#f2efe8;color:#111214}
+@media (hover: hover){#hover .fix .b:hover{background:#f2efe8;color:#111214}}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">Plain :hover</span><button class="b" type="button">Add to bag</button></div>
+  <div class="pane fix"><span class="tag ok">Inside @media (hover: hover)</span><button class="b" type="button">Add to bag</button></div>
+</div>
+<p class="note">Open this on a phone and tap both buttons: the left one can stay lit after your finger lifts, until you tap somewhere else; the right one only presses. With a mouse both light up on hover.</p>`,
+    js: `function(){}`,
+  },
   transform: {
     css: `
 #transform .pane{height:96px}
