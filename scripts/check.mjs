@@ -70,6 +70,9 @@ for (const dir of ['scripts/explainer', 'scripts/showreel', 'scripts/channel3'])
     postText(j, label);
     // Channel 3 (owner, 31 Oct 2026: true stories, every claim in two sources): the sources the app lists and copies as a comment
     if (dir === 'scripts/channel3') {
+      // the shared 3D kit (scripts/channel3/kit3d.js) is copied into each scene that uses it: a stale copy fails (node scripts/channel3/kit-inline.mjs <scene>)
+      const sc = j.seek && existsSync(join(root, j.seek)) ? readFileSync(join(root, j.seek), 'utf8') : '', ka = sc.indexOf('<script>/*kit:begin*/') + 8, kb = sc.indexOf('/*kit:end*/</script>');
+      if (ka >= 8 && sc.slice(ka + 13, kb).trim() !== readFileSync(join(root, 'scripts/channel3/kit3d.js'), 'utf8').trim().replace(/<\/script/gi, '<\\/script')) err(`${label}: its copy of the 3D kit is stale; run node scripts/channel3/kit-inline.mjs ${j.seek}`);
       const src = Array.isArray(j.sources) ? j.sources : [];
       if (src.length < 2 || !src.every((x) => x && String(x.title || '').trim() && /^https:\/\/\S+$/.test(x.url || ''))) err(`${label}: needs a "sources" list of at least 2 entries, each { title, url (https) }`);
     }

@@ -1,7 +1,8 @@
 // Pre-render stills for a narrated showreel (owner, 29 Oct 2026: review one small sheet, not separate frames, to save usage).
 // Simulates the voice from the config (letters per word at the preflight rate, breaths after sentences), seeks the cover and
 // n evenly spaced moments, and writes ONE contact sheet (cover first, time under each frame) plus any page errors.
-// Usage: node scripts/showreel/stills.mjs scripts/explainer/<slug>.json [out dir] [n=11]   (writes <out>/sheet.png)
+// Usage: node scripts/showreel/stills.mjs scripts/explainer/<slug>.json [out dir] [n=11 | t1,t2,...]   (writes <out>/sheet.png; a comma list
+// seeks those times, e.g. one per beat, after the cover)
 import { readFileSync, mkdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { createRequire } from 'node:module';
@@ -20,7 +21,7 @@ const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-un
 p.on('pageerror', (e) => errors.push(e.message));
 await p.goto('file://' + resolve(scene)); await p.waitForSelector('html[data-ready]');
 const cover = await p.evaluate((ws) => { if (ws.length && window.setVoice) window.setVoice({ words: ws }); return window.COVER ?? 0; }, words);
-const ts = [cover]; for (let i = 0; i < +n; i++) ts.push(+(cover + .3 + i * (cfg.dur - cover - .6) / (+n - 1)).toFixed(2));
+const ts = [cover]; if (String(n).includes(',')) ts.push(...String(n).split(',').map(Number)); else for (let i = 0; i < +n; i++) ts.push(+(cover + .3 + i * (cfg.dur - cover - .6) / (+n - 1)).toFixed(2));
 const shots = [];
 for (const x of ts) { await p.evaluate((x) => window.seek(x), x); shots.push((await p.screenshot({ type: 'jpeg', quality: 70 })).toString('base64')); }
 await p.setViewportSize({ width: 1080, height: 100 });

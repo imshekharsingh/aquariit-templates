@@ -94,15 +94,35 @@ scripts/channel3/three-inline.mjs). The bar, for a channel that tells true stori
 - Cost: render at 30 fps with no motion blur; the 3D layer at 1.4x (756x1344, upscaled; type stays at 2x); one shadow map for the whole reel
   (`shadowMap.autoUpdate = false`; nothing that casts a shadow moves); no environment map (it cost 0.7 s a frame); leaf clusters as
   icosahedra of detail 1; far city blocks at double size without chimneys; 20-tap depth of field.
-- People (rebuilt 1 Nov after the contact sheet: the capsule peg dolls looked cheap next to the lit world): diorama miniatures in
-  scripts/channel3/eiffel-saved.html, `figure()`: turned (lathe) coats, tunics and dresses (with a bustle), legs and shoes, arms with an
-  elbow and a hand with a thumb, a bump map for cloth folds, a simple face (two dark eyes, a nose, ears, hair; a beard and moustache where
-  the prop needs it), lathe top hats with a curled brim and band, a kepi with visor, lady's hats with flowers; a soft contact shadow under
-  each. Keep them to mid and wide shots (the figure about a third of the frame height), clear of the caption band; light them from the
-  side the sun is on, or they read as black shapes.
-- Titles in 3D: dark bronze type (no glow) on a soft pale haze plane behind it (a shader falloff, not a canvas texture: the canvas alpha
-  texture rendered nothing under SwiftShader); it does not write depth, so the depth of field softens its edge. Light titles on the iron
-  lattice were unreadable; this reads on iron, city and sky. Keep a title inside the frame's middle 80 % (the Bizerte subtitle was cut).
+- People and titles: superseded by the kit below (1 Nov, second pass).
+
+### 3D toolkit (scripts/channel3/kit3d.js, owner 1 Nov 2026: shared parts for every 3D reel)
+One file, copied into each scene between the kit markers (`node scripts/channel3/kit-inline.mjs <scene.html>`; npm run check fails on a
+stale copy). In the scene: `var K = TOKIT(THREE, scene, { seed })`, then `K.tick(t)` in `seek` (wind). Built for the Eiffel reel's
+review flaws; the sky and lost-day reels reuse it.
+- **Figures** `K.figure({ coat, trousers, skin, hair, brows, beard, stache, hat: 'top'|'bowler'|'kepi'|'lady', dress, tunic, jacket,
+  bun, parasol, phones, belt, buttons, facing, lod })`: clay-diorama miniatures about 1.75 m tall with a head of about 1/6 of the height;
+  turned coats with folds in the geometry and a cloth bump, lapels and a shirt front laid on the curved chest, double-breasted buttons,
+  a waist seam, collars and cuffs, mitt hands with a thumb; an egg head with a narrower jaw, skin-tone with warm cheeks (vertex colours),
+  dark bead eyes, friendly brows, a nose, ears, a mouth, hair, a beard shell with sideburns and a moustache. Every clay material adds a
+  little warm light in the shade and at the rim (a cheap subsurface look; `K.clay(colour, { r, m, sss, bump })`). `fig.userData.idle(t, k)`
+  breathes, shifts weight and turns the head; arms are `userData.arms[i]` (shoulder, `.userData.elbow`, `.userData.hand`). `lod: 1` for
+  crowds (no lapels, buttons, brows, ears, thumbs). Grey or salt-and-pepper beards, never pure white (a white beard plus a pale face read
+  as a white plate). Show figures only in the shots that frame them (`visible` per shot): hundreds of small meshes cost about 0.5 s a frame.
+- **Titles** `K.title(lines, widthM, o)` + `K.titleFade(group, k)`: cream type (9 stacked alpha-tested layers, dark bronze behind) on a
+  thin dark plate (alpha 0.93, rounded, a fine amber rule inside the edge) that writes depth, so the depth of field keeps it sharp with
+  its letters. No glow, no haze plane. Subtitles at least 150 px in the canvas (smaller ones vanish at phone size on small plates).
+- **Trees** `K.tree(x, z, s, 'plane'|'round'|'far', hero)` then `K.forest()` once: a barked trunk (mottled plane-tree bark), three
+  limbs with twigs, 11-13 lumpy leaf clusters (three shapes, welded and displaced icosahedra) in five greens, shaded as one crown
+  (light side, shadow side, darker underneath and inside), leaf texture that fades with distance (no shimmer), a slight sway.
+  `hero` (finer clusters) only for trees close to a camera; leaves are the biggest cost (keep under about 2M triangles).
+- **City** `K.city({ near, mid, far, skip(x, z, f, isTree), avenues: [[x0, z0, x1, z1, width]], river: { z, w, bridges }, extra })`:
+  Haussmann perimeter blocks round light courtyards; near blocks split into buildings of varied height, each with a zinc mansard (dormers
+  and standing seams drawn in the shader) and chimney stacks with pots on its party walls; facades drawn in the shader at real scale (a
+  shop floor, tall windows, iron balconies on the 2nd and 5th floors) fading to their average with distance; districts keep their own
+  street angle; avenues cut through with plane trees down both sides; the river with quays, tree rows and bridges. Instanced and grouped
+  by area so the camera skips what it cannot see; streets are grey paving (the scene's ground), parks lay their own gravel and lawns.
+- Cost (Eiffel reel, 1 Nov): about 1.6-2 s a frame locally at 1080x1920 (the reel before the kit: 1.6 s); render it split in 2 parts.
 
 ## Pattern library (2D, retired with the pilots on 31 Oct 2026; kept for the story ideas, rebuilt in 3D)
 Rotate patterns so the feed never shows the same look two days running. Each entry is a reusable recipe; a new pattern gets an entry here
@@ -152,7 +172,8 @@ consecutive days, and no more than 3 of one pattern in a week. Spread continents
 - `story([[sentence, breath before it], ...])` sets one start time per sentence from the same estimate preflight uses (0.07 s a letter at
   speed 1, a digit as 4 letters) and window.VOICE; beats key off `A[i]` (sentence i's start).
 - Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, `node scripts/showreel/preflight.mjs <config>` says
-  "fits", one stills sheet (`node scripts/showreel/stills.mjs <config> <out> 15`) scored beat by beat against the Quality bar. Then the Showreel workflow.
+  "fits", one stills sheet (`node scripts/showreel/stills.mjs <config> <out> 15`, or a comma list of times, one per beat) scored beat by beat
+  against the Quality bar. Then the Showreel workflow (3D reels: "parts" 2, the capture split across two jobs).
 
 ## The three pilots (31 Oct 2026; premium pass and re-render the same day)
 | Pattern | Topic | Length | Sources |
@@ -164,7 +185,7 @@ consecutive days, and no more than 3 of one pattern in a week. Spread continents
 ## 3D reels (from 1 Nov 2026)
 | Reel | Topic | Length | Render |
 |---|---|---|---|
-| showreel-c3-eiffel-saved (scripts/channel3/eiffel-saved.html) | Why the Eiffel Tower was almost torn down: the pilot's facts and voice, ten 3D shots | 34.4 s | 30 fps, one job: 41 GitHub minutes (capture 38.5 min, about 2.2 s a frame; 1.3x the local time). Rendered and checked 1 Nov, posts Mon 2 Nov. Polish pass the same day (miniature figures, titles on a soft haze, a closer cover, Bizerte re-checked), re-rendered in place |
+| showreel-c3-eiffel-saved (scripts/channel3/eiffel-saved.html) | Why the Eiffel Tower was almost torn down: the pilot's facts and voice, ten 3D shots | 34.4 s | 30 fps, one job: 41 GitHub minutes (capture 38.5 min, about 2.2 s a frame; 1.3x the local time). Rendered and checked 1 Nov, posts Mon 2 Nov. Polish pass the same day (miniature figures, titles on a soft haze, a closer cover, Bizerte re-checked), re-rendered in place. Second pass the same day on the 3D toolkit (clay figures, matte title plates, real trees, a Haussmann city), re-rendered in place split in 2 parts |
 The flat 2D Eiffel pilot and the 3-second 3D test are in attic/scripts/channel3/.
 Learned from its render (fix in the shared core before the next 3D reel): at a cut the caption card stays up empty for about 0.2 s
 while it changes shape (seen at 3 cuts); the voice check counts a year as four words, so its "too dense" pacing flag misreads

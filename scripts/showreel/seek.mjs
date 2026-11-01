@@ -1,6 +1,9 @@
 // Seekable scenes (owner, 22 Oct 2026: explainer brief): a page that exposes window.seek(t) and draws every frame as a pure function of t.
 // Steps t in 1/fps increments in headless Chromium and pipes the frames straight into ffmpeg (sound comes after, from the page's window.CUES: scripts/showreel/sound.py).
-// Usage: node scripts/showreel/seek.mjs <config.json> <out.mp4> [--seconds S]
+// Usage: node scripts/showreel/seek.mjs <config.json> <out.mp4> [--seconds S] [--part i/n]
+//   --part i/n (owner, 1 Nov 2026: split render): only frames [N*i/n, N*(i+1)/n), so n jobs capture one reel side by side; the parts are
+//   joined with ffmpeg's concat demuxer (same encoder settings, so -c copy). Name the parts <name>.partI.mp4; the cover time and the cues
+//   go next to <name>.mp4 (written by part 0 only).
 //   config: { seek: "path/to/page.html", dur, fps, width, height, blur, shutter, grain, vignette }
 // Film look (owner, 22 Oct 2026: "we are missing motion design"): blur = sub-frames per frame (real motion blur: the page is drawn at
 // several instants inside the shutter and ffmpeg averages them), shutter = fraction of a frame the shutter is open (0.5 = 180 degrees),
@@ -14,6 +17,8 @@ const { chromium } = require('playwright');
 const [cfgPath, out] = process.argv.slice(2), R = JSON.parse(readFileSync(cfgPath, 'utf8'));
 const FPS = R.fps || 60, W = R.width || 540, H = R.height || 960, K = Math.max(1, R.blur | 0), SH = R.shutter ?? .5;
 const sec = process.argv.indexOf('--seconds'), DUR = sec > 0 ? +process.argv[sec + 1] : (R.dur || 30), N = Math.round(DUR * FPS);   // --seconds: quick local test
+const pa = process.argv.indexOf('--part'), [PI, PN] = pa > 0 ? process.argv[pa + 1].split('/').map(Number) : [0, 1];
+const F0 = Math.floor(N * PI / PN), F1 = Math.floor(N * (PI + 1) / PN), base = out.replace(/(\.part\d+)?\.mp4$/, '');
 const vf = [];
 if (K > 1) vf.push(`tmix=frames=${K}`, `select='eq(mod(n\\,${K})\\,${K - 1})'`, `setpts=N/(${FPS}*TB)`);
 if (R.grain) vf.push(`noise=alls=${R.grain}:allf=t`);
@@ -28,14 +33,14 @@ if (process.env.VOICE_WORDS) {   // narrated reels: the scene times its beats an
 }
 // the cover (owner, 28 Oct: a cover that missed the title, three times): a scene may say when its title is fully on screen (window.COVER,
 // from the real voice timings); the workflow then takes that frame instead of the config's fixed "cover"
-{ const cov = await p.evaluate(() => window.COVER); if (typeof cov === 'number' && cov > 0) writeFileSync(out.replace(/\.mp4$/, '.cover.txt'), cov.toFixed(2));
+if (PI === 0) { const cov = await p.evaluate(() => window.COVER); if (typeof cov === 'number' && cov > 0) writeFileSync(base + '.cover.txt', cov.toFixed(2));
 }
 const cues = await p.evaluate(() => window.CUES || null);   // sound cues for scripts/showreel/sound.py (owner, 23 Oct: sound supports the hook)
-if (cues) writeFileSync(out.replace(/\.mp4$/, '.cues.json'), JSON.stringify(Object.assign(cues, { dur: Math.min(cues.dur || DUR, DUR) })));
+if (cues && PI === 0) writeFileSync(base + '.cues.json', JSON.stringify(Object.assign(cues, { dur: Math.min(cues.dur || DUR, DUR) })));
 const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS * K), '-c:v', 'mjpeg', '-i', '-',
   ...(vf.length ? ['-vf', vf.join(',')] : []), '-r', String(FPS), '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
 const done = new Promise((ok, no) => ff.on('close', (c) => c === 0 ? ok() : no(new Error('ffmpeg exited ' + c))));
-for (let i = 0; i < N; i++) {
+for (let i = F0; i < F1; i++) {
   for (let j = 0; j < K; j++) {   // K sub-frames spread over the open shutter, centred on the frame's time
     const t = Math.min(DUR, Math.max(0, (i + (K > 1 ? SH * (j / (K - 1) - .5) : 0)) / FPS));
     await p.evaluate((t) => window.seek(t), t);
@@ -46,4 +51,4 @@ for (let i = 0; i < N; i++) {
 }
 ff.stdin.end(); await done; await b.close();
 if (errs.length) { console.error('page errors:', errs); process.exit(1); }
-console.log(`wrote ${out}: ${N} frames at ${FPS} fps` + (K > 1 ? `, motion blur ${K} sub-frames, shutter ${SH}` : '') + (R.grain ? `, grain ${R.grain}` : ''));
+console.log(`wrote ${out}: ${F1 - F0} frames` + (PN > 1 ? ` (part ${PI + 1} of ${PN}, frames ${F0}-${F1 - 1} of ${N})` : '') + ` at ${FPS} fps` + (K > 1 ? `, motion blur ${K} sub-frames, shutter ${SH}` : '') + (R.grain ? `, grain ${R.grain}` : ''));

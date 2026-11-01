@@ -74,6 +74,7 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   Quality bar (owner, 31 Oct): real-time 3D with a documentary title-sequence look; design/channel3.md, "Quality bar" (points 1-9), applies to every
   reel, and every beat of the stills sheet is scored against it before the one render. The 2D patterns below it are retired with the pilots.
   Scenes `scripts/channel3/<slug>.html` + `.json` (name `showreel-c3-<slug>`), entry in captions.json (`"channel": "c3"`, "concept", "about").
+  3D scenes build people, titles, trees and the city from the shared kit scripts/channel3/kit3d.js (design/channel3.md, "3D toolkit"); render them with the Showreel input "parts" 2.
   Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, preflight says "fits", one stills sheet.
 
 ## Accounts and data
