@@ -43,13 +43,11 @@
   .when{display:inline-flex;align-items:center;min-height:30px;padding:0 12px;margin-bottom:10px;border-radius:999px;background:#1d2133;font:700 .8rem system-ui,sans-serif;color:var(--ink)}
   .when.now{background:var(--accent);color:#0b0d14}
   .when.ok{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ok);color:var(--ok)}
-  .reel.posted video{opacity:.55}
   .tile{display:flex;align-items:center;gap:14px;width:100%;margin-top:12px;padding:10px 14px 10px 10px;background:var(--card);border:1px solid var(--line);border-radius:18px;color:var(--ink);text-align:left;cursor:pointer;font:inherit}
   .tile .th{flex:none;width:54px;aspect-ratio:9/16;border-radius:10px;background:#000 center/cover no-repeat}
   .tile .tx{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
   .tile .when{margin:0;min-height:26px;font-size:.75rem}
   .tile .chev{font:700 1.6rem/1 system-ui,sans-serif;color:var(--mute)}
-  .tile.posted .th{opacity:.55}
   .empty{margin-top:30px;color:var(--mute)}
   /* one tab per channel (owner, 27 Oct 2026; Turns Out from 31 Oct): its own accent, posting window and queue */
   body[data-ch="web"]{--accent:#7c8cff}
@@ -102,14 +100,22 @@
   .bar.over i{background:#ff6b6b}
   .use ul{margin:8px 0 0;padding:0;list-style:none}
   .use li{display:flex;justify-content:space-between;padding:3px 0;border-top:1px solid var(--line)}
-  /* posted more than 7 days ago: folded at the bottom (owner, 27 Oct 2026); MP4s go 30 days after upload, cover and post text stay */
+  /* the Posted list (owner, 1 Nov 2026): one compact row per posted reel, newest first, numbers from the nightly collector */
+  .posted-list{margin-top:30px}
+  .posted-list h2{font:800 .8rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 4px}
+  .prow{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+  .prow .th{flex:none;width:40px;aspect-ratio:9/16;border-radius:8px;background:#000 center/cover no-repeat}
+  .prow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+  .prow .name{font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .prow .meta{margin:0;color:var(--ok);font-size:.78rem}
+  .prow .nums{color:var(--mute);font-size:.78rem}
+  .prow .undo{flex:none;min-height:36px;padding:0 12px;font-size:.78rem}
+  /* a reel's sources (Turns Out): listed on the card with one "Copy as comment" button */
   .src{margin-top:12px;padding:10px 14px 12px;border:1px solid var(--line);border-radius:14px;font-size:.85rem}
   .src small{display:block;color:var(--mute);font:700 .7rem system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase}
   .src ol{margin:6px 0 10px;padding-left:18px}
   .src li{margin:3px 0}
   .src a{color:#d9d7d0;overflow-wrap:anywhere}
-  .old{margin-top:22px}
-  .old summary{cursor:pointer;color:var(--mute);font:700 .85rem system-ui,sans-serif;min-height:44px;display:flex;align-items:center}
 </style>
 </head>
 <body>
@@ -124,7 +130,7 @@
   </div>
   <details class="prof" id="prof" hidden><summary>Profile</summary></details>
   <h1 id="title">Showreels</h1>
-  <p class="lede" id="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, paste its sources as the first comment when it has them, then mark it uploaded.</p>
+  <p class="lede" id="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, paste its sources as the first comment when it has them, then mark it uploaded: it moves to the Posted list below.</p>
   <div id="list"><p class="empty">Loading…</p></div>
 </main>
 <script>
@@ -214,29 +220,61 @@
       if (navigator.canShare && navigator.canShare({ files: [f] })) return navigator.share({ files: [f] }).catch(function(){});
       var u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); }, 60000);
     }).catch(function(){ btn.disabled = false; btn.textContent = 'Try again'; setTimeout(function(){ btn.textContent = idle; }, 1800); }); }
-  fetch('/channels/channels.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }).then(function(j){ PROF = j || {}; profile(); });
+  var profP = fetch('/channels/channels.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }).then(function(j){ PROF = j || {}; profile(); });
   function paint(counts){
     document.body.setAttribute('data-ch', ch); document.getElementById('title').textContent = CH[ch].name; profile();
     Array.prototype.forEach.call(tabs, function(t){ var k = t.getAttribute('data-ch'), n = counts && counts[k], sp = t.querySelector('span');
       t.setAttribute('aria-selected', k === ch ? 'true' : 'false');
       sp.textContent = CH[k].sub + (n ? ' · ' + n + ' to post' : ''); sp.className = n ? 'due' : ''; });
   }
+  // the "Posted" list (owner, 1 Nov 2026): cover, title, posted date and the reel's Instagram numbers once the nightly collector has them.
+  // No video here: 15 days after upload the MP4 is removed from the releases (cover, post text and sources stay).
+  var PERF = {};   // channel -> media rows from /api/perf (also feeds the Growth view)
+  function istDay(iso){ return new Date(Date.parse(iso) + IST).toISOString().slice(0, 10); }
+  function perfFor(k){ return profP.then(function(){ return perfOf(k); }); }
+  function perfOf(k){ var p = PROF[k]; if (!p || !p.username) return null;
+    if (!PERF[k]) PERF[k] = fetch('/api/perf?days=365&account=' + encodeURIComponent(p.username.replace(/^@/, '')), { credentials: 'same-origin', cache: 'no-store' })
+      .then(function(r){ if (!r.ok) throw 0; return r.json(); }).catch(function(){ PERF[k] = null; return null; });
+    return PERF[k]; }
+  // which Instagram post is which reel: the post made closest to the moment the reel was marked uploaded (within 2 days), each post used once
+  function matchPosts(done, media){ var used = {}, out = {};
+    done.forEach(function(s){ var t = Date.parse(ticks[s.name]), best = null, gap = 2 * DAY;
+      (media || []).forEach(function(m){ var g = Math.abs(Date.parse(m.posted_at) - t); if (!used[m.ig_id] && g < gap) { gap = g; best = m; } });
+      if (best) { used[best.ig_id] = 1; out[s.name] = best; } });
+    return out; }
+  function short(n){ return n >= 1e6 ? (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M' : n >= 1e4 ? Math.round(n / 1e3) + 'k' : n >= 1e3 ? (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'k' : String(n); }
+  function numbers(m){ var a = [];
+    if (m.views != null) a.push(short(m.views) + ' views'); if (m.reach != null) a.push(short(m.reach) + ' reached');
+    if (m.saves != null) a.push(short(m.saves) + ' saves'); if (m.shares != null) a.push(short(m.shares) + ' shares');
+    if (m.watch_avg_ms) a.push((m.watch_avg_ms / 1000).toFixed(1) + ' s avg watch');
+    return a.join(' · '); }
+  function posted(done, c){ var box = el('section', 'posted-list'), k = ch; box.appendChild(el('h2', null, 'Posted (' + done.length + ')')); list.appendChild(box);
+    var rows = {};
+    done.forEach(function(s){ var meta = c[s.name] || {}, at = ticks[s.name], r = el('div', 'prow'), th = el('span', 'th'), tx = el('span', 'tx');
+      if (s.cover) th.style.backgroundImage = 'url(' + s.cover + ')'; r.appendChild(th);
+      tx.appendChild(el('span', 'name', meta.concept || label(s))); tx.appendChild(el('span', 'meta', '✓ Posted ' + nice(istDay(at))));
+      var nums = el('span', 'nums'); nums.hidden = true; tx.appendChild(nums); r.appendChild(tx); rows[s.name] = nums;
+      if (Date.now() - Date.parse(at) < DAY) {   // a wrong tap is easy to undo on the first day
+        var u = el('button', 'btn g undo', 'Undo'); u.type = 'button'; u.setAttribute('aria-label', 'Not posted yet: move ' + (meta.concept || label(s)) + ' back');
+        u.addEventListener('click', function(){ u.disabled = true; mark(s.name, false).then(render, function(){ u.disabled = false; u.textContent = 'Try again'; }); }); r.appendChild(u); }
+      box.appendChild(r); });
+    perfFor(k).then(function(j){ if (!j || k !== ch) return; var hit = matchPosts(done, j.media);
+      Object.keys(hit).forEach(function(n){ var t = numbers(hit[n]); if (t && rows[n]) { rows[n].textContent = t; rows[n].hidden = false; } }); });
+    return box; }
   function render(){
     var d = DATA.d, c = DATA.c, all = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }), counts = { web: 0, tech: 0, c3: 0 };
     all.forEach(function(s){ var k = chOf(s, c); if (!ticks[s.name]) counts[k]++; });
     paint(counts);
     var items = all.filter(function(s){ return chOf(s, c) === ch; }); list.textContent = '';
     if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No reels for ' + CH[ch].name + ' yet.')); return; }
-    // to post first (by date), then the uploaded ones (newest upload first)
-    items.sort(function(x, y){ var ux = !!ticks[x.name], uy = !!ticks[y.name]; if (ux !== uy) return ux ? 1 : -1;
-      if (ux) return ticks[x.name] < ticks[y.name] ? 1 : -1; var px = (c[x.name] || {}).postOn || '9999', py = (c[y.name] || {}).postOn || '9999'; if (px !== py) return px < py ? -1 : 1; var cx = (c[x.name] || {}).concept || '', cy = (c[y.name] || {}).concept || ''; return cx < cy ? -1 : cx > cy ? 1 : 0; });   // unscheduled pilots in concept order
-    if (!openName[ch] || !items.some(function(s){ return s.name === openName[ch]; })) openName[ch] = items[0].name;
-    var fold = null, weekAgo = Date.now() - 7 * DAY;
-    items.forEach(function(s){
-      var into = list;
-      if (ticks[s.name] && Date.parse(ticks[s.name]) < weekAgo && s.name !== openName[ch]) {
-        if (!fold) { fold = el('details', 'old'); fold.appendChild(el('summary', null, 'Posted more than a week ago')); list.appendChild(fold); }
-        into = fold; }
+    // to post (by date) in the main list; a reel marked uploaded leaves it at once for the compact "Posted" list (owner, 1 Nov 2026)
+    var todo = items.filter(function(s){ return !ticks[s.name] && s.video; }), done = items.filter(function(s){ return ticks[s.name]; });
+    todo.sort(function(x, y){ var px = (c[x.name] || {}).postOn || '9999', py = (c[y.name] || {}).postOn || '9999'; if (px !== py) return px < py ? -1 : 1; var cx = (c[x.name] || {}).concept || '', cy = (c[y.name] || {}).concept || ''; return cx < cy ? -1 : cx > cy ? 1 : 0; });   // unscheduled pilots in concept order
+    done.sort(function(x, y){ return ticks[x.name] < ticks[y.name] ? 1 : -1; });
+    if (!todo.length) list.appendChild(el('p', 'empty', 'Nothing to post for ' + CH[ch].name + ' right now.'));
+    else if (!openName[ch] || !todo.some(function(s){ return s.name === openName[ch]; })) openName[ch] = todo[0].name;
+    var box = done.length ? posted(done, c) : null, put = function(n){ list.insertBefore(n, box); };
+    todo.forEach(function(s){
       var meta = c[s.name] || {}, up = ticks[s.name];
       if (s.name !== openName[ch]) {   // collapsed tile: cover, name, date or uploaded mark; tap to open it
         var tl = el('button', 'tile' + (up ? ' posted' : '')); tl.type = 'button'; tl.setAttribute('aria-label', 'Open ' + s.name);
@@ -245,7 +283,7 @@
         tx.appendChild(el('span', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) : when(meta.postOn)));
         tl.appendChild(tx); tl.appendChild(el('span', 'chev', '›'));
         tl.addEventListener('click', function(){ openName[ch] = s.name; render(); var o = list.querySelector('.reel'); if (o) o.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
-        into.appendChild(tl); return;
+        put(tl); return;
       }
       var card = el('article', 'reel' + (up ? ' posted' : '')), v = document.createElement('video');
       v.src = s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover;
@@ -273,7 +311,7 @@
           if (!meta.concept) { TITLES[s.name] = firstLine(m.caption); nm.textContent = TITLES[s.name]; } }
         else { cap.textContent = 'No post text for this reel yet.'; }
         if (Array.isArray(m.sources) && m.sources.length) sources(src, m.sources); });
-      b.appendChild(row); card.appendChild(v); card.appendChild(b); list.appendChild(card);
+      b.appendChild(row); card.appendChild(v); card.appendChild(b); put(card);
     });
   }
   paint();

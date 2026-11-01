@@ -1,7 +1,7 @@
 name: Actions usage
 
 # Once a day (about 02:10 IST) counts this month's GitHub Actions minutes the way GitHub bills them, for the meter in the Showreels app,
-# and removes the MP4 of any reel marked uploaded more than 30 days ago (cover and post text stay). About a minute a day.
+# and removes the MP4 and review PNG of any reel marked uploaded more than 15 days ago (cover and post text stay). About a minute a day.
 # The allowance is the repo variable ACTIONS_MINUTES_ALLOWANCE (default 2000, GitHub Free; set 3000 for Pro).
 on:
   schedule:

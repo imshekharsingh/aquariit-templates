@@ -273,9 +273,11 @@ async function showreelList(env) {
   const h = { 'User-Agent': 'aquarii-templates', Accept: 'application/vnd.github+json', ...(env.GH_READ_TOKEN ? { Authorization: `Bearer ${env.GH_READ_TOKEN}` } : {}) };
   const r = await fetch(`https://api.github.com/repos/${REPO}/releases/tags/reels`, { headers: h, cf: { cacheTtl: 300, cacheEverything: true } });
   if (!r.ok) return jres({ error: 'upstream', status: r.status }, 502);
-  const assets = (await r.json()).assets || [], names = new Set(assets.map((a) => a.name));
-  const list = assets.filter((a) => /^showreel-[a-z0-9-]{1,60}\.mp4$/.test(a.name)).map((a) => { const n = a.name.slice(0, -4);
-    return { name: n, video: '/reels/' + a.name, cover: names.has(n + '-cover.jpg') ? `/reels/${n}-cover.jpg` : null, info: names.has(n + '.json') ? `/reels/${n}.json` : null, size: a.size, at: a.updated_at }; })
+  const assets = (await r.json()).assets || [], byName = new Map(assets.map((a) => [a.name, a]));
+  // a reel is listed while its MP4 or its cover is in the release: 15 days after upload the MP4 goes (owner, 1 Nov 2026), the cover and post text stay
+  const reels = new Set(assets.map((a) => (/^(showreel-[a-z0-9-]{1,60})(?:\.mp4|-cover\.jpg)$/.exec(a.name) || [])[1]).filter(Boolean));
+  const list = [...reels].map((n) => { const mp4 = byName.get(n + '.mp4'), main = mp4 || byName.get(n + '-cover.jpg');
+    return { name: n, video: mp4 ? '/reels/' + n + '.mp4' : null, cover: byName.has(n + '-cover.jpg') ? `/reels/${n}-cover.jpg` : null, info: byName.has(n + '.json') ? `/reels/${n}.json` : null, size: mp4 ? mp4.size : 0, at: main.updated_at }; })
     .sort((x, y) => String(y.at).localeCompare(String(x.at)));
   return jres({ showreels: list });
 }

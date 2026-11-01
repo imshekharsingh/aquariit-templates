@@ -21,9 +21,10 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   scripts/tips/demos.mjs: it becomes an entry on the public page /tips/ (scripts/build-tips.mjs; npm run check fails if the page is stale).
   /tips/ is the only public path (src/worker.js PUBLIC): static, no data, no API calls.
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
-- Archiving (owner, 27 Oct 2026): reels marked uploaded more than 7 days ago fold into "Posted more than a week ago" in the app; 30 days after
-  upload the nightly "Actions usage" workflow removes the reel's MP4 from the releases (cover and post text stay). Replaced code moves to attic/
-  in the change that replaces it. The app's GitHub minutes meter comes from the same workflow; set the repo variable ACTIONS_MINUTES_ALLOWANCE for Pro (3000).
+- Archiving (owner, 1 Nov 2026; replaces the 7-day fold / 30-day rule): a reel marked uploaded leaves the main list at once for its channel's compact
+  "Posted" list (cover, title, posted date, its numbers once the collector has them; no video). 15 days after upload the nightly "Actions usage"
+  workflow removes its MP4 and review/contact-sheet PNG from the releases; caption/post text, sources, cover, config json, scene code and numbers stay.
+  Replaced code moves to attic/ in the change that replaces it. The app's GitHub minutes meter comes from the same workflow; set the repo variable ACTIONS_MINUTES_ALLOWANCE for Pro (3000).
 - `attic/` holds the retired tooling (films, recordings, kits, the daily-template routine). Nothing in it runs or deploys; don't build on it.
 
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
