@@ -99,6 +99,7 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
         txt(w.d, 0, 0, HOOK.size, '800 ' + FD, hl ? HOOK.hlCol : HOOK.col, 'center', -.6); x.restore(); xx += q[1] + W.sp; }); });
     x.restore();
   }
+  // (1 Nov, the 2.5D Eiffel render: the new line fades in from 14 % of the change, not 36 %, so the card is never empty for a frame)
   // the caption card (premium pass, 31 Oct): ONE card that stays up and changes shape from sentence to sentence (no fade out and in);
   // the old line slides up out of it as the new one rises in word by word
   function capLay(i){ var size = 27, W = wrap(CAPS[i].words, size, '700 ' + FI, 452), lh = 35, n = W.lines.length, base = 716 - (n - 1) * lh / 2;
@@ -116,7 +117,7 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     paper(rr(270 - pw / 2, cy - ph / 2, pw, ph, 12), STYLE.panel || '#fbf6ea', 3);
     x.save(); x.beginPath(); x.rect(270 - pw / 2, cy - ph / 2, pw, ph); x.clip();
     if (prev && mk < 1) capWords(prev, t, A0 * (1 - eo(P(mk, 0, .32))), (cy - prev.py - prev.ph / 2) - eo(mk) * 16, true);
-    capWords(cur, t, A0 * (prev ? eo(P(mk, .36, .8)) : 1), (cy - cur.py - cur.ph / 2) + (prev ? (1 - eo(P(mk, .3, 1))) * 10 : 0), false);
+    capWords(cur, t, A0 * (prev ? eo(P(mk, .14, .45)) : 1), (cy - cur.py - cur.ph / 2) + (prev ? (1 - eo(P(mk, .3, 1))) * 10 : 0), false);
     x.restore(); x.restore();
   }
   // the source credit (owner, 31 Oct: a short credit on the last frame): a small paper tag at the top for the last 3 s
@@ -182,8 +183,8 @@ var K25 = (function(){
   function roll(s, X, Y, size, f, col, k, knock){ if (k <= 0) return; x.save(); x.font = font(size, f); x.textAlign = 'left'; x.letterSpacing = '0px';
     var w = x.measureText(s).width, xx = X - w / 2, n = s.length; x.globalAlpha *= cl(k * 3, 0, 1); probe(s, X, Y, 'center', size);
     for (var i = 0; i < n; i++) { var ch = s[i], cw = x.measureText(ch).width, kc = eo(cl((k - i * .08) / .7, 0, 1));
-      if (/[0-9]/.test(ch)) { var o = (1 - kc) * 4, v = +ch; x.save(); x.beginPath(); x.rect(xx - 4, Y - size * .95, cw + 8, size * 1.25); x.clip();
-        for (var j = Math.max(0, Math.floor(o) - 1); j <= Math.ceil(o) + 1; j++) { var yy = Y - (j - o) * size * 1.05; if (knock) { x.strokeStyle = knock; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(String((v + j * 7) % 10), xx, yy); } x.fillStyle = col; x.fillText(String((v + j * 7) % 10), xx, yy); }
+      if (/[0-9]/.test(ch)) { var o = (1 - kc) * 4, v = +ch; x.save(); x.beginPath(); x.rect(xx - 4, Y - size * .82, cw + 8, size * 1.12); x.clip();
+        for (var j = Math.floor(o); j <= Math.ceil(o); j++) { var yy = Y - (j - o) * size * 1.45; if (knock) { x.strokeStyle = knock; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(String((v + j * 7) % 10), xx, yy); } x.fillStyle = col; x.fillText(String((v + j * 7) % 10), xx, yy); }
         x.restore(); }
       else if (ch !== ' ') { x.save(); x.globalAlpha *= kc; if (knock) { x.strokeStyle = knock; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(ch, xx, Y + (1 - kc) * 10); } x.fillStyle = col; x.fillText(ch, xx, Y + (1 - kc) * 10); x.restore(); }
       xx += cw; }
