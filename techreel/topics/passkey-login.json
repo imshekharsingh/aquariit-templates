@@ -1,0 +1,198 @@
+{
+ "slug": "passkey-login",
+ "topic": "Passkeys",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.95,
+ "max_speed": 1.0,
+ "dur": 20,
+ "max_end": 19.4,
+ "say": {
+  "passkey": "pass key",
+  "passkeys": "pass keys",
+  "PIN": "pin"
+ },
+ "hook": [
+  "How does a",
+  "passkey log",
+  "you in?"
+ ],
+ "lines": [
+  {
+   "text": "How does a passkey log you in?"
+  },
+  {
+   "text": "Your device makes two keys for that site.",
+   "scene": {
+    "label": "STEP 1: TWO KEYS",
+    "tint": "purple",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Private key: never leaves",
+      "cue": "two"
+     },
+     "b": {
+      "title": "Public key: given to site",
+      "icon": "key",
+      "cue": "site",
+      "ticks": [],
+      "meter": false
+     }
+    }
+   }
+  },
+  {
+   "text": "The site sends a random challenge.",
+   "scene": {
+    "label": "STEP 2: A CHALLENGE",
+    "tint": "blue",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "The site"
+     ],
+     "source_tint": "blue",
+     "hub": {
+      "label": "RANDOM CHALLENGE",
+      "tag": "NEW EACH TIME",
+      "icon": "doc"
+     },
+     "target": {
+      "icon": "chip",
+      "label": "Your device"
+     },
+     "target_tint": "purple",
+     "hub_cue": "random"
+    }
+   }
+  },
+  {
+   "text": "You unlock it with your face, finger or PIN.",
+   "scene": {
+    "label": "STEP 3: YOU UNLOCK",
+    "tint": "amber",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Your device",
+      "sub": "asks you first",
+      "icon": "chip"
+     },
+     "inner": {
+      "title": "Face, finger or PIN",
+      "sub": "only you can unlock it",
+      "icon": "user"
+     },
+     "inner_cue": "face"
+    }
+   }
+  },
+  {
+   "text": "It signs that with the private key.",
+   "scene": {
+    "label": "STEP 4: IT SIGNS",
+    "tint": "purple",
+    "kind": "portal",
+    "params": {
+     "icon": "key",
+     "pills": [
+      "Challenge in",
+      "Signature out"
+     ],
+     "guest": "doc",
+     "guest_tint": "amber",
+     "n": 1,
+     "open": "signs"
+    }
+   }
+  },
+  {
+   "text": "The site checks it with the public key. No secret is sent.",
+   "scene": {
+    "label": "STEP 5: IT CHECKS",
+    "tint": "blue",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "Signature",
+      "Public key"
+     ],
+     "source_tint": "purple",
+     "hub": {
+      "label": "CHECK",
+      "tag": "MATCH",
+      "icon": "check"
+     },
+     "target": {
+      "icon": "user",
+      "label": "Signed in"
+     },
+     "target_tint": "green",
+     "hub_cue": "checks"
+    }
+   },
+   "chunks": [
+    8,
+    4
+   ]
+  },
+  {
+   "text": "A fake site gets nothing. Turn passkeys on.",
+   "scene": {
+    "label": "DO THIS",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Fake sites get nothing",
+       "cue": "fake"
+      },
+      {
+       "text": "Turn passkeys on",
+       "cue": "turn"
+      }
+     ]
+    }
+   },
+   "chunks": [
+    5,
+    3
+   ]
+  }
+ ],
+ "post": {
+  "title": "How does a passkey log you in without a password?",
+  "caption": "How does a passkey log you in without a password? 🔑\n\nWhen you create one, your device makes a pair of keys just for that site: the private key stays on your device, the public key goes to the site. To sign in, the site sends a random challenge; you unlock with your face, fingerprint or PIN, and your device signs the challenge with the private key. The site checks the signature with the public key. No password or other secret is sent, and the site only stores a public key, so a leak or a fake lookalike site gets nothing it can use.\nSave this, and turn passkeys on wherever your email, bank and apps offer them.",
+  "keywords": [
+   "how do passkeys work",
+   "passkeys explained",
+   "passkey vs password",
+   "passwordless login",
+   "public key cryptography",
+   "account security"
+  ],
+  "hashtags": [
+   "#passkeys",
+   "#passwordless",
+   "#cybersecuritytips",
+   "#techexplained",
+   "#onlinesafety"
+  ],
+  "sources": [
+   {
+    "url": "https://github.com/w3c/webauthn/blob/main/index.bs",
+    "note": "W3C Web Authentication: a key pair per site (credential scoped to the relying party), the server sends a random challenge, the authenticator signs it after a biometric or PIN gesture, the server verifies the signature with the stored public key; the private key is expected never to leave the authenticator"
+   },
+   {
+    "url": "https://support.apple.com/en-us/102195",
+    "note": "Apple Support, About the security of passkeys: the device creates a unique key pair per account; the public key is stored on the server; the server never learns the private key; Face ID or Touch ID authorizes use; no shared secret is transmitted; resistant to phishing"
+   },
+   {
+    "url": "https://developer.apple.com/passkeys/",
+    "note": "Apple Developer, Passkeys: based on FIDO Alliance and W3C standards; servers only keep public keys; passkeys are linked to the app or website they were created for, so they cannot be used on a fraudulent site"
+   }
+  ]
+ }
+}
