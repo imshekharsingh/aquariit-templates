@@ -1,0 +1,57 @@
+{
+ "name": "showreel-21-dvh",
+ "seek": "scripts/explainer/dvh.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why is your button cut off on phones? Your hero is a hundred V H. That's the screen with the bars hidden. With the bars showing, the bottom slides under them. The fix: a hundred D V H. It fits the screen you can actually see.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.7,
+   0.85,
+   0.75,
+   0.7
+  ]
+ },
+ "caption": "Why is your button cut off on phones? 📱\n\nA full-screen hero set to height: 100vh is sized for the large viewport: the screen with the browser's address and tool bars hidden. When the bars are showing (as they are when a page first loads), the bottom of the hero sits under them, and so does your button. Use 100dvh instead: the dynamic viewport height follows the bars, so the hero fits the screen you can actually see. In every major browser since 2022. (dvh resizes as the bars move while scrolling; if that jump bothers you, 100svh is the stable, always-visible size.)\nSave it for your next landing page, or send it to whoever builds your site.",
+ "keywords": [
+  "100vh vs 100dvh",
+  "dvh CSS",
+  "100vh mobile address bar",
+  "button hidden behind browser bar",
+  "CSS viewport units",
+  "responsive design"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#css",
+  "#responsivedesign",
+  "#frontenddev",
+  "#webdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/length",
+   "note": "MDN length: vh is equivalent to lvh (the large viewport, browser interfaces retracted), which could obscure content while the interface is expanded; dvh follows dynamic browser interfaces but resizes while scrolling; svh is the stable small viewport"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/types/length.json",
+   "note": "small, large and dynamic viewport units: Chrome 108, Firefox 101, Safari 15.4"
+  }
+ ],
+ "tip": {
+  "title": "Why is your button cut off on phones?",
+  "why": "100vh is the large viewport: the height with the mobile browser's bars retracted (MDN: vh is equivalent to lvh). While the bars are showing, as they are when the page first loads, the bottom of a 100vh hero sits under them, and so does its button. 100dvh, the dynamic viewport height, follows the bars, so the hero fits what you can see. dvh changes as the bars move while scrolling; 100svh is the stable size that is always fully visible.",
+  "code": ".hero {\n  height: 100dvh;\n}",
+  "demo": "dvh",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/length",
+   "label": "MDN, viewport units"
+  }
+ }
+}

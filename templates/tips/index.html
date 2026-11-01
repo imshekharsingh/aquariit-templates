@@ -68,6 +68,12 @@
 #hover .b:active{transform:scale(.97)}
 #hover .pane:not(.fix) .b:hover{background:#f2efe8;color:#111214}
 @media (hover: hover){#hover .fix .b:hover{background:#f2efe8;color:#111214}}
+#dvh .pane{height:110px;display:flex;align-items:flex-end;padding:10px}
+#dvh .open{width:100%;min-height:44px;border-radius:22px;border:1.5px solid #f2efe8;background:transparent;color:#f2efe8;font:700 15px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}
+#dvh .sheet{display:none;position:fixed;left:0;right:0;top:0;z-index:50;background:#f2efe8;color:#111214;padding:24px;font:800 28px/1.1 system-ui,-apple-system,"Segoe UI",sans-serif}
+#dvh .sheet.on{display:block}
+#dvh .vh{height:100vh}#dvh .dv{height:100dvh}
+#dvh .sheet button{position:absolute;left:24px;right:24px;bottom:24px;min-height:52px;border:0;border-radius:26px;background:#111214;color:#f2efe8;font:800 17px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}
 #transform .pane{height:96px}
 #transform .dot{position:absolute;top:44px;left:12px;width:34px;height:34px;border-radius:10px;background:#7c8cff}
 #transform .run .dot{animation:tip-left 2s ease-in-out infinite alternate}
@@ -83,6 +89,24 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="dvh">
+  <p class="no">Nº 11</p>
+  <h2>Why is your button cut off on phones?</h2>
+  <p class="why">100vh is the large viewport: the height with the mobile browser's bars retracted (MDN: vh is equivalent to lvh). While the bars are showing, as they are when the page first loads, the bottom of a 100vh hero sits under them, and so does its button. 100dvh, the dynamic viewport height, follows the bars, so the hero fits what you can see. dvh changes as the bars move while scrolling; 100svh is the stable size that is always fully visible.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">height: 100vh</span><button class="open" type="button" data-s="vh">Open full screen</button></div>
+  <div class="pane fix"><span class="tag ok">height: 100dvh</span><button class="open" type="button" data-s="dv">Open full screen</button></div>
+</div>
+<div class="sheet vh">100vh<button type="button">Close (bottom button)</button></div>
+<div class="sheet dv">100dvh<button type="button">Close (bottom button)</button></div>
+<p class="note">Open both on a phone with the browser bars showing: the 100vh screen can put its bottom button under the bars; the 100dvh one fits what you can see. On a laptop both look the same.</p></div>
+  <div class="code"><pre><code>.hero {
+  height: 100dvh;
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/length" rel="noopener">Source: MDN, viewport units</a></p>
+</article>
 
 <article class="tip" id="hover">
   <p class="no">Nº 10</p>
@@ -240,11 +264,13 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>8 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>9 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "dvh": function(root){ root.querySelectorAll('.open').forEach(function(b){ b.addEventListener('click', function(){ root.querySelector('.sheet.' + b.dataset.s).classList.add('on'); }); });
+  root.querySelectorAll('.sheet button').forEach(function(b){ b.addEventListener('click', function(){ b.parentNode.classList.remove('on'); }); }); },
     "hover": function(){},
     "numbers": function(root, btn){ btn.addEventListener('click', function(){ if (btn.disabled) return; btn.disabled = true;
   var ns = root.querySelectorAll('.n span'), t0 = performance.now();

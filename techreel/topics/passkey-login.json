@@ -54,7 +54,7 @@
      ],
      "source_tint": "blue",
      "hub": {
-      "label": "RANDOM CHALLENGE",
+      "label": "CHALLENGE",
       "tag": "NEW EACH TIME",
       "icon": "doc"
      },
@@ -63,7 +63,7 @@
       "label": "Your device"
      },
      "target_tint": "purple",
-     "hub_cue": "random"
+     "hub_cue": "sends"
     }
    }
   },

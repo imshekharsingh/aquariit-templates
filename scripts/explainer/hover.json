@@ -7,9 +7,16 @@
  "vignette": true,
  "cover": 2.4,
  "voice": {
-  "text": "Why does your button stay lit after tapping? Phones fake a hover when you tap. And it sticks, until you tap somewhere else. The fix: wrap your hover rule in at media, hover, hover. Now only a mouse gets the hover. On a phone, a tap is just a tap.",
+  "text": "Why does your button stay lit after tapping? Phones fake a hover on tap. And it sticks, until you tap somewhere else. The fix: wrap your hover rule in at media, hover, hover. Now only a mouse gets it. On a phone, a tap is just a tap.",
   "voice": "af_heart",
-  "speed": 0.86
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.8,
+   0.85,
+   0.7,
+   0.65
+  ]
  },
  "caption": "Why does your button stay lit after tapping? 👆\n\nOn a phone there's no mouse, so a tap counts as a hover. In some mobile browsers the :hover style then sticks after your finger lifts, until you tap somewhere else. Wrap your hover styles in @media (hover: hover) and only devices that can really hover (a mouse, a trackpad) get them; on a phone, a tap is just a tap. One media query, in every major browser. (A few Android phones report hover wrongly; add and (pointer: fine) to be safe. Keep an :active style for tap feedback.)\nSave it for your next button, or send it to whoever builds your UI.",
  "keywords": [

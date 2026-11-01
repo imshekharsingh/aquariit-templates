@@ -147,6 +147,7 @@ Keywords and hashtags are chosen for reach: what people type into Instagram sear
 ## Log
 | date | reel | series | notes |
 |---|---|---|---|
+| 1 Nov | showreel-21-dvh (Nº 11, posts 2 Nov) | narrated layout tip | "Why is your button cut off on phones?": a portrait phone (new layout after two landscape screens), a 100vh hero whose button sits under the browser bar (red dashed zone, 116 px hidden), 100dvh typed, the hero fits and follows the bar; MDN length (vh = lvh; dvh resizes on scroll, svh stable) + BCD; 20 s |
 | 1 Nov | showreel-20-hover (Nº 10) | narrated touch tip | "Why does your button stay lit after tapping?": a shop card's button lights on a tap and stays lit (red ring, a stuck-for counter) until a tap elsewhere, @media (hover: hover) typed, a mouse still hovers, taps stay clean; MDN :hover touchscreen note + BCD (Samsung quirk in the caption); 20 s |
 | 22 Oct | showreel-05-layout-shift | (explainer, owner brief) | 30 s; too slow in the middle; first second barely moved |
 | 22 Oct | showreel-07-built-in-20s | Built in 20 s | first of the series; Halden, Swiss modernist |

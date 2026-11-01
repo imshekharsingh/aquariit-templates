@@ -78,7 +78,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
   var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
   var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
-  var TEXT = "Why does your button stay lit after tapping? Phones fake a hover when you tap. And it sticks, until you tap somewhere else. The fix: wrap your hover rule in at media, hover, hover. Now only a mouse gets the hover. On a phone, a tap is just a tap.";
+  var TEXT = "Why does your button stay lit after tapping? Phones fake a hover on tap. And it sticks, until you tap somewhere else. The fix: wrap your hover rule in at media, hover, hover. Now only a mouse gets it. On a phone, a tap is just a tap.";
   // ~20 s, the whole script in one take; beats and caption words land 0.15 s before the word
   var WORDS = [], DUR = 20, LEAD = .15, HOOK_N = 8;
   (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
@@ -90,7 +90,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   function anchors(){
     align();
     A = { phones: at('phones'), fake: at('fake'), hover1: at('hover'), tap1: at('tap'), sticks: at('sticks'), until: at('until'), tap2: at('tap', 2), somewhere: at('somewhere'), els: at('else'),
-      fix: at('fix'), wrap: at('wrap'), media: at('media'), hover4: at('hover', 4), now: at('now'), only: at('only'), mouse: at('mouse'), hover5: at('hover', 5),
+      fix: at('fix'), wrap: at('wrap'), media: at('media'), hover4: at('hover', 4), now: at('now'), only: at('only'), mouse: at('mouse'), hover5: at('it', 2),
       on: at('on'), phone: at('phone'), tap3: at('tap', 3), just: at('just'), tap4: at('tap', 4) };
     A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.phones - .3, A.hookIn + .35);
     A.codeEnd = Math.min(A.hover4 + .35, A.now - .4);
