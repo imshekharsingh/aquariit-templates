@@ -220,7 +220,7 @@ jobs:
           # videos stream from the "reels" release through the Worker (src/worker.js); check the newest one (first KiB only)
           B=https://templates.aquariit.com; J=$(mktemp)
           curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
-          n=$(curl -s -b "$J" "$B/api/showreels" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{try{const s=JSON.parse(d).showreels||[];console.log(s.length?s[0].name:"")}catch{console.log("")}})')
+          n=$(curl -s -b "$J" "$B/api/showreels" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{try{const s=JSON.parse(d).showreels||[];const v=s.find(x=>x.video);console.log(v?v.name:"")}catch{console.log("")}})')
           if [ -z "$n" ]; then echo "::warning::/api/showreels listed nothing"; exit 0; fi
           out=$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n.mp4"); [ "$out" != "200" ] || { echo "::error::$n.mp4 is reachable without signing in"; exit 1; }
           v=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -H 'Range: bytes=0-1023' -b "$J" "$B/reels/$n.mp4")

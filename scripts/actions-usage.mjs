@@ -1,7 +1,7 @@
 // GitHub Actions minutes this month, the way GitHub bills them (each job rounded up to a whole minute; all our jobs run on Linux, 1x),
 // for the meter in the Showreels app (owner, 27 Oct 2026: know the minutes before the repo goes private, where they are capped).
-// Plus the 30-day clean-up (owner, 27 Oct 2026): a reel's MP4 is removed from the releases 30 days after it was marked uploaded;
-// its cover and post text stay. Nothing else is ever deleted.
+// Plus the 15-day clean-up (owner, 1 Nov 2026; was 30 days): a reel's MP4 and its big review / contact-sheet PNG are removed from the
+// releases 15 days after it was marked uploaded. Its cover, post text (json), sources, scene code and numbers stay. Nothing else is ever deleted.
 //   env:  GH_TOKEN (the workflow token: actions read, contents write), REPO (owner/name), ALLOWANCE (minutes a month, default 2000 = GitHub Free)
 //         GH_API_BASE (default https://api.github.com, for tests)
 //         BASIC_AUTH_USER / BASIC_AUTH_PASS (site sign-in, to read the "uploaded" marks), SITE_BASE (default https://templates.aquariit.com)
@@ -13,6 +13,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 const args = process.argv.slice(2), DRY = args.includes('--dry'), CLEAN = args.includes('--cleanup');
 const TOKEN = process.env.GH_TOKEN || '', REPO = process.env.REPO || 'imshekharsingh/aquariit-templates';
 const ALLOWANCE = +process.env.ALLOWANCE || 2000, SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, '');
+const KEEP_DAYS = 15;   // a posted reel's MP4 and review PNG stay this long after upload (owner, 1 Nov 2026)
 const API = (process.env.GH_API_BASE || 'https://api.github.com') + '/repos/' + REPO, MAX_JOB_CALLS = 600;   // the workflow token allows 1,000 calls an hour; the first run of a month catches up over two nights
 if (!TOKEN) { console.error('✗ GH_TOKEN is missing'); process.exit(1); }
 const gh = async (path, opt = {}) => {
@@ -55,7 +56,7 @@ console.log(`Actions minutes ${month}: ${used} of ${ALLOWANCE} (${Math.round(100
 for (const w of result.workflows) console.log(`  ${w.name}: ${w.minutes} min in ${w.runs} runs`);
 writeFileSync('showreel-usage-actions.json', JSON.stringify(result));
 
-// 2. the 30-day clean-up: MP4s of reels marked uploaded more than 30 days ago, from the "reels" release and, for tech reels, the "techreel" release
+// 2. the 15-day clean-up: MP4s and review PNGs of reels marked uploaded more than 15 days ago, from the "reels" release and, for tech reels, the "techreel" release
 if (CLEAN) {
   const U = process.env.BASIC_AUTH_USER, P = process.env.BASIC_AUTH_PASS;
   if (!U || !P) { console.log('Clean-up skipped: no site sign-in to read the uploaded marks.'); process.exit(0); }
@@ -64,7 +65,7 @@ if (CLEAN) {
   if (login.status !== 303 || !cookie) { console.log(`Clean-up skipped: the site refused the sign-in (HTTP ${login.status}).`); process.exit(0); }
   const up = await fetch(SITE + '/api/uploaded', { headers: { Cookie: cookie } });
   if (!up.ok) { console.log(`Clean-up skipped: could not read the uploaded marks (HTTP ${up.status}).`); process.exit(0); }
-  const ids = (await up.json()).ids || {}, cutoff = Date.now() - 30 * 864e5;
+  const ids = (await up.json()).ids || {}, cutoff = Date.now() - KEEP_DAYS * 864e5;
   const old = Object.entries(ids).filter(([n, at]) => /^showreel-[a-z0-9-]+$/.test(n) && Date.parse(at) < cutoff).map(([n]) => n);
   const targets = [];
   for (const tag of ['reels', 'techreel']) {
@@ -72,15 +73,15 @@ if (CLEAN) {
     const assets = [];
     for (let page = 1; page <= 10; page++) { const a = await gh(`/releases/${rel.id}/assets?per_page=100&page=${page}`); assets.push(...a); if (a.length < 100) break; }
     for (const n of old) {
-      const file = tag === 'reels' ? n + '.mp4' : n.startsWith('showreel-tech-') ? n.slice('showreel-tech-'.length) + '.mp4' : null;
-      const a = file && assets.find((x) => x.name === file);
-      if (a) targets.push({ tag, id: a.id, name: a.name });
+      const slug = n.startsWith('showreel-tech-') ? n.slice('showreel-tech-'.length) : null;
+      const files = tag === 'reels' ? [n + '.mp4', n + '-review.png'] : slug ? [slug + '.mp4', slug + '-contact.png'] : [];
+      for (const f of files) { const a = assets.find((x) => x.name === f); if (a) targets.push({ tag, id: a.id, name: a.name }); }
     }
   }
-  if (!targets.length) console.log('Clean-up: nothing is past 30 days since upload.');
+  if (!targets.length) console.log(`Clean-up: nothing is past ${KEEP_DAYS} days since upload.`);
   for (const t of targets) {
     if (DRY) { console.log(`Clean-up (dry run): would remove ${t.tag}/${t.name}`); continue; }
     await gh(`/releases/assets/${t.id}`, { method: 'DELETE' });
-    console.log(`Clean-up: removed ${t.tag}/${t.name} (posted more than 30 days ago; cover and post text kept)`);
+    console.log(`Clean-up: removed ${t.tag}/${t.name} (posted more than ${KEEP_DAYS} days ago; cover and post text kept)`);
   }
 }
