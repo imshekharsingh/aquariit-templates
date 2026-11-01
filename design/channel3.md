@@ -154,6 +154,9 @@ it in (the same command inlines kit3d.js), npm run check fails on a stale copy. 
 - Learned on the pilot's stills (1 Nov): a log of a negative distance (the camera past Z = 0) silently blanks the frame; outlines on a
   figure scaled 400x must use the canvas's real scale (`cs()`), not the layer's; a rolled number must not show its neighbours; long
   zooms over featureless land are empty, so pass them in about 0.4 s and keep a subject (rings, the tower glyph on Paris) on screen.
+- Learned on its first render (1 Nov): a fix made in a scene's inlined kit copy is lost at the next `kit-inline.mjs`; fix the kit file.
+  The empty caption card at a sentence change (also in the 3D render) is fixed in this scene's copy of the shared core: the new line fades
+  in from 14 % of the change, not 36 % (0 empty frames by a frame-by-frame probe); carry it into the core of the next scene.
 
 ## Pattern library (2D, retired with the pilots on 31 Oct 2026; kept for the story ideas, rebuilt in 3D)
 Rotate patterns so the feed never shows the same look two days running. Each entry is a reusable recipe; a new pattern gets an entry here
