@@ -541,7 +541,7 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
   function lookShot(p0, p1, q0, q1, k){ var e = .3 * k + .7 * ease(k); cam.position.copy(lerpV(p0, p1, e)); cam.lookAt(lerpV(q0, q1, e)); return cam.position.distanceTo(lerpV(q0, q1, e)); }
   function orbit(c0, r0, r1, a0, a1, y0, y1, q, k){ var e = .3 * k + .7 * ease(k), a = mix(a0, a1, e), r = mix(r0, r1, e); cam.position.set(c0.x + Math.sin(a) * r, mix(y0, y1, e), c0.z + Math.cos(a) * r); cam.lookAt(q); return cam.position.distanceTo(q); }
   function showType(g0, t, t0, pos, face0){ var k = es(P(t, t0, t0 + .7)); g0.visible = k > 0.01; if (!g0.visible) return; g0.position.copy(pos); g0.position.y += (1 - k) * -g0.userData.h * .6;
-    g0.scale.setScalar(mix(.82, 1, k)); g0.children.forEach(function(m){ if (m.userData.shade) { m.material.uniforms.opacity.value = cl(k * 1.6, 0, 1); return; } m.material.transparent = k < .99; m.material.opacity = cl(k * 1.6, 0, 1); }); }
+    g0.scale.setScalar(mix(.82, 1, k)); g0.children.forEach(function(m){ if (m.userData.shade) { m.material.uniforms.opacity.value = cl((k - .3) * 2.2, 0, 1); /* the haze arrives with the letters: alpha-tested, they show once k > 0.31 */ return; } m.material.transparent = k < .99; m.material.opacity = cl(k * 1.6, 0, 1); }); }
   var SHOTS = [
     // 1. the hook (owner, 1 Nov: a stronger cover): low on the lawn in the golden hour, looking up; the tower fills the frame, the tree row
     //    frames the left edge, the hook stands on clean sky above the top; a slow crane up and in
