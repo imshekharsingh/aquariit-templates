@@ -85,8 +85,13 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN, INSTAGRAM_TOKEN_2 and INSTAGRAM_TOKEN_3 (Turns Out, @itturns.out) (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.
-- The "Instagram collect" workflow reads all three accounts nightly (slot 3 only once INSTAGRAM_TOKEN_3 exists); the daily audit (scheduled task, 08:52 IST) writes the Results log
-  and, once slot 3 has data, adds a Turns Out line: followers, last-7-day reels (reach, avg watch, saves, shares, pattern used), best reel and one lesson.
+- The "Instagram collect" workflow reads all three accounts nightly (slot 3 only once INSTAGRAM_TOKEN_3 exists).
+- Daily audit (owner, 1 Nov 2026: the app shows the owner everything): every daily studio run writes its full audit as a CARD in the app, by
+  dispatching the "Audit card" workflow on main with input `card` = JSON `{"kind":"audit","day":"YYYY-MM-DD","points":[today's points],
+  "channels":{"web":[...],"tech":[...],"c3":[...]}}` (format in scripts/post-card.mjs; short bullets, numbers first, simple English; per channel the
+  last 7 days: followers, reels with reach, avg watch, saves, shares, pattern used, best reel). The same day's id replaces the card; the owner's
+  "Mark read" deletes it for good. In the repo only ONE line a day stays: the lesson, in design/experiments.md "Results log"
+  (`- DD Mon: lesson`). The full report never goes into the repo or chat.
 
 ## Sign-in and secrets
 The whole site sits behind a sign-in page + 30-day session cookie (src/worker.js). Credentials exist only as secrets (GitHub + Worker):
@@ -113,7 +118,7 @@ Reels carry their own sound from 23 Oct (owner: audio supports the hook): effect
 ## Save Claude usage (owner, 14 Oct 2026)
 Heavy work runs on GitHub. In a session keep to quick stills and checks; never poll long jobs (one check-in after ~12 minutes is enough).
 Before any task, tell the owner its size, S (< 15 min) / M (30-60 min) / L (1-3 h) of session work, and wait for a go-ahead on M or bigger unless already approved.
-The daily studio run (scheduled task, 08:52 IST, a fresh session each day) does the audit, then that day's @webin20sec and @techin20sec reels; approved standing work.
+The daily studio run (scheduled task, 08:52 IST, a fresh session each day) does the audit (posted as a card in the app via the "Audit card" workflow, one lesson line in the Results log), then that day's @webin20sec and @techin20sec reels; approved standing work.
 Lean by default (owner, 29 Oct 2026): scheduled work starts a fresh session, never a long-running one; review one stills sheet and one contact sheet
 per reel, not separate frames; read the voice check and qa.txt as text; at most one check-in per render, inside the same session; no subagents.
 

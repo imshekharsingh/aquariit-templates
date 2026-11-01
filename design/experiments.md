@@ -69,6 +69,7 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
+From 2 Nov 2026 one line a day (`- DD Mon: lesson`); the full audit is a card in the app (CLAUDE.md, "Accounts and data").
 ### 1 Nov 2026, 08:52 IST audit (collect 04:49 IST; @webin20sec 257 followers (+188), 26 posts; @techin20sec 9 followers (+0), 28 posts)
 Studio, 7 days (8 reels): **31 Oct 13:21 Nº 09 "Why do your numbers wiggle when they change?" 79,496 reach, 14.3 s of 21, 2,296 saves, 370 shares at ~15.5 h** · Nº 04 5,117 · Nº 08 3,471 · Nº 05 2,504 · Nº 06 1,514 · Nº 03 1,238 · others 208-284. Median 2,009 (was 1,295); 2,800 saves, 417 shares. Account, last day: reach 81,707 (99.9% non-followers), +14 follows in the day's window, +188 since 31 Oct.
 techin20sec, 7 days (16 reels): **31 Oct 17:04 test day 1 "Why does your iPhone stop charging at 80%?" 8 reach, 3.6 s at ~12 h** · best Amazon cloud 173. Median 108.5; 1 save, 0 shares. Account, last day: reach 30. Head-to-head median 2,009 vs 108.5.

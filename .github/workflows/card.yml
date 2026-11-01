@@ -1,0 +1,30 @@
+name: Audit card
+
+# Puts a card at the top of the app (owner, 1 Nov 2026): the daily audit, or the spare-usage night's report. A Claude session dispatches it
+# with the card as JSON (format in scripts/post-card.mjs); it signs in with the BASIC_AUTH secrets. Well under a minute.
+on:
+  workflow_dispatch:
+    inputs:
+      card:
+        description: 'The card as JSON: {"kind":"audit","day":"YYYY-MM-DD","points":[...],"channels":{"web":[...],"tech":[...],"c3":[...]}}'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  card:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: scripts
+      - name: Post the card
+        env:
+          CARD: ${{ inputs.card }}
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: node scripts/post-card.mjs | tee -a "$GITHUB_STEP_SUMMARY"
