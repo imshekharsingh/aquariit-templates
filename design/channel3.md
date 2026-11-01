@@ -9,7 +9,7 @@
 | Name | **Turns Out** |
 | Username | **@itturns.out** |
 | Bio | True stories behind things everyone knows. Sources in the comments. |
-| Post window | daily, 21:00-22:00 IST (evening in Europe, morning to afternoon in the Americas) |
+| Post window | 3 times a week, Mon, Wed, Fri, 21:00-22:00 IST (owner, 1 Nov 2026: while the channel is in 3D; was daily). Evening in Europe, morning to afternoon in the Americas |
 | Logo | design/brand/accounts/turnsout-logo.svg, option M2 (see below) |
 
 In code the channel keeps its internal id `c3`: scenes in scripts/channel3/, reels named `showreel-c3-<slug>`, `"channel": "c3"` in captions.json.
@@ -75,13 +75,27 @@ scripts/channel3/three-inline.mjs). The bar, for a channel that tells true stori
 9. **The check before any render**: score every beat of the stills sheet against points 1-8; any failure is fixed first. Ask of each
    frame: "would this look at home on a premium documentary or museum channel watched worldwide?" If not, it is not ready.
 
-### 3D craft notes (from the test shot, scripts/channel3/eiffel-3d.html)
+### 3D craft notes (the first full 3D reel, scripts/channel3/eiffel-saved.html, 1 Nov 2026)
 - One self-contained file: three.js r170 between `/*three:begin*/` and `/*three:end*/` (`node scripts/channel3/three-inline.mjs <scene> <three.module.min.js>`).
+  Two canvases: the 3D layer (`#gl`) and a 2D layer over it (`#c`, 1080x1920) for the hook, captions, credit and payoff, drawn by the shared core.
 - `window.seek(t)` sets camera, light and any motion from t, then renders: scene into a 4x MSAA half-float target, then one final pass
   (depth of field from the depth buffer, ACES tone, the grade, vignette). Renderer with `preserveDrawingBuffer: true` so frames capture.
 - Headless Chromium renders it on SwiftShader (CPU WebGL; seek.mjs and stills.mjs launch it with the SwiftShader flags).
-- Cost: about 3-3.5 s a frame at 1080x1920 locally (tower lattice 10k beams, 6k leaf clusters, 3.6k city blocks; MSAA alone about 1 s).
-  Draw the sky last (renderOrder) so only open sky pays for the clouds; keep instanced meshes; shadow map 2048 over the subject only.
+- The four fixes from the 3-second test (1 Nov): (1) the hook and payoff sit on open sky, with a soft dark grade behind them on the 2D layer;
+  (2) the ground has detail (striped lawns in hedged panels, fine gravel, lamps, tree crowns shaded as one volume, Haussmann blocks with zinc
+  mansard roofs and chimneys in a full ring round the tower), and shots are framed so no ground area dominates; (3) one low warm key from the
+  back left (warm rim on the iron), a cool sky fill and hemisphere on the shadow side, a blue-to-amber sky, and haze that takes the sky's
+  colour in each direction (a patched fog chunk: amber toward the sun, pale away from it; never brown); (4) one shot per sentence, cut in
+  the breath before it, every shot a crane, dolly or orbit that is already moving at its first frame.
+- Portrait frames are narrow (about 27 degrees across at a 46-degree vertical fov): place type and props within about 10 degrees of the
+  camera's line, and check them in stills, not by eye in the code. Type faces the camera after the camera moves (not before).
+- Type in 3D: a canvas texture on 9 stacked alpha-tested planes (the back ones dark bronze) reads as solid letters; no fog on type;
+  dark type on a bright sky, light type on iron or city.
+- Cost: render at 30 fps with no motion blur; the 3D layer at 1.4x (756x1344, upscaled; type stays at 2x); one shadow map for the whole reel
+  (`shadowMap.autoUpdate = false`; nothing that casts a shadow moves); no environment map (it cost 0.7 s a frame); leaf clusters as
+  icosahedra of detail 1; far city blocks at double size without chimneys; 20-tap depth of field.
+- People: clay miniatures from capsules, spheres and cylinders (scripts/channel3/eiffel-saved.html, `figure()`), a soft blob shadow under
+  each; light them from the side the sun is on, or they read as black shapes.
 
 ## Pattern library (2D, retired with the pilots on 31 Oct 2026; kept for the story ideas, rebuilt in 3D)
 Rotate patterns so the feed never shows the same look two days running. Each entry is a reusable recipe; a new pattern gets an entry here
@@ -140,5 +154,13 @@ consecutive days, and no more than 3 of one pattern in a week. Spread continents
 | One continuous zoom | Why the sky is blue but sunsets are red (scattering by nitrogen and oxygen, longer path at sunset) | 30.1 s | Met Office, NOAA NESDIS, NASA Space Place, Royal Museums Greenwich |
 | Living globe | The sailors who lost a day (Pigafetta's Wednesday, Cape Verde's Thursday, July 1522; the date line) | 35 s | Linda Hall Library, Utrecht University (van Gent), National Geographic |
 
+## 3D reels (from 1 Nov 2026)
+| Reel | Topic | Length | Render |
+|---|---|---|---|
+| showreel-c3-eiffel-saved (scripts/channel3/eiffel-saved.html) | Why the Eiffel Tower was almost torn down: the pilot's facts and voice, ten 3D shots | 34.4 s | 30 fps, one job (~45 GitHub minutes estimated from 1.6-1.7 s a frame locally) |
+The flat 2D Eiffel pilot and the 3-second 3D test are in attic/scripts/channel3/. The sky and the lost day are next in 3D (step 3).
+
 ## Launch order (31 Oct 2026)
 The three pilots, after the premium pass, are the first three posts, 21:00-22:00 IST: Eiffel Tower (1 Nov), the sky (2 Nov), the lost day (3 Nov).
+Superseded (owner, 1 Nov 2026): the pilots were hidden and the channel moved to 3D at 3 posts a week (Mon, Wed, Fri). First post: the 3D
+Eiffel reel on Mon 2 Nov; the sky and the lost day follow once rebuilt in 3D.

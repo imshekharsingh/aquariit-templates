@@ -3,7 +3,7 @@
 # and a hit or whoosh on every cut, all dense and loud (-14 LUFS). Here every sound is made in code from the scene's own cue list
 # (window.CUES, written next to the MP4 by seek.mjs), so sound and picture share one timeline.
 # Usage: python3 scripts/showreel/sound.py <cues.json> <out.wav> [narration.wav]
-#   cues.json: { dur, bed: { bpm, origin, chords }, cues: [ { t, k, g?, p?, d?, text?, voice?, speed? } ] }
+#   cues.json: { dur, bed: { bpm, origin, chords, soft?, lift? }, cues: [ { t, k, g?, p?, d?, text?, voice?, speed? } ] }
 #   k: whoosh (d = length), swish (d; soft, for narrated reels), hit, boom, pop (p = pitch step), tap, thud, tick, click, shimmer, riser (d), voice (text; Kokoro, Apache-2.0, runs on the runner)
 # Seeded noise only, so the same cues always give the same sound. The workflow levels the mix to -14 LUFS when it muxes.
 import json, sys, wave
@@ -198,6 +198,8 @@ def main(cues_path, out_path, narration=None):
     sfx, vox = sfx[:, :n], vox[:, :n]
     B = C.get('bed')
     b = bed(dur, B['bpm'], B['origin'], B['chords'], B.get('soft', False)) if B else np.zeros((2, n))
+    if B and B.get('lift') is not None:   # the bed lifts into the payoff (Turns Out quality bar, point 7): +5 dB over 1.5 s from 'lift'
+        k = np.clip((np.arange(n) / SR - float(B['lift'])) / 1.5, 0, 1); b = b * (1 + .78 * k * k * (3 - 2 * k))
     duck = np.convolve(np.abs(vox[0]), np.ones(2400) / 2400, 'same'); duck = 1 - .55 * np.clip(duck / (duck.max() + 1e-9) * 3, 0, 1)
     mix = B.get('gain', .5) * b * duck + .75 * reverb(sfx) + 1.0 * vox if B else .75 * reverb(sfx) + 1.0 * vox
     mix = np.tanh(1.3 * mix) * .8
