@@ -1,0 +1,36 @@
+name: Owner answers
+
+# The app's "Needs you" list (owner, 1 Nov 2026). A Claude session dispatches this to read the owner's replies (action read: prints
+# "ANSWER <id> ..." lines), add questions (add) or clear replies it has acted on (clear). Format in scripts/asks.mjs. A few seconds.
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: read, add or clear
+        type: choice
+        options: [read, add, clear]
+        default: read
+      asks:
+        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"]'
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  asks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: scripts
+      - name: Owner answers
+        env:
+          ACTION: ${{ inputs.action }}
+          ASKS: ${{ inputs.asks }}
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: node scripts/asks.mjs | tee -a "$GITHUB_STEP_SUMMARY"

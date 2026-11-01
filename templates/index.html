@@ -107,6 +107,16 @@
   .bar.over i{background:#ff6b6b}
   .use ul{margin:8px 0 0;padding:0;list-style:none}
   .use li{display:flex;justify-content:space-between;padding:3px 0;border-top:1px solid var(--line)}
+  /* "Needs you" (owner, 1 Nov 2026): questions and tasks only the owner can answer, above the cards; answering takes an item off the list */
+  .needs{margin:0 0 14px;padding:12px 16px 4px;background:var(--card);border:1px solid var(--line);border-left:3px solid #f2c14e;border-radius:16px}
+  .needs h2{font:800 .8rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 4px}
+  .ask{padding:10px 0;border-top:1px solid var(--line);font-size:.9rem}
+  .ask:first-child{border-top:0}
+  .ask b{display:block;font-weight:700}
+  .ask p{margin-top:2px;color:var(--mute);font-size:.8rem}
+  .ask .row{margin-top:8px}
+  .ask .btn{min-height:40px;font-size:.82rem}
+  .ask textarea{width:100%;min-height:64px;margin-top:8px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--well);color:var(--ink);font:400 16px/1.4 system-ui,sans-serif;resize:vertical}
   /* cards (owner, 1 Nov 2026): the daily audit and the spare-usage night's report, under the alert; "Mark read" deletes one for good */
   .card{margin:0 0 14px;padding:14px 16px 12px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:16px;font-size:.88rem}
   .card .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
@@ -156,6 +166,11 @@
   .prow .name{font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .prow .meta{margin:0;color:var(--ok);font-size:.78rem}
   .prow .nums{color:var(--mute);font-size:.78rem}
+  .prow .pbtn{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+  .prow .chev{flex:none;color:var(--mute);font:700 1.2rem/1 system-ui,sans-serif;padding:0 4px}
+  .pdet{padding:4px 0 14px}
+  .pdet video,.pdet img{display:block;width:min(100%,300px);aspect-ratio:9/16;margin:0 auto;border-radius:16px;background:#000;object-fit:cover}
+  .pdet .gone{margin-top:8px;text-align:center;color:var(--mute);font-size:.8rem}
   .prow .undo{flex:none;min-height:36px;padding:0 12px;font-size:.78rem}
   /* a reel's sources (Turns Out): listed on the card with one "Copy as comment" button */
   .src{margin-top:12px;padding:10px 14px 12px;border:1px solid var(--line);border-radius:14px;font-size:.85rem}
@@ -169,6 +184,7 @@
 <main class="wrap">
   <div class="top"><span class="brand">Studio</span><span class="tr"><button class="pill" id="refresh" type="button">Refresh</button></span></div>
   <div class="alert" id="alert" role="alert" hidden></div>
+  <section class="needs" id="needs" hidden><h2>Needs you</h2><div id="needs-list"></div></section>
   <div id="cards"></div>
   <div class="notify" id="notify" hidden><span>Get the Tuesday 9 PM reminder on this phone.</span><button class="btn g" id="notify-on" type="button">Turn on notifications</button></div>
   <details class="use" id="use" hidden><summary><span class="r"><span>GitHub minutes</span><span id="use-n"></span></span><span class="bar" id="use-bar"><i></i></span></summary><div id="use-note"></div><ul id="use-list"></ul></details>
@@ -299,16 +315,31 @@
     if (m.saves != null) a.push(short(m.saves) + ' saves'); if (m.shares != null) a.push(short(m.shares) + ' shares');
     if (m.watch_avg_ms) a.push((m.watch_avg_ms / 1000).toFixed(1) + ' s avg watch');
     return a.join(' · '); }
+  // each row opens (owner, 1 Nov 2026: "why are uploaded cards not opening?"): the video while its MP4 exists, else the cover; post text, sources, numbers
+  var openPosted = {};
+  function postedDetail(s, meta){ var d = el('div', 'pdet');
+    if (s.video) { var v = document.createElement('video'); v.src = s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover; v.setAttribute('aria-label', 'Showreel ' + s.name); d.appendChild(v); }
+    else { if (s.cover) { var im = document.createElement('img'); im.src = s.cover; im.alt = 'Cover of ' + (meta.concept || label(s)); d.appendChild(im); } d.appendChild(el('p', 'gone', 'Video removed 15 days after upload. The post text and sources stay.')); }
+    var cap = el('div', 'cap wait', 'Loading post text…'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), src = el('div', 'src'); copy.type = 'button'; copy.disabled = true; src.hidden = true;
+    copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
+    row.appendChild(copy); d.appendChild(cap); d.appendChild(row); d.appendChild(src);
+    fetch(s.info || '/reels/' + s.name + '.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }).then(function(j){
+      var m = Object.assign({}, j, meta);
+      if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false; } else cap.textContent = 'No post text for this reel.';
+      if (Array.isArray(m.sources) && m.sources.length) sources(src, m.sources); });
+    return d; }
   function posted(done, c){ var box = el('section', 'posted-list'), k = ch; box.appendChild(el('h2', null, 'Posted (' + done.length + ')')); list.appendChild(box);
     var rows = {};
-    done.forEach(function(s){ var meta = c[s.name] || {}, at = ticks[s.name], r = el('div', 'prow'), th = el('span', 'th'), tx = el('span', 'tx');
-      if (s.cover) th.style.backgroundImage = 'url(' + s.cover + ')'; r.appendChild(th);
+    done.forEach(function(s){ var meta = c[s.name] || {}, at = ticks[s.name], r = el('div', 'prow'), op = el('button', 'pbtn'), th = el('span', 'th'), tx = el('span', 'tx'), isOpen = openPosted[k] === s.name;
+      op.type = 'button'; op.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if (s.cover) th.style.backgroundImage = 'url(' + s.cover + ')'; op.appendChild(th);
       tx.appendChild(el('span', 'name', meta.concept || label(s))); tx.appendChild(el('span', 'meta', '✓ Posted ' + nice(istDay(at))));
-      var nums = el('span', 'nums'); nums.hidden = true; tx.appendChild(nums); r.appendChild(tx); rows[s.name] = nums;
+      var nums = el('span', 'nums'); nums.hidden = true; tx.appendChild(nums); op.appendChild(tx); op.appendChild(el('span', 'chev', isOpen ? '⌄' : '›')); r.appendChild(op); rows[s.name] = nums;
+      op.addEventListener('click', function(){ openPosted[k] = isOpen ? null : s.name; render(); });
       if (Date.now() - Date.parse(at) < DAY) {   // a wrong tap is easy to undo on the first day
         var u = el('button', 'btn g undo', 'Undo'); u.type = 'button'; u.setAttribute('aria-label', 'Not posted yet: move ' + (meta.concept || label(s)) + ' back');
         u.addEventListener('click', function(){ u.disabled = true; mark(s.name, false).then(render, function(){ u.disabled = false; u.textContent = 'Try again'; }); }); r.appendChild(u); }
-      box.appendChild(r); });
+      box.appendChild(r); if (isOpen) box.appendChild(postedDetail(s, meta)); });
     perfFor(k).then(function(j){ if (!j || k !== ch) return; var hit = matchPosts(done, j.media);
       Object.keys(hit).forEach(function(n){ var t = numbers(hit[n]); if (t && rows[n]) { rows[n].textContent = t; rows[n].hidden = false; } }); });
     return box; }
@@ -435,6 +466,20 @@
     });
   }
   paint();
+  // "Needs you": each item has buttons that fit it (Yes / No, Done, or a short reply); the reply is stored and the item leaves the list
+  var needs = document.getElementById('needs'), needsList = document.getElementById('needs-list');
+  function askEl(a){ var box = el('div', 'ask'), row = el('div', 'row'), ta = null;
+    box.appendChild(el('b', null, (a.channel && CH[a.channel] ? CH[a.channel].name + ': ' : '') + a.question)); if (a.why) box.appendChild(el('p', null, a.why));
+    function answer(v, btn){ if (!v || !v.trim()) { if (ta) ta.focus(); return; } btn.disabled = true;
+      fetch('/api/asks/' + encodeURIComponent(a.id) + '/answer', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ answer: v.trim() }) })
+        .then(function(r){ if (!r.ok) throw 0; box.remove(); if (!needsList.children.length) needs.hidden = true; }).catch(function(){ btn.disabled = false; btn.textContent = 'Try again'; }); }
+    function btn(t, v, cls){ var b = el('button', 'btn' + (cls ? ' ' + cls : ''), t); b.type = 'button'; b.addEventListener('click', function(){ answer(v === null ? ta.value : v, b); }); row.appendChild(b); }
+    if (a.kind === 'yesno') { btn('Yes', 'yes'); btn('No', 'no', 'g'); }
+    else if (a.kind === 'done') btn('Done', 'done');
+    else { ta = document.createElement('textarea'); ta.setAttribute('aria-label', 'Your reply'); ta.placeholder = 'Your reply'; box.appendChild(ta); btn('Send', null); }
+    box.appendChild(row); return box; }
+  fetch('/api/asks', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
+    .then(function(j){ (j.asks || []).forEach(function(a){ needsList.appendChild(askEl(a)); }); needs.hidden = !needsList.children.length; }).catch(function(){});
   // cards: one per daily audit (and the spare-usage night's report), newest first; "Mark read" deletes the card for good (no archive)
   var cardsBox = document.getElementById('cards'), CC = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' };
   function cardEl(cd){ var box = el('section', 'card'), hd = el('div', 'hd');
@@ -508,7 +553,7 @@
     document.getElementById('use').hidden = false; }).catch(function(){});
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
     // a re-render keeps the file name, so the video and cover URLs carry the release's update time: the phone never plays a cached older cut
-    (r[0].showreels || []).forEach(function(s){ var v = '?v=' + encodeURIComponent(s.at || ''); s.video += v; if (s.cover) s.cover += v; });
+    (r[0].showreels || []).forEach(function(s){ var v = '?v=' + encodeURIComponent(s.at || ''); if (s.video) s.video += v; if (s.cover) s.cover += v; });
     DATA = { d: r[0], c: r[1] }; render();
     // titles for the collapsed tiles too: each reel's caption first line (one small request per reel), then one re-render
     Promise.all((r[0].showreels || []).filter(function(s){ return !(r[1][s.name] || {}).concept; }).map(function(s){

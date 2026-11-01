@@ -104,6 +104,10 @@ A scheduled task (created by the parent session, not here) fires Tuesdays around
   last 7 days: followers, reels with reach, avg watch, saves, shares, pattern used, best reel). The same day's id replaces the card; the owner's
   "Mark read" deletes it for good. In the repo only ONE line a day stays: the lesson, in design/experiments.md "Results log"
   (`- DD Mon: lesson`). The full report never goes into the repo or chat.
+- Questions for the owner (owner, 1 Nov 2026) go into the app's "Needs you" list, never into chat: dispatch the "Owner answers" workflow (main) with
+  action `add` and `asks` = `[{"id":"short-id","question":"plain English","why":"why it matters","kind":"yesno|done|text","channel":"web|tech|c3"}]`.
+  Every daily run (and the spare-usage night) first dispatches it with action `read`, acts on each `ANSWER` line, then dispatches `clear` with
+  the ids it acted on (format in scripts/asks.mjs).
 
 ## Sign-in and secrets
 The whole site sits behind a sign-in page + 30-day session cookie (src/worker.js). Credentials exist only as secrets (GitHub + Worker):
