@@ -508,24 +508,43 @@
     show(!!sp.on); row.appendChild(b); box.appendChild(row); cardsBox.insertBefore(box, cardsBox.firstChild);
     var left = Date.parse(sp.until) - Date.now(); if (left > 0) setTimeout(function(){ box.remove(); }, Math.min(left, 2e9));   // gone at the reset
   }).catch(function(){});
-  // notifications: the service worker (offline copies + push), and a one-time "Turn on notifications" button while this device has no subscription.
-  // iPhone: iOS 16.4+ and the app added to the Home Screen (Safari in a tab has no push)
-  var nBox = document.getElementById('notify'), nBtn = document.getElementById('notify-on');
+  // notifications: the service worker (offline copies + push) and one line that always says where this device stands (owner, 1 Nov 2026:
+  // "turn on notifications doesn't do anything"): never silent. iPhone: iOS 16.4+ and the app added to the Home Screen (Safari in a tab has no push)
+  var nBox = document.getElementById('notify'), nTxt = nBox.querySelector('span'), nBtn = document.getElementById('notify-on'), nMode = null, nReg = null, nKey = null;
   function keyBytes(k){ var s = atob(k.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((k.length + 3) % 4)), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').then(function(){ return navigator.serviceWorker.ready; }).then(function(reg){
-    if (!reg.pushManager || !('Notification' in window) || Notification.permission === 'denied') return;
-    return Promise.all([reg.pushManager.getSubscription(), fetch('/api/push/key', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; })]).then(function(x){
-      var sub = x[0], key = x[1] && x[1].key; if (!key) return;
-      function save(s){ return fetch('/api/push/subscribe', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify(s) }).then(function(r){ if (!r.ok) throw 0; }); }
-      if (sub && Notification.permission === 'granted') return;   // already on for this device
-      nBox.hidden = false;
-      nBtn.addEventListener('click', function(){ nBtn.disabled = true; nBtn.textContent = 'Turning on…';
-        Notification.requestPermission().then(function(p){ if (p !== 'granted') throw 0;
-          return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(key) }); })
-          .then(function(s){ return save(s.toJSON()); }).then(function(){ nBox.textContent = 'Notifications are on for this device.'; setTimeout(function(){ nBox.hidden = true; }, 4000); })
-          .catch(function(){ nBtn.disabled = false; nBtn.textContent = Notification.permission === 'denied' ? 'Blocked in settings' : 'Try again'; }); });
+  function nState(text, btn, mode){ nTxt.textContent = text; nBtn.hidden = !btn; if (btn) { nBtn.textContent = btn; nBtn.disabled = false; } nMode = mode || null; nBox.hidden = false; }
+  function pushPost(path, body){ return fetch(path, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify(body) })
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if (!r.ok) throw new Error(j.error === 'not-subscribed' ? 'this device is not signed up on the server. Tap Refresh, then turn notifications on again' : 'server ' + r.status); return j; }); }); }
+  function sentMsg(st){ return st == null ? 'Saved, but the server key is missing, so nothing can be sent yet.' : st >= 200 && st < 300 ? 'A test notification is on its way.' : 'Saved, but the push service said no (' + st + '). Tell Claude.'; }
+  function withTimeout(p, ms, msg){ return Promise.race([p, new Promise(function(_, no){ setTimeout(function(){ no(new Error(msg)); }, ms); })]); }
+  var BLOCKED = 'Blocked: turn on in Settings > Notifications > Showreels.';
+  nBtn.addEventListener('click', function(){
+    if (nMode === 'test') { nBtn.disabled = true; nBtn.textContent = 'Sending…';
+      withTimeout(nReg.pushManager.getSubscription(), 10000, 'no answer').then(function(sub){ if (!sub) throw new Error('This device is not signed up any more. Refresh and turn it on again.');
+        return pushPost('/api/push/test', { endpoint: sub.endpoint }); })
+        .then(function(j){ nState(sentMsg(j.sent), 'Send a test notification', 'test'); }, function(e){ nState('Test failed: ' + e.message, 'Send a test notification', 'test'); });
+      return; }
+    if (nMode !== 'on') return;
+    nBtn.disabled = true; nBtn.textContent = 'Turning on…';
+    // the permission prompt is asked first, straight from the tap (iPhone shows it only then)
+    Notification.requestPermission().then(function(p){
+      if (p !== 'granted') throw new Error(p === 'denied' ? BLOCKED : 'Not allowed. Tap again and choose Allow.');
+      return withTimeout(nReg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(nKey) }), 15000, 'The push service did not answer. Check the connection and try again.'); })
+      .then(function(sub){ return pushPost('/api/push/subscribe', sub.toJSON()); })
+      .then(function(j){ nState('Notifications are on for this device. ' + sentMsg(j.sent), 'Send a test notification', 'test'); },
+        function(e){ nState(e && e.message && !/^server|^Failed|TypeError/.test(e.message) ? e.message : 'Could not turn on (' + ((e && e.message) || 'error') + '). Try again.', 'Turn on notifications', 'on'); });
+  });
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) nState('Notifications need iOS 16.4+ and the app on the Home Screen (Share > Add to Home Screen).', null);
+  else navigator.serviceWorker.register('/sw.js').then(function(){ return withTimeout(navigator.serviceWorker.ready, 10000, 'The app is still installing. Refresh in a moment.'); }).then(function(reg){
+    nReg = reg;
+    return Promise.all([reg.pushManager.getSubscription(), fetch('/api/push/key', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; })]).then(function(x){
+      var sub = x[0]; nKey = x[1] && x[1].key;
+      if (!nKey) return nState('Notifications: not ready yet, the server key is missing (see "Needs you" above).', null);
+      if (Notification.permission === 'denied') return nState(BLOCKED, null);
+      if (sub && Notification.permission === 'granted') { pushPost('/api/push/subscribe?quiet=1', sub.toJSON()).catch(function(){}); return nState('Notifications are on for this device.', 'Send a test notification', 'test'); }
+      nState('Get the Tuesday 9 PM reminder on this phone.', 'Turn on notifications', 'on');
     });
-  }).catch(function(){});
+  }).catch(function(e){ nState('Notifications: ' + ((e && e.message) || 'not available here') + '.', null); });
   // Instagram collector health: an open alert per account, or no new numbers for 36+ hours (the run itself failed or stopped)
   fetch('/api/perf/status', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(st){
     var ACC = { 1: '@webin20sec', 2: '@techin20sec', 3: '@itturns.out' }, box = document.getElementById('alert'), lines = [];

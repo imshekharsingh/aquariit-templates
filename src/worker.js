@@ -350,6 +350,15 @@ async function spareApi(request, env, p, url) {
     const row = await db.prepare('SELECT at FROM spare_week WHERE week = ?1').bind(week).first();
     return jres({ ...w, week, on: !!row, at: row ? row.at : null });
   }
+  if (p === '/api/push/test' && request.method === 'POST') {   // "Send a test notification": only to a device that is signed up
+    let b = null; try { b = await request.json(); } catch { /* handled below */ }
+    const r = b && typeof b.endpoint === 'string' ? await db.prepare('SELECT endpoint, p256dh, auth FROM push_subs WHERE endpoint = ?1').bind(b.endpoint).first() : null;
+    if (!r) return jres({ error: 'not-subscribed' }, 404);
+    if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return jres({ ok: true, sent: null });
+    const status = await sendPush({ endpoint: r.endpoint, keys: { p256dh: r.p256dh, auth: r.auth } }, { title: 'Test notification', body: 'This is how the Tuesday reminder will look.', url: '/' }, env, 600).catch(() => 0);
+    if (status === 404 || status === 410) await db.prepare('DELETE FROM push_subs WHERE endpoint = ?1').bind(r.endpoint).run();
+    return jres({ ok: true, sent: status });
+  }
   if (p === '/api/push/subscribe') {
     let b = null; try { b = await request.json(); } catch { /* handled below */ }
     const ep = b && typeof b.endpoint === 'string' && b.endpoint.length < 1000 && PUSH_HOST.test(b.endpoint) ? b.endpoint : null;
@@ -360,6 +369,7 @@ async function spareApi(request, env, p, url) {
     await db.prepare('INSERT INTO push_subs (endpoint, p256dh, auth, at) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(endpoint) DO UPDATE SET p256dh = excluded.p256dh, auth = excluded.auth, at = excluded.at')
       .bind(ep, k.p256dh, k.auth, new Date().toISOString()).run();
     if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return jres({ ok: true, sent: null });
+    if (url.searchParams.get('quiet') === '1') return jres({ ok: true });   // the app re-saves an existing subscription on open: no message
     const status = await sendPush({ endpoint: ep, keys: k }, { title: 'Notifications are on', body: 'You will get the Tuesday 9 PM spare-usage reminder here.', url: '/' }, env, 600).catch(() => 0);
     return jres({ ok: true, sent: status });
   }
