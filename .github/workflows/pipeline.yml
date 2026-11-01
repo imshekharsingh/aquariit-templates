@@ -219,6 +219,8 @@ jobs:
           # the app's cards (owner, 1 Nov 2026): closed when signed out; with D1 a test card round-trips and is deleted again
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/cards")" = "401" ] || { echo "cards API must be closed to signed-out requests"; exit 1; }
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/spare")" = "401" ] || { echo "spare API must be closed to signed-out requests"; exit 1; }
+          [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/asks")" = "401" ] || { echo "Needs-you API must be closed to signed-out requests"; exit 1; }
+          if [ "$code" = "200" ]; then command curl -sf -b "$J" "$B/api/asks" | grep -q '"asks"' || { echo "Needs-you API did not answer"; exit 1; }; echo "OK Needs-you API"; fi
           if [ "$code" = "200" ]; then command curl -sf -b "$J" "$B/api/spare" | grep -q '"week"' || { echo "spare API did not answer"; exit 1; }; echo "OK spare API"; fi
           if [ "$code" = "200" ]; then
             H=(-b "$J" -H 'X-Requested-With: reel' -H 'Content-Type: application/json')
