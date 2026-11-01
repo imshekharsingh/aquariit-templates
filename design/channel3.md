@@ -57,6 +57,8 @@ accounts read as siblings.
 - 25-35 s. Every frame a pure function of t (seeded randomness only).
 
 ## Quality bar (owner, 31 Oct 2026: replaces the "Premium rules"; real-time 3D from now on)
+
+> **1 Nov 2026 (owner): 2.5D, continuous flow is the standard** (see "2.5D toolkit" below). The owner preferred the 2.5D Eiffel reel and posted it as the launch reel; the 3D version (showreel-c3-eiffel-saved) is hidden and real-time 3D is retired. Read the points below for 2.5D: one continuous camera instead of shots, illustrated figures instead of clay miniatures.
 The three 2D pilots were hidden: flat shapes read as a school diagram, frames were mostly empty, a caption card stood empty, grain was
 doubled. Polish cannot fix a cheap base style, so the channel moves to real-time 3D in the browser (three.js inlined into the scene,
 scripts/channel3/three-inline.mjs). The bar, for a channel that tells true stories to a global audience with a documentary-explainer feel:

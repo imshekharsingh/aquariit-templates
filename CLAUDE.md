@@ -61,7 +61,7 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 ## Turns Out: true stories (owner, 31 Oct 2026; was "Channel 3")
 - Promise: "The true story behind something everyone knows." Plan, never-list, fact rules and the pattern library: design/channel3.md.
   Instagram **@itturns.out**, display name **Turns Out**, bio "True stories behind things everyone knows. Sources in the comments."
-  Posts 3 times a week (Mon, Wed, Fri) 21:00-22:00 IST (owner, 1 Nov 2026: while it is in 3D); launched Sun 1 Nov with the Eiffel reel (owner), next reel Wed 4 Nov. Logo: design/brand/accounts/turnsout-logo.svg (an amber arrow turning round a dark ring, TURNS OUT inside; the family look of the other two).
+  Posts 3 times a week (Mon, Wed, Fri) 21:00-22:00 IST (owner, 1 Nov 2026); launched Sun 1 Nov with the 2.5D Eiffel reel (showreel-c3-eiffel-flow), next reel Wed 4 Nov. Logo: design/brand/accounts/turnsout-logo.svg (an amber arrow turning round a dark ring, TURNS OUT inside; the family look of the other two).
   The app's "Turns Out" tab has the profile card and the reels. Internal ids stay `c3` (scripts/channel3/, `showreel-c3-*`, `"channel": "c3"`).
 - Fixed Cell and the fictional pilots (rivals, pick-one, velmora and the silent first set) are retired: hidden, scenes in attic/.
 - Topics: general knowledge, recognisable on every continent (4+ continents a week), simple English, metric + imperial, universal dates.
@@ -71,10 +71,12 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   "sources" list (2+, title + https url; npm run check fails without it) is shown in the app with "Copy as comment".
 - Narrated: hook question on screen and in the voice from frame 0, full sentences at about 2.3-2.6 words/s overall, every sentence shown,
   a big change every ~3 s, payoff in the last 3 s, 25-35 s, matte look (no glow), every frame a pure function of t.
-  Quality bar (owner, 31 Oct): real-time 3D with a documentary title-sequence look; design/channel3.md, "Quality bar" (points 1-9), applies to every
-  reel, and every beat of the stills sheet is scored against it before the one render. The 2D patterns below it are retired with the pilots.
+  Style (owner, 1 Nov 2026, after posting the first reel): 2.5D, continuous flow (design/channel3.md, "2.5D toolkit"): illustrated engraving/cut-paper
+  layers with parallax, ONE camera that never cuts (match cuts, push-ins, zoom-throughs), kinetic type in time with the voice. Real-time 3D is retired
+  (over-engineered: ~50 render minutes, toy-like people); kit3d.js stays only for reference. design/channel3.md, "Quality bar" (points 1-9), still applies
+  to every reel, read for 2.5D (continuous camera instead of shots), and every beat of the stills sheet is scored against it before the one render.
   Scenes `scripts/channel3/<slug>.html` + `.json` (name `showreel-c3-<slug>`), entry in captions.json (`"channel": "c3"`, "concept", "about").
-  3D scenes build people, titles, trees and the city from the shared kit scripts/channel3/kit3d.js (design/channel3.md, "3D toolkit"); render them with the Showreel input "parts" 2.
+  Scenes build their camera, layers, paper, figures and type from the shared kit scripts/channel3/kit25d.js; render with Showreel "parts" 1 (about 22 GitHub minutes).
   Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, preflight says "fits", one stills sheet.
 
 ## Accounts and data
