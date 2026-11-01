@@ -5,13 +5,17 @@
   - Facts (two sources each; the pilot's checked set, unchanged): toureiffel.paris "Why was the Eiffel Tower kept?" and "The Eiffel Tower
     laboratory"; history.com "How the Eiffel Tower survived"; Guinness World Records "Tallest iron structure". Built for the 1889 Exposition
     Universelle; 300 m, the tallest structure in the world until 1930; Eiffel's concession ran 20 years (to 1909), after which the City of
-    Paris could have it dismantled; radio trials with Captain Ferrie's army team from 1903; Bizerte (Tunisia) reached in 1904; the
+    Paris could have it dismantled; radio trials with Captain Ferrie's army team from 1903; the naval base at Bizerte (Tunisia), across the Mediterranean, reached
+    soon after (re-checked 1 Nov: toureiffel.paris gives no year, other accounts say by 1907, so no year is shown on screen); the
     concession renewed for 70 years from 1 January 1910; the tower still carries radio and TV transmitters.
   - The tower is modelled from its published proportions (toureiffel.paris): base 125 m square, 1st floor 57 m, 2nd floor 115 m, top
     floor 276 m; approximate, not a survey. The steam crane and wrecking ball of shot 5 show what demolition would have meant (it never
     came). The antenna wires and the operator's set are illustrations, not a record of the 1903 equipment.
-  - People: stylised clay miniatures recognised by props (Eiffel: top hat, white beard; the operator: kepi, blue tunic, red trousers,
-    headphones), never faces (CLAUDE.md exception for Turns Out).
+  - People (rebuilt 1 Nov): diorama miniatures with turned bodies, cloth folds, hands and a simple friendly face, recognised by props
+    (Eiffel: top hat, white beard, frock coat; the operator: kepi, blue tunic, red trousers, headphones), never a likeness or a caricature
+    (CLAUDE.md exception for Turns Out); kept to mid and wide shots.
+  - Titles (1 Nov): dark bronze type on a soft pale haze set behind it in 3D, so every date reads on iron, city or sky. The cover is a low
+    golden-hour angle with the tower filling the frame and the hook on clean sky.
   - Look (design/channel3.md, "Quality bar" and the 1 Nov fixes): one low warm sun from the back left (warm rim on the iron), a cool sky
     fill on the shadow side, a clean blue-to-amber sky with haze that takes the sky's colour, depth of field and one golden-hour grade in
     the final pass; the hook and the payoff sit on open sky with a soft grade behind them. No scene grain (the render adds it once).
@@ -129,7 +133,7 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
     x.restore(); x.restore();
   }
   // the source credit (owner, 31 Oct: a short credit on the last frame): a small paper tag at the top for the last 3 s
-  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.5); if (k <= 0) return; k = eo(k); x.save(); x.globalAlpha = k; tag(CREDIT, 270, 92 - (1 - k) * 10, 11.5, '700 ' + FI, '#23202b', '#fbf6ea', .6); x.restore(); }
+  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.5); if (k <= 0) return; k = eo(k); x.save(); x.globalAlpha = k; tag(CREDIT, 270, 92 - (1 - k) * 10, 13, '700 ' + FI, '#23202b', '#fbf6ea', .6); x.restore(); }
   Object.defineProperty(window, 'COVER', { configurable: true, get: function(){ return +Math.min(CAPS[0].e + .25, A[1] - .3).toFixed(2); } });   // the question fully lit
 
   // ---- the story (the facts and voice of the 31 Oct pilot, two sources per claim; see the header) ----
@@ -218,8 +222,6 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
     g.fillStyle = 'rgba(40,36,34,.6)'; g.fillRect(0, 140, s, 3); g.fillRect(0, 26, s, 3);
     g.fillStyle = 'rgba(90,76,60,.3)'; for (var y2 = 62; y2 < s - 40; y2 += 38) g.fillRect(0, y2, s, 2);
   }, 1);
-  function blob(){ return tex(128, function(g, s){ var gr = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2); gr.addColorStop(0, 'rgba(20,14,10,.55)'); gr.addColorStop(.6, 'rgba(20,14,10,.22)'); gr.addColorStop(1, 'rgba(20,14,10,0)'); g.fillStyle = gr; g.fillRect(0, 0, s, s); }, 1); }
-  var shadowMat = new T.MeshBasicMaterial({ map: blob(), transparent: true, depthWrite: false, fog: false });
 
   // ---------- the tower (modelled from its published proportions; see the header) ----------
   var Wt = function(h){ return 5.5 + 57 * Math.exp(-h / 80); };
@@ -378,30 +380,69 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
     var base = new T.Mesh(new T.BoxGeometry(120, 30, 120), new T.MeshStandardMaterial({ color: Cc('#e2d3b6'), roughness: .85 })); base.position.set(980, 15, 760); scene.add(base);
   })();
 
-  // ---------- figures: stylised clay miniatures recognised by props (CLAUDE.md exception), never faces ----------
-  var matCache = {}; function clay(h, r, m){ var k = h + (r || '') + (m || ''); return matCache[k] || (matCache[k] = new T.MeshStandardMaterial({ color: Cc(h), roughness: r || .78, metalness: m || 0 })); }
-  var G = { leg: new T.CapsuleGeometry(.1, .72, 4, 8), body: new T.CapsuleGeometry(.23, .5, 4, 10), arm: new T.CapsuleGeometry(.07, .5, 4, 8), head: new T.SphereGeometry(.14, 16, 12),
-    skirt: new T.CylinderGeometry(.16, .42, .95, 14), top: new T.CylinderGeometry(.12, .125, .27, 14), brim: new T.CylinderGeometry(.22, .22, .02, 18), bowl: new T.SphereGeometry(.14, 14, 8, 0, 6.283, 0, 1.57),
-    kepi: new T.CylinderGeometry(.115, .135, .15, 14), beard: new T.SphereGeometry(.12, 12, 10), disc: new T.CylinderGeometry(.06, .06, .04, 12), band: new T.TorusGeometry(.16, .015, 6, 16, Math.PI),
-    shadow: new T.PlaneGeometry(1, 1), parasol: new T.ConeGeometry(.5, .22, 16, 1, true), stick: new T.CylinderGeometry(.012, .012, .9, 5) };
+  // ---------- figures: diorama miniatures (owner, 1 Nov: the peg dolls looked cheap) recognised by props and setting (CLAUDE.md exception) ----------
+  // Turned (lathe) bodies with real proportions (about 7.5 heads tall), cloth with soft folds (a bump map), elbows and hands, shoes,
+  // and a simple friendly face (two dark eyes, a nose, ears): never a likeness or a caricature. A soft contact shadow under each.
+  var foldT = tex(128, function(g, s){ g.fillStyle = '#808080'; g.fillRect(0, 0, s, s);   // soft vertical folds, a little uneven
+    for (var xx = 0; xx < s; xx++) { var v = 128 + 44 * Math.sin(xx / s * 6.283 * 3 + 1.3 * Math.sin(xx / s * 6.283 * 2)) + 18 * Math.sin(xx / s * 6.283 * 7); g.fillStyle = 'rgb(' + [v, v, v].map(Math.round).join(',') + ')'; g.fillRect(xx, 0, 1, s); }
+    for (var i = 0; i < 1800; i++) { g.fillStyle = 'rgba(' + (R() < .5 ? '0,0,0' : '255,255,255') + ',.05)'; g.fillRect(RR(0, s), RR(0, s), 2, 2); } }, 1);
+  foldT.colorSpace = T.NoColorSpace;
+  var matCache = {}; function clay(h, r, m, folds){ var k = h + (r || '') + (m || '') + (folds ? 'f' : ''); if (matCache[k]) return matCache[k];
+    var o = { color: Cc(h), roughness: r || .78, metalness: m || 0 }; if (folds) { o.bumpMap = foldT; o.bumpScale = 2.2; } return matCache[k] = new T.MeshStandardMaterial(o); }
+  var lathe = function(pts, n){ return new T.LatheGeometry(pts.map(function(p){ return new T.Vector2(p[0], p[1]); }), n || 22); };
+  var G = {
+    coat: lathe([[.001, .54], [.25, .55], [.235, .7], [.19, .9], [.2, 1.04], [.215, 1.2], [.205, 1.34], [.16, 1.43], [.07, 1.49], [.001, 1.5]]),
+    tunic: lathe([[.001, .63], [.215, .64], [.205, .76], [.19, .9], [.2, 1.04], [.215, 1.2], [.205, 1.34], [.16, 1.43], [.07, 1.49], [.001, 1.5]]),
+    dress: lathe([[.001, .03], [.43, .03], [.42, .1], [.36, .34], [.27, .62], [.17, .88], [.15, .95], [.18, 1.12], [.185, 1.28], [.15, 1.4], [.07, 1.47], [.001, 1.48]], 26),
+    leg: new T.CapsuleGeometry(.068, .5, 4, 10), shoe: new T.SphereGeometry(.06, 12, 8),
+    upper: new T.CapsuleGeometry(.06, .22, 4, 10), fore: new T.CapsuleGeometry(.052, .2, 4, 10), cuff: new T.CylinderGeometry(.056, .056, .035, 12), palm: new T.SphereGeometry(.045, 12, 8), thumb: new T.CapsuleGeometry(.016, .04, 3, 6),
+    neck: new T.CylinderGeometry(.045, .05, .1, 10), head: new T.SphereGeometry(.105, 22, 16), ear: new T.SphereGeometry(.024, 8, 6), nose: new T.SphereGeometry(.019, 10, 8), eye: new T.SphereGeometry(.0125, 8, 6),
+    hair: new T.SphereGeometry(.11, 20, 12, 0, 6.283, 0, 1.9), bun: new T.SphereGeometry(.06, 12, 8), collar: new T.CylinderGeometry(.052, .058, .05, 12), button: new T.SphereGeometry(.014, 8, 6), shirt: new T.CircleGeometry(.075, 3),
+    beard: new T.SphereGeometry(.095, 16, 12), stache: new T.CapsuleGeometry(.017, .07, 3, 8), bustle: new T.SphereGeometry(.2, 16, 12),
+    top: lathe([[.001, 0], [.104, 0], [.1, .05], [.106, .17], [.112, .2], [.001, .2]], 20), brim: lathe([[.001, 0], [.19, 0], [.205, .015], [.2, .028], [.17, .012], [.001, .012]], 24), band: new T.CylinderGeometry(.1045, .1035, .035, 20),
+    bowl: new T.SphereGeometry(.118, 18, 10, 0, 6.283, 0, 1.57), kepi: new T.CylinderGeometry(.095, .11, .13, 18), visor: new T.CylinderGeometry(.085, .085, .008, 16, 1, false, -Math.PI / 2, Math.PI),
+    hband: new T.TorusGeometry(.12, .011, 6, 18, Math.PI), disc: new T.CylinderGeometry(.04, .04, .03, 14), flower: new T.SphereGeometry(.03, 8, 6), feather: new T.CapsuleGeometry(.018, .16, 3, 6),
+    shadow: new T.PlaneGeometry(1, 1), parasol: lathe([[.001, .2], [.12, .17], [.3, .09], [.46, 0], [.45, -.01], [.001, .19]], 20), stick: new T.CylinderGeometry(.01, .01, .95, 5) };
   G.shadow.rotateX(-Math.PI / 2);
+  var cshadow = new T.MeshBasicMaterial({ map: tex(128, function(g, s){ var gr = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2); gr.addColorStop(0, 'rgba(18,12,8,.72)'); gr.addColorStop(.35, 'rgba(18,12,8,.42)'); gr.addColorStop(1, 'rgba(18,12,8,0)'); g.fillStyle = gr; g.fillRect(0, 0, s, s); }, 1), transparent: true, depthWrite: false, fog: false });
   function part(g0, geo, mat, xx, y, z){ var o = new T.Mesh(geo, mat); o.position.set(xx, y, z); o.castShadow = true; g0.add(o); return o; }
+  var SKIN = ['#efc9a6', '#e2b08a', '#d39d76', '#c58a62', '#f3d4b8'];
+  function arm(g, s, sleeve, skin, cuff){   // shoulder pivot > upper arm > elbow pivot > forearm, cuff, hand (with a thumb)
+    var sh = new T.Group(); sh.position.set(s * .225, 1.41, 0); sh.rotation.z = s * .07; g.add(sh); part(sh, G.upper, sleeve, 0, -.15, 0);
+    var el = new T.Group(); el.position.y = -.31; el.rotation.x = -.18; sh.add(el); part(el, G.fore, sleeve, 0, -.13, 0); if (cuff) part(el, G.cuff, cuff, 0, -.26, 0);
+    var hand = new T.Group(); hand.position.y = -.31; el.add(hand); part(hand, G.palm, skin, 0, 0, 0).scale.set(.85, 1.2, .6); var th = part(hand, G.thumb, skin, -s * .03, .01, .025); th.rotation.z = -s * .5;
+    sh.userData.elbow = el; sh.userData.hand = hand; return sh; }
+  function faceOf(g, skin, o){ var h = part(g, G.head, skin, 0, 1.655, 0); h.scale.set(.95, 1.08, 1); part(g, G.neck, skin, 0, 1.53, 0);
+    [-1, 1].forEach(function(s){ part(g, G.ear, skin, s * .1, 1.65, -.005).scale.set(.6, 1, .8); part(g, G.eye, clay('#231a15', .35), s * .037, 1.68, .094); });
+    part(g, G.nose, skin, 0, 1.652, .104).scale.set(1, 1.15, 1);
+    var hair = o.hair || '#4a3626'; var hr = part(g, G.hair, clay(hair, .9), 0, 1.66, -.006); hr.rotation.x = -.55; hr.scale.set(1, 1.05, 1.02);
+    if (o.bun) part(g, G.bun, clay(hair, .9), 0, 1.7, -.1);
+    if (o.beard) { var bd = part(g, G.beard, clay(o.beard, .95, 0, true), 0, 1.585, .035); bd.scale.set(1.02, .95, .8); var st = part(g, G.stache, clay(o.beard, .95), 0, 1.625, .098); st.rotation.z = Math.PI / 2; } }
   function figure(o){
-    var g = new T.Group(), coat = clay(o.coat), skin = clay('#e2bb98', .7);
-    if (o.dress) part(g, G.skirt, coat, 0, .47, 0);
-    else { part(g, G.leg, clay(o.trousers || '#3a3633'), -.11, .46, 0); part(g, G.leg, clay(o.trousers || '#3a3633'), .11, .46, 0); }
-    var body = part(g, G.body, coat, 0, 1.18, 0); body.scale.set(1, 1, .78);
-    var arms = [-1, 1].map(function(s){ var piv = new T.Group(); piv.position.set(s * .3, 1.43, 0); g.add(piv); part(piv, G.arm, coat, 0, -.3, 0); part(piv, G.head, skin, 0, -.62, 0).scale.setScalar(.45); return piv; });
-    part(g, G.head, skin, 0, 1.68, 0);
-    if (o.beard) { var bd = part(g, G.beard, clay('#f1ede4', .9), 0, 1.6, .06); bd.scale.set(1.05, 1.1, .9); }
-    var hc = clay(o.hatCol || '#1d1b1a', .55);
-    if (o.hat === 'top') { part(g, G.top, hc, 0, 1.9, 0); part(g, G.brim, hc, 0, 1.775, 0); }
-    else if (o.hat === 'bowler') { part(g, G.bowl, hc, 0, 1.77, 0); part(g, G.brim, hc, 0, 1.775, 0).scale.setScalar(.8); }
-    else if (o.hat === 'kepi') { part(g, G.kepi, clay('#b2332c', .6), 0, 1.84, 0); part(g, G.brim, clay('#2a3552'), 0, 1.77, .05).scale.set(.75, 1, .75); }
-    else if (o.hat === 'lady') { part(g, G.brim, hc, 0, 1.79, 0).scale.set(1.5, 1, 1.5); part(g, G.bowl, hc, 0, 1.79, 0).scale.set(.8, .7, .8); }
-    if (o.phones) { var hb = part(g, G.band, clay('#2a2a2a', .4, .5), 0, 1.7, 0); hb.rotation.y = Math.PI / 2; [-1, 1].forEach(function(s){ part(g, G.disc, clay('#2a2a2a', .4, .5), s * .15, 1.68, 0).rotation.z = Math.PI / 2; }); }
-    if (o.parasol) { var pp = new T.Group(); pp.position.set(.28, 1.25, .05); pp.rotation.z = -.25; g.add(pp); part(pp, G.stick, clay('#3b2f25'), 0, .45, 0); part(pp, G.parasol, clay(o.parasol, .8), 0, .95, 0); }
-    var sh = new T.Mesh(G.shadow, shadowMat); sh.scale.setScalar(1.3); sh.position.y = .03; g.add(sh);
+    var g = new T.Group(), coat = clay(o.coat, .8, 0, true), skin = clay(o.skin || SKIN[R() * SKIN.length | 0], .62), white = clay('#f1ebe0', .7), trousers = clay(o.trousers || '#3a3633', .85, 0, true);
+    if (o.dress) { part(g, G.dress, coat, 0, 0, 0).scale.set(1, 1, .82); part(g, G.bustle, coat, 0, .86, -.16).scale.set(1, .8, .9); part(g, G.collar, clay(o.trim || '#efe4cf', .7), 0, 1.47, 0); }
+    else {
+      [-1, 1].forEach(function(s){ part(g, G.leg, trousers, s * .09, .36, 0); part(g, G.shoe, clay('#1d1714', .4), s * .09, .045, .035).scale.set(1, .6, 1.8); });
+      part(g, o.tunic ? G.tunic : G.coat, coat, 0, 0, 0).scale.set(1, 1, .74);
+      part(g, G.collar, white, 0, 1.49, 0); var sf = part(g, G.shirt, white, 0, 1.37, .151); sf.rotation.z = Math.PI / 2; sf.scale.set(1, .7, 1);
+      part(g, G.button, clay('#14110f', .4), 0, 1.33, .162).scale.set(1.6, 1, 1);   // the tie knot
+      [1.2, 1.08, .96].forEach(function(y){ part(g, G.button, o.buttons || clay('#191512', .4, .3), 0, y, .158); });
+      if (o.belt) part(g, G.cuff, clay('#1e1a17', .5), 0, .92, 0).scale.set(3.6, 1.2, 2.7);
+    }
+    var arms = [-1, 1].map(function(s){ return arm(g, s, coat, skin, o.dress ? null : white); });
+    faceOf(g, skin, o);
+    var hc = clay(o.hatCol || '#1d1b1a', .5);
+    if (o.hat === 'top') { part(g, G.top, hc, 0, 1.765, 0); part(g, G.brim, hc, 0, 1.755, 0).scale.set(1, 1, .86); part(g, G.band, clay('#3a3634', .6), 0, 1.785, 0); }
+    else if (o.hat === 'bowler') { part(g, G.bowl, hc, 0, 1.745, 0).scale.set(1, .95, 1.05); part(g, G.brim, hc, 0, 1.745, 0).scale.set(.85, 1, .8); }
+    else if (o.hat === 'kepi') { var kp = new T.Group(); kp.position.set(0, 1.79, .01); kp.rotation.x = .16; g.add(kp); part(kp, G.kepi, clay('#b2332c', .6), 0, .02, 0); part(kp, G.band, clay('#26314f', .6), 0, -.03, 0).scale.set(1.04, 1.4, 1.04);
+      var vs = part(kp, G.visor, clay('#15120f', .3), 0, -.05, .06); vs.rotation.x = .25; }
+    else if (o.hat === 'lady') { var lh = new T.Group(); lh.position.set(0, 1.76, -.01); lh.rotation.x = -.12; g.add(lh); part(lh, G.brim, hc, 0, 0, 0).scale.set(1.25, 1, 1.25); part(lh, G.bowl, hc, 0, 0, 0).scale.set(.85, .6, .85);
+      [[-.06, .07], [.02, .1], [.08, .05]].forEach(function(f, i){ part(lh, G.flower, clay(['#e7c45a', '#f2efe6', '#c9566a'][i], .7), f[0], .05, f[1]); });
+      var fe = part(lh, G.feather, clay('#f3eee4', .8), -.1, .1, -.05); fe.rotation.z = .9; }
+    if (o.phones) { var hb = part(g, G.hband, clay('#2a2a2a', .4, .5), 0, 1.69, 0); hb.rotation.y = Math.PI / 2; [-1, 1].forEach(function(s){ part(g, G.disc, clay('#2a2a2a', .4, .5), s * .118, 1.65, 0).rotation.z = Math.PI / 2; }); }
+    if (o.parasol) { var pp = new T.Group(); pp.position.set(0, .03, 0); arms[1].userData.hand.add(pp); arms[1].rotation.x = -.5; arms[1].userData.elbow.rotation.x = -1.2; pp.rotation.x = 1.45;
+      part(pp, G.stick, clay('#3b2f25'), 0, .42, 0); part(pp, G.parasol, clay(o.parasol, .85), 0, .84, 0); }
+    var sh = new T.Mesh(G.shadow, cshadow); sh.scale.set(.95, 1, .8); sh.position.y = .03; g.add(sh);
     g.userData.arms = arms; return g;
   }
   function place(g0, xx, y, z, ry, s){ g0.position.set(xx, y, z); g0.rotation.y = ry || 0; g0.scale.setScalar(s || 1); scene.add(g0); return g0; }
@@ -410,11 +451,11 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
   (function(){ var coats = ['#2b2826', '#34302d', '#2f3a52', '#5b2f2c', '#3d4a3a', '#6b5a48'], dresses = ['#efe4cf', '#8a3b3b', '#3f4f74', '#c9b48e', '#56415d'];
     for (var i = 0; i < 52; i++) { var xx = RR(-22, 22), z = RR(122, 196); if (Math.abs(xx - 4) < 3.6 && z > 165) continue;   // the camera's path
       var lady = R() < .4;
-      var f = lady ? figure({ coat: dresses[R() * 5 | 0], dress: true, hat: 'lady', hatCol: ['#efe4cf', '#2b2826', '#8a3b3b'][R() * 3 | 0], parasol: R() < .5 ? ['#f3ead8', '#d9c7a0', '#9a3f3f'][R() * 3 | 0] : null })
-        : figure({ coat: coats[R() * 6 | 0], hat: R() < .6 ? 'top' : 'bowler', beard: R() < .25 });
+      var f = lady ? figure({ coat: dresses[R() * 5 | 0], dress: true, hat: 'lady', bun: true, hair: ['#3b2a1e', '#6b4a2e', '#1f1712', '#9a7448'][R() * 4 | 0], hatCol: ['#efe4cf', '#2b2826', '#8a3b3b'][R() * 3 | 0], parasol: R() < .5 ? ['#f3ead8', '#d9c7a0', '#9a3f3f'][R() * 3 | 0] : null })
+        : figure({ coat: coats[R() * 6 | 0], hat: R() < .6 ? 'top' : 'bowler', hair: ['#3b2a1e', '#1f1712', '#6b4a2e'][R() * 3 | 0], beard: R() < .3 ? ['#3b2a1e', '#5a4636', '#b9b0a2'][R() * 3 | 0] : null });
       f.userData.ph = RR(0, 6.28); crowd.push(place(f, xx, 0, z, RR(-1, 1) + (R() < .5 ? Math.PI : 0), RR(.94, 1.06))); } 
     [[.8, 166, '#8a3b3b', 1], [5.6, 158, '#2b2826', 0], [-1.6, 150, '#efe4cf', 1], [3.4, 171, '#2f3a52', 0]].forEach(function(q){   // a few close to the camera: the near layer
-      var f = q[3] ? figure({ coat: q[2], dress: true, hat: 'lady', hatCol: '#2b2826', parasol: '#f3ead8' }) : figure({ coat: q[2], hat: 'top' });
+      var f = q[3] ? figure({ coat: q[2], dress: true, hat: 'lady', bun: true, hair: '#4a3020', hatCol: '#2b2826', parasol: '#f3ead8' }) : figure({ coat: q[2], hat: 'top', hair: '#2a1d14' });
       f.userData.ph = RR(0, 6.28); crowd.push(place(f, q[0], 0, q[1], RR(-.6, .6) + Math.PI * .9, 1)); });
   })();
   // flags of 1889 along the central path (cloth that waves as a function of t)
@@ -430,12 +471,15 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
     for (var i = 0; i < a.count; i++) { var u = b[i * 3] / w; a.array[i * 3 + 2] = Math.sin(u * 5 - t * 6.5 + k) * .16 * w * u; a.array[i * 3 + 1] = b[i * 3 + 1] - u * u * .05 * w; }
     a.needsUpdate = true; fl.geometry.computeVertexNormals(); }); }
   // Gustave Eiffel (top hat, white beard, frock coat): on the Champ de Mars with his permit, and on the top platform
-  var eiffelA = place(figure({ coat: '#332d2b', trousers: '#4a4643', hat: 'top', beard: true }), 22, 0, 104, -.45);
-  var scroll = new T.Mesh(new T.CylinderGeometry(.035, .035, .34, 10), clay('#f2e6c9', .9)); scroll.position.set(0, -.6, .12); scroll.rotation.x = Math.PI / 2; eiffelA.userData.arms[1].add(scroll);
-  var paperSheet = new T.Mesh(new T.PlaneGeometry(.3, .4), new T.MeshStandardMaterial({ color: Cc('#f4ead2'), side: T.DoubleSide, roughness: .9 })); paperSheet.position.set(0, -.62, .3); paperSheet.rotation.x = -.6; eiffelA.userData.arms[0].add(paperSheet);
-  var eiffelB = place(figure({ coat: '#332d2b', trousers: '#4a4643', hat: 'top', beard: true }), -(TOPW - .9), 276.8, 1.6, -Math.PI / 2 - .25);
+  var EIFFEL = { coat: '#2e2826', trousers: '#4a4643', hat: 'top', skin: '#efc9a6', hair: '#cfc7ba', beard: '#e4ded3', buttons: clay('#191512', .4, .3) };
+  var eiffelA = place(figure(EIFFEL), 22, 0, 104, -.45);
+  var scroll = new T.Mesh(new T.CylinderGeometry(.025, .025, .26, 10), clay('#f2e6c9', .9)); scroll.position.set(0, -.02, .03); scroll.rotation.z = Math.PI / 2; eiffelA.userData.arms[1].userData.hand.add(scroll);
+  var paperSheet = new T.Mesh(new T.PlaneGeometry(.21, .28), new T.MeshStandardMaterial({ color: Cc('#f4ead2'), side: T.DoubleSide, roughness: .9 })); paperSheet.position.set(.05, -.08, .1); paperSheet.rotation.set(-1.1, .3, 0); eiffelA.userData.arms[0].userData.hand.add(paperSheet);
+  // the permit's writing: a few ruled lines and a seal on the sheet (illustrative, no real text)
+  paperSheet.material.map = tex(128, function(g, s){ g.fillStyle = '#f4ead2'; g.fillRect(0, 0, s, s); g.fillStyle = 'rgba(60,44,30,.55)'; for (var y = 22; y < 100; y += 9) g.fillRect(16, y, y === 22 ? 60 : RR(70, 96), 2.4); g.fillStyle = '#9b2f2a'; g.beginPath(); g.arc(96, 112, 9, 0, 6.283); g.fill(); }, 1);
+  var eiffelB = place(figure(EIFFEL), -(TOPW - .9), 276.8, 1.6, -Math.PI / 2 - .25);
   // 1903: an army radio operator (kepi, blue tunic, red trousers, headphones) at a table with a spark-gap set and a Morse key
-  var soldier = place(figure({ coat: '#2c3a5e', trousers: '#a3352d', hat: 'kepi', phones: true }), 7.1, 276.8, -6.6, .69);
+  var soldier = place(figure({ coat: '#2c3a5e', trousers: '#a3352d', hat: 'kepi', phones: true, tunic: true, belt: true, hair: '#2a1d14', skin: '#e2b08a', buttons: clay('#c99a45', .35, .8) }), 7.1, 276.8, -6.6, .69);
   (function(){ var tb = new T.Group(); tb.position.set(7.75, 276.8, -5.82); tb.rotation.y = .69 - Math.PI / 2; scene.add(tb); var wood = clay('#6a4526', .7), brass = clay('#c99a45', .35, .8);
     part(tb, new T.BoxGeometry(.75, .05, 1.3), wood, 0, .82, 0); [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(function(s){ part(tb, new T.BoxGeometry(.05, .8, .05), wood, s[0] * .32, .4, s[1] * .6); });
     part(tb, new T.BoxGeometry(.42, .3, .5), clay('#4a2f1c', .6), -.08, 1, -.28);
@@ -463,6 +507,10 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
   })();
 
   // ---------- type set into the 3D space: dates and numbers as solid letters (stacked layers give them depth) ----------
+  // the soft shade behind 3D type: an elliptical falloff computed in the shader (dark behind light type, pale behind dark type)
+  function shadeMat(dark){ return new T.ShaderMaterial({ transparent: true, depthWrite: false, fog: false, uniforms: { opacity: { value: 1 }, c: { value: Cc(dark ? '#fff4e6' : '#1a120c') } },
+    vertexShader: 'varying vec2 vu; void main(){ vu = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); }',
+    fragmentShader: 'varying vec2 vu; uniform float opacity; uniform vec3 c; void main(){ vec2 d = (vu - .5) * 2.; gl_FragColor = vec4(c, ' + (dark ? '.84' : '.72') + ' * opacity * exp(-3.4 * dot(d, d)) * (1. - smoothstep(.7, 1., max(abs(d.x), abs(d.y))))); }' }); }
   function typeMesh(lines, wM, opt){
     opt = opt || {}; var cw = 2048, ch = 0; lines.forEach(function(L){ ch += L[1] * 1.2; }); ch = Math.ceil(ch + 40);
     var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch; var g = cv.getContext('2d'), y = 20;
@@ -474,6 +522,9 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
       var front = i === 0, m = new T.MeshStandardMaterial({ map: mt, alphaTest: .5, color: Cc(front ? (opt.col || '#fff4e2') : (opt.side || '#8a5a32')), roughness: front ? .45 : .6, metalness: front ? 0 : .3,
         emissive: Cc(front ? (opt.glow || '#fff1dc') : '#000'), emissiveMap: front ? mt : null, emissiveIntensity: front ? (opt.glowK == null ? .55 : opt.glowK) : 0, side: T.DoubleSide, fog: false });
       var pl = new T.Mesh(geo, m); pl.position.z = -i * depth / layers; grp.add(pl); }
+    // a soft local shade behind the letters (owner, 1 Nov: titles on the iron lattice were hard to read): dark behind light type, pale behind dark type
+    var sh = new T.Mesh(new T.PlaneGeometry(wM * 1.5, hM * 2.5), shadeMat(opt.dark));
+    sh.position.z = -depth - wM * .02; sh.renderOrder = -1; sh.userData.shade = 1; grp.add(sh);
     grp.userData.h = hM; scene.add(grp); grp.visible = false; return grp;
   }
 
@@ -490,16 +541,17 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
   function lookShot(p0, p1, q0, q1, k){ var e = .3 * k + .7 * ease(k); cam.position.copy(lerpV(p0, p1, e)); cam.lookAt(lerpV(q0, q1, e)); return cam.position.distanceTo(lerpV(q0, q1, e)); }
   function orbit(c0, r0, r1, a0, a1, y0, y1, q, k){ var e = .3 * k + .7 * ease(k), a = mix(a0, a1, e), r = mix(r0, r1, e); cam.position.set(c0.x + Math.sin(a) * r, mix(y0, y1, e), c0.z + Math.cos(a) * r); cam.lookAt(q); return cam.position.distanceTo(q); }
   function showType(g0, t, t0, pos, face0){ var k = es(P(t, t0, t0 + .7)); g0.visible = k > 0.01; if (!g0.visible) return; g0.position.copy(pos); g0.position.y += (1 - k) * -g0.userData.h * .6;
-    g0.scale.setScalar(mix(.82, 1, k)); g0.children.forEach(function(m){ m.material.transparent = k < .99; m.material.opacity = cl(k * 1.6, 0, 1); }); }
+    g0.scale.setScalar(mix(.82, 1, k)); g0.children.forEach(function(m){ if (m.userData.shade) { m.material.uniforms.opacity.value = cl(k * 1.6, 0, 1); return; } m.material.transparent = k < .99; m.material.opacity = cl(k * 1.6, 0, 1); }); }
   var SHOTS = [
-    // 1. the hook: a crane up the Champ de Mars past a row of trees; the tower in the lower half, the hook on open sky
-    function(lt, k){ return { f: lookShot(V(-50, 4, 770), V(-38, 15, 700), V(0, 214, 0), V(0, 202, 0), k), ap: .5, fov: 50 }; },
+    // 1. the hook (owner, 1 Nov: a stronger cover): low on the lawn in the golden hour, looking up; the tower fills the frame, the tree row
+    //    frames the left edge, the hook stands on clean sky above the top; a slow crane up and in
+    function(lt, k){ return { f: lookShot(V(-40, 1.4, 420), V(-34, 7, 392), V(0, 196, 0), V(0, 190, 0), k), ap: .5, fov: 54 }; },
     // 2. 1889: at eye level among the fair's visitors, flags waving, the year standing over the crowd
     function(lt, k){ showType(TYPES.y1889, lt, .25, V(0, 15.5, 128)); lookShot(V(7.5, 2, 204), V(2, 2.8, 180), V(0, 16, 0), V(0, 24, 0), k); return { f: 34, ap: 1.5, fov: 46 }; },
     // 3. 300 m: a crane up the lattice beside a measure that grows with it
     function(lt, k){ return { f: lookShot(V(-150, 30, 150), V(-118, 300, 118), V(0, 70, 0), V(0, 290, 0), k), ap: .6, fov: 44, ruler: k }; },
     // 4. the permit: Eiffel with his paper, side-lit by the low sun; "20 years" over him; the tower's leg above
-    function(lt, k){ showType(TYPES.permit, lt, .3, V(22.25, 3.2, 103.4)); return { f: orbit(V(22, 0, 104), 4.6, 3.9, -.38, .14, 1.3, 1.7, V(22.2, 2.25, 103.7), k), ap: 2.4, fov: 42 }; },
+    function(lt, k){ showType(TYPES.permit, lt, .3, V(22.25, 3.05, 103.4)); return { f: orbit(V(22, 0, 104), 6.8, 6, -.38, .14, 1, 1.3, V(22.2, 1.5, 103.7), k), ap: 2, fov: 40 }; },
     // 5. 1909: under the arch, a wrecking ball swings in, the light dims
     function(lt, k){ showType(TYPES.y1909, lt, .35, V(-8, 62, 72)); return { f: lookShot(V(-4, 3, 168), V(3, 7, 141), V(0, 76, 0), V(6, 86, 0), k), ap: .9, fov: 46, dim: 1, crane: 1 }; },
     // 6. a new job: high over Eiffel's shoulder on the sunlit side of the top platform, Paris below; he points up and out
@@ -507,7 +559,7 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
     // 7. 1903: the army's radio operator taps his key; the camera pulls out and up to the wires running down to the Champ de Mars
     function(lt, k){ showType(TYPES.y1903, lt, .3, V(6.2, 279.8, -8.1)); return { f: lookShot(V(8.7, 278.5, -3.3), V(12.6, 280.6, .6), V(7.1, 278.1, -6.6), V(6.6, 278.3, -7.2), k), ap: 1.6, fov: 46, tap: 1, wires: 1 }; },
     // 8. the signals cross the sea: high behind the top, looking down the Champ de Mars to the south-east, rings spread out over Paris
-    function(lt, k){ showType(TYPES.bizerte, lt, .5, V(300, 150, 700)); return { f: lookShot(V(-90, 520, -230), V(-140, 600, -330), V(80, 120, 300), V(140, 60, 480), k), ap: .3, fov: 46, waves: 1, wires: 1, haze: .0003 }; },
+    function(lt, k){ showType(TYPES.bizerte, lt, .5, V(215, 190, 640)); return { f: lookShot(V(-90, 520, -230), V(-140, 600, -330), V(80, 120, 300), V(140, 60, 480), k), ap: .3, fov: 46, waves: 1, wires: 1, haze: .0003 }; },
     // 9. saved in 1910: a low sweep up the lawn to the tower in full sun
     function(lt, k){ showType(TYPES.y1910, lt, .4, V(-6, 110, 150)); return { f: lookShot(V(-34, 2.2, 370), V(-14, 34, 262), V(0, 120, 0), V(0, 150, 0), k), ap: .5, fov: 44, wires: 1 }; },
     // 10. still on air: from across the river (the gardens in front, the sun behind us), today's antennas, the waves, the payoff on the sky
@@ -607,13 +659,15 @@ const t="170",e={LEFT:0,MIDDLE:1,RIGHT:2,ROTATE:0,DOLLY:1,PAN:2},n={ROTATE:0,PAN
   Promise.all([document.fonts.load("800 44px 'Playfair Display'"), document.fonts.load("700 44px 'Playfair Display'"), document.fonts.load("700 27px 'Inter'"), document.fonts.load("800 18px 'Inter'"), document.fonts.load("600 18px 'Inter'")]).then(function(){ return document.fonts.ready; })
     .then(function(){
       var I = "'Inter',system-ui,sans-serif";
-      TYPES.y1889 = typeMesh([['1889', 520, '700'], ["WORLD'S FAIR · PARIS", 120, '600', I, 30]], 15);
-      TYPES.m300 = typeMesh([['300 m', 480, '700'], ['984 ft', 200, '600', I, 10]], 13, { col: '#4a3322', side: '#2a1c12', glowK: 0 });
-      TYPES.permit = typeMesh([['20 years', 420, '700'], ['PERMIT 1889–1909', 130, '600', I, 24]], 1.75);
-      TYPES.y1909 = typeMesh([['1909', 520, '700']], 22, { col: '#ffe6cf', side: '#6e2f24' });
-      TYPES.y1903 = typeMesh([['1903', 520, '700'], ['ARMY RADIO TESTS', 120, '600', I, 30]], 1.3, { col: '#4a3322', side: '#2a1c12', glowK: 0 });   // dark type: it stands on a bright sky
-      TYPES.bizerte = typeMesh([['1904', 420, '700'], ['PARIS → BIZERTE, TUNISIA', 120, '600', I, 24]], 250, { depth: 5 });
-      TYPES.y1910 = typeMesh([['SAVED', 150, '600', I, 60], ['1910', 520, '700']], 34);
+      // every title (owner, 1 Nov: light titles on the iron were hard to read): dark bronze type on a soft pale haze, readable on iron, city and sky
+      var DK = { col: '#3a2618', side: '#24170e', glowK: 0, dark: 1 };
+      TYPES.y1889 = typeMesh([['1889', 520, '700'], ["WORLD'S FAIR · PARIS", 120, '600', I, 30]], 15, DK);
+      TYPES.m300 = typeMesh([['300 m', 480, '700'], ['984 ft', 200, '600', I, 10]], 13, DK);
+      TYPES.permit = typeMesh([['20 years', 420, '700'], ['PERMIT 1889–1909', 130, '600', I, 24]], 1.75, DK);
+      TYPES.y1909 = typeMesh([['1909', 520, '700']], 22, DK);
+      TYPES.y1903 = typeMesh([['1903', 520, '700'], ['ARMY RADIO TESTS', 120, '600', I, 30]], 1.3, DK);
+      TYPES.bizerte = typeMesh([['Bizerte', 400, '700'], ['PARIS → TUNISIA', 120, '600', I, 30]], 200, Object.assign({ depth: 5 }, DK));   // no year: the sources disagree (1904-1907)
+      TYPES.y1910 = typeMesh([['SAVED', 150, '600', I, 60], ['1910', 520, '700']], 34, DK);
       seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 </script>
