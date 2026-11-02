@@ -22,6 +22,9 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 - Every @webin20sec reel config carries a "tip" block (title, why, code, demo, source, reel link once posted) with its live demo in
   scripts/tips/demos.mjs: it becomes an entry on the public page /tips/ (scripts/build-tips.mjs; npm run check fails if the page is stale).
   /tips/ is the only public path (src/worker.js PUBLIC): static, no data, no API calls.
+- Scheduling is the same for every channel (owner, 2 Nov 2026): each reel (scripts/explainer, scripts/channel3, techreel/topics as `showreel-tech-<slug>`)
+  gets a templates/showreels/captions.json entry with "channel" (web / tech / c3), "postOn" (the IST day it should go out, chosen when it is made,
+  e.g. a reel made the evening before for tomorrow says tomorrow) and "concept", in the push that makes it; npm run check fails without it.
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
 - Archiving (owner, 1 Nov 2026; replaces the 7-day fold / 30-day rule): a reel marked uploaded leaves the main list at once for its channel's compact
   "Posted" list (cover, title, posted date, its numbers once the collector has them; no video). 15 days after upload the nightly "Actions usage"
