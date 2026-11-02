@@ -136,7 +136,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var fixK = io(P(t, A.cover - .05, A.cover + .35));
     $('i2').style.opacity = fixK;
     // the cropped-away part (cover): a faint dashed ghost of the whole image around the box, shown while it crops
-    var s2 = Math.max(w, h), gA = fixK * win(t, A.it2, DUR - 1.3, .3) * .9 * (1 - ex);
+    var s2 = Math.max(w, h), gA = fixK * win(t, A.it2 + .25, DUR - 1.3, .3) * .9 * (1 - ex);
     var gh = $('ghost'); gh.style.left = (cx - s2 / 2) + 'px'; gh.style.top = (cy - s2 / 2) + 'px'; gh.style.width = s2 + 'px'; gh.style.height = s2 + 'px'; gh.style.opacity = gA;
     var rg = $('ring'); rg.style.left = (x - 6) + 'px'; rg.style.top = (y - 6) + 'px'; rg.style.width = (w + 12) + 'px'; rg.style.height = (h + 12) + 'px';
     rg.style.opacity = fixK * win(t, A.it2, DUR - .7, .2) * (1 - ex) * .9;
