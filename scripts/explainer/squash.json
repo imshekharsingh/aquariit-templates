@@ -1,0 +1,56 @@
+{
+ "name": "showreel-22-squash",
+ "seek": "scripts/explainer/squash.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why do your photos look squashed? By default, your image fills its box exactly. When the box changes shape, the picture stretches with it. The fix: object fit, cover. It fills the box and crops the edges, so nothing stretches.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.7,
+   0.85,
+   0.75
+  ]
+ },
+ "caption": "Why do your photos look squashed? 📸\n\nAn <img> is object-fit: fill by default: it fills its box exactly, so when the box has a different shape from the photo (a wide banner, a tall card on a phone), the picture is stretched to match. Add object-fit: cover and the image keeps its own shape: it still fills the whole box, and the edges that don't fit are cropped instead. Pick which part stays in view with object-position (center by default). Works in every major browser.\nSave it for your next card grid, or send it to whoever builds your site.",
+ "keywords": [
+  "object-fit cover",
+  "stretched images CSS",
+  "image squashed in div",
+  "object-fit vs fill",
+  "responsive images",
+  "CSS image tips"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#css",
+  "#webdesign",
+  "#frontenddev",
+  "#responsivedesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/object-fit",
+   "note": "MDN object-fit: fill is the initial value; the image fills the content box and is stretched when its aspect ratio differs; cover keeps the aspect ratio while filling the box and clips what doesn't fit"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/properties/object-fit.json",
+   "note": "object-fit: Chrome 32, Edge 79, Firefox 36, Safari 10 (iOS mirrors)"
+  }
+ ],
+ "tip": {
+  "title": "Why do your photos look squashed?",
+  "why": "An <img> is object-fit: fill by default (MDN: the initial value), so it fills its box exactly and is stretched whenever the box has a different shape from the photo. object-fit: cover keeps the photo's own ratio, still fills the box, and crops the edges that don't fit; object-position picks which part stays in view.",
+  "code": "img {\n  object-fit: cover;\n}",
+  "demo": "squash",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/object-fit",
+   "label": "MDN, object-fit"
+  }
+ }
+}

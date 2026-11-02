@@ -112,6 +112,23 @@ export const demos = {
 <p class="note">Open this on a phone and tap both buttons: the left one can stay lit after your finger lifts, until you tap somewhere else; the right one only presses. With a mouse both light up on hover.</p>`,
     js: `function(){}`,
   },
+  squash: {
+    css: `
+#squash .pane{height:190px}
+#squash .ph{position:absolute;left:10px;top:40px;width:calc(100% - 20px);height:140px;border-radius:12px;display:block;transition:width .5s,height .5s,left .5s}
+#squash .wide .ph{height:70px;top:75px}
+#squash .tall .ph{width:70px;left:calc(50% - 35px)}
+#squash .fit{object-fit:cover}
+#squash .go{margin-top:10px;width:100%;min-height:44px;border-radius:22px;border:1.5px solid #f2efe8;background:transparent;color:#f2efe8;font:700 15px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">object-fit: fill (default)</span><img class="ph" alt="A round cat face" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' preserveAspectRatio='none'%3E%3Crect width='200' height='200' fill='%238fd3c8'/%3E%3Crect y='160' width='200' height='40' fill='%23d9b77a'/%3E%3Ccircle cx='100' cy='102' r='56' fill='%23f0a24b'/%3E%3Ccircle cx='78' cy='98' r='8' fill='%231f2328'/%3E%3Ccircle cx='122' cy='98' r='8' fill='%231f2328'/%3E%3Cellipse cx='100' cy='130' rx='30' ry='20' fill='%23fbe3c8'/%3E%3C/svg%3E"></div>
+  <div class="pane fix"><span class="tag ok">object-fit: cover</span><img class="ph fit" alt="A round cat face" src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' preserveAspectRatio='none'%3E%3Crect width='200' height='200' fill='%238fd3c8'/%3E%3Crect y='160' width='200' height='40' fill='%23d9b77a'/%3E%3Ccircle cx='100' cy='102' r='56' fill='%23f0a24b'/%3E%3Ccircle cx='78' cy='98' r='8' fill='%231f2328'/%3E%3Ccircle cx='122' cy='98' r='8' fill='%231f2328'/%3E%3Cellipse cx='100' cy='130' rx='30' ry='20' fill='%23fbe3c8'/%3E%3C/svg%3E"></div>
+</div>
+<button class="go" type="button">Change the box shape</button>
+<p class="note">Tap the button: both boxes go wide, then tall. The left photo stretches to match the box; the right one keeps its shape and crops the edges.</p>`,
+    js: `function(root){ var i = 0, k = ['', 'wide', 'tall']; root.querySelector('.go').addEventListener('click', function(){ i = (i + 1) % 3; root.querySelectorAll('.pane').forEach(function(p){ p.classList.remove('wide', 'tall'); if (k[i]) p.classList.add(k[i]); }); }); }`,
+  },
   dvh: {
     css: `
 #dvh .pane{height:110px;display:flex;align-items:flex-end;padding:10px}
