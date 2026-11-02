@@ -428,6 +428,25 @@
    "#webdesign"
   ]
  },
+ "showreel-22-squash": {
+  "postOn": "2026-11-03",
+  "caption": "Why do your photos look squashed? 📸\n\nAn <img> is object-fit: fill by default: it fills its box exactly, so when the box has a different shape from the photo (a wide banner, a tall card on a phone), the picture is stretched to match. Add object-fit: cover and the image keeps its own shape: it still fills the whole box, and the edges that don't fit are cropped instead. Pick which part stays in view with object-position (center by default). Works in every major browser.\nSave it for your next card grid, or send it to whoever builds your site.",
+  "keywords": [
+   "object-fit cover",
+   "stretched images CSS",
+   "image squashed in div",
+   "object-fit vs fill",
+   "responsive images",
+   "CSS image tips"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#webdesign",
+   "#frontenddev",
+   "#responsivedesign"
+  ]
+ },
  "showreel-t01-passkeys": {
   "hidden": true
  }

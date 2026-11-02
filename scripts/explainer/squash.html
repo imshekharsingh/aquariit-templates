@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why do your photos look squashed?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 12, an image tip: "Why do your photos look squashed?"
+   An <img> is object-fit: fill by default (MDN: the initial value; the image fills the box and is stretched when the ratios differ).
+   object-fit: cover keeps the image's ratio and clips it to the box. The photo here is a real <img> with the real property:
+   one with fill, one with cover, cross-faded on the fix; the box changes shape (a card on a phone, then a wide banner) so the
+   stretch is seen in motion. Beats and captions lead the voice by 0.15 s; the title holds until it is complete and the cover
+   is that moment (window.COVER); every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--rule:#33343c;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:166px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:226px;font-weight:800;font-size:76px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--red)}
+/* the photo box: a real <img> with object-fit fill, the same with cover on top, and the cropped-away part as a faint ghost */
+#stage{left:0;top:0;width:540px;height:960px;pointer-events:none}
+#ghost{position:absolute;opacity:0;border:2px dashed var(--dim);border-radius:6px;overflow:hidden}
+#ghost img{width:100%;height:100%;display:block;opacity:.22}
+#box{position:absolute;border-radius:22px;overflow:hidden;background:#2a2b31;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+#box img{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+#i1{object-fit:fill}#i2{object-fit:cover}
+#ring{position:absolute;border:3px solid var(--acc);border-radius:26px}
+#dimw,#dimh{position:absolute;font:700 13px/1 var(--m);letter-spacing:.08em;color:var(--dim);white-space:nowrap}
+#cd{left:110px;width:320px;top:300px;padding:22px 24px;border-radius:20px;background:var(--surface);font:500 30px/1.4 var(--m);white-space:pre;color:var(--paper);box-shadow:0 30px 60px rgba(0,0,0,.5)}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#cap{left:36px;right:36px;top:700px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 12 · IMAGES</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>do</span> <span>your</span></span><span class="ln"><span>photos</span> <span>look</span></span><span class="ln"><span class="acc">squashed?</span></span></div>
+<div id="stage" class="a">
+  <div id="ghost"><img id="i0" alt=""></div>
+  <div id="box"><img id="i1" alt=""><img id="i2" alt=""></div>
+  <div id="ring"></div>
+  <div id="dimw"></div><div id="dimh"></div>
+</div>
+<div id="cd" class="a"></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  // the photo: a square portrait of a round-faced cat (drawn in SVG), so any stretch shows at once
+  var CAT = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd3c8"/><stop offset="1" stop-color="#f1dca4"/></linearGradient></defs>' +
+    '<rect width="400" height="400" fill="url(#g)"/><circle cx="330" cy="70" r="34" fill="#fff4d6" opacity=".9"/><rect y="318" width="400" height="82" fill="#d9b77a"/><rect y="318" width="400" height="8" fill="#c79f5e"/>' +
+    '<path d="M108 150 L120 66 L178 118 Z M292 150 L280 66 L222 118 Z" fill="#e58f3c"/><path d="M122 132 L128 90 L160 118 Z M278 132 L272 90 L240 118 Z" fill="#f7c9a8"/>' +
+    '<circle cx="200" cy="205" r="112" fill="#f0a24b"/><path d="M200 93 C186 120 186 140 200 150 C214 140 214 120 200 93 Z" fill="#e58f3c"/>' +
+    '<ellipse cx="200" cy="262" rx="62" ry="44" fill="#fbe3c8"/><ellipse cx="156" cy="196" rx="15" ry="20" fill="#1f2328"/><ellipse cx="244" cy="196" rx="15" ry="20" fill="#1f2328"/>' +
+    '<circle cx="161" cy="189" r="5" fill="#fff"/><circle cx="249" cy="189" r="5" fill="#fff"/><path d="M188 238 L212 238 L200 252 Z" fill="#e56b7a"/>' +
+    '<path d="M200 252 Q200 268 186 270 M200 252 Q200 268 214 270" stroke="#1f2328" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+    '<path d="M120 246 L60 236 M120 258 L58 264 M280 246 L340 236 M280 258 L342 264" stroke="#fff8ee" stroke-width="4" stroke-linecap="round"/>' +
+    '<circle cx="132" cy="236" r="14" fill="#f58f7a" opacity=".45"/><circle cx="268" cy="236" r="14" fill="#f58f7a" opacity=".45"/></svg>';
+  var SRC = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(CAT);
+  ['i0', 'i1', 'i2'].forEach(function(id){ $(id).src = SRC; });
+  var TEXT = "Why do your photos look squashed? By default, your image fills its box exactly. When the box changes shape, the picture stretches with it. The fix: object fit, cover. It fills the box and crops the edges, so nothing stretches.";
+  var WORDS = [], DUR = 20, LEAD = .15, HOOK_N = 6;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { by: at('by'), fills: at('fills'), exactly: at('exactly'), when: at('when'), changes: at('changes'), picture: at('picture'), stretches: at('stretches'),
+      fix: at('fix'), object: at('object'), cover: at('cover'), it2: at('it', 2), crops: at('crops'), edges: at('edges'), nothing: at('nothing'), stretches2: at('stretches', 2) };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.by - .3, A.hookIn + .35);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  // the box's shape over time: a wide banner in the hook (already squashed), square while "fills its box exactly",
+  // then wide → tall → wide as "the box changes shape"; after the fix the same wide → tall → wide again, now with cover
+  var SQ = [300, 300], WIDE = [468, 214], TALL = [236, 384];
+  function lerp2(a, b, k){ return [mix(a[0], b[0], k), mix(a[1], b[1], k)]; }
+  function shape(t){
+    var s = WIDE;
+    s = lerp2(s, SQ, io(P(t, A.leave, A.leave + .6)));
+    s = lerp2(s, WIDE, io(P(t, A.changes - .1, A.changes + .55)));
+    s = lerp2(s, TALL, io(P(t, A.stretches - .25, A.stretches + .45)));
+    s = lerp2(s, WIDE, io(P(t, A.stretches + .9, A.fix - .3)));
+    s = lerp2(s, TALL, io(P(t, A.crops - .2, A.crops + .45)));
+    s = lerp2(s, WIDE, io(P(t, A.nothing - .3, A.nothing + .35)));
+    s = lerp2(s, SQ, io(P(t, DUR - 1.9, DUR - 1.1)));
+    return s;
+  }
+  var CODE = '<span class="dim">img {</span>\n  object-fit:\n    <b>cover</b>;\n<span class="dim">}</span>';
+  var CODE_TXT = CODE.replace(/<[^>]+>/g, '');
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function ratio(w, h){ return w >= h ? (w / h).toFixed(1) + ':1' : '1:' + (h / w).toFixed(1); }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    var gone = io(P(t, A.leave, A.leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the box: under the title in the hook (with a slow breathing squash), then centred in the stage ----
+    var sh = shape(t), rise = io(P(t, A.leave + .1, A.leave + .6));
+    var breathe = (1 - rise) * Math.sin(t * 2.2) * 26;
+    var w = sh[0] + breathe, h = sh[1] - breathe * .45;
+    var cx = 270, cy = mix(624, 440, rise);
+    // the fix: in the code beat the box steps back; on "cover" the cover image fades in over the fill one
+    var codeOn = win(t, A.fix - .1, A.it2 - .1, .2), back = codeOn;
+    var sc = 1 - .12 * back, x = cx - w / 2, y = cy - h / 2;
+    var box = $('box'), stA = out(P(t, 0, .3)) * (1 - ex) * (1 - .75 * back);
+    box.style.left = x + 'px'; box.style.top = y + 'px'; box.style.width = w + 'px'; box.style.height = h + 'px';
+    box.style.opacity = stA; box.style.transform = 'scale(' + sc + ')';
+    var fixK = io(P(t, A.cover - .05, A.cover + .35));
+    $('i2').style.opacity = fixK;
+    // the cropped-away part (cover): a faint dashed ghost of the whole image around the box, shown while it crops
+    var s2 = Math.max(w, h), gA = fixK * win(t, A.it2, DUR - 1.3, .3) * .9 * (1 - ex);
+    var gh = $('ghost'); gh.style.left = (cx - s2 / 2) + 'px'; gh.style.top = (cy - s2 / 2) + 'px'; gh.style.width = s2 + 'px'; gh.style.height = s2 + 'px'; gh.style.opacity = gA;
+    var rg = $('ring'); rg.style.left = (x - 6) + 'px'; rg.style.top = (y - 6) + 'px'; rg.style.width = (w + 12) + 'px'; rg.style.height = (h + 12) + 'px';
+    rg.style.opacity = fixK * win(t, A.it2, DUR - .7, .2) * (1 - ex) * .9;
+    // the box's size, as on a page (2x CSS pixels)
+    var dA = rise * (1 - back) * (1 - ex) * (1 - fixK);
+    var dw = $('dimw'); dw.textContent = Math.round(w * 2) + ' PX'; dw.style.left = (cx - 40) + 'px'; dw.style.top = (y - 26) + 'px'; dw.style.opacity = dA * (1 - gA);
+    var dh = $('dimh'); dh.textContent = Math.round(h * 2) + ' PX'; dh.style.left = (x + w + 12) + 'px'; dh.style.top = (cy - 6) + 'px'; dh.style.opacity = dA * (1 - gA) * (w < 420 ? 1 : 0);
+    // ---- the code ----
+    var cd = $('cd'), cin = out(P(t, A.fix - .1, A.fix + .3));
+    cd.style.opacity = codeOn; cd.style.transform = 'translateY(' + (1 - cin) * 20 + 'px)';
+    var n = Math.floor(5 + (CODE_TXT.length - 5) * P(t, A.fix + .15, A.cover + .1));
+    cd.innerHTML = typed(CODE, n);
+    // ---- HUD and tag ----
+    var stretch = fixK > .5 ? 1 : Math.max(w / h, h / w), Hd;
+    if (t < A.leave + .2) Hd = 'PHOTO · <b class="r">SQUASHED</b>';
+    else if (t < A.fix - .2) Hd = 'PHOTO <b>1:1</b> · BOX <b class="' + (stretch > 1.08 ? 'r' : '') + '">' + ratio(w, h) + '</b>';
+    else if (t < A.it2 - .2) Hd = 'CSS <b>1 LINE</b>';
+    else Hd = 'PHOTO · <b class="y">NEVER STRETCHED</b>';
+    $('hud').innerHTML = Hd; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.changes - .2 ? 'OBJECT-FIT: FILL · THE DEFAULT' : t < A.fix - .2 ? 'FILL STRETCHES TO THE BOX' : t < A.it2 - .2 ? 'THE FIX' : 'COVER · CROPS, NEVER STRETCHES';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)
+      ph0.forEach(function(j){ var w2 = WORDS[j], on = t >= w2.s - LEAD, k = out(P(t, w2.s - LEAD, w2.s - LEAD + .2)), aft = w2.s >= A.fix;
+        var col2 = aft && /^(object|fit|cover|crops)/i.test(w2.d) ? 'var(--acc)' : !aft && /^(stretches|changes)/i.test(w2.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col2 + '">' + w2.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
+    Q.push({ t: A.changes - .1, k: 'swish', d: .5, g: .35, p: -.3 }, { t: A.stretches - .25, k: 'swish', d: .5, g: .35, p: .3 }, { t: A.stretches + .2, k: 'thud', g: .35 });
+    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
+    for (var c = 0, t0 = A.fix + .15, t1 = A.cover + .1; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.cover, k: 'tap', g: .5, p: 6 }, { t: A.crops - .2, k: 'swish', d: .5, g: .35, p: -.2 }, { t: A.nothing - .3, k: 'swish', d: .5, g: .35, p: .2 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
