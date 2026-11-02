@@ -1,0 +1,140 @@
+{
+ "slug": "offline-find",
+ "topic": "Find My",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.95,
+ "max_speed": 1.0,
+ "dur": 20,
+ "max_end": 19.4,
+ "say": {},
+ "hook": [
+  "How does an",
+  "offline phone",
+  "get found?"
+ ],
+ "lines": [
+  {
+   "text": "How does an offline phone get found?"
+  },
+  {
+   "text": "Your lost phone beams a key over Bluetooth.",
+   "scene": {
+    "label": "STEP 1: IT BEAMS A KEY",
+    "tint": "purple",
+    "kind": "nest",
+    "params": {
+     "outer": {"title": "Your lost phone", "sub": "no Wi-Fi, no signal", "icon": "chip"},
+     "inner": {"title": "Beams a key", "sub": "over Bluetooth", "icon": "key"},
+     "inner_cue": "beams"
+    }
+   }
+  },
+  {
+   "text": "A stranger's iPhone nearby picks it up.",
+   "scene": {
+    "label": "STEP 2: SOMEONE HEARS IT",
+    "tint": "blue",
+    "kind": "flow",
+    "params": {
+     "sources": ["Lost phone"],
+     "source_tint": "purple",
+     "hub": {"label": "BLUETOOTH", "tag": "NEARBY", "icon": "key"},
+     "target": {"icon": "user", "label": "Passing iPhone"},
+     "target_tint": "blue",
+     "hub_cue": "iPhone"
+    }
+   }
+  },
+  {
+   "text": "It locks its own location with that key.",
+   "scene": {
+    "label": "STEP 3: LOCKED FOR YOU",
+    "tint": "amber",
+    "kind": "portal",
+    "params": {
+     "icon": "lock",
+     "pills": ["Its location", "Your key"],
+     "guest": "key",
+     "guest_tint": "purple",
+     "n": 1,
+     "open": "locks"
+    }
+   }
+  },
+  {
+   "text": "It goes to Apple, who can't read it.",
+   "scene": {
+    "label": "STEP 4: SENT SEALED",
+    "tint": "blue",
+    "kind": "guard",
+    "params": {
+     "object": {"icon": "doc", "label": "Your location"},
+     "attacker": "eye",
+     "stop_cue": "can't",
+     "badge": "APPLE CAN'T READ IT"
+    }
+   }
+  },
+  {
+   "text": "Only you hold the key that opens it.",
+   "scene": {
+    "label": "STEP 5: ONLY YOU",
+    "tint": "green",
+    "kind": "flow",
+    "params": {
+     "sources": ["Location", "Your key"],
+     "source_tint": "purple",
+     "hub": {"label": "UNLOCK", "tag": "ONLY YOU", "icon": "key"},
+     "target": {"icon": "user", "label": "On your map"},
+     "target_tint": "green",
+     "hub_cue": "key"
+    }
+   }
+  },
+  {
+   "text": "Turn on Find My network. It even works when off.",
+   "scene": {
+    "label": "DO THIS",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {"text": "Find My network: on", "cue": "turn"},
+      {"text": "Even works when off", "cue": "even"}
+     ]
+    }
+   },
+   "chunks": [5, 5]
+  }
+ ],
+ "post": {
+  "title": "How does an offline phone get found?",
+  "caption": "How does an offline phone get found? 📍\n\nA lost iPhone with no Wi-Fi or cellular keeps broadcasting a public key over Bluetooth, and swaps it for a new one about every 15 minutes so no one can follow it. Any Apple device that passes by hears it, encrypts its own location with that key and sends it to iCloud. Apple can't read the location and doesn't know who found whose device: only your devices hold the private key that opens it and puts the pin on your map. It even works for up to 24 hours after the phone is turned off or its battery runs low.\nSave this, and check that Find My network is on in Settings before you ever need it.",
+  "keywords": [
+   "how does find my work offline",
+   "find my network explained",
+   "find a lost iphone that is off",
+   "offline finding bluetooth",
+   "lost phone tips",
+   "phone security"
+  ],
+  "hashtags": [
+   "#findmy",
+   "#iphonetips",
+   "#lostphone",
+   "#techexplained",
+   "#bluetooth"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/guide/security/find-my-security-sec6cbc80fd0/web",
+    "note": "Apple Platform Security, Find My: a missing device broadcasts a derived public key in a Bluetooth payload, replaced about every 15 minutes; nearby finder devices encrypt their location to that public key and relay it to iCloud; only the owner can decrypt; Apple doesn't know who the finder is or whose device was found"
+   },
+   {
+    "url": "https://www.apple.com/icloud/find-my/",
+    "note": "Apple, Find My: find devices that are offline or powered off through the Find My network (over a billion devices); nearby devices securely send the location to iCloud, anonymous and encrypted; iPhone can send its location for up to 24 hours after being turned off or on low battery"
+   }
+  ]
+ }
+}
