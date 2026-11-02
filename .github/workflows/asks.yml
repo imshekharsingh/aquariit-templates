@@ -1,17 +1,17 @@
 name: Owner answers
 
 # The app's "Needs you" list (owner, 1 Nov 2026). A Claude session dispatches this to read the owner's replies (action read: prints
-# "ANSWER <id> ..." lines), add questions (add) or clear replies it has acted on (clear). Format in scripts/asks.mjs. A few seconds.
+# "ANSWER <id> ..." lines), add questions (add), clear replies it has acted on (clear) or mark reels uploaded (mark). Format in scripts/asks.mjs. A few seconds.
 on:
   workflow_dispatch:
     inputs:
       action:
         description: read, add or clear
         type: choice
-        options: [read, add, clear]
+        options: [read, add, clear, mark]
         default: read
       asks:
-        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"]'
+        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"] · mark: {"showreel-x":"ISO time"}'
         type: string
         required: false
 

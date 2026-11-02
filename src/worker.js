@@ -392,7 +392,7 @@ async function sparePush(env) {   // the cron runs daily at 15:30 UTC (21:00 IST
 }
 
 // ---- Reel-uploaded tracking in D1 (binding "DB"). Without the binding the API answers 501 and the pages fall back to localStorage. ----
-const ID_RE = /^\d{4}-\d{2}-\d{2}(-\d{4})?$/;
+const ID_RE = /^(\d{4}-\d{2}-\d{2}(-\d{4})?|showreel-[a-z0-9-]{1,60})$/;   // old template dates and showreels (the import is also how a Claude run marks reels the owner says are posted)
 const jsonHeaders = { 'Content-Type': 'application/json', ...noStore };
 const jres = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: jsonHeaders });
 let tableReady = null;
