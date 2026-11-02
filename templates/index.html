@@ -420,6 +420,8 @@
     if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No reels for ' + CH[ch].name + ' yet.')); return; }
     // to post (by date) in the main list; a reel marked uploaded leaves it at once for the compact "Posted" list (owner, 1 Nov 2026)
     var todo = items.filter(function(s){ return !ticks[s.name] && s.video; }), done = items.filter(function(s){ return ticks[s.name]; });
+    // @techin20sec reels are made the morning they post and have no captions.json entry: their posting day is the day they were made (owner, 2 Nov 2026)
+    todo.forEach(function(s){ if (ch === 'tech' && s.at && !(c[s.name] && c[s.name].postOn)) c[s.name] = Object.assign({}, c[s.name], { postOn: istDay(s.at) }); });
     todo.sort(function(x, y){ var px = (c[x.name] || {}).postOn || '9999', py = (c[y.name] || {}).postOn || '9999'; if (px !== py) return px < py ? -1 : 1; var cx = (c[x.name] || {}).concept || '', cy = (c[y.name] || {}).concept || ''; return cx < cy ? -1 : cx > cy ? 1 : 0; });   // unscheduled pilots in concept order
     done.sort(function(x, y){ return ticks[x.name] < ticks[y.name] ? 1 : -1; });
     if (!todo.length) list.appendChild(el('p', 'empty', 'Nothing to post for ' + CH[ch].name + ' right now.'));
