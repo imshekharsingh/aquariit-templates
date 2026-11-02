@@ -68,9 +68,10 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 - Promise: "The true story behind something everyone knows." Plan, never-list, fact rules and the pattern library: design/channel3.md.
   Instagram **@itturns.out**, display name **Turns Out**, bio "True stories behind things everyone knows. Sources in the comments."
   Posts 3 times a week (Mon, Wed, Fri) 21:00-22:00 IST (owner, 1 Nov 2026); launched Sun 1 Nov with the 2.5D Eiffel reel (showreel-c3-eiffel-flow), next reel Wed 4 Nov.
-  Going daily (owner, 1 Nov 2026): the Wed 4 Nov reel is the test. If its session costs about $4 or less at the same quality, Turns Out posts daily from
-  Mon 9 Nov in its own small fresh session each day (separate from the daily studio run); if not, cut the cost first (reusable story layouts, less
-  bespoke art per reel), then go daily. Logo: design/brand/accounts/turnsout-logo.svg (an amber arrow turning round a dark ring, TURNS OUT inside; the family look of the other two).
+  Going daily: the cost test passed (Mon 2 Nov blue-sky reel, $4.08 of session usage, same quality), so Turns Out posts DAILY from Mon 9 Nov
+  (until then Mon/Wed/Fri). A scheduled task ("Turns Out daily reel", ~14:39 IST) asks the studio launcher to start a fresh session on posting days
+  that builds THAT day's reel for 21:00 IST: new globally known true story, 2.5D kit, lean (one stills sheet, one render, no subagents, about $4),
+  captions.json postOn = that day, and a "note" card in the app when it is ready. Logo: design/brand/accounts/turnsout-logo.svg (an amber arrow turning round a dark ring, TURNS OUT inside; the family look of the other two).
   The app's "Turns Out" tab has the profile card and the reels. Internal ids stay `c3` (scripts/channel3/, `showreel-c3-*`, `"channel": "c3"`).
 - Fixed Cell and the fictional pilots (rivals, pick-one, velmora and the silent first set) are retired: hidden, scenes in attic/.
 - Topics: general knowledge, recognisable on every continent (4+ continents a week), simple English, metric + imperial, universal dates.
