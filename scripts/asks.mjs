@@ -4,15 +4,18 @@
 //   read:  prints every reply waiting for Claude, one line each: ANSWER <id> <answered_at> <answer> | Q: <question>; and the open count
 //   add:   ASKS = [{ "id": "tech-bio", "question": "plain English", "why": "why it matters", "kind": "yesno" | "done" | "text", "channel": "web"|"tech"|"c3" }]
 //   clear: ASKS = ["tech-bio", ...] (after acting on the replies; removes them for good)
+//   mark:  ASKS = {"showreel-19-numbers": "2026-10-31T07:51:00Z", ...} marks reels uploaded at their real post time (an answer such as
+//          "these are already on Instagram"); a reel already marked keeps its own time (POST /api/uploaded/import, insert-or-ignore)
 // Usage: node scripts/asks.mjs
 const SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, ''), ACTION = process.env.ACTION || 'read';
 const die = (m) => { console.error('✗ ' + m); process.exit(1); };
 let items = [];
-if (ACTION !== 'read') { try { items = JSON.parse(process.env.ASKS || '[]'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); } if (!Array.isArray(items) || !items.length) die('ASKS must be a non-empty list'); }
+if (ACTION !== 'read') { try { items = JSON.parse(process.env.ASKS || '[]'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); } if (ACTION !== 'mark' && (!Array.isArray(items) || !items.length)) die('ASKS must be a non-empty list'); }
+if (ACTION === 'mark') { if (!items || Array.isArray(items) || typeof items !== 'object' || !Object.keys(items).length) die('mark: ASKS is {"showreel-...": "ISO time"}'); for (const [id, at] of Object.entries(items)) if (!/^showreel-[a-z0-9-]{1,60}$/.test(id) || isNaN(Date.parse(at))) die(`mark: bad entry ${id}`); }
 const ID = /^[a-z0-9-]{1,60}$/;
 if (ACTION === 'add') for (const a of items) { if (!a || !ID.test(a.id || '') || !a.question) die('each item needs an id (lowercase, dashes) and a question'); if (a.kind && !['yesno', 'done', 'text'].includes(a.kind)) die('kind is yesno, done or text'); }
 if (ACTION === 'clear') for (const id of items) if (!ID.test(String(id))) die(`bad id ${id}`);
-if (!['read', 'add', 'clear'].includes(ACTION)) die('ACTION is read, add or clear');
+if (!['read', 'add', 'clear', 'mark'].includes(ACTION)) die('ACTION is read, add, clear or mark');
 const U = process.env.BASIC_AUTH_USER, P = process.env.BASIC_AUTH_PASS;
 if (!U || !P) die('BASIC_AUTH_USER / BASIC_AUTH_PASS are missing');
 const login = await fetch(SITE + '/login', { method: 'POST', redirect: 'manual', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ username: U, password: P }) });
@@ -32,4 +35,8 @@ if (ACTION === 'add') for (const a of items) {
 if (ACTION === 'clear') for (const id of items) {
   const r = await fetch(`${SITE}/api/asks/${id}`, { method: 'DELETE', headers: H });
   if (!r.ok) die(`could not clear ${id} (HTTP ${r.status})`); console.log(`✓ cleared ${id}`);
+}
+if (ACTION === 'mark') {
+  const r = await fetch(SITE + '/api/uploaded/import', { method: 'POST', headers: H, body: JSON.stringify({ ids: items }) });
+  if (!r.ok) die(`could not mark the reels (HTTP ${r.status})`); console.log(`✓ marked uploaded (already-marked reels keep their time): ${Object.keys(items).join(', ')}`);
 }
