@@ -146,6 +146,10 @@ it in (the same command inlines kit3d.js), npm run check fails on a stale copy. 
   by size on screen (the tower's diamonds subdivide as the camera closes in). `Kt.paperTex(seed)` once at load, laid over each frame
   with 'multiply' (fibres, mottling, specks, warm vignette; static, so it is paper, not a second grain; the render's grain 4 stays).
 - **Scenery** `Kt.city(Z, seed, tone, { h, domes, dark })` an endless row of Paris blocks; `Kt.tree(x, h, seed, tone, ink)`.
+  `Kt.ridge(seed, H, tone, ink, hatch, { deep, grass })` an endless engraved ridge (paler, bluer tones further back read as distance;
+  `deep` fills a near meadow to the frame's bottom, `grass` inks blades along the crest: no flat ground). `Kt.wave(x0, y0, x1, y1, lam,
+  amp, phase, col, lw)` a light wave as an engraved sine line that straightens once a wavelength is under ~8 px. `Kt.rings(..., r0)`
+  takes a start radius (0.06 m: light scattering off a molecule) (added 2 Nov, the sky reel).
 - **People** `Kt.person({ h, coat, trousers, skin, hair, beard, stache, hat: 'top'|'bowler'|'kepi'|'lady', dress, parasol, sit, arms: [[hx, hy],
   [hx, hy]], phones, buttons, chain, belt, long, detail })`: clean illustrated figures in metres (feet at 0, facing +x), hands placed by a
   two-bone reach, one eye dot and no other facial detail, recognised by props; scale them with the canvas (outlines stay in px).
@@ -223,6 +227,7 @@ consecutive days, and no more than 3 of one pattern in a week. Spread continents
 |---|---|---|---|
 | showreel-c3-eiffel-saved (scripts/channel3/eiffel-saved.html) | Why the Eiffel Tower was almost torn down: the pilot's facts and voice, ten 3D shots | 34.4 s | 30 fps, one job: 41 GitHub minutes (capture 38.5 min, about 2.2 s a frame; 1.3x the local time). Rendered and checked 1 Nov, posts Mon 2 Nov. Polish pass the same day (miniature figures, titles on a soft haze, a closer cover, Bizerte re-checked), re-rendered in place. Second pass the same day on the 3D toolkit (clay figures, matte title plates, real trees, a Haussmann city), re-rendered in place split in 2 parts |
 | showreel-c3-eiffel-flow (scripts/channel3/eiffel-flow.html) | The same story, voice and sources in 2.5D (engraved layers, one continuous camera, no cuts), made 1 Nov to compare with the 3D version for that night's post | 34.4 s | 30 fps, parts 1 (2D canvas) |
+| showreel-c3-blue-flow (scripts/channel3/blue-flow.html) | Why is the sky blue, and not violet? (scattering; the turn: less violet in sunlight, eyes see blue better) | 31.3 s | 30 fps, parts 1. Made 2 Nov for that night; the cost test for going daily |
 The flat 2D Eiffel pilot and the 3-second 3D test are in attic/scripts/channel3/.
 Learned from its render (fix in the shared core before the next 3D reel): at a cut the caption card stays up empty for about 0.2 s
 while it changes shape (seen at 3 cuts); the voice check counts a year as four words, so its "too dense" pacing flag misreads

@@ -1,0 +1,62 @@
+{
+ "name": "showreel-c3-blue-flow",
+ "seek": "scripts/channel3/blue-flow.html",
+ "dur": 31.3,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Why is the sky blue? Sunlight carries every colour of the rainbow. In the air, it hits tiny molecules of nitrogen and oxygen. They scatter short blue waves all over the sky. Long red waves mostly pass straight through. But violet waves are even shorter, and scatter even more. So why isn't the sky violet? The Sun sends less violet, and our eyes see blue much better. There is violet up there. Your eyes just see blue.",
+  "at": [
+   0,
+   2.11,
+   5.41,
+   9.3,
+   12.6,
+   15.88,
+   19.77,
+   21.87,
+   26.01,
+   27.88
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "Violet light scatters even more than blue. So why isn't the sky violet? Two reasons, and one of them is your own eyes. 👁️💙\n\nSave this for the next time someone asks. Which everyday thing should we explain next? 👇",
+ "keywords": [
+  "why is the sky blue",
+  "why isn't the sky violet",
+  "Rayleigh scattering explained",
+  "sky colour science",
+  "light scattering",
+  "physics explained"
+ ],
+ "hashtags": [
+  "#whyistheskyblue",
+  "#rayleighscattering",
+  "#lightscattering",
+  "#physicsexplained",
+  "#sciencefacts"
+ ],
+ "sources": [
+  {
+   "title": "Why is the sky blue? (NASA Space Place)",
+   "url": "https://spaceplace.nasa.gov/blue-sky/en/"
+  },
+  {
+   "title": "Why is the sky blue? (NOAA NESDIS)",
+   "url": "https://www.nesdis.noaa.gov/about/k-12-education/atmosphere/why-the-sky-blue"
+  },
+  {
+   "title": "Why is the sky blue? (Met Office)",
+   "url": "https://weather.metoffice.gov.uk/learn-about/weather/optical-effects/why-is-the-sky-blue"
+  },
+  {
+   "title": "Why is the sky blue? (US National Weather Service, Flagstaff)",
+   "url": "https://www.weather.gov/fgz/SkyBlue"
+  },
+  {
+   "title": "Why is the sky blue? (Physics FAQ, UC Riverside)",
+   "url": "https://math.ucr.edu/home/baez/physics/General/BlueSky/blue_sky.html"
+  }
+ ]
+}
