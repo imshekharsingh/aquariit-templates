@@ -57,6 +57,15 @@ const postText = (j, label) => {
 const caps = existsSync(join(T, 'showreels', 'captions.json')) ? readJSON(join(T, 'showreels', 'captions.json'), 'templates/showreels/captions.json') : null;
 if (caps) for (const [name, j] of Object.entries(caps)) postText(j, `captions.json ${name}`);
 
+// 4b. every reel of every channel is scheduled the same way (owner, 2 Nov 2026): a captions.json entry with "channel" and "postOn" (or "hidden"), added in the push that makes the reel
+if (caps) {
+  const need = [];
+  for (const dir of ['scripts/explainer', 'scripts/channel3']) { const D = join(root, dir); for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.json')) : []) { try { const n = JSON.parse(readFileSync(join(D, f), 'utf8')).name; if (n) need.push([n, `${dir}/${f}`]); } catch {} } }
+  const TD = join(root, 'techreel', 'topics');
+  for (const f of existsSync(TD) ? readdirSync(TD).filter((x) => x.endsWith('.json')) : []) { try { const s = JSON.parse(readFileSync(join(TD, f), 'utf8')).slug; if (s) need.push(['showreel-tech-' + s, `techreel/topics/${f}`]); } catch {} }
+  for (const [n, from] of need) { const e = caps[n]; if (!e || (!e.hidden && (!e.postOn || !e.channel))) err(`${from}: add "${n}" to templates/showreels/captions.json with "channel" and "postOn" (YYYY-MM-DD IST), or "hidden": true`); }
+}
+
 // 5. reel configs: a showreel name, a scene that exists, and post text
 for (const dir of ['scripts/explainer', 'scripts/showreel', 'scripts/channel3']) {
   const D = join(root, dir);

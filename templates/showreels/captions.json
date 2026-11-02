@@ -18,7 +18,8 @@
    "#creativedeveloper",
    "#interactivedesign"
   ],
-  "hidden": true
+  "hidden": true,
+  "channel": "web"
  },
  "showreel-01-v2": {
   "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
@@ -39,7 +40,8 @@
    "#creativedeveloper",
    "#interactivedesign"
   ],
-  "hidden": true
+  "hidden": true,
+  "channel": "web"
  },
  "showreel-01": {
   "caption": "6 website heroes. 20 seconds. All built in code. ⚡\n\nGem in 3D → clay character → shader planet → scroll timeline → exploding layers → rough to ring.\nWhich one would you put on your site? 👇",
@@ -60,7 +62,8 @@
    "#creativedeveloper",
    "#interactivedesign"
   ],
-  "hidden": true
+  "hidden": true,
+  "channel": "web"
  },
  "showreel-02-halcyra": {
   "caption": "A rough stone becomes a ring, on scroll. 💎\n\nEvery facet is code: 57 faces, real reflections, no images, no video.\nWould you put this on a jewellery site? 👇",
@@ -79,7 +82,8 @@
    "#luxurywebdesign",
    "#jewelrywebsite"
   ],
-  "hidden": true
+  "hidden": true,
+  "channel": "web"
  },
  "showreel-03-before-after": {
   "caption": "Same website. Without motion → with motion. ✨\n\nA gem that turns, a day that plays as you scroll, a product that opens layer by layer. All built in code.\nWhich one changed the most? 👇",
@@ -98,7 +102,8 @@
    "#interactivedesign",
    "#motionui"
   ],
-  "hidden": true
+  "hidden": true,
+  "channel": "web"
  },
  "showreel-04-hover": {
   "caption": "1 button. 6 hover effects. 20 seconds. ✨\n\nMagnetic → liquid fill → glitch → 3D tilt → ripple → particle burst. All built in code.\nWhich one goes on your next site? 👇",
@@ -117,28 +122,36 @@
    "#creativecoding",
    "#cssanimation"
   ],
-  "hidden": true
+  "hidden": true,
+  "channel": "web"
  },
  "showreel-06-easing": {
-  "hidden": true
+  "hidden": true,
+  "channel": "web"
  },
  "showreel-07-built-in-20s": {
-  "hidden": true
+  "hidden": true,
+  "channel": "web"
  },
  "showreel-05-layout-shift": {
-  "postOn": "2026-10-22"
+  "postOn": "2026-10-22",
+  "channel": "web"
  },
  "showreel-07-built-film": {
-  "postOn": "2026-10-23"
+  "postOn": "2026-10-23",
+  "channel": "web"
  },
  "showreel-08-six-transitions": {
-  "hidden": true
+  "hidden": true,
+  "channel": "web"
  },
  "showreel-09-liquid-glass": {
-  "hidden": true
+  "hidden": true,
+  "channel": "web"
  },
  "showreel-10-zero-js-transition": {
-  "postOn": "2026-10-26"
+  "postOn": "2026-10-26",
+  "channel": "web"
  },
  "showreel-11-springs": {
   "postOn": "2026-10-24",
@@ -157,7 +170,8 @@
    "#uianimation",
    "#frontenddev",
    "#motiondesign"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-12-inp": {
   "postOn": "2026-10-25",
@@ -176,7 +190,8 @@
    "#javascript",
    "#frontenddev",
    "#webdev"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-13-popup": {
   "postOn": "2026-10-25",
@@ -195,7 +210,8 @@
    "#microinteractions",
    "#frontenddev",
    "#uianimation"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-14-stagger": {
   "postOn": "2026-10-26",
@@ -214,7 +230,8 @@
    "#microinteractions",
    "#frontenddev",
    "#uianimation"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-15-transform": {
   "postOn": "2026-10-27",
@@ -233,7 +250,8 @@
    "#css",
    "#frontenddev",
    "#uianimation"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-16-balance": {
   "postOn": "2026-10-28",
@@ -252,7 +270,8 @@
    "#css",
    "#frontenddev",
    "#webdesign"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-17-smooth": {
   "postOn": "2026-10-29",
@@ -271,7 +290,8 @@
    "#css",
    "#frontenddev",
    "#webdesign"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-18-overscroll": {
   "postOn": "2026-10-30",
@@ -290,7 +310,8 @@
    "#uidesign",
    "#frontenddev",
    "#webdesign"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-19-numbers": {
   "postOn": "2026-10-31",
@@ -309,7 +330,8 @@
    "#typography",
    "#uidesign",
    "#frontenddev"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-fc01-lookup-column": {
   "channel": "fc",
@@ -407,7 +429,8 @@
    "#uidesign",
    "#frontenddev",
    "#webdesign"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-21-dvh": {
   "postOn": "2026-11-02",
@@ -426,7 +449,8 @@
    "#responsivedesign",
    "#frontenddev",
    "#webdesign"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-22-squash": {
   "postOn": "2026-11-03",
@@ -445,9 +469,65 @@
    "#webdesign",
    "#frontenddev",
    "#responsivedesign"
-  ]
+  ],
+  "channel": "web"
  },
  "showreel-t01-passkeys": {
-  "hidden": true
+  "hidden": true,
+  "channel": "tech"
+ },
+ "showreel-tech-php2shell": {
+  "channel": "tech",
+  "postOn": "2026-10-26",
+  "concept": "PHP security"
+ },
+ "showreel-tech-gitlab-10": {
+  "channel": "tech",
+  "postOn": "2026-10-26",
+  "concept": "GitLab security"
+ },
+ "showreel-tech-eu-satellites": {
+  "channel": "tech",
+  "postOn": "2026-10-27",
+  "concept": "Satellite phones"
+ },
+ "showreel-tech-siri-memory": {
+  "channel": "tech",
+  "postOn": "2026-10-28",
+  "concept": "Your iPhone"
+ },
+ "showreel-tech-discord-web": {
+  "channel": "tech",
+  "postOn": "2026-10-29",
+  "concept": "Your privacy"
+ },
+ "showreel-tech-macbook-touch": {
+  "channel": "tech",
+  "postOn": "2026-10-30",
+  "concept": "Your next laptop"
+ },
+ "showreel-tech-charge-80": {
+  "channel": "tech",
+  "postOn": "2026-10-31",
+  "concept": "Phone charging"
+ },
+ "showreel-tech-passkey-login": {
+  "channel": "tech",
+  "postOn": "2026-11-01",
+  "concept": "Passkeys"
+ },
+ "showreel-tech-offline-find": {
+  "channel": "tech",
+  "postOn": "2026-11-02",
+  "concept": "Find My"
+ },
+ "showreel-tech-walmart-agents": {
+  "channel": "tech",
+  "hidden": true,
+  "concept": "Never rendered (retired topic)"
+ },
+ "showreel-t02-php2shell": {
+  "hidden": true,
+  "channel": "tech"
  }
 }
