@@ -201,14 +201,31 @@ var K25 = (function(){
     x.strokeStyle = col; x.lineWidth = 4; x.stroke(); x.lineWidth = 1.5; x.beginPath(); x.roundRect(-W0 / 2 + 7, -H0 / 2 + 7, W0 - 14, H0 - 14, 4); x.stroke();
     var yy = -H0 / 2 + 13; lines.forEach(function(L){ yy += L[1] * .95; if (L[4] == null || L[4] > 0) { x.save(); x.globalAlpha *= L[4] == null ? 1 : cl(L[4] * 2.5, 0, 1); txt(L[0], 0, yy, L[1], L[2], col, 'center', L[3] || 0); x.restore(); } yy += L[1] * .13; });
     x.restore(); }
-  // rings(cam, X, Y, Z, t, t0, every, col): radio rings from a point, each growing exp(3 * age) metres from 12 m: on screen they keep
-  // spreading at any zoom (Paris to Tunisia, about 1,400 km, in about 3.9 s)
-  function rings(cam, X, Y, Z, t, t0, t1, every, col){ var c0 = proj(cam, X, Y, Z); if (!c0) return; screen();
-    for (var e = t0; e <= Math.min(t, t1); e += every) { var age = t - e, r = 12 * Math.exp(3 * age) * c0.s; if (r < 2 || r > 1400) continue;
+  // rings(cam, X, Y, Z, t, t0, t1, every, col, r0): radio rings from a point, each growing exp(3 * age) metres from r0 (default 12 m): on
+  // screen they keep spreading at any zoom (Paris to Tunisia, about 1,400 km, in about 3.9 s); a small r0 (0.04 m) scatters light off a molecule
+  function rings(cam, X, Y, Z, t, t0, t1, every, col, r0){ var c0 = proj(cam, X, Y, Z); if (!c0) return; screen();
+    for (var e = t0; e <= Math.min(t, t1); e += every) { var age = t - e, r = (r0 || 12) * Math.exp(3 * age) * c0.s; if (r < 2 || r > 1400) continue;
       var a = P(r, 2, 14) * (1 - P(r, 700, 1400)) * (1 - P(age, 4.6, 5.6)); if (a <= 0) continue;
       x.save(); x.globalAlpha *= a; x.strokeStyle = col; x.lineWidth = 2.2; x.beginPath(); x.arc(c0.x, c0.y, r, 0, 7); x.stroke();
       x.globalAlpha *= .45; x.lineWidth = 1; x.beginPath(); x.arc(c0.x, c0.y, r * .93, 0, 7); x.stroke(); x.restore(); } }
   // ---- the scenery ----
+  // ridge(seed, H, tone, ink, hatchCol): an endless engraved ridge of hills on the current layer (metres), H high on average; filled in
+  // tone, shaded with hatching that keeps its size on screen, inked along the crest. Far ridges in paler, bluer tones read as distance.
+  // o.deep: fill down to -deep metres (a near meadow that must reach the bottom of the frame); o.grass: inked grass blades along the crest
+  function ridge(seed, H, tone, ink, hc, o){ o = o || {}; var V = vis(20), r = rnd(seed), p1 = r() * 7, p2 = r() * 7, p3 = r() * 7, L = H * 3.2, st = Math.max((V.x1 - V.x0) / 120, H / 40);
+    var top = function(X){ return H * (.62 + .22 * Math.sin(X / L + p1) + .12 * Math.sin(X / (L * .37) + p2) + .04 * Math.sin(X / (L * .11) + p3)); }, pts = [], X;
+    for (X = V.x0 - st; X <= V.x1 + st; X += st) pts.push([X, top(X)]);
+    var B = -(o.deep || H); x.beginPath(); x.moveTo(pts[0][0], B); pts.forEach(function(q){ x.lineTo(q[0], q[1]); }); x.lineTo(pts[pts.length - 1][0], B); x.closePath(); x.fillStyle = tone; x.fill();
+    if (hc) { x.save(); x.clip(); hatch(V.x0, Math.max(B, V.y0), V.x1, H * 1.1, .55, 4, hc, .7); x.restore(); }
+    if (o.grass && cs() * H > 6) { var g = rnd(seed * 31), gs = Math.max(px(5), H / 30); x.beginPath(); for (X = Math.floor(V.x0 / gs) * gs; X <= V.x1; X += gs) { var y0 = top(X), l = H * (.08 + g() * .14); x.moveTo(X, y0 - l * .3); x.lineTo(X + (g() - .5) * l * .6, y0 + l); }
+      x.lineWidth = 1 / cs(); x.strokeStyle = o.grass; x.stroke(); }
+    if (ink) { x.beginPath(); pts.forEach(function(q, i){ if (i) x.lineTo(q[0], q[1]); else x.moveTo(q[0], q[1]); }); x.lineWidth = 1.1 / cs(); x.strokeStyle = ink; x.stroke(); }
+    return top; }
+  // wave(x0, y0, x1, y1, lam, amp, ph, col, lw): a light wave drawn as an engraved sine line along a segment of the current layer
+  // (wavelength lam and amplitude amp in metres, phase ph in waves); it straightens smoothly once a wavelength is under ~8 px on screen
+  function wave(x0, y0, x1, y1, lam, amp, ph, col, lw){ var s = cs(), L = Math.hypot(x1 - x0, y1 - y0), ux = (x1 - x0) / L, uy = (y1 - y0) / L, a = amp * P(lam * s, 4, 12), n = Math.min(1200, Math.ceil(L * s / 3));
+    x.beginPath(); for (var i = 0; i <= n; i++) { var d = L * i / n, o = a * Math.sin((d / lam + ph) * 2 * Math.PI); if (i) x.lineTo(x0 + ux * d - uy * o, y0 + uy * d + ux * o); else x.moveTo(x0 + ux * d - uy * o, y0 + uy * d + ux * o); }
+    x.lineWidth = (lw || 2) / s; x.strokeStyle = col; x.lineCap = 'round'; x.lineJoin = 'round'; x.stroke(); }
   // ground(cam, col, line): the y = 0 plane in perspective (rows every 20 m fixed to the ground, paths given as x positions)
   function ground(cam, col, line, paths, zFrom, zTo){ var hz = 480 + OY; if (cam.y <= .05) return; screen();
     x.fillStyle = col; x.fillRect(0, hz, 540, 960 - hz + 1);
@@ -286,7 +303,7 @@ var K25 = (function(){
     if (o.cuff) { x.beginPath(); x.arc(A1[2] + (A1[4] - A1[2]) * .85, A1[3] + (A1[5] - A1[3]) * .85, .045, 0, 7); fill(o.cuff); x.beginPath(); x.arc(A1[4], A1[5], .04, 0, 7); fill(o.skin); }
     x.restore(); }
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
-    paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, city: city, tree: tree, person: person, reach: reach, limb: limb };
+    paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb };
 })();
 /*kit25:end*/
 
