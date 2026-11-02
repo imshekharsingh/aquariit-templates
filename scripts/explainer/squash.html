@@ -127,14 +127,15 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var breathe = (1 - rise) * Math.sin(t * 2.2) * 26;
     var w = sh[0] + breathe, h = sh[1] - breathe * .45;
     var cx = 270, cy = mix(624, 440, rise);
-    // the fix: in the code beat the box steps back; on "cover" the cover image fades in over the fill one
+    // the fix: in the code beat the box steps back (smaller by its size, not a transform); on "cover", while the code card hides it,
+    // the cover image replaces the fill one in one frame (a fading <img> inside the scaled, rounded box drew stray tiles in the render)
     var codeOn = win(t, A.fix - .1, A.it2 - .1, .2), back = codeOn;
-    var sc = 1 - .12 * back, x = cx - w / 2, y = cy - h / 2;
+    var sc = 1 - .12 * back, x = cx - w / 2, y = cy - h / 2, bw = w * sc, bh = h * sc;
     var box = $('box'), stA = out(P(t, 0, .3)) * (1 - ex) * (1 - .75 * back);
-    box.style.left = x + 'px'; box.style.top = y + 'px'; box.style.width = w + 'px'; box.style.height = h + 'px';
-    box.style.opacity = stA; box.style.transform = 'scale(' + sc + ')';
-    var fixK = io(P(t, A.cover - .05, A.cover + .35));
-    $('i2').style.opacity = fixK;
+    box.style.left = (cx - bw / 2) + 'px'; box.style.top = (cy - bh / 2) + 'px'; box.style.width = bw + 'px'; box.style.height = bh + 'px';
+    box.style.opacity = stA;
+    var fixK = io(P(t, A.cover - .05, A.cover + .35)), swapped = t >= A.cover;
+    $('i2').style.visibility = swapped ? 'visible' : 'hidden'; $('i1').style.visibility = swapped ? 'hidden' : 'visible';
     // the cropped-away part (cover): a faint dashed ghost of the whole image around the box, shown while it crops
     var s2 = Math.max(w, h), gA = fixK * win(t, A.it2 + .25, DUR - 1.3, .3) * .9 * (1 - ex);
     var gh = $('ghost'); gh.style.left = (cx - s2 / 2) + 'px'; gh.style.top = (cy - s2 / 2) + 'px'; gh.style.width = s2 + 'px'; gh.style.height = s2 + 'px'; gh.style.opacity = gA;
