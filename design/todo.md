@@ -7,7 +7,6 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 ## P1
 - [ ] Reels 2-3 days ahead per channel, kept topped up: a missed day costs reach, and a buffer lets the daily run spend its time on quality.
 - [ ] Reusable Turns Out story layouts in kit25d.js (opening, map move, number roll, payoff): the cost cut that makes daily posting affordable.
-- [ ] "Text wider than its box" check for the web and tech scenes in scripts/showreel preflight (roadmap 2; Turns Out has it in qa.mjs; blank frames done 3 Nov).
 
 ## P2
 - [ ] Growth step 3: the audit writes its signals as data (best posting window, winning hook shape, reel-to-follower pairing; roadmap 5)
@@ -32,3 +31,5 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   fallback (used when the apt mirror is slow) works again.
 - 3 Nov 2026: Growth step 2: "What each reel did" in the Growth view (typical saves and shares per 1,000 reached and % watched, and
   every reel with its rates and the follower change on its day, the best in each column starred).
+- 3 Nov 2026: stills.mjs also prints TEXT FIT (any DOM text past its clipping box or the frame's side margins, every 0.5 s; fails the
+  check). Covers the web showreels; techreel scenes keep their own --stills check.

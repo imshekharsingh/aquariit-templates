@@ -5,6 +5,10 @@
 // seeks those times, e.g. one per beat, after the cover)
 // Empty-frame scan (todo P1, 3 Nov 2026): it also seeks every 0.5 s of the reel and prints EMPTY FRAMES for any moment whose picture is
 // nearly one flat colour (luminance spread under 5 of 255 on a small copy), and exits 1: no render with a blank frame.
+// Text fit (3 Nov 2026): at the same moments, any visible DOM text that runs past the box that clips it (the nearest parent with
+// overflow other than visible) or past the frame's 12 px side margins is printed as TEXT WIDER THAN ITS BOX, and exits 1. Canvas text
+// is not seen here (Turns Out scenes report theirs to scripts/channel3/qa.mjs). A demo that overflows on purpose (the bug a reel shows)
+// marks its container data-fit="free".
 import { readFileSync, mkdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { createRequire } from 'node:module';
@@ -27,7 +31,17 @@ const ts = [cover]; if (String(n).includes(',')) ts.push(...String(n).split(',')
 const shots = [];
 for (const x of ts) { await p.evaluate((x) => window.seek(x), x); shots.push((await p.screenshot({ type: 'jpeg', quality: 70 })).toString('base64')); }
 const scanT = [], scan = [];
-for (let x = 0; x <= cfg.dur - .05; x += .5) { scanT.push(+x.toFixed(2)); await p.evaluate((x) => window.seek(x), x); scan.push((await p.screenshot({ type: 'jpeg', quality: 40 })).toString('base64')); }
+const wide = new Map();   // text -> first moment it overflowed
+const fit = () => { const out = [], W = innerWidth, op = (e) => { let a = 1; for (; e && e.nodeType === 1; e = e.parentElement) { const cs = getComputedStyle(e); if (cs.display === 'none' || cs.visibility === 'hidden') return 0; a *= +cs.opacity; } return a; };
+  const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n;
+  while ((n = tw.nextNode())) { const s = n.textContent.trim(); if (!s || !n.parentElement || /^(SCRIPT|STYLE)$/.test(n.parentElement.tagName) || n.parentElement.closest('[data-fit=free]')) continue;
+    const r = document.createRange(); r.selectNodeContents(n); const b = r.getBoundingClientRect(); if (b.width < 1 || op(n.parentElement) < .05) continue;
+    let clip = null; for (let e = n.parentElement; e && e !== document.body; e = e.parentElement) { const o = getComputedStyle(e).overflowX; if (o !== 'visible') { clip = e.getBoundingClientRect(); break; } }
+    const L = Math.max(clip ? clip.left : 12, 12), R = Math.min(clip ? clip.right : W - 12, W - 12);
+    if (b.right > L - 1 && b.left < R + 1 && (b.left < L - 1 || b.right > R + 1)) out.push(s.slice(0, 40) + ' (' + Math.round(b.left) + '-' + Math.round(b.right) + ' px, box ' + Math.round(L) + '-' + Math.round(R) + ')'); }
+  return out; };
+for (let x = 0; x <= cfg.dur - .05; x += .5) { scanT.push(+x.toFixed(2)); await p.evaluate((x) => window.seek(x), x); scan.push((await p.screenshot({ type: 'jpeg', quality: 40 })).toString('base64'));
+  for (const w of await p.evaluate(fit)) { const k = w.replace(/ \(.*$/, ''); if (!wide.has(k)) wide.set(k, x.toFixed(1) + ' s: ' + w); } }
 const spread = await p.evaluate(async (list) => { const c = document.createElement('canvas'); c.width = 54; c.height = 96; const g = c.getContext('2d', { willReadFrequently: true });
   const out = []; for (const b64 of list) { const im = new Image(); im.src = 'data:image/jpeg;base64,' + b64; await im.decode(); g.drawImage(im, 0, 0, 54, 96);
     const d = g.getImageData(0, 0, 54, 96).data; let s = 0, s2 = 0, n = d.length / 4; for (let i = 0; i < d.length; i += 4) { const l = .2126 * d[i] + .7152 * d[i + 1] + .0722 * d[i + 2]; s += l; s2 += l * l; }
@@ -40,4 +54,5 @@ await p.screenshot({ path: `${out}/sheet.png`, fullPage: true });
 await b.close();
 console.log(`STILLS: ${ts.length} frames (cover ${cover} s) in ${out}/sheet.png; simulated voice ends ${t.toFixed(1)} s; page errors: ${errors.length ? errors.join(' | ') : 'none'}`);
 console.log(`EMPTY FRAMES: ${empty.length ? empty.map((x) => x + ' s').join(', ') + ' (nearly one flat colour: fix before the render)' : 'none'} (scanned ${scanT.length} moments, least detail ${Math.min(...spread).toFixed(1)} at ${scanT[spread.indexOf(Math.min(...spread))]} s)`);
-process.exit(errors.length || empty.length ? 1 : 0);
+console.log(`TEXT FIT: ${wide.size ? 'TEXT WIDER THAN ITS BOX: ' + [...wide.values()].join(' | ') : 'all text inside its box'}`);
+process.exit(errors.length || empty.length || wide.size ? 1 : 0);
