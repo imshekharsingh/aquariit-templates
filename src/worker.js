@@ -437,41 +437,50 @@ async function uploadedApi(request, env, p) {
   return jres({ error: 'bad-request' }, 400);
 }
 
-// reel videos stream from the GitHub "reels" release (owner, 17 Oct 2026: the site's 25 MiB per-file cap squeezed the films), behind the same sign-in.
-// Range requests pass through so phones can seek. A public repo needs no key; if it goes private, add a read-only token as the Worker secret GH_READ_TOKEN.
-// showreels (owner, 21 Oct 2026): showreel-NAME.mp4 plus its cover .jpg and caption .json come from the same release, listed by /api/showreels
-const REPO = 'imshekharsingh/aquariit-templates', REEL = /^\/reels\/(\d{4}-\d{2}-\d{2}(?:-\d{4})?\.mp4|showreel-[a-z0-9-]{1,60}\.(?:mp4|jpg|json))$/;
-const TYPES = { mp4: 'video/mp4', jpg: 'image/jpeg', json: 'application/json; charset=utf-8' };
+// reel media (owner, 3 Nov 2026) live in the PRIVATE R2 bucket "aquarii-reels" (binding REELS; scripts/r2.sh), served only to signed-in users.
+// The repo is public, so nothing goes to the GitHub releases any more. v/<name> = MP4 and review PNG (an R2 lifecycle rule deletes them
+// 15 days after upload), c/<name> = cover, config json and the minutes meter (kept). Range requests are answered so phones can seek.
+// /api/showreels lists a reel while its MP4 or its cover is there: after 15 days only the cover (and the post text) remain.
+const REEL = /^\/reels\/(showreel-[a-z0-9-]{1,60}\.(?:mp4|jpg|json|png))$/;
+const TYPES = { mp4: 'video/mp4', jpg: 'image/jpeg', json: 'application/json; charset=utf-8', png: 'image/png' };
+const reelKey = (name) => (/\.(mp4|png)$/.test(name) ? 'v/' : 'c/') + name;
+async function listAll(bucket, prefix) {
+  const out = [];
+  let cursor;
+  do { const r = await bucket.list({ prefix, delimiter: '/', cursor, limit: 1000 }); out.push(...r.objects); cursor = r.truncated ? r.cursor : undefined; } while (cursor);
+  return out;
+}
 async function showreelList(env) {
-  const h = { 'User-Agent': 'aquarii-templates', Accept: 'application/vnd.github+json', ...(env.GH_READ_TOKEN ? { Authorization: `Bearer ${env.GH_READ_TOKEN}` } : {}) };
-  const r = await fetch(`https://api.github.com/repos/${REPO}/releases/tags/reels`, { headers: h, cf: { cacheTtl: 300, cacheEverything: true } });
-  if (!r.ok) return jres({ error: 'upstream', status: r.status }, 502);
-  const assets = (await r.json()).assets || [], byName = new Map(assets.map((a) => [a.name, a]));
-  // a reel is listed while its MP4 or its cover is in the release: 15 days after upload the MP4 goes (owner, 1 Nov 2026), the cover and post text stay
-  const reels = new Set(assets.map((a) => (/^(showreel-[a-z0-9-]{1,60})(?:\.mp4|-cover\.jpg)$/.exec(a.name) || [])[1]).filter(Boolean));
+  if (!env.REELS) return jres({ error: 'no-store' }, 503);
+  const [v, c] = await Promise.all([listAll(env.REELS, 'v/'), listAll(env.REELS, 'c/')]);
+  const byName = new Map([...v, ...c].map((o) => [o.key.slice(2), o]));
+  let first = {};   // original render times of reels copied from the old releases (R2 dates a copy with the day it was copied)
+  try { const o = await env.REELS.get('c/rendered-at.json'); if (o) first = await o.json(); } catch { /* use the R2 dates */ }
+  const reels = new Set([...byName.keys()].map((k) => (/^(showreel-[a-z0-9-]{1,60}?)(?:\.mp4|-cover\.jpg)$/.exec(k) || [])[1]).filter(Boolean));
   const list = [...reels].map((n) => { const mp4 = byName.get(n + '.mp4'), main = mp4 || byName.get(n + '-cover.jpg');
-    return { name: n, video: mp4 ? '/reels/' + n + '.mp4' : null, cover: byName.has(n + '-cover.jpg') ? `/reels/${n}-cover.jpg` : null, info: byName.has(n + '.json') ? `/reels/${n}.json` : null, size: mp4 ? mp4.size : 0, at: main.updated_at }; })
+    return { name: n, video: mp4 ? '/reels/' + n + '.mp4' : null, cover: byName.has(n + '-cover.jpg') ? `/reels/${n}-cover.jpg` : null, info: byName.has(n + '.json') ? `/reels/${n}.json` : null,
+      size: mp4 ? mp4.size : 0, at: first[n] || main.uploaded.toISOString() }; })
     .sort((x, y) => String(y.at).localeCompare(String(x.at)));
   return jres({ showreels: list });
 }
-async function reelVideo(request, env, name) {
-  const ua = { 'User-Agent': 'aquarii-templates' };
-  let src = `https://github.com/${REPO}/releases/download/reels/${name}`, first = { ...ua };
-  if (env.GH_READ_TOKEN) {
-    const auth = { ...ua, Authorization: `Bearer ${env.GH_READ_TOKEN}` };
-    const r = await fetch(`https://api.github.com/repos/${REPO}/releases/tags/reels`, { headers: { ...auth, Accept: 'application/vnd.github+json' } });
-    const a = r.ok ? ((await r.json()).assets || []).find((x) => x.name === name) : null;
-    if (!a) return null;
-    src = a.url; first = { ...auth, Accept: 'application/octet-stream' };
+async function reelFile(request, env, name) {
+  if (!env.REELS) return null;
+  const key = reelKey(name), head = request.method === 'HEAD', range = request.headers.get('Range');
+  let obj;
+  try { obj = head ? await env.REELS.head(key) : await env.REELS.get(key, range ? { range: request.headers } : {}); }
+  catch { return new Response('Range not satisfiable', { status: 416, headers: { 'Content-Range': 'bytes */*' } }); }
+  if (!obj) return null;
+  const h = new Headers({ 'Content-Type': TYPES[name.split('.').pop()] || 'application/octet-stream', 'Accept-Ranges': 'bytes', ETag: obj.httpEtag,
+    'Last-Modified': obj.uploaded.toUTCString(), 'Cache-Control': name.endsWith('.json') ? 'private, no-cache' : 'private, max-age=3600' });
+  const r = obj.range, start = /^bytes=(\d+)-/.exec(range || '');
+  if (!head && start && +start[1] >= obj.size) return new Response('Range not satisfiable', { status: 416, headers: { 'Content-Range': `bytes */${obj.size}` } });
+  if (!head && range && r) {
+    const suffix = typeof r.suffix === 'number', offset = suffix ? obj.size - r.suffix : (r.offset || 0), length = suffix ? r.suffix : (r.length ?? obj.size - offset);
+    h.set('Content-Range', `bytes ${offset}-${offset + length - 1}/${obj.size}`); h.set('Content-Length', String(length));
+    return new Response(obj.body, { status: 206, headers: h });
   }
-  const range = request.headers.get('Range');
-  // follow GitHub's redirect by hand so the key never travels to the storage host
-  let up = await fetch(src, { method: request.method === 'HEAD' ? 'HEAD' : 'GET', headers: { ...first, ...(range ? { Range: range } : {}) }, redirect: 'manual' });
-  if (up.status >= 300 && up.status < 400 && up.headers.get('Location')) up = await fetch(up.headers.get('Location'), { method: request.method === 'HEAD' ? 'HEAD' : 'GET', headers: { ...ua, ...(range ? { Range: range } : {}) } });
-  if (up.status !== 200 && up.status !== 206) return null;
-  const h = new Headers({ 'Content-Type': TYPES[name.split('.').pop()] || 'application/octet-stream', 'Accept-Ranges': 'bytes', 'Cache-Control': 'private, max-age=3600' });
-  for (const k of ['Content-Length', 'Content-Range', 'ETag', 'Last-Modified']) if (up.headers.get(k)) h.set(k, up.headers.get(k));
-  return new Response(request.method === 'HEAD' ? null : up.body, { status: up.status, headers: h });
+  h.set('Content-Length', String(obj.size));
+  return new Response(head ? null : obj.body, { status: 200, headers: h });
 }
 
 export default {
@@ -506,7 +515,7 @@ export default {
     if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (signedIn) {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
-      if (m) { try { const v = await reelVideo(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }
+      if (m) { try { const v = await reelFile(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }
       return env.ASSETS.fetch(request);
     }
 

@@ -5,11 +5,6 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
-- [ ] Reel media to a private R2 bucket (owner, 3 Nov 2026: the public repo's releases show every reel, posted or not). Blocked on the
-      owner: the Cloudflare token has no R2 permission ("Needs you" item r2-token; the 4 Nov "R2 check" run got Authentication error 10000).
-      When r2-token is answered: Actions -> R2 -> check must print R2_OK=yes; then push branch wip/r2-private-reels (code done, npm run check
-      passes, CLAUDE.md updated) rebased on main as claude/r2-private-reels; after its deploy run R2 -> move (copies about 180 release files
-      into R2, verifies each, deletes them from the releases), then R2 -> site (list loads, Range 206, old release URL 404); move this line to Done.
 - [ ] Reels 2-3 days ahead per channel, kept topped up: a missed day costs reach, and a buffer lets the daily run spend its time on quality.
       (After the 3 Nov night: web to 6 Nov, tech to 5 Nov, Turns Out to 6 Nov ready. Standing item: the daily runs build for the first free day
       (CLAUDE.md, "Buffer"), so the buffer holds; each spare night tops it up. A Great Wall reel was dropped: its myth's origin date differs between sources.)
@@ -22,6 +17,10 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] Posting through Instagram's content publishing API (roadmap 6; needs Meta's review, owner's call).
 
 ## Done
+- 4 Nov 2026: reel media live in the private R2 bucket aquarii-reels (only the signed-in app serves it; Range/seek and Save video kept).
+  Renders, tech reels, previews, reel study and the minutes meter write to R2; the "Showreel ready" issue names the reel only; an R2
+  lifecycle rule deletes v/ (MP4 + contact sheet) 15 days after upload; the release clean-up moved to attic/. The old release files
+  were copied ("R2 -> move") and the releases emptied.
 - 3 Nov 2026: Turns Out starter, map and globe: kit25d.js has Kt.globe (a matte cut-paper globe that turns a place to the front), Kt.map
   (the same coastlines flat, so the camera dives from the globe onto the map with no cut), Kt.route/Kt.bow and Kt.place (pin tags that stay
   in the frame); starter25d.html goes hook -> globe -> dive -> route from A to B -> payoff. qa clean, stills: no empty frames, text fits.

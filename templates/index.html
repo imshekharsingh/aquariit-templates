@@ -309,7 +309,7 @@
       sp.textContent = CH[k].sub + (n ? ' · ' + n + ' to post' : ''); sp.className = n ? 'due' : ''; });
   }
   // the "Posted" list (owner, 1 Nov 2026): cover, title, posted date and the reel's Instagram numbers once the nightly collector has them.
-  // No video here: 15 days after upload the MP4 is removed from the releases (cover, post text and sources stay).
+  // No video here: 15 days after upload the MP4 is deleted from the private R2 store (cover, post text and sources stay).
   var PERF = {};   // channel -> media rows from /api/perf (also feeds the Growth view)
   function istDay(iso){ return new Date(Date.parse(iso) + IST).toISOString().slice(0, 10); }
   function perfFor(k){ return profP.then(function(){ return perfOf(k); }); }

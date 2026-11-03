@@ -1,19 +1,16 @@
 // GitHub Actions minutes this month, the way GitHub bills them (each job rounded up to a whole minute; all our jobs run on Linux, 1x),
 // for the meter in the Showreels app (owner, 27 Oct 2026: know the minutes before the repo goes private, where they are capped).
-// Plus the 15-day clean-up (owner, 1 Nov 2026; was 30 days): a reel's MP4 and its big review / contact-sheet PNG are removed from the
-// releases 15 days after it was marked uploaded. Its cover, post text (json), sources, scene code and numbers stay. Nothing else is ever deleted.
+// Reel videos are no longer cleaned up here (owner, 3 Nov 2026): they live in the private R2 bucket, whose lifecycle rule deletes v/ files
+// 15 days after upload. The old release clean-up is in attic/scripts/actions-usage-cleanup.mjs.
 //   env:  GH_TOKEN (the workflow token: actions read, contents write), REPO (owner/name), ALLOWANCE (minutes a month, default 2000 = GitHub Free)
 //         GH_API_BASE (default https://api.github.com, for tests)
-//         BASIC_AUTH_USER / BASIC_AUTH_PASS (site sign-in, to read the "uploaded" marks), SITE_BASE (default https://templates.aquariit.com)
 //   in:   prev.json (optional) the last result, so only new runs are asked for their jobs
-//   out:  showreel-usage-actions.json in the current directory; the workflow uploads it to the "reels" release
-// Usage: node scripts/actions-usage.mjs [--cleanup] [--dry]
+//   out:  showreel-usage-actions.json in the current directory; the workflow keeps it in R2 (c/showreel-usage-actions.json)
+// Usage: node scripts/actions-usage.mjs
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
-const args = process.argv.slice(2), DRY = args.includes('--dry'), CLEAN = args.includes('--cleanup');
 const TOKEN = process.env.GH_TOKEN || '', REPO = process.env.REPO || 'imshekharsingh/aquariit-templates';
-const ALLOWANCE = +process.env.ALLOWANCE || 2000, SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, '');
-const KEEP_DAYS = 15;   // a posted reel's MP4 and review PNG stay this long after upload (owner, 1 Nov 2026)
+const ALLOWANCE = +process.env.ALLOWANCE || 2000;
 const API = (process.env.GH_API_BASE || 'https://api.github.com') + '/repos/' + REPO, MAX_JOB_CALLS = 600;   // the workflow token allows 1,000 calls an hour; the first run of a month catches up over two nights
 if (!TOKEN) { console.error('✗ GH_TOKEN is missing'); process.exit(1); }
 const gh = async (path, opt = {}) => {
@@ -55,33 +52,3 @@ const result = { month, at: now.toISOString(), allowance: ALLOWANCE, used, pace:
 console.log(`Actions minutes ${month}: ${used} of ${ALLOWANCE} (${Math.round(100 * used / ALLOWANCE)}%), on pace for ${result.pace}; last 7 days ${last7}` + (estimated ? `; ${estimated} runs estimated, filled in next run` : ''));
 for (const w of result.workflows) console.log(`  ${w.name}: ${w.minutes} min in ${w.runs} runs`);
 writeFileSync('showreel-usage-actions.json', JSON.stringify(result));
-
-// 2. the 15-day clean-up: MP4s and review PNGs of reels marked uploaded more than 15 days ago, from the "reels" release and, for tech reels, the "techreel" release
-if (CLEAN) {
-  const U = process.env.BASIC_AUTH_USER, P = process.env.BASIC_AUTH_PASS;
-  if (!U || !P) { console.log('Clean-up skipped: no site sign-in to read the uploaded marks.'); process.exit(0); }
-  const login = await fetch(SITE + '/login', { method: 'POST', redirect: 'manual', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ username: U, password: P }) });
-  const cookie = (login.headers.getSetCookie ? login.headers.getSetCookie() : []).map((c) => c.split(';')[0]).join('; ');
-  if (login.status !== 303 || !cookie) { console.log(`Clean-up skipped: the site refused the sign-in (HTTP ${login.status}).`); process.exit(0); }
-  const up = await fetch(SITE + '/api/uploaded', { headers: { Cookie: cookie } });
-  if (!up.ok) { console.log(`Clean-up skipped: could not read the uploaded marks (HTTP ${up.status}).`); process.exit(0); }
-  const ids = (await up.json()).ids || {}, cutoff = Date.now() - KEEP_DAYS * 864e5;
-  const old = Object.entries(ids).filter(([n, at]) => /^showreel-[a-z0-9-]+$/.test(n) && Date.parse(at) < cutoff).map(([n]) => n);
-  const targets = [];
-  for (const tag of ['reels', 'techreel']) {
-    let rel; try { rel = await gh('/releases/tags/' + tag); } catch { continue; }
-    const assets = [];
-    for (let page = 1; page <= 10; page++) { const a = await gh(`/releases/${rel.id}/assets?per_page=100&page=${page}`); assets.push(...a); if (a.length < 100) break; }
-    for (const n of old) {
-      const slug = n.startsWith('showreel-tech-') ? n.slice('showreel-tech-'.length) : null;
-      const files = tag === 'reels' ? [n + '.mp4', n + '-review.png'] : slug ? [slug + '.mp4', slug + '-contact.png'] : [];
-      for (const f of files) { const a = assets.find((x) => x.name === f); if (a) targets.push({ tag, id: a.id, name: a.name }); }
-    }
-  }
-  if (!targets.length) console.log(`Clean-up: nothing is past ${KEEP_DAYS} days since upload.`);
-  for (const t of targets) {
-    if (DRY) { console.log(`Clean-up (dry run): would remove ${t.tag}/${t.name}`); continue; }
-    await gh(`/releases/assets/${t.id}`, { method: 'DELETE' });
-    console.log(`Clean-up: removed ${t.tag}/${t.name} (posted more than ${KEEP_DAYS} days ago; cover and post text kept)`);
-  }
-}

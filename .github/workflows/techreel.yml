@@ -1,7 +1,7 @@
 name: Tech reel
 
 # Tech explainer reels (owner, 24 Oct 2026): python3 techreel/make.py <slug> renders the voice, frames, sound and QA for one topic file.
-# The MP4, contact sheet, QA report and word timings land in the "techreel" release. Run by hand: Actions -> Tech reel -> slug.
+# The MP4, contact sheet, QA report and word timings go to the private R2 bucket under techreel/ (scripts/r2.sh; owner, 3 Nov 2026). Run by hand: Actions -> Tech reel -> slug.
 on:
   workflow_dispatch:
     inputs:
@@ -10,7 +10,7 @@ on:
         default: walmart-agents
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   render:
@@ -52,15 +52,30 @@ jobs:
           pip install faster-whisper==1.1.1 requests
           python3 -I -c "import json,sys; t=json.load(open(sys.argv[1])); json.dump({'voice': {'text': ' '.join(l['text'] for l in t['lines'])}}, open('vc.json','w'))" "techreel/topics/$SLUG.json"
           python3 scripts/showreel/voicecheck.py vc.json "out/techreel/$SLUG/vo.wav" "$GITHUB_STEP_SUMMARY"
-      - name: Keep it
+      - uses: actions/setup-node@v4   # wrangler (package.json) uploads to R2
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Keep it in R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           D="out/techreel/$SLUG"
-          gh release view techreel --repo "$REPO" >/dev/null 2>&1 || gh release create techreel --repo "$REPO" --title "Tech reels" --latest=false --notes "Tech explainer reels (techreel/)"
           cp "$D/contact.png" "$D/$SLUG-contact.png"; cp "$D/qa.txt" "$D/$SLUG-qa.txt"; cp "$D/vo.json" "$D/$SLUG-vo.json"
-          gh release upload techreel --repo "$REPO" --clobber "$D/$SLUG.mp4" "$D/$SLUG-contact.png" "$D/$SLUG-qa.txt" "$D/$SLUG-vo.json"
+          for f in "$SLUG.mp4" "$SLUG-contact.png" "$SLUG-qa.txt" "$SLUG-vo.json"; do bash scripts/r2.sh put "$D/$f" "$(case $f in *.mp4|*.png) echo v;; *) echo c;; esac)/techreel/$f" || exit 1; done
           cat "$D/qa.txt"
           # also on the Showreels page with its post text (owner, 26 Oct), as showreel-tech-<slug>
           N="showreel-tech-$SLUG"; cp "$D/$SLUG.mp4" "$D/$N.mp4"
           python3 -I -c "import json,sys; t=json.load(open(sys.argv[1])); p=t.get('post',{}); json.dump({'name': sys.argv[2], 'caption': p.get('caption',''), 'keywords': p.get('keywords',[]), 'hashtags': p.get('hashtags',[])}, open(sys.argv[3],'w'), ensure_ascii=False, indent=1)" "techreel/topics/$SLUG.json" "$N" "$D/$N.json"
           ffmpeg -y -loglevel error -ss 2 -i "$D/$N.mp4" -frames:v 1 -q:v 3 "$D/$N-cover.jpg"
-          gh release upload reels --repo "$REPO" --clobber "$D/$N.mp4" "$D/$N.json" "$D/$N-cover.jpg"
+          for f in "$N.mp4" "$N.json" "$N-cover.jpg"; do bash scripts/r2.sh put "$D/$f" || exit 1; done
+      - name: Contact sheet and QA for the review (kept 2 days)
+        uses: actions/upload-artifact@v4
+        with:
+          name: review
+          path: |
+            out/techreel/${{ inputs.slug }}/${{ inputs.slug }}-contact.png
+            out/techreel/${{ inputs.slug }}/${{ inputs.slug }}-qa.txt
+          retention-days: 2

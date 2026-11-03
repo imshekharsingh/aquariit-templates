@@ -130,13 +130,13 @@ Claude reviews every draft as a critical creative director before sending it, an
 1. Scene: `scripts/explainer/<slug>.html` exposes `window.seek(t)`; every frame is a pure function of t (seeded randomness only).
 2. Config: `scripts/explainer/<slug>.json` (name `showreel-NN-<slug>`, dur, fps 60, cover time, caption, 6 keywords, 5 niche hashtags).
 3. Review: stills at each beat and a GIF on a private page for the owner; fix what the stills show (two or three passes).
-4. Render on GitHub: Actions, Showreel workflow, config = the json. The MP4 lands in the reels release, the Showreels page and a "Showreel ready" issue.
+4. Render on GitHub: Actions, Showreel workflow, config = the json. The MP4 lands in the private R2 bucket (CLAUDE.md, Render), on the Showreels page, and a "Showreel ready" issue names it.
 5. The owner posts at 14:00 IST and adds a trending Instagram audio track.
 
 ## Post text
 The first caption line holds the search words in plain language. Then one line with the six keywords joined by ` · `, then exactly five niche hashtags.
 No call to action and nothing at the end of the reel (owner, 21 Oct); the caption may invite a send.
-The owner gets it as one block to copy whole, with no labels (owner, 22 Oct): on the Showreels page with the video (Copy post text) and in the Showreel ready issue. Not repeated in chat unless the owner asks (owner, 24 Oct).
+The owner gets it as one block to copy whole, with no labels (owner, 22 Oct): on the Showreels page with the video (Copy post text); the public "Showreel ready" issue carries no post text (3 Nov 2026). Not repeated in chat unless the owner asks (owner, 24 Oct).
 Keywords and hashtags are chosen for reach: what people type into Instagram search for this kind of reel, the most specific first; no broad tags.
 
 ## Measure and decide

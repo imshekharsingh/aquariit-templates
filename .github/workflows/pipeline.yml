@@ -127,6 +127,23 @@ jobs:
         if: always()
         run: |
           if [ "${{ steps.d1.outcome }}" = "success" ]; then echo "D1 reel-tick tracking: ON"; else echo "::warning::D1 reel-tick tracking is OFF (could not find/create the database; check the token has D1 Edit permission). The site still deployed."; fi
+      - name: Ensure the private R2 bucket for reel media (never blocks the deploy)
+        id: r2
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # owner, 3 Nov 2026: reel media live in the private bucket "aquarii-reels" (no public access, no r2.dev URL; v/ expires 15 days
+          # after upload), bound as REELS for this deploy only. If R2 is unreachable the site still deploys and the Showreels list says so.
+          set -e
+          bash scripts/r2.sh ensure
+          node -e 'const fs=require("fs");const c=JSON.parse(fs.readFileSync("wrangler.jsonc","utf8"));c.r2_buckets=[{binding:"REELS",bucket_name:"aquarii-reels"}];fs.writeFileSync("wrangler.jsonc",JSON.stringify(c,null,2))'
+          echo "R2 bound (not committed)"
+      - name: R2 status
+        if: always()
+        run: |
+          if [ "${{ steps.r2.outcome }}" = "success" ]; then echo "R2 reel store: ON"; else echo "::warning::R2 reel store is OFF (could not ensure the bucket; check the token has R2 Edit). The site deployed without reels."; fi
       - uses: cloudflare/wrangler-action@v3
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
@@ -235,7 +252,7 @@ jobs:
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
         run: |
           curl() { command curl --connect-timeout 15 --max-time 120 --retry 4 --retry-all-errors --retry-delay 5 "$@"; }
-          # videos stream from the "reels" release through the Worker (src/worker.js); check the newest one (first KiB only)
+          # videos stream from the private R2 bucket through the Worker (src/worker.js); check the newest one (first KiB only)
           B=https://templates.aquariit.com; J=$(mktemp)
           curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
           n=$(curl -s -b "$J" "$B/api/showreels" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{try{const s=JSON.parse(d).showreels||[];const v=s.find(x=>x.video);console.log(v?v.name:"")}catch{console.log("")}})')
@@ -243,7 +260,9 @@ jobs:
           out=$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n.mp4"); [ "$out" != "200" ] || { echo "::error::$n.mp4 is reachable without signing in"; exit 1; }
           v=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -H 'Range: bytes=0-1023' -b "$J" "$B/reels/$n.mp4")
           echo "$n.mp4: signed out $out | signed in [$v]"
-          case "$v" in "200 "*|"206 "*) ;; *) echo "::error::$n.mp4 is not served to a signed-in user"; exit 1;; esac
+          case "$v" in "206 1024") ;; *) echo "::error::$n.mp4 is not served to a signed-in user with a Range answer"; exit 1;; esac
+          g=$(command curl -s -L -o /dev/null -w '%{http_code}' "https://github.com/${{ github.repository }}/releases/download/reels/$n.mp4")
+          [ "$g" = "404" ] && echo "OK no public copy of $n.mp4 in the releases" || echo "::warning::$n.mp4 is still in the public reels release ($g): run Actions -> R2 -> move"
       - name: Summary
         run: echo "Deployed. Showreels https://templates.aquariit.com/" >> "$GITHUB_STEP_SUMMARY"
 
