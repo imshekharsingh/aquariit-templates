@@ -9,7 +9,6 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] Turns Out starter, next layouts: a map move and a globe station for starter25d.html (the opening, stations, fly-through, number roll and payoff are in it since 3 Nov).
 
 ## P2
-- [ ] Growth step 4: show the AUDIT_SIGNALS (best hour, best format, follower reels) in the app's Growth view.
 - [ ] @techin20sec topic shortlist from primary sources each morning on GitHub (roadmap 4): 3 candidates with sources and a viewer-stake hook.
 - [ ] One daily routine per channel that writes the script, renders stills to a private review page and stops (roadmap 3).
 
@@ -37,3 +36,4 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   ready as the card's "channels"): the daily run reads one line instead of the raw data.
 - 3 Nov 2026: Growth step 3: the nightly audit numbers also print AUDIT_SIGNALS (30 days per channel: best posting hour, best format,
   the reels with the biggest follower gains); CLAUDE.md tells the daily run to plan from it.
+- 3 Nov 2026: Growth step 4: "What works" card in the Growth view (best time to post, best format, reels that brought followers; 30 days).
