@@ -105,6 +105,10 @@ A scheduled task (created by the parent session, not here) fires Tuesdays around
 2. If yes: (1) build reels ahead so each channel has 2-3 days ready (same preflight rules, one render per reel); (2) plan next week's topics;
    (3) work design/todo.md top-down, one item per push; stop by 04:00 IST. Then update design/todo.md and post a short card
    (`"kind":"spare"`, "Audit card" workflow) saying what was done, in simple English.
+   The owner's brief for every spare night (3 Nov 2026): close as many growth and app improvements as possible, one at a time, each
+   finished, checked and pushed before the next; only work that needs nothing from the owner (anything that would goes into
+   design/todo.md); stop at 04:00 IST with no push or render still running. Wait for each branch to merge before starting the next one
+   that touches design/todo.md (two open branches that both add "Done" lines conflict).
 
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN, INSTAGRAM_TOKEN_2 and INSTAGRAM_TOKEN_3 (Turns Out, @itturns.out) (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.

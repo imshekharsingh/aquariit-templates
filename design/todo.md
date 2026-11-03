@@ -6,6 +6,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 
 ## P1
 - [ ] Reels 2-3 days ahead per channel, kept topped up: a missed day costs reach, and a buffer lets the daily run spend its time on quality.
+      (3 Nov night: web 4 Nov, tech 4-5 Nov, Turns Out 4 Nov ready; a Great Wall reel for Turns Out was dropped: its myth's origin date differs between sources.)
 - [ ] Turns Out starter, next layouts: a map move and a globe station for starter25d.html (the opening, stations, fly-through, number roll and payoff are in it since 3 Nov).
 
 ## P2
