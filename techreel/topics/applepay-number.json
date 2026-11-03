@@ -1,0 +1,169 @@
+{
+ "slug": "applepay-number",
+ "topic": "Apple Pay",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.95,
+ "max_speed": 1.0,
+ "dur": 20,
+ "max_end": 19.4,
+ "say": {},
+ "hook": [
+  "How does",
+  "Apple Pay hide",
+  "your card number?"
+ ],
+ "lines": [
+  {
+   "text": "How does Apple Pay hide your card number?"
+  },
+  {
+   "text": "Your bank makes a new number just for this phone.",
+   "scene": {
+    "label": "STEP 1: A NEW NUMBER",
+    "tint": "purple",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Your card",
+      "sub": "the real number stays home",
+      "icon": "card"
+     },
+     "inner": {
+      "title": "Device number",
+      "sub": "made by your bank",
+      "icon": "key"
+     },
+     "inner_cue": "new"
+    }
+   },
+   "chunks": [
+    5,
+    5
+   ]
+  },
+  {
+   "text": "It sits in a locked chip, never on Apple's servers.",
+   "scene": {
+    "label": "STEP 2: A LOCKED CHIP",
+    "tint": "amber",
+    "kind": "portal",
+    "params": {
+     "icon": "lock",
+     "pills": [
+      "Secure Element",
+      "Not on Apple"
+     ],
+     "guest": "key",
+     "guest_tint": "purple",
+     "n": 1,
+     "open": "locked"
+    }
+   },
+   "chunks": [
+    6,
+    4
+   ]
+  },
+  {
+   "text": "Each tap adds a code that works only once.",
+   "scene": {
+    "label": "STEP 3: A ONE-TIME CODE",
+    "tint": "cyan",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "Device number",
+      "Fresh code"
+     ],
+     "source_tint": "purple",
+     "hub": {
+      "label": "YOUR TAP",
+      "tag": "ONCE ONLY",
+      "icon": "bolt"
+     },
+     "target": {
+      "icon": "store",
+      "label": "The store"
+     },
+     "target_tint": "blue",
+     "hub_cue": "tap"
+    }
+   }
+  },
+  {
+   "text": "Your bank checks it. A reused code is rejected.",
+   "scene": {
+    "label": "STEP 4: THE BANK CHECKS",
+    "tint": "blue",
+    "kind": "guard",
+    "params": {
+     "object": {
+      "icon": "card",
+      "label": "Your account"
+     },
+     "attacker": "doc",
+     "stop_cue": "rejected",
+     "badge": "USED CODE: DECLINED"
+    }
+   },
+   "chunks": [
+    4,
+    5
+   ]
+  },
+  {
+   "text": "The store never sees your card. Neither does Apple.",
+   "scene": {
+    "label": "GOOD TO KNOW",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Store never sees it",
+       "cue": "store"
+      },
+      {
+       "text": "Apple doesn't keep it",
+       "cue": "neither"
+      }
+     ]
+    }
+   },
+   "chunks": [
+    6,
+    3
+   ]
+  }
+ ],
+ "post": {
+  "title": "How does Apple Pay hide your card number?",
+  "caption": "How does Apple Pay hide your card number? 💳\n\nWhen you add a card, your bank creates a Device Account Number just for that phone or watch. It's stored encrypted in the Secure Element, a certified payment chip, never on Apple's servers and never in iCloud. When you tap to pay, the chip sends that number plus a dynamic security code made for that one purchase, and your bank checks the code is unique and tied to your device before it approves. Your real card number is never sent to the store, and Apple doesn't store it either.\nSend this to the friend who still won't add their card to Wallet.",
+  "keywords": [
+   "how does apple pay work",
+   "apple pay card number",
+   "is apple pay safe",
+   "device account number",
+   "iphone tips",
+   "tap to pay explained"
+  ],
+  "hashtags": [
+   "#applepay",
+   "#iphonetips",
+   "#techexplained",
+   "#contactlesspayment",
+   "#paymentsecurity"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/101554",
+    "note": "Apple, Apple Pay security and privacy overview: your bank or card issuer creates a device-specific Device Account Number, encrypted, stored in the Secure Element, never on Apple servers or in iCloud; at payment the Secure Element provides the Device Account Number and a transaction-specific dynamic security code; your actual card number is not sent; the bank verifies the code is unique and tied to your device; Apple doesn't store original card numbers"
+   },
+   {
+    "url": "https://support.apple.com/guide/security/card-provisioning-security-overview-sec0f005981a/web",
+    "note": "Apple Platform Security, card provisioning: full card numbers aren't stored on the device or on Apple Pay servers; a unique Device Account Number is created by the card issuer, sent encrypted to Apple and stored in the Secure Element where Apple can't access it"
+   }
+  ]
+ }
+}
