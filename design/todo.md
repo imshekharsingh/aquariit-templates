@@ -15,7 +15,6 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] One daily routine per channel that writes the script, renders stills to a private review page and stops (roadmap 3).
 
 ## P3
-- [ ] The audit numbers (medians, deltas, milestones) computed by a script on GitHub; Claude only writes the lesson: cheaper daily runs.
 - [ ] Posting through Instagram's content publishing API (roadmap 6; needs Meta's review, owner's call).
 
 ## Done
@@ -35,3 +34,5 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   check). Covers the web showreels; techreel scenes keep their own --stills check.
 - 3 Nov 2026: Turns Out starter: node scripts/channel3/new25d.mjs makes a new 2.5D reel from scripts/channel3/starter25d.html (core, kit,
   two stations with a fly-through, hook, captions, kinetic type, credit, payoff, sound), qa clean and stills without empty frames.
+- 3 Nov 2026: the audit's numbers are computed on GitHub after each nightly collect (scripts/audit-numbers.mjs prints AUDIT_CHANNELS,
+  ready as the card's "channels"): the daily run reads one line instead of the raw data.

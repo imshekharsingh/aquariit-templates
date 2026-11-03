@@ -111,7 +111,8 @@ A scheduled task (created by the parent session, not here) fires Tuesdays around
 - Daily audit (owner, 1 Nov 2026: the app shows the owner everything): every daily studio run writes its full audit as a CARD in the app, by
   dispatching the "Audit card" workflow on main with input `card` = JSON `{"kind":"audit","day":"YYYY-MM-DD","points":[today's points],
   "channels":{"web":[...],"tech":[...],"c3":[...]}}` (format in scripts/post-card.mjs; short bullets, numbers first, simple English; per channel the
-  last 7 days: followers, reels with reach, avg watch, saves, shares, pattern used, best reel). The same day's id replaces the card; the owner's
+  last 7 days: followers, reels with reach, avg watch, saves, shares, pattern used, best reel). The numbers are computed nightly on GitHub
+  (scripts/audit-numbers.mjs, the "Audit numbers" step of the latest "Instagram collect" run): use its AUDIT_CHANNELS line as "channels" and add only the lesson. The same day's id replaces the card; the owner's
   "Mark read" deletes it for good. In the repo only ONE line a day stays: the lesson, in design/experiments.md "Results log"
   (`- DD Mon: lesson`). The full report never goes into the repo or chat.
 - Questions for the owner (owner, 1 Nov 2026) go into the app's "Needs you" list, never into chat: dispatch the "Owner answers" workflow (main) with
