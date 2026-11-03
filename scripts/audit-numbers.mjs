@@ -2,6 +2,8 @@
 // Runs after the nightly "Instagram collect": signs in like scripts/ig-collect.mjs, reads every channel's numbers from /api/perf and
 // prints, per channel, the last 7 days as short bullets (numbers first, simple English) plus one line AUDIT_CHANNELS={...} that is
 // ready to use as the audit card's "channels" (scripts/post-card.mjs). The daily run reads that line from the log instead of the raw data.
+// A second line, AUDIT_SIGNALS={...}, holds the last 30 days' signals per channel (best posting hour, best format, reels with the biggest
+// follower gains): the daily run plans topics, hooks and timing from it.
 //   env:  BASIC_AUTH_USER / BASIC_AUTH_PASS, SITE_BASE (default https://templates.aquariit.com)
 // Usage: node scripts/audit-numbers.mjs [--fixture file.json]   (a fixture { web: { account, media }, ... } skips the site, for tests)
 import { readFileSync, appendFileSync } from 'node:fs';
@@ -35,6 +37,25 @@ export function week({ account = [], media = [] }, today) {
   return out;
 }
 
+// signals as data (Growth step 3, 3 Nov 2026): what the last 30 days say, for the daily run to plan by instead of memory:
+// the posting hour (IST) with the best median reach, the reels that came with the biggest follower gains, and the format (captions.json
+// "concept" before " · ") with the best median reach. Only patterns with 2+ reels count.
+export function signals({ account = [], media = [] }, today) {
+  const from = new Date(Date.parse(today + 'T00:00:00Z') - 30 * DAY).toISOString().slice(0, 10), out = {};
+  const seen = media.filter((m) => m.posted_at && m.reach != null && istDay(m.posted_at) > from);
+  const groupBest = (key) => { const g = {}; seen.forEach((m) => { const k = key(m); if (k != null) (g[k] = g[k] || []).push(m.reach); });
+    return Object.entries(g).filter(([, v]) => v.length >= 2).map(([k, v]) => [k, Math.round(med(v)), v.length]).sort((a, b) => b[1] - a[1]); };
+  const hours = groupBest((m) => Math.floor(((Date.parse(m.posted_at) + IST) % DAY) / 36e5));
+  if (hours.length) out.bestHour = { hourIST: +hours[0][0], medianReach: hours[0][1], reels: hours[0][2], others: hours.slice(1, 4).map((h) => ({ hourIST: +h[0], medianReach: h[1] })) };
+  const fmtB = groupBest((m) => { const c = CAPS[m.template_id]; return c && c.concept ? c.concept.split(' · ')[0] : null; });
+  if (fmtB.length) out.bestFormat = { format: fmtB[0][0], medianReach: fmtB[0][1], reels: fmtB[0][2] };
+  const f = {}; account.forEach((r) => { if (r.followers != null) f[r.day] = r.followers; });
+  const prev = (d) => new Date(Date.parse(d + 'T00:00:00Z') - DAY).toISOString().slice(0, 10);
+  out.followerReels = seen.map((m) => { const d = istDay(m.posted_at), c = CAPS[m.template_id] || {}; return f[d] != null && f[prev(d)] != null ? { day: d, gain: f[d] - f[prev(d)], reach: m.reach, reel: c.concept || m.template_id || '' } : null; })
+    .filter(Boolean).sort((a, b) => b.gain - a.gain).slice(0, 3);
+  return out;
+}
+
 async function load() {
   if (fx > 0) return JSON.parse(readFileSync(process.argv[fx + 1], 'utf8'));
   const { BASIC_AUTH_USER: u, BASIC_AUTH_PASS: p } = process.env;
@@ -54,4 +75,6 @@ const data = await load(), today = istDay(new Date().toISOString()), channels = 
 for (const k of Object.keys(CH)) if (data[k]) channels[k] = week(data[k], today);
 for (const [k, a] of Object.entries(channels)) { console.log(`AUDIT ${k} (${CH[k].username}), 7 days to ${today}:`); a.forEach((l) => console.log('  - ' + l)); }
 console.log('AUDIT_CHANNELS=' + JSON.stringify(channels));
+const sig = {}; for (const k of Object.keys(CH)) if (data[k]) sig[k] = signals(data[k], today);
+console.log('AUDIT_SIGNALS=' + JSON.stringify(sig));
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, '### Audit numbers, 7 days to ' + today + '\n' + Object.entries(channels).map(([k, a]) => `**${CH[k].username}**\n` + a.map((l) => '- ' + l).join('\n')).join('\n\n') + '\n');
