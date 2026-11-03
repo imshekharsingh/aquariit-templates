@@ -39,7 +39,8 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
 - Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel; `node scripts/showreel/preflight.mjs <config>` plus `node scripts/showreel/stills.mjs <config> <out>` for showreels, one sheet to review)
   and clear all of it: the PREFLIGHT voice line must say "fits", no "text wider than its box", the stills lines must say "EMPTY FRAMES: none" and "TEXT FIT: all text inside its box" (both scan every 0.5 s; a demo that overflows on purpose marks its container data-fit="free"), and stills at every beat checked.
-  Re-render only for a real defect in the output.
+  Re-render only for a real defect in the output. After a render, one `node scripts/reel-status.mjs <config> <scratch dir>` (about 25 minutes after the
+  dispatch) gives the run's result, the voice check and the contact sheet; a failed run prints the failing job's error lines.
 - Ownership (owner, 28 Oct 2026): Claude decides the topics for both channels, runs every check, renders and delivers; the owner watches and posts.
   Nothing is parked for the owner. The bar is the owner's: every reel feels premium, nothing looks broken, every spoken line is shown and
   finished (no half-relayed statement), and every reel teaches one concrete, useful thing. Claude reviews its own stills at every beat against
