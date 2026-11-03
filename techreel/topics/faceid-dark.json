@@ -20,14 +20,22 @@
    "text": "How does Face ID work in the dark?"
   },
   {
-   "text": "It brings its own light, invisible infrared.",
+   "text": "It shines invisible infrared light.",
    "scene": {
     "label": "STEP 1: ITS OWN LIGHT",
     "tint": "purple",
     "kind": "nest",
     "params": {
-     "outer": {"title": "Your iPhone", "sub": "camera at the top", "icon": "chip"},
-     "inner": {"title": "Infrared light", "sub": "invisible to your eyes", "icon": "eye"},
+     "outer": {
+      "title": "Your iPhone",
+      "sub": "camera at the top",
+      "icon": "chip"
+     },
+     "inner": {
+      "title": "Infrared light",
+      "sub": "invisible to your eyes",
+      "icon": "eye"
+     },
      "inner_cue": "invisible"
     }
    }
@@ -38,16 +46,24 @@
     "label": "STEP 2: THOUSANDS OF DOTS",
     "tint": "red",
     "kind": "dots",
-    "params": {"mode": "spray", "cue": "sprays", "pill": "INFRARED DOTS"}
+    "params": {
+     "mode": "spray",
+     "cue": "sprays",
+     "pill": "INFRARED DOTS"
+    }
    }
   },
   {
-   "text": "The way they bend becomes a depth map.",
+   "text": "How they bend becomes a depth map.",
    "scene": {
     "label": "STEP 3: A DEPTH MAP",
     "tint": "cyan",
     "kind": "dots",
-    "params": {"mode": "map", "cue": "bend", "pill": "NEAR = BRIGHT, FAR = DIM"}
+    "params": {
+     "mode": "map",
+     "cue": "bend",
+     "pill": "NEAR = BRIGHT, FAR = DIM"
+    }
    }
   },
   {
@@ -58,7 +74,10 @@
     "kind": "portal",
     "params": {
      "icon": "lock",
-     "pills": ["Secure Enclave", "Stays on device"],
+     "pills": [
+      "Secure Enclave",
+      "Stays on device"
+     ],
      "guest": "doc",
      "guest_tint": "cyan",
      "n": 1,
@@ -73,7 +92,10 @@
     "tint": "blue",
     "kind": "guard",
     "params": {
-     "object": {"icon": "user", "label": "Your face"},
+     "object": {
+      "icon": "user",
+      "label": "Your face"
+     },
      "attacker": "doc",
      "stop_cue": "fails",
      "badge": "NO DEPTH, NO UNLOCK"
@@ -81,19 +103,28 @@
    }
   },
   {
-   "text": "Total darkness is fine. Five misses, and it asks for your passcode.",
+   "text": "Pitch dark is fine. Five misses, and it wants your passcode.",
    "scene": {
     "label": "GOOD TO KNOW",
     "tint": "green",
     "kind": "checklist",
     "params": {
      "items": [
-      {"text": "Works in total darkness", "cue": "total"},
-      {"text": "5 misses: passcode", "cue": "five"}
+      {
+       "text": "Works in pitch dark",
+       "cue": "pitch"
+      },
+      {
+       "text": "5 misses: passcode",
+       "cue": "five"
+      }
      ]
     }
    },
-   "chunks": [4, 8]
+   "chunks": [
+    4,
+    7
+   ]
   }
  ],
  "post": {

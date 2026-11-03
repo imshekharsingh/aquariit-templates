@@ -105,7 +105,7 @@ def generate(topic, wav_path, fake=False):
         # render would, and say plainly whether it fits, so a script that cannot fit is trimmed before anything is dispatched.
         letters = len(re.sub(r'[^A-Za-z]', '', re.sub(r'\[([^\]]+)\]\(/[^)]*/\)', r'\1', ' '.join(' '.join(w for _, sp in pr for w in sp) for pr in pairs))))
         sp0, top, lim = float(topic.get('speed', 1.05)), float(topic.get('max_speed', 1.14)), float(topic.get('max_end', MAX_END))
-        est = lambda v: FIRST + letters * .079 / v   # .079 s a letter at speed 1: the slowest take so far (29 Oct, Discord: 20.6 s for 256 letters at 0.98)
+        est = lambda v: FIRST + letters * .083 / v   # .083 s a letter at speed 1: the slowest take so far (3 Nov, Face ID: 19.75 s for 240 letters at 1.01)
         v = sp0
         while est(v) > lim and v < top - .001:
             v = round(v + .03, 2)
