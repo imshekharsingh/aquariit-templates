@@ -172,6 +172,11 @@ it in (the same command inlines kit3d.js), npm run check fails on a stale copy. 
   the subject's centre about 50 px below the frame centre (hook and kinetic type above, caption below); an exact zoom into fine detail
   is drawn in screen space with `deep()` (Kt.proj stops 5 cm from a plane).
 
+- **Pronunciation** (3 Nov 2026, the tea reel): a foreign or short word the voice may misread (te, thé, Tee) gets Kokoro markup in the
+  config's voice text only, `[te](/tˈA/)` (misaki phonemes: A = the "ay" sound, I = "eye", O = "oh"); the scene keeps the plain word for
+  the caption. qa.mjs compares the config with the markup read as its word, and `--write` keeps the markup. Read the voice check's
+  "Heard" line for every foreign word after the render.
+
 ## Pattern library (2D, retired with the pilots on 31 Oct 2026; kept for the story ideas, rebuilt in 3D)
 Rotate patterns so the feed never shows the same look two days running. Each entry is a reusable recipe; a new pattern gets an entry here
 before its first reel.
@@ -238,7 +243,7 @@ consecutive days, and no more than 3 of one pattern in a week. Spread continents
 | showreel-c3-blue-flow (scripts/channel3/blue-flow.html) | Why is the sky blue, and not violet? (scattering; the turn: less violet in sunlight, eyes see blue better) | 31.3 s | 30 fps, parts 1. Made 2 Nov for that night; the cost test for going daily |
 | showreel-c3-liberty-green (scripts/channel3/liberty-green.html) | Why is the Statue of Liberty green? (copper-brown in 1886, green in about 20 years, the 1906 paint plan dropped after protests, the patina protects the copper) | 33.3 s | 30 fps, parts 1. Made 3 Nov for that night (first daily reel) |
 | showreel-c3-green-sahara (scripts/channel3/green-sahara.html) | Was the Sahara always a desert? (green 10,000 years ago, hippos and crocodiles, cattle rock art; a slow wobble of the Earth moves the summer rains; dried up about 5,000 years ago; green about every 20,000 years) | 32.7 s | 30 fps, parts 1. Made on the 3 Nov spare night for Thu 5 Nov (Africa) |
-| showreel-c3-tea-chai (scripts/channel3/tea-chai.html) | Why do some say tea, and others say chai? (both Chinese; cha spread west over land; Fujian's te went to Europe on Dutch ships in the 1600s; your word shows the route) | 30.1 s | 30 fps, parts 1. Made on the 3 Nov spare night for Fri 6 Nov (Asia) |
+| showreel-c3-tea-chai (scripts/channel3/tea-chai.html) | Why do some say tea, and others say chai? (both Chinese; cha spread west over land; Fujian's te went to Europe on Dutch ships in the 1600s; your word shows the route) | 31 s | 30 fps, parts 1. Made on the 3 Nov spare night for Fri 6 Nov (Asia). First render read "te" as "tea" and "thé, Tee" as "they tea" (voice check); re-rendered with the voice markup below |
 The flat 2D Eiffel pilot and the 3-second 3D test are in attic/scripts/channel3/.
 Learned from its render (fix in the shared core before the next 3D reel): at a cut the caption card stays up empty for about 0.2 s
 while it changes shape (seen at 3 cuts); the voice check counts a year as four words, so its "too dense" pacing flag misreads

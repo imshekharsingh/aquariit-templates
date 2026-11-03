@@ -305,7 +305,7 @@ var K25 = (function(){
 /*kit25:end*/
 
   // ---- the story (new25d.mjs fills it; then node scripts/channel3/qa.mjs <config> --write copies voice, times and length into the config) ----
-  story(/*story*/[['Why do some say tea, and others say chai?', 0], ['Both words come from Chinese.', 1.0], ['In most of China, it is chá.', 0.9], ['Carried west over land, it became chai in India, Persia and Russia.', 0.9], ['But on the coast of Fujian, the word is te.', 0.9], ['In the 1600s, Dutch ships carried tea from there to Europe.', 0.9], ['So Europe says thé, Tee and tea.', 0.9], ['Turns out, your word for tea shows its route: land or sea.', 0.9]]/*story:end*/);
+  story(/*story*/[['Why do some say tea, and others say chai?', 0], ['Both words come from Chinese.', 1.0], ['In most of China, it is chá.', 1.05], ['Carried west over land, it became chai in India, Persia and Russia.', 1.05], ['But on the coast of Fujian, the word is te.', 1.05], ['In the 1600s, Dutch ships carried tea from there to Europe.', 1.05], ['So Europe says thé, Tee and tea.', 1.05], ['Turns out, your word for tea shows its route: land or sea.', 1.05]]/*story:end*/);
   var DUR = +(CAPS[CAPS.length - 1].e + 1.9).toFixed(1);
   // ---- the look: one grade per reel (design/channel3.md, "Quality bar" 5): warm tea brown, tea-hill green, atlas parchment; matte, no glow ----
   var CREAM = '#fbf3e0', AMBER = '#f2b46a', SEA = '#3f6f9a', KD = 'rgba(14,10,8,.9)';
