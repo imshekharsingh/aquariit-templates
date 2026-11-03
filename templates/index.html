@@ -162,6 +162,10 @@
   .gtable td.best::after{content:'★';color:var(--c-c3,#f2b46a);font-size:.65rem;margin-left:2px}
   .rates td,.rates th{white-space:nowrap;padding:5px 3px}
   .gtable .sub{margin:6px 0 4px}
+  .works{list-style:none;margin:4px 0 6px;padding:0}
+  .works li{display:flex;flex-direction:column;gap:2px;padding:9px 0;border-top:1px solid var(--line)}
+  .works li span{color:var(--mute);font:700 .72rem system-ui,sans-serif;text-transform:uppercase;letter-spacing:.04em}
+  .works li b{font:700 .9rem/1.35 system-ui,sans-serif}
   .rtiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 8px}
   .rtile{display:flex;flex-direction:column;gap:2px;padding:10px;border:1px solid var(--line);border-radius:12px;min-width:0}
   .rtile span{color:var(--mute);font:700 .72rem system-ui,sans-serif;text-transform:uppercase;letter-spacing:.04em}
@@ -426,6 +430,26 @@
       [[r.reach == null ? '–' : r.reach.toLocaleString('en-IN')], [f1(r.saves), 'saves'], [f1(r.shares), 'shares'], [pc(r.watch), 'watch'], [sg(r.fol), 'fol']].forEach(function(q){
         var td = el('td', 'n' + (q[1] && r[q[1]] != null && r[q[1]] === bs[q[1]] && rows.length > 1 ? ' best' : ''), q[0]); tr.appendChild(td); }); tb.appendChild(tr); });
     det.appendChild(tb); det.appendChild(el('p', 'sub', 'Saves and shares per 1,000 reached. Watch: average, as % of the reel. Fol.: the follower change on the day it went out. ★ best in each column.')); c.appendChild(det); return c; }
+  // Growth step 4 (3 Nov 2026): "What works", the same 30-day signals the nightly audit prints (scripts/audit-numbers.mjs, AUDIT_SIGNALS):
+  // the posting hour with the best median reach, the format (captions.json concept before " · ") with the best median reach, and the
+  // reels that came with the biggest follower gains. A slot or format needs 2+ reels to count.
+  function works(reels, acc){ var c = el('section', 'gcard'), cap = (DATA && DATA.c) || {}, from = istDay(new Date(Date.now() - 30 * DAY).toISOString()), ul = el('ul', 'works');
+    c.appendChild(el('h2', null, 'What works')); c.appendChild(el('p', 'sub', 'From the last 30 days. A time or format needs 2 or more reels to count.'));
+    var seen = reels.filter(function(m){ return istDay(m.posted_at) > from; });
+    function best(key){ var g = {}; seen.forEach(function(m){ var k = key(m); if (k != null) (g[k] = g[k] || []).push(m.reach); }); var b = null;
+      Object.keys(g).forEach(function(k){ var v = g[k].slice().sort(function(a, b){ return a - b; }); if (v.length < 2) return; var h = v.length >> 1, md = v.length % 2 ? v[h] : (v[h - 1] + v[h]) / 2; if (!b || md > b.md) b = { k: k, md: md, n: v.length }; }); return b; }
+    function row(label, text){ var li = el('li'); li.appendChild(el('span', null, label)); li.appendChild(el('b', null, text)); ul.appendChild(li); }
+    var hr = best(function(m){ return Math.floor(((Date.parse(m.posted_at) + IST) % DAY) / 36e5); }), pad = function(h){ return (h < 10 ? '0' : '') + h + ':00'; };
+    row('Best time to post', hr ? pad(+hr.k) + '–' + pad((+hr.k + 1) % 24) + ' IST · ' + Math.round(hr.md).toLocaleString('en-IN') + ' typical reach (' + hr.n + ' reels)' : 'not enough reels yet');
+    var fm = best(function(m){ var x = cap[m.template_id]; return x && x.concept ? x.concept.split(' · ')[0] : null; });
+    row('Best format', fm ? fm.k + ' · ' + Math.round(fm.md).toLocaleString('en-IN') + ' typical reach (' + fm.n + ' reels)' : 'not enough reels yet');
+    var fol = {}; acc.forEach(function(r){ fol[r.day] = r.followers; });
+    var gains = seen.map(function(m){ var d = istDay(m.posted_at), p = new Date(Date.parse(d + 'T00:00:00Z') - DAY).toISOString().slice(0, 10), x = cap[m.template_id] || {};
+      return fol[d] != null && fol[p] != null ? { d: d, g: fol[d] - fol[p], what: x.concept ? x.concept.split(' · ').pop() : 'reel' } : null; }).filter(function(r){ return r && r.g > 0; }).sort(function(a, b){ return b.g - a.g; }).slice(0, 3);
+    row('Brought followers', gains.length ? '' : 'no follower gains on a reel day yet');
+    gains.forEach(function(r){ ul.lastChild.appendChild(el('b', null, '+' + r.g + ' followers on ' + dShort(r.d) + ' · ' + r.what)); });
+    if (gains.length) ul.lastChild.removeChild(ul.lastChild.children[1]);
+    c.appendChild(ul); return c; }
   function growth(){ var k = ch; gBox.textContent = ''; gBox.appendChild(el('p', 'empty', 'Loading numbers…'));
     perfFor(k).then(function(j){ if (k !== ch || view !== 'growth') return; gBox.textContent = '';
       var acc = ((j && j.account) || []).filter(function(r){ return r.followers != null; });
@@ -439,7 +463,7 @@
       if (reels.length) { var c2 = el('section', 'gcard'); c2.appendChild(el('h2', null, 'Reach per reel'));
         c2.appendChild(el('p', 'sub', 'People reached by each of the last ' + reels.length + ' posts, oldest on the left. Tap a bar.'));
         c2.appendChild(reachChart(reels));
-        gBox.appendChild(c2); gBox.appendChild(rates(reels, acc)); }
+        gBox.appendChild(c2); gBox.appendChild(rates(reels, acc)); gBox.appendChild(works(reels, acc)); }
       if (j && j.updated) gBox.appendChild(el('p', 'about', 'Numbers from ' + dShort(j.updated) + '.'));
     }); }
   function render(){
