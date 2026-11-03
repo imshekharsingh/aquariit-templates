@@ -1,0 +1,501 @@
+<!doctype html>
+<!--
+  Turns Out: "Was the Sahara always a desert?" in 2.5D, one continuous camera (5 Nov 2026).
+  The turn: the Sahara is not a permanent desert. It turns green and back on a cycle of about 20,000 years, driven by a slow wobble of
+  the Earth (orbital precession) that moves the summer monsoon rains north and south.
+  - Facts (two sources each):
+    * About 10,000 years ago the Sahara was green, with lakes and rivers (the African Humid Period, roughly 11,500-5,000 years ago):
+      University of Bristol 2023 (Nature Communications); University of Chicago News (Gobero lake); MIT News 2019.
+    * Hippos and crocodiles lived there: University of Chicago News (Gobero: crocodile and hippo remains); National Geographic (Gobero bones).
+    * People herded cattle and painted them on rocks: Live Science (cattle rock art, Atbai Desert); University of Chicago News (domesticated cattle at Gobero).
+    * The cause is a slow wobble of the Earth (precession) that strengthens the summer monsoon: MIT News 2019; University of Bristol 2023.
+    * About 5,000 years ago the rains moved south and it dried up: University of Bristol 2023; MIT News 2019 (the wet phases end with the cycle).
+    * About every 20,000 years (MIT: 20,000; Bristol: about 21,000; said as "about"): MIT News 2019; University of Bristol 2023.
+    Africa's outline on the globe is a coarse hand drawing, for the picture only.
+  - Look (design/channel3.md, "2.5D toolkit"): engraved paper layers at real depths in front of ONE camera that never stops and never cuts:
+    the desert at noon (through the sun), the green Sahara (a lake with hippos and a crocodile, acacias), a rock wall where red-ochre cattle
+    are painted as the voice says it, the Earth in space (the axis wobbles, the rain belt slides north over the Sahara, then south), the
+    desert at dusk with the cycle ring. One grade: warm sand, savanna green and night blue, matte, no glow. Every frame is a pure function
+    of t; seeded randomness.
+  Made from scripts/channel3/starter25d.html by scripts/channel3/new25d.mjs.
+-->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=540">
+<title>Was the Sahara always a desert? (2.5D)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@600;700;800&display=block" rel="stylesheet">
+<style>
+html,body{margin:0;width:540px;height:960px;overflow:hidden;background:#1d1410}
+canvas{position:absolute;left:0;top:0;width:540px;height:960px}
+</style></head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+(function(){
+  // ---- shared core of the Channel 3 scenes (design/channel3.md): timing, voice, captions, hook, text probes (no scene grain in 3D: the render adds it once) ----
+  var c = document.getElementById('c'), x = c.getContext('2d');   // the 2D layer over the 3D canvas: hook, captions, credit, payoff
+  var FD = "'Playfair Display',Georgia,serif", FI = "'Inter',system-ui,sans-serif";
+  function rnd(s){ return function(){ s |= 0; s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function cl(v, a, b){ return v < a ? a : v > b ? b : v; }
+  function P(t, a, b){ return cl((t - a) / (b - a), 0, 1); }
+  function mix(a, b, k){ return a + (b - a) * k; }
+  function eo(k){ return 1 - Math.pow(1 - k, 3); }
+  function eio(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+  function eb(k){ var q = 1.6; return 1 + (q + 1) * Math.pow(k - 1, 3) + q * Math.pow(k - 1, 2); }
+  function win(t, a, b, f){ f = f || .25; return P(t, a, a + f) * (1 - P(t, b - f, b)); }   // 0 -> 1 -> 0 over [a, b]
+  // every text drawn in the last seek, as its box on screen (CSS px), for scripts/channel3/qa.mjs
+  var BOXES = []; window.__boxes = function(){ return BOXES; };
+  function probe(s, X, Y, al, size){ if (x.globalAlpha < .05) return; var w = x.measureText(s).width, l = al === 'left' ? X : al === 'right' ? X - w : X - w / 2, m = x.getTransform();
+    var a = m.transformPoint(new DOMPoint(l, Y - size * .75)), b = m.transformPoint(new DOMPoint(l + w, Y + size * .2)); BOXES.push([s, Math.min(a.x, b.x) / 2, Math.max(a.x, b.x) / 2, Math.min(a.y, b.y) / 2, Math.max(a.y, b.y) / 2]); }
+  function font(size, f){ var w = f.split(' '); return w[0] + ' ' + size + 'px ' + w.slice(1).join(' '); }
+  function txt(s, X, Y, size, f, col, al, sp){ x.font = font(size, f); x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px';
+    x.fillStyle = col; probe(s, X, Y, x.textAlign, size); x.fillText(s, X, Y); x.letterSpacing = '0px'; }
+  function tw(s, size, f, sp){ x.font = font(size, f); x.letterSpacing = (sp || 0) + 'px'; var w = x.measureText(s).width; x.letterSpacing = '0px'; return w; }
+  function es(k){ k = cl(k, 0, 1); var q = .7; return 1 + (q + 1) * Math.pow(k - 1, 3) + q * Math.pow(k - 1, 2); }   // a soft spring: eases in, settles with a small overshoot
+  // arrive(k): an element travels in (rises 12 px, grows from 86 %, fades up) instead of popping; k from es() so it settles like a spring
+  function arrive(k){ x.globalAlpha *= cl(k * 2.2, 0, 1); var s = mix(.86, 1, k); x.translate(0, (1 - cl(k, 0, 1)) * 12); x.scale(s, s); }
+  function lg(x0, y0, x1, y1, st){ var g = x.createLinearGradient(x0, y0, x1, y1); st.forEach(function(s){ g.addColorStop(s[0], s[1]); }); return g; }
+  function rgb(h){ return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+  function tone(h, f, to){ var a = rgb(h), b = to ? rgb(to) : [0, 0, 0]; return 'rgb(' + a.map(function(v, i){ return Math.round(to ? mix(v, b[i], f) : Math.min(255, v * f)); }).join(',') + ')'; }
+  // a paper piece: one key light from the upper left, so a soft contact shadow falls down and a little right; flat or gradient fill, crisp edge
+  function paper(path, col, sh, edge){ var m = x.getTransform(), k = Math.hypot(m.a, m.b), d = sh == null ? 2.5 : sh; x.save();
+    if (d > 0) { x.shadowColor = 'rgba(40,28,24,.22)'; x.shadowBlur = d * 2.6 * k; x.shadowOffsetX = d * .35 * k; x.shadowOffsetY = d * 1.25 * k; }
+    x.fillStyle = col; path(); x.fill(); x.restore(); if (edge) { x.strokeStyle = edge; x.lineWidth = 1.2; x.stroke(); } }
+  function rr(X, Y, w, h, r){ return function(){ x.beginPath(); x.roundRect(X, Y, w, h, r); }; }
+  function tag(s, X, Y, size, f, col, bg, sp){ var w = tw(s, size, f, sp) + size * 1.1, h = size * 1.75;
+    paper(rr(X - w / 2, Y - h / 2, w, h, h * .22), bg); txt(s, X, Y + size * .36, size, f, col, 'center', sp); }
+  // ---- the story: one start time per sentence, from an estimate of each sentence's length (scripts/showreel/preflight.mjs uses the same
+  // rate: 0.07 s a letter at speed 1, a digit as 4 letters since "1889" is spoken as "eighteen eighty nine"), then a breath ----
+  var SPEED = .95, lt = function(w){ return w.replace(/[^A-Za-z]/g, '').length + 4 * w.replace(/[^0-9]/g, '').length; };
+  var A = [], CAPS = [];
+  function story(lines){   // lines: [[text, breath before it]]
+    var t = 0;
+    lines.forEach(function(L, i){ if (i) t += L[1]; var at = +t.toFixed(2), ws = L[0].split(/\s+/), w0 = at + .05, n = 0;
+      var words = ws.map(function(w){ var o = { d: w, s: w0, e: w0 + lt(w) * .07 / SPEED }; w0 = o.e; n += lt(w); return o; });
+      A.push(at); CAPS.push({ text: L[0], at: at, s: at, e: at + .1 + n * .07 / SPEED, words: words }); t = CAPS[i].e; });
+    window.VOICE = { text: CAPS.map(function(L){ return L.text; }).join(' '), at: A.slice() };
+  }
+  var norm = function(w){ return String(w).toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  window.setVoice = function(v){ if (!v || !v.words || !v.words.length) return; var V = v.words, j = 0;
+    CAPS.forEach(function(L){ L.words.forEach(function(w){ for (var k = j; k < Math.min(V.length, j + 4); k++) if (norm(V[k].w) === norm(w.d)) { w.s = V[k].s; w.e = V[k].e; j = k + 1; return; } }); L.s = L.words[0].s; L.e = L.words[L.words.length - 1].e; }); };
+  var CAPI = -1; window.__cap = function(){ return CAPI; };
+  window.__caps = function(){ return CAPS.map(function(L){ return [L.at, +L.s.toFixed(2), +L.e.toFixed(2), L.text]; }); };
+  // a sentence stays up until the next one starts (no empty caption between them), at most 2.5 s after it is spoken
+  function capAt(t){ for (var i = CAPS.length - 1; i >= 0; i--) if (t >= CAPS[i].s - .12) return t < CAPS[i].e + 2.5 ? i : -1; return -1; }
+  function wrap(words, size, f, maxW){ x.font = font(size, f); var sp = x.measureText(' ').width, lines = [[]], lw = [0];
+    words.forEach(function(w){ var ww = x.measureText(w.d).width, n = lines.length - 1; if (lw[n] && lw[n] + sp + ww > maxW) { lines.push([]); lw.push(0); n++; } lines[n].push([w, ww]); lw[n] += (lw[n] ? sp : 0) + ww; });
+    return { lines: lines, lw: lw, sp: sp }; }
+  // HOOK = { y, col, hl, hlCol, size }: the question, big, at the top while it is spoken (it is sentence 1's caption); then it lifts away
+  // STYLE = { hl: /words in accent/, hlCol, ink, panel }: the caption strip for every other sentence
+  function drawHook(t){
+    var L = CAPS[0], out = P(t, A[1] - .35, A[1] + .1); if (out >= 1) return;
+    var W = wrap(L.words, HOOK.size, '800 ' + FD, 480), lh = HOOK.size * 1.08, y0 = HOOK.y - (W.lines.length - 1) * lh / 2 - eo(out) * 30;
+    x.save(); x.globalAlpha = 1 - out;
+    if (HOOK.label) { var lk = P(t, 0, .3); x.globalAlpha = (1 - out) * lk; tag(HOOK.label, 270, y0 + eo(out) * 30 - HOOK.size - 14, 12, '800 ' + FI, HOOK.labelCol || '#fff', HOOK.labelBg || '#23202b', 2.5); }
+    W.lines.forEach(function(ln, r){ var xx = 270 - W.lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .1, w.s + .12)), hl = HOOK.hl && HOOK.hl.test(w.d);
+        x.globalAlpha = (1 - out) * (.5 + .5 * k); x.save(); x.translate(xx + q[1] / 2, y0 + r * lh); var sc = 1 + .06 * (1 - k); x.scale(sc, sc);
+        if (HOOK.shadow) { x.globalAlpha *= .9; txt(w.d, 2, 3, HOOK.size, '800 ' + FD, HOOK.shadow, 'center', -.6); x.globalAlpha = (1 - out) * (.5 + .5 * k); }
+        txt(w.d, 0, 0, HOOK.size, '800 ' + FD, hl ? HOOK.hlCol : HOOK.col, 'center', -.6); x.restore(); xx += q[1] + W.sp; }); });
+    x.restore();
+  }
+  // (1 Nov, the 2.5D Eiffel render: the new line fades in from 14 % of the change, not 36 %, so the card is never empty for a frame)
+  // the caption card (premium pass, 31 Oct): ONE card that stays up and changes shape from sentence to sentence (no fade out and in);
+  // the old line slides up out of it as the new one rises in word by word
+  function capLay(i){ var size = 27, W = wrap(CAPS[i].words, size, '700 ' + FI, 452), lh = 35, n = W.lines.length, base = 716 - (n - 1) * lh / 2;
+    return { W: W, base: base, pw: Math.max.apply(null, W.lw) + 34, ph: n * lh + 18, py: base - size * .8 - 10, lh: lh, size: size }; }
+  function capWords(C, t, a, dy, lit){ C.W.lines.forEach(function(ln, r){ var xx = 270 - C.W.lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = lit ? 1 : eo(P(t, w.s - .1, w.s + .08)), hl = STYLE.hl && STYLE.hl.test(w.d);
+        x.globalAlpha = a * (.3 + .7 * k); txt(w.d, xx, C.base + r * C.lh + dy - (1 - k) * 3, C.size, '700 ' + FI, hl ? (STYLE.hlFor ? STYLE.hlFor(w.d) : STYLE.hlCol) : (STYLE.ink || '#23202b'), 'left', -.3); xx += q[1] + C.W.sp; }); }); }
+  function drawCaption(t){
+    var i = capAt(t); CAPI = i; if (i < 0) return; if (i === 0) { drawHook(t); return; }
+    var L = CAPS[i], cur = capLay(i), prev = i > 1 && t < L.s + .4 ? capLay(i - 1) : null, mk = P(t, L.s - .14, L.s + .3), m = es(mk);
+    var inK = i > 1 ? 1 : eo(P(t, L.s - .14, L.s + .22)), next = i + 1 < CAPS.length ? CAPS[i + 1].s - .14 : 1e9, outK = eio(P(t, Math.min(next, L.e + 2.5) - .2, Math.min(next, L.e + 2.5)));
+    if (i + 1 < CAPS.length && next < L.e + 2.5) outK = 0;   // the next sentence morphs the card; it never empties
+    var pw = prev ? mix(prev.pw, cur.pw, m) : cur.pw, ph = prev ? mix(prev.ph, cur.ph, m) : cur.ph, cy = (prev ? mix(prev.py + prev.ph / 2, cur.py + cur.ph / 2, m) : cur.py + cur.ph / 2) + (1 - inK) * 18;
+    var A0 = inK * (1 - outK); x.save(); x.globalAlpha = A0;
+    paper(rr(270 - pw / 2, cy - ph / 2, pw, ph, 12), STYLE.panel || '#fbf6ea', 3);
+    x.save(); x.beginPath(); x.rect(270 - pw / 2, cy - ph / 2, pw, ph); x.clip();
+    if (prev && mk < 1) capWords(prev, t, A0 * (1 - eo(P(mk, 0, .32))), (cy - prev.py - prev.ph / 2) - eo(mk) * 16, true);
+    capWords(cur, t, A0 * (prev ? eo(P(mk, .14, .45)) : 1), (cy - cur.py - cur.ph / 2) + (prev ? (1 - eo(P(mk, .3, 1))) * 10 : 0), false);
+    x.restore(); x.restore();
+  }
+  // the source credit (owner, 31 Oct: a short credit on the last frame): a small paper tag at the top for the last 3 s
+  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.5); if (k <= 0) return; k = eo(k); x.save(); x.globalAlpha = k; tag(CREDIT, 270, 92 - (1 - k) * 10, 13, '700 ' + FI, CREAM, 'rgba(17,14,12,.8)', .6); x.restore(); }
+  Object.defineProperty(window, 'COVER', { configurable: true, get: function(){ return +Math.min(CAPS[0].e + .25, A[1] - .3).toFixed(2); } });   // the question fully lit
+  /*kit25:begin*/
+// ---- Turns Out 2.5D toolkit (scripts/channel3/kit25d.js; design/channel3.md, "2.5D toolkit"), inlined after the shared core of the
+// scene (it uses the core's x, cl, P, mix, eo, es, rnd, font, txt, probe) by node scripts/channel3/kit-inline.mjs <scene.html> ----
+// Flat engraved layers at real depths in front of ONE pinhole camera: a layer at depth Z draws in metres (y up) at F / (Z - cz) px per
+// metre, so every move has true parallax. The camera never stops: keys are eased with a little speed left at each key.
+var K25 = (function(){
+  var F = 810, CUR = { s: 1, cam: { x: 0, y: 0, z: -810 } }, OX = 0, OY = 0;
+  // track(keys)(t): keys [t, x, y, cz, f]; between two keys the distance to plane f (the next key's, default 0) moves in log space and
+  // x, y follow it (so a long zoom keeps its target in frame: the centre moves with 1/zoom); short moves ease. Speed never drops to 0.
+  function track(keys){ return function(t){
+    if (t <= keys[0][0]) return { x: keys[0][1], y: keys[0][2], z: keys[0][3] };
+    for (var i = 0; i + 1 < keys.length; i++) { var a = keys[i], b = keys[i + 1]; if (t <= b[0] || i + 2 === keys.length) {
+      var k = cl((t - a[0]) / (b[0] - a[0]), 0, 1), e = .3 * k + .7 * k * k * (3 - 2 * k), f = b[4] || 0, d0 = f - a[3], d1 = f - b[3];
+      var d = Math.exp(mix(Math.log(d0), Math.log(d1), e)), w = Math.abs(Math.log(d1 / d0)) > 1.5 ? (d - d0) / (d1 - d0) : e;
+      return { x: mix(a[1], b[1], w), y: mix(a[2], b[2], w), z: f - d }; } }
+  }; }
+  // off(ox, oy): shift the whole picture on screen (a world seen through a hole); use(cam, Z): metres at depth Z, y up; returns px per metre (0 = behind)
+  function off(ox, oy){ OX = ox; OY = oy; }
+  function use(cam, Z){ var dz = Z - cam.z; if (dz < .05) return 0; var s = F / dz; CUR.s = s; CUR.cam = cam;
+    x.setTransform(2 * s, 0, 0, -2 * s, 2 * (270 + OX - cam.x * s), 2 * (480 + OY + cam.y * s)); return s; }
+  function screen(){ x.setTransform(2, 0, 0, 2, 0, 0); }
+  function proj(cam, X, Y, Z){ var dz = Z - cam.z; if (dz < .05) return null; var s = F / dz; return { x: 270 + OX + (X - cam.x) * s, y: 480 + OY - (Y - cam.y) * s, s: s }; }
+  // the part of the current layer on screen, in metres (plus a margin in px)
+  // the current drawing scale (px per unit, any extra translate or scale included) and what is on screen in the current units
+  function cs(){ var m = x.getTransform(); return Math.hypot(m.a, m.b) / 2; }
+  function vis(m){ var I = x.getTransform().inverse(), s = cs(), r = { x0: 1e18, x1: -1e18, y0: 1e18, y1: -1e18 }; m = (m || 0) / s;
+    [[0, 0], [1080, 0], [0, 1920], [1080, 1920]].forEach(function(q){ var p = I.transformPoint(new DOMPoint(q[0], q[1])); r.x0 = Math.min(r.x0, p.x - m); r.x1 = Math.max(r.x1, p.x + m); r.y0 = Math.min(r.y0, p.y - m); r.y1 = Math.max(r.y1, p.y + m); }); return r; }
+  function px(v){ return v / cs(); }   // a size on screen (CSS px) in the current layer's metres
+  // hatch: engraved lines at angle a across a box (metres), spaced about sp px on screen at any zoom: lines are fixed to the layer at a
+  // power-of-two spacing and every other one fades out as the zoom halves them (no swimming, no popping)
+  function hatch(x0, y0, x1, y1, a, sp, col, lw){ var V = vis(4); x0 = Math.max(x0, V.x0); x1 = Math.min(x1, V.x1); y0 = Math.max(y0, V.y0); y1 = Math.min(y1, V.y1); if (x1 <= x0 || y1 <= y0) return;
+    var s = cs(), l2 = Math.log2(sp / s), n = Math.floor(l2), base = Math.pow(2, n), fr = l2 - n, dx = Math.cos(a), dy = Math.sin(a), nx = -dy, ny = dx;
+    var nmin = 1e18, nmax = -1e18, umin = 1e18, umax = -1e18;
+    [[x0, y0], [x1, y0], [x0, y1], [x1, y1]].forEach(function(p){ var q = p[0] * nx + p[1] * ny, u = p[0] * dx + p[1] * dy; nmin = Math.min(nmin, q); nmax = Math.max(nmax, q); umin = Math.min(umin, u); umax = Math.max(umax, u); });
+    var i0 = Math.floor(nmin / base), i1 = Math.ceil(nmax / base); if (i1 - i0 > 900) return;
+    x.lineWidth = (lw || .8) / s; x.strokeStyle = col; var ga = x.globalAlpha;
+    for (var pass = 0; pass < 2; pass++) { x.beginPath(); for (var i = i0; i <= i1; i++) { if ((i & 1) !== pass) continue; var o = i * base; x.moveTo(nx * o + dx * umin, ny * o + dy * umin); x.lineTo(nx * o + dx * umax, ny * o + dy * umax); }
+      if (pass) x.globalAlpha = ga * (1 - fr); x.stroke(); x.globalAlpha = ga; }
+  }
+  function path(pts, close){ x.beginPath(); pts.forEach(function(p, i){ if (i) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); }); if (close) x.closePath(); }
+  function ink(w, col){ x.lineWidth = w / cs(); x.strokeStyle = col || '#2a1f17'; x.lineJoin = 'round'; x.lineCap = 'round'; x.stroke(); }
+  function fill(col){ x.fillStyle = col; x.fill(); }
+  function seg(a, b, c0, d){ x.moveTo(a, b); x.lineTo(c0, d); }
+  // a world text (not a caption): drawn upright in the layer, size in metres; not reported to qa (it may sit half off screen while the camera passes)
+  function wtxt(s, X, Y, size, f, col, al, sp){ x.save(); x.translate(X, Y); x.scale(1, -1); x.font = font(size, f); x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px'; x.fillStyle = col; x.fillText(s, 0, 0); x.restore(); }
+  // paper: fibres, mottling, specks and a warm vignette on white, laid over the frame with 'multiply' (static: it is the paper, not film grain)
+  function paperTex(seed){ var cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1920; var g = cv.getContext('2d'), r = rnd(seed), i;
+    g.fillStyle = '#fff'; g.fillRect(0, 0, 1080, 1920);
+    for (i = 0; i < 70; i++) { var X = r() * 1080, Y = r() * 1920, R = 80 + r() * 280, gr = g.createRadialGradient(X, Y, 0, X, Y, R); gr.addColorStop(0, 'rgba(150,118,78,' + (.02 + r() * .035).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(150,118,78,0)'); g.fillStyle = gr; g.fillRect(X - R, Y - R, 2 * R, 2 * R); }
+    g.lineCap = 'round';
+    for (i = 0; i < 6000; i++) { var X2 = r() * 1080, Y2 = r() * 1920, a = r() * Math.PI, L = 3 + r() * 13; g.strokeStyle = 'rgba(125,98,62,' + (.04 + r() * .07).toFixed(3) + ')'; g.lineWidth = .6 + r() * .7;
+      g.beginPath(); g.moveTo(X2, Y2); g.quadraticCurveTo(X2 + Math.cos(a) * L * .5 + (r() - .5) * 3, Y2 + Math.sin(a) * L * .5 + (r() - .5) * 3, X2 + Math.cos(a) * L, Y2 + Math.sin(a) * L); g.stroke(); }
+    for (i = 0; i < 2200; i++) { g.fillStyle = 'rgba(92,70,45,' + (.05 + r() * .1).toFixed(3) + ')'; g.fillRect(r() * 1080, r() * 1920, 1 + r() * 1.3, 1 + r() * 1.3); }
+    var v = g.createRadialGradient(540, 880, 520, 540, 880, 1280); v.addColorStop(0, 'rgba(110,80,50,0)'); v.addColorStop(1, 'rgba(110,80,50,.3)'); g.fillStyle = v; g.fillRect(0, 0, 1080, 1920);
+    return cv; }
+  // ---- kinetic type (screen space, reported to qa) ----
+  // roll: the digits roll up into place one column after another (an odometer); letters fade up; k 0 -> 1. knock: a paper outline behind dark type
+  function roll(s, X, Y, size, f, col, k, knock){ if (k <= 0) return; x.save(); x.font = font(size, f); x.textAlign = 'left'; x.letterSpacing = '0px';
+    var w = x.measureText(s).width, xx = X - w / 2, n = s.length; x.globalAlpha *= cl(k * 3, 0, 1); probe(s, X, Y, 'center', size);
+    for (var i = 0; i < n; i++) { var ch = s[i], cw = x.measureText(ch).width, kc = eo(cl((k - i * .08) / .7, 0, 1));
+      if (/[0-9]/.test(ch)) { var o = (1 - kc) * 4, v = +ch; x.save(); x.beginPath(); x.rect(xx - 4, Y - size * .82, cw + 8, size * 1.12); x.clip();
+        for (var j = Math.floor(o); j <= Math.ceil(o); j++) { var yy = Y - (j - o) * size * 1.45; if (knock) { x.strokeStyle = knock; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(String((v + j * 7) % 10), xx, yy); } x.fillStyle = col; x.fillText(String((v + j * 7) % 10), xx, yy); }
+        x.restore(); }
+      else if (ch !== ' ') { x.save(); x.globalAlpha *= kc; if (knock) { x.strokeStyle = knock; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(ch, xx, Y + (1 - kc) * 10); } x.fillStyle = col; x.fillText(ch, xx, Y + (1 - kc) * 10); x.restore(); }
+      xx += cw; }
+    x.restore(); }
+  // label: small spaced capitals that slide in from the left edge of their own box as k goes 0 -> 1
+  function label(s, X, Y, size, f, col, k, sp, knock){ if (k <= 0) return; x.save(); x.globalAlpha *= cl(k * 2, 0, 1); var w = tw(s, size, f, sp);
+    x.beginPath(); x.rect(X - w / 2 - 6, Y - size * 1.1, (w + 12) * eo(k), size * 1.6); x.clip();
+    if (knock) { x.font = font(size, f); x.letterSpacing = sp + 'px'; x.textAlign = 'center'; x.strokeStyle = knock; x.lineWidth = size * .35; x.lineJoin = 'round'; x.strokeText(s, X, Y); x.letterSpacing = '0px'; }
+    txt(s, X, Y, size, f, col, 'center', sp); x.restore(); }
+  // stamp: a rubber stamp that lands (scale 1.5 -> 1 with a settle), ink-coloured frame and letters on a pale wash, rotated a little
+  function stamp(lines, X, Y, rot, col, k, wash){ if (k <= 0) return; var sc = mix(1.5, 1, es(k)); x.save(); x.translate(X, Y); x.rotate(rot); x.scale(sc, sc); x.globalAlpha *= cl(k * 3, 0, 1);
+    var W0 = 0, H0 = 0; lines.forEach(function(L){ W0 = Math.max(W0, tw(L[0], L[1], L[2], L[3] || 0)); H0 += L[1] * 1.08; }); W0 += 46; H0 += 26;
+    x.fillStyle = wash || 'rgba(244,234,212,.86)'; x.beginPath(); x.roundRect(-W0 / 2, -H0 / 2, W0, H0, 8); x.fill();
+    x.strokeStyle = col; x.lineWidth = 4; x.stroke(); x.lineWidth = 1.5; x.beginPath(); x.roundRect(-W0 / 2 + 7, -H0 / 2 + 7, W0 - 14, H0 - 14, 4); x.stroke();
+    var yy = -H0 / 2 + 13; lines.forEach(function(L){ yy += L[1] * .95; if (L[4] == null || L[4] > 0) { x.save(); x.globalAlpha *= L[4] == null ? 1 : cl(L[4] * 2.5, 0, 1); txt(L[0], 0, yy, L[1], L[2], col, 'center', L[3] || 0); x.restore(); } yy += L[1] * .13; });
+    x.restore(); }
+  // rings(cam, X, Y, Z, t, t0, t1, every, col, r0): radio rings from a point, each growing exp(3 * age) metres from r0 (default 12 m): on
+  // screen they keep spreading at any zoom (Paris to Tunisia, about 1,400 km, in about 3.9 s); a small r0 (0.04 m) scatters light off a molecule
+  function rings(cam, X, Y, Z, t, t0, t1, every, col, r0){ var c0 = proj(cam, X, Y, Z); if (!c0) return; screen();
+    for (var e = t0; e <= Math.min(t, t1); e += every) { var age = t - e, r = (r0 || 12) * Math.exp(3 * age) * c0.s; if (r < 2 || r > 1400) continue;
+      var a = P(r, 2, 14) * (1 - P(r, 700, 1400)) * (1 - P(age, 4.6, 5.6)); if (a <= 0) continue;
+      x.save(); x.globalAlpha *= a; x.strokeStyle = col; x.lineWidth = 2.2; x.beginPath(); x.arc(c0.x, c0.y, r, 0, 7); x.stroke();
+      x.globalAlpha *= .45; x.lineWidth = 1; x.beginPath(); x.arc(c0.x, c0.y, r * .93, 0, 7); x.stroke(); x.restore(); } }
+  // ---- the scenery ----
+  // ridge(seed, H, tone, ink, hatchCol): an endless engraved ridge of hills on the current layer (metres), H high on average; filled in
+  // tone, shaded with hatching that keeps its size on screen, inked along the crest. Far ridges in paler, bluer tones read as distance.
+  // o.deep: fill down to -deep metres (a near meadow that must reach the bottom of the frame); o.grass: inked grass blades along the crest
+  function ridge(seed, H, tone, ink, hc, o){ o = o || {}; var V = vis(20), r = rnd(seed), p1 = r() * 7, p2 = r() * 7, p3 = r() * 7, L = H * 3.2, st = Math.max((V.x1 - V.x0) / 120, H / 40);
+    var top = function(X){ return H * (.62 + .22 * Math.sin(X / L + p1) + .12 * Math.sin(X / (L * .37) + p2) + .04 * Math.sin(X / (L * .11) + p3)); }, pts = [], X;
+    for (X = V.x0 - st; X <= V.x1 + st; X += st) pts.push([X, top(X)]);
+    var B = -(o.deep || H); x.beginPath(); x.moveTo(pts[0][0], B); pts.forEach(function(q){ x.lineTo(q[0], q[1]); }); x.lineTo(pts[pts.length - 1][0], B); x.closePath(); x.fillStyle = tone; x.fill();
+    if (hc) { x.save(); x.clip(); hatch(V.x0, Math.max(B, V.y0), V.x1, H * 1.1, .55, 4, hc, .7); x.restore(); }
+    if (o.grass && cs() * H > 6) { var g = rnd(seed * 31), gs = Math.max(px(5), H / 30); x.beginPath(); for (X = Math.floor(V.x0 / gs) * gs; X <= V.x1; X += gs) { var y0 = top(X), l = H * (.08 + g() * .14); x.moveTo(X, y0 - l * .3); x.lineTo(X + (g() - .5) * l * .6, y0 + l); }
+      x.lineWidth = 1 / cs(); x.strokeStyle = o.grass; x.stroke(); }
+    if (ink) { x.beginPath(); pts.forEach(function(q, i){ if (i) x.lineTo(q[0], q[1]); else x.moveTo(q[0], q[1]); }); x.lineWidth = 1.1 / cs(); x.strokeStyle = ink; x.stroke(); }
+    return top; }
+  // wave(x0, y0, x1, y1, lam, amp, ph, col, lw): a light wave drawn as an engraved sine line along a segment of the current layer
+  // (wavelength lam and amplitude amp in metres, phase ph in waves); it straightens smoothly once a wavelength is under ~8 px on screen
+  function wave(x0, y0, x1, y1, lam, amp, ph, col, lw){ var s = cs(), L = Math.hypot(x1 - x0, y1 - y0), ux = (x1 - x0) / L, uy = (y1 - y0) / L, a = amp * P(lam * s, 4, 12), n = Math.min(1200, Math.ceil(L * s / 3));
+    x.beginPath(); for (var i = 0; i <= n; i++) { var d = L * i / n, o = a * Math.sin((d / lam + ph) * 2 * Math.PI); if (i) x.lineTo(x0 + ux * d - uy * o, y0 + uy * d + ux * o); else x.moveTo(x0 + ux * d - uy * o, y0 + uy * d + ux * o); }
+    x.lineWidth = (lw || 2) / s; x.strokeStyle = col; x.lineCap = 'round'; x.lineJoin = 'round'; x.stroke(); }
+  // ground(cam, col, line): the y = 0 plane in perspective (rows every 20 m fixed to the ground, paths given as x positions)
+  function ground(cam, col, line, paths, zFrom, zTo){ var hz = 480 + OY; if (cam.y <= .05) return; screen();
+    x.fillStyle = col; x.fillRect(0, hz, 540, 960 - hz + 1);
+    x.strokeStyle = line; x.lineWidth = .8; var z0 = Math.ceil((cam.z + 1) / 20) * 20;
+    for (var Z = z0; Z < cam.z + 30000; Z += Z - cam.z > 2000 ? 160 : Z - cam.z > 500 ? 40 : 20) { var p = proj(cam, 0, 0, Z), q = proj(cam, 0, 0, Z + 20); if (!p || p.y > 980) continue; var gap = p.y - q.y;
+      if (gap < 1.2) break; x.globalAlpha = cl((gap - 1.2) / 3, 0, 1) * .5; x.beginPath(); x.moveTo(0, p.y); x.lineTo(540, p.y); x.stroke(); }
+    x.globalAlpha = 1; (paths || []).forEach(function(px0){ var a = proj(cam, px0, 0, Math.max(zFrom, cam.z + 1)), b = proj(cam, px0, 0, zTo); if (!a || !b) return; x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x, b.y); x.globalAlpha = .55; x.stroke(); });
+    x.globalAlpha = 1; }
+  // city(Z, seed, tone, o): an endless row of Paris blocks at depth Z (six storeys, zinc mansards, chimneys, a dome now and then)
+  function city(Z, seed, tone, o){ var s = cs(), V = vis(20), cw = 30, dark = o.dark || 'rgba(42,31,23,.55)';
+    for (var i = Math.floor(V.x0 / cw) - 1; i <= Math.ceil(V.x1 / cw); i++) { var r = rnd(seed * 7919 + i * 104729), b0 = i * cw, w = cw * (.7 + r() * .3), h = (o.h || 20) * (.8 + r() * .45), m = 4 + r() * 3;
+      x.beginPath(); x.moveTo(b0, -3); x.lineTo(b0, h); x.lineTo(b0 + 2, h + m); x.lineTo(b0 + w - 2, h + m); x.lineTo(b0 + w, h); x.lineTo(b0 + w, -3); x.closePath(); x.fillStyle = tone; x.fill();
+      if (s * h > 14) { x.lineWidth = .7 / s; x.strokeStyle = dark; x.stroke(); }
+      for (var c0 = 0; c0 < 2; c0++) { var cx0 = b0 + w * (.2 + c0 * .55) + r() * 2; x.fillStyle = tone; x.fillRect(cx0, h + m - 1, 2, 3.5); if (s * 3 > 4) { x.lineWidth = .6 / s; x.strokeRect(cx0, h + m - 1, 2, 3.5); } }
+      if (s * 1.4 > 2.2) { x.fillStyle = dark; var fl = Math.floor(h / 3.3); x.globalAlpha *= .8; for (var f0 = 1; f0 < fl; f0++) for (var wx = b0 + 2.2; wx < b0 + w - 2.5; wx += 3.6) x.fillRect(wx, f0 * 3.3, 1.2, 1.9); x.globalAlpha /= .8;
+        x.save(); x.beginPath(); x.moveTo(b0, h); x.lineTo(b0 + 2, h + m); x.lineTo(b0 + w - 2, h + m); x.lineTo(b0 + w, h); x.closePath(); x.clip(); hatch(b0, h, b0 + w, h + m, Math.PI / 2, 3.2, dark, .6); x.restore(); }
+      if (o.domes && r() < .05) { var dx = b0 + w / 2, dh = h + m + 8; x.beginPath(); x.moveTo(dx - 9, dh - 6); x.lineTo(dx - 9, dh); x.arc(dx, dh, 9, Math.PI, 0, true); x.lineTo(dx + 9, dh - 6); x.closePath(); x.fillStyle = tone; x.fill(); x.lineWidth = .7 / s; x.strokeStyle = dark; x.stroke(); x.fillRect(dx - .6, dh + 9, 1.2, 6); }
+    } }
+  // tree(X, Z-scale, seed, tone): an engraved tree on its layer: a trunk and a crown of overlapping lobes, shaded on the right with hatching
+  function tree(X, h, seed, tone, ink){ var r = rnd(seed), s = cs(); x.fillStyle = ink; x.fillRect(X - h * .03, 0, h * .06, h * .45);
+    var lobes = []; for (var i = 0; i < 9; i++) lobes.push([X + (r() - .5) * h * .55, h * (.55 + r() * .35), h * (.16 + r() * .1)]);
+    x.beginPath(); lobes.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.arc(L[0], L[1], L[2], 0, 7); }); x.fillStyle = tone; x.fill();
+    if (s * h > 30) { x.save(); x.clip(); hatch(X - h * .5, h * .3, X + h * .5, h * 1.2, -.9, 3.4, ink, .7); x.restore();
+      x.save(); x.beginPath(); lobes.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.arc(L[0], L[1], L[2], 0, 7); }); x.clip(); x.beginPath(); x.rect(X - h * .05, 0, h, h * 2); x.clip(); hatch(X - h * .05, h * .3, X + h * .5, h * 1.2, .9, 2.6, ink, .7); x.restore(); }
+    x.beginPath(); lobes.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.arc(L[0], L[1], L[2], 0, 7); }); x.lineWidth = .8 / s; x.strokeStyle = ink; x.globalAlpha *= .6; x.stroke(); x.globalAlpha /= .6; }
+  // ---- people: clean illustrated figures in metres (feet at 0, facing +x), recognised by props, no facial detail beyond an eye dot ----
+  // person(o): o.h height, o.coat/o.trousers/o.skin/o.hair colours, o.hat 'top'|'bowler'|'kepi'|'lady'|'', o.beard colour, o.stache,
+  // o.dress (long skirt), o.sit (seated on a chair), o.arms [[hx, hy], [hx, hy]] hand targets (back arm, front arm; two-bone reach),
+  // o.phones (headphones), o.buttons colour, o.chain (watch chain colour), o.detail (0 = silhouette for far crowds)
+  function reach(sx, sy, tx, ty, l1, l2, bend){ var dx = tx - sx, dy = ty - sy, d = Math.min(Math.hypot(dx, dy), l1 + l2 - 1e-4), a = Math.atan2(dy, dx), c0 = cl((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d), -1, 1), e = a + (bend || 1) * Math.acos(c0);
+    return [sx + Math.cos(e) * l1, sy + Math.sin(e) * l1, sx + Math.cos(a) * d, sy + Math.sin(a) * d]; }
+  function limb(pts, w, col, outline){ x.beginPath(); x.moveTo(pts[0], pts[1]); for (var i = 2; i < pts.length; i += 2) x.lineTo(pts[i], pts[i + 1]); x.lineCap = 'round'; x.lineJoin = 'round';
+    if (outline) { x.lineWidth = w + 1.6 / cs(); x.strokeStyle = outline; x.stroke(); } x.lineWidth = w; x.strokeStyle = col; x.stroke(); }
+  function person(o){ var h = o.h || 1.78, k = h / 1.78, OL = o.detail === 0 ? null : (o.ink || 'rgba(30,22,16,.85)'), sit = !!o.sit;
+    x.save(); x.scale(k, k);
+    var hipY = sit ? .5 : .93, sh = sit ? 1.2 : 1.44, hy = sh + .17, arms = o.arms || [[-.05, sit ? .75 : .85], [.08, sit ? .75 : .85]];
+    if (sit) { x.fillStyle = o.chair || '#5a4330'; x.fillRect(-.24, .44, .36, .04); x.fillRect(-.24, 0, .03, .46); x.fillRect(.08, 0, .03, .46); x.fillRect(-.26, .44, .03, .55); }
+    var ah = function(i){ var tgt = arms[i], s0 = [i ? .06 : -.06, sh - .04], j = reach(s0[0], s0[1], tgt[0] / k, tgt[1] / k, .3, .29, i ? -1 : -1); return [s0[0], s0[1], j[0], j[1], j[2], j[3]]; };
+    var A0 = ah(0); limb(A0, .085, o.coat2 || o.coat, OL); x.beginPath(); x.arc(A0[4], A0[5], .04, 0, 7); fill(o.skin);
+    // legs
+    if (sit) { limb([-.04, hipY, .36, hipY + .02, .38, .02], .13, o.trousers, OL); limb([.02, hipY, .42, hipY + .02, .44, .02], .13, o.trousers, OL);
+      x.beginPath(); x.ellipse(.47, .03, .1, .04, 0, 0, 7); fill(o.shoes || '#1d1713'); }
+    else if (o.dress) { path([[-.16, sh - .02], [.12, sh - .02], [.16, .9], [.3, .02], [-.28, .02], [-.18, .9]], true); fill(o.dress); if (OL) ink(.9, OL); }
+    else { limb([-.03, hipY, -.06, .05], .12, o.trousers, OL); limb([.05, hipY, .1, .05], .12, o.trousers, OL);
+      x.beginPath(); x.ellipse(-.02, .03, .1, .035, 0, 0, 7); x.ellipse(.15, .03, .1, .035, 0, 0, 7); fill(o.shoes || '#1d1713'); }
+    // body: a frock coat to the knee, a tunic to the hip
+    if (!o.dress) { var hem = sit ? hipY - .02 : (o.long ? .52 : .82);
+      path([[-.14, sh], [-.02, sh + .05], [.1, sh], [.15, sh - .2], [.12, hipY + .08], [o.long ? .17 : .14, hem], [o.long ? -.19 : -.15, hem], [-.15, hipY + .1]], true); fill(o.coat); if (OL) ink(.9, OL);
+      if (o.detail !== 0) { x.save(); path([[-.14, sh], [-.02, sh + .05], [.1, sh], [.15, sh - .2], [.12, hipY + .08], [.17, hem], [-.19, hem], [-.15, hipY + .1]], true); x.clip();
+          hatch(-.2, hem, -.02, sh + .1, 1.1, 3, 'rgba(0,0,0,.35)', .6); x.restore();
+        if (o.shirt) { path([[-.02, sh + .05], [.08, sh + .01], [.05, sh - .18]], true); fill(o.shirt); path([[-.02, sh + .05], [.1, sh], [.13, sh - .14], [.06, sh - .3]]); ink(.9, 'rgba(0,0,0,.45)'); x.beginPath(); x.ellipse(.03, sh + .01, .03, .015, 0, 0, 7); fill('#1b1511'); }
+        if (o.buttons) { for (var b = 0; b < 4; b++) { x.beginPath(); x.arc(.1 - b * .005, sh - .1 - b * .1, .012, 0, 7); fill(o.buttons); } }
+        if (o.chain) { x.beginPath(); x.moveTo(.11, hipY + .2); x.quadraticCurveTo(.03, hipY + .12, -.04, hipY + .2); ink(1.2, o.chain); }
+        if (o.belt) { x.fillStyle = o.belt; x.fillRect(-.15, hipY + .1, .29, .045); } } }
+    // head
+    x.fillStyle = o.skin; x.fillRect(-.03, sh, .07, .08);
+    x.beginPath(); x.ellipse(.02, hy, .095, .115, 0, 0, 7); fill(o.skin); if (OL) ink(.9, OL);
+    if (o.detail !== 0) {
+      if (o.hair) { x.beginPath(); x.ellipse(-.035, hy + .02, .06, .085, -.2, 0, 7); fill(o.hair); }
+      x.beginPath(); x.ellipse(-.005, hy, .022, .032, 0, 0, 7); fill(o.ear || 'rgba(150,95,70,.55)');
+      if (o.beard) { path([[-.02, hy - .01], [.0, hy - .1], [.06, hy - .16], [.115, hy - .09], [.117, hy - .04], [.08, hy - .055], [.03, hy - .04]], true); fill(o.beard); if (OL) ink(.7, 'rgba(40,30,22,.6)'); }
+      if (o.stache || o.beard) { x.beginPath(); x.ellipse(.095, hy - .04, .035, .014, -.15, 0, 7); fill(o.stache || o.beard); }
+      x.beginPath(); x.arc(.075, hy + .025, .011, 0, 7); fill('#1b1511');
+      x.beginPath(); x.moveTo(.105, hy + .02); x.lineTo(.125, hy - .015); x.lineTo(.1, hy - .02); fill(o.skin); }
+    // hats
+    if (o.hat === 'top') { x.beginPath(); x.ellipse(.02, hy + .095, .15, .024, 0, 0, 7); fill(o.hatc || '#1b1613'); path([[-.075, hy + .095], [-.085, hy + .33], [.125, hy + .33], [.115, hy + .095]], true); fill(o.hatc || '#1b1613'); if (o.band) { x.fillStyle = o.band; x.fillRect(-.078, hy + .1, .196, .035); } }
+    else if (o.hat === 'bowler') { x.beginPath(); x.ellipse(.02, hy + .085, .14, .022, 0, 0, 7); x.ellipse(.02, hy + .1, .1, .1, 0, Math.PI, 0, true); fill(o.hatc || '#2a221c'); }
+    else if (o.hat === 'kepi') { path([[-.07, hy + .07], [-.06, hy + .2], [.1, hy + .21], [.105, hy + .07]], true); fill(o.hatc || '#2f3546'); x.fillStyle = o.kepiTop || '#7b3a2b'; x.fillRect(-.062, hy + .14, .165, .07);
+      path([[.08, hy + .075], [.17, hy + .055], [.1, hy + .09]], true); fill('#14100d'); if (OL) { path([[-.07, hy + .07], [-.06, hy + .2], [.1, hy + .21], [.105, hy + .07]], true); ink(.8, OL); } }
+    else if (o.hat === 'lady') { x.beginPath(); x.ellipse(.02, hy + .08, .17, .03, -.08, 0, 7); fill(o.hatc || '#6b4a35'); x.beginPath(); x.ellipse(.01, hy + .12, .08, .06, 0, 0, 7); fill(o.hatc || '#6b4a35'); x.beginPath(); x.arc(.09, hy + .13, .025, 0, 7); fill(o.flower || '#c97a26'); }
+    if (o.phones) { x.beginPath(); x.ellipse(-.005, hy, .035, .045, 0, 0, 7); fill('#1d1916'); x.beginPath(); x.moveTo(-.005, hy + .04); x.quadraticCurveTo(-.02, hy + .26, .02, hy + .26); ink(1.4, '#1d1916'); }
+    if (o.parasol) { var pt = [.32, 1.05]; x.beginPath(); x.moveTo(pt[0], pt[1]); x.lineTo(pt[0] - .05, 1.95); ink(1, '#2a1f17'); x.beginPath(); x.ellipse(pt[0] - .05, 1.92, .42, .14, 0, Math.PI, 0, true); fill(o.parasol); if (OL) ink(.8, OL); }
+    // front arm last
+    var A1 = ah(1); limb(A1, .085, o.coat, OL); x.beginPath(); x.arc(A1[4], A1[5], .042, 0, 7); fill(o.skin);
+    if (o.cuff) { x.beginPath(); x.arc(A1[2] + (A1[4] - A1[2]) * .85, A1[3] + (A1[5] - A1[3]) * .85, .045, 0, 7); fill(o.cuff); x.beginPath(); x.arc(A1[4], A1[5], .04, 0, 7); fill(o.skin); }
+    x.restore(); }
+  return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
+    paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb };
+})();
+/*kit25:end*/
+
+  // ---- the story (new25d.mjs fills it; then node scripts/channel3/qa.mjs <config> --write copies voice, times and length into the config) ----
+  story(/*story*/[['Was the Sahara always a desert?', 0], ['10,000 years ago, it was green, with lakes and rivers.', 0.9], ['Hippos and crocodiles lived where there is only sand today.', 0.45], ['People herded cattle there, and painted them on rocks.', 0.45], ['The cause is a slow wobble of the Earth.', 0.45], ['It can pull the summer rains far to the north.', 0.45], ['About 5,000 years ago, they moved south, and it dried up.', 0.45], ['Turns out, the Sahara turns green about every 20,000 years.', 0.45]]/*story:end*/);
+  var DUR = +(CAPS[CAPS.length - 1].e + 1.9).toFixed(1);
+  // ---- the look: one grade per reel (design/channel3.md, "Quality bar" 5): warm sand and savanna green, matte, no glow ----
+  var CREAM = '#fbf3e0', AMBER = '#f2b46a', GREEN = '#9fc26a', OCHRE = '#9c3a1e', KD = 'rgba(14,10,8,.9)';
+  var HOOK = { y: 222, size: 58, col: CREAM, hl: /^(sahara|desert)/i, hlCol: AMBER, shadow: 'rgba(10,6,4,.6)', label: 'THE TRUE STORY', labelBg: 'rgba(14,10,8,.9)', labelCol: AMBER };
+  var STYLE = { hl: /^(10,000|green|hippos|crocodiles|cattle|rocks|wobble|north|south|dried|5,000|20,000)/i, hlCol: AMBER, ink: CREAM, panel: 'rgba(16,12,10,.9)' };
+  var CREDIT = 'SOURCES: MIT NEWS · U. OF BRISTOL · U. OF CHICAGO · LIVE SCIENCE';
+  var PAYOFF = 'Green, sand, green.';
+  function WT(i, re, n){ var w = CAPS[i].words, c = 0; for (var j = 0; j < w.length; j++) if (re.test(w[j].d) && c++ === (n || 0)) return w[j].s; return CAPS[i].s; }   // when a word is spoken (n: the nth match)
+
+  // ================= the 2.5D world (kit25d.js, inlined above) =================
+  // Five stations, one camera that never cuts: 0 the desert today (the sun is the way through), 1 the green Sahara (lake, acacias,
+  // hippos and a crocodile), 2 a rock wall with painted cattle, 3 the Earth in space (the axis wobbles, the rain belt slides north over
+  // Africa, then south), 4 the desert at dusk with the cycle.
+  var Kt = K25, use = Kt.use, proj = Kt.proj, PAPERTEX = null;
+  var ST = [{ Z: 40, at: function(){ return 0; } }, { Z: 140, at: function(){ return A[1]; } }, { Z: 240, at: function(){ return A[3]; } },
+    { Z: 340, at: function(){ return A[4]; } }, { Z: 440, at: function(){ return A[7]; } }];
+  var camT = null;
+  function buildCam(){ var Z = ST.map(function(s){ return s.Z; }); camT = Kt.track([
+    [0, 0, 1.4, Z[0] - 34, Z[0]], [A[1] - .45, 0, .9, Z[0] - 24, Z[0]],                       // the hook: a slow push into the sun
+    [A[1] + .5, 0, -1, Z[1] - 25, Z[1]], [A[2], .6, -2.2, Z[1] - 19, Z[1]], [A[3] - .45, 0, -2.8, Z[1] - 15, Z[1]],   // the green Sahara, down to the lake
+    [A[3] + .4, 0, .6, Z[2] - 31, Z[2]], [A[4] - .45, .3, .3, Z[2] - 23, Z[2]],               // the rock wall, cattle painted one by one
+    [A[4] + .45, 0, 1.2, Z[3] - 36, Z[3]], [A[5], -.3, 1.4, Z[3] - 31, Z[3]], [A[6], 0, 2.2, Z[3] - 27, Z[3]], [A[7] - .45, .4, 2.6, Z[3] - 23, Z[3]],   // the Earth: into Africa
+    [A[7] + .45, 0, 1.4, Z[4] - 33, Z[4]], [DUR, 0, 1.6, Z[4] - 26, Z[4]]]); }
+  function pres(i, t){ return i === 0 ? 1 : P(t, ST[i].at() - .7, ST[i].at() - .35); }    // a station fades in just before the camera passes the one in front
+  function gone(i, t){ return i + 1 < ST.length ? P(t, ST[i + 1].at() - .35, ST[i + 1].at()) : 0; }   // its far layers go once the camera is through
+  function near(cam, Z, d0, d1){ return cl((Z - cam.z - d0) / d1, 0, 1); }
+  function hmix(a, b, k){ var p = rgb(a), q = rgb(b); return '#' + p.map(function(v, i){ return ('0' + Math.round(mix(v, q[i], cl(k, 0, 1))).toString(16)).slice(-2); }).join(''); }
+  var SKY = [['#5b6f8c', '#d79a5e', '#f6cf8c'], ['#6f9bc0', '#b9cfb0', '#eedcae'], ['#7aa0c0', '#c9c39a', '#ecd2a0'], ['#04081a', '#0b1430', '#18224a'], ['#2a2440', '#b4624a', '#f2a866']];
+  var STARS = (function(){ var r = rnd(11), s = []; for (var i = 0; i < 160; i++) s.push([r() * 540, r() * 960, .5 + r() * 1.3, r() * 6.3]); return s; })();
+  function sky(t){ Kt.screen(); var c = SKY[0].slice(); for (var i = 1; i < ST.length; i++) { var k = pres(i, t); if (k > 0) c = c.map(function(h, j){ return hmix(h, SKY[i][j], k); }); }
+    x.fillStyle = lg(0, 0, 0, 640, [[0, c[0]], [.62, c[1]], [1, c[2]]]); x.fillRect(0, 0, 540, 960);
+    var sa = pres(3, t) * (1 - pres(4, t)); if (sa > 0) { x.fillStyle = '#f4ead0'; STARS.forEach(function(s){ x.globalAlpha = sa * (.4 + .4 * Math.sin(t * 1.3 + s[3])); x.beginPath(); x.arc(s[0], s[1], s[2], 0, 7); x.fill(); }); x.globalAlpha = 1; } }
+
+  // ---- 0 and 4: dunes (engraved sand ridges, wind ripples) and a low sun ----
+  function dunes(cam, st, a, g, tones){ if (a <= 0) return; x.save(); x.globalAlpha *= a;
+    if (g < 1 && use(cam, st.Z + 90)) { x.save(); x.globalAlpha *= 1 - g; x.translate(0, -6.5); Kt.ridge(31 + st.Z, 5, tones[0], 'rgba(110,60,26,.45)', 'rgba(120,70,30,.14)', { deep: 300 }); x.restore(); }
+    if (g < 1 && use(cam, st.Z + 40)) { x.save(); x.globalAlpha *= 1 - g; x.translate(0, -6.8); Kt.ridge(7 + st.Z, 3, tones[1], 'rgba(100,52,22,.6)', 'rgba(110,60,26,.22)', { deep: 300 }); x.restore(); }
+    if (use(cam, st.Z + 10) && near(cam, st.Z + 10, 3, 10) > 0) { x.globalAlpha *= near(cam, st.Z + 10, 3, 10); x.translate(0, -7.6); Kt.ridge(19 + st.Z, 2.4, tones[2], 'rgba(80,40,16,.75)', 'rgba(90,46,20,.3)', { deep: 300 }); }
+    x.restore(); }
+  function sun(cam, Z, a, col){ if (a <= 0 || !use(cam, Z)) return; var fa = near(cam, Z, 3, 10); x.save(); x.globalAlpha *= a * fa;
+    paper(function(){ x.beginPath(); x.arc(0, 0, 4.4, 0, 7); }, col, 3); x.beginPath(); x.arc(0, 0, 4.4, 0, 7); x.save(); x.clip(); Kt.hatch(-5, -5, 5, 5, .5, 5, 'rgba(160,80,20,.22)', .7);
+    x.fillStyle = lg(0, 0, 0, 0, [[0, '#000'], [1, '#000']]); x.fillStyle = 'rgba(255,250,230,.25)'; x.beginPath(); x.arc(-1.2, 1.2, 2.6, 0, 7); x.fill(); x.restore();
+    x.beginPath(); for (var i = 0; i < 24; i++) { var an = i * Math.PI / 12; x.moveTo(Math.cos(an) * 5, Math.sin(an) * 5); x.lineTo(Math.cos(an) * (i % 2 ? 5.7 : 6.3), Math.sin(an) * (i % 2 ? 5.7 : 6.3)); } Kt.ink(1.6, 'rgba(150,72,22,.7)');
+    x.beginPath(); x.arc(0, 0, 4.4, 0, 7); Kt.ink(1.4, 'rgba(120,56,18,.8)'); x.restore(); }
+
+  // ---- 1: the green Sahara: savanna ridges with acacias, a lake, hippos and a crocodile ----
+  function acacia(X, h, seed){ var r = rnd(seed); x.beginPath(); x.moveTo(X - h * .03, 0); x.lineTo(X - h * .015, h * .6); x.lineTo(X - h * .2, h * .82); x.moveTo(X + h * .01, h * .55); x.lineTo(X + h * .22, h * .84); x.moveTo(X, h * .6); x.lineTo(X + h * .02, h * .86); Kt.ink(2, '#3a2a18');
+    for (var i = 0; i < 4; i++) { var cx = X + (i - 1.5) * h * .16 + (r() - .5) * h * .05, cy = h * (.86 + r() * .06); x.beginPath(); x.ellipse(cx, cy, h * .2, h * .07, 0, 0, 7); x.fillStyle = tone('#4f6b2e', .9 + r() * .2); x.fill(); Kt.ink(.8, 'rgba(30,40,14,.6)'); } }
+  function hippo(X, Y, s, k){ if (k <= 0) return; x.save(); x.translate(X, Y - (1 - es(k)) * 1.4 * s); x.scale(s, s); x.globalAlpha *= cl(k * 2, 0, 1);
+    paper(function(){ x.beginPath(); x.ellipse(0, .55, 2.1, .9, 0, Math.PI, 0, true); x.ellipse(1.9, .5, .9, .6, 0, Math.PI, 0, true); }, '#7d6a72', 2);
+    x.beginPath(); x.ellipse(0, .55, 2.1, .9, 0, Math.PI, 0, true); x.save(); x.clip(); Kt.hatch(-2.2, .5, 2.2, 1.5, .4, 4, 'rgba(40,28,36,.3)', .6); x.restore();
+    x.beginPath(); x.ellipse(0, .55, 2.1, .9, 0, Math.PI, 0, true); x.ellipse(1.9, .5, .9, .6, 0, Math.PI, 0, true); Kt.ink(1.2, 'rgba(30,20,26,.85)');
+    [[.9, 1.4], [1.35, 1.38]].forEach(function(e){ x.beginPath(); x.ellipse(e[0], e[1], .16, .22, 0, 0, 7); x.fillStyle = '#6a5660'; x.fill(); Kt.ink(.9, 'rgba(30,20,26,.85)'); });
+    x.beginPath(); x.arc(1.45, 1.05, .1, 0, 7); x.fillStyle = '#1b1416'; x.fill(); x.beginPath(); x.arc(2.45, .85, .07, 0, 7); x.fill(); x.restore(); }
+  function croc(X, Y, s, k){ if (k <= 0) return; x.save(); x.translate(X + (1 - es(k)) * 2 * s, Y); x.scale(s, s); x.globalAlpha *= cl(k * 2, 0, 1);
+    paper(function(){ x.beginPath(); x.moveTo(-2.8, .1); x.quadraticCurveTo(-1.2, .55, .2, .45); x.lineTo(2.9, .22); x.lineTo(3, .05); x.lineTo(-2.8, .05); x.closePath(); }, '#5d6b3c', 2);
+    x.beginPath(); for (var i = 0; i < 7; i++) { var bx = -2.4 + i * .4; x.moveTo(bx - .12, .33 + (i < 3 ? .08 : 0)); x.lineTo(bx, .5 + (i < 3 ? .08 : 0)); x.lineTo(bx + .12, .33 + (i < 3 ? .08 : 0)); } x.fillStyle = '#4a5630'; x.fill();
+    x.beginPath(); x.moveTo(-2.8, .1); x.quadraticCurveTo(-1.2, .55, .2, .45); x.lineTo(2.9, .22); Kt.ink(1.2, 'rgba(20,26,10,.85)');
+    x.beginPath(); x.ellipse(.1, .6, .22, .2, 0, 0, 7); x.fillStyle = '#5d6b3c'; x.fill(); Kt.ink(.9, 'rgba(20,26,10,.85)'); x.beginPath(); x.arc(.15, .62, .07, 0, 7); x.fillStyle = '#e8c64a'; x.fill(); x.restore(); }
+  function green(cam, st, t, a, g){ if (a <= 0) return; x.save(); x.globalAlpha *= a;
+    if (g < 1 && use(cam, st.Z + 90)) { x.save(); x.globalAlpha *= 1 - g; x.translate(0, -6.5); Kt.ridge(44, 5, '#8fa57a', 'rgba(50,70,40,.4)', null, { deep: 300 }); x.restore(); }
+    if (g < 1 && use(cam, st.Z + 40)) { x.save(); x.globalAlpha *= 1 - g; x.translate(0, -6.6); [-26, -11, 9, 22, 37].forEach(function(X, i){ acacia(X, 6 + (i % 3), 70 + i); }); Kt.ridge(12, 2.6, '#7c9a50', 'rgba(40,60,20,.6)', 'rgba(40,60,20,.2)', { deep: 300, grass: true }); x.restore(); }
+    if (use(cam, st.Z)) { var fa = near(cam, st.Z, 2, 9); x.save(); x.globalAlpha *= fa;   // the lake, from the horizon down, ripples hatched
+      x.fillStyle = lg(0, 0, 0, 0, [[0, '#000'], [1, '#000']]); x.beginPath(); x.rect(-80, -14, 160, 11.6); x.fillStyle = '#5f8fa8'; x.fill(); x.save(); x.clip();
+      x.fillStyle = 'rgba(230,240,230,.18)'; x.fillRect(-80, -4, 160, 1.6); Kt.hatch(-80, -14, 80, -2.4, 0, 6, 'rgba(30,60,80,.35)', .7); x.restore();
+      x.beginPath(); x.moveTo(-80, -2.4); x.lineTo(80, -2.4); Kt.ink(1.2, 'rgba(30,50,40,.7)');
+      hippo(-4.3, -5.6, 1.3, P(t, WT(2, /hippos/i) - .2, WT(2, /hippos/i) + .5)); hippo(1.2, -4.0, .75, P(t, WT(2, /hippos/i) + .1, WT(2, /hippos/i) + .8));
+      croc(1.6, -6.0, 1, P(t, WT(2, /crocodiles/i) - .15, WT(2, /crocodiles/i) + .6));
+      x.translate(0, -11.5); Kt.ridge(19, 3, '#6f8c42', 'rgba(30,46,14,.75)', 'rgba(30,46,14,.3)', { deep: 300, grass: true }); x.restore(); }
+    x.restore(); }
+
+  // ---- 2: a rock wall in the savanna; cattle and a herder painted in red ochre as the sentence says it ----
+  function cow(X, Y, s, k, white){ if (k <= 0) return; x.save(); x.translate(X, Y); x.scale(s, s); x.globalAlpha *= .85 * cl(k * 1.6, 0, 1);
+    x.save(); x.beginPath(); x.rect(-2.2, -2, 4.6 * cl(k * 1.3, 0, 1), 5); x.clip();   // painted left to right
+    x.fillStyle = OCHRE; x.beginPath(); x.ellipse(0, 0, 1.4, .62, 0, 0, 7); x.fill(); x.beginPath(); x.moveTo(1.1, .3); x.lineTo(1.9, .5); x.lineTo(2.1, .1); x.lineTo(1.3, -.2); x.fill();
+    if (white) { x.fillStyle = '#e9d8bc'; x.beginPath(); x.ellipse(-.3, .1, .5, .3, .3, 0, 7); x.fill(); }
+    x.beginPath(); [-1, -.6, .6, 1].forEach(function(l){ x.moveTo(l, -.3); x.lineTo(l + .05, -1.4); }); x.moveTo(-1.3, .2); x.lineTo(-1.7, -.6); Kt.ink(3.4, OCHRE);
+    x.beginPath(); x.moveTo(1.8, .5); x.quadraticCurveTo(1.5, 1.3, 2.1, 1.5); x.moveTo(1.95, .45); x.quadraticCurveTo(2.4, 1.2, 2.6, 1.1); Kt.ink(2.6, OCHRE); x.restore(); x.restore(); }
+  function herder(X, Y, s, k){ if (k <= 0) return; x.save(); x.translate(X, Y); x.scale(s, s); x.globalAlpha *= .85 * cl(k * 1.6, 0, 1);
+    x.beginPath(); x.arc(0, 1.9, .28, 0, 7); x.fillStyle = OCHRE; x.fill(); x.beginPath(); x.moveTo(0, 1.6); x.lineTo(0, .4); x.lineTo(-.4, -.8); x.moveTo(0, .4); x.lineTo(.4, -.8); x.moveTo(0, 1.3); x.lineTo(.6, .8); x.moveTo(0, 1.3); x.lineTo(-.5, .7);
+    x.moveTo(.75, 2.1); x.lineTo(.55, -.8); Kt.ink(3.2, OCHRE); x.restore(); }
+  var CRACKS = (function(){ var r = rnd(27), c = []; for (var i = 0; i < 9; i++) { var p = [[(r() - .5) * 22, (r() - .5) * 14 - 2]]; for (var j = 0; j < 5; j++) { var q = p[p.length - 1]; p.push([q[0] + (r() - .5) * 2.4, q[1] - .6 - r() * 1.4]); } c.push(p); } return c; })();
+  function rockwall(cam, st, t, a, g){ if (a <= 0) return; x.save(); x.globalAlpha *= a;
+    if (g < 1 && use(cam, st.Z + 90)) { x.save(); x.globalAlpha *= 1 - g; x.translate(0, -6.5); Kt.ridge(55, 5, '#9aa77e', 'rgba(50,70,40,.4)', null, { deep: 300 }); x.restore(); }
+    if (g < 1 && use(cam, st.Z + 40)) { x.save(); x.globalAlpha *= 1 - g; x.translate(0, -6.6); [-30, -18, 16, 31].forEach(function(X, i){ acacia(X, 6.5 + (i % 2), 90 + i); }); Kt.ridge(23, 2.6, '#86a058', 'rgba(40,60,20,.6)', 'rgba(40,60,20,.2)', { deep: 300, grass: true }); x.restore(); }
+    if (use(cam, st.Z)) { var fa = near(cam, st.Z, 2, 9), shape = function(){ x.beginPath(); x.moveTo(-13, -13); x.bezierCurveTo(-14, -2, -12, 6, -6, 7.4); x.bezierCurveTo(-1, 8.6, 6, 8.2, 10, 5.6); x.bezierCurveTo(14, 2.4, 14, -6, 13, -13); x.closePath(); };
+      x.save(); x.globalAlpha *= fa; paper(shape, '#b9875a', 6); shape(); x.save(); x.clip();
+      x.fillStyle = lg(0, 0, 0, 0, [[0, '#000'], [1, '#000']]); var gr = x.createLinearGradient(-12, 7, 12, -12); gr.addColorStop(0, 'rgba(255,230,190,.3)'); gr.addColorStop(.55, 'rgba(255,230,190,0)'); gr.addColorStop(1, 'rgba(60,30,12,.4)'); x.fillStyle = gr; x.fillRect(-14, -14, 28, 23);
+      Kt.hatch(-14, -14, 14, 9, 2.3, 6, 'rgba(90,50,24,.2)', .6);
+      CRACKS.forEach(function(p){ Kt.path(p); Kt.ink(1, 'rgba(70,38,18,.55)'); });
+      var w = [/herded/, /cattle/, /painted/, /rocks/].map(function(re){ return WT(3, re); });
+      cow(-6.2, 1.6, 1, P(t, w[1] - .25, w[1] + .45), false); cow(.2, 2.6, .85, P(t, w[1] + .05, w[1] + .75), true); cow(5.6, .9, 1, P(t, w[2] - .1, w[2] + .6), false);
+      cow(-3.2, -2.4, .9, P(t, w[2] + .2, w[2] + .9), true); cow(3.2, -2.8, .8, P(t, w[3] - .2, w[3] + .5), false); herder(-9.6, -1.6, 1.1, P(t, w[0] - .2, w[0] + .5));
+      x.restore(); shape(); Kt.ink(1.6, 'rgba(70,38,18,.85)'); x.restore();
+      x.save(); x.translate(0, -14.6); Kt.ridge(33, 3, '#7a9446', 'rgba(30,46,14,.75)', 'rgba(30,46,14,.3)', { deep: 300, grass: true }); x.restore(); }
+    x.restore(); }
+
+  // ---- 3: the Earth in space: Africa face on (orthographic, centre 15 E, 5 N), the tilted axis wobbling, the rain belt sliding ----
+  // Africa's coast is a coarse hand-drawn outline (lon, lat), for the picture only
+  var AF = [[-17, 21], [-16, 28], [-10, 30], [-6, 36], [0, 36], [10, 37], [11, 33], [20, 31], [25, 32], [32, 31], [34, 28], [39, 16], [43, 12], [51, 12], [48, 5], [42, -2], [40, -10], [40, -15], [35, -24], [32, -29], [27, -34], [20, -35], [18, -32], [12, -17], [13, -6], [9, -1], [9, 4], [5, 5], [-2, 5], [-8, 4], [-13, 8], [-17, 14]];
+  var MG = [[44, -13], [50, -15], [49, -22], [45, -25], [43, -21]], ARAB = [[34, 28], [36, 34], [48, 30], [57, 24], [59, 22], [52, 16], [44, 12], [39, 16]], EU = [[-9, 37], [-8, 43], [-2, 44], [3, 43], [10, 44], [12, 42], [16, 41], [19, 40], [24, 38], [26, 41], [29, 41], [30, 45], [20, 48], [5, 48], [-4, 48]];
+  var RE = 6, L0 = 15 * Math.PI / 180, B0 = 5 * Math.PI / 180;
+  function orth(lo, la){ lo *= Math.PI / 180; la *= Math.PI / 180; var X = Math.cos(la) * Math.sin(lo - L0), Y = Math.cos(B0) * Math.sin(la) - Math.sin(B0) * Math.cos(la) * Math.cos(lo - L0); return [X * RE, Y * RE]; }
+  function poly(p){ x.beginPath(); p.forEach(function(q, i){ var o = orth(q[0], q[1]); if (i) x.lineTo(o[0], o[1]); else x.moveTo(o[0], o[1]); }); x.closePath(); }
+  function belt(t){ var a = WT(5, /north/), b = WT(6, /south/); return mix(mix(6, 22, eio(P(t, a - .4, a + 1.2))), 0, eio(P(t, b - .4, b + 1.4))); }   // the rain belt's centre latitude
+  function earth(cam, st, t, a){ if (a <= 0 || !use(cam, st.Z)) return; x.save(); x.globalAlpha *= a * near(cam, st.Z, 1, 6);
+    // the Sun to the upper left
+    x.save(); x.translate(-17, 13); paper(function(){ x.beginPath(); x.arc(0, 0, 3.4, 0, 7); }, '#f3c56e', 3); x.beginPath(); for (var i = 0; i < 20; i++) { var an = i * Math.PI / 10; x.moveTo(Math.cos(an) * 3.9, Math.sin(an) * 3.9); x.lineTo(Math.cos(an) * 4.7, Math.sin(an) * 4.7); } Kt.ink(1.6, 'rgba(240,180,90,.75)'); x.restore();
+    // the axis: tilted, its top tracing a small circle (the wobble), seen with "wobble"
+    var wk = P(t, WT(4, /wobble/) - .3, WT(4, /wobble/) + .3), ph = (t - A[4]) * 2.2, tilt = 23.4 * Math.PI / 180 * Math.cos(ph * wk), ax = Math.sin(tilt) * 7.6, ay = Math.cos(tilt) * 7.6;
+    x.beginPath(); x.moveTo(-ax, -ay); x.lineTo(ax, ay); Kt.ink(2, 'rgba(240,230,200,.85)');
+    if (wk > 0) { x.save(); x.globalAlpha *= wk; x.beginPath(); x.ellipse(0, 7, 3.05, .75, 0, 0, 7); x.setLineDash([.3, .3]); Kt.ink(1.4, 'rgba(242,180,106,.9)'); x.setLineDash([]); x.restore(); }
+    // the globe: ocean, a lit side toward the Sun, the land, the rain belt, the grid, the rim
+    paper(function(){ x.beginPath(); x.arc(0, 0, RE, 0, 7); }, '#2f5f86', 4); x.save(); x.beginPath(); x.arc(0, 0, RE, 0, 7); x.clip();
+    Kt.hatch(-RE, -RE, RE, RE, .3, 5, 'rgba(10,30,50,.25)', .6);
+    [EU, ARAB].forEach(function(p){ poly(p); x.fillStyle = '#b89d6e'; x.fill(); Kt.ink(1, 'rgba(60,40,20,.7)'); });
+    poly(AF); x.fillStyle = '#d6ad6c'; x.fill(); poly(MG); x.fill(); poly(AF); x.save(); x.clip();
+    Kt.hatch(-RE, -RE, RE, RE, 2.4, 5, 'rgba(120,70,30,.25)', .6);
+    var c = belt(t), y0 = orth(15, c - 9)[1], y1 = orth(15, c + 9)[1];
+    x.fillStyle = lg(0, 0, 0, 0, [[0, '#000'], [1, '#000']]); var gb = x.createLinearGradient(0, y0 - 1.2, 0, y1 + 1.2); gb.addColorStop(0, 'rgba(90,140,60,0)'); gb.addColorStop(.25, 'rgba(90,140,60,.95)'); gb.addColorStop(.75, 'rgba(90,140,60,.95)'); gb.addColorStop(1, 'rgba(90,140,60,0)');
+    x.fillStyle = gb; x.fillRect(-RE, y0 - 1.2, RE * 2, y1 - y0 + 2.4); x.restore();
+    x.save(); x.beginPath(); x.rect(-RE, y0, RE * 2, y1 - y0); x.clip(); Kt.hatch(-RE, y0, RE, y1, 1.9, 5, 'rgba(220,235,255,.45)', .8); x.restore();   // rain
+    poly(AF); Kt.ink(1.3, 'rgba(60,36,14,.9)'); poly(MG); Kt.ink(1.1, 'rgba(60,36,14,.9)');
+    x.beginPath(); for (var la = -60; la <= 60; la += 30) { for (var lo = -75; lo <= 105; lo += 3) { var o = orth(lo, la); if (lo === -75) x.moveTo(o[0], o[1]); else x.lineTo(o[0], o[1]); } } Kt.ink(.7, 'rgba(230,220,190,.35)');
+    var sg = x.createLinearGradient(-RE, RE, RE, -RE); sg.addColorStop(0, 'rgba(0,0,10,0)'); sg.addColorStop(.55, 'rgba(0,0,10,.08)'); sg.addColorStop(1, 'rgba(0,4,20,.5)');
+    x.fillStyle = sg; x.fillRect(-RE, -RE, RE * 2, RE * 2); x.fillStyle = 'rgba(255,240,210,.14)'; x.beginPath(); x.arc(-2.2, 2.2, 3.2, 0, 7); x.fill();
+    var so = orth(14, 23); x.globalAlpha *= P(t, A[5] - .3, A[5] + .3); Kt.wtxt('SAHARA', so[0], so[1] - .16, .52, '800 ' + FI, 'rgba(50,28,10,.9)', 'center', 0);
+    x.restore(); x.beginPath(); x.arc(0, 0, RE, 0, 7); Kt.ink(1.6, 'rgba(200,215,240,.6)');
+    x.restore(); }
+
+  // ---- 4: the cycle: a ring, half green and half sand, its arrow turning (sand, green, sand, green) ----
+  function cycle(cam, st, t, a){ if (a <= 0 || !use(cam, st.Z)) return; var k = P(t, A[7] - .4, A[7] + .4); if (k <= 0) return; x.save(); x.globalAlpha *= a * cl(k * 2, 0, 1);
+    var R = 5.2, sp = (t - A[7]) * 1.6;
+    x.beginPath(); x.arc(0, 0, R + .55, 0, Math.PI); x.arc(0, 0, R - .55, Math.PI, 0, true); x.closePath(); x.fillStyle = '#7f9e4c'; x.fill(); Kt.ink(1.2, 'rgba(30,40,12,.8)');
+    x.beginPath(); x.arc(0, 0, R + .55, Math.PI, Math.PI * 2); x.arc(0, 0, R - .55, 0, Math.PI, true); x.closePath(); x.fillStyle = '#d9ae6c'; x.fill(); Kt.ink(1.2, 'rgba(90,50,20,.8)');
+    var an = Math.PI / 2 - sp; x.save(); x.rotate(an); x.beginPath(); x.moveTo(R - 1.3, 0); x.lineTo(R + 1.3, 0); x.lineTo(R, -1.5); x.closePath(); x.fillStyle = CREAM; x.fill(); Kt.ink(1.4, 'rgba(20,14,8,.9)'); x.restore();
+    x.restore(); }
+
+  function frame(t){ var cam = camT(t); Kt.off(0, 0);
+    x.setTransform(2, 0, 0, 2, 0, 0); x.fillStyle = '#1d1410'; x.fillRect(0, 0, 540, 960); sky(t);
+    var DUSK = ['#c08a5c', '#a8703e', '#8a5a30'];
+    dunes(cam, ST[4], pres(4, t), 0, DUSK); cycle(cam, ST[4], t, pres(4, t));
+    earth(cam, ST[3], t, pres(3, t) * (1 - gone(3, t)));
+    rockwall(cam, ST[2], t, pres(2, t), gone(2, t));
+    green(cam, ST[1], t, pres(1, t), gone(1, t));
+    dunes(cam, ST[0], 1, gone(0, t), ['#e2b47a', '#d6a064', '#c48a4e']); sun(cam, ST[0].Z, 1 - gone(0, t) * 0, '#f6cd7a');
+    Kt.screen(); x.fillStyle = lg(0, 620, 0, 960, [[0, 'rgba(12,7,4,0)'], [1, 'rgba(12,7,4,.42)']]); x.fillRect(0, 620, 540, 340); }
+
+  // ---------- type over the picture (kinetic type keyed to the spoken word, above the subject: y 150-340) ----------
+  function kinetic(t){
+    function shown(i, re){ return 1 - P(t, A[i + 1] - .45, A[i + 1] - .1); }
+    var k = P(t, WT(1, /10,000/) - .1, WT(1, /10,000/) + .6), o = shown(1);
+    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; Kt.roll('10,000', 270, 200, 92, '800 ' + FD, AMBER, k, KD); Kt.label('YEARS AGO', 270, 244, 18, '800 ' + FI, CREAM, k, 3.5, KD); x.restore(); }
+    k = P(t, WT(2, /hippos/i) - .05, WT(2, /hippos/i) + .4); o = shown(2); var k2 = P(t, WT(2, /crocodiles/i) - .05, WT(2, /crocodiles/i) + .4);
+    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; Kt.label('HIPPOS', 270, 190, 26, '800 ' + FI, CREAM, k, 4, KD); Kt.label('CROCODILES', 270, 232, 26, '800 ' + FI, CREAM, k2, 4, KD); Kt.label('LAKES IN THE DESERT', 270, 268, 15, '800 ' + FI, AMBER, k2, 3, KD); x.restore(); }
+    k = P(t, WT(3, /painted/) - .05, WT(3, /painted/) + .4); o = shown(3);
+    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; Kt.stamp([['ROCK ART', 30, '800 ' + FI, 3], ['HERDERS AND THEIR CATTLE', 13, '800 ' + FI, 2.5]], 270, 214, -.04, '#7a2e16', k); x.restore(); }
+    k = P(t, WT(4, /wobble/) - .1, WT(4, /wobble/) + .5); o = shown(4);
+    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; Kt.label('A SLOW WOBBLE', 270, 168, 24, '800 ' + FI, AMBER, k, 4, KD); x.restore(); }
+    k = P(t, WT(5, /rains/) - .1, WT(5, /rains/) + .5); o = shown(5);
+    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; Kt.label('SUMMER RAINS', 270, 168, 24, '800 ' + FI, CREAM, k, 4, KD); x.restore(); }
+    k = P(t, WT(6, /5,000/) - .1, WT(6, /5,000/) + .6); o = shown(6);
+    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; Kt.roll('5,000', 270, 180, 80, '800 ' + FD, AMBER, k, KD); Kt.label('YEARS AGO', 270, 220, 17, '800 ' + FI, CREAM, k, 3.5, KD); x.restore(); }
+    k = P(t, WT(7, /20,000/) - .1, WT(7, /20,000/) + .6); var c4 = proj(camT(t), 0, 0, ST[4].Z);   // the number sits inside the cycle ring to the end
+    if (k > 0 && c4) { x.save(); Kt.roll('20,000', 270, c4.y + 14, 64, '800 ' + FD, AMBER, k, KD); Kt.label('YEARS', 270, c4.y + 48, 17, '800 ' + FI, CREAM, k, 3.5, KD); x.restore(); }
+  }
+  function drawPayoff(t){ var k = es(P(t, DUR - 2.9, DUR - 2.2)); if (k <= 0) return; x.save(); x.globalAlpha = cl(k * 1.6, 0, 1); x.translate(270, 220); arrive(k);
+    x.font = font(50, '700 ' + FD); x.textAlign = 'center'; x.strokeStyle = 'rgba(14,10,8,.75)'; x.lineWidth = 8; x.lineJoin = 'round'; x.strokeText(PAYOFF, 0, 0); txt(PAYOFF, 0, 0, 50, '700 ' + FD, AMBER, 'center', -.5); x.restore(); }
+  function seek(t){
+    t = cl(t, 0, DUR); BOXES.length = 0; x.globalAlpha = 1; frame(t);
+    Kt.off(0, 0); Kt.screen(); x.globalAlpha = 1;
+    if (PAPERTEX) { x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'multiply'; x.globalAlpha = .8; x.drawImage(PAPERTEX, 0, 0); x.restore(); }
+    x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1; x.letterSpacing = '0px';
+    kinetic(t); drawCaption(t); drawCredit(t); drawPayoff(t);
+  }
+  // sound (scripts/showreel/sound.py): a low hit with the question, a whoosh with each fly-through, hits on the kinetic type, a bed that lifts into the payoff
+  (function(){
+    var Q = [{ t: 0, k: 'boom', g: .32 }, { t: .05, k: 'swish', d: .7, g: .2 }];
+    [1, 3, 4, 7].forEach(function(i){ Q.push({ t: ST.filter(function(s){ return s.at() === A[i]; }).length ? A[i] - .6 : A[i], k: 'whoosh', d: 1.2, g: .18, p: .1 }); });
+    Q.push({ t: WT(1, /10,000/), k: 'hit', g: .18 }, { t: WT(2, /hippos/i), k: 'thud', g: .16 }, { t: WT(2, /crocodiles/i), k: 'thud', g: .16 }, { t: WT(3, /painted/), k: 'thud', g: .2 },
+      { t: WT(5, /north/), k: 'swish', d: .8, g: .16 }, { t: WT(6, /south/), k: 'swish', d: .8, g: .16 }, { t: WT(6, /5,000/), k: 'hit', g: .18 }, { t: WT(7, /20,000/), k: 'hit', g: .2 }, { t: DUR - 2.4, k: 'thud', g: .2 });
+    Q.forEach(function(q){ q.t = +q.t.toFixed(2); }); Q.sort(function(a, b){ return a.t - b.t; });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 72, origin: 0, gain: .3, soft: true, lift: +(A[A.length - 1] - .2).toFixed(2), chords: [[45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [48, 55, 60, 64, 67], [43, 50, 55, 59, 62]] } };
+  })();
+  window.seek = seek; window.DURATION = DUR;
+  Promise.all([document.fonts.load("800 44px 'Playfair Display'"), document.fonts.load("700 44px 'Playfair Display'"), document.fonts.load("700 27px 'Inter'"), document.fonts.load("800 18px 'Inter'"), document.fonts.load("600 18px 'Inter'")]).then(function(){ return document.fonts.ready; })
+    .then(function(){ buildCam(); PAPERTEX = Kt.paperTex(7);
+      seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body></html>

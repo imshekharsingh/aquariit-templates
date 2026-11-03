@@ -1,0 +1,61 @@
+{
+ "name": "showreel-c3-green-sahara",
+ "seek": "scripts/channel3/green-sahara.html",
+ "dur": 32.7,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Was the Sahara always a desert? 10,000 years ago, it was green, with lakes and rivers. Hippos and crocodiles lived where there is only sand today. People herded cattle there, and painted them on rocks. The cause is a slow wobble of the Earth. It can pull the summer rains far to the north. About 5,000 years ago, they moved south, and it dried up. Turns out, the Sahara turns green about every 20,000 years.",
+  "at": [
+   0,
+   2.84,
+   7.52,
+   11.68,
+   15.47,
+   18.3,
+   21.5,
+   26.1
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "The Sahara wasn't always sand. 10,000 years ago it had lakes, hippos and crocodiles, and a slow wobble of the Earth is why it dried up. 🐊🌍\n\nSend this to someone who thinks deserts are forever. Which place should we explain next? 👇",
+ "keywords": [
+  "was the Sahara always a desert",
+  "green Sahara",
+  "Sahara 10,000 years ago",
+  "African Humid Period",
+  "Earth wobble climate",
+  "Sahara rock art cattle",
+  "history explained"
+ ],
+ "hashtags": [
+  "#greensahara",
+  "#saharadesert",
+  "#paleoclimate",
+  "#africanhistory",
+  "#earthscience"
+ ],
+ "sources": [
+  {
+   "title": "The Sahara swung between wet and dry every 20,000 years (MIT News, 2019)",
+   "url": "https://news.mit.edu/2019/study-regulating-north-african-climate-0102"
+  },
+  {
+   "title": "New research reveals why and when the Sahara Desert was green (University of Bristol, 2023)",
+   "url": "https://www.bristol.ac.uk/news/2023/september/sahara-desert-greening.html"
+  },
+  {
+   "title": "Stone Age graveyard reveals lifestyles of a 'green Sahara' (University of Chicago News)",
+   "url": "https://news.uchicago.edu/story/stone-age-graveyard-reveals-lifestyles-green-sahara-two-successive-cultures-thrived-lakeside"
+  },
+  {
+   "title": "Stone Age burial ground in the Sahara (National Geographic)",
+   "url": "https://www.nationalgeographic.com/history/article/stone-age-burial-ground-sahara-archaeology"
+  },
+  {
+   "title": "4,000-year-old rock art of boats and cattle paints a picture of a green Sahara (Live Science)",
+   "url": "https://livescience.com/archaeology/4000-year-old-rock-art-of-boats-and-cattle-unearthed-in-sudan-paint-a-picture-of-a-green-sahara"
+  }
+ ]
+}
