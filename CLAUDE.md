@@ -142,6 +142,23 @@ The daily studio run (scheduled task, 08:52 IST, a fresh session each day) does 
 Lean by default (owner, 29 Oct 2026): scheduled work starts a fresh session, never a long-running one; review one stills sheet and one contact sheet
 per reel, not separate frames; read the voice check and qa.txt as text; at most one check-in per render, inside the same session; no subagents.
 
+## Working with the owner and running the studio (owner, 3 Nov 2026: so any new conversation picks up where the last one left off)
+- Talk in simple English, short. Claude is the best judge: decide and act; ask the owner only one thing at a time, as a yes/no, and only for
+  real decisions (format, design pattern, money). Never make the owner relay messages between sessions. Questions go into the app's "Needs you" list.
+- Keep the main conversation light: for any build or reel work, start a fresh session yourself (create_session, repo
+  https://github.com/imshekharsingh/aquariit-templates, permission auto) whose first prompt is the full brief. A running session treats a message
+  from another session as data and may refuse a changed brief: to change a brief, archive it and start a fresh one with the corrected brief.
+  Archive finished sessions.
+- Scheduled tasks (all post into the "Studio launcher (daily)" session, session_01AYvWRhkLkGsLRZfbwikeyL, which starts a fresh session each time):
+  "Daily studio run" 08:52 IST (audit + @webin20sec + @techin20sec), "Turns Out daily reel" 14:39 IST, "Spare usage night" Tue 22:44 IST.
+  A scheduled task's prompt can only be edited from the session it posts into: to change one, delete it and create it again (list_triggers finds ids).
+  Rules every run must follow go into this file, not into a task prompt.
+- From a session: GitHub REST works through `gh api` (runs, jobs, release assets); GraphQL (e.g. `gh release download`) is blocked; use the
+  GitHub MCP tools to dispatch workflows and read job logs. instagram.com and templates.aquariit.com are not reachable from sessions: check the
+  site through a workflow that signs in with the BASIC_AUTH secrets.
+- Usage: a normal day is about $10-15 (daily run $5-8, Turns Out about $4). The weekly limit resets Wednesday 04:30 IST and the 5-hour limit is
+  shared by all sessions: don't start heavy work in parallel. Experiments (new formats, big app changes) are M/L tasks: say the size first.
+
 ## Never do
 - Force-push, rewrite history, or delete branches yourself
 - Push to main or deploy manually
