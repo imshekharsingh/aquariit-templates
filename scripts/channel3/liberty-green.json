@@ -1,0 +1,61 @@
+{
+ "name": "showreel-c3-liberty-green",
+ "seek": "scripts/channel3/liberty-green.html",
+ "dur": 33.3,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Why is the Statue of Liberty green? In 1886, she was the colour of a shiny new coin. Her skin is copper, thinner than 3 millimetres. Year after year, air and sea salt reacted with the copper. In about 20 years, she turned completely green. In 1906, there was a plan to paint her. People protested, and her outside was never painted. Turns out, that green layer protects the copper underneath. The green is her armour.",
+  "at": [
+   0,
+   3.06,
+   7.15,
+   10.72,
+   14.61,
+   18.45,
+   21.97,
+   25.74,
+   29.9
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "She wasn't built green. The Statue of Liberty was shiny copper-brown in 1886, and that green coat is what keeps her standing. 🗽\n\nSave this for your next trip to New York. Which landmark should we explain next? 👇",
+ "keywords": [
+  "why is the Statue of Liberty green",
+  "Statue of Liberty original color",
+  "copper patina explained",
+  "Statue of Liberty facts",
+  "copper turning green",
+  "history explained"
+ ],
+ "hashtags": [
+  "#statueofliberty",
+  "#copperpatina",
+  "#ladyliberty",
+  "#historyfacts",
+  "#chemistryexplained"
+ ],
+ "sources": [
+  {
+   "title": "How the Statue of Liberty became green (American Chemical Society)",
+   "url": "https://www.acs.org/content/dam/acsorg/pressroom/reactions/infographics/statue-of-liberty-became-green.pdf"
+  },
+  {
+   "title": "Statue Statistics (US National Park Service)",
+   "url": "https://www.nps.gov/stli/learn/historyculture/statue-statistics.htm"
+  },
+  {
+   "title": "The Statue of Liberty (Copper Development Association)",
+   "url": "https://archive.copper.org/education/liberty/"
+  },
+  {
+   "title": "Was the Statue of Liberty originally a different color? (Snopes)",
+   "url": "https://www.snopes.com/fact-check/statue-liberty-different-color/"
+  },
+  {
+   "title": "Why did the Statue of Liberty change color? (History.com)",
+   "url": "https://www.history.com/articles/statue-of-liberty-green-color-change"
+  }
+ ]
+}
