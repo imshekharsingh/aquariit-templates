@@ -89,7 +89,8 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   (over-engineered: ~50 render minutes, toy-like people); kit3d.js stays only for reference. design/channel3.md, "Quality bar" (points 1-9), still applies
   to every reel, read for 2.5D (continuous camera instead of shots), and every beat of the stills sheet is scored against it before the one render.
   Scenes `scripts/channel3/<slug>.html` + `.json` (name `showreel-c3-<slug>`), entry in captions.json (`"channel": "c3"`, "concept", "about").
-  Scenes build their camera, layers, paper, figures and type from the shared kit scripts/channel3/kit25d.js; render with Showreel "parts" 1 (about 22 GitHub minutes).
+  Scenes build their camera, layers, paper, figures and type from the shared kit scripts/channel3/kit25d.js; start a new one with
+  `node scripts/channel3/new25d.mjs <slug> "Hook?" "Sentence." ...` (a working starter; design/channel3.md, "Starter"); render with Showreel "parts" 1 (about 22 GitHub minutes).
   Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, preflight says "fits", one stills sheet.
 
 ## Spare usage night (owner, 1 Nov 2026; opt-OUT from 3 Nov 2026: spare usage is used every week unless the owner skips)

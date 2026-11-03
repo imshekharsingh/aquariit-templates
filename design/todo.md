@@ -6,7 +6,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 
 ## P1
 - [ ] Reels 2-3 days ahead per channel, kept topped up: a missed day costs reach, and a buffer lets the daily run spend its time on quality.
-- [ ] Reusable Turns Out story layouts in kit25d.js (opening, map move, number roll, payoff): the cost cut that makes daily posting affordable.
+- [ ] Turns Out starter, next layouts: a map move and a globe station for starter25d.html (the opening, stations, fly-through, number roll and payoff are in it since 3 Nov).
 
 ## P2
 - [ ] Growth step 3: the audit writes its signals as data (best posting window, winning hook shape, reel-to-follower pairing; roadmap 5)
@@ -32,5 +32,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   every reel with its rates and the follower change on its day, the best in each column starred).
 - 3 Nov 2026: stills.mjs also prints TEXT FIT (any DOM text past its clipping box or the frame's side margins, every 0.5 s; fails the
   check). Covers the web showreels; techreel scenes keep their own --stills check.
+- 3 Nov 2026: Turns Out starter: node scripts/channel3/new25d.mjs makes a new 2.5D reel from scripts/channel3/starter25d.html (core, kit,
+  two stations with a fly-through, hook, captions, kinetic type, credit, payoff, sound), qa clean and stills without empty frames.
 - 3 Nov 2026: the audit's numbers are computed on GitHub after each nightly collect (scripts/audit-numbers.mjs prints AUDIT_CHANNELS,
   ready as the card's "channels"): the daily run reads one line instead of the raw data.
