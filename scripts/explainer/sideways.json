@@ -1,0 +1,57 @@
+{
+ "name": "showreel-23-sideways",
+ "seek": "scripts/explainer/sideways.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why does your page slide sideways on phones? One long link can't break, because text only wraps at spaces. It sticks out past the edge, and the whole page slides. The fix: overflow wrap, anywhere. Now it breaks to fit, and the page stays put.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.7,
+   0.85,
+   0.75,
+   0.7
+  ]
+ },
+ "caption": "Why does your page slide sideways on phones? 📱\n\nBy default text only wraps at normal break points, like a space (overflow-wrap: normal). A long link, an email address or a code has none, so it sticks out past the screen and the whole page can be dragged sideways. Add overflow-wrap: anywhere and the browser may break that one long string at any point, but only when it would overflow; normal words still wrap at spaces. Unlike break-word, anywhere also lets a flex or grid item shrink to fit. Chrome 80+, Firefox 65+, Safari 15.4+.\nSave it for your next blog or order page, or send it to whoever builds your site.",
+ "keywords": [
+  "page scrolls sideways on mobile",
+  "overflow-wrap anywhere",
+  "long URL breaks layout",
+  "horizontal scroll mobile fix",
+  "CSS text wrapping",
+  "responsive design"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#css",
+  "#responsivedesign",
+  "#frontenddev",
+  "#webdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overflow-wrap",
+   "note": "MDN overflow-wrap: normal breaks lines only at normal break points such as a space; anywhere lets an otherwise unbreakable string like a long word or URL break at any point to prevent overflow, and counts those breaks for min-content sizes (break-word does not)"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/properties/overflow-wrap.json",
+   "note": "overflow-wrap: anywhere: Chrome 80, Firefox 65, Safari 15.4 (Edge follows Chrome)"
+  }
+ ],
+ "tip": {
+  "title": "Why does your page slide sideways on phones?",
+  "why": "Text only wraps at normal break points such as a space (overflow-wrap: normal, MDN), so a long link, email or code has nowhere to break: it sticks out past the screen and the page can be dragged sideways. overflow-wrap: anywhere lets that one string break at any point, only when it would overflow, and (unlike break-word) it also lets a flex or grid item shrink.",
+  "code": "a {\n  overflow-wrap: anywhere;\n}",
+  "demo": "sideways",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overflow-wrap",
+   "label": "MDN, overflow-wrap"
+  }
+ }
+}

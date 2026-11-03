@@ -112,6 +112,23 @@ export const demos = {
 <p class="note">Open this on a phone and tap both buttons: the left one can stay lit after your finger lifts, until you tap somewhere else; the right one only presses. With a mouse both light up on hover.</p>`,
     js: `function(){}`,
   },
+  sideways: {
+    css: `
+#sideways .pane{height:150px;overflow-x:auto;overflow-y:hidden}
+#sideways .card{margin:36px 10px 0;width:calc(100% - 20px);border-radius:12px;background:#f2efe8;color:#111214;padding:10px 12px;font:600 13px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;transition:width .4s}
+#sideways .narrow .card{width:60%}
+#sideways .card a{color:#2e5bd8;font:500 13px/1.4 ui-monospace,Menlo,monospace}
+#sideways .fix .card a{overflow-wrap:anywhere}
+#sideways .go{margin-top:10px;width:100%;min-height:44px;border-radius:22px;border:1.5px solid #f2efe8;background:transparent;color:#f2efe8;font:700 15px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">overflow-wrap: normal (default)</span><div class="card">Track it here:<br><a href="#sideways">https://parcelbay.example/track/7Q4KXW92LMZRHT8VBN2C</a></div></div>
+  <div class="pane fix"><span class="tag ok">overflow-wrap: anywhere</span><div class="card">Track it here:<br><a href="#sideways">https://parcelbay.example/track/7Q4KXW92LMZRHT8VBN2C</a></div></div>
+</div>
+<button class="go" type="button">Make the cards narrower</button>
+<p class="note">The left link has no space to break at, so it sticks out of its card and the box scrolls sideways. The right one breaks wherever it must and stays inside.</p>`,
+    js: `function(root){ root.querySelector('.go').addEventListener('click', function(){ root.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('narrow'); }); }); }`,
+  },
   squash: {
     css: `
 #squash .pane{height:190px}
