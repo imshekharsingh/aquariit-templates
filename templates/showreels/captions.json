@@ -503,6 +503,48 @@
   "channel": "web",
   "concept": "overflow-wrap: anywhere"
  },
+ "showreel-24-sticky": {
+  "postOn": "2026-11-05",
+  "caption": "Why did your sticky header stop sticking? 📌\n\nA sticky element sticks to its nearest ancestor with a scrolling mechanism, and overflow: hidden creates one even if that box never scrolls (MDN). So one wrapper with overflow: hidden captures your header, and it scrolls away with the page. Swap it for overflow: clip: the content is still clipped, but the box is not a scroll container, so the header sticks to the page again. Chrome 90+, Firefox 81+, Safari 16+. (No top value set? Sticky never sticks; check that first.)\nSave it for the next time a header won't stick, or send it to whoever builds your site.",
+  "keywords": [
+   "position sticky not working",
+   "sticky header not sticking",
+   "overflow clip vs hidden",
+   "CSS sticky header fix",
+   "CSS overflow",
+   "frontend tips"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#frontenddev",
+   "#webdev",
+   "#webdesign"
+  ],
+  "channel": "web",
+  "concept": "position: sticky + overflow: clip"
+ },
+ "showreel-25-anchor": {
+  "postOn": "2026-11-06",
+  "caption": "Why is your heading hiding under the header? 🔗\n\nA link to #billing scrolls that heading to the very top of the page, right where your fixed header sits, so the header covers it. Add scroll-padding-top to the html element, about the height of your header: it tells the browser the top strip is covered, so every link jump (and scrollIntoView) stops below it. One rule fixes every link on the page. Chrome 69+, Firefox 68+, Safari 14.1+. (For a single target, scroll-margin-top on that heading does the same.)\nSave it for your next docs or FAQ page, or send it to whoever builds your site.",
+  "keywords": [
+   "anchor link hidden under fixed header",
+   "scroll-padding-top",
+   "fixed header covers heading",
+   "CSS anchor link offset",
+   "CSS scroll tips",
+   "web design"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#frontenddev",
+   "#webdev",
+   "#uxdesign"
+  ],
+  "channel": "web",
+  "concept": "scroll-padding-top"
+ },
  "showreel-tech-php2shell": {
   "channel": "tech",
   "postOn": "2026-10-26",

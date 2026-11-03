@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why did your sticky header stop sticking?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 14, a layout tip: "Why did your sticky header stop sticking?"
+   MDN position: a sticky element sticks to its nearest ancestor with a "scrolling mechanism" (created by overflow hidden, scroll,
+   auto or overlay), even if that ancestor isn't the one actually scrolling. So a wrapper with overflow: hidden captures the header
+   and it scrolls away with the page. MDN overflow: clip clips too, but the box is not a scroll container, so the header sticks to
+   the page again. Same phone and column as Nº 13; the page scrolls from frame 0 and the header leaves (the bug moving at once),
+   the wrapper is drawn as a red dashed "scroll box", the code types hidden -> clip, the header drops back and stays.
+   Beats and captions lead the voice by 0.15 s; the cover is the finished title (window.COVER); every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--rule:#33343c;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:166px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:236px;font-weight:800;font-size:72px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--red)}
+#ph{left:0;top:0;width:250px;height:470px;border-radius:38px;background:#2a2b31;padding:8px;transform-origin:0 0}
+#scr{position:absolute;left:8px;top:8px;width:234px;height:454px;border-radius:31px;overflow:hidden;background:var(--paper)}
+#sb{position:absolute;left:0;right:0;top:0;height:26px;background:var(--paper);font:700 11px/26px var(--m);padding:0 18px;color:var(--ink);z-index:5}
+#pg{position:absolute;left:0;top:26px;width:234px;height:428px;overflow:hidden;color:var(--ink)}
+#body{position:absolute;left:0;top:0;width:234px}
+#hdr{position:absolute;left:0;top:0;width:234px;height:46px;background:var(--ink);color:var(--paper);z-index:3;padding:0 16px;font:800 15px/46px var(--f);letter-spacing:.02em}
+#hdr i{position:absolute;right:16px;top:17px;width:20px;height:2.5px;border-radius:2px;background:var(--paper);box-shadow:0 6px 0 var(--paper)}
+#hdr u{position:absolute;right:48px;top:15px;width:16px;height:16px;border-radius:50%;border:2.5px solid var(--paper);text-decoration:none}
+.h1{position:absolute;left:16px;font:800 28px/.96 var(--f);font-variation-settings:'opsz' 72;letter-spacing:-.02em}
+.tile{position:absolute;left:14px;width:206px;height:120px;border-radius:14px}
+.bar{position:absolute;left:16px;height:9px;border-radius:5px;background:#d8d4cb}
+.pr{position:absolute;left:16px;font:700 12px/1 var(--m);color:#5d5a54}
+#wrapbox{position:absolute;left:0;top:0;width:234px;height:428px;border:3px dashed var(--red);border-radius:4px 4px 24px 24px;background:rgba(255,90,74,.07);z-index:4}
+#chip{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:var(--red);color:#fff;font:700 11px/22px var(--m);padding:0 9px;border-radius:11px;white-space:nowrap;letter-spacing:.04em}
+#bad{position:absolute;left:5px;width:224px;height:46px;border:3px solid var(--red);border-radius:10px;z-index:6}
+#ok{position:absolute;left:5px;width:224px;height:46px;border:3px solid var(--acc);border-radius:10px;z-index:6}
+#col{left:306px;top:430px;width:198px;height:200px}
+#cd{position:absolute;left:0;right:0;top:0;padding:16px 14px;border-radius:18px;background:var(--surface);font:500 17px/1.45 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc)}#cd s{text-decoration:none;color:var(--red)}#cd .dim{color:var(--dim)}
+#cd .cur{display:inline-block;width:2px;height:18px;background:var(--paper);vertical-align:-3px}
+#cap{left:36px;right:36px;top:700px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 14 · LAYOUT</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>did</span> <span>your</span></span><span class="ln"><span class="acc">sticky</span> <span>header</span></span><span class="ln"><span>stop</span> <span class="acc">sticking?</span></span></div>
+<div id="ph" class="a">
+  <div id="scr">
+    <div id="sb">9:41</div>
+    <div id="pg">
+      <div id="body">
+        <div class="h1" style="top:66px">Linen,<br>made slow.</div>
+        <div class="bar" style="top:136px;width:180px"></div><div class="bar" style="top:154px;width:150px"></div>
+        <div class="tile" style="top:182px;background:#c9d8c5"></div><div class="pr" style="top:314px">SAGE THROW · 64</div>
+        <div class="tile" style="top:340px;background:#e7c9a9"></div><div class="pr" style="top:472px">SAND QUILT · 120</div>
+        <div class="tile" style="top:498px;background:#b9c4d9"></div><div class="pr" style="top:630px">MIST SHEETS · 88</div>
+        <div class="tile" style="top:656px;background:#dcc3c9"></div><div class="pr" style="top:788px">ROSE CUSHION · 32</div>
+        <div class="tile" style="top:814px;background:#cfcab9"></div><div class="pr" style="top:946px">OAT TOWEL · 24</div>
+        <div class="tile" style="top:972px;background:#c9d8c5"></div><div class="pr" style="top:1104px">SAGE NAPKINS · 18</div>
+      </div>
+      <div id="hdr">FERNLY<u></u><i></i></div>
+      <div id="wrapbox"><div id="chip">.wrap · overflow: hidden</div></div>
+      <div id="bad"></div><div id="ok"></div>
+    </div>
+  </div>
+</div>
+<div id="col" class="a"><div id="cd"></div></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why did your sticky header stop sticking? A parent has overflow hidden. That makes it a scroll box, so the header sticks inside it and scrolls away. The fix: overflow, clip. It clips, but isn't a scroll box. Now the header stays on top.";
+  var WORDS = [], DUR = 20, LEAD = .15, HOOK_N = 7;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { parent: at('parent'), hidden: at('hidden'), makes: at('makes'), box: at('box'), inside: at('inside'), scrolls: at('scrolls'), away: at('away'), page: at('page'),
+      fix: at('fix'), overflow: at('overflow', 2), clip: at('clip'), still: at('clips'), box2: at('box', 2), now: at('now'), stays: at('stays'), top: at('top') };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.parent - .3, A.hookIn + .35);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  // the page's scroll (px) at t: it scrolls in the hook (the header leaves at once), is back at the top while the cause is told,
+  // scrolls again on "scrolls away with the page", holds through the fix, and scrolls on through "stays on top"
+  function scroll(t){
+    var hook = Math.sin(P(t, .1, A.leave + .2) * Math.PI) * 210;
+    var wig = Math.sin(P(t, A.makes, A.inside + .2) * Math.PI) * 80;
+    var s2 = io(P(t, A.scrolls - .1, A.away + .5)) * 300;
+    var s3 = io(P(t, A.now, A.top + .6)) * 340;
+    var back = io(P(t, DUR - 1.2, DUR - .2)) * 640;
+    return Math.max(0, hook + wig + s2 + s3 - back);
+  }
+  var CODE_A = '<span class="dim">.wrap {</span>\n  overflow:\n    ', CODE_Z = ';\n<span class="dim">}</span>';
+  function code(t){
+    // "hidden" (red) types on "parent has overflow hidden", is deleted on "The fix", then "clip" (green) types on "overflow, clip"
+    var h = 'hidden', c = 'clip';
+    var nh = Math.round(h.length * P(t, A.parent + .1, A.hidden + .2)) - Math.round(h.length * P(t, A.fix + .05, A.overflow + .1));
+    var nc = Math.round(c.length * P(t, A.overflow + .15, A.clip + .15));
+    var cur = (t > A.fix - .1 && t < A.clip + .3) ? '<span class="cur"></span>' : '';
+    return CODE_A + (nh > 0 ? '<s>' + h.slice(0, nh) + '</s>' : '') + (nc > 0 ? '<b>' + c.slice(0, nc) + '</b>' : '') + cur + CODE_Z;
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    var gone = io(P(t, A.leave, A.leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the phone: small and centred under the title, then full size on the left ----
+    var rise = io(P(t, A.leave + .2, A.leave + .7)), s = mix(.56, 1, rise), x = mix((540 - 250 * .56) / 2, 36, rise), y = mix(538 + Math.sin(t * .9) * 3, 206, rise);
+    var ph = $('ph'); ph.style.opacity = out(P(t, 0, .3)) * (1 - ex); ph.style.transform = 'translate(' + x + 'px,' + (y + ex * 20) + 'px) scale(' + s + ')';
+    // ---- the page: the body scrolls; the header goes with it until the fix, then drops back and stays ----
+    var sc = scroll(t), fixK = io(P(t, A.clip + .15, A.clip + .55));
+    $('body').style.transform = 'translateY(' + (-sc) + 'px)';
+    var hy = mix(-Math.min(sc, 60), 0, fixK);
+    $('hdr').style.transform = 'translateY(' + hy + 'px)';
+    // the wrapper drawn as a red dashed scroll box from "parent" until the fix lands
+    var wb = $('wrapbox'), wbA = win(t, A.parent, A.clip + .5, .2) * (1 - ex);
+    wb.style.opacity = wbA; wb.style.transform = 'scale(' + (mix(1.04, 1, out(P(t, A.parent - .2, A.parent + .2))) + .03 * Math.sin(P(t, A.box - .1, A.box + .35) * Math.PI)) + ')';
+    $('chip').textContent = t < A.box - .1 ? '.wrap · overflow: hidden' : 'SCROLL BOX (hidden)';
+    // the header ringed red while it is held by the scroll box
+    var bad = $('bad'); bad.style.top = hy + 'px'; bad.style.opacity = win(t, A.makes, A.away + .5, .15) * (1 - fixK) * (1 - ex);
+    // the header ringed green once it sticks
+    var ok = $('ok'); ok.style.top = (hy) + 'px'; ok.style.opacity = Math.max(win(t, A.clip + .45, A.still + .2, .15), win(t, A.stays - .1, DUR - .7, .15)) * (1 - ex);
+    // ---- the code card ----
+    var codeOn = P(t, A.parent - .1, A.parent + .15) * (1 - ex), col = $('col');
+    col.style.opacity = codeOn; col.style.transform = 'translateY(' + (1 - out(P(t, A.parent - .1, A.parent + .3))) * 24 + 'px)';
+    $('cd').innerHTML = code(t);
+    // ---- HUD and tag ----
+    var Hd, off = sc > 46 && fixK < .5;
+    if (t < A.leave + .2) Hd = 'HEADER · <b class="r">SCROLLS AWAY</b>';
+    else if (fixK < .5) Hd = 'SCROLL <b>' + Math.round(sc * 390 / 234) + ' PX</b> · HEADER <b class="' + (off ? 'r">GONE' : '">SHOWN') + '</b>';
+    else Hd = 'SCROLL <b>' + Math.round(sc * 390 / 234) + ' PX</b> · HEADER <b class="y">STUCK</b>';
+    $('hud').innerHTML = Hd; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.makes - .2 ? 'POSITION: STICKY' : t < A.fix - .2 ? 'IT STICKS TO THE SCROLL BOX' : t < A.now - .2 ? 'THE FIX' : 'CLIPS, BUT NOT A SCROLL BOX';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2)), aft = w.s >= A.fix;
+        var col2 = aft && /^(overflow|clip|stays|top)/i.test(w.d) ? 'var(--acc)' : !aft && /^(hidden|scroll|away)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col2 + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
+    Q.push({ t: A.parent, k: 'thud', g: .3 }, { t: A.scrolls - .1, k: 'swish', d: .5, g: .4, p: -.3 }, { t: A.away + .4, k: 'thud', g: .35 });
+    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
+    for (var c = 0, t0 = A.overflow + .15, t1 = A.clip + .15; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.clip + .3, k: 'tap', g: .5, p: 6 }, { t: A.now, k: 'swish', d: .4, g: .25, p: .2 }, { t: A.top, k: 'tap', g: .35, p: 3 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

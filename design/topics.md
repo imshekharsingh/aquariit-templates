@@ -8,10 +8,10 @@ fresher idea (say why in the log). Facts are still checked against two sources (
 ### @webin20sec (narrated "Why does your ...?" tip, one CSS/HTML fix, MDN + BCD support)
 | Day | Hook | The fix |
 |---|---|---|
-| Mon 9 | Why did your sticky header stop sticking? | position: sticky breaks under an ancestor with overflow: hidden; overflow: clip keeps it |
-| Tue 10 | Why does iPhone zoom in when you tap a form? | inputs under 16px zoom on focus in Safari iOS; font-size: 16px (max(16px, 1rem)) |
+| Mon 9 | (built early as showreel-24-sticky, posts 5 Nov) Why did your sticky header stop sticking? | position: sticky breaks under an ancestor with overflow: hidden; overflow: clip keeps it |
+| Tue 10 | Why does iPhone zoom in when you tap a form? | DROPPED unless a primary source turns up: MDN, BCD and WebKit do not document the 16px focus zoom (3 Nov); pick a new tip |
 | Wed 11 | Why does your layout jump when a page gets long? | the scrollbar appears and steals width; scrollbar-gutter: stable |
-| Thu 12 | Why do your links hide the heading under the header? | scroll-margin-top on the target (or scroll-padding-top on html) |
+| Thu 12 | (built early as showreel-25-anchor, posts 6 Nov, with scroll-padding-top on html) Why do your links hide the heading under the header? | scroll-margin-top on the target (or scroll-padding-top on html) |
 | Fri 13 | Why did the focus ring vanish? | outline: none kills it for keyboards; :focus-visible keeps it for keys, not taps |
 | Sat 14 | Why does your text flash in the wrong font? | font-display (swap vs optional) and a size-adjusted fallback |
 | Sun 15 | Why does one long name break your card? | min-width: 0 on the flex child + text-overflow: ellipsis (or line-clamp) |
