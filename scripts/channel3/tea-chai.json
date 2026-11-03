@@ -1,0 +1,52 @@
+{
+ "name": "showreel-c3-tea-chai",
+ "seek": "scripts/channel3/tea-chai.html",
+ "dur": 30.1,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Why do some say tea, and others say chai? Both words come from Chinese. In most of China, it is chá. Carried west over land, it became chai in India, Persia and Russia. But on the coast of Fujian, the word is te. In the 1600s, Dutch ships carried tea from there to Europe. So Europe says thé, Tee and tea. Turns out, your word for tea shows its route: land or sea.",
+  "at": [
+   0,
+   3.38,
+   6.15,
+   8.55,
+   13.46,
+   16.82,
+   22.17,
+   24.86
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "Tea or chai? Both words come from Chinese, and the one you use shows the road tea took to reach you: over land, or by sea. 🍵🌍\n\nSend this to the friend who always orders chai. What does your language call it? 👇",
+ "keywords": [
+  "tea vs chai",
+  "why is tea called chai",
+  "word for tea in different languages",
+  "tea by sea cha by land",
+  "history of tea",
+  "etymology explained"
+ ],
+ "hashtags": [
+  "#teahistory",
+  "#etymology",
+  "#chai",
+  "#languagefacts",
+  "#wordorigins"
+ ],
+ "sources": [
+  {
+   "title": "Feature 138A: Tea, by Östen Dahl (World Atlas of Language Structures)",
+   "url": "https://wals.info/chapter/138"
+  },
+  {
+   "title": "Tea if by sea, cha if by land: why the world only has two words for tea (Quartz)",
+   "url": "https://qz.com/1176962/map-how-the-word-tea-spread-over-land-and-sea-to-conquer-the-world"
+  },
+  {
+   "title": "Words for tea in different languages (Datawrapper)",
+   "url": "https://www.datawrapper.de/blog/words-for-tea-in-different-languages"
+  }
+ ]
+}
