@@ -37,3 +37,4 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - 3 Nov 2026: Growth step 3: the nightly audit numbers also print AUDIT_SIGNALS (30 days per channel: best posting hour, best format,
   the reels with the biggest follower gains); CLAUDE.md tells the daily run to plan from it.
 - 3 Nov 2026: Growth step 4: "What works" card in the Growth view (best time to post, best format, reels that brought followers; 30 days).
+- 3 Nov 2026: scripts/reel-status.mjs: one command after a render for its result, voice check, issue and contact sheet (was done by hand).
