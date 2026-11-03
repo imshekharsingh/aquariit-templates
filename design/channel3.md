@@ -164,6 +164,14 @@ it in (the same command inlines kit3d.js), npm run check fails on a stale copy. 
   The empty caption card at a sentence change (also in the 3D render) is fixed in this scene's copy of the shared core: the new line fades
   in from 14 % of the change, not 36 % (0 empty frames by a frame-by-frame probe); carry it into the core of the next scene.
 
+- **Starter** (3 Nov 2026): `node scripts/channel3/new25d.mjs <slug> "Hook?" "Sentence." ...` copies scripts/channel3/starter25d.html
+  (the shared core, the kit, two camera STATIONS with a fly-through, hook, captions, kinetic type, credit, payoff and sound cues, all
+  working) into a new scene with the story filled in, writes its config skeleton and inlines the kit. Draw the story's world into the
+  stations (one subject per station, its own sky and ground), key the kinetic type to the spoken words, then qa --write. Learned on the
+  60-minutes reel: a station's far ridges stand in front of the next station, so fade them out as the camera passes the subject; keep
+  the subject's centre about 50 px below the frame centre (hook and kinetic type above, caption below); an exact zoom into fine detail
+  is drawn in screen space with `deep()` (Kt.proj stops 5 cm from a plane).
+
 ## Pattern library (2D, retired with the pilots on 31 Oct 2026; kept for the story ideas, rebuilt in 3D)
 Rotate patterns so the feed never shows the same look two days running. Each entry is a reusable recipe; a new pattern gets an entry here
 before its first reel.
