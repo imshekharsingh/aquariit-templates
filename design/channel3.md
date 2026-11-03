@@ -165,12 +165,21 @@ it in (the same command inlines kit3d.js), npm run check fails on a stale copy. 
   in from 14 % of the change, not 36 % (0 empty frames by a frame-by-frame probe); carry it into the core of the next scene.
 
 - **Starter** (3 Nov 2026): `node scripts/channel3/new25d.mjs <slug> "Hook?" "Sentence." ...` copies scripts/channel3/starter25d.html
-  (the shared core, the kit, two camera STATIONS with a fly-through, hook, captions, kinetic type, credit, payoff and sound cues, all
+  (the shared core, the kit, a STATION and a globe station with a fly-through, the dive onto a map and a route from A to B, hook, captions, kinetic type, credit, payoff and sound cues, all
   working) into a new scene with the story filled in, writes its config skeleton and inlines the kit. Draw the story's world into the
   stations (one subject per station, its own sky and ground), key the kinetic type to the spoken words, then qa --write. Learned on the
   60-minutes reel: a station's far ridges stand in front of the next station, so fade them out as the camera passes the subject; keep
   the subject's centre about 50 px below the frame centre (hook and kinetic type above, caption below); an exact zoom into fine detail
   is drawn in screen space with `deep()` (Kt.proj stops 5 cm from a plane).
+
+- **Globe and map** (3 Nov 2026): `Kt.globe(R, { lon, lat }, { sea, land, ink, hi: { africa: col }, grid, shade })` draws a matte
+  cut-paper globe on the current layer with { lon, lat } turned to the front (ease it to bring a region round); `Kt.gxy` gives a place's
+  point on it. `Kt.map(m, o)` draws the same coastlines (Kt.LANDS: coarse on purpose, roughened by a seeded jitter) flat, with engraved
+  water lines along every coast; with m = { lon, lat, k: R x pi / 180 } on the globe's plane it matches the globe's front, so the camera
+  dives into the globe and lands on the map with no cut (the starter swaps them by the globe's size on screen, 900-1500 px).
+  `Kt.bow(a, b, h)` + `Kt.route(pts, k, col)` draw a dashed course that grows with k (key k with the camera's own easing so the line
+  leads it); `Kt.place(cam, X, Y, Z, name, k)` is a pin with its name on a tag that keeps its box inside the frame and fades once the pin
+  leaves it. The starter uses all of them: hook on station 0, the globe turns place A to the front, the dive, the route from A to B, the payoff.
 
 - **Pronunciation** (3 Nov 2026, the tea reel): a foreign or short word the voice may misread (te, thé, Tee) gets Kokoro markup in the
   config's voice text only, `[te](/tˈA/)` (misaki phonemes: A = the "ay" sound, I = "eye", O = "oh"); the scene keeps the plain word for

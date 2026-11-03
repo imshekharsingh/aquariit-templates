@@ -298,8 +298,89 @@ var K25 = (function(){
     var A1 = ah(1); limb(A1, .085, o.coat, OL); x.beginPath(); x.arc(A1[4], A1[5], .042, 0, 7); fill(o.skin);
     if (o.cuff) { x.beginPath(); x.arc(A1[2] + (A1[4] - A1[2]) * .85, A1[3] + (A1[5] - A1[3]) * .85, .045, 0, 7); fill(o.cuff); x.beginPath(); x.arc(A1[4], A1[5], .04, 0, 7); fill(o.skin); }
     x.restore(); }
+  // ---- maps and globes (3 Nov 2026): one set of cut-paper coastlines (lon, lat in degrees), coarse on purpose and roughened by a seeded
+  // midpoint jitter so a coast reads as cut by hand, shared by the globe station and the flat map (so a push into the globe lands on the map) ----
+  var D = Math.PI / 180, LANDS = {
+    eurasia: [[-9,43],[-9,37],[-2,36],[3,43],[8,44],[12,44],[16,38],[19,40],[23,37],[27,40],[36,36],[35,32],[44,12],[52,15],[57,24],[60,25],[67,25],[73,20],[77,8],[80,15],[88,22],[92,22],[98,16],[100,6],[104,1],[104,10],[109,12],[107,21],[115,22],[121,30],[122,40],[129,35],[130,43],[141,46],[140,53],[135,55],[143,59],[156,51],[163,60],[178,64],[178,70],[140,72],[110,77],[90,76],[70,73],[60,70],[45,68],[33,69],[25,71],[15,68],[5,61],[8,57],[10,54],[5,53],[2,51],[-2,48],[-1,46]],
+    africa: [[-17,15],[-16,22],[-9,32],[-5,36],[10,37],[20,32],[32,31],[35,28],[43,12],[51,12],[42,-2],[40,-15],[35,-25],[20,-35],[18,-30],[12,-17],[13,-6],[9,4],[-8,5]],
+    northAmerica: [[-168,66],[-162,60],[-153,57],[-135,58],[-124,48],[-124,40],[-117,32],[-110,23],[-105,20],[-95,16],[-88,15],[-83,9],[-79,9],[-82,14],[-87,21],[-91,19],[-97,22],[-97,28],[-90,29],[-83,29],[-81,25],[-80,32],[-76,35],[-74,40],[-70,42],[-66,44],[-60,46],[-56,52],[-61,56],[-64,60],[-78,62],[-79,55],[-86,55],[-94,59],[-90,64],[-82,67],[-95,69],[-110,68],[-125,70],[-141,70],[-156,71],[-166,68]],
+    southAmerica: [[-79,9],[-77,4],[-81,-5],[-76,-14],[-70,-18],[-71,-30],[-73,-40],[-75,-50],[-69,-55],[-66,-55],[-68,-50],[-65,-42],[-62,-39],[-57,-37],[-53,-34],[-48,-26],[-41,-22],[-39,-14],[-35,-8],[-35,-5],[-44,-2],[-50,0],[-52,5],[-60,8],[-64,10],[-72,12]],
+    australia: [[114,-22],[114,-34],[117,-35],[124,-34],[131,-31],[138,-35],[141,-38],[146,-39],[150,-37],[153,-31],[153,-25],[146,-19],[142,-11],[136,-12],[136,-15],[130,-12],[126,-14],[122,-18]],
+    greenland: [[-73,78],[-60,82],[-30,83],[-20,80],[-20,72],[-30,68],[-40,65],[-44,60],[-50,64],[-54,70],[-60,76]],
+    britain: [[-5,50],[1,51],[2,53],[-1,55],[-2,57],[-5,58],[-6,56],[-5,54],[-3,53],[-5,52]],
+    japan: [[130,31],[132,34],[135,34],[140,35],[141,38],[142,41],[141,45],[144,43],[140,40],[139,36],[136,36],[133,35]],
+    madagascar: [[44,-25],[47,-25],[50,-15],[49,-12],[44,-16]],
+    newZealand: [[172,-34],[175,-37],[178,-38],[175,-41],[171,-46],[167,-46],[171,-42],[174,-39]] }, ROUGH = {};
+  function rough(name){ if (ROUGH[name]) return ROUGH[name]; var pts = LANDS[name], r = rnd(name.length * 977 + name.charCodeAt(0) * 31);
+    for (var l = 0; l < 3; l++) { var n = []; for (var i = 0; i < pts.length; i++) { var a = pts[i], b = pts[(i + 1) % pts.length], dx = b[0] - a[0], dy = b[1] - a[1], d = Math.hypot(dx, dy) || 1, j = (r() - .5) * d * (l ? .22 : .3);
+      n.push(a, [(a[0] + b[0]) / 2 - dy / d * j, (a[1] + b[1]) / 2 + dx / d * j]); } pts = n; }
+    return (ROUGH[name] = pts); }
+  // globe on the current layer (metres), centred on 0,0, radius R: g = { lon, lat } is the point turned to the front (ease it to bring a
+  // region round), o.sea / o.land / o.ink / o.hi { name: colour } / o.shade (night-side hatching) / o.grid (degrees, 0 = none).
+  // gxy(g, lon, lat) -> [X, Y, z] in units of R (z > 0: on the front) for pins and labels. Matte: flat paper fills, hatched shade, no rim light
+  function gxy(g, lon, lat){ var l = (lon - g.lon) * D, p = lat * D, c = Math.cos(p), X = c * Math.sin(l), Y0 = c * Math.cos(l), Z0 = Math.sin(p), cb = Math.cos(g.lat * D), sb = Math.sin(g.lat * D);
+    return [X, Z0 * cb - Y0 * sb, Y0 * cb + Z0 * sb]; }
+  function gpoly(g, pts, R){ var q = pts.map(function(p){ return gxy(g, p[0], p[1]); }), out = [], n = q.length, i;
+    for (i = 0; i < n; i++) { var a = q[i], b = q[(i + 1) % n]; if (a[2] >= 0) out.push({ x: a[0], y: a[1] });
+      if ((a[2] >= 0) !== (b[2] >= 0)) { var k = a[2] / (a[2] - b[2]), X = mix(a[0], b[0], k), Y = mix(a[1], b[1], k), L = Math.hypot(X, Y) || 1; out.push({ x: X / L, y: Y / L, exit: a[2] >= 0 }); } }
+    if (!out.length) return null; x.beginPath();
+    out.forEach(function(p, j){ if (j) x.lineTo(p.x * R, p.y * R); else x.moveTo(p.x * R, p.y * R);
+      if (p.exit) { var nx = out[(j + 1) % out.length], a0 = Math.atan2(p.y, p.x), a1 = Math.atan2(nx.y, nx.x), da = a1 - a0; while (da > Math.PI) da -= 2 * Math.PI; while (da < -Math.PI) da += 2 * Math.PI;
+        for (var s = 1, m = Math.ceil(Math.abs(da) / .07); s < m; s++) x.lineTo(Math.cos(a0 + da * s / m) * R, Math.sin(a0 + da * s / m) * R); } });
+    x.closePath(); return true; }
+  function globe(R, g, o){ o = o || {}; var s = cs(), inkc = o.ink || 'rgba(30,18,10,.85)', hi = o.hi || {};
+    x.save(); x.shadowColor = 'rgba(20,12,8,.35)'; x.shadowBlur = 18; x.shadowOffsetX = 5; x.shadowOffsetY = 12; x.beginPath(); x.arc(0, 0, R, 0, 7); x.fillStyle = o.sea || '#2f5c78'; x.fill(); x.restore();
+    x.save(); x.beginPath(); x.arc(0, 0, R, 0, 7); x.clip();
+    hatch(-R, -R, R, R, 0, 7, 'rgba(255,255,255,.07)', .7);
+    if (o.grid !== 0) { var st = o.grid || 30, la, lo, j, p, on; x.beginPath();
+      for (la = -90 + st; la < 90; la += st) { on = false; for (j = 0; j <= 72; j++) { p = gxy(g, j * 5 - 180, la); if (p[2] < 0) { on = false; continue; } if (on) x.lineTo(p[0] * R, p[1] * R); else x.moveTo(p[0] * R, p[1] * R); on = true; } }
+      for (lo = -180; lo < 180; lo += st) { on = false; for (j = 0; j <= 36; j++) { p = gxy(g, lo, j * 5 - 90); if (p[2] < 0) { on = false; continue; } if (on) x.lineTo(p[0] * R, p[1] * R); else x.moveTo(p[0] * R, p[1] * R); on = true; } }
+      x.lineWidth = .8 / s; x.strokeStyle = o.gridCol || 'rgba(240,226,200,.22)'; x.stroke(); }
+    Object.keys(LANDS).forEach(function(nm){ if (!gpoly(g, rough(nm), R)) return; x.fillStyle = hi[nm] || o.land || '#d9c49a'; x.fill();
+      x.save(); x.clip(); hatch(-R, -R, R, R, .8, 5, 'rgba(60,40,20,.16)', .6); x.restore(); gpoly(g, rough(nm), R); x.lineWidth = 1 / s; x.strokeStyle = inkc; x.stroke(); });
+    if (o.shade !== 0) { x.beginPath(); x.arc(0, 0, R, 0, 7); x.arc(-R * .32, R * .3, R * 1.08, 0, 7, true); x.fillStyle = 'rgba(16,10,8,' + (o.shade || .28) + ')'; x.fill('evenodd');
+      x.save(); x.beginPath(); x.arc(0, 0, R, 0, 7); x.arc(-R * .32, R * .3, R * 1.08, 0, 7, true); x.clip('evenodd'); hatch(-R, -R, R, R, -.7, 4, 'rgba(16,10,8,.35)', .7); x.restore(); }
+    x.restore(); x.beginPath(); x.arc(0, 0, R, 0, 7); x.lineWidth = 1.6 / s; x.strokeStyle = inkc; x.stroke(); }
+  // map on the current layer: the same coastlines flat, origin at m.lon, m.lat, m.k metres a degree north (east: k x cos(lat)), so the map
+  // at the globe's plane with k = R x pi / 180 matches the globe's front where the camera pushes in. mxy(m, lon, lat) -> [X, Y]
+  function mxy(m, lon, lat){ return [(lon - m.lon) * m.k * Math.cos(m.lat * D), (lat - m.lat) * m.k]; }
+  function map(m, o){ o = o || {}; var s = cs(), V = vis(20), hi = o.hi || {}, step = o.grid || 10, i;
+    x.fillStyle = o.sea || '#2f5c78'; x.fillRect(V.x0, V.y0, V.x1 - V.x0, V.y1 - V.y0); hatch(V.x0, V.y0, V.x1, V.y1, 0, 7, 'rgba(255,255,255,.07)', .7);
+    var c = Math.cos(m.lat * D) * m.k; x.beginPath();
+    for (i = Math.ceil((V.x0 / c + m.lon) / step) * step; (i - m.lon) * c <= V.x1; i += step) seg((i - m.lon) * c, V.y0, (i - m.lon) * c, V.y1);
+    for (i = Math.ceil((V.y0 / m.k + m.lat) / step) * step; (i - m.lat) * m.k <= V.y1; i += step) seg(V.x0, (i - m.lat) * m.k, V.x1, (i - m.lat) * m.k);
+    x.lineWidth = .8 / s; x.strokeStyle = o.gridCol || 'rgba(240,226,200,.22)'; x.stroke();
+    var shown = Object.keys(LANDS).map(function(nm){ var P0 = rough(nm).map(function(p){ return mxy(m, p[0], p[1]); }), b = [1e18, -1e18, 1e18, -1e18], g = px(40);
+      P0.forEach(function(p){ b[0] = Math.min(b[0], p[0]); b[1] = Math.max(b[1], p[0]); b[2] = Math.min(b[2], p[1]); b[3] = Math.max(b[3], p[1]); });
+      return b[1] < V.x0 - g || b[0] > V.x1 + g || b[3] < V.y0 - g || b[2] > V.y1 + g ? null : [nm, P0]; }).filter(Boolean);
+    // engraved water lines: two thin lines following every coast out at sea, 10 and 20 px off (a wide light stroke cut by a sea-coloured one)
+    x.lineJoin = 'round'; [[22, 18], [42, 38]].forEach(function(w){ shown.forEach(function(L){ path(L[1], true); x.lineWidth = px(w[0]); x.strokeStyle = o.lineCol || 'rgba(232,218,190,.3)'; x.stroke(); });
+      shown.forEach(function(L){ path(L[1], true); x.lineWidth = px(w[1]); x.strokeStyle = o.sea || '#2f5c78'; x.stroke(); }); });
+    shown.forEach(function(L){ var nm = L[0], P0 = L[1];
+      x.save(); x.shadowColor = 'rgba(20,12,8,.32)'; x.shadowBlur = 8; x.shadowOffsetX = 2; x.shadowOffsetY = 5; path(P0, true); x.fillStyle = hi[nm] || o.land || '#d9c49a'; x.fill(); x.restore();
+      x.save(); path(P0, true); x.clip(); hatch(V.x0, V.y0, V.x1, V.y1, .8, 5, 'rgba(60,40,20,.16)', .6); x.restore(); path(P0, true); ink(1.1, o.ink || 'rgba(30,18,10,.85)'); }); }
+  // route(pts, k, col, w): a dashed travel line along pts (layer units) drawn up to k (0 -> 1) with a ringed head; bow(a, b, h): a curved
+  // course from a to b bowing by h x its length to the left (a flight or a sea route), as points for route()
+  function bow(a, b, h, n){ n = n || 48; var dx = b[0] - a[0], dy = b[1] - a[1], o = []; for (var i = 0; i <= n; i++) { var k = i / n, e = 4 * k * (1 - k) * h; o.push([a[0] + dx * k - dy * e, a[1] + dy * k + dx * e]); } return o; }
+  function route(pts, k, col, w){ if (k <= 0) return; var L = [0], i; for (i = 1; i < pts.length; i++) L.push(L[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+    var end = L[L.length - 1] * cl(k, 0, 1), hd = pts[0]; x.save(); x.beginPath(); x.moveTo(pts[0][0], pts[0][1]);
+    for (i = 1; i < pts.length; i++) { if (L[i] >= end) { var f = (end - L[i - 1]) / ((L[i] - L[i - 1]) || 1); hd = [mix(pts[i - 1][0], pts[i][0], f), mix(pts[i - 1][1], pts[i][1], f)]; x.lineTo(hd[0], hd[1]); break; } x.lineTo(pts[i][0], pts[i][1]); hd = pts[i]; }
+    x.setLineDash([px(11), px(7)]); x.lineWidth = px(w || 3.4); x.strokeStyle = col; x.lineCap = 'round'; x.stroke(); x.setLineDash([]);
+    x.beginPath(); x.arc(hd[0], hd[1], px(6), 0, 7); x.fillStyle = col; x.fill(); x.beginPath(); x.arc(hd[0], hd[1], px(11), 0, 7); x.lineWidth = px(1.6); x.stroke(); x.restore(); return hd; }
+  // place(cam, X, Y, Z, name, k, o): a pin at a point of a layer and its name on a paper tag (screen space, reported to qa) that keeps its
+  // whole box inside the frame (x 16-524, y 80-640) as the camera moves and fades once the pin leaves the frame; o.col (pin), o.ink, o.bg, o.size, o.up (tag above the pin, px)
+  function place(cam, X, Y, Z, name, k, o){ if (k <= 0) return; o = o || {}; var p = proj(cam, X, Y, Z); if (!p) return; screen(); x.save(); x.globalAlpha *= cl(k * 2.5, 0, 1);
+    var sz = o.size || 15, w = tw(name, sz, '800 ' + FI_, 2.5) + sz * 1.2, h = sz * 1.8, up = o.up == null ? 34 : o.up, k2 = eo(cl(k, 0, 1));
+    x.beginPath(); x.arc(p.x, p.y, 5.5 * k2, 0, 7); x.fillStyle = o.col || '#f2b46a'; x.fill(); x.lineWidth = 1.6; x.strokeStyle = o.ink || '#1a120c'; x.stroke();
+    var cx = cl(p.x, 16 + w / 2, 524 - w / 2), cy = cl(p.y - up - (1 - k2) * 8, 80 + h / 2, 640 - h / 2), out = Math.max(-p.x, p.x - 540, 60 - p.y, p.y - 700, 0);
+    x.globalAlpha *= 1 - P(out, 0, 50); if (x.globalAlpha < .01) { x.restore(); return; }   // the pin has left the frame: its tag goes with it
+    x.beginPath(); x.moveTo(p.x, p.y - 6); x.lineTo(cx, cy + h / 2); x.lineWidth = 1.2; x.strokeStyle = o.ink || '#1a120c'; x.globalAlpha *= .8; x.stroke(); x.globalAlpha /= .8;
+    x.fillStyle = o.bg || 'rgba(16,12,10,.88)'; x.beginPath(); x.roundRect(cx - w / 2, cy - h / 2, w, h, h * .22); x.fill();
+    txt(name, cx, cy + sz * .36, sz, '800 ' + FI_, o.txt || '#fbf3e0', 'center', 2.5); x.restore(); }
+  var FI_ = "'Inter',system-ui,sans-serif";
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
-    paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb };
+    paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb,
+    LANDS: LANDS, globe: globe, gxy: gxy, map: map, mxy: mxy, route: route, bow: bow, place: place };
 })();
 /*kit25:end*/
 

@@ -1,5 +1,5 @@
 // Starts a Turns Out 2.5D reel from the starter (todo P1 "reusable story layouts", 3 Nov 2026): copies scripts/channel3/starter25d.html
-// (shared core, the 2.5D kit, two camera stations with a fly-through, hook, captions, kinetic type, credit, payoff, sound cues) to
+// (shared core, the 2.5D kit, a station, a globe station and a map move with a route, all one camera, hook, captions, kinetic type, credit, payoff, sound cues) to
 // scripts/channel3/<slug>.html with the story filled in, writes <slug>.json (name, timing, empty post text and sources to fill), and
 // inlines the current kit. Then: draw the story's world in the scene, fill the config, `node scripts/channel3/qa.mjs <config> --write`.
 // Usage: node scripts/channel3/new25d.mjs <slug> "Hook question?" "Sentence two." ... ("Turns out, ..." last)
