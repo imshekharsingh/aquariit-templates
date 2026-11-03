@@ -20,7 +20,7 @@ fresher idea (say why in the log). Facts are still checked against two sources (
 | Day | Hook |
 |---|---|
 | Mon 9 | Why is Wi-Fi slower one room over? (2.4 vs 5 GHz, walls, range vs speed) |
-| Tue 10 | How does tap-to-pay work without your card number? (device token, one-time cryptogram) |
+| Tue 10 | How does AirDrop find a phone next to you? (Bluetooth LE discovery, then a direct peer-to-peer Wi-Fi link; Apple Platform Security, AirDrop) (tap-to-pay was built early as showreel-tech-applepay-number, 4 Nov) |
 | Wed 11 | Why are screenshots of some videos black? (protected video path, DRM) |
 | Thu 12 | What does airplane mode actually turn off? (radios; Wi-Fi and Bluetooth can come back on) |
 | Fri 13 | How does a torn QR code still scan? (error correction levels L/M/Q/H) |

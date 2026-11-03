@@ -567,5 +567,15 @@
   "postOn": "2026-11-03",
   "concept": "2.5D flow · Why is the Statue of Liberty green?",
   "about": "One camera that never cuts: New York harbour at dusk, back to 1886 as her skin turns copper again, a magnifier on the 2.4 mm skin, rain and sea salt over 20 years as she turns green, the 1906 paint plan, a crowd on the pier protesting, and the green layer that protects the copper."
+ },
+ "showreel-tech-applepay-number": {
+  "channel": "tech",
+  "postOn": "2026-11-04",
+  "concept": "Apple Pay"
+ },
+ "showreel-tech-wifi-address": {
+  "channel": "tech",
+  "postOn": "2026-11-05",
+  "concept": "Wi-Fi privacy"
  }
 }

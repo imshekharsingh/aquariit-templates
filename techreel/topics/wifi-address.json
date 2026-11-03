@@ -1,0 +1,171 @@
+{
+ "slug": "wifi-address",
+ "topic": "Wi-Fi privacy",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.95,
+ "max_speed": 1.0,
+ "dur": 20,
+ "max_end": 19.4,
+ "say": {
+  "Wi-Fi": "[WiFi](/wˈaɪfˌaɪ/)",
+  "MAC": "[MAC](/mˈæk/)"
+ },
+ "hook": [
+  "Why does your",
+  "iPhone give Wi-Fi",
+  "a fake address?"
+ ],
+ "lines": [
+  {
+   "text": "Why does your iPhone give Wi-Fi a fake address?"
+  },
+  {
+   "text": "Every phone has one fixed address, its MAC.",
+   "scene": {
+    "label": "STEP 1: ONE FIXED ID",
+    "tint": "purple",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Your iPhone",
+      "sub": "talks to every Wi-Fi",
+      "icon": "chip"
+     },
+     "inner": {
+      "title": "MAC address",
+      "sub": "the same everywhere",
+      "icon": "key"
+     },
+     "inner_cue": "fixed"
+    }
+   }
+  },
+  {
+   "text": "Show it everywhere, and networks can link your visits.",
+   "scene": {
+    "label": "STEP 2: EASY TO TRACK",
+    "tint": "red",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "Café",
+      "Airport",
+      "Hotel"
+     ],
+     "source_tint": "purple",
+     "hub": {
+      "label": "SAME ADDRESS",
+      "tag": "LINKED",
+      "icon": "eye"
+     },
+     "target": {
+      "icon": "user",
+      "label": "Your trail"
+     },
+     "target_tint": "red",
+     "hub_cue": "networks"
+    }
+   },
+   "chunks": [
+    5,
+    4
+   ]
+  },
+  {
+   "text": "So it shows each network a different one.",
+   "scene": {
+    "label": "STEP 3: ONE PER NETWORK",
+    "tint": "cyan",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Real MAC: kept hidden",
+      "cue": "shows"
+     },
+     "b": {
+      "title": "A new one for each",
+      "icon": "key",
+      "ticks": [
+       "Home",
+       "Café",
+       "Hotel"
+      ],
+      "meter": false,
+      "cue": "different"
+     }
+    }
+   }
+  },
+  {
+   "text": "Open Wi-Fi gets one that changes every two weeks.",
+   "scene": {
+    "label": "STEP 4: OPEN WI-FI",
+    "tint": "blue",
+    "kind": "guard",
+    "params": {
+     "object": {
+      "icon": "user",
+      "label": "You"
+     },
+     "attacker": "eye",
+     "stop_cue": "changes",
+     "badge": "NEW ONE EVERY 2 WEEKS"
+    }
+   },
+   "chunks": [
+    5,
+    4
+   ]
+  },
+  {
+   "text": "Keep Private Wi-Fi Address on.",
+   "scene": {
+    "label": "DO THIS",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Private Wi-Fi Address",
+       "cue": "private"
+      },
+      {
+       "text": "Keep it on",
+       "cue": "on"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "Why does your iPhone give Wi-Fi a fake address?",
+  "caption": "Why does your iPhone give Wi-Fi a fake address? 📶\n\nEvery device has a hardware MAC address it uses to talk to Wi-Fi. If it showed the same one everywhere, network operators and anyone watching could link your visits and build a trail of where you go. So your iPhone uses a private Wi-Fi address: a different one for each network. On iOS 18 and later, networks with WPA2 or stronger security get a Fixed one, while open or weak-security networks get a Rotating one that changes every two weeks. Check it in Settings, Wi-Fi, tap the info button next to a network, Private Wi-Fi Address. Turn it off only if a network won't work with it.\nSend this to someone who joins every café Wi-Fi.",
+  "keywords": [
+   "iphone private wifi address",
+   "why does my iphone change its mac address",
+   "private wifi address explained",
+   "public wifi privacy",
+   "iphone privacy settings",
+   "iphone tips"
+  ],
+  "hashtags": [
+   "#iphoneprivacy",
+   "#iphonetips",
+   "#techexplained",
+   "#wifisecurity",
+   "#privacytips"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/102509",
+    "note": "Apple, Use private Wi-Fi addresses on Apple devices: a device identifies itself to each network with a different Wi-Fi (MAC) address; the same address across all networks lets operators and observers relate it to your activity and location over time; Fixed is the default on WPA2 or stronger networks, Rotating (a new private address every 2 weeks) on weak or no security (iOS 18+)"
+   },
+   {
+    "url": "https://support.apple.com/guide/security/wi-fi-privacy-secb9cb3140c/web",
+    "note": "Apple Platform Security, Wi-Fi privacy: randomized MAC addresses for Wi-Fi scans when not associated, so the address can't be used to persistently track a device by passive observers"
+   }
+  ]
+ }
+}
