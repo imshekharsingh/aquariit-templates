@@ -158,6 +158,15 @@
   .gtable table{width:100%;border-collapse:collapse;font-size:.8rem}
   .gtable td,.gtable th{padding:5px 4px;border-top:1px solid var(--line);text-align:left}
   .gtable td.n,.gtable th.n{text-align:right;font-variant-numeric:tabular-nums}
+  .gtable td.best{font-weight:800;color:var(--ink)}
+  .gtable td.best::after{content:'★';color:var(--c-c3,#f2b46a);font-size:.65rem;margin-left:2px}
+  .rates td,.rates th{white-space:nowrap;padding:5px 3px}
+  .gtable .sub{margin:6px 0 4px}
+  .rtiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 8px}
+  .rtile{display:flex;flex-direction:column;gap:2px;padding:10px;border:1px solid var(--line);border-radius:12px;min-width:0}
+  .rtile span{color:var(--mute);font:700 .72rem system-ui,sans-serif;text-transform:uppercase;letter-spacing:.04em}
+  .rtile b{font:800 1.4rem/1.1 system-ui,sans-serif;font-variant-numeric:tabular-nums}
+  .rtile small{color:var(--mute);font-size:.7rem;line-height:1.25}
   /* the Posted list (owner, 1 Nov 2026): one compact row per posted reel, newest first, numbers from the nightly collector */
   .posted-list{margin-top:30px}
   .posted-list h2{font:800 .8rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 4px}
@@ -393,6 +402,30 @@
     hover(box, svg, W, n, x, function(i){ bars.forEach(function(b, k){ b.classList.toggle('dim', i >= 0 && k !== i); }); if (i < 0) return;
       return { x: x(i), y: y(v[i]), text: dShort(istDay(reels[i].posted_at)) + ' · ' + v[i].toLocaleString('en-IN') + ' reached' }; });
     return box; }
+  // Growth step 2 (todo P1, 3 Nov 2026): what each reel did, as rates that compare across reels of any reach: saves and shares per 1,000
+  // reached, average watch as % of the reel's length, and the follower change on the day it went out (one snapshot a night, so a day's
+  // change is that night's count minus the night before). Typical = the median of these reels; the best value in each column is marked.
+  function rates(reels, acc){ var fol = {}; acc.forEach(function(r){ fol[r.day] = r.followers; });
+    function prevDay(d){ return new Date(Date.parse(d + 'T00:00:00Z') - DAY).toISOString().slice(0, 10); }
+    var rows = reels.map(function(m){ var d = istDay(m.posted_at), r = m.reach || 0;
+      return { day: d, reach: m.reach, saves: r && m.saves != null ? m.saves * 1000 / r : null, shares: r && m.shares != null ? m.shares * 1000 / r : null,
+        watch: m.watch_avg_ms != null && m.duration_s ? Math.min(999, m.watch_avg_ms / 10 / m.duration_s) : null,
+        fol: fol[d] != null && fol[prevDay(d)] != null ? fol[d] - fol[prevDay(d)] : null }; });
+    function med(k){ var v = rows.map(function(r){ return r[k]; }).filter(function(x){ return x != null; }).sort(function(a, b){ return a - b; }); if (!v.length) return null; var h = v.length >> 1; return v.length % 2 ? v[h] : (v[h - 1] + v[h]) / 2; }
+    function best(k){ var b = null; rows.forEach(function(r){ if (r[k] != null && (b == null || r[k] > b)) b = r[k]; }); return b; }
+    var f1 = function(v){ return v == null ? '–' : v >= 10 ? Math.round(v).toLocaleString('en-IN') : v.toFixed(1); }, pc = function(v){ return v == null ? '–' : Math.round(v) + '%'; }, sg = function(v){ return v == null ? '–' : (v > 0 ? '+' : '') + v.toLocaleString('en-IN'); };
+    var c = el('section', 'gcard'), tiles = el('div', 'rtiles'); c.appendChild(el('h2', null, 'What each reel did'));
+    c.appendChild(el('p', 'sub', 'Typical reel (median of these ' + rows.length + '). Rates compare reels of any reach.'));
+    [['Saves', f1(med('saves')), 'per 1,000 reached'], ['Shares', f1(med('shares')), 'per 1,000 reached'], ['Watched', pc(med('watch')), 'of the reel, on average']].forEach(function(q){
+      var t = el('div', 'rtile'); t.appendChild(el('span', null, q[0])); t.appendChild(el('b', null, q[1])); t.appendChild(el('small', null, q[2])); tiles.appendChild(t); });
+    c.appendChild(tiles);
+    var det = el('details', 'gtable rates'), tb = el('table'), hr = el('tr'), bs = { saves: best('saves'), shares: best('shares'), watch: best('watch'), fol: best('fol') };
+    det.appendChild(el('summary', null, 'Every reel'));
+    [['Day'], ['Reach', 'n'], ['Saves', 'n'], ['Shares', 'n'], ['Watch', 'n'], ['Fol.', 'n']].forEach(function(h){ hr.appendChild(el('th', h[1] || null, h[0])); }); tb.appendChild(hr);
+    rows.slice().reverse().forEach(function(r){ var tr = el('tr'); tr.appendChild(el('td', null, dShort(r.day)));
+      [[r.reach == null ? '–' : r.reach.toLocaleString('en-IN')], [f1(r.saves), 'saves'], [f1(r.shares), 'shares'], [pc(r.watch), 'watch'], [sg(r.fol), 'fol']].forEach(function(q){
+        var td = el('td', 'n' + (q[1] && r[q[1]] != null && r[q[1]] === bs[q[1]] && rows.length > 1 ? ' best' : ''), q[0]); tr.appendChild(td); }); tb.appendChild(tr); });
+    det.appendChild(tb); det.appendChild(el('p', 'sub', 'Saves and shares per 1,000 reached. Watch: average, as % of the reel. Fol.: the follower change on the day it went out. ★ best in each column.')); c.appendChild(det); return c; }
   function growth(){ var k = ch; gBox.textContent = ''; gBox.appendChild(el('p', 'empty', 'Loading numbers…'));
     perfFor(k).then(function(j){ if (k !== ch || view !== 'growth') return; gBox.textContent = '';
       var acc = ((j && j.account) || []).filter(function(r){ return r.followers != null; });
@@ -406,11 +439,7 @@
       if (reels.length) { var c2 = el('section', 'gcard'); c2.appendChild(el('h2', null, 'Reach per reel'));
         c2.appendChild(el('p', 'sub', 'People reached by each of the last ' + reels.length + ' posts, oldest on the left. Tap a bar.'));
         c2.appendChild(reachChart(reels));
-        var det = el('details', 'gtable'), tb = el('table'), hr = el('tr'); det.appendChild(el('summary', null, 'See the numbers'));
-        ['Posted', 'Reached', 'Saves', 'Shares'].forEach(function(h, i){ hr.appendChild(el('th', i ? 'n' : null, h)); }); tb.appendChild(hr);
-        reels.slice().reverse().forEach(function(m){ var tr = el('tr'); tr.appendChild(el('td', null, dShort(istDay(m.posted_at))));
-          [m.reach, m.saves, m.shares].forEach(function(x){ tr.appendChild(el('td', 'n', x == null ? '–' : x.toLocaleString('en-IN'))); }); tb.appendChild(tr); });
-        det.appendChild(tb); c2.appendChild(det); gBox.appendChild(c2); }
+        gBox.appendChild(c2); gBox.appendChild(rates(reels, acc)); }
       if (j && j.updated) gBox.appendChild(el('p', 'about', 'Numbers from ' + dShort(j.updated) + '.'));
     }); }
   function render(){

@@ -31,8 +31,9 @@ jobs:
         timeout-minutes: 15
         run: |
           if ! timeout 240 sh -c 'sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg fonts-inter espeak-ng'; then
-            pip install imageio-ffmpeg==0.6.0
-            sudo ln -sf "$(python3 -I -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())')" /usr/local/bin/ffmpeg
+            # into a folder of its own and linked by path (3 Nov 2026: pip fell back to a user install that python3 -I cannot see)
+            python3 -m pip install --quiet --target "$RUNNER_TEMP/iff" imageio-ffmpeg==0.6.0
+            f=$(find "$RUNNER_TEMP/iff" -type f -name "ffmpeg-*" | head -1); [ -n "$f" ] || { echo "::error::no ffmpeg in imageio-ffmpeg"; exit 1; }; chmod +x "$f"; sudo ln -sf "$f" /usr/local/bin/ffmpeg
             curl -sSL -o /tmp/inter.zip https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip
             sudo mkdir -p /usr/share/fonts/truetype/inter && sudo unzip -oj -q /tmp/inter.zip 'extras/ttf/Inter-*.ttf' -d /usr/share/fonts/truetype/inter
           fi
