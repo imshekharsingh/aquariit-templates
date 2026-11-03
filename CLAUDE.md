@@ -27,6 +27,7 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   e.g. a reel made the evening before for tomorrow says tomorrow) and "concept", in the push that makes it; npm run check fails without it.
   Buffer (owner, 1 Nov 2026: reels 2-3 days ahead): before building, every run reads captions.json; if its channel already has a visible reel
   with postOn = the day it would build for, it builds for the first later day without one instead (never two reels for one channel and day).
+  Topics for each channel and day are planned a week ahead in design/topics.md (spare-usage night, every Tuesday); runs take theirs from it.
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
 - Archiving (owner, 1 Nov 2026; replaces the 7-day fold / 30-day rule): a reel marked uploaded leaves the main list at once for its channel's compact
   "Posted" list (cover, title, posted date, its numbers once the collector has them; no video). 15 days after upload the nightly "Actions usage"
