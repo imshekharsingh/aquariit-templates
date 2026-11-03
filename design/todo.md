@@ -26,3 +26,5 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 ## Done
 - 1 Nov 2026: Posted list per channel with numbers; MP4s removed 15 days after upload; audit cards in the app; spare-usage night card,
   push reminder and "Spare check" workflow; Growth step 1 (followers and reach-per-reel charts per channel, light and dark); "Needs you" list for the owner's answers; Posted rows open (video, then cover after 15 days).
+- 3 Nov 2026: spare-usage night is opt-out (owner: "my remaining usage goes to waste"): the Tuesday card says Claude uses it tonight with one
+  "Skip tonight" button; the push says "Tap to skip"; each reminder send is logged and the card shows "Last reminder: <time>, sent to N phones".

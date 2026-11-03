@@ -92,12 +92,14 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   Scenes build their camera, layers, paper, figures and type from the shared kit scripts/channel3/kit25d.js; render with Showreel "parts" 1 (about 22 GitHub minutes).
   Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, preflight says "fits", one stills sheet.
 
-## Spare usage night (owner, 1 Nov 2026)
-The owner's weekly Claude limit resets Wednesday 04:30 IST. From Tuesday 21:00 IST the app shows a card "Weekly reset at 4:30 AM. Spare usage
-left?" with one "Use it" button (a flag for that week in D1, /api/spare) and sends a push reminder at 21:00 IST (Worker cron, Web Push; keys
+## Spare usage night (owner, 1 Nov 2026; opt-OUT from 3 Nov 2026: spare usage is used every week unless the owner skips)
+The owner's weekly Claude limit resets Wednesday 04:30 IST. From Tuesday 21:00 IST the app shows a card "Tonight Claude uses your spare usage
+(until 4:30 AM)" with one "Skip tonight" button (a skip flag for that week in D1, /api/spare reports on = not skipped) and the time and reach of
+the last push reminder ("Last reminder: <time>, sent to N phones" / "no phone signed up"; each cron send is logged in D1). The push reminder
+("Tonight Claude uses your spare usage. Tap to skip.") goes out at 21:00 IST (Worker cron, Web Push; keys
 are the GitHub secrets VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY, published as Worker secrets by the pipeline; never in a file).
 A scheduled task (created by the parent session, not here) fires Tuesdays around 22:45 IST into the studio launcher, which starts a fresh session that:
-1. dispatches the "Spare check" workflow (main) and reads SPARE=yes/no from its log. If no: end at once, no other work.
+1. dispatches the "Spare check" workflow (main) and reads SPARE=yes/no from its log (yes unless the owner tapped "Skip tonight"). If no: end at once, no other work.
 2. If yes: (1) build reels ahead so each channel has 2-3 days ready (same preflight rules, one render per reel); (2) plan next week's topics;
    (3) work design/todo.md top-down, one item per push; stop by 04:00 IST. Then update design/todo.md and post a short card
    (`"kind":"spare"`, "Audit card" workflow) saying what was done, in simple English.

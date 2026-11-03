@@ -314,8 +314,10 @@ async function asksApi(request, env, p, url) {
 }
 
 // ---- Spare-usage night (owner, 1 Nov 2026): the owner's weekly Claude limit resets Wednesday 04:30 IST. From Tuesday 21:00 IST the app shows a card
-// with one "Use it" button (a flag for that week, stored here); the "Spare check" workflow reads the flag for the night's session. The Worker's cron
-// sends a Web Push reminder at 21:00 IST on Tuesdays to every subscribed device (VAPID keys: Worker secrets VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY).
+// saying Claude uses the spare usage tonight, with one "Skip tonight" button (owner, 3 Nov 2026: opt-out; a skip flag for that week, stored here).
+// /api/spare reports on = not skipped, and the "Spare check" workflow prints SPARE=yes unless skipped. The Worker's cron sends a Web Push reminder
+// at 21:00 IST on Tuesdays to every subscribed device (VAPID keys: Worker secrets VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY) and logs each send here,
+// so the card can show when the last reminder went out and to how many phones.
 const IST_MS = 5.5 * 3600e3, DAY_MS = 864e5;
 function spareWindow(now = Date.now()) {   // the next reset (Wed 04:30 IST) and whether its card is showing (from Tue 21:00 IST)
   const ist = now + IST_MS, midnight = ist - (ist % DAY_MS), dow = new Date(ist).getUTCDay();
@@ -327,7 +329,8 @@ let spareReady = null;
 async function spareDb(env) {
   if (!env.DB) return null;
   spareReady = spareReady || env.DB.batch([
-    env.DB.prepare('CREATE TABLE IF NOT EXISTS spare_week (week TEXT PRIMARY KEY, at TEXT NOT NULL)'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS spare_skip (week TEXT PRIMARY KEY, at TEXT NOT NULL)'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS spare_push_log (at TEXT PRIMARY KEY, devices INTEGER NOT NULL, sent INTEGER NOT NULL, failed INTEGER NOT NULL, note TEXT)'),
     env.DB.prepare('CREATE TABLE IF NOT EXISTS push_subs (endpoint TEXT PRIMARY KEY, p256dh TEXT NOT NULL, auth TEXT NOT NULL, at TEXT NOT NULL)'),
   ]).catch((e) => { spareReady = null; throw e; });
   await spareReady;
@@ -343,12 +346,14 @@ async function spareApi(request, env, p, url) {
     const w = spareWindow(), week = DAY_RE.test(url.searchParams.get('week') || '') ? url.searchParams.get('week') : w.week;
     if (request.method === 'PUT') {
       let b = null; try { b = await request.json(); } catch { /* handled below */ }
-      if (!b || typeof b.on !== 'boolean') return jres({ error: 'bad-request' }, 400);
-      if (b.on) await db.prepare('INSERT INTO spare_week (week, at) VALUES (?1, ?2) ON CONFLICT(week) DO UPDATE SET at = excluded.at').bind(w.week, new Date().toISOString()).run();
-      else await db.prepare('DELETE FROM spare_week WHERE week = ?1').bind(w.week).run();
+      const skip = b && typeof b.skip === 'boolean' ? b.skip : b && typeof b.on === 'boolean' ? !b.on : null;
+      if (skip === null) return jres({ error: 'bad-request' }, 400);
+      if (skip) await db.prepare('INSERT INTO spare_skip (week, at) VALUES (?1, ?2) ON CONFLICT(week) DO UPDATE SET at = excluded.at').bind(w.week, new Date().toISOString()).run();
+      else await db.prepare('DELETE FROM spare_skip WHERE week = ?1').bind(w.week).run();
     }
-    const row = await db.prepare('SELECT at FROM spare_week WHERE week = ?1').bind(week).first();
-    return jres({ ...w, week, on: !!row, at: row ? row.at : null });
+    const row = await db.prepare('SELECT at FROM spare_skip WHERE week = ?1').bind(week).first();
+    const last = await db.prepare('SELECT at, devices, sent, failed, note FROM spare_push_log ORDER BY at DESC LIMIT 1').first();
+    return jres({ ...w, week, on: !row, skipped: !!row, at: row ? row.at : null, lastPush: last || null });
   }
   if (p === '/api/push/test' && request.method === 'POST') {   // "Send a test notification": only to a device that is signed up
     let b = null; try { b = await request.json(); } catch { /* handled below */ }
@@ -370,25 +375,30 @@ async function spareApi(request, env, p, url) {
       .bind(ep, k.p256dh, k.auth, new Date().toISOString()).run();
     if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return jres({ ok: true, sent: null });
     if (url.searchParams.get('quiet') === '1') return jres({ ok: true });   // the app re-saves an existing subscription on open: no message
-    const status = await sendPush({ endpoint: ep, keys: k }, { title: 'Notifications are on', body: 'You will get the Tuesday 9 PM spare-usage reminder here.', url: '/' }, env, 600).catch(() => 0);
+    const status = await sendPush({ endpoint: ep, keys: k }, { title: 'Notifications are on', body: 'You will get the Tuesday 9 PM spare-usage night reminder here.', url: '/' }, env, 600).catch(() => 0);
     return jres({ ok: true, sent: status });
   }
   return jres({ error: 'bad-request' }, 400);
 }
 async function sparePush(env) {   // the cron runs daily at 15:30 UTC (21:00 IST); it only sends on Tuesdays (IST)
   const w = spareWindow(Date.now() + 120e3);   // a cron may fire a moment early
-  if (!w.show || !env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return { sent: 0, skipped: true };
+  if (!w.show) return { sent: 0, skipped: true };
   const db = await spareDb(env);
   if (!db) return { sent: 0 };
+  const log = (devices, sent, failed, note) => db.prepare('INSERT OR REPLACE INTO spare_push_log (at, devices, sent, failed, note) VALUES (?1, ?2, ?3, ?4, ?5)')
+    .bind(new Date().toISOString(), devices, sent, failed, note || null).run().catch(() => {});
+  if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) { await log(0, 0, 0, 'no-keys'); return { sent: 0, skipped: true }; }
   const { results } = await db.prepare('SELECT endpoint, p256dh, auth FROM push_subs').all();
-  let sent = 0;
+  let sent = 0, failed = 0;
   for (const r of results || []) {
     const status = await sendPush({ endpoint: r.endpoint, keys: { p256dh: r.p256dh, auth: r.auth } },
-      { title: 'Weekly reset at 4:30 AM', body: 'Spare usage left? Check Settings > Usage in Claude. Tap to open the app.', url: '/' }, env).catch(() => 0);
-    if (status === 404 || status === 410) await db.prepare('DELETE FROM push_subs WHERE endpoint = ?1').bind(r.endpoint).run();   // unsubscribed device
+      { title: 'Spare usage night', body: 'Tonight Claude uses your spare usage. Tap to skip.', url: '/' }, env).catch(() => 0);
+    if (status === 404 || status === 410) { failed++; await db.prepare('DELETE FROM push_subs WHERE endpoint = ?1').bind(r.endpoint).run(); }   // unsubscribed device
     else if (status >= 200 && status < 300) sent++;
+    else failed++;
   }
-  return { sent };
+  await log((results || []).length, sent, failed);
+  return { sent, failed };
 }
 
 // ---- Reel-uploaded tracking in D1 (binding "DB"). Without the binding the API answers 501 and the pages fall back to localStorage. ----

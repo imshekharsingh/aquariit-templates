@@ -129,6 +129,7 @@
   .card .btn{min-height:40px;font-size:.82rem}
   .card.spare{border-left-color:#f2c14e}
   .card.spare p{margin-top:6px;color:var(--ink)}
+  .card.spare p.mute{color:var(--mute);font-size:.85rem}
   .notify{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:10px 14px;border:1px dashed var(--line);border-radius:16px;font-size:.82rem;color:var(--mute)}
   .notify .btn{flex:none;min-height:40px;font-size:.82rem}
   /* Growth view (owner, 1 Nov 2026): per channel, followers over time and reach per reel, from the nightly collector's numbers in D1 */
@@ -495,17 +496,21 @@
     row.appendChild(b); box.appendChild(row); return box; }
   fetch('/api/cards', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
     .then(function(j){ (j.cards || []).forEach(function(cd){ if (cd && cd.id && cd.day) cardsBox.appendChild(cardEl(cd)); }); }).catch(function(){});
-  // spare-usage night (owner, 1 Nov 2026): from Tuesday 21:00 IST until the weekly reset (Wednesday 04:30 IST) one card with a "Use it" switch for that week
+  // spare-usage night (owner, 3 Nov 2026: opt-out): from Tuesday 21:00 IST until the weekly reset (Wednesday 04:30 IST) one card saying Claude uses
+  // the spare usage tonight, with a "Skip tonight" switch for that week, and when the last push reminder went out (so a missed one is visible)
   fetch('/api/spare', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(sp){
     if (!sp.show) return;
-    var box = el('section', 'card spare'), hd = el('div', 'hd'), row = el('div', 'row'), b = el('button', 'btn g tick', ''); b.type = 'button';
-    hd.appendChild(el('b', null, 'Spare usage tonight?')); hd.appendChild(el('span', null, 'until 4:30 AM')); box.appendChild(hd);
-    box.appendChild(el('p', null, 'Weekly reset at 4:30 AM. Spare usage left? Check Settings > Usage in Claude.'));
-    function show(on){ sp.on = on; b.textContent = on ? 'Using it tonight ✓ (tap to undo)' : 'Use it'; b.classList.toggle('on', on); }
+    var box = el('section', 'card spare'), hd = el('div', 'hd'), row = el('div', 'row'), b = el('button', 'btn g tick', ''), msg = el('p'); b.type = 'button';
+    hd.appendChild(el('b', null, 'Spare usage night')); hd.appendChild(el('span', null, 'until 4:30 AM')); box.appendChild(hd); box.appendChild(msg);
+    var lp = sp.lastPush, lt = lp && new Date(lp.at), lw = lt && lt.toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+    box.appendChild(el('p', 'mute', !lp ? 'Last reminder: none sent yet.' : lp.note === 'no-keys' ? 'Last reminder: ' + lw + ', not sent (push keys missing).'
+      : !lp.devices ? 'Last reminder: ' + lw + ', no phone signed up.' : 'Last reminder: ' + lw + ', sent to ' + lp.sent + ' phone' + (lp.sent === 1 ? '' : 's') + (lp.failed ? ' (' + lp.failed + ' failed)' : '') + '.'));
+    function show(on){ sp.on = on; msg.textContent = on ? 'Tonight Claude uses your spare usage (until 4:30 AM).' : 'Skipped: Claude will not use your spare usage tonight.';
+      b.textContent = on ? 'Skip tonight' : 'Skipped ✓ (tap to undo)'; b.classList.toggle('on', !on); }
     b.addEventListener('click', function(){ b.disabled = true;
-      fetch('/api/spare', { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: !sp.on }) })
+      fetch('/api/spare', { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ skip: !!sp.on }) })
         .then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ show(j.on); }).catch(function(){ b.textContent = 'Try again'; }).then(function(){ b.disabled = false; }); });
-    show(!!sp.on); row.appendChild(b); box.appendChild(row); cardsBox.insertBefore(box, cardsBox.firstChild);
+    show(sp.on !== false); row.appendChild(b); box.appendChild(row); cardsBox.insertBefore(box, cardsBox.firstChild);
     var left = Date.parse(sp.until) - Date.now(); if (left > 0) setTimeout(function(){ box.remove(); }, Math.min(left, 2e9));   // gone at the reset
   }).catch(function(){});
   // notifications: the service worker (offline copies + push) and one line that always says where this device stands (owner, 1 Nov 2026:
