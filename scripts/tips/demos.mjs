@@ -129,6 +129,42 @@ export const demos = {
 <p class="note">The left link has no space to break at, so it sticks out of its card and the box scrolls sideways. The right one breaks wherever it must and stays inside.</p>`,
     js: `function(root){ root.querySelector('.go').addEventListener('click', function(){ root.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('narrow'); }); }); }`,
   },
+  sticky: {
+    css: `
+#sticky .sc{height:130px;overflow-y:auto;margin:0 8px 8px;border-radius:10px;background:#f2efe8}
+#sticky .wrap{overflow:hidden}
+#sticky .fix .wrap{overflow:clip}
+#sticky .hd{position:sticky;top:0;background:#111214;color:#f2efe8;padding:8px 10px;font:800 13px system-ui,-apple-system,"Segoe UI",sans-serif}
+#sticky .it{margin:8px;height:34px;border-radius:8px;background:#d8d4cb}
+#sticky .go{margin-top:10px;width:100%;min-height:44px;border-radius:22px;border:1.5px solid #f2efe8;background:transparent;color:#f2efe8;font:700 15px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">.wrap { overflow: hidden }</span><div class="sc"><div class="wrap"><div class="hd">FERNLY</div>${'<div class="it"></div>'.repeat(8)}</div></div></div>
+  <div class="pane fix"><span class="tag ok">.wrap { overflow: clip }</span><div class="sc"><div class="wrap"><div class="hd">FERNLY</div>${'<div class="it"></div>'.repeat(8)}</div></div></div>
+</div>
+<button class="go" type="button">Scroll both</button>
+<p class="note">Both headers are position: sticky; top: 0. On the left the wrapper's overflow: hidden makes it the box the header sticks to, so the header scrolls away. On the right overflow: clip is not a scroll box, so the header stays. (Needs Safari 16+.)</p>`,
+    js: `function(root){ root.querySelector('.go').addEventListener('click', function(){ root.querySelectorAll('.sc').forEach(function(s){ s.scrollTo({ top: s.scrollTop > 10 ? 0 : 200, behavior: 'smooth' }); }); }); }`,
+  },
+  anchor: {
+    css: `
+#anchor .sc{position:relative;height:130px;overflow-y:auto;margin:0 8px 8px;border-radius:10px;background:#f2efe8;color:#111214}
+#anchor .fix .sc{scroll-padding-top:34px}
+#anchor .hd{position:sticky;top:0;z-index:1;height:30px;background:#111214;color:#f2efe8;padding:0 10px;font:800 12px/30px system-ui,-apple-system,"Segoe UI",sans-serif}
+#anchor h4{margin:10px;font:800 15px system-ui,-apple-system,"Segoe UI",sans-serif}
+#anchor .it{margin:8px 10px;height:10px;border-radius:5px;background:#d8d4cb}
+#anchor .go{margin-top:10px;width:100%;min-height:44px;border-radius:22px;border:1.5px solid #f2efe8;background:transparent;color:#f2efe8;font:700 15px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">No scroll padding</span><div class="sc"><div class="hd">HELP</div>${'<div class="it"></div>'.repeat(10)}<h4 class="to">3. Billing</h4>${'<div class="it"></div>'.repeat(10)}</div></div>
+  <div class="pane fix"><span class="tag ok">scroll-padding-top</span><div class="sc"><div class="hd">HELP</div>${'<div class="it"></div>'.repeat(10)}<h4 class="to">3. Billing</h4>${'<div class="it"></div>'.repeat(10)}</div></div>
+</div>
+<button class="go" type="button">Jump to Billing</button>
+<p class="note">Both boxes jump to the "3. Billing" heading the way a #link does. On the left it lands at the very top, under the dark header. On the right scroll-padding-top marks the header's strip as covered, so it stops just below it.</p>`,
+    js: `function(root){ var b = root.querySelector('.go'); b.addEventListener('click', function(){ var y = window.scrollY, back = b.dataset.on === '1';
+  root.querySelectorAll('.sc').forEach(function(s){ if (back) s.scrollTop = 0; else s.querySelector('.to').scrollIntoView({ block: 'start' }); });
+  window.scrollTo(0, y); b.dataset.on = back ? '0' : '1'; b.textContent = back ? 'Jump to Billing' : 'Back to top'; }); }`,
+  },
   squash: {
     css: `
 #squash .pane{height:190px}

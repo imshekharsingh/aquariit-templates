@@ -1,0 +1,55 @@
+{
+ "name": "showreel-25-anchor",
+ "seek": "scripts/explainer/anchor.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why is your heading hiding under the header? You tap a link, the page jumps, and the heading lands at the very top, under your fixed header. The fix: scroll padding top, on the html. Now every jump stops below the header, and the heading shows.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.85,
+   0.75
+  ]
+ },
+ "caption": "Why is your heading hiding under the header? 🔗\n\nA link to #billing scrolls that heading to the very top of the page, right where your fixed header sits, so the header covers it. Add scroll-padding-top to the html element, about the height of your header: it tells the browser the top strip is covered, so every link jump (and scrollIntoView) stops below it. One rule fixes every link on the page. Chrome 69+, Firefox 68+, Safari 14.1+. (For a single target, scroll-margin-top on that heading does the same.)\nSave it for your next docs or FAQ page, or send it to whoever builds your site.",
+ "keywords": [
+  "anchor link hidden under fixed header",
+  "scroll-padding-top",
+  "fixed header covers heading",
+  "CSS anchor link offset",
+  "CSS scroll tips",
+  "web design"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#css",
+  "#frontenddev",
+  "#webdev",
+  "#uxdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-padding-top",
+   "note": "MDN scroll-padding-top: offsets the top of the optimal viewing region of the scrollport, the region used as the target region for placing things in view, to exclude regions obscured by other content such as fixed-positioned toolbars"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/properties/scroll-padding-top.json",
+   "note": "scroll-padding-top: Chrome 69, Firefox 68, Safari 14.1 (Safari 11-14 did not apply it to fragment targets or scrollIntoView, WebKit bug 179379)"
+  }
+ ],
+ "tip": {
+  "title": "Why is your heading hiding under the header?",
+  "why": "A link to #section scrolls its target to the top of the page, where a fixed header covers it. scroll-padding-top on the scroll container (html for the page) marks that top strip as covered: MDN calls it the offset of the optimal viewing region, used to exclude parts obscured by fixed toolbars. Every link jump then stops below the header. Chrome 69+, Firefox 68+, Safari 14.1+.",
+  "code": "html {\n  scroll-padding-top: 80px; /* your header's height */\n}",
+  "demo": "anchor",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-padding-top",
+   "label": "MDN, scroll-padding-top"
+  }
+ }
+}

@@ -1,0 +1,61 @@
+{
+ "name": "showreel-24-sticky",
+ "seek": "scripts/explainer/sticky.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why did your sticky header stop sticking? A parent has overflow hidden. That makes it a scroll box, so the header sticks inside it and scrolls away. The fix: overflow, clip. It clips, but isn't a scroll box. Now the header stays on top.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.7,
+   0.85,
+   0.75,
+   0.7
+  ]
+ },
+ "caption": "Why did your sticky header stop sticking? 📌\n\nA sticky element sticks to its nearest ancestor with a scrolling mechanism, and overflow: hidden creates one even if that box never scrolls (MDN). So one wrapper with overflow: hidden captures your header, and it scrolls away with the page. Swap it for overflow: clip: the content is still clipped, but the box is not a scroll container, so the header sticks to the page again. Chrome 90+, Firefox 81+, Safari 16+. (No top value set? Sticky never sticks; check that first.)\nSave it for the next time a header won't stick, or send it to whoever builds your site.",
+ "keywords": [
+  "position sticky not working",
+  "sticky header not sticking",
+  "overflow clip vs hidden",
+  "CSS sticky header fix",
+  "CSS overflow",
+  "frontend tips"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#css",
+  "#frontenddev",
+  "#webdev",
+  "#webdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/position",
+   "note": "MDN position: a sticky element sticks to its nearest ancestor that has a scrolling mechanism (created when overflow is hidden, scroll, auto, or overlay), even if that ancestor isn't the nearest actually scrolling ancestor; it needs a non-auto inset such as top"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/overflow",
+   "note": "MDN overflow: hidden clips and the box is a scroll container; clip clips at the overflow clip edge and the box is not a scroll container"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/properties/overflow.json",
+   "note": "overflow: clip: Chrome 90, Firefox 81, Safari 16 (Edge follows Chrome)"
+  }
+ ],
+ "tip": {
+  "title": "Why did your sticky header stop sticking?",
+  "why": "A sticky element sticks to its nearest ancestor with a scrolling mechanism, and overflow: hidden creates one even if that box never scrolls (MDN position). So a wrapper with overflow: hidden captures the header and it scrolls away with the page. overflow: clip still clips, but the box is not a scroll container (MDN overflow), so the header sticks to the page again. Chrome 90+, Firefox 81+, Safari 16+.",
+  "code": ".wrap {\n  overflow: clip; /* was: hidden */\n}\n.header {\n  position: sticky;\n  top: 0;\n}",
+  "demo": "sticky",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/position",
+   "label": "MDN, position: sticky"
+  }
+ }
+}

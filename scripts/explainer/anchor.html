@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why is your heading hiding under the header?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 15, a layout tip: "Why is your heading hiding under the header?"
+   A link to #section scrolls its target to the top of the scrollport, where a fixed header covers it. MDN scroll-padding-top:
+   it offsets the top of the scrollport's optimal viewing region, "the region used as the target region for placing things in
+   view", to exclude parts covered by fixed toolbars. Same phone and column as Nº 14: a help page with a fixed header; a finger
+   taps "Billing" from frame 0 and the heading lands under the header (its hidden part drawn over the header in red); the code
+   types html { scroll-padding-top: 80px }, the same tap lands below the header, ringed green.
+   Beats and captions lead the voice by 0.15 s; the cover is the finished title (window.COVER); every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--rule:#33343c;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:166px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:236px;font-weight:800;font-size:72px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--red)}
+#ph{left:0;top:0;width:250px;height:470px;border-radius:38px;background:#2a2b31;padding:8px;transform-origin:0 0}
+#scr{position:absolute;left:8px;top:8px;width:234px;height:454px;border-radius:31px;overflow:hidden;background:var(--paper)}
+#sb{position:absolute;left:0;right:0;top:0;height:26px;background:var(--paper);font:700 11px/26px var(--m);padding:0 18px;color:var(--ink);z-index:5}
+#pg{position:absolute;left:0;top:26px;width:234px;height:428px;overflow:hidden;color:var(--ink)}
+#body{position:absolute;left:0;top:0;width:234px}
+#hdr{position:absolute;left:0;top:0;width:234px;height:42px;background:var(--ink);color:var(--paper);z-index:3;padding:0 16px;font:800 14px/42px var(--f);letter-spacing:.02em}
+#hdr i{position:absolute;right:16px;top:16px;width:20px;height:2.5px;border-radius:2px;background:var(--paper);box-shadow:0 6px 0 var(--paper)}
+.h1{position:absolute;left:16px;font:800 28px/.96 var(--f);font-variation-settings:'opsz' 72;letter-spacing:-.02em}
+.toc{position:absolute;left:16px;font:600 14px/1 var(--f);color:#2e5bd8;text-decoration:underline;white-space:nowrap}
+.sh{position:absolute;left:16px;font:800 22px/26px var(--f);letter-spacing:-.01em;white-space:nowrap}
+.bar{position:absolute;left:16px;height:9px;border-radius:5px;background:#d8d4cb}
+#ghost{position:absolute;left:16px;font:800 22px/26px var(--f);letter-spacing:-.01em;white-space:nowrap;color:var(--red);z-index:4}
+#gbox{position:absolute;left:8px;width:150px;border:2.5px dashed var(--red);border-radius:6px;z-index:4}
+#pad{position:absolute;left:0;top:42px;width:234px;background:repeating-linear-gradient(135deg,rgba(124,240,182,.35) 0 4px,rgba(124,240,182,.12) 4px 9px);z-index:2}
+#fg{position:absolute;width:40px;height:40px;border-radius:50%;background:rgba(17,18,20,.22);border:2.5px solid rgba(17,18,20,.55);z-index:7}
+#ok{position:absolute;left:6px;width:160px;height:36px;border:3px solid var(--acc);border-radius:10px;z-index:6}
+#col{left:306px;top:430px;width:198px;height:200px}
+#cd{position:absolute;left:0;right:0;top:0;padding:16px 14px;border-radius:18px;background:var(--surface);font:500 17px/1.45 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc)}#cd s{text-decoration:none;color:var(--red)}#cd .dim{color:var(--dim)}
+#cd .cur{display:inline-block;width:2px;height:18px;background:var(--paper);vertical-align:-3px}
+#cap{left:36px;right:36px;top:700px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 15 · LAYOUT</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>is</span> <span>your</span></span><span class="ln"><span>heading</span> <span class="acc">hiding</span></span><span class="ln"><span class="acc">under</span> <span>the</span></span><span class="ln"><span>header?</span></span></div>
+<div id="ph" class="a">
+  <div id="scr">
+    <div id="sb">9:41</div>
+    <div id="pg">
+      <div id="body">
+        <div class="h1" style="top:62px">Help<br>center</div>
+        <div class="toc" style="top:136px">1. Setup</div><div class="toc" id="lnk2" style="top:164px">2. Install</div><div class="toc" id="lnk" style="top:192px">3. Billing</div>
+        <div class="bar" style="top:230px;width:190px"></div><div class="bar" style="top:248px;width:160px"></div>
+        <div class="sh" style="top:300px">1. Setup</div>
+        <div class="bar" style="top:340px;width:196px"></div><div class="bar" style="top:358px;width:176px"></div><div class="bar" style="top:376px;width:188px"></div><div class="bar" style="top:394px;width:120px"></div>
+        <div class="bar" style="top:430px;width:184px"></div><div class="bar" style="top:448px;width:150px"></div>
+        <div class="sh" style="top:520px">2. Install</div>
+        <div class="bar" style="top:560px;width:190px"></div><div class="bar" style="top:578px;width:170px"></div><div class="bar" style="top:596px;width:186px"></div><div class="bar" style="top:614px;width:110px"></div>
+        <div class="bar" style="top:650px;width:180px"></div><div class="bar" style="top:668px;width:140px"></div>
+        <div class="sh" id="tg3" style="top:740px">3. Billing</div>
+        <div class="bar" style="top:780px;width:194px"></div><div class="bar" style="top:798px;width:168px"></div><div class="bar" style="top:816px;width:184px"></div><div class="bar" style="top:834px;width:126px"></div>
+        <div class="bar" style="top:870px;width:190px"></div><div class="bar" style="top:888px;width:172px"></div><div class="bar" style="top:906px;width:180px"></div><div class="bar" style="top:924px;width:100px"></div>
+        <div class="bar" style="top:960px;width:186px"></div><div class="bar" style="top:978px;width:150px"></div><div class="bar" style="top:996px;width:176px"></div><div class="bar" style="top:1014px;width:130px"></div>
+        <div class="bar" style="top:1050px;width:190px"></div><div class="bar" style="top:1068px;width:160px"></div><div class="bar" style="top:1086px;width:184px"></div><div class="bar" style="top:1104px;width:110px"></div>
+        <div class="bar" style="top:1140px;width:176px"></div><div class="bar" style="top:1158px;width:150px"></div>
+      </div>
+      <div id="pad"></div>
+      <div id="hdr"><span id="brand">OKRALINE · HELP</span><i></i></div>
+      <div id="ghost">3. Billing</div><div id="gbox"></div>
+      <div id="ok"></div>
+      <div id="fg"></div>
+    </div>
+  </div>
+</div>
+<div id="col" class="a"><div id="cd"></div></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why is your heading hiding under the header? You tap a link, the page jumps, and the heading lands at the very top, under your fixed header. The fix: scroll padding top, on the html. Now every jump stops below the header, and the heading shows.";
+  var WORDS = [], DUR = 20, LEAD = .15, HOOK_N = 8;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { tap: at('tap'), jumps: at('jumps'), lands: at('lands'), top: at('top'), under: at('under', 2), fixed: at('fixed'), fix: at('fix'), scroll: at('scroll'), padding: at('padding'),
+      top2: at('top', 2), html: at('html'), now: at('now'), every: at('every'), stops: at('stops'), below: at('below'), shows: at('shows') };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.tap - .3, A.hookIn + .35);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  var HEAD = 42, TARGET = 740, TARGET2 = 520, PAD = 48;   // screen px: header height, the Billing heading's top, the padding (80 CSS px on a 390 px phone)
+  // taps on "Billing": in the hook (frame 0), on "You tap a link", and after the fix on "Now every jump"
+  function taps(){ return [{ t: .25, y: 192 }, { t: A.tap + .1, y: 192 }, { t: A.html + .2, y: 192 }, { t: A.stops + .45, y: 164 }]; }
+  // the page's scroll at t: each tap jumps to the heading (fast, like a real jump), and the page rises back to the top before the next tap
+  function scroll(t){
+    var T = taps(), y = 0;
+    var target = function(k){ return TARGET - PAD * k; };
+    var j1 = io(P(t, T[0].t + .25, T[0].t + .55)), b1 = io(P(t, A.leave - .1, A.leave + .3));
+    var j2 = io(P(t, A.jumps - .05, A.jumps + .25)), b2 = io(P(t, A.fix - .1, A.fix + .4));
+    var j3 = io(P(t, T[2].t + .3, T[2].t + .6)), b3 = io(P(t, A.stops - .05, A.stops + .3)), j4 = io(P(t, T[3].t + .3, T[3].t + .6));
+    y = target(0) * j1 * (1 - b1) + target(0) * j2 * (1 - b2) + target(1) * j3 * (1 - b3) + (TARGET2 - PAD) * j4;
+    return y;
+  }
+  function finger(t){   // finger opacity and press for the tap nearest t
+    var T = taps(), best = 0, press = 0;
+    var y = 192;
+    T.forEach(function(x){ var w = win(t, x.t - .25, x.t + .35, .12); if (w > best) { best = w; y = x.y; press = Math.sin(P(t, x.t - .05, x.t + .2) * Math.PI); } });
+    return { a: best, p: press, y: y };
+  }
+  var CODE_A = '<span class="dim">html {</span>\n  scroll-padding-\n    top: ', CODE_Z = ';\n<span class="dim">}</span>';
+  function code(t){
+    var v = '80px', n = Math.round(v.length * P(t, A.padding, A.html + .1));
+    var a = Math.round(CODE_A.replace(/<[^>]+>/g, '').length * P(t, A.fix - .1, A.padding));
+    var raw = CODE_A.replace(/<[^>]+>/g, '');
+    var head = a >= raw.length ? CODE_A : '<span class="dim">' + raw.slice(0, a).replace(/&/g, '&amp;') + '</span>';
+    var cur = (t > A.fix - .1 && t < A.html + .3) ? '<span class="cur"></span>' : '';
+    return head + (n > 0 ? '<b>' + v.slice(0, n) + '</b>' : '') + cur + (a >= raw.length && n >= v.length ? CODE_Z : '');
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    var gone = io(P(t, A.leave, A.leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    var rise = io(P(t, A.leave + .2, A.leave + .7)), s = mix(.56, 1, rise), x = mix((540 - 250 * .56) / 2, 36, rise), y = mix(538 + Math.sin(t * .9) * 3, 206, rise);
+    var ph = $('ph'); ph.style.opacity = out(P(t, 0, .3)) * (1 - ex); ph.style.transform = 'translate(' + x + 'px,' + (y + ex * 20) + 'px) scale(' + s + ')';
+    // ---- the page ----
+    var sc = scroll(t), fixK = io(P(t, A.html, A.html + .4));
+    $('body').style.transform = 'translateY(' + (-sc) + 'px)';
+    var hy = TARGET - sc;                                  // the heading's top on screen
+    // the part of the heading under the header, drawn over the header in red
+    var under = hy < HEAD - 4 && hy > -26, gA = (under ? 1 : 0) * (1 - fixK) * (1 - ex);
+    $('brand').style.opacity = 1 - gA;
+    var g = $('ghost'); g.style.top = hy + 'px'; g.style.opacity = gA * .95; g.style.clipPath = 'inset(0 0 ' + Math.max(0, hy + 26 - HEAD) + 'px 0)';
+    var gb = $('gbox'); gb.style.top = (hy - 5) + 'px'; gb.style.height = '36px'; gb.style.opacity = gA;
+    // the padding zone, shown once the fix is typed
+    var pd = $('pad'); pd.style.height = (PAD * fixK) + 'px'; pd.style.opacity = win(t, A.html, A.html + 1.2, .2) * (1 - ex);
+    // the heading ringed green once it lands below the header
+    var land2 = t > taps()[3].t + .2, ok = $('ok'); ok.style.top = ((land2 ? TARGET2 - sc : hy) - 5) + 'px'; ok.style.width = (land2 ? 150 : 160) + 'px';
+    ok.style.opacity = Math.max(win(t, A.html + .85, A.stops - .05, .15), win(t, taps()[3].t + .7, DUR - .7, .15)) * (1 - ex);
+    // the finger taps "3. Billing" in the table of contents
+    var f = finger(t), fg = $('fg'), lk = $('lnk');
+    fg.style.left = (70 - 20) + 'px'; fg.style.top = (f.y + 8 - 20 - sc) + 'px'; fg.style.opacity = f.a * (1 - ex); fg.style.transform = 'scale(' + (1 - .15 * f.p) + ')';
+    lk.style.background = 'rgba(46,91,216,' + (f.y === 192 ? .18 * f.p : 0) + ')'; $('lnk2').style.background = 'rgba(46,91,216,' + (f.y === 164 ? .18 * f.p : 0) + ')';
+    // ---- the code card ----
+    var codeOn = P(t, A.fix - .2, A.fix + .05) * (1 - ex), col = $('col');
+    col.style.opacity = codeOn; col.style.transform = 'translateY(' + (1 - out(P(t, A.fix - .2, A.fix + .2))) * 24 + 'px)';
+    $('cd').innerHTML = code(t);
+    // ---- HUD and tag ----
+    var Hd, cover = Math.round(Math.max(0, HEAD - hy) * 390 / 234);
+    if (t < A.leave + .2) Hd = 'HEADING · <b class="r">UNDER THE HEADER</b>';
+    else if (fixK < .5) Hd = 'PADDING <b>0 PX</b> · HEADING ' + (sc > 600 ? '<b class="r">COVERED</b>' : '<b>&mdash;</b>');
+    else Hd = 'PADDING <b>80 PX</b> · HEADING ' + (sc > 400 ? '<b class="y">SHOWN</b>' : '<b>&mdash;</b>');
+    $('hud').innerHTML = Hd; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.lands - .2 ? 'A LINK TO #BILLING' : t < A.fix - .2 ? 'THE TARGET GOES TO THE TOP' : t < A.now - .2 ? 'THE FIX' : 'JUMPS STOP 80 PX LOWER';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2)), aft = w.s >= A.fix;
+        var col2 = aft && /^(scroll|padding|top|below|shows)/i.test(w.d) ? 'var(--acc)' : !aft && /^(under|fixed|very)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col2 + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  function buildCues(){
+    var T = taps(), Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
+    T.forEach(function(x){ Q.push({ t: x.t, k: 'tap', g: .4, p: 2 }); });
+    Q.push({ t: A.jumps, k: 'swish', d: .35, g: .4, p: -.2 }, { t: A.under, k: 'thud', g: .35 });
+    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
+    for (var c = 0, t0 = A.padding, t1 = A.html + .1; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.html + .2, k: 'tap', g: .5, p: 6 }, { t: T[2].t + .3, k: 'swish', d: .35, g: .3, p: .2 }, { t: T[3].t + .3, k: 'swish', d: .35, g: .3, p: .1 }, { t: A.shows, k: 'tap', g: .35, p: 3 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
