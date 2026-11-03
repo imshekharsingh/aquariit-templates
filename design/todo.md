@@ -8,7 +8,6 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] Reels 2-3 days ahead per channel, kept topped up: a missed day costs reach, and a buffer lets the daily run spend its time on quality.
       (After the 3 Nov night: web to 6 Nov, tech to 5 Nov, Turns Out to 6 Nov ready. Standing item: the daily runs build for the first free day
       (CLAUDE.md, "Buffer"), so the buffer holds; each spare night tops it up. A Great Wall reel was dropped: its myth's origin date differs between sources.)
-- [ ] Turns Out starter, next layouts: a map move and a globe station for starter25d.html (the opening, stations, fly-through, number roll and payoff are in it since 3 Nov).
 
 ## P2
 - [ ] @techin20sec topic shortlist from primary sources each morning on GitHub (roadmap 4): 3 candidates with sources and a viewer-stake hook.
@@ -18,6 +17,9 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] Posting through Instagram's content publishing API (roadmap 6; needs Meta's review, owner's call).
 
 ## Done
+- 3 Nov 2026: Turns Out starter, map and globe: kit25d.js has Kt.globe (a matte cut-paper globe that turns a place to the front), Kt.map
+  (the same coastlines flat, so the camera dives from the globe onto the map with no cut), Kt.route/Kt.bow and Kt.place (pin tags that stay
+  in the frame); starter25d.html goes hook -> globe -> dive -> route from A to B -> payoff. qa clean, stills: no empty frames, text fits.
 - 1 Nov 2026: Posted list per channel with numbers; MP4s removed 15 days after upload; audit cards in the app; spare-usage night card,
   push reminder and "Spare check" workflow; Growth step 1 (followers and reach-per-reel charts per channel, light and dark); "Needs you" list for the owner's answers; Posted rows open (video, then cover after 15 days).
 - 3 Nov 2026: spare-usage night is opt-out (owner: "my remaining usage goes to waste"): the Tuesday card says Claude uses it tonight with one
