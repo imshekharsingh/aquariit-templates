@@ -7,7 +7,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 ## P1
 - [ ] Reels 2-3 days ahead per channel, kept topped up: a missed day costs reach, and a buffer lets the daily run spend its time on quality.
 - [ ] Reusable Turns Out story layouts in kit25d.js (opening, map move, number roll, payoff): the cost cut that makes daily posting affordable.
-- [ ] Blank-frame and "text wider than its box" check in scripts/showreel preflight (roadmap 2): no render with a broken frame, no wasted minutes.
+- [ ] "Text wider than its box" check for the web and tech scenes in scripts/showreel preflight (roadmap 2; Turns Out has it in qa.mjs; blank frames done 3 Nov).
 - [ ] Growth step 2: per-reel rates in the Growth view (saves and shares per 1,000 reached, average watch as % of length) and the
       follower change of each day next to that day's reel: shows which reels bring followers, not just views.
 
@@ -30,3 +30,5 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   (every Tuesday night from now on); spare night built the Turns Out reel for Wed 4 Nov ahead ("Why are there 60 minutes in an hour?").
   Next spare night: start with "Reusable Turns Out story layouts in kit25d.js" (the 60-minutes scene adds two reusable pieces: a
   fly-through from one circle into the next era, and an exact deep zoom drawn in screen space past the kit's 5 cm limit).
+- 3 Nov 2026: stills.mjs scans every 0.5 s of a reel and fails on a nearly flat frame ("EMPTY FRAMES"); the render workflows' ffmpeg
+  fallback (used when the apt mirror is slow) works again.

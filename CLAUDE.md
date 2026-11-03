@@ -38,7 +38,7 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
 Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
 - Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel; `node scripts/showreel/preflight.mjs <config>` plus `node scripts/showreel/stills.mjs <config> <out>` for showreels, one sheet to review)
-  and clear all of it: the PREFLIGHT voice line must say "fits", no "text wider than its box", and stills at every beat checked for empty frames.
+  and clear all of it: the PREFLIGHT voice line must say "fits", no "text wider than its box", the stills line must say "EMPTY FRAMES: none" (it scans every 0.5 s), and stills at every beat checked.
   Re-render only for a real defect in the output.
 - Ownership (owner, 28 Oct 2026): Claude decides the topics for both channels, runs every check, renders and delivers; the owner watches and posts.
   Nothing is parked for the owner. The bar is the owner's: every reel feels premium, nothing looks broken, every spoken line is shown and
