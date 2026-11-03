@@ -1,0 +1,48 @@
+{
+ "name": "showreel-c3-sixty-minutes",
+ "seek": "scripts/channel3/sixty-minutes.html",
+ "dur": 34.6,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Why are there 60 minutes in an hour? About 4,000 years ago, people in Mesopotamia counted in sixties. Sixty splits evenly into halves, thirds, quarters, fifths and sixths. Ancient Egypt gave the day 12 hours, and the night 12 more. Greeks cut each degree into 60 parts, then 60 again. Clocks later split the hour the same way. In Latin: the first small part, and the second small part. Turns out, that's where minute and second come from.",
+  "at": [
+   0,
+   3.51,
+   8.78,
+   13.46,
+   18.28,
+   22.74,
+   25.72,
+   29.59
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "An hour has 60 minutes because of a 4,000-year-old way of counting, and \"second\" really means the second cut. ⏱️\n\nSend this to someone who is always \"one minute away\". What should we explain next? 👇",
+ "keywords": [
+  "why are there 60 minutes in an hour",
+  "why 60 seconds in a minute",
+  "where does the word minute come from",
+  "Babylonian base 60",
+  "history of time explained",
+  "history explained"
+ ],
+ "hashtags": [
+  "#historyoftime",
+  "#babylonian",
+  "#etymology",
+  "#historyfacts",
+  "#didyouknowfacts"
+ ],
+ "sources": [
+  {
+   "title": "Why is a minute divided into 60 seconds, an hour into 60 minutes, yet there are only 24 hours in a day? (Scientific American)",
+   "url": "https://www.scientificamerican.com/article/experts-time-division-days-hours-minutes/"
+  },
+  {
+   "title": "Keeping Time: Why 60 Minutes? (Live Science)",
+   "url": "https://www.livescience.com/44964-why-60-minutes-in-an-hour.html"
+  }
+ ]
+}
