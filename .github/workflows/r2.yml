@@ -1,0 +1,69 @@
+name: R2
+
+# The private reel store (owner, 3 Nov 2026: reel media moves from the public GitHub releases to a private Cloudflare R2 bucket that only
+# the signed-in app serves). scripts/r2.sh does the work. Run by hand: Actions -> R2 -> action.
+#   check: the token can create, write and read the bucket (prints R2_OK=yes / no)
+#   copy:  copy every asset of the reels, techreel and study releases into R2 and verify each (releases untouched)
+#   move:  the same, then delete the verified assets from the releases
+#   site:  sign in to the app: the Showreels list loads, a reel plays (Range -> 206), and its old public release URL is gone (404)
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        type: choice
+        options: [check, copy, move, site]
+        default: check
+
+permissions:
+  contents: write
+
+concurrency:
+  group: r2
+  cancel-in-progress: false
+
+jobs:
+  r2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        if: inputs.action != 'site'
+      - name: Check
+        if: inputs.action == 'check'
+        run: bash scripts/r2.sh check
+      - name: Copy
+        if: inputs.action == 'copy'
+        run: bash scripts/r2.sh migrate
+      - name: Move
+        if: inputs.action == 'move'
+        run: bash scripts/r2.sh migrate --delete
+      - name: Site
+        if: inputs.action == 'site'
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: |
+          curl() { command curl --connect-timeout 15 --max-time 120 --retry 3 --retry-all-errors --retry-delay 5 "$@"; }
+          B=https://templates.aquariit.com; J=$(mktemp); fail=0
+          curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
+          curl -s -b "$J" "$B/api/showreels" > list.json
+          node -e 'const s=JSON.parse(require("fs").readFileSync("list.json","utf8")).showreels||[]; console.log(`SHOWREELS: ${s.length} listed, ${s.filter(x=>x.video).length} with video, ${s.filter(x=>x.cover).length} with cover`)' || { echo "::error::the Showreels list did not load"; cat list.json; exit 1; }
+          n=$(node -e 'const s=JSON.parse(require("fs").readFileSync("list.json","utf8")).showreels||[]; const v=s.find(x=>x.video); console.log(v?v.name:"")')
+          [ -n "$n" ] || { echo "::error::no reel with a video"; exit 1; }
+          v=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -H 'Range: bytes=0-1023' -b "$J" "$B/reels/$n.mp4"); echo "PLAY $n.mp4 signed in, Range 0-1023: $v"
+          [ "$v" = "206 1024" ] || fail=1
+          c=$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/reels/$n-cover.jpg"); echo "COVER $n-cover.jpg: $c"; [ "$c" = 200 ] || fail=1
+          o=$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n.mp4"); echo "SIGNED OUT $n.mp4: $o"; [ "$o" = 401 ] || fail=1
+          g=$(command curl -s -L -o /dev/null -w '%{http_code}' "https://github.com/$REPO/releases/download/reels/$n.mp4"); echo "OLD PUBLIC URL github.com/.../releases/download/reels/$n.mp4: $g"; [ "$g" = 404 ] || fail=1
+          for t in reels techreel study; do echo "RELEASE $t: $(gh api "repos/$REPO/releases/tags/$t" -q '.assets | length' 2>/dev/null || echo none) assets"; done
+          [ $fail = 0 ] && echo "SITE_OK=yes" || { echo "SITE_OK=no"; exit 1; }
