@@ -1,0 +1,543 @@
+<!doctype html>
+<!--
+  Turns Out: "Why are there 60 minutes in an hour?" in 2.5D, one continuous camera (4 Nov 2026).
+  The turn: the minute and the second are not clock words at first. They are the Latin names of the first and second cuts by 60 that
+  Greek astronomers made in a degree, using a base-60 count that goes back to Mesopotamia.
+  - Facts (two sources each: Scientific American, "Why is a minute divided into 60 seconds, an hour into 60 minutes, yet there are only
+    24 hours in a day?"; Live Science, "Keeping Time: Why 60 Minutes?"):
+    * Counting in sixties (sexagesimal) began with the Sumerians in Mesopotamia and passed to the Babylonians, about 4,000 years ago.
+    * 60 divides evenly by 2, 3, 4, 5 and 6 (arithmetic), the reason both sources give for its use.
+    * The ancient Egyptians divided daylight into 12 hours and the night into 12 more.
+    * Greek astronomy (Hipparchus, then Ptolemy's Almagest) divided each degree of a circle into 60 parts and each of those into 60 again.
+    * In Latin these were "partes minutae primae" (first small parts) and "partes minutae secundae" (second small parts): the minute and
+      the second. Clocks showed minutes, later seconds, many centuries afterwards (said only as "later" on screen).
+  - Look (design/channel3.md, "2.5D toolkit"): engraved paper layers at real depths in front of ONE camera that never stops and never cuts;
+    the camera flies through a circle into each era: a study wall clock, a clay tablet in Mesopotamia ringed by 60 beads, Egypt's 24-hour
+    ring by the pyramids, a Greek bronze circle it zooms into (one degree, then 1/60, then 1/3600), the clock again. One grade: warm lamp
+    and dusk amber, matte, no glow. No people. Every frame is a pure function of t; seeded randomness.
+-->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=540">
+<title>Why are there 60 minutes in an hour? (2.5D)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@600;700;800&display=block" rel="stylesheet">
+<style>
+html,body{margin:0;width:540px;height:960px;overflow:hidden;background:#1d1410}
+canvas{position:absolute;left:0;top:0;width:540px;height:960px}
+</style></head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+(function(){
+  // ---- shared core of the Channel 3 scenes (design/channel3.md): timing, voice, captions, hook, text probes (no scene grain in 3D: the render adds it once) ----
+  var c = document.getElementById('c'), x = c.getContext('2d');   // the 2D layer over the 3D canvas: hook, captions, credit, payoff
+  var FD = "'Playfair Display',Georgia,serif", FI = "'Inter',system-ui,sans-serif";
+  function rnd(s){ return function(){ s |= 0; s = s + 0x6D2B79F5 | 0; var t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function cl(v, a, b){ return v < a ? a : v > b ? b : v; }
+  function P(t, a, b){ return cl((t - a) / (b - a), 0, 1); }
+  function mix(a, b, k){ return a + (b - a) * k; }
+  function eo(k){ return 1 - Math.pow(1 - k, 3); }
+  function eio(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+  function eb(k){ var q = 1.6; return 1 + (q + 1) * Math.pow(k - 1, 3) + q * Math.pow(k - 1, 2); }
+  function win(t, a, b, f){ f = f || .25; return P(t, a, a + f) * (1 - P(t, b - f, b)); }   // 0 -> 1 -> 0 over [a, b]
+  // every text drawn in the last seek, as its box on screen (CSS px), for scripts/channel3/qa.mjs
+  var BOXES = []; window.__boxes = function(){ return BOXES; };
+  function probe(s, X, Y, al, size){ if (x.globalAlpha < .05) return; var w = x.measureText(s).width, l = al === 'left' ? X : al === 'right' ? X - w : X - w / 2, m = x.getTransform();
+    var a = m.transformPoint(new DOMPoint(l, Y - size * .75)), b = m.transformPoint(new DOMPoint(l + w, Y + size * .2)); BOXES.push([s, Math.min(a.x, b.x) / 2, Math.max(a.x, b.x) / 2, Math.min(a.y, b.y) / 2, Math.max(a.y, b.y) / 2]); }
+  function font(size, f){ var w = f.split(' '); return w[0] + ' ' + size + 'px ' + w.slice(1).join(' '); }
+  function txt(s, X, Y, size, f, col, al, sp){ x.font = font(size, f); x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px';
+    x.fillStyle = col; probe(s, X, Y, x.textAlign, size); x.fillText(s, X, Y); x.letterSpacing = '0px'; }
+  function tw(s, size, f, sp){ x.font = font(size, f); x.letterSpacing = (sp || 0) + 'px'; var w = x.measureText(s).width; x.letterSpacing = '0px'; return w; }
+  function es(k){ k = cl(k, 0, 1); var q = .7; return 1 + (q + 1) * Math.pow(k - 1, 3) + q * Math.pow(k - 1, 2); }   // a soft spring: eases in, settles with a small overshoot
+  // arrive(k): an element travels in (rises 12 px, grows from 86 %, fades up) instead of popping; k from es() so it settles like a spring
+  function arrive(k){ x.globalAlpha *= cl(k * 2.2, 0, 1); var s = mix(.86, 1, k); x.translate(0, (1 - cl(k, 0, 1)) * 12); x.scale(s, s); }
+  function lg(x0, y0, x1, y1, st){ var g = x.createLinearGradient(x0, y0, x1, y1); st.forEach(function(s){ g.addColorStop(s[0], s[1]); }); return g; }
+  function rgb(h){ return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+  function tone(h, f, to){ var a = rgb(h), b = to ? rgb(to) : [0, 0, 0]; return 'rgb(' + a.map(function(v, i){ return Math.round(to ? mix(v, b[i], f) : Math.min(255, v * f)); }).join(',') + ')'; }
+  // a paper piece: one key light from the upper left, so a soft contact shadow falls down and a little right; flat or gradient fill, crisp edge
+  function paper(path, col, sh, edge){ var m = x.getTransform(), k = Math.hypot(m.a, m.b), d = sh == null ? 2.5 : sh; x.save();
+    if (d > 0) { x.shadowColor = 'rgba(40,28,24,.22)'; x.shadowBlur = d * 2.6 * k; x.shadowOffsetX = d * .35 * k; x.shadowOffsetY = d * 1.25 * k; }
+    x.fillStyle = col; path(); x.fill(); x.restore(); if (edge) { x.strokeStyle = edge; x.lineWidth = 1.2; x.stroke(); } }
+  function rr(X, Y, w, h, r){ return function(){ x.beginPath(); x.roundRect(X, Y, w, h, r); }; }
+  function tag(s, X, Y, size, f, col, bg, sp){ var w = tw(s, size, f, sp) + size * 1.1, h = size * 1.75;
+    paper(rr(X - w / 2, Y - h / 2, w, h, h * .22), bg); txt(s, X, Y + size * .36, size, f, col, 'center', sp); }
+  // ---- the story: one start time per sentence, from an estimate of each sentence's length (scripts/showreel/preflight.mjs uses the same
+  // rate: 0.07 s a letter at speed 1, a digit as 4 letters since "1889" is spoken as "eighteen eighty nine"), then a breath ----
+  var SPEED = .95, lt = function(w){ return w.replace(/[^A-Za-z]/g, '').length + 4 * w.replace(/[^0-9]/g, '').length; };
+  var A = [], CAPS = [];
+  function story(lines){   // lines: [[text, breath before it]]
+    var t = 0;
+    lines.forEach(function(L, i){ if (i) t += L[1]; var at = +t.toFixed(2), ws = L[0].split(/\s+/), w0 = at + .05, n = 0;
+      var words = ws.map(function(w){ var o = { d: w, s: w0, e: w0 + lt(w) * .07 / SPEED }; w0 = o.e; n += lt(w); return o; });
+      A.push(at); CAPS.push({ text: L[0], at: at, s: at, e: at + .1 + n * .07 / SPEED, words: words }); t = CAPS[i].e; });
+    window.VOICE = { text: CAPS.map(function(L){ return L.text; }).join(' '), at: A.slice() };
+  }
+  var norm = function(w){ return String(w).toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  window.setVoice = function(v){ if (!v || !v.words || !v.words.length) return; var V = v.words, j = 0;
+    CAPS.forEach(function(L){ L.words.forEach(function(w){ for (var k = j; k < Math.min(V.length, j + 4); k++) if (norm(V[k].w) === norm(w.d)) { w.s = V[k].s; w.e = V[k].e; j = k + 1; return; } }); L.s = L.words[0].s; L.e = L.words[L.words.length - 1].e; }); };
+  var CAPI = -1; window.__cap = function(){ return CAPI; };
+  window.__caps = function(){ return CAPS.map(function(L){ return [L.at, +L.s.toFixed(2), +L.e.toFixed(2), L.text]; }); };
+  // a sentence stays up until the next one starts (no empty caption between them), at most 2.5 s after it is spoken
+  function capAt(t){ for (var i = CAPS.length - 1; i >= 0; i--) if (t >= CAPS[i].s - .12) return t < CAPS[i].e + 2.5 ? i : -1; return -1; }
+  function wrap(words, size, f, maxW){ x.font = font(size, f); var sp = x.measureText(' ').width, lines = [[]], lw = [0];
+    words.forEach(function(w){ var ww = x.measureText(w.d).width, n = lines.length - 1; if (lw[n] && lw[n] + sp + ww > maxW) { lines.push([]); lw.push(0); n++; } lines[n].push([w, ww]); lw[n] += (lw[n] ? sp : 0) + ww; });
+    return { lines: lines, lw: lw, sp: sp }; }
+  // HOOK = { y, col, hl, hlCol, size }: the question, big, at the top while it is spoken (it is sentence 1's caption); then it lifts away
+  // STYLE = { hl: /words in accent/, hlCol, ink, panel }: the caption strip for every other sentence
+  function drawHook(t){
+    var L = CAPS[0], out = P(t, A[1] - .35, A[1] + .1); if (out >= 1) return;
+    var W = wrap(L.words, HOOK.size, '800 ' + FD, 480), lh = HOOK.size * 1.08, y0 = HOOK.y - (W.lines.length - 1) * lh / 2 - eo(out) * 30;
+    x.save(); x.globalAlpha = 1 - out;
+    if (HOOK.label) { var lk = P(t, 0, .3); x.globalAlpha = (1 - out) * lk; tag(HOOK.label, 270, y0 + eo(out) * 30 - HOOK.size - 14, 12, '800 ' + FI, HOOK.labelCol || '#fff', HOOK.labelBg || '#23202b', 2.5); }
+    W.lines.forEach(function(ln, r){ var xx = 270 - W.lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .1, w.s + .12)), hl = HOOK.hl && HOOK.hl.test(w.d);
+        x.globalAlpha = (1 - out) * (.5 + .5 * k); x.save(); x.translate(xx + q[1] / 2, y0 + r * lh); var sc = 1 + .06 * (1 - k); x.scale(sc, sc);
+        if (HOOK.shadow) { x.globalAlpha *= .9; txt(w.d, 2, 3, HOOK.size, '800 ' + FD, HOOK.shadow, 'center', -.6); x.globalAlpha = (1 - out) * (.5 + .5 * k); }
+        txt(w.d, 0, 0, HOOK.size, '800 ' + FD, hl ? HOOK.hlCol : HOOK.col, 'center', -.6); x.restore(); xx += q[1] + W.sp; }); });
+    x.restore();
+  }
+  // (1 Nov, the 2.5D Eiffel render: the new line fades in from 14 % of the change, not 36 %, so the card is never empty for a frame)
+  // the caption card (premium pass, 31 Oct): ONE card that stays up and changes shape from sentence to sentence (no fade out and in);
+  // the old line slides up out of it as the new one rises in word by word
+  function capLay(i){ var size = 27, W = wrap(CAPS[i].words, size, '700 ' + FI, 452), lh = 35, n = W.lines.length, base = 716 - (n - 1) * lh / 2;
+    return { W: W, base: base, pw: Math.max.apply(null, W.lw) + 34, ph: n * lh + 18, py: base - size * .8 - 10, lh: lh, size: size }; }
+  function capWords(C, t, a, dy, lit){ C.W.lines.forEach(function(ln, r){ var xx = 270 - C.W.lw[r] / 2;
+      ln.forEach(function(q){ var w = q[0], k = lit ? 1 : eo(P(t, w.s - .1, w.s + .08)), hl = STYLE.hl && STYLE.hl.test(w.d);
+        x.globalAlpha = a * (.3 + .7 * k); txt(w.d, xx, C.base + r * C.lh + dy - (1 - k) * 3, C.size, '700 ' + FI, hl ? (STYLE.hlFor ? STYLE.hlFor(w.d) : STYLE.hlCol) : (STYLE.ink || '#23202b'), 'left', -.3); xx += q[1] + C.W.sp; }); }); }
+  function drawCaption(t){
+    var i = capAt(t); CAPI = i; if (i < 0) return; if (i === 0) { drawHook(t); return; }
+    var L = CAPS[i], cur = capLay(i), prev = i > 1 && t < L.s + .4 ? capLay(i - 1) : null, mk = P(t, L.s - .14, L.s + .3), m = es(mk);
+    var inK = i > 1 ? 1 : eo(P(t, L.s - .14, L.s + .22)), next = i + 1 < CAPS.length ? CAPS[i + 1].s - .14 : 1e9, outK = eio(P(t, Math.min(next, L.e + 2.5) - .2, Math.min(next, L.e + 2.5)));
+    if (i + 1 < CAPS.length && next < L.e + 2.5) outK = 0;   // the next sentence morphs the card; it never empties
+    var pw = prev ? mix(prev.pw, cur.pw, m) : cur.pw, ph = prev ? mix(prev.ph, cur.ph, m) : cur.ph, cy = (prev ? mix(prev.py + prev.ph / 2, cur.py + cur.ph / 2, m) : cur.py + cur.ph / 2) + (1 - inK) * 18;
+    var A0 = inK * (1 - outK); x.save(); x.globalAlpha = A0;
+    paper(rr(270 - pw / 2, cy - ph / 2, pw, ph, 12), STYLE.panel || '#fbf6ea', 3);
+    x.save(); x.beginPath(); x.rect(270 - pw / 2, cy - ph / 2, pw, ph); x.clip();
+    if (prev && mk < 1) capWords(prev, t, A0 * (1 - eo(P(mk, 0, .32))), (cy - prev.py - prev.ph / 2) - eo(mk) * 16, true);
+    capWords(cur, t, A0 * (prev ? eo(P(mk, .14, .45)) : 1), (cy - cur.py - cur.ph / 2) + (prev ? (1 - eo(P(mk, .3, 1))) * 10 : 0), false);
+    x.restore(); x.restore();
+  }
+  // the source credit (owner, 31 Oct: a short credit on the last frame): a small paper tag at the top for the last 3 s
+  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.5); if (k <= 0) return; k = eo(k); x.save(); x.globalAlpha = k; tag(CREDIT, 270, 92 - (1 - k) * 10, 13, '700 ' + FI, CREAM, 'rgba(17,14,12,.8)', .6); x.restore(); }
+  Object.defineProperty(window, 'COVER', { configurable: true, get: function(){ return +Math.min(CAPS[0].e + .25, A[1] - .3).toFixed(2); } });   // the question fully lit
+  /*kit25:begin*/
+// ---- Turns Out 2.5D toolkit (scripts/channel3/kit25d.js; design/channel3.md, "2.5D toolkit"), inlined after the shared core of the
+// scene (it uses the core's x, cl, P, mix, eo, es, rnd, font, txt, probe) by node scripts/channel3/kit-inline.mjs <scene.html> ----
+// Flat engraved layers at real depths in front of ONE pinhole camera: a layer at depth Z draws in metres (y up) at F / (Z - cz) px per
+// metre, so every move has true parallax. The camera never stops: keys are eased with a little speed left at each key.
+var K25 = (function(){
+  var F = 810, CUR = { s: 1, cam: { x: 0, y: 0, z: -810 } }, OX = 0, OY = 0;
+  // track(keys)(t): keys [t, x, y, cz, f]; between two keys the distance to plane f (the next key's, default 0) moves in log space and
+  // x, y follow it (so a long zoom keeps its target in frame: the centre moves with 1/zoom); short moves ease. Speed never drops to 0.
+  function track(keys){ return function(t){
+    if (t <= keys[0][0]) return { x: keys[0][1], y: keys[0][2], z: keys[0][3] };
+    for (var i = 0; i + 1 < keys.length; i++) { var a = keys[i], b = keys[i + 1]; if (t <= b[0] || i + 2 === keys.length) {
+      var k = cl((t - a[0]) / (b[0] - a[0]), 0, 1), e = .3 * k + .7 * k * k * (3 - 2 * k), f = b[4] || 0, d0 = f - a[3], d1 = f - b[3];
+      var d = Math.exp(mix(Math.log(d0), Math.log(d1), e)), w = Math.abs(Math.log(d1 / d0)) > 1.5 ? (d - d0) / (d1 - d0) : e;
+      return { x: mix(a[1], b[1], w), y: mix(a[2], b[2], w), z: f - d }; } }
+  }; }
+  // off(ox, oy): shift the whole picture on screen (a world seen through a hole); use(cam, Z): metres at depth Z, y up; returns px per metre (0 = behind)
+  function off(ox, oy){ OX = ox; OY = oy; }
+  function use(cam, Z){ var dz = Z - cam.z; if (dz < .05) return 0; var s = F / dz; CUR.s = s; CUR.cam = cam;
+    x.setTransform(2 * s, 0, 0, -2 * s, 2 * (270 + OX - cam.x * s), 2 * (480 + OY + cam.y * s)); return s; }
+  function screen(){ x.setTransform(2, 0, 0, 2, 0, 0); }
+  function proj(cam, X, Y, Z){ var dz = Z - cam.z; if (dz < .05) return null; var s = F / dz; return { x: 270 + OX + (X - cam.x) * s, y: 480 + OY - (Y - cam.y) * s, s: s }; }
+  // the part of the current layer on screen, in metres (plus a margin in px)
+  // the current drawing scale (px per unit, any extra translate or scale included) and what is on screen in the current units
+  function cs(){ var m = x.getTransform(); return Math.hypot(m.a, m.b) / 2; }
+  function vis(m){ var I = x.getTransform().inverse(), s = cs(), r = { x0: 1e18, x1: -1e18, y0: 1e18, y1: -1e18 }; m = (m || 0) / s;
+    [[0, 0], [1080, 0], [0, 1920], [1080, 1920]].forEach(function(q){ var p = I.transformPoint(new DOMPoint(q[0], q[1])); r.x0 = Math.min(r.x0, p.x - m); r.x1 = Math.max(r.x1, p.x + m); r.y0 = Math.min(r.y0, p.y - m); r.y1 = Math.max(r.y1, p.y + m); }); return r; }
+  function px(v){ return v / cs(); }   // a size on screen (CSS px) in the current layer's metres
+  // hatch: engraved lines at angle a across a box (metres), spaced about sp px on screen at any zoom: lines are fixed to the layer at a
+  // power-of-two spacing and every other one fades out as the zoom halves them (no swimming, no popping)
+  function hatch(x0, y0, x1, y1, a, sp, col, lw){ var V = vis(4); x0 = Math.max(x0, V.x0); x1 = Math.min(x1, V.x1); y0 = Math.max(y0, V.y0); y1 = Math.min(y1, V.y1); if (x1 <= x0 || y1 <= y0) return;
+    var s = cs(), l2 = Math.log2(sp / s), n = Math.floor(l2), base = Math.pow(2, n), fr = l2 - n, dx = Math.cos(a), dy = Math.sin(a), nx = -dy, ny = dx;
+    var nmin = 1e18, nmax = -1e18, umin = 1e18, umax = -1e18;
+    [[x0, y0], [x1, y0], [x0, y1], [x1, y1]].forEach(function(p){ var q = p[0] * nx + p[1] * ny, u = p[0] * dx + p[1] * dy; nmin = Math.min(nmin, q); nmax = Math.max(nmax, q); umin = Math.min(umin, u); umax = Math.max(umax, u); });
+    var i0 = Math.floor(nmin / base), i1 = Math.ceil(nmax / base); if (i1 - i0 > 900) return;
+    x.lineWidth = (lw || .8) / s; x.strokeStyle = col; var ga = x.globalAlpha;
+    for (var pass = 0; pass < 2; pass++) { x.beginPath(); for (var i = i0; i <= i1; i++) { if ((i & 1) !== pass) continue; var o = i * base; x.moveTo(nx * o + dx * umin, ny * o + dy * umin); x.lineTo(nx * o + dx * umax, ny * o + dy * umax); }
+      if (pass) x.globalAlpha = ga * (1 - fr); x.stroke(); x.globalAlpha = ga; }
+  }
+  function path(pts, close){ x.beginPath(); pts.forEach(function(p, i){ if (i) x.lineTo(p[0], p[1]); else x.moveTo(p[0], p[1]); }); if (close) x.closePath(); }
+  function ink(w, col){ x.lineWidth = w / cs(); x.strokeStyle = col || '#2a1f17'; x.lineJoin = 'round'; x.lineCap = 'round'; x.stroke(); }
+  function fill(col){ x.fillStyle = col; x.fill(); }
+  function seg(a, b, c0, d){ x.moveTo(a, b); x.lineTo(c0, d); }
+  // a world text (not a caption): drawn upright in the layer, size in metres; not reported to qa (it may sit half off screen while the camera passes)
+  function wtxt(s, X, Y, size, f, col, al, sp){ x.save(); x.translate(X, Y); x.scale(1, -1); x.font = font(size, f); x.textAlign = al || 'center'; x.letterSpacing = (sp || 0) + 'px'; x.fillStyle = col; x.fillText(s, 0, 0); x.restore(); }
+  // paper: fibres, mottling, specks and a warm vignette on white, laid over the frame with 'multiply' (static: it is the paper, not film grain)
+  function paperTex(seed){ var cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1920; var g = cv.getContext('2d'), r = rnd(seed), i;
+    g.fillStyle = '#fff'; g.fillRect(0, 0, 1080, 1920);
+    for (i = 0; i < 70; i++) { var X = r() * 1080, Y = r() * 1920, R = 80 + r() * 280, gr = g.createRadialGradient(X, Y, 0, X, Y, R); gr.addColorStop(0, 'rgba(150,118,78,' + (.02 + r() * .035).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(150,118,78,0)'); g.fillStyle = gr; g.fillRect(X - R, Y - R, 2 * R, 2 * R); }
+    g.lineCap = 'round';
+    for (i = 0; i < 6000; i++) { var X2 = r() * 1080, Y2 = r() * 1920, a = r() * Math.PI, L = 3 + r() * 13; g.strokeStyle = 'rgba(125,98,62,' + (.04 + r() * .07).toFixed(3) + ')'; g.lineWidth = .6 + r() * .7;
+      g.beginPath(); g.moveTo(X2, Y2); g.quadraticCurveTo(X2 + Math.cos(a) * L * .5 + (r() - .5) * 3, Y2 + Math.sin(a) * L * .5 + (r() - .5) * 3, X2 + Math.cos(a) * L, Y2 + Math.sin(a) * L); g.stroke(); }
+    for (i = 0; i < 2200; i++) { g.fillStyle = 'rgba(92,70,45,' + (.05 + r() * .1).toFixed(3) + ')'; g.fillRect(r() * 1080, r() * 1920, 1 + r() * 1.3, 1 + r() * 1.3); }
+    var v = g.createRadialGradient(540, 880, 520, 540, 880, 1280); v.addColorStop(0, 'rgba(110,80,50,0)'); v.addColorStop(1, 'rgba(110,80,50,.3)'); g.fillStyle = v; g.fillRect(0, 0, 1080, 1920);
+    return cv; }
+  // ---- kinetic type (screen space, reported to qa) ----
+  // roll: the digits roll up into place one column after another (an odometer); letters fade up; k 0 -> 1. knock: a paper outline behind dark type
+  function roll(s, X, Y, size, f, col, k, knock){ if (k <= 0) return; x.save(); x.font = font(size, f); x.textAlign = 'left'; x.letterSpacing = '0px';
+    var w = x.measureText(s).width, xx = X - w / 2, n = s.length; x.globalAlpha *= cl(k * 3, 0, 1); probe(s, X, Y, 'center', size);
+    for (var i = 0; i < n; i++) { var ch = s[i], cw = x.measureText(ch).width, kc = eo(cl((k - i * .08) / .7, 0, 1));
+      if (/[0-9]/.test(ch)) { var o = (1 - kc) * 4, v = +ch; x.save(); x.beginPath(); x.rect(xx - 4, Y - size * .82, cw + 8, size * 1.12); x.clip();
+        for (var j = Math.floor(o); j <= Math.ceil(o); j++) { var yy = Y - (j - o) * size * 1.45; if (knock) { x.strokeStyle = knock; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(String((v + j * 7) % 10), xx, yy); } x.fillStyle = col; x.fillText(String((v + j * 7) % 10), xx, yy); }
+        x.restore(); }
+      else if (ch !== ' ') { x.save(); x.globalAlpha *= kc; if (knock) { x.strokeStyle = knock; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(ch, xx, Y + (1 - kc) * 10); } x.fillStyle = col; x.fillText(ch, xx, Y + (1 - kc) * 10); x.restore(); }
+      xx += cw; }
+    x.restore(); }
+  // label: small spaced capitals that slide in from the left edge of their own box as k goes 0 -> 1
+  function label(s, X, Y, size, f, col, k, sp, knock){ if (k <= 0) return; x.save(); x.globalAlpha *= cl(k * 2, 0, 1); var w = tw(s, size, f, sp);
+    x.beginPath(); x.rect(X - w / 2 - 6, Y - size * 1.1, (w + 12) * eo(k), size * 1.6); x.clip();
+    if (knock) { x.font = font(size, f); x.letterSpacing = sp + 'px'; x.textAlign = 'center'; x.strokeStyle = knock; x.lineWidth = size * .35; x.lineJoin = 'round'; x.strokeText(s, X, Y); x.letterSpacing = '0px'; }
+    txt(s, X, Y, size, f, col, 'center', sp); x.restore(); }
+  // stamp: a rubber stamp that lands (scale 1.5 -> 1 with a settle), ink-coloured frame and letters on a pale wash, rotated a little
+  function stamp(lines, X, Y, rot, col, k, wash){ if (k <= 0) return; var sc = mix(1.5, 1, es(k)); x.save(); x.translate(X, Y); x.rotate(rot); x.scale(sc, sc); x.globalAlpha *= cl(k * 3, 0, 1);
+    var W0 = 0, H0 = 0; lines.forEach(function(L){ W0 = Math.max(W0, tw(L[0], L[1], L[2], L[3] || 0)); H0 += L[1] * 1.08; }); W0 += 46; H0 += 26;
+    x.fillStyle = wash || 'rgba(244,234,212,.86)'; x.beginPath(); x.roundRect(-W0 / 2, -H0 / 2, W0, H0, 8); x.fill();
+    x.strokeStyle = col; x.lineWidth = 4; x.stroke(); x.lineWidth = 1.5; x.beginPath(); x.roundRect(-W0 / 2 + 7, -H0 / 2 + 7, W0 - 14, H0 - 14, 4); x.stroke();
+    var yy = -H0 / 2 + 13; lines.forEach(function(L){ yy += L[1] * .95; if (L[4] == null || L[4] > 0) { x.save(); x.globalAlpha *= L[4] == null ? 1 : cl(L[4] * 2.5, 0, 1); txt(L[0], 0, yy, L[1], L[2], col, 'center', L[3] || 0); x.restore(); } yy += L[1] * .13; });
+    x.restore(); }
+  // rings(cam, X, Y, Z, t, t0, t1, every, col, r0): radio rings from a point, each growing exp(3 * age) metres from r0 (default 12 m): on
+  // screen they keep spreading at any zoom (Paris to Tunisia, about 1,400 km, in about 3.9 s); a small r0 (0.04 m) scatters light off a molecule
+  function rings(cam, X, Y, Z, t, t0, t1, every, col, r0){ var c0 = proj(cam, X, Y, Z); if (!c0) return; screen();
+    for (var e = t0; e <= Math.min(t, t1); e += every) { var age = t - e, r = (r0 || 12) * Math.exp(3 * age) * c0.s; if (r < 2 || r > 1400) continue;
+      var a = P(r, 2, 14) * (1 - P(r, 700, 1400)) * (1 - P(age, 4.6, 5.6)); if (a <= 0) continue;
+      x.save(); x.globalAlpha *= a; x.strokeStyle = col; x.lineWidth = 2.2; x.beginPath(); x.arc(c0.x, c0.y, r, 0, 7); x.stroke();
+      x.globalAlpha *= .45; x.lineWidth = 1; x.beginPath(); x.arc(c0.x, c0.y, r * .93, 0, 7); x.stroke(); x.restore(); } }
+  // ---- the scenery ----
+  // ridge(seed, H, tone, ink, hatchCol): an endless engraved ridge of hills on the current layer (metres), H high on average; filled in
+  // tone, shaded with hatching that keeps its size on screen, inked along the crest. Far ridges in paler, bluer tones read as distance.
+  // o.deep: fill down to -deep metres (a near meadow that must reach the bottom of the frame); o.grass: inked grass blades along the crest
+  function ridge(seed, H, tone, ink, hc, o){ o = o || {}; var V = vis(20), r = rnd(seed), p1 = r() * 7, p2 = r() * 7, p3 = r() * 7, L = H * 3.2, st = Math.max((V.x1 - V.x0) / 120, H / 40);
+    var top = function(X){ return H * (.62 + .22 * Math.sin(X / L + p1) + .12 * Math.sin(X / (L * .37) + p2) + .04 * Math.sin(X / (L * .11) + p3)); }, pts = [], X;
+    for (X = V.x0 - st; X <= V.x1 + st; X += st) pts.push([X, top(X)]);
+    var B = -(o.deep || H); x.beginPath(); x.moveTo(pts[0][0], B); pts.forEach(function(q){ x.lineTo(q[0], q[1]); }); x.lineTo(pts[pts.length - 1][0], B); x.closePath(); x.fillStyle = tone; x.fill();
+    if (hc) { x.save(); x.clip(); hatch(V.x0, Math.max(B, V.y0), V.x1, H * 1.1, .55, 4, hc, .7); x.restore(); }
+    if (o.grass && cs() * H > 6) { var g = rnd(seed * 31), gs = Math.max(px(5), H / 30); x.beginPath(); for (X = Math.floor(V.x0 / gs) * gs; X <= V.x1; X += gs) { var y0 = top(X), l = H * (.08 + g() * .14); x.moveTo(X, y0 - l * .3); x.lineTo(X + (g() - .5) * l * .6, y0 + l); }
+      x.lineWidth = 1 / cs(); x.strokeStyle = o.grass; x.stroke(); }
+    if (ink) { x.beginPath(); pts.forEach(function(q, i){ if (i) x.lineTo(q[0], q[1]); else x.moveTo(q[0], q[1]); }); x.lineWidth = 1.1 / cs(); x.strokeStyle = ink; x.stroke(); }
+    return top; }
+  // wave(x0, y0, x1, y1, lam, amp, ph, col, lw): a light wave drawn as an engraved sine line along a segment of the current layer
+  // (wavelength lam and amplitude amp in metres, phase ph in waves); it straightens smoothly once a wavelength is under ~8 px on screen
+  function wave(x0, y0, x1, y1, lam, amp, ph, col, lw){ var s = cs(), L = Math.hypot(x1 - x0, y1 - y0), ux = (x1 - x0) / L, uy = (y1 - y0) / L, a = amp * P(lam * s, 4, 12), n = Math.min(1200, Math.ceil(L * s / 3));
+    x.beginPath(); for (var i = 0; i <= n; i++) { var d = L * i / n, o = a * Math.sin((d / lam + ph) * 2 * Math.PI); if (i) x.lineTo(x0 + ux * d - uy * o, y0 + uy * d + ux * o); else x.moveTo(x0 + ux * d - uy * o, y0 + uy * d + ux * o); }
+    x.lineWidth = (lw || 2) / s; x.strokeStyle = col; x.lineCap = 'round'; x.lineJoin = 'round'; x.stroke(); }
+  // ground(cam, col, line): the y = 0 plane in perspective (rows every 20 m fixed to the ground, paths given as x positions)
+  function ground(cam, col, line, paths, zFrom, zTo){ var hz = 480 + OY; if (cam.y <= .05) return; screen();
+    x.fillStyle = col; x.fillRect(0, hz, 540, 960 - hz + 1);
+    x.strokeStyle = line; x.lineWidth = .8; var z0 = Math.ceil((cam.z + 1) / 20) * 20;
+    for (var Z = z0; Z < cam.z + 30000; Z += Z - cam.z > 2000 ? 160 : Z - cam.z > 500 ? 40 : 20) { var p = proj(cam, 0, 0, Z), q = proj(cam, 0, 0, Z + 20); if (!p || p.y > 980) continue; var gap = p.y - q.y;
+      if (gap < 1.2) break; x.globalAlpha = cl((gap - 1.2) / 3, 0, 1) * .5; x.beginPath(); x.moveTo(0, p.y); x.lineTo(540, p.y); x.stroke(); }
+    x.globalAlpha = 1; (paths || []).forEach(function(px0){ var a = proj(cam, px0, 0, Math.max(zFrom, cam.z + 1)), b = proj(cam, px0, 0, zTo); if (!a || !b) return; x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x, b.y); x.globalAlpha = .55; x.stroke(); });
+    x.globalAlpha = 1; }
+  // city(Z, seed, tone, o): an endless row of Paris blocks at depth Z (six storeys, zinc mansards, chimneys, a dome now and then)
+  function city(Z, seed, tone, o){ var s = cs(), V = vis(20), cw = 30, dark = o.dark || 'rgba(42,31,23,.55)';
+    for (var i = Math.floor(V.x0 / cw) - 1; i <= Math.ceil(V.x1 / cw); i++) { var r = rnd(seed * 7919 + i * 104729), b0 = i * cw, w = cw * (.7 + r() * .3), h = (o.h || 20) * (.8 + r() * .45), m = 4 + r() * 3;
+      x.beginPath(); x.moveTo(b0, -3); x.lineTo(b0, h); x.lineTo(b0 + 2, h + m); x.lineTo(b0 + w - 2, h + m); x.lineTo(b0 + w, h); x.lineTo(b0 + w, -3); x.closePath(); x.fillStyle = tone; x.fill();
+      if (s * h > 14) { x.lineWidth = .7 / s; x.strokeStyle = dark; x.stroke(); }
+      for (var c0 = 0; c0 < 2; c0++) { var cx0 = b0 + w * (.2 + c0 * .55) + r() * 2; x.fillStyle = tone; x.fillRect(cx0, h + m - 1, 2, 3.5); if (s * 3 > 4) { x.lineWidth = .6 / s; x.strokeRect(cx0, h + m - 1, 2, 3.5); } }
+      if (s * 1.4 > 2.2) { x.fillStyle = dark; var fl = Math.floor(h / 3.3); x.globalAlpha *= .8; for (var f0 = 1; f0 < fl; f0++) for (var wx = b0 + 2.2; wx < b0 + w - 2.5; wx += 3.6) x.fillRect(wx, f0 * 3.3, 1.2, 1.9); x.globalAlpha /= .8;
+        x.save(); x.beginPath(); x.moveTo(b0, h); x.lineTo(b0 + 2, h + m); x.lineTo(b0 + w - 2, h + m); x.lineTo(b0 + w, h); x.closePath(); x.clip(); hatch(b0, h, b0 + w, h + m, Math.PI / 2, 3.2, dark, .6); x.restore(); }
+      if (o.domes && r() < .05) { var dx = b0 + w / 2, dh = h + m + 8; x.beginPath(); x.moveTo(dx - 9, dh - 6); x.lineTo(dx - 9, dh); x.arc(dx, dh, 9, Math.PI, 0, true); x.lineTo(dx + 9, dh - 6); x.closePath(); x.fillStyle = tone; x.fill(); x.lineWidth = .7 / s; x.strokeStyle = dark; x.stroke(); x.fillRect(dx - .6, dh + 9, 1.2, 6); }
+    } }
+  // tree(X, Z-scale, seed, tone): an engraved tree on its layer: a trunk and a crown of overlapping lobes, shaded on the right with hatching
+  function tree(X, h, seed, tone, ink){ var r = rnd(seed), s = cs(); x.fillStyle = ink; x.fillRect(X - h * .03, 0, h * .06, h * .45);
+    var lobes = []; for (var i = 0; i < 9; i++) lobes.push([X + (r() - .5) * h * .55, h * (.55 + r() * .35), h * (.16 + r() * .1)]);
+    x.beginPath(); lobes.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.arc(L[0], L[1], L[2], 0, 7); }); x.fillStyle = tone; x.fill();
+    if (s * h > 30) { x.save(); x.clip(); hatch(X - h * .5, h * .3, X + h * .5, h * 1.2, -.9, 3.4, ink, .7); x.restore();
+      x.save(); x.beginPath(); lobes.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.arc(L[0], L[1], L[2], 0, 7); }); x.clip(); x.beginPath(); x.rect(X - h * .05, 0, h, h * 2); x.clip(); hatch(X - h * .05, h * .3, X + h * .5, h * 1.2, .9, 2.6, ink, .7); x.restore(); }
+    x.beginPath(); lobes.forEach(function(L){ x.moveTo(L[0] + L[2], L[1]); x.arc(L[0], L[1], L[2], 0, 7); }); x.lineWidth = .8 / s; x.strokeStyle = ink; x.globalAlpha *= .6; x.stroke(); x.globalAlpha /= .6; }
+  // ---- people: clean illustrated figures in metres (feet at 0, facing +x), recognised by props, no facial detail beyond an eye dot ----
+  // person(o): o.h height, o.coat/o.trousers/o.skin/o.hair colours, o.hat 'top'|'bowler'|'kepi'|'lady'|'', o.beard colour, o.stache,
+  // o.dress (long skirt), o.sit (seated on a chair), o.arms [[hx, hy], [hx, hy]] hand targets (back arm, front arm; two-bone reach),
+  // o.phones (headphones), o.buttons colour, o.chain (watch chain colour), o.detail (0 = silhouette for far crowds)
+  function reach(sx, sy, tx, ty, l1, l2, bend){ var dx = tx - sx, dy = ty - sy, d = Math.min(Math.hypot(dx, dy), l1 + l2 - 1e-4), a = Math.atan2(dy, dx), c0 = cl((l1 * l1 + d * d - l2 * l2) / (2 * l1 * d), -1, 1), e = a + (bend || 1) * Math.acos(c0);
+    return [sx + Math.cos(e) * l1, sy + Math.sin(e) * l1, sx + Math.cos(a) * d, sy + Math.sin(a) * d]; }
+  function limb(pts, w, col, outline){ x.beginPath(); x.moveTo(pts[0], pts[1]); for (var i = 2; i < pts.length; i += 2) x.lineTo(pts[i], pts[i + 1]); x.lineCap = 'round'; x.lineJoin = 'round';
+    if (outline) { x.lineWidth = w + 1.6 / cs(); x.strokeStyle = outline; x.stroke(); } x.lineWidth = w; x.strokeStyle = col; x.stroke(); }
+  function person(o){ var h = o.h || 1.78, k = h / 1.78, OL = o.detail === 0 ? null : (o.ink || 'rgba(30,22,16,.85)'), sit = !!o.sit;
+    x.save(); x.scale(k, k);
+    var hipY = sit ? .5 : .93, sh = sit ? 1.2 : 1.44, hy = sh + .17, arms = o.arms || [[-.05, sit ? .75 : .85], [.08, sit ? .75 : .85]];
+    if (sit) { x.fillStyle = o.chair || '#5a4330'; x.fillRect(-.24, .44, .36, .04); x.fillRect(-.24, 0, .03, .46); x.fillRect(.08, 0, .03, .46); x.fillRect(-.26, .44, .03, .55); }
+    var ah = function(i){ var tgt = arms[i], s0 = [i ? .06 : -.06, sh - .04], j = reach(s0[0], s0[1], tgt[0] / k, tgt[1] / k, .3, .29, i ? -1 : -1); return [s0[0], s0[1], j[0], j[1], j[2], j[3]]; };
+    var A0 = ah(0); limb(A0, .085, o.coat2 || o.coat, OL); x.beginPath(); x.arc(A0[4], A0[5], .04, 0, 7); fill(o.skin);
+    // legs
+    if (sit) { limb([-.04, hipY, .36, hipY + .02, .38, .02], .13, o.trousers, OL); limb([.02, hipY, .42, hipY + .02, .44, .02], .13, o.trousers, OL);
+      x.beginPath(); x.ellipse(.47, .03, .1, .04, 0, 0, 7); fill(o.shoes || '#1d1713'); }
+    else if (o.dress) { path([[-.16, sh - .02], [.12, sh - .02], [.16, .9], [.3, .02], [-.28, .02], [-.18, .9]], true); fill(o.dress); if (OL) ink(.9, OL); }
+    else { limb([-.03, hipY, -.06, .05], .12, o.trousers, OL); limb([.05, hipY, .1, .05], .12, o.trousers, OL);
+      x.beginPath(); x.ellipse(-.02, .03, .1, .035, 0, 0, 7); x.ellipse(.15, .03, .1, .035, 0, 0, 7); fill(o.shoes || '#1d1713'); }
+    // body: a frock coat to the knee, a tunic to the hip
+    if (!o.dress) { var hem = sit ? hipY - .02 : (o.long ? .52 : .82);
+      path([[-.14, sh], [-.02, sh + .05], [.1, sh], [.15, sh - .2], [.12, hipY + .08], [o.long ? .17 : .14, hem], [o.long ? -.19 : -.15, hem], [-.15, hipY + .1]], true); fill(o.coat); if (OL) ink(.9, OL);
+      if (o.detail !== 0) { x.save(); path([[-.14, sh], [-.02, sh + .05], [.1, sh], [.15, sh - .2], [.12, hipY + .08], [.17, hem], [-.19, hem], [-.15, hipY + .1]], true); x.clip();
+          hatch(-.2, hem, -.02, sh + .1, 1.1, 3, 'rgba(0,0,0,.35)', .6); x.restore();
+        if (o.shirt) { path([[-.02, sh + .05], [.08, sh + .01], [.05, sh - .18]], true); fill(o.shirt); path([[-.02, sh + .05], [.1, sh], [.13, sh - .14], [.06, sh - .3]]); ink(.9, 'rgba(0,0,0,.45)'); x.beginPath(); x.ellipse(.03, sh + .01, .03, .015, 0, 0, 7); fill('#1b1511'); }
+        if (o.buttons) { for (var b = 0; b < 4; b++) { x.beginPath(); x.arc(.1 - b * .005, sh - .1 - b * .1, .012, 0, 7); fill(o.buttons); } }
+        if (o.chain) { x.beginPath(); x.moveTo(.11, hipY + .2); x.quadraticCurveTo(.03, hipY + .12, -.04, hipY + .2); ink(1.2, o.chain); }
+        if (o.belt) { x.fillStyle = o.belt; x.fillRect(-.15, hipY + .1, .29, .045); } } }
+    // head
+    x.fillStyle = o.skin; x.fillRect(-.03, sh, .07, .08);
+    x.beginPath(); x.ellipse(.02, hy, .095, .115, 0, 0, 7); fill(o.skin); if (OL) ink(.9, OL);
+    if (o.detail !== 0) {
+      if (o.hair) { x.beginPath(); x.ellipse(-.035, hy + .02, .06, .085, -.2, 0, 7); fill(o.hair); }
+      x.beginPath(); x.ellipse(-.005, hy, .022, .032, 0, 0, 7); fill(o.ear || 'rgba(150,95,70,.55)');
+      if (o.beard) { path([[-.02, hy - .01], [.0, hy - .1], [.06, hy - .16], [.115, hy - .09], [.117, hy - .04], [.08, hy - .055], [.03, hy - .04]], true); fill(o.beard); if (OL) ink(.7, 'rgba(40,30,22,.6)'); }
+      if (o.stache || o.beard) { x.beginPath(); x.ellipse(.095, hy - .04, .035, .014, -.15, 0, 7); fill(o.stache || o.beard); }
+      x.beginPath(); x.arc(.075, hy + .025, .011, 0, 7); fill('#1b1511');
+      x.beginPath(); x.moveTo(.105, hy + .02); x.lineTo(.125, hy - .015); x.lineTo(.1, hy - .02); fill(o.skin); }
+    // hats
+    if (o.hat === 'top') { x.beginPath(); x.ellipse(.02, hy + .095, .15, .024, 0, 0, 7); fill(o.hatc || '#1b1613'); path([[-.075, hy + .095], [-.085, hy + .33], [.125, hy + .33], [.115, hy + .095]], true); fill(o.hatc || '#1b1613'); if (o.band) { x.fillStyle = o.band; x.fillRect(-.078, hy + .1, .196, .035); } }
+    else if (o.hat === 'bowler') { x.beginPath(); x.ellipse(.02, hy + .085, .14, .022, 0, 0, 7); x.ellipse(.02, hy + .1, .1, .1, 0, Math.PI, 0, true); fill(o.hatc || '#2a221c'); }
+    else if (o.hat === 'kepi') { path([[-.07, hy + .07], [-.06, hy + .2], [.1, hy + .21], [.105, hy + .07]], true); fill(o.hatc || '#2f3546'); x.fillStyle = o.kepiTop || '#7b3a2b'; x.fillRect(-.062, hy + .14, .165, .07);
+      path([[.08, hy + .075], [.17, hy + .055], [.1, hy + .09]], true); fill('#14100d'); if (OL) { path([[-.07, hy + .07], [-.06, hy + .2], [.1, hy + .21], [.105, hy + .07]], true); ink(.8, OL); } }
+    else if (o.hat === 'lady') { x.beginPath(); x.ellipse(.02, hy + .08, .17, .03, -.08, 0, 7); fill(o.hatc || '#6b4a35'); x.beginPath(); x.ellipse(.01, hy + .12, .08, .06, 0, 0, 7); fill(o.hatc || '#6b4a35'); x.beginPath(); x.arc(.09, hy + .13, .025, 0, 7); fill(o.flower || '#c97a26'); }
+    if (o.phones) { x.beginPath(); x.ellipse(-.005, hy, .035, .045, 0, 0, 7); fill('#1d1916'); x.beginPath(); x.moveTo(-.005, hy + .04); x.quadraticCurveTo(-.02, hy + .26, .02, hy + .26); ink(1.4, '#1d1916'); }
+    if (o.parasol) { var pt = [.32, 1.05]; x.beginPath(); x.moveTo(pt[0], pt[1]); x.lineTo(pt[0] - .05, 1.95); ink(1, '#2a1f17'); x.beginPath(); x.ellipse(pt[0] - .05, 1.92, .42, .14, 0, Math.PI, 0, true); fill(o.parasol); if (OL) ink(.8, OL); }
+    // front arm last
+    var A1 = ah(1); limb(A1, .085, o.coat, OL); x.beginPath(); x.arc(A1[4], A1[5], .042, 0, 7); fill(o.skin);
+    if (o.cuff) { x.beginPath(); x.arc(A1[2] + (A1[4] - A1[2]) * .85, A1[3] + (A1[5] - A1[3]) * .85, .045, 0, 7); fill(o.cuff); x.beginPath(); x.arc(A1[4], A1[5], .04, 0, 7); fill(o.skin); }
+    x.restore(); }
+  return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
+    paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb };
+})();
+/*kit25:end*/
+
+  // ---- the story ----
+  story([['Why are there 60 minutes in an hour?', 0], ['About 4,000 years ago, people in Mesopotamia counted in sixties.', .9],
+    ['Sixty splits evenly into halves, thirds, quarters, fifths and sixths.', .45], ['Ancient Egypt gave the day 12 hours, and the night 12 more.', .45],
+    ['Greeks cut each degree into 60 parts, then 60 again.', .45], ['Clocks later split the hour the same way.', .45],
+    ['In Latin: the first small part, and the second small part.', .45], ["Turns out, that's where minute and second come from.", .45]]);
+  var DUR = +(CAPS[CAPS.length - 1].e + 1.9).toFixed(1);
+  var CREAM = '#fbf3e0', AMBER = '#f2b46a', INK = '#1d1712', CLAY = '#b9784a', LAPIS = '#7fa3e0', BRONZE = '#b8894e', KD = 'rgba(14,10,8,.9)';
+  var HOOK = { y: 222, size: 58, col: CREAM, hl: /^(60|minutes)/i, hlCol: AMBER, shadow: 'rgba(10,6,4,.6)', label: 'THE TRUE STORY', labelBg: 'rgba(14,10,8,.9)', labelCol: AMBER };
+  var STYLE = { hl: /^(4,000|sixties|60|12|evenly|degree|again|hour|first|second|minute)/i, hlCol: AMBER, ink: CREAM, panel: 'rgba(16,12,10,.9)' };
+  var CREDIT = 'SOURCES: SCIENTIFIC AMERICAN · LIVE SCIENCE';
+  var PAYOFF = 'The second cut.';
+  function WT(i, re, n){ var w = CAPS[i].words, c = 0; for (var j = 0; j < w.length; j++) if (re.test(w[j].d) && c++ === (n || 0)) return w[j].s; return CAPS[i].s; }   // when a word is spoken (n: the nth match)
+
+  // ================= the 2.5D world (kit25d.js, inlined above) =================
+  var Kt = K25, use = Kt.use, proj = Kt.proj, PAPERTEX = null;
+  var Z0 = 40, Z1 = 140, Z2 = 240, Z3 = 340, Z4 = 440, RG = 8, FU = .5;   // the five circles (m); the Greek ring's radius and the degree it zooms into (deg)
+  var FX = RG * Math.sin(FU * Math.PI / 180), FY = RG * Math.cos(FU * Math.PI / 180);
+  var camT = null;
+  function buildCam(){ var D1 = 50 / (810 / .5), D2 = 50 / (810 / .008), D3 = 50 / (810 / .00014);   // the edge sits 50 px above the centre
+    camT = Kt.track([
+    [0, 0, 1.4, Z0 - 34, Z0], [A[1] - .1, 0, .9, Z0 - 25, Z0],                         // the hook: a slow push into the study clock
+    [A[1] + .6, 0, .3, Z1 - 29, Z1], [A[2], .2, .1, Z1 - 26.5, Z1], [A[3] - .75, -.2, 0, Z1 - 24, Z1],   // through it: Mesopotamia, the tablet and 60 beads
+    [A[3] + .15, 0, .3, Z2 - 33, Z2], [A[4] - .75, .2, 0, Z2 - 26, Z2],               // Egypt: 12 hours of day, 12 of night
+    [A[4] + .1, 0, 0, Z3 - 31, Z3], [WT(4, /degree/) + .15, FX, FY - D1, Z3 - .5, Z3],      // Greece: the bronze circle, into one degree
+    [WT(4, /parts/) + .3, FX, FY - D2, Z3 - .008, Z3], [WT(4, /again/) + .35, FX, FY - D3, Z3 - .00014, Z3], [A[5] - .3, FX, FY - D3 * .7, Z3 - .0001, Z3],   // 1/60 of it, then 1/60 again
+    [A[5] + .5, 0, 1.6, Z4 - 34, Z4], [A[6], 0, 1.5, Z4 - 31, Z4], [A[7], 0, 1.4, Z4 - 28, Z4], [DUR, 0, 1.6, Z4 - 33, Z4]]); }
+
+  // which era is on screen: 0 study, 1 Mesopotamia, 2 Egypt, 3 Greece, 4 study again (each fades in just before the camera passes the circle)
+  function pres(i, t){ return [1, P(t, A[1] - .35, A[1] - .05), P(t, A[3] - .95, A[3] - .65), P(t, A[4] - .95, A[4] - .65), P(t, A[5] - .45, A[5] - .15)][i]; }
+  function night(t){ return eio(P(t, WT(3, /night/) - .3, WT(3, /night/) + .5)); }   // Egypt: day to night
+  function near(cam, Z, d0, d1){ return cl((Z - cam.z - d0) / d1, 0, 1); }        // fades a layer out as the camera reaches it
+
+  // ---- the sky behind each era (screen space) ----
+  var SKY = [['#1d1410', '#3a281c', '#5a3c26'], ['#26314d', '#a8664a', '#f0bf82'], ['#6f93b4', '#cdb88e', '#f1d7a0'], ['#070d24', '#13214a', '#2e3f68']];
+  var NIGHT = ['#0b1230', '#1b2650', '#3c4066'];
+  var STARS = (function(){ var r = rnd(60), s = []; for (var i = 0; i < 120; i++) s.push([r() * 540, r() * 520, .6 + r() * 1.4, r() * 6.3]); return s; })();
+  function hmix(a, b, k){ var p = rgb(a), q = rgb(b); return '#' + p.map(function(v, i){ return ('0' + Math.round(mix(v, q[i], cl(k, 0, 1))).toString(16)).slice(-2); }).join(''); }
+  function sky(t){ Kt.screen(); var e = [pres(1, t) * (1 - pres(2, t)), pres(2, t) * (1 - pres(3, t)), pres(3, t) * (1 - pres(4, t))], c = SKY[0].slice(), n = night(t);
+    var eg = SKY[2].map(function(h, i){ return hmix(h, NIGHT[i], n); });
+    [[SKY[1], e[0]], [eg, e[1]], [SKY[3], e[2]]].forEach(function(q){ if (q[1] > 0) c = c.map(function(h, i){ return hmix(h, q[0][i], q[1]); }); });
+    x.fillStyle = lg(0, 0, 0, 640, [[0, c[0]], [.62, c[1]], [1, c[2]]]); x.fillRect(0, 0, 540, 960);
+    var sa = Math.max(e[1] * n, e[2]); if (sa > 0) { x.fillStyle = '#f4ead0'; STARS.forEach(function(s){ x.globalAlpha = sa * (.45 + .4 * Math.sin(t * 1.3 + s[3])); x.beginPath(); x.arc(s[0], s[1], s[2], 0, 7); x.fill(); }); x.globalAlpha = 1; } }
+
+  // ---- 0 and 4: the study wall and the clock ----
+  function wall(cam, Z, a){ if (a <= 0 || !use(cam, Z + .6)) return; x.save(); x.globalAlpha *= a;
+    x.fillStyle = '#3d2b20'; x.fillRect(-80, -60, 160, 120); for (var X = -78; X < 80; X += 4.2) { x.beginPath(); x.rect(X, -11, 3.6, 7.5); x.rect(X, 4, 3.6, 18); Kt.ink(1, 'rgba(14,8,4,.55)'); }
+    Kt.hatch(-80, -60, 80, 60, 1.35, 5, 'rgba(16,10,6,.3)', .7);
+    x.fillStyle = '#2a1d15'; x.fillRect(-80, -12.6, 160, 1.2); x.fillStyle = '#4c3626'; x.fillRect(-80, -12.6, 160, .3);
+    x.restore(); }
+  function lamp(a){ if (a <= 0) return; Kt.screen(); x.save(); x.globalAlpha = a; var g = x.createRadialGradient(150, 360, 20, 150, 360, 520); g.addColorStop(0, 'rgba(255,200,120,.28)'); g.addColorStop(1, 'rgba(255,200,120,0)'); x.fillStyle = g; x.fillRect(0, 0, 540, 960);
+    g = x.createRadialGradient(270, 560, 300, 270, 560, 760); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(8,4,2,.45)'); x.fillStyle = g; x.fillRect(0, 0, 540, 960); x.restore(); }
+  function clock(cam, Z, t, a, lit){ if (a <= 0) return; var s = use(cam, Z); if (!s) return; var fa = near(cam, Z, 4, 12); x.save(); x.globalAlpha *= a;
+    paper(function(){ x.beginPath(); x.arc(0, 0, 6.1, 0, 7); }, '#6b4a2e', 4); x.beginPath(); x.arc(0, 0, 6.1, 0, 7); x.arc(0, 0, 5.3, 0, 7, true); x.save(); x.clip(); Kt.hatch(-7, -7, 7, 7, .8, 4, 'rgba(30,16,8,.35)', .7); x.restore();
+    x.beginPath(); x.arc(0, 0, 6.1, 0, 7); Kt.ink(1.4, 'rgba(20,12,6,.9)');
+    x.save(); x.globalAlpha *= fa; x.beginPath(); x.arc(0, 0, 5.3, 0, 7); x.fillStyle = lg(0, 0, 0, 0, [[0, '#f1e6cc'], [1, '#f1e6cc']]); x.fillStyle = '#efe2c4'; x.fill();
+    x.fillStyle = (function(){ var q = x.createLinearGradient(-5, 5, 5, -5); q.addColorStop(0, 'rgba(120,80,40,.22)'); q.addColorStop(.6, 'rgba(255,240,200,0)'); return q; })(); x.fill();
+    for (var i = 0; i < 60; i++) { var an = i * Math.PI / 30, big = i % 5 === 0, r0 = big ? 4.45 : 4.8, on = lit ? P(lit * 60, i, i + 1) : 0;
+      x.beginPath(); x.moveTo(Math.sin(an) * r0, Math.cos(an) * r0); x.lineTo(Math.sin(an) * 5.05, Math.cos(an) * 5.05); Kt.ink(big ? 3 : 1.4, on > 0 ? tone('#2a1f17', on, '#c9762e') : '#2a1f17'); }
+    [['12', 0, 3.75], ['3', 3.75, 0], ['6', 0, -3.75], ['9', -3.75, 0]].forEach(function(n){ Kt.wtxt(n[0], n[1], n[2] - .38, 1.05, '700 ' + FD, '#2a1f17', 'center'); });
+    var mA = (8 + t * .9) * Math.PI / 30 + (lit ? lit * Math.PI * 2 : 0), hA = (10 + (8 + t * .9) / 60) * Math.PI / 6, sA = Math.floor(t * 4) / 4 * Math.PI / 30 * 6;
+    function hand(an, l, w, col){ x.save(); x.rotate(-an); x.beginPath(); x.moveTo(-w, -.6); x.lineTo(0, l); x.lineTo(w, -.6); x.closePath(); x.fillStyle = col; x.fill(); x.restore(); }
+    x.save(); x.translate(.12, -.15); x.globalAlpha *= .25; hand(hA, 2.8, .26, '#000'); hand(mA, 4.1, .18, '#000'); x.restore();
+    hand(hA, 2.8, .26, '#2a1f17'); hand(mA, 4.1, .18, '#2a1f17');
+    x.save(); x.rotate(-sA); x.beginPath(); x.moveTo(0, -1); x.lineTo(0, 4.5); Kt.ink(1.6, '#b8562e'); x.restore();
+    x.beginPath(); x.arc(0, 0, .25, 0, 7); x.fillStyle = '#2a1f17'; x.fill();
+    x.restore(); x.restore(); }
+
+  // ---- 1: Mesopotamia: dunes, a ziggurat, a round clay tablet with wedge marks, ringed by 60 beads ----
+  function ziggurat(){ var T = [[16, 2.6], [12, 2.4], [8.4, 2.2], [5, 2]], y = 0;
+    T.forEach(function(q, i){ x.beginPath(); x.rect(-q[0] / 2, y, q[0], q[1]); x.fillStyle = tone('#a87548', 1 - i * .04); x.fill(); x.save(); x.clip(); Kt.hatch(0, y, q[0] / 2, y + q[1], .5, 4, 'rgba(60,30,14,.4)', .7); x.restore(); Kt.ink(1, 'rgba(50,28,14,.8)'); y += q[1]; });
+    x.beginPath(); x.rect(-.9, 0, 1.8, 7.2); x.fillStyle = '#93623a'; x.fill(); Kt.ink(.9, 'rgba(50,28,14,.8)'); }
+  function wedge(X, Y, sz, rot){ x.save(); x.translate(X, Y); x.rotate(rot); x.beginPath(); x.moveTo(-sz * .5, 0); x.lineTo(sz * .5, sz * .28); x.lineTo(sz * .5, -sz * .28); x.closePath(); x.fillStyle = 'rgba(70,36,18,.85)'; x.fill();
+    x.beginPath(); x.moveTo(sz * .45, 0); x.lineTo(sz * 1.05, 0); Kt.ink(1.6, 'rgba(70,36,18,.85)'); x.restore(); }
+  var MARKS = (function(){ var r = rnd(4000), m = []; for (var row = 0; row < 7; row++) { var y = 2.4 - row * .8, w = Math.sqrt(Math.max(0, 3.2 * 3.2 - y * y)) - .5;
+    for (var X = -w; X < w - .4; X += .5 + r() * .5) m.push([X, y + (r() - .5) * .1, .34 + r() * .1, r() < .3 ? -1.57 : r() < .2 ? -.78 : 0]); } return m; })();
+  function split(t){ var ks = [/halves/, /thirds/, /quarters/, /fifths/, /sixths/], n = 1, k = 0;   // which division is on: 2, 3, 4, 5, 6 as each word is spoken
+    ks.forEach(function(re, i){ var w = WT(2, re); if (t >= w - .15) { n = i + 2; k = P(t, w - .15, w + .25); } }); if (t > A[3] - .5) k *= 1 - P(t, A[3] - .5, A[3] - .2); return { n: n, k: k }; }
+  var GC = ['#f2b46a', '#e58a5a', '#8fc0a8', '#7fa3e0', '#d9a0c8', '#e8d48a'];
+  function mesopotamia(cam, t, a){ if (a <= 0) return; var s;
+    x.save(); x.globalAlpha *= a;
+    if ((s = use(cam, Z1 + 90))) { x.translate(0, -6.5); Kt.ridge(31, 5, '#d4a26c', 'rgba(110,64,34,.6)', 'rgba(120,70,40,.18)', { deep: 300 }); }
+    if ((s = use(cam, Z1 + 45))) { x.translate(-17, -6.5); ziggurat(); x.translate(17, 0); x.translate(0, -.5); Kt.ridge(7, 2.6, '#c48d58', 'rgba(100,56,28,.65)', 'rgba(110,62,32,.25)', { deep: 300 }); }
+    if ((s = use(cam, Z1 + 10)) && near(cam, Z1 + 10, 3, 10) > 0) { x.globalAlpha *= near(cam, Z1 + 10, 3, 10); x.translate(0, -7.2); Kt.ridge(19, 2.2, '#b07a46', 'rgba(80,44,20,.75)', 'rgba(90,50,24,.3)', { deep: 300 }); }
+    x.restore();
+    if (!(s = use(cam, Z1))) return; var fa = near(cam, Z1, 2, 9), sp = split(t), ring = P(t, A[2] - .3, A[2] + .4);
+    x.save(); x.globalAlpha *= a;
+    // the 60 beads: they appear one by one around the tablet with "sixties", then group by 2, 3, 4, 5, 6
+    var bn = Math.round(60 * eo(P(t, WT(1, /sixties/) - .2, WT(1, /sixties/) + .9)));
+    if (sp.n > 1) { for (var g = 0; g < sp.n; g++) { var a0 = g * Math.PI * 2 / sp.n; x.globalAlpha = a * sp.k; x.beginPath(); x.moveTo(Math.sin(a0) * 3.4, Math.cos(a0) * 3.4); x.lineTo(Math.sin(a0) * 6.5, Math.cos(a0) * 6.5); Kt.ink(2.4, CREAM); } x.globalAlpha = a; }
+    for (var i = 0; i < bn; i++) { var an = (i + .5) * Math.PI / 30, gi = Math.floor(i / (60 / sp.n)), col = sp.n > 1 ? tone('#e9d9b4', sp.k, GC[gi % GC.length]) : '#e9d9b4';
+      paper(function(){ x.beginPath(); x.arc(Math.sin(an) * 5.4, Math.cos(an) * 5.4, .27, 0, 7); }, col, 1); x.beginPath(); x.arc(Math.sin(an) * 5.4, Math.cos(an) * 5.4, .27, 0, 7); Kt.ink(.9, 'rgba(40,24,12,.8)'); }
+    x.globalAlpha = a * fa;
+    paper(function(){ x.beginPath(); x.ellipse(0, 0, 3.4, 3.25, .05, 0, 7); }, CLAY, 5);
+    x.save(); x.beginPath(); x.ellipse(0, 0, 3.4, 3.25, .05, 0, 7); x.clip();
+    x.fillStyle = (function(){ var q = x.createLinearGradient(-3, 3, 3, -3); q.addColorStop(0, 'rgba(255,220,170,.3)'); q.addColorStop(.5, 'rgba(255,220,170,0)'); q.addColorStop(1, 'rgba(60,30,10,.35)'); return q; })(); x.fillRect(-4, -4, 8, 8);
+    Kt.hatch(-4, -4, 4, 4, 2.2, 6, 'rgba(70,36,16,.18)', .6);
+    MARKS.forEach(function(m){ wedge(m[0], m[1], m[2], m[3]); }); x.restore();
+    x.beginPath(); x.ellipse(0, 0, 3.4, 3.25, .05, 0, 7); Kt.ink(1.5, 'rgba(60,30,12,.9)');
+    x.restore(); }
+
+  // ---- 2: Egypt: pyramids and a 24-hour ring, 12 lit by the sun, 12 by the stars ----
+  function pyramid(X, h, w){ x.beginPath(); x.moveTo(X - w / 2, 0); x.lineTo(X, h); x.lineTo(X + w / 2, 0); x.closePath(); x.fillStyle = '#d9b27a'; x.fill();
+    x.beginPath(); x.moveTo(X, h); x.lineTo(X + w / 2, 0); x.lineTo(X + w * .12, 0); x.closePath(); x.fillStyle = 'rgba(90,50,22,.35)'; x.fill(); x.save(); x.clip(); Kt.hatch(X, 0, X + w / 2, h, .9, 4, 'rgba(80,44,20,.35)', .7); x.restore();
+    x.beginPath(); x.moveTo(X - w / 2, 0); x.lineTo(X, h); x.lineTo(X + w / 2, 0); Kt.ink(1.1, 'rgba(70,40,16,.85)');
+    for (var y = h / 7; y < h; y += h / 7) { var hw = w / 2 * (1 - y / h); x.beginPath(); x.moveTo(X - hw, y); x.lineTo(X + hw, y); Kt.ink(.6, 'rgba(90,54,24,.35)'); } }
+  function egypt(cam, t, a){ if (a <= 0) return; var s, n = night(t);
+    x.save(); x.globalAlpha *= a;
+    if ((s = use(cam, Z2 + 90))) { x.translate(0, -6.5); Kt.ridge(77, 4, tone('#d8b884', n * .7, '#2a2d48'), 'rgba(110,70,30,.5)', null, { deep: 300 }); }
+    if ((s = use(cam, Z2 + 50))) { x.translate(0, -6.6); x.fillStyle = 'rgba(0,0,0,' + (n * .45).toFixed(3) + ')'; pyramid(-19, 11, 19); pyramid(15, 8, 14); pyramid(28, 5, 9);
+      if (n > 0) { x.globalAlpha *= n * .55; x.fillStyle = '#141a38'; x.fillRect(-60, 0, 120, 14); x.globalAlpha /= n * .55 || 1; } x.translate(0, -.4); Kt.ridge(12, 2.2, tone('#cfa468', n * .7, '#232846'), 'rgba(100,60,26,.7)', 'rgba(110,66,30,.22)', { deep: 300 }); }
+    if ((s = use(cam, Z2 + 10)) && near(cam, Z2 + 10, 3, 10) > 0) { x.globalAlpha *= near(cam, Z2 + 10, 3, 10); x.translate(0, -7.4); Kt.ridge(23, 2, tone('#bd8c52', n * .7, '#1d2140'), 'rgba(80,44,20,.75)', 'rgba(90,50,24,.3)', { deep: 300 }); }
+    x.restore();
+    if (!(s = use(cam, Z2))) return; x.save(); x.globalAlpha *= a;
+    var kd = P(t, WT(3, /day/) - .2, WT(3, /day/) + 1.0), kn = P(t, WT(3, /night/) - .1, WT(3, /night/) + .9);
+    for (var i = 0; i < 24; i++) { var dayH = i < 12, a0 = Math.PI / 2 - (dayH ? i : i - 12) * Math.PI / 12 - (dayH ? 0 : Math.PI), a1 = a0 - Math.PI / 12, on = dayH ? P(kd * 12, i, i + 1) : P(kn * 12, i - 12, i - 11);
+      // day hours run left to right over the top half, night hours right to left under it
+      a0 = dayH ? Math.PI - i * Math.PI / 12 : -(i - 12) * Math.PI / 12; a1 = dayH ? a0 - Math.PI / 12 : a0 - Math.PI / 12;
+      x.beginPath(); x.arc(0, 0, 6.2, a0, a1, true); x.arc(0, 0, 5.0, a1, a0, false); x.closePath();
+      x.fillStyle = tone(dayH ? '#6b5a44' : '#2c3352', on, dayH ? '#f2c063' : '#5d79c4'); x.fill(); Kt.ink(1.2, 'rgba(24,18,12,.85)'); }
+    // the sun crosses the day half; stars sit in the night half
+    var su = P(t, WT(3, /day/) - .2, WT(3, /day/) + 1.0), sa = Math.PI - su * Math.PI; if (kd > 0 && n < 1) { x.globalAlpha = a * (1 - n); paper(function(){ x.beginPath(); x.arc(Math.cos(sa) * 7.3, Math.sin(sa) * 7.3, .55, 0, 7); }, '#fbe0a0', 2); x.globalAlpha = a; }
+    x.globalAlpha = a * near(cam, Z2, 2, 9);
+    x.save(); x.beginPath(); x.arc(0, 0, 4.6, 0, 7); x.clip(); x.fillStyle = '#f0d9a2'; x.fillRect(-5, 0, 10, 5); x.fillStyle = '#1f2748'; x.fillRect(-5, -5, 10, 5);
+    x.beginPath(); x.moveTo(-5, 0); x.lineTo(5, 0); Kt.ink(1.4, 'rgba(24,18,12,.85)');
+    x.beginPath(); x.arc(0, 0, 1.5, Math.PI, 0, true); x.fillStyle = '#e9a24a'; x.fill(); Kt.ink(1.2, 'rgba(90,50,20,.9)');
+    x.beginPath(); for (var rr2 = 0; rr2 < 7; rr2++) { var ra = Math.PI * (rr2 + .5) / 7; x.moveTo(Math.cos(ra) * 1.9, Math.sin(ra) * 1.9); x.lineTo(Math.cos(ra) * 2.8, Math.sin(ra) * 2.8); } Kt.ink(1.6, '#c9822e');
+    [[-2.2, -1.4, .32], [.4, -2.6, .26], [2.4, -1.2, .3], [-.9, -3.4, .2], [1.6, -3.3, .18]].forEach(function(q){ x.save(); x.translate(q[0], q[1]); x.beginPath();
+      for (var j = 0; j < 10; j++) { var rj = j % 2 ? q[2] * .42 : q[2], aj = j * Math.PI / 5; x.lineTo(Math.sin(aj) * rj, Math.cos(aj) * rj); } x.closePath(); x.fillStyle = '#f4e6b8'; x.fill(); x.restore(); });
+    x.restore(); x.beginPath(); x.arc(0, 0, 4.6, 0, 7); Kt.ink(1.2, 'rgba(24,18,12,.85)');
+    x.restore(); }
+
+  // ---- 3: Greece: columns at night and a bronze circle with 360 degrees; the camera zooms into one degree, 1/60 of it, 1/60 again ----
+  function temple(){ for (var i = 0; i < 8; i++) { var X = -17.5 + i * 5; x.beginPath(); x.rect(X - .9, 0, 1.8, 10); x.fillStyle = '#2b3554'; x.fill(); x.save(); x.clip(); Kt.hatch(X, 0, X + .9, 10, 1.57, 3, 'rgba(10,14,30,.5)', .7); x.restore(); Kt.ink(.9, 'rgba(8,10,24,.9)'); }
+    x.beginPath(); x.rect(-20, 10, 40, 1.6); x.moveTo(-20.5, 11.6); x.lineTo(0, 15.4); x.lineTo(20.5, 11.6); x.closePath(); x.fillStyle = '#323d60'; x.fill(); Kt.ink(1, 'rgba(8,10,24,.9)');
+    x.beginPath(); x.rect(-21, -1, 42, 1); x.fillStyle = '#323d60'; x.fill(); Kt.ink(1, 'rgba(8,10,24,.9)'); }
+  function greece(cam, t, a){ if (a <= 0) return; var s;
+    x.save(); x.globalAlpha *= a;
+    if ((s = use(cam, Z3 + 90))) { x.translate(0, -9.5); Kt.ridge(5, 4, '#1b2546', 'rgba(120,140,190,.35)', null, { deep: 300 }); }
+    if ((s = use(cam, Z3 + 40))) { x.translate(14, -9.5); temple(); x.translate(-14, 0); x.translate(0, -1); Kt.ridge(3, 2, '#18203c', 'rgba(120,140,190,.35)', 'rgba(8,10,24,.3)', { deep: 300 }); }
+    x.restore();
+    var dz3 = Z3 - cam.z; if (dz3 <= 1e-7) return; var s3 = Kt.F / dz3, ca = 1 - P(s3, 500, 900);
+    x.save(); x.globalAlpha *= a * ca;
+    if (ca > 0 && (s = use(cam, Z3))) {   // the whole circle: a bronze band with 360 ticks, every tenth longer, numbers every 30 degrees
+      x.beginPath(); x.arc(0, 0, RG, 0, 7); x.arc(0, 0, RG - 1, 0, 7, true); x.fillStyle = BRONZE; x.fill('evenodd'); x.save(); x.clip('evenodd'); Kt.hatch(-9, -9, 9, 9, .7, 4, 'rgba(60,36,12,.35)', .7);
+      x.fillStyle = (function(){ var q = x.createLinearGradient(-8, 8, 8, -8); q.addColorStop(0, 'rgba(255,230,180,.35)'); q.addColorStop(.5, 'rgba(255,230,180,0)'); q.addColorStop(1, 'rgba(30,16,4,.35)'); return q; })(); x.fillRect(-9, -9, 18, 18); x.restore();
+      x.beginPath(); for (var i = 0; i < 360; i++) { var an = (90 - i) * Math.PI / 180, l = i % 10 === 0 ? .55 : i % 5 === 0 ? .38 : .24; x.moveTo(Math.cos(an) * RG, Math.sin(an) * RG); x.lineTo(Math.cos(an) * (RG - l), Math.sin(an) * (RG - l)); } Kt.ink(.9, 'rgba(40,24,8,.85)');
+      for (i = 0; i < 360; i += 30) { var an2 = (90 - i) * Math.PI / 180; Kt.wtxt(String(i), Math.cos(an2) * (RG - .82), Math.sin(an2) * (RG - .82) - .14, .42, '800 ' + FI, 'rgba(40,24,8,.9)', 'center'); }
+      x.beginPath(); x.arc(0, 0, RG, 0, 7); x.moveTo(RG - 1, 0); x.arc(0, 0, RG - 1, 0, 7); Kt.ink(1.4, 'rgba(30,18,6,.9)');
+      // the spokes and a sighting bar across the middle
+      x.beginPath(); for (i = 0; i < 4; i++) { var a2 = i * Math.PI / 4; x.moveTo(Math.cos(a2) * (RG - 1), Math.sin(a2) * (RG - 1)); x.lineTo(-Math.cos(a2) * (RG - 1), -Math.sin(a2) * (RG - 1)); } Kt.ink(2, 'rgba(150,104,52,.8)');
+      x.beginPath(); x.arc(0, 0, .5, 0, 7); x.fillStyle = BRONZE; x.fill(); Kt.ink(1.2, 'rgba(30,18,6,.9)'); }
+    x.restore();
+    ruler(cam, t, a * (1 - P(t, A[5] - .45, A[5] - .25)) * P(s3, 450, 800)); }
+  // the zoomed edge, in screen space (so it stays exact at any zoom): the bronze below the edge, ticks for degrees, 1/60 and 1/3600 of a degree
+  function ruler(cam, t, a){ if (a <= 0) return; var s = Kt.F / (Z3 - cam.z); Kt.screen(); x.save(); x.globalAlpha = a;
+    var ey = 480 - (FY - cam.y) * s, du = RG * Math.PI / 180;   // metres per degree along the edge
+    x.fillStyle = lg(0, ey, 0, 960, [[0, '#d0a066'], [.12, BRONZE], [1, '#7a5428']]); x.fillRect(0, ey, 540, 960 - ey);
+    x.strokeStyle = 'rgba(70,44,16,.34)'; x.lineWidth = 1; var hs = 7, off = (((-cam.x * s) % hs) + hs) % hs; x.beginPath(); for (var hx = -960 + off; hx < 540; hx += hs) { x.moveTo(hx, 960); x.lineTo(hx + 960 - ey, ey); } x.stroke();
+    x.strokeStyle = 'rgba(30,18,6,.95)'; x.lineWidth = 2.5; x.beginPath(); x.moveTo(0, ey); x.lineTo(540, ey); x.stroke();
+    var u0 = (cam.x - 270 / s) / du, u1 = (cam.x + 270 / s) / du;   // the degrees on screen (u, from 90 degrees going clockwise)
+    [[1, 3.2], [1 / 60, 2.2], [1 / 3600, 1.6]].forEach(function(L, li){ var sp = L[0] * du * s; if (sp < 2.2) return; var al = P(sp, 2.2, 9), i0 = Math.ceil(u0 / L[0]), i1 = Math.floor(u1 / L[0]); if (i1 - i0 > 300) return;
+      var len = Math.min(sp * .9, 230); x.globalAlpha = a * al; x.strokeStyle = 'rgba(30,18,6,.92)'; x.lineWidth = L[1]; x.beginPath();
+      for (var i = i0; i <= i1; i++) { if (li && i % 60 === 0) continue; var X = 270 + (i * L[0] * du - cam.x) * s; x.moveTo(X, ey); x.lineTo(X, ey + len); } x.stroke();
+      var na = P(sp, 50, 110); if (na > 0) { x.globalAlpha = a * na; x.font = font(15, '800 ' + FI); x.textAlign = 'center'; x.fillStyle = 'rgba(40,24,8,.9)';   // world numbers (not captions: not reported to qa)
+        for (i = i0; i <= i1; i++) { var X2 = 270 + (i * L[0] * du - cam.x) * s, v = li ? ((i % 60) + 60) % 60 : 90 + i; if (li && v === 0) continue; x.fillText(v + (li === 0 ? '°' : li === 1 ? '′' : '″'), X2, ey + Math.min(sp * .9, 230) + 22); } } });
+    x.restore(); }
+
+  function frame(t){ var cam = camT(t); Kt.off(0, 0);
+    x.setTransform(2, 0, 0, 2, 0, 0); x.fillStyle = '#1d1410'; x.fillRect(0, 0, 540, 960);
+    sky(t);
+    greece(cam, t, pres(3, t) * (1 - pres(4, t)));
+    egypt(cam, t, pres(2, t));
+    mesopotamia(cam, t, pres(1, t));
+    var w4 = pres(4, t); if (w4 > 0) { wall(cam, Z4, w4); clock(cam, Z4, t, w4, P(t, WT(5, /split/) - .1, WT(5, /way/) + .3)); }
+    wall(cam, Z0, near(cam, Z0, 2, 10)); clock(cam, Z0, t, 1, 0);
+    Kt.screen(); x.fillStyle = lg(0, 620, 0, 960, [[0, 'rgba(12,7,4,0)'], [1, 'rgba(12,7,4,.42)']]); x.fillRect(0, 620, 540, 340);
+    lamp(Math.max(near(cam, Z0, 2, 10) * (cam.z < Z0 ? 1 : 0), w4));
+  }
+
+  // ---------- type over the picture ----------
+  function kinetic(t){
+    var k1 = P(t, WT(1, /4,000/) - .1, WT(1, /4,000/) + .6), o1 = 1 - P(t, A[2] - .45, A[2] - .1);
+    if (k1 > 0 && o1 > 0) { x.save(); x.globalAlpha = o1; Kt.roll('4,000', 270, 190, 92, '800 ' + FD, AMBER, k1, KD); Kt.label('YEARS AGO · MESOPOTAMIA', 270, 232, 18, '800 ' + FI, CREAM, P(t, WT(1, /Mesopotamia/) - .1, WT(1, /Mesopotamia/) + .5), 3.5, KD);
+      Kt.label('TODAY: IRAQ, SYRIA, KUWAIT', 270, 262, 13, '800 ' + FI, '#e8d6b0', P(t, WT(1, /Mesopotamia/) + .2, WT(1, /Mesopotamia/) + .8), 3, KD); x.restore(); }
+    var sp = split(t), o2 = 1 - P(t, A[3] - .45, A[3] - .1);
+    if (sp.n > 1 && o2 > 0) { var s = '60 ÷ ' + sp.n + ' = ' + (60 / sp.n); x.save(); x.globalAlpha = o2; Kt.label(s, 270, 206, 58, '800 ' + FD, GC[0], 1, 0, KD);
+      Kt.label('NO REMAINDER', 270, 254, 16, '800 ' + FI, CREAM, P(t, WT(2, /evenly/) - .1, WT(2, /evenly/) + .5), 3.5, KD); x.restore(); }
+    var o3 = 1 - P(t, A[4] - .45, A[4] - .1), kd = P(t, WT(3, /12/) - .1, WT(3, /12/) + .5), kn = P(t, WT(3, /12/, 1) - .1, WT(3, /12/, 1) + .5);
+    if (kd > 0 && o3 > 0) { x.save(); x.globalAlpha = o3; Kt.roll('12', 175, 196, 80, '800 ' + FD, '#f2c063', kd, KD); Kt.label('HOURS OF DAY', 175, 232, 15, '800 ' + FI, CREAM, kd, 3, KD);
+      if (kn > 0) { Kt.roll('12', 365, 196, 80, '800 ' + FD, LAPIS, kn, KD); Kt.label('HOURS OF NIGHT', 365, 232, 15, '800 ' + FI, CREAM, kn, 3, KD); txt('+', 270, 188, 52, '800 ' + FD, CREAM, 'center'); }
+      Kt.label('= 24 HOURS', 270, 266, 22, '800 ' + FI, AMBER, P(t, WT(3, /more/) + .1, WT(3, /more/) + .7), 3.5, KD); x.restore(); }
+    var o4 = 1 - P(t, A[5] - .45, A[5] - .1), g1 = P(t, WT(4, /degree/) - .1, WT(4, /degree/) + .5), g2 = P(t, WT(4, /parts/) - .2, WT(4, /parts/) + .4), g3 = P(t, WT(4, /again/) - .2, WT(4, /again/) + .4);
+    if (o4 > 0) { x.save(); x.globalAlpha = o4; Kt.label('GREEK ASTRONOMY · A CIRCLE OF 360°', 270, 168, 15, '800 ' + FI, CREAM, P(t, A[4] - .1, A[4] + .5), 3, KD);
+      // one label at a time: the old one is gone before the next wipes in
+      var h2 = cl((g2 - .3) / .7, 0, 1), h3 = cl((g3 - .3) / .7, 0, 1);
+      if (g1 > 0 && g2 < .3) { x.globalAlpha = o4 * (1 - g2 / .3); Kt.label('ONE DEGREE', 270, 250, 34, '800 ' + FD, AMBER, g1, 1, KD); }
+      if (h2 > 0 && g3 < .3) { x.globalAlpha = o4 * (1 - g3 / .3); Kt.label('1 DEGREE ÷ 60', 270, 250, 34, '800 ' + FD, AMBER, h2, 1, KD); Kt.label('THE FIRST CUT', 270, 288, 16, '800 ' + FI, CREAM, h2, 3.5, KD); }
+      if (h3 > 0) { x.globalAlpha = o4; Kt.label('÷ 60 AGAIN', 270, 250, 34, '800 ' + FD, AMBER, h3, 1, KD); Kt.label('THE SECOND CUT', 270, 288, 16, '800 ' + FI, CREAM, h3, 3.5, KD); }
+      x.restore(); }
+    var o5 = 1 - P(t, A[6] - .45, A[6] - .1), k5 = P(t, WT(5, /hour/) - .1, WT(5, /hour/) + .5);
+    if (k5 > 0 && o5 > 0) { x.save(); x.globalAlpha = o5; Kt.label('1 HOUR = 60 MINUTES', 270, 214, 30, '800 ' + FD, AMBER, k5, 0, KD); Kt.label('1 MINUTE = 60 SECONDS', 270, 258, 22, '800 ' + FD, CREAM, P(t, WT(5, /same/) - .1, WT(5, /same/) + .5), 0, KD); x.restore(); }
+    var o6 = 1 - P(t, A[7] - .5, A[7] - .15), k6a = P(t, WT(6, /first/) - .1, WT(6, /first/) + .4), k6b = P(t, WT(6, /second/) - .1, WT(6, /second/) + .4);
+    var k7a = P(t, WT(7, /minute/) - .1, WT(7, /minute/) + .45), k7b = P(t, WT(7, /second/) - .1, WT(7, /second/) + .45), o7 = 1 - P(t, DUR - 3.1, DUR - 2.8);
+    if (o6 > 0 && k6a > 0) { x.save(); x.globalAlpha = o6; Kt.stamp([['PARS MINUTA PRIMA', 22, '800 ' + FD, 1], ['FIRST SMALL PART', 13, '800 ' + FI, 3.5]], 270, 176, -.04, '#7a3d1c', k6a);
+      Kt.stamp([['PARS MINUTA SECUNDA', 22, '800 ' + FD, 1], ['SECOND SMALL PART', 13, '800 ' + FI, 3.5]], 270, 286, .03, '#7a3d1c', k6b); x.restore(); }
+    if (o7 > 0 && (k7a > 0 || A[7] - .3 < t)) { x.save(); x.globalAlpha = o7 * P(t, A[7] - .45, A[7] - .15);
+      txt('minuta', 160, 196, 30, '700 ' + FD, '#e8d6b0', 'center'); txt('secunda', 160, 286, 30, '700 ' + FD, '#e8d6b0', 'center');
+      txt('→', 262, 196, 30, '700 ' + FD, CREAM, 'center'); txt('→', 262, 286, 30, '700 ' + FD, CREAM, 'center'); x.restore();
+      x.save(); x.globalAlpha = o7; Kt.label('MINUTE', 380, 198, 34, '800 ' + FD, AMBER, k7a, 1, KD); Kt.label('SECOND', 380, 288, 34, '800 ' + FD, AMBER, k7b, 1, KD); x.restore(); }
+  }
+  function drawPayoff(t){ var k = es(P(t, DUR - 2.9, DUR - 2.2)); if (k <= 0) return; x.save(); x.globalAlpha = cl(k * 1.6, 0, 1); x.translate(270, 220); arrive(k);
+    x.font = font(56, '700 ' + FD); x.textAlign = 'center'; x.strokeStyle = 'rgba(14,10,8,.75)'; x.lineWidth = 8; x.lineJoin = 'round'; x.strokeText(PAYOFF, 0, 0); txt(PAYOFF, 0, 0, 56, '700 ' + FD, AMBER, 'center', -.5); x.restore(); }
+  function seek(t){
+    t = cl(t, 0, DUR); BOXES.length = 0; x.globalAlpha = 1; frame(t);
+    Kt.off(0, 0); Kt.screen(); x.globalAlpha = 1;
+    if (PAPERTEX) { x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'multiply'; x.globalAlpha = .8; x.drawImage(PAPERTEX, 0, 0); x.restore(); }
+    x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1; x.letterSpacing = '0px';
+    kinetic(t); drawCaption(t); drawCredit(t); drawPayoff(t);
+  }
+
+  // sound: a low hit with the question, whooshes through each circle, ticks as the beads and hours light, stamps that land, a bed that lifts into the payoff
+  (function(){
+    var Q = [{ t: 0, k: 'boom', g: .32 }, { t: .05, k: 'swish', d: .7, g: .2 }, { t: A[1] - .3, k: 'whoosh', d: 1.4, g: .2, p: .1 }, { t: WT(1, /4,000/), k: 'hit', g: .18 },
+      { t: WT(1, /sixties/), k: 'riser', d: 1.0, g: .1 }];
+    [/halves/, /thirds/, /quarters/, /fifths/, /sixths/].forEach(function(re){ Q.push({ t: WT(2, re), k: 'tick', g: .14 }); });
+    Q.push({ t: A[3] - .8, k: 'whoosh', d: 1.4, g: .2, p: -.1 }, { t: WT(3, /12/), k: 'hit', g: .16 }, { t: WT(3, /night/), k: 'shimmer', g: .14 }, { t: A[4] - .8, k: 'whoosh', d: 1.4, g: .2, p: .2 },
+      { t: WT(4, /degree/), k: 'swish', d: .8, g: .16 }, { t: WT(4, /parts/), k: 'tick', g: .16 }, { t: WT(4, /again/), k: 'tick', g: .18 }, { t: A[5] - .35, k: 'whoosh', d: 1.4, g: .2, p: -.2 },
+      { t: WT(5, /hour/), k: 'thud', g: .18 }, { t: WT(6, /first/), k: 'thud', g: .2 }, { t: WT(6, /second/), k: 'thud', g: .2 }, { t: WT(7, /minute/), k: 'shimmer', g: .16 }, { t: DUR - 2.4, k: 'thud', g: .2 });
+    Q.forEach(function(q){ q.t = +q.t.toFixed(2); }); Q.sort(function(a, b){ return a.t - b.t; });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 72, origin: 0, gain: .3, soft: true, lift: +(A[7] - .2).toFixed(2), chords: [[45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [48, 55, 60, 64, 67], [43, 50, 55, 59, 62]] } };
+  })();
+  window.seek = seek; window.DURATION = DUR;
+  Promise.all([document.fonts.load("800 44px 'Playfair Display'"), document.fonts.load("700 44px 'Playfair Display'"), document.fonts.load("700 27px 'Inter'"), document.fonts.load("800 18px 'Inter'"), document.fonts.load("600 18px 'Inter'")]).then(function(){ return document.fonts.ready; })
+    .then(function(){ buildCam(); PAPERTEX = Kt.paperTex(60);
+      seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body></html>
