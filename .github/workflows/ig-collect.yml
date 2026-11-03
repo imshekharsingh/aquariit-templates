@@ -64,6 +64,13 @@ jobs:
             INSTAGRAM_TOKEN="$INSTAGRAM_TOKEN_3" node scripts/ig-collect.mjs $flags --slot 3 2>&1 | tee -a collect.log || ok=1
           fi
           exit $ok
+      - name: Audit numbers (the daily run reads AUDIT_CHANNELS from this step's log; scripts/audit-numbers.mjs)
+        if: success() && inputs.dry != true
+        continue-on-error: true
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: node scripts/audit-numbers.mjs
       - name: Tell the owner when it fails (one open issue at a time)
         if: failure()
         run: |
