@@ -1,20 +1,20 @@
 {
  "name": "showreel-c3-tea-chai",
  "seek": "scripts/channel3/tea-chai.html",
- "dur": 30.1,
+ "dur": 31,
  "fps": 30,
  "grain": 4,
  "voice": {
-  "text": "Why do some say tea, and others say chai? Both words come from Chinese. In most of China, it is chá. Carried west over land, it became chai in India, Persia and Russia. But on the coast of Fujian, the word is te. In the 1600s, Dutch ships carried tea from there to Europe. So Europe says thé, Tee and tea. Turns out, your word for tea shows its route: land or sea.",
+  "text": "Why do some say tea, and others say chai? Both words come from Chinese. In most of China, it is chá. Carried west over land, it became chai in India, Persia and Russia. But on the coast of Fujian, the word is [te](/tˈA/). In the 1600s, Dutch ships carried tea from there to Europe. So Europe says [thé](/tˈA/), [Tee](/tˈA/) and tea. Turns out, your word for tea shows its route: land or sea.",
   "at": [
    0,
    3.38,
-   6.15,
-   8.55,
-   13.46,
-   16.82,
-   22.17,
-   24.86
+   6.3,
+   8.85,
+   13.91,
+   17.42,
+   22.92,
+   25.76
   ],
   "voice": "af_heart",
   "speed": 0.95

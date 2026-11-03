@@ -29,8 +29,13 @@ const want = await p.evaluate(() => window.VOICE || null), dur = await p.evaluat
 let vbad = 0;
 if (want) {
   const v = cfg.voice || {};
-  if (process.argv.includes('--write')) { Object.assign(v, { text: want.text, at: want.at }); cfg.voice = v; cfg.dur = dur; writeFileSync(process.argv[2], JSON.stringify(cfg, null, 1) + '\n'); console.log('QA voice: config updated from the scene'); }
-  if (v.text !== want.text || JSON.stringify(v.at) !== JSON.stringify(want.at) || +cfg.dur !== +dur) { vbad++; console.log(`QA voice: the config does not match the scene; use "dur": ${dur} and\n  "text": ${JSON.stringify(want.text)},\n  "at": ${JSON.stringify(want.at)}`); }
+  // the config may carry pronunciation markup the voice reads, [te](/tˈA/), over the scene's plain words (3 Nov 2026: "te" was read as "tea");
+  // --write keeps it: each marked word is marked again wherever it stands alone in the scene's new text
+  const plain = (s) => String(s || '').replace(/\[([^\]]+)\]\(\/[^)]*\/\)/g, '$1');
+  if (process.argv.includes('--write')) { let text = want.text; const marks = [...String(v.text || '').matchAll(/\[([^\]]+)\]\(\/[^)]*\/\)/g)];
+    for (const [w, k] of new Map(marks.map((q) => [q[1], q]))) text = text.replace(new RegExp(`(^|[^\\p{L}\\]])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\]])`, 'gu'), (q, pre) => pre + k[0]);
+    Object.assign(v, { text, at: want.at }); cfg.voice = v; cfg.dur = dur; writeFileSync(process.argv[2], JSON.stringify(cfg, null, 1) + '\n'); console.log('QA voice: config updated from the scene'); }
+  if (plain(v.text) !== want.text || JSON.stringify(v.at) !== JSON.stringify(want.at) || +cfg.dur !== +dur) { vbad++; console.log(`QA voice: the config does not match the scene; use "dur": ${dur} and\n  "text": ${JSON.stringify(want.text)},\n  "at": ${JSON.stringify(want.at)}`); }
   const n = want.at.length, miss = [...Array(n).keys()].filter((i) => !shown.has(i));
   if (miss.length) { vbad++; console.log(`QA captions: sentence(s) ${miss.map((i) => i + 1).join(', ')} never on screen`); }
   else console.log(`QA captions: all ${n} sentences on screen`);
