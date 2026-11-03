@@ -6,7 +6,8 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 
 ## P1
 - [ ] Reels 2-3 days ahead per channel, kept topped up: a missed day costs reach, and a buffer lets the daily run spend its time on quality.
-      (3 Nov night: web 4 Nov, tech 4-5 Nov, Turns Out 4 Nov ready; a Great Wall reel for Turns Out was dropped: its myth's origin date differs between sources.)
+      (After the 3 Nov night: web to 6 Nov, tech to 5 Nov, Turns Out to 6 Nov ready. Standing item: the daily runs build for the first free day
+      (CLAUDE.md, "Buffer"), so the buffer holds; each spare night tops it up. A Great Wall reel was dropped: its myth's origin date differs between sources.)
 - [ ] Turns Out starter, next layouts: a map move and a globe station for starter25d.html (the opening, stations, fly-through, number roll and payoff are in it since 3 Nov).
 
 ## P2
@@ -38,4 +39,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - 3 Nov 2026: Growth step 3: the nightly audit numbers also print AUDIT_SIGNALS (30 days per channel: best posting hour, best format,
   the reels with the biggest follower gains); CLAUDE.md tells the daily run to plan from it.
 - 3 Nov 2026: Growth step 4: "What works" card in the Growth view (best time to post, best format, reels that brought followers; 30 days).
+- 3 Nov 2026 (spare night, second session): reels ahead: tech "Apple Pay card number" (4 Nov) and "Wi-Fi fake address" (5 Nov), web Nº 14
+  sticky header (5 Nov) and Nº 15 anchor under header (6 Nov), Turns Out "Was the Sahara always a desert?" (5 Nov) and "Tea or chai?" (6 Nov);
+  CLAUDE.md buffer rule (a run builds for the first day without a reel).
 - 3 Nov 2026: scripts/reel-status.mjs: one command after a render for its result, voice check, issue and contact sheet (was done by hand).
