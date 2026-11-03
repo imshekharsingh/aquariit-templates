@@ -6,7 +6,6 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 
 ## P1
 - [ ] Reels 2-3 days ahead per channel, kept topped up: a missed day costs reach, and a buffer lets the daily run spend its time on quality.
-- [ ] Turns Out goes daily from Mon 9 Nov if the Wed 4 Nov reel's session costs about $4 or less: 3 more posts a week on the channel with the widest audience.
 - [ ] Reusable Turns Out story layouts in kit25d.js (opening, map move, number roll, payoff): the cost cut that makes daily posting affordable.
 - [ ] Blank-frame and "text wider than its box" check in scripts/showreel preflight (roadmap 2): no render with a broken frame, no wasted minutes.
 - [ ] Growth step 2: per-reel rates in the Growth view (saves and shares per 1,000 reached, average watch as % of length) and the
@@ -17,7 +16,6 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
       and the daily run reads them, so the plan follows results instead of memory.
 - [ ] @techin20sec topic shortlist from primary sources each morning on GitHub (roadmap 4): 3 candidates with sources and a viewer-stake hook.
 - [ ] One daily routine per channel that writes the script, renders stills to a private review page and stops (roadmap 3).
-- [ ] Next week's topics planned every Tuesday night: the weekday sessions start building at once instead of choosing.
 
 ## P3
 - [ ] The audit numbers (medians, deltas, milestones) computed by a script on GitHub; Claude only writes the lesson: cheaper daily runs.
@@ -28,3 +26,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   push reminder and "Spare check" workflow; Growth step 1 (followers and reach-per-reel charts per channel, light and dark); "Needs you" list for the owner's answers; Posted rows open (video, then cover after 15 days).
 - 3 Nov 2026: spare-usage night is opt-out (owner: "my remaining usage goes to waste"): the Tuesday card says Claude uses it tonight with one
   "Skip tonight" button; the push says "Tap to skip"; each reminder send is logged and the card shows "Last reminder: <time>, sent to N phones".
+- 3 Nov 2026: Turns Out posts daily (cost test passed on 2 Nov); next week's topics planned per channel and day in design/topics.md
+  (every Tuesday night from now on); spare night built the Turns Out reel for Wed 4 Nov ahead ("Why are there 60 minutes in an hour?").
+  Next spare night: start with "Reusable Turns Out story layouts in kit25d.js" (the 60-minutes scene adds two reusable pieces: a
+  fly-through from one circle into the next era, and an exact deep zoom drawn in screen space past the kit's 5 cm limit).
