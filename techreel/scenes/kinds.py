@@ -4,7 +4,7 @@ cue(word) -> time the word is spoken, or the scene start if missing). Content st
 Add a kind by writing one function and listing it in KINDS."""
 import math
 
-from .base import W, NEON, TEXT, DIM, CONTENT_TOP, CONTENT_BOTTOM, prog, ease_out, ease_io, spring, mix, text_w
+from .base import W, NEON, TEXT, DIM, CONTENT_TOP, CONTENT_BOTTOM, prog, ease_out, ease_io, spring, mix, mixc, text_w
 from .icons import icon
 
 SURFACE = (18, 26, 48)
@@ -219,4 +219,84 @@ def checklist(fr, sc, t):
         fr.circle(W / 2, (CONTENT_TOP + CONTENT_BOTTOM) / 2, r, outline=_a(col, .5 * (1 - fin)), width=3, glow=col, glow_a=.6 * (1 - fin))
 
 
-KINDS = {f.__name__: f for f in (portal, flow, nest, choice, guard, checklist)}
+def _depth(u, v):
+    """Toy face depth for the dot scenes (0 far .. 1 near): a dome, a nose ridge, two eye hollows. u, v in -1..1 across the head."""
+    d = max(0.0, 1 - u * u - v * v)
+    z = math.sqrt(d) * .7
+    z += .45 * math.exp(-(u * u) / .012 - ((v - .05) ** 2) / .09)            # nose
+    z -= .3 * math.exp(-((abs(u) - .38) ** 2) / .02 - ((v + .18) ** 2) / .012)  # eye hollows
+    return clamp01(z)
+
+
+def clamp01(v):
+    return max(0.0, min(1.0, v))
+
+
+def dots(fr, sc, t):
+    """Structured light: a projector sprays a grid of infrared dots onto a face; each dot shifts sideways by the depth under it,
+    so the bent grid reads as the face's shape. params: mode ('spray' | 'map'), cue (word), pill (text under the face).
+    spray: dots fly out on the cue and bend as they land. map: the bent dots are there from the start; on the cue a mesh joins them
+    and they light up near-bright, far-dim (the depth map)."""
+    p = sc.params
+    col = NEON[sc.tint]
+    cue = sc.cue(p.get('cue'))
+    mode = p.get('mode', 'spray')
+    cx, cy, rx, ry = W / 2, 800, 235, 300
+    k = spring(t - sc.start + .05)
+    ka = min(1, k * 2)
+    # the projector: a small emitter at the top of the band
+    px, py = W / 2, CONTENT_TOP + 30
+    fr.rect(px - 70, py - 18, 140, 36, r=18, fill=_a(SURFACE, ka), outline=_a(col, .7 * ka), width=2)
+    fr.circle(px, py, 9, fill=_a(col, ka), glow=col, glow_a=.8 * ka)
+    # the face outline, quiet until the dots reveal it
+    reveal = ease_out(prog(t, cue, cue + 1.0)) if mode == 'spray' else 1.0
+    oa = ka * (.3 + .3 * reveal)
+    pts = [(cx + rx * math.cos(a / 40 * 2 * math.pi), cy + ry * math.sin(a / 40 * 2 * math.pi)) for a in range(41)]
+    fr.line(pts, _a(DIM, oa), 2)
+    n, m = 15, 19   # columns, rows
+    grid = []
+    for j in range(m):
+        row = []
+        for i in range(n):
+            u, v = (i / (n - 1)) * 2 - 1, (j / (m - 1)) * 2 - 1
+            inside = u * u + v * v < .96
+            z = _depth(u, v) if inside else 0.0
+            x0, y0 = cx + u * (rx + 40), cy + v * (ry + 30)
+            row.append((x0, y0, z, inside, i, j))
+        grid.append(row)
+    mesh = ease_io(prog(t, cue, cue + 1.1)) if mode == 'map' else 0.0
+    pos = {}
+    for row in grid:
+        for x0, y0, z, inside, i, j in row:
+            if mode == 'spray':
+                d0 = cue + .02 * (i + j) * .6 + ((i * 7 + j * 13) % 5) * .03
+                fly = ease_out(prog(t, d0, d0 + .45))
+                if fly <= 0:
+                    continue
+                bend = ease_io(prog(t, d0 + .35, d0 + .8))
+            else:
+                fly, bend = ka, 1.0
+            x = mix(px, x0 + 45 * z * bend, fly) if mode == 'spray' else x0 + 45 * z
+            y = mix(py, y0, fly) if mode == 'spray' else y0
+            pos[(i, j)] = (x, y, z, inside)
+            if inside:
+                c = mixc(col, TEXT, z * mesh) if mesh > 0 else col
+                a = (.55 + .45 * z * mesh) * (fly if mode == 'spray' else ka)
+                fr.circle(x, y, 5 + 4 * z * mesh, fill=_a(c, a), glow=col, glow_a=.5 * a)
+            else:
+                fr.circle(x, y, 3, fill=_a(col, .22 * (fly if mode == 'spray' else ka)))
+    if mesh > 0:
+        rows_on = mesh * m
+        for (i, j), (x, y, z, inside) in pos.items():
+            if not inside or j > rows_on:
+                continue
+            for di, dj in ((1, 0), (0, 1)):
+                q = pos.get((i + di, j + dj))
+                if q and q[3]:
+                    fr.line([(x, y), (q[0], q[1])], _a(mixc(col, TEXT, z), .35 + .4 * z), 2)
+    if p.get('pill'):
+        pa = appear(t, (cue + .6) if mode == "spray" else (cue + .5))
+        pill(fr, W / 2, 1150, p['pill'], col, pa, size=28, solid=True)
+
+
+KINDS = {f.__name__: f for f in (portal, flow, nest, choice, guard, checklist, dots)}
