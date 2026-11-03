@@ -1,21 +1,17 @@
 name: Actions usage
 
-# Once a day (about 02:10 IST) counts this month's GitHub Actions minutes the way GitHub bills them, for the meter in the Showreels app,
-# and removes the MP4 and review PNG of any reel marked uploaded more than 15 days ago (cover and post text stay). About a minute a day.
+# Once a day (about 02:10 IST) counts this month's GitHub Actions minutes the way GitHub bills them, for the meter in the Showreels app.
+# The result goes to the private R2 bucket (c/showreel-usage-actions.json). Old reel videos are no longer removed here: the R2 lifecycle
+# rule deletes them 15 days after upload (owner, 3 Nov 2026; the release clean-up is in attic/scripts/actions-usage-cleanup.mjs).
 # The allowance is the repo variable ACTIONS_MINUTES_ALLOWANCE (default 2000, GitHub Free; set 3000 for Pro).
 on:
   schedule:
     - cron: '40 20 * * *'
   workflow_dispatch:
-    inputs:
-      dry:
-        description: Count only; list what the clean-up would remove without removing it
-        type: boolean
-        default: false
 
 permissions:
   actions: read
-  contents: write
+  contents: read
 
 concurrency:
   group: actions-usage
@@ -35,14 +31,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Count and clean up
+          cache: npm
+      - run: npm ci
+      - name: Count
         env:
           ALLOWANCE: ${{ vars.ACTIONS_MINUTES_ALLOWANCE }}
-          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
-          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
-          DRY: ${{ inputs.dry }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          gh release download reels --repo "$REPO" -p showreel-usage-actions.json -O prev.json 2>/dev/null || true
-          flags="--cleanup"; [ "$DRY" = "true" ] && flags="$flags --dry"
-          node scripts/actions-usage.mjs $flags | tee -a "$GITHUB_STEP_SUMMARY"
-          gh release upload reels --repo "$REPO" --clobber showreel-usage-actions.json
+          bash scripts/r2.sh get c/showreel-usage-actions.json prev.json || rm -f prev.json
+          node scripts/actions-usage.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+          bash scripts/r2.sh put showreel-usage-actions.json c/showreel-usage-actions.json
