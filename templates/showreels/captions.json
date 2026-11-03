@@ -527,6 +527,11 @@
   "postOn": "2026-11-02",
   "concept": "Find My"
  },
+ "showreel-tech-faceid-dark": {
+  "channel": "tech",
+  "postOn": "2026-11-03",
+  "concept": "Face ID"
+ },
  "showreel-tech-walmart-agents": {
   "channel": "tech",
   "hidden": true,

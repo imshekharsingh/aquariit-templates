@@ -1,0 +1,128 @@
+{
+ "slug": "faceid-dark",
+ "topic": "Face ID",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.95,
+ "max_speed": 1.0,
+ "dur": 20,
+ "max_end": 19.4,
+ "say": {
+  "ID": "I D"
+ },
+ "hook": [
+  "How does",
+  "Face ID work",
+  "in the dark?"
+ ],
+ "lines": [
+  {
+   "text": "How does Face ID work in the dark?"
+  },
+  {
+   "text": "It brings its own light, invisible infrared.",
+   "scene": {
+    "label": "STEP 1: ITS OWN LIGHT",
+    "tint": "purple",
+    "kind": "nest",
+    "params": {
+     "outer": {"title": "Your iPhone", "sub": "camera at the top", "icon": "chip"},
+     "inner": {"title": "Infrared light", "sub": "invisible to your eyes", "icon": "eye"},
+     "inner_cue": "invisible"
+    }
+   }
+  },
+  {
+   "text": "It sprays thousands of dots onto your face.",
+   "scene": {
+    "label": "STEP 2: THOUSANDS OF DOTS",
+    "tint": "red",
+    "kind": "dots",
+    "params": {"mode": "spray", "cue": "sprays", "pill": "INFRARED DOTS"}
+   }
+  },
+  {
+   "text": "The way they bend becomes a depth map.",
+   "scene": {
+    "label": "STEP 3: A DEPTH MAP",
+    "tint": "cyan",
+    "kind": "dots",
+    "params": {"mode": "map", "cue": "bend", "pill": "NEAR = BRIGHT, FAR = DIM"}
+   }
+  },
+  {
+   "text": "A locked chip turns that map into math.",
+   "scene": {
+    "label": "STEP 4: FACE INTO MATH",
+    "tint": "amber",
+    "kind": "portal",
+    "params": {
+     "icon": "lock",
+     "pills": ["Secure Enclave", "Stays on device"],
+     "guest": "doc",
+     "guest_tint": "cyan",
+     "n": 1,
+     "open": "turns"
+    }
+   }
+  },
+  {
+   "text": "A flat photo has no depth, so it fails.",
+   "scene": {
+    "label": "STEP 5: PHOTOS FAIL",
+    "tint": "blue",
+    "kind": "guard",
+    "params": {
+     "object": {"icon": "user", "label": "Your face"},
+     "attacker": "doc",
+     "stop_cue": "fails",
+     "badge": "NO DEPTH, NO UNLOCK"
+    }
+   }
+  },
+  {
+   "text": "Total darkness is fine. Five misses, and it asks for your passcode.",
+   "scene": {
+    "label": "GOOD TO KNOW",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {"text": "Works in total darkness", "cue": "total"},
+      {"text": "5 misses: passcode", "cue": "five"}
+     ]
+    }
+   },
+   "chunks": [4, 8]
+  }
+ ],
+ "post": {
+  "title": "How does Face ID work in the dark?",
+  "caption": "How does Face ID work in the dark? 🌑\n\nIt doesn't need your room's light. The TrueDepth camera at the top of your iPhone projects thousands of invisible infrared dots onto your face and reads how they land to build a depth map, plus an infrared image of your face. A part of the chip that's walled off in the Secure Enclave turns that into math and compares it with the face you enrolled; it never leaves the phone. Because it reads depth, not just a picture, it's built to resist photos and masks, and Apple puts the chance of a random person unlocking your iPhone at less than 1 in 1,000,000. After five failed tries it asks for your passcode.\nSave this for the next time someone asks how it sees in the dark.",
+  "keywords": [
+   "how does face id work in the dark",
+   "face id explained",
+   "truedepth camera infrared dots",
+   "how face id works",
+   "iphone tips",
+   "phone security"
+  ],
+  "hashtags": [
+   "#faceid",
+   "#iphonetips",
+   "#techexplained",
+   "#infrared",
+   "#iphonesecurity"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/102381",
+    "note": "Apple, About Face ID advanced technology: the TrueDepth camera projects and analyzes thousands of invisible dots to make a depth map and captures an infrared image; the neural engine inside the Secure Enclave turns them into a mathematical representation and compares it with the enrolled data; works indoors, outdoors and in total darkness; less than 1 in 1,000,000 chance a random person unlocks it; five failed attempts, then the passcode"
+   },
+   {
+    "url": "https://support.apple.com/guide/security/face-id-and-touch-id-security-sec067eb0c9e/web",
+    "note": "Apple Platform Security, Face ID and Touch ID security: the TrueDepth camera projects and reads thousands of infrared dots to form a depth map with a 2D infrared image, signed and sent to the Secure Enclave; randomized sequences counter digital and physical spoofs"
+   }
+  ]
+ }
+}
