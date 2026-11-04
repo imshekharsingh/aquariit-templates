@@ -33,6 +33,7 @@ def plain(text):
 
 def words(text):
     text = plain(text)
+    text = re.sub(r'(^|\s)\.(\d+)', lambda m: ' point ' + ' '.join(ONES[int(d)] for d in m.group(2)) + ' ', text)   # the recogniser's own token ".195" (4 Nov: it split 42.195 in two)
     text = re.sub(r'(\d+)\.(\d+)', lambda m: ' ' + spell(m.group(1)) + ' point ' + ' '.join(ONES[int(d)] for d in m.group(2)) + ' ', text.lower())   # 42.195: forty two point one nine five
     text = re.sub(r'\d+', lambda m: ' ' + spell(m.group()) + ' ', text.lower())
     return [w for w in re.sub(r"[^a-z' ]", ' ', text.replace('-', ' ')).split() if w]
