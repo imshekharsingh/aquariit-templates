@@ -1,11 +1,11 @@
 {
  "name": "showreel-c3-marathon",
  "seek": "scripts/channel3/marathon.html",
- "dur": 33.6,
+ "dur": 34.3,
  "fps": 30,
  "grain": 4,
  "voice": {
-  "text": "Why is a marathon 42.195 kilometres? The first Olympic marathon, 1896: about 40 kilometres. Then the distance kept changing. Until London, 1908. It ran from Windsor Castle to the royal box in the stadium. That's 26 miles 385 yards: 42.195 kilometres. In 1921, it became the official distance. Turns out, every marathon runs London's 1908 course.",
+  "text": "Why is a marathon [42.195](/fˈɔɹɾi tˈu pˈYnt wˈʌn nˈIn fˈIv/) kilometres? The first Olympic marathon, 1896: about 40 kilometres. Then the distance kept changing. Until London, 1908. It ran from Windsor Castle to the royal box in the stadium. That's 26 miles 385 yards: [42.195](/fˈɔɹɾi tˈu pˈYnt wˈʌn nˈIn fˈIv/) kilometres. In 1921, it became the official distance. Turns out, every marathon runs London's 1908 course.",
   "at": [
    0,
    4.24,
@@ -13,8 +13,8 @@
    11.9,
    14.44,
    18.45,
-   23.79,
-   27.66
+   23.94,
+   28.36
   ],
   "voice": "af_heart",
   "speed": 0.95

@@ -28,8 +28,11 @@ for (const run of runs) {
   console.log(keep.length ? keep.join('\n') : 'No voice check lines found in the render job.');
   // the contact sheet is a run artifact kept 2 days (owner, 3 Nov 2026: reel media live only in the private R2 bucket, never in public releases)
   const art = JSON.parse(gh(`repos/${REPO}/actions/runs/${run.id}/artifacts`)).artifacts.find((x) => x.name === 'review' && !x.expired);
-  if (art) { mkdirSync(out, { recursive: true }); const zip = `${out}/${NAME}-review.zip`; writeFileSync(zip, gh(`repos/${REPO}/actions/artifacts/${art.id}/zip`, true));
-    execFileSync('unzip', ['-o', '-q', zip, '-d', out]); console.log(`CONTACT SHEET: ${out}/${NAME}-review.png (artifact of run ${run.id}, kept 2 days)`); }
+  if (art) { mkdirSync(out, { recursive: true }); const zip = `${out}/${NAME}-review.zip`;
+    // the zip comes from a blob storage host that some sessions cannot reach (4 Nov 2026: HTTP 415 with the octet-stream header, Forbidden
+    // without it): say so instead of crashing, so the voice check above still stands
+    try { writeFileSync(zip, gh(`repos/${REPO}/actions/artifacts/${art.id}/zip`)); execFileSync('unzip', ['-o', '-q', zip, '-d', out]); console.log(`CONTACT SHEET: ${out}/${NAME}-review.png (artifact of run ${run.id}, kept 2 days)`); }
+    catch (e) { console.log(`CONTACT SHEET: could not download artifact ${art.id} from this session (${String(e.stderr || e.message).split('\n')[0].slice(0, 120)}); open it from ${run.html_url}`); } }
   else console.log('CONTACT SHEET: no "review" artifact on this run (kept 2 days)');
   process.exit(0);
 }
