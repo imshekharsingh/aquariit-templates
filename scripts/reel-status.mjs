@@ -1,6 +1,6 @@
 // After a render (CLAUDE.md "Automate as we go", 3 Nov 2026: done by hand on the spare night): finds the latest "Showreel" run for a
 // reel, says whether it is running, failed (which job, and its last error lines) or done, prints the voice check (pacing table, unsure
-// words, what the recogniser heard) and the "Showreel ready" issue, and saves the contact sheet to look at. Uses `gh api` (REST), which
+// words, what the recogniser heard) and the "Showreel ready" issue, and saves the contact sheet (the run's "review" artifact) to look at. Uses `gh api` (REST), which
 // works from a session; one call per run, no polling (start it once, about 25 minutes after the dispatch).
 // Usage: node scripts/reel-status.mjs scripts/channel3/<slug>.json [out dir]   (exit 0 done, 1 failed, 2 still running or not found)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -26,9 +26,11 @@ for (const run of runs) {
   const R = jobs.find((j) => j.name === 'render'), L = R ? log(R).split('\n').map((l) => l.replace(/^\S+Z /, '')) : [];
   const keep = L.filter((l) => /^(Unsure words|Heard:|### Pacing|\| )/.test(l) || /issues\/\d+$/.test(l));
   console.log(keep.length ? keep.join('\n') : 'No voice check lines found in the render job.');
-  const rel = JSON.parse(gh(`repos/${REPO}/releases/tags/reels`)), a = rel.assets.find((x) => x.name === `${NAME}-review.png`);
-  if (a) { mkdirSync(out, { recursive: true }); writeFileSync(`${out}/${NAME}-review.png`, gh(`repos/${REPO}/releases/assets/${a.id}`, true)); console.log(`CONTACT SHEET: ${out}/${NAME}-review.png (${a.size} bytes, updated ${a.updated_at})`); }
-  else console.log('CONTACT SHEET: not in the "reels" release');
+  // the contact sheet is a run artifact kept 2 days (owner, 3 Nov 2026: reel media live only in the private R2 bucket, never in public releases)
+  const art = JSON.parse(gh(`repos/${REPO}/actions/runs/${run.id}/artifacts`)).artifacts.find((x) => x.name === 'review' && !x.expired);
+  if (art) { mkdirSync(out, { recursive: true }); const zip = `${out}/${NAME}-review.zip`; writeFileSync(zip, gh(`repos/${REPO}/actions/artifacts/${art.id}/zip`, true));
+    execFileSync('unzip', ['-o', '-q', zip, '-d', out]); console.log(`CONTACT SHEET: ${out}/${NAME}-review.png (artifact of run ${run.id}, kept 2 days)`); }
+  else console.log('CONTACT SHEET: no "review" artifact on this run (kept 2 days)');
   process.exit(0);
 }
 console.log(`No recent Showreel run found for ${NAME}.`); process.exit(2);

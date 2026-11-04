@@ -1,5 +1,5 @@
 name: Voice check
-# Re-check a reel already in the "reels" release, without re-rendering it: its narration transcribed and compared with the script,
+# Re-check a reel already in the private R2 bucket, without re-rendering it: its narration transcribed and compared with the script,
 # and each sentence timed for pace and pauses (scripts/showreel/voicecheck.py; the Showreel workflow runs the same check on every render).
 on:
   workflow_dispatch:
@@ -22,11 +22,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - name: Check
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           sudo apt-get install -y --no-install-recommends ffmpeg
           pip install faster-whisper==1.1.1 requests
           NAME=$(python3 -I -c "import json,sys; print(json.load(open(sys.argv[1]))['name'])" "$CFG")
-          gh release download reels --repo "$REPO" --pattern "$NAME.mp4" --dir out
+          mkdir -p out && bash scripts/r2.sh get "v/$NAME.mp4" "out/$NAME.mp4" || { echo "::error::v/$NAME.mp4 is not in R2 (deleted 15 days after upload?)"; exit 1; }
           ffmpeg -y -loglevel error -i "out/$NAME.mp4" -vn -ac 1 -ar 16000 out/voice.wav
           python3 scripts/showreel/voicecheck.py "$CFG" out/voice.wav "$GITHUB_STEP_SUMMARY"

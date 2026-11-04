@@ -13,8 +13,11 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   (inline SVG, no libraries); the app follows the phone's light or dark setting through its color tokens. Cards (audit, spare night) sit at the top. The 6-17 Oct templates, their Archive and Style Library were deleted (owner, 31 Oct 2026).
 - **Reels**: one seekable scene per reel, `scripts/explainer/<slug>.html` exposing `window.seek(t)` (every frame a pure function of t,
   seeded randomness only), plus `scripts/explainer/<slug>.json` (name `showreel-NN-<slug>`, dur, fps 60, cover time, caption, 6+ keywords, exactly 5 hashtags).
-- **Render**: always on GitHub (Actions, "Showreel" workflow, config = the json). The MP4, cover and contact sheet land in the "reels" release,
-  the Showreels page lists them, and a "Showreel ready" issue carries the post text. Never render whole videos in the session.
+- **Render**: always on GitHub (Actions, "Showreel" workflow, config = the json). The MP4, cover and contact sheet go to the PRIVATE Cloudflare R2
+  bucket "aquarii-reels" (owner, 3 Nov 2026: the repo is public, so nothing goes to the GitHub releases, which stay empty; scripts/r2.sh,
+  Worker binding REELS, only the signed-in app serves it). The Showreels page lists them; the public "Showreel ready" issue only names the reel
+  (no links, no post text: the app has it). The contact sheet is also the run's "review" artifact for 2 days (scripts/reel-status.mjs reads it).
+  Never render whole videos in the session.
 - **Review**: Claude reviews stills at every beat itself before the render (see Ownership below); the owner reviews the finished reel. Fix what the stills show first.
 - **Post text**: one block the owner copies whole, no labels: caption, a blank line, the first 6 keywords joined by " · ", a blank line, the 5 hashtags.
   Keywords and hashtags are chosen for reach (what people search for this kind of reel, most specific first, niche tags only).
@@ -30,8 +33,8 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   Topics for each channel and day are planned a week ahead in design/topics.md (spare-usage night, every Tuesday); runs take theirs from it.
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
 - Archiving (owner, 1 Nov 2026; replaces the 7-day fold / 30-day rule): a reel marked uploaded leaves the main list at once for its channel's compact
-  "Posted" list (cover, title, posted date, its numbers once the collector has them; no video). 15 days after upload the nightly "Actions usage"
-  workflow removes its MP4 and review/contact-sheet PNG from the releases; caption/post text, sources, cover, config json, scene code and numbers stay.
+  "Posted" list (cover, title, posted date, its numbers once the collector has them; no video). An R2 lifecycle rule deletes every file under v/ (MP4,
+  review/contact-sheet PNG) 15 days after it was uploaded to R2 (owner, 3 Nov 2026); caption/post text, sources, cover (c/), config json, scene code and numbers stay.
   Replaced code moves to attic/ in the change that replaces it. The app's GitHub minutes meter comes from the same workflow; set the repo variable ACTIONS_MINUTES_ALLOWANCE for Pro (3000).
 - `attic/` holds the retired tooling (films, recordings, kits, the daily-template routine). Nothing in it runs or deploys; don't build on it.
 
@@ -166,7 +169,7 @@ per reel, not separate frames; read the voice check and qa.txt as text; at most 
   "Daily studio run" 08:52 IST (audit + @webin20sec + @techin20sec), "Turns Out daily reel" 14:39 IST, "Spare usage night" Tue 22:44 IST.
   A scheduled task's prompt can only be edited from the session it posts into: to change one, delete it and create it again (list_triggers finds ids).
   Rules every run must follow go into this file, not into a task prompt.
-- From a session: GitHub REST works through `gh api` (runs, jobs, release assets); GraphQL (e.g. `gh release download`) is blocked; use the
+- From a session: GitHub REST works through `gh api` (runs, jobs, artifacts); GraphQL (e.g. `gh release download`) is blocked; use the
   GitHub MCP tools to dispatch workflows and read job logs. instagram.com and templates.aquariit.com are not reachable from sessions: check the
   site through a workflow that signs in with the BASIC_AUTH secrets.
 - Usage: a normal day is about $10-15 (daily run $5-8, Turns Out about $4). The weekly limit resets Wednesday 04:30 IST and the 5-hour limit is
