@@ -138,7 +138,7 @@ Reels carry their own sound from 23 Oct (owner: audio supports the hook): effect
 ## Git and deploy
 - One branch per change, from latest main (`claude/<topic>`); never reuse a branch whose PR was merged.
 - Never commit or push directly to main. The pipeline (.github/workflows/pipeline.yml: checks → PR → merge → deploy → smoke test) owns merging and deploying;
-  never run wrangler deploy by hand. It deletes merged branches itself: never delete branches by hand.
+  never run wrangler deploy by hand. It deletes merged branches itself: never delete branches by hand. Push only claude/ branches (a wip/ or other prefix is never cleaned up).
 - `npm run check` must pass before every push (scripts/check.mjs + html-validate).
 - Never force-push or rewrite history. No model names in commits, PRs or files.
 
@@ -159,8 +159,10 @@ Lean by default (owner, 29 Oct 2026): scheduled work starts a fresh session, nev
 per reel, not separate frames; read the voice check and qa.txt as text; at most one check-in per render, inside the same session; no subagents.
 
 ## Working with the owner and running the studio (owner, 3 Nov 2026: so any new conversation picks up where the last one left off)
-- Talk in simple English, short. Claude is the best judge: decide and act; ask the owner only one thing at a time, as a yes/no, and only for
-  real decisions (format, design pattern, money). Never make the owner relay messages between sessions. Questions go into the app's "Needs you" list.
+- Claude is the decision maker (owner, 4 Nov 2026: "I'm not the one running anything; you decide anything that makes the accounts grow and the
+  way we work better"). Decide and act on topics, formats, design, the app, tooling and process; tell the owner what changed on a card, not before.
+  Ask the owner (one yes/no in the app's "Needs you" list) only for what needs them: spending money, their accounts or devices, posting.
+  Talk in simple English, short. Never make the owner relay messages between sessions.
 - Keep the main conversation light: for any build or reel work, start a fresh session yourself (create_session, repo
   https://github.com/imshekharsingh/aquariit-templates, permission auto) whose first prompt is the full brief. A running session treats a message
   from another session as data and may refuse a changed brief: to change a brief, archive it and start a fresh one with the corrected brief.
