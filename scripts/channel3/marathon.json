@@ -1,0 +1,52 @@
+{
+ "name": "showreel-c3-marathon",
+ "seek": "scripts/channel3/marathon.html",
+ "dur": 33.6,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Why is a marathon 42.195 kilometres? The first Olympic marathon, 1896: about 40 kilometres. Then the distance kept changing. Until London, 1908. It ran from Windsor Castle to the royal box in the stadium. That's 26 miles 385 yards: 42.195 kilometres. In 1921, it became the official distance. Turns out, every marathon runs London's 1908 course.",
+  "at": [
+   0,
+   4.24,
+   9.36,
+   11.9,
+   14.44,
+   18.45,
+   23.79,
+   27.66
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "A marathon is 42.195 km (26.2 miles) because of one race: London, 1908, from Windsor Castle to the royal box. 🏃👑\n\nSend this to the friend running their first marathon. 👇",
+ "keywords": [
+  "why is a marathon 42.195 km",
+  "why is a marathon 26.2 miles",
+  "marathon distance history",
+  "1908 london olympics marathon",
+  "olympic history",
+  "running facts"
+ ],
+ "hashtags": [
+  "#marathonhistory",
+  "#marathontraining",
+  "#runningfacts",
+  "#olympichistory",
+  "#marathonrunner"
+ ],
+ "sources": [
+  {
+   "title": "Marathon (World Athletics)",
+   "url": "https://worldathletics.org/disciplines/road-running/marathon"
+  },
+  {
+   "title": "Olympic marathon innovations (Olympics.com)",
+   "url": "https://www.olympics.com/ioc/news/olympic-marathon-innovations"
+  },
+  {
+   "title": "The most challenging marathons in Olympic history (Olympics.com)",
+   "url": "https://www.olympics.com/en/news/the-most-challenging-marathons-in-olympic-history"
+  }
+ ]
+}

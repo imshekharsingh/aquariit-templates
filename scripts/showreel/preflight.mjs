@@ -8,7 +8,7 @@ if (!v.text) { console.log('PREFLIGHT voice: no voice in this config'); process.
 // a digit counts as 4 letters (31 Oct: "1889" is spoken "eighteen eighty nine"; letters alone made years free)
 const spoken = (x) => (x.match(/[A-Za-z]/g) || []).length + 4 * (x.match(/\d/g) || []).length;
 const text = v.text.replace(/\[([^\]]+)\]\(\/[^)]*\/\)/g, '$1'), letters = spoken(text), speed = +v.speed || 1;
-const parts = (text.match(/[^.?!]+[.?!]?/g) || []).map((x) => x.trim()).filter(Boolean), sentences = parts.length;
+const parts = (text.match(/(?:[^.?!]|\.(?=\d))+[.?!]?/g) || []).map((x) => x.trim()).filter(Boolean), sentences = parts.length;
 // voice.at (Channel 3, 31 Oct): every sentence starts at its own time; each must end 0.15 s before the next one starts
 if (Array.isArray(v.at)) {
   if (v.at.length !== sentences) { console.log(`PREFLIGHT voice: TOO LONG/SHORT: voice.at has ${v.at.length} times for ${sentences} sentences`); process.exit(1); }

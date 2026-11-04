@@ -185,6 +185,9 @@ it in (the same command inlines kit3d.js), npm run check fails on a stale copy. 
   config's voice text only, `[te](/tˈA/)` (misaki phonemes: A = the "ay" sound, I = "eye", O = "oh"); the scene keeps the plain word for
   the caption. qa.mjs compares the config with the markup read as its word, and `--write` keeps the markup. Read the voice check's
   "Heard" line for every foreign word after the render.
+  A decimal (42.195) no longer splits a sentence (4 Nov 2026, the marathon reel): preflight.mjs, voice.py and voicecheck.py treat a dot
+  before a digit as part of the sentence, and voicecheck hears "42.195" as "forty two point one nine five". Numbers are slow to say:
+  a number-heavy script reads under 2 words/s, so keep the other sentences short.
 
 ## Pattern library (2D, retired with the pilots on 31 Oct 2026; kept for the story ideas, rebuilt in 3D)
 Rotate patterns so the feed never shows the same look two days running. Each entry is a reusable recipe; a new pattern gets an entry here
