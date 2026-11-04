@@ -1,0 +1,170 @@
+{
+ "slug": "airplane-bluetooth",
+ "topic": "Airplane mode",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.95,
+ "max_speed": 1.0,
+ "dur": 20,
+ "max_end": 19.4,
+ "say": {
+  "Wi-Fi": "[WiFi](/wˈaɪfˌaɪ/)"
+ },
+ "hook": [
+  "Why do your",
+  "earbuds still play",
+  "in airplane mode?"
+ ],
+ "lines": [
+  {
+   "text": "Why do your earbuds still play in airplane mode?"
+  },
+  {
+   "text": "On iPhone, airplane mode turns off cellular and Wi-Fi.",
+   "scene": {
+    "label": "STEP 1: RADIOS OFF",
+    "tint": "red",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "Cellular",
+      "Wi-Fi"
+     ],
+     "source_tint": "purple",
+     "hub": {
+      "label": "AIRPLANE MODE",
+      "tag": "OFF",
+      "icon": "cross"
+     },
+     "target": {
+      "icon": "chip",
+      "label": "No signal out"
+     },
+     "target_tint": "red",
+     "hub_cue": "turns"
+    }
+   },
+   "chunks": [
+    5,
+    4
+   ]
+  },
+  {
+   "text": "But Bluetooth is the one radio it leaves on.",
+   "scene": {
+    "label": "STEP 2: ONE STAYS ON",
+    "tint": "blue",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Bluetooth: still on",
+      "cue": "Bluetooth"
+     },
+     "b": {
+      "title": "Switched off",
+      "icon": "cross",
+      "ticks": [
+       "Cellular",
+       "Wi-Fi"
+      ],
+      "meter": false,
+      "cue": "one"
+     }
+    }
+   }
+  },
+  {
+   "text": "So earbuds and watches stay connected.",
+   "scene": {
+    "label": "STEP 3: STILL PAIRED",
+    "tint": "purple",
+    "kind": "nest",
+    "params": {
+     "outer": {
+      "title": "Your iPhone",
+      "sub": "in airplane mode",
+      "icon": "chip"
+     },
+     "inner": {
+      "title": "Earbuds, watch",
+      "sub": "still on Bluetooth",
+      "icon": "check"
+     },
+     "inner_cue": "earbuds"
+    }
+   }
+  },
+  {
+   "text": "If the airline allows it, turn Wi-Fi back on.",
+   "scene": {
+    "label": "STEP 4: WI-FI IF ALLOWED",
+    "tint": "cyan",
+    "kind": "portal",
+    "params": {
+     "icon": "gate",
+     "pills": [
+      "Airline says yes",
+      "Tap Wi-Fi"
+     ],
+     "guest": "user",
+     "guest_tint": "green",
+     "n": 1,
+     "open": "turn"
+    }
+   },
+   "chunks": [
+    5,
+    4
+   ]
+  },
+  {
+   "text": "Turn Bluetooth off there once, and it stays off next time.",
+   "scene": {
+    "label": "SAVE THIS",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Bluetooth off in flight",
+       "cue": "off"
+      },
+      {
+       "text": "Remembered next time",
+       "cue": "next"
+      }
+     ]
+    }
+   },
+   "chunks": [
+    5,
+    6
+   ]
+  }
+ ],
+ "post": {
+  "title": "Why do your earbuds still play in airplane mode?",
+  "caption": "Why do your earbuds still play in airplane mode? ✈️\n\nOn iPhone, airplane mode turns off cellular and Wi-Fi, but it leaves Bluetooth on. That's why your earbuds and your watch stay connected on a flight. If the airline allows it, you can turn Wi-Fi back on yourself from Control Center while airplane mode stays on. And your iPhone remembers: turn Bluetooth off while you're in airplane mode, and it stays off the next time you switch airplane mode on.\nSend this to the friend who takes their earbuds out on every flight.",
+  "keywords": [
+   "why does bluetooth stay on in airplane mode",
+   "airplane mode bluetooth",
+   "airplane mode iphone",
+   "airpods on a plane",
+   "what does airplane mode turn off",
+   "iphone tips"
+  ],
+  "hashtags": [
+   "#airplanemode",
+   "#iphonetips",
+   "#techexplained",
+   "#traveltips",
+   "#bluetooth"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/108785",
+    "note": "Apple, Use Airplane Mode on your iPhone: Airplane Mode turns off all radios except Bluetooth; if the airline allows it you can still use Wi-Fi and Bluetooth in Airplane Mode; turn off Bluetooth in Airplane Mode and it is off the next time you turn Airplane Mode on"
+   }
+  ]
+ }
+}
