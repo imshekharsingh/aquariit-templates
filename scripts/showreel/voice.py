@@ -24,7 +24,7 @@ def main(cfg_path, wav_path, words_path):
     gaps = V.get('gap', 0)   # one number for every breath, or a list: one breath per sentence (owner, 26 Oct: pauses that follow the thought)
     gap = (max(gaps) if gaps else 0) if isinstance(gaps, list) else float(gaps)
     at = V.get('at')
-    parts = [x.strip() for x in re.findall(r'[^.?!]+[.?!]?', V['text']) if x.strip()] if gap or at else [V['text']]
+    parts = [x.strip() for x in re.findall(r'(?:[^.?!]|\.(?=\d))+[.?!]?', V['text']) if x.strip()] if gap or at else [V['text']]
     if at and len(at) != len(parts): sys.exit(f'voice.at has {len(at)} times for {len(parts)} sentences')
     for n, part in enumerate(parts):
         if at:   # placed at its own time: silence up to it (at least 0.12 s after the previous sentence)

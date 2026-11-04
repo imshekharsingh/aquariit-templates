@@ -33,6 +33,7 @@ def plain(text):
 
 def words(text):
     text = plain(text)
+    text = re.sub(r'(\d+)\.(\d+)', lambda m: ' ' + spell(m.group(1)) + ' point ' + ' '.join(ONES[int(d)] for d in m.group(2)) + ' ', text.lower())   # 42.195: forty two point one nine five
     text = re.sub(r'\d+', lambda m: ' ' + spell(m.group()) + ' ', text.lower())
     return [w for w in re.sub(r"[^a-z' ]", ' ', text.replace('-', ' ')).split() if w]
 
@@ -67,7 +68,7 @@ def main(cfg_path, wav_path, report=None):
     for blk in difflib.SequenceMatcher(a=want, b=got, autojunk=False).get_matching_blocks():
         for k in range(blk.size): m[blk.a + k] = blk.b + k
     sents, i = [], 0
-    for sent in re.findall(r'[^.?!]+[.?!]?', script):
+    for sent in re.findall(r'(?:[^.?!]|\.(?=\d))+[.?!]?', script):
         n = len(words(sent))
         if n: sents.append((sent.strip(), i, i + n)); i += n
     prow, flags, times = [], 0, []
