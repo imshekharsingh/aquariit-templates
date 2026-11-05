@@ -336,9 +336,10 @@
     if (!PERF[k]) PERF[k] = fetch('/api/perf?days=365&account=' + encodeURIComponent(p.username.replace(/^@/, '')), { credentials: 'same-origin', cache: 'no-store' })
       .then(function(r){ if (!r.ok) throw 0; return r.json(); }).catch(function(){ PERF[k] = null; return null; });
     return PERF[k]; }
-  // which Instagram post is which reel: the post made closest to the moment the reel was marked uploaded (within 2 days), each post used once
+  // which Instagram post is which reel: the collector's match (ig_media.template_id), else the post made closest to the moment the reel was marked uploaded (within 2 days), each post used once
   function matchPosts(done, media){ var used = {}, out = {};
-    done.forEach(function(s){ var t = Date.parse(ticks[s.name]), best = null, gap = 2 * DAY;
+    (media || []).slice().reverse().forEach(function(m){ if (m.template_id && !out[m.template_id]) { used[m.ig_id] = 1; out[m.template_id] = m; } });   // the collector's caption match first (owner, 5 Nov 2026)
+    done.forEach(function(s){ if (out[s.name]) return; var t = Date.parse(ticks[s.name]), best = null, gap = 2 * DAY;
       (media || []).forEach(function(m){ var g = Math.abs(Date.parse(m.posted_at) - t); if (!used[m.ig_id] && g < gap) { gap = g; best = m; } });
       if (best) { used[best.ig_id] = 1; out[s.name] = best; } });
     return out; }

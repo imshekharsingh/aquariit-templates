@@ -10,11 +10,9 @@
 //   --dry         read from Instagram and print the result, but do not write to the site
 //   --no-refresh  never refresh the token this run;  --refresh  refresh it now (normally: when no stored token exists or it is over 6 days old)
 // Exit code 1 on any problem the owner must know about (bad token, missing permission, site refused); the message says what to do.
-import { readFileSync, existsSync, appendFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { appendFileSync } from 'node:fs';
+import { matchPosts, SLOT_CHANNEL } from './reel-match.mjs';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2), has = (f) => args.includes(f), opt = (n, d) => { const i = args.indexOf(n); return i > -1 ? args[i + 1] : d; };
 const ENV_TOKEN = process.env.INSTAGRAM_TOKEN || '', IG = (process.env.IG_API_BASE || 'https://graph.instagram.com').replace(/\/$/, ''), SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, '');
 const DRY = has('--dry'), LIMIT = Math.max(1, Math.min(100, +opt('--limit', 50))), SLOT = Math.max(1, Math.min(9, +opt('--slot', 1) || 1)), SECRET = SLOT === 1 ? 'INSTAGRAM_TOKEN' : 'INSTAGRAM_TOKEN_' + SLOT;
@@ -96,23 +94,25 @@ async function insightsFor(m) {
   return got;
 }
 
-// 4. match each post to its template by the brand name every caption carries (kits are built by scripts/build-kits.mjs)
-let kits = []; try { kits = JSON.parse(readFileSync(join(root, 'templates', 'social-kits.json'), 'utf8')); } catch { /* matching is optional */ }
-const brands = kits.filter((k) => k.name && k.name.length >= 3).map((k) => ({ id: k.id, name: k.name.toLowerCase() })).sort((a, b) => b.name.length - a.name.length);
-const templateFor = (caption) => { const c = (caption || '').toLowerCase(); const hit = brands.find((b) => new RegExp('(^|[^a-z0-9])' + b.name.replace(/[^a-z0-9 ]/g, '') + '([^a-z0-9]|$)').test(c.replace(/[^a-z0-9 ]/g, ' '))); return hit ? hit.id : null; };
+// 4. match each post to its reel (owner, 5 Nov 2026): the old brand-name match pointed at the deleted templates, so every post was "unmatched".
+// scripts/reel-match.mjs matches by the first caption line against captions.json and the reel configs, else by channel + IST day = postOn.
+const CHANNEL = SLOT_CHANNEL[SLOT] || 'web';
+const { byPost, how } = matchPosts(items.map((m) => ({ ig_id: m.id, caption: m.caption, posted_at: m.timestamp })), CHANNEL);
+const templateFor = (m) => byPost[m.id] || null;
 
 const media = [];
 for (const m of items) {
   const x = await insightsFor(m);
   media.push({
-    ig_id: m.id, template_id: templateFor(m.caption), permalink: m.permalink || null, posted_at: m.timestamp || null, caption: m.caption || null, kind: m.media_product_type || m.media_type || null,
+    ig_id: m.id, template_id: templateFor(m), permalink: m.permalink || null, posted_at: m.timestamp || null, caption: m.caption || null, kind: m.media_product_type || m.media_type || null,
     metrics: { views: x.views ?? null, reach: x.reach ?? null, likes: x.likes ?? m.like_count ?? null, comments: x.comments ?? m.comments_count ?? null, saves: x.saved ?? null, shares: x.shares ?? null,
       watch_avg_ms: x.ig_reels_avg_watch_time ?? null, watch_total_ms: x.ig_reels_video_view_total_time ?? null },
   });
 }
 for (const k of Object.keys(supported)) say(`Insight metrics (${k}): ${supported[k].join(', ') || 'none'}${unsupported[k] && unsupported[k].length ? ` | not available: ${unsupported[k].map((n) => `${n} [${firstError[n]}]`).join('; ')}` : ''}`);
 const matched = media.filter((m) => m.template_id).length;
-say(`Matched to a template: ${matched} of ${media.length}`);
+const byHow = (k) => Object.values(how).filter((h) => h === k).length;
+say(`Matched to a reel (${CHANNEL}): ${matched} matched (${byHow('caption')} by caption, ${byHow('day')} by day), ${media.length - matched} unmatched, of ${media.length}`);
 // a compact per-reel table (numbers only, no secrets): this is what the advisor reads to give advice from real results
 {
   const n = (v) => (v == null ? '-' : String(v)), pc = (a, b) => (b > 0 && a != null ? (100 * a / b).toFixed(1) + '%' : '-');
@@ -174,5 +174,14 @@ const post = await fetch(SITE + '/api/perf/ingest', { method: 'POST', headers: {
 if (post.status === 501) await die('The site has no D1 database bound, so results cannot be stored. Give the Cloudflare token Account → D1 → Edit and redeploy.');
 if (!post.ok) await die(`The site refused the data (HTTP ${post.status}).`);
 say(`Saved to the site for ${day}: ${media.length} posts + the account snapshot.`);
+// 7. auto-mark (owner, 5 Nov 2026): every matched reel is marked uploaded at its post's real Instagram time, overwriting a hand-tapped time
+{
+  const ids = {};
+  for (const m of media) if (m.template_id && m.posted_at) { const at = new Date(m.posted_at).toISOString(); if (!ids[m.template_id] || at < ids[m.template_id]) ids[m.template_id] = at; }
+  if (Object.keys(ids).length) {
+    const r = await fetch(SITE + '/api/uploaded/import', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel', Cookie: cookie }, body: JSON.stringify({ ids, force: true }) });
+    say(r.ok ? `Marked posted from Instagram: ${Object.keys(ids).length} reels (at their Instagram time)` : `⚠ Marking reels posted failed (HTTP ${r.status})`);
+  }
+}
 await fetch(SITE + '/api/perf/alert?slot=' + SLOT, { method: 'DELETE', headers: { 'X-Requested-With': 'reel', Cookie: cookie } }).catch(() => {}); // a good run clears this account's banner
 summary('### Instagram collector\n\n```\n' + out.join('\n') + '\n```');

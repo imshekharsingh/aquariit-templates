@@ -16,6 +16,10 @@ on:
         description: Also refresh the token now (it is refreshed weekly automatically)
         type: boolean
         default: false
+      state_only:
+        description: Only print the posting state (scripts/post-state.mjs), no Instagram read
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -40,6 +44,7 @@ jobs:
         with:
           node-version: 22
       - name: Collect
+        if: inputs.state_only != true
         env:
           INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
           INSTAGRAM_TOKEN_2: ${{ secrets.INSTAGRAM_TOKEN_2 }}
@@ -65,12 +70,21 @@ jobs:
           fi
           exit $ok
       - name: Audit numbers (the daily run reads AUDIT_CHANNELS from this step's log; scripts/audit-numbers.mjs)
-        if: success() && inputs.dry != true
+        if: success() && inputs.dry != true && inputs.state_only != true
         continue-on-error: true
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
         run: node scripts/audit-numbers.mjs
+      - name: Posting state (per channel, due -7..+2 days; PROBLEM lines; scripts/post-state.mjs)
+        if: success() && inputs.dry != true
+        continue-on-error: true
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+          STATE_ONLY: ${{ inputs.state_only }}
+        run: |
+          if [ "$STATE_ONLY" = "true" ]; then node scripts/post-state.mjs; else node scripts/post-state.mjs --fresh; fi
       - name: Tell the owner when it fails (one open issue at a time)
         if: failure()
         run: |
