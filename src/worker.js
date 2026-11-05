@@ -138,6 +138,10 @@ async function perfDb(env) {
     env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_tokens (slot INTEGER PRIMARY KEY CHECK (slot BETWEEN 2 AND 9), token TEXT NOT NULL, saved_at TEXT NOT NULL)'),
     // collector failures shown as a banner in the app (owner, 31 Oct 2026: GitHub issues go unseen); one row per account slot, cleared on the next good run
     env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_alerts (slot INTEGER PRIMARY KEY CHECK (slot BETWEEN 1 AND 9), secret TEXT NOT NULL, message TEXT NOT NULL, at TEXT NOT NULL)'),
+    // audience and early signals (owner, 5 Nov 2026): one row per reel per collect run (nightly + 12:30 IST), audience breakdowns and daily account insights
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_media_runs (ig_id TEXT NOT NULL, at TEXT NOT NULL, views INTEGER, reach INTEGER, saves INTEGER, shares INTEGER, watch_avg_ms INTEGER, follows INTEGER, profile_visits INTEGER, profile_activity INTEGER, extra TEXT, PRIMARY KEY (ig_id, at))'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_audience (day TEXT NOT NULL, username TEXT NOT NULL, metric TEXT NOT NULL, breakdown TEXT NOT NULL, k TEXT NOT NULL, value INTEGER, PRIMARY KEY (day, username, metric, breakdown, k))'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS ig_insights_day (day TEXT NOT NULL, username TEXT NOT NULL, metric TEXT NOT NULL, value INTEGER, PRIMARY KEY (day, username, metric))'),
   ]).then(() => env.DB.prepare('ALTER TABLE ig_media ADD COLUMN username TEXT').run().catch(() => {}))   // already there after the first run
     .catch((e) => { perfReady = null; throw e; });
   await perfReady;
@@ -198,7 +202,17 @@ async function perfApi(request, env, p, url) {
       WHERE ${who ? 'm.username = ?1' : '(m.username IS NULL OR m.username = (SELECT username FROM ig_account ORDER BY day DESC LIMIT 1))'}
       ORDER BY m.posted_at DESC LIMIT 200`).bind(...(who ? [who] : [])).all();
     const last = await db.prepare('SELECT MAX(day) AS d FROM ig_metrics').first();
-    return jres({ account: (acc.results || []).reverse(), accounts: (names.results || []).map((r) => r.username), media: media.results || [], updated: (last && last.d) || null });
+    const outp = { account: (acc.results || []).reverse(), accounts: (names.results || []).map((r) => r.username), media: media.results || [], updated: (last && last.d) || null };
+    if (who && url.searchParams.get('extra') === '1') { // for scripts/audit-numbers.mjs: per-run readings (and the older daily rows), latest audience, daily insights
+      const since = new Date(Date.now() - days * 864e5).toISOString();
+      const runs = await db.prepare('SELECT r.ig_id, r.at, r.reach, r.views, r.follows, r.profile_visits FROM ig_media_runs r JOIN ig_media m ON m.ig_id = r.ig_id WHERE m.username = ?1 AND r.at >= ?2 ORDER BY r.at').bind(who, since).all();
+      const daily = await db.prepare('SELECT x.ig_id, x.day, x.reach FROM ig_metrics x JOIN ig_media m ON m.ig_id = x.ig_id WHERE m.username = ?1 AND x.day >= ?2 ORDER BY x.day').bind(who, since.slice(0, 10)).all();
+      const aday = await db.prepare('SELECT MAX(day) AS d FROM ig_audience WHERE username = ?1').bind(who).first();
+      const aud = aday && aday.d ? await db.prepare('SELECT metric, breakdown, k, value FROM ig_audience WHERE username = ?1 AND day = ?2').bind(who, aday.d).all() : { results: [] };
+      const ins = await db.prepare('SELECT day, metric, value FROM ig_insights_day WHERE username = ?1 AND day >= ?2 ORDER BY day').bind(who, since.slice(0, 10)).all();
+      Object.assign(outp, { runs: runs.results || [], daily: daily.results || [], audience: { day: (aday && aday.d) || null, rows: aud.results || [] }, insights: ins.results || [] });
+    }
+    return jres(outp);
   }
   if (request.method === 'POST' && p === '/api/perf/ingest') {
     if (request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403); // simple cross-site requests cannot set this header
@@ -209,9 +223,11 @@ async function perfApi(request, env, p, url) {
     const st = [];
     const a = b.account;
     const slot = Math.max(1, Math.min(9, Math.round(+b.slot) || 1)), uname = a && typeof a === 'object' ? nStr(a.username, 60) : null;
-    if (a && typeof a === 'object' && slot === 1) st.push(db.prepare('INSERT INTO ig_account (day, username, followers, follows, media_count) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT(day) DO UPDATE SET username = COALESCE(excluded.username, username), followers = COALESCE(excluded.followers, followers), follows = COALESCE(excluded.follows, follows), media_count = COALESCE(excluded.media_count, media_count)')
+    const snap = b.snapshot !== false; // the 12:30 IST run keeps the nightly follower snapshot of the day
+    const at = typeof b.at === 'string' && /^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/.test(b.at) ? b.at : new Date().toISOString();
+    if (a && typeof a === 'object' && slot === 1 && snap) st.push(db.prepare('INSERT INTO ig_account (day, username, followers, follows, media_count) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT(day) DO UPDATE SET username = COALESCE(excluded.username, username), followers = COALESCE(excluded.followers, followers), follows = COALESCE(excluded.follows, follows), media_count = COALESCE(excluded.media_count, media_count)')
       .bind(day, nStr(a.username, 60), nInt(a.followers), nInt(a.follows), nInt(a.media_count)));
-    if (uname) st.push(db.prepare('INSERT INTO ig_accounts (day, username, followers, follows, media_count) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT(day, username) DO UPDATE SET followers = excluded.followers, follows = excluded.follows, media_count = excluded.media_count')
+    if (uname && snap) st.push(db.prepare('INSERT INTO ig_accounts (day, username, followers, follows, media_count) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT(day, username) DO UPDATE SET followers = excluded.followers, follows = excluded.follows, media_count = excluded.media_count')
       .bind(day, uname, nInt(a.followers), nInt(a.follows), nInt(a.media_count)));
     const list = Array.isArray(b.media) ? b.media.slice(0, 200) : [];
     for (const m of list) {
@@ -223,6 +239,16 @@ async function perfApi(request, env, p, url) {
       const x = m.metrics;
       if (x && typeof x === 'object') st.push(db.prepare('INSERT INTO ig_metrics (ig_id, day, views, reach, likes, comments, saves, shares, watch_avg_ms, watch_total_ms) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) ON CONFLICT(ig_id, day) DO UPDATE SET views = excluded.views, reach = excluded.reach, likes = excluded.likes, comments = excluded.comments, saves = excluded.saves, shares = excluded.shares, watch_avg_ms = excluded.watch_avg_ms, watch_total_ms = excluded.watch_total_ms')
         .bind(m.ig_id, day, nInt(x.views), nInt(x.reach), nInt(x.likes), nInt(x.comments), nInt(x.saves), nInt(x.shares), nInt(x.watch_avg_ms), nInt(x.watch_total_ms)));
+      if (x && typeof x === 'object' && x.reach != null) { let ex = null; try { ex = x.extra && typeof x.extra === 'object' && Object.keys(x.extra).length ? JSON.stringify(x.extra).slice(0, 600) : null; } catch { /* none */ }
+        st.push(db.prepare('INSERT OR REPLACE INTO ig_media_runs (ig_id, at, views, reach, saves, shares, watch_avg_ms, follows, profile_visits, profile_activity, extra) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)')
+          .bind(m.ig_id, at, nInt(x.views), nInt(x.reach), nInt(x.saves), nInt(x.shares), nInt(x.watch_avg_ms), nInt(x.follows), nInt(x.profile_visits), nInt(x.profile_activity), ex)); }
+    }
+    if (uname) {
+      const okS = (v) => typeof v === 'string' && /^[a-z_]{3,40}$/.test(v);
+      for (const r of (Array.isArray(b.audience) ? b.audience.slice(0, 400) : [])) if (r && okS(r.metric) && okS(r.breakdown) && typeof r.k === 'string' && r.k)
+        st.push(db.prepare('INSERT OR REPLACE INTO ig_audience (day, username, metric, breakdown, k, value) VALUES (?1, ?2, ?3, ?4, ?5, ?6)').bind(day, uname, r.metric, r.breakdown, r.k.slice(0, 80), nInt(r.value)));
+      for (const r of (Array.isArray(b.insights) ? b.insights.slice(0, 200) : [])) if (r && okS(r.metric) && typeof r.day === 'string' && DAY_RE.test(r.day))
+        st.push(db.prepare('INSERT OR REPLACE INTO ig_insights_day (day, username, metric, value) VALUES (?1, ?2, ?3, ?4)').bind(r.day, uname, r.metric, nInt(r.value)));
     }
     for (let i = 0; i < st.length; i += 90) await db.batch(st.slice(i, i + 90));
     return jres({ ok: true, day, statements: st.length });

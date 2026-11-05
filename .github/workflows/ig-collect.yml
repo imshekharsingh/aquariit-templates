@@ -6,6 +6,8 @@ name: Instagram collect
 on:
   schedule:
     - cron: '14 20 * * *'
+    # 12:30 IST (owner, 5 Nov 2026): same-morning numbers for the 13:39 Turns Out build and the 19:00 reel; keeps the nightly follower snapshot
+    - cron: '0 7 * * *'
   workflow_dispatch:
     inputs:
       dry:
@@ -53,8 +55,10 @@ jobs:
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
           DRY: ${{ inputs.dry }}
           REFRESH: ${{ inputs.refresh }}
+          MIDDAY: ${{ github.event.schedule == '0 7 * * *' }}
         run: |
           flags=""
+          [ "$MIDDAY" = "true" ] && flags="$flags --midday"
           [ "$DRY" = "true" ] && flags="$flags --dry"
           [ "$REFRESH" = "true" ] && flags="$flags --refresh"
           set -o pipefail   # a failed collect must fail the run, or the owner is never told (the log goes through tee)

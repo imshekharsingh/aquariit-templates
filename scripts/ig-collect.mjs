@@ -5,7 +5,8 @@
 //         BASIC_AUTH_USER / BASIC_AUTH_PASS      the site sign-in (GitHub secrets, same ones the pipeline uses)
 //         SITE_BASE (default https://templates.aquariit.com), IG_API_BASE (default https://graph.instagram.com)   -- overridable for tests
 //   The token is kept alive by itself: a refreshed token is stored on the site (primary account only) and preferred from then on; the GitHub secret is the fallback.
-// Usage: node scripts/ig-collect.mjs [--dry] [--no-refresh] [--refresh] [--limit 50] [--slot N]
+// Usage: node scripts/ig-collect.mjs [--dry] [--no-refresh] [--refresh] [--limit 50] [--slot N] [--midday]
+//   --midday      the 12:30 IST run (owner, 5 Nov 2026): fresh reel numbers for the day's builds; it keeps the nightly follower snapshot of the day
 //   --slot N      which account (1 = the main one, the default; 2 = the second account, its token in INSTAGRAM_TOKEN_2). Each slot keeps its own refreshed token on the site.
 //   --dry         read from Instagram and print the result, but do not write to the site
 //   --no-refresh  never refresh the token this run;  --refresh  refresh it now (normally: when no stored token exists or it is over 6 days old)
@@ -15,7 +16,7 @@ import { matchPosts, SLOT_CHANNEL } from './reel-match.mjs';
 
 const args = process.argv.slice(2), has = (f) => args.includes(f), opt = (n, d) => { const i = args.indexOf(n); return i > -1 ? args[i + 1] : d; };
 const ENV_TOKEN = process.env.INSTAGRAM_TOKEN || '', IG = (process.env.IG_API_BASE || 'https://graph.instagram.com').replace(/\/$/, ''), SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, '');
-const DRY = has('--dry'), LIMIT = Math.max(1, Math.min(100, +opt('--limit', 50))), SLOT = Math.max(1, Math.min(9, +opt('--slot', 1) || 1)), SECRET = SLOT === 1 ? 'INSTAGRAM_TOKEN' : 'INSTAGRAM_TOKEN_' + SLOT;
+const MIDDAY = has('--midday'), DRY = has('--dry'), LIMIT = Math.max(1, Math.min(100, +opt('--limit', 50))), SLOT = Math.max(1, Math.min(9, +opt('--slot', 1) || 1)), SECRET = SLOT === 1 ? 'INSTAGRAM_TOKEN' : 'INSTAGRAM_TOKEN_' + SLOT;
 const out = [], say = (m) => { out.push(m); console.log(m); };
 const summary = (md) => { if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, md + '\n'); };
 // a failure is also posted to the site, where the app shows it as a red banner until the next good run (owner, 31 Oct 2026: GitHub issues go unseen)
@@ -75,13 +76,22 @@ const items = (list.json.data || []).filter((m) => m && m.id);
 say(`Posts read: ${items.length}`);
 
 // 3. per-post insights. Metric names differ by media type and API version, so the first post is probed metric by metric and the supported set is reused.
-// follows / profile_visits per reel were tried on 27 Oct 2026: Instagram does not offer them for reels (code 100), so followers are read per day (account line below)
-const CANDIDATES = { REELS: ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions', 'ig_reels_avg_watch_time', 'ig_reels_video_view_total_time'], OTHER: ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions'] };
-const supported = {}, unsupported = {}, firstError = {};
+// follows / profile_visits / profile_activity per reel were refused on 27 Oct 2026 (code 100); they stay in the probe (owner, 5 Nov 2026), so the day
+// Instagram offers them they are read. The probe also asks the API for its own list of valid metrics (an unknown name makes the error list them)
+// and tries every listed name we do not read yet; those land in "extra".
+const KNOWN = ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions', 'ig_reels_avg_watch_time', 'ig_reels_video_view_total_time', 'follows', 'profile_visits', 'profile_activity'];
+const CANDIDATES = { REELS: KNOWN.slice(), OTHER: ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions'] };
+const supported = {}, unsupported = {}, firstError = {}, listed = {};
 async function insightsFor(m) {
-  const kind = m.media_product_type === 'REELS' ? 'REELS' : 'OTHER', want = CANDIDATES[kind], got = {};
+  const kind = m.media_product_type === 'REELS' ? 'REELS' : 'OTHER', got = {};
   const parse = (j) => { for (const row of j.data || []) { const v = row.values ? row.values[0] && row.values[0].value : row.total_value && row.total_value.value; if (typeof v === 'number') got[row.name] = v; } };
   if (!supported[kind]) { // probe once
+    if (kind === 'REELS') { // what this API version lists for a reel
+      const l = await ig(`/${m.id}/insights`, { metric: 'zz_list_probe' }), t = l.ok ? '' : String(l.error.message || '');
+      const names = (t.split(/following values?:/i)[1] || '').split(',').map((x) => x.trim().replace(/[^a-z_]/g, '')).filter(Boolean);
+      listed[kind] = names; for (const n of names) if (!CANDIDATES.REELS.includes(n)) CANDIDATES.REELS.push(n);
+    }
+    const want = CANDIDATES[kind];
     const all = await ig(`/${m.id}/insights`, { metric: want.join(',') });
     if (all.ok) { supported[kind] = want.slice(); parse(all.json); return got; }
     supported[kind] = []; unsupported[kind] = [];
@@ -89,6 +99,7 @@ async function insightsFor(m) {
     return got;
   }
   if (!supported[kind].length) return got;
+  const want = CANDIDATES[kind];
   const r = await ig(`/${m.id}/insights`, { metric: supported[kind].join(',') });
   if (r.ok) parse(r.json); else for (const metric of supported[kind]) { const one = await ig(`/${m.id}/insights`, { metric }); if (one.ok) parse(one.json); } // a single post can lack some metrics
   return got;
@@ -106,9 +117,12 @@ for (const m of items) {
   media.push({
     ig_id: m.id, template_id: templateFor(m), permalink: m.permalink || null, posted_at: m.timestamp || null, caption: m.caption || null, kind: m.media_product_type || m.media_type || null,
     metrics: { views: x.views ?? null, reach: x.reach ?? null, likes: x.likes ?? m.like_count ?? null, comments: x.comments ?? m.comments_count ?? null, saves: x.saved ?? null, shares: x.shares ?? null,
-      watch_avg_ms: x.ig_reels_avg_watch_time ?? null, watch_total_ms: x.ig_reels_video_view_total_time ?? null },
+      watch_avg_ms: x.ig_reels_avg_watch_time ?? null, watch_total_ms: x.ig_reels_video_view_total_time ?? null,
+      follows: x.follows ?? null, profile_visits: x.profile_visits ?? null, profile_activity: x.profile_activity ?? null,
+      extra: Object.fromEntries(Object.entries(x).filter(([k]) => !KNOWN.includes(k))) },
   });
 }
+if (listed.REELS) say(`Reel metrics the API lists: ${listed.REELS.join(', ') || '(no list in the error text)'}; not read before 5 Nov: ${listed.REELS.filter((n) => !KNOWN.includes(n)).join(', ') || 'none'}`);
 for (const k of Object.keys(supported)) say(`Insight metrics (${k}): ${supported[k].join(', ') || 'none'}${unsupported[k] && unsupported[k].length ? ` | not available: ${unsupported[k].map((n) => `${n} [${firstError[n]}]`).join('; ')}` : ''}`);
 const matched = media.filter((m) => m.template_id).length;
 const byHow = (k) => Object.values(how).filter((h) => h === k).length;
@@ -145,6 +159,56 @@ say(`Matched to a reel (${CHANNEL}): ${matched} matched (${byHow('caption')} by 
   }
   say('Account, last day: ' + rows.join(' | '));
 }
+// 4b. audience and account probe (owner, 5 Nov 2026: global audience, followers arrive at night): each metric is asked on its own and printed as
+// PROBE ... SUPPORTED / NOT AVAILABLE [the API's error]; what works is stored (ig_audience, ig_insights_day). Demographics need 100+ followers.
+// online_followers: the hour keys are in the zone whose midnight is the value's end_time (Pacific time in Meta's insights), so the offset is read from end_time.
+const audience = [], insights = [], probe = [];
+{
+  const P = (name, ok, note) => { probe.push(`${name}: ${ok ? 'SUPPORTED' : 'NOT AVAILABLE'}${note ? ' [' + note + ']' : ''}`); };
+  const TF = ['this_month', 'this_week', 'last_30_days', 'last_90_days'];
+  for (const metric of ['follower_demographics', 'engaged_audience_demographics', 'reached_audience_demographics']) {
+    let tf = null, lastErr = '';
+    for (const breakdown of ['country', 'city', 'age', 'gender']) {
+      let r = null;
+      for (const t of tf ? [tf] : TF) { r = await ig('/me/insights', { metric, period: 'lifetime', metric_type: 'total_value', timeframe: t, breakdown }); if (r.ok) { tf = t; break; } lastErr = errText(r.error).slice(0, 160); if (!/timeframe/i.test(lastErr)) break; }
+      if (!r || !r.ok) { P(`${metric} (${breakdown})`, false, lastErr); continue; }
+      const res = (((((r.json.data || [])[0] || {}).total_value || {}).breakdowns || [])[0] || {}).results || [];
+      res.forEach((x) => { const k = (x.dimension_values || []).join('/'); if (k && typeof x.value === 'number') audience.push({ metric, breakdown, k: k.slice(0, 80), value: x.value }); });
+      P(`${metric} (${breakdown}, ${tf})`, true, res.length ? `${res.length} rows` : 'empty');
+    }
+  }
+  { const r = await ig('/me/insights', { metric: 'online_followers', period: 'lifetime' });
+    if (!r.ok) P('online_followers', false, errText(r.error).slice(0, 160));
+    else {
+      const vals = (((r.json.data || [])[0] || {}).values || []).filter((v) => v && v.value && typeof v.value === 'object' && Object.keys(v.value).length);
+      const v = vals[vals.length - 1];
+      if (!v) P('online_followers', true, 'empty');
+      else { const endH = new Date(v.end_time || 0).getUTCHours(); // local midnight in UTC hours, e.g. 8 for PST
+        for (const [h, n] of Object.entries(v.value)) if (typeof n === 'number') audience.push({ metric: 'online_followers', breakdown: 'hour_ist', k: String(Math.floor(+h + endH + 5.5) % 24).padStart(2, '0') + ':30', value: n });
+        P('online_followers', true, `hours shifted by end_time ${v.end_time} (+${endH} h to UTC, +5:30 to IST)`); }
+    } }
+  { const until = Math.floor(Date.now() / 1000), since = until - 29 * 86400;
+    let r = await ig('/me/insights', { metric: 'follower_count', period: 'day', since: String(since), until: String(until) });
+    if (!r.ok) r = await ig('/me/insights', { metric: 'follower_count', period: 'day' });
+    if (!r.ok) P('follower_count (day)', false, errText(r.error).slice(0, 160));
+    else { const vals = (((r.json.data || [])[0] || {}).values || []).filter((v) => typeof v.value === 'number' && v.end_time);
+      vals.forEach((v) => insights.push({ day: new Date(Date.parse(v.end_time) - 12 * 3600e3).toISOString().slice(0, 10), metric: 'follower_count', value: v.value }));
+      P('follower_count (day, 30 days)', true, `${vals.length} days`); } }
+  const today = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
+  for (const metric of ['profile_views', 'accounts_engaged']) {
+    const r = await ig('/me/insights', { metric, period: 'day', metric_type: 'total_value' });
+    if (!r.ok) { P(`${metric} (day)`, false, errText(r.error).slice(0, 160)); continue; }
+    const v = ((((r.json.data || [])[0] || {}).total_value) || {}).value;
+    if (typeof v === 'number') insights.push({ day: today, metric, value: v });
+    P(`${metric} (day)`, true, typeof v === 'number' ? String(v) : 'no value');
+  }
+  if (supported.REELS) for (const n of ['follows', 'profile_visits', 'profile_activity']) P(`reel ${n}`, supported.REELS.includes(n), supported.REELS.includes(n) ? '' : firstError[n]);
+  if (listed.REELS) { const extra = listed.REELS.filter((n) => !KNOWN.includes(n)); for (const n of extra) P(`reel ${n} (listed by the API)`, (supported.REELS || []).includes(n), (supported.REELS || []).includes(n) ? '' : firstError[n]); }
+  for (const l of probe) say(`PROBE @${A.username} ${l}`);
+  const top = (metric, breakdown, n = 5) => audience.filter((a) => a.metric === metric && a.breakdown === breakdown).sort((a, b) => b.value - a.value).slice(0, n).map((a) => `${a.k} ${a.value}`).join(', ');
+  for (const [m, b] of [['follower_demographics', 'country'], ['follower_demographics', 'city'], ['reached_audience_demographics', 'country'], ['reached_audience_demographics', 'city']]) { const t = top(m, b); if (t) say(`Top ${b} (${m.split('_')[0]}): ${t}`); }
+  const on = top('online_followers', 'hour_ist', 6); if (on) say(`Followers online, busiest IST hours: ${on}`);
+}
 if (media.length && !Object.values(supported).some((s) => s.length)) say('⚠ No insight metric could be read. The token probably lacks the “instagram_business_manage_insights” permission (or Instagram needs App Review for it). Followers and posts were still collected.');
 
 // 5. token health. Instagram tokens last 60 days and a refresh issues a NEW token, so the new one is stored on the site (only the primary account can read it).
@@ -167,7 +231,7 @@ say(`Token: ${tokenNote}`);
 
 // 6. send everything to the site
 const day = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10); // IST day
-const body = { day, slot: SLOT, account: { username: A.username, followers: A.followers_count, follows: A.follows_count, media_count: A.media_count }, media };
+const body = { day, at: new Date().toISOString(), snapshot: !MIDDAY, audience, insights, slot: SLOT, account: { username: A.username, followers: A.followers_count, follows: A.follows_count, media_count: A.media_count }, media };
 if (DRY) { say(`Dry run: would send ${media.length} posts for ${day}. Nothing written.`); summary('### Instagram collector (dry run)\n\n```\n' + out.join('\n') + '\n```'); process.exit(0); }
 if (!U || !P || !cookie) await die('BASIC_AUTH_USER / BASIC_AUTH_PASS are not set or not accepted, so the results cannot be saved to the site.');
 const post = await fetch(SITE + '/api/perf/ingest', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel', Cookie: cookie }, body: JSON.stringify(body) });
