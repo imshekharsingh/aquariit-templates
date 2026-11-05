@@ -1,0 +1,55 @@
+{
+ "name": "showreel-28-thumb",
+ "seek": "scripts/explainer/thumb.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why does your thumb hit the wrong link? Your links are tiny, so one tap covers two: you aim for Archive, and get Delete. The fix: min height, forty four pixels. Now every tap lands where you aim.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.8,
+   0.75
+  ]
+ },
+ "caption": "Why does your thumb hit the wrong link? 👍\n\nMenu links set in small text are often only about 16 px tall, so one fingertip covers two of them: you aim for Archive and get Delete. Give each link a real target: display: block and min-height: 44px. The text keeps its size; only the area you can tap grows. WCAG asks for targets of at least 24 × 24 CSS px (2.5.8, AA) and 44 × 44 for the best level (2.5.5, AAA). Works in every browser.\nSave it for your next menu or footer, or send it to whoever builds your app.",
+ "keywords": [
+  "tap target size mobile",
+  "links too small to tap",
+  "min-height 44px",
+  "touch target WCAG",
+  "mobile UX design",
+  "CSS tips"
+ ],
+ "hashtags": [
+  "#mobileux",
+  "#csstips",
+  "#accessibility",
+  "#uxdesign",
+  "#frontenddev"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Understanding_WCAG/Operable",
+   "note": "MDN, Understanding WCAG, Operable: 2.5.5 Target Size (AAA) at least 44 CSS px wide and tall; 2.5.8 Target size minimum (AA) at least 24 x 24 px, with spacing exceptions"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/min-height",
+   "note": "MDN min-height: sets the minimum height of an element; applies to all elements but non-replaced inline elements (hence display: block on the link)"
+  }
+ ],
+ "tip": {
+  "title": "Why does your thumb hit the wrong link?",
+  "why": "Links set in small text are only as tall as their line, about 16 px, so one fingertip covers two of them. A block link with min-height: 44px gets a real target while its text keeps its size. WCAG asks for at least 24 x 24 CSS px (2.5.8, AA) and 44 x 44 for AAA (2.5.5), per MDN's Understanding WCAG.",
+  "code": "a {\n  display: block;\n  min-height: 44px;\n}",
+  "demo": "thumb",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Understanding_WCAG/Operable",
+   "label": "MDN, Understanding WCAG (Operable)"
+  }
+ }
+}

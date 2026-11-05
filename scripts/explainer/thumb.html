@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does your form show the wrong keyboard?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 18, a touch tip: "Why does your thumb hit the wrong link?"
+   A long-press menu whose links are 16 px tall: one tap covers two of them, you aim for Archive and get Delete. min-height: 44px
+   makes each link a real target (MDN, Understanding WCAG: 2.5.5 asks 44 x 44 CSS px, 2.5.8 at least 24 x 24). The text keeps its
+   size; only the target grows (drawn as dashed hit boxes). Same phone and column as Nº 13/17. Beats and captions lead the voice
+   by 0.15 s; the title holds until it is complete and the cover is that moment (window.COVER); every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--rule:#33343c;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:166px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:236px;font-weight:800;font-size:72px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--red)}
+/* the phone: status bar, a notes list, a long-press menu with tight links */
+#ph{left:0;top:0;width:250px;height:470px;border-radius:38px;background:#2a2b31;padding:8px;transform-origin:0 0}
+#scr{position:absolute;left:8px;top:8px;width:234px;height:454px;border-radius:31px;overflow:hidden;background:var(--paper)}
+#sb{position:absolute;left:0;right:0;top:0;height:26px;background:var(--paper);font:700 11px/26px var(--m);padding:0 18px;color:var(--ink);z-index:3}
+#pg{position:absolute;left:0;top:26px;width:234px;height:428px;background:var(--paper);color:var(--ink)}
+#pg .br{position:absolute;left:18px;top:16px;font:700 11px/1 var(--m);letter-spacing:.16em}
+#pg .h{position:absolute;left:18px;top:38px;font:800 28px/1 var(--f);font-variation-settings:'opsz' 72;letter-spacing:-.02em}
+.note{position:absolute;left:14px;width:206px;height:46px;border-radius:12px;background:#fff;padding:9px 12px;font:700 13px/1.2 var(--f)}
+.note i{display:block;font:500 11px/1.4 var(--f);font-style:normal;color:#7a766e}
+#dim{position:absolute;inset:0;background:rgba(17,18,20,.28)}
+#menu{position:absolute;left:58px;width:150px;border-radius:12px;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.25);overflow:hidden;padding:6px 0}
+#menu .it{position:relative;padding:0 14px;font:600 13px/1 var(--f);display:flex;align-items:center;white-space:nowrap}
+#menu .it.del{color:#d8392b}
+#menu .hb{position:absolute;left:4px;right:4px;top:0;bottom:0;border:1.5px dashed var(--red);border-radius:4px;pointer-events:none}
+#toast{position:absolute;left:24px;width:186px;height:34px;border-radius:17px;background:var(--ink);color:var(--paper);font:700 12px/34px var(--f);text-align:center}
+#fg{position:absolute;width:40px;height:40px;border-radius:50%;background:rgba(17,18,20,.22);border:2.5px solid rgba(17,18,20,.55);z-index:7}
+#ring{position:absolute;border:3px solid var(--red);border-radius:16px;z-index:6}
+/* the column: the code */
+#col{left:300px;top:430px;width:210px;height:200px}
+#cd{position:absolute;left:0;right:0;top:0;padding:16px 14px;border-radius:18px;background:var(--surface);font:500 16px/1.45 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#cap{left:36px;right:36px;top:700px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 18 · TOUCH</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>thumb</span> <span>hit</span></span><span class="ln"><span>the</span> <span class="acc">wrong</span></span><span class="ln"><span class="acc">link?</span></span></div>
+<div id="ph" class="a">
+  <div id="scr">
+    <div id="sb">9:41</div>
+    <div id="pg">
+      <div class="br">PAPERLEAF</div><div class="h">Notes</div>
+      <div class="note" style="top:80px">Trip to Lisbon<i>Flights, the tram, a list of…</i></div>
+      <div class="note" style="top:134px">Groceries<i>Oats, lemons, coffee</i></div>
+      <div class="note" style="top:188px">Book club<i>Chapter 7 by Friday</i></div>
+      <div class="note" style="top:242px">Ideas<i>A shelf for the hall</i></div>
+      <div id="dim"></div>
+      <div id="menu"><div class="it" id="m0">Share<span class="hb"></span></div><div class="it" id="m1">Copy link<span class="hb"></span></div><div class="it" id="m2">Archive<span class="hb"></span></div><div class="it del" id="m3">Delete<span class="hb"></span></div></div>
+      <div id="toast"></div>
+    </div>
+    <div id="ring"></div>
+    <div id="fg"></div>
+  </div>
+</div>
+<div id="col" class="a"><div id="cd"></div></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why does your thumb hit the wrong link? Your links are tiny, so one tap covers two: you aim for Archive, and get Delete. The fix: min height, forty four pixels. Now every tap lands where you aim.";
+  var WORDS = [], DUR = 20, LEAD = .15, HOOK_N = 8;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { first: at('your', 2), tiny: at('tiny'), tight: at('tight'), covers: at('covers'), aim: at('aim'), archive: at('archive'), get: at('get'), del: at('delete'),
+      fix: at('fix'), min: at('min'), forty: at('forty'), pixels: at('pixels'), now: at('now'), real: at('real'), target: at('target'), every: at('every'), lands: at('lands'), aim2: at('aim', 2) };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.first - .3, A.hookIn + .35);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  var CODE = '<span class="dim">a {</span>\n  display: block;\n  min-height:\n    <b>44px</b>;\n<span class="dim">}</span>';
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  var CODE_N = CODE.replace(/<[^>]+>/g, '').length;
+  var MT = 150;   // the menu's top inside the page
+  // the taps: [time, menu row the finger aims at, row it hits]
+  function taps(){ return [[.7, 2, 3], [1.75, 0, 1], [A.archive + .1, 2, 3], [A.every + .05, 2, 2], [Math.max(A.aim2 + .2, A.every + 1.1), 0, 0], [Math.max(A.aim2 + 1.6, A.every + 2.5), 1, 1], [Math.min(Math.max(A.aim2 + 3, A.every + 3.9), DUR - 1.6), 2, 2]]; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    var gone = io(P(t, A.leave, A.leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the phone: small and centred under the title, then full size on the left ----
+    var rise = io(P(t, A.leave + .2, A.leave + .7)), s = mix(.56, 1, rise), x = mix((540 - 250 * .56) / 2 - 40, 36, rise), y = mix(538 + Math.sin(t * .9) * 3, 206, rise);
+    var ph = $('ph'); ph.style.opacity = out(P(t, 0, .3)) * (1 - ex); ph.style.transform = 'translate(' + x + 'px,' + (y + ex * 20) + 'px) scale(' + s + ')';
+    // ---- the menu: rows 16 px tall until the fix, then 44 px (the text stays the same size) ----
+    var grow = io(P(t, A.now - .05, A.now + .5)), rowH = mix(16, 44, grow), rows = [];
+    $('menu').style.top = MT + 'px';
+    for (var r = 0; r < 4; r++) { var it = $('m' + r); it.style.height = rowH + 'px'; rows.push({ y: MT + 6 + r * rowH + rowH / 2 }); }
+    var T = taps(), hbA = Math.max(win(t, A.tiny, A.fix - .1, .2), win(t, A.now, DUR - .7, .2));
+    var hit = [0, 0, 0, 0], aimR = [0, 0, 0, 0];
+    T.forEach(function(tp){ var k = win(t, tp[0], tp[0] + .35, .05); hit[tp[2]] = Math.max(hit[tp[2]], k); });
+    for (var r2 = 0; r2 < 4; r2++) { var it2 = $('m' + r2), hb = it2.querySelector('.hb'), good = grow > .5;
+      it2.style.background = hit[r2] > 0 ? (good ? 'rgba(124,240,182,' + .9 * hit[r2] + ')' : 'rgba(255,90,74,' + .35 * hit[r2] + ')') : '';
+      hb.style.opacity = hbA; hb.style.borderColor = good ? 'var(--acc)' : 'var(--red)'; }
+    // the finger: aims at one row, its pad covers two while the rows are tiny
+    var fx = 133, fy = 0, fa = 0;
+    for (var i = 0; i < T.length; i++) { var st = T[i][0], nx = i < T.length - 1 ? T[i + 1][0] : 99;
+      if (t >= st - .45 && t < nx - .45) { var m = io(P(t, st - .45, st - .1)), ty = 26 + rows[T[i][1]].y + (T[i][2] !== T[i][1] ? (T[i][2] - T[i][1]) * rowH * .45 : 0);
+        fy = mix(ty + 60, ty, m); fx = mix(175, 133, m); fa = cl((t - st + .45) * 6) * (1 - P(t, st + .45, st + .7)); } }
+    var cov = win(t, A.covers - .1, A.aim - .2, .2);   // on "one tap covers two" the finger rests over two rows
+    if (cov > 0) { fy = 26 + (rows[1].y + rows[2].y) / 2; fx = 133; fa = cov; }
+    fa *= (1 - ex);
+    var fg = $('fg'); fg.style.left = (fx - 20) + 'px'; fg.style.top = (fy - 20) + 'px'; fg.style.opacity = fa;
+    // the toast: "Note deleted" after a wrong tap on Delete, "Copied" on Copy link, "Archived" once it works
+    var msg = '', tA = 0, bad = false;
+    T.forEach(function(tp){ var k = win(t, tp[0] + .15, tp[0] + 1.1, .12); if (k > 0) { tA = k; msg = ['Shared', 'Link copied', 'Note archived ✓', 'Note deleted · Undo'][tp[2]]; bad = tp[2] !== tp[1]; } });
+    var to = $('toast'); to.textContent = msg; to.style.opacity = tA * (1 - ex); to.style.top = (370 + (1 - out(cl(tA))) * 14) + 'px';
+    to.style.background = bad ? 'var(--red)' : tA > 0 && grow > .5 ? '#2c9662' : 'var(--ink)';
+    // the ring: red round the tiny menu, green round the grown one
+    var ring = $('ring'), menuH = 12 + 4 * rowH, rr = win(t, A.tiny, A.fix - .1, .2), rg = win(t, A.now + .3, DUR - .7, .2);
+    ring.style.left = (58 - 6) + 'px'; ring.style.top = (26 + MT - 6) + 'px'; ring.style.width = '162px'; ring.style.height = (menuH + 12) + 'px';
+    ring.style.borderColor = rg > 0 ? 'var(--acc)' : 'var(--red)'; ring.style.opacity = Math.max(rr, rg) * (1 - ex);
+    // ---- the code: typed on "min height, forty four pixels" ----
+    var codeOn = P(t, A.fix - .1, A.fix + .15) * (1 - ex), col = $('col');
+    col.style.opacity = codeOn; col.style.transform = 'translateY(' + (1 - out(P(t, A.fix - .1, A.fix + .3))) * 24 + 'px)';
+    $('cd').innerHTML = typed(CODE, Math.floor(3 + (CODE_N - 3) * P(t, A.fix + .1, A.pixels + .3)));
+    // ---- HUD and tag ----
+    var Hd;
+    if (t < A.leave + .2) Hd = 'AIMED <b>ARCHIVE</b> · GOT <b class="r">DELETE</b>';
+    else Hd = 'LINK HEIGHT <b class="' + (grow > .5 ? 'y' : 'r') + '">' + Math.round(rowH) + ' PX</b>';
+    $('hud').innerHTML = Hd; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.covers - .2 ? 'ONE TAP, TWO LINKS' : t < A.fix - .2 ? 'AIM ARCHIVE, GET DELETE' : t < A.now - .2 ? 'THE FIX' : 'WCAG: 44 × 44 CSS PX (24 AT LEAST)';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i2 = 0; i2 < PH.length; i2++) { if (t >= WORDS[PH[i2][0]].s - LEAD - .05 && (i2 === PH.length - 1 || t < WORDS[PH[i2 + 1][0]].s - LEAD - .05)) ph0 = PH[i2]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2)), aft = w.s >= A.fix;
+        var col2 = aft && /^(min|height|forty|four|pixels|lands|aim)/i.test(w.d) ? 'var(--acc)' : !aft && /^(tiny|two|delete)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col2 + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
+    taps().forEach(function(tp, i){ Q.push({ t: tp[0], k: 'tap', g: .3, p: tp[1] === tp[2] ? 5 : 1 }); if (tp[1] !== tp[2]) Q.push({ t: tp[0] + .15, k: 'thud', g: .28 }); });
+    Q.push({ t: A.tiny, k: 'swish', d: .3, g: .25, p: .1 }, { t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
+    for (var c = 0, t0 = A.fix + .1, t1 = A.pixels + .3; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.now, k: 'swish', d: .5, g: .4, p: .4 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

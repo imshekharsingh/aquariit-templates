@@ -695,5 +695,27 @@
   "channel": "web",
   "concept": "inputmode=\"numeric\" (number pad on a code field)",
   "note": "19:00 IST (two-a-day test)"
+ },
+ "showreel-28-thumb": {
+  "postOn": "2026-11-06",
+  "caption": "Why does your thumb hit the wrong link? 👍\n\nMenu links set in small text are often only about 16 px tall, so one fingertip covers two of them: you aim for Archive and get Delete. Give each link a real target: display: block and min-height: 44px. The text keeps its size; only the area you can tap grows. WCAG asks for targets of at least 24 × 24 CSS px (2.5.8, AA) and 44 × 44 for the best level (2.5.5, AAA). Works in every browser.\nSave it for your next menu or footer, or send it to whoever builds your app.",
+  "keywords": [
+   "tap target size mobile",
+   "links too small to tap",
+   "min-height 44px",
+   "touch target WCAG",
+   "mobile UX design",
+   "CSS tips"
+  ],
+  "hashtags": [
+   "#mobileux",
+   "#csstips",
+   "#accessibility",
+   "#uxdesign",
+   "#frontenddev"
+  ],
+  "channel": "web",
+  "concept": "min-height: 44px on menu links (tap targets)",
+  "note": "19:00 IST (two-a-day test)"
  }
 }

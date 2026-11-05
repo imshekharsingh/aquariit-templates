@@ -70,6 +70,11 @@
 @media (hover: hover){#hover .fix .b:hover{background:#f2efe8;color:#111214}}
 #keyboard .pane{height:120px;display:flex;flex-direction:column;justify-content:center}
 #keyboard input{margin:28px 10px 0;width:calc(100% - 20px);min-height:44px;border-radius:10px;border:1.5px solid #cfcac0;background:#fff;color:#111214;padding:0 12px;font:700 17px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em}
+#thumb .menu{margin:30px 10px 0;border-radius:10px;background:#fff;overflow:hidden;padding:4px 0}
+#thumb .menu a{display:block;padding:0 12px;color:#111214;font:600 13px/16px system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none}
+#thumb .menu a.del{color:#d8392b}
+#thumb .fix .menu a{min-height:44px;line-height:44px}
+#thumb .menu a:active{background:#7cf0b6}
 #sideways .pane{height:150px;overflow-x:auto;overflow-y:hidden}
 #sideways .card{margin:36px 10px 0;width:calc(100% - 20px);border-radius:12px;background:#f2efe8;color:#111214;padding:10px 12px;font:600 13px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;transition:width .4s}
 #sideways .narrow .card{width:60%}
@@ -123,6 +128,23 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="thumb">
+  <p class="no">Nº 18</p>
+  <h2>Why does your thumb hit the wrong link?</h2>
+  <p class="why">Links set in small text are only as tall as their line, about 16 px, so one fingertip covers two of them. A block link with min-height: 44px gets a real target while its text keeps its size. WCAG asks for at least 24 x 24 CSS px (2.5.8, AA) and 44 x 44 for AAA (2.5.5), per MDN's Understanding WCAG.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">16 px links</span><div class="menu"><a href="#thumb">Share</a><a href="#thumb">Copy link</a><a href="#thumb">Archive</a><a href="#thumb" class="del">Delete</a></div></div>
+  <div class="pane fix"><span class="tag ok">min-height: 44px</span><div class="menu"><a href="#thumb">Share</a><a href="#thumb">Copy link</a><a href="#thumb">Archive</a><a href="#thumb" class="del">Delete</a></div></div>
+</div>
+<p class="note">On a phone, try to tap Archive in each menu with your thumb. The left links are one line of text tall, so your thumb covers two; the right ones are 44 px tall with the same text.</p></div>
+  <div class="code"><pre><code>a {
+  display: block;
+  min-height: 44px;
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Understanding_WCAG/Operable" rel="noopener">Source: MDN, Understanding WCAG (Operable)</a></p>
+</article>
 
 <article class="tip" id="keyboard">
   <p class="no">Nº 17</p>
@@ -406,11 +428,12 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>15 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>16 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "thumb": function(){},
     "keyboard": function(){},
     "longname": function(root){ root.querySelector('.go').addEventListener('click', function(){ root.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('narrow'); }); }); },
     "anchor": function(root){ var b = root.querySelector('.go'); b.addEventListener('click', function(){ var y = window.scrollY, back = b.dataset.on === '1';
