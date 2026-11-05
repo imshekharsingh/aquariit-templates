@@ -1,0 +1,60 @@
+{
+ "name": "showreel-26-longname",
+ "seek": "scripts/explainer/longname.html",
+ "dur": 21,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why does one long name break your card? The name has an ellipsis, but it still pushes the button off the card. A flex item won't shrink below its content. The fix: min width zero, on the flex item. Now it shrinks, and the long name ends in dots.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.7,
+   0.75,
+   0.75
+  ]
+ },
+ "caption": "Why does one long name break your card? 💳\n\nYour name has overflow: hidden, white-space: nowrap and text-overflow: ellipsis, yet it still pushes the button out of the card. The name sits in a flex item, and a flex item's min-width is auto: its smallest allowed width is its content, here the whole one-line name. Add min-width: 0 to that flex item (the wrapper, not the text): it can shrink, and the ellipsis finally shows. Works in every browser (Chrome 21+, Firefox 34+, Safari 7+ have the auto minimum). overflow: hidden on the flex item does the same.\nSave it for your next list or contact card, or send it to whoever builds your app.",
+ "keywords": [
+  "text-overflow ellipsis not working in flexbox",
+  "min-width: 0 flex item",
+  "flex item won't shrink",
+  "long name breaks card layout",
+  "CSS ellipsis tips",
+  "web design"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#css",
+  "#frontenddev",
+  "#webdev",
+  "#uxdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/min-width",
+   "note": "MDN min-width, auto: for flex items the minimum width is the specified suggested size, else the min-content size; 0 only if the flex item is a scroll container"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-overflow",
+   "note": "MDN text-overflow: only shows on a box with overflow other than visible and white-space: nowrap"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/properties/min-width.json",
+   "note": "min-width: auto: Chrome 21, Firefox 34 (16-21 used auto as initial value, removed in 22), Safari 7"
+  }
+ ],
+ "tip": {
+  "title": "Why does one long name break your card?",
+  "why": "The name has text-overflow: ellipsis, but it sits inside a flex item whose min-width is auto. MDN: for a flex item that minimum is its min-content size, so with white-space: nowrap the item can never be narrower than the whole name, and it pushes the button out of the card. min-width: 0 on the flex item lets it shrink, and the ellipsis shows. Every current browser.",
+  "code": ".who {           /* the flex item */\n  min-width: 0;  /* may shrink below its content */\n}\n.name {\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}",
+  "demo": "longname",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/min-width",
+   "label": "MDN, min-width"
+  }
+ }
+}

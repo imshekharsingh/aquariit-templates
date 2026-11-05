@@ -165,6 +165,25 @@ export const demos = {
   root.querySelectorAll('.sc').forEach(function(s){ if (back) s.scrollTop = 0; else s.querySelector('.to').scrollIntoView({ block: 'start' }); });
   window.scrollTo(0, y); b.dataset.on = back ? '0' : '1'; b.textContent = back ? 'Jump to Billing' : 'Back to top'; }); }`,
   },
+  longname: {
+    css: `
+#longname .row{display:flex;align-items:center;gap:8px;margin:0 8px 8px;padding:8px;border-radius:12px;background:#f2efe8;color:#111214;overflow:hidden;transition:width .5s}
+#longname .narrow .row{width:150px}
+#longname .av{flex:none;width:26px;height:26px;border-radius:50%;background:#d8572e}
+#longname .who{flex:1}
+#longname .fix .who{min-width:0}
+#longname .nm{font:800 13px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#longname .pay{flex:none;padding:5px 10px;border-radius:14px;background:#111214;color:#f2efe8;font:800 11px system-ui,-apple-system,"Segoe UI",sans-serif}
+#longname .go{margin-top:10px;width:100%;min-height:44px;border-radius:22px;border:1.5px solid #f2efe8;background:transparent;color:#f2efe8;font:700 15px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">.who { min-width: auto }</span><div class="row"><span class="av"></span><div class="who"><div class="nm">Maximiliana Okonkwo-Vandenberg</div></div><span class="pay">Pay</span></div></div>
+  <div class="pane fix"><span class="tag ok">.who { min-width: 0 }</span><div class="row"><span class="av"></span><div class="who"><div class="nm">Maximiliana Okonkwo-Vandenberg</div></div><span class="pay">Pay</span></div></div>
+</div>
+<button class="go" type="button">Make the cards narrower</button>
+<p class="note">Both names have text-overflow: ellipsis. On the left the flex item can't shrink below the whole name, so Pay is pushed out of the card. On the right min-width: 0 lets it shrink, and the name ends in dots.</p>`,
+    js: `function(root){ root.querySelector('.go').addEventListener('click', function(){ root.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('narrow'); }); }); }`,
+  },
   squash: {
     css: `
 #squash .pane{height:190px}

@@ -652,5 +652,26 @@
   "concept": "2.5D flow · Why is a marathon 42.195 kilometres?",
   "about": "One camera that never cuts: a runner of 1896 on a dusty Greek road, then an atlas globe turns from Athens to London, the camera dives into Britain and lands on an engraved map of the 1908 course: the route draws from Windsor Castle to the stadium, the last 385 yards run round the track to the royal box, an OFFICIAL 1921 stamp, and the pull out to the whole course.",
   "note": "Built 4 Nov for Sat 7 Nov 21:00 IST (4, 5 and 6 Nov already had Turns Out reels)."
+ },
+ "showreel-26-longname": {
+  "postOn": "2026-11-07",
+  "caption": "Why does one long name break your card? 💳\n\nYour name has overflow: hidden, white-space: nowrap and text-overflow: ellipsis, yet it still pushes the button out of the card. The name sits in a flex item, and a flex item's min-width is auto: its smallest allowed width is its content, here the whole one-line name. Add min-width: 0 to that flex item (the wrapper, not the text): it can shrink, and the ellipsis finally shows. Works in every browser (Chrome 21+, Firefox 34+, Safari 7+ have the auto minimum). overflow: hidden on the flex item does the same.\nSave it for your next list or contact card, or send it to whoever builds your app.",
+  "keywords": [
+   "text-overflow ellipsis not working in flexbox",
+   "min-width: 0 flex item",
+   "flex item won't shrink",
+   "long name breaks card layout",
+   "CSS ellipsis tips",
+   "web design"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#frontenddev",
+   "#webdev",
+   "#uxdesign"
+  ],
+  "channel": "web",
+  "concept": "min-width: 0 on a flex item"
  }
 }
