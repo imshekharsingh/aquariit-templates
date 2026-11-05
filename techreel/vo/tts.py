@@ -28,7 +28,10 @@ def spoken_words(line, say):
     for w in line.split():
         c = core(w)
         punct = re.search(r'[,.?!:;]*$', w).group()
-        rep = say.get(c, say.get(c.lower(), None))
+        key = re.sub(r"^[^\w]+|[^\w]+$", '', w)   # the word as written, inner hyphen kept: "Wi-Fi," -> "Wi-Fi" (5 Nov: core() made it "WiFi", so a "Wi-Fi" override never matched)
+        rep = next((say[k] for k in (key, key.lower(), c, c.lower()) if k in say), None)
+        if rep:
+            USED.add(next(k for k in (key, key.lower(), c, c.lower()) if k in say))
         sp = rep.split() if rep else [x for x in re.split(r'-', re.sub(r"[^\w'-]", '', w)) if x]
         if punct and sp:
             sp = sp[:-1] + [sp[-1] + punct]
@@ -95,10 +98,20 @@ def _assign(pairs, toks, dur):
     return words
 
 
+USED = set()
+# words every topic needs said one way (owner, 5 Nov 2026: "Wi-Fi" was read as two words); a topic's own "say" wins
+DEFAULT_SAY = {'Wi-Fi': '[WiFi](/wˈaɪfˌaɪ/)', 'WiFi': '[WiFi](/wˈaɪfˌaɪ/)'}
+
+
 def generate(topic, wav_path, fake=False):
-    say = topic.get('say', {})
+    own = topic.get('say', {})
+    say = {**DEFAULT_SAY, **own}
     lines = [l['text'] for l in topic['lines']]
+    USED.clear()
     pairs = [spoken_words(l, say) for l in lines]
+    unused = [k for k in own if k not in USED]
+    if unused:   # an override that matches no word is a silent mispronunciation: stop before anything renders
+        raise SystemExit(f'"say" entries match no spoken word: {", ".join(unused)} (check the spelling as written in the lines)')
     if fake:
         # preflight (owner, 27 Oct 2026: renders were repeated because the voice came out too long): Kokoro af_heart reads about 75.5 ms per
         # letter at speed 1 in one take, pauses included (5 renders on 26-27 Oct, within 3%). Estimate the take, nudged up to max_speed as the
