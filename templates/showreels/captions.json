@@ -522,7 +522,8 @@
    "#webdesign"
   ],
   "channel": "web",
-  "concept": "position: sticky + overflow: clip"
+  "concept": "position: sticky + overflow: clip",
+  "note": "19:00 IST (two-a-day test)"
  },
  "showreel-25-anchor": {
   "postOn": "2026-11-06",
@@ -696,7 +697,7 @@
   ],
   "channel": "web",
   "concept": "inputmode=\"numeric\" (number pad on a code field)",
-  "note": "19:00 IST (two-a-day test)"
+  "note": "posted 13:00 IST"
  },
  "showreel-28-thumb": {
   "postOn": "2026-11-06",
