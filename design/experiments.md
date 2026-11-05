@@ -47,7 +47,7 @@ best average watch as the single Aquarii voice (pin it with a `Voice:` line or c
 Both reels pass design/rules-web.md. **Decide 14 Nov:** keep two a day only if the 13:00 reel's 24 h reach on two-reel days is at least 80%
 of its 24 h reach on one-reel days AND followers gained per day are higher on two-reel days; otherwise back to one a day.
 
-## E14 · Turns Out: payoff image in frame 0 (owner, 5 Nov 2026; 3 reels from 8 Nov)
+## E14 · Turns Out: payoff image in frame 0 (owner, 5 Nov 2026; 3 reels from 6 Nov; moved up from 8 Nov the same day: the rendered 6 and 7 Nov reels were hidden and are rebuilt fresh)
 **Change (one):** frame 0 shows the payoff image (a "wait, what?" visual like the copper-brown Liberty), not a question on paper; only topics
 with a visible transformation. **Decide after the 3rd reel:** keep if reach and hold beat the channel median (157 reach on 5 Nov), else drop.
 
