@@ -285,9 +285,9 @@
   try { var saved = localStorage.getItem('studio-ch'); if (CH[saved]) ch = saved; } catch (e) {}
   if (CH[location.hash.slice(1)]) ch = location.hash.slice(1);
   // the exact slot (owner, 5 Nov 2026): "postAt" (HH:MM IST) in captions.json, else the channel's default: web 13:00 (19:00 when the note says so),
-  // tech 17:00, Turns Out 21:00. The same rule is in src/worker.js (the reminders) and scripts/check.mjs
+  // tech 19:00, Turns Out 20:00 (E15 from 6 Nov). The same rule is in src/worker.js (the reminders) and scripts/check.mjs
   function slotOf(s, m){ if (/^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt; var k = chOf(s, DATA ? DATA.c : {});
-    return k === 'tech' ? '17:00' : k === 'c3' ? '21:00' : /\b19:00\b/.test(m.note || '') ? '19:00' : '13:00'; }
+    return k === 'tech' ? '19:00' : k === 'c3' ? '20:00' : /\b19:00\b/.test(m.note || '') ? '19:00' : '13:00'; }
   function dueOf(s, m){ return m.postOn ? Date.parse(m.postOn + 'T' + slotOf(s, m) + ':00+05:30') : Infinity; }
   function when(s, m){ if (!m.postOn) return ['Not scheduled', '']; var t = slotOf(s, m), diff = Math.round((Date.parse(m.postOn) - Date.parse(istToday())) / DAY);
     if (Date.now() > dueOf(s, m)) return ['Overdue since ' + (diff === 0 ? '' : diff === -1 ? 'yesterday ' : nice(m.postOn) + ' ') + t, ' late'];
