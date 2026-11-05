@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does your form show the wrong keyboard?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 17, a form tip: "Why does your form show the wrong keyboard?"
+   A plain text field gets the standard keyboard for the user's locale (MDN inputmode: text is the default), so a code field
+   opens letters and the user hunts for the digits. inputmode="numeric" asks for a numeric keyboard (digits 0-9).
+   Same phone and column as Nº 13; the keyboard is drawn in code (a generic layout, no real OS look). Beats and captions lead
+   the voice by 0.15 s; the title holds until it is complete and the cover is that moment (window.COVER); every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--rule:#33343c;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:166px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:236px;font-weight:800;font-size:72px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--red)}
+/* the phone: status bar, a sign-in code page, the keyboard */
+#ph{left:0;top:0;width:250px;height:470px;border-radius:38px;background:#2a2b31;padding:8px;transform-origin:0 0}
+#scr{position:absolute;left:8px;top:8px;width:234px;height:454px;border-radius:31px;overflow:hidden;background:var(--paper)}
+#sb{position:absolute;left:0;right:0;top:0;height:26px;background:var(--paper);font:700 11px/26px var(--m);padding:0 18px;color:var(--ink);z-index:3}
+#pg{position:absolute;left:0;top:26px;width:234px;height:428px;background:var(--paper);color:var(--ink)}
+#pg .br{position:absolute;left:18px;top:16px;font:700 11px/1 var(--m);letter-spacing:.16em}
+#pg .h{position:absolute;left:18px;top:40px;font:800 26px/.98 var(--f);font-variation-settings:'opsz' 72;letter-spacing:-.02em}
+#pg .s{position:absolute;left:18px;top:100px;font:600 12px/1.3 var(--f);color:#5d5a54}
+#fld{position:absolute;left:14px;top:124px;width:206px;height:46px;border-radius:12px;background:#fff;border:2px solid #cfcac0;font:700 22px/42px var(--m);letter-spacing:.32em;padding-left:14px;white-space:nowrap;overflow:hidden}
+#fld .ph{color:#b9b4aa}
+#fld .bad{color:var(--red)}
+#fld .car{display:inline-block;width:2px;height:24px;background:#2e5bd8;vertical-align:-4px;margin-left:-.3em}
+#vf{position:absolute;left:14px;top:180px;width:206px;height:38px;border-radius:19px;background:var(--ink);color:var(--paper);font:800 15px/38px var(--f);text-align:center}
+/* the keyboard (generic): letters, the digits-and-symbols row, or a number pad */
+#kb{position:absolute;left:0;top:274px;width:234px;height:180px;background:#cfd2d8;z-index:4}
+#kb .k{position:absolute;border-radius:5px;background:#fff;color:#1d1e22;font:600 13px/30px var(--f);text-align:center;box-shadow:0 1px 0 rgba(0,0,0,.25)}
+#kb .k.f{background:#aeb2ba;font:700 10px/30px var(--m)}
+#kb .k.n{font:600 19px/34px var(--f)}
+#kb .k.n small{display:block;font:700 6px/1 var(--m);letter-spacing:.16em;margin-top:-6px;color:#6b6e75}
+#fg{position:absolute;width:40px;height:40px;border-radius:50%;background:rgba(17,18,20,.22);border:2.5px solid rgba(17,18,20,.55);z-index:7}
+#ring{position:absolute;border:3px solid var(--red);border-radius:10px;z-index:6}
+/* the column: the code */
+#col{left:306px;top:430px;width:198px;height:200px}
+#cd{position:absolute;left:0;right:0;top:0;padding:16px 14px;border-radius:18px;background:var(--surface);font:500 17px/1.45 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#cap{left:36px;right:36px;top:700px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lbl" class="a">Nº 17 · FORMS</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>form</span> <span>show</span></span><span class="ln"><span>the</span> <span class="acc">wrong</span></span><span class="ln"><span class="acc">keyboard?</span></span></div>
+<div id="ph" class="a">
+  <div id="scr">
+    <div id="sb">9:41</div>
+    <div id="pg">
+      <div class="br">KITEBANK</div><div class="h">Enter the code<br>we sent you</div>
+      <div class="s">6 digits, sent to ••• 42</div>
+      <div id="fld"></div>
+      <div id="vf">Verify</div>
+    </div>
+    <div id="kb"></div>
+    <div id="ring"></div>
+    <div id="fg"></div>
+  </div>
+</div>
+<div id="col" class="a"><div id="cd"></div></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why does your form show the wrong keyboard? A text field opens the letter keyboard, so you hunt for the numbers. The fix: input mode, numeric. Now one tap opens the number pad, and the code goes straight in.";
+  var WORDS = [], DUR = 20, LEAD = .15, HOOK_N = 8;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [];
+  function anchors(){
+    align();
+    A = { first: at('a'), letter: at('letter'), hunt: at('hunt'), numbers: at('numbers'), fix: at('fix'), input: at('input'),
+      numeric: at('numeric'), now: at('now'), tap: at('tap'), opens: at('opens', 2), number: at('number'), pad: at('pad'), code2: at('code'), straight: at('straight'), inn: at('in') };
+    if (A.opens > 90) A.opens = at('opens');
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.first - .3, A.hookIn + .35);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  // ---- the keyboards: built once; positions inside #kb (234 x 180) ----
+  var KW = 234, LET = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'], SYM = ['1234567890', '-/:;()$&@"', ".,?!'"], KEYS = {};
+  function mk(id, x, y, w, h, html, cls){ var e = document.createElement('div'); e.className = 'k' + (cls ? ' ' + cls : ''); e.style.cssText = 'left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + h + 'px';
+    e.innerHTML = html; $('kb').appendChild(e); KEYS[id] = { el: e, x: x + w / 2, y: y + h / 2 }; return e; }
+  (function(){
+    var g = 3, kw = (KW - 8 - 9 * g) / 10, ys = [10, 48, 86];
+    ['L', 'S'].forEach(function(set){ var rows = set === 'L' ? LET : SYM;
+      rows.forEach(function(r, ri){ var n = r.length, x0 = 4 + (KW - 8 - (n * kw + (n - 1) * g)) / 2;
+        for (var i = 0; i < n; i++) mk(set + r[i], x0 + i * (kw + g), ys[ri], kw, 30, r[i].replace('"', '&quot;'), ''); });
+      mk(set + 'shift', 4, 86, 26, 30, set === 'L' ? '&#8679;' : '#+=', 'f'); mk(set + 'del', KW - 30, 86, 26, 30, '&#9003;', 'f');
+      mk(set + 'mode', 4, 128, 44, 32, set === 'L' ? '123' : 'ABC', 'f'); mk(set + 'sp', 52, 128, 120, 32, 'space', 'f'); mk(set + 'ret', 176, 128, 54, 32, 'return', 'f'); });
+    var nw = (KW - 8 - 2 * 5) / 3, sub = ['', 'ABC', 'DEF', 'GHI', 'JKL', 'MNO', 'PQRS', 'TUV', 'WXYZ'];
+    for (var d = 1; d <= 9; d++) mk('N' + d, 4 + ((d - 1) % 3) * (nw + 5), 10 + Math.floor((d - 1) / 3) * 41, nw, 35, d + '<small>' + sub[d - 1] + '</small>', 'n');
+    mk('N0', 4 + (nw + 5), 133, nw, 35, '0', 'n'); mk('Ndel', 4 + 2 * (nw + 5), 133, nw, 35, '&#9003;', 'n f');
+  })();
+  var CODE = '<span class="dim">&lt;input</span>\n  inputmode=\n  <b>"numeric"</b><span class="dim">&gt;</span>';
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (src[i] === '&') { var sc = src.indexOf(';', i); if (k >= n) break; o += src.slice(i, sc + 1); k++; i = sc; continue; }
+      if (k >= n) break; o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  var CODE_N = CODE.replace(/<[^>]+>/g, '').replace(/&\w+;/g, 'x').length;
+  var DIG = '482916';
+  // the finger's taps: [time, key id]; the field and the keys answer them
+  function taps(){
+    var T = [[.55, 'Lr'], [1.0, 'Lt'], [1.45, 'Ly'], [1.95, 'Lu'], [A.hunt + .05, 'Lmode'], [A.numbers + .05, 'S4'], [A.numbers + .5, 'S8']];
+    var d0 = A.code2 - .1, d1 = Math.max(Math.min(A.inn + .9, DUR - 1.4), DUR - 3);
+    for (var i = 0; i < 6; i++) T.push([mix(d0, d1, i / 5), 'N' + DIG[i]]);
+    return T;
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    var gone = io(P(t, A.leave, A.leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the phone: small and centred under the title, then full size on the left ----
+    var rise = io(P(t, A.leave + .2, A.leave + .7)), s = mix(.56, 1, rise), x = mix((540 - 250 * .56) / 2 - 40, 36, rise), y = mix(538 + Math.sin(t * .9) * 3, 206, rise);
+    var ph = $('ph'); ph.style.opacity = out(P(t, 0, .3)) * (1 - ex); ph.style.transform = 'translate(' + x + 'px,' + (y + ex * 20) + 'px) scale(' + s + ')';
+    // ---- which keyboard: letters, then digits-and-symbols after "123", then (after the fix) a number pad ----
+    var T = taps(), fixed = t >= A.opens - .1, down = win(t, A.tap + .05, A.opens + .1, .2);   // the keyboard drops on "tap" and comes back as the number pad
+    var mode = fixed ? 'N' : (t >= A.hunt + .1 ? 'S' : 'L');
+    var kbY = 274 + io(cl(down)) * 186 + (1 - out(P(t, 0, .4))) * 186;
+    $('kb').style.top = kbY + 'px';
+    for (var id in KEYS) { var K = KEYS[id], on = id[0] === mode, hit = 0;
+      T.forEach(function(tp){ if (tp[1] === id) hit = Math.max(hit, win(t, tp[0], tp[0] + .22, .05)); });
+      var redK = mode === 'L' && id.length === 2 && win(t, A.letter, A.hunt - .1, .2) > 0 ? .5 + .5 * Math.sin((t - A.letter) * 9) : 0;
+      var digK = mode === 'S' && /^S\d$/.test(id) ? win(t, A.hunt + .2, A.fix - .1, .2) : 0;
+      K.el.style.display = on ? 'block' : 'none';
+      K.el.style.background = hit > 0 ? (mode === 'N' ? 'var(--acc)' : '#ffd9d4') : redK > 0 ? 'rgba(255,90,74,' + (.25 + .35 * redK) + ')' : digK > 0 ? 'rgba(255,214,102,' + (.9 * digK) + ')' : '';
+      K.el.style.transform = 'scale(' + (1 + hit * .12) + ')'; }
+    // ---- the field: wrong letters in the hook, a 4 after the hunt, the code after the fix ----
+    var val = '', cls = '';
+    if (t < A.leave + .1) { T.slice(0, 4).forEach(function(tp){ if (t >= tp[0]) val += tp[1][1]; }); cls = 'bad'; }
+    else if (!fixed) { if (t >= A.numbers + .05) val = '4'; if (t >= A.numbers + .5) val = '48'; }
+    else T.slice(7).forEach(function(tp){ if (t >= tp[0]) val += tp[1][1]; });
+    var blink = Math.floor(t * 2.2) % 2 === 0 && val.length < 6;
+    $('fld').innerHTML = (val ? '<span class="' + cls + '">' + val + '</span>' : '') + (blink ? '<span class="car"></span>' : '') + (val ? '' : '<span class="ph">______</span>');
+    var shake = t < A.leave ? Math.sin(t * 40) * 3 * win(t, 1.95, 2.4, .05) : 0;
+    $('fld').style.transform = 'translateX(' + shake + 'px)';
+    $('fld').style.borderColor = val.length === 6 ? 'var(--acc)' : t < A.leave + .1 && val ? 'var(--red)' : '';
+    var done = P(t, T[12][0] + .2, T[12][0] + .45);
+    $('vf').style.background = done > 0 ? 'rgb(' + Math.round(mix(17, 44, done)) + ',' + Math.round(mix(18, 150, done)) + ',' + Math.round(mix(20, 98, done)) + ')' : '';
+    $('vf').textContent = done > .5 ? 'Verified ✓' : 'Verify';
+    // ---- the finger ----
+    var fx = 117, fy = 300, fa = 0;
+    for (var i = 0; i < T.length; i++) { var K2 = KEYS[T[i][1]], st = T[i][0];
+      var prev = i ? T[i - 1] : null, pk = prev ? KEYS[prev[1]] : null;
+      if (t >= st - .35 && (i === T.length - 1 || t < T[i + 1][0] - .35)) { var m = io(P(t, st - .35, st - .05)), px = pk && t < st ? pk.x : K2.x, py = pk && t < st ? pk.y : K2.y;
+        if (pk && T[i][0] - prev[0] > 1.2) { px = K2.x; py = K2.y; }
+        fx = mix(px, K2.x, m); fy = 274 + mix(py, K2.y, m); fa = 1; } }
+    if (t >= A.tap - .3 && t < A.opens + .25) { fx = 117; fy = 26 + 147; fa = 1; }   // the fixed field gets one tap
+    var lastTap = T[T.length - 1][0];
+    fa *= (1 - P(t, lastTap + .3, lastTap + .6)) * (1 - win(t, 2.6, A.hunt - .45, .25)) * (t > A.numbers + .8 && t < A.tap - .3 ? 0 : 1) * (t > A.opens + .25 && t < T[7][0] - .45 ? 0 : 1) * (1 - ex);
+    var fg = $('fg'); fg.style.left = (fx - 20) + 'px'; fg.style.top = (fy - 20 + (kbY - 274) * (fy > 274 ? 1 : 0)) + 'px'; fg.style.opacity = fa;
+    // the ring: red round the letter keyboard, green round the number pad
+    var ring = $('ring'), rr = win(t, A.letter, A.hunt - .1, .2), rg = win(t, A.number, DUR - .7, .2);
+    ring.style.left = '2px'; ring.style.top = (kbY - 2) + 'px'; ring.style.width = '230px'; ring.style.height = '180px';
+    ring.style.borderColor = rg > 0 ? 'var(--acc)' : 'var(--red)'; ring.style.opacity = Math.max(rr, rg) * (1 - ex);
+    // ---- the code: typed on "input mode, numeric" ----
+    var codeOn = P(t, A.fix - .1, A.fix + .15) * (1 - ex), col = $('col');
+    col.style.opacity = codeOn; col.style.transform = 'translateY(' + (1 - out(P(t, A.fix - .1, A.fix + .3))) * 24 + 'px)';
+    $('cd').innerHTML = typed(CODE, Math.floor(6 + (CODE_N - 6) * P(t, A.fix + .1, A.numeric + .3)));
+    // ---- HUD and tag ----
+    var digits = mode === 'N' ? 10 : mode === 'S' ? 10 : 0, Hd;
+    if (t < A.leave + .2) Hd = 'CODE FIELD · <b class="r">LETTERS</b>';
+    else if (mode === 'N') Hd = 'KEYBOARD <b class="y">NUMBERS</b> · CODE <b class="y">' + val.length + '/6</b>';
+    else Hd = 'KEYBOARD <b class="r">' + (mode === 'S' ? 'SYMBOLS' : 'LETTERS') + '</b> · DIGITS <b class="' + (digits ? 'y' : 'r') + '">' + digits + '</b>';
+    $('hud').innerHTML = Hd; $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.hunt - .2 ? 'INPUTMODE: TEXT (THE DEFAULT)' : t < A.fix - .2 ? 'HUNTING FOR THE DIGITS' : t < A.now - .2 ? 'THE FIX' : 'ONE TAP PER DIGIT';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i2 = 0; i2 < PH.length; i2++) { if (t >= WORDS[PH[i2][0]].s - LEAD - .05 && (i2 === PH.length - 1 || t < WORDS[PH[i2 + 1][0]].s - LEAD - .05)) ph0 = PH[i2]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2)), aft = w.s >= A.fix;
+        var col2 = aft && /^(input|mode|numeric|number|pad|straight)/i.test(w.d) ? 'var(--acc)' : !aft && /^(text|letter|hunt)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col2 + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
+    taps().forEach(function(tp, i){ Q.push({ t: tp[0], k: 'tap', g: i < 4 ? .22 : .3, p: i < 7 ? (i * 3) % 5 : 4 + i % 3 }); });
+    Q.push({ t: 2.0, k: 'thud', g: .25 }, { t: A.letter, k: 'thud', g: .3 });
+    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
+    for (var c = 0, t0 = A.fix + .1, t1 = A.numeric + .3; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
+    Q.push({ t: A.tap + .05, k: 'swish', d: .3, g: .3, p: -.2 }, { t: A.opens + .1, k: 'swish', d: .3, g: .3, p: .3 });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

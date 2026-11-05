@@ -673,5 +673,27 @@
   ],
   "channel": "web",
   "concept": "min-width: 0 on a flex item"
+ },
+ "showreel-27-keyboard": {
+  "postOn": "2026-11-05",
+  "caption": "Why does your form show the wrong keyboard? 📱\n\nA plain text field gets the phone's standard letter keyboard (inputmode=\"text\" is the default), so for a one-time code, a PIN or an amount your user has to switch layouts and hunt for the digits. Add inputmode=\"numeric\" and the phone opens a number pad: digits 0-9, one tap each. It only changes the keyboard, not what counts as valid, so keep your own checks. For emails and phone numbers use type=\"email\" and type=\"tel\". Chrome 66+, Firefox 95+, Safari 12.1+ (iOS 12.2+).\nSave it for your next sign-up or checkout form, or send it to whoever builds yours.",
+  "keywords": [
+   "wrong keyboard on mobile form",
+   "inputmode numeric",
+   "number keyboard html input",
+   "OTP input mobile",
+   "mobile form UX",
+   "HTML forms"
+  ],
+  "hashtags": [
+   "#htmltips",
+   "#formdesign",
+   "#mobileux",
+   "#frontenddev",
+   "#webdesign"
+  ],
+  "channel": "web",
+  "concept": "inputmode=\"numeric\" (number pad on a code field)",
+  "note": "19:00 IST (two-a-day test)"
  }
 }

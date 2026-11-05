@@ -68,6 +68,8 @@
 #hover .b:active{transform:scale(.97)}
 #hover .pane:not(.fix) .b:hover{background:#f2efe8;color:#111214}
 @media (hover: hover){#hover .fix .b:hover{background:#f2efe8;color:#111214}}
+#keyboard .pane{height:120px;display:flex;flex-direction:column;justify-content:center}
+#keyboard input{margin:28px 10px 0;width:calc(100% - 20px);min-height:44px;border-radius:10px;border:1.5px solid #cfcac0;background:#fff;color:#111214;padding:0 12px;font:700 17px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em}
 #sideways .pane{height:150px;overflow-x:auto;overflow-y:hidden}
 #sideways .card{margin:36px 10px 0;width:calc(100% - 20px);border-radius:12px;background:#f2efe8;color:#111214;padding:10px 12px;font:600 13px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;transition:width .4s}
 #sideways .narrow .card{width:60%}
@@ -121,6 +123,20 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="keyboard">
+  <p class="no">Nº 17</p>
+  <h2>Why does your form show the wrong keyboard?</h2>
+  <p class="why">A plain text field gets the standard keyboard for the user's locale (inputmode=&quot;text&quot; is the default, MDN), so a code or PIN field opens letters and the user has to hunt for the digits. inputmode=&quot;numeric&quot; asks the phone for a numeric keyboard with the digits 0-9. It changes only the keyboard, not validation.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">No inputmode (text)</span><input type="text" placeholder="6-digit code" aria-label="Code, default keyboard"></div>
+  <div class="pane fix"><span class="tag ok">inputmode="numeric"</span><input type="text" inputmode="numeric" placeholder="6-digit code" aria-label="Code, number keyboard"></div>
+</div>
+<p class="note">Open this on a phone and tap each field: the left one opens the letter keyboard, the right one opens a number pad. inputmode only changes the keyboard, not what the field accepts.</p></div>
+  <div class="code"><pre><code>&lt;input inputmode=&quot;numeric&quot;&gt;</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/inputmode" rel="noopener">Source: MDN, inputmode</a></p>
+</article>
 
 <article class="tip" id="longname">
   <p class="no">Nº 16</p>
@@ -390,11 +406,12 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>14 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>15 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "keyboard": function(){},
     "longname": function(root){ root.querySelector('.go').addEventListener('click', function(){ root.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('narrow'); }); }); },
     "anchor": function(root){ var b = root.querySelector('.go'); b.addEventListener('click', function(){ var y = window.scrollY, back = b.dataset.on === '1';
   root.querySelectorAll('.sc').forEach(function(s){ if (back) s.scrollTop = 0; else s.querySelector('.to').scrollIntoView({ block: 'start' }); });
