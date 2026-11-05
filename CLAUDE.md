@@ -115,6 +115,10 @@ A fresh session, lean, no subagents, in this order:
 1. Dispatch "Owner answers" with action `read`, act on each ANSWER line, then `clear` the ids acted on.
 2. Audit card: numbers from the latest "Instagram collect" run's AUDIT_CHANNELS line, plan from its AUDIT_SIGNALS line, add only the lesson;
    dispatch "Audit card" (kind audit).
+   Choose hooks, topics and the posting-time test with AUDIT_SIGNALS' audience (followersTop/reachedTop countries and cities, onlineHoursIST:
+   the reels have a global audience and followers arrive at night) and its "early" line (reach ~6 h after posting vs ~24 h later): a "slow start"
+   is not a verdict until its 24 h reading; a "late climber" topic is a keep. Instagram collect also runs at 12:30 IST, so the 13:39 and 19:00
+   builds read same-morning numbers (the PROBE lines in its log say which Instagram metrics each account offers).
 3. Update the rulebooks (design/rules-web.md, rules-c3.md, rules-tech.md) when the numbers say so: add, change or drop a rule, with the number.
 4. Build that day's reels (learn-then-build, nothing ahead): @webin20sec 13:00 IST (and 19:00 on E13 two-reel days), @techin20sec on
    Mon / Wed / Fri after 6 Nov. Each is scored against its rulebook in the stills review before its ONE render; then reel-status.
@@ -140,7 +144,7 @@ A scheduled task (created by the parent session, not here) fires Tuesdays around
 
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN, INSTAGRAM_TOKEN_2 and INSTAGRAM_TOKEN_3 (Turns Out, @itturns.out) (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.
-- The "Instagram collect" workflow reads all three accounts nightly (slot 3 only once INSTAGRAM_TOKEN_3 exists).
+- The "Instagram collect" workflow reads all three accounts nightly and at 12:30 IST (slot 3 only once INSTAGRAM_TOKEN_3 exists).
 - Daily audit (owner, 1 Nov 2026: the app shows the owner everything): every daily studio run writes its full audit as a CARD in the app, by
   dispatching the "Audit card" workflow on main with input `card` = JSON `{"kind":"audit","day":"YYYY-MM-DD","points":[today's points],
   "channels":{"web":[...],"tech":[...],"c3":[...]}}` (format in scripts/post-card.mjs; short bullets, numbers first, simple English; per channel the

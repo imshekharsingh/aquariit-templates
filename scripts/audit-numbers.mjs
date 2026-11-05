@@ -3,7 +3,9 @@
 // prints, per channel, the last 7 days as short bullets (numbers first, simple English) plus one line AUDIT_CHANNELS={...} that is
 // ready to use as the audit card's "channels" (scripts/post-card.mjs). The daily run reads that line from the log instead of the raw data.
 // A second line, AUDIT_SIGNALS={...}, holds the last 30 days' signals per channel (best posting hour, best format, reels with the biggest
-// follower gains): the daily run plans topics, hooks and timing from it.
+// follower gains): the daily run plans topics, hooks and timing from it. From 5 Nov 2026 it also holds the audience (top countries and cities of
+// followers and of reached viewers, the IST hours followers are online), follows per reel where Instagram gives them, and the early signal per reel
+// (reach at the first collect ~6 h after posting vs ~24 h later: "slow start" or "late climber"; a 6 h number alone must not kill a topic).
 //   env:  BASIC_AUTH_USER / BASIC_AUTH_PASS, SITE_BASE (default https://templates.aquariit.com)
 // Usage: node scripts/audit-numbers.mjs [--fixture file.json]   (a fixture { web: { account, media }, ... } skips the site, for tests)
 import { readFileSync, appendFileSync } from 'node:fs';
@@ -40,7 +42,8 @@ export function week({ account = [], media = [] }, today) {
 // signals as data (Growth step 3, 3 Nov 2026): what the last 30 days say, for the daily run to plan by instead of memory:
 // the posting hour (IST) with the best median reach, the reels that came with the biggest follower gains, and the format (captions.json
 // "concept" before " · ") with the best median reach. Only patterns with 2+ reels count.
-export function signals({ account = [], media = [] }, today) {
+export function signals(d, today) {
+  const { account = [], media = [], runs = [] } = d;
   const from = new Date(Date.parse(today + 'T00:00:00Z') - 30 * DAY).toISOString().slice(0, 10), out = {};
   const seen = media.filter((m) => m.posted_at && m.reach != null && istDay(m.posted_at) > from);
   const groupBest = (key) => { const g = {}; seen.forEach((m) => { const k = key(m); if (k != null) (g[k] = g[k] || []).push(m.reach); });
@@ -53,7 +56,42 @@ export function signals({ account = [], media = [] }, today) {
   const prev = (d) => new Date(Date.parse(d + 'T00:00:00Z') - DAY).toISOString().slice(0, 10);
   out.followerReels = seen.map((m) => { const d = istDay(m.posted_at), c = CAPS[m.template_id] || {}; return f[d] != null && f[prev(d)] != null ? { day: d, gain: f[d] - f[prev(d)], reach: m.reach, reel: c.concept || m.template_id || '' } : null; })
     .filter(Boolean).sort((a, b) => b.gain - a.gain).slice(0, 3);
+  const label = (m) => m.template_id || (m.caption || '').split('\n')[0].slice(0, 40);
+  const lastRun = {}; runs.forEach((r) => { if (r.follows != null && (!lastRun[r.ig_id] || r.at > lastRun[r.ig_id].at)) lastRun[r.ig_id] = r; });
+  const fr = media.filter((m) => lastRun[m.ig_id] && m.posted_at && istDay(m.posted_at) > from).sort((a, b) => lastRun[b.ig_id].follows - lastRun[a.ig_id].follows).slice(0, 5);
+  if (fr.length) out.followsByReel = fr.map((m) => ({ reel: label(m), follows: lastRun[m.ig_id].follows, reach: lastRun[m.ig_id].reach }));
+  const e = early(d, today); Object.assign(out, audience(d), e ? { early: e } : {});
   return out;
+}
+
+// audience (latest stored day): top 5 countries and cities of followers and of reached viewers, and the 6 busiest IST hours of followers online
+export function audience({ audience: a } = {}) {
+  const rows = (a && a.rows) || [], out = {};
+  const top = (metric, breakdown, n = 5) => rows.filter((r) => r.metric === metric && r.breakdown === breakdown && r.value != null).sort((x, y) => y.value - x.value).slice(0, n).map((r) => [r.k, r.value]);
+  for (const [key, metric] of [['followers', 'follower_demographics'], ['reached', 'reached_audience_demographics']])
+    for (const b of ['country', 'city']) { const t = top(metric, b); if (t.length) out[`${key}Top${b === 'country' ? 'Countries' : 'Cities'}`] = t; }
+  const on = top('online_followers', 'hour_ist', 6); if (on.length) out.onlineHoursIST = on.map(([h, v]) => `${h} (${v})`);
+  if (Object.keys(out).length) out.audienceDay = a.day;
+  return out;
+}
+
+// early signal: per reel posted in the last 14 days, the first reading >= 4 h after posting (normally the next collect, ~6 h) and the first one
+// >= 20 h after that. Readings are the per-run rows (ig_media_runs) plus the older daily rows (ig_metrics, taken ~01:45 IST that day).
+export function early({ media = [], runs = [], daily = [] }, today) {
+  const from = Date.parse(today + 'T00:00:00Z') - 14 * DAY, read = {};
+  const add = (id, at, reach) => { if (reach != null && Number.isFinite(at)) (read[id] = read[id] || []).push([at, reach]); };
+  runs.forEach((r) => add(r.ig_id, Date.parse(r.at), r.reach));
+  daily.forEach((r) => add(r.ig_id, Date.parse(r.day + 'T01:45:00+05:30'), r.reach));
+  const rows = media.filter((m) => m.posted_at && Date.parse(m.posted_at) >= from && read[m.ig_id]).map((m) => {
+    const t0 = Date.parse(m.posted_at), rs = read[m.ig_id].sort((a, b) => a[0] - b[0]);
+    const e = rs.find(([at]) => at - t0 >= 4 * 36e5); if (!e || e[0] - t0 > 18 * 36e5) return null;
+    const l = rs.find(([at]) => at - e[0] >= 20 * 36e5);
+    return { reel: m.template_id || (m.caption || '').split('\n')[0].slice(0, 40), postedIST: new Date(t0 + IST).toISOString().slice(5, 16).replace('T', ' '),
+      earlyH: Math.round((e[0] - t0) / 36e5), early: e[1], ...(l ? { laterH: Math.round((l[0] - t0) / 36e5), later: l[1], x: Math.round(10 * l[1] / Math.max(1, e[1])) / 10 } : {}) };
+  }).filter(Boolean);
+  const mE = med(rows.map((r) => r.early));
+  rows.forEach((r) => { r.flag = r.x == null ? (r.early < 0.6 * mE ? 'slow start, wait for 24 h' : 'pending 24 h') : r.x >= 2 ? 'late climber' : r.early < 0.6 * mE ? 'slow start' : r.early >= mE ? 'fast start' : 'steady'; });
+  return rows.length ? { medianEarly: Math.round(mE), reels: rows } : null;
 }
 
 async function load() {
@@ -64,7 +102,7 @@ async function load() {
   const cookie = (login.headers.getSetCookie?.() || [login.headers.get('set-cookie') || '']).map((c) => c.split(';')[0]).filter(Boolean).join('; ');
   const data = {};
   for (const [k, c] of Object.entries(CH)) {
-    const r = await fetch(`${SITE}/api/perf?days=60&account=${encodeURIComponent(String(c.username || '').replace(/^@/, ''))}`, { headers: { Cookie: cookie } });
+    const r = await fetch(`${SITE}/api/perf?days=60&extra=1&account=${encodeURIComponent(String(c.username || '').replace(/^@/, ''))}`, { headers: { Cookie: cookie } });
     if (!r.ok) { console.error(`✗ ${k}: /api/perf answered ${r.status}`); continue; }
     data[k] = await r.json();
   }
