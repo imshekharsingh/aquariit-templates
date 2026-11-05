@@ -19,3 +19,6 @@ Evidence = the Instagram collect run of 5 Nov 2026: 4 reels, median reach 157, 0
    Evidence so far: Liberty went out at 18:21 (1,051); the 15:07, 17:30 and 20:16 posts reached 118-161 (4 reels, small sample).
    Measure: each reel's 24 h reach and hold vs the channel median (157). It runs alongside E14 (frame-0 payoff), so read both together.
    Timing cannot fix a low hold: rules 1-4 stay the main gate.
+7. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
+   PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
+   Kokoro alone reads 1889 as "eighteen hundred eighty nine" (5 of 10 Turns Out scripts have years); Eiffel and metres were unknown to it.

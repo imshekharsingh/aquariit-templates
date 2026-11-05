@@ -21,8 +21,12 @@ def spell(n):
     n = int(n)
     if n < 20: return ONES[n]
     if n < 100: return TENS[n // 10 - 2] + ('' if n % 10 == 0 else ' ' + ONES[n % 10])
-    if 2000 <= n < 2100 and n % 100: return 'twenty ' + spell(n % 100)
+    if 1100 <= n <= 1999 or 2010 <= n <= 2099:   # years as scripts/voice/say.py has them said (5 Nov 2026): 1889 eighteen eighty nine, 1908 nineteen oh eight
+        hi, lo = divmod(n, 100)
+        return spell(hi) + (' hundred' if lo == 0 else ' oh ' + ONES[lo] if lo < 10 else ' ' + spell(lo))
+    if 2000 <= n < 2010: return 'two thousand' + (' ' + ONES[n % 10] if n % 10 else '')
     if n < 1000: return ONES[n // 100] + ' hundred' + ('' if n % 100 == 0 else ' ' + spell(n % 100))
+    if n < 1000000: return spell(n // 1000) + ' thousand' + ('' if n % 1000 == 0 else ' ' + spell(n % 1000))   # 4000: four thousand, as Kokoro says it
     return ' '.join(ONES[int(d)] for d in str(n))
 
 
