@@ -1,0 +1,56 @@
+{
+ "name": "showreel-27-keyboard",
+ "seek": "scripts/explainer/keyboard.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why does your form show the wrong keyboard? A text field opens the letter keyboard, so you hunt for the numbers. The fix: input mode, numeric. Now one tap opens the number pad, and the code goes straight in.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.8,
+   0.75,
+   0.7
+  ]
+ },
+ "caption": "Why does your form show the wrong keyboard? 📱\n\nA plain text field gets the phone's standard letter keyboard (inputmode=\"text\" is the default), so for a one-time code, a PIN or an amount your user has to switch layouts and hunt for the digits. Add inputmode=\"numeric\" and the phone opens a number pad: digits 0-9, one tap each. It only changes the keyboard, not what counts as valid, so keep your own checks. For emails and phone numbers use type=\"email\" and type=\"tel\". Chrome 66+, Firefox 95+, Safari 12.1+ (iOS 12.2+).\nSave it for your next sign-up or checkout form, or send it to whoever builds yours.",
+ "keywords": [
+  "wrong keyboard on mobile form",
+  "inputmode numeric",
+  "number keyboard html input",
+  "OTP input mobile",
+  "mobile form UX",
+  "HTML forms"
+ ],
+ "hashtags": [
+  "#htmltips",
+  "#formdesign",
+  "#mobileux",
+  "#frontenddev",
+  "#webdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/inputmode",
+   "note": "MDN inputmode: hints at the type of data so the browser can show an appropriate virtual keyboard; text (default) = standard keyboard for the locale; numeric = numeric keyboard, only digits 0-9; it does not enforce validity"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/html/global_attributes.json",
+   "note": "inputmode: Chrome 66, Firefox 95 (Android 79), Safari 12.1, Safari iOS 12.2 (Edge follows Chrome)"
+  }
+ ],
+ "tip": {
+  "title": "Why does your form show the wrong keyboard?",
+  "why": "A plain text field gets the standard keyboard for the user's locale (inputmode=\"text\" is the default, MDN), so a code or PIN field opens letters and the user has to hunt for the digits. inputmode=\"numeric\" asks the phone for a numeric keyboard with the digits 0-9. It changes only the keyboard, not validation.",
+  "code": "<input inputmode=\"numeric\">",
+  "demo": "keyboard",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/inputmode",
+   "label": "MDN, inputmode"
+  }
+ }
+}

@@ -112,6 +112,18 @@ export const demos = {
 <p class="note">Open this on a phone and tap both buttons: the left one can stay lit after your finger lifts, until you tap somewhere else; the right one only presses. With a mouse both light up on hover.</p>`,
     js: `function(){}`,
   },
+  keyboard: {
+    css: `
+#keyboard .pane{height:120px;display:flex;flex-direction:column;justify-content:center}
+#keyboard input{margin:28px 10px 0;width:calc(100% - 20px);min-height:44px;border-radius:10px;border:1.5px solid #cfcac0;background:#fff;color:#111214;padding:0 12px;font:700 17px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">No inputmode (text)</span><input type="text" placeholder="6-digit code" aria-label="Code, default keyboard"></div>
+  <div class="pane fix"><span class="tag ok">inputmode="numeric"</span><input type="text" inputmode="numeric" placeholder="6-digit code" aria-label="Code, number keyboard"></div>
+</div>
+<p class="note">Open this on a phone and tap each field: the left one opens the letter keyboard, the right one opens a number pad. inputmode only changes the keyboard, not what the field accepts.</p>`,
+    js: `function(){}`,
+  },
   sideways: {
     css: `
 #sideways .pane{height:150px;overflow-x:auto;overflow-y:hidden}
