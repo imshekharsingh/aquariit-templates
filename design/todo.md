@@ -5,9 +5,8 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
-- [ ] Reels 2-3 days ahead per channel, kept topped up: a missed day costs reach, and a buffer lets the daily run spend its time on quality.
-      (After the 3 Nov night: web to 6 Nov, tech to 5 Nov, Turns Out to 6 Nov ready. Standing item: the daily runs build for the first free day
-      (CLAUDE.md, "Buffer"), so the buffer holds; each spare night tops it up. A Great Wall reel was dropped: its myth's origin date differs between sources.)
+- [ ] Reel tooling that raises the hit rate: the stills review prints a rulebook score block (design/rules-*.md) next to the sheet.
+      (The 2-3 day buffer item was dropped on 5 Nov 2026: owner, learn-then-build.)
 
 ## P2
 - [ ] @techin20sec topic shortlist from primary sources each morning on GitHub (roadmap 4): 3 candidates with sources and a viewer-stake hook.
