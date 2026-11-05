@@ -149,6 +149,7 @@ A scheduled task (created by the parent session, not here) fires Tuesdays around
   plan the day's hooks, formats and timing from its AUDIT_SIGNALS line (30 days: best posting hour, best format, reels with the biggest follower gains). The same day's id replaces the card; the owner's
   "Mark read" deletes it for good. In the repo only ONE line a day stays: the lesson, in design/experiments.md "Results log"
   (`- DD Mon: lesson`). The full report never goes into the repo or chat.
+- Cards (owner, 5 Nov 2026): only the daily audit, the spare-night summary and anything that needs the owner. Fixes and tooling are applied without a card; the owner asks about them in the daily checks.
 - Questions for the owner (owner, 1 Nov 2026) go into the app's "Needs you" list, never into chat: dispatch the "Owner answers" workflow (main) with
   action `add` and `asks` = `[{"id":"short-id","question":"plain English","why":"why it matters","kind":"yesno|done|text","channel":"web|tech|c3"}]`.
   Every daily run (and the spare-usage night) first dispatches it with action `read`, acts on each `ANSWER` line, then dispatches `clear` with
