@@ -56,6 +56,19 @@
   .tile .when{margin:0;min-height:26px;font-size:.75rem}
   .tile .chev{font:700 1.6rem/1 system-ui,sans-serif;color:var(--mute)}
   .empty{margin-top:30px;color:var(--mute)}
+  /* "Up next" (owner, 5 Nov 2026: what to post when): every unposted reel due today or tomorrow (and anything overdue) with its exact slot */
+  .sec{margin:26px 0 0;font:800 .8rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+  .when.late{background:var(--accent);color:var(--bg)}
+  .when.late::before{content:'!';display:inline-grid;place-items:center;width:16px;height:16px;margin-right:6px;border-radius:50%;background:var(--bg);color:var(--accent);font-size:.7rem}
+  .reel.compact{margin-top:12px}
+  .reel.compact .top2{display:flex;gap:14px;align-items:center}
+  .reel.compact .play{flex:none;position:relative;width:64px;aspect-ratio:9/16;border:0;padding:0;border-radius:12px;background:#000 center/cover no-repeat;cursor:pointer}
+  .reel.compact .play::after{content:'';position:absolute;left:50%;top:50%;width:0;height:0;margin:-9px 0 0 -6px;border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent #fff;filter:drop-shadow(0 1px 3px #000)}
+  .reel.compact .when{margin-bottom:6px}
+  .reel.compact .row .btn:first-child{flex:1 1 100%}
+  .reel.hl{animation:hl 1.2s ease-out 3}
+  @keyframes hl{0%{box-shadow:0 0 0 0 var(--accent)}100%{box-shadow:0 0 0 14px transparent}}
+  @media (prefers-reduced-motion: reduce){.reel.hl{animation:none;box-shadow:0 0 0 3px var(--accent)}}
   /* one tab per channel (owner, 27 Oct 2026; Turns Out from 31 Oct): its own accent, posting window and queue */
   body[data-ch="web"]{--accent:var(--c-web)}
   body[data-ch="tech"]{--accent:var(--c-tech)}
@@ -200,7 +213,7 @@
   <div class="alert" id="alert" role="alert" hidden></div>
   <section class="needs" id="needs" hidden><h2>Needs you</h2><div id="needs-list"></div></section>
   <div id="cards"></div>
-  <div class="notify" id="notify" hidden><span>Get the Tuesday 9 PM reminder on this phone.</span><button class="btn g" id="notify-on" type="button">Turn on notifications</button></div>
+  <div class="notify" id="notify" hidden><span>Get a reminder 10 minutes before each post time on this phone.</span><button class="btn g" id="notify-on" type="button">Turn on notifications</button></div>
   <details class="use" id="use" hidden><summary><span class="r"><span>GitHub minutes</span><span id="use-n"></span></span><span class="bar" id="use-bar"><i></i></span></summary><div id="use-note"></div><ul id="use-list"></ul></details>
   <div class="tabs" role="tablist" aria-label="Channel">
     <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
@@ -210,7 +223,7 @@
   <details class="prof" id="prof" hidden><summary>Profile</summary></details>
   <div class="seg" role="tablist" aria-label="View"><button type="button" role="tab" data-v="reels" aria-selected="true">Reels</button><button type="button" role="tab" data-v="growth" aria-selected="false">Growth</button></div>
   <h1 id="title">Showreels</h1>
-  <p class="lede" id="lede">The next reel to post is open; tap any other to open it. Copy the post text, save the video, post it, paste its sources as the first comment when it has them, then mark it uploaded: it moves to the Posted list below.</p>
+  <p class="lede" id="lede">Up next shows each reel with its exact time to post; tap a cover to play it. Copy the post text, save the video, post it at that time (paste its sources as the first comment when it has them), then tap Mark posted: it moves to the Posted list below. A reminder comes 10 minutes before each time.</p>
   <div id="list"><p class="empty">Loading…</p></div>
   <div id="growth" hidden></div>
 </main>
@@ -271,8 +284,14 @@
   var ch = 'web';
   try { var saved = localStorage.getItem('studio-ch'); if (CH[saved]) ch = saved; } catch (e) {}
   if (CH[location.hash.slice(1)]) ch = location.hash.slice(1);
-  function when(d){ if (!d) return 'Not scheduled'; var diff = Math.round((Date.parse(d) - Date.parse(istToday())) / DAY), t = CH[ch].slot;
-    return diff === 0 ? 'Post today · ' + t : diff === 1 ? 'Post tomorrow · ' + t : diff < 0 ? 'Was due ' + nice(d) + ' · post next' : 'Post ' + nice(d) + ' · ' + t; }
+  // the exact slot (owner, 5 Nov 2026): "postAt" (HH:MM IST) in captions.json, else the channel's default: web 13:00 (19:00 when the note says so),
+  // tech 19:00, Turns Out 20:00 (E15 from 6 Nov). The same rule is in src/worker.js (the reminders) and scripts/check.mjs
+  function slotOf(s, m){ if (/^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt; var k = chOf(s, DATA ? DATA.c : {});
+    return k === 'tech' ? '19:00' : k === 'c3' ? '20:00' : /\b19:00\b/.test(m.note || '') ? '19:00' : '13:00'; }
+  function dueOf(s, m){ return m.postOn ? Date.parse(m.postOn + 'T' + slotOf(s, m) + ':00+05:30') : Infinity; }
+  function when(s, m){ if (!m.postOn) return ['Not scheduled', '']; var t = slotOf(s, m), diff = Math.round((Date.parse(m.postOn) - Date.parse(istToday())) / DAY);
+    if (Date.now() > dueOf(s, m)) return ['Overdue since ' + (diff === 0 ? '' : diff === -1 ? 'yesterday ' : nice(m.postOn) + ' ') + t, ' late'];
+    return [diff === 0 ? 'Today ' + t : diff === 1 ? 'Tomorrow ' + t : nice(m.postOn) + ' · ' + t, diff === 0 ? ' now' : '']; }
   var ticks = {}, trackOk = true;
   function load(){ return fetch('/api/uploaded', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){ ticks = j.ids || {}; }).catch(function(){ trackOk = false; }); }
   function mark(name, on){ return fetch('/api/uploaded/' + encodeURIComponent(name), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ on: on }) })
@@ -472,53 +491,83 @@
     paint(counts);
     var items = all.filter(function(s){ return chOf(s, c) === ch; }); list.textContent = '';
     if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No reels for ' + CH[ch].name + ' yet.')); return; }
-    // to post (by date) in the main list; a reel marked uploaded leaves it at once for the compact "Posted" list (owner, 1 Nov 2026)
+    // to post, by exact due time: "Up next" = anything overdue plus everything due today or tomorrow (owner, 5 Nov 2026), each compact with its own
+    // buttons (tap the cover to play); "Later" = the rest as tiles. A tap or a reminder opens one. A reel marked posted leaves both at once for the compact "Posted" list (owner, 1 Nov 2026)
     var todo = items.filter(function(s){ return !ticks[s.name] && s.video; }), done = items.filter(function(s){ return ticks[s.name]; });
-    todo.sort(function(x, y){ var px = (c[x.name] || {}).postOn || '9999', py = (c[y.name] || {}).postOn || '9999'; if (px !== py) return px < py ? -1 : 1; var cx = (c[x.name] || {}).concept || '', cy = (c[y.name] || {}).concept || ''; return cx < cy ? -1 : cx > cy ? 1 : 0; });   // unscheduled pilots in concept order
+    todo.sort(function(x, y){ var mx = c[x.name] || {}, my = c[y.name] || {}, dx = dueOf(x, mx), dy = dueOf(y, my); if (dx !== dy) return dx < dy ? -1 : 1; var cx = mx.concept || '', cy = my.concept || ''; return cx < cy ? -1 : cx > cy ? 1 : 0; });   // unscheduled pilots in concept order
     done.sort(function(x, y){ return ticks[x.name] < ticks[y.name] ? 1 : -1; });
     if (!todo.length) list.appendChild(el('p', 'empty', 'Nothing to post for ' + CH[ch].name + ' right now.'));
-    else if (!openName[ch] || !todo.some(function(s){ return s.name === openName[ch]; })) openName[ch] = todo[0].name;
+    var horizon = Date.parse(istToday() + 'T00:00:00+05:30') + 2 * DAY;   // end of tomorrow, IST
+    var next = todo.filter(function(s){ return dueOf(s, c[s.name] || {}) < horizon; });
+    if (!next.length && todo.length && isFinite(dueOf(todo[0], c[todo[0].name] || {}))) next = [todo[0]];
+    var later = todo.filter(function(s){ return next.indexOf(s) < 0; });
     var box = done.length ? posted(done, c) : null, put = function(n){ list.insertBefore(n, box); };
-    todo.forEach(function(s){
-      var meta = c[s.name] || {}, up = ticks[s.name];
-      if (s.name !== openName[ch]) {   // collapsed tile: cover, name, date or uploaded mark; tap to open it
-        var tl = el('button', 'tile' + (up ? ' posted' : '')); tl.type = 'button'; tl.setAttribute('aria-label', 'Open ' + s.name);
-        var th = el('span', 'th'); if (s.cover) th.style.backgroundImage = 'url(' + s.cover + ')'; tl.appendChild(th);
-        var tx = el('span', 'tx'); tx.appendChild(el('span', 'name', meta.concept || label(s)));
-        tx.appendChild(el('span', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) : when(meta.postOn)));
-        tl.appendChild(tx); tl.appendChild(el('span', 'chev', '›'));
-        tl.addEventListener('click', function(){ openName[ch] = s.name; render(); var o = list.querySelector('.reel'); if (o) o.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
-        put(tl); return;
-      }
-      var card = el('article', 'reel' + (up ? ' posted' : '')), v = document.createElement('video');
-      v.src = s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover;
-      v.setAttribute('aria-label', 'Showreel ' + s.name);
-      var b = el('div', 'body');
-      b.appendChild(el('div', 'when' + (up ? ' ok' : meta.postOn === istToday() ? ' now' : ''), up ? '✓ Uploaded ' + nice(up.slice(0, 10)) + (meta.postOn ? ' · planned ' + nice(meta.postOn) : '') : when(meta.postOn)));
-      var nm = el('div', 'name', meta.concept || label(s)); b.appendChild(nm);
-      if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a reel's one-line description
-      b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size)));
-      var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), tick = el('button', 'btn g tick' + (up ? ' on' : ''), up ? 'Uploaded ✓' : 'Mark uploaded');
-      copy.type = 'button'; copy.disabled = true; dl.type = 'button'; tick.type = 'button'; tick.disabled = !trackOk; if (!trackOk) tick.title = 'Upload tracking is unavailable right now';
-      dl.addEventListener('click', function(){ save(s, dl); });
-      tick.addEventListener('click', function(){ tick.disabled = true; mark(s.name, !up).then(render, function(){ tick.disabled = false; tick.textContent = 'Try again'; }); });
-      copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
-      row.appendChild(copy); row.appendChild(dl); row.appendChild(tick);
-      // the post text sits on the card, above the buttons (owner, 24 Oct: "Where?"). It comes from the reel's NAME.json in the release, asked for
-      // even when the list did not link it (a re-render can briefly hide it from a cached list), with one retry; fields in captions.json win
-      cap.textContent = 'Loading post text…'; cap.classList.add('wait'); b.appendChild(cap);
-      var src = el('div', 'src'); src.hidden = true; b.appendChild(src);
-      var info = s.info || '/reels/' + s.name + '.json';
-      var get = function(){ return fetch(info, { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw r.status; return r.json(); }); };
-      get().catch(function(){ return new Promise(function(ok){ setTimeout(ok, 1500); }).then(get); }).catch(function(){ return {}; }).then(function(j){
-        var m = Object.assign({}, j, meta);
-        if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false;
-          if (!meta.concept) { TITLES[s.name] = firstLine(m.caption); nm.textContent = TITLES[s.name]; } }
-        else { cap.textContent = 'No post text for this reel yet.'; }
-        if (Array.isArray(m.sources) && m.sources.length) sources(src, m.sources); });
-      b.appendChild(row); card.appendChild(v); card.appendChild(b); put(card);
+    if (next.length) put(el('h2', 'sec', 'Up next'));
+    next.forEach(function(s){ put(reelCard(s, c[s.name] || {}, s.name !== openName[ch])); });
+    if (later.length) put(el('h2', 'sec', next.length ? 'Later' : 'To post'));
+    later.forEach(function(s){
+      var meta = c[s.name] || {};
+      if (s.name === openName[ch]) { put(reelCard(s, meta, false)); return; }
+      var w = when(s, meta), tl = el('button', 'tile'); tl.type = 'button'; tl.setAttribute('aria-label', 'Open ' + s.name); tl.setAttribute('data-reel', s.name);   // collapsed tile: cover, name, slot; tap to open it
+      var th = el('span', 'th'); if (s.cover) th.style.backgroundImage = 'url(' + s.cover + ')'; tl.appendChild(th);
+      var tx = el('span', 'tx'); tx.appendChild(el('span', 'name', meta.concept || label(s))); tx.appendChild(el('span', 'when' + w[1], w[0]));
+      tl.appendChild(tx); tl.appendChild(el('span', 'chev', '›'));
+      tl.addEventListener('click', function(){ openReel(s.name, false); });
+      put(tl);
     });
+    var h = hl && Date.now() < hl.until ? list.querySelector('[data-reel="' + hl.name + '"]') : null;   // a reminder's reel: highlighted for 4 s, scrolled to once
+    if (h) { h.classList.add('hl'); if (!hl.scrolled) { hl.scrolled = true; setTimeout(function(){ h.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); } }
   }
+  // one reel to post: the open one has the video, the post text and its sources; a compact one (in "Up next") has the cover (tap to play)
+  // and the same three buttons, so every due slot can be copied, saved and marked without opening it
+  function reelCard(s, meta, compact){
+    var w = when(s, meta), card = el('article', 'reel' + (compact ? ' compact' : '')), b = el('div', 'body'); card.setAttribute('data-reel', s.name);
+    var nm = el('div', 'name', meta.concept || label(s));
+    if (compact) { var t2 = el('div', 'top2'), pl = el('button', 'play'), tx = el('div'); pl.type = 'button'; pl.setAttribute('aria-label', 'Play ' + (meta.concept || label(s)));
+      if (s.cover) pl.style.backgroundImage = 'url(' + s.cover + ')'; pl.addEventListener('click', function(){ openReel(s.name, false); });
+      tx.appendChild(el('div', 'when' + w[1], w[0])); tx.appendChild(nm); t2.appendChild(pl); t2.appendChild(tx); b.appendChild(t2); }
+    else { var v = document.createElement('video'); v.src = s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover;
+      v.setAttribute('aria-label', 'Showreel ' + s.name); card.appendChild(v);
+      b.appendChild(el('div', 'when' + w[1], w[0])); b.appendChild(nm);
+      if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a reel's one-line description
+      b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size))); }
+    var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), tick = el('button', 'btn g tick', 'Mark posted');
+    copy.type = 'button'; copy.disabled = true; dl.type = 'button'; tick.type = 'button'; tick.disabled = !trackOk; if (!trackOk) tick.title = 'Upload tracking is unavailable right now';
+    dl.addEventListener('click', function(){ save(s, dl); });
+    tick.addEventListener('click', function(){ tick.disabled = true; mark(s.name, true).then(render, function(){ tick.disabled = false; tick.textContent = 'Try again'; }); });
+    copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
+    row.appendChild(copy); row.appendChild(dl); row.appendChild(tick);
+    // the post text sits on the card, above the buttons (owner, 24 Oct: "Where?"). It comes from the reel's NAME.json, asked for even when the
+    // list did not link it (a re-render can briefly hide it from a cached list), with one retry; fields in captions.json win
+    cap.textContent = 'Loading post text…'; cap.classList.add('wait'); cap.hidden = compact; b.appendChild(cap);
+    var src = el('div', 'src'); src.hidden = true; if (!compact) b.appendChild(src);
+    var info = s.info || '/reels/' + s.name + '.json';
+    var get = function(){ return fetch(info, { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw r.status; return r.json(); }); };
+    get().catch(function(){ return new Promise(function(ok){ setTimeout(ok, 1500); }).then(get); }).catch(function(){ return {}; }).then(function(j){
+      var m = Object.assign({}, j, meta);
+      if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false;
+        if (!meta.concept) { TITLES[s.name] = firstLine(m.caption); nm.textContent = TITLES[s.name]; } }
+      else { cap.textContent = 'No post text for this reel yet.'; }
+      if (!compact && Array.isArray(m.sources) && m.sources.length) sources(src, m.sources); });
+    b.appendChild(row); card.appendChild(b); return card;
+  }
+  // open one reel: a tap on a tile or cover, or a post reminder's link /#reel=<name> (owner, 5 Nov 2026): its tab, open, scrolled to and highlighted
+  var hl = null, pendingReel = null;
+  function openReel(name, flash){
+    if (!DATA) { pendingReel = name; return; }
+    var s = ((DATA.d && DATA.d.showreels) || []).filter(function(x){ return x.name === name; })[0];
+    var k = s ? chOf(s, DATA.c) : CH[(DATA.c[name] || {}).channel] ? DATA.c[name].channel : null;
+    if (!k) return;
+    ch = k; openName[k] = name; if (flash) hl = { name: name, until: Date.now() + 4000 };
+    if (view !== 'reels') { view = 'reels'; showView(); }
+    render();
+    if (!flash) { var o = list.querySelector('.reel[data-reel="' + name + '"]:not(.compact)'); if (o) o.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+  function fromLink(href){ var m = /#reel=(showreel-[a-z0-9-]{1,60})/.exec(href || ''); if (!m) return false;
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    openReel(m[1], true); return true; }
+  window.addEventListener('hashchange', function(){ fromLink(location.hash); });
+  if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', function(e){ if (e.data && e.data.open) fromLink(e.data.open); });
   paint();
   // "Needs you": each item has buttons that fit it (Yes / No, Done, or a short reply); the reply is stored and the item leaves the list
   var needs = document.getElementById('needs'), needsList = document.getElementById('needs-list');
@@ -600,7 +649,7 @@
       if (!nKey) return nState('Notifications: not ready yet, the server key is missing (see "Needs you" above).', null);
       if (Notification.permission === 'denied') return nState(BLOCKED, null);
       if (sub && Notification.permission === 'granted') { pushPost('/api/push/subscribe?quiet=1', sub.toJSON()).catch(function(){}); return nState('Notifications are on for this device.', 'Send a test notification', 'test'); }
-      nState('Get the Tuesday 9 PM reminder on this phone.', 'Turn on notifications', 'on');
+      nState('Get a reminder 10 minutes before each post time on this phone.', 'Turn on notifications', 'on');
     });
   }).catch(function(e){ nState('Notifications: ' + ((e && e.message) || 'not available here') + '.', null); });
   // Instagram collector health: an open alert per account, or no new numbers for 36+ hours (the run itself failed or stopped)
@@ -631,7 +680,7 @@
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
     // a re-render keeps the file name, so the video and cover URLs carry the release's update time: the phone never plays a cached older cut
     (r[0].showreels || []).forEach(function(s){ var v = '?v=' + encodeURIComponent(s.at || ''); if (s.video) s.video += v; if (s.cover) s.cover += v; });
-    DATA = { d: r[0], c: r[1] }; render();
+    DATA = { d: r[0], c: r[1] }; if (!fromLink(location.hash)) { if (pendingReel) openReel(pendingReel, true); else render(); }
     // titles for the collapsed tiles too: each reel's caption first line (one small request per reel), then one re-render
     Promise.all((r[0].showreels || []).filter(function(s){ return !(r[1][s.name] || {}).concept; }).map(function(s){
       return fetch(s.info || '/reels/' + s.name + '.json', { credentials: 'same-origin' }).then(function(x){ return x.ok ? x.json() : {}; }).then(function(j){ if (j && j.caption) TITLES[s.name] = firstLine(j.caption); }).catch(function(){}); }))

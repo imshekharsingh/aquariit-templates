@@ -505,6 +505,7 @@
  },
  "showreel-24-sticky": {
   "postOn": "2026-11-05",
+  "postAt": "19:00",
   "caption": "Why did your sticky header stop sticking? 📌\n\nA sticky element sticks to its nearest ancestor with a scrolling mechanism, and overflow: hidden creates one even if that box never scrolls (MDN). So one wrapper with overflow: hidden captures your header, and it scrolls away with the page. Swap it for overflow: clip: the content is still clipped, but the box is not a scroll container, so the header sticks to the page again. Chrome 90+, Firefox 81+, Safari 16+. (No top value set? Sticky never sticks; check that first.)\nSave it for the next time a header won't stick, or send it to whoever builds your site.",
   "keywords": [
    "position sticky not working",
@@ -527,6 +528,7 @@
  },
  "showreel-25-anchor": {
   "postOn": "2026-11-06",
+  "postAt": "13:00",
   "caption": "Why is your heading hiding under the header? 🔗\n\nA link to #billing scrolls that heading to the very top of the page, right where your fixed header sits, so the header covers it. Add scroll-padding-top to the html element, about the height of your header: it tells the browser the top strip is covered, so every link jump (and scrollIntoView) stops below it. One rule fixes every link on the page. Chrome 69+, Firefox 68+, Safari 14.1+. (For a single target, scroll-margin-top on that heading does the same.)\nSave it for your next docs or FAQ page, or send it to whoever builds your site.",
   "keywords": [
    "anchor link hidden under fixed header",
@@ -621,6 +623,7 @@
  "showreel-c3-green-sahara": {
   "channel": "c3",
   "postOn": "2026-11-05",
+  "postAt": "21:00",
   "concept": "2.5D flow · Was the Sahara always a desert?",
   "about": "One camera that never cuts: through the noon sun over the dunes into the green Sahara of 10,000 years ago (a lake with hippos and a crocodile), a rock wall where cattle are painted in red ochre, the Earth in space as its axis wobbles and the rain belt slides north over the Sahara and back south, and a sand-and-green cycle ring at dusk.",
   "note": "Built on the spare-usage night (3 Nov) for Thu 5 Nov 21:00 IST."
@@ -641,11 +644,13 @@
  "showreel-tech-wifi-address": {
   "channel": "tech",
   "postOn": "2026-11-05",
+  "postAt": "17:00",
   "concept": "Wi-Fi privacy"
  },
  "showreel-tech-airplane-bluetooth": {
   "channel": "tech",
   "postOn": "2026-11-06",
+  "postAt": "17:30",
   "concept": "Airplane mode"
  },
  "showreel-c3-marathon": {
@@ -658,6 +663,7 @@
  },
  "showreel-26-longname": {
   "postOn": "2026-11-07",
+  "postAt": "13:00",
   "caption": "Why does one long name break your card? 💳\n\nYour name has overflow: hidden, white-space: nowrap and text-overflow: ellipsis, yet it still pushes the button out of the card. The name sits in a flex item, and a flex item's min-width is auto: its smallest allowed width is its content, here the whole one-line name. Add min-width: 0 to that flex item (the wrapper, not the text): it can shrink, and the ellipsis finally shows. Works in every browser (Chrome 21+, Firefox 34+, Safari 7+ have the auto minimum). overflow: hidden on the flex item does the same.\nSave it for your next list or contact card, or send it to whoever builds your app.",
   "keywords": [
    "text-overflow ellipsis not working in flexbox",
@@ -679,6 +685,7 @@
  },
  "showreel-27-keyboard": {
   "postOn": "2026-11-05",
+  "postAt": "13:00",
   "caption": "Why does your form show the wrong keyboard? 📱\n\nA plain text field gets the phone's standard letter keyboard (inputmode=\"text\" is the default), so for a one-time code, a PIN or an amount your user has to switch layouts and hunt for the digits. Add inputmode=\"numeric\" and the phone opens a number pad: digits 0-9, one tap each. It only changes the keyboard, not what counts as valid, so keep your own checks. For emails and phone numbers use type=\"email\" and type=\"tel\". Chrome 66+, Firefox 95+, Safari 12.1+ (iOS 12.2+).\nSave it for your next sign-up or checkout form, or send it to whoever builds yours.",
   "keywords": [
    "wrong keyboard on mobile form",
@@ -701,6 +708,7 @@
  },
  "showreel-28-thumb": {
   "postOn": "2026-11-06",
+  "postAt": "19:00",
   "caption": "Why does your thumb hit the wrong link? 👍\n\nMenu links set in small text are often only about 16 px tall, so one fingertip covers two of them: you aim for Archive and get Delete. Give each link a real target: display: block and min-height: 44px. The text keeps its size; only the area you can tap grows. WCAG asks for targets of at least 24 × 24 CSS px (2.5.8, AA) and 44 × 44 for the best level (2.5.5, AAA). Works in every browser.\nSave it for your next menu or footer, or send it to whoever builds your app.",
   "keywords": [
    "tap target size mobile",
