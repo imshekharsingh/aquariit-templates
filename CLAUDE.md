@@ -70,6 +70,7 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 - @techin20sec makes "Tech, explained in 20 s" reels, not news: design/webin20sec.md, "@techin20sec reels", has the brief and the pass/fail targets.
   The 6 Nov audit gives the owner the verdict (keep the format, or pause the channel).
   After the verdict (owner, 5 Nov 2026): @techin20sec posts 2-3 reels a week (Mon / Wed / Fri), each built that day by the daily run. Paused, not cut.
+  Posting-time test (owner, 5 Nov 2026; 2 weeks from 6 Nov, E15): Mon and Wed 19:00 IST, Fri 17:30 IST. Web stays at 13:00 (its own data).
   Account Status checked by the owner on 1 Nov: no issues (no reach limit), so low reach is distribution, not a restriction; don't ask again.
 - Before the first test render, fix in techreel/ (same push): qa.txt prints the old 19.4 s voice limit (read the real one), and scenes
   open with only their label for about 0.4 s (content must arrive with the label).
@@ -83,10 +84,10 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 ## Turns Out: true stories (owner, 31 Oct 2026; was "Channel 3")
 - Promise: "The true story behind something everyone knows." Plan, never-list, fact rules and the pattern library: design/channel3.md.
   Instagram **@itturns.out**, display name **Turns Out**, bio "True stories behind things everyone knows. Sources in the comments."
-  Posts DAILY 21:00-22:00 IST (owner, 3 Nov 2026); launched Sun 1 Nov with the 2.5D Eiffel reel (showreel-c3-eiffel-flow).
+  Posts DAILY at 20:00 IST from 6 Nov (owner, 5 Nov 2026: posting-time test for 2 weeks, E15; reel ready by 18:30; was 21:00-22:00); launched Sun 1 Nov with the 2.5D Eiffel reel (showreel-c3-eiffel-flow).
   Going daily: the cost test passed (Mon 2 Nov blue-sky reel, $4.08 of session usage, same quality), so Turns Out posts DAILY from Tue 3 Nov
   (owner). A scheduled task ("Turns Out daily reel", ~14:39 IST) asks the studio launcher to start a fresh session every day
-  that builds THAT day's reel for 21:00 IST: new globally known true story, 2.5D kit, lean (one stills sheet, one render, no subagents, about $4),
+  that builds THAT day's reel for 20:00 IST (ready by 18:30): new globally known true story, 2.5D kit, lean (one stills sheet, one render, no subagents, about $4),
   captions.json postOn = that day, and a "note" card in the app when it is ready. Logo: design/brand/accounts/turnsout-logo.svg (an amber arrow turning round a dark ring, TURNS OUT inside; the family look of the other two).
   The app's "Turns Out" tab has the profile card and the reels. Internal ids stay `c3` (scripts/channel3/, `showreel-c3-*`, `"channel": "c3"`).
 - From 6 Nov (owner, 5 Nov 2026; moved up from 8 Nov the same day): a 3-reel test of ONE change (E14 in design/experiments.md): the payoff image in frame 0 (a "wait, what?"
