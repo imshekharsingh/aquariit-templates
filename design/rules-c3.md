@@ -15,5 +15,7 @@ Evidence = the Instagram collect run of 5 Nov 2026: 4 reels, median reach 157, 0
    blue sky held 8.4 s of 31.3 (27%).
 5. **Globally known, 2 reliable sources per claim, short credit on the last frame.** Evidence: no source complaints; the rule protects reach
    on every continent.
-Posting time stays 21:00-22:00 IST during the test from 6 Nov (one change at a time); note for later: Liberty went out at 18:21 (1,051),
-the 15:07, 17:30 and 20:16 posts reached 118-161 (4 reels, too few to move the slot yet).
+6. **Post daily at 20:00 IST, reel ready by 18:30** (posting-time test, owner 5 Nov, 2 weeks from 6 Nov; E15; was 21:00-22:00).
+   Evidence so far: Liberty went out at 18:21 (1,051); the 15:07, 17:30 and 20:16 posts reached 118-161 (4 reels, small sample).
+   Measure: each reel's 24 h reach and hold vs the channel median (157). It runs alongside E14 (frame-0 payoff), so read both together.
+   Timing cannot fix a low hold: rules 1-4 stay the main gate.

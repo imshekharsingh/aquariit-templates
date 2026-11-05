@@ -51,6 +51,12 @@ of its 24 h reach on one-reel days AND followers gained per day are higher on tw
 **Change (one):** frame 0 shows the payoff image (a "wait, what?" visual like the copper-brown Liberty), not a question on paper; only topics
 with a visible transformation. **Decide after the 3rd reel:** keep if reach and hold beat the channel median (157 reach on 5 Nov), else drop.
 
+## E15 · posting times for tech and Turns Out (owner, 5 Nov 2026; 2 weeks from 6 Nov)
+**Change:** @techin20sec posts Mon and Wed 19:00 IST, Fri 17:30 IST; Turns Out posts daily at 20:00 IST (was 21:00-22:00; reels ready by 18:30).
+@webin20sec stays at 13:00 (its own data: median 2,313 vs 899 at 12:00). **Measure:** each reel's reach at 24 h and hold vs its channel's
+median (tech 112, Turns Out 157 on 5 Nov). **Decide 20 Nov:** keep a slot whose reels beat the median more often than the old slot's did.
+Timing cannot fix a low hold; the rulebooks' hold rules stay the main gate.
+
 ## Queue of next ideas
 - E2: hook style: question vs bold claim vs number ("+212% leads").
 - E3: audience: show the template as a *result for a business* (before/after) rather than as a design showcase.
