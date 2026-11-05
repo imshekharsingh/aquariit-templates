@@ -28,9 +28,13 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 - Scheduling is the same for every channel (owner, 2 Nov 2026): each reel (scripts/explainer, scripts/channel3, techreel/topics as `showreel-tech-<slug>`)
   gets a templates/showreels/captions.json entry with "channel" (web / tech / c3), "postOn" (the IST day it should go out, chosen when it is made,
   e.g. a reel made the evening before for tomorrow says tomorrow) and "concept", in the push that makes it; npm run check fails without it.
-  Buffer (owner, 1 Nov 2026: reels 2-3 days ahead): before building, every run reads captions.json; if its channel already has a visible reel
-  with postOn = the day it would build for, it builds for the first later day without one instead (never two reels for one channel and day).
-  Topics for each channel and day are planned a week ahead in design/topics.md (spare-usage night, every Tuesday); runs take theirs from it.
+  Learn-then-build (owner, 5 Nov 2026; replaces the 2-3 day buffer): every reel is built the day it posts (or the evening before at most),
+  from the latest numbers and its channel's rulebook. No reels ahead. Reels rendered before 5 Nov (web 6-7 Nov, Turns Out 6-7 Nov, tech 6 Nov)
+  still post. Before building, a run reads captions.json and never builds a second reel for a channel and slot that already has one
+  (the @webin20sec two-a-day test, E13, has two slots on its two-reel days: 13:00 and 19:00 IST, the second with a "note").
+  Topics for each channel and day are planned a week ahead in design/topics.md (spare-usage night, every Tuesday); runs take theirs from it,
+  and swap it for a better one when the rulebook says so.
+- No app work until reach improves (owner, 5 Nov 2026): only fixes for things that break.
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
 - Archiving (owner, 1 Nov 2026; replaces the 7-day fold / 30-day rule): a reel marked uploaded leaves the main list at once for its channel's compact
   "Posted" list (cover, title, posted date, its numbers once the collector has them; no video). An R2 lifecycle rule deletes every file under v/ (MP4,
@@ -44,6 +48,10 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   and clear all of it: the PREFLIGHT voice line must say "fits", no "text wider than its box", the stills lines must say "EMPTY FRAMES: none" and "TEXT FIT: all text inside its box" (both scan every 0.5 s; a demo that overflows on purpose marks its container data-fit="free"), and stills at every beat checked.
   Re-render only for a real defect in the output. After a render, one `node scripts/reel-status.mjs <config> <scratch dir>` (about 25 minutes after the
   dispatch) gives the run's result, the voice check and the contact sheet; a failed run prints the failing job's error lines.
+- Rulebooks are a gate (owner, 5 Nov 2026): design/rules-web.md, design/rules-c3.md, design/rules-tech.md, 5-8 hard rules each with the
+  numbers behind them. Before the one render, every reel is scored rule by rule (pass / fail, one line each) and the score goes into the stills
+  review. A reel that fails a rule is fixed or its topic swapped. The daily audit adds, changes or drops a rule when the numbers say so
+  (always with the number).
 - Ownership (owner, 28 Oct 2026): Claude decides the topics for both channels, runs every check, renders and delivers; the owner watches and posts.
   Nothing is parked for the owner. The bar is the owner's: every reel feels premium, nothing looks broken, every spoken line is shown and
   finished (no half-relayed statement), and every reel teaches one concrete, useful thing. Claude reviews its own stills at every beat against
@@ -61,6 +69,7 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 ## @techin20sec test, 31 Oct-6 Nov 2026 (owner, 30 Oct; overrides any daily-run instruction to pick "the freshest tech story")
 - @techin20sec makes "Tech, explained in 20 s" reels, not news: design/webin20sec.md, "@techin20sec reels", has the brief and the pass/fail targets.
   The 6 Nov audit gives the owner the verdict (keep the format, or pause the channel).
+  After the verdict (owner, 5 Nov 2026): @techin20sec posts 2-3 reels a week (Mon / Wed / Fri), each built that day by the daily run. Paused, not cut.
   Account Status checked by the owner on 1 Nov: no issues (no reach limit), so low reach is distribution, not a restriction; don't ask again.
 - Before the first test render, fix in techreel/ (same push): qa.txt prints the old 19.4 s voice limit (read the real one), and scenes
   open with only their label for about 0.4 s (content must arrive with the label).
@@ -80,6 +89,9 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   that builds THAT day's reel for 21:00 IST: new globally known true story, 2.5D kit, lean (one stills sheet, one render, no subagents, about $4),
   captions.json postOn = that day, and a "note" card in the app when it is ready. Logo: design/brand/accounts/turnsout-logo.svg (an amber arrow turning round a dark ring, TURNS OUT inside; the family look of the other two).
   The app's "Turns Out" tab has the profile card and the reels. Internal ids stay `c3` (scripts/channel3/, `showreel-c3-*`, `"channel": "c3"`).
+- From 8 Nov (owner, 5 Nov 2026): a 3-reel test of ONE change (E14 in design/experiments.md): the payoff image in frame 0 (a "wait, what?"
+  visual like the copper-coloured Liberty, not a question on paper), and only topics with a visible transformation. Keep or drop after the
+  3 reels, by reach and hold vs the channel median (157). design/rules-c3.md is the gate.
 - Fixed Cell and the fictional pilots (rivals, pick-one, velmora and the silent first set) are retired: hidden, scenes in attic/.
 - Topics: general knowledge, recognisable on every continent (4+ continents a week), simple English, metric + imperial, universal dates.
   Never: religion, active wars or disputed borders, living politicians, "which country is better", health and diet claims,
@@ -97,6 +109,17 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   `node scripts/channel3/new25d.mjs <slug> "Hook?" "Sentence." ...` (a working starter; design/channel3.md, "Starter"); render with Showreel "parts" 1 (about 22 GitHub minutes).
   Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, preflight says "fits", one stills sheet.
 
+## Daily run (owner, 5 Nov 2026; the "Daily studio run" scheduled task points here)
+A fresh session, lean, no subagents, in this order:
+1. Dispatch "Owner answers" with action `read`, act on each ANSWER line, then `clear` the ids acted on.
+2. Audit card: numbers from the latest "Instagram collect" run's AUDIT_CHANNELS line, plan from its AUDIT_SIGNALS line, add only the lesson;
+   dispatch "Audit card" (kind audit).
+3. Update the rulebooks (design/rules-web.md, rules-c3.md, rules-tech.md) when the numbers say so: add, change or drop a rule, with the number.
+4. Build that day's reels (learn-then-build, nothing ahead): @webin20sec 13:00 IST (and 19:00 on E13 two-reel days), @techin20sec on
+   Mon / Wed / Fri after 6 Nov. Each is scored against its rulebook in the stills review before its ONE render; then reel-status.
+   Turns Out keeps its own scheduled task (14:39 IST), under the same rulebook gate.
+5. One lesson line in design/experiments.md "Results log" (`- DD Mon: lesson`), in the same push as the day's first reel.
+
 ## Spare usage night (owner, 1 Nov 2026; opt-OUT from 3 Nov 2026: spare usage is used every week unless the owner skips)
 The owner's weekly Claude limit resets Wednesday 04:30 IST. From Tuesday 21:00 IST the app shows a card "Tonight Claude uses your spare usage
 (until 4:30 AM)" with one "Skip tonight" button (a skip flag for that week in D1, /api/spare reports on = not skipped) and the time and reach of
@@ -105,10 +128,11 @@ the last push reminder ("Last reminder: <time>, sent to N phones" / "no phone si
 are the GitHub secrets VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY, published as Worker secrets by the pipeline; never in a file).
 A scheduled task (created by the parent session, not here) fires Tuesdays around 22:45 IST into the studio launcher, which starts a fresh session that:
 1. dispatches the "Spare check" workflow (main) and reads SPARE=yes/no from its log (yes unless the owner tapped "Skip tonight"). If no: end at once, no other work.
-2. If yes: (1) build reels ahead so each channel has 2-3 days ready (same preflight rules, one render per reel); (2) plan next week's topics;
-   (3) work design/todo.md top-down, one item per push; stop by 04:00 IST. Then update design/todo.md and post a short card
+2. If yes: growth work only (owner, 5 Nov 2026: no surplus reels, no app work): (1) plan next week's topics against the rulebooks;
+   (2) sharpen the rulebooks (design/rules-*.md) from the numbers, analysis of what held and what did not; (3) reel tooling that raises the
+   hit rate (preflight checks, kit pieces, the stills review), from design/todo.md top-down, one item per push; stop by 04:00 IST. Then update design/todo.md and post a short card
    (`"kind":"spare"`, "Audit card" workflow) saying what was done, in simple English.
-   The owner's brief for every spare night (3 Nov 2026): close as many growth and app improvements as possible, one at a time, each
+   The owner's brief for every spare night (3 Nov 2026, narrowed 5 Nov to growth work): close as many growth improvements as possible, one at a time, each
    finished, checked and pushed before the next; only work that needs nothing from the owner (anything that would goes into
    design/todo.md); stop at 04:00 IST with no push or render still running. Wait for each branch to merge before starting the next one
    that touches design/todo.md (two open branches that both add "Done" lines conflict).
@@ -154,7 +178,7 @@ Reels carry their own sound from 23 Oct (owner: audio supports the hook): effect
 ## Save Claude usage (owner, 14 Oct 2026)
 Heavy work runs on GitHub. In a session keep to quick stills and checks; never poll long jobs (one check-in after ~12 minutes is enough).
 Before any task, tell the owner its size, S (< 15 min) / M (30-60 min) / L (1-3 h) of session work, and wait for a go-ahead on M or bigger unless already approved.
-The daily studio run (scheduled task, 08:52 IST, a fresh session each day) does the audit (posted as a card in the app via the "Audit card" workflow, one lesson line in the Results log), then that day's @webin20sec and @techin20sec reels; approved standing work.
+The daily studio run (scheduled task, 08:52 IST, a fresh session each day) follows "Daily run" above; approved standing work.
 Lean by default (owner, 29 Oct 2026): scheduled work starts a fresh session, never a long-running one; review one stills sheet and one contact sheet
 per reel, not separate frames; read the voice check and qa.txt as text; at most one check-in per render, inside the same session; no subagents.
 

@@ -36,10 +36,20 @@ excepted) so a change in reach comes from distribution, not from a different kin
 reel) read next to each post's comment. **Verdict (29 Oct):** keep the routine if median reach per reel is at least 3x the 9-14 Oct median and at least one reel
 gets shares; otherwise test the next lever (hook style, posting time). Then decide area 3 of the process review (signature parts).
 
-## E13 · which AI voice: CANCELLED the same day (owner: keep only af_heart for consistency)
+## (old E13, renumbered) which AI voice: CANCELLED the same day (owner: keep only af_heart for consistency)
 Six Kokoro voices rotate by film date (af_heart, am_michael, bf_emma, am_fenrir, af_bella, bm_george; scripts/film/voice.mjs). Each reel's voice is in its voice
 report. **Measure:** average watch time and shares per reach per voice (Instagram collect). **Verdict:** after each voice has 2+ posted reels, keep the one with the
 best average watch as the single Aquarii voice (pin it with a `Voice:` line or change the default).
+
+## E13 · @webin20sec two a day (owner, 5 Nov 2026; runs 5-13 Nov)
+**Hypothesis:** a second reel at 19:00 IST adds followers without eating the 13:00 reel's reach.
+**Change:** two-reel days 5 (started a day early), 6, 8, 10, 12 Nov: 13:00 + 19:00 IST; one-reel days 7, 9, 11, 13 Nov: 13:00 only.
+Both reels pass design/rules-web.md. **Decide 14 Nov:** keep two a day only if the 13:00 reel's 24 h reach on two-reel days is at least 80%
+of its 24 h reach on one-reel days AND followers gained per day are higher on two-reel days; otherwise back to one a day.
+
+## E14 · Turns Out: payoff image in frame 0 (owner, 5 Nov 2026; 3 reels from 8 Nov)
+**Change (one):** frame 0 shows the payoff image (a "wait, what?" visual like the copper-brown Liberty), not a question on paper; only topics
+with a visible transformation. **Decide after the 3rd reel:** keep if reach and hold beat the channel median (157 reach on 5 Nov), else drop.
 
 ## Queue of next ideas
 - E2: hook style: question vs bold claim vs number ("+212% leads").
