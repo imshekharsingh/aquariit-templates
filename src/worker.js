@@ -507,7 +507,9 @@ async function uploadedApi(request, env, p) {
   }
   if (request.method === 'POST' && p === '/api/uploaded/import' && body && body.ids && typeof body.ids === 'object') {
     const rows = Object.entries(body.ids).filter(([id, at]) => ID_RE.test(id) && typeof at === 'string').slice(0, 500);
-    if (rows.length) await db.batch(rows.map(([id, at]) => db.prepare('INSERT OR IGNORE INTO reel_uploaded (id, at) VALUES (?1, ?2)').bind(id, at.slice(0, 40))));
+    // force (owner, 5 Nov 2026): the collector marks reels at their real Instagram time, overwriting a hand-tapped time
+    const sql = body.force === true ? 'INSERT INTO reel_uploaded (id, at) VALUES (?1, ?2) ON CONFLICT(id) DO UPDATE SET at = excluded.at' : 'INSERT OR IGNORE INTO reel_uploaded (id, at) VALUES (?1, ?2)';
+    if (rows.length) await db.batch(rows.map(([id, at]) => db.prepare(sql).bind(id, at.slice(0, 40))));
     return jres({ ok: true, imported: rows.length });
   }
   return jres({ error: 'bad-request' }, 400);
