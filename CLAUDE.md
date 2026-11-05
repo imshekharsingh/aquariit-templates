@@ -29,8 +29,8 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   gets a templates/showreels/captions.json entry with "channel" (web / tech / c3), "postOn" (the IST day it should go out, chosen when it is made,
   e.g. a reel made the evening before for tomorrow says tomorrow) and "concept", in the push that makes it; npm run check fails without it.
   Learn-then-build (owner, 5 Nov 2026; replaces the 2-3 day buffer): every reel is built the day it posts (or the evening before at most),
-  from the latest numbers and its channel's rulebook. No reels ahead. Reels rendered before 5 Nov (web 6-7 Nov, Turns Out 6-7 Nov, tech 6 Nov)
-  still post. Before building, a run reads captions.json and never builds a second reel for a channel and slot that already has one
+  from the latest numbers and its channel's rulebook. No reels ahead. Reels rendered before 5 Nov post only if they pass their rulebook (web 6-7 Nov passed; tech 6 Nov
+  posts; Turns Out 6-7 Nov were hidden for the E14 test and are rebuilt fresh). Before building, a run reads captions.json and never builds a second reel for a channel and slot that already has one
   (the @webin20sec two-a-day test, E13, has two slots on its two-reel days: 13:00 and 19:00 IST, the second with a "note").
   Topics for each channel and day are planned a week ahead in design/topics.md (spare-usage night, every Tuesday); runs take theirs from it,
   and swap it for a better one when the rulebook says so.
@@ -89,7 +89,7 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   that builds THAT day's reel for 21:00 IST: new globally known true story, 2.5D kit, lean (one stills sheet, one render, no subagents, about $4),
   captions.json postOn = that day, and a "note" card in the app when it is ready. Logo: design/brand/accounts/turnsout-logo.svg (an amber arrow turning round a dark ring, TURNS OUT inside; the family look of the other two).
   The app's "Turns Out" tab has the profile card and the reels. Internal ids stay `c3` (scripts/channel3/, `showreel-c3-*`, `"channel": "c3"`).
-- From 8 Nov (owner, 5 Nov 2026): a 3-reel test of ONE change (E14 in design/experiments.md): the payoff image in frame 0 (a "wait, what?"
+- From 6 Nov (owner, 5 Nov 2026; moved up from 8 Nov the same day): a 3-reel test of ONE change (E14 in design/experiments.md): the payoff image in frame 0 (a "wait, what?"
   visual like the copper-coloured Liberty, not a question on paper), and only topics with a visible transformation. Keep or drop after the
   3 reels, by reach and hold vs the channel median (157). design/rules-c3.md is the gate.
 - Fixed Cell and the fictional pilots (rivals, pick-one, velmora and the silent first set) are retired: hidden, scenes in attic/.
