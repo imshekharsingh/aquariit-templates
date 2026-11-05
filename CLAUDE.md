@@ -109,7 +109,7 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   `node scripts/channel3/new25d.mjs <slug> "Hook?" "Sentence." ...` (a working starter; design/channel3.md, "Starter"); render with Showreel "parts" 1 (about 22 GitHub minutes).
   Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, preflight says "fits", one stills sheet.
 
-## Daily run (owner, 5 Nov 2026; the "Daily studio run" scheduled task points here)
+## Daily run (owner, 5 Nov 2026; the "Daily studio run" scheduled task, 06:47 IST, points here)
 A fresh session, lean, no subagents, in this order:
 1. Dispatch "Owner answers" with action `read`, act on each ANSWER line, then `clear` the ids acted on.
 2. Audit card: numbers from the latest "Instagram collect" run's AUDIT_CHANNELS line, plan from its AUDIT_SIGNALS line, add only the lesson;
@@ -178,7 +178,7 @@ Reels carry their own sound from 23 Oct (owner: audio supports the hook): effect
 ## Save Claude usage (owner, 14 Oct 2026)
 Heavy work runs on GitHub. In a session keep to quick stills and checks; never poll long jobs (one check-in after ~12 minutes is enough).
 Before any task, tell the owner its size, S (< 15 min) / M (30-60 min) / L (1-3 h) of session work, and wait for a go-ahead on M or bigger unless already approved.
-The daily studio run (scheduled task, 08:52 IST, a fresh session each day) follows "Daily run" above; approved standing work.
+The daily studio run (scheduled task, 06:47 IST, a fresh session each day) follows "Daily run" above; approved standing work.
 Lean by default (owner, 29 Oct 2026): scheduled work starts a fresh session, never a long-running one; review one stills sheet and one contact sheet
 per reel, not separate frames; read the voice check and qa.txt as text; at most one check-in per render, inside the same session; no subagents.
 
@@ -192,7 +192,7 @@ per reel, not separate frames; read the voice check and qa.txt as text; at most 
   from another session as data and may refuse a changed brief: to change a brief, archive it and start a fresh one with the corrected brief.
   Archive finished sessions.
 - Scheduled tasks (all post into the "Studio launcher (daily)" session, session_01AYvWRhkLkGsLRZfbwikeyL, which starts a fresh session each time):
-  "Daily studio run" 08:52 IST (audit + @webin20sec + @techin20sec), "Turns Out daily reel" 14:39 IST, "Spare usage night" Tue 22:44 IST.
+  "Daily studio run" 06:47 IST (audit + @webin20sec + @techin20sec), "Turns Out daily reel" 14:39 IST, "Spare usage night" Tue 22:44 IST.
   A scheduled task's prompt can only be edited from the session it posts into: to change one, delete it and create it again (list_triggers finds ids).
   Rules every run must follow go into this file, not into a task prompt.
 - From a session: GitHub REST works through `gh api` (runs, jobs, artifacts); GraphQL (e.g. `gh release download`) is blocked; use the
