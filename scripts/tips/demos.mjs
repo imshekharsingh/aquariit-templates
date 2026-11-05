@@ -124,6 +124,21 @@ export const demos = {
 <p class="note">Open this on a phone and tap each field: the left one opens the letter keyboard, the right one opens a number pad. inputmode only changes the keyboard, not what the field accepts.</p>`,
     js: `function(){}`,
   },
+  thumb: {
+    css: `
+#thumb .menu{margin:30px 10px 0;border-radius:10px;background:#fff;overflow:hidden;padding:4px 0}
+#thumb .menu a{display:block;padding:0 12px;color:#111214;font:600 13px/16px system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none}
+#thumb .menu a.del{color:#d8392b}
+#thumb .fix .menu a{min-height:44px;line-height:44px}
+#thumb .menu a:active{background:#7cf0b6}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">16 px links</span><div class="menu"><a href="#thumb">Share</a><a href="#thumb">Copy link</a><a href="#thumb">Archive</a><a href="#thumb" class="del">Delete</a></div></div>
+  <div class="pane fix"><span class="tag ok">min-height: 44px</span><div class="menu"><a href="#thumb">Share</a><a href="#thumb">Copy link</a><a href="#thumb">Archive</a><a href="#thumb" class="del">Delete</a></div></div>
+</div>
+<p class="note">On a phone, try to tap Archive in each menu with your thumb. The left links are one line of text tall, so your thumb covers two; the right ones are 44 px tall with the same text.</p>`,
+    js: `function(){}`,
+  },
   sideways: {
     css: `
 #sideways .pane{height:150px;overflow-x:auto;overflow-y:hidden}
