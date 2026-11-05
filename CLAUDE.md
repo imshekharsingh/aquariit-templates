@@ -27,7 +27,7 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   /tips/ is the only public path (src/worker.js PUBLIC): static, no data, no API calls.
 - Scheduling is the same for every channel (owner, 2 Nov 2026): each reel (scripts/explainer, scripts/channel3, techreel/topics as `showreel-tech-<slug>`)
   gets a templates/showreels/captions.json entry with "channel" (web / tech / c3), "postOn" (the IST day it should go out, chosen when it is made,
-  e.g. a reel made the evening before for tomorrow says tomorrow) and "concept", in the push that makes it; npm run check fails without it.
+  e.g. a reel made the evening before for tomorrow says tomorrow), "postAt" (the exact IST slot, HH:MM: web 13:00 or 19:00, tech 17:00, c3 21:00; the app's "Up next" shows it and a push reminder goes out 10 minutes before, so a new slot needs its cron in wrangler.jsonc) and "concept", in the push that makes it; npm run check fails without it.
   Learn-then-build (owner, 5 Nov 2026; replaces the 2-3 day buffer): every reel is built the day it posts (or the evening before at most),
   from the latest numbers and its channel's rulebook. No reels ahead. Reels rendered before 5 Nov post only if they pass their rulebook (web 6-7 Nov passed; tech 6 Nov
   posts; Turns Out 6-7 Nov were hidden for the E14 test and are rebuilt fresh). Before building, a run reads captions.json and never builds a second reel for a channel and slot that already has one

@@ -1,7 +1,7 @@
 // studio app service worker (home = Showreels).
 // Network-first: HTML + the reel and channel lists (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v13';
+const VERSION = 'v14';
 const CACHE = `aquarii-${VERSION}`;
 const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/channels/channels.json', '/showreels/captions.json', '/icons/icon.svg'];
 
@@ -55,13 +55,16 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('push', (e) => {
   let m = {};
   try { m = e.data ? e.data.json() : {}; } catch { m = { body: e.data ? e.data.text() : '' }; }
-  e.waitUntil(self.registration.showNotification(m.title || 'Studio', { body: m.body || '', icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: m.url || '/' }, tag: 'studio' }));
+  e.waitUntil(self.registration.showNotification(m.title || 'Studio', { body: m.body || '', icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: m.url || '/' }, tag: m.tag || 'studio' }));
 });
 self.addEventListener('notificationclick', (e) => {
   e.notification.close();
   const url = new URL((e.notification.data && e.notification.data.url) || '/', self.location.origin).href;
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
-    for (const c of list) if (new URL(c.url).origin === self.location.origin && 'focus' in c) { if ('navigate' in c && c.url !== url) c.navigate(url).catch(() => {}); return c.focus(); }
+    // an open app gets a message (a post reminder opens /#reel=<name> without a reload); another page of the app navigates
+    for (const c of list) if (new URL(c.url).origin === self.location.origin && 'focus' in c) {
+      if (new URL(c.url).pathname === new URL(url).pathname) c.postMessage({ open: url }); else if ('navigate' in c) c.navigate(url).catch(() => {});
+      return c.focus(); }
     return self.clients.openWindow(url);
   }));
 });

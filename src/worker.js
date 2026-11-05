@@ -318,7 +318,7 @@ async function asksApi(request, env, p, url) {
 // /api/spare reports on = not skipped, and the "Spare check" workflow prints SPARE=yes unless skipped. The Worker's cron sends a Web Push reminder
 // at 21:00 IST on Tuesdays to every subscribed device (VAPID keys: Worker secrets VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY) and logs each send here,
 // so the card can show when the last reminder went out and to how many phones.
-const IST_MS = 5.5 * 3600e3, DAY_MS = 864e5;
+const IST_MS = 5.5 * 3600e3, DAY_MS = 864e5, SPARE_CRON = '30 15 * * *';   // wrangler.jsonc: the spare reminder's cron; every other cron is a post reminder
 function spareWindow(now = Date.now()) {   // the next reset (Wed 04:30 IST) and whether its card is showing (from Tue 21:00 IST)
   const ist = now + IST_MS, midnight = ist - (ist % DAY_MS), dow = new Date(ist).getUTCDay();
   let reset = midnight + ((3 - dow + 7) % 7) * DAY_MS + 4.5 * 3600e3;
@@ -360,7 +360,7 @@ async function spareApi(request, env, p, url) {
     const r = b && typeof b.endpoint === 'string' ? await db.prepare('SELECT endpoint, p256dh, auth FROM push_subs WHERE endpoint = ?1').bind(b.endpoint).first() : null;
     if (!r) return jres({ error: 'not-subscribed' }, 404);
     if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return jres({ ok: true, sent: null });
-    const status = await sendPush({ endpoint: r.endpoint, keys: { p256dh: r.p256dh, auth: r.auth } }, { title: 'Test notification', body: 'This is how the Tuesday reminder will look.', url: '/' }, env, 600).catch(() => 0);
+    const status = await sendPush({ endpoint: r.endpoint, keys: { p256dh: r.p256dh, auth: r.auth } }, await testPayload(env, db), env, 600).catch(() => 0);
     if (status === 404 || status === 410) await db.prepare('DELETE FROM push_subs WHERE endpoint = ?1').bind(r.endpoint).run();
     return jres({ ok: true, sent: status });
   }
@@ -375,7 +375,7 @@ async function spareApi(request, env, p, url) {
       .bind(ep, k.p256dh, k.auth, new Date().toISOString()).run();
     if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return jres({ ok: true, sent: null });
     if (url.searchParams.get('quiet') === '1') return jres({ ok: true });   // the app re-saves an existing subscription on open: no message
-    const status = await sendPush({ endpoint: ep, keys: k }, { title: 'Notifications are on', body: 'You will get the Tuesday 9 PM spare-usage night reminder here.', url: '/' }, env, 600).catch(() => 0);
+    const status = await sendPush({ endpoint: ep, keys: k }, { title: 'Notifications are on', body: 'You will get a reminder 10 minutes before each post time, and the Tuesday 9 PM spare-usage reminder.', url: '/' }, env, 600).catch(() => 0);
     return jres({ ok: true, sent: status });
   }
   return jres({ error: 'bad-request' }, 400);
@@ -399,6 +399,82 @@ async function sparePush(env) {   // the cron runs daily at 15:30 UTC (21:00 IST
   }
   await log((results || []).length, sent, failed);
   return { sent, failed };
+}
+
+// ---- Post-time reminders (owner, 5 Nov 2026: "less clarity on what should be uploaded when"; a 19:00 reel went out at 13:00). Each reel has an
+// exact slot: "postAt" (HH:MM IST) in captions.json, else its channel's default (web 13:00, or 19:00 when its note says so; tech 17:00; c3 21:00).
+// The cron fires 10 minutes before each slot ("20 7,11,13,15 * * *" UTC = 12:50, 16:50, 18:50, 20:50 IST) and sends "Post now: <title>" for each
+// reel due then and not marked uploaded; the tap opens /#reel=<name> (the app scrolls to it, opens and highlights it). Each send is logged in D1.
+// The same slot rule lives in templates/index.html and scripts/check.mjs (which also checks every postAt has a cron).
+const CH_NAME = { web: '@webin20sec', tech: '@techin20sec', c3: '@itturns.out' };
+export function postSlot(name, m) {
+  if (m && /^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt;
+  const ch = m && CH_NAME[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(name) ? 'tech' : /^showreel-c3-/.test(name) ? 'c3' : 'web';
+  return ch === 'tech' ? '17:00' : ch === 'c3' ? '21:00' : /\b19:00\b/.test((m && m.note) || '') ? '19:00' : '13:00';
+}
+const chOfReel = (name, m) => (m && CH_NAME[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(name) ? 'tech' : /^showreel-c3-/.test(name) ? 'c3' : 'web');
+const hookLine = (c) => String(c || '').split('\n')[0].replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}️]/gu, '').trim();
+async function reelTitle(env, name, m) {
+  let t = hookLine(m.caption);
+  if (!t && env.REELS) { try { const o = await env.REELS.get('c/' + name + '.json'); if (o) t = hookLine((await o.json()).caption); } catch { /* fall back */ } }
+  if (!t && m.concept) t = String(m.concept).split(' · ').pop();
+  return t || name.replace(/^showreel-(tech-|c3-|t\d+-)?(\d+-)?/, '').replace(/-/g, ' ');
+}
+export function postPayload(name, m, title) {
+  return { title: 'Time to post', body: `Post now: ${title} (${CH_NAME[chOfReel(name, m)]}, ${postSlot(name, m)})`, url: '/#reel=' + name, tag: 'post-' + name };
+}
+async function captionsOf(env) {
+  const r = await env.ASSETS.fetch(new Request('https://assets.local/showreels/captions.json'));
+  return r.ok ? r.json() : {};
+}
+// reels not marked uploaded, due between `from` and `to` (ms), oldest first
+async function dueReels(env, db, from, to) {
+  const caps = await captionsOf(env), up = new Set(((await db.prepare('SELECT id FROM reel_uploaded').all().catch(() => ({}))).results || []).map((r) => r.id));
+  return Object.entries(caps).filter(([n, m]) => m && !m.hidden && /^\d{4}-\d{2}-\d{2}$/.test(m.postOn || '') && !up.has(n))
+    .map(([n, m]) => ({ name: n, m, due: Date.parse(`${m.postOn}T${postSlot(n, m)}:00+05:30`) }))
+    .filter((x) => x.due >= from && x.due <= to).sort((a, b) => a.due - b.due);
+}
+async function postDb(env) {
+  const db = await spareDb(env);
+  if (!db) return null;
+  await db.batch([db.prepare('CREATE TABLE IF NOT EXISTS reel_uploaded (id TEXT PRIMARY KEY, at TEXT NOT NULL)'),
+    db.prepare('CREATE TABLE IF NOT EXISTS post_push_log (reel TEXT NOT NULL, due TEXT NOT NULL, at TEXT NOT NULL, devices INTEGER NOT NULL, sent INTEGER NOT NULL, failed INTEGER NOT NULL, note TEXT, PRIMARY KEY (reel, due))')]);
+  return db;
+}
+async function postPush(env, now = Date.now()) {
+  const db = await postDb(env);
+  if (!db) return { sent: 0 };
+  const reels = await dueReels(env, db, now + 3 * 60e3, now + 20 * 60e3);   // the slot 10 minutes ahead (a cron may run a few minutes late or early)
+  const out = [];
+  for (const { name, m, due } of reels) {
+    const dueIso = new Date(due).toISOString();
+    if (await db.prepare('SELECT 1 FROM post_push_log WHERE reel = ?1 AND due = ?2').bind(name, dueIso).first()) continue;   // already reminded
+    const log = (devices, sent, failed, note) => db.prepare('INSERT OR REPLACE INTO post_push_log (reel, due, at, devices, sent, failed, note) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)')
+      .bind(name, dueIso, new Date().toISOString(), devices, sent, failed, note || null).run().catch(() => {});
+    if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) { await log(0, 0, 0, 'no-keys'); continue; }
+    const payload = postPayload(name, m, await reelTitle(env, name, m));
+    const { results } = await db.prepare('SELECT endpoint, p256dh, auth FROM push_subs').all();
+    let sent = 0, failed = 0;
+    for (const r of results || []) {
+      const status = await sendPush({ endpoint: r.endpoint, keys: { p256dh: r.p256dh, auth: r.auth } }, payload, env).catch(() => 0);
+      if (status === 404 || status === 410) { failed++; await db.prepare('DELETE FROM push_subs WHERE endpoint = ?1').bind(r.endpoint).run(); }
+      else if (status >= 200 && status < 300) sent++;
+      else failed++;
+    }
+    await log((results || []).length, sent, failed, payload.body.slice(0, 200));
+    out.push({ name, sent, failed });
+  }
+  return out;
+}
+// "Send a test notification": the real reminder for the next reel to post (overdue or upcoming, 3 days either side), so the tap tests the deep link
+async function testPayload(env, db) {
+  try {
+    await postDb(env);
+    const now = Date.now(), list = await dueReels(env, db, now - 3 * DAY_MS, now + 3 * DAY_MS);
+    const x = list.find((r) => r.due >= now - 12 * 3600e3) || list[list.length - 1];
+    if (x) { const p = postPayload(x.name, x.m, await reelTitle(env, x.name, x.m)); return { ...p, title: 'Test: ' + p.title, tag: 'test' }; }
+  } catch { /* the plain test below */ }
+  return { title: 'Test notification', body: 'This is how the reminders will look.', url: '/' };
 }
 
 // ---- Reel-uploaded tracking in D1 (binding "DB"). Without the binding the API answers 501 and the pages fall back to localStorage. ----
@@ -484,7 +560,7 @@ async function reelFile(request, env, name) {
 }
 
 export default {
-  async scheduled(controller, env, ctx) { ctx.waitUntil(sparePush(env)); },
+  async scheduled(controller, env, ctx) { ctx.waitUntil(controller.cron === SPARE_CRON ? sparePush(env) : postPush(env, controller.scheduledTime || Date.now())); },
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname;
     const configured = accounts(env).length > 0;
