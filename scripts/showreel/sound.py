@@ -6,8 +6,14 @@
 #   cues.json: { dur, bed: { bpm, origin, chords, soft?, lift? }, cues: [ { t, k, g?, p?, d?, text?, voice?, speed? } ] }
 #   k: whoosh (d = length), swish (d; soft, for narrated reels), hit, boom, pop (p = pitch step), tap, thud, tick, click, shimmer, riser (d), voice (text; Kokoro, Apache-2.0, runs on the runner)
 # Seeded noise only, so the same cues always give the same sound. The workflow levels the mix to -14 LUFS when it muxes.
-import json, sys, wave
+import json, os, sys, wave
 import numpy as np
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'voice'))
+import say   # noqa: E402  the shared lexicon (scripts/voice/say.json): the hook voice says words the way the narration does
+# SAY_CONFIG=<reel config.json> (set by the Showreel workflow) adds the config's own "say" on top of the lexicon
+SAY = json.load(open(os.environ['SAY_CONFIG'])).get('say') if os.environ.get('SAY_CONFIG') else None
+SAY_USED = []
 
 SR = 48000
 rng = np.random.default_rng(20)
@@ -109,7 +115,8 @@ def voice(text, speed=1.1, name='af_heart'):
     try:
         from kokoro import KPipeline
         pipe = KPipeline(lang_code='a', repo_id='hexgrad/Kokoro-82M')
-        a = np.concatenate([np.asarray(c[2], dtype=float).reshape(-1) for c in pipe(text, voice=name, speed=speed)])
+        spoken, used = say.apply(text, SAY); SAY_USED.extend(x for x in used if x not in SAY_USED)
+        a = np.concatenate([np.asarray(c[2], dtype=float).reshape(-1) for c in pipe(spoken, voice=name, speed=speed)])
     except Exception as e:   # no voice model on this machine: the reel keeps its sound effects and bed
         print('voice skipped:', e); return None
     a = np.interp(np.arange(0, len(a) * 2) / 2, np.arange(len(a)), a)   # 24 kHz -> 48 kHz
@@ -176,6 +183,12 @@ def reverb(x, sec=1.4, mix=.18):
 
 def main(cues_path, out_path, narration=None):
     C = json.load(open(cues_path)); dur = float(C['dur']); n = int(dur * SR)
+    if SAY:   # a config "say" entry that matches no word of the narration or the hook voice stops the run, as in voice.py and techreel
+        v = json.load(open(os.environ['SAY_CONFIG'])).get('voice')
+        texts = [c['text'] for c in C['cues'] if c['k'] == 'voice'] + ([v['text']] if isinstance(v, dict) and v.get('text') else [])
+        used = [u for t in texts for u in say.apply(t, SAY)[1]]
+        bad = say.unused(SAY, used)
+        if bad: sys.exit(f'"say" entries match no spoken word: {", ".join(bad)}')
     sfx = np.zeros((2, n + SR * 2)); vox = np.zeros((2, n + SR * 4))
     def put(buf, s, t):
         i = int(round(t * SR)); a = max(0, i); s = s[:, a - i:]; buf[:, a:a + s.shape[1]] += s[:, :buf.shape[1] - a]

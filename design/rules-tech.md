@@ -15,3 +15,6 @@ After the 6 Nov verdict the channel posts 2-3 reels a week (Mon / Wed / Fri), ea
    AUDIT_SIGNALS 19:00 median 129 (2 reels) vs 00:00 119, 11:00 117, 23:00 117; the pre-13:00 news posts sank under 10 (28 Oct).
    Measure: each reel's 24 h reach and hold vs the channel median (112 reach on 5 Nov). Timing cannot fix a low hold: rules 1-4 stay the main gate.
 6. **No topic @webin20sec covers and no repeat of a test topic.**
+7. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
+   PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
+   the Wi-Fi reel was read "Wi" "Fi" (owner); a mispronounced brand makes the whole explainer sound wrong.

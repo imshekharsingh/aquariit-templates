@@ -1,5 +1,5 @@
 """Voiceover: Kokoro TTS (open licence, CPU, no key), generated line by line (or in one take with "flow": true) with a start and end time for every displayed word.
-The topic's "say" map gives pronunciation overrides: display word -> spoken words, or Kokoro phoneme markup for letters and brands,
+The shared lexicon scripts/voice/say.json (every channel, 5 Nov 2026) and the topic's own "say" map (wins) give pronunciation overrides: display word -> spoken words, or Kokoro phoneme markup for letters and brands,
 e.g. "AI": "[AI](/ˌAˈI/)". Spelling letters with spaces ("A I") makes two separately stressed words ("AY. EYE."), which sounds
 choppy (measured 24 Oct). Every line's phonemes are kept in vo.json and listed in qa.txt so the pronunciation can be checked. The spoken text may not contain
 digits or hyphens; the whole voice must end by 19.4 s (the speed is nudged up a little if needed, then it fails and asks for a trim)."""
@@ -7,7 +7,13 @@ import json
 import re
 import wave
 
+import os
+import sys
+
 import numpy as np
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'scripts', 'voice'))
+import say   # noqa: E402  the shared lexicon (scripts/voice/say.json) every channel's voice uses
 
 SR = 48000
 GAP = .04          # extra silence between lines (each line already keeps 50 ms before and 110 ms after its sound)
@@ -20,23 +26,23 @@ def core(w):
     return re.sub(r"[^\w']", '', w)
 
 
-def spoken_words(line, say):
-    """[(display word, [spoken words])] for a line, after pronunciation overrides. A hyphenated word is spoken as its parts
-    ("self-hosted" -> "self hosted"), and the punctuation after a word stays on its last spoken word, so commas and question
+def spoken_words(line, own):
+    """[(display word, [spoken words])] for a line, after pronunciation overrides: the topic's own "say" first, then the shared
+    lexicon scripts/voice/say.json (owner, 5 Nov 2026: one way to say each word on every channel). A hyphenated word is spoken as its
+    parts ("self-hosted" -> "self hosted"), and the punctuation after a word stays on its last spoken word, so commas and question
     marks keep their pauses and rises (owner, 26 Oct: the statements did not sound connected)."""
     out = []
     for w in line.split():
-        c = core(w)
         punct = re.search(r'[,.?!:;]*$', w).group()
-        key = re.sub(r"^[^\w]+|[^\w]+$", '', w)   # the word as written, inner hyphen kept: "Wi-Fi," -> "Wi-Fi" (5 Nov: core() made it "WiFi", so a "Wi-Fi" override never matched)
-        rep = next((say[k] for k in (key, key.lower(), c, c.lower()) if k in say), None)
-        if rep:
-            USED.add(next(k for k in (key, key.lower(), c, c.lower()) if k in say))
-        sp = rep.split() if rep else [x for x in re.split(r'-', re.sub(r"[^\w'-]", '', w)) if x]
+        hit = say.lookup(w, own)   # hyphen-safe: "Wi-Fi," is looked up as "Wi-Fi" (5 Nov)
+        if hit and hit[:2] not in [u[:2] for u in USED]:
+            USED.append(hit)
+        rep = say.replacement(w, hit[1]) if hit else None
+        sp = re.findall(r'\[[^\]]+\]\(/[^)]*/\)|\S+', rep) if rep else [x for x in re.split(r'-', re.sub(r"[^\w'-]", '', w)) if x]
         if punct and sp:
             sp = sp[:-1] + [sp[-1] + punct]
         for s in sp:
-            if re.search(r'\d', s) or ('-' in s and not s.startswith('[')):
+            if not s.startswith('[') and (re.search(r'\d', s) or '-' in s):
                 raise SystemExit(f'spoken text must spell numbers out and avoid hyphens: "{s}" in "{line}" (add it to "say")')
         out.append((w, sp))
     return out
@@ -98,31 +104,30 @@ def _assign(pairs, toks, dur):
     return words
 
 
-USED = set()
-# words every topic needs said one way (owner, 5 Nov 2026: "Wi-Fi" was read as two words); a topic's own "say" wins
-DEFAULT_SAY = {'Wi-Fi': '[WiFi](/wˈaɪfˌaɪ/)', 'WiFi': '[WiFi](/wˈaɪfˌaɪ/)'}
+USED = []   # (key, replacement, source) of every override used by the lines, in order
 
 
 def generate(topic, wav_path, fake=False):
     own = topic.get('say', {})
-    say = {**DEFAULT_SAY, **own}
     lines = [l['text'] for l in topic['lines']]
     USED.clear()
-    pairs = [spoken_words(l, say) for l in lines]
-    unused = [k for k in own if k not in USED]
+    pairs = [spoken_words(l, own) for l in lines]
+    unused = say.unused(own, [(k, src) for k, _, src in USED])
     if unused:   # an override that matches no word is a silent mispronunciation: stop before anything renders
         raise SystemExit(f'"say" entries match no spoken word: {", ".join(unused)} (check the spelling as written in the lines)')
     if fake:
         # preflight (owner, 27 Oct 2026: renders were repeated because the voice came out too long): Kokoro af_heart reads about 75.5 ms per
         # letter at speed 1 in one take, pauses included (5 renders on 26-27 Oct, within 3%). Estimate the take, nudged up to max_speed as the
         # render would, and say plainly whether it fits, so a script that cannot fit is trimmed before anything is dispatched.
-        letters = len(re.sub(r'[^A-Za-z]', '', re.sub(r'\[([^\]]+)\]\(/[^)]*/\)', r'\1', ' '.join(' '.join(w for _, sp in pr for w in sp) for pr in pairs))))
+        said = re.sub(r'\[([^\]]+)\]\(/[^)]*/\)', r'\1', ' '.join(' '.join(w for _, sp in pr for w in sp) for pr in pairs))
+        letters = len(re.sub(r'[^A-Za-z]', '', said)) + 4 * len(re.sub(r'\D', '', said))   # a year in markup ("1889") still takes time
         sp0, top, lim = float(topic.get('speed', 1.05)), float(topic.get('max_speed', 1.14)), float(topic.get('max_end', MAX_END))
         est = lambda v: FIRST + letters * .083 / v   # .083 s a letter at speed 1: the slowest take so far (3 Nov, Face ID: 19.75 s for 240 letters at 1.01)
         v = sp0
         while est(v) > lim and v < top - .001:
             v = round(v + .03, 2)
         verdict = 'fits' if est(v) <= lim - .3 else 'TOO LONG: trim about %d letters' % (int((est(v) - lim + .3) * v / .0765) + 1) if est(v) > lim else 'tight (within 0.3 s): trim a word to be safe'
+        print(say.report(topic)[0])
         print(f'PREFLIGHT voice: {letters} letters, about {est(v):.1f} s at speed {v:.2f} (limit {lim}): {verdict}')
     if fake:   # estimate at 3.2 words a second, no audio; for local stills
         res, cur = [], FIRST
@@ -138,7 +143,7 @@ def generate(topic, wav_path, fake=False):
     speed = topic.get('speed', 1.05)
     # how the phonemizer reads each overridden word on its own, spelled with spaces, and with the override (for QA)
     checks = {}
-    for k, v in say.items():
+    for k, v, _ in USED:
         try:
             checks[k] = {form: pipe.g2p(f'Can an {form} shop?')[0] for form in (k, ' '.join(k), v)}
         except Exception as e:

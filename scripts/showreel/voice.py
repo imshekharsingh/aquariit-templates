@@ -10,14 +10,20 @@
 #   sentence, in seconds from the reel's start (null = a breath of `gap`, default 0.25 s, after the previous one); each sentence is
 #   spoken on its own, trimmed, and placed at its time, so the voice lands on the scene's events. The scene is the source of truth
 #   (window.VOICE = { text, at }); scripts/channel3/qa.mjs checks that the config matches it, preflight.mjs that every sentence fits its slot.
-import json, re, sys, wave
+#   Pronunciation (owner, 5 Nov 2026: one way to say each word on every channel): every sentence goes through the shared lexicon
+#   scripts/voice/say.json, plus the config's own "say" (word as written -> Kokoro markup or spoken words; it wins). A config "say"
+#   entry that matches no spoken word stops the run.
+import json, os, re, sys, wave
 import numpy as np
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'voice'))
+import say   # noqa: E402
 
 SR = 48000
 
 
 def main(cfg_path, wav_path, words_path):
-    V = json.load(open(cfg_path))['voice']
+    cfg = json.load(open(cfg_path)); V = cfg['voice']
     from kokoro import KPipeline
     pipe = KPipeline(lang_code='a', repo_id='hexgrad/Kokoro-82M')
     audio, words, off = [], [], 0.0
@@ -26,6 +32,12 @@ def main(cfg_path, wav_path, words_path):
     at = V.get('at')
     parts = [x.strip() for x in re.findall(r'(?:[^.?!]|\.(?=\d))+[.?!]?', V['text']) if x.strip()] if gap or at else [V['text']]
     if at and len(at) != len(parts): sys.exit(f'voice.at has {len(at)} times for {len(parts)} sentences')
+    used = []
+    for n, part in enumerate(parts):
+        parts[n], u = say.apply(part, cfg.get('say')); used += [x for x in u if x not in used]
+    bad = say.unused(cfg.get('say'), used)
+    if bad: sys.exit(f'"say" entries match no spoken word: {", ".join(bad)} (check the spelling as written in voice.text)')
+    print(f'voice: {len(used)} pronunciation overrides: {say.label(used) or "none"}')
     for n, part in enumerate(parts):
         if at:   # placed at its own time: silence up to it (at least 0.12 s after the previous sentence)
             want = at[n] if at[n] is not None else off + (gap or .25)
