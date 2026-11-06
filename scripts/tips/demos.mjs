@@ -139,6 +139,21 @@ export const demos = {
 <p class="note">Turn your screen brightness down or step outside: the left prices fade first. WCAG asks for at least 4.5 : 1 for body text; on white, #767676 is the lightest grey that passes.</p>`,
     js: `function(){}`,
   },
+  // sample (6 Nov 2026, temporary): the scroll-snap sample's demo (its tip stays off the public page while it is a sample)
+  snap: {
+    css: `
+#snap .row{display:flex;gap:0;margin:30px 10px 0;border-radius:10px;overflow-x:auto;overflow-y:hidden}
+#snap .row div{flex:0 0 100%;height:84px;display:flex;align-items:center;justify-content:center;color:#111214;font:800 22px system-ui,-apple-system,"Segoe UI",sans-serif}
+#snap .fix .row{scroll-snap-type:x mandatory}
+#snap .fix .row div{scroll-snap-align:center}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">No snap</span><div class="row"><div style="background:#c9714f">1</div><div style="background:#8fa58a">2</div><div style="background:#e3c9a0">3</div><div style="background:#d9a441">4</div></div></div>
+  <div class="pane fix"><span class="tag ok">scroll-snap-type: x mandatory</span><div class="row"><div style="background:#c9714f">1</div><div style="background:#8fa58a">2</div><div style="background:#e3c9a0">3</div><div style="background:#d9a441">4</div></div></div>
+</div>
+<p class="note">Swipe each row and let go halfway. The left one stops wherever you let go; the right one always settles on one whole photo.</p>`,
+    js: `function(){}`,
+  },
   thumb: {
     css: `
 #thumb .menu{margin:30px 10px 0;border-radius:10px;background:#fff;overflow:hidden;padding:4px 0}

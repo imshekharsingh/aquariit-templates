@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does your carousel stop between photos?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, sample 2 (6 Nov 2026, temporary, for the owner's review): "Why does your carousel stop between photos?"
+   The dark Nº 14-18 look, with motion introduced gradually: ONE camera (the phone rises out of the title, a push-in on the seam between
+   two half photos, the red outline of the carousel lifts off and becomes the code card, the camera pulls back as the row snaps), eased
+   secondary motion (staggered words with an overshoot settle, snap lines that pop in one by one, a spring on every landing), a tap ripple
+   under the finger, and two depth layers (a far dot grid moving at a third of the camera). Sound follows the motion (window.CUES with the
+   new kinds in scripts/showreel/sound.py: move, touch, snap, blip, swell, resolve; x for stereo, r for a room tail). Facts: MDN
+   scroll-snap-type (mandatory: the viewport must snap when it is not being scrolled) and scroll-snap-align; BCD Chrome 69, Firefox 68,
+   Safari 11. Beats and captions lead the voice by 0.15 s; every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--rule:#33343c;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#bg{left:-200px;top:-200px;width:940px;height:1360px;background-image:radial-gradient(circle,#24252b 1.4px,transparent 1.6px);background-size:30px 30px;transform-origin:470px 680px}
+#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
+#tag{left:36px;top:166px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
+#hook{left:34px;top:236px;font-weight:800;font-size:72px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96;z-index:4}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--red)}
+/* the stage: the camera's window (it opens to the full frame for the title, then sits between the tag and the captions) */
+#stage{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
+/* the phone: a shop page with a photo carousel */
+#ph{left:0;top:0;width:250px;height:470px;border-radius:38px;background:#2a2b31;padding:8px;transform-origin:0 0}
+#scr{position:absolute;left:8px;top:8px;width:234px;height:454px;border-radius:31px;overflow:hidden;background:var(--paper);color:var(--ink)}
+#sb{position:absolute;left:0;right:0;top:0;height:26px;font:700 11px/26px var(--m);padding:0 18px}
+#br{position:absolute;left:16px;top:38px;font:700 11px/1 var(--m);letter-spacing:.16em}
+#bag{position:absolute;right:16px;top:34px;width:18px;height:18px;border:2px solid var(--ink);border-radius:4px 4px 6px 6px}
+#car{position:absolute;left:0;top:60px;width:234px;height:186px;overflow:hidden;background:#ddd8cc}
+#trk{position:absolute;left:0;top:0;width:936px;height:186px}
+.pic{position:absolute;top:0;width:234px;height:186px}
+.pic svg{display:block}
+.snl{position:absolute;top:10px;width:0;height:166px;border-left:2px dashed var(--acc);transform-origin:50% 100%}
+#seam{position:absolute;top:0;width:0;height:186px;border-left:3px dashed var(--red)}
+#half{position:absolute;top:12px;height:24px;padding:0 9px;border-radius:12px;background:var(--red);color:#fff;font:700 11px/24px var(--m);letter-spacing:.08em;white-space:nowrap}
+#dots{position:absolute;left:0;right:0;top:256px;height:6px;text-align:center;font-size:0}
+#dots i{display:inline-block;height:6px;border-radius:3px;background:#c6c1b6;margin:0 3px;vertical-align:top}
+#pt{position:absolute;left:16px;top:278px;font:800 21px/1.05 var(--f);font-variation-settings:'opsz' 48;letter-spacing:-.015em}
+#pp{position:absolute;left:16px;top:306px;font:700 13px/1 var(--m);color:#6d6960}
+#pd{position:absolute;left:16px;right:16px;top:330px;font:500 11.5px/1.45 var(--f);color:#6d6960}
+#btn{position:absolute;left:16px;right:16px;top:388px;height:40px;border-radius:20px;background:var(--ink);color:var(--paper);font:700 13px/40px var(--f);text-align:center}
+#fg{position:absolute;width:40px;height:40px;border-radius:50%;background:rgba(17,18,20,.22);border:2.5px solid rgba(17,18,20,.55);z-index:7}
+#rip{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.95);z-index:6}
+/* the fix card: it starts as the carousel's red outline and lifts out of it */
+#cd{left:0;top:0;border-radius:18px;font:500 15px/1.45 var(--m);white-space:pre;color:var(--paper);overflow:hidden}
+#cd .in{position:absolute;left:14px;top:14px}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#cap{left:36px;right:36px;top:710px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="bg" class="a"></div>
+<div id="stage" class="a"><div id="world" class="a">
+<div id="ph" class="a">
+  <div id="scr">
+    <div id="sb">9:41</div>
+    <div id="br">KILNWORK</div><div id="bag"></div>
+    <div id="car" data-fit="free"><div id="trk">
+      <div class="pic" style="left:0;background:#c9714f"><svg width="234" height="186" viewBox="0 0 234 186"><ellipse cx="117" cy="168" rx="58" ry="7" fill="#000" opacity=".16"/><path d="M104 34h26v22c26 10 40 32 40 58 0 30-22 52-53 52s-53-22-53-52c0-26 14-48 40-58z" fill="#f2e6d4"/><rect x="100" y="30" width="34" height="8" rx="3" fill="#e4d4bc"/></svg></div>
+      <div class="pic" style="left:234px;background:#8fa58a"><svg width="234" height="186" viewBox="0 0 234 186"><ellipse cx="117" cy="168" rx="44" ry="6" fill="#000" opacity=".16"/><path d="M108 22h18v40c18 8 28 26 28 50 0 30-16 54-37 54s-37-24-37-54c0-24 10-42 28-50z" fill="#2f3a2e"/><rect x="104" y="18" width="26" height="7" rx="3" fill="#232c22"/></svg></div>
+      <div class="pic" style="left:468px;background:#3b4e7a"><svg width="234" height="186" viewBox="0 0 234 186"><ellipse cx="117" cy="168" rx="66" ry="7" fill="#000" opacity=".2"/><path d="M96 70h42c30 6 46 26 46 50 0 28-26 46-67 46s-67-18-67-46c0-24 16-44 46-50z" fill="#e3c9a0"/><rect x="92" y="62" width="50" height="10" rx="4" fill="#d1b386"/></svg></div>
+      <div class="pic" style="left:702px;background:#d9a441"><svg width="234" height="186" viewBox="0 0 234 186"><ellipse cx="117" cy="168" rx="40" ry="6" fill="#000" opacity=".16"/><path d="M110 16h14v30c22 12 30 40 30 70 0 30-14 50-37 50s-37-20-37-50c0-30 8-58 30-70z" fill="#244a3c"/><rect x="106" y="12" width="22" height="7" rx="3" fill="#1b3a2f"/></svg></div>
+      <div class="snl" id="sn0" style="left:117px"></div><div class="snl" id="sn1" style="left:351px"></div><div class="snl" id="sn2" style="left:585px"></div><div class="snl" id="sn3" style="left:819px"></div>
+      <div id="seam"></div>
+    </div><div id="half">HALF + HALF</div></div>
+    <div id="dots"><i></i><i></i><i></i><i></i></div>
+    <div id="pt">Stoneware vase</div>
+    <div id="pp">€48 · 4 colours</div>
+    <div id="pd">Thrown by hand, glazed inside, holds water.</div>
+    <div id="btn">Add to bag</div>
+    <div id="rip"></div>
+    <div id="fg"></div>
+  </div>
+</div>
+<div id="cd" class="a"><div class="in" id="code"></div></div>
+</div></div>
+<div id="lbl" class="a">Nº S2 · SWIPE</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span class="acc">carousel</span></span><span class="ln"><span>stop</span> <span class="acc">between</span></span><span class="ln"><span>photos?</span></span></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var back = function(k){ var c = 1.9; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };   // overshoot, then settle
+  var spring = function(k){ return k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-5.5 * k) * Math.cos(9.5 * k) * (1 - k * .9); };   // lands, overshoots a little, settles
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why does your carousel stop between photos? Your swipe stops wherever your finger lets go, so you see half of two. The fix: scroll snap type, x mandatory. Now every swipe lands on one photo.";
+  var WORDS = [], DUR = 20, LEAD = .15, HOOK_N = 7, PW = 234;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [], SW = [];
+  function anchors(){
+    align();
+    A = { first: at('your', 2), swipe: at('swipe'), go: at('go'), half: at('half'), two: at('two'), fix: at('fix'), scroll: at('scroll'), type: at('type'),
+      mand: at('mandatory'), now: at('now'), every: at('every'), lands: at('lands'), one: at('one'), photo: at('photo', 2) };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.first - .3, A.hookIn + .35);
+    A.snap = A.mand + .25;   // the row snaps as "mandatory" lands
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    // the swipes: [touch down, from, to, length, snaps?]; before the fix the row coasts and stops dead wherever it is
+    SW = [[.05, 0, 1.46, 1.15, 0], [Math.min(1.45, A.leave - 1.2), 1.46, 2.53, 1.05, 0], [A.go - .5, 2.53, 1.55, 1.1, 0],
+      [A.every - .35, 2, 3, .8, 1], [A.every + 1.25, 3, 2, .8, 1], [Math.min(A.every + 2.75, DUR - 1.9), 2, 1, .8, 1]];
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  var CODE = '<span class="dim">.row {</span>\n  scroll-snap-type:\n    <b>x mandatory</b>;\n<span class="dim">}</span>\n<span class="dim">.row img {</span>\n  scroll-snap-align:\n    <b>center</b>;\n<span class="dim">}</span>';
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  var CODE_N = CODE.replace(/<[^>]+>/g, '').length, CODE_1 = '.row {\n  scroll-snap-type:\n    x mandatory;'.length;
+  // the row's scroll position (in photos) at time t
+  function posAt(t){ var p = 0;
+    for (var i = 0; i < SW.length; i++) { var s = SW[i]; if (t < s[0]) break;
+      var k = P(t, s[0], s[0] + s[3]);
+      p = s[4] ? mix(s[1], s[2], spring(P(t, s[0] + .1, s[0] + s[3] + .35))) : mix(s[1], s[2], out(k));
+      if (i === 2 && t >= A.snap) p = mix(1.55, 2, spring(P(t, A.snap, A.snap + .75))); }
+    return p; }
+  // the camera: [time, world x, world y at screen (270, 440), scale]
+  var SEAM = { x: 36 + 8 + .45 * PW, y: 206 + 8 + 60 + 93 };
+  function camKeys(){ return [[0, 270, 440, 1], [A.half - .25, 270, 440, 1], [A.half + .45, SEAM.x, SEAM.y, 1.5], [A.fix - .15, SEAM.x + 6, SEAM.y, 1.56], [A.fix + .65, 270, 440, 1], [A.now - .1, 270, 440, 1], [A.now + .7, 270, 440, 1.03], [DUR, 268, 442, 1.04]]; }
+  function cam(t){ var K = camKeys(), i = 0; while (i < K.length - 2 && t >= K[i + 1][0]) i++;
+    var a = K[i], b = K[i + 1], k = io(P(t, a[0], b[0])), ls = Math.exp(mix(Math.log(a[3]), Math.log(b[3]), k));
+    var w = (ls - a[3]) / ((b[3] - a[3]) || 1); if (b[3] === a[3]) w = k;
+    return { x: mix(a[1], b[1], w), y: mix(a[2], b[2], w), s: ls }; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var ex = io(P(t, DUR - .6, DUR - .1));
+    var gone = io(P(t, A.leave, A.leave + .35));
+    // the title: words rise in one by one and settle with a small overshoot; they leave upwards as the phone rises
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = back(P(t, s, s + .42));
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 46 - gone * 80) + 'px) rotate(' + (1 - k) * 3 + 'deg)'; });
+    $('lbl').style.opacity = 1 - ex;
+    // ---- the camera and the far layer (a third of the camera's move: depth) ----
+    var c = cam(t), tx = 270 - c.x * c.s, ty = 440 - c.y * c.s;
+    $('world').style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + c.s + ')';
+    var bs = 1 + (c.s - 1) * .3;
+    $('bg').style.transform = 'translate(' + ((270 - c.x) * .15 * (c.s - 1) + Math.sin(t * .3) * 6) + 'px,' + ((440 - c.y) * .15 * (c.s - 1) - t * 3) + 'px) scale(' + bs + ')';
+    $('bg').style.opacity = 1 - ex * .6;
+    // ---- the stage window: full frame for the title, then between the tag and the captions ----
+    var rise = io(P(t, A.leave + .15, A.leave + .7));
+    $('stage').style.clipPath = 'inset(' + (196 * rise) + 'px 0 ' + (270 * rise) + 'px 0)';
+    // ---- the phone: small and centred under the title, then full size on the left ----
+    var s = mix(.68, 1, rise), x = mix((540 - 250 * .68) / 2, 36, rise), y = mix(548 + Math.sin(t * .9) * 3, 206 + Math.sin(t * .8 + 1) * 2, rise);
+    var ph = $('ph'); ph.style.opacity = out(P(t, 0, .25)) * (1 - ex); ph.style.transform = 'translate(' + x + 'px,' + (y + ex * 20) + 'px) scale(' + s + ')';
+    // ---- the carousel ----
+    var pos = posAt(t), fixed = t >= A.snap;
+    $('trk').style.transform = 'translateX(' + (-pos * PW) + 'px)';
+    [].forEach.call($('dots').children, function(d, i){ var a = cl(1 - Math.abs(pos - i)); d.style.width = (6 + 14 * a) + 'px'; d.style.background = a > .02 ? 'rgba(17,18,20,' + (.25 + .75 * a) + ')' : '#c6c1b6'; });
+    // the seam between two half photos, and its pill, before the fix
+    var near = Math.round(pos), fr = Math.abs(pos - near), seamOn = (fixed ? 0 : 1) * cl((fr - .3) * 8) * (t > .5 ? 1 : 0);
+    var sx = (Math.floor(pos) + 1) * PW;
+    $('seam').style.left = (sx - 1.5) + 'px'; $('seam').style.opacity = seamOn * (1 - P(t, A.fix - .15, A.fix + .2));
+    var hp = win(t, A.half, A.fix - .1, .2), hk = back(P(t, A.half, A.half + .4));
+    var hl = $('half'); hl.style.left = ((sx - pos * PW) - 46) + 'px'; hl.style.opacity = hp; hl.style.transform = 'scale(' + mix(.6, 1, hk) + ')';
+    // snap lines: one per photo centre, popping in one after another on "mandatory"
+    for (var n = 0; n < 4; n++) { var st = A.mand - .05 + n * .09, k2 = back(P(t, st, st + .4)), fade = mix(1, .35, P(t, A.snap + 1.2, A.snap + 2));
+      var sl = $('sn' + n); sl.style.opacity = cl((t - st) * 8) * fade * (1 - ex); sl.style.transform = 'scaleY(' + k2 + ')'; }
+    // the finger and its tap ripple
+    var fx = 150, fy = 150, fa = 0, rk = -1;
+    for (var i = 0; i < SW.length; i++) { var w0 = SW[i], d0 = w0[0] - .3, drag = w0[0] + w0[3] * .42;
+      if (t >= d0 && t < drag + .3) { var dir = w0[2] > w0[1] ? -1 : 1, m = io(P(t, w0[0], drag));
+        fx = mix(117 - dir * 55, 117 + dir * 55, m); fy = 60 + 100 + Math.sin(m * Math.PI) * -6;
+        fa = cl((t - d0) / .2) * (1 - P(t, drag, drag + .25));
+        if (t >= w0[0] && t < w0[0] + .45) rk = P(t, w0[0], w0[0] + .45);
+        if (t < w0[0]) fx = 117 - dir * 55 + (1 - P(t, d0, w0[0])) * 14; } }
+    fa *= (1 - ex);
+    var fg = $('fg'); fg.style.left = (fx - 20) + 'px'; fg.style.top = (fy - 20) + 'px'; fg.style.opacity = fa;
+    var rp = $('rip'), rr = rk < 0 ? 0 : 6 + out(rk) * 30, lastSw = null;
+    SW.forEach(function(w){ if (t >= w[0]) lastSw = w; });
+    var rx = lastSw ? 117 + (lastSw[2] > lastSw[1] ? 55 : -55) : 117;
+    rp.style.left = (rx - rr) + 'px'; rp.style.top = (160 - rr) + 'px'; rp.style.width = rp.style.height = (rr * 2) + 'px'; rp.style.opacity = rk < 0 ? 0 : (1 - rk) * .9;
+    // ---- the fix card: the carousel's red outline lifts out of it and becomes the code card ----
+    var mk = io(P(t, A.fix - .2, A.fix + .55)), lift = P(t, A.fix - .35, A.fix - .2);
+    var r0 = { x: 36 + 8, y: 206 + 8 + 60, w: PW, h: 186 }, r1 = { x: 296, y: 420 + Math.sin(t * .8) * 3, w: 218, h: 236 };
+    var cd = $('cd'), on = Math.max(lift * (mk < 1 ? 1 : 0), mk > 0 ? 1 : 0) * (t > A.fix - .35 ? 1 : 0);
+    cd.style.left = mix(r0.x, r1.x, mk) + 'px'; cd.style.top = mix(r0.y, r1.y, mk) + 'px'; cd.style.width = mix(r0.w, r1.w, mk) + 'px'; cd.style.height = mix(r0.h, r1.h, mk) + 'px';
+    cd.style.opacity = on * (1 - ex); cd.style.borderRadius = mix(4, 18, mk) + 'px';
+    cd.style.border = mk < .8 ? '3px dashed var(--red)' : '1px solid var(--rule)';
+    cd.style.background = 'rgba(27,28,33,' + cl((mk - .7) / .3) + ')';
+    cd.style.transform = 'rotate(' + Math.sin(mk * Math.PI) * -3 + 'deg)';
+    var nTyped = Math.floor(CODE_N * P(t, A.scroll - .05, A.mand + .25) * (CODE_1 / CODE_N) + (CODE_N - CODE_1) * P(t, A.mand + .3, A.mand + 1.4));
+    $('code').innerHTML = typed(CODE, mk > .8 ? nTyped : 0);
+    // ---- HUD and tag ----
+    var shown = pos + 1;
+    $('hud').innerHTML = 'PHOTO <b class="' + (fixed ? 'y' : fr < .02 ? '' : 'r') + '">' + (fixed || fr < .02 ? String(near + 1) : shown.toFixed(1)) + '</b> / 4';
+    $('hud').style.opacity = 1 - ex;
+    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
+    tg.textContent = t < A.half - .2 ? 'STOPS WHERE YOU LET GO' : t < A.fix - .2 ? 'HALF OF ONE, HALF OF THE NEXT' : t < A.snap ? 'THE FIX' : 'SNAPS TO ONE PHOTO · NO JS';
+    // ---- captions ----
+    var ph0 = null;
+    for (var i2 = 0; i2 < PH.length; i2++) { if (t >= WORDS[PH[i2][0]].s - LEAD - .05 && (i2 === PH.length - 1 || t < WORDS[PH[i2 + 1][0]].s - LEAD - .05)) ph0 = PH[i2]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)
+      ph0.forEach(function(j){ var w = WORDS[j], on2 = t >= w.s - LEAD, k = back(P(t, w.s - LEAD, w.s - LEAD + .3)), aft = w.s >= A.fix;
+        var col2 = aft && /^(scroll|snap|type|x$|mandatory|every|one)/i.test(w.d) ? 'var(--acc)' : !aft && /^(stops|half|two)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on2 ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 14 + 'px);color:' + col2 + '">' + w.d.replace(/</g, '') + '</span>'; });
+    $('cap').innerHTML = html;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  // sound follows the motion: each cue carries the length of its move (d), where it is on screen (x, x2) and a room send (r)
+  var CHORDS = [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [48, 60, 64, 67, 72], [43, 55, 62, 67, 71]];
+  function buildCues(){
+    var BAR = DUR / 8, Q = [];
+    var chordAt = function(t){ return CHORDS[Math.floor(t / BAR) % CHORDS.length]; };
+    var tone = function(t, i){ var ch = chordAt(t); return ch[1 + i % (ch.length - 1)] - 69 + 12; };   // a chord tone, as semitones from A5 (blip p)
+    Q.push({ t: 0, k: 'move', d: .6, g: .35, dir: 1, x: 270, r: .3 });
+    // the title words: soft tuned blips, placed where each word lands
+    var wx = [80, 200, 330, 190, 110, 330, 200];
+    for (var i = 0; i < HOOK_N; i++) Q.push({ t: WORDS[i].s - LEAD + .05, k: 'blip', g: .1, p: tone(WORDS[i].s, i) - 12, x: wx[i] });
+    // each swipe: a fingertip touch, air shaped to the swipe's own length travelling with it, then a dead stop or a snap that lands in key
+    SW.forEach(function(w, i){ var dir = w[2] > w[1] ? -1 : 1, x0 = A.leave < w[0] ? 160 : 270, scr = A.leave < w[0] ? 1 : .68;
+      Q.push({ t: w[0], k: 'touch', g: .45, p: w[4] ? 3 : 0, x: x0 - dir * 50 * scr });
+      Q.push({ t: w[0] + .05, k: 'move', d: w[3] * .9, g: w[4] ? .3 : .26, dir: -dir, x: x0 - dir * 60 * scr, x2: x0 + dir * 60 * scr, r: .15 });
+      if (!w[4]) Q.push({ t: w[0] + w[3] - .05, k: 'thud', g: .22, p: -3, x: x0 });
+      else Q.push({ t: w[0] + w[3] * .55, k: 'snap', g: .5, p: tone(w[0] + w[3], i), x: x0 }); });
+    // the phone rises out of the title; the push-in on the seam; the red pill
+    Q.push({ t: A.leave + .15, k: 'move', d: .6, g: .4, dir: 1, x: 270, x2: 160, r: .35 });
+    Q.push({ t: A.half - .25, k: 'move', d: .7, g: .35, dir: 1, p: -.3, x: 270, x2: 200, r: .3 });
+    Q.push({ t: A.half + .05, k: 'blip', g: .16, p: -1, x: 200 });
+    // the fix: the outline lifts out of the carousel and travels to the code column while the camera pulls back
+    Q.push({ t: A.fix - .25, k: 'move', d: .8, g: .45, dir: 1, p: .2, x: 160, x2: 405, r: .45 });
+    for (var c = 0, t0 = A.scroll, t1 = A.mand + .25; t0 + c * .09 < t1; c++) Q.push({ t: t0 + c * .09, k: 'tick', g: .08, p: (c * 5) % 7, x: 405 });
+    Q.push({ t: A.snap, k: 'swell', d: Math.min(1.6, A.snap - A.scroll + .2), g: .3, x: 300 });
+    Q.push({ t: A.snap, k: 'resolve', g: .5, notes: chordAt(A.snap).slice(1), x: 160, r: .5 });
+    Q.push({ t: A.snap + .5, k: 'snap', g: .45, p: tone(A.snap, 2), x: 160 });
+    for (var n = 0; n < 4; n++) Q.push({ t: A.mand - .05 + n * .09 + .2, k: 'blip', g: .08, p: tone(A.mand, n), x: 90 + n * 30 });
+    for (var c2 = 0, u0 = A.mand + .3, u1 = A.mand + 1.4; u0 + c2 * .11 < u1; c2++) Q.push({ t: u0 + c2 * .11, k: 'tick', g: .06, p: (c2 * 3) % 7, x: 405 });
+    Q.push({ t: A.now - .1, k: 'move', d: .8, g: .3, dir: 1, p: -.2, x: 270, x2: 220, r: .3 });
+    Q.push({ t: DUR - .6, k: 'move', d: .6, g: .4, dir: -1, p: -.4, x: 270, r: .4 });
+    window.CUES = { dur: DUR, cues: Q, mix: { duck: 9, attack: .02, release: .3, room: .55 },
+      bed: { bpm: 240 / BAR, origin: 0, gain: .3, chords: CHORDS } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

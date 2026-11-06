@@ -1,0 +1,59 @@
+{
+ "name": "showreel-s02-snap",
+ "sample": true,
+ "seek": "scripts/explainer/snap.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why does your carousel stop between photos? Your swipe stops wherever your finger lets go, so you see half of two. The fix: scroll snap type, x mandatory. Now every swipe lands on one photo.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "gap": [
+   0.75,
+   0.8,
+   0.75
+  ]
+ },
+ "say": {
+  "x": "[x](/ˈɛks/)"
+ },
+ "caption": "Why does your carousel stop between photos? 📸\n\nA row of photos with overflow-x: auto scrolls freely, so it stops wherever your finger lets go: half of one photo, half of the next. Add scroll-snap-type: x mandatory to the row and scroll-snap-align: center to each photo, and every swipe settles on one whole photo. No JavaScript, no library. Works in Chrome 69+, Firefox 68+ and Safari 11+.\nSave it for your next product gallery, or send it to whoever built your carousel.",
+ "keywords": [
+  "carousel stops between slides",
+  "CSS scroll snap",
+  "scroll-snap-type x mandatory",
+  "image carousel without JavaScript",
+  "mobile UX design",
+  "CSS tips"
+ ],
+ "hashtags": [
+  "#scrollsnap",
+  "#csstips",
+  "#mobileux",
+  "#uidesign",
+  "#frontenddev"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-snap-type",
+   "note": "MDN scroll-snap-type: set on a scroll container; mandatory = the viewport must snap to a snap position when it is not being scrolled; BCD: Chrome 69, Firefox 68, Safari 11 (iOS 11)"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-snap-align",
+   "note": "MDN scroll-snap-align: the box's snap position (start, end, center) within its snap area; BCD: Chrome 69, Firefox 68, Safari 11"
+  }
+ ],
+ "tip": {
+  "title": "Why does your carousel stop between photos?",
+  "why": "A scrolling row stops wherever the finger lets go, so a swipe often ends on half of two photos. scroll-snap-type: x mandatory on the row makes it settle on a snap position every time, and scroll-snap-align: center on each photo makes that position the photo's centre (MDN). No JavaScript.",
+  "code": ".row {\n  overflow-x: auto;\n  scroll-snap-type: x mandatory;\n}\n.row img {\n  scroll-snap-align: center;\n}",
+  "demo": "snap",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-snap-type",
+   "label": "MDN, scroll-snap-type"
+  }
+ }
+}
