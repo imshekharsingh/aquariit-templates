@@ -23,3 +23,8 @@ Evidence = the Instagram collect run of 5 Nov 2026: 4 reels, median reach 157, 0
 7. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
    PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
    Kokoro alone reads 1889 as "eighteen hundred eighty nine" (5 of 10 Turns Out scripts have years); Eiffel and metres were unknown to it.
+8. **Two slots a day, 7-20 Nov (E16, owner 6 Nov): 13:30 IST and 20:00 IST**, each its own reel built that day, both passing rules 1-7.
+   13:30 IST targets Europe's morning and Asia's afternoon (India, the Gulf, South-East Asia); 20:00 IST targets Europe's afternoon and the
+   US morning. Each build checks captions.json for its own slot only (postOn = today AND postAt = 13:30 or 20:00).
+   Compare per slot: 24 h reach and hold vs the median (157), followers per day, and the reached countries (AUDIT_SIGNALS reachedTop per slot,
+   once available). Decide 21 Nov: keep two a day if reach per reel holds at 80%+ of the one-a-day median and followers per day rise; else one a day at the better slot.
