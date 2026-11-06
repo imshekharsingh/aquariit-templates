@@ -104,6 +104,25 @@ for (const dir of ['scripts/explainer', 'scripts/showreel', 'scripts/channel3'])
   }
 }
 
+// 6. every ffmpeg command that writes a delivered MP4 puts the moov atom first (owner, 6 Nov 2026: reels were slow to start in the app because
+// the sound remux dropped +faststart). A command writes an MP4 when a *.mp4 argument is not an input (-i), or when it encodes AAC (the final mux).
+{
+  const files = [];
+  const add = (d, re) => { const D = join(root, d); if (existsSync(D)) for (const f of readdirSync(D)) { const p = join(D, f); if (statSync(p).isDirectory()) add(join(d, f), re); else if (re.test(f)) files.push(join(d, f)); } };
+  add('.github/workflows', /\.ya?ml$/); add('scripts', /\.(sh|mjs|py)$/); add('techreel', /\.py$/);
+  for (const f of files) {
+    const text = readFileSync(join(root, f), 'utf8').replace(/\\\n/g, ' ');
+    // one command = the ffmpeg line up to its end; for a Python or JS argument list, up to the closing bracket
+    for (const m of text.matchAll(/(['"]?)ffmpeg\1[ ,]([^\n]*(?:\n(?![^\n]*ffmpeg)[^\n]*){0,2})/g)) {
+      let cmd = m[2];
+      if (m[1]) { const end = cmd.search(/\]/); if (end >= 0) cmd = cmd.slice(0, end); } else cmd = cmd.split('\n')[0];
+      const toks = cmd.match(/'[^']*'|"[^"]*"|\S+/g) || [];
+      const out = toks.some((t, i) => /\.mp4['"]?,?$/.test(t) && !/^['"]?-i['"]?,?$/.test(toks[i - 1] || '')) || /-c:a['"]?,? *['"]?aac/.test(cmd);
+      if (out && !/\+faststart/.test(cmd)) err(`${f}: an ffmpeg command writes an MP4 without -movflags +faststart (the moov atom must come first so phones start playing at once): ${cmd.trim().slice(0, 120)}`);
+    }
+  }
+}
+
 if (errors.length) {
   console.error(`✗ ${errors.length} problem(s):\n` + errors.map((e) => '  - ' + e).join('\n'));
   process.exit(1);
