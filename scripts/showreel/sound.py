@@ -6,6 +6,17 @@
 #   cues.json: { dur, bed: { bpm, origin, chords, soft?, lift? }, cues: [ { t, k, g?, p?, d?, text?, voice?, speed? } ] }
 #   k: whoosh (d = length), swish (d; soft, for narrated reels), hit, boom, pop (p = pitch step), tap, thud, tick, click, shimmer, riser (d), voice (text; Kokoro, Apache-2.0, runs on the runner)
 # Seeded noise only, so the same cues always give the same sound. The workflow levels the mix to -14 LUFS when it muxes.
+# Sound follows the motion (sample 2, 6 Nov 2026). New cue kinds, each with its own seeded noise so the kinds above sound exactly as before:
+#   move    (d, dir = 1 up / -1 down): air shaped to a transform's own length; starts ON the cue and swells with the move's speed (ease-in-out)
+#   touch   a soft fingertip tap for micro-interactions (a tap ripple, a cursor press): rounded, low, with a tiny glint
+#   snap    (p): a settle click with a short pitched body that overshoots and settles, like a spring landing
+#   blip    (p): a soft tuned pluck for an element landing; give p from the bed's chord so pops sit in key
+#   swell   (d): a soft riser that ENDS on the cue (into the fix): darker than riser, no hiss on top
+#   resolve (notes = midi list): a low soft hit plus a bell chord that blooms on the fix
+# New optional fields on any cue: x (screen x 0-540 px; with x2 it travels from x to x2 over the sound) places it in stereo,
+#   r (0-1) sends it to a short room reverb (a tail on transitions). A cue without them sounds as before.
+# Optional "mix" block: { duck: dB the bed drops under the voice (sidechain-style, attack/release in s), room: room length in s }.
+#   Without "mix" the bed ducks the old way, so earlier reels render the same.
 import json, os, sys, wave
 import numpy as np
 
@@ -111,6 +122,97 @@ def shimmer(g=1, p=0):
     return pan(m * g * .14, np.sin(tt * 6) * .5)
 
 
+# ---- sample 2 (6 Nov 2026): sound that follows the motion. Own seeded noise per cue, so the global rng (older kinds) is untouched ----
+def _rng(t, k):
+    return np.random.default_rng(int(t * 1000) * 31 + sum(map(ord, k)))
+
+
+def lowpass(x, fc):
+    fr = np.fft.rfftfreq(len(x), 1 / SR)
+    return np.fft.irfft(np.fft.rfft(x) / np.sqrt(1 + (fr / fc) ** 4), len(x))
+
+
+def move(d=.5, g=1, p=0, dir=1, r=None):
+    # air whose loudness follows the speed of an ease-in-out move (sin^2), its filter sweeping the way the element travels
+    r = r or np.random.default_rng(1); n = max(int(d * SR), 64); k = np.linspace(0, 1, n)
+    e = np.sin(np.pi * k) ** 2 * np.clip(k / .05, 0, 1)
+    lo, hi = 260 * 2 ** p, 2000 * 2 ** p
+    m = bandpass_sweep(r.standard_normal(n), lo if dir >= 0 else hi, hi if dir >= 0 else lo, .9) * e
+    m = m / (np.abs(m).max() + 1e-9)
+    f = 90 * 2 ** p * 2 ** (dir * .5 * k); body = np.sin(2 * np.pi * np.cumsum(f) / SR) * e * .18   # a little weight under the air
+    return (m * .42 + body) * g
+
+
+def touch(g=1, p=0, r=None):
+    r = r or np.random.default_rng(2); n = int(.09 * SR); tt = np.arange(n) / SR
+    pad = lowpass(r.standard_normal(n) * env_exp(n, .006), 1400) * 3
+    knock = np.sin(2 * np.pi * (300 * 2 ** (p / 12)) * tt) * env_exp(n, .02) * np.clip(tt / .002, 0, 1)
+    glint = np.sin(2 * np.pi * 2600 * 2 ** (p / 12) * tt) * env_exp(n, .01) * .12
+    return (pad * .5 + knock * .45 + glint) * g * .5
+
+
+def snap(g=1, p=0, r=None):
+    r = r or np.random.default_rng(3); n = int(.22 * SR); tt = np.arange(n) / SR
+    f = 660 * 2 ** (p / 12) * (1 - .06 * np.exp(-tt / .03) * np.cos(2 * np.pi * 18 * tt))   # pitch overshoots, then settles
+    body = np.sin(2 * np.pi * np.cumsum(f) / SR) * env_exp(n, .05) * np.clip(tt / .0015, 0, 1)
+    cl = lowpass(r.standard_normal(n) * env_exp(n, .0025), 5000)
+    return (body * .55 + cl * .5) * g * .5
+
+
+def blip(g=1, p=0, r=None):
+    n = int(.14 * SR); tt = np.arange(n) / SR; f = 440 * 2 ** ((p + 12) / 12)
+    m = (np.sin(2 * np.pi * f * tt) + .25 * np.sin(4 * np.pi * f * tt)) * env_exp(n, .05) * np.clip(tt / .003, 0, 1)
+    return m * g * .4
+
+
+def swell(d=1, g=1, p=0, r=None):
+    r = r or np.random.default_rng(4); n = int(d * SR); k = np.linspace(0, 1, n); e = k ** 2.2 * np.clip((1 - k) / .03, 0, 1)
+    m = bandpass_sweep(r.standard_normal(n), 300 * 2 ** p, 3500 * 2 ** p, 1.6); m = m / (np.abs(m).max() + 1e-9)
+    f = 220 * 2 ** (p / 12) * 2 ** k; ph = 2 * np.pi * np.cumsum(f) / SR
+    return (.55 * m + .3 * np.sin(ph) + .1 * np.sin(1.5 * ph)) * e * g
+
+
+def resolve(g=1, p=0, notes=None, r=None):
+    n = int(1.8 * SR); tt = np.arange(n) / SR; hz = lambda m: 440 * 2 ** ((m - 69 + p) / 12)
+    low = np.sin(2 * np.pi * (55 * 2 ** (p / 12) + 60 * np.exp(-tt / .04)) * tt) * env_exp(n, .22) * np.clip(tt / .003, 0, 1)
+    bell = np.zeros(n)
+    for j, m in enumerate(notes or [57, 64, 69, 73]):
+        a = np.clip((tt - .012 * j) / .015, 0, 1)
+        bell += (np.sin(2 * np.pi * hz(m) * tt + j) + .2 * np.sin(2 * np.pi * hz(m) * 2.01 * tt)) * env_exp(n, .55 - .06 * j) * a
+    return (low * .6 + bell / 4 * .55) * g
+
+
+NEW_KINDS = {'move': move, 'touch': touch, 'snap': snap, 'blip': blip, 'swell': swell, 'resolve': resolve}
+
+
+def place(s, x, x2=None):   # stereo from the element's place on screen (540 px wide); gentle, never hard left or right
+    m = s.mean(0) * np.sqrt(2) if s.ndim == 2 else s
+    a = (float(x) / 540 * 2 - 1) * .6
+    b = a if x2 is None else (float(x2) / 540 * 2 - 1) * .6
+    return pan(m, np.linspace(a, b, len(m)) if b != a else a)
+
+
+def room(x, sec=.55):   # a short, bright room: early reflections and a quick tail
+    r = np.random.default_rng(55); n = int(sec * SR)
+    ir = r.standard_normal((2, n)) * env_exp(n, sec / 6); ir[:, :int(.006 * SR)] = 0
+    ir = np.stack([lowpass(ir[0], 6000), lowpass(ir[1], 6000)])
+    L = 1 << int(np.ceil(np.log2(x.shape[1] + n)))
+    y = np.fft.irfft(np.fft.rfft(x, L) * np.fft.rfft(ir, L), L)[:, :x.shape[1]]
+    return y / (np.abs(y).max() + 1e-9) * np.abs(x).max()
+
+
+def sidechain(vox, n, depth_db=9, attack=.02, release=.3):
+    # an envelope follower on the voice (10 ms blocks), fast attack, slow release; the bed drops depth_db while the voice talks
+    blk = int(.01 * SR); nb = n // blk + 1; v = np.abs(vox).max(0)[:n]
+    lev = np.array([v[i * blk:(i + 1) * blk].max() if i * blk < len(v) else 0 for i in range(nb)])
+    lev = np.clip(lev / (np.percentile(lev[lev > 0], 90) + 1e-9 if (lev > 0).any() else 1), 0, 1)
+    env = np.zeros(nb); a, rl = np.exp(-.01 / attack), np.exp(-.01 / release); y = 0
+    for i in range(nb):
+        y = a * y + (1 - a) * lev[i] if lev[i] > y else rl * y + (1 - rl) * lev[i]; env[i] = y
+    g = 10 ** (-depth_db * np.clip(env * 1.6, 0, 1) / 20)
+    return np.interp(np.arange(n), np.arange(nb) * blk, g)
+
+
 def voice(text, speed=1.1, name='af_heart'):
     try:
         from kokoro import KPipeline
@@ -189,7 +291,7 @@ def main(cues_path, out_path, narration=None):
         used = [u for t in texts for u in say.apply(t, SAY)[1]]
         bad = say.unused(SAY, used)
         if bad: sys.exit(f'"say" entries match no spoken word: {", ".join(bad)}')
-    sfx = np.zeros((2, n + SR * 2)); vox = np.zeros((2, n + SR * 4))
+    sfx = np.zeros((2, n + SR * 2)); vox = np.zeros((2, n + SR * 4)); wet = np.zeros((2, n + SR * 2))
     def put(buf, s, t):
         i = int(round(t * SR)); a = max(0, i); s = s[:, a - i:]; buf[:, a:a + s.shape[1]] += s[:, :buf.shape[1] - a]
     for c in C['cues']:
@@ -199,12 +301,25 @@ def main(cues_path, out_path, narration=None):
             v = voice(c['text'], c.get('speed', 1.1), c.get('voice', 'af_heart'))
             if v is not None: put(vox, v * g, t)
             continue
+        if k in NEW_KINDS:   # sample 2 kinds: own seeded noise, stereo from x, room send r
+            kw = {'r': _rng(t, k)}
+            if k in ('move', 'swell'): kw['d'] = c.get('d', .5 if k == 'move' else 1)
+            if k == 'move': kw['dir'] = c.get('dir', 1)
+            if k == 'resolve' and c.get('notes'): kw['notes'] = c['notes']
+            s = NEW_KINDS[k](g=g, p=p, **kw)
+            if k == 'swell': t -= kw['d']   # ends on the cue
+            s = place(s, c.get('x', 270), c.get('x2'))
+            put(sfx, s, t)
+            if c.get('r'): put(wet, s * float(c['r']), t)
+            continue
         if k == 'whoosh': s = whoosh(c.get('d', .6), g, p); t -= .68 * c.get('d', .6)   # peak lands on the cue
         elif k == 'swish': s = swish(c.get('d', .4), g, p); t -= .5 * c.get('d', .4)
         elif k == 'riser': s = riser(c.get('d', 1), g, p); t -= c.get('d', 1)   # ends on the cue
         elif k == 'boom': s = hit(g, p, True)
         else: s = {'hit': hit, 'pop': pop, 'tick': tick, 'click': click, 'shimmer': shimmer, 'tap': tap, 'thud': thud}[k](g, p)
+        if c.get('x') is not None: s = place(s, c['x'], c.get('x2'))
         put(sfx, s, t)
+        if c.get('r'): put(wet, s * float(c['r']), t)
     if narration:   # the whole-reel voice from voice.py, from frame 0; the bed ducks under it
         with wave.open(narration) as w: v = np.frombuffer(w.readframes(w.getnframes()), '<i2').reshape(-1, w.getnchannels()).T / 32767
         put(vox, v[:2] if v.shape[0] > 1 else np.vstack([v, v]), 0)
@@ -213,8 +328,14 @@ def main(cues_path, out_path, narration=None):
     b = bed(dur, B['bpm'], B['origin'], B['chords'], B.get('soft', False)) if B else np.zeros((2, n))
     if B and B.get('lift') is not None:   # the bed lifts into the payoff (Turns Out quality bar, point 7): +5 dB over 1.5 s from 'lift'
         k = np.clip((np.arange(n) / SR - float(B['lift'])) / 1.5, 0, 1); b = b * (1 + .78 * k * k * (3 - 2 * k))
-    duck = np.convolve(np.abs(vox[0]), np.ones(2400) / 2400, 'same'); duck = 1 - .55 * np.clip(duck / (duck.max() + 1e-9) * 3, 0, 1)
+    M = C.get('mix')
+    if M:   # sample 2: sidechain-style ducking (attack / release) instead of the smoothed level below
+        duck = sidechain(vox, n, M.get('duck', 9), M.get('attack', .02), M.get('release', .3))
+    else:
+        duck = np.convolve(np.abs(vox[0]), np.ones(2400) / 2400, 'same'); duck = 1 - .55 * np.clip(duck / (duck.max() + 1e-9) * 3, 0, 1)
     mix = B.get('gain', .5) * b * duck + .75 * reverb(sfx) + 1.0 * vox if B else .75 * reverb(sfx) + 1.0 * vox
+    wet = wet[:, :n]
+    if np.abs(wet).max() > 0: mix = mix + .45 * room(wet, (M or {}).get('room', .55))   # the room tail on transitions (cues with r)
     mix = np.tanh(1.3 * mix) * .8
     fade = int(.004 * SR); mix[:, :fade] *= np.linspace(0, 1, fade); mix[:, -fade:] *= np.linspace(1, 0, fade)
     pcm = (np.clip(mix, -1, 1) * 32767).astype('<i2').T.copy()
