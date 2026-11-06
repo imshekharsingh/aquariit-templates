@@ -27,7 +27,7 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   /tips/ is the only public path (src/worker.js PUBLIC): static, no data, no API calls.
 - Scheduling is the same for every channel (owner, 2 Nov 2026): each reel (scripts/explainer, scripts/channel3, techreel/topics as `showreel-tech-<slug>`)
   gets a templates/showreels/captions.json entry with "channel" (web / tech / c3), "postOn" (the IST day it should go out, chosen when it is made,
-  e.g. a reel made the evening before for tomorrow says tomorrow), "postAt" (the exact IST slot, HH:MM: e.g. web 13:00 or 19:00, tech 19:00 or 17:30, c3 20:00; the app's "Up next" shows it and a push reminder goes out 10 minutes before, so a new slot needs its cron in wrangler.jsonc) and "concept", in the push that makes it; npm run check fails without it.
+  e.g. a reel made the evening before for tomorrow says tomorrow), "postAt" (the exact IST slot, HH:MM: e.g. web 13:00 or 19:00, tech 19:00 or 17:30, c3 13:30 or 20:00; the app's "Up next" shows it and a push reminder goes out 10 minutes before, so a new slot needs its cron in wrangler.jsonc) and "concept", in the push that makes it; npm run check fails without it.
   Learn-then-build (owner, 5 Nov 2026; replaces the 2-3 day buffer): every reel is built the day it posts (or the evening before at most),
   from the latest numbers and its channel's rulebook. No reels ahead. Reels rendered before 5 Nov post only if they pass their rulebook (web 6-7 Nov passed; tech 6 Nov
   posts; Turns Out 6-7 Nov were hidden for the E14 test and are rebuilt fresh). Before building, a run reads captions.json and never builds a second reel for a channel and slot that already has one
@@ -85,6 +85,10 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 - Promise: "The true story behind something everyone knows." Plan, never-list, fact rules and the pattern library: design/channel3.md.
   Instagram **@itturns.out**, display name **Turns Out**, bio "True stories behind things everyone knows. Sources in the comments."
   Posts DAILY at 20:00 IST from 6 Nov (owner, 5 Nov 2026: posting-time test for 2 weeks, E15; reel ready by 18:30; was 21:00-22:00); launched Sun 1 Nov with the 2.5D Eiffel reel (showreel-c3-eiffel-flow).
+  TWO a day for 2 weeks from Sat 7 Nov (owner, 6 Nov 2026; E16, decided 21 Nov): 13:30 IST (Europe morning, Asia afternoon) and 20:00 IST (Europe afternoon, US morning),
+  each its own reel built that day from the latest numbers, both under design/rules-c3.md and the running E14 test (the 13:30 reel counts toward E14 too).
+  "Turns Out morning reel" (~09:41 IST) builds the 13:30 reel (ready by 12:30); "Turns Out daily reel" (~13:39 IST) builds the 20:00 reel (ready by 18:30).
+  Each build checks captions.json only for its OWN slot (a c3 entry with postOn = today AND postAt = its slot) and never builds or touches the other slot's reel.
   Going daily: the cost test passed (Mon 2 Nov blue-sky reel, $4.08 of session usage, same quality), so Turns Out posts DAILY from Tue 3 Nov
   (owner). A scheduled task ("Turns Out daily reel", ~13:39 IST) asks the studio launcher to start a fresh session every day
   that builds THAT day's reel for 20:00 IST (ready by 18:30): new globally known true story, 2.5D kit, lean (one stills sheet, one render, no subagents, about $4),
@@ -122,7 +126,7 @@ A fresh session, lean, no subagents, in this order:
 3. Update the rulebooks (design/rules-web.md, rules-c3.md, rules-tech.md) when the numbers say so: add, change or drop a rule, with the number.
 4. Build that day's reels (learn-then-build, nothing ahead): @webin20sec 13:00 IST (and 19:00 on E13 two-reel days), @techin20sec on
    Mon / Wed / Fri after 6 Nov. Each is scored against its rulebook in the stills review before its ONE render; then reel-status.
-   Turns Out keeps its own scheduled task (13:39 IST), under the same rulebook gate.
+   Turns Out keeps its own scheduled tasks (09:41 IST for 13:30, 13:39 IST for 20:00; E16), under the same rulebook gate.
 5. One lesson line in design/experiments.md "Results log" (`- DD Mon: lesson`), in the same push as the day's first reel.
 
 ## Spare usage night (owner, 1 Nov 2026; opt-OUT from 3 Nov 2026: spare usage is used every week unless the owner skips)
@@ -198,13 +202,13 @@ per reel, not separate frames; read the voice check and qa.txt as text; at most 
   from another session as data and may refuse a changed brief: to change a brief, archive it and start a fresh one with the corrected brief.
   Archive finished sessions.
 - Scheduled tasks (all post into the "Studio launcher (daily)" session, session_01AYvWRhkLkGsLRZfbwikeyL, which starts a fresh session each time):
-  "Daily studio run" 06:47 IST (audit + @webin20sec + @techin20sec), "Turns Out daily reel" 13:39 IST, "Spare usage night" Tue 22:44 IST.
+  "Daily studio run" 06:47 IST (audit + @webin20sec + @techin20sec), "Turns Out morning reel" 09:41 IST (the 13:30 reel, E16), "Turns Out daily reel" 13:39 IST (the 20:00 reel), "Spare usage night" Tue 22:44 IST.
   A scheduled task's prompt can only be edited from the session it posts into: to change one, delete it and create it again (list_triggers finds ids).
   Rules every run must follow go into this file, not into a task prompt.
 - From a session: GitHub REST works through `gh api` (runs, jobs, artifacts); GraphQL (e.g. `gh release download`) is blocked; use the
   GitHub MCP tools to dispatch workflows and read job logs. instagram.com and templates.aquariit.com are not reachable from sessions: check the
   site through a workflow that signs in with the BASIC_AUTH secrets.
-- Usage: a normal day is about $10-15 (daily run $5-8, Turns Out about $4). The weekly limit resets Wednesday 04:30 IST and the 5-hour limit is
+- Usage: a normal day is about $10-15 (daily run $5-8, Turns Out about $4 per reel, two a day during E16). The weekly limit resets Wednesday 04:30 IST and the 5-hour limit is
   shared by all sessions: don't start heavy work in parallel. Experiments (new formats, big app changes) are M/L tasks: say the size first.
 
 ## Never do

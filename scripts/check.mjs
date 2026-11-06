@@ -75,7 +75,7 @@ if (caps) {
   for (const c of crons) { const [mm, hh] = c.split(' '); if (c === '30 15 * * *' || !/^\d+$/.test(mm)) continue; for (const h of hh.split(',')) if (/^\d+$/.test(h)) fired.add(+h * 60 + +mm); }
   for (const [name, j] of Object.entries(caps)) {
     if (!j || j.hidden || !j.postOn || j.postOn < '2026-11-05') continue;
-    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(j.postAt || '')) { err(`captions.json ${name}: add "postAt" (HH:MM IST, the exact slot; web 13:00 or 19:00, tech Mon/Wed 19:00 and Fri 17:30, c3 20:00: E15)`); continue; }
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(j.postAt || '')) { err(`captions.json ${name}: add "postAt" (HH:MM IST, the exact slot; web 13:00 or 19:00, tech Mon/Wed 19:00 and Fri 17:30, c3 13:30 or 20:00: E15, E16)`); continue; }
     const [h, m] = j.postAt.split(':').map(Number), utc = (((h * 60 + m - 10 - 330) % 1440) + 1440) % 1440;
     if (!fired.has(utc)) err(`captions.json ${name}: no reminder for ${j.postAt} IST; add a cron at ${String(utc % 60)} ${Math.floor(utc / 60)} UTC to wrangler.jsonc ("triggers")`);
   }

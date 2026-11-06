@@ -57,6 +57,17 @@ with a visible transformation. **Decide after the 3rd reel:** keep if reach and 
 median (tech 112, Turns Out 157 on 5 Nov). **Decide 20 Nov:** keep a slot whose reels beat the median more often than the old slot's did.
 Timing cannot fix a low hold; the rulebooks' hold rules stay the main gate.
 
+## E16 · Turns Out two a day (owner, 6 Nov 2026; 2 weeks, 7-20 Nov)
+**Hypothesis:** a second daily reel learns twice as fast and reaches more of the world without halving each reel's reach.
+**Change:** two reels a day, each built that day from the latest numbers: 13:30 IST (Europe morning, Asia afternoon; "Turns Out morning reel"
+task ~09:41 IST, ready by 12:30) and 20:00 IST (Europe afternoon, US morning; "Turns Out daily reel" ~13:39 IST, ready by 18:30). Both pass
+design/rules-c3.md and the E14 change (payoff image in frame 0, visible transformation); the 13:30 reel counts toward E14 too.
+**Measure:** each reel's 24 h reach and hold, followers gained per day, and per slot the reached countries (AUDIT_SIGNALS reachedTop) once available.
+**Decide 21 Nov:** keep two a day if reach per reel on two-reel days is at least 80% of the one-a-day median (157, or the latest median at the
+time) AND followers per day rise; otherwise back to one a day at whichever slot did better.
+**Cost:** about $4 per Turns Out reel, so +$4 a day; it competes with the @webin20sec two-a-day test (E13, to 13 Nov) for the shared 5-hour and
+weekly usage: never run the 13:30 build alongside another heavy session.
+
 ## Queue of next ideas
 - E2: hook style: question vs bold claim vs number ("+212% leads").
 - E3: audience: show the template as a *result for a business* (before/after) rather than as a design showcase.
