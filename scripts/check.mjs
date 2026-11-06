@@ -63,7 +63,8 @@ if (caps) {
   for (const dir of ['scripts/explainer', 'scripts/channel3']) { const D = join(root, dir); for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.json')) : []) { try { const n = JSON.parse(readFileSync(join(D, f), 'utf8')).name; if (n) need.push([n, `${dir}/${f}`]); } catch {} } }
   const TD = join(root, 'techreel', 'topics');
   for (const f of existsSync(TD) ? readdirSync(TD).filter((x) => x.endsWith('.json')) : []) { try { const s = JSON.parse(readFileSync(join(TD, f), 'utf8')).slug; if (s) need.push(['showreel-tech-' + s, `techreel/topics/${f}`]); } catch {} }
-  for (const [n, from] of need) { const e = caps[n]; if (!e || (!e.hidden && (!e.postOn || !e.channel))) err(`${from}: add "${n}" to templates/showreels/captions.json with "channel" and "postOn" (YYYY-MM-DD IST), or "hidden": true`); }
+  // sample (6 Nov 2026, temporary): a "sample": true entry is for review only, never scheduled, so it needs "channel" but no "postOn"
+  for (const [n, from] of need) { const e = caps[n]; if (!e || (!e.hidden && (!e.channel || (!e.postOn && !e.sample)))) err(`${from}: add "${n}" to templates/showreels/captions.json with "channel" and "postOn" (YYYY-MM-DD IST), or "hidden": true`); }
 }
 
 // 4c. exact post time (owner, 5 Nov 2026): every reel posting from 5 Nov on has "postAt" (HH:MM IST), and the Worker has a cron 10 minutes

@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does your grey text vanish on phones?</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec SAMPLE S1 (sample (6 Nov 2026, temporary)): "Why does your grey text vanish on phones?" A story opening (Client and Dev chat
+   bubbles whose lines are the voice), ONE camera that never cuts (the pale price → a loupe → a contrast dial → its colour drops into the
+   code → the camera pulls back to the fixed screen), and a calm light look (off-white, faint grid, soft shadows, one serif italic accent).
+   Light grey #b3b3b3 on white is 2.1:1; WCAG asks 4.5:1 for body text (MDN, Color contrast); #767676 is 4.54:1. The dial's needle is the
+   real WCAG ratio of the grey on screen, computed every frame. Beats lead the voice by 0.15 s; every frame a pure function of t. */
+:root{--bg:#f3f0e9;--ink:#1d1d1f;--dim:#8b867c;--card:#fff;--line:rgba(29,29,31,.055);--acc:#c4532f;--acc2:#f2a582;--ok:#2f8f5b;--bad:#d4553a;
+  --f:'Inter',system-ui,sans-serif;--s:'Instrument Serif',Georgia,serif;--m:'JetBrains Mono',ui-monospace,monospace;--sh:0 14px 34px rgba(60,45,30,.13),0 2px 6px rgba(60,45,30,.07)}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#grid{left:0;top:0;width:540px;height:960px;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:30px 30px;transform-origin:0 0}
+#lbl,#hud{top:96px;font:700 13px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#lbl{left:30px}#hud{right:30px;text-align:right}
+#hud b{font-weight:700}
+/* the world: one camera over a phone showing a shop */
+#world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
+#ph{left:150px;top:368px;width:240px;height:440px;border-radius:36px;background:var(--ink);padding:7px;box-shadow:var(--sh)}
+#scr{position:absolute;left:7px;top:7px;width:226px;height:426px;border-radius:29px;overflow:hidden;background:#fff}
+#scr .sb{position:absolute;left:20px;top:10px;font:700 10px/1 var(--m)}
+#scr .br{position:absolute;left:16px;top:34px;font:700 9px/1 var(--m);letter-spacing:.2em;color:var(--ink)}
+#scr .h{position:absolute;left:15px;top:50px;font:800 24px/1 var(--f);letter-spacing:-.02em}
+.row{position:absolute;left:12px;width:202px;height:62px}
+.row .th{position:absolute;left:0;top:6px;width:50px;height:50px;border-radius:12px;background:#efe9df}
+.row .th i{position:absolute;left:12px;top:12px;width:26px;height:26px;border-radius:50%}
+.row .nm{position:absolute;left:60px;top:13px;font:700 13px/1 var(--f);white-space:nowrap}
+.row .sub{position:absolute;left:60px;top:33px;font:500 11px/1 var(--f);white-space:nowrap}
+.row .pr{position:absolute;left:150px;top:13px;width:46px;text-align:right;font:700 15px/1 var(--f)}
+#glare{position:absolute;top:-80px;width:110px;height:600px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.78) 45%,rgba(255,255,255,.78) 55%,rgba(255,255,255,0));transform-origin:50% 50%}
+#okring{position:absolute;border:2.5px solid var(--ok);border-radius:10px}
+/* screen-space layers: the loupe / dial, the code card, the chat */
+#dial{left:120px;top:350px;width:300px;height:300px;transform-origin:150px 150px}
+#dial svg{position:absolute;left:0;top:0;overflow:visible}
+#dial .pz{position:absolute;left:0;top:118px;width:300px;text-align:center;font:700 48px/1 var(--f);letter-spacing:-.02em}
+#dial .on{position:absolute;left:0;top:176px;width:300px;text-align:center;font:500 13px/1 var(--m);letter-spacing:.1em;color:var(--dim)}
+#ratio{left:0;width:540px;text-align:center;white-space:nowrap}
+#ratio span{display:inline-block;padding:9px 16px;border-radius:14px;background:var(--card);box-shadow:var(--sh);font:700 24px/1 var(--m);letter-spacing:.02em}
+#sw2{left:0;top:0;width:236px;height:40px;border-radius:20px;background:#e9e4da;font:700 13px/40px var(--m);letter-spacing:.1em}
+#sw2 i{position:absolute;top:4px;left:4px;width:112px;height:32px;border-radius:16px;background:var(--card);box-shadow:0 2px 6px rgba(60,45,30,.15)}
+#sw2 b{position:absolute;top:0;width:118px;text-align:center}
+#code{left:0;top:0;width:236px;padding:16px 16px;border-radius:18px;background:var(--card);box-shadow:var(--sh);font:500 16px/1.55 var(--m);white-space:pre;color:var(--ink)}
+#code .dim{color:var(--dim)}#code b{font-weight:700;color:var(--acc)}
+#code .sw{display:inline-block;width:13px;height:13px;border-radius:3px;margin-right:6px;vertical-align:-1px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+#chip{left:0;top:0;padding:9px 12px;border-radius:12px;background:#e3f1e7;color:var(--ok);font:700 13px/1 var(--m);letter-spacing:.06em;white-space:nowrap}
+.bw{position:absolute;max-width:470px}
+.bw.r{right:30px;text-align:right}.bw.l{left:30px}
+.bw .who{font:700 11px/1 var(--m);letter-spacing:.16em;color:var(--dim);margin-bottom:7px}
+.bw .bb{display:inline-block;text-align:left;padding:13px 18px 14px;border-radius:22px;box-shadow:var(--sh);font:600 22px/1.25 var(--f);letter-spacing:-.01em;max-width:350px;position:relative}
+.bw.l .bb{background:var(--card);border-bottom-left-radius:6px}
+.bw.r .bb{background:var(--ink);color:#fbf8f2;border-bottom-right-radius:6px}
+.bw .bb span{display:inline-block;margin-right:.24em}
+.bw .bb .it{font:italic 400 1.18em/1 var(--s);letter-spacing:0;color:var(--acc)}
+.bw.r .bb .it{color:var(--acc2)}
+.bw .dots{position:absolute;left:18px;top:50%;margin-top:-5px;white-space:nowrap}
+.bw .dots i{display:inline-block;width:9px;height:9px;border-radius:50%;background:currentColor;margin-right:5px}
+#b0{transform-origin:0 100%}
+#b0 .bb{font-size:40px;line-height:1.08;letter-spacing:-.025em;max-width:480px;padding:16px 22px 18px;font-weight:700}
+</style>
+</head>
+<body>
+<div id="grid" class="a"></div>
+<div id="world" class="a" data-fit="free">
+  <div id="ph" class="a">
+    <div id="scr">
+      <div class="sb">9:41</div>
+      <div class="br">KILNHOUSE</div><div class="h">New in</div>
+      <div class="row" style="top:92px"><div class="th"><i style="background:#c9b8a0"></i></div><div class="nm">Stoneware mug</div><div class="sub g">Speckled glaze</div><div class="pr g" id="p0">$24</div></div>
+      <div class="row" style="top:160px"><div class="th"><i style="background:#9fb3a8"></i></div><div class="nm">Shallow bowl</div><div class="sub g">Sea-green glaze</div><div class="pr g">$32</div></div>
+      <div class="row" style="top:228px"><div class="th"><i style="background:#d8a48f"></i></div><div class="nm">Bud vase</div><div class="sub g">Clay pink, small</div><div class="pr g">$18</div></div>
+      <div class="row" style="top:296px"><div class="th"><i style="background:#8a8f9c"></i></div><div class="nm">Pour-over set</div><div class="sub g">Slate, two cups</div><div class="pr g">$46</div></div>
+      <div id="glare"></div>
+      <div id="okring"></div>
+    </div>
+  </div>
+</div>
+<div id="dial" class="a">
+  <svg width="300" height="300" viewBox="-150 -150 300 300" aria-hidden="true">
+    <circle id="disc" r="128" fill="#fff"/>
+    <circle id="loupe" r="48" fill="none" stroke="#1d1d1f" stroke-width="3"/>
+    <path id="arcBad" fill="none" stroke="#d4553a" stroke-width="9" stroke-linecap="round"/>
+    <path id="arcOk" fill="none" stroke="#2f8f5b" stroke-width="9" stroke-linecap="round"/>
+    <g id="ticks"></g>
+    <line id="needle" x1="0" y1="0" x2="0" y2="-92" stroke="#1d1d1f" stroke-width="4" stroke-linecap="round"/>
+    <circle id="hub" r="7" fill="#1d1d1f"/>
+  </svg>
+  <div class="pz" id="pz">$24</div><div class="on" id="on">ON WHITE</div>
+</div>
+<div id="ratio" class="a"></div>
+<div id="code" class="a"></div>
+<div id="chip" class="a">4.5 : 1 ✓ WCAG AA</div>
+<div id="sw2" class="a"><i></i><b style="left:0">BEFORE</b><b style="left:118px">AFTER</b></div>
+<div id="lbl" class="a">Nº S1 · COLOR</div>
+<div id="hud" class="a"></div>
+<div id="chat"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var back = function(k){ var c = 1.6; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+  var TEXT = "Why does your grey text vanish on phones? That grey scores about two to one. Text needs four and a half. The fix: hash seven six seven six seven six, or darker. Now every price reads at a glance.";
+  var WORDS = [], DUR = 20, LEAD = .15;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  // the chat: each bubble shows one spoken sentence; [display word, spoken word it lands on (nth), accent?]
+  var BUB = [
+    { who: 'CLIENT', side: 'l', w: [['Why', 'why'], ['does', 'does'], ['your', 'your'], ['grey', 'grey'], ['text', 'text'], ['vanish', 'vanish', 1, 1], ['on', 'on'], ['phones?', 'phones']] },
+    { who: 'DEV', side: 'r', w: [['That', 'that'], ['grey', 'grey', 2], ['scores', 'scores'], ['about', 'about'], ['2 to 1.', 'two', 1, 1]] },
+    { who: 'DEV', side: 'r', w: [['Text', 'text', 2], ['needs', 'needs'], ['4.5 to 1.', 'four', 1, 1]] },
+    { who: 'DEV', side: 'r', w: [['The', 'the'], ['fix:', 'fix'], ['#767676,', 'hash'], ['or', 'or'], ['darker.', 'darker', 1, 1]] },
+    { who: 'CLIENT', side: 'l', w: [['Now', 'now'], ['every', 'every'], ['price', 'price'], ['reads', 'reads'], ['at a glance.', 'glance', 1, 1]] }
+  ];
+  (function(){ var c = $('chat');
+    BUB.forEach(function(b, i){ var w = document.createElement('div'); w.className = 'bw ' + b.side; w.id = 'b' + i;
+      w.innerHTML = '<div class="who">' + b.who + '</div><div class="bb">' + b.w.map(function(x){ return '<span' + (x[3] ? ' class="it"' : '') + '>' + x[0] + '</span>'; }).join('') + '<span class="dots"><i></i><i></i><i></i></span></div>';
+      c.appendChild(w); }); })();
+  var A = {}, H = [];
+  function anchors(){
+    BUB.forEach(function(b){ b.at = b.w.map(function(x){ return at(x[1], x[2]); }); b.a = b.at[0] - .6; });
+    A = { that: at('that'), text2: at('text', 2), four: at('four'), half: at('half'), fix: at('fix'), hash: at('hash'), darker: at('darker'), now: at('now'), every: at('every'), glance: at('glance') };
+    A.hookIn = BUB[0].at[7] + .3; A.leave = BUB[1].a - .1;
+    window.COVER = +Math.max(.8, BUB[1].a - .35).toFixed(2);   // the hook is whole from frame 0: the cover is the last moment it stands alone
+    H = BUB.map(function(b, i){ return $('b' + i).offsetHeight; });
+    buildCues();
+  }
+  // WCAG relative luminance contrast of grey level g on white
+  function lin(c){ c /= 255; return c <= .04045 ? c / 12.92 : Math.pow((c + .055) / 1.055, 2.4); }
+  function ratio(g){ return 1.05 / (lin(g) + .05); }
+  var G0 = 179, G1 = 118;   // #b3b3b3 (2.1:1) → #767676 (4.54:1)
+  function hex(g){ var h = Math.round(g).toString(16); return '#' + h + h + h; }
+  // the dial: 1:1 to 7:1 over 270°, red below 4.5, green from 4.5
+  var ANG = function(r){ return (-225 + (Math.min(Math.max(r, 1), 7) - 1) / 6 * 270) * Math.PI / 180; }, RR = 112;
+  function arc(r0, r1, R){ var a0 = ANG(r0), a1 = ANG(r1), big = a1 - a0 > Math.PI ? 1 : 0;
+    return 'M' + (R * Math.cos(a0)).toFixed(2) + ' ' + (R * Math.sin(a0)).toFixed(2) + ' A' + R + ' ' + R + ' 0 ' + big + ' 1 ' + (R * Math.cos(a1)).toFixed(2) + ' ' + (R * Math.sin(a1)).toFixed(2); }
+  (function(){ var g = '', L = [1, 2, 3, 4, 4.5, 5, 6, 7];
+    L.forEach(function(r, i){ var a = ANG(r), big = r === 4.5, r0 = big ? 88 : 96, r1 = big ? 124 : 104;
+      g += '<g class="tk" data-i="' + i + '"><line x1="' + (r0 * Math.cos(a)).toFixed(1) + '" y1="' + (r0 * Math.sin(a)).toFixed(1) + '" x2="' + (r1 * Math.cos(a)).toFixed(1) + '" y2="' + (r1 * Math.sin(a)).toFixed(1) + '" stroke="' + (big ? '#2f8f5b' : '#8b867c') + '" stroke-width="' + (big ? 4 : 2) + '" stroke-linecap="round"/>' +
+        (big ? '<text x="' + (140 * Math.cos(a)).toFixed(1) + '" y="' + (140 * Math.sin(a) + 5).toFixed(1) + '" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="15" fill="#2f8f5b">4.5</text>' : '') + '</g>'; });
+    $('ticks').innerHTML = g; })();
+  $('arcBad').setAttribute('d', arc(1, 4.5, RR)); $('arcOk').setAttribute('d', arc(4.5, 7, RR));
+  var CODE = '<span class="dim">.price {</span>\n  color: <b>#767676</b>;\n<span class="dim">}</span>';
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  var CODE_N = CODE.replace(/<[^>]+>/g, '').length;
+  var PX = 347, PY = 495;   // the first price's centre in the world (row top 92 + 13, screen inner 157, 375)
+  // the camera: [time, world point at screen (270, 500), scale]; eased in log scale
+  function camKeys(){ return [[0, 270, 500, 1], [A.leave - .1, 270, 512, 1.04], [A.that + .55, 300, PY, 2.8], [A.now - .15, 300, PY, 3.0], [A.now + .8, 400, 500, 1], [DUR, 404, 500, 1.015]]; }
+  function cam(t){ var K = camKeys(), i = 0; while (i < K.length - 2 && t >= K[i + 1][0]) i++;
+    var a = K[i], b = K[i + 1], k = io(P(t, a[0], b[0])), s = Math.exp(mix(Math.log(a[3]), Math.log(b[3]), k));
+    var u = a[3] === b[3] ? k : (1 / a[3] - 1 / s) / (1 / a[3] - 1 / b[3]);   // keep the zoom target steady while the scale changes
+    if (!isFinite(u)) u = k;
+    return { x: mix(a[1], b[1], u), y: mix(a[2], b[2], u), s: s }; }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var c = cam(t), tx = 270 - c.x * c.s, ty = 500 - c.y * c.s;
+    $('world').style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + c.s + ')';
+    var z = cl((c.s - 1) / .7), ph = $('ph');   // zoomed in, the phone's frame melts away: a white page on the grid
+    ph.style.background = 'rgba(29,29,31,' + (1 - z) + ')'; ph.style.boxShadow = z > .5 ? 'none' : '';
+    var gs = Math.min(c.s, 1.6);   // the grid drifts with the camera, slower (depth)
+    $('grid').style.transform = 'translate(' + (270 - c.x * gs) * .35 + 'px,' + (500 - c.y * gs) * .35 + 'px) scale(' + (1 + (gs - 1) * .35) + ')';
+    // ---- the grey: pale until "hash", then down to #767676 by "darker" ----
+    var flip = win(t, A.glance + 1.6, A.glance + 3, .3);   // the end: Before | After, the same screen in the old grey and back
+    var gk = io(P(t, A.hash, A.darker + .2)) * (1 - io(flip)), g = mix(G0, G1, gk), R = ratio(g), col = hex(g), ok = R >= 4.5;
+    [].forEach.call(document.querySelectorAll('.g'), function(e){ e.style.color = col; });
+    // ---- glare sweeps over the phone from frame 0: the pale text washes out ----
+    var gl = $('glare'), gx = -200, ga = 0;
+    if (t < A.leave + .6) { gx = ((t * 150 + 150) % 460) - 150; ga = 1 - P(t, A.leave, A.leave + .6); }
+    gl.style.left = gx + 'px'; gl.style.opacity = ga; gl.style.transform = 'rotate(14deg)';
+    var okr = $('okring'), ork = out(P(t, A.now + .7, A.now + 1.1));
+    okr.style.left = '172px'; okr.style.top = '98px'; okr.style.width = '46px'; okr.style.height = '28px'; okr.style.opacity = ork; okr.style.borderColor = ok ? 'var(--ok)' : 'var(--bad)'; okr.style.transform = 'scale(' + mix(1.3, 1, ork) + ')';
+    // ---- the loupe (on the price) becomes the dial, then shrinks back into the price as the camera pulls out ----
+    var ps = { x: PX * c.s + tx, y: PY * c.s + ty };   // the price on screen
+    var lp = out(P(t, A.that + .1, A.that + .6)), dl = io(P(t, A.text2 - .1, A.text2 + .5)), shut = io(P(t, A.now - .15, A.now + .5));
+    var dial = $('dial'), dx = mix(ps.x, 270, dl * (1 - shut)) - 150, dy = mix(ps.y, mix(500, 450, io(P(t, A.fix - .2, A.fix + .3))), dl * (1 - shut)) - 150;
+    dial.style.opacity = lp * (1 - P(t, A.now + .35, A.now + .6)); dial.style.transform = 'translate(' + (dx - 120) + 'px,' + (dy - 350) + 'px) scale(' + mix(1, .25, shut) + ')';
+    $('world').style.opacity = 1 - .82 * dl * (1 - shut);
+    $('disc').setAttribute('r', mix(0, 128, dl)); $('loupe').setAttribute('r', mix(48, RR, dl)); $('loupe').style.opacity = 1 - dl;
+    $('loupe').setAttribute('stroke-dasharray', (2 * Math.PI * 48 * lp).toFixed(1) + ' 999');
+    ['arcBad', 'arcOk'].forEach(function(id){ var e = $(id); e.style.opacity = dl; });
+    [].forEach.call(document.querySelectorAll('.tk'), function(e, i){ var k = back(P(t, A.text2 + i * .05, A.text2 + .35 + i * .05)); e.style.opacity = cl(k * 1.5); e.setAttribute('transform', 'scale(' + Math.max(0, k) + ')'); });
+    var sw = back(P(t, A.text2 + .1, A.text2 + .7)), nr = mix(1, R, cl(sw)) + (sw > 1 ? (sw - 1) * .6 : 0);   // the needle swings up to the real ratio
+    var na = ANG(nr) * 180 / Math.PI + 90;
+    $('needle').setAttribute('transform', 'rotate(' + na.toFixed(2) + ')'); $('needle').style.opacity = cl(dl * 2); $('hub').style.opacity = cl(dl * 2);
+    $('needle').setAttribute('stroke', ok ? '#2f8f5b' : '#d4553a'); $('hub').setAttribute('fill', ok ? '#2f8f5b' : '#1d1d1f');
+    var pz = $('pz'); pz.style.color = col; pz.style.opacity = cl(lp * 3) * (dl > .02 ? 1 : 0); $('on').style.opacity = dl;
+    pz.style.fontSize = mix(15 * c.s, 48, dl) + 'px';
+    pz.style.top = mix(150 - 15 * c.s * .5, 118, dl) + 'px';
+    // ---- the ratio readout under the dial (counts with the needle) ----
+    var ro = $('ratio'), rk = P(t, A.text2 + .2, A.text2 + .5) * (1 - P(t, A.now - .2, A.now + .1));
+    ro.style.top = (dy + 150 + 140) + 'px'; ro.style.opacity = rk; ro.style.color = ok ? 'var(--ok)' : 'var(--bad)';
+    ro.innerHTML = '<span>' + nr.toFixed(1) + ' : 1 ' + (ok ? '✓ PASSES' : '✕ TOO PALE') + '</span>';
+    // ---- the code: rises under the dial on "the fix", typed through "darker", then moves beside the phone ----
+    var cu = out(P(t, A.fix - .15, A.fix + .3)), mv = io(P(t, A.now + .1, A.now + .85)), cd = $('code');
+    var cx = mix(152, 280, mv), cy = mix(mix(682, 652, cu), 424, mv);
+    cd.style.opacity = cu; cd.style.transform = 'translate(' + cx + 'px,' + cy + 'px)';
+    var n = Math.floor(8 + (CODE_N - 8) * P(t, A.fix + .05, A.hash + .9));
+    cd.innerHTML = typed(CODE.replace('<b>#767676</b>', '<span class="sw" style="background:' + col + '"></span><b>#767676</b>'), n);
+    var ch = $('chip'), ck = back(P(t, A.now + .7, A.now + 1.1));
+    ch.style.opacity = cl(ck * 1.4); ch.style.transform = 'translate(' + 280 + 'px,' + (424 + cd.offsetHeight + 14) + 'px) scale(' + Math.max(0, ck) + ')'; ch.style.transformOrigin = '0 50%';
+    var s2 = $('sw2'), sk = out(P(t, A.glance + 1, A.glance + 1.4)), kn = io(1 - flip);
+    s2.style.opacity = sk; s2.style.transform = 'translate(280px,' + (424 + cd.offsetHeight + 62 + (1 - sk) * 12) + 'px)';
+    s2.querySelector('i').style.transform = 'translateX(' + kn * 116 + 'px)';
+    s2.querySelectorAll('b')[0].style.color = kn < .5 ? 'var(--bad)' : 'var(--dim)'; s2.querySelectorAll('b')[1].style.color = kn >= .5 ? 'var(--ok)' : 'var(--dim)';
+    var chOk = $('chip'); chOk.textContent = ok ? '4.5 : 1 ✓ WCAG AA' : R.toFixed(1) + ' : 1 ✕ TOO PALE'; chOk.style.background = ok ? '#e3f1e7' : '#f8e3dc'; chOk.style.color = ok ? 'var(--ok)' : 'var(--bad)';
+    // ---- HUD ----
+    $('hud').innerHTML = 'CONTRAST <b style="color:' + (ok ? 'var(--ok)' : 'var(--bad)') + '">' + R.toFixed(1) + ' : 1</b>';
+    // ---- the chat: newest bubble at the bottom of the zone, older ones push up and fade under the label line ----
+    var hookS = mix(1, .56, io(P(t, A.leave, A.leave + .45))), K = BUB.map(function(b){ return out(P(t, b.a, b.a + .35)); });
+    BUB.forEach(function(b, i){ var w = $('b' + i), eh = H[i] * (i === 0 ? hookS : 1), off = 0;
+      for (var j = i + 1; j < BUB.length; j++) off += K[j] * (H[j] + 14);
+      var bot = 336 - off, top = bot - eh, fade = cl((top - 104) / 26), k = i === 0 ? 1 : K[i];
+      w.style.top = (bot - H[i]) + 'px';
+      w.style.opacity = k * fade;
+      w.style.transform = (i === 0 ? 'scale(' + hookS + ')' : 'translate(' + (1 - k) * (b.side === 'l' ? -24 : 24) + 'px,' + (1 - k) * 18 + 'px) scale(' + mix(.92, 1, k) + ')');
+      w.style.transformOrigin = b.side === 'l' ? '0 100%' : '100% 100%';
+      var sp = w.querySelectorAll('.bb > span:not(.dots)');
+      var land = i === 0 ? 1 : out(P(t, b.a + .3, b.a + .5));   // the message lands whole after the typing dots
+      [].forEach.call(sp, function(s, j2){ var a = b.at[j2], pop = b.w[j2][3] ? Math.sin(Math.PI * P(t, a, a + .4)) : 0;
+        s.style.opacity = land; s.style.transform = 'translateY(' + (1 - land) * 6 + 'px) scale(' + (1 + .12 * pop) + ')'; s.style.transformOrigin = '50% 70%'; });
+      var dots = w.querySelector('.dots'), dk = i === 0 ? 0 : win(t, b.a, b.a + .34, .06);
+      dots.style.opacity = dk; [].forEach.call(dots.children, function(d, m){ d.style.transform = 'translateY(' + (-3 * Math.max(0, Math.sin((t - b.a) * 12 - m * .9))) + 'px)'; });
+    });
+  }
+  function win(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  function buildCues(){
+    var Q = [{ t: 0, k: 'swish', d: .5, g: .45, p: -.5 }];
+    BUB.forEach(function(b, i){ if (i) Q.push({ t: b.a + .05, k: 'tap', g: .26, p: b.side === 'l' ? 2 : 4 }); });
+    Q.push({ t: A.that + .05, k: 'swish', d: .6, g: .45, p: .2 }, { t: A.text2 - .1, k: 'swish', d: .4, g: .35, p: .3 });
+    for (var i = 0; i < 8; i++) Q.push({ t: A.text2 + i * .05 + .2, k: 'tick', g: .08, p: i % 5 });
+    Q.push({ t: A.text2 + .45, k: 'thud', g: .25 });
+    for (var c = 0, t0 = A.fix + .05, t1 = A.hash + .9; t0 + c * .1 < t1; c++) Q.push({ t: t0 + c * .1, k: 'tick', g: .09, p: (c * 5) % 7 });
+    Q.push({ t: A.darker + .2, k: 'tap', g: .3, p: 6 }, { t: A.now - .1, k: 'swish', d: .7, g: .5, p: -.2 }, { t: A.now + .8, k: 'tap', g: .3, p: 6 }, { t: A.glance + 1.6, k: 'tap', g: .26, p: 1 }, { t: A.glance + 3, k: 'tap', g: .3, p: 6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .28, chords: [[48, 60, 64, 67, 71], [45, 57, 60, 64, 67], [41, 57, 60, 65, 69], [43, 55, 59, 62, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("700 40px Inter").then(function(){ return document.fonts.load("italic 400 26px 'Instrument Serif'"); }).then(function(){ return document.fonts.load("500 16px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

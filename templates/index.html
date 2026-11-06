@@ -289,7 +289,8 @@
   function slotOf(s, m){ if (/^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt; var k = chOf(s, DATA ? DATA.c : {});
     return k === 'tech' ? '19:00' : k === 'c3' ? '20:00' : /\b19:00\b/.test(m.note || '') ? '19:00' : '13:00'; }
   function dueOf(s, m){ return m.postOn ? Date.parse(m.postOn + 'T' + slotOf(s, m) + ':00+05:30') : Infinity; }
-  function when(s, m){ if (!m.postOn) return ['Not scheduled', '']; var t = slotOf(s, m), diff = Math.round((Date.parse(m.postOn) - Date.parse(istToday())) / DAY);
+  function when(s, m){ if (m.sample) return ['Sample · not scheduled', ''];   // sample (6 Nov 2026, temporary)
+    if (!m.postOn) return ['Not scheduled', '']; var t = slotOf(s, m), diff = Math.round((Date.parse(m.postOn) - Date.parse(istToday())) / DAY);
     if (Date.now() > dueOf(s, m)) return ['Overdue since ' + (diff === 0 ? '' : diff === -1 ? 'yesterday ' : nice(m.postOn) + ' ') + t, ' late'];
     return [diff === 0 ? 'Today ' + t : diff === 1 ? 'Tomorrow ' + t : nice(m.postOn) + ' · ' + t, diff === 0 ? ' now' : '']; }
   var ticks = {}, trackOk = true;
@@ -488,7 +489,7 @@
     }); }
   function render(){
     var d = DATA.d, c = DATA.c, all = ((d && d.showreels) || []).filter(function(s){ return !(c[s.name] && c[s.name].hidden); }), counts = { web: 0, tech: 0, c3: 0 };
-    all.forEach(function(s){ var k = chOf(s, c); if (!ticks[s.name]) counts[k]++; });
+    all.forEach(function(s){ var k = chOf(s, c); if (!ticks[s.name] && !(c[s.name] && c[s.name].sample)) counts[k]++; });   // sample (6 Nov 2026, temporary): not counted
     paint(counts);
     var items = all.filter(function(s){ return chOf(s, c) === ch; }); list.textContent = '';
     if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No reels for ' + CH[ch].name + ' yet.')); return; }
@@ -499,13 +500,13 @@
     done.sort(function(x, y){ return ticks[x.name] < ticks[y.name] ? 1 : -1; });
     if (!todo.length) list.appendChild(el('p', 'empty', 'Nothing to post for ' + CH[ch].name + ' right now.'));
     var horizon = Date.parse(istToday() + 'T00:00:00+05:30') + 2 * DAY;   // end of tomorrow, IST
-    var next = todo.filter(function(s){ return dueOf(s, c[s.name] || {}) < horizon; });
+    var next = todo.filter(function(s){ return !(c[s.name] || {}).sample && dueOf(s, c[s.name] || {}) < horizon; });   // sample (6 Nov 2026, temporary): never Up next
     if (!next.length && todo.length && isFinite(dueOf(todo[0], c[todo[0].name] || {}))) next = [todo[0]];
     var later = todo.filter(function(s){ return next.indexOf(s) < 0; });
     var box = done.length ? posted(done, c) : null, put = function(n){ list.insertBefore(n, box); };
     if (next.length) put(el('h2', 'sec', 'Up next'));
     next.forEach(function(s){ put(reelCard(s, c[s.name] || {}, s.name !== openName[ch])); });
-    if (later.length) put(el('h2', 'sec', next.length ? 'Later' : 'To post'));
+    if (later.length) put(el('h2', 'sec', next.length ? 'Later' : later.every(function(s){ return (c[s.name] || {}).sample; }) ? 'Sample' : 'To post'));
     later.forEach(function(s){
       var meta = c[s.name] || {};
       if (s.name === openName[ch]) { put(reelCard(s, meta, false)); return; }

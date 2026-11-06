@@ -463,10 +463,10 @@ async function captionsOf(env) {
   const r = await env.ASSETS.fetch(new Request('https://assets.local/showreels/captions.json'));
   return r.ok ? r.json() : {};
 }
-// reels not marked uploaded, due between `from` and `to` (ms), oldest first
+// reels not marked uploaded, due between `from` and `to` (ms), oldest first; sample (6 Nov 2026, temporary): "sample": true entries are never due
 async function dueReels(env, db, from, to) {
   const caps = await captionsOf(env), up = new Set(((await db.prepare('SELECT id FROM reel_uploaded').all().catch(() => ({}))).results || []).map((r) => r.id));
-  return Object.entries(caps).filter(([n, m]) => m && !m.hidden && /^\d{4}-\d{2}-\d{2}$/.test(m.postOn || '') && !up.has(n))
+  return Object.entries(caps).filter(([n, m]) => m && !m.hidden && !m.sample && /^\d{4}-\d{2}-\d{2}$/.test(m.postOn || '') && !up.has(n))
     .map(([n, m]) => ({ name: n, m, due: Date.parse(`${m.postOn}T${postSlot(n, m)}:00+05:30`) }))
     .filter((x) => x.due >= from && x.due <= to).sort((a, b) => a.due - b.due);
 }
