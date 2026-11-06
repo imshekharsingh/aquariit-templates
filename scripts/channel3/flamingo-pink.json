@@ -1,0 +1,58 @@
+{
+ "name": "showreel-c3-flamingo-pink",
+ "seek": "scripts/channel3/flamingo-pink.html",
+ "dur": 31.6,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Why are flamingos pink? They hatch grey, covered in fluffy down. The pink comes from what they eat. Algae and brine shrimp are full of pigments called carotenoids. Pigments like these make carrots orange. Its liver turns them pink, and they go into its feathers, bill and legs. It takes a few years to turn fully pink. In zoos, the pigment goes into their food, or they fade. Turns out, a flamingo is pink because of its dinner.",
+  "at": [
+   0,
+   2.4,
+   5.31,
+   7.85,
+   12.31,
+   15.37,
+   20.05,
+   22.88,
+   26.6
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "Flamingos are not born pink. They hatch grey, and every bit of pink comes from what they eat. 🦩\n\nSend this to someone who loves flamingos. Which colour should we explain next? 👇",
+ "keywords": [
+  "why are flamingos pink",
+  "baby flamingo grey",
+  "flamingo chick",
+  "carotenoids",
+  "brine shrimp",
+  "flamingo facts",
+  "animal facts"
+ ],
+ "hashtags": [
+  "#flamingo",
+  "#flamingos",
+  "#flamingofacts",
+  "#animalfacts",
+  "#birdfacts"
+ ],
+ "sources": [
+  {
+   "title": "Why Are Flamingos Pink? And Other Flamingo Facts (Smithsonian's National Zoo)",
+   "url": "https://nationalzoo.si.edu/animals/news/why-are-flamingos-pink-and-other-flamingo-facts"
+  },
+  {
+   "title": "Rainbow nature: life in proud pink (Natural History Museum, London)",
+   "url": "https://www.nhm.ac.uk/discover/rainbow-nature-life-in-pink.html"
+  },
+  {
+   "title": "Flamingo (San Diego Zoo Wildlife Alliance)",
+   "url": "https://animals.sandiegozoo.org/animals/flamingo"
+  },
+  {
+   "title": "Why are flamingos pink? (BBC Science Focus)",
+   "url": "https://www.sciencefocus.com/nature/why-are-flamingos-pink"
+  }
+ ]
+}
