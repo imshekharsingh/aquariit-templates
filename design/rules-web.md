@@ -21,7 +21,8 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
 6. **Hook = "Why does your X …?" in at most 8 words, over the broken thing.** Evidence: all 8 web reels past 1,300 reach open this way;
    every reel that opened another way (claims, "built in 20 s", "6 ways", "why did I…", service pitches) reached 26-330.
 7. **Post at 13:00 IST** (one reel a day; the 19:00 slot is under test, E13). Evidence (AUDIT_SIGNALS, 30 days): 13:00 median reach 2,313
-   (6 reels) vs 12:00 899, 17:00 712, 23:00 103.
+   (6 reels) vs 12:00 899, 17:00 712, 23:00 103. E13 first reading (6 Nov): 19:00 reel (sticky) 1,198 at 4 h vs the 13:00 reel (keyboard)
+   1,159 at 11 h, 24 h pending; followers are most online 18:30-23:30 IST (peak 21:30). Decide on 14 Nov, not before.
 8. **One concrete thing to copy, checked on MDN + BCD**, kept on screen 3 s+; the caption invites a save or a send.
    Evidence: save rate 2.9-4.4% on the reels that end on one copyable line (Nº 04, 08, 09, 13) vs 0.4% on squashed photos.
 9. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
