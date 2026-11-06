@@ -124,6 +124,21 @@ export const demos = {
 <p class="note">Open this on a phone and tap each field: the left one opens the letter keyboard, the right one opens a number pad. inputmode only changes the keyboard, not what the field accepts.</p>`,
     js: `function(){}`,
   },
+  // sample (6 Nov 2026, temporary): the contrast sample's demo (its tip stays off the public page while it is a sample)
+  contrast: {
+    css: `
+#contrast .shop{margin:30px 10px 0;border-radius:10px;background:#fff;padding:6px 12px}
+#contrast .shop p{display:flex;justify-content:space-between;margin:0;padding:8px 0;color:#1d1d1f;font:700 14px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif}
+#contrast .shop span{color:#b3b3b3}
+#contrast .fix .shop span{color:#767676}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">#b3b3b3 · 2.1 : 1</span><div class="shop"><p>Stoneware mug <span>$24</span></p><p>Shallow bowl <span>$32</span></p></div></div>
+  <div class="pane fix"><span class="tag ok">#767676 · 4.5 : 1</span><div class="shop"><p>Stoneware mug <span>$24</span></p><p>Shallow bowl <span>$32</span></p></div></div>
+</div>
+<p class="note">Turn your screen brightness down or step outside: the left prices fade first. WCAG asks for at least 4.5 : 1 for body text; on white, #767676 is the lightest grey that passes.</p>`,
+    js: `function(){}`,
+  },
   thumb: {
     css: `
 #thumb .menu{margin:30px 10px 0;border-radius:10px;background:#fff;overflow:hidden;padding:4px 0}

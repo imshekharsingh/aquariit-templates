@@ -13,7 +13,7 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const tips = [];
 for (const f of readdirSync(dir).filter((x) => x.endsWith('.json')).sort()) {
   const c = JSON.parse(readFileSync(join(dir, f), 'utf8'));
-  if (!c.tip) continue;
+  if (!c.tip || c.sample) continue;   // sample (6 Nov 2026, temporary): a sample reel's tip stays off the public page until it is adopted
   const t = c.tip, id = t.demo;
   for (const k of ['title', 'why', 'code', 'demo', 'source']) if (!t[k]) throw new Error(`${f}: tip.${k} is missing`);
   if (!demos[id]) throw new Error(`${f}: tip.demo "${id}" has no demo in scripts/tips/demos.mjs`);

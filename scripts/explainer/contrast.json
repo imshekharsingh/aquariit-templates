@@ -1,0 +1,56 @@
+{
+ "name": "showreel-s01-contrast",
+ "sample": true,
+ "seek": "scripts/explainer/contrast.html",
+ "dur": 20,
+ "fps": 60,
+ "grain": 4,
+ "cover": 2.9,
+ "voice": {
+  "text": "Why does your grey text vanish on phones? That grey scores about two to one. Text needs four and a half. The fix: hash seven six seven six seven six, or darker. Now every price reads at a glance.",
+  "voice": "af_heart",
+  "speed": 0.82,
+  "gap": [
+   0.7,
+   0.5,
+   0.7,
+   0.75
+  ]
+ },
+ "caption": "Why does your grey text vanish on phones? 👀\n\nLight grey text on white looks calm in the mockup, but #b3b3b3 on white has a contrast ratio of about 2.1 to 1, and on a phone in daylight it all but disappears. WCAG asks for at least 4.5 to 1 for body text (3 to 1 for large text). On white, #767676 is the lightest grey that passes (4.54 to 1); anything darker passes too. Check your prices, captions and placeholders.\nSave it for your next design review, or send it to whoever picked the grey.",
+ "keywords": [
+  "grey text hard to read",
+  "color contrast ratio",
+  "WCAG 4.5 to 1",
+  "accessible text color",
+  "web accessibility",
+  "UI design tips"
+ ],
+ "hashtags": [
+  "#colorcontrast",
+  "#accessibility",
+  "#uidesign",
+  "#webdesign",
+  "#frontenddev"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Understanding_WCAG/Perceivable/Color_contrast",
+   "note": "MDN Color contrast (WCAG 1.4.3, AA): text and its background at least 4.5:1; large text (18pt, or 14pt bold) at least 3:1; AAA 7:1"
+  },
+  {
+   "url": "https://www.w3.org/TR/WCAG22/#dfn-contrast-ratio",
+   "note": "WCAG 2.2 contrast ratio (L1 + 0.05) / (L2 + 0.05) with relative luminance; computed: #b3b3b3 on #fff = 2.10:1, #767676 on #fff = 4.54:1"
+  }
+ ],
+ "tip": {
+  "title": "Why does your grey text vanish on phones?",
+  "why": "Light grey on white looks soft in a mockup, but #b3b3b3 on white is about 2.1:1, and on a phone in daylight it washes out. WCAG asks for at least 4.5:1 for body text (MDN). On white, #767676 is the lightest grey that passes (4.54:1).",
+  "code": ".price {\n  color: #767676;\n}",
+  "demo": "contrast",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Understanding_WCAG/Perceivable/Color_contrast",
+   "label": "MDN, Color contrast"
+  }
+ }
+}

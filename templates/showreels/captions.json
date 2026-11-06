@@ -736,5 +736,12 @@
   "concept": "2.5D flow · Why are flamingos pink?",
   "about": "One camera that never cuts: a GREY young flamingo and its chick in a dusk lagoon (frame 0, E14 reel 1), the bill dips and the camera dives into the water (algae, brine shrimp, a carrot for carotenoids), up into daylight as the same bird turns pink (legs and bill first), two zoo birds by their trays (with pigment pink, without pale), and a pink flock at sunset.",
   "note": "Turns Out daily run, 6 Nov: E14 reel 1 (payoff image in frame 0)."
+ },
+ "showreel-s01-contrast": {
+  "channel": "web",
+  "sample": true,
+  "concept": "Sample · color: #767676 (grey text contrast, 4.5:1)",
+  "about": "A sample in a new style: a Client and Dev chat tells the story, one camera never cuts (the pale price becomes a contrast dial, its colour drops into the code, the camera pulls back to the fixed screen), calm light look.",
+  "note": "Sample for review, not scheduled"
  }
 }
