@@ -6,8 +6,10 @@ name: Instagram collect
 on:
   schedule:
     - cron: '14 20 * * *'
-    # 12:30 IST (owner, 5 Nov 2026): same-morning numbers for the 13:39 Turns Out build and the 19:00 reel; keeps the nightly follower snapshot
-    - cron: '0 7 * * *'
+    # Same-morning numbers for the 13:39 Turns Out build and the 19:00 reel (owner, 5 Nov 2026); keeps the nightly follower snapshot.
+    # 05:23 UTC = 10:53 IST, not 07:00 UTC: GitHub starts scheduled runs late (the 20:14 UTC run started 3-6 h late, 1-6 Nov) and drops some
+    # at :00, so an off-minute about 2.5 h early still lands before the 13:39 build on a normal delay and before the 19:00 build on a long one.
+    - cron: '23 5 * * *'
   workflow_dispatch:
     inputs:
       dry:
@@ -55,7 +57,7 @@ jobs:
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
           DRY: ${{ inputs.dry }}
           REFRESH: ${{ inputs.refresh }}
-          MIDDAY: ${{ github.event.schedule == '0 7 * * *' }}
+          MIDDAY: ${{ github.event.schedule == '23 5 * * *' }}
         run: |
           flags=""
           [ "$MIDDAY" = "true" ] && flags="$flags --midday"

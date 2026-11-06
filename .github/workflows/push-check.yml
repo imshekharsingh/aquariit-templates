@@ -1,0 +1,26 @@
+name: Push check
+
+# Why did (or didn't) a push reminder go out? (owner, 6 Nov 2026) Signs in to the app and prints /api/push/status: signed-up devices (push host
+# only, never endpoints or keys), the reels with a slot a day either side (hidden / uploaded flagged), which ones a reminder would go to, the last
+# post-reminder and spare-reminder sends, and every Worker cron run (time, cron, result). Read-only, a few seconds. Sessions dispatch it and read the log.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Push status
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: |
+          curl() { command curl --connect-timeout 15 --max-time 30 --retry 3 --retry-all-errors --retry-delay 3 "$@"; }
+          B=https://templates.aquariit.com; J=$(mktemp)
+          curl -s -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
+          curl -sf -b "$J" "$B/api/push/status" > status.json || { echo "::error::could not read /api/push/status"; exit 1; }
+          node -e 'const j=JSON.parse(require("fs").readFileSync("status.json","utf8")); console.log(`PUSH_STATUS now=${j.now} vapid=${j.vapid} captions=${j.captions} devices=${j.devices} remindable=${(j.remindable||[]).join(",")||"none"}`); console.log(JSON.stringify(j,null,1))' | tee -a "$GITHUB_STEP_SUMMARY"

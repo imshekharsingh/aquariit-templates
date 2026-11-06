@@ -381,6 +381,7 @@ async function spareApi(request, env, p, url) {
     const last = await db.prepare('SELECT at, devices, sent, failed, note FROM spare_push_log ORDER BY at DESC LIMIT 1').first();
     return jres({ ...w, week, on: !row, skipped: !!row, at: row ? row.at : null, lastPush: last || null });
   }
+  if (p === '/api/push/status' && request.method === 'GET') return jres(await pushStatus(env, db));   // read-only: the "Push check" workflow prints it
   if (p === '/api/push/test' && request.method === 'POST') {   // "Send a test notification": only to a device that is signed up
     let b = null; try { b = await request.json(); } catch { /* handled below */ }
     const r = b && typeof b.endpoint === 'string' ? await db.prepare('SELECT endpoint, p256dh, auth FROM push_subs WHERE endpoint = ?1').bind(b.endpoint).first() : null;
@@ -492,6 +493,41 @@ async function postPush(env, now = Date.now()) {
   }
   return out;
 }
+// Every cron run is logged (owner, 6 Nov 2026: a 12:50 reminder never came and nothing showed why), kept 14 days
+async function cronLog(env, cron, scheduled, result) {
+  try {
+    const db = await spareDb(env); if (!db) return;
+    await db.prepare('CREATE TABLE IF NOT EXISTS cron_log (at TEXT NOT NULL, cron TEXT NOT NULL, scheduled TEXT, result TEXT)').run();
+    await db.batch([db.prepare('INSERT INTO cron_log (at, cron, scheduled, result) VALUES (?1, ?2, ?3, ?4)').bind(new Date().toISOString(), cron || '', scheduled ? new Date(scheduled).toISOString() : null, String(result).slice(0, 500)),
+      db.prepare('DELETE FROM cron_log WHERE at < ?1').bind(new Date(Date.now() - 14 * DAY_MS).toISOString())]);
+  } catch { /* logging never breaks a send */ }
+}
+async function runCron(env, cron, scheduled) {
+  let r;
+  try { r = cron === SPARE_CRON ? await sparePush(env) : await postPush(env, scheduled || Date.now()); } catch (e) { r = { error: String(e && e.message || e) }; }
+  await cronLog(env, cron, scheduled, JSON.stringify(r));
+}
+// GET /api/push/status (signed in, read-only): devices by push host only (never endpoints or keys), the send logs, the cron runs, and the reels due
+async function pushStatus(env, db) {
+  const q = async (sql) => ((await db.prepare(sql).all().catch((e) => ({ results: [{ error: String(e.message || e) }] }))).results || []);
+  await postDb(env).catch(() => {});
+  const subs = await q('SELECT endpoint, at FROM push_subs ORDER BY at DESC');
+  const now = Date.now();
+  let due = [], slots = [], captions = null;
+  try {   // every reel with a slot within a day either side (hidden and uploaded ones too, flagged), and the ones a reminder would go to
+    const caps = await captionsOf(env); captions = Object.keys(caps).length;
+    const up = new Map((await q('SELECT id, at FROM reel_uploaded')).map((r) => [r.id, r.at]));
+    slots = Object.entries(caps).filter(([, m]) => m && /^\d{4}-\d{2}-\d{2}$/.test(m.postOn || '')).map(([n, m]) => ({ name: n, due: Date.parse(`${m.postOn}T${postSlot(n, m)}:00+05:30`), hidden: !!m.hidden, uploaded: up.get(n) || null }))
+      .filter((x) => Math.abs(x.due - now) <= DAY_MS).sort((a, b) => a.due - b.due).map((x) => ({ ...x, due: new Date(x.due).toISOString() }));
+    due = (await dueReels(env, db, now - DAY_MS, now + DAY_MS)).map((x) => x.name);
+  } catch (e) { captions = 'error: ' + (e.message || e); }
+  return { now: new Date(now).toISOString(), vapid: !!(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY), captions,
+    devices: subs.length, subs: subs.map((r) => ({ host: r.endpoint ? new URL(r.endpoint).host : null, at: r.at })),
+    slots, remindable: due,
+    postLog: await q('SELECT reel, due, at, devices, sent, failed, note FROM post_push_log ORDER BY at DESC LIMIT 20'),
+    spareLog: await q('SELECT at, devices, sent, failed, note FROM spare_push_log ORDER BY at DESC LIMIT 5'),
+    cronLog: await q('SELECT at, cron, scheduled, result FROM cron_log ORDER BY at DESC LIMIT 30') };
+}
 // "Send a test notification": the real reminder for the next reel to post (overdue or upcoming, 3 days either side), so the tap tests the deep link
 async function testPayload(env, db) {
   try {
@@ -588,7 +624,7 @@ async function reelFile(request, env, name) {
 }
 
 export default {
-  async scheduled(controller, env, ctx) { ctx.waitUntil(controller.cron === SPARE_CRON ? sparePush(env) : postPush(env, controller.scheduledTime || Date.now())); },
+  async scheduled(controller, env, ctx) { ctx.waitUntil(runCron(env, controller.cron, controller.scheduledTime)); },
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname;
     const configured = accounts(env).length > 0;
