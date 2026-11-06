@@ -1,7 +1,7 @@
 // studio app service worker (home = Showreels).
 // Network-first: HTML + the reel and channel lists (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v14';
+const VERSION = 'v15';
 const CACHE = `aquarii-${VERSION}`;
 const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/channels/channels.json', '/showreels/captions.json', '/icons/icon.svg'];
 
@@ -55,7 +55,12 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('push', (e) => {
   let m = {};
   try { m = e.data ? e.data.json() : {}; } catch { m = { body: e.data ? e.data.text() : '' }; }
-  e.waitUntil(self.registration.showNotification(m.title || 'Studio', { body: m.body || '', icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: m.url || '/' }, tag: m.tag || 'studio' }));
+  // delivery receipt (owner, 6 Nov 2026: a reminder Apple accepted never showed): the phone reports that it received and showed it, so
+  // the "Push check" workflow can tell "never reached the phone" from "reached it but was hidden" (Focus, Scheduled Summary)
+  const ack = (shown) => fetch('/api/push/ack', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' },
+    body: JSON.stringify({ tag: String(m.tag || 'studio').slice(0, 90), shown }) }).catch(() => {});
+  e.waitUntil(self.registration.showNotification(m.title || 'Studio', { body: m.body || '', icon: '/icons/icon-192.png', badge: '/icons/icon-192.png', data: { url: m.url || '/' }, tag: m.tag || 'studio' })
+    .then(() => ack(true), (err) => ack('error: ' + String(err && err.message || err).slice(0, 80))));
 });
 self.addEventListener('notificationclick', (e) => {
   e.notification.close();

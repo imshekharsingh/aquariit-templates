@@ -2,7 +2,7 @@ name: Push check
 
 # Why did (or didn't) a push reminder go out? (owner, 6 Nov 2026) Signs in to the app and prints /api/push/status: signed-up devices (push host
 # only, never endpoints or keys), the reels with a slot a day either side (hidden / uploaded flagged), which ones a reminder would go to, the last
-# post-reminder and spare-reminder sends, and every Worker cron run (time, cron, result). Read-only, a few seconds. Sessions dispatch it and read the log.
+# post-reminder and spare-reminder sends, the phone's delivery receipts (push_ack: the service worker showed it) and every Worker cron run (time, cron, result). Read-only, a few seconds. Sessions dispatch it and read the log.
 on:
   workflow_dispatch:
 

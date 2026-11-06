@@ -358,6 +358,8 @@ async function spareDb(env) {
     env.DB.prepare('CREATE TABLE IF NOT EXISTS spare_skip (week TEXT PRIMARY KEY, at TEXT NOT NULL)'),
     env.DB.prepare('CREATE TABLE IF NOT EXISTS spare_push_log (at TEXT PRIMARY KEY, devices INTEGER NOT NULL, sent INTEGER NOT NULL, failed INTEGER NOT NULL, note TEXT)'),
     env.DB.prepare('CREATE TABLE IF NOT EXISTS push_subs (endpoint TEXT PRIMARY KEY, p256dh TEXT NOT NULL, auth TEXT NOT NULL, at TEXT NOT NULL)'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS cron_log (at TEXT NOT NULL, cron TEXT NOT NULL, scheduled TEXT, result TEXT)'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS push_ack (at TEXT NOT NULL, tag TEXT NOT NULL, shown TEXT)'),
   ]).catch((e) => { spareReady = null; throw e; });
   await spareReady;
   return env.DB;
@@ -382,6 +384,13 @@ async function spareApi(request, env, p, url) {
     return jres({ ...w, week, on: !row, skipped: !!row, at: row ? row.at : null, lastPush: last || null });
   }
   if (p === '/api/push/status' && request.method === 'GET') return jres(await pushStatus(env, db));   // read-only: the "Push check" workflow prints it
+  if (p === '/api/push/ack' && request.method === 'POST') {   // the service worker's delivery receipt for each push it showed (kept 14 days)
+    let b = null; try { b = await request.json(); } catch { /* handled below */ }
+    if (!b || typeof b.tag !== 'string' || !/^[\w-]{1,90}$/.test(b.tag)) return jres({ error: 'bad-request' }, 400);
+    await db.batch([db.prepare('INSERT INTO push_ack (at, tag, shown) VALUES (?1, ?2, ?3)').bind(new Date().toISOString(), b.tag, String(b.shown).slice(0, 100)),
+      db.prepare('DELETE FROM push_ack WHERE at < ?1').bind(new Date(Date.now() - 14 * DAY_MS).toISOString())]);
+    return jres({ ok: true });
+  }
   if (p === '/api/push/test' && request.method === 'POST') {   // "Send a test notification": only to a device that is signed up
     let b = null; try { b = await request.json(); } catch { /* handled below */ }
     const r = b && typeof b.endpoint === 'string' ? await db.prepare('SELECT endpoint, p256dh, auth FROM push_subs WHERE endpoint = ?1').bind(b.endpoint).first() : null;
@@ -497,7 +506,6 @@ async function postPush(env, now = Date.now()) {
 async function cronLog(env, cron, scheduled, result) {
   try {
     const db = await spareDb(env); if (!db) return;
-    await db.prepare('CREATE TABLE IF NOT EXISTS cron_log (at TEXT NOT NULL, cron TEXT NOT NULL, scheduled TEXT, result TEXT)').run();
     await db.batch([db.prepare('INSERT INTO cron_log (at, cron, scheduled, result) VALUES (?1, ?2, ?3, ?4)').bind(new Date().toISOString(), cron || '', scheduled ? new Date(scheduled).toISOString() : null, String(result).slice(0, 500)),
       db.prepare('DELETE FROM cron_log WHERE at < ?1').bind(new Date(Date.now() - 14 * DAY_MS).toISOString())]);
   } catch { /* logging never breaks a send */ }
@@ -526,6 +534,7 @@ async function pushStatus(env, db) {
     slots, remindable: due,
     postLog: await q('SELECT reel, due, at, devices, sent, failed, note FROM post_push_log ORDER BY at DESC LIMIT 20'),
     spareLog: await q('SELECT at, devices, sent, failed, note FROM spare_push_log ORDER BY at DESC LIMIT 5'),
+    acks: await q('SELECT at, tag, shown FROM push_ack ORDER BY at DESC LIMIT 20'),
     cronLog: await q('SELECT at, cron, scheduled, result FROM cron_log ORDER BY at DESC LIMIT 30') };
 }
 // "Send a test notification": the real reminder for the next reel to post (overdue or upcoming, 3 days either side), so the tap tests the deep link
