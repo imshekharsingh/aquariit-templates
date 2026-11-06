@@ -159,7 +159,8 @@ jobs:
           cat out/parts.txt
           ffmpeg -y -loglevel error -f concat -safe 0 -i out/parts.txt -c copy -movflags +faststart "out/$NAME.mp4"
           rm -f out/$NAME.part*.mp4
-          ffprobe -v error -show_entries format=duration -of csv=p=0 "out/$NAME.mp4"
+          # the imageio-ffmpeg fallback (apt mirror down) has no ffprobe: then read the duration from ffmpeg itself
+          if command -v ffprobe >/dev/null; then ffprobe -v error -show_entries format=duration -of csv=p=0 "out/$NAME.mp4"; else ffmpeg -hide_banner -i "out/$NAME.mp4" 2>&1 | grep -m1 Duration || true; fi
           if [ -n "$SECS" ]; then mv "out/$NAME.mp4" "out/$NAME-preview.mp4"; for f in out/$NAME.cues.json out/$NAME.cover.txt; do [ -f "$f" ] && mv "$f" "${f/$NAME/$NAME-preview}"; done; NAME="$NAME-preview"; fi
           echo "NAME=$NAME" >> "$GITHUB_ENV"
           [ -s out/words.json ] && echo "VOICE_WORDS=out/words.json" >> "$GITHUB_ENV"
