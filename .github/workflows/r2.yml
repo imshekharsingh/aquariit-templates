@@ -5,13 +5,15 @@ name: R2
 #   check: the token can create, write and read the bucket (prints R2_OK=yes / no)
 #   copy:  copy every asset of the reels, techreel and study releases into R2 and verify each (releases untouched)
 #   move:  the same, then delete the verified assets from the releases
-#   site:  sign in to the app: the Showreels list loads, a reel plays (Range -> 206), and its old public release URL is gone (404)
+#   site:  sign in to the app: the Showreels list loads, a reel plays (Range -> 206), and its old public release URL is gone (404);
+#          and the first 64 KB of a reel's -play.mp4 hold its moov atom (playback can start at once)
+#   faststart: reels in the app without a -play.mp4 get one, and their full MP4 gets its moov atom first (-c copy) (owner, 6 Nov 2026)
 on:
   workflow_dispatch:
     inputs:
       action:
         type: choice
-        options: [check, copy, move, site]
+        options: [check, copy, move, site, faststart]
         default: check
 
 permissions:
@@ -47,8 +49,21 @@ jobs:
       - name: Move
         if: inputs.action == 'move'
         run: bash scripts/r2.sh migrate --delete
+      - name: Faststart
+        if: inputs.action == 'faststart'
+        env:
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            timeout 180 sh -c 'sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg' || { echo "::error::no ffmpeg"; exit 1; }
+          fi
+          B=https://templates.aquariit.com; J=$(mktemp)
+          curl -s --retry 3 -o /dev/null -c "$J" -X POST --data-urlencode "username=$BASIC_AUTH_USER" --data-urlencode "password=$BASIC_AUTH_PASS" "$B/login"
+          curl -s --retry 3 -b "$J" "$B/api/showreels" > list.json
+          bash scripts/r2.sh faststart list.json
       - name: Site
-        if: inputs.action == 'site'
+        if: inputs.action == 'site' || inputs.action == 'faststart'
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
@@ -65,5 +80,14 @@ jobs:
           c=$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/reels/$n-cover.jpg"); echo "COVER $n-cover.jpg: $c"; [ "$c" = 200 ] || fail=1
           o=$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n.mp4"); echo "SIGNED OUT $n.mp4: $o"; [ "$o" = 401 ] || fail=1
           g=$(command curl -s -L -o /dev/null -w '%{http_code}' "https://github.com/$REPO/releases/download/reels/$n.mp4"); echo "OLD PUBLIC URL github.com/.../releases/download/reels/$n.mp4: $g"; [ "$g" = 404 ] || fail=1
+          # first byte to playable (owner, 6 Nov 2026): the first 64 KB of the newest reel's -play.mp4 must hold the whole moov atom
+          p=$(node -e 'const s=JSON.parse(require("fs").readFileSync("list.json","utf8")).showreels||[]; const v=s.find(x=>x.play); console.log(v?v.name:"")')
+          if [ -n "$p" ]; then
+            full=$(node -e 'const s=JSON.parse(require("fs").readFileSync("list.json","utf8")).showreels; const v=s.find(x=>x.name===process.argv[1]); console.log(v.size, v.playSize)' "$p")
+            curl -s -o head.bin -w '%{http_code} %{size_download}\n' -H 'Range: bytes=0-65535' -b "$J" "$B/reels/$p-play.mp4" | sed "s/^/PLAY_RANGE $p-play.mp4 0-65535: /"
+            node scripts/showreel/mp4boxes.mjs head.bin --bytes 65536 --need-moov-first || fail=1
+            echo "SIZES $p: full $(echo "$full" | cut -d' ' -f1) bytes, play $(echo "$full" | cut -d' ' -f2) bytes"
+            h=$(curl -s -D - -o /dev/null -H 'Range: bytes=0-1' -b "$J" "$B/reels/$p-play.mp4" | grep -i '^cache-control' | tr -d '\r'); echo "$h"
+          else echo "::warning::no reel has a -play.mp4 yet"; fi
           for t in reels techreel study; do echo "RELEASE $t: $(gh api "repos/$REPO/releases/tags/$t" -q '.assets | length' 2>/dev/null || echo none) assets"; done
           [ $fail = 0 ] && echo "SITE_OK=yes" || { echo "SITE_OK=no"; exit 1; }

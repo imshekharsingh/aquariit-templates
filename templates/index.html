@@ -352,7 +352,7 @@
   // each row opens (owner, 1 Nov 2026: "why are uploaded cards not opening?"): the video while its MP4 exists, else the cover; post text, sources, numbers
   var openPosted = {};
   function postedDetail(s, meta){ var d = el('div', 'pdet');
-    if (s.video) { var v = document.createElement('video'); v.src = s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover; v.setAttribute('aria-label', 'Showreel ' + s.name); d.appendChild(v); }
+    if (s.video) { var v = document.createElement('video'); v.src = s.play || s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover; v.setAttribute('aria-label', 'Showreel ' + s.name); d.appendChild(v); }
     else { if (s.cover) { var im = document.createElement('img'); im.src = s.cover; im.alt = 'Cover of ' + (meta.concept || label(s)); d.appendChild(im); } d.appendChild(el('p', 'gone', 'Video removed 15 days after upload. The post text and sources stay.')); }
     var cap = el('div', 'cap wait', 'Loading post text…'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), src = el('div', 'src'); copy.type = 'button'; copy.disabled = true; src.hidden = true;
     copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
@@ -527,7 +527,7 @@
     if (compact) { var t2 = el('div', 'top2'), pl = el('button', 'play'), tx = el('div'); pl.type = 'button'; pl.setAttribute('aria-label', 'Play ' + (meta.concept || label(s)));
       if (s.cover) pl.style.backgroundImage = 'url(' + s.cover + ')'; pl.addEventListener('click', function(){ openReel(s.name, false); });
       tx.appendChild(el('div', 'when' + w[1], w[0])); tx.appendChild(nm); t2.appendChild(pl); t2.appendChild(tx); b.appendChild(t2); }
-    else { var v = document.createElement('video'); v.src = s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover;
+    else { var v = document.createElement('video'); v.src = s.play || s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover;
       v.setAttribute('aria-label', 'Showreel ' + s.name); card.appendChild(v);
       b.appendChild(el('div', 'when' + w[1], w[0])); b.appendChild(nm);
       if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a reel's one-line description
@@ -679,8 +679,7 @@
     (u.workflows || []).slice(0, 5).forEach(function(w){ var li = el('li'); li.appendChild(el('span', null, w.name)); li.appendChild(el('span', null, w.minutes + ' min · ' + w.runs + ' runs')); ul.appendChild(li); });
     document.getElementById('use').hidden = false; }).catch(function(){});
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
-    // a re-render keeps the file name, so the video and cover URLs carry the release's update time: the phone never plays a cached older cut
-    (r[0].showreels || []).forEach(function(s){ var v = '?v=' + encodeURIComponent(s.at || ''); if (s.video) s.video += v; if (s.cover) s.cover += v; });
+    // a re-render keeps the file name, so the Worker's video, play and cover URLs carry each object's upload time (?v=): the phone never plays a cached older cut
     DATA = { d: r[0], c: r[1] }; if (!fromLink(location.hash)) { if (pendingReel) openReel(pendingReel, true); else render(); }
     // titles for the collapsed tiles too: each reel's caption first line (one small request per reel), then one re-render
     Promise.all((r[0].showreels || []).filter(function(s){ return !(r[1][s.name] || {}).concept; }).map(function(s){
