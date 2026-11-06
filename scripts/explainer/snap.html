@@ -250,6 +250,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     for (var c2 = 0, u0 = A.mand + .3, u1 = A.mand + 1.4; u0 + c2 * .11 < u1; c2++) Q.push({ t: u0 + c2 * .11, k: 'tick', g: .06, p: (c2 * 3) % 7, x: 405 });
     Q.push({ t: A.now - .1, k: 'move', d: .8, g: .3, dir: 1, p: -.2, x: 270, x2: 220, r: .3 });
     Q.push({ t: DUR - .6, k: 'move', d: .6, g: .4, dir: -1, p: -.4, x: 270, r: .4 });
+    Q.forEach(function(q){ q.t = Math.max(0, +q.t.toFixed(3)); });   // the real voice can start at 0 s: no cue before the reel
     window.CUES = { dur: DUR, cues: Q, mix: { duck: 9, attack: .02, release: .3, room: .55 },
       bed: { bpm: 240 / BAR, origin: 0, gain: .3, chords: CHORDS } };
   }
