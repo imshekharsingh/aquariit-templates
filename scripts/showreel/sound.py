@@ -124,7 +124,7 @@ def shimmer(g=1, p=0):
 
 # ---- sample 2 (6 Nov 2026): sound that follows the motion. Own seeded noise per cue, so the global rng (older kinds) is untouched ----
 def _rng(t, k):
-    return np.random.default_rng(int(t * 1000) * 31 + sum(map(ord, k)))
+    return np.random.default_rng(abs(int(round(t * 1000))) * 31 + sum(map(ord, k)))   # abs: a cue may sit a little before 0 s
 
 
 def lowpass(x, fc):
