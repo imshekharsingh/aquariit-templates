@@ -3,7 +3,8 @@
 Same use as design/rules-web.md: score every rule (pass / fail, one line each) in the stills review before the one render; fix or swap on a fail;
 the daily audit adds, changes or drops a rule with the number. Evidence = the Instagram collect run of 5 Nov 2026.
 State on 5 Nov: 8 followers (-1 in 7 days), 6 explainer test reels at 110-120 reach, 3.5-4.7 s watched, 0 saves, 2 shares.
-After the 6 Nov verdict the channel posts 2-3 reels a week (Mon / Wed / Fri), each built that day (paused, not cut).
+Verdict 6 Nov: the test missed all three targets (median reach 115 vs 300, ~4 s watched vs 6 s, 10 followers vs 20; 0 saves in 7 reels).
+As decided by the owner on 5 Nov, the channel posts 2-3 reels a week (Mon / Wed / Fri), each built that day (paused, not cut).
 
 1. **An everyday puzzle the viewer can see on their own phone**, not a feature or a news item. Evidence: explainers held 110-120 reach
    with 3.5-4.7 s watched; news reels in the same week sank to 8-35 (Siri 8, MacBook 29, Discord 35).
