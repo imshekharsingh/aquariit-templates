@@ -6,75 +6,85 @@
 <title>Why does one long name break your card?</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-/* @webin20sec, narrated explainer Nº 16, a layout tip: "Why does one long name break your card?"
+/* @webin20sec, narrated explainer Nº 16, a layout tip: "Why does one long name break your card?" (reworked 7 Nov 2026: one continuous camera,
+   the app's card list fills the frame from frame 0, the bug shoves the Pay button off the card, the fix flies out of the code into the row).
    A card is a flex row (avatar, name, Pay button). The name has overflow: hidden + white-space: nowrap + text-overflow: ellipsis,
    but its flex item (.who) keeps min-width: auto, which MDN defines for flex items as the min-content size: the whole one-line
    name. So the item will not shrink and pushes the button off the card. min-width: 0 on .who lets it shrink; the ellipsis shows.
-   Same phone and column as Nº 14-15: a payments app; the long name types in from frame 0 and pushes Pay out of its card (the cut-off
-   part drawn past the phone in red); the code types .who { min-width: 0 }, the name shrinks, and retyped it ends in dots, ringed green.
-   Beats and captions lead the voice by 0.15 s; the cover is the finished title (window.COVER); every frame a pure function of t. */
-:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--rule:#33343c;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+   Everything lives in one world (#w, CSS px of a 390 px phone screen); ONE camera (focus, scale) pans and zooms between the row,
+   the button and the code, never cuts. Beats lead the voice by 0.15 s; captions show whole phrases; every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
 *{box-sizing:border-box;margin:0}
 html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
 .a{position:absolute}
-#lbl{left:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
-#hud{right:36px;top:120px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
-#hud b{font-weight:700;color:var(--paper)}#hud .r{color:var(--red)}#hud .y{color:var(--acc)}
-#tag{left:36px;top:166px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--dim)}
-#hook{left:34px;top:236px;font-weight:800;font-size:72px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96}
+#lbl{left:36px;top:62px;font:700 14px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#tag{right:36px;top:62px;font:700 14px/1 var(--m);letter-spacing:.1em;color:var(--dim);white-space:nowrap;text-align:right}
+#hook{left:32px;top:96px;font-weight:800;font-size:54px;line-height:.98;letter-spacing:-.022em;font-variation-settings:'wdth' 100,'opsz' 96}
 #hook .ln{display:block;white-space:nowrap}
 #hook .ln > span{display:inline-block;transform-origin:0 80%}
 #hook .acc{color:var(--red)}
-#ph{left:0;top:0;width:250px;height:470px;border-radius:38px;background:#2a2b31;padding:8px;transform-origin:0 0}
-#scr{position:absolute;left:8px;top:8px;width:234px;height:454px;border-radius:31px;overflow:hidden;background:#e7e3da}
-#sb{position:absolute;left:0;right:0;top:0;height:26px;font:700 11px/26px var(--m);padding:0 18px;color:var(--ink)}
-#brand{position:absolute;left:16px;top:40px;font:700 10px/1 var(--m);letter-spacing:.14em;color:#6d6a63}
-.h1{position:absolute;left:16px;top:58px;font:800 28px/.96 var(--f);font-variation-settings:'opsz' 72;letter-spacing:-.02em;color:var(--ink)}
-.card{position:absolute;left:10px;width:214px;height:56px;border-radius:14px;background:#fff;overflow:hidden;color:var(--ink)}
-.av{position:absolute;left:10px;top:11px;width:34px;height:34px;border-radius:50%;font:800 13px/34px var(--f);text-align:center;color:#fff}
-.who{position:absolute;left:54px;top:11px}
-.nm{font:800 14px/18px var(--f);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sub{font:500 11px/16px var(--f);color:#77746d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pay{position:absolute;top:14px;width:48px;height:28px;border-radius:14px;background:var(--ink);color:var(--paper);font:800 12px/28px var(--f);text-align:center}
-#gw{position:absolute;height:44px;border:2.5px dashed var(--red);border-radius:8px}
-#gb{position:absolute;width:52px;height:32px;border:2.5px dashed var(--red);border-radius:16px;font:800 12px/27px var(--f);text-align:center;color:var(--red)}
-#gl{position:absolute;font:700 13px/1 var(--m);color:var(--red);white-space:nowrap}
-#ok{position:absolute;left:12px;width:222px;height:64px;border:3px solid var(--acc);border-radius:18px}
-#meas{position:absolute;left:-2000px;top:0;font:800 14px/18px var(--f);white-space:nowrap}
-#col{left:306px;top:470px;width:198px;height:160px}
-#cd{position:absolute;left:0;right:0;top:0;padding:16px 14px;border-radius:18px;background:var(--surface);font:500 17px/1.45 var(--m);white-space:pre;color:var(--paper)}
-#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
-#cd .cur{display:inline-block;width:2px;height:18px;background:var(--paper);vertical-align:-3px}
-#cap{left:36px;right:36px;top:700px;font:700 34px/1.12 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
-#cap span{display:inline-block;margin-right:.24em}
+#w{left:0;top:0;width:390px;height:700px;transform-origin:0 0}
+#panel{position:absolute;left:0;top:92px;width:390px;height:390px;border-radius:34px;background:#e7e3da}
+.card{position:absolute;left:14px;width:362px;height:78px;border-radius:20px;background:#fff;overflow:hidden;color:var(--ink)}
+.av{position:absolute;left:14px;top:15px;width:48px;height:48px;border-radius:50%;font:800 18px/48px var(--f);text-align:center;color:#fff}
+.who{position:absolute;left:76px;top:15px;overflow:hidden}
+.nm{font:800 21px/26px var(--f);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sub{font:500 15px/22px var(--f);color:#77746d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pay{position:absolute;top:19px;left:272px;width:76px;height:40px;border-radius:20px;background:var(--ink);color:var(--paper);font:800 17px/40px var(--f);text-align:center}
+#pay{left:0;top:0;transform-origin:50% 50%;overflow:hidden;white-space:nowrap}
+#pay span{display:inline-block}
+#ghost{position:absolute;font:800 21px/26px var(--f);white-space:nowrap;color:var(--red)}
+#edge{position:absolute;left:374px;width:0;height:96px;border-left:3px dashed var(--red)}
+#box{position:absolute;height:56px;border:3px dashed var(--red);border-radius:10px}
+#boxl{position:absolute;font:700 15px/1 var(--m);white-space:nowrap;color:var(--red);background:var(--ink);padding:6px 9px;border-radius:8px}
+#chipE{position:absolute;font:700 15px/1 var(--m);white-space:nowrap;color:var(--ink);background:var(--acc);padding:7px 10px;border-radius:9px}
+#code{position:absolute;left:14px;top:296px;width:362px;height:168px;padding:22px 22px;border-radius:22px;background:var(--surface);font:500 25px/1.5 var(--m);white-space:pre;color:var(--paper)}
+#code .dim{color:var(--dim)}#code .r{color:var(--red)}#code b{font-weight:500;color:var(--acc)}
+#code .cur{display:inline-block;width:3px;height:26px;background:var(--paper);vertical-align:-4px}
+#sweep{position:absolute;left:0;top:0;height:38px;border-radius:6px;background:rgba(124,240,182,.22)}
+#chip0{position:absolute;left:0;top:0;font:700 22px/1 var(--m);white-space:nowrap;color:var(--ink);background:var(--acc);padding:9px 12px;border-radius:10px;transform-origin:50% 50%}
+#ok{position:absolute;left:8px;width:374px;height:90px;border:4px solid var(--acc);border-radius:25px}
+#nsw{position:absolute;left:90px;top:243px;height:5px;border-radius:3px;background:var(--acc)}
+#dots{position:absolute;width:40px;height:40px;border:3px solid var(--acc);border-radius:50%}
+#th{position:absolute;left:0;top:0;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(255,255,255,.55);border:3px solid rgba(17,18,20,.55);box-shadow:0 8px 18px rgba(0,0,0,.25)}
+#rip{position:absolute;left:0;top:0;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;border:4px solid var(--red)}
+#miss{position:absolute;font:800 22px/1 var(--m);color:var(--red);white-space:nowrap}
+#meas{position:absolute;left:-2000px;top:0;font:800 21px/26px var(--f);white-space:nowrap}
+#cap{left:24px;right:24px;top:676px;text-align:center}
+#cap > div{display:inline-block;padding:9px 16px 11px;border-radius:14px;background:rgba(17,18,20,.9);font:700 31px/1.14 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin:0 .12em}
 </style>
 </head>
 <body>
-<div id="lbl" class="a">Nº 16 · LAYOUT</div>
-<div id="hud" class="a"></div>
-<div id="tag" class="a"></div>
-<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>one</span></span><span class="ln"><span class="acc">long</span> <span class="acc">name</span></span><span class="ln"><span>break</span> <span>your</span></span><span class="ln"><span>card?</span></span></div>
-<div id="ph" class="a">
-  <div id="scr">
-    <div id="sb">9:41</div>
-    <div id="brand">PAYLARK</div>
-    <div class="h1">Send<br>money</div>
-    <div class="card" style="top:126px"><div class="av" style="background:#2e5bd8">AL</div><div class="who" style="width:92px"><div class="nm">Ana Lima</div><div class="sub">Paid you · 2 Nov</div></div><div class="pay" style="left:156px">Pay</div></div>
-    <div class="card" id="c2" style="top:192px" data-fit="free"><div class="av" style="background:#d8572e">MO</div><div class="who" id="who"><div class="nm" id="nm"></div><div class="sub" id="sub">New contact</div></div><div class="pay" id="pay">Pay</div></div>
-    <div class="card" style="top:258px"><div class="av" style="background:#1f8a5b">TR</div><div class="who" style="width:92px"><div class="nm">Tom Reyes</div><div class="sub">You paid · 1 Nov</div></div><div class="pay" style="left:156px">Pay</div></div>
-    <div class="card" style="top:324px"><div class="av" style="background:#8a4fd8">PD</div><div class="who" style="width:92px"><div class="nm">Priya Das</div><div class="sub">Paid you · 30 Oct</div></div><div class="pay" style="left:156px">Pay</div></div>
-  </div>
-  <div id="gw"></div><div id="gb">Pay</div><div id="gl">min-width: auto</div>
-  <div id="ok"></div>
+<div id="w" class="a" data-fit="free">
+  <div id="panel"></div>
+  <div class="card" id="c1" style="top:110px"><div class="av" style="background:#2e5bd8">AL</div><div class="who" style="width:182px"><div class="nm">Ana Lima</div><div class="sub">Paid you · 2 Nov</div></div><div class="pay">Pay</div></div>
+  <div class="card" id="c2" style="top:200px"><div class="av" style="background:#d8572e">MO</div><div class="who" id="who"><div class="nm" id="nm"></div><div class="sub" id="sub">New contact</div></div></div>
+  <div class="card" id="c3" style="top:290px"><div class="av" style="background:#1f8a5b">TR</div><div class="who" style="width:182px"><div class="nm">Tom Reyes</div><div class="sub">You paid · 1 Nov</div></div><div class="pay">Pay</div></div>
+  <div class="card" id="c4" style="top:380px"><div class="av" style="background:#8a4fd8">PD</div><div class="who" style="width:182px"><div class="nm">Priya Das</div><div class="sub">Paid you · 30 Oct</div></div><div class="pay">Pay</div></div>
+  <div id="ghost"></div>
+  <div id="edge" style="top:191px"></div>
+  <div id="box"></div><div id="boxl">flex item · min-width: auto</div>
+  <div id="chipE">text-overflow: ellipsis ✓</div>
+  <div id="ok" style="top:194px"></div>
+  <div id="dots"></div><div id="nsw"></div>
+  <div class="pay" id="pay"><span>Pay</span></div>
+  <div id="code"><div id="sweep"></div><div id="cdt"></div></div>
+  <div id="chip0">min-width: 0</div>
+  <div id="rip"></div><div id="th"></div><div id="miss">missed</div>
 </div>
+<div id="lbl" class="a">Nº 16 · LAYOUT</div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>one</span></span><span class="ln"><span class="acc">long</span> <span class="acc">name</span> <span>break</span></span><span class="ln"><span>your</span> <span>card?</span></span></div>
 <div id="meas" aria-hidden="true" data-fit="free"></div>
-<div id="col" class="a"><div id="cd"></div></div>
 <div id="cap" class="a"></div>
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
   var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
   var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var spring = function(k){ return k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-5.5 * k) * Math.cos(11 * k); };   // overshoots, settles by k = 1
+  var back = function(k){ var c = 2.2; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
   var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
   var TEXT = "Why does one long name break your card? The name has an ellipsis, but it still pushes the button off the card. A flex item won't shrink below its content. The fix: min width zero, on the flex item. Now it shrinks, and the long name ends in dots.";
   var WORDS = [], DUR = 21, LEAD = .15, HOOK_N = 8;
@@ -83,96 +93,171 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
   function align(){ var T = TEXT.split(/\s+/), j = 0;
     WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
-  var A = {}, PH = [];
+  // ---- geometry (world = CSS px of a 390 px phone screen) ----
+  var NAME = 'Maximiliana Okonkwo-Vandenberg', ROOM = 182, WHO_X = 90, CARD_R = 376, ROW = 200, PAY_W = 76, PAY_MIN = 46;
+  var widths = {};
+  function textW(n){ if (widths[n] == null) { var m = $('meas'); m.textContent = NAME.slice(0, n); widths[n] = m.getBoundingClientRect().width; } return widths[n]; }
+  var A = {}, PH = [], FALL = [];
+  // letters of the name at t: typed in the hook from frame 0; backspaced and typed again as the voice says it pushes
+  function typed(t){
+    var L = NAME.length;
+    if (t < A.rw) return Math.round(4 + (L - 4) * P(t, 0, 2.1));
+    if (t < A.pushes - .15) return Math.round(L - (L - 11) * P(t, A.rw, A.rw + .45));
+    return Math.round(11 + (L - 11) * P(t, A.pushes - .15, A.off - .05));
+  }
+  function fixK(t){ return P(t, A.now - .05, A.now + .75); }
+  function whoW(t){ var nat = Math.max(ROOM, textW(typed(t))), k = fixK(t); return k > 0 ? mix(nat, ROOM, spring(k)) : nat; }
+  // the Pay button while it is still on the card: squeezed first (flex-shrink), then shoved past the card edge
+  function payAt(W){ var o = Math.max(0, W - ROOM), w = Math.max(PAY_MIN, PAY_W - o), x = (CARD_R - 14 - PAY_W) + Math.max(0, o - (PAY_W - PAY_MIN)) + (PAY_W - w); return { x: x, w: w }; }
   function anchors(){
     align();
-    A = { the: at('the'), ellipsis: at('ellipsis'), but: at('but'), pushes: at('pushes'), off: at('off'), flex: at('flex'), shrink: at('shrink'), content: at('content'),
-      fix: at('fix'), min: at('min'), zero: at('zero'), item2: at('item', 2), now: at('now'), shrinks: at('shrinks'), dots: at('dots') };
+    A = { the: at('the'), ellipsis: at('ellipsis'), but: at('but'), pushes: at('pushes'), off: at('off'), a: at('a'), flex: at('flex'), wont: at('wont'), shrink: at('shrink'),
+      below: at('below'), content: at('content'), fix: at('fix'), min: at('min'), zero: at('zero'), on: at('on'), flex2: at('flex', 2), item2: at('item', 2),
+      now: at('now'), shrinks: at('shrinks'), and: at('and'), long2: at('long', 2), dots: at('dots') };
     A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.the - .3, A.hookIn + .35);
-    window.COVER = +(A.hookIn + .1).toFixed(2);
+    A.rw = A.but - .55; A.tap = A.dots + 1.0; A.miss = Math.min(A.hookIn + .15, A.leave - .25);
+    window.COVER = +(A.hookIn - .05).toFixed(2);
+    // when the button tips over the card edge (twice: in the hook and as the voice says "off")
+    FALL = [];
+    [[0, A.rw], [A.pushes - .15, A.now - .1]].forEach(function(r){ for (var t = r[0]; t < r[1]; t += 1 / 240) { var p = payAt(whoW(t)); if (p.x > CARD_R - PAY_MIN * .45) { FALL.push({ t: t, x: p.x, end: r[1] }); break; } } });
     PH = []; var cur = [];
     WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
       if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
         if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
       else PH.push(cur);
       cur = []; } });
+    // the camera: [start, end, focus x, focus y (world), screen y, scale]; each move eases from the state before it
+    CAM = [
+      [0, 0, 195, 287, 512, 1.12],
+      [A.leave - .15, A.leave + .6, 200, 230, 430, 1.42],                 // in on the row and its name
+      [A.pushes - .1, A.off + .05, 290, 238, 400, 1.75],                   // track the button to the card edge
+      [A.off + .15, A.off + .75, 310, 280, 380, 1.6],                     // tilt down after it as it falls
+      [A.a - .2, A.flex + .45, 195, 292, 452, 1.3],                       // out: the row, its flex item, the code sliding up
+      [A.fix - .25, A.fix + .45, 196, 382, 452, 1.42],                     // down onto the code
+      [A.on - .05, A.now - .1, 196, 236, 440, 1.42],                       // follow min-width: 0 up into the row
+      [A.long2 - .35, A.long2 + .55, 262, 228, 410, 3.0],                  // close-up on the dots
+      [A.dots + .5, A.tap - .1, 240, 240, 430, 1.9],                       // back to the row and its Pay button
+      [A.tap + .45, DUR - .2, 195, 280, 440, 1.3]];                       // the fixed card list, big
     buildCues();
   }
-  var NAME = 'Maximiliana Okonkwo-Vandenberg', FIT = 92, WHO_X = 54, CARD_W = 214, CARD_Y = 192, PX = 390 / 234;   // screen px; CSS px on a 390 px phone
-  var widths = {};
-  function textW(n){ if (widths[n] == null) { var m = $('meas'); m.textContent = NAME.slice(0, n); widths[n] = m.getBoundingClientRect().width; } return widths[n]; }
-  // letters of the name shown at t: typed in the hook (frame 0), retyped as the voice says it pushes, and retyped once more after the fix
-  function typed(t){
-    var L = NAME.length;
-    if (t < A.leave + .3) return Math.round(4 + (L - 4) * P(t, 0, 1.9));
-    if (t < A.now - .1) return Math.round(11 + (L - 11) * P(t, A.but, A.off + .1));
-    return Math.round(11 + (L - 11) * P(t, A.now, A.dots - .1));
+  var CAM = [];
+  function cam(t){
+    var c = CAM[0].slice(2);
+    for (var i = 1; i < CAM.length; i++) { var m = CAM[i], k = io(P(t, m[0], m[1])); if (k <= 0) break; for (var j = 0; j < 4; j++) c[j] = mix(c[j], m[2 + j], k); }
+    c[3] *= 1 + .012 * Math.sin(t * 1.3);   // a slow breath so no frame is a still
+    return c;
   }
-  var CODE_A = '.who {\n  min-width: ', CODE_Z = ';\n}';
+  // the code card: ".who { min-width: auto; }" typed under the row; at the fix "auto" is deleted and a green 0 typed
   function code(t){
-    var a = Math.round(CODE_A.length * P(t, A.fix - .1, A.min + .35)), n = t >= A.zero ? 1 : 0;
-    var head = a >= CODE_A.length ? '<span class="dim">.who {</span>\n  min-width: ' : '<span class="dim">' + CODE_A.slice(0, a) + '</span>';
-    var cur = (t > A.fix - .1 && t < A.zero + .3) ? '<span class="cur"></span>' : '';
-    return head + (n ? '<b>0</b>' : '') + cur + (a >= CODE_A.length && n ? '<span class="dim">' + CODE_Z + '</span>' : '');
+    var HEAD = '.who {\n  min-width: ', VAL = 'auto', TAIL = ';\n}', all = HEAD.length + VAL.length + TAIL.length;
+    var n = Math.round(all * P(t, A.flex, A.content + .2)), del = Math.round(VAL.length * P(t, A.fix + .1, A.min + .1));
+    var h = HEAD.slice(0, n), v = n > HEAD.length ? VAL.slice(0, Math.min(VAL.length, n - HEAD.length) - del) : '', tl = n > HEAD.length + VAL.length ? TAIL.slice(0, n - HEAD.length - VAL.length) : '';
+    var cur = (t > A.flex && t < A.content + .35) || (t > A.fix && t < A.zero + .35) ? '<span class="cur"></span>' : '';
+    return '<span class="dim">' + h + '</span>' + (t >= A.zero ? '<b>0</b>' : '<span class="r">' + v + '</span>') + cur + '<span class="dim">' + tl + '</span>';
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t));
-    var ex = io(P(t, DUR - .6, DUR - .1));
     var gone = io(P(t, A.leave, A.leave + .35));
     [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
       var s = WORDS[i] ? WORDS[i].s - LEAD : 0, k = out(P(t, s, s + .26));
-      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 80) + 'px)'; });
-    $('lbl').style.opacity = 1 - ex;
-    var rise = io(P(t, A.leave + .2, A.leave + .7)), s = mix(.56, 1, rise), x = mix(130, 36, rise), y = mix(538 + Math.sin(t * .9) * 3, 206, rise);
-    var ph = $('ph'); ph.style.opacity = out(P(t, 0, .3)) * (1 - ex); ph.style.transform = 'translate(' + x + 'px,' + (y + ex * 20) + 'px) scale(' + s + ')';
-    // ---- the card: .who is as wide as the whole name (min-width: auto) until the fix, then shrinks to the space left ----
-    var n = typed(t), nw = textW(n), fixK = io(P(t, A.zero + .1, A.zero + .6));
-    var W = mix(Math.max(FIT, nw), FIT, fixK), bx = WHO_X + W + 10;
-    $('nm').textContent = NAME.slice(0, n);
-    $('who').style.width = W + 'px'; $('pay').style.left = bx + 'px';
-    // what the card cuts off, drawn past its edge in red (gone before the code card comes in)
-    var gA = cl((W - FIT - 2) / 12) * (1 - P(t, A.fix - .4, A.fix - .1)) * (1 - ex);
-    var gw = $('gw'), gb = $('gb'), gl = $('gl');
-    gw.style.left = (8 + 10 + WHO_X - 4) + 'px'; gw.style.top = (8 + CARD_Y + 6) + 'px'; gw.style.width = (W + 8) + 'px'; gw.style.opacity = gA * (bx > CARD_W - 6 ? 1 : 0);
-    gb.style.left = (8 + 10 + bx - 2) + 'px'; gb.style.top = (8 + CARD_Y + 12) + 'px'; gb.style.opacity = gA * cl((bx + 48 - CARD_W) / 20);
-    var lA = win(t, A.flex, A.fix - .1, .2) * gA; gl.style.left = '262px'; gl.style.top = (8 + CARD_Y + 54) + 'px'; gl.style.opacity = lA;
-    gw.style.borderWidth = (2.5 + 1 * lA) + 'px';
-    // the card ringed green once the name ends in dots
-    var ok = $('ok'); ok.style.top = (8 + CARD_Y - 4) + 'px'; ok.style.opacity = win(t, A.dots - .1, DUR - .7, .15) * (1 - ex);
-    // ---- the code card ----
-    var codeOn = P(t, A.fix - .2, A.fix + .05) * (1 - ex), col = $('col');
-    col.style.opacity = codeOn; col.style.transform = 'translateY(' + (1 - out(P(t, A.fix - .2, A.fix + .2))) * 24 + 'px)';
-    $('cd').innerHTML = code(t);
-    // ---- HUD and tag ----
-    var Hd, nCss = Math.round(W * PX), cCss = Math.round((CARD_W - WHO_X - 58) * PX);
-    if (t < A.leave + .2) Hd = 'NAME <b class="r">' + nCss + ' PX</b> · ROOM <b>' + cCss + ' PX</b>';
-    else if (fixK < .5) Hd = 'NAME <b' + (W > FIT + 2 ? ' class="r"' : '') + '>' + nCss + ' PX</b> · ROOM <b>' + cCss + ' PX</b>';
-    else Hd = 'NAME <b class="y">' + nCss + ' PX</b> · <b class="y">FITS</b>';
-    $('hud').innerHTML = Hd; $('hud').style.opacity = 1 - ex;
-    var tg = $('tag'); tg.style.opacity = (t >= A.leave + .2 ? 1 : 0) * (1 - ex);
-    tg.textContent = t < A.flex - .2 ? 'TEXT-OVERFLOW: ELLIPSIS IS SET' : t < A.fix - .2 ? 'THE FLEX ITEM WON’T SHRINK' : t < A.now - .2 ? 'THE FIX' : 'IT SHRINKS · THE NAME ENDS IN …';
-    // ---- captions ----
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 40 - gone * 70) + 'px)'; });
+    // ---- camera ----
+    var c = cam(t), w = $('w'); w.style.transform = 'translate(' + (270 - c[0] * c[3]) + 'px,' + (c[2] - c[1] * c[3]) + 'px) scale(' + c[3] + ')';
+    // ---- rows: stagger in at frame 0; rows 3-4 sit under the code card, then slide back in at the end ----
+    ['c1', 'c2', 'c3', 'c4'].forEach(function(id, i){ var k = back(P(t, i * .06 - .3, i * .06 + .2)), k2 = i > 1 ? back(P(t, A.and - .1 + (i - 2) * .12, A.and + .4 + (i - 2) * .12)) : 1;
+      var hid = i > 1 ? io(P(t, A.a - .1, A.a + .35)) * (1 - k2) : 0;
+      $(id).style.transform = 'translateX(' + ((1 - k) * 60 + hid * 30) + 'px)'; $(id).style.opacity = cl(k * 2) * (1 - hid); });
+    // ---- the broken row ----
+    var n = typed(t), W = whoW(t), fk = fixK(t), wobble = 0;
+    // "won't shrink": the flex item tries to get narrower twice and springs back
+    [A.wont, A.shrink].forEach(function(x){ var k = P(t, x, x + .55); wobble += k > 0 && k < 1 ? -Math.sin(k * Math.PI) * 34 * (1 - k * .4) : 0; });
+    $('nm').textContent = NAME.slice(0, n); $('who').style.width = (W + wobble) + 'px';
+    var shake = Math.sin(P(t, A.miss, A.miss + .45) * Math.PI * 6) * 5 * (1 - P(t, A.miss, A.miss + .45));
+    $('c2').style.transform += ' translateX(' + shake + 'px)';
+    // the name past the card edge, drawn in red (what the card's overflow cuts off)
+    var g = $('ghost'), over = WHO_X + W > CARD_R + 2 && fk < .3;
+    g.textContent = NAME.slice(0, n); g.style.left = WHO_X + 'px'; g.style.top = (ROW + 15) + 'px';
+    g.style.clipPath = 'inset(-4px -4px -4px ' + (CARD_R - WHO_X) + 'px)'; g.style.opacity = over ? .9 * (1 - P(t, A.fix - .5, A.fix - .2)) : 0;
+    $('edge').style.opacity = over ? 1 - P(t, A.fix - .5, A.fix - .2) : 0;
+    // the Pay button: squeezed, shoved, tips over the edge and falls; after the fix it drops back in with overshoot
+    var pay = $('pay'), pe = payAt(W + wobble), px = pe.x, py = ROW + 19, pw = pe.w, rot = 0, sc = 1, po = 1, f = null;
+    FALL.forEach(function(F){ if (t >= F.t && t < F.end) f = F; });
+    if (f) { var d = t - f.t, tip = out(P(d, 0, .25)), dd = Math.max(0, d - .2); px = f.x + 8 * tip + 60 * dd; py = ROW + 19 + 6 * tip + 900 * dd * dd; rot = 25 * tip + 240 * dd; pw = PAY_MIN; po = d > 1.4 ? 0 : 1; }
+    if (t >= A.rw && t < A.rw + .5 && (!f || t < f.t)) { var r = back(P(t, A.rw, A.rw + .5)); py = mix(ROW - 160, ROW + 19, r); }
+    if (t >= A.now - .1) { var rk = P(t, A.now + .15, A.now + .75); py = ROW + 19 - 14 * (1 - out(rk)); sc = back(rk); po = rk > 0 ? 1 : 0; pe = payAt(W); px = pe.x; pw = pe.w; }
+    var tapK = P(t, A.tap, A.tap + .2), paid = t >= A.tap + .08;
+    if (tapK > 0) sc *= 1 - .12 * Math.sin(tapK * Math.PI);
+    pay.style.width = pw + 'px'; pay.style.left = px + 'px'; pay.style.top = py + 'px'; pay.style.opacity = po;
+    pay.style.transform = 'rotate(' + rot + 'deg) scale(' + sc + ')';
+    pay.style.background = paid ? 'var(--acc)' : 'var(--ink)'; pay.style.color = paid ? 'var(--ink)' : 'var(--paper)';
+    pay.firstChild.textContent = paid ? 'Paid ✓' : 'Pay'; pay.firstChild.style.transform = 'scaleX(' + (paid ? 1 : pw / PAY_W) + ')';
+    if (paid) { pay.style.width = (PAY_W + 22) + 'px'; pay.style.left = (px - 22) + 'px'; }
+    // ---- labels in the world ----
+    var ce = $('chipE'); ce.style.left = WHO_X + 'px'; ce.style.top = (ROW - 42) + 'px';
+    var eK = win(t, A.ellipsis - .1, A.pushes - .2, .25); ce.style.opacity = eK; ce.style.transform = 'translateY(' + (1 - out(P(t, A.ellipsis - .1, A.ellipsis + .25))) * 14 + 'px)';
+    var bx = $('box'), bl = $('boxl'), bK = win(t, A.flex - .1, A.on - .1, .25);
+    bx.style.left = (WHO_X - 6) + 'px'; bx.style.top = (ROW + 11) + 'px'; bx.style.width = (W + wobble + 12) + 'px';
+    bx.style.borderColor = fk > .1 ? 'var(--acc)' : 'var(--red)'; bx.style.opacity = Math.max(bK, win(t, A.now - .1, A.now + 1.3, .25));
+    bl.style.left = (WHO_X - 6) + 'px'; bl.style.top = (ROW - 38) + 'px'; bl.style.opacity = bK;
+    bl.style.transform = 'translateY(' + (1 - out(P(t, A.flex - .1, A.flex + .25))) * 12 + 'px)';
+    $('ok').style.opacity = win(t, A.tap + .15, DUR, .3);
+    var dt = $('dots'); dt.style.left = (WHO_X + ROOM - 22) + 'px'; dt.style.top = (ROW + 8) + 'px';
+    var nk = P(t, A.long2 + .3, A.dots - .1); $('nsw').style.width = (io(nk) * (ROOM - 6)) + 'px'; $('nsw').style.opacity = nk > 0 ? 1 - P(t, A.tap - .3, A.tap) : 0;
+    var dK = P(t, A.dots - .05, A.dots + .35); dt.style.opacity = win(t, A.dots - .05, A.tap - .2, .2); dt.style.transform = 'scale(' + (dK > 0 ? spring(dK) : 0) + ')';
+    // ---- the code card: slides up over rows 3-4, the fix is typed, then min-width: 0 flies out into the row ----
+    var co = $('code'), cIn = out(P(t, A.a - .1, A.a + .5)), cOut = io(P(t, A.and - .35, A.and + .2));
+    co.style.opacity = cl(cIn * 2) * (1 - P(t, A.and - .35, A.and - .05)); co.style.transform = 'translateY(' + ((1 - cIn) * 200 + cOut * 230) + 'px)';
+    $('cdt').innerHTML = code(t);
+    var sw = $('sweep'), sk = P(t, A.zero, A.zero + .5); sw.style.left = '22px'; sw.style.top = '58px'; sw.style.width = (sk * 270) + 'px'; sw.style.opacity = sk > 0 ? 1 - P(t, A.on, A.on + .3) : 0;
+    var ch = $('chip0'), fl = P(t, A.on - .05, A.now - .1), lift = out(P(t, A.on - .05, A.on + .3));
+    var cx = mix(36, WHO_X + 10, io(fl)), cy = mix(296 + 58, ROW + 60, io(fl)) - Math.sin(fl * Math.PI) * 40 - lift * 6;
+    ch.style.left = cx + 'px'; ch.style.top = cy + 'px'; ch.style.opacity = t >= A.on - .05 && t < A.now + .25 ? 1 - P(t, A.now + .05, A.now + .25) : 0;
+    ch.style.transform = 'scale(' + (1 + .12 * lift - .2 * P(t, A.now - .3, A.now)) + ') rotate(' + (Math.sin(fl * Math.PI) * -6) + 'deg)';
+    // ---- the thumb: misses where the button was (hook), lands on Pay at the end ----
+    var th = $('th'), rp = $('rip'), ms = $('miss'), tx, ty, tA = 0, tP = 0, rk2 = 0, red = true;
+    var m1 = win(t, A.miss - .45, A.miss + .55, .2), m2 = win(t, A.tap - .45, A.tap + .55, .2);
+    if (m1 > 0) { tx = 322; ty = ROW + 40; tA = m1; tP = P(t, A.miss - .45, A.miss); rk2 = P(t, A.miss, A.miss + .5); }
+    else if (m2 > 0) { tx = payAt(ROOM).x + 30; ty = ROW + 40; tA = m2; tP = P(t, A.tap - .45, A.tap); rk2 = P(t, A.tap, A.tap + .5); red = false; }
+    if (tA > 0) { th.style.left = (tx + (1 - out(tP)) * 70) + 'px'; th.style.top = (ty + (1 - out(tP)) * 120) + 'px'; th.style.transform = 'scale(' + (rk2 > 0 && rk2 < .3 ? .85 : 1) + ')';
+      rp.style.left = tx + 'px'; rp.style.top = ty + 'px'; rp.style.transform = 'scale(' + (.4 + rk2 * 1.6) + ')'; rp.style.opacity = rk2 > 0 ? 1 - rk2 : 0; rp.style.borderColor = red ? 'var(--red)' : 'var(--acc)'; }
+    th.style.opacity = tA; if (!(tA > 0)) rp.style.opacity = 0;
+    ms.style.left = '300px'; ms.style.top = (ROW + 86) + 'px'; ms.style.opacity = m1 > 0 && rk2 > 0 ? cl(rk2 * 4) * m1 : 0;
+    // ---- tag (top right) ----
+    var tg = $('tag'); tg.style.opacity = t >= A.leave + .2 ? 1 : 0;
+    tg.textContent = t < A.a - .2 ? 'ELLIPSIS IS SET' : t < A.fix - .2 ? 'MIN-WIDTH: AUTO' : t < A.now - .1 ? 'THE FIX' : 'IT SHRINKS';
+    // ---- captions: whole phrases, the word being said in full colour ----
     var ph0 = null;
     for (var i = 0; i < PH.length; i++) { if (t >= WORDS[PH[i][0]].s - LEAD - .05 && (i === PH.length - 1 || t < WORDS[PH[i + 1][0]].s - LEAD - .05)) ph0 = PH[i]; }
     var html = '';
-    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .5)
-      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2)), aft = w.s >= A.fix;
+    if (ph0 && ph0[0] >= HOOK_N && t < DUR - .3) {
+      var pk = out(P(t, WORDS[ph0[0]].s - LEAD - .05, WORDS[ph0[0]].s - LEAD + .15));
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, aft = w.s >= A.fix + LEAD;
         var col2 = aft && /^(min|width|zero|shrinks|dots)/i.test(w.d) ? 'var(--acc)' : !aft && /^(pushes|off|won|below|content)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
-        html += '<span style="opacity:' + (on ? 1 - ex : 0) + ';transform:translateY(' + (1 - k) * 12 + 'px);color:' + col2 + '">' + w.d.replace(/</g, '') + '</span>'; });
+        html += '<span style="opacity:' + (on ? 1 : .42) + ';color:' + col2 + '">' + w.d.replace(/</g, '') + '</span>'; });
+      html = '<div style="transform:translateY(' + (1 - pk) * 10 + 'px);opacity:' + pk + '">' + html + '</div>';
+    }
     $('cap').innerHTML = html;
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
   function buildCues(){
-    var Q = [{ t: 0, k: 'swish', d: .5, g: .5, p: -.5 }, { t: A.leave, k: 'swish', d: .4, g: .5 }];
-    for (var c = 0; c < 18; c++) Q.push({ t: .1 + c * .1, k: 'tick', g: .08, p: (c * 5) % 7 });
-    for (c = 0; A.but + c * .12 < A.off; c++) Q.push({ t: A.but + c * .12, k: 'tick', g: .08, p: (c * 3) % 7 });
-    Q.push({ t: A.off, k: 'thud', g: .35 }, { t: A.flex, k: 'tap', g: .35, p: -2 });
-    Q.push({ t: A.fix - .2, k: 'swish', d: .5, g: .5, p: .2 });
-    for (c = 0; A.fix + c * .1 < A.min + .35; c++) Q.push({ t: A.fix + c * .1, k: 'tick', g: .1, p: (c * 5) % 7 });
-    Q.push({ t: A.zero, k: 'tap', g: .5, p: 6 }, { t: A.zero + .15, k: 'swish', d: .4, g: .35, p: .1 });
-    for (c = 0; A.now + c * .12 < A.dots - .1; c++) Q.push({ t: A.now + c * .12, k: 'tick', g: .08, p: (c * 2) % 7 });
-    Q.push({ t: A.dots, k: 'tap', g: .35, p: 3 }, { t: DUR - .45, k: 'swish', d: .6, g: .5, p: -.6 });
-    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+    var Q = [{ t: 0, k: 'move', d: .5, g: .35, dir: 1, x: 270, r: .3 }];
+    for (var i = 1; i < CAM.length; i++) Q.push({ t: CAM[i][0], k: 'move', d: Math.max(.35, CAM[i][1] - CAM[i][0]), g: .34, dir: CAM[i][5] > CAM[i - 1][5] ? 1 : -1, x: 270, x2: 270 + (CAM[i][2] - CAM[i - 1][2]) * .8, r: .25 });
+    for (var c = 0; c < 4; c++) Q.push({ t: c * .07 + .2, k: 'blip', g: .14, p: [0, 3, 7, 10][c] });
+    // the name typing (ticks) and the button being squeezed (falling ticks, a low snap), its fall (thud), the thumb's miss
+    function typing(a, b){ for (var c = 0; a + c * .09 < b; c++) Q.push({ t: a + c * .09, k: 'tick', g: .07, p: (c * 5) % 7 }); }
+    typing(.05, 1.9); typing(A.pushes - .15, A.off - .05);
+    FALL.forEach(function(F){ for (var c = 0; c < 4; c++) Q.push({ t: F.t - .5 + c * .1, k: 'tick', g: .12, p: -2 - c * 2, x: 420 }); Q.push({ t: F.t - .05, k: 'snap', g: .3, p: -7, x: 470 }, { t: F.t + .2, k: 'thud', g: .5, x: 500 }); });
+    Q.push({ t: A.miss, k: 'touch', g: .45, x: 400 }, { t: A.miss + .05, k: 'swish', d: .3, g: .25, p: -.4, x: 400 });
+    Q.push({ t: A.rw + .3, k: 'blip', g: .2, p: 7 });
+    Q.push({ t: A.ellipsis, k: 'blip', g: .25, p: 10 }, { t: A.flex, k: 'tap', g: .3, p: -2 });
+    [A.wont, A.shrink].forEach(function(x){ Q.push({ t: x + .1, k: 'tick', g: .14, p: -5 }, { t: x + .32, k: 'snap', g: .22, p: -5 }); });
+    typing(A.flex, A.content + .2);
+    for (c = 0; c < 4; c++) Q.push({ t: A.fix + .1 + c * .08, k: 'tick', g: .1, p: 6 - c });
+    Q.push({ t: A.zero, k: 'tap', g: .45, p: 6 }, { t: A.on, k: 'swish', d: .4, g: .3, p: .3 });
+    Q.push({ t: A.now - .1, k: 'swell', d: 1.3, g: .4 }, { t: A.now - .1, k: 'resolve', g: .5, notes: [57, 64, 69, 73] }, { t: A.now + .45, k: 'pop', g: .45, p: 7 }, { t: A.now + .7, k: 'snap', g: .3, p: 3 });
+    Q.push({ t: A.dots, k: 'blip', g: .35, p: 12 }, { t: A.tap, k: 'touch', g: .4 }, { t: A.tap + .03, k: 'click', g: .45, p: 4 }, { t: A.tap + .12, k: 'blip', g: .3, p: 16 });
+    for (c = 0; c < 2; c++) Q.push({ t: A.tap + .35 + c * .1, k: 'blip', g: .14, p: [7, 12][c] });
+    window.CUES = { dur: DUR, cues: Q, mix: { duck: 9 }, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
   }
   window.seek = seek; window.DURATION = DUR;
   document.fonts.load("800 72px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 22px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
