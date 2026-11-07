@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why do good apps feel so smooth?</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300..800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec "details" starter (node scripts/explainer/newweb.mjs <slug> --details N; owner, 8 Nov 2026). A compilation of small UI motions,
+   each slowed down so the eye can read it: the hook beat opens on the first one already running (result first), then one beat per detail
+   (a numbered eyebrow, a three-word title with one accent word, the component doing its one micro-interaction in slow motion, the CSS that
+   does it typed underneath, its easing curve drawn live with a dot riding it, a spec chip whose numbers roll in, a speed badge, a segmented
+   bar on top), then a recap grid with every detail at full speed (the saveable frame). One camera that pans from part to part (declared
+   matchMoves) and never stops drifting; motion from scripts/explainer/kitmotion.js; every frame a pure function of t.
+   Edit DETAILS (kind, title, accent word) and the KINDS library (markup, draw, css, curve, chip) for the reel's own components.
+   The look is the kit's theme (KM.theme: style C, "Glass and light", the web default from 8 Nov 2026): every colour below is a token it sets;
+   window.WEB_THEME = 'dark' before this script gives the old ink-and-mint look. Cheap glass only (no backdrop-filter, no live blur on big layers). */
+:root{--f:'Sora',system-ui,sans-serif;--m:'DM Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
+.pn{position:absolute;top:0;width:540px;height:960px}
+.stage{position:absolute;left:30px;top:230px;width:450px;height:190px;border-radius:28px;background:var(--glass);overflow:hidden;box-shadow:var(--edge),var(--lift)}
+.comp{position:absolute;left:0;top:0;width:450px;height:190px;transform-origin:50% 50%}
+.code{position:absolute;left:30px;top:430px;width:450px;height:118px;border-radius:24px;background:var(--glass);overflow:hidden;box-shadow:var(--edge),var(--lift)}
+.cd{position:absolute;left:26px;top:12px;font:500 14px/19px var(--m);white-space:pre;color:var(--paper)}
+.cd b{font-weight:500;color:var(--acc)}.cd .dim{color:var(--dim)}
+.km-caret{display:inline-block;width:2px;height:16px;margin-left:1px;vertical-align:-3px;background:var(--acc)}
+.cg{position:absolute;left:50px;top:556px;overflow:visible}
+.cg-axis{stroke:rgba(255,255,255,.2);stroke-width:2}.cg-guide{stroke:rgba(255,255,255,.2);stroke-width:1.5;stroke-dasharray:4 5}
+.cg-ghost{fill:none;stroke:rgba(255,255,255,.14);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.cg-line{fill:none;stroke:var(--acc);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px var(--glow))}
+.cg-h{stroke:var(--ring);stroke-width:1.5;stroke-dasharray:3 4}
+.cg-dot{fill:var(--paper);stroke:var(--acc);stroke-width:3;filter:drop-shadow(0 0 8px var(--acc))}
+.cg-t{fill:var(--dim);font:700 11px var(--m);letter-spacing:.06em}
+.chip{position:absolute;left:316px;top:562px;width:138px;opacity:0}
+.chip div{white-space:nowrap}
+.chip small{display:block;font:700 11px/1 var(--m);letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-bottom:6px}
+.chip .sc-r0 b{font:700 32px/1 var(--f);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.chip .sc-r0 span{font:700 15px/1 var(--m);color:var(--dim)}
+.chip .sc-r1{margin-top:8px;font:700 14px/1 var(--m);color:var(--acc)}
+.chip .sc-r1 b{font-weight:700}
+/* the recap grid */
+.grid{position:absolute;left:40px;top:230px;width:430px}
+.tile{position:absolute;width:210px;border-radius:22px;background:var(--glass);overflow:hidden;box-shadow:var(--edge),var(--lift)}
+.mini{position:absolute;left:8px;top:8px;width:450px;height:190px;border-radius:28px;background:rgba(255,255,255,.05);overflow:hidden;transform-origin:0 0}
+.tl{position:absolute;left:14px;white-space:nowrap}
+.tl b{display:block;font:700 15px/1.1 var(--f);letter-spacing:-.01em}
+.tl small{display:block;margin-top:4px;font:700 11px/1 var(--m);letter-spacing:.06em;color:var(--acc)}
+/* screen space: the part bar, the titles, the badge, the subtitles */
+#bar{left:34px;top:126px;width:442px;height:5px;display:flex;gap:6px}
+#bar i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.16);overflow:hidden}
+#bar b{display:block;width:100%;height:100%;background:var(--acc);transform-origin:0 0;transform:scaleX(0)}
+#hook{left:34px;top:146px;font-weight:var(--hw);font-size:48px;line-height:.98;letter-spacing:var(--ht)}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span,.blk .tt > span,.blk .eb{display:inline-block;transform-origin:0 80%}
+.acc{color:var(--acc)}
+.blk{left:34px;top:144px;width:440px}
+.blk .eb{font:700 14px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+.blk .tt{margin-top:12px;font-weight:var(--hw);font-size:40px;line-height:1;letter-spacing:var(--ht);white-space:nowrap}
+.badge{right:60px;top:138px;height:28px;padding:0 12px 0 10px;border-radius:14px;background:var(--soft);border:1.5px solid var(--ring);color:var(--acc);font:700 12px/25px var(--m);letter-spacing:.12em;white-space:nowrap;opacity:0;transform-origin:100% 50%}
+.badge i{display:inline-block;width:8px;height:8px;margin-right:7px;border-radius:50%;background:var(--acc);vertical-align:0;box-shadow:0 0 8px var(--acc)}
+#band{left:0;top:668px;width:540px;height:140px;background:var(--ink)}
+#cap{left:30px;top:680px;width:450px;min-height:80px;font:600 30px/1.16 var(--f);letter-spacing:-.025em}
+#cap span{display:inline-block;margin-right:.24em}
+/* components (KINDS): coordinates inside the 450x190 stage */
+.fg{position:absolute;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.75);opacity:0}
+.cp{position:absolute;top:63px;height:64px;border-radius:32px;background:var(--ctl);overflow:hidden}
+.cp .ic{position:absolute;left:22px;top:20px;width:18px;height:22px;border:3px solid currentColor;border-radius:5px}
+.cp .ic::after{content:'';position:absolute;left:5px;top:-8px;width:18px;height:22px;border:3px solid currentColor;border-radius:5px;border-left-color:transparent;border-bottom-color:transparent}
+.cp .ck{position:absolute;left:24px;top:16px;width:12px;height:24px;border:solid currentColor;border-width:0 4px 4px 0;transform:rotate(45deg) scale(0);transform-origin:60% 70%}
+.cp span{position:absolute;left:58px;top:0;font:650 22px/64px var(--f);white-space:nowrap}
+.tg-l{position:absolute;left:44px;top:62px;font:650 27px/1 var(--f);letter-spacing:-.02em;white-space:nowrap}
+.tg-s{position:absolute;left:44px;top:100px;font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+.tg{position:absolute;left:294px;top:63px;width:112px;height:64px;border-radius:32px;background:var(--ctl)}
+.kn{position:absolute;left:6px;top:6px;width:52px;height:52px;border-radius:26px;background:var(--paper);box-shadow:0 4px 10px rgba(0,0,0,.35)}
+.ts{position:absolute;left:35px;top:104px;width:380px;height:74px;border-radius:22px;background:var(--raise);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 12px 30px rgba(0,0,0,.35)}
+.ts i{position:absolute;left:18px;top:21px;width:32px;height:32px;border-radius:50%;background:var(--acc)}
+.ts i::after{content:'';position:absolute;left:11px;top:6px;width:7px;height:14px;border:solid var(--on);border-width:0 3px 3px 0;transform:rotate(45deg)}
+.ts b{position:absolute;left:66px;top:0;font:650 21px/74px var(--f);white-space:nowrap}
+.ts small{position:absolute;right:20px;top:0;font:700 15px/74px var(--m);letter-spacing:.08em;color:var(--acc)}
+.sk{position:absolute;left:35px;width:330px;height:28px;border-radius:10px;background:rgba(255,255,255,.08)}
+.st-t{position:absolute;left:84px;top:62px;width:282px;height:8px;border-radius:4px;background:var(--ctl)}
+.st-f{position:absolute;left:84px;top:62px;width:282px;height:8px;border-radius:4px;background:var(--acc);transform-origin:0 0}
+.st-d{position:absolute;top:44px;width:44px;height:44px;margin-left:-22px;border-radius:50%;background:var(--ctl);font:700 18px/44px var(--f);text-align:center}
+.st-n{position:absolute;top:104px;width:90px;margin-left:-45px;text-align:center;font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim)}
+.lk-h{position:absolute;left:150px;top:52px;width:86px;height:86px;transform-origin:50% 55%}
+.lk-h path{stroke:var(--paper);stroke-width:7;stroke-linejoin:round}
+.lk-c{position:absolute;left:256px;top:62px;font:700 50px/1 var(--f);font-variant-numeric:tabular-nums;letter-spacing:-.02em;white-space:nowrap}
+.lk-s{position:absolute;left:258px;top:126px;font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free"></div></div>
+<div id="bar" class="a"></div>
+<div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>do</span> <span>good</span> <span>apps</span></span><span class="ln"><span>feel</span> <span>so</span> <span class="acc">smooth?</span></span></div>
+<div id="blks"></div>
+<div id="fe" class="a" aria-hidden="true"></div>
+<div id="band" class="a" data-band></div>
+<div id="cap" class="a" data-subs></div>
+<script>
+(function(){
+/*kitmotion:begin*/
+// ---- @webin20sec motion kit (scripts/explainer/kitmotion.js; owner, 7 Nov 2026: "Can we further improve the overall animation and flow?") ----
+// Premium motion by default for every web reel, like kit25d.js for Turns Out. Inlined into a scene's main script between the kitmotion
+// begin and end markers by node scripts/channel3/kit-inline.mjs <scene.html> (npm run check fails on a stale copy); start a reel with
+// node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ... Every frame is a pure function of t: moves, transitions and taps are
+// registered once (in the scene's anchors(), after the voice timings are known), then drawn from t alone in seek(t).
+// Registering a move, transition or tap also writes its sound cue (move / swell / snap / blip / touch, with x) and declares a transition in
+// window.TRANSITIONS, so the FLOW gate (scripts/showreel/flow.mjs: no undeclared cuts, no dead runs, continuity 85%+) knows it was meant.
+//   KM.reset(dur)                         before registering (anchors()); KM.publish(extra) after: window.CUES and window.TRANSITIONS
+//   eases: KM.ease.out3 / inOut3 / expoInOut / back(k, s) / spring(k) (critically damped) / settle(k, f) (overshoot and settle)
+//   KM.rig({ x, y, z, drift })            the camera: a continuous eased drift (never still) + named moves, rig.at(t) -> { x, y, z, vx, vy, vz }
+//     rig.pushIn(t0, d, x, y, z) · rig.pan(t0, d, x, y) · rig.pushThrough(t0, d, x, y, z) (a fast zoom through, declared) ·
+//     rig.matchMove(t0, d, x, y, z) (follows a shared element, declared) · rig.creep(t0, d, dz) (a slow steady push through a held beat) · rig.apply(worldEl, t, tiltEl) · rig.toScreen(c, x, y)
+//   KM.transition(kind, t0, d, cue)       declares [t0, t0 + d, kind], writes its cue, returns k(t) (0 -> 1, eased) for the setters:
+//     KM.shared(el, a, b, k) (sharedElement: a box glides and scales between layouts, a/b = { x, y, w, h, r }) · KM.pushThrough(el, k, dir) ·
+//     KM.morph(el, a, b, k, colA, colB) · KM.wipe(newLayer, k) (wipeRestyle: the new theme comes down top to bottom)
+//   text: KM.rise(spans, t, starts, gone) (blur to sharp, word by word) · KM.type(el, html, t, t0, t1) (typing with a caret) ·
+//     KM.sweep(el, t, t0, d, col) (a highlight sweep) · KM.leader(line, label, from, to, k) (a leader-line label, SVG line + text)
+//   secondary: KM.parallax(el, c, depth) · KM.stagger(els, t, t0, gap, d) · KM.squeeze(el, t, tTap) (press and pop) ·
+//     KM.ripple(el, t, tTap, x, y) · KM.tap(t, x) (the touch cue for a tap at screen x)
+//   details format (8 Nov 2026): KM.curve(spec) · KM.linearCss(f, n) · KM.timeScale(t0, t1, factor) (slow motion; the camera keeps reel time) ·
+//     KM.curveGraph(svg, spec, c0, d, { clock, real }) (the live easing curve with a riding dot) · KM.slowmoBadge(el, ts, label) ·
+//     KM.specChip(el, items, t0, d) (numbers roll in) · KM.partProgress(el, parts) (the segmented top bar); start a reel with newweb.mjs --details N
+//   voice and subtitles: KM.voice(text, lead) -> { words, at(word, nth), phrases(max) } · KM.subs(capEl, t, V, PH, from, until, colour)
+//   look (owner, 8 Nov 2026: "Let's go with C."): KM.theme(name) -> T (hex colours for KM.mixCol) sets the :root tokens (--ink, --paper, --dim,
+//     --acc, --red, --ctl, --raise, --skel, --pg, --card, --on, --glass, --frost, --edge, --lift, --glow, --soft, --ring, --f, --m, --hw, --ht) and lays a
+//     light canvas behind everything; KM.lights(t, c) paints it every frame: the blooms drifting (with the camera c, at depth) and the grade; KM.cutBelow(vp, fe, y, k) ends the world
+//     at y (an overflow cut under a soft feather: a mask costs ~75 ms a frame); KM.depth(el, c, cx, cy, d) (a pane at its own depth: parallax in
+//     the camera's moves); KM.float(t, seed, amp) (a pane's slow sine float). 'glass' (style C, "Glass and light") is the web default from
+//     8 Nov 2026; 'dark' is the old ink-and-mint look.
+var KM = (function(){
+  var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; };
+  var P = function(t, a, b){ return b <= a ? (t >= a ? 1 : 0) : cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var ease = {
+    linear: function(k){ return k; },
+    out3: function(k){ return 1 - Math.pow(1 - k, 3); },
+    inOut3: function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; },
+    expoInOut: function(k){ return k <= 0 ? 0 : k >= 1 ? 1 : k < .5 ? Math.pow(2, 20 * k - 10) / 2 : (2 - Math.pow(2, -20 * k + 10)) / 2; },
+    back: function(k, s){ s = s == null ? 1.3 : s; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2); },
+    // a critically damped spring over the move's length (no overshoot, a fast start and a long soft landing), exactly 1 at the end
+    spring: function(k){ if (k <= 0) return 0; if (k >= 1) return 1; var w = 9; return (1 - (1 + w * k) * Math.exp(-w * k)) / (1 - (1 + w) * Math.exp(-w)); },
+    // overshoot and settle (an underdamped spring): about f wobbles, dying out, exactly 1 at the end
+    settle: function(k, f){ if (k <= 0) return 0; if (k >= 1) return 1; f = f || 1.4; return 1 - Math.exp(-5 * k) * Math.cos(k * Math.PI * f) * (1 - k); }
+  };
+  var Q = [], TR = [], DUR = 20;
+  function reset(dur){ Q = []; TR = []; DUR = dur || DUR; }
+  function cue(c){ Q.push(c); return c; }
+  function declare(t0, t1, kind){ TR.push([+t0.toFixed(2), +t1.toFixed(2), kind]); }
+  // ---- the camera: base framing, a drift that never stops, and named moves folded in order ----
+  function rig(o){
+    var base = [o.x, o.y, o.z], D = o.drift == null ? 1 : o.drift, moves = [], last = base.slice();
+    function add(t0, d, x, y, z, kind, e){ var to = [x, y, z == null ? last[2] : z], m = { t0: t0, d: d, to: to, kind: kind, e: e };
+      moves.push(m); var dz = to[2] - last[2];
+      cue({ t: t0, k: 'move', d: Math.max(.4, d * .8), g: kind === 'pan' ? .26 : .34, dir: dz >= 0 ? 1 : -1, x: 255, x2: cl(255 + (x - last[0]) * 2, 40, 500), r: .25 });
+      if (kind === 'pushThrough') { cue({ t: t0, k: 'swell', d: Math.max(.5, d), g: .4, x: 255 }); cue({ t: t0 + d * .55, k: 'snap', g: .3, p: 5, x: 255, r: .2 }); declare(t0, t0 + d, 'pushThrough'); }
+      if (kind === 'matchMove') declare(t0, t0 + d, 'matchMove');
+      last = to; return R; }
+    var R = {
+      moves: moves,
+      pushIn: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pushIn', 'settle'); },
+      pan: function(t0, d, x, y){ return add(t0, d, x, y, null, 'pan', 'inOut3'); },
+      pushThrough: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pushThrough', 'expoInOut'); },
+      matchMove: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'matchMove', 'inOut3'); },
+      pull: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pull', 'settle'); },
+      // creep: a slow, steady push to the end of a beat (a held shot that still breathes: FLOW dead runs), no cue
+      creep: function(t0, d, dz){ moves.push({ t0: t0, d: d, to: [last[0], last[1], last[2] * (1 + (dz || .08))], kind: 'creep', e: 'linear' }); last = moves[moves.length - 1].to; return R; },
+      at: function(t){ var c = base.slice();
+        moves.forEach(function(m){ var k = P(t, m.t0, m.t0 + m.d), e = m.e === 'settle' ? ease.settle(k, 1.2) : ease[m.e](k); if (k > 0) c = [mix(c[0], m.to[0], e), mix(c[1], m.to[1], e), mix(c[2], m.to[2], e)]; });
+        // the drift: a slow sway and breathing zoom, so no stretch of the reel is ever still (FLOW: dead runs)
+        c[0] += D * (Math.sin(t * .55) * 9 + Math.sin(t * 1.3 + 2) * 2.5); c[1] += D * (Math.sin(t * .41 + 1) * 11 + Math.sin(t * 1.1) * 3); c[2] *= 1 + D * (Math.sin(t * .33) * .012 + Math.sin(t * .9 + 1) * .004);
+        return { x: c[0], y: c[1], z: c[2] }; },
+      vel: function(t){ var a = R.at(t - .05), b = R.at(t + .05); return { vx: (b.x - a.x) * 10, vy: (b.y - a.y) * 10, vz: (b.z - a.z) * 10 }; },
+      // world point -> screen point (the world is laid out at 540x960 and the camera centres (x, y) at (255, 480): the safe zone's middle)
+      toScreen: function(c, x, y){ return [(x - c.x) * c.z + 255, (y - c.y) * c.z + 480]; },
+      apply: function(world, t, tiltEl){ var c = R.at(t); world.style.transform = 'translate(' + (255 - c.x * c.z).toFixed(2) + 'px,' + (480 - c.y * c.z).toFixed(2) + 'px) scale(' + c.z.toFixed(4) + ')';
+        if (tiltEl) { var v = R.vel(t); tiltEl.style.transform = 'perspective(1600px) rotateX(' + cl(v.vy * .02 + v.vz * 3, -5, 5).toFixed(2) + 'deg) rotateY(' + cl(-v.vx * .03, -5, 5).toFixed(2) + 'deg)'; }
+        return c; }
+    };
+    return R;
+  }
+  // ---- transitions: declared once, drawn from k ----
+  var CUE = { sharedElement: 'move', pushThrough: 'swell', morph: 'snap', wipeRestyle: 'swell' };
+  function transition(kind, t0, d, sound){ declare(t0, t0 + d, kind);
+    var s = sound === false ? null : sound || CUE[kind] || 'move';
+    if (s === 'move') cue({ t: t0, k: 'move', d: Math.max(.4, d), g: .3, dir: 1, x: 255, x2: 255, r: .25 });
+    else if (s === 'swell') cue({ t: t0, k: 'swell', d: Math.max(.5, d), g: .42, x: 255 });
+    else if (s) cue({ t: t0, k: s, g: .35, p: 5, x: 255, r: .2 });
+    if (kind !== 'sharedElement') cue({ t: t0 + d, k: 'snap', g: .3, p: 7, x: 255, r: .2 });
+    var e = kind === 'pushThrough' ? ease.expoInOut : kind === 'sharedElement' ? function(k){ return ease.settle(k, 1.1); } : ease.inOut3;
+    return function(t){ return e(P(t, t0, t0 + d)); }; }
+  function box(el, b){ el.style.left = b.x.toFixed(2) + 'px'; el.style.top = b.y.toFixed(2) + 'px'; el.style.width = b.w.toFixed(2) + 'px'; el.style.height = b.h.toFixed(2) + 'px'; if (b.r != null) el.style.borderRadius = b.r.toFixed(2) + 'px'; }
+  function lerpBox(a, b, k){ return { x: mix(a.x, b.x, k), y: mix(a.y, b.y, k), w: mix(a.w, b.w, k), h: mix(a.h, b.h, k), r: mix(a.r || 0, b.r || 0, cl(k)) }; }
+  // sharedElement: the element glides and scales from layout a to layout b; it lifts (a shadow) in the middle of the glide
+  function shared(el, a, b, k){ box(el, lerpBox(a, b, k)); var lift = Math.sin(cl(k) * Math.PI); el.style.boxShadow = '0 ' + (8 + lift * 22).toFixed(1) + 'px ' + (20 + lift * 40).toFixed(1) + 'px rgba(0,0,0,' + (.25 + lift * .2).toFixed(2) + ')'; }
+  // pushThrough: the layer scales up past the camera and blurs out (dir -1: comes in from behind the camera instead)
+  function pushThrough(el, k, dir){ var q = dir === -1 ? 1 - k : k; el.style.transform = 'scale(' + (1 + q * q * 2.4).toFixed(3) + ')'; el.style.opacity = (1 - P(q, .35, .9)).toFixed(3); el.style.filter = 'blur(' + (q * 10).toFixed(2) + 'px)'; }
+  function rgb(h){ var n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+  function mixCol(a, b, k){ var x = rgb(a), y = rgb(b); return 'rgb(' + x.map(function(v, i){ return Math.round(mix(v, y[i], k)); }).join(',') + ')'; }
+  // morph: a box becomes another box (position, size, corner radius and colour)
+  function morph(el, a, b, k, colA, colB){ box(el, lerpBox(a, b, k)); if (colA) el.style.background = mixCol(colA, colB, k); }
+  // wipeRestyle: the new-theme copy of a layer is revealed top to bottom (it sits over the old one); clip-path inset in px for the BAND check
+  function wipe(el, k){ var h = el.offsetHeight || 1000; el.style.clipPath = k >= 1 ? 'none' : 'inset(0px 0px ' + ((1 - k) * h).toFixed(1) + 'px 0px)'; el.style.visibility = k > 0 ? 'visible' : 'hidden'; }
+  // ---- text ----
+  // rise: each word comes up from blur to sharp with a little overshoot at its own start time; gone (0 -> 1) blurs the line away, lifting it
+  // only a little (it fades before it can leave the safe zone)
+  function rise(spans, t, starts, gone){ gone = gone || 0;
+    [].forEach.call(spans, function(sp, i){ var s = starts[i], k = ease.back(P(t, s, s + .34), 1.6);
+      sp.style.filter = 'blur(' + ((1 - P(t, s, s + .24)) * 8 + gone * 6).toFixed(2) + 'px)'; sp.style.opacity = (cl((t - s) * 9) * (1 - gone) * (1 - gone)).toFixed(3); sp.style.transform = 'translateY(' + ((1 - k) * 44 - gone * 24).toFixed(2) + 'px)'; }); }
+  // type: html (tags and entities allowed) typed from t0 to t1 with a caret that blinks when idle
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; if (src[i] === '&') { var e2 = src.indexOf(';', i); o += src.slice(i, e2 + 1); i = e2; } else o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function type(el, html, t, t0, t1){ var N = html.replace(/<[^>]+>/g, '').replace(/&\w+;/g, '_').length, n = Math.floor(N * P(t, t0, t1)), busy = t >= t0 && t < t1 + .15;
+    el.innerHTML = typed(html, n) + (t >= t0 - .3 ? '<span class="km-caret" style="opacity:' + (busy || Math.floor((t - t1) * 2.4) % 2 === 0 ? 1 : 0) + '"></span>' : ''); }
+  function sweep(el, t, t0, d, col){ var k = ease.inOut3(P(t, t0, t0 + d)); el.style.backgroundImage = 'linear-gradient(' + col + ',' + col + ')'; el.style.backgroundRepeat = 'no-repeat'; el.style.backgroundSize = (k * 100).toFixed(1) + '% 100%'; }
+  // leader: an SVG line drawn from the thing to its label, then the label fades up at the end of the line
+  function leader(line, label, from, to, k){ var e = ease.out3(cl(k / .7)); line.setAttribute('x1', from[0]); line.setAttribute('y1', from[1]); line.setAttribute('x2', mix(from[0], to[0], e).toFixed(1)); line.setAttribute('y2', mix(from[1], to[1], e).toFixed(1));
+    line.style.opacity = k > 0 ? 1 : 0; label.style.opacity = ease.out3(P(k, .55, 1)).toFixed(3); label.style.transform = 'translateY(' + ((1 - ease.back(P(k, .55, 1), 1.4)) * 10).toFixed(2) + 'px)'; }
+  // ---- secondary motion ----
+  function parallax(el, c, depth){ el.style.transform = 'translate(' + (-(c.x - 270) * depth).toFixed(2) + 'px,' + (-(c.y - 480) * depth).toFixed(2) + 'px) scale(' + (1 + (c.z - 1) * depth).toFixed(4) + ')'; }
+  function stagger(els, t, t0, gap, d){ [].forEach.call(els, function(el, i){ var k = ease.settle(P(t, t0 + i * gap, t0 + i * gap + (d || .6)), 1.2);
+    el.style.opacity = cl(k * 2.5).toFixed(3); el.style.transform = 'translateY(' + ((1 - k) * 44).toFixed(2) + 'px) scale(' + mix(.94, 1, k).toFixed(4) + ')'; }); }
+  // squeeze: pressed in 0.12 s before the tap, popped past full size after it, settled by 0.5 s
+  function squeeze(el, t, tap){ var press = win(t, tap - .12, tap + .06, .1), pop = t > tap ? Math.sin(P(t, tap, tap + .5) * Math.PI) * (1 - P(t, tap, tap + .5)) : 0;
+    el.style.transform = 'scale(' + (1 - press * .07 + pop * .09).toFixed(4) + ')'; }
+  function ripple(el, t, tap, x, y){ var k = P(t, tap, tap + .55); el.style.left = (x - 32) + 'px'; el.style.top = (y - 32) + 'px'; el.style.opacity = (k > 0 && k < 1 ? 1 - k : 0).toFixed(3); el.style.transform = 'scale(' + mix(.5, 2.6, ease.out3(k)).toFixed(3) + ')'; }
+  function tap(t, x){ cue({ t: t, k: 'touch', g: .38, x: cl(x, 30, 510) }); cue({ t: t + .05, k: 'blip', g: .24, x: cl(x, 30, 510) }); }
+  // ---- voice timings and subtitles ----
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function voice(text, lead, words){ lead = lead == null ? .15 : lead; var T = text.split(/\s+/).filter(Boolean), W = [];
+    if (words && words.length) { var j = 0; words.forEach(function(w){ var o = { w: w.w, s: w.s, e: w.e, d: w.w }; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { o.d = T[k]; j = k + 1; break; } W.push(o); }); }
+    else { var t = .2; T.forEach(function(w){ var d = .14 + w.length * .03; W.push({ w: w, d: w, s: t, e: t + d }); t += d + (/[.?:,;!]$/.test(w) ? .32 : .06); }); }
+    return { words: W, lead: lead, end: W.length ? W[W.length - 1].e : 0,
+      at: function(word, nth){ var n = nth || 1; for (var i = 0; i < W.length; i++) if (norm(W[i].w) === norm(word) && --n === 0) return W[i].s - lead; return 99; },
+      // sentence starts (minus the lead), and whole phrases of at most max words, split at a comma where it can
+      starts: function(){ var o = []; W.forEach(function(w, i){ if (i === 0 || /[.?!]$/.test(W[i - 1].d)) o.push(w.s - lead); }); return o; },
+      phrases: function(max){ max = max || 6; var PH = [], cur = [];
+        W.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === W.length - 1) { while (cur.length > max) { var best = -1;
+              cur.forEach(function(q, k){ if (/[,:;]$/.test(W[q].d) && k >= 1 && k < max && (best < 0 || k > best)) best = k; });
+              if (best < 0) best = Math.min(max, Math.ceil(cur.length / 2)) - 1; PH.push(cur.slice(0, best + 1)); cur = cur.slice(best + 1); }
+            if (cur.length) PH.push(cur); cur = []; } });
+        return PH; } };
+  }
+  // subtitles: the phrase being spoken, each word sharpening as it is said; colour(word, i) -> a CSS colour (or null)
+  function subs(capEl, t, V, PH, from, until, colour){ var W = V.words, L = V.lead, ph = null, html = '';
+    for (var i = 0; i < PH.length; i++) if (t >= W[PH[i][0]].s - L - .05 && (i === PH.length - 1 || t < W[PH[i + 1][0]].s - L - .05)) ph = PH[i];
+    if (ph && ph[0] >= from && t < until) ph.forEach(function(j){ var w = W[j], on = t >= w.s - L, k = ease.out3(P(t, w.s - L, w.s - L + .2)), c = colour ? colour(w.d, j) : null;
+      html += '<span style="opacity:' + (on ? 1 : .32) + ';filter:blur(' + (on ? (1 - k) * 4 : 1.2).toFixed(2) + 'px);transform:translateY(' + ((1 - k) * 5).toFixed(2) + 'px)' + (c ? ';color:' + c : '') + '">' + w.d.replace(/</g, '') + '</span>'; });
+    capEl.innerHTML = html; capEl.style.opacity = html ? 1 : 0; }
+  // ---- the details format (owner, 8 Nov 2026: small UI motions in slow motion, each with its live easing curve and its CSS) ----
+  // KM.curve(spec) -> { f(k), css, min, max }: spec = a kit ease name ('settle', 'spring', 'back', 'out3' ...), { bezier: [x1, y1, x2, y2] }
+  //   (CSS cubic-bezier: y may leave 0-1 for an overshoot), { linear: [0, [.62, 18], 1.1, 1] } (CSS linear(): a value, or [value, percent];
+  //   stops without a percent are spread evenly, as the spec does) or { keyframes: [[0, 1], [40, 1.3], [100, 1]] } (percent, value).
+  //   KM.linearCss(f, n) writes any ease (a kit spring included) as a CSS linear() string, so the curve on screen is the curve in the code.
+  function bezier(x1, y1, x2, y2){ var B = function(a, b, s){ return 3 * a * s * (1 - s) * (1 - s) + 3 * b * s * s * (1 - s) + s * s * s; };
+    return function(k){ if (k <= 0) return 0; if (k >= 1) return 1; var lo = 0, hi = 1, s = k; for (var i = 0; i < 40; i++) { s = (lo + hi) / 2; if (B(x1, x2, s) < k) lo = s; else hi = s; } return B(y1, y2, s); }; }
+  function stops(list){ var S = list.map(function(s){ return Array.isArray(s) ? { v: s[0], p: s[1] / 100 } : { v: s, p: null }; });
+    if (S[0].p == null) S[0].p = 0; if (S[S.length - 1].p == null) S[S.length - 1].p = 1;
+    for (var i = 1; i < S.length; i++) if (S[i].p == null) { var j = i; while (S[j].p == null) j++; for (var q = i; q < j; q++) S[q].p = S[i - 1].p + (S[j].p - S[i - 1].p) * (q - i + 1) / (j - i + 1); }
+    for (var m = 1; m < S.length; m++) S[m].p = Math.max(S[m].p, S[m - 1].p);
+    return function(k){ if (k <= S[0].p) return S[0].v; for (var i = 1; i < S.length; i++) if (k <= S[i].p) return S[i].p === S[i - 1].p ? S[i].v : mix(S[i - 1].v, S[i].v, (k - S[i - 1].p) / (S[i].p - S[i - 1].p)); return S[S.length - 1].v; }; }
+  var num = function(v){ return (+v.toFixed(3)).toString().replace(/^0\./, '.').replace(/^-0\./, '-.'); };
+  function linearCss(f, n){ n = n || 10; var o = []; for (var i = 0; i <= n; i++) o.push(i === 0 || i === n ? num(f(i / n)) : num(f(i / n)) + ' ' + Math.round(i / n * 100) + '%'); return 'linear(' + o.join(', ') + ')'; }
+  function curve(spec){ var f, css;
+    if (typeof spec === 'string') { f = ease[spec]; css = linearCss(f, 10); }
+    else if (spec.bezier) { f = bezier.apply(null, spec.bezier); css = 'cubic-bezier(' + spec.bezier.map(num).join(', ') + ')'; }
+    else if (spec.linear) { f = stops(spec.linear); css = 'linear(' + spec.linear.map(function(s){ return Array.isArray(s) ? num(s[0]) + ' ' + s[1] + '%' : num(s); }).join(', ') + ')'; }
+    else { f = stops(spec.keyframes.map(function(s){ return [s[1], s[0]]; })); css = '@keyframes'; }
+    var lo = 0, hi = 1; for (var i = 0; i <= 80; i++) { var v = f(i / 80); lo = Math.min(lo, v); hi = Math.max(hi, v); }
+    return { f: f, css: css, min: lo, max: hi }; }
+  // KM.timeScale(t0, t1, factor, ramp): a slow-motion stretch of the reel. The component's own clock, at(t) (seconds, 0 at t0), runs at
+  //   1x before t0, eases down to factor over ramp, runs at factor, eases back to 1x by t1; the camera keeps reel time, so it never slows.
+  //   on(t) 0 -> 1 (how slow it is, for the badge), real(c) = the reel time the component clock reaches c. Cues: a falling swell into the
+  //   slow motion, a whoosh as it speeds back up.
+  function timeScale(t0, t1, f, ramp){ ramp = ramp == null ? .25 : Math.min(ramp, (t1 - t0) / 2);
+    var a1 = t0 + ramp, b0 = t1 - ramp, A1 = ramp * (1 + f) / 2, B0 = A1 + (b0 - a1) * f, B1 = B0 + ramp * (1 + f) / 2;
+    cue({ t: a1, k: 'swell', d: .55, g: .3, x: 255 }); cue({ t: t1 - .05, k: 'whoosh', d: .4, g: .22 });
+    var at = function(t){ if (t <= t0) return t - t0; if (t <= a1) { var u = t - t0; return u - (1 - f) * u * u / (2 * ramp); }
+      if (t <= b0) return A1 + (t - a1) * f; if (t <= t1) { var w = t - b0; return B0 + f * w + (1 - f) * w * w / (2 * ramp); } return B1 + t - t1; };
+    return { t0: t0, t1: t1, f: f, at: at,
+      speed: function(t){ return t <= t0 || t >= t1 ? 1 : t < a1 ? mix(1, f, (t - t0) / ramp) : t > b0 ? mix(f, 1, (t - b0) / ramp) : f; },
+      on: function(t){ return f >= 1 ? 0 : (1 - this.speed(t)) / (1 - f); },
+      real: function(c){ var lo = t0 - 50, hi = t1 + 50; for (var i = 0; i < 50; i++) { var m = (lo + hi) / 2; if (at(m) < c) lo = m; else hi = m; } return hi; } }; }
+  // KM.curveGraph(svg, spec, c0, d, o): the easing curve drawn live, synced to the element it describes: the curve draws itself behind a dot
+  //   that rides it, on a time axis (0 to d, in the component's own seconds), with dashed guides at 0 and 1 and the dot's value on the left edge.
+  //   o.clock(t) = the component's clock (a timeScale's at, or reel time when left out); o.real(c) = the reel time of clock c (for the cues).
+  //   Returns { k(t), v(t), draw(t, alpha) }. Cues: a soft move while it draws, a snap when the dot lands.
+  function curveGraph(svg, spec, c0, d, o){ o = o || {}; var C = curve(spec), clock = o.clock || function(t){ return t; }, real = o.real || function(c){ return c; };
+    var W = +svg.getAttribute('width'), H = +svg.getAttribute('height'), pl = 6, pr = 10, pt = 10, pb = 22, lo = Math.min(0, C.min) - .06, hi = Math.max(1, C.max) + .06;
+    var X = function(k){ return pl + k * (W - pl - pr); }, Y = function(v){ return pt + (hi - v) / (hi - lo) * (H - pt - pb); }, NS = 'http://www.w3.org/2000/svg';
+    var mk = function(tag, at){ var e = document.createElementNS(NS, tag); for (var a in at) e.setAttribute(a, at[a]); svg.appendChild(e); return e; };
+    svg.innerHTML = '';
+    var g0 = mk('line', { x1: X(0), x2: X(1), y1: Y(0), y2: Y(0), class: 'cg-axis' }), g1 = mk('line', { x1: X(0), x2: X(1), y1: Y(1), y2: Y(1), class: 'cg-guide' });
+    var full = '', N = 72; for (var i = 0; i <= N; i++) full += (i ? 'L' : 'M') + X(i / N).toFixed(1) + ' ' + Y(C.f(i / N)).toFixed(1);
+    var ghost = mk('path', { d: full, class: 'cg-ghost' }), line = mk('path', { d: '', class: 'cg-line' }), hz = mk('line', { class: 'cg-h' }), dot = mk('circle', { r: 5.5, class: 'cg-dot' });
+    var l0 = mk('text', { x: X(0), y: H - 5, class: 'cg-t' }), l1 = mk('text', { x: X(1), y: H - 5, class: 'cg-t', 'text-anchor': 'end' });
+    l0.textContent = '0'; l1.textContent = Math.round(d * 1000) + ' ms';
+    cue({ t: real(c0), k: 'move', d: Math.max(.4, real(c0 + d) - real(c0)), g: .16, dir: 1, x: 120, x2: 230, r: .2 }); cue({ t: real(c0 + d), k: 'snap', g: .22, p: 9, x: 230, r: .2 });
+    var R = { css: C.css, f: C.f, k: function(t){ return cl((clock(t) - c0) / d); }, v: function(t){ return C.f(R.k(t)); },
+      draw: function(t, alpha){ var k = R.k(t), p = '', n = Math.max(1, Math.round(N * k)); for (var i = 0; i <= n; i++) { var q = k * i / n; p += (i ? 'L' : 'M') + X(q).toFixed(1) + ' ' + Y(C.f(q)).toFixed(1); }
+        line.setAttribute('d', p); var x = X(k), y = Y(C.f(k)); dot.setAttribute('cx', x.toFixed(1)); dot.setAttribute('cy', y.toFixed(1));
+        hz.setAttribute('x1', X(0)); hz.setAttribute('x2', x.toFixed(1)); hz.setAttribute('y1', y.toFixed(1)); hz.setAttribute('y2', y.toFixed(1));
+        dot.style.opacity = hz.style.opacity = clock(t) >= c0 - .05 ? 1 : 0; svg.style.opacity = alpha == null ? 1 : alpha; } };
+    return R; }
+  // KM.slowmoBadge(el, ts, label): a pill that pops in as the slow motion starts (a blip) and lets go as it ends; its dot pulses with the speed.
+  function slowmoBadge(el, ts, label){ el.innerHTML = '<i></i><span>' + label + '</span>'; cue({ t: ts.t0 + .05, k: 'blip', g: .2, x: 430 });
+    return function(t){ var on = ts.on(t), k = ease.back(P(t, ts.t0, ts.t0 + .35), 1.8) * (1 - ease.inOut3(P(t, ts.t1 - .2, ts.t1 + .1)));
+      el.style.opacity = cl(k * 1.4).toFixed(3); el.style.transform = 'scale(' + mix(.7, 1, cl(k)).toFixed(3) + ')';
+      el.firstChild.style.transform = 'scale(' + (1 + .35 * on * Math.max(0, Math.sin(t * 7))).toFixed(3) + ')'; }; }
+  // KM.specChip(el, items, t0, d, kf): the numbers roll up from 0 (ticks as they count) and land; items = [{ label, v, unit, dp }];
+  //   kf(t) -> 0-1 (optional) drives the roll instead of t0 + d, e.g. a curveGraph's k: the "ms" counter then is the component's own clock
+  function specChip(el, items, t0, d, kf){ d = d || .55; for (var i = 0; i < 6; i++) cue({ t: t0 + i * d / 6, k: 'tick', g: .07, p: i * 2 }); cue({ t: t0 + d, k: 'pop', g: .22, p: 6 });
+    el.innerHTML = items.map(function(it, i){ return '<div class="sc-r' + i + '">' + (it.label ? '<small>' + it.label + '</small>' : '') + '<b></b>' + (it.unit && it.unit[0] !== '%' ? ' ' : '') + '<span>' + (it.unit || '') + '</span></div>'; }).join('');
+    var B = el.querySelectorAll('b');
+    return function(t){ var k = kf ? kf(t) : P(t, t0, t0 + d);
+      items.forEach(function(it, i){ var q = kf ? (i ? ease.out3(P(t, t0 + d, t0 + d + .4)) : k) : ease.out3(P(k, i * .2, Math.min(1, .7 + i * .2))); B[i].textContent = (it.v * q).toFixed(it.dp || 0); if (kf && i) B[i].parentNode.style.opacity = P(t, t0 + d - .05, t0 + d + .15).toFixed(3); });
+      el.style.opacity = ease.out3(P(t, t0 - .15, t0 + .1)).toFixed(3); el.style.transform = 'translateY(' + ((1 - ease.back(P(t, t0 - .15, t0 + .3), 1.5)) * 10).toFixed(2) + 'px)'; }; }
+  // KM.partProgress(el, parts): a segmented bar, one segment per part ([[t0, t1], ...]); the current one fills as its part plays (a click at each)
+  function partProgress(el, parts){ el.innerHTML = parts.map(function(){ return '<i><b></b></i>'; }).join(''); var S = el.querySelectorAll('b');
+    parts.forEach(function(p){ cue({ t: p[0], k: 'click', g: .08, p: 3 }); });
+    return function(t){ parts.forEach(function(p, i){ var k = P(t, p[0], p[1]); S[i].style.transform = 'scaleX(' + k.toFixed(4) + ')'; S[i].parentNode.style.opacity = t >= p[0] && t < p[1] ? 1 : .6; }); }; }
+  // ---- the look: themes (owner, 8 Nov 2026: "Let's go with C."; scripts/explainer/styles/C.html was the test) ----
+  // Style C, "Glass and light": layered frosted panes over slow coloured light, a soft gradient grade, crisp white type, floating code panes.
+  // The cheap path (render minutes): no backdrop-filter (style C's test took 52 GitHub minutes for 8 s; real backdrop blur roughly doubles the
+  // cost of a frame), no live filter blur on big layers, no full-frame mask. The blooms are soft radial gradients, so blurring them would change
+  // nothing you can see: a translucent gradient pane with a 1 px lit edge over them reads as frosted glass. Each bloom and the grade is its own
+  // The light is painted in a 135x240 canvas scaled up to the frame (soft light needs no resolution: the upscale is the blur), with the grade on
+  // it: four bloom layers and a grade layer at full size cost ~160 ms a frame to composite in the headless capture, the canvas almost nothing.
+  var THEMES = {
+    glass: { name: 'Glass and light',
+      c: { ink: '#070816', paper: '#f7f8ff', dim: '#9ea4c9', acc: '#8fe6ff', red: '#ff7aa8', ctl: '#272b55', raise: '#1e2148', skel: '#1b1d40', pg: '#0c0d26',
+        card: '#161939', on: '#0b0c1d' },
+      v: { glass: 'linear-gradient(155deg,rgba(255,255,255,.17),rgba(255,255,255,.055) 46%,rgba(255,255,255,.1))',
+        // frost: the opaque pane for glass that sits over other content (a code pane over the phone): what frosted glass shows, an averaged colour
+        frost: 'linear-gradient(155deg,#2c2c66,#17183c 46%,#1f2050)',
+        edge: 'inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1.5px 0 rgba(255,255,255,.5)', lift: '0 18px 28px rgba(18,8,60,.55)',
+        glow: 'rgba(143,230,255,.6)', soft: 'rgba(143,230,255,.16)', ring: 'rgba(143,230,255,.55)',
+        f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '680', ht: '-.04em' },
+      // [rgb, alpha, size, x, y, fx, fy, phase] in a 940x1280 field behind the frame (violet, rose, cyan, amber: light, never fills)
+      blooms: [['122,92,255', .62, 640, 180, 220, .31, .23, 0], ['255,111,207', .42, 580, 460, 640, .27, .35, 1.7], ['63,216,255', .4, 540, 120, 860, .37, .21, 3.1],
+        ['255,180,92', .3, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(90,60,200,.2)'], [.4, 'rgba(7,8,22,0)'], [1, 'rgba(0,150,170,.14)']] },
+    dark: { name: 'Ink and mint',
+      c: { ink: '#111214', paper: '#f2efe8', dim: '#8a8780', acc: '#7cf0b6', red: '#ff5a4a', ctl: '#3a3b44', raise: '#34353e', skel: '#2e2f37', pg: '#16171c',
+        card: '#202128', on: '#111214' },
+      v: { glass: '#26272e', frost: '#1b1c21', edge: 'inset 0 1px 0 rgba(255,255,255,.06)', lift: '0 24px 60px rgba(0,0,0,.4)', glow: 'rgba(124,240,182,.55)', soft: 'rgba(124,240,182,.14)',
+        ring: 'rgba(124,240,182,.5)', f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '800', ht: '-.024em' },
+      blooms: [['124,240,182', .08, 460, 140, 200, .2, .17, 0], ['124,140,255', .06, 380, 520, 640, .23, .19, 2]], grade: null }
+  };
+  var LT = {};
+  function theme(name){ var th = THEMES[name] || THEMES.glass, R = document.documentElement, k;
+    for (k in th.c) R.style.setProperty('--' + k, th.c[k]); for (k in th.v) R.style.setProperty('--' + k, th.v[k]);
+    R.style.background = document.body.style.background = th.c.ink; R.dataset.theme = name in THEMES ? name : 'glass';
+    // the light and the grade in one tiny canvas (135x240, a quarter of the frame) scaled up to the frame: the upscale is the blur, for free
+    var L = document.createElement('canvas'); L.id = 'km-lights'; L.className = 'a'; L.width = 135; L.height = 240; L.setAttribute('data-fit', 'free'); L.setAttribute('aria-hidden', 'true');
+    L.style.cssText = 'position:absolute;left:0;top:0;width:540px;height:960px;pointer-events:none';
+    document.body.insertBefore(L, document.body.firstChild); LT = { cx: L.getContext('2d'), th: th };
+    var T = {}; for (k in th.c) T[k] = th.c[k]; T.name = th.name; return T; }
+  // the blooms drift on slow Lissajous paths (a pure function of t), breathe a little, and follow the camera at a shallow depth
+  // (x .05: the camera crosses 560 px a part in the details format; y .2; zoom .25), so the light is never still; the grade is painted over them
+  function lights(t, c){ if (!LT.cx) return; c = c || { x: 270, y: 480, z: 1 }; var g = LT.cx, th = LT.th, q = .25, zs = 1 + (c.z - 1) * .25;
+    g.globalCompositeOperation = 'source-over'; g.fillStyle = th.c.ink; g.fillRect(0, 0, 135, 240); g.globalCompositeOperation = 'lighter';
+    th.blooms.forEach(function(b, i){ var r = b[2] / 2 * zs * (1 + .08 * Math.sin(t * .5 + i)), a = b[1] * (.82 + .18 * Math.sin(t * .7 + i * 2.1));
+      var x = (b[3] - 200 + Math.sin(t * b[5] + b[7]) * 90 - (c.x - 270) * .05 - 270) * zs + 270, y = (b[4] - 160 + Math.sin(t * b[6] + b[7] * 1.3) * 110 - (c.y - 480) * .2 - 480) * zs + 480;
+      var gr = g.createRadialGradient(x * q, y * q, 0, x * q, y * q, r * q); gr.addColorStop(0, 'rgba(' + b[0] + ',' + a.toFixed(3) + ')'); gr.addColorStop(.5, 'rgba(' + b[0] + ',' + (a * .5).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(' + b[0] + ',0)');
+      g.fillStyle = gr; g.fillRect(0, 0, 135, 240); });
+    if (th.grade) { g.globalCompositeOperation = 'source-over'; var gd = g.createLinearGradient(0, 0, 0, 240);
+      th.grade.forEach(function(s){ gd.addColorStop(s[0], s[1]); }); g.fillStyle = gd; g.fillRect(0, 0, 135, 240); } }
+  // the world ends at y (viewport px) by k (0: the full frame, 1: cut at y): an overflow cut (cheap, and the BAND check reads it) under a soft
+  // feather (fe: a gradient from transparent to the ink, 28 px tall, ending at the cut) that fades the panes and the light into the band
+  function cutBelow(vp, fe, y, k){ var e = mix(960, y, k); vp.style.height = e.toFixed(1) + 'px';
+    if (fe) { fe.style.cssText = 'position:absolute;left:0;top:' + (e - 28).toFixed(1) + 'px;width:540px;height:28px;pointer-events:none;background:linear-gradient(transparent,var(--ink));opacity:' + k.toFixed(3); } }
+  // a pane at its own depth: it slides against the camera's moves (d > 0: nearer than the world, so it moves more), measured from (cx, cy),
+  // the camera's centre when the pane is framed; extra = a transform to add (a float)
+  function depth(el, c, cx, cy, d, extra){ el.style.transform = 'translate(' + (-(c.x - cx) * d).toFixed(2) + 'px,' + (-(c.y - cy) * d).toFixed(2) + 'px)' + (extra || ''); }
+  function float(t, seed, amp){ return (amp == null ? 3 : amp) * Math.sin(t * (4.4 + seed % 1.2) / 1.2 + seed * 2.3); }
+  function publish(extra){ extra = extra || {}; window.TRANSITIONS = TR.slice().sort(function(a, b){ return a[0] - b[0]; });
+    window.CUES = { dur: DUR, cues: Q.slice().sort(function(a, b){ return a.t - b.t; }), mix: extra.mix || { duck: 8 }, bed: extra.bed || { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } }; }
+  return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
+    rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, voice: voice, subs: subs, publish: publish,
+    curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
+    THEMES: THEMES, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float };
+})();
+/*kitmotion:end*/
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, T = KM.theme(window.WEB_THEME || 'glass');
+  var TEXT = "Why do good apps feel so smooth? One: the copy button springs into Copied, and lands in half a second. Two: the switch knob stretches as it slides, then settles round again. Three: the toast eases up from below, then swipes away with a flick. Save all three for your next app.", DUR = 21.2, HOOK_N = 7;
+  // ---- the details: one per beat, in order (kind = a component in KINDS; title = three words; acc = the accent word's index) ----
+  var DETAILS = [{"kind":"copy"},{"kind":"toggle"},{"kind":"toast"}];
+  var RECAP = {"eyebrow":"RECAP · ALL 3 AT 1×","title":["All","three","together"],"acc":1};
+  // ---- the component library. Each kind: html (inside the 450x190 stage), draw(root, c, o) with c = the component's own clock in seconds
+  //   (0 = the interaction starts; it is slowed by the beat's timeScale), o = { f: the curve's ease, k: progress 0-1 on the curve, a: text alpha,
+  //   mini: true in the recap and the hook loop (no finger) }. css = the real CSS (checked on MDN + BCD), curve = what that CSS's timing does,
+  //   dur = the CSS duration (s), after = seconds of story after it, chip = the spec chip, token = the recap label ----
+  var tx = function(root, a){ [].forEach.call(root.querySelectorAll('.tx'), function(e){ e.style.opacity = a; }); };
+  function finger(root, c, o, x0, y0, x1, y1, drag){ var fg = root.querySelector('.fg'); if (!fg) return; if (o.mini) { fg.style.opacity = 0; return; }
+    var inn = E.inOut3(P(c, -.42, -.06)), lift = E.inOut3(P(c, drag ? drag[1] : .12, (drag ? drag[1] : .12) + .3)), dx = drag ? E.inOut3(P(c, drag[0], drag[1])) * drag[2] : 0;
+    var x = mix(x0, x1, inn) + dx + lift * 30, y = mix(y0, y1, inn) + lift * 50, press = KM.win(c, -.08, drag ? drag[1] : .1, .06);
+    fg.style.left = (x - 28).toFixed(1) + 'px'; fg.style.top = (y - 28).toFixed(1) + 'px'; fg.style.opacity = (cl((c + .42) * 5) * (1 - lift) * o.a).toFixed(3); fg.style.transform = 'scale(' + (1 - press * .14).toFixed(3) + ')'; }
+  var KINDS = {
+    copy: { title: ['Copy', 'that', 'springs'], acc: 2, say: 'the copy button springs into its answer.', token: 'width · linear()',
+      css: '.copy {\n  transition: width .5s\n    linear(0, .62 18%, 1.1 38%, .97 62%, 1);\n}\n.copy.done { width: 168px; }',
+      curve: { linear: [0, [.62, 18], [1.1, 38], [.97, 62], 1] }, dur: .5, after: .3, chip: [{ label: 'lands in', v: 500, unit: 'ms' }, { v: 1, unit: 'overshoot' }],
+      html: '<div class="cp"><i class="ic"></i><i class="ck"></i><span class="t1 tx">Copy link</span><span class="t2 tx">Copied</span></div><div class="fg"></div>',
+      draw: function(r, c, o){ var w = mix(224, 168, o.f(o.k)), cp = r.querySelector('.cp'), sw = P(o.k, .15, .45), press = KM.win(c, -.08, .1, .06);
+        cp.style.width = w.toFixed(2) + 'px'; cp.style.left = (225 - w / 2).toFixed(2) + 'px'; cp.style.transform = 'scale(' + (1 - press * .05).toFixed(3) + ')';
+        cp.style.background = KM.mixCol(T.ctl, T.acc, sw); cp.style.color = KM.mixCol(T.paper, T.on, sw);
+        r.querySelector('.ic').style.transform = 'scale(' + (1 - sw).toFixed(3) + ')'; r.querySelector('.ck').style.transform = 'rotate(45deg) scale(' + E.back(P(o.k, .3, .7), 2).toFixed(3) + ')';
+        var t1 = r.querySelector('.t1'), t2 = r.querySelector('.t2'); t1.style.opacity = ((1 - P(o.k, .1, .35)) * o.a).toFixed(3); t2.style.opacity = (P(o.k, .3, .55) * o.a).toFixed(3);
+        t1.style.transform = 'translateY(' + (-P(o.k, .1, .35) * 14).toFixed(2) + 'px)'; t2.style.transform = 'translateY(' + ((1 - E.out3(P(o.k, .3, .6))) * 14).toFixed(2) + 'px)';
+        finger(r, c, o, 330, 190, 250, 104); } },
+    toggle: { title: ['Knobs', 'that', 'stretch'], acc: 2, say: 'the switch knob stretches as it slides.', token: 'translate · squash',
+      css: '.knob { transition: translate .4s\n  cubic-bezier(.34, 1.56, .64, 1); }\n.on .knob { translate: 48px;\n  animation: squash .4s; }\n@keyframes squash { 40% { scale: 1.3 .8 } }',
+      curve: { bezier: [.34, 1.56, .64, 1] }, dur: .4, after: .3, chip: [{ label: 'slides in', v: 400, unit: 'ms' }, { v: 130, unit: '% stretch' }],
+      html: '<span class="tg-l tx">Dark mode</span><span class="tg-s tx">SETTINGS</span><div class="tg"><div class="kn"></div></div><div class="fg"></div>',
+      draw: function(r, c, o){ var x = 48 * o.f(o.k), sq = KM.curve({ keyframes: [[0, 0], [40, 1], [100, 0]] }).f(o.k), kn = r.querySelector('.kn');
+        kn.style.transform = 'translateX(' + x.toFixed(2) + 'px) scale(' + (1 + .3 * sq).toFixed(3) + ',' + (1 - .2 * sq).toFixed(3) + ')';
+        r.querySelector('.tg').style.background = KM.mixCol(T.ctl, T.acc, P(o.k, .1, .6)); tx(r, o.a);
+        finger(r, c, o, 420, 190, 352, 100); } },
+    toast: { title: ['Toasts', 'that', 'settle'], acc: 2, say: 'the toast eases in, then swipes away.', token: '@starting-style',
+      css: '.toast { transition: translate .5s\n  cubic-bezier(.2, .9, .3, 1.25);\n  @starting-style { translate: 0 120%; }\n}\n.toast.gone { translate: 110% 0; }',
+      curve: { bezier: [.2, .9, .3, 1.25] }, dur: .5, after: .75, chip: [{ label: 'settles in', v: 500, unit: 'ms' }, { v: 1, unit: 'overshoot' }],
+      html: '<div class="sk" style="top:26px"></div><div class="sk" style="top:70px;width:260px"></div><div class="ts"><i></i><b class="tx">Saved to your list</b><small class="tx">UNDO</small></div><div class="fg"></div>',
+      draw: function(r, c, o){ var y = 89 * (1 - o.f(o.k)), dr = E.inOut3(P(c, .62, .9)) * 46, fl = KM.curve({ bezier: [.2, .9, .3, 1.25] }).f(P(c, .9, 1.4)) * 400, ts = r.querySelector('.ts');
+        ts.style.transform = 'translate(' + (dr + fl).toFixed(2) + 'px,' + y.toFixed(2) + 'px) rotate(' + (dr * .04 + fl * .012).toFixed(2) + 'deg)'; ts.style.opacity = (1 - P(c, 1.05, 1.4)).toFixed(3);
+        tx(r, o.a * (o.k > 0 || c > 0 ? 1 : 0)); if (o.mini) { finger(r, c, o, 0, 0, 0, 0); return; }
+        var fg = r.querySelector('.fg'), on = KM.win(c, .5, .92, .1), lx = 210 + dr; fg.style.left = (lx - 28).toFixed(1) + 'px'; fg.style.top = (141 - 28 + (1 - on) * 30).toFixed(1) + 'px';
+        fg.style.opacity = (on * o.a).toFixed(3); fg.style.transform = 'scale(' + (1 - KM.win(c, .58, .9, .05) * .14).toFixed(3) + ')'; } },
+    stepper: { title: ['Steps', 'that', 'fill'], acc: 2, say: 'the progress bar fills, then the next step pops.', token: 'width · ease-in-out',
+      css: '.bar { transition: width .7s\n  cubic-bezier(.65, 0, .35, 1); }\n.step.done { scale: 1.15;\n  transition: scale .3s; }',
+      curve: { bezier: [.65, 0, .35, 1] }, dur: .7, after: .35, chip: [{ label: 'fills in', v: 700, unit: 'ms' }, { v: 3, unit: 'steps' }],
+      html: '<div class="st-t"></div><div class="st-f"></div><div class="st-d tx" style="left:84px">1</div><div class="st-d tx" style="left:225px">2</div><div class="st-d tx" style="left:366px">3</div><div class="st-n tx" style="left:84px">CART</div><div class="st-n tx" style="left:225px">PAY</div><div class="st-n tx" style="left:366px">DONE</div><div class="fg"></div>',
+      draw: function(r, c, o){ var w = .5 * o.f(o.k), D = r.querySelectorAll('.st-d'), pop = KM.curve({ bezier: [.25, .1, .25, 1] }).f(P(c, o.dur, o.dur + .3));
+        r.querySelector('.st-f').style.transform = 'scaleX(' + w.toFixed(4) + ')'; tx(r, o.a);
+        D[0].style.background = T.acc; D[0].style.color = T.on;
+        D[1].style.background = KM.mixCol(T.ctl, T.acc, P(c, o.dur - .05, o.dur + .1)); D[1].style.color = KM.mixCol(T.paper, T.on, P(c, o.dur - .05, o.dur + .1));
+        D[1].style.transform = 'scale(' + (1 + .15 * pop * (1 - P(c, o.dur + .5, o.dur + .8))).toFixed(3) + ')';
+        finger(r, c, o, 400, 200, 366, 120); } },
+    like: { title: ['Hearts', 'that', 'pop'], acc: 2, say: 'the heart pops, then wobbles into place.', token: 'scale · linear()',
+      css: '.heart { transition: scale .45s\n  linear(0, 1.3 30%, .9 55%, 1.04 78%, 1); }\n.liked .heart { scale: 1.2; }',
+      curve: { linear: [0, [1.3, 30], [.9, 55], [1.04, 78], 1] }, dur: .45, after: .3, chip: [{ label: 'pops in', v: 450, unit: 'ms' }, { v: 2, unit: 'wobbles' }],
+      html: '<svg class="lk-h" viewBox="0 0 86 86"><path d="M43 74 C14 54 6 40 6 28 C6 16 15 8 26 8 C34 8 40 13 43 19 C46 13 52 8 60 8 C71 8 80 16 80 28 C80 40 72 54 43 74Z"/></svg><span class="lk-c tx">128</span><span class="lk-s tx">LIKES</span><div class="fg"></div>',
+      draw: function(r, c, o){ var s = 1 + .2 * o.f(o.k), h = r.querySelector('.lk-h'), on = P(o.k, 0, .2);
+        h.style.transform = 'scale(' + s.toFixed(4) + ')'; h.querySelector('path').style.fill = T.red; h.querySelector('path').style.fillOpacity = on.toFixed(3); h.querySelector('path').style.stroke = KM.mixCol(T.paper, T.red, on);
+        r.querySelector('.lk-c').textContent = o.k > .25 ? '129' : '128'; tx(r, o.a); finger(r, c, o, 250, 200, 194, 110); } }
+  };
+  var N = DETAILS.length, D = DETAILS.map(function(d){ var K = KINDS[d.kind], o = {}; for (var k in K) o[k] = K[k]; for (var q in d) o[q] = d[q]; return o; });
+  // ---- build the world: one panel per detail (560 px apart), the recap grid after them ----
+  var esc = function(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var hl = function(css){ return esc(css).replace(/(linear\([^)]*\)|cubic-bezier\([^)]*\)|@starting-style|@keyframes)/g, '<b>$1</b>').replace(/([{}])/g, '<span class="dim">$1</span>'); };
+  var world = $('world'), blks = $('blks'), rows = Math.ceil(N / 2), tileH = Math.min(150, (416 - (rows - 1) * 10) / rows), ms = Math.min(194 / 450, (tileH - 52) / 190);
+  D.forEach(function(d, i){ var pn = document.createElement('div'); pn.className = 'pn'; pn.style.left = (560 * i) + 'px';
+    pn.innerHTML = '<div class="stage"><div class="comp">' + d.html + '</div></div><div class="code"><div class="cd"></div></div><svg class="cg" width="250" height="96"></svg><div class="chip"></div>';
+    world.appendChild(pn); d.pn = pn; d.stage = pn.querySelector('.stage'); d.comp = pn.querySelector('.comp'); d.code = pn.querySelector('.cd'); d.cgEl = pn.querySelector('.cg'); d.html2 = hl(d.css);
+    var b = document.createElement('div'); b.className = 'blk a'; b.innerHTML = '<span class="eb">Nº ' + ('0' + (i + 1)).slice(-2) + ' / ' + ('0' + N).slice(-2) + '</span><div class="tt">' + d.title.map(function(w, j){ return '<span' + (j === d.acc ? ' class="acc"' : '') + '>' + esc(w) + '</span>'; }).join(' ') + '</div>';
+    blks.appendChild(b); d.blk = b;
+    var bg = document.createElement('div'); bg.className = 'badge a'; blks.appendChild(bg); d.badge = bg; });
+  var rc = document.createElement('div'); rc.className = 'pn'; rc.style.left = (560 * N) + 'px'; rc.innerHTML = '<div class="grid" style="height:' + (rows * tileH + (rows - 1) * 10) + 'px"></div>'; world.appendChild(rc);
+  var grid = rc.querySelector('.grid'), gridTop = 230 + Math.max(0, (416 - (rows * tileH + (rows - 1) * 10)) / 2); grid.style.top = gridTop + 'px';
+  D.forEach(function(d, i){ var tl = document.createElement('div'), col = i % 2, row = Math.floor(i / 2), solo = N % 2 === 1 && i === N - 1;
+    tl.className = 'tile'; tl.style.left = (solo ? 110 : col * 220) + 'px'; tl.style.top = (row * (tileH + 10)) + 'px'; tl.style.height = tileH + 'px';
+    tl.innerHTML = '<div class="mini" style="transform:scale(' + ms.toFixed(4) + ')"><div class="comp">' + d.html + '</div></div><div class="tl" style="top:' + (14 + 190 * ms).toFixed(0) + 'px"><b>' + ('0' + (i + 1)).slice(-2) + ' ' + esc(d.title.join(' ')) + '</b><small>' + esc(d.token) + '</small></div>';
+    grid.appendChild(tl); d.tile = tl; d.mini = tl.querySelector('.comp'); });
+  var rb = document.createElement('div'); rb.className = 'blk a'; rb.innerHTML = '<span class="eb">' + esc(RECAP.eyebrow) + '</span><div class="tt">' + RECAP.title.map(function(w, j){ return '<span' + (j === RECAP.acc ? ' class="acc"' : '') + '>' + esc(w) + '</span>'; }).join(' ') + '</div>'; blks.appendChild(rb);
+  var V, PH, A = {}, CAM, BAR, B = [];
+  // the ping-pong loop (the hook and the recap play each detail at full speed, forward then back): x = seconds into the loop, c starts at c0
+  // the hook: the first detail finishing at frame 0 (result first), held done while the hook is said, played back to its start just
+  // before part 1, so part 1 picks up seamlessly
+  var HOLD = .45, hookC = function(d, t){ var c0 = d.clock(A.b[0]), top = d.dur + d.after, r0 = Math.max(A.hookIn + .3, A.b[0] - .8);
+    return t < .4 ? top - .4 + t : t < r0 ? top : mix(top, c0, E.inOut3(P(t, r0, A.b[0] - .1))); };
+  var pp = function(d, x, c0){ var L = d.dur + d.after - c0, Q = 2 * L + 2 * HOLD; x = ((x % Q) + Q) % Q; return x < L ? c0 + x : x < L + HOLD ? c0 + L : x < 2 * L + HOLD ? c0 + 2 * L + HOLD - x : c0; };
+  function anchors(words){
+    V = KM.voice(TEXT, .15, words); PH = V.phrases(6); KM.reset(DUR);
+    var S = V.starts(); if (S.length < N + 2) { S = [0]; for (var i = 1; i <= N + 1; i++) S.push(1.8 + (DUR - 3.4) * (i - 1) / (N + .5)); }
+    A.b = []; for (var j = 1; j <= N + 1; j++) A.b.push(S[j] - .3); A.b.push(DUR);   // A.b[i] = the start of detail i (A.b[N] = the recap)
+    A.end = V.end; A.hookIn = (V.words[HOOK_N - 1] ? V.words[HOOK_N - 1].s - V.lead : 1.2) + .25; window.COVER = +Math.min(A.hookIn + .35, A.b[0] - .22).toFixed(2);
+    // the camera: close on the first detail under the hook (it is already running: result first), then one declared glide per part
+    CAM = KM.rig({ x: 255, y: 330.6, z: 1.8, drift: 1.3 }).matchMove(A.b[0] - .3, .75, 255, 480, 1);
+    for (var p = 1; p <= N; p++) CAM.creep(A.b[p - 1] + .5, Math.max(.2, A.b[p] - A.b[p - 1] - .85), .03).matchMove(A.b[p] - .3, .62, 255 + 560 * p, 480, 1);
+    CAM.creep(A.b[N] + .4, DUR - A.b[N] - .4, .02);   // the drift (1.3) and a 3% creep through each part keep it moving; texts sit 26 px inside the safe zone for them
+    D.forEach(function(d, i){ var b0 = A.b[i], b1 = A.b[i + 1], z0 = b0 + .5, s0 = z0 - .1, s1 = Math.max(s0 + .6, b1 - .9 - d.after);   // lands about 0.9 s before the camera moves on
+      // slow motion: the interaction (dur in the component's own seconds) fills the stretch from s0 to s1; at most 1x, at least 0.1x
+      var f = cl((d.dur - .1) / Math.max(.3, s1 - s0 - .25), .1, 1);
+      d.f = f; d.ts = KM.timeScale(s0, s1, f, .25); d.off = s0 - z0; d.clock = (function(ts, off){ return function(t){ return ts.at(t) + off; }; })(d.ts, d.off);
+      d.real = (function(ts, off){ return function(c){ return ts.real(c - off); }; })(d.ts, d.off);
+      d.cg = KM.curveGraph(d.pn.querySelector('.cg'), d.curve, 0, d.dur, { clock: d.clock, real: d.real });
+      d.chipDraw = KM.specChip(d.pn.querySelector('.chip'), d.chip, d.real(0), d.real(d.dur) - d.real(0), d.cg.k);   // the ms counter runs with the dot
+      d.badgeDraw = KM.slowmoBadge(d.badge, d.ts, f.toFixed(2) + '× SPEED');
+      d.typeA = b0 + .35; d.typeB = Math.min(b0 + .35 + d.css.length * .011, b1 - .9);
+      for (var c = 0; d.typeA + c * .1 < d.typeB; c++) KM.cue({ t: d.typeA + c * .1, k: 'tick', g: .05, p: (c * 5) % 7 });
+      if (!(d.kind === 'toast')) KM.tap(d.real(0), 255); });
+    BAR = KM.partProgress($('bar'), D.map(function(d, i){ return [A.b[i], A.b[i + 1]]; }));
+    KM.cue({ t: 0, k: 'hit', g: .45, p: -.3 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .35 });
+    KM.cue({ t: A.b[N] + .35, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] }); KM.cue({ t: DUR - .45, k: 'swish', d: .6, g: .4, p: -.6 });
+    KM.publish();
+  }
+  // a panel's text alpha: up once the camera has arrived, down as soon as it leaves (texts never slide toward the frame's edges)
+  var arrive = function(i){ return i === 0 ? -1 : A.b[i] - .3; }, alpha = function(i, t){ var a = arrive(i), l = i < N ? A.b[i + 1] - .3 : 99, d = i === 0 ? .75 : .62;
+    return (a < 0 ? 1 : P(t, a + d * .88, a + d)) * (1 - P(t, l, l + d * .12)); };
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var c = CAM.apply($('world'), t), cur = 0; for (var i = 0; i < N; i++) if (t >= A.b[i + 1] - .0) cur = i + 1;
+    KM.lights(t, c);
+    D.forEach(function(d, i){ var a = alpha(i, t), live = t >= A.b[i] - .35 && t < A.b[i + 1] + .4, hookLoop = i === 0 && t < A.b[0];
+      d.stage.toggleAttribute('data-subject', cur === i);
+      var cc = hookLoop ? hookC(d, t) : d.clock(t), end = d.dur + d.after + .25;
+      if (!hookLoop && cc > end) cc = pp(d, d.dur + d.after + .2 + cc - end, -.2);   // once it has played, it replays at 1x (back and forth) until the camera moves on
+      var k = cl(cc / d.dur);
+      if (live || hookLoop) d.draw(d.comp, cc, { f: d.cg.f, k: k, a: a, dur: d.dur, mini: hookLoop });
+      // inside its card the component eases closer through its part (a slow-motion push that keeps the frame alive through the holds)
+      var zk = E.inOut3(P(t, A.b[i] + .2, A.b[i + 1] + .3)); d.comp.style.transform = 'scale(' + (1 + .1 * zk).toFixed(4) + ')';
+      KM.type(d.code, d.html2, t, d.typeA, d.typeB); d.code.style.opacity = a.toFixed(3);
+      // glass panes at three depths (the stage, the code pane nearer, the curve nearest): they slide against the camera's glides and float
+      KM.depth(d.stage, c, 255 + 560 * i, 480, 0, ' translateY(' + KM.float(t, i + .9, 2).toFixed(2) + 'px)');
+      KM.depth(d.code.parentNode, c, 255 + 560 * i, 480, .05, ' translateY(' + KM.float(t, i + .3, 3).toFixed(2) + 'px)');
+      KM.depth(d.cgEl, c, 255 + 560 * i, 480, .09, ' translateY(' + KM.float(t, i + .6, 2.5).toFixed(2) + 'px)');
+      d.cg.draw(t, a * P(t, A.b[i] + .1, A.b[i] + .4)); d.chipDraw(t); d.pn.querySelector('.chip').style.opacity = (+d.pn.querySelector('.chip').style.opacity * a).toFixed(3);
+      d.badgeDraw(t);
+      // the title block: in word by word as its part starts, blurred away as the next one comes
+      var st = [A.b[i] + .02]; d.title.forEach(function(w, j){ st.push(A.b[i] + .1 + j * .09); });
+      d.tile.style.zIndex = 1;
+      KM.rise(d.blk.querySelectorAll('.eb, .tt > span'), t, st, E.inOut3(P(t, A.b[i + 1] - .3, A.b[i + 1] - .05)));
+      // the recap tile: the same component at full speed, forward and back, its own phase
+      var rk = E.settle(P(t, A.b[N] - .05 + i * .09, A.b[N] + .55 + i * .09), 1.2), ra = alpha(N, t);
+      // a spotlight walks the grid once the tiles are in (one tile lifts and lights up at a time: the eye reads each, the frame never rests)
+      var sp = t - A.b[N] - .8, per = .85, ph = sp / per - i, hl = sp < 0 ? 0 : Math.max(0, Math.sin(Math.PI * cl(((ph % N) + N) % N / 1.6))) * P(sp, 0, .4);
+      d.tile.style.opacity = cl(rk * 2.5).toFixed(3); d.tile.style.transform = 'translateY(' + ((1 - rk) * 36 - hl * 8).toFixed(2) + 'px) scale(' + (mix(.94, 1, rk) + hl * .06).toFixed(4) + ')';
+      d.tile.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,' + (.22 + hl * .2).toFixed(3) + '), inset 0 1.5px 0 rgba(255,255,255,.5), inset 0 0 44px rgba(143,230,255,' + (hl * .2).toFixed(3) + '), 0 0 0 2px rgba(143,230,255,' + (hl * .75).toFixed(3) + '), 0 ' + (18 + hl * 10).toFixed(1) + 'px ' + (28 + hl * 12).toFixed(1) + 'px rgba(18,8,60,.55)';
+      if (t >= A.b[N] - .4) { var mc = pp(d, t - A.b[N] + i * .37, -.2); d.draw(d.mini, mc, { f: d.cg.f, k: cl(mc / d.dur), a: ra, dur: d.dur, mini: true }); }
+      [].forEach.call(d.tile.querySelectorAll('.tl'), function(e){ e.style.opacity = ra; }); });
+    grid.toggleAttribute('data-subject', cur === N);
+    BAR(t);
+    var rst = [A.b[N] + .02]; RECAP.title.forEach(function(w, j){ rst.push(A.b[N] + .1 + j * .09); }); KM.rise(rb.querySelectorAll('.eb, .tt > span'), t, rst, 0);
+    // ---- the hook: word by word over the first detail, gone as the camera pulls back to the first part ----
+    var gone = E.inOut3(P(t, A.b[0] - .2, A.b[0] + .05)), hs = [];
+    for (var h = 0; h < HOOK_N; h++) hs.push(h === 0 ? -.3 : V.words[h].s - V.lead);
+    KM.rise($('hook').querySelectorAll('.ln > span'), t, hs, gone);
+    // ---- the subtitle band and the world's fade above it (the fade leads the band in, so nothing shows inside a band that is up) ----
+    var bk = E.out3(P(t, A.b[0] - .4, A.b[0] - .05)) * (1 - E.out3(P(t, A.end + 1.1, A.end + 1.6))), fk = E.out3(P(t, A.b[0] - .7, A.b[0] - .25)) * (1 - E.out3(P(t, A.end + 1.3, A.end + 1.8)));
+    KM.cutBelow($('vp'), $('fe'), 668, fk);   // an overflow cut under a soft feather (a mask costs ~75 ms a frame)
+    $('band').style.opacity = bk.toFixed(3); $('band').style.transform = 'translateY(' + ((1 - bk) * 40).toFixed(2) + 'px)';
+    KM.subs($('cap'), t, V, PH, HOOK_N, Math.min(DUR - .9, A.end + 1.1), function(w){ return /^(one|two|three|four|five|six|save)\b/i.test(w) ? 'var(--acc)' : null; });
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); } };
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("680 48px 'Sora'").then(function(){ return document.fonts.load("500 14px 'DM Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

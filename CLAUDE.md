@@ -14,7 +14,9 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 - **Reels**: every new @webin20sec reel starts from `node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ...` and the shared motion kit
   scripts/explainer/kitmotion.js (camera rig with drift and named moves, declared transitions, springs, text and secondary motion, cues, and the slow-mo "details" pieces: live easing curve, time scale, spec chip, part bar,
   `newweb.mjs <slug> --details N` for a compilation of N small UI motions with a recap grid, owner 8 Nov 2026; owner, 7 Nov 2026:
-  premium motion by default, not hand-built per reel; a kit change: `node scripts/channel3/kit-inline.mjs <scene>`). One seekable scene per reel, `scripts/explainer/<slug>.html` exposing `window.seek(t)` (every frame a pure function of t,
+  premium motion by default, not hand-built per reel; a kit change: `node scripts/channel3/kit-inline.mjs <scene>`). Web reels use style C, "Glass and light", from 8 Nov 2026 (owner: "Let's go with C."), through the kit theme
+  (`KM.theme('glass')`, the default of both newweb.mjs modes: frosted panes at three depths over drifting coloured light, a soft grade, Sora + DM Mono);
+  cheap glass only (no backdrop-filter, no live blur on big layers, no full-frame mask), render at most 30 GitHub minutes for 20 s (design/rules-web.md rule 12). One seekable scene per reel, `scripts/explainer/<slug>.html` exposing `window.seek(t)` (every frame a pure function of t,
   seeded randomness only), plus `scripts/explainer/<slug>.json` (name `showreel-NN-<slug>`, dur, fps 60, cover time, caption, 6+ keywords, exactly 5 hashtags).
 - **Render**: always on GitHub (Actions, "Showreel" workflow, config = the json). The MP4, cover and contact sheet go to the PRIVATE Cloudflare R2
   bucket "aquarii-reels" (owner, 3 Nov 2026: the repo is public, so nothing goes to the GitHub releases, which stay empty; scripts/r2.sh,

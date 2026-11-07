@@ -811,5 +811,12 @@
   "concept": "Style C · Glass and light",
   "about": "Style test C for the web look (7 Nov 2026), on the flash reel's beats in 8 s: frosted glass device and code panes at three depths over slow coloured light blooms, a soft gradient grade, crisp white Sora type, springy panes.",
   "note": "Style sample for review, not scheduled: pick A, B or C"
+ },
+ "showreel-style-c-details": {
+  "channel": "web",
+  "sample": true,
+  "concept": "Sample · style C (Glass and light) on the slow-mo details format",
+  "about": "The new web look (owner, 8 Nov 2026: \"Let's go with C.\") on the details format: frosted glass panes at three depths over slow coloured light, a soft grade, crisp white Sora type; the copy button, the switch knob and the toast in slow motion with their live easing curves, then all three in a recap grid. Cheap glass path, measured render minutes in its review.",
+  "note": "Sample for review, not scheduled"
  }
 }

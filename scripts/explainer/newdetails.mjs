@@ -23,7 +23,7 @@ export function write({ root, here, out, force, slug, hook, sentences, n }) {
   const say = sentences.length ? sentences : [...picked.map((k, i) => `${WORDS[i + 1][0].toUpperCase() + WORDS[i + 1].slice(1)}: ${k.say}`), `Save all ${WORDS[n]} for your next app.`];
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const text = [hook, ...say].join(' '), hw = hook.split(/\s+/);
-  // the hook in lines of at most 16 letters; two lines at 54 px, three at 44 px; the last word in the accent colour
+  // the hook in lines of at most 16 letters; two lines at 48 px, three at 40 px (Sora, the glass theme's face, is wider); the last word in the accent colour
   const lines = []; for (const w of hw) { const l = lines[lines.length - 1]; if (l && (l.join(' ') + ' ' + w).length <= 16) l.push(w); else lines.push([w]); }
   if (lines.length > 3) { console.error(`the hook needs ${lines.length} lines (at most 3 of 16 letters): shorten it`); process.exit(1); }
   let wi = 0; const hookHtml = lines.map((l) => '<span class="ln">' + l.map((w) => `<span${wi++ === hw.length - 1 ? ' class="acc"' : ''}>${esc(w)}</span>`).join(' ') + '</span>').join('');
@@ -31,13 +31,14 @@ export function write({ root, here, out, force, slug, hook, sentences, n }) {
   const speed = .9, letters = (text.match(/[A-Za-z]/g) || []).length + 4 * (text.match(/\d/g) || []).length, est = .2 + letters * .0765 / speed;
   const dur = Math.ceil((est + .8 + 2) * 10) / 10, words = text.split(/\s+/).length;
   const recap = { eyebrow: `RECAP · ALL ${n} AT 1×`, title: ['All', WORDS[n], 'together'], acc: 1 };
-  page = page.replace(/__TITLE__/g, esc(hook)).replace('__HOOK__', hookHtml).replace('__HOOK_FS__', lines.length > 2 ? '44' : '54').replace('__TEXT__', JSON.stringify(text))
+  page = page.replace(/__TITLE__/g, esc(hook)).replace('__HOOK__', hookHtml).replace('__HOOK_FS__', lines.length > 2 ? '40' : '48').replace('__TEXT__', JSON.stringify(text))
     .replace('__DUR__', String(dur)).replace('__HOOK_N__', String(hw.length)).replace('__DETAILS__', JSON.stringify(picked.map((k) => ({ kind: k.kind }))))
     .replace('__RECAP__', JSON.stringify(recap));
   writeFileSync(html, page);
   execFileSync('node', [join(root, 'scripts/channel3/kit-inline.mjs'), html], { stdio: 'inherit' });
   const seek = relative(root, html);
-  const cfg = { name: `showreel-00-${slug}`, seek, dur, fps: 60, blur: 6, shutter: .4, grain: 4, vignette: true, cover: 1.2,
+  // the glass theme's render: 3 motion-blur sub-frames, grain 2, no vignette (the grade does it): about 25 GitHub minutes for 20 s (rules-web.md rule 12)
+  const cfg = { name: `showreel-00-${slug}`, seek, dur, fps: 60, blur: 3, shutter: .45, grain: 2, vignette: false, cover: 1.2, style: 'Glass and light',
     voice: { text, voice: 'af_heart', speed },
     experiment: { id: 'details-format', change: 'slow-mo motion details compilation', vs: 'median' },
     caption: `TODO: the caption (the hook, one line per detail with its CSS property, browser support), then "Save it for your next app, or send it to a designer friend."`,

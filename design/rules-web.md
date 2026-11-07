@@ -43,3 +43,10 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    9.5-14.7 s and saves 2.2-4.5% (numbers 103,105 · stagger 5,869 · overscroll 4,496 · transform 2,670 at 9.5 s · balance 1,677 at 12.6 s
    is the exception); every reel since 1 Nov is a layout fix: reach 305-2,267 (median 1,316), avg watch 5.9-11.8 s (median 8.7 s of ~20),
    saves 0.3-3.3% (median 1.3%). Hold and saves fell together, and reach followed.
+12. **Style C, "Glass and light", through the kit theme; render at most 30 GitHub minutes for a 20 s reel, measured** (owner, 8 Nov 2026:
+   "Let's go with C."). Every web reel starts from newweb.mjs (normal or `--details N`), whose starters call `KM.theme('glass')`
+   (scripts/explainer/kitmotion.js): frosted panes at three depths over slow coloured light, a soft grade, Sora + DM Mono, crisp white type.
+   Cheap glass only: no backdrop-filter, no live `filter: blur` on big layers, no full-frame mask (KM.lights paints the light in a small canvas,
+   KM.cutBelow ends the world above the band); blur 3 in the config. Item 13 of the review writes the run's measured minutes (its job times).
+   Evidence: the style C test (real backdrop blur) took 52 GitHub minutes for 8 s, about 130 for 20 s; a frame of the kit theme costs ~218 ms
+   locally vs 393 for the first glass draft (big bloom layers) and 341 for the dark details demo; the sample showreel-style-c-details: its review, item 13.
