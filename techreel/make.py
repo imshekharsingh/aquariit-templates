@@ -3,6 +3,7 @@ Reads techreel/topics/<slug>.json and writes out/techreel/<slug>/: vo.wav + vo.j
 30 fps, 20 s, 8 Mbps H.264 + AAC 192k), contact.png (a frame at every word onset), qa.txt (layout warnings, blank stretches, loudness).
 --fake-vo estimates word timings at 3.2 words a second without a voice model; --stills renders only those times as PNGs (for checks)."""
 import json
+import math
 import os
 import re
 import subprocess
@@ -43,15 +44,36 @@ class Scene:
         return self.start + .3
 
 
+GLIDE, SPAN = .6, 1200   # the camera's glide from one scene to the next (s) and the world distance between scenes (px)
+
+
 def timeline(topic, vo):
+    """The hook card, then one scene per line. A scene starts 0.35 s before its line (its content arrives during the camera's glide, so it
+    never opens on its label alone) and ends where the next one starts."""
     L = vo['lines']
     hook_out = max(2.0, L[1]['start'] - .1)
     scenes = []
     for i in range(1, len(L)):
-        st = hook_out if i == 1 else L[i]['start'] - .12
-        en = (L[i + 1]['start'] - .12) if i + 1 < len(L) else DUR
+        st = hook_out - .3 if i == 1 else L[i]['start'] - .35
+        en = (L[i + 1]['start'] - .35) if i + 1 < len(L) else DUR
         scenes.append(Scene(i, topic['lines'][i]['scene'], L[i], st, en))
     return hook_out, scenes
+
+
+def transitions(topic, scenes):
+    """Declared transitions (Mandatory Gate item 14): the engine's own glides, plus any in the topic file."""
+    return [[round(s.start, 3), round(s.start + GLIDE, 3), 'glide'] for s in scenes] + list(topic.get('transitions', []))
+
+
+def camera(t, scenes):
+    """The camera, a pure function of t (kitmotion.js rig): cpos = which scene is framed (0 = the hook, eased glides between), and a drift
+    that never stops (a slow sway, scaled x2 from the web kit's 540 px world), so no stretch of the reel is still. Returns (cpos, dx, dy)."""
+    cpos = 0.0
+    for s in scenes:
+        cpos += B.ease_io(B.prog(t, s.start, s.start + GLIDE))
+    dx = 2.4 * (math.sin(t * .55) * 9 + math.sin(t * 1.3 + 2) * 2.5)
+    dy = 2.4 * (math.sin(t * .41 + 1) * 11 + math.sin(t * 1.1) * 3)
+    return cpos, dx, dy
 
 
 def sound_events(topic, vo, hook_out, scenes):
@@ -75,30 +97,39 @@ def sound_events(topic, vo, hook_out, scenes):
     return ev
 
 
+MOTES = [((i * 379) % 1080, (i * 613) % 1920, 2 + i % 3, .35 + (i % 4) * .12, i * 1.7) for i in range(18)]
+
+
 def draw(t, topic, vo, hook_out, scenes):
-    # background tint follows the scene, crossfading over the cut
-    cur = next((s for s in scenes if s.start <= t < s.end), scenes[-1] if t >= scenes[-1].start else None)
-    if cur is None:
-        bg = B.background(scenes[0].tint)
-    else:
-        prev = scenes[cur.i - 2] if cur.i >= 2 else None
-        k = B.prog(t, cur.start - .15, cur.start + .25)
-        bg = B.blend_bg(prev.tint if prev else scenes[0].tint, cur.tint, k)
+    cpos, ddx, ddy = camera(t, scenes)
+    # the light: the framed scene's tint crossfades during the glide; the blooms follow the camera at a shallow depth
+    ci = min(len(scenes) - 1, max(0, int(cpos) - 1))
+    tint_a = scenes[ci].tint
+    tint_b = scenes[min(len(scenes) - 1, int(cpos))].tint
+    bg, bare = B.lights(t, tint_a, tint_b, cpos - int(cpos) if cpos >= 1 else 0, cam=(cpos * 600 + ddx, ddy))
     fr = B.Frame(bg)
-    # the hook card (line 1 is the title)
-    B.hook_card(fr, topic['hook'], t, hook_out, accent=topic.get('accent', 'green'))
-    # header and progress once the hook has gone
-    ha = B.ease_out(B.prog(t, hook_out - .2, hook_out + .3))
-    if ha > 0:
-        B.header(fr, topic['topic'], B.prog(t, hook_out, DUR - .4), ha)
-    # scenes: the current one, and the previous one sliding up and fading for 0.25 s after the cut
+    fr.t, fr.bare = t, bare
+    # light motes drifting at half depth (always moving, never in the way: small and faint)
+    for x, y, r, sp, ph in MOTES:
+        mx = (x - cpos * SPAN * .5 + ddx * .5) % 1240 - 80 + math.sin(t * .6 + ph) * 14
+        my = (y - t * 22 * sp) % 1980 - 30
+        fr.circle(mx, my, r, fill=(255, 255, 255, int(70 * (.6 + .4 * math.sin(t * 1.3 + ph)))))
+    # the world: hook card at 0, scene i at i * SPAN; the camera offsets it (and centres it on the safe zone, x 510)
+    base_x = -30   # the world is laid out on x 540; the safe zone's middle is x 510
+    fr.dx, fr.dy = -cpos * SPAN + ddx + base_x, ddy
+    B.hook_card(fr, topic['hook'], t, hook_out)
     for s in scenes:
-        if s.start - .02 <= t < s.end + .1:
-            out = B.prog(t, s.end - .14, s.end + .1) if s is not scenes[-1] else 0   # a quick handover: the old scene is gone 0.1 s into the next
-            fr.alpha, fr.dy = 1 - out, -60 * B.ease_io(out)
+        off = s.i - cpos
+        if t >= s.start - .02 and abs(off) < 1:
+            fr.dx, fr.dy = off * SPAN + ddx + base_x, ddy
+            fr.alpha = 1 - .5 * min(1, abs(off))
             B.chip(fr, s.label, s.tint, B.prog(t, s.start, s.start + .4))
             KINDS[s.kind](fr, s, t)
-            fr.alpha, fr.dy = 1.0, 0.0
+    fr.alpha, fr.dx, fr.dy = 1.0, 0.0, 0.0
+    # the HUD: part progress and captions stay still while the world moves
+    ha = B.ease_out(B.prog(t, hook_out - .2, hook_out + .3))
+    if ha > 0:
+        B.header(fr, topic['topic'], t, [(s.start if k else hook_out, s.end) for k, s in enumerate(scenes)], ha)
     # captions for the spoken line (line 1 is the hook card instead)
     for li, line in enumerate(vo['lines'][1:], start=1):
         nxt = vo['lines'][li + 1]['start'] if li + 1 < len(vo['lines']) else DUR - .3
@@ -120,12 +151,14 @@ def layout_lines(topic, vo, hook_out, scenes):
     """Mandatory Gate items 3-4 (the same rules as scripts/showreel/layout.mjs): every text box drawn at every 0.5 s inside the safe zone,
     and no two texts overlapping by more than 6 px each way (a crossfade under 30 % opacity does not count)."""
     safe, over = {}, {}
+    gl = transitions(topic, scenes)
     t = 0.0
     while t <= DUR - .05:
         fr, _ = draw(t, topic, vo, hook_out, scenes)
+        moving = any(a - .05 <= t <= b + .05 for a, b, *_ in gl)   # text crossing the frame edge in a declared glide is motion, not layout
         on = [b for b in fr.boxes if b[5] >= .3 and b[3] > 0 and b[1] < B.W and b[4] > 0 and b[2] < B.H]
         for s, l, tp, r, bt, a in on:
-            if l < SAFE[0] - 1 or r > SAFE[2] + 1 or tp < SAFE[1] - 1 or bt > SAFE[3] + 1:
+            if not moving and (l < SAFE[0] - 1 or r > SAFE[2] + 1 or tp < SAFE[1] - 1 or bt > SAFE[3] + 1):
                 safe.setdefault(s, f'{t:.1f} s: "{s}" at {l:.0f}-{r:.0f} x, {tp:.0f}-{bt:.0f} y')
         for i in range(len(on)):
             for j in range(i + 1, len(on)):
@@ -148,7 +181,7 @@ def flow_lines(topic, vo, hook_out, scenes):
     change between neighbours (0-255); cuts (a jump over CUT from slow motion, outside topic "transitions": [[t0, t1, kind]]), dead runs (1 s+
     under DEAD outside topic "holds"), continuity (share of 0.3 s windows between DEAD and CUT), strobes (over STROBE and back within 1 s)."""
     F, E, ST = FLOW, .051, .1
-    holds, trans = topic.get('holds', []), topic.get('transitions', [])
+    holds, trans = topic.get('holds', []), transitions(topic, scenes)
     fr, t = [], 0.0
     while t <= DUR - .05:
         _, img = draw(t, topic, vo, hook_out, scenes)
@@ -210,7 +243,7 @@ def chunks(line, counts=None):
         return [c for c in out if c]
     out, cur = [], []
     for i, w in enumerate(words):
-        if cur and len(B.wrap([words[j] for j in cur + [i]], 72, 860, 800)) > 2:
+        if cur and len(B.wrap([words[j] for j in cur + [i]], 72, 820, 800)) > 2:
             # break after the last comma in the chunk if there is one late enough, else here
             k = max((n for n, j in enumerate(cur) if words[j].endswith(',') and n >= 2), default=None)
             if k is not None and k < len(cur) - 1:
@@ -221,16 +254,6 @@ def chunks(line, counts=None):
     if cur:
         out.append(cur)
     return out
-
-
-_bgb = {}
-
-
-def bg_band(tint):
-    if tint not in _bgb:
-        a = np.asarray(B.background(tint).resize((B.W, B.H), Image.LANCZOS), dtype=np.float32)
-        _bgb[tint] = a[B.CONTENT_TOP:B.CONTENT_BOTTOM:8, ::8]
-    return _bgb[tint]
 
 
 def contact_sheet(thumbs, path, cols=6):
@@ -284,8 +307,7 @@ def main():
         ff.stdin.write(img.tobytes())
         for w in fr.warnings:
             warns.setdefault(w, t)
-        cur = next((s for s in scenes if s.start <= t < s.end), scenes[0])
-        ink.append(float(np.abs(img[B.CONTENT_TOP:B.CONTENT_BOTTOM:8, ::8].astype(np.float32) - bg_band(cur.tint)).mean()))
+        ink.append(float(np.abs(img[B.CONTENT_TOP:B.CONTENT_BOTTOM:8, 4::8].astype(np.float32) - fr.bare[B.CONTENT_TOP // 8:B.CONTENT_BOTTOM // 8].astype(np.float32)).mean()))
         if f in onsets:
             thumbs.append((t, onsets[f], Image.fromarray(img)))
         if f % 60 == 0:

@@ -439,7 +439,7 @@ async function sparePush(env) {   // the cron runs daily at 15:30 UTC (21:00 IST
 
 // ---- Post-time reminders (owner, 5 Nov 2026: "less clarity on what should be uploaded when"; a 19:00 reel went out at 13:00). Each reel has an
 // exact slot: "postAt" (HH:MM IST) in captions.json, else its channel's default (web 13:00, or 19:00 when its note says so; tech 19:00; c3 20:00: E15).
-// The crons fire 10 minutes before each slot ("20 7,11,13,14,15 * * *" + "50 11 * * *" UTC = 12:50, 16:50, 18:50, 19:50, 20:50 + 17:20 IST) and sends "Post now: <title>" for each
+// The crons fire 10 minutes before each slot ("20 7 * * *" UTC = 12:50 IST, the one slot for every channel from 8 Nov 2026) and sends "Post now: <title>" for each
 // reel due then and not marked uploaded; the tap opens /#reel=<name> (the app scrolls to it, opens and highlights it). Each send is logged in D1.
 // The same slot rule lives in templates/index.html and scripts/check.mjs (which also checks every postAt has a cron).
 const CH_NAME = { web: '@webin20sec', tech: '@techin20sec', c3: '@itturns.out' };

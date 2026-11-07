@@ -91,6 +91,7 @@ picture; one **step** = the mean absolute RGB change (0-255) between neighbourin
 | Turns Out Liberty (2.5D) | 0 | none | 100% | 0 | 1.8 | pass |
 | Turns Out Sahara (2.5D) | 0 (whips of 40 and 30, eased up from 15) | none at 0.3 (several at 0.5) | 95% | 0 | 0.6 | pass with the Turns Out dead line 0.3 |
 | tech wifi-address (fake voice) | 0 | 0.8-2.0, 12.4-19.5 s | 35% | 0 | 0.2 | fail: tech scenes hold still after each build-in |
+| tech wifi-address on the 8 Nov engine (fake voice; glass light, camera drift, 5 declared glides, secondary motion) | 0 (5 declared glides) | none | 100% | 0 | 1.1 | pass (the quietest step, the long takeaway tail, is 0.61: the drifting orbs of light and the camera sway keep it over 0.5) |
 | web kit demo (scripts/explainer/demo/kitdemo, starter as written) | 0 (3 declared: morph, sharedElement, wipeRestyle) | none | 95% | 0 | 1.3 | pass |
 | web details demo (scripts/explainer/demo/details, `newweb.mjs --details 3`, 8 Nov) | 0 (4 declared matchMoves) | none | 88% | 0 | 0.8 | pass (slow motion is slow by design: the drift 1.3, a 3% creep, the 1x replay after each detail and the recap spotlight keep it above 85%) |
 | web details sample in style C (scripts/explainer/styles/C-details, the kit theme 'glass', 8 Nov) | 0 (4 declared matchMoves) | none | 100% | 0 | 1.2 | pass (the softer glass did not cost continuity: the drifting light blooms, the panes floating at three depths and their parallax in each glide add change on every step) |
