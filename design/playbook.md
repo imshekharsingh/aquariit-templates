@@ -4,6 +4,9 @@ The daily improvement loop (owner, 7 Nov 2026; CLAUDE.md, "Daily improvement loo
 reads yesterday's result, and writes it here. Every reel starts from its channel's current "What works" combination.
 A change that wins 2 of 3 tries becomes a rule in the channel rulebook (design/rules-*.md); one that loses twice is dropped (moved to "What didn't").
 Numbers: reach and avg watch from the Instagram collect run (AUDIT_CHANNELS / AUDIT_SIGNALS), with the hour of the reading.
+Checked automatically (7 Nov 2026): each reel's config names its experiment (`"experiment": {"id", "change", "vs": "median"}`; a reel not built yet
+is marked in design/targets.md, "Planned experiments"); every Instagram collect prints its verdict at 24 h and 72 h ("EXPERIMENT ... → WIN | LOSE"),
+and "PROMOTE" after 2 WINs or "DROP" after 2 LOSEs: the daily run moves it here and into the rulebook the same day.
 
 ## Experiment log
 One line per channel per day: `- DD Mon, channel: experiment (the one change) → result (number, vs what)`. A result is read at ~24 h, not at 5 h.
@@ -42,3 +45,4 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 - 7 Nov 2026, web plateau: since 1 Nov every web reel is a layout fix and reach sits at 305-2,267 (median 1,316), avg watch ~8.7 s, saves ~1.3%.
   The winners (numbers 103k, stagger 5.9k, overscroll 4.5k) were satisfying motion or polish tricks with 14 s watch and 3-4.5% saves.
   Next experiment (8 Nov 13:00): result-first opening on a satisfying motion trick (rules-web.md rule 11); read reach, watch and saves at 24 h vs the median above.
+  Marked in design/targets.md (id result-first) so its verdict prints by itself; the 8 Nov config also carries it as "experiment".

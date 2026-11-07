@@ -142,7 +142,14 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 A fresh session, lean, no subagents, in this order:
 1. Dispatch "Owner answers" with action `read`, act on each ANSWER line, then `clear` the ids acted on.
 2. Audit card: numbers from the latest "Instagram collect" run's AUDIT_CHANNELS line, plan from its AUDIT_SIGNALS line, add only the lesson;
-   dispatch "Audit card" (kind audit).
+   dispatch "Audit card" (kind audit). Results checks (owner, 7 Nov 2026: "Who is going to check all of this?"): the card MUST lead with the run's
+   AUDIT_CHECKS lines (scripts/audit-numbers.mjs, targets in design/targets.md): "ALARM/OK <ch>" (last 7 reels vs target and best window),
+   "ESCALATE <ch>" (ALARM two days running), "EXPERIMENT ... → WIN | LOSE | TOO EARLY" and "PROMOTE / DROP", and the RULE lines flagged
+   "question it". The run MUST act on every ALARM, ESCALATE, PROMOTE and DROP that same day, in the day's push, with the numbers: ALARM = a rulebook
+   or playbook change; ESCALATE = a different topic type or format for the day's reel (not a tweak); PROMOTE = a rule in design/rules-<ch>.md;
+   DROP = "What didn't" in design/playbook.md. The card says what was checked and what changed. Every reel's config carries its one experiment
+   (`"experiment": {"id", "change", "vs": "median"}`) so its verdict prints by itself at 24 h and 72 h, and its review file's item 1 scores the
+   rulebook as "rule N pass|fail" (the RULE lines read it).
    Choose hooks, topics and the posting-time test with AUDIT_SIGNALS' audience (followersTop/reachedTop countries and cities, onlineHoursIST:
    the reels have a global audience and followers arrive at night) and its "early" line (reach ~6 h after posting vs ~24 h later): a "slow start"
    is not a verdict until its 24 h reading; a "late climber" topic is a keep. Instagram collect also runs at about 10:53 IST (05:23 UTC; GitHub often starts it hours late), so the 13:39 and 19:00
