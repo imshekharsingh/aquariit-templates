@@ -8,6 +8,10 @@ Evidence = the Instagram collect run of 5 Nov 2026: 4 reels, median reach 157, 0
    Evidence: Liberty (the colour change carries the reel) 1,051 reach, 15.2 s watched vs Eiffel 161 (13.4 s), blue sky 153 (8.4 s),
    60 minutes 118 (12.4 s). 6 Nov: the green Sahara (a map turning green) 1,041 at 5 h and the channel's first 4 followers: both reels past
    1,000 open on a colour change; the 3 without one sit at 150-161. Test from 6 Nov (E14): 3 reels; keep or drop by reach and hold vs the median (157).
+   7 Nov, E14 reel 1 (flamingos, a grey chick in frame 0): 120 at 5 h vs the Sahara's 1,041 at 5 h (every Turns Out reel has ended at
+   x1.0-1.0 of its 5-8 h reach, so this is close to final; 24 h reading at the 13:39 run). A colour change alone is not enough: the two hits show
+   a world-famous thing everyone pictures one way (Liberty, the Sahara) in a state that looks wrong; a grey chick is not recognised as a
+   flamingo, and "why are flamingos pink" is a fact many already know. Frame 0 = an icon in an unexpected state, recognised in under 1 s.
 2. **Only topics with a visible transformation** (a colour, a shape, a map, a size that changes in front of you).
    Evidence: the one reel past 1,000 is the one with a transformation; the abstract ones (why 60 minutes, why the sky is blue) sit at 118-153. 6 Nov: the green Sahara (1,041 at 5 h) is the second.
 3. **Hook spoken and shown from frame 0, in at most 9 words**, and answered by the payoff in the last 3 s. Evidence: every Turns Out reel

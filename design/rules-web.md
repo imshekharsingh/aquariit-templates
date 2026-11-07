@@ -23,6 +23,9 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
 7. **Post at 13:00 IST** (one reel a day; the 19:00 slot is under test, E13). Evidence (AUDIT_SIGNALS, 30 days): 13:00 median reach 2,313
    (6 reels) vs 12:00 899, 17:00 712, 23:00 103. E13 first reading (6 Nov): 19:00 reel (sticky) 1,198 at 4 h vs the 13:00 reel (keyboard)
    1,159 at 11 h, 24 h pending; followers are most online 18:30-23:30 IST (peak 21:30). Decide on 14 Nov, not before.
+   7 Nov: the 12:27-13:21 posts are one slot (AUDIT_SIGNALS splits them: 12:00 median 1,221 over 9 reels, 13:00 1,172); 24 h readings on the
+   first two-reel day: 13:00 keyboard 1,221, 19:00 sticky 1,430 (x1.2 from 4 h). 6 Nov: 13:00 anchor 1,172 at 13 h, 19:00 thumb 910 at 5 h.
+   Followers now most online 16:30-21:30 IST (18:30 peak, 196), so 19:00 sits inside the peak.
 8. **One concrete thing to copy, checked on MDN + BCD**, kept on screen 3 s+; the caption invites a save or a send.
    Evidence: save rate 2.9-4.4% on the reels that end on one copyable line (Nº 04, 08, 09, 13) vs 0.4% on squashed photos.
 9. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
