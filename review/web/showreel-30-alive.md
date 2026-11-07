@@ -14,8 +14,8 @@ self-drawing checkmark, springy copy button; hook beat over the finished heart, 
 9. Payoff: PASS: each detail lands in close-up (heart 129, knob on, tick drawn, "Copied"), then the recap grid of all four at full speed with a spotlight walking the tiles from ~14.4 s; the last frame is the grid
 10. Facts: PASS: sources in the config: MDN linear() (BCD Chrome 113, Firefox 112, Safari 17.2), cubic-bezier() (overshoot y values), stroke-dashoffset (a CSS property, animation type "by computed value" in mdn/data; px used, a bare number is non-standard), scale/translate (Chrome 104, Firefox 72, Safari 14.1); tip + live demo "alive" on /tips/; npm run check passes
 11. Post data: PASS: captions.json entry with channel web, postOn 2026-11-08, postAt 13:00, concept, about, note; 6 keywords, 5 hashtags in the config
-12. Review file: PASS: this file, items 1-11 and 14-17 PASS
-13. After the render: PENDING
+12. Review file: PASS: this file, items 1-11, 13 and 14-17 PASS
+13. After the render: PASS: run 42411261110 green, about 18 GitHub minutes (voice 1.4, frames 14.8, render 1.4; rule 12 target 30), 20.0 s at 60 fps, cover at 1.54 s; SOUND GATE: ok -14.2 LUFS, true peak -1.8 dBTP; voice check: 43 words in the script, 43 heard ("Copied" heard "coppid" at 13.94 s, confidence 0.55, the same recogniser quirk as the style-C sample; the word is on screen as it is said), pacing 2.62 words/s overall (limit 2.7), the hook at 4.07 and the save line at 4.79 words/s flagged fast (short sentences; each fully shown in the subtitles), no other flags; the contact sheet artifact cannot be downloaded from the session (Forbidden), so the final scene's stills were re-run locally on the merged code (fb3bef6): every AUTO line clean, FLOW continuity 100%
 14. Cuts: PASS: FLOW: cuts 0 (declared: 5 matchMoves from the kit, one into each part and the recap)
 15. Dead runs: PASS: FLOW: dead runs none (no holds)
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.3, 5 declared transitions)
