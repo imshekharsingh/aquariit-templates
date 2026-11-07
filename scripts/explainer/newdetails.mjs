@@ -37,7 +37,7 @@ export function write({ root, here, out, force, slug, hook, sentences, n }) {
   writeFileSync(html, page);
   execFileSync('node', [join(root, 'scripts/channel3/kit-inline.mjs'), html], { stdio: 'inherit' });
   const seek = relative(root, html);
-  // the glass theme's render: 3 motion-blur sub-frames, grain 2, no vignette (the grade does it): about 25 GitHub minutes for 20 s (rules-web.md rule 12)
+  // the glass theme's render: 3 motion-blur sub-frames, grain 2, no vignette (the grade does it): 15 GitHub minutes for the 21.2 s sample (rules-web.md rule 12)
   const cfg = { name: `showreel-00-${slug}`, seek, dur, fps: 60, blur: 3, shutter: .45, grain: 2, vignette: false, cover: 1.2, style: 'Glass and light',
     voice: { text, voice: 'af_heart', speed },
     experiment: { id: 'details-format', change: 'slow-mo motion details compilation', vs: 'median' },

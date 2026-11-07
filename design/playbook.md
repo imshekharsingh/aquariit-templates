@@ -31,7 +31,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
 - **Art direction (8 Nov, owner: "Let's go with C."):** style C, "Glass and light": frosted panes at three depths over slow coloured light blooms,
   a soft gradient grade, crisp white Sora type, floating code panes. Through the kit theme (`KM.theme('glass')`, the newweb.mjs default in both
   modes), cheap glass path only (style C's test with real backdrop blur: 52 GitHub minutes for 8 s; style A ~210 for 20 s). From the Sun 8 Nov
-  13:00 details-format reel on (the 06:47 daily run builds it); sample: showreel-style-c-details (rules-web.md rule 12, measured minutes).
+  13:00 details-format reel on (the 06:47 daily run builds it); sample: showreel-style-c-details, 21.2 s in 15 GitHub minutes (rules-web.md rule 12).
 
 ### Turns Out (c3)
 - **Topic:** a world-famous thing everyone pictures one way, shown in a state that looks wrong: a visible transformation (Liberty copper-brown 1,051 reach, 15.2 s watched; the green Sahara 1,041 at 5 h).
