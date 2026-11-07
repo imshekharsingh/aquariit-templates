@@ -4,7 +4,7 @@ Same use as design/rules-web.md: score every rule (pass / fail, one line each) i
 the daily audit adds, changes or drops a rule with the number. Evidence = the Instagram collect run of 5 Nov 2026.
 State on 5 Nov: 8 followers (-1 in 7 days), 6 explainer test reels at 110-120 reach, 3.5-4.7 s watched, 0 saves, 2 shares.
 Verdict 6 Nov: the test missed all three targets (median reach 115 vs 300, ~4 s watched vs 6 s, 10 followers vs 20; 0 saves in 7 reels).
-As decided by the owner on 5 Nov, the channel posts 2-3 reels a week (Mon / Wed / Fri), each built that day (paused, not cut).
+As decided by the owner on 5 Nov, the channel posted 2-3 reels a week; from Sun 8 Nov (owner) one reel every day at 13:00 IST, each built that morning.
 
 1. **An everyday puzzle the viewer can see on their own phone**, not a feature or a news item. Evidence: explainers held 110-120 reach
    with 3.5-4.7 s watched; news reels in the same week sank to 8-35 (Siri 8, MacBook 29, Discord 35).
@@ -12,11 +12,14 @@ As decided by the owner on 5 Nov, the channel posts 2-3 reels a week (Mon / Wed 
    leave before the mechanism starts; the two best older reels (encryption 7.1 s, Amazon cloud 7.0 s) opened on the answer as a claim.
 3. **18 s or shorter.** Evidence: no tech reel has held more than ~7 s, so length only lowers the hold share Instagram reads.
 4. **A takeaway worth saving, said and shown in the last 3 s** (a setting to change, a number to remember). Evidence: 0 saves in 6 test reels.
-5. **Post Mon and Wed 19:00 IST, Fri 17:30 IST** (posting-time test, owner 5 Nov, 2 weeks from 6 Nov; E15). Evidence for 19:00:
-   AUDIT_SIGNALS 19:00 median 129 (2 reels) vs 00:00 119, 11:00 117, 23:00 117; the pre-13:00 news posts sank under 10 (28 Oct).
-   Measure: each reel's 24 h reach and hold vs the channel median (112 reach on 5 Nov). First reading (7 Nov): Fri 17:30 airplane mode 129 at 8 h,
-   the best of the 7 test reels (median 116) but inside the same ~110-130 test pool: not a timing win yet. Timing cannot fix a low hold: rules 1-4 stay the main gate.
+5. **Post one reel EVERY day at 13:00 IST** (owner, 8 Nov 2026: "Let's make the tech reel one per day as well; Sunday is the right time to check
+   engagement" and "upload time at 13:00 for all three"). E15 (Mon/Wed 19:00, Fri 17:30) ended 8 Nov: Fri 17:30 airplane mode 129 at 8 h was the best of
+   the 7 test reels (median 116) but inside the same ~110-130 pool, so timing was never the lever. Measure from 8 Nov: each reel's 24 h reach and hold
+   vs the channel median (112 on 5 Nov); read engagement on Sundays. Timing cannot fix a low hold: rules 1-4 stay the main gate.
 6. **No topic @webin20sec covers and no repeat of a test topic.**
 7. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
    PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
    the Wi-Fi reel was read "Wi" "Fi" (owner); a mispronounced brand makes the whole explainer sound wrong.
+8. **Every topic passes FLOW** (Mandatory Gate items 14-17: cuts 0, no dead runs, continuity 85%+). Evidence: the old engine held still after
+   each build-in (wifi-address 35%, 7 Nov) and tech watch time is 3.5-4.7 s; the 8 Nov engine (glass light, camera drift, declared glides, secondary
+   motion in every kind) measures wifi-address at 100% with the fake voice. `make.py --fake-vo --stills` prints the FLOW lines.
