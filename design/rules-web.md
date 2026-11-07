@@ -35,3 +35,11 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    `FLOW: dead runs none`.** Start from scripts/explainer/newweb.mjs and the motion kit. Evidence (7 Nov, design/mandatory.md "FLOW calibration"):
    the best web reel, Nº 09 numbers (100,928 reach, 74% hold), is 95% continuous with no cut and no dead run; Nº 13 sideways (1,872) is 35% with
    4 dead runs; the first flash cut was 65% with 2 cuts, an undeclared strobe and 3 dead runs, and 94% after its flow pass.
+11. **Satisfying to watch, saved to reuse (owner, 7 Nov 2026: "we haven't gone past 2k views on many of our last reels").** Pick a topic whose
+   result is a pleasure to look at (motion, rhythm, polish: a stagger, a smooth number, a spring, a reveal) and OPEN on that finished result
+   for ~1 s, then show the broken version and the one-line fix. Plain layout bug fixes (overflow, truncation, scroll offset, input types) are
+   second choice and need a visual payoff to pass. A reel must aim for a save rate of 3%+ (end on one copyable line, caption invites a save).
+   Evidence (Instagram collect, 7 Nov 2026, lifetime): the five reels past 3,000 reach are all motion or visual-polish tricks with avg watch
+   9.5-14.7 s and saves 2.2-4.5% (numbers 103,105 · stagger 5,869 · overscroll 4,496 · transform 2,670 at 9.5 s · balance 1,677 at 12.6 s
+   is the exception); every reel since 1 Nov is a layout fix: reach 305-2,267 (median 1,316), avg watch 5.9-11.8 s (median 8.7 s of ~20),
+   saves 0.3-3.3% (median 1.3%). Hold and saves fell together, and reach followed.
