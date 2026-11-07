@@ -12,6 +12,7 @@ and "PROMOTE" after 2 WINs or "DROP" after 2 LOSEs: the daily run moves it here 
 One line per channel per day: `- DD Mon, channel: experiment (the one change) → result (number, vs what)`. A result is read at ~24 h, not at 5 h.
 
 - 7 Nov, all: the Mandatory Gate's visual upgrades (safe zone, subtitle band, motion-following sound) on every new reel → read 8 Nov.
+- 8 Nov, web: the "details" format (id details-format): a slow-mo compilation of 4-5 small UI motions, each with its live easing curve, a spec chip and its CSS line, result-first, recap grid at the end, caption invites a save → read 9 Nov (24 h) and 11 Nov (72 h) vs the web median (~1,300 reach, ~8.7 s watch, ~1.3% saves).
 
 ## What works
 
@@ -22,6 +23,13 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 - **Fix:** one line of code under the live picture by ~8 s, then the same picture fixed (fixes you can see at a glance: list 5,722 vs invisible speed fixes 258-2,645).
 - **Time:** 13:00 IST (30-day median 2,313 vs 12:00 899, 17:00 712); 19:00 under test (E13: sticky 1,430 at 24 h).
 - **Craft (7 Nov):** everything inside the safe zone (x 60-960, y 250-1570), subtitles in their own band below the picture, sound cues that follow the motion, one continuous camera.
+- **Format under test (8 Nov 13:00, details-format):** a compilation of small satisfying UI motions in slow motion (the owner shared a reel of this kind; we take the techniques only:
+  slow motion, a live easing curve with a riding dot, a spec chip, a numbered part bar). Built with `node scripts/explainer/newweb.mjs <slug> --details N` (4-5 beats, ~20 s):
+  the hook over the first detail already finished (result first), one beat per detail (three-word title with one accent word, the component slowed, its CSS typed, the curve and
+  the "ms" counter running with the dot), then a recap grid of all of them at full speed (the saveable frame). Why: rule 11 (motion tricks are our winners: numbers 103k, stagger 5.9k)
+  and saves (a recap of copyable lines). Keep our dark theme (ink #111214, mint accent) for this format; titles, wording and components are ours.
+- **Art direction (7 Nov, styles A/B/C in scripts/explainer/styles):** style A was the recommended look, but it costs ~210 render minutes per 20 s reel: not usable daily
+  until that is cut (a todo for a spare night). Until then web reels keep the dark theme above.
 
 ### Turns Out (c3)
 - **Topic:** a world-famous thing everyone pictures one way, shown in a state that looks wrong: a visible transformation (Liberty copper-brown 1,051 reach, 15.2 s watched; the green Sahara 1,041 at 5 h).

@@ -161,6 +161,9 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--night);color
 //     KM.sweep(el, t, t0, d, col) (a highlight sweep) · KM.leader(line, label, from, to, k) (a leader-line label, SVG line + text)
 //   secondary: KM.parallax(el, c, depth) · KM.stagger(els, t, t0, gap, d) · KM.squeeze(el, t, tTap) (press and pop) ·
 //     KM.ripple(el, t, tTap, x, y) · KM.tap(t, x) (the touch cue for a tap at screen x)
+//   details format (8 Nov 2026): KM.curve(spec) · KM.linearCss(f, n) · KM.timeScale(t0, t1, factor) (slow motion; the camera keeps reel time) ·
+//     KM.curveGraph(svg, spec, c0, d, { clock, real }) (the live easing curve with a riding dot) · KM.slowmoBadge(el, ts, label) ·
+//     KM.specChip(el, items, t0, d) (numbers roll in) · KM.partProgress(el, parts) (the segmented top bar); start a reel with newweb.mjs --details N
 //   voice and subtitles: KM.voice(text, lead) -> { words, at(word, nth), phrases(max) } · KM.subs(capEl, t, V, PH, from, until, colour)
 var KM = (function(){
   var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; };
@@ -283,10 +286,83 @@ var KM = (function(){
     if (ph && ph[0] >= from && t < until) ph.forEach(function(j){ var w = W[j], on = t >= w.s - L, k = ease.out3(P(t, w.s - L, w.s - L + .2)), c = colour ? colour(w.d, j) : null;
       html += '<span style="opacity:' + (on ? 1 : .32) + ';filter:blur(' + (on ? (1 - k) * 4 : 1.2).toFixed(2) + 'px);transform:translateY(' + ((1 - k) * 5).toFixed(2) + 'px)' + (c ? ';color:' + c : '') + '">' + w.d.replace(/</g, '') + '</span>'; });
     capEl.innerHTML = html; capEl.style.opacity = html ? 1 : 0; }
+  // ---- the details format (owner, 8 Nov 2026: small UI motions in slow motion, each with its live easing curve and its CSS) ----
+  // KM.curve(spec) -> { f(k), css, min, max }: spec = a kit ease name ('settle', 'spring', 'back', 'out3' ...), { bezier: [x1, y1, x2, y2] }
+  //   (CSS cubic-bezier: y may leave 0-1 for an overshoot), { linear: [0, [.62, 18], 1.1, 1] } (CSS linear(): a value, or [value, percent];
+  //   stops without a percent are spread evenly, as the spec does) or { keyframes: [[0, 1], [40, 1.3], [100, 1]] } (percent, value).
+  //   KM.linearCss(f, n) writes any ease (a kit spring included) as a CSS linear() string, so the curve on screen is the curve in the code.
+  function bezier(x1, y1, x2, y2){ var B = function(a, b, s){ return 3 * a * s * (1 - s) * (1 - s) + 3 * b * s * s * (1 - s) + s * s * s; };
+    return function(k){ if (k <= 0) return 0; if (k >= 1) return 1; var lo = 0, hi = 1, s = k; for (var i = 0; i < 40; i++) { s = (lo + hi) / 2; if (B(x1, x2, s) < k) lo = s; else hi = s; } return B(y1, y2, s); }; }
+  function stops(list){ var S = list.map(function(s){ return Array.isArray(s) ? { v: s[0], p: s[1] / 100 } : { v: s, p: null }; });
+    if (S[0].p == null) S[0].p = 0; if (S[S.length - 1].p == null) S[S.length - 1].p = 1;
+    for (var i = 1; i < S.length; i++) if (S[i].p == null) { var j = i; while (S[j].p == null) j++; for (var q = i; q < j; q++) S[q].p = S[i - 1].p + (S[j].p - S[i - 1].p) * (q - i + 1) / (j - i + 1); }
+    for (var m = 1; m < S.length; m++) S[m].p = Math.max(S[m].p, S[m - 1].p);
+    return function(k){ if (k <= S[0].p) return S[0].v; for (var i = 1; i < S.length; i++) if (k <= S[i].p) return S[i].p === S[i - 1].p ? S[i].v : mix(S[i - 1].v, S[i].v, (k - S[i - 1].p) / (S[i].p - S[i - 1].p)); return S[S.length - 1].v; }; }
+  var num = function(v){ return (+v.toFixed(3)).toString().replace(/^0\./, '.').replace(/^-0\./, '-.'); };
+  function linearCss(f, n){ n = n || 10; var o = []; for (var i = 0; i <= n; i++) o.push(i === 0 || i === n ? num(f(i / n)) : num(f(i / n)) + ' ' + Math.round(i / n * 100) + '%'); return 'linear(' + o.join(', ') + ')'; }
+  function curve(spec){ var f, css;
+    if (typeof spec === 'string') { f = ease[spec]; css = linearCss(f, 10); }
+    else if (spec.bezier) { f = bezier.apply(null, spec.bezier); css = 'cubic-bezier(' + spec.bezier.map(num).join(', ') + ')'; }
+    else if (spec.linear) { f = stops(spec.linear); css = 'linear(' + spec.linear.map(function(s){ return Array.isArray(s) ? num(s[0]) + ' ' + s[1] + '%' : num(s); }).join(', ') + ')'; }
+    else { f = stops(spec.keyframes.map(function(s){ return [s[1], s[0]]; })); css = '@keyframes'; }
+    var lo = 0, hi = 1; for (var i = 0; i <= 80; i++) { var v = f(i / 80); lo = Math.min(lo, v); hi = Math.max(hi, v); }
+    return { f: f, css: css, min: lo, max: hi }; }
+  // KM.timeScale(t0, t1, factor, ramp): a slow-motion stretch of the reel. The component's own clock, at(t) (seconds, 0 at t0), runs at
+  //   1x before t0, eases down to factor over ramp, runs at factor, eases back to 1x by t1; the camera keeps reel time, so it never slows.
+  //   on(t) 0 -> 1 (how slow it is, for the badge), real(c) = the reel time the component clock reaches c. Cues: a falling swell into the
+  //   slow motion, a whoosh as it speeds back up.
+  function timeScale(t0, t1, f, ramp){ ramp = ramp == null ? .25 : Math.min(ramp, (t1 - t0) / 2);
+    var a1 = t0 + ramp, b0 = t1 - ramp, A1 = ramp * (1 + f) / 2, B0 = A1 + (b0 - a1) * f, B1 = B0 + ramp * (1 + f) / 2;
+    cue({ t: a1, k: 'swell', d: .55, g: .3, x: 255 }); cue({ t: t1 - .05, k: 'whoosh', d: .4, g: .22 });
+    var at = function(t){ if (t <= t0) return t - t0; if (t <= a1) { var u = t - t0; return u - (1 - f) * u * u / (2 * ramp); }
+      if (t <= b0) return A1 + (t - a1) * f; if (t <= t1) { var w = t - b0; return B0 + f * w + (1 - f) * w * w / (2 * ramp); } return B1 + t - t1; };
+    return { t0: t0, t1: t1, f: f, at: at,
+      speed: function(t){ return t <= t0 || t >= t1 ? 1 : t < a1 ? mix(1, f, (t - t0) / ramp) : t > b0 ? mix(f, 1, (t - b0) / ramp) : f; },
+      on: function(t){ return f >= 1 ? 0 : (1 - this.speed(t)) / (1 - f); },
+      real: function(c){ var lo = t0 - 50, hi = t1 + 50; for (var i = 0; i < 50; i++) { var m = (lo + hi) / 2; if (at(m) < c) lo = m; else hi = m; } return hi; } }; }
+  // KM.curveGraph(svg, spec, c0, d, o): the easing curve drawn live, synced to the element it describes: the curve draws itself behind a dot
+  //   that rides it, on a time axis (0 to d, in the component's own seconds), with dashed guides at 0 and 1 and the dot's value on the left edge.
+  //   o.clock(t) = the component's clock (a timeScale's at, or reel time when left out); o.real(c) = the reel time of clock c (for the cues).
+  //   Returns { k(t), v(t), draw(t, alpha) }. Cues: a soft move while it draws, a snap when the dot lands.
+  function curveGraph(svg, spec, c0, d, o){ o = o || {}; var C = curve(spec), clock = o.clock || function(t){ return t; }, real = o.real || function(c){ return c; };
+    var W = +svg.getAttribute('width'), H = +svg.getAttribute('height'), pl = 6, pr = 10, pt = 10, pb = 22, lo = Math.min(0, C.min) - .06, hi = Math.max(1, C.max) + .06;
+    var X = function(k){ return pl + k * (W - pl - pr); }, Y = function(v){ return pt + (hi - v) / (hi - lo) * (H - pt - pb); }, NS = 'http://www.w3.org/2000/svg';
+    var mk = function(tag, at){ var e = document.createElementNS(NS, tag); for (var a in at) e.setAttribute(a, at[a]); svg.appendChild(e); return e; };
+    svg.innerHTML = '';
+    var g0 = mk('line', { x1: X(0), x2: X(1), y1: Y(0), y2: Y(0), class: 'cg-axis' }), g1 = mk('line', { x1: X(0), x2: X(1), y1: Y(1), y2: Y(1), class: 'cg-guide' });
+    var full = '', N = 72; for (var i = 0; i <= N; i++) full += (i ? 'L' : 'M') + X(i / N).toFixed(1) + ' ' + Y(C.f(i / N)).toFixed(1);
+    var ghost = mk('path', { d: full, class: 'cg-ghost' }), line = mk('path', { d: '', class: 'cg-line' }), hz = mk('line', { class: 'cg-h' }), dot = mk('circle', { r: 5.5, class: 'cg-dot' });
+    var l0 = mk('text', { x: X(0), y: H - 5, class: 'cg-t' }), l1 = mk('text', { x: X(1), y: H - 5, class: 'cg-t', 'text-anchor': 'end' });
+    l0.textContent = '0'; l1.textContent = Math.round(d * 1000) + ' ms';
+    cue({ t: real(c0), k: 'move', d: Math.max(.4, real(c0 + d) - real(c0)), g: .16, dir: 1, x: 120, x2: 230, r: .2 }); cue({ t: real(c0 + d), k: 'snap', g: .22, p: 9, x: 230, r: .2 });
+    var R = { css: C.css, f: C.f, k: function(t){ return cl((clock(t) - c0) / d); }, v: function(t){ return C.f(R.k(t)); },
+      draw: function(t, alpha){ var k = R.k(t), p = '', n = Math.max(1, Math.round(N * k)); for (var i = 0; i <= n; i++) { var q = k * i / n; p += (i ? 'L' : 'M') + X(q).toFixed(1) + ' ' + Y(C.f(q)).toFixed(1); }
+        line.setAttribute('d', p); var x = X(k), y = Y(C.f(k)); dot.setAttribute('cx', x.toFixed(1)); dot.setAttribute('cy', y.toFixed(1));
+        hz.setAttribute('x1', X(0)); hz.setAttribute('x2', x.toFixed(1)); hz.setAttribute('y1', y.toFixed(1)); hz.setAttribute('y2', y.toFixed(1));
+        dot.style.opacity = hz.style.opacity = clock(t) >= c0 - .05 ? 1 : 0; svg.style.opacity = alpha == null ? 1 : alpha; } };
+    return R; }
+  // KM.slowmoBadge(el, ts, label): a pill that pops in as the slow motion starts (a blip) and lets go as it ends; its dot pulses with the speed.
+  function slowmoBadge(el, ts, label){ el.innerHTML = '<i></i><span>' + label + '</span>'; cue({ t: ts.t0 + .05, k: 'blip', g: .2, x: 430 });
+    return function(t){ var on = ts.on(t), k = ease.back(P(t, ts.t0, ts.t0 + .35), 1.8) * (1 - ease.inOut3(P(t, ts.t1 - .2, ts.t1 + .1)));
+      el.style.opacity = cl(k * 1.4).toFixed(3); el.style.transform = 'scale(' + mix(.7, 1, cl(k)).toFixed(3) + ')';
+      el.firstChild.style.transform = 'scale(' + (1 + .35 * on * Math.max(0, Math.sin(t * 7))).toFixed(3) + ')'; }; }
+  // KM.specChip(el, items, t0, d, kf): the numbers roll up from 0 (ticks as they count) and land; items = [{ label, v, unit, dp }];
+  //   kf(t) -> 0-1 (optional) drives the roll instead of t0 + d, e.g. a curveGraph's k: the "ms" counter then is the component's own clock
+  function specChip(el, items, t0, d, kf){ d = d || .55; for (var i = 0; i < 6; i++) cue({ t: t0 + i * d / 6, k: 'tick', g: .07, p: i * 2 }); cue({ t: t0 + d, k: 'pop', g: .22, p: 6 });
+    el.innerHTML = items.map(function(it, i){ return '<div class="sc-r' + i + '">' + (it.label ? '<small>' + it.label + '</small>' : '') + '<b></b>' + (it.unit && it.unit[0] !== '%' ? ' ' : '') + '<span>' + (it.unit || '') + '</span></div>'; }).join('');
+    var B = el.querySelectorAll('b');
+    return function(t){ var k = kf ? kf(t) : P(t, t0, t0 + d);
+      items.forEach(function(it, i){ var q = kf ? (i ? ease.out3(P(t, t0 + d, t0 + d + .4)) : k) : ease.out3(P(k, i * .2, Math.min(1, .7 + i * .2))); B[i].textContent = (it.v * q).toFixed(it.dp || 0); if (kf && i) B[i].parentNode.style.opacity = P(t, t0 + d - .05, t0 + d + .15).toFixed(3); });
+      el.style.opacity = ease.out3(P(t, t0 - .15, t0 + .1)).toFixed(3); el.style.transform = 'translateY(' + ((1 - ease.back(P(t, t0 - .15, t0 + .3), 1.5)) * 10).toFixed(2) + 'px)'; }; }
+  // KM.partProgress(el, parts): a segmented bar, one segment per part ([[t0, t1], ...]); the current one fills as its part plays (a click at each)
+  function partProgress(el, parts){ el.innerHTML = parts.map(function(){ return '<i><b></b></i>'; }).join(''); var S = el.querySelectorAll('b');
+    parts.forEach(function(p){ cue({ t: p[0], k: 'click', g: .08, p: 3 }); });
+    return function(t){ parts.forEach(function(p, i){ var k = P(t, p[0], p[1]); S[i].style.transform = 'scaleX(' + k.toFixed(4) + ')'; S[i].parentNode.style.opacity = t >= p[0] && t < p[1] ? 1 : .6; }); }; }
   function publish(extra){ extra = extra || {}; window.TRANSITIONS = TR.slice().sort(function(a, b){ return a[0] - b[0]; });
     window.CUES = { dur: DUR, cues: Q.slice().sort(function(a, b){ return a.t - b.t; }), mix: extra.mix || { duck: 8 }, bed: extra.bed || { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } }; }
   return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
-    rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, voice: voice, subs: subs, publish: publish };
+    rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, voice: voice, subs: subs, publish: publish,
+    curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress };
 })();
 /*kitmotion:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;
