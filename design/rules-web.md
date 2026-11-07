@@ -49,4 +49,4 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    Cheap glass only: no backdrop-filter, no live `filter: blur` on big layers, no full-frame mask (KM.lights paints the light in a small canvas,
    KM.cutBelow ends the world above the band); blur 3 in the config. Item 13 of the review writes the run's measured minutes (its job times).
    Evidence: the style C test (real backdrop blur) took 52 GitHub minutes for 8 s, about 130 for 20 s; a frame of the kit theme costs ~218 ms
-   locally vs 393 for the first glass draft (big bloom layers) and 341 for the dark details demo; the sample showreel-style-c-details: its review, item 13.
+   locally vs 393 for the first glass draft (big bloom layers) and 341 for the dark details demo; the sample showreel-style-c-details (21.2 s) rendered in 15 GitHub minutes (frames 12; run 42406421148, 8 Nov), so the target holds with room.
