@@ -10,7 +10,8 @@
    A dark reading site in a phone that fills the frame. Every tap shows a blank page before the dark styles load, and a blank page is
    white, so the screen flashes; the form boxes are white too. <meta name="color-scheme" content="dark light"> in the head tells the
    browser before any CSS that the page is dark (MDN: "helping prevent unwanted screen flashes during the page load"; it also sets the
-   default colors of form controls). The white blank peels off the screen and becomes the code; after it, every blank is dark and the
+   default colors of form controls). Flow pass (7 Nov): one soft white bloom, a push-through into the slow-motion load, the code card sliding down as the phone
+   glides under it (one shared move), a drift that never stops, a caret and highlight sweeps, a re-render scan; after it, every blank is dark and the
    boxes turn dark. Built to the 7 Nov visual bar: one continuous camera (pushes and pulls with overshoot, no cuts), an event every
    1.5-2 s, the subject at 60%+ of the frame. Beats and captions lead the voice by 0.15 s; every frame a pure function of t. */
 :root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--acc:#7cf0b6;--red:#ff5a4a;--pg:#16171c;--card:#202128;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
@@ -56,6 +57,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .nx{position:absolute;left:20px;top:242px;width:190px;height:50px;border-radius:25px;border:2px solid var(--paper);font:700 17px/46px var(--f);text-align:center}
 .bd{position:absolute;left:20px;top:312px;width:420px;font:500 19px/1.5 var(--f);color:#c9c5bc}
 #blank{position:absolute;left:0;top:104px;width:460px;height:876px;z-index:2}
+#scan{position:absolute;left:0;top:0;width:460px;height:90px;z-index:2;background:linear-gradient(rgba(124,240,182,0),rgba(124,240,182,.16));border-bottom:3px solid rgba(124,240,182,.75)}
 #stamp{position:absolute;left:62px;top:150px;width:336px;z-index:3;border:4px solid var(--red);border-radius:14px;color:var(--red);font:700 21px/1 var(--m);letter-spacing:.06em;text-align:center;padding:14px 0;white-space:nowrap}
 #stamp small{display:block;font:700 13px/1 var(--m);letter-spacing:.14em;margin-top:9px;opacity:.8}
 #css{position:absolute;left:80px;top:0;width:300px;height:76px;border-radius:16px;background:#1b1c21;color:var(--paper);z-index:4;padding:14px 16px 0 62px;box-shadow:0 16px 40px rgba(0,0,0,.35)}
@@ -74,10 +76,9 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #hook .ln{display:block;white-space:nowrap}
 #hook .ln > span{display:inline-block;transform-origin:0 80%}
 #hook .acc{color:var(--red)}
-#peel{left:0;top:0;width:10px;height:10px;background:#fff;transform-origin:0 0}
 #code{left:30px;top:128px;width:450px;padding:20px 22px 16px;border-radius:20px;background:var(--surface);transform-origin:50% 0;border:2px solid transparent}
 #cd{font:500 20px/1.45 var(--m);white-space:pre;color:var(--paper);height:87px}
-#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#cd b{font-weight:500;color:var(--acc);border-radius:4px}#cd .caret{display:inline-block;width:11px;height:23px;margin-left:2px;vertical-align:-5px;background:var(--acc);border-radius:2px}#cd .dim{color:var(--dim)}
 #sup{margin-top:10px;font:700 12px/1 var(--m);letter-spacing:.1em;color:var(--dim);white-space:nowrap}
 #band{left:0;top:640px;width:540px;height:150px;background:var(--ink)}
 #cap{left:30px;top:652px;width:450px;min-height:90px;padding:6px 0 0;font:700 31px/1.14 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
@@ -127,7 +128,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
           <div class="bd">What glows, what hunts and what sleeps in the water after dark, told by the people who dive it.</div>
         </div>
       </div>
-      <div id="blank"></div>
+      <div id="blank"></div><div id="scan"></div>
       <div id="stamp"></div>
       <div id="css"><svg width="28" height="36" viewBox="0 0 28 36" aria-hidden="true"><path d="M2 2h16l8 8v24H2z" fill="none" stroke="#7cf0b6" stroke-width="2.5"/><path d="M18 2v8h8" fill="none" stroke="#7cf0b6" stroke-width="2.5"/></svg><b>styles.css</b><small id="pct">0%</small><i><u id="bar"></u></i></div>
       <div id="rip"></div>
@@ -140,7 +141,6 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 <div id="hud" class="a"></div>
 <div id="tag" class="a"></div>
 <div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>dark</span> <span>page</span> <span class="acc">flash</span></span><span class="ln"><span class="acc">white?</span></span></div>
-<div id="peel" class="a"></div>
 <div id="code" class="a"><div id="cd"></div><div id="sup">MDN · CHROME 81 · FIREFOX 96 · SAFARI 12.1</div></div>
 <div id="band" class="a" data-band></div>
 <div id="cap" class="a" data-subs></div>
@@ -158,9 +158,11 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
   function align(){ var T = TEXT.split(/\s+/), j = 0;
     WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
-  var A = {}, PH = [], TAPS = [], MOVES = [];
+  var A = {}, PH = [], TAPS = [], MOVES = [], SLOW = null, NOWT = null, FORMT = null;
   // screen-local tap targets (inside the 460 px screen): a home card, "Next story", "‹ Back", the second home card
   var CARD = [95, 434], NEXT = [115, 371], BACK = [52, 124], CARD2 = [95, 560];
+  var spring = function(k){ return k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.exp(-5.5 * k) * Math.cos(11 * k); };
+  var REV = 1;   // the slow-motion load opens from the landed styles over this long
   function anchors(){
     align();
     A = { until: at('until'), styles: at('styles'), load: at('load'), browser: at('browser'), blank: at('blank'), white: at('white', 2), page: at('page', 2),
@@ -169,32 +171,38 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.until - .3, A.hookIn + .35);
     window.COVER = +(A.hookIn + .1).toFixed(2);
     A.land = Math.max(A.page + .55, A.blank + 1.2);           // the styles arrive: the slow-motion blank ends
-    var t4 = Math.min(A.land + .55, A.fix - .95);
+    A.land = Math.min(A.land, A.fix - REV - .1);
+    A.flash = .3;                                            // the one real-speed white flash (a bloom, not a strobe)
     // [tap time, x, y, page before, page after, end of the blank]
-    TAPS = [[-.1, BACK[0], BACK[1], 1, 0, .6], [1.4, CARD[0], CARD[1], 0, 1, A.leave + .75], [A.until + .35, NEXT[0], NEXT[1], 1, 2, A.land], [t4, BACK[0], BACK[1], 2, 0, A.fix],
-      [A.now, CARD[0], CARD[1], 0, 1, A.now + .95], [A.frame, NEXT[0], NEXT[1], 1, 2, A.frame + .5], [A.form - .55, BACK[0], BACK[1], 2, 0, A.form - .1]];
+    TAPS = [[A.flash, CARD[0], CARD[1], 0, 1, A.flash + .5], [A.until + .35, NEXT[0], NEXT[1], 1, 2, A.land],
+      [A.now, BACK[0], BACK[1], 2, 0, A.frame - .12], [A.frame, CARD[0], CARD[1], 0, 1, A.frame + .5], [A.form - .55, BACK[0], BACK[1], 1, 0, A.form - .1]];
+    SLOW = TAPS[1]; NOWT = TAPS[2]; FORMT = TAPS[4];
     A.pull = Math.max(A.match + .75, A.boxes + 1.5);
     A.last = Math.min(A.pull + 1.2, DUR - 1.9);
     TAPS.push([A.last, CARD[0], CARD[1], 0, 3, A.last + .5]);
-    // the camera: [start, length, centre x, centre y, zoom]; it never cuts, every move eases out past its mark and settles
-    MOVES = [[A.leave + .27, .8, 270, 572, 1.16], [A.blank + .55, .9, 258, 590, 1.08], [t4 + .2, A.fix - t4 - .2, 270, 620, 1.42], [A.fix, .75, 270, 548, .86], [A.color - .1, .8, 264, 536, .9],
-      [A.now - .15, .7, 270, 535, 1.02], [A.form - .25, .8, 270, 527, 1.05], [A.pull, .9, 270, 548, .96], [A.last - .1, 1, 268, 540, 1.0]];
+    // the camera: [start, length, centre x, centre y, zoom, ease]; it never cuts. 'io' = an eased transition with no overshoot
+    // (the push-through into the slow-motion page, the phone gliding down under the code), the rest ease out past their mark and settle
+    MOVES = [[A.leave - .05, .9, 262, 560, 1.24, 'io'], [A.blank + .4, 1.1, 258, 590, 1.1], [A.land + .15, .9, 270, 580, 1.16], [A.fix - .15, .85, 270, 548, .86, 'io'],
+      [A.color - .1, 1.1, 262, 536, .9], [A.now - .15, .8, 270, 535, 1.02], [A.form - .25, .8, 270, 527, 1.05], [A.pull, .9, 270, 548, .96], [A.last - .1, 1, 268, 540, 1.0], [A.last + 1, Math.max(1, DUR - .6 - A.last - 1), 276, 556, 1.035, 'io']];   // the last: a slow push into the story
     PH = []; var cur = [];
     WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
       if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
         if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
       else PH.push(cur);
       cur = []; } });
-    buildCues();
+    buildCues(); window.__A = Object.assign({ taps: TAPS, moves: MOVES }, A);
   }
   function cam(t){ var c = [270, 457, .94];
-    MOVES.forEach(function(m){ var k = back(P(t, m[0], m[0] + m[1]), 1.15); if (k !== 0) c = [mix(c[0], m[2], k), mix(c[1], m[3], k), mix(c[2], m[4], k)]; });
-    c[0] += Math.sin(t * .6) * 3; c[1] += Math.sin(t * .45 + 1) * 6; c[2] *= 1 + Math.sin(t * .38) * .008; return c; }
+    MOVES.forEach(function(m){ var k = m[5] === 'io' ? io(P(t, m[0], m[0] + m[1])) : back(P(t, m[0], m[0] + m[1]), 1.15); if (k !== 0) c = [mix(c[0], m[2], k), mix(c[1], m[3], k), mix(c[2], m[4], k)]; });
+    // a gentle drift that never stops: a slow 3% push across the reel and a slow sway, so no frame is ever fully still
+    c[0] += Math.sin(t * .9) * 9 + Math.sin(t * .37) * 4; c[1] += Math.sin(t * .7 + 1) * 9; c[2] *= (1 + .03 * io(t / DUR)) * (1 + Math.sin(t * .55) * .012); return c; }
   // world point -> screen point
   function toScr(c, x, y){ return [(x - c[0]) * c[2] + 255, (y - c[1]) * c[2] + 480]; }
   var CODE = '<span class="dim">&lt;head&gt;</span>\n  &lt;meta name="<b>color-scheme</b>"\n        content="<b>dark light</b>"&gt;';
-  function typed(src, n){ var o = '', k = 0, open = [];
-    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+  function typed(src, n, hl){ var o = '', k = 0, open = [], bi = 0;
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1);
+        if (tag === '<b>') { var w = hl[bi++] || 0; tag = '<b style="background:linear-gradient(rgba(124,240,182,.26),rgba(124,240,182,.26)) no-repeat 0 0/' + (w * 100).toFixed(1) + '% 100%">'; }
+        o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
       if (k >= n) break; if (src[i] === '&') { var e2 = src.indexOf(';', i); o += src.slice(i, e2 + 1); i = e2; } else o += src[i]; k++; }
     while (open.length) o += '</' + open.pop() + '>'; return o; }
   var CODE_N = CODE.replace(/<[^>]+>/g, '').replace(/&\w+;/g, '_').length;
@@ -202,40 +210,45 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   var URLS = ['duskpost.example', 'duskpost.example/trains', 'duskpost.example/lights', 'duskpost.example/sea'];
   function seek(t){
     t = Math.max(0, Math.min(DUR, t));
-    // ---- the page state: which tap we are in, blank or loaded ----
+    // ---- the page state: which tap we are in, how much blank covers the page ----
     var tp = TAPS[0]; for (var i = 0; i < TAPS.length; i++) if (t >= TAPS[i][0]) tp = TAPS[i];
-    var fixed = tp[0] >= A.now - .2, inBlank = t >= tp[0] + .05 && t < tp[5], page = t >= tp[5] ? tp[4] : tp[3];
-    var reveal = tp === TAPS[2] ? out(P(t, A.land, A.land + .4)) : 1;   // the slow-motion load opens from the landed styles
-    var revealing = tp === TAPS[2] && t >= A.land && t < A.land + .4;
-    if (revealing) inBlank = true;
-    for (var p = 0; p < 4; p++) { var el = $('p' + p); el.style.visibility = p === page && (!inBlank || revealing) ? 'visible' : 'hidden'; el.style.zIndex = 3;
-      el.style.clipPath = p === page && reveal < 1 ? 'circle(' + (reveal * 1000) + 'px at 230px ' + (CHIP_Y1 + 38 - 104) + 'px)' : 'none'; }
-    var ck2 = P(t, A.styles, A.land), chipA = tp === TAPS[2] ? win(t, A.styles, A.land + .25, .2) : 0, cy2 = mix(CHIP_Y0, CHIP_Y1, io(ck2)) + (t > A.land ? -back(P(t, A.land, A.land + .3), 3) * 0 : 0);
-    var css = $('css'); css.style.opacity = chipA; css.style.top = cy2 + 'px'; css.style.transform = 'scale(' + (t < A.styles + .3 ? mix(.7, 1, back(P(t, A.styles, A.styles + .3), 2)) : t > A.land ? mix(1, 1.25, P(t, A.land, A.land + .25)) : 1) + ')';
+    var fixed = tp[0] >= A.now - .2, page, bo = 0, bclip = 'none', reveal = 1;
+    if (t < tp[0] + .03) page = tp[3];
+    else if (tp === TAPS[0]) { var pk0 = tp[0] + .18; bo = .86 * (t < pk0 ? io(P(t, tp[0] + .03, pk0)) : 1 - io(P(t, pk0 + .04, pk0 + .4))); page = t >= pk0 ? tp[4] : tp[3]; }
+    else if (tp === SLOW) { page = t >= A.land ? tp[4] : tp[3]; bo = t < A.land ? io(P(t, tp[0] + .05, tp[0] + 1.05)) : 1 - io(P(t, A.land, A.land + REV));
+      if (t >= A.land && t < A.land + REV) reveal = io(P(t, A.land, A.land + REV)); }
+    else { page = t >= tp[5] - .2 ? tp[4] : tp[3];   // after the fix: a dark blank re-renders from the top down, then the page settles in
+      bo = 1 - io(P(t, tp[5] - .2, tp[5] + .05)); bclip = 'inset(0 0 ' + ((1 - io(P(t, tp[0] + .05, tp[0] + .4))) * 100).toFixed(1) + '% 0)'; }
+    for (var p = 0; p < 4; p++) { var el = $('p' + p); el.style.visibility = p === page ? 'visible' : 'hidden'; el.style.zIndex = 1;
+      el.style.transform = p === page && reveal < 1 ? 'scale(' + mix(1.05, 1, reveal).toFixed(4) + ')' : p === 3 ? el.style.transform : 'none'; }
+    var ck2 = P(t, A.styles, A.land), chipA = tp === SLOW ? win(t, A.styles, A.land + .35, .3) : 0, cy2 = mix(CHIP_Y0, CHIP_Y1, io(ck2));
+    var css = $('css'); css.style.opacity = chipA; css.style.top = cy2 + 'px'; css.style.transform = 'scale(' + (t < A.styles + .45 ? mix(.7, 1, spring(P(t, A.styles, A.styles + .45))) : t > A.land ? mix(1, 1.2, io(P(t, A.land, A.land + .35))) : 1) + ')';
     var pc = Math.min(100, Math.round(100 * Math.pow(ck2, 1.6))); $('pct').textContent = pc + '%'; $('bar').style.width = pc + '%';
-    var bl = $('blank'); bl.style.background = fixed ? '#121212' : '#ffffff'; bl.style.opacity = inBlank ? 1 : 0;
-    if (tp === TAPS[2] && t >= A.land) { bl.style.zIndex = 2; }
+    var bl = $('blank'); bl.style.background = fixed ? '#121212' : '#ffffff'; bl.style.opacity = bo; bl.style.clipPath = bclip;
+    // the re-render line: a soft green scan sweeps down the dark blank as the fixed page paints
+    var sk = fixed && tp !== TAPS[TAPS.length - 1] ? P(t, tp[0] + .05, tp[0] + .4) : 0, sw = $('scan');
+    sw.style.opacity = sk > 0 && sk < 1 ? (1 - sk) * .9 : 0; sw.style.top = (104 + sk * 876 - 90) + 'px';
     $('urlt').textContent = URLS[t >= tp[0] + .05 ? tp[4] : tp[3]];
     // the progress line: runs while a page loads
     var lk = P(t, tp[0] + .05, tp[5]), pr = $('prog');
     pr.style.width = (t < tp[5] ? mix(8, 92, out(lk)) : 100) + '%'; pr.style.opacity = t < tp[0] + .05 ? 0 : 1 - P(t, tp[5] + .1, tp[5] + .35);
     // the light of a white screen falls on the room around the phone
-    var flashes = 0; TAPS.forEach(function(x){ if (x[0] < A.now - .2 && t >= x[0] + .05) flashes++; });
-    $('room').style.opacity = inBlank && !fixed ? .1 : 0;
+    var flashes = (t >= TAPS[0][0] + .2 ? 1 : 0) + (t >= SLOW[0] + .3 ? 1 : 0);
+    $('room').style.opacity = fixed ? 0 : bo * .1;
     // ---- the form boxes: white (default light colors) until the fixed load of the home page ----
-    var boxDark = fixed && t >= TAPS[6][5];
+    var boxDark = fixed && t >= FORMT[5];
     ['srch', 'chk', 'sel'].forEach(function(id, j){ var b = $(id);
       b.style.background = boxDark ? '#2a2b31' : '#ffffff'; b.style.color = boxDark ? '#f2efe8' : '#111214'; b.style.border = boxDark ? '1.5px solid #4a4b52' : '1.5px solid #c9c5bc';
       var g = $('g' + j), pk = P(t, A.boxes - .1 + j * .38, A.boxes + .25 + j * .38), on = boxDark && t < A.boxes + .25 + j * .38;
       g.style.opacity = on ? 1 - io(pk) : 0; g.style.transform = 'translate(' + (pk * 30) + 'px,' + (-pk * 40) + 'px) rotate(' + (-pk * 8) + 'deg)'; });
     $('chk').style.color = boxDark ? '#7cf0b6' : '#111214';
-    // the stamp on the blank: red before the fix, green after
+    // the stamp on the blank: red before the fix, green after; it lands with a spring
     var st = $('stamp'), sA = 0, sK = 0, good = fixed;
-    if (!fixed) { sA = tp === TAPS[2] ? win(t, A.blank, A.land, .12) : 0; sK = back(P(t, A.blank, A.blank + .3), 2); }
-    else if (inBlank) { sA = 1; sK = back(P(t, tp[0] + .05, tp[0] + .3), 2); }
+    if (tp === SLOW) { sA = win(t, A.blank, A.land + .2, .2); sK = spring(P(t, A.blank, A.blank + .8)); }
+    else if (fixed && tp !== TAPS[TAPS.length - 1] && t >= tp[0] + .1) { sA = Math.min(bo, P(t, tp[0] + .1, tp[0] + .3)); sK = spring(P(t, tp[0] + .1, tp[0] + 1.1)); }
     st.innerHTML = good ? 'BLANK PAGE = DARK<small>COLOR-SCHEME: DARK LIGHT</small>' : 'BLANK PAGE = WHITE<small>BEFORE YOUR CSS ARRIVES</small>';
     st.style.borderColor = st.style.color = good ? 'var(--acc)' : 'var(--red)';
-    st.style.opacity = sA; st.style.transform = 'rotate(' + (good ? -3 : -5) + 'deg) scale(' + mix(1.5, 1, sK) + ')';
+    st.style.opacity = sA; st.style.transform = 'translateY(' + ((1 - sK) * -26) + 'px) rotate(' + mix(good ? -9 : -11, good ? -3 : -5, sK) + 'deg) scale(' + mix(1.35, 1, sK) + ')';
     // ---- the finger: comes in, presses, a ring opens, lifts ----
     var fx = 0, fy = 0, fa = 0, ra = 0, rs = 1;
     TAPS.forEach(function(x, n){ var nx = n < TAPS.length - 1 ? TAPS[n + 1][0] : 99;
@@ -245,8 +258,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var fg = $('fg'); fg.style.left = (fx - 32) + 'px'; fg.style.top = (104 + fy - 32) + 'px'; fg.style.opacity = fa; fg.style.transform = 'scale(' + (fa > .8 && Math.abs(fa) > 0 ? 1 : .92) + ')';
     var rp = $('rip'); rp.style.left = (fx - 32) + 'px'; rp.style.top = (104 + fy - 32) + 'px'; rp.style.opacity = ra; rp.style.transform = 'scale(' + rs + ')';
     rp.style.borderColor = fixed ? 'var(--acc)' : 'var(--red)';
-    var scr = back(P(t, A.last + 1.1, A.last + 1.7), 1.2) * 70; $('p3').style.transform = 'translateY(' + (-scr) + 'px)';
-    var bk0 = out(P(t, A.leave - .1, A.leave + .35)) * (1 - io(P(t, WORDS[WORDS.length - 1].e + 1.1, WORDS[WORDS.length - 1].e + 1.9))), mY = mix(960, 626, bk0), mk = 'linear-gradient(to bottom,#000 ' + (mY - 22) + 'px,rgba(0,0,0,0) ' + mY + 'px)';
+    var scr = back(P(t, A.last + 1.1, A.last + 1.7), 1.2) * 70 + P(t, A.last + 1.6, DUR - .6) * Math.min(110, (DUR - .6 - A.last - 1.6) * 40);   // then keeps reading, slowly $('p3').style.transform = 'translateY(' + (-scr) + 'px)';
+    var bk0 = out(P(t, A.leave - .15, A.leave + .35)) * (1 - io(P(t, WORDS[WORDS.length - 1].e + 1.1, WORDS[WORDS.length - 1].e + 1.9))), mY = mix(960, 626, bk0), mk = 'linear-gradient(to bottom,#000 ' + (mY - 22) + 'px,rgba(0,0,0,0) ' + mY + 'px)';
     $('vp').style.webkitMaskImage = mk; $('vp').style.maskImage = mk;
     $('amb').style.transform = 'translate(' + (Math.sin(t * .4) * 14) + 'px,' + (Math.cos(t * .33) * 10) + 'px)';
     // ---- the camera ----
@@ -254,32 +267,28 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     $('world').style.transform = 'translate(' + (255 - c[0] * c[2]) + 'px,' + (480 - c[1] * c[2]) + 'px) scale(' + c[2] + ')';
     $('ph').style.transform = 'perspective(1600px) rotateX(' + Math.max(-5, Math.min(5, vy * .02 + vz * 3)) + 'deg) rotateY(' + Math.max(-5, Math.min(5, -vx * .03)) + 'deg)';
     // ---- the hook ----
-    var gone = io(P(t, A.leave, A.leave + .25));
+    var gone = io(P(t, A.leave - .05, A.leave + .4));
     [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
       var s = i === 0 ? -.3 : WORDS[i] ? WORDS[i].s - LEAD : 0, k = back(P(t, s, s + .32), 1.6);
-      sp.style.filter = 'blur(' + ((1 - P(t, s, s + .22)) * 8 + gone * 6).toFixed(2) + 'px)'; sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 46 - gone * 90) + 'px)'; });
+      sp.style.filter = 'blur(' + ((1 - P(t, s, s + .22)) * 8 + gone * 6).toFixed(2) + 'px)'; sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 46 - gone * 4) + 'px) scale(' + (1 - gone * .06) + ')'; });
     var preFix = t < A.fix - .05;
-    $('lbl').style.opacity = 1 - gone;
-    $('hud').innerHTML = 'WHITE FLASHES <b>' + flashes + '</b>'; $('hud').style.opacity = 1 - gone;
+    var gone2 = io(P(t, A.leave - .25, A.leave + .05)); $('lbl').style.opacity = 1 - gone2;
+    $('hud').innerHTML = 'WHITE FLASHES <b>' + flashes + '</b>'; $('hud').style.opacity = 1 - gone2;
     // ---- the tag row: what the picture is doing ----
-    var tg = $('tag'), tgA = preFix ? P(t, A.leave + .3, A.leave + .45) * (1 - P(t, TAPS[3][0] - .1, TAPS[3][0] + .1)) : 0;
+    var tg = $('tag'), tgA = preFix ? P(t, A.leave + .3, A.leave + .5) * (1 - P(t, A.fix - .35, A.fix - .1)) : 0;
     tg.innerHTML = t < A.styles - .1 ? 'EVERY TAP · <b>WHITE FLASH ' + flashes + '</b>' : t < A.land ? 'SLOW MOTION · <b>ONE PAGE LOAD</b>' : 'STILL WHITE · <b>FLASH ' + flashes + '</b>';
     tg.style.opacity = tgA; tg.style.transform = 'translateY(' + (1 - out(P(t, A.leave + .3, A.leave + .6))) * -10 + 'px)';
-    // ---- the white blank peels off the screen and becomes the code ----
-    var pk2 = P(t, A.fix - .02, A.fix + .5), pe = $('peel'), cd = $('code');
-    var tl = toScr(c, 40, 424), br = toScr(c, 500, 1300);
-    tl = [Math.max(0, tl[0]), Math.max(0, tl[1])]; br = [Math.min(540, br[0]), Math.min(mY - 20, br[1])];
-    var CW = 450, CH = 158, ck = back(pk2, 1.1);
-    if (pk2 > 0 && pk2 < 1) { pe.style.opacity = 1 - P(pk2, .75, 1);
-      var x0 = mix(tl[0], 30, ck), y0 = mix(tl[1], 128, ck), w0 = mix(br[0] - tl[0], CW, ck), h0 = mix(br[1] - tl[1], CH, ck);
-      pe.style.left = x0 + 'px'; pe.style.top = y0 + 'px'; pe.style.width = w0 + 'px'; pe.style.height = h0 + 'px'; pe.style.borderRadius = (pk2 * 20) + 'px';
-      var g2 = Math.round(mix(255, 27, io(P(pk2, .2, .8)))); pe.style.background = 'rgb(' + g2 + ',' + g2 + ',' + Math.round(mix(255, 33, io(P(pk2, .2, .8)))) + ')'; }
-    else pe.style.opacity = 0;
-    var codeOn = P(t, A.fix + .35, A.fix + .5);
+    // ---- the code card slides down from above while the phone glides down under it (one shared move, no swap) ----
+    var cd = $('code'), ci = io(P(t, A.fix - .15, A.fix + .7)), codeOn = P(t, A.fix - .15, A.fix + .3);
     var comp = back(P(t, A.now - .15, A.now + .45), 1.3), pulse = win(t, A.light + .3, A.light + .9, .15);
-    cd.style.opacity = codeOn; cd.style.transform = 'translateY(' + (-8 * comp) + 'px) scale(' + mix(1, .8, comp) + ')';
+    var plx = (c[0] - 266) * -.45, ply = (c[1] - 545) * -.35 + Math.sin(t * 1.1) * 3;   // the card floats a little against the phone
+    cd.style.opacity = codeOn; cd.style.transform = 'translate(' + Math.max(-6, Math.min(6, plx)).toFixed(2) + 'px,' + ((1 - ci) * -230 - 8 * comp + Math.max(-8, Math.min(8, ply))).toFixed(2) + 'px) scale(' + mix(1, .8, comp) + ')';
     cd.style.borderColor = 'rgba(124,240,182,' + (pulse * .9) + ')';
-    $('cd').innerHTML = typed(CODE, Math.floor(CODE_N * P(t, A.fix + .4, A.light + .25)));
+    $('cd').style.opacity = $('sup').style.opacity = P(ci, .9, 1);   // the card arrives first, its text once it is inside the frame's safe zone
+    var nT = Math.floor(CODE_N * P(t, A.fix + .4, A.light + .25));
+    var hl = [io(P(t, A.color - .05, A.scheme + .45)), io(P(t, A.dark2 - .05, A.light + .4))];
+    var caretOn = t >= A.fix + .3 && t < A.now - .1, blink = nT < CODE_N ? 1 : (Math.floor((t - A.light) / .45) % 2 ? .15 : 1);
+    $('cd').innerHTML = typed(CODE, nT, hl) + (caretOn ? '<span class="caret" style="opacity:' + blink + '"></span>' : '');
     // ---- captions: whole phrases, one sentence half at a time ----
     var ph0 = null;
     for (var i2 = 0; i2 < PH.length; i2++) { if (t >= WORDS[PH[i2][0]].s - LEAD - .05 && (i2 === PH.length - 1 || t < WORDS[PH[i2 + 1][0]].s - LEAD - .05)) ph0 = PH[i2]; }
@@ -289,22 +298,26 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
         var col2 = aft && /^(meta|color|scheme|dark|light|match)/i.test(w.d) ? 'var(--acc)' : !aft && /^(blank|white)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
         html += '<span style="opacity:' + (on ? 1 : .32) + ';filter:blur(' + (on ? (1 - k) * 4 : 1.2).toFixed(2) + 'px);transform:translateY(' + (1 - k) * 5 + 'px);color:' + col2 + '">' + w.d.replace(/</g, '') + '</span>'; });
     var cp = $('cap'); cp.innerHTML = html; cp.style.opacity = html ? 1 : 0;
-    var bk = out(P(t, A.leave - .1, A.leave + .35)) * (1 - out(P(t, WORDS[WORDS.length - 1].e + 1.1, WORDS[WORDS.length - 1].e + 1.6))); $('band').style.opacity = bk; $('band').style.transform = 'translateY(' + (1 - bk) * 40 + 'px)';
+    var bk = io(P(t, A.leave + .05, A.leave + .5)) * (1 - out(P(t, WORDS[WORDS.length - 1].e + 1.1, WORDS[WORDS.length - 1].e + 1.6))); $('band').style.opacity = bk; $('band').style.transform = 'translateY(' + (1 - bk) * 40 + 'px)';
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
   function buildCues(){
-    var Q = [{ t: 0, k: 'hit', g: .5, p: -.3 }, { t: 0, k: 'whoosh', d: .5, g: .4 }];
-    // the bug: a tap, then an impact as the screen goes white; after the fix a tap and a soft blip
-    TAPS.forEach(function(x){ if (x[0] < 0) return; var bad = x[0] < A.now - .2;
+    var Q = [{ t: 0, k: 'whoosh', d: .5, g: .35 }];
+    // the bug: a tap, then a soft bloom as the screen goes white; after the fix a tap, a soft blip and the re-render
+    TAPS.forEach(function(x, n){ if (x[0] < 0) return; var bad = x[0] < A.now - .2;
       Q.push({ t: x[0], k: 'touch', g: .38, x: 30 + x[1] * .94 });
-      if (bad) Q.push({ t: x[0] + .05, k: 'hit', g: .42, p: -.2 }); else Q.push({ t: x[0] + .05, k: 'blip', g: .25, x: 270 }); });
-    // a whoosh on every camera move (the peak lands as the move arrives)
-    MOVES.forEach(function(m, i){ if (i === 2) return; var pz = i ? MOVES[i - 1][4] : .94; Q.push({ t: m[0], k: 'move', d: Math.max(.4, m[1] * .8), g: .34, dir: m[4] > pz ? 1 : -1, x: 255, x2: 255 + (m[2] - 270) * 2, r: .25 }); });
-    Q.push({ t: A.styles, k: 'blip', g: .3, x: 270 }, { t: A.blank, k: 'boom', g: .4 }, { t: A.blank + .05, k: 'thud', g: .3 }, { t: A.land, k: 'snap', g: .45, p: 4, x: 255, r: .2 });
-    Q.push({ t: A.fix, k: 'swell', d: Math.max(.8, A.fix - TAPS[3][0] - .1), g: .5, x: 255 }, { t: A.fix, k: 'hit', g: .45 }, { t: A.fix + .5, k: 'snap', g: .35, p: 7, x: 255, r: .2 });
+      if (n === 0) Q.push({ t: x[0] + .25, k: 'swell', d: .22, g: .4, x: 255 }, { t: x[0] + .25, k: 'hit', g: .36, p: -.2 });
+      else if (bad) Q.push({ t: x[0] + .75, k: 'swell', d: .7, g: .38, x: 255 });
+      else { Q.push({ t: x[0] + .05, k: 'blip', g: .25, x: 270 }); if (n < TAPS.length - 1) Q.push({ t: x[0] + .1, k: 'move', d: .4, g: .2, dir: -1, x: 270, x2: 270, r: .2 }, { t: x[0] + .45, k: 'snap', g: .22, p: 5, x: 255, r: .2 }); } });
+    // a whoosh on every camera move, panned with it (the peak lands as the move arrives)
+    MOVES.forEach(function(m, i){ var pz = i ? MOVES[i - 1][4] : .94; Q.push({ t: m[0], k: 'move', d: Math.max(.45, m[1] * .85), g: m[5] ? .42 : .3, dir: m[4] > pz ? 1 : -1, x: 255, x2: 255 + (m[2] - 270) * 4, r: .25 }); });
+    Q.push({ t: A.leave + .8, k: 'swell', d: .9, g: .4, x: 255 });   // the push-through into slow motion
+    Q.push({ t: A.styles, k: 'blip', g: .3, x: 270 }, { t: A.styles + .2, k: 'snap', g: .25, p: 3, x: 300, r: .2 }, { t: A.blank, k: 'boom', g: .38 }, { t: A.blank + .12, k: 'thud', g: .28 }, { t: A.land, k: 'snap', g: .45, p: 4, x: 255, r: .2 }, { t: A.land + .1, k: 'swish', d: .7, g: .3, p: .2 });
+    Q.push({ t: A.fix + .55, k: 'swell', d: Math.max(.8, A.fix - A.land - .2), g: .5, x: 255 }, { t: A.fix - .15, k: 'whoosh', d: .8, g: .4, p: -.2 }, { t: A.fix + .6, k: 'snap', g: .38, p: 7, x: 255, r: .2 });
     for (var c = 0, t0 = A.fix + .4, t1 = A.light + .25; t0 + c * .09 < t1; c++) Q.push({ t: t0 + c * .09, k: 'tick', g: .09, p: (c * 5) % 7 });
+    Q.push({ t: A.color - .05, k: 'swish', d: .5, g: .22, p: .6 }, { t: A.dark2 - .05, k: 'swish', d: .5, g: .22, p: .9 });
     Q.push({ t: A.light + .3, k: 'pop', g: .35, p: 4 });
-    Q.push({ t: A.now - .05, k: 'resolve', g: .45, x: 255, r: .3, notes: [57, 64, 69, 76] }, { t: A.now + .1, k: 'pop', g: .3, p: 6 });
+    Q.push({ t: A.now - .05, k: 'resolve', g: .45, x: 255, r: .3, notes: [57, 64, 69, 76] }, { t: A.now + .1, k: 'pop', g: .3, p: 6 }, { t: A.now + .25, k: 'snap', g: .3, p: 6, x: 255, r: .2 });
     [0, 1, 2].forEach(function(j){ Q.push({ t: A.boxes - .1 + j * .38, k: 'blip', g: .32, p: 3 + j * 2, x: [255, 120, 400][j] }); });
     Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .45, p: -.6 });
     window.CUES = { dur: DUR, cues: Q, mix: { duck: 8 }, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
