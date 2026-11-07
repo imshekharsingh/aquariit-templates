@@ -38,3 +38,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
 - c3: abstract "why" topics with nothing to see change (why 60 minutes 118, why the sky is blue 153).
 - c3: a transformation people don't recognise (flamingos, a grey chick in frame 0: 120 at 5 h vs the Sahara's 1,041).
 - tech: news reels (Siri 8, MacBook 29, Discord 35); the 31 Oct-6 Nov test missed all three targets (median reach 115 vs 300).
+
+- 7 Nov 2026, web plateau: since 1 Nov every web reel is a layout fix and reach sits at 305-2,267 (median 1,316), avg watch ~8.7 s, saves ~1.3%.
+  The winners (numbers 103k, stagger 5.9k, overscroll 4.5k) were satisfying motion or polish tricks with 14 s watch and 3-4.5% saves.
+  Next experiment (8 Nov 13:00): result-first opening on a satisfying motion trick (rules-web.md rule 11); read reach, watch and saves at 24 h vs the median above.
