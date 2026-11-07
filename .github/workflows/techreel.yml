@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Mandatory Gate
-        # no render without review/tech/showreel-tech-<slug>.md, items 1-12 PASS (design/mandatory.md; owner, 7 Nov 2026)
+        # no render without review/tech/showreel-tech-<slug>.md, items 1-12 and the FLOW items 14-17 PASS (design/mandatory.md; owner, 7 Nov 2026)
         run: node scripts/review-gate.mjs --name "showreel-tech-$SLUG"
       - uses: actions/setup-python@v5
         with:

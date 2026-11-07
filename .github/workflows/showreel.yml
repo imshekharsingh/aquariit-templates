@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Mandatory Gate
-        # no render without review/<channel>/<name>.md, items 1-12 PASS (design/mandatory.md; owner, 7 Nov 2026); a short preview (seconds) is exempt
+        # no render without review/<channel>/<name>.md, items 1-12 and the FLOW items 14-17 PASS (design/mandatory.md; owner, 7 Nov 2026); a short preview (seconds) is exempt
         if: inputs.seconds == ''
         run: node scripts/review-gate.mjs --config "$CFG"
       - uses: actions/setup-python@v5

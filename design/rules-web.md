@@ -31,3 +31,7 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
 9. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
    PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
    Wi-Fi was read "Wi" "Fi" on @techin20sec; Kokoro alone reads CSS-style units (px, vh, dvh) through its fallback voice.
+10. **Motion that never stops and never jumps: `FLOW: continuity` 85%+, `FLOW: cuts 0` (every planned jump declared in window.TRANSITIONS),
+   `FLOW: dead runs none`.** Start from scripts/explainer/newweb.mjs and the motion kit. Evidence (7 Nov, design/mandatory.md "FLOW calibration"):
+   the best web reel, Nº 09 numbers (100,928 reach, 74% hold), is 95% continuous with no cut and no dead run; Nº 13 sideways (1,872) is 35% with
+   4 dead runs; the first flash cut was 65% with 2 cuts, an undeclared strobe and 3 dead runs, and 94% after its flow pass.

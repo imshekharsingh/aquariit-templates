@@ -6,12 +6,14 @@
 // every sentence must be on screen as a caption at some point (window.__cap() = the sentence shown).
 // Mandatory Gate (7 Nov 2026): it also prints SAFE ZONE and OVERLAP for the reported boxes every 0.5 s (scripts/showreel/layout.mjs; BAND, HOOK and
 // SUBTITLES are canvas-drawn, so they are REVIEW items read from the stills sheet).
+// FLOW (7 Nov 2026): cuts, dead runs, continuity and strobes from the frame every 0.1 s (scripts/showreel/flow.mjs, the c3 thresholds).
 // Usage: node scripts/channel3/qa.mjs scripts/channel3/<slug>.json [--write]   (exit 1 on any problem; --write copies the scene's voice
 // text, times and length into the config first)
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { createRequire } from 'node:module';
 import { judge } from '../showreel/layout.mjs';
+import { sample, judgeFlow } from '../showreel/flow.mjs';
 const { chromium } = createRequire(process.env.PW_FROM || join(process.cwd(), 'node_modules/'))('playwright');
 const cfg = JSON.parse(readFileSync(process.argv[2], 'utf8'));
 const b = await chromium.launch(), p = await b.newPage({ viewport: { width: 540, height: 960 } }), errors = [];
@@ -44,12 +46,13 @@ if (want) {
   if (miss.length) { vbad++; console.log(`QA captions: sentence(s) ${miss.map((i) => i + 1).join(', ')} never on screen`); }
   else console.log(`QA captions: all ${n} sentences on screen`);
 }
+const FL = judgeFlow(await sample(p, +cfg.dur), 'c3');   // FLOW (design/mandatory.md items 14-17): Turns Out thresholds (scripts/showreel/flow.mjs)
 await b.close();
 for (const [m, t] of seen) console.log(`QA ${t.toFixed(1)} s: text outside the frame: ${m}`);
-const L = judge(lay, false); for (const l of L.lines) console.log(l);
+const L = judge(lay, false); for (const l of [...L.lines, ...FL.lines]) console.log(l);
 if (out) console.log('QA outcome: ' + JSON.stringify(out));
 console.log(`QA sound: ${cues} cues`);
-const bad = L.bad + vbad + seen.size + errors.length + (out && out.ok === false ? 1 : 0) + (cues ? 0 : 1);
+const bad = L.bad + FL.bad + vbad + seen.size + errors.length + (out && out.ok === false ? 1 : 0) + (cues ? 0 : 1);
 if (errors.length) console.log('QA page errors: ' + errors.join(' | '));
 console.log(bad ? `QA: ${bad} problem(s)` : 'QA: clean');
 process.exit(bad ? 1 : 0);

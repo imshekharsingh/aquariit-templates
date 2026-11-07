@@ -99,16 +99,21 @@ for (const dir of ['scripts/explainer', 'scripts/showreel', 'scripts/channel3'])
       else if (!/window\.seek\s*=/.test(readFileSync(join(root, j.seek), 'utf8'))) err(`${label}: ${j.seek} must expose window.seek(t)`);
     }
     postText(j, label);
+    // the shared kits (scripts/channel3/kit3d.js, kit25d.js, scripts/explainer/kitmotion.js) are copied into each scene that uses them: a stale copy fails (node scripts/channel3/kit-inline.mjs <scene>)
+    { const sc = j.seek && existsSync(join(root, j.seek)) ? readFileSync(join(root, j.seek), 'utf8') : '';
+      for (const k of KITS) { const cp = kitCopy(sc, k); if (cp !== null && cp !== kitText(k)) err(`${label}: its copy of the ${k.name} kit is stale; run node scripts/channel3/kit-inline.mjs ${j.seek}`); } }
     // Channel 3 (owner, 31 Oct 2026: true stories, every claim in two sources): the sources the app lists and copies as a comment
     if (dir === 'scripts/channel3') {
-      // the shared kits (scripts/channel3/kit3d.js, kit25d.js) are copied into each scene that uses them: a stale copy fails (node scripts/channel3/kit-inline.mjs <scene>)
-      const sc = j.seek && existsSync(join(root, j.seek)) ? readFileSync(join(root, j.seek), 'utf8') : '';
-      for (const k of KITS) { const cp = kitCopy(sc, k); if (cp !== null && cp !== kitText(k)) err(`${label}: its copy of the ${k.name} kit is stale; run node scripts/channel3/kit-inline.mjs ${j.seek}`); }
       const src = Array.isArray(j.sources) ? j.sources : [];
       if (src.length < 2 || !src.every((x) => x && String(x.title || '').trim() && /^https:\/\/\S+$/.test(x.url || ''))) err(`${label}: needs a "sources" list of at least 2 entries, each { title, url (https) }`);
     }
   }
 }
+
+// 5b. the web motion kit's demo and starter scenes outside the reel folders (scripts/explainer/demo) keep a fresh copy of the kit too
+{ const D = join(root, 'scripts/explainer/demo');
+  for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.html')) : []) { const sc = readFileSync(join(D, f), 'utf8');
+    for (const k of KITS) { const cp = kitCopy(sc, k); if (cp !== null && cp !== kitText(k)) err(`scripts/explainer/demo/${f}: its copy of the ${k.name} kit is stale; run node scripts/channel3/kit-inline.mjs scripts/explainer/demo/${f}`); } } }
 
 // 6. every ffmpeg command that writes a delivered MP4 puts the moov atom first (owner, 6 Nov 2026: reels were slow to start in the app because
 // the sound remux dropped +faststart). A command writes an MP4 when a *.mp4 argument is not an input (-i), or when it encodes AAC (the final mux).

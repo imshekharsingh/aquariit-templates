@@ -11,7 +11,9 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   and the reel list (owner, 31 Oct 2026: the tabs must look consistent).
   Each tab has a "Reels | Growth" switch (owner, 1 Nov 2026): Growth charts followers over time and reach per reel from the collector's D1 data
   (inline SVG, no libraries); the app follows the phone's light or dark setting through its color tokens. Cards (audit, spare night) sit at the top. The 6-17 Oct templates, their Archive and Style Library were deleted (owner, 31 Oct 2026).
-- **Reels**: one seekable scene per reel, `scripts/explainer/<slug>.html` exposing `window.seek(t)` (every frame a pure function of t,
+- **Reels**: every new @webin20sec reel starts from `node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ...` and the shared motion kit
+  scripts/explainer/kitmotion.js (camera rig with drift and named moves, declared transitions, springs, text and secondary motion, cues; owner, 7 Nov 2026:
+  premium motion by default, not hand-built per reel; a kit change: `node scripts/channel3/kit-inline.mjs <scene>`). One seekable scene per reel, `scripts/explainer/<slug>.html` exposing `window.seek(t)` (every frame a pure function of t,
   seeded randomness only), plus `scripts/explainer/<slug>.json` (name `showreel-NN-<slug>`, dur, fps 60, cover time, caption, 6+ keywords, exactly 5 hashtags).
 - **Render**: always on GitHub (Actions, "Showreel" workflow, config = the json). The MP4, cover and contact sheet go to the PRIVATE Cloudflare R2
   bucket "aquarii-reels" (owner, 3 Nov 2026: the repo is public, so nothing goes to the GitHub releases, which stay empty; scripts/r2.sh,
@@ -43,7 +45,8 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
 - `attic/` holds the retired tooling (films, recordings, kits, the daily-template routine). Nothing in it runs or deploys; don't build on it.
 
 ## Mandatory Gate (owner, 7 Nov 2026)
-design/mandatory.md: 13 items with a pass condition each (AUTO = a script prints it, REVIEW = the builder checks the stills and writes the evidence),
+design/mandatory.md: 13 items with a pass condition each, plus the FLOW items 14-17 (motion quality, not only defects: no undeclared cuts, no dead runs,
+continuity 85%+, at most one declared strobe; owner, 7 Nov 2026) (AUTO = a script prints it, REVIEW = the builder checks the stills and writes the evidence),
 plus the daily musts (audit card, rulebook update, one craft improvement per channel logged in design/craft-log.md). It applies to every reel on
 every channel, every day: nothing is rendered or called ready until every item passes; a failing reel is fixed or its topic swapped.
 Each reel has review/<channel>/<name>.md (from review/TEMPLATE.md, "N. item: PASS: evidence", the AUTO lines pasted); npm run check and the
@@ -65,7 +68,7 @@ a social media manager, design manager, product manager, whatever you can be." S
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
 Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
 - Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel, which also prints SAFE ZONE and OVERLAP for the Mandatory Gate; `node scripts/showreel/preflight.mjs <config>` plus `node scripts/showreel/stills.mjs <config> <out>` for showreels, one sheet to review)
-  and clear all of it: the PREFLIGHT voice line must say "fits", the PRONUNCIATION line must show no "check:" words (shared lexicon scripts/voice/say.json, every channel), no "text wider than its box", the stills lines must say "EMPTY FRAMES: none", "TEXT FIT: all text inside its box", "STATIC STRETCH: none" and "SUBJECT FILL: nn% at frame 0" at 40% or more (all scan every 0.5 s; a demo that overflows on purpose marks its container data-fit="free"; a deliberate hold is marked in the scene with window.HOLDS = [[t0, t1]]; owner, 7 Nov 2026), "SAFE ZONE: ok", "OVERLAP: none", "BAND: clear", "HOOK: clear of the subject" and the SUBTITLES line (scripts/showreel/layout.mjs; the scene marks data-subject, data-band, data-hook, data-subs), and stills at every beat checked. All of it goes into the reel's Mandatory Gate review file (design/mandatory.md).
+  and clear all of it: the PREFLIGHT voice line must say "fits", the PRONUNCIATION line must show no "check:" words (shared lexicon scripts/voice/say.json, every channel), no "text wider than its box", the stills lines must say "EMPTY FRAMES: none", "TEXT FIT: all text inside its box", "STATIC STRETCH: none" and "SUBJECT FILL: nn% at frame 0" at 40% or more (all scan every 0.5 s; a demo that overflows on purpose marks its container data-fit="free"; a deliberate hold is marked in the scene with window.HOLDS = [[t0, t1]]; owner, 7 Nov 2026), "SAFE ZONE: ok", "OVERLAP: none", "BAND: clear", "HOOK: clear of the subject", the SUBTITLES line and the four FLOW lines ("FLOW: cuts 0", "FLOW: dead runs none", "FLOW: continuity" 85%+, "FLOW: strobes" 0 or 1 declared; scripts/showreel/flow.mjs, also printed by channel3/qa.mjs and techreel --stills; a planned jump is declared in window.TRANSITIONS = [[t0, t1, 'kind']], a tech topic's "transitions") (scripts/showreel/layout.mjs; the scene marks data-subject, data-band, data-hook, data-subs), and stills at every beat checked. All of it goes into the reel's Mandatory Gate review file (design/mandatory.md).
   Re-render only for a real defect in the output. After a render, one `node scripts/reel-status.mjs <config> <scratch dir>` (about 25 minutes after the
   dispatch) gives the run's result, the voice check and the contact sheet; a failed run prints the failing job's error lines.
 - Rulebooks are a gate (owner, 5 Nov 2026): design/rules-web.md, design/rules-c3.md, design/rules-tech.md, 5-8 hard rules each with the

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>__TITLE__</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec starter (scripts/explainer/newweb.mjs; motion from scripts/explainer/kitmotion.js). Beat 1: the broken thing is moving in the
+   phone from frame 0 under the hook. Beat 2: the BEFORE tag morphs into the code card, the fix is typed with a caret, the fix line glides
+   into the page and the page re-themes top to bottom. Payoff: a tap on the fixed page, a leader-line label on the result. One camera, never
+   still; the subtitle band below the phone; every frame a pure function of t. Replace .bad / .good with the reel's own picture. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--acc:#7cf0b6;--red:#ff5a4a;--pg:#16171c;--card:#202128;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#bg{left:-200px;top:-100px;width:940px;height:1160px}
+#bg i{position:absolute;border-radius:50%;filter:blur(30px)}
+#vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
+#ph{left:30px;top:300px;width:480px;height:1000px;border-radius:62px;background:#2a2b31;padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+#scr{position:absolute;left:10px;top:10px;width:460px;height:980px;border-radius:52px;overflow:hidden;background:var(--pg)}
+#sb{position:absolute;left:0;right:0;top:0;height:44px;background:var(--pg);color:var(--paper);font:700 15px/44px var(--m);padding:0 34px;z-index:4}
+.pg{position:absolute;left:0;top:44px;width:460px;height:936px;background:var(--pg)}
+.br{position:absolute;left:24px;top:22px;font:700 13px/1 var(--m);letter-spacing:.18em;color:var(--dim)}
+.h1{position:absolute;left:24px;top:44px;font:800 44px/1 var(--f);font-variation-settings:'opsz' 96;letter-spacing:-.025em}
+.row{position:absolute;left:20px;width:420px;height:96px;border-radius:18px;background:var(--card)}
+.row .th{position:absolute;left:12px;top:12px;width:72px;height:72px;border-radius:14px}
+.row b{position:absolute;left:100px;top:22px;font:700 21px/1 var(--f);letter-spacing:-.01em;white-space:nowrap}
+.row small{position:absolute;left:100px;top:56px;font:700 12px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+.row s{position:absolute;right:16px;top:34px;width:28px;height:28px;border-radius:50%;text-decoration:none}
+.bad .row s{border:3px solid var(--red)}
+.good .row s{background:var(--acc)}
+.good .row s::after{content:'';position:absolute;left:9px;top:4px;width:7px;height:13px;border:solid #111214;border-width:0 3px 3px 0;transform:rotate(45deg)}
+.btn{position:absolute;left:20px;top:600px;width:420px;height:64px;border-radius:32px;font:800 21px/64px var(--f);text-align:center}
+.bad .btn{background:#3a3b42;color:var(--dim)}
+.good .btn{background:var(--acc);color:#111214}
+.good{visibility:hidden}
+#fg{position:absolute;width:64px;height:64px;border-radius:50%;background:rgba(242,239,232,.28);border:3px solid rgba(242,239,232,.8);z-index:6;opacity:0}
+#rip{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid var(--acc);z-index:6;opacity:0}
+#ghost{left:0;top:0;padding:8px 12px;border-radius:12px;background:var(--surface);border:2px solid var(--acc);font:500 18px/1 var(--m);color:var(--acc);white-space:nowrap;opacity:0;z-index:5}
+/* screen space: the label row, the hook, the tag that becomes the code card, the leader label, the subtitles */
+#lbl{left:34px;top:130px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hook{left:34px;top:158px;font-weight:800;font-size:58px;line-height:.98;letter-spacing:-.024em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--red)}
+#code{left:30px;top:128px;width:450px;height:104px;border-radius:20px;background:var(--surface);overflow:hidden;opacity:0}
+#tagt{position:absolute;left:14px;top:10px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--red)}
+#cd{position:absolute;left:22px;top:18px;font:500 20px/1.45 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc);border-radius:4px}#cd .dim{color:var(--dim)}
+.km-caret{display:inline-block;width:3px;height:22px;margin-left:2px;vertical-align:-4px;background:var(--acc)}
+#lead{left:0;top:0;width:540px;height:960px;overflow:visible}
+#lead line{stroke:var(--acc);stroke-width:2.5;stroke-linecap:round}
+#lab{left:300px;top:560px;font:700 15px/1 var(--m);letter-spacing:.12em;color:#111214;background:var(--acc);padding:9px 12px;border-radius:9px;white-space:nowrap;opacity:0}
+#band{left:0;top:640px;width:540px;height:150px;background:var(--ink)}
+#cap{left:30px;top:652px;width:450px;min-height:90px;padding:6px 0 0;font:700 31px/1.14 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="bg" class="a" data-fit="free"><i style="left:120px;top:160px;width:420px;height:420px;background:rgba(124,240,182,.07)"></i><i style="left:520px;top:620px;width:380px;height:380px;background:rgba(255,90,74,.06)"></i></div>
+<div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
+  <div id="ph" class="a" data-subject>
+    <div id="scr">
+      <div id="sb">9:41</div>
+      <div class="pg bad" id="bad">
+        <div class="br">YOUR APP</div><div class="h1">Today</div>
+        <div class="row" style="top:110px"><div class="th" style="background:#2b3046"></div><b>Morning run</b><small>6:30 · 5 KM</small><s></s></div>
+        <div class="row" style="top:222px"><div class="th" style="background:#3a2b46"></div><b>Team call</b><small>10:00 · 30 MIN</small><s></s></div>
+        <div class="row" style="top:334px"><div class="th" style="background:#2b4636"></div><b>Lunch with Ana</b><small>13:00 · CAFE</small><s></s></div>
+        <div class="row" style="top:446px"><div class="th" style="background:#46402b"></div><b>Read a chapter</b><small>21:00 · 20 MIN</small><s></s></div>
+        <div class="btn">Save the day</div>
+      </div>
+      <div class="pg good" id="good">
+        <div class="br">YOUR APP</div><div class="h1">Today</div>
+        <div class="row" style="top:110px"><div class="th" style="background:#2b3046"></div><b>Morning run</b><small>6:30 · 5 KM</small><s></s></div>
+        <div class="row" style="top:222px"><div class="th" style="background:#3a2b46"></div><b>Team call</b><small>10:00 · 30 MIN</small><s></s></div>
+        <div class="row" style="top:334px"><div class="th" style="background:#2b4636"></div><b>Lunch with Ana</b><small>13:00 · CAFE</small><s></s></div>
+        <div class="row" style="top:446px"><div class="th" style="background:#46402b"></div><b>Read a chapter</b><small>21:00 · 20 MIN</small><s></s></div>
+        <div class="btn" id="btn">Save the day</div>
+      </div>
+      <div id="rip"></div><div id="fg"></div>
+    </div>
+  </div>
+</div></div>
+<div id="ghost" class="a" aria-hidden="true">fix: one-line;</div>
+<div id="lbl" class="a">Nº 00 · __SLUG__</div>
+<div id="hook" class="a" data-hook>__HOOK__</div>
+<div id="code" class="a"><div id="tagt">BEFORE · IT BREAKS</div><div id="cd"></div></div>
+<svg id="lead" class="a" aria-hidden="true"><line id="ll" x1="0" y1="0" x2="0" y2="0"/></svg>
+<div id="lab" class="a">FIXED · ONE LINE</div>
+<div id="band" class="a" data-band></div>
+<div id="cap" class="a" data-subs></div>
+<script>
+(function(){
+/*kitmotion:begin*/
+/*kitmotion:end*/
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease;
+  var TEXT = __TEXT__, DUR = __DUR__, HOOK_N = __HOOK_N__, HOOK_LINES = __HOOK_LINES__, FIX_S = __FIX_S__;
+  // the code: the line the reel teaches (the <b> part is the fix, swept with the highlight); the ghost copy glides into the page
+  var CODE = '<span class="dim">.list {</span>\n  <b>fix: one-line;</b> <span class="dim">}</span>';
+  var V, PH, A = {}, CAM, T = {};
+  var TAG = { x: 30, y: 128, w: 230, h: 36, r: 9 }, CARD = { x: 30, y: 128, w: 450, h: 104, r: 20 };
+  function anchors(words){
+    V = KM.voice(TEXT, .15, words); PH = V.phrases(6); KM.reset(DUR);
+    var S = V.starts(), W = V.words;
+    A.hookIn = (W[HOOK_N - 1] ? W[HOOK_N - 1].s - V.lead : 1.5) + .3; A.leave = Math.max(S[1] - .3, A.hookIn + .35);
+    A.fix = S[FIX_S]; A.typeEnd = Math.min(A.fix + 1.6, (S[FIX_S + 1] || A.fix + 2.4) - .3); A.pay = S[S.length - 1]; A.end = V.end;
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    // the camera: wide on the phone under the hook, in on the broken rows, back for the code, in on the result; it drifts all the way
+    CAM = KM.rig({ x: 270, y: 445 - (HOOK_LINES - 2) * 32, z: .94 })   // a three-line hook: the phone starts lower
+      .pushIn(A.leave + .2, .9, 270, 590, 1.1)
+      .pan((A.leave + A.fix) / 2, 1.1, 262, 640)
+      .pull(A.fix - .25, .85, 270, 545, .9)
+      .pushIn(A.pay - .2, 1, 270, 880, .97)
+      .creep(A.pay + .8, DUR - A.pay - .8, .1);
+    // the transitions: the tag becomes the code card (morph), the fix line glides into the page (sharedElement), the page re-themes (wipeRestyle)
+    T.morph = KM.transition('morph', A.fix - .1, .5);
+    T.glide = KM.transition('sharedElement', A.typeEnd + .1, .7);
+    T.wipe = KM.transition('wipeRestyle', A.typeEnd + .7, .6);
+    A.tap = Math.min(A.pay + .5, DUR - 1.6); KM.tap(A.tap, 255);
+    KM.cue({ t: 0, k: 'hit', g: .45, p: -.3 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .35 });
+    for (var c = 0, t0 = A.fix + .4; t0 + c * .09 < A.typeEnd; c++) KM.cue({ t: t0 + c * .09, k: 'tick', g: .08, p: (c * 5) % 7 });
+    KM.cue({ t: A.typeEnd + .15, k: 'pop', g: .3, p: 4 }); KM.cue({ t: A.tap + .55, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] });
+    KM.cue({ t: DUR - .45, k: 'swish', d: .6, g: .4, p: -.6 });
+    KM.publish();
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var c = CAM.apply($('world'), t, $('ph'));
+    KM.parallax($('bg'), c, .35);
+    // ---- beat 1: the broken thing, moving from frame 0 (here: rows that will not sit still; draw the reel's own bug) ----
+    [].forEach.call(document.querySelectorAll('.bad .row'), function(r, i){ var a = Math.sin(t * 5.2 + i * 1.7), b = Math.sin(t * 3.1 + i * 2.3);
+      r.style.transform = 'translate(' + (a * 6).toFixed(2) + 'px,' + (b * 7).toFixed(2) + 'px) rotate(' + (a * 1.2).toFixed(2) + 'deg)'; });
+    // ---- beat 2: the page re-themes top to bottom once the fix lands, the rows settle one after another ----
+    var wk = T.wipe(t); KM.wipe($('good'), wk);
+    KM.stagger(document.querySelectorAll('.good .row'), t, A.typeEnd + .75, .1, .6);
+    KM.squeeze($('btn'), t, A.tap);
+    // after the tap the fixed page scrolls on slowly (the payoff keeps living to the last frame)
+    var scr = E.inOut3(P(t, A.tap + .8, DUR)) * 60; if (wk > 0) $('good').style.transform = 'translateY(' + (-scr).toFixed(2) + 'px)';
+    // the tap: the finger comes in, presses, the ring opens
+    var fin = E.inOut3(P(t, A.tap - .45, A.tap - .05)), lift = E.inOut3(P(t, A.tap + .12, A.tap + .5)), fx = mix(320, 230, fin) + lift * 40, fy = mix(760, 676, fin) + lift * 70;
+    $('fg').style.left = (fx - 32) + 'px'; $('fg').style.top = (fy - 32) + 'px'; $('fg').style.opacity = (KM.cl((t - A.tap + .45) * 5) * (1 - lift)).toFixed(3);
+    KM.ripple($('rip'), t, A.tap, 230, 676);
+    // ---- the hook: word by word, blur to sharp; it lifts away before the first sentence ----
+    var gone = E.inOut3(P(t, A.leave, A.leave + .25)), st = [];
+    for (var i = 0; i < HOOK_N; i++) st.push(i === 0 ? -.3 : V.words[i].s - V.lead);
+    KM.rise($('hook').querySelectorAll('.ln > span'), t, st, gone);
+    $('lbl').style.opacity = (1 - P(t, A.leave - .2, A.leave)).toFixed(3);   // the label row leaves first, so the rising hook never meets it
+    // ---- the BEFORE tag (after the hook) morphs into the code card; the fix is typed with a caret and swept ----
+    var mk = T.morph(t), cd = $('code'), tagIn = P(t, A.leave + .3, A.leave + .5);
+    KM.morph(cd, TAG, CARD, mk, '#2a1716', '#1b1c21'); cd.style.opacity = (t < A.fix - .1 ? tagIn : 1).toFixed(3);
+    $('tagt').style.opacity = (1 - P(mk, 0, .4)).toFixed(3);
+    KM.type($('cd'), CODE, t, A.fix + .4, A.typeEnd); $('cd').style.opacity = P(mk, .6, 1).toFixed(3);
+    var fixB = $('cd').querySelector('b'); if (fixB) KM.sweep(fixB, t, A.typeEnd + .05, .45, 'rgba(124,240,182,.18)');
+    // the fix line glides from the code card into the page (a copy: the card keeps it on screen for the save)
+    var g = T.glide(t), gh = $('ghost'), a = { x: 78, y: 158, w: 182, h: 36, r: 12 }, sc = CAM.toScreen(c, 270, 360), b = { x: sc[0] - 60, y: sc[1] - 14, w: 120, h: 28, r: 14 };
+    KM.shared(gh, a, b, g); gh.style.opacity = (t >= A.typeEnd + .1 && g < 1 ? 1 - P(g, .8, 1) : 0).toFixed(3);
+    // ---- payoff: a leader line from the button to its label ----
+    // (the label sits in the gap between the last row and the button; the line runs from the button's top edge up to it)
+    var bt = CAM.toScreen(c, 330, 954 - scr), lk = P(t, A.tap + .3, A.tap + 1);
+    $('lab').style.left = (bt[0] - 40).toFixed(1) + 'px'; $('lab').style.top = (bt[1] - 46).toFixed(1) + 'px';
+    KM.leader($('ll'), $('lab'), [bt[0] - 70, bt[1] + 6], [bt[0] - 40, bt[1] - 30], lk);
+    // ---- the subtitle band and the phone's fade above it ----
+    // the phone's fade leads the band in and trails it out, so the phone never shows inside a band that is up
+    var bk = E.out3(P(t, A.leave - .1, A.leave + .35)) * (1 - E.out3(P(t, A.end + 1.1, A.end + 1.6))), fk = E.out3(P(t, A.leave - .4, A.leave + .05)) * (1 - E.out3(P(t, A.end + 1.3, A.end + 1.8))), mY = mix(960, 626, fk), mask = 'linear-gradient(to bottom,#000 ' + (mY - 22) + 'px,rgba(0,0,0,0) ' + mY + 'px)';
+    $('vp').style.webkitMaskImage = mask; $('vp').style.maskImage = mask;
+    $('band').style.opacity = bk.toFixed(3); $('band').style.transform = 'translateY(' + ((1 - bk) * 40).toFixed(2) + 'px)';
+    KM.subs($('cap'), t, V, PH, HOOK_N, Math.min(DUR - .9, A.end + 1.1), function(w, j){ return V.words[j].s >= A.fix + V.lead && /^(fix|one|line|now)/i.test(w) ? 'var(--acc)' : null; });
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); } };
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 58px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 20px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
