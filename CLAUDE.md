@@ -175,6 +175,10 @@ A scheduled task (created by the parent session, not here) fires Tuesdays around
 ## Accounts and data
 - Instagram tokens live only in the GitHub secrets INSTAGRAM_TOKEN, INSTAGRAM_TOKEN_2 and INSTAGRAM_TOKEN_3 (Turns Out, @itturns.out) (+ the optional Worker secret GH_READ_TOKEN). Never print them or put them in files or chat.
 - The "Instagram collect" workflow reads all three accounts nightly and at about 10:53 IST (slot 3 only once INSTAGRAM_TOKEN_3 exists).
+- Post check (owner, 7 Nov 2026: "Why did I have to tell you I posted it?"): Instagram collect also runs a light post check about 40 minutes after every
+  posting slot and at 23:43 IST (input `post_check` to run it by hand; latest 5 posts per account, auto-marked at Instagram's time). Its log has one line
+  per reel due today: "POSTED web: showreel-29-flash at 19:04 IST (marked)" or "NOT POSTED web 19:00: showreel-29-flash". Sessions read these lines
+  (latest Instagram collect run) to know what went out; never ask the owner whether something was posted.
 - Daily audit (owner, 1 Nov 2026: the app shows the owner everything): every daily studio run writes its full audit as a CARD in the app, by
   dispatching the "Audit card" workflow on main with input `card` = JSON `{"kind":"audit","day":"YYYY-MM-DD","points":[today's points],
   "channels":{"web":[...],"tech":[...],"c3":[...]}}` (format in scripts/post-card.mjs; short bullets, numbers first, simple English; per channel the
