@@ -1,0 +1,53 @@
+{
+ "name": "showreel-c3-white-pyramid",
+ "seek": "scripts/channel3/white-pyramid.html",
+ "dur": 32.4,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Why did the Great Pyramid stop shining white? 4,500 years ago, it was cased in polished white limestone. The blocks came from quarries across the Nile. About 900 years ago, builders took the stones for Cairo. What you see today is the rough, stepped core underneath. A few casing stones still sit at its foot. Next door, Khafre's pyramid still has its casing at the top. Turns out, it never faded; it was stripped for stone.",
+  "at": [
+   0,
+   3.73,
+   8.55,
+   11.9,
+   16.43,
+   20.37,
+   23.35,
+   27.36
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "The Great Pyramid didn't fade from white to brown. It was cased in smooth white limestone, and the stones were carried off to build Cairo. 🏜️\n\nSend this to someone who's been to Giza. Which landmark should we explain next? 👇",
+ "keywords": [
+  "Great Pyramid was white",
+  "pyramids were white",
+  "Great Pyramid casing stones",
+  "white limestone pyramid",
+  "Khafre pyramid casing",
+  "Giza pyramids history",
+  "ancient Egypt facts"
+ ],
+ "hashtags": [
+  "#greatpyramid",
+  "#pyramidsofgiza",
+  "#ancientegypt",
+  "#egyptology",
+  "#historyfacts"
+ ],
+ "sources": [
+  {
+   "title": "Pyramids: The Inside Story, Giza history (PBS NOVA)",
+   "url": "https://www.pbs.org/wgbh/nova/pyramid/explore/gizahistory2.html"
+  },
+  {
+   "title": "Casing stone from the Great Pyramid of Giza (National Museums Scotland)",
+   "url": "https://nms.ac.uk/discover-catalogue/casing-stone-from-the-great-pyramid-of-giza"
+  },
+  {
+   "title": "Ten quarries of Ancient Egypt: 3, The Second Pyramid at Giza (Per Storemyr)",
+   "url": "https://per-storemyr.net/2012/12/24/ten-quarries-of-ancient-egypt-3-the-second-pyramid-at-giza/"
+  }
+ ]
+}
