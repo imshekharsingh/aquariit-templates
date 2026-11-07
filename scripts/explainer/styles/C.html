@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Style C: Glass and light</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300..800&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec style test C, "Glass and light" (7 Nov 2026; the owner picks one of A / B / C, nothing here changes the kit or the rules).
+   The flash reel's beats in 8 s: the hook over the device, the white flash, the fix code, the page that now loads dark.
+   TOKENS
+     palette   night #070816 · white #f7f8ff · dim rgba(230,234,255,.62) · glass rgba(255,255,255,.08) on a 1 px edge rgba(255,255,255,.26) ·
+               accent ice #8fe6ff · light blooms: violet #7a5cff, rose #ff6fcf, amber #ffb45c, cyan #3fd8ff (only as light, never as fills)
+     type      display Sora 680 56 px / 1.0, tracking -0.04em, the key words in ice; subtitles Sora 600 30 px; code DM Mono 500 18 px / 1.55;
+               labels DM Mono 500 12 px, tracking .14em
+     radii     device 64 · glass panes 26 · pills 999
+     shadows   panes float on soft coloured shadows (0 30px 60px rgba(20,10,60,.55)); a 1 px inner highlight on every glass edge
+     light     three slow blooms drift behind everything (radial light, screen-blended); the flash flares them to white; a soft gradient grade
+               (violet top, teal bottom) over the frame
+     grain 2 · blur 6 (shutter .45) · vignette off (the grade does it) · frosted blur 18-22 px behind every pane
+   CAMERA   a light, floating camera: settle-eased pushes with a little overshoot, a stronger drift; panes at three depths (back pane blurred,
+            front pane sharp, parallax 0.25-0.6) so a move reads as depth; the code pane springs out of a glass pill (morph)
+   MOTION   settle (1.4 wobbles) 0.6-0.9 s for panes, out3 0.35 s for words (blur to sharp), sine floats on every pane (2-4 px, 1-1.4 s)
+   SOUND    bed 240 bpm (bright major-seventh pads, hats), duck 8 dB, room 0.5; shimmer when a pane appears, blips in key on landings,
+            a swell into the flash, a bright resolve on the fixed page */
+:root{--night:#070816;--ink:#f7f8ff;--dim:rgba(230,234,255,.62);--glass:rgba(255,255,255,.08);--edge:rgba(255,255,255,.26);--acc:#8fe6ff;--f:'Sora',system-ui,sans-serif;--m:'DM Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--night);color:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#lights{left:-200px;top:-160px;width:940px;height:1280px}
+#lights i{position:absolute;border-radius:50%;mix-blend-mode:screen}
+#l1{width:620px;height:620px;background:radial-gradient(closest-side,rgba(122,92,255,.62),rgba(122,92,255,0))}
+#l2{width:560px;height:560px;background:radial-gradient(closest-side,rgba(255,111,207,.42),rgba(255,111,207,0))}
+#l3{width:520px;height:520px;background:radial-gradient(closest-side,rgba(63,216,255,.40),rgba(63,216,255,0))}
+#l4{width:460px;height:460px;background:radial-gradient(closest-side,rgba(255,180,92,.30),rgba(255,180,92,0))}
+#flare{left:-100px;top:100px;width:740px;height:900px;background:radial-gradient(closest-side,rgba(255,255,255,.7),rgba(255,255,255,0));opacity:0;mix-blend-mode:screen}
+#grade{left:0;top:0;width:540px;height:960px;background:linear-gradient(180deg,rgba(90,60,200,.20),rgba(7,8,22,0) 40%,rgba(0,150,170,.14));pointer-events:none;z-index:19}
+#vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
+/* the device: a slab of frosted glass; the page inside is translucent, its cards are glass too */
+#ph{left:40px;top:300px;width:460px;height:940px;border-radius:64px;padding:12px;background:rgba(255,255,255,.07);
+  -webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),inset 0 1.5px 0 rgba(255,255,255,.45),0 40px 90px rgba(18,8,60,.6)}
+#scr{position:absolute;left:12px;top:12px;width:436px;height:916px;border-radius:52px;overflow:hidden;background:rgba(9,10,30,.74);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+#sb{position:absolute;left:0;right:0;top:0;height:42px;font:500 14px/42px var(--m);padding:0 38px;z-index:4}
+#ab{position:absolute;left:0;right:0;top:42px;height:56px;z-index:4}
+#url{position:absolute;left:16px;right:16px;top:8px;height:40px;border-radius:20px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);font:500 14px/40px var(--m);color:var(--dim);text-align:center;white-space:nowrap}
+#prog{position:absolute;left:16px;bottom:2px;height:2px;border-radius:1px;background:var(--acc)}
+#pages{position:absolute;left:0;top:98px;width:436px;height:818px;overflow:hidden}
+.pg{position:absolute;left:0;top:0;width:436px;height:818px}
+.br{position:absolute;left:24px;top:22px;font:500 12px/1 var(--m);letter-spacing:.18em;color:var(--dim)}
+.h1{position:absolute;left:24px;top:44px;font:700 42px/1 var(--f);letter-spacing:-.04em}
+.fx{position:absolute;left:20px;width:396px;height:48px;border-radius:24px;font:500 16px/48px var(--f);padding:0 20px}
+.w{background:#ffffff;color:#5d6070}
+.d{background:rgba(255,255,255,.07);color:var(--dim);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+.cd{position:absolute;left:20px;width:396px;height:150px;border-radius:26px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);overflow:hidden}
+.cd .art{position:absolute;left:10px;top:10px;width:130px;height:130px;border-radius:18px;overflow:hidden;background:linear-gradient(160deg,#3b2f8f,#14264f)}
+.cd b{position:absolute;left:158px;top:22px;right:16px;font:650 20px/1.18 var(--f);letter-spacing:-.025em}
+.cd small{position:absolute;left:158px;bottom:20px;font:500 11px/1 var(--m);letter-spacing:.14em;color:var(--dim)}
+.art span,.hero span{position:absolute;display:block}
+.bk{position:absolute;left:24px;top:18px;font:500 13px/1 var(--m);letter-spacing:.14em;color:var(--dim)}
+.hero{position:absolute;left:20px;top:42px;width:396px;height:128px;border-radius:24px;overflow:hidden;background:linear-gradient(160deg,#3b2f8f,#14264f)}
+.hl{position:absolute;left:24px;top:186px;width:390px;font:700 27px/1.1 var(--f);letter-spacing:-.035em}
+.nx{position:absolute;left:20px;top:256px;width:180px;height:46px;border-radius:23px;background:var(--ink);color:#0b0c1d;font:650 15px/46px var(--f);text-align:center}
+.bd{position:absolute;left:24px;top:320px;width:390px;font:400 16px/1.45 var(--f);color:var(--dim);white-space:nowrap}
+#blank{position:absolute;left:0;top:98px;width:436px;height:818px;z-index:3;opacity:0}
+#sheen{position:absolute;left:0;top:98px;width:436px;height:120px;z-index:3;opacity:0;background:linear-gradient(180deg,rgba(143,230,255,0),rgba(143,230,255,.16) 60%,rgba(255,111,207,.12));filter:blur(6px)}
+#fg{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.18);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7);z-index:6;opacity:0}
+#rip{position:absolute;width:64px;height:64px;border-radius:50%;border:2px solid var(--acc);z-index:6;opacity:0}
+/* screen space */
+#lbl{left:34px;top:127px;font:500 11px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hook{left:32px;top:152px;font-weight:680;font-size:56px;line-height:.96;letter-spacing:-.04em}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--acc)}
+#back{left:280px;top:150px;width:200px;height:84px;border-radius:22px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);opacity:0;filter:blur(1.5px)}
+#back b{position:absolute;left:18px;top:16px;font:500 12px/1 var(--m);letter-spacing:.12em;color:var(--dim)}
+#back i{position:absolute;left:18px;right:18px;bottom:20px;height:5px;border-radius:3px;background:rgba(255,255,255,.12)}
+#back u{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--acc)}
+#code{left:30px;top:128px;width:450px;height:116px;border-radius:26px;overflow:hidden;opacity:0;background:rgba(255,255,255,.09);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),inset 0 1.5px 0 rgba(255,255,255,.5),0 30px 60px rgba(20,10,60,.55)}
+#tagt{position:absolute;left:16px;top:12px;font:500 12px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:#ffb0e4}
+#fn{position:absolute;left:24px;top:17px;font:500 11px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#cd{position:absolute;left:24px;top:40px;font:500 18px/1.55 var(--m);white-space:pre;color:var(--ink)}
+#cd .t{color:rgba(230,234,255,.55)}#cd b{font-weight:500;color:var(--acc);border-radius:6px}
+.km-caret{display:inline-block;width:2.5px;height:20px;margin-left:2px;vertical-align:-4px;background:var(--acc)}
+#lead{left:0;top:0;width:540px;height:960px;overflow:visible}
+#lead line{stroke:var(--acc);stroke-width:1.5;stroke-linecap:round}
+#lab{left:300px;top:400px;font:500 12px/1 var(--m);letter-spacing:.14em;color:var(--ink);background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);padding:9px 14px;border-radius:999px;white-space:nowrap;opacity:0;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+#band{left:0;top:640px;width:540px;height:150px;background:linear-gradient(rgba(7,8,22,.0),rgba(7,8,22,.92) 30%,rgba(7,8,22,.92))}
+#cap{left:32px;top:654px;width:450px;min-height:90px;padding:6px 0 0;font:600 30px/1.16 var(--f);letter-spacing:-.025em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="lights" class="a" data-fit="free"><i id="l1"></i><i id="l2"></i><i id="l3"></i><i id="l4"></i></div>
+<div id="flare" class="a"></div>
+<div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
+  <div id="ph" class="a" data-subject>
+    <div id="scr">
+      <div id="sb">9:41</div>
+      <div id="ab"><div id="url">duskpost.example</div><div id="prog"></div></div>
+      <div id="pages">
+        <div class="pg" id="p0">
+          <div class="br">DUSKPOST</div><div class="h1">Tonight</div>
+          <div class="fx w" style="top:108px">Search stories</div>
+          <div class="cd" style="top:176px"><div class="art"><span style="left:82px;top:18px;width:26px;height:26px;border-radius:50%;background:#f7f8ff"></span><span style="left:-30px;top:72px;width:150px;height:96px;border-radius:50%;background:#5b47d6"></span><span style="left:40px;top:86px;width:150px;height:96px;border-radius:50%;background:#2c8fd8"></span></div><b>Night trains are back across the map</b><small>6 MIN · TRAVEL</small></div>
+          <div class="cd" style="top:344px"><div class="art" style="background:linear-gradient(160deg,#173a6b,#0c1636)"><span style="left:-10px;top:62px;width:150px;height:24px;border-radius:12px;background:#2c8fd8"></span><span style="left:16px;top:86px;width:140px;height:24px;border-radius:12px;background:#5b47d6"></span></div><b>A field guide to the night sea</b><small>8 MIN · NATURE</small></div>
+        </div>
+        <div class="pg" id="p1">
+          <div class="bk">‹ BACK</div>
+          <div class="hero"><span style="left:300px;top:20px;width:38px;height:38px;border-radius:50%;background:#f7f8ff"></span><span style="left:-60px;top:64px;width:320px;height:200px;border-radius:50%;background:#5b47d6"></span><span style="left:150px;top:80px;width:340px;height:200px;border-radius:50%;background:#2c8fd8"></span></div>
+          <div class="hl">Night trains are back across the map</div>
+          <div class="nx" id="nx">Next story ›</div>
+          <div class="bd">Sleeper lines are running again.</div>
+          <div class="fx w" style="top:362px">Write a reply</div>
+        </div>
+        <div class="pg" id="p2">
+          <div class="bk">‹ BACK</div>
+          <div class="hero" style="background:linear-gradient(160deg,#173a6b,#0c1636)"><span style="left:-20px;top:58px;width:440px;height:34px;border-radius:17px;background:#2c8fd8"></span><span style="left:40px;top:86px;width:420px;height:34px;border-radius:17px;background:#5b47d6"></span><span style="left:290px;top:16px;width:34px;height:34px;border-radius:50%;background:#f7f8ff"></span></div>
+          <div class="hl">A field guide to the night sea</div>
+          <div class="nx">Next story ›</div>
+          <div class="bd">What glows in the water after dark.</div>
+          <div class="fx d" style="top:362px">Write a reply</div>
+        </div>
+      </div>
+      <div id="blank"></div><div id="sheen"></div>
+      <div id="rip"></div><div id="fg"></div>
+    </div>
+  </div>
+</div></div>
+<div id="lbl" class="a">Nº 29 · DARK MODE</div>
+<div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>dark</span> <span>page</span> <span class="acc">flash</span></span><span class="ln"><span class="acc">white?</span></span></div>
+<div id="back" class="a" aria-hidden="true"><i><u id="bar"></u></i></div>
+<div id="code" class="a"><div id="tagt">NO COLOR-SCHEME</div><div id="fn">INDEX.HTML · IN THE HEAD</div><div id="cd"></div></div>
+<svg id="lead" class="a" aria-hidden="true"><line id="ll" x1="0" y1="0" x2="0" y2="0"/></svg>
+<div id="lab" class="a">BLANK = DARK</div>
+<div id="band" class="a" data-band></div>
+<div id="cap" class="a" data-subs></div>
+<div id="grade" class="a" data-fit="free"></div>
+<script>
+(function(){
+/*kitmotion:begin*/
+// ---- @webin20sec motion kit (scripts/explainer/kitmotion.js; owner, 7 Nov 2026: "Can we further improve the overall animation and flow?") ----
+// Premium motion by default for every web reel, like kit25d.js for Turns Out. Inlined into a scene's main script between the kitmotion
+// begin and end markers by node scripts/channel3/kit-inline.mjs <scene.html> (npm run check fails on a stale copy); start a reel with
+// node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ... Every frame is a pure function of t: moves, transitions and taps are
+// registered once (in the scene's anchors(), after the voice timings are known), then drawn from t alone in seek(t).
+// Registering a move, transition or tap also writes its sound cue (move / swell / snap / blip / touch, with x) and declares a transition in
+// window.TRANSITIONS, so the FLOW gate (scripts/showreel/flow.mjs: no undeclared cuts, no dead runs, continuity 85%+) knows it was meant.
+//   KM.reset(dur)                         before registering (anchors()); KM.publish(extra) after: window.CUES and window.TRANSITIONS
+//   eases: KM.ease.out3 / inOut3 / expoInOut / back(k, s) / spring(k) (critically damped) / settle(k, f) (overshoot and settle)
+//   KM.rig({ x, y, z, drift })            the camera: a continuous eased drift (never still) + named moves, rig.at(t) -> { x, y, z, vx, vy, vz }
+//     rig.pushIn(t0, d, x, y, z) · rig.pan(t0, d, x, y) · rig.pushThrough(t0, d, x, y, z) (a fast zoom through, declared) ·
+//     rig.matchMove(t0, d, x, y, z) (follows a shared element, declared) · rig.creep(t0, d, dz) (a slow steady push through a held beat) · rig.apply(worldEl, t, tiltEl) · rig.toScreen(c, x, y)
+//   KM.transition(kind, t0, d, cue)       declares [t0, t0 + d, kind], writes its cue, returns k(t) (0 -> 1, eased) for the setters:
+//     KM.shared(el, a, b, k) (sharedElement: a box glides and scales between layouts, a/b = { x, y, w, h, r }) · KM.pushThrough(el, k, dir) ·
+//     KM.morph(el, a, b, k, colA, colB) · KM.wipe(newLayer, k) (wipeRestyle: the new theme comes down top to bottom)
+//   text: KM.rise(spans, t, starts, gone) (blur to sharp, word by word) · KM.type(el, html, t, t0, t1) (typing with a caret) ·
+//     KM.sweep(el, t, t0, d, col) (a highlight sweep) · KM.leader(line, label, from, to, k) (a leader-line label, SVG line + text)
+//   secondary: KM.parallax(el, c, depth) · KM.stagger(els, t, t0, gap, d) · KM.squeeze(el, t, tTap) (press and pop) ·
+//     KM.ripple(el, t, tTap, x, y) · KM.tap(t, x) (the touch cue for a tap at screen x)
+//   voice and subtitles: KM.voice(text, lead) -> { words, at(word, nth), phrases(max) } · KM.subs(capEl, t, V, PH, from, until, colour)
+var KM = (function(){
+  var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; };
+  var P = function(t, a, b){ return b <= a ? (t >= a ? 1 : 0) : cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var ease = {
+    linear: function(k){ return k; },
+    out3: function(k){ return 1 - Math.pow(1 - k, 3); },
+    inOut3: function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; },
+    expoInOut: function(k){ return k <= 0 ? 0 : k >= 1 ? 1 : k < .5 ? Math.pow(2, 20 * k - 10) / 2 : (2 - Math.pow(2, -20 * k + 10)) / 2; },
+    back: function(k, s){ s = s == null ? 1.3 : s; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2); },
+    // a critically damped spring over the move's length (no overshoot, a fast start and a long soft landing), exactly 1 at the end
+    spring: function(k){ if (k <= 0) return 0; if (k >= 1) return 1; var w = 9; return (1 - (1 + w * k) * Math.exp(-w * k)) / (1 - (1 + w) * Math.exp(-w)); },
+    // overshoot and settle (an underdamped spring): about f wobbles, dying out, exactly 1 at the end
+    settle: function(k, f){ if (k <= 0) return 0; if (k >= 1) return 1; f = f || 1.4; return 1 - Math.exp(-5 * k) * Math.cos(k * Math.PI * f) * (1 - k); }
+  };
+  var Q = [], TR = [], DUR = 20;
+  function reset(dur){ Q = []; TR = []; DUR = dur || DUR; }
+  function cue(c){ Q.push(c); return c; }
+  function declare(t0, t1, kind){ TR.push([+t0.toFixed(2), +t1.toFixed(2), kind]); }
+  // ---- the camera: base framing, a drift that never stops, and named moves folded in order ----
+  function rig(o){
+    var base = [o.x, o.y, o.z], D = o.drift == null ? 1 : o.drift, moves = [], last = base.slice();
+    function add(t0, d, x, y, z, kind, e){ var to = [x, y, z == null ? last[2] : z], m = { t0: t0, d: d, to: to, kind: kind, e: e };
+      moves.push(m); var dz = to[2] - last[2];
+      cue({ t: t0, k: 'move', d: Math.max(.4, d * .8), g: kind === 'pan' ? .26 : .34, dir: dz >= 0 ? 1 : -1, x: 255, x2: cl(255 + (x - last[0]) * 2, 40, 500), r: .25 });
+      if (kind === 'pushThrough') { cue({ t: t0, k: 'swell', d: Math.max(.5, d), g: .4, x: 255 }); cue({ t: t0 + d * .55, k: 'snap', g: .3, p: 5, x: 255, r: .2 }); declare(t0, t0 + d, 'pushThrough'); }
+      if (kind === 'matchMove') declare(t0, t0 + d, 'matchMove');
+      last = to; return R; }
+    var R = {
+      moves: moves,
+      pushIn: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pushIn', 'settle'); },
+      pan: function(t0, d, x, y){ return add(t0, d, x, y, null, 'pan', 'inOut3'); },
+      pushThrough: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pushThrough', 'expoInOut'); },
+      matchMove: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'matchMove', 'inOut3'); },
+      pull: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pull', 'settle'); },
+      // creep: a slow, steady push to the end of a beat (a held shot that still breathes: FLOW dead runs), no cue
+      creep: function(t0, d, dz){ moves.push({ t0: t0, d: d, to: [last[0], last[1], last[2] * (1 + (dz || .08))], kind: 'creep', e: 'linear' }); last = moves[moves.length - 1].to; return R; },
+      at: function(t){ var c = base.slice();
+        moves.forEach(function(m){ var k = P(t, m.t0, m.t0 + m.d), e = m.e === 'settle' ? ease.settle(k, 1.2) : ease[m.e](k); if (k > 0) c = [mix(c[0], m.to[0], e), mix(c[1], m.to[1], e), mix(c[2], m.to[2], e)]; });
+        // the drift: a slow sway and breathing zoom, so no stretch of the reel is ever still (FLOW: dead runs)
+        c[0] += D * (Math.sin(t * .55) * 9 + Math.sin(t * 1.3 + 2) * 2.5); c[1] += D * (Math.sin(t * .41 + 1) * 11 + Math.sin(t * 1.1) * 3); c[2] *= 1 + D * (Math.sin(t * .33) * .012 + Math.sin(t * .9 + 1) * .004);
+        return { x: c[0], y: c[1], z: c[2] }; },
+      vel: function(t){ var a = R.at(t - .05), b = R.at(t + .05); return { vx: (b.x - a.x) * 10, vy: (b.y - a.y) * 10, vz: (b.z - a.z) * 10 }; },
+      // world point -> screen point (the world is laid out at 540x960 and the camera centres (x, y) at (255, 480): the safe zone's middle)
+      toScreen: function(c, x, y){ return [(x - c.x) * c.z + 255, (y - c.y) * c.z + 480]; },
+      apply: function(world, t, tiltEl){ var c = R.at(t); world.style.transform = 'translate(' + (255 - c.x * c.z).toFixed(2) + 'px,' + (480 - c.y * c.z).toFixed(2) + 'px) scale(' + c.z.toFixed(4) + ')';
+        if (tiltEl) { var v = R.vel(t); tiltEl.style.transform = 'perspective(1600px) rotateX(' + cl(v.vy * .02 + v.vz * 3, -5, 5).toFixed(2) + 'deg) rotateY(' + cl(-v.vx * .03, -5, 5).toFixed(2) + 'deg)'; }
+        return c; }
+    };
+    return R;
+  }
+  // ---- transitions: declared once, drawn from k ----
+  var CUE = { sharedElement: 'move', pushThrough: 'swell', morph: 'snap', wipeRestyle: 'swell' };
+  function transition(kind, t0, d, sound){ declare(t0, t0 + d, kind);
+    var s = sound === false ? null : sound || CUE[kind] || 'move';
+    if (s === 'move') cue({ t: t0, k: 'move', d: Math.max(.4, d), g: .3, dir: 1, x: 255, x2: 255, r: .25 });
+    else if (s === 'swell') cue({ t: t0, k: 'swell', d: Math.max(.5, d), g: .42, x: 255 });
+    else if (s) cue({ t: t0, k: s, g: .35, p: 5, x: 255, r: .2 });
+    if (kind !== 'sharedElement') cue({ t: t0 + d, k: 'snap', g: .3, p: 7, x: 255, r: .2 });
+    var e = kind === 'pushThrough' ? ease.expoInOut : kind === 'sharedElement' ? function(k){ return ease.settle(k, 1.1); } : ease.inOut3;
+    return function(t){ return e(P(t, t0, t0 + d)); }; }
+  function box(el, b){ el.style.left = b.x.toFixed(2) + 'px'; el.style.top = b.y.toFixed(2) + 'px'; el.style.width = b.w.toFixed(2) + 'px'; el.style.height = b.h.toFixed(2) + 'px'; if (b.r != null) el.style.borderRadius = b.r.toFixed(2) + 'px'; }
+  function lerpBox(a, b, k){ return { x: mix(a.x, b.x, k), y: mix(a.y, b.y, k), w: mix(a.w, b.w, k), h: mix(a.h, b.h, k), r: mix(a.r || 0, b.r || 0, cl(k)) }; }
+  // sharedElement: the element glides and scales from layout a to layout b; it lifts (a shadow) in the middle of the glide
+  function shared(el, a, b, k){ box(el, lerpBox(a, b, k)); var lift = Math.sin(cl(k) * Math.PI); el.style.boxShadow = '0 ' + (8 + lift * 22).toFixed(1) + 'px ' + (20 + lift * 40).toFixed(1) + 'px rgba(0,0,0,' + (.25 + lift * .2).toFixed(2) + ')'; }
+  // pushThrough: the layer scales up past the camera and blurs out (dir -1: comes in from behind the camera instead)
+  function pushThrough(el, k, dir){ var q = dir === -1 ? 1 - k : k; el.style.transform = 'scale(' + (1 + q * q * 2.4).toFixed(3) + ')'; el.style.opacity = (1 - P(q, .35, .9)).toFixed(3); el.style.filter = 'blur(' + (q * 10).toFixed(2) + 'px)'; }
+  function rgb(h){ var n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+  function mixCol(a, b, k){ var x = rgb(a), y = rgb(b); return 'rgb(' + x.map(function(v, i){ return Math.round(mix(v, y[i], k)); }).join(',') + ')'; }
+  // morph: a box becomes another box (position, size, corner radius and colour)
+  function morph(el, a, b, k, colA, colB){ box(el, lerpBox(a, b, k)); if (colA) el.style.background = mixCol(colA, colB, k); }
+  // wipeRestyle: the new-theme copy of a layer is revealed top to bottom (it sits over the old one); clip-path inset in px for the BAND check
+  function wipe(el, k){ var h = el.offsetHeight || 1000; el.style.clipPath = k >= 1 ? 'none' : 'inset(0px 0px ' + ((1 - k) * h).toFixed(1) + 'px 0px)'; el.style.visibility = k > 0 ? 'visible' : 'hidden'; }
+  // ---- text ----
+  // rise: each word comes up from blur to sharp with a little overshoot at its own start time; gone (0 -> 1) blurs the line away, lifting it
+  // only a little (it fades before it can leave the safe zone)
+  function rise(spans, t, starts, gone){ gone = gone || 0;
+    [].forEach.call(spans, function(sp, i){ var s = starts[i], k = ease.back(P(t, s, s + .34), 1.6);
+      sp.style.filter = 'blur(' + ((1 - P(t, s, s + .24)) * 8 + gone * 6).toFixed(2) + 'px)'; sp.style.opacity = (cl((t - s) * 9) * (1 - gone) * (1 - gone)).toFixed(3); sp.style.transform = 'translateY(' + ((1 - k) * 44 - gone * 24).toFixed(2) + 'px)'; }); }
+  // type: html (tags and entities allowed) typed from t0 to t1 with a caret that blinks when idle
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; if (src[i] === '&') { var e2 = src.indexOf(';', i); o += src.slice(i, e2 + 1); i = e2; } else o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function type(el, html, t, t0, t1){ var N = html.replace(/<[^>]+>/g, '').replace(/&\w+;/g, '_').length, n = Math.floor(N * P(t, t0, t1)), busy = t >= t0 && t < t1 + .15;
+    el.innerHTML = typed(html, n) + (t >= t0 - .3 ? '<span class="km-caret" style="opacity:' + (busy || Math.floor((t - t1) * 2.4) % 2 === 0 ? 1 : 0) + '"></span>' : ''); }
+  function sweep(el, t, t0, d, col){ var k = ease.inOut3(P(t, t0, t0 + d)); el.style.backgroundImage = 'linear-gradient(' + col + ',' + col + ')'; el.style.backgroundRepeat = 'no-repeat'; el.style.backgroundSize = (k * 100).toFixed(1) + '% 100%'; }
+  // leader: an SVG line drawn from the thing to its label, then the label fades up at the end of the line
+  function leader(line, label, from, to, k){ var e = ease.out3(cl(k / .7)); line.setAttribute('x1', from[0]); line.setAttribute('y1', from[1]); line.setAttribute('x2', mix(from[0], to[0], e).toFixed(1)); line.setAttribute('y2', mix(from[1], to[1], e).toFixed(1));
+    line.style.opacity = k > 0 ? 1 : 0; label.style.opacity = ease.out3(P(k, .55, 1)).toFixed(3); label.style.transform = 'translateY(' + ((1 - ease.back(P(k, .55, 1), 1.4)) * 10).toFixed(2) + 'px)'; }
+  // ---- secondary motion ----
+  function parallax(el, c, depth){ el.style.transform = 'translate(' + (-(c.x - 270) * depth).toFixed(2) + 'px,' + (-(c.y - 480) * depth).toFixed(2) + 'px) scale(' + (1 + (c.z - 1) * depth).toFixed(4) + ')'; }
+  function stagger(els, t, t0, gap, d){ [].forEach.call(els, function(el, i){ var k = ease.settle(P(t, t0 + i * gap, t0 + i * gap + (d || .6)), 1.2);
+    el.style.opacity = cl(k * 2.5).toFixed(3); el.style.transform = 'translateY(' + ((1 - k) * 44).toFixed(2) + 'px) scale(' + mix(.94, 1, k).toFixed(4) + ')'; }); }
+  // squeeze: pressed in 0.12 s before the tap, popped past full size after it, settled by 0.5 s
+  function squeeze(el, t, tap){ var press = win(t, tap - .12, tap + .06, .1), pop = t > tap ? Math.sin(P(t, tap, tap + .5) * Math.PI) * (1 - P(t, tap, tap + .5)) : 0;
+    el.style.transform = 'scale(' + (1 - press * .07 + pop * .09).toFixed(4) + ')'; }
+  function ripple(el, t, tap, x, y){ var k = P(t, tap, tap + .55); el.style.left = (x - 32) + 'px'; el.style.top = (y - 32) + 'px'; el.style.opacity = (k > 0 && k < 1 ? 1 - k : 0).toFixed(3); el.style.transform = 'scale(' + mix(.5, 2.6, ease.out3(k)).toFixed(3) + ')'; }
+  function tap(t, x){ cue({ t: t, k: 'touch', g: .38, x: cl(x, 30, 510) }); cue({ t: t + .05, k: 'blip', g: .24, x: cl(x, 30, 510) }); }
+  // ---- voice timings and subtitles ----
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function voice(text, lead, words){ lead = lead == null ? .15 : lead; var T = text.split(/\s+/).filter(Boolean), W = [];
+    if (words && words.length) { var j = 0; words.forEach(function(w){ var o = { w: w.w, s: w.s, e: w.e, d: w.w }; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { o.d = T[k]; j = k + 1; break; } W.push(o); }); }
+    else { var t = .2; T.forEach(function(w){ var d = .14 + w.length * .03; W.push({ w: w, d: w, s: t, e: t + d }); t += d + (/[.?:,;!]$/.test(w) ? .32 : .06); }); }
+    return { words: W, lead: lead, end: W.length ? W[W.length - 1].e : 0,
+      at: function(word, nth){ var n = nth || 1; for (var i = 0; i < W.length; i++) if (norm(W[i].w) === norm(word) && --n === 0) return W[i].s - lead; return 99; },
+      // sentence starts (minus the lead), and whole phrases of at most max words, split at a comma where it can
+      starts: function(){ var o = []; W.forEach(function(w, i){ if (i === 0 || /[.?!]$/.test(W[i - 1].d)) o.push(w.s - lead); }); return o; },
+      phrases: function(max){ max = max || 6; var PH = [], cur = [];
+        W.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === W.length - 1) { while (cur.length > max) { var best = -1;
+              cur.forEach(function(q, k){ if (/[,:;]$/.test(W[q].d) && k >= 1 && k < max && (best < 0 || k > best)) best = k; });
+              if (best < 0) best = Math.min(max, Math.ceil(cur.length / 2)) - 1; PH.push(cur.slice(0, best + 1)); cur = cur.slice(best + 1); }
+            if (cur.length) PH.push(cur); cur = []; } });
+        return PH; } };
+  }
+  // subtitles: the phrase being spoken, each word sharpening as it is said; colour(word, i) -> a CSS colour (or null)
+  function subs(capEl, t, V, PH, from, until, colour){ var W = V.words, L = V.lead, ph = null, html = '';
+    for (var i = 0; i < PH.length; i++) if (t >= W[PH[i][0]].s - L - .05 && (i === PH.length - 1 || t < W[PH[i + 1][0]].s - L - .05)) ph = PH[i];
+    if (ph && ph[0] >= from && t < until) ph.forEach(function(j){ var w = W[j], on = t >= w.s - L, k = ease.out3(P(t, w.s - L, w.s - L + .2)), c = colour ? colour(w.d, j) : null;
+      html += '<span style="opacity:' + (on ? 1 : .32) + ';filter:blur(' + (on ? (1 - k) * 4 : 1.2).toFixed(2) + 'px);transform:translateY(' + ((1 - k) * 5).toFixed(2) + 'px)' + (c ? ';color:' + c : '') + '">' + w.d.replace(/</g, '') + '</span>'; });
+    capEl.innerHTML = html; capEl.style.opacity = html ? 1 : 0; }
+  function publish(extra){ extra = extra || {}; window.TRANSITIONS = TR.slice().sort(function(a, b){ return a[0] - b[0]; });
+    window.CUES = { dur: DUR, cues: Q.slice().sort(function(a, b){ return a.t - b.t; }), mix: extra.mix || { duck: 8 }, bed: extra.bed || { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } }; }
+  return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
+    rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, voice: voice, subs: subs, publish: publish };
+})();
+/*kitmotion:end*/
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;
+  var TEXT = "Why does your dark page flash white? One tag fixes it: color scheme, dark light. Now it loads dark.", DUR = 8, HOOK_N = 7;
+  var CODE = '<span class="t">&lt;meta</span> name="color-scheme"\n      content=<b>"dark light"</b><span class="t">&gt;</span>';
+  var V, PH, A = {}, CAM, T = {};
+  var PILL = { x: 30, y: 128, w: 196, h: 36, r: 18 }, CARD = { x: 30, y: 128, w: 450, h: 116, r: 26 };
+  function bloom(t, t0){ return E.out3(P(t, t0, t0 + .2)) * (1 - E.inOut3(P(t, t0 + .32, t0 + .9))); }
+  // the light: four soft blooms on slow Lissajous paths (seeded by their index, a pure function of t)
+  var LP = [[180, 220, .31, .23, 0], [460, 640, .27, .35, 1.7], [120, 860, .37, .21, 3.1], [520, 260, .22, .29, 4.4]];
+  function anchors(words){
+    V = KM.voice(TEXT, .15, words); PH = V.phrases(6); KM.reset(DUR);
+    var S = V.starts(), W = V.words;
+    A.tap1 = .12; A.fl = .3; A.hookIn = W[HOOK_N - 1].s - V.lead + .35;
+    A.leave = Math.max(S[1] - .3, A.hookIn + .3); A.fix = S[1]; A.typeEnd = Math.min(A.fix + 1.5, S[2] - .35);
+    A.dl = V.at('dark', 2); A.pay = S[2]; A.tap2 = A.pay + .05; A.end = V.end;
+    window.COVER = +Math.min(A.hookIn, A.leave - .2).toFixed(2);
+    KM.declare(A.fl, A.fl + .9, 'flash');
+    CAM = KM.rig({ x: 270, y: 413, z: .94, drift: 1.3 })
+      .pushIn(.95, 1.1, 274, 446, .97)
+      .pull(A.leave, .85, 270, 560, .86)
+      .creep(A.leave + .85, A.pay - .25 - A.leave - .85, .05)
+      .pushIn(A.pay - .25, .95, 262, 566, .91)
+      .creep(A.pay + .7, DUR - A.pay - .7, .06);
+    T.morph = KM.transition('morph', A.fix - .1, .55, 'snap');
+    KM.tap(A.tap1, 300); KM.tap(A.tap2, 150);
+    KM.cue({ t: 0, k: 'shimmer', g: .32, p: 2 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .28 });
+    KM.cue({ t: A.fl + .2, k: 'swell', d: .5, g: .42, x: 255 }); KM.cue({ t: A.fl + .2, k: 'shimmer', g: .3, p: 7 });
+    KM.cue({ t: A.leave + .25, k: 'blip', g: .24, p: 4, x: 140 }); KM.cue({ t: A.leave + .5, k: 'shimmer', g: .2, p: 5 });
+    for (var c = 0, t0 = A.fix + .35; t0 + c * .1 < A.typeEnd; c++) KM.cue({ t: t0 + c * .1, k: 'tick', g: .06, p: (c * 4) % 7 });
+    KM.cue({ t: A.dl, k: 'blip', g: .26, p: 9, x: 330 });
+    KM.cue({ t: A.tap2 + .6, k: 'resolve', g: .4, x: 255, r: .3, notes: [60, 67, 71, 76, 79] });
+    KM.publish({ mix: { duck: 8, room: .5 }, bed: { bpm: 240, origin: 0, gain: .26, chords: [[48, 60, 64, 67, 71], [45, 57, 60, 64, 67], [41, 57, 60, 64, 69], [43, 55, 59, 62, 67]] } });
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var c = CAM.apply($('world'), t, $('ph'));
+    var b1 = bloom(t, A.fl), fixed = E.inOut3(P(t, A.tap2 + .2, A.tap2 + 1));
+    // the light moves behind the glass; the flash flares it toward white
+    [].forEach.call($('lights').children, function(l, i){ var q = LP[i], w = l.offsetWidth;
+      l.style.left = (q[0] + Math.sin(t * q[2] * 2.2 + q[4]) * 120 - w / 2 - (c.x - 270) * .4).toFixed(1) + 'px'; l.style.top = (q[1] + Math.cos(t * q[3] * 2.2 + q[4]) * 110 - w / 2 - (c.y - 480) * .4).toFixed(1) + 'px';
+      l.style.transform = 'scale(' + (1 + b1 * .35 + Math.sin(t * .8 + i) * .06).toFixed(3) + ')'; });
+    $('flare').style.opacity = (b1 * .75).toFixed(3);
+    var fp = CAM.toScreen(c, 270, 720); $('flare').style.transform = 'translate(' + (fp[0] - 270).toFixed(1) + 'px,' + (fp[1] - 550).toFixed(1) + 'px)';
+    // ---- beat 1: a tap, the screen floods white, the article arrives ----
+    var fin = E.inOut3(P(t, -.3, A.tap1 - .02)), lift = E.inOut3(P(t, A.tap1 + .1, A.tap1 + .5));
+    $('fg').style.left = (mix(330, 290, fin) + lift * 40 - 30) + 'px'; $('fg').style.top = (mix(360, 330, fin) + lift * 80 - 30) + 'px'; $('fg').style.opacity = (1 - lift).toFixed(3);
+    KM.ripple($('rip'), t, A.tap1, 290, 330);
+    var p1on = t >= A.fl + .22;
+    $('p0').style.visibility = p1on ? 'hidden' : 'visible'; $('p1').style.visibility = p1on && t < A.tap2 + .35 ? 'visible' : 'hidden';
+    KM.stagger($('p1').children, t, A.fl + .45, .06, .7);
+    $('prog').style.width = (t < A.fl + 1.1 ? P(t, A.tap1, A.fl + .9) * 404 : 0).toFixed(1) + 'px';
+    var bl = $('blank'); bl.style.background = '#ffffff'; bl.style.opacity = b1.toFixed(3);
+    // the cards float a little (glass on water)
+    [].forEach.call(document.querySelectorAll('.cd,.hero'), function(el, i){ el.style.marginTop = (Math.sin(t * 1.3 + i * 1.9) * 3).toFixed(2) + 'px'; });
+    // ---- the hook: blur to sharp, word by word ----
+    var gone = E.inOut3(P(t, A.leave, A.leave + .28)), st = [];
+    for (var i = 0; i < HOOK_N; i++) st.push(i === 0 ? -.3 : V.words[i].s - V.lead);
+    KM.rise($('hook').querySelectorAll('.ln > span'), t, st, gone);
+    $('lbl').style.opacity = (1 - P(t, A.leave - .25, A.leave)).toFixed(3);
+    // ---- beat 2: the glass pill springs into the code pane; a blurred styles.css pane loads behind it (depth) ----
+    var mk = T.morph(t), cd = $('code'), tagIn = E.out3(P(t, A.leave + .2, A.leave + .45));
+    KM.morph(cd, PILL, CARD, KM.ease.settle(P(t, A.fix - .1, A.fix + .65), 1.4)); cd.style.opacity = (t < A.fix - .1 ? tagIn : 1).toFixed(3);
+    cd.style.transform = 'translateY(' + (Math.sin(t * 1.2) * 3).toFixed(2) + 'px)';
+    $('tagt').style.opacity = (1 - P(mk, 0, .4)).toFixed(3); $('fn').style.opacity = P(mk, .5, 1).toFixed(3);
+    KM.type($('cd'), CODE, t, A.fix + .35, A.typeEnd); $('cd').style.opacity = P(mk, .6, 1).toFixed(3);
+    var fb = $('cd').querySelector('b'); if (fb) KM.sweep(fb, t, A.dl, .4, 'rgba(143,230,255,.18)');
+    var bk2 = E.out3(P(t, A.fix + .2, A.fix + .8)) * (1 - E.inOut3(P(t, A.pay - .3, A.pay + .2)));
+    $('back').style.opacity = (bk2 * .85).toFixed(3);
+    $('back').style.transform = 'translate(' + (-(c.x - 270) * .25 + (1 - bk2) * 30).toFixed(1) + 'px,' + (Math.sin(t * 1.0 + 2) * 4 + 52 + (1 - bk2) * -10).toFixed(1) + 'px) scale(.92)';
+    $('bar').style.width = (P(t, A.fix + .3, A.pay) * 100).toFixed(1) + '%';
+    // ---- payoff: the next tap shows a dark blank (a soft coloured sheen passes down it), the article floats in, the reply box is glass ----
+    var fin2 = E.inOut3(P(t, A.tap2 - .4, A.tap2 - .02)), lift2 = E.inOut3(P(t, A.tap2 + .1, A.tap2 + .5));
+    if (t > A.tap2 - .4) { $('fg').style.left = (mix(170, 120, fin2) + lift2 * 30 - 30) + 'px'; $('fg').style.top = (mix(470, 377, fin2) + lift2 * 70 - 30) + 'px'; $('fg').style.opacity = (KM.cl((t - A.tap2 + .4) * 5) * (1 - lift2)).toFixed(3); KM.ripple($('rip'), t, A.tap2, 110, 377); }
+    KM.squeeze($('nx'), t, A.tap2);
+    if (t >= A.tap2) { bl.style.background = '#0a0b20'; bl.style.opacity = (t >= A.tap2 + .08 ? 1 - E.inOut3(P(t, A.tap2 + .7, A.tap2 + 1.2)) : 0).toFixed(3); }
+    var sk = P(t, A.tap2 + .1, A.tap2 + .8); $('sheen').style.opacity = (sk > 0 && sk < 1 ? Math.sin(sk * Math.PI) : 0).toFixed(3); $('sheen').style.transform = 'translateY(' + (E.inOut3(sk) * 700).toFixed(1) + 'px)';
+    $('p2').style.visibility = t >= A.tap2 + .35 ? 'visible' : 'hidden';
+    KM.stagger($('p2').children, t, A.tap2 + .7, .07, .7);
+    $('pages').style.transform = 'translateY(' + (-E.inOut3(P(t, A.tap2 + 1.2, DUR)) * 26).toFixed(2) + 'px)';
+    var lb = CAM.toScreen(c, 296, 688), lk = P(t, A.tap2 + .35, A.tap2 + 1.05);
+    $('lab').style.left = (lb[0] + 30).toFixed(1) + 'px'; $('lab').style.top = (lb[1] - 16).toFixed(1) + 'px';
+    KM.leader($('ll'), $('lab'), [lb[0] - 8, lb[1]], [lb[0] + 26, lb[1]], lk);
+    // ---- the subtitle band and the device's fade above it ----
+    var bk = E.out3(P(t, A.leave - .1, A.leave + .35)), fk = E.out3(P(t, A.leave - .4, A.leave + .05)), mY = mix(960, 626, fk), mask = 'linear-gradient(to bottom,#000 ' + (mY - 22) + 'px,rgba(0,0,0,0) ' + mY + 'px)';
+    $('vp').style.webkitMaskImage = mask; $('vp').style.maskImage = mask;
+    $('band').style.opacity = bk.toFixed(3); $('band').style.transform = 'translateY(' + ((1 - bk) * 40).toFixed(2) + 'px)';
+    KM.subs($('cap'), t, V, PH, HOOK_N, DUR + 1, function(w, j){ return V.words[j].s >= A.fix + V.lead && /^(color|scheme|dark|light)/i.test(w) ? 'var(--acc)' : null; });
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
+  window.seek = seek; window.DURATION = DUR;
+  window.STYLE = { id: 'C', name: 'Glass and light', fonts: ['Sora', 'DM Mono'], palette: ['#070816', '#f7f8ff', '#8fe6ff', '#7a5cff', '#ff6fcf'] };
+  document.fonts.load("680 56px 'Sora'").then(function(){ return document.fonts.load("500 18px 'DM Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

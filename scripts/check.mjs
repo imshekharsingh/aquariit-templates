@@ -61,7 +61,7 @@ if (caps) for (const [name, j] of Object.entries(caps)) postText(j, `captions.js
 // 4b. every reel of every channel is scheduled the same way (owner, 2 Nov 2026): a captions.json entry with "channel" and "postOn" (or "hidden"), added in the push that makes the reel
 if (caps) {
   const need = [];
-  for (const dir of ['scripts/explainer', 'scripts/channel3']) { const D = join(root, dir); for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.json')) : []) { try { const n = JSON.parse(readFileSync(join(D, f), 'utf8')).name; if (n) need.push([n, `${dir}/${f}`]); } catch {} } }
+  for (const dir of ['scripts/explainer', 'scripts/explainer/styles', 'scripts/channel3']) { const D = join(root, dir); for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.json')) : []) { try { const n = JSON.parse(readFileSync(join(D, f), 'utf8')).name; if (n) need.push([n, `${dir}/${f}`]); } catch {} } }
   const TD = join(root, 'techreel', 'topics');
   for (const f of existsSync(TD) ? readdirSync(TD).filter((x) => x.endsWith('.json')) : []) { try { const s = JSON.parse(readFileSync(join(TD, f), 'utf8')).slug; if (s) need.push(['showreel-tech-' + s, `techreel/topics/${f}`]); } catch {} }
   // sample (6 Nov 2026, temporary): a "sample": true entry is for review only, never scheduled, so it needs "channel" but no "postOn"
@@ -88,7 +88,7 @@ if (caps) {
 if (caps) for (const m of gateProblems(caps)) err(m);
 
 // 5. reel configs: a showreel name, a scene that exists, and post text
-for (const dir of ['scripts/explainer', 'scripts/showreel', 'scripts/channel3']) {
+for (const dir of ['scripts/explainer', 'scripts/explainer/styles', 'scripts/showreel', 'scripts/channel3']) {   // styles: the web style tests (7 Nov 2026)
   const D = join(root, dir);
   for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.json')) : []) {
     const label = `${dir}/${f}`, j = readJSON(join(D, f), label);
