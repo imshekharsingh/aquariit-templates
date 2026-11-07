@@ -3,6 +3,11 @@
 A run takes the topic for its channel and day from here, skips any already built (captions.json), and may swap one for a better or
 fresher idea (say why in the log). Facts are still checked against two sources (Turns Out) or a primary source (web, tech) before building.
 
+## Sun 8 Nov 2026 (set 8 Nov, 00:10 IST, owner-approved)
+| Channel | Slot | Topic | How |
+|---|---|---|---|
+| web | 13:00 | **Slow-mo motion details**: 4-5 small UI motions (e.g. a copy button that springs into "Copied", a switch knob that stretches, a toast that settles and swipes away, a step bar that fills, a heart that pops), each slowed down with its live easing curve and its one CSS line | `node scripts/explainer/newweb.mjs <slug> --details 4` (or 5): ~20 s, result-first (the first detail finished in frame 0), recap grid at the end, the caption invites a save. Built by the 06:47 daily run; config `"experiment": {"id": "details-format", "change": "slow-mo motion details compilation", "vs": "median"}`. Use our own titles and components (the kinds in scripts/explainer/starterdetails.html, or new ones); every CSS line checked on MDN + BCD. |
+
 ## Week of Mon 9 - Sun 15 Nov 2026 (planned Tue 3 Nov)
 
 ### @webin20sec (narrated "Why does your ...?" tip, one CSS/HTML fix, MDN + BCD support)

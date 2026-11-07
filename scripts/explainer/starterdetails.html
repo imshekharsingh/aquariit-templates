@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>__TITLE__</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec "details" starter (node scripts/explainer/newweb.mjs <slug> --details N; owner, 8 Nov 2026). A compilation of small UI motions,
+   each slowed down so the eye can read it: the hook beat opens on the first one already running (result first), then one beat per detail
+   (a numbered eyebrow, a three-word title with one accent word, the component doing its one micro-interaction in slow motion, the CSS that
+   does it typed underneath, its easing curve drawn live with a dot riding it, a spec chip whose numbers roll in, a speed badge, a segmented
+   bar on top), then a recap grid with every detail at full speed (the saveable frame). One camera that pans from part to part (declared
+   matchMoves) and never stops drifting; motion from scripts/explainer/kitmotion.js; every frame a pure function of t.
+   Edit DETAILS (kind, title, accent word) and the KINDS library (markup, draw, css, curve, chip) for the reel's own components. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--stage:#26272e;--card:#202128;--line:#34353d;--acc:#7cf0b6;--red:#ff5a4a;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#bg{left:-200px;top:-100px;width:940px;height:1160px}
+#bg i{position:absolute;border-radius:50%;filter:blur(40px)}
+#vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
+.pn{position:absolute;top:0;width:540px;height:960px}
+.stage{position:absolute;left:30px;top:230px;width:450px;height:190px;border-radius:28px;background:var(--stage);overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06)}
+.comp{position:absolute;left:0;top:0;width:450px;height:190px;transform-origin:50% 50%}
+.code{position:absolute;left:30px;top:430px;width:450px;height:118px;border-radius:20px;background:var(--card);overflow:hidden}
+.cd{position:absolute;left:26px;top:12px;font:500 14px/19px var(--m);white-space:pre;color:var(--paper)}
+.cd b{font-weight:700;color:var(--acc)}.cd .dim{color:var(--dim)}
+.km-caret{display:inline-block;width:2px;height:16px;margin-left:1px;vertical-align:-3px;background:var(--acc)}
+.cg{position:absolute;left:50px;top:556px;overflow:visible}
+.cg-axis{stroke:var(--line);stroke-width:2}.cg-guide{stroke:var(--line);stroke-width:1.5;stroke-dasharray:4 5}
+.cg-ghost{fill:none;stroke:rgba(242,239,232,.12);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.cg-line{fill:none;stroke:var(--acc);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px rgba(124,240,182,.55))}
+.cg-h{stroke:rgba(124,240,182,.4);stroke-width:1.5;stroke-dasharray:3 4}
+.cg-dot{fill:var(--paper);stroke:var(--acc);stroke-width:3;filter:drop-shadow(0 0 7px rgba(124,240,182,.9))}
+.cg-t{fill:var(--dim);font:700 11px var(--m);letter-spacing:.06em}
+.chip{position:absolute;left:316px;top:562px;width:138px;opacity:0}
+.chip div{white-space:nowrap}
+.chip small{display:block;font:700 11px/1 var(--m);letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-bottom:6px}
+.chip .sc-r0 b{font:800 34px/1 var(--f);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.chip .sc-r0 span{font:700 15px/1 var(--m);color:var(--dim)}
+.chip .sc-r1{margin-top:8px;font:700 14px/1 var(--m);color:var(--acc)}
+.chip .sc-r1 b{font-weight:700}
+/* the recap grid */
+.grid{position:absolute;left:40px;top:230px;width:430px}
+.tile{position:absolute;width:210px;border-radius:20px;background:var(--card);overflow:hidden}
+.mini{position:absolute;left:8px;top:8px;width:450px;height:190px;border-radius:28px;background:var(--stage);overflow:hidden;transform-origin:0 0}
+.tl{position:absolute;left:14px;white-space:nowrap}
+.tl b{display:block;font:800 15px/1.1 var(--f);letter-spacing:-.01em}
+.tl small{display:block;margin-top:4px;font:700 11px/1 var(--m);letter-spacing:.06em;color:var(--acc)}
+/* screen space: the part bar, the titles, the badge, the subtitles */
+#bar{left:34px;top:126px;width:442px;height:5px;display:flex;gap:6px}
+#bar i{flex:1;height:5px;border-radius:3px;background:rgba(242,239,232,.16);overflow:hidden}
+#bar b{display:block;width:100%;height:100%;background:var(--acc);transform-origin:0 0;transform:scaleX(0)}
+#hook{left:34px;top:146px;font-weight:800;font-size:__HOOK_FS__px;line-height:.98;letter-spacing:-.024em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span,.blk .tt > span,.blk .eb{display:inline-block;transform-origin:0 80%}
+.acc{color:var(--acc)}
+.blk{left:34px;top:144px;width:440px}
+.blk .eb{font:700 14px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+.blk .tt{margin-top:12px;font-weight:800;font-size:42px;line-height:1;letter-spacing:-.022em;white-space:nowrap;font-variation-settings:'wdth' 100,'opsz' 96}
+.badge{right:60px;top:138px;height:28px;padding:0 12px 0 10px;border-radius:14px;background:rgba(124,240,182,.14);border:1.5px solid rgba(124,240,182,.5);color:var(--acc);font:700 12px/25px var(--m);letter-spacing:.12em;white-space:nowrap;opacity:0;transform-origin:100% 50%}
+.badge i{display:inline-block;width:8px;height:8px;margin-right:7px;border-radius:50%;background:var(--acc);vertical-align:0;box-shadow:0 0 8px var(--acc)}
+#band{left:0;top:668px;width:540px;height:140px;background:var(--ink)}
+#cap{left:30px;top:680px;width:450px;min-height:80px;font:700 31px/1.14 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+/* components (KINDS): coordinates inside the 450x190 stage */
+.fg{position:absolute;width:56px;height:56px;border-radius:50%;background:rgba(242,239,232,.22);border:3px solid rgba(242,239,232,.75);opacity:0}
+.cp{position:absolute;top:63px;height:64px;border-radius:32px;background:#3a3b44;overflow:hidden}
+.cp .ic{position:absolute;left:22px;top:20px;width:18px;height:22px;border:3px solid currentColor;border-radius:5px}
+.cp .ic::after{content:'';position:absolute;left:5px;top:-8px;width:18px;height:22px;border:3px solid currentColor;border-radius:5px;border-left-color:transparent;border-bottom-color:transparent}
+.cp .ck{position:absolute;left:24px;top:16px;width:12px;height:24px;border:solid currentColor;border-width:0 4px 4px 0;transform:rotate(45deg) scale(0);transform-origin:60% 70%}
+.cp span{position:absolute;left:58px;top:0;font:800 23px/64px var(--f);white-space:nowrap}
+.tg-l{position:absolute;left:44px;top:62px;font:800 28px/1 var(--f);white-space:nowrap}
+.tg-s{position:absolute;left:44px;top:100px;font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+.tg{position:absolute;left:294px;top:63px;width:112px;height:64px;border-radius:32px;background:#3a3b44}
+.kn{position:absolute;left:6px;top:6px;width:52px;height:52px;border-radius:26px;background:var(--paper);box-shadow:0 4px 10px rgba(0,0,0,.35)}
+.ts{position:absolute;left:35px;top:104px;width:380px;height:74px;border-radius:20px;background:#34353e;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.ts i{position:absolute;left:18px;top:21px;width:32px;height:32px;border-radius:50%;background:var(--acc)}
+.ts i::after{content:'';position:absolute;left:11px;top:6px;width:7px;height:14px;border:solid var(--ink);border-width:0 3px 3px 0;transform:rotate(45deg)}
+.ts b{position:absolute;left:66px;top:0;font:800 22px/74px var(--f);white-space:nowrap}
+.ts small{position:absolute;right:20px;top:0;font:700 15px/74px var(--m);letter-spacing:.08em;color:var(--acc)}
+.sk{position:absolute;left:35px;width:330px;height:28px;border-radius:10px;background:#2e2f37}
+.st-t{position:absolute;left:84px;top:62px;width:282px;height:8px;border-radius:4px;background:#3a3b44}
+.st-f{position:absolute;left:84px;top:62px;width:282px;height:8px;border-radius:4px;background:var(--acc);transform-origin:0 0}
+.st-d{position:absolute;top:44px;width:44px;height:44px;margin-left:-22px;border-radius:50%;background:#3a3b44;font:800 19px/44px var(--f);text-align:center}
+.st-n{position:absolute;top:104px;width:90px;margin-left:-45px;text-align:center;font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim)}
+.lk-h{position:absolute;left:150px;top:52px;width:86px;height:86px;transform-origin:50% 55%}
+.lk-h path{stroke:var(--paper);stroke-width:7;stroke-linejoin:round}
+.lk-c{position:absolute;left:256px;top:62px;font:800 52px/1 var(--f);font-variant-numeric:tabular-nums;letter-spacing:-.02em;white-space:nowrap}
+.lk-s{position:absolute;left:258px;top:126px;font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="bg" class="a" data-fit="free"><i style="left:140px;top:200px;width:460px;height:460px;background:rgba(124,240,182,.07)"></i><i style="left:520px;top:640px;width:380px;height:380px;background:rgba(124,140,255,.05)"></i></div>
+<div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free"></div></div>
+<div id="bar" class="a"></div>
+<div id="hook" class="a" data-hook>__HOOK__</div>
+<div id="blks"></div>
+<div id="band" class="a" data-band></div>
+<div id="cap" class="a" data-subs></div>
+<script>
+(function(){
+/*kitmotion:begin*/
+/*kitmotion:end*/
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;
+  var TEXT = __TEXT__, DUR = __DUR__, HOOK_N = __HOOK_N__;
+  // ---- the details: one per beat, in order (kind = a component in KINDS; title = three words; acc = the accent word's index) ----
+  var DETAILS = __DETAILS__;
+  var RECAP = __RECAP__;
+  // ---- the component library. Each kind: html (inside the 450x190 stage), draw(root, c, o) with c = the component's own clock in seconds
+  //   (0 = the interaction starts; it is slowed by the beat's timeScale), o = { f: the curve's ease, k: progress 0-1 on the curve, a: text alpha,
+  //   mini: true in the recap and the hook loop (no finger) }. css = the real CSS (checked on MDN + BCD), curve = what that CSS's timing does,
+  //   dur = the CSS duration (s), after = seconds of story after it, chip = the spec chip, token = the recap label ----
+  var tx = function(root, a){ [].forEach.call(root.querySelectorAll('.tx'), function(e){ e.style.opacity = a; }); };
+  function finger(root, c, o, x0, y0, x1, y1, drag){ var fg = root.querySelector('.fg'); if (!fg) return; if (o.mini) { fg.style.opacity = 0; return; }
+    var inn = E.inOut3(P(c, -.42, -.06)), lift = E.inOut3(P(c, drag ? drag[1] : .12, (drag ? drag[1] : .12) + .3)), dx = drag ? E.inOut3(P(c, drag[0], drag[1])) * drag[2] : 0;
+    var x = mix(x0, x1, inn) + dx + lift * 30, y = mix(y0, y1, inn) + lift * 50, press = KM.win(c, -.08, drag ? drag[1] : .1, .06);
+    fg.style.left = (x - 28).toFixed(1) + 'px'; fg.style.top = (y - 28).toFixed(1) + 'px'; fg.style.opacity = (cl((c + .42) * 5) * (1 - lift) * o.a).toFixed(3); fg.style.transform = 'scale(' + (1 - press * .14).toFixed(3) + ')'; }
+  var KINDS = {
+    copy: { title: ['Copy', 'that', 'springs'], acc: 2, say: 'the copy button springs into its answer.', token: 'width · linear()',
+      css: '.copy {\n  transition: width .5s\n    linear(0, .62 18%, 1.1 38%, .97 62%, 1);\n}\n.copy.done { width: 168px; }',
+      curve: { linear: [0, [.62, 18], [1.1, 38], [.97, 62], 1] }, dur: .5, after: .3, chip: [{ label: 'lands in', v: 500, unit: 'ms' }, { v: 1, unit: 'overshoot' }],
+      html: '<div class="cp"><i class="ic"></i><i class="ck"></i><span class="t1 tx">Copy link</span><span class="t2 tx">Copied</span></div><div class="fg"></div>',
+      draw: function(r, c, o){ var w = mix(224, 168, o.f(o.k)), cp = r.querySelector('.cp'), sw = P(o.k, .15, .45), press = KM.win(c, -.08, .1, .06);
+        cp.style.width = w.toFixed(2) + 'px'; cp.style.left = (225 - w / 2).toFixed(2) + 'px'; cp.style.transform = 'scale(' + (1 - press * .05).toFixed(3) + ')';
+        cp.style.background = KM.mixCol('#3a3b44', '#7cf0b6', sw); cp.style.color = KM.mixCol('#f2efe8', '#111214', sw);
+        r.querySelector('.ic').style.transform = 'scale(' + (1 - sw).toFixed(3) + ')'; r.querySelector('.ck').style.transform = 'rotate(45deg) scale(' + E.back(P(o.k, .3, .7), 2).toFixed(3) + ')';
+        var t1 = r.querySelector('.t1'), t2 = r.querySelector('.t2'); t1.style.opacity = ((1 - P(o.k, .1, .35)) * o.a).toFixed(3); t2.style.opacity = (P(o.k, .3, .55) * o.a).toFixed(3);
+        t1.style.transform = 'translateY(' + (-P(o.k, .1, .35) * 14).toFixed(2) + 'px)'; t2.style.transform = 'translateY(' + ((1 - E.out3(P(o.k, .3, .6))) * 14).toFixed(2) + 'px)';
+        finger(r, c, o, 330, 190, 250, 104); } },
+    toggle: { title: ['Knobs', 'that', 'stretch'], acc: 2, say: 'the switch knob stretches as it slides.', token: 'translate · squash',
+      css: '.knob { transition: translate .4s\n  cubic-bezier(.34, 1.56, .64, 1); }\n.on .knob { translate: 48px;\n  animation: squash .4s; }\n@keyframes squash { 40% { scale: 1.3 .8 } }',
+      curve: { bezier: [.34, 1.56, .64, 1] }, dur: .4, after: .3, chip: [{ label: 'slides in', v: 400, unit: 'ms' }, { v: 130, unit: '% stretch' }],
+      html: '<span class="tg-l tx">Dark mode</span><span class="tg-s tx">SETTINGS</span><div class="tg"><div class="kn"></div></div><div class="fg"></div>',
+      draw: function(r, c, o){ var x = 48 * o.f(o.k), sq = KM.curve({ keyframes: [[0, 0], [40, 1], [100, 0]] }).f(o.k), kn = r.querySelector('.kn');
+        kn.style.transform = 'translateX(' + x.toFixed(2) + 'px) scale(' + (1 + .3 * sq).toFixed(3) + ',' + (1 - .2 * sq).toFixed(3) + ')';
+        r.querySelector('.tg').style.background = KM.mixCol('#3a3b44', '#7cf0b6', P(o.k, .1, .6)); tx(r, o.a);
+        finger(r, c, o, 420, 190, 352, 100); } },
+    toast: { title: ['Toasts', 'that', 'settle'], acc: 2, say: 'the toast eases in, then swipes away.', token: '@starting-style',
+      css: '.toast { transition: translate .5s\n  cubic-bezier(.2, .9, .3, 1.25);\n  @starting-style { translate: 0 120%; }\n}\n.toast.gone { translate: 110% 0; }',
+      curve: { bezier: [.2, .9, .3, 1.25] }, dur: .5, after: .75, chip: [{ label: 'settles in', v: 500, unit: 'ms' }, { v: 1, unit: 'overshoot' }],
+      html: '<div class="sk" style="top:26px"></div><div class="sk" style="top:70px;width:260px"></div><div class="ts"><i></i><b class="tx">Saved to your list</b><small class="tx">UNDO</small></div><div class="fg"></div>',
+      draw: function(r, c, o){ var y = 89 * (1 - o.f(o.k)), dr = E.inOut3(P(c, .62, .9)) * 46, fl = KM.curve({ bezier: [.2, .9, .3, 1.25] }).f(P(c, .9, 1.4)) * 400, ts = r.querySelector('.ts');
+        ts.style.transform = 'translate(' + (dr + fl).toFixed(2) + 'px,' + y.toFixed(2) + 'px) rotate(' + (dr * .04 + fl * .012).toFixed(2) + 'deg)'; ts.style.opacity = (1 - P(c, 1.05, 1.4)).toFixed(3);
+        tx(r, o.a * (o.k > 0 || c > 0 ? 1 : 0)); if (o.mini) { finger(r, c, o, 0, 0, 0, 0); return; }
+        var fg = r.querySelector('.fg'), on = KM.win(c, .5, .92, .1), lx = 210 + dr; fg.style.left = (lx - 28).toFixed(1) + 'px'; fg.style.top = (141 - 28 + (1 - on) * 30).toFixed(1) + 'px';
+        fg.style.opacity = (on * o.a).toFixed(3); fg.style.transform = 'scale(' + (1 - KM.win(c, .58, .9, .05) * .14).toFixed(3) + ')'; } },
+    stepper: { title: ['Steps', 'that', 'fill'], acc: 2, say: 'the progress bar fills, then the next step pops.', token: 'width · ease-in-out',
+      css: '.bar { transition: width .7s\n  cubic-bezier(.65, 0, .35, 1); }\n.step.done { scale: 1.15;\n  transition: scale .3s; }',
+      curve: { bezier: [.65, 0, .35, 1] }, dur: .7, after: .35, chip: [{ label: 'fills in', v: 700, unit: 'ms' }, { v: 3, unit: 'steps' }],
+      html: '<div class="st-t"></div><div class="st-f"></div><div class="st-d tx" style="left:84px">1</div><div class="st-d tx" style="left:225px">2</div><div class="st-d tx" style="left:366px">3</div><div class="st-n tx" style="left:84px">CART</div><div class="st-n tx" style="left:225px">PAY</div><div class="st-n tx" style="left:366px">DONE</div><div class="fg"></div>',
+      draw: function(r, c, o){ var w = .5 * o.f(o.k), D = r.querySelectorAll('.st-d'), pop = KM.curve({ bezier: [.25, .1, .25, 1] }).f(P(c, o.dur, o.dur + .3));
+        r.querySelector('.st-f').style.transform = 'scaleX(' + w.toFixed(4) + ')'; tx(r, o.a);
+        D[0].style.background = '#7cf0b6'; D[0].style.color = '#111214';
+        D[1].style.background = KM.mixCol('#3a3b44', '#7cf0b6', P(c, o.dur - .05, o.dur + .1)); D[1].style.color = KM.mixCol('#f2efe8', '#111214', P(c, o.dur - .05, o.dur + .1));
+        D[1].style.transform = 'scale(' + (1 + .15 * pop * (1 - P(c, o.dur + .5, o.dur + .8))).toFixed(3) + ')';
+        finger(r, c, o, 400, 200, 366, 120); } },
+    like: { title: ['Hearts', 'that', 'pop'], acc: 2, say: 'the heart pops, then wobbles into place.', token: 'scale · linear()',
+      css: '.heart { transition: scale .45s\n  linear(0, 1.3 30%, .9 55%, 1.04 78%, 1); }\n.liked .heart { scale: 1.2; }',
+      curve: { linear: [0, [1.3, 30], [.9, 55], [1.04, 78], 1] }, dur: .45, after: .3, chip: [{ label: 'pops in', v: 450, unit: 'ms' }, { v: 2, unit: 'wobbles' }],
+      html: '<svg class="lk-h" viewBox="0 0 86 86"><path d="M43 74 C14 54 6 40 6 28 C6 16 15 8 26 8 C34 8 40 13 43 19 C46 13 52 8 60 8 C71 8 80 16 80 28 C80 40 72 54 43 74Z"/></svg><span class="lk-c tx">128</span><span class="lk-s tx">LIKES</span><div class="fg"></div>',
+      draw: function(r, c, o){ var s = 1 + .2 * o.f(o.k), h = r.querySelector('.lk-h'), on = P(o.k, 0, .2);
+        h.style.transform = 'scale(' + s.toFixed(4) + ')'; h.querySelector('path').style.fill = 'rgba(255,90,74,' + on.toFixed(3) + ')'; h.querySelector('path').style.stroke = KM.mixCol('#f2efe8', '#ff5a4a', on);
+        r.querySelector('.lk-c').textContent = o.k > .25 ? '129' : '128'; tx(r, o.a); finger(r, c, o, 250, 200, 194, 110); } }
+  };
+  var N = DETAILS.length, D = DETAILS.map(function(d){ var K = KINDS[d.kind], o = {}; for (var k in K) o[k] = K[k]; for (var q in d) o[q] = d[q]; return o; });
+  // ---- build the world: one panel per detail (560 px apart), the recap grid after them ----
+  var esc = function(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  var hl = function(css){ return esc(css).replace(/(linear\([^)]*\)|cubic-bezier\([^)]*\)|@starting-style|@keyframes)/g, '<b>$1</b>').replace(/([{}])/g, '<span class="dim">$1</span>'); };
+  var world = $('world'), blks = $('blks'), rows = Math.ceil(N / 2), tileH = Math.min(150, (416 - (rows - 1) * 10) / rows), ms = Math.min(194 / 450, (tileH - 52) / 190);
+  D.forEach(function(d, i){ var pn = document.createElement('div'); pn.className = 'pn'; pn.style.left = (560 * i) + 'px';
+    pn.innerHTML = '<div class="stage"><div class="comp">' + d.html + '</div></div><div class="code"><div class="cd"></div></div><svg class="cg" width="250" height="96"></svg><div class="chip"></div>';
+    world.appendChild(pn); d.pn = pn; d.stage = pn.querySelector('.stage'); d.comp = pn.querySelector('.comp'); d.code = pn.querySelector('.cd'); d.html2 = hl(d.css);
+    var b = document.createElement('div'); b.className = 'blk a'; b.innerHTML = '<span class="eb">Nº ' + ('0' + (i + 1)).slice(-2) + ' / ' + ('0' + N).slice(-2) + '</span><div class="tt">' + d.title.map(function(w, j){ return '<span' + (j === d.acc ? ' class="acc"' : '') + '>' + esc(w) + '</span>'; }).join(' ') + '</div>';
+    blks.appendChild(b); d.blk = b;
+    var bg = document.createElement('div'); bg.className = 'badge a'; blks.appendChild(bg); d.badge = bg; });
+  var rc = document.createElement('div'); rc.className = 'pn'; rc.style.left = (560 * N) + 'px'; rc.innerHTML = '<div class="grid" style="height:' + (rows * tileH + (rows - 1) * 10) + 'px"></div>'; world.appendChild(rc);
+  var grid = rc.querySelector('.grid'), gridTop = 230 + Math.max(0, (416 - (rows * tileH + (rows - 1) * 10)) / 2); grid.style.top = gridTop + 'px';
+  D.forEach(function(d, i){ var tl = document.createElement('div'), col = i % 2, row = Math.floor(i / 2), solo = N % 2 === 1 && i === N - 1;
+    tl.className = 'tile'; tl.style.left = (solo ? 110 : col * 220) + 'px'; tl.style.top = (row * (tileH + 10)) + 'px'; tl.style.height = tileH + 'px';
+    tl.innerHTML = '<div class="mini" style="transform:scale(' + ms.toFixed(4) + ')"><div class="comp">' + d.html + '</div></div><div class="tl" style="top:' + (14 + 190 * ms).toFixed(0) + 'px"><b>' + ('0' + (i + 1)).slice(-2) + ' ' + esc(d.title.join(' ')) + '</b><small>' + esc(d.token) + '</small></div>';
+    grid.appendChild(tl); d.tile = tl; d.mini = tl.querySelector('.comp'); });
+  var rb = document.createElement('div'); rb.className = 'blk a'; rb.innerHTML = '<span class="eb">' + esc(RECAP.eyebrow) + '</span><div class="tt">' + RECAP.title.map(function(w, j){ return '<span' + (j === RECAP.acc ? ' class="acc"' : '') + '>' + esc(w) + '</span>'; }).join(' ') + '</div>'; blks.appendChild(rb);
+  var V, PH, A = {}, CAM, BAR, B = [];
+  // the ping-pong loop (the hook and the recap play each detail at full speed, forward then back): x = seconds into the loop, c starts at c0
+  // the hook: the first detail finishing at frame 0 (result first), held done while the hook is said, played back to its start just
+  // before part 1, so part 1 picks up seamlessly
+  var HOLD = .45, hookC = function(d, t){ var c0 = d.clock(A.b[0]), top = d.dur + d.after, r0 = Math.max(A.hookIn + .3, A.b[0] - .8);
+    return t < .4 ? top - .4 + t : t < r0 ? top : mix(top, c0, E.inOut3(P(t, r0, A.b[0] - .1))); };
+  var pp = function(d, x, c0){ var L = d.dur + d.after - c0, Q = 2 * L + 2 * HOLD; x = ((x % Q) + Q) % Q; return x < L ? c0 + x : x < L + HOLD ? c0 + L : x < 2 * L + HOLD ? c0 + 2 * L + HOLD - x : c0; };
+  function anchors(words){
+    V = KM.voice(TEXT, .15, words); PH = V.phrases(6); KM.reset(DUR);
+    var S = V.starts(); if (S.length < N + 2) { S = [0]; for (var i = 1; i <= N + 1; i++) S.push(1.8 + (DUR - 3.4) * (i - 1) / (N + .5)); }
+    A.b = []; for (var j = 1; j <= N + 1; j++) A.b.push(S[j] - .3); A.b.push(DUR);   // A.b[i] = the start of detail i (A.b[N] = the recap)
+    A.end = V.end; A.hookIn = (V.words[HOOK_N - 1] ? V.words[HOOK_N - 1].s - V.lead : 1.2) + .25; window.COVER = +Math.min(A.hookIn + .35, A.b[0] - .22).toFixed(2);
+    // the camera: close on the first detail under the hook (it is already running: result first), then one declared glide per part
+    CAM = KM.rig({ x: 255, y: 330.6, z: 1.8, drift: 1.3 }).matchMove(A.b[0] - .3, .75, 255, 480, 1);
+    for (var p = 1; p <= N; p++) CAM.creep(A.b[p - 1] + .5, Math.max(.2, A.b[p] - A.b[p - 1] - .85), .03).matchMove(A.b[p] - .3, .62, 255 + 560 * p, 480, 1);
+    CAM.creep(A.b[N] + .4, DUR - A.b[N] - .4, .02);   // the drift (1.3) and a 3% creep through each part keep it moving; texts sit 26 px inside the safe zone for them
+    D.forEach(function(d, i){ var b0 = A.b[i], b1 = A.b[i + 1], z0 = b0 + .5, s0 = z0 - .1, s1 = Math.max(s0 + .6, b1 - .9 - d.after);   // lands about 0.9 s before the camera moves on
+      // slow motion: the interaction (dur in the component's own seconds) fills the stretch from s0 to s1; at most 1x, at least 0.1x
+      var f = cl((d.dur - .1) / Math.max(.3, s1 - s0 - .25), .1, 1);
+      d.f = f; d.ts = KM.timeScale(s0, s1, f, .25); d.off = s0 - z0; d.clock = (function(ts, off){ return function(t){ return ts.at(t) + off; }; })(d.ts, d.off);
+      d.real = (function(ts, off){ return function(c){ return ts.real(c - off); }; })(d.ts, d.off);
+      d.cg = KM.curveGraph(d.pn.querySelector('.cg'), d.curve, 0, d.dur, { clock: d.clock, real: d.real });
+      d.chipDraw = KM.specChip(d.pn.querySelector('.chip'), d.chip, d.real(0), d.real(d.dur) - d.real(0), d.cg.k);   // the ms counter runs with the dot
+      d.badgeDraw = KM.slowmoBadge(d.badge, d.ts, f.toFixed(2) + '× SPEED');
+      d.typeA = b0 + .35; d.typeB = Math.min(b0 + .35 + d.css.length * .011, b1 - .9);
+      for (var c = 0; d.typeA + c * .1 < d.typeB; c++) KM.cue({ t: d.typeA + c * .1, k: 'tick', g: .05, p: (c * 5) % 7 });
+      if (!(d.kind === 'toast')) KM.tap(d.real(0), 255); });
+    BAR = KM.partProgress($('bar'), D.map(function(d, i){ return [A.b[i], A.b[i + 1]]; }));
+    KM.cue({ t: 0, k: 'hit', g: .45, p: -.3 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .35 });
+    KM.cue({ t: A.b[N] + .35, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] }); KM.cue({ t: DUR - .45, k: 'swish', d: .6, g: .4, p: -.6 });
+    KM.publish();
+  }
+  // a panel's text alpha: up once the camera has arrived, down as soon as it leaves (texts never slide toward the frame's edges)
+  var arrive = function(i){ return i === 0 ? -1 : A.b[i] - .3; }, alpha = function(i, t){ var a = arrive(i), l = i < N ? A.b[i + 1] - .3 : 99, d = i === 0 ? .75 : .62;
+    return (a < 0 ? 1 : P(t, a + d * .88, a + d)) * (1 - P(t, l, l + d * .12)); };
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var c = CAM.apply($('world'), t), cur = 0; for (var i = 0; i < N; i++) if (t >= A.b[i + 1] - .0) cur = i + 1;
+    KM.parallax($('bg'), c, .3);
+    D.forEach(function(d, i){ var a = alpha(i, t), live = t >= A.b[i] - .35 && t < A.b[i + 1] + .4, hookLoop = i === 0 && t < A.b[0];
+      d.stage.toggleAttribute('data-subject', cur === i);
+      var cc = hookLoop ? hookC(d, t) : d.clock(t), end = d.dur + d.after + .25;
+      if (!hookLoop && cc > end) cc = pp(d, d.dur + d.after + .2 + cc - end, -.2);   // once it has played, it replays at 1x (back and forth) until the camera moves on
+      var k = cl(cc / d.dur);
+      if (live || hookLoop) d.draw(d.comp, cc, { f: d.cg.f, k: k, a: a, dur: d.dur, mini: hookLoop });
+      // inside its card the component eases closer through its part (a slow-motion push that keeps the frame alive through the holds)
+      var zk = E.inOut3(P(t, A.b[i] + .2, A.b[i + 1] + .3)); d.comp.style.transform = 'scale(' + (1 + .1 * zk).toFixed(4) + ')';
+      KM.type(d.code, d.html2, t, d.typeA, d.typeB); d.code.style.opacity = a.toFixed(3);
+      d.cg.draw(t, a * P(t, A.b[i] + .1, A.b[i] + .4)); d.chipDraw(t); d.pn.querySelector('.chip').style.opacity = (+d.pn.querySelector('.chip').style.opacity * a).toFixed(3);
+      d.badgeDraw(t);
+      // the title block: in word by word as its part starts, blurred away as the next one comes
+      var st = [A.b[i] + .02]; d.title.forEach(function(w, j){ st.push(A.b[i] + .1 + j * .09); });
+      d.tile.style.zIndex = 1;
+      KM.rise(d.blk.querySelectorAll('.eb, .tt > span'), t, st, E.inOut3(P(t, A.b[i + 1] - .3, A.b[i + 1] - .05)));
+      // the recap tile: the same component at full speed, forward and back, its own phase
+      var rk = E.settle(P(t, A.b[N] - .05 + i * .09, A.b[N] + .55 + i * .09), 1.2), ra = alpha(N, t);
+      // a spotlight walks the grid once the tiles are in (one tile lifts and lights up at a time: the eye reads each, the frame never rests)
+      var sp = t - A.b[N] - .8, per = .85, ph = sp / per - i, hl = sp < 0 ? 0 : Math.max(0, Math.sin(Math.PI * cl(((ph % N) + N) % N / 1.6))) * P(sp, 0, .4);
+      d.tile.style.opacity = cl(rk * 2.5).toFixed(3); d.tile.style.transform = 'translateY(' + ((1 - rk) * 36 - hl * 8).toFixed(2) + 'px) scale(' + (mix(.94, 1, rk) + hl * .06).toFixed(4) + ')';
+      d.tile.style.background = KM.mixCol('#202128', '#2c3a34', hl); d.tile.style.boxShadow = '0 0 0 2px rgba(124,240,182,' + (hl * .8).toFixed(3) + '), 0 ' + (10 + hl * 14).toFixed(1) + 'px ' + (24 + hl * 20).toFixed(1) + 'px rgba(0,0,0,.4)';
+      if (t >= A.b[N] - .4) { var mc = pp(d, t - A.b[N] + i * .37, -.2); d.draw(d.mini, mc, { f: d.cg.f, k: cl(mc / d.dur), a: ra, dur: d.dur, mini: true }); }
+      [].forEach.call(d.tile.querySelectorAll('.tl'), function(e){ e.style.opacity = ra; }); });
+    grid.toggleAttribute('data-subject', cur === N);
+    BAR(t);
+    var rst = [A.b[N] + .02]; RECAP.title.forEach(function(w, j){ rst.push(A.b[N] + .1 + j * .09); }); KM.rise(rb.querySelectorAll('.eb, .tt > span'), t, rst, 0);
+    // ---- the hook: word by word over the first detail, gone as the camera pulls back to the first part ----
+    var gone = E.inOut3(P(t, A.b[0] - .2, A.b[0] + .05)), hs = [];
+    for (var h = 0; h < HOOK_N; h++) hs.push(h === 0 ? -.3 : V.words[h].s - V.lead);
+    KM.rise($('hook').querySelectorAll('.ln > span'), t, hs, gone);
+    // ---- the subtitle band and the world's fade above it (the fade leads the band in, so nothing shows inside a band that is up) ----
+    var bk = E.out3(P(t, A.b[0] - .4, A.b[0] - .05)) * (1 - E.out3(P(t, A.end + 1.1, A.end + 1.6))), fk = E.out3(P(t, A.b[0] - .7, A.b[0] - .25)) * (1 - E.out3(P(t, A.end + 1.3, A.end + 1.8)));
+    var mY = mix(960, 668, fk), mask = 'linear-gradient(to bottom,#000 ' + (mY - 14) + 'px,rgba(0,0,0,0) ' + mY + 'px)';
+    $('vp').style.webkitMaskImage = mask; $('vp').style.maskImage = mask;
+    $('band').style.opacity = bk.toFixed(3); $('band').style.transform = 'translateY(' + ((1 - bk) * 40).toFixed(2) + 'px)';
+    KM.subs($('cap'), t, V, PH, HOOK_N, Math.min(DUR - .9, A.end + 1.1), function(w){ return /^(one|two|three|four|five|six|save)\b/i.test(w) ? 'var(--acc)' : null; });
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); } };
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 54px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 14px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

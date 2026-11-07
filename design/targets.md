@@ -24,4 +24,4 @@ config forgets. Two WINs of one id print PROMOTE (becomes a rulebook rule that d
 
 | Channel | Post on | Post at | Id | Change | Vs |
 |---|---|---|---|---|---|
-| web | 2026-11-08 | 13:00 | result-first | result-first opening on a satisfying motion trick (rules-web.md rule 11) | median |
+| web | 2026-11-08 | 13:00 | details-format | slow-mo motion details compilation (newweb.mjs --details; it opens result-first, rules-web.md rule 11) | median |

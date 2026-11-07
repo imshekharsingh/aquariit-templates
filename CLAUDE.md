@@ -12,7 +12,8 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   Each tab has a "Reels | Growth" switch (owner, 1 Nov 2026): Growth charts followers over time and reach per reel from the collector's D1 data
   (inline SVG, no libraries); the app follows the phone's light or dark setting through its color tokens. Cards (audit, spare night) sit at the top. The 6-17 Oct templates, their Archive and Style Library were deleted (owner, 31 Oct 2026).
 - **Reels**: every new @webin20sec reel starts from `node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ...` and the shared motion kit
-  scripts/explainer/kitmotion.js (camera rig with drift and named moves, declared transitions, springs, text and secondary motion, cues; owner, 7 Nov 2026:
+  scripts/explainer/kitmotion.js (camera rig with drift and named moves, declared transitions, springs, text and secondary motion, cues, and the slow-mo "details" pieces: live easing curve, time scale, spec chip, part bar,
+  `newweb.mjs <slug> --details N` for a compilation of N small UI motions with a recap grid, owner 8 Nov 2026; owner, 7 Nov 2026:
   premium motion by default, not hand-built per reel; a kit change: `node scripts/channel3/kit-inline.mjs <scene>`). One seekable scene per reel, `scripts/explainer/<slug>.html` exposing `window.seek(t)` (every frame a pure function of t,
   seeded randomness only), plus `scripts/explainer/<slug>.json` (name `showreel-NN-<slug>`, dur, fps 60, cover time, caption, 6+ keywords, exactly 5 hashtags).
 - **Render**: always on GitHub (Actions, "Showreel" workflow, config = the json). The MP4, cover and contact sheet go to the PRIVATE Cloudflare R2
