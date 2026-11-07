@@ -5,18 +5,21 @@
 //         BASIC_AUTH_USER / BASIC_AUTH_PASS      the site sign-in (GitHub secrets, same ones the pipeline uses)
 //         SITE_BASE (default https://templates.aquariit.com), IG_API_BASE (default https://graph.instagram.com)   -- overridable for tests
 //   The token is kept alive by itself: a refreshed token is stored on the site (primary account only) and preferred from then on; the GitHub secret is the fallback.
-// Usage: node scripts/ig-collect.mjs [--dry] [--no-refresh] [--refresh] [--limit 50] [--slot N] [--midday]
+// Usage: node scripts/ig-collect.mjs [--dry] [--no-refresh] [--refresh] [--limit 50] [--slot N] [--midday] [--post-check]
+//   --post-check  the light run ~40 min after each posting slot (owner, 7 Nov 2026: "Why did I have to tell you I posted it?"): only the latest 5 posts,
+//                 match + auto-mark at Instagram's time, a first metrics reading, no account insights / audience / token refresh / follower snapshot.
+//                 Prints one POSTED / NOT POSTED line per reel of this channel due today (IST), e.g. "POSTED web: showreel-29-flash at 19:04 IST (marked)".
 //   --midday      the 12:30 IST run (owner, 5 Nov 2026): fresh reel numbers for the day's builds; it keeps the nightly follower snapshot of the day
 //   --slot N      which account (1 = the main one, the default; 2 = the second account, its token in INSTAGRAM_TOKEN_2). Each slot keeps its own refreshed token on the site.
 //   --dry         read from Instagram and print the result, but do not write to the site
 //   --no-refresh  never refresh the token this run;  --refresh  refresh it now (normally: when no stored token exists or it is over 6 days old)
 // Exit code 1 on any problem the owner must know about (bad token, missing permission, site refused); the message says what to do.
 import { appendFileSync } from 'node:fs';
-import { matchPosts, SLOT_CHANNEL } from './reel-match.mjs';
+import { matchPosts, SLOT_CHANNEL, catalogue, istDay } from './reel-match.mjs';
 
 const args = process.argv.slice(2), has = (f) => args.includes(f), opt = (n, d) => { const i = args.indexOf(n); return i > -1 ? args[i + 1] : d; };
 const ENV_TOKEN = process.env.INSTAGRAM_TOKEN || '', IG = (process.env.IG_API_BASE || 'https://graph.instagram.com').replace(/\/$/, ''), SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, '');
-const MIDDAY = has('--midday'), DRY = has('--dry'), LIMIT = Math.max(1, Math.min(100, +opt('--limit', 50))), SLOT = Math.max(1, Math.min(9, +opt('--slot', 1) || 1)), SECRET = SLOT === 1 ? 'INSTAGRAM_TOKEN' : 'INSTAGRAM_TOKEN_' + SLOT;
+const POST_CHECK = has('--post-check'), MIDDAY = has('--midday') || POST_CHECK, DRY = has('--dry'), LIMIT = Math.max(1, Math.min(100, +opt('--limit', 50))), SLOT = Math.max(1, Math.min(9, +opt('--slot', 1) || 1)), SECRET = SLOT === 1 ? 'INSTAGRAM_TOKEN' : 'INSTAGRAM_TOKEN_' + SLOT;
 const out = [], say = (m) => { out.push(m); console.log(m); };
 const summary = (md) => { if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, md + '\n'); };
 // a failure is also posted to the site, where the app shows it as a red banner until the next good run (owner, 31 Oct 2026: GitHub issues go unseen)
@@ -70,7 +73,7 @@ const A = me.json;
 say(`Account: @${A.username} (${A.account_type}), ${A.followers_count} followers, ${A.follows_count} following, ${A.media_count} posts`);
 
 // 2. recent media
-const list = await ig('/me/media', { fields: 'id,caption,media_type,media_product_type,permalink,timestamp,like_count,comments_count', limit: String(LIMIT) });
+const list = await ig('/me/media', { fields: 'id,caption,media_type,media_product_type,permalink,timestamp,like_count,comments_count', limit: String(POST_CHECK ? 5 : LIMIT) });
 if (!list.ok) await die(`Could not list posts: ${errText(list.error)}`);
 const items = (list.json.data || []).filter((m) => m && m.id);
 say(`Posts read: ${items.length}`);
@@ -80,13 +83,14 @@ say(`Posts read: ${items.length}`);
 // Instagram offers them they are read. The probe also asks the API for its own list of valid metrics (an unknown name makes the error list them)
 // and tries every listed name we do not read yet; those land in "extra".
 const KNOWN = ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions', 'ig_reels_avg_watch_time', 'ig_reels_video_view_total_time', 'follows', 'profile_visits', 'profile_activity'];
-const CANDIDATES = { REELS: KNOWN.slice(), OTHER: ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions'] };
+// the post check asks only the reel metrics Instagram is known to give (one call per post), so it stays under a minute
+const CANDIDATES = { REELS: POST_CHECK ? KNOWN.slice(0, 9) : KNOWN.slice(), OTHER: ['views', 'reach', 'saved', 'shares', 'likes', 'comments', 'total_interactions'] };
 const supported = {}, unsupported = {}, firstError = {}, listed = {};
 async function insightsFor(m) {
   const kind = m.media_product_type === 'REELS' ? 'REELS' : 'OTHER', got = {};
   const parse = (j) => { for (const row of j.data || []) { const v = row.values ? row.values[0] && row.values[0].value : row.total_value && row.total_value.value; if (typeof v === 'number') got[row.name] = v; } };
   if (!supported[kind]) { // probe once
-    if (kind === 'REELS') { // what this API version lists for a reel
+    if (kind === 'REELS' && !POST_CHECK) { // what this API version lists for a reel
       const l = await ig(`/${m.id}/insights`, { metric: 'zz_list_probe' }), t = l.ok ? '' : String(l.error.message || '');
       const names = (t.split(/following values?:/i)[1] || '').split(',').map((x) => x.trim().replace(/[^a-z_]/g, '')).filter(Boolean);
       listed[kind] = names; for (const n of names) if (!CANDIDATES.REELS.includes(n)) CANDIDATES.REELS.push(n);
@@ -112,7 +116,7 @@ const { byPost, how } = matchPosts(items.map((m) => ({ ig_id: m.id, caption: m.c
 const templateFor = (m) => byPost[m.id] || null;
 
 const media = [];
-for (const m of items) {
+for (const m of POST_CHECK ? items.slice().reverse() : items) {   // post check: probe on the oldest post, a minutes-old reel may not have insights yet
   const x = await insightsFor(m);
   media.push({
     ig_id: m.id, template_id: templateFor(m), permalink: m.permalink || null, posted_at: m.timestamp || null, caption: m.caption || null, kind: m.media_product_type || m.media_type || null,
@@ -121,6 +125,7 @@ for (const m of items) {
       follows: x.follows ?? null, profile_visits: x.profile_visits ?? null, profile_activity: x.profile_activity ?? null,
       extra: Object.fromEntries(Object.entries(x).filter(([k]) => !KNOWN.includes(k))) },
   });
+  if (POST_CHECK && x.reach == null) delete media[media.length - 1].metrics;   // no reading yet: never overwrite the day's numbers with blanks
 }
 if (listed.REELS) say(`Reel metrics the API lists: ${listed.REELS.join(', ') || '(no list in the error text)'}; not read before 5 Nov: ${listed.REELS.filter((n) => !KNOWN.includes(n)).join(', ') || 'none'}`);
 for (const k of Object.keys(supported)) say(`Insight metrics (${k}): ${supported[k].join(', ') || 'none'}${unsupported[k] && unsupported[k].length ? ` | not available: ${unsupported[k].map((n) => `${n} [${firstError[n]}]`).join('; ')}` : ''}`);
@@ -132,16 +137,18 @@ say(`Matched to a reel (${CHANNEL}): ${matched} matched (${byHow('caption')} by 
   const n = (v) => (v == null ? '-' : String(v)), pc = (a, b) => (b > 0 && a != null ? (100 * a / b).toFixed(1) + '%' : '-');
   say('\nReels (newest first): date | template | views | reach | shares | saves | likes | comments | avg watch s | share% | save%');
   for (const m of media.slice().sort((a, b) => String(b.posted_at).localeCompare(String(a.posted_at)))) {
-    const x = m.metrics; say([String(m.posted_at || '').slice(0, 10), m.template_id || 'unmatched', n(x.views), n(x.reach), n(x.shares), n(x.saves), n(x.likes), n(x.comments), x.watch_avg_ms != null ? (x.watch_avg_ms / 1000).toFixed(1) : '-', pc(x.shares, x.reach), pc(x.saves, x.reach)].join(' | '));
+    const x = m.metrics || {}; say([String(m.posted_at || '').slice(0, 10), m.template_id || 'unmatched', n(x.views), n(x.reach), n(x.shares), n(x.saves), n(x.likes), n(x.comments), x.watch_avg_ms != null ? (x.watch_avg_ms / 1000).toFixed(1) : '-', pc(x.shares, x.reach), pc(x.saves, x.reach)].join(' | '));
   }
   say('\nPosts (newest first): posted IST | reach | link | caption (first line)');
   for (const m of media.slice().sort((a, b) => String(b.posted_at).localeCompare(String(a.posted_at)))) {
     const ist = m.posted_at ? new Date(new Date(m.posted_at).getTime() + 5.5 * 3600e3).toISOString().slice(0, 16).replace('T', ' ') : '-';
-    say([ist, n(m.metrics.reach), m.permalink || '-', String(m.caption || '').split('\n')[0].slice(0, 110)].join(' | '));
+    say([ist, n((m.metrics || {}).reach), m.permalink || '-', String(m.caption || '').split('\n')[0].slice(0, 110)].join(' | '));
   }
-  const tot = (k) => media.reduce((a, m) => a + (m.metrics[k] || 0), 0);
+  const tot = (k) => media.reduce((a, m) => a + ((m.metrics || {})[k] || 0), 0);
   say(`Totals: ${tot('views')} views, ${tot('reach')} reach (sum), ${tot('shares')} shares, ${tot('saves')} saves, ${tot('likes')} likes, ${tot('comments')} comments\n`);
 }
+const audience = [], insights = [], probe = [];
+if (!POST_CHECK) {
 // account-level, last day (owner, 27 Oct 2026): how much reach comes from non-followers, follows vs unfollows, profile link taps. Each metric is asked on its own,
 // so one Instagram does not offer just shows as unavailable. Where viewers come from (feed, Explore, Reels tab) is not offered by the API at all.
 {
@@ -162,7 +169,6 @@ say(`Matched to a reel (${CHANNEL}): ${matched} matched (${byHow('caption')} by 
 // 4b. audience and account probe (owner, 5 Nov 2026: global audience, followers arrive at night): each metric is asked on its own and printed as
 // PROBE ... SUPPORTED / NOT AVAILABLE [the API's error]; what works is stored (ig_audience, ig_insights_day). Demographics need 100+ followers.
 // online_followers: the hour keys are in the zone whose midnight is the value's end_time (Pacific time in Meta's insights), so the offset is read from end_time.
-const audience = [], insights = [], probe = [];
 {
   const P = (name, ok, note) => { probe.push(`${name}: ${ok ? 'SUPPORTED' : 'NOT AVAILABLE'}${note ? ' [' + note + ']' : ''}`); };
   const TF = ['this_month', 'this_week', 'last_30_days', 'last_90_days'];
@@ -209,13 +215,14 @@ const audience = [], insights = [], probe = [];
   for (const [m, b] of [['follower_demographics', 'country'], ['follower_demographics', 'city'], ['reached_audience_demographics', 'country'], ['reached_audience_demographics', 'city']]) { const t = top(m, b); if (t) say(`Top ${b} (${m.split('_')[0]}): ${t}`); }
   const on = top('online_followers', 'hour_ist', 6); if (on) say(`Followers online, busiest IST hours: ${on}`);
 }
+}
 if (media.length && !Object.values(supported).some((s) => s.length)) say('⚠ No insight metric could be read. The token probably lacks the “instagram_business_manage_insights” permission (or Instagram needs App Review for it). Followers and posts were still collected.');
 
 // 5. token health. Instagram tokens last 60 days and a refresh issues a NEW token, so the new one is stored on the site (only the primary account can read it).
 // Refresh when none is stored yet or the stored one is over 6 days old. The token itself is never printed.
 let tokenNote = usedStored ? 'using the stored token' : 'using the GitHub secret token';
 const ageDays = stored && stored.saved_at ? (Date.now() - Date.parse(stored.saved_at)) / 864e5 : Infinity;
-if (!has('--no-refresh') && (has('--refresh') || ageDays > 6)) {
+if (!POST_CHECK && !has('--no-refresh') && (has('--refresh') || ageDays > 6)) {
   const r = await ig('/refresh_access_token', { grant_type: 'ig_refresh_token' });
   if (r.ok && r.json.access_token) {
     const days = r.json.expires_in ? Math.round(r.json.expires_in / 86400) : '?';
@@ -239,13 +246,30 @@ if (post.status === 501) await die('The site has no D1 database bound, so result
 if (!post.ok) await die(`The site refused the data (HTTP ${post.status}).`);
 say(`Saved to the site for ${day}: ${media.length} posts + the account snapshot.`);
 // 7. auto-mark (owner, 5 Nov 2026): every matched reel is marked uploaded at its post's real Instagram time, overwriting a hand-tapped time
+let markedOk = false;
 {
   const ids = {};
   for (const m of media) if (m.template_id && m.posted_at) { const at = new Date(m.posted_at).toISOString(); if (!ids[m.template_id] || at < ids[m.template_id]) ids[m.template_id] = at; }
   if (Object.keys(ids).length) {
     const r = await fetch(SITE + '/api/uploaded/import', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel', Cookie: cookie }, body: JSON.stringify({ ids, force: true }) });
+    markedOk = r.ok;
     say(r.ok ? `Marked posted from Instagram: ${Object.keys(ids).length} reels (at their Instagram time)` : `⚠ Marking reels posted failed (HTTP ${r.status})`);
   }
+}
+// 8. today's posting state for this channel (owner, 7 Nov 2026): sessions read these lines instead of asking the owner
+if (POST_CHECK) {
+  const IST = 5.5 * 3600e3, today = istDay(new Date().toISOString()), hm = (iso) => new Date(Date.parse(iso) + IST).toISOString().slice(11, 16);
+  const cat = catalogue(), seen = new Set(), lines = [];
+  for (const m of media.filter((x) => x.posted_at && istDay(x.posted_at) === today).sort((a, b) => a.posted_at.localeCompare(b.posted_at))) {
+    if (m.template_id) seen.add(m.template_id);
+    lines.push(`POSTED ${CHANNEL}: ${m.template_id || 'unmatched post (' + (m.permalink || m.ig_id) + ')'} at ${hm(m.posted_at)} IST (${m.template_id ? (markedOk ? 'marked' : 'NOT marked') : 'no reel matched'})`);
+  }
+  for (const r of Object.values(cat).filter((x) => x.channel === CHANNEL && x.postOn === today && !x.hidden && !seen.has(x.name)).sort((a, b) => String(a.postAt).localeCompare(String(b.postAt)))) {
+    const late = Date.now() > Date.parse(`${today}T${r.postAt || '23:59'}:00+05:30`) + 30 * 60e3;
+    lines.push(`NOT POSTED ${CHANNEL} ${r.postAt || '?'}: ${r.name}${late ? ' (overdue)' : ' (not due yet)'}`);
+  }
+  if (!lines.length) lines.push(`POSTED ${CHANNEL}: nothing planned or posted today (${today})`);
+  for (const l of lines) say(l);
 }
 await fetch(SITE + '/api/perf/alert?slot=' + SLOT, { method: 'DELETE', headers: { 'X-Requested-With': 'reel', Cookie: cookie } }).catch(() => {}); // a good run clears this account's banner
 summary('### Instagram collector\n\n```\n' + out.join('\n') + '\n```');

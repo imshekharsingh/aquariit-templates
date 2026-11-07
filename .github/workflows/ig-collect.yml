@@ -10,6 +10,14 @@ on:
     # 05:23 UTC = 10:53 IST, not 07:00 UTC: GitHub starts scheduled runs late (the 20:14 UTC run started 3-6 h late, 1-6 Nov) and drops some
     # at :00, so an off-minute about 2.5 h early still lands before the 13:39 build on a normal delay and before the 19:00 build on a long one.
     - cron: '23 5 * * *'
+    # Post check (owner, 7 Nov 2026: the owner never reports a post): latest 5 posts per account, matched and auto-marked, ~40 min after each slot.
+    # IST -> UTC, off-minutes: 13:37 + 14:13 IST (web 13:00, Turns Out 13:30), Fri 18:07 IST (tech 17:30), 19:37 IST (web + tech 19:00),
+    # 20:43 IST (Turns Out 20:00), 23:43 IST (catch-all). Each run prints POSTED / NOT POSTED lines per channel for today.
+    - cron: '7,43 8 * * *'
+    - cron: '37 12 * * 5'
+    - cron: '7 14 * * *'
+    - cron: '13 15 * * *'
+    - cron: '13 18 * * *'
   workflow_dispatch:
     inputs:
       dry:
@@ -18,6 +26,10 @@ on:
         default: false
       refresh:
         description: Also refresh the token now (it is refreshed weekly automatically)
+        type: boolean
+        default: false
+      post_check:
+        description: Light post check only (latest 5 posts, match + mark, POSTED lines; under a minute)
         type: boolean
         default: false
       state_only:
@@ -58,8 +70,10 @@ jobs:
           DRY: ${{ inputs.dry }}
           REFRESH: ${{ inputs.refresh }}
           MIDDAY: ${{ github.event.schedule == '23 5 * * *' }}
+          POST_CHECK: ${{ inputs.post_check == true || (github.event_name == 'schedule' && github.event.schedule != '23 5 * * *' && github.event.schedule != '14 20 * * *') }}
         run: |
           flags=""
+          [ "$POST_CHECK" = "true" ] && flags="$flags --post-check"
           [ "$MIDDAY" = "true" ] && flags="$flags --midday"
           [ "$DRY" = "true" ] && flags="$flags --dry"
           [ "$REFRESH" = "true" ] && flags="$flags --refresh"
@@ -76,14 +90,14 @@ jobs:
           fi
           exit $ok
       - name: Audit numbers (the daily run reads AUDIT_CHANNELS from this step's log; scripts/audit-numbers.mjs)
-        if: success() && inputs.dry != true && inputs.state_only != true
+        if: success() && inputs.dry != true && inputs.state_only != true && !(inputs.post_check == true || (github.event_name == 'schedule' && github.event.schedule != '23 5 * * *' && github.event.schedule != '14 20 * * *'))
         continue-on-error: true
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
           BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
         run: node scripts/audit-numbers.mjs
       - name: Posting state (per channel, due -7..+2 days; PROBLEM lines; scripts/post-state.mjs)
-        if: success() && inputs.dry != true
+        if: success() && inputs.dry != true && !(inputs.post_check == true || (github.event_name == 'schedule' && github.event.schedule != '23 5 * * *' && github.event.schedule != '14 20 * * *'))
         continue-on-error: true
         env:
           BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
