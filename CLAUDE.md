@@ -49,6 +49,18 @@ every channel, every day: nothing is rendered or called ready until every item p
 Each reel has review/<channel>/<name>.md (from review/TEMPLATE.md, "N. item: PASS: evidence", the AUTO lines pasted); npm run check and the
 Showreel / Tech reel workflows refuse a reel without it (scripts/review-gate.mjs; reels posting before 8 Nov are grandfathered).
 
+## Daily improvement loop (owner, 7 Nov 2026)
+Owner: "Every day we should think of some improvements to experiment with or put in place, and keep using the combinations that work. You should be
+a social media manager, design manager, product manager, whatever you can be." So, every day:
+- Every daily run (and each Turns Out run) picks ONE small experiment per channel from the numbers and the rulebook: a topic angle, hook, motion or
+  transition, sound, caption or hashtags, or posting time. Only one change at a time, so the result can be read.
+- Results go into design/playbook.md: "What works" (combinations that won, with their numbers) and "What didn't" (dropped, with numbers).
+  Every reel starts from its channel's current "What works" combination.
+- A change that wins 2 out of 3 tries becomes a rule in the channel rulebook; one that loses twice is dropped.
+- The roles Claude plays every day: social media manager (topics, timing, captions, hashtags, audience), design manager (look, motion, sound,
+  the craft-log step up), product manager (cost, the app only when it breaks, process and automation).
+- The audit card adds one line per channel: "Today's experiment: X. Yesterday's: Y → result."
+
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
 Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
 - Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel, which also prints SAFE ZONE and OVERLAP for the Mandatory Gate; `node scripts/showreel/preflight.mjs <config>` plus `node scripts/showreel/stills.mjs <config> <out>` for showreels, one sheet to review)
