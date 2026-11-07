@@ -89,6 +89,11 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .lk-h{position:absolute;left:150px;top:52px;width:86px;height:86px;transform-origin:50% 55%}
 .lk-h path{stroke:var(--paper);stroke-width:7;stroke-linejoin:round}
 .lk-c{position:absolute;left:256px;top:62px;font:700 50px/1 var(--f);font-variant-numeric:tabular-nums;letter-spacing:-.02em;white-space:nowrap}
+.ck-b{position:absolute;left:58px;top:63px;width:64px;height:64px;border-radius:18px;background:var(--ctl);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.ck-b svg{position:absolute;left:0;top:0}
+.ck-b path{fill:none;stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+.ck-l{position:absolute;left:150px;top:70px;font:650 27px/1 var(--f);letter-spacing:-.02em;white-space:nowrap}
+.ck-s{position:absolute;left:151px;top:108px;font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
 .lk-s{position:absolute;left:258px;top:126px;font:700 13px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
 </style>
 </head>
@@ -163,7 +168,15 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
       html: '<svg class="lk-h" viewBox="0 0 86 86"><path d="M43 74 C14 54 6 40 6 28 C6 16 15 8 26 8 C34 8 40 13 43 19 C46 13 52 8 60 8 C71 8 80 16 80 28 C80 40 72 54 43 74Z"/></svg><span class="lk-c tx">128</span><span class="lk-s tx">LIKES</span><div class="fg"></div>',
       draw: function(r, c, o){ var s = 1 + .2 * o.f(o.k), h = r.querySelector('.lk-h'), on = P(o.k, 0, .2);
         h.style.transform = 'scale(' + s.toFixed(4) + ')'; h.querySelector('path').style.fill = T.red; h.querySelector('path').style.fillOpacity = on.toFixed(3); h.querySelector('path').style.stroke = KM.mixCol(T.paper, T.red, on);
-        r.querySelector('.lk-c').textContent = o.k > .25 ? '129' : '128'; tx(r, o.a); finger(r, c, o, 250, 200, 194, 110); } }
+        r.querySelector('.lk-c').textContent = o.k > .25 ? '129' : '128'; tx(r, o.a); finger(r, c, o, 250, 200, 194, 110); } },
+    check: { title: ['Ticks', 'that', 'draw'], acc: 2, say: 'the checkmark draws itself in.', token: 'stroke-dashoffset',
+      css: '.tick {\n  stroke-dasharray: 42px;\n  stroke-dashoffset: 42px;\n  transition: stroke-dashoffset .4s\n    cubic-bezier(.65, 0, .35, 1);\n}\n.done .tick { stroke-dashoffset: 0; }',
+      curve: { bezier: [.65, 0, .35, 1] }, dur: .4, after: .35, chip: [{ label: 'draws in', v: 400, unit: 'ms' }, { v: 42, unit: 'px of path' }],
+      html: '<div class="ck-b"><svg width="64" height="64" viewBox="0 0 64 64"><path d="M18 33 L28 43 L46 23"/></svg></div><span class="ck-l tx">Book the flight</span><span class="ck-s tx">TODAY · 9:40</span><div class="fg"></div>',
+      draw: function(r, c, o){ var f = o.f(o.k), on = P(o.k, 0, .25), b = r.querySelector('.ck-b'), pa = b.querySelector('path'), press = KM.win(c, -.08, .1, .06);
+        b.style.background = KM.mixCol(T.ctl, T.acc, on); b.style.transform = 'scale(' + (1 - press * .08 + .06 * KM.win(o.k, .7, 1, .15)).toFixed(3) + ')';
+        pa.style.stroke = T.on; pa.style.strokeDasharray = '42px'; pa.style.strokeDashoffset = (42 * (1 - f)).toFixed(2) + 'px';
+        var l = r.querySelector('.ck-l'); l.style.color = KM.mixCol(T.paper, T.dim, P(o.k, .5, 1)); tx(r, o.a); finger(r, c, o, 170, 200, 92, 100); } }
   };
   var N = DETAILS.length, D = DETAILS.map(function(d){ var K = KINDS[d.kind], o = {}; for (var k in K) o[k] = K[k]; for (var q in d) o[q] = d[q]; return o; });
   // ---- build the world: one panel per detail (560 px apart), the recap grid after them ----
