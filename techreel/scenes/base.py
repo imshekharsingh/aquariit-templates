@@ -95,6 +95,7 @@ class Frame:
         self.glow = Image.new('RGB', (W // GQ, H // GQ), (0, 0, 0))
         self.g = ImageDraw.Draw(self.glow, 'RGBA')
         self.warnings = []
+        self.boxes = []      # every text drawn: (text, left, top, right, bottom, opacity) in output pixels (Mandatory Gate layout check, make.py)
         self.alpha = 1.0   # opacity multiplier for everything drawn (scene fades)
         self.dy = 0.0      # vertical offset for everything drawn (scene slides)
 
@@ -144,6 +145,11 @@ class Frame:
         w = text_w(s, size, weight, tracking)
         if max_w and w > max_w + 1:
             self.warnings.append(f'text wider than its box ({w:.0f} > {max_w}): "{s}"')
+        x0 = x - (w / 2 if anchor[0] == 'm' else w if anchor[0] == 'r' else 0)
+        y0 = y + self.dy - (0 if anchor[1] in 'at' else size * .5 if anchor[1] == 'm' else size * .75)
+        ca = (color[3] / 255 if color is not None and len(color) == 4 else 1) * self.alpha
+        if ca >= .05:
+            self.boxes.append((s, x0, y0, x0 + w, y0 + size * .95, ca))
         f = font(size, weight)
         y = y + self.dy
         color = self._c(color)

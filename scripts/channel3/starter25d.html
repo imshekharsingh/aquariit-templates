@@ -72,14 +72,16 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
   function wrap(words, size, f, maxW){ x.font = font(size, f); var sp = x.measureText(' ').width, lines = [[]], lw = [0];
     words.forEach(function(w){ var ww = x.measureText(w.d).width, n = lines.length - 1; if (lw[n] && lw[n] + sp + ww > maxW) { lines.push([]); lw.push(0); n++; } lines[n].push([w, ww]); lw[n] += (lw[n] ? sp : 0) + ww; });
     return { lines: lines, lw: lw, sp: sp }; }
+  // SX: the centre of Instagram's safe zone (x 30-480 of 540: the right-side buttons take more room; Mandatory Gate item 3, design/mandatory.md)
+  var SX = 255;
   // HOOK = { y, col, hl, hlCol, size }: the question, big, at the top while it is spoken (it is sentence 1's caption); then it lifts away
   // STYLE = { hl: /words in accent/, hlCol, ink, panel }: the caption strip for every other sentence
   function drawHook(t){
     var L = CAPS[0], out = P(t, A[1] - .35, A[1] + .1); if (out >= 1) return;
-    var W = wrap(L.words, HOOK.size, '800 ' + FD, 480), lh = HOOK.size * 1.08, y0 = HOOK.y - (W.lines.length - 1) * lh / 2 - eo(out) * 30;
+    var W = wrap(L.words, HOOK.size, '800 ' + FD, 420), lh = HOOK.size * 1.08, y0 = Math.max(HOOK.y - (W.lines.length - 1) * lh / 2, (HOOK.label ? 156 : 132) + HOOK.size * .85) - eo(out) * 30;   // never above the safe zone (y 125)
     x.save(); x.globalAlpha = 1 - out;
-    if (HOOK.label) { var lk = P(t, 0, .3); x.globalAlpha = (1 - out) * lk; tag(HOOK.label, 270, y0 + eo(out) * 30 - HOOK.size - 14, 12, '800 ' + FI, HOOK.labelCol || '#fff', HOOK.labelBg || '#23202b', 2.5); }
-    W.lines.forEach(function(ln, r){ var xx = 270 - W.lw[r] / 2;
+    if (HOOK.label) { var lk = P(t, 0, .3); x.globalAlpha = (1 - out) * lk; tag(HOOK.label, SX, y0 + eo(out) * 30 - HOOK.size - 14, 12, '800 ' + FI, HOOK.labelCol || '#fff', HOOK.labelBg || '#23202b', 2.5); }
+    W.lines.forEach(function(ln, r){ var xx = SX - W.lw[r] / 2;
       ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .1, w.s + .12)), hl = HOOK.hl && HOOK.hl.test(w.d);
         x.globalAlpha = (1 - out) * (.5 + .5 * k); x.save(); x.translate(xx + q[1] / 2, y0 + r * lh); var sc = 1 + .06 * (1 - k); x.scale(sc, sc);
         if (HOOK.shadow) { x.globalAlpha *= .9; txt(w.d, 2, 3, HOOK.size, '800 ' + FD, HOOK.shadow, 'center', -.6); x.globalAlpha = (1 - out) * (.5 + .5 * k); }
@@ -89,9 +91,9 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
   // (1 Nov, the 2.5D Eiffel render: the new line fades in from 14 % of the change, not 36 %, so the card is never empty for a frame)
   // the caption card (premium pass, 31 Oct): ONE card that stays up and changes shape from sentence to sentence (no fade out and in);
   // the old line slides up out of it as the new one rises in word by word
-  function capLay(i){ var size = 27, W = wrap(CAPS[i].words, size, '700 ' + FI, 452), lh = 35, n = W.lines.length, base = 716 - (n - 1) * lh / 2;
+  function capLay(i){ var size = 27, W = wrap(CAPS[i].words, size, '700 ' + FI, 396), lh = 35, n = W.lines.length, base = 716 - (n - 1) * lh / 2;
     return { W: W, base: base, pw: Math.max.apply(null, W.lw) + 34, ph: n * lh + 18, py: base - size * .8 - 10, lh: lh, size: size }; }
-  function capWords(C, t, a, dy, lit){ C.W.lines.forEach(function(ln, r){ var xx = 270 - C.W.lw[r] / 2;
+  function capWords(C, t, a, dy, lit){ C.W.lines.forEach(function(ln, r){ var xx = SX - C.W.lw[r] / 2;
       ln.forEach(function(q){ var w = q[0], k = lit ? 1 : eo(P(t, w.s - .1, w.s + .08)), hl = STYLE.hl && STYLE.hl.test(w.d);
         x.globalAlpha = a * (.3 + .7 * k); txt(w.d, xx, C.base + r * C.lh + dy - (1 - k) * 3, C.size, '700 ' + FI, hl ? (STYLE.hlFor ? STYLE.hlFor(w.d) : STYLE.hlCol) : (STYLE.ink || '#23202b'), 'left', -.3); xx += q[1] + C.W.sp; }); }); }
   function drawCaption(t){
@@ -101,14 +103,14 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     if (i + 1 < CAPS.length && next < L.e + 2.5) outK = 0;   // the next sentence morphs the card; it never empties
     var pw = prev ? mix(prev.pw, cur.pw, m) : cur.pw, ph = prev ? mix(prev.ph, cur.ph, m) : cur.ph, cy = (prev ? mix(prev.py + prev.ph / 2, cur.py + cur.ph / 2, m) : cur.py + cur.ph / 2) + (1 - inK) * 18;
     var A0 = inK * (1 - outK); x.save(); x.globalAlpha = A0;
-    paper(rr(270 - pw / 2, cy - ph / 2, pw, ph, 12), STYLE.panel || '#fbf6ea', 3);
-    x.save(); x.beginPath(); x.rect(270 - pw / 2, cy - ph / 2, pw, ph); x.clip();
+    paper(rr(SX - pw / 2, cy - ph / 2, pw, ph, 12), STYLE.panel || '#fbf6ea', 3);
+    x.save(); x.beginPath(); x.rect(SX - pw / 2, cy - ph / 2, pw, ph); x.clip();
     if (prev && mk < 1) capWords(prev, t, A0 * (1 - eo(P(mk, 0, .32))), (cy - prev.py - prev.ph / 2) - eo(mk) * 16, true);
     capWords(cur, t, A0 * (prev ? eo(P(mk, .14, .45)) : 1), (cy - cur.py - cur.ph / 2) + (prev ? (1 - eo(P(mk, .3, 1))) * 10 : 0), false);
     x.restore(); x.restore();
   }
   // the source credit (owner, 31 Oct: a short credit on the last frame): a small paper tag at the top for the last 3 s
-  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.5); if (k <= 0) return; k = eo(k); x.save(); x.globalAlpha = k; tag(CREDIT, 270, 92 - (1 - k) * 10, 13, '700 ' + FI, CREAM, 'rgba(17,14,12,.8)', .6); x.restore(); }
+  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.5); if (k <= 0) return; k = eo(k); x.save(); x.globalAlpha = k; tag(CREDIT, SX, 142 - (1 - k) * 10, 13, '700 ' + FI, CREAM, 'rgba(17,14,12,.8)', .6); x.restore(); }
   Object.defineProperty(window, 'COVER', { configurable: true, get: function(){ return +Math.min(CAPS[0].e + .25, A[1] - .3).toFixed(2); } });   // the question fully lit
   /*kit25:begin*/
 // ---- Turns Out 2.5D toolkit (scripts/channel3/kit25d.js; design/channel3.md, "2.5D toolkit"), inlined after the shared core of the
@@ -380,7 +382,7 @@ var K25 = (function(){
   var DUR = +(CAPS[CAPS.length - 1].e + 1.9).toFixed(1);
   // ---- the look: one grade per reel (design/channel3.md, "Quality bar" 5) ----
   var CREAM = '#fbf3e0', AMBER = '#f2b46a', KD = 'rgba(14,10,8,.9)';
-  var HOOK = { y: 222, size: 58, col: CREAM, hl: /^(blue)/i, hlCol: AMBER, shadow: 'rgba(10,6,4,.6)', label: 'THE TRUE STORY', labelBg: 'rgba(14,10,8,.9)', labelCol: AMBER };
+  var HOOK = { y: 268, size: 58, col: CREAM, hl: /^(blue)/i, hlCol: AMBER, shadow: 'rgba(10,6,4,.6)', label: 'THE TRUE STORY', labelBg: 'rgba(14,10,8,.9)', labelCol: AMBER };
   var STYLE = { hl: /^(turns)/i, hlCol: AMBER, ink: CREAM, panel: 'rgba(16,12,10,.9)' };
   var CREDIT = 'SOURCES: FIRST SOURCE · SECOND SOURCE';
   var PAYOFF = 'The payoff.';

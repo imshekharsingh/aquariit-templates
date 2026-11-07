@@ -42,10 +42,17 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   Replaced code moves to attic/ in the change that replaces it. The app's GitHub minutes meter comes from the same workflow; set the repo variable ACTIONS_MINUTES_ALLOWANCE for Pro (3000).
 - `attic/` holds the retired tooling (films, recordings, kits, the daily-template routine). Nothing in it runs or deploys; don't build on it.
 
+## Mandatory Gate (owner, 7 Nov 2026)
+design/mandatory.md: 13 items with a pass condition each (AUTO = a script prints it, REVIEW = the builder checks the stills and writes the evidence),
+plus the daily musts (audit card, rulebook update, one craft improvement per channel logged in design/craft-log.md). It applies to every reel on
+every channel, every day: nothing is rendered or called ready until every item passes; a failing reel is fixed or its topic swapped.
+Each reel has review/<channel>/<name>.md (from review/TEMPLATE.md, "N. item: PASS: evidence", the AUTO lines pasted); npm run check and the
+Showreel / Tech reel workflows refuse a reel without it (scripts/review-gate.mjs; reels posting before 8 Nov are grandfathered).
+
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
 Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
-- Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel; `node scripts/showreel/preflight.mjs <config>` plus `node scripts/showreel/stills.mjs <config> <out>` for showreels, one sheet to review)
-  and clear all of it: the PREFLIGHT voice line must say "fits", the PRONUNCIATION line must show no "check:" words (shared lexicon scripts/voice/say.json, every channel), no "text wider than its box", the stills lines must say "EMPTY FRAMES: none", "TEXT FIT: all text inside its box", "STATIC STRETCH: none" and "SUBJECT FILL: nn% at frame 0" at 40% or more (all scan every 0.5 s; a demo that overflows on purpose marks its container data-fit="free"; a deliberate hold is marked in the scene with window.HOLDS = [[t0, t1]]; owner, 7 Nov 2026), and stills at every beat checked.
+- Reels: script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel, which also prints SAFE ZONE and OVERLAP for the Mandatory Gate; `node scripts/showreel/preflight.mjs <config>` plus `node scripts/showreel/stills.mjs <config> <out>` for showreels, one sheet to review)
+  and clear all of it: the PREFLIGHT voice line must say "fits", the PRONUNCIATION line must show no "check:" words (shared lexicon scripts/voice/say.json, every channel), no "text wider than its box", the stills lines must say "EMPTY FRAMES: none", "TEXT FIT: all text inside its box", "STATIC STRETCH: none" and "SUBJECT FILL: nn% at frame 0" at 40% or more (all scan every 0.5 s; a demo that overflows on purpose marks its container data-fit="free"; a deliberate hold is marked in the scene with window.HOLDS = [[t0, t1]]; owner, 7 Nov 2026), "SAFE ZONE: ok", "OVERLAP: none", "BAND: clear", "HOOK: clear of the subject" and the SUBTITLES line (scripts/showreel/layout.mjs; the scene marks data-subject, data-band, data-hook, data-subs), and stills at every beat checked. All of it goes into the reel's Mandatory Gate review file (design/mandatory.md).
   Re-render only for a real defect in the output. After a render, one `node scripts/reel-status.mjs <config> <scratch dir>` (about 25 minutes after the
   dispatch) gives the run's result, the voice check and the contact sheet; a failed run prints the failing job's error lines.
 - Rulebooks are a gate (owner, 5 Nov 2026): design/rules-web.md, design/rules-c3.md, design/rules-tech.md, 5-8 hard rules each with the
@@ -112,7 +119,8 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   Scenes `scripts/channel3/<slug>.html` + `.json` (name `showreel-c3-<slug>`), entry in captions.json (`"channel": "c3"`, "concept", "about").
   Scenes build their camera, layers, paper, figures and type from the shared kit scripts/channel3/kit25d.js; start a new one with
   `node scripts/channel3/new25d.mjs <slug> "Hook?" "Sentence." ...` (a working starter; design/channel3.md, "Starter"); render with Showreel "parts" 1 (about 22 GitHub minutes).
-  Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean, preflight says "fits", one stills sheet.
+  Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean (it prints SAFE ZONE and OVERLAP), preflight says "fits", one stills sheet,
+  and the Mandatory Gate (design/mandatory.md) passed with its review file review/c3/<name>.md: both Turns Out builds, every day.
 
 ## Daily run (owner, 5 Nov 2026; the "Daily studio run" scheduled task, 06:47 IST, points here)
 A fresh session, lean, no subagents, in this order:
@@ -126,6 +134,8 @@ A fresh session, lean, no subagents, in this order:
 3. Update the rulebooks (design/rules-web.md, rules-c3.md, rules-tech.md) when the numbers say so: add, change or drop a rule, with the number.
 4. Build that day's reels (learn-then-build, nothing ahead): @webin20sec 13:00 IST (and 19:00 on E13 two-reel days), @techin20sec on
    Mon / Wed / Fri after 6 Nov. Each is scored against its rulebook in the stills review before its ONE render; then reel-status.
+   Every reel passes the Mandatory Gate (design/mandatory.md) with its review file (review/<channel>/<name>.md, item 13 after reel-status),
+   and each channel logs its one craft improvement in design/craft-log.md.
    Turns Out keeps its own scheduled tasks (09:41 IST for 13:30, 13:39 IST for 20:00; E16), under the same rulebook gate.
 5. One lesson line in design/experiments.md "Results log" (`- DD Mon: lesson`), in the same push as the day's first reel.
 

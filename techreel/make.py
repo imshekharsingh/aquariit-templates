@@ -113,6 +113,33 @@ def draw(t, topic, vo, hook_out, scenes):
     return fr, fr.finish(fade=fade)
 
 
+SAFE = (60, 250, 960, 1570)   # Instagram's safe zone in 1080x1920 (Mandatory Gate item 3, design/mandatory.md; owner, 7 Nov 2026)
+
+
+def layout_lines(topic, vo, hook_out, scenes):
+    """Mandatory Gate items 3-4 (the same rules as scripts/showreel/layout.mjs): every text box drawn at every 0.5 s inside the safe zone,
+    and no two texts overlapping by more than 6 px each way (a crossfade under 30 % opacity does not count)."""
+    safe, over = {}, {}
+    t = 0.0
+    while t <= DUR - .05:
+        fr, _ = draw(t, topic, vo, hook_out, scenes)
+        on = [b for b in fr.boxes if b[5] >= .3 and b[3] > 0 and b[1] < B.W and b[4] > 0 and b[2] < B.H]
+        for s, l, tp, r, bt, a in on:
+            if l < SAFE[0] - 1 or r > SAFE[2] + 1 or tp < SAFE[1] - 1 or bt > SAFE[3] + 1:
+                safe.setdefault(s, f'{t:.1f} s: "{s}" at {l:.0f}-{r:.0f} x, {tp:.0f}-{bt:.0f} y')
+        for i in range(len(on)):
+            for j in range(i + 1, len(on)):
+                a, b = on[i], on[j]
+                if a[0] == b[0] and abs(a[1] - b[1]) < 12 and abs(a[2] - b[2]) < 12:
+                    continue
+                if min(a[3], b[3]) - max(a[1], b[1]) > 6 and min(a[4], b[4]) - max(a[2], b[2]) > 6:
+                    over.setdefault(a[0] + '|' + b[0], f'{t:.1f} s: "{a[0]}" x "{b[0]}"')
+        t = round(t + .5, 2)
+    return ['SAFE ZONE: ' + ('OUTSIDE x 60-960, y 250-1570: ' + ' | '.join(safe.values()) if safe else 'ok'),
+            'OVERLAP: ' + (' | '.join(over.values()) if over else 'none'),
+            'BAND: by layout (scenes in y 430-1196, captions below): REVIEW the stills', 'HOOK: the hook card leaves before the scenes: REVIEW the stills'], len(safe) + len(over)
+
+
 def chunks(line, counts=None):
     """Caption chunks for a line: from the topic file (word counts), or as many words as fit two caption rows, breaking after a comma when it can."""
     words = [w['d'] for w in line['words']]
@@ -180,7 +207,9 @@ def main():
             Image.fromarray(img).save(os.path.join(out, f'still-{t:05.2f}.png'))
             for w in fr.warnings:
                 print(f'{t:5.2f}s  {w}')
-        return
+        lines, bad = layout_lines(topic, vo, hook_out, scenes)
+        print('\n'.join(lines))
+        sys.exit(1 if bad else 0)
     onsets = {}
     for li, line in enumerate(vo['lines']):
         for w in line['words']:
@@ -226,12 +255,19 @@ def main():
         if run == int(.3 * FPS) + 1:
             qa.append(f'blank stretch over 0.3 s near {f / FPS:.2f} s')
     qa += [f'{t:5.2f}s  {w}' for w, t in sorted(warns.items(), key=lambda x: x[1])]
+    qa += layout_lines(topic, vo, hook_out, scenes)[0]
     qa += ['override readings (in "Can an ___ shop?"):'] + [f'  {k}: ' + ' | '.join(f'{f} -> {p}' for f, p in v.items()) for k, v in vo.get('say_checks', {}).items()]
     qa += ['pronunciation (phonemes as spoken):'] + [f'  {l["text"]}  ->  {l.get("phonemes", "?")}' for l in vo['lines']]
+    # Mandatory Gate item 8 (design/mandatory.md; owner, 7 Nov 2026): -14 LUFS +-1, true peak at most -1 dBTP, or the render fails
+    li, tpv = float(lufs.group(1)) if lufs else 0.0, float(tp.group(1)) if tp else 0.0
+    loud_ok = -15 <= li <= -13 and tpv <= -1
+    qa.append(f'SOUND GATE: {"ok" if loud_ok else "OUT OF RANGE"} ({li} LUFS, true peak {tpv} dBTP; need -15 to -13, at most -1)')
     open(os.path.join(out, 'qa.txt'), 'w').write('\n'.join(qa) + '\n')
     contact_sheet(thumbs, os.path.join(out, 'contact.png'))
     print('\n'.join(qa))
     print('wrote', final)
+    if not loud_ok:
+        sys.exit('SOUND GATE: out of range; fix the mix before the reel is kept')
 
 
 if __name__ == '__main__':

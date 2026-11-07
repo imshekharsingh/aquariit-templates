@@ -63,7 +63,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:radial-gradient(13
 </head>
 <body>
 <div id="w" class="a" data-fit="free">
-  <div id="panel"></div>
+  <div id="panel" data-subject></div>
   <div class="card" id="c1" style="top:112px"><div class="av" style="background:#2e5bd8">AL</div><div class="who" style="width:174px"><div class="nm">Ana Lima</div><div class="sub">Paid you · 2 Nov</div></div><div class="pay">Pay</div></div>
   <div class="card" id="c2" style="top:232px"><div class="av" style="background:#d8572e">MO</div><div class="who" id="who"><div class="nm" id="nm"></div><div class="sub" id="sub">New contact</div></div></div>
   <div class="card" id="c3" style="top:352px"><div class="av" style="background:#1f8a5b">TR</div><div class="who" style="width:174px"><div class="nm">Tom Reyes</div><div class="sub">You paid · 1 Nov</div></div><div class="pay">Pay</div></div>
@@ -81,10 +81,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:radial-gradient(13
 </div>
 <div id="lbl" class="a">Nº 16 · LAYOUT</div>
 <div id="tag" class="a"></div>
-<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>one</span></span><span class="ln"><span class="acc">long</span> <span class="acc">name</span> <span>break</span></span><span class="ln"><span>your</span> <span>card?</span></span></div>
+<div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>does</span> <span>one</span></span><span class="ln"><span class="acc">long</span> <span class="acc">name</span> <span>break</span></span><span class="ln"><span>your</span> <span>card?</span></span></div>
 <div id="meas" aria-hidden="true" data-fit="free"></div>
-<div id="band" class="a"></div>
-<div id="cap" class="a"></div>
+<div id="band" class="a" data-band></div>
+<div id="cap" class="a" data-subs></div>
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
