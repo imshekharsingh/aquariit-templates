@@ -7,7 +7,7 @@
  "vignette": true,
  "cover": 2.4,
  "voice": {
-  "text": "Why does one long name break your card? The name has an ellipsis, but it still pushes the button off the card. A flex item won't shrink below its content. The fix: min width zero, on the flex item. Now it shrinks, and the long name ends in dots.",
+  "text": "Why does one long name break your card? The name has an ellipsis, but it still pushes the button off. A flex item won't shrink below its content. The fix: min width zero, on the flex item. Now it shrinks, and the long name ends in dots.",
   "voice": "af_heart",
   "speed": 0.82,
   "gap": [
