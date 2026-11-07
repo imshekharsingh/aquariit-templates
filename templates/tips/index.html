@@ -124,6 +124,25 @@
 #transform .fix.run .dot{animation-name:tip-move}
 @keyframes tip-left{to{left:calc(100% - 46px)}}
 @keyframes tip-move{to{transform:translateX(calc(var(--w) - 58px))}}
+#alive .pane{display:flex;align-items:center;justify-content:space-around;height:96px;padding-top:18px}
+#alive .ht{width:30px;height:30px;fill:transparent;stroke:#f1efe9;stroke-width:6}
+#alive .sw{position:relative;width:46px;height:26px;border-radius:13px;background:#3a4160}
+#alive .kn{position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:10px;background:#f1efe9}
+#alive .bx{width:26px;height:26px;border-radius:8px;background:#3a4160}
+#alive .tk{fill:none;stroke:#10131c;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:22px;stroke-dashoffset:22px}
+#alive .cp{width:64px;height:28px;border-radius:14px;background:#3a4160;color:#f1efe9;font:700 12px/28px system-ui;text-align:center;overflow:hidden;white-space:nowrap}
+#alive .on .ht{fill:#ff5a7a;stroke:#ff5a7a;scale:1.2}
+#alive .on .sw{background:#7cf0b6}
+#alive .on .kn{translate:20px}
+#alive .on .bx{background:#7cf0b6}
+#alive .on .tk{stroke-dashoffset:0}
+#alive .on .cp{width:52px;background:#7cf0b6;color:#10131c}
+#alive .fix .ht{transition:scale .45s linear(0, 1.3 30%, .9 55%, 1.04 78%, 1)}
+#alive .fix .kn{transition:translate .4s cubic-bezier(.34, 1.56, .64, 1)}
+#alive .fix.on .kn{animation:tip-squash .4s}
+#alive .fix .tk{transition:stroke-dashoffset .4s cubic-bezier(.65, 0, .35, 1)}
+#alive .fix .cp{transition:width .5s linear(0, .62 18%, 1.1 38%, .97 62%, 1)}
+@keyframes tip-squash{40%{scale:1.3 .8}}
 </style>
 </head>
 <body>
@@ -133,6 +152,35 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="alive">
+  <p class="no">Nº 20</p>
+  <h2>Four tiny motions that make an app feel alive</h2>
+  <p class="why">A control that pops, stretches, draws or springs reads as an answer to your finger; one that just switches state reads as a glitch. Each of these is one transition line.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span>
+    <svg class="ht" viewBox="0 0 86 86" aria-hidden="true"><path d="M43 74 C14 54 6 40 6 28 C6 16 15 8 26 8 C34 8 40 13 43 19 C46 13 52 8 60 8 C71 8 80 16 80 28 C80 40 72 54 43 74Z"/></svg>
+    <div class="sw"><div class="kn"></div></div>
+    <svg class="bx" viewBox="0 0 26 26" aria-hidden="true"><path class="tk" d="M7 13.5 L11.5 18 L19.5 9"/></svg>
+    <div class="cp">Copy</div>
+  </div>
+  <div class="pane fix"><span class="tag ok">With the motion</span>
+    <svg class="ht" viewBox="0 0 86 86" aria-hidden="true"><path d="M43 74 C14 54 6 40 6 28 C6 16 15 8 26 8 C34 8 40 13 43 19 C46 13 52 8 60 8 C71 8 80 16 80 28 C80 40 72 54 43 74Z"/></svg>
+    <div class="sw"><div class="kn"></div></div>
+    <svg class="bx" viewBox="0 0 26 26" aria-hidden="true"><path class="tk" d="M7 13.5 L11.5 18 L19.5 9"/></svg>
+    <div class="cp">Copy</div>
+  </div>
+</div>
+<button class="play" type="button">Tap all four</button></div>
+  <div class="code"><pre><code>.heart { transition: scale .45s linear(0, 1.3 30%, .9 55%, 1.04 78%, 1); }
+.knob { transition: translate .4s cubic-bezier(.34, 1.56, .64, 1); }
+.tick { stroke-dasharray: 42px; stroke-dashoffset: 42px;
+  transition: stroke-dashoffset .4s cubic-bezier(.65, 0, .35, 1); }
+.done .tick { stroke-dashoffset: 0; }
+.copy { transition: width .5s linear(0, .62 18%, 1.1 38%, .97 62%, 1); }</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/linear" rel="noopener">Source: MDN, linear() easing</a></p>
+</article>
 
 <article class="tip" id="flash">
   <p class="no">Nº 19</p>
@@ -448,11 +496,13 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>17 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>18 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "alive": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
+  panes.forEach(function(p){ p.classList.toggle('on', on); p.querySelector('.cp').textContent = on ? 'Copied' : 'Copy'; }); btn.textContent = on ? 'Tap all four again' : 'Tap all four'; }); },
     "flash": function(){},
     "thumb": function(){},
     "keyboard": function(){},

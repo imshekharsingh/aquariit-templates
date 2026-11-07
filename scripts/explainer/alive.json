@@ -1,0 +1,66 @@
+{
+ "name": "showreel-30-alive",
+ "seek": "scripts/explainer/alive.html",
+ "dur": 20,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.2,
+ "style": "Glass and light",
+ "voice": {
+  "text": "Why do the best apps feel alive? One: the heart pops, then wobbles into place. Two: the switch knob stretches as it slides. Three: the checkmark draws itself in. Four: the copy button springs into Copied. Save all four for your next app.",
+  "voice": "af_heart",
+  "speed": 0.9
+ },
+ "experiment": {
+  "id": "details-format",
+  "change": "slow-mo motion details compilation in look C",
+  "vs": "median"
+ },
+ "caption": "Why do the best apps feel alive? ✨ Four tiny motions, slowed down so you can see them.\n\n1) The heart pops, then wobbles into place: transition on scale with linear(), 450 ms.\n2) The switch knob stretches as it slides: cubic-bezier(.34, 1.56, .64, 1) on translate, plus a squash keyframe on scale.\n3) The checkmark draws itself in: stroke-dasharray and stroke-dashoffset on the tick's path, 400 ms.\n4) The copy button springs into Copied: transition on width with linear(), one overshoot.\n\nlinear() works in Chrome 113, Firefox 112 and Safari 17.2; the scale and translate properties in Chrome 104, Firefox 72 and Safari 14.1.\nSave it for your next app, or send it to a designer friend.",
+ "keywords": [
+  "css micro interactions",
+  "css linear easing spring",
+  "svg checkmark animation stroke-dashoffset",
+  "toggle switch animation css",
+  "like button animation css",
+  "ui animation details"
+ ],
+ "hashtags": [
+  "#microinteractions",
+  "#cssanimation",
+  "#uianimation",
+  "#frontenddev",
+  "#webdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/linear",
+   "note": "MDN, linear() easing (values past 1 overshoot); BCD: Chrome 113, Firefox 112, Safari 17.2"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/cubic-bezier",
+   "note": "MDN, cubic-bezier(): y values may leave 0-1 (overshoot); BCD: Chrome 16, Firefox 4, Safari 6"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/stroke-dashoffset",
+   "note": "MDN, stroke-dashoffset (CSS property, animatable by computed value); BCD: Chrome 1, Firefox 1.5, Safari 4"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scale",
+   "note": "MDN, the scale and translate properties; BCD: Chrome 104, Firefox 72, Safari 14.1"
+  }
+ ],
+ "tip": {
+  "title": "Four tiny motions that make an app feel alive",
+  "why": "A control that pops, stretches, draws or springs reads as an answer to your finger; one that just switches state reads as a glitch. Each of these is one transition line.",
+  "code": ".heart { transition: scale .45s linear(0, 1.3 30%, .9 55%, 1.04 78%, 1); }\n.knob { transition: translate .4s cubic-bezier(.34, 1.56, .64, 1); }\n.tick { stroke-dasharray: 42px; stroke-dashoffset: 42px;\n  transition: stroke-dashoffset .4s cubic-bezier(.65, 0, .35, 1); }\n.done .tick { stroke-dashoffset: 0; }\n.copy { transition: width .5s linear(0, .62 18%, 1.1 38%, .97 62%, 1); }",
+  "demo": "alive",
+  "source": {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/linear",
+   "label": "MDN, linear() easing"
+  }
+ }
+}
