@@ -818,5 +818,13 @@
   "concept": "Sample · style C (Glass and light) on the slow-mo details format",
   "about": "The new web look (owner, 8 Nov 2026: \"Let's go with C.\") on the details format: frosted glass panes at three depths over slow coloured light, a soft grade, crisp white Sora type; the copy button, the switch knob and the toast in slow motion with their live easing curves, then all three in a recap grid. Cheap glass path, measured render minutes in its review.",
   "note": "Sample for review, not scheduled"
+ },
+ "showreel-30-alive": {
+  "channel": "web",
+  "postOn": "2026-11-08",
+  "postAt": "13:00",
+  "concept": "Slow-mo details (look C) · heart pop, stretchy switch knob, self-drawing checkmark, springy copy button",
+  "about": "Result first: a heart already popped to 129 likes under the hook, then four small app motions in slow motion, each with its live easing curve, a ms counter, a spec chip and its one CSS line typed (linear(), cubic-bezier overshoot, stroke-dashoffset, linear() on width), and a recap grid of all four at full speed.",
+  "note": "13:00 IST, experiment details-format (the slow-mo details compilation in look C)"
  }
 }

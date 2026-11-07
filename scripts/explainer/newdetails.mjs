@@ -3,7 +3,7 @@
 // first), N detail beats (numbered eyebrow, three-word title with one accent word, the component in slow motion, its CSS typed underneath, the
 // easing curve drawn live with a riding dot, a spec chip, a speed badge, the segmented part bar), and a recap grid with all N at full speed.
 // It passes the whole Mandatory Gate and FLOW as written (design/mandatory.md). The components come from the starter's KINDS library
-// (copy, toggle, toast, stepper, like; N > 5 repeats them): edit DETAILS (kind, title, acc) and add the reel's own kinds, with their real CSS.
+// (copy, toggle, toast, stepper, like, check; N > 6 repeats them): edit DETAILS (kind, title, acc) and add the reel's own kinds, with their real CSS.
 // Sentences: give N + 1 after the hook (one per detail, then the recap line), or none for the kinds' defaults ("One: the copy button ...").
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';

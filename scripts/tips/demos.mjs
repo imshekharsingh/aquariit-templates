@@ -312,4 +312,38 @@ export const demos = {
   var end = performance.now() + 4000;
   (function busy(){ var t = performance.now(); while (performance.now() - t < 40) {} if (t < end) requestAnimationFrame(busy); else { panes.forEach(function(p){ p.classList.remove('run'); }); btn.disabled = false; } })(); }); }`,
   },
+  alive: {
+    css: `
+#alive .pane{display:flex;align-items:center;justify-content:space-around;height:96px;padding-top:18px}
+#alive .ht{width:30px;height:30px;fill:transparent;stroke:#f1efe9;stroke-width:6}
+#alive .sw{position:relative;width:46px;height:26px;border-radius:13px;background:#3a4160}
+#alive .kn{position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:10px;background:#f1efe9}
+#alive .bx{width:26px;height:26px;border-radius:8px;background:#3a4160}
+#alive .tk{fill:none;stroke:#10131c;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:22px;stroke-dashoffset:22px}
+#alive .cp{width:64px;height:28px;border-radius:14px;background:#3a4160;color:#f1efe9;font:700 12px/28px system-ui;text-align:center;overflow:hidden;white-space:nowrap}
+#alive .on .ht{fill:#ff5a7a;stroke:#ff5a7a;scale:1.2}
+#alive .on .sw{background:#7cf0b6}
+#alive .on .kn{translate:20px}
+#alive .on .bx{background:#7cf0b6}
+#alive .on .tk{stroke-dashoffset:0}
+#alive .on .cp{width:52px;background:#7cf0b6;color:#10131c}
+#alive .fix .ht{transition:scale .45s linear(0, 1.3 30%, .9 55%, 1.04 78%, 1)}
+#alive .fix .kn{transition:translate .4s cubic-bezier(.34, 1.56, .64, 1)}
+#alive .fix.on .kn{animation:tip-squash .4s}
+#alive .fix .tk{transition:stroke-dashoffset .4s cubic-bezier(.65, 0, .35, 1)}
+#alive .fix .cp{transition:width .5s linear(0, .62 18%, 1.1 38%, .97 62%, 1)}
+@keyframes tip-squash{40%{scale:1.3 .8}}`,
+    html: `
+<div class="pair">${['', ' fix'].map((f) => `
+  <div class="pane${f}"><span class="tag${f ? ' ok' : ''}">${f ? 'With the motion' : 'Before'}</span>
+    <svg class="ht" viewBox="0 0 86 86" aria-hidden="true"><path d="M43 74 C14 54 6 40 6 28 C6 16 15 8 26 8 C34 8 40 13 43 19 C46 13 52 8 60 8 C71 8 80 16 80 28 C80 40 72 54 43 74Z"/></svg>
+    <div class="sw"><div class="kn"></div></div>
+    <svg class="bx" viewBox="0 0 26 26" aria-hidden="true"><path class="tk" d="M7 13.5 L11.5 18 L19.5 9"/></svg>
+    <div class="cp">Copy</div>
+  </div>`).join('')}
+</div>
+<button class="play" type="button">Tap all four</button>`,
+    js: `function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
+  panes.forEach(function(p){ p.classList.toggle('on', on); p.querySelector('.cp').textContent = on ? 'Copied' : 'Copy'; }); btn.textContent = on ? 'Tap all four again' : 'Tap all four'; }); }`,
+  },
 };
