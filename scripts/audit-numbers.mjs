@@ -8,7 +8,7 @@
 // (reach at the first collect ~6 h after posting vs ~24 h later: "slow start" or "late climber"; a 6 h number alone must not kill a topic).
 //   env:  BASIC_AUTH_USER / BASIC_AUTH_PASS, SITE_BASE (default https://templates.aquariit.com)
 // Usage: node scripts/audit-numbers.mjs [--fixture file.json]   (a fixture { web: { account, media }, ... } skips the site, for tests)
-import { readFileSync, appendFileSync } from 'node:fs';
+import { readFileSync, appendFileSync, readdirSync, existsSync } from 'node:fs';
 const SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, '');
 const fx = process.argv.indexOf('--fixture'), DAY = 864e5, IST = 5.5 * 36e5;
 const CH = JSON.parse(readFileSync(new URL('../templates/channels/channels.json', import.meta.url), 'utf8'));
@@ -94,6 +94,127 @@ export function early({ media = [], runs = [], daily = [] }, today) {
   return rows.length ? { medianEarly: Math.round(mE), reels: rows } : null;
 }
 
+// ---- Results checks (owner, 7 Nov 2026: "Who is going to check all of this?"): run inside every Instagram collect, so nobody has to remember.
+// 1. TREND ALARM: the last 7 posted reels (24 h old or more) vs the channel target (design/targets.md) and the best 7-reel window of the
+//    last 30 days. "ALARM <ch>: ..." when any target is missed, else "OK <ch>: ...". ESCALATE when it was already ALARM a day earlier
+//    (the same check on the reels posted by then, with each reel's reach as read by then): the daily run must change topic type or format.
+// 2. EXPERIMENT verdicts: a reel's config (or its captions.json entry, or a planned row in design/targets.md) carries
+//    "experiment": {"id", "change", "vs": "median" | "<reel name>"}. At 24 h and 72 h after the post: reach then vs the median reach of the
+//    channel's 7 reels before it at the same age → WIN | LOSE | TOO EARLY. 2 WINs of an id → PROMOTE (a rulebook rule), 2 LOSEs → DROP.
+// 3. RULE CHECK: for the same 7 reels, which rulebook rules each passed in its review file (review/<ch>/<name>.md, item 1's
+//    "rule N pass" list) next to its reach; a rule every reviewed reel passed while the channel is in ALARM is flagged "question it".
+const ROOT = new URL('../', import.meta.url), rd = (p) => { try { return readFileSync(new URL(p, ROOT), 'utf8'); } catch { return ''; } };
+const pct = (a, b) => (b ? Math.round((a / b - 1) * 100) : 0), sgn = (n) => (n >= 0 ? '+' : '') + n;
+const cells = (l) => l.split('|').slice(1, -1).map((c) => c.trim());
+// design/targets.md: the "Targets" table (Channel | Median reach | Avg watch (s) | Saves (%)) and the "Planned experiments" table
+// (Channel | Post on | Post at | Id | Change | Vs); "–" or empty = no target. The owner can change either.
+export function targets(md = rd('design/targets.md')) {
+  const t = {}, planned = []; let sec = '';
+  for (const l of md.split('\n')) {
+    if (/^#+\s/.test(l)) sec = /planned/i.test(l) ? 'p' : /target/i.test(l) ? 't' : '';
+    if (!/^\|/.test(l) || /^\|\s*-/.test(l) || /\|\s*Channel\s*\|/i.test(l)) continue;
+    const c = cells(l), n = (x) => { const v = parseFloat(String(x || '').replace(/[,%s]/g, '')); return Number.isFinite(v) ? v : null; };
+    if (sec === 't' && c[0]) t[c[0]] = { reach: n(c[1]), watch: n(c[2]), saves: n(c[3]) };
+    if (sec === 'p' && c[3]) planned.push({ channel: c[0], postOn: c[1], postAt: c[2], id: c[3], change: c[4] || c[3], vs: c[5] || 'median' });
+  }
+  return { t, planned };
+}
+// reel configs by name (scripts/explainer, scripts/channel3, techreel/topics as showreel-tech-<slug>)
+const CONFIGS = (() => { const o = {};
+  for (const [dir, pre] of [['scripts/explainer/', ''], ['scripts/channel3/', ''], ['techreel/topics/', 'showreel-tech-']]) {
+    let fs = []; try { fs = readdirSync(new URL(dir, ROOT)).filter((f) => f.endsWith('.json')); } catch { /* none */ }
+    for (const f of fs) { try { const j = JSON.parse(rd(dir + f)); const name = pre ? pre + f.replace(/\.json$/, '') : j.name; if (name) o[name] = j; } catch { /* not a config */ } }
+  }
+  return o; })();
+export function experimentOf(name, planned = targets().planned) {
+  const c = CAPS[name] || {}, x = (CONFIGS[name] || {}).experiment || c.experiment;
+  if (x && x.id) return { id: x.id, change: x.change || x.id, vs: x.vs || 'median' };
+  const p = planned.find((r) => r.channel === c.channel && r.postOn === c.postOn && r.postAt === c.postAt);
+  return p ? { id: p.id, change: p.change, vs: p.vs, planned: true } : null;
+}
+// reach of a reel as read at time t (ms): the last per-run or daily reading at or before t; null if none
+function readings({ runs = [], daily = [] }) {
+  const r = {}; const add = (id, at, v) => { if (v != null && Number.isFinite(at)) (r[id] = r[id] || []).push([at, v]); };
+  runs.forEach((x) => add(x.ig_id, Date.parse(x.at), x.reach)); daily.forEach((x) => add(x.ig_id, Date.parse(x.day + 'T01:45:00+05:30'), x.reach));
+  Object.values(r).forEach((a) => a.sort((p, q) => p[0] - q[0]));
+  return (m, t) => { const a = r[m.ig_id]; if (!a || !a.length) return Date.parse(m.posted_at) <= t ? m.reach : null; let v = null; for (const [at, x] of a) { if (at <= t) v = x; else break; } return v; };
+}
+const watchS = (m) => (m.watch_avg_ms != null ? m.watch_avg_ms / 1000 : null), saveP = (m) => (m.reach ? (100 * (m.saves || 0)) / m.reach : null);
+const name = (m) => m.template_id || (m.caption || '').split('\n')[0].slice(0, 40);
+
+export function checks(d, k, now = Date.now(), T = targets()) {
+  const tg = T.t[k] || {}, at = readings(d), out = { lines: [] };
+  const posted = (d.media || []).filter((m) => m.posted_at && m.reach != null).sort((a, b) => Date.parse(a.posted_at) - Date.parse(b.posted_at));
+  // 1. trend alarm
+  const judge = (t, reachOf) => {
+    const pool = posted.filter((m) => Date.parse(m.posted_at) <= t - DAY), last = pool.slice(-7);
+    if (!last.length) return null;
+    const r = med(last.map(reachOf)), w = med(last.map(watchS)), s = med(last.map(saveP));
+    const win = pool.filter((m) => Date.parse(m.posted_at) > t - 30 * DAY); let best = null;
+    for (let i = 0; i <= Math.max(0, win.length - 7); i++) { const v = med(win.slice(i, i + 7).map(reachOf)); if (v != null && (best == null || v > best)) best = v; }
+    const miss = [tg.reach != null && r < tg.reach, tg.watch != null && w != null && w < tg.watch, tg.saves != null && s != null && s < tg.saves];
+    return { n: last.length, reach: r, watch: w, saves: s, best, alarm: miss.some(Boolean), reels: last };
+  };
+  const j = judge(now, (m) => m.reach), y = judge(now - DAY, (m) => at(m, now - DAY));
+  if (j) {
+    const parts = [`median reach ${fmt(j.reach)} over the last ${j.n} (target ${tg.reach != null ? fmt(tg.reach) : '–'}; best window ${j.best != null ? fmt(j.best) : '–'})`];
+    if (j.watch != null) parts.push(`watch ${one(j.watch)} s (target ${tg.watch != null ? tg.watch : '–'})`);
+    if (j.saves != null) parts.push(`saves ${one(j.saves)}% (target ${tg.saves != null ? tg.saves + '%' : '–'})`);
+    out.trend = { status: j.alarm ? 'ALARM' : 'OK', reels: j.n, medianReach: Math.round(j.reach), watchS: j.watch != null ? +one(j.watch) : null, savesPct: j.saves != null ? +one(j.saves) : null, bestWindow: j.best != null ? Math.round(j.best) : null, target: tg };
+    out.lines.push(`${out.trend.status} ${k}: ${parts.join('; ')}`);
+    if (j.alarm && y && y.alarm) { out.trend.escalate = true; out.lines.push(`ESCALATE ${k}: ALARM two days in a row (yesterday median reach ${fmt(y.reach)}): change the topic type or the format today, not a tweak`); }
+  }
+  // 2. experiment verdicts (reels posted in the last 30 days)
+  const verdicts = [];
+  posted.filter((m) => Date.parse(m.posted_at) > now - 30 * DAY).forEach((m) => {
+    const x = experimentOf(m.template_id, T.planned); if (!x) return;
+    const t0 = Date.parse(m.posted_at), i = posted.indexOf(m), before = posted.slice(Math.max(0, i - 7), i);
+    const base = /^showreel-/.test(x.vs) ? posted.filter((p) => p.template_id === x.vs) : before;
+    const read = (h) => {
+      if (now - t0 < h * 36e5) return { h, verdict: 'TOO EARLY' };
+      const r = at(m, t0 + (h + 2) * 36e5) ?? m.reach, b = med(base.map((p) => at(p, Date.parse(p.posted_at) + (h + 2) * 36e5) ?? p.reach));
+      if (r == null || b == null) return { h, verdict: 'TOO EARLY' };
+      return { h, reach: r, vs: Math.round(b), pct: pct(r, b), verdict: r >= b ? 'WIN' : 'LOSE' };
+    };
+    const r24 = read(24), r72 = read(72), w = watchS(m), s = saveP(m), bw = med(base.map(watchS)), bs = med(base.map(saveP));
+    const final = r72.verdict !== 'TOO EARLY' ? r72 : r24;
+    verdicts.push({ id: x.id, reel: name(m), final: final.verdict });
+    [r24, r72].forEach((r) => { if (r.h === 72 && now - t0 < 72 * 36e5 && r24.verdict === 'TOO EARLY') return;
+      out.lines.push(`EXPERIMENT ${k} ${x.id} (${name(m)}) ${r.h} h: ` + (r.reach != null ? `reach ${fmt(r.reach)} vs ${x.vs === 'median' ? 'median' : x.vs} ${fmt(r.vs)} (${sgn(r.pct)}%)` +
+        (w != null ? `, watch ${one(w)} s vs ${bw != null ? one(bw) : '–'}` : '') + (s != null ? `, saves ${one(s)}% vs ${bs != null ? one(bs) : '–'}%` : '') : `${x.change}, posted ${new Date(t0 + IST).toISOString().slice(5, 16).replace('T', ' ')} IST`) + ` → ${r.verdict}`); });
+  });
+  // planned but not posted yet: say so, so a forgotten mark is visible
+  T.planned.filter((p) => p.channel === k && !posted.some((m) => { const c = CAPS[m.template_id] || {}; return c.channel === p.channel && c.postOn === p.postOn && c.postAt === p.postAt; }))
+    .forEach((p) => out.lines.push(`EXPERIMENT ${k} ${p.id} (planned ${p.postOn} ${p.postAt}): ${p.change} → TOO EARLY`));
+  const byId = {}; verdicts.forEach((v) => { (byId[v.id] = byId[v.id] || { WIN: 0, LOSE: 0 }); if (v.final in byId[v.id]) byId[v.id][v.final]++; });
+  for (const [id, c] of Object.entries(byId)) {
+    if (c.WIN >= 2) out.lines.push(`PROMOTE ${k} ${id}: ${c.WIN} WINs, ${c.LOSE} LOSEs: make it a rule in design/rules-${k}.md today, with the numbers`);
+    else if (c.LOSE >= 2) out.lines.push(`DROP ${k} ${id}: ${c.LOSE} LOSEs, ${c.WIN} WINs: move it to "What didn't" in design/playbook.md today`);
+  }
+  if (verdicts.length) out.experiments = byId;
+  // 3. rule check (the alarm window's reels)
+  const rules = {}; rd(`design/rules-${k}.md`).split('\n').forEach((l) => { const m = l.match(/^(\d{1,2})\.\s+\*\*(.+?)\*\*/); if (m) rules[m[1]] = m[2].replace(/[*`]/g, '').split(/\s+/).slice(0, 6).join(' '); });
+  if (j && Object.keys(rules).length) {
+    const rev = j.reels.map((m) => { const f = rd(`review/${k}/${m.template_id}.md`); if (!f) return { m, got: null };
+      const l1 = (f.split('\n').find((l) => /^\s*1\.\s/.test(l)) || ''), got = {};
+      // each "pass"/"fail" belongs to the first "(N", ", N" or "rule N" after the previous verdict ("(1 everyday annoyance pass, 2 ... pass")
+      let from = 0; for (const v of l1.matchAll(/\b(pass|fail)\b/gi)) { const r = l1.slice(from, v.index).match(/[(,;]\s*(?:rule\s+)?(\d{1,2})\s/i); from = v.index + v[0].length;
+        if (r && rules[r[1]] && !(r[1] in got)) got[r[1]] = v[1].toLowerCase() === 'pass'; }
+      return { m, got }; });
+    const withFile = rev.filter((r) => r.got), miss = rev.length - withFile.length;
+    out.rules = { reviewed: withFile.length, noReview: miss, perReel: rev.map((r) => ({ reel: name(r.m), reach: r.m.reach, passed: r.got ? Object.keys(r.got).filter((n) => r.got[n]).map(Number) : null })) };
+    out.lines.push(`RULES ${k}: ${withFile.length} of ${rev.length} recent reels have a rule score in their review file` + (miss ? ` (${miss} without: ${rev.filter((r) => !r.got).map((r) => name(r.m)).slice(0, 7).join(', ')})` : ''));
+    if (withFile.length) for (const [n, t] of Object.entries(rules)) {
+      const p = withFile.filter((r) => r.got[n] === true), f = withFile.filter((r) => r.got[n] === false);
+      if (!p.length && !f.length) continue;
+      const mp = med(p.map((r) => r.m.reach)), mf = med(f.map((r) => r.m.reach));
+      const q = p.length === withFile.length && withFile.length >= 3 && j.alarm ? `, yet the channel is in ALARM (median reach ${fmt(j.reach)}): question it` : '';
+      out.lines.push(`RULE ${k} ${n} (${t}): passed by ${p.length} of ${withFile.length}; median reach ${mp != null ? fmt(mp) : '–'} passing` + (f.length ? ` vs ${fmt(mf)} failing` : '') + q);
+    }
+  }
+  return out;
+}
+
 async function load() {
   if (fx > 0) return JSON.parse(readFileSync(process.argv[fx + 1], 'utf8'));
   const { BASIC_AUTH_USER: u, BASIC_AUTH_PASS: p } = process.env;
@@ -109,10 +230,14 @@ async function load() {
   return data;
 }
 
-const data = await load(), today = istDay(new Date().toISOString()), channels = {};
+const NOW = process.env.AUDIT_NOW ? Date.parse(process.env.AUDIT_NOW) : Date.now();
+const data = await load(), today = istDay(new Date(NOW).toISOString()), channels = {};
 for (const k of Object.keys(CH)) if (data[k]) channels[k] = week(data[k], today);
 for (const [k, a] of Object.entries(channels)) { console.log(`AUDIT ${k} (${CH[k].username}), 7 days to ${today}:`); a.forEach((l) => console.log('  - ' + l)); }
 console.log('AUDIT_CHANNELS=' + JSON.stringify(channels));
-const sig = {}; for (const k of Object.keys(CH)) if (data[k]) sig[k] = signals(data[k], today);
+const sig = {}, chk = {}; for (const k of Object.keys(CH)) if (data[k]) { sig[k] = signals(data[k], today); chk[k] = checks(data[k], k, NOW); }
+// the results checks lead (the daily run's audit card opens with them and acts on every ALARM, ESCALATE, PROMOTE and DROP the same day)
+console.log('AUDIT_CHECKS (design/targets.md; CLAUDE.md "Daily run" step 2):'); Object.values(chk).forEach((c) => c.lines.forEach((l) => console.log(l)));
+for (const [k, c] of Object.entries(chk)) sig[k].checks = { lines: c.lines, trend: c.trend, experiments: c.experiments, rules: c.rules };
 console.log('AUDIT_SIGNALS=' + JSON.stringify(sig));
-if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, '### Audit numbers, 7 days to ' + today + '\n' + Object.entries(channels).map(([k, a]) => `**${CH[k].username}**\n` + a.map((l) => '- ' + l).join('\n')).join('\n\n') + '\n');
+if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, '### Audit numbers, 7 days to ' + today + '\n' + Object.values(chk).flatMap((c) => c.lines).map((l) => '- **' + l + '**').join('\n') + '\n\n' + Object.entries(channels).map(([k, a]) => `**${CH[k].username}**\n` + a.map((l) => '- ' + l).join('\n')).join('\n\n') + '\n');
