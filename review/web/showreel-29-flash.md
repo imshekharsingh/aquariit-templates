@@ -15,4 +15,4 @@ honestly against the gate anyway: the AUTO lines below are pasted as the gate's 
 10. Facts: PASS: MDN meta name="color-scheme" and MDN color-scheme ("helping prevent unwanted screen flashes during the page load"; form controls follow the scheme); BCD Chrome 81, Firefox 96, Safari 12.1; tip block with demo "flash"; npm run check passes
 11. Post data: PASS: captions.json showreel-29-flash with channel web, postOn 2026-11-07, postAt 19:00, concept, note; 6 keywords, 5 hashtags
 12. Review file: PASS: this file; items 3 and 4 recorded as failing, not hidden
-13. After the render: PENDING
+13. After the render: PASS: reel-status read 7 Nov 14:28 IST: run 42354658697 completed / success, issue #637; voice check heard every word (one low-confidence word, "and" at 14.6 s, 0.47, heard right), 2.55 words/s, 0 of 4 sentences flagged; the contact sheet could not be downloaded in the session (artifact host blocked), so the final scene's stills were re-run locally on the render's real sentence times (0, 2.84, 7.72, 12.04 s): every beat as reviewed, nothing crossing the band on screen; this run predates the SOUND GATE step (mix levelled to -14 LUFS with the 0.8 limiter)
