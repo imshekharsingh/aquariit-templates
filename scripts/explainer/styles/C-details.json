@@ -1,0 +1,62 @@
+{
+ "name": "showreel-style-c-details",
+ "seek": "scripts/explainer/styles/C-details.html",
+ "dur": 21.2,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.2,
+ "sample": true,
+ "style": "Glass and light",
+ "voice": {
+  "text": "Why do good apps feel so smooth? One: the copy button springs into Copied, and lands in half a second. Two: the switch knob stretches as it slides, then settles round again. Three: the toast eases up from below, then swipes away with a flick. Save all three for your next app.",
+  "voice": "af_heart",
+  "speed": 0.9
+ },
+ "caption": "Why do good apps feel so smooth? Three small motions, slowed down so you can see them. 1) A copy button that springs into Copied: transition on width with linear(), 500 ms, one overshoot. 2) A switch knob that stretches as it slides: cubic-bezier(.34, 1.56, .64, 1) plus a squash keyframe on scale. 3) A toast that eases up and settles: @starting-style gives it a place to start from, no JavaScript. linear() works in Chrome 113, Firefox 112 and Safari 17.2; @starting-style in Chrome 117, Firefox 129 and Safari 17.5. Save it for your next app, or send it to a designer friend.",
+ "keywords": [
+  "css micro interactions",
+  "css linear easing spring",
+  "css starting-style",
+  "cubic-bezier overshoot",
+  "ui animation details",
+  "toggle switch animation"
+ ],
+ "hashtags": [
+  "#microinteractions",
+  "#cssanimation",
+  "#uianimation",
+  "#frontenddev",
+  "#webdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/linear",
+   "note": "MDN, linear() easing; BCD: Chrome 113, Firefox 112, Safari 17.2"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/cubic-bezier",
+   "note": "MDN, cubic-bezier(): y values may leave 0-1 (overshoot); BCD: Chrome 16, Firefox 4, Safari 6"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/At-rules/@starting-style",
+   "note": "MDN, @starting-style (nestable inside a rule); BCD: Chrome 117, Firefox 129, Safari 17.5"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scale",
+   "note": "MDN, the scale and translate properties; BCD: Chrome 104, Firefox 72, Safari 14.1"
+  }
+ ],
+ "tip": {
+  "title": "Three small motions that make an app feel smooth",
+  "why": "A UI change that springs, stretches or settles reads as a response to your finger; one that jumps reads as a glitch. Each of these is one transition line.",
+  "code": ".copy { transition: width .5s linear(0, .62 18%, 1.1 38%, .97 62%, 1); }\n.knob { transition: translate .4s cubic-bezier(.34, 1.56, .64, 1); }\n.toast { transition: translate .5s cubic-bezier(.2, .9, .3, 1.25);\n  @starting-style { translate: 0 120%; } }",
+  "demo": "details",
+  "source": {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/linear",
+   "label": "MDN, linear() easing"
+  }
+ }
+}

@@ -1,5 +1,5 @@
-// Starter for a new @webin20sec reel (owner, 7 Nov 2026: premium motion by default, not hand-built per reel). Writes a working dark-theme
-// scene that uses the shared motion kit (scripts/explainer/kitmotion.js, inlined) and passes the whole Mandatory Gate and the FLOW lines out
+// Starter for a new @webin20sec reel (owner, 7 Nov 2026: premium motion by default, not hand-built per reel). Writes a working scene in
+// style C, "Glass and light" (owner, 8 Nov 2026: the kit theme KM.theme('glass'), cheap glass, blur 3; rules-web.md rule 12) that uses the shared motion kit (scripts/explainer/kitmotion.js, inlined) and passes the whole Mandatory Gate and the FLOW lines out
 // of the box: a phone that fills the frame from frame 0 with the broken thing already moving, the hook rising word by word over it, the
 // fix typed with a caret under a code card that morphs out of the BEFORE tag, the fix line gliding into the page (sharedElement), the page
 // re-themed top to bottom (wipeRestyle), a tap that squeezes the button with a ripple, a leader-line label on the result; one camera with a
@@ -40,7 +40,8 @@ page = page.replace(/__TITLE__/g, esc(hook)).replace('__HOOK__', hookHtml).repla
 writeFileSync(html, page);
 execFileSync('node', [join(root, 'scripts/channel3/kit-inline.mjs'), html], { stdio: 'inherit' });
 const seek = relative(root, html);
-const cfg = { name: `showreel-00-${slug}`, seek, dur, fps: 60, blur: 6, shutter: .4, grain: 4, vignette: true, cover: 1.6,
+// the glass theme's render: 3 motion-blur sub-frames, grain 2, no vignette (the grade does it): about 25 GitHub minutes for 20 s (rules-web.md rule 12)
+const cfg = { name: `showreel-00-${slug}`, seek, dur, fps: 60, blur: 3, shutter: .45, grain: 2, vignette: false, cover: 1.6, style: 'Glass and light',
   voice: { text, voice: 'af_heart', speed },
   caption: 'TODO: the caption (hook, the why in two sentences, the fix, browser support), then "Save it for ..., or send it to ...".',
   keywords: ['TODO 1', 'TODO 2', 'TODO 3', 'TODO 4', 'TODO 5', 'TODO 6'], hashtags: ['#todo1', '#todo2', '#todo3', '#todo4', '#todo5'],

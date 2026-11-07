@@ -21,6 +21,12 @@
 //     KM.curveGraph(svg, spec, c0, d, { clock, real }) (the live easing curve with a riding dot) · KM.slowmoBadge(el, ts, label) ·
 //     KM.specChip(el, items, t0, d) (numbers roll in) · KM.partProgress(el, parts) (the segmented top bar); start a reel with newweb.mjs --details N
 //   voice and subtitles: KM.voice(text, lead) -> { words, at(word, nth), phrases(max) } · KM.subs(capEl, t, V, PH, from, until, colour)
+//   look (owner, 8 Nov 2026: "Let's go with C."): KM.theme(name) -> T (hex colours for KM.mixCol) sets the :root tokens (--ink, --paper, --dim,
+//     --acc, --red, --ctl, --raise, --skel, --pg, --card, --on, --glass, --frost, --edge, --lift, --glow, --soft, --ring, --f, --m, --hw, --ht) and lays a
+//     light canvas behind everything; KM.lights(t, c) paints it every frame: the blooms drifting (with the camera c, at depth) and the grade; KM.cutBelow(vp, fe, y, k) ends the world
+//     at y (an overflow cut under a soft feather: a mask costs ~75 ms a frame); KM.depth(el, c, cx, cy, d) (a pane at its own depth: parallax in
+//     the camera's moves); KM.float(t, seed, amp) (a pane's slow sine float). 'glass' (style C, "Glass and light") is the web default from
+//     8 Nov 2026; 'dark' is the old ink-and-mint look.
 var KM = (function(){
   var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; };
   var P = function(t, a, b){ return b <= a ? (t >= a ? 1 : 0) : cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
@@ -214,9 +220,65 @@ var KM = (function(){
   function partProgress(el, parts){ el.innerHTML = parts.map(function(){ return '<i><b></b></i>'; }).join(''); var S = el.querySelectorAll('b');
     parts.forEach(function(p){ cue({ t: p[0], k: 'click', g: .08, p: 3 }); });
     return function(t){ parts.forEach(function(p, i){ var k = P(t, p[0], p[1]); S[i].style.transform = 'scaleX(' + k.toFixed(4) + ')'; S[i].parentNode.style.opacity = t >= p[0] && t < p[1] ? 1 : .6; }); }; }
+  // ---- the look: themes (owner, 8 Nov 2026: "Let's go with C."; scripts/explainer/styles/C.html was the test) ----
+  // Style C, "Glass and light": layered frosted panes over slow coloured light, a soft gradient grade, crisp white type, floating code panes.
+  // The cheap path (render minutes): no backdrop-filter (style C's test took 52 GitHub minutes for 8 s; real backdrop blur roughly doubles the
+  // cost of a frame), no live filter blur on big layers, no full-frame mask. The blooms are soft radial gradients, so blurring them would change
+  // nothing you can see: a translucent gradient pane with a 1 px lit edge over them reads as frosted glass. Each bloom and the grade is its own
+  // The light is painted in a 135x240 canvas scaled up to the frame (soft light needs no resolution: the upscale is the blur), with the grade on
+  // it: four bloom layers and a grade layer at full size cost ~160 ms a frame to composite in the headless capture, the canvas almost nothing.
+  var THEMES = {
+    glass: { name: 'Glass and light',
+      c: { ink: '#070816', paper: '#f7f8ff', dim: '#9ea4c9', acc: '#8fe6ff', red: '#ff7aa8', ctl: '#272b55', raise: '#1e2148', skel: '#1b1d40', pg: '#0c0d26',
+        card: '#161939', on: '#0b0c1d' },
+      v: { glass: 'linear-gradient(155deg,rgba(255,255,255,.17),rgba(255,255,255,.055) 46%,rgba(255,255,255,.1))',
+        // frost: the opaque pane for glass that sits over other content (a code pane over the phone): what frosted glass shows, an averaged colour
+        frost: 'linear-gradient(155deg,#2c2c66,#17183c 46%,#1f2050)',
+        edge: 'inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1.5px 0 rgba(255,255,255,.5)', lift: '0 18px 28px rgba(18,8,60,.55)',
+        glow: 'rgba(143,230,255,.6)', soft: 'rgba(143,230,255,.16)', ring: 'rgba(143,230,255,.55)',
+        f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '680', ht: '-.04em' },
+      // [rgb, alpha, size, x, y, fx, fy, phase] in a 940x1280 field behind the frame (violet, rose, cyan, amber: light, never fills)
+      blooms: [['122,92,255', .62, 640, 180, 220, .31, .23, 0], ['255,111,207', .42, 580, 460, 640, .27, .35, 1.7], ['63,216,255', .4, 540, 120, 860, .37, .21, 3.1],
+        ['255,180,92', .3, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(90,60,200,.2)'], [.4, 'rgba(7,8,22,0)'], [1, 'rgba(0,150,170,.14)']] },
+    dark: { name: 'Ink and mint',
+      c: { ink: '#111214', paper: '#f2efe8', dim: '#8a8780', acc: '#7cf0b6', red: '#ff5a4a', ctl: '#3a3b44', raise: '#34353e', skel: '#2e2f37', pg: '#16171c',
+        card: '#202128', on: '#111214' },
+      v: { glass: '#26272e', frost: '#1b1c21', edge: 'inset 0 1px 0 rgba(255,255,255,.06)', lift: '0 24px 60px rgba(0,0,0,.4)', glow: 'rgba(124,240,182,.55)', soft: 'rgba(124,240,182,.14)',
+        ring: 'rgba(124,240,182,.5)', f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '800', ht: '-.024em' },
+      blooms: [['124,240,182', .08, 460, 140, 200, .2, .17, 0], ['124,140,255', .06, 380, 520, 640, .23, .19, 2]], grade: null }
+  };
+  var LT = {};
+  function theme(name){ var th = THEMES[name] || THEMES.glass, R = document.documentElement, k;
+    for (k in th.c) R.style.setProperty('--' + k, th.c[k]); for (k in th.v) R.style.setProperty('--' + k, th.v[k]);
+    R.style.background = document.body.style.background = th.c.ink; R.dataset.theme = name in THEMES ? name : 'glass';
+    // the light and the grade in one tiny canvas (135x240, a quarter of the frame) scaled up to the frame: the upscale is the blur, for free
+    var L = document.createElement('canvas'); L.id = 'km-lights'; L.className = 'a'; L.width = 135; L.height = 240; L.setAttribute('data-fit', 'free'); L.setAttribute('aria-hidden', 'true');
+    L.style.cssText = 'position:absolute;left:0;top:0;width:540px;height:960px;pointer-events:none';
+    document.body.insertBefore(L, document.body.firstChild); LT = { cx: L.getContext('2d'), th: th };
+    var T = {}; for (k in th.c) T[k] = th.c[k]; T.name = th.name; return T; }
+  // the blooms drift on slow Lissajous paths (a pure function of t), breathe a little, and follow the camera at a shallow depth
+  // (x .05: the camera crosses 560 px a part in the details format; y .2; zoom .25), so the light is never still; the grade is painted over them
+  function lights(t, c){ if (!LT.cx) return; c = c || { x: 270, y: 480, z: 1 }; var g = LT.cx, th = LT.th, q = .25, zs = 1 + (c.z - 1) * .25;
+    g.globalCompositeOperation = 'source-over'; g.fillStyle = th.c.ink; g.fillRect(0, 0, 135, 240); g.globalCompositeOperation = 'lighter';
+    th.blooms.forEach(function(b, i){ var r = b[2] / 2 * zs * (1 + .08 * Math.sin(t * .5 + i)), a = b[1] * (.82 + .18 * Math.sin(t * .7 + i * 2.1));
+      var x = (b[3] - 200 + Math.sin(t * b[5] + b[7]) * 90 - (c.x - 270) * .05 - 270) * zs + 270, y = (b[4] - 160 + Math.sin(t * b[6] + b[7] * 1.3) * 110 - (c.y - 480) * .2 - 480) * zs + 480;
+      var gr = g.createRadialGradient(x * q, y * q, 0, x * q, y * q, r * q); gr.addColorStop(0, 'rgba(' + b[0] + ',' + a.toFixed(3) + ')'); gr.addColorStop(.5, 'rgba(' + b[0] + ',' + (a * .5).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(' + b[0] + ',0)');
+      g.fillStyle = gr; g.fillRect(0, 0, 135, 240); });
+    if (th.grade) { g.globalCompositeOperation = 'source-over'; var gd = g.createLinearGradient(0, 0, 0, 240);
+      th.grade.forEach(function(s){ gd.addColorStop(s[0], s[1]); }); g.fillStyle = gd; g.fillRect(0, 0, 135, 240); } }
+  // the world ends at y (viewport px) by k (0: the full frame, 1: cut at y): an overflow cut (cheap, and the BAND check reads it) under a soft
+  // feather (fe: a gradient from transparent to the ink, 28 px tall, ending at the cut) that fades the panes and the light into the band
+  function cutBelow(vp, fe, y, k){ var e = mix(960, y, k); vp.style.height = e.toFixed(1) + 'px';
+    if (fe) { fe.style.cssText = 'position:absolute;left:0;top:' + (e - 28).toFixed(1) + 'px;width:540px;height:28px;pointer-events:none;background:linear-gradient(transparent,var(--ink));opacity:' + k.toFixed(3); } }
+  // a pane at its own depth: it slides against the camera's moves (d > 0: nearer than the world, so it moves more), measured from (cx, cy),
+  // the camera's centre when the pane is framed; extra = a transform to add (a float)
+  function depth(el, c, cx, cy, d, extra){ el.style.transform = 'translate(' + (-(c.x - cx) * d).toFixed(2) + 'px,' + (-(c.y - cy) * d).toFixed(2) + 'px)' + (extra || ''); }
+  function float(t, seed, amp){ return (amp == null ? 3 : amp) * Math.sin(t * (4.4 + seed % 1.2) / 1.2 + seed * 2.3); }
   function publish(extra){ extra = extra || {}; window.TRANSITIONS = TR.slice().sort(function(a, b){ return a[0] - b[0]; });
     window.CUES = { dur: DUR, cues: Q.slice().sort(function(a, b){ return a.t - b.t; }), mix: extra.mix || { duck: 8 }, bed: extra.bed || { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } }; }
   return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
     rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, voice: voice, subs: subs, publish: publish,
-    curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress };
+    curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
+    THEMES: THEMES, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float };
 })();

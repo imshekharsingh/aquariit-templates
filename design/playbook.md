@@ -27,9 +27,11 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
   slow motion, a live easing curve with a riding dot, a spec chip, a numbered part bar). Built with `node scripts/explainer/newweb.mjs <slug> --details N` (4-5 beats, ~20 s):
   the hook over the first detail already finished (result first), one beat per detail (three-word title with one accent word, the component slowed, its CSS typed, the curve and
   the "ms" counter running with the dot), then a recap grid of all of them at full speed (the saveable frame). Why: rule 11 (motion tricks are our winners: numbers 103k, stagger 5.9k)
-  and saves (a recap of copyable lines). Keep our dark theme (ink #111214, mint accent) for this format; titles, wording and components are ours.
-- **Art direction (7 Nov, styles A/B/C in scripts/explainer/styles):** style A was the recommended look, but it costs ~210 render minutes per 20 s reel: not usable daily
-  until that is cut (a todo for a spare night). Until then web reels keep the dark theme above.
+  and saves (a recap of copyable lines). Look: style C, "Glass and light" (owner, 8 Nov 2026), the kit's default theme; titles, wording and components are ours.
+- **Art direction (8 Nov, owner: "Let's go with C."):** style C, "Glass and light": frosted panes at three depths over slow coloured light blooms,
+  a soft gradient grade, crisp white Sora type, floating code panes. Through the kit theme (`KM.theme('glass')`, the newweb.mjs default in both
+  modes), cheap glass path only (style C's test with real backdrop blur: 52 GitHub minutes for 8 s; style A ~210 for 20 s). From the Sun 8 Nov
+  13:00 details-format reel on (the 06:47 daily run builds it); sample: showreel-style-c-details (rules-web.md rule 12, measured minutes).
 
 ### Turns Out (c3)
 - **Topic:** a world-famous thing everyone pictures one way, shown in a state that looks wrong: a visible transformation (Liberty copper-brown 1,051 reach, 15.2 s watched; the green Sahara 1,041 at 5 h).
