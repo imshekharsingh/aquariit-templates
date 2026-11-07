@@ -15,17 +15,28 @@ for the whole reel with karaoke captions, and synthesized sound. A new topic nee
 |---|---|
 | `make.py` | runs everything: voice → timeline → frames piped to ffmpeg (libx264, 8 Mbps) → sound → mux (AAC 192k, two-pass loudness to about -14.5 LUFS, true peak ≤ -1) → QA |
 | `vo/tts.py` | Kokoro `af_heart` at about 1.05, line by line, with a start and end for every word; pronunciation overrides; refuses digits and hyphens; must end by 19.4 s, or the topic's `max_end` |
-| `scenes/base.py` | canvas (2x supersampling + a blurred glow layer), palette, easing and springs, background grid, header, progress bar, label chip, hook card, karaoke captions |
+| `scenes/base.py` | canvas (2x supersampling + a faint glow layer), the camera offset (`Frame.dx/dy`), palette (gold accent), easing and springs, the light (`lights`: drifting blooms and orbs, the scene tint, a soft grade), glass panes (`glass`), rolling numbers (`roll`), part progress bar, label chip, hook card, karaoke captions |
 | `scenes/icons.py` | icon library built from shapes (bot, store, cart, card, lock, shield, check, cross, user, chat, gate, coin, doc, bolt, warning, key, chip, cloud, eye) |
 | `scenes/kinds.py` | scene kinds (visual metaphors): `portal`, `flow`, `nest`, `choice`, `guard`, `checklist` |
 | `audio/synth.py` | numpy synthesis: a pad per scene with chord changes, plucks, bells, clicks, whooshes, kick, thud, a resolving final chord, convolution reverb, ducking under the voice |
 | `topics/<slug>.json` | one topic: script, scenes, pronunciation, post text and sources |
 
+## Look and motion (owner, 8 Nov 2026)
+- The sister of web's style C, "Glass and light" (scripts/explainer/kitmotion.js, theme 'glass'), with tech's own accent, warm gold: frosted panes
+  faked cheaply (a translucent fill, a lighter upper half, a 1.5 px edge, a lit top rim, a soft offset shadow, a slow highlight sweep; no blur) over
+  slow drifting coloured light painted at 1/8 size and scaled up (the upscale is the blur), crisp white type. About 0.28 s a frame.
+- The camera never stops (make.py `camera`): a slow sway (the web kit's drift, x2.4) and, between scenes, an eased 0.6 s glide sideways (scenes sit
+  1200 px apart in one world). The glides are declared transitions (make.py `transitions`, plus any in the topic's "transitions"), so FLOW reads them.
+- Secondary motion while every line is spoken: pulses along links, the hub's rings, a highlight stepping through lists, a renewal ring, rolling
+  numbers in badges, a loading shimmer, breathing rings on ticked steps, the part progress bar (one segment per scene), drifting motes.
+- A scene starts 0.35 s before its line, so its content arrives during the glide with its label (no label-only frame).
+- `--stills` prints SAFE ZONE, OVERLAP and the four FLOW lines (Mandatory Gate items 3-4 and 14-17); wifi-address: continuity 100%.
+
 ## The fixed structure
 - 0–2 s: the hook card (the first line as a big three-or-four-line title, then IN 20 SECONDS); the voice reads it.
 - Six scenes, one per remaining script line, each with a label chip at y≈392 (THE NEWS, THE FIX, ...) and its own tint.
-- Header `<TOPIC> · EXPLAINED` at y≈292 and a progress bar at y=262. Scene content stays between y 430 and 1196.
-- Captions at y≈1290, 72 px bold, wrapped at 860 px: spoken words white, the current word green, upcoming words dimmed.
+- Header `<TOPIC> · EXPLAINED` at y≈300 and the part progress bar at y=262 (a segment per scene). The world is centred on x 510. Scene content stays between y 430 and 1196.
+- Captions at y≈1290, 72 px bold, wrapped at 820 px and centred on x 510 (the safe zone's middle) on a faint glass plate: spoken words white, the current word gold, upcoming words dimmed.
 - The last scene is the takeaway, ending on a big resolving chord, then a short fade.
 
 ## Topic file

@@ -12,12 +12,12 @@ def _c(color, a):
 
 def fr_arc(fr, box, a0, a1, col, width):
     x0, y0, x1, y1 = box
-    fr.d.arc([x0 * SS, (y0 + fr.dy) * SS, x1 * SS, (y1 + fr.dy) * SS], a0, a1, fill=fr._c(col), width=width)
+    fr.d.arc([(x0 + fr.dx) * SS, (y0 + fr.dy) * SS, (x1 + fr.dx) * SS, (y1 + fr.dy) * SS], a0, a1, fill=fr._c(col), width=width)
 
 
 def fr_chord(fr, box, a0, a1, col, width):
     x0, y0, x1, y1 = box
-    fr.d.chord([x0 * SS, (y0 + fr.dy) * SS, x1 * SS, (y1 + fr.dy) * SS], a0, a1, outline=fr._c(col), width=width)
+    fr.d.chord([(x0 + fr.dx) * SS, (y0 + fr.dy) * SS, (x1 + fr.dx) * SS, (y1 + fr.dy) * SS], a0, a1, outline=fr._c(col), width=width)
 
 
 def _sw(size):

@@ -73,11 +73,14 @@ if (caps) {
 if (caps) {
   let crons = [];
   try { crons = (JSON.parse(readFileSync(join(root, 'wrangler.jsonc'), 'utf8').replace(/^\s*\/\/.*$/gm, '')).triggers || {}).crons || []; } catch (e) { err(`wrangler.jsonc: cannot read its crons (${e.message})`); }
+  const todayIST = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
   const fired = new Set();   // UTC minutes of the day the post-reminder crons fire at ("M H1,H2 * * *"; the spare reminder "30 15 * * *" excluded)
   for (const c of crons) { const [mm, hh] = c.split(' '); if (c === '30 15 * * *' || !/^\d+$/.test(mm)) continue; for (const h of hh.split(',')) if (/^\d+$/.test(h)) fired.add(+h * 60 + +mm); }
   for (const [name, j] of Object.entries(caps)) {
-    if (!j || j.hidden || !j.postOn || j.postOn < '2026-11-05') continue;
-    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(j.postAt || '')) { err(`captions.json ${name}: add "postAt" (HH:MM IST, the exact slot; web 13:00 or 19:00, tech Mon/Wed 19:00 and Fri 17:30, c3 13:30 or 20:00: E15, E16)`); continue; }
+    // only reels still to post need a reminder (past slots may have lost their cron); from 8 Nov 2026 every channel posts at 13:00 IST (owner)
+    if (!j || j.hidden || !j.postOn || j.postOn < '2026-11-05' || j.postOn < todayIST) continue;
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(j.postAt || '')) { err(`captions.json ${name}: add "postAt" (HH:MM IST, the exact slot: 13:00 for every channel from 8 Nov 2026)`); continue; }
+    if (j.postOn >= '2026-11-08' && j.postAt !== '13:00' && !j.slotNote) err(`captions.json ${name}: postAt ${j.postAt}: every channel posts at 13:00 IST from 8 Nov 2026 (owner); a deliberate one-off slot needs "slotNote" with the reason`);
     const [h, m] = j.postAt.split(':').map(Number), utc = (((h * 60 + m - 10 - 330) % 1440) + 1440) % 1440;
     if (!fired.has(utc)) err(`captions.json ${name}: no reminder for ${j.postAt} IST; add a cron at ${String(utc % 60)} ${Math.floor(utc / 60)} UTC to wrangler.jsonc ("triggers")`);
   }

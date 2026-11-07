@@ -20,7 +20,7 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    Evidence: stutter (invisible on a phone) 2,645 and a 1.8% save rate vs list 5,722 and 4.4%; INP 258.
 6. **Hook = "Why does your X …?" in at most 8 words, over the broken thing.** Evidence: all 8 web reels past 1,300 reach open this way;
    every reel that opened another way (claims, "built in 20 s", "6 ways", "why did I…", service pitches) reached 26-330.
-7. **Post at 13:00 IST** (one reel a day; the 19:00 slot is under test, E13). Evidence (AUDIT_SIGNALS, 30 days): 13:00 median reach 2,313
+7. **Post at 13:00 IST** (one reel a day; E13, the 19:00 second slot, ended 8 Nov; owner, 8 Nov 2026: 13:00 for all three channels). Evidence (AUDIT_SIGNALS, 30 days): 13:00 median reach 2,313
    (6 reels) vs 12:00 899, 17:00 712, 23:00 103. E13 first reading (6 Nov): 19:00 reel (sticky) 1,198 at 4 h vs the 13:00 reel (keyboard)
    1,159 at 11 h, 24 h pending; followers are most online 18:30-23:30 IST (peak 21:30). Decide on 14 Nov, not before.
    7 Nov: the 12:27-13:21 posts are one slot (AUDIT_SIGNALS splits them: 12:00 median 1,221 over 9 reels, 13:00 1,172); 24 h readings on the

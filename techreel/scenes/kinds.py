@@ -1,13 +1,14 @@
 """Scene kinds: each is a visual metaphor built from shapes, animated against the scene's local time and the spoken words.
 A topic file picks a kind per scene and fills its params. Every kind is draw(fr, sc, t) where sc is a Scene (start, end, tint, params,
 cue(word) -> time the word is spoken, or the scene start if missing). Content stays inside CONTENT_TOP..CONTENT_BOTTOM.
-Add a kind by writing one function and listing it in KINDS."""
+Add a kind by writing one function and listing it in KINDS.
+Secondary motion (owner, 8 Nov 2026: FLOW continuity 85%+): every kind keeps something moving while its line is spoken (a pulse along a link,
+a highlight cycling through a list, a ring sweeping, numbers rolling), and every pane is glass with its own highlight sweep (base.glass)."""
 import math
 
-from .base import W, NEON, TEXT, DIM, CONTENT_TOP, CONTENT_BOTTOM, prog, ease_out, ease_io, spring, mix, mixc, text_w
-from .icons import icon
+from .base import W, NEON, TEXT, DIM, ACCENT, CONTENT_TOP, CONTENT_BOTTOM, prog, ease_out, ease_io, spring, mix, mixc, text_w, glass, roll
+from .icons import icon, fr_arc
 
-SURFACE = (18, 26, 48)
 EDGE = .55   # outline strength: borders are quiet, the content carries the colour
 
 
@@ -16,15 +17,33 @@ def _a(c, a):
 
 
 def pill(fr, cx, cy, label, col, a, size=30, solid=False, max_w=420):
+    """A glass pill (solid: a filled badge in the colour, its numbers rolling in as it appears)."""
+    if a <= 0:
+        return 0
+    label = roll(label, a) if solid else label
+    while size > 22 and text_w(label, size, 800) + size * 1.4 > max_w:   # a long label steps its type down to fit, never past the pill
+        size -= 1
     w = min(max_w, text_w(label, size, 800) + size * 1.4)
     h = size * 1.9
-    fr.rect(cx - w / 2, cy - h / 2, w, h, r=h / 2, fill=_a(col, a * (.9 if solid else .12)), outline=_a(col, a * EDGE), width=2, glow=col, glow_a=a * .2)
-    fr.text(cx, cy, label, size, color=_a((8, 13, 28) if solid else TEXT, a), weight=800, anchor='mm', max_w=max_w - size)
+    if solid:
+        fr.rect(cx - w / 2, cy - h / 2 + 10, w, h, r=h / 2, fill=(4, 3, 20, int(40 * a)))
+        fr.rect(cx - w / 2, cy - h / 2, w, h, r=h / 2, fill=_a(col, a * .92), glow=col, glow_a=a * .3)
+        fr.rect(cx - w / 2 + h / 2, cy - h / 2 + 1, w - h, 2, r=1, fill=(255, 255, 255, int(150 * a)))
+    else:
+        glass(fr, cx - w / 2, cy - h / 2, w, h, r=h / 2, a=a, tint=col, lift=False, sheen=False)
+    fr.text(cx, cy, label, size, color=_a((14, 12, 32) if solid else TEXT, a), weight=800, anchor='mm', max_w=max_w - size)
     return w
 
 
 def box(fr, x, y, w, h, col, a, r=28):
-    fr.rect(x, y, w, h, r=r, fill=_a(SURFACE, a * .95), outline=_a(col, a * EDGE), width=2, glow=col, glow_a=a * .15)
+    glass(fr, x, y, w, h, r=r, a=a, tint=col)
+
+
+def pulse(fr, p0, p1, t, col, a, period=1.1, n=2):
+    """Light pulses travelling along a link from p0 to p1 (secondary motion while a line is spoken)."""
+    for i in range(n):
+        u = ((t / period) + i / n) % 1
+        fr.circle(mix(p0[0], p1[0], u), mix(p0[1], p1[1], u), 6, fill=_a(TEXT, a * math.sin(u * math.pi)), glow=col, glow_a=a * .6)
 
 
 def appear(t, t0, d=.35):
@@ -64,19 +83,19 @@ def flow(fr, sc, t):
     hub_t = sc.cue(p.get('hub_cue'))
     hx, hy, tx, ty = W / 2, 760, 880, 760
     if p.get('source_note'):
-        fr.text(190, 760 - (len(srcs) - 1) / 2 * 150 - 90, p['source_note'], 20, color=_a(DIM, appear(t, sc.start)), weight=700, anchor='mm', tracking=3)
+        fr.text(230, 760 - (len(srcs) - 1) / 2 * 150 - 90, p['source_note'], 20, color=_a(DIM, appear(t, sc.start)), weight=700, anchor='mm', tracking=3)
     for i, s in enumerate(srcs):
         y = 760 + (i - (len(srcs) - 1) / 2) * 150
         a = appear(t, sc.start + i * .08)
-        pill(fr, 190, y, s, NEON[p.get('source_tint', 'purple')], a, size=34, max_w=300)
+        pill(fr, 230, y, s, NEON[p.get('source_tint', 'purple')], a, size=34, max_w=260)   # x 230: clear of the safe zone's left edge with the camera's sway
         lk = ease_io(prog(t, hub_t, hub_t + .45))
         if lk > 0:
-            x2 = mix(330, hx - 120, lk)
-            fr.line([(330, y), (x2, mix(y, hy, lk))], _a(col, .55 * lk), 3, glow=col, glow_a=.4 * lk)
+            x2 = mix(360, hx - 120, lk)
+            fr.line([(360, y), (x2, mix(y, hy, lk))], _a(col, .55 * lk), 3, glow=col, glow_a=.4 * lk)
             for d in range(3):   # dots travelling into the hub
                 u = ((t - hub_t) * .9 + d / 3 + i * .17) % 1
                 if lk >= 1:
-                    fr.circle(mix(330, hx - 120, u), mix(y, hy, u), 7, fill=_a(col, 1), glow=col)
+                    fr.circle(mix(360, hx - 120, u), mix(y, hy, u), 7, fill=_a(col, 1), glow=col)
     # before the hub is named, its place and the target wait as faint outlines, so the frame is never empty
     ghost = appear(t, sc.start) * (1 - prog(t, hub_t - .05, hub_t + .1))
     if ghost > 0:
@@ -88,6 +107,9 @@ def flow(fr, sc, t):
         s = 220 * (.6 + .4 * hk)
         box(fr, hx - 120 * hk, hy - 150 * hk, 240 * hk, 300 * hk, col, min(1, hk * 2))
         icon(fr, p['hub'].get('icon', 'gate'), hx, hy - 30, s * .7, col, min(1, hk * 2), k=(t - hub_t) * .6)
+        for i in range(2):   # the hub watches: rings open out of it
+            u = ((t - hub_t) * .7 + i * .5) % 1
+            fr.rect(hx - 120 - 30 * u, hy - 150 - 30 * u, 240 + 60 * u, 300 + 60 * u, r=28 + 10 * u, outline=_a(col, .35 * (1 - u) * min(1, hk * 2)), width=2)
         fr.text(hx, hy + 92, p['hub']['label'], 21, color=_a(TEXT, min(1, hk * 2)), weight=800, anchor='mm', tracking=2, max_w=220)
         if p['hub'].get('tag'):
             tk = appear(t, hub_t + .4)
@@ -114,13 +136,18 @@ def nest(fr, sc, t):
         fr.text(x + 200, y + 105, p['outer']['title'], 46, color=_a(TEXT, min(1, oa * 2)), weight=800, anchor='lm', max_w=600)
         fr.text(x + 200, y + 160, p['outer'].get('sub', ''), 28, color=_a(DIM, min(1, oa * 2)), weight=600, anchor='lm', max_w=600)
         for i in range(2):
-            fr.rect(x + 60, y + 228 + i * 40, [520, 380][i], 18, r=9, fill=_a((40, 52, 86), min(1, oa * 2)))
+            bw = [520, 380][i]
+            fr.rect(x + 60, y + 228 + i * 40, bw, 18, r=9, fill=_a(TEXT, .1 * min(1, oa * 2)))
+            u = ((t - sc.start) * .6 + i * .35) % 1   # a loading shimmer runs along the bars
+            fr.rect(x + 60 + (bw - 90) * u, y + 228 + i * 40, 90, 18, r=9, fill=_a(TEXT, .16 * math.sin(u * math.pi) * min(1, oa * 2)))
     ic = sc.cue(p.get('inner_cue'))
     ik = spring(t - ic)
     if t >= ic:
         yy = mix(y + 120, 860, ik)
         box(fr, 200, yy, 680, 270, col, min(1, ik * 2.5))
         fr.line([(W / 2, y + h), (W / 2, yy)], _a(col, .6 * min(1, ik * 2)), 3, glow=col)
+        if ik > .9:
+            pulse(fr, (W / 2, y + h), (W / 2, yy), t, col, min(1, ik * 2))
         icon(fr, p['inner'].get('icon', 'bot'), 310, yy + 135, 130, col, min(1, ik * 2.5))
         fr.text(400, yy + 110, p['inner']['title'], 44, color=_a(TEXT, min(1, ik * 2.5)), weight=800, anchor='lm', max_w=460)
         fr.text(400, yy + 165, p['inner'].get('sub', ''), 28, color=_a(col, min(1, ik * 2.5)), weight=700, anchor='lm', max_w=460)
@@ -152,11 +179,12 @@ def choice(fr, sc, t):
         mx, my, mw = x + 70, y + 210, 700
         ticks = p['b'].get('ticks', [])
         if p['b'].get('meter', True) is False:   # a plain list: each item springs in, all in the same colour
+            cur = int((t - b_t) / .55) % max(1, len(ticks)) if t > b_t + .6 else -1   # a highlight steps through the list: one each
             for i, tk in enumerate(ticks):
                 ik = spring(t - b_t - .2 - i * .12)
-                pill(fr, mx + mw * (i + .5) / len(ticks), my + 20, tk, TEXT, min(1, ik * 2), size=30)
+                pill(fr, mx + mw * (i + .5) / len(ticks), my + 20, tk, ACCENT if i == cur else TEXT, min(1, ik * 2), size=30)
             return
-        fr.rect(mx, my, mw, 16, r=8, fill=_a((40, 52, 86), min(1, bk * 2)))
+        fr.rect(mx, my, mw, 16, r=8, fill=_a(TEXT, .14 * min(1, bk * 2)))
         fill = ease_io(prog(t, b_t + .3, b_t + 1.1)) * (1 / max(1, len(ticks)))
         fr.rect(mx, my, max(16, mw * fill), 16, r=8, fill=_a(col, min(1, bk * 2)), glow=col)
         for i, tk in enumerate(ticks):
@@ -186,6 +214,9 @@ def guard(fr, sc, t):
     fr.line([(150, cy), (ax, cy)], _a(NEON['red'], .5), 3)
     icon(fr, p.get('attacker', 'bot'), ax, cy, 140, NEON['red'] if t > stop else NEON['amber'], min(1, k * 2))
     if t > stop:
+        u = (t - stop) * 1.1   # a renewal ring sweeps round the shield
+        rr = 250
+        fr_arc(fr, (cx - rr, cy - rr, cx + rr, cy + rr), (u * 360) % 360, (u * 360) % 360 + 100 * min(1, (t - stop) * 3), _a(NEON['green'], .7), 6)
         icon(fr, 'cross', cx - 250, cy - 120, 90, NEON['red'], 1, k=prog(t, stop, stop + .3))
         if p.get('badge'):
             pill(fr, W / 2, 1130, p['badge'], NEON['red'], appear(t, stop + .15), size=28, solid=True)
@@ -211,6 +242,8 @@ def checklist(fr, sc, t):
         box(fr, 120, y, 840, 160, col, min(1, k * 2))
         fr.circle(210, y + 80, 46, outline=_a(col, min(1, k * 2)), width=3, glow=col)
         icon(fr, 'check', 210, y + 80, 70, col, min(1, k * 2), k=prog(t, ct + .1, ct + .45))
+        u = ((t - ct) * .8) % 1   # a ring breathes out of each ticked step
+        fr.circle(210, y + 80, 46 + 26 * u, outline=_a(col, .45 * (1 - u) * min(1, k * 2)), width=2)
         fr.text(290, y + 80, it['text'], 46, color=_a(TEXT, min(1, k * 2)), weight=800, anchor='lm', max_w=620)
     # the resolve: a ring of light opens around the list as the last chord lands
     fin = prog(t, sc.end - 1.2, sc.end - .2)
@@ -246,7 +279,7 @@ def dots(fr, sc, t):
     ka = min(1, k * 2)
     # the projector: a small emitter at the top of the band
     px, py = W / 2, CONTENT_TOP + 30
-    fr.rect(px - 70, py - 18, 140, 36, r=18, fill=_a(SURFACE, ka), outline=_a(col, .7 * ka), width=2)
+    fr.rect(px - 70, py - 18, 140, 36, r=18, fill=_a(TEXT, .1 * ka), outline=_a(col, .7 * ka), width=2)
     fr.circle(px, py, 9, fill=_a(col, ka), glow=col, glow_a=.8 * ka)
     # the face outline, quiet until the dots reveal it
     reveal = ease_out(prog(t, cue, cue + 1.0)) if mode == 'spray' else 1.0

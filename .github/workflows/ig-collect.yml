@@ -10,13 +10,10 @@ on:
     # 05:23 UTC = 10:53 IST, not 07:00 UTC: GitHub starts scheduled runs late (the 20:14 UTC run started 3-6 h late, 1-6 Nov) and drops some
     # at :00, so an off-minute about 2.5 h early still lands before the 13:39 build on a normal delay and before the 19:00 build on a long one.
     - cron: '23 5 * * *'
-    # Post check (owner, 7 Nov 2026: the owner never reports a post): latest 5 posts per account, matched and auto-marked, ~40 min after each slot.
-    # IST -> UTC, off-minutes: 13:37 + 14:13 IST (web 13:00, Turns Out 13:30), Fri 18:07 IST (tech 17:30), 19:37 IST (web + tech 19:00),
-    # 20:43 IST (Turns Out 20:00), 23:43 IST (catch-all). Each run prints POSTED / NOT POSTED lines per channel for today.
-    - cron: '7,43 8 * * *'
-    - cron: '37 12 * * 5'
-    - cron: '7 14 * * *'
-    - cron: '13 15 * * *'
+    # Post check (owner, 7 Nov 2026: the owner never reports a post): latest 5 posts per account, matched and auto-marked.
+    # One slot for all three channels from 8 Nov 2026 (13:00 IST, owner): 13:43 IST (08:13 UTC, ~40 min after it) and 23:43 IST (18:13 UTC, catch-all).
+    # Each run prints POSTED / NOT POSTED lines per channel for today.
+    - cron: '13 8 * * *'
     - cron: '13 18 * * *'
   workflow_dispatch:
     inputs:
