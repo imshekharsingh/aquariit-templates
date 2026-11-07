@@ -681,7 +681,8 @@
    "#uxdesign"
   ],
   "channel": "web",
-  "concept": "min-width: 0 on a flex item"
+  "concept": "min-width: 0 on a flex item",
+  "note": "reworked 7 Nov, post as soon as ready"
  },
  "showreel-27-keyboard": {
   "postOn": "2026-11-05",
