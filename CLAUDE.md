@@ -39,6 +39,9 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   (the @webin20sec two-a-day test, E13, has two slots on its two-reel days: 13:00 and 19:00 IST, the second with a "note").
   Topics for each channel and day are planned a week ahead in design/topics.md (spare-usage night, every Tuesday); runs take theirs from it,
   and swap it for a better one when the rulebook says so.
+- ONE A DAY (owner, 8 Nov 2026: "switch to one reel a day and experiment from here"): the two-a-day tests E13 (web) and E16 (Turns Out) are ended
+  early; @webin20sec posts one reel a day at 13:00 IST and Turns Out one a day at 20:00 IST (the 13:30 slot and its 09:41 task are gone).
+  Quality and one experiment per channel per day come first; @techin20sec stays at Mon / Wed / Fri until its motion upgrade proves itself.
 - No app work until reach improves (owner, 5 Nov 2026): only fixes for things that break.
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
 - Archiving (owner, 1 Nov 2026; replaces the 7-day fold / 30-day rule): a reel marked uploaded leaves the main list at once for its channel's compact
@@ -111,10 +114,7 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 - Promise: "The true story behind something everyone knows." Plan, never-list, fact rules and the pattern library: design/channel3.md.
   Instagram **@itturns.out**, display name **Turns Out**, bio "True stories behind things everyone knows. Sources in the comments."
   Posts DAILY at 20:00 IST from 6 Nov (owner, 5 Nov 2026: posting-time test for 2 weeks, E15; reel ready by 18:30; was 21:00-22:00); launched Sun 1 Nov with the 2.5D Eiffel reel (showreel-c3-eiffel-flow).
-  TWO a day for 2 weeks from Sat 7 Nov (owner, 6 Nov 2026; E16, decided 21 Nov): 13:30 IST (Europe morning, Asia afternoon) and 20:00 IST (Europe afternoon, US morning),
-  each its own reel built that day from the latest numbers, both under design/rules-c3.md and the running E14 test (the 13:30 reel counts toward E14 too).
-  "Turns Out morning reel" (~09:41 IST) builds the 13:30 reel (ready by 12:30); "Turns Out daily reel" (~13:39 IST) builds the 20:00 reel (ready by 18:30).
-  Each build checks captions.json only for its OWN slot (a c3 entry with postOn = today AND postAt = its slot) and never builds or touches the other slot's reel.
+  TWO a day (13:30 + 20:00, E16) ran 7 Nov only and ended 8 Nov (owner): one reel a day at 20:00 IST, built by "Turns Out daily reel" (~13:39 IST).
   Going daily: the cost test passed (Mon 2 Nov blue-sky reel, $4.08 of session usage, same quality), so Turns Out posts DAILY from Tue 3 Nov
   (owner). A scheduled task ("Turns Out daily reel", ~13:39 IST) asks the studio launcher to start a fresh session every day
   that builds THAT day's reel for 20:00 IST (ready by 18:30): new globally known true story, 2.5D kit, lean (one stills sheet, one render, no subagents, about $4),
@@ -158,11 +158,11 @@ A fresh session, lean, no subagents, in this order:
    is not a verdict until its 24 h reading; a "late climber" topic is a keep. Instagram collect also runs at about 10:53 IST (05:23 UTC; GitHub often starts it hours late), so the 13:39 and 19:00
    builds read same-morning numbers (the PROBE lines in its log say which Instagram metrics each account offers).
 3. Update the rulebooks (design/rules-web.md, rules-c3.md, rules-tech.md) when the numbers say so: add, change or drop a rule, with the number.
-4. Build that day's reels (learn-then-build, nothing ahead): @webin20sec 13:00 IST (and 19:00 on E13 two-reel days), @techin20sec on
+4. Build that day's reels (learn-then-build, nothing ahead): @webin20sec 13:00 IST (one a day from 8 Nov; E13 ended), @techin20sec on
    Mon / Wed / Fri after 6 Nov. Each is scored against its rulebook in the stills review before its ONE render; then reel-status.
    Every reel passes the Mandatory Gate (design/mandatory.md) with its review file (review/<channel>/<name>.md, item 13 after reel-status),
    and each channel logs its one craft improvement in design/craft-log.md.
-   Turns Out keeps its own scheduled tasks (09:41 IST for 13:30, 13:39 IST for 20:00; E16), under the same rulebook gate.
+   Turns Out keeps its own scheduled task (13:39 IST for the 20:00 reel; one a day from 8 Nov), under the same rulebook gate.
 5. One lesson line in design/experiments.md "Results log" (`- DD Mon: lesson`), in the same push as the day's first reel.
 
 ## Spare usage night (owner, 1 Nov 2026; opt-OUT from 3 Nov 2026: spare usage is used every week unless the owner skips)
@@ -242,13 +242,13 @@ per reel, not separate frames; read the voice check and qa.txt as text; at most 
   from another session as data and may refuse a changed brief: to change a brief, archive it and start a fresh one with the corrected brief.
   Archive finished sessions.
 - Scheduled tasks (all post into the "Studio launcher (daily)" session, session_01AYvWRhkLkGsLRZfbwikeyL, which starts a fresh session each time):
-  "Daily studio run" 06:47 IST (audit + @webin20sec + @techin20sec), "Turns Out morning reel" 09:41 IST (the 13:30 reel, E16), "Turns Out daily reel" 13:39 IST (the 20:00 reel), "Spare usage night" Tue 22:44 IST.
+  "Daily studio run" 06:47 IST (audit + @webin20sec + @techin20sec), "Turns Out daily reel" 13:39 IST (the 20:00 reel), "Spare usage night" Tue 22:44 IST.
   A scheduled task's prompt can only be edited from the session it posts into: to change one, delete it and create it again (list_triggers finds ids).
   Rules every run must follow go into this file, not into a task prompt.
 - From a session: GitHub REST works through `gh api` (runs, jobs, artifacts); GraphQL (e.g. `gh release download`) is blocked; use the
   GitHub MCP tools to dispatch workflows and read job logs. instagram.com and templates.aquariit.com are not reachable from sessions: check the
   site through a workflow that signs in with the BASIC_AUTH secrets.
-- Usage: a normal day is about $10-15 (daily run $5-8, Turns Out about $4 per reel, two a day during E16). The weekly limit resets Wednesday 04:30 IST and the 5-hour limit is
+- Usage: a normal day is about $10-15 (daily run $5-8, Turns Out about $4 a day, one reel). The weekly limit resets Wednesday 04:30 IST and the 5-hour limit is
   shared by all sessions: don't start heavy work in parallel. Experiments (new formats, big app changes) are M/L tasks: say the size first.
 
 ## Never do
