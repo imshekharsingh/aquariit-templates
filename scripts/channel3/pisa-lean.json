@@ -1,0 +1,59 @@
+{
+ "name": "showreel-c3-pisa-lean",
+ "seek": "scripts/channel3/pisa-lean.html",
+ "dur": 34.7,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Was the Leaning Tower of Pisa built to lean? No, it went up straight, from 1173. Five years later, at the third floor, soft ground gave way. War stopped the work for almost a century. Builders made new floors taller on the low side. The extra weight sank it further. By 1990, it leaned so far it was shut. Engineers pulled soil from under its high side. It came back 40 centimetres. Turns out, it was built straight; the ground tipped it.",
+  "at": [
+   0,
+   3.58,
+   6.93,
+   10.87,
+   13.93,
+   17.35,
+   19.89,
+   23.39,
+   26.81,
+   29.5
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "The Leaning Tower of Pisa was never meant to lean. It went up straight in 1173, the soft ground gave way at the third floor, and the builders' fix made it worse. 🇮🇹\n\nSend this to someone who's done the 'holding it up' photo. Which landmark should we explain next? 👇",
+ "keywords": [
+  "why the Leaning Tower of Pisa leans",
+  "Leaning Tower of Pisa history",
+  "was Pisa built to lean",
+  "Pisa tower soft soil",
+  "Leaning Tower of Pisa straightened",
+  "Pisa tower 1990 closed",
+  "Italy history facts"
+ ],
+ "hashtags": [
+  "#leaningtowerofpisa",
+  "#pisa",
+  "#torredipisa",
+  "#italyhistory",
+  "#historyfacts"
+ ],
+ "sources": [
+  {
+   "title": "Leaning Tower of Pisa (Encyclopaedia Britannica)",
+   "url": "https://www.britannica.com/topic/Leaning-Tower-of-Pisa"
+  },
+  {
+   "title": "Why does the Leaning Tower of Pisa lean? (History.com)",
+   "url": "https://www.history.com/articles/why-does-the-leaning-tower-of-pisa-lean"
+  },
+  {
+   "title": "Leaning Tower of Pisa reopens, 15 Dec 2001 (History.com)",
+   "url": "https://www.history.com/this-day-in-history/december-15/leaning-tower-of-pisa-reopens"
+  },
+  {
+   "title": "The Leaning Tower Straightens Up (Smithsonian Magazine)",
+   "url": "https://www.smithsonianmag.com/travel/the-leaning-tower-straightens-up-75064764/"
+  }
+ ]
+}
