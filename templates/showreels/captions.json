@@ -759,5 +759,28 @@
   "concept": "2.5D flow · Why did the Great Pyramid stop shining white?",
   "about": "One camera that never cuts: the three Giza pyramids shining WHITE at noon (frame 0, E14: an icon in a state that looks wrong), a push onto the polished face, a barge carrying a white block across the Nile from the quarry cliffs, the Great Pyramid stripped from the top down as the blocks fly off toward Cairo, the stepped core and the casing stones still at its foot, Khafre's cap, and the core at dusk with the dashed ghost of its white shell.",
   "note": "Turns Out morning run, 7 Nov: the 13:30 reel (E16 slot 1, E14 reel 2: a world icon in an unexpected state)."
+ },
+ "showreel-29-flash": {
+  "postOn": "2026-11-07",
+  "postAt": "19:00",
+  "caption": "Why does your dark page flash white? 🌙\n\nYou browse in dark mode, tap a link, and the screen flashes white. Until a page's styles load, the browser shows a blank page in its default colors, and the default is light. Put <meta name=\"color-scheme\" content=\"dark light\"> in the <head>, before your CSS: the browser knows the page is dark from the first frame, so the blank is dark too, and default form boxes, checkboxes and scrollbars follow your theme. Supported in Chrome 81+, Firefox 96+ and Safari 12.1+.\nSave it for your next dark theme, or send it to whoever builds your site.",
+  "keywords": [
+   "dark mode white flash",
+   "color-scheme meta tag",
+   "dark mode website",
+   "dark mode form inputs white",
+   "CSS dark mode",
+   "web design tips"
+  ],
+  "hashtags": [
+   "#darkmode",
+   "#csstips",
+   "#webdesign",
+   "#frontenddev",
+   "#uxdesign"
+  ],
+  "channel": "web",
+  "concept": "<meta name=\"color-scheme\" content=\"dark light\"> (no white flash, dark form boxes)",
+  "note": "19:00 IST, built to the new visual bar"
  }
 }
