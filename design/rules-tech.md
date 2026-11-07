@@ -14,7 +14,8 @@ As decided by the owner on 5 Nov, the channel posts 2-3 reels a week (Mon / Wed 
 4. **A takeaway worth saving, said and shown in the last 3 s** (a setting to change, a number to remember). Evidence: 0 saves in 6 test reels.
 5. **Post Mon and Wed 19:00 IST, Fri 17:30 IST** (posting-time test, owner 5 Nov, 2 weeks from 6 Nov; E15). Evidence for 19:00:
    AUDIT_SIGNALS 19:00 median 129 (2 reels) vs 00:00 119, 11:00 117, 23:00 117; the pre-13:00 news posts sank under 10 (28 Oct).
-   Measure: each reel's 24 h reach and hold vs the channel median (112 reach on 5 Nov). Timing cannot fix a low hold: rules 1-4 stay the main gate.
+   Measure: each reel's 24 h reach and hold vs the channel median (112 reach on 5 Nov). First reading (7 Nov): Fri 17:30 airplane mode 129 at 8 h,
+   the best of the 7 test reels (median 116) but inside the same ~110-130 test pool: not a timing win yet. Timing cannot fix a low hold: rules 1-4 stay the main gate.
 6. **No topic @webin20sec covers and no repeat of a test topic.**
 7. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
    PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
