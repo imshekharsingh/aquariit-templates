@@ -1,0 +1,66 @@
+{
+ "name": "showreel-c3-golden-gate",
+ "seek": "scripts/channel3/golden-gate.html",
+ "dur": 34.8,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Was the Golden Gate Bridge nearly black and yellow? Yes, America's navy wanted stripes, so ships could see it in fog. The Army's pilots wanted red and white stripes instead. But the steel arrived already coated in a red primer. Architect Irving Morrow loved it against the fog, the hills and the sea. He chose that warm colour, called International Orange. It opened in 1937, and it has stayed orange ever since. Turns out, the world's most famous orange started as primer.",
+  "at": [
+   0,
+   4.09,
+   8.32,
+   12.19,
+   15.91,
+   20.73,
+   24.67,
+   29.27
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "The Golden Gate Bridge nearly went black and yellow. The US Navy wanted stripes so ships could see it in fog, and the Army's pilots wanted red and white. The steel arrived in a red primer, and the architect kept its warm colour. 🌉\n\nSend this to someone who's walked across it. Which landmark should we explain next? 👇",
+ "keywords": [
+  "why is the Golden Gate Bridge orange",
+  "Golden Gate Bridge history",
+  "Golden Gate Bridge black and yellow stripes",
+  "International Orange color",
+  "Golden Gate Bridge primer",
+  "San Francisco history facts",
+  "Irving Morrow Golden Gate"
+ ],
+ "hashtags": [
+  "#goldengatebridge",
+  "#internationalorange",
+  "#sanfranciscohistory",
+  "#bridgehistory",
+  "#historyfacts"
+ ],
+ "sources": [
+  {
+   "title": "Painting the Bridge (Golden Gate Bridge, Highway and Transportation District)",
+   "url": "https://www.goldengate.org/bridge/bridge-maintenance/painting-the-bridge/"
+  },
+  {
+   "title": "The Golden Gate Bridge's Accidental Color (NPR, 2011)",
+   "url": "https://www.npr.org/2011/04/26/135150942/the-golden-gate-bridges-accidental-color"
+  },
+  {
+   "title": "6 Things You May Not Know About the Golden Gate Bridge (History.com)",
+   "url": "https://www.history.com/articles/6-things-you-may-not-know-about-the-golden-gate-bridge"
+  },
+  {
+   "title": "The Golden Gate Bridge almost ended up with a bumblebee paint job (Gizmodo)",
+   "url": "https://gizmodo.com/the-golden-gate-bridge-almost-ended-up-with-a-bumble-be-1702822993"
+  },
+  {
+   "title": "Golden Gate Bridge went from ugly to a lasting landmark (San Francisco Examiner)",
+   "url": "https://www.sfexaminer.com/news/golden-gate-bridge-went-from-ugly-to-a-lasting-landmark/article_be67f76b-5ddf-5942-bdae-1e9a183bfc23.html"
+  }
+ ],
+ "experiment": {
+  "id": "c3-1300-slot",
+  "change": "posted at 13:00 IST (owner, 8 Nov: all channels at 13:00; was 20:00), with the E14 frame 0 (an icon in a state that looks wrong)",
+  "vs": "median"
+ }
+}

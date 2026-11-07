@@ -13,6 +13,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 
 - 7 Nov, all: the Mandatory Gate's visual upgrades (safe zone, subtitle band, motion-following sound) on every new reel → read 8 Nov.
 - 8 Nov, web: the "details" format (id details-format): a slow-mo compilation of 4-5 small UI motions, each with its live easing curve, a spec chip and its CSS line, result-first, recap grid at the end, caption invites a save → read 9 Nov (24 h) and 11 Nov (72 h) vs the web median (~1,300 reach, ~8.7 s watch, ~1.3% saves).
+- 8 Nov, c3: posting at 13:00 IST (id c3-1300-slot; owner moved every channel to 13:00) on an E14-style frame 0 (the Golden Gate Bridge in black and yellow stripes) → read 9 Nov (24 h) vs the c3 median (157).
 
 ## What works
 
