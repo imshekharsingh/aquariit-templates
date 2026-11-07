@@ -9,6 +9,9 @@
 // overflow other than visible) or past the frame's 12 px side margins is printed as TEXT WIDER THAN ITS BOX, and exits 1. Canvas text
 // is not seen here (Turns Out scenes report theirs to scripts/channel3/qa.mjs). A demo that overflows on purpose (the bug a reel shows)
 // marks its container data-fit="free".
+// Static stretch and subject fill (7 Nov 2026): STATIC STRETCH lists any 2 s+ where the mean pixel change between moments 0.5 s apart stays under 1
+// (calibrated: Nº 09 numbers passes, least 0.6 once; the old Nº 16 longname fails from 7.5 s on; Nº 13 sideways fails 3.5-7 s, where only subtitle
+// words change); SUBJECT FILL is the share of the frame the subject covers at frame 0 (old Nº 16: 4%, reworked: 42%); both exit 1 when they fail.
 import { readFileSync, mkdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { createRequire } from 'node:module';
@@ -47,6 +50,20 @@ const spread = await p.evaluate(async (list) => { const c = document.createEleme
     const d = g.getImageData(0, 0, 54, 96).data; let s = 0, s2 = 0, n = d.length / 4; for (let i = 0; i < d.length; i += 4) { const l = .2126 * d[i] + .7152 * d[i + 1] + .0722 * d[i + 2]; s += l; s2 += l * l; }
     out.push(Math.sqrt(Math.max(0, s2 / n - (s / n) ** 2))); } return out; }, scan);
 const empty = scanT.filter((x, i) => spread[i] < 5);
+// Motion and fill (owner, 7 Nov 2026, after Nº 16 held one small phone still for 5 s): on the same 0.5 s scan, the mean pixel change between
+// neighbouring moments (0-255 on a 108x192 copy) and, for frame 0, how much of the frame the subject covers (share of 20 px cells whose
+// pixels differ from the background colour, read from the corners). A deliberate hold is marked in the scene: window.HOLDS = [[t0, t1], ...].
+const vis = await p.evaluate(async (list) => { const c = document.createElement('canvas'); c.width = 108; c.height = 192; const g = c.getContext('2d', { willReadFrequently: true });
+  const frames = []; for (const b64 of list) { const im = new Image(); im.src = 'data:image/jpeg;base64,' + b64; await im.decode(); g.drawImage(im, 0, 0, 108, 192); frames.push(g.getImageData(0, 0, 108, 192).data); }
+  const diff = []; for (let i = 1; i < frames.length; i++) { const a = frames[i - 1], b = frames[i]; let s = 0; for (let j = 0; j < a.length; j += 4) s += (Math.abs(a[j] - b[j]) + Math.abs(a[j + 1] - b[j + 1]) + Math.abs(a[j + 2] - b[j + 2])) / 3; diff.push(s / (a.length / 4)); }
+  const d = frames[0], px = (x, y) => (y * 108 + x) * 4, bg = [0, 1, 2].map((k) => Math.round(([px(1, 1), px(106, 1), px(1, 190), px(106, 190)].map((i) => d[i + k]).sort((m, n) => m - n)[1] + [px(1, 1), px(106, 1), px(1, 190), px(106, 190)].map((i) => d[i + k]).sort((m, n) => m - n)[2]) / 2));
+  let on = 0, cells = 0; for (let cy = 0; cy < 192; cy += 4) for (let cx = 0; cx < 108; cx += 4) { cells++; let n = 0; for (let y = cy; y < cy + 4; y++) for (let x = cx; x < cx + 4; x++) { const i = px(x, y); if (Math.abs(d[i] - bg[0]) + Math.abs(d[i + 1] - bg[1]) + Math.abs(d[i + 2] - bg[2]) > 36) n++; } if (n >= 2) on++; }
+  return { diff, fill: on / cells, holds: window.HOLDS || [] }; }, scan);
+if (process.env.DIFFS) console.log("DIFFS " + vis.diff.map((d) => d.toFixed(1)).join(" "));   // DIFFS=1: every change value, to calibrate
+const STILL = 1, held = (x) => vis.holds.some(([a, z]) => x >= a - .01 && x <= z + .01), stretches = [];
+for (let i = 0, a = -1; i <= vis.diff.length; i++) { const quiet = i < vis.diff.length && vis.diff[i] < STILL && !(held(scanT[i]) && held(scanT[i + 1]));
+  if (quiet && a < 0) a = i; if (!quiet && a >= 0) { if (scanT[i] - scanT[a] >= 2) stretches.push(scanT[a].toFixed(1) + '-' + scanT[i].toFixed(1) + ' s'); a = -1; } }
+const FILL_MIN = .4, fill = Math.round(vis.fill * 100);
 await p.setViewportSize({ width: 1080, height: 100 });
 await p.setContent(`<body style="margin:0;background:#111;display:grid;grid-template-columns:repeat(4,270px);gap:0;font:600 13px system-ui;color:#fff">${
   shots.map((s, i) => `<figure style="margin:0;position:relative"><img src="data:image/jpeg;base64,${s}" style="width:270px;display:block"><figcaption style="position:absolute;left:4px;top:4px;background:#000a;padding:1px 5px">${i ? ts[i].toFixed(1) + ' s' : 'cover'}</figcaption></figure>`).join('')}</body>`);
@@ -54,5 +71,7 @@ await p.screenshot({ path: `${out}/sheet.png`, fullPage: true });
 await b.close();
 console.log(`STILLS: ${ts.length} frames (cover ${cover} s) in ${out}/sheet.png; simulated voice ends ${t.toFixed(1)} s; page errors: ${errors.length ? errors.join(' | ') : 'none'}`);
 console.log(`EMPTY FRAMES: ${empty.length ? empty.map((x) => x + ' s').join(', ') + ' (nearly one flat colour: fix before the render)' : 'none'} (scanned ${scanT.length} moments, least detail ${Math.min(...spread).toFixed(1)} at ${scanT[spread.indexOf(Math.min(...spread))]} s)`);
+console.log(`STATIC STRETCH: ${stretches.length ? stretches.join(', ') + ' (under ' + STILL + ' mean change per 0.5 s for 2 s or more: give it a move, or mark a deliberate hold in window.HOLDS)' : 'none'} (least change ${Math.min(...vis.diff).toFixed(1)} at ${scanT[vis.diff.indexOf(Math.min(...vis.diff))]} s, median ${[...vis.diff].sort((a, b) => a - b)[vis.diff.length >> 1].toFixed(1)})`);
+console.log(`SUBJECT FILL: ${fill}% at frame 0${fill < FILL_MIN * 100 ? ' (UNDER ' + FILL_MIN * 100 + '%: push the camera in so the subject fills the frame)' : ''}`);
 console.log(`TEXT FIT: ${wide.size ? 'TEXT WIDER THAN ITS BOX: ' + [...wide.values()].join(' | ') : 'all text inside its box'}`);
-process.exit(errors.length || empty.length || wide.size ? 1 : 0);
+process.exit(errors.length || empty.length || wide.size || stretches.length || fill < FILL_MIN * 100 ? 1 : 0);
