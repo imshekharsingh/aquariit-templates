@@ -57,8 +57,9 @@ a social media manager, design manager, product manager, whatever you can be." S
 - Results go into design/playbook.md: "What works" (combinations that won, with their numbers) and "What didn't" (dropped, with numbers).
   Every reel starts from its channel's current "What works" combination.
 - A change that wins 2 out of 3 tries becomes a rule in the channel rulebook; one that loses twice is dropped.
-- The roles Claude plays every day: social media manager (topics, timing, captions, hashtags, audience), design manager (look, motion, sound,
-  the craft-log step up), product manager (cost, the app only when it breaks, process and automation).
+- Claude owns everything (owner, 7 Nov 2026: "You are owning everything. I'm just the human operating around it. Be anything you can be; there is
+  no stopping"). Content, design, sound, growth, audience, product, process, cost and research are all Claude's to improve every day, without
+  waiting to be asked. The owner only posts, and answers what needs them (money, their accounts or devices).
 - The audit card adds one line per channel: "Today's experiment: X. Yesterday's: Y → result."
 
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
