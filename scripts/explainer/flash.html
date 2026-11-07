@@ -19,6 +19,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .a{position:absolute}
 #room{left:0;top:0;width:540px;height:960px;background:#f2efe8;opacity:0}
 #amb{left:-120px;top:120px;width:780px;height:900px;background:radial-gradient(closest-side,rgba(242,239,232,.075),rgba(242,239,232,0))}
+#vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
 #world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
 /* the phone: big, the whole page area visible */
 #ph{left:30px;top:310px;width:480px;height:1000px;border-radius:62px;background:#2a2b31;padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
@@ -50,10 +51,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .cd small{position:absolute;left:164px;bottom:16px;font:700 12px/1 var(--m);letter-spacing:.12em;color:var(--dim)}
 .art span{position:absolute;display:block}
 .bk{position:absolute;left:20px;top:16px;font:700 15px/1 var(--m);letter-spacing:.12em;color:var(--dim)}
-.hero{position:absolute;left:20px;top:46px;width:420px;height:140px;border-radius:18px;overflow:hidden;background:#2b3046}
-.hl{position:absolute;left:20px;top:202px;width:420px;font:800 32px/1.06 var(--f);font-variation-settings:'opsz' 72;letter-spacing:-.02em}
-.nx{position:absolute;left:20px;top:282px;width:190px;height:50px;border-radius:25px;border:2px solid var(--paper);font:700 17px/46px var(--f);text-align:center}
-.bd{position:absolute;left:20px;top:356px;width:420px;font:500 19px/1.5 var(--f);color:#c9c5bc}
+.hero{position:absolute;left:20px;top:46px;width:420px;height:110px;border-radius:18px;overflow:hidden;background:#2b3046}
+.hl{position:absolute;left:20px;top:170px;width:420px;font:800 27px/1.08 var(--f);font-variation-settings:'opsz' 72;letter-spacing:-.02em}
+.nx{position:absolute;left:20px;top:242px;width:190px;height:50px;border-radius:25px;border:2px solid var(--paper);font:700 17px/46px var(--f);text-align:center}
+.bd{position:absolute;left:20px;top:312px;width:420px;font:500 19px/1.5 var(--f);color:#c9c5bc}
 #blank{position:absolute;left:0;top:104px;width:460px;height:876px;z-index:2}
 #stamp{position:absolute;left:62px;top:150px;width:336px;z-index:3;border:4px solid var(--red);border-radius:14px;color:var(--red);font:700 21px/1 var(--m);letter-spacing:.06em;text-align:center;padding:14px 0;white-space:nowrap}
 #stamp small{display:block;font:700 13px/1 var(--m);letter-spacing:.14em;margin-top:9px;opacity:.8}
@@ -78,7 +79,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #cd{font:500 20px/1.45 var(--m);white-space:pre;color:var(--paper);height:87px}
 #cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
 #sup{margin-top:10px;font:700 12px/1 var(--m);letter-spacing:.1em;color:var(--dim);white-space:nowrap}
-#band{left:0;top:640px;width:540px;height:150px;background:var(--ink);border-top:1px solid #2a2b31;box-shadow:0 -18px 40px rgba(17,18,20,.6)}
+#band{left:0;top:640px;width:540px;height:150px;background:var(--ink)}
 #cap{left:30px;top:652px;width:450px;min-height:90px;padding:6px 0 0;font:700 31px/1.14 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
 #cap span{display:inline-block;margin-right:.24em}
 </style>
@@ -86,7 +87,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 <body>
 <div id="room" class="a"></div>
 <div id="amb" class="a"></div>
-<div id="world" class="a" data-fit="free">
+<div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
   <div id="ph" class="a">
     <div id="scr">
       <div id="sb">9:41<i></i></div>
@@ -100,9 +101,9 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
           <div class="gh" id="g0" style="left:20px;top:110px;width:420px;height:50px">BEFORE</div>
           <div class="gh" id="g1" style="left:20px;top:182px;width:28px;height:28px;padding:0"></div>
           <div class="gh" id="g2" style="left:280px;top:174px;width:160px;height:44px">BEFORE</div>
-          <div class="cd" style="top:240px"><div class="art"><span style="left:84px;top:18px;width:30px;height:30px;border-radius:50%;background:#f2efe8"></span><span style="left:-30px;top:70px;width:140px;height:90px;border-radius:50%;background:#3d4560"></span><span style="left:50px;top:84px;width:150px;height:90px;border-radius:50%;background:#4b5576"></span></div><b>Night trains are back across the map</b><small>6 MIN · TRAVEL</small></div>
-          <div class="cd" style="top:396px"><div class="art" style="background:#262a3c"><span style="left:14px;top:56px;width:20px;height:62px;background:#4b5576"></span><span style="left:38px;top:34px;width:26px;height:84px;background:#5d6890"></span><span style="left:68px;top:66px;width:18px;height:52px;background:#4b5576"></span><span style="left:90px;top:44px;width:30px;height:74px;background:#3d4560"></span><span style="left:44px;top:46px;width:6px;height:6px;background:#f2efe8"></span><span style="left:98px;top:58px;width:6px;height:6px;background:#f2efe8"></span></div><b>The city that turns its lights down at ten</b><small>4 MIN · CITIES</small></div>
-          <div class="cd" style="top:552px"><div class="art" style="background:#20283a"><span style="left:-10px;top:60px;width:160px;height:24px;border-radius:12px;background:#3d4560"></span><span style="left:20px;top:84px;width:150px;height:24px;border-radius:12px;background:#4b5576"></span><span style="left:-20px;top:104px;width:160px;height:24px;border-radius:12px;background:#5d6890"></span></div><b>A field guide to the night sea</b><small>8 MIN · NATURE</small></div>
+          <div class="cd" style="top:270px"><div class="art"><span style="left:84px;top:18px;width:30px;height:30px;border-radius:50%;background:#f2efe8"></span><span style="left:-30px;top:70px;width:140px;height:90px;border-radius:50%;background:#3d4560"></span><span style="left:50px;top:84px;width:150px;height:90px;border-radius:50%;background:#4b5576"></span></div><b>Night trains are back across the map</b><small>6 MIN · TRAVEL</small></div>
+          <div class="cd" style="top:426px"><div class="art" style="background:#262a3c"><span style="left:14px;top:56px;width:20px;height:62px;background:#4b5576"></span><span style="left:38px;top:34px;width:26px;height:84px;background:#5d6890"></span><span style="left:68px;top:66px;width:18px;height:52px;background:#4b5576"></span><span style="left:90px;top:44px;width:30px;height:74px;background:#3d4560"></span><span style="left:44px;top:46px;width:6px;height:6px;background:#f2efe8"></span><span style="left:98px;top:58px;width:6px;height:6px;background:#f2efe8"></span></div><b>The city that turns its lights down at ten</b><small>4 MIN · CITIES</small></div>
+          <div class="cd" style="top:582px"><div class="art" style="background:#20283a"><span style="left:-10px;top:60px;width:160px;height:24px;border-radius:12px;background:#3d4560"></span><span style="left:20px;top:84px;width:150px;height:24px;border-radius:12px;background:#4b5576"></span><span style="left:-20px;top:104px;width:160px;height:24px;border-radius:12px;background:#5d6890"></span></div><b>A field guide to the night sea</b><small>8 MIN · NATURE</small></div>
         </div>
         <div class="pg" id="p1">
           <div class="bk">‹ BACK</div>
@@ -134,6 +135,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     </div>
   </div>
 </div>
+</div>
 <div id="lbl" class="a">Nº 19 · DARK MODE</div>
 <div id="hud" class="a"></div>
 <div id="tag" class="a"></div>
@@ -158,7 +160,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
   var A = {}, PH = [], TAPS = [], MOVES = [];
   // screen-local tap targets (inside the 460 px screen): a home card, "Next story", "‹ Back", the second home card
-  var CARD = [95, 404], NEXT = [115, 411], BACK = [52, 124], CARD2 = [95, 560];
+  var CARD = [95, 434], NEXT = [115, 371], BACK = [52, 124], CARD2 = [95, 560];
   function anchors(){
     align();
     A = { until: at('until'), styles: at('styles'), load: at('load'), browser: at('browser'), blank: at('blank'), white: at('white', 2), page: at('page', 2),
@@ -169,14 +171,14 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     A.land = Math.max(A.page + .55, A.blank + 1.2);           // the styles arrive: the slow-motion blank ends
     var t4 = Math.min(A.land + .55, A.fix - .95);
     // [tap time, x, y, page before, page after, end of the blank]
-    TAPS = [[-.1, BACK[0], BACK[1], 1, 0, .6], [1.4, CARD[0], CARD[1], 0, 1, A.leave + .05], [A.until + .35, NEXT[0], NEXT[1], 1, 2, A.land], [t4, BACK[0], BACK[1], 2, 0, A.fix],
+    TAPS = [[-.1, BACK[0], BACK[1], 1, 0, .6], [1.4, CARD[0], CARD[1], 0, 1, A.leave + .75], [A.until + .35, NEXT[0], NEXT[1], 1, 2, A.land], [t4, BACK[0], BACK[1], 2, 0, A.fix],
       [A.now, CARD[0], CARD[1], 0, 1, A.now + .95], [A.frame, NEXT[0], NEXT[1], 1, 2, A.frame + .5], [A.form - .55, BACK[0], BACK[1], 2, 0, A.form - .1]];
     A.pull = Math.max(A.match + .75, A.boxes + 1.5);
     A.last = Math.min(A.pull + 1.2, DUR - 1.9);
-    TAPS.push([A.last, CARD2[0], CARD2[1], 0, 3, A.last + .5]);
+    TAPS.push([A.last, CARD[0], CARD[1], 0, 3, A.last + .5]);
     // the camera: [start, length, centre x, centre y, zoom]; it never cuts, every move eases out past its mark and settles
-    MOVES = [[A.leave - .05, .8, 270, 572, 1.16], [A.blank + .55, .9, 258, 590, 1.08], [t4 + .2, A.fix - t4 - .2, 270, 620, 1.42], [A.fix, .75, 270, 548, .86], [A.color - .1, .8, 264, 536, .9],
-      [A.now - .15, .7, 270, 535, 1.02], [A.form - .25, .8, 270, 516, 1.1], [A.pull, .9, 270, 548, .96], [A.last - .1, 1, 268, 540, 1.0]];
+    MOVES = [[A.leave + .27, .8, 270, 572, 1.16], [A.blank + .55, .9, 258, 590, 1.08], [t4 + .2, A.fix - t4 - .2, 270, 620, 1.42], [A.fix, .75, 270, 548, .86], [A.color - .1, .8, 264, 536, .9],
+      [A.now - .15, .7, 270, 535, 1.02], [A.form - .25, .8, 270, 527, 1.05], [A.pull, .9, 270, 548, .96], [A.last - .1, 1, 268, 540, 1.0]];
     PH = []; var cur = [];
     WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
       if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
@@ -196,7 +198,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
       if (k >= n) break; if (src[i] === '&') { var e2 = src.indexOf(';', i); o += src.slice(i, e2 + 1); i = e2; } else o += src[i]; k++; }
     while (open.length) o += '</' + open.pop() + '>'; return o; }
   var CODE_N = CODE.replace(/<[^>]+>/g, '').replace(/&\w+;/g, '_').length;
-  var CHIP_Y0 = 236, CHIP_Y1 = 400;
+  var CHIP_Y0 = 226, CHIP_Y1 = 296;
   var URLS = ['duskpost.example', 'duskpost.example/trains', 'duskpost.example/lights', 'duskpost.example/sea'];
   function seek(t){
     t = Math.max(0, Math.min(DUR, t));
@@ -244,13 +246,15 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     var rp = $('rip'); rp.style.left = (fx - 32) + 'px'; rp.style.top = (104 + fy - 32) + 'px'; rp.style.opacity = ra; rp.style.transform = 'scale(' + rs + ')';
     rp.style.borderColor = fixed ? 'var(--acc)' : 'var(--red)';
     var scr = back(P(t, A.last + 1.1, A.last + 1.7), 1.2) * 70; $('p3').style.transform = 'translateY(' + (-scr) + 'px)';
+    var bk0 = out(P(t, A.leave - .1, A.leave + .35)) * (1 - io(P(t, WORDS[WORDS.length - 1].e + 1.1, WORDS[WORDS.length - 1].e + 1.9))), mY = mix(960, 626, bk0), mk = 'linear-gradient(to bottom,#000 ' + (mY - 22) + 'px,rgba(0,0,0,0) ' + mY + 'px)';
+    $('vp').style.webkitMaskImage = mk; $('vp').style.maskImage = mk;
     $('amb').style.transform = 'translate(' + (Math.sin(t * .4) * 14) + 'px,' + (Math.cos(t * .33) * 10) + 'px)';
     // ---- the camera ----
     var c = cam(t), c0 = cam(t - .05), c1 = cam(t + .05), vx = (c1[0] - c0[0]) * 10, vy = (c1[1] - c0[1]) * 10, vz = (c1[2] - c0[2]) * 10;
     $('world').style.transform = 'translate(' + (255 - c[0] * c[2]) + 'px,' + (480 - c[1] * c[2]) + 'px) scale(' + c[2] + ')';
     $('ph').style.transform = 'perspective(1600px) rotateX(' + Math.max(-5, Math.min(5, vy * .02 + vz * 3)) + 'deg) rotateY(' + Math.max(-5, Math.min(5, -vx * .03)) + 'deg)';
     // ---- the hook ----
-    var gone = io(P(t, A.leave, A.leave + .35));
+    var gone = io(P(t, A.leave, A.leave + .25));
     [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
       var s = i === 0 ? -.3 : WORDS[i] ? WORDS[i].s - LEAD : 0, k = back(P(t, s, s + .32), 1.6);
       sp.style.filter = 'blur(' + ((1 - P(t, s, s + .22)) * 8 + gone * 6).toFixed(2) + 'px)'; sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 46 - gone * 90) + 'px)'; });
@@ -264,7 +268,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     // ---- the white blank peels off the screen and becomes the code ----
     var pk2 = P(t, A.fix - .02, A.fix + .5), pe = $('peel'), cd = $('code');
     var tl = toScr(c, 40, 424), br = toScr(c, 500, 1300);
-    tl = [Math.max(0, tl[0]), Math.max(0, tl[1])]; br = [Math.min(540, br[0]), Math.min(960, br[1])];
+    tl = [Math.max(0, tl[0]), Math.max(0, tl[1])]; br = [Math.min(540, br[0]), Math.min(mY - 20, br[1])];
     var CW = 450, CH = 158, ck = back(pk2, 1.1);
     if (pk2 > 0 && pk2 < 1) { pe.style.opacity = 1 - P(pk2, .75, 1);
       var x0 = mix(tl[0], 30, ck), y0 = mix(tl[1], 128, ck), w0 = mix(br[0] - tl[0], CW, ck), h0 = mix(br[1] - tl[1], CH, ck);
