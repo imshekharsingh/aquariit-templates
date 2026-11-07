@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Style B: Editorial dark</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Schibsted+Grotesk:wght@400..800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec style test B, "Editorial dark" (7 Nov 2026; the owner picks one of A / B / C, nothing here changes the kit or the rules).
+   The flash reel's beats in 8 s: the hook over the page, the white flash, the fix code, the page that now loads dark.
+   TOKENS
+     palette   warm off-black #14110d · paper #efe6d6 · dim #8f8474 · hairline rgba(239,230,214,.16) · plate #2a241d · accent ochre #e3a857 ·
+               the flash is warm paper #f3ead9, never pure white
+     type      display Fraunces 380, opsz 144, 56 px / 1.0, tracking -0.025em, the accent word in Fraunces italic (ochre);
+               text and subtitles Schibsted Grotesk 560-620; code IBM Plex Mono 500 18 px / 1.55; folios Fraunces italic 15 px
+     radii     plate 6 · code slab 4 · labels 3 (print, not app)
+     shadows   none on type; the plate sits on a broad low shadow (0 40px 90px #0006); matte, no gloss, no glow
+     light     no visible light source: the flash warms the whole room a little (the stage lifts 6% toward paper)
+     grain 8 (a fine static paper grain in the scene too) · blur 6 (shutter .35) · vignette on · grade: warm, lifted blacks
+   CAMERA   a slow lateral dolly (2 s pans), almost no zoom; held frames that keep creeping; line-mask reveals instead of blur;
+            a hairline that becomes the code slab (morph); generous margins, one idea per frame
+   MOTION   expo-out arrivals 0.7-0.9 s (1 - 2^-10k), inOut3 1.2-2 s camera, word stagger 0.08 s; nothing bounces
+   SOUND    the soft bed (pads only, chords crossfade, a held low note), 90 bpm, duck 10 dB, room 0.9; soft swishes on each move,
+            a low thud as the slab lands, sparse ticks while typing, a low resolve on the fixed page; no hits, no clicks */
+:root{--ink:#14110d;--paper:#efe6d6;--dim:#8f8474;--rule:rgba(239,230,214,.16);--plate:#2a241d;--acc:#e3a857;--sf:'Fraunces',Georgia,serif;--f:'Schibsted Grotesk',system-ui,sans-serif;--m:'IBM Plex Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#room{left:0;top:0;width:540px;height:960px;background:#f3ead9;opacity:0}
+#tone{left:-120px;top:-80px;width:780px;height:1120px;background:radial-gradient(48% 36% at 50% 42%,rgba(239,214,180,.15),rgba(239,214,180,.04) 60%,rgba(239,214,180,0))}
+#grain{left:0;top:0;width:540px;height:960px;opacity:.09;mix-blend-mode:overlay;pointer-events:none;z-index:20;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+#vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
+/* the subject: a matte page plate with a thin browser strip, no device */
+#plate{left:60px;top:300px;width:420px;height:900px;border-radius:6px;background:var(--plate);box-shadow:0 0 0 1px var(--rule),0 40px 90px rgba(0,0,0,.4);overflow:hidden}
+#strip{position:absolute;left:0;right:0;top:0;height:46px;border-bottom:1px solid var(--rule);font:500 12px/46px var(--m);color:var(--dim);text-align:center;letter-spacing:.04em;z-index:4;background:var(--plate)}
+#strip b{position:absolute;left:18px;top:0;font:italic 400 15px/46px var(--sf);color:var(--paper);letter-spacing:0}
+#prog{position:absolute;left:0;bottom:-1px;height:1px;background:var(--acc)}
+#pages{position:absolute;left:0;top:46px;width:420px;height:854px;overflow:hidden}
+.pg{position:absolute;left:0;top:0;width:420px;height:854px;background:var(--plate)}
+.kk{position:absolute;left:26px;top:24px;font:600 11px/1 var(--f);letter-spacing:.22em;color:var(--acc)}
+.h1{position:absolute;left:26px;top:44px;width:370px;font:400 40px/1.02 var(--sf);font-variation-settings:'opsz' 144;letter-spacing:-.02em}
+.h1 i{font-style:italic}
+.fx{position:absolute;left:26px;width:368px;height:44px;border-radius:3px;font:500 16px/44px var(--f);padding:0 14px}
+.w{background:#fbf8f2;color:#6f6a62}
+.d{background:#221d18;color:#8f8474;box-shadow:0 0 0 1px var(--rule) inset}
+.it{position:absolute;left:26px;width:368px;height:132px;border-top:1px solid var(--rule)}
+.it .art{position:absolute;right:0;top:16px;width:112px;height:100px;overflow:hidden;background:#3a2f24}
+.it b{position:absolute;left:0;top:18px;width:236px;font:400 22px/1.12 var(--sf);font-variation-settings:'opsz' 72;letter-spacing:-.01em}
+.it small{position:absolute;left:0;bottom:16px;font:600 10px/1 var(--f);letter-spacing:.2em;color:var(--dim)}
+.art span,.hero span{position:absolute;display:block}
+.bk{position:absolute;left:26px;top:22px;font:600 11px/1 var(--f);letter-spacing:.22em;color:var(--dim)}
+.hero{position:absolute;left:26px;top:46px;width:368px;height:132px;overflow:hidden;background:#3a2f24}
+.hl{position:absolute;left:26px;top:196px;width:368px;font:400 29px/1.08 var(--sf);font-variation-settings:'opsz' 96;letter-spacing:-.015em}
+.nx{position:absolute;left:26px;top:276px;font:italic 400 18px/1 var(--sf);color:var(--acc);border-bottom:1px solid var(--acc);padding-bottom:5px}
+.bd{position:absolute;left:26px;top:318px;width:368px;font:500 16px/1.5 var(--f);color:#b5aa98;white-space:nowrap}
+#blank{position:absolute;left:0;top:46px;width:420px;height:854px;z-index:3;opacity:0}
+#fg{position:absolute;width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(239,230,214,.85);background:rgba(239,230,214,.12);z-index:6;opacity:0}
+#rip{position:absolute;width:64px;height:64px;border-radius:50%;border:1.5px solid var(--acc);z-index:6;opacity:0}
+/* screen space: folio, hook, code slab, note, subtitles */
+#rul{left:34px;top:122px;width:472px;height:1px;background:var(--rule);transform-origin:0 0}
+#lbl{left:34px;top:134px;font:italic 400 15px/1 var(--sf);color:var(--dim);white-space:nowrap}
+#hook{left:34px;top:154px;font-family:var(--sf);font-weight:380;font-size:56px;line-height:1.0;letter-spacing:-.025em;font-variation-settings:'opsz' 144}
+#hook .ln{display:block;white-space:nowrap;overflow:hidden;padding:0 4px 6px 0;height:58px}
+#hook .ln > span{display:inline-block}
+#hook .acc{font-style:italic;color:var(--acc)}
+#code{left:30px;top:150px;width:450px;height:2px;border-radius:4px;overflow:hidden;opacity:0;background:var(--acc)}
+#note{position:absolute;left:22px;top:16px;font:italic 400 15px/1 var(--sf);color:var(--dim);white-space:nowrap}
+#cd{position:absolute;left:22px;top:44px;font:500 18px/1.55 var(--m);white-space:pre;color:var(--paper)}
+#cd .t{color:#8f8474}#cd b{font-weight:500;color:var(--acc)}
+#bar{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--acc)}
+.km-caret{display:inline-block;width:2px;height:20px;margin-left:2px;vertical-align:-4px;background:var(--acc)}
+#lead{left:0;top:0;width:540px;height:960px;overflow:visible}
+#lead line{stroke:var(--acc);stroke-width:1;stroke-linecap:round}
+#lab{left:300px;top:400px;font:italic 400 17px/1 var(--sf);color:var(--paper);white-space:nowrap;opacity:0}
+#band{left:0;top:640px;width:540px;height:150px;background:var(--ink)}
+#cap{left:34px;top:654px;width:450px;min-height:90px;padding:6px 0 0;font:600 29px/1.18 var(--f);letter-spacing:-.012em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="tone" class="a" data-fit="free"></div>
+<div id="room" class="a"></div>
+<div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
+  <div id="plate" class="a" data-subject>
+    <div id="strip"><b>Duskpost</b>duskpost.example<div id="prog"></div></div>
+    <div id="pages">
+      <div class="pg" id="p0">
+        <div class="kk">EVENING EDITION</div><div class="h1">Stories for <i>tonight</i></div>
+        <div class="fx w" style="top:150px">Search the archive</div>
+        <div class="it" style="top:214px"><div class="art"><span style="left:66px;top:14px;width:22px;height:22px;border-radius:50%;background:#efe6d6"></span><span style="left:-30px;top:56px;width:130px;height:80px;border-radius:50%;background:#5a4632"></span><span style="left:40px;top:66px;width:130px;height:80px;border-radius:50%;background:#7a5d3e"></span></div><b>Night trains are back across the map</b><small>TRAVEL · 6 MIN</small></div>
+        <div class="it" style="top:346px"><div class="art" style="background:#2c241c"><span style="left:-10px;top:54px;width:130px;height:20px;border-radius:10px;background:#5a4632"></span><span style="left:14px;top:74px;width:120px;height:20px;border-radius:10px;background:#7a5d3e"></span></div><b>A field guide to the night sea</b><small>NATURE · 8 MIN</small></div>
+      </div>
+      <div class="pg" id="p1">
+        <div class="bk">‹ TRAVEL</div>
+        <div class="hero"><span style="left:280px;top:20px;width:36px;height:36px;border-radius:50%;background:#efe6d6"></span><span style="left:-60px;top:64px;width:300px;height:180px;border-radius:50%;background:#5a4632"></span><span style="left:140px;top:80px;width:320px;height:180px;border-radius:50%;background:#7a5d3e"></span></div>
+        <div class="hl">Night trains are back across the map</div>
+        <div class="nx" id="nx">Next story →</div>
+        <div class="bd">Sleeper lines are running again.</div>
+        <div class="fx w" style="top:362px">Write a letter to the editor</div>
+      </div>
+      <div class="pg" id="p2">
+        <div class="bk">‹ NATURE</div>
+        <div class="hero" style="background:#2c241c"><span style="left:-20px;top:60px;width:420px;height:32px;border-radius:16px;background:#5a4632"></span><span style="left:40px;top:86px;width:400px;height:32px;border-radius:16px;background:#7a5d3e"></span><span style="left:280px;top:16px;width:32px;height:32px;border-radius:50%;background:#efe6d6"></span></div>
+        <div class="hl">A field guide to the night sea</div>
+        <div class="nx">Next story →</div>
+        <div class="bd">What glows in the water after dark.</div>
+        <div class="fx d" style="top:362px">Write a letter to the editor</div>
+      </div>
+    </div>
+    <div id="blank"></div>
+    <div id="rip"></div><div id="fg"></div>
+  </div>
+</div></div>
+<div id="rul" class="a"></div>
+<div id="lbl" class="a">Nº 29 — on dark pages</div>
+<div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>dark</span> <span>page</span> <span>flash</span></span><span class="ln"><span class="acc">white?</span></span></div>
+<div id="code" class="a"><div id="bar"></div><div id="note">In the head, before any CSS</div><div id="cd"></div></div>
+<svg id="lead" class="a" aria-hidden="true"><line id="ll" x1="0" y1="0" x2="0" y2="0"/></svg>
+<div id="lab" class="a">dark from frame one</div>
+<div id="band" class="a" data-band></div>
+<div id="cap" class="a" data-subs></div>
+<div id="grain" class="a" data-fit="free"></div>
+<script>
+(function(){
+/*kitmotion:begin*/
+// ---- @webin20sec motion kit (scripts/explainer/kitmotion.js; owner, 7 Nov 2026: "Can we further improve the overall animation and flow?") ----
+// Premium motion by default for every web reel, like kit25d.js for Turns Out. Inlined into a scene's main script between the kitmotion
+// begin and end markers by node scripts/channel3/kit-inline.mjs <scene.html> (npm run check fails on a stale copy); start a reel with
+// node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ... Every frame is a pure function of t: moves, transitions and taps are
+// registered once (in the scene's anchors(), after the voice timings are known), then drawn from t alone in seek(t).
+// Registering a move, transition or tap also writes its sound cue (move / swell / snap / blip / touch, with x) and declares a transition in
+// window.TRANSITIONS, so the FLOW gate (scripts/showreel/flow.mjs: no undeclared cuts, no dead runs, continuity 85%+) knows it was meant.
+//   KM.reset(dur)                         before registering (anchors()); KM.publish(extra) after: window.CUES and window.TRANSITIONS
+//   eases: KM.ease.out3 / inOut3 / expoInOut / back(k, s) / spring(k) (critically damped) / settle(k, f) (overshoot and settle)
+//   KM.rig({ x, y, z, drift })            the camera: a continuous eased drift (never still) + named moves, rig.at(t) -> { x, y, z, vx, vy, vz }
+//     rig.pushIn(t0, d, x, y, z) · rig.pan(t0, d, x, y) · rig.pushThrough(t0, d, x, y, z) (a fast zoom through, declared) ·
+//     rig.matchMove(t0, d, x, y, z) (follows a shared element, declared) · rig.creep(t0, d, dz) (a slow steady push through a held beat) · rig.apply(worldEl, t, tiltEl) · rig.toScreen(c, x, y)
+//   KM.transition(kind, t0, d, cue)       declares [t0, t0 + d, kind], writes its cue, returns k(t) (0 -> 1, eased) for the setters:
+//     KM.shared(el, a, b, k) (sharedElement: a box glides and scales between layouts, a/b = { x, y, w, h, r }) · KM.pushThrough(el, k, dir) ·
+//     KM.morph(el, a, b, k, colA, colB) · KM.wipe(newLayer, k) (wipeRestyle: the new theme comes down top to bottom)
+//   text: KM.rise(spans, t, starts, gone) (blur to sharp, word by word) · KM.type(el, html, t, t0, t1) (typing with a caret) ·
+//     KM.sweep(el, t, t0, d, col) (a highlight sweep) · KM.leader(line, label, from, to, k) (a leader-line label, SVG line + text)
+//   secondary: KM.parallax(el, c, depth) · KM.stagger(els, t, t0, gap, d) · KM.squeeze(el, t, tTap) (press and pop) ·
+//     KM.ripple(el, t, tTap, x, y) · KM.tap(t, x) (the touch cue for a tap at screen x)
+//   voice and subtitles: KM.voice(text, lead) -> { words, at(word, nth), phrases(max) } · KM.subs(capEl, t, V, PH, from, until, colour)
+var KM = (function(){
+  var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; };
+  var P = function(t, a, b){ return b <= a ? (t >= a ? 1 : 0) : cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var ease = {
+    linear: function(k){ return k; },
+    out3: function(k){ return 1 - Math.pow(1 - k, 3); },
+    inOut3: function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; },
+    expoInOut: function(k){ return k <= 0 ? 0 : k >= 1 ? 1 : k < .5 ? Math.pow(2, 20 * k - 10) / 2 : (2 - Math.pow(2, -20 * k + 10)) / 2; },
+    back: function(k, s){ s = s == null ? 1.3 : s; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2); },
+    // a critically damped spring over the move's length (no overshoot, a fast start and a long soft landing), exactly 1 at the end
+    spring: function(k){ if (k <= 0) return 0; if (k >= 1) return 1; var w = 9; return (1 - (1 + w * k) * Math.exp(-w * k)) / (1 - (1 + w) * Math.exp(-w)); },
+    // overshoot and settle (an underdamped spring): about f wobbles, dying out, exactly 1 at the end
+    settle: function(k, f){ if (k <= 0) return 0; if (k >= 1) return 1; f = f || 1.4; return 1 - Math.exp(-5 * k) * Math.cos(k * Math.PI * f) * (1 - k); }
+  };
+  var Q = [], TR = [], DUR = 20;
+  function reset(dur){ Q = []; TR = []; DUR = dur || DUR; }
+  function cue(c){ Q.push(c); return c; }
+  function declare(t0, t1, kind){ TR.push([+t0.toFixed(2), +t1.toFixed(2), kind]); }
+  // ---- the camera: base framing, a drift that never stops, and named moves folded in order ----
+  function rig(o){
+    var base = [o.x, o.y, o.z], D = o.drift == null ? 1 : o.drift, moves = [], last = base.slice();
+    function add(t0, d, x, y, z, kind, e){ var to = [x, y, z == null ? last[2] : z], m = { t0: t0, d: d, to: to, kind: kind, e: e };
+      moves.push(m); var dz = to[2] - last[2];
+      cue({ t: t0, k: 'move', d: Math.max(.4, d * .8), g: kind === 'pan' ? .26 : .34, dir: dz >= 0 ? 1 : -1, x: 255, x2: cl(255 + (x - last[0]) * 2, 40, 500), r: .25 });
+      if (kind === 'pushThrough') { cue({ t: t0, k: 'swell', d: Math.max(.5, d), g: .4, x: 255 }); cue({ t: t0 + d * .55, k: 'snap', g: .3, p: 5, x: 255, r: .2 }); declare(t0, t0 + d, 'pushThrough'); }
+      if (kind === 'matchMove') declare(t0, t0 + d, 'matchMove');
+      last = to; return R; }
+    var R = {
+      moves: moves,
+      pushIn: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pushIn', 'settle'); },
+      pan: function(t0, d, x, y){ return add(t0, d, x, y, null, 'pan', 'inOut3'); },
+      pushThrough: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pushThrough', 'expoInOut'); },
+      matchMove: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'matchMove', 'inOut3'); },
+      pull: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pull', 'settle'); },
+      // creep: a slow, steady push to the end of a beat (a held shot that still breathes: FLOW dead runs), no cue
+      creep: function(t0, d, dz){ moves.push({ t0: t0, d: d, to: [last[0], last[1], last[2] * (1 + (dz || .08))], kind: 'creep', e: 'linear' }); last = moves[moves.length - 1].to; return R; },
+      at: function(t){ var c = base.slice();
+        moves.forEach(function(m){ var k = P(t, m.t0, m.t0 + m.d), e = m.e === 'settle' ? ease.settle(k, 1.2) : ease[m.e](k); if (k > 0) c = [mix(c[0], m.to[0], e), mix(c[1], m.to[1], e), mix(c[2], m.to[2], e)]; });
+        // the drift: a slow sway and breathing zoom, so no stretch of the reel is ever still (FLOW: dead runs)
+        c[0] += D * (Math.sin(t * .55) * 9 + Math.sin(t * 1.3 + 2) * 2.5); c[1] += D * (Math.sin(t * .41 + 1) * 11 + Math.sin(t * 1.1) * 3); c[2] *= 1 + D * (Math.sin(t * .33) * .012 + Math.sin(t * .9 + 1) * .004);
+        return { x: c[0], y: c[1], z: c[2] }; },
+      vel: function(t){ var a = R.at(t - .05), b = R.at(t + .05); return { vx: (b.x - a.x) * 10, vy: (b.y - a.y) * 10, vz: (b.z - a.z) * 10 }; },
+      // world point -> screen point (the world is laid out at 540x960 and the camera centres (x, y) at (255, 480): the safe zone's middle)
+      toScreen: function(c, x, y){ return [(x - c.x) * c.z + 255, (y - c.y) * c.z + 480]; },
+      apply: function(world, t, tiltEl){ var c = R.at(t); world.style.transform = 'translate(' + (255 - c.x * c.z).toFixed(2) + 'px,' + (480 - c.y * c.z).toFixed(2) + 'px) scale(' + c.z.toFixed(4) + ')';
+        if (tiltEl) { var v = R.vel(t); tiltEl.style.transform = 'perspective(1600px) rotateX(' + cl(v.vy * .02 + v.vz * 3, -5, 5).toFixed(2) + 'deg) rotateY(' + cl(-v.vx * .03, -5, 5).toFixed(2) + 'deg)'; }
+        return c; }
+    };
+    return R;
+  }
+  // ---- transitions: declared once, drawn from k ----
+  var CUE = { sharedElement: 'move', pushThrough: 'swell', morph: 'snap', wipeRestyle: 'swell' };
+  function transition(kind, t0, d, sound){ declare(t0, t0 + d, kind);
+    var s = sound === false ? null : sound || CUE[kind] || 'move';
+    if (s === 'move') cue({ t: t0, k: 'move', d: Math.max(.4, d), g: .3, dir: 1, x: 255, x2: 255, r: .25 });
+    else if (s === 'swell') cue({ t: t0, k: 'swell', d: Math.max(.5, d), g: .42, x: 255 });
+    else if (s) cue({ t: t0, k: s, g: .35, p: 5, x: 255, r: .2 });
+    if (kind !== 'sharedElement') cue({ t: t0 + d, k: 'snap', g: .3, p: 7, x: 255, r: .2 });
+    var e = kind === 'pushThrough' ? ease.expoInOut : kind === 'sharedElement' ? function(k){ return ease.settle(k, 1.1); } : ease.inOut3;
+    return function(t){ return e(P(t, t0, t0 + d)); }; }
+  function box(el, b){ el.style.left = b.x.toFixed(2) + 'px'; el.style.top = b.y.toFixed(2) + 'px'; el.style.width = b.w.toFixed(2) + 'px'; el.style.height = b.h.toFixed(2) + 'px'; if (b.r != null) el.style.borderRadius = b.r.toFixed(2) + 'px'; }
+  function lerpBox(a, b, k){ return { x: mix(a.x, b.x, k), y: mix(a.y, b.y, k), w: mix(a.w, b.w, k), h: mix(a.h, b.h, k), r: mix(a.r || 0, b.r || 0, cl(k)) }; }
+  // sharedElement: the element glides and scales from layout a to layout b; it lifts (a shadow) in the middle of the glide
+  function shared(el, a, b, k){ box(el, lerpBox(a, b, k)); var lift = Math.sin(cl(k) * Math.PI); el.style.boxShadow = '0 ' + (8 + lift * 22).toFixed(1) + 'px ' + (20 + lift * 40).toFixed(1) + 'px rgba(0,0,0,' + (.25 + lift * .2).toFixed(2) + ')'; }
+  // pushThrough: the layer scales up past the camera and blurs out (dir -1: comes in from behind the camera instead)
+  function pushThrough(el, k, dir){ var q = dir === -1 ? 1 - k : k; el.style.transform = 'scale(' + (1 + q * q * 2.4).toFixed(3) + ')'; el.style.opacity = (1 - P(q, .35, .9)).toFixed(3); el.style.filter = 'blur(' + (q * 10).toFixed(2) + 'px)'; }
+  function rgb(h){ var n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+  function mixCol(a, b, k){ var x = rgb(a), y = rgb(b); return 'rgb(' + x.map(function(v, i){ return Math.round(mix(v, y[i], k)); }).join(',') + ')'; }
+  // morph: a box becomes another box (position, size, corner radius and colour)
+  function morph(el, a, b, k, colA, colB){ box(el, lerpBox(a, b, k)); if (colA) el.style.background = mixCol(colA, colB, k); }
+  // wipeRestyle: the new-theme copy of a layer is revealed top to bottom (it sits over the old one); clip-path inset in px for the BAND check
+  function wipe(el, k){ var h = el.offsetHeight || 1000; el.style.clipPath = k >= 1 ? 'none' : 'inset(0px 0px ' + ((1 - k) * h).toFixed(1) + 'px 0px)'; el.style.visibility = k > 0 ? 'visible' : 'hidden'; }
+  // ---- text ----
+  // rise: each word comes up from blur to sharp with a little overshoot at its own start time; gone (0 -> 1) blurs the line away, lifting it
+  // only a little (it fades before it can leave the safe zone)
+  function rise(spans, t, starts, gone){ gone = gone || 0;
+    [].forEach.call(spans, function(sp, i){ var s = starts[i], k = ease.back(P(t, s, s + .34), 1.6);
+      sp.style.filter = 'blur(' + ((1 - P(t, s, s + .24)) * 8 + gone * 6).toFixed(2) + 'px)'; sp.style.opacity = (cl((t - s) * 9) * (1 - gone) * (1 - gone)).toFixed(3); sp.style.transform = 'translateY(' + ((1 - k) * 44 - gone * 24).toFixed(2) + 'px)'; }); }
+  // type: html (tags and entities allowed) typed from t0 to t1 with a caret that blinks when idle
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; if (src[i] === '&') { var e2 = src.indexOf(';', i); o += src.slice(i, e2 + 1); i = e2; } else o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function type(el, html, t, t0, t1){ var N = html.replace(/<[^>]+>/g, '').replace(/&\w+;/g, '_').length, n = Math.floor(N * P(t, t0, t1)), busy = t >= t0 && t < t1 + .15;
+    el.innerHTML = typed(html, n) + (t >= t0 - .3 ? '<span class="km-caret" style="opacity:' + (busy || Math.floor((t - t1) * 2.4) % 2 === 0 ? 1 : 0) + '"></span>' : ''); }
+  function sweep(el, t, t0, d, col){ var k = ease.inOut3(P(t, t0, t0 + d)); el.style.backgroundImage = 'linear-gradient(' + col + ',' + col + ')'; el.style.backgroundRepeat = 'no-repeat'; el.style.backgroundSize = (k * 100).toFixed(1) + '% 100%'; }
+  // leader: an SVG line drawn from the thing to its label, then the label fades up at the end of the line
+  function leader(line, label, from, to, k){ var e = ease.out3(cl(k / .7)); line.setAttribute('x1', from[0]); line.setAttribute('y1', from[1]); line.setAttribute('x2', mix(from[0], to[0], e).toFixed(1)); line.setAttribute('y2', mix(from[1], to[1], e).toFixed(1));
+    line.style.opacity = k > 0 ? 1 : 0; label.style.opacity = ease.out3(P(k, .55, 1)).toFixed(3); label.style.transform = 'translateY(' + ((1 - ease.back(P(k, .55, 1), 1.4)) * 10).toFixed(2) + 'px)'; }
+  // ---- secondary motion ----
+  function parallax(el, c, depth){ el.style.transform = 'translate(' + (-(c.x - 270) * depth).toFixed(2) + 'px,' + (-(c.y - 480) * depth).toFixed(2) + 'px) scale(' + (1 + (c.z - 1) * depth).toFixed(4) + ')'; }
+  function stagger(els, t, t0, gap, d){ [].forEach.call(els, function(el, i){ var k = ease.settle(P(t, t0 + i * gap, t0 + i * gap + (d || .6)), 1.2);
+    el.style.opacity = cl(k * 2.5).toFixed(3); el.style.transform = 'translateY(' + ((1 - k) * 44).toFixed(2) + 'px) scale(' + mix(.94, 1, k).toFixed(4) + ')'; }); }
+  // squeeze: pressed in 0.12 s before the tap, popped past full size after it, settled by 0.5 s
+  function squeeze(el, t, tap){ var press = win(t, tap - .12, tap + .06, .1), pop = t > tap ? Math.sin(P(t, tap, tap + .5) * Math.PI) * (1 - P(t, tap, tap + .5)) : 0;
+    el.style.transform = 'scale(' + (1 - press * .07 + pop * .09).toFixed(4) + ')'; }
+  function ripple(el, t, tap, x, y){ var k = P(t, tap, tap + .55); el.style.left = (x - 32) + 'px'; el.style.top = (y - 32) + 'px'; el.style.opacity = (k > 0 && k < 1 ? 1 - k : 0).toFixed(3); el.style.transform = 'scale(' + mix(.5, 2.6, ease.out3(k)).toFixed(3) + ')'; }
+  function tap(t, x){ cue({ t: t, k: 'touch', g: .38, x: cl(x, 30, 510) }); cue({ t: t + .05, k: 'blip', g: .24, x: cl(x, 30, 510) }); }
+  // ---- voice timings and subtitles ----
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function voice(text, lead, words){ lead = lead == null ? .15 : lead; var T = text.split(/\s+/).filter(Boolean), W = [];
+    if (words && words.length) { var j = 0; words.forEach(function(w){ var o = { w: w.w, s: w.s, e: w.e, d: w.w }; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { o.d = T[k]; j = k + 1; break; } W.push(o); }); }
+    else { var t = .2; T.forEach(function(w){ var d = .14 + w.length * .03; W.push({ w: w, d: w, s: t, e: t + d }); t += d + (/[.?:,;!]$/.test(w) ? .32 : .06); }); }
+    return { words: W, lead: lead, end: W.length ? W[W.length - 1].e : 0,
+      at: function(word, nth){ var n = nth || 1; for (var i = 0; i < W.length; i++) if (norm(W[i].w) === norm(word) && --n === 0) return W[i].s - lead; return 99; },
+      // sentence starts (minus the lead), and whole phrases of at most max words, split at a comma where it can
+      starts: function(){ var o = []; W.forEach(function(w, i){ if (i === 0 || /[.?!]$/.test(W[i - 1].d)) o.push(w.s - lead); }); return o; },
+      phrases: function(max){ max = max || 6; var PH = [], cur = [];
+        W.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === W.length - 1) { while (cur.length > max) { var best = -1;
+              cur.forEach(function(q, k){ if (/[,:;]$/.test(W[q].d) && k >= 1 && k < max && (best < 0 || k > best)) best = k; });
+              if (best < 0) best = Math.min(max, Math.ceil(cur.length / 2)) - 1; PH.push(cur.slice(0, best + 1)); cur = cur.slice(best + 1); }
+            if (cur.length) PH.push(cur); cur = []; } });
+        return PH; } };
+  }
+  // subtitles: the phrase being spoken, each word sharpening as it is said; colour(word, i) -> a CSS colour (or null)
+  function subs(capEl, t, V, PH, from, until, colour){ var W = V.words, L = V.lead, ph = null, html = '';
+    for (var i = 0; i < PH.length; i++) if (t >= W[PH[i][0]].s - L - .05 && (i === PH.length - 1 || t < W[PH[i + 1][0]].s - L - .05)) ph = PH[i];
+    if (ph && ph[0] >= from && t < until) ph.forEach(function(j){ var w = W[j], on = t >= w.s - L, k = ease.out3(P(t, w.s - L, w.s - L + .2)), c = colour ? colour(w.d, j) : null;
+      html += '<span style="opacity:' + (on ? 1 : .32) + ';filter:blur(' + (on ? (1 - k) * 4 : 1.2).toFixed(2) + 'px);transform:translateY(' + ((1 - k) * 5).toFixed(2) + 'px)' + (c ? ';color:' + c : '') + '">' + w.d.replace(/</g, '') + '</span>'; });
+    capEl.innerHTML = html; capEl.style.opacity = html ? 1 : 0; }
+  function publish(extra){ extra = extra || {}; window.TRANSITIONS = TR.slice().sort(function(a, b){ return a[0] - b[0]; });
+    window.CUES = { dur: DUR, cues: Q.slice().sort(function(a, b){ return a.t - b.t; }), mix: extra.mix || { duck: 8 }, bed: extra.bed || { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } }; }
+  return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
+    rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, voice: voice, subs: subs, publish: publish };
+})();
+/*kitmotion:end*/
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;
+  var expo = function(k){ return k <= 0 ? 0 : k >= 1 ? 1 : 1 - Math.pow(2, -10 * k); };
+  var TEXT = "Why does your dark page flash white? One tag fixes it: color scheme, dark light. Now it loads dark.", DUR = 8, HOOK_N = 7;
+  var CODE = '<span class="t">&lt;meta</span> name="color-scheme"\n      content=<b>"dark light"</b><span class="t">&gt;</span>';
+  var V, PH, A = {}, CAM, T = {};
+  var RULE = { x: 30, y: 150, w: 450, h: 2, r: 0 }, SLAB = { x: 30, y: 128, w: 450, h: 112, r: 4 };
+  function bloom(t, t0){ return E.out3(P(t, t0, t0 + .22)) * (1 - E.inOut3(P(t, t0 + .34, t0 + .95))); }
+  function anchors(words){
+    V = KM.voice(TEXT, .15, words); PH = V.phrases(6); KM.reset(DUR);
+    var S = V.starts(), W = V.words;
+    A.tap1 = .12; A.fl = .3; A.hookIn = W[HOOK_N - 1].s - V.lead + .6;
+    A.leave = Math.max(S[1] - .35, A.hookIn + .2); A.fix = S[1]; A.typeEnd = Math.min(A.fix + 1.5, S[2] - .35);
+    A.dl = V.at('dark', 2); A.pay = S[2]; A.tap2 = A.pay + .05; A.end = V.end;
+    window.COVER = +Math.min(A.hookIn, A.leave - .15).toFixed(2);
+    KM.declare(A.fl, A.fl + 1, 'flash');
+    // a slow lateral dolly; a pull back for the code slab; a gentle push onto the fixed page; creeping holds
+    CAM = KM.rig({ x: 292, y: 413, z: .94, drift: 1.25 })
+      .pan(.6, 2.2, 258, 430)
+      .pull(A.leave + .25, 1.2, 270, 562, .86)
+      .pan(A.leave + 1.0, A.pay - A.leave - .6, 240, 574)
+      .pan(A.pay - .6, 1.6, 290, 566)
+      .pan(A.pay + .7, DUR - A.pay - .5, 258, 580);
+    T.morph = KM.transition('morph', A.fix - .15, .7, 'swish');
+    KM.tap(A.tap1, 300); KM.tap(A.tap2, 140);
+    KM.cue({ t: 0, k: 'swish', d: .6, g: .32, p: -.4 });
+    KM.cue({ t: A.fl + .22, k: 'swell', d: .6, g: .34, x: 255 });
+    for (var c = 0, t0 = A.fix + .4; t0 + c * .16 < A.typeEnd; c++) KM.cue({ t: t0 + c * .16, k: 'tick', g: .045, p: (c * 3) % 5 });
+    KM.cue({ t: A.fix + .55, k: 'thud', g: .3 });
+    KM.cue({ t: A.dl, k: 'swish', d: .5, g: .26 });
+    KM.cue({ t: A.tap2 + .8, k: 'resolve', g: .34, x: 255, r: .45, notes: [45, 52, 57, 64] });
+    KM.publish({ mix: { duck: 10, room: .9 }, bed: { bpm: 90, origin: 0, gain: .24, soft: true, chords: [[45, 52, 57, 60, 64], [41, 48, 57, 60, 65], [43, 50, 55, 59, 62], [40, 47, 55, 59, 64]] } });
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    var c = CAM.apply($('world'), t, $('plate'));
+    // a warm window light that drifts slowly across the room behind the page
+    $('tone').style.transform = 'translate(' + (Math.sin(t * .62) * 110 - (c.x - 270) * .3).toFixed(1) + 'px,' + (Math.cos(t * .47) * 70).toFixed(1) + 'px)';
+    var b1 = bloom(t, A.fl), fixed = E.inOut3(P(t, A.tap2 + .2, A.tap2 + 1));
+    $('room').style.opacity = (b1 * .07).toFixed(3);
+    // the folio rule draws itself across, then gives the frame to the code slab
+    $('rul').style.transform = 'scaleX(' + expo(P(t, 0, 1.2)).toFixed(4) + ')'; $('rul').style.opacity = (1 - P(t, A.leave - .3, A.leave)).toFixed(3);
+    $('lbl').style.opacity = (P(t, .2, .8) * (1 - P(t, A.leave - .3, A.leave))).toFixed(3);
+    // ---- beat 1: a tap on a story, the page flashes paper-white, the article arrives (the white search box gives it away) ----
+    var fin = E.inOut3(P(t, -.3, A.tap1 - .02)), lift = E.inOut3(P(t, A.tap1 + .1, A.tap1 + .55));
+    $('fg').style.left = (mix(300, 250, fin) + lift * 40 - 26) + 'px'; $('fg').style.top = (mix(310, 290, fin) + lift * 80 - 26) + 'px'; $('fg').style.opacity = (1 - lift).toFixed(3);
+    KM.ripple($('rip'), t, A.tap1, 250, 290);
+    var p1on = t >= A.fl + .24;
+    $('p0').style.visibility = p1on ? 'hidden' : 'visible'; $('p1').style.visibility = p1on && t < A.tap2 + .4 ? 'visible' : 'hidden';
+    [].forEach.call($('p1').children, function(el, i){ var k = expo(P(t, A.fl + .5 + i * .08, A.fl + 1.3 + i * .08)); el.style.opacity = k.toFixed(3); el.style.transform = 'translateY(' + ((1 - k) * 16).toFixed(2) + 'px)'; });
+    $('prog').style.width = (t < A.fl + 1.2 ? E.out3(P(t, A.tap1, A.fl + 1)) * 100 : 0).toFixed(1) + '%';
+    var bl = $('blank'); bl.style.background = '#f3ead9'; bl.style.opacity = b1.toFixed(3);
+    // ---- the hook: each word rises through its line's mask (expo-out), the lines leave upward through the same masks ----
+    [].forEach.call($('hook').querySelectorAll('.ln'), function(ln, li){ var g = expo(P(t, A.leave + li * .07, A.leave + .55 + li * .07));
+      [].forEach.call(ln.children, function(sp){ var j = [].indexOf.call($('hook').querySelectorAll('.ln > span'), sp), s = j === 0 ? -.4 : V.words[j].s - V.lead - .1, k = expo(P(t, s, s + .75));
+        sp.style.transform = 'translateY(' + ((1 - k) * 66 - g * 66).toFixed(2) + 'px)'; sp.style.opacity = (1 - P(g, .6, .95)).toFixed(3); }); });
+    // ---- beat 2: the hairline becomes the code slab (morph); the fix is typed, then underlined ----
+    var mk = T.morph(t), cd = $('code'), ruleIn = expo(P(t, A.leave + .15, A.leave + .7));
+    KM.morph(cd, RULE, SLAB, mk); cd.style.background = KM.mixCol('#e3a857', '#211c16', cl(mk * 5)); cd.style.transform = 'translateY(' + (Math.sin(t * 1.1) * 3).toFixed(2) + 'px)'; cd.style.opacity = (t < A.fix - .15 ? ruleIn : 1).toFixed(3);
+    cd.style.clipPath = t < A.fix - .15 ? 'inset(0 ' + ((1 - ruleIn) * 100).toFixed(1) + '% 0 0)' : 'none';
+    cd.style.boxShadow = '0 0 0 1px rgba(239,230,214,' + (mk * .12).toFixed(3) + ')';
+    $('note').style.opacity = P(mk, .5, 1).toFixed(3); $('bar').style.opacity = P(mk, .4, 1).toFixed(3);
+    KM.type($('cd'), CODE, t, A.fix + .4, A.typeEnd); $('cd').style.opacity = P(mk, .6, 1).toFixed(3);
+    var fb = $('cd').querySelector('b'); if (fb) KM.sweep(fb, t, A.dl, .5, 'rgba(227,168,87,.16)');
+    // ---- payoff: the next tap shows a dark blank, an ochre hairline loads across, the article sets in, the letter box is dark ----
+    var fin2 = E.inOut3(P(t, A.tap2 - .45, A.tap2 - .02)), lift2 = E.inOut3(P(t, A.tap2 + .1, A.tap2 + .55));
+    if (t > A.tap2 - .45) { $('fg').style.left = (mix(200, 140, fin2) + lift2 * 30 - 26) + 'px'; $('fg').style.top = (mix(440, 368, fin2) + lift2 * 70 - 26) + 'px'; $('fg').style.opacity = (KM.cl((t - A.tap2 + .45) * 4) * (1 - lift2)).toFixed(3); KM.ripple($('rip'), t, A.tap2, 140, 368); }
+    if (t >= A.tap2) { bl.style.background = '#2a241d'; bl.style.opacity = (t >= A.tap2 + .08 ? 1 - E.inOut3(P(t, A.tap2 + .55, A.tap2 + 1.1)) : 0).toFixed(3);
+      $('prog').style.width = (E.out3(P(t, A.tap2 + .05, A.tap2 + .9)) * 100 * (1 - P(t, A.tap2 + 1.2, A.tap2 + 1.5))).toFixed(1) + '%'; }
+    $('p2').style.visibility = t >= A.tap2 + .4 ? 'visible' : 'hidden';
+    [].forEach.call($('p2').children, function(el, i){ var k = expo(P(t, A.tap2 + .6 + i * .08, A.tap2 + 1.4 + i * .08)); el.style.opacity = k.toFixed(3); el.style.transform = 'translateY(' + ((1 - k) * 16).toFixed(2) + 'px)'; });
+    $('pages').style.transform = 'translateY(' + (-P(t, A.tap2 + .9, DUR + .5) * 46).toFixed(2) + 'px)';
+    [].forEach.call(document.querySelectorAll('.hero span,.art span'), function(sp, i){ sp.style.transform = 'translateX(' + (Math.sin(t * .7 + i) * 26).toFixed(2) + 'px) scale(' + (1 + t * .035).toFixed(4) + ')'; });
+    if (t < A.tap2 + .4) $('pages').style.transform = 'translateY(' + (-P(t, A.fl + 1.1, A.tap2 + .2) * 56).toFixed(2) + 'px)';
+    var lb = CAM.toScreen(c, 206, 630), lk = P(t, A.tap2 + .5, A.tap2 + 1.3);
+    $('lab').style.left = (lb[0] + 34).toFixed(1) + 'px'; $('lab').style.top = (lb[1] - 9).toFixed(1) + 'px';
+    KM.leader($('ll'), $('lab'), [lb[0], lb[1]], [lb[0] + 28, lb[1]], lk);
+    // ---- the subtitle band and the plate's fade above it ----
+    var bk = E.out3(P(t, A.leave - .1, A.leave + .4)), fk = E.out3(P(t, A.leave - .4, A.leave + .05)), mY = mix(960, 626, fk), mask = 'linear-gradient(to bottom,#000 ' + (mY - 22) + 'px,rgba(0,0,0,0) ' + mY + 'px)';
+    $('vp').style.webkitMaskImage = mask; $('vp').style.maskImage = mask;
+    $('band').style.opacity = bk.toFixed(3); $('band').style.transform = 'translateY(' + ((1 - bk) * 30).toFixed(2) + 'px)';
+    KM.subs($('cap'), t, V, PH, HOOK_N, DUR + 1, function(w, j){ return V.words[j].s >= A.fix + V.lead && /^(color|scheme|dark|light)/i.test(w) ? 'var(--acc)' : null; });
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
+  window.seek = seek; window.DURATION = DUR;
+  window.STYLE = { id: 'B', name: 'Editorial dark', fonts: ['Fraunces', 'Schibsted Grotesk', 'IBM Plex Mono'], palette: ['#14110d', '#efe6d6', '#8f8474', '#1c1814', '#e3a857'] };
+  document.fonts.load("380 56px 'Fraunces'").then(function(){ return document.fonts.load("italic 380 56px 'Fraunces'"); }).then(function(){ return document.fonts.load("600 29px 'Schibsted Grotesk'"); })
+    .then(function(){ return document.fonts.load("500 18px 'IBM Plex Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

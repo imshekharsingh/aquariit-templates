@@ -790,5 +790,26 @@
   "concept": "2.5D flow · Was the Leaning Tower of Pisa built to lean?",
   "about": "One camera that never cuts: the Leaning Tower of Pisa standing STRAIGHT on its lawn (frame 0, E14: an icon in a state that looks wrong), the upper floors fading to a dashed ghost (built straight, 1173), the cut-away ground with its soft clay as the tower tips at the third floor, a century of suns while war stops the work, new floors built taller on the low side (the curve) as it sinks further, 1990 and CLOSED, drills pulling soil from under the high side, and the tower today, 40 cm (16 in) back from the ghost of its 1990 lean.",
   "note": "Turns Out daily run, 7 Nov: the 20:00 reel (E16 slot 2, E14 reel 3: a world icon in an unexpected state)."
+ },
+ "showreel-style-a-studio": {
+  "channel": "web",
+  "sample": true,
+  "concept": "Style A · Studio product film",
+  "about": "Style test A for the web look (7 Nov 2026), on the flash reel's beats in 8 s: deep black stage, a lit device that slowly orbits (bevel, glass reflection, cool and warm rim light), rack focus to the code pane, big tight Archivo type, one ember accent.",
+  "note": "Style sample for review, not scheduled: pick A, B or C"
+ },
+ "showreel-style-b-editorial": {
+  "channel": "web",
+  "sample": true,
+  "concept": "Style B · Editorial dark",
+  "about": "Style test B for the web look (7 Nov 2026), on the flash reel's beats in 8 s: warm off-black and paper, a matte page plate instead of a phone, Fraunces serif headline with an italic ochre word, line-mask reveals, slow lateral dollies, film grain.",
+  "note": "Style sample for review, not scheduled: pick A, B or C"
+ },
+ "showreel-style-c-glass": {
+  "channel": "web",
+  "sample": true,
+  "concept": "Style C · Glass and light",
+  "about": "Style test C for the web look (7 Nov 2026), on the flash reel's beats in 8 s: frosted glass device and code panes at three depths over slow coloured light blooms, a soft gradient grade, crisp white Sora type, springy panes.",
+  "note": "Style sample for review, not scheduled: pick A, B or C"
  }
 }
