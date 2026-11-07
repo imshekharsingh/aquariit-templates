@@ -15,7 +15,7 @@ A sample is exempt from scripts/review-gate.mjs; written against the gate anyway
 10. Facts: PASS: MDN meta name="color-scheme" (the flash reel's sources and tip); npm run check passes
 11. Post data: PASS: captions.json entry with channel web, "sample": true (never scheduled), concept, note; 6 keywords, 5 hashtags in the config
 12. Review file: PASS: this file
-13. After the render: PENDING
+13. After the render: PASS: run 42381345952 green in 52 min (frames 50), 480 frames at 60 fps; SOUND GATE: ok -14.1 LUFS, true peak -1.5 dBTP; MP4 5.6 MB; voice check heard every word ("dark" at 4.34 s unsure, about 0.43) and flags pacing at 3.0 words/s while speaking (limit 2.7): the 8 s cut of a 20 s script, acceptable for a sample, never for a reel; the contact sheet could not be downloaded in the session (403), so the final scene's stills were re-run locally: every gate and FLOW line as above
 14. Cuts: PASS: FLOW: cuts 0 (declared: flash, morph)
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.6, 2 declared transitions)
