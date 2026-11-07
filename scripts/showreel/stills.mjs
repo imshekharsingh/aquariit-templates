@@ -12,22 +12,18 @@
 // Static stretch and subject fill (7 Nov 2026): STATIC STRETCH lists any 2 s+ where the mean pixel change between moments 0.5 s apart stays under 1
 // (calibrated: Nº 09 numbers passes, least 0.6 once; the old Nº 16 longname fails from 7.5 s on; Nº 13 sideways fails 3.5-7 s, where only subtitle
 // words change); SUBJECT FILL is the share of the frame the subject covers at frame 0 (old Nº 16: 4%, reworked: 42%); both exit 1 when they fail.
+// FLOW (items 14-17, 7 Nov 2026): cuts, dead runs, continuity, strobes on a 0.1 s scan (scripts/showreel/flow.mjs; declare window.TRANSITIONS).
 // Layout (Mandatory Gate items 3-4, design/mandatory.md; 7 Nov 2026): SAFE ZONE, OVERLAP, BAND and HOOK from scripts/showreel/layout.mjs on the
 // same 0.5 s scan (every text box via getBoundingClientRect); a scene marks its subject, subtitle band and hook with data-subject, data-band, data-hook.
 import { readFileSync, mkdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { createRequire } from 'node:module';
 import { collectDom, judge } from './layout.mjs';
+import { sample, judgeFlow, channelOf, simWords } from './flow.mjs';
 const { chromium } = createRequire(process.env.PW_FROM || join(process.cwd(), 'node_modules/'))('playwright');
 const [cfgPath, out = 'stills', n = '11'] = process.argv.slice(2);
-const cfg = JSON.parse(readFileSync(cfgPath, 'utf8')), scene = cfgPath.replace(/\.json$/, '.html'), sp = +cfg.voice?.speed || 1;
-let t = .1, si = 0;
-const AT = cfg.voice?.at;   // timed sentences (voice.at): each sentence's words start at its own time
-const words = (cfg.voice?.text || '').split(/\s+/).filter(Boolean).map((w, i, all) => {
-  if (AT && (i === 0 || /[.?!]$/.test(all[i - 1]))) { if (AT[si] != null) t = Math.max(t, AT[si]); si++; }
-  const d = w.replace(/[^A-Za-z]/g, '').length * .0765 / sp * .62, o = { w, s: t, e: t + d };
-  t += d + (/[.?!]$/.test(w) ? .55 : /,$/.test(w) ? .3 : .06); return o;
-});
+const cfg = JSON.parse(readFileSync(cfgPath, 'utf8')), scene = cfgPath.replace(/\.json$/, '.html');
+const { words, end: t } = simWords(cfg);
 mkdirSync(out, { recursive: true });
 const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] }), p = await b.newPage({ viewport: { width: 540, height: 960 } }), errors = [];
 p.on('pageerror', (e) => errors.push(e.message));
@@ -69,6 +65,9 @@ for (let i = 0, a = -1; i <= vis.diff.length; i++) { const quiet = i < vis.diff.
   if (quiet && a < 0) a = i; if (!quiet && a >= 0) { if (scanT[i] - scanT[a] >= 2) stretches.push(scanT[a].toFixed(1) + '-' + scanT[i].toFixed(1) + ' s'); a = -1; } }
 const FILL_MIN = .4, fill = Math.round(vis.fill * 100);
 const lay = judge(boxes, !/channel3/.test(cfgPath));   // Turns Out draws on a canvas: BAND, HOOK and SUBTITLES are REVIEW items there
+// FLOW (design/mandatory.md items 14-17; 7 Nov 2026): cuts, dead runs, continuity and strobes from the frame every 0.1 s (scripts/showreel/flow.mjs).
+// Turns Out prints them from scripts/channel3/qa.mjs (its own thresholds), so they are not repeated here.
+const flow = /channel3/.test(cfgPath) ? { lines: [], bad: 0 } : judgeFlow(await sample(p, cfg.dur), channelOf(cfgPath));
 await p.setViewportSize({ width: 1080, height: 100 });
 await p.setContent(`<body style="margin:0;background:#111;display:grid;grid-template-columns:repeat(4,270px);gap:0;font:600 13px system-ui;color:#fff">${
   shots.map((s, i) => `<figure style="margin:0;position:relative"><img src="data:image/jpeg;base64,${s}" style="width:270px;display:block"><figcaption style="position:absolute;left:4px;top:4px;background:#000a;padding:1px 5px">${i ? ts[i].toFixed(1) + ' s' : 'cover'}</figcaption></figure>`).join('')}</body>`);
@@ -79,5 +78,5 @@ console.log(`EMPTY FRAMES: ${empty.length ? empty.map((x) => x + ' s').join(', '
 console.log(`STATIC STRETCH: ${stretches.length ? stretches.join(', ') + ' (under ' + STILL + ' mean change per 0.5 s for 2 s or more: give it a move, or mark a deliberate hold in window.HOLDS)' : 'none'} (least change ${Math.min(...vis.diff).toFixed(1)} at ${scanT[vis.diff.indexOf(Math.min(...vis.diff))]} s, median ${[...vis.diff].sort((a, b) => a - b)[vis.diff.length >> 1].toFixed(1)})`);
 console.log(`SUBJECT FILL: ${fill}% at frame 0${fill < FILL_MIN * 100 ? ' (UNDER ' + FILL_MIN * 100 + '%: push the camera in so the subject fills the frame)' : ''}`);
 console.log(`TEXT FIT: ${wide.size ? 'TEXT WIDER THAN ITS BOX: ' + [...wide.values()].join(' | ') : 'all text inside its box'}`);
-for (const l of lay.lines) console.log(l);
-process.exit(lay.bad || errors.length || empty.length || wide.size || stretches.length || fill < FILL_MIN * 100 ? 1 : 0);
+for (const l of [...lay.lines, ...flow.lines]) console.log(l);
+process.exit(lay.bad || flow.bad || errors.length || empty.length || wide.size || stretches.length || fill < FILL_MIN * 100 ? 1 : 0);

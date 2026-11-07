@@ -1,0 +1,48 @@
+{
+ "name": "showreel-00-kitdemo",
+ "seek": "scripts/explainer/demo/kitdemo.html",
+ "dur": 13.3,
+ "fps": 60,
+ "blur": 6,
+ "shutter": 0.4,
+ "grain": 4,
+ "vignette": true,
+ "cover": 1.6,
+ "voice": {
+  "text": "Why does your list keep shaking? Each row is animated on its own, out of step. The fix: one line moves them together. Now the list holds still and reads at a glance.",
+  "voice": "af_heart",
+  "speed": 0.9
+ },
+ "caption": "TODO: the caption (hook, the why in two sentences, the fix, browser support), then \"Save it for ..., or send it to ...\".",
+ "keywords": [
+  "TODO 1",
+  "TODO 2",
+  "TODO 3",
+  "TODO 4",
+  "TODO 5",
+  "TODO 6"
+ ],
+ "hashtags": [
+  "#todo1",
+  "#todo2",
+  "#todo3",
+  "#todo4",
+  "#todo5"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/",
+   "note": "TODO: the MDN page and BCD versions"
+  }
+ ],
+ "tip": {
+  "title": "Why does your list keep shaking?",
+  "why": "TODO",
+  "code": "TODO",
+  "demo": "kitdemo",
+  "source": {
+   "url": "https://developer.mozilla.org/",
+   "label": "MDN, TODO"
+  }
+ }
+}

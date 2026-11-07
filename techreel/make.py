@@ -140,6 +140,65 @@ def layout_lines(topic, vo, hook_out, scenes):
             'BAND: by layout (scenes in y 430-1196, captions below): REVIEW the stills', 'HOOK: the hook card leaves before the scenes: REVIEW the stills'], len(safe) + len(over)
 
 
+FLOW = dict(CUT=25, DEAD=.5, DEAD_RUN=1, CONT=.85, STROBE=60)   # the same thresholds as scripts/showreel/flow.mjs (web and tech), design/mandatory.md
+
+
+def flow_lines(topic, vo, hook_out, scenes):
+    """Mandatory Gate items 14-17 (FLOW, scripts/showreel/flow.mjs is the reference): the frame every 0.1 s on a 54x96 copy, the mean absolute RGB
+    change between neighbours (0-255); cuts (a jump over CUT from slow motion, outside topic "transitions": [[t0, t1, kind]]), dead runs (1 s+
+    under DEAD outside topic "holds"), continuity (share of 0.3 s windows between DEAD and CUT), strobes (over STROBE and back within 1 s)."""
+    F, E, ST = FLOW, .051, .1
+    holds, trans = topic.get('holds', []), topic.get('transitions', [])
+    fr, t = [], 0.0
+    while t <= DUR - .05:
+        _, img = draw(t, topic, vo, hook_out, scenes)
+        fr.append(np.asarray(Image.fromarray(img).resize((54, 96), Image.BILINEAR), dtype=np.float32))
+        t = round(t + ST, 2)
+    md = lambda a, b: float(np.abs(a - b).mean())
+    d = [md(fr[i - 1], fr[i]) for i in range(1, len(fr))]
+    ts = [round(i * ST, 2) for i in range(len(d))]
+    held = lambda i: any(ts[i] >= x - E and ts[i] + ST <= z + E for x, z, *_ in holds)
+    decl = lambda i: any(ts[i] + ST > x - E and ts[i] < z + E for x, z, *_ in trans)
+    strobe, strobes = set(), []
+    for i in range(len(d)):
+        if d[i] > F['STROBE'] and i not in strobe:
+            j = next((k for k in range(i + 1, min(i + 11, len(d))) if d[k] > F['STROBE']), None)
+            if j is not None and md(fr[i], fr[j + 1]) < min(d[i], d[j]) * .5:
+                strobe |= {i, j}
+                strobes.append((ts[i], max(d[i], d[j]), any(len(w) > 2 and w[2] == 'flash' and ts[i] + ST > w[0] - E and ts[i] < w[1] + E for w in trans)))
+    cuts = []
+    for i in range(len(d)):
+        if d[i] > F['CUT'] and (d[i] > F['STROBE'] or i == 0 or d[i - 1] < F['CUT'] / 2) and not decl(i) and i not in strobe:
+            if cuts and cuts[-1][0] == i - 1:
+                cuts[-1] = (i, cuts[-1][1], max(cuts[-1][2], d[i]))
+            else:
+                cuts.append((i, ts[i], d[i]))
+    dead, a = [], -1
+    for i in range(len(d) + 1):
+        q = i < len(d) and d[i] < F['DEAD'] and not held(i)
+        if q and a < 0:
+            a = i
+        if not q and a >= 0:
+            if (i - a) * ST >= F['DEAD_RUN'] - 1e-6:
+                dead.append((ts[a], ts[a] + (i - a) * ST))
+            a = -1
+    n = ok = 0
+    for i in range(len(d)):
+        if decl(i) or i in strobe:   # a hold excuses a dead run, not the continuity score
+            continue
+        n += 1
+        m = (d[max(0, i - 1)] + d[i] + d[min(len(d) - 1, i + 1)]) / 3
+        ok += F['DEAD'] <= m <= F['CUT']
+    cont = ok / n if n else 1
+    med = sorted(d)[len(d) // 2] if d else 0
+    und = sum(1 for s in strobes if not s[2])
+    lines = ['FLOW: cuts %d' % len(cuts) + (' (undeclared jumps over %d: ' % F['CUT'] + ', '.join('%.1f s (%d)' % (c[1], c[2]) for c in cuts) + '; make it a continuous move, or declare it in the topic\'s "transitions")' if cuts else ''),
+             'FLOW: dead runs ' + (', '.join('%.1f-%.1f s' % r for r in dead) + ' (under %s for 1 s or more: keep something moving, or add it to the topic\'s "holds")' % F['DEAD'] if dead else 'none'),
+             'FLOW: continuity %d%%' % round(cont * 100) + (' (UNDER 85%: too much time still or jumping)' if cont < F['CONT'] else '') + ' (median step %.1f, %d declared transitions)' % (med, len(trans)),
+             'FLOW: strobes %d' % len(strobes) + (' (' + ', '.join('%.1f s (%d, %s)' % (s[0], s[1], 'declared' if s[2] else 'NOT DECLARED') for s in strobes) + ')' if strobes else '') + (' (at most 1)' if len(strobes) > 1 else '')]
+    return lines, len(cuts) + len(dead) + (cont < F['CONT']) + und + (len(strobes) > 1)
+
+
 def chunks(line, counts=None):
     """Caption chunks for a line: from the topic file (word counts), or as many words as fit two caption rows, breaking after a comma when it can."""
     words = [w['d'] for w in line['words']]
@@ -208,8 +267,9 @@ def main():
             for w in fr.warnings:
                 print(f'{t:5.2f}s  {w}')
         lines, bad = layout_lines(topic, vo, hook_out, scenes)
-        print('\n'.join(lines))
-        sys.exit(1 if bad else 0)
+        fl, fbad = flow_lines(topic, vo, hook_out, scenes)
+        print('\n'.join(lines + fl))
+        sys.exit(1 if bad + fbad else 0)
     onsets = {}
     for li, line in enumerate(vo['lines']):
         for w in line['words']:
