@@ -5,6 +5,7 @@ import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { KITS, kitText, kitCopy } from './channel3/kit-inline.mjs';
+import { gateProblems } from './review-gate.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const T = join(root, 'templates');
@@ -81,6 +82,10 @@ if (caps) {
     if (!fired.has(utc)) err(`captions.json ${name}: no reminder for ${j.postAt} IST; add a cron at ${String(utc % 60)} ${Math.floor(utc / 60)} UTC to wrangler.jsonc ("triggers")`);
   }
 }
+
+// 4d. the Mandatory Gate (owner, 7 Nov 2026; design/mandatory.md): every reel posting from 2026-11-08 on has review/<channel>/<name>.md with
+// all 13 items PASS and their evidence (item 13, after the render, may be PENDING until its post day is past); scripts/review-gate.mjs
+if (caps) for (const m of gateProblems(caps)) err(m);
 
 // 5. reel configs: a showreel name, a scene that exists, and post text
 for (const dir of ['scripts/explainer', 'scripts/showreel', 'scripts/channel3']) {
