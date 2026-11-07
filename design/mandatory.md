@@ -19,8 +19,8 @@ Frame size is 1080x1920; the stills viewport is 540x960 (halve every number ther
 | # | Item | Pass condition | Checked by |
 |---|------|----------------|------------|
 | 1 | Topic | A non-specialist feels the problem within 1 s (no developer-only topic); not done before on any channel; passes every rule of the channel rulebook (design/rules-web.md, rules-tech.md, rules-c3.md), scored rule by rule. | REVIEW |
-| 2 | Frame 0 | The subject is already happening at frame 0; `SUBJECT FILL` at least 40 % (web at least 50 %); the hook is clear of the subject (`HOOK: clear of the subject`). | AUTO + REVIEW |
-| 3 | Safe zone | Every text box and key action ([data-key]) inside x 60-960, y 250-1570: `SAFE ZONE: ok`. | AUTO |
+| 2 | Frame 0 | The subject is already happening at frame 0; `SUBJECT FILL` at least 40 % on every channel (the hook above and the subtitle band below leave about 42 % for the subject); the hook is clear of the subject (`HOOK: clear of the subject`). | AUTO + REVIEW |
+| 3 | Safe zone | Every overlay text box (hook, labels, subtitles, chips) and key action ([data-key]) inside x 60-960, y 250-1570; the subject's own UI text may run off the frame's edges in a push-in but never under the right-side buttons (x past 960): `SAFE ZONE: ok`. | AUTO |
 | 4 | No overlap | No text box intersects another text box or a UI element's text (`OVERLAP: none`); the subject never crosses the subtitle band (`BAND: clear`). | AUTO |
 | 5 | Motion | `STATIC STRETCH: none` (no still 2 s or more unless marked in window.HOLDS). | AUTO |
 | 6 | Subtitles | Whole phrases, at least 52 px, at most about 6 words a line (`SUBTITLES: at least 52 px, at most 6 words a line`), every spoken line shown and finished. | AUTO + REVIEW |
@@ -43,7 +43,9 @@ Frame size is 1080x1920; the stills viewport is 540x960 (halve every number ther
 - **Web** (scripts/explainer): `node scripts/showreel/preflight.mjs <config>` (PREFLIGHT, PRONUNCIATION), then
   `node scripts/showreel/stills.mjs <config> <out>` (EMPTY FRAMES, STATIC STRETCH, SUBJECT FILL, TEXT FIT, SAFE ZONE, OVERLAP, BAND, HOOK,
   SUBTITLES). The scene marks its parts: `data-subject` on the subject (the phone, the card list), `data-band` on the subtitle band,
-  `data-hook` on the hook, `data-subs` on the subtitle box, `data-key` on a key action that is not text (a tap, a cursor). Unmarked = fail.
+  `data-hook` on the hook, `data-subs` on the subtitle box, `data-key` on a key action (a tap, a cursor, the moment the reel is about), `data-ui`
+  on the subject's UI when it sits outside the data-subject box. Unmarked = fail. BAND reads the subject's visible box: cut by overflow, a clip-path
+  inset(), a top-to-bottom mask fade, or `data-visible-bottom` (viewport px); a band under 30% opacity (fading in) does not count.
 - **Turns Out** (scripts/channel3): `node scripts/channel3/qa.mjs <config> --write` prints SAFE ZONE and OVERLAP from the text the canvas
   reports (window.__boxes); BAND, HOOK and SUBTITLES are drawn on the canvas, so they are REVIEW items read from the stills sheet. The starter
   (scripts/channel3/starter25d.html) centres the hook, captions and credit in the safe zone (SX = 255 of 540).
@@ -52,7 +54,8 @@ Frame size is 1080x1920; the stills viewport is 540x960 (halve every number ther
   and confirmed on the stills. The render's qa.txt repeats them and adds `SOUND GATE`.
 - All layout rules live in one place, scripts/showreel/layout.mjs (the techreel copy in techreel/make.py follows it). Calibrated 7 Nov 2026:
   the first two Nº 16 longname versions in git history fail (top-bar text, captions over the list, static stretch); the reworked longname
-  still showed the long name past x 960 and the list under the band, the moments the owner flagged.
+  still fails only on the moments the owner flagged (the long name and Pay under the right-side buttons, the list under the band at 3 s,
+  the hook touching the list at 2 s, the min-width chip over the code at 11.5 s); the reworked flash passes every line.
 
 ## The review file
 
