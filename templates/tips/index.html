@@ -75,6 +75,11 @@
 #thumb .menu a.del{color:#d8392b}
 #thumb .fix .menu a{min-height:44px;line-height:44px}
 #thumb .menu a:active{background:#7cf0b6}
+#flash .pane{background:#16171c;color:#f2efe8;padding-bottom:12px}
+#flash .fix{color-scheme:dark}
+#flash .box{display:block;width:calc(100% - 20px);margin:34px 10px 8px;font:15px system-ui,-apple-system,"Segoe UI",sans-serif}
+#flash label{display:flex;align-items:center;gap:8px;margin:0 10px 8px;font:600 13px system-ui,-apple-system,"Segoe UI",sans-serif}
+#flash select{margin:0 10px;font:14px system-ui,-apple-system,"Segoe UI",sans-serif}
 #sideways .pane{height:150px;overflow-x:auto;overflow-y:hidden}
 #sideways .card{margin:36px 10px 0;width:calc(100% - 20px);border-radius:12px;background:#f2efe8;color:#111214;padding:10px 12px;font:600 13px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif;transition:width .4s}
 #sideways .narrow .card{width:60%}
@@ -128,6 +133,21 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="flash">
+  <p class="no">Nº 19</p>
+  <h2>Why does your dark page flash white?</h2>
+  <p class="why">Until a page's CSS loads, the browser shows a blank page in its default colors, which are light, so a dark site flashes white on every tap. The color-scheme meta tag, placed in the head before any CSS, tells the browser up front that the page supports dark; MDN says it helps prevent unwanted screen flashes during the page load, and it also turns default form controls and scrollbars dark. Chrome 81, Firefox 96, Safari 12.1.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">no color-scheme</span><input class="box" type="search" placeholder="Search stories" aria-label="Search stories (default colors)"><label><input type="checkbox" checked> Unread only</label><select aria-label="Sort (default colors)"><option>Latest</option><option>Oldest</option></select></div>
+  <div class="pane fix"><span class="tag ok">color-scheme: dark</span><input class="box" type="search" placeholder="Search stories" aria-label="Search stories (dark scheme)"><label><input type="checkbox" checked> Unread only</label><select aria-label="Sort (dark scheme)"><option>Latest</option><option>Oldest</option></select></div>
+</div>
+<p class="note">Both panes have the same dark background and the same unstyled form controls. The left keeps the browser's default light colors; the right says color-scheme: dark, so the boxes, checkbox and menu follow the dark page. On a whole site, the meta tag in the head does this before any CSS loads, which is what stops the white flash between pages.</p></div>
+  <div class="code"><pre><code>&lt;meta name=&quot;color-scheme&quot;
+      content=&quot;dark light&quot;&gt;</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name/color-scheme" rel="noopener">Source: MDN, &lt;meta name=&quot;color-scheme&quot;&gt;</a></p>
+</article>
 
 <article class="tip" id="thumb">
   <p class="no">Nº 18</p>
@@ -428,11 +448,12 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>16 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>17 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "flash": function(){},
     "thumb": function(){},
     "keyboard": function(){},
     "longname": function(root){ root.querySelector('.go').addEventListener('click', function(){ root.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('narrow'); }); }); },

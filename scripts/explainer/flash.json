@@ -1,0 +1,57 @@
+{
+ "name": "showreel-29-flash",
+ "seek": "scripts/explainer/flash.html",
+ "dur": 20.5,
+ "fps": 60,
+ "blur": 6,
+ "shutter": 0.4,
+ "grain": 4,
+ "vignette": true,
+ "cover": 2.4,
+ "voice": {
+  "text": "Why does your dark page flash white? Until your styles load, the browser shows a blank white page. The fix: one meta tag, color scheme, dark light. Now the blank page is dark from the first frame, and your form boxes match.",
+  "voice": "af_heart",
+  "speed": 0.84,
+  "gap": [
+   0.7,
+   0.8,
+   0.75
+  ]
+ },
+ "caption": "Why does your dark page flash white? 🌙\n\nYou browse in dark mode, tap a link, and the screen flashes white. Until a page's styles load, the browser shows a blank page in its default colors, and the default is light. Put <meta name=\"color-scheme\" content=\"dark light\"> in the <head>, before your CSS: the browser knows the page is dark from the first frame, so the blank is dark too, and default form boxes, checkboxes and scrollbars follow your theme. Supported in Chrome 81+, Firefox 96+ and Safari 12.1+.\nSave it for your next dark theme, or send it to whoever builds your site.",
+ "keywords": [
+  "dark mode white flash",
+  "color-scheme meta tag",
+  "dark mode website",
+  "dark mode form inputs white",
+  "CSS dark mode",
+  "web design tips"
+ ],
+ "hashtags": [
+  "#darkmode",
+  "#csstips",
+  "#webdesign",
+  "#frontenddev",
+  "#uxdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name/color-scheme",
+   "note": "MDN <meta name=\"color-scheme\">: indicates the color schemes the document supports (\"dark light\" = prefers dark, also supports light); BCD: Chrome 81, Firefox 96, Safari 12.1"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/color-scheme",
+   "note": "MDN color-scheme: sets the canvas surface, scrollbars and default form control colors; include the meta tag in the head before any CSS, \"helping prevent unwanted screen flashes during the page load\""
+  }
+ ],
+ "tip": {
+  "title": "Why does your dark page flash white?",
+  "why": "Until a page's CSS loads, the browser shows a blank page in its default colors, which are light, so a dark site flashes white on every tap. The color-scheme meta tag, placed in the head before any CSS, tells the browser up front that the page supports dark; MDN says it helps prevent unwanted screen flashes during the page load, and it also turns default form controls and scrollbars dark. Chrome 81, Firefox 96, Safari 12.1.",
+  "code": "<meta name=\"color-scheme\"\n      content=\"dark light\">",
+  "demo": "flash",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name/color-scheme",
+   "label": "MDN, <meta name=\"color-scheme\">"
+  }
+ }
+}

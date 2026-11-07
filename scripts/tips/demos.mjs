@@ -169,6 +169,21 @@ export const demos = {
 <p class="note">On a phone, try to tap Archive in each menu with your thumb. The left links are one line of text tall, so your thumb covers two; the right ones are 44 px tall with the same text.</p>`,
     js: `function(){}`,
   },
+  flash: {
+    css: `
+#flash .pane{background:#16171c;color:#f2efe8;padding-bottom:12px}
+#flash .fix{color-scheme:dark}
+#flash .box{display:block;width:calc(100% - 20px);margin:34px 10px 8px;font:15px system-ui,-apple-system,"Segoe UI",sans-serif}
+#flash label{display:flex;align-items:center;gap:8px;margin:0 10px 8px;font:600 13px system-ui,-apple-system,"Segoe UI",sans-serif}
+#flash select{margin:0 10px;font:14px system-ui,-apple-system,"Segoe UI",sans-serif}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">no color-scheme</span><input class="box" type="search" placeholder="Search stories" aria-label="Search stories (default colors)"><label><input type="checkbox" checked> Unread only</label><select aria-label="Sort (default colors)"><option>Latest</option><option>Oldest</option></select></div>
+  <div class="pane fix"><span class="tag ok">color-scheme: dark</span><input class="box" type="search" placeholder="Search stories" aria-label="Search stories (dark scheme)"><label><input type="checkbox" checked> Unread only</label><select aria-label="Sort (dark scheme)"><option>Latest</option><option>Oldest</option></select></div>
+</div>
+<p class="note">Both panes have the same dark background and the same unstyled form controls. The left keeps the browser's default light colors; the right says color-scheme: dark, so the boxes, checkbox and menu follow the dark page. On a whole site, the meta tag in the head does this before any CSS loads, which is what stops the white flash between pages.</p>`,
+    js: `function(){}`,
+  },
   sideways: {
     css: `
 #sideways .pane{height:150px;overflow-x:auto;overflow-y:hidden}

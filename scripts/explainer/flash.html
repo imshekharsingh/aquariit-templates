@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Why does your dark page flash white?</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* @webin20sec, narrated explainer Nº 19, a dark-mode tip: "Why does your dark page flash white?"
+   A dark reading site in a phone that fills the frame. Every tap shows a blank page before the dark styles load, and a blank page is
+   white, so the screen flashes; the form boxes are white too. <meta name="color-scheme" content="dark light"> in the head tells the
+   browser before any CSS that the page is dark (MDN: "helping prevent unwanted screen flashes during the page load"; it also sets the
+   default colors of form controls). The white blank peels off the screen and becomes the code; after it, every blank is dark and the
+   boxes turn dark. Built to the 7 Nov visual bar: one continuous camera (pushes and pulls with overshoot, no cuts), an event every
+   1.5-2 s, the subject at 60%+ of the frame. Beats and captions lead the voice by 0.15 s; every frame a pure function of t. */
+:root{--ink:#111214;--paper:#f2efe8;--dim:#8a8780;--surface:#1b1c21;--acc:#7cf0b6;--red:#ff5a4a;--pg:#16171c;--card:#202128;--f:'Bricolage Grotesque',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#room{left:0;top:0;width:540px;height:960px;background:#f2efe8;opacity:0}
+#world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
+/* the phone: big, the whole page area visible */
+#ph{left:30px;top:310px;width:480px;height:1000px;border-radius:62px;background:#2a2b31;padding:10px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+#scr{position:absolute;left:10px;top:10px;width:460px;height:980px;border-radius:52px;overflow:hidden;background:var(--pg)}
+#sb{position:absolute;left:0;right:0;top:0;height:44px;background:#0c0d0f;color:var(--paper);font:700 15px/44px var(--m);padding:0 34px;z-index:4}
+#sb i{position:absolute;right:34px;top:16px;width:26px;height:12px;border:2px solid var(--paper);border-radius:4px;font-style:normal}
+#sb i::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:4px;background:var(--paper);border-radius:1px}
+#ab{position:absolute;left:0;right:0;top:44px;height:60px;background:#0c0d0f;z-index:4}
+#url{position:absolute;left:16px;right:16px;top:9px;height:40px;border-radius:20px;background:#25262c;font:500 15px/40px var(--m);color:#c9c5bc;padding:0 18px 0 42px;white-space:nowrap;overflow:hidden}
+#url svg{position:absolute;left:16px;top:12px}
+#prog{position:absolute;left:0;bottom:0;height:3px;background:var(--acc)}
+#pages{position:absolute;left:0;top:104px;width:460px;height:876px;overflow:hidden}
+.pg{position:absolute;left:0;top:0;width:460px;height:876px;background:var(--pg);color:var(--paper)}
+.br{position:absolute;left:20px;top:22px;font:700 13px/1 var(--m);letter-spacing:.18em;color:var(--dim)}
+.h1{position:absolute;left:20px;top:44px;font:800 46px/1 var(--f);font-variation-settings:'opsz' 96;letter-spacing:-.025em}
+/* the form boxes: white before the fix (browser default colors), dark after */
+.fx{position:absolute;border-radius:12px;font:500 17px/1 var(--f)}
+#srch{left:20px;top:110px;width:420px;height:50px;padding:0 0 0 46px;line-height:50px}
+#srch svg{position:absolute;left:16px;top:16px}
+#chk{left:20px;top:182px;width:28px;height:28px;border-radius:7px}
+#chk::after{content:'';position:absolute;left:8px;top:3px;width:8px;height:15px;border:solid currentColor;border-width:0 3px 3px 0;transform:rotate(45deg)}
+#chkl{position:absolute;left:60px;top:186px;font:600 18px/1 var(--f)}
+#sel{left:280px;top:174px;width:160px;height:44px;line-height:44px;padding:0 16px;border-radius:10px}
+#sel::after{content:'';position:absolute;right:16px;top:16px;width:8px;height:8px;border:solid currentColor;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+.gh{position:absolute;border:2px dashed var(--red);border-radius:12px;background:#fff;font:700 11px/1 var(--m);letter-spacing:.12em;color:var(--red);padding:5px 8px}
+.cd{position:absolute;left:20px;width:420px;height:142px;border-radius:18px;background:var(--card)}
+.cd .art{position:absolute;left:12px;top:12px;width:136px;height:118px;border-radius:12px;overflow:hidden;background:#2b3046}
+.cd b{position:absolute;left:164px;top:18px;right:14px;font:700 20px/1.18 var(--f);letter-spacing:-.01em}
+.cd small{position:absolute;left:164px;bottom:16px;font:700 12px/1 var(--m);letter-spacing:.12em;color:var(--dim)}
+.art span{position:absolute;display:block}
+.bk{position:absolute;left:20px;top:16px;font:700 15px/1 var(--m);letter-spacing:.12em;color:var(--dim)}
+.hero{position:absolute;left:20px;top:46px;width:420px;height:140px;border-radius:18px;overflow:hidden;background:#2b3046}
+.hl{position:absolute;left:20px;top:202px;width:420px;font:800 32px/1.06 var(--f);font-variation-settings:'opsz' 72;letter-spacing:-.02em}
+.nx{position:absolute;left:20px;top:282px;width:190px;height:50px;border-radius:25px;border:2px solid var(--paper);font:700 17px/46px var(--f);text-align:center}
+.bd{position:absolute;left:20px;top:356px;width:420px;font:500 19px/1.5 var(--f);color:#c9c5bc}
+#blank{position:absolute;left:0;top:104px;width:460px;height:876px;z-index:2}
+#stamp{position:absolute;left:62px;top:150px;width:336px;z-index:3;border:4px solid var(--red);border-radius:14px;color:var(--red);font:700 21px/1 var(--m);letter-spacing:.06em;text-align:center;padding:14px 0;white-space:nowrap}
+#stamp small{display:block;font:700 13px/1 var(--m);letter-spacing:.14em;margin-top:9px;opacity:.8}
+#css{position:absolute;left:80px;top:0;width:300px;height:76px;border-radius:16px;background:#1b1c21;color:var(--paper);z-index:4;padding:14px 16px 0 62px;box-shadow:0 16px 40px rgba(0,0,0,.35)}
+#css svg{position:absolute;left:18px;top:16px}
+#css b{display:block;font:700 18px/1 var(--m)}#css small{position:absolute;right:16px;top:16px;font:700 15px/1 var(--m);color:var(--acc)}
+#css i{position:absolute;left:62px;right:16px;bottom:16px;height:6px;border-radius:3px;background:#33343c}#css i u{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--acc)}
+#fg{position:absolute;width:64px;height:64px;border-radius:50%;background:rgba(242,239,232,.28);border:3px solid rgba(242,239,232,.8);z-index:6}
+#rip{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid var(--acc);z-index:6}
+/* screen space: the hook, the rows of labels, the code, the captions */
+#lbl{left:36px;top:106px;font:700 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+#hud{right:36px;top:106px;font:700 15px/1 var(--m);letter-spacing:.06em;white-space:nowrap;color:var(--dim);text-align:right}
+#hud b{font-weight:700;color:var(--red)}
+#tag{left:24px;top:98px;font:700 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--paper);background:rgba(17,18,20,.9);padding:9px 12px;border-radius:9px}
+#tag b{color:var(--red);font-weight:700}#tag i{color:var(--acc);font-style:normal}
+#hook{left:34px;top:134px;font-weight:800;font-size:58px;line-height:.98;letter-spacing:-.024em;font-variation-settings:'wdth' 100,'opsz' 96}
+#hook .ln{display:block;white-space:nowrap}
+#hook .ln > span{display:inline-block;transform-origin:0 80%}
+#hook .acc{color:var(--red)}
+#peel{left:0;top:0;width:10px;height:10px;background:#fff;transform-origin:0 0}
+#code{left:36px;top:112px;width:468px;padding:20px 22px 16px;border-radius:20px;background:var(--surface);transform-origin:50% 0;border:2px solid transparent}
+#cd{font:500 20px/1.45 var(--m);white-space:pre;color:var(--paper);height:87px}
+#cd b{font-weight:500;color:var(--acc)}#cd .dim{color:var(--dim)}
+#sup{margin-top:10px;font:700 12px/1 var(--m);letter-spacing:.1em;color:var(--dim);white-space:nowrap}
+#cap{left:24px;top:648px;width:492px;min-height:92px;padding:12px 18px 14px;border-radius:20px;background:rgba(17,18,20,.97);font:700 33px/1.14 var(--f);font-variation-settings:'opsz' 36;letter-spacing:-.015em}
+#cap span{display:inline-block;margin-right:.24em}
+</style>
+</head>
+<body>
+<div id="room" class="a"></div>
+<div id="world" class="a" data-fit="free">
+  <div id="ph" class="a">
+    <div id="scr">
+      <div id="sb">9:41<i></i></div>
+      <div id="ab"><div id="url"><svg width="12" height="16" viewBox="0 0 12 16" aria-hidden="true"><rect x="1" y="7" width="10" height="8" rx="2" fill="#c9c5bc"/><path d="M3 7V5a3 3 0 0 1 6 0v2" stroke="#c9c5bc" stroke-width="2" fill="none"/></svg><span id="urlt">duskpost.example</span></div><div id="prog"></div></div>
+      <div id="pages">
+        <div class="pg" id="p0">
+          <div class="br">DUSKPOST</div><div class="h1">Tonight</div>
+          <div class="fx" id="srch"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M12 12l5 5" stroke="currentColor" stroke-width="2.4"/></svg>Search stories</div>
+          <div class="fx" id="chk"></div><div id="chkl">Unread only</div>
+          <div class="fx" id="sel">Latest</div>
+          <div class="gh" id="g0" style="left:20px;top:110px;width:420px;height:50px">BEFORE</div>
+          <div class="gh" id="g1" style="left:20px;top:182px;width:28px;height:28px;padding:0"></div>
+          <div class="gh" id="g2" style="left:280px;top:174px;width:160px;height:44px">BEFORE</div>
+          <div class="cd" style="top:240px"><div class="art"><span style="left:84px;top:18px;width:30px;height:30px;border-radius:50%;background:#f2efe8"></span><span style="left:-30px;top:70px;width:140px;height:90px;border-radius:50%;background:#3d4560"></span><span style="left:50px;top:84px;width:150px;height:90px;border-radius:50%;background:#4b5576"></span></div><b>Night trains are back across the map</b><small>6 MIN · TRAVEL</small></div>
+          <div class="cd" style="top:396px"><div class="art" style="background:#262a3c"><span style="left:14px;top:56px;width:20px;height:62px;background:#4b5576"></span><span style="left:38px;top:34px;width:26px;height:84px;background:#5d6890"></span><span style="left:68px;top:66px;width:18px;height:52px;background:#4b5576"></span><span style="left:90px;top:44px;width:30px;height:74px;background:#3d4560"></span><span style="left:44px;top:46px;width:6px;height:6px;background:#f2efe8"></span><span style="left:98px;top:58px;width:6px;height:6px;background:#f2efe8"></span></div><b>The city that turns its lights down at ten</b><small>4 MIN · CITIES</small></div>
+          <div class="cd" style="top:552px"><div class="art" style="background:#20283a"><span style="left:-10px;top:60px;width:160px;height:24px;border-radius:12px;background:#3d4560"></span><span style="left:20px;top:84px;width:150px;height:24px;border-radius:12px;background:#4b5576"></span><span style="left:-20px;top:104px;width:160px;height:24px;border-radius:12px;background:#5d6890"></span></div><b>A field guide to the night sea</b><small>8 MIN · NATURE</small></div>
+        </div>
+        <div class="pg" id="p1">
+          <div class="bk">‹ BACK</div>
+          <div class="hero"><span class="a" style="left:300px;top:22px;width:46px;height:56px;border-radius:50%;background:#f2efe8"></span><span class="a" style="left:-60px;top:70px;width:320px;height:200px;border-radius:50%;background:#3d4560"></span><span class="a" style="left:160px;top:86px;width:340px;height:200px;border-radius:50%;background:#4b5576"></span><span class="a" style="left:0;top:118px;width:420px;height:6px;background:#111214"></span></div>
+          <div class="hl">Night trains are back across the map</div>
+          <div class="nx">Next story ›</div>
+          <div class="bd">Sleeper lines that closed years ago are running again, and the late trains fill up first.</div>
+        </div>
+        <div class="pg" id="p2">
+          <div class="bk">‹ BACK</div>
+          <div class="hero" style="background:#262a3c"><span class="a" style="left:30px;top:50px;width:50px;height:90px;background:#4b5576"></span><span class="a" style="left:96px;top:20px;width:64px;height:120px;background:#5d6890"></span><span class="a" style="left:176px;top:62px;width:44px;height:78px;background:#4b5576"></span><span class="a" style="left:236px;top:30px;width:76px;height:110px;background:#3d4560"></span><span class="a" style="left:328px;top:56px;width:60px;height:84px;background:#5d6890"></span><span class="a" style="left:114px;top:40px;width:10px;height:10px;background:#f2efe8"></span><span class="a" style="left:260px;top:56px;width:10px;height:10px;background:#f2efe8"></span></div>
+          <div class="hl">The city that turns its lights down at ten</div>
+          <div class="nx">Next story ›</div>
+          <div class="bd">At ten the streetlights dim to half, and on a clear night you can see the stars again.</div>
+        </div>
+        <div class="pg" id="p3">
+          <div class="bk">‹ BACK</div>
+          <div class="hero" style="background:#20283a"><span class="a" style="left:-20px;top:62px;width:480px;height:40px;border-radius:20px;background:#3d4560"></span><span class="a" style="left:40px;top:92px;width:440px;height:40px;border-radius:20px;background:#4b5576"></span><span class="a" style="left:-40px;top:120px;width:470px;height:40px;border-radius:20px;background:#5d6890"></span><span class="a" style="left:290px;top:18px;width:40px;height:40px;border-radius:50%;background:#f2efe8"></span></div>
+          <div class="hl">A field guide to the night sea</div>
+          <div class="nx">Next story ›</div>
+          <div class="bd">What glows, what hunts and what sleeps in the water after dark, told by the people who dive it.</div>
+        </div>
+      </div>
+      <div id="blank"></div>
+      <div id="stamp"></div>
+      <div id="css"><svg width="28" height="36" viewBox="0 0 28 36" aria-hidden="true"><path d="M2 2h16l8 8v24H2z" fill="none" stroke="#7cf0b6" stroke-width="2.5"/><path d="M18 2v8h8" fill="none" stroke="#7cf0b6" stroke-width="2.5"/></svg><b>styles.css</b><small id="pct">0%</small><i><u id="bar"></u></i></div>
+      <div id="rip"></div>
+      <div id="fg"></div>
+    </div>
+  </div>
+</div>
+<div id="lbl" class="a">Nº 19 · DARK MODE</div>
+<div id="hud" class="a"></div>
+<div id="tag" class="a"></div>
+<div id="hook" class="a"><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>dark</span> <span>page</span> <span class="acc">flash</span></span><span class="ln"><span class="acc">white?</span></span></div>
+<div id="peel" class="a"></div>
+<div id="code" class="a"><div id="cd"></div><div id="sup">MDN · CHROME 81 · FIREFOX 96 · SAFARI 12.1</div></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var back = function(k, s){ s = s == null ? 1.3 : s; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2); };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var TEXT = "Why does your dark page flash white? Until your styles load, the browser shows a blank white page. The fix: one meta tag, color scheme, dark light. Now the blank page is dark from the first frame, and your form boxes match.";
+  var WORDS = [], DUR = 20.5, LEAD = .15, HOOK_N = 7;
+  (function(){ var t = .2; TEXT.split(/\s+/).forEach(function(w){ var d = .14 + w.length * .03; WORDS.push({ w: w, s: t, e: t + d }); t += d + (/[.?:,;]$/.test(w) ? .32 : .06); }); })();
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function at(word, nth){ var n = nth || 1; for (var i = 0; i < WORDS.length; i++) if (norm(WORDS[i].w) === word && --n === 0) return WORDS[i].s - LEAD; return 99; }
+  function align(){ var T = TEXT.split(/\s+/), j = 0;
+    WORDS.forEach(function(w){ w.d = w.w; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { w.d = T[k]; j = k + 1; break; } }); }
+  var A = {}, PH = [], TAPS = [], MOVES = [];
+  // screen-local tap targets (inside the 460 px screen): a home card, "Next story", "‹ Back", the second home card
+  var CARD = [95, 404], NEXT = [115, 411], BACK = [52, 124], CARD2 = [95, 560];
+  function anchors(){
+    align();
+    A = { until: at('until'), styles: at('styles'), load: at('load'), browser: at('browser'), blank: at('blank'), white: at('white', 2), page: at('page', 2),
+      fix: at('fix'), meta: at('meta'), color: at('color'), scheme: at('scheme'), dark2: at('dark', 2), light: at('light'), now: at('now'), first: at('first'),
+      frame: at('frame'), form: at('form'), boxes: at('boxes'), match: at('match') };
+    A.hookIn = (WORDS[HOOK_N - 1] ? WORDS[HOOK_N - 1].s - LEAD : 2) + .3; A.leave = Math.max(A.until - .3, A.hookIn + .35);
+    window.COVER = +(A.hookIn + .1).toFixed(2);
+    A.land = Math.max(A.page + .55, A.blank + 1.2);           // the styles arrive: the slow-motion blank ends
+    var t4 = Math.min(A.land + .55, A.fix - .95);
+    // [tap time, x, y, page before, page after, end of the blank]
+    TAPS = [[-.1, BACK[0], BACK[1], 1, 0, .6], [1.4, CARD[0], CARD[1], 0, 1, A.leave + .05], [A.until + .35, NEXT[0], NEXT[1], 1, 2, A.land], [t4, BACK[0], BACK[1], 2, 0, A.fix],
+      [A.now, CARD[0], CARD[1], 0, 1, A.now + .95], [A.frame, NEXT[0], NEXT[1], 1, 2, A.frame + .5], [A.form - .55, BACK[0], BACK[1], 2, 0, A.form - .1]];
+    A.pull = Math.max(A.match + .75, A.boxes + 1.5);
+    A.last = Math.min(A.pull + 1.2, DUR - 1.9);
+    TAPS.push([A.last, CARD2[0], CARD2[1], 0, 3, A.last + .5]);
+    // the camera: [start, length, centre x, centre y, zoom]; it never cuts, every move eases out past its mark and settles
+    MOVES = [[A.leave - .05, .8, 270, 600, 1.16], [A.blank + .55, .9, 252, 640, 1.08], [t4 + .2, A.fix - t4 - .2, 270, 620, 1.42], [A.fix, .75, 270, 536, .86], [A.color - .1, .8, 262, 518, .92],
+      [A.now - .15, .7, 270, 560, 1.06], [A.form - .25, .8, 266, 598, 1.27], [A.pull, .9, 270, 548, 1.0], [A.last - .1, 1, 268, 566, 1.07]];
+    PH = []; var cur = [];
+    WORDS.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === WORDS.length - 1) {
+      if (cur.length > 7) { var best = -1; cur.forEach(function(j, k){ if (/[,:;]$/.test(WORDS[j].d) && k > 1 && k < cur.length - 2 && (best < 0 || Math.abs(k - cur.length / 2) < Math.abs(best - cur.length / 2))) best = k; });
+        if (best < 0) best = Math.floor(cur.length / 2) - 1; PH.push(cur.slice(0, best + 1)); PH.push(cur.slice(best + 1)); }
+      else PH.push(cur);
+      cur = []; } });
+    buildCues();
+  }
+  function cam(t){ var c = [270, 480, 1];
+    MOVES.forEach(function(m){ var k = back(P(t, m[0], m[0] + m[1]), 1.15); if (k !== 0) c = [mix(c[0], m[2], k), mix(c[1], m[3], k), mix(c[2], m[4], k)]; });
+    c[0] += Math.sin(t * .6) * 3; c[1] += Math.sin(t * .45 + 1) * 6; c[2] *= 1 + Math.sin(t * .38) * .008; return c; }
+  // world point -> screen point
+  function toScr(c, x, y){ return [(x - c[0]) * c[2] + 270, (y - c[1]) * c[2] + 480]; }
+  var CODE = '<span class="dim">&lt;head&gt;</span>\n  &lt;meta name="<b>color-scheme</b>"\n        content="<b>dark light</b>"&gt;';
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; if (src[i] === '&') { var e2 = src.indexOf(';', i); o += src.slice(i, e2 + 1); i = e2; } else o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  var CODE_N = CODE.replace(/<[^>]+>/g, '').replace(/&\w+;/g, '_').length;
+  var CHIP_Y0 = 236, CHIP_Y1 = 400;
+  var URLS = ['duskpost.example', 'duskpost.example/trains', 'duskpost.example/lights', 'duskpost.example/sea'];
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t));
+    // ---- the page state: which tap we are in, blank or loaded ----
+    var tp = TAPS[0]; for (var i = 0; i < TAPS.length; i++) if (t >= TAPS[i][0]) tp = TAPS[i];
+    var fixed = tp[0] >= A.now - .2, inBlank = t >= tp[0] + .05 && t < tp[5], page = t >= tp[5] ? tp[4] : tp[3];
+    var reveal = tp === TAPS[2] ? out(P(t, A.land, A.land + .4)) : 1;   // the slow-motion load opens from the landed styles
+    var revealing = tp === TAPS[2] && t >= A.land && t < A.land + .4;
+    if (revealing) inBlank = true;
+    for (var p = 0; p < 4; p++) { var el = $('p' + p); el.style.visibility = p === page && (!inBlank || revealing) ? 'visible' : 'hidden'; el.style.zIndex = 3;
+      el.style.clipPath = p === page && reveal < 1 ? 'circle(' + (reveal * 1000) + 'px at 230px ' + (CHIP_Y1 + 38 - 104) + 'px)' : 'none'; }
+    var ck2 = P(t, A.styles, A.land), chipA = tp === TAPS[2] ? win(t, A.styles, A.land + .25, .2) : 0, cy2 = mix(CHIP_Y0, CHIP_Y1, io(ck2)) + (t > A.land ? -back(P(t, A.land, A.land + .3), 3) * 0 : 0);
+    var css = $('css'); css.style.opacity = chipA; css.style.top = cy2 + 'px'; css.style.transform = 'scale(' + (t < A.styles + .3 ? mix(.7, 1, back(P(t, A.styles, A.styles + .3), 2)) : t > A.land ? mix(1, 1.25, P(t, A.land, A.land + .25)) : 1) + ')';
+    var pc = Math.min(100, Math.round(100 * Math.pow(ck2, 1.6))); $('pct').textContent = pc + '%'; $('bar').style.width = pc + '%';
+    var bl = $('blank'); bl.style.background = fixed ? '#121212' : '#ffffff'; bl.style.opacity = inBlank ? 1 : 0;
+    if (tp === TAPS[2] && t >= A.land) { bl.style.zIndex = 2; }
+    $('urlt').textContent = URLS[t >= tp[0] + .05 ? tp[4] : tp[3]];
+    // the progress line: runs while a page loads
+    var lk = P(t, tp[0] + .05, tp[5]), pr = $('prog');
+    pr.style.width = (t < tp[5] ? mix(8, 92, out(lk)) : 100) + '%'; pr.style.opacity = t < tp[0] + .05 ? 0 : 1 - P(t, tp[5] + .1, tp[5] + .35);
+    // the light of a white screen falls on the room around the phone
+    var flashes = 0; TAPS.forEach(function(x){ if (x[0] < A.now - .2 && t >= x[0] + .05) flashes++; });
+    $('room').style.opacity = inBlank && !fixed ? .1 : 0;
+    // ---- the form boxes: white (default light colors) until the fixed load of the home page ----
+    var boxDark = fixed && t >= TAPS[6][5];
+    ['srch', 'chk', 'sel'].forEach(function(id, j){ var b = $(id);
+      b.style.background = boxDark ? '#2a2b31' : '#ffffff'; b.style.color = boxDark ? '#f2efe8' : '#111214'; b.style.border = boxDark ? '1.5px solid #4a4b52' : '1.5px solid #c9c5bc';
+      var g = $('g' + j), pk = P(t, A.boxes - .1 + j * .38, A.boxes + .25 + j * .38), on = boxDark && t < A.boxes + .25 + j * .38;
+      g.style.opacity = on ? 1 - io(pk) : 0; g.style.transform = 'translate(' + (pk * 30) + 'px,' + (-pk * 40) + 'px) rotate(' + (-pk * 8) + 'deg)'; });
+    $('chk').style.color = boxDark ? '#7cf0b6' : '#111214';
+    // the stamp on the blank: red before the fix, green after
+    var st = $('stamp'), sA = 0, sK = 0, good = fixed;
+    if (!fixed) { sA = tp === TAPS[2] ? win(t, A.blank, A.land, .12) : 0; sK = back(P(t, A.blank, A.blank + .3), 2); }
+    else if (inBlank) { sA = 1; sK = back(P(t, tp[0] + .05, tp[0] + .3), 2); }
+    st.innerHTML = good ? 'BLANK PAGE = DARK<small>COLOR-SCHEME: DARK LIGHT</small>' : 'BLANK PAGE = WHITE<small>BEFORE YOUR CSS ARRIVES</small>';
+    st.style.borderColor = st.style.color = good ? 'var(--acc)' : 'var(--red)';
+    st.style.opacity = sA; st.style.transform = 'rotate(' + (good ? -3 : -5) + 'deg) scale(' + mix(1.5, 1, sK) + ')';
+    // ---- the finger: comes in, presses, a ring opens, lifts ----
+    var fx = 0, fy = 0, fa = 0, ra = 0, rs = 1;
+    TAPS.forEach(function(x, n){ var nx = n < TAPS.length - 1 ? TAPS[n + 1][0] : 99;
+      if (t >= x[0] - .45 && t < Math.min(nx - .45, x[0] + .7)) { var m = io(P(t, x[0] - .45, x[0] - .05)), lift = io(P(t, x[0] + .12, x[0] + .5));
+        fx = mix(x[1] + 90, x[1], m) + lift * 40; fy = mix(x[2] + 150, x[2], m) + lift * 70; fa = cl((t - x[0] + .45) * 5) * (1 - lift);
+        var rk = P(t, x[0], x[0] + .45); ra = rk > 0 && rk < 1 ? 1 - rk : 0; rs = mix(.6, 2.2, out(rk)); } });
+    var fg = $('fg'); fg.style.left = (fx - 32) + 'px'; fg.style.top = (104 + fy - 32) + 'px'; fg.style.opacity = fa; fg.style.transform = 'scale(' + (fa > .8 && Math.abs(fa) > 0 ? 1 : .92) + ')';
+    var rp = $('rip'); rp.style.left = (fx - 32) + 'px'; rp.style.top = (104 + fy - 32) + 'px'; rp.style.opacity = ra; rp.style.transform = 'scale(' + rs + ')';
+    rp.style.borderColor = fixed ? 'var(--acc)' : 'var(--red)';
+    var scr = back(P(t, A.last + 1.1, A.last + 1.7), 1.2) * 70; $('p3').style.transform = 'translateY(' + (-scr) + 'px)';
+    // ---- the camera ----
+    var c = cam(t), c0 = cam(t - .05), c1 = cam(t + .05), vx = (c1[0] - c0[0]) * 10, vy = (c1[1] - c0[1]) * 10, vz = (c1[2] - c0[2]) * 10;
+    $('world').style.transform = 'translate(' + (270 - c[0] * c[2]) + 'px,' + (480 - c[1] * c[2]) + 'px) scale(' + c[2] + ')';
+    $('ph').style.transform = 'perspective(1600px) rotateX(' + Math.max(-5, Math.min(5, vy * .02 + vz * 3)) + 'deg) rotateY(' + Math.max(-5, Math.min(5, -vx * .03)) + 'deg)';
+    // ---- the hook ----
+    var gone = io(P(t, A.leave, A.leave + .35));
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(sp, i){
+      var s = i === 0 ? -.3 : WORDS[i] ? WORDS[i].s - LEAD : 0, k = back(P(t, s, s + .32), 1.6);
+      sp.style.opacity = cl((t - s) * 9) * (1 - gone); sp.style.transform = 'translateY(' + ((1 - k) * 46 - gone * 90) + 'px)'; });
+    var preFix = t < A.fix - .05;
+    $('lbl').style.opacity = 1 - gone;
+    $('hud').innerHTML = 'WHITE FLASHES <b>' + flashes + '</b>'; $('hud').style.opacity = 1 - gone;
+    // ---- the tag row: what the picture is doing ----
+    var tg = $('tag'), tgA = preFix ? P(t, A.leave + .3, A.leave + .45) : 0;
+    tg.innerHTML = t < A.styles - .1 ? 'EVERY TAP · <b>WHITE FLASH ' + flashes + '</b>' : t < A.land ? 'SLOW MOTION · <b>ONE PAGE LOAD</b>' : 'STILL WHITE · <b>FLASH ' + flashes + '</b>';
+    tg.style.opacity = tgA; tg.style.transform = 'translateY(' + (1 - out(P(t, A.leave + .3, A.leave + .6))) * -10 + 'px)';
+    // ---- the white blank peels off the screen and becomes the code ----
+    var pk2 = P(t, A.fix - .02, A.fix + .5), pe = $('peel'), cd = $('code');
+    var tl = toScr(c, 40, 424), br = toScr(c, 500, 1300);
+    tl = [Math.max(0, tl[0]), Math.max(0, tl[1])]; br = [Math.min(540, br[0]), Math.min(960, br[1])];
+    var CW = 468, CH = 158, ck = back(pk2, 1.1);
+    if (pk2 > 0 && pk2 < 1) { pe.style.opacity = 1 - P(pk2, .75, 1);
+      var x0 = mix(tl[0], 36, ck), y0 = mix(tl[1], 112, ck), w0 = mix(br[0] - tl[0], CW, ck), h0 = mix(br[1] - tl[1], CH, ck);
+      pe.style.left = x0 + 'px'; pe.style.top = y0 + 'px'; pe.style.width = w0 + 'px'; pe.style.height = h0 + 'px'; pe.style.borderRadius = (pk2 * 20) + 'px';
+      var g2 = Math.round(mix(255, 27, io(P(pk2, .2, .8)))); pe.style.background = 'rgb(' + g2 + ',' + g2 + ',' + Math.round(mix(255, 33, io(P(pk2, .2, .8)))) + ')'; }
+    else pe.style.opacity = 0;
+    var codeOn = P(t, A.fix + .35, A.fix + .5);
+    var comp = back(P(t, A.now - .15, A.now + .45), 1.3), pulse = win(t, A.light + .3, A.light + .9, .15);
+    cd.style.opacity = codeOn; cd.style.transform = 'translateY(' + (-8 * comp) + 'px) scale(' + mix(1, .8, comp) + ')';
+    cd.style.borderColor = 'rgba(124,240,182,' + (pulse * .9) + ')';
+    $('cd').innerHTML = typed(CODE, Math.floor(CODE_N * P(t, A.fix + .4, A.light + .25)));
+    // ---- captions: whole phrases, one sentence half at a time ----
+    var ph0 = null;
+    for (var i2 = 0; i2 < PH.length; i2++) { if (t >= WORDS[PH[i2][0]].s - LEAD - .05 && (i2 === PH.length - 1 || t < WORDS[PH[i2 + 1][0]].s - LEAD - .05)) ph0 = PH[i2]; }
+    var html = '';
+    if (ph0 && ph0[0] >= HOOK_N && t < Math.min(DUR - .9, WORDS[WORDS.length - 1].e + 1.1))
+      ph0.forEach(function(j){ var w = WORDS[j], on = t >= w.s - LEAD, k = out(P(t, w.s - LEAD, w.s - LEAD + .2)), aft = w.s >= A.fix + LEAD;
+        var col2 = aft && /^(meta|tag|color|scheme|dark|light|match)/i.test(w.d) ? 'var(--acc)' : !aft && /^(blank|white)/i.test(w.d) ? 'var(--red)' : 'var(--paper)';
+        html += '<span style="opacity:' + (on ? 1 : .32) + ';transform:translateY(' + (1 - k) * 5 + 'px);color:' + col2 + '">' + w.d.replace(/</g, '') + '</span>'; });
+    var cp = $('cap'); cp.innerHTML = html; cp.style.opacity = html ? 1 : 0;
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) { WORDS = v.words; anchors(); } };
+  function buildCues(){
+    var Q = [{ t: 0, k: 'hit', g: .5, p: -.3 }, { t: 0, k: 'whoosh', d: .5, g: .4 }];
+    // the bug: a tap, then an impact as the screen goes white; after the fix a tap and a soft blip
+    TAPS.forEach(function(x){ if (x[0] < 0) return; var bad = x[0] < A.now - .2;
+      Q.push({ t: x[0], k: 'tap', g: .32, p: bad ? 1 : 5, x: 270 });
+      if (bad) Q.push({ t: x[0] + .05, k: 'hit', g: .42, p: -.2 }); else Q.push({ t: x[0] + .05, k: 'blip', g: .25, x: 270 }); });
+    // a whoosh on every camera move (the peak lands as the move arrives)
+    MOVES.forEach(function(m, i){ if (i !== 2) Q.push({ t: m[0] + Math.min(.35, m[1] * .45), k: 'whoosh', d: .55, g: .3, p: i % 2 ? .3 : -.3 }); });
+    Q.push({ t: A.styles, k: 'blip', g: .3, x: 270 }, { t: A.blank, k: 'boom', g: .4 }, { t: A.blank + .05, k: 'thud', g: .3 }, { t: A.land, k: 'snap', g: .45, x: 270 });
+    Q.push({ t: A.fix, k: 'riser', d: Math.max(.8, A.fix - TAPS[3][0] - .1), g: .45 }, { t: A.fix, k: 'hit', g: .5 });
+    for (var c = 0, t0 = A.fix + .4, t1 = A.light + .25; t0 + c * .09 < t1; c++) Q.push({ t: t0 + c * .09, k: 'tick', g: .09, p: (c * 5) % 7 });
+    Q.push({ t: A.light + .3, k: 'pop', g: .35, p: 4 });
+    Q.push({ t: A.now - .05, k: 'resolve', g: .45, x: 270 }, { t: A.now + .1, k: 'pop', g: .3, p: 6 });
+    [0, 1, 2].forEach(function(j){ Q.push({ t: A.boxes - .1 + j * .38, k: 'pop', g: .3, p: 3 + j * 2 }); });
+    Q.push({ t: DUR - .45, k: 'swish', d: .6, g: .45, p: -.6 });
+    window.CUES = { dur: DUR, cues: Q, bed: { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  }
+  window.seek = seek; window.DURATION = DUR;
+  document.fonts.load("800 58px 'Bricolage Grotesque'").then(function(){ return document.fonts.load("500 20px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
