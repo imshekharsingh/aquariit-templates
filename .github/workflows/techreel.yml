@@ -61,7 +61,7 @@ jobs:
         run: |
           pip install faster-whisper==1.1.1 requests
           python3 -I -c "import json,sys; t=json.load(open(sys.argv[1])); json.dump({'voice': {'text': ' '.join(l['text'] for l in t['lines'])}}, open('vc.json','w'))" "techreel/topics/$SLUG.json"
-          python3 scripts/showreel/voicecheck.py vc.json "out/techreel/$SLUG/vo.wav" "$GITHUB_STEP_SUMMARY"
+          VC_MAX_OVERALL=3.3 python3 scripts/showreel/voicecheck.py vc.json "out/techreel/$SLUG/vo.wav" "$GITHUB_STEP_SUMMARY"
       - uses: actions/setup-node@v4   # wrangler (package.json) uploads to R2
         with:
           node-version: 22
