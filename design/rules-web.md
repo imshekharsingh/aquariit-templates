@@ -51,6 +51,14 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    Evidence: the style C test (real backdrop blur) took 52 GitHub minutes for 8 s, about 130 for 20 s; a frame of the kit theme costs ~218 ms
    locally vs 393 for the first glass draft (big bloom layers) and 341 for the dark details demo; the sample showreel-style-c-details (21.2 s) rendered in 15 GitHub minutes (frames 12; run 42406421148, 8 Nov), so the target holds with room.
 
+13. **A details reel is calm: 3 details, one beat of ~5.5 s each (never under 4.5 s), 24-26 s in all, the voice at most 2.4 words/s overall
+   with 0.6 s+ of breath between sentences** (owner, 8 Nov 2026: "The web reel seems to have too much in 20 s ... It feels rushed."). Each beat:
+   the motion once at real speed, once in slow motion with its curve (the curve only then), a settle hold; one chip at a time (the speed chip);
+   the hook ~2-2.6 s, the recap grid 3 s+ with a real hold. `newweb.mjs --details` writes it (default 3 beats of 5.5 s, sentences timed with
+   voice.at, config "format": "details"); preflight's PACE line fails a beat under 4.5 s, over 2.5 words/s, a breath under 0.6 s or a recap
+   under 3 s. Why: the slow-mo format needs time per motion; the first cut (showreel-30-alive, 4 details in 20 s: beats of ~2.6-3.2 s,
+   2.15 words/s with no breaths) gave no single motion time to land. Reworked the same morning: beats 5.9 s, 1.58 words/s, breaths 0.71 s+.
+
 **ESCALATE 8 Nov** (median reach 1,247 over the last 7 vs target 2,000; watch 8.5 s; saves 1.3%; ALARM two days running): answered by a format
 change, the slow-mo "details" compilation (showreel-30-alive, 8 Nov 13:00, experiment details-format; rule 11). Read at 24 h (9 Nov) vs the median;
 if it wins, the next web reels stay in the format; if it loses, the 10 Nov reel tries a different topic type (a phone trick people use as users).
