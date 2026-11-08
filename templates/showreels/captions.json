@@ -653,6 +653,13 @@
   "postAt": "17:30",
   "concept": "Airplane mode"
  },
+ "showreel-tech-close-apps": {
+  "channel": "tech",
+  "postOn": "2026-11-08",
+  "postAt": "13:00",
+  "concept": "Myth-bust: does closing apps save battery? (MYTH stamped in frame 0)",
+  "experiment": {"id": "tech-myth-verdict", "change": "myth-bust format: the verdict (MYTH) stamped in frame 0, then why", "vs": "median"}
+ },
  "showreel-c3-marathon": {
   "channel": "c3",
   "postOn": "2026-11-07",

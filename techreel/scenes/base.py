@@ -287,8 +287,26 @@ def chip(fr, label, tint, k):
         fr.text(W / 2 + 14, 392, label, 26, color=TEXT + (int(255 * aa),), weight=800, anchor='mm', tracking=6)
 
 
-def hook_card(fr, title_lines, t, t_out, accent=None):
-    """0–2 s: the question as a big title, three or four lines, then IN 20 SECONDS. Words rise in one by one; the camera glides past it at t_out."""
+VERDICT_COL = (255, 92, 110)
+
+
+def verdict_stamp(fr, word, cx, cy, t, a_out):
+    """The myth-bust verdict (topic "verdict", e.g. MYTH): already on screen at frame 0, it slams down from 1.5x by 0.28 s, then breathes.
+    The answer before the question (owner's rulebook, tech rule 2: the answer inside 2 s)."""
+    k = ease_out(prog(t, 0, .28))
+    sc = 1.5 - .5 * k + .03 * math.sin(max(0, t - .28) * 4.2) * k
+    size = 88 * sc
+    tw = text_w(word, 88, 900, tracking=14) * sc
+    w, h = tw + 110 * sc, 140 * sc
+    a = int(255 * (.55 + .45 * k) * (1 - a_out))
+    fr.rect(cx - w / 2, cy - h / 2, w, h, r=26 * sc, fill=VERDICT_COL + (int(a * .16),), outline=VERDICT_COL + (a,), width=6,
+            glow=VERDICT_COL, glow_a=.5 * k)
+    fr.text(cx, cy + 2, word, int(size), color=VERDICT_COL + (a,), weight=900, anchor='mm', tracking=14 * sc, glow=VERDICT_COL, glow_a=.3)
+
+
+def hook_card(fr, title_lines, t, t_out, accent=None, verdict=None):
+    """0–2 s: the question as a big title, three or four lines, then IN 20 SECONDS. Words rise in one by one; the camera glides past it at t_out.
+    verdict: a myth-bust stamp (MYTH / TRUE) above the title, on screen from frame 0."""
     out = ease_io(prog(t, t_out - .2, t_out + .45))
     if out >= 1:
         return
@@ -296,6 +314,8 @@ def hook_card(fr, title_lines, t, t_out, accent=None):
     size = 104 if max(text_w(l, 104, 800) for l in title_lines) <= 860 else 92
     lh = size * 1.08
     y0 = 860 - lh * (len(title_lines) - 1) / 2 - 40 * prog(t, 0, t_out)   # a slow rise while it is read: never still
+    if verdict:
+        verdict_stamp(fr, verdict, W / 2, y0 - 210, t, out * .6)
     n = 0
     for li, ln in enumerate(title_lines):
         words = ln.split()

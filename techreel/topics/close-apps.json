@@ -1,0 +1,54 @@
+{
+ "slug": "close-apps",
+ "topic": "Closing apps",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.95,
+ "max_speed": 1.0,
+ "dur": 18,
+ "max_end": 17.4,
+ "say": {},
+ "verdict": "MYTH",
+ "experiment": {"id": "tech-myth-verdict", "change": "myth-bust format: the verdict (MYTH) stamped in frame 0, then why", "vs": "median"},
+ "hook": ["Does closing", "your apps", "save battery?"],
+ "lines": [
+  {"text": "Does closing your apps save battery?"},
+  {"text": "No. Apple says close an app only if it freezes.",
+   "scene": {"label": "THE ANSWER: NO", "tint": "red", "kind": "choice",
+    "params": {"a": {"title": "Frozen app: close it", "cue": "only"},
+               "b": {"title": "Swiping all away", "icon": "cross", "ticks": ["No battery saved"], "meter": false, "cue": "freezes"}}},
+   "chunks": [4, 6]},
+  {"text": "Once you leave it, iPhone pauses it in the background.",
+   "scene": {"label": "STEP 1: PAUSED", "tint": "purple", "kind": "flow",
+    "params": {"sources": ["Chat", "Maps", "Photos"], "source_tint": "purple",
+               "hub": {"label": "BACKGROUND", "tag": "SUSPENDED", "icon": "chip"},
+               "target": {"icon": "bolt", "label": "Little work"}, "target_tint": "green", "hub_cue": "pauses"}},
+   "chunks": [5, 5]},
+  {"text": "Low on memory? iPhone clears it by itself.",
+   "scene": {"label": "STEP 2: MEMORY", "tint": "blue", "kind": "portal",
+    "params": {"icon": "gate", "pills": ["Memory low", "Cleared for you"], "guest": "chip", "guest_tint": "cyan", "n": 2, "open": "clears"}},
+   "chunks": [3, 5]},
+  {"text": "To save battery, turn off Background App Refresh.",
+   "scene": {"label": "SAVE THIS", "tint": "green", "kind": "checklist",
+    "params": {"items": [{"text": "Background App Refresh", "cue": "Background"}, {"text": "Off for apps you skip", "cue": "off"}]}},
+   "chunks": [3, 5]}
+ ],
+ "post": {
+  "title": "Does closing your apps save battery?",
+  "caption": "Does closing your apps save battery? No 🔋\n\nApple's own advice: close an app only if it's unresponsive. When you leave an app, iPhone moves it to the background and then suspends it, so it does as little work as possible. If memory runs low, iPhone frees it up by itself. Closing all of your apps doesn't make your iPhone faster or last longer. What does help: Settings, General, Background App Refresh: set it to Wi-Fi only, or Off for apps you don't need updating behind your back. Then check Settings, Battery to see which apps really use it.\nSend this to the friend who swipes every app away.",
+  "keywords": [
+   "does closing apps save battery",
+   "should i close apps on iphone",
+   "iphone battery myths",
+   "background app refresh",
+   "iphone battery tips",
+   "iphone tips"
+  ],
+  "hashtags": ["#iphonebattery", "#batterytips", "#iphonetips", "#techmyths", "#techexplained"],
+  "sources": [
+   {"url": "https://support.apple.com/en-us/109359", "note": "Apple Support, Close an app on your iPhone: you should close an app only if it's unresponsive; if your iPhone runs slowly or its battery drains quickly, closing all of your apps does not impact the device's overall performance"},
+   {"url": "https://developer.apple.com/documentation/uikit/managing-your-app-s-life-cycle", "note": "Apple Developer, Managing your app's life cycle: a background app must do as little work as possible, preferably nothing; when someone dismisses an app's UI, UIKit moves it to the background and eventually to the suspended state, and can disconnect a background or suspended scene at any time to reclaim its resources"},
+   {"url": "https://www.apple.com/batteries/maximizing-performance/", "note": "Apple, Maximizing battery life: Settings > General > Background App Refresh, choose Wi-Fi, Wi-Fi & Cellular Data, or Off; view Battery Usage information"}
+  ]
+ }
+}

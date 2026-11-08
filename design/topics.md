@@ -8,6 +8,10 @@ fresher idea (say why in the log). Facts are still checked against two sources (
 |---|---|---|---|
 | web | 13:00 | **Slow-mo motion details**: 4-5 small UI motions (e.g. a copy button that springs into "Copied", a switch knob that stretches, a toast that settles and swipes away, a step bar that fills, a heart that pops), each slowed down with its live easing curve and its one CSS line | `node scripts/explainer/newweb.mjs <slug> --details 4` (or 5): ~20 s, result-first (the first detail finished in frame 0), recap grid at the end, the caption invites a save. Built by the 06:47 daily run; config `"experiment": {"id": "details-format", "change": "slow-mo motion details compilation", "vs": "median"}`. Use our own titles and components (the kinds in scripts/explainer/starterdetails.html, or new ones); every CSS line checked on MDN + BCD. Look: **style C, "Glass and light"** (owner, 8 Nov 2026), the kit's default theme in newweb.mjs (cheap glass, blur 3: rules-web.md rule 12); sample showreel-style-c-details. |
 
+Tech, Sun 8 Nov 13:00 (daily run, 8 Nov): **Does closing your apps save battery?** (showreel-tech-close-apps), the myth-bust format, verdict
+MYTH in frame 0 (ESCALATE answer; rules-tech.md rule 9). Note: the Thu 12 (airplane mode) and Sun 15 (fast charging, built as charge-80) tech
+topics were already posted: replan them on Tuesday's spare night, as myth-busts if the format wins.
+
 ## Week of Mon 9 - Sun 15 Nov 2026 (planned Tue 3 Nov)
 
 ### @webin20sec (narrated "Why does your ...?" tip, one CSS/HTML fix, MDN + BCD support)
@@ -35,7 +39,7 @@ fresher idea (say why in the log). Facts are still checked against two sources (
 ### Turns Out (true story, 2.5D, 25-35 s; 5 continents in the week)
 | Day | Hook | Continent |
 |---|---|---|
-| Mon 9 | Why is Mount Everest named after a man who never saw it? (Peak XV, 1856; Sagarmatha / Chomolungma) | Asia |
+| Mon 9 | Why was the Great Sphinx buried up to its neck in sand? (swapped 8 Nov for a visible transformation: rules-c3.md ESCALATE; Everest moves to a later week) | Africa |
 | Tue 10 | Why does the Panama Canal's Pacific end lie east of its Atlantic end? | Americas |
 | Wed 11 | How did the builders point the Great Pyramid almost exactly north? | Africa |
 | Thu 12 | Why is Australia's capital Canberra, not Sydney or Melbourne? | Oceania |

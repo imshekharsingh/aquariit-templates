@@ -28,3 +28,7 @@ Evidence = the Instagram collect run of 5 Nov 2026: 4 reels, median reach 157, 0
    PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
    Kokoro alone reads 1889 as "eighteen hundred eighty nine" (5 of 10 Turns Out scripts have years); Eiffel and metres were unknown to it.
 8. **One slot a day** (owner, 8 Nov 2026): E16 (13:30 + 20:00, 7 Nov only) ended; each build checks captions.json for its channel and day (postOn = today, postAt 13:00) and never builds a second reel.
+
+**ESCALATE 8 Nov** (median reach 163 over the last 6, ALARM two days running; the two 1,000+ reels and the white pyramid's 465 at 5 h are all visible
+transformations of a world-famous thing; every reel without one sits at 118-161): from Mon 9 Nov every Turns Out topic must be a visible transformation
+of a landmark everyone pictures (not a naming or calendar story). Mon 9's Everest-name topic is swapped for the Sphinx buried in sand (design/topics.md).
