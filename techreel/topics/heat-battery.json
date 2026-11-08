@@ -3,8 +3,8 @@
  "topic": "Phone heat",
  "voice": "af_heart",
  "flow": true,
- "speed": 0.84,
- "max_speed": 0.9,
+ "speed": 0.8,
+ "max_speed": 0.86,
  "dur": 18,
  "max_end": 17.5,
  "say": {
@@ -54,10 +54,10 @@
    }
   },
   {
-   "text": "Even a hot parked car can do it.",
+   "text": "A hot parked car is enough.",
    "chunks": [
-    4,
-    4
+    3,
+    3
    ],
    "scene": {
     "label": "STEP 1: LEFT HOT",
