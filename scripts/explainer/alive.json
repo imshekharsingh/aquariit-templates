@@ -1,7 +1,7 @@
 {
  "name": "showreel-30-alive",
  "seek": "scripts/explainer/alive.html",
- "dur": 20,
+ "dur": 24.6,
  "fps": 60,
  "blur": 3,
  "shutter": 0.45,
@@ -9,17 +9,25 @@
  "vignette": false,
  "cover": 1.2,
  "style": "Glass and light",
+ "format": "details",
  "voice": {
-  "text": "Why do the best apps feel alive? One: the heart pops, then wobbles into place. Two: the switch knob stretches as it slides. Three: the checkmark draws itself in. Four: the copy button springs into Copied. Save all four for your next app.",
+  "text": "Why do the best apps feel alive? One: the heart pops, then wobbles into place. Two: the switch knob stretches as it slides. Three: the checkmark draws itself in. Save all three for your next app.",
   "voice": "af_heart",
-  "speed": 0.9
+  "speed": 0.9,
+  "at": [
+   0.15,
+   2.9,
+   8.8,
+   14.7,
+   20.6
+  ]
  },
  "experiment": {
   "id": "details-format",
-  "change": "slow-mo motion details compilation in look C",
+  "change": "calm slow-mo details compilation (3 beats of ~5.9 s) in look C",
   "vs": "median"
  },
- "caption": "Why do the best apps feel alive? ✨ Four tiny motions, slowed down so you can see them.\n\n1) The heart pops, then wobbles into place: transition on scale with linear(), 450 ms.\n2) The switch knob stretches as it slides: cubic-bezier(.34, 1.56, .64, 1) on translate, plus a squash keyframe on scale.\n3) The checkmark draws itself in: stroke-dasharray and stroke-dashoffset on the tick's path, 400 ms.\n4) The copy button springs into Copied: transition on width with linear(), one overshoot.\n\nlinear() works in Chrome 113, Firefox 112 and Safari 17.2; the scale and translate properties in Chrome 104, Firefox 72 and Safari 14.1.\nSave it for your next app, or send it to a designer friend.",
+ "caption": "Why do the best apps feel alive? ✨ Three tiny motions, each played at real speed, then slowed down so you can see it.\n\n1) The heart pops, then wobbles into place: transition on scale with linear(), 450 ms.\n2) The switch knob stretches as it slides: cubic-bezier(.34, 1.56, .64, 1) on translate, plus a squash keyframe on scale.\n3) The checkmark draws itself in: stroke-dasharray and stroke-dashoffset on the tick's path, 400 ms.\n\nlinear() works in Chrome 113, Firefox 112 and Safari 17.2; the scale and translate properties in Chrome 104, Firefox 72 and Safari 14.1.\nSave it for your next app, or send it to a designer friend.",
  "keywords": [
   "css micro interactions",
   "css linear easing spring",
@@ -54,9 +62,9 @@
   }
  ],
  "tip": {
-  "title": "Four tiny motions that make an app feel alive",
-  "why": "A control that pops, stretches, draws or springs reads as an answer to your finger; one that just switches state reads as a glitch. Each of these is one transition line.",
-  "code": ".heart { transition: scale .45s linear(0, 1.3 30%, .9 55%, 1.04 78%, 1); }\n.knob { transition: translate .4s cubic-bezier(.34, 1.56, .64, 1); }\n.tick { stroke-dasharray: 42px; stroke-dashoffset: 42px;\n  transition: stroke-dashoffset .4s cubic-bezier(.65, 0, .35, 1); }\n.done .tick { stroke-dashoffset: 0; }\n.copy { transition: width .5s linear(0, .62 18%, 1.1 38%, .97 62%, 1); }",
+  "title": "Three tiny motions that make an app feel alive",
+  "why": "A control that pops, stretches or draws reads as an answer to your finger; one that just switches state reads as a glitch. Each of these is one transition line.",
+  "code": ".heart { transition: scale .45s linear(0, 1.3 30%, .9 55%, 1.04 78%, 1); }\n.knob { transition: translate .4s cubic-bezier(.34, 1.56, .64, 1); }\n.tick { stroke-dasharray: 42px; stroke-dashoffset: 42px;\n  transition: stroke-dashoffset .4s cubic-bezier(.65, 0, .35, 1); }\n.done .tick { stroke-dashoffset: 0; }",
   "demo": "alive",
   "source": {
    "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/linear",

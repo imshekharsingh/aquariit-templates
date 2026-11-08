@@ -6,8 +6,9 @@
 // continuous drift and named moves; the safe zone, the subtitle band and the data-subject / data-band / data-hook / data-subs markers;
 // window.TRANSITIONS declared by the kit, window.CUES from every move.
 // Usage: node scripts/explainer/newweb.mjs <slug> "Why does your X ...?" "Sentence." "The fix: ..." "Now ..." [--out dir] [--force]
-//   Details mode (owner, 8 Nov 2026): node scripts/explainer/newweb.mjs <slug> --details N "Hook?" ["One: ..." x N "Save all N ..."]: a
-//   compilation of N small UI motions in slow motion with live easing curves and a recap grid (scripts/explainer/newdetails.mjs).
+//   Details mode (owner, 8 Nov 2026): node scripts/explainer/newweb.mjs <slug> --details [N] [--beat S] "Hook?" ["One: ..." x N "Save all N ..."]:
+//   a compilation of N small UI motions (default 3, calm: one beat of S s each, default 5.5; owner, 8 Nov 2026) at real speed, then in slow
+//   motion with live easing curves, and a recap grid (scripts/explainer/newdetails.mjs).
 //   The sentence that says "fix" (else the middle one) starts the fix beat; the last sentence is the payoff. Then: draw the reel's own
 //   broken and fixed states in .bad and .good (keep the same text in both, at most 10 px apart), write the code, fill the config's post text
 //   and tip, and run preflight.mjs and stills.mjs (design/mandatory.md).
@@ -18,9 +19,11 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url)), root = join(here, '..', '..');
 const args = process.argv.slice(2), flag = (f) => { const i = args.indexOf(f); if (i < 0) return null; const v = args[i + 1]; args.splice(i, 2); return v; };
 const out = flag('--out') || 'scripts/explainer', force = args.includes('--force'); if (force) args.splice(args.indexOf('--force'), 1);
-const details = flag('--details');
+// --details [N]: N details (default 3; owner, 8 Nov 2026: calm by default), --beat S: seconds a detail (default 5.5)
+let details = null; { const i = args.indexOf('--details'); if (i >= 0) { const v = args[i + 1]; details = /^\d+$/.test(v || '') ? +v : 3; args.splice(i, /^\d+$/.test(v || '') ? 2 : 1); } }
+const beat = +(flag('--beat') || 5.5);
 const [slug, hook, ...sentences] = args;
-if (details) { await import('./newdetails.mjs').then((m) => m.write({ root, here, out, force, slug, hook, sentences, n: +details })); process.exit(0); }
+if (details) { await import('./newdetails.mjs').then((m) => m.write({ root, here, out, force, slug, hook, sentences, n: details, beat })); process.exit(0); }
 if (!slug || !/^[a-z0-9-]+$/.test(slug) || !hook || sentences.length < 2) { console.error('usage: node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." "The fix: ..." "Now ..." [--out dir] [--force]'); process.exit(1); }
 const html = join(root, out, slug + '.html'), cfgP = join(root, out, slug + '.json');
 if (!force && (existsSync(html) || existsSync(cfgP))) { console.error(`${relative(root, html)} exists (pass --force to overwrite)`); process.exit(1); }

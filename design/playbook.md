@@ -12,7 +12,7 @@ and "PROMOTE" after 2 WINs or "DROP" after 2 LOSEs: the daily run moves it here 
 One line per channel per day: `- DD Mon, channel: experiment (the one change) → result (number, vs what)`. A result is read at ~24 h, not at 5 h.
 
 - 7 Nov, all: the Mandatory Gate's visual upgrades (safe zone, subtitle band, motion-following sound) on every new reel → read 8 Nov.
-- 8 Nov, web: the "details" format (id details-format): a slow-mo compilation of 4-5 small UI motions, each with its live easing curve, a spec chip and its CSS line, result-first, recap grid at the end, caption invites a save → read 9 Nov (24 h) and 11 Nov (72 h) vs the web median (~1,300 reach, ~8.7 s watch, ~1.3% saves).
+- 8 Nov, web: the "details" format (id details-format): a slow-mo compilation of small UI motions (3 calm beats after the owner's "rushed" note, rule 13), each with its live easing curve, a spec chip and its CSS line, result-first, recap grid at the end, caption invites a save → read 9 Nov (24 h) and 11 Nov (72 h) vs the web median (~1,300 reach, ~8.7 s watch, ~1.3% saves).
 - 8 Nov, c3: posting at 13:00 IST (id c3-1300-slot; owner moved every channel to 13:00) on an E14-style frame 0 (the Golden Gate Bridge in black and yellow stripes) → read 9 Nov (24 h) vs the c3 median (157).
 
 - 8 Nov, tech: the myth-bust format (id tech-myth-verdict; ESCALATE answer): "Does closing your apps save battery?", MYTH stamped in frame 0, why in 3 steps, Background App Refresh as the takeaway, 18 s → read 9 Nov (24 h) vs the tech median (116).
@@ -27,10 +27,12 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 - **Time:** 13:00 IST (30-day median 2,313 vs 12:00 899, 17:00 712); 19:00 under test (E13: sticky 1,430 at 24 h).
 - **Craft (7 Nov):** everything inside the safe zone (x 60-960, y 250-1570), subtitles in their own band below the picture, sound cues that follow the motion, one continuous camera.
 - **Format under test (8 Nov 13:00, details-format):** a compilation of small satisfying UI motions in slow motion (the owner shared a reel of this kind; we take the techniques only:
-  slow motion, a live easing curve with a riding dot, a spec chip, a numbered part bar). Built with `node scripts/explainer/newweb.mjs <slug> --details N` (4-5 beats, ~20 s):
+  slow motion, a live easing curve with a riding dot, a spec chip, a numbered part bar). Built with `node scripts/explainer/newweb.mjs <slug> --details N` (now 3 beats of ~5.5 s, 24-26 s; first cut 4-5 beats in ~20 s):
   the hook over the first detail already finished (result first), one beat per detail (three-word title with one accent word, the component slowed, its CSS typed, the curve and
   the "ms" counter running with the dot), then a recap grid of all of them at full speed (the saveable frame). Why: rule 11 (motion tricks are our winners: numbers 103k, stagger 5.9k)
   and saves (a recap of copyable lines). Look: style C, "Glass and light" (owner, 8 Nov 2026), the kit's default theme; titles, wording and components are ours.
+  **Calm (owner, 8 Nov 2026: the 4-detail 20 s cut "feels rushed"):** 3 details, ~5.5-5.9 s a beat (real speed, then slow-mo with its curve, then a hold), 24-26 s,
+  at most 2.4 words/s with 0.6 s+ breaths; showreel-30-alive was rebuilt this way before posting (beats ~2.6-3.2 s → 5.9 s, 2.15 → 1.58 words/s). Rule 13; PACE in preflight.
 - **Art direction (8 Nov, owner: "Let's go with C."):** style C, "Glass and light": frosted panes at three depths over slow coloured light blooms,
   a soft gradient grade, crisp white Sora type, floating code panes. Through the kit theme (`KM.theme('glass')`, the newweb.mjs default in both
   modes), cheap glass path only (style C's test with real backdrop blur: 52 GitHub minutes for 8 s; style A ~210 for 20 s). From the Sun 8 Nov

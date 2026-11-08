@@ -49,7 +49,8 @@ Frame size is 1080x1920; the stills viewport is 540x960 (halve every number ther
 ## How each AUTO line is made
 
 - **Web** (scripts/explainer): every new reel starts from `node scripts/explainer/newweb.mjs` and the motion kit (scripts/explainer/kitmotion.js),
-  which pass the whole gate and FLOW out of the box. `node scripts/showreel/preflight.mjs <config>` (PREFLIGHT, PRONUNCIATION), then
+  which pass the whole gate and FLOW out of the box. `node scripts/showreel/preflight.mjs <config>` (PREFLIGHT, PRONUNCIATION; PACE for a details reel: beats of 4.5 s+, 2.5 words/s at most,
+  breaths of 0.6 s+, a recap of 3 s+; rules-web.md rule 13), then
   `node scripts/showreel/stills.mjs <config> <out>` (EMPTY FRAMES, STATIC STRETCH, SUBJECT FILL, TEXT FIT, SAFE ZONE, OVERLAP, BAND, HOOK,
   SUBTITLES, FLOW). The scene marks its parts: `data-subject` on the subject (the phone, the card list), `data-band` on the subtitle band,
   `data-hook` on the hook, `data-subs` on the subtitle box, `data-key` on a key action (a tap, a cursor, the moment the reel is about), `data-ui`

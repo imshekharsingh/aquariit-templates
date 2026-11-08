@@ -8,9 +8,10 @@
 <style>
 /* @webin20sec "details" starter (node scripts/explainer/newweb.mjs <slug> --details N; owner, 8 Nov 2026). A compilation of small UI motions,
    each slowed down so the eye can read it: the hook beat opens on the first one already running (result first), then one beat per detail
-   (a numbered eyebrow, a three-word title with one accent word, the component doing its one micro-interaction in slow motion, the CSS that
-   does it typed underneath, its easing curve drawn live with a dot riding it, a spec chip whose numbers roll in, a speed badge, a segmented
-   bar on top), then a recap grid with every detail at full speed (the saveable frame). One camera that pans from part to part (declared
+   (a numbered eyebrow, a three-word title with one accent word, the component's one micro-interaction played once at real speed, then
+   once in slow motion with its easing curve drawn live (a dot riding it) and one speed chip, then a settle hold; the CSS that does it typed
+   underneath; a segmented bar on top), then a recap grid that plays every detail once at full speed and holds (the saveable frame).
+   Calm by default (owner, 8 Nov 2026: the 4-5 detail 20 s cut "feels rushed"): 3 details, ~5.5 s a beat, rules-web.md rule 13. One camera that pans from part to part (declared
    matchMoves) and never stops drifting; motion from scripts/explainer/kitmotion.js; every frame a pure function of t.
    Edit DETAILS (kind, title, accent word) and the KINDS library (markup, draw, css, curve, chip) for the reel's own components.
    The look is the kit's theme (KM.theme: style C, "Glass and light", the web default from 8 Nov 2026): every colour below is a token it sets;
@@ -35,13 +36,6 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .cg-h{stroke:var(--ring);stroke-width:1.5;stroke-dasharray:3 4}
 .cg-dot{fill:var(--paper);stroke:var(--acc);stroke-width:3;filter:drop-shadow(0 0 8px var(--acc))}
 .cg-t{fill:var(--dim);font:700 11px var(--m);letter-spacing:.06em}
-.chip{position:absolute;left:316px;top:562px;width:138px;opacity:0}
-.chip div{white-space:nowrap}
-.chip small{display:block;font:700 11px/1 var(--m);letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-bottom:6px}
-.chip .sc-r0 b{font:700 32px/1 var(--f);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.chip .sc-r0 span{font:700 15px/1 var(--m);color:var(--dim)}
-.chip .sc-r1{margin-top:8px;font:700 14px/1 var(--m);color:var(--acc)}
-.chip .sc-r1 b{font-weight:700}
 /* the recap grid */
 .grid{position:absolute;left:40px;top:230px;width:430px}
 .tile{position:absolute;width:210px;border-radius:22px;background:var(--glass);overflow:hidden;box-shadow:var(--edge),var(--lift)}
@@ -394,10 +388,13 @@ var KM = (function(){
 })();
 /*kitmotion:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, T = KM.theme(window.WEB_THEME || 'glass');
-  var TEXT = "Why do the best apps feel alive? One: the heart pops, then wobbles into place. Two: the switch knob stretches as it slides. Three: the checkmark draws itself in. Four: the copy button springs into Copied. Save all four for your next app.", DUR = 20.0, HOOK_N = 7;
+  var TEXT = "Why do the best apps feel alive? One: the heart pops, then wobbles into place. Two: the switch knob stretches as it slides. Three: the checkmark draws itself in. Save all three for your next app.", DUR = 24.6, HOOK_N = 7;
+  // calm pacing (owner, 8 Nov 2026: "too much in 20 s, it feels rushed"): 3 details, one beat of BEAT s each; every sentence at its own time
+  // (config voice.at, the same list): the hook at 0.15, each detail's line 0.3 s into its beat, the recap line 0.3 s into the recap
+  var BEAT = 5.9, B0 = 2.6, AT = [.15, B0 + .3, B0 + BEAT + .3, B0 + 2 * BEAT + .3, B0 + 3 * BEAT + .3];
   // ---- the details: one per beat, in order (kind = a component in KINDS; title = three words; acc = the accent word's index) ----
-  var DETAILS = [{"kind":"like"},{"kind":"toggle"},{"kind":"check"},{"kind":"copy"}];
-  var RECAP = {"eyebrow":"RECAP · ALL 4 AT 1×","title":["All","four","together"],"acc":1};
+  var DETAILS = [{"kind":"like"},{"kind":"toggle"},{"kind":"check"}];
+  var RECAP = {"eyebrow":"RECAP · ALL 3 AT 1×","title":["All","three","together"],"acc":1};
   // ---- the component library. Each kind: html (inside the 450x190 stage), draw(root, c, o) with c = the component's own clock in seconds
   //   (0 = the interaction starts; it is slowed by the beat's timeScale), o = { f: the curve's ease, k: progress 0-1 on the curve, a: text alpha,
   //   mini: true in the recap and the hook loop (no finger) }. css = the real CSS (checked on MDN + BCD), curve = what that CSS's timing does,
@@ -468,7 +465,7 @@ var KM = (function(){
   var hl = function(css){ return esc(css).replace(/(linear\([^)]*\)|cubic-bezier\([^)]*\)|@starting-style|@keyframes)/g, '<b>$1</b>').replace(/([{}])/g, '<span class="dim">$1</span>'); };
   var world = $('world'), blks = $('blks'), rows = Math.ceil(N / 2), tileH = Math.min(150, (416 - (rows - 1) * 10) / rows), ms = Math.min(194 / 450, (tileH - 52) / 190);
   D.forEach(function(d, i){ var pn = document.createElement('div'); pn.className = 'pn'; pn.style.left = (560 * i) + 'px';
-    pn.innerHTML = '<div class="stage"><div class="comp">' + d.html + '</div></div><div class="code"><div class="cd"></div></div><svg class="cg" width="250" height="96"></svg><div class="chip"></div>';
+    pn.innerHTML = '<div class="stage"><div class="comp">' + d.html + '</div></div><div class="code"><div class="cd"></div></div><svg class="cg" width="250" height="96"></svg>';
     world.appendChild(pn); d.pn = pn; d.stage = pn.querySelector('.stage'); d.comp = pn.querySelector('.comp'); d.code = pn.querySelector('.cd'); d.cgEl = pn.querySelector('.cg'); d.html2 = hl(d.css);
     var b = document.createElement('div'); b.className = 'blk a'; b.innerHTML = '<span class="eb">Nº ' + ('0' + (i + 1)).slice(-2) + ' / ' + ('0' + N).slice(-2) + '</span><div class="tt">' + d.title.map(function(w, j){ return '<span' + (j === d.acc ? ' class="acc"' : '') + '>' + esc(w) + '</span>'; }).join(' ') + '</div>';
     blks.appendChild(b); d.blk = b;
@@ -489,24 +486,26 @@ var KM = (function(){
   var pp = function(d, x, c0){ var L = d.dur + d.after - c0, Q = 2 * L + 2 * HOLD; x = ((x % Q) + Q) % Q; return x < L ? c0 + x : x < L + HOLD ? c0 + L : x < 2 * L + HOLD ? c0 + 2 * L + HOLD - x : c0; };
   function anchors(words){
     V = KM.voice(TEXT, .15, words); PH = V.phrases(6); KM.reset(DUR);
-    var S = V.starts(); if (S.length < N + 2) { S = [0]; for (var i = 1; i <= N + 1; i++) S.push(1.8 + (DUR - 3.4) * (i - 1) / (N + .5)); }
-    A.b = []; for (var j = 1; j <= N + 1; j++) A.b.push(S[j] - .3); A.b.push(DUR);   // A.b[i] = the start of detail i (A.b[N] = the recap)
+    A.b = []; for (var j = 1; j <= N + 1; j++) A.b.push(AT[j] - .3); A.b.push(DUR);   // A.b[i] = the start of detail i (A.b[N] = the recap)
     A.end = V.end; A.hookIn = (V.words[HOOK_N - 1] ? V.words[HOOK_N - 1].s - V.lead : 1.2) + .25; window.COVER = +Math.min(A.hookIn + .35, A.b[0] - .22).toFixed(2);
     // the camera: close on the first detail under the hook (it is already running: result first), then one declared glide per part
     CAM = KM.rig({ x: 255, y: 330.6, z: 1.8, drift: 1.3 }).matchMove(A.b[0] - .3, .75, 255, 480, 1);
     for (var p = 1; p <= N; p++) CAM.creep(A.b[p - 1] + .5, Math.max(.2, A.b[p] - A.b[p - 1] - .85), .03).matchMove(A.b[p] - .3, .62, 255 + 560 * p, 480, 1);
     CAM.creep(A.b[N] + .4, DUR - A.b[N] - .4, .02);   // the drift (1.3) and a 3% creep through each part keep it moving; texts sit 26 px inside the safe zone for them
-    D.forEach(function(d, i){ var b0 = A.b[i], b1 = A.b[i + 1], z0 = b0 + .5, s0 = z0 - .1, s1 = Math.max(s0 + .6, b1 - .9 - d.after);   // lands about 0.9 s before the camera moves on
-      // slow motion: the interaction (dur in the component's own seconds) fills the stretch from s0 to s1; at most 1x, at least 0.1x
+    D.forEach(function(d, i){ var b0 = A.b[i], b1 = A.b[i + 1], top = d.dur + d.after;
+      // one beat (BEAT s): the tap at real speed (r0), a short hold on the result, a rewind (w0 to w1, to c = -0.5), the same tap in slow
+      // motion (s0 to s1, the curve and the speed chip only here), then a settle hold on the finished state until the camera moves on
+      var r0 = b0 + .9, w0 = r0 + top + .3, w1 = w0 + .6, s0 = w1 + .5, s1 = Math.min(b0 + 4.6, b1 - 1.1);
       var f = cl((d.dur - .1) / Math.max(.3, s1 - s0 - .25), .1, 1);
-      d.f = f; d.ts = KM.timeScale(s0, s1, f, .25); d.off = s0 - z0; d.clock = (function(ts, off){ return function(t){ return ts.at(t) + off; }; })(d.ts, d.off);
-      d.real = (function(ts, off){ return function(c){ return ts.real(c - off); }; })(d.ts, d.off);
-      d.cg = KM.curveGraph(d.pn.querySelector('.cg'), d.curve, 0, d.dur, { clock: d.clock, real: d.real });
-      d.chipDraw = KM.specChip(d.pn.querySelector('.chip'), d.chip, d.real(0), d.real(d.dur) - d.real(0), d.cg.k);   // the ms counter runs with the dot
+      d.f = f; d.ts = KM.timeScale(s0, s1, f, .25); d.r0 = r0; d.w0 = w0; d.w1 = w1; d.s0 = s0; d.s1 = s1; d.top = top;
+      d.clock = (function(ts){ return function(t){ if (t < w0) return Math.min(t - r0, top); if (t < w1) return mix(top, -.5, E.inOut3(P(t, w0, w1)));
+        return t < s0 ? t - s0 : Math.min(ts.at(t), top); }; })(d.ts);
+      d.real = (function(ts){ return function(c){ return ts.real(c); }; })(d.ts);
+      d.cg = KM.curveGraph(d.pn.querySelector('.cg'), d.curve, 0, d.dur, { clock: function(t){ return t < w1 ? -1 : d.clock(t); }, real: d.real });
       d.badgeDraw = KM.slowmoBadge(d.badge, d.ts, f.toFixed(2) + '× SPEED');
-      d.typeA = b0 + .35; d.typeB = Math.min(b0 + .35 + d.css.length * .011, b1 - .9);
+      d.typeA = b0 + .4; d.typeB = Math.min(b0 + .4 + d.css.length * .012, b0 + 2.4);
       for (var c = 0; d.typeA + c * .1 < d.typeB; c++) KM.cue({ t: d.typeA + c * .1, k: 'tick', g: .05, p: (c * 5) % 7 });
-      if (!(d.kind === 'toast')) KM.tap(d.real(0), 255); });
+      KM.tap(r0, 255); KM.tap(d.real(0), 255); KM.cue({ t: w0 + .05, k: 'move', d: .55, g: .1, dir: -1, x: 255, r: .2 }); });
     BAR = KM.partProgress($('bar'), D.map(function(d, i){ return [A.b[i], A.b[i + 1]]; }));
     KM.cue({ t: 0, k: 'hit', g: .45, p: -.3 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .35 });
     KM.cue({ t: A.b[N] + .35, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] }); KM.cue({ t: DUR - .45, k: 'swish', d: .6, g: .4, p: -.6 });
@@ -521,10 +520,9 @@ var KM = (function(){
     KM.lights(t, c);
     D.forEach(function(d, i){ var a = alpha(i, t), live = t >= A.b[i] - .35 && t < A.b[i + 1] + .4, hookLoop = i === 0 && t < A.b[0];
       d.stage.toggleAttribute('data-subject', cur === i);
-      var cc = hookLoop ? hookC(d, t) : d.clock(t), end = d.dur + d.after + .25;
-      if (!hookLoop && cc > end) cc = pp(d, d.dur + d.after + .2 + cc - end, -.2);   // once it has played, it replays at 1x (back and forth) until the camera moves on
+      var cc = hookLoop ? hookC(d, t) : d.clock(t), rew = t >= d.w0 && t < d.w1;
       var k = cl(cc / d.dur);
-      if (live || hookLoop) d.draw(d.comp, cc, { f: d.cg.f, k: k, a: a, dur: d.dur, mini: hookLoop });
+      if (live || hookLoop) d.draw(d.comp, cc, { f: d.cg.f, k: k, a: a, dur: d.dur, mini: hookLoop || rew });
       // inside its card the component eases closer through its part (a slow-motion push that keeps the frame alive through the holds)
       var zk = E.inOut3(P(t, A.b[i] + .2, A.b[i + 1] + .3)); d.comp.style.transform = 'scale(' + (1 + .1 * zk).toFixed(4) + ')';
       KM.type(d.code, d.html2, t, d.typeA, d.typeB); d.code.style.opacity = a.toFixed(3);
@@ -532,7 +530,7 @@ var KM = (function(){
       KM.depth(d.stage, c, 255 + 560 * i, 480, 0, ' translateY(' + KM.float(t, i + .9, 2).toFixed(2) + 'px)');
       KM.depth(d.code.parentNode, c, 255 + 560 * i, 480, .05, ' translateY(' + KM.float(t, i + .3, 3).toFixed(2) + 'px)');
       KM.depth(d.cgEl, c, 255 + 560 * i, 480, .09, ' translateY(' + KM.float(t, i + .6, 2.5).toFixed(2) + 'px)');
-      d.cg.draw(t, a * P(t, A.b[i] + .1, A.b[i] + .4)); d.chipDraw(t); d.pn.querySelector('.chip').style.opacity = (+d.pn.querySelector('.chip').style.opacity * a).toFixed(3);
+      d.cg.draw(t, a * E.inOut3(P(t, d.w1 - .1, d.s0 - .1)) * (1 - E.inOut3(P(t, d.s1 + .2, d.s1 + .6))));
       d.badgeDraw(t);
       // the title block: in word by word as its part starts, blurred away as the next one comes
       var st = [A.b[i] + .02]; d.title.forEach(function(w, j){ st.push(A.b[i] + .1 + j * .09); });
@@ -541,10 +539,10 @@ var KM = (function(){
       // the recap tile: the same component at full speed, forward and back, its own phase
       var rk = E.settle(P(t, A.b[N] - .05 + i * .09, A.b[N] + .55 + i * .09), 1.2), ra = alpha(N, t);
       // a spotlight walks the grid once the tiles are in (one tile lifts and lights up at a time: the eye reads each, the frame never rests)
-      var sp = t - A.b[N] - .8, per = .85, ph = sp / per - i, hl = sp < 0 ? 0 : Math.max(0, Math.sin(Math.PI * cl(((ph % N) + N) % N / 1.6))) * P(sp, 0, .4);
+      var sp = t - A.b[N] - 1.6, per = 1.1, ph = sp / per - i, hl = sp < 0 ? 0 : Math.max(0, Math.sin(Math.PI * cl(((ph % N) + N) % N / 1.6))) * P(sp, 0, .4);
       d.tile.style.opacity = cl(rk * 2.5).toFixed(3); d.tile.style.transform = 'translateY(' + ((1 - rk) * 36 - hl * 8).toFixed(2) + 'px) scale(' + (mix(.94, 1, rk) + hl * .06).toFixed(4) + ')';
       d.tile.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,' + (.22 + hl * .2).toFixed(3) + '), inset 0 1.5px 0 rgba(255,255,255,.5), inset 0 0 44px rgba(143,230,255,' + (hl * .2).toFixed(3) + '), 0 0 0 2px rgba(143,230,255,' + (hl * .75).toFixed(3) + '), 0 ' + (18 + hl * 10).toFixed(1) + 'px ' + (28 + hl * 12).toFixed(1) + 'px rgba(18,8,60,.55)';
-      if (t >= A.b[N] - .4) { var mc = pp(d, t - A.b[N] + i * .37, -.2); d.draw(d.mini, mc, { f: d.cg.f, k: cl(mc / d.dur), a: ra, dur: d.dur, mini: true }); }
+      if (t >= A.b[N] - .4) { var mc = Math.min(d.top, t - A.b[N] - .3 - i * .35); /* each plays once at 1x, then holds (the recap's hold) */ d.draw(d.mini, mc, { f: d.cg.f, k: cl(mc / d.dur), a: ra, dur: d.dur, mini: true }); }
       [].forEach.call(d.tile.querySelectorAll('.tl'), function(e){ e.style.opacity = ra; }); });
     grid.toggleAttribute('data-subject', cur === N);
     BAR(t);
