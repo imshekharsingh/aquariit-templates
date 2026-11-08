@@ -3,7 +3,7 @@
  "topic": "Phone charging",
  "voice": "af_heart",
  "flow": true,
- "speed": 0.84,
+ "speed": 0.78,
  "max_speed": 0.9,
  "dur": 29.5,
  "max_end": 29,
@@ -77,7 +77,7 @@
      },
      "target": {
       "icon": "check",
-      "label": "Counted once"
+      "label": "Counted"
      },
      "target_tint": "green",
      "hub_cue": "cycles"
