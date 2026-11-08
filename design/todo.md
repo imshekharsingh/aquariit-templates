@@ -5,6 +5,10 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
+- [ ] AFTER the Wed 11 Nov 04:30 IST reset (not before: usage): web colour variety (owner, 8 Nov 2026: "introduce more colour combinations,
+  video to video"). Within look C (the type, glass panes and layout stay the brand), curate 5-6 light-bloom palettes (bloom colours, grade,
+  accent) in kitmotion.js's glass theme, rotated per reel (newweb.mjs picks the next one after the last web reel in captions.json), with an
+  AA contrast check (4.5:1 for captions and labels over the brightest bloom) in the preflight. Record the palette per reel to read reach by it.
 - [ ] Reel tooling that raises the hit rate: the stills review prints a rulebook score block (design/rules-*.md) next to the sheet.
       (The 2-3 day buffer item was dropped on 5 Nov 2026: owner, learn-then-build.)
 

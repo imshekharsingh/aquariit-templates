@@ -103,8 +103,10 @@ def whoosh(d=.5, g=1.0):
     fc = np.exp(np.linspace(np.log(350), np.log(3200), n)); fk = 2 * np.sin(np.pi * fc / SR)
     for i in range(n):
         hi = x[i] - lo - .8 * bp; bp += fk[i] * hi; lo += fk[i] * bp; out[i] = bp
-    e = np.where(k < .7, (k / .7) ** 2, ((1 - k) / .3) ** 1.5)
-    return out / (np.abs(out).max() + 1e-9) * e * g * .5
+    e = np.where(k < .7, (k / .7) ** 2, ((1 - k) / .3) ** 2.2)   # a shorter tail (owner, 8 Nov 2026: "more elegant")
+    out = out / (np.abs(out).max() + 1e-9) * e
+    fr = np.fft.rfftfreq(n, 1 / SR); out = np.fft.irfft(np.fft.rfft(out) / np.sqrt(1 + (fr / 7000) ** 4), n)   # no top end above ~7 kHz
+    return out * g * .5
 
 
 def kick(g=1.0):
@@ -147,7 +149,7 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
         dets.append({'t': el['t'], 'k': k, 'g': el.get('g', 1) * {'s': .9, 'm': 1.0, 'l': 1.15}[el['size']], 'x': el['x'],
                      'm': notes[1 + (j % 4)] + 12, 'f': 2300 * 2 ** ((j * 5 % 12) / 24)})
     for t in ev['bells']: place(sfx, bell(84, .7), t)
-    for t in ev['whooshes']: place(sfx, whoosh(.5, .7), t - .35)
+    for t in ev['whooshes']: place(sfx, whoosh(.45, .7 * 10 ** (-5.5 / 20)), t - .32)   # 5.5 dB under the old level: the element details lead
     for t in ev['kicks']: place(sfx, kick(1.0), t)
     for t in ev['thuds']: place(sfx, thud(.9), t)
     if ev.get('final') is not None:   # the resolve: a full C major chord with a bell on top, ringing into the fade
