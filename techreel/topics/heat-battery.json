@@ -3,17 +3,17 @@
  "topic": "Phone heat",
  "voice": "af_heart",
  "flow": true,
- "speed": 0.75,
- "max_speed": 0.86,
- "dur": 29.5,
- "max_end": 29,
+ "speed": 1.0,
+ "max_speed": 1.06,
+ "dur": 22.0,
+ "max_end": 21.4,
  "say": {
   "35°C": "thirty five Celsius"
  },
  "verdict": "TRUE",
  "experiment": {
   "id": "tech-myth-verdict",
-  "change": "myth or truth, try 2 with a complete-thought script (what it is, why it happens, what it means for you; owner 8 Nov: \"I feel lost at times\"), platform-neutral",
+  "change": "myth or truth, try 2: clarity by structure at a natural pace (what it is, why, what it means for you; ~3 words/s, 20-22 s; owner 8 Nov: \"clearer sentences, not slowed\"), platform-neutral",
   "vs": "median"
  },
  "hook": [
@@ -26,10 +26,9 @@
    "text": "Does heat hurt your phone's battery?"
   },
   {
-   "text": "Yes. Above 35°C, the battery wears out faster, so every charge lasts less, for good.",
+   "text": "Yes. Above 35°C, the battery wears out faster, for good.",
    "chunks": [
     3,
-    5,
     4,
     3
    ],
@@ -58,10 +57,10 @@
   {
    "text": "That's because heat speeds up its chemistry, and a parked car gets hotter than that.",
    "chunks": [
-    4,
     3,
-    5,
-    3
+    4,
+    4,
+    4
    ],
    "scene": {
     "label": "WHY: HEAT",
@@ -88,11 +87,11 @@
    }
   },
   {
-   "text": "So when it's too hot, your phone slows or stops charging to protect it.",
+   "text": "So a hot phone slows or stops charging to protect itself.",
    "chunks": [
-    5,
     4,
-    5
+    4,
+    3
    ],
    "scene": {
     "label": "SO: CHARGING PAUSES",
@@ -110,10 +109,10 @@
    }
   },
   {
-   "text": "Takeaway: keep it out of hot cars, and take a thick case off to charge.",
+   "text": "Takeaway: keep it out of hot cars, and charge it without a thick case.",
    "chunks": [
     7,
-    8
+    7
    ],
    "scene": {
     "label": "TAKEAWAY",

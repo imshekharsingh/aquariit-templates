@@ -30,6 +30,9 @@ As decided by the owner on 5 Nov, the channel posted 2-3 reels a week; from Sun 
 10. **Every step is a complete thought** (owner, 8 Nov 2026: "the information feels cut off; it doesn't really explain well what it is for or how
    it relates; I feel lost at times"): each line is a full sentence, no fragments, no unexplained term; the script runs what it is → why it happens
    → what it means for you, with one plain link word between steps ("so", "that's because", "which means"); the last line says the practical
-   takeaway in one sentence. At most 2.5 words/s: lengthen the reel (to about 24-28 s) rather than cut a link. This overrides rule 3's 18 s cap.
+   takeaway in one sentence. Clarity comes from the structure, not a slow voice (owner, 8 Nov 2026: "I wanted clearer sentences, not slowed.
+   While it helps, it's so slow that it goes beyond the 20 s range. 1-2 s over could have been fine, but it feels slowed."): Kokoro at its
+   natural pace (speed ~1.0, about 2.9-3.3 words/s), short breaths only, 20-22 s total (at most ~2 s over 20 s); cut every word that doesn't
+   serve the chain rather than slow the voice. This replaces rule 3's 18 s cap.
 11. **Platform balance** (owner, 8 Nov 2026: "we lean too much on Apple"): at most 1 in 3 tech reels Apple-specific; most reels are
    platform-neutral (wording that fits Android and iPhone alike) or cover both. Check the last 3 reels in captions.json before picking a topic.

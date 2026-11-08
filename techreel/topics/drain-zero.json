@@ -3,17 +3,17 @@
  "topic": "Phone charging",
  "voice": "af_heart",
  "flow": true,
- "speed": 0.78,
- "max_speed": 0.9,
- "dur": 29.5,
- "max_end": 29,
+ "speed": 1.0,
+ "max_speed": 1.06,
+ "dur": 22.0,
+ "max_end": 21.4,
  "say": {
   "0%": "zero percent"
  },
  "verdict": "MYTH",
  "experiment": {
   "id": "tech-myth-verdict",
-  "change": "myth or truth, try 3 with a complete-thought script (what it is, why it happens, what it means for you; owner 8 Nov: \"I feel lost at times\"), platform-neutral",
+  "change": "myth or truth, try 3: clarity by structure at a natural pace (what it is, why, what it means for you; ~3 words/s, 20-22 s; owner 8 Nov: \"clearer sentences, not slowed\"), platform-neutral",
   "vs": "median"
  },
  "hook": [
@@ -25,12 +25,10 @@
    "text": "Should you wait for 0%?"
   },
   {
-   "text": "No. Today's phone batteries are lithium ion, and they don't need to run empty first.",
+   "text": "No. Lithium ion batteries don't need to run empty.",
    "chunks": [
-    3,
     4,
-    5,
-    3
+    5
    ],
    "scene": {
     "label": "THE ANSWER: NO",
@@ -54,9 +52,9 @@
    }
   },
   {
-   "text": "What wears it out is cycles: a cycle is a hundred percent used, even over days.",
+   "text": "They wear out in cycles: one cycle is a hundred percent used, even over days.",
    "chunks": [
-    6,
+    5,
     7,
     3
    ],
@@ -85,10 +83,10 @@
    }
   },
   {
-   "text": "So top ups waste nothing, and most phones keep about eighty percent after hundreds of cycles.",
+   "text": "So top ups are fine, and batteries keep about eighty percent after hundreds of cycles.",
    "chunks": [
     5,
-    7,
+    6,
     4
    ],
    "scene": {
@@ -114,10 +112,10 @@
    }
   },
   {
-   "text": "Takeaway: charge whenever it suits you, and check battery health in your settings.",
+   "text": "Takeaway: charge any time, and check battery health in settings.",
    "chunks": [
-    6,
-    7
+    4,
+    6
    ],
    "scene": {
     "label": "TAKEAWAY",
@@ -126,7 +124,7 @@
     "params": {
      "items": [
       {
-       "text": "Charge whenever it suits you",
+       "text": "Charge any time",
        "cue": "charge"
       },
       {
@@ -140,7 +138,7 @@
  ],
  "post": {
   "title": "Should you wait for 0% before charging?",
-  "caption": "Should you let your phone hit 0% before you charge it? No 🔋\n\nPhone batteries are lithium-ion, and they don't need to run empty first: charge whenever you want. What wears them is charge cycles, and one cycle is 100% of the battery's capacity used, even if it's spread over several charges (75% today, 25% tomorrow = one cycle). So topping up wastes nothing, and phone batteries are built to keep about 80% of their capacity after hundreds of full cycles. The takeaway, on Android or iPhone: charge whenever it suits you, and check battery health in your settings.\nSend this to the friend who waits for 1%.",
+  "caption": "Should you let your phone hit 0% before you charge it? No 🔋\n\nPhone batteries are lithium-ion, and they don't need to run empty first: charge whenever you want. What wears them is charge cycles, and one cycle is 100% of the battery's capacity used, even if it's spread over several charges (75% today, 25% tomorrow = one cycle). So topping up wastes nothing, and phone batteries are built to keep about 80% of their capacity after hundreds of full cycles. The takeaway, on Android or iPhone: charge any time, and check battery health in your settings.\nSend this to the friend who waits for 1%.",
   "keywords": [
    "should you let your phone die before charging",
    "phone battery myths",

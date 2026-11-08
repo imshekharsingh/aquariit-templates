@@ -19,6 +19,7 @@ owner catches something new, the same day.
 - 8 Nov: a figure's action looked like a fall; human actions need anticipation, ease and weight; check every 0.1 s.
 - 8 Nov: tech info felt cut off ("I feel lost at times"). Does every line say what, why and what it means for you, joined by a link word?
 - 8 Nov: "we lean too much on Apple." Would an Android owner feel the reel is for them too?
+- 8 Nov: tech made clearer by slowing the voice to 29 s; the owner wanted clearer sentences at a natural pace, 20-22 s. Is the reel 20-22 s at about 3 words/s (voice check), with clarity from the sentences, not the speed?
 
 The principle (owner, 8 Nov 2026: "Who is going to have that critical thinking?"): a check that measures the input (code, cue lists,
 counts) is not a check. Measure what the viewer gets: the rendered video and its sound.
