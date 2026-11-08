@@ -48,7 +48,8 @@ jobs:
           # answered 504 for every try for an hour): a few tries with backoff, then the same wheel from spaCy's Hugging Face copy
           W=en_core_web_sm-3.8.0; ok=
           for d in 0 5 15 30 60; do sleep $d; pip install --quiet "https://github.com/explosion/spacy-models/releases/download/$W/$W-py3-none-any.whl" && { ok=1; break; }; done
-          [ -n "$ok" ] || pip install "https://huggingface.co/spacy/en_core_web_sm/resolve/main/en_core_web_sm-any-py3-none-any.whl"
+          # (the Hugging Face file is named "-any-", which pip refuses as a wheel name: saved under the real one first)
+          [ -n "$ok" ] || { curl -fsSL --retry 3 -o "$RUNNER_TEMP/$W-py3-none-any.whl" "https://huggingface.co/spacy/en_core_web_sm/resolve/main/en_core_web_sm-any-py3-none-any.whl" && pip install "$RUNNER_TEMP/$W-py3-none-any.whl"; }
           python3 -c "import spacy; spacy.load('en_core_web_sm'); print('en_core_web_sm ok')"
       - name: Render
         run: |
