@@ -59,6 +59,13 @@ every channel, every day: nothing is rendered or called ready until every item p
 Each reel has review/<channel>/<name>.md (from review/TEMPLATE.md, "N. item: PASS: evidence", the AUTO lines pasted); npm run check and the
 Showreel / Tech reel workflows refuse a reel without it (scripts/review-gate.mjs; reels posting before 8 Nov are grandfathered).
 
+## Verify the output, not the input (owner, 8 Nov 2026: "Our checks only counted whether sounds existed, never whether you can hear them. Why
+always the same situation? Who is going to have that critical thinking?")
+Claude is the critic. Every check measures what the viewer gets: the rendered MP4, its frames at phone size and its audio (levels, what is
+audible), never only the scene code, cue lists or counts. Before calling any reel ready, read design/owner-feedback.md line by line against
+the finished output, and add a line there the same day whenever the owner catches something. When a new rule or check is added, ask
+"would this have caught the owner's last complaint on the final video?" If not, it isn't done.
+
 ## Daily improvement loop (owner, 7 Nov 2026)
 Owner: "Every day we should think of some improvements to experiment with or put in place, and keep using the combinations that work. You should be
 a social media manager, design manager, product manager, whatever you can be." So, every day:
