@@ -377,10 +377,59 @@ var K25 = (function(){
     x.beginPath(); x.moveTo(p.x, p.y - 6); x.lineTo(cx, cy + h / 2); x.lineWidth = 1.2; x.strokeStyle = o.ink || '#1a120c'; x.globalAlpha *= .8; x.stroke(); x.globalAlpha /= .8;
     x.fillStyle = o.bg || 'rgba(16,12,10,.88)'; x.beginPath(); x.roundRect(cx - w / 2, cy - h / 2, w, h, h * .22); x.fill();
     txt(name, cx, cy + sz * .36, sz, '800 ' + FI_, o.txt || '#fbf3e0', 'center', 2.5); x.restore(); }
+
+  // ---- journey (owner, 8 Nov 2026: "a JOURNEY, not a scene"; design/rules-c3.md rule 9): several worlds, each drawn whole by its own
+  // function with its own camera, joined by varied, motivated transitions. paint(i, fn) draws a world into off-screen buffer i (the core's
+  // context is swapped while fn runs, so every kit and core helper draws there); the transitions composite two buffers on the main canvas.
+  // Draw no text inside a world (text boxes are probed on the main canvas): kinetic type goes over the composite.
+  var BUFS = [];
+  function paint(i, fn){ if (!BUFS[i]) { BUFS[i] = document.createElement('canvas'); BUFS[i].width = 1080; BUFS[i].height = 1920; }
+    var b = BUFS[i], g = b.getContext('2d'), keep = x, ox = OX, oy = OY; g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1; g.filter = 'none';
+    g.globalCompositeOperation = 'source-over'; g.clearRect(0, 0, 1080, 1920); x = g; OX = 0; OY = 0; try { fn(); } finally { x = keep; OX = ox; OY = oy; } return b; }
+  function blit(b, a, f){ x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha *= a == null ? 1 : a; if (f) x.filter = f; x.drawImage(b, 0, 0); x.restore(); }
+  function half(px0, py0, ang, side){ var dx = Math.sin(ang), dy = Math.cos(ang), nx = dy * side, ny = -dx * side; x.beginPath();
+    x.moveTo(px0 - dx * 3000, py0 - dy * 3000); x.lineTo(px0 + dx * 3000, py0 + dy * 3000); x.lineTo(px0 + dx * 3000 + nx * 3000, py0 + dy * 3000 + ny * 3000); x.lineTo(px0 - dx * 3000 + nx * 3000, py0 - dy * 3000 + ny * 3000); x.closePath(); }
+  // through(A, B, k, hole, c, s0): the camera flies through a hole in world A (hole() = its path in screen px, grown by A's own camera)
+  // into world B, which waits inside it scaled s0 about the hole's centre c = [x, y] and settles to full size and centre as k -> 1
+  function through(bA, bB, k, hole, c, s0){ blit(bA); var e = eio(cl(k, 0, 1)), s = mix(s0, 1, e), cx = mix(c[0], 270, e), cy = mix(c[1], 480, e);
+    x.save(); screen(); hole(); x.clip(); x.setTransform(2 * s, 0, 0, 2 * s, 2 * (cx - 270 * s), 2 * (cy - 480 * s)); x.drawImage(bB, 0, 0, 540, 960);
+    x.restore(); }
+  // match(A, B, k, a, b): a match cut on a shape: circle a = [x, y, r] in A and circle b in B; B is laid so its circle sits on A's, shows
+  // inside it first, then eases to its own place while the circle opens past the frame
+  function match(bA, bB, k, a, b){ blit(bA); var k1 = eo(P(k, 0, .4)), e = eio(P(k, .3, 1)), s = mix(a[2] / b[2], 1, e), tx = mix(a[0], b[0], e), ty = mix(a[1], b[1], e), r = mix(a[2], 1300, Math.pow(e, 1.6));
+    x.save(); screen(); x.beginPath(); x.arc(tx, ty, r, 0, 7); x.clip(); x.globalAlpha = k1;
+    x.setTransform(2 * s, 0, 0, 2 * s, 2 * (tx - b[0] * s), 2 * (ty - b[1] * s)); x.drawImage(bB, 0, 0, 540, 960); x.restore(); }
+  // page(A, B, k): A turns over like a page from the right edge (a slightly tilted fold), its back is plain paper, B lies under it
+  function page(bA, bB, k, back){ var e = eio(cl(k, 0, 1)), f = mix(600, -260, e), ang = -.16, dx = Math.sin(ang), dy = Math.cos(ang), R = [2 * dx * dx - 1, 2 * dx * dy, 2 * dx * dy, 2 * dy * dy - 1];
+    blit(bB); x.save(); screen(); x.fillStyle = lg(f, 0, f + 60, 0, [[0, 'rgba(20,12,6,.45)'], [1, 'rgba(20,12,6,0)']]); half(f, 480, ang, 1); x.fill(); x.restore();
+    x.save(); screen(); half(f, 480, ang, -1); x.clip(); blit(bA); x.restore();
+    x.save(); screen(); x.transform(R[0], R[1], R[2], R[3], f - R[0] * f - R[2] * 480, 480 - R[1] * f - R[3] * 480); half(f, 480, ang, 1); x.clip(); x.beginPath(); x.rect(0, 0, 540, 960); x.clip();
+    x.fillStyle = back || '#efe2c4'; x.fillRect(-100, -100, 740, 1160); x.globalAlpha = .13; x.drawImage(bA, 0, 0, 540, 960); x.globalAlpha = 1;
+    x.fillStyle = lg(f, 0, f + 140, 0, [[0, 'rgba(60,40,20,.35)'], [.3, 'rgba(255,248,230,.25)'], [1, 'rgba(60,40,20,0)']]); x.fillRect(-100, -100, 740, 1160); x.restore(); }
+  // fold(A, B, k, n): A folds up like a paper screen toward the left edge (n panels, alternate ones in shade) and B slides in behind it
+  function fold(bA, bB, k, n){ n = n || 6; var e = eio(cl(k, 0, 1)), W = 540 * (1 - e), w = W / n;
+    x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.drawImage(bB, (1 - e) * 80, 0); x.restore();
+    if (W < .5) return; x.save(); screen(); x.fillStyle = 'rgba(20,12,6,.35)'; x.fillRect(W, 0, 14 * (1 - e) + 4, 960);
+    for (var i = 0; i < n; i++) { var sy = i % 2 ? 1 - .05 * e : 1, h = 960 * sy; x.drawImage(bA, 1080 / n * i, 0, 1080 / n, 1920, i * w, (960 - h) / 2, w + .5, h);
+      x.fillStyle = 'rgba(20,12,6,' + (i % 2 ? .38 * e : .06 * e) + ')'; x.fillRect(i * w, (960 - h) / 2, w + .5, h); }
+    x.restore(); }
+  // seam(A, B, k): a parallax pan from world A into world B: both cameras keep moving sideways (the scene's tracks give the parallax), and
+  // a cut-paper edge with a soft shadow travels from the right edge to the left; A left of it, B right of it
+  function seam(bA, bB, k){ var e = eio(cl(k, 0, 1)), sx = mix(560, -20, e), r = rnd(41); blit(bA); x.save(); screen(); x.beginPath(); x.moveTo(sx, -5);
+    for (var y = 0; y <= 965; y += 12) x.lineTo(sx + Math.sin(y / 53) * 6 + (r() - .5) * 4, y); x.lineTo(560, 965); x.lineTo(560, -5); x.closePath();
+    x.shadowColor = 'rgba(20,12,6,.45)'; x.shadowBlur = 18; x.shadowOffsetX = -6; x.fillStyle = '#efe2c4'; x.fill(); x.shadowColor = 'transparent'; x.clip();
+    x.setTransform(1, 0, 0, 1, 0, 0); x.drawImage(bB, 0, 0); x.restore(); }
+  // print(A, k, at): world A becomes an old photograph: it tones to sepia, gains a white border and settles, small and turned, at
+  // at = [x, y, scale, angle] (the scene draws the desk it lands on first)
+  function print(bA, k, at){ var e = eio(cl(k, 0, 1)), s = mix(1, at[2], e), r = mix(0, at[3], e), cx = mix(270, at[0], e), cy = mix(480, at[1], e), bd = 16 * e;
+    x.save(); screen(); x.translate(cx, cy); x.rotate(r); x.scale(s, s); x.shadowColor = 'rgba(20,12,6,' + (.45 * e) + ')'; x.shadowBlur = 30 * e; x.shadowOffsetY = 12 * e;
+    x.fillStyle = '#f3ead6'; x.fillRect(-270 - bd, -480 - bd, 540 + 2 * bd, 960 + 2 * bd + bd * 2.2); x.shadowColor = 'transparent';
+    x.drawImage(bA, -270, -480, 540, 960); x.globalAlpha = P(k, 0, .5); x.filter = 'sepia(1) contrast(.9) brightness(1.04)'; x.drawImage(bA, -270, -480, 540, 960); x.filter = 'none'; x.restore(); }
   var FI_ = "'Inter',system-ui,sans-serif";
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
     paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb,
-    LANDS: LANDS, globe: globe, gxy: gxy, map: map, mxy: mxy, route: route, bow: bow, place: place };
+    LANDS: LANDS, globe: globe, gxy: gxy, map: map, mxy: mxy, route: route, bow: bow, place: place,
+    paint: paint, blit: blit, through: through, match: match, page: page, fold: fold, print: print, seam: seam };
 })();
 /*kit25:end*/
 

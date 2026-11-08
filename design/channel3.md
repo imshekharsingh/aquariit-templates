@@ -181,6 +181,16 @@ it in (the same command inlines kit3d.js), npm run check fails on a stale copy. 
   leads it); `Kt.place(cam, X, Y, Z, name, k)` is a pin with its name on a tag that keeps its box inside the frame and fades once the pin
   leaves it. The starter uses all of them: hook on station 0, the globe turns place A to the front, the dive, the route from A to B, the payoff.
 
+- **Journey** (8 Nov 2026, owner: "a JOURNEY, not a scene"; rules-c3.md rule 9; pilots scripts/channel3/sphinx-sand.html, opera-sphere.html):
+  each world is one function `W(t)` that draws a whole frame with its own `Kt.track` camera (no text inside it). `Kt.paint(i, fn)` draws a world
+  into off-screen buffer i (the core's context is swapped while fn runs); the transitions composite two buffers: `Kt.through(A, B, k, hole, c, s0)`
+  (fly through a hole in A that A's own camera grows; s0 above 1 so B always covers the hole), `Kt.match(A, B, k, a, b)` (circle a in A onto circle b
+  in B: make the two radii close), `Kt.page`, `Kt.fold`, `Kt.seam` (parallax pan: both cameras keep moving sideways), `Kt.print` (a world becomes a
+  photograph). A dive is a clip at a moving cut-paper edge. Declare every one in window.TRANSITIONS. Learned on the pilots' stills: cameras for a
+  landmark must hold the subject at 40-60 % of the frame width (a 70 m statue needs about 120 m of distance only for the final wide view); figures
+  at 1.8 m need the camera within about 15 m to read; keep people above y 600 (the caption card); a world rendered at a frozen time (the photo) is
+  painted once into its own buffer.
+
 - **Pronunciation** (3 Nov 2026, the tea reel): a foreign or short word the voice may misread (te, thé, Tee) gets Kokoro markup in the
   config's voice text only, `[te](/tˈA/)` (misaki phonemes: A = the "ay" sound, I = "eye", O = "oh"); the scene keeps the plain word for
   the caption. qa.mjs compares the config with the markup read as its word, and `--write` keeps the markup. Read the voice check's
