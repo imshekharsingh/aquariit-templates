@@ -199,6 +199,20 @@ def rustle(d=.5, g=1, p=0, r=None):
     return m / (np.abs(m).max() + 1e-9) * .5 * g
 
 
+# Elegant air (owner, 8 Nov 2026: "the whooshes and swells are too much; tone them down for a more elegant tone"): every air kind
+# (whoosh, swish, riser, move, swell) sits AIR_DB lower, loses its top end above AIR_LP and has a shorter tail, so the element details
+# (ticks, blips, snaps on the detail bus, unchanged) lead and the air sits behind them. Every channel that renders through this file.
+AIR = {'whoosh', 'swish', 'riser', 'move', 'swell'}; AIR_DB = -5.5; AIR_LP = 7000
+
+
+def air(s, tail=True):
+    s = np.atleast_2d(np.asarray(s, dtype=float)); n = s.shape[1]
+    out = np.stack([lowpass(ch, AIR_LP) for ch in s]) * 10 ** (AIR_DB / 20)
+    if tail:   # the last 40% falls away faster (about a third shorter audible tail); a riser or swell ends on its cue and keeps its end
+        k = np.linspace(0, 1, n); out *= np.where(k < .6, 1, np.clip((1 - k) / .4, 0, 1) ** .9)
+    return out
+
+
 NEW_KINDS = {'rustle': rustle, 'move': move, 'touch': touch, 'snap': snap, 'blip': blip, 'swell': swell, 'resolve': resolve}
 
 
@@ -337,6 +351,7 @@ def main(cues_path, out_path, narration=None):
             s = NEW_KINDS[k](g=g, p=p, **kw)
             if k == 'swell': t -= kw['d']   # ends on the cue
             s = place(s, c.get('x', 270), c.get('x2'))
+            if k in AIR: s = air(s, k != 'swell')
             s = _detail(s, k, g, t)
             put(bus, s, t)
             if c.get('r'): put(wet, s * float(c['r']), t)
@@ -347,6 +362,7 @@ def main(cues_path, out_path, narration=None):
         elif k == 'boom': s = hit(g, p, True)
         else: s = {'hit': hit, 'pop': pop, 'tick': tick, 'click': click, 'shimmer': shimmer, 'tap': tap, 'thud': thud}[k](g, p)
         if c.get('x') is not None: s = place(s, c['x'], c.get('x2'))
+        if k in AIR: s = air(s, k != 'riser')
         s = _detail(s, k, g, t)
         put(bus, s, t)
         if c.get('r'): put(wet, s * float(c['r']), t)

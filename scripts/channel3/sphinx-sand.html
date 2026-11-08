@@ -540,6 +540,48 @@ var K25 = (function(){
     streaks(cam, 80, t, 50, 11, 10, 30, nt > 0 ? .85 : .25, 14);
     if (use(cam, 90)) { x.save(); x.translate(-10 - t * .4, -4.5); Kt.ridge(19, 1.6, '#9c7a4c', 'rgba(70,46,20,.6)', 'rgba(70,46,20,.2)', { deep: 30 }); x.restore(); }
   }
+  // ---------- the prince lies down (owner, 8 Nov 2026: "it's like someone has abruptly fallen"): a human action with anticipation, ease
+  // and weight. A small rig (hip, torso, head angles; feet and hands placed by two-bone reach) through seven poses on a Catmull-Rom curve, so
+  // the speed never stops between poses: a yawn and a stretch, he lowers (leaning forward to balance), sits, leans back on one arm, reclines,
+  // the head settles on his hand and the eyes close; then a soft breath and a few rising z's. World units, y up, he faces -x. ----------
+  var G3 = 9.7, NAP = [   // t (s from NAP0), hip x, hip y, torso a (+ = back), head, feet x, back hand x/y, front hand x/y, yawn, eyes shut
+    [0, 3.15, 1.18, .02, 0, 3.12, 3.2, 1.12, 3.08, 1.12, 0, 0],
+    [.5, 3.15, 1.22, .14, .35, 3.12, 3.45, 2.5, 3.18, 2.55, 1, .4],
+    [.95, 3.02, .64, -.3, -.08, 2.8, 3.32, .55, 2.55, 1.0, .25, 0],
+    [1.32, 3.05, .17, .1, 0, 2.4, 3.55, .03, 2.55, .72, 0, 0],
+    [1.68, 3.08, .16, .72, -.08, 2.2, 3.62, .03, 2.8, .45, 0, .15],
+    [2.05, 3.12, .15, 1.43, -.12, 1.97, 4.12, .14, 3.45, .44, 0, .6],
+    [2.3, 3.12, .15, 1.5, -.08, 1.95, 4.12, .13, 3.45, .43, 0, 1]];
+  function nap0(){ return Math.max(tw1(1) + .05, WT(3, /napped/) - 2.15); }
+  function napPose(t){ var u = t - nap0(), K = NAP, n = K.length; if (u <= 0) return K[0].slice(1); if (u >= K[n - 1][0]) return K[n - 1].slice(1);
+    var i = 0; while (K[i + 1][0] < u) i++; var k0 = K[Math.max(i - 1, 0)], k1 = K[i], k2 = K[i + 1], k3 = K[Math.min(i + 2, n - 1)], s = (u - k1[0]) / (k2[0] - k1[0]);
+    var e = s * s * (3 - 2 * s) * .35 + s * .65;   // a little ease inside each span; the Catmull-Rom tangents carry the speed through the poses
+    return k1.slice(1).map(function(_, j){ var p0 = k0[j + 1], p1 = k1[j + 1], p2 = k2[j + 1], p3 = k3[j + 1], m1 = i ? (p2 - p0) / 2 : 0, m2 = i + 2 < n ? (p3 - p1) / 2 : 0, e2 = e * e, e3 = e2 * e;
+      return (2 * e3 - 3 * e2 + 1) * p1 + (e3 - 2 * e2 + e) * m1 + (-2 * e3 + 3 * e2) * p2 + (e3 - e2) * m2; }); }
+  function prince(t){ var q = napPose(t), S = 1.29, OL = 'rgba(30,22,16,.85)', SK = '#9a6440', CO = '#f1ead8', u = t - nap0(),
+      br = u > 2.2 ? Math.sin((u - 2.2) * 2.1) * .5 + .5 : 0, hx = q[0], hy = G3 + q[1], a = q[2] - br * .012, hd = q[3];
+    var sh = [hx + .66 * Math.sin(a), hy + .66 * Math.cos(a)], hc = [sh[0] + .37 * Math.sin(a + hd), sh[1] + .37 * Math.cos(a + hd)];
+    function leg(fx, dark){ var j = Kt.reach(hx, hy, fx, G3 + .06, .6, .59, -1); Kt.limb([hx, hy, j[0], j[1], j[2], j[3]], .15, dark ? '#86552f' : SK, OL);
+      x.beginPath(); x.ellipse(j[2] - .07, j[3] - .02, .12, .045, 0, 0, 7); Kt.fill(dark ? '#7a4c2a' : SK); }
+    function arm(tx, ty, dark){ var j = Kt.reach(sh[0], sh[1] - .04, tx, G3 + ty, .39, .38, 1); Kt.limb([sh[0], sh[1] - .04, j[0], j[1], j[2], j[3]], .105, dark ? '#86552f' : SK, OL);
+      x.beginPath(); x.arc(j[2], j[3], .055, 0, 7); Kt.fill(dark ? '#86552f' : SK); }
+    x.save(); x.globalAlpha *= .22 + .1 * P(u, 1.2, 2); x.beginPath(); x.ellipse(mix(hx, hx + .5, P(u, 1, 2.2)), G3 + .02, mix(.45, 1.35, P(u, .9, 2.2)), .09, 0, 0, 7); Kt.fill('#3a2410'); x.restore();   // his shadow on the sand
+    arm(q[5], q[6], 1); leg(q[4] - .1, 1);
+    x.save(); x.translate(hx, hy); x.rotate(-a); var bw = 1 + br * .04;   // the tunic (a kilt to the knee in the old prints), its chest rising with the breath
+    Kt.path([[-.2 * bw, .66], [.2 * bw, .66], [.22, .1], [.3, -.32], [-.28, -.32], [-.21, .1]], true); Kt.fill(CO); Kt.ink(.9, OL);
+    x.fillStyle = '#d9a640'; x.fillRect(-.21, .06, .43, .07); x.beginPath(); x.moveTo(-.19, .62); x.quadraticCurveTo(0, .48, .19, .62); Kt.ink(2.2, '#2f4a8c'); x.restore();
+    leg(q[4], 0);
+    x.save(); x.translate(hc[0], hc[1]); x.rotate(-(a + hd)); var y_ = q[9], cl_ = q[10];   // the head: headcloth stripes behind, eye and yawn in front (-x)
+    Kt.path([[.05, .17], [.2, .1], [.2, -.2], [.1, -.15]], true); Kt.fill('#2f4a8c'); x.beginPath(); x.ellipse(0, 0, .125, .15, 0, 0, 7); Kt.fill(SK); Kt.ink(.9, OL);
+    Kt.path([[-.11, .07], [.13, .1], [.2, .03], [.14, .15], [-.06, .17]], true); Kt.fill('#2f4a8c'); x.fillStyle = '#e6c46a'; x.fillRect(-.11, .05, .24, .035);
+    x.beginPath(); x.moveTo(-.124, .0); x.lineTo(-.16, -.04); x.lineTo(-.12, -.05); Kt.fill(SK);
+    if (cl_ < .5) { x.beginPath(); x.ellipse(-.07, .02, .016, .022 * (1 - cl_ * 1.6), 0, 0, 7); Kt.fill('#1b1511'); } else { x.beginPath(); x.moveTo(-.095, .025); x.quadraticCurveTo(-.07, .005 - .01 * cl_, -.045, .025); Kt.ink(1.1, '#1b1511'); }
+    if (y_ > .05) { x.beginPath(); x.ellipse(-.08, -.085, .025 + .01 * y_, .04 * y_, 0, 0, 7); Kt.fill('#3a1a10'); }
+    x.restore();
+    arm(q[7], q[8], 0);
+    if (u > 2.3) for (var z = 0; z < 3; z++) { var zk = ((u - 2.3) * .55 + z / 3) % 1, zt = u - 2.3 - z / 3 / .55; if (zt < 0) continue;   // a slow loop of rising z's
+      x.save(); x.globalAlpha *= Math.sin(Math.PI * zk) * .85; Kt.wtxt('z', hc[0] - .1 + zk * .9 + Math.sin(zk * 6 + z) * .12, hc[1] + .35 + zk * 1.5, .32 + zk * .3, "800 'Playfair Display',serif", '#5a3a22'); x.restore(); }
+  }
   // ---------- W3: 1400 BC: the prince asleep in the shadow of the head ----------
   function cloud(cam, t){ var p = proj(cam, 4.6, 15.6, 40); if (!p) return null; var g = P(t, A[4] - 1.6, A[4] - .6), r = 1.5 * p.s * eo(g); return { x: p.x, y: p.y, r: r }; }
   function cloudPath(c){ x.beginPath(); [[0, 0, 1], [-.75, .15, .62], [.75, .1, .66], [-.35, -.45, .6], [.4, -.42, .58], [0, .5, .55]].forEach(function(q){ x.moveTo(c.x + q[0] * c.r + q[2] * c.r, c.y + q[1] * c.r); x.arc(c.x + q[0] * c.r, c.y + q[1] * c.r, q[2] * c.r, 0, 7); }); }
@@ -549,8 +591,7 @@ var K25 = (function(){
     birds(cam, 300, t, 2, 9, -20, 34, 2);
     sphinx(cam, 60, -6, {}); sandMass(cam, 58, 10.2, 13, '#e0bb80', 1);
     if (use(cam, 52)) { x.fillStyle = 'rgba(80,46,20,.28)'; Kt.path([[-30, 10], [5, 10.2], [9, 9.4], [-30, 9]], true); x.fill(); }
-    if (use(cam, 36)) { x.save(); x.translate(3.4, 9.7); x.rotate(-Math.PI / 2 + .04); x.translate(-.2, -1.2);
-        var br = Math.sin(t * 1.4) * .015; x.scale(1, 1 + br); Kt.person({ h: 2.3, coat: '#f1ead8', trousers: '#9a6440', skin: '#9a6440', hair: '#1a1410', arms: [[.15, 1.05], [-.2, 1.1]] }); x.restore();
+    if (use(cam, 36)) { prince(t);
       x.save(); x.translate(5.5, 9.75); x.rotate(.1); x.beginPath(); x.moveTo(-1.2, 0); x.quadraticCurveTo(0, .55, 1.2, 0); Kt.ink(1.6, '#5a3a22'); x.beginPath(); x.moveTo(-1.2, 0); x.lineTo(1.2, 0); Kt.ink(.6, '#3a2a1a'); x.restore();
       x.save(); x.translate(1.4, 9.7); paper(function(){ x.beginPath(); x.ellipse(0, .25, .5, .25, 0, 0, 7); }, '#c08040', 1); x.restore(); }
     var c = cloud(cam, t); if (c && c.r > 1 && !hole) { Kt.screen(); x.save(); x.globalAlpha = .95; cloudPath(c); x.fillStyle = '#fbf3e4'; x.fill(); x.lineWidth = 1.5; x.strokeStyle = 'rgba(80,60,40,.5)'; x.stroke(); x.restore();
@@ -704,6 +745,8 @@ var K25 = (function(){
     for (var h = A[1] + .3; h < WT(2, /pit/); h += .5) Q.push({ t: h, k: 'tick', g: .07, x: 160 + (h * 97 % 220) });               // chisels
     Lg(WT(2, /winds/) - .2, A[3] - WT(2, /winds/), 80, 460, .24); M(WT(2, /sand/), 300, .18);                                  // the pit fills, left to right
     M(tw0(1) + .1, 470, .32, 'rustle', tw1(1) - tw0(1));                                                                         // the page turns from the right
+    var n0 = nap0(); M(n0 + .55, 300, .2, 'rustle', .8); M(n0 + 1.3, 310, .14, 'rustle', .75);                                       // the prince lies down: cloth, no thud
+    Q.push({ t: n0 + 2.1, k: 'swell', d: 1.3, g: .1, p: -1, x: 310 }); for (var zz = n0 + 2.5; zz < A[4] - 1.6; zz += 1.82 / 3 * 1.8) Q.push({ t: zz, k: 'blip', g: .05, p: 14, x: 330 });   // a sigh, then each z
     Q.push({ t: A[4] - 1.5, k: 'blip', g: .1, p: 12, x: 330 }, { t: A[4] - 1.1, k: 'blip', g: .1, p: 14, x: 340 });            // the dream puffs rise
     Lg(tw0(2), tw1(2) - tw0(2) + .4, 330, 270, .26); Q.push({ t: tw1(2), k: 'shimmer', g: .1 });                               // through the cloud into the night
     Lg(WT(4, /throne/) - .5, 1, 120, 230, .16); M(WT(4, /freed/), 270, .2);                                                     // the crown descends, the stamp

@@ -27,3 +27,9 @@ As decided by the owner on 5 Nov, the channel posted 2-3 reels a week; from Sun 
 8. **Every topic passes FLOW** (Mandatory Gate items 14-17: cuts 0, no dead runs, continuity 85%+). Evidence: the old engine held still after
    each build-in (wifi-address 35%, 7 Nov) and tech watch time is 3.5-4.7 s; the 8 Nov engine (glass light, camera drift, declared glides, secondary
    motion in every kind) measures wifi-address at 100% with the fake voice. `make.py --fake-vo --stills` prints the FLOW lines.
+10. **Every step is a complete thought** (owner, 8 Nov 2026: "the information feels cut off; it doesn't really explain well what it is for or how
+   it relates; I feel lost at times"): each line is a full sentence, no fragments, no unexplained term; the script runs what it is → why it happens
+   → what it means for you, with one plain link word between steps ("so", "that's because", "which means"); the last line says the practical
+   takeaway in one sentence. At most 2.5 words/s: lengthen the reel (to about 24-28 s) rather than cut a link. This overrides rule 3's 18 s cap.
+11. **Platform balance** (owner, 8 Nov 2026: "we lean too much on Apple"): at most 1 in 3 tech reels Apple-specific; most reels are
+   platform-neutral (wording that fits Android and iPhone alike) or cover both. Check the last 3 reels in captions.json before picking a topic.

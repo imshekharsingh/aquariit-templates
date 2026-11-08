@@ -5,15 +5,15 @@
  "flow": true,
  "speed": 0.8,
  "max_speed": 0.86,
- "dur": 18,
- "max_end": 17.5,
+ "dur": 29.5,
+ "max_end": 29,
  "say": {
   "35°C": "thirty five Celsius"
  },
  "verdict": "TRUE",
  "experiment": {
   "id": "tech-myth-verdict",
-  "change": "myth-bust format, try 2: the verdict stamped in frame 0, then why; every element with its own flow and a sound by size",
+  "change": "myth or truth, try 2 with a complete-thought script (what it is, why it happens, what it means for you; owner 8 Nov: \"I feel lost at times\"), platform-neutral",
   "vs": "median"
  },
  "hook": [
@@ -26,10 +26,12 @@
    "text": "Does heat hurt your phone's battery?"
   },
   {
-   "text": "Yes. Above 35°C, it holds less charge.",
+   "text": "Yes. Above 35°C, the battery wears out faster, so every charge lasts less, for good.",
    "chunks": [
     3,
-    4
+    5,
+    4,
+    3
    ],
    "scene": {
     "label": "THE ANSWER: YES",
@@ -41,26 +43,28 @@
       "cue": "Yes"
      },
      "b": {
-      "title": "Hotter: less charge",
+      "title": "Hotter: wears faster",
       "icon": "warning",
       "ticks": [
        "For good",
        "Even at 95 °F"
       ],
       "meter": false,
-      "cue": "holds"
+      "cue": "faster"
      }
     }
    }
   },
   {
-   "text": "A hot parked car is enough.",
+   "text": "That's because heat speeds up its chemistry, and a parked car gets hotter than that.",
    "chunks": [
+    4,
     3,
+    5,
     3
    ],
    "scene": {
-    "label": "STEP 1: LEFT HOT",
+    "label": "WHY: HEAT",
     "tint": "amber",
     "kind": "flow",
     "params": {
@@ -76,21 +80,22 @@
      },
      "target": {
       "icon": "warning",
-      "label": "Less charge"
+      "label": "Shorter charge"
      },
      "target_tint": "red",
-     "hub_cue": "car"
+     "hub_cue": "heat"
     }
    }
   },
   {
-   "text": "Too hot? Charging slows, or stops.",
+   "text": "So when it's too hot, your phone slows or stops charging to protect it.",
    "chunks": [
-    2,
-    4
+    5,
+    4,
+    5
    ],
    "scene": {
-    "label": "STEP 2: CHARGING",
+    "label": "SO: CHARGING PAUSES",
     "tint": "purple",
     "kind": "guard",
     "params": {
@@ -105,19 +110,19 @@
    }
   },
   {
-   "text": "Save this: no hot cars, no thick case while charging.",
+   "text": "Takeaway: keep it out of hot cars, and take a thick case off to charge.",
    "chunks": [
-    5,
-    5
+    7,
+    8
    ],
    "scene": {
-    "label": "SAVE THIS",
+    "label": "TAKEAWAY",
     "tint": "green",
     "kind": "checklist",
     "params": {
      "items": [
       {
-       "text": "No hot car or sun",
+       "text": "Out of hot cars and sun",
        "cue": "hot"
       },
       {
@@ -131,19 +136,19 @@
  ],
  "post": {
   "title": "Does heat hurt your phone's battery?",
-  "caption": "Does heat hurt your phone's battery? Yes 🔥\n\nApple says iPhone works best between 0 and 35 °C (32 to 95 °F). Above that, the battery can lose capacity for good: it won't last as long on a charge. Even storing it hot does damage, and a parked car on a hot day gets hotter than that. When your phone gets too hot, charging slows or stops, and software may limit charging above 80% to protect the battery. What helps: don't leave it in a car or in direct sun, and take a thick case off while it charges.\nSend this to the friend who leaves their phone on the dashboard.",
+  "caption": "Does heat hurt your phone's battery? Yes 🔥\n\nPhone batteries are lithium-ion, and they work best between 0 and 35 °C (32 to 95 °F). Above that, heat speeds up the chemistry that wears the battery, so it loses capacity for good: every charge lasts a little less. A car parked in the sun gets much hotter than that. When a phone gets too hot it slows or pauses charging to protect itself. The takeaway, on Android or iPhone: keep it out of hot cars and direct sun, and take a thick case off while it charges.\nSend this to the friend who leaves their phone on the dashboard.",
   "keywords": [
    "does heat damage phone battery",
    "phone overheating battery",
-   "iphone too hot",
-   "iphone battery tips",
+   "phone too hot while charging",
+   "android and iphone battery tips",
    "phone battery health",
    "phone tips"
   ],
   "hashtags": [
    "#phonebattery",
    "#batterytips",
-   "#iphonetips",
+   "#phonetips",
    "#techmyths",
    "#techexplained"
   ],

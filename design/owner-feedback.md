@@ -15,6 +15,10 @@ owner catches something new, the same day.
 - 8 Nov: Turns Out "flat": one bridge from start to end. Count the scenes and the transitions.
 - 8 Nov: tick sounds missing. They existed in the cue list at 5% volume and were inaudible. LISTEN to the finished audio: can you hear
   a sound for every element that moves, small high, medium mid, large low?
+- 8 Nov: the whooshes and swells were too much. Do the element details (ticks, blips, snaps) lead, with the air soft and behind them?
+- 8 Nov: a figure's action looked like a fall; human actions need anticipation, ease and weight; check every 0.1 s.
+- 8 Nov: tech info felt cut off ("I feel lost at times"). Does every line say what, why and what it means for you, joined by a link word?
+- 8 Nov: "we lean too much on Apple." Would an Android owner feel the reel is for them too?
 
 The principle (owner, 8 Nov 2026: "Who is going to have that critical thinking?"): a check that measures the input (code, cue lists,
 counts) is not a check. Measure what the viewer gets: the rendered video and its sound.

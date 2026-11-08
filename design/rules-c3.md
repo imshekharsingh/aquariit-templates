@@ -40,3 +40,8 @@ Evidence = the Instagram collect run of 5 Nov 2026: 4 reels, median reach 157, 0
 **ESCALATE 8 Nov** (median reach 163 over the last 6, ALARM two days running; the two 1,000+ reels and the white pyramid's 465 at 5 h are all visible
 transformations of a world-famous thing; every reel without one sits at 118-161): from Mon 9 Nov every Turns Out topic must be a visible transformation
 of a landmark everyone pictures (not a naming or calendar story). Mon 9's Everest-name topic is swapped for the Sphinx buried in sand (design/topics.md).
+
+**Figure motion (REVIEW; owner, 8 Nov 2026: the Sphinx prince lying down looked "like someone has abruptly fallen")**: any human action (sit, lie
+down, stand, reach, walk) is a sequence of poses with anticipation (a yawn, a shift of weight), ease through every pose (no linear move, no snap,
+no pose that appears whole) and weight (a hand or foot planted before the body moves onto it), about 1.5-2.5 s for a whole-body move, and a
+settle after (a breath, a blink). The stills review checks it every 0.1 s across the move. Sound: cloth and breath, never a thud for a body.
