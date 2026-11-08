@@ -1,0 +1,165 @@
+{
+ "slug": "heat-battery",
+ "topic": "Phone heat",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.84,
+ "max_speed": 0.9,
+ "dur": 18,
+ "max_end": 17.5,
+ "say": {
+  "35°C": "thirty five Celsius"
+ },
+ "verdict": "TRUE",
+ "experiment": {
+  "id": "tech-myth-verdict",
+  "change": "myth-bust format, try 2: the verdict stamped in frame 0, then why; every element with its own flow and a sound by size",
+  "vs": "median"
+ },
+ "hook": [
+  "Does heat hurt",
+  "your phone's",
+  "battery?"
+ ],
+ "lines": [
+  {
+   "text": "Does heat hurt your phone's battery?"
+  },
+  {
+   "text": "Yes. Above 35°C, it holds less charge.",
+   "chunks": [
+    3,
+    4
+   ],
+   "scene": {
+    "label": "THE ANSWER: YES",
+    "tint": "red",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "0 to 35 °C: fine",
+      "cue": "Yes"
+     },
+     "b": {
+      "title": "Hotter: less charge",
+      "icon": "warning",
+      "ticks": [
+       "For good",
+       "Even at 95 °F"
+      ],
+      "meter": false,
+      "cue": "holds"
+     }
+    }
+   }
+  },
+  {
+   "text": "Even a hot parked car can do it.",
+   "chunks": [
+    4,
+    4
+   ],
+   "scene": {
+    "label": "STEP 1: LEFT HOT",
+    "tint": "amber",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "Parked car",
+      "Direct sun"
+     ],
+     "source_tint": "amber",
+     "hub": {
+      "label": "BATTERY",
+      "tag": "AGES",
+      "icon": "bolt"
+     },
+     "target": {
+      "icon": "warning",
+      "label": "Less charge"
+     },
+     "target_tint": "red",
+     "hub_cue": "car"
+    }
+   }
+  },
+  {
+   "text": "Too hot? Charging slows, or stops.",
+   "chunks": [
+    2,
+    4
+   ],
+   "scene": {
+    "label": "STEP 2: CHARGING",
+    "tint": "purple",
+    "kind": "guard",
+    "params": {
+     "object": {
+      "icon": "bolt",
+      "label": "Charging"
+     },
+     "attacker": "warning",
+     "stop_cue": "stops",
+     "badge": "PAUSED TO COOL"
+    }
+   }
+  },
+  {
+   "text": "Save this: no hot cars, no thick case while charging.",
+   "chunks": [
+    5,
+    5
+   ],
+   "scene": {
+    "label": "SAVE THIS",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "No hot car or sun",
+       "cue": "hot"
+      },
+      {
+       "text": "Thick case off to charge",
+       "cue": "case"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "Does heat hurt your phone's battery?",
+  "caption": "Does heat hurt your phone's battery? Yes 🔥\n\nApple says iPhone works best between 0 and 35 °C (32 to 95 °F). Above that, the battery can lose capacity for good: it won't last as long on a charge. Even storing it hot does damage, and a parked car on a hot day gets hotter than that. When your phone gets too hot, charging slows or stops, and software may limit charging above 80% to protect the battery. What helps: don't leave it in a car or in direct sun, and take a thick case off while it charges.\nSend this to the friend who leaves their phone on the dashboard.",
+  "keywords": [
+   "does heat damage phone battery",
+   "phone overheating battery",
+   "iphone too hot",
+   "iphone battery tips",
+   "phone battery health",
+   "phone tips"
+  ],
+  "hashtags": [
+   "#phonebattery",
+   "#batterytips",
+   "#iphonetips",
+   "#techmyths",
+   "#techexplained"
+  ],
+  "sources": [
+   {
+    "url": "https://www.apple.com/batteries/maximizing-performance/",
+    "note": "Apple, Maximizing battery life: iPhone works best at 0-35 °C (32-95 °F) ambient; temperatures above 35 °C can permanently damage battery capacity; charging in high temperatures can damage it further; software may limit charging above 80%; remove certain cases during charging"
+   },
+   {
+    "url": "https://support.apple.com/en-us/HT201678",
+    "note": "Apple Support, If your iPhone or iPad gets too hot or too cold: use between 0 and 35 °C; very hot conditions can permanently shorten battery life; don't leave your device in a car; when too warm, charging slows or stops"
+   },
+   {
+    "url": "https://support.apple.com/en-us/101575",
+    "note": "Apple Support, iPhone battery and performance: avoid charging or leaving your iPhone in hot environments, including direct sun exposure"
+   }
+  ]
+ }
+}

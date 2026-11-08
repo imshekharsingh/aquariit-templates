@@ -1,5 +1,6 @@
-"""Sound design, all synthesized in numpy (no samples): a pad per scene (the chord changes with the scene), plucks on element entrances,
-bells on the hook and the takeaways, clicks on label chips, whooshes on scene changes, a kick on the hook, a thud on the hard stop,
+"""Sound design, all synthesized in numpy (no samples): a pad per scene (the chord changes with the scene), a sound for every element
+(owner, 8 Nov 2026: small = a high blip, medium = a mid snap, large = a low thud with a swish, panned by the element's x; make.py elements()),
+bells on the hook and the takeaways, whooshes on scene changes, a kick on the hook, a thud on the hard stop,
 and a resolving chord at the end. Light convolution reverb. The music ducks under the voice: voice about -15.6 dB RMS, music about
 -25 dB RMS while the voice plays. Plucks and clicks ride the element-detail bus (scripts/showreel/detail.py, 8 Nov 2026): their own
 level against the voice, no duck, and the SOUND DETAIL gate. render(events, vo_wav, dur, out_wav); the final loudness pass happens in make.py with ffmpeg."""
@@ -64,6 +65,37 @@ def click(g=1.0):
     return (nz * .5 + np.sin(2 * np.pi * 2200 * np.arange(n) / SR) * dec(n, .004) * .4) * g * .5
 
 
+def blip(f, g=1.0):
+    """A small element: a short high tick (a sine blip with a click on top), 2-4 kHz."""
+    n = int(.07 * SR); tt = np.arange(n) / SR
+    s = np.sin(2 * np.pi * f * tt) * dec(n, .018) + .5 * np.sin(2 * np.pi * f * 1.5 * tt) * dec(n, .008)
+    return (s + np.pad(click(1.4), (0, max(0, n - int(.03 * SR))))[:n]) * np.clip(tt / .0015, 0, 1) * g * .5
+
+
+def snap(m, g=1.0):
+    """A medium element: a mid pluck (400-1000 Hz) with a short noise snap on its attack."""
+    p = pluck(m, 1.0)[:int(.45 * SR)]
+    n = int(.02 * SR); nz = np.diff(rng.standard_normal(n + 1)) * dec(n, .003) * .35
+    p[:n] += nz
+    return p * env(len(p), 0, .1) * g
+
+
+def lowhit(g=1.0, d=.32):
+    """A large element: a low thud (90-150 Hz body) under a short band-passed swish, so it reads on a phone speaker too."""
+    n = int(d * SR); tt = np.arange(n) / SR
+    body = np.sin(2 * np.pi * np.cumsum(95 + 70 * np.exp(-tt / .03)) / SR) * dec(n, .11)
+    x = rng.standard_normal(n); sw = np.convolve(x, np.ones(6) / 6, 'same') - np.convolve(x, np.ones(40) / 40, 'same')
+    sw *= np.clip(tt / .04, 0, 1) * dec(n, .07)
+    return (np.tanh(1.3 * body) * .8 + sw * 1.4) * g * .6
+
+
+def pan(x, s):
+    """Equal-power pan by the element's x (0-1080, the frame), up to 70% to a side. Returns (2, n)."""
+    p = max(-1, min(1, (x - 540) / 540)) * .7
+    a = (p + 1) * np.pi / 4
+    return np.stack([s * np.cos(a), s * np.sin(a)]) * np.sqrt(2)
+
+
 def whoosh(d=.5, g=1.0):
     """Noise through a band-pass whose centre sweeps up, swelling into the cut."""
     n = int(d * SR); k = np.linspace(0, 1, n)
@@ -104,14 +136,17 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
     n = int(dur * SR)
     music = np.zeros(n + SR * 3); sfx = np.zeros(n + SR * 3)
     prog = chords or PROGRESSION
-    dets = []   # the element entrances (plucks) and label chips (clicks): the detail bus, levelled against the voice below, no duck
-    for i, (s, e) in enumerate(ev['scenes']):
+    dets = []   # every element's sound by its size (make.py elements()): the detail bus, levelled against the voice below, no duck
+    sc = ev['scenes']
+    for i, (s, e) in enumerate(sc):
+        place(music, pad(CHORDS[prog[i % len(prog)]], e - s + .5), s - .2)
+    for j, el in enumerate(ev.get('elements', [])):
+        i = max([k for k, (s, e) in enumerate(sc) if s <= el['t']] or [0])
         notes = CHORDS[prog[i % len(prog)]]
-        place(music, pad(notes, e - s + .5), s - .2)
-        for j, t in enumerate(sorted(p for p in ev['plucks'] if s <= p < e)):
-            dets.append({'t': t, 'k': 'pluck', 'g': .55, 'm': notes[1 + (j % 4)] + 12})
+        k = {'s': 'blip', 'm': 'snap', 'l': 'low'}[el['size']]
+        dets.append({'t': el['t'], 'k': k, 'g': el.get('g', 1) * {'s': .9, 'm': 1.0, 'l': 1.15}[el['size']], 'x': el['x'],
+                     'm': notes[1 + (j % 4)] + 12, 'f': 2300 * 2 ** ((j * 5 % 12) / 24)})
     for t in ev['bells']: place(sfx, bell(84, .7), t)
-    for t in ev['clicks']: dets.append({'t': t, 'k': 'click', 'g': .8})
     for t in ev['whooshes']: place(sfx, whoosh(.5, .7), t - .35)
     for t in ev['kicks']: place(sfx, kick(1.0), t)
     for t in ev['thuds']: place(sfx, thud(.9), t)
@@ -138,19 +173,25 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
     bed *= 10 ** ((-25 - rms_db(bed[active])) / 20) if active.any() else 1
     bed *= 1 + (10 ** (5 / 20) - 1) * (1 - np.clip(act, 0, 1))
     # the detail bus: 250 Hz high-pass, a transient lift, each peak 10-16 dB under the voice's speech peak, cues within 60 ms merged
-    det = np.zeros(n); hits = []; K = {'pluck', 'click'}
+    # small = high blip, medium = mid snap, large = low thud with a swish; panned by the element's x
+    det = np.zeros((2, n)); hits = []; K = {'blip', 'snap', 'low'}
     dets = detail.merge(dets, K); peak = detail.level(dets, detail.speech_peaks(vo)[2], K)
     for c in dets:
-        x = pluck(c['m'], c['g']) if c['k'] == 'pluck' else click(c['g'])
-        x = detail.shape(x)[0]; x = x / (np.abs(x).max() + 1e-9) * peak(c['g']); hits.append((c['t'], peak(c['g'])))
-        place(det, x + .25 * fftconvolve(x, ir)[:len(x)] if c['k'] == 'pluck' else x, c['t'])
+        x = blip(c['f'], 1) if c['k'] == 'blip' else snap(c['m'], 1) if c['k'] == 'snap' else lowhit(1)
+        if c['k'] != 'low':   # the low hit keeps its body: the 250 Hz high-pass would take it away
+            x = detail.shape(x)[0]
+        if c['k'] == 'snap':
+            x = x + .25 * fftconvolve(x, ir)[:len(x)]
+        st = pan(c['x'], x); st = st / (np.abs(st).max() + 1e-9) * peak(c['g']); hits.append((c['t'], peak(c['g'])))
+        i0 = int(c['t'] * SR)
+        if i0 < n: det[:, i0:i0 + st.shape[1]] += st[:, :n - i0]
     line, ok = detail.gate(hits, vo)
     print(line)
-    mix = vo + bed + det
-    fade = int(.35 * SR); mix[-fade:] *= np.linspace(1, 0, fade)
+    mix = (vo + bed)[None, :] + det
+    fade = int(.35 * SR); mix[:, -fade:] *= np.linspace(1, 0, fade)
     # a look-ahead peak limiter at -1.5 dBFS instead of saturation (tanh bent the voice's loudest syllables)
     thr = 10 ** (-1.5 / 20)
-    need = np.minimum(1, thr / (np.abs(mix) + 1e-9))
+    need = np.minimum(1, thr / (np.abs(mix).max(0) + 1e-9))
     la = int(.004 * SR)
     from scipy.ndimage import minimum_filter1d
     g = minimum_filter1d(need, size=2 * la + 1)
@@ -159,7 +200,7 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
         cur = g[i] if g[i] < cur else cur * rel + g[i] * (1 - rel)
         out_g[i] = cur
     mix = mix * out_g
-    st = (np.clip(np.stack([mix, mix]).T, -1, 1) * 32767).astype('<i2')
+    st = (np.clip(mix.T, -1, 1) * 32767).astype('<i2')
     with wave.open(out_wav, 'wb') as w:
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(st.tobytes())
     return {'voice_rms_db': float(round(rms_db(vo[active]), 1)), 'music_rms_under_voice_db': float(round(rms_db(bed[active]), 1)),

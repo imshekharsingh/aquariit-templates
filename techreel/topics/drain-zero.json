@@ -1,0 +1,165 @@
+{
+ "slug": "drain-zero",
+ "topic": "Phone charging",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 0.84,
+ "max_speed": 0.9,
+ "dur": 18,
+ "max_end": 17.5,
+ "say": {
+  "0%": "zero percent"
+ },
+ "verdict": "MYTH",
+ "experiment": {
+  "id": "tech-myth-verdict",
+  "change": "myth-bust format, try 3: the verdict stamped in frame 0, then why; every element with its own flow and a sound by size",
+  "vs": "median"
+ },
+ "hook": [
+  "Should you",
+  "wait for 0%?"
+ ],
+ "lines": [
+  {
+   "text": "Should you wait for 0%?"
+  },
+  {
+   "text": "No. Apple says: charge whenever you want.",
+   "chunks": [
+    3,
+    4
+   ],
+   "scene": {
+    "label": "THE ANSWER: NO",
+    "tint": "red",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Charge any time",
+      "cue": "charge"
+     },
+     "b": {
+      "title": "Waiting for 0%",
+      "icon": "cross",
+      "ticks": [
+       "No need"
+      ],
+      "meter": false,
+      "cue": "whenever"
+     }
+    }
+   }
+  },
+  {
+   "text": "Wear counts in full cycles, split over days.",
+   "chunks": [
+    5,
+    3
+   ],
+   "scene": {
+    "label": "HOW WEAR COUNTS",
+    "tint": "blue",
+    "kind": "flow",
+    "params": {
+     "sources": [
+      "75% today",
+      "25% later"
+     ],
+     "source_tint": "cyan",
+     "hub": {
+      "label": "ONE CYCLE",
+      "tag": "100% USED",
+      "icon": "bolt"
+     },
+     "target": {
+      "icon": "check",
+      "label": "Counted once"
+     },
+     "target_tint": "green",
+     "hub_cue": "cycles"
+    }
+   }
+  },
+  {
+   "text": "Built to keep eighty percent, five hundred cycles.",
+   "chunks": [
+    5,
+    3
+   ],
+   "scene": {
+    "label": "BUILT TO LAST",
+    "tint": "purple",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Keeps 80% capacity",
+      "cue": "Built"
+     },
+     "b": {
+      "title": "After this many cycles",
+      "icon": "bolt",
+      "ticks": [
+       "500",
+       "1000 (iPhone 15+)"
+      ],
+      "cue": "cycles"
+     }
+    }
+   }
+  },
+  {
+   "text": "Save this: top up any time, check Battery Health.",
+   "chunks": [
+    5,
+    4
+   ],
+   "scene": {
+    "label": "SAVE THIS",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Top up any time",
+       "cue": "top"
+      },
+      {
+       "text": "Settings › Battery Health",
+       "cue": "check"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "Should you wait for 0% before charging?",
+  "caption": "Should you let your phone hit 0% before you charge it? No 🔋\n\nApple says: charge your lithium-ion battery whenever you want; there's no need to let it run down first. Wear is counted in charge cycles: one cycle is 100% of the battery's capacity used, even if it's spread over several charges (75% today, 25% tomorrow = one cycle). iPhone 14 and earlier are designed to keep 80% of their capacity at 500 full cycles under ideal conditions; iPhone 15 and later at 1000. So top up whenever it suits you, and check Settings, Battery, Battery Health to see where yours is.\nSend this to the friend who waits for 1%.",
+  "keywords": [
+   "should i let my phone die before charging",
+   "charge phone at 0 percent",
+   "battery charge cycles",
+   "iphone battery health",
+   "phone battery myths",
+   "phone tips"
+  ],
+  "hashtags": [
+   "#phonebattery",
+   "#batterymyths",
+   "#iphonetips",
+   "#techmyths",
+   "#techexplained"
+  ],
+  "sources": [
+   {
+    "url": "https://www.apple.com/batteries/why-lithium-ion/",
+    "note": "Apple, Why lithium-ion: charge your Apple lithium-ion battery whenever you want; there's no need to let it discharge 100% before recharging; one charge cycle = 100% of capacity used, not necessarily from one charge (75% one day, 25% the next)"
+   },
+   {
+    "url": "https://support.apple.com/en-us/101575",
+    "note": "Apple Support, iPhone battery and performance: one charge cycle when you've used an amount that represents 100% of capacity; iPhone 14 and earlier retain 80% of original capacity at 500 complete cycles under ideal conditions, iPhone 15 models at 1000; Battery Health in Settings"
+   }
+  ]
+ }
+}

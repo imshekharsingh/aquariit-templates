@@ -1,0 +1,26 @@
+# Review: showreel-tech-heat-battery (tech, postOn 2026-11-09 postAt 13:00 IST)
+
+The Mandatory Gate, design/mandatory.md. Built ahead on 8 Nov (owner override: Mon and Tue built now, learn-then-build suspended for these two days).
+Experiment tech-myth-verdict, try 2 of 3 (rules-tech.md rule 9): the verdict stamped in frame 0, this time TRUE, then why in steps and a setting to
+change. New in the engine for this reel (owner, 8 Nov 2026: "Each element should have a flow ... every element's flow should have a compatible
+sound"): every element has its own entrance (from below, from the centre outwards, from above, or a push from depth, rotating so neighbours
+differ), its own staggered exit as the line ends, and its own sound by size on the element-detail bus, panned by x. AUTO lines from
+`make.py heat-battery --fake-vo --stills`, 8 Nov ~15:00 IST.
+
+1. Topic: PASS: heat and phone batteries, felt by everyone in a hot summer or a parked car (India, the Gulf, the US south, Australia); not done on any channel (tech: charge-80 is the 80% charge limit, close-apps is app closing); rule 1 pass (your own phone in the heat), rule 2 pass (TRUE on screen at frame 0, the first step by 2.5 s), rule 3 pass (18 s, voice ends by 17.5), rule 4 pass ("no hot cars, no thick case while charging" said and shown as a two-item checklist in the last scene), rule 5 pass (13:00 IST), rule 6 pass (no web overlap, no repeat), rule 7 pass (PRONUNCIATION clean), rule 8 pass (FLOW below), rule 9 pass (myth-bust format, try 2)
+2. Frame 0: PASS: the TRUE stamp slamming down over the three-line title (tech has no subject-fill check; the verdict is the subject)
+3. Safe zone: PASS: SAFE ZONE: ok (stamp, title, chips, panels and checklist inside x 60-960 on every still; the exits move inside the band)
+4. No overlap: PASS: OVERLAP: none; BAND: by layout (scenes in y 430-1196, captions below), checked on the stills sheet: nothing reaches the caption plate, the exits stay inside the band
+5. Motion: PASS: camera sway and glides, secondary motion in every kind, and now every element's own entrance and staggered exit; FLOW continuity 100% (below)
+6. Subtitles: PASS: 72 px captions in chunks of at most 5 words (3+4, 4+4, 2+4, 5+5); every line shown and finished on the stills
+7. Voice: PASS: PREFLIGHT voice: 162 letters, about 16.1 s at speed 0.84 (limit 17.5): fits; PRONUNCIATION: 1 overrides used: 35°C (config); no unchecked words; 39 spoken words, a calm 0.84 (close-apps measured 2.58 words/s at 0.90 with 39 words, so about 2.4 expected: under the 2.5 ceiling)
+8. Sound: PASS: ELEMENTS: 34 element sounds (small high 23, medium mid 5, large low 6); longest gap 1.3 s at 5.9 s (fake timings); a dry run of the new stereo synth with a stand-in voice: SOUND DETAIL: 28 of 28 element cues audible (>= -18 dB vs voice); quietest -14.4 dB, median -13.0 dB (100%): ok; the render's SOUND GATE and SOUND DETAIL lines are read in item 13
+9. Payoff: PASS: the last scene ticks "No hot car or sun" and "Thick case off to charge" on "hot" and "case"; the last frame holds the ticked checklist with the resolve ring
+10. Facts: PASS: apple.com/batteries/maximizing-performance (0-35 °C / 32-95 °F comfort zone; above 35 °C can permanently damage battery capacity; charging hot damages it further; software may limit charging above 80%; remove certain cases while charging), Apple Support HT201678 (very hot conditions can permanently shorten battery life; don't leave it in a car; when too warm, charging slows or stops), Apple Support 101575 (avoid hot environments, including direct sun)
+11. Post data: PASS: captions.json entry with channel tech, postOn 2026-11-09, postAt 13:00, concept, experiment; 6 keywords, 5 hashtags and 3 sources in the topic
+12. Review file: PASS: this file, items 1-11 and 14-17 PASS; 13 after the render
+13. After the render: PENDING: reel-status after the one render
+14. Cuts: PASS: FLOW: cuts 0
+15. Dead runs: PASS: FLOW: dead runs none
+16. Continuity: PASS: FLOW: continuity 100% (median step 1.1, 4 declared transitions)
+17. Strobes: PASS: FLOW: strobes 0

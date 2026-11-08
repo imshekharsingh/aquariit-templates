@@ -29,6 +29,10 @@ for the whole reel with karaoke captions, and synthesized sound. A new topic nee
   1200 px apart in one world). The glides are declared transitions (make.py `transitions`, plus any in the topic's "transitions"), so FLOW reads them.
 - Secondary motion while every line is spoken: pulses along links, the hub's rings, a highlight stepping through lists, a renewal ring, rolling
   numbers in badges, a loading shimmer, breathing rings on ticked steps, the part progress bar (one segment per scene), drifting motes.
+- Every element has its own flow and sound (owner, 8 Nov 2026): kinds call `fr.el(key, t0, size, x)` before drawing an element (an entrance
+  that rotates between from below, from the centre outwards, from above and a push from depth; a staggered exit as the line ends; a sound event)
+  and `fr.hit(...)` for a move inside it. Size picks the sound: s = high blip, m = mid snap, l = low thud with a swish, panned by x, on the
+  element-detail bus (scripts/showreel/detail.py). `--stills` prints ELEMENTS; the render prints SOUND DETAIL (80%+ or it fails).
 - A scene starts 0.35 s before its line, so its content arrives during the glide with its label (no label-only frame).
 - `--stills` prints SAFE ZONE, OVERLAP and the four FLOW lines (Mandatory Gate items 3-4 and 14-17); wifi-address: continuity 100%.
 
