@@ -82,10 +82,10 @@
    }
   },
   {
-   "text": "Built to keep eighty percent, five hundred cycles.",
+   "text": "Built to keep eighty percent for five hundred cycles.",
    "chunks": [
-    5,
-    3
+    4,
+    5
    ],
    "scene": {
     "label": "BUILT TO LAST",
@@ -97,21 +97,23 @@
       "cue": "Built"
      },
      "b": {
-      "title": "After this many cycles",
+      "title": "This many full cycles",
       "icon": "bolt",
       "ticks": [
        "500",
-       "1000 (iPhone 15+)"
+       "1000 on iPhone 15+"
       ],
-      "cue": "cycles"
-     }
+      "meter": false,
+      "cue": "five"
+     },
+     "join": "FOR"
     }
    }
   },
   {
-   "text": "Save this: top up any time, check Battery Health.",
+   "text": "Top up any time, and check Battery Health.",
    "chunks": [
-    5,
+    4,
     4
    ],
    "scene": {

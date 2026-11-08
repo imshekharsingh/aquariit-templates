@@ -166,7 +166,7 @@ def nest(fr, sc, t):
 
 
 def choice(fr, sc, t):
-    """Two ways to stay in control, A or B. params: a{title,icon,cue}, b{title,icon?,ticks[],cue,note,meter?}.
+    """Two ways to stay in control, A or B. params: a{title,icon,cue}, b{title,icon?,ticks[],cue,note,meter?}, join (the word between, default OR).
     b.meter false shows the ticks as a plain list (e.g. version numbers) instead of a cap meter that fills to the first one."""
     p = sc.params
     col = NEON[sc.tint]
@@ -183,7 +183,7 @@ def choice(fr, sc, t):
     ok = appear(t, (a_t + b_t) / 2)
     fr.el('or', (a_t + b_t) / 2, 's', W / 2)
     if ok > 0:
-        pill(fr, W / 2, 735, 'OR', DIM, ok, size=26)
+        pill(fr, W / 2, 735, p.get('join', 'OR'), DIM, ok, size=26)   # join: the word between the panels ("FOR", "THEN")
     bk = spring(t - b_t + .1)
     fr.el('b', b_t - .1, 'l', W / 2, enter=False)
     if t >= b_t - .1:
