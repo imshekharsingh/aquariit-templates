@@ -18,7 +18,7 @@ AUTO lines from preflight.mjs and stills.mjs, 8 Nov.
 10. Facts: PASS: sources in the config: MDN grid-template-rows (BCD animation Chrome 107, Firefox 66, Safari 16), transition-delay, translate (Chrome 104, Firefox 72, Safari 14.1), transition-timing-function; tip + live demo "menus" on /tips/; npm run check passes
 11. Post data: PASS: captions.json entry with channel web, postOn 2026-11-09, postAt 13:00, concept, about, note; 6 keywords, 5 hashtags in the config
 12. Review file: PASS: this file, items 1-11, 14-18
-13. After the render: PENDING
+13. After the render: PASS: run 42460744225 green, about 24 GitHub minutes (voice 1.0, frames 21.2, render 1.5; rule 12 target 30; the frames job shared the runners with the 32-waiting render dispatched the same minute), 24.6 s at 60 fps, cover at 1.74 s; SOUND GATE: ok -14.6 LUFS, true peak -1.8 dBTP; voice check: 38 words in the script, 38 heard as written ("one" at 2.72 s at confidence 0.53, on screen as it is said); pacing 1.73 words/s overall, pauses of 2.9-3.5 s after each detail line; one line flagged fast ("One: the tab line glides to where you tap.", 4.17 words/s over 2.16 s, shown word by word in the subtitles, then 3.2 s of pause); the contact sheet artifact cannot be downloaded from the session (Forbidden), so the stills sheet of the merged scene (identical file) stands for it
 14. Cuts: PASS: FLOW: cuts 0 (declared: 4 matchMoves from the kit, one into each part and the recap)
 15. Dead runs: PASS: FLOW: dead runs none (no holds declared)
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.0, 4 declared transitions)
