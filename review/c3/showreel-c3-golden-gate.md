@@ -17,7 +17,7 @@ against design/channel3.md "Quality bar" (read for 2.5D).
 10. Facts: PASS: 5 sources in the config (goldengate.org painting page, NPR 2011, History.com, Gizmodo, San Francisco Examiner); every claim in two (scene header): Navy black and yellow (History.com, Gizmodo), Army Air Corps red and white (History.com, Gizmodo), red primer (NPR, SF Examiner), Morrow and the setting, International Orange (NPR, goldengate.org), opened 1937 (History.com, goldengate.org); npm run check passes
 11. Post data: PASS: captions.json entry with channel c3, postOn 2026-11-08, postAt 13:00, concept, about, note; 7 keywords, 5 hashtags; experiment c3-1300-slot vs median
 12. Review file: PASS: this file, items 1-11 and 14-17 PASS before the one render
-13. After the render: PENDING
+13. After the render: PASS: run 42432860027 completed/success (25 GitHub minutes); SOUND GATE: ok -14.2 LUFS, true peak -1.4 dBTP; voice check heard every line (84 words, 2.59 words/s, limit 2.7); unsure words are names and short words at confidence 0.49-0.59 (Morrow, navy), heard correctly in the transcript; 1 breath at 4.1 s is 0.52 s (limit 0.55), not a defect; contact sheet not downloadable in-session (artifact host blocked), the final scene's stills were checked before the render
 14. Cuts: PASS: FLOW: cuts 0 (no window.TRANSITIONS: every repaint is a wipe of 1.4-2.9 s)
 15. Dead runs: PASS: FLOW: dead runs none (no window.HOLDS; the 2.7-3.7 s run of the first pass was fixed with a longer push and faster fog)
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.0, 0 declared transitions)
