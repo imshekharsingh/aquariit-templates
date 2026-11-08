@@ -97,6 +97,9 @@ def wrap(words, size, max_w, weight=700):
     return lines
 
 
+EVENTS = None   # make.py sets a dict to collect the element events ((scene, key) -> {t, size, x, g}) while frames are drawn
+
+
 class Frame:
     """One output frame: a sharp RGB layer at SS x and a glow layer at 1/GQ. Colors may carry alpha (blended)."""
 
@@ -111,6 +114,45 @@ class Frame:
         self.dx = 0.0      # the camera: horizontal offset for everything drawn (drift and the glide between scenes; 0 for the HUD)
         self.dy = 0.0      # vertical offset
         self.t = 0.0       # reel time (secondary motion: sheens, pulses)
+        self.scene = None  # the scene being drawn (element flow, el())
+        self.xk = 0.0      # that scene's exit (0 = in place, 1 = gone)
+        self.nel = 0       # elements placed so far in that scene
+        self.base = (0.0, 0.0, 1.0)
+
+    def begin(self, scene, xk):
+        """Starts a scene's elements: el() offsets each one from this camera and opacity."""
+        self.scene, self.xk, self.nel, self.base = scene, xk, 0, (self.dx, self.dy, self.alpha)
+
+    def el(self, key, t0, size, x, enter=True, g=1.0):
+        """One element's own flow (owner, 8 Nov 2026: "Each element should have a flow, whether it's a small, medium or large element. Every
+        element's flow should have a compatible sound"). Everything drawn after this call, until the next el(), is that element:
+        - entrance at t0, varied so neighbours never move alike: from below, from the centre outwards, from above, or a short push from depth;
+        - exit as the scene leaves (xk), staggered, each in its own direction;
+        - its sound: an event (t0, size s/m/l, x for the pan) collected in EVENTS; make.py turns it into a high tick (s), a mid pluck or
+          snap (m) or a low thud with a swish (l) on the element-detail bus. enter=False: the element has its own entrance (it walks or
+          flies in); it still gets its exit and its sound."""
+        bx, by, ba = self.base
+        i = self.nel
+        self.nel += 1
+        self.hit(key, t0, size, x, g)
+        v = (i + self.scene.i if self.scene is not None else i) % 4
+        k = ease_out(prog(self.t, t0, t0 + .5)) if enter else 1.0
+        side = 1 if x < W / 2 - 40 else -1 if x > W / 2 + 40 else 0
+        ox, oy = [(0, 44), (side * 52, 0 if side else 36), (0, -38), (0, 22)][v]
+        ox, oy = ox * (1 - k), oy * (1 - k)
+        e = ease_io(prog(self.xk, .1 * min(i, 4), .1 * min(i, 4) + .6))
+        ex, ey = [(0, -46), (-side * 40 or -40, 0), (0, 44), (40, -20)][(v + 1) % 4]
+        self.dx, self.dy = bx + ox + ex * e, by + oy + ey * e
+        self.alpha = ba * (1 - e) ** 1.5
+
+    def hit(self, key, t0, size, x, g=1.0):
+        """A sound-only event: a move inside an element (a hit, a fill, a tick landing), same sizes as el()."""
+        if self.scene is not None and EVENTS is not None and self.scene.start - .15 <= t0 <= self.scene.end + .05:
+            EVENTS.setdefault((self.scene.i, key), {'t': round(t0, 3), 'size': size, 'x': x, 'g': g})
+
+    def end_el(self):
+        if self.scene is not None:
+            self.dx, self.dy, self.alpha = self.base
 
     def _c(self, c):
         if c is None:

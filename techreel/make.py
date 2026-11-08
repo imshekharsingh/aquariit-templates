@@ -76,25 +76,47 @@ def camera(t, scenes):
     return cpos, dx, dy
 
 
-def sound_events(topic, vo, hook_out, scenes):
-    ev = {'scenes': [(0, hook_out)] + [(s.start, s.end) for s in scenes], 'plucks': [], 'bells': [.12], 'clicks': [], 'whooshes': [], 'kicks': [.04], 'thuds': []}
+def elements(topic, vo, hook_out, scenes):
+    """Every element's sound event (owner, 8 Nov 2026: every element's flow gets a compatible sound, small high, medium mid, large low):
+    the hook's words (small) and its IN 20 SECONDS line (medium) and verdict stamp (large), each scene's label chip (small), and every
+    element the kinds place with Frame.el / Frame.hit (collected while frames are drawn: every 0.1 s here). [{t, size, x, g}] by time."""
+    B.EVENTS = {}
+    t = 0.0
+    while t <= DUR - .05:
+        draw(t, topic, vo, hook_out, scenes)
+        t = round(t + .1, 2)
+    ev = list(B.EVENTS.values())
+    B.EVENTS = None
+    n = 0
+    for ln in topic['hook']:
+        for j, w in enumerate(ln.split()):
+            ev.append({'t': .05 + n * .07, 'size': 's', 'x': 300 + 480 * j / max(1, len(ln.split()) - 1), 'g': .85})
+            n += 1
+    ev.append({'t': .6, 'size': 'm', 'x': B.W / 2, 'g': .9})
+    if topic.get('verdict'):
+        ev.append({'t': .22, 'size': 'l', 'x': B.W / 2, 'g': 1.2})
+    ev += [{'t': s.start + .08, 'size': 's', 'x': B.W / 2, 'g': .9} for s in scenes]
+    return sorted(ev, key=lambda e: e['t'])
+
+
+def sound_events(topic, vo, hook_out, scenes, els=None):
+    ev = {'scenes': [(0, hook_out)] + [(s.start, s.end) for s in scenes], 'plucks': [], 'bells': [.12], 'clicks': [], 'whooshes': [], 'kicks': [.04], 'thuds': [],
+          'elements': els if els is not None else elements(topic, vo, hook_out, scenes)}
     for s in scenes:
         ev['whooshes'].append(s.start)
-        ev['clicks'].append(s.start + .08)
-        p = s.params
-        for key in ('open', 'hub_cue', 'inner_cue'):
-            if p.get(key):
-                ev['plucks'].append(s.cue(p[key]))
-        for key in ('a', 'b'):
-            if isinstance(p.get(key), dict) and p[key].get('cue'):
-                ev['plucks'].append(s.cue(p[key]['cue']))
-        if s.kind == 'guard':
-            ev['thuds'].append(s.cue(p.get('stop_cue')))
         if s.kind == 'checklist':
-            ev['bells'] += [s.cue(it.get('cue')) for it in p.get('items', [])]
-        ev['plucks'].append(s.start + .3)
+            ev['bells'] += [s.cue(it.get('cue')) for it in s.params.get('items', [])]
     ev['final'] = max(vo['dur'] - .2, DUR - 1.7)
     return ev
+
+
+def element_line(els):
+    """ELEMENTS: how many element sounds by size, and the longest gap between two (the reel should never go quiet for long)."""
+    c = {k: sum(e['size'] == k for e in els) for k in 'sml'}
+    ts = sorted(e['t'] for e in els)
+    gap = max((b - a, a) for a, b in zip(ts, ts[1:])) if len(ts) > 1 else (0, 0)
+    return f"ELEMENTS: {len(els)} element sounds (small high {c['s']}, medium mid {c['m']}, large low {c['l']}); longest gap {gap[0]:.1f} s at {gap[1]:.1f} s"
+
 
 
 MOTES = [((i * 379) % 1080, (i * 613) % 1920, 2 + i % 3, .35 + (i % 4) * .12, i * 1.7) for i in range(18)]
@@ -123,8 +145,12 @@ def draw(t, topic, vo, hook_out, scenes):
         if t >= s.start - .02 and abs(off) < 1:
             fr.dx, fr.dy = off * SPAN + ddx + base_x, ddy
             fr.alpha = 1 - .5 * min(1, abs(off))
+            # each element leaves on its own as the line ends (staggered, its own direction), from 0.25 s before the glide
+            fr.begin(s, 0.0 if s is scenes[-1] else B.prog(t, s.end - .25, s.end + .45))
             B.chip(fr, s.label, s.tint, B.prog(t, s.start, s.start + .4))
             KINDS[s.kind](fr, s, t)
+            fr.end_el()
+            fr.scene = None
     fr.alpha, fr.dx, fr.dy = 1.0, 0.0, 0.0
     # the HUD: part progress and captions stay still while the world moves
     ha = B.ease_out(B.prog(t, hook_out - .2, hook_out + .3))
@@ -291,7 +317,11 @@ def main():
                 print(f'{t:5.2f}s  {w}')
         lines, bad = layout_lines(topic, vo, hook_out, scenes)
         fl, fbad = flow_lines(topic, vo, hook_out, scenes)
-        print('\n'.join(lines + fl))
+        els = elements(topic, vo, hook_out, scenes)
+        print('\n'.join(lines + fl + [element_line(els)]))
+        if '--events' in sys.argv:
+            for e in els:
+                print(f"  {e['t']:6.2f}s  {e['size']}  x {e['x']:.0f}  g {e['g']}")
         sys.exit(1 if bad + fbad else 0)
     onsets = {}
     for li, line in enumerate(vo['lines']):
@@ -316,7 +346,8 @@ def main():
     ff.wait()
     # sound, then the mux with a two-pass loudness match to about -14.5 LUFS, true peak at or below -1 dBFS
     mix_wav = os.path.join(out, 'mix.wav')
-    lv = synth.render(sound_events(topic, vo, hook_out, scenes), vo_wav, DUR, mix_wav, topic.get('chords'))
+    els = elements(topic, vo, hook_out, scenes)
+    lv = synth.render(sound_events(topic, vo, hook_out, scenes, els), vo_wav, DUR, mix_wav, topic.get('chords'))
     meas = subprocess.run(['ffmpeg', '-hide_banner', '-i', mix_wav, '-af', 'loudnorm=I=-14.5:TP=-1.5:LRA=7:print_format=json', '-f', 'null', '-'], capture_output=True, text=True).stderr
     m = json.loads(meas[meas.rindex('{'):meas.rindex('}') + 1])
     ln = (f"loudnorm=I=-14.5:TP=-1.5:LRA=7:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
@@ -345,6 +376,7 @@ def main():
     li, tpv = float(lufs.group(1)) if lufs else 0.0, float(tp.group(1)) if tp else 0.0
     loud_ok = -15 <= li <= -13 and tpv <= -1
     qa.append(f'SOUND GATE: {"ok" if loud_ok else "OUT OF RANGE"} ({li} LUFS, true peak {tpv} dBTP; need -15 to -13, at most -1)')
+    qa.append(element_line(els))
     qa.append(lv.pop('detail'))   # SOUND DETAIL (the element-detail bus, scripts/showreel/detail.py): 80%+ audible or the render fails
     detail_ok = lv.pop('detail_ok')
     open(os.path.join(out, 'qa.txt'), 'w').write('\n'.join(qa) + '\n')

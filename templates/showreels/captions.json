@@ -664,6 +664,28 @@
    "vs": "median"
   }
  },
+ "showreel-tech-heat-battery": {
+  "channel": "tech",
+  "postOn": "2026-11-09",
+  "postAt": "13:00",
+  "concept": "Myth-bust: does heat hurt your phone's battery? (TRUE stamped in frame 0; every element with its own flow and sound)",
+  "experiment": {
+   "id": "tech-myth-verdict",
+   "change": "myth-bust format, try 2: the verdict stamped in frame 0, then why; every element with its own flow and a sound by size",
+   "vs": "median"
+  }
+ },
+ "showreel-tech-drain-zero": {
+  "channel": "tech",
+  "postOn": "2026-11-10",
+  "postAt": "13:00",
+  "concept": "Myth-bust: should you wait for 0% to charge? (MYTH stamped in frame 0; every element with its own flow and sound)",
+  "experiment": {
+   "id": "tech-myth-verdict",
+   "change": "myth-bust format, try 3: the verdict stamped in frame 0, then why; every element with its own flow and a sound by size",
+   "vs": "median"
+  }
+ },
  "showreel-c3-marathon": {
   "channel": "c3",
   "postOn": "2026-11-07",
