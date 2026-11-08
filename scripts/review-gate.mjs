@@ -13,10 +13,12 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const GATE_FROM = '2026-11-08', ITEMS = 13, FLOW_FROM = '2026-11-08', FLOW_ITEMS = [14, 15, 16, 17];
+// ELEMENT SOUND (owner, 8 Nov 2026: every element's flow has a compatible sound): item 18, web reels posting from SOUND_FROM (scripts/showreel/elsound.mjs)
+export const SOUND_FROM = '2026-11-09', SOUND_ITEM = 18;
 export const reviewPath = (channel, name) => `review/${channel}/${name}.md`;
 const NEED = { 2: /SUBJECT FILL/, 3: /SAFE ZONE: ok/, 4: /OVERLAP: none/, 7: /fits/,
   // FLOW (owner, 7 Nov 2026: the gate is a floor, motion quality is the ceiling; scripts/showreel/flow.mjs): pasted from stills.mjs, qa.mjs or make.py --stills
-  14: /FLOW: cuts 0\b/, 15: /FLOW: dead runs none/, 16: /FLOW: continuity (8[5-9]|9\d|100)%/, 17: /FLOW: strobes (0\b|1 \(.*declared\))/ };
+  14: /FLOW: cuts 0\b/, 15: /FLOW: dead runs none/, 16: /FLOW: continuity (8[5-9]|9\d|100)%/, 17: /FLOW: strobes (0\b|1 \(.*declared\))/, 18: /ELEMENT SOUND: \d+ of \d+ animated elements have a cue \((9\d|100)%\): ok/ };
 // the template's own placeholder evidence never counts
 const TEMPLATE = (() => { try { return new Set(readFileSync(join(root, 'review/TEMPLATE.md'), 'utf8').split('\n').map((l) => (l.match(/:\s+PASS:\s*(.*)$/) || [])[1]).filter(Boolean).map((x) => x.trim())); } catch { return new Set(); } })();
 export const todayIST = () => new Date(Date.now() + 330 * 60000).toISOString().slice(0, 10);
@@ -27,7 +29,7 @@ export const reviewProblems = (name, e, { render = false, today = todayIST() } =
   if (!existsSync(f)) return [`${p} is missing (the Mandatory Gate review: design/mandatory.md)`];
   const got = new Map(), out = [];
   for (const line of readFileSync(f, 'utf8').split('\n')) { const m = line.match(/^\s*(\d{1,2})\.\s+(.+?):\s+(PASS|FAIL|PENDING)\b:?\s*(.*)$/); if (m && !got.has(+m[1])) got.set(+m[1], { st: m[3], ev: m[4].trim() }); }
-  const items = [...Array(ITEMS).keys()].map((i) => i + 1).concat(e.postOn >= FLOW_FROM ? FLOW_ITEMS : []);
+  const items = [...Array(ITEMS).keys()].map((i) => i + 1).concat(e.postOn >= FLOW_FROM ? FLOW_ITEMS : []).concat(e.channel === 'web' && e.postOn >= SOUND_FROM ? [SOUND_ITEM] : []);
   for (const i of items) {
     const g = got.get(i);
     if (!g) { if (!(render && i === ITEMS)) out.push(`${p}: item ${i} is missing ("${i}. <item>: PASS: <evidence>")`); continue; }
