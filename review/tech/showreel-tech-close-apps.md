@@ -15,8 +15,8 @@ three steps and a setting to change. AUTO lines from `make.py close-apps --fake-
 9. Payoff: PASS: the last scene ticks "Background App Refresh" and "Off for apps you skip" on "Background" and "off"; the last frame holds the ticked checklist
 10. Facts: PASS: Apple Support 109359 (close an app only if it's unresponsive; closing all apps doesn't impact overall performance), Apple Developer "Managing your app's life cycle" (background apps do as little work as possible; dismissed apps go to the background and then suspended; the system can reclaim a suspended scene's resources at any time), apple.com/batteries/maximizing-performance (Settings > General > Background App Refresh: Wi-Fi, Wi-Fi & Cellular Data or Off); npm run check passes
 11. Post data: PASS: captions.json entry with channel tech, postOn 2026-11-08, postAt 13:00, concept, experiment; 6 keywords, 5 hashtags in the topic
-12. Review file: PASS: this file, items 1-11 and 14-17 PASS
-13. After the render: PENDING
+12. Review file: PASS: this file, items 1-11, 13 and 14-17 PASS
+13. After the render: PASS: run 42434733689 green in about 5 GitHub minutes (the first render, run 42434260150, was redone for pacing: item 7); voice ends at 15.47 s (limit 17.4); SAFE ZONE ok, OVERLAP none; SOUND GATE: ok (-14.3 LUFS, true peak -1.9 dBTP); voice check: 39 words in the script, 39 heard ("apps" heard "app" at 0.84 s, a recogniser quirk; the word is on screen), no unsure words; pacing 2.58 words/s overall (ok, limit 2.7); "Apple says: only if it freezes." 4.11 words/s (just over 4.0) and a 0.50 s pause after "iPhone clears it by itself." (0.55 wanted) flagged, both short and fully shown in the captions, not worth a third render; MP4, play copy, cover and post data in R2
 14. Cuts: PASS: FLOW: cuts 0 (declared: 4 engine glides)
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.1, 4 declared transitions)
