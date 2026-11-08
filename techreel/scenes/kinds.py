@@ -235,6 +235,11 @@ def guard(fr, sc, t):
     ax = mix(150, cx - 260, adv) - 90 * back
     fr.line([(150, cy), (ax, cy)], _a(NEON['red'], .5), 3)
     icon(fr, p.get('attacker', 'bot'), ax, cy, 140, NEON['red'] if t > stop else NEON['amber'], min(1, k * 2))
+    mid = (sc.start + .2 + stop) / 2   # halfway in, the agent pulses (a ring and a tick): a long approach is seen and heard
+    fr.hit('approach', mid, 's', mix(150, cx - 260, .5))
+    u = prog(t, mid, mid + .45)
+    if 0 < u < 1:
+        fr.circle(ax, cy, 80 + 60 * ease_out(u), outline=_a(NEON['amber'], .6 * (1 - u)), width=3)
     if t > stop:
         u = (t - stop) * 1.1   # a renewal ring sweeps round the shield
         rr = 250
