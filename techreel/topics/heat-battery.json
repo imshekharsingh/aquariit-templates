@@ -3,7 +3,7 @@
  "topic": "Phone heat",
  "voice": "af_heart",
  "flow": true,
- "speed": 0.8,
+ "speed": 0.75,
  "max_speed": 0.86,
  "dur": 29.5,
  "max_end": 29,
@@ -80,7 +80,7 @@
      },
      "target": {
       "icon": "warning",
-      "label": "Shorter charge"
+      "label": "Less charge"
      },
      "target_tint": "red",
      "hub_cue": "heat"
