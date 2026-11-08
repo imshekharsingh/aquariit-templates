@@ -18,7 +18,7 @@ AUTO lines from preflight.mjs and stills.mjs, 8 Nov.
 10. Facts: PASS: sources in the config: MDN width, scale (BCD Chrome 104, Firefox 72, Safari 14.1), @starting-style (Chrome 117, Firefox 129, Safari 17.5), cubic-bezier() overshoot; tip + live demo "waiting" on /tips/; npm run check passes
 11. Post data: PASS: captions.json entry with channel web, postOn 2026-11-10, postAt 13:00, concept, about, note; 6 keywords, 5 hashtags in the config
 12. Review file: PASS: this file, items 1-11, 14-18
-13. After the render: PENDING
+13. After the render: PASS: run 42460745987 green, about 15 GitHub minutes (voice 1.5, frames 11.7, render 1.4; rule 12 target 30), 24.5 s at 60 fps, cover at 1.79 s; SOUND GATE: ok -14.8 LUFS, true peak -1.9 dBTP; voice check: 35 words in the script, 35 heard as written ("one" at 2.92 s at 0.47, "then" at 16.04 s at 0.57, both on screen as said); pacing 1.60 words/s overall, no sentence flagged, pauses of 3.0-3.4 s after each detail line; the contact sheet artifact cannot be downloaded from the session (Forbidden), so the stills sheet of the merged scene (identical file) stands for it
 14. Cuts: PASS: FLOW: cuts 0 (declared: 4 matchMoves from the kit, one into each part and the recap)
 15. Dead runs: PASS: FLOW: dead runs none (no holds declared)
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.1, 4 declared transitions)
