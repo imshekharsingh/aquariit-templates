@@ -18,11 +18,18 @@
 #   r (0-1) sends it to a short room reverb (a tail on transitions). A cue without them sounds as before.
 # Optional "mix" block: { duck: dB the bed drops under the voice (sidechain-style, attack/release in s), room: room length in s }.
 #   Without "mix" the bed ducks the old way, so earlier reels render the same.
+# The element-detail bus (8 Nov 2026, scripts/showreel/detail.py): tick, blip, snap, touch, tap, click, pop and rustle cues get their own
+#   level against the voice (peaks 10-16 dB under its speech peak), a 250 Hz high-pass and a transient lift, no voice duck; cues closer
+#   than 60 ms merge. Prints "SOUND DETAIL: n of m element cues audible ..." and fails under 80% (design/mandatory.md item 8).
 import json, os, sys, wave
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'voice'))
 import say   # noqa: E402  the shared lexicon (scripts/voice/say.json): the hook voice says words the way the narration does
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import detail   # noqa: E402  the element-detail bus (8 Nov 2026): ticks, blips, snaps, touches heard, not buried under the voice
+# SOUND_DETAIL=off renders the old routing (details on the effects bus at their cue gain) and still prints the gate line: a before/after check
+LEGACY = os.environ.get('SOUND_DETAIL') == 'off'
 # SAY_CONFIG=<reel config.json> (set by the Showreel workflow) adds the config's own "say" on top of the lexicon
 SAY = json.load(open(os.environ['SAY_CONFIG'])).get('say') if os.environ.get('SAY_CONFIG') else None
 SAY_USED = []
@@ -301,16 +308,27 @@ def main(cues_path, out_path, narration=None):
         used = [u for t in texts for u in say.apply(t, SAY)[1]]
         bad = say.unused(SAY, used)
         if bad: sys.exit(f'"say" entries match no spoken word: {", ".join(bad)}')
-    sfx = np.zeros((2, n + SR * 2)); vox = np.zeros((2, n + SR * 4)); wet = np.zeros((2, n + SR * 2))
+    sfx = np.zeros((2, n + SR * 2)); vox = np.zeros((2, n + SR * 4)); wet = np.zeros((2, n + SR * 2)); det = np.zeros((2, n + SR * 2))
     def put(buf, s, t):
         i = int(round(t * SR)); a = max(0, i); s = s[:, a - i:]; buf[:, a:a + s.shape[1]] += s[:, :buf.shape[1] - a]
+    # the voice first (hook voice cues + the narration), so the detail bus can be levelled against it
     for c in C['cues']:
+        if c['k'] != 'voice' or float(c['t']) >= dur: continue
+        v = voice(c['text'], c.get('speed', 1.1), c.get('voice', 'af_heart'))
+        if v is not None: put(vox, v * c.get('g', 1), float(c['t']))
+    if narration:   # the whole-reel voice from voice.py, from frame 0; the bed ducks under it
+        with wave.open(narration) as w: v = np.frombuffer(w.readframes(w.getnframes()), '<i2').reshape(-1, w.getnchannels()).T / 32767
+        put(vox, v[:2] if v.shape[0] > 1 else np.vstack([v, v]), 0)
+    cues = C['cues'] if LEGACY else detail.merge(C['cues'])
+    dpeak = detail.level(cues, detail.speech_peaks(vox[:, :n])[2]); hits = []
+    def _detail(s, k, g, t):   # a detail cue: shaped and set to its level on its own bus (the old routing: as is, on the effects bus at .75)
+        if k not in detail.KINDS: return s
+        if LEGACY: hits.append((t, .75 * float(np.abs(s).max()))); return s
+        s = detail.shape(s); s = s / (np.abs(s).max() + 1e-9) * dpeak(g); hits.append((t, dpeak(g))); return s
+    for c in cues:
         k, t, g, p = c['k'], float(c['t']), c.get('g', 1), c.get('p', 0)
-        if t >= dur: continue
-        if k == 'voice':
-            v = voice(c['text'], c.get('speed', 1.1), c.get('voice', 'af_heart'))
-            if v is not None: put(vox, v * g, t)
-            continue
+        if t >= dur or k == 'voice': continue
+        bus = sfx if LEGACY or k not in detail.KINDS else det
         if k in NEW_KINDS:   # sample 2 kinds: own seeded noise, stereo from x, room send r
             kw = {'r': _rng(t, k)}
             if k in ('move', 'swell', 'rustle'): kw['d'] = c.get('d', 1 if k == 'swell' else .5)
@@ -319,7 +337,8 @@ def main(cues_path, out_path, narration=None):
             s = NEW_KINDS[k](g=g, p=p, **kw)
             if k == 'swell': t -= kw['d']   # ends on the cue
             s = place(s, c.get('x', 270), c.get('x2'))
-            put(sfx, s, t)
+            s = _detail(s, k, g, t)
+            put(bus, s, t)
             if c.get('r'): put(wet, s * float(c['r']), t)
             continue
         if k == 'whoosh': s = whoosh(c.get('d', .6), g, p); t -= .68 * c.get('d', .6)   # peak lands on the cue
@@ -328,12 +347,12 @@ def main(cues_path, out_path, narration=None):
         elif k == 'boom': s = hit(g, p, True)
         else: s = {'hit': hit, 'pop': pop, 'tick': tick, 'click': click, 'shimmer': shimmer, 'tap': tap, 'thud': thud}[k](g, p)
         if c.get('x') is not None: s = place(s, c['x'], c.get('x2'))
-        put(sfx, s, t)
+        s = _detail(s, k, g, t)
+        put(bus, s, t)
         if c.get('r'): put(wet, s * float(c['r']), t)
-    if narration:   # the whole-reel voice from voice.py, from frame 0; the bed ducks under it
-        with wave.open(narration) as w: v = np.frombuffer(w.readframes(w.getnframes()), '<i2').reshape(-1, w.getnchannels()).T / 32767
-        put(vox, v[:2] if v.shape[0] > 1 else np.vstack([v, v]), 0)
-    sfx, vox = sfx[:, :n], vox[:, :n]
+    sfx, vox, det = sfx[:, :n], vox[:, :n], det[:, :n]
+    line, ok = detail.gate(hits, vox)
+    print(line)
     B = C.get('bed')
     b = bed(dur, B['bpm'], B['origin'], B['chords'], B.get('soft', False)) if B else np.zeros((2, n))
     if B and B.get('lift') is not None:   # the bed lifts into the payoff (Turns Out quality bar, point 7): +5 dB over 1.5 s from 'lift'
@@ -344,6 +363,7 @@ def main(cues_path, out_path, narration=None):
     else:
         duck = np.convolve(np.abs(vox[0]), np.ones(2400) / 2400, 'same'); duck = 1 - .55 * np.clip(duck / (duck.max() + 1e-9) * 3, 0, 1)
     mix = B.get('gain', .5) * b * duck + .75 * reverb(sfx) + 1.0 * vox if B else .75 * reverb(sfx) + 1.0 * vox
+    mix = mix + det   # the detail bus: its own level against the voice, no voice duck
     wet = wet[:, :n]
     if np.abs(wet).max() > 0: mix = mix + .45 * room(wet, (M or {}).get('room', .55))   # the room tail on transitions (cues with r)
     mix = np.tanh(1.3 * mix) * .8
@@ -351,7 +371,8 @@ def main(cues_path, out_path, narration=None):
     pcm = (np.clip(mix, -1, 1) * 32767).astype('<i2').T.copy()
     with wave.open(out_path, 'wb') as w:
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
-    print(f'wrote {out_path}: {dur:.2f} s, {len(C["cues"])} cues' + (', bed' if B else ''))
+    print(f'wrote {out_path}: {dur:.2f} s, {len(cues)} cues' + (', bed' if B else ''))
+    if not ok and not LEGACY: sys.exit('::error::' + line)
 
 
 if __name__ == '__main__':

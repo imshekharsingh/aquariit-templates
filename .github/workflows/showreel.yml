@@ -186,7 +186,9 @@ jobs:
         # every sound comes from the scene's cues (scripts/showreel/sound.py), levelled to -14 LUFS like the reels that hold attention
         if: hashFiles('out/*.cues.json') != ''
         run: |
-          SAY_CONFIG="$CFG" python3 scripts/showreel/sound.py "out/$NAME.cues.json" out/sound.wav $( [ -f out/narration.wav ] && echo out/narration.wav )
+          # the element-detail bus (scripts/showreel/detail.py): sound.py prints SOUND DETAIL and fails the run under 80% audible (gate item 8)
+          SAY_CONFIG="$CFG" python3 scripts/showreel/sound.py "out/$NAME.cues.json" out/sound.wav $( [ -f out/narration.wav ] && echo out/narration.wav ) | tee out/sound.log
+          grep -h "^SOUND DETAIL" out/sound.log >> "$GITHUB_STEP_SUMMARY" || true
           # two passes: measure, then the exact gain to -14 LUFS and a limiter on the peaks (one-pass loudnorm stayed near -16)
           EQ="highpass=f=55,equalizer=f=200:t=q:w=1.2:g=-3,equalizer=f=3000:t=q:w=1:g=2"
           IN=$(ffmpeg -hide_banner -i out/sound.wav -af "$EQ,ebur128" -f null - 2>&1 | grep -E "^\s+I:" | tail -1 | awk '{print $2}')

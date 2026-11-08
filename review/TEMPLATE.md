@@ -9,7 +9,7 @@ The Mandatory Gate, design/mandatory.md. One line per item: "N. <item>: PASS: <e
 5. Motion: PASS: STATIC STRETCH: none (least change n at t s)
 6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; every line shown and finished on the stills
 7. Voice: PASS: PREFLIGHT voice ... fits; PRONUNCIATION: no unchecked words; n words/s
-8. Sound: PASS: n cues on the moves and impacts; bed ducked under the voice; the workflow's SOUND GATE checks the loudness
+8. Sound: PASS: n cues on the moves and impacts; bed ducked under the voice; the workflow's SOUND GATE checks the loudness; SOUND DETAIL: n of m element cues audible (>= -18 dB vs voice) ... ok (sound.py / techreel qa.txt)
 9. Payoff: PASS: the close-up result at t s, the last frame shows ...
 10. Facts: PASS: sources ...; npm run check passes
 11. Post data: PASS: captions.json entry with channel, postOn, postAt, concept; 6 keywords, 5 hashtags

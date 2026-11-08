@@ -1,11 +1,17 @@
 """Sound design, all synthesized in numpy (no samples): a pad per scene (the chord changes with the scene), plucks on element entrances,
 bells on the hook and the takeaways, clicks on label chips, whooshes on scene changes, a kick on the hook, a thud on the hard stop,
 and a resolving chord at the end. Light convolution reverb. The music ducks under the voice: voice about -15.6 dB RMS, music about
--25 dB RMS while the voice plays. render(events, vo_wav, dur, out_wav); the final loudness pass happens in make.py with ffmpeg."""
+-25 dB RMS while the voice plays. Plucks and clicks ride the element-detail bus (scripts/showreel/detail.py, 8 Nov 2026): their own
+level against the voice, no duck, and the SOUND DETAIL gate. render(events, vo_wav, dur, out_wav); the final loudness pass happens in make.py with ffmpeg."""
+import os
+import sys
 import wave
 
 import numpy as np
 from scipy.signal import fftconvolve
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'scripts', 'showreel'))
+import detail   # noqa: E402  the element-detail bus shared with every channel (scripts/showreel/detail.py, 8 Nov 2026)
 
 SR = 48000
 rng = np.random.default_rng(7)
@@ -98,13 +104,14 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
     n = int(dur * SR)
     music = np.zeros(n + SR * 3); sfx = np.zeros(n + SR * 3)
     prog = chords or PROGRESSION
+    dets = []   # the element entrances (plucks) and label chips (clicks): the detail bus, levelled against the voice below, no duck
     for i, (s, e) in enumerate(ev['scenes']):
         notes = CHORDS[prog[i % len(prog)]]
         place(music, pad(notes, e - s + .5), s - .2)
         for j, t in enumerate(sorted(p for p in ev['plucks'] if s <= p < e)):
-            place(sfx, pluck(notes[1 + (j % 4)] + 12, .55), t)
+            dets.append({'t': t, 'k': 'pluck', 'g': .55, 'm': notes[1 + (j % 4)] + 12})
     for t in ev['bells']: place(sfx, bell(84, .7), t)
-    for t in ev['clicks']: place(sfx, click(.8), t)
+    for t in ev['clicks']: dets.append({'t': t, 'k': 'click', 'g': .8})
     for t in ev['whooshes']: place(sfx, whoosh(.5, .7), t - .35)
     for t in ev['kicks']: place(sfx, kick(1.0), t)
     for t in ev['thuds']: place(sfx, thud(.9), t)
@@ -130,7 +137,16 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
     act = np.convolve(active.astype(float), np.ones(int(.6 * SR)) / int(.6 * SR), 'same')
     bed *= 10 ** ((-25 - rms_db(bed[active])) / 20) if active.any() else 1
     bed *= 1 + (10 ** (5 / 20) - 1) * (1 - np.clip(act, 0, 1))
-    mix = vo + bed
+    # the detail bus: 250 Hz high-pass, a transient lift, each peak 10-16 dB under the voice's speech peak, cues within 60 ms merged
+    det = np.zeros(n); hits = []; K = {'pluck', 'click'}
+    dets = detail.merge(dets, K); peak = detail.level(dets, detail.speech_peaks(vo)[2], K)
+    for c in dets:
+        x = pluck(c['m'], c['g']) if c['k'] == 'pluck' else click(c['g'])
+        x = detail.shape(x)[0]; x = x / (np.abs(x).max() + 1e-9) * peak(c['g']); hits.append((c['t'], peak(c['g'])))
+        place(det, x + .25 * fftconvolve(x, ir)[:len(x)] if c['k'] == 'pluck' else x, c['t'])
+    line, ok = detail.gate(hits, vo)
+    print(line)
+    mix = vo + bed + det
     fade = int(.35 * SR); mix[-fade:] *= np.linspace(1, 0, fade)
     # a look-ahead peak limiter at -1.5 dBFS instead of saturation (tanh bent the voice's loudest syllables)
     thr = 10 ** (-1.5 / 20)
@@ -146,4 +162,5 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
     st = (np.clip(np.stack([mix, mix]).T, -1, 1) * 32767).astype('<i2')
     with wave.open(out_wav, 'wb') as w:
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(st.tobytes())
-    return {'voice_rms_db': float(round(rms_db(vo[active]), 1)), 'music_rms_under_voice_db': float(round(rms_db(bed[active]), 1))}
+    return {'voice_rms_db': float(round(rms_db(vo[active]), 1)), 'music_rms_under_voice_db': float(round(rms_db(bed[active]), 1)),
+            'detail': line, 'detail_ok': ok}
