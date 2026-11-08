@@ -15,6 +15,8 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
 - 8 Nov, web: the "details" format (id details-format): a slow-mo compilation of 4-5 small UI motions, each with its live easing curve, a spec chip and its CSS line, result-first, recap grid at the end, caption invites a save â†’ read 9 Nov (24 h) and 11 Nov (72 h) vs the web median (~1,300 reach, ~8.7 s watch, ~1.3% saves).
 - 8 Nov, c3: posting at 13:00 IST (id c3-1300-slot; owner moved every channel to 13:00) on an E14-style frame 0 (the Golden Gate Bridge in black and yellow stripes) â†’ read 9 Nov (24 h) vs the c3 median (157).
 
+- 8 Nov, tech: the myth-bust format (id tech-myth-verdict; ESCALATE answer): "Does closing your apps save battery?", MYTH stamped in frame 0, why in 3 steps, Background App Refresh as the takeaway, 18 s â†’ read 9 Nov (24 h) vs the tech median (116).
+
 ## What works
 
 ### @webin20sec (web)
@@ -43,7 +45,8 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
 ### @techin20sec (tech)
 - **Topic:** an everyday puzzle you can see on your own phone, not news (explainers 110-120 reach vs news 8-35).
 - **Open:** the answer's first step on screen inside 2 s; 18 s or shorter; a takeaway worth saving in the last 3 s.
-- **Time:** Mon and Wed 19:00, Fri 17:30 IST (E15, running; 19:00 median 129 over 2 reels).
+- **Time:** 13:00 IST every day from 8 Nov (owner); E15 ended (19:00 median 129 over 2 reels, inside the same ~110-130 pool).
+- **Format under test (8 Nov, tech-myth-verdict):** the myth-bust, verdict first (rules-tech.md rule 9).
 
 ## What didn't
 - web: fixes you must imagine or that only developers see (squashed photos 281, page jump 402, INP 258, springs 391, zero-JS transition 178).

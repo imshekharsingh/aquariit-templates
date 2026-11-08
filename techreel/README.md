@@ -45,6 +45,7 @@ for the whole reel with karaoke captions, and synthesized sound. A new topic nee
  "slug": "walmart-agents", "topic": "AI shopping", "voice": "af_heart", "speed": 1.05,
  "say": {"AI": "A I"},                       // display word -> spoken words (no digits, no hyphens)
  "hook": ["Can an AI", "shop Walmart", "for you?"],
+ "verdict": "MYTH",                           // optional: a myth-bust stamp over the hook, on screen from frame 0 (rules-tech.md rule 9)
  "lines": [
   {"text": "Can an AI shop Walmart for you?"},  // line 1: the hook, no scene
   {"text": "...", "scene": {"label": "THE NEWS", "tint": "blue", "kind": "portal", "params": {...}}},

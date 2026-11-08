@@ -117,7 +117,7 @@ def draw(t, topic, vo, hook_out, scenes):
     # the world: hook card at 0, scene i at i * SPAN; the camera offsets it (and centres it on the safe zone, x 510)
     base_x = -30   # the world is laid out on x 540; the safe zone's middle is x 510
     fr.dx, fr.dy = -cpos * SPAN + ddx + base_x, ddy
-    B.hook_card(fr, topic['hook'], t, hook_out)
+    B.hook_card(fr, topic['hook'], t, hook_out, verdict=topic.get('verdict'))
     for s in scenes:
         off = s.i - cpos
         if t >= s.start - .02 and abs(off) < 1:

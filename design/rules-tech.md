@@ -20,6 +20,10 @@ As decided by the owner on 5 Nov, the channel posted 2-3 reels a week; from Sun 
 7. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
    PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
    the Wi-Fi reel was read "Wi" "Fi" (owner); a mispronounced brand makes the whole explainer sound wrong.
+9. **On ESCALATE, change the format, not the topic** (8 Nov audit: ALARM two days running; the last 7 explainers sit at 113-131 reach,
+   median 116, whatever the topic or hour: 12:31 passkey 113, 15:06 Face ID 116, 17:33 airplane 131). From 8 Nov the myth-bust (experiment
+   tech-myth-verdict): a habit people believe, the verdict (MYTH / TRUE) stamped in frame 0 (topic "verdict"), why in 3 steps, a setting to change.
+   Keep it if it beats the median (116) at 24 h in 2 of 3 reels; drop it after 2 losses.
 8. **Every topic passes FLOW** (Mandatory Gate items 14-17: cuts 0, no dead runs, continuity 85%+). Evidence: the old engine held still after
    each build-in (wifi-address 35%, 7 Nov) and tech watch time is 3.5-4.7 s; the 8 Nov engine (glass light, camera drift, declared glides, secondary
    motion in every kind) measures wifi-address at 100% with the fake voice. `make.py --fake-vo --stills` prints the FLOW lines.
