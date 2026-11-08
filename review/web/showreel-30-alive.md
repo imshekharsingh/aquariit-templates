@@ -18,7 +18,7 @@ AUTO lines from preflight.mjs and stills.mjs, 8 Nov ~08:00 IST.
 10. Facts: PASS: sources in the config: MDN linear() (BCD Chrome 113, Firefox 112, Safari 17.2), cubic-bezier() (overshoot y values), stroke-dashoffset, scale/translate (Chrome 104, Firefox 72, Safari 14.1); tip + live demo "alive" on /tips/ (now three controls); npm run check passes
 11. Post data: PASS: captions.json entry with channel web, postOn 2026-11-08, postAt 13:00, concept, about, note; 6 keywords, 5 hashtags in the config
 12. Review file: PASS: this file, items 1-11, 13 and 14-17
-13. After the render: PENDING: the calm re-render (one run), then reel-status
+13. After the render: PASS: run 42441473566 green, about 16 GitHub minutes (voice 1.0, frames 12.7, render 1.8; rule 12 target 30), 24.6 s at 60 fps, cover at 1.76 s; SOUND GATE: ok -14.7 LUFS, true peak -1.5 dBTP; voice check: 36 words in the script, 36 heard, every word heard as written ("one" at 3.02 s at confidence 0.50, on screen as it is said); pacing 1.62 words/s overall (was 2.62), detail lines 2.5-3.4 words/s with 3.1-3.5 s of pause after each; only the 7-word hook flagged fast (4.22, 1.66 s, same as the first cut; it is on screen word by word); the contact sheet artifact cannot be downloaded from the session (Forbidden), so the stills sheet of the merged scene (37dce75) stands for it: every AUTO line clean, FLOW continuity 100%
 14. Cuts: PASS: FLOW: cuts 0 (declared: 4 matchMoves from the kit, one into each part and the recap)
 15. Dead runs: PASS: FLOW: dead runs none (no holds declared: the settle holds keep the camera drift, the creep and the light blooms moving)
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.0, 4 declared transitions)
