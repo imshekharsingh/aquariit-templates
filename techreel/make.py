@@ -329,7 +329,8 @@ def main():
     lufs = re.search(r'I:\s+(-?[\d.]+) LUFS', summ)
     tp = re.search(r'Peak:\s+(-?[\d.]+) dBFS', summ)
     # QA: blank stretches in the content band (after the hook), layout warnings, loudness
-    qa = [f'voice ends at {vo["dur"]:.2f} s (limit {topic.get("max_end", tts.MAX_END)}); speed {vo.get("speed")}', f'levels in the mix: {lv}',
+    lvl = {k: v for k, v in lv.items() if not k.startswith('detail')}
+    qa = [f'voice ends at {vo["dur"]:.2f} s (limit {topic.get("max_end", tts.MAX_END)}); speed {vo.get("speed")}', f'levels in the mix: {lvl}',
           f'loudness: {lufs.group(1) if lufs else "?"} LUFS integrated, true peak {tp.group(1) if tp else "?"} dBFS (target -14 to -15, <= -1)']
     run = 0
     for f in range(int(hook_out * FPS), N - int(.4 * FPS)):
@@ -344,12 +345,16 @@ def main():
     li, tpv = float(lufs.group(1)) if lufs else 0.0, float(tp.group(1)) if tp else 0.0
     loud_ok = -15 <= li <= -13 and tpv <= -1
     qa.append(f'SOUND GATE: {"ok" if loud_ok else "OUT OF RANGE"} ({li} LUFS, true peak {tpv} dBTP; need -15 to -13, at most -1)')
+    qa.append(lv.pop('detail'))   # SOUND DETAIL (the element-detail bus, scripts/showreel/detail.py): 80%+ audible or the render fails
+    detail_ok = lv.pop('detail_ok')
     open(os.path.join(out, 'qa.txt'), 'w').write('\n'.join(qa) + '\n')
     contact_sheet(thumbs, os.path.join(out, 'contact.png'))
     print('\n'.join(qa))
     print('wrote', final)
     if not loud_ok:
         sys.exit('SOUND GATE: out of range; fix the mix before the reel is kept')
+    if not detail_ok:
+        sys.exit('SOUND DETAIL: under 80% of the element cues audible; fix the mix before the reel is kept')
 
 
 if __name__ == '__main__':

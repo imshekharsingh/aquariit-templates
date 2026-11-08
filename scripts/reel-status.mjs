@@ -24,7 +24,7 @@ for (const run of runs) {
     process.exit(1);
   }
   const R = jobs.find((j) => j.name === 'render'), L = R ? log(R).split('\n').map((l) => l.replace(/^\S+Z /, '')) : [];
-  const keep = L.filter((l) => /^(Unsure words|Heard:|### Pacing|\| )/.test(l) || /issues\/\d+$/.test(l));
+  const keep = L.filter((l) => /^(Unsure words|Heard:|### Pacing|SOUND (GATE|DETAIL)|\| )/.test(l) || /issues\/\d+$/.test(l));
   console.log(keep.length ? keep.join('\n') : 'No voice check lines found in the render job.');
   // the contact sheet is a run artifact kept 2 days (owner, 3 Nov 2026: reel media live only in the private R2 bucket, never in public releases)
   const art = JSON.parse(gh(`repos/${REPO}/actions/runs/${run.id}/artifacts`)).artifacts.find((x) => x.name === 'review' && !x.expired);
