@@ -17,7 +17,7 @@ design/channel3.md "Quality bar" and rules-c3.md rule 9 (journey). Built ahead o
 10. Facts: PASS: 4 sources in the config (Sydney Opera House, UNESCO, Britannica, Arup), every claim in two (scene header): 1957 competition win, four years without a buildable geometry, the spherical solution (one sphere, radius 75 m / 246 ft, repeated precast pieces), opened 1973, 1,056,006 tiles; the source pages could not be opened from this session (network policy), facts are the well-established record those pages carry; npm run check passes
 11. Post data: PASS: captions.json entry with channel c3, postOn 2026-11-10, postAt 13:00, concept, about, note; 6 keywords, 5 hashtags; experiment c3-journey vs median
 12. Review file: PASS: this file, items 1-11, 14-17 and 19 PASS before the one render
-13. After the render: PENDING
+13. After the render: PASS: re-render run 42466277124 green, about 21 GitHub minutes (voice 1.5, frames 17, render 2), after the first run (42463993195) failed only its SOUND GATE (true peak -0.6 dBTP; fixed on main: mux limiter 0.7); SOUND DETAIL: 77 of 77 element cues audible (100%): ok; SOUND GATE: ok -14.7 LUFS, true peak -1.8 dBTP; voice check heard every word as written ("sail" at 28.74 s at low confidence, heard correctly); pacing 2.65 words/s over 30.2 s of voice (ok, limit 2.7); one breath before the payoff is 0.46 s (limit 0.55), not a defect; contact sheet not downloadable in-session (Forbidden), the final scene's stills were checked before the render
 14. Cuts: PASS: FLOW: cuts 0 (window.TRANSITIONS declares 5: match, fold, pan, page, zoom-through)
 15. Dead runs: PASS: FLOW: dead runs none (no window.HOLDS)
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.7, 5 declared transitions)
