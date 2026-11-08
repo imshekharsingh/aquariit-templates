@@ -190,11 +190,12 @@ jobs:
           SAY_CONFIG="$CFG" python3 scripts/showreel/sound.py "out/$NAME.cues.json" out/sound.wav $( [ -f out/narration.wav ] && echo out/narration.wav ) | tee out/sound.log
           grep -h "^SOUND DETAIL" out/sound.log >> "$GITHUB_STEP_SUMMARY" || true
           # two passes: measure, then the exact gain to -14 LUFS and a limiter on the peaks (one-pass loudnorm stayed near -16)
+          # limiter at 0.7 (-3.1 dBFS; 8 Nov 2026): the detail bus's sharp transients overshot to -0.6 dBTP after AAC at 0.8
           EQ="highpass=f=55,equalizer=f=200:t=q:w=1.2:g=-3,equalizer=f=3000:t=q:w=1:g=2"
           IN=$(ffmpeg -hide_banner -i out/sound.wav -af "$EQ,ebur128" -f null - 2>&1 | grep -E "^\s+I:" | tail -1 | awk '{print $2}')
           GAIN=$(python3 -I -c "import sys; print(round(-13.8 - float(sys.argv[1]), 2))" "$IN")
           echo "mix measured $IN LUFS, gain $GAIN dB"
-          ffmpeg -y -loglevel error -i "out/$NAME.mp4" -i out/sound.wav -map 0:v -map 1:a -c:v copy -af "$EQ,volume=${GAIN}dB,alimiter=limit=0.8:attack=5:release=60:level=false" -ar 48000 -c:a aac -b:a 192k -shortest -movflags +faststart out/muxed.mp4
+          ffmpeg -y -loglevel error -i "out/$NAME.mp4" -i out/sound.wav -map 0:v -map 1:a -c:v copy -af "$EQ,volume=${GAIN}dB,alimiter=limit=0.7:attack=5:release=60:level=false" -ar 48000 -c:a aac -b:a 192k -shortest -movflags +faststart out/muxed.mp4
           mv out/muxed.mp4 "out/$NAME.mp4"
           ffmpeg -hide_banner -i "out/$NAME.mp4" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | tail -3 | tee out/loud.txt
           # Mandatory Gate item 8 (design/mandatory.md; owner, 7 Nov 2026): -14 LUFS +-1 and true peak at most -1 dBTP, or the run fails here
