@@ -28,6 +28,14 @@ Evidence = the Instagram collect run of 5 Nov 2026: 4 reels, median reach 157, 0
    PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
    Kokoro alone reads 1889 as "eighteen hundred eighty nine" (5 of 10 Turns Out scripts have years); Eiffel and metres were unknown to it.
 8. **One slot a day** (owner, 8 Nov 2026): E16 (13:30 + 20:00, 7 Nov only) ended; each build checks captions.json for its channel and day (postOn = today, postAt 13:00) and never builds a second reel.
+9. **Journey: 4+ scenes, varied transitions, no single static set** (owner, 8 Nov 2026). At least 4 distinct places, scales or eras per reel
+   (a wide view, a close detail, an archive, people or tools, the payoff view), joined by motivated transitions declared in window.TRANSITIONS,
+   no two alike (the kit's Kt.through zoom-through, Kt.match match cut, Kt.page page turn, Kt.fold paper fold, Kt.seam parallax pan, Kt.print photo,
+   a dive or a time-lapse); 4+ depth layers per scene with something passing the lens and secondary motion everywhere; every moving element
+   has a sound by its size (small = high tick or blip, medium = snap or paper rustle, large = low move or thud), panned by its x. The review
+   file's item 19 lists the scenes and transitions. Evidence: Golden Gate (8 Nov) passed FLOW (continuity 100%) with one bridge from start to
+   end, because a drifting set counts as motion; the owner: "Turns Out feels flat at times ... such designs can be easily made." The channel
+   median is 163 over the last 6; the first journey reels (Sphinx 9 Nov, Opera House 10 Nov) are E-journey, read vs that median.
 
 **ESCALATE 8 Nov** (median reach 163 over the last 6, ALARM two days running; the two 1,000+ reels and the white pyramid's 465 at 5 h are all visible
 transformations of a world-famous thing; every reel without one sits at 118-161): from Mon 9 Nov every Turns Out topic must be a visible transformation

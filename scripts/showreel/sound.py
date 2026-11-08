@@ -13,6 +13,7 @@
 #   blip    (p): a soft tuned pluck for an element landing; give p from the bed's chord so pops sit in key
 #   swell   (d): a soft riser that ENDS on the cue (into the fix): darker than riser, no hiss on top
 #   resolve (notes = midi list): a low soft hit plus a bell chord that blooms on the fix
+#   rustle  (d, p): paper: small crackles under soft air over d (page turns, folds, cut paper; 8 Nov 2026)
 # New optional fields on any cue: x (screen x 0-540 px; with x2 it travels from x to x2 over the sound) places it in stereo,
 #   r (0-1) sends it to a short room reverb (a tail on transitions). A cue without them sounds as before.
 # Optional "mix" block: { duck: dB the bed drops under the voice (sidechain-style, attack/release in s), room: room length in s }.
@@ -182,7 +183,16 @@ def resolve(g=1, p=0, notes=None, r=None):
     return (low * .6 + bell / 4 * .55) * g
 
 
-NEW_KINDS = {'move': move, 'touch': touch, 'snap': snap, 'blip': blip, 'swell': swell, 'resolve': resolve}
+def rustle(d=.5, g=1, p=0, r=None):
+    # paper (8 Nov 2026, Turns Out journeys: page turns and folds): dense small crackles under a soft band of air, swelling and fading over d
+    r = r or np.random.default_rng(5); n = max(int(d * SR), 64); k = np.linspace(0, 1, n)
+    cr = r.standard_normal(n) * (r.random(n) < .012) * 3; cr = lowpass(cr, 6000 * 2 ** p) - lowpass(cr, 900 * 2 ** p)
+    air = lowpass(r.standard_normal(n), 2600 * 2 ** p) - lowpass(r.standard_normal(n), 500)
+    m = (cr * .8 + air * .25) * np.sin(np.pi * k) ** 1.5
+    return m / (np.abs(m).max() + 1e-9) * .5 * g
+
+
+NEW_KINDS = {'rustle': rustle, 'move': move, 'touch': touch, 'snap': snap, 'blip': blip, 'swell': swell, 'resolve': resolve}
 
 
 def place(s, x, x2=None):   # stereo from the element's place on screen (540 px wide); gentle, never hard left or right
@@ -303,7 +313,7 @@ def main(cues_path, out_path, narration=None):
             continue
         if k in NEW_KINDS:   # sample 2 kinds: own seeded noise, stereo from x, room send r
             kw = {'r': _rng(t, k)}
-            if k in ('move', 'swell'): kw['d'] = c.get('d', .5 if k == 'move' else 1)
+            if k in ('move', 'swell', 'rustle'): kw['d'] = c.get('d', 1 if k == 'swell' else .5)
             if k == 'move': kw['dir'] = c.get('dir', 1)
             if k == 'resolve' and c.get('notes'): kw['notes'] = c['notes']
             s = NEW_KINDS[k](g=g, p=p, **kw)

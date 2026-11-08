@@ -658,7 +658,11 @@
   "postOn": "2026-11-08",
   "postAt": "13:00",
   "concept": "Myth-bust: does closing apps save battery? (MYTH stamped in frame 0)",
-  "experiment": {"id": "tech-myth-verdict", "change": "myth-bust format: the verdict (MYTH) stamped in frame 0, then why", "vs": "median"}
+  "experiment": {
+   "id": "tech-myth-verdict",
+   "change": "myth-bust format: the verdict (MYTH) stamped in frame 0, then why",
+   "vs": "median"
+  }
  },
  "showreel-c3-marathon": {
   "channel": "c3",
@@ -833,7 +837,7 @@
   "concept": "Slow-mo details (look C), calm cut: heart pop, stretchy switch knob, self-drawing checkmark",
   "about": "Result first: a heart already popped to 129 likes under the hook, then three small app motions, one calm beat of ~5.9 s each: the tap at real speed, the same tap in slow motion with its live easing curve and a speed chip, a settle hold, and its one CSS line typed (linear(), cubic-bezier overshoot, stroke-dashoffset); a recap grid of all three that plays once and holds. Reworked 8 Nov after the owner said the 4-detail 20 s cut felt rushed.",
   "note": "13:00 IST, experiment details-format (the slow-mo details compilation in look C)"
-  },
+ },
  "showreel-c3-golden-gate": {
   "channel": "c3",
   "postOn": "2026-11-08",
@@ -857,5 +861,21 @@
   "concept": "Slow-mo details (look C), waiting: send button morphs into a spinner, photo fades in, toast settles",
   "about": "Result first: the send button already turned into a check under the hook, then three waiting motions, one calm beat of ~5.8 s each (real speed, slow motion with its live curve, a settle hold), its CSS typed; a recap grid that plays once and holds. Every element has a size-matched sound (the kit's element sound, 8 Nov).",
   "note": "13:00 IST, experiment details-format (try 3) with element sound"
+ },
+ "showreel-c3-sphinx-sand": {
+  "channel": "c3",
+  "postOn": "2026-11-09",
+  "postAt": "13:00",
+  "concept": "2.5D journey · Why was the Sphinx buried up to its shoulders?",
+  "about": "Seven worlds: the Sphinx's head above a sea of sand in the 1850s (frame 0), a dive through the sand into the quarry pit in 2500 BC (workers carve, the wind fills it), a page turn to Prince Thutmose asleep in its shadow, a zoom through his dream cloud into the night where a crown descends, a match cut from the moon to the Dream Stele as the Sphinx is dug out, the sand flowing back in a time-lapse that freezes into an 1800s photograph on a desk, and a fold to 1936: the whole body cleared, the old sand line left as a ghost.",
+  "note": "Turns Out, Mon 9 Nov 13:00 IST (built ahead on 8 Nov, owner override)."
+ },
+ "showreel-c3-opera-sphere": {
+  "channel": "c3",
+  "postOn": "2026-11-10",
+  "postAt": "13:00",
+  "concept": "2.5D journey · How did one ball shape the Sydney Opera House?",
+  "about": "Six worlds: a tiled ball on the Opera House's podium in Sydney Harbour, its sails lifting out (frame 0), a match cut to the compass circle on the 1957 drawing, a fold to the engineers' office where every curve is crossed out, a parallax pan to one wooden sphere with a sail cut from its surface, a page turn to the casting yard of identical rib pieces, a zoom through the rib arch to the finished building in 1973, ghost circles showing every sail on the same curve.",
+  "note": "Turns Out, Tue 10 Nov 13:00 IST (built ahead on 8 Nov, owner override)."
  }
 }

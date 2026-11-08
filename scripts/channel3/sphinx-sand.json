@@ -1,0 +1,59 @@
+{
+ "name": "showreel-c3-sphinx-sand",
+ "seek": "scripts/channel3/sphinx-sand.html",
+ "dur": 34.5,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Why was the Sphinx buried up to its shoulders? It was carved inside a quarry pit. Desert winds kept filling the pit with sand. Around 1400 BC, Prince Thutmose napped in its shadow. He dreamed it promised him the throne if he freed it. He dug it out, and carved the dream between its paws. The sand came back, and old photos show little more than its head. Its whole body was only cleared in 1936. Turns out, the desert hid most of it for centuries.",
+  "at": [
+   0,
+   3.73,
+   6.27,
+   9.47,
+   14.17,
+   17.81,
+   21.43,
+   25.81,
+   29.6
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "For centuries the Great Sphinx was buried up to its shoulders. It sits in a quarry pit, and the desert keeps filling it. A prince dug it out around 1400 BC and carved his dream between its paws, but the sand came back. Its whole body was only cleared in 1936. 🏜️\n\nSave this for your next trip to Giza. Which landmark should we dig into next? 👇",
+ "keywords": [
+  "why was the Sphinx buried in sand",
+  "Great Sphinx of Giza history",
+  "Dream Stele Thutmose IV",
+  "Sphinx excavation 1936",
+  "ancient Egypt facts",
+  "Giza pyramids history",
+  "Sphinx buried to its shoulders"
+ ],
+ "hashtags": [
+  "#greatsphinx",
+  "#sphinx",
+  "#ancientegypt",
+  "#gizapyramids",
+  "#egyptianhistory"
+ ],
+ "sources": [
+  {
+   "title": "Great Sphinx (Encyclopaedia Britannica)",
+   "url": "https://www.britannica.com/topic/Great-Sphinx"
+  },
+  {
+   "title": "Uncovering the Secrets of the Sphinx (Smithsonian Magazine)",
+   "url": "https://www.smithsonianmag.com/history/uncovering-secrets-of-the-sphinx-5013957/"
+  },
+  {
+   "title": "Great Sphinx of Giza (National Geographic)",
+   "url": "https://www.nationalgeographic.com/history/article/great-sphinx-of-giza"
+  }
+ ],
+ "experiment": {
+  "id": "c3-journey",
+  "change": "a journey of 4+ worlds (places, scales, eras) joined by varied declared transitions, every moving element with a sound by its size (owner, 8 Nov: Golden Gate had one bridge from start to end)",
+  "vs": "median"
+ }
+}

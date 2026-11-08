@@ -1,0 +1,61 @@
+{
+ "name": "showreel-c3-opera-sphere",
+ "seek": "scripts/channel3/opera-sphere.html",
+ "dur": 32.2,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "How did one ball shape the Sydney Opera House? In 1957, a Danish architect won with roofs like sails. But every curve was different, so nobody could build them. Engineers tried for four years, and nothing worked. Then he cut every shell from the surface of one sphere. Same curve everywhere, so the pieces could repeat. It opened in 1973, roofed in over a million tiles. Turns out, every sail is a slice of one ball.",
+  "at": [
+   0,
+   3.73,
+   8.33,
+   12.34,
+   15.98,
+   19.77,
+   23.34,
+   27.65
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "Every sail of the Sydney Opera House is a slice of the same sphere. Jørn Utzon's 1957 design had curves nobody could build; after four years he cut every shell from one sphere, so thousands of pieces could repeat one curve. It opened in 1973 under 1,056,006 tiles. 🌏\n\nSend this to someone who's seen it in person. Which building should we explain next? 👇",
+ "keywords": [
+  "Sydney Opera House spherical solution",
+  "how was the Sydney Opera House built",
+  "Sydney Opera House shells sphere",
+  "Jorn Utzon Sydney Opera House",
+  "Sydney Opera House history",
+  "architecture facts"
+ ],
+ "hashtags": [
+  "#sydneyoperahouse",
+  "#jornutzon",
+  "#architecturehistory",
+  "#sydneyharbour",
+  "#designhistory"
+ ],
+ "sources": [
+  {
+   "title": "The story of the Sydney Opera House (Sydney Opera House)",
+   "url": "https://www.sydneyoperahouse.com/our-story"
+  },
+  {
+   "title": "Sydney Opera House (UNESCO World Heritage Centre)",
+   "url": "https://whc.unesco.org/en/list/166"
+  },
+  {
+   "title": "Sydney Opera House (Encyclopaedia Britannica)",
+   "url": "https://www.britannica.com/topic/Sydney-Opera-House"
+  },
+  {
+   "title": "Sydney Opera House (Arup)",
+   "url": "https://www.arup.com/projects/sydney-opera-house"
+  }
+ ],
+ "experiment": {
+  "id": "c3-journey",
+  "change": "a journey of 4+ worlds (places, scales, eras) joined by varied declared transitions, every moving element with a sound by its size (owner, 8 Nov: Golden Gate had one bridge from start to end)",
+  "vs": "median"
+ }
+}

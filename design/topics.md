@@ -40,7 +40,7 @@ topics were already posted: replan them on Tuesday's spare night, as myth-busts 
 | Day | Hook | Continent |
 |---|---|---|
 | Mon 9 | Why was the Great Sphinx buried up to its neck in sand? (swapped 8 Nov for a visible transformation: rules-c3.md ESCALATE; Everest moves to a later week) | Africa |
-| Tue 10 | Why does the Panama Canal's Pacific end lie east of its Atlantic end? | Americas |
+| Tue 10 | How did one ball shape the Sydney Opera House? (swapped 8 Nov: Panama is a map fact, not a visible transformation of a landmark; rules-c3.md ESCALATE; Panama moves to a later week) | Oceania |
 | Wed 11 | How did the builders point the Great Pyramid almost exactly north? | Africa |
 | Thu 12 | Why is Australia's capital Canberra, not Sydney or Melbourne? | Oceania |
 | Fri 13 | Why does Brazil speak Portuguese when its neighbours speak Spanish? (Tordesillas, 1494) | South America |
