@@ -1,6 +1,6 @@
 // ---- @webin20sec element sound + entrance variants (scripts/explainer/kitsfx.js; owner, 8 Nov 2026: "Each element should have a flow,
 // whether it's a small, medium or large element on the screen. Every element's flow should have a compatible sound, low, medium or high
-// pitch based on the need.") Part of the motion kit: inlined after kitmotion.js between /*kitsfx:begin*/ and /*kitsfx:end*/ (the starters
+// pitch based on the need.") Part of the motion kit: inlined after kitmotion.js between the kitsfx begin and end markers (the starters
 // carry both markers; node scripts/channel3/kit-inline.mjs <scene> fills them; npm run check fails on a stale copy). It extends KM:
 //   KM.sfx(el, t, verb, o)     the element's sound, picked by its rendered size (layout box, transform-free): small (chips, icons, dots,
 //                              under 4,000 px²) = a high blip; medium (buttons, cards, rows, under 45,000 px²) = a mid snap (enter, land) or

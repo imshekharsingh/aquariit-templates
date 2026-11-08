@@ -342,4 +342,55 @@ export const demos = {
     js: `function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
   panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Tap all three again' : 'Tap all three'; }); }`,
   },
+  menus: {
+    css: `
+#menus .pane{height:150px;padding:30px 12px 0}
+#menus .tabs{position:relative;display:flex;gap:14px;font-weight:700;font-size:13px;color:#9aa0b8}
+#menus .ink{position:absolute;left:0;top:20px;width:44px;height:3px;border-radius:2px;background:#7cf0b6}
+#menus .ac{margin-top:16px;border-radius:8px;background:#262b40;font-size:12px;font-weight:700}
+#menus .ac b{display:block;padding:6px 8px}
+#menus .panel{display:grid;grid-template-rows:0fr}
+#menus .panel > div{overflow:hidden;color:#9aa0b8;padding:0 8px}
+#menus .menu{list-style:none;margin:10px 0 0;padding:0;display:flex;gap:6px;font-size:12px;font-weight:700}
+#menus .menu li{opacity:0;translate:0 -8px;padding:3px 7px;border-radius:6px;background:#262b40}
+#menus .on .ink{translate:96px;width:30px}
+#menus .on .panel{grid-template-rows:1fr}
+#menus .on .menu li{opacity:1;translate:0}
+#menus .fix .ink{transition-property:translate,width;transition-duration:.45s;transition-timing-function:cubic-bezier(.22, 1, .36, 1)}
+#menus .fix .panel{transition:grid-template-rows .4s cubic-bezier(.4, 0, .2, 1)}
+#menus .fix .menu li{transition:opacity .3s,translate .3s;transition-timing-function:ease-out;transition-delay:calc(var(--i) * 60ms)}`,
+    html: `
+<div class="pair">${['', ' fix'].map((f) => `
+  <div class="pane${f}"><span class="tag${f ? ' ok' : ''}">${f ? 'With the motion' : 'Before'}</span>
+    <div class="tabs"><span>For you</span><span>Following</span><span>Live</span><i class="ink"></i></div>
+    <div class="ac"><b>Shipping</b><div class="panel"><div>Free over 30 days.</div></div></div>
+    <ul class="menu"><li style="--i:0">Share</li><li style="--i:1">Rename</li><li style="--i:2">Delete</li></ul>
+  </div>`).join('')}
+</div>
+<button class="play" type="button">Tap all three</button>`,
+    js: `function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
+  panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Tap all three again' : 'Tap all three'; }); }`,
+  },
+  waiting: {
+    css: `
+#waiting .pane{display:flex;flex-direction:column;align-items:center;gap:10px;height:170px;padding-top:30px;overflow:hidden}
+#waiting .send{width:110px;height:30px;border-radius:15px;background:#7cf0b6;color:#10131c;font-weight:700;font-size:13px;line-height:30px;text-align:center;overflow:hidden;white-space:nowrap}
+#waiting .img{width:90px;height:44px;border-radius:8px;background:linear-gradient(180deg,#ffb38a,#ff7eb3 55%,#7a5cff);opacity:0;scale:1.06}
+#waiting .toast{padding:5px 10px;border-radius:8px;background:#262b40;font-size:12px;font-weight:700;translate:0 120%;opacity:0}
+#waiting .on .send{width:30px}
+#waiting .on .img{opacity:1;scale:1}
+#waiting .on .toast{translate:0;opacity:1}
+#waiting .fix .send{transition:width .5s cubic-bezier(.65, 0, .35, 1)}
+#waiting .fix .img{transition:opacity .5s,scale .5s;transition-timing-function:cubic-bezier(.2, .7, .3, 1)}
+#waiting .fix .toast{transition:translate .5s cubic-bezier(.2, .9, .3, 1.25),opacity .2s}`,
+    html: `
+<div class="pair">${['', ' fix'].map((f) => `
+  <div class="pane${f}"><span class="tag${f ? ' ok' : ''}">${f ? 'With the motion' : 'Before'}</span>
+    <div class="send">Send</div><div class="img"></div><div class="toast">Saved to your list</div>
+  </div>`).join('')}
+</div>
+<button class="play" type="button">Send it</button>`,
+    js: `function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
+  panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Reset' : 'Send it'; }); }`,
+  },
 };

@@ -1,0 +1,74 @@
+{
+ "name": "showreel-31-menus",
+ "seek": "scripts/explainer/menus.html",
+ "dur": 24.6,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.74,
+ "style": "Glass and light",
+ "format": "details",
+ "voice": {
+  "text": "Why do menus feel so smooth? One: the tab line glides to where you tap. Two: the row opens to its full height. Three: menu items slide in one after another. Save all three before your next build.",
+  "voice": "af_heart",
+  "speed": 0.9,
+  "at": [
+   0.15,
+   2.6,
+   8.4,
+   14.2,
+   20
+  ]
+ },
+ "experiment": {
+  "id": "details-format",
+  "change": "slow-mo details compilation, try 2 (menus), with size-matched element sound",
+  "vs": "median"
+ },
+ "caption": "Why do menus feel so smooth? ✨ Three small motions you tap every day, each played at real speed, then slowed down so you can see it.\n\n1) The tab line glides to where you tap: a transition on translate and width with cubic-bezier(.22, 1, .36, 1), 450 ms.\n2) The row opens to its full height: grid-template-rows from 0fr to 1fr, 400 ms, no fixed height needed.\n3) Menu items slide in one after another: the same transition on each item, delayed by calc(var(--i) * 60ms).\n\nAnimating grid-template-rows works in Chrome 107, Firefox 66 and Safari 16; translate in Chrome 104, Firefox 72 and Safari 14.1.\nSave it for your next build, or send it to a designer friend.",
+ "keywords": [
+  "css accordion animation",
+  "grid-template-rows 0fr 1fr",
+  "tab underline animation css",
+  "staggered menu animation css",
+  "css micro interactions",
+  "ui animation details"
+ ],
+ "hashtags": [
+  "#cssanimation",
+  "#microinteractions",
+  "#uidesign",
+  "#frontenddev",
+  "#css"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-rows",
+   "note": "MDN, grid-template-rows (animatable between track lists of the same shape: 0fr to 1fr); BCD 8.1.8 animation: Chrome 107, Firefox 66, Safari 16"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-delay",
+   "note": "MDN, transition-delay (a per-item delay from calc(var(--i) * 60ms)); BCD: Chrome 26, Firefox 16, Safari 9"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/translate",
+   "note": "MDN, the translate property; BCD: Chrome 104, Firefox 72, Safari 14.1"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/transition-timing-function",
+   "note": "MDN, transition-timing-function (cubic-bezier, ease-out); BCD: Chrome 26, Firefox 16, Safari 9"
+  }
+ ],
+ "tip": {
+  "title": "Three menu motions that make an app feel smooth",
+  "why": "A tab line that glides, a row that opens to its real height and menu items that arrive one by one tell your eye where things came from. Each is one transition.",
+  "code": ".ink { transition-property: translate, width;\n  transition-duration: .45s;\n  transition-timing-function: cubic-bezier(.22, 1, .36, 1); }\n.panel { display: grid; grid-template-rows: 0fr;\n  transition: grid-template-rows .4s cubic-bezier(.4, 0, .2, 1); }\n.open .panel { grid-template-rows: 1fr; }\n.menu li { transition: opacity .3s, translate .3s;\n  transition-delay: calc(var(--i) * 60ms); }",
+  "demo": "menus",
+  "source": {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-rows",
+   "label": "MDN, grid-template-rows"
+  }
+ }
+}

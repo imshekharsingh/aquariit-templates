@@ -1,0 +1,74 @@
+{
+ "name": "showreel-32-waiting",
+ "seek": "scripts/explainer/waiting.html",
+ "dur": 24.5,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.79,
+ "style": "Glass and light",
+ "format": "details",
+ "voice": {
+  "text": "Why does waiting feel shorter? One: the send button shrinks into a spinner. Two: the photo fades in, it never pops. Three: the toast eases in, then settles. Save these three for your next app.",
+  "voice": "af_heart",
+  "speed": 0.9,
+  "at": [
+   0.15,
+   2.8,
+   8.6,
+   14.4,
+   20.2
+  ]
+ },
+ "experiment": {
+  "id": "details-format",
+  "change": "slow-mo details compilation, try 3 (waiting), with size-matched element sound",
+  "vs": "median"
+ },
+ "caption": "Why does waiting feel shorter in some apps? ⏳ Three small motions that keep you company while the app works, each played at real speed, then slowed down.\n\n1) The send button shrinks into a spinner: a transition on width with cubic-bezier(.65, 0, .35, 1), 500 ms.\n2) The photo fades in, it never pops: opacity, and scale from 1.06 to 1, with cubic-bezier(.2, .7, .3, 1), 500 ms.\n3) The toast eases in, then settles: @starting-style sets where it starts, and cubic-bezier(.2, .9, .3, 1.25) overshoots a little.\n\n@starting-style works in Chrome 117, Firefox 129 and Safari 17.5; scale in Chrome 104, Firefox 72 and Safari 14.1.\nSave it for your next app, or send it to a designer friend.",
+ "keywords": [
+  "loading button animation css",
+  "image fade in on load css",
+  "toast notification animation css",
+  "@starting-style css",
+  "css micro interactions",
+  "ui animation details"
+ ],
+ "hashtags": [
+  "#microinteractions",
+  "#cssanimation",
+  "#uxdesign",
+  "#frontenddev",
+  "#webdev"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/width",
+   "note": "MDN, width (animatable as a length); BCD: Chrome 1, Firefox 1, Safari 1"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/scale",
+   "note": "MDN, the scale property; BCD: Chrome 104, Firefox 72, Safari 14.1"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/At-rules/@starting-style",
+   "note": "MDN, @starting-style (the starting values of a first transition); BCD 8.1.8: Chrome 117, Firefox 129, Safari 17.5"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/cubic-bezier",
+   "note": "MDN, cubic-bezier(): y values may leave 0-1 (overshoot); BCD: Chrome 16, Firefox 4, Safari 6"
+  }
+ ],
+ "tip": {
+  "title": "Three motions that make waiting feel shorter",
+  "why": "A button that turns into a spinner, a photo that fades in and a toast that settles all say \"working on it\" without words, so the wait feels shorter than a frozen screen.",
+  "code": ".send { transition: width .5s cubic-bezier(.65, 0, .35, 1); }\n.send.busy { width: 64px; }\nimg { opacity: 0; scale: 1.06;\n  transition: opacity .5s, scale .5s;\n  transition-timing-function: cubic-bezier(.2, .7, .3, 1); }\nimg.loaded { opacity: 1; scale: 1; }\n.toast { transition: translate .5s cubic-bezier(.2, .9, .3, 1.25);\n  @starting-style { translate: 0 120%; } }",
+  "demo": "waiting",
+  "source": {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/At-rules/@starting-style",
+   "label": "MDN, @starting-style"
+  }
+ }
+}

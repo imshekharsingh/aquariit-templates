@@ -140,6 +140,31 @@
 #alive .fix.on .kn{animation:tip-squash .4s}
 #alive .fix .tk{transition:stroke-dashoffset .4s cubic-bezier(.65, 0, .35, 1)}
 @keyframes tip-squash{40%{scale:1.3 .8}}
+#menus .pane{height:150px;padding:30px 12px 0}
+#menus .tabs{position:relative;display:flex;gap:14px;font-weight:700;font-size:13px;color:#9aa0b8}
+#menus .ink{position:absolute;left:0;top:20px;width:44px;height:3px;border-radius:2px;background:#7cf0b6}
+#menus .ac{margin-top:16px;border-radius:8px;background:#262b40;font-size:12px;font-weight:700}
+#menus .ac b{display:block;padding:6px 8px}
+#menus .panel{display:grid;grid-template-rows:0fr}
+#menus .panel > div{overflow:hidden;color:#9aa0b8;padding:0 8px}
+#menus .menu{list-style:none;margin:10px 0 0;padding:0;display:flex;gap:6px;font-size:12px;font-weight:700}
+#menus .menu li{opacity:0;translate:0 -8px;padding:3px 7px;border-radius:6px;background:#262b40}
+#menus .on .ink{translate:96px;width:30px}
+#menus .on .panel{grid-template-rows:1fr}
+#menus .on .menu li{opacity:1;translate:0}
+#menus .fix .ink{transition-property:translate,width;transition-duration:.45s;transition-timing-function:cubic-bezier(.22, 1, .36, 1)}
+#menus .fix .panel{transition:grid-template-rows .4s cubic-bezier(.4, 0, .2, 1)}
+#menus .fix .menu li{transition:opacity .3s,translate .3s;transition-timing-function:ease-out;transition-delay:calc(var(--i) * 60ms)}
+#waiting .pane{display:flex;flex-direction:column;align-items:center;gap:10px;height:170px;padding-top:30px;overflow:hidden}
+#waiting .send{width:110px;height:30px;border-radius:15px;background:#7cf0b6;color:#10131c;font-weight:700;font-size:13px;line-height:30px;text-align:center;overflow:hidden;white-space:nowrap}
+#waiting .img{width:90px;height:44px;border-radius:8px;background:linear-gradient(180deg,#ffb38a,#ff7eb3 55%,#7a5cff);opacity:0;scale:1.06}
+#waiting .toast{padding:5px 10px;border-radius:8px;background:#262b40;font-size:12px;font-weight:700;translate:0 120%;opacity:0}
+#waiting .on .send{width:30px}
+#waiting .on .img{opacity:1;scale:1}
+#waiting .on .toast{translate:0;opacity:1}
+#waiting .fix .send{transition:width .5s cubic-bezier(.65, 0, .35, 1)}
+#waiting .fix .img{transition:opacity .5s,scale .5s;transition-timing-function:cubic-bezier(.2, .7, .3, 1)}
+#waiting .fix .toast{transition:translate .5s cubic-bezier(.2, .9, .3, 1.25),opacity .2s}
 </style>
 </head>
 <body>
@@ -149,6 +174,60 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="waiting">
+  <p class="no">Nº 22</p>
+  <h2>Three motions that make waiting feel shorter</h2>
+  <p class="why">A button that turns into a spinner, a photo that fades in and a toast that settles all say &quot;working on it&quot; without words, so the wait feels shorter than a frozen screen.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span>
+    <div class="send">Send</div><div class="img"></div><div class="toast">Saved to your list</div>
+  </div>
+  <div class="pane fix"><span class="tag ok">With the motion</span>
+    <div class="send">Send</div><div class="img"></div><div class="toast">Saved to your list</div>
+  </div>
+</div>
+<button class="play" type="button">Send it</button></div>
+  <div class="code"><pre><code>.send { transition: width .5s cubic-bezier(.65, 0, .35, 1); }
+.send.busy { width: 64px; }
+img { opacity: 0; scale: 1.06;
+  transition: opacity .5s, scale .5s;
+  transition-timing-function: cubic-bezier(.2, .7, .3, 1); }
+img.loaded { opacity: 1; scale: 1; }
+.toast { transition: translate .5s cubic-bezier(.2, .9, .3, 1.25);
+  @starting-style { translate: 0 120%; } }</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a></p>
+</article>
+
+<article class="tip" id="menus">
+  <p class="no">Nº 21</p>
+  <h2>Three menu motions that make an app feel smooth</h2>
+  <p class="why">A tab line that glides, a row that opens to its real height and menu items that arrive one by one tell your eye where things came from. Each is one transition.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span>
+    <div class="tabs"><span>For you</span><span>Following</span><span>Live</span><i class="ink"></i></div>
+    <div class="ac"><b>Shipping</b><div class="panel"><div>Free over 30 days.</div></div></div>
+    <ul class="menu"><li style="--i:0">Share</li><li style="--i:1">Rename</li><li style="--i:2">Delete</li></ul>
+  </div>
+  <div class="pane fix"><span class="tag ok">With the motion</span>
+    <div class="tabs"><span>For you</span><span>Following</span><span>Live</span><i class="ink"></i></div>
+    <div class="ac"><b>Shipping</b><div class="panel"><div>Free over 30 days.</div></div></div>
+    <ul class="menu"><li style="--i:0">Share</li><li style="--i:1">Rename</li><li style="--i:2">Delete</li></ul>
+  </div>
+</div>
+<button class="play" type="button">Tap all three</button></div>
+  <div class="code"><pre><code>.ink { transition-property: translate, width;
+  transition-duration: .45s;
+  transition-timing-function: cubic-bezier(.22, 1, .36, 1); }
+.panel { display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows .4s cubic-bezier(.4, 0, .2, 1); }
+.open .panel { grid-template-rows: 1fr; }
+.menu li { transition: opacity .3s, translate .3s;
+  transition-delay: calc(var(--i) * 60ms); }</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/grid-template-rows" rel="noopener">Source: MDN, grid-template-rows</a></p>
+</article>
 
 <article class="tip" id="alive">
   <p class="no">Nº 20</p>
@@ -490,11 +569,15 @@
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>18 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>20 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "waiting": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
+  panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Reset' : 'Send it'; }); },
+    "menus": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
+  panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Tap all three again' : 'Tap all three'; }); },
     "alive": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
   panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Tap all three again' : 'Tap all three'; }); },
     "flash": function(){},
