@@ -7,7 +7,8 @@
 // Usage: node scripts/channel3/kit-inline.mjs <scene.html> [more scenes]
 import { readFileSync, writeFileSync } from 'node:fs';
 export const KITS = [{ file: 'kit3d.js', begin: '<script>/*kit:begin*/', end: '/*kit:end*/</script>', skip: 8, name: '3D' }, { file: 'kit25d.js', begin: '/*kit25:begin*/', end: '/*kit25:end*/', skip: 0, name: '2.5D' },
-  { file: '../explainer/kitmotion.js', begin: '/*kitmotion:begin*/', end: '/*kitmotion:end*/', skip: 0, name: 'web motion' }];   // @webin20sec (scripts/explainer/newweb.mjs)
+  { file: '../explainer/kitmotion.js', begin: '/*kitmotion:begin*/', end: '/*kitmotion:end*/', skip: 0, name: 'web motion' },   // @webin20sec (scripts/explainer/newweb.mjs)
+  { file: '../explainer/kitsfx.js', begin: '/*kitsfx:begin*/', end: '/*kitsfx:end*/', skip: 0, name: 'web element sound' }];   // 8 Nov 2026: size-matched sound + entrance variants
 export function kitText(k){ return readFileSync(new URL('./' + k.file, import.meta.url), 'utf8').trim().replace(/<\/script/gi, '<\\/script'); }
 // the kit's copy in a scene (null when the scene has none)
 export function kitCopy(html, k){ const a = html.indexOf(k.begin), b = html.indexOf(k.end); return a < 0 || b < a ? null : html.slice(a + k.begin.length, b).trim(); }

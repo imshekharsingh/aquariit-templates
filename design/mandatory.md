@@ -39,6 +39,7 @@ Frame size is 1080x1920; the stills viewport is 540x960 (halve every number ther
 | 15 | FLOW: dead runs | Nothing on screen is still for 1 s or more outside `window.HOLDS`: `FLOW: dead runs none`. | AUTO |
 | 16 | FLOW: continuity | The picture is always moving and never jumping, 85 % of the time or more: `FLOW: continuity nn%` (holds count as still time). | AUTO |
 | 17 | FLOW: strobes | At most one full-frame flash, declared as a `'flash'` transition: `FLOW: strobes 0` (or `1 (..., declared)`). | AUTO |
+| 18 | ELEMENT SOUND (web, from 9 Nov) | Every element that enters, moves, changes or leaves has a sound cue matched to its size (small = high blip, medium = mid snap or touch, large = low move; in the bed's key, panned by x; a stagger is one pitched run): `ELEMENT SOUND: n of m animated elements have a cue (90%+): ok` (the stills run, scripts/showreel/elsound.mjs; the kit's scripts/explainer/kitsfx.js writes the cues). Owner, 8 Nov 2026: "Every element's flow should have a compatible sound." | AUTO |
 
 ### Daily musts (every day, beside the items)
 - The audit card (daily run step 2).

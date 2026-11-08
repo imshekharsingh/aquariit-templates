@@ -13,6 +13,10 @@
    underneath; a segmented bar on top), then a recap grid that plays every detail once at full speed and holds (the saveable frame).
    Calm by default (owner, 8 Nov 2026: the 4-5 detail 20 s cut "feels rushed"): 3 details, ~5.5 s a beat, rules-web.md rule 13. One camera that pans from part to part (declared
    matchMoves) and never stops drifting; motion from scripts/explainer/kitmotion.js; every frame a pure function of t.
+   Element sound (owner, 8 Nov 2026: every element's flow has a compatible sound, by its size): scripts/explainer/kitsfx.js gives every
+   element that enters, changes or leaves a cue picked by its size (small = high blip, medium = mid snap or touch, large = low move), in the
+   bed's key and panned by its x; staggers are one pitched run. Entrances rotate through KM.VARIANTS (code pane, curve, recap tiles), so
+   neighbouring elements never move alike. The stills run prints ELEMENT SOUND (90%+).
    Edit DETAILS (kind, title, accent word) and the KINDS library (markup, draw, css, curve, chip) for the reel's own components.
    The look is the kit's theme (KM.theme: style C, "Glass and light", the web default from 8 Nov 2026): every colour below is a token it sets;
    window.WEB_THEME = 'dark' before this script gives the old ink-and-mint look. Cheap glass only (no backdrop-filter, no live blur on big layers). */
@@ -103,6 +107,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 (function(){
 /*kitmotion:begin*/
 /*kitmotion:end*/
+/*kitsfx:begin*/
+/*kitsfx:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, T = KM.theme(window.WEB_THEME || 'glass');
   var TEXT = __TEXT__, DUR = __DUR__, HOOK_N = __HOOK_N__;
   // calm pacing (owner, 8 Nov 2026: "too much in 20 s, it feels rushed"; rules-web.md rule 13): one beat of BEAT s per detail, every
@@ -175,18 +181,19 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
         pa.style.stroke = T.on; pa.style.strokeDasharray = '42px'; pa.style.strokeDashoffset = (42 * (1 - f)).toFixed(2) + 'px';
         var l = r.querySelector('.ck-l'); l.style.color = KM.mixCol(T.paper, T.dim, P(o.k, .5, 1)); tx(r, o.a); finger(r, c, o, 170, 200, 92, 100); } }
   };
+  var MAIN = { copy: '.cp', toggle: '.tg', toast: '.ts', stepper: '.st-d', like: '.lk-h', check: '.ck-b' };   // the element whose size picks a kind's sound (a new kind sets main)
   var N = DETAILS.length, D = DETAILS.map(function(d){ var K = KINDS[d.kind], o = {}; for (var k in K) o[k] = K[k]; for (var q in d) o[q] = d[q]; return o; });
   // ---- build the world: one panel per detail (560 px apart), the recap grid after them ----
   var esc = function(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
   var hl = function(css){ return esc(css).replace(/(linear\([^)]*\)|cubic-bezier\([^)]*\)|@starting-style|@keyframes)/g, '<b>$1</b>').replace(/([{}])/g, '<span class="dim">$1</span>'); };
   var world = $('world'), blks = $('blks'), rows = Math.ceil(N / 2), tileH = Math.min(150, (416 - (rows - 1) * 10) / rows), ms = Math.min(194 / 450, (tileH - 52) / 190);
-  D.forEach(function(d, i){ var pn = document.createElement('div'); pn.className = 'pn'; pn.style.left = (560 * i) + 'px';
+  D.forEach(function(d, i){ var pn = document.createElement('div'); pn.className = 'pn'; pn.setAttribute('data-sfx-frame', ''); pn.style.left = (560 * i) + 'px';
     pn.innerHTML = '<div class="stage"><div class="comp">' + d.html + '</div></div><div class="code"><div class="cd"></div></div><svg class="cg" width="250" height="96"></svg>';
     world.appendChild(pn); d.pn = pn; d.stage = pn.querySelector('.stage'); d.comp = pn.querySelector('.comp'); d.code = pn.querySelector('.cd'); d.cgEl = pn.querySelector('.cg'); d.html2 = hl(d.css);
     var b = document.createElement('div'); b.className = 'blk a'; b.innerHTML = '<span class="eb">Nº ' + ('0' + (i + 1)).slice(-2) + ' / ' + ('0' + N).slice(-2) + '</span><div class="tt">' + d.title.map(function(w, j){ return '<span' + (j === d.acc ? ' class="acc"' : '') + '>' + esc(w) + '</span>'; }).join(' ') + '</div>';
     blks.appendChild(b); d.blk = b;
     var bg = document.createElement('div'); bg.className = 'badge a'; blks.appendChild(bg); d.badge = bg; });
-  var rc = document.createElement('div'); rc.className = 'pn'; rc.style.left = (560 * N) + 'px'; rc.innerHTML = '<div class="grid" style="height:' + (rows * tileH + (rows - 1) * 10) + 'px"></div>'; world.appendChild(rc);
+  var rc = document.createElement('div'); rc.className = 'pn'; rc.setAttribute('data-sfx-frame', ''); rc.style.left = (560 * N) + 'px'; rc.innerHTML = '<div class="grid" style="height:' + (rows * tileH + (rows - 1) * 10) + 'px"></div>'; world.appendChild(rc);
   var grid = rc.querySelector('.grid'), gridTop = 230 + Math.max(0, (416 - (rows * tileH + (rows - 1) * 10)) / 2); grid.style.top = gridTop + 'px';
   D.forEach(function(d, i){ var tl = document.createElement('div'), col = i % 2, row = Math.floor(i / 2), solo = N % 2 === 1 && i === N - 1;
     tl.className = 'tile'; tl.style.left = (solo ? 110 : col * 220) + 'px'; tl.style.top = (row * (tileH + 10)) + 'px'; tl.style.height = tileH + 'px';
@@ -221,8 +228,26 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
       d.badgeDraw = KM.slowmoBadge(d.badge, d.ts, f.toFixed(2) + '× SPEED');
       d.typeA = b0 + .4; d.typeB = Math.min(b0 + .4 + d.css.length * .012, b0 + 2.4);
       for (var c = 0; d.typeA + c * .1 < d.typeB; c++) KM.cue({ t: d.typeA + c * .1, k: 'tick', g: .05, p: (c * 5) % 7 });
-      if (d.kind !== 'toast') { KM.tap(r0, 255); KM.tap(d.real(0), 255); } KM.cue({ t: w0 + .05, k: 'move', d: .55, g: .1, dir: -1, x: 255, r: .2 }); });
+      // element sound (kitsfx.js): the component's tap (its main element's size picks the sound) and its landing, at real speed and in slow motion;
+      // the title as one pitched run, the eyebrow a high blip, the code pane and the curve each with their own entrance variant
+      var main = d.comp.querySelector(d.main || MAIN[d.kind]) || d.comp.firstElementChild;
+      KM.sfx(d.comp, r0, 'change', { sizeEl: main }); KM.sfx(main, r0 + d.dur, 'land', { g: .8 });
+      KM.sfx(d.comp, d.real(0), 'change', { sizeEl: main, g: .9 }); KM.sfx(main, d.real(d.dur), 'land', { g: .9, deg: 2 });
+      KM.sfx(d.blk.querySelector('.eb'), A.b[i] + .02, 'enter');
+      KM.sfxRun(d.blk.querySelectorAll('.tt > span'), A.b[i] + .1, .09, 'enter', { size: 'small' });
+      d.codeIn = KM.el(d.code.parentNode, { t0: A.b[i] + (i ? .2 : -.1), d: .55, variant: ['unfold', 'flip', 'slide'][i % 3] });
+      d.cgIn = KM.el(d.cgEl, { t0: d.w1 - .1, d: .5, variant: ['pop', 'morph', 'drop'][i % 3], sound: false });
+      KM.cue({ t: w0 + .05, k: 'move', d: .55, g: .1, dir: -1, x: 255, r: .2 }); });
+    [].forEach.call(world.querySelectorAll('.pn'), function(pn){ KM.mark(pn, 'self', 'camera'); });   // the panels ride the camera (its move cues)
     BAR = KM.partProgress($('bar'), D.map(function(d, i){ return [A.b[i], A.b[i + 1]]; }));
+    // the recap: the tiles cascade in as one pitched run, each mini plays once (a high blip each), the spotlight's lifts tick softly, the title is a run
+    KM.sfxRun(D.map(function(d){ return d.tile; }), A.b[N] - .05, .09, 'enter');
+    D.forEach(function(d, i){ KM.sfx(d.mini, A.b[N] + .3 + i * .35, 'change', { size: 'small', deg: i + 1 });
+      for (var sp = (i + .8) * 1.1; A.b[N] + 1.6 + sp < DUR - .5; sp += N * 1.1) KM.sfx(d.tile, A.b[N] + 1.6 + sp, 'change', { g: .35, deg: i }); });
+    KM.sfxRun(rb.querySelectorAll('.eb, .tt > span'), A.b[N] + .02, .09, 'enter', { size: 'small' });
+    // the hook words (soft, under the voice), the subtitle band in and out (large: low and wide)
+    [].forEach.call($('hook').querySelectorAll('.ln > span'), function(w, h){ KM.sfx(w, h === 0 ? .05 : V.words[h].s - V.lead, 'enter', { size: 'small', g: .45, deg: h }); });
+    KM.sfx($('band'), A.b[0] - .4, 'enter', { size: 'large' }); KM.sfx($('band'), A.end + 1.1, 'exit', { size: 'large' });
     KM.cue({ t: 0, k: 'hit', g: .45, p: -.3 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .35 });
     KM.cue({ t: A.b[N] + .35, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] }); KM.cue({ t: DUR - .45, k: 'swish', d: .6, g: .4, p: -.6 });
     KM.publish();
@@ -244,8 +269,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
       KM.type(d.code, d.html2, t, d.typeA, d.typeB); d.code.style.opacity = a.toFixed(3);
       // glass panes at three depths (the stage, the code pane nearer, the curve nearest): they slide against the camera's glides and float
       KM.depth(d.stage, c, 255 + 560 * i, 480, 0, ' translateY(' + KM.float(t, i + .9, 2).toFixed(2) + 'px)');
-      KM.depth(d.code.parentNode, c, 255 + 560 * i, 480, .05, ' translateY(' + KM.float(t, i + .3, 3).toFixed(2) + 'px)');
-      KM.depth(d.cgEl, c, 255 + 560 * i, 480, .09, ' translateY(' + KM.float(t, i + .6, 2.5).toFixed(2) + 'px)');
+      var ci = d.codeIn(t); KM.depth(d.code.parentNode, c, 255 + 560 * i, 480, .05, ' translateY(' + KM.float(t, i + .3, 3).toFixed(2) + 'px)' + ci.tf); d.code.parentNode.style.opacity = ci.o.toFixed(3);
+      KM.depth(d.cgEl, c, 255 + 560 * i, 480, .09, ' translateY(' + KM.float(t, i + .6, 2.5).toFixed(2) + 'px)' + d.cgIn(t).tf);
       d.cg.draw(t, a * E.inOut3(P(t, d.w1 - .1, d.s0 - .1)) * (1 - E.inOut3(P(t, d.s1 + .2, d.s1 + .6))));
       d.badgeDraw(t);
       // the title block: in word by word as its part starts, blurred away as the next one comes
@@ -256,7 +281,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
       var rk = E.settle(P(t, A.b[N] - .05 + i * .09, A.b[N] + .55 + i * .09), 1.2), ra = alpha(N, t);
       // a spotlight walks the grid once the tiles are in (one tile lifts and lights up at a time: the eye reads each, the frame never rests)
       var sp = t - A.b[N] - 1.6, per = 1.1, ph = sp / per - i, hl = sp < 0 ? 0 : Math.max(0, Math.sin(Math.PI * cl(((ph % N) + N) % N / 1.6))) * P(sp, 0, .4);
-      d.tile.style.opacity = cl(rk * 2.5).toFixed(3); d.tile.style.transform = 'translateY(' + ((1 - rk) * 36 - hl * 8).toFixed(2) + 'px) scale(' + (mix(.94, 1, rk) + hl * .06).toFixed(4) + ')';
+      var te = KM.enter(KM.variant(i), P(t, A.b[N] - .05 + i * .09, A.b[N] + .55 + i * .09));   // stagger-cascade, each tile its own entrance
+      d.tile.style.opacity = te.o.toFixed(3); d.tile.style.transform = 'translateY(' + (-hl * 8).toFixed(2) + 'px) scale(' + (1 + hl * .06).toFixed(4) + ')' + te.tf;
       d.tile.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,' + (.22 + hl * .2).toFixed(3) + '), inset 0 1.5px 0 rgba(255,255,255,.5), inset 0 0 44px rgba(143,230,255,' + (hl * .2).toFixed(3) + '), 0 0 0 2px rgba(143,230,255,' + (hl * .75).toFixed(3) + '), 0 ' + (18 + hl * 10).toFixed(1) + 'px ' + (28 + hl * 12).toFixed(1) + 'px rgba(18,8,60,.55)';
       if (t >= A.b[N] - .4) { var mc = Math.min(d.top, t - A.b[N] - .3 - i * .35); /* each plays once at 1x, then holds (the recap's hold) */ d.draw(d.mini, mc, { f: d.cg.f, k: cl(mc / d.dur), a: ra, dur: d.dur, mini: true }); }
       [].forEach.call(d.tile.querySelectorAll('.tl'), function(e){ e.style.opacity = ra; }); });

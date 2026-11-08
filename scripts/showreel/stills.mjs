@@ -12,6 +12,7 @@
 // Static stretch and subject fill (7 Nov 2026): STATIC STRETCH lists any 2 s+ where the mean pixel change between moments 0.5 s apart stays under 1
 // (calibrated: Nº 09 numbers passes, least 0.6 once; the old Nº 16 longname fails from 7.5 s on; Nº 13 sideways fails 3.5-7 s, where only subtitle
 // words change); SUBJECT FILL is the share of the frame the subject covers at frame 0 (old Nº 16: 4%, reworked: 42%); both exit 1 when they fail.
+// ELEMENT SOUND (8 Nov 2026): the share of animated elements that carry a cue (scripts/showreel/elsound.mjs; 90%+ on scenes with the kit's element sound).
 // FLOW (items 14-17, 7 Nov 2026): cuts, dead runs, continuity, strobes on a 0.1 s scan (scripts/showreel/flow.mjs; declare window.TRANSITIONS).
 // Layout (Mandatory Gate items 3-4, design/mandatory.md; 7 Nov 2026): SAFE ZONE, OVERLAP, BAND and HOOK from scripts/showreel/layout.mjs on the
 // same 0.5 s scan (every text box via getBoundingClientRect); a scene marks its subject, subtitle band and hook with data-subject, data-band, data-hook.
@@ -20,6 +21,7 @@ import { resolve, join } from 'node:path';
 import { createRequire } from 'node:module';
 import { collectDom, judge } from './layout.mjs';
 import { sample, judgeFlow, channelOf, simWords } from './flow.mjs';
+import { collectEls, judgeSound } from './elsound.mjs';
 const { chromium } = createRequire(process.env.PW_FROM || join(process.cwd(), 'node_modules/'))('playwright');
 const [cfgPath, out = 'stills', n = '11'] = process.argv.slice(2);
 const cfg = JSON.parse(readFileSync(cfgPath, 'utf8')), scene = cfgPath.replace(/\.json$/, '.html');
@@ -33,7 +35,7 @@ const ts = [cover]; if (String(n).includes(',')) ts.push(...String(n).split(',')
 const shots = [];
 for (const x of ts) { await p.evaluate((x) => window.seek(x), x); shots.push((await p.screenshot({ type: 'jpeg', quality: 70 })).toString('base64')); }
 const scanT = [], scan = [];
-const wide = new Map(), boxes = [];   // text -> first moment it overflowed; the layout at every moment (layout.mjs)
+const wide = new Map(), boxes = [], els = [];   // els: every element's box at every moment (ELEMENT SOUND, scripts/showreel/elsound.mjs)   // text -> first moment it overflowed; the layout at every moment (layout.mjs)
 const fit = () => { const out = [], W = innerWidth, op = (e) => { let a = 1; for (; e && e.nodeType === 1; e = e.parentElement) { const cs = getComputedStyle(e); if (cs.display === 'none' || cs.visibility === 'hidden') return 0; a *= +cs.opacity; } return a; };
   const tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n;
   while ((n = tw.nextNode())) { const s = n.textContent.trim(); if (!s || !n.parentElement || /^(SCRIPT|STYLE)$/.test(n.parentElement.tagName) || n.parentElement.closest('[data-fit=free]')) continue;
@@ -43,7 +45,7 @@ const fit = () => { const out = [], W = innerWidth, op = (e) => { let a = 1; for
     if (b.right > L - 1 && b.left < R + 1 && (b.left < L - 1 || b.right > R + 1)) out.push(s.slice(0, 40) + ' (' + Math.round(b.left) + '-' + Math.round(b.right) + ' px, box ' + Math.round(L) + '-' + Math.round(R) + ')'); }
   return out; };
 for (let x = 0; x <= cfg.dur - .05; x += .5) { scanT.push(+x.toFixed(2)); await p.evaluate((x) => window.seek(x), x); scan.push((await p.screenshot({ type: 'jpeg', quality: 40 })).toString('base64'));
-  boxes.push({ t: x, ...(await p.evaluate(`(${collectDom})()`)) });
+  boxes.push({ t: x, ...(await p.evaluate(`(${collectDom})()`)) }); els.push(await p.evaluate(`(${collectEls})()`));
   for (const w of await p.evaluate(fit)) { const k = w.replace(/ \(.*$/, ''); if (!wide.has(k)) wide.set(k, x.toFixed(1) + ' s: ' + w); } }
 const spread = await p.evaluate(async (list) => { const c = document.createElement('canvas'); c.width = 54; c.height = 96; const g = c.getContext('2d', { willReadFrequently: true });
   const out = []; for (const b64 of list) { const im = new Image(); im.src = 'data:image/jpeg;base64,' + b64; await im.decode(); g.drawImage(im, 0, 0, 54, 96);
@@ -67,6 +69,7 @@ const FILL_MIN = .4, fill = Math.round(vis.fill * 100);
 const lay = judge(boxes, !/channel3/.test(cfgPath));   // Turns Out draws on a canvas: BAND, HOOK and SUBTITLES are REVIEW items there
 // FLOW (design/mandatory.md items 14-17; 7 Nov 2026): cuts, dead runs, continuity and strobes from the frame every 0.1 s (scripts/showreel/flow.mjs).
 // Turns Out prints them from scripts/channel3/qa.mjs (its own thresholds), so they are not repeated here.
+const snd = judgeSound(els, await p.evaluate(() => !!window.ELEMENT_SOUND));
 const flow = /channel3/.test(cfgPath) ? { lines: [], bad: 0 } : judgeFlow(await sample(p, cfg.dur), channelOf(cfgPath));
 await p.setViewportSize({ width: 1080, height: 100 });
 await p.setContent(`<body style="margin:0;background:#111;display:grid;grid-template-columns:repeat(4,270px);gap:0;font:600 13px system-ui;color:#fff">${
@@ -78,5 +81,5 @@ console.log(`EMPTY FRAMES: ${empty.length ? empty.map((x) => x + ' s').join(', '
 console.log(`STATIC STRETCH: ${stretches.length ? stretches.join(', ') + ' (under ' + STILL + ' mean change per 0.5 s for 2 s or more: give it a move, or mark a deliberate hold in window.HOLDS)' : 'none'} (least change ${Math.min(...vis.diff).toFixed(1)} at ${scanT[vis.diff.indexOf(Math.min(...vis.diff))]} s, median ${[...vis.diff].sort((a, b) => a - b)[vis.diff.length >> 1].toFixed(1)})`);
 console.log(`SUBJECT FILL: ${fill}% at frame 0${fill < FILL_MIN * 100 ? ' (UNDER ' + FILL_MIN * 100 + '%: push the camera in so the subject fills the frame)' : ''}`);
 console.log(`TEXT FIT: ${wide.size ? 'TEXT WIDER THAN ITS BOX: ' + [...wide.values()].join(' | ') : 'all text inside its box'}`);
-for (const l of [...lay.lines, ...flow.lines]) console.log(l);
-process.exit(lay.bad || flow.bad || errors.length || empty.length || wide.size || stretches.length || fill < FILL_MIN * 100 ? 1 : 0);
+for (const l of [...lay.lines, ...flow.lines, ...snd.lines]) console.log(l);
+process.exit(lay.bad || flow.bad || snd.bad || errors.length || empty.length || wide.size || stretches.length || fill < FILL_MIN * 100 ? 1 : 0);
