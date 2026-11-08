@@ -841,5 +841,21 @@
   "concept": "2.5D flow · Was the Golden Gate Bridge nearly black and yellow?",
   "about": "One camera that never cuts: the Golden Gate Bridge painted in the Navy's black and yellow stripes over the fog (frame 0, E14: an icon in a state that looks wrong), a Navy ship passing under it, the Army pilots' biplane as the towers turn red and white from the top, the red primer washing up the steel, Irving Morrow on the Marin headland with the fog, the hills and the sea, International Orange rolling up the tower in slow motion, 1937 and traffic, and the orange bridge in the evening.",
   "note": "Turns Out, 8 Nov 13:00 IST (built overnight; the slot moved from 20:00 to 13:00 today)."
+ },
+ "showreel-31-menus": {
+  "channel": "web",
+  "postOn": "2026-11-09",
+  "postAt": "13:00",
+  "concept": "Slow-mo details (look C), menus: gliding tab line, accordion row via grid-template-rows, cascading menu items",
+  "about": "Result first: the tab line already on \"Live\" under the hook, then three menu motions, one calm beat of ~5.8 s each (real speed, slow motion with its live curve, a settle hold), its CSS typed; a recap grid that plays once and holds. Every element has a size-matched sound (the kit's element sound, 8 Nov).",
+  "note": "13:00 IST, experiment details-format (try 2) with element sound"
+ },
+ "showreel-32-waiting": {
+  "channel": "web",
+  "postOn": "2026-11-10",
+  "postAt": "13:00",
+  "concept": "Slow-mo details (look C), waiting: send button morphs into a spinner, photo fades in, toast settles",
+  "about": "Result first: the send button already turned into a check under the hook, then three waiting motions, one calm beat of ~5.8 s each (real speed, slow motion with its live curve, a settle hold), its CSS typed; a recap grid that plays once and holds. Every element has a size-matched sound (the kit's element sound, 8 Nov).",
+  "note": "13:00 IST, experiment details-format (try 3) with element sound"
  }
 }

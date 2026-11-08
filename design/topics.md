@@ -17,8 +17,8 @@ topics were already posted: replan them on Tuesday's spare night, as myth-busts 
 ### @webin20sec (narrated "Why does your ...?" tip, one CSS/HTML fix, MDN + BCD support)
 | Day | Hook | The fix |
 |---|---|---|
-| Mon 9 | (built early as showreel-24-sticky, posts 5 Nov) Why did your sticky header stop sticking? | position: sticky breaks under an ancestor with overflow: hidden; overflow: clip keeps it |
-| Tue 10 | Why does iPhone zoom in when you tap a form? | DROPPED unless a primary source turns up: MDN, BCD and WebKit do not document the 16px focus zoom (3 Nov); pick a new tip |
+| Mon 9 | Why do menus feel so smooth? (built 8 Nov as showreel-31-menus, details format; owner override: build ahead) | tab line translate + width, grid-template-rows 0fr to 1fr, transition-delay calc(var(--i) * 60ms) |
+| Tue 10 | Why does waiting feel shorter? (built 8 Nov as showreel-32-waiting, details format; owner override: build ahead) | send button width morph, photo opacity + scale fade, toast @starting-style |
 | Wed 11 | Why does your layout jump when a page gets long? | the scrollbar appears and steals width; scrollbar-gutter: stable |
 | Thu 12 | (built early as showreel-25-anchor, posts 6 Nov, with scroll-padding-top on html) Why do your links hide the heading under the header? | scroll-margin-top on the target (or scroll-padding-top on html) |
 | Fri 13 | Why did the focus ring vanish? | outline: none kills it for keyboards; :focus-visible keeps it for keys, not taps |
