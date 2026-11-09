@@ -36,3 +36,9 @@ As decided by the owner on 5 Nov, the channel posted 2-3 reels a week; from Sun 
    serve the chain rather than slow the voice. This replaces rule 3's 18 s cap.
 11. **Platform balance** (owner, 8 Nov 2026: "we lean too much on Apple"): at most 1 in 3 tech reels Apple-specific; most reels are
    platform-neutral (wording that fits Android and iPhone alike) or cover both. Check the last 3 reels in captions.json before picking a topic.
+
+**ESCALATE 9 Nov** (median reach 116 over the last 7, ALARM again): the format answer is running (rule 9, the myth-bust): try 1 close-apps 121 at
+6 h vs the tech 6 h median of 111 (+9%, inside the ~110-130 pool; 24 h verdict at the ~10:53 IST collect), try 2 today (heat-battery, TRUE),
+try 3 tomorrow (drain-zero, MYTH). Every tech reel since 31 Oct has ended at x1.0 of its 6 h reach with 11 followers: the pool is the follower
+count plus a fixed test audience, so a format that does not break 150 at 24 h in 2 of 3 tries is dropped on 11 Nov and the channel tries a
+different topic type (the phone habit with a number on screen people save, rule 4), not another tweak.

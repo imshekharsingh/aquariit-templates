@@ -19,6 +19,9 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 - 10 Nov, web: the details format, try 3 (id details-format; showreel-32-waiting: send-button morph, photo fade, toast), element sound → read 11 Nov (24 h); 2 WINs of 3 → rule.
 
 - 8 Nov, tech: the myth-bust format (id tech-myth-verdict; ESCALATE answer): "Does closing your apps save battery?", MYTH stamped in frame 0, why in 3 steps, Background App Refresh as the takeaway, 18 s → read 9 Nov (24 h) vs the tech median (116).
+- 9 Nov, tech: the myth-bust, try 2 (heat-battery, TRUE in frame 0; natural voice pace, rule 10) → read 10 Nov (24 h) vs 116. Try 1 at 6 h: 121 vs the 6 h median 111.
+- 9 Nov, c3: the journey, try 1 (id c3-journey; Sphinx in sand, seven worlds) → read 10 Nov (24 h) vs the c3 median. Yesterday's 13:00 slot (Golden Gate): 1,143 at 6 h vs the 6 h median 158 (x7), 24 h verdict at the 10:53 collect.
+- 9 Nov, web: try 1 of details-format (showreel-30-alive) at 6 h: 1,333 vs the 6 h median 1,288 (on par); its 24 h verdict prints at the 10:53 collect.
 
 ## What works
 
@@ -44,6 +47,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 ### Turns Out (c3)
 - **Topic:** a world-famous thing everyone pictures one way, shown in a state that looks wrong: a visible transformation (Liberty copper-brown 1,051 reach, 15.2 s watched; the green Sahara 1,041 at 5 h).
 - **Frame 0:** the payoff image in frame 0, the "wait, what?" picture (E14, running).
+- **Icon in a colour nobody pictured (rule 10, 9 Nov):** Liberty 1,058, Sahara 1,076, white pyramid 1,102, black-and-yellow Golden Gate 1,143 at 6 h; every other reel 108-161.
 - **Form:** 25-35 s, 2.5D, one camera that never cuts, a big change every ~3 s, payoff in the last 3 s (Liberty held 46%, the channel's best).
 - **Craft (7 Nov):** hook, captions and credit centred in the safe zone (the starter, SX = 255).
 
