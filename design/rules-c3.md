@@ -37,6 +37,13 @@ Evidence = the Instagram collect run of 5 Nov 2026: 4 reels, median reach 157, 0
    end, because a drifting set counts as motion; the owner: "Turns Out feels flat at times ... such designs can be easily made." The channel
    median is 163 over the last 6; the first journey reels (Sphinx 9 Nov, Opera House 10 Nov) are E-journey, read vs that median.
 
+10. **The icon in a colour or state people never pictured, recognised in under 1 s** (promoted 9 Nov 2026 from rules 1-2: 4 wins of 5).
+   Evidence (Instagram collect, 9 Nov 05:10 IST): the four Turns Out reels past 1,000 reach are all a world-famous thing in a colour that looks
+   wrong: Liberty copper-brown 1,058, the green Sahara 1,076, the white Great Pyramid 1,102, the black-and-yellow Golden Gate 1,143 at 6 h
+   (vs the channel's 6 h median of 158, x7); every other reel sits at 108-161 (blue sky 160, 60 minutes 153, flamingo pink 123, Pisa 108).
+   The one colour reel that missed (flamingos) showed a thing nobody recognised. So: pick the icon first (a landmark, artwork or object people on
+   every continent know on sight), then the true state it was in; a shape or naming story is second choice and needs a visible change to pass.
+
 **ESCALATE 8 Nov** (median reach 163 over the last 6, ALARM two days running; the two 1,000+ reels and the white pyramid's 465 at 5 h are all visible
 transformations of a world-famous thing; every reel without one sits at 118-161): from Mon 9 Nov every Turns Out topic must be a visible transformation
 of a landmark everyone pictures (not a naming or calendar story). Mon 9's Everest-name topic is swapped for the Sphinx buried in sand (design/topics.md).
@@ -45,3 +52,8 @@ of a landmark everyone pictures (not a naming or calendar story). Mon 9's Everes
 down, stand, reach, walk) is a sequence of poses with anticipation (a yawn, a shift of weight), ease through every pose (no linear move, no snap,
 no pose that appears whole) and weight (a hand or foot planted before the body moves onto it), about 1.5-2.5 s for a whole-body move, and a
 settle after (a breath, a blink). The stills review checks it every 0.1 s across the move. Sound: cloth and breath, never a thud for a body.
+
+**ESCALATE 9 Nov** (median reach 160 over the last 7, ALARM again): today's and tomorrow's reels (Sphinx 9 Nov, Opera House 10 Nov) are already
+the format answer (the journey, E c3-journey, try 1 and 2) and are read at 24 h. The topic answer is applied to the week: Wed 11 - Sun 15 were
+calendar, naming and map stories (pyramid north, Canberra, Brazil, leap day, Japan), which rule 10 fails; they are swapped in design/topics.md for
+five icons in a colour or state nobody pictures. Golden Gate at 13:00 (1,143 at 6 h) is on track for a WIN at its 24 h reading.

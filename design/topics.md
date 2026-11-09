@@ -41,8 +41,8 @@ topics were already posted: replan them on Tuesday's spare night, as myth-busts 
 |---|---|---|
 | Mon 9 | Why was the Great Sphinx buried up to its neck in sand? (swapped 8 Nov for a visible transformation: rules-c3.md ESCALATE; Everest moves to a later week) | Africa |
 | Tue 10 | How did one ball shape the Sydney Opera House? (swapped 8 Nov: Panama is a map fact, not a visible transformation of a landmark; rules-c3.md ESCALATE; Panama moves to a later week) | Oceania |
-| Wed 11 | How did the builders point the Great Pyramid almost exactly north? | Africa |
-| Thu 12 | Why is Australia's capital Canberra, not Sydney or Melbourne? | Oceania |
-| Fri 13 | Why does Brazil speak Portuguese when its neighbours speak Spanish? (Tordesillas, 1494) | South America |
-| Sat 14 | Why do we add a day every four years, but not always? (Julian 46 BC, Gregorian 1582) | Europe |
-| Sun 15 | Why is Japan called the Land of the Rising Sun? (Nihon, "the sun's origin") | Asia |
+| Wed 11 | Was the Terracotta Army once painted in bright colours? (swapped 9 Nov, rules-c3.md rule 10; the pyramid-north story moves to a later week) | Asia |
+| Thu 12 | Was Tower Bridge once painted chocolate brown? (1894 brown, 1977 red-white-blue, now blue and white; swapped 9 Nov, rule 10; Canberra moves later) | Europe |
+| Fri 13 | Why did the Taj Mahal need a mud face mask? (yellowing marble, clay-pack cleaning; swapped 9 Nov, rule 10; Brazil moves later) | Asia |
+| Sat 14 | Was Niagara Falls ever switched off? (American Falls dried in 1969; swapped 9 Nov, rule 10; leap day moves later) | North America |
+| Sun 15 | Were Greek marble statues once brightly painted? (the Parthenon and its statues in colour; swapped 9 Nov, rule 10; Japan's name moves later) | Europe |

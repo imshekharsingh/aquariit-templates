@@ -62,3 +62,9 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
 **ESCALATE 8 Nov** (median reach 1,247 over the last 7 vs target 2,000; watch 8.5 s; saves 1.3%; ALARM two days running): answered by a format
 change, the slow-mo "details" compilation (showreel-30-alive, 8 Nov 13:00, experiment details-format; rule 11). Read at 24 h (9 Nov) vs the median;
 if it wins, the next web reels stay in the format; if it loses, the 10 Nov reel tries a different topic type (a phone trick people use as users).
+
+**ESCALATE 9 Nov** (median reach 1,458 over the last 7 vs target 2,000; watch 9 s; saves 1.7%; ALARM again, but up from 1,247): the format answer
+is already running and is not changed mid-test (one change at a time): the details format, try 1 (showreel-30-alive, 1,333 at 6 h vs the web 6 h
+median of 1,288: on par, 24 h verdict at the ~10:53 IST collect), try 2 today (showreel-31-menus), try 3 tomorrow (showreel-32-waiting). The window is
+lifting on its own (flash 3,630 and longname 2,354, both "fast start", a satisfying polish fix and a layout fix with a visual payoff, rule 11).
+If try 1 reads LOSE at 24 h, the Wed 11 reel is the different topic type named on 8 Nov (a phone trick people use as users), not a fourth details reel.
