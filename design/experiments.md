@@ -304,3 +304,13 @@ that form; the ideas behind them (a save-worthy summary, a service ad) stay, bui
 metaphor). Originality is now enforced (scripts/film/sources.json).
 - 11 Nov: web single fixes with a visual payoff keep climbing after 6 h (flash x1.9, longname x1.6) while the details compilations stop at x1.1, so ESCALATE goes back to one satisfying fix (carousel snap); on tech the verdict stamp lifts watch (6.0 / 5.2 s vs 4.7) but not reach (117-123), so the topic type changes (black screenshots), not the stamp.
 - 11 Nov: tech is not capped by followers (Turns Out reaches 1,100+ with 8) but by what the first ~120 viewers do: 9 explainers and myth-busts held ~28% with 0 saves whatever the topic, so tech switches format (E17: 3 settings to change today, tapped on a drawn phone, both platforms' paths, a recap to save).
+
+## E18 · @webin20sec: back to the October formula (owner idea, 11 Nov 2026: "our earlier videos worked better ... the black background gives an attractive look to the content and profile, plus the kind of fixes we highlighted"; 3 reels, 12-14 Nov)
+- Change: the dark theme (`KM.theme('dark')`, the old ink-and-mint look) AND October's topic type: a motion-feel fix you can see and feel
+  (how something moves: stagger, a press, a collapse, a spring), one fix per reel, "Why does your X …?" hook. Config `"experiment": {"id": "dark-return", "change": "dark theme + motion-feel single fix", "vs": "median"}`.
+- Evidence (Instagram collect, 11 Nov): 24-31 Oct (dark, motion-feel fixes like stagger 6,053, overscroll 4,645, transform 2,685, numbers 104,925)
+  median reach 1,704, watch 9.5-14.7 s, saves up to 4.6%; 1-7 Nov (still dark, layout fixes) median ~1,340, watch 6-11 s; 8-10 Nov (glass)
+  median 1,546. So the drop started before the glass look: topic type is the stronger suspect, the background the weaker one; this test
+  brings both back together because that combination is proven.
+- Decides: median reach of the 3 vs the glass reels (1,546) and watch vs 8.8 s, at 24 h and 72 h. If it wins, test the background alone next
+  (dark vs glass on the same topic type) so we learn which one did it; the profile grid look counts too (owner).

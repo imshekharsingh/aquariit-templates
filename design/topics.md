@@ -20,9 +20,9 @@ topics were already posted: replan them on Tuesday's spare night, as myth-busts 
 | Mon 9 | Why do menus feel so smooth? (built 8 Nov as showreel-31-menus, details format; owner override: build ahead) | tab line translate + width, grid-template-rows 0fr to 1fr, transition-delay calc(var(--i) * 60ms) |
 | Tue 10 | Why does waiting feel shorter? (built 8 Nov as showreel-32-waiting, details format; owner override: build ahead) | send button width morph, photo opacity + scale fade, toast @starting-style |
 | Wed 11 | Why does your carousel stop between photos? (built 11 Nov as showreel-33-carousel; swapped from the scrollbar jump, which phones never show: overlay scrollbars, rule 1; ESCALATE answer, rule 11) | scroll-snap-type: x mandatory + scroll-snap-align: center |
-| Thu 12 | (built early as showreel-25-anchor, posts 6 Nov, with scroll-padding-top on html) Why do your links hide the heading under the header? | scroll-margin-top on the target (or scroll-padding-top on html) |
-| Fri 13 | Why did the focus ring vanish? | outline: none kills it for keyboards; :focus-visible keeps it for keys, not taps |
-| Sat 14 | Why does your text flash in the wrong font? | font-display (swap vs optional) and a size-adjusted fallback |
+| Thu 12 | Why does your button feel dead when you tap it? (E18: dark, motion-feel fix) | :active { transform: scale(.96) } + a 120 ms transition: the press you can feel |
+| Fri 13 | Why does your list jump when you delete a row? (E18) | the row collapses first: grid-template-rows 1fr → 0fr with a transition, then it leaves |
+| Sat 14 | Why does your toggle feel cheap? (E18) | a spring easing with linear() so the knob overshoots and settles |
 | Sun 15 | Why does one long name break your card? | min-width: 0 on the flex child + text-overflow: ellipsis (or line-clamp) |
 
 ### @techin20sec (only if the 6 Nov audit keeps the format; "How does / why does" + the mechanism step by step)
