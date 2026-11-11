@@ -19,7 +19,7 @@ past the safe zone at 66-965 px; all three fixed: tighter lines, chunks [4, 4, 4
 10. Facts: PASS: Android Developers WindowManager.LayoutParams FLAG_SECURE ("treat the content of the window as secure, preventing it from appearing in screenshots or from being viewed on non-secure displays") and SurfaceView.setSecure (the same words for a video surface), both read 11 Nov; Apple FairPlay Streaming (content encrypted, playback protected on Apple platforms); the script says "the app marks its video window as secure" and "phones leave secure windows out of screenshots", nothing beyond the docs; npm run check passes
 11. Post data: PASS: captions.json entry with channel tech, postOn 2026-11-11, postAt 13:00, concept, experiment; 6 keywords, 5 hashtags in the topic's post block
 12. Review file: PASS: this file, items 1-11, 14-17
-13. After the render: PENDING
+13. After the render: PASS: run 42940408228 green, 8 GitHub minutes; voice in one take at speed 1.00, ends 19.07 s (limit 21.4); voice check: 50 words in the script, 50 heard, no unsure words, 2.67 words/s (limit 3.3); one flag: 0.46 s after the hook (under 0.55 s; the hook card glides straight into the answer, kept); SOUND DETAIL: 31 of 31 element cues audible, quietest -15.0 dB, median -12.6 dB (100%): ok; SOUND GATE: ok -14.4 LUFS, true peak -2.2 dBTP; SAFE ZONE: ok in the render. The contact sheet artifact cannot be downloaded from a session (HTTP 403): frames not viewed here, the stills from the same engine passed
 14. Cuts: PASS: FLOW: cuts 0 (4 declared glides between the scenes)
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.0, 4 declared transitions)
