@@ -5,8 +5,12 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
-- [ ] 11 Nov 2026 (owner): first research pass on short-form video design gaining reach now (all three channels), as in CLAUDE.md
-  "Research what works now"; then weekly on the spare-usage night.
+- [ ] 11 Nov 2026, from the first research pass (design/references.md, R-trend 11 Nov), before the experiments that need them:
+  - caption question line: newweb.mjs and the techreel starter write caption line 1 as a one-word-answer question and the last line as the
+    comment ask (E20 web from Sun 15; E21 tech uses it only if E20 wins);
+  - a series tag in kit25d.js (`Kt.seriesTag(name, n)`: small, above the hook in frame 0 and on the cover; the guess starter calls it) (E22, Mon 16);
+  - Trial Reels: one "Needs you" yes/no for the owner on the daily run (is "Trial" offered when posting on each account?); if yes, post one
+    hook variant of a reel as a trial (non-followers only) to read hooks without risking the grid.
 - [ ] Reel tooling that raises the hit rate: the stills review prints a rulebook score block (design/rules-*.md) next to the sheet.
       (The 2-3 day buffer item was dropped on 5 Nov 2026: owner, learn-then-build.)
 
@@ -26,6 +30,9 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] Posting through Instagram's content publishing API (roadmap 6; needs Meta's review, owner's call).
 
 ## Done
+- 11 Nov 2026: first research pass (design/references.md, "R-trend: first weekly research pass"): 7 trends kept with sources, 2 kit pieces
+  and 1 owner item to todo; next experiments queued after E17-E19: E20 web (caption asks a question and a comment), E21 tech ("ships with
+  this ON" default hook), E22 Turns Out (a named series); topics in design/topics.md. Weekly from now on the spare-usage night.
 - 11 Nov 2026: web colour variety: 5 palettes in look C (kitmotion.js KM.PALETTES: aurora, ember, lagoon, orchid, glacier), rotated by newweb.mjs
   (scripts/explainer/palette.mjs, the config's "palette"), CONTRAST line in preflight (scripts/showreel/contrast.mjs, 4.5:1 on rendered frames),
   scripts/explainer/palettesheet.mjs for a sheet of a scene in every palette. Citrus tried and dropped (muddy at phone size).

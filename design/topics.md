@@ -72,3 +72,18 @@ Start from techreel/topics/stop-tracking.json (copy, change the words). These re
 | Tue 17 | 3 settings that stop eating your mobile DATA | Low Data Mode / Data Saver · Wi-Fi Assist / Adaptive connectivity off · app background data off |
 | Wed 18 | 3 settings that help you SLEEP | Night Shift / Night Light · a bedtime focus / Bedtime mode · grayscale at night |
 Swap a day for a better benefit only when the numbers say so (E17 verdict Sun 15); never repeat a setting.
+
+## Queued experiments after E17-E19 (research pass 11 Nov 2026; design/experiments.md E20-E22)
+The day's topic stays the row above for its channel; these rows add the one experiment and its hook or caption line.
+| Day | Channel | Experiment | Topic and the one change |
+|---|---|---|---|
+| Sun 15 | web | E20 web-comment-ask | Why does one long name break your card? · caption line 1 "Has a long name broken your card? yes or never", last line asks for the word in the comments |
+| Mon 16 | web | E20 | Why does your popup slam in? (`@starting-style` + a transition on the dialog's opacity and scale; check MDN + BCD) · "Does your popup fade in? yes or not yet" |
+| Tue 17 | web | E20 | Why does your button stay lit after a tap? (`@media (hover: hover)` around the hover style; rule 1, a phone annoyance) · "Seen this on your site? yes or no" |
+| Mon 16 | tech | E21 tech-default-hook | "Your phone ships with this ON": app background data / Background App Refresh (data, the E17 Tue 17 row moved up) |
+| Tue 17 | tech | E21 | "Your phone ships with this ON": precise location for the camera / photos keep where they were taken (location in photos; both platforms' paths checked that morning) |
+| Wed 18 | tech | E21 | "Your phone ships with this ON": keep messages forever (storage; the E17 Mon 16 row's setting) |
+| Mon 16 | c3 | E22 c3-series-tag | Nº 1 · Big Ben's dials were Prussian blue (the Mon 16 row above) |
+| Tue 17 | c3 | E22 | Nº 2 · Easter Island's moai had eyes (the Tue 17 row) |
+| Wed 18 | c3 | E22 | Nº 3 · Stonehenge's bluestones came from Wales (the Wed 18 row) |
+The Tue 17 spare night re-checks these against E17-E19's verdicts and swaps any row the verdicts make wrong.

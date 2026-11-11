@@ -328,3 +328,32 @@ Kit: Kt.choices, Kt.countdown, Kt.repaint, Kt.guessCues; starter: `new25d.mjs <s
 **Decides:** each reel at 24 h; WIN = reach above 1,300 (the best non-guess reel: 1,273) OR 5+ shares and comments together; keep at 2 WINs of 3,
 drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and in design/playbook.md.
 
+
+## E20 · @webin20sec: the caption asks a question and a comment (queued 11 Nov 2026 from research, design/references.md R-trend 11 Nov; 3 reels, Sun 15 - Tue 17 Nov)
+- Why: Metricool (24.4M posts, 2026): captions that ask for comments get ~3x the comments, a question +37%, asking for likes -5%. Web captions
+  invite a save or a send but never ask anything, and a comment is the next viewer action we are not getting.
+- Change (one, the caption only; topic type and look follow E18's verdict on Sun 15): line 1 is a question with a one-word answer about the
+  viewer's own site ("Does your button do this? yes or not yet"); the last line asks for that word in the comments (the save/send line stays,
+  no "like"). Config `"experiment": {"id": "web-comment-ask", "change": "caption question + comment ask", "vs": "median"}`.
+- Decides (each reel at 24 h vs the last 7 web reels): WIN = comments per 1,000 reached at 2x the median or more AND reach not below 80% of
+  the median. Keep at 2 WINs of 3 (rule in rules-web.md, the caption starter writes it), drop at 2 LOSEs. Verdict Wed 18 Nov.
+
+## E21 · @techin20sec: the "ships with this ON" hook (queued 11 Nov 2026 from research, design/references.md R-trend 11 Nov; 3 reels, Mon 16 - Wed 18 Nov)
+- Why: tech-tip guides agree (two vendor sources, weak) that "most people don't know" and settings content is what gets saved and sent, and a
+  reel that makes the sender look informed gets shared. E17 tests the format (3 settings); this tests the hook on top of it.
+- Change (one, the hook): if E17 is kept on Sun 15, the hook names the factory default instead of a count: "Your phone ships with this ON."
+  with the switch shown in its default state in frame 0 (`hook_toggles`), the same 3 settings and recap after it. If E17 is dropped, the hook
+  runs on the next format in E17's queue (a one-feature "your phone can do this" demo). Config
+  `"experiment": {"id": "tech-default-hook", "change": "factory-default hook", "vs": "median"}`.
+- Decides (each reel at 24 h): WIN = reach above E17's median AND 3s skip lower than E17's median, or 3+ saves and shares. Keep at 2 of 3.
+  Verdict Thu 19 Nov.
+
+## E22 · Turns Out: a named series, "Not how you picture it" (queued 11 Nov 2026 from research, design/references.md R-trend 11 Nov; 3 reels, Mon 16 - Wed 18 Nov)
+- Why: Meta is testing a native Series hub for Reels (June 2026); guides agree a named, numbered series gives a reason to follow. Turns Out
+  has 8 followers after 11 reels while its icon-in-a-state-nobody-pictured topics reach ~1,100 each (6 of 6): the reach is there, the follow is
+  not. A series name tells a viewer there are more like this one.
+- Change (one, the label): a small series tag "NOT HOW YOU PICTURE IT · Nº N" above the hook in frame 0 and on the cover (Kt.seriesTag,
+  design/todo.md), the caption opens with the same name; format = whatever E19's verdict keeps on Sun 15. Numbering starts at Nº 1 on Mon 16.
+  Config `"experiment": {"id": "c3-series-tag", "change": "named series tag", "vs": "median"}`.
+- Decides (each reel at 24 h vs the channel's last 7): WIN = follows per 1,000 reached at 2x the median or more (AUDIT_CHANNELS discovery)
+  with reach not below 1,000. Keep at 2 WINs of 3 (rule in rules-c3.md), drop at 2 LOSEs. Verdict Thu 19 Nov.
