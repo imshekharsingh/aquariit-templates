@@ -136,7 +136,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 /*kitmotion:end*/
 /*kitsfx:begin*/
 /*kitsfx:end*/
-  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, T = KM.theme(window.WEB_THEME || 'glass');
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, T = KM.theme(window.WEB_THEME || 'glass', window.WEB_PALETTE || '__PALETTE__');
   var TEXT = __TEXT__, DUR = __DUR__, HOOK_N = __HOOK_N__;
   // calm pacing (owner, 8 Nov 2026: "too much in 20 s, it feels rushed"; rules-web.md rule 13): one beat of BEAT s per detail, every
   // sentence at its own time (config voice.at, the same list): the hook at 0.15, each detail's line 0.3 s into its beat, the recap line 0.3 s into the recap

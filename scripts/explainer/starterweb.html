@@ -96,7 +96,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 (function(){
 /*kitmotion:begin*/
 /*kitmotion:end*/
-  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, TH = KM.theme(window.WEB_THEME || 'glass');
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, TH = KM.theme(window.WEB_THEME || 'glass', window.WEB_PALETTE || '__PALETTE__');
   var TEXT = __TEXT__, DUR = __DUR__, HOOK_N = __HOOK_N__, HOOK_LINES = __HOOK_LINES__, FIX_S = __FIX_S__;
   // the code: the line the reel teaches (the <b> part is the fix, swept with the highlight); the ghost copy glides into the page
   var CODE = '<span class="dim">.list {</span>\n  <b>fix: one-line;</b> <span class="dim">}</span>';

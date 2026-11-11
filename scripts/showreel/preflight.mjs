@@ -2,6 +2,7 @@
 // before anything is dispatched, from the reel config alone. Kokoro af_heart reads about 75.5 ms per letter at speed 1 in one take,
 // pauses included (5 renders, 26-27 Oct, within 3%); a "gap" config adds its breaths. The voice must end 0.6 s before the reel does.
 // Usage: node scripts/showreel/preflight.mjs scripts/explainer/<slug>.json   (exit 1 when it does not fit)
+// A web reel with a "palette" also gets the CONTRAST line (scripts/showreel/contrast.mjs; a few seconds of headless frames).
 import { readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 const c = JSON.parse(readFileSync(process.argv[2], 'utf8')), v = c.voice || {};
@@ -10,6 +11,10 @@ const c = JSON.parse(readFileSync(process.argv[2], 'utf8')), v = c.voice || {};
 const pr = spawnSync('python3', [new URL('../voice/say.py', import.meta.url).pathname, process.argv[2]], { encoding: 'utf8' });
 process.stdout.write(pr.stdout || `PRONUNCIATION: could not run scripts/voice/say.py: ${pr.stderr || pr.error}\n`);
 if (pr.status !== 0) process.exitCode = 1;
+// CONTRAST (11 Nov 2026; rules-web.md rule 12): a web reel with a palette (newweb.mjs writes it) has its captions and labels measured on
+// rendered frames over the light (scripts/showreel/contrast.mjs): "CONTRAST: n.n:1 (palette)", under 4.5:1 fails
+if (c.palette) { const ct = spawnSync('node', [new URL('./contrast.mjs', import.meta.url).pathname, process.argv[2]], { encoding: 'utf8' });
+  process.stdout.write(ct.stdout || `CONTRAST: could not run scripts/showreel/contrast.mjs: ${ct.stderr || ct.error}\n`); if (ct.status !== 0) process.exitCode = 1; }
 if (!v.text) { console.log('PREFLIGHT voice: no voice in this config'); process.exit(process.exitCode || 0); }
 // a digit counts as 4 letters (31 Oct: "1889" is spoken "eighteen eighty nine"; letters alone made years free)
 const spoken = (x) => (x.match(/[A-Za-z]/g) || []).length + 4 * (x.match(/\d/g) || []).length;

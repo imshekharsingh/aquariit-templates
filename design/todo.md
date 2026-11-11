@@ -5,10 +5,6 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
-- [ ] AFTER the Wed 11 Nov 04:30 IST reset (not before: usage): web colour variety (owner, 8 Nov 2026: "introduce more colour combinations,
-  video to video"). Within look C (the type, glass panes and layout stay the brand), curate 5-6 light-bloom palettes (bloom colours, grade,
-  accent) in kitmotion.js's glass theme, rotated per reel (newweb.mjs picks the next one after the last web reel in captions.json), with an
-  AA contrast check (4.5:1 for captions and labels over the brightest bloom) in the preflight. Record the palette per reel to read reach by it.
 - [ ] Reel tooling that raises the hit rate: the stills review prints a rulebook score block (design/rules-*.md) next to the sheet.
       (The 2-3 day buffer item was dropped on 5 Nov 2026: owner, learn-then-build.)
 
@@ -20,6 +16,9 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] Posting through Instagram's content publishing API (roadmap 6; needs Meta's review, owner's call).
 
 ## Done
+- 11 Nov 2026: web colour variety: 5 palettes in look C (kitmotion.js KM.PALETTES: aurora, ember, lagoon, orchid, glacier), rotated by newweb.mjs
+  (scripts/explainer/palette.mjs, the config's "palette"), CONTRAST line in preflight (scripts/showreel/contrast.mjs, 4.5:1 on rendered frames),
+  scripts/explainer/palettesheet.mjs for a sheet of a scene in every palette. Citrus tried and dropped (muddy at phone size).
 - 4 Nov 2026: reel media live in the private R2 bucket aquarii-reels (only the signed-in app serves it; Range/seek and Save video kept).
   Renders, tech reels, previews, reel study and the minutes meter write to R2; the "Showreel ready" issue names the reel only; an R2
   lifecycle rule deletes v/ (MP4 + contact sheet) 15 days after upload; the release clean-up moved to attic/. The old release files
