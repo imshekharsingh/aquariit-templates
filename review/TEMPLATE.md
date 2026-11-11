@@ -21,3 +21,4 @@ The Mandatory Gate, design/mandatory.md. One line per item: "N. <item>: PASS: <e
 17. Strobes: PASS: FLOW: strobes ... (0, or 1 declared as a 'flash' transition)
 18. Element sound (web): PASS: ELEMENT SOUND: n of m animated elements have a cue (pct%): ok
 19. Journey (c3 only, from 9 Nov): PASS: scenes N (list them); transitions: list them, no two alike
+20. Depth and life (c3 only, from 11 Nov): PASS: DEPTH <world>: n planes, parallax nn px, foreground yes (one per world, pasted from qa.mjs); figure actions checked every 0.1 s (name them); ambient life and its cue per world
