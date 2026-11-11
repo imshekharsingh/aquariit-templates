@@ -8,6 +8,14 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] Reel tooling that raises the hit rate: the stills review prints a rulebook score block (design/rules-*.md) next to the sheet.
       (The 2-3 day buffer item was dropped on 5 Nov 2026: owner, learn-then-build.)
 
+- [ ] 11 Nov 2026, from design/references.md (MISSING kit pieces; one per push, web kit first):
+  - a pivot-word beat: one word alone, its own world response (R2);
+  - a travelling object that becomes the transition (one shape through the reel, declared to FLOW) (R2, R3);
+  - an organic wipe (a liquid wave or brush-smear reveal), cheap (rule 12: no full-frame mask) (R2);
+  - icons inside sentences (a small drawn icon in the line of type, sized to the text) (R3);
+  - letters spread on guide lines that snap into a word (R3);
+  - a hand-drawn ring that circles a final number (R4).
+
 ## P2
 - [ ] @techin20sec topic shortlist from primary sources each morning on GitHub (roadmap 4): 3 candidates with sources and a viewer-stake hook.
 - [ ] One daily routine per channel that writes the script, renders stills to a private review page and stops (roadmap 3).
