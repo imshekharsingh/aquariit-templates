@@ -234,6 +234,8 @@ A scheduled task (created by the parent session, not here) fires Tuesdays around
   "channels":{"web":[...],"tech":[...],"c3":[...]}}` (format in scripts/post-card.mjs; short bullets, numbers first, simple English; per channel the
   last 7 days: followers, reels with reach, avg watch, saves, shares, pattern used, best reel). The numbers are computed nightly on GitHub
   (scripts/audit-numbers.mjs, the "Audit numbers" step of the latest "Instagram collect" run): use its AUDIT_CHANNELS line as "channels" and add only the lesson;
+  AUDIT_CHANNELS also carries, per channel, the last 7 reels' hold % of the reel, skip % in 3 s, saves and shares per 1,000 reached, and the account's
+  7-day discovery (non-follower share of reach, follows per 1,000 reached); the REEL lines give the same per reel (owner, 11 Nov 2026). Keep both on the card;
   plan the day's hooks, formats and timing from its AUDIT_SIGNALS line (30 days: best posting hour, best format, reels with the biggest follower gains). The same day's id replaces the card; the owner's
   "Mark read" deletes it for good. In the repo only ONE line a day stays: the lesson, in design/experiments.md "Results log"
   (`- DD Mon: lesson`). The full report never goes into the repo or chat.

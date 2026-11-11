@@ -208,6 +208,21 @@ if (!POST_CHECK) {
     if (typeof v === 'number') insights.push({ day: today, metric, value: v });
     P(`${metric} (day)`, true, typeof v === 'number' ? String(v) : 'no value');
   }
+  // discovery over the last 7 days (owner, 11 Nov 2026: "more data to check our progress"): reach and views split by FOLLOWER / NON_FOLLOWER and
+  // follows_and_unfollows (FOLLOWER = new follows, NON_FOLLOWER = unfollows), over one since/until window so reach counts each account once.
+  // Instagram gives no follower split, follows or profile visits per reel (PROBE "reel follows"), so the audit's discovery numbers are per account.
+  // Stored in ig_insights_day as <metric>_wk_<split> (e.g. reach_wk_non_follower; letters only, the Worker's name check) under today's IST day; the midday run refreshes the same day.
+  { const until = Math.floor(Date.now() / 1000), since = until - 7 * 86400;
+    for (const metric of ['reach', 'views', 'follows_and_unfollows']) {
+      const r = await ig('/me/insights', { metric, period: 'day', metric_type: 'total_value', breakdown: 'follow_type', since: String(since), until: String(until) });
+      if (!r.ok) { P(`${metric} by follow_type (7 days)`, false, errText(r.error).slice(0, 160)); continue; }
+      const tv = (((r.json.data || [])[0] || {}).total_value) || {}, parts = ((tv.breakdowns || [])[0] || {}).results || [], got = [];
+      if (typeof tv.value === 'number') { insights.push({ day: today, metric: `${metric === 'follows_and_unfollows' ? 'follows_unfollows' : metric}_wk_total`, value: tv.value }); got.push(`total ${tv.value}`); }
+      for (const p of parts) { const k = String((p.dimension_values || [])[0] || '').toLowerCase(); if (!/^[a-z_]+$/.test(k) || typeof p.value !== 'number') continue;
+        const name = metric === 'follows_and_unfollows' ? (k === 'follower' ? 'follows_wk' : k === 'non_follower' ? 'unfollows_wk' : null) : `${metric}_wk_${k}`;
+        if (name) { insights.push({ day: today, metric: name, value: p.value }); got.push(`${name} ${p.value}`); } }
+      P(`${metric} by follow_type (7 days)`, true, got.join(', ') || 'no value');
+    } }
   if (supported.REELS) for (const n of ['follows', 'profile_visits', 'profile_activity']) P(`reel ${n}`, supported.REELS.includes(n), supported.REELS.includes(n) ? '' : firstError[n]);
   if (listed.REELS) { const extra = listed.REELS.filter((n) => !KNOWN.includes(n)); for (const n of extra) P(`reel ${n} (listed by the API)`, (supported.REELS || []).includes(n), (supported.REELS || []).includes(n) ? '' : firstError[n]); }
   for (const l of probe) say(`PROBE @${A.username} ${l}`);
