@@ -62,6 +62,17 @@ def main(cfg_path, wav_path, report=None):
             heard[k:k + 2] = [(heard[k][0] + heard[k + 1][0], heard[k][1], min(heard[k][2], heard[k + 1][2]), heard[k + 1][3])]
         k += 1
     got = [h[0] for h in heard]
+    # words heard after the script's last word (11 Nov 2026: the Eiffel reel's voice-only track "said" "check out our website at eiffel tower"
+    # in its last 0.5 s at 0.09-0.45 confidence): the track is the narration alone, which speaks only the script, so a tail the script does
+    # not have is the recogniser's own text (a known faster-whisper habit at the end of audio); it is dropped and printed, never hidden
+    ignored = ''
+    ops = difflib.SequenceMatcher(a=want, b=got, autojunk=False).get_opcodes()
+    if ops and ops[-1][0] == 'insert' and ops[-1][2] == len(want):
+        b0 = ops[-1][3]
+        ignored = ('IGNORED after the voice ended (not in the script; recogniser noise on the voice-only track): '
+                   + ' '.join(f'{w} ({t:.2f} s, {p:.2f})' for w, t, p, _ in heard[b0:]))
+        print(ignored)
+        heard, got = heard[:b0], got[:b0]
     rows = []
     for op, a0, a1, b0, b1 in difflib.SequenceMatcher(a=want, b=got, autojunk=False).get_opcodes():
         if op == 'equal':
@@ -98,7 +109,7 @@ def main(cfg_path, wav_path, report=None):
     out = [f"### Voice check: {len(want)} words in the script, {len(got)} heard",
            'Every word heard as written.' if not rows else '| at | change | script | heard |\n|---|---|---|---|\n' + '\n'.join(rows),
            'Unsure words (recogniser confidence under 0.6): ' + (', '.join(unsure) if unsure else 'none'),
-           'Heard: ' + ' '.join(got), pacing]
+           'Heard: ' + ' '.join(got)] + ([ignored] if ignored else []) + [pacing]
     text = '\n\n'.join(out)
     print(text)
     if report:

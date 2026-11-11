@@ -5,8 +5,18 @@ on:
   workflow_dispatch:
     inputs:
       config:
-        description: "Reel config, e.g. scripts/explainer/stagger.json"
-        required: true
+        description: "Reel config, e.g. scripts/explainer/stagger.json (empty with sample)"
+        required: false
+      sample:
+        description: "Instead of a reel: lines to speak and hear before/after a lexicon fix, one per line break or '|' (scripts/voice/sample.py)"
+        required: false
+      sample_off:
+        description: "With sample: the say.json words left out for 'before', comma-separated (e.g. photos,photo)"
+        required: false
+      speed:
+        description: "With sample: Kokoro speed (the reel's voice.speed)"
+        required: false
+        default: '1.0'
 permissions:
   contents: read
 jobs:
@@ -27,7 +37,21 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Sample
+        # a word before and after its say.json fix, spoken by Kokoro and heard by the recogniser, with no reel render (11 Nov 2026: "photos")
+        if: inputs.sample != ''
+        env:
+          SAMPLE: ${{ inputs.sample }}
+          OFF: ${{ inputs.sample_off }}
+          SPEED: ${{ inputs.speed }}
+        run: |
+          timeout 120 sudo apt-get install -y --no-install-recommends espeak-ng || echo 'espeak-ng from apt unavailable; using the bundled one'
+          pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+          pip install kokoro==0.9.4 soundfile==0.12.1 preshed==3.0.13 cymem==2.0.13 murmurhash==1.0.15 srsly==2.5.4 spacy==3.8.16 thinc==8.3.13 blis==1.3.3 faster-whisper==1.1.1
+          set -o pipefail
+          python3 -I -c "import os,re,subprocess,sys; ls=[x.strip() for x in re.split(r'[|\n]', os.environ['SAMPLE']) if x.strip()]; sys.exit(subprocess.call([sys.executable, 'scripts/voice/sample.py', '--speed', os.environ.get('SPEED') or '1.0', '--off', os.environ.get('OFF', '')] + ls))" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Check
+        if: inputs.sample == ''
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

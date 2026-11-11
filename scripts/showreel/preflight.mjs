@@ -40,7 +40,16 @@ if (Array.isArray(v.at)) {
   if (v.at.length !== sentences) { console.log(`PREFLIGHT voice: TOO LONG/SHORT: voice.at has ${v.at.length} times for ${sentences} sentences`); process.exit(1); }
   const words = text.split(/\s+/).filter(Boolean).length, limit = (+c.dur || 20) - .6, bad = [];
   let end = 0;
-  const slots = parts.map((x, i) => { const s = v.at[i] ?? end + (+v.gap || .25), d = .1 + spoken(x) * .07 / speed; end = Math.max(s, end + (i ? .12 : 0)) + d; return [s, end]; });
+  const sp = (i) => (Array.isArray(v.speeds) && +v.speeds[i]) || speed;
+  const slots = parts.map((x, i) => { const s = v.at[i] ?? end + (+v.gap || .25), d = .1 + spoken(x) * .07 / sp(i); end = Math.max(s, end + (i ? .12 : 0)) + d; return [s, end]; });
+  // SENTENCE PACE (11 Nov 2026: "Lock in your guess." was heard at 7.7 words/s, 0.52 s for 4 words, in the Eiffel reel): each sentence's
+  // rate as the voice check will measure it (first word to last, so about 0.55 s shorter than the letter estimate; a comma adds about 0.3 s;
+  // calibrated on that reel's 7 sentences); over 4 words/s fails. Fix: a slower "speeds" value for that sentence, or more words.
+  const rates = parts.map((x, i) => { const n = x.split(/\s+/).filter(Boolean).length; return [n / Math.max(.3, spoken(x) * .07 / sp(i) - .55 + .3 * (x.match(/,/g) || []).length), i]; });
+  const fast = rates.filter(([r]) => r > 4), top = rates.reduce((a, b) => (b[0] > a[0] ? b : a));
+  console.log(`SENTENCE PACE: fastest ${top[0].toFixed(1)} words/s (sentence ${top[1] + 1}, "${parts[top[1]].slice(0, 30)}"): ${fast.length ? 'FAIL: over 4 words/s: ' + fast.map(([r, i]) => `sentence ${i + 1} ("${parts[i].slice(0, 30)}") ${r.toFixed(1)}`).join('; ') + ' (give it a slower voice.speeds value or more words)' : 'ok'}`);
+  if (fast.length) process.exitCode = 1;
+  if (Array.isArray(v.speeds) && v.speeds.length !== sentences) { console.log(`PREFLIGHT voice: voice.speeds has ${v.speeds.length} values for ${sentences} sentences`); process.exitCode = 1; }
   slots.forEach(([s, e], i) => { const next = i + 1 < sentences ? (v.at[i + 1] ?? e + .25) - .15 : limit; if (e > next) bad.push(`sentence ${i + 1} ("${parts[i].slice(0, 30)}") ends about ${e.toFixed(1)} s, ${(e - next).toFixed(1)} s past its slot`); });
   const talk = slots.reduce((a, [s, e]) => a + e - s, 0);
   console.log(`PREFLIGHT voice: ${sentences} timed sentences, ${words} words, voice ends about ${end.toFixed(1)} s (reel ${c.dur} s, must end by ${limit.toFixed(1)} s), ${(words / talk).toFixed(1)} words/s while speaking, ${(words / end).toFixed(1)} overall: ${bad.length ? 'TOO LONG: ' + bad.join('; ') : 'fits'}`);

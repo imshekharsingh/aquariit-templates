@@ -62,14 +62,17 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     paper(rr(X - w / 2, Y - h / 2, w, h, h * .22), bg); txt(s, X, Y + size * .36, size, f, col, 'center', sp); }
   // ---- the story: one start time per sentence, from an estimate of each sentence's length (scripts/showreel/preflight.mjs uses the same
   // rate: 0.07 s a letter at speed 1, a digit as 4 letters since "1889" is spoken as "eighteen eighty nine"), then a breath ----
+  // a line may carry its own speed (11 Nov 2026: "Lock in your guess." was spoken at 7.7 words/s at .95): [text, breath, speed]; the
+  // scene hands it on as VOICE.speeds (qa.mjs --write copies it into the config, voice.py speaks that sentence at it, preflight checks it)
   var SPEED = .95, lt = function(w){ return w.replace(/[^A-Za-z]/g, '').length + 4 * w.replace(/[^0-9]/g, '').length; };
   var A = [], CAPS = [];
-  function story(lines){   // lines: [[text, breath before it]]
-    var t = 0;
-    lines.forEach(function(L, i){ if (i) t += L[1]; var at = +t.toFixed(2), ws = L[0].split(/\s+/), w0 = at + .05, n = 0;
-      var words = ws.map(function(w){ var o = { d: w, s: w0, e: w0 + lt(w) * .07 / SPEED }; w0 = o.e; n += lt(w); return o; });
-      A.push(at); CAPS.push({ text: L[0], at: at, s: at, e: at + .1 + n * .07 / SPEED, words: words }); t = CAPS[i].e; });
+  function story(lines){   // lines: [[text, breath before it, speed?]]
+    var t = 0, SP = [];
+    lines.forEach(function(L, i){ if (i) t += L[1]; var at = +t.toFixed(2), ws = L[0].split(/\s+/), w0 = at + .05, n = 0, sp = L[2] || SPEED;
+      var words = ws.map(function(w){ var o = { d: w, s: w0, e: w0 + lt(w) * .07 / sp }; w0 = o.e; n += lt(w); return o; });
+      A.push(at); SP.push(L[2] || null); CAPS.push({ text: L[0], at: at, s: at, e: at + .1 + n * .07 / sp, words: words }); t = CAPS[i].e; });
     window.VOICE = { text: CAPS.map(function(L){ return L.text; }).join(' '), at: A.slice() };
+    if (SP.some(Boolean)) window.VOICE.speeds = SP;
   }
   var norm = function(w){ return String(w).toLowerCase().replace(/[^a-z0-9]/g, ''); };
   window.setVoice = function(v){ if (!v || !v.words || !v.words.length) return; var V = v.words, j = 0;
