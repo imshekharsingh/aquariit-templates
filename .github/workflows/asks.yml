@@ -1,17 +1,17 @@
 name: Owner answers
 
 # The app's "Needs you" list (owner, 1 Nov 2026). A Claude session dispatches this to read the owner's replies (action read: prints
-# "ANSWER <id> ..." lines), add questions (add), clear replies it has acted on (clear) or mark reels uploaded (mark). Format in scripts/asks.mjs. A few seconds.
+# "ANSWER <id> ..." lines), add questions (add), clear replies it has acted on (clear) or mark reels uploaded (mark); read also prints the owner's new Feedback items ("FEEDBACK <id> ..."), feedback-done marks them done with a note. Format in scripts/asks.mjs. A few seconds.
 on:
   workflow_dispatch:
     inputs:
       action:
-        description: read, add or clear
+        description: read (answers + new feedback), add, clear, mark, feedback (new feedback only) or feedback-done
         type: choice
-        options: [read, add, clear, mark]
+        options: [read, add, clear, mark, feedback, feedback-done]
         default: read
       asks:
-        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"] · mark: {"showreel-x":"ISO time"}'
+        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"] · mark: {"showreel-x":"ISO time"} · feedback-done: {"ids":[3],"note":"what was done"}'
         type: string
         required: false
 

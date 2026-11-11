@@ -130,6 +130,24 @@
   .ask .row{margin-top:8px}
   .ask .btn{min-height:40px;font-size:.82rem}
   .ask textarea{width:100%;min-height:64px;margin-top:8px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--well);color:var(--ink);font:400 16px/1.4 system-ui,sans-serif;resize:vertical}
+  /* Feedback (owner, 11 Nov 2026): the owner writes feedback any time; every Claude run reads the new items first and marks each done with a note */
+  .fb{margin:0 0 14px;padding:12px 16px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:16px;font-size:.88rem}
+  .fb summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;font:800 .8rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+  .fb summary::-webkit-details-marker{display:none}
+  .fb summary span{font:600 .78rem system-ui,sans-serif;letter-spacing:0;text-transform:none}
+  .fb .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .fb .chips button{min-height:34px;padding:0 12px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font:600 .78rem system-ui,sans-serif;cursor:pointer}
+  .fb .chips button[aria-pressed="true"]{background:var(--soft);border-color:var(--accent)}
+  .fb textarea{width:100%;min-height:80px;margin-top:8px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--well);color:var(--ink);font:400 16px/1.4 system-ui,sans-serif;resize:vertical}
+  .fb .row{justify-content:flex-end;margin-top:8px}
+  .fb .btn{min-height:40px;font-size:.82rem}
+  .fbi{padding:10px 0;border-top:1px solid var(--line)}
+  .fbi:first-of-type{margin-top:10px}
+  .fbi .h{display:flex;justify-content:space-between;gap:8px;color:var(--mute);font-size:.75rem}
+  .fbi .st{font-weight:800;color:var(--accent)}
+  .fbi .st.done{color:var(--ok)}
+  .fbi p{margin-top:3px;white-space:pre-wrap;overflow-wrap:anywhere}
+  .fbi p.note{color:var(--mute);font-size:.8rem}
   /* cards (owner, 1 Nov 2026): the daily audit and the spare-usage night's report, under the alert; "Mark read" deletes one for good */
   .card{margin:0 0 14px;padding:14px 16px 12px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:16px;font-size:.88rem}
   .card .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
@@ -213,6 +231,12 @@
   <div class="alert" id="alert" role="alert" hidden></div>
   <section class="needs" id="needs" hidden><h2>Needs you</h2><div id="needs-list"></div></section>
   <div id="cards"></div>
+  <details class="fb" id="fb"><summary>Feedback <span id="fb-n">Write to Claude</span></summary>
+    <div class="chips" id="fb-ch" role="group" aria-label="About"><button type="button" data-ch="" aria-pressed="true">Any</button><button type="button" data-ch="web" aria-pressed="false">Web</button><button type="button" data-ch="tech" aria-pressed="false">Tech</button><button type="button" data-ch="c3" aria-pressed="false">Turns Out</button><button type="button" data-ch="app" aria-pressed="false">App</button></div>
+    <textarea id="fb-text" aria-label="Your feedback" placeholder="What should Claude change or look at? Read first when work resumes."></textarea>
+    <div class="row"><button class="btn" id="fb-send" type="button">Send</button></div>
+    <div id="fb-list"></div>
+  </details>
   <div class="notify" id="notify" hidden><span>Get a reminder 10 minutes before each post time on this phone.</span><button class="btn g" id="notify-on" type="button">Turn on notifications</button></div>
   <details class="use" id="use" hidden><summary><span class="r"><span>GitHub minutes</span><span id="use-n"></span></span><span class="bar" id="use-bar"><i></i></span></summary><div id="use-note"></div><ul id="use-list"></ul></details>
   <div class="tabs" role="tablist" aria-label="Channel">
@@ -585,6 +609,22 @@
     box.appendChild(row); return box; }
   fetch('/api/asks', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
     .then(function(j){ (j.asks || []).forEach(function(a){ needsList.appendChild(askEl(a)); }); needs.hidden = !needsList.children.length; }).catch(function(){});
+  // Feedback: the owner writes any time (optional channel); Claude runs read the new items first and mark each done with a note shown here
+  var fbList = document.getElementById('fb-list'), fbText = document.getElementById('fb-text'), fbSend = document.getElementById('fb-send'), fbN = document.getElementById('fb-n'), fbCh = '';
+  var FBN = { web: 'Web', tech: 'Tech', c3: 'Turns Out', app: 'App' };
+  Array.prototype.forEach.call(document.querySelectorAll('#fb-ch button'), function(b){ b.addEventListener('click', function(){ fbCh = b.getAttribute('data-ch');
+    Array.prototype.forEach.call(document.querySelectorAll('#fb-ch button'), function(x){ x.setAttribute('aria-pressed', String(x === b)); }); }); });
+  function fbWhen(t){ var d = new Date(t); return isNaN(d) ? '' : d.toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }) + ' IST'; }
+  function fbItem(f){ var box = el('div', 'fbi'), h = el('div', 'h');
+    h.appendChild(el('span', null, fbWhen(f.created) + (f.channel && FBN[f.channel] ? ' · ' + FBN[f.channel] : ''))); h.appendChild(el('span', 'st' + (f.state === 'done' ? ' done' : ''), f.state === 'done' ? 'Done' : 'New'));
+    box.appendChild(h); box.appendChild(el('p', null, f.text)); if (f.note) box.appendChild(el('p', 'note', 'Claude: ' + f.note)); return box; }
+  function fbLoad(){ fetch('/api/feedback', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
+    .then(function(j){ var a = j.feedback || [], n = a.filter(function(f){ return f.state !== 'done'; }).length; fbList.textContent = ''; a.forEach(function(f){ fbList.appendChild(fbItem(f)); });
+      fbN.textContent = n ? n + ' new' : a.length ? 'All done' : 'Write to Claude'; }).catch(function(){}); }
+  fbSend.addEventListener('click', function(){ var v = fbText.value.trim(); if (!v) { fbText.focus(); return; } fbSend.disabled = true;
+    fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ text: v, channel: fbCh || null }) })
+      .then(function(r){ if (!r.ok) throw 0; fbText.value = ''; fbSend.disabled = false; fbSend.textContent = 'Send'; fbLoad(); }).catch(function(){ fbSend.disabled = false; fbSend.textContent = 'Try again'; }); });
+  fbLoad();
   // cards: one per daily audit (and the spare-usage night's report), newest first; "Mark read" deletes the card for good (no archive)
   var cardsBox = document.getElementById('cards'), CC = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' };
   function cardEl(cd){ var box = el('section', 'card'), hd = el('div', 'hd');
