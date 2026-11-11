@@ -1,5 +1,5 @@
 {
- "_about": "Shared pronunciation lexicon for every channel's Kokoro voice (owner, 5 Nov 2026: one way to say each tech term). words: the word as written in the script -> Kokoro markup [word](/phonemes/) (misaki US set: A=ay, I=eye, O=oh, W=ow). scripts/voice/say.py swaps the match for that markup (bracket text = the written word without punctuation, so captions still line up). Every reading was checked with Kokoro's own phonemizer (misaki G2P, 5 Nov 2026): the respelling below reads as intended; WiFi, Siri, px, vh, dvh, fps, flexbox, npm, popup, Eiffel and the British spellings are unknown to it and would otherwise go to the espeak fallback. Years (1100-1999, 2010-2099) are said like people say them ('eighteen eighty nine', 'nineteen oh eight'): Kokoro alone reads 1889 as 'eighteen hundred eighty nine'.",
+ "_about": "Shared pronunciation lexicon for every channel's Kokoro voice (owner, 5 Nov 2026: one way to say each tech term). words: the word as written in the script -> Kokoro markup [word](/phonemes/) (misaki US set: A=ay, I=eye, O=oh, W=ow). scripts/voice/say.py swaps the match for that markup (bracket text = the written word without punctuation, so captions still line up). Every reading was checked with Kokoro's own phonemizer (misaki G2P, 5 Nov 2026): the respelling below reads as intended; WiFi, Siri, px, vh, dvh, fps, flexbox, npm, popup, Eiffel and the British spellings are unknown to it; photos/photo get a clear t (11 Nov 2026: misaki builds 'photos' by rule with a flapped t, fˈOTOz, 'foh-doze', which the owner heard as weird) and would otherwise go to the espeak fallback. Years (1100-1999, 2010-2099) are said like people say them ('eighteen eighty nine', 'nineteen oh eight'): Kokoro alone reads 1889 as 'eighteen hundred eighty nine'.",
  "words": {
   "Wi-Fi": "[WiFi](/wˈIfˌI/)",
   "WiFi": "[WiFi](/wˈIfˌI/)",
@@ -20,6 +20,8 @@
   "SVG": "[SVG](/ˌɛsvˌiʤˈi/)",
   "PNG": "[PNG](/pˌiˌɛnʤˈi/)",
   "JPEG": "[JPEG](/ʤˈApˌɛɡ/)",
+  "photos": "[photos](/fˈOtOz/)",
+  "photo": "[photo](/fˈOtO/)",
   "GIF": "[GIF](/ɡˈɪf/)",
   "PDF": "[PDF](/pˌidˌiˈɛf/)",
   "px": "[px](/pˈɪksᵊlz/)",

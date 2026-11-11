@@ -15,15 +15,22 @@ const dir = new URL('./', import.meta.url).pathname, html = `${dir}${slug}.html`
 if (existsSync(html) || existsSync(cfg)) { console.error(`${slug} already exists`); process.exit(1); }
 const esc = (s) => s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 if (guess && (lines.length < 6 || !/,/.test(lines[1]))) { console.error('--guess needs: "Question?" "A, B, or C?" "Lock in your guess." "Answer." "Why." ... "Turns out, ..."'); process.exit(1); }
-const breath = (i) => (i === 0 ? 0 : guess ? [0, .5, .45, 2.6, 1.3][i] ?? .5 : i === 1 ? .9 : .45);   // guess: the countdown sits in the 2.6 s breath before the answer, a 1.3 s hold on it
-const story = '[' + lines.map((l, i) => `['${esc(l)}', ${breath(i)}]`).join(', ') + ']';
+const breath = (i) => (i === 0 ? 0 : guess ? [0, .5, .7, 2.6, 1.3][i] ?? .5 : i === 1 ? .9 : .45);   // guess: the countdown sits in the 2.6 s breath before the answer, a 1.3 s hold on it
+// each line gets its own slower pace when it needs it (11 Nov 2026: "Lock in your guess." at .95 was heard at 7.7 words/s, 0.52 s for
+// 4 words): the fastest speed (step .05, .6 to .95) that keeps it under 3.9 words/s by preflight's SENTENCE PACE model (first word to
+// last = letters x .07 / speed - .55 s, +.3 s a comma; over 4 fails); the guess line also gets a longer breath before it (.7 s)
+const slow = (i) => { const l = lines[i], n = l.split(/\s+/).filter(Boolean).length, L = (l.match(/[A-Za-z]/g) || []).length + 4 * (l.match(/\d/g) || []).length;
+  const rate = (sp) => n / Math.max(.3, L * .07 / sp - .55 + .3 * (l.match(/,/g) || []).length);
+  let sp = .95; while (sp > .6 && rate(sp) > 3.9) sp = +(sp - .05).toFixed(2);
+  return sp < .95 ? sp : 0; };
+const story = '[' + lines.map((l, i) => `['${esc(l)}', ${breath(i)}${slow(i) ? ', ' + slow(i) : ''}]`).join(', ') + ']';
 let s = readFileSync(`${dir}${guess ? 'starterguess' : 'starter25d'}.html`, 'utf8');
 if (guess) { const words = lines[1].replace(/[?.!]/g, '').split(/,\s*(?:or\s+)?|\s+or\s+/).map((w) => w.trim()).filter(Boolean), cols = ['#e0b13e', '#8e939a', '#b3392b', '#3f7fbf'];
   s = s.replace(/var OPTS = \[[^\]]*\], ANSWER = \d+;/, () => `var OPTS = [${words.map((w, i) => `{ key: '${'ABCD'[i]}', word: '${esc(w.toUpperCase())}', col: '${cols[i % 4]}' }`).join(', ')}], ANSWER = ${Math.max(0, words.findIndex((w) => lines[3].toLowerCase().startsWith(w.toLowerCase())))};`); }
 s = s.replace(/\/\*story\*\/[\s\S]*?\/\*story:end\*\//, () => `/*story*/${story}/*story:end*/`).replaceAll('__HOOK__', lines[0].replace(/[<>&"]/g, '')).replace('__DATE__', new Date().toISOString().slice(0, 10));
 writeFileSync(html, s);
 writeFileSync(cfg, JSON.stringify({ name: `showreel-c3-${slug}`, seek: `scripts/channel3/${slug}.html`, dur: 30, fps: 30, grain: 4,
-  voice: { text: lines.join(' '), at: [], voice: 'af_heart', speed: .95 }, caption: '', keywords: [], hashtags: [], sources: [] }, null, 1) + '\n');
+  voice: { text: lines.join(' '), at: [], voice: 'af_heart', speed: .95, ...(lines.some((l, i) => slow(i)) ? { speeds: lines.map((l, i) => slow(i) || null) } : {}) }, caption: '', keywords: [], hashtags: [], sources: [] }, null, 1) + '\n');
 execFileSync('node', [`${dir}kit-inline.mjs`, html], { stdio: 'inherit' });
 console.log(`NEW: ${html} and ${cfg}. Next: draw the world (stations, subject, kinetic type), fill caption, 6+ keywords, 5 hashtags and 2+ sources,
 add the captions.json entry, then node scripts/channel3/qa.mjs scripts/channel3/${slug}.json --write`);

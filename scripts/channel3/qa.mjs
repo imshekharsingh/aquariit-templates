@@ -46,8 +46,8 @@ if (want) {
   const plain = (s) => String(s || '').replace(/\[([^\]]+)\]\(\/[^)]*\/\)/g, '$1');
   if (process.argv.includes('--write')) { let text = want.text; const marks = [...String(v.text || '').matchAll(/\[([^\]]+)\]\(\/[^)]*\/\)/g)];
     for (const [w, k] of new Map(marks.map((q) => [q[1], q]))) text = text.replace(new RegExp(`(^|[^\\p{L}\\]])${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\]])`, 'gu'), (q, pre) => pre + k[0]);
-    Object.assign(v, { text, at: want.at }); cfg.voice = v; cfg.dur = dur; writeFileSync(process.argv[2], JSON.stringify(cfg, null, 1) + '\n'); console.log('QA voice: config updated from the scene'); }
-  if (plain(v.text) !== want.text || JSON.stringify(v.at) !== JSON.stringify(want.at) || +cfg.dur !== +dur) { vbad++; console.log(`QA voice: the config does not match the scene; use "dur": ${dur} and\n  "text": ${JSON.stringify(want.text)},\n  "at": ${JSON.stringify(want.at)}`); }
+    Object.assign(v, { text, at: want.at }); if (want.speeds) v.speeds = want.speeds; else delete v.speeds; cfg.voice = v; cfg.dur = dur; writeFileSync(process.argv[2], JSON.stringify(cfg, null, 1) + '\n'); console.log('QA voice: config updated from the scene'); }
+  if (plain(v.text) !== want.text || JSON.stringify(v.at) !== JSON.stringify(want.at) || JSON.stringify(v.speeds || null) !== JSON.stringify(want.speeds || null) || +cfg.dur !== +dur) { vbad++; console.log(`QA voice: the config does not match the scene; use "dur": ${dur} and\n  "text": ${JSON.stringify(want.text)},\n  "at": ${JSON.stringify(want.at)}${want.speeds ? `,\n  "speeds": ${JSON.stringify(want.speeds)}` : ''}`); }
   const n = want.at.length, miss = [...Array(n).keys()].filter((i) => !shown.has(i));
   if (miss.length) { vbad++; console.log(`QA captions: sentence(s) ${miss.map((i) => i + 1).join(', ')} never on screen`); }
   else console.log(`QA captions: all ${n} sentences on screen`);

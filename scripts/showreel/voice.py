@@ -13,6 +13,8 @@
 #   Pronunciation (owner, 5 Nov 2026: one way to say each word on every channel): every sentence goes through the shared lexicon
 #   scripts/voice/say.json, plus the config's own "say" (word as written -> Kokoro markup or spoken words; it wins). A config "say"
 #   entry that matches no spoken word stops the run.
+#   speeds (11 Nov 2026: "Lock in your guess." was heard at 7.7 words/s): with at, one speed per sentence (null = speed), so a short
+#   fixed line can be spoken slower than the rest.
 import json, os, re, sys, wave
 import numpy as np
 
@@ -32,6 +34,8 @@ def main(cfg_path, wav_path, words_path):
     at = V.get('at')
     parts = [x.strip() for x in re.findall(r'(?:[^.?!]|\.(?=\d))+[.?!]?', V['text']) if x.strip()] if gap or at else [V['text']]
     if at and len(at) != len(parts): sys.exit(f'voice.at has {len(at)} times for {len(parts)} sentences')
+    speeds = V.get('speeds') or []
+    if speeds and len(speeds) != len(parts): sys.exit(f'voice.speeds has {len(speeds)} values for {len(parts)} sentences')
     used = []
     for n, part in enumerate(parts):
         parts[n], u = say.apply(part, cfg.get('say')); used += [x for x in u if x not in used]
@@ -45,7 +49,8 @@ def main(cfg_path, wav_path, words_path):
             if pad > want - off + .01: print(f'voice: sentence {n + 1} starts {pad - (want - off):.2f} s late ({want:.2f} s wanted): the previous one ran long')
             if pad > 0: audio.append(np.zeros(int(pad * 24000))); off += pad
         pa, pw, po = [], [], 0.0   # this sentence's audio and words, timed from its own start
-        for r in pipe(part, voice=V.get('voice', 'af_heart'), speed=V.get('speed', 1.0)):
+        sp = (speeds[n] if speeds and speeds[n] else None) or V.get('speed', 1.0)
+        for r in pipe(part, voice=V.get('voice', 'af_heart'), speed=sp):
             a = np.asarray(r.audio, dtype=float).reshape(-1)
             toks = [k for k in (r.tokens or []) if re.search(r'\w', k.text or '')]
             if toks and all(k.start_ts is not None for k in toks):
