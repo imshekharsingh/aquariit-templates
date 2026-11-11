@@ -44,6 +44,17 @@ Evidence = the Instagram collect run of 5 Nov 2026: 4 reels, median reach 157, 0
    The one colour reel that missed (flamingos) showed a thing nobody recognised. So: pick the icon first (a landmark, artwork or object people on
    every continent know on sight), then the true state it was in; a shape or naming story is second choice and needs a visible change to pass.
 
+11. **Depth and life in every world** (owner, 8 Nov 2026: Turns Out "feels flat"; 9 Nov: the napping prince "looks like someone has abruptly fallen";
+   kit 11 Nov 2026). Every world is drawn with Kt.world and 4+ Kt.plane layers, far to near, with air between them (far planes lighter and lower
+   contrast), ONE foreground plane that passes close to the lens, soft contact shadows under layers and figures (Kt.contact) and one light from the
+   upper left through the whole journey (Kt.lit, the core's paper()). People move from keyframed joints (Kt.act + Kt.figure: anticipation, ease,
+   settle, a breath and a blink) and every action is checked every 0.1 s on a stills strip so none reads as a fall or a jump. Every world has
+   ambient life (dust, cloth, lamp or torch light, grass: seeded, a pure function of t) with its own quiet cue (Kt.ambient). Gate:
+   `node scripts/channel3/qa.mjs` prints "DEPTH <world>: n planes, parallax nn px, foreground yes" per world and fails under 4 planes, under
+   12 px or without a foreground plane; the review file's item 20 pastes the lines. Evidence: Sphinx (9 Nov) and Opera House (10 Nov) had 2-4
+   flat layers a world and no air between them; the first reel on the kit (Terracotta, 11 Nov) measures 5-13 planes and 243-9,102 px of
+   parallax per world. Test E c3-depth: 3 reels, read vs the channel median at 24 h.
+
 **ESCALATE 8 Nov** (median reach 163 over the last 6, ALARM two days running; the two 1,000+ reels and the white pyramid's 465 at 5 h are all visible
 transformations of a world-famous thing; every reel without one sits at 118-161): from Mon 9 Nov every Turns Out topic must be a visible transformation
 of a landmark everyone pictures (not a naming or calendar story). Mon 9's Everest-name topic is swapped for the Sphinx buried in sand (design/topics.md).
