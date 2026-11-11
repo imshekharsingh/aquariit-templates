@@ -298,7 +298,7 @@ def roll(label, k):
 
 
 # ---------- fixed furniture ----------
-def header(fr, topic, t, parts, alpha=1.0):
+def header(fr, topic, t, parts, alpha=1.0, title=None):
     """The part progress bar (one segment per scene, the current one filling with time; kitmotion.js partProgress) and the topic line."""
     a = int(255 * alpha)
     x0, x1, gap = 140, 900, 10
@@ -310,7 +310,7 @@ def header(fr, topic, t, parts, alpha=1.0):
         k = prog(t, s0, s1)
         if k > 0:
             fr.rect(x, 260, max(6, sw * k), 6, r=3, fill=ACCENT + (a,), glow=ACCENT if k < 1 else None, glow_a=.5)
-    fr.text(520, 300, f'{topic.upper()} · EXPLAINED', 26, color=DIM + (a,), weight=700, anchor='mm', tracking=5)
+    fr.text(520, 300, title or f'{topic.upper()} · EXPLAINED', 26, color=DIM + (a,), weight=700, anchor='mm', tracking=5)
 
 
 def chip(fr, label, tint, k):
@@ -346,7 +346,10 @@ def verdict_stamp(fr, word, cx, cy, t, a_out):
     fr.text(cx, cy + 2, word, int(size), color=VERDICT_COL + (a,), weight=900, anchor='mm', tracking=14 * sc, glow=VERDICT_COL, glow_a=.3)
 
 
-def hook_card(fr, title_lines, t, t_out, accent=None, verdict=None):
+HOOK_FLIPS = (.45, .75, 1.05)   # when the hook's switches flip on (topic "hook_toggles"; make.py gives each its sound)
+
+
+def hook_card(fr, title_lines, t, t_out, accent=None, verdict=None, toggles=None):
     """0–2 s: the question as a big title, three or four lines, then IN 20 SECONDS. Words rise in one by one; the camera glides past it at t_out.
     verdict: a myth-bust stamp (MYTH / TRUE) above the title, on screen from frame 0."""
     out = ease_io(prog(t, t_out - .2, t_out + .45))
@@ -370,6 +373,16 @@ def hook_card(fr, title_lines, t, t_out, accent=None, verdict=None):
                     glow=col if col != TEXT else None, glow_a=.15 * k)
             x += text_w(w + ' ', size, 800)
             n += 1
+    if toggles:   # the settings format: the payoff in frame 0, a row of switches (already drawn, off) flipping on one by one
+        from .kinds import toggle
+        yb = y0 + len(title_lines) * lh + 30
+        a = 1 - out * .6
+        for i, lab in enumerate(toggles[:3]):
+            cx = W / 2 + (i - 1) * 280
+            k = spring(t - HOOK_FLIPS[i], .5, 16)
+            toggle(fr, cx - 72, yb, k, a, w=144, h=80)
+            fr.text(cx, yb + 128, lab, 36, color=(TEXT if k > .5 else DIM) + (int(255 * a),), weight=800, anchor='mm', max_w=250)
+        return
     k = ease_out(prog(t, .6, 1.0))
     a = int(255 * k * (1 - out * .6))
     yb = y0 + len(title_lines) * lh + 40
