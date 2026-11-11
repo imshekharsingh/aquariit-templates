@@ -53,6 +53,20 @@ Showed: a compilation of small, satisfying UI motions, each at real speed, then 
 - [x] A numbered part bar: KM.partProgress.
 - [x] A recap grid of all the motions at full speed: newweb.mjs --details (scripts/explainer/newdetails.mjs).
 
+## R-trend: research pass for Turns Out (11 Nov 2026, web search; secondary sources unless named)
+- R-trend 11 Nov: **Sends per reach is the reach lever for non-followers.** Instagram's head (Mosseri, Jan 2025 video, repeated in 2026 guides:
+  Buffer, Sprout Social, SocialPilot) names watch time, likes per reach and sends per reach as the top signals, sends weighing most for people who
+  don't follow you. Technique: give the viewer a reason to send (a guess a friend would get wrong). Kit: Kt.choices + the caption's send line. Taken (E19).
+- R-trend 11 Nov: **Completion falls with length.** Vendor benchmarks (ttcalculator, Kapwing 2026 stats) agree that shorter clips finish far more
+  often (no platform data); our own: watch 12-19 s on 31-35 s reels. Technique: end near the average watch and loop to frame 0. Kit: the guess
+  starter ends on the frame-0 view. Taken (rules-c3.md rule 3).
+- R-trend 11 Nov: **Quiz / guess-before-reveal reels draw comments and replays** (marketing blogs, mostly a quiz-tool vendor, Typito; Instagram
+  also added a native quiz option to Reels). Technique: options on screen, a pause or countdown before the reveal, under 30 s. Kit: Kt.choices,
+  Kt.countdown. Taken (E19); weak evidence, so it is a test, not a rule.
+- R-trend 11 Nov: **History shorts: a specific date, number or name in the hook; one image every 3-5 s; sepia for the past, full colour for now**
+  (FlowShorts, fluxnote guides). Covered: years in the voice and kinetic type, a world change every 3-5 s; the sepia/colour switch is Kt.print. Kept as is.
+- Not taken: AI-generated photo-real images and voice-over channels as a format (copyright rules: images are code only).
+
 ## Count
 5 references, 28 techniques: 21 covered, 7 MISSING (6 pieces: a pivot-word beat, a travelling object as the transition (R2 and R3), an organic
 wipe, icons inside sentences, letters snapping into a word, a hand-drawn ring around a number); 3 more not taken by rule.

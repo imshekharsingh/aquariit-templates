@@ -1,0 +1,56 @@
+{
+ "name": "showreel-c3-eiffel-red",
+ "seek": "scripts/channel3/eiffel-red.html",
+ "dur": 23.7,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "What colour was the Eiffel Tower at first? Gold, grey, or red? Lock in your guess. Red. Every iron piece was painted Venetian red to stop rust. Since 1889, it has worn seven official colours. Turns out, today's brown is a shade from 1907.",
+  "at": [
+   0,
+   3.11,
+   4.62,
+   8.43,
+   10.05,
+   13.97,
+   18.25
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "Gold, grey or red: what did you guess? 👇\n\nWhile the Eiffel Tower went up in 1887-1888, every iron piece got a coat of Venetian red against rust. Since 1889 it has worn seven official colours, and the brown you know today is a shade from 1907.\n\nComment your letter before you watch it again, and send this to the friend who'd get it wrong.",
+ "keywords": [
+  "Eiffel Tower original colour",
+  "what colour was the Eiffel Tower",
+  "Eiffel Tower was red",
+  "Eiffel Tower paint history",
+  "Venetian red Eiffel Tower",
+  "Paris history facts"
+ ],
+ "hashtags": [
+  "#eiffeltower",
+  "#paris",
+  "#parishistory",
+  "#historyfacts",
+  "#didyouknow"
+ ],
+ "sources": [
+  {
+   "title": "Painting the Eiffel Tower (official Eiffel Tower site)",
+   "url": "https://www.toureiffel.paris/en/the-monument/painting-eiffel-tower"
+  },
+  {
+   "title": "What colors has the Tower sported over the years? (official Eiffel Tower site)",
+   "url": "https://www.toureiffel.paris/en/news/130-years/what-colors-has-tower-sported-over-years"
+  },
+  {
+   "title": "The Eiffel Tower Could Be Repainted Its Original Vibrant Color (Smithsonian Magazine)",
+   "url": "https://www.smithsonianmag.com/travel/eiffel-tower-could-be-repainted-its-original-vibrant-color-180968543/"
+  }
+ ],
+ "experiment": {
+  "id": "c3-guess",
+  "change": "the GUESS format: three options painted onto the icon, a 3-2-1 countdown, the answer, a 24 s reel that loops to frame 0; caption asks for the letter in the comments and a send (Turns Out reels stall at ~1,100 reach with 0-8 shares)",
+  "vs": "median"
+ }
+}

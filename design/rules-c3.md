@@ -2,69 +2,48 @@
 
 Same use as design/rules-web.md: score every rule (pass / fail, one line each) in the stills review before the one render; fix or swap on a fail;
 the daily audit adds, changes or drops a rule with the number. design/channel3.md (fact rules, never-list, quality bar) still applies.
-Evidence = the Instagram collect run of 5 Nov 2026: 4 reels, median reach 157, 0 followers, 1 save, 1 share.
+Rewritten 11 Nov 2026 (owner: "Go all in on ... Turns Out ... don't bother about the existing pattern, theme or anything"). The old rules 1-11
+and the ESCALATE notes are in git history; what the numbers backed is kept below, the rest is dropped.
 
-1. **The payoff image is in frame 0**: a "wait, what?" visual (the copper-brown Statue of Liberty), not a question written on paper.
-   Evidence: Liberty (the colour change carries the reel) 1,051 reach, 15.2 s watched vs Eiffel 161 (13.4 s), blue sky 153 (8.4 s),
-   60 minutes 118 (12.4 s). 6 Nov: the green Sahara (a map turning green) 1,041 at 5 h and the channel's first 4 followers: both reels past
-   1,000 open on a colour change; the 3 without one sit at 150-161. Test from 6 Nov (E14): 3 reels; keep or drop by reach and hold vs the median (157).
-   7 Nov, E14 reel 1 (flamingos, a grey chick in frame 0): 120 at 5 h vs the Sahara's 1,041 at 5 h (every Turns Out reel has ended at
-   x1.0-1.0 of its 5-8 h reach, so this is close to final; 24 h reading at the 13:39 run). A colour change alone is not enough: the two hits show
-   a world-famous thing everyone pictures one way (Liberty, the Sahara) in a state that looks wrong; a grey chick is not recognised as a
-   flamingo, and "why are flamingos pink" is a fact many already know. Frame 0 = an icon in an unexpected state, recognised in under 1 s.
-2. **Only topics with a visible transformation** (a colour, a shape, a map, a size that changes in front of you).
-   Evidence: the one reel past 1,000 is the one with a transformation; the abstract ones (why 60 minutes, why the sky is blue) sit at 118-153. 6 Nov: the green Sahara (1,041 at 5 h) is the second.
-3. **Hook spoken and shown from frame 0, in at most 9 words**, and answered by the payoff in the last 3 s. Evidence: every Turns Out reel
-   so far; keep until the numbers say otherwise.
-4. **25-35 s, a big change every ~3 s, one camera that never cuts** (2.5D kit). Evidence: Liberty held 15.2 s of 33.3 (46%), the best on the channel;
-   blue sky held 8.4 s of 31.3 (27%).
-5. **Globally known, 2 reliable sources per claim, short credit on the last frame.** Evidence: no source complaints; the rule protects reach
-   on every continent.
-6. **Post one reel daily at 13:00 IST, ready by 12:00** (owner, 8 Nov 2026: "upload time at 13:00 for all three"; built by "Turns Out daily reel" at ~09:11 IST).
-   E15 (20:00 IST, 6-7 Nov) ended 8 Nov. Evidence so far: Liberty went out at 18:21 (1,051); the 15:07, 17:30 and 20:16 posts reached 118-161; the Sahara
-   (20:53) 1,041 at 5 h: the topic drives reach, not the hour. Measure from 8 Nov: each reel's 24 h reach and hold vs the channel median (157).
-   Timing cannot fix a low hold: rules 1-4 stay the main gate.
-7. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
-   PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
-   Kokoro alone reads 1889 as "eighteen hundred eighty nine" (5 of 10 Turns Out scripts have years); Eiffel and metres were unknown to it.
-8. **One slot a day** (owner, 8 Nov 2026): E16 (13:30 + 20:00, 7 Nov only) ended; each build checks captions.json for its channel and day (postOn = today, postAt 13:00) and never builds a second reel.
-9. **Journey: 4+ scenes, varied transitions, no single static set** (owner, 8 Nov 2026). At least 4 distinct places, scales or eras per reel
-   (a wide view, a close detail, an archive, people or tools, the payoff view), joined by motivated transitions declared in window.TRANSITIONS,
-   no two alike (the kit's Kt.through zoom-through, Kt.match match cut, Kt.page page turn, Kt.fold paper fold, Kt.seam parallax pan, Kt.print photo,
-   a dive or a time-lapse); 4+ depth layers per scene with something passing the lens and secondary motion everywhere; every moving element
-   has a sound by its size (small = high tick or blip, medium = snap or paper rustle, large = low move or thud), panned by its x. The review
-   file's item 19 lists the scenes and transitions. Evidence: Golden Gate (8 Nov) passed FLOW (continuity 100%) with one bridge from start to
-   end, because a drifting set counts as motion; the owner: "Turns Out feels flat at times ... such designs can be easily made." The channel
-   median is 163 over the last 6; the first journey reels (Sphinx 9 Nov, Opera House 10 Nov) are E-journey, read vs that median.
+**The diagnosis (Instagram collect, 11 Nov 2026, 11 reels):** reach is two flat levels, never a curve. Every reel whose frame 0 is a world icon in
+a colour or state nobody pictured stops at 1,059-1,273 (Liberty 1,059, Sahara 1,079, white pyramid 1,103, Golden Gate 1,157, Opera House 1,225,
+Sphinx 1,273), every other one at 111-168; nothing grows after its 6 h reading (x1.0, except the late-climbing pyramid). The ~1,100 is Instagram's
+first test pool; no reel earns the next one because nobody acts on it: 0-8 shares (0-0.7% of reach), 0-1 saves, 13-24 likes, 0 comments, 8
+followers after 11 reels. Watch is 12-19 s of 31-35 s (40-55%). Instagram's head says its three main ranking signals are watch time, likes per
+reach and sends per reach, and that sends matter most for reaching people who don't follow you (design/references.md, R-trend 11 Nov). So the
+topic gate works; the format must now make people answer, send and finish.
 
-10. **The icon in a colour or state people never pictured, recognised in under 1 s** (promoted 9 Nov 2026 from rules 1-2: 4 wins of 5).
-   Evidence (Instagram collect, 9 Nov 05:10 IST): the four Turns Out reels past 1,000 reach are all a world-famous thing in a colour that looks
-   wrong: Liberty copper-brown 1,058, the green Sahara 1,076, the white Great Pyramid 1,102, the black-and-yellow Golden Gate 1,143 at 6 h
-   (vs the channel's 6 h median of 158, x7); every other reel sits at 108-161 (blue sky 160, 60 minutes 153, flamingo pink 123, Pisa 108).
-   The one colour reel that missed (flamingos) showed a thing nobody recognised. So: pick the icon first (a landmark, artwork or object people on
-   every continent know on sight), then the true state it was in; a shape or naming story is second choice and needs a visible change to pass.
+1. **Guess first** (E19, c3-guess, from Thu 12 Nov): the reel is a question the viewer answers before we do. The hook question in frame 0
+   (at most 9 words), three options read aloud and shown as chips (`Kt.choices`), each one shown ON the subject (a coat of paint climbing it,
+   `Kt.repaint`), "Lock in your guess.", a 3-2-1 countdown (`Kt.countdown`, a 2.6 s breath in the story), then the answer with a tick on the
+   right chip and strikes on the others, then the why. One wrong option is the colour people picture today, one is plausible, one is true.
+   Start every reel with `node scripts/channel3/new25d.mjs <slug> --guess "Question?" "A, B, or C?" "Lock in your guess." "Answer." "Why." "More." "Turns out, ..."`.
+   Decides keep or drop: 3 reels (12-14 Nov), each read at 24 h; WIN = reach above 1,300 (the best non-guess reel was 1,273) OR 5+ shares and
+   comments together (the best so far was 8 shares once). Verdict Sun 15 Nov in design/experiments.md (E19).
+2. **The icon in a colour or state people never pictured, recognised in under 1 s** (kept: 6 of 6 such reels reached 1,059-1,273, all 5 others
+   111-168). Pick the icon first (a landmark, artwork or object people on every continent know on sight), then its true past state. A
+   transformation nobody recognises fails (flamingos 125).
+3. **18-25 s and it loops** (was 25-35 s). Watch held 12-19 s on 31-35 s reels whatever happened after it; a reel that ends near the viewer's
+   average watch is finished by most viewers and replayed by some. The last frame matches frame 0 (same view, same subject), so a replay is
+   seamless. At most 2.6 words/s overall (preflight), a change every 1.5-2 s.
+4. **The caption asks for the answer and a send**: line 1 is the question back to the viewer ("Gold, grey or red: what did you guess?"), the
+   last line asks for the letter in the comments and a send to the friend who'd get it wrong. No other call to action (no "follow").
+5. **Journey of 4+ scenes with declared transitions, depth in every world** (kept from rules 9 and 11: Sphinx 1,273 and Opera House 1,225 were
+   the two best and the first two journeys; owner, 8 Nov: "feels flat"). The question world first (the icon, big), then 2+ worlds for the why
+   (a place, a close detail, an archive), joined by different transitions in window.TRANSITIONS, and back to the question world for the payoff
+   (rule 3's loop): 4+ scenes counting the return (review item 19). Every world: Kt.world with 4+ Kt.plane layers, a foreground plane, contact shadows, one light from the upper left, ambient
+   life with its quiet cue; qa.mjs prints "DEPTH <world>" lines (4+ planes, 12+ px, foreground yes). People (if any) move from keyframed joints
+   (Kt.act) and are read on a 0.1 s strip: no move may look like a fall (owner, 9 Nov).
+6. **Facts: globally known, every claim in two reliable sources, nothing an expert or official body disputes** (kept; 11 Nov: Tower Bridge's
+   "chocolate brown" first colour is disputed by a paint historian, so the topic was swapped). Credit on the last frames; 2+ sources in the config.
+7. **Said right**: the preflight PRONUNCIATION line has no "check:" words (shared lexicon scripts/voice/say.json); years as people say them.
+8. **One reel a day at 13:00 IST, ready by 12:00** (owner, 8 Nov 2026), built that morning or the evening before; never a second reel for a
+   channel and day (captions.json).
 
-11. **Depth and life in every world** (owner, 8 Nov 2026: Turns Out "feels flat"; 9 Nov: the napping prince "looks like someone has abruptly fallen";
-   kit 11 Nov 2026). Every world is drawn with Kt.world and 4+ Kt.plane layers, far to near, with air between them (far planes lighter and lower
-   contrast), ONE foreground plane that passes close to the lens, soft contact shadows under layers and figures (Kt.contact) and one light from the
-   upper left through the whole journey (Kt.lit, the core's paper()). People move from keyframed joints (Kt.act + Kt.figure: anticipation, ease,
-   settle, a breath and a blink) and every action is checked every 0.1 s on a stills strip so none reads as a fall or a jump. Every world has
-   ambient life (dust, cloth, lamp or torch light, grass: seeded, a pure function of t) with its own quiet cue (Kt.ambient). Gate:
-   `node scripts/channel3/qa.mjs` prints "DEPTH <world>: n planes, parallax nn px, foreground yes" per world and fails under 4 planes, under
-   12 px or without a foreground plane; the review file's item 20 pastes the lines. Evidence: Sphinx (9 Nov) and Opera House (10 Nov) had 2-4
-   flat layers a world and no air between them; the first reel on the kit (Terracotta, 11 Nov) measures 5-13 planes and 243-9,102 px of
-   parallax per world. Test E c3-depth: 3 reels, read vs the channel median at 24 h.
+**Quality gate (unchanged, design/mandatory.md):** SAFE ZONE ok, OVERLAP none, BAND and HOOK read on the stills, FLOW (cuts 0, dead runs
+none, continuity 85%+, strobes 0-1), DEPTH lines, SOUND GATE ok and SOUND DETAIL ok after the render (every moving element heard, small high,
+medium mid, large low), the voice check, and design/owner-feedback.md line by line on the finished output.
 
-**ESCALATE 8 Nov** (median reach 163 over the last 6, ALARM two days running; the two 1,000+ reels and the white pyramid's 465 at 5 h are all visible
-transformations of a world-famous thing; every reel without one sits at 118-161): from Mon 9 Nov every Turns Out topic must be a visible transformation
-of a landmark everyone pictures (not a naming or calendar story). Mon 9's Everest-name topic is swapped for the Sphinx buried in sand (design/topics.md).
-
-**Figure motion (REVIEW; owner, 8 Nov 2026: the Sphinx prince lying down looked "like someone has abruptly fallen")**: any human action (sit, lie
-down, stand, reach, walk) is a sequence of poses with anticipation (a yawn, a shift of weight), ease through every pose (no linear move, no snap,
-no pose that appears whole) and weight (a hand or foot planted before the body moves onto it), about 1.5-2.5 s for a whole-body move, and a
-settle after (a breath, a blink). The stills review checks it every 0.1 s across the move. Sound: cloth and breath, never a thud for a body.
-
-**ESCALATE 9 Nov** (median reach 160 over the last 7, ALARM again): today's and tomorrow's reels (Sphinx 9 Nov, Opera House 10 Nov) are already
-the format answer (the journey, E c3-journey, try 1 and 2) and are read at 24 h. The topic answer is applied to the week: Wed 11 - Sun 15 were
-calendar, naming and map stories (pyramid north, Canberra, Brazil, leap day, Japan), which rule 10 fails; they are swapped in design/topics.md for
-five icons in a colour or state nobody pictures. Golden Gate at 13:00 (1,143 at 6 h) is on track for a WIN at its 24 h reading.
+**Dropped 11 Nov (the numbers do not support them):** the 25-35 s length (no reel's watch went past 19 s); "a big change every ~3 s" (now
+1.5-2 s, owner feedback 7 Nov); the hour as a lever (13:00 vs evening made no difference: every slot gave 1,0xx or ~150 by topic); the
+"Did you know / why" question with the answer spoken straight away (it reaches the first pool and stops there).
