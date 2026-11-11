@@ -63,6 +63,13 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    voice.at, config "format": "details"); preflight's PACE line fails a beat under 4.5 s, over 2.5 words/s, a breath under 0.6 s or a recap
    under 3 s. Why: the slow-mo format needs time per motion; the first cut (showreel-30-alive, 4 details in 20 s: beats of ~2.6-3.2 s,
    2.15 words/s with no breaths) gave no single motion time to land. Reworked the same morning: beats 5.9 s, 1.58 words/s, breaths 0.71 s+.
+14. **The motion leads the eye to what is being said (owner, 11 Nov 2026: "have the animation flow across the frame with the right position, so
+   the eye can follow it easily and understand what is being said").** One focus at a time: the thing the voice names is the thing that moves,
+   lights up or comes closer at that moment (within ~0.2 s of the word), and nothing else competes with it. Each new element enters from where
+   the eye already is (or along the path from the last focus) and the camera glides toward it, so the eye travels one clear path through the
+   frame: hook at the top → the broken thing → the code line → the fixed thing, never jumping back and forth across the frame. The subtitle sits
+   next to the focus it describes. Check in the stills review: at every beat, write where the eye is and why (one line each); a beat where the
+   focus is not what the voice says, or the eye has to jump more than half the frame with no motion leading it, fails.
 
 **ESCALATE 8 Nov** (median reach 1,247 over the last 7 vs target 2,000; watch 8.5 s; saves 1.3%; ALARM two days running): answered by a format
 change, the slow-mo "details" compilation (showreel-30-alive, 8 Nov 13:00, experiment details-format; rule 11). Read at 24 h (9 Nov) vs the median;

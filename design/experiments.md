@@ -307,7 +307,7 @@ metaphor). Originality is now enforced (scripts/film/sources.json).
 
 ## E18 · @webin20sec: back to the October formula (owner idea, 11 Nov 2026: "our earlier videos worked better ... the black background gives an attractive look to the content and profile, plus the kind of fixes we highlighted"; 3 reels, 12-14 Nov)
 - Change: the dark theme (`KM.theme('dark')`, the old ink-and-mint look) AND October's topic type: a motion-feel fix you can see and feel
-  (how something moves: stagger, a press, a collapse, a spring), one fix per reel, "Why does your X …?" hook. Config `"experiment": {"id": "dark-return", "change": "dark theme + motion-feel single fix", "vs": "median"}`.
+  (how something moves: stagger, a press, a collapse, a spring), one fix per reel, "Why does your X …?" hook, the current motion kit kept (camera, springs, transitions, element sound), and rule 14 (motion leads the eye to what is being said). Config `"experiment": {"id": "dark-return", "change": "dark theme + motion-feel single fix", "vs": "median"}`.
 - Evidence (Instagram collect, 11 Nov): 24-31 Oct (dark, motion-feel fixes like stagger 6,053, overscroll 4,645, transform 2,685, numbers 104,925)
   median reach 1,704, watch 9.5-14.7 s, saves up to 4.6%; 1-7 Nov (still dark, layout fixes) median ~1,340, watch 6-11 s; 8-10 Nov (glass)
   median 1,546. So the drop started before the glass look: topic type is the stronger suspect, the background the weaker one; this test
