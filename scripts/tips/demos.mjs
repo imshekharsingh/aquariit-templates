@@ -139,7 +139,7 @@ export const demos = {
 <p class="note">Turn your screen brightness down or step outside: the left prices fade first. WCAG asks for at least 4.5 : 1 for body text; on white, #767676 is the lightest grey that passes.</p>`,
     js: `function(){}`,
   },
-  // sample (6 Nov 2026, temporary): the scroll-snap sample's demo (its tip stays off the public page while it is a sample)
+  // the scroll-snap demo (sample 6 Nov 2026; adopted 11 Nov by showreel-33-carousel, whose tip is on the public page)
   snap: {
     css: `
 #snap .row{display:flex;gap:0;margin:30px 10px 0;border-radius:10px;overflow-x:auto;overflow-y:hidden}

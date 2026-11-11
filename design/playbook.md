@@ -23,6 +23,9 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 - 9 Nov, c3: the journey, try 1 (id c3-journey; Sphinx in sand, seven worlds) → read 10 Nov (24 h) vs the c3 median. Yesterday's 13:00 slot (Golden Gate): 1,143 at 6 h vs the 6 h median 158 (x7), 24 h verdict at the 10:53 collect.
 - 9 Nov, web: try 1 of details-format (showreel-30-alive) at 6 h: 1,333 vs the 6 h median 1,288 (on par); its 24 h verdict prints at the 10:53 collect.
 
+- 11 Nov, web: ONE narrated fix with a satisfying motion payoff, not a compilation (id web-single-satisfying; showreel-33-carousel, the photo row that snaps; ESCALATE answer) → read 12 Nov (24 h) vs the web median (1,331). Yesterday's: details try 2 (menus) → LOSE 1,180 vs 1,331 (24 h); try 1 (alive) → WIN 1,486 vs 1,331; try 3 (waiting) 1,360 at 6 h.
+- 11 Nov, tech: a new topic type, a weird thing your screen does (id tech-screen-puzzle; black screenshots, "NO BUG" stamp) → read 12 Nov (24 h) vs 116. tech-myth-verdict PROMOTED (2 WINs: 123, 117 vs 114-116; watch 6.0 / 5.2 s vs 4.7) → rules-tech.md rule 9.
+
 ## What works
 
 ### @webin20sec (web)
@@ -55,7 +58,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 - **Topic:** an everyday puzzle you can see on your own phone, not news (explainers 110-120 reach vs news 8-35).
 - **Open:** the answer's first step on screen inside 2 s; 18 s or shorter; a takeaway worth saving in the last 3 s.
 - **Time:** 13:00 IST every day from 8 Nov (owner); E15 ended (19:00 median 129 over 2 reels, inside the same ~110-130 pool).
-- **Format under test (8 Nov, tech-myth-verdict):** the myth-bust, verdict first (rules-tech.md rule 9).
+- **Verdict first (rule 9, promoted 11 Nov):** the answer stamped in frame 0 (MYTH / TRUE / NO BUG): watch 6.0 and 5.2 s vs 4.7, reach unchanged (117-123).
 
 ## What didn't
 - web: fixes you must imagine or that only developers see (squashed photos 281, page jump 402, INP 258, springs 391, zero-JS transition 178).

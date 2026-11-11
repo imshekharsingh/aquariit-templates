@@ -1,0 +1,163 @@
+{
+ "slug": "black-screenshot",
+ "topic": "Screenshots",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 1.0,
+ "max_speed": 1.06,
+ "dur": 22.0,
+ "max_end": 21.4,
+ "say": {},
+ "verdict": "NO BUG",
+ "experiment": {
+  "id": "tech-screen-puzzle",
+  "change": "ESCALATE answer: a new topic type, a weird thing your screen does (black screenshots of videos), not a battery habit; the verdict stamp kept (now rule 9)",
+  "vs": "median"
+ },
+ "hook": [
+  "Why are video",
+  "screenshots",
+  "sometimes black?"
+ ],
+ "lines": [
+  {
+   "text": "Why are video screenshots sometimes black?"
+  },
+  {
+   "text": "It's not a bug: the app marks its video window as secure.",
+   "chunks": [
+    4,
+    4,
+    4
+   ],
+   "scene": {
+    "label": "THE ANSWER: NOT A BUG",
+    "tint": "green",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Not a bug",
+      "cue": "bug"
+     },
+     "b": {
+      "title": "Video window: secure",
+      "icon": "lock",
+      "ticks": [
+       "Set by the app"
+      ],
+      "meter": false,
+      "cue": "secure"
+     },
+     "join": "BECAUSE"
+    }
+   }
+  },
+  {
+   "text": "That's because films are protected, so phones leave secure windows out of screenshots.",
+   "chunks": [
+    5,
+    4,
+    4
+   ],
+   "scene": {
+    "label": "WHY: PROTECTED",
+    "tint": "blue",
+    "kind": "guard",
+    "params": {
+     "object": {
+      "icon": "lock",
+      "label": "The film"
+     },
+     "attacker": "eye",
+     "stop_cue": "leave",
+     "badge": "LEFT OUT"
+    }
+   }
+  },
+  {
+   "text": "Which means your screenshot is black, while the film keeps playing.",
+   "chunks": [
+    6,
+    5
+   ],
+   "scene": {
+    "label": "SO: BLACK PICTURE",
+    "tint": "purple",
+    "kind": "choice",
+    "params": {
+     "a": {
+      "title": "Your screenshot: black",
+      "cue": "black"
+     },
+     "b": {
+      "title": "The film: still playing",
+      "icon": "check",
+      "ticks": [
+       "Nothing broke"
+      ],
+      "meter": false,
+      "cue": "playing"
+     },
+     "join": "WHILE"
+    }
+   }
+  },
+  {
+   "text": "Takeaway: a black screenshot means protected, not broken.",
+   "chunks": [
+    4,
+    4
+   ],
+   "scene": {
+    "label": "TAKEAWAY",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Black means protected",
+       "cue": "protected"
+      },
+      {
+       "text": "Your phone is fine",
+       "cue": "broken"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "Why are video screenshots sometimes black?",
+  "caption": "Why do screenshots of some videos come out black? 🎬\n\nIt's not a bug. Streaming apps mark the window that plays the film as secure, because the film is protected content. Your phone then leaves secure windows out of screenshots (Android's own developer docs say so word for word), so the picture you save is black while the film keeps playing. A black screenshot means protected, not broken: your phone is fine.\nSend this to the friend who thinks their screenshot button broke.",
+  "keywords": [
+   "screenshot black screen video",
+   "why can't I screenshot Netflix",
+   "black screenshot streaming app",
+   "secure window screenshot",
+   "phone screenshot tips",
+   "tech explained"
+  ],
+  "hashtags": [
+   "#screenshot",
+   "#phonetips",
+   "#techmyths",
+   "#techexplained",
+   "#androidtips"
+  ],
+  "sources": [
+   {
+    "url": "https://developer.android.com/reference/android/view/WindowManager.LayoutParams#FLAG_SECURE",
+    "note": "Android Developers, WindowManager.LayoutParams FLAG_SECURE: \"treat the content of the window as secure, preventing it from appearing in screenshots or from being viewed on non-secure displays\""
+   },
+   {
+    "url": "https://developer.android.com/reference/android/view/SurfaceView#setSecure(boolean)",
+    "note": "Android Developers, SurfaceView.setSecure: the surface (the video layer) can be treated as secure, so its content does not appear in screenshots"
+   },
+   {
+    "url": "https://developer.apple.com/streaming/fps/",
+    "note": "Apple, FairPlay Streaming: content providers encrypt content, exchange keys securely and protect playback on Apple platforms"
+   }
+  ]
+ }
+}
