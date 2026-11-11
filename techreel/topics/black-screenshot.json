@@ -46,7 +46,7 @@
        "Set by the app"
       ],
       "meter": false,
-      "cue": "secure"
+      "cue": "marks"
      },
      "join": "BECAUSE"
     }
@@ -96,7 +96,7 @@
        "Nothing broke"
       ],
       "meter": false,
-      "cue": "playing"
+      "cue": "film"
      },
      "join": "WHILE"
     }
