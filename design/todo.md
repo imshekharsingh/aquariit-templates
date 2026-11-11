@@ -5,6 +5,8 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
+- [ ] 11 Nov 2026 (owner): first research pass on short-form video design gaining reach now (all three channels), as in CLAUDE.md
+  "Research what works now"; then weekly on the spare-usage night.
 - [ ] Reel tooling that raises the hit rate: the stills review prints a rulebook score block (design/rules-*.md) next to the sheet.
       (The 2-3 day buffer item was dropped on 5 Nov 2026: owner, learn-then-build.)
 

@@ -89,6 +89,12 @@ a social media manager, design manager, product manager, whatever you can be." S
   no stopping"). Content, design, sound, growth, audience, product, process, cost and research are all Claude's to improve every day, without
   waiting to be asked. The owner only posts, and answers what needs them (money, their accounts or devices).
 - The audit card adds one line per channel: "Today's experiment: X. Yesterday's: Y → result."
+- Research what works now (owner, 11 Nov 2026: "keep researching video design that's working today and gaining traction on social media, and
+  plan things around it"): once a week (the spare-usage night, step 2, before the tooling), a research pass with web search on short-form video
+  design that is gaining reach right now (motion, layout, type, colour, pacing, sound, hooks, formats) for each channel's niche. Keep only what
+  is backed by evidence (numbers, platform guidance, repeated across sources), write each finding as an entry in design/references.md
+  ("R-trend: ..." with source and date, techniques, kit piece or MISSING), turn the best one or two into the next week's experiments
+  (design/experiments.md + design/topics.md), and drop findings that do not fit our copyright rules.
 - Learn from every reference (owner, 11 Nov 2026): each reel the owner shares as a reference gets an entry in design/references.md the same day
   (what it showed, its techniques as a checklist, the kit piece that covers each or MISSING). Each MISSING technique becomes a kit piece or a dated
   line in design/todo.md. A reel's review file names the reference techniques it uses (e.g. "R5: KM.curveGraph"). Techniques only, never a piece.
@@ -196,7 +202,7 @@ the last push reminder ("Last reminder: <time>, sent to N phones" / "no phone si
 are the GitHub secrets VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY, published as Worker secrets by the pipeline; never in a file).
 A scheduled task (created by the parent session, not here) fires Tuesdays around 22:45 IST into the studio launcher, which starts a fresh session that:
 1. dispatches the "Spare check" workflow (main) and reads SPARE=yes/no from its log (yes unless the owner tapped "Skip tonight"). If no: end at once, no other work.
-2. If yes: growth work only (owner, 5 Nov 2026: no surplus reels, no app work): (1) plan next week's topics against the rulebooks;
+2. If yes: growth work only (owner, 5 Nov 2026: no surplus reels, no app work): (0) the weekly research pass ("Research what works now" in the Daily improvement loop); (1) plan next week's topics against the rulebooks and that research;
    (2) sharpen the rulebooks (design/rules-*.md) from the numbers, analysis of what held and what did not; (3) reel tooling that raises the
    hit rate (preflight checks, kit pieces, the stills review), from design/todo.md top-down, one item per push; stop by 04:00 IST. Then update design/todo.md and post a short card
    (`"kind":"spare"`, "Audit card" workflow) saying what was done, in simple English.
