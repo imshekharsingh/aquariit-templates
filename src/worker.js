@@ -205,7 +205,7 @@ async function perfApi(request, env, p, url) {
     const outp = { account: (acc.results || []).reverse(), accounts: (names.results || []).map((r) => r.username), media: media.results || [], updated: (last && last.d) || null };
     if (who && url.searchParams.get('extra') === '1') { // for scripts/audit-numbers.mjs: per-run readings (and the older daily rows), latest audience, daily insights
       const since = new Date(Date.now() - days * 864e5).toISOString();
-      const runs = await db.prepare('SELECT r.ig_id, r.at, r.reach, r.views, r.follows, r.profile_visits FROM ig_media_runs r JOIN ig_media m ON m.ig_id = r.ig_id WHERE m.username = ?1 AND r.at >= ?2 ORDER BY r.at').bind(who, since).all();
+      const runs = await db.prepare('SELECT r.ig_id, r.at, r.reach, r.views, r.saves, r.shares, r.watch_avg_ms, r.follows, r.profile_visits, r.extra FROM ig_media_runs r JOIN ig_media m ON m.ig_id = r.ig_id WHERE m.username = ?1 AND r.at >= ?2 ORDER BY r.at').bind(who, since).all();
       const daily = await db.prepare('SELECT x.ig_id, x.day, x.reach FROM ig_metrics x JOIN ig_media m ON m.ig_id = x.ig_id WHERE m.username = ?1 AND x.day >= ?2 ORDER BY x.day').bind(who, since.slice(0, 10)).all();
       const aday = await db.prepare('SELECT MAX(day) AS d FROM ig_audience WHERE username = ?1').bind(who).first();
       const aud = aday && aday.d ? await db.prepare('SELECT metric, breakdown, k, value FROM ig_audience WHERE username = ?1 AND day = ?2').bind(who, aday.d).all() : { results: [] };

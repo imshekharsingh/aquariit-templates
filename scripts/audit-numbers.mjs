@@ -28,7 +28,7 @@ export function week({ account = [], media = [] }, today) {
   const seen = wk.filter((m) => m.reach != null);
   if (!wk.length) { out.push('0 reels posted in 7 days'); return out; }
   out.push(`${wk.length} reel${wk.length === 1 ? '' : 's'} posted, ${seen.length} with reach; median reach ${seen.length ? fmt(med(seen.map((m) => m.reach))) : '–'}`);
-  const watch = med(seen.map((m) => (m.watch_avg_ms != null && m.duration_s ? m.watch_avg_ms / 10 / m.duration_s : null)));
+  const watch = med(seen.map((m) => (m.watch_avg_ms != null && durOf(m) ? m.watch_avg_ms / 10 / durOf(m) : null)));
   const avgS = med(seen.map((m) => (m.watch_avg_ms != null ? m.watch_avg_ms / 1000 : null)));
   if (watch != null) out.push(`avg watch ${one(avgS)} s, ${Math.round(watch)}% of the reel (median)`);
   const reach = seen.reduce((a, m) => a + m.reach, 0), saves = seen.reduce((a, m) => a + (m.saves || 0), 0), shares = seen.reduce((a, m) => a + (m.shares || 0), 0);
@@ -36,6 +36,35 @@ export function week({ account = [], media = [] }, today) {
   const best = seen.slice().sort((a, b) => b.reach - a.reach)[0];
   if (best) { const c = CAPS[best.template_id] || {}, what = c.concept || (best.caption || '').split('\n')[0].slice(0, 60);
     out.push(`best: ${fmt(best.reach)} reached, ${dm(istDay(best.posted_at))}, ${what}${best.saves ? `, ${fmt(best.saves)} saves` : ''}`); }
+  return out;
+}
+
+// what drives reach (owner, 11 Nov 2026: "look at the audit enhancements so that we know if we have more data to check our progress"):
+// per reel, the last 7 posted: reach, hold % (avg watch / reel length from its config; Instagram gives no length), skip % (reels_skip_rate, the share
+// of plays skipped in the first 3 s, from the latest per-run reading's "extra"), saves and shares per 1,000 reached. Per channel: their medians and
+// the account's last 7 days (Instagram collect's reach_wk_* / follows_wk rows): non-follower share of reach (discovery) and follows per 1,000 reached.
+// Follows, profile visits and the follower split are NOT offered per reel (PROBE "reel follows: NOT AVAILABLE"), so those two are per account.
+export function drivers({ media = [], runs = [], insights = [] }) {
+  const skip = {};
+  runs.forEach((r) => { let x = null; try { x = r.extra ? JSON.parse(r.extra) : null; } catch { /* not json */ }
+    if (x && typeof x.reels_skip_rate === 'number' && (!skip[r.ig_id] || r.at > skip[r.ig_id].at)) skip[r.ig_id] = { at: r.at, v: x.reels_skip_rate }; });
+  const reels = media.filter((m) => m.posted_at && m.reach).sort((a, b) => Date.parse(b.posted_at) - Date.parse(a.posted_at)).slice(0, 7).map((m) => {
+    const dur = durOf(m), w = watchS(m), sk = skip[m.ig_id] ? skip[m.ig_id].v : null;
+    return { reel: name(m), day: istDay(m.posted_at), reach: m.reach, watchS: w != null ? +one(w) : null, lenS: dur, holdPct: w != null && dur ? Math.round((100 * w) / dur) : null,
+      skipPct: sk == null ? null : Math.round(sk <= 1 ? sk * 100 : sk), savesPer1k: +one((1000 * (m.saves || 0)) / m.reach), sharesPer1k: +one((1000 * (m.shares || 0)) / m.reach) };
+  });
+  const out = { reels };
+  if (reels.length) out.last7 = { reels: reels.length, medianReach: Math.round(med(reels.map((r) => r.reach))), holdPct: med(reels.map((r) => r.holdPct)), skipPct: med(reels.map((r) => r.skipPct)),
+    savesPer1k: med(reels.map((r) => r.savesPer1k)), sharesPer1k: med(reels.map((r) => r.sharesPer1k)) };
+  const days = [...new Set(insights.filter((r) => /^reach_wk_/.test(r.metric)).map((r) => r.day))].sort(), day = days[days.length - 1];
+  if (day) { const v = (k) => { const r = insights.find((x) => x.day === day && x.metric === k); return r ? r.value : null; };
+    const nf = v('reach_wk_non_follower'), fo = v('reach_wk_follower'), tot = v('reach_wk_total') ?? ((nf || 0) + (fo || 0)), fw = v('follows_wk'), uf = v('unfollows_wk');
+    out.discovery = { day, reach: tot, nonFollowerPct: nf != null && nf + (fo || 0) > 0 ? Math.round((100 * nf) / (nf + (fo || 0))) : null,
+      follows: fw, unfollows: uf, followsPer1k: fw != null && tot ? +one((1000 * fw) / tot) : null }; }
+  const b = [], L = out.last7, D = out.discovery;
+  if (L) b.push(`last ${L.reels} reels (median): ${L.holdPct != null ? `hold ${Math.round(L.holdPct)}% of the reel, ` : ''}${L.skipPct != null ? `${Math.round(L.skipPct)}% skip in 3 s, ` : ''}${one(L.savesPer1k)} saves and ${one(L.sharesPer1k)} shares per 1,000 reached`);
+  if (D) b.push(`discovery, 7 days: ${D.nonFollowerPct != null ? `${D.nonFollowerPct}% of ${fmt(D.reach)} reached were non-followers` : `${fmt(D.reach)} reached`}${D.follows != null ? `; ${one(D.followsPer1k || 0)} follows per 1,000 reached (+${D.follows}${D.unfollows != null ? `, -${D.unfollows}` : ''})` : ''}`);
+  out.bullets = b;
   return out;
 }
 
@@ -128,8 +157,9 @@ const CONFIGS = (() => { const o = {};
   return o; })();
 export function experimentOf(name, planned = targets().planned) {
   const c = CAPS[name] || {}, x = (CONFIGS[name] || {}).experiment || c.experiment;
-  if (x && x.id) return { id: x.id, change: x.change || x.id, vs: x.vs || 'median' };
   const p = planned.find((r) => r.channel === c.channel && r.postOn === c.postOn && r.postAt === c.postAt);
+  // a planned row with the same id sets the baseline (E18: "reach 1546, watch 8.8", the glass reels' median), whatever the config says
+  if (x && x.id) return { id: x.id, change: x.change || x.id, vs: p && p.id === x.id ? p.vs : x.vs || 'median' };
   return p ? { id: p.id, change: p.change, vs: p.vs, planned: true } : null;
 }
 // reach of a reel as read at time t (ms): the last per-run or daily reading at or before t; null if none
@@ -139,6 +169,7 @@ function readings({ runs = [], daily = [] }) {
   Object.values(r).forEach((a) => a.sort((p, q) => p[0] - q[0]));
   return (m, t) => { const a = r[m.ig_id]; if (!a || !a.length) return Date.parse(m.posted_at) <= t ? m.reach : null; let v = null; for (const [at, x] of a) { if (at <= t) v = x; else break; } return v; };
 }
+const durOf = (m) => m.duration_s || (CONFIGS[m.template_id] || {}).dur || null;   // ig_media.duration_s is never filled; the config's "dur" is
 const watchS = (m) => (m.watch_avg_ms != null ? m.watch_avg_ms / 1000 : null), saveP = (m) => (m.reach ? (100 * (m.saves || 0)) / m.reach : null);
 const name = (m) => m.template_id || (m.caption || '').split('\n')[0].slice(0, 40);
 
@@ -170,18 +201,20 @@ export function checks(d, k, now = Date.now(), T = targets()) {
     const x = experimentOf(m.template_id, T.planned); if (!x) return;
     const t0 = Date.parse(m.posted_at), i = posted.indexOf(m), before = posted.slice(Math.max(0, i - 7), i);
     const base = /^showreel-/.test(x.vs) ? posted.filter((p) => p.template_id === x.vs) : before;
+    // a fixed baseline ("reach 1546, watch 8.8[, saves 1.7]") compares with those numbers instead of the reels before it
+    const fixedOf = (k) => { const v = new RegExp(k + '\\s*([\\d.,]+)', 'i').exec(x.vs || ''); return v ? +v[1].replace(/,/g, '') : null; }, fR = fixedOf('reach');
     const read = (h) => {
       if (now - t0 < h * 36e5) return { h, verdict: 'TOO EARLY' };
-      const r = at(m, t0 + (h + 2) * 36e5) ?? m.reach, b = med(base.map((p) => at(p, Date.parse(p.posted_at) + (h + 2) * 36e5) ?? p.reach));
+      const r = at(m, t0 + (h + 2) * 36e5) ?? m.reach, b = fR != null ? fR : med(base.map((p) => at(p, Date.parse(p.posted_at) + (h + 2) * 36e5) ?? p.reach));
       if (r == null || b == null) return { h, verdict: 'TOO EARLY' };
       return { h, reach: r, vs: Math.round(b), pct: pct(r, b), verdict: r >= b ? 'WIN' : 'LOSE' };
     };
-    const r24 = read(24), r72 = read(72), w = watchS(m), s = saveP(m), bw = med(base.map(watchS)), bs = med(base.map(saveP));
+    const r24 = read(24), r72 = read(72), w = watchS(m), s = saveP(m), bw = fR != null ? fixedOf('watch') : med(base.map(watchS)), bs = fR != null ? fixedOf('saves') : med(base.map(saveP));
     const final = r72.verdict !== 'TOO EARLY' ? r72 : r24;
     verdicts.push({ id: x.id, reel: name(m), final: final.verdict });
     [r24, r72].forEach((r) => { if (r.h === 72 && now - t0 < 72 * 36e5 && r24.verdict === 'TOO EARLY') return;
-      out.lines.push(`EXPERIMENT ${k} ${x.id} (${name(m)}) ${r.h} h: ` + (r.reach != null ? `reach ${fmt(r.reach)} vs ${x.vs === 'median' ? 'median' : x.vs} ${fmt(r.vs)} (${sgn(r.pct)}%)` +
-        (w != null ? `, watch ${one(w)} s vs ${bw != null ? one(bw) : '–'}` : '') + (s != null ? `, saves ${one(s)}% vs ${bs != null ? one(bs) : '–'}%` : '') : `${x.change}, posted ${new Date(t0 + IST).toISOString().slice(5, 16).replace('T', ' ')} IST`) + ` → ${r.verdict}`); });
+      out.lines.push(`EXPERIMENT ${k} ${x.id} (${name(m)}) ${r.h} h: ` + (r.reach != null ? `reach ${fmt(r.reach)} vs ${x.vs === 'median' ? 'median' : fR != null ? 'baseline' : x.vs} ${fmt(r.vs)} (${sgn(r.pct)}%)` +
+        (w != null ? `, watch ${one(w)} s vs ${bw != null ? one(bw) : '–'}` : '') + (s != null ? `, saves ${one(s)}% vs ${bs != null ? one(bs) + '%' : '–'}` : '') + `, ${fmt((m.saves || 0) + (m.shares || 0))} saves+shares` : `${x.change}, posted ${new Date(t0 + IST).toISOString().slice(5, 16).replace('T', ' ')} IST`) + ` → ${r.verdict}`); });
   });
   // planned but not posted yet: say so, so a forgotten mark is visible
   T.planned.filter((p) => p.channel === k && !posted.some((m) => { const c = CAPS[m.template_id] || {}; return c.channel === p.channel && c.postOn === p.postOn && c.postAt === p.postAt; }))
@@ -232,12 +265,15 @@ async function load() {
 
 const NOW = process.env.AUDIT_NOW ? Date.parse(process.env.AUDIT_NOW) : Date.now();
 const data = await load(), today = istDay(new Date(NOW).toISOString()), channels = {};
-for (const k of Object.keys(CH)) if (data[k]) channels[k] = week(data[k], today);
+const drv = {}; for (const k of Object.keys(CH)) if (data[k]) { drv[k] = drivers(data[k]); channels[k] = week(data[k], today).concat(drv[k].bullets); }
 for (const [k, a] of Object.entries(channels)) { console.log(`AUDIT ${k} (${CH[k].username}), 7 days to ${today}:`); a.forEach((l) => console.log('  - ' + l)); }
 console.log('AUDIT_CHANNELS=' + JSON.stringify(channels));
+console.log('AUDIT_REELS (last 7 per channel: reach | hold % of the reel | skip % in 3 s | saves and shares per 1,000 reached):');
+for (const [k, v] of Object.entries(drv)) v.reels.forEach((r) => console.log(`REEL ${k} ${r.day} ${r.reel}: reach ${fmt(r.reach)} | hold ${r.holdPct != null ? r.holdPct + '%' : '–'}${r.watchS != null ? ` (${r.watchS} of ${r.lenS || '?'} s)` : ''} | skip ${r.skipPct != null ? r.skipPct + '%' : '–'} | ${r.savesPer1k} saves, ${r.sharesPer1k} shares per 1,000`));
 const sig = {}, chk = {}; for (const k of Object.keys(CH)) if (data[k]) { sig[k] = signals(data[k], today); chk[k] = checks(data[k], k, NOW); }
 // the results checks lead (the daily run's audit card opens with them and acts on every ALARM, ESCALATE, PROMOTE and DROP the same day)
 console.log('AUDIT_CHECKS (design/targets.md; CLAUDE.md "Daily run" step 2):'); Object.values(chk).forEach((c) => c.lines.forEach((l) => console.log(l)));
+for (const [k, v] of Object.entries(drv)) if (sig[k]) sig[k].drivers = { last7: v.last7, discovery: v.discovery, reels: v.reels };
 for (const [k, c] of Object.entries(chk)) sig[k].checks = { lines: c.lines, trend: c.trend, experiments: c.experiments, rules: c.rules };
 console.log('AUDIT_SIGNALS=' + JSON.stringify(sig));
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, '### Audit numbers, 7 days to ' + today + '\n' + Object.values(chk).flatMap((c) => c.lines).map((l) => '- **' + l + '**').join('\n') + '\n\n' + Object.entries(channels).map(([k, a]) => `**${CH[k].username}**\n` + a.map((l) => '- ' + l).join('\n')).join('\n\n') + '\n');
