@@ -76,6 +76,9 @@ does the job, so our focus should be on making the channels popular")
   at a time, no overwork. When the weekly limit is reached, work stops and the owner's feedback from the app's "Feedback" box is read first
   when it resumes (Wednesday 04:30 IST).
 - Sessions: archive every session as soon as its work is done (owner, 11 Nov 2026: "don't leave those open if not needed").
+- One thing at a time (owner, 11 Nov 2026: "work on one thing at a time when in sessions to keep things clean and in control for limit usage"):
+  one session runs at a time, each session has ONE task, finishes it (pushed, merged, checked) and is archived before the next starts; a session
+  keeps one branch at a time. Leftover branches that are not claude/ or never merged are listed for the owner (sessions cannot delete branches).
 
 ## Daily improvement loop (owner, 7 Nov 2026)
 Owner: "Every day we should think of some improvements to experiment with or put in place, and keep using the combinations that work. You should be
