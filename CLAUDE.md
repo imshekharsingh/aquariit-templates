@@ -43,7 +43,8 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   the tech reel one per day as well; Sunday is the right time to check engagement"): @webin20sec, @techin20sec and Turns Out ALL post one reel
   EVERY day at 13:00 IST from Sun 8 Nov. The E15 posting-time test (tech 19:00 / 17:30, Turns Out 20:00) has ended; the only reminder cron is 12:50 IST.
   Quality and one experiment per channel per day come first.
-- No app work until reach improves (owner, 5 Nov 2026): only fixes for things that break, and the owner's "Feedback" box (owner, 11 Nov 2026).
+- No app work until reach improves (owner, 5 Nov 2026): only fixes for things that break, and the owner's "Feedback" box (owner, 11 Nov 2026:
+  on the home page under the cards; D1 table owner_feedback; /api/feedback; read and marked done through "Owner answers", see "Daily run" step 0).
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
 - Archiving (owner, 1 Nov 2026; replaces the 7-day fold / 30-day rule): a reel marked uploaded leaves the main list at once for its channel's compact
   "Posted" list (cover, title, posted date, its numbers once the collector has them; no video). An R2 lifecycle rule deletes every file under v/ (MP4,
@@ -149,7 +150,7 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
   TWO a day (13:30 + 20:00, E16) ran 7 Nov only and ended 8 Nov (owner): one reel a day at 13:00 IST, built by "Turns Out daily reel" (~09:11 IST).
   Going daily: the cost test passed (Mon 2 Nov blue-sky reel, $4.08 of session usage, same quality), so Turns Out posts DAILY from Tue 3 Nov
   (owner). A scheduled task ("Turns Out daily reel", ~09:11 IST) asks the studio launcher to start a fresh session every day
-  that builds THAT day's reel for 13:00 IST (ready by 12:00): new globally known true story, 2.5D kit, lean (one stills sheet, one render, no subagents, about $4),
+  that builds THAT day's reel for 13:00 IST (ready by 12:00), reading Feedback first ("Daily run" step 0; Turns Out and c3 items): new globally known true story, 2.5D kit, lean (one stills sheet, one render, no subagents, about $4),
   captions.json postOn = that day, and a "note" card in the app when it is ready. Logo: design/brand/accounts/turnsout-logo.svg (an amber arrow turning round a dark ring, TURNS OUT inside; the family look of the other two).
   The app's "Turns Out" tab has the profile card and the reels. Internal ids stay `c3` (scripts/channel3/, `showreel-c3-*`, `"channel": "c3"`).
 - From 6 Nov (owner, 5 Nov 2026; moved up from 8 Nov the same day): a 3-reel test of ONE change (E14 in design/experiments.md): the payoff image in frame 0 (a "wait, what?"
@@ -178,7 +179,10 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 
 ## Daily run (owner, 5 Nov 2026; the "Daily studio run" scheduled task, 06:47 IST, points here)
 A fresh session, lean, no subagents, in this order:
-1. Dispatch "Owner answers" with action `read`, act on each ANSWER line, then `clear` the ids acted on.
+0. Feedback first (owner, 11 Nov 2026): the "Owner answers" `read` prints the app's new Feedback items as FEEDBACK lines (id, time, channel, text).
+   Act on each new item that day, or put it in design/todo.md with a date, then dispatch `feedback-done` with `{"ids":[..],"note":"what was done"}`
+   (the app shows the note under the item). Every run reads it first: the daily run, the Turns Out run and the spare-usage night.
+1. Dispatch "Owner answers" with action `read` (the same dispatch as step 0), act on each ANSWER line, then `clear` the ids acted on.
 2. Audit card: numbers from the latest "Instagram collect" run's AUDIT_CHANNELS line, plan from its AUDIT_SIGNALS line, add only the lesson;
    dispatch "Audit card" (kind audit). Results checks (owner, 7 Nov 2026: "Who is going to check all of this?"): the card MUST lead with the run's
    AUDIT_CHECKS lines (scripts/audit-numbers.mjs, targets in design/targets.md): "ALARM/OK <ch>" (last 7 reels vs target and best window),
@@ -207,6 +211,7 @@ the last push reminder ("Last reminder: <time>, sent to N phones" / "no phone si
 ("Tonight Claude uses your spare usage. Tap to skip.") goes out at 21:00 IST (Worker cron, Web Push; keys
 are the GitHub secrets VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY, published as Worker secrets by the pipeline; never in a file).
 A scheduled task (created by the parent session, not here) fires Tuesdays around 22:45 IST into the studio launcher, which starts a fresh session that:
+0. reads Feedback first ("Daily run" step 0: "Owner answers" `read`, act or file each FEEDBACK item, `feedback-done` with a note).
 1. dispatches the "Spare check" workflow (main) and reads SPARE=yes/no from its log (yes unless the owner tapped "Skip tonight"). If no: end at once, no other work.
 2. If yes: growth work only (owner, 5 Nov 2026: no surplus reels, no app work): (0) the weekly research pass ("Research what works now" in the Daily improvement loop); (1) plan next week's topics against the rulebooks and that research;
    (2) sharpen the rulebooks (design/rules-*.md) from the numbers, analysis of what held and what did not; (3) reel tooling that raises the

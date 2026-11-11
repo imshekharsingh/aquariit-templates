@@ -238,6 +238,9 @@ jobs:
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/spare")" = "401" ] || { echo "spare API must be closed to signed-out requests"; exit 1; }
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/asks")" = "401" ] || { echo "Needs-you API must be closed to signed-out requests"; exit 1; }
           if [ "$code" = "200" ]; then command curl -sf -b "$J" "$B/api/asks" | grep -q '"asks"' || { echo "Needs-you API did not answer"; exit 1; }; echo "OK Needs-you API"; fi
+          [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/feedback")" = "401" ] || { echo "Feedback API must be closed to signed-out requests"; exit 1; }
+          if [ "$code" = "200" ]; then command curl -sf -b "$J" "$B/api/feedback" | grep -q '"feedback"' || { echo "Feedback API did not answer"; exit 1; }; echo "OK Feedback API"; fi
+          command curl -sf -b "$J" "$B/" | grep -q 'id="fb-text"' || { echo "the signed-in page has no Feedback box"; exit 1; }; echo "OK Feedback box on the page"
           if [ "$code" = "200" ]; then command curl -sf -b "$J" "$B/api/spare" | grep -q '"week"' || { echo "spare API did not answer"; exit 1; }; echo "OK spare API"; fi
           if [ "$code" = "200" ]; then
             H=(-b "$J" -H 'X-Requested-With: reel' -H 'Content-Type: application/json')

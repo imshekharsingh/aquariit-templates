@@ -339,6 +339,47 @@ async function asksApi(request, env, p, url) {
   return jres({ error: 'bad-request' }, 400);
 }
 
+// ---- Feedback (owner, 11 Nov 2026: "when we reach the limit within the week, keep an option in the app where I can submit feedback for that window,
+// so you visit it first before resuming"): the owner types feedback any time (optional channel); every Claude run reads the new items first with the
+// "Owner answers" workflow (scripts/asks.mjs, action read or feedback), acts on them or files them in design/todo.md, then marks them done with a
+// short note (action feedback-done), which the app shows under the item. Primary account only.
+let fbReady = null;
+async function fbDb(env) {
+  if (!env.DB) return null;
+  fbReady = fbReady || env.DB.exec('CREATE TABLE IF NOT EXISTS owner_feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, created TEXT NOT NULL, channel TEXT, body TEXT NOT NULL, state TEXT NOT NULL DEFAULT \'new\', note TEXT, done_at TEXT)').catch((e) => { fbReady = null; throw e; });
+  await fbReady;
+  return env.DB;
+}
+const FB_CH = ['web', 'tech', 'c3', 'app'], FB_ID = /^\/api\/feedback\/([0-9]{1,9})\/done$/;
+async function feedbackApi(request, env, p, url) {
+  if (!(await isPrimary(request, env))) return request.method === 'GET' ? jres({ feedback: [] }) : jres({ error: 'forbidden' }, 403);
+  let db;
+  try { db = await fbDb(env); } catch { return jres({ error: 'db-unavailable' }, 503); }
+  if (!db) return jres({ error: 'no-db' }, 501);
+  if (request.method === 'GET' && p === '/api/feedback') {   // newest first; ?state=new gives only the items waiting for Claude
+    const onlyNew = url.searchParams.get('state') === 'new';
+    const { results } = await db.prepare(`SELECT id, created, channel, body, state, note, done_at FROM owner_feedback ${onlyNew ? "WHERE state = 'new' " : ''}ORDER BY id DESC LIMIT 50`).all();
+    return jres({ feedback: (results || []).map((r) => ({ id: r.id, created: r.created, channel: r.channel, text: r.body, state: r.state, note: r.note, done_at: r.done_at })) });
+  }
+  if (request.method !== 'POST' || request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403);
+  let b = null; try { b = await request.json(); } catch { /* handled below */ }
+  if (p === '/api/feedback') {   // the owner's new item
+    const text = b && nStr(b.text, 2000);
+    if (!text || !text.trim()) return jres({ error: 'bad-request' }, 400);
+    const ch = b && FB_CH.includes(b.channel) ? b.channel : null;
+    const r = await db.prepare('INSERT INTO owner_feedback (created, channel, body) VALUES (?1, ?2, ?3)').bind(new Date().toISOString(), ch, text.trim()).run();
+    return jres({ ok: true, id: r.meta && r.meta.last_row_id });
+  }
+  const m = FB_ID.exec(p);
+  if (m) {   // a Claude run marks an item done, with a short note of what it did
+    const note = b && nStr(b.note, 500);
+    if (!note || !note.trim()) return jres({ error: 'bad-request' }, 400);
+    const r = await db.prepare("UPDATE owner_feedback SET state = 'done', note = ?2, done_at = ?3 WHERE id = ?1").bind(Number(m[1]), note.trim(), new Date().toISOString()).run();
+    return jres({ ok: true, stored: !!(r.meta && r.meta.changes) });
+  }
+  return jres({ error: 'bad-request' }, 400);
+}
+
 // ---- Spare-usage night (owner, 1 Nov 2026): the owner's weekly Claude limit resets Wednesday 04:30 IST. From Tuesday 21:00 IST the app shows a card
 // saying Claude uses the spare usage tonight, with one "Skip tonight" button (owner, 3 Nov 2026: opt-out; a skip flag for that week, stored here).
 // /api/spare reports on = not skipped, and the "Spare check" workflow prints SPARE=yes unless skipped. The Worker's cron sends a Web Push reminder
@@ -664,7 +705,7 @@ export default {
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (signedIn) {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
       if (m) { try { const v = await reelFile(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }
