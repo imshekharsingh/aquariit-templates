@@ -6,6 +6,8 @@ over "Why are video screenshots sometimes black?" from frame 0, then what (the a
 so phones leave secure windows out of screenshots) → which means (your screenshot is black while the film keeps playing) → takeaway. AUTO lines from
 `make.py black-screenshot --fake-vo --stills`, 11 Nov ~08:40 IST (first pass: voice 21.1 s TOO LONG, a 3-line caption at 4 s and "NOT A BUG"
 past the safe zone at 66-965 px; all three fixed: tighter lines, chunks [4, 4, 4], "NO BUG", dur 22 s inside rule 10's 20-22 s).
+Re-render 11 Nov evening (owner: improvements first): the second panel of both choice scenes now arrives mid-line (cues "marks" and "film", not the
+last word), so no frame shows one card over an empty half for ~2.5 s; stills re-checked: SAFE ZONE ok, OVERLAP none, FLOW 100%, ELEMENTS 34, longest gap 1.5 s.
 
 1. Topic: PASS: anyone who tried to screenshot a film in a streaming app got a black picture; not covered by @webin20sec, not a repeat; rulebook score: rule 1 pass (a puzzle on your own phone), rule 2 pass (NO BUG stamped in frame 0, the answer panel by ~2.5 s), rule 3 pass (replaced by rule 10: 22 s), rule 4 pass (the takeaway said and shown in the last 3 s: "black means protected, not broken"; a fact to keep, not a setting), rule 5 pass (13:00 IST), rule 6 pass, rule 7 pass (PRONUNCIATION clean), rule 8 pass (FLOW lines below), rule 9 pass (verdict stamp, NO BUG), rule 10 pass (complete sentences joined by "that's because" and "which means", natural speed 1.00, 21 s of voice), rule 11 pass (platform-neutral; the evidence is Android's own docs; last three reels battery myths, none Apple-only)
 2. Frame 0: PASS: the NO BUG stamp slams in over the three-line hook card at frame 0 (the kit's verdict_stamp); the answer before the question
