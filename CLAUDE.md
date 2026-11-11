@@ -78,6 +78,9 @@ a social media manager, design manager, product manager, whatever you can be." S
   no stopping"). Content, design, sound, growth, audience, product, process, cost and research are all Claude's to improve every day, without
   waiting to be asked. The owner only posts, and answers what needs them (money, their accounts or devices).
 - The audit card adds one line per channel: "Today's experiment: X. Yesterday's: Y → result."
+- Learn from every reference (owner, 11 Nov 2026): each reel the owner shares as a reference gets an entry in design/references.md the same day
+  (what it showed, its techniques as a checklist, the kit piece that covers each or MISSING). Each MISSING technique becomes a kit piece or a dated
+  line in design/todo.md. A reel's review file names the reference techniques it uses (e.g. "R5: KM.curveGraph"). Techniques only, never a piece.
 
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
 Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
