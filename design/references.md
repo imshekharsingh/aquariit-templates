@@ -67,6 +67,43 @@ Showed: a compilation of small, satisfying UI motions, each at real speed, then 
   (FlowShorts, fluxnote guides). Covered: years in the voice and kinetic type, a world change every 3-5 s; the sepia/colour switch is Kt.print. Kept as is.
 - Not taken: AI-generated photo-real images and voice-over channels as a format (copyright rules: images are code only).
 
+## R-trend: first weekly research pass, all three channels (11 Nov 2026, web search)
+Evidence is thin for our exact niches (no study of CSS or phone-tip reels exists in the results; most pages are tool vendors). Kept only what
+has numbers, comes from Instagram itself, or repeats across several sources. Each line: the finding, its source, the technique, the kit piece.
+- R-trend 11 Nov: **A caption that asks for comments gets ~3x the comments; a question in it +37%; asking for likes -5%** (Metricool study,
+  24.4M posts, 375k accounts, Jan-Feb 2025 vs 2026, via NetInfluencer). Same study: Reels views +27% year on year, average watch per Reel 8.5 s.
+  Comments are not one of Instagram's top three signals, but they are the cheapest action we are not asking for on web and tech.
+  - [ ] Line 1 of the caption is a question the viewer can answer in one word; the last line asks for that word in the comments (never likes).
+  - Kit: the caption is plain text in the config; newweb.mjs and techreel starters do not write a question line: MISSING (todo).
+  Queued: E20 (web). Turns Out already does it (E19).
+- R-trend 11 Nov: **Speech in the first 3 s beats music-only openings: 3 s retention +11.7%, 10 s +24.7%** (Emplifi, 10,000+ Facebook Reels,
+  Mar 2026, via Social Media Today; Facebook, not Instagram). On speech reels, heavy text overlays went with slightly LOWER retention (-6% at 10 s).
+  - [x] Voice from frame 0 on all three channels (hook voice in every starter; Mandatory Gate).
+  - [ ] Text on screen supports the voice, never competes with it: one line at a time, key words big. Covered by the subtitle band (data-subs)
+    and the owner's rule that every spoken line is shown, so no cut to fewer words; watch it in the stills review. Kept as is.
+- R-trend 11 Nov: **Series: Meta is testing a native "Series" hub that groups Reels into episodes** (MediaPost, June 2026, via Lindsey Gamble
+  and Social Media Today); guides agree (Later via SocialPilot, CreatorFlow) that a named, numbered series gives viewers a reason to follow, each
+  part must work alone, and "Part 1" is the best entry point. No independent number isolates the effect, so it is a test, not a rule.
+  - [ ] A fixed series name + number on the cover and in frame 0 (small, above the hook), the same name opening the caption.
+  - [x] Web already numbers its reels (Nº 09 ...).
+  - Kit: Turns Out has no series tag in kit25d.js: MISSING (todo). Queued: E22 (Turns Out), on the topic type that already won 6 of 6.
+- R-trend 11 Nov: **Tech tips that get saved: settings and "most people don't know" angles, and things that make the sender look informed**
+  (fluxnote "40 viral tech ideas 2026", wreltik "why some reels get saved and shared"; vendors, two sources agree). Settings lists are E17.
+  - [ ] Hook names a setting most phones ship with the wrong way ("Your phone ships with this ON"), the curiosity of a default, not a count.
+  - Kit: techreel `header` + `hook_toggles` cover it (the switch shown in its factory state at frame 0). Queued: E21 (tech).
+- R-trend 11 Nov: **Instagram rewards originality and demotes aggregators** (creators.instagram.com, "Rewarding original creators", extended
+  to photos and carousels 2026): reposts with only a watermark, subtitles or credit added lose recommendations. Covered: every scene is our own code.
+- R-trend 11 Nov: **Trial Reels** (Instagram feature): a reel is shown to non-followers first, off the grid, with its numbers in ~24 h; Meta
+  said 80% of the creators who posted more after trying it grew non-follower reach (secondhand summaries of Meta's 2024 note; eligibility now
+  reported as 1,000+ followers by one 2026 blog, unverified). Fits our one-change tests (two hooks of the same reel). Needs the owner (posting): todo.
+- R-trend 11 Nov: **Keywords in the caption feed Instagram search, and public posts show in Google and Bing since July 2025** (Metricool;
+  several SEO guides agree, Instagram names usernames, bios, captions, hashtags and places as the fields search reads). Covered: the post text
+  carries 6 keywords, most specific first.
+- Not kept: "hashtags no longer matter" (no primary source found), "TikTok watermark suppression" (not in Instagram's own text), vendor
+  hook-rate benchmarks that define the metric differently (NestScale 25-30% vs Blitzcut 60%+), and every "3-5x saves" claim without a method.
+
 ## Count
 5 references, 28 techniques: 21 covered, 7 MISSING (6 pieces: a pivot-word beat, a travelling object as the transition (R2 and R3), an organic
 wipe, icons inside sentences, letters snapping into a word, a hand-drawn ring around a number); 3 more not taken by rule.
+Research passes (R-trend): 11 trends kept on 11 Nov 2026 (4 Turns Out, 7 all channels); 2 MISSING pieces (a caption question line in the web and
+tech starters, a series tag in kit25d.js) and 1 owner item (Trial Reels), all in design/todo.md. Next pass: the spare-usage night, Tue 17 Nov.
