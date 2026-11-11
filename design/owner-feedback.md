@@ -25,3 +25,4 @@ owner catches something new, the same day.
 
 The principle (owner, 8 Nov 2026: "Who is going to have that critical thinking?"): a check that measures the input (code, cue lists,
 counts) is not a check. Measure what the viewer gets: the rendered video and its sound.
+- 11 Nov 2026: five web samples (style A/B/C, contrast, details) stayed in the app days after their decision: "Why do we keep such things? Do I really need to tell each and everything?" Fixed: hidden; a sample now needs "until" (at most 3 days) and npm run check fails once it passes. Every session also clears what it made for review once the decision is taken.

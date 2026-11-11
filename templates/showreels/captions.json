@@ -780,6 +780,7 @@
   "hidden": true
  },
  "showreel-s01-contrast": {
+    "hidden": true,
   "channel": "web",
   "sample": true,
   "concept": "Sample · color: #767676 (grey text contrast, 4.5:1)",
@@ -826,6 +827,7 @@
   "note": "Turns Out daily run, 7 Nov: the 20:00 reel (E16 slot 2, E14 reel 3: a world icon in an unexpected state)."
  },
  "showreel-style-a-studio": {
+    "hidden": true,
   "channel": "web",
   "sample": true,
   "concept": "Style A · Studio product film",
@@ -833,6 +835,7 @@
   "note": "Style sample for review, not scheduled: pick A, B or C"
  },
  "showreel-style-b-editorial": {
+    "hidden": true,
   "channel": "web",
   "sample": true,
   "concept": "Style B · Editorial dark",
@@ -840,6 +843,7 @@
   "note": "Style sample for review, not scheduled: pick A, B or C"
  },
  "showreel-style-c-glass": {
+    "hidden": true,
   "channel": "web",
   "sample": true,
   "concept": "Style C · Glass and light",
@@ -847,6 +851,7 @@
   "note": "Style sample for review, not scheduled: pick A, B or C"
  },
  "showreel-style-c-details": {
+    "hidden": true,
   "channel": "web",
   "sample": true,
   "concept": "Sample · style C (Glass and light) on the slow-mo details format",
