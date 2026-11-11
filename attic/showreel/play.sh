@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# RETIRED 11 Nov 2026 (owner: the app plays the full-quality MP4); kept for reference only.
 # The light copy the app plays (owner, 6 Nov 2026: "videos are too slow to start in the app"): 720x1280, 30 fps, H.264 high ~3 Mbit/s,
 # AAC 128k, moov atom first (+faststart) so a phone can start after the first bytes. The full-quality <name>.mp4 stays the one that is
 # saved and posted. Used by the Showreel and Tech reel workflows and by `scripts/r2.sh faststart`.

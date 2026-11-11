@@ -646,7 +646,8 @@ async function showreelList(env) {
   const byName = new Map([...v, ...c].map((o) => [o.key.slice(2), o]));
   let first = {};   // original render times of reels copied from the old releases (R2 dates a copy with the day it was copied)
   try { const o = await env.REELS.get('c/rendered-at.json'); if (o) first = await o.json(); } catch { /* use the R2 dates */ }
-  // <name>-play.mp4 (owner, 6 Nov 2026) is the light 720p copy the app plays; <name>.mp4 is the full-quality file "Save video" downloads
+  // <name>.mp4 is the full-quality file the app plays and "Save video" downloads (owner, 11 Nov 2026); <name>-play.mp4 (a 720p copy made
+  // 6-11 Nov 2026) is only a fallback for a reel without its full file
   const reels = new Set([...byName.keys()].filter((k) => !k.endsWith('-play.mp4')).map((k) => (/^(showreel-[a-z0-9-]{1,60}?)(?:\.mp4|-cover\.jpg)$/.exec(k) || [])[1]).filter(Boolean));
   // each URL carries its object's upload time: a re-render replaces the object, so the URL changes and the immutable cache never serves an old cut
   const url = (o) => (o ? `/reels/${o.key.slice(2)}?v=${o.uploaded.getTime()}` : null);

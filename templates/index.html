@@ -37,6 +37,14 @@
   .reel{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden}
   .reel video{display:block;width:100%;aspect-ratio:9/16;background:#000;object-fit:cover}
   .body{padding:16px 16px 18px}
+  .vwrap{position:relative}
+  .pdet .vwrap{width:min(100%,300px);margin:0 auto}
+  .vload{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(0,0,0,.5);color:#fff;font:700 .85rem system-ui,sans-serif;pointer-events:none;border-radius:inherit}
+  .vload[hidden]{display:none}
+  .vload svg{width:46px;height:46px;transform:rotate(-90deg)}
+  .vload circle{fill:none;stroke-width:4}
+  .vload .tr{stroke:rgba(255,255,255,.25)}
+  .vload .pr{stroke:#fff;stroke-linecap:round;transition:stroke-dashoffset .2s linear}
   .name{font:700 1rem system-ui,sans-serif}
   .meta{color:var(--mute);font-size:.85rem;margin-top:2px}
   .cap{white-space:pre-wrap;margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--well);border:1px solid var(--line);font-size:.9rem;color:var(--capink)}
@@ -214,7 +222,8 @@
   .prow .pbtn{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
   .prow .chev{flex:none;color:var(--mute);font:700 1.2rem/1 system-ui,sans-serif;padding:0 4px}
   .pdet{padding:4px 0 14px}
-  .pdet video,.pdet img{display:block;width:min(100%,300px);aspect-ratio:9/16;margin:0 auto;border-radius:16px;background:#000;object-fit:cover}
+  .pdet video{display:block;width:100%;aspect-ratio:9/16;border-radius:16px;background:#000;object-fit:cover}
+  .pdet img{display:block;width:min(100%,300px);aspect-ratio:9/16;margin:0 auto;border-radius:16px;background:#000;object-fit:cover}
   .pdet .gone{margin-top:8px;text-align:center;color:var(--mute);font-size:.8rem}
   .prow .undo{flex:none;min-height:36px;padding:0 12px;font-size:.78rem}
   /* a reel's sources (Turns Out): listed on the card with one "Copy as comment" button */
@@ -264,6 +273,33 @@
   rb.addEventListener('click', refresh);
   document.addEventListener('visibilitychange', function(){ if (document.hidden) hiddenAt = Date.now(); else if (hiddenAt && Date.now() - hiddenAt > 15 * 60 * 1000) refresh(); });
   function el(t, c, txt){ var e = document.createElement(t); if (c) e.className = c; if (txt != null) e.textContent = txt; return e; }
+
+  // full quality by default (owner, 11 Nov 2026: "I'm ok to watch reels in the app at their top quality"): the full MP4 (moov first, Range
+  // requests for seeking); the 720p -play copy only for older reels without one. Until enough is buffered a ring says "Loading full quality…".
+  function player(s){ var w = el('div', 'vwrap'), v = document.createElement('video'), ov = el('div', 'vload'), lbl = el('span', null, 'Loading full quality…');
+    var R = 20, C = 2 * Math.PI * R, NS = 'http://www.w3.org/2000/svg', sv = document.createElementNS(NS, 'svg'), tr = document.createElementNS(NS, 'circle'), pr = document.createElementNS(NS, 'circle');
+    sv.setAttribute('viewBox', '0 0 46 46'); sv.setAttribute('aria-hidden', 'true');
+    [tr, pr].forEach(function(c){ c.setAttribute('cx', '23'); c.setAttribute('cy', '23'); c.setAttribute('r', String(R)); sv.appendChild(c); });
+    tr.setAttribute('class', 'tr'); pr.setAttribute('class', 'pr'); pr.setAttribute('stroke-dasharray', String(C)); pr.setAttribute('stroke-dashoffset', String(C));
+    ov.appendChild(sv); ov.appendChild(lbl); ov.hidden = true; ov.setAttribute('role', 'status');
+    v.src = s.video || s.play; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover; v.setAttribute('aria-label', 'Showreel ' + s.name);
+    var holding = false, started = false;
+    function ahead(){ var t = v.currentTime, b = v.buffered; for (var i = 0; i < b.length; i++) if (b.start(i) <= t + 0.1 && b.end(i) >= t) return b.end(i) - t; return 0; }
+    function need(){ var d = v.duration; return isFinite(d) && d > 0 ? Math.min(6, d - v.currentTime - 0.05) : 6; }   // 6 s ahead (or the rest of the reel)
+    function ready(){ return v.readyState >= 4 || ahead() >= need(); }
+    function show(text){ lbl.textContent = text; ov.hidden = false; tick(); }
+    function tick(){ if (ov.hidden) return; var f = Math.max(0, Math.min(1, ahead() / Math.max(0.1, need()))); pr.setAttribute('stroke-dashoffset', String(C * (1 - f))); lbl.textContent = lbl.textContent.replace(/ \d+%$/, '') + ' ' + Math.round(f * 100) + '%'; }
+    function release(){ if (!holding || !ready()) return; holding = false; ov.hidden = true; var p = v.play(); if (p && p.catch) p.catch(function(){ show('Loaded. Tap play'); ov.querySelector('svg').style.display = 'none'; }); }
+    // first play: hold until 6 s are buffered (at most 15 s, some phones load little while paused); a second tap on play goes at once
+    v.addEventListener('play', function(){ if (!started) { started = true; if (!ready()) { holding = true; v.preload = 'auto'; v.pause(); show('Loading full quality…');
+      setTimeout(function(){ if (holding) { v.preload = 'auto'; holding = false; ov.hidden = true; var p = v.play(); if (p && p.catch) p.catch(function(){}); } }, 15000); } }
+      else if (holding) { holding = false; } });
+    v.addEventListener('waiting', function(){ if (!holding) show('Buffering full quality…'); });
+    v.addEventListener('playing', function(){ if (!holding) ov.hidden = true; });
+    ['progress', 'canplay', 'canplaythrough', 'loadeddata'].forEach(function(e){ v.addEventListener(e, function(){ tick(); release(); }); });
+    v.addEventListener('seeking', function(){ if (!v.paused && !holding) show('Buffering full quality…'); });
+    v.addEventListener('seeked', function(){ if (v.readyState >= 3 && !holding) ov.hidden = true; });
+    w.appendChild(v); w.appendChild(ov); return w; }
   // what gets pasted into Instagram: the caption, one line of niche search keywords, then exactly 5 niche hashtags (owner, 22 Oct 2026)
   function postText(j){ var t = j.caption.trim(); if (j.keywords && j.keywords.length) t += '\n\n' + j.keywords.slice(0, 6).join(' · '); if (j.hashtags && j.hashtags.length) t += '\n\n' + j.hashtags.slice(0, 5).join(' '); return t; }
   // never navigate to the mp4: in the installed iOS app that opens a file viewer with no way back. Fetch it, then hand it to the share sheet ("Save Video"),
@@ -377,7 +413,7 @@
   // each row opens (owner, 1 Nov 2026: "why are uploaded cards not opening?"): the video while its MP4 exists, else the cover; post text, sources, numbers
   var openPosted = {};
   function postedDetail(s, meta){ var d = el('div', 'pdet');
-    if (s.video) { var v = document.createElement('video'); v.src = s.play || s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover; v.setAttribute('aria-label', 'Showreel ' + s.name); d.appendChild(v); }
+    if (s.video || s.play) d.appendChild(player(s));
     else { if (s.cover) { var im = document.createElement('img'); im.src = s.cover; im.alt = 'Cover of ' + (meta.concept || label(s)); d.appendChild(im); } d.appendChild(el('p', 'gone', 'Video removed 15 days after upload. The post text and sources stay.')); }
     var cap = el('div', 'cap wait', 'Loading post text…'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), src = el('div', 'src'); copy.type = 'button'; copy.disabled = true; src.hidden = true;
     copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
@@ -552,8 +588,7 @@
     if (compact) { var t2 = el('div', 'top2'), pl = el('button', 'play'), tx = el('div'); pl.type = 'button'; pl.setAttribute('aria-label', 'Play ' + (meta.concept || label(s)));
       if (s.cover) pl.style.backgroundImage = 'url(' + s.cover + ')'; pl.addEventListener('click', function(){ openReel(s.name, false); });
       tx.appendChild(el('div', 'when' + w[1], w[0])); tx.appendChild(nm); t2.appendChild(pl); t2.appendChild(tx); b.appendChild(t2); }
-    else { var v = document.createElement('video'); v.src = s.play || s.video; v.controls = true; v.playsInline = true; v.preload = 'metadata'; if (s.cover) v.poster = s.cover;
-      v.setAttribute('aria-label', 'Showreel ' + s.name); card.appendChild(v);
+    else { card.appendChild(player(s));
       b.appendChild(el('div', 'when' + w[1], w[0])); b.appendChild(nm);
       if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a reel's one-line description
       b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size))); }

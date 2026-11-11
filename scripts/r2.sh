@@ -10,9 +10,9 @@
 #   bash scripts/r2.sh check                  ensure, then write, read back and delete a test object: prints R2_OK=yes or R2_OK=no
 #   bash scripts/r2.sh put <file> [key]       upload one file (key defaults to v/ or c/ + its name, by extension)
 #   bash scripts/r2.sh get <key> <file>       download one object
-#   bash scripts/r2.sh faststart <list.json>   for each reel in the app's /api/showreels list (saved to list.json) with an MP4 and no -play
-#                                             twin, uploaded less than 14 days ago: moov atom first (-c copy, no re-encode) and the light
-#                                             <name>-play.mp4, each verified (moov before mdat, same duration) before it is uploaded
+#   bash scripts/r2.sh faststart <list.json>   for each reel in the app's /api/showreels list (saved to list.json) with an MP4 uploaded less
+#                                             than 14 days ago: moov atom first (-c copy, no re-encode), verified (moov before mdat, same
+#                                             duration) before it is uploaded. The app plays the full MP4 (owner, 11 Nov 2026); no 720p copy
 #   bash scripts/r2.sh migrate [--delete]     copy every asset of the reels, techreel and study releases into the bucket, verify each one
 #                                             (downloaded back, same bytes); with --delete, then remove the verified assets from the releases
 set -uo pipefail
@@ -110,33 +110,24 @@ faststart() { # list.json from /api/showreels (owner, 6 Nov 2026: videos were sl
   local W n up fixed=0 skipped=0 failed=0 at_json; W=$(mktemp -d); at_json="$W/at.json"; echo '{}' > "$at_json"
   node -e '
     const s = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).showreels || [], now = Date.now();
-    for (const r of s) if (r.video && !r.play) console.log([r.name, Math.floor((now - Date.parse(r.uploaded || r.at)) / 864e5), r.at].join("\t"));' "$1" > "$W/todo.tsv"
-  echo "FASTSTART: $(wc -l < "$W/todo.tsv") reels with a video and no play copy"
+    for (const r of s) if (r.video) console.log([r.name, Math.floor((now - Date.parse(r.uploaded || r.at)) / 864e5), r.at].join("\t"));' "$1" > "$W/todo.tsv"
+  echo "FASTSTART: $(wc -l < "$W/todo.tsv") reels with a video"
   exec 3< "$W/todo.tsv"
   while IFS=$'\t' read -r -u 3 n up at; do
     if [ "$up" -ge 14 ]; then echo "SKIP $n: uploaded $up days ago, R2 deletes it within a day"; skipped=$((skipped + 1)); continue; fi
-    rm -f "$W/in.mp4" "$W/fs.mp4" "$W/play.mp4"
+    rm -f "$W/in.mp4" "$W/fs.mp4"
     get "v/$n.mp4" "$W/in.mp4" || { echo "::warning::$n: download failed"; failed=$((failed + 1)); continue; }
-    local d0 d1 d2 full_new=no
+    local d0 d1
     d0=$(dur "$W/in.mp4")
-    if node scripts/showreel/mp4boxes.mjs "$W/in.mp4" | grep -q MOOV_FIRST=yes; then echo "$n: moov already first"
-    else
-      ffmpeg -y -loglevel error -i "$W/in.mp4" -map 0 -c copy -movflags +faststart "$W/fs.mp4" || { echo "::warning::$n: remux failed"; failed=$((failed + 1)); continue; }
-      d1=$(dur "$W/fs.mp4")
-      if ! node scripts/showreel/mp4boxes.mjs "$W/fs.mp4" --need-moov-first >/dev/null || [ "$(awk -v a="$d0" -v b="$d1" 'BEGIN{print (a-b<0.01 && b-a<0.01)}')" != 1 ]; then
-        echo "::warning::$n: remuxed file failed its check (duration $d0 -> $d1)"; failed=$((failed + 1)); continue; fi
-      full_new=yes
-    fi
-    bash scripts/showreel/play.sh "$W/in.mp4" "$W/play.mp4" >/dev/null || { echo "::warning::$n: play copy failed"; failed=$((failed + 1)); continue; }
-    d2=$(dur "$W/play.mp4")
-    [ "$(awk -v a="$d0" -v b="$d2" 'BEGIN{print (a-b<0.1 && b-a<0.1)}')" = 1 ] || { echo "::warning::$n: play copy is $d2 s, the reel $d0 s"; failed=$((failed + 1)); continue; }
-    put "$W/play.mp4" "v/$n-play.mp4" || { failed=$((failed + 1)); continue; }
-    if [ $full_new = yes ]; then
-      # re-uploading dates the object today: keep its render time for the app's list (c/rendered-at.json, as for the migrated reels)
-      node -e 'const fs=require("fs"),[f,n,a]=process.argv.slice(1),m=JSON.parse(fs.readFileSync(f,"utf8"));m[n]=a;fs.writeFileSync(f,JSON.stringify(m))' "$at_json" "$n" "$at"
-      put "$W/fs.mp4" "v/$n.mp4" || { failed=$((failed + 1)); continue; }
-    fi
-    echo "FIXED $n: full $(stat -c%s "$W/in.mp4") bytes (moov moved: $full_new), play $(stat -c%s "$W/play.mp4") bytes, ${d0}s"
+    if node scripts/showreel/mp4boxes.mjs "$W/in.mp4" | grep -q MOOV_FIRST=yes; then echo "$n: moov already first"; skipped=$((skipped + 1)); continue; fi
+    ffmpeg -y -loglevel error -i "$W/in.mp4" -map 0 -c copy -movflags +faststart "$W/fs.mp4" || { echo "::warning::$n: remux failed"; failed=$((failed + 1)); continue; }
+    d1=$(dur "$W/fs.mp4")
+    if ! node scripts/showreel/mp4boxes.mjs "$W/fs.mp4" --need-moov-first >/dev/null || [ "$(awk -v a="$d0" -v b="$d1" 'BEGIN{print (a-b<0.01 && b-a<0.01)}')" != 1 ]; then
+      echo "::warning::$n: remuxed file failed its check (duration $d0 -> $d1)"; failed=$((failed + 1)); continue; fi
+    # re-uploading dates the object today: keep its render time for the app's list (c/rendered-at.json, as for the migrated reels)
+    node -e 'const fs=require("fs"),[f,n,a]=process.argv.slice(1),m=JSON.parse(fs.readFileSync(f,"utf8"));m[n]=a;fs.writeFileSync(f,JSON.stringify(m))' "$at_json" "$n" "$at"
+    put "$W/fs.mp4" "v/$n.mp4" || { failed=$((failed + 1)); continue; }
+    echo "FIXED $n: moov moved first, $(stat -c%s "$W/fs.mp4") bytes, ${d0}s"
     fixed=$((fixed + 1))
   done
   exec 3<&-
