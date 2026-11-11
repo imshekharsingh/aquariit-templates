@@ -43,7 +43,7 @@ the craft bar and the log live in **design/webin20sec.md**; read it before makin
   the tech reel one per day as well; Sunday is the right time to check engagement"): @webin20sec, @techin20sec and Turns Out ALL post one reel
   EVERY day at 13:00 IST from Sun 8 Nov. The E15 posting-time test (tech 19:00 / 17:30, Turns Out 20:00) has ended; the only reminder cron is 12:50 IST.
   Quality and one experiment per channel per day come first.
-- No app work until reach improves (owner, 5 Nov 2026): only fixes for things that break.
+- No app work until reach improves (owner, 5 Nov 2026): only fixes for things that break, and the owner's "Feedback" box (owner, 11 Nov 2026).
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
 - Archiving (owner, 1 Nov 2026; replaces the 7-day fold / 30-day rule): a reel marked uploaded leaves the main list at once for its channel's compact
   "Posted" list (cover, title, posted date, its numbers once the collector has them; no video). An R2 lifecycle rule deletes every file under v/ (MP4,
@@ -65,6 +65,17 @@ Claude is the critic. Every check measures what the viewer gets: the rendered MP
 audible), never only the scene code, cue lists or counts. Before calling any reel ready, read design/owner-feedback.md line by line against
 the finished output, and add a line there the same day whenever the owner catches something. When a new rule or check is added, ask
 "would this have caught the owner's last complaint on the final video?" If not, it isn't done.
+
+## Popularity first (owner, 11 Nov 2026: "all these rapid changes are to get to a stable state where I just upload the reel and popularity
+does the job, so our focus should be on making the channels popular")
+- The goal of every change is reach and followers. A change that does not serve that waits.
+- @techin20sec and Turns Out: "Go all in ... don't bother about the existing pattern, theme or anything, we need to get these two to work."
+  Format, look, topic type, length, hook style and voice are all open on these two channels; rules in design/rules-tech.md and rules-c3.md
+  that the numbers do not support may be dropped. Decide from the numbers and research, test one big change at a time, keep what wins.
+- Keep improving without stopping (owner, 11 Nov 2026: "work on any improvements without stopping"), but at a steady pace: one heavy session
+  at a time, no overwork. When the weekly limit is reached, work stops and the owner's feedback from the app's "Feedback" box is read first
+  when it resumes (Wednesday 04:30 IST).
+- Sessions: archive every session as soon as its work is done (owner, 11 Nov 2026: "don't leave those open if not needed").
 
 ## Daily improvement loop (owner, 7 Nov 2026)
 Owner: "Every day we should think of some improvements to experiment with or put in place, and keep using the combinations that work. You should be
