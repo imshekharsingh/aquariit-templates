@@ -948,5 +948,16 @@
    "change": "ESCALATE answer: a new topic type, a weird thing your screen does (black screenshots of videos), not a battery habit; verdict stamp kept",
    "vs": "median"
   }
+ },
+ "showreel-tech-stop-tracking": {
+  "channel": "tech",
+  "postOn": "2026-11-12",
+  "postAt": "13:00",
+  "concept": "New format (E17): 3 settings that stop apps tracking you, each tapped on a drawn phone with its iPhone and Android path, then a recap to save",
+  "experiment": {
+   "id": "tech-settings-list",
+   "change": "New format (owner, 11 Nov: go all in): 3 phone settings to change today, tapped on a drawn phone, both platforms' paths, a recap to save; replaces the explainer / myth-bust",
+   "vs": "median"
+  }
  }
 }

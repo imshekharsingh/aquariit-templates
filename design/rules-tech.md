@@ -1,50 +1,44 @@
 # @techin20sec rulebook (the gate every tech reel passes before its one render)
 
 Same use as design/rules-web.md: score every rule (pass / fail, one line each) in the stills review before the one render; fix or swap on a fail;
-the daily audit adds, changes or drops a rule with the number. Evidence = the Instagram collect run of 5 Nov 2026.
-State on 5 Nov: 8 followers (-1 in 7 days), 6 explainer test reels at 110-120 reach, 3.5-4.7 s watched, 0 saves, 2 shares.
-Verdict 6 Nov: the test missed all three targets (median reach 115 vs 300, ~4 s watched vs 6 s, 10 followers vs 20; 0 saves in 7 reels).
-As decided by the owner on 5 Nov, the channel posted 2-3 reels a week; from Sun 8 Nov (owner) one reel every day at 13:00 IST, each built that morning.
+the daily audit adds, changes or drops a rule with the number.
 
-1. **An everyday puzzle the viewer can see on their own phone**, not a feature or a news item. Evidence: explainers held 110-120 reach
-   with 3.5-4.7 s watched; news reels in the same week sank to 8-35 (Siri 8, MacBook 29, Discord 35).
-2. **The answer's first step on screen inside 2 s** (no label-only frame). Evidence: watch is 3.5-4.7 s, about 20-24% of the reel: most viewers
-   leave before the mechanism starts; the two best older reels (encryption 7.1 s, Amazon cloud 7.0 s) opened on the answer as a claim.
-3. **18 s or shorter.** Evidence: no tech reel has held more than ~7 s, so length only lowers the hold share Instagram reads.
-4. **A takeaway worth saving, said and shown in the last 3 s** (a setting to change, a number to remember). Evidence: 0 saves in 6 test reels.
-5. **Post one reel EVERY day at 13:00 IST** (owner, 8 Nov 2026: "Let's make the tech reel one per day as well; Sunday is the right time to check
-   engagement" and "upload time at 13:00 for all three"). E15 (Mon/Wed 19:00, Fri 17:30) ended 8 Nov: Fri 17:30 airplane mode 129 at 8 h was the best of
-   the 7 test reels (median 116) but inside the same ~110-130 pool, so timing was never the lever. Measure from 8 Nov: each reel's 24 h reach and hold
-   vs the channel median (112 on 5 Nov); read engagement on Sundays. Timing cannot fix a low hold: rules 1-4 stay the main gate.
-6. **No topic @webin20sec covers and no repeat of a test topic.**
-7. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
-   PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
-   the Wi-Fi reel was read "Wi" "Fi" (owner); a mispronounced brand makes the whole explainer sound wrong.
-9. **The verdict in frame 0** (PROMOTED 11 Nov 2026: experiment tech-myth-verdict won 2 of 2 at 24 h): the answer stamped over the hook
-   from frame 0 (topic "verdict": MYTH / TRUE / a two-word verdict such as NO BUG, inside the safe zone), then why in 3 steps, a takeaway.
-   Evidence: close-apps 123 reach and 6.0 s watched, heat-battery 117 and 5.2 s, vs the channel median 114-116 and 4.7 s watched; drain-zero
-   118 at 6 h. Reach stayed inside the ~110-130 pool, so the stamp is kept for the hold, and ESCALATE is answered with the topic type, not the stamp.
-   On ESCALATE, change the format or the topic type, not a tweak (8 Nov audit: the last 7 explainers sat at 113-131 whatever the topic or hour).
-8. **Every topic passes FLOW** (Mandatory Gate items 14-17: cuts 0, no dead runs, continuity 85%+). Evidence: the old engine held still after
-   each build-in (wifi-address 35%, 7 Nov) and tech watch time is 3.5-4.7 s; the 8 Nov engine (glass light, camera drift, declared glides, secondary
-   motion in every kind) measures wifi-address at 100% with the fake voice. `make.py --fake-vo --stills` prints the FLOW lines.
-10. **Every step is a complete thought** (owner, 8 Nov 2026: "the information feels cut off; it doesn't really explain well what it is for or how
-   it relates; I feel lost at times"): each line is a full sentence, no fragments, no unexplained term; the script runs what it is → why it happens
-   → what it means for you, with one plain link word between steps ("so", "that's because", "which means"); the last line says the practical
-   takeaway in one sentence. Clarity comes from the structure, not a slow voice (owner, 8 Nov 2026: "I wanted clearer sentences, not slowed.
-   While it helps, it's so slow that it goes beyond the 20 s range. 1-2 s over could have been fine, but it feels slowed."): Kokoro at its
-   natural pace (speed ~1.0, about 2.9-3.3 words/s), short breaths only, 20-22 s total (at most ~2 s over 20 s); cut every word that doesn't
-   serve the chain rather than slow the voice. This replaces rule 3's 18 s cap.
-11. **Platform balance** (owner, 8 Nov 2026: "we lean too much on Apple"): at most 1 in 3 tech reels Apple-specific; most reels are
-   platform-neutral (wording that fits Android and iPhone alike) or cover both. Check the last 3 reels in captions.json before picking a topic.
+**Rewritten 11 Nov 2026** (owner: "Go all in on techin20sec ... don't bother about the existing pattern, theme or anything, we need to get it to
+work"). Evidence (Instagram collect, 11 Nov 18:19 IST): 11 followers; the 9 explainers and myth-busts since 1 Nov all reached 113-133 (median 119)
+whatever the topic, hour, look or stamp, every one ending at x1.0 of its 6 h reach; 0 saves and 2 shares in 10 reels; watch 3.4-8.8 s of ~20 s
+(~28% hold). Turns Out has FEWER followers (8) and reaches 1,059-1,273 with ~50% hold, so the ~120 pool is not the follower count: Instagram's
+first test audience is not keeping, saving or sending these reels. "How does X work" is curiosity with nothing to do; the old rules 1-4, 9 and 10
+were all passed by reels stuck at 119 (the audit's "question it" lines) and are dropped. The new format gives the viewer something to DO, now,
+on their own phone, and a reason to save it and send it.
 
-**ESCALATE 9 Nov** (median reach 116 over the last 7, ALARM again): the format answer is running (rule 9, the myth-bust): try 1 close-apps 121 at
-6 h vs the tech 6 h median of 111 (+9%, inside the ~110-130 pool; 24 h verdict at the ~10:53 IST collect), try 2 today (heat-battery, TRUE),
-try 3 tomorrow (drain-zero, MYTH). Every tech reel since 31 Oct has ended at x1.0 of its 6 h reach with 11 followers: the pool is the follower
-count plus a fixed test audience, so a format that does not break 150 at 24 h in 2 of 3 tries is dropped on 11 Nov and the channel tries a
-different topic type (the phone habit with a number on screen people save, rule 4), not another tweak.
+1. **Format: "3 settings to change today"** (experiment tech-settings-list, E17): one benefit per reel (privacy, battery, scam calls, storage,
+   theft, data, sleep), three phone settings that deliver it, each tapped on a phone we draw (kind `phone`: a generic settings screen, a finger
+   taps the row, the switch or tick flips on the word, a before → after pill, the path on both platforms), then the recap (kind `checklist`).
+   Evidence: 9 explainers / myth-busts at 113-133, 0 saves; research (11 Nov): settings and "hidden feature" lists are the most saved and sent
+   tech format on Reels (vendor guides, so a hypothesis to test, not a fact).
+2. **The payoff in frame 0**: the hook names the number and the benefit ("3 settings that stop apps TRACKING you") and the switches are on
+   screen at frame 0, flipping on by 1.1 s (topic `hook_toggles`); the first setting is tapped by ~6 s. Evidence: the best tech reel ever
+   (airplane mode, 133 reach, 8.8 s) and every Turns Out winner showed the payoff first; explainers that opened on a question held ~24%.
+3. **Every setting exists on iPhone AND Android, with both paths on screen**, each checked on the platform's own page (support.apple.com,
+   developer.android.com, Google's help pages) that day. A setting one platform lacks is swapped. Evidence: owner 8 Nov, "we lean too much on
+   Apple"; a path people can follow is what makes the reel worth saving.
+4. **Built to be saved and sent**: the last scene is the recap checklist (label "SAVE THIS · ..."), the voice says "save this", and the caption
+   lists the three settings in text (so the post works as a note) and invites a send to a named kind of friend. Evidence: 0 saves, 2 shares in
+   10 reels; sends per reach is Instagram's main signal for reaching non-followers (Mosseri, as reported by several 2026 guides).
+5. **20-22 s at the natural voice pace, one complete sentence per setting**: "Number: do X, so Y for you." (what to change, then what it does for
+   you, joined by "so"). Kokoro at speed ~1.0, about 3 words/s, 60-66 words. Evidence: owner 8 Nov, "clearer sentences, not slowed"; at 29 s the
+   slowed voice lost the owner, at 18 s the explainers lost the viewer.
+6. **Post one reel EVERY day at 13:00 IST** (owner, 8 Nov 2026). E15 showed timing was never the lever (19:00 median 129, inside the same pool).
+7. **Tech terms are said the way people say them** (scripts/voice/say.json; the preflight PRONUNCIATION line shows no "check:" words). Evidence:
+   5 Nov, "Wi-Fi" read as two words.
+8. **Every reel passes FLOW** (Mandatory Gate items 14-17: cuts 0, no dead runs, continuity 85%+, at most one declared strobe), and SAFE ZONE,
+   OVERLAP, SOUND GATE, SOUND DETAIL and the voice check after the render. These protect quality whatever the format.
+9. **No repeat**: no setting already shown on the channel, no topic @webin20sec covers. Check captions.json and design/topics.md first.
 
-**ESCALATE 11 Nov** (median reach 119 over the last 7, ALARM again; PROMOTE tech-myth-verdict → rule 9): three battery myths in a row (123, 117,
-118 at 6 h) changed the hold, not the reach, so the 11 Nov reel changes the topic type: a weird thing your screen does that people hit as users
-(black screenshots of videos; experiment tech-screen-puzzle), verdict stamp kept. Read at 24 h vs 116; if it is also inside 110-130, the next
-type is a number people save (rule 4), and the Sunday engagement check (rule 5) asks whether the pool is the follower count.
+**Decide E17 on Sun 15 Nov** (the owner's engagement day) after 3 reels (12, 13, 14 Nov): a reel WINS if its 24 h reach is 150 or more (no tech
+reel since 1 Nov passed 133) or it gets 3+ saves and shares together. 2 of 3 WINs: keep it and make it the channel's format. 0-1: drop it to
+"What didn't" in design/playbook.md and test the next format in design/experiments.md, "Queue of next ideas".
+
+Dropped 11 Nov (the numbers do not support them): old rule 1 (an everyday puzzle, 113-133), rule 2 (answer's first step in 2 s; kept in spirit
+as rule 2), rule 3 / 10 (length caps; now rule 5), rule 4 (a takeaway to save: 0 saves; now rule 4 with the recap), rule 9 (the verdict stamp:
+lifted watch 4.7 → 6.0 s, never reach: 117-123), rule 11 (platform balance; now rule 3, both paths).

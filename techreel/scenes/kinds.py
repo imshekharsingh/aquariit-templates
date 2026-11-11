@@ -368,4 +368,126 @@ def dots(fr, sc, t):
         pill(fr, W / 2, 1150, p['pill'], col, pa, size=28, solid=True)
 
 
-KINDS = {f.__name__: f for f in (portal, flow, nest, choice, guard, checklist, dots)}
+# ---------- the settings format (owner, 11 Nov 2026: "go all in on techin20sec"; rules-tech.md rule 1) ----------
+OFF = (92, 98, 132)
+ON = (88, 222, 150)
+
+
+def toggle(fr, x, y, k, a, w=76, h=44):
+    """A generic switch (our own drawing, no platform's): k 0 = off, 1 = on, sprung between."""
+    c = mixc(OFF, ON, max(0.0, min(1.0, k)))
+    fr.rect(x, y, w, h, r=h / 2, fill=_a(c, a * .95), outline=_a(TEXT, .25 * a), width=1.5)
+    kx = x + h / 2 + (w - h) * k
+    fr.circle(kx, y + h / 2 + 2, h / 2 - 4, fill=(4, 3, 20, int(50 * a)))
+    fr.circle(kx, y + h / 2, h / 2 - 5, fill=_a(TEXT, a))
+
+
+def phone(fr, sc, t):
+    """One setting changed on a phone we draw ourselves (a generic settings screen, no real UI copied): the screen title, three rows,
+    a finger that taps the row that matters on the cue word, the control flips (a switch, or a tick moving between choices), then the
+    result pill (before -> after) and where to find it on both platforms. Something always moves: the finger's approach, a shimmer on the
+    row to tap, a breathing ring on the changed control, the tracking dot pulsing until the tap, then still glowing calm.
+    params: screen (title), sub (small line under it), rows [{text, on?}], control ('switch' | 'choice'), pick (row index to tap),
+    from (choice: the row ticked before), cue (word), before, after (result pill), paths [[platform, path], ...]."""
+    p = sc.params
+    col = NEON[sc.tint]
+    cue = sc.cue(p.get('cue'))
+    rows = p.get('rows', [])
+    pick = p.get('pick', 0)
+    ctl = p.get('control', 'switch')
+    px, py, pw, ph = W / 2 - 240, 440, 480, 584
+    ka = appear(t, sc.start, .45)
+    # the phone body
+    fr.el('phone', sc.start, 'l', W / 2)
+    fr.rect(px + 10, py + 26, pw - 20, ph, r=58, fill=(4, 3, 20, int(60 * ka)))
+    fr.rect(px, py, pw, ph, r=58, fill=(16, 18, 40, int(235 * ka)), outline=_a(TEXT, .35 * ka), width=3)
+    fr.rect(px + 12, py + 12, pw - 24, ph - 24, r=48, fill=(255, 255, 255, int(12 * ka)), outline=(255, 255, 255, int(28 * ka)), width=1.5)
+    fr.rect(W / 2 - 52, py + 26, 104, 26, r=13, fill=(2, 2, 8, int(255 * ka)))
+    # the tracking dot in the status bar: pulses (being watched) until the tap, then calm green
+    done = spring(t - cue - .05)
+    dc = mixc(VERDICT, ON, min(1, done))
+    pu = (.5 + .5 * math.sin(t * 7)) if done < .5 else 1
+    fr.circle(px + pw - 70, py + 39, 8, fill=_a(dc, ka * (.45 + .55 * pu)), glow=dc, glow_a=.5 * ka)
+    fr.text(px + 52, py + 40, '12:30', 22, color=_a(TEXT, .8 * ka), weight=700, anchor='lm')
+    # the screen title
+    fr.el('title', sc.start + .08, 's', W / 2)
+    fr.text(px + 40, py + 112, '\u2039 ' + p.get('screen', 'Settings'), 38, color=_a(TEXT, ka), weight=800, anchor='lm', max_w=pw - 70)
+    if p.get('sub'):
+        fr.text(px + 42, py + 160, p['sub'], 24, color=_a(DIM, ka), weight=700, anchor='lm', max_w=pw - 70)
+    fr.end_el()
+    ry0, rh = py + 196, 100
+    fy = ry0 + pick * rh + rh / 2
+    for i, r in enumerate(rows):
+        fr.el('row%d' % i, sc.start + .14 + i * .07, 's', W / 2)
+        y = ry0 + i * rh
+        g = appear(t, sc.start + .14 + i * .07)
+        hl = i == pick
+        fr.rect(px + 26, y + 6, pw - 52, rh - 12, r=20, fill=_a(col if hl else TEXT, (.13 if hl else .05) * g),
+                outline=_a(col, (.55 if hl else 0) * g), width=2)
+        if hl and t < cue:   # a shimmer runs across the row to tap ("look here")
+            u = ((t - sc.start) * .9) % 1
+            fr.rect(px + 30 + (pw - 150) * u, y + 10, 90, rh - 20, r=16, fill=_a(TEXT, .07 * math.sin(u * math.pi) * g))
+        fr.text(px + 50, y + rh / 2, r['text'], 34, color=_a(TEXT, g), weight=700, anchor='lm', max_w=pw - 190)
+        if ctl == 'switch':
+            k0 = 1.0 if r.get('on') else 0.0
+            k = k0 + ((1 - 2 * k0) * spring(t - cue, .5, 16) if hl else 0)
+            toggle(fr, px + pw - 128, y + rh / 2 - 24, k, g, w=84, h=48)
+        else:
+            sel_from, sel_to = p.get('from', 0), pick
+            m = ease_io(prog(t, cue, cue + .3))
+            if i in (sel_from, sel_to):
+                w8 = (1 - m) if i == sel_from else m
+                if i == sel_from == sel_to:
+                    w8 = 1
+                if w8 > .02:
+                    icon(fr, 'check', px + pw - 80, y + rh / 2, 40 * (.6 + .4 * w8), col if i == sel_to else DIM, g * w8)
+    fr.end_el()
+    # the finger: glides in, presses on the cue (a ripple), leaves
+    fr.el('finger', cue - .75, 's', W / 2 + 120, enter=False)
+    fr.hit('tap', cue, 'm', W / 2 + 120)
+    tx, ty = px + pw - (86 if ctl == 'switch' else 80), fy
+    a_in = ease_out(prog(t, cue - .75, cue - .1))
+    a_out = ease_io(prog(t, cue + .45, cue + 1.0))
+    if 0 < a_in and a_out < 1:
+        fx = mix(tx + 160, tx, a_in) + 120 * a_out
+        fyy = mix(ty + 260, ty, a_in) + 200 * a_out
+        press = 1 - .18 * math.sin(math.pi * prog(t, cue - .1, cue + .15))
+        fa = a_in * (1 - a_out)
+        fr.circle(fx + 6, fyy + 10, 34 * press, fill=(4, 3, 20, int(70 * fa)))
+        fr.circle(fx, fyy, 34 * press, fill=_a(TEXT, .55 * fa), outline=_a(TEXT, .9 * fa), width=2)
+    if cue <= t < cue + .7:
+        u = prog(t, cue, cue + .7)
+        fr.circle(tx, ty, 20 + 70 * ease_out(u), outline=_a(col, .8 * (1 - u)), width=3, glow=col, glow_a=.6 * (1 - u))
+    if t >= cue + .3:   # the changed control breathes
+        u = ((t - cue) * .7) % 1
+        fr.circle(tx, ty, 34 + 30 * u, outline=_a(col, .35 * (1 - u)), width=2)
+    fr.end_el()
+    # the result: before -> after, rolling over as the control flips
+    if p.get('before') or p.get('after'):
+        fr.el('result', sc.start + .3, 'm', W / 2)
+        fr.hit('result_flip', cue + .25, 'l', W / 2)
+        ga = appear(t, sc.start + .3)
+        flip = ease_io(prog(t, cue + .2, cue + .5))
+        lab = p.get('after') if flip >= .5 else p.get('before')
+        c = ON if flip >= .5 else VERDICT
+        sq = abs(1 - 2 * flip) if 0 < flip < 1 else 1
+        pill(fr, W / 2, py + ph + 4, lab, c, ga * (.35 + .65 * sq), size=30, solid=True, max_w=560)
+        fr.end_el()
+    # where to find it, on both platforms
+    paths = p.get('paths', [])
+    if paths:
+        fr.el('paths', sc.start + .45, 's', W / 2)
+        ga = appear(t, sc.start + .45)
+        y0 = py + ph + 52
+        glass(fr, 110, y0, 860, 52 * len(paths) + 14, r=26, a=ga, tint=col, lift=False)
+        for j, (plat, path) in enumerate(paths):
+            yy = y0 + 33 + j * 52
+            fr.text(146, yy, plat, 26, color=_a(ACCENT, ga), weight=800, anchor='lm', max_w=150)
+            fr.text(300, yy, path, 26, color=_a(TEXT, ga), weight=700, anchor='lm', max_w=640)
+        fr.end_el()
+
+
+VERDICT = (255, 112, 130)
+
+
+KINDS = {f.__name__: f for f in (portal, flow, nest, choice, guard, checklist, dots, phone)}

@@ -92,7 +92,10 @@ def elements(topic, vo, hook_out, scenes):
         for j, w in enumerate(ln.split()):
             ev.append({'t': .05 + n * .07, 'size': 's', 'x': 300 + 480 * j / max(1, len(ln.split()) - 1), 'g': .85})
             n += 1
-    ev.append({'t': .6, 'size': 'm', 'x': B.W / 2, 'g': .9})
+    if topic.get('hook_toggles'):   # each switch in the hook flips with a mid snap, left to right
+        ev += [{'t': B.HOOK_FLIPS[i], 'size': 'm', 'x': B.W / 2 + (i - 1) * 280, 'g': 1.0} for i in range(min(3, len(topic['hook_toggles'])))]
+    else:
+        ev.append({'t': .6, 'size': 'm', 'x': B.W / 2, 'g': .9})
     if topic.get('verdict'):
         ev.append({'t': .22, 'size': 'l', 'x': B.W / 2, 'g': 1.2})
     ev += [{'t': s.start + .08, 'size': 's', 'x': B.W / 2, 'g': .9} for s in scenes]
@@ -139,7 +142,7 @@ def draw(t, topic, vo, hook_out, scenes):
     # the world: hook card at 0, scene i at i * SPAN; the camera offsets it (and centres it on the safe zone, x 510)
     base_x = -30   # the world is laid out on x 540; the safe zone's middle is x 510
     fr.dx, fr.dy = -cpos * SPAN + ddx + base_x, ddy
-    B.hook_card(fr, topic['hook'], t, hook_out, verdict=topic.get('verdict'))
+    B.hook_card(fr, topic['hook'], t, hook_out, verdict=topic.get('verdict'), toggles=topic.get('hook_toggles'))
     for s in scenes:
         off = s.i - cpos
         if t >= s.start - .02 and abs(off) < 1:
@@ -155,7 +158,7 @@ def draw(t, topic, vo, hook_out, scenes):
     # the HUD: part progress and captions stay still while the world moves
     ha = B.ease_out(B.prog(t, hook_out - .2, hook_out + .3))
     if ha > 0:
-        B.header(fr, topic['topic'], t, [(s.start if k else hook_out, s.end) for k, s in enumerate(scenes)], ha)
+        B.header(fr, topic['topic'], t, [(s.start if k else hook_out, s.end) for k, s in enumerate(scenes)], ha, title=topic.get('header'))
     # captions for the spoken line (line 1 is the hook card instead)
     for li, line in enumerate(vo['lines'][1:], start=1):
         nxt = vo['lines'][li + 1]['start'] if li + 1 < len(vo['lines']) else DUR - .3

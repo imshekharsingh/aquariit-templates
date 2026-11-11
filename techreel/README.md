@@ -36,6 +36,15 @@ for the whole reel with karaoke captions, and synthesized sound. A new topic nee
 - A scene starts 0.35 s before its line, so its content arrives during the glide with its label (no label-only frame).
 - `--stills` prints SAFE ZONE, OVERLAP and the four FLOW lines (Mandatory Gate items 3-4 and 14-17); wifi-address: continuity 100%.
 
+## The settings format (11 Nov 2026, design/rules-tech.md; experiment E17)
+"3 settings to change today": the hook names the number and the benefit, with `"hook_toggles": ["A", "B", "C"]` (three switches drawn off at
+frame 0, flipping on at 0.45 / 0.75 / 1.05 s, each with a mid snap) in place of IN 20 SECONDS; `"header"` replaces the TOPIC · EXPLAINED line;
+three scenes of kind `phone` and a closing `checklist` (label "SAVE THIS · ..."). Start a new one by copying `topics/stop-tracking.json`.
+`phone` params: `screen` and `sub` (title and small line), `rows` [{text, on?}] (three rows, short text), `control` "switch" (the picked row's
+switch flips) or "choice" (a tick moves from row `from` to row `pick`), `pick`, `cue` (the word the finger taps on), `before` / `after`
+(the result pill flips red to green), `paths` [["iPhone", "..."], ["Android", "..."]] (each path checked on the platform's own page).
+The phone is our own drawing (no platform's UI, icons or fonts); platform names appear only as text.
+
 ## The fixed structure
 - 0–2 s: the hook card (the first line as a big three-or-four-line title, then IN 20 SECONDS); the voice reads it.
 - Six scenes, one per remaining script line, each with a label chip at y≈392 (THE NEWS, THE FIX, ...) and its own tint.

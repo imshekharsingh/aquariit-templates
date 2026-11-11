@@ -68,6 +68,14 @@ time) AND followers per day rise; otherwise back to one a day at whichever slot 
 **Cost:** about $4 per Turns Out reel, so +$4 a day; it competes with the @webin20sec two-a-day test (E13, to 13 Nov) for the shared 5-hour and
 weekly usage: never run the 13:30 build alongside another heavy session.
 
+## E17 · @techin20sec "3 settings to change today" (owner, 11 Nov 2026: "go all in"; 3 reels, 12-14 Nov)
+**Hypothesis:** the tech reels are stuck at 113-133 reach (median 119, 0 saves) because there is nothing to do with them; a reel of three phone
+settings you change right now, each tapped on a phone on screen with its path on iPhone and Android, is kept, saved and sent, and breaks the pool.
+**Change (one big one, the format):** design/rules-tech.md rewritten around it; engine: techreel kind `phone`, `hook_toggles`, `header`.
+**Measure:** each reel's 24 h reach, watch, saves + shares (config experiment id tech-settings-list, vs the median).
+**Decide Sun 15 Nov:** a reel WINS at 150+ reach at 24 h or 3+ saves and shares; keep the format on 2 of 3 WINs, else drop it and try the next
+(queue: a "you've been doing X wrong" correction with the right way on screen; a one-feature "your phone can do this" demo).
+
 ## Queue of next ideas
 - E2: hook style: question vs bold claim vs number ("+212% leads").
 - E3: audience: show the template as a *result for a business* (before/after) rather than as a design showcase.
@@ -295,3 +303,4 @@ Same day, owner: that re-cut copied the reference reel (swinging tag, "Need X? W
 that form; the ideas behind them (a save-worthy summary, a service ad) stay, built in our own words and visuals. The slot was re-made as "the leaky site" (our water-bearer
 metaphor). Originality is now enforced (scripts/film/sources.json).
 - 11 Nov: web single fixes with a visual payoff keep climbing after 6 h (flash x1.9, longname x1.6) while the details compilations stop at x1.1, so ESCALATE goes back to one satisfying fix (carousel snap); on tech the verdict stamp lifts watch (6.0 / 5.2 s vs 4.7) but not reach (117-123), so the topic type changes (black screenshots), not the stamp.
+- 11 Nov: tech is not capped by followers (Turns Out reaches 1,100+ with 8) but by what the first ~120 viewers do: 9 explainers and myth-busts held ~28% with 0 saves whatever the topic, so tech switches format (E17: 3 settings to change today, tapped on a drawn phone, both platforms' paths, a recap to save).

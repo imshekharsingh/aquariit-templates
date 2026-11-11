@@ -1,0 +1,233 @@
+{
+ "slug": "stop-tracking",
+ "topic": "Privacy",
+ "header": "3 SETTINGS · CHANGE TODAY",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 1.0,
+ "max_speed": 1.06,
+ "dur": 22.0,
+ "max_end": 21.4,
+ "say": {},
+ "experiment": {
+  "id": "tech-settings-list",
+  "change": "New format (owner, 11 Nov: go all in): 3 phone settings to change today, each tapped on a drawn phone screen with its path on both platforms, a recap to save; replaces the explainer / myth-bust",
+  "vs": "median"
+ },
+ "hook": [
+  "3 settings that",
+  "stop apps",
+  "TRACKING you"
+ ],
+ "hook_toggles": [
+  "Location",
+  "Precise",
+  "Ad ID"
+ ],
+ "lines": [
+  {
+   "text": "Three settings that stop apps tracking you."
+  },
+  {
+   "text": "One: set location to While Using, so apps can't follow you when closed.",
+   "chunks": [
+    5,
+    4,
+    4
+   ],
+   "scene": {
+    "label": "1 OF 3 · WHILE USING",
+    "tint": "blue",
+    "kind": "phone",
+    "params": {
+     "screen": "Location",
+     "sub": "Weather app",
+     "control": "choice",
+     "rows": [
+      {
+       "text": "Always"
+      },
+      {
+       "text": "While Using"
+      },
+      {
+       "text": "Never"
+      }
+     ],
+     "from": 0,
+     "pick": 1,
+     "cue": "While",
+     "before": "Tracked when closed",
+     "after": "Only while it's open",
+     "paths": [
+      [
+       "iPhone",
+       "Privacy › Location Services › app"
+      ],
+      [
+       "Android",
+       "Location › App location permissions"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "text": "Two: turn off Precise Location, so apps see your area, not your door.",
+   "chunks": [
+    5,
+    4,
+    4
+   ],
+   "scene": {
+    "label": "2 OF 3 · PRECISE OFF",
+    "tint": "purple",
+    "kind": "phone",
+    "params": {
+     "screen": "Location",
+     "sub": "Shopping app",
+     "control": "switch",
+     "rows": [
+      {
+       "text": "Precise",
+       "on": true
+      },
+      {
+       "text": "Share to friends"
+      },
+      {
+       "text": "Background"
+      }
+     ],
+     "pick": 0,
+     "cue": "off",
+     "before": "Your exact door",
+     "after": "Only your area",
+     "paths": [
+      [
+       "iPhone",
+       "Location Services › app › Precise"
+      ],
+      [
+       "Android",
+       "App location › Use precise location"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "text": "Three: switch off ad tracking, so apps lose the ID that follows you.",
+   "chunks": [
+    5,
+    4,
+    4
+   ],
+   "scene": {
+    "label": "3 OF 3 · AD TRACKING",
+    "tint": "red",
+    "kind": "phone",
+    "params": {
+     "screen": "Tracking",
+     "sub": "Privacy",
+     "control": "switch",
+     "rows": [
+      {
+       "text": "Ad tracking",
+       "on": true
+      },
+      {
+       "text": "Personal ads"
+      },
+      {
+       "text": "App analytics"
+      }
+     ],
+     "pick": 0,
+     "cue": "off",
+     "before": "One ID in every app",
+     "after": "No ID to follow",
+     "paths": [
+      [
+       "iPhone",
+       "Privacy › Tracking › Allow apps to ask"
+      ],
+      [
+       "Android",
+       "Privacy › Ads › Delete advertising ID"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "text": "Two minutes, three switches. Save this and do it tonight.",
+   "chunks": [
+    4,
+    6
+   ],
+   "scene": {
+    "label": "SAVE THIS · DO IT TONIGHT",
+    "tint": "green",
+    "kind": "checklist",
+    "params": {
+     "items": [
+      {
+       "text": "Location: While Using",
+       "cue": "minutes"
+      },
+      {
+       "text": "Precise: off",
+       "cue": "switches"
+      },
+      {
+       "text": "Ad tracking: off",
+       "cue": "tonight"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "3 settings that stop apps tracking you",
+  "caption": "3 settings that stop apps tracking you 📍\n\n1. Location: While Using. Apps that say Always can read your location even when they are closed.\n2. Precise Location: off. Weather and shopping apps only need your area, not your front door.\n3. Ad tracking: off. On iPhone, apps then can't read the advertising ID that links you across apps; on Android, deleting the ID gives apps only zeros.\n\nTwo minutes, three switches. Save this for tonight, and send it to the friend who taps Allow on everything.",
+  "keywords": [
+   "stop apps tracking you",
+   "phone privacy settings",
+   "turn off precise location",
+   "delete advertising ID android",
+   "iPhone privacy settings",
+   "phone settings to change"
+  ],
+  "hashtags": [
+   "#privacytips",
+   "#phonesettings",
+   "#phonetips",
+   "#iphonetips",
+   "#androidtips"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/102647",
+    "note": "Apple Support, Location Services: While Using the App allows access only when the app or its features are visible on screen; turn Precise Location off to share only your approximate location"
+   },
+   {
+    "url": "https://support.apple.com/en-us/102420",
+    "note": "Apple Support, If an app asks to track your activity: with Allow Apps to Request to Track off, apps can't access the advertising identifier (IDFA); Settings > Privacy & Security > Tracking"
+   },
+   {
+    "url": "https://developer.android.com/develop/sensors-and-location/location/permissions/runtime",
+    "note": "Android Developers: users choose Precise or Approximate, and While using the app / Only this time / Deny"
+   },
+   {
+    "url": "https://developer.android.com/develop/sensors-and-location/location/permissions",
+    "note": "Android Developers: approximate location is accurate to within about 3 square kilometers; precise usually within about 50 meters"
+   },
+   {
+    "url": "https://support.google.com/googleplay/android-developer/answer/6048248",
+    "note": "Google Play Console Help, Advertising ID: when a user deletes the advertising ID (Settings > Privacy > Ads, Android 12+), apps reading it get a string of zeros"
+   }
+  ]
+ }
+}

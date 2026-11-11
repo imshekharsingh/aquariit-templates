@@ -46,3 +46,18 @@ topics were already posted: replan them on Tuesday's spare night, as myth-busts 
 | Fri 13 | Why did the Taj Mahal need a mud face mask? (yellowing marble, clay-pack cleaning; swapped 9 Nov, rule 10; Brazil moves later) | Asia |
 | Sat 14 | Was Niagara Falls ever switched off? (American Falls dried in 1969; swapped 9 Nov, rule 10; leap day moves later) | North America |
 | Sun 15 | Were Greek marble statues once brightly painted? (the Parthenon and its statues in colour; swapped 9 Nov, rule 10; Japan's name moves later) | Europe |
+
+## @techin20sec, Thu 12 - Wed 18 Nov 2026: "3 settings to change today" (E17; planned 11 Nov, rules-tech.md rewritten the same day)
+Each reel: one benefit, three settings that exist on iPhone AND Android (rule 3: both paths on screen, each checked on Apple's and Google's
+own pages that morning; swap any setting one platform lacks), kind `phone` x3 + the recap checklist, `hook_toggles` in frame 0, 20-22 s.
+Start from techreel/topics/stop-tracking.json (copy, change the words). These replace the Thu 12 - Sun 15 explainer rows above.
+| Day | Hook | The three settings (check each path that day) |
+|---|---|---|
+| Thu 12 | 3 settings that stop apps TRACKING you (built 11 Nov as showreel-tech-stop-tracking) | Location While Using · Precise Location off · ad tracking off / delete advertising ID |
+| Fri 13 | 3 settings that stop SCAM calls | iPhone Silence Unknown Callers / Android caller ID and spam filter · filter unknown texts · block a number from the call log |
+| Sat 14 | 3 settings to switch on BEFORE your phone is stolen | Stolen Device Protection / Theft Detection Lock · Find My / Find Hub on · a SIM PIN |
+| Sun 15 | 3 settings that make your battery LAST longer | auto-lock / screen timeout 30 s · Low Power Mode / Battery Saver at 20% · charging limit (80% Limit / Battery protection) |
+| Mon 16 | 3 settings that free up STORAGE today | offload / archive unused apps · keep messages 1 year, not forever · optimise photo storage |
+| Tue 17 | 3 settings that stop eating your mobile DATA | Low Data Mode / Data Saver · Wi-Fi Assist / Adaptive connectivity off · app background data off |
+| Wed 18 | 3 settings that help you SLEEP | Night Shift / Night Light · a bedtime focus / Bedtime mode · grayscale at night |
+Swap a day for a better benefit only when the numbers say so (E17 verdict Sun 15); never repeat a setting.

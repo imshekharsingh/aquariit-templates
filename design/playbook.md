@@ -24,6 +24,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 - 9 Nov, web: try 1 of details-format (showreel-30-alive) at 6 h: 1,333 vs the 6 h median 1,288 (on par); its 24 h verdict prints at the 10:53 collect.
 
 - 11 Nov, web: ONE narrated fix with a satisfying motion payoff, not a compilation (id web-single-satisfying; showreel-33-carousel, the photo row that snaps; ESCALATE answer) → read 12 Nov (24 h) vs the web median (1,331). Yesterday's: details try 2 (menus) → LOSE 1,180 vs 1,331 (24 h); try 1 (alive) → WIN 1,486 vs 1,331; try 3 (waiting) 1,360 at 6 h.
+- 11 Nov, tech: a new FORMAT for 12-14 Nov (E17, tech-settings-list; owner: "go all in"): 3 settings to change today on a drawn phone → read each at 24 h; WIN = 150+ reach or 3+ saves and shares; decide Sun 15 Nov.
 - 11 Nov, tech: a new topic type, a weird thing your screen does (id tech-screen-puzzle; black screenshots, "NO BUG" stamp) → read 12 Nov (24 h) vs 116. tech-myth-verdict PROMOTED (2 WINs: 123, 117 vs 114-116; watch 6.0 / 5.2 s vs 4.7) → rules-tech.md rule 9.
 
 ## What works
@@ -55,6 +56,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 - **Craft (7 Nov):** hook, captions and credit centred in the safe zone (the starter, SX = 255).
 
 ### @techin20sec (tech)
+- **Format under test from 12 Nov (E17, tech-settings-list):** "3 settings to change today", each tapped on a drawn phone with both platforms' paths, a recap to save (design/rules-tech.md, rewritten 11 Nov). The explainer / myth-bust below is retired: 9 reels at 113-133, 0 saves.
 - **Topic:** an everyday puzzle you can see on your own phone, not news (explainers 110-120 reach vs news 8-35).
 - **Open:** the answer's first step on screen inside 2 s; 18 s or shorter; a takeaway worth saving in the last 3 s.
 - **Time:** 13:00 IST every day from 8 Nov (owner); E15 ended (19:00 median 129 over 2 reels, inside the same ~110-130 pool).
