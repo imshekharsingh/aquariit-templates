@@ -6,8 +6,8 @@ name: R2
 #   copy:  copy every asset of the reels, techreel and study releases into R2 and verify each (releases untouched)
 #   move:  the same, then delete the verified assets from the releases
 #   site:  sign in to the app: the Showreels list loads, a reel plays (Range -> 206), and its old public release URL is gone (404);
-#          and the first 64 KB of a reel's -play.mp4 hold its moov atom (playback can start at once)
-#   faststart: reels in the app without a -play.mp4 get one, and their full MP4 gets its moov atom first (-c copy) (owner, 6 Nov 2026)
+#          and the first 256 KB of the newest reel's full MP4 (what the app plays, owner 11 Nov 2026) hold its moov atom
+#   faststart: reels in the app whose full MP4 has its moov atom after mdat get it moved first (-c copy, no re-encode)
 on:
   workflow_dispatch:
     inputs:
@@ -80,14 +80,13 @@ jobs:
           c=$(curl -s -o /dev/null -w '%{http_code}' -b "$J" "$B/reels/$n-cover.jpg"); echo "COVER $n-cover.jpg: $c"; [ "$c" = 200 ] || fail=1
           o=$(curl -s -o /dev/null -w '%{http_code}' "$B/reels/$n.mp4"); echo "SIGNED OUT $n.mp4: $o"; [ "$o" = 401 ] || fail=1
           g=$(command curl -s -L -o /dev/null -w '%{http_code}' "https://github.com/$REPO/releases/download/reels/$n.mp4"); echo "OLD PUBLIC URL github.com/.../releases/download/reels/$n.mp4: $g"; [ "$g" = 404 ] || fail=1
-          # first byte to playable (owner, 6 Nov 2026): the first 64 KB of the newest reel's -play.mp4 must hold the whole moov atom
-          p=$(node -e 'const s=JSON.parse(require("fs").readFileSync("list.json","utf8")).showreels||[]; const v=s.find(x=>x.play); console.log(v?v.name:"")')
-          if [ -n "$p" ]; then
-            full=$(node -e 'const s=JSON.parse(require("fs").readFileSync("list.json","utf8")).showreels; const v=s.find(x=>x.name===process.argv[1]); console.log(v.size, v.playSize)' "$p")
-            curl -s -o head.bin -w '%{http_code} %{size_download}\n' -H 'Range: bytes=0-65535' -b "$J" "$B/reels/$p-play.mp4" | sed "s/^/PLAY_RANGE $p-play.mp4 0-65535: /"
-            node scripts/showreel/mp4boxes.mjs head.bin --bytes 65536 --need-moov-first || fail=1
-            echo "SIZES $p: full $(echo "$full" | cut -d' ' -f1) bytes, play $(echo "$full" | cut -d' ' -f2) bytes"
-            h=$(curl -s -D - -o /dev/null -H 'Range: bytes=0-1' -b "$J" "$B/reels/$p-play.mp4" | grep -i '^cache-control' | tr -d '\r'); echo "$h"
-          else echo "::warning::no reel has a -play.mp4 yet"; fi
+          # first byte to playable (owner, 11 Nov 2026: the app plays the full MP4): the newest reel's first 256 KB hold the whole moov atom,
+          # and a Range from the middle of the file comes back 206 (seeking)
+          sz=$(node -e 'const s=JSON.parse(require("fs").readFileSync("list.json","utf8")).showreels; console.log(s.find(x=>x.name===process.argv[1]).size)' "$n")
+          curl -s -o head.bin -w '%{http_code} %{size_download}\n' -H 'Range: bytes=0-262143' -b "$J" "$B/reels/$n.mp4" | sed "s/^/FULL_RANGE $n.mp4 0-262143: /"
+          node scripts/showreel/mp4boxes.mjs head.bin --bytes 262144 --need-moov-first || fail=1
+          m=$((sz / 2)); s=$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -H "Range: bytes=$m-$((m + 65535))" -b "$J" "$B/reels/$n.mp4"); echo "SEEK $n.mp4 bytes $m-$((m + 65535)) of $sz: $s"
+          [ "$s" = "206 65536" ] || fail=1
+          h=$(curl -s -D - -o /dev/null -H 'Range: bytes=0-1' -b "$J" "$B/reels/$n.mp4" | grep -i '^cache-control' | tr -d '\r'); echo "$h"
           for t in reels techreel study; do echo "RELEASE $t: $(gh api "repos/$REPO/releases/tags/$t" -q '.assets | length' 2>/dev/null || echo none) assets"; done
           [ $fail = 0 ] && echo "SITE_OK=yes" || { echo "SITE_OK=no"; exit 1; }

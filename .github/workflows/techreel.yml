@@ -80,9 +80,8 @@ jobs:
           N="showreel-tech-$SLUG"; cp "$D/$SLUG.mp4" "$D/$N.mp4"
           python3 -I -c "import json,sys; t=json.load(open(sys.argv[1])); p=t.get('post',{}); json.dump({'name': sys.argv[2], 'caption': p.get('caption',''), 'keywords': p.get('keywords',[]), 'hashtags': p.get('hashtags',[])}, open(sys.argv[3],'w'), ensure_ascii=False, indent=1)" "techreel/topics/$SLUG.json" "$N" "$D/$N.json"
           ffmpeg -y -loglevel error -ss 2 -i "$D/$N.mp4" -frames:v 1 -q:v 3 "$D/$N-cover.jpg"
-          node scripts/showreel/mp4boxes.mjs "$D/$N.mp4" --need-moov-first
-          bash scripts/showreel/play.sh "$D/$N.mp4" "$D/$N-play.mp4"   # the light copy the app plays (owner, 6 Nov 2026)
-          for f in "$N.mp4" "$N-play.mp4" "$N.json" "$N-cover.jpg"; do bash scripts/r2.sh put "$D/$f" || exit 1; done
+          node scripts/showreel/mp4boxes.mjs "$D/$N.mp4" --need-moov-first   # the app plays the full file (owner, 11 Nov 2026): moov first
+          for f in "$N.mp4" "$N.json" "$N-cover.jpg"; do bash scripts/r2.sh put "$D/$f" || exit 1; done
       - name: Contact sheet and QA for the review (kept 2 days)
         uses: actions/upload-artifact@v4
         with:
