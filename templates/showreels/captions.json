@@ -776,7 +776,8 @@
   "sample": true,
   "concept": "Sample 2 · scroll-snap-type: x mandatory (carousel stops between photos)",
   "about": "Sample 2: our dark web look with motion added gradually (one camera: the phone rises out of the title, a push-in on the seam, the carousel's red outline lifts off and becomes the code card, the row snaps with a spring) and sound that follows the motion (air shaped to each move, fingertip taps, tuned snaps, a swell into the fix and a resolve on it, ducking under the voice, stereo by position, a short room tail).",
-  "note": "Sample for review, not scheduled"
+  "note": "Sample for review, not scheduled",
+  "hidden": true
  },
  "showreel-s01-contrast": {
   "channel": "web",
@@ -899,5 +900,45 @@
   "concept": "2.5D journey · How did one ball shape the Sydney Opera House?",
   "about": "Six worlds: a tiled ball on the Opera House's podium in Sydney Harbour, its sails lifting out (frame 0), a match cut to the compass circle on the 1957 drawing, a fold to the engineers' office where every curve is crossed out, a parallax pan to one wooden sphere with a sail cut from its surface, a page turn to the casting yard of identical rib pieces, a zoom through the rib arch to the finished building in 1973, ghost circles showing every sail on the same curve.",
   "note": "Turns Out, Tue 10 Nov 13:00 IST (built ahead on 8 Nov, owner override)."
+ },
+ "showreel-33-carousel": {
+  "postOn": "2026-11-11",
+  "postAt": "13:00",
+  "caption": "Why does your carousel stop between photos? 📸\n\nA row of photos with overflow-x: auto scrolls freely, so it stops wherever your finger lets go: half of one photo, half of the next. Add scroll-snap-type: x mandatory to the row and scroll-snap-align: center to each photo, and every swipe settles on one whole photo. No JavaScript, no library. Works in Chrome 69+, Safari 11+ and Firefox 99+.\nSave it for your next product gallery, or send it to whoever built your carousel.",
+  "keywords": [
+   "carousel stops between slides",
+   "CSS scroll snap",
+   "scroll-snap-type x mandatory",
+   "image carousel without JavaScript",
+   "mobile UX design",
+   "CSS tips"
+  ],
+  "hashtags": [
+   "#scrollsnap",
+   "#csstips",
+   "#mobileux",
+   "#uidesign",
+   "#frontenddev"
+  ],
+  "channel": "web",
+  "concept": "scroll-snap-type: x mandatory + scroll-snap-align: center (a photo row that lands on one whole photo)",
+  "about": "One narrated fix with a satisfying motion payoff (ESCALATE answer, rule 11): a shop photo row swiping from frame 0 and stopping on half of two photos, the fix typed, then every swipe snapping onto one whole photo, driven by a finger. Style C, element sound.",
+  "note": "13:00 IST, experiment web-single-satisfying",
+  "experiment": {
+   "id": "web-single-satisfying",
+   "change": "ESCALATE answer: back to ONE narrated fix with a satisfying motion payoff (a photo row that snaps), not a details compilation; style C, element sound",
+   "vs": "median"
+  }
+ },
+ "showreel-tech-black-screenshot": {
+  "channel": "tech",
+  "postOn": "2026-11-11",
+  "postAt": "13:00",
+  "concept": "Why are video screenshots sometimes black? (NO BUG stamped in frame 0; a weird screen puzzle, not a battery habit)",
+  "experiment": {
+   "id": "tech-screen-puzzle",
+   "change": "ESCALATE answer: a new topic type, a weird thing your screen does (black screenshots of videos), not a battery habit; verdict stamp kept",
+   "vs": "median"
+  }
  }
 }

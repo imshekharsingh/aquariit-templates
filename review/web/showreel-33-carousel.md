@@ -1,0 +1,27 @@
+# Review: showreel-33-carousel (web, postOn 2026-11-11 postAt 13:00 IST)
+
+The Mandatory Gate, design/mandatory.md. Built 11 Nov by the daily run (learn-then-build), the ESCALATE answer (rules-web.md, "ESCALATE 11 Nov"):
+back to ONE narrated fix whose result is a satisfying motion (rule 11), experiment web-single-satisfying, in style C from `newweb.mjs` with the
+kit's element sound. A shop's photo row swipes from frame 0 and every fling coasts to a stop on half of two photos (a "HALF + HALF" chip and a
+dashed seam appear while it rests between); the fix is typed in a glass code card (scroll-snap-type: x mandatory on the row, scroll-snap-align:
+center on each photo); the page re-themes and every swipe now settles on one whole photo, the last one driven by a finger. AUTO lines from
+preflight.mjs and stills.mjs, 11 Nov ~08:30 IST.
+
+1. Topic: PASS: anyone who swipes a shop or news gallery on a phone has landed on half of two photos; not done before on the channel (the 6 Nov snap sample was never posted; hidden now); rulebook score: rule 1 pass (a phone gallery, seen as a user), rule 2 pass (the row is mid-fling at frame 0 and rests on half + half under the hook), rule 3 pass (the fix typed from ~7.3 s), rule 4 pass (new reveal at ~4 s push-in on the half photos, ~7.5 s the code card, ~10.5 s the re-theme, ~12.5 s the finger swipe), rule 5 pass (visible at a glance), rule 6 pass ("Why does your carousel stop between photos?", 7 words), rule 7 pass (13:00 IST), rule 8 pass (two copyable lines held on screen ~11 s; caption invites a save), rule 9 pass (PRONUNCIATION clean, "x" overridden), rule 10 pass (FLOW lines below), rule 11 pass (the satisfying result: a row that clicks onto each photo with a soft settle), rule 12 pass (style C via KM.theme('glass'), blur 3, no backdrop-filter; minutes in item 13), rule 13 n/a (single fix, not a details reel)
+2. Frame 0: PASS: SUBJECT FILL: 64% at frame 0; HOOK: clear of the subject; the photo row is mid-fling and rests on half of two photos with the HALF + HALF chip
+3. Safe zone: PASS: SAFE ZONE: ok (every still: the photo row, the code card, the chip and the leader label inside x 60-960, y 250-1570; the hook card at frame 0 included)
+4. No overlap: PASS: OVERLAP: none; BAND: clear (the code card sits above the photo row on every still from 7.3 s; the payoff push-in frames the row under it)
+5. Motion: PASS: STATIC STRETCH: none (least change 1.4 at 10 s, median 14.9); EMPTY FRAMES: none (scanned 37 moments, least detail 43.7 at 2.5 s); TEXT FIT: all text inside its box
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; every sentence shown and finished on the stills (the hook on the card, then the three sentences in the band)
+7. Voice: PASS: PREFLIGHT voice: 167 letters, 4 sentences, about 16.0 s at speed 0.84 with 2.25 s of breaths (reel 18.5 s, voice must end by 17.9 s): fits; PRONUNCIATION: 1 overrides used: x (config); no unchecked words; 38 words, 2.05 words/s over the reel
+8. Sound: PASS: every swipe a mid touch as it starts and a pitched snap on the dots as it lands (good row), the HALF chip a high blip each time a fling rests between photos, the hook words a pitched run, the label exit, band, code card morph, typing ticks, glide and leader label each cued; the camera moves from the kit; bed ducked under the voice; the workflow's SOUND GATE and SOUND DETAIL check the loudness and audibility (item 13)
+9. Payoff: PASS: from ~12 s the camera frames the fixed row under the code card; a finger drags it and it settles on one whole photo with the "ONE WHOLE PHOTO" leader label; it keeps snapping photo to photo to the last frame (18.2 s: the yellow photo, centred)
+10. Facts: PASS: MDN scroll-snap-type ("mandatory: the visual viewport of this scroll container must snap to a snap position if it isn't currently scrolled", read from mdn/content 11 Nov) and scroll-snap-align; BCD read 11 Nov: scroll-snap-type Chrome 69, Firefox 99 (68-98 partial), Safari 11; scroll-snap-align Chrome 69, Firefox 68, Safari 11 (the caption says Firefox 99+); without scroll-snap-align there is nothing to snap to, so the code card and the voice carry both lines; tip + live demo "snap" on /tips/; npm run check passes
+11. Post data: PASS: captions.json entry with channel web, postOn 2026-11-11, postAt 13:00, concept, about, note, experiment; 6 keywords, 5 hashtags in the config
+12. Review file: PASS: this file, items 1-11, 14-18
+13. After the render: PENDING
+14. Cuts: PASS: FLOW: cuts 0 (declared by the kit: morph (tag to code card), sharedElement (the fix line glides into the page), wipeRestyle (the page re-themes))
+15. Dead runs: PASS: FLOW: dead runs none (no holds declared)
+16. Continuity: PASS: FLOW: continuity 94% (median step 2.3, 3 declared transitions)
+17. Strobes: PASS: FLOW: strobes 0
+18. Element sound (web): PASS: ELEMENT SOUND: 84 of 85 animated elements have a cue (99%): ok (no cue: #ll, the leader line, drawn with its label's cue)

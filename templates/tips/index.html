@@ -70,6 +70,10 @@
 @media (hover: hover){#hover .fix .b:hover{background:#f2efe8;color:#111214}}
 #keyboard .pane{height:120px;display:flex;flex-direction:column;justify-content:center}
 #keyboard input{margin:28px 10px 0;width:calc(100% - 20px);min-height:44px;border-radius:10px;border:1.5px solid #cfcac0;background:#fff;color:#111214;padding:0 12px;font:700 17px/1 ui-monospace,Menlo,monospace;letter-spacing:.2em}
+#snap .row{display:flex;gap:0;margin:30px 10px 0;border-radius:10px;overflow-x:auto;overflow-y:hidden}
+#snap .row div{flex:0 0 100%;height:84px;display:flex;align-items:center;justify-content:center;color:#111214;font:800 22px system-ui,-apple-system,"Segoe UI",sans-serif}
+#snap .fix .row{scroll-snap-type:x mandatory}
+#snap .fix .row div{scroll-snap-align:center}
 #thumb .menu{margin:30px 10px 0;border-radius:10px;background:#fff;overflow:hidden;padding:4px 0}
 #thumb .menu a{display:block;padding:0 12px;color:#111214;font:600 13px/16px system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none}
 #thumb .menu a.del{color:#d8392b}
@@ -174,6 +178,26 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="snap">
+  <p class="no">Nº 23</p>
+  <h2>Why does your carousel stop between photos?</h2>
+  <p class="why">A scrolling row stops wherever the finger lets go, so a swipe often ends on half of two photos. scroll-snap-type: x mandatory on the row makes it settle on a snap position every time, and scroll-snap-align: center on each photo makes that position the photo's centre (MDN). No JavaScript.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">No snap</span><div class="row"><div style="background:#c9714f">1</div><div style="background:#8fa58a">2</div><div style="background:#e3c9a0">3</div><div style="background:#d9a441">4</div></div></div>
+  <div class="pane fix"><span class="tag ok">scroll-snap-type: x mandatory</span><div class="row"><div style="background:#c9714f">1</div><div style="background:#8fa58a">2</div><div style="background:#e3c9a0">3</div><div style="background:#d9a441">4</div></div></div>
+</div>
+<p class="note">Swipe each row and let go halfway. The left one stops wherever you let go; the right one always settles on one whole photo.</p></div>
+  <div class="code"><pre><code>.row {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+.row img {
+  scroll-snap-align: center;
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-snap-type" rel="noopener">Source: MDN, scroll-snap-type</a></p>
+</article>
 
 <article class="tip" id="waiting">
   <p class="no">Nº 22</p>
@@ -569,11 +593,12 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>20 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>21 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "snap": function(){},
     "waiting": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
   panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Reset' : 'Send it'; }); },
     "menus": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');

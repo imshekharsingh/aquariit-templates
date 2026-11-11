@@ -68,3 +68,10 @@ is already running and is not changed mid-test (one change at a time): the detai
 median of 1,288: on par, 24 h verdict at the ~10:53 IST collect), try 2 today (showreel-31-menus), try 3 tomorrow (showreel-32-waiting). The window is
 lifting on its own (flash 3,630 and longname 2,354, both "fast start", a satisfying polish fix and a layout fix with a visual payoff, rule 11).
 If try 1 reads LOSE at 24 h, the Wed 11 reel is the different topic type named on 8 Nov (a phone trick people use as users), not a fourth details reel.
+
+**ESCALATE 11 Nov** (median reach 1,468 over the last 7 vs 2,000; watch 8.8 s; saves 1.7%; ALARM two days running): the details format reads 1 WIN
+(alive 1,486 vs 1,331), 1 LOSE (menus 1,180), try 3 pending (waiting 1,360 at 6 h), and every details reel stops at x1.1 of its 6 h reach, while the
+single narrated fixes with a visual payoff kept climbing (flash 1,967 → 3,696, x1.9; longname 1,388 → 2,273, x1.6). Answer: a format change back to
+ONE narrated fix whose result is a satisfying motion (rule 11), in style C with element sound: showreel-33-carousel (a photo row that snaps;
+experiment web-single-satisfying). The planned Wed 11 topic (scrollbar-gutter) was swapped: phones draw overlay scrollbars, so the layout jump is a
+desktop bug and fails rule 1. The details format is decided by try 3's 24 h verdict (2 WINs → rule, 2 LOSEs → What didn't).

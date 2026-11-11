@@ -294,4 +294,4 @@ web, social, security, edge; studio for intros) with the template only as proof.
 Same day, owner: that re-cut copied the reference reel (swinging tag, "Need X? We got you.", "Screenshot this"): plagiarism. E10/E11 as written above are retired in
 that form; the ideas behind them (a save-worthy summary, a service ad) stay, built in our own words and visuals. The slot was re-made as "the leaky site" (our water-bearer
 metaphor). Originality is now enforced (scripts/film/sources.json).
-
+- 11 Nov: web single fixes with a visual payoff keep climbing after 6 h (flash x1.9, longname x1.6) while the details compilations stop at x1.1, so ESCALATE goes back to one satisfying fix (carousel snap); on tech the verdict stamp lifts watch (6.0 / 5.2 s vs 4.7) but not reach (117-123), so the topic type changes (black screenshots), not the stamp.

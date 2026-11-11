@@ -20,10 +20,11 @@ As decided by the owner on 5 Nov, the channel posted 2-3 reels a week; from Sun 
 7. **Tech terms and years are said the way people say them** (one shared lexicon for every channel, scripts/voice/say.json): the preflight
    PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
    the Wi-Fi reel was read "Wi" "Fi" (owner); a mispronounced brand makes the whole explainer sound wrong.
-9. **On ESCALATE, change the format, not the topic** (8 Nov audit: ALARM two days running; the last 7 explainers sit at 113-131 reach,
-   median 116, whatever the topic or hour: 12:31 passkey 113, 15:06 Face ID 116, 17:33 airplane 131). From 8 Nov the myth-bust (experiment
-   tech-myth-verdict): a habit people believe, the verdict (MYTH / TRUE) stamped in frame 0 (topic "verdict"), why in 3 steps, a setting to change.
-   Keep it if it beats the median (116) at 24 h in 2 of 3 reels; drop it after 2 losses.
+9. **The verdict in frame 0** (PROMOTED 11 Nov 2026: experiment tech-myth-verdict won 2 of 2 at 24 h): the answer stamped over the hook
+   from frame 0 (topic "verdict": MYTH / TRUE / a two-word verdict such as NO BUG, inside the safe zone), then why in 3 steps, a takeaway.
+   Evidence: close-apps 123 reach and 6.0 s watched, heat-battery 117 and 5.2 s, vs the channel median 114-116 and 4.7 s watched; drain-zero
+   118 at 6 h. Reach stayed inside the ~110-130 pool, so the stamp is kept for the hold, and ESCALATE is answered with the topic type, not the stamp.
+   On ESCALATE, change the format or the topic type, not a tweak (8 Nov audit: the last 7 explainers sat at 113-131 whatever the topic or hour).
 8. **Every topic passes FLOW** (Mandatory Gate items 14-17: cuts 0, no dead runs, continuity 85%+). Evidence: the old engine held still after
    each build-in (wifi-address 35%, 7 Nov) and tech watch time is 3.5-4.7 s; the 8 Nov engine (glass light, camera drift, declared glides, secondary
    motion in every kind) measures wifi-address at 100% with the fake voice. `make.py --fake-vo --stills` prints the FLOW lines.
@@ -42,3 +43,8 @@ As decided by the owner on 5 Nov, the channel posted 2-3 reels a week; from Sun 
 try 3 tomorrow (drain-zero, MYTH). Every tech reel since 31 Oct has ended at x1.0 of its 6 h reach with 11 followers: the pool is the follower
 count plus a fixed test audience, so a format that does not break 150 at 24 h in 2 of 3 tries is dropped on 11 Nov and the channel tries a
 different topic type (the phone habit with a number on screen people save, rule 4), not another tweak.
+
+**ESCALATE 11 Nov** (median reach 119 over the last 7, ALARM again; PROMOTE tech-myth-verdict → rule 9): three battery myths in a row (123, 117,
+118 at 6 h) changed the hold, not the reach, so the 11 Nov reel changes the topic type: a weird thing your screen does that people hit as users
+(black screenshots of videos; experiment tech-screen-puzzle), verdict stamp kept. Read at 24 h vs 116; if it is also inside 110-130, the next
+type is a number people save (rule 4), and the Sunday engagement check (rule 5) asks whether the pool is the follower count.
