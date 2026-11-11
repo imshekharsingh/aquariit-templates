@@ -17,6 +17,8 @@ owner catches something new, the same day.
   a sound for every element that moves, small high, medium mid, large low?
 - 8 Nov: the whooshes and swells were too much. Do the element details (ticks, blips, snaps) lead, with the air soft and behind them?
 - 8 Nov: a figure's action looked like a fall; human actions need anticipation, ease and weight; check every 0.1 s.
+- 8 Nov: Turns Out "feels flat" even with a journey. Does every world have 4+ depth planes with air between them, something passing close to the lens, contact shadows and one light (qa.mjs DEPTH lines)? Look at the frames: do far things look far?
+- 9 Nov: the napping prince "looks like someone has abruptly fallen". Is every figure action built from keyframed joints (Kt.act) and read on a 0.1 s strip of the frames, with ambient life (dust, cloth, lamp light) and its quiet sound in every world?
 - 8 Nov: tech info felt cut off ("I feel lost at times"). Does every line say what, why and what it means for you, joined by a link word?
 - 8 Nov: "we lean too much on Apple." Would an Android owner feel the reel is for them too?
 - 8 Nov: tech made clearer by slowing the voice to 29 s; the owner wanted clearer sentences at a natural pace, 20-22 s. Is the reel 20-22 s at about 3 words/s (voice check), with clarity from the sentences, not the speed?

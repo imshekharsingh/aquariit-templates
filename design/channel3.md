@@ -127,6 +127,12 @@ review flaws; the sky and lost-day reels reuse it.
 - Cost (Eiffel reel, 1 Nov): about 1.6-2 s a frame locally at 1080x1920 (the reel before the kit: 1.6 s); render it split in 2 parts.
 
 ### 2.5D toolkit (scripts/channel3/kit25d.js, owner 1 Nov 2026: "2.5D, continuous flow", the lighter alternative to real-time 3D)
+> **11 Nov 2026: depth, figure motion, ambient life** (owner, 8-9 Nov; rules-c3.md rule 11; mandatory item 20). `Kt.begin()` first in seek();
+> `Kt.world(name, { air, haze, floor })` then `Kt.plane(cam, Z, { fg, clear })` per layer, far to near (the air between planes is laid for you);
+> `Kt.contact(X, Y, w)` contact shadows, `Kt.lit(...)` shade for a clipped shape, `Kt.LIGHT` (upper left, one light for the journey);
+> `Kt.act(keys)(t)` poses with anticipation, ease and settle ({ hit: 1 } = an impact), `Kt.figure(o, pose, t)` a jointed person (bends, crouches,
+> reaches; breath and blink; its own contact shadow); `Kt.motes`, `Kt.cloth`, `Kt.flick` ambient life and `Kt.ambient(Q, kind, t0, t1, x)` its quiet
+> cue ('dust', 'wind', 'cloth', 'torch', 'lamp'). qa.mjs prints `DEPTH <world>: n planes, parallax nn px, foreground yes`. Example: scripts/channel3/terracotta-colour.html.
 Why: the 3D reel costs about 50 GitHub minutes, its people read as toys and its ten hard-cut shots hold the camera mostly still; flow,
 not model detail, holds viewers. The 2.5D look: flat engraved layers (ink linework, cross-hatching, old paper, one amber accent, matte,
 no glow) at real depths in front of ONE pinhole camera that never stops and never cuts. 2D canvas only: about 0.01-0.5 s a frame, parts 1.

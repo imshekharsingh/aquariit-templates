@@ -425,11 +425,96 @@ var K25 = (function(){
     x.save(); screen(); x.translate(cx, cy); x.rotate(r); x.scale(s, s); x.shadowColor = 'rgba(20,12,6,' + (.45 * e) + ')'; x.shadowBlur = 30 * e; x.shadowOffsetY = 12 * e;
     x.fillStyle = '#f3ead6'; x.fillRect(-270 - bd, -480 - bd, 540 + 2 * bd, 960 + 2 * bd + bd * 2.2); x.shadowColor = 'transparent';
     x.drawImage(bA, -270, -480, 540, 960); x.globalAlpha = P(k, 0, .5); x.filter = 'sepia(1) contrast(.9) brightness(1.04)'; x.drawImage(bA, -270, -480, 540, 960); x.filter = 'none'; x.restore(); }
+  // ---- depth, figure motion and ambient life (11 Nov 2026; owner, 8 Nov: Turns Out "feels flat"; 9 Nov: a figure "looks like someone has
+  // abruptly fallen"; design/rules-c3.md rule 11, design/mandatory.md item 20). scripts/channel3/qa.mjs reads window.__depth() every 0.1 s and
+  // prints "DEPTH <world>: n planes, parallax nn px, foreground yes" (fails under 4 planes, under 12 px or without a foreground plane). ----
+  // ONE light for the whole journey: the key light comes from the upper left (the core's paper() drops its shadow down and right to match)
+  var LIGHT = [-.5, .86], DEPTH = [], WCUR = null;
+  // begin(): first call of the scene's seek(); world(name, o): starts a world: o.air = the colour of its air (far planes go toward it:
+  // lighter, lower contrast), o.haze = how thick (0-1, default .5), o.floor = the ground's height in metres (the air is laid only above the
+  // new plane's ground line, so the near ground stays clear)
+  function begin(){ DEPTH.length = 0; WCUR = null; }
+  function world(name, o){ o = o || {}; WCUR = { name: name, air: o.air || '#d9cbb0', haze: o.haze == null ? .5 : o.haze, floor: o.floor, planes: [], cam: null, fg: 0, last: null }; DEPTH.push(WCUR); }
+  // plane(cam, Z, o): use(cam, Z) for a depth plane of the current world, drawn far to near: before it the air between the last plane and
+  // this one is laid over everything farther (atmospheric perspective). o.fg: the foreground plane that passes close to the lens; o.clear: no air
+  function plane(cam, Z, o){ o = o || {}; var W = WCUR, dz = Z - cam.z; if (dz < .05) return 0;
+    if (W) { if (W.last != null && W.haze > 0 && !o.clear && W.last > dz) { var a = cl(W.haze * (1 - Math.exp(-.55 * Math.log(W.last / dz))), 0, .6);
+        if (a > .004) { screen(); x.save(); x.globalAlpha *= a; var yb = 960; if (W.floor != null && cam.y > W.floor) yb = cl(480 + OY + (cam.y - W.floor) * F / dz, 0, 960);
+          if (yb >= 960) { x.fillStyle = W.air; x.fillRect(0, 0, 540, 960); }
+          else { var g = x.createLinearGradient(0, yb - 26, 0, yb), c0 = W.air; g.addColorStop(0, c0); g.addColorStop(1, c0.length === 7 ? c0 + '00' : 'rgba(0,0,0,0)'); x.fillStyle = c0; x.fillRect(0, 0, 540, Math.max(0, yb - 26)); x.fillStyle = g; x.fillRect(0, yb - 26, 540, 26); }
+          x.restore(); } }
+      W.last = dz; W.cam = cam; W.planes.push(Z); if (o.fg) W.fg = 1; }
+    return use(cam, Z); }
+  window.__depth = function(){ return DEPTH.map(function(W){ return { name: W.name, F: F, fg: W.fg, cam: W.cam ? [W.cam.x, W.cam.y, W.cam.z] : null, planes: W.planes.slice() }; }); };
+  // contact(X, Y, w, a, h): a soft contact shadow on the ground under a layer or a figure (current units): w wide, pulled away from the light
+  function contact(X, Y, w, a, h){ a = a == null ? .42 : a; x.save(); x.translate(X - LIGHT[0] * w * .22, Y); x.scale(1, (h || w * .16) / w);
+    var g = x.createRadialGradient(0, 0, 0, 0, 0, w * .5); g.addColorStop(0, 'rgba(24,14,8,' + a + ')'); g.addColorStop(.6, 'rgba(24,14,8,' + (a * .45) + ')'); g.addColorStop(1, 'rgba(24,14,8,0)');
+    x.fillStyle = g; x.beginPath(); x.arc(0, 0, w * .5, 0, 7); x.fill(); x.restore(); }
+  // lit(x0, y0, x1, y1, a, hi): a fill for a clipped shape (box in current units, y up): a little light on its upper left, shade on its lower right
+  function lit(x0, y0, x1, y1, a, hi){ var g = x.createLinearGradient(x0, y1, x1, y0); g.addColorStop(0, 'rgba(255,240,210,' + (hi == null ? .16 : hi) + ')'); g.addColorStop(.42, 'rgba(255,240,210,0)');
+    g.addColorStop(.58, 'rgba(30,18,10,0)'); g.addColorStop(1, 'rgba(30,18,10,' + (a == null ? .34 : a) + ')'); return g; }
+  // ---- figure motion from keyframed joints. act(keys)(t) -> pose: keys [[t, pose, o]]; every move between two keys starts with a small
+  // anticipation (it first goes the other way: o.ant, default .07 of the move), eases in and out (no linear move, no snap) and settles with a
+  // small overshoot (o.over, default .04). o.hit: an impact (a tool landing): eases in and stops on the key. A pose is { hip: [x, y],
+  // lean, head, hands: [[x, y], [x, y]], feet: [[x, y], [x, y]] } in the figure's metres (feet at 0, facing +x); any number or list blends. ----
+  function sin2(k){ var s = Math.sin(Math.PI * cl(k, 0, 1)); return s * s; }
+  function aes(k, o){ o = o || {}; k = cl(k, 0, 1); if (o.hit) return k * k * (1.6 * k - .6);
+    return k * k * k * (k * (6 * k - 15) + 10) - (o.ant == null ? .07 : o.ant) * sin2(k / .3) + (o.over == null ? .04 : o.over) * sin2((k - .7) / .3); }
+  function blend(a, b, w){ if (typeof a === 'number') return a + (b - a) * w; if (Array.isArray(a)) return a.map(function(v, i){ return blend(v, b[i], w); });
+    var o = {}; Object.keys(a).forEach(function(q){ o[q] = b[q] == null ? a[q] : blend(a[q], b[q], w); }); return o; }
+  function act(keys){ return function(t){ var n = keys.length; if (t <= keys[0][0]) return keys[0][1]; if (t >= keys[n - 1][0]) return keys[n - 1][1];
+    for (var i = 0; i + 1 < n; i++) if (t <= keys[i + 1][0]) return blend(keys[i][1], keys[i + 1][1], aes((t - keys[i][0]) / (keys[i + 1][0] - keys[i][0]), keys[i + 1][2])); }; }
+  // figure(o, pose, t): a jointed person in metres (feet at 0, facing +x; two-bone legs and arms, so it can bend, crouch, kneel and reach),
+  // with its contact shadow; t adds the settle: a breath and a blink. o.h height, o.coat / o.trousers / o.skin / o.hair colours, o.long (a robe
+  // to the shin), o.belt, o.bun (a topknot), o.hat 'straw', o.seed. Returns { hands: [[x, y], [x, y]], head: [x, y], sh: [x, y] } for props
+  function figure(o, p, t){ var h = o.h || 1.7, k = h / 1.7, OL = o.ink || 'rgba(30,22,16,.85)', sd = o.seed || 0, br = t == null ? 0 : Math.sin(t * 1.9 + sd) * .008;
+    var hip = p.hip || [0, .9], ln = p.lean || 0, ux = Math.sin(ln), uy = Math.cos(ln), fx = uy, fy = -ux, sh = [hip[0] + ux * .5, hip[1] + uy * .5 + br], ha = ln + (p.head || 0);
+    var hd = [sh[0] + Math.sin(ha) * .2, sh[1] + Math.cos(ha) * .2], feet = p.feet || [[-.1, 0], [.12, 0]], hands = p.hands || [[sh[0] - .02, hip[1] - .1], [sh[0] + .12, hip[1] - .1]];
+    x.save(); x.scale(k, k); contact((feet[0][0] + feet[1][0] + hip[0]) / 3, 0, .95 + Math.abs(feet[1][0] - feet[0][0]) * .6, .4, .1);
+    function arm(i){ var s0 = [sh[0] + fx * (i ? .05 : -.05) - ux * .05, sh[1] + fy * (i ? .05 : -.05) - uy * .05], j = reach(s0[0], s0[1], hands[i][0], hands[i][1], .31, .3, -1);
+      limb([s0[0], s0[1], j[0], j[1], j[2], j[3]], .09, i ? o.coat : (o.coat2 || o.coat), OL); x.beginPath(); x.arc(j[2], j[3], .043, 0, 7); fill(o.skin); return [j[2], j[3]]; }
+    function leg(i){ var h0 = [hip[0] + (i ? .05 : -.04), hip[1]], f = feet[i], j = reach(h0[0], h0[1], f[0], f[1] + .05, .47, .47, 1);
+      limb([h0[0], h0[1], j[0], j[1], j[2], j[3]], .13, i ? o.trousers : (o.trousers2 || o.trousers), OL); x.beginPath(); x.ellipse(f[0] + .06, f[1] + .035, .105, .04, 0, 0, 7); fill(o.shoes || '#1d1713'); }
+    var H0 = arm(0); leg(0); leg(1);
+    var hem = Math.min(o.long ? .5 : .16, hip[1] - .06), T = [[sh[0] - fx * .13, sh[1] - fy * .13], [sh[0] + ux * .05, sh[1] + uy * .05], [sh[0] + fx * .11, sh[1] + fy * .11], [hip[0] + ux * .25 + fx * .15, hip[1] + uy * .25 + fy * .15],
+      [hip[0] + fx * .14, hip[1] + fy * .14], [hip[0] + .16, hip[1] - hem], [hip[0] - .18, hip[1] - hem], [hip[0] - fx * .15, hip[1] - fy * .15]];
+    path(T, true); fill(o.coat); x.save(); path(T, true); x.clip(); x.fillStyle = lit(hip[0] - .3, hip[1] - hem, hip[0] + .45, sh[1] + .1, .36, .14); x.fillRect(hip[0] - 1, hip[1] - 1, 2.4, 2); x.restore(); path(T, true); ink(.9, OL);
+    if (o.belt) { x.beginPath(); x.moveTo(hip[0] - fx * .15, hip[1] - fy * .15 + .04); x.lineTo(hip[0] + fx * .14, hip[1] + fy * .14 + .04); x.lineWidth = .05; x.strokeStyle = o.belt; x.lineCap = 'butt'; x.stroke(); }
+    x.save(); x.translate(hd[0], hd[1]); x.rotate(-ha); x.fillStyle = o.skin; x.fillRect(-.035, -.2, .075, .1);
+    x.beginPath(); x.ellipse(.02, 0, .095, .115, 0, 0, 7); fill(o.skin); ink(.9, OL);
+    if (o.hair) { x.beginPath(); x.ellipse(-.03, .03, .07, .09, -.2, 0, 7); fill(o.hair); if (o.bun) { x.beginPath(); x.arc(-.02, .14, .05, 0, 7); fill(o.hair); } }
+    x.beginPath(); x.ellipse(-.005, 0, .022, .032, 0, 0, 7); fill('rgba(150,95,70,.55)');
+    var bl = t != null && ((t * .31 + sd * .17) % 1) < .045; if (bl) { x.beginPath(); x.moveTo(.06, .025); x.lineTo(.09, .025); ink(1, '#1b1511'); } else { x.beginPath(); x.arc(.075, .025, .011, 0, 7); fill('#1b1511'); }
+    x.beginPath(); x.moveTo(.105, .02); x.lineTo(.127, -.015); x.lineTo(.1, -.02); fill(o.skin);
+    if (o.hat === 'straw') { path([[-.21, .06], [.02, .2], [.25, .06]], true); fill(o.hatc || '#d9b56a'); ink(.8, OL); }
+    x.restore(); var H1 = arm(1); x.restore();
+    return { hands: [[H0[0] * k, H0[1] * k], [H1[0] * k, H1[1] * k]], head: [hd[0] * k, hd[1] * k], sh: [sh[0] * k, sh[1] * k] }; }
+  // ---- ambient life (seeded, a pure function of t) ----
+  // flick(t, seed): torch or lamp light, about .75-1; motes(t, n, seed, [x0, y0, x1, y1], col, size px): dust drifting through a box of the
+  // current layer; cloth(X, Y, w, h, t, col, seed, edge): a cloth hanging from its top edge (X, Y) to (X + w, Y), swaying more toward its hem
+  function flick(t, seed){ var s = seed || 1; return .86 + .07 * Math.sin(t * 11.3 + s) + .04 * Math.sin(t * 23.7 + s * 2.1) + .03 * Math.sin(t * 5.1 + s * .7); }
+  function motes(t, n, seed, b, col, sz){ var r = rnd(seed), w = b[2] - b[0], h = b[3] - b[1], ga = x.globalAlpha; x.fillStyle = col;
+    for (var i = 0; i < n; i++) { var X = b[0] + (((r() * w + t * (.015 + r() * .03) * w + Math.sin(t * (.4 + r()) + i) * w * .015) % w) + w) % w, Y = b[1] + (((r() * h - t * (.008 + r() * .02) * h) % h) + h) % h;
+      x.globalAlpha = ga * (.3 + .7 * Math.abs(Math.sin(t * (.6 + r() * .8) + i * 1.3))); x.beginPath(); x.arc(X, Y, px(sz || 1.6) * (.5 + r()), 0, 7); x.fill(); }
+    x.globalAlpha = ga; }
+  function cloth(X, Y, w, h, t, col, seed, edge){ var n = 10, pts = [], i, s = seed || 0, sw = function(u, q){ return (Math.sin(t * 1.7 + s + u * 2.4 + q) * .07 + Math.sin(t * .9 + s * 2 + u * 1.3 + q) * .05) * w * u; };
+    for (i = 0; i <= n; i++) pts.push([X + sw(i / n, 0), Y - h * i / n]); for (i = n; i >= 0; i--) pts.push([X + w + sw(i / n, .6), Y - h * i / n]);
+    x.save(); x.shadowColor = 'rgba(24,14,8,.25)'; x.shadowBlur = 6 * cs(); x.shadowOffsetX = 3; x.shadowOffsetY = 5; path(pts, true); fill(col); x.restore();
+    x.save(); path(pts, true); x.clip(); x.fillStyle = lit(X, Y - h, X + w, Y, .3, .12); x.fillRect(X - w, Y - h * 1.1, w * 3, h * 1.2);
+    x.beginPath(); for (i = 1; i < 4; i++) { x.moveTo(X + w * i / 4, Y); x.lineTo(X + w * i / 4 + sw(1, i * .2), Y - h); } ink(.8, 'rgba(30,18,10,.22)'); x.restore(); path(pts, true); ink(.9, edge || 'rgba(30,22,16,.6)'); }
+  // ambient(Q, kind, t0, t1, X): the quiet sound of a world's ambient life, pushed into the scene's cue list Q (scripts/showreel/sound.py):
+  // 'torch' / 'lamp' = small crackles, 'cloth' = soft paper-cloth rustles, 'dust' = thin air with a few high ticks, 'wind' = one long soft move
+  function ambient(Q, kind, t0, t1, X){ var r = rnd(Math.round(t0 * 100) + kind.length * 7), t; X = X == null ? 270 : X;
+    if (kind === 'torch' || kind === 'lamp') for (t = t0 + .3; t < t1 - .3; t += 1.1 + r() * .7) Q.push({ t: t, k: 'rustle', d: .45, g: .09, p: 4, x: X });
+    else if (kind === 'cloth') for (t = t0 + .4; t < t1 - .4; t += 1.7 + r()) Q.push({ t: t, k: 'rustle', d: .7, g: .11, p: -3, x: X });
+    else { Q.push({ t: t0 + .1, k: 'move', d: Math.max(.6, Math.min(t1 - t0 - .3, 4)), g: kind === 'wind' ? .1 : .06, p: kind === 'wind' ? -.5 : 1, x: kind === 'wind' ? 60 : X, x2: kind === 'wind' ? 480 : X, r: .25 });
+      if (kind === 'dust') for (t = t0 + .5; t < t1 - .3; t += 1.3 + r()) Q.push({ t: t, k: 'tick', g: .03, p: 12, x: cl(X + (r() - .5) * 200, 30, 510) }); } }
   var FI_ = "'Inter',system-ui,sans-serif";
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
     paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb,
     LANDS: LANDS, globe: globe, gxy: gxy, map: map, mxy: mxy, route: route, bow: bow, place: place,
-    paint: paint, blit: blit, through: through, match: match, page: page, fold: fold, print: print, seam: seam };
+    paint: paint, blit: blit, through: through, match: match, page: page, fold: fold, print: print, seam: seam,
+    LIGHT: LIGHT, begin: begin, world: world, plane: plane, contact: contact, lit: lit, act: act, aes: aes, figure: figure, flick: flick, motes: motes, cloth: cloth, ambient: ambient };
 })();
 /*kit25:end*/
 

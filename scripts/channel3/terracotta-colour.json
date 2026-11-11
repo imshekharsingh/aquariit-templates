@@ -1,0 +1,60 @@
+{
+ "name": "showreel-c3-terracotta-colour",
+ "seek": "scripts/channel3/terracotta-colour.html",
+ "dur": 32.3,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "Was the Terracotta Army once painted in bright colours? In 1974, farmers digging a well in China struck a clay head. It was one of about 8,000 soldiers buried with the first emperor. Over 2,200 years ago, painters gave each one pink skin and bright robes. But the paint sat on lacquer, which shrinks in dry air. Within minutes of digging, the colour flakes away. Turns out, the grey army was dressed in colour.",
+  "at": [
+   0,
+   4.39,
+   9.29,
+   14.66,
+   20.29,
+   24.01,
+   27.58
+  ],
+  "voice": "af_heart",
+  "speed": 0.95
+ },
+ "caption": "The Terracotta Army was never meant to be grey. Over 2,200 years ago every soldier was painted: pink skin, robes of red, blue, green and purple, laid over a coat of lacquer. Out of the damp earth that lacquer dries, shrinks and curls, and the colour flakes off within minutes. 🎨\n\nSend this to someone who has seen the warriors. Which landmark should we repaint next? 👇",
+ "keywords": [
+  "Terracotta Army original colours",
+  "were the terracotta warriors painted",
+  "Terracotta Army paint flaking",
+  "Qin Shi Huang terracotta warriors",
+  "Xi'an Terracotta Army history",
+  "ancient China facts"
+ ],
+ "hashtags": [
+  "#terracottaarmy",
+  "#terracottawarriors",
+  "#xian",
+  "#ancientchina",
+  "#historyfacts"
+ ],
+ "sources": [
+  {
+   "title": "Mausoleum of the First Qin Emperor (UNESCO World Heritage Centre)",
+   "url": "https://whc.unesco.org/en/list/441"
+  },
+  {
+   "title": "Qin tomb (Encyclopaedia Britannica)",
+   "url": "https://www.britannica.com/topic/Qin-tomb"
+  },
+  {
+   "title": "Preserving the paint of the Terracotta Army (Technical University of Munich)",
+   "url": "https://www.tum.de/en/news-and-events/all-news/press-releases/details/32291"
+  },
+  {
+   "title": "5 things you may not know about the Terra-Cotta Army (History.com)",
+   "url": "https://www.history.com/articles/5-things-you-may-not-know-about-the-terra-cotta-army"
+  }
+ ],
+ "experiment": {
+  "id": "c3-depth",
+  "change": "depth kit: every world 4+ parallax planes with air between them, a foreground plane passing the lens, contact shadows, one light; figures moved from keyframed joints; ambient life with its own quiet sound (owner, 8-9 Nov: flat; a figure that looked fallen)",
+  "vs": "median"
+ }
+}
