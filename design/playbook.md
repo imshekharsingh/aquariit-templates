@@ -25,6 +25,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 
 - 11 Nov, web: ONE narrated fix with a satisfying motion payoff, not a compilation (id web-single-satisfying; showreel-33-carousel, the photo row that snaps; ESCALATE answer) → read 12 Nov (24 h) vs the web median (1,331). Yesterday's: details try 2 (menus) → LOSE 1,180 vs 1,331 (24 h); try 1 (alive) → WIN 1,486 vs 1,331; try 3 (waiting) 1,360 at 6 h.
 - 11 Nov, tech: a new FORMAT for 12-14 Nov (E17, tech-settings-list; owner: "go all in"): 3 settings to change today on a drawn phone → read each at 24 h; WIN = 150+ reach or 3+ saves and shares; decide Sun 15 Nov.
+- 11 Nov, c3: the GUESS format (E19, id c3-guess; showreel-c3-eiffel-red for Thu 12) → read 13 Nov (24 h): WIN = reach above 1,300 or 5+ shares and comments. c3-journey: 2 WINs (Sphinx 1,258 vs 1,023; Opera House 1,224 vs 1,041) → kept as rules-c3.md rule 5.
 - 11 Nov, tech: a new topic type, a weird thing your screen does (id tech-screen-puzzle; black screenshots, "NO BUG" stamp) → read 12 Nov (24 h) vs 116. tech-myth-verdict PROMOTED (2 WINs: 123, 117 vs 114-116; watch 6.0 / 5.2 s vs 4.7) → rules-tech.md rule 9.
 
 ## What works
@@ -54,6 +55,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 - **Icon in a colour nobody pictured (rule 10, 9 Nov):** Liberty 1,058, Sahara 1,076, white pyramid 1,102, black-and-yellow Golden Gate 1,143 at 6 h; every other reel 108-161.
 - **Form:** 25-35 s, 2.5D, one camera that never cuts, a big change every ~3 s, payoff in the last 3 s (Liberty held 46%, the channel's best).
 - **Craft (7 Nov):** hook, captions and credit centred in the safe zone (the starter, SX = 255).
+- **Format under test from 12 Nov (E19, c3-guess):** guess first: options painted onto the icon, a 3-2-1 countdown, the answer, 22-25 s, loops to frame 0; caption asks for the letter and a send (rules-c3.md, rewritten 11 Nov). Why: the icon topics stop at the ~1,100 first pool with 0-8 shares and 0 comments.
 
 ### @techin20sec (tech)
 - **Format under test from 12 Nov (E17, tech-settings-list):** "3 settings to change today", each tapped on a drawn phone with both platforms' paths, a recap to save (design/rules-tech.md, rewritten 11 Nov). The explainer / myth-bust below is retired: 9 reels at 113-133, 0 saves.

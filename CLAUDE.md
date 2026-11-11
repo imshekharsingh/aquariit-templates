@@ -155,6 +155,9 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 - From 6 Nov (owner, 5 Nov 2026; moved up from 8 Nov the same day): a 3-reel test of ONE change (E14 in design/experiments.md): the payoff image in frame 0 (a "wait, what?"
   visual like the copper-coloured Liberty, not a question on paper), and only topics with a visible transformation. Keep or drop after the
   3 reels, by reach and hold vs the channel median (157). design/rules-c3.md is the gate.
+- From Thu 12 Nov (E19, 11 Nov 2026; owner: "go all in on ... Turns Out"): the GUESS format, 22-25 s: the viewer guesses (three options painted on the
+  icon, a 3-2-1 countdown) before the answer, and the reel loops to frame 0. Start every Turns Out reel with `node scripts/channel3/new25d.mjs <slug> --guess ...`;
+  design/rules-c3.md (rewritten 11 Nov) is the gate and overrides the 25-35 s length below; topics in design/topics.md; verdict Sun 15 Nov.
 - Fixed Cell and the fictional pilots (rivals, pick-one, velmora and the silent first set) are retired: hidden, scenes in attic/.
 - Topics: general knowledge, recognisable on every continent (4+ continents a week), simple English, metric + imperial, universal dates.
   Never: religion, active wars or disputed borders, living politicians, "which country is better", health and diet claims,

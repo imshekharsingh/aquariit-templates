@@ -511,12 +511,53 @@ var K25 = (function(){
     else if (kind === 'cloth') for (t = t0 + .4; t < t1 - .4; t += 1.7 + r()) Q.push({ t: t, k: 'rustle', d: .7, g: .11, p: -3, x: X });
     else { Q.push({ t: t0 + .1, k: 'move', d: Math.max(.6, Math.min(t1 - t0 - .3, 4)), g: kind === 'wind' ? .1 : .06, p: kind === 'wind' ? -.5 : 1, x: kind === 'wind' ? 60 : X, x2: kind === 'wind' ? 480 : X, r: .25 });
       if (kind === 'dust') for (t = t0 + .5; t < t1 - .3; t += 1.3 + r()) Q.push({ t: t, k: 'tick', g: .03, p: 12, x: cl(X + (r() - .5) * 200, 30, 510) }); } }
+  // ---- the guess format (11 Nov 2026; design/rules-c3.md rule 1, "Guess first"): the viewer picks before the answer. Turns Out reels that
+  // reached the ~1,100 pool stopped there with 0-8 shares (Instagram collect, 11 Nov); a question the viewer answers (in the head, then in the
+  // comments) and a short loop are the levers for the next pool. Screen space, every text reported to qa. ----
+  // choices(opts, t, o): the options row. opts = [{ key: 'A', word: 'GOLD', col: '#d9a93a', at: when it is spoken }]; o = { y (centre, px),
+  // x (centre, default 255), pick (index of the answer), reveal (time of the answer), live(t) -> the index lit now (or -1), bg, ink, hi (ring) }.
+  // Each chip springs in on its word; at the reveal the answer pops and gets a ring and a tick, the others dim and get a strike.
+  function choices(opts, t, o){ var n = opts.length, gap = 10, W = Math.min(142, (450 - gap * (n - 1)) / n), X0 = (o.x || 255) - (n * W + (n - 1) * gap) / 2, Y = o.y || 214, h = 50,
+      rv = o.reveal == null ? 1e9 : o.reveal, kr = P(t, rv, rv + .35), live = o.live ? o.live(t) : -1, out = o.out == null ? 0 : P(t, o.out, o.out + .35);
+    if (out >= 1) return;
+    opts.forEach(function(op, i){ var k = es(P(t, op.at - .12, op.at + .3)); if (k <= 0) return; var cx = X0 + i * (W + gap) + W / 2, win = i === o.pick,
+        pop = win ? Math.sin(Math.PI * P(t, rv, rv + .45)) * .14 : 0, lit = live === i && kr <= 0 ? .06 : 0;
+      x.save(); x.translate(cx, Y - eo(out) * 14); arrive(k); x.scale(1 + pop + lit, 1 + pop + lit); x.globalAlpha *= (1 - out) * (win ? 1 : 1 - .6 * kr);
+      paper(rr(-W / 2, -h / 2, W, h, 13), o.bg || 'rgba(16,12,10,.9)', 3);
+      if (lit || (win && kr > 0)) { x.save(); x.globalAlpha *= win && kr > 0 ? kr : 1; x.beginPath(); x.roundRect(-W / 2 - 3, -h / 2 - 3, W + 6, h + 6, 15); x.lineWidth = win && kr > 0 ? 3.5 : 2; x.strokeStyle = win && kr > 0 ? (o.hi || '#8fe39b') : 'rgba(255,240,215,.7)'; x.stroke(); x.restore(); }
+      x.beginPath(); x.arc(-W / 2 + 23, 0, 13, 0, 7); x.fillStyle = op.col; x.fill(); x.lineWidth = 2; x.strokeStyle = 'rgba(255,246,228,.75)'; x.stroke();
+      txt(op.word, -W / 2 + 44, 7, 19, '800 ' + FI, o.ink || '#fbf3e0', 'left', 1.2);
+      if (!win && kr > 0) { x.beginPath(); x.moveTo(-W / 2 + 40, 0); x.lineTo(-W / 2 + 40 + (W - 52) * eo(kr), 0); x.lineWidth = 2.5; x.strokeStyle = 'rgba(255,240,215,.8)'; x.stroke(); }
+      if (win && kr > 0) { var e = eo(kr); x.save(); x.translate(W / 2 - 4, -h / 2 + 4); x.scale(e, e); x.beginPath(); x.arc(0, 0, 12, 0, 7); x.fillStyle = o.hi || '#8fe39b'; x.fill();
+        x.beginPath(); x.moveTo(-5, .5); x.lineTo(-1.5, 4); x.lineTo(5.5, -4); x.lineWidth = 2.6; x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = '#12301a'; x.stroke(); x.restore(); }
+      x.restore(); }); }
+  // countdown(t, t0, t1, X, Y, o): n numerals (o.n, default 3) over [t0, t1], each landing with a spring inside a ring that drains; o.col,
+  // o.bg, o.size. Returns the times each numeral lands (for the ticks).
+  function countdown(t, t0, t1, X, Y, o){ o = o || {}; var n = o.n || 3, d = (t1 - t0) / n, at = [], i; for (i = 0; i < n; i++) at.push(t0 + i * d);
+    if (t < t0 - .2 || t > t1 + .25) return at; var a = P(t, t0 - .2, t0) * (1 - P(t, t1, t1 + .25)), R = o.r || 46, i0 = cl(Math.floor((t - t0) / d), 0, n - 1), u = P(t, at[i0], at[i0] + d);
+    x.save(); x.globalAlpha *= a; x.translate(X, Y); x.beginPath(); x.arc(0, 0, R, 0, 7); x.fillStyle = o.bg || 'rgba(16,12,10,.82)'; x.fill();
+    x.beginPath(); x.arc(0, 0, R - 5, -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * (1 - P(t, t0, t1))); x.lineWidth = 5; x.lineCap = 'round'; x.strokeStyle = o.col || '#f2b46a'; x.stroke();
+    var k = es(P(u, 0, .35)); x.save(); x.scale(mix(1.5, 1, k), mix(1.5, 1, k)); x.globalAlpha *= cl(k * 2.5, 0, 1) * (1 - P(u, .85, 1) * .6); txt(String(n - i0), 0, (o.size || 50) * .36, o.size || 50, '800 ' + FI, o.ink || '#fbf3e0', 'center'); x.restore();
+    x.restore(); return at; }
+  // repaint(draw, from, to, k, box, o): a coat of paint climbing (or o.dir 'x': crossing) a subject: draw(col) draws the subject in a colour (current
+  // units, y up); the new coat covers box = [x0, y0, x1, y1] up to k (0 -> 1, eased by the caller) with a wet, lighter edge. Use it for every
+  // colour change of a "colour nobody pictured" reel: the change happens on the subject, in front of the viewer.
+  function repaint(draw, from, to, k, box, o){ o = o || {}; k = cl(k, 0, 1); if (k < 1) draw(from); if (k <= 0) return; var ax = o.dir === 'x', L = ax ? mix(box[0], box[2], k) : mix(box[1], box[3], k);
+    x.save(); x.beginPath(); if (ax) x.rect(box[0] - 1e3, box[1] - 1e3, L - box[0] + 1e3, box[3] - box[1] + 2e3); else x.rect(box[0] - 1e3, box[1] - 1e3, box[2] - box[0] + 2e3, L - box[1] + 1e3); x.clip(); draw(to); x.restore();
+    if (k < 1 && o.edge !== false) { x.save(); x.beginPath(); if (ax) x.rect(L - px(3), box[1], px(3), box[3] - box[1]); else x.rect(box[0], L - px(3), box[2] - box[0], px(3)); x.clip(); draw(o.wet || 'rgba(255,244,222,.95)'); x.restore(); } }
+  // guessCues(Q, opts, cd, reveal, X): the format's sounds: a pop as each option lands (panned by its place), a tick per numeral, a riser into the
+  // answer, a hit and a shimmer on it
+  function guessCues(Q, opts, cd, reveal, X){ X = X == null ? 255 : X; var n = opts.length;
+    opts.forEach(function(op, i){ Q.push({ t: op.at, k: 'pop', g: .16, p: 3 + i * 2, x: X + (i - (n - 1) / 2) * 152 }); });
+    cd.forEach(function(c, i){ Q.push({ t: c, k: 'tick', g: .22, p: 6 + i * 2, x: X }); });
+    Q.push({ t: reveal, k: 'riser', d: Math.min(1.6, reveal - cd[0]), g: .12 }, { t: reveal, k: 'hit', g: .24, x: X }, { t: reveal + .05, k: 'shimmer', g: .14, x: X }); }
   var FI_ = "'Inter',system-ui,sans-serif";
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
     paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb,
     LANDS: LANDS, globe: globe, gxy: gxy, map: map, mxy: mxy, route: route, bow: bow, place: place,
     paint: paint, blit: blit, through: through, match: match, page: page, fold: fold, print: print, seam: seam,
-    LIGHT: LIGHT, begin: begin, world: world, plane: plane, contact: contact, lit: lit, act: act, aes: aes, figure: figure, flick: flick, motes: motes, cloth: cloth, ambient: ambient };
+    LIGHT: LIGHT, begin: begin, world: world, plane: plane, contact: contact, lit: lit, act: act, aes: aes, figure: figure, flick: flick, motes: motes, cloth: cloth, ambient: ambient,
+    choices: choices, countdown: countdown, repaint: repaint, guessCues: guessCues };
 })();
 /*kit25:end*/
 

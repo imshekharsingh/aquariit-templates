@@ -304,6 +304,7 @@ that form; the ideas behind them (a save-worthy summary, a service ad) stay, bui
 metaphor). Originality is now enforced (scripts/film/sources.json).
 - 11 Nov: web single fixes with a visual payoff keep climbing after 6 h (flash x1.9, longname x1.6) while the details compilations stop at x1.1, so ESCALATE goes back to one satisfying fix (carousel snap); on tech the verdict stamp lifts watch (6.0 / 5.2 s vs 4.7) but not reach (117-123), so the topic type changes (black screenshots), not the stamp.
 - 11 Nov: tech is not capped by followers (Turns Out reaches 1,100+ with 8) but by what the first ~120 viewers do: 9 explainers and myth-busts held ~28% with 0 saves whatever the topic, so tech switches format (E17: 3 settings to change today, tapped on a drawn phone, both platforms' paths, a recap to save).
+- 11 Nov: Turns Out has two flat levels, ~1,100 for an icon in a colour nobody pictured and ~150 for the rest, and nothing grows after 6 h; with 0-8 shares and 0 comments per reel no reel earns the next pool, so the format changes to a guess the viewer answers (E19: options painted on the icon, a countdown, a 24 s loop, a caption asking for the letter and a send).
 
 ## E18 · @webin20sec: back to the October formula (owner idea, 11 Nov 2026: "our earlier videos worked better ... the black background gives an attractive look to the content and profile, plus the kind of fixes we highlighted"; 3 reels, 12-14 Nov)
 - Change: the dark theme (`KM.theme('dark')`, the old ink-and-mint look) AND October's topic type: a motion-feel fix you can see and feel
@@ -314,3 +315,16 @@ metaphor). Originality is now enforced (scripts/film/sources.json).
   brings both back together because that combination is proven.
 - Decides: median reach of the 3 vs the glass reels (1,546) and watch vs 8.8 s, at 24 h and 72 h. If it wins, test the background alone next
   (dark vs glass on the same topic type) so we learn which one did it; the profile grid look counts too (owner).
+
+## E19 · Turns Out: GUESS FIRST (11 Nov 2026, owner: "go all in on ... Turns Out"; 3 reels, 12-14 Nov)
+**Why:** 11 reels, reach in two flat levels: 1,059-1,273 for the six icons in a colour nobody pictured, 111-168 for the rest, x1.0 after 6 h.
+The ~1,100 pool is Instagram's first test; the next one needs viewers to act, and ours don't: 0-8 shares, 0-1 saves, 0 comments, 8 followers.
+Instagram ranks on watch time, likes per reach and sends per reach, sends weighing most for non-followers (design/references.md, R-trend 11 Nov).
+**Change (one, the format):** the viewer guesses before we answer: three options read and shown as chips, each painted onto the icon, "Lock in
+your guess.", a 3-2-1 countdown, the answer with a tick, the why, back to the frame-0 view so it loops; 22-25 s instead of 31-35 s; caption
+line 1 asks what they guessed, the last line asks for the letter in the comments and a send. Topic gate unchanged (rules-c3.md rule 2).
+Kit: Kt.choices, Kt.countdown, Kt.repaint, Kt.guessCues; starter: `new25d.mjs <slug> --guess` (scripts/channel3/starterguess.html).
+**Reels:** Thu 12 Eiffel (showreel-c3-eiffel-red), Fri 13 Taj Mahal, Sat 14 Niagara (design/topics.md).
+**Decides:** each reel at 24 h; WIN = reach above 1,300 (the best non-guess reel: 1,273) OR 5+ shares and comments together; keep at 2 WINs of 3,
+drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and in design/playbook.md.
+

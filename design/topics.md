@@ -39,13 +39,24 @@ topics were already posted: replan them on Tuesday's spare night, as myth-busts 
 ### Turns Out (true story, 2.5D, 25-35 s; 5 continents in the week)
 | Day | Hook | Continent |
 |---|---|---|
-| Mon 9 | Why was the Great Sphinx buried up to its neck in sand? (swapped 8 Nov for a visible transformation: rules-c3.md ESCALATE; Everest moves to a later week) | Africa |
-| Tue 10 | How did one ball shape the Sydney Opera House? (swapped 8 Nov: Panama is a map fact, not a visible transformation of a landmark; rules-c3.md ESCALATE; Panama moves to a later week) | Oceania |
-| Wed 11 | Was the Terracotta Army once painted in bright colours? (built 11 Nov as showreel-c3-terracotta-colour, the first reel on the depth kit; swapped 9 Nov, rules-c3.md rule 10; the pyramid-north story moves to a later week) | Asia |
-| Thu 12 | Was Tower Bridge once painted chocolate brown? (1894 brown, 1977 red-white-blue, now blue and white; swapped 9 Nov, rule 10; Canberra moves later) | Europe |
-| Fri 13 | Why did the Taj Mahal need a mud face mask? (yellowing marble, clay-pack cleaning; swapped 9 Nov, rule 10; Brazil moves later) | Asia |
-| Sat 14 | Was Niagara Falls ever switched off? (American Falls dried in 1969; swapped 9 Nov, rule 10; leap day moves later) | North America |
-| Sun 15 | Were Greek marble statues once brightly painted? (the Parthenon and its statues in colour; swapped 9 Nov, rule 10; Japan's name moves later) | Europe |
+| Mon 9 | Why was the Great Sphinx buried up to its neck in sand? (posted, 1,273 reach) | Africa |
+| Tue 10 | How did one ball shape the Sydney Opera House? (posted, 1,225) | Oceania |
+| Wed 11 | Was the Terracotta Army once painted in bright colours? (built 11 Nov as showreel-c3-terracotta-colour) | Asia |
+
+### Turns Out, Thu 12 - Wed 18 Nov 2026: the GUESS format (E19; planned 11 Nov, design/rules-c3.md rewritten the same day)
+Every reel: `node scripts/channel3/new25d.mjs <slug> --guess "Question?" "A, B, or C?" "Lock in your guess." "Answer." "Why." "One more fact." "Turns out, ..."`
+(starts from the Eiffel reel; redraw the worlds for the icon). One option = what people picture today, one plausible, one true. Check every claim
+in two sources before building; swap a topic if an expert disputes it (Tower Bridge's "chocolate brown" was swapped for this reason, 11 Nov).
+| Day | Question · options (answer in bold) | Continent |
+|---|---|---|
+| Thu 12 | What colour was the Eiffel Tower at first? · gold, grey, **red** (built 11 Nov as showreel-c3-eiffel-red; swapped from Tower Bridge) | Europe |
+| Fri 13 | What keeps the Taj Mahal white? · bleach, **a clay face mask**, new marble (multani mitti mud packs draw out the yellowing) | Asia |
+| Sat 14 | What did engineers do to Niagara's American Falls in 1969? · froze it, **switched it off**, moved it (a dam of rock dried it for months) | North America |
+| Sun 15 | What colour were ancient Greek marble statues? · white, gold, **bright paint** (traces of pigment under UV) | Europe |
+| Mon 16 | What colour were Big Ben's clock dials trimmed at first? · black, gold, **Prussian blue** (restored in the 2017-2022 works) | Europe |
+| Tue 17 | What did Easter Island's moai once have? · wings, crowns, **eyes** (white coral with dark stone pupils) | Oceania |
+| Wed 18 | Where did Stonehenge's bluestones come from? · next door, **Wales**, France (about 240 km away; check the altar stone's Scottish origin as the "one more fact") | Europe |
+E19's verdict is read Sun 15 (3 reels); from Mon 16 the rows run only if it is kept, otherwise as 25-35 s journeys.
 
 ## @techin20sec, Thu 12 - Wed 18 Nov 2026: "3 settings to change today" (E17; planned 11 Nov, rules-tech.md rewritten the same day)
 Each reel: one benefit, three settings that exist on iPhone AND Android (rule 3: both paths on screen, each checked on Apple's and Google's
