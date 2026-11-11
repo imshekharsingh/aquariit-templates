@@ -43,7 +43,7 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    9.5-14.7 s and saves 2.2-4.5% (numbers 103,105 · stagger 5,869 · overscroll 4,496 · transform 2,670 at 9.5 s · balance 1,677 at 12.6 s
    is the exception); every reel since 1 Nov is a layout fix: reach 305-2,267 (median 1,316), avg watch 5.9-11.8 s (median 8.7 s of ~20),
    saves 0.3-3.3% (median 1.3%). Hold and saves fell together, and reach followed.
-12. **Style C, "Glass and light", through the kit theme; render at most 30 GitHub minutes for a 20 s reel, measured** (owner, 8 Nov 2026:
+12. **E18 (12-14 Nov 2026) overrides the look: the dark theme `KM.theme('dark')` with a motion-feel single fix (design/experiments.md E18); after the 3 reels the audit keeps or drops it.** Otherwise: **Style C, "Glass and light", through the kit theme; render at most 30 GitHub minutes for a 20 s reel, measured** (owner, 8 Nov 2026:
    "Let's go with C."). Every web reel starts from newweb.mjs (normal or `--details N`), whose starters call `KM.theme('glass')`
    (scripts/explainer/kitmotion.js): frosted panes at three depths over slow coloured light, a soft grade, Sora + DM Mono, crisp white type.
    Cheap glass only: no backdrop-filter, no live `filter: blur` on big layers, no full-frame mask (KM.lights paints the light in a small canvas,
