@@ -9,8 +9,9 @@
  "vignette": false,
  "cover": 1.6,
  "style": "Glass and light",
+ "palette": "ember",
  "voice": {
-  "text": "Why does your carousel stop between photos? Your swipe stops where your finger lets go: half of two photos. The fix: scroll snap type, x mandatory, and snap align, center. Now every swipe lands on one whole photo.",
+  "text": "Why does your carousel stop between photos? Your swipe stops where your finger lets go: half of two photos. The fix: scroll snap type, x mandatory, and scroll snap align, center. Now every swipe lands on one whole photo.",
   "voice": "af_heart",
   "speed": 0.84,
   "gap": [
