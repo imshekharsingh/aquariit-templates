@@ -170,7 +170,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--night);color
 //     light canvas behind everything; KM.lights(t, c) paints it every frame: the blooms drifting (with the camera c, at depth) and the grade; KM.cutBelow(vp, fe, y, k) ends the world
 //     at y (an overflow cut under a soft feather: a mask costs ~75 ms a frame); KM.depth(el, c, cx, cy, d) (a pane at its own depth: parallax in
 //     the camera's moves); KM.float(t, seed, amp) (a pane's slow sine float). 'glass' (style C, "Glass and light") is the web default from
-//     8 Nov 2026; 'dark' is the old ink-and-mint look.
+//     8 Nov 2026; 'dark' is the old ink-and-mint look. KM.theme('glass', palette) (or window.WEB_PALETTE) swaps the light and the accents:
+//     KM.PALETTES aurora (the original), ember, lagoon, orchid, glacier (owner, 8 Nov 2026: colour variety, reel to reel).
 var KM = (function(){
   var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; };
   var P = function(t, a, b){ return b <= a ? (t >= a ? 1 : 0) : cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
@@ -392,15 +393,43 @@ var KM = (function(){
         ring: 'rgba(124,240,182,.5)', f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '800', ht: '-.024em' },
       blooms: [['124,240,182', .08, 460, 140, 200, .2, .17, 0], ['124,140,255', .06, 380, 520, 640, .23, .19, 2]], grade: null }
   };
+  // ---- palettes (owner, 8 Nov 2026: "introduce more colour combinations, video to video"; rules-web.md rule 12): the glass look keeps its
+  // type, panes and layout; a palette swaps only the light (blooms, grade), the accent pair and the tints that follow them. newweb.mjs rotates
+  // them reel to reel (the next after the last web reel's "palette" in captions.json) and writes the name into the config, so reach reads per
+  // palette; preflight's CONTRAST line measures captions and labels over the light on rendered frames (4.5:1 or it fails).
+  // KM.theme('glass', name) or window.WEB_PALETTE; 'aurora' is the original glass light.
+  var PALETTES = {
+    // aurora: the original light; its labels lifted for CONTRAST (the old --dim read 2.9:1 over the top bloom). A scene with no palette keeps the old tokens.
+    aurora: { c: { dim: '#cdd1ee', red: '#ff8ab4' } },
+    ember: { c: { ink: '#0d0710', dim: '#e6d2ce', acc: '#ffcf7a', red: '#ff8a7a', ctl: '#3a2630', raise: '#2c1c26', skel: '#28192a', pg: '#150b12', card: '#211520', on: '#140a0c' },
+      v: { frost: 'linear-gradient(155deg,#4a2a3a,#241521 46%,#33202c)', lift: '0 18px 28px rgba(50,10,20,.55)', glow: 'rgba(255,207,122,.6)', soft: 'rgba(255,207,122,.16)', ring: 'rgba(255,207,122,.55)' },
+      blooms: [['255,96,84', .5, 640, 180, 220, .31, .23, 0], ['255,170,60', .4, 580, 460, 640, .27, .35, 1.7], ['214,64,150', .42, 540, 120, 860, .37, .21, 3.1], ['130,60,210', .34, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(160,40,60,.2)'], [.4, 'rgba(13,7,16,0)'], [1, 'rgba(170,90,20,.14)']] },
+    lagoon: { c: { ink: '#04101a', dim: '#c4dde2', acc: '#8ff7dc', red: '#ffc27a', ctl: '#1d3a4a', raise: '#16303e', skel: '#142b38', pg: '#081a24', card: '#0f2633', on: '#04121a' },
+      v: { frost: 'linear-gradient(155deg,#1d4a5e,#0f2a38 46%,#173c4c)', lift: '0 18px 28px rgba(0,30,50,.55)', glow: 'rgba(143,247,220,.6)', soft: 'rgba(143,247,220,.16)', ring: 'rgba(143,247,220,.55)' },
+      blooms: [['30,200,180', .38, 640, 180, 220, .31, .23, 0], ['50,120,255', .44, 580, 460, 640, .27, .35, 1.7], ['120,240,160', .32, 540, 120, 860, .37, .21, 3.1], ['20,150,210', .4, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(0,120,140,.2)'], [.4, 'rgba(4,16,26,0)'], [1, 'rgba(30,60,180,.14)']] },
+    orchid: { c: { ink: '#0e0718', dim: '#ddd2ea', acc: '#ffb8e4', red: '#c6a8ff', ctl: '#352650', raise: '#2a1d42', skel: '#261a3c', pg: '#140b22', card: '#1f1534', on: '#120818' },
+      v: { frost: 'linear-gradient(155deg,#432a66,#22153a 46%,#30204e)', lift: '0 18px 28px rgba(40,8,60,.55)', glow: 'rgba(255,184,228,.6)', soft: 'rgba(255,184,228,.16)', ring: 'rgba(255,184,228,.55)' },
+      blooms: [['200,80,255', .52, 640, 180, 220, .31, .23, 0], ['255,80,170', .44, 580, 460, 640, .27, .35, 1.7], ['110,100,255', .44, 540, 120, 860, .37, .21, 3.1], ['255,150,200', .26, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(120,40,200,.2)'], [.4, 'rgba(14,7,24,0)'], [1, 'rgba(200,40,140,.14)']] },
+    glacier: { c: { ink: '#060b18', dim: '#cdd8ea', acc: '#a6d8ff', red: '#ff9cb4', ctl: '#24314f', raise: '#1c2742', skel: '#18223a', pg: '#0a1222', card: '#141d34', on: '#081020' },
+      v: { frost: 'linear-gradient(155deg,#2a3d66,#141f3a 46%,#1e2c50)', lift: '0 18px 28px rgba(0,15,50,.55)', glow: 'rgba(166,216,255,.6)', soft: 'rgba(166,216,255,.16)', ring: 'rgba(166,216,255,.55)' },
+      blooms: [['80,150,255', .5, 640, 180, 220, .31, .23, 0], ['150,200,255', .34, 580, 460, 640, .27, .35, 1.7], ['70,80,240', .46, 540, 120, 860, .37, .21, 3.1], ['190,150,255', .3, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(40,80,200,.2)'], [.4, 'rgba(6,11,24,0)'], [1, 'rgba(60,140,200,.14)']] }
+  };
+  function withPalette(th, pal){ var p = PALETTES[pal], o = { name: th.name, c: {}, v: {}, blooms: p.blooms || th.blooms, grade: p.grade || th.grade }, k;
+    for (k in th.c) o.c[k] = (p.c && p.c[k]) || th.c[k]; for (k in th.v) o.v[k] = (p.v && p.v[k]) || th.v[k]; return o; }
   var LT = {};
-  function theme(name){ var th = THEMES[name] || THEMES.glass, R = document.documentElement, k;
+  function theme(name, pal){ var th = THEMES[name] || THEMES.glass, R = document.documentElement, k;
+    pal = pal || window.WEB_PALETTE; if (th === THEMES.glass && PALETTES[pal]) { th = withPalette(th, pal); R.dataset.palette = pal; }
     for (k in th.c) R.style.setProperty('--' + k, th.c[k]); for (k in th.v) R.style.setProperty('--' + k, th.v[k]);
     R.style.background = document.body.style.background = th.c.ink; R.dataset.theme = name in THEMES ? name : 'glass';
     // the light and the grade in one tiny canvas (135x240, a quarter of the frame) scaled up to the frame: the upscale is the blur, for free
     var L = document.createElement('canvas'); L.id = 'km-lights'; L.className = 'a'; L.width = 135; L.height = 240; L.setAttribute('data-fit', 'free'); L.setAttribute('aria-hidden', 'true');
     L.style.cssText = 'position:absolute;left:0;top:0;width:540px;height:960px;pointer-events:none';
     document.body.insertBefore(L, document.body.firstChild); LT = { cx: L.getContext('2d'), th: th };
-    var T = {}; for (k in th.c) T[k] = th.c[k]; T.name = th.name; return T; }
+    var T = {}; for (k in th.c) T[k] = th.c[k]; T.name = th.name; T.palette = R.dataset.palette || null; return T; }
   // the blooms drift on slow Lissajous paths (a pure function of t), breathe a little, and follow the camera at a shallow depth
   // (x .05: the camera crosses 560 px a part in the details format; y .2; zoom .25), so the light is never still; the grade is painted over them
   function lights(t, c){ if (!LT.cx) return; c = c || { x: 270, y: 480, z: 1 }; var g = LT.cx, th = LT.th, q = .25, zs = 1 + (c.z - 1) * .25;
@@ -424,7 +453,7 @@ var KM = (function(){
   return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
     rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, voice: voice, subs: subs, publish: publish,
     curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
-    THEMES: THEMES, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float };
+    THEMES: THEMES, PALETTES: PALETTES, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float };
 })();
 /*kitmotion:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;

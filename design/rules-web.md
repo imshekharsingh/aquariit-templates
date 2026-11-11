@@ -50,6 +50,11 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    KM.cutBelow ends the world above the band); blur 3 in the config. Item 13 of the review writes the run's measured minutes (its job times).
    Evidence: the style C test (real backdrop blur) took 52 GitHub minutes for 8 s, about 130 for 20 s; a frame of the kit theme costs ~218 ms
    locally vs 393 for the first glass draft (big bloom layers) and 341 for the dark details demo; the sample showreel-style-c-details (21.2 s) rendered in 15 GitHub minutes (frames 12; run 42406421148, 8 Nov), so the target holds with room.
+   Colour rotation (owner, 8 Nov 2026: "introduce more colour combinations, video to video"; 11 Nov): the type, panes and layout stay; the light
+   and accents rotate through 5 palettes (KM.PALETTES: aurora, ember, lagoon, orchid, glacier). newweb.mjs picks the next after the last web reel's
+   "palette" in captions.json order and writes it into the config (read reach by palette). Preflight's CONTRAST line must read 4.5:1 or more for
+   captions and labels on rendered frames over the brightest light (starters, 11 Nov: aurora 4.7, ember 4.8, lagoon 4.6, orchid 5.1, glacier 4.9;
+   the old dim labels read 2.9). A new palette passes CONTRAST on both starters and a phone-size palettesheet.mjs review first (citrus failed it).
 
 13. **A details reel is calm: 3 details, one beat of ~5.5 s each (never under 4.5 s), 24-26 s in all, the voice at most 2.4 words/s overall
    with 0.6 s+ of breath between sentences** (owner, 8 Nov 2026: "The web reel seems to have too much in 20 s ... It feels rushed."). Each beat:

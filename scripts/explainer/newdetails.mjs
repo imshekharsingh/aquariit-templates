@@ -13,7 +13,7 @@ import { execFileSync } from 'node:child_process';
 import { join, dirname, relative } from 'node:path';
 
 const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
-export function write({ root, here, out, force, slug, hook, sentences, n = 3, beat = 5.5 }) {
+export function write({ root, here, out, force, slug, hook, sentences, n = 3, beat = 5.5, palette = 'aurora' }) {
   if (!slug || !/^[a-z0-9-]+$/.test(slug) || !hook || !(n >= 2 && n <= 6) || (sentences.length && sentences.length !== n + 1)) {
     console.error('usage: node scripts/explainer/newweb.mjs <slug> --details [N, 2-6, default 3] [--beat S, default 5.5] "Hook?" ["One: ..." (N of them) "Save all N ..."] [--out dir] [--force]'); process.exit(1); }
   const html = join(root, out, slug + '.html'), cfgP = join(root, out, slug + '.json');
@@ -42,12 +42,12 @@ export function write({ root, here, out, force, slug, hook, sentences, n = 3, be
   const recap = { eyebrow: `RECAP · ALL ${n} AT 1×`, title: ['All', WORDS[n], 'together'], acc: 1 };
   page = page.replace(/__TITLE__/g, esc(hook)).replace('__HOOK__', hookHtml).replace('__HOOK_FS__', lines.length > 2 ? '40' : '48').replace('__TEXT__', JSON.stringify(text))
     .replace('__DUR__', String(dur)).replace('__BEAT__', String(beat)).replace('__AT__', JSON.stringify(at)).replace('__HOOK_N__', String(hw.length)).replace('__DETAILS__', JSON.stringify(picked.map((k) => ({ kind: k.kind }))))
-    .replace('__RECAP__', JSON.stringify(recap));
+    .replace('__RECAP__', JSON.stringify(recap)).replace('__PALETTE__', palette);
   writeFileSync(html, page);
   execFileSync('node', [join(root, 'scripts/channel3/kit-inline.mjs'), html], { stdio: 'inherit' });
   const seek = relative(root, html);
   // the glass theme's render: 3 motion-blur sub-frames, grain 2, no vignette (the grade does it): 15 GitHub minutes for the 21.2 s sample (rules-web.md rule 12)
-  const cfg = { name: `showreel-00-${slug}`, seek, dur, fps: 60, blur: 3, shutter: .45, grain: 2, vignette: false, cover: 1.2, style: 'Glass and light',
+  const cfg = { name: `showreel-00-${slug}`, seek, dur, fps: 60, blur: 3, shutter: .45, grain: 2, vignette: false, cover: 1.2, style: 'Glass and light', palette,
     format: 'details', voice: { text, voice: 'af_heart', speed, at },
     experiment: { id: 'details-format', change: 'slow-mo motion details compilation', vs: 'median' },
     caption: `TODO: the caption (the hook, one line per detail with its CSS property, browser support), then "Save it for your next app, or send it to a designer friend."`,
@@ -55,6 +55,6 @@ export function write({ root, here, out, force, slug, hook, sentences, n = 3, be
     sources: [{ url: 'https://developer.mozilla.org/', note: 'TODO: one MDN page + BCD versions per detail' }],
     tip: { title: hook, why: 'TODO', code: 'TODO', demo: slug, source: { url: 'https://developer.mozilla.org/', label: 'MDN, TODO' } } };
   writeFileSync(cfgP, JSON.stringify(cfg, null, 1) + '\n');
-  console.log(`wrote ${seek} and ${relative(root, cfgP)}: ${dur} s, ${words} words (${(words / dur).toFixed(2)} words/s over the reel; details at most 2.5), ${n} details of ${beat} s: ${picked.map((k) => k.kind).join(', ')}`);
+  console.log(`wrote ${seek} and ${relative(root, cfgP)}: palette ${palette}, ${dur} s, ${words} words (${(words / dur).toFixed(2)} words/s over the reel; details at most 2.5), ${n} details of ${beat} s: ${picked.map((k) => k.kind).join(', ')}`);
   console.log(`next: edit DETAILS / KINDS (titles, components, real CSS), then node scripts/showreel/preflight.mjs ${relative(root, cfgP)} && node scripts/showreel/stills.mjs ${relative(root, cfgP)} <out dir>`);
 }
