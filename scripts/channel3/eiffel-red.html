@@ -551,13 +551,81 @@ var K25 = (function(){
     opts.forEach(function(op, i){ Q.push({ t: op.at, k: 'pop', g: .16, p: 3 + i * 2, x: X + (i - (n - 1) / 2) * 152 }); });
     cd.forEach(function(c, i){ Q.push({ t: c, k: 'tick', g: .22, p: 6 + i * 2, x: X }); });
     Q.push({ t: reveal, k: 'riser', d: Math.min(1.6, reveal - cd[0]), g: .12 }, { t: reveal, k: 'hit', g: .24, x: X }, { t: reveal + .05, k: 'shimmer', g: .14, x: X }); }
+  // ---- detail and stacking (12 Nov 2026; owner: "improvements in animation with more detailing and stacking ... with sound element
+  // enhancements, to avoid boring instances in the reel and make it tick, snap, click better"; design/rules-c3.md rule 9). Every world
+  // carries small details that build up (rivets popping in, paint strokes sweeping, labels and stamps snapping on, paper pieces stacking,
+  // tallies ticking, dust and sparks), staggered so something small changes every 0.5-1 s, and each one is heard: beat() declares it once
+  // (when, what kind, where on screen, how big) and beatCues() turns every beat into its matched sound on the element-detail bus. qa.mjs
+  // reads window.__beats(): "BUSY: longest quiet run n.n s" (no beat seen on the frames and no sound onset) fails over 1.5 s. ----
+  var BEATS = [];
+  // beat(t, kind, X, Y, size): one small event the scene draws at t. X, Y = where on screen (CSS px: the pan, and where qa looks for it);
+  // size 0-1 (0 = a rivet, 1 = a large piece; small sounds high, large low). Kinds and their sounds:
+  //   'pop' (a rivet, a dot, a small piece popping in) and 'count' (a tally or counter step) = tick; 'stamp' and 'label' = snap;
+  //   'pin' and 'toggle' = click; 'stack' and 'slide' (a paper piece landing on the pile) = a short paper slide and a tap on the landing;
+  //   'big' (a large piece settling) = a soft thud with a tap on top; 'stroke' (a paint stroke) = a short rustle; 'spark' = a high tick
+  function beat(t, kind, X, Y, size){ BEATS.push({ t: +(+t).toFixed(2), kind: kind, x: Math.round(cl(X, 0, 540)), y: Math.round(cl(Y == null ? 480 : Y, 0, 960)), s: size == null ? .3 : size }); return t; }
+  function beats(){ return BEATS; }
+  window.__beats = function(){ return BEATS.slice(); };
+  function beatCues(Q){ BEATS.forEach(function(b, i){ var X = cl(b.x, 20, 520), hi = 1 - cl(b.s, 0, 1), v = (i * 7) % 3;
+    if (b.kind === 'pop' || b.kind === 'count') Q.push({ t: b.t, k: 'tick', g: .09 + b.s * .04, p: Math.round(8 + hi * 8 + v), x: X });
+    else if (b.kind === 'spark') Q.push({ t: b.t, k: 'tick', g: .07, p: 16 + v, x: X });
+    else if (b.kind === 'stamp' || b.kind === 'label') Q.push({ t: b.t, k: 'snap', g: .11 + b.s * .04, p: Math.round(1 + hi * 5 + v), x: X });
+    else if (b.kind === 'pin' || b.kind === 'toggle') Q.push({ t: b.t, k: 'click', g: .11, p: Math.round(hi * 4 + v), x: X });
+    else if (b.kind === 'stack' || b.kind === 'slide') Q.push({ t: b.t - .16, k: 'rustle', d: .2, g: .1, p: 2 + v, x: X }, { t: b.t, k: 'tap', g: .1 + b.s * .04, p: Math.round(hi * 4), x: X });
+    else if (b.kind === 'big') Q.push({ t: b.t, k: 'thud', g: .16 + b.s * .08, p: -2, x: X }, { t: b.t + .01, k: 'tap', g: .12, p: 0, x: X });
+    else if (b.kind === 'stroke') Q.push({ t: b.t, k: 'rustle', d: .26, g: .1, p: 5 + v, x: X });
+    else Q.push({ t: b.t, k: 'tick', g: .09, p: 10, x: X }); }); }
+  // lands(t, t0, d): 0 before a piece starts arriving, a spring to 1 as it lands at t0 (d = the flight, default .32 s), settling after
+  function lands(t, t0, d){ d = d || .32; return t < t0 - d ? 0 : es(P(t, t0 - d, t0 + .22)); }
+  // stackOn(t, t0, X, Y, rot, draw, o): a cut-paper piece arriving on the pile in front of the viewer: it drops in from o.from (current units,
+  // default 40 px "above" in this layer's own up), turned o.turn (default .12 rad) more than its resting rot, 8 % large and lifted (a long,
+  // soft offset shadow), then lands at t0 on (X, Y), settles with a small overshoot and its shadow tightens to a short offset (the key light
+  // is upper left, so it falls down and right). draw() draws the piece around 0, 0 in the current units. o.d = the flight (s), o.sh = shadow
+  // strength (0-1). Use it for every piece that builds a picture: cards, photos, stamps, labels, plates, tiles.
+  function stackOn(t, t0, X, Y, rot, draw, o){ o = o || {}; var k = lands(t, t0, o.d); if (k <= 0) return 0; var up = x.getTransform().d < 0 ? 1 : -1, from = o.from || [px(-14), up * px(40)],
+      lift = 1 - cl(k, 0, 1), sh = o.sh == null ? 1 : o.sh;
+    x.save(); x.translate(X + from[0] * lift, Y + from[1] * lift); x.rotate((rot || 0) + (o.turn == null ? .12 : o.turn) * (1 - k)); x.scale(1 + .08 * lift, 1 + .08 * lift);
+    x.globalAlpha *= cl(k * 4, 0, 1);
+    if (sh > 0) { x.shadowColor = 'rgba(28,18,12,' + (.3 * sh).toFixed(3) + ')'; x.shadowBlur = mix(4, 22, lift) * sh; x.shadowOffsetX = mix(3, 12, lift) * sh; x.shadowOffsetY = mix(5, 20, lift) * sh; }
+    draw(k); x.restore(); return k; }
+  // rivet(t, t0, X, Y, r, col): a rivet head popping in (current units, r = radius): grows past full size and settles, a lit dot on its upper
+  // left, and a thin ring that opens and fades around it (matte: a line, no glow)
+  function rivet(t, t0, X, Y, r, col){ if (t < t0 - .04) return; var k = es(P(t, t0 - .04, t0 + .2)), g = P(t, t0, t0 + .4);
+    x.save(); x.beginPath(); x.arc(X, Y, r * k, 0, 7); x.fillStyle = col || '#3b302a'; x.fill();
+    x.beginPath(); x.arc(X - r * .3, Y + (x.getTransform().d < 0 ? r * .3 : -r * .3), r * .32 * k, 0, 7); x.fillStyle = 'rgba(255,240,215,.55)'; x.fill();
+    if (g > 0 && g < 1) { x.globalAlpha *= (1 - g) * .8; x.beginPath(); x.arc(X, Y, r * (1.2 + 2.2 * eo(g)), 0, 7); x.lineWidth = px(1.2); x.strokeStyle = 'rgba(255,236,200,.9)'; x.stroke(); }
+    x.restore(); }
+  // sweep(t, t0, t1, pts, w, col, seed): one paint stroke along a polyline (current units) from t0 to t1: the paint lays down behind a wet,
+  // lighter head, with bristle streaks along it and a dry, broken tail
+  function sweep(t, t0, t1, pts, w, col, seed){ if (t < t0) return; var k = eio(P(t, t0, t1)), L = [0], i, tot; for (i = 1; i < pts.length; i++) L.push(L[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])); tot = L[L.length - 1] * k;
+    var r = rnd(seed || 5), at = function(d){ for (var j = 1; j < pts.length; j++) if (L[j] >= d || j === pts.length - 1) { var u = (d - L[j - 1]) / Math.max(1e-9, L[j] - L[j - 1]); return [mix(pts[j - 1][0], pts[j][0], cl(u, 0, 1)), mix(pts[j - 1][1], pts[j][1], cl(u, 0, 1)), Math.atan2(pts[j][1] - pts[j - 1][1], pts[j][0] - pts[j - 1][0])]; } return [pts[0][0], pts[0][1], 0]; };
+    x.save(); x.lineCap = 'round'; x.lineJoin = 'round';
+    for (var b = 0; b < 7; b++) { var off = (b / 6 - .5) * w * .9, dry = .55 + r() * .45; x.beginPath();
+      for (var s0 = 0; s0 <= 24; s0++) { var d = tot * s0 / 24, q = at(d), nx = -Math.sin(q[2]), ny = Math.cos(q[2]); if (s0) x.lineTo(q[0] + nx * off, q[1] + ny * off); else x.moveTo(q[0] + nx * off, q[1] + ny * off); if (s0 / 24 > dry && k >= 1) break; }
+      x.lineWidth = w * (b % 3 ? .2 : .32); x.strokeStyle = col; x.globalAlpha = b % 2 ? .85 : 1; x.stroke(); }
+    if (k < 1) { var h = at(tot); x.globalAlpha = .7; x.beginPath(); x.arc(h[0], h[1], w * .45, 0, 7); x.fillStyle = 'rgba(255,240,222,.55)'; x.fill(); }
+    x.restore(); }
+  // sparks(t, t0, X, Y, n, seed, col, R): a little burst on a landing (dust off paper, sparks off iron): n bits fly out up to R px and fade
+  // over .45 s (current units; sizes on screen stay about 1.5-2.5 px)
+  function sparks(t, t0, X, Y, n, seed, col, R){ var u = P(t, t0, t0 + .45); if (u <= 0 || u >= 1) return; var r = rnd(seed || 3), e = eo(u), up = x.getTransform().d < 0 ? 1 : -1; x.save(); x.fillStyle = col || 'rgba(255,226,180,.9)';
+    for (var i = 0; i < (n || 8); i++) { var a = (i / (n || 8)) * 6.28 + r() * .6, d = px(R || 26) * (.5 + r() * .6) * e; x.globalAlpha = (1 - u) * (.6 + r() * .4);
+      x.beginPath(); x.arc(X + Math.cos(a) * d, Y + up * (Math.sin(a) * d * .7 + px(6) * e) - up * px(14) * u * u * (r() - .2), px(1.1 + r() * 1.2), 0, 7); x.fill(); }
+    x.restore(); }
+  // tally(t, times, X, Y, o): a counter without digits: one tick mark lands at each time (a short drop and a snap), o.gap / o.h (px on screen),
+  // o.col; every fifth crosses the four before it. Use it when a count is shown but no number is said (a number said lands with its word).
+  function tally(t, times, X, Y, o){ o = o || {}; var g = px(o.gap || 7), h = px(o.h || 18), up = x.getTransform().d < 0 ? 1 : -1; x.save(); x.lineCap = 'round'; x.strokeStyle = o.col || 'rgba(40,30,22,.85)'; x.lineWidth = px(o.w || 2.2);
+    times.forEach(function(t0, i){ var k = es(P(t, t0 - .06, t0 + .18)); if (k <= 0) return; var five = i % 5 === 4, gi = Math.floor(i / 5) * 5, X0 = X + (gi + (i - gi)) * g + Math.floor(i / 5) * g * .8;
+      x.beginPath(); if (five) { x.moveTo(X + gi * g + Math.floor(i / 5) * g * .8 - g * .4, Y + up * h * .2); x.lineTo(X + gi * g + Math.floor(i / 5) * g * .8 + g * 3.4 * k, Y + up * h * (.2 + .6 * k)); }
+      else { x.moveTo(X0, Y + up * h * (1 - k) * .4); x.lineTo(X0, Y + up * h * mix(.4, 1, k)); } x.stroke(); });
+    x.restore(); }
   var FI_ = "'Inter',system-ui,sans-serif";
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
     paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb,
     LANDS: LANDS, globe: globe, gxy: gxy, map: map, mxy: mxy, route: route, bow: bow, place: place,
     paint: paint, blit: blit, through: through, match: match, page: page, fold: fold, print: print, seam: seam,
     LIGHT: LIGHT, begin: begin, world: world, plane: plane, contact: contact, lit: lit, act: act, aes: aes, figure: figure, flick: flick, motes: motes, cloth: cloth, ambient: ambient,
-    choices: choices, countdown: countdown, repaint: repaint, guessCues: guessCues };
+    choices: choices, countdown: countdown, repaint: repaint, guessCues: guessCues,
+    beat: beat, beats: beats, beatCues: beatCues, lands: lands, stackOn: stackOn, rivet: rivet, sweep: sweep, sparks: sparks, tally: tally };
 })();
 /*kit25:end*/
 
@@ -598,6 +666,30 @@ var K25 = (function(){
     // the answer's coat starts climbing only AT the reveal. The options live on the chips only. qa.mjs GUESS checks the frames for it.
     SW = [[.3, 1.4, SIL], [tRv, tRv + .75, RED]];
     window.GUESS = { reveal: +tRv.toFixed(2), answer: RED, box: [150, 270, 390, 690] };   // the subject's screen box (CSS px) during the guess
+    details();
+  }
+  // ---- the details (12 Nov 2026, owner: "more detailing and stacking ... make it tick, snap, click better"; design/rules-c3.md rule 9): every
+  // world builds up in small steps, each a Kt.beat with its matched sound (Kt.beatCues), so something small lands every 0.5-1 s ----
+  // W1: cream rivet heads pop up the tower's legs as it drains to a silhouette (neutral: no option colour before the answer); a padlock
+  // clicks shut on "Lock"; the countdown ring loses a notch every half second. W2: rivets pop behind the brush with a few sparks, painted
+  // plates stack on the floor. W3: the blueprint draws itself, the two photos are pinned on, a tally counts the chips as they fan out.
+  // W4: the payoff's second line snaps on, the tower's lights sparkle to the end.
+  var RIV = [], RIV2 = [], PLATES = [], NOTCH = [], SPARK = [], PIN = [];
+  function sp(cam, X, Y, Z){ var q = proj(cam, X, Y, Z); return q ? [q.x, q.y] : [270, 480]; }
+  function tAtB(X){ var lo = tB0, hi = tB1; for (var i = 0; i < 30; i++) { var m = (lo + hi) / 2; if (bx(m) < X) lo = m; else hi = m; } return lo; }   // when the brush passes X
+  function details(){ var i, q, t0;
+    RIV = [[.55, -1, 22], [.95, 1, 48], [1.35, -1, 84], [1.75, 1, 124], [2.15, -1, 168], [2.55, 1, 218]].map(function(r){ q = sp(C1(r[0]), r[1] * hw(r[2]) * .97, r[2], 0); Kt.beat(r[0], 'pop', q[0], q[1], .1); return r; });
+    t0 = WT(2, /lock/i); Kt.beat(t0 + .12, 'toggle', 104, 452, .4); Kt.beat(t0 + 1.05, 'toggle', 104, 452, .3);   // the shackle shuts; a tug: locked
+    var d = (CD[1] - CD[0]) / 3; NOTCH = [.5, 1.5, 2.5].map(function(j){ return CD[0] + d * j; });   // between the numerals
+    NOTCH.forEach(function(v){ Kt.beat(v, 'count', 104, 410, .1); });
+    RIV2 = []; for (i = 0; i <= 24; i++) { var X = -3.55 + i * .3; RIV2.push([X, tAtB(X - .05)]); if (i % 3 === 1) { q = sp(C2(RIV2[i][1]), X, 1.69, 0); Kt.beat(RIV2[i][1], 'pop', q[0], q[1], .15); } }
+    PLATES = []; [[11.75, 3], [12.95, 3]].forEach(function(g, gi){ var X0 = C2(g[0] + .3).x + 1.05; for (var j = 0; j < g[1]; j++) { var tl = g[0] + j * .3; PLATES.push([X0 + (j % 2 ? .04 : -.03), .035 + j * .07, [-.04, .05, -.02][j], tl]); q = sp(C2(tl), X0, .1 + j * .07, 0); Kt.beat(tl, 'stack', q[0], q[1], .45); } });
+    Kt.beat(WT(4, /venetian/i), 'label', SX, 190, .5); Kt.beat(WT(4, /venetian/i) + .45, 'label', SX, 232, .2);
+    PIN = [[-1.5, 1.95, -.08, A[5] + .05], [1.55, 1.8, .1, A[5] + .5]]; PIN.forEach(function(r){ q = sp(C3(r[3]), r[0], r[1], 3.6); Kt.beat(r[3], 'stack', q[0], q[1] + 60, .35); Kt.beat(r[3] + .14, 'pin', q[0], q[1], .1); });
+    for (i = 0; i < 7; i++) Kt.beat(chipT(i) + .15, 'count', SX - 46 + i * 13, 214, .1);
+    Kt.beat(DUR - 2.45, 'label', SX, 248, .25);
+    SPARK = [DUR - 1.85, DUR - 1.25, DUR - .65]; SPARK.forEach(function(v, j){ var p0 = sparkPts(j)[0]; q = sp(C4(v + .1), p0[0], p0[1], 0); Kt.beat(v, 'spark', q[0], q[1], .05); });
+    Kt.beat(tw1(2), 'big', 270, 520, .9);   // the match cut settles: the tower lands in its place
   }
   function optsAt(){ OPTS.forEach(function(o){ o.at = WT(1, new RegExp('^' + o.word, 'i')); }); return OPTS; }
   function paintAt(t){ var from = TODAY, i, cur = null; for (i = 0; i < SW.length; i++) { if (SW[i][0] <= t) { if (cur) from = cur[2]; cur = SW[i]; } }
@@ -659,6 +751,9 @@ var K25 = (function(){
     if (Kt.plane(cam, 800)) roofs(9, 800, '#2f2a4b', 'rgba(255,200,130,.7)', 22, cam);
     if ((s = Kt.plane(cam, 0))) { V = Kt.vis(10); x.fillStyle = '#26303a'; x.fillRect(V.x0, -200, V.x1 - V.x0, 200); Kt.contact(0, 0, 150, .5, 10); piers();
       var pa = o.paint || { from: col, to: col, k: 0 }; Kt.repaint(function(c){ tower(c, s); }, pa.from, pa.to, pa.k, [-70, -1, 70, 330]);
+      if (o.rivets) RIV.forEach(function(r){ Kt.rivet(t, r[0], r[1] * hw(r[2]) * .97, r[2], Kt.px(4.6), '#efe3c8'); });
+      if (o.spark) SPARK.forEach(function(v, j){ var u = P(t, v - .05, v + .35); if (u <= 0 || u >= 1) return; x.save(); x.globalAlpha *= Math.sin(Math.PI * u); x.strokeStyle = '#fff6e2'; x.lineWidth = Kt.px(1.6);
+        sparkPts(j).forEach(function(q0, m){ var L = Kt.px(m ? 4 + 3 * Math.sin(Math.PI * u) : 6 + 5 * Math.sin(Math.PI * u)); x.beginPath(); Kt.seg(q0[0] - L, q0[1], q0[0] + L, q0[1]); Kt.seg(q0[0], q0[1] - L * 1.4, q0[0], q0[1] + L * 1.4); x.stroke(); }); x.restore(); });
       // the tower's own lights come on in today's world only (warm points along the edges)
       if (o.lights) { x.save(); x.globalAlpha *= o.lights; x.fillStyle = 'rgba(255,214,140,.9)'; for (var ly = 6; ly < 270; ly += 9) [-1, 1].forEach(function(sg){ x.beginPath(); x.arc(sg * hw(ly) * .98, ly, Kt.px(1.3), 0, 7); x.fill(); }); x.restore(); } }
     if (Kt.plane(cam, -70)) { V = Kt.vis(10); x.fillStyle = '#1d2530'; x.fillRect(V.x0, -100, V.x1 - V.x0, 100); r = rnd(17);   // the row of trees along the quay
@@ -678,8 +773,9 @@ var K25 = (function(){
       x.fillStyle = 'rgba(255,226,170,' + (.9 * fl2) + ')'; x.fillRect(LX - 1, 114, 3.6, 4.8); }
     Kt.screen(); x.fillStyle = lg(0, 640, 0, 960, [[0, 'rgba(8,8,20,0)'], [1, 'rgba(8,8,20,.5)']]); x.fillRect(0, 640, 540, 320);
   }
-  function W1(t){ paris(C1(t), t, TODAY, { paint: paintAt(t) }); }
-  function W4(t){ paris(C4(t), t, TODAY, { lights: P(t, tw1(2), tw1(2) + 1.5) * .8 }); }
+  function sparkPts(j){ var r0 = rnd(71 + j), o = []; for (var m = 0; m < 7; m++) { var yy = 30 + r0() * 200, sg0 = r0() < .5 ? -1 : 1; o.push([sg0 * hw(yy) * (.3 + r0() * .65), yy]); } return o; }   // where a sparkle flashes on the tower (metres)
+  function W1(t){ paris(C1(t), t, TODAY, { paint: paintAt(t), rivets: true }); }
+  function W4(t){ paris(C4(t), t, TODAY, { lights: P(t, tw1(2), tw1(2) + 1.5) * .8, spark: true }); }
   function archHole(cam){ var p = proj(cam, 0, 4, 0) || { x: 270, y: 480, s: 1 }, s = p.s; return function(){ x.beginPath(); x.moveTo(p.x - 34.4 * s, p.y + 4 * s); x.lineTo(p.x - 34.4 * s, p.y);
       x.ellipse(p.x, p.y, 34.4 * s, 35 * s, 0, Math.PI, 2 * Math.PI); x.lineTo(p.x + 34.4 * s, p.y + 4 * s); x.closePath(); }; }
 
@@ -704,7 +800,10 @@ var K25 = (function(){
     if ((s = Kt.plane(cam, 0))) { V = Kt.vis(5); x.fillStyle = '#5c4232'; x.fillRect(V.x0, -3, V.x1 - V.x0, 3); x.beginPath(); for (i = Math.floor(V.x0); i < V.x1; i += 1) Kt.seg(i, 0, i - 1.4, -3); Kt.ink(.8, 'rgba(30,20,14,.35)');
       [-2.2, 2.4].forEach(function(tx){ Kt.contact(tx, 0, 1.2, .45, .12); x.beginPath(); Kt.seg(tx - .45, 0, tx - .08, .86); Kt.seg(tx + .45, 0, tx + .08, .86); x.lineWidth = .08; x.strokeStyle = '#3c2a1e'; x.stroke(); x.fillStyle = '#4a3424'; x.fillRect(tx - .55, .8, 1.1, .07); });
       Kt.contact(0, .02, 7.6, .35, .12);
-      var k = (bx(t) + 3.4) / 6.8; Kt.repaint(girder, IRON, RED, P(t, tB0 - .01, tB0) > 0 ? k : 0, [-3.6, .8, 3.6, 1.8], { dir: 'x', wet: 'rgba(255,190,170,.9)' }); }
+      PLATES.forEach(function(q, j){ Kt.stackOn(t, q[3], q[0], q[1], q[2], function(){ x.beginPath(); x.rect(-.32, -.03, .64, .06); x.fillStyle = RED; x.fill(); x.fillStyle = tone(RED, 1.3); x.fillRect(-.32, .015, .64, .015); x.fillStyle = tone(RED, .52); x.fillRect(-.32, -.03, .64, .012);
+        x.fillStyle = tone(RED, .45); for (var h0 = -.24; h0 < .3; h0 += .16) { x.beginPath(); x.arc(h0, 0, .012, 0, 7); x.fill(); } }, { sh: .8 }); });
+      var k = (bx(t) + 3.4) / 6.8; Kt.repaint(girder, IRON, RED, P(t, tB0 - .01, tB0) > 0 ? k : 0, [-3.6, .8, 3.6, 1.8], { dir: 'x', wet: 'rgba(255,190,170,.9)' });
+      RIV2.forEach(function(r, j){ if (t < r[1] - .05) return; Kt.rivet(t, r[1], r[0], 1.69, .028, tone(RED, .62)); Kt.rivet(t, r[1] + .04, r[0], .93, .028, tone(RED, .62)); if (j % 3 === 1) Kt.sparks(t, r[1], r[0], 1.72, 6, 30 + j, 'rgba(255,214,160,.95)', 18); }); }
     if (Kt.plane(cam, -.3)) { var b = bx(t), sc = Math.sin(t * 13) * .22 * (t > tB0 && t < tB1 ? 1 : .2), hy = 1.3 + sc, sh = [b - 1.25, 3.6];   // the painter's arm and brush, from above the frame
       x.beginPath(); x.moveTo(sh[0] - .1, sh[1]); x.quadraticCurveTo(b - .72, hy + .95, b - .1, hy + .34); x.lineTo(b + .02, hy + .43); x.quadraticCurveTo(b - .55, hy + 1.08, sh[0] + .1, sh[1] + .06); x.closePath(); x.fillStyle = '#3a3329'; x.fill(); x.save(); x.clip(); x.fillStyle = Kt.lit(sh[0], hy, b, sh[1], .4, .14); x.fillRect(sh[0] - 1, hy - 1, 3, 4); x.restore();
       x.beginPath(); x.ellipse(b - .09, hy + .37, .075, .06, .6, 0, 7); x.fillStyle = '#e6dccb'; x.fill();
@@ -725,15 +824,18 @@ var K25 = (function(){
   function W3(t){ var cam = C3(t), i, r, V; Kt.world('chips', { air: '#33405f', haze: .4 });
     Kt.screen(); x.fillStyle = lg(0, 0, 0, 960, [[0, '#18203a'], [1, '#2a3656']]); x.fillRect(0, 0, 540, 960);
     if (Kt.plane(cam, 9)) { V = Kt.vis(5); x.fillStyle = '#244a7a'; x.fillRect(-6, -6, 12, 13); x.save(); x.beginPath(); x.rect(-6, -6, 12, 13); x.clip(); x.beginPath(); for (i = -6; i <= 6; i += .5) { Kt.seg(i, -6, i, 7); Kt.seg(-6, i, 6, i); } Kt.ink(.6, 'rgba(220,235,255,.18)');
-      x.save(); x.translate(0, -5); x.scale(.034, .034); Kt.path(edge(hw, 0, 276, -1)); Kt.ink(1.4, 'rgba(235,244,255,.8)'); Kt.path(edge(hw, 0, 276, 1)); Kt.ink(1.4, 'rgba(235,244,255,.8)'); Kt.path(edge(xi, 0, 160, -1)); Kt.ink(1, 'rgba(235,244,255,.6)'); Kt.path(edge(xi, 0, 160, 1)); Kt.ink(1, 'rgba(235,244,255,.6)');
+      x.save(); x.translate(0, -5); x.scale(.034, .034); var bp = eio(P(t, tw0(1) + .2, A[5] + 1.2)); x.save(); x.beginPath(); x.rect(-80, -10, 160, 10 + 335 * bp); x.clip(); Kt.path(edge(hw, 0, 276, -1)); Kt.ink(1.4, 'rgba(235,244,255,.8)'); Kt.path(edge(hw, 0, 276, 1)); Kt.ink(1.4, 'rgba(235,244,255,.8)'); Kt.path(edge(xi, 0, 160, -1)); Kt.ink(1, 'rgba(235,244,255,.6)'); Kt.path(edge(xi, 0, 160, 1)); Kt.ink(1, 'rgba(235,244,255,.6)');
         for (i = 0; i + 1 < LEV.length; i += 2) { x.beginPath(); Kt.seg(-hw(LEV[i]), LEV[i], hw(LEV[i]), LEV[i]); Kt.ink(.6, 'rgba(235,244,255,.35)'); } x.beginPath(); x.ellipse(0, 4, 34.4, 35, 0, 0, Math.PI); Kt.ink(1, 'rgba(235,244,255,.6)'); x.restore();
+        if (bp > 0 && bp < 1) { x.beginPath(); Kt.seg(-80, 335 * bp - 10, 80, 335 * bp - 10); Kt.ink(1.2, 'rgba(235,244,255,.5)'); } x.restore();
       x.restore(); x.fillStyle = '#b8c0c8'; [[-5.6, 6.6], [5.6, 6.6], [-5.6, -5.6], [5.6, -5.6]].forEach(function(q){ x.beginPath(); x.arc(q[0], q[1], .09, 0, 7); x.fill(); }); }
-    if (Kt.plane(cam, 3.6)) { r = rnd(4); [[-1.5, 1.95, -.08], [1.55, 1.8, .1]].forEach(function(q, j){ var sw = Math.sin(t * 1.1 + j) * .03; x.save(); x.translate(q[0], q[1]); x.rotate(q[2] + sw);
-        x.fillStyle = '#e8dcc2'; x.fillRect(-.7, -1.6, 1.4, 1.7); x.fillStyle = '#7a6448'; x.fillRect(-.6, -1.35, 1.2, 1.25); x.save(); x.translate(0, -1.3); x.scale(1.2, 1.2); miniTower('#4a3a2a'); x.restore(); x.restore();
-        x.beginPath(); Kt.seg(q[0], q[1] + .1, q[0], 4); Kt.ink(1, 'rgba(230,220,200,.5)'); }); }
+    if (Kt.plane(cam, 3.6)) { r = rnd(4); PIN.forEach(function(q, j){ var sw = Math.sin(t * 1.1 + j) * .03 * P(t, q[3], q[3] + .5);
+        x.beginPath(); Kt.seg(q[0], q[1] + .1, q[0], 4); Kt.ink(1, 'rgba(230,220,200,.5)');
+        Kt.stackOn(t, q[3], q[0], q[1], q[2] + sw, function(){ x.fillStyle = '#e8dcc2'; x.fillRect(-.7, -1.6, 1.4, 1.7); x.fillStyle = '#7a6448'; x.fillRect(-.6, -1.35, 1.2, 1.25); x.save(); x.translate(0, -1.3); x.scale(1.2, 1.2); miniTower('#4a3a2a'); x.restore(); }, { from: [0, .7], turn: .22 });
+        Kt.rivet(t, q[3] + .14, q[0], q[1] - .02, .07, '#b8372a'); }); }
     if (Kt.plane(cam, 0)) { Kt.contact(0, -1.7, 3, .4, .2);
       for (i = 0; i < 7; i++) { var a = chipA(i, t), k = P(t, chipT(i) - .2, chipT(i)), lift = chipLift(i, t); if (k <= 0 && i > 0) continue;
-        x.save(); x.translate(0, -1.7); x.rotate(-a); x.translate(0, lift); x.shadowColor = 'rgba(8,10,20,.45)'; x.shadowBlur = 14; x.shadowOffsetX = 4; x.shadowOffsetY = 6;
+        var up = 1 - es(P(t, chipT(i) - .05, chipT(i) + .4)); if (i === 0 && t < chipT(0) - .05) up = 0;
+        x.save(); x.translate(0, -1.7); x.rotate(-a); x.translate(0, lift); x.scale(1 + .06 * up, 1 + .06 * up); x.shadowColor = 'rgba(8,10,20,.45)'; x.shadowBlur = 14 + 16 * up; x.shadowOffsetX = 4 + 8 * up; x.shadowOffsetY = 6 + 12 * up;
         x.beginPath(); x.roundRect(-.3, .2, .6, 2.5, .06); x.fillStyle = '#efe6d4'; x.fill(); x.shadowColor = 'transparent';
         x.beginPath(); x.roundRect(-.26, .62, .52, 2.04, .04); x.fillStyle = CHIPS7[i]; x.fill(); x.fillStyle = Kt.lit(-.26, .62, .26, 2.66, .3, .16); x.fill();
         x.save(); x.translate(0, 1.6); miniTower(tone(CHIPS7[i], 1.35)); x.restore();
@@ -763,14 +865,29 @@ var K25 = (function(){
   function kinetic(t){ var k, o;
     Kt.choices(optsAt(), t, { y: 232, pick: ANSWER, reveal: tRv, live: liveOpt, out: tw0(0) - .15 });
     Kt.countdown(t, CD[0], CD[1], 104, 452, { col: AMBER, r: 50, size: 58 });   // left of the tower, clear of the spire and the chips
+    lock(t); notches(t);
     k = P(t, WT(4, /venetian/i) - .1, WT(4, /venetian/i) + .5); o = 1 - P(t, tw0(1) - .3, tw0(1));
     if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; lab('VENETIAN RED', SX, 196, 30, REDT, k, 4); lab('AN ANTI-RUST COAT · 1887-1888', SX, 236, 14, CREAM, P(t, WT(4, /venetian/i) + .4, WT(4, /venetian/i) + .9), 2.5); x.restore(); }
+    // the tally counts the chips as they fan out (one mark each, never past seven), then gives way to the 7 on "seven"
+    var tk7 = P(t, WT(5, /seven/i) - .15, WT(5, /seven/i) + .05); if (t > chipT(0) && tk7 < 1) { x.save(); x.globalAlpha *= 1 - tk7; x.strokeStyle = 'rgba(8,8,20,.75)';
+      Kt.tally(t, [0, 1, 2, 3, 4, 5, 6].map(function(j){ return chipT(j) + .15; }), SX - 46, 232, { col: CREAM, gap: 13, h: 36, w: 4 }); x.restore(); }
     k = P(t, WT(5, /seven/i) - .1, WT(5, /seven/i) + .6); o = 1 - P(t, tw0(2) - .2, tw0(2) + .1);
     if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; pop('7', SX, 222, 92, AMBER, k); lab('OFFICIAL COLOURS SINCE 1889', SX, 258, 15, CREAM, k, 3); x.restore(); }
   }
+  // the padlock: lands on "Lock", its shackle clicks shut, then it gives way to the countdown in the same place
+  function lock(t){ var t0 = WT(2, /lock/i), k = es(P(t, t0 - .25, t0 + .1)), sh = eo(P(t, t0 + .02, t0 + .12)), o = 1 - P(t, CD[0] - .35, CD[0] - .1); if (k <= 0 || o <= 0) return;
+    x.save(); x.globalAlpha *= o; x.translate(104, 458); arrive(k); x.rotate(Math.sin(P(t, t0 + 1.0, t0 + 1.4) * Math.PI * 3) * .14 * (1 - P(t, t0 + 1.0, t0 + 1.4))); x.scale(1 + .1 * Math.sin(Math.PI * P(t, t0 + .1, t0 + .3)), 1 + .1 * Math.sin(Math.PI * P(t, t0 + .1, t0 + .3)));
+    x.beginPath(); x.arc(0, -16 - 9 * (1 - sh), 13, Math.PI, 0); x.lineTo(13, -16 + 9 * sh - 9); x.moveTo(-13, -16 - 9 * (1 - sh)); x.lineTo(-13, -10); x.lineWidth = 6; x.lineCap = 'round'; x.strokeStyle = CREAM; x.stroke();
+    paper(rr(-22, -14, 44, 34, 7), 'rgba(16,12,10,.92)', 3); x.beginPath(); x.roundRect(-22, -14, 44, 34, 7); x.lineWidth = 2; x.strokeStyle = AMBER; x.stroke();
+    x.beginPath(); x.arc(0, 0, 4.5, 0, 7); x.fillStyle = AMBER; x.fill(); x.fillRect(-1.6, 1, 3.2, 9); x.restore(); }
+  // the countdown's notches: three marks above the ring, one drops away between each pair of numerals
+  function notches(t){ if (t < CD[0] - .2 || t > CD[1] + .25) return; var a = P(t, CD[0] - .2, CD[0]) * (1 - P(t, CD[1], CD[1] + .25)); x.save(); x.globalAlpha *= a;
+    NOTCH.forEach(function(v, j){ var g = P(t, v - .03, v + .25), X = 104 + (j - 1) * 16, Y = 394 + 18 * eo(g); x.save(); x.globalAlpha *= 1 - g; x.beginPath(); x.arc(X, Y, 4.5 * (1 + .5 * Math.sin(Math.PI * P(t, v - .03, v + .12))), 0, 7); x.fillStyle = AMBER; x.fill(); x.restore(); });
+    x.restore(); }
   function drawPayoff(t){ var k = es(P(t, DUR - 2.9, DUR - 2.2)); if (k <= 0) return; x.save(); x.globalAlpha = cl(k * 1.6, 0, 1); x.translate(SX, 214); arrive(k);
     x.font = font(48, '700 ' + FD); x.textAlign = 'center'; x.strokeStyle = 'rgba(8,8,20,.75)'; x.lineWidth = 8; x.lineJoin = 'round'; x.strokeText(PAYOFF, 0, 0); txt(PAYOFF, 0, 0, 48, '700 ' + FD, REDT, 'center', -.5);
-    x.font = font(15, '800 ' + FI); x.strokeStyle = 'rgba(8,8,20,.8)'; x.lineWidth = 6; x.letterSpacing = '3px'; x.strokeText(PAYOFF2, 0, 38); x.letterSpacing = '0px'; txt(PAYOFF2, 0, 38, 15, '800 ' + FI, CREAM, 'center', 3); x.restore(); }
+    var k2 = es(P(t, DUR - 2.65, DUR - 2.3)); if (k2 > 0) { x.save(); x.globalAlpha *= cl(k2 * 3, 0, 1); x.translate(0, 38); x.scale(mix(1.3, 1, k2), mix(1.3, 1, k2));
+    x.font = font(15, '800 ' + FI); x.strokeStyle = 'rgba(8,8,20,.8)'; x.lineWidth = 6; x.letterSpacing = '3px'; x.strokeText(PAYOFF2, 0, 0); x.letterSpacing = '0px'; txt(PAYOFF2, 0, 0, 15, '800 ' + FI, CREAM, 'center', 3); x.restore(); } x.restore(); }
   function seek(t){
     t = cl(t, 0, DUR); BOXES.length = 0; x.globalAlpha = 1; Kt.begin(); frame(t);
     Kt.off(0, 0); Kt.screen(); x.globalAlpha = 1;
@@ -790,15 +907,15 @@ var K25 = (function(){
     Lg(tRv + .4, tw1(0) - tRv - .4, 270, 270, .26); Q.push({ t: tw1(0) - .1, k: 'touch', g: .16, x: 270 });                                // the dive through the arch
     Kt.ambient(Q, 'lamp', tw1(0), tw0(1), 300);
     for (var u = tB0 + .1; u < tB1; u += .46) { var bxp = 270 + bx(u) * 50; R(u, .4, cl(bxp, 30, 510), .13); Q.push({ t: u + .02, k: 'tap', g: .08, x: cl(bxp, 30, 510) }); }   // the brush strokes along the girder
-    Q.push({ t: WT(4, /venetian/i), k: 'blip', g: .12, p: 6, x: SX }, { t: WT(4, /rust/i), k: 'blip', g: .1, p: 9, x: SX });
     R(tw0(1), tw1(1) - tw0(1), 470, .3);                                                                                                  // the page
-    for (i = 0; i < 7; i++) Q.push({ t: chipT(i), k: 'snap', g: .12, p: i, x: 255 + (i - 3) * 50 }, { t: chipT(i) + .05, k: 'tick', g: .08, p: 8 + i, x: 255 + (i - 3) * 50 });   // the chips fan out
+    for (i = 0; i < 7; i++) Q.push({ t: chipT(i), k: 'snap', g: .12, p: i, x: 255 + (i - 3) * 50 });   // the chips fan out
     Q.push({ t: WT(5, /seven/i) - .05, k: 'pop', g: .18, p: 5, x: SX }, { t: WT(5, /seven/i) + .1, k: 'tick', g: .1, p: 10, x: SX });   // the 7 lands, its label
     Q.push({ t: A[6] - .9, k: 'blip', g: .1, p: 4, x: 400 });                                                                             // today's chip lifts
     Lg(tw0(2), tw1(2) - tw0(2) + 1.2, 300, 270, .22); Q.push({ t: tw0(2) + .1, k: 'touch', g: .16, x: 300 });                              // the match cut and the pull-back
     Kt.ambient(Q, 'wind', tw1(2), DUR - .3, 270);
     for (i = 0; i < 6; i++) Q.push({ t: tw1(2) + .4 + i * .18, k: 'tick', g: .08, p: 12 + i, x: 200 + i * 28 });                            // the tower's lights come on
     Q.push({ t: DUR - 3, k: 'tick', g: .1, p: 9, x: SX }, { t: DUR - 2.85, k: 'pop', g: .16, p: 4, x: SX }, { t: DUR - 2.4, k: 'resolve', g: .3, notes: [57, 64, 69, 73] });   // the credit, the payoff line
+    Kt.beatCues(Q);   // every detail beat's matched sound (tick, snap, click, paper slide + tap, thud), panned by its x
     Q.forEach(function(q){ q.t = +Math.max(0, q.t).toFixed(2); }); Q.sort(function(a, b){ return a.t - b.t; });
     window.CUES = { dur: DUR, cues: Q, mix: { duck: 8, room: .6 }, bed: { bpm: 76, origin: 0, gain: .3, soft: true, lift: +(A[A.length - 1] - .2).toFixed(2), chords: [[45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [48, 55, 60, 64, 67], [43, 50, 55, 59, 62]] } }; }
   window.seek = seek; window.DURATION = DUR;

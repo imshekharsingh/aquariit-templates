@@ -550,13 +550,81 @@ var K25 = (function(){
     opts.forEach(function(op, i){ Q.push({ t: op.at, k: 'pop', g: .16, p: 3 + i * 2, x: X + (i - (n - 1) / 2) * 152 }); });
     cd.forEach(function(c, i){ Q.push({ t: c, k: 'tick', g: .22, p: 6 + i * 2, x: X }); });
     Q.push({ t: reveal, k: 'riser', d: Math.min(1.6, reveal - cd[0]), g: .12 }, { t: reveal, k: 'hit', g: .24, x: X }, { t: reveal + .05, k: 'shimmer', g: .14, x: X }); }
+  // ---- detail and stacking (12 Nov 2026; owner: "improvements in animation with more detailing and stacking ... with sound element
+  // enhancements, to avoid boring instances in the reel and make it tick, snap, click better"; design/rules-c3.md rule 9). Every world
+  // carries small details that build up (rivets popping in, paint strokes sweeping, labels and stamps snapping on, paper pieces stacking,
+  // tallies ticking, dust and sparks), staggered so something small changes every 0.5-1 s, and each one is heard: beat() declares it once
+  // (when, what kind, where on screen, how big) and beatCues() turns every beat into its matched sound on the element-detail bus. qa.mjs
+  // reads window.__beats(): "BUSY: longest quiet run n.n s" (no beat seen on the frames and no sound onset) fails over 1.5 s. ----
+  var BEATS = [];
+  // beat(t, kind, X, Y, size): one small event the scene draws at t. X, Y = where on screen (CSS px: the pan, and where qa looks for it);
+  // size 0-1 (0 = a rivet, 1 = a large piece; small sounds high, large low). Kinds and their sounds:
+  //   'pop' (a rivet, a dot, a small piece popping in) and 'count' (a tally or counter step) = tick; 'stamp' and 'label' = snap;
+  //   'pin' and 'toggle' = click; 'stack' and 'slide' (a paper piece landing on the pile) = a short paper slide and a tap on the landing;
+  //   'big' (a large piece settling) = a soft thud with a tap on top; 'stroke' (a paint stroke) = a short rustle; 'spark' = a high tick
+  function beat(t, kind, X, Y, size){ BEATS.push({ t: +(+t).toFixed(2), kind: kind, x: Math.round(cl(X, 0, 540)), y: Math.round(cl(Y == null ? 480 : Y, 0, 960)), s: size == null ? .3 : size }); return t; }
+  function beats(){ return BEATS; }
+  window.__beats = function(){ return BEATS.slice(); };
+  function beatCues(Q){ BEATS.forEach(function(b, i){ var X = cl(b.x, 20, 520), hi = 1 - cl(b.s, 0, 1), v = (i * 7) % 3;
+    if (b.kind === 'pop' || b.kind === 'count') Q.push({ t: b.t, k: 'tick', g: .09 + b.s * .04, p: Math.round(8 + hi * 8 + v), x: X });
+    else if (b.kind === 'spark') Q.push({ t: b.t, k: 'tick', g: .07, p: 16 + v, x: X });
+    else if (b.kind === 'stamp' || b.kind === 'label') Q.push({ t: b.t, k: 'snap', g: .11 + b.s * .04, p: Math.round(1 + hi * 5 + v), x: X });
+    else if (b.kind === 'pin' || b.kind === 'toggle') Q.push({ t: b.t, k: 'click', g: .11, p: Math.round(hi * 4 + v), x: X });
+    else if (b.kind === 'stack' || b.kind === 'slide') Q.push({ t: b.t - .16, k: 'rustle', d: .2, g: .1, p: 2 + v, x: X }, { t: b.t, k: 'tap', g: .1 + b.s * .04, p: Math.round(hi * 4), x: X });
+    else if (b.kind === 'big') Q.push({ t: b.t, k: 'thud', g: .16 + b.s * .08, p: -2, x: X }, { t: b.t + .01, k: 'tap', g: .12, p: 0, x: X });
+    else if (b.kind === 'stroke') Q.push({ t: b.t, k: 'rustle', d: .26, g: .1, p: 5 + v, x: X });
+    else Q.push({ t: b.t, k: 'tick', g: .09, p: 10, x: X }); }); }
+  // lands(t, t0, d): 0 before a piece starts arriving, a spring to 1 as it lands at t0 (d = the flight, default .32 s), settling after
+  function lands(t, t0, d){ d = d || .32; return t < t0 - d ? 0 : es(P(t, t0 - d, t0 + .22)); }
+  // stackOn(t, t0, X, Y, rot, draw, o): a cut-paper piece arriving on the pile in front of the viewer: it drops in from o.from (current units,
+  // default 40 px "above" in this layer's own up), turned o.turn (default .12 rad) more than its resting rot, 8 % large and lifted (a long,
+  // soft offset shadow), then lands at t0 on (X, Y), settles with a small overshoot and its shadow tightens to a short offset (the key light
+  // is upper left, so it falls down and right). draw() draws the piece around 0, 0 in the current units. o.d = the flight (s), o.sh = shadow
+  // strength (0-1). Use it for every piece that builds a picture: cards, photos, stamps, labels, plates, tiles.
+  function stackOn(t, t0, X, Y, rot, draw, o){ o = o || {}; var k = lands(t, t0, o.d); if (k <= 0) return 0; var up = x.getTransform().d < 0 ? 1 : -1, from = o.from || [px(-14), up * px(40)],
+      lift = 1 - cl(k, 0, 1), sh = o.sh == null ? 1 : o.sh;
+    x.save(); x.translate(X + from[0] * lift, Y + from[1] * lift); x.rotate((rot || 0) + (o.turn == null ? .12 : o.turn) * (1 - k)); x.scale(1 + .08 * lift, 1 + .08 * lift);
+    x.globalAlpha *= cl(k * 4, 0, 1);
+    if (sh > 0) { x.shadowColor = 'rgba(28,18,12,' + (.3 * sh).toFixed(3) + ')'; x.shadowBlur = mix(4, 22, lift) * sh; x.shadowOffsetX = mix(3, 12, lift) * sh; x.shadowOffsetY = mix(5, 20, lift) * sh; }
+    draw(k); x.restore(); return k; }
+  // rivet(t, t0, X, Y, r, col): a rivet head popping in (current units, r = radius): grows past full size and settles, a lit dot on its upper
+  // left, and a thin ring that opens and fades around it (matte: a line, no glow)
+  function rivet(t, t0, X, Y, r, col){ if (t < t0 - .04) return; var k = es(P(t, t0 - .04, t0 + .2)), g = P(t, t0, t0 + .4);
+    x.save(); x.beginPath(); x.arc(X, Y, r * k, 0, 7); x.fillStyle = col || '#3b302a'; x.fill();
+    x.beginPath(); x.arc(X - r * .3, Y + (x.getTransform().d < 0 ? r * .3 : -r * .3), r * .32 * k, 0, 7); x.fillStyle = 'rgba(255,240,215,.55)'; x.fill();
+    if (g > 0 && g < 1) { x.globalAlpha *= (1 - g) * .8; x.beginPath(); x.arc(X, Y, r * (1.2 + 2.2 * eo(g)), 0, 7); x.lineWidth = px(1.2); x.strokeStyle = 'rgba(255,236,200,.9)'; x.stroke(); }
+    x.restore(); }
+  // sweep(t, t0, t1, pts, w, col, seed): one paint stroke along a polyline (current units) from t0 to t1: the paint lays down behind a wet,
+  // lighter head, with bristle streaks along it and a dry, broken tail
+  function sweep(t, t0, t1, pts, w, col, seed){ if (t < t0) return; var k = eio(P(t, t0, t1)), L = [0], i, tot; for (i = 1; i < pts.length; i++) L.push(L[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])); tot = L[L.length - 1] * k;
+    var r = rnd(seed || 5), at = function(d){ for (var j = 1; j < pts.length; j++) if (L[j] >= d || j === pts.length - 1) { var u = (d - L[j - 1]) / Math.max(1e-9, L[j] - L[j - 1]); return [mix(pts[j - 1][0], pts[j][0], cl(u, 0, 1)), mix(pts[j - 1][1], pts[j][1], cl(u, 0, 1)), Math.atan2(pts[j][1] - pts[j - 1][1], pts[j][0] - pts[j - 1][0])]; } return [pts[0][0], pts[0][1], 0]; };
+    x.save(); x.lineCap = 'round'; x.lineJoin = 'round';
+    for (var b = 0; b < 7; b++) { var off = (b / 6 - .5) * w * .9, dry = .55 + r() * .45; x.beginPath();
+      for (var s0 = 0; s0 <= 24; s0++) { var d = tot * s0 / 24, q = at(d), nx = -Math.sin(q[2]), ny = Math.cos(q[2]); if (s0) x.lineTo(q[0] + nx * off, q[1] + ny * off); else x.moveTo(q[0] + nx * off, q[1] + ny * off); if (s0 / 24 > dry && k >= 1) break; }
+      x.lineWidth = w * (b % 3 ? .2 : .32); x.strokeStyle = col; x.globalAlpha = b % 2 ? .85 : 1; x.stroke(); }
+    if (k < 1) { var h = at(tot); x.globalAlpha = .7; x.beginPath(); x.arc(h[0], h[1], w * .45, 0, 7); x.fillStyle = 'rgba(255,240,222,.55)'; x.fill(); }
+    x.restore(); }
+  // sparks(t, t0, X, Y, n, seed, col, R): a little burst on a landing (dust off paper, sparks off iron): n bits fly out up to R px and fade
+  // over .45 s (current units; sizes on screen stay about 1.5-2.5 px)
+  function sparks(t, t0, X, Y, n, seed, col, R){ var u = P(t, t0, t0 + .45); if (u <= 0 || u >= 1) return; var r = rnd(seed || 3), e = eo(u), up = x.getTransform().d < 0 ? 1 : -1; x.save(); x.fillStyle = col || 'rgba(255,226,180,.9)';
+    for (var i = 0; i < (n || 8); i++) { var a = (i / (n || 8)) * 6.28 + r() * .6, d = px(R || 26) * (.5 + r() * .6) * e; x.globalAlpha = (1 - u) * (.6 + r() * .4);
+      x.beginPath(); x.arc(X + Math.cos(a) * d, Y + up * (Math.sin(a) * d * .7 + px(6) * e) - up * px(14) * u * u * (r() - .2), px(1.1 + r() * 1.2), 0, 7); x.fill(); }
+    x.restore(); }
+  // tally(t, times, X, Y, o): a counter without digits: one tick mark lands at each time (a short drop and a snap), o.gap / o.h (px on screen),
+  // o.col; every fifth crosses the four before it. Use it when a count is shown but no number is said (a number said lands with its word).
+  function tally(t, times, X, Y, o){ o = o || {}; var g = px(o.gap || 7), h = px(o.h || 18), up = x.getTransform().d < 0 ? 1 : -1; x.save(); x.lineCap = 'round'; x.strokeStyle = o.col || 'rgba(40,30,22,.85)'; x.lineWidth = px(o.w || 2.2);
+    times.forEach(function(t0, i){ var k = es(P(t, t0 - .06, t0 + .18)); if (k <= 0) return; var five = i % 5 === 4, gi = Math.floor(i / 5) * 5, X0 = X + (gi + (i - gi)) * g + Math.floor(i / 5) * g * .8;
+      x.beginPath(); if (five) { x.moveTo(X + gi * g + Math.floor(i / 5) * g * .8 - g * .4, Y + up * h * .2); x.lineTo(X + gi * g + Math.floor(i / 5) * g * .8 + g * 3.4 * k, Y + up * h * (.2 + .6 * k)); }
+      else { x.moveTo(X0, Y + up * h * (1 - k) * .4); x.lineTo(X0, Y + up * h * mix(.4, 1, k)); } x.stroke(); });
+    x.restore(); }
   var FI_ = "'Inter',system-ui,sans-serif";
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
     paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb,
     LANDS: LANDS, globe: globe, gxy: gxy, map: map, mxy: mxy, route: route, bow: bow, place: place,
     paint: paint, blit: blit, through: through, match: match, page: page, fold: fold, print: print, seam: seam,
     LIGHT: LIGHT, begin: begin, world: world, plane: plane, contact: contact, lit: lit, act: act, aes: aes, figure: figure, flick: flick, motes: motes, cloth: cloth, ambient: ambient,
-    choices: choices, countdown: countdown, repaint: repaint, guessCues: guessCues };
+    choices: choices, countdown: countdown, repaint: repaint, guessCues: guessCues,
+    beat: beat, beats: beats, beatCues: beatCues, lands: lands, stackOn: stackOn, rivet: rivet, sweep: sweep, sparks: sparks, tally: tally };
 })();
 /*kit25:end*/
 

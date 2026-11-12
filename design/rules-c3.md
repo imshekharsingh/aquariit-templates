@@ -44,6 +44,12 @@ topic gate works; the format must now make people answer, send and finish.
 7. **Said right**: the preflight PRONUNCIATION line has no "check:" words (shared lexicon scripts/voice/say.json); years as people say them.
 8. **One reel a day at 13:00 IST, ready by 12:00** (owner, 8 Nov 2026), built that morning or the evening before; never a second reel for a
    channel and day (captions.json).
+9. **Something small lands and is heard every 0.5-1 s** (owner, 12 Nov 2026: "more detailing and stacking ... to avoid boring instances in
+   the reel and make it tick, snap, click better"; the first Eiffel guess reel went quiet for 2.4 s at its payoff, 22.2-24.6 s, with nothing
+   small moving or heard). Every world builds up in front of the viewer: rivets popping in, paint strokes, labels and stamps snapping on,
+   paper pieces stacking with a shadow that tightens as they settle, a tally counting, dust and sparks, each a `Kt.beat` with its matched
+   sound (`Kt.beatCues`). qa.mjs "BUSY: longest quiet run" must be 1.5 s or less with 80 %+ of the beats seen on the frames, and SOUND
+   DETAIL 80 %+ after the render. In the guess world the details stay neutral until the reveal (rule 1).
 
 **Quality gate (unchanged, design/mandatory.md):** SAFE ZONE ok, OVERLAP none, BAND and HOOK read on the stills, FLOW (cuts 0, dead runs
 none, continuity 85%+, strobes 0-1), DEPTH lines, SOUND GATE ok and SOUND DETAIL ok after the render (every moving element heard, small high,

@@ -15,6 +15,7 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 8. Is the answer hidden in EVERY frame before the reveal (colour, state, label, icon)? (12 Nov: the Eiffel tower was red while asking "gold, grey or red?")
 9. Is the 3-2-1 countdown clear, complete and placed away from the subject?
 10. Do counters and dates on screen equal the facts said (12 Nov: "8" shown for "seven colours")?
+15. Does something small land and get heard every 0.5-1 s in every world (qa.mjs BUSY ok; 12 Nov: 2.4 s with nothing at the payoff), is each detail readable at phone size (not specks), and does no detail in the guess world hint at the answer?
 
 ## @webin20sec
 11. Mute test: 1 s of "before" and 1 s of "after" at phone size: is it obvious which is broken (rules-web.md rule 15; 12 Nov: a 4% press dip was invisible)?
