@@ -28,6 +28,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 import say   # noqa: E402  the shared lexicon (scripts/voice/say.json): the hook voice says words the way the narration does
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import detail   # noqa: E402  the element-detail bus (8 Nov 2026): ticks, blips, snaps, touches heard, not buried under the voice
+import samples   # noqa: E402  recorded CC0 effects (12 Nov 2026): each effect kind plays a real recorded sample; synthesized only as a fallback
 # SOUND_DETAIL=off renders the old routing (details on the effects bus at their cue gain) and still prints the gate line: a before/after check
 LEGACY = os.environ.get('SOUND_DETAIL') == 'off'
 # SAY_CONFIG=<reel config.json> (set by the Showreel workflow) adds the config's own "say" on top of the lexicon
@@ -349,6 +350,7 @@ def main(cues_path, out_path, narration=None):
             if k == 'move': kw['dir'] = c.get('dir', 1)
             if k == 'resolve' and c.get('notes'): kw['notes'] = c['notes']
             s = NEW_KINDS[k](g=g, p=p, **kw)
+            s = samples.swap(k, s, t, p)
             if k == 'swell': t -= kw['d']   # ends on the cue
             s = place(s, c.get('x', 270), c.get('x2'))
             if k in AIR: s = air(s, k != 'swell')
@@ -361,6 +363,7 @@ def main(cues_path, out_path, narration=None):
         elif k == 'riser': s = riser(c.get('d', 1), g, p); t -= c.get('d', 1)   # ends on the cue
         elif k == 'boom': s = hit(g, p, True)
         else: s = {'hit': hit, 'pop': pop, 'tick': tick, 'click': click, 'shimmer': shimmer, 'tap': tap, 'thud': thud}[k](g, p)
+        s = samples.swap(k, s, t, p)
         if c.get('x') is not None: s = place(s, c['x'], c.get('x2'))
         if k in AIR: s = air(s, k != 'riser')
         s = _detail(s, k, g, t)
@@ -369,6 +372,7 @@ def main(cues_path, out_path, narration=None):
     sfx, vox, det = sfx[:, :n], vox[:, :n], det[:, :n]
     line, ok = detail.gate(hits, vox)
     print(line)
+    samples.report()
     B = C.get('bed')
     b = bed(dur, B['bpm'], B['origin'], B['chords'], B.get('soft', False)) if B else np.zeros((2, n))
     if B and B.get('lift') is not None:   # the bed lifts into the payoff (Turns Out quality bar, point 7): +5 dB over 1.5 s from 'lift'

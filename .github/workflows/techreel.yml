@@ -51,6 +51,18 @@ jobs:
           # (the Hugging Face file is named "-any-", which pip refuses as a wheel name: saved under the real one first)
           [ -n "$ok" ] || { curl -fsSL --retry 3 -o "$RUNNER_TEMP/$W-py3-none-any.whl" "https://huggingface.co/spacy/en_core_web_sm/resolve/main/en_core_web_sm-any-py3-none-any.whl" && pip install "$RUNNER_TEMP/$W-py3-none-any.whl"; }
           python3 -c "import spacy; spacy.load('en_core_web_sm'); print('en_core_web_sm ok')"
+      - name: Recorded sound samples (cache)
+        # Kenney's CC0 packs (12 Nov 2026: real recorded effects; scripts/showreel/samples.py), downloaded once and cached
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/cc0-sounds
+          key: cc0-sounds-kenney-v1
+      - name: Recorded sound samples
+        # never fails the run: without samples the engines use the synthesized fallback and print "SOUND SOURCE: synthesized"
+        continue-on-error: true
+        run: |
+          bash scripts/sound/fetch-samples.sh "$HOME/.cache/cc0-sounds"
+          echo "SFX_SAMPLES=$HOME/.cache/cc0-sounds" >> "$GITHUB_ENV"
       - name: Render
         run: |
           set -o pipefail

@@ -97,8 +97,9 @@ def main(cfg_path, wav_path, report=None):
     for k, (sent, a0, a1) in enumerate(sents[:len(times)]):
         st, en = times[k]; dur = max(.01, en - st); wps = (a1 - a0) / dur
         pause = times[k + 1][0] - en if k + 1 < len(times) else None
-        bad = [x for x, c in (('fast', wps > MAX_WPS), ('no breath', pause is not None and pause < MIN_PAUSE)) if c]
-        flags += bool(bad)
+        short = a1 - a0 <= 6   # 12 Nov 2026: natural speed 1.0; a short line that reads quick is a warning, a full sentence is flagged over 4.5
+        bad = [x for x, c in (('fast', not short and wps > MAX_WPS + .5), ('quick short line (warning)', short and wps > MAX_WPS), ('no breath', pause is not None and pause < MIN_PAUSE)) if c]
+        flags += bool([x for x in bad if 'warning' not in x])
         prow.append(f"| {st:5.2f} s | {sent} | {dur:.2f} s | {a1 - a0} | {wps:.2f} | {'end' if pause is None else f'{pause:.2f} s'} | {', '.join(bad) or 'ok'} |")
     total = (times[-1][1] - times[0][0]) if times else 0
     overall = len(want) / max(total, .01)

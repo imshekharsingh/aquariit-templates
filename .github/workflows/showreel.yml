@@ -182,13 +182,25 @@ jobs:
           timeout 120 sudo apt-get install -y --no-install-recommends espeak-ng || echo 'espeak-ng from apt unavailable; using the bundled one'
           pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
           pip install kokoro==0.9.4 soundfile==0.12.1 preshed==3.0.13 cymem==2.0.13 murmurhash==1.0.15 srsly==2.5.4 spacy==3.8.16 thinc==8.3.13 blis==1.3.3
+      - name: Recorded sound samples (cache)
+        # Kenney's CC0 packs (12 Nov 2026: real recorded effects; scripts/showreel/samples.py), downloaded once and cached
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/cc0-sounds
+          key: cc0-sounds-kenney-v1
+      - name: Recorded sound samples
+        # never fails the run: without samples the engines use the synthesized fallback and print "SOUND SOURCE: synthesized"
+        continue-on-error: true
+        run: |
+          bash scripts/sound/fetch-samples.sh "$HOME/.cache/cc0-sounds"
+          echo "SFX_SAMPLES=$HOME/.cache/cc0-sounds" >> "$GITHUB_ENV"
       - name: Sound
         # every sound comes from the scene's cues (scripts/showreel/sound.py), levelled to -14 LUFS like the reels that hold attention
         if: hashFiles('out/*.cues.json') != ''
         run: |
           # the element-detail bus (scripts/showreel/detail.py): sound.py prints SOUND DETAIL and fails the run under 80% audible (gate item 8)
           SAY_CONFIG="$CFG" python3 scripts/showreel/sound.py "out/$NAME.cues.json" out/sound.wav $( [ -f out/narration.wav ] && echo out/narration.wav ) | tee out/sound.log
-          grep -h "^SOUND DETAIL" out/sound.log >> "$GITHUB_STEP_SUMMARY" || true
+          grep -h "^SOUND DETAIL\|^SOUND SOURCE" out/sound.log >> "$GITHUB_STEP_SUMMARY" || true
           # two passes: measure, then the exact gain to -14 LUFS and a limiter on the peaks (one-pass loudnorm stayed near -16)
           # limiter at 0.7 (-3.1 dBFS; 8 Nov 2026): the detail bus's sharp transients overshot to -0.6 dBTP after AAC at 0.8
           EQ="highpass=f=55,equalizer=f=200:t=q:w=1.2:g=-3,equalizer=f=3000:t=q:w=1:g=2"

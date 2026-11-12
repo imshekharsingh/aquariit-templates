@@ -38,7 +38,7 @@ const text = [hook, ...sentences].join(' '), hw = hook.split(/\s+/);
 const lines = []; for (let i = 0; i < hw.length; i += 3) lines.push(hw.slice(i, i + 3));
 const hookHtml = lines.map((l, li) => '<span class="ln">' + l.map((w, wi) => `<span${li * 3 + wi >= hw.length - 2 ? ' class="acc"' : ''}>${esc(w)}</span>`).join(' ') + '</span>').join('');
 // the reel's length: the preflight voice estimate (75.5 ms a letter at the speed), its 0.6 s margin, and about 1.5 s of payoff after the voice
-const speed = .9, letters = (text.match(/[A-Za-z]/g) || []).length + 4 * (text.match(/\d/g) || []).length, est = .2 + letters * .0765 / speed;
+const speed = 1, letters = (text.match(/[A-Za-z]/g) || []).length + 4 * (text.match(/\d/g) || []).length, est = .2 + letters * .0765 / speed;
 const dur = Math.ceil((est + .8 + 1.5) * 10) / 10, words = text.split(/\s+/).length;
 const fixI = Math.max(1, sentences.findIndex((s) => /\bfix\b/i.test(s)) + 1 || Math.ceil((sentences.length + 1) / 2));
 let page = readFileSync(join(here, 'starterweb.html'), 'utf8');
