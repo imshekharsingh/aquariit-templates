@@ -42,3 +42,9 @@ reel since 1 Nov passed 133) or it gets 3+ saves and shares together. 2 of 3 WIN
 Dropped 11 Nov (the numbers do not support them): old rule 1 (an everyday puzzle, 113-133), rule 2 (answer's first step in 2 s; kept in spirit
 as rule 2), rule 3 / 10 (length caps; now rule 5), rule 4 (a takeaway to save: 0 saves; now rule 4 with the recap), rule 9 (the verdict stamp:
 lifted watch 4.7 → 6.0 s, never reach: 117-123), rule 11 (platform balance; now rule 3, both paths).
+
+**12 Nov audit:** ESCALATE tech (median reach 119, ALARM two days running) is answered by E17 starting today (showreel-tech-stop-tracking,
+13:00: a new format, not a tweak). PROMOTE tech-myth-verdict (3 WINs: +8%, +1%, +2% vs median) was already written on 11 Nov as old rule 9
+and dropped the same day in the rewrite: its wins are inside the 113-133 pool (watch 6.0 / 5.2 / 6.4 s vs 4.7, reach flat), so it lifts
+watch, not reach. It is the fallback format if E17 is dropped on Sun 15 (not a rule while E17 runs).
+

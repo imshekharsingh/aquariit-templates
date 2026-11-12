@@ -47,3 +47,7 @@ medium mid, large low), the voice check, and design/owner-feedback.md line by li
 **Dropped 11 Nov (the numbers do not support them):** the 25-35 s length (no reel's watch went past 19 s); "a big change every ~3 s" (now
 1.5-2 s, owner feedback 7 Nov); the hour as a lever (13:00 vs evening made no difference: every slot gave 1,0xx or ~150 by topic); the
 "Did you know / why" question with the answer spoken straight away (it reaches the first pool and stops there).
+
+**12 Nov audit:** PROMOTE c3-journey (2 WINs, 0 LOSEs at 24 h: Sphinx 1,258 vs median 1,023, +23%; Opera House 1,224 vs 1,041, +18%) is
+rule 5 already; the c3 channel is OK (median reach 1,103 vs target 500). E19 (guess) starts today with showreel-c3-eiffel-red.
+

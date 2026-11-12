@@ -44,6 +44,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
   and saves (a recap of copyable lines). Look: style C, "Glass and light" (owner, 8 Nov 2026), the kit's default theme; titles, wording and components are ours.
   **Calm (owner, 8 Nov 2026: the 4-detail 20 s cut "feels rushed"):** 3 details, ~5.5-5.9 s a beat (real speed, then slow-mo with its curve, then a hold), 24-26 s,
   at most 2.4 words/s with 0.6 s+ breaths; showreel-30-alive was rebuilt this way before posting (beats ~2.6-3.2 s → 5.9 s, 2.15 → 1.58 words/s). Rule 13; PACE in preflight.
+- **Details format KEPT (12 Nov, PROMOTE):** 2 WINs of 3 at 24 h (alive +12%, waiting +27% with 4% saves and 98 saves + shares; menus -11%); rules-web.md rule 13. After E18, alternate it with the single fix.
 - **Art direction (8 Nov, owner: "Let's go with C."):** style C, "Glass and light": frosted panes at three depths over slow coloured light blooms,
   a soft gradient grade, crisp white Sora type, floating code panes. Through the kit theme (`KM.theme('glass')`, the newweb.mjs default in both
   modes), cheap glass path only (style C's test with real backdrop blur: 52 GitHub minutes for 8 s; style A ~210 for 20 s). From the Sun 8 Nov

@@ -96,6 +96,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 (function(){
 /*kitmotion:begin*/
 /*kitmotion:end*/
+/*kitsfx:begin*/
+/*kitsfx:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, TH = KM.theme(window.WEB_THEME || 'glass', window.WEB_PALETTE || '__PALETTE__');
   var TEXT = __TEXT__, DUR = __DUR__, HOOK_N = __HOOK_N__, HOOK_LINES = __HOOK_LINES__, FIX_S = __FIX_S__;
   // the code: the line the reel teaches (the <b> part is the fix, swept with the highlight); the ghost copy glides into the page
@@ -124,6 +126,17 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     for (var c = 0, t0 = A.fix + .4; t0 + c * .09 < A.typeEnd; c++) KM.cue({ t: t0 + c * .09, k: 'tick', g: .08, p: (c * 5) % 7 });
     KM.cue({ t: A.typeEnd + .15, k: 'pop', g: .3, p: 4 }); KM.cue({ t: A.tap + .55, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] });
     KM.cue({ t: DUR - .45, k: 'swish', d: .6, g: .4, p: -.6 });
+    // element sound (scripts/explainer/kitsfx.js; ELEMENT SOUND in the stills run): every element that enters, moves or changes has a cue by
+    // its size; an element whose cue is written above is marked. Give the reel's own moving parts their KM.sfx / KM.mark here too.
+    KM.mark($('ph'), 'tree', 'the camera moves the phone; the rows, the wipe and the tap have their cues');
+    KM.mark($('fg'), 'self', 'the tap cue'); KM.mark($('rip'), 'self', 'the tap cue'); KM.mark($('btn'), 'self', 'the tap cue');
+    KM.sfx($('lbl'), A.leave - .2, 'exit', { size: 'small' }); KM.sfx($('band'), A.leave - .1, 'enter', { size: 'medium', g: .6 });
+    KM.sfx($('code'), A.leave + .3, 'enter', { size: 'small', g: .6 });
+    KM.sfx($('code'), A.fix - .1, 'change', { size: 'medium' }); KM.mark($('tagt'), 'self', 'with the code card'); KM.mark($('cd'), 'tree', 'the typing ticks');
+    KM.sfx($('ghost'), A.typeEnd + .1, 'enter', { size: 'small', g: .7 }); KM.sfx($('ghost'), A.typeEnd + .78, 'land', { size: 'small', g: .6 });
+    KM.sfx($('good'), A.typeEnd + .7, 'change', { size: 'large', g: .6 }); KM.sfxRun(document.querySelectorAll('.good .row'), A.typeEnd + .75, .1, 'land', { size: 'medium' });
+    KM.sfx($('lab'), A.tap + .3, 'enter', { size: 'small', deg: 1 }); KM.mark($('ll'), 'self', 'drawn with its label');
+    var hs = $('hook').querySelectorAll('.ln > span'); for (var h = 0; h < hs.length; h++) KM.sfx(hs[h], h === 0 ? 0 : V.words[h].s - V.lead, 'enter', { size: 'small', g: .6, deg: h % 3 });
     KM.publish();
   }
   function seek(t){

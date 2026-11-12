@@ -393,4 +393,20 @@ export const demos = {
     js: `function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
   panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Reset' : 'Send it'; }); }`,
   },
+  // the press demo (showreel-34-press, 12 Nov 2026): the same Pay button with and without the :active scale
+  press: {
+    css: `
+#press .pane{display:flex;align-items:center;justify-content:center;height:130px}
+#press .pay{width:84%;height:52px;border:0;border-radius:26px;background:#7cf0b6;color:#111214;font:700 18px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#press .fix .pay{transition:scale .12s}
+#press .fix .pay:active{scale:.96}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">No :active</span><button class="pay" type="button">Pay $64.00</button></div>
+  <div class="pane fix"><span class="tag ok">:active { scale: .96 }</span><button class="pay" type="button">Pay $64.00</button></div>
+</div>
+<p class="note">Press and hold each button. The left one gives no sign the tap landed; the right one dips under your finger and springs back when you let go.</p>`,
+    // Safari on iOS applies :active only when the page listens for touchstart (BCD css.selectors.active, safari_ios note)
+    js: `function(){ document.addEventListener('touchstart', function(){}, { passive: true }); }`,
+  },
 };
