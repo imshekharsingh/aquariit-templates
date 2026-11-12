@@ -110,6 +110,13 @@ has numbers, comes from Instagram itself, or repeats across several sources. Eac
   (paper: book flips; small: wooden/plastic ticks and clicks; snaps: real switches; large: soft impacts; camera air: a cloth swish), a seeded pick,
   +-1 semitone and +-1.5 dB per hit so repeats differ, the synthesized sound's level, pan and timing kept (scripts/showreel/samples.py). Kit piece:
   samples.py (sound.py and techreel/audio/synth.py). The run prints "SOUND SOURCE: recorded CC0 samples ..." or "synthesized (fallback ...)".
+  12 Nov, first render: kenney.nl answers HTTP 403 to GitHub runners, so the second source is the Sonic Pi sample set (CC0 Freesound
+  recordings), https://raw.githubusercontent.com/sonic-pi-net/sonic-pi/v4.5.1/etc/samples/ ; its README.md: "All other samples in this
+  directory are from http://freesound.org and have also been placed in the public domain via the Creative Commons 0 License"
+  (http://creativecommons.org/publicdomain/zero/1.0/); the script checks that line before using them and keeps the README next to the
+  sounds. Only recorded foley and percussion: perc_snap, perc_snap2 (finger snaps: ticks, clicks, snaps), drum_cymbal_pedal (a closed
+  hat chick: taps, touches), drum_tom_hi/mid/lo_soft and drum_bass_soft (soft toms: blips, pops, thuds, hits), perc_swoosh and perc_swash
+  (camera air, paper), perc_bell; never the elec_ synth sounds.
 
 ## Count
 5 references, 28 techniques: 21 covered, 7 MISSING (6 pieces: a pivot-word beat, a travelling object as the transition (R2 and R3), an organic
