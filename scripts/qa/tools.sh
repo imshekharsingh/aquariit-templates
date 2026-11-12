@@ -6,4 +6,4 @@ if ! command -v ffmpeg >/dev/null && ! timeout 180 sudo apt-get install -y --no-
   f=$(find "$RUNNER_TEMP/iff" -type f -name "ffmpeg-*" | head -1); chmod +x "$f"; sudo ln -sf "$f" /usr/local/bin/ffmpeg
 fi
 command -v tesseract >/dev/null || timeout 180 sudo apt-get install -y --no-install-recommends tesseract-ocr || echo "::warning::tesseract unavailable: the NUMBERS check will SKIP"
-python3 -m pip install --quiet numpy==2.1.3 Pillow==11.0.0 faster-whisper==1.1.1
+python3 -m pip install --quiet numpy==2.1.3 Pillow==11.0.0 faster-whisper==1.1.1 requests   # faster-whisper imports requests (12 Nov 2026: without it every voice check said SKIP)

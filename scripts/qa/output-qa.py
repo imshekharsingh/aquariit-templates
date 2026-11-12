@@ -347,7 +347,7 @@ def main():
     dur = probe(mp4); fps = 10
     print(f'Output QA: {name} ({ch}), {dur:.2f} s, {mp4}', flush=True)
     try: heard = transcribe(mp4) if text else []
-    except ImportError: heard = None
+    except ImportError as e: heard = None; print(f'::warning::no recogniser: {e}')
     voice_checks(text, speeds, heard) if text else line('PACE', 'SKIP', 'no narration in the config')
     sound_checks(mp4, logs)
     F = frames(mp4, fps, 270, 480)
