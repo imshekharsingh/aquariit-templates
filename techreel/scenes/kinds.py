@@ -395,7 +395,7 @@ def phone(fr, sc, t):
     rows = p.get('rows', [])
     pick = p.get('pick', 0)
     ctl = p.get('control', 'switch')
-    px, py, pw, ph = W / 2 - 240, 440, 480, 584
+    px, py, pw, ph = W / 2 - 240, 440, 480, 560
     ka = appear(t, sc.start, .45)
     # the phone body
     fr.el('phone', sc.start, 'l', W / 2)
@@ -479,11 +479,11 @@ def phone(fr, sc, t):
         fr.el('paths', sc.start + .45, 's', W / 2)
         ga = appear(t, sc.start + .45)
         y0 = py + ph + 52
-        glass(fr, 110, y0, 860, 52 * len(paths) + 14, r=26, a=ga, tint=col, lift=False)
+        glass(fr, 100, y0, 880, 64 * len(paths) + 14, r=26, a=ga, tint=col, lift=False)
         for j, (plat, path) in enumerate(paths):
-            yy = y0 + 33 + j * 52
-            fr.text(146, yy, plat, 26, color=_a(ACCENT, ga), weight=800, anchor='lm', max_w=150)
-            fr.text(300, yy, path, 26, color=_a(TEXT, ga), weight=700, anchor='lm', max_w=640)
+            yy = y0 + 39 + j * 64   # 36 px: readable at phone size (critic, 12 Nov: 26 px was about 9 pt on a phone)
+            fr.text(130, yy, plat, 34, color=_a(ACCENT, ga), weight=800, anchor='lm', max_w=150)
+            fr.text(290, yy, path, 36, color=_a(TEXT, ga), weight=700, anchor='lm', max_w=660)
         fr.end_el()
 
 

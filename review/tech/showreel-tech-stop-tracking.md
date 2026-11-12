@@ -24,3 +24,12 @@ Reference techniques: settings-reveal list (research 11 Nov: a number + benefit 
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.1, 4 declared transitions)
 17. Strobes: PASS: FLOW: strobes 0
+
+## Critic pass, 12 Nov 2026 (~10:40 IST, fresh session; stills every 1 s from `make.py stop-tracking --fake-vo --stills 0..21`, read at 360 px wide)
+Problems found, with times (fake-vo times; the render's real voice runs ~25% later):
+- 0.0-1.1 s: the hook switches were labelled "Location / Precise / Ad ID" and flipped ON, while the reel tells you to turn Precise and ad tracking OFF: screen against voice (critic Q3). Fixed: labelled as the protections they turn on: "While Using / Area only / Block Ad ID".
+- 3-12 s: the iPhone / Android paths were 26 px, about 9 pt on a phone: not readable (critic Q13). Fixed: 36 px (platform 34 px), panel rows 64 px, phone 24 px shorter so nothing moves into the captions; SAFE ZONE ok, OVERLAP none.
+- Paths checked against Apple Support 102647 / 102420 and Android / Google Play help: iPhone "Privacy › Location Services › app", "Location Services › app › Precise", "Privacy › Tracking › Request to Track" (the switch is "Allow Apps to Request to Track"; "allow apps to ask" was not its words); Android "Location › App location permissions", "App location › Use precise location", "Privacy › Ads › Delete advertising ID" (Android 12+).
+- Last line "Save this and do it tonight" at 4.4 words/s in the 11 Nov render (critic Q5). Fixed: a comma ("Save this, and do it tonight.") and the take at speed 0.96 (preflight about 21.0 s, limit 21.4).
+Passed: frame 0 stops (big hook + switches, readable < 1 s); nothing cut at the edges in any still (2 s and 12 s are declared glides); one focus at a time (finger, row shimmer, result pill); drawn phone UI is generic (no logos) and reads as a settings screen; ends on the full recap checklist with the save line. Would a stranger stop and save it? Yes: three things to do tonight, both platforms, a checklist to save.
+FLOW: cuts 0 · dead runs none · continuity 100% · strobes 0. ELEMENTS: 53 (longest gap 2.3 s).

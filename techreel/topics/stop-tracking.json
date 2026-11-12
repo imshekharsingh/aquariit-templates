@@ -4,7 +4,7 @@
  "header": "3 SETTINGS · CHANGE TODAY",
  "voice": "af_heart",
  "flow": true,
- "speed": 1.0,
+ "speed": 0.96,
  "max_speed": 1.06,
  "dur": 22.0,
  "max_end": 21.4,
@@ -20,9 +20,9 @@
   "TRACKING you"
  ],
  "hook_toggles": [
-  "Location",
-  "Precise",
-  "Ad ID"
+  "While Using",
+  "Area only",
+  "Block Ad ID"
  ],
  "lines": [
   {
@@ -150,7 +150,7 @@
      "paths": [
       [
        "iPhone",
-       "Privacy › Tracking › Allow apps to ask"
+       "Privacy › Tracking › Request to Track"
       ],
       [
        "Android",
@@ -161,7 +161,7 @@
    }
   },
   {
-   "text": "Two minutes, three switches. Save this and do it tonight.",
+   "text": "Two minutes, three switches. Save this, and do it tonight.",
    "chunks": [
     4,
     6
