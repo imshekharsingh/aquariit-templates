@@ -46,8 +46,13 @@ if (Array.isArray(v.at)) {
   // rate as the voice check will measure it (first word to last, so about 0.55 s shorter than the letter estimate; a comma adds about 0.3 s;
   // calibrated on that reel's 7 sentences); over 4 words/s fails. Fix: a slower "speeds" value for that sentence, or more words.
   const rates = parts.map((x, i) => { const n = x.split(/\s+/).filter(Boolean).length; return [n / Math.max(.3, spoken(x) * .07 / sp(i) - .55 + .3 * (x.match(/,/g) || []).length), i]; });
-  const fast = rates.filter(([r]) => r > 4), top = rates.reduce((a, b) => (b[0] > a[0] ? b : a));
-  console.log(`SENTENCE PACE: fastest ${top[0].toFixed(1)} words/s (sentence ${top[1] + 1}, "${parts[top[1]].slice(0, 30)}"): ${fast.length ? 'FAIL: over 4 words/s: ' + fast.map(([r, i]) => `sentence ${i + 1} ("${parts[i].slice(0, 30)}") ${r.toFixed(1)}`).join('; ') + ' (give it a slower voice.speeds value or more words)' : 'ok'}`);
+  // 12 Nov 2026 (owner: "audio is super slowed and unnecessarily makes the video longer"): the voice runs at natural speed 1.0; a short
+  // line (6 words or fewer) that reads quick is only a WARNING, and a full sentence fails over 4.5 words/s (Nº 01, the reel the owner liked,
+  // had sentences up to ~4.4). The fix is a shorter sentence or a split, never a slower voice.speeds value.
+  const nw = (i) => parts[i].split(/\s+/).filter(Boolean).length;
+  const fast = rates.filter(([r, i]) => nw(i) > 6 && r > 4.5), quick = rates.filter(([r, i]) => nw(i) <= 6 && r > 4), top = rates.reduce((a, b) => (b[0] > a[0] ? b : a));
+  const slow = Array.isArray(v.speeds) ? v.speeds.filter((x) => x && +x < .95) : []; if (slow.length || speed < .95) console.log(`SENTENCE PACE: WARNING: voice slowed below 0.95 (${[speed, ...slow].join(', ')}); use natural speed 1.0 and shorter sentences`);
+  console.log(`SENTENCE PACE: fastest ${top[0].toFixed(1)} words/s (sentence ${top[1] + 1}, "${parts[top[1]].slice(0, 30)}"): ${fast.length ? 'FAIL: over 4.5 words/s: ' + fast.map(([r, i]) => `sentence ${i + 1} ("${parts[i].slice(0, 30)}") ${r.toFixed(1)}`).join('; ') + ' (shorten or split the sentence; keep speed 1.0)' : 'ok'}${quick.length ? '; WARNING short line(s) quick: ' + quick.map(([r, i]) => `sentence ${i + 1} ${r.toFixed(1)}`).join(', ') : ''}`);
   if (fast.length) process.exitCode = 1;
   if (Array.isArray(v.speeds) && v.speeds.length !== sentences) { console.log(`PREFLIGHT voice: voice.speeds has ${v.speeds.length} values for ${sentences} sentences`); process.exitCode = 1; }
   slots.forEach(([s, e], i) => { const next = i + 1 < sentences ? (v.at[i + 1] ?? e + .25) - .15 : limit; if (e > next) bad.push(`sentence ${i + 1} ("${parts[i].slice(0, 30)}") ends about ${e.toFixed(1)} s, ${(e - next).toFixed(1)} s past its slot`); });

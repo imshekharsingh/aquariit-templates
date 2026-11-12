@@ -33,7 +33,7 @@ export function write({ root, here, out, force, slug, hook, sentences, n = 3, be
   // the timing (calm, rules-web.md rule 13): each sentence spoken on its own at its time (voice.at; the preflight's model: 0.1 s + 70 ms a
   // letter at the speed): the hook at 0.15, detail i's line 0.3 s into its beat (beats of `beat` s from B0, at least 0.6 s of breath after
   // the hook), the recap line 0.3 s into the recap, then a hold of about 2 s after the voice (a recap of 3.5 s or more)
-  const speed = .9, spoken = (x) => (x.match(/[A-Za-z]/g) || []).length + 4 * (x.match(/\d/g) || []).length, sd = (x) => .1 + spoken(x) * .07 / speed;
+  const speed = 1, spoken = (x) => (x.match(/[A-Za-z]/g) || []).length + 4 * (x.match(/\d/g) || []).length, sd = (x) => .1 + spoken(x) * .07 / speed;
   if (!(beat >= 4.5)) { console.error(`--beat ${beat}: a details beat is at least 4.5 s (rules-web.md rule 13)`); process.exit(1); }
   const r1 = (x) => Math.round(x * 100) / 100, B0 = Math.ceil(Math.max(2.3, .15 + sd(hook) + .3) * 10) / 10;
   const at = [.15, ...say.map((_, i) => r1(B0 + .3 + i * beat))];

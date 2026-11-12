@@ -4,7 +4,7 @@
  "header": "3 SETTINGS · CHANGE TODAY",
  "voice": "af_heart",
  "flow": true,
- "speed": 0.96,
+ "speed": 1.0,
  "max_speed": 1.06,
  "dur": 22.0,
  "max_end": 21.4,

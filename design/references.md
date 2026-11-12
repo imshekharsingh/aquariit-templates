@@ -102,6 +102,15 @@ has numbers, comes from Instagram itself, or repeats across several sources. Eac
 - Not kept: "hashtags no longer matter" (no primary source found), "TikTok watermark suppression" (not in Instagram's own text), vendor
   hook-rate benchmarks that define the metric differently (NestScale 25-30% vs Blitzcut 60%+), and every "3-5x saves" claim without a method.
 
+- R-sound 12 Nov: **Recorded effects instead of synthesized ones** (owner, 12 Nov 2026: "sound elements feel cheap, as if from kids' toys").
+  Source: Kenney's audio packs, https://kenney.nl/assets/interface-sounds, https://kenney.nl/assets/impact-sounds,
+  https://kenney.nl/assets/rpg-audio, https://kenney.nl/assets/ui-audio. Licence: CC0 1.0 (public domain, https://creativecommons.org/publicdomain/zero/1.0/):
+  no attribution, commercial use allowed. scripts/sound/fetch-samples.sh keeps a pack only if its own License.txt says CC0 and copies that file next to
+  the sounds; the Showreel and Tech reel workflows cache them (actions/cache, key cc0-sounds-kenney-v1). Techniques: 2-4 real samples per cue kind
+  (paper: book flips; small: wooden/plastic ticks and clicks; snaps: real switches; large: soft impacts; camera air: a cloth swish), a seeded pick,
+  +-1 semitone and +-1.5 dB per hit so repeats differ, the synthesized sound's level, pan and timing kept (scripts/showreel/samples.py). Kit piece:
+  samples.py (sound.py and techreel/audio/synth.py). The run prints "SOUND SOURCE: recorded CC0 samples ..." or "synthesized (fallback ...)".
+
 ## Count
 5 references, 28 techniques: 21 covered, 7 MISSING (6 pieces: a pivot-word beat, a travelling object as the transition (R2 and R3), an organic
 wipe, icons inside sentences, letters snapping into a word, a hand-drawn ring around a number); 3 more not taken by rule.

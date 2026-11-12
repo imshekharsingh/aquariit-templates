@@ -1,4 +1,4 @@
-"""Sound design, all synthesized in numpy (no samples): a pad per scene (the chord changes with the scene), a sound for every element
+"""Sound design: effects are real recorded CC0 samples (scripts/showreel/samples.py, 12 Nov 2026; synthesized only as a fallback), music synthesized in numpy: a pad per scene (the chord changes with the scene), a sound for every element
 (owner, 8 Nov 2026: small = a high blip, medium = a mid snap, large = a low thud with a swish, panned by the element's x; make.py elements()),
 bells on the hook and the takeaways, whooshes on scene changes, a kick on the hook, a thud on the hard stop,
 and a resolving chord at the end. Light convolution reverb. The music ducks under the voice: voice about -15.6 dB RMS, music about
@@ -13,6 +13,7 @@ from scipy.signal import fftconvolve
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'scripts', 'showreel'))
 import detail   # noqa: E402  the element-detail bus shared with every channel (scripts/showreel/detail.py, 8 Nov 2026)
+import samples   # noqa: E402  recorded CC0 effects (12 Nov 2026): bells, whooshes, kicks, thuds and element sounds play real recordings
 
 SR = 48000
 rng = np.random.default_rng(7)
@@ -148,15 +149,15 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
         k = {'s': 'blip', 'm': 'snap', 'l': 'low'}[el['size']]
         dets.append({'t': el['t'], 'k': k, 'g': el.get('g', 1) * {'s': .9, 'm': 1.0, 'l': 1.15}[el['size']], 'x': el['x'],
                      'm': notes[1 + (j % 4)] + 12, 'f': 2300 * 2 ** ((j * 5 % 12) / 24)})
-    for t in ev['bells']: place(sfx, bell(84, .7), t)
-    for t in ev['whooshes']: place(sfx, whoosh(.45, .7 * 10 ** (-5.5 / 20)), t - .32)   # 5.5 dB under the old level: the element details lead
-    for t in ev['kicks']: place(sfx, kick(1.0), t)
-    for t in ev['thuds']: place(sfx, thud(.9), t)
+    for t in ev['bells']: place(sfx, samples.swap('bell', bell(84, .7), t), t)
+    for t in ev['whooshes']: place(sfx, samples.swap('whoosh', whoosh(.45, .7 * 10 ** (-5.5 / 20)), t), t - .32)   # 5.5 dB under the old level: the element details lead
+    for t in ev['kicks']: place(sfx, samples.swap('kick', kick(1.0), t), t)
+    for t in ev['thuds']: place(sfx, samples.swap('thud', thud(.9), t), t)
     if ev.get('final') is not None:   # the resolve: a full C major chord with a bell on top, ringing into the fade
         place(music, pad(CHORDS['C'], dur - ev['final'] + 1.5) * 1.6, ev['final'])
         for j, m in enumerate([60, 64, 67, 72]): place(sfx, pluck(m + 12, .45), ev['final'] + j * .06)
-        place(sfx, bell(96, .6), ev['final'] + .1)
-        place(sfx, kick(.7), ev['final'])
+        place(sfx, samples.swap('bell', bell(96, .6), ev['final'] + .1), ev['final'] + .1)
+        place(sfx, samples.swap('kick', kick(.7), ev['final']), ev['final'])
     ir = rng.standard_normal(int(1.5 * SR)) * dec(int(1.5 * SR), .32); ir[:int(.015 * SR)] = 0; ir /= np.abs(ir).sum() ** .5 * 6
     bed = music + sfx
     bed = bed + fftconvolve(bed, ir)[:len(bed)] * .9   # light room
@@ -180,6 +181,7 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
     dets = detail.merge(dets, K); peak = detail.level(dets, detail.speech_peaks(vo)[2], K)
     for c in dets:
         x = blip(c['f'], 1) if c['k'] == 'blip' else snap(c['m'], 1) if c['k'] == 'snap' else lowhit(1)
+        x = samples.swap({'blip': 'tick', 'snap': 'snap', 'low': 'low'}[c['k']], x, c['t'])
         if c['k'] != 'low':   # the low hit keeps its body: the 250 Hz high-pass would take it away
             x = detail.shape(x)[0]
         if c['k'] == 'snap':
@@ -189,6 +191,7 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
         if i0 < n: det[:, i0:i0 + st.shape[1]] += st[:, :n - i0]
     line, ok = detail.gate(hits, vo)
     print(line)
+    src = samples.report()
     mix = (vo + bed)[None, :] + det
     fade = int(.35 * SR); mix[:, -fade:] *= np.linspace(1, 0, fade)
     # a look-ahead peak limiter at -1.5 dBFS instead of saturation (tanh bent the voice's loudest syllables)
@@ -206,4 +209,4 @@ def render(ev, vo_wav, dur, out_wav, chords=None):
     with wave.open(out_wav, 'wb') as w:
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(st.tobytes())
     return {'voice_rms_db': float(round(rms_db(vo[active]), 1)), 'music_rms_under_voice_db': float(round(rms_db(bed[active]), 1)),
-            'detail': line, 'detail_ok': ok}
+            'detail': line, 'detail_ok': ok, 'source': src}
