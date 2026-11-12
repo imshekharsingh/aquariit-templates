@@ -70,6 +70,12 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    frame: hook at the top → the broken thing → the code line → the fixed thing, never jumping back and forth across the frame. The subtitle sits
    next to the focus it describes. Check in the stills review: at every beat, write where the eye is and why (one line each); a beat where the
    focus is not what the voice says, or the eye has to jump more than half the frame with no motion leading it, fails.
+15. **The fix is dynamic: the broken thing visibly misbehaves in motion, and the fixed thing visibly behaves, both obvious at a glance
+   (owner, 12 Nov 2026: "people engage with fixes that are more dynamic when they show up; number wiggle is the right example").** Topic test
+   before building: mute the reel and watch 1 s of "before" and 1 s of "after" at phone size; if a stranger cannot tell which is broken, swap the
+   topic. Evidence (Instagram collect, 11 Nov): dynamic before/after topics: numbers wiggle 104,925 reach, stagger 6,053, overscroll 4,645,
+   flash 3,808, transform stutter 2,685; subtle or invisible ones: INP 272, squash 320, smooth 429, springs 440, hover 509. Today's press reel
+   (a 4% dip, 12 Nov) failed this test and was rebuilt; owner: "it doesn't engage me".
 
 **ESCALATE 8 Nov** (median reach 1,247 over the last 7 vs target 2,000; watch 8.5 s; saves 1.3%; ALARM two days running): answered by a format
 change, the slow-mo "details" compilation (showreel-30-alive, 8 Nov 13:00, experiment details-format; rule 11). Read at 24 h (9 Nov) vs the median;
