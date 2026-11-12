@@ -24,10 +24,12 @@ const cfg = JSON.parse(readFileSync(process.argv[2], 'utf8'));
 const b = await chromium.launch(), p = await b.newPage({ viewport: { width: 540, height: 960 } }), errors = [];
 p.on('pageerror', (e) => errors.push(e.message));
 await p.goto('file://' + resolve(cfg.seek)); await p.waitForSelector('html[data-ready]', { timeout: 60000 });
-const seen = new Map(), shown = new Set(), lay = [], depth = new Map();   // lay: the text boxes every 0.5 s for the Mandatory Gate layout lines (scripts/showreel/layout.mjs)
+const seen = new Map(), shown = new Set(), lay = [], depth = new Map(), lum = [];   // lay: the text boxes every 0.5 s for the Mandatory Gate layout lines (scripts/showreel/layout.mjs)
 for (let t = 0; t <= cfg.dur; t = +(t + .1).toFixed(2)) {
   const [boxes, cap] = await p.evaluate((t) => { window.seek(t); return [window.__boxes(), window.__cap ? window.__cap() : -1]; }, t);
   shown.add(cap);
+  lum.push(await p.evaluate(() => { const c = document.querySelector('canvas'), m = document.createElement('canvas'); m.width = 54; m.height = 96; const g = m.getContext('2d'); g.drawImage(c, 0, 0, 54, 96);
+    const d = g.getImageData(0, 0, 54, 96).data, o = []; for (let i = 0; i < d.length; i += 4) o.push(Math.round(.3 * d[i] + .59 * d[i + 1] + .11 * d[i + 2])); return o; }));
   for (const w of await p.evaluate(() => (window.__depth ? window.__depth() : []))) { if (!w.cam) continue; if (!depth.has(w.name)) depth.set(w.name, []); depth.get(w.name).push(w); }
   if (Math.abs(t * 2 - Math.round(t * 2)) < .01) lay.push({ t, texts: boxes.filter(([, l, r, top, bot]) => r > 0 && l < 540 && bot > 0 && top < 960).map(([s, l, r, top, bot]) => ({ s: String(s).slice(0, 40), l: l * 2, r: r * 2, t: top * 2, b: bot * 2, a: 1, g: -1 })) });
   for (const [s, l, r, top, bot] of boxes) {
@@ -58,6 +60,7 @@ const FL = judgeFlow(await sample(p, +cfg.dur), 'c3');
 // Measured on the drawn frames: the share of the box's pixels in the answer's hue (+-12 deg, saturation .35+, value .18+) every 0.2 s before
 // the reveal, against the same share 1.0-1.5 s after it. Any frame before the reveal at a tenth of the after level (and 2%+ of the box) fails (the broken Eiffel reel: 11.5% at 4.6 s vs 53.9% after; fixed: under 1%):
 // the answer must stay hidden until it is said.
+const posted = (() => { try { return (JSON.parse(readFileSync('templates/showreels/captions.json', 'utf8'))[cfg.name] || {}).postOn || ''; } catch { return ''; } })();
 const usesGuess = /Kt\.choices\(/.test(readFileSync(resolve(cfg.seek), 'utf8')) || /^c3-guess/.test(cfg.experiment?.id || '');
 let gbad = 0; const gLines = [];
 if (usesGuess) {
@@ -79,10 +82,29 @@ if (usesGuess) {
     else gLines.push(`GUESS: answer hidden until ${G.reveal} s (answer colour at most ${pc(worst)} of the subject before it, ${pc(after)} after)`);
   }
 }   // FLOW (design/mandatory.md items 14-17): Turns Out thresholds (scripts/showreel/flow.mjs)
+// BUSY (owner, 12 Nov 2026: "more detailing and stacking ... to avoid boring instances in the reel and make it tick, snap, click better";
+// design/rules-c3.md rule 9): the kit's beats (Kt.beat: a rivet, a stamp, a piece landing on the pile, window.__beats) are looked for on the
+// drawn frames (the picture every 0.1 s at 54x96: the change within 30 px of the beat, 0.2 s before to 0.3 s after it, must stand 3+ levels
+// above the frame's median change, so a camera drift does not count), and joined with the sound onsets (window.CUES, no bed over 1.5 s).
+// "BUSY: longest quiet run n.n s": the longest stretch with no beat seen and no sound starting; fails over 1.5 s, or under 80 % of the beats seen.
+const BEATS = await p.evaluate(() => (window.__beats ? window.__beats() : [])), CUEL = await p.evaluate(() => (window.CUES || {}).cues || []);
+let busyBad = 0; const busyLines = [];
+{ const W = 54, H = 96, med = (a) => { const s = [...a].sort((u, v) => u - v); return s[s.length >> 1]; }, D = [];
+  for (let i = 0; i + 1 < lum.length; i++) { const d = lum[i + 1].map((v, j) => Math.abs(v - lum[i][j])); D.push({ d, m: med(d) }); }
+  const seenB = BEATS.filter((bt) => bt.t <= +cfg.dur).map((bt) => { const cx = Math.round(bt.x / 10), cy = Math.round(bt.y / 10); let best = -1e9;
+    for (let i = Math.max(0, Math.floor((bt.t - .2) / .1)); i < D.length && i * .1 <= bt.t + .3; i++) { let s = 0, n = 0;
+      for (let y = Math.max(0, cy - 3); y <= Math.min(H - 1, cy + 3); y++) for (let xx = Math.max(0, cx - 3); xx <= Math.min(W - 1, cx + 3); xx++) { s += D[i].d[y * W + xx]; n++; }
+      best = Math.max(best, s / n - D[i].m); }
+    return { ...bt, ok: best >= 3 }; });
+  const ev = [...seenB.filter((q) => q.ok).map((q) => q.t), ...CUEL.filter((q) => q.k !== 'voice' && !(+q.d > 1.5)).map((q) => +q.t)].filter((v) => v >= 0 && v <= +cfg.dur).sort((u, v) => u - v);
+  let gap = 0, ga = 0, prev = 0; for (const e of [...ev, +cfg.dur]) { if (e - prev > gap) { gap = e - prev; ga = prev; } prev = Math.max(prev, e); }
+  const nOk = seenB.filter((q) => q.ok).length, pct = seenB.length ? Math.round(100 * nOk / seenB.length) : 0, used = /Kt\.beat\(|Kt\.stackOn\(/.test(readFileSync(resolve(cfg.seek), 'utf8'));
+  const ok = gap <= 1.5 && (!used || pct >= 80); if (!ok && (used || posted >= '2026-11-12' || !posted)) busyBad++;
+  busyLines.push(`BUSY: longest quiet run ${gap.toFixed(1)} s (${ga.toFixed(1)}-${(ga + gap).toFixed(1)} s); ${BEATS.length} detail beats, ${nOk} seen on the frames (${pct}%)` + (ok ? ': ok' : `: FAIL (${gap > 1.5 ? 'over 1.5 s with nothing small moving or heard' : 'under 80% of the beats seen'}; design/rules-c3.md rule 9)`));
+  const miss = seenB.filter((q) => !q.ok).slice(0, 8); if (miss.length) busyLines.push('BUSY not seen: ' + miss.map((q) => `${q.kind}@${q.t}s(${q.x},${q.y})`).join(' ')); }
 await b.close();
 // DEPTH: per world, the planes in a typical frame and the parallax between its nearest and farthest plane
 const dLines = []; let dbad = 0;
-const posted = (() => { try { return (JSON.parse(readFileSync('templates/showreels/captions.json', 'utf8'))[cfg.name] || {}).postOn || ''; } catch { return ''; } })();
 for (const [name, fr] of depth) {
   const counts = fr.map((w) => new Set(w.planes.map((z) => z.toFixed(2))).size).sort((a, b) => a - b), n = counts[counts.length >> 1], fg = fr.some((w) => w.fg);
   const f0 = fr[0], F = f0.F, zs = [...new Set(f0.planes)].filter((z) => z - f0.cam[2] > .05).sort((a, b) => b - a), far = zs[0];
@@ -93,10 +115,10 @@ for (const [name, fr] of depth) {
 }
 if (!depth.size) { const old = posted && posted < '2026-11-11'; if (!old) dbad++; dLines.push(old ? 'DEPTH: not judged (posts before 11 Nov 2026)' : 'DEPTH: no world declared (FAIL: draw every world with Kt.world and 4+ Kt.plane layers, design/rules-c3.md rule 11)'); }
 for (const [m, t] of seen) console.log(`QA ${t.toFixed(1)} s: text outside the frame: ${m}`);
-const L = judge(lay, false); for (const l of [...L.lines, ...FL.lines, ...dLines, ...gLines]) console.log(l);
+const L = judge(lay, false); for (const l of [...L.lines, ...FL.lines, ...dLines, ...gLines, ...busyLines]) console.log(l);
 if (out) console.log('QA outcome: ' + JSON.stringify(out));
 console.log(`QA sound: ${cues} cues`);
-const bad = L.bad + FL.bad + dbad + gbad + vbad + seen.size + errors.length + (out && out.ok === false ? 1 : 0) + (cues ? 0 : 1);
+const bad = L.bad + FL.bad + dbad + gbad + busyBad + vbad + seen.size + errors.length + (out && out.ok === false ? 1 : 0) + (cues ? 0 : 1);
 if (errors.length) console.log('QA page errors: ' + errors.join(' | '));
 console.log(bad ? `QA: ${bad} problem(s)` : 'QA: clean');
 process.exit(bad ? 1 : 0);

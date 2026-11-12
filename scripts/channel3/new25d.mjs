@@ -8,6 +8,8 @@
 //   guess reel: options as chips, the icon neutral (a silhouette) until the answer, a 3-2-1 countdown beside it in a 2.6 s breath, the answer
 //   painted on, three worlds and a loop back to frame 0). Set window.GUESS (reveal, answer colour, the subject's box): qa.mjs GUESS fails
 //   any frame that shows the answer before the reveal (owner, 12 Nov 2026).
+//   Both starters carry the detail and stacking pieces (12 Nov 2026, design/rules-c3.md rule 9): declare every small event as a Kt.beat
+//   (Kt.stackOn, Kt.rivet, Kt.sweep, Kt.tally, Kt.sparks draw them) and Kt.beatCues(Q) sounds them; qa.mjs BUSY fails a quiet run over 1.5 s.
 //   The options are read from sentence 2 (comma-separated words); set ANSWER (index) and each option's colour in the scene, then redraw the worlds.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';

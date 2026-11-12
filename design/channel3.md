@@ -205,6 +205,18 @@ it in (the same command inlines kit3d.js), npm run check fails on a stale copy. 
   before a digit as part of the sentence, and voicecheck hears "42.195" as "forty two point one nine five". Numbers are slow to say:
   a number-heavy script reads under 2 words/s, so keep the other sentences short.
 
+- **Detail and stacking** (12 Nov 2026; owner: "more detailing and stacking ... with sound element enhancements, to avoid boring instances
+  in the reel and make it tick, snap, click better"; rules-c3.md rule 9): every world builds up in small steps in front of the viewer.
+  `Kt.beat(t, kind, x, y, size)` declares each small event once (at build time, with its screen point), `Kt.beatCues(Q)` gives each its
+  matched sound on the element-detail bus, panned by x (pop / count = tick, stamp / label = snap, pin / toggle = click, stack / slide = a
+  short paper slide and a tap on the landing, big = a soft thud with a tap, stroke = a short rustle, spark = a high tick; small high, large
+  low). Drawing pieces: `Kt.stackOn` (a cut-paper piece dropping onto the pile: turned, 8 % large, a long soft shadow that tightens as it
+  settles with a small overshoot), `Kt.rivet` (a head popping in with a thin ring), `Kt.sweep` (a paint stroke with bristles and a wet head),
+  `Kt.tally` (a count without digits: one mark per item, fives crossed), `Kt.sparks` (dust or sparks off a landing), `Kt.lands`. qa.mjs
+  prints "BUSY: longest quiet run n.n s": the beats are looked for on the drawn frames (a local change 3+ levels over the frame's median, so
+  a camera drift does not count) and joined with the sound onsets; over 1.5 s, or under 80 % of the beats seen, fails. Matte: rings and
+  sparkles are thin lines and dots, never glow. In a guess world the details stay neutral (cream rivets, a padlock) until the reveal.
+
 ## Pattern library (2D, retired with the pilots on 31 Oct 2026; kept for the story ideas, rebuilt in 3D)
 Rotate patterns so the feed never shows the same look two days running. Each entry is a reusable recipe; a new pattern gets an entry here
 before its first reel.
