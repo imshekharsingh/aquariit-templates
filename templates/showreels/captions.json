@@ -976,7 +976,7 @@
  "showreel-34-press": {
   "postOn": "2026-11-12",
   "postAt": "13:00",
-  "caption": "Why does your button feel dead on tap? 👆\n\nWith no :active style, a tap gives no sign it landed, so people tap again (and pay twice). Give the button a transition on scale and shrink it to 96% while it is pressed: every tap now feels like a real press. On iPhone, Safari only shows :active when the page listens for touches, so add ontouchstart to your <body>. Works in Chrome 104+, Safari 14.1+ and Firefox 72+ (or use transform: scale(.96) for older browsers).\nSave it for your next button, or send it to whoever built your checkout.",
+  "caption": "Why does your button feel dead on tap? 👆\n\nWith no :active style, a tap gives no sign it landed, so people tap again (and pay twice). While the button is pressed, shrink it to 96%, drop its shadow and darken it a touch, with a 0.12 s transition: it sinks under the finger and springs back. On iPhone, Safari only shows :active when the page listens for touches, so add ontouchstart to your <body>. scale works in Chrome 104+, Safari 14.1+ and Firefox 72+ (or use transform: scale(.96) for older browsers).\nSave it for your next button, or send it to whoever built your checkout.",
   "keywords": [
    "button not responding on tap",
    "CSS :active button press effect",
@@ -993,8 +993,8 @@
    "#frontenddev"
   ],
   "channel": "web",
-  "concept": "transition: scale .12s + :active { scale: .96 } (a Pay button that dips under the finger); iPhone needs a touchstart listener",
-  "about": "E18 try 1 (dark theme + a motion-feel single fix): a finger taps a checkout's Pay button from frame 0 and it never moves (tap? tap??); the fix is typed, then every tap presses the button to 96% and lets it go in 0.12 s. Dark theme (Ink and mint), element sound.",
+  "concept": "transition: .12s + :active { scale: .96; box-shadow: 0 2px 6px #0006; filter: brightness(.92) } (a big Pay button that sinks under the finger); iPhone needs a touchstart listener",
+  "about": "E18 try 1 (dark theme + a motion-feel single fix), rebuilt 12 Nov after the owner's \"it doesn't engage me\": a big Pay button tapped from frame 0 that never moves (tap? tap??, a TAPS counter, BUTTON MOVED 0 px), then DEAD vs PRESSED side by side (silence vs a soft thock), one press replayed at 0.25x with its live curve, and a rhythm of presses to the end.",
   "note": "13:00 IST, experiment dark-return (E18, try 1)",
   "experiment": {
    "id": "dark-return",

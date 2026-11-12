@@ -170,9 +170,9 @@
 #waiting .fix .img{transition:opacity .5s,scale .5s;transition-timing-function:cubic-bezier(.2, .7, .3, 1)}
 #waiting .fix .toast{transition:translate .5s cubic-bezier(.2, .9, .3, 1.25),opacity .2s}
 #press .pane{display:flex;align-items:center;justify-content:center;height:130px}
-#press .pay{width:84%;height:52px;border:0;border-radius:26px;background:#7cf0b6;color:#111214;font:700 18px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
-#press .fix .pay{transition:scale .12s}
-#press .fix .pay:active{scale:.96}
+#press .pay{width:84%;height:52px;border:0;border-radius:26px;background:#7cf0b6;color:#111214;font:700 18px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 5px 0 #2f9c72,0 12px 18px #0008}
+#press .fix .pay{transition:.12s}
+#press .fix .pay:active{scale:.96;box-shadow:0 2px 6px #0006;filter:brightness(.92)}
 </style>
 </head>
 <body>
@@ -186,18 +186,20 @@
 <article class="tip" id="press">
   <p class="no">Nº 24</p>
   <h2>Why does your button feel dead on tap?</h2>
-  <p class="why">A button with no :active style gives no sign a tap landed, so people tap again. A short transition on scale and scale: .96 while :active make it dip under the finger and spring back (MDN :active, scale). Safari on iOS only applies :active when the page has a touchstart listener, so add ontouchstart to &lt;body&gt; (BCD note).</p>
+  <p class="why">A button with no :active style gives no sign a tap landed, so people tap again. A short transition plus scale: .96, a collapsed box-shadow and a slight brightness drop while :active make it sink under the finger and spring back (MDN :active, scale). Safari on iOS only applies :active when the page has a touchstart listener, so add ontouchstart to &lt;body&gt; (BCD note).</p>
   <div class="demo">
 <div class="pair">
   <div class="pane"><span class="tag">No :active</span><button class="pay" type="button">Pay $64.00</button></div>
-  <div class="pane fix"><span class="tag ok">:active { scale: .96 }</span><button class="pay" type="button">Pay $64.00</button></div>
+  <div class="pane fix"><span class="tag ok">:active { scale: .96 } + shadow</span><button class="pay" type="button">Pay $64.00</button></div>
 </div>
-<p class="note">Press and hold each button. The left one gives no sign the tap landed; the right one dips under your finger and springs back when you let go.</p></div>
+<p class="note">Press and hold each button. The left one gives no sign the tap landed; the right one sinks under your finger, its shadow collapsing, and springs back when you let go.</p></div>
   <div class="code"><pre><code>.btn {
-  transition: scale .12s;
+  transition: .12s;
 }
 .btn:active {
   scale: .96;
+  box-shadow: 0 2px 6px #0006;
+  filter: brightness(.92);
 }
 /* iPhone: &lt;body ontouchstart&gt; */</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:active" rel="noopener">Source: MDN, :active</a></p>
