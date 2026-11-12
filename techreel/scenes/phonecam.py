@@ -2,7 +2,10 @@
 Owner, 12 Nov: "Tech reel doesn't feel like a change at all, same things, same design pattern". The glass panels are replaced by what
 settings-tip reels with big reach use: ONE big phone filling the frame (our own generic drawing: no platform UI, icons or fonts), a touch
 indicator that walks the real path tap by tap ON the word that names it, the camera zooming into every tap, a flat bold colour per setting,
-a big 1/3 counter, huge word-by-word captions (white, black outline, the current word yellow), the result shown in frame 0.
+a big 1/3 counter, huge word-by-word captions (white, black outline, the current word in the accent), the result shown in frame 0.
+Palette (owner, 12 Nov 2026: "colour grading is horrible, I hate it without opening it"): ONE deep near-black background for the whole reel
+(a soft warm glow behind the phone and a vignette, no colour per setting), the phone in neutral dark-mode greys, ONE warm gold accent used only
+for the touch marker, the active row and the result banner (and the spoken word), red / green only as small status dots.
 Every frame is a pure function of t. World = 1080x1920 output pixels, drawn at 2x, then one affine zoom; the HUD (counter, paths, captions,
 hook) is drawn over the zoomed world and never zooms."""
 import math
@@ -14,14 +17,18 @@ from PIL import Image, ImageDraw
 from . import base as B
 
 W, H, SS = B.W, B.H, B.SS
-INK = (14, 14, 18)
-YEL = (255, 222, 0)
-GREEN = (22, 196, 108)
-RED = (240, 62, 62)
-GREY = (120, 124, 136)
-LINE = (226, 228, 234)
-SCREEN_BG = (246, 247, 250)
-COLORS = {'blue': (34, 86, 255), 'purple': (120, 64, 236), 'red': (240, 74, 74), 'green': (16, 168, 104), 'amber': (245, 150, 20), 'cyan': (0, 160, 210)}
+INK = (10, 10, 12)             # outlines, the darkest ink
+YEL = (236, 192, 98)           # THE accent: warm gold (touch marker, active row, result banner, spoken word, hook key word)
+GREEN = (52, 199, 120)         # status dots only
+RED = (235, 77, 77)            # status dots only
+TXT = (240, 240, 244)          # screen text
+GREY = (152, 152, 160)         # screen secondary text (5.9:1 on ROWBG)
+LINE = (52, 52, 58)
+SCREEN_BG = (6, 6, 8)          # dark-mode page
+ROWBG = (30, 30, 34)           # dark-mode grouped rows
+CARDBG = (24, 24, 28)          # HUD cards (counter, path card) with an EDGE
+EDGE = (64, 64, 72)
+BG = (9, 9, 11)                # the reel's background, the same for every setting
 # the phone (world px): body x 150-870, top PY; the screen inside a 14 px bezel, drawn to its own image and clipped by a rounded mask
 PX, PW, BEZ, PR = 150, 720, 14, 74
 SX, SW = PX + BEZ, PW - 2 * BEZ
@@ -47,17 +54,18 @@ def _mask():
 _LY, _LX = (np.mgrid[0:240, 0:135].astype(np.float32) + .5) * 8
 
 
-def background(t, col):
-    """A flat bold colour (the scene's), lighter at the top left, with three soft lighter blobs drifting slowly: painted at 1/8 and scaled up."""
+def background(t, col=BG):
+    """Deep near-black, a soft warm glow behind the phone (drifting slowly, so the frame is never still) and a vignette: painted at 1/8 and
+    scaled up (owner, 12 Nov 2026: no saturated full-screen colours, no colour change per setting)."""
     c = np.array(col, np.float32)
     img = np.zeros((240, 135, 3), np.float32) + c
-    g = np.clip(1 - (_LX / 1080 * .5 + _LY / 1920), 0, 1)[..., None]
-    img = img + (255 - img) * .12 * g - img * .18 * np.clip(_LY / 1920 - .45, 0, 1)[..., None]
-    for i, (x, y, r, fx, fy) in enumerate(((200, 400, 520, .23, .31), (900, 1200, 600, .29, .19), (500, 1750, 480, .17, .27))):
-        xx = x + math.sin(t * fx * 2 + i) * 160
-        yy = y + math.sin(t * fy * 2 + i * 1.7) * 200
-        f = np.clip(1 - np.sqrt((_LX - xx) ** 2 + (_LY - yy) ** 2) / r, 0, 1) ** 2 * .16
-        img = img + (255 - img) * f[..., None]
+    gx = 540 + math.sin(t * .62) * 150
+    gy = 1150 + math.sin(t * .47 + 1) * 220
+    g = np.clip(1 - np.sqrt(((_LX - gx) / 1.1) ** 2 + ((_LY - gy) / 1.5) ** 2) / 700, 0, 1) ** 2
+    g = g * (.85 + .15 * math.sin(t * 1.3))
+    img = img + np.array((62, 46, 22), np.float32) * g[..., None]
+    v = np.clip(np.sqrt(((_LX - 540) / 540) ** 2 + ((_LY - 960) / 960) ** 2) - .55, 0, 1)
+    img = img * (1 - .55 * v[..., None])
     small = np.clip(img, 0, 255).astype(np.uint8)
     return Image.fromarray(small).resize((W * SS, H * SS), Image.BICUBIC), small
 
@@ -79,7 +87,7 @@ class Screen:
     def line(self, pts, fill, width=4):
         self.d.line([v * SS for p in pts for v in p], fill=fill, width=int(width * SS), joint='curve')
 
-    def text(self, x, y, s, size, color=INK, weight=700, anchor='lm'):
+    def text(self, x, y, s, size, color=TXT, weight=700, anchor='lm'):
         w = B.text_w(s, size, weight)
         x0 = x - (w / 2 if anchor[0] == 'm' else w if anchor[0] == 'r' else 0)
         self.d.text((x * SS, y * SS), s, font=B.font(size, weight), fill=color, anchor=anchor)
@@ -92,31 +100,34 @@ def tick(sc, cx, cy, s, col=(255, 255, 255), width=6):
     sc.line([(cx - 13 * s, cy), (cx - 4 * s, cy + 10 * s), (cx + 14 * s, cy - 11 * s)], col, width)
 
 
-def switch(sc, x, y, k, on_col=GREEN):
-    """A generic switch at (x, y) centre; k = 0 off .. 1 on (springy)."""
-    col = B.mixc((205, 208, 216), on_col, B.clamp(k))
+def switch(sc, x, y, k, on_col=YEL):
+    """A generic switch at (x, y) centre; k = 0 off .. 1 on (springy); on = the accent (it is the active row's control)."""
+    col = B.mixc((72, 72, 80), on_col, B.clamp(k))
     sc.rect(x - 52, y - 30, 104, 60, r=30, fill=col)
     kx = x - 22 + 44 * B.clamp(k, -.1, 1.1)
     sc.circle(kx, y + 2, 25, fill=(0, 0, 0, 30))
     sc.circle(kx, y, 25, fill=(255, 255, 255))
 
 
-ICON_COLS = [(52, 120, 246), (255, 149, 0), (88, 86, 214), (52, 199, 89), (255, 59, 48), (90, 200, 250), (175, 82, 222)]
+ICON_COLS = [(64, 64, 72), (74, 74, 82), (58, 58, 66), (70, 70, 78)]   # neutral greys, no rainbow icons
 
 
-def page(sc, pg, ox, t, act=None, act_k=0.0, hook_flip=None):
+def page(sc, pg, ox, t, act=None, act_k=0.0, hook_flip=None, hl=None):
     """One settings page at x offset ox: a back link, the title, rows. Row: {text, value?, icon?, switch?: bool, chevron?, check?}.
-    act: the row index changed on this page (switch flips / tick moves); act_k 0 -> 1."""
+    act: the row index changed on this page (switch flips / tick moves); act_k 0 -> 1. hl: (row, alpha) the active (tapped) row, in the accent."""
     title = pg.get('title', 'Settings')
     sc.rect(ox, 0, SW, SH, fill=SCREEN_BG)
     sc.texts = [b for b in sc.texts if not (b[3] > ox and b[1] < ox + SW)]   # what this page covers is hidden (layout check)
     if pg.get('back'):
-        sc.text(ox + 34, 92, '‹ ' + pg['back'], 34, (40, 100, 240), 600)
-    sc.text(ox + 34, 168, title, 62, INK, 800)
+        sc.text(ox + 34, 92, '‹ ' + pg['back'], 34, GREY, 600)
+    sc.text(ox + 34, 168, title, 62, TXT, 800)
     if pg.get('sub'):
         sc.text(ox + 36, 226, pg['sub'], 30, GREY, 500)
     y0 = ROW0 + (30 if pg.get('sub') else 0)
-    sc.rect(ox + 22, y0 - 6, SW - 44, ROWH * len(pg['rows']) + 12, r=26, fill=(255, 255, 255))
+    sc.rect(ox + 22, y0 - 6, SW - 44, ROWH * len(pg['rows']) + 12, r=26, fill=ROWBG)
+    if hl is not None and hl[1] > .01:
+        hy = y0 + hl[0] * ROWH
+        sc.rect(ox + 26, hy - 2, SW - 52, ROWH + 4, r=22, fill=YEL + (int(38 * hl[1]),), outline=YEL + (int(200 * hl[1]),), width=3)
     choice = pg.get('choice')   # {"from": i, "pick": j}: a tick moving from row i to row j
     for i, row in enumerate(pg['rows']):
         y = y0 + i * ROWH + ROWH / 2
@@ -125,9 +136,9 @@ def page(sc, pg, ox, t, act=None, act_k=0.0, hook_flip=None):
         x = ox + 50
         if row.get('icon', pg.get('icons')):
             sc.rect(x - 6, y - 30, 60, 60, r=16, fill=ICON_COLS[(i + len(title)) % len(ICON_COLS)])
-            sc.circle(x + 24, y, 11, fill=(255, 255, 255, 230))
+            sc.circle(x + 24, y, 11, fill=(200, 200, 208))
             x += 78
-        sc.text(x, y, row['text'], 42, INK, 600)
+        sc.text(x, y, row['text'], 42, TXT, 600)
         rx = ox + SW - 56
         hk = None if hook_flip is None else hook_flip[i]
         if row.get('switch') is not None:
@@ -136,29 +147,26 @@ def page(sc, pg, ox, t, act=None, act_k=0.0, hook_flip=None):
                 tgt = 0.0 if row['switch'] else 1.0
                 on = on + (tgt - on) * act_k
             switch(sc, rx - 40, y, on)
-        elif hk is not None:   # the hook: a red pill (the risky value) flips to a green one (the safe value)
+        elif hk is not None:   # the hook: the risky value (grey, a small red dot) flips to the safe one (white, a small green dot)
             a, b = row['from'], row['to']
             k = B.clamp(hk)
             s = b if k > .5 else a
-            col = GREEN if k > .5 else RED
             sc_k = 1 + .18 * math.sin(math.pi * B.clamp(hk * 2)) if hk < .5 else 1 + .12 * max(0, math.sin(math.pi * B.clamp((hk - .5) * 2)))
-            tw = B.text_w(s, 34, 800) + 64
-            sc.rect(rx - tw * sc_k + 8, y - 30 * sc_k, tw * sc_k, 60 * sc_k, r=30 * sc_k, fill=col)
-            sc.text(rx - tw * sc_k / 2 + 8 + (14 if k > .5 else 0), y, s, int(34 * sc_k), (255, 255, 255), 800, 'mm')
-            if k > .5:
-                tick(sc, rx - tw * sc_k + 40, y, .9 * sc_k, width=5)
+            w = B.text_w(s, int(38 * sc_k), 700)
+            sc.text(rx + 8, y, s, int(38 * sc_k), TXT if k > .5 else GREY, 700, 'rm')
+            sc.circle(rx + 8 - w - 26, y, 10 * sc_k, fill=GREEN if k > .5 else RED)
         elif choice is not None:
             frm, pick = choice['from'], choice['pick']
             k = act_k if act is not None else 0.0
             if i == frm and k < .5:
-                tick(sc, rx - 10, y, 1.2 * (1 - k * 2), (40, 100, 240), 6)
+                tick(sc, rx - 10, y, 1.2 * (1 - k * 2), YEL, 6)
             if i == pick and k >= .5:
-                tick(sc, rx - 10, y, 1.2 * min(1, (k - .5) * 3), (40, 100, 240), 6)
+                tick(sc, rx - 10, y, 1.2 * min(1, (k - .5) * 3), YEL, 6)
         else:
             if row.get('value'):
                 sc.text(rx - 34, y, row['value'], 36, GREY, 500, 'rm')
             if row.get('chevron', True):
-                sc.text(rx, y, '›', 48, (190, 192, 200), 500, 'rm')
+                sc.text(rx, y, '›', 48, (110, 110, 118), 500, 'rm')
     return y0
 
 
@@ -253,10 +261,10 @@ def finger(fr2, taps, t, z, F, D):
         if 0 <= t - tt < .5:
             k = (t - tt) / .5
             rx, ry = F[0] + (tx - F[0]) * z + D[0], F[1] + (ty - F[1]) * z + D[1]
-            fr2.circle(rx, ry, 46 + 70 * k, outline=(255, 255, 255, int(220 * (1 - k) * a)), width=6)
+            fr2.circle(rx, ry, 46 + 70 * k, outline=YEL + (int(220 * (1 - k) * a),), width=6)
     r = 46 * (1 - .18 * press)
     fr2.circle(ox, oy + 4, r + 2, fill=(0, 0, 0, int(50 * a)))
-    fr2.circle(ox, oy, r, fill=(120, 124, 136, int(150 * a)), outline=(255, 255, 255, int(235 * a)), width=5)
+    fr2.circle(ox, oy, r, fill=YEL + (int(90 * a),), outline=YEL + (int(240 * a),), width=5)
 
 
 # ---------- HUD ----------
@@ -313,7 +321,7 @@ def counter(fr, n, total, label, t, t0, done=False):
     s = .6 + .4 * k
     txt = '✓' if done else f'{n}/{total}'
     w = 150 * s
-    fr.rect(72, 262, w, 92 * s, r=24 * s, fill=INK)
+    fr.rect(72, 262, w, 92 * s, r=24 * s, fill=CARDBG, outline=EDGE, width=2)
     if done:
         fr.line([(72 + w * .3, 262 + 46 * s), (72 + w * .45, 262 + 64 * s), (72 + w * .72, 262 + 28 * s)], YEL, 9)
     else:
@@ -330,10 +338,10 @@ def path_card(fr, paths, t, t_in, t_out, t_act=None):
     x, y, w, h = CARD
     y += (1 - a) * 90   # slides up, opaque (a fading card let the row under it show through)
     fr.rect(x + 4, y + 8, w, h, r=30, fill=(0, 0, 0, 60))
-    fr.rect(x, y, w, h, r=30, fill=INK)
+    fr.rect(x, y, w, h, r=30, fill=CARDBG, outline=EDGE, width=2)
     for i, (plat, p) in enumerate(paths[:2]):
         yy = y + 50 + i * 76
-        fr.rect(x + 24, yy - 25, 172, 50, r=14, fill=(255, 255, 255, 30))
+        fr.rect(x + 24, yy - 25, 172, 50, r=14, fill=(255, 255, 255, 18))
         fr.text(x + 110, yy, plat, 32, YEL, 800, 'mm')
         if t_act is not None and t >= t_act + 1.6 + .7 * i:
             k = B.spring(t - (t_act + 1.6 + .7 * i), .5, 14)
@@ -343,11 +351,11 @@ def path_card(fr, paths, t, t_in, t_out, t_act=None):
 
 # ---------- the frame ----------
 def scene_bg(s):
-    return COLORS.get(s.tint, COLORS['blue'])
+    return BG   # one background for the whole reel (owner, 12 Nov 2026); a topic's "tint" no longer colours the frame
 
 
 def transitions(topic, scenes):
-    """Declared transitions (Mandatory Gate item 14): the push between settings pages and the colour change between settings."""
+    """Declared transitions (Mandatory Gate item 14): the push between settings pages and the page change between settings."""
     out = []
     for s in scenes:
         out.append([round(s.start - .05, 3), round(s.start + .45, 3), 'slide'])
@@ -392,7 +400,9 @@ def draw(t, topic, vo, hook_out, scenes, chunks):
             vis = [(k_pg - 1, -slide * SW * .3), (k_pg, (1 - slide) * SW)] if slide < 1 and k_pg > 0 else [(k_pg, 0.0)]
             for kk, off in vis:
                 st = s.params['steps'][kk]
-                page(scr, pages[kk], ox + off, tt, act=st['tap'] if kk == last and st.get('action') else None, act_k=act_k if kk == last else 0.0)
+                ha = B.clamp((tt - (ts[kk] - .1)) / .12) * (1.0 if kk == last else 1 - B.clamp((tt - ts[kk] - .3) / .2))
+                page(scr, pages[kk], ox + off, tt, act=st['tap'] if kk == last and st.get('action') else None, act_k=act_k if kk == last else 0.0,
+                     hl=(st['tap'], ha))
         else:
             recap(scr, s, ox, tt)
 
@@ -410,19 +420,19 @@ def draw(t, topic, vo, hook_out, scenes, chunks):
         else:
             draw_scene_page(cur, t, 0)
     # status bar (generic) and the camera island
-    scr.text(56, 40, '13:00', 30, INK, 700)
-    scr.rect(SW / 2 - 90, 22, 180, 42, r=21, fill=INK)
+    scr.text(56, 40, '13:00', 30, TXT, 700)
+    scr.rect(SW / 2 - 90, 22, 180, 42, r=21, fill=(0, 0, 0))
     for i in range(3):
-        scr.rect(SW - 150 + i * 14, 46 - (i + 1) * 7, 10, (i + 1) * 7, r=2, fill=INK)
-    scr.rect(SW - 96, 30, 50, 24, r=7, outline=INK, width=2.5)
-    scr.rect(SW - 92, 34, 34, 16, r=4, fill=INK)
+        scr.rect(SW - 150 + i * 14, 46 - (i + 1) * 7, 10, (i + 1) * 7, r=2, fill=TXT)
+    scr.rect(SW - 96, 30, 50, 24, r=7, outline=TXT, width=2.5)
+    scr.rect(SW - 92, 34, 34, 16, r=4, fill=TXT)
     if cur is not None and cur.kind == 'tap' and t >= cur.start + .4:
         ts_ = plan(cur)
         result(scr, cur, None, 0, t, ts_[-1])
     # assemble the phone in the world at 2x
-    wd.rounded_rectangle([(PX + 10) * SS, (py + 24) * SS, (PX + PW + 10) * SS, (py + 2400) * SS], radius=PR * SS, fill=(0, 0, 0, 70))
-    wd.rounded_rectangle([PX * SS, py * SS, (PX + PW) * SS, (py + 2400) * SS], radius=PR * SS, fill=INK)
-    wd.rounded_rectangle([(PX + 3) * SS, (py + 3) * SS, (PX + PW - 3) * SS, (py + 2400) * SS], radius=(PR - 3) * SS, outline=(70, 72, 82), width=3 * SS)
+    wd.rounded_rectangle([(PX + 10) * SS, (py + 24) * SS, (PX + PW + 10) * SS, (py + 2400) * SS], radius=PR * SS, fill=(0, 0, 0, 120))
+    wd.rounded_rectangle([PX * SS, py * SS, (PX + PW) * SS, (py + 2400) * SS], radius=PR * SS, fill=(26, 26, 30))
+    wd.rounded_rectangle([(PX + 3) * SS, (py + 3) * SS, (PX + PW - 3) * SS, (py + 2400) * SS], radius=(PR - 3) * SS, outline=(92, 92, 102), width=3 * SS)
     world.paste(scr.img, (int(SX * SS), int((py + BEZ) * SS)), _mask())
     # the camera: one affine zoom of the whole world
     z, fx, fy, dx, dy = zoom_at(t, scenes, hook_out)
@@ -525,20 +535,18 @@ def result(scr, s, pg, ox, t, t_act):
     bw, bh = (SW - 40) * pop, 118 * pop
     x0, y0 = ox + SW / 2 - bw / 2, 16 - (1 - k1) * 150
     scr.texts = [b for b in scr.texts if not (b[2] < y0 + bh and b[4] > y0 and b[3] > x0 and b[1] < x0 + bw)]
-    scr.rect(x0 + 2, y0 + 8, bw, bh, r=34, fill=(0, 0, 0, 40))
-    scr.rect(x0, y0, bw, bh, r=34, fill=GREEN if k2 else (255, 236, 236))
-    cx, cy = x0 + 62 * pop, y0 + bh / 2
-    if k2:
-        scr.circle(cx, cy, 30 * pop, fill=(255, 255, 255))
-        tick(scr, cx, cy + 1, .95 * pop, GREEN, 6)
-        scr.text(cx + 52 * pop, cy, p['after'], int(46 * pop), (255, 255, 255), 900, 'lm')
-    else:
-        scr.circle(cx, cy, 30, fill=RED)
-        scr.line([(cx - 11, cy - 11), (cx + 11, cy + 11)], (255, 255, 255), 6)
-        scr.line([(cx - 11, cy + 11), (cx + 11, cy - 11)], (255, 255, 255), 6)
-        w = scr.text(cx + 52, cy, p['before'], 42, RED, 800, 'lm')
+    scr.rect(x0 + 2, y0 + 10, bw, bh, r=34, fill=(0, 0, 0, 120))
+    scr.rect(x0, y0, bw, bh, r=34, fill=(44, 40, 32) if k2 else (40, 40, 46), outline=YEL if k2 else (72, 72, 80), width=4 if k2 else 2)
+    cx, cy = x0 + 56 * pop, y0 + bh / 2
+    if k2:   # the new state: the accent edge, a small green status dot with a tick, white text
+        scr.circle(cx, cy, 20 * pop, fill=GREEN)
+        tick(scr, cx, cy + 1, .6 * pop, (255, 255, 255), 5)
+        scr.text(cx + 40 * pop, cy, p['after'], int(46 * pop), TXT, 800, 'lm')
+    else:    # the old state: a small red status dot, grey text, struck through
+        scr.circle(cx, cy, 14, fill=RED)
+        w = scr.text(cx + 40, cy, p['before'], 42, GREY, 700, 'lm')
         k = B.clamp((t - (t_act + .4)) / .3)
-        scr.rect(cx + 50, cy - 2, (w + 4) * k, 6, r=3, fill=RED)
+        scr.rect(cx + 38, cy - 2, (w + 4) * k, 5, r=2, fill=GREY)
 
 
 def recap(scr, s, ox, t):
@@ -552,14 +560,22 @@ def recap(scr, s, ox, t):
         y = row_y(pg, i)
         cx = ox + SW - 78
         if k > 0:
-            scr.circle(cx, y, 30 * k, fill=GREEN)
-            tick(scr, cx, y + 1, .9 * k, (255, 255, 255), 6)
+            br = 1 + .06 * math.sin((t - tc) * 4.2) * B.clamp(t - tc - .5)   # the ticks breathe in the hold
+            scr.circle(cx, y, 30 * k * br, fill=YEL)
+            tick(scr, cx, y + 1, .9 * k * br, INK, 6)
         else:
-            scr.circle(cx, y, 28, outline=(200, 202, 210), width=3)
+            scr.circle(cx, y, 28, outline=(90, 90, 98), width=3)
     ts = s.cue(p.get('stamp_cue'))
     if t >= ts:
         k = B.spring(t - ts, .45, 13)
         y = row_y(pg, len(pg['rows']) - 1) + 150
         w, h = 470 * (1.3 - .3 * k), 104 * (1.3 - .3 * k)
         scr.rect(ox + SW / 2 - w / 2, y - h / 2, w, h, r=24, fill=YEL + (int(255 * min(1, k)),), outline=INK, width=5)
+        sx0 = ox + SW / 2 - w / 2
+        for j in range(2):   # a slow light sweep across the stamp, every 1.4 s, so the end hold is never still
+            ph = ((t - ts) / 1.4 + j * .5) % 1
+            hx = sx0 - 60 + (w + 120) * ph
+            hx0, hx1 = max(sx0 + 6, hx - 30), min(sx0 + w - 6, hx + 30)
+            if hx1 > hx0:
+                scr.rect(hx0, y - h / 2 + 5, hx1 - hx0, h - 10, r=6, fill=(255, 248, 225, 110))
         scr.text(ox + SW / 2, y, p.get('stamp', 'SAVE THIS'), int(54 * (1.3 - .3 * k)), INK, 900, 'mm')

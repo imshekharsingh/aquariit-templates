@@ -25,6 +25,18 @@ References used: R-trend 12 Nov tech walkthrough (phonecam.py: phone + touch ind
 16. Continuity: PASS: FLOW: continuity 99% (median step 1.3, 10 declared transitions)
 17. Strobes: PASS: FLOW: strobes 0
 
+## Palette fix, 12 Nov ~14:00-14:40 IST (owner: "colour grading is horrible, I hate it without opening it")
+Only the colour changed (layout, motion, captions, paths, timing, voice and sounds kept): design/rules-tech.md L7. Near-black for the whole reel
+(a soft warm glow behind the phone, a vignette), the phone in dark-mode greys, one gold accent (touch marker, active tapped row, result banner
+edge, spoken word, TRACKING), red / green only as small status dots; the SAVE THIS stamp gets a slow light sweep and the ticks breathe, so the
+dark end hold is not still. Contrast: secondary text 5.8:1 on rows, 7.1:1 on the page, banner grey 5.1:1, gold on cards 10.4:1, white 11-15:1.
+AUTO (`make.py stop-tracking --fake-vo --stills` every 1 s, then a FLOW re-check after the end-hold fix): SAFE ZONE: ok · OVERLAP: none ·
+FLOW: cuts 0 · dead runs none · continuity 91% · strobes 0 · ELEMENTS 55, longest gap 0.8 s · PREFLIGHT fits · PRONUNCIATION no unchecked words.
+The first dark pass failed FLOW (dead run 18.6-20.0 s, continuity 79%: the black frame lost the old moving colour blobs); fixed before the render.
+Viewer read of the stills at 270 px and the cover at 200 px: frame 0 is a calm black frame with white type, one gold word and a dark phone with
+three small red dots; nothing saturated anywhere; every setting reads the same calm black; the active row and banner are the only gold areas.
+Next to the web channel's dark reels it reads as the same family. Owner-feedback lines re-read: no large fills, no colour change per scene.
+
 ## Builder notes, 12 Nov remake
 Fixed from the stills before the render: the zoom pushed the phone into the counter (focus now clamped); the result pill sat under the path card
 (now a notification banner at the top of the screen); caption outlines merged letters (thinner outline, 30 px word gaps); two chunk lists were
