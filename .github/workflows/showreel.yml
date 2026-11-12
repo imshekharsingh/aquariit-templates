@@ -258,3 +258,13 @@ jobs:
           name: review
           path: out/${{ env.NAME }}-review.png
           retention-days: 2
+      - name: Output QA
+        # the final MP4 checked as the viewer gets it (scripts/qa/output-qa.py; owner, 12 Nov 2026: every owner complaint is a check run on
+        # GitHub): voice pace, stray words, sound source, loudness, colour, edges, guess, numbers vs voice, dead stretches, the web mute test.
+        # Any FAIL fails the run and posts NOT READY on the reel's issue (scripts/qa/notify.sh); the reel stays in R2 for the critic.
+        if: inputs.seconds == ''
+        run: |
+          bash scripts/qa/tools.sh
+          set +e; python3 scripts/qa/output-qa.py "out/$NAME.mp4" "$CFG" --log out/sound.log --summary "$GITHUB_STEP_SUMMARY" --fails oqa-fails.txt; rc=$?; set -e
+          bash scripts/qa/notify.sh "$NAME" oqa-fails.txt
+          exit $rc

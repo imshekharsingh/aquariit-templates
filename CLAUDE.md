@@ -67,6 +67,13 @@ audible), never only the scene code, cue lists or counts. Before calling any ree
 the finished output, and add a line there the same day whenever the owner catches something. When a new rule or check is added, ask
 "would this have caught the owner's last complaint on the final video?" If not, it isn't done.
 
+## Output QA: every owner complaint is a GitHub check (owner, 12 Nov 2026: "Every issue that I report, build a check for that which avoids using our session but does it using GitHub")
+Every issue the owner reports becomes an automated Output QA check (scripts/qa/) the same day, run on GitHub on the final MP4; a reel whose Output QA fails is NOT READY.
+scripts/qa/output-qa.py runs by itself at the end of every Showreel and Tech reel render (and by hand: Actions -> "Output QA", config + R2 key, no
+re-render): one "OQA <CHECK>: PASS|FAIL" line per check with its numbers and the owner-feedback line it guards; any FAIL fails the run and
+posts "NOT READY" on the reel's issue (scripts/qa/notify.sh). Configs declare what the frames cannot tell: "qa": {"guess"} (Turns Out guess
+reels; new25d.mjs --guess writes it), "mute" (web before/after), "edges_ok" (a world built full-bleed on purpose).
+
 ## Independent critic: nobody approves their own reel (owner, 12 Nov 2026: "Are we really checking if something works or not? How can we ensure our reels are checked for everything?")
 The builder's checks passed while the 12 Nov Turns Out reel showed its answer before the guess and the web reel's fix was invisible: the builder
 judged its own work. So a reel is ready only when a DIFFERENT session, the "Reel critic" (scheduled task, ~11:17 IST daily, fresh session,

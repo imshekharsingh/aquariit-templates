@@ -52,5 +52,35 @@
   "id": "c3-guess",
   "change": "the GUESS format: three options painted onto the icon, a 3-2-1 countdown, the answer, a 24 s reel that loops to frame 0; caption asks for the letter in the comments and a send (Turns Out reels stall at ~1,100 reach with 0-8 shares)",
   "vs": "median"
+ },
+ "qa": {
+  "guess": {
+   "answer": "#b3392b",
+   "reveal": {
+    "say": "red every"
+   },
+   "box": [
+    150,
+    270,
+    390,
+    690
+   ],
+   "css_width": 540
+  },
+  "edges_ok": [
+   {
+    "from": {
+     "say": "every iron piece"
+    },
+    "to": {
+     "say": "since"
+    },
+    "sides": [
+     "left",
+     "right"
+    ],
+    "why": "the workshop walls and posts run past the frame by design"
+   }
+  ]
  }
 }

@@ -3,6 +3,8 @@
 Every line is something the owner had to catch himself. Before saying "ready", check the FINISHED output (the rendered MP4, its audio,
 its frames on a phone-sized screen) against every line, as a viewer would, not the scene code or the cue list. Add a line each time the
 owner catches something new, the same day.
+Each line also becomes an automated Output QA check the same day (scripts/qa/output-qa.py, run on GitHub on the final MP4 after every render;
+owner, 12 Nov 2026): a reel whose Output QA fails is NOT READY. A line no script can measure says so and stays a critic question.
 
 - 5 Nov: a tech term said wrong ("Wi-Fi" read as two words). Listen for every technical word.
 - 7 Nov: a reel barely moved (one small phone still for 18 s). Does something change every 1.5-2 s?

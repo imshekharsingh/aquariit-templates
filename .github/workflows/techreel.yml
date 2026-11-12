@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  issues: write   # Output QA posts NOT READY (scripts/qa/notify.sh)
 
 jobs:
   render:
@@ -64,6 +65,7 @@ jobs:
           bash scripts/sound/fetch-samples.sh "$HOME/.cache/cc0-sounds"
           echo "SFX_SAMPLES=$HOME/.cache/cc0-sounds" >> "$GITHUB_ENV"
       - name: Render
+        id: render
         run: |
           set -o pipefail
           python3 techreel/make.py "$SLUG" 2>&1 | grep -v "^frame " | tee render.log
@@ -102,3 +104,13 @@ jobs:
             out/techreel/${{ inputs.slug }}/${{ inputs.slug }}-contact.png
             out/techreel/${{ inputs.slug }}/${{ inputs.slug }}-qa.txt
           retention-days: 2
+      - name: Output QA
+        # the final MP4 checked as the viewer gets it (scripts/qa/output-qa.py; owner, 12 Nov 2026: every owner complaint is a check run on
+        # GitHub): voice pace, stray words, sound source, loudness, colour, edges, guess, numbers vs voice, dead stretches, the web mute test.
+        # Any FAIL fails the run and posts NOT READY on the reel's issue (scripts/qa/notify.sh); the reel stays in R2 for the critic.
+        if: always() && steps.render.outcome == 'success'
+        run: |
+          bash scripts/qa/tools.sh
+          set +e; python3 scripts/qa/output-qa.py "out/techreel/$SLUG/$SLUG.mp4" "techreel/topics/$SLUG.json" --log render.log --log "out/techreel/$SLUG/qa.txt" --summary "$GITHUB_STEP_SUMMARY" --fails oqa-fails.txt; rc=$?; set -e
+          bash scripts/qa/notify.sh "showreel-tech-$SLUG" oqa-fails.txt
+          exit $rc
