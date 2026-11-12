@@ -171,14 +171,14 @@ def plan(sc):
     """The scene's taps: every step gets a time (its cue word, or spaced between its neighbours), pages slide in after each tap."""
     steps = sc.params['steps']
     ts = [sc.cue(s['cue']) if s.get('cue') else None for s in steps]
-    first = sc.start + .55
+    first = sc.start + .4
     for i in range(len(ts)):
         if ts[i] is None:
             prev = ts[i - 1] if i else first - .55
             nxt = next((ts[j] for j in range(i + 1, len(ts)) if ts[j] is not None), None)
             ts[i] = (prev + nxt) / 2 if nxt is not None and i else max(first, prev + .6) if nxt is None else max(first, nxt - .65)
         if i:
-            ts[i] = max(ts[i], ts[i - 1] + .5)
+            ts[i] = max(ts[i], ts[i - 1] + .42)
     return ts
 
 
@@ -322,22 +322,23 @@ def counter(fr, n, total, label, t, t0, done=False):
     stroke_text(fr, 72 + 150 + 26 - (1 - a) * 30, 308, label, 54, (255, 255, 255), 'lm', stroke=6, a=a)
 
 
-def path_card(fr, paths, t, t_in, t_out):
+def path_card(fr, paths, t, t_in, t_out, t_act=None):
     """Where to find it on both platforms (HUD, over the phone's lower screen): big enough to read (36 px), on for the whole setting."""
     a = ease((t - t_in) / .35) * (1 - ease((t - t_out) / .3))
     if a <= .02:
         return
     x, y, w, h = CARD
-    y += (1 - a) * 60
-    fr.alpha = a
+    y += (1 - a) * 90   # slides up, opaque (a fading card let the row under it show through)
     fr.rect(x + 4, y + 8, w, h, r=30, fill=(0, 0, 0, 60))
     fr.rect(x, y, w, h, r=30, fill=INK)
     for i, (plat, p) in enumerate(paths[:2]):
         yy = y + 50 + i * 76
         fr.rect(x + 24, yy - 25, 172, 50, r=14, fill=(255, 255, 255, 30))
         fr.text(x + 110, yy, plat, 32, YEL, 800, 'mm')
+        if t_act is not None and t >= t_act + 1.6 + .7 * i:
+            k = B.spring(t - (t_act + 1.6 + .7 * i), .5, 14)
+            fr.rect(x + 12, yy - 34, w - 24, 68, r=18, outline=YEL, width=4 * min(1.0, k))
         fr.text(x + 216, yy, p, 35, (255, 255, 255), 700, 'lm', max_w=w - 236)
-    fr.alpha = 1.0
 
 
 # ---------- the frame ----------
@@ -463,6 +464,9 @@ def draw(t, topic, vo, hook_out, scenes, chunks):
                             fr.hit(f'slide{i}', tt + .16, 's', W / 2 + 150, .8)
                     fr.hit('flip', ts[-1] + .06, 'm', taps[-1][1], 1.0)
                     fr.hit('result', ts[-1] + .35, 'l', W / 2, 1.0)
+                    fr.hit('result2', ts[-1] + .85, 'm', W / 2, 1.1)
+                    for i in range(2):
+                        fr.hit(f'pathhi{i}', ts[-1] + 1.6 + .7 * i, 's', W / 2 - 200, .9)
                     fr.hit('card', s.start + .5, 's', W / 2, .8)
                 else:
                     for i, it in enumerate(s.params['items']):
@@ -490,7 +494,7 @@ def draw(t, topic, vo, hook_out, scenes, chunks):
         if cur.kind == 'tap':
             n = taps_sc.index(cur) + 1
             counter(fr, n, len(taps_sc), cur.params.get('name', cur.label), t, max(cur.start, hook_out + .05))
-            path_card(fr, cur.params['paths'], t, cur.start + .5, cur.end - .1)
+            path_card(fr, cur.params['paths'], t, cur.start + .5, cur.end - .1, plan(cur)[-1])
         else:
             counter(fr, 0, 0, cur.params.get('name', 'SAVE THIS'), t, cur.start, done=True)
     for li, line in enumerate(vo['lines'][1:], start=1):

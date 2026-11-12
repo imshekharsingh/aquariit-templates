@@ -14,12 +14,12 @@ References used: R-trend 12 Nov tech walkthrough (phonecam.py: phone + touch ind
 5. Motion: PASS: FLOW: dead runs none; a tap, page push, flip or banner every 0.5-1.2 s in each setting, the camera leans in to each tap and drifts always, the save screen pushes in slowly
 6. Subtitles: PASS: chunks of 2-3 words (every line's chunk counts equal its words; make.py now refuses a short list), 88 px, at most 2 rows, every sentence finished on the stills
 7. Voice: PASS: PREFLIGHT voice: 258 letters, about 21.5 s at speed 1.00 (limit 22.0): fits; PRONUNCIATION: 1 overrides used: ID; no unchecked words; speed 1.0, max_speed 1.0 (never slowed, never sped)
-8. Sound: PASS: ELEMENTS: 48 element sounds (small high 23, medium mid 20, large low 5); longest gap 2.0 s at 6.9 s; each tap a mid snap, each page push a small tick, each flip a mid snap, each banner a low thud; recorded CC0 samples (SOUND SOURCE on the render); SOUND GATE and SOUND DETAIL after the render (item 13)
+8. Sound: PASS: ELEMENTS: 57 element sounds on the first render's real timings (small high 29, medium mid 23, large low 5); longest gap 1.5 s at 10.1 s (after the critic fix; fake-vo: 55, 0.8 s); each tap a mid snap, each page push a small tick, each flip a mid snap, each banner a low thud; recorded CC0 samples (SOUND SOURCE on the render); SOUND GATE and SOUND DETAIL after the render (item 13)
 9. Payoff: PASS: the save screen: the three changes tick in on "Save", "send", "friend", the SAVE THIS stamp lands on "Allow" and holds with a slow push-in to the end
 10. Facts: PASS: unchanged sources (5 in the topic's post block): Apple Support 102647 and 102420, Android Developers location permissions (two pages), Google Play Console Help 6048248; the lines say only what they support
 11. Post data: PASS: captions.json entry (channel tech, postOn 2026-11-12, postAt 13:00, concept updated for the new look, experiment tech-settings-list); 6 keywords, 5 hashtags
 12. Review file: PASS: this file, items 1-11, 14-17
-13. After the render: PENDING
+13. After the render: PENDING (re-render after the critic fixes; first render below)
 14. Cuts: PASS: FLOW: cuts 0 (10 declared: the push into each setting, the page pushes after each tap, the end fade)
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 99% (median step 1.3, 10 declared transitions)
@@ -42,4 +42,13 @@ Passed: frame 0 stops (big hook + switches, readable < 1 s); nothing cut at the 
 FLOW: cuts 0 · dead runs none · continuity 100% · strobes 0. ELEMENTS: 53 (longest gap 2.3 s).
 
 Re-render after the critic fixes: run 43160702033 (12 Nov, 10:50 IST), green. Voice in one take at speed 0.96, ends 19.92 s (limit 21.4); voice check: 56 of 56 words heard as written, no unsure words, 2.86 words/s overall (ok); SOUND DETAIL: 45 of 45 element cues audible, quietest -14.1 dB (100%): ok; SOUND GATE: ok -14.4 LUFS, true peak -2.5 dBTP; SAFE ZONE: ok; OVERLAP: none; ELEMENTS longest gap 3.1 s at 13.1 s. Pacing table: sentences 1-5 at 2.99-3.28 words/s; the last, "Save this, and do it tonight." (18.26 s), at 4.48 words/s (1.34 s for 6 words): the comma and speed 0.96 did not slow it, because Kokoro rushes a short closing sentence at the end of a take.
+## Critic pass on the first render (12 Nov ~13:00 IST; run 43173400447, green, 10 GitHub minutes)
+Render: voice in one take at speed 1.00, ends 21.00 s (limit 22.0); voice check 63 of 63 words heard as written; words/s 3.12 / 3.57 / 3.25 / 2.98 / 4.17 (the last line under 4.5, clear: critic Q16 ok); SOUND SOURCE: recorded CC0 samples (sonic-pi); SOUND DETAIL 42 of 42 audible (100%); SOUND GATE ok (-14.5 LUFS, true peak -2.4 dBTP).
+Frames every 1 s rebuilt from the render's real line timings (the scene is a pure function of t; the artifact host is blocked from sessions), read at 270 px wide:
+- 0-2 s: hook readable at once, Always/On/On flip to While Using/Off/Off by 1.1 s (Q1, Q15 ok). 3-6 s: taps land on "Location", "app", "While"; banner red then green "Only while open" (Q3 ok). Paths readable 4 s+ per setting (Q13 ok). Generic phone, no logos (Q14 ok). Every word captioned (Q17 ok). Ends on the SAVE THIS screen (Q7 ok).
+- PROBLEM 8.5-11.6 s (and every result): the banner's turn to green had NO sound; the render's ELEMENTS line showed a 3.1 s gap (Q6, owner 8 Nov "tick sounds missing"). Fixed: a mid snap on the green flip.
+- PROBLEM 9-11 s and 15-16 s: after each result ~2-3 s where only the captions moved (owner 7 Nov "does something change every 1.5-2 s?"). Fixed: the two paths light up in turn (yellow ring, a small tick each) at +1.6 / +2.3 s after the change.
+- PROBLEM ~3 s: the path card faded in, so the row under it showed through its text for ~0.3 s (Q2). Fixed: the card slides in opaque.
+- Minor 8.0 s: the Precise switch flipped ~0.35 s after "off". Fixed: taps spaced 0.42 s, the first 0.4 s into the setting; now flipped at 8.0 s.
+After the fixes: SAFE ZONE ok, OVERLAP none, FLOW cuts 0 / dead runs none / continuity 99% / strobes 0. ONE re-render (the critic's one, CLAUDE.md "Independent critic").
 20. Critic: PENDING: the remade reel is checked by a fresh critic pass after its render (this session renders once, then reads the output as a viewer)
