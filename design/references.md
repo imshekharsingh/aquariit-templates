@@ -118,6 +118,24 @@ has numbers, comes from Instagram itself, or repeats across several sources. Eac
   hat chick: taps, touches), drum_tom_hi/mid/lo_soft and drum_bass_soft (soft toms: blips, pops, thuds, hits), perc_swoosh and perc_swash
   (camera air, paper), perc_bell; never the elec_ synth sounds.
 
+## R-trend: tech walkthrough look (12 Nov 2026, web search, standard; owner: "Tech reel doesn't feel like a change at all ... how do we expect to get audiences?")
+- R-trend 12 Nov: **Settings tips that travel are a phone screen walked tap by tap.** Press coverage of viral settings videos: a screen recording of
+  the settings page walking the viewer through turning a feature off, 820,000+ views (Daily Dot, https://dailydot.com/creepy-iphone-setting);
+  "3 settings to turn off" from a faceless tips account, ~2 million views (Daily Dot, https://dailydot.com/news/disable-three-ios-18-settings/);
+  numbered steps "open Settings, tap App Store, toggle off" in a 6 million view video (Dexerto,
+  https://dexerto.com/tiktok/tiktok-could-be-removed-from-your-iphone-unless-you-disable-this-setting-3059565). Faceless tech guides agree the
+  viewer trusts what they can see being tapped (FluxNote, https://fluxnote.io/guides/faceless-instagram-reels-tech-niche; vendor). Techniques:
+  ONE phone filling the frame; a touch indicator on each tap with a ripple; the voice names the row as it is tapped; a number in the hook and a
+  1/3 counter. Kit piece: techreel/scenes/phonecam.py (topic "look": "phone"); no real platform UI: our own generic drawing, platform names as text only.
+- R-trend 12 Nov: **Word-by-word captions, current word highlighted, beat plain subtitles** (vendor data only, no published method: ~34% more watch
+  time in one vendor's 80-video test, ~50% vs ~40% completion; Opus, https://www.opus.pro/blog/best-caption-presets-styles-boost-retention;
+  ClipSpeed, https://www.clipspeed.ai/blog/11-caption-styles-ranked-viral-performance-2026.html). Direction repeated across sources, size unproven.
+  Technique: 2-4 words at a time, heavy face, black outline, the spoken word yellow and lifted. Kit piece: phonecam.captions.
+- R-trend 12 Nov: **Text and motion in the first 1-2 s, speech from frame 0** (Emplifi via Pulse, speech in 3 s +~25% 10 s retention; vendor claims
+  of up to +50% 3 s hold for a text overlay plus motion vs a static open; https://www.pulse.bot/digital-marketing/news/human-speech-and-presence-help-drive-reels-engagement-26291baf-0b96-441f-aefa-8af987fa02e8).
+  Technique: the hook title in a heavy face with the result already flipping on the phone (red → green) by 1.1 s. Kit piece: topic "hook_page".
+- Not kept: "zoom on every tap" has no measured source (taken as craft, the screen-recording look, not as evidence); vendor 3 s benchmarks.
+
 ## Count
 5 references, 28 techniques: 21 covered, 7 MISSING (6 pieces: a pivot-word beat, a travelling object as the transition (R2 and R3), an organic
 wipe, icons inside sentences, letters snapping into a word, a hand-drawn ring around a number); 3 more not taken by rule.
