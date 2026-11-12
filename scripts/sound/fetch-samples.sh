@@ -24,6 +24,18 @@ for P in interface-sounds impact-sounds rpg-audio ui-audio; do
   cp "$lic" "$D/$P/LICENSE.txt"
   echo "$P: $n sounds, CC0 (licence: $(grep -m1 -oiE 'CC0[^.]*|creative commons zero[^.]*' "$lic")), from $url" | tee -a "$D/SOURCE.txt"
 done
+# Second source (12 Nov 2026: kenney.nl answers 403 to GitHub runners): the Sonic Pi sample set on GitHub, pinned to tag v4.5.1. Its
+# etc/samples/README.md: "All other samples in this directory are from http://freesound.org and have also been placed in the public domain
+# via the Creative Commons 0 License". Only recorded percussion and foley (snaps, soft toms, swooshes, a bell), never the elec_ synth ones.
+SP=https://raw.githubusercontent.com/sonic-pi-net/sonic-pi/v4.5.1/etc/samples
+if ! ls "$D"/*/*.wav >/dev/null 2>&1 && curl -fsSL --retry 3 -m 60 -o "$T/sp-README.md" "$SP/README.md" && grep -q "Creative Commons 0" "$T/sp-README.md"; then
+  mkdir -p "$D/sonic-pi"; n=0
+  for f in perc_snap perc_snap2 drum_cymbal_pedal drum_tom_hi_soft drum_tom_mid_soft drum_tom_lo_soft drum_bass_soft perc_swash perc_swoosh perc_bell; do
+    curl -fsSL --retry 3 -m 60 -o "$T/$f.flac" "$SP/$f.flac" && ffmpeg -nostdin -loglevel error -y -i "$T/$f.flac" -ac 1 -ar 48000 -c:a pcm_s16le "$D/sonic-pi/$f.wav" && n=$((n + 1))
+  done
+  cp "$T/sp-README.md" "$D/sonic-pi/LICENSE-README.md"
+  echo "sonic-pi: $n sounds, CC0 (README: \"placed in the public domain via the Creative Commons 0 License\"), from $SP" | tee -a "$D/SOURCE.txt"
+elif ! ls "$D"/*/*.wav >/dev/null 2>&1; then echo "SAMPLES: sonic-pi not reachable or its README lost the CC0 line"; fi
 rm -rf "$T"
 [ -f "$D/SOURCE.txt" ] || echo "SAMPLES: none fetched; the engines use the synthesized fallback"
 exit 0
