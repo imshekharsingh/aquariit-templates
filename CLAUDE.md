@@ -67,6 +67,18 @@ audible), never only the scene code, cue lists or counts. Before calling any ree
 the finished output, and add a line there the same day whenever the owner catches something. When a new rule or check is added, ask
 "would this have caught the owner's last complaint on the final video?" If not, it isn't done.
 
+## Independent critic: nobody approves their own reel (owner, 12 Nov 2026: "Are we really checking if something works or not? How can we ensure our reels are checked for everything?")
+The builder's checks passed while the 12 Nov Turns Out reel showed its answer before the guess and the web reel's fix was invisible: the builder
+judged its own work. So a reel is ready only when a DIFFERENT session, the "Reel critic" (scheduled task, ~11:17 IST daily, fresh session,
+lean), has watched it as a viewer and written "CRITIC: READY" in its review file (review/<channel>/<name>.md, item 20). The critic:
+- renders stills of the final scene every 1 s (stills.mjs / qa.mjs / techreel --stills: the scenes are a pure function of t, so these are the
+  video's frames) and reads the render's voice check and sound lines; looks at every frame at phone size;
+- answers the format's own questions in design/critic.md (e.g. guess: is the answer hidden until the reveal? web: is the before/after obvious on
+  mute? tech: is every setting path readable and correct?) plus design/owner-feedback.md line by line, and "would I stop scrolling and watch it twice?";
+- writes every problem with its time; if any is found it fixes the reel and dispatches ONE re-render (or swaps the reel for the next day's topic
+  if it cannot be fixed by 12:30 IST), then writes CRITIC: READY or CRITIC: NOT READY with the reason. The owner posts only READY reels.
+- Each problem the critic or the owner finds becomes a question in design/critic.md the same day, so the list grows with every miss.
+
 ## Popularity first (owner, 11 Nov 2026: "all these rapid changes are to get to a stable state where I just upload the reel and popularity
 does the job, so our focus should be on making the channels popular")
 - The goal of every change is reach and followers. A change that does not serve that waits.
