@@ -19,7 +19,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .a{position:absolute}
 #vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
 #world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
-#pane{left:18px;top:326px;width:474px;height:474px;border-radius:46px;background:var(--glass);box-shadow:var(--edge),var(--lift)}
+#pane{left:30px;top:326px;width:450px;height:474px;border-radius:46px;background:var(--glass);box-shadow:var(--edge),var(--lift)}
 #ctx{left:54px;top:356px;font:500 15px/1 var(--m);letter-spacing:.16em;color:#b4b1a9;white-space:nowrap}
 #ctx i{font-style:normal;color:var(--paper)}
 #subj{left:0;top:0;width:540px;height:960px}
@@ -40,11 +40,11 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #hook .ln{display:block;white-space:nowrap}
 #hook .ln > span{display:inline-block;transform-origin:0 80%}
 #hook .acc{color:var(--red)}
-#code{left:30px;top:118px;width:450px;height:198px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);overflow:hidden;opacity:0;transform-origin:50% 0}
+#code{left:30px;top:168px;width:450px;height:198px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);overflow:hidden;opacity:0;transform-origin:50% 0}
 #cd{position:absolute;left:22px;top:18px;font:500 19px/1.47 var(--m);white-space:pre;color:var(--paper)}
 #cd b{font-weight:500;color:var(--acc);border-radius:4px}#cd .dim{color:var(--dim)}
 .km-caret{display:inline-block;width:3px;height:21px;margin-left:2px;vertical-align:-4px;background:var(--acc)}
-#slow{left:30px;top:118px;width:450px;height:178px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);opacity:0;transform-origin:50% 0}
+#slow{left:30px;top:168px;width:450px;height:178px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);opacity:0;transform-origin:50% 0}
 #slow .cg{position:absolute;left:12px;top:30px}
 #slow .ttl{position:absolute;left:20px;top:14px;font:500 12px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
 .cg-axis{stroke:rgba(255,255,255,.2);stroke-width:2}.cg-guide{stroke:rgba(255,255,255,.2);stroke-width:1.5;stroke-dasharray:4 5}
@@ -61,15 +61,15 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #spec b{font:750 46px/1 var(--f);letter-spacing:-.03em;color:var(--paper)}
 #spec span{font:500 18px/1 var(--m);color:var(--dim)}
 #scl{position:absolute;left:290px;top:160px;font:500 12px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap;opacity:0}#scl b{font:750 22px/1 var(--f);letter-spacing:-.02em;color:var(--acc);margin-left:6px}
-#stat{left:34px;top:150px;width:440px;height:130px;opacity:0}
+#stat{left:34px;top:196px;width:440px;height:130px;opacity:0}
 #stat .c{position:absolute;top:0;white-space:nowrap}
 #stat small{display:block;font:500 14px/1 var(--m);letter-spacing:.16em;color:var(--dim);margin-bottom:10px}
 #stat b{display:inline-block;font:800 78px/1 var(--f);letter-spacing:-.04em;transform-origin:0 80%}
 #stat .c2 b{color:var(--red)}
-#line{left:30px;top:150px;width:450px;height:122px;padding:16px 22px;border-radius:20px;background:var(--frost);box-shadow:var(--edge),var(--lift);font:500 19px/1.47 var(--m);white-space:pre;color:var(--paper);opacity:0}
+#line{left:30px;top:220px;width:450px;height:122px;padding:16px 22px;border-radius:20px;background:var(--frost);box-shadow:var(--edge),var(--lift);font:500 19px/1.47 var(--m);white-space:pre;color:var(--paper);opacity:0}
 #line b{font-weight:500;color:var(--acc)}#line .dim{color:var(--dim)}
-#band{left:0;top:640px;width:540px;height:140px;background:transparent}
-#cap{left:34px;top:650px;width:450px;min-height:80px;padding:6px 0 0;font:600 30px/1.16 var(--f);letter-spacing:-.025em}
+#band{left:0;top:688px;width:540px;height:96px;background:transparent}
+#cap{left:34px;top:692px;width:450px;min-height:80px;padding:6px 0 0;font:600 30px/1.16 var(--f);letter-spacing:-.025em}
 #cap span{display:inline-block;margin-right:.24em}
 </style>
 </head>
@@ -84,7 +84,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     <div class="btn" id="bA"><div class="dk"></div><span>Pay $64.00</span></div>
     <div class="btn" id="bB"><div class="dk"></div><span>Pay $64.00</span></div>
   </div>
-  <svg id="fg" viewBox="0 0 84 210" aria-hidden="true"><defs><linearGradient id="fgs" x1="0" x2="1"><stop offset="0" stop-color="#d9dee8"/><stop offset=".45" stop-color="#f6f7fb"/><stop offset="1" stop-color="#c3c9d6"/></linearGradient><linearGradient id="fgf" x1="0" x2="0" y1="0" y2="1"><stop offset=".34" stop-color="#fff"/><stop offset=".54" stop-color="#000"/></linearGradient><mask id="fgm"><rect width="84" height="210" fill="url(#fgf)"/></mask></defs><g mask="url(#fgm)">
+  <svg id="fg" viewBox="0 0 84 210" aria-hidden="true"><defs><linearGradient id="fgs" x1="0" x2="1"><stop offset="0" stop-color="#d9dee8"/><stop offset=".45" stop-color="#f6f7fb"/><stop offset="1" stop-color="#c3c9d6"/></linearGradient><linearGradient id="fgf" x1="0" x2="0" y1="0" y2="1"><stop offset=".3" stop-color="#fff"/><stop offset=".48" stop-color="#000"/></linearGradient><mask id="fgm"><rect width="84" height="210" fill="url(#fgf)"/></mask></defs><g mask="url(#fgm)">
     <path d="M8 46 C8 18 24 4 42 4 C60 4 76 18 76 46 L80 210 L4 210 Z" fill="url(#fgs)" stroke="rgba(0,0,0,.25)" stroke-width="2"/>
     <path d="M24 34 C24 20 32 13 42 13 C52 13 60 20 60 34 L60 52 C52 58 32 58 24 52 Z" fill="#ffffff" stroke="rgba(0,0,0,.12)" stroke-width="1.5"/></g></svg>
   <div class="bub" id="q0"></div><div class="bub" id="q1"></div><div class="rip" id="r0"></div><div class="rip" id="r1"></div>
@@ -535,13 +535,13 @@ var KM = (function(){
     for (var r = A.pay + .2, n = 0; r < DUR - .42; n++) { TAPS.push({ t: r, b: 'B' }); r += n % 3 === 2 ? .62 : .3; }
     TAPS.sort(function(a, b){ return a.t - b.t; });
     // ---- the camera: on the button under the hook, closer on the dead taps, back for the code, in for the slow motion and the payoff ----
-    CAM = KM.rig({ x: 255, y: 470, z: 1 })
-      .pushIn(A.leave, .9, 255, 476, 1.07)
-      .pull(A.fix - .2, .8, 255, 470, 1)
-      .pushIn(A.watch - .1, .9, 255, 480, 1.2)
-      .creep(A.watch + .8, A.pay - A.watch - 1, .02)
-      .pull(A.pay - .25, .9, 255, 472, 1.1)
-      .creep(A.pay + .7, DUR - A.pay - .7, .025);
+    CAM = KM.rig({ x: 255, y: 390, z: 1, drift: .8 })
+      .pushIn(A.leave, .9, 255, 394, 1.03)
+      .pull(A.fix - .2, .8, 255, 390, 1)
+      .pushIn(A.watch - .1, .9, 255, 396, 1.04)
+      .creep(A.watch + .8, A.pay - A.watch - 1, .005)
+      .pull(A.pay - .25, .9, 255, 392, 1.03)
+      .creep(A.pay + .7, DUR - A.pay - .7, .005);
     T.split = KM.transition('sharedElement', A.fix - .05, .7);
     T.merge = KM.transition('sharedElement', A.watch - .1, .75);
     KM.cue({ t: 0, k: 'whoosh', d: .5, g: .3 });
@@ -571,7 +571,7 @@ var KM = (function(){
     EL.code = KM.el($('code'), { t0: A.fix + .05, d: .5, variant: 'unfold', t1: A.watch - .15, d1: .35, out: 'slide', g: .7 });
     EL.slow = KM.el($('slow'), { t0: A.watch + .25, d: .5, variant: 'unfold', t1: A.pay - .3, d1: .35, out: 'slide', g: .7 });
     EL.line = KM.el($('line'), { t0: A.pay + .05, d: .5, variant: 'morph', g: .7 });
-    EL.tgA = KM.el($('tgA'), { t0: A.fix + .35, d: .4, variant: 'pop', t1: A.watch - .1, d1: .3, g: .6 });
+    EL.tgA = KM.el($('tgA'), { t0: A.fix + .35, d: .4, variant: 'pop', t1: A.watch - .45, d1: .3, g: .6 });
     EL.tgB = KM.el($('tgB'), { t0: A.fix + .5, d: .4, variant: 'pop', t1: A.watch + .4, d1: .3, g: .6 });
     KM.mark($('bA'), 'tree', 'never moves (silent by design); its exit rides the merge transition'); KM.mark($('bB'), 'tree', 'the thock and tick on every press');
     KM.mark($('fg'), 'tree', 'the finger: the press cues'); KM.mark($('q0'), 'self', 'bubble blip'); KM.mark($('q1'), 'self', 'bubble blip');
@@ -596,12 +596,14 @@ var KM = (function(){
     KM.lights(t, c);
     // ---- the two buttons: one full-width dead button; it splits into DEAD | PRESSED; the pressed one returns to full width ----
     var sk = T.split(t), mk = T.merge(t), bA = $('bA'), bB = $('bB');
-    var boxA = t < A.watch - .1 ? lerpBox(FULL, LEFT, sk) : lerpBox(LEFT, OUT, E.inOut3(P(t, A.watch - .1, A.watch + .5)));
-    var boxB = t < A.watch - .1 ? lerpBox(FULL, RIGHT, sk) : lerpBox(RIGHT, FULL, mk);
+    // the split never shows one button over the other: the dead one shrinks to the left half, THEN the pressed one pops in on the right;
+    // at the merge the dead one fades out first, then the pressed one glides to full width
+    var boxA = lerpBox(FULL, LEFT, sk);
+    var boxB = t < A.watch - .1 ? RIGHT : lerpBox(RIGHT, FULL, mk), popB = KM.enter('pop', P(t, A.fix + .4, A.fix + .8));
     var kA = pressOf(t, 'A') * 0, kB = pressOf(t, 'B');   // the dead one NEVER moves
-    paint(bA, boxA, kA); paint(bB, boxB, kB);
-    bA.style.opacity = (t < A.watch - .1 ? 1 : 1 - P(t, A.watch - .12, A.watch + .02)).toFixed(3);
-    bB.style.opacity = (sk > .02 ? 1 : 0).toFixed(3); bB.style.zIndex = t >= A.watch ? 3 : 1; bA.style.zIndex = 2;
+    paint(bA, boxA, kA); paint(bB, boxB, kB); if (t < A.watch - .1) bB.style.transform += popB.tf;
+    bA.style.opacity = (1 - P(t, A.watch - .4, A.watch - .14)).toFixed(3);
+    bB.style.opacity = (t < A.fix + .4 ? 0 : t < A.watch - .1 ? popB.o : 1).toFixed(3); bB.style.zIndex = t >= A.watch ? 3 : 1; bA.style.zIndex = 2;
     // the subject box (data-subject): the union of the buttons on screen
     var sb = t < A.fix - .05 ? FULL : t < A.watch + .5 ? { x: Math.min(boxA.x, boxB.x), y: Math.min(boxA.y, boxB.y), w: Math.max(boxA.x + boxA.w, boxB.x + boxB.w) - Math.min(boxA.x, boxB.x), h: Math.max(boxA.h, boxB.h) } : boxB;
     if (t >= A.watch - .1 && t < A.watch + .5) sb = boxB;
