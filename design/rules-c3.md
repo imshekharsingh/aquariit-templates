@@ -14,9 +14,14 @@ reach and sends per reach, and that sends matter most for reaching people who do
 topic gate works; the format must now make people answer, send and finish.
 
 1. **Guess first** (E19, c3-guess, from Thu 12 Nov): the reel is a question the viewer answers before we do. The hook question in frame 0
-   (at most 9 words), three options read aloud and shown as chips (`Kt.choices`), each one shown ON the subject (a coat of paint climbing it,
-   `Kt.repaint`), "Lock in your guess.", a 3-2-1 countdown (`Kt.countdown`, a 2.6 s breath in the story), then the answer with a tick on the
-   right chip and strikes on the others, then the why. One wrong option is the colour people picture today, one is plausible, one is true.
+   (at most 9 words), three options read aloud and shown as chips (`Kt.choices`), "Lock in your guess.", a 3-2-1 countdown (`Kt.countdown`,
+   a 2.6 s breath in the story, placed beside the subject, never on it), then the answer with a tick on the right chip and strikes on the
+   others, then the why. **The answer stays hidden until it is said** (owner, 12 Nov 2026: the first guess reel painted the tower red while
+   still asking "Gold, grey, or red?"): from the question to the reveal the subject is neutral (a silhouette, or the colour people picture
+   today when that is not an option); the options live on the chips only, and the answer's change (`Kt.repaint`) starts AT the reveal. The
+   scene declares `window.GUESS = { reveal, answer, box }` and qa.mjs prints "GUESS: answer hidden until n s" from the drawn frames; a frame
+   before the reveal with the answer colour on the subject fails the reel. A number claim lands once on its word (never `Kt.roll`, whose
+   rolling digits show numbers above the claim). One wrong option is the colour people picture today, one is plausible, one is true.
    Start every reel with `node scripts/channel3/new25d.mjs <slug> --guess "Question?" "A, B, or C?" "Lock in your guess." "Answer." "Why." "More." "Turns out, ..."`.
    Decides keep or drop: 3 reels (12-14 Nov), each read at 24 h; WIN = reach above 1,300 (the best non-guess reel was 1,273) OR 5+ shares and
    comments together (the best so far was 8 shares once). Verdict Sun 15 Nov in design/experiments.md (E19).

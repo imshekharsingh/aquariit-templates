@@ -2,8 +2,8 @@
 <!--
   Turns Out: "What colour was the Eiffel Tower at first?", the GUESS format (design/rules-c3.md rule 1), 2.5D, one camera feel (2026-11-12).
   The turn: everyone pictures the tower bronze-brown; while it went up it was red.
-  The format: the question, three options as chips (each one painted onto the tower as it is read), "Lock in your guess.", a 3-2-1 countdown on
-  the tower in silhouette, the answer painted up the tower, the why, the payoff, and an ending that matches frame 0 (the reel loops).
+  The format: the question, three options as chips (the tower drains from today's brown to a silhouette and gives
+  nothing away until the answer), "Lock in your guess.", a 3-2-1 countdown beside the tower, the answer painted up the tower, the why, the payoff, and an ending that matches frame 0 (the reel loops).
   - Facts (two sources each; design/channel3.md "Fact rules"):
     the iron pieces got an anti-rust coat of Venetian red in Eiffel's workshop, the tower's colour while it went up in 1887-1888
       (toureiffel.paris, "Painting the Eiffel Tower" and "What colors has the Tower sported over the years?"; Smithsonian Magazine, 2018);
@@ -63,12 +63,13 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
   // rate: 0.07 s a letter at speed 1, a digit as 4 letters since "1889" is spoken as "eighteen eighty nine"), then a breath ----
   var SPEED = .95, lt = function(w){ return w.replace(/[^A-Za-z]/g, '').length + 4 * w.replace(/[^0-9]/g, '').length; };
   var A = [], CAPS = [];
-  function story(lines){   // lines: [[text, breath before it]]
-    var t = 0;
-    lines.forEach(function(L, i){ if (i) t += L[1]; var at = +t.toFixed(2), ws = L[0].split(/\s+/), w0 = at + .05, n = 0;
-      var words = ws.map(function(w){ var o = { d: w, s: w0, e: w0 + lt(w) * .07 / SPEED }; w0 = o.e; n += lt(w); return o; });
-      A.push(at); CAPS.push({ text: L[0], at: at, s: at, e: at + .1 + n * .07 / SPEED, words: words }); t = CAPS[i].e; });
+  function story(lines){   // lines: [[text, breath before it, speed?]] (a line's own speed: VOICE.speeds, 11 Nov 2026)
+    var t = 0, SP = [];
+    lines.forEach(function(L, i){ if (i) t += L[1]; var at = +t.toFixed(2), ws = L[0].split(/\s+/), w0 = at + .05, n = 0, sp = L[2] || SPEED;
+      var words = ws.map(function(w){ var o = { d: w, s: w0, e: w0 + lt(w) * .07 / sp }; w0 = o.e; n += lt(w); return o; });
+      A.push(at); SP.push(L[2] || null); CAPS.push({ text: L[0], at: at, s: at, e: at + .1 + n * .07 / sp, words: words }); t = CAPS[i].e; });
     window.VOICE = { text: CAPS.map(function(L){ return L.text; }).join(' '), at: A.slice() };
+    if (SP.some(Boolean)) window.VOICE.speeds = SP;
   }
   var norm = function(w){ return String(w).toLowerCase().replace(/[^a-z0-9]/g, ''); };
   window.setVoice = function(v){ if (!v || !v.words || !v.words.length) return; var V = v.words, j = 0;
@@ -562,7 +563,7 @@ var K25 = (function(){
 
   // ---- the story (new25d.mjs --guess fills it: the question, the options as one sentence, "Lock in your guess.", the answer word after a
   // 2.6 s breath that holds the countdown, the why, one more fact, "Turns out, ..."). qa.mjs --write copies voice, times and length into the config ----
-  story(/*story*/[['What colour was the Eiffel Tower at first?', 0], ['Gold, grey, or red?', .5], ['Lock in your guess.', .45], ['Red.', 2.6], ['Every iron piece was painted Venetian red to stop rust.', 1.3], ['Since 1889, it has worn seven official colours.', .5], ["Turns out, today's brown is a shade from 1907.", .5]]/*story:end*/);
+  story(/*story*/[['What colour was the Eiffel Tower at first?', 0, .9], ['Gold, grey, or red?', .5], ['Lock in your guess.', .7, .65], ['Red.', 2.6], ['Every iron piece was painted Venetian red to stop rust.', 1.3], ['Since 1889, it has worn seven official colours.', .5], ["Turns out, today's brown is a shade from 1907.", .5]]/*story:end*/);
   var DUR = +(CAPS[CAPS.length - 1].e + 1.9).toFixed(1);
   // ---- the look: dusk blue and warm horizon; the paint colours are the only strong colours ----
   var CREAM = '#fbf3e0', AMBER = '#f2b46a', KD = 'rgba(14,10,8,.9)', REDT = '#ff8f7a';
@@ -571,7 +572,7 @@ var K25 = (function(){
   var CREDIT = 'SOURCES: TOUR EIFFEL OFFICIAL SITE · SMITHSONIAN';
   var PAYOFF = 'It started red.', PAYOFF2 = "TODAY'S SHADE IS FROM 1907";
   // the guess: one option per word of sentence 2 (the chip lands as its word is spoken), ANSWER = the index of the true one
-  var GOLD = '#e0b13e', GREY = '#8e939a', RED = '#b3392b', TODAY = '#9a7442', SIL = '#1f1a2b', IRON = '#5f5c5a';
+  var GOLD = '#e0b13e', GREY = '#8e939a', RED = '#b3392b', TODAY = '#9a7442', SIL = '#272236', IRON = '#5f5c5a';
   var OPTS = [{ key: 'A', word: 'GOLD', col: GOLD }, { key: 'B', word: 'GREY', col: GREY }, { key: 'C', word: 'RED', col: RED }], ANSWER = 2;
   var CHIPS7 = ['#8e3324', '#8a5a2e', '#c99a40', '#a27a3e', '#7f3f2a', '#6b4f35', TODAY];   // seven official colours (shades approximate; no years claimed per chip)
   function WT(i, re, n){ var w = CAPS[i].words, c = 0; for (var j = 0; j < w.length; j++) if (re.test(w[j].d) && c++ === (n || 0)) return w[j].s; return CAPS[i].s; }   // when a word is spoken (n: the nth match)
@@ -592,9 +593,11 @@ var K25 = (function(){
     C4 = Kt.track([[tw0(2), 2, 176, -560, 0], [DUR, -12, 166.7, -675, 0]]);
     tB0 = tw1(0) - .1; tB1 = A[5] - .25;   // the brush crosses the girder
     // the paint sweeps on the tower in W1: [start, end, colour] (frame 0 is already mid-sweep, so something changes from the first frame)
-    SW = [[-.5, .8, GOLD], [1.35, 2.15, GREY]];
-    OPTS.forEach(function(o, i){ var w = WT(1, new RegExp('^' + o.word, 'i')); SW.push([w - .05, w + .36, o.col]); });
-    SW.push([A[2] + .05, A[2] + .75, SIL], [tRv - .3, tRv + .55, RED]);
+    // THE GUESS RULE (owner, 12 Nov 2026: the tower was red while the viewer was still asked to guess): from frame 0 (today's brown, the loop's
+    // last frame) the tower drains to a silhouette while the question is asked and stays a silhouette through the options and the countdown;
+    // the answer's coat starts climbing only AT the reveal. The options live on the chips only. qa.mjs GUESS checks the frames for it.
+    SW = [[.3, 1.4, SIL], [tRv, tRv + .75, RED]];
+    window.GUESS = { reveal: +tRv.toFixed(2), answer: RED, box: [150, 270, 390, 690] };   // the subject's screen box (CSS px) during the guess
   }
   function optsAt(){ OPTS.forEach(function(o){ o.at = WT(1, new RegExp('^' + o.word, 'i')); }); return OPTS; }
   function paintAt(t){ var from = TODAY, i, cur = null; for (i = 0; i < SW.length; i++) { if (SW[i][0] <= t) { if (cur) from = cur[2]; cur = SW[i]; } }
@@ -669,14 +672,10 @@ var K25 = (function(){
       x.fillStyle = 'rgba(255,210,150,.9)'; for (i = -7; i <= 7; i++) { x.beginPath(); x.arc(i * 22, 12.5, Kt.px(1.6), 0, 7); x.fill(); } }
     if ((s = Kt.plane(cam, -330))) { r = rnd(23); for (i = 0; i < 6; i++) { var bx0 = -200 + ((r() * 400 + t * (9 + r() * 5)) % 400), by = 210 + r() * 70 + Math.sin(t * .8 + i) * 2, fl = Math.sin(t * 9 + i * 2.1);   // birds crossing
         x.beginPath(); x.moveTo(bx0 - 1.6, by + fl * .9); x.quadraticCurveTo(bx0 - .7, by + .3, bx0, by); x.quadraticCurveTo(bx0 + .7, by + .3, bx0 + 1.6, by + fl * .9); Kt.ink(1.4, 'rgba(14,12,24,.85)'); } }
-    if ((s = Kt.plane(cam, -460, { fg: true }))) {   // the foreground: a chestnut branch top left and a street lamp on the right, passing close
-      x.save(); x.translate(-118 + Math.sin(t * .7) * .4, 300); x.rotate(-.35 + Math.sin(t * .9) * .015); x.fillStyle = '#0d0c18';
-      x.beginPath(); x.moveTo(-40, -6); x.quadraticCurveTo(10, 4, 46, -14); x.lineTo(46, -12); x.quadraticCurveTo(10, 7, -40, -3); x.fill();
-      r = rnd(31); for (i = 0; i < 14; i++) { var lx = -30 + i * 5.4, ly2 = -4 + Math.sin(i) * 3 + Math.sin(t * 1.4 + i) * .5; x.save(); x.translate(lx, ly2); x.rotate(-1.2 + r() * 1.4 + Math.sin(t * 1.1 + i) * .05); x.beginPath(); x.ellipse(0, -5, 2.4, 6, 0, 0, 7); x.fill(); x.restore(); }
-      x.restore();
-      var fl2 = Kt.flick(t, 3); x.fillStyle = '#0d0c18'; x.fillRect(56, -200, 1.6, 316); x.fillRect(53.5, 112, 6.6, 1.2); x.beginPath(); x.moveTo(54, 113); x.lineTo(59.5, 113); x.lineTo(58.6, 120); x.lineTo(54.9, 120); x.closePath(); x.fill();
-      var g = x.createRadialGradient(56.8, 116, 0, 56.8, 116, 14); g.addColorStop(0, 'rgba(255,214,150,' + (.55 * fl2) + ')'); g.addColorStop(1, 'rgba(255,214,150,0)'); x.fillStyle = g; x.fillRect(40, 100, 34, 34);
-      x.fillStyle = 'rgba(255,226,170,' + (.9 * fl2) + ')'; x.fillRect(55, 114, 3.6, 4.8); }
+    if ((s = Kt.plane(cam, -460, { fg: true }))) {   // the foreground: a street lamp on the left, fully in frame at the loop's frame, passing close
+      var LX = -70, fl2 = Kt.flick(t, 3); x.fillStyle = '#0d0c18'; x.fillRect(LX, -200, 1.6, 316); x.fillRect(LX - 2.5, 112, 6.6, 1.2); x.beginPath(); x.moveTo(LX - 2, 113); x.lineTo(LX + 3.5, 113); x.lineTo(LX + 2.6, 120); x.lineTo(LX - 1.1, 120); x.closePath(); x.fill();
+      var g = x.createRadialGradient(LX + .8, 116, 0, LX + .8, 116, 14); g.addColorStop(0, 'rgba(255,214,150,' + (.55 * fl2) + ')'); g.addColorStop(1, 'rgba(255,214,150,0)'); x.fillStyle = g; x.fillRect(LX - 16, 100, 34, 34);
+      x.fillStyle = 'rgba(255,226,170,' + (.9 * fl2) + ')'; x.fillRect(LX - 1, 114, 3.6, 4.8); }
     Kt.screen(); x.fillStyle = lg(0, 640, 0, 960, [[0, 'rgba(8,8,20,0)'], [1, 'rgba(8,8,20,.5)']]); x.fillRect(0, 640, 540, 320);
   }
   function W1(t){ paris(C1(t), t, TODAY, { paint: paintAt(t) }); }
@@ -720,7 +719,7 @@ var K25 = (function(){
   // ---------- W3 seven colour chips over a blueprint ----------
   function C3(t){ var u = P(t, tw0(1), tw1(2)); return { x: mix(-.25, .2, u), y: mix(.15, .55, eio(u)), z: mix(-5.8, -4.6, u) }; }
   function chipT(i){ return A[5] + .1 + i * .3; }
-  function chipA(i, t){ return mix(-.02, (i - 3) * .24, es(P(t, chipT(i), chipT(i) + .5))); }
+  function chipA(i, t){ return mix(-.02, (i - 3) * .16, es(P(t, chipT(i), chipT(i) + .5))); }
   function chipLift(i, t){ return i === 6 ? eio(P(t, A[6] - .9, A[6] - .4)) * .35 : 0; }
   function miniTower(col){ x.beginPath(); edge(function(y){ return hw(y * 330 / .9) / 330; }, 0, .9, -1).concat(edge(function(y){ return hw(y * 330 / .9) / 330; }, 0, .9, 1).reverse()).forEach(function(p, i){ if (i) x.lineTo(p[0] * 1.6, p[1]); else x.moveTo(p[0] * 1.6, p[1]); }); x.closePath(); x.fillStyle = col; x.fill(); }
   function W3(t){ var cam = C3(t), i, r, V; Kt.world('chips', { air: '#33405f', haze: .4 });
@@ -729,7 +728,7 @@ var K25 = (function(){
       x.save(); x.translate(0, -5); x.scale(.034, .034); Kt.path(edge(hw, 0, 276, -1)); Kt.ink(1.4, 'rgba(235,244,255,.8)'); Kt.path(edge(hw, 0, 276, 1)); Kt.ink(1.4, 'rgba(235,244,255,.8)'); Kt.path(edge(xi, 0, 160, -1)); Kt.ink(1, 'rgba(235,244,255,.6)'); Kt.path(edge(xi, 0, 160, 1)); Kt.ink(1, 'rgba(235,244,255,.6)');
         for (i = 0; i + 1 < LEV.length; i += 2) { x.beginPath(); Kt.seg(-hw(LEV[i]), LEV[i], hw(LEV[i]), LEV[i]); Kt.ink(.6, 'rgba(235,244,255,.35)'); } x.beginPath(); x.ellipse(0, 4, 34.4, 35, 0, 0, Math.PI); Kt.ink(1, 'rgba(235,244,255,.6)'); x.restore();
       x.restore(); x.fillStyle = '#b8c0c8'; [[-5.6, 6.6], [5.6, 6.6], [-5.6, -5.6], [5.6, -5.6]].forEach(function(q){ x.beginPath(); x.arc(q[0], q[1], .09, 0, 7); x.fill(); }); }
-    if (Kt.plane(cam, 3.6)) { r = rnd(4); [[-2.6, 2.4, -.08], [2.7, 2.1, .1]].forEach(function(q, j){ var sw = Math.sin(t * 1.1 + j) * .03; x.save(); x.translate(q[0], q[1]); x.rotate(q[2] + sw);
+    if (Kt.plane(cam, 3.6)) { r = rnd(4); [[-1.5, 1.95, -.08], [1.55, 1.8, .1]].forEach(function(q, j){ var sw = Math.sin(t * 1.1 + j) * .03; x.save(); x.translate(q[0], q[1]); x.rotate(q[2] + sw);
         x.fillStyle = '#e8dcc2'; x.fillRect(-.7, -1.6, 1.4, 1.7); x.fillStyle = '#7a6448'; x.fillRect(-.6, -1.35, 1.2, 1.25); x.save(); x.translate(0, -1.3); x.scale(1.2, 1.2); miniTower('#4a3a2a'); x.restore(); x.restore();
         x.beginPath(); Kt.seg(q[0], q[1] + .1, q[0], 4); Kt.ink(1, 'rgba(230,220,200,.5)'); }); }
     if (Kt.plane(cam, 0)) { Kt.contact(0, -1.7, 3, .4, .2);
@@ -757,13 +756,17 @@ var K25 = (function(){
   }
 
   // ---------- type over the picture: the options, the countdown, labels (y 150-340, above the subject) ----------
+  // lab: a whole label fades up and settles (never a half-wiped word); pop: a number lands once, at its spoken word (never counts past the claim)
+  function lab(s, X, Y, size, col, k, sp){ if (k <= 0) return; x.save(); x.globalAlpha *= cl(k * 2.5, 0, 1); x.translate(0, (1 - eo(k)) * 8); Kt.label(s, X, Y, size, '800 ' + FI, col, 1, sp, KD); x.restore(); }
+  function pop(s, X, Y, size, col, k){ if (k <= 0) return; var e = es(cl(k * 1.6, 0, 1)), sc = mix(1.45, 1, e); x.save(); x.globalAlpha *= cl(k * 3, 0, 1); x.translate(X, Y - size * .35); x.scale(sc, sc);
+    x.font = font(size, '800 ' + FD); x.textAlign = 'center'; x.strokeStyle = KD; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(s, 0, size * .35); txt(s, 0, size * .35, size, '800 ' + FD, col, 'center'); x.restore(); }
   function kinetic(t){ var k, o;
     Kt.choices(optsAt(), t, { y: 232, pick: ANSWER, reveal: tRv, live: liveOpt, out: tw0(0) - .15 });
-    Kt.countdown(t, CD[0], CD[1], SX, 338, { col: AMBER });
+    Kt.countdown(t, CD[0], CD[1], 104, 452, { col: AMBER, r: 50, size: 58 });   // left of the tower, clear of the spire and the chips
     k = P(t, WT(4, /venetian/i) - .1, WT(4, /venetian/i) + .5); o = 1 - P(t, tw0(1) - .3, tw0(1));
-    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; Kt.label('VENETIAN RED', SX, 196, 30, '800 ' + FI, REDT, k, 4, KD); Kt.label('AN ANTI-RUST COAT · 1887-1888', SX, 236, 14, '800 ' + FI, CREAM, P(t, WT(4, /venetian/i) + .4, WT(4, /venetian/i) + .9), 2.5, KD); x.restore(); }
+    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; lab('VENETIAN RED', SX, 196, 30, REDT, k, 4); lab('AN ANTI-RUST COAT · 1887-1888', SX, 236, 14, CREAM, P(t, WT(4, /venetian/i) + .4, WT(4, /venetian/i) + .9), 2.5); x.restore(); }
     k = P(t, WT(5, /seven/i) - .1, WT(5, /seven/i) + .6); o = 1 - P(t, tw0(2) - .2, tw0(2) + .1);
-    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; Kt.roll('7', SX, 222, 92, '800 ' + FD, AMBER, k, KD); Kt.label('OFFICIAL COLOURS SINCE 1889', SX, 258, 15, '800 ' + FI, CREAM, k, 3, KD); x.restore(); }
+    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; pop('7', SX, 222, 92, AMBER, k); lab('OFFICIAL COLOURS SINCE 1889', SX, 258, 15, CREAM, k, 3); x.restore(); }
   }
   function drawPayoff(t){ var k = es(P(t, DUR - 2.9, DUR - 2.2)); if (k <= 0) return; x.save(); x.globalAlpha = cl(k * 1.6, 0, 1); x.translate(SX, 214); arrive(k);
     x.font = font(48, '700 ' + FD); x.textAlign = 'center'; x.strokeStyle = 'rgba(8,8,20,.75)'; x.lineWidth = 8; x.lineJoin = 'round'; x.strokeText(PAYOFF, 0, 0); txt(PAYOFF, 0, 0, 48, '700 ' + FD, REDT, 'center', -.5);
@@ -781,21 +784,21 @@ var K25 = (function(){
   function sfx(){ var Q = [{ t: 0, k: 'boom', g: .24 }, { t: .05, k: 'move', d: 1.6, g: .14, p: -1, x: 270, r: .3 }], i;
     function R(t, d, x0, g){ Q.push({ t: t, k: 'rustle', d: d, g: g || .2, x: x0, r: .2 }); } function Lg(t, d, x0, x2, g){ Q.push({ t: t, k: 'move', d: d, g: g || .22, p: -1.2, x: x0, x2: x2, r: .35 }); }
     SW.forEach(function(w, j){ if (w[0] < 0) w = [0, w[1], w[2]]; R(w[0], Math.max(.3, w[1] - w[0]), 270, .16); Q.push({ t: w[1] - .05, k: 'snap', g: .1, p: 2 + (j % 3), x: 270 }); });   // a coat of paint climbs the tower
-    Kt.guessCues(Q, optsAt(), Kt.countdown(-99, CD[0], CD[1], SX, 338), tRv, SX);
+    Kt.guessCues(Q, optsAt(), Kt.countdown(-99, CD[0], CD[1], 104, 452), tRv, SX);
     Kt.ambient(Q, 'wind', .2, tw0(0), 270); Kt.ambient(Q, 'lamp', 1, tw0(0) - .3, 480);
-    for (i = 0; i < 4; i++) Q.push({ t: 1.2 + i * 1.9, k: 'tick', g: .04, p: 14, x: 120 + i * 90 });                                       // the birds
+    for (i = 0; i < 4; i++) Q.push({ t: 1.2 + i * 1.9, k: 'tick', g: .08, p: 14, x: 120 + i * 90 });                                       // the birds
     Lg(tRv + .4, tw1(0) - tRv - .4, 270, 270, .26); Q.push({ t: tw1(0) - .1, k: 'touch', g: .16, x: 270 });                                // the dive through the arch
     Kt.ambient(Q, 'lamp', tw1(0), tw0(1), 300);
     for (var u = tB0 + .1; u < tB1; u += .46) { var bxp = 270 + bx(u) * 50; R(u, .4, cl(bxp, 30, 510), .13); Q.push({ t: u + .02, k: 'tap', g: .08, x: cl(bxp, 30, 510) }); }   // the brush strokes along the girder
     Q.push({ t: WT(4, /venetian/i), k: 'blip', g: .12, p: 6, x: SX }, { t: WT(4, /rust/i), k: 'blip', g: .1, p: 9, x: SX });
     R(tw0(1), tw1(1) - tw0(1), 470, .3);                                                                                                  // the page
-    for (i = 0; i < 7; i++) Q.push({ t: chipT(i), k: 'snap', g: .12, p: i, x: 255 + (i - 3) * 50 }, { t: chipT(i) + .05, k: 'tick', g: .05, p: 8 + i, x: 255 + (i - 3) * 50 });   // the chips fan out
-    for (u = WT(5, /seven/i) - .1; u < WT(5, /seven/i) + .5; u += .08) Q.push({ t: u, k: 'tick', g: .03, p: 10, x: SX });
+    for (i = 0; i < 7; i++) Q.push({ t: chipT(i), k: 'snap', g: .12, p: i, x: 255 + (i - 3) * 50 }, { t: chipT(i) + .05, k: 'tick', g: .08, p: 8 + i, x: 255 + (i - 3) * 50 });   // the chips fan out
+    Q.push({ t: WT(5, /seven/i) - .05, k: 'pop', g: .18, p: 5, x: SX }, { t: WT(5, /seven/i) + .1, k: 'tick', g: .1, p: 10, x: SX });   // the 7 lands, its label
     Q.push({ t: A[6] - .9, k: 'blip', g: .1, p: 4, x: 400 });                                                                             // today's chip lifts
     Lg(tw0(2), tw1(2) - tw0(2) + 1.2, 300, 270, .22); Q.push({ t: tw0(2) + .1, k: 'touch', g: .16, x: 300 });                              // the match cut and the pull-back
     Kt.ambient(Q, 'wind', tw1(2), DUR - .3, 270);
-    for (i = 0; i < 6; i++) Q.push({ t: tw1(2) + .4 + i * .18, k: 'tick', g: .04, p: 12 + i, x: 200 + i * 28 });                            // the tower's lights come on
-    Q.push({ t: DUR - 2.4, k: 'resolve', g: .3, notes: [57, 64, 69, 73] });
+    for (i = 0; i < 6; i++) Q.push({ t: tw1(2) + .4 + i * .18, k: 'tick', g: .08, p: 12 + i, x: 200 + i * 28 });                            // the tower's lights come on
+    Q.push({ t: DUR - 3, k: 'tick', g: .1, p: 9, x: SX }, { t: DUR - 2.85, k: 'pop', g: .16, p: 4, x: SX }, { t: DUR - 2.4, k: 'resolve', g: .3, notes: [57, 64, 69, 73] });   // the credit, the payoff line
     Q.forEach(function(q){ q.t = +Math.max(0, q.t).toFixed(2); }); Q.sort(function(a, b){ return a.t - b.t; });
     window.CUES = { dur: DUR, cues: Q, mix: { duck: 8, room: .6 }, bed: { bpm: 76, origin: 0, gain: .3, soft: true, lift: +(A[A.length - 1] - .2).toFixed(2), chords: [[45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [48, 55, 60, 64, 67], [43, 50, 55, 59, 62]] } }; }
   window.seek = seek; window.DURATION = DUR;
