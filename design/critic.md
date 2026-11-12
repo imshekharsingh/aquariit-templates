@@ -23,3 +23,4 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 ## @techin20sec
 13. Is every setting's path readable for 2 s+ and correct on both iPhone and Android as stated?
 14. Is the drawn phone UI generic (no real logos) and still clearly recognisable?
+15. (12 Nov) Do the hook's switches show the RESULT the reel asks for (a "turn off" setting must not flip ON in frame 0)? Are the paths at least 34 px (about 12 pt on a phone)?
