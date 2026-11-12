@@ -11,7 +11,7 @@
  "style": "Ink and mint (E18 dark-return)",
  "palette": "dark",
  "voice": {
-  "text": "Why does your button feel dead on tap? You tap. Nothing moves. So you tap again. The fix: while it's pressed, scale it to ninety six percent and drop the shadow. Watch it slowed down. It sinks, the shadow drops, then it springs back. Now every tap feels real.",
+  "text": "Why does your button feel dead? You tap. Nothing moves. So you tap again. The fix: while it's pressed, scale it to ninety six percent and drop the shadow. Watch it slowed down. It sinks, the shadow drops, then it springs back. Now every tap feels real.",
   "voice": "af_heart",
   "speed": 1.0,
   "gap": [

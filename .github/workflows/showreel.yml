@@ -218,6 +218,14 @@ jobs:
             ffmpeg -y -loglevel error -i "out/$NAME.mp4" -i out/sound.wav -map 0:v -map 1:a -c:v copy -af "$EQ,volume=${GAIN}dB,alimiter=limit=0.7:attack=5:release=60:level=false" -ar 48000 -c:a aac -b:a 192k -shortest -movflags +faststart out/muxed.mp4
           done
           mv out/muxed.mp4 "out/$NAME.mp4"
+          # true-peak guard (12 Nov 2026: the eiffel-red re-render peaked at -0.2 dBTP through the 5 ms limiter): over -1.3 dBTP, remux once
+          # with a faster, lower limiter (the loudness moves by tenths of a LU; the gate below still measures the result)
+          TP=$(ffmpeg -hide_banner -i "out/$NAME.mp4" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+Peak:" | tail -1 | awk '{print $2}')
+          if python3 -I -c "import sys; sys.exit(0 if float(sys.argv[1]) > -1.3 else 1)" "$TP"; then
+            echo "true peak $TP dBTP: remux with limiter 0.6, attack 1 ms"
+            ffmpeg -y -loglevel error -i "out/$NAME.mp4" -i out/sound.wav -map 0:v -map 1:a -c:v copy -af "$EQ,volume=${GAIN}dB,alimiter=limit=0.6:attack=1:release=60:level=false" -ar 48000 -c:a aac -b:a 192k -shortest -movflags +faststart out/muxed.mp4
+            mv out/muxed.mp4 "out/$NAME.mp4"
+          fi
           ffmpeg -hide_banner -i "out/$NAME.mp4" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | tail -3 | tee out/loud.txt
           # Mandatory Gate item 8 (design/mandatory.md; owner, 7 Nov 2026): -14 LUFS +-1 and true peak at most -1 dBTP, or the run fails here
           python3 -I -c "import re,sys; t=open(sys.argv[1]).read(); i=float(re.search(r'I:\s+(-?[\d.]+)',t).group(1)); p=float(re.search(r'Peak:\s+(-?[\d.inf]+)',t).group(1)); ok=-15<=i<=-13 and p<=-1; print(('SOUND GATE: ok' if ok else '::error::SOUND GATE: out of range'), i, 'LUFS, true peak', p, 'dBTP (need -15 to -13, at most -1)'); sys.exit(0 if ok else 1)" out/loud.txt
