@@ -29,8 +29,11 @@ FB = {   # the owner-feedback.md lines each check guards
     'dead': '7 Nov "a reel barely moved"; 12 Nov "2.4 s with nothing at the payoff"',
     'mute': '12 Nov "the payoff was a 4% scale change ... the fix is invisible"',
 }
-# thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking; see design/owner-feedback.md)
-T = dict(full_wps=4.0, short_words=6, min_overall=2.0, min_speed=.95, stray_p=.5,
+# thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
+# last on the final mix, which reads fast: full sentences at natural speed 1.0 measured 4.10-4.17, so a full sentence fails over 4.5 (as the voice
+# check and design/critic.md 5) and a short line (6 words or fewer) over 4.0 is a warning. Colour: the old blue tech look the owner called
+# horrible measured 54% saturated fill all through; the dark web reel 2%.
+T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=.95, stray_p=.5,
          sat_s=.6, sat_v=.4, sat_frac=.25, hue_jump=45, ring_sat=.12,
          edge_frac=.06, edge_dist=48, edge_secs=1.0,
          ocr_conf=70, num_win=1.0,
@@ -139,17 +142,19 @@ def voice_checks(text, speeds, heard):
     rows, bad = [], []
     for s, a0, a1 in sents:
         hs = [m[j] for j in range(a0, a1) if j in m]
-        if len(hs) < 2: rows.append(f'"{s[:28]}" not heard'); bad.append(f'"{s[:40]}" not heard'); continue
-        st, en = heard[hs[0]][1], heard[hs[-1]][2]; n = a1 - a0; wps = n / max(.01, en - st)
-        tag = 'ok'
-        if wps > T['full_wps']: tag = 'quick (short line, warning)' if n <= T['short_words'] else 'FAST'
+        if not hs: rows.append(f'"{s[:28]}" not heard'); bad.append(f'"{s[:40]}" not heard'); continue
+        st, en = heard[hs[0]][1], heard[hs[-1]][2]; n = a1 - a0
+        if n < 2: rows.append(f'{st:.1f}s 1w heard'); continue   # a one-word line has no pace to time
+        wps = n / max(.01, en - st); tag = 'ok'
+        if n <= T['short_words'] and wps > T['short_wps']: tag = 'quick (short line, warning)'
+        elif n > T['short_words'] and wps > T['full_wps']: tag = 'FAST'
         if tag == 'FAST': bad.append(f'"{s[:40]}" {wps:.2f} words/s at {st:.1f} s')
         rows.append(f'{st:.1f}s {n}w {wps:.2f}/s {tag}')
     ms = sorted(m.values())
     span = heard[ms[-1]][2] - heard[ms[0]][1] if ms else 0
     overall = len(want) / max(span, .01)
     detail = f'{len(want)} words in {span:.1f} s = {overall:.2f} words/s overall; sentences: ' + '; '.join(rows)
-    if bad: line('PACE', 'FAIL', f'{len(bad)} sentence(s) over {T["full_wps"]} words/s or lost: ' + '; '.join(bad) + ' | ' + detail)
+    if bad: line('PACE', 'FAIL', f'{len(bad)} sentence(s) over {T["full_wps"]} words/s (full) or not heard: ' + '; '.join(bad) + ' | ' + detail)
     elif overall < T['min_overall']: line('PACE', 'FAIL', f'speech sounds slowed: {overall:.2f} words/s overall (at least {T["min_overall"]}) | ' + detail)
     elif not slow: line('PACE', 'PASS', detail)
     # stray words: anything the recogniser hears after the script's last word, in the final mix
