@@ -46,8 +46,8 @@ switch flips) or "choice" (a tick moves from row `from` to row `pick`), `pick`, 
 The phone is our own drawing (no platform's UI, icons or fonts); platform names appear only as text.
 
 ## The phone walkthrough look (12 Nov 2026; topic `"look": "phone"`, scenes/phonecam.py; design/rules-tech.md L1-L6)
-The default for every tech reel from 12 Nov (owner: "Tech reel doesn't feel like a change at all"). One big drawn phone on a flat bold colour per
-setting; `hook_page` {title, sub, rows [{text, from, to}]} flips red values to green by 1.1 s under the hook title; scene kind `tap` with params
+The default for every tech reel from 12 Nov (owner: "Tech reel doesn't feel like a change at all"). One big drawn phone on the dark palette (rules-tech.md L7, owner 12 Nov: no colour per
+setting, one gold accent); `hook_page` {title, sub, rows [{text, from, to}]} flips the risky values to the safe ones by 1.1 s under the hook title; scene kind `tap` with params
 `name` (the counter label), `steps` [{page, tap, cue?, action?: "choice" | "switch"}] (a page: {title, back?, sub?, icons?, rows [{text, value?,
 switch?: bool, chevron?}], choice?: {from, pick}}), `before` / `after` (the notification banner), `paths`; the last scene kind `recap` with
 `page`, `items` [{cue}], `stamp`, `stamp_cue`. Each tap time is its cue word (or spaced between its neighbours); each tap, page push, flip,

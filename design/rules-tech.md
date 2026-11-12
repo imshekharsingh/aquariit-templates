@@ -18,18 +18,25 @@ Evidence (design/references.md, R-trend 12 Nov): the settings videos that travel
 press coverage of "settings to turn off" videos), and word-by-word captions with the spoken word highlighted beat plain subtitles (vendor data,
 direction repeated, size unproven). Rules L1-L6 are the gate for the look; rules 1-9 below still hold for the format.
 
-- **L1. One big phone fills the frame** (720 px wide, running off the foot of the frame), on a flat bold colour that changes with every setting
-  (blue, purple, red, green for the save): the viewer sees "a phone" in frame 0. Our own generic drawing: no platform UI, icons or fonts.
+- **L1. One big phone fills the frame** (720 px wide, running off the foot of the frame) on the DARK palette (L7): the viewer sees "a phone"
+  in frame 0. Our own generic drawing: no platform UI, icons or fonts.
+- **L7. The dark palette** (owner, 12 Nov 2026, on the first render's flat bold colours: "colour grading is horrible, I hate it without opening
+  it"; the cover alone failed). One deep near-black background for the whole reel (a soft warm glow behind the phone and a vignette at most; no
+  saturated full-screen colour, no colour change per setting; a topic's "tint" no longer colours the frame). The phone in neutral dark-mode greys
+  (rows #1E1E22, text #F0F0F4, secondary #9898A0, every text 4.5:1+). ONE accent, warm gold #ECC062, used only for the touch marker, the active
+  row, the result banner's edge, the spoken word and the hook's key word. Red / green only as small status dots, never large fills. Captions
+  white with a black outline. Check: the cover at thumbnail size (about 200 px wide) looks calm and premium next to the web channel's dark reels.
+  (phonecam.py palette constants; the owner likes the dark look of the web channel and the October reels.)
 - **L2. The touch indicator walks the real path tap by tap, ON the word that names it** (`steps` [{page, tap, cue, action}]): every step's
   `cue` is a word in the line ("in Location" → tap Location; "your app" → tap the app; "While Using" → the tick moves). 2-3 taps per setting, a
   page push after each, the camera leaning in to every tap (1.09, the change 1.13). The script is written as the path ("One: in Location, set your
   app to While Using, so ...").
-- **L3. The result as a notification banner**, dropping in at the top of the screen after the change: red (the old state, struck through), then
-  green with a tick (the new state). Never under the path card or the captions.
+- **L3. The result as a notification banner**, dropping in at the top of the screen after the change: the old state (grey, struck through, a
+  small red dot), then the new state (white, a gold edge, a small green dot with a tick). Never under the path card or the captions.
 - **L4. The 1/3 counter and the setting's name, top left; both paths on a black card (36 px) for the whole setting** (rule 3, critic Q13).
-- **L5. Word-by-word captions**: 2-4 words at a time (`chunks`), 88 px heavy, white with a black outline, the spoken word yellow and lifted.
-- **L6. Frame 0 = the result**: the hook in 112 px heavy type (the key word yellow) over the phone showing `hook_page`: three red values flipping to
-  green safe values by 1.1 s (critic Q15: the flips show the protection, never a "turn off" setting going ON).
+- **L5. Word-by-word captions**: 2-4 words at a time (`chunks`), 88 px heavy, white with a black outline, the spoken word gold (L7) and lifted.
+- **L6. Frame 0 = the result**: the hook in 112 px heavy type (the key word gold) over the phone showing `hook_page`: three risky values (grey, red dot) flipping
+  to the safe values (white, green dot) by 1.1 s (critic Q15: the flips show the protection, never a "turn off" setting going ON).
 - Verdict with E17 on Sun 15 Nov: the same targets (24 h reach 150+, or 3+ saves and shares). The look is the change; topics stay settings lists.
 
 1. **Format: "3 settings to change today"** (experiment tech-settings-list, E17): one benefit per reel (privacy, battery, scam calls, storage,
