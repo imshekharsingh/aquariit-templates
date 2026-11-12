@@ -5,7 +5,9 @@
 // Usage: node scripts/channel3/new25d.mjs <slug> "Hook question?" "Sentence two." ... ("Turns out, ..." last)
 // The GUESS format (11 Nov 2026, design/rules-c3.md rule 1): node scripts/channel3/new25d.mjs <slug> --guess "Question?" "Gold, grey, or red?"
 //   "Lock in your guess." "Red." "Why." "One more fact." "Turns out, ..." copies scripts/channel3/starterguess.html (the Eiffel reel, a working
-//   guess reel: options as chips painted onto the icon, a 3-2-1 countdown in a 2.6 s breath, the answer, three worlds and a loop back to frame 0).
+//   guess reel: options as chips, the icon neutral (a silhouette) until the answer, a 3-2-1 countdown beside it in a 2.6 s breath, the answer
+//   painted on, three worlds and a loop back to frame 0). Set window.GUESS (reveal, answer colour, the subject's box): qa.mjs GUESS fails
+//   any frame that shows the answer before the reveal (owner, 12 Nov 2026).
 //   The options are read from sentence 2 (comma-separated words); set ANSWER (index) and each option's colour in the scene, then redraw the worlds.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';

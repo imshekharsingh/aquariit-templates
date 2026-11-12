@@ -1,22 +1,31 @@
 {
  "name": "showreel-c3-eiffel-red",
  "seek": "scripts/channel3/eiffel-red.html",
- "dur": 23.7,
+ "dur": 24.6,
  "fps": 30,
  "grain": 4,
  "voice": {
   "text": "What colour was the Eiffel Tower at first? Gold, grey, or red? Lock in your guess. Red. Every iron piece was painted Venetian red to stop rust. Since 1889, it has worn seven official colours. Turns out, today's brown is a shade from 1907.",
   "at": [
    0,
-   3.11,
-   4.62,
-   8.43,
-   10.05,
-   13.97,
-   18.25
+   3.24,
+   5,
+   9.32,
+   10.94,
+   14.86,
+   19.14
   ],
   "voice": "af_heart",
-  "speed": 0.95
+  "speed": 0.95,
+  "speeds": [
+   0.9,
+   null,
+   0.65,
+   null,
+   null,
+   null,
+   null
+  ]
  },
  "caption": "Gold, grey or red: what did you guess? 👇\n\nWhile the Eiffel Tower went up in 1887-1888, every iron piece got a coat of Venetian red against rust. Since 1889 it has worn seven official colours, and the brown you know today is a shade from 1907.\n\nComment your letter before you watch it again, and send this to the friend who'd get it wrong.",
  "keywords": [

@@ -52,7 +52,33 @@ if (want) {
   if (miss.length) { vbad++; console.log(`QA captions: sentence(s) ${miss.map((i) => i + 1).join(', ')} never on screen`); }
   else console.log(`QA captions: all ${n} sentences on screen`);
 }
-const FL = judgeFlow(await sample(p, +cfg.dur), 'c3');   // FLOW (design/mandatory.md items 14-17): Turns Out thresholds (scripts/showreel/flow.mjs)
+const FL = judgeFlow(await sample(p, +cfg.dur), 'c3');
+// GUESS (owner, 12 Nov 2026: the Eiffel guess reel showed the tower red while asking "Gold, grey, or red?"): a guess reel (Kt.choices, or the
+// c3-guess experiment) declares window.GUESS = { reveal: t, answer: '#hex', box: [l, t, r, b] (CSS px, where the subject sits during the guess) }.
+// Measured on the drawn frames: the share of the box's pixels in the answer's hue (+-12 deg, saturation .35+, value .18+) every 0.2 s before
+// the reveal, against the same share 1.0-1.5 s after it. Any frame before the reveal at a tenth of the after level (and 2%+ of the box) fails (the broken Eiffel reel: 11.5% at 4.6 s vs 53.9% after; fixed: under 1%):
+// the answer must stay hidden until it is said.
+const usesGuess = /Kt\.choices\(/.test(readFileSync(resolve(cfg.seek), 'utf8')) || /^c3-guess/.test(cfg.experiment?.id || '');
+let gbad = 0; const gLines = [];
+if (usesGuess) {
+  const G = await p.evaluate(() => window.GUESS || null);
+  if (!G || !(G.reveal > 0) || !/^#[0-9a-f]{6}$/i.test(G.answer || '') || !Array.isArray(G.box)) { gbad++; gLines.push('GUESS: not declared (FAIL: set window.GUESS = { reveal, answer: "#hex", box: [l, t, r, b] } in the scene, design/rules-c3.md rule 1)'); }
+  else {
+    const share = (t) => p.evaluate(([t, G]) => { window.seek(t); const c = document.querySelector('canvas'), w = 135, h = 240, m = document.createElement('canvas'); m.width = w; m.height = h;
+      const g = m.getContext('2d'); g.drawImage(c, 0, 0, w, h); const d = g.getImageData(0, 0, w, h).data, k = w / 540;
+      const hsv = (r, gg, b) => { const mx = Math.max(r, gg, b), mn = Math.min(r, gg, b), dd = mx - mn; let hh = 0; if (dd) hh = mx === r ? ((gg - b) / dd) % 6 : mx === gg ? (b - r) / dd + 2 : (r - gg) / dd + 4; return [(hh * 60 + 360) % 360, mx ? dd / mx : 0, mx / 255]; };
+      const A = hsv(...[1, 3, 5].map((i) => parseInt(G.answer.slice(i, i + 2), 16)));
+      let n = 0, hit = 0; for (let y = Math.round(G.box[1] * k); y < Math.round(G.box[3] * k); y++) for (let xx = Math.round(G.box[0] * k); xx < Math.round(G.box[2] * k); xx++) { const i = (y * w + xx) * 4, q = hsv(d[i], d[i + 1], d[i + 2]);
+        n++; const dh = Math.min(Math.abs(q[0] - A[0]), 360 - Math.abs(q[0] - A[0])); if (dh <= 12 && q[1] >= .35 && q[2] >= .18) hit++; }
+      return hit / Math.max(1, n); }, [t, G]);
+    let after = 0; for (let t = G.reveal + 1; t <= G.reveal + 1.5; t += .25) after = Math.max(after, await share(t));
+    let worst = 0, wt = 0; for (let t = 0; t < G.reveal - .02; t = +(t + .2).toFixed(2)) { const v = await share(t); if (v > worst) { worst = v; wt = t; } }
+    const lim = Math.max(.02, after * .1), pc = (v) => (v * 100).toFixed(1) + '%';
+    if (after < .05) { gbad++; gLines.push(`GUESS: FAIL the answer colour fills only ${pc(after)} of the subject after the reveal (${G.reveal} s): is the box or the answer colour right?`); }
+    else if (worst > lim) { gbad++; gLines.push(`GUESS: FAIL the answer shows before the reveal: ${pc(worst)} of the subject is the answer colour at ${wt.toFixed(1)} s (after the reveal ${pc(after)}; limit ${pc(lim)}). Keep the subject neutral until ${G.reveal} s.`); }
+    else gLines.push(`GUESS: answer hidden until ${G.reveal} s (answer colour at most ${pc(worst)} of the subject before it, ${pc(after)} after)`);
+  }
+}   // FLOW (design/mandatory.md items 14-17): Turns Out thresholds (scripts/showreel/flow.mjs)
 await b.close();
 // DEPTH: per world, the planes in a typical frame and the parallax between its nearest and farthest plane
 const dLines = []; let dbad = 0;
@@ -67,10 +93,10 @@ for (const [name, fr] of depth) {
 }
 if (!depth.size) { const old = posted && posted < '2026-11-11'; if (!old) dbad++; dLines.push(old ? 'DEPTH: not judged (posts before 11 Nov 2026)' : 'DEPTH: no world declared (FAIL: draw every world with Kt.world and 4+ Kt.plane layers, design/rules-c3.md rule 11)'); }
 for (const [m, t] of seen) console.log(`QA ${t.toFixed(1)} s: text outside the frame: ${m}`);
-const L = judge(lay, false); for (const l of [...L.lines, ...FL.lines, ...dLines]) console.log(l);
+const L = judge(lay, false); for (const l of [...L.lines, ...FL.lines, ...dLines, ...gLines]) console.log(l);
 if (out) console.log('QA outcome: ' + JSON.stringify(out));
 console.log(`QA sound: ${cues} cues`);
-const bad = L.bad + FL.bad + dbad + vbad + seen.size + errors.length + (out && out.ok === false ? 1 : 0) + (cues ? 0 : 1);
+const bad = L.bad + FL.bad + dbad + gbad + vbad + seen.size + errors.length + (out && out.ok === false ? 1 : 0) + (cues ? 0 : 1);
 if (errors.length) console.log('QA page errors: ' + errors.join(' | '));
 console.log(bad ? `QA: ${bad} problem(s)` : 'QA: clean');
 process.exit(bad ? 1 : 0);
