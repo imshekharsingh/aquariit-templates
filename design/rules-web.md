@@ -87,3 +87,12 @@ single narrated fixes with a visual payoff kept climbing (flash 1,967 → 3,696,
 ONE narrated fix whose result is a satisfying motion (rule 11), in style C with element sound: showreel-33-carousel (a photo row that snaps;
 experiment web-single-satisfying). The planned Wed 11 topic (scrollbar-gutter) was swapped: phones draw overlay scrollbars, so the layout jump is a
 desktop bug and fails rule 1. The details format is decided by try 3's 24 h verdict (2 WINs → rule, 2 LOSEs → What didn't).
+
+**ESCALATE 12 Nov** (median reach 1,548 over the last 7 vs 2,000; watch 8.8 s; saves 2%; ALARM two days running, though up from 1,470): answered by
+E18 try 1 (showreel-34-press: the dark theme + a motion-feel single fix, a Pay button that presses), a change of look AND topic type, not a
+tweak. The RULE lines flag rules 1-6, 8 and 9 ("passed by 4 of 4, yet ALARM"): they are hygiene every reel already passes, not the lever; the
+lever under test is the format and look (E18, read 14-15 Nov). They stay until a reel that breaks one does better.
+**PROMOTED 12 Nov: the details format is a kept format** (2 WINs of 3 at 24 h: alive 1,486 vs median 1,331, +12%; waiting 1,695 vs 1,331,
++27%, saves 4% vs 1.7%, 98 saves + shares, the best save rate on the channel; menus LOSE 1,180, -11%). Rule 13 is its gate. After E18 (Sun 15),
+the web reels alternate it with the winning single-fix look, so each format is read against the other on the same weeks.
+

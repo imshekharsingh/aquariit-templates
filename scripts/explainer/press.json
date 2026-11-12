@@ -1,0 +1,65 @@
+{
+ "name": "showreel-34-press",
+ "seek": "scripts/explainer/press.html",
+ "dur": 17.4,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.6,
+ "style": "Ink and mint (E18 dark-return)",
+ "palette": "dark",
+ "voice": {
+  "text": "Why does your button feel dead on tap? You tap, nothing moves, so you tap again. The fix: scale it to ninety six percent while it's pressed, with a quick transition. Now every tap feels like a real press.",
+  "voice": "af_heart",
+  "speed": 0.86,
+  "gap": [
+   0.7,
+   0.75,
+   0.75
+  ]
+ },
+ "caption": "Why does your button feel dead on tap? \ud83d\udc46\n\nWith no :active style, a tap gives no sign it landed, so people tap again (and pay twice). Give the button a transition on scale and shrink it to 96% while it is pressed: every tap now feels like a real press. On iPhone, Safari only shows :active when the page listens for touches, so add ontouchstart to your <body>. Works in Chrome 104+, Safari 14.1+ and Firefox 72+ (or use transform: scale(.96) for older browsers).\nSave it for your next button, or send it to whoever built your checkout.",
+ "keywords": [
+  "button not responding on tap",
+  "CSS :active button press effect",
+  "button press animation CSS",
+  "scale on click CSS",
+  "mobile tap feedback UX",
+  "CSS tips"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#microinteractions",
+  "#mobileux",
+  "#uidesign",
+  "#frontenddev"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:active",
+   "note": "MDN :active: matches an element while it is being activated (pressed) by the user; BCD css.selectors.active: all browsers; safari_ios note: by default Safari on iOS does not use :active unless there is a touchstart handler on the element or on <body> (read from mdn/browser-compat-data 12 Nov 2026)"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scale",
+   "note": "MDN scale (the individual transform property); BCD css.properties.scale: Chrome 104, Firefox 72, Safari 14.1 (iOS mirror)"
+  }
+ ],
+ "tip": {
+  "title": "Why does your button feel dead on tap?",
+  "why": "A button with no :active style gives no sign a tap landed, so people tap again. A short transition on scale and scale: .96 while :active make it dip under the finger and spring back (MDN :active, scale). Safari on iOS only applies :active when the page has a touchstart listener, so add ontouchstart to <body> (BCD note).",
+  "code": ".btn {\n  transition: scale .12s;\n}\n.btn:active {\n  scale: .96;\n}\n/* iPhone: <body ontouchstart> */",
+  "demo": "press",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:active",
+   "label": "MDN, :active"
+  }
+ },
+ "experiment": {
+  "id": "dark-return",
+  "change": "E18: dark theme + motion-feel single fix (October formula), try 1 (a button that presses)",
+  "vs": "median"
+ },
+ "format": "single"
+}

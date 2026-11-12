@@ -169,6 +169,10 @@
 #waiting .fix .send{transition:width .5s cubic-bezier(.65, 0, .35, 1)}
 #waiting .fix .img{transition:opacity .5s,scale .5s;transition-timing-function:cubic-bezier(.2, .7, .3, 1)}
 #waiting .fix .toast{transition:translate .5s cubic-bezier(.2, .9, .3, 1.25),opacity .2s}
+#press .pane{display:flex;align-items:center;justify-content:center;height:130px}
+#press .pay{width:84%;height:52px;border:0;border-radius:26px;background:#7cf0b6;color:#111214;font:700 18px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#press .fix .pay{transition:scale .12s}
+#press .fix .pay:active{scale:.96}
 </style>
 </head>
 <body>
@@ -178,6 +182,26 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="press">
+  <p class="no">Nº 24</p>
+  <h2>Why does your button feel dead on tap?</h2>
+  <p class="why">A button with no :active style gives no sign a tap landed, so people tap again. A short transition on scale and scale: .96 while :active make it dip under the finger and spring back (MDN :active, scale). Safari on iOS only applies :active when the page has a touchstart listener, so add ontouchstart to &lt;body&gt; (BCD note).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">No :active</span><button class="pay" type="button">Pay $64.00</button></div>
+  <div class="pane fix"><span class="tag ok">:active { scale: .96 }</span><button class="pay" type="button">Pay $64.00</button></div>
+</div>
+<p class="note">Press and hold each button. The left one gives no sign the tap landed; the right one dips under your finger and springs back when you let go.</p></div>
+  <div class="code"><pre><code>.btn {
+  transition: scale .12s;
+}
+.btn:active {
+  scale: .96;
+}
+/* iPhone: &lt;body ontouchstart&gt; */</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:active" rel="noopener">Source: MDN, :active</a></p>
+</article>
 
 <article class="tip" id="snap">
   <p class="no">Nº 23</p>
@@ -593,11 +617,12 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>21 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>22 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "press": function(){ document.addEventListener('touchstart', function(){}, { passive: true }); },
     "snap": function(){},
     "waiting": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
   panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Reset' : 'Send it'; }); },

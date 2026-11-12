@@ -972,5 +972,34 @@
   "concept": "Guess first · What colour was the Eiffel Tower at first?",
   "about": "The new GUESS format (E19): Paris at dusk, the tower repainted gold, grey and red as each option is read, a 3-2-1 countdown on the tower in silhouette, the answer painted up the tower with a tick on RED; through the arch into Eiffel's 1887 workshop where a girder is brushed Venetian red; a page turn to seven colour chips fanning over a blueprint; a match cut on today's chip back to Paris, ending on the frame-0 view so the reel loops. 23.7 s.",
   "note": "Turns Out, Thu 12 Nov 13:00 IST. Built 11 Nov in the format session (swapped from Tower Bridge: its first colour is disputed by a paint historian). Pin a comment asking for A, B or C if you like."
+ },
+ "showreel-34-press": {
+  "postOn": "2026-11-12",
+  "postAt": "13:00",
+  "caption": "Why does your button feel dead on tap? 👆\n\nWith no :active style, a tap gives no sign it landed, so people tap again (and pay twice). Give the button a transition on scale and shrink it to 96% while it is pressed: every tap now feels like a real press. On iPhone, Safari only shows :active when the page listens for touches, so add ontouchstart to your <body>. Works in Chrome 104+, Safari 14.1+ and Firefox 72+ (or use transform: scale(.96) for older browsers).\nSave it for your next button, or send it to whoever built your checkout.",
+  "keywords": [
+   "button not responding on tap",
+   "CSS :active button press effect",
+   "button press animation CSS",
+   "scale on click CSS",
+   "mobile tap feedback UX",
+   "CSS tips"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#microinteractions",
+   "#mobileux",
+   "#uidesign",
+   "#frontenddev"
+  ],
+  "channel": "web",
+  "concept": "transition: scale .12s + :active { scale: .96 } (a Pay button that dips under the finger); iPhone needs a touchstart listener",
+  "about": "E18 try 1 (dark theme + a motion-feel single fix): a finger taps a checkout's Pay button from frame 0 and it never moves (tap? tap??); the fix is typed, then every tap presses the button to 96% and lets it go in 0.12 s. Dark theme (Ink and mint), element sound.",
+  "note": "13:00 IST, experiment dark-return (E18, try 1)",
+  "experiment": {
+   "id": "dark-return",
+   "change": "E18: dark theme + motion-feel single fix (October formula), try 1 (a button that presses)",
+   "vs": "median"
+  }
  }
 }
