@@ -504,7 +504,7 @@ var KM = (function(){
   window.WEB_THEME = 'dark';   // E18 (12-14 Nov 2026): the dark theme, rules-web.md rule 12
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.theme('dark');
   var TEXT = "Why does your button feel dead on tap? You tap. Nothing moves. So you tap again. The fix: while it's pressed, scale it to ninety six percent and drop the shadow. Watch it slowed down. It sinks, the shadow drops, then it springs back. Now every tap feels real.";
-  var DUR = 22, HOOK_N = 8;
+  var DUR = 20, HOOK_N = 8;
   // the code the reel teaches (MDN :active, scale, box-shadow, filter): exactly what the pressed button does on screen
   var CODE = '<span class="dim">.btn {</span> transition: .12s; <span class="dim">}</span>\n<span class="dim">.btn:active {</span>\n  <b>scale: .96;</b>\n  box-shadow: 0 2px 6px #0006;\n  filter: brightness(.92);\n<span class="dim">}</span>';
   var EASE = { bezier: [.25, .1, .25, 1] };   // CSS "ease", the transition's default timing function
