@@ -19,7 +19,7 @@ and lets it go in 0.12 s, as the CSS does; a "PRESSED · 96%" leader label. AUTO
 10. Facts: PASS: MDN :active (read from mdn/content 12 Nov: matches an element while it is being activated by the user); BCD css.selectors.active (read 12 Nov): all browsers, safari_ios note "Safari on iOS does not use :active unless there is a touchstart event handler on the relevant element or on the <body>" (hence the third code line, the caption and the tip demo's listener); BCD css.properties.scale: Chrome 104, Firefox 72, Safari 14.1 (the caption says so and offers transform: scale(.96) for older browsers); tip + live demo "press" on /tips/; npm run check passes
 11. Post data: PASS: captions.json entry with channel web, postOn 2026-11-12, postAt 13:00, concept, about, note, experiment dark-return; 6 keywords, 5 hashtags in the config
 12. Review file: PASS: this file, items 1-11, 14-18
-13. After the render: PENDING
+13. After the render: PENDING (first render, run 43135099372 green, 13 GitHub minutes: SOUND GATE ok -13.9 LUFS, true peak -1.3 dBTP; SOUND DETAIL 63 of 63 element cues audible, 100%; every word heard as written; but the voice check flagged the hook at 4.49 words/s (limit 4.0) and 2.70 words/s overall ("too dense", limit 2.7): the hook is now spoken at speed 0.72 (voice.speeds) and the reel is rendered once more)
 14. Cuts: PASS: FLOW: cuts 0 (declared by the kit: morph (tag to code card), sharedElement ("scale: .96" glides onto the button))
 15. Dead runs: PASS: FLOW: dead runs none (no holds declared)
 16. Continuity: PASS: FLOW: continuity 87% (median step 0.8, 2 declared transitions)

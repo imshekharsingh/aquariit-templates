@@ -18,6 +18,12 @@
    0.7,
    0.75,
    0.75
+  ],
+  "speeds": [
+   0.72,
+   null,
+   null,
+   null
   ]
  },
  "caption": "Why does your button feel dead on tap? \ud83d\udc46\n\nWith no :active style, a tap gives no sign it landed, so people tap again (and pay twice). Give the button a transition on scale and shrink it to 96% while it is pressed: every tap now feels like a real press. On iPhone, Safari only shows :active when the page listens for touches, so add ontouchstart to your <body>. Works in Chrome 104+, Safari 14.1+ and Firefox 72+ (or use transform: scale(.96) for older browsers).\nSave it for your next button, or send it to whoever built your checkout.",
