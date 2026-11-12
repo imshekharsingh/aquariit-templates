@@ -358,3 +358,11 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
   Config `"experiment": {"id": "c3-series-tag", "change": "named series tag", "vs": "median"}`.
 - Decides (each reel at 24 h vs the channel's last 7): WIN = follows per 1,000 reached at 2x the median or more (AUDIT_CHANNELS discovery)
   with reach not below 1,000. Keep at 2 WINs of 3 (rule in rules-c3.md), drop at 2 LOSEs. Verdict Thu 19 Nov.
+
+## E23 · @webin20sec: dynamic fixes only (owner, 12 Nov 2026: "people engage with fixes that are more dynamic when they show up, number wiggle is the right example ... we can try a few on those lines, or have animation which shows a fix looking like that"; Fri 13 - Mon 16 Nov, 4 reels)
+- Change: every topic passes rules-web.md rule 15 (the mute test: 1 s of before and 1 s of after, obvious at a glance), and every reel shows the
+  broken and fixed versions running SIDE BY SIDE in sync for at least 3 s (the kit's split piece, design/todo.md), so even a quieter fix reads as motion.
+  Topics: list jumps on delete (Fri), tab underline jumps (Sat), text jumps when the font loads (Sun), counter jumps instead of counting (Mon).
+  Runs on top of E18 (dark) and E20 (caption question); config `"experiment": {"id": "dynamic-fix", "change": "dynamic before/after + side by side", "vs": "median"}`.
+- Evidence it should help: dynamic topics 2,685-104,925 reach (numbers, stagger, overscroll, flash, transform) vs subtle ones 272-509 (INP, squash, smooth, springs, hover).
+- Decides: median reach of the 4 vs the last 7 web reels' median, and watch vs 8.8 s, at 24 h and 72 h; win on 3 of 4 = rule.
