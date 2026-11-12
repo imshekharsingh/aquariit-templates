@@ -25,3 +25,4 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 13. Is every setting's path readable for 2 s+ and correct on both iPhone and Android as stated?
 14. Is the drawn phone UI generic (no real logos) and still clearly recognisable?
 15. (12 Nov) Do the hook's switches show the RESULT the reel asks for (a "turn off" setting must not flip ON in frame 0)? Are the paths at least 34 px (about 12 pt on a phone)?
+16. (12 Nov) Is the LAST sentence under 4 words/s on the render's pacing table? Kokoro rushes a short closing sentence at the end of a one-take voice; a comma or a 4% slower speed did not fix it (4.4 → 4.48 words/s).
