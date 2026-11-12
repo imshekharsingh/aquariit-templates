@@ -1,0 +1,59 @@
+name: Output QA
+
+# Output QA by hand (owner, 12 Nov 2026: every owner complaint is a check that runs on GitHub, not in a session): downloads a finished reel's
+# MP4 from the private R2 bucket and runs scripts/qa/output-qa.py on it (frames + audio), no re-render. The Showreel and Tech reel workflows
+# run the same check by themselves after every render. Run by hand: Actions -> Output QA -> config (a reel config or techreel/topics/<slug>.json).
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: Reel config (scripts/explainer/x.json, scripts/channel3/x.json or techreel/topics/x.json)
+        default: scripts/explainer/press.json
+      key:
+        description: R2 key of the MP4 (empty = v/<name>.mp4, tech v/techreel/<slug>.mp4)
+        required: false
+        default: ''
+      notify:
+        description: On a FAIL, post NOT READY on the reel's issue
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      CFG: ${{ inputs.config }}
+      KEY: ${{ inputs.key }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Tools
+        timeout-minutes: 10
+        run: bash scripts/qa/tools.sh
+      - name: Output QA
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          NAME=$(python3 -I -c "import json,sys; c=json.load(open(sys.argv[1])); print('showreel-tech-'+c['slug'] if 'slug' in c and 'lines' in c else c['name'])" "$CFG")
+          [ -n "$KEY" ] || KEY=$(python3 -I -c "import json,sys; c=json.load(open(sys.argv[1])); print('v/techreel/'+c['slug']+'.mp4' if 'slug' in c and 'lines' in c else 'v/'+c['name']+'.mp4')" "$CFG")
+          bash scripts/r2.sh get "$KEY" reel.mp4 || { echo "::error::R2: $KEY not found (deleted 15 days after upload?)"; exit 1; }
+          # the render's sound lines (SOUND SOURCE / SOUND DETAIL): tech keeps its qa.txt in R2; a Showreel's log is only in its run
+          LOG=; case "$KEY" in v/techreel/*) S=$(basename "$KEY" .mp4); bash scripts/r2.sh get "c/techreel/$S-qa.txt" qa.txt && LOG="--log qa.txt";; esac
+          set +e; python3 scripts/qa/output-qa.py reel.mp4 "$CFG" $LOG --summary "$GITHUB_STEP_SUMMARY" --fails oqa-fails.txt; rc=$?; set -e
+          [ "${{ inputs.notify }}" = true ] && bash scripts/qa/notify.sh "$NAME" oqa-fails.txt
+          exit $rc

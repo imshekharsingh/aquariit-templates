@@ -24,13 +24,15 @@ const breath = (i) => (i === 0 ? 0 : guess ? [0, .5, .7, 2.6, 1.3][i] ?? .5 : i 
 // slowdowns; a line that reads quick is made shorter or split, never slowed (preflight SENTENCE PACE warns on short lines)
 const slow = () => 0;
 const story = '[' + lines.map((l, i) => `['${esc(l)}', ${breath(i)}${slow(i) ? ', ' + slow(i) : ''}]`).join(', ') + ']';
-let s = readFileSync(`${dir}${guess ? 'starterguess' : 'starter25d'}.html`, 'utf8');
+let s = readFileSync(`${dir}${guess ? 'starterguess' : 'starter25d'}.html`, 'utf8'), guessCol = '';
 if (guess) { const words = lines[1].replace(/[?.!]/g, '').split(/,\s*(?:or\s+)?|\s+or\s+/).map((w) => w.trim()).filter(Boolean), cols = ['#e0b13e', '#8e939a', '#b3392b', '#3f7fbf'];
-  s = s.replace(/var OPTS = \[[^\]]*\], ANSWER = \d+;/, () => `var OPTS = [${words.map((w, i) => `{ key: '${'ABCD'[i]}', word: '${esc(w.toUpperCase())}', col: '${cols[i % 4]}' }`).join(', ')}], ANSWER = ${Math.max(0, words.findIndex((w) => lines[3].toLowerCase().startsWith(w.toLowerCase())))};`); }
+  s = s.replace(/var OPTS = \[[^\]]*\], ANSWER = \d+;/, () => `var OPTS = [${words.map((w, i) => `{ key: '${'ABCD'[i]}', word: '${esc(w.toUpperCase())}', col: '${cols[i % 4]}' }`).join(', ')}], ANSWER = ${Math.max(0, words.findIndex((w) => lines[3].toLowerCase().startsWith(w.toLowerCase())))};`); 
+  guessCol = cols[Math.max(0, words.findIndex((w) => lines[3].toLowerCase().startsWith(w.toLowerCase()))) % 4]; }   // Output QA's GUESS check (scripts/qa/output-qa.py) reads it from the config
 s = s.replace(/\/\*story\*\/[\s\S]*?\/\*story:end\*\//, () => `/*story*/${story}/*story:end*/`).replaceAll('__HOOK__', lines[0].replace(/[<>&"]/g, '')).replace('__DATE__', new Date().toISOString().slice(0, 10));
 writeFileSync(html, s);
 writeFileSync(cfg, JSON.stringify({ name: `showreel-c3-${slug}`, seek: `scripts/channel3/${slug}.html`, dur: 30, fps: 30, grain: 4,
-  voice: { text: lines.join(' '), at: [], voice: 'af_heart', speed: 1, ...(lines.some((l, i) => slow(i)) ? { speeds: lines.map((l, i) => slow(i) || null) } : {}) }, caption: '', keywords: [], hashtags: [], sources: [] }, null, 1) + '\n');
+  voice: { text: lines.join(' '), at: [], voice: 'af_heart', speed: 1, ...(lines.some((l, i) => slow(i)) ? { speeds: lines.map((l, i) => slow(i) || null) } : {}) }, caption: '', keywords: [], hashtags: [], sources: [],
+  ...(guess ? { qa: { guess: { answer: guessCol, reveal: { say: lines[3].split(/\s+/).slice(0, 1).concat(lines[4].split(/\s+/).slice(0, 1)).join(' ').replace(/[^\w' ]/g, '') }, box: [150, 270, 390, 690], css_width: 540 } } } : {}) }, null, 1) + '\n');
 execFileSync('node', [`${dir}kit-inline.mjs`, html], { stdio: 'inherit' });
 console.log(`NEW: ${html} and ${cfg}. Next: draw the world (stations, subject, kinetic type), fill caption, 6+ keywords, 5 hashtags and 2+ sources,
 add the captions.json entry, then node scripts/channel3/qa.mjs scripts/channel3/${slug}.json --write`);

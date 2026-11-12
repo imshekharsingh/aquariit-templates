@@ -34,7 +34,7 @@
    null
   ]
  },
- "caption": "Why does your button feel dead on tap? \ud83d\udc46\n\nWith no :active style, a tap gives no sign it landed, so people tap again (and pay twice). While the button is pressed, shrink it to 96%, drop its shadow and darken it a touch, with a 0.12 s transition: it sinks under the finger and springs back. On iPhone, Safari only shows :active when the page listens for touches, so add ontouchstart to your <body>. scale works in Chrome 104+, Safari 14.1+ and Firefox 72+ (or use transform: scale(.96) for older browsers).\nSave it for your next button, or send it to whoever built your checkout.",
+ "caption": "Why does your button feel dead on tap? 👆\n\nWith no :active style, a tap gives no sign it landed, so people tap again (and pay twice). While the button is pressed, shrink it to 96%, drop its shadow and darken it a touch, with a 0.12 s transition: it sinks under the finger and springs back. On iPhone, Safari only shows :active when the page listens for touches, so add ontouchstart to your <body>. scale works in Chrome 104+, Safari 14.1+ and Firefox 72+ (or use transform: scale(.96) for older browsers).\nSave it for your next button, or send it to whoever built your checkout.",
  "keywords": [
   "button not responding on tap",
   "CSS :active button press effect",
@@ -75,5 +75,16 @@
   "change": "E18: dark theme + motion-feel single fix (October formula), try 1 (a button that presses), rebuilt 12 Nov after the owner's \"it doesn't engage me\"",
   "vs": "median"
  },
- "format": "single"
+ "format": "single",
+ "qa": {
+  "mute": {
+   "before": {
+    "say": "you tap nothing moves"
+   },
+   "after": {
+    "say": "it sinks"
+   },
+   "span": 1.5
+  }
+ }
 }
