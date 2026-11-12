@@ -45,6 +45,14 @@ switch flips) or "choice" (a tick moves from row `from` to row `pick`), `pick`, 
 (the result pill flips red to green), `paths` [["iPhone", "..."], ["Android", "..."]] (each path checked on the platform's own page).
 The phone is our own drawing (no platform's UI, icons or fonts); platform names appear only as text.
 
+## The phone walkthrough look (12 Nov 2026; topic `"look": "phone"`, scenes/phonecam.py; design/rules-tech.md L1-L6)
+The default for every tech reel from 12 Nov (owner: "Tech reel doesn't feel like a change at all"). One big drawn phone on a flat bold colour per
+setting; `hook_page` {title, sub, rows [{text, from, to}]} flips red values to green by 1.1 s under the hook title; scene kind `tap` with params
+`name` (the counter label), `steps` [{page, tap, cue?, action?: "choice" | "switch"}] (a page: {title, back?, sub?, icons?, rows [{text, value?,
+switch?: bool, chevron?}], choice?: {from, pick}}), `before` / `after` (the notification banner), `paths`; the last scene kind `recap` with
+`page`, `items` [{cue}], `stamp`, `stamp_cue`. Each tap time is its cue word (or spaced between its neighbours); each tap, page push, flip,
+banner, card and tick is an element sound. Copy topics/stop-tracking.json to start one.
+
 ## The fixed structure
 - 0–2 s: the hook card (the first line as a big three-or-four-line title, then IN 20 SECONDS); the voice reads it.
 - Six scenes, one per remaining script line, each with a label chip at y≈392 (THE NEWS, THE FIX, ...) and its own tint.

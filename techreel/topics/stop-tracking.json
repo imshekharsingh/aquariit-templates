@@ -1,13 +1,13 @@
 {
  "slug": "stop-tracking",
  "topic": "Privacy",
- "header": "3 SETTINGS · CHANGE TODAY",
+ "header": "3 SETTINGS",
  "voice": "af_heart",
  "flow": true,
  "speed": 1.0,
- "max_speed": 1.06,
- "dur": 22.0,
- "max_end": 21.4,
+ "max_speed": 1.0,
+ "dur": 22.6,
+ "max_end": 22.0,
  "say": {},
  "experiment": {
   "id": "tech-settings-list",
@@ -20,45 +20,108 @@
   "TRACKING you"
  ],
  "hook_toggles": [
-  "While Using",
-  "Area only",
-  "Block Ad ID"
+  "Location",
+  "Precise",
+  "Ad tracking"
  ],
  "lines": [
   {
    "text": "Three settings that stop apps tracking you."
   },
   {
-   "text": "One: set location to While Using, so apps can't follow you when closed.",
+   "text": "One: in Location, set your app to While Using, so closed apps can't track you.",
    "chunks": [
-    5,
-    4,
-    4
+    3,
+    3,
+    3,
+    3,
+    3
    ],
    "scene": {
-    "label": "1 OF 3 · WHILE USING",
+    "label": "1 OF 3",
     "tint": "blue",
-    "kind": "phone",
+    "kind": "tap",
     "params": {
-     "screen": "Location",
-     "sub": "Weather app",
-     "control": "choice",
-     "rows": [
+     "name": "WHILE USING",
+     "steps": [
       {
-       "text": "Always"
+       "page": {
+        "title": "Settings",
+        "icons": true,
+        "rows": [
+         {
+          "text": "Wi-Fi"
+         },
+         {
+          "text": "Battery"
+         },
+         {
+          "text": "Location"
+         },
+         {
+          "text": "Privacy"
+         },
+         {
+          "text": "Display"
+         }
+        ]
+       },
+       "tap": 2,
+       "cue": "Location"
       },
       {
-       "text": "While Using"
+       "page": {
+        "title": "Location",
+        "back": "Settings",
+        "rows": [
+         {
+          "text": "Weather app",
+          "value": "Always"
+         },
+         {
+          "text": "Maps",
+          "value": "While Using"
+         },
+         {
+          "text": "Camera",
+          "value": "Never"
+         }
+        ]
+       },
+       "tap": 0,
+       "cue": "app"
       },
       {
-       "text": "Never"
+       "page": {
+        "title": "Weather app",
+        "back": "Location",
+        "sub": "Allow location access",
+        "rows": [
+         {
+          "text": "Never",
+          "chevron": false
+         },
+         {
+          "text": "While Using",
+          "chevron": false
+         },
+         {
+          "text": "Always",
+          "chevron": false
+         }
+        ],
+        "choice": {
+         "from": 2,
+         "pick": 1
+        }
+       },
+       "tap": 1,
+       "cue": "While",
+       "action": "choice"
       }
      ],
-     "from": 0,
-     "pick": 1,
-     "cue": "While",
      "before": "Tracked when closed",
-     "after": "Only while it's open",
+     "after": "Only while open",
      "paths": [
       [
        "iPhone",
@@ -75,32 +138,62 @@
   {
    "text": "Two: turn off Precise Location, so apps see your area, not your door.",
    "chunks": [
-    5,
-    4,
-    4
+    2,
+    3,
+    3,
+    2,
+    3
    ],
    "scene": {
-    "label": "2 OF 3 · PRECISE OFF",
+    "label": "2 OF 3",
     "tint": "purple",
-    "kind": "phone",
+    "kind": "tap",
     "params": {
-     "screen": "Location",
-     "sub": "Shopping app",
-     "control": "switch",
-     "rows": [
+     "name": "PRECISE: OFF",
+     "steps": [
       {
-       "text": "Precise",
-       "on": true
+       "page": {
+        "title": "Location",
+        "back": "Settings",
+        "rows": [
+         {
+          "text": "Weather app",
+          "value": "Always"
+         },
+         {
+          "text": "Maps",
+          "value": "While Using"
+         },
+         {
+          "text": "Camera",
+          "value": "Never"
+         }
+        ]
+       },
+       "tap": 0
       },
       {
-       "text": "Share to friends"
-      },
-      {
-       "text": "Background"
+       "page": {
+        "title": "Weather app",
+        "back": "Location",
+        "sub": "Allow location access",
+        "rows": [
+         {
+          "text": "While Using",
+          "value": "",
+          "chevron": true
+         },
+         {
+          "text": "Precise Location",
+          "switch": true
+         }
+        ]
+       },
+       "tap": 1,
+       "cue": "off",
+       "action": "switch"
       }
      ],
-     "pick": 0,
-     "cue": "off",
      "before": "Your exact door",
      "after": "Only your area",
      "paths": [
@@ -117,34 +210,90 @@
    }
   },
   {
-   "text": "Three: switch off ad tracking, so apps lose the ID that follows you.",
+   "text": "Three: in Privacy, turn off ad tracking, so apps lose the ID that follows you.",
    "chunks": [
-    5,
-    4,
+    3,
+    3,
+    2,
+    3,
     4
    ],
    "scene": {
-    "label": "3 OF 3 · AD TRACKING",
+    "label": "3 OF 3",
     "tint": "red",
-    "kind": "phone",
+    "kind": "tap",
     "params": {
-     "screen": "Tracking",
-     "sub": "Privacy",
-     "control": "switch",
-     "rows": [
+     "name": "AD TRACKING: OFF",
+     "steps": [
       {
-       "text": "Ad tracking",
-       "on": true
+       "page": {
+        "title": "Settings",
+        "icons": true,
+        "rows": [
+         {
+          "text": "Wi-Fi"
+         },
+         {
+          "text": "Battery"
+         },
+         {
+          "text": "Location"
+         },
+         {
+          "text": "Privacy"
+         },
+         {
+          "text": "Display"
+         }
+        ]
+       },
+       "tap": 3,
+       "cue": "Privacy"
       },
       {
-       "text": "Personal ads"
+       "page": {
+        "title": "Privacy",
+        "back": "Settings",
+        "icons": true,
+        "rows": [
+         {
+          "text": "Location"
+         },
+         {
+          "text": "Tracking & ads"
+         },
+         {
+          "text": "Camera"
+         },
+         {
+          "text": "Microphone"
+         }
+        ]
+       },
+       "tap": 1
       },
       {
-       "text": "App analytics"
+       "page": {
+        "title": "Tracking & ads",
+        "back": "Privacy",
+        "sub": "One ad ID links you across apps",
+        "rows": [
+         {
+          "text": "Ad tracking",
+          "switch": true
+         },
+         {
+          "text": "Ad ID",
+          "value": "Shared",
+          "chevron": false
+         }
+        ]
+       },
+       "tap": 0,
+       "cue": "off",
+       "action": "switch"
       }
      ],
-     "pick": 0,
-     "cue": "off",
      "before": "One ID in every app",
      "after": "No ID to follow",
      "paths": [
@@ -161,30 +310,48 @@
    }
   },
   {
-   "text": "Two minutes, three switches. Save this, and do it tonight.",
+   "text": "Save this, and send it to a friend who taps Allow on everything.",
    "chunks": [
-    4,
-    6
+    2,
+    3,
+    3,
+    3,
+    2
    ],
    "scene": {
-    "label": "SAVE THIS · DO IT TONIGHT",
+    "label": "SAVE THIS",
     "tint": "green",
-    "kind": "checklist",
+    "kind": "recap",
     "params": {
+     "name": "SAVE THIS",
+     "page": {
+      "title": "Done",
+      "sub": "Apps that track you: blocked",
+      "rows": [
+       {
+        "text": "Location: While Using"
+       },
+       {
+        "text": "Precise: off"
+       },
+       {
+        "text": "Ad tracking: off"
+       }
+      ]
+     },
      "items": [
       {
-       "text": "Location: While Using",
-       "cue": "minutes"
+       "cue": "Save"
       },
       {
-       "text": "Precise: off",
-       "cue": "switches"
+       "cue": "send"
       },
       {
-       "text": "Ad tracking: off",
-       "cue": "tonight"
+       "cue": "friend"
       }
-     ]
+     ],
+     "stamp": "SAVE THIS",
+     "stamp_cue": "Allow"
     }
    }
   }
@@ -227,6 +394,28 @@
    {
     "url": "https://support.google.com/googleplay/android-developer/answer/6048248",
     "note": "Google Play Console Help, Advertising ID: when a user deletes the advertising ID (Settings > Privacy > Ads, Android 12+), apps reading it get a string of zeros"
+   }
+  ]
+ },
+ "look": "phone",
+ "hook_page": {
+  "title": "Privacy check",
+  "sub": "3 changes, 2 minutes",
+  "rows": [
+   {
+    "text": "Location",
+    "from": "Always",
+    "to": "While Using"
+   },
+   {
+    "text": "Precise",
+    "from": "On",
+    "to": "Off"
+   },
+   {
+    "text": "Ad tracking",
+    "from": "On",
+    "to": "Off"
    }
   ]
  }

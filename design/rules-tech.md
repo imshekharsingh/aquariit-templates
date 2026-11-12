@@ -11,6 +11,27 @@ first test audience is not keeping, saving or sending these reels. "How does X w
 were all passed by reels stuck at 119 (the audit's "question it" lines) and are dropped. The new format gives the viewer something to DO, now,
 on their own phone, and a reason to save it and send it.
 
+**12 Nov 2026: the phone walkthrough LOOK** (owner: "Tech reel doesn't feel like a change at all, same things, same design pattern, how do we
+expect to get audiences?"). The format (E17) stayed but the look did not: the glass panels, labels and small phone read as every tech reel since
+1 Nov (113-133 reach). From showreel-tech-stop-tracking (12 Nov) every tech reel uses topic `"look": "phone"` (techreel/scenes/phonecam.py).
+Evidence (design/references.md, R-trend 12 Nov): the settings videos that travel are a phone screen walked tap by tap (820k, ~2M and 6M views in
+press coverage of "settings to turn off" videos), and word-by-word captions with the spoken word highlighted beat plain subtitles (vendor data,
+direction repeated, size unproven). Rules L1-L6 are the gate for the look; rules 1-9 below still hold for the format.
+
+- **L1. One big phone fills the frame** (720 px wide, running off the foot of the frame), on a flat bold colour that changes with every setting
+  (blue, purple, red, green for the save): the viewer sees "a phone" in frame 0. Our own generic drawing: no platform UI, icons or fonts.
+- **L2. The touch indicator walks the real path tap by tap, ON the word that names it** (`steps` [{page, tap, cue, action}]): every step's
+  `cue` is a word in the line ("in Location" → tap Location; "your app" → tap the app; "While Using" → the tick moves). 2-3 taps per setting, a
+  page push after each, the camera leaning in to every tap (1.09, the change 1.13). The script is written as the path ("One: in Location, set your
+  app to While Using, so ...").
+- **L3. The result as a notification banner**, dropping in at the top of the screen after the change: red (the old state, struck through), then
+  green with a tick (the new state). Never under the path card or the captions.
+- **L4. The 1/3 counter and the setting's name, top left; both paths on a black card (36 px) for the whole setting** (rule 3, critic Q13).
+- **L5. Word-by-word captions**: 2-4 words at a time (`chunks`), 88 px heavy, white with a black outline, the spoken word yellow and lifted.
+- **L6. Frame 0 = the result**: the hook in 112 px heavy type (the key word yellow) over the phone showing `hook_page`: three red values flipping to
+  green safe values by 1.1 s (critic Q15: the flips show the protection, never a "turn off" setting going ON).
+- Verdict with E17 on Sun 15 Nov: the same targets (24 h reach 150+, or 3+ saves and shares). The look is the change; topics stay settings lists.
+
 1. **Format: "3 settings to change today"** (experiment tech-settings-list, E17): one benefit per reel (privacy, battery, scam calls, storage,
    theft, data, sleep), three phone settings that deliver it, each tapped on a phone we draw (kind `phone`: a generic settings screen, a finger
    taps the row, the switch or tick flips on the word, a before → after pill, the path on both platforms), then the recap (kind `checklist`).
