@@ -6,94 +6,97 @@
 <title>Why does your button feel dead on tap?</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300..800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* showreel-34-press (12 Nov 2026, E18 dark-return: the dark theme + a motion-feel single fix). Beat 1: a finger taps a checkout's Pay
-   button from frame 0 and the button never moves ("tap?" "tap??"). Beat 2: the BEFORE tag morphs into the code card, the fix is typed
-   (transition: scale .12s; :active { scale: .96 }; the iPhone note), "scale: .96" glides onto the button. Payoff: every tap now presses the
-   button to 96% and lets it go in 0.12 s, as the CSS does; the camera closes in on the press, a leader label names it. One camera, never
-   still; every frame a pure function of t. Started from newweb.mjs (scripts/explainer/starterweb.html).
-   The look is the kit's theme (KM.theme: style C, "Glass and light", the web default from 8 Nov 2026): a frosted glass phone and code pane over
-   drifting light; every colour below is a token it sets (window.WEB_THEME = 'dark' gives the old look). Cheap glass only: no backdrop-filter. */
-:root{--f:'Sora',system-ui,sans-serif;--m:'DM Mono',ui-monospace,monospace}
+/* showreel-34-press, rebuilt 12 Nov 2026 (owner: "it doesn't engage me"; E18 dark-return: the dark theme + a motion-feel single fix).
+   The subject is ONE big Pay button, as wide as the frame, from frame 0. Beat 1: a finger taps it ("tap?" "tap??") and it never moves, in
+   silence. Beat 2: the fix is typed; the button splits into DEAD and PRESSED side by side and the finger taps each in turn: silence vs a
+   soft thock, the pressed one sinking (scale .96, its shadow collapsing, a slight darken: exactly the CSS on the card). Beat 3: the pressed
+   one glides back to full width and one press is replayed at 0.25x (KM.timeScale) with its live easing curve (KM.curveGraph, the 120 ms
+   transition) and a millisecond chip. Payoff: a rhythm of fast presses, the button big in frame, the fix on one line above it; the reel
+   ends on the button. One camera, never still; every frame a pure function of t. */
+:root{--f:'Sora',system-ui,sans-serif;--m:'DM Mono',ui-monospace,monospace;--lip:#2f9c72}
 *{box-sizing:border-box;margin:0}
 html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
 .a{position:absolute}
 #vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
 #world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
-#ph{left:30px;top:300px;width:480px;height:1000px;border-radius:62px;background:var(--glass);padding:10px;box-shadow:var(--edge),var(--lift)}
-#scr{position:absolute;left:10px;top:10px;width:460px;height:980px;border-radius:52px;overflow:hidden;background:var(--pg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
-#sb{position:absolute;left:0;right:0;top:0;height:44px;background:var(--pg);color:var(--paper);font:500 15px/44px var(--m);padding:0 34px;z-index:4}
-.pg{position:absolute;left:0;top:44px;width:460px;height:936px;background:var(--pg);overflow:hidden}
-.in{position:absolute;left:0;top:0;width:460px;height:936px}
-.br{position:absolute;left:24px;top:22px;font:500 13px/1 var(--m);letter-spacing:.18em;color:var(--dim)}
-.h1{position:absolute;left:24px;top:44px;font:700 42px/1 var(--f);letter-spacing:-.04em}
-.row{position:absolute;left:20px;width:420px;height:96px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
-.row .th{position:absolute;left:12px;top:12px;width:72px;height:72px;border-radius:14px}
-.row b{position:absolute;left:100px;top:22px;font:650 20px/1 var(--f);letter-spacing:-.025em;white-space:nowrap}
-.row small{position:absolute;left:100px;top:56px;font:500 12px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
-.tot{position:absolute;left:24px;top:228px;font:600 22px/1 var(--f);letter-spacing:-.02em}
-.tot i{font-style:normal;margin-left:14px;color:var(--acc)}
-.tot small{display:block;margin-top:8px;font:500 12px/1 var(--m);letter-spacing:.12em;color:var(--dim)}
-.btn{position:absolute;left:20px;top:290px;width:420px;height:64px;border-radius:32px;font:700 21px/64px var(--f);text-align:center;background:var(--acc);color:var(--on);box-shadow:0 10px 24px rgba(0,0,0,.35)}
-.sec{position:absolute;left:24px;font:500 13px/1 var(--m);letter-spacing:.18em;color:var(--dim)}
-.good{visibility:hidden}
-#tq{position:absolute;left:318px;top:280px;font:700 22px/1 var(--f);color:var(--red);white-space:nowrap;opacity:0;z-index:7}
-#fg{position:absolute;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.8);z-index:6;opacity:0}
-#ghost{left:0;top:0;padding:8px 12px;border-radius:12px;background:var(--raise);border:2px solid var(--acc);font:500 18px/1 var(--m);color:var(--acc);white-space:nowrap;opacity:0;z-index:5}
-/* screen space: the label row, the hook, the tag that becomes the code card, the leader label, the subtitles */
+#pane{left:18px;top:326px;width:474px;height:474px;border-radius:46px;background:var(--glass);box-shadow:var(--edge),var(--lift)}
+#ctx{left:54px;top:356px;font:500 15px/1 var(--m);letter-spacing:.16em;color:#b4b1a9;white-space:nowrap}
+#ctx i{font-style:normal;color:var(--paper)}
+#subj{left:0;top:0;width:540px;height:960px}
+.btn{position:absolute;border-radius:75px;background:var(--acc);color:var(--on);font-weight:750;text-align:center;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;transform-origin:50% 50%}
+.btn .dk{position:absolute;left:0;top:0;right:0;bottom:0;background:#000;opacity:0}
+.btn span{position:relative}
+.tg{position:absolute;font:500 14px/1 var(--m);letter-spacing:.16em;white-space:nowrap;opacity:0}
+#tgA{color:var(--red)}#tgB{color:var(--acc)}
+#outl{position:absolute;border:2.5px dashed var(--red);border-radius:72px;opacity:0}
+#shl{position:absolute;height:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(124,240,182,.75),rgba(124,240,182,0));opacity:0}
+#fg{position:absolute;left:0;top:0;width:84px;height:210px;opacity:0;transform-origin:42px 14px;z-index:6}
+#sbox{position:absolute;left:0;top:0;width:10px;height:10px}
+.rip{position:absolute;width:80px;height:80px;border-radius:50%;border:3px solid var(--acc);opacity:0;z-index:5}
+.bub{position:absolute;font:750 26px/1 var(--f);color:var(--red);white-space:nowrap;opacity:0;z-index:7}
+/* screen space: the label row, the hook, the code card, the slow-motion panel, the payoff code line, the subtitles */
 #lbl{left:34px;top:130px;font:500 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
-#hook{left:34px;top:158px;font-weight:var(--hw);font-size:50px;line-height:.98;letter-spacing:var(--ht)}
+#hook{left:34px;top:156px;font-weight:var(--hw);font-size:50px;line-height:.98;letter-spacing:var(--ht)}
 #hook .ln{display:block;white-space:nowrap}
 #hook .ln > span{display:inline-block;transform-origin:0 80%}
 #hook .acc{color:var(--red)}
-#code{left:30px;top:128px;width:450px;height:134px;border-radius:20px;background:var(--frost);box-shadow:var(--edge),var(--lift);overflow:hidden;opacity:0}
-#tagt{position:absolute;left:14px;top:10px;font:500 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--red)}
-#cd{position:absolute;left:22px;top:18px;font:500 20px/1.45 var(--m);white-space:pre;color:var(--paper)}
-#cd b{font-weight:500;color:var(--acc);border-radius:4px}#cd .ios{color:var(--dim);font-size:17px}#cd .dim{color:var(--dim)}
-.km-caret{display:inline-block;width:3px;height:22px;margin-left:2px;vertical-align:-4px;background:var(--acc)}
-#lead{left:0;top:0;width:540px;height:960px;overflow:visible}
-#lead line{stroke:var(--acc);stroke-width:2.5;stroke-linecap:round}
-#lab{left:300px;top:560px;font:500 15px/1 var(--m);letter-spacing:.12em;color:var(--on);background:var(--acc);padding:9px 12px;border-radius:9px;white-space:nowrap;opacity:0}
-#band{left:0;top:640px;width:540px;height:150px;background:var(--ink)}
-#cap{left:30px;top:652px;width:450px;min-height:90px;padding:6px 0 0;font:600 30px/1.16 var(--f);letter-spacing:-.025em}
+#code{left:30px;top:118px;width:450px;height:198px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);overflow:hidden;opacity:0;transform-origin:50% 0}
+#cd{position:absolute;left:22px;top:18px;font:500 19px/1.47 var(--m);white-space:pre;color:var(--paper)}
+#cd b{font-weight:500;color:var(--acc);border-radius:4px}#cd .dim{color:var(--dim)}
+.km-caret{display:inline-block;width:3px;height:21px;margin-left:2px;vertical-align:-4px;background:var(--acc)}
+#slow{left:30px;top:118px;width:450px;height:178px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);opacity:0;transform-origin:50% 0}
+#slow .cg{position:absolute;left:12px;top:30px}
+#slow .ttl{position:absolute;left:20px;top:14px;font:500 12px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
+.cg-axis{stroke:rgba(255,255,255,.2);stroke-width:2}.cg-guide{stroke:rgba(255,255,255,.2);stroke-width:1.5;stroke-dasharray:4 5}
+.cg-ghost{fill:none;stroke:rgba(255,255,255,.14);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.cg-line{fill:none;stroke:var(--acc);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.cg-h{stroke:var(--ring);stroke-width:1.5;stroke-dasharray:3 4}
+.cg-dot{fill:var(--paper);stroke:var(--acc);stroke-width:3}
+.cg-t{fill:var(--dim);font:500 11px var(--m);letter-spacing:.06em}
+#badge{position:absolute;left:290px;top:22px;height:34px;padding:0 14px 0 12px;border-radius:17px;background:var(--acc);color:var(--on);font:500 14px/34px var(--m);letter-spacing:.06em;white-space:nowrap;opacity:0;transform-origin:50% 50%}
+#badge i{display:inline-block;width:9px;height:9px;margin-right:8px;border-radius:50%;background:var(--on);vertical-align:0}
+#spec{position:absolute;left:290px;top:76px;width:150px;opacity:0}
+#spec div{white-space:nowrap}
+#spec small{display:block;font:500 12px/1 var(--m);letter-spacing:.14em;color:var(--dim);margin-bottom:8px}
+#spec b{font:750 46px/1 var(--f);letter-spacing:-.03em;color:var(--paper)}
+#spec span{font:500 18px/1 var(--m);color:var(--dim)}
+#scl{position:absolute;left:290px;top:160px;font:500 12px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap;opacity:0}#scl b{font:750 22px/1 var(--f);letter-spacing:-.02em;color:var(--acc);margin-left:6px}
+#stat{left:34px;top:150px;width:440px;height:130px;opacity:0}
+#stat .c{position:absolute;top:0;white-space:nowrap}
+#stat small{display:block;font:500 14px/1 var(--m);letter-spacing:.16em;color:var(--dim);margin-bottom:10px}
+#stat b{display:inline-block;font:800 78px/1 var(--f);letter-spacing:-.04em;transform-origin:0 80%}
+#stat .c2 b{color:var(--red)}
+#line{left:30px;top:150px;width:450px;height:122px;padding:16px 22px;border-radius:20px;background:var(--frost);box-shadow:var(--edge),var(--lift);font:500 19px/1.47 var(--m);white-space:pre;color:var(--paper);opacity:0}
+#line b{font-weight:500;color:var(--acc)}#line .dim{color:var(--dim)}
+#band{left:0;top:640px;width:540px;height:140px;background:transparent}
+#cap{left:34px;top:650px;width:450px;min-height:80px;padding:6px 0 0;font:600 30px/1.16 var(--f);letter-spacing:-.025em}
 #cap span{display:inline-block;margin-right:.24em}
 </style>
 </head>
 <body>
 <div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
-  <div id="ph" class="a" data-subject>
-    <div id="scr">
-      <div id="sb"></div>
-      <div class="pg bad" id="bad">
-        <div class="in"><div class="br">YOUR SHOP</div><div class="h1">Checkout</div>
-        <div class="row" style="top:110px"><div class="th" style="background:linear-gradient(160deg,#3a8f7a,#14303a)"></div><b>Trail shoes</b><small>SIZE 42 · ONE PAIR</small></div>
-        <div class="tot">Total<i>$64.00</i><small>FREE DELIVERY · 2 DAYS</small></div>
-        <div class="btn" id="bbtn">Pay $64.00</div>
-        <div class="sec" style="top:400px">ALSO IN YOUR BAG</div>
-        <div class="row" style="top:428px"><div class="th" style="background:linear-gradient(160deg,#6a5ab0,#1d1a40)"></div><b>Sport socks</b><small>2 PAIRS · SAVED</small></div>
-        <div class="row" style="top:540px"><div class="th" style="background:linear-gradient(160deg,#b07a3a,#3a2416)"></div><b>Water bottle</b><small>750 ML · SAVED</small></div>
-        <div class="row" style="top:652px"><div class="th" style="background:linear-gradient(160deg,#3a6ab0,#14203a)"></div><b>Running cap</b><small>ONE SIZE · SAVED</small></div></div>
-      </div>
-      <div class="pg good" id="good">
-        <div class="in"><div class="br">YOUR SHOP</div><div class="h1">Checkout</div>
-        <div class="row" style="top:110px"><div class="th" style="background:linear-gradient(160deg,#3a8f7a,#14303a)"></div><b>Trail shoes</b><small>SIZE 42 · ONE PAIR</small></div>
-        <div class="tot">Total<i>$64.00</i><small>FREE DELIVERY · 2 DAYS</small></div>
-        <div class="btn" id="btn">Pay $64.00</div>
-        <div class="sec" style="top:400px">ALSO IN YOUR BAG</div>
-        <div class="row" style="top:428px"><div class="th" style="background:linear-gradient(160deg,#6a5ab0,#1d1a40)"></div><b>Sport socks</b><small>2 PAIRS · SAVED</small></div>
-        <div class="row" style="top:540px"><div class="th" style="background:linear-gradient(160deg,#b07a3a,#3a2416)"></div><b>Water bottle</b><small>750 ML · SAVED</small></div>
-        <div class="row" style="top:652px"><div class="th" style="background:linear-gradient(160deg,#3a6ab0,#14203a)"></div><b>Running cap</b><small>ONE SIZE · SAVED</small></div></div>
-      </div>
-      <div id="tq">tap</div><div id="fg"></div>
-    </div>
+  <div id="pane" class="a"></div>
+  <div id="sbox" data-subject></div>
+  <div id="subj" class="a" data-ui data-fit="free">
+    <div id="ctx" class="a">CHECKOUT · TOTAL <i>$64.00</i></div>
+    <div id="outl"></div><div id="shl"></div>
+    <div class="tg" id="tgA">DEAD</div><div class="tg" id="tgB">PRESSED</div>
+    <div class="btn" id="bA"><div class="dk"></div><span>Pay $64.00</span></div>
+    <div class="btn" id="bB"><div class="dk"></div><span>Pay $64.00</span></div>
   </div>
+  <svg id="fg" viewBox="0 0 84 210" aria-hidden="true"><defs><linearGradient id="fgs" x1="0" x2="1"><stop offset="0" stop-color="#d9dee8"/><stop offset=".45" stop-color="#f6f7fb"/><stop offset="1" stop-color="#c3c9d6"/></linearGradient><linearGradient id="fgf" x1="0" x2="0" y1="0" y2="1"><stop offset=".34" stop-color="#fff"/><stop offset=".54" stop-color="#000"/></linearGradient><mask id="fgm"><rect width="84" height="210" fill="url(#fgf)"/></mask></defs><g mask="url(#fgm)">
+    <path d="M8 46 C8 18 24 4 42 4 C60 4 76 18 76 46 L80 210 L4 210 Z" fill="url(#fgs)" stroke="rgba(0,0,0,.25)" stroke-width="2"/>
+    <path d="M24 34 C24 20 32 13 42 13 C52 13 60 20 60 34 L60 52 C52 58 32 58 24 52 Z" fill="#ffffff" stroke="rgba(0,0,0,.12)" stroke-width="1.5"/></g></svg>
+  <div class="bub" id="q0"></div><div class="bub" id="q1"></div><div class="rip" id="r0"></div><div class="rip" id="r1"></div>
 </div></div>
-<div id="ghost" class="a" aria-hidden="true">scale: .96</div>
 <div id="lbl" class="a">Nº 34 · THE PRESS</div>
 <div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>button</span> <span>feel</span> <span>dead</span></span><span class="ln"><span class="acc">on</span> <span class="acc">tap?</span></span></div>
-<div id="code" class="a"><div id="tagt">BEFORE · IT BREAKS</div><div id="cd"></div></div>
-<svg id="lead" class="a" aria-hidden="true"><line id="ll" x1="0" y1="0" x2="0" y2="0"/></svg>
-<div id="lab" class="a">PRESSED · 96%</div>
-<div id="fe" class="a" aria-hidden="true"></div>
+<div id="stat" class="a"><div class="c c1" style="left:0"><small>TAPS</small><b id="nT">0</b></div><div class="c c2" style="left:210px"><small>BUTTON MOVED</small><b id="nM">0 px</b></div></div>
+<div id="code" class="a"><div id="cd"></div></div>
+<div id="slow" class="a"><div class="ttl">THE PRESS · EASE · 120 MS</div><svg class="cg" width="262" height="140"></svg><div id="badge"></div><div id="spec"></div><div id="scl">SCALE <b>1.00</b></div></div>
+<div id="line" class="a"><span class="dim">.btn:active {</span> <b>scale: .96;</b>
+  box-shadow: 0 2px 6px #0006;
+  filter: brightness(.92); <span class="dim">}</span></div>
 <div id="band" class="a" data-band></div>
 <div id="cap" class="a" data-subs></div>
 <script>
@@ -499,109 +502,177 @@ var KM = (function(){
 /*kitsfx:end*/
 
   window.WEB_THEME = 'dark';   // E18 (12-14 Nov 2026): the dark theme, rules-web.md rule 12
-  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, TH = KM.theme('dark');
-  var TEXT = "Why does your button feel dead on tap? You tap, nothing moves, so you tap again. The fix: scale it to ninety six percent while it's pressed, with a quick transition. Now every tap feels like a real press.", DUR = 17.4, HOOK_N = 8, HOOK_LINES = 3, FIX_S = 2;
-  // the code the reel teaches: the transition on the button, the pressed scale (swept), and the iPhone note (Safari on iOS applies :active
-  // only when the page listens for touchstart: BCD css.selectors.active, safari_ios note)
-  var CODE = '<span class="dim">.btn {</span> transition: scale .12s; <span class="dim">}</span>\n<span class="dim">.btn:active {</span> <b>scale: .96;</b> <span class="dim">}</span>\n<span class="ios">/* iPhone: &lt;body ontouchstart&gt; */</span>';
-  var V, PH, A = {}, CAM, T = {}, BAD = [], GOOD = [];
-  var TAG = { x: 250, y: 128, w: 230, h: 36, r: 9 }, CARD = { x: 30, y: 128, w: 450, h: 134, r: 20 };
-  var BX = 230, BY = 366;   // the Pay button's centre in screen-of-the-phone px (world: 270, 676)
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.theme('dark');
+  var TEXT = "Why does your button feel dead on tap? You tap. Nothing moves. So you tap again. The fix: while it's pressed, scale it to ninety six percent and drop the shadow. Watch it slowed down. It sinks, the shadow drops, then it springs back. Now every tap feels real.";
+  var DUR = 22, HOOK_N = 8;
+  // the code the reel teaches (MDN :active, scale, box-shadow, filter): exactly what the pressed button does on screen
+  var CODE = '<span class="dim">.btn {</span> transition: .12s; <span class="dim">}</span>\n<span class="dim">.btn:active {</span>\n  <b>scale: .96;</b>\n  box-shadow: 0 2px 6px #0006;\n  filter: brightness(.92);\n<span class="dim">}</span>';
+  var EASE = { bezier: [.25, .1, .25, 1] };   // CSS "ease", the transition's default timing function
+  var FULL = { x: 40, y: 404, w: 430, h: 150, r: 75 }, LEFT = { x: 36, y: 428, w: 206, h: 104, r: 52 }, RIGHT = { x: 268, y: 428, w: 206, h: 104, r: 52 }, OUT = { x: -330, y: 428, w: 206, h: 104, r: 52 };
+  var V, PH, A = {}, CAM, T = {}, TAPS = [], TS, CG, BADGE, SPEC, EL = {}, ease = null;
+  function at(w, n){ return V.at(w, n); }
+  function box(el, b){ el.style.left = b.x.toFixed(2) + 'px'; el.style.top = b.y.toFixed(2) + 'px'; el.style.width = b.w.toFixed(2) + 'px'; el.style.height = b.h.toFixed(2) + 'px'; if (b.r != null) el.style.borderRadius = b.r.toFixed(2) + 'px'; }
+  function lerpBox(a, b, k){ return { x: mix(a.x, b.x, k), y: mix(a.y, b.y, k), w: mix(a.w, b.w, k), h: mix(a.h, b.h, k), r: mix(a.r || 0, b.r || 0, cl(k)) }; }
   function anchors(words){
     V = KM.voice(TEXT, .15, words); PH = V.phrases(6); KM.reset(DUR);
-    var S = V.starts(), W = V.words;
-    A.hookIn = (W[HOOK_N - 1] ? W[HOOK_N - 1].s - V.lead : 1.5) + .3; A.leave = Math.max(S[1] - .3, A.hookIn + .35);
-    A.fix = S[FIX_S]; A.typeEnd = Math.min(A.fix + 1.9, (S[FIX_S + 1] || A.fix + 2.4) - .3); A.pay = S[S.length - 1]; A.end = V.end;
-    window.COVER = +(A.hookIn + .1).toFixed(2);
-    // the dead taps: from frame 0 until the code card arrives, one every 0.8 s; the live taps: one after the fix lands, then three in the payoff
-    BAD = []; for (var b = .3; b < A.typeEnd - .25; b += .8) BAD.push(b);
-    GOOD = [A.typeEnd + .95]; for (var g = A.pay + .25; g < DUR - .7; g += .85) GOOD.push(g);
-    // the camera: wide under the hook, in on the dead button, back for the code card, in on the live press; it drifts all the way
-    CAM = KM.rig({ x: 270, y: 430, z: .98 })
-      .pushIn(A.leave + .05, 1, 270, 600, 1.05)
-      .pan((A.leave + A.fix) / 2, 1.1, 264, 612)
-      .pull(A.fix - .25, .85, 270, 540, 1)
-      .pushIn(A.pay - .2, 1, 270, 530, 1.15)
-      .creep(A.pay + .8, DUR - A.pay - .8, .03);
-    T.morph = KM.transition('morph', A.fix - .1, .5);
-    T.glide = KM.transition('sharedElement', A.typeEnd + .1, .7);
-    KM.cue({ t: 0, k: 'hit', g: .45, p: -.3 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .35 });
-    // a dead tap: a dull touch and nothing else; its "tap?" bubble a low blip
-    BAD.forEach(function(t, i){ KM.cue({ t: t, k: 'touch', g: .3, p: -5, x: 255 }); if (t < A.fix - .4) KM.cue({ t: t + .08, k: 'blip', g: .14, p: -7 + i, x: 360 }); });
-    KM.cue({ t: A.fix - .3, k: 'whoosh', d: .6, g: .22, p: 2 });   // the page scrolls up under the code card
-    for (var c = 0, t0 = A.fix + .4; t0 + c * .07 < A.typeEnd; c++) KM.cue({ t: t0 + c * .07, k: 'tick', g: .08, p: (c * 5) % 7 });
-    KM.cue({ t: A.typeEnd + .15, k: 'pop', g: .3, p: 4 });
-    // a live tap: the touch, a soft click as the button goes down, a higher one as it comes back
-    GOOD.forEach(function(t, i){ KM.tap(t, 255); KM.cue({ t: t + .1, k: 'pop', g: .26, p: 2 + (i % 3) * 2, x: 270 }); });
-    KM.cue({ t: GOOD[1] + .5, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] });
-    KM.cue({ t: DUR - .45, k: 'swish', d: .6, g: .4, p: -.6 });
-    // element sound (scripts/explainer/kitsfx.js): every element that enters, moves or changes has its cue, by its size
-    KM.mark($('ph'), 'tree', 'the camera moves the phone; the taps, the scroll and the press have their own cues above');
-    KM.mark($('fg'), 'self', 'the finger: the touch cue on every tap'); KM.mark($('btn'), 'self', 'the press: the touch + pop cues');
-    BAD.forEach(function(t){ if (t < A.fix - .4) KM.mark($('tq'), 'self', 'the tap? bubble: its blip'); });
-    KM.sfx($('lbl'), A.leave - .2, 'exit', { size: 'small' }); KM.sfx($('band'), A.leave - .1, 'enter', { size: 'medium', g: .6 });
-    KM.sfx($('code'), A.leave + .3, 'enter', { size: 'small', g: .6 });
-    KM.sfx($('code'), A.fix - .1, 'change', { size: 'medium' }); KM.mark($('tagt'), 'self', 'with the code card'); KM.mark($('cd'), 'tree', 'the typing ticks');
-    KM.sfx($('ghost'), A.typeEnd + .1, 'enter', { size: 'small', g: .7 }); KM.sfx($('ghost'), A.typeEnd + .78, 'land', { size: 'small', g: .6 });
-    KM.sfx($('lab'), GOOD[1] + .55, 'enter', { size: 'small', deg: 1 }); KM.mark($('ll'), 'self', 'drawn with its label');
+    var S = V.starts(); ease = KM.curve(EASE).f;
+    A.s = S; A.hookIn = V.words[HOOK_N - 1].s - V.lead + .3; A.leave = S[1] - .25; A.fix = S[4]; A.watch = S[5]; A.slowS = S[6]; A.pay = S[7]; A.end = V.end;
+    window.COVER = +(A.hookIn - .05).toFixed(2);
+    // ---- the taps: who is tapped (A = the dead button, B = the pressed one) and when ----
+    TAPS = [];
+    var dead = [.32, 1.08, 1.3, 2.05, at('tap', 2) - .03, at('again') - .2, at('again') + .02];
+    dead.forEach(function(t){ if (t < A.fix - .1) TAPS.push({ t: t, b: 'A' }); });
+    // side by side: the dead one, then the pressed one, the pressed one on "ninety" and on "drop"
+    [at('ninety') - .62, at('drop') - .62].forEach(function(t){ TAPS.push({ t: t, b: 'A' }); TAPS.push({ t: t + .6, b: 'B' }); });
+    TAPS.push({ t: A.fix + 1.0, b: 'A' }); TAPS.push({ t: A.fix + 1.55, b: 'B' });
+    TAPS.sort(function(a, b){ return a.t - b.t; });
+    // the slow motion: from just before "sinks" to just after "back"; the press starts on "sinks", the release on "springs"
+    TS = KM.timeScale(at('sinks') - .45, at('back') + .55, .25, .3);
+    A.pc0 = TS.at(at('sinks') - .04); A.rc0 = Math.max(A.pc0 + .2, TS.at(at('springs') - .04)); A.slowTap = TS.real(A.pc0);
+    TAPS.push({ t: A.slowTap, b: 'B', slow: 1 });
+    A.real = TS.t1 + .12; if (A.real < A.pay - .45) TAPS.push({ t: A.real, b: 'B' });   // real speed again
+    // the payoff: a rhythm of presses (three quick, a breath, three quick...) to the end; the last one lets go before the loop
+    for (var r = A.pay + .2, n = 0; r < DUR - .42; n++) { TAPS.push({ t: r, b: 'B' }); r += n % 3 === 2 ? .62 : .3; }
+    TAPS.sort(function(a, b){ return a.t - b.t; });
+    // ---- the camera: on the button under the hook, closer on the dead taps, back for the code, in for the slow motion and the payoff ----
+    CAM = KM.rig({ x: 255, y: 470, z: 1 })
+      .pushIn(A.leave, .9, 255, 476, 1.07)
+      .pull(A.fix - .2, .8, 255, 470, 1)
+      .pushIn(A.watch - .1, .9, 255, 480, 1.2)
+      .creep(A.watch + .8, A.pay - A.watch - 1, .02)
+      .pull(A.pay - .25, .9, 255, 472, 1.1)
+      .creep(A.pay + .7, DUR - A.pay - .7, .025);
+    T.split = KM.transition('sharedElement', A.fix - .05, .7);
+    T.merge = KM.transition('sharedElement', A.watch - .1, .75);
+    KM.cue({ t: 0, k: 'whoosh', d: .5, g: .3 });
+    // ---- sound: a dead tap is SILENT (the point of the reel); a live press is a soft thock down and a light tick up ----
+    TAPS.forEach(function(tp, i){ if (tp.b === 'A') return;
+      if (tp.slow) { KM.cue({ t: tp.t + .02, k: 'thud', g: .55, p: -5, x: 270 }); KM.cue({ t: TS.real(A.rc0) + .05, k: 'pop', g: .2, p: -2, x: 270 }); return; }
+      KM.cue({ t: tp.t + .01, k: 'thud', g: .5, p: (i % 3) * .5, x: 270 }); KM.cue({ t: tp.t + .2, k: 'pop', g: .14, p: 5 + (i % 3), x: 270 }); });
+    // the "tap?" bubbles over the dead taps: a muted blip each (the bubble, not the button)
+    A.bubbles = TAPS.filter(function(tp){ return tp.b === 'A' && tp.t < A.fix - .1; });
+    A.bubbles.forEach(function(tp, i){ KM.cue({ t: tp.t + .1, k: 'blip', g: .1, p: -6 + i, x: 380 }); });
+    // the dashed outline on "Nothing moves": it draws itself round the button
+    A.outl = at('nothing') - .1; KM.cue({ t: A.outl, k: 'move', d: .5, g: .12, dir: 1, x: 120, x2: 400 });
+    // typing ticks
+    A.typeA = A.fix + .3; A.typeB = Math.min(A.watch - .7, A.fix + 2.6);
+    for (var c = 0; A.typeA + c * .09 < A.typeB; c++) KM.cue({ t: A.typeA + c * .09, k: 'tick', g: .06, p: (c * 5) % 7 });
+    // the slow-motion panel: the live curve of the press (its own 120 ms clock), the speed badge, the ms counter
+    CG = KM.curveGraph($('slow').querySelector('.cg'), EASE, A.pc0, .12, { clock: TS.at, real: TS.real });
+    BADGE = KM.slowmoBadge($('badge'), TS, '0.25× SPEED');
+    SPEC = KM.specChip($('spec'), [{ label: 'PRESS', v: 120, unit: 'ms' }], A.slowTap, .5, function(t){ return CG.k(t); }); KM.mark($('scl'), 'self', 'with the ms counter');
+    A.shadowW = at('shadow', 2);
+    KM.cue({ t: A.shadowW, k: 'blip', g: .12, p: -3, x: 270 });
+    // ---- element sound (kitsfx.js): every element that enters, moves or changes has a cue ----
     var hs = $('hook').querySelectorAll('.ln > span'); for (var h = 0; h < hs.length; h++) KM.sfx(hs[h], h === 0 ? 0 : V.words[h].s - V.lead, 'enter', { size: 'small', g: .6, deg: h % 3 });
+    KM.sfx($('lbl'), A.leave - .2, 'exit', { size: 'small' });
+    EL.stat = KM.el($('stat'), { t0: A.leave + .1, d: .45, variant: 'slide', t1: A.fix - .25, d1: .3, g: .6 }); KM.mark($('nT'), 'self', 'the bubble blips'); KM.mark($('nM'), 'self', 'its blip');
+    KM.cue({ t: A.outl + .05, k: 'blip', g: .12, p: -4, x: 380 });
+    EL.code = KM.el($('code'), { t0: A.fix + .05, d: .5, variant: 'unfold', t1: A.watch - .15, d1: .35, out: 'slide', g: .7 });
+    EL.slow = KM.el($('slow'), { t0: A.watch + .25, d: .5, variant: 'unfold', t1: A.pay - .3, d1: .35, out: 'slide', g: .7 });
+    EL.line = KM.el($('line'), { t0: A.pay + .05, d: .5, variant: 'morph', g: .7 });
+    EL.tgA = KM.el($('tgA'), { t0: A.fix + .35, d: .4, variant: 'pop', t1: A.watch - .1, d1: .3, g: .6 });
+    EL.tgB = KM.el($('tgB'), { t0: A.fix + .5, d: .4, variant: 'pop', t1: A.watch + .4, d1: .3, g: .6 });
+    KM.mark($('bA'), 'tree', 'never moves (silent by design); its exit rides the merge transition'); KM.mark($('bB'), 'tree', 'the thock and tick on every press');
+    KM.mark($('fg'), 'tree', 'the finger: the press cues'); KM.mark($('q0'), 'self', 'bubble blip'); KM.mark($('q1'), 'self', 'bubble blip');
+    KM.mark($('outl'), 'self', 'its draw cue'); KM.mark($('shl'), 'self', 'the shadow blip'); KM.mark($('cd'), 'tree', 'the typing ticks');
+    KM.mark($('pane'), 'self', 'the camera'); KM.mark($('subj'), 'self', 'the camera'); KM.mark($('sbox'), 'self', 'the camera'); KM.mark($('badge').firstChild, 'self', 'the badge blip'); KM.mark($('r0'), 'self', 'with the thock'); KM.mark($('r1'), 'self', 'with the thock'); KM.mark($('ctx'), 'self', 'the camera'); 
     KM.publish();
   }
-  // how far a finger is pressed on the nearest tap (0 at rest, 1 down), and how far the button is down (the CSS: .12 s each way)
-  function finger(t, taps){ var k = 0; taps.forEach(function(a){ k = Math.max(k, E.inOut3(P(t, a - .26, a)) * (1 - E.inOut3(P(t, a + .2, a + .46)))); }); return k; }
-  function pressed(t, taps){ var k = 0; taps.forEach(function(a){ k = Math.max(k, E.inOut3(P(t, a, a + .12)) * (1 - E.inOut3(P(t, a + .2, a + .32)))); }); return k; }
+  // ---- presses ----
+  function upDown(t, a){ return E.inOut3(P(t, a - .22, a)) * (1 - E.inOut3(P(t, a + .16, a + .4))); }   // the finger, 0 lifted .. 1 down
+  function pressK(t, a){ return ease(P(t, a, a + .12)) * (1 - ease(P(t, a + .16, a + .28))); }        // the CSS: .12 s in, .12 s out, while held
+  function slowPress(t){ var c = TS.at(t); return ease(P(c, A.pc0, A.pc0 + .12)) * (1 - ease(P(c, A.rc0, A.rc0 + .12))); }
+  function slowFinger(t){ var c = TS.at(t); return E.inOut3(P(c, A.pc0 - .1, A.pc0)) * (1 - E.inOut3(P(c, A.rc0 + .02, A.rc0 + .14))); }
+  function pressOf(t, b){ var k = 0; TAPS.forEach(function(tp){ if (tp.b !== b || tp.t > t + .5 || tp.t < t - 2) return; k = Math.max(k, tp.slow ? 0 : pressK(t, tp.t)); }); if (b === 'B') k = Math.max(k, slowPress(t)); return k; }
+  function paint(el, bx, k){ box(el, bx); el.style.fontSize = (bx.h * .31).toFixed(2) + 'px'; el.style.lineHeight = bx.h.toFixed(2) + 'px';
+    el.style.transform = 'scale(' + (1 - .04 * k).toFixed(4) + ')';
+    var s = bx.h / 130;
+    el.style.boxShadow = '0 ' + (10 * (1 - k) * s).toFixed(2) + 'px 0 var(--lip), 0 ' + (mix(24, 2, k) * s).toFixed(2) + 'px ' + (mix(36, 6, k) * s).toFixed(2) + 'px rgba(0,0,0,' + mix(.55, .4, k).toFixed(3) + ')';
+    el.querySelector('.dk').style.opacity = (.08 * k).toFixed(3); }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t));
-    var c = CAM.apply($('world'), t, $('ph'));
+    var c = CAM.apply($('world'), t, null);
     KM.lights(t, c);
-    var live = t >= A.typeEnd + .1, ALL = BAD.concat(GOOD);
-    // the page scrolls up 110 px as the code card arrives, so the phone's text stays clear of the card (the button rises to meet it)
-    var sc = 110 * E.inOut3(P(t, A.fix - .3, A.fix + .6));
-    [].forEach.call(document.querySelectorAll('.in'), function(el){ el.style.transform = 'translateY(' + (-sc).toFixed(2) + 'px)'; });
-    $('bad').style.visibility = live ? 'hidden' : 'visible'; $('good').style.visibility = live ? 'visible' : 'hidden';
-    // ---- the button: dead (never moves) before the fix, pressed to 96% on every tap after it ----
-    var pk = pressed(t, GOOD); $('btn').style.transform = 'scale(' + (1 - .04 * pk).toFixed(4) + ')';
-    $('btn').style.boxShadow = '0 ' + mix(10, 4, pk).toFixed(1) + 'px ' + mix(24, 10, pk).toFixed(1) + 'px rgba(0,0,0,.35)';
-    // ---- the finger: hovers near the button, comes down on each tap; seen from frame 0 to the code card, and again from the first live tap ----
-    var seen = 1, fk = finger(t, ALL), j = 0;
-    ALL.forEach(function(a, i){ if (t >= a - .4) j = i; });
-    var jx = [60, 84, 40, 70, 30, 90][j % 6], fx = BX + jx + (1 - fk) * 70 + Math.sin(t * 1.7) * 4, fy = BY - sc + 4 + (1 - fk) * 24 + Math.sin(t * 2.3 + 1) * 4;
-    $('fg').style.left = (fx - 32).toFixed(1) + 'px'; $('fg').style.top = (fy - 32).toFixed(1) + 'px';
-    $('fg').style.opacity = (seen * .95).toFixed(3); $('fg').style.transform = 'scale(' + (1 - .14 * fk).toFixed(3) + ')';
-    // ---- the "tap?" bubbles over the dead button: a little louder each time ----
-    var qi = -1; BAD.forEach(function(a, i){ if (a < A.fix - .4 && t >= a + .02 && t < a + .78) qi = i; });
-    var tq = $('tq'); if (qi < 0 || live) tq.style.opacity = 0; else { var q = P(t, BAD[qi] + .02, BAD[qi] + .78);
-      tq.textContent = ['tap', 'tap?', 'tap??', 'hello?', 'TAP!?', 'tap…', 'tap??'][qi % 7];
-      tq.style.opacity = (E.out3(P(q, 0, .15)) * (1 - P(q, .7, 1))).toFixed(3);
-      tq.style.transform = 'translate(' + ((qi % 2) * 18).toFixed(1) + 'px,' + (-q * 26).toFixed(1) + 'px) scale(' + (.85 + .15 * E.back(P(q, 0, .25), 1.6) + qi * .04).toFixed(3) + ')'; }
+    // ---- the two buttons: one full-width dead button; it splits into DEAD | PRESSED; the pressed one returns to full width ----
+    var sk = T.split(t), mk = T.merge(t), bA = $('bA'), bB = $('bB');
+    var boxA = t < A.watch - .1 ? lerpBox(FULL, LEFT, sk) : lerpBox(LEFT, OUT, E.inOut3(P(t, A.watch - .1, A.watch + .5)));
+    var boxB = t < A.watch - .1 ? lerpBox(FULL, RIGHT, sk) : lerpBox(RIGHT, FULL, mk);
+    var kA = pressOf(t, 'A') * 0, kB = pressOf(t, 'B');   // the dead one NEVER moves
+    paint(bA, boxA, kA); paint(bB, boxB, kB);
+    bA.style.opacity = (t < A.watch - .1 ? 1 : 1 - P(t, A.watch - .12, A.watch + .02)).toFixed(3);
+    bB.style.opacity = (sk > .02 ? 1 : 0).toFixed(3); bB.style.zIndex = t >= A.watch ? 3 : 1; bA.style.zIndex = 2;
+    // the subject box (data-subject): the union of the buttons on screen
+    var sb = t < A.fix - .05 ? FULL : t < A.watch + .5 ? { x: Math.min(boxA.x, boxB.x), y: Math.min(boxA.y, boxB.y), w: Math.max(boxA.x + boxA.w, boxB.x + boxB.w) - Math.min(boxA.x, boxB.x), h: Math.max(boxA.h, boxB.h) } : boxB;
+    if (t >= A.watch - .1 && t < A.watch + .5) sb = boxB;
+    box($('sbox'), sb);
+    // a mint ring from the press point on every live press (not in the slow motion, where the curve tells it)
+    var rp = TAPS.filter(function(tp){ return tp.b === 'B' && !tp.slow && t >= tp.t && t < tp.t + .55; }).slice(-2);
+    ['r0', 'r1'].forEach(function(id, i){ var r = $(id), tp = rp[i]; if (!tp) { r.style.opacity = 0; return; }
+      var k = P(t, tp.t, tp.t + .55), bx = tp.t < A.watch ? RIGHT : boxB;
+      r.style.left = (bx.x + bx.w * .74 - 40).toFixed(1) + 'px'; r.style.top = (bx.y + bx.h * .6 - 40).toFixed(1) + 'px';
+      r.style.opacity = ((1 - k) * .9).toFixed(3); r.style.transform = 'scale(' + mix(.4, 2.6, E.out3(k)).toFixed(3) + ')'; });
+    // the tags over each half
+    var ta = EL.tgA.apply(t), tb = EL.tgB.apply(t);
+    $('tgA').style.left = (boxA.x + 4).toFixed(1) + 'px'; $('tgA').style.top = (boxA.y - 28).toFixed(1) + 'px';
+    $('tgB').style.left = (boxB.x + 4).toFixed(1) + 'px'; $('tgB').style.top = (boxB.y - 28).toFixed(1) + 'px';
+    // ---- "Nothing moves": a dashed outline traced round the dead button, still a perfect fit after every tap ----
+    var ok = E.out3(P(t, A.outl, A.outl + .45)) * (1 - P(t, A.fix - .3, A.fix));
+    var ob = { x: FULL.x - 9, y: FULL.y - 9, w: FULL.w + 18, h: FULL.h + 18 }, o = $('outl');
+    box(o, ob); o.style.opacity = ok.toFixed(3); o.style.transform = 'scale(' + mix(1.08, 1, E.out3(P(t, A.outl, A.outl + .45))).toFixed(4) + ')';
+    // ---- "the shadow drops": a mint glow under the pressed button, on the word ----
+    var hk = E.out3(P(t, A.shadowW - .05, A.shadowW + .25)) * (1 - E.inOut3(P(t, A.shadowW + .9, A.shadowW + 1.3))), sh = $('shl');
+    sh.style.left = (boxB.x + 30).toFixed(1) + 'px'; sh.style.width = (boxB.w - 60).toFixed(1) + 'px'; sh.style.top = (boxB.y + boxB.h + 4).toFixed(1) + 'px'; sh.style.opacity = hk.toFixed(3);
+    // ---- the finger: it travels between taps and pushes in on each (closer to the lens = bigger when lifted) ----
+    var prev = null, next = null; TAPS.forEach(function(tp){ if (tp.t <= t + .25) prev = tp; else if (!next) next = tp; });
+    var tgt = function(tp){ var bx = tp.b === 'A' ? (tp.t < A.fix - .05 ? FULL : LEFT) : (tp.t < A.watch ? RIGHT : FULL), k = tp.b === 'A' ? 0 : 1;
+      return [bx.x + bx.w * .74, bx.y + bx.h * .6]; };
+    var fd = 0, p0 = prev ? tgt(prev) : [FULL.x + FULL.w * .74 + 30, FULL.y + FULL.h * .6 + 60], p1 = next ? tgt(next) : p0, tr = 0;
+    if (prev) fd = prev.slow ? slowFinger(t) : upDown(t, prev.t);
+    if (prev && next) { var g0 = prev.slow ? TS.real(A.rc0 + .14) : prev.t + .4; tr = E.inOut3(P(t, g0, Math.max(g0 + .05, next.t - .22))); }
+    var fx = mix(p0[0], p1[0], tr), fy = mix(p0[1], p1[1], tr);
+    // the finger rides the pressed button down (scale about its centre)
+    var bxN = prev && prev.b === 'B' ? boxB : boxA, kN = prev && prev.b === 'B' ? kB : 0, cx = bxN.x + bxN.w / 2, cy = bxN.y + bxN.h / 2;
+    fx = cx + (fx - cx) * (1 - .04 * kN); fy = cy + (fy - cy) * (1 - .04 * kN);
+    var lift = 1 - fd, fg = $('fg');
+    fg.style.left = (fx - 42 + lift * 18 + Math.sin(t * 1.6) * 2).toFixed(1) + 'px'; fg.style.top = (fy - 14 + lift * 26 + Math.sin(t * 2.1 + 1) * 2).toFixed(1) + 'px';
+    var fin = P(t, 0, .2) * (1 - P(t, DUR - .15, DUR)) + (t > DUR - .15 ? 0 : 0);
+    fg.style.opacity = Math.max(fin, t < .2 ? 1 : 0).toFixed(3);
+    fg.style.transform = 'rotate(-14deg) scale(' + (1 + lift * .14).toFixed(3) + ')';
+    // ---- the "tap?" bubbles over the dead taps, each a little more desperate ----
+    var words = ['tap?', 'tap??', 'tap??!', 'hello?', 'tap?', 'tap??', 'TAP!?'];
+    var live = A.bubbles.filter(function(tp){ return t >= tp.t + .04 && t < tp.t + .9; }).slice(-1);
+    ['q0', 'q1'].forEach(function(id, i){ var q = $(id), tp = live[i]; if (!tp) { q.style.opacity = 0; return; }
+      var j = A.bubbles.indexOf(tp), k = P(t, tp.t + .04, tp.t + .9), p = tgt(tp);
+      q.textContent = words[j % words.length];
+      q.style.left = (p[0] - 4).toFixed(1) + 'px'; q.style.top = (FULL.y - 78 - k * 24).toFixed(1) + 'px';
+      q.style.opacity = (E.out3(P(k, 0, .15)) * (1 - P(k, .7, 1))).toFixed(3);
+      q.style.transform = 'scale(' + (.8 + .2 * E.back(P(k, 0, .3), 1.8)).toFixed(3) + ') rotate(' + (j % 2 ? -6 : 5) + 'deg)'; });
     // ---- the hook: word by word, blur to sharp; it lifts away before the first sentence ----
-    var gone = E.inOut3(P(t, A.leave, A.leave + .25)), st = [];
+    var gone = E.inOut3(P(t, A.leave, A.leave + .3)), st = [];
     for (var i = 0; i < HOOK_N; i++) st.push(i === 0 ? -.3 : V.words[i].s - V.lead);
     KM.rise($('hook').querySelectorAll('.ln > span'), t, st, gone);
     $('lbl').style.opacity = (1 - P(t, A.leave - .2, A.leave)).toFixed(3);
-    // ---- the BEFORE tag morphs into the code card; the fix is typed with a caret and swept ----
-    var mk = T.morph(t), cd = $('code'), tagIn = P(t, A.leave + .3, A.leave + .5);
-    KM.morph(cd, TAG, CARD, mk);
-    cd.style.opacity = (t < A.fix - .1 ? tagIn : 1).toFixed(3);
-    $('tagt').style.opacity = (1 - P(mk, 0, .4)).toFixed(3);
-    KM.type($('cd'), CODE, t, A.fix + .4, A.typeEnd); $('cd').style.opacity = P(mk, .6, 1).toFixed(3);
-    var fixB = $('cd').querySelector('b'); if (fixB) KM.sweep(fixB, t, A.typeEnd + .05, .45, 'var(--soft)');
-    // "scale: .96" glides from the code card down onto the button (a copy: the card keeps the line on screen for the save)
-    var g = T.glide(t), gh = $('ghost'), a = { x: 220, y: 172, w: 134, h: 34, r: 12 }, so = CAM.toScreen(c, 270, 676 - sc), b = { x: so[0] - 60, y: so[1] - 14, w: 120, h: 28, r: 14 };
-    KM.shared(gh, a, b, g); gh.style.opacity = (t >= A.typeEnd + .1 && g < 1 ? 1 - P(g, .8, 1) : 0).toFixed(3);
-    // ---- payoff: a leader line from the button to its label ----
-    var bt = CAM.toScreen(c, 400, 644 - sc), lk = P(t, GOOD[1] + .3, GOOD[1] + 1);
-    $('lab').style.left = (bt[0] - 128).toFixed(1) + 'px'; $('lab').style.top = (bt[1] - 52).toFixed(1) + 'px';
-    KM.leader($('ll'), $('lab'), [bt[0] - 10, bt[1] + 4], [bt[0] - 10, bt[1] - 18], lk);
-    // ---- the subtitle band and the phone's fade above it ----
-    var bk = E.out3(P(t, A.leave - .1, A.leave + .35)) * (1 - E.out3(P(t, A.end + 1.1, A.end + 1.6))), fk2 = E.out3(P(t, A.leave - .2, A.leave + .1)) * (1 - E.out3(P(t, A.end + 1.3, A.end + 1.8))), mY = 626;
-    KM.cutBelow($('vp'), $('fe'), mY, fk2);
-    $('band').style.opacity = bk.toFixed(3); $('band').style.transform = 'translateY(' + ((1 - bk) * 40).toFixed(2) + 'px)';
-    KM.subs($('cap'), t, V, PH, HOOK_N, Math.min(DUR - .9, A.end + 1.1), function(w, j){ return V.words[j].s >= A.fix + V.lead && /^(fix|scale|ninety|pressed|press|now)/i.test(w) ? 'var(--acc)' : null; });
+    // ---- the counter: every dead tap adds one; the button has moved 0 px (it flashes on "Nothing moves") ----
+    EL.stat.apply(t);
+    var nt = 0, lastT = -9; TAPS.forEach(function(tp){ if (tp.b === 'A' && tp.t < A.fix - .1 && tp.t <= t) { nt++; lastT = tp.t; } });
+    $('nT').textContent = nt; $('nT').style.transform = 'scale(' + (1 + .18 * (1 - E.out3(P(t, lastT, lastT + .3)))).toFixed(3) + ')';
+    $('nM').style.transform = 'scale(' + (1 + .16 * Math.sin(Math.PI * P(t, A.outl, A.outl + .4))).toFixed(3) + ')';
+    // ---- the code card: unfolds on "The fix", typed with a caret, the scale line swept ----
+    EL.code.apply(t);
+    KM.type($('cd'), CODE, t, A.typeA, A.typeB);
+    var fixB = $('cd').querySelector('b'); if (fixB) KM.sweep(fixB, t, at('ninety') - .1, .45, 'var(--soft)');
+    // ---- the slow-motion panel ----
+    EL.slow.apply(t); CG.draw(t, 1); BADGE(t); SPEC(t);
+    $('scl').style.opacity = $('spec').style.opacity; $('scl').querySelector('b').textContent = (1 - .04 * slowPress(t)).toFixed(2);
+    // ---- payoff: the fix on one line over the button ----
+    EL.line.apply(t);
+    // ---- subtitles (the band is clear: nothing of the subject reaches it) ----
+    KM.subs($('cap'), t, V, PH, HOOK_N, Math.min(DUR - .3, V.end + .7), function(w, j){ return /^(fix|scale|ninety|six|percent|shadow|sinks|springs|real)/i.test(w) && V.words[j].s >= A.fix ? 'var(--acc)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); } };
   window.seek = seek; window.DURATION = DUR;
-  document.fonts.load("680 50px 'Sora'").then(function(){ return document.fonts.load("500 20px 'DM Mono'"); }).then(function(){ return document.fonts.ready; })
+  document.fonts.load("750 50px 'Sora'").then(function(){ return document.fonts.load("500 20px 'DM Mono'"); }).then(function(){ return document.fonts.ready; })
     .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 </script>

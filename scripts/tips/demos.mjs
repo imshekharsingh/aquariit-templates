@@ -397,15 +397,15 @@ export const demos = {
   press: {
     css: `
 #press .pane{display:flex;align-items:center;justify-content:center;height:130px}
-#press .pay{width:84%;height:52px;border:0;border-radius:26px;background:#7cf0b6;color:#111214;font:700 18px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
-#press .fix .pay{transition:scale .12s}
-#press .fix .pay:active{scale:.96}`,
+#press .pay{width:84%;height:52px;border:0;border-radius:26px;background:#7cf0b6;color:#111214;font:700 18px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 5px 0 #2f9c72,0 12px 18px #0008}
+#press .fix .pay{transition:.12s}
+#press .fix .pay:active{scale:.96;box-shadow:0 2px 6px #0006;filter:brightness(.92)}`,
     html: `
 <div class="pair">
   <div class="pane"><span class="tag">No :active</span><button class="pay" type="button">Pay $64.00</button></div>
-  <div class="pane fix"><span class="tag ok">:active { scale: .96 }</span><button class="pay" type="button">Pay $64.00</button></div>
+  <div class="pane fix"><span class="tag ok">:active { scale: .96 } + shadow</span><button class="pay" type="button">Pay $64.00</button></div>
 </div>
-<p class="note">Press and hold each button. The left one gives no sign the tap landed; the right one dips under your finger and springs back when you let go.</p>`,
+<p class="note">Press and hold each button. The left one gives no sign the tap landed; the right one sinks under your finger, its shadow collapsing, and springs back when you let go.</p>`,
     // Safari on iOS applies :active only when the page listens for touchstart (BCD css.selectors.active, safari_ios note)
     js: `function(){ document.addEventListener('touchstart', function(){}, { passive: true }); }`,
   },
