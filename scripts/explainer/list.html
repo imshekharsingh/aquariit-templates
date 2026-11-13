@@ -19,24 +19,22 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .a{position:absolute}
 #vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
 #world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
-#pane{left:30px;top:300px;width:450px;height:396px;border-radius:40px;background:var(--glass);box-shadow:var(--edge),var(--lift)}
+#pane{left:30px;top:300px;width:450px;height:396px;border-radius:40px;background:linear-gradient(160deg,rgba(95,242,176,.08),rgba(110,120,255,.06) 55%,rgba(255,106,92,.05)),var(--glass);box-shadow:var(--edge),var(--lift)}
 #ctx{display:none;left:54px;top:316px;font:500 15px/1 var(--m);letter-spacing:.16em;color:#dcd9d1;white-space:nowrap}
 #ctx i{font-style:normal;color:var(--paper)}
 #subj{left:0;top:0;width:540px;height:960px}
-.lst{position:absolute;overflow:hidden;border-radius:20px;background:rgba(255,255,255,.025)}
-.row{position:absolute;left:0;top:0;height:62px;overflow:hidden;border-radius:16px;background:rgba(255,255,255,.065);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-.row .av{position:absolute;left:10px;top:12px;width:38px;height:38px;border-radius:50%;font:700 16px/38px var(--f);text-align:center;color:#f4f2ec;font-style:normal}
+.lst{position:absolute;overflow:visible;border-radius:20px}
+.row{position:absolute;left:0;top:0;height:62px;overflow:hidden;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.115),rgba(255,255,255,.07));box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.06)}
+.row .av{position:absolute;left:10px;top:12px;width:38px;height:38px;border-radius:50%;font:700 16px/38px var(--f);text-align:center;color:#fff;font-style:normal;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
 .row b{position:absolute;left:58px;top:13px;font:650 18px/1 var(--f);letter-spacing:-.01em;white-space:nowrap;color:var(--paper)}
-.row s{position:absolute;left:58px;top:40px;height:8px;border-radius:4px;background:rgba(255,255,255,.16);text-decoration:none}
+.row s{position:absolute;left:58px;top:40px;height:8px;border-radius:4px;background:rgba(255,255,255,.2);text-decoration:none}
 .row u{position:absolute;top:17px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.08);text-decoration:none}
 .row u:before,.row u:after{content:"";position:absolute;left:8px;top:13px;width:12px;height:2px;border-radius:1px;background:#c9c6be;transform:rotate(45deg)}
 .row u:after{transform:rotate(-45deg)}
 .tg{position:absolute;font:500 17px/1 var(--m);letter-spacing:.14em;white-space:nowrap;opacity:0}
 #tgA{color:var(--red)}#tgB{color:var(--acc)}
 .gh{position:absolute;border:2.5px dashed var(--red);border-radius:16px;opacity:0}
-#fg{position:absolute;left:0;top:0;width:84px;height:210px;opacity:0;transform-origin:42px 14px;z-index:6}
 #sbox{position:absolute;left:0;top:0;width:10px;height:10px}
-.rip{position:absolute;width:60px;height:60px;border-radius:50%;border:3px solid var(--acc);opacity:0;z-index:5}
 .bub{position:absolute;font:750 26px/1 var(--f);color:var(--red);white-space:nowrap;opacity:0;z-index:7}
 /* screen space: the label row, the hook, the counters, the code card, the slow-motion panel, the payoff code, the subtitles */
 #lbl{left:34px;top:132px;font:500 15px/1 var(--m);letter-spacing:.14em;color:#bdbab2;white-space:nowrap}
@@ -69,7 +67,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #stat .c{position:absolute;top:0;white-space:nowrap}
 #stat small{display:block;font:500 14px/1 var(--m);letter-spacing:.16em;color:var(--dim);margin-bottom:10px}
 #stat b{display:inline-block;font:800 70px/1 var(--f);letter-spacing:-.04em;transform-origin:0 80%}
-#stat .c2 b{color:#ff9d95}
+#stat .c2 b{color:#ff8a7e}
 #line{left:30px;top:184px;width:450px;height:122px;padding:16px 22px;border-radius:20px;background:var(--frost);box-shadow:var(--edge),var(--lift);font:500 19px/1.47 var(--m);white-space:pre;color:var(--paper);opacity:0}
 #line b{font-weight:500;color:var(--acc)}#line .dim{color:var(--dim)}
 #band{left:0;top:688px;width:540px;height:96px;background:transparent}
@@ -87,10 +85,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     <div class="lst" id="lA"></div><div class="lst" id="lB"></div>
     <div class="gh" id="g0"></div>
   </div>
-  <svg id="fg" viewBox="0 0 84 210" aria-hidden="true"><defs><linearGradient id="fgs" x1="0" x2="1"><stop offset="0" stop-color="#d9dee8"/><stop offset=".45" stop-color="#f6f7fb"/><stop offset="1" stop-color="#c3c9d6"/></linearGradient><linearGradient id="fgf" x1="0" x2="0" y1="0" y2="1"><stop offset=".3" stop-color="#fff"/><stop offset=".48" stop-color="#000"/></linearGradient><mask id="fgm"><rect width="84" height="210" fill="url(#fgf)"/></mask></defs><g mask="url(#fgm)">
-    <path d="M8 46 C8 18 24 4 42 4 C60 4 76 18 76 46 L80 210 L4 210 Z" fill="url(#fgs)" stroke="rgba(0,0,0,.25)" stroke-width="2"/>
-    <path d="M24 34 C24 20 32 13 42 13 C52 13 60 20 60 34 L60 52 C52 58 32 58 24 52 Z" fill="#ffffff" stroke="rgba(0,0,0,.12)" stroke-width="1.5"/></g></svg>
-  <div class="bub" id="q0"></div><div class="rip" id="r0"></div><div class="rip" id="r1"></div>
+  <div class="bub" id="q0"></div>
 </div></div>
 <div id="lbl" class="a">Nº 35 · THE DELETE</div>
 <div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>inbox</span> <span class="acc">jump?</span></span></div>
@@ -123,7 +118,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 //   text: KM.rise(spans, t, starts, gone) (blur to sharp, word by word) · KM.type(el, html, t, t0, t1) (typing with a caret) ·
 //     KM.sweep(el, t, t0, d, col) (a highlight sweep) · KM.leader(line, label, from, to, k) (a leader-line label, SVG line + text)
 //   secondary: KM.parallax(el, c, depth) · KM.stagger(els, t, t0, gap, d) · KM.squeeze(el, t, tTap) (press and pop) ·
-//     KM.ripple(el, t, tTap, x, y) · KM.tap(t, x) (the touch cue for a tap at screen x)
+//     KM.ripple(el, t, tTap, x, y) · KM.tap(t, x) (the touch cue for a tap at screen x) · KM.touch(host) -> draw(t, s) (the slim ring touch marker, 13 Nov 2026)
 //   details format (8 Nov 2026): KM.curve(spec) · KM.linearCss(f, n) · KM.timeScale(t0, t1, factor) (slow motion; the camera keeps reel time) ·
 //     KM.curveGraph(svg, spec, c0, d, { clock, real }) (the live easing curve with a riding dot) · KM.slowmoBadge(el, ts, label) ·
 //     KM.specChip(el, items, t0, d) (numbers roll in) · KM.partProgress(el, parts) (the segmented top bar); start a reel with newweb.mjs --details N
@@ -234,6 +229,27 @@ var KM = (function(){
     el.style.transform = 'scale(' + (1 - press * .07 + pop * .09).toFixed(4) + ')'; }
   function ripple(el, t, tap, x, y){ var k = P(t, tap, tap + .55); el.style.left = (x - 32) + 'px'; el.style.top = (y - 32) + 'px'; el.style.opacity = (k > 0 && k < 1 ? 1 - k : 0).toFixed(3); el.style.transform = 'scale(' + mix(.5, 2.6, ease.out3(k)).toFixed(3) + ')'; }
   function tap(t, x){ cue({ t: t, k: 'touch', g: .38, x: cl(x, 30, 510) }); cue({ t: t + .05, k: 'blip', g: .24, x: cl(x, 30, 510) }); }
+  // touch marker (owner, 13 Nov 2026: "the finger looks a bit bulky on screen"): a slim soft-white ring (60 px) around the button it taps,
+  // never over it (the button stays visible inside the ring); it presses in on each tap and sends out one ripple, with a faint shadow.
+  // KM.touch(host) makes the marker in host (the world, so it moves with the camera) and returns draw(t, s), s = { x, y (world centre of the
+  // button), press (0 lifted .. 1 down), tap (time of the last tap, for the ripple), o (opacity), c (the camera: the ring is kept inside the
+  // safe zone, x 30-480 / y 125-785 on screen, by at most 14 px, so the button stays inside it) }. Its sound: KM.tap(t, x) on each tap.
+  // The ring carries data-key, so the SAFE ZONE line checks it on every still; Output QA BULK fails a solid white shape on the final frames.
+  function touch(host, o){ o = o || {}; var D = o.size || 60, el = document.createElement('div'), rp = document.createElement('div'), rg = document.createElement('div');
+    el.className = 'km-touch'; el.setAttribute('data-key', 'touch'); el.setAttribute('aria-hidden', 'true');
+    el.style.cssText = 'position:absolute;left:0;top:0;width:' + D + 'px;height:' + D + 'px;pointer-events:none;z-index:8;opacity:0';
+    rp.style.cssText = 'position:absolute;left:0;top:0;width:' + D + 'px;height:' + D + 'px;border-radius:50%;border:2px solid rgba(255,255,255,.7);opacity:0';
+    rg.style.cssText = 'position:absolute;left:0;top:0;width:' + D + 'px;height:' + D + 'px;border-radius:50%;border:2.5px solid rgba(255,255,255,.92);background:rgba(255,255,255,.08);box-shadow:0 6px 16px rgba(0,0,0,.35),inset 0 0 10px rgba(255,255,255,.12)';
+    el.appendChild(rp); el.appendChild(rg); host.appendChild(el);
+    var draw = function(t, s){ var x = s.x, y = s.y, p = cl(s.press || 0), R = D / 2;
+      if (s.c) { var z = s.c.z, sx = (x - s.c.x) * z + 255, sy = (y - s.c.y) * z + 480, r = R * z + 3;
+        var nx = cl(sx, 30 + r, 480 - r), ny = cl(sy, 125 + r, 785 - r); nx = sx + cl(nx - sx, -14, 14); ny = sy + cl(ny - sy, -14, 14);
+        x += (nx - sx) / z; y += (ny - sy) / z; }
+      el.style.left = (x - R).toFixed(2) + 'px'; el.style.top = (y - R).toFixed(2) + 'px'; el.style.opacity = cl(s.o == null ? 1 : s.o).toFixed(3);
+      rg.style.transform = 'scale(' + mix(1, .84, p).toFixed(4) + ')'; rg.style.background = 'rgba(255,255,255,' + (.08 + .16 * p).toFixed(3) + ')';
+      var k = s.tap == null ? 1 : P(t, s.tap, s.tap + .55);
+      rp.style.opacity = (k > 0 && k < 1 ? .75 * (1 - ease.out3(k)) : 0).toFixed(3); rp.style.transform = 'scale(' + mix(.9, 1.9, ease.out3(k)).toFixed(4) + ')'; };
+    draw.el = el; return draw; }
   // ---- voice timings and subtitles ----
   var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
   function voice(text, lead, words){ lead = lead == null ? .15 : lead; var T = text.split(/\s+/).filter(Boolean), W = [];
@@ -349,13 +365,17 @@ var KM = (function(){
       blooms: [['122,92,255', .62, 640, 180, 220, .31, .23, 0], ['255,111,207', .42, 580, 460, 640, .27, .35, 1.7], ['63,216,255', .4, 540, 120, 860, .37, .21, 3.1],
         ['255,180,92', .3, 480, 520, 260, .22, .29, 4.4]],
       grade: [[0, 'rgba(90,60,200,.2)'], [.4, 'rgba(7,8,22,0)'], [1, 'rgba(0,150,170,.14)']] },
+    // dark (E18), 13 Nov 2026 (owner: "a little vibrancy in the colour grading, it feels slightly dull"): stronger mint and coral, cards a touch
+    // lighter with a soft top highlight, a faint mint / violet / coral glow behind the subject; KM.JEWELS = the avatar and chip tints
     dark: { name: 'Ink and mint',
-      c: { ink: '#111214', paper: '#f2efe8', dim: '#8a8780', acc: '#7cf0b6', red: '#ff5a4a', ctl: '#3a3b44', raise: '#34353e', skel: '#2e2f37', pg: '#16171c',
-        card: '#202128', on: '#111214' },
-      v: { glass: '#26272e', frost: '#1b1c21', edge: 'inset 0 1px 0 rgba(255,255,255,.06)', lift: '0 24px 60px rgba(0,0,0,.4)', glow: 'rgba(124,240,182,.55)', soft: 'rgba(124,240,182,.14)',
-        ring: 'rgba(124,240,182,.5)', f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '800', ht: '-.024em' },
-      blooms: [['124,240,182', .08, 460, 140, 200, .2, .17, 0], ['124,140,255', .06, 380, 520, 640, .23, .19, 2]], grade: null }
+      c: { ink: '#101116', paper: '#f4f1ea', dim: '#9a978f', acc: '#5ff2b0', red: '#ff6a5c', ctl: '#3c3e4a', raise: '#363845', skel: '#30323d', pg: '#171820',
+        card: '#262833', on: '#0c0d12' },
+      v: { glass: '#262833', frost: '#1d1e26', edge: 'inset 0 1px 0 rgba(255,255,255,.11)', lift: '0 24px 60px rgba(0,0,0,.45)', glow: 'rgba(95,242,176,.6)', soft: 'rgba(95,242,176,.16)',
+        ring: 'rgba(95,242,176,.55)', f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '800', ht: '-.024em' },
+      blooms: [['95,242,176', .13, 460, 140, 200, .2, .17, 0], ['110,120,255', .12, 420, 520, 640, .23, .19, 2], ['255,106,92', .07, 360, 500, 860, .17, .21, 4]], grade: null }
   };
+  // jewel tones for avatars and chips on the dark look (13 Nov 2026): rich, mid-dark, white text on each at 4.5:1 or more
+  var JEWELS = ['#1f7a5c', '#5b45c4', '#b03a5b', '#2f5fc0', '#8a4fb8', '#1d7186', '#a8451f'];
   // ---- palettes (owner, 8 Nov 2026: "introduce more colour combinations, video to video"; rules-web.md rule 12): the glass look keeps its
   // type, panes and layout; a palette swaps only the light (blooms, grade), the accent pair and the tints that follow them. newweb.mjs rotates
   // them reel to reel (the next after the last web reel's "palette" in captions.json) and writes the name into the config, so reach reads per
@@ -414,9 +434,9 @@ var KM = (function(){
   function publish(extra){ extra = extra || {}; window.TRANSITIONS = TR.slice().sort(function(a, b){ return a[0] - b[0]; });
     window.CUES = { dur: DUR, cues: Q.slice().sort(function(a, b){ return a.t - b.t; }), mix: extra.mix || { duck: 8 }, bed: extra.bed || { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } }; }
   return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
-    rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, voice: voice, subs: subs, publish: publish,
+    rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, touch: touch, voice: voice, subs: subs, publish: publish,
     curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
-    THEMES: THEMES, PALETTES: PALETTES, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float };
+    THEMES: THEMES, PALETTES: PALETTES, JEWELS: JEWELS, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float };
 })();
 /*kitmotion:end*/
 /*kitsfx:begin*/
@@ -512,9 +532,10 @@ var KM = (function(){
   var CODE = '<span class="dim">.row {</span> display: grid;\n  grid-template-rows: 1fr;\n  transition: .3s; <span class="dim">}</span>\n<span class="dim">.row.gone {</span> opacity: 0;\n  <b>grid-template-rows: 0fr;</b> <span class="dim">}</span>\n<span class="dim">.row > * {</span> overflow: hidden; <span class="dim">}</span>';
   var EASE = { bezier: [.25, .1, .25, 1] }, COL = .3;   // CSS "ease", the transition's default timing function; 300 ms
   var RH = 68, NQ = 44;   // a row's slot (62 px card + 6 px gap) and the inbox queue
-  var FULL = { x: 40, y: 340, w: 430, h: 340, r: 22 }, LEFT = { x: 36, y: 340, w: 206, h: 316, r: 18 }, RIGHT = { x: 268, y: 340, w: 206, h: 316, r: 18 };
+  var FULL = { x: 48, y: 340, w: 414, h: 340, r: 22 }, LEFT = { x: 44, y: 340, w: 200, h: 340, r: 18 }, RIGHT = { x: 266, y: 340, w: 200, h: 340, r: 18 };
+  var TA, TB;   // the touch markers (KM.touch): one per list
   var NAMES = ['Mia', 'Leo', 'Ava', 'Noah', 'Zoe', 'Kai', 'Ivy', 'Sam', 'Eli', 'Nia', 'Ray', 'Uma', 'Jay', 'Lou', 'Bea', 'Max', 'Ada', 'Tom', 'Ana', 'Ben', 'Cleo', 'Dev', 'Emi', 'Finn', 'Gia', 'Hugo', 'Ines', 'Jon', 'Kira', 'Luca', 'Maya', 'Nico', 'Omar', 'Pia', 'Remy', 'Sara', 'Teo', 'Vera', 'Wes', 'Yara', 'Zane', 'Rio', 'Lena', 'Omi'];
-  var AVC = ['#46536a', '#6a5946', '#466a5c', '#5c466a', '#6a4653', '#46646a'];   // muted avatar tints (no saturated fills)
+  var AVC = KM.JEWELS;   // jewel-tone avatars (13 Nov 2026, owner: "a little vibrancy"; white letter at 5.2:1 or more, small fills only)
   var V, PH, A = {}, CAM, T = {}, DA = [], DB = [], TS, CG, BADGE, SPEC, EL = {}, ease = null, ROWS = { A: [], B: [] };
   function at(w, n){ return V.at(w, n); }
   function box(el, b){ el.style.left = b.x.toFixed(2) + 'px'; el.style.top = b.y.toFixed(2) + 'px'; el.style.width = b.w.toFixed(2) + 'px'; el.style.height = b.h.toFixed(2) + 'px'; if (b.r != null) el.style.borderRadius = b.r.toFixed(2) + 'px'; }
@@ -547,7 +568,8 @@ var KM = (function(){
     A.post = post;
     DB = assign(pre.concat(side, post).map(function(t){ return { t: t, slow: Math.abs(t - A.slowT) < 1e-6 }; }));
     // ---- the camera: on the list under the hook, closer on the snaps, back for the code, in for the slow motion and the payoff ----
-    CAM = KM.rig({ x: 255, y: 500, z: 1.04, drift: 2 })
+    A.subEnd = Math.min(DUR - .3, V.end + .7);
+    CAM = KM.rig({ x: 255, y: 500, z: 1.04, drift: 1.6 })
       .pushIn(A.leave, .9, 255, 506, 1.05)
       .pull(A.fix - .2, .8, 255, 480, 1)
       .pushIn(A.watch - .1, .9, 255, 486, 1.02)
@@ -584,26 +606,28 @@ var KM = (function(){
     EL.ctx = KM.el($('ctx'), { t0: -1, d: .1, variant: 'slide', t1: A.leave - .1, d1: .3, sound: false }); KM.sfx($('ctx'), A.leave - .1, 'exit', { size: 'small', g: .5 });
     A.ctxBack = 99;   // the inbox label leaves with the hook (the panels above the list take its place)
     KM.mark($('lA'), 'tree', 'the snap on every delete'); KM.mark($('lB'), 'tree', 'the slide and landing tick on every delete');
-    KM.mark($('fg'), 'tree', 'the finger: the tap ticks'); KM.mark($('q0'), 'self', 'bubble blip'); KM.mark($('g0'), 'self', 'the snap');
+    KM.mark($('band'), 'self', 'with the subtitles'); KM.mark(TA.el, 'tree', 'the touch marker: the tap ticks'); KM.mark(TB.el, 'tree', 'the touch marker: the tap ticks'); KM.mark($('q0'), 'self', 'bubble blip'); KM.mark($('g0'), 'self', 'the snap');
     KM.mark($('cd'), 'tree', 'the typing ticks');
-    KM.mark($('pane'), 'self', 'the camera'); KM.mark($('subj'), 'self', 'the camera'); KM.mark($('sbox'), 'self', 'the camera'); KM.mark($('badge').firstChild, 'self', 'the badge blip'); KM.mark($('r0'), 'self', 'with the tap tick'); KM.mark($('r1'), 'self', 'with the tap tick');
+    KM.mark($('pane'), 'self', 'the camera'); KM.mark($('subj'), 'self', 'the camera'); KM.mark($('sbox'), 'self', 'the camera'); KM.mark($('badge').firstChild, 'self', 'the badge blip');
     KM.publish();
   }
   // ---- a delete's progress: the BEFORE list drops the row at once; the AFTER list fades it and collapses its slot over 300 ms (ease) ----
   function kOf(d, t, fixed){ if (!fixed) return t >= d.t ? 1 : 0; if (d.slow) return ease(P(TS.at(t), A.c0, A.c0 + COL)); return ease(P(t, d.t, d.t + COL)); }
-  function paintList(L, bx, t, list, fixed){ var host = $('l' + L); box(host, bx);
+  function paintList(L, bx, t, list, fixed){ var host = $('l' + L); box(host, bx); var AV = bx.h;
     var gone = {}; list.forEach(function(d){ gone[d.item] = d; });
-    var y = 0, rows = ROWS[L], pw = Math.max(20, bx.w - 58 - 48);
+    var y = 0, bot = 0, rows = ROWS[L], pw = Math.max(20, bx.w - 58 - 48);
     for (var i = 0; i < NQ; i++) { var r = rows[i], d = gone[i], k = d ? kOf(d, t, fixed) : 0, hgt = RH * (1 - k);
-      if (hgt < .5 || y >= bx.h) { r.style.display = 'none'; y += hgt; continue; }
+      var fit = Math.pow(cl(1 - (y + hgt - 6 - AV) / 14), 3);   // the list is never cut: a row that does not fit yet is faded, whole, not clipped
+      if (hgt < .5 || fit <= .01) { r.style.display = 'none'; y += hgt; continue; }
       r.style.display = 'block'; r.style.width = bx.w.toFixed(1) + 'px'; r.style.height = Math.max(0, hgt - 6).toFixed(2) + 'px';
-      r.style.transform = 'translateY(' + y.toFixed(2) + 'px)'; r.style.opacity = (1 - k).toFixed(3);
+      r.style.transform = 'translateY(' + y.toFixed(2) + 'px)'; r.style.opacity = ((1 - k) * fit).toFixed(3);
       r.querySelector('s').style.width = (pw * (.55 + .4 * ((i * 37) % 10) / 10)).toFixed(1) + 'px';
       var u = r.querySelector('u'); u.style.left = (bx.w - 38).toFixed(1) + 'px';
       // the x lights red under the finger just before its delete
       var hot = d ? E.out3(P(t, d.t - .2, d.t - .08)) * (1 - P(t, d.t + .05, d.t + .25)) : 0;
-      u.style.background = hot > .01 ? 'rgba(255,107,107,' + (.08 + .5 * hot).toFixed(3) + ')' : '';
-      y += hgt; } }
+      u.style.background = hot > .01 ? 'rgba(255,106,92,' + (.08 + .55 * hot).toFixed(3) + ')' : '';
+      bot = Math.max(bot, mix(y - 6, y + hgt - 6, fit)); y += hgt; }
+    return bot; }
   function upDown(t, a){ return E.inOut3(P(t, a - .22, a - .1)) * (1 - E.inOut3(P(t, a + .02, a + .25))); }   // the finger, 0 lifted .. 1 down (it taps the x just before the delete)
   function seek(t){
     t = Math.max(0, Math.min(DUR, t));
@@ -611,8 +635,11 @@ var KM = (function(){
     KM.lights(t, c);
     // ---- the two lists: one full-width BEFORE list; it splits into BEFORE | AFTER; the AFTER one returns to full width ----
     var sk = T.split(t), mk = T.merge(t);
+    var bk = E.inOut3(P(t, A.leave - .25, A.leave + .2)) * (1 - E.inOut3(P(t, A.subEnd, A.subEnd + .5))), lim = mix(770, 672, bk), wb = c.y + (lim - 480) / c.z;
+    $('band').style.opacity = bk.toFixed(3); $('cap').style.visibility = bk > .02 ? '' : 'hidden';
     var boxA = lerpBox(FULL, LEFT, sk), boxB = t < A.watch - .1 ? RIGHT : lerpBox(RIGHT, FULL, mk), popB = KM.enter('pop', P(t, A.fix + .4, A.fix + .8));
-    paintList('A', boxA, t, DA, false); paintList('B', boxB, t, DB, true);
+    boxA.h = wb - boxA.y; boxB.h = wb - boxB.y;
+    var botA = paintList('A', boxA, t, DA, false), botB = paintList('B', boxB, t, DB, true);
     var lA = $('lA'), lB = $('lB');
     lA.style.opacity = (1 - P(t, A.watch - .4, A.watch - .14)).toFixed(3); lA.style.transform = '';
     lB.style.opacity = (t < A.fix + .4 ? 0 : t < A.watch - .1 ? popB.o : 1).toFixed(3); lB.style.transform = t < A.watch - .1 ? popB.tf : '';
@@ -620,33 +647,25 @@ var KM = (function(){
     // the subject box (data-subject): the union of the lists on screen
     var sb = t < A.fix - .05 ? FULL : t < A.watch - .1 ? { x: boxA.x, y: boxA.y, w: boxB.x + boxB.w - boxA.x, h: boxA.h } : boxB;
     box($('sbox'), sb);
+    var pb = t < A.fix - .05 ? botA : t < A.watch - .1 ? Math.max(botA, botB) : botB;   // the pane ends under the last whole row
+    box($('pane'), { x: sb.x - 10, y: sb.y - 40, w: sb.w + 20, h: pb + 56, r: 36 });
     // ---- the snap: a red dashed ghost where the row was, the rows under it already moved up ----
     var g = $('g0'), gk = 0, gd = null; DA.forEach(function(d){ if (t >= d.t && t < d.t + .6 && d.t < A.watch - .4) { gd = d; } });
     if (gd) { gk = 1 - E.inOut3(P(t, gd.t + .15, gd.t + .6)); var gb = gd.t < A.fix ? lerpBox(FULL, LEFT, T.split(gd.t)) : boxA;
       g.style.left = (gb.x - 3).toFixed(1) + 'px'; g.style.top = (gb.y + RH - 3).toFixed(1) + 'px'; g.style.width = (gb.w + 6).toFixed(1) + 'px'; g.style.height = RH.toFixed(1) + 'px';
       g.style.transform = 'scale(' + mix(1, 1.04, 1 - gk).toFixed(4) + ')'; }
     g.style.opacity = (gk * .95).toFixed(3);
-    // a mint ring on the AFTER list's x on every delete it animates
-    var rp = DB.filter(function(d){ return t >= d.t - .12 && t < d.t + .4 && d.t > A.fix + .4; }).slice(-1);
-    var ra = DA.filter(function(d){ return t >= d.t - .12 && t < d.t + .3 && d.t < A.watch - .4; }).slice(-1);
-    [['r0', rp[0], boxB, 'var(--acc)'], ['r1', ra[0], boxA, 'var(--red)']].forEach(function(q){ var r = $(q[0]), d = q[1]; if (!d) { r.style.opacity = 0; return; }
-      var k = P(t, d.t - .12, d.t + .4), bx = q[2];
-      r.style.borderColor = q[3]; r.style.left = (bx.x + bx.w - 24 - 30).toFixed(1) + 'px'; r.style.top = (bx.y + RH + 31 - 30).toFixed(1) + 'px';
-      r.style.opacity = ((1 - k) * .85).toFixed(3); r.style.transform = 'scale(' + mix(.35, 1.6, E.out3(k)).toFixed(3) + ')'; });
     // the tags over each half
     EL.tgA.apply(t); EL.tgB.apply(t);
     $('tgA').style.left = (boxA.x + 4).toFixed(1) + 'px'; $('tgA').style.top = (boxA.y - 24).toFixed(1) + 'px';
     $('tgB').style.left = (boxB.x + 4).toFixed(1) + 'px'; $('tgB').style.top = (boxB.y - 24).toFixed(1) + 'px';
     var cx = EL.ctx(t), cb = KM.enter('slide', P(t, A.ctxBack, A.ctxBack + .4)); $('ctx').style.opacity = (t < A.ctxBack ? cx.o : cb.o).toFixed(3); $('ctx').style.transform = t < A.ctxBack ? cx.tf : cb.tf;
-    // ---- the finger: on the second row's x for the full-width deletes (hidden while the two lists sit side by side) ----
-    var fdl = null; (t < A.fix ? DA : DB).forEach(function(d){ if (d.t - .3 <= t) fdl = d; });
-    var bxF = t < A.fix ? boxA : boxB, fx = bxF.x + bxF.w - 24, fy = bxF.y + RH + 31;
-    var fd = fdl ? (fdl.slow ? E.inOut3(P(TS.at(t), A.c0 - .1, A.c0 - .03)) * (1 - E.inOut3(P(TS.at(t), A.c0 + .01, A.c0 + .08))) : upDown(t, fdl.t)) : 0;
-    var lift = 1 - fd, fg = $('fg');
-    fg.style.left = (fx - 42 + lift * 18 + Math.sin(t * 1.6) * 2).toFixed(1) + 'px'; fg.style.top = (fy - 14 + lift * 26 + Math.sin(t * 2.1 + 1) * 2).toFixed(1) + 'px';
-    var fo = t < A.fix ? 1 - P(t, A.fix - .3, A.fix) : P(t, A.watch + .5, A.watch + .9) * (1 - P(t, DUR - .3, DUR));
-    fg.style.opacity = fo.toFixed(3);
-    fg.style.transform = 'rotate(-14deg) scale(' + (1 + lift * .14).toFixed(3) + ')';
+    // ---- the touch markers (KM.touch, 13 Nov 2026): a slim ring round each list's second-row x; it presses in and ripples on every delete ----
+    [[TA, DA, boxA, false, 1 - P(t, A.watch - .5, A.watch - .2)], [TB, DB, boxB, true, P(t, A.fix + .5, A.fix + .9) * (1 - P(t, DUR - .3, DUR))]].forEach(function(m){
+      var fdl = null; m[1].forEach(function(d){ if (d.t - .3 <= t && (m[3] ? d.t > A.fix + .4 : d.t < A.watch - .4)) fdl = d; });
+      var fd = fdl ? (fdl.slow ? E.inOut3(P(TS.at(t), A.c0 - .1, A.c0 - .03)) * (1 - E.inOut3(P(TS.at(t), A.c0 + .01, A.c0 + .08))) : upDown(t, fdl.t)) : 0;
+      var tp = fdl ? (fdl.slow ? TS.real(A.c0 - .03) : fdl.t - .1) : null;
+      m[0](t, { x: m[2].x + m[2].w - 24 + Math.sin(t * 1.6) * 1.5, y: m[2].y + RH + 31 + Math.sin(t * 2.1 + 1) * 1.5, press: fd, tap: tp, o: m[4], c: c }); });
     // ---- the "jump!" bubbles over the snaps before the fix ----
     var words = ['jump!', 'huh?', 'wait…', 'where?', 'jump!'], live = null, j = -1;
     A.pre.forEach(function(p, i){ if (t >= p + .04 && t < p + .9) { live = p; j = i; } });
@@ -678,7 +697,7 @@ var KM = (function(){
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); } };
   window.seek = seek; window.DURATION = DUR;
-  build();
+  build(); TA = KM.touch($('world')); TB = KM.touch($('world'));
   document.fonts.load("750 50px 'Sora'").then(function(){ return document.fonts.load("500 20px 'DM Mono'"); }).then(function(){ return document.fonts.ready; })
     .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
