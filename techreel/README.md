@@ -45,7 +45,23 @@ switch flips) or "choice" (a tick moves from row `from` to row `pick`), `pick`, 
 (the result pill flips red to green), `paths` [["iPhone", "..."], ["Android", "..."]] (each path checked on the platform's own page).
 The phone is our own drawing (no platform's UI, icons or fonts); platform names appear only as text.
 
-## The gadget look (13 Nov 2026; topic `"look": "gadget"`, scenes/gadget.py; design/rules-tech.md G1-G8)
+## The idea look (13 Nov 2026; topic `"look": "idea"`, scenes/idea.py; design/rules-tech.md G9-G13): the default for every tech reel
+Owner, 13 Nov: "Let's build it with new animation." The idea at full-frame scale, one subject per scene, a crisp camera (`Cam`: zoom about a
+focus point + drift; text scales with it), declared zoom-throughs between worlds. Copy topics/ip68.json to start one.
+- HUD: progress bar + `"format"` pill (top), the TAG row (a giant gold glyph that travels between scenes + one or two big words on their cue
+  words + a small sub line), a chip at the foot of the stage (`"chips"`: [{text, cue, ok?}]), captions in their own band over a dark bed.
+- Topic keys: `"hook_glyphs"` {text, size, y, water (px under the letters' centre, or omit), dust, labels [{i, text, t, gold?}], ripples [{i, t}]}:
+  frame 0 is the giant term doing the thing; the first scene's `tag.from_hook` letter rises out of it to the tag row, the others sink.
+- Scene params (every kind): `tag` {glyph?, from_hook?, words [{text, cue, gold?}], sub?, sub_cue?}, `push` [zoom, x, y], `chips`, `world`
+  (scenes with the same key share one world, no zoom-through).
+- Kinds (sets): `barrier` (a product edge in macro, particles bounce off the seam; seam_cue, particles), `fill` + `depth` (one water world:
+  rise_cue, sink_cue; then depth {value, unit, cue, labels, label} with a ruler and a readout, ring {value, unit, cue}), `slam` (cards
+  [{icon, text, cue, dot}] slamming in with a jolt), `split` (before / after of one object with a wiping divider: before, after, show_cue,
+  wipe_cue, inside), `verdict` (the term reassembles over two panels: glyphs, good {icon, text, cue}, bad {...}). Icons: scenes/gadget.py.
+- New kinds go in scenes/idea.py as `set_<name>(cm, fr, s, t, cur)` drawn through `cm` (world px), each element calling `hit()` for its sound.
+- Text: Pillow 12 draws text ink opaque whatever its alpha, so faded text goes through `ftext` (a mask); never fade text with an RGBA fill.
+
+## The gadget look (13 Nov 2026, superseded the same day by the idea look; topic `"look": "gadget"`, scenes/gadget.py; design/rules-tech.md G1-G8)
 The default for every tech reel from 13 Nov (the gadget channel; owner: "a similar grade as web", "more organised, with flow on the screen").
 One fixed layout: the header row (`"format"` pill in gold + `"header"` title + a progress bar), the drawn product centred in the stage
 (y 384-1326; the world is masked to that band, so a zoom never reaches the header or captions, and the camera keeps the whole product in it),
