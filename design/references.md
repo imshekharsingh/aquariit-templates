@@ -141,3 +141,14 @@ has numbers, comes from Instagram itself, or repeats across several sources. Eac
 wipe, icons inside sentences, letters snapping into a word, a hand-drawn ring around a number); 3 more not taken by rule.
 Research passes (R-trend): 11 trends kept on 11 Nov 2026 (4 Turns Out, 7 all channels); 2 MISSING pieces (a caption question line in the web and
 tech starters, a series tag in kit25d.js) and 1 owner item (Trial Reels), all in design/todo.md. Next pass: the spare-usage night, Tue 17 Nov.
+
+## R-puzzle · visual "find the odd one" puzzle reel (owner reference, 13 Nov 2026; future channel idea)
+- What it showed: a dark full-frame grid of ~150 small circles, each with a dot orbiting it; one circle spins the other way. On-screen text:
+  "Only the 1% with perfect vision can find the single circle that spins in reverse." No voice needed, about 12 s, built to loop.
+  Reached small numbers on a small account (about 107 likes, 18 comments, 39 saves), but saves and comments are high for its size.
+- Techniques (take the mechanic, never the piece): (1) one-line challenge hook that flatters the viewer ("only X% can..."); (2) a dense
+  procedural field with ONE odd element (direction, speed, colour shade, shape, phase); (3) no answer shown, or a reveal after a pause, so
+  people rewatch, comment their answer and send it to friends; (4) loops seamlessly so watch time stacks; (5) calm dark palette, subtle motion.
+- Kit piece: MISSING (a seeded "odd one out" field generator: grid of N items, one rule-breaker, difficulty knobs, optional delayed reveal).
+- Fit: perfect for code-only, faceless, cheap renders (no voice, seconds of render time); could be its own channel. Owner: "We should be
+  able to create a channel with such puzzles; we don't copy but take reference. Mark it to pick up in the future."
