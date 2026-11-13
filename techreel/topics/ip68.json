@@ -10,8 +10,8 @@
  "flow": true,
  "speed": 1.0,
  "max_speed": 1.0,
- "dur": 22.2,
- "max_end": 21.6,
+ "dur": 23.0,
+ "max_end": 22.5,
  "say": {
   "IP68": "I P sixty eight",
   "iPhones": "[iPhones](/ˈIfOnz/)"
@@ -335,8 +335,9 @@
    }
   },
   {
-   "text": "And the seals wear out with age.",
+   "text": "And the seals inside your phone wear out with age.",
    "chunks": [
+    3,
     3,
     4
    ],
