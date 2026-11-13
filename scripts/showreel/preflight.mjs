@@ -11,6 +11,11 @@ const c = JSON.parse(readFileSync(process.argv[2], 'utf8')), v = c.voice || {};
 const pr = spawnSync('python3', [new URL('../voice/say.py', import.meta.url).pathname, process.argv[2]], { encoding: 'utf8' });
 process.stdout.write(pr.stdout || `PRONUNCIATION: could not run scripts/voice/say.py: ${pr.stderr || pr.error}\n`);
 if (pr.status !== 0) process.exitCode = 1;
+// HOOK PACE (13 Nov 2026): Kokoro reads an opening question at about 5 words/s whatever the speed, so a first sentence over 6 words fails
+// Output QA's PACE on the final video (press 12 Nov: 8 words at 5.13/s; list 13 Nov: 7 words at 5.07/s). 6 words or fewer is a short line (a warning).
+{ const first = (v.text || '').split(/(?<=[.?!])\s+/)[0] || '', n = first.split(/\s+/).filter(Boolean).length;
+  console.log(`HOOK PACE: the first sentence has ${n} words${n > 6 ? ' (OVER 6: Kokoro reads a hook at ~5 words/s and Output QA PACE fails a full sentence over 4.5; cut it to 6 words or fewer)' : ': ok (6 or fewer)'}`);
+  if (n > 6) process.exitCode = 1; }
 // CONTRAST (11 Nov 2026; rules-web.md rule 12): a web reel with a palette (newweb.mjs writes it) has its captions and labels measured on
 // rendered frames over the light (scripts/showreel/contrast.mjs): "CONTRAST: n.n:1 (palette)", under 4.5:1 fails
 if (c.palette) { const ct = spawnSync('node', [new URL('./contrast.mjs', import.meta.url).pathname, process.argv[2]], { encoding: 'utf8' });
