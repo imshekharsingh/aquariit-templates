@@ -91,6 +91,7 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     var L = CAPS[0], out = P(t, A[1] - .35, A[1] + .1); if (out >= 1) return;
     var W = wrap(L.words, HOOK.size, '800 ' + FD, 420), lh = HOOK.size * 1.08, y0 = Math.max(HOOK.y - (W.lines.length - 1) * lh / 2, (HOOK.label ? 156 : 132) + HOOK.size * .85) - eo(out) * 30;   // never above the safe zone (y 125)
     x.save(); x.globalAlpha = 1 - out;
+    if (HOOK.plate) { var pw0 = Math.max.apply(null, W.lw) + 44, ph0 = W.lines.length * lh + 30; Kt.plate(SX - pw0 / 2, y0 - HOOK.size * .95, pw0, ph0, 16, HOOK.plate); }   // titles on a solid plate (13 Nov 2026)
     if (HOOK.label) { var lk = P(t, 0, .3); x.globalAlpha = (1 - out) * lk; tag(HOOK.label, SX, y0 + eo(out) * 30 - HOOK.size - 14, 12, '800 ' + FI, HOOK.labelCol || '#fff', HOOK.labelBg || '#23202b', 2.5); }
     W.lines.forEach(function(ln, r){ var xx = SX - W.lw[r] / 2;
       ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .1, w.s + .12)), hl = HOOK.hl && HOOK.hl.test(w.d);
@@ -433,12 +434,14 @@ var K25 = (function(){
   // abruptly fallen"; design/rules-c3.md rule 11, design/mandatory.md item 20). scripts/channel3/qa.mjs reads window.__depth() every 0.1 s and
   // prints "DEPTH <world>: n planes, parallax nn px, foreground yes" (fails under 4 planes, under 12 px or without a foreground plane). ----
   // ONE light for the whole journey: the key light comes from the upper left (the core's paper() drops its shadow down and right to match)
-  var LIGHT = [-.5, .86], DEPTH = [], WCUR = null;
+  var LIGHT = [-.5, .86], DEPTH = [], WCUR = null, MOOD = null;
   // begin(): first call of the scene's seek(); world(name, o): starts a world: o.air = the colour of its air (far planes go toward it:
   // lighter, lower contrast), o.haze = how thick (0-1, default .5), o.floor = the ground's height in metres (the air is laid only above the
   // new plane's ground line, so the near ground stays clear)
   function begin(){ DEPTH.length = 0; WCUR = null; }
-  function world(name, o){ o = o || {}; WCUR = { name: name, air: o.air || '#d9cbb0', haze: o.haze == null ? .5 : o.haze, floor: o.floor, planes: [], cam: null, fg: 0, last: null }; DEPTH.push(WCUR); }
+  // with a colour mood set (Kt.mood, 13 Nov 2026) the air is the mood's (no pale fog) and the haze is capped at the mood's hazeMax
+  function world(name, o){ o = o || {}; var hz = o.haze == null ? .5 : o.haze; if (MOOD) hz = Math.min(hz, MOOD.hazeMax);
+    WCUR = { name: name, air: MOOD && !o.ownAir ? MOOD.air : o.air || '#d9cbb0', haze: hz, floor: o.floor, planes: [], cam: null, fg: 0, last: null }; DEPTH.push(WCUR); }
   // plane(cam, Z, o): use(cam, Z) for a depth plane of the current world, drawn far to near: before it the air between the last plane and
   // this one is laid over everything farther (atmospheric perspective). o.fg: the foreground plane that passes close to the lens; o.clear: no air
   function plane(cam, Z, o){ o = o || {}; var W = WCUR, dz = Z - cam.z; if (dz < .05) return 0;
@@ -497,7 +500,7 @@ var K25 = (function(){
   // flick(t, seed): torch or lamp light, about .75-1; motes(t, n, seed, [x0, y0, x1, y1], col, size px): dust drifting through a box of the
   // current layer; cloth(X, Y, w, h, t, col, seed, edge): a cloth hanging from its top edge (X, Y) to (X + w, Y), swaying more toward its hem
   function flick(t, seed){ var s = seed || 1; return .86 + .07 * Math.sin(t * 11.3 + s) + .04 * Math.sin(t * 23.7 + s * 2.1) + .03 * Math.sin(t * 5.1 + s * .7); }
-  function motes(t, n, seed, b, col, sz){ var r = rnd(seed), w = b[2] - b[0], h = b[3] - b[1], ga = x.globalAlpha; x.fillStyle = col;
+  function motes(t, n, seed, b, col, sz){ if (MOOD) n = Math.round(n * MOOD.particles); var r = rnd(seed), w = b[2] - b[0], h = b[3] - b[1], ga = x.globalAlpha; x.fillStyle = col;
     for (var i = 0; i < n; i++) { var X = b[0] + (((r() * w + t * (.015 + r() * .03) * w + Math.sin(t * (.4 + r()) + i) * w * .015) % w) + w) % w, Y = b[1] + (((r() * h - t * (.008 + r() * .02) * h) % h) + h) % h;
       x.globalAlpha = ga * (.3 + .7 * Math.abs(Math.sin(t * (.6 + r() * .8) + i * 1.3))); x.beginPath(); x.arc(X, Y, px(sz || 1.6) * (.5 + r()), 0, 7); x.fill(); }
     x.globalAlpha = ga; }
@@ -620,6 +623,40 @@ var K25 = (function(){
       x.beginPath(); if (five) { x.moveTo(X + gi * g + Math.floor(i / 5) * g * .8 - g * .4, Y + up * h * .2); x.lineTo(X + gi * g + Math.floor(i / 5) * g * .8 + g * 3.4 * k, Y + up * h * (.2 + .6 * k)); }
       else { x.moveTo(X0, Y + up * h * (1 - k) * .4); x.lineTo(X0, Y + up * h * mix(.4, 1, k)); } x.stroke(); });
     x.restore(); }
+  // ---- colour mood (13 Nov 2026; owner: "On Turns Out, I don't find the colour selection better in the overall reel combination"; the Taj
+  // stills: a grey-green fog over every scene, a white subject on a pale grey sky, thin cream titles, beige-on-beige close-ups, a sudden navy
+  // sky, pink flakes everywhere). ONE mood per reel, set once before the first seek: Kt.mood('dusk'). It gives every world the same sky,
+  // air and ground family, a dark ground for depth, a warm key light on the subject with a gold rim, ONE accent for type, solid dark plates
+  // for every title and subtitle, a cap on haze and on particles, and a final grade that pulls each frame into the family. Matte: no glow.
+  // Output QA GRADE (scripts/qa/output-qa.py) measures it on the final MP4: subject vs background contrast on the cover, no washed-out
+  // frames, no hue jumps between worlds. ----
+  var MOODS = {
+    // golden hour: a deep blue dusk sky over a dark ground; the subject lit warm from the low sun with a soft gold rim
+    dusk: { sky: [[0, '#0b1430'], [.42, '#1d2c55'], [.6, '#3a3f66'], [.68, '#8a5a4a'], [.72, '#2a2a3a'], [1, '#101318']], night: [[0, '#070b1c'], [.5, '#121b3a'], [1, '#0c0f18']],
+      air: '#22305a', hazeMax: .2, ground: '#1b2219', groundDeep: '#0d110d', lit: '#f6d9a8', rim: '#f2b65e', shade: '#2b3354', wall: '#e8c99a', water: '#1c2a4a',
+      accent: '#f2b46a', ink: '#fbf3e0', plate: 'rgba(9,11,22,.94)', tint: '#3a4a7a', unify: .07, vignette: .45, particles: .3, paper: .2 } };
+  // mood(name | object): set the reel's mood (returns it); mood() returns the current one (null = the old per-scene colours)
+  function mood(m){ if (m !== undefined) MOOD = typeof m === 'string' ? MOODS[m] : m; return MOOD; }
+  // sky(stops): the mood's sky over the whole frame (screen space); stops default to the mood's dusk sky, or pass MOOD.night
+  function sky(stops, k){ var M = MOOD || MOODS.dusk; screen(); var g = x.createLinearGradient(0, 0, 0, 960); (stops || M.sky).forEach(function(s){ g.addColorStop(s[0], s[1]); });
+    x.save(); if (k != null) x.globalAlpha *= k; x.fillStyle = g; x.fillRect(0, 0, 540, 960); x.restore(); }
+  // warm(hex, k): a colour lit by the mood's key light (k 0-1, default .45): a white subject becomes warm cream, never grey
+  function warm(hex, k){ var M = MOOD || MOODS.dusk, a = hex.match(/\w\w/g).map(function(v){ return parseInt(v, 16); }), b = M.lit.match(/\w\w/g).map(function(v){ return parseInt(v, 16); }), q = k == null ? .45 : k;
+    return '#' + a.map(function(v, i){ return Math.round(v + (b[i] - v) * q).toString(16).padStart(2, '0'); }).join(''); }
+  // rim(draw, d): the subject with a gold rim on the edges that face the light (upper left): draw(col) draws it in a colour (current units);
+  // a copy in the rim colour sits d px (default 2.2) toward the light, then the subject over it. Hard edge, no blur (matte).
+  function rim(draw, d, col){ var M = MOOD || MOODS.dusk, o = px(d || 3), up = x.getTransform().d < 0 ? 1 : -1; x.save(); x.translate(LIGHT[0] * o * 1.2, up * LIGHT[1] * o); draw(col || M.rim); x.restore(); }
+  // plate(X, Y, w, h, r): a solid dark plate (screen px) behind a title, a subtitle or a label: type never sits on the picture
+  function plate(X, Y, w, h, r, col){ var M = MOOD || MOODS.dusk; x.save(); x.shadowColor = 'rgba(0,0,0,.35)'; x.shadowBlur = 10; x.shadowOffsetY = 3; x.fillStyle = col || M.plate;
+    x.beginPath(); x.roundRect(X, Y, w, h, r == null ? 12 : r); x.fill(); x.restore(); }
+  // grade(): the last pass over the picture, before the type (screen space): a soft-light wash of the mood's tint pulls every world into one
+  // family, the corners and the bottom go darker (depth, and the subtitles sit on dark). Call it once per frame after the worlds.
+  function grade(){ var M = MOOD; if (!M) return; x.save(); x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1;
+    x.globalCompositeOperation = 'soft-light'; x.globalAlpha = M.unify * 2; x.fillStyle = M.tint; x.fillRect(0, 0, 540, 960);
+    x.globalCompositeOperation = 'multiply'; x.globalAlpha = 1; var v = x.createRadialGradient(255, 420, 260, 255, 470, 720); v.addColorStop(0, 'rgba(255,255,255,1)'); v.addColorStop(1, 'rgba(' + [40, 44, 70].join(',') + ',1)');
+    x.globalAlpha = M.vignette; x.fillStyle = v; x.fillRect(0, 0, 540, 960);
+    var b = x.createLinearGradient(0, 640, 0, 960); b.addColorStop(0, 'rgba(255,255,255,1)'); b.addColorStop(1, 'rgba(30,32,48,1)'); x.globalAlpha = .55; x.fillStyle = b; x.fillRect(0, 640, 540, 320);
+    x.restore(); }
   var FI_ = "'Inter',system-ui,sans-serif";
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
     paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb,
@@ -627,6 +664,7 @@ var K25 = (function(){
     paint: paint, blit: blit, through: through, match: match, page: page, fold: fold, print: print, seam: seam,
     LIGHT: LIGHT, begin: begin, world: world, plane: plane, contact: contact, lit: lit, act: act, aes: aes, figure: figure, flick: flick, motes: motes, cloth: cloth, ambient: ambient,
     choices: choices, countdown: countdown, repaint: repaint, guessCues: guessCues,
+    MOODS: MOODS, mood: mood, sky: sky, warm: warm, rim: rim, plate: plate, grade: grade,
     beat: beat, beats: beats, beatCues: beatCues, lands: lands, stackOn: stackOn, rivet: rivet, sweep: sweep, sparks: sparks, tally: tally };
 })();
 /*kit25:end*/
@@ -636,9 +674,12 @@ var K25 = (function(){
   story(/*story*/[['What colour was the Eiffel Tower at first?', 0, .9], ['Gold, grey, or red?', .5], ['Lock in your guess.', .7, .65], ['Red.', 2.6], ['Every iron piece was painted Venetian red to stop rust.', 1.3], ['Since 1889, it has worn seven official colours.', .5], ["Turns out, today's brown is a shade from 1907.", .5]]/*story:end*/);
   var DUR = +(CAPS[CAPS.length - 1].e + 1.9).toFixed(1);
   // ---- the look: dusk blue and warm horizon; the paint colours are the only strong colours ----
-  var CREAM = '#fbf3e0', AMBER = '#f2b46a', KD = 'rgba(14,10,8,.9)', REDT = '#ff8f7a';
-  var HOOK = { y: 200, size: 50, col: CREAM, hl: /^(colour|first)/i, hlCol: AMBER, shadow: 'rgba(8,8,20,.65)', label: 'GUESS FIRST', labelBg: 'rgba(14,10,8,.9)', labelCol: AMBER };
-  var STYLE = { hl: /^(red|venetian|rust|1889|seven|1907|turns)/i, hlFor: function(w){ return /^(red|venetian)/i.test(w) ? REDT : AMBER; }, hlCol: AMBER, ink: CREAM, panel: 'rgba(16,12,10,.9)' };
+  // the colour mood (13 Nov 2026, owner: "I don't find the colour selection better"; kit25d.js Kt.mood): ONE mood per reel (golden hour:
+  // deep blue dusk sky, dark ground, the subject lit warm with a gold rim via Kt.warm / Kt.rim, Kt.sky for every sky), ONE accent for type,
+  // every title and subtitle on a solid dark plate, Kt.grade() over the picture each frame. Output QA GRADE checks it on the final MP4.
+  var M = K25.mood('dusk'), CREAM = M.ink, AMBER = M.accent, KD = M.plate, REDT = AMBER;
+  var HOOK = { y: 200, size: 50, col: CREAM, hl: /^(colour|first)/i, hlCol: AMBER, plate: KD, label: 'GUESS FIRST', labelBg: 'rgba(14,10,8,.9)', labelCol: AMBER };
+  var STYLE = { hl: /^(red|venetian|rust|1889|seven|1907|turns)/i, hlFor: function(w){ return /^(red|venetian)/i.test(w) ? REDT : AMBER; }, hlCol: AMBER, ink: CREAM, panel: KD };
   var CREDIT = 'SOURCES: TOUR EIFFEL OFFICIAL SITE · SMITHSONIAN';
   var PAYOFF = 'It started red.', PAYOFF2 = "TODAY'S SHADE IS FROM 1907";
   // the guess: one option per word of sentence 2 (the chip lands as its word is spoken), ANSWER = the index of the true one
@@ -887,13 +928,14 @@ var K25 = (function(){
     NOTCH.forEach(function(v, j){ var g = P(t, v - .03, v + .25), X = 104 + (j - 1) * 16, Y = 394 + 18 * eo(g); x.save(); x.globalAlpha *= 1 - g; x.beginPath(); x.arc(X, Y, 4.5 * (1 + .5 * Math.sin(Math.PI * P(t, v - .03, v + .12))), 0, 7); x.fillStyle = AMBER; x.fill(); x.restore(); });
     x.restore(); }
   function drawPayoff(t){ var k = es(P(t, DUR - 2.9, DUR - 2.2)); if (k <= 0) return; x.save(); x.globalAlpha = cl(k * 1.6, 0, 1); x.translate(SX, 214); arrive(k);
+    var pw = tw(PAYOFF, 48, '700 ' + FD) + 48; Kt.plate(-pw / 2, -54, pw, 112, 16);
     x.font = font(48, '700 ' + FD); x.textAlign = 'center'; x.strokeStyle = 'rgba(8,8,20,.75)'; x.lineWidth = 8; x.lineJoin = 'round'; x.strokeText(PAYOFF, 0, 0); txt(PAYOFF, 0, 0, 48, '700 ' + FD, REDT, 'center', -.5);
     var k2 = es(P(t, DUR - 2.65, DUR - 2.3)); if (k2 > 0) { x.save(); x.globalAlpha *= cl(k2 * 3, 0, 1); x.translate(0, 38); x.scale(mix(1.3, 1, k2), mix(1.3, 1, k2));
     x.font = font(15, '800 ' + FI); x.strokeStyle = 'rgba(8,8,20,.8)'; x.lineWidth = 6; x.letterSpacing = '3px'; x.strokeText(PAYOFF2, 0, 0); x.letterSpacing = '0px'; txt(PAYOFF2, 0, 0, 15, '800 ' + FI, CREAM, 'center', 3); x.restore(); } x.restore(); }
   function seek(t){
     t = cl(t, 0, DUR); BOXES.length = 0; x.globalAlpha = 1; Kt.begin(); frame(t);
-    Kt.off(0, 0); Kt.screen(); x.globalAlpha = 1;
-    if (PAPERTEX) { x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'multiply'; x.globalAlpha = .5; x.drawImage(PAPERTEX, 0, 0); x.restore(); }
+    Kt.off(0, 0); Kt.screen(); x.globalAlpha = 1; Kt.grade();
+    if (PAPERTEX) { x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'multiply'; x.globalAlpha = M.paper; x.drawImage(PAPERTEX, 0, 0); x.restore(); }
     x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1; x.letterSpacing = '0px';
     kinetic(t); drawCaption(t); drawCredit(t); drawPayoff(t);
   }

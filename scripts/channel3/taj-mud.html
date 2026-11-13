@@ -90,6 +90,7 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     var L = CAPS[0], out = P(t, A[1] - .35, A[1] + .1); if (out >= 1) return;
     var W = wrap(L.words, HOOK.size, '800 ' + FD, 420), lh = HOOK.size * 1.08, y0 = Math.max(HOOK.y - (W.lines.length - 1) * lh / 2, (HOOK.label ? 156 : 132) + HOOK.size * .85) - eo(out) * 30;   // never above the safe zone (y 125)
     x.save(); x.globalAlpha = 1 - out;
+    if (HOOK.plate) { var pw0 = Math.max.apply(null, W.lw) + 44, ph0 = W.lines.length * lh + 30; x.save(); x.globalAlpha = 1 - out; Kt.plate(SX - pw0 / 2, y0 - HOOK.size * .95 - eo(out) * 0, pw0, ph0, 16, HOOK.plate); x.restore(); }
     if (HOOK.label) { var lk = P(t, 0, .3); x.globalAlpha = (1 - P(out, 0, .08)) * lk; tag(HOOK.label, SX, y0 + eo(out) * 30 - HOOK.size - 14, 12, '800 ' + FI, HOOK.labelCol || '#fff', HOOK.labelBg || '#23202b', 2.5); }
     W.lines.forEach(function(ln, r){ var xx = SX - W.lw[r] / 2;
       ln.forEach(function(q){ var w = q[0], k = eo(P(t, w.s - .1, w.s + .12)), hl = HOOK.hl && HOOK.hl.test(w.d);
@@ -120,7 +121,7 @@ canvas{position:absolute;left:0;top:0;width:540px;height:960px}
     x.restore(); x.restore();
   }
   // the source credit (owner, 31 Oct: a short credit on the last frame): a small paper tag at the top for the last 3 s
-  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.5); if (k <= 0) return; k = eo(k); x.save(); x.globalAlpha = k; tag(CREDIT, SX, 142 - (1 - k) * 10, 13, '700 ' + FI, CREAM, 'rgba(17,14,12,.8)', .6); x.restore(); }
+  function drawCredit(t){ var k = P(t, DUR - 3, DUR - 2.5); if (k <= 0) return; k = eo(k); x.save(); x.globalAlpha = k; tag(CREDIT, SX, 142 - (1 - k) * 10, 13, '700 ' + FI, CREAM, KD, .6); x.restore(); }
   Object.defineProperty(window, 'COVER', { configurable: true, get: function(){ return +Math.min(CAPS[0].e + .25, A[1] - .3).toFixed(2); } });   // the question fully lit
   /*kit25:begin*/
 // ---- Turns Out 2.5D toolkit (scripts/channel3/kit25d.js; design/channel3.md, "2.5D toolkit"), inlined after the shared core of the
@@ -432,12 +433,14 @@ var K25 = (function(){
   // abruptly fallen"; design/rules-c3.md rule 11, design/mandatory.md item 20). scripts/channel3/qa.mjs reads window.__depth() every 0.1 s and
   // prints "DEPTH <world>: n planes, parallax nn px, foreground yes" (fails under 4 planes, under 12 px or without a foreground plane). ----
   // ONE light for the whole journey: the key light comes from the upper left (the core's paper() drops its shadow down and right to match)
-  var LIGHT = [-.5, .86], DEPTH = [], WCUR = null;
+  var LIGHT = [-.5, .86], DEPTH = [], WCUR = null, MOOD = null;
   // begin(): first call of the scene's seek(); world(name, o): starts a world: o.air = the colour of its air (far planes go toward it:
   // lighter, lower contrast), o.haze = how thick (0-1, default .5), o.floor = the ground's height in metres (the air is laid only above the
   // new plane's ground line, so the near ground stays clear)
   function begin(){ DEPTH.length = 0; WCUR = null; }
-  function world(name, o){ o = o || {}; WCUR = { name: name, air: o.air || '#d9cbb0', haze: o.haze == null ? .5 : o.haze, floor: o.floor, planes: [], cam: null, fg: 0, last: null }; DEPTH.push(WCUR); }
+  // with a colour mood set (Kt.mood, 13 Nov 2026) the air is the mood's (no pale fog) and the haze is capped at the mood's hazeMax
+  function world(name, o){ o = o || {}; var hz = o.haze == null ? .5 : o.haze; if (MOOD) hz = Math.min(hz, MOOD.hazeMax);
+    WCUR = { name: name, air: MOOD && !o.ownAir ? MOOD.air : o.air || '#d9cbb0', haze: hz, floor: o.floor, planes: [], cam: null, fg: 0, last: null }; DEPTH.push(WCUR); }
   // plane(cam, Z, o): use(cam, Z) for a depth plane of the current world, drawn far to near: before it the air between the last plane and
   // this one is laid over everything farther (atmospheric perspective). o.fg: the foreground plane that passes close to the lens; o.clear: no air
   function plane(cam, Z, o){ o = o || {}; var W = WCUR, dz = Z - cam.z; if (dz < .05) return 0;
@@ -496,7 +499,7 @@ var K25 = (function(){
   // flick(t, seed): torch or lamp light, about .75-1; motes(t, n, seed, [x0, y0, x1, y1], col, size px): dust drifting through a box of the
   // current layer; cloth(X, Y, w, h, t, col, seed, edge): a cloth hanging from its top edge (X, Y) to (X + w, Y), swaying more toward its hem
   function flick(t, seed){ var s = seed || 1; return .86 + .07 * Math.sin(t * 11.3 + s) + .04 * Math.sin(t * 23.7 + s * 2.1) + .03 * Math.sin(t * 5.1 + s * .7); }
-  function motes(t, n, seed, b, col, sz){ var r = rnd(seed), w = b[2] - b[0], h = b[3] - b[1], ga = x.globalAlpha; x.fillStyle = col;
+  function motes(t, n, seed, b, col, sz){ if (MOOD) n = Math.round(n * MOOD.particles); var r = rnd(seed), w = b[2] - b[0], h = b[3] - b[1], ga = x.globalAlpha; x.fillStyle = col;
     for (var i = 0; i < n; i++) { var X = b[0] + (((r() * w + t * (.015 + r() * .03) * w + Math.sin(t * (.4 + r()) + i) * w * .015) % w) + w) % w, Y = b[1] + (((r() * h - t * (.008 + r() * .02) * h) % h) + h) % h;
       x.globalAlpha = ga * (.3 + .7 * Math.abs(Math.sin(t * (.6 + r() * .8) + i * 1.3))); x.beginPath(); x.arc(X, Y, px(sz || 1.6) * (.5 + r()), 0, 7); x.fill(); }
     x.globalAlpha = ga; }
@@ -619,6 +622,40 @@ var K25 = (function(){
       x.beginPath(); if (five) { x.moveTo(X + gi * g + Math.floor(i / 5) * g * .8 - g * .4, Y + up * h * .2); x.lineTo(X + gi * g + Math.floor(i / 5) * g * .8 + g * 3.4 * k, Y + up * h * (.2 + .6 * k)); }
       else { x.moveTo(X0, Y + up * h * (1 - k) * .4); x.lineTo(X0, Y + up * h * mix(.4, 1, k)); } x.stroke(); });
     x.restore(); }
+  // ---- colour mood (13 Nov 2026; owner: "On Turns Out, I don't find the colour selection better in the overall reel combination"; the Taj
+  // stills: a grey-green fog over every scene, a white subject on a pale grey sky, thin cream titles, beige-on-beige close-ups, a sudden navy
+  // sky, pink flakes everywhere). ONE mood per reel, set once before the first seek: Kt.mood('dusk'). It gives every world the same sky,
+  // air and ground family, a dark ground for depth, a warm key light on the subject with a gold rim, ONE accent for type, solid dark plates
+  // for every title and subtitle, a cap on haze and on particles, and a final grade that pulls each frame into the family. Matte: no glow.
+  // Output QA GRADE (scripts/qa/output-qa.py) measures it on the final MP4: subject vs background contrast on the cover, no washed-out
+  // frames, no hue jumps between worlds. ----
+  var MOODS = {
+    // golden hour: a deep blue dusk sky over a dark ground; the subject lit warm from the low sun with a soft gold rim
+    dusk: { sky: [[0, '#0b1430'], [.42, '#1d2c55'], [.6, '#3a3f66'], [.68, '#8a5a4a'], [.72, '#2a2a3a'], [1, '#101318']], night: [[0, '#070b1c'], [.5, '#121b3a'], [1, '#0c0f18']],
+      air: '#22305a', hazeMax: .2, ground: '#1b2219', groundDeep: '#0d110d', lit: '#f6d9a8', rim: '#f2b65e', shade: '#2b3354', wall: '#e8c99a', water: '#1c2a4a',
+      accent: '#f2b46a', ink: '#fbf3e0', plate: 'rgba(9,11,22,.94)', tint: '#3a4a7a', unify: .07, vignette: .45, particles: .3, paper: .2 } };
+  // mood(name | object): set the reel's mood (returns it); mood() returns the current one (null = the old per-scene colours)
+  function mood(m){ if (m !== undefined) MOOD = typeof m === 'string' ? MOODS[m] : m; return MOOD; }
+  // sky(stops): the mood's sky over the whole frame (screen space); stops default to the mood's dusk sky, or pass MOOD.night
+  function sky(stops, k){ var M = MOOD || MOODS.dusk; screen(); var g = x.createLinearGradient(0, 0, 0, 960); (stops || M.sky).forEach(function(s){ g.addColorStop(s[0], s[1]); });
+    x.save(); if (k != null) x.globalAlpha *= k; x.fillStyle = g; x.fillRect(0, 0, 540, 960); x.restore(); }
+  // warm(hex, k): a colour lit by the mood's key light (k 0-1, default .45): a white subject becomes warm cream, never grey
+  function warm(hex, k){ var M = MOOD || MOODS.dusk, a = hex.match(/\w\w/g).map(function(v){ return parseInt(v, 16); }), b = M.lit.match(/\w\w/g).map(function(v){ return parseInt(v, 16); }), q = k == null ? .45 : k;
+    return '#' + a.map(function(v, i){ return Math.round(v + (b[i] - v) * q).toString(16).padStart(2, '0'); }).join(''); }
+  // rim(draw, d): the subject with a gold rim on the edges that face the light (upper left): draw(col) draws it in a colour (current units);
+  // a copy in the rim colour sits d px (default 2.2) toward the light, then the subject over it. Hard edge, no blur (matte).
+  function rim(draw, d, col){ var M = MOOD || MOODS.dusk, o = px(d || 3), up = x.getTransform().d < 0 ? 1 : -1; x.save(); x.translate(LIGHT[0] * o * 1.2, up * LIGHT[1] * o); draw(col || M.rim); x.restore(); }
+  // plate(X, Y, w, h, r): a solid dark plate (screen px) behind a title, a subtitle or a label: type never sits on the picture
+  function plate(X, Y, w, h, r, col){ var M = MOOD || MOODS.dusk; x.save(); x.shadowColor = 'rgba(0,0,0,.35)'; x.shadowBlur = 10; x.shadowOffsetY = 3; x.fillStyle = col || M.plate;
+    x.beginPath(); x.roundRect(X, Y, w, h, r == null ? 12 : r); x.fill(); x.restore(); }
+  // grade(): the last pass over the picture, before the type (screen space): a soft-light wash of the mood's tint pulls every world into one
+  // family, the corners and the bottom go darker (depth, and the subtitles sit on dark). Call it once per frame after the worlds.
+  function grade(){ var M = MOOD; if (!M) return; x.save(); x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1;
+    x.globalCompositeOperation = 'soft-light'; x.globalAlpha = M.unify * 2; x.fillStyle = M.tint; x.fillRect(0, 0, 540, 960);
+    x.globalCompositeOperation = 'multiply'; x.globalAlpha = 1; var v = x.createRadialGradient(255, 420, 260, 255, 470, 720); v.addColorStop(0, 'rgba(255,255,255,1)'); v.addColorStop(1, 'rgba(' + [40, 44, 70].join(',') + ',1)');
+    x.globalAlpha = M.vignette; x.fillStyle = v; x.fillRect(0, 0, 540, 960);
+    var b = x.createLinearGradient(0, 640, 0, 960); b.addColorStop(0, 'rgba(255,255,255,1)'); b.addColorStop(1, 'rgba(30,32,48,1)'); x.globalAlpha = .55; x.fillStyle = b; x.fillRect(0, 640, 540, 320);
+    x.restore(); }
   var FI_ = "'Inter',system-ui,sans-serif";
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
     paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb,
@@ -626,6 +663,7 @@ var K25 = (function(){
     paint: paint, blit: blit, through: through, match: match, page: page, fold: fold, print: print, seam: seam,
     LIGHT: LIGHT, begin: begin, world: world, plane: plane, contact: contact, lit: lit, act: act, aes: aes, figure: figure, flick: flick, motes: motes, cloth: cloth, ambient: ambient,
     choices: choices, countdown: countdown, repaint: repaint, guessCues: guessCues,
+    MOODS: MOODS, mood: mood, sky: sky, warm: warm, rim: rim, plate: plate, grade: grade,
     beat: beat, beats: beats, beatCues: beatCues, lands: lands, stackOn: stackOn, rivet: rivet, sweep: sweep, sparks: sparks, tally: tally };
 })();
 /*kit25:end*/
@@ -634,14 +672,15 @@ var K25 = (function(){
   // 2.6 s breath that holds the countdown, the why, one more fact, "Turns out, ..."). qa.mjs --write copies voice, times and length into the config ----
   story(/*story*/[['How does the Taj stay white?', 0], ['Bleach, acid, or mud?', 0.5], ['Lock in your guess.', 0.7], ['Mud.', 2.6], ['Workers spread a clay paste over the yellowed marble.', 2.0], ['It dries, then washes off, taking the grime with it.', 0.5], ['Turns out, the Taj has had mud facials since 1994.', 0.5]]/*story:end*/);
   var DUR = +(CAPS[CAPS.length - 1].e + 1.9).toFixed(1);
-  // ---- the look: a pale, hazy morning over the garden; the clay is the only strong colour, and only after the answer ----
-  var CREAM = '#fbf3e0', AMBER = '#f2b46a', KD = 'rgba(14,10,8,.9)', MUDT = '#e8b07a';
-  var HOOK = { y: 200, size: 44, col: CREAM, hl: /^(white)/i, hlCol: AMBER, shadow: 'rgba(8,8,20,.65)', label: 'GUESS FIRST', labelBg: KD, labelCol: AMBER };
-  var STYLE = { hl: /^(mud|clay|yellowed|dries|grime|1994|turns)/i, hlFor: function(w){ return /^(mud|clay)/i.test(w) ? MUDT : AMBER; }, hlCol: AMBER, ink: CREAM, panel: 'rgba(16,12,10,.9)' };
+  // ---- the look (13 Nov 2026, owner: "I don't find the colour selection better"): ONE mood, golden hour (Kt.mood('dusk')): a deep blue dusk
+  // sky over a dark garden, the Taj lit warm with a gold rim, one accent (amber) for all type, every title on a solid dark plate ----
+  var M = K25.mood('dusk'), CREAM = M.ink, AMBER = M.accent, KD = M.plate, MUDT = AMBER;
+  var HOOK = { y: 200, size: 48, col: CREAM, hl: /^(white)/i, hlCol: AMBER, plate: KD, label: 'GUESS FIRST', labelBg: KD, labelCol: AMBER };
+  var STYLE = { hl: /^(mud|clay|yellowed|dries|grime|1994|turns)/i, hlCol: AMBER, ink: CREAM, panel: KD };
   var CREDIT = 'SOURCES: QUARTZ · DECCAN HERALD · THE WEEK';
   var PAYOFF = 'A mud facial.';
   // the guess: one option per word of sentence 2 (the chip lands as its word is spoken), ANSWER = the index of the true one
-  var WHITE = '#efe9dc', YEL = '#e0d0a8', MUD = '#a8723c', DRY = '#c9ad86', SKYM = '#c9d1d4';
+  var WHITE = K25.warm('#f7efe2', .6), YEL = '#c9c2a4', MUD = '#8a5428', DRY = '#b8936a';
   var OPTS = [{ key: 'A', word: 'BLEACH', col: '#d6dde0' }, { key: 'B', word: 'ACID', col: '#a9bf8e' }, { key: 'C', word: 'MUD', col: MUD }], ANSWER = 2;
   function WT(i, re, n){ var w = CAPS[i].words, c = 0; for (var j = 0; j < w.length; j++) if (re.test(w[j].d) && c++ === (n || 0)) return w[j].s; return CAPS[i].s; }   // when a word is spoken (n: the nth match)
 
@@ -657,7 +696,7 @@ var K25 = (function(){
   var V0 = [0, 3.75, 42.5, -202.5];   // the frame-0 view: the Taj 4 px a metre, its base at y 650, its finial at y 322
   function buildCam(){
     tRv = A[3]; var cd0 = CAPS[2].e + .2, cd1 = A[3] - .12; CD = [cd0, cd1];
-    TR = [[A[4] - .55, A[4] + .4, 'zoom-through'], [A[5] - .55, A[5] + .45, 'page'], [A[6] - .55, A[6] + .55, 'match']];
+    TR = [[A[4] - .9, A[4] + .5, 'zoom-through'], [A[5] - .55, A[5] + .45, 'page'], [A[6] - .55, A[6] + .55, 'match']];
     window.TRANSITIONS = TR.map(function(r){ return [+r[0].toFixed(2), +r[1].toFixed(2), r[2]]; });
     C1 = Kt.track([[0, V0[1], V0[2], V0[3], 0], [A[2], 3, 41.8, -193, 0], [A[3] + .35, 2.2, 40.6, -182, 0], [tw0(0), 0, 32, -135, 0], [tw1(0), 0, 21, -10, 0]]);
     C4 = Kt.track([[tw0(2), 0, 50, -125, 0], [DUR, V0[1], V0[2], V0[3], 0]]);
@@ -745,30 +784,29 @@ var K25 = (function(){
   function cypress(X, h, col){ x.beginPath(); x.moveTo(X, h); x.quadraticCurveTo(X - h * .17, h * .5, X - h * .1, 0); x.lineTo(X + h * .1, 0); x.quadraticCurveTo(X + h * .17, h * .5, X, h); x.fillStyle = col; x.fill(); }
   function garden(cam, t, o){ o = o || {}; var s, V, i, r;
     Kt.world(o.name || 'garden', { air: '#d6dad8', haze: .4, floor: 0 });
-    Kt.screen(); x.fillStyle = lg(0, 0, 0, 960, [[0, '#93a3b0'], [.36, '#bcc6cb'], [.62, '#e2dfd5'], [.7, '#d9d6c8'], [1, '#8d9283']]); x.fillRect(0, 0, 540, 960);
-    if ((s = Kt.plane(cam, 2600))) { var sun = x.createRadialGradient(-600, 560, 0, -600, 560, 900); sun.addColorStop(0, 'rgba(255,248,230,.55)'); sun.addColorStop(1, 'rgba(255,248,230,0)'); x.fillStyle = sun; x.fillRect(-1600, -200, 2400, 1800);
-      Kt.ridge(31, 40, '#a8b0a8', null, null, { deep: 900 }); }
-    if (Kt.plane(cam, 420)) { V = Kt.vis(10); r = rnd(7); x.fillStyle = '#8e998a'; x.fillRect(V.x0, -40, V.x1 - V.x0, 40);
-      for (var tx = Math.floor(V.x0 / 14) * 14; tx < V.x1 + 14; tx += 14) { var rb = rnd(Math.abs(Math.round(tx / 14)) + 9), h = 14 + rb() * 10; x.beginPath(); x.ellipse(tx, h * .6, 9 + rb() * 4, h * .55, 0, 0, 7); x.fillStyle = '#8a9686'; x.fill(); } }
-    if ((s = Kt.plane(cam, 0))) { V = Kt.vis(10); x.fillStyle = '#9aa08c'; x.fillRect(V.x0, -80, V.x1 - V.x0, 80); x.fillStyle = '#c8bfae'; x.fillRect(V.x0, -1.2, V.x1 - V.x0, 1.2);
-      Kt.contact(0, 0, 120, .35, 6);
-      var pa = o.paint || { from: WHITE, to: WHITE, k: 0 }; Kt.repaint(function(c){ taj(c); }, pa.from, pa.to, pa.k, [-48, -1, 48, 83], { wet: 'rgba(255,250,236,.9)' });
+    Kt.sky();
+    if ((s = Kt.plane(cam, 2600))) Kt.ridge(31, 40, '#232c48', null, null, { deep: 900 });
+    if (Kt.plane(cam, 420)) { V = Kt.vis(10); r = rnd(7); x.fillStyle = '#18201b'; x.fillRect(V.x0, -40, V.x1 - V.x0, 40);
+      for (var tx = Math.floor(V.x0 / 14) * 14; tx < V.x1 + 14; tx += 14) { var rb = rnd(Math.abs(Math.round(tx / 14)) + 9), h = 14 + rb() * 10; x.beginPath(); x.ellipse(tx, h * .6, 9 + rb() * 4, h * .55, 0, 0, 7); x.fillStyle = '#1d2720'; x.fill(); } }
+    if ((s = Kt.plane(cam, 0))) { V = Kt.vis(10); x.fillStyle = M.ground; x.fillRect(V.x0, -80, V.x1 - V.x0, 80); x.fillStyle = '#5a4c3a'; x.fillRect(V.x0, -1.2, V.x1 - V.x0, 1.2);
+      Kt.contact(0, 0, 120, .5, 6);
+      var pa = o.paint || { from: WHITE, to: WHITE, k: 0 }; Kt.rim(function(c){ taj(c); }); Kt.repaint(function(c){ taj(c); }, pa.from, pa.to, pa.k, [-48, -1, 48, 83], { wet: 'rgba(255,236,200,.9)' });
       if (o.grime) SPOT.forEach(function(q, j){ var k = P(t, q[0] - .05, q[0] + .3) * (1 - P(t, tRv, tRv + .5)); blot(q[1], q[2], 3.2, k, 'rgba(112,104,84,.75)', 50 + j); });
       if (o.dabs) DAB.forEach(function(q, j){ blot(q[1], q[2], 2.2, P(t, q[0] - .05, q[0] + .25), tone(MUD, .85), 80 + j); });
       if (o.glint) GLINT.forEach(function(v, j){ var u = P(t, v - .05, v + .4); if (u <= 0 || u >= 1) return; var p0 = glintPt(j), L = Kt.px(8 + 9 * Math.sin(Math.PI * u)); x.save(); x.globalAlpha *= Math.sin(Math.PI * u); x.strokeStyle = 'rgba(236,178,92,.95)'; x.lineWidth = Kt.px(2.4);
         x.beginPath(); Kt.seg(p0[0] - L, p0[1], p0[0] + L, p0[1]); Kt.seg(p0[0], p0[1] - L * 1.4, p0[0], p0[1] + L * 1.4); x.stroke(); x.restore(); });
       // the long pool in front, with the Taj's reflection (its current colour) broken by ripples
-      x.save(); x.beginPath(); x.rect(-7, -60, 14, 59); x.clip(); x.fillStyle = '#7f8f96'; x.fillRect(-7, -60, 14, 60);
+      x.save(); x.beginPath(); x.rect(-7, -60, 14, 59); x.clip(); x.fillStyle = M.water; x.fillRect(-7, -60, 14, 60);
       x.save(); x.translate(0, -1.5); x.scale(1, -.62); x.globalAlpha *= .45; var rc = pa.k > .5 ? pa.to : pa.from; taj(rc); x.restore();
-      x.fillStyle = 'rgba(235,240,240,.35)'; for (i = 0; i < 14; i++) { var yy = -3 - i * 3.6, w0 = 3 + (i % 3) * 2, xx = Math.sin(t * 1.2 + i * 1.9) * 2.4; x.fillRect(xx - w0 / 2, yy, w0, .35); } x.restore();
-      x.fillStyle = '#d8d0bf'; x.fillRect(-8.2, -60, 1.2, 59); x.fillRect(7, -60, 1.2, 59); }
-    if (Kt.plane(cam, -45)) { V = Kt.vis(5); [-1, 1].forEach(function(sg){ for (var j = 0; j < 7; j++) { var X = sg * (12 + j * 6.5); Kt.contact(X, 0, 4, .35, .6); cypress(X, 11 + (j % 2) * 1.5, j % 2 ? '#5f6d5c' : '#566352'); } });
-      x.fillStyle = '#8f957f'; x.fillRect(V.x0, -40, V.x1 - V.x0, 40); x.fillStyle = '#7f8f96'; x.fillRect(-7.5, -40, 15, 40); x.fillStyle = '#d8d0bf'; x.fillRect(-8.7, -40, 1.2, 40); x.fillRect(7.5, -40, 1.2, 40); }
+      x.fillStyle = 'rgba(242,182,94,.4)'; for (i = 0; i < 14; i++) { var yy = -3 - i * 3.6, w0 = 3 + (i % 3) * 2, xx = Math.sin(t * 1.2 + i * 1.9) * 2.4; x.fillRect(xx - w0 / 2, yy, w0, .35); } x.restore();
+      x.fillStyle = '#6a5a44'; x.fillRect(-8.2, -60, 1.2, 59); x.fillRect(7, -60, 1.2, 59); }
+    if (Kt.plane(cam, -45)) { V = Kt.vis(5); [-1, 1].forEach(function(sg){ for (var j = 0; j < 7; j++) { var X = sg * (12 + j * 6.5); Kt.contact(X, 0, 4, .35, .6); cypress(X, 11 + (j % 2) * 1.5, j % 2 ? '#101812' : '#0c130e'); } });
+      x.fillStyle = M.groundDeep; x.fillRect(V.x0, -40, V.x1 - V.x0, 40); x.fillStyle = M.water; x.fillRect(-7.5, -40, 15, 40); x.fillStyle = '#5a4c3a'; x.fillRect(-8.7, -40, 1.2, 40); x.fillRect(7.5, -40, 1.2, 40); }
     if ((s = Kt.plane(cam, -110))) { r = rnd(23); for (i = 0; i < 5; i++) { var bx0 = -60 + ((r() * 120 + t * (5 + r() * 3)) % 120), by = 58 + r() * 18 + Math.sin(t * .8 + i) * .8, fl = Math.sin(t * 9 + i * 2.1);   // birds over the garden
-        x.beginPath(); x.moveTo(bx0 - .7, by + fl * .4); x.quadraticCurveTo(bx0 - .3, by + .15, bx0, by); x.quadraticCurveTo(bx0 + .3, by + .15, bx0 + .7, by + fl * .4); Kt.ink(1.3, 'rgba(40,44,52,.75)'); } }
-    if (Kt.plane(cam, cam.z + 24, { clear: true, fg: true })) { r = rnd(61); for (i = 0; i < 7; i++) {   // jasmine petals drifting past the lens, small and always inside the frame
+        x.beginPath(); x.moveTo(bx0 - .7, by + fl * .4); x.quadraticCurveTo(bx0 - .3, by + .15, bx0, by); x.quadraticCurveTo(bx0 + .3, by + .15, bx0 + .7, by + fl * .4); Kt.ink(1.3, 'rgba(8,10,20,.8)'); } }
+    if (Kt.plane(cam, cam.z + 24, { clear: true, fg: true })) { r = rnd(61); for (i = 0; i < 1; i++) {   // jasmine petals drifting past the lens, small and always inside the frame
         var u = ((r() + t * (.05 + r() * .03)) % 1), X = cam.x - 6 + r() * 11 + Math.sin(t * .7 + i) * .5, Y = cam.y + 9 - u * 19, a = t * (1 + r()) + i;
-        x.save(); x.translate(X, Y); x.rotate(a); x.beginPath(); x.ellipse(0, 0, .3, .17, 0, 0, 7); x.fillStyle = i % 2 ? 'rgba(246,240,232,.9)' : 'rgba(236,226,230,.85)'; x.fill(); x.restore(); } }
+        x.save(); x.translate(X, Y); x.rotate(a); x.beginPath(); x.ellipse(0, 0, .3, .17, 0, 0, 7); x.fillStyle = 'rgba(242,200,140,.8)'; x.fill(); x.restore(); } }
     Kt.screen(); x.fillStyle = lg(0, 680, 0, 960, [[0, 'rgba(20,20,24,0)'], [1, 'rgba(20,20,24,.4)']]); x.fillRect(0, 680, 540, 280);
   }
   function glintPt(j){ var r0 = rnd(71 + j); return [(r0() - .5) * 18, 52 + r0() * 18]; }   // where a glint flashes on the dome (metres)
@@ -779,8 +817,8 @@ var K25 = (function(){
 
   // ---------- W2 the marble wall, close: the clay goes on ----------
   function inlay(k){   // a pietra dura flower panel (muted stone colours), k = how clean (1) or dulled
-    x.fillStyle = '#f1ece1'; x.fillRect(-2, 0, 3.2, 3.3); x.save(); x.beginPath(); x.rect(-2, 0, 3.2, 3.3); x.clip(); x.fillStyle = Kt.lit(-2, 0, 1.2, 3.3, .2, .12); x.fillRect(-2, 0, 3.2, 3.3); x.restore();
-    x.beginPath(); x.rect(-1.9, .1, 3, 3.1); x.lineWidth = .05; x.strokeStyle = '#4a4a4c'; x.stroke(); x.beginPath(); x.rect(-1.78, .22, 2.76, 2.86); x.lineWidth = .015; x.stroke();
+    x.fillStyle = '#f8eedb'; x.fillRect(-2, 0, 3.2, 3.3); x.save(); x.beginPath(); x.rect(-2, 0, 3.2, 3.3); x.clip(); x.fillStyle = Kt.lit(-2, 0, 1.2, 3.3, .2, .12); x.fillRect(-2, 0, 3.2, 3.3); x.restore();
+    x.beginPath(); x.rect(-1.9, .1, 3, 3.1); x.lineWidth = .09; x.strokeStyle = '#2a2420'; x.stroke(); x.beginPath(); x.rect(-1.78, .22, 2.76, 2.86); x.lineWidth = .015; x.stroke();
     x.save(); x.translate(-.4, .35);
     x.beginPath(); x.moveTo(0, 0); x.bezierCurveTo(.05, .7, -.05, 1.4, 0, 2.1); x.lineWidth = .04; x.strokeStyle = '#5d7552'; x.stroke();
     [[.5, 1, -.7], [.9, -1, .6], [1.35, 1, -.5], [1.65, -1, .5]].forEach(function(l){ x.save(); x.translate(0, l[0]); x.rotate(l[2]); x.beginPath(); x.ellipse(l[1] * .22, 0, .24, .08, 0, 0, 7); x.fillStyle = '#6b8460'; x.fill(); x.restore(); });
@@ -792,23 +830,23 @@ var K25 = (function(){
   // near(cam, X, Y, Z): the point at depth Z that sits on screen over (X, Y) of the wall (Z 0): a hand or a sponge touches what it works on
   function near(cam, X, Y, Z){ var r = (Z - cam.z) / (0 - cam.z); return [cam.x + (X - cam.x) * r, cam.y + (Y - cam.y) * r]; }
   // the wall: marble with faint veins up to a cornice at 3.9 m, the sky above it (a far chhatri on the roof line), the inlaid panel
-  function wallPlane(cam, day){ var V = Kt.vis(5); x.fillStyle = mixc('#8c92a0', '#ece6d9', day); x.fillRect(V.x0, -4, V.x1 - V.x0, 7.9);
+  function wallPlane(cam, day){ var V = Kt.vis(5); x.fillStyle = mixc('#5e6688', M.wall, day); x.fillRect(V.x0, -4, V.x1 - V.x0, 7.9);
     x.save(); x.beginPath(); x.rect(V.x0, -4, V.x1 - V.x0, 7.9); x.clip(); x.fillStyle = Kt.lit(V.x0, -4, V.x1, 3.9, .18, .1); x.fillRect(V.x0, -4, V.x1 - V.x0, 7.9);
-    x.beginPath(); for (var i = -8; i < 8; i++) Kt.seg(i * 1.1, -4, i * 1.1 + .9, 3.9); Kt.ink(.6, 'rgba(120,110,95,.12)'); x.restore();
-    x.fillStyle = mixc('#9aa0ad', '#f3eee4', day); x.fillRect(V.x0, 3.75, V.x1 - V.x0, .2); x.fillStyle = mixc('#6c7180', '#cfc7b6', day); x.fillRect(V.x0, 3.6, V.x1 - V.x0, .15);
-    x.fillStyle = mixc('#7a8090', '#ddd6c8', day); for (var j = Math.floor(V.x0 / .5); j < V.x1 / .5; j++) x.fillRect(j * .5 + .1, 3.95, .3, .16); }
-  function farDome(day){ var C = shades(mixc('#7c8394', '#e6e0d3', day).replace(/rgb\((\d+),(\d+),(\d+)\)/, function(m, a, b, c){ return '#' + [a, b, c].map(function(v){ return (+v).toString(16).padStart(2, '0'); }).join(''); }));
+    x.beginPath(); for (var i = -8; i < 8; i++) Kt.seg(i * 1.1, -4, i * 1.1 + .9, 3.9); Kt.ink(.6, 'rgba(110,80,50,.14)'); x.restore();
+    x.fillStyle = mixc('#6e7698', '#f3dcb0', day); x.fillRect(V.x0, 3.75, V.x1 - V.x0, .2); x.fillStyle = mixc('#3c4262', '#a8865c', day); x.fillRect(V.x0, 3.6, V.x1 - V.x0, .15);
+    x.fillStyle = mixc('#4c5474', '#d9b98a', day); for (var j = Math.floor(V.x0 / .5); j < V.x1 / .5; j++) x.fillRect(j * .5 + .1, 3.95, .3, .16); }
+  function farDome(day){ var C = shades(mixc('#4c5474', '#e8c99a', day).replace(/rgb\((\d+),(\d+),(\d+)\)/, function(m, a, b, c){ return '#' + [a, b, c].map(function(v){ return (+v).toString(16).padStart(2, '0'); }).join(''); }));
     x.save(); x.translate(4.2, 2.2); x.scale(.28, .28); x.translate(0, -40); chhatri(0, C); x.restore(); }
   function C2(t){ var u = P(t, tw0(0), tw1(1)); return { x: mix(-.75, -.35, eio(u)), y: mix(1.95, 1.7, u), z: mix(-7.6, -7.0, u) }; }
   function W2(t){ var cam = C2(t), s, i, r, V; Kt.world('wall', { air: '#d8d6cc', haze: .35, floor: 0 });
-    Kt.screen(); x.fillStyle = lg(0, 0, 0, 960, [[0, '#a9b6bf'], [.4, '#cfd3cf'], [1, '#d7d4ca']]); x.fillRect(0, 0, 540, 960);
-    if (Kt.plane(cam, 60)) { x.save(); x.translate(0, 2); Kt.ridge(14, 3, '#b3bab2', null, null, { deep: 30 }); x.restore(); }
+    Kt.sky();
+    if (Kt.plane(cam, 60)) { x.save(); x.translate(0, 2); Kt.ridge(14, 3, '#232c48', null, null, { deep: 30 }); x.restore(); }
     if (Kt.plane(cam, 14)) farDome(1);
     if ((s = Kt.plane(cam, 0))) { wallPlane(cam, 1); inlay(.3);
       STROKES.forEach(function(st, j){ var pts = [[-2.05, st[2]], [-1.2, st[2] + .05 * Math.sin(j * 1.3)], [-.3, st[2] - .04], [1.25, st[2] + .03 * Math.cos(j)]]; Kt.sweep(t, st[0], st[1], pts, .46, j % 2 ? MUD : tone(MUD, .93), 11 + j); }); }
     if (Kt.plane(cam, -.7)) { V = Kt.vis(5);   // the bamboo scaffold: a plank, two poles, the bucket of clay
-      x.fillStyle = '#8a6c48'; x.fillRect(V.x0, -.62, V.x1 - V.x0, .12); x.fillStyle = '#a5845a'; x.fillRect(V.x0, -.52, V.x1 - V.x0, .03); Kt.contact(0, -.62, 6, .3, .12);
-      [-2.5, 1.7].forEach(function(px0){ x.fillStyle = '#9b7c4e'; x.fillRect(px0 - .05, -3, .1, 7); x.fillStyle = '#7c6038'; for (var j = -2; j < 5; j++) x.fillRect(px0 - .055, j * .9, .11, .03); });
+      x.fillStyle = '#4a3424'; x.fillRect(V.x0, -.62, V.x1 - V.x0, .12); x.fillStyle = '#6a4c32'; x.fillRect(V.x0, -.52, V.x1 - V.x0, .03); Kt.contact(0, -.62, 6, .3, .12);
+      [-2.5, 1.7].forEach(function(px0){ x.fillStyle = '#4e3826'; x.fillRect(px0 - .05, -3, .1, 7); x.fillStyle = '#34261a'; for (var j = -2; j < 5; j++) x.fillRect(px0 - .055, j * .9, .11, .03); });
       Kt.contact(1.05, -.5, .8, .4, .06);
       Kt.stackOn(t, tw1(0) + .05, 1.05, -.5, 0, function(){ x.beginPath(); x.moveTo(-.25, 0); x.lineTo(-.3, .45); x.lineTo(.3, .45); x.lineTo(.25, 0); x.closePath(); x.fillStyle = '#5b5f63'; x.fill();
         x.beginPath(); x.ellipse(0, .45, .3, .055, 0, 0, 7); x.fillStyle = MUD; x.fill(); x.beginPath(); x.arc(0, .5, .3, Math.PI, 0); Kt.ink(1.2, '#3c3f43'); }, { sh: .8 }); }
@@ -816,20 +854,20 @@ var K25 = (function(){
       var kk = eio(P(t, cur[0], cur[1])), last = cs0[cs0.length - 1], wx0 = mix(-2.05, 1.25, kk), wy0 = cur[2], back = eio(P(t, last[1], last[1] + .5));
       wx0 = mix(wx0, .9, back); wy0 = mix(wy0, 1.2, back); var hp = near(cam, wx0, wy0, -1.1), hx = hp[0], hy = hp[1] + Math.sin(t * 9) * .012, sh = [cam.x + 2.7, hy - .55];
       var c0 = [mix(hx, sh[0], .55), hy - .45], e0 = [hx + .14, hy - .08], bz = function(u){ return [(1 - u) * (1 - u) * sh[0] + 2 * (1 - u) * u * c0[0] + u * u * e0[0], (1 - u) * (1 - u) * sh[1] + 2 * (1 - u) * u * c0[1] + u * u * e0[1]]; }, m0 = bz(.6), m1 = bz(.8);
-      x.beginPath(); x.moveTo(sh[0], sh[1]); x.quadraticCurveTo(c0[0], c0[1], e0[0], e0[1]); x.lineCap = 'round'; x.lineWidth = .32; x.strokeStyle = '#5a6478'; x.stroke();   // the sleeve
+      x.beginPath(); x.moveTo(sh[0], sh[1]); x.quadraticCurveTo(c0[0], c0[1], e0[0], e0[1]); x.lineCap = 'round'; x.lineWidth = .32; x.strokeStyle = '#2b3354'; x.stroke();   // the sleeve
       x.beginPath(); x.moveTo(m0[0], m0[1]); x.quadraticCurveTo(m1[0], m1[1], e0[0], e0[1]); x.lineWidth = .22; x.strokeStyle = '#a77a58'; x.stroke();   // the bare forearm
       x.beginPath(); x.moveTo(m0[0], m0[1]); x.lineTo(bz(.56)[0], bz(.56)[1]); x.lineWidth = .36; x.lineCap = 'butt'; x.strokeStyle = '#e4dccb'; x.stroke(); x.lineCap = 'round';   // the rolled-up cuff
       x.beginPath(); x.ellipse(hx + .08, hy - .06, .17, .13, .5, 0, 7); x.fillStyle = '#a77a58'; x.fill();
       x.save(); x.translate(hx, hy); x.rotate(.25); x.beginPath(); x.moveTo(-.26, .03); x.lineTo(.22, .03); x.lineTo(.3, -.05); x.lineTo(-.26, -.05); x.closePath(); x.fillStyle = '#b8bcc0'; x.fill(); x.fillStyle = MUD; x.fillRect(-.26, .03, .4, .03); x.fillStyle = '#6a4b30'; x.fillRect(.02, -.05, .06, -.22); x.restore(); }
-    if (Kt.plane(cam, -2.6, { fg: true })) { var fx = cam.x - 1.2; x.fillStyle = '#7e6240'; x.fillRect(fx - .07, cam.y - 4, .14, 8); x.fillStyle = '#6a5132'; for (var j = -3; j < 4; j++) x.fillRect(fx - .075, cam.y + j * 1.1, .15, .04); }   // a scaffold pole passing close
+    if (Kt.plane(cam, -2.6, { fg: true })) { var fx = cam.x - 1.2; x.fillStyle = '#2e2218'; x.fillRect(fx - .07, cam.y - 4, .14, 8); x.fillStyle = '#1e160f'; for (var j = -3; j < 4; j++) x.fillRect(fx - .075, cam.y + j * 1.1, .15, .04); }   // a scaffold pole passing close
     if (Kt.plane(cam, cam.z + 2.2, { clear: true, fg: true })) Kt.motes(t, 20, 9, [cam.x - 1.4, cam.y - 2.2, cam.x + 1.4, cam.y + 2.2], 'rgba(255,246,226,.55)', 1.4);
     Kt.screen(); x.fillStyle = lg(0, 640, 0, 960, [[0, 'rgba(20,16,12,0)'], [1, 'rgba(20,16,12,.4)']]); x.fillRect(0, 640, 540, 320); }
 
   // ---------- W3 the same panel at night: it dries and cracks, then the water washes it off and morning comes ----------
   function C3(t){ var u = P(t, tw0(1), tw1(2)); return { x: mix(-.55, -.4, u), y: mix(1.75, 1.95, eio(u)), z: mix(-7.3, -6.4, u) }; }
   function washX(t){ return mix(-2.3, 1.5, eio(P(t, tWa0, tWa1))); }
-  function W3(t){ var cam = C3(t), s, i, r, V, day = P(t, tWa0 - .4, tWa1), nt = 1 - day; Kt.world('night', { air: mixc('#3a4258', '#d8d6cc', day), haze: .35, floor: 0 });
-    Kt.screen(); x.fillStyle = lg(0, 0, 0, 960, [[0, mixc('#1e2638', '#a9b6bf', day)], [.4, mixc('#2c3448', '#cfd3cf', day)], [1, mixc('#3a4258', '#d7d4ca', day)]]); x.fillRect(0, 0, 540, 960);
+  function W3(t){ var cam = C3(t), s, i, r, V, day = P(t, tWa0 - .4, tWa1), nt = 1 - day; Kt.world('night', { haze: .35, floor: 0 });
+    Kt.sky(M.night); Kt.sky(M.sky, day);
     if (Kt.plane(cam, 60)) { r = rnd(5); x.fillStyle = 'rgba(240,240,255,' + (.8 * nt) + ')'; for (i = 0; i < 40; i++) x.fillRect(-25 + r() * 50, 18 + r() * 24, Kt.px(1.6), Kt.px(1.6));
       var mk = P(t, tC0 + .1, tC0 + .5), my = mix(21, 25, P(t, tC0, tWa0)); if (mk > 0) { x.save(); x.globalAlpha *= mk * nt; x.beginPath(); x.arc(10, my, 2.2, 0, 7); x.fillStyle = '#eef0f2'; x.fill(); x.beginPath(); x.arc(10.8, my + .4, 1.9, 0, 7); x.fillStyle = mixc('#26304a', '#bcc6cb', day); x.fill(); x.restore(); } }
     if (Kt.plane(cam, 14)) farDome(day);
@@ -844,14 +882,14 @@ var K25 = (function(){
       if (wx > -2.2 && wx < 1.4) { x.fillStyle = 'rgba(210,230,240,.5)'; x.fillRect(wx - .14, .4, .14, 2.85);   // the wet edge and its drops
         r = rnd(Math.floor(t * 30)); x.fillStyle = 'rgba(220,236,245,.85)'; for (i = 0; i < 14; i++) { x.beginPath(); x.arc(wx - .05 - r() * .25, .45 + r() * 2.8, .014 + r() * .02, 0, 7); x.fill(); } }
       FLAKE.forEach(function(f, j){ var u = P(t, f[0], f[0] + .7); if (u <= 0 || u >= 1) return; x.save(); x.translate(f[1] + u * .2, f[2] - u * u * 2.6); x.rotate(u * 3 * (j % 2 ? 1 : -1)); x.globalAlpha *= 1 - u * .6; x.fillStyle = tone(DRY, .8); x.fillRect(-.13, -.09, .26, .18); x.fillStyle = tone(DRY, 1.1); x.fillRect(-.13, .05, .26, .04); x.restore(); }); }
-    if (Kt.plane(cam, -.7)) { V = Kt.vis(5); x.fillStyle = mixc('#4a3e30', '#8a6c48', day); x.fillRect(V.x0, -.62, V.x1 - V.x0, .12); Kt.contact(0, -.62, 6, .3, .12);
-      [-2.5, 1.7].forEach(function(px0){ x.fillStyle = mixc('#4d4232', '#9b7c4e', day); x.fillRect(px0 - .05, -3, .1, 7); }); }
+    if (Kt.plane(cam, -.7)) { V = Kt.vis(5); x.fillStyle = mixc('#2a2420', '#4a3424', day); x.fillRect(V.x0, -.62, V.x1 - V.x0, .12); Kt.contact(0, -.62, 6, .3, .12);
+      [-2.5, 1.7].forEach(function(px0){ x.fillStyle = mixc('#2e2620', '#4e3826', day); x.fillRect(px0 - .05, -3, .1, 7); }); }
     if (Kt.plane(cam, -1.1)) { var on = P(t, tWa0 - .25, tWa0) * (1 - P(t, tWa1, tWa1 + .3));   // the sponge on the wash line, and the hose
       if (on > 0) { var hp = near(cam, washX(t) - .1, 1.8 + Math.sin(t * 7) * .9, -1.1), hx = hp[0], hy = hp[1]; x.save(); x.globalAlpha *= on;
         x.beginPath(); x.moveTo(cam.x + 2.8, hy - .9); x.quadraticCurveTo(mix(hx, cam.x + 2.8, .5), hy - .7, hx + .05, hy - .05); Kt.ink(5, '#2f3a3f');
         x.beginPath(); x.moveTo(hx, hy); x.quadraticCurveTo(hx - .12, hy - .4, hx - .06, hy - .95); Kt.ink(3, 'rgba(210,232,245,.7)');
         x.beginPath(); x.roundRect(-.2 + hx, hy - .13, .4, .26, .06); x.fillStyle = '#d2b462'; x.fill(); x.restore(); } }
-    if (Kt.plane(cam, -2.6, { fg: true })) { var fx = cam.x + 1.1; x.fillStyle = mixc('#3f3a34', '#7e6240', day); x.fillRect(fx - .07, cam.y - 4, .14, 8); x.fillStyle = mixc('#2f2b26', '#6a5132', day); for (var j = -3; j < 4; j++) x.fillRect(fx - .075, cam.y + j * 1.1, .15, .04); }
+    if (Kt.plane(cam, -2.6, { fg: true })) { var fx = cam.x + 1.1; x.fillStyle = mixc('#1c1814', '#2e2218', day); x.fillRect(fx - .07, cam.y - 4, .14, 8); x.fillStyle = mixc('#14110e', '#1e160f', day); for (var j = -3; j < 4; j++) x.fillRect(fx - .075, cam.y + j * 1.1, .15, .04); }
     if (Kt.plane(cam, cam.z + 2.2, { clear: true, fg: true })) Kt.motes(t, 16, 5, [cam.x - 1.4, cam.y - 2.2, cam.x + 1.4, cam.y + 2.2], 'rgba(220,230,255,.45)', 1.3);
     Kt.screen(); x.fillStyle = lg(0, 640, 0, 960, [[0, 'rgba(10,10,20,0)'], [1, 'rgba(10,10,20,.45)']]); x.fillRect(0, 640, 540, 320); }
   function mixc(a, b, k){ var p = rgb(a), q = rgb(b); return 'rgb(' + p.map(function(v, i){ return Math.round(mix(v, q[i], cl(k, 0, 1))); }).join(',') + ')'; }
@@ -862,14 +900,15 @@ var K25 = (function(){
     if (t < tw0(0)) return W1(t);
     if (t < tw1(0)) { var h = archHole(C1(t)), p = proj(C1(t), 0, 22, 0) || { x: 270, y: 480 }; return Kt.through(Kt.paint(0, function(){ W1(t); }), Kt.paint(1, function(){ W2(t); }), tk(0, t), h, [p.x, p.y], .28); }
     if (t < tw0(1)) return W2(t);
-    if (t < tw1(1)) return Kt.page(Kt.paint(0, function(){ W2(t); }), Kt.paint(1, function(){ W3(t); }), tk(1, t), '#e9dcc0');
+    if (t < tw1(1)) return Kt.page(Kt.paint(0, function(){ W2(t); }), Kt.paint(1, function(){ W3(t); }), tk(1, t), M.wall);
     if (t < tw0(2)) return W3(t);
     if (t < tw1(2)) { var dp = proj(C4(t), 0, 60, 0) || { x: 255, y: 450, s: 3 }; return Kt.match(Kt.paint(0, function(){ W3(t); }), Kt.paint(1, function(){ W4(t); }), tk(2, t), flowerCircle(t), [dp.x, dp.y, 14 * dp.s]); }
     W4(t);
   }
 
   // ---------- type over the picture: the options, the countdown, labels (y 150-370, above the subject) ----------
-  function lab(s, X, Y, size, col, k, sp){ if (k <= 0) return; x.save(); x.globalAlpha *= cl(k * 2.5, 0, 1); x.translate(0, (1 - eo(k)) * 8); Kt.label(s, X, Y, size, '800 ' + FI, col, 1, sp, KD); x.restore(); }
+  function lab(s, X, Y, size, col, k, sp){ if (k <= 0) return; x.save(); x.globalAlpha *= cl(k * 2.5, 0, 1); x.translate(0, (1 - eo(k)) * 8); var w = tw(s, size, '800 ' + FI, sp) + size * 1.2;
+    Kt.plate(X - w / 2, Y - size * 1.05, w, size * 1.55, 8); Kt.label(s, X, Y, size, '800 ' + FI, col, 1, sp); x.restore(); }
   function pop(s, X, Y, size, col, k){ if (k <= 0) return; var e = es(cl(k * 1.6, 0, 1)), sc = mix(1.45, 1, e); x.save(); x.globalAlpha *= cl(k * 3, 0, 1); x.translate(X, Y - size * .35); x.scale(sc, sc);
     x.font = font(size, '800 ' + FD); x.textAlign = 'center'; x.strokeStyle = KD; x.lineWidth = size * .09; x.lineJoin = 'round'; x.strokeText(s, 0, size * .35); txt(s, 0, size * .35, size, '800 ' + FD, col, 'center'); x.restore(); }
   function kinetic(t){ var k, o, t0;
@@ -877,10 +916,10 @@ var K25 = (function(){
     Kt.countdown(t, CD[0], CD[1], 108, 330, { col: AMBER, r: 40, size: 50 });   // in the sky left of the dome, under the chips
     lock(t); notches(t);
     t0 = WT(4, /clay/i); k = P(t, t0 - .1, t0 + .5); o = 1 - P(t, tw0(1) - .3, tw0(1));
-    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; lab('MULTANI MITTI', SX, 196, 30, MUDT, k, 4); lab("A FULLER'S EARTH CLAY", SX, 236, 14, CREAM, P(t, t0 + .4, t0 + .9), 2.5); x.restore(); }
+    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; lab('MULTANI MITTI', SX, 196, 30, AMBER, k, 4); lab("A FULLER'S EARTH CLAY", SX, 240, 15, CREAM, P(t, t0 + .4, t0 + .9), 2.5); x.restore(); }
     t0 = WT(5, /dries/i); k = P(t, t0 - .1, t0 + .5); o = 1 - P(t, tw0(2) - .3, tw0(2));
-    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; lab('LEFT TO DRY', SX, 196, 26, CREAM, k, 3); lab('WASHED OFF WITH WATER', SX, 236, 14, AMBER, P(t, WT(5, /washes/i), WT(5, /washes/i) + .5), 2.5); x.restore(); }
-    t0 = WT(6, /1994/); k = P(t, t0 - .05, t0 + .5); if (k > 0) pop('SINCE 1994', SX, 296, 40, AMBER, k);
+    if (k > 0 && o > 0) { x.save(); x.globalAlpha = o; lab('LEFT TO DRY', SX, 196, 26, CREAM, k, 3); lab('WASHED OFF WITH WATER', SX, 240, 15, AMBER, P(t, WT(5, /washes/i), WT(5, /washes/i) + .5), 2.5); x.restore(); }
+    endCard(t);
   }
   // the padlock: lands on "Lock", its shackle clicks shut, then it gives way to the countdown in the same place
   function lock(t){ var t0 = WT(2, /lock/i), k = es(P(t, t0 - .25, t0 + .1)), sh = eo(P(t, t0 + .02, t0 + .12)), o = 1 - P(t, CD[0] - .35, CD[0] - .1); if (k <= 0 || o <= 0) return;
@@ -892,12 +931,17 @@ var K25 = (function(){
   function notches(t){ if (t < CD[0] - .2 || t > CD[1] + .25) return; var a = P(t, CD[0] - .2, CD[0]) * (1 - P(t, CD[1], CD[1] + .25)); x.save(); x.globalAlpha *= a;
     NOTCH.forEach(function(v, j){ var g = P(t, v - .03, v + .25), X = 92 + j * 16, Y = 386 + 30 * eo(g); x.save(); x.globalAlpha *= 1 - g * g; x.beginPath(); x.arc(X, Y, 7 * (1 + .6 * Math.sin(Math.PI * P(t, v - .03, v + .12))), 0, 7); x.fillStyle = AMBER; x.fill(); x.restore(); });
     x.restore(); }
-  function drawPayoff(t){ var k = es(P(t, DUR - 2.6, DUR - 1.9)); if (k <= 0) return; x.save(); x.globalAlpha = cl(k * 1.6, 0, 1); x.translate(SX, 222); arrive(k);
-    x.font = font(46, '700 ' + FD); x.textAlign = 'center'; x.strokeStyle = 'rgba(8,8,20,.75)'; x.lineWidth = 8; x.lineJoin = 'round'; x.strokeText(PAYOFF, 0, 0); txt(PAYOFF, 0, 0, 46, '700 ' + FD, MUDT, 'center', -.5); x.restore(); }
+  // the end card (one solid plate): "SINCE 1994" lands on its word, then the payoff title lands above it in the same card, big, in the accent
+  function endCard(t){ var t0 = WT(6, /1994/), k1 = es(P(t, t0 - .05, t0 + .45)); if (k1 <= 0) return; var k2 = es(P(t, DUR - 2.6, DUR - 1.9)), h = mix(64, 146, cl(k2, 0, 1)), w = mix(250, 400, cl(k2, 0, 1)), yb = 318;
+    x.save(); x.globalAlpha = cl(k1 * 2, 0, 1); Kt.plate(SX - w / 2, yb - h, w, h, 16);
+    x.save(); x.translate(SX, yb - 22); x.scale(mix(1.35, 1, k1), mix(1.35, 1, k1)); txt('SINCE 1994', 0, 0, 30, '800 ' + FI, CREAM, 'center', 5); x.restore();
+    if (k2 > 0) { x.save(); x.globalAlpha *= cl(k2 * 1.6, 0, 1); x.translate(SX, yb - 80); arrive(k2); txt(PAYOFF.toUpperCase(), 0, 0, 50, '800 ' + FD, AMBER, 'center', .5); x.restore(); }
+    x.restore(); }
+  function drawPayoff(){}
   function seek(t){
     t = cl(t, 0, DUR); BOXES.length = 0; x.globalAlpha = 1; Kt.begin(); frame(t);
-    Kt.off(0, 0); Kt.screen(); x.globalAlpha = 1;
-    if (PAPERTEX) { x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'multiply'; x.globalAlpha = .5; x.drawImage(PAPERTEX, 0, 0); x.restore(); }
+    Kt.off(0, 0); Kt.screen(); x.globalAlpha = 1; Kt.grade();
+    if (PAPERTEX) { x.save(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'multiply'; x.globalAlpha = M.paper; x.drawImage(PAPERTEX, 0, 0); x.restore(); }
     x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1; x.letterSpacing = '0px';
     kinetic(t); drawCaption(t); drawCredit(t); drawPayoff(t);
   }
