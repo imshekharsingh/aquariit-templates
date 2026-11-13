@@ -30,6 +30,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] One daily routine per channel that writes the script, renders stills to a private review page and stops (roadmap 3).
 
 ## P3
+- [ ] Future channel (owner, 13 Nov 2026; reference R-puzzle in design/references.md): a visual-puzzle channel ("find the odd one": the circle spinning in reverse, the shape a shade off, the dot out of phase), procedural and voice-free, built to loop and pull comments/saves. Before starting: a name and handle, a puzzle generator kit, 10 puzzle types, difficulty ramp, and when to reveal the answer; needs a new Instagram account from the owner. Pick up when the three current channels are stable.
 - [ ] Posting through Instagram's content publishing API (roadmap 6; needs Meta's review, owner's call).
 
 ## Done
