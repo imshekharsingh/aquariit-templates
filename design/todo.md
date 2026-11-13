@@ -5,7 +5,6 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
-- [ ] 13 Nov 2026 (owner, tech IP68): Output QA "SYNC" check: OCR the frames and FAIL when a noun the voice says (a card or label item) is not readable on screen within 1 s of being said (the sauna card was empty while the voice said it); and extend EDGES to big type (the giant IP68 touched the left edge but passed).
 - [ ] 12 Nov 2026 (owner, E23): web kit "split" piece: the broken and fixed versions of the same component running side by side in sync (labels BEFORE / AFTER, the broken one visibly misbehaving), one call in kitmotion.js and an option in newweb.mjs, so every web reel can show its fix as motion; must pass SAFE ZONE, OVERLAP and FLOW on the starter. Needed by Fri 13 Nov 06:47 IST.
 - [ ] 11 Nov 2026, from the first research pass (design/references.md, R-trend 11 Nov), before the experiments that need them:
   - caption question line: newweb.mjs and the techreel starter write caption line 1 as a one-word-answer question and the last line as the
@@ -34,6 +33,10 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] Posting through Instagram's content publishing API (roadmap 6; needs Meta's review, owner's call).
 
 ## Done
+- 13 Nov 2026: Output QA SYNC (scripts/qa/output-qa.py): OCR of the final frames (subtitle band ignored, it always shows the spoken word)
+  fails when an item the voice names ("qa": {"sync"}, tech topics default to their cards) is not readable within 1.0 s of being said; EDGES
+  also fails very large type (glyphs over 8% of the frame tall, in a row, read by tesseract) touching the outer 3% for 0.3 s+. Small chips
+  (Turns Out guess options, ~22 px) do not OCR reliably: no sync list on them.
 - 11 Nov 2026: first research pass (design/references.md, "R-trend: first weekly research pass"): 7 trends kept with sources, 2 kit pieces
   and 1 owner item to todo; next experiments queued after E17-E19: E20 web (caption asks a question and a comment), E21 tech ("ships with
   this ON" default hook), E22 Turns Out (a named series); topics in design/topics.md. Weekly from now on the spare-usage night.

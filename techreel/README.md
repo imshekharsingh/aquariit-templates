@@ -47,7 +47,9 @@ The phone is our own drawing (no platform's UI, icons or fonts); platform names 
 
 ## The idea look (13 Nov 2026; topic `"look": "idea"`, scenes/idea.py; design/rules-tech.md G9-G13): the default for every tech reel
 Owner, 13 Nov: "Let's build it with new animation." The idea at full-frame scale, one subject per scene, a crisp camera (`Cam`: zoom about a
-focus point + drift; text scales with it), declared zoom-throughs between worlds. Copy topics/ip68.json to start one.
+focus point + drift; text scales with it), declared zoom-throughs between worlds. Copy topics/ip68.json to start one, and
+keep its `"qa": {"sync": [...]}` up to date: every word the voice says that names a card, verdict or label on screen (Output QA SYNC fails
+when one is not readable on screen within 1 s of being said; without the list it uses the scenes' `cards` and `good` / `bad` texts).
 - HUD: progress bar + `"format"` pill (top), the TAG row (a giant gold glyph that travels between scenes + one or two big words on their cue
   words + a small sub line), a chip at the foot of the stage (`"chips"`: [{text, cue, ok?}]), captions in their own band over a dark bed.
 - Topic keys: `"hook_glyphs"` {text, size, y, water (px under the letters' centre, or omit), dust, labels [{i, text, t, gold?}], ripples [{i, t}]}:
