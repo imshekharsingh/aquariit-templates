@@ -1,0 +1,88 @@
+{
+ "name": "showreel-c3-taj-mud",
+ "seek": "scripts/channel3/taj-mud.html",
+ "dur": 22.7,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "How does the Taj stay white? Bleach, acid, or mud? Lock in your guess. Mud. Workers spread a clay paste over the yellowed marble. It dries, then washes off, taking the grime with it. Turns out, the Taj has had mud facials since 1994.",
+  "at": [
+   0,
+   2.14,
+   3.99,
+   7.74,
+   10.05,
+   13.73,
+   17.13
+  ],
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "Bleach, acid or mud: what did you guess? 👇\n\nTo lift the yellow grime off the Taj Mahal's marble, workers coat it in a paste of fuller's earth clay (multani mitti). It dries, then it is washed off with water, taking the dirt with it. The Taj has had these mud packs since 1994.\n\nComment your letter before you watch it again, and send this to the friend who'd get it wrong.",
+ "keywords": [
+  "Taj Mahal mud pack",
+  "how is the Taj Mahal cleaned",
+  "Taj Mahal multani mitti",
+  "Taj Mahal yellowing",
+  "Taj Mahal marble cleaning",
+  "India history facts"
+ ],
+ "hashtags": [
+  "#tajmahal",
+  "#agra",
+  "#incredibleindia",
+  "#historyfacts",
+  "#didyouknow"
+ ],
+ "sources": [
+  {
+   "title": "Can India's favourite beauty treatment save the Taj Mahal from decay? (Quartz)",
+   "url": "https://qz.com/802281/monumental-mud-pack-can-indias-favourite-beauty-treatment-save-the-taj-mahal-from-decay"
+  },
+  {
+   "title": "Taj Mahal to get mud pack (Deccan Herald)",
+   "url": "https://www.deccanherald.com/archives/taj-mahal-get-mud-pack-2210226"
+  },
+  {
+   "title": "Mud pack treatment for Taj Mahal (The Week)",
+   "url": "https://www.theweek.in/news/india/Mud-pack-treatment-for-Taj-Mahal.html"
+  }
+ ],
+ "experiment": {
+  "id": "c3-guess",
+  "change": "the GUESS format, reel 2 of 3 (E19): three options as chips, a 3-2-1 countdown, the answer climbing the icon, a loop to frame 0; this one on an Asian icon (the Taj Mahal) after the Eiffel reel",
+  "vs": "median"
+ },
+ "qa": {
+  "guess": {
+   "answer": "#a8723c",
+   "reveal": {
+    "say": "Mud Workers"
+   },
+   "box": [
+    65,
+    318,
+    445,
+    650
+   ],
+   "css_width": 540
+  },
+  "edges_ok": [
+   {
+    "from": {
+     "say": "workers spread"
+    },
+    "to": {
+     "say": "turns out"
+    },
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the marble wall, its cornice and the scaffold poles run past the frame by design in the close-up worlds"
+   }
+  ]
+ }
+}
