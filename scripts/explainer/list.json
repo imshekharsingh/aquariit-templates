@@ -11,7 +11,7 @@
  "style": "Ink and mint (E18 dark-return, E23 dynamic fix)",
  "palette": "dark",
  "voice": {
-  "text": "Why does your list jump on delete? You delete a message. It vanishes, and everything below snaps up. The fix: collapse the row first. Animate its height to zero, then remove it. Watch it slowed down. The gap closes, and the rows glide up. Now nothing jumps.",
+  "text": "Why does your inbox jump? You delete a message. It vanishes, and everything below snaps up. The fix: collapse the row first. Animate its height to zero, then remove it. Watch it slowed down. The gap closes, and the rows glide up. Now nothing jumps.",
   "voice": "af_heart",
   "speed": 1.0,
   "gap": [

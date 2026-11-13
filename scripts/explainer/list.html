@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=540, initial-scale=1">
-<title>Why does your list jump on delete?</title>
+<title>Why does your inbox jump?</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300..800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* showreel-35-list, 13 Nov 2026 (E18 dark theme, try 2 + E23 dynamic fix: broken and fixed side by side, in sync).
@@ -39,8 +39,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .rip{position:absolute;width:60px;height:60px;border-radius:50%;border:3px solid var(--acc);opacity:0;z-index:5}
 .bub{position:absolute;font:750 26px/1 var(--f);color:var(--red);white-space:nowrap;opacity:0;z-index:7}
 /* screen space: the label row, the hook, the counters, the code card, the slow-motion panel, the payoff code, the subtitles */
-#lbl{left:34px;top:132px;font:500 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);white-space:nowrap}
-#hook{left:34px;top:160px;font-weight:var(--hw);font-size:44px;line-height:.98;letter-spacing:var(--ht)}
+#lbl{left:34px;top:132px;font:500 15px/1 var(--m);letter-spacing:.14em;color:#bdbab2;white-space:nowrap}
+#hook{left:34px;top:160px;font-weight:var(--hw);font-size:50px;line-height:.98;letter-spacing:var(--ht)}
 #hook .ln{display:block;white-space:nowrap}
 #hook .ln > span{display:inline-block;transform-origin:0 80%}
 #hook .acc{color:var(--red)}
@@ -93,7 +93,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   <div class="bub" id="q0"></div><div class="rip" id="r0"></div><div class="rip" id="r1"></div>
 </div></div>
 <div id="lbl" class="a">Nº 35 · THE DELETE</div>
-<div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>does</span> <span>your</span> <span>list</span></span><span class="ln"><span>jump</span> <span>on</span> <span class="acc">delete?</span></span></div>
+<div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span>inbox</span> <span class="acc">jump?</span></span></div>
 <div id="stat" class="a"><div class="c c1" style="left:0"><small>DELETED</small><b id="nT">0</b></div><div class="c c2" style="left:200px"><small>ROWS JUMP · 0 MS</small><b id="nM">68 px</b></div></div>
 <div id="code" class="a"><div id="cd"></div></div>
 <div id="slow" class="a"><div class="ttl">THE COLLAPSE · EASE · 300 MS</div><svg class="cg" width="262" height="140"></svg><div id="badge"></div><div id="spec"></div><div id="scl">HEIGHT <b>68 px</b></div></div>
@@ -506,8 +506,8 @@ var KM = (function(){
 
   window.WEB_THEME = 'dark';   // E18 (12-14 Nov 2026): the dark theme, rules-web.md rule 12
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.theme('dark');
-  var TEXT = "Why does your list jump on delete? You delete a message. It vanishes, and everything below snaps up. The fix: collapse the row first. Animate its height to zero, then remove it. Watch it slowed down. The gap closes, and the rows glide up. Now nothing jumps.";
-  var DUR = 20, HOOK_N = 7;
+  var TEXT = "Why does your inbox jump? You delete a message. It vanishes, and everything below snaps up. The fix: collapse the row first. Animate its height to zero, then remove it. Watch it slowed down. The gap closes, and the rows glide up. Now nothing jumps.";
+  var DUR = 20, HOOK_N = 5;
   // the code the reel teaches (MDN grid-template-rows, animatable track sizes; BCD: Chrome 107, Firefox 66, Safari 16): exactly what the AFTER list does
   var CODE = '<span class="dim">.row {</span> display: grid;\n  grid-template-rows: 1fr;\n  transition: .3s; <span class="dim">}</span>\n<span class="dim">.row.gone {</span> opacity: 0;\n  <b>grid-template-rows: 0fr;</b> <span class="dim">}</span>\n<span class="dim">.row > * {</span> overflow: hidden; <span class="dim">}</span>';
   var EASE = { bezier: [.25, .1, .25, 1] }, COL = .3;   // CSS "ease", the transition's default timing function; 300 ms
@@ -534,7 +534,7 @@ var KM = (function(){
     window.COVER = +(A.hookIn - .05).toFixed(2);
     // ---- the deletes: before the fix only the BEFORE list is seen (it snaps); side by side both delete the same row at the same moment ----
     var pre = [], c, last = -9;
-    [.5, 1.3, 2.05, at('delete', 2) + .05, at('vanishes') - .02, at('below') - .05, at('snaps') + .05].forEach(function(t){ if (t - last >= .55 && t < A.fix - .35) { pre.push(t); last = t; } });
+    [.5, 1.3, 2.05, at('delete') + .05, at('vanishes') - .02, at('below') - .05, at('snaps') + .05].forEach(function(t){ if (t - last >= .55 && t < A.fix - .35) { pre.push(t); last = t; } });
     var side = []; for (c = A.fix + .9; c < A.watch - .5; c += .85) side.push(c);
     A.pre = pre; A.side = side;
     DA = assign(pre.concat(side).map(function(t){ return { t: t }; }));
