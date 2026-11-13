@@ -1,0 +1,379 @@
+{
+ "slug": "scam-calls",
+ "topic": "Scam calls",
+ "header": "3 SETTINGS",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "dur": 22.6,
+ "max_end": 22.0,
+ "say": {},
+ "experiment": {
+  "id": "tech-settings-list",
+  "change": "E17 try 2: 3 phone settings that stop scam calls, tapped on the drawn phone (dark palette, L7), both paths, a recap to save",
+  "vs": "median"
+ },
+ "hook": [
+  "3 settings that",
+  "stop",
+  "SCAM calls"
+ ],
+ "hook_toggles": [
+  "Spam calls",
+  "Unknown texts",
+  "That number"
+ ],
+ "lines": [
+  {
+   "text": "Three settings that stop scam calls."
+  },
+  {
+   "text": "One: in Phone, turn on the spam filter, so flagged calls never ring.",
+   "chunks": [
+    3,
+    3,
+    2,
+    3,
+    2
+   ],
+   "scene": {
+    "label": "1 OF 3",
+    "tint": "blue",
+    "kind": "tap",
+    "params": {
+     "name": "SPAM FILTER: ON",
+     "steps": [
+      {
+       "page": {
+        "title": "Settings",
+        "icons": true,
+        "rows": [
+         {
+          "text": "Phone"
+         },
+         {
+          "text": "Messages"
+         },
+         {
+          "text": "Wi-Fi"
+         },
+         {
+          "text": "Battery"
+         }
+        ]
+       },
+       "tap": 0,
+       "cue": "Phone"
+      },
+      {
+       "page": {
+        "title": "Phone",
+        "back": "Settings",
+        "sub": "Calls from strangers",
+        "rows": [
+         {
+          "text": "Caller ID",
+          "value": "On"
+         },
+         {
+          "text": "Spam filter",
+          "switch": false
+         },
+         {
+          "text": "Blocked numbers",
+          "value": "0"
+         }
+        ]
+       },
+       "tap": 1,
+       "cue": "spam",
+       "action": "switch"
+      }
+     ],
+     "before": "Spam calls ring",
+     "after": "Flagged calls silenced",
+     "paths": [
+      [
+       "iPhone",
+       "Settings › Apps › Phone › Spam"
+      ],
+      [
+       "Android",
+       "Phone › Caller ID & spam › Filter"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "text": "Two: in Messages, screen unknown senders, so scam texts land in their own list.",
+   "chunks": [
+    3,
+    3,
+    2,
+    3,
+    3
+   ],
+   "scene": {
+    "label": "2 OF 3",
+    "tint": "purple",
+    "kind": "tap",
+    "params": {
+     "name": "UNKNOWN: SCREENED",
+     "steps": [
+      {
+       "page": {
+        "title": "Settings",
+        "icons": true,
+        "rows": [
+         {
+          "text": "Phone"
+         },
+         {
+          "text": "Messages"
+         },
+         {
+          "text": "Wi-Fi"
+         },
+         {
+          "text": "Battery"
+         }
+        ]
+       },
+       "tap": 1,
+       "cue": "Messages"
+      },
+      {
+       "page": {
+        "title": "Messages",
+        "back": "Settings",
+        "sub": "Texts from numbers you don't know",
+        "rows": [
+         {
+          "text": "Screen unknown",
+          "switch": false
+         },
+         {
+          "text": "Spam protection",
+          "value": "Off"
+         },
+         {
+          "text": "Read receipts",
+          "value": "On"
+         }
+        ]
+       },
+       "tap": 0,
+       "cue": "screen",
+       "action": "switch"
+      }
+     ],
+     "before": "Scam texts in your inbox",
+     "after": "Their own list",
+     "paths": [
+      [
+       "iPhone",
+       "Messages › Manage Filtering"
+      ],
+      [
+       "Android",
+       "Messages › Spam protection › On"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "text": "Three: in Recents, tap the number and block it, so it can never ring again.",
+   "chunks": [
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "scene": {
+    "label": "3 OF 3",
+    "tint": "red",
+    "kind": "tap",
+    "params": {
+     "name": "NUMBER: BLOCKED",
+     "steps": [
+      {
+       "page": {
+        "title": "Recents",
+        "rows": [
+         {
+          "text": "+1 555 0142",
+          "value": "9:41"
+         },
+         {
+          "text": "Mum",
+          "value": "Yesterday"
+         },
+         {
+          "text": "+44 7700 900461",
+          "value": "Monday"
+         }
+        ]
+       },
+       "tap": 0,
+       "cue": "number"
+      },
+      {
+       "page": {
+        "title": "+1 555 0142",
+        "back": "Recents",
+        "sub": "Unknown caller · 4 calls",
+        "rows": [
+         {
+          "text": "Call back"
+         },
+         {
+          "text": "Block this caller",
+          "switch": false
+         },
+         {
+          "text": "Add to contacts"
+         }
+        ]
+       },
+       "tap": 1,
+       "cue": "block",
+       "action": "switch"
+      }
+     ],
+     "before": "It keeps calling",
+     "after": "Blocked for good",
+     "paths": [
+      [
+       "iPhone",
+       "Phone › Recents › (i) › Block Caller"
+      ],
+      [
+       "Android",
+       "Recents › number › Block"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "text": "Save this, and send it to someone who still answers every call.",
+   "chunks": [
+    2,
+    3,
+    3,
+    2,
+    2
+   ],
+   "scene": {
+    "label": "SAVE THIS",
+    "tint": "green",
+    "kind": "recap",
+    "params": {
+     "name": "SAVE THIS",
+     "page": {
+      "title": "Done",
+      "sub": "Scam calls: stopped",
+      "rows": [
+       {
+        "text": "Spam filter: on"
+       },
+       {
+        "text": "Unknown texts: screened"
+       },
+       {
+        "text": "That number: blocked"
+       }
+      ]
+     },
+     "items": [
+      {
+       "cue": "Save"
+      },
+      {
+       "cue": "send"
+      },
+      {
+       "cue": "someone"
+      }
+     ],
+     "stamp": "SAVE THIS",
+     "stamp_cue": "answers"
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "3 settings that stop scam calls",
+  "caption": "3 settings that stop scam calls 📵\n\n1. Spam filter: on. iPhone: Settings › Apps › Phone › Spam. Android (Phone by Google): Phone › Settings › Caller ID & spam › Filter spam calls. Calls flagged as spam stop ringing.\n2. Screen unknown senders. iPhone: Messages › Manage Filtering › Screen Unknown Senders. Android (Google Messages): Settings › Spam protection. Texts from numbers you don't know go to their own list.\n3. Block the number. iPhone: Phone › Recents › ⓘ › Block Caller. Android: Recents › tap the number › Block / report spam.\n\nThree taps, two minutes. Save this, and send it to someone who still answers every call.",
+  "keywords": [
+   "stop scam calls",
+   "block spam calls iPhone",
+   "filter spam calls Android",
+   "screen unknown senders",
+   "block a number",
+   "phone settings to change"
+  ],
+  "hashtags": [
+   "#scamcalls",
+   "#phonesettings",
+   "#phonetips",
+   "#iphonetips",
+   "#androidtips"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/guide/iphone/screen-and-block-calls-iphe4b3f7823/ios",
+    "note": "iPhone User Guide, Screen and block calls: Settings > Apps > Phone, turn on Spam: calls identified by your carrier as potential spam or fraud are silenced, sent to voicemail and moved to the Spam list (read 13 Nov 2026)"
+   },
+   {
+    "url": "https://support.apple.com/guide/iphone/screen-and-filter-texts-iph203ab0be4/ios",
+    "note": "iPhone User Guide, Screen and filter texts: Messages > Manage Filtering > turn on Screen Unknown Senders (read 13 Nov 2026)"
+   },
+   {
+    "url": "https://support.apple.com/guide/iphone/screen-and-block-calls-iphe4b3f7823/18.0/ios/18.0",
+    "note": "iPhone User Guide (iOS 18), block from Recents: tap the info button next to the number, then Block Caller"
+   },
+   {
+    "url": "https://support.google.com/phoneapp/answer/3459153",
+    "note": "Phone by Google Help, caller ID and spam protection: Settings > Caller ID & spam > Filter spam calls; block a number from Recents > Block / report spam (not reachable from the build session; path from the help page)"
+   },
+   {
+    "url": "https://support.google.com/messages/answer/9061432",
+    "note": "Google Messages Help, spam protection: Messages settings > Spam protection (not reachable from the build session)"
+   }
+  ]
+ },
+ "look": "phone",
+ "hook_page": {
+  "title": "Scam check",
+  "sub": "3 changes, 2 minutes",
+  "rows": [
+   {
+    "text": "Spam calls",
+    "from": "Ring",
+    "to": "Silenced"
+   },
+   {
+    "text": "Unknown texts",
+    "from": "Inbox",
+    "to": "Screened"
+   },
+   {
+    "text": "That number",
+    "from": "Rings",
+    "to": "Blocked"
+   }
+  ]
+ },
+ "holds": [
+  [
+   0.4,
+   1.8,
+   "the hook is read while its three values flip (HOOK_FLIPS 0.45 / 0.75 / 1.05 s)"
+  ]
+ ]
+}

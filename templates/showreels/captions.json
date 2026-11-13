@@ -780,7 +780,7 @@
   "hidden": true
  },
  "showreel-s01-contrast": {
-    "hidden": true,
+  "hidden": true,
   "channel": "web",
   "sample": true,
   "concept": "Sample · color: #767676 (grey text contrast, 4.5:1)",
@@ -827,7 +827,7 @@
   "note": "Turns Out daily run, 7 Nov: the 20:00 reel (E16 slot 2, E14 reel 3: a world icon in an unexpected state)."
  },
  "showreel-style-a-studio": {
-    "hidden": true,
+  "hidden": true,
   "channel": "web",
   "sample": true,
   "concept": "Style A · Studio product film",
@@ -835,7 +835,7 @@
   "note": "Style sample for review, not scheduled: pick A, B or C"
  },
  "showreel-style-b-editorial": {
-    "hidden": true,
+  "hidden": true,
   "channel": "web",
   "sample": true,
   "concept": "Style B · Editorial dark",
@@ -843,7 +843,7 @@
   "note": "Style sample for review, not scheduled: pick A, B or C"
  },
  "showreel-style-c-glass": {
-    "hidden": true,
+  "hidden": true,
   "channel": "web",
   "sample": true,
   "concept": "Style C · Glass and light",
@@ -851,7 +851,7 @@
   "note": "Style sample for review, not scheduled: pick A, B or C"
  },
  "showreel-style-c-details": {
-    "hidden": true,
+  "hidden": true,
   "channel": "web",
   "sample": true,
   "concept": "Sample · style C (Glass and light) on the slow-mo details format",
@@ -999,6 +999,40 @@
   "experiment": {
    "id": "dark-return",
    "change": "E18: dark theme + motion-feel single fix (October formula), try 1 (a button that presses)",
+   "vs": "median"
+  }
+ },
+ "showreel-35-list": {
+  "postOn": "2026-11-13",
+  "postAt": "13:00",
+  "caption": "Why does your list jump when you delete a row? 🗑️\n\nRemove a row from the page and every row under it snaps up in one frame, so the eye loses its place (and the next tap can land on the wrong message). Collapse it first: make the row a one-track grid (grid-template-rows: 1fr) with a 0.3 s transition, add a class that sets grid-template-rows: 0fr and opacity: 0, give its child overflow: hidden so it can shrink to nothing, and remove the row on transitionend. The rows below glide up instead of jumping. Animating grid tracks works in Chrome 107+, Safari 16+ and Firefox 66+.\nSave it for your next list, or send it to whoever built your inbox.",
+  "keywords": [
+   "list jumps when deleting item",
+   "animate height to 0 CSS",
+   "grid-template-rows 0fr transition",
+   "smooth delete animation CSS",
+   "collapse row animation",
+   "CSS tips"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#cssanimation",
+   "#webanimation",
+   "#uidesign",
+   "#frontenddev"
+  ],
+  "channel": "web",
+  "concept": "grid-template-rows 1fr -> 0fr + opacity 0 with a .3s transition, overflow: hidden on the child, then remove on transitionend (a deleted row collapses, the rows glide up instead of jumping)",
+  "about": "E23 try 1 (dynamic fix, side by side) on E18 try 2 (dark): an inbox where every delete makes the rows below SNAP up (a red ghost, \"jump!\", DELETED counter), then BEFORE vs AFTER side by side deleting the same message at the same moment (snap vs collapse), one collapse replayed at 0.25x with its live curve and the height counting 68 → 0 px, and a rhythm of smooth deletes to the end."
+ },
+ "showreel-tech-scam-calls": {
+  "channel": "tech",
+  "postOn": "2026-11-13",
+  "postAt": "13:00",
+  "concept": "E17 try 2 in the dark phone look: 3 settings that stop scam calls (spam filter on, screen unknown senders, block the number from Recents), tapped on the drawn phone on the spoken word, both platforms' paths, a recap to save",
+  "experiment": {
+   "id": "tech-settings-list",
+   "change": "E17 try 2: 3 phone settings that stop scam calls, tapped on the drawn phone (dark palette, L7), both paths, a recap to save",
    "vs": "median"
   }
  }

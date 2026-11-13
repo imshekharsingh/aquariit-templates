@@ -173,6 +173,14 @@
 #press .pay{width:84%;height:52px;border:0;border-radius:26px;background:#7cf0b6;color:#111214;font:700 18px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 5px 0 #2f9c72,0 12px 18px #0008}
 #press .fix .pay{transition:.12s}
 #press .fix .pay:active{scale:.96;box-shadow:0 2px 6px #0006;filter:brightness(.92)}
+#list .pane{padding:8px}
+#list ul{list-style:none;margin:0;padding:0}
+#list li{display:grid;grid-template-rows:1fr}
+#list li>div{overflow:hidden}
+#list li span{display:flex;justify-content:space-between;align-items:center;margin:0 0 6px;padding:10px 12px;border-radius:12px;background:#ffffff12;font:600 15px system-ui,-apple-system,"Segoe UI",sans-serif}
+#list li button{border:0;border-radius:50%;width:26px;height:26px;background:#ffffff1a;color:inherit;cursor:pointer}
+#list .fix li{transition:.3s}
+#list .fix li.gone{grid-template-rows:0fr;opacity:0}
 </style>
 </head>
 <body>
@@ -182,6 +190,30 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="list">
+  <p class="no">Nº 25</p>
+  <h2>Why does your list jump when you delete a row?</h2>
+  <p class="why">Removing a row from the DOM makes every row below it snap up in one frame. Collapse the row first: a one-track grid (grid-template-rows: 1fr) with a transition, a class that sets 0fr and opacity: 0, overflow: hidden on its child so it can shrink to zero, then remove it on transitionend. Animating grid tracks: Chrome 107+, Safari 16+, Firefox 66+ (BCD).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane "><span class="tag">Remove at once</span><ul><li><div><span>Mia<button type="button" aria-label="Delete Mia">×</button></span></div></li><li><div><span>Leo<button type="button" aria-label="Delete Leo">×</button></span></div></li><li><div><span>Ava<button type="button" aria-label="Delete Ava">×</button></span></div></li><li><div><span>Noah<button type="button" aria-label="Delete Noah">×</button></span></div></li><li><div><span>Zoe<button type="button" aria-label="Delete Zoe">×</button></span></div></li></ul></div><div class="pane fix"><span class="tag ok">Collapse, then remove</span><ul><li><div><span>Mia<button type="button" aria-label="Delete Mia">×</button></span></div></li><li><div><span>Leo<button type="button" aria-label="Delete Leo">×</button></span></div></li><li><div><span>Ava<button type="button" aria-label="Delete Ava">×</button></span></div></li><li><div><span>Noah<button type="button" aria-label="Delete Noah">×</button></span></div></li><li><div><span>Zoe<button type="button" aria-label="Delete Zoe">×</button></span></div></li></ul></div>
+</div>
+<button class="play" type="button">Reset</button>
+<p class="note">Tap × in each list. On the left the row is removed at once and every row under it jumps up; on the right it fades while its grid row collapses to 0fr, and it is removed on transitionend.</p></div>
+  <div class="code"><pre><code>.row {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: .3s;
+}
+.row.gone {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.row &gt; * { overflow: hidden; }
+/* then remove the row on transitionend */</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid-template-rows" rel="noopener">Source: MDN, grid-template-rows</a></p>
+</article>
 
 <article class="tip" id="press">
   <p class="no">Nº 24</p>
@@ -619,11 +651,16 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>22 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>23 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "list": function(root, btn){ var html = [].map.call(root.querySelectorAll('ul'), function(u){ return u.innerHTML; });
+  root.addEventListener('click', function(e){ var b = e.target.closest('li button'); if (!b) return; var li = b.closest('li');
+    if (!li.closest('.fix')) { li.remove(); return; }
+    li.addEventListener('transitionend', function(){ li.remove(); }, { once: true }); li.classList.add('gone'); });
+  btn.addEventListener('click', function(){ root.querySelectorAll('ul').forEach(function(u, i){ u.innerHTML = html[i]; }); }); },
     "press": function(){ document.addEventListener('touchstart', function(){}, { passive: true }); },
     "snap": function(){},
     "waiting": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');

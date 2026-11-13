@@ -1,0 +1,80 @@
+{
+ "name": "showreel-35-list",
+ "seek": "scripts/explainer/list.html",
+ "dur": 20,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.6,
+ "style": "Ink and mint (E18 dark-return, E23 dynamic fix)",
+ "palette": "dark",
+ "voice": {
+  "text": "Why does your list jump on delete? You delete a message. It vanishes, and everything below snaps up. The fix: collapse the row first. Animate its height to zero, then remove it. Watch it slowed down. The gap closes, and the rows glide up. Now nothing jumps.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": [
+   0.6,
+   0.35,
+   0.4,
+   0.6,
+   0.6,
+   0.5,
+   0.6
+  ]
+ },
+ "caption": "Why does your list jump when you delete a row? 🗑️\n\nRemove a row from the page and every row under it snaps up in one frame, so the eye loses its place (and the next tap can land on the wrong message). Collapse it first: make the row a one-track grid (grid-template-rows: 1fr) with a 0.3 s transition, add a class that sets grid-template-rows: 0fr and opacity: 0, give its child overflow: hidden so it can shrink to nothing, and remove the row on transitionend. The rows below glide up instead of jumping. Animating grid tracks works in Chrome 107+, Safari 16+ and Firefox 66+.\nSave it for your next list, or send it to whoever built your inbox.",
+ "keywords": [
+  "list jumps when deleting item",
+  "animate height to 0 CSS",
+  "grid-template-rows 0fr transition",
+  "smooth delete animation CSS",
+  "collapse row animation",
+  "CSS tips"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#cssanimation",
+  "#webanimation",
+  "#uidesign",
+  "#frontenddev"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid-template-rows",
+   "note": "MDN grid-template-rows (fr track sizes; animation type: simple list of length, percentage or calc, provided the only differences are in the values); BCD css.properties.grid-template-rows.animation (Animation of tracks): Chrome 107, Firefox 66, Safari 16 (iOS mirror) (read from mdn/browser-compat-data 13 Nov 2026)"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionend_event",
+   "note": "MDN transitionend: fires when a CSS transition has completed; remove the row there"
+  }
+ ],
+ "tip": {
+  "title": "Why does your list jump when you delete a row?",
+  "why": "Removing a row from the DOM makes every row below it snap up in one frame. Collapse the row first: a one-track grid (grid-template-rows: 1fr) with a transition, a class that sets 0fr and opacity: 0, overflow: hidden on its child so it can shrink to zero, then remove it on transitionend. Animating grid tracks: Chrome 107+, Safari 16+, Firefox 66+ (BCD).",
+  "code": ".row {\n  display: grid;\n  grid-template-rows: 1fr;\n  transition: .3s;\n}\n.row.gone {\n  grid-template-rows: 0fr;\n  opacity: 0;\n}\n.row > * { overflow: hidden; }\n/* then remove the row on transitionend */",
+  "demo": "list",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid-template-rows",
+   "label": "MDN, grid-template-rows"
+  }
+ },
+ "experiment": {
+  "id": "dynamic-fix",
+  "change": "E23: dynamic before/after + side by side (BEFORE snaps | AFTER collapses, in sync), on E18's dark single fix (try 2)",
+  "vs": "median"
+ },
+ "format": "single",
+ "qa": {
+  "mute": {
+   "before": {
+    "say": "snaps up"
+   },
+   "after": {
+    "say": "nothing jumps"
+   },
+   "span": 1.5
+  }
+ }
+}
