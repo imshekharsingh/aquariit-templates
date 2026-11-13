@@ -1042,10 +1042,10 @@
   "channel": "tech",
   "postOn": "2026-11-13",
   "postAt": "13:00",
-  "concept": "Gadget channel try 1, specs decoded: what IP68 really protects (6 = dust tight, 8 = fresh water at the maker's depth and time, new iPhones 6 m for 30 min; not for swimming, showers or the sauna; seals wear), the phone centred in a glass test tank in the fixed gadget layout",
+  "concept": "Gadget channel try 1, specs decoded: what IP68 really protects (6 = dust tight, 8 = fresh water at the maker's depth and time, new iPhones 6 m for 30 min; not for swimming, showers or the sauna; seals wear), remade 13 Nov in the idea look: giant IP68 half under water splits into its 6 and 8, dust bouncing off a sealed seam, water rising across the frame against a depth ruler and a timer ring, cards slamming in, a new / worn seal split, the verdict two-up",
   "experiment": {
-   "id": "tech-gadget-specs",
-   "change": "Gadget format try 1: specs decoded (what IP68 really protects) in the fixed gadget layout (header row, the phone centred in a test tank, caption band) with web-grade motion",
+   "id": "tech-idea-look",
+   "change": "The idea look (techreel/scenes/idea.py): the idea at full-frame scale, one subject per scene, worlds with zoom-throughs, giant type that travels between scenes, instead of widgets inside a small phone screen",
    "vs": "median"
   }
  },

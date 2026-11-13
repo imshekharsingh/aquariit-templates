@@ -23,7 +23,24 @@ attic/design/rules-tech-2026-11-12.md; its palette (L7), pronunciation, FLOW and
 - **F4. One useful verdict a viewer can act on**, said in the last line and shown on the product ("IP68 saves a spill, not a swim"): the
   reason to save and send. The caption repeats it in text with the numbers and invites a send to a named kind of friend.
 
-## Look and motion (G1-G8; techreel/scenes/gadget.py, topic `"look": "gadget"`)
+## Look and motion: the idea look (G9-G13; techreel/scenes/idea.py, topic `"look": "idea"`; the default for every tech reel from 13 Nov)
+Owner, 13 Nov 2026: "Tech reel animation doesn't live up to expectation"; "Let's build it with new animation." The parent review of the gadget
+IP68 stills: everything happened inside a small phone screen (under half the frame width, numbers and labels tiny on a real phone, the rest of
+the frame black), every scene was the same phone with only its screen text changing (a slideshow), and the motion was small. These rules
+override G1-G4 below; G5-G8 (palette, frame 0, sound, captions) still apply.
+- **G9. The idea at full-frame scale**: one subject per scene filling 70-80% of the frame (giant type, the product's edge in macro, water
+  across the whole frame, big cards, a before/after split), never widgets inside a small screen. A phone screen appears only when the screen
+  itself is the point, and then large. Check: every number and label readable at phone size (34 px+), nothing small in an empty frame.
+- **G10. Every scene a different world**: no two scenes share the same picture with new text; consecutive scenes may share a world (`"world"`
+  key) only when the camera moves through it (water rising, then the camera following the phone down).
+- **G11. The idea itself moves**: one big moment per scene where the concept acts (dust bounces off the sealed seam, water rises, cards slam,
+  the divider wipes new into worn), and a travelling element ties the scenes (IP68's 6 and 8 fly out of the word into the tag row and back).
+- **G12. The camera leads the eye** (rules-web.md rule 14): each scene pushes towards what the voice names (`"push": [zoom, x, y]`), a drift
+  that never stops, a declared zoom-through between worlds (FLOW reads them), a jolt on a slam.
+- **G13. Numbers on screen equal the voice**: a readout pops on its word with the value said (no rolling digits that Output QA NUMBERS could
+  read as a different number); a ring or a bar may sweep.
+
+## Old layout rules (G1-G8; techreel/scenes/gadget.py, topic `"look": "gadget"`; G1-G4 retired 13 Nov by G9-G13)
 - **G1. One fixed layout for every scene**: the header row at the top (the format pill in gold + a short title, a progress bar under it), the
   drawn product centred in the stage (y 384-1326) and fully inside the frame at every zoom, the captions in their own band below (y ~1350-1530).
   Nothing moves between left, centre and right; nothing sits on the product but its own screen. (13 Nov parent review: the phone moved left /
@@ -58,3 +75,5 @@ phone). Decide after 3 reels (13, 14, 15 Nov) on Sun 15 / Mon 16: a reel WINS at
 3+ saves and shares. 2 of 3 WINs: the format stays and the formats keep rotating; 0-1: change the look or the hook style next (one change).
 E17 (settings lists) ends early by the owner's decision on 13 Nov, 2 reels in (stop-tracking 152 / 2 saves; scam-calls replaced the same
 morning, never posted): "What didn't" in design/playbook.md with that reason.
+**tech-idea-look (from 13 Nov, owner: "Let's build it with new animation")**: the idea look replaces the gadget layout from the remade
+showreel-tech-ip68 on; E24 (gadget format) keeps counting its 3 reels in this look. Read with the 24 h reach and hold of 13, 14, 15 Nov.

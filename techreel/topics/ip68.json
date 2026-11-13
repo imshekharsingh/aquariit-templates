@@ -1,7 +1,7 @@
 {
  "slug": "ip68",
  "topic": "IP68",
- "look": "gadget",
+ "look": "idea",
  "format": "SPECS DECODED",
  "header": "IP68 water rating",
  "audience": "global",
@@ -17,8 +17,8 @@
   "iPhones": "[iPhones](/ˈIfOnz/)"
  },
  "experiment": {
-  "id": "tech-gadget-specs",
-  "change": "Gadget format try 1: specs decoded (what IP68 really protects) in the fixed gadget layout (header row, the phone centred in a test tank, caption band) with web-grade motion",
+  "id": "tech-idea-look",
+  "change": "The idea look (techreel/scenes/idea.py): the idea at full-frame scale, one subject per scene, worlds with zoom-throughs, giant type that travels between scenes, instead of widgets inside a small phone screen",
   "vs": "median"
  },
  "hook": [
@@ -26,34 +26,6 @@
   "really protect?"
  ],
  "hook_key": "IP68",
- "tank": true,
- "water0": 0.42,
- "hook_screen": [
-  {
-   "type": "title",
-   "text": "RATING",
-   "sub": "IEC 60529"
-  },
-  {
-   "type": "spec",
-   "text": "IP68",
-   "label": "dust · water"
-  },
-  {
-   "type": "meter",
-   "label": "DUST",
-   "icon": "dust",
-   "n": 6,
-   "pulse": 1.15
-  },
-  {
-   "type": "meter",
-   "label": "WATER",
-   "icon": "drop",
-   "n": 8,
-   "pulse": 1.75
-  }
- ],
  "lines": [
   {
    "text": "What does IP68 really protect?"
@@ -67,62 +39,34 @@
    ],
    "scene": {
     "label": "DUST",
-    "kind": "gadget",
+    "kind": "barrier",
     "params": {
-     "screen": [
-      {
-       "type": "title",
-       "text": "FIRST DIGIT",
-       "gold": true
-      },
-      {
-       "type": "spec",
-       "text": "IP68",
-       "hi": [
-        2
-       ],
-       "hi_cue": "six",
-       "label": "6 = dust"
-      },
-      {
-       "type": "meter",
-       "label": "DUST",
-       "icon": "dust",
-       "n": 6,
-       "cue": "dust"
-      },
-      {
-       "type": "row",
-       "icon": "dust",
-       "text": "Dust tight",
-       "sub": "nothing gets in",
-       "dot": "green",
-       "cue": "tight"
-      }
-     ],
-     "water": [
-      {
-       "level": 0.0
-      }
-     ],
-     "dust": "dust",
-     "focus": {
-      "cue": "six",
-      "w": 1,
-      "hold": 1.4
+     "tag": {
+      "glyph": "6",
+      "from_hook": 2,
+      "words": [
+       {
+        "text": "DUST",
+        "cue": "dust"
+       },
+       {
+        "text": "TIGHT",
+        "cue": "tight",
+        "gold": true
+       }
+      ]
      },
-     "callouts": [
+     "seam_cue": "tight",
+     "particles": 42,
+     "push": [
+      1.32,
+      330,
+      1110
+     ],
+     "chips": [
       {
-       "side": "left",
-       "y": 560,
-       "big": "6",
-       "small": "DUST TIGHT",
-       "gold": true,
-       "cue": "tight",
-       "anchor": [
-        292,
-        760
-       ]
+       "text": "NO DUST GETS IN",
+       "cue": "no"
       }
      ]
     }
@@ -138,69 +82,34 @@
    ],
    "scene": {
     "label": "WATER",
-    "kind": "gadget",
+    "kind": "fill",
     "params": {
-     "screen": [
-      {
-       "type": "title",
-       "text": "SECOND DIGIT",
-       "gold": true
-      },
-      {
-       "type": "spec",
-       "text": "IP68",
-       "hi": [
-        3
-       ],
-       "hi_cue": "eight",
-       "label": "8 = water"
-      },
-      {
-       "type": "meter",
-       "label": "WATER",
-       "icon": "drop",
-       "n": 8,
-       "cue": "water"
-      },
-      {
-       "type": "row",
-       "icon": "drop",
-       "text": "Fresh water",
-       "dot": "green",
-       "cue": "fresh"
-      },
-      {
-       "type": "row",
-       "icon": "depth",
-       "text": "Depth, time",
-       "sub": "set by the maker",
-       "cue": "maker",
-       "hi_cue": "picks"
-      }
-     ],
-     "water": [
-      {
-       "cue": "water",
-       "level": 0.4
-      }
-     ],
-     "focus": {
-      "cue": "eight",
-      "w": 1,
-      "hold": 1.3
+     "world": "water",
+     "tag": {
+      "glyph": "8",
+      "words": [
+       {
+        "text": "FRESH",
+        "cue": "fresh"
+       },
+       {
+        "text": "WATER",
+        "cue": "water",
+        "gold": true
+       }
+      ]
      },
-     "callouts": [
+     "rise_cue": "eight",
+     "sink_cue": "fresh",
+     "push": [
+      1.08,
+      510,
+      900
+     ],
+     "chips": [
       {
-       "side": "right",
-       "y": 820,
-       "big": "8",
-       "small": "FRESH WATER",
-       "gold": true,
-       "cue": "fresh",
-       "anchor": [
-        728,
-        944
-       ]
+       "text": "THE MAKER SETS THE DEPTH",
+       "cue": "maker"
       }
      ]
     }
@@ -216,60 +125,42 @@
    ],
    "scene": {
     "label": "TEST",
-    "kind": "gadget",
+    "kind": "depth",
     "params": {
-     "screen": [
-      {
-       "type": "title",
-       "text": "TESTED",
-       "gold": true,
-       "sub": "new iPhones"
-      },
-      {
-       "type": "count",
-       "value": 6,
-       "unit": "m",
-       "label": "DEPTH",
-       "count_cue": "six",
-       "secs": 0.9
-      },
-      {
-       "type": "ring",
-       "value": 30,
-       "unit": "min",
-       "label": "TIME",
-       "count_cue": "thirty",
-       "secs": 1.0
-      }
-     ],
-     "water": [
-      {
-       "cue": "tested",
-       "level": 1.07
-      }
-     ],
-     "ruler": "six",
-     "focus": {
-      "cue": "thirty",
-      "w": 2,
-      "hold": 1.3
+     "world": "water",
+     "tag": {
+      "glyph": "8",
+      "words": [
+       {
+        "text": "TESTED",
+        "cue": "tested",
+        "gold": true
+       }
+      ],
+      "sub": "new iPhones, per Apple",
+      "sub_cue": "iphones"
      },
-     "callouts": [
-      {
-       "side": "right",
-       "y": 470,
-       "count": {
-        "to": 6,
-        "unit": " m",
-        "secs": 0.9
-       },
-       "small": "DEPTH",
-       "cue": "six",
-       "anchor": [
-        760,
-        520
-       ]
-      }
+     "depth": {
+      "value": 6,
+      "unit": "m",
+      "cue": "six",
+      "labels": [
+       0,
+       2,
+       4,
+       6
+      ],
+      "label": "DEPTH"
+     },
+     "ring": {
+      "value": 30,
+      "unit": "MIN",
+      "cue": "thirty"
+     },
+     "push": [
+      1.06,
+      600,
+      1050
      ]
     }
    }
@@ -284,53 +175,44 @@
    ],
    "scene": {
     "label": "AVOID",
-    "kind": "gadget",
+    "kind": "slam",
     "params": {
-     "screen": [
+     "tag": {
+      "words": [
+       {
+        "text": "NOT FOR",
+        "cue": "not",
+        "gold": true
+       }
+      ],
+      "sub": "per Apple",
+      "sub_cue": "for"
+     },
+     "cards": [
       {
-       "type": "title",
-       "text": "AVOID",
-       "gold": true,
-       "sub": "per Apple"
-      },
-      {
-       "type": "row",
        "icon": "swim",
        "text": "Swimming",
-       "dot": "red",
        "cue": "swimming",
-       "hi_cue": "swimming",
-       "h": 150
+       "dot": "red"
       },
       {
-       "type": "row",
        "icon": "shower",
        "text": "Showers",
-       "dot": "red",
        "cue": "showers",
-       "hi_cue": "showers",
-       "h": 150
+       "dot": "red"
       },
       {
-       "type": "row",
        "icon": "steam",
        "text": "Sauna",
-       "dot": "red",
        "cue": "sauna",
-       "hi_cue": "sauna",
-       "h": 150
+       "dot": "red"
       }
      ],
-     "water": [
-      {
-       "level": 0.0
-      }
-     ],
-     "focus": {
-      "cue": "showers",
-      "w": 2,
-      "hold": 1.0
-     }
+     "push": [
+      1.04,
+      510,
+      975
+     ]
     }
    }
   },
@@ -343,60 +225,36 @@
    ],
    "scene": {
     "label": "SEALS",
-    "kind": "gadget",
+    "kind": "split",
     "params": {
-     "screen": [
-      {
-       "type": "title",
-       "text": "WITH AGE",
-       "gold": true
-      },
-      {
-       "type": "drain",
-       "label": "SEALS",
-       "icon": "seal",
-       "drain_cue": "wear",
-       "to": 0.45,
-       "h": 170
-      },
-      {
-       "type": "row",
-       "icon": "timer",
-       "text": "Normal wear",
-       "sub": "lowers resistance",
-       "dot": "red",
-       "cue": "age",
-       "h": 140
-      },
-      {
-       "type": "note",
-       "text": "Not permanent",
-       "gold": true,
-       "size": 40,
-       "h": 90
-      }
+     "tag": {
+      "words": [
+       {
+        "text": "SEALS",
+        "cue": "seals"
+       },
+       {
+        "text": "WEAR OUT",
+        "cue": "wear",
+        "gold": true
+       }
+      ]
+     },
+     "before": "NEW",
+     "after": "WITH AGE",
+     "inside": "INSIDE",
+     "show_cue": "seals",
+     "wipe_cue": "wear",
+     "push": [
+      1.1,
+      600,
+      995
      ],
-     "seal": {
-      "draw": "seals",
-      "wear": "wear"
-     },
-     "focus": {
-      "cue": "wear",
-      "w": 1,
-      "hold": 1.2
-     },
-     "callouts": [
+     "chips": [
       {
-       "side": "right",
-       "y": 1040,
-       "big": "Seals",
-       "small": "ALL AROUND",
-       "cue": "seals",
-       "size": 46,
-       "anchor": [
-        729,
-        1100
-       ]
+       "text": "NOT PERMANENT",
+       "cue": "age",
+       "ok": false
       }
      ]
     }
@@ -411,58 +269,32 @@
    ],
    "scene": {
     "label": "VERDICT",
-    "kind": "gadget",
+    "kind": "verdict",
     "params": {
-     "screen": [
-      {
-       "type": "title",
-       "text": "THE VERDICT",
-       "gold": true
-      },
-      {
-       "type": "spec",
-       "text": "IP68",
-       "size": 120
-      },
-      {
-       "type": "row",
-       "icon": "cup",
-       "text": "A spill",
-       "sub": "it copes",
-       "dot": "green",
-       "cue": "spill",
-       "hi_cue": "spill",
-       "h": 150
-      },
-      {
-       "type": "row",
-       "icon": "swim",
-       "text": "A swim",
-       "sub": "not for it",
-       "dot": "red",
-       "cue": "swim",
-       "hi_cue": "swim",
-       "h": 150
-      }
-     ],
-     "focus": {
-      "cue": "spill",
-      "w": 2,
-      "hold": 1.2
+     "tag": {
+      "words": [
+       {
+        "text": "THE VERDICT",
+        "cue": "so",
+        "gold": true
+       }
+      ]
      },
-     "callouts": [
-      {
-       "side": "left",
-       "y": 930,
-       "big": "Spill",
-       "small": "IT COPES",
-       "cue": "spill",
-       "size": 46,
-       "anchor": [
-        292,
-        1000
-       ]
-      }
+     "glyphs": "IP68",
+     "good": {
+      "icon": "cup",
+      "text": "SPILL",
+      "cue": "spill"
+     },
+     "bad": {
+      "icon": "swim",
+      "text": "SWIM",
+      "cue": "swim"
+     },
+     "push": [
+      1.04,
+      510,
+      1000
      ]
     }
    }
@@ -494,6 +326,32 @@
    {
     "url": "https://www.iec.ch/ip-ratings",
     "note": "IEC, IP ratings (IEC 60529): first digit 6 = dust tight, second digit 8 = continuous immersion beyond 1 m under conditions the manufacturer specifies (not reachable from the build session; the standard's digit meanings)"
+   }
+  ]
+ },
+ "hook_glyphs": {
+  "text": "IP68",
+  "size": 330,
+  "y": 830,
+  "water": 40,
+  "dust": true,
+  "labels": [
+   {
+    "i": 2,
+    "text": "DUST",
+    "t": 0.55,
+    "gold": false
+   },
+   {
+    "i": 3,
+    "text": "WATER",
+    "t": 0.95
+   }
+  ],
+  "ripples": [
+   {
+    "i": 3,
+    "t": 1.45
    }
   ]
  }
