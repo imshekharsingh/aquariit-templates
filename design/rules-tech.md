@@ -77,3 +77,8 @@ E17 (settings lists) ends early by the owner's decision on 13 Nov, 2 reels in (s
 morning, never posted): "What didn't" in design/playbook.md with that reason.
 **tech-idea-look (from 13 Nov, owner: "Let's build it with new animation")**: the idea look replaces the gadget layout from the remade
 showreel-tech-ip68 on; E24 (gadget format) keeps counting its 3 reels in this look. Read with the 24 h reach and hold of 13, 14, 15 Nov.
+
+**Idea-look musts (owner, 13 Nov 2026, after the IP68 reel):** every item the voice names is on screen when it is said (no empty cards);
+giant type stays inside the safe zone (x 60-1020); each idea scene shows the mechanism itself (dust stopped at a sealed seam, water rising
+against a ruler), not an object with a label; a before/after shows both states side by side. The Output QA gets a SYNC check (words read on
+screen vs the words spoken in the same 1 s) in design/todo.md.
