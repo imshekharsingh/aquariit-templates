@@ -17,6 +17,7 @@ sys.path.insert(0, HERE)
 from scenes import base as B          # noqa: E402
 from scenes.kinds import KINDS        # noqa: E402
 from scenes import phonecam as P      # noqa: E402  the phone walkthrough look (topic "look": "phone", 12 Nov 2026)
+from scenes import gadget as G       # noqa: E402  the gadget look (topic "look": "gadget", 13 Nov 2026): fixed header / centred product / caption band
 from vo import tts                    # noqa: E402
 from audio import synth               # noqa: E402
 
@@ -65,6 +66,8 @@ def transitions(topic, scenes):
     """Declared transitions (Mandatory Gate item 14): the engine's own glides, plus any in the topic file."""
     if topic.get('look') == 'phone':
         return P.transitions(topic, scenes)
+    if topic.get('look') == 'gadget':
+        return G.transitions(topic, scenes)
     return [[round(s.start, 3), round(s.start + GLIDE, 3), 'glide'] for s in scenes] + list(topic.get('transitions', []))
 
 
@@ -131,6 +134,8 @@ MOTES = [((i * 379) % 1080, (i * 613) % 1920, 2 + i % 3, .35 + (i % 4) * .12, i 
 def draw(t, topic, vo, hook_out, scenes):
     if topic.get('look') == 'phone':   # the phone walkthrough (scenes/phonecam.py): one big phone, taps, zooms, word-by-word captions
         return P.draw(t, topic, vo, hook_out, scenes, chunks)
+    if topic.get('look') == 'gadget':   # the gadget look (scenes/gadget.py): header row, the product centred, captions in their own band
+        return G.draw(t, topic, vo, hook_out, scenes, chunks)
     cpos, ddx, ddy = camera(t, scenes)
     # the light: the framed scene's tint crossfades during the glide; the blooms follow the camera at a shallow depth
     ci = min(len(scenes) - 1, max(0, int(cpos) - 1))
@@ -313,6 +318,7 @@ def main():
     global DUR, N
     DUR = float(topic.get('dur', DUR)); N = int(FPS * DUR)
     P.B_DUR[0] = DUR
+    G.B_DUR[0] = DUR
     out = os.path.join('out', 'techreel', slug)
     os.makedirs(out, exist_ok=True)
     vo_wav, vo_json = os.path.join(out, 'vo.wav'), os.path.join(out, 'vo.json')

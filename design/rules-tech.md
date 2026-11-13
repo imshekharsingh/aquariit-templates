@@ -1,83 +1,60 @@
 # @techin20sec rulebook (the gate every tech reel passes before its one render)
 
-Same use as design/rules-web.md: score every rule (pass / fail, one line each) in the stills review before the one render; fix or swap on a fail;
-the daily audit adds, changes or drops a rule with the number.
+Same use as design/rules-web.md: score every rule (pass / fail, one line each) in the stills review before the one render; fix or swap on a
+fail; the daily audit adds, changes or drops a rule with the number.
 
-**Rewritten 11 Nov 2026** (owner: "Go all in on techin20sec ... don't bother about the existing pattern, theme or anything, we need to get it to
-work"). Evidence (Instagram collect, 11 Nov 18:19 IST): 11 followers; the 9 explainers and myth-busts since 1 Nov all reached 113-133 (median 119)
-whatever the topic, hour, look or stamp, every one ending at x1.0 of its 6 h reach; 0 saves and 2 shares in 10 reels; watch 3.4-8.8 s of ~20 s
-(~28% hold). Turns Out has FEWER followers (8) and reaches 1,059-1,273 with ~50% hold, so the ~120 pool is not the follower count: Instagram's
-first test audience is not keeping, saving or sending these reels. "How does X work" is curiosity with nothing to do; the old rules 1-4, 9 and 10
-were all passed by reels stuck at 119 (the audit's "question it" lines) and are dropped. The new format gives the viewer something to DO, now,
-on their own phone, and a reason to save it and send it.
+**Rewritten 13 Nov 2026: the gadget channel** (CLAUDE.md, "@techin20sec: gadget channel built for brand collabs"). Owner, 13 Nov: "I'm not
+liking the content we are focusing on" (the "3 settings" format) and, on the scam-calls stills, make the animation "a similar grade as web"
+and "more organised, with flow on the screen". Evidence: 1-13 Nov every tech reel (explainers, myth-busts, settings lists) reached 113-152,
+0-2 saves; the settings format (E17) gave the best reel (stop-tracking, 152 reach, 2 saves) but the owner does not want the channel built on
+it, and settings lists do not lead to gadget-brand collabs. The old rulebook (settings format, phone walkthrough look L1-L7) is in
+attic/design/rules-tech-2026-11-12.md; its palette (L7), pronunciation, FLOW and voice rules carry over below.
 
-**12 Nov 2026: the phone walkthrough LOOK** (owner: "Tech reel doesn't feel like a change at all, same things, same design pattern, how do we
-expect to get audiences?"). The format (E17) stayed but the look did not: the glass panels, labels and small phone read as every tech reel since
-1 Nov (113-133 reach). From showreel-tech-stop-tracking (12 Nov) every tech reel uses topic `"look": "phone"` (techreel/scenes/phonecam.py).
-Evidence (design/references.md, R-trend 12 Nov): the settings videos that travel are a phone screen walked tap by tap (820k, ~2M and 6M views in
-press coverage of "settings to turn off" videos), and word-by-word captions with the spoken word highlighted beat plain subtitles (vendor data,
-direction repeated, size unproven). Rules L1-L6 are the gate for the look; rules 1-9 below still hold for the format.
+## Format (F1-F4)
+- **F1. Three formats, rotating**: (a) **specs decoded**: what a number on the box means for you (mAh, nits, Hz, IP68, ANC, watts, megapixels)
+  and when it is marketing; (b) **worth it or not**: is a feature worth paying extra for (120 Hz, wireless charging, 1 TB, an ultra-wide);
+  (c) **gadget myths**: a belief about charging, batteries, cameras or speakers, settled by the maker's own pages. No two days in a row with
+  the same format or the same gadget type (phone, earbuds, watch, charger, laptop, speaker); design/topics.md plans the week.
+- **F2. Audience mix**: 7 reels a week, 3 for India (prices in ₹, brands and models sold in India, Indian buying questions) and 4 global;
+  the topic file carries `"audience": "india" | "global"`, `"format"` and `"gadget"`, and the audit reads reach by audience.
+- **F3. Brands, diplomatically** (owner, 13 Nov 2026): real brand and model names only as text and voice, for facts; every product at its
+  strengths, no winner / loser, no mocking, no "X is worse"; never logos, trade dress, product photos or marketing art (products drawn
+  generically by us); every spec from the maker's official spec or support page (or the standard), cited in the topic's "sources" with the date read.
+- **F4. One useful verdict a viewer can act on**, said in the last line and shown on the product ("IP68 saves a spill, not a swim"): the
+  reason to save and send. The caption repeats it in text with the numbers and invites a send to a named kind of friend.
 
-- **L1. One big phone fills the frame** (720 px wide, running off the foot of the frame) on the DARK palette (L7): the viewer sees "a phone"
-  in frame 0. Our own generic drawing: no platform UI, icons or fonts.
-- **L7. The dark palette** (owner, 12 Nov 2026, on the first render's flat bold colours: "colour grading is horrible, I hate it without opening
-  it"; the cover alone failed). One deep near-black background for the whole reel (a soft warm glow behind the phone and a vignette at most; no
-  saturated full-screen colour, no colour change per setting; a topic's "tint" no longer colours the frame). The phone in neutral dark-mode greys
-  (rows #1E1E22, text #F0F0F4, secondary #9898A0, every text 4.5:1+). ONE accent, warm gold #ECC062, used only for the touch marker, the active
-  row, the result banner's edge, the spoken word and the hook's key word. Red / green only as small status dots, never large fills. Captions
-  white with a black outline. Check: the cover at thumbnail size (about 200 px wide) looks calm and premium next to the web channel's dark reels.
-  (phonecam.py palette constants; the owner likes the dark look of the web channel and the October reels.)
-- **L2. The touch indicator walks the real path tap by tap, ON the word that names it** (`steps` [{page, tap, cue, action}]): every step's
-  `cue` is a word in the line ("in Location" → tap Location; "your app" → tap the app; "While Using" → the tick moves). 2-3 taps per setting, a
-  page push after each, the camera leaning in to every tap (1.09, the change 1.13). The script is written as the path ("One: in Location, set your
-  app to While Using, so ...").
-- **L3. The result as a notification banner**, dropping in at the top of the screen after the change: the old state (grey, struck through, a
-  small red dot), then the new state (white, a gold edge, a small green dot with a tick). Never under the path card or the captions.
-- **L4. The 1/3 counter and the setting's name, top left; both paths on a black card (36 px) for the whole setting** (rule 3, critic Q13).
-- **L5. Word-by-word captions**: 2-4 words at a time (`chunks`), 88 px heavy, white with a black outline, the spoken word gold (L7) and lifted.
-- **L6. Frame 0 = the result**: the hook in 112 px heavy type (the key word gold) over the phone showing `hook_page`: three risky values (grey, red dot) flipping
-  to the safe values (white, green dot) by 1.1 s (critic Q15: the flips show the protection, never a "turn off" setting going ON).
-- Verdict with E17 on Sun 15 Nov: the same targets (24 h reach 150+, or 3+ saves and shares). The look is the change; topics stay settings lists.
+## Look and motion (G1-G8; techreel/scenes/gadget.py, topic `"look": "gadget"`)
+- **G1. One fixed layout for every scene**: the header row at the top (the format pill in gold + a short title, a progress bar under it), the
+  drawn product centred in the stage (y 384-1326) and fully inside the frame at every zoom, the captions in their own band below (y ~1350-1530).
+  Nothing moves between left, centre and right; nothing sits on the product but its own screen. (13 Nov parent review: the phone moved left /
+  centre / right, its foot was always cut, captions sat on the empty phone, the path card covered it.)
+- **G2. The product's screen is full**: its widgets (title, spec, meters, rows, counts, rings, bars) share the whole screen height and enter
+  together at the scene's start (staggered 0.07 s); a widget with a cue waits dimmed and lights up ON its word. No half-empty screen in any still.
+- **G3. Web-grade motion** (scripts/explainer/kitmotion.js): numbers count up to the value said and never past it (no "29" after "thirty" is
+  said, no overshoot), meters fill segment by segment on springs, items stagger in, a ripple and a gold edge on the detail being named, the
+  camera leans in at most 6% towards it and back (rules-web.md rule 14: the camera leads the eye), a slow drift so nothing is ever still, the
+  screen content slides up between scenes (declared transitions).
+- **G4. Side callouts** in two fixed columns (x 64-234 and 786-956), joined to the product by a leader line with a dot and one ripple; short
+  (a value and a 1-2 word label), never repeating a whole line.
+- **G5. The dark palette** (old L7, owner 12 Nov): one near-black background with a soft warm glow, the product in dark greys, ONE gold accent
+  (the named detail, counts landing, the format pill, the spoken word), red / green only as small dots, water a low-saturation steel blue.
+  Check: the cover at thumbnail size is calm and premium.
+- **G6. Frame 0 = the subject doing the thing** (the phone half under water, the charger at 100%, the earbuds with ANC on) with the hook
+  question in the caption band, its key term gold; readable in under 1 s.
+- **G7. Every element has its sound** (recorded CC0 samples): entrances small, activations and callouts medium, counts landing and water low;
+  ELEMENTS longest gap under 1.6 s; SOUND DETAIL 80%+.
+- **G8. Word-by-word captions** 2-4 words at a time (`chunks`), 80 px heavy, white with a black outline, the spoken word gold.
 
-1. **Format: "3 settings to change today"** (experiment tech-settings-list, E17): one benefit per reel (privacy, battery, scam calls, storage,
-   theft, data, sleep), three phone settings that deliver it, each tapped on a phone we draw (kind `phone`: a generic settings screen, a finger
-   taps the row, the switch or tick flips on the word, a before → after pill, the path on both platforms), then the recap (kind `checklist`).
-   Evidence: 9 explainers / myth-busts at 113-133, 0 saves; research (11 Nov): settings and "hidden feature" lists are the most saved and sent
-   tech format on Reels (vendor guides, so a hypothesis to test, not a fact).
-2. **The payoff in frame 0**: the hook names the number and the benefit ("3 settings that stop apps TRACKING you") and the switches are on
-   screen at frame 0, flipping on by 1.1 s (topic `hook_toggles`); the first setting is tapped by ~6 s. Evidence: the best tech reel ever
-   (airplane mode, 133 reach, 8.8 s) and every Turns Out winner showed the payoff first; explainers that opened on a question held ~24%.
-3. **Every setting exists on iPhone AND Android, with both paths on screen**, each checked on the platform's own page (support.apple.com,
-   developer.android.com, Google's help pages) that day. A setting one platform lacks is swapped. Evidence: owner 8 Nov, "we lean too much on
-   Apple"; a path people can follow is what makes the reel worth saving.
-4. **Built to be saved and sent**: the last scene is the recap checklist (label "SAVE THIS · ..."), the voice says "save this", and the caption
-   lists the three settings in text (so the post works as a note) and invites a send to a named kind of friend. Evidence: 0 saves, 2 shares in
-   10 reels; sends per reach is Instagram's main signal for reaching non-followers (Mosseri, as reported by several 2026 guides).
-5. **20-22 s at the natural voice pace, one complete sentence per setting**: "Number: do X, so Y for you." (what to change, then what it does for
-   you, joined by "so"). Kokoro at speed ~1.0, about 3 words/s, 60-66 words. Evidence: owner 8 Nov, "clearer sentences, not slowed"; at 29 s the
-   slowed voice lost the owner, at 18 s the explainers lost the viewer.
-6. **Post one reel EVERY day at 13:00 IST** (owner, 8 Nov 2026). E15 showed timing was never the lever (19:00 median 129, inside the same pool).
-7. **Tech terms are said the way people say them** (scripts/voice/say.json; the preflight PRONUNCIATION line shows no "check:" words). Evidence:
-   5 Nov, "Wi-Fi" read as two words.
-8. **Every reel passes FLOW** (Mandatory Gate items 14-17: cuts 0, no dead runs, continuity 85%+, at most one declared strobe), and SAFE ZONE,
-   OVERLAP, SOUND GATE, SOUND DETAIL and the voice check after the render. These protect quality whatever the format.
-9. **No repeat**: no setting already shown on the channel, no topic @webin20sec covers. Check captions.json and design/topics.md first.
+## Voice, length and gates (V1-V4, kept from the old rulebook)
+- **V1. 20-22 s at the natural voice, speed 1.0**, about 3 words/s, 55-66 words, one sentence per scene, the hook 6 words or fewer (HOOK PACE).
+- **V2. Tech terms said the way people say them** (scripts/voice/say.json or the topic's "say"; PRONUNCIATION: no "check:" words).
+- **V3. FLOW** (cuts 0, no dead runs, continuity 85%+, at most one declared strobe), SAFE ZONE ok, OVERLAP none, SOUND GATE, SOUND DETAIL, and
+  the GitHub Output QA PASS on the final MP4.
+- **V4. Post one reel EVERY day at 13:00 IST** (owner, 8 Nov 2026); no topic repeated on the channel or covered by @webin20sec.
 
-**Decide E17 on Sun 15 Nov** (the owner's engagement day) after 3 reels (12, 13, 14 Nov): a reel WINS if its 24 h reach is 150 or more (no tech
-reel since 1 Nov passed 133) or it gets 3+ saves and shares together. 2 of 3 WINs: keep it and make it the channel's format. 0-1: drop it to
-"What didn't" in design/playbook.md and test the next format in design/experiments.md, "Queue of next ideas".
-
-Dropped 11 Nov (the numbers do not support them): old rule 1 (an everyday puzzle, 113-133), rule 2 (answer's first step in 2 s; kept in spirit
-as rule 2), rule 3 / 10 (length caps; now rule 5), rule 4 (a takeaway to save: 0 saves; now rule 4 with the recap), rule 9 (the verdict stamp:
-lifted watch 4.7 → 6.0 s, never reach: 117-123), rule 11 (platform balance; now rule 3, both paths).
-
-**12 Nov audit:** ESCALATE tech (median reach 119, ALARM two days running) is answered by E17 starting today (showreel-tech-stop-tracking,
-13:00: a new format, not a tweak). PROMOTE tech-myth-verdict (3 WINs: +8%, +1%, +2% vs median) was already written on 11 Nov as old rule 9
-and dropped the same day in the rewrite: its wins are inside the 113-133 pool (watch 6.0 / 5.2 / 6.4 s vs 4.7, reach flat), so it lifts
-watch, not reach. It is the fallback format if E17 is dropped on Sun 15 (not a rule while E17 runs).
-
-
-**13 Nov audit:** ESCALATE tech (median reach 120, ALARM two days running) is answered by E17 try 2 (showreel-tech-scam-calls), a format that
-is one day old, not a tweak: stop-tracking (E17 try 1, dark look) is the channel's best reel of the 7 at ~18 h, 152 reached and 2 saves,
-already past E17's 150 WIN line (24 h verdict at the next collect). PROMOTE tech-myth-verdict (3 WINs, +1-8%) was handled on 12 Nov (above):
-it stays the fallback format, not a rule, while E17 runs.
+## Experiment
+**tech-gadget-specs (E24, from 13 Nov)**: the gadget format in the fixed layout. Try 1: showreel-tech-ip68 (13 Nov, specs decoded, global,
+phone). Decide after 3 reels (13, 14, 15 Nov) on Sun 15 / Mon 16: a reel WINS at 150+ reach in 24 h (no tech reel since 1 Nov passed 152) or
+3+ saves and shares. 2 of 3 WINs: the format stays and the formats keep rotating; 0-1: change the look or the hook style next (one change).
+E17 (settings lists) ends early by the owner's decision on 13 Nov, 2 reels in (stop-tracking 152 / 2 saves; scam-calls replaced the same
+morning, never posted): "What didn't" in design/playbook.md with that reason.

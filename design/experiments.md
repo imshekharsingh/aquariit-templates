@@ -307,6 +307,7 @@ metaphor). Originality is now enforced (scripts/film/sources.json).
 - 11 Nov: tech is not capped by followers (Turns Out reaches 1,100+ with 8) but by what the first ~120 viewers do: 9 explainers and myth-busts held ~28% with 0 saves whatever the topic, so tech switches format (E17: 3 settings to change today, tapped on a drawn phone, both platforms' paths, a recap to save).
 - 11 Nov: Turns Out has two flat levels, ~1,100 for an icon in a colour nobody pictured and ~150 for the rest, and nothing grows after 6 h; with 0-8 shares and 0 comments per reel no reel earns the next pool, so the format changes to a guess the viewer answers (E19: options painted on the icon, a countdown, a 24 s loop, a caption asking for the letter and a send).
 - 13 Nov: a fix the viewer can't see on mute loses even when it is satisfying to build (carousel snap 814 reach, -45% at 24 h), while tech's first settings reel in the dark look (152, 2 saves) is already its best in 7: show the difference, not the technique, so web now runs broken and fixed side by side in sync (E23).
+- 13 Nov: tech becomes a gadget channel (owner: the settings lists are not the content to focus on): specs decoded, worth it or not, myths, in one fixed layout (header, the product centred and whole, a caption band); E17 ends at 2 reels (stop-tracking 152 reach / 2 saves, scam-calls replaced before posting) and E24 starts with IP68.
 
 ## E18 · @webin20sec: back to the October formula (owner idea, 11 Nov 2026: "our earlier videos worked better ... the black background gives an attractive look to the content and profile, plus the kind of fixes we highlighted"; 3 reels, 12-14 Nov)
 - Change: the dark theme (`KM.theme('dark')`, the old ink-and-mint look) AND October's topic type: a motion-feel fix you can see and feel
@@ -367,3 +368,9 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
   Runs on top of E18 (dark) and E20 (caption question); config `"experiment": {"id": "dynamic-fix", "change": "dynamic before/after + side by side", "vs": "median"}`.
 - Evidence it should help: dynamic topics 2,685-104,925 reach (numbers, stagger, overscroll, flash, transform) vs subtle ones 272-509 (INP, squash, smooth, springs, hover).
 - Decides: median reach of the 4 vs the last 7 web reels' median, and watch vs 8.8 s, at 24 h and 72 h; win on 3 of 4 = rule.
+
+## E24 · @techin20sec: the gadget channel (owner, 13 Nov 2026; 3 reels, Fri 13 - Sun 15 Nov)
+- Change: specs decoded / worth it or not / gadget myths (design/rules-tech.md F1-F4) in the fixed gadget layout with web-grade motion (G1-G8),
+  replacing E17's settings lists. Config `"experiment": {"id": "tech-gadget-specs", ...}`.
+- Try 1: showreel-tech-ip68 (13 Nov, specs decoded, phone, global). Tries 2-3: the Sat 14 and Sun 15 rows of design/topics.md.
+- Decides: 150+ reach in 24 h or 3+ saves and shares per reel; 2 of 3 = the channel's format, read again by audience (india / global) after a week.

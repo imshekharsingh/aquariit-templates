@@ -58,7 +58,22 @@ in two sources before building; swap a topic if an expert disputes it (Tower Bri
 | Wed 18 | Where did Stonehenge's bluestones come from? · next door, **Wales**, France (about 240 km away; check the altar stone's Scottish origin as the "one more fact") | Europe |
 E19's verdict is read Sun 15 (3 reels); from Mon 16 the rows run only if it is kept, otherwise as 25-35 s journeys.
 
-## @techin20sec, Thu 12 - Wed 18 Nov 2026: "3 settings to change today" (E17; planned 11 Nov, rules-tech.md rewritten the same day)
+## @techin20sec, Fri 13 - Thu 19 Nov 2026: the gadget channel (planned 13 Nov; replaces the settings rows and the tech E21 rows below)
+Owner, 13 Nov 2026: the channel helps people understand and choose gadgets (CLAUDE.md, "@techin20sec: gadget channel"); design/rules-tech.md
+(rewritten 13 Nov) is the gate. Each reel: `"look": "gadget"` (copy techreel/topics/ip68.json), one format, one gadget, the product drawn
+generically, every spec from the maker's official page or the standard, read that morning; brands as text only, at their strengths.
+Rotation: no format and no gadget type two days in a row; 3 India + 4 global a week (the mix carries over).
+| Day | Format | Gadget | Audience | Hook | What it shows (check that morning) |
+|---|---|---|---|---|---|
+| Fri 13 | specs decoded | phone | global | What does IP68 really protect? (built 13 Nov as showreel-tech-ip68) | 6 = dust tight, 8 = fresh water at the maker's depth and time (new iPhones 6 m, 30 min); not for swimming, showers, sauna; seals wear; saves a spill, not a swim |
+| Sat 14 | worth it or not | earbuds | india | Is ANC worth it in budget earbuds? | what active noise cancelling does (a mic + an opposite wave), what it costs in battery (makers' own "ANC on / off" playtime), when it helps (bus, metro, flights) vs when it does not; prices in ₹ from the makers' Indian pages |
+| Sun 15 | gadget myths | charger | global | Can a bigger charger hurt your phone? | the phone decides how much power it takes (USB Power Delivery), so a 65 W charger on a 25 W phone charges at the phone's rate; heat is what ages a battery (Apple, Google, Samsung battery pages) |
+| Mon 16 | specs decoded | smartwatch | india | What does 5 ATM on your watch mean? | 5 ATM = pressure like 50 m, fine for a swim in a pool, not for diving or a hot shower; IP68 vs 5 ATM; the makers' own care notes (watches sold in India) |
+| Tue 17 | worth it or not | phone screen | global | Is a 120Hz screen worth paying extra for? | 60 vs 120 refresh: smoother scrolling and games, the battery trade, adaptive refresh (makers' spec pages); who notices it and who does not |
+| Wed 18 | gadget myths | laptop | global | Should your laptop stay plugged in all day? | modern laptops stop charging at full and many have a charge limit (Apple optimised charging, Windows makers' battery modes); heat and 100% for weeks are what age it |
+| Thu 19 | specs decoded | power bank | india | Why doesn't a 20,000 mAh power bank give 20,000 mAh? | mAh is rated at the cell's 3.7 V; at the phone's 5 V and with conversion loss you get about 60-70% (the makers' "rated capacity" line); how many phone charges that means |
+
+## @techin20sec, Thu 12 - Wed 18 Nov 2026: "3 settings to change today" (ENDED 13 Nov by the owner: replaced by the gadget rows above) (E17; planned 11 Nov, rules-tech.md rewritten the same day)
 Each reel: one benefit, three settings that exist on iPhone AND Android (rule 3: both paths on screen, each checked on Apple's and Google's
 own pages that morning; swap any setting one platform lacks), kind `phone` x3 + the recap checklist, `hook_toggles` in frame 0, 20-22 s.
 Start from techreel/topics/stop-tracking.json (copy, change the words). These replace the Thu 12 - Sun 15 explainer rows above.

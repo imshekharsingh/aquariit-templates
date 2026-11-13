@@ -66,6 +66,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) �
 - **Verdict first (rule 9, promoted 11 Nov):** the answer stamped in frame 0 (MYTH / TRUE / NO BUG): watch 6.0 and 5.2 s vs 4.7, reach unchanged (117-123).
 
 ## What didn't
+- tech: settings lists (E17, 12-13 Nov), ended by the owner after 2 reels ("I'm not liking the content we are focusing on"): stop-tracking reached 152 with 2 saves, the best tech reel, but the channel moves to gadgets (brand collabs); scam-calls was replaced before posting.
 - web: fixes you must imagine or that only developers see (squashed photos 281, page jump 402, INP 258, springs 391, zero-JS transition 178).
 - web: cover-card openers before the bug (13-26% hold, 2.7-5.0 s).
 - web: a big hit does not carry the account (Nº 09's 97k, then Nº 10 at 312 at ~16 h): reach follows the topic.
