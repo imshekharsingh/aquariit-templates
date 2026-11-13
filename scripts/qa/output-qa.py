@@ -28,6 +28,8 @@ FB = {   # the owner-feedback.md lines each check guards
     'numbers': '12 Nov "a counter rolled through 8 before \'seven\'"',
     'dead': '7 Nov "a reel barely moved"; 12 Nov "2.4 s with nothing at the payoff"',
     'mute': '12 Nov "the payoff was a 4% scale change ... the fix is invisible"',
+    'bulk': '13 Nov "the finger looks a bit bulky on screen"',
+    'vibrancy': '13 Nov "the menu grid ... feels slightly dull"',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
 # last on the final mix, which reads fast: full sentences at natural speed 1.0 measured 4.10-4.17, so a full sentence fails over 4.5 (as the voice
@@ -38,7 +40,11 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          edge_frac=.06, edge_dist=48, edge_secs=1.0,
          ocr_conf=70, num_win=1.0,
          dead_secs=1.5, vis_px=20, vis_frac=.003, onset_db=9, onset_floor=-45,
-         mute_frac=.02)
+         mute_frac=.02,
+         bulk_v=.82, bulk_s=.2, bulk_k=7, bulk_px=150, vib_s=.35, vib_v=.35, vib_med=.014)
+# BULK and VIBRANCY (13 Nov 2026, web only), calibrated on the showreel-35-list stills at 270x480: the big white finger left 564-874 px of solid
+# near-white after a 7x7 erosion (text strokes vanish; 70 px bold numbers leave 0), the slim ring 0; coloured pixels (S>.35, V>.35) were a median
+# 1.2% of the frame on the dull grid and 2.3% after the vibrancy pass.
 
 out, fails = [], []
 
@@ -211,6 +217,31 @@ def colour_checks(F, fps, cover):
     line('COLOUR', 'FAIL' if (long or fc > T['sat_frac'] or jumps) else 'PASS', msg)
 
 
+def bulk_check(F, fps):
+    from numpy.lib.stride_tricks import sliding_window_view as sw
+    k = T['bulk_k']; step = max(1, int(round(fps * .5))); runs, worst, wt, prev = [], 0, 0, None
+    for i in range(0, len(F), step):
+        _, S, V = hsv(F[i]); m = (V > T['bulk_v']) & (S < T['bulk_s']); n = int(sw(m, (k, k)).all(axis=(2, 3)).sum())
+        if n > worst: worst, wt = n, i / fps
+        if n > T['bulk_px']:
+            if prev is not None and runs and runs[-1][1] == prev: runs[-1][1] = i
+            else: runs.append([i, i])
+            prev = i
+        else: prev = None
+    long = [f'{a / fps:.1f}-{(b + step) / fps:.1f} s' for a, b in runs if b > a]
+    line('BULK', 'FAIL' if long else 'PASS', f'solid near-white shapes (a {k}x{k} core at 270x480: a finger, a white blob; text strokes do not count) over {T["bulk_px"]} px for 0.5 s+: '
+         f'{", ".join(long) or "none"} (largest {worst} px at {wt:.1f} s)')
+
+
+def vibrancy_check(F, fps):
+    step = max(1, int(round(fps * .5))); v = []
+    for i in range(0, len(F), step):
+        _, S, V = hsv(F[i]); v.append(float(((S > T['vib_s']) & (V > T['vib_v'])).mean()))
+    med = float(np.median(v)) if v else 0
+    line('VIBRANCY', 'FAIL' if med < T['vib_med'] else 'PASS', f'coloured pixels (S>{T["vib_s"]}, V>{T["vib_v"]}) a median {med:.1%} of the frame (at least {T["vib_med"]:.1%}; '
+         f'the dull 13 Nov grid 1.2%), least {min(v):.1%}, most {max(v):.1%}')
+
+
 def edge_checks(F, fps, ok=(), heard=None):
     h, w = F.shape[1:3]; th, tw = max(2, round(h * .02)), max(2, round(w * .02))
     def side(strip):   # strip: (frames, L, thickness, 3) -> share of the side that is content (far from its own running background)
@@ -358,6 +389,8 @@ def main():
     F = frames(mp4, fps, 270, 480)
     colour_checks(F, fps, cover)
     edge_checks(F, fps, qa.get('edges_ok', []), heard)
+    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps)
+    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only')
     if qa.get('guess'): guess_check(F, fps, qa['guess'], heard)
     elif ch == 'c3' and (c.get('experiment') or {}).get('id', '').startswith('c3-guess'): line('GUESS', 'FAIL', 'a guess reel without "qa": {"guess": {answer, reveal, box}} in its config')
     else: line('GUESS', 'SKIP', 'not a guess reel')

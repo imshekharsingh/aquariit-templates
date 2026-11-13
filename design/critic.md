@@ -20,6 +20,7 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 ## @webin20sec
 11. Mute test: 1 s of "before" and 1 s of "after" at phone size: is it obvious which is broken (rules-web.md rule 15; 12 Nov: a 4% press dip was invisible)?
 12. Is the fixed state big in the frame at the end, not a list or empty space?
+18. (13 Nov) Is every touch a slim ring that leaves the button visible (no finger or blob, Output QA BULK), inside the safe zone? Is the subject never cut at the bottom and the lower third (above the subtitles) used? Does the grid have colour (jewel avatars, accents; Output QA VIBRANCY) without loud fills?
 
 ## @techin20sec
 13. Is every setting's path readable for 2 s+ and correct on both iPhone and Android as stated?

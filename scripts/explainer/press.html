@@ -120,7 +120,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 //   text: KM.rise(spans, t, starts, gone) (blur to sharp, word by word) · KM.type(el, html, t, t0, t1) (typing with a caret) ·
 //     KM.sweep(el, t, t0, d, col) (a highlight sweep) · KM.leader(line, label, from, to, k) (a leader-line label, SVG line + text)
 //   secondary: KM.parallax(el, c, depth) · KM.stagger(els, t, t0, gap, d) · KM.squeeze(el, t, tTap) (press and pop) ·
-//     KM.ripple(el, t, tTap, x, y) · KM.tap(t, x) (the touch cue for a tap at screen x)
+//     KM.ripple(el, t, tTap, x, y) · KM.tap(t, x) (the touch cue for a tap at screen x) · KM.touch(host) -> draw(t, s) (the slim ring touch marker, 13 Nov 2026)
 //   details format (8 Nov 2026): KM.curve(spec) · KM.linearCss(f, n) · KM.timeScale(t0, t1, factor) (slow motion; the camera keeps reel time) ·
 //     KM.curveGraph(svg, spec, c0, d, { clock, real }) (the live easing curve with a riding dot) · KM.slowmoBadge(el, ts, label) ·
 //     KM.specChip(el, items, t0, d) (numbers roll in) · KM.partProgress(el, parts) (the segmented top bar); start a reel with newweb.mjs --details N
@@ -231,6 +231,27 @@ var KM = (function(){
     el.style.transform = 'scale(' + (1 - press * .07 + pop * .09).toFixed(4) + ')'; }
   function ripple(el, t, tap, x, y){ var k = P(t, tap, tap + .55); el.style.left = (x - 32) + 'px'; el.style.top = (y - 32) + 'px'; el.style.opacity = (k > 0 && k < 1 ? 1 - k : 0).toFixed(3); el.style.transform = 'scale(' + mix(.5, 2.6, ease.out3(k)).toFixed(3) + ')'; }
   function tap(t, x){ cue({ t: t, k: 'touch', g: .38, x: cl(x, 30, 510) }); cue({ t: t + .05, k: 'blip', g: .24, x: cl(x, 30, 510) }); }
+  // touch marker (owner, 13 Nov 2026: "the finger looks a bit bulky on screen"): a slim soft-white ring (60 px) around the button it taps,
+  // never over it (the button stays visible inside the ring); it presses in on each tap and sends out one ripple, with a faint shadow.
+  // KM.touch(host) makes the marker in host (the world, so it moves with the camera) and returns draw(t, s), s = { x, y (world centre of the
+  // button), press (0 lifted .. 1 down), tap (time of the last tap, for the ripple), o (opacity), c (the camera: the ring is kept inside the
+  // safe zone, x 30-480 / y 125-785 on screen, by at most 14 px, so the button stays inside it) }. Its sound: KM.tap(t, x) on each tap.
+  // The ring carries data-key, so the SAFE ZONE line checks it on every still; Output QA BULK fails a solid white shape on the final frames.
+  function touch(host, o){ o = o || {}; var D = o.size || 60, el = document.createElement('div'), rp = document.createElement('div'), rg = document.createElement('div');
+    el.className = 'km-touch'; el.setAttribute('data-key', 'touch'); el.setAttribute('aria-hidden', 'true');
+    el.style.cssText = 'position:absolute;left:0;top:0;width:' + D + 'px;height:' + D + 'px;pointer-events:none;z-index:8;opacity:0';
+    rp.style.cssText = 'position:absolute;left:0;top:0;width:' + D + 'px;height:' + D + 'px;border-radius:50%;border:2px solid rgba(255,255,255,.7);opacity:0';
+    rg.style.cssText = 'position:absolute;left:0;top:0;width:' + D + 'px;height:' + D + 'px;border-radius:50%;border:2.5px solid rgba(255,255,255,.92);background:rgba(255,255,255,.08);box-shadow:0 6px 16px rgba(0,0,0,.35),inset 0 0 10px rgba(255,255,255,.12)';
+    el.appendChild(rp); el.appendChild(rg); host.appendChild(el);
+    var draw = function(t, s){ var x = s.x, y = s.y, p = cl(s.press || 0), R = D / 2;
+      if (s.c) { var z = s.c.z, sx = (x - s.c.x) * z + 255, sy = (y - s.c.y) * z + 480, r = R * z + 3;
+        var nx = cl(sx, 30 + r, 480 - r), ny = cl(sy, 125 + r, 785 - r); nx = sx + cl(nx - sx, -14, 14); ny = sy + cl(ny - sy, -14, 14);
+        x += (nx - sx) / z; y += (ny - sy) / z; }
+      el.style.left = (x - R).toFixed(2) + 'px'; el.style.top = (y - R).toFixed(2) + 'px'; el.style.opacity = cl(s.o == null ? 1 : s.o).toFixed(3);
+      rg.style.transform = 'scale(' + mix(1, .84, p).toFixed(4) + ')'; rg.style.background = 'rgba(255,255,255,' + (.08 + .16 * p).toFixed(3) + ')';
+      var k = s.tap == null ? 1 : P(t, s.tap, s.tap + .55);
+      rp.style.opacity = (k > 0 && k < 1 ? .75 * (1 - ease.out3(k)) : 0).toFixed(3); rp.style.transform = 'scale(' + mix(.9, 1.9, ease.out3(k)).toFixed(4) + ')'; };
+    draw.el = el; return draw; }
   // ---- voice timings and subtitles ----
   var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
   function voice(text, lead, words){ lead = lead == null ? .15 : lead; var T = text.split(/\s+/).filter(Boolean), W = [];
@@ -346,13 +367,17 @@ var KM = (function(){
       blooms: [['122,92,255', .62, 640, 180, 220, .31, .23, 0], ['255,111,207', .42, 580, 460, 640, .27, .35, 1.7], ['63,216,255', .4, 540, 120, 860, .37, .21, 3.1],
         ['255,180,92', .3, 480, 520, 260, .22, .29, 4.4]],
       grade: [[0, 'rgba(90,60,200,.2)'], [.4, 'rgba(7,8,22,0)'], [1, 'rgba(0,150,170,.14)']] },
+    // dark (E18), 13 Nov 2026 (owner: "a little vibrancy in the colour grading, it feels slightly dull"): stronger mint and coral, cards a touch
+    // lighter with a soft top highlight, a faint mint / violet / coral glow behind the subject; KM.JEWELS = the avatar and chip tints
     dark: { name: 'Ink and mint',
-      c: { ink: '#111214', paper: '#f2efe8', dim: '#8a8780', acc: '#7cf0b6', red: '#ff5a4a', ctl: '#3a3b44', raise: '#34353e', skel: '#2e2f37', pg: '#16171c',
-        card: '#202128', on: '#111214' },
-      v: { glass: '#26272e', frost: '#1b1c21', edge: 'inset 0 1px 0 rgba(255,255,255,.06)', lift: '0 24px 60px rgba(0,0,0,.4)', glow: 'rgba(124,240,182,.55)', soft: 'rgba(124,240,182,.14)',
-        ring: 'rgba(124,240,182,.5)', f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '800', ht: '-.024em' },
-      blooms: [['124,240,182', .08, 460, 140, 200, .2, .17, 0], ['124,140,255', .06, 380, 520, 640, .23, .19, 2]], grade: null }
+      c: { ink: '#101116', paper: '#f4f1ea', dim: '#9a978f', acc: '#5ff2b0', red: '#ff6a5c', ctl: '#3c3e4a', raise: '#363845', skel: '#30323d', pg: '#171820',
+        card: '#262833', on: '#0c0d12' },
+      v: { glass: '#262833', frost: '#1d1e26', edge: 'inset 0 1px 0 rgba(255,255,255,.11)', lift: '0 24px 60px rgba(0,0,0,.45)', glow: 'rgba(95,242,176,.6)', soft: 'rgba(95,242,176,.16)',
+        ring: 'rgba(95,242,176,.55)', f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '800', ht: '-.024em' },
+      blooms: [['95,242,176', .13, 460, 140, 200, .2, .17, 0], ['110,120,255', .12, 420, 520, 640, .23, .19, 2], ['255,106,92', .07, 360, 500, 860, .17, .21, 4]], grade: null }
   };
+  // jewel tones for avatars and chips on the dark look (13 Nov 2026): rich, mid-dark, white text on each at 4.5:1 or more
+  var JEWELS = ['#1f7a5c', '#5b45c4', '#b03a5b', '#2f5fc0', '#8a4fb8', '#1d7186', '#a8451f'];
   // ---- palettes (owner, 8 Nov 2026: "introduce more colour combinations, video to video"; rules-web.md rule 12): the glass look keeps its
   // type, panes and layout; a palette swaps only the light (blooms, grade), the accent pair and the tints that follow them. newweb.mjs rotates
   // them reel to reel (the next after the last web reel's "palette" in captions.json) and writes the name into the config, so reach reads per
@@ -411,9 +436,9 @@ var KM = (function(){
   function publish(extra){ extra = extra || {}; window.TRANSITIONS = TR.slice().sort(function(a, b){ return a[0] - b[0]; });
     window.CUES = { dur: DUR, cues: Q.slice().sort(function(a, b){ return a.t - b.t; }), mix: extra.mix || { duck: 8 }, bed: extra.bed || { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } }; }
   return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
-    rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, voice: voice, subs: subs, publish: publish,
+    rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, touch: touch, voice: voice, subs: subs, publish: publish,
     curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
-    THEMES: THEMES, PALETTES: PALETTES, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float };
+    THEMES: THEMES, PALETTES: PALETTES, JEWELS: JEWELS, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float };
 })();
 /*kitmotion:end*/
 /*kitsfx:begin*/
