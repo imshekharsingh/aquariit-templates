@@ -1034,6 +1034,19 @@
    "id": "tech-settings-list",
    "change": "E17 try 2: 3 phone settings that stop scam calls, tapped on the drawn phone (dark palette, L7), both paths, a recap to save",
    "vs": "median"
+  },
+  "hidden": true,
+  "hiddenWhy": "replaced 13 Nov by showreel-tech-ip68 (owner: not the content we focus on; the gadget channel starts)"
+ },
+ "showreel-tech-ip68": {
+  "channel": "tech",
+  "postOn": "2026-11-13",
+  "postAt": "13:00",
+  "concept": "Gadget channel try 1, specs decoded: what IP68 really protects (6 = dust tight, 8 = fresh water at the maker's depth and time, new iPhones 6 m for 30 min; not for swimming, showers or the sauna; seals wear), the phone centred in a glass test tank in the fixed gadget layout",
+  "experiment": {
+   "id": "tech-gadget-specs",
+   "change": "Gadget format try 1: specs decoded (what IP68 really protects) in the fixed gadget layout (header row, the phone centred in a test tank, caption band) with web-grade motion",
+   "vs": "median"
   }
  }
 }

@@ -1,0 +1,499 @@
+{
+ "slug": "ip68",
+ "topic": "IP68",
+ "look": "gadget",
+ "format": "SPECS DECODED",
+ "header": "IP68 water rating",
+ "audience": "global",
+ "gadget": "phone",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "dur": 22.2,
+ "max_end": 21.6,
+ "say": {
+  "IP68": "I P sixty eight",
+  "iPhones": "[iPhones](/ˈIfOnz/)"
+ },
+ "experiment": {
+  "id": "tech-gadget-specs",
+  "change": "Gadget format try 1: specs decoded (what IP68 really protects) in the fixed gadget layout (header row, the phone centred in a test tank, caption band) with web-grade motion",
+  "vs": "median"
+ },
+ "hook": [
+  "What does IP68",
+  "really protect?"
+ ],
+ "hook_key": "IP68",
+ "tank": true,
+ "water0": 0.42,
+ "hook_screen": [
+  {
+   "type": "title",
+   "text": "RATING",
+   "sub": "IEC 60529"
+  },
+  {
+   "type": "spec",
+   "text": "IP68",
+   "label": "dust · water"
+  },
+  {
+   "type": "meter",
+   "label": "DUST",
+   "icon": "dust",
+   "n": 6,
+   "pulse": 1.15
+  },
+  {
+   "type": "meter",
+   "label": "WATER",
+   "icon": "drop",
+   "n": 8,
+   "pulse": 1.75
+  }
+ ],
+ "lines": [
+  {
+   "text": "What does IP68 really protect?"
+  },
+  {
+   "text": "The six means dust tight: no dust gets in.",
+   "chunks": [
+    3,
+    2,
+    4
+   ],
+   "scene": {
+    "label": "DUST",
+    "kind": "gadget",
+    "params": {
+     "screen": [
+      {
+       "type": "title",
+       "text": "FIRST DIGIT",
+       "gold": true
+      },
+      {
+       "type": "spec",
+       "text": "IP68",
+       "hi": [
+        2
+       ],
+       "hi_cue": "six",
+       "label": "6 = dust"
+      },
+      {
+       "type": "meter",
+       "label": "DUST",
+       "icon": "dust",
+       "n": 6,
+       "cue": "dust"
+      },
+      {
+       "type": "row",
+       "icon": "dust",
+       "text": "Dust tight",
+       "sub": "nothing gets in",
+       "dot": "green",
+       "cue": "tight"
+      }
+     ],
+     "water": [
+      {
+       "level": 0.0
+      }
+     ],
+     "dust": "dust",
+     "focus": {
+      "cue": "six",
+      "w": 1,
+      "hold": 1.4
+     },
+     "callouts": [
+      {
+       "side": "left",
+       "y": 560,
+       "big": "6",
+       "small": "DUST TIGHT",
+       "gold": true,
+       "cue": "tight",
+       "anchor": [
+        292,
+        760
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "The eight means fresh water, at a depth the maker picks.",
+   "chunks": [
+    3,
+    2,
+    3,
+    3
+   ],
+   "scene": {
+    "label": "WATER",
+    "kind": "gadget",
+    "params": {
+     "screen": [
+      {
+       "type": "title",
+       "text": "SECOND DIGIT",
+       "gold": true
+      },
+      {
+       "type": "spec",
+       "text": "IP68",
+       "hi": [
+        3
+       ],
+       "hi_cue": "eight",
+       "label": "8 = water"
+      },
+      {
+       "type": "meter",
+       "label": "WATER",
+       "icon": "drop",
+       "n": 8,
+       "cue": "water"
+      },
+      {
+       "type": "row",
+       "icon": "drop",
+       "text": "Fresh water",
+       "dot": "green",
+       "cue": "fresh"
+      },
+      {
+       "type": "row",
+       "icon": "depth",
+       "text": "Depth, time",
+       "sub": "set by the maker",
+       "cue": "maker",
+       "hi_cue": "picks"
+      }
+     ],
+     "water": [
+      {
+       "cue": "water",
+       "level": 0.4
+      }
+     ],
+     "focus": {
+      "cue": "eight",
+      "w": 1,
+      "hold": 1.3
+     },
+     "callouts": [
+      {
+       "side": "right",
+       "y": 820,
+       "big": "8",
+       "small": "FRESH WATER",
+       "gold": true,
+       "cue": "fresh",
+       "anchor": [
+        728,
+        944
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "New iPhones are tested at six metres, for thirty minutes.",
+   "chunks": [
+    2,
+    2,
+    3,
+    3
+   ],
+   "scene": {
+    "label": "TEST",
+    "kind": "gadget",
+    "params": {
+     "screen": [
+      {
+       "type": "title",
+       "text": "TESTED",
+       "gold": true,
+       "sub": "new iPhones"
+      },
+      {
+       "type": "count",
+       "value": 6,
+       "unit": "m",
+       "label": "DEPTH",
+       "count_cue": "six",
+       "secs": 0.9
+      },
+      {
+       "type": "ring",
+       "value": 30,
+       "unit": "min",
+       "label": "TIME",
+       "count_cue": "thirty",
+       "secs": 1.0
+      }
+     ],
+     "water": [
+      {
+       "cue": "tested",
+       "level": 1.07
+      }
+     ],
+     "ruler": "six",
+     "focus": {
+      "cue": "thirty",
+      "w": 2,
+      "hold": 1.3
+     },
+     "callouts": [
+      {
+       "side": "right",
+       "y": 470,
+       "count": {
+        "to": 6,
+        "unit": " m",
+        "secs": 0.9
+       },
+       "small": "DEPTH",
+       "cue": "six",
+       "anchor": [
+        760,
+        520
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "It is not for swimming, showers, or the sauna.",
+   "chunks": [
+    3,
+    2,
+    1,
+    3
+   ],
+   "scene": {
+    "label": "AVOID",
+    "kind": "gadget",
+    "params": {
+     "screen": [
+      {
+       "type": "title",
+       "text": "AVOID",
+       "gold": true,
+       "sub": "per Apple"
+      },
+      {
+       "type": "row",
+       "icon": "swim",
+       "text": "Swimming",
+       "dot": "red",
+       "cue": "swimming",
+       "hi_cue": "swimming",
+       "h": 150
+      },
+      {
+       "type": "row",
+       "icon": "shower",
+       "text": "Showers",
+       "dot": "red",
+       "cue": "showers",
+       "hi_cue": "showers",
+       "h": 150
+      },
+      {
+       "type": "row",
+       "icon": "steam",
+       "text": "Sauna",
+       "dot": "red",
+       "cue": "sauna",
+       "hi_cue": "sauna",
+       "h": 150
+      }
+     ],
+     "water": [
+      {
+       "level": 0.0
+      }
+     ],
+     "focus": {
+      "cue": "showers",
+      "w": 2,
+      "hold": 1.0
+     }
+    }
+   }
+  },
+  {
+   "text": "And the seals wear out with age.",
+   "chunks": [
+    3,
+    4
+   ],
+   "scene": {
+    "label": "SEALS",
+    "kind": "gadget",
+    "params": {
+     "screen": [
+      {
+       "type": "title",
+       "text": "WITH AGE",
+       "gold": true
+      },
+      {
+       "type": "drain",
+       "label": "SEALS",
+       "icon": "seal",
+       "drain_cue": "wear",
+       "to": 0.45,
+       "h": 170
+      },
+      {
+       "type": "row",
+       "icon": "timer",
+       "text": "Normal wear",
+       "sub": "lowers resistance",
+       "dot": "red",
+       "cue": "age",
+       "h": 140
+      },
+      {
+       "type": "note",
+       "text": "Not permanent",
+       "gold": true,
+       "size": 40,
+       "h": 90
+      }
+     ],
+     "seal": {
+      "draw": "seals",
+      "wear": "wear"
+     },
+     "focus": {
+      "cue": "wear",
+      "w": 1,
+      "hold": 1.2
+     },
+     "callouts": [
+      {
+       "side": "right",
+       "y": 1040,
+       "big": "Seals",
+       "small": "ALL AROUND",
+       "cue": "seals",
+       "size": 46,
+       "anchor": [
+        729,
+        1100
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "So IP68 saves a spill, not a swim.",
+   "chunks": [
+    2,
+    3,
+    3
+   ],
+   "scene": {
+    "label": "VERDICT",
+    "kind": "gadget",
+    "params": {
+     "screen": [
+      {
+       "type": "title",
+       "text": "THE VERDICT",
+       "gold": true
+      },
+      {
+       "type": "spec",
+       "text": "IP68",
+       "size": 120
+      },
+      {
+       "type": "row",
+       "icon": "cup",
+       "text": "A spill",
+       "sub": "it copes",
+       "dot": "green",
+       "cue": "spill",
+       "hi_cue": "spill",
+       "h": 150
+      },
+      {
+       "type": "row",
+       "icon": "swim",
+       "text": "A swim",
+       "sub": "not for it",
+       "dot": "red",
+       "cue": "swim",
+       "hi_cue": "swim",
+       "h": 150
+      }
+     ],
+     "focus": {
+      "cue": "spill",
+      "w": 2,
+      "hold": 1.2
+     },
+     "callouts": [
+      {
+       "side": "left",
+       "y": 930,
+       "big": "Spill",
+       "small": "IT COPES",
+       "cue": "spill",
+       "size": 46,
+       "anchor": [
+        292,
+        1000
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "What IP68 really protects",
+  "caption": "What IP68 on your phone really means 💧\n\nThe 6: dust tight, no dust gets in.\nThe 8: fresh water, at a depth and time the maker tests. New iPhones (iPhone 16 and later) are rated to 6 m for up to 30 minutes, tested in a lab.\nNot for: swimming, showers, saunas, salt water.\nThe seals wear with normal use, so the rating is not permanent.\n\nIP68 saves a spill, not a swim. Send this to the friend who takes their phone in the pool.",
+  "keywords": [
+   "what does IP68 mean",
+   "IP68 water resistance",
+   "is my phone waterproof",
+   "IP68 phone underwater",
+   "phone water damage",
+   "IP rating explained"
+  ],
+  "hashtags": [
+   "#ip68",
+   "#waterproofphone",
+   "#phonetips",
+   "#techexplained",
+   "#smartphonetips"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/108039",
+    "note": "Apple Support, About splash, water, and dust resistance of iPhone: IP68 under IEC 60529, maximum depth of 6 meters up to 30 minutes (iPhone 16 and later); avoid swimming, showering (pressurized or high velocity water), saunas and steam rooms, intentional submerging; resistance is not permanent and might decrease with normal wear; liquid damage not covered under warranty; resistant to accidental spills (read 13 Nov 2026)"
+   },
+   {
+    "url": "https://www.iec.ch/ip-ratings",
+    "note": "IEC, IP ratings (IEC 60529): first digit 6 = dust tight, second digit 8 = continuous immersion beyond 1 m under conditions the manufacturer specifies (not reachable from the build session; the standard's digit meanings)"
+   }
+  ]
+ }
+}

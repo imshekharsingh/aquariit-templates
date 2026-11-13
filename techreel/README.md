@@ -45,6 +45,19 @@ switch flips) or "choice" (a tick moves from row `from` to row `pick`), `pick`, 
 (the result pill flips red to green), `paths` [["iPhone", "..."], ["Android", "..."]] (each path checked on the platform's own page).
 The phone is our own drawing (no platform's UI, icons or fonts); platform names appear only as text.
 
+## The gadget look (13 Nov 2026; topic `"look": "gadget"`, scenes/gadget.py; design/rules-tech.md G1-G8)
+The default for every tech reel from 13 Nov (the gadget channel; owner: "a similar grade as web", "more organised, with flow on the screen").
+One fixed layout: the header row (`"format"` pill in gold + `"header"` title + a progress bar), the drawn product centred in the stage
+(y 384-1326; the world is masked to that band, so a zoom never reaches the header or captions, and the camera keeps the whole product in it),
+the captions in their own band (line 1, the hook, shown whole from frame 0 with `"hook_key"` in gold). Topic keys: `"hook_screen"` (the
+screen's widgets in frame 0), `"tank": true` + `"water0"` (a glass test tank and its water level at frame 0). Scene kind `gadget`, params:
+`screen` [widgets], `focus` {cue, w (widget index) | wy, hold} (the 6% lean-in), `callouts` [{side, y, big | count {to, dec, unit}, small, cue,
+anchor [x, y], gold?}], `water` [{cue?, level}], `dust` (cue), `seal` {draw, wear}, `ruler` (cue). Widgets (fill the screen together, enter
+at the scene's start, light up on their `cue`): `title` {text, sub?, gold?}, `spec` {text, hi [char indexes], hi_cue, label?},
+`meter` {label, icon?, n}, `row` {icon, text, sub?, dot green|red, hi_cue?}, `count` {value, unit, label, count_cue, secs, dec?},
+`ring` {value, unit, label, count_cue}, `drain` {label, icon?, drain_cue, to}, `note` {text, gold?, size?}; any widget takes `h`.
+Icons: drop, dust, swim, shower, steam, cup, seal, timer, depth. Copy topics/ip68.json to start one.
+
 ## The phone walkthrough look (12 Nov 2026; topic `"look": "phone"`, scenes/phonecam.py; design/rules-tech.md L1-L6)
 The default for every tech reel from 12 Nov (owner: "Tech reel doesn't feel like a change at all"). One big drawn phone on the dark palette (rules-tech.md L7, owner 12 Nov: no colour per
 setting, one gold accent); `hook_page` {title, sub, rows [{text, from, to}]} flips the risky values to the safe ones by 1.1 s under the hook title; scene kind `tap` with params

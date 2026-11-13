@@ -19,7 +19,7 @@ SR = 48000
 GAP = .04          # extra silence between lines (each line already keeps 50 ms before and 110 ms after its sound)
 FIRST = .08        # the first line starts here
 MAX_END = 19.4
-WPS = 3.9          # Kokoro af_heart at 1.05 speaks about 3.9 words a second (measured 24 Oct); used by --fake-vo
+WPS = 3.0          # Kokoro af_heart at speed 1.0 speaks about 3 words a second (13 Nov: 60 words in 20.3 s on the scam-calls render); used by --fake-vo
 
 
 def core(w):
