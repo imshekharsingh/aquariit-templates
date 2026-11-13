@@ -354,5 +354,14 @@
     "t": 1.45
    }
   ]
+ },
+ "qa": {
+  "sync": [
+   "swimming",
+   "showers",
+   "sauna",
+   "spill",
+   "swim"
+  ]
  }
 }

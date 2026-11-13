@@ -8,7 +8,9 @@
 #   config: a Showreel config (scripts/explainer, scripts/channel3) or a tech topic (techreel/topics). Optional "qa" block:
 #     "qa": {"guess": {"answer": "#b3392b", "reveal": 8.44 | {"say": "red every"}, "box": [l, t, r, b], "css_width": 540},
 #            "edges_ok": [{"from": t | {"say": ...}, "to": ..., "sides": ["left", "right"], "why": "the workshop walls run past the frame"}],
-#            "mute":  {"before": [t0, t1] | {"say": "nothing moves"}, "after": [t0, t1] | {"say": "it sinks"}, "span": 1.5}}
+#            "mute":  {"before": [t0, t1] | {"say": "nothing moves"}, "after": [t0, t1] | {"say": "it sinks"}, "span": 1.5},
+#            "sync":  ["swimming", "showers", "sauna"]}   (words the voice says that name an on-screen card or label: each must be readable
+#                      on screen within 1.0 s of being said; a tech topic without it uses its scenes' card / verdict texts)
 #   ("say" = the first words of the line, found in the final audio's own recogniser timings; the window runs "span" s from there.)
 # Needs ffmpeg, numpy, Pillow; faster-whisper for the voice checks and tesseract for the numbers check (SKIP, said aloud, without them).
 import json, os, re, subprocess, sys, tempfile
@@ -23,13 +25,14 @@ FB = {   # the owner-feedback.md lines each check guards
     'sound': '12 Nov "sound elements feel cheap, as if from kids\' toys"; 8 Nov "tick sounds missing"',
     'loud': '8 Nov "LISTEN to the finished audio" (-14 LUFS, Mandatory Gate 8)',
     'colour': '12 Nov "colour grading is horrible"',
-    'edges': '12 Nov "cards and photos cut at the frame edges ... a lamp cut at the edge"',
+    'edges': '12 Nov "cards and photos cut at the frame edges ... a lamp cut at the edge"; 13 Nov IP68 "the giant title touched the left frame edge"',
     'guess': '12 Nov "the tower was already painted red while the viewer was asked"',
     'numbers': '12 Nov "a counter rolled through 8 before \'seven\'"',
     'dead': '7 Nov "a reel barely moved"; 12 Nov "2.4 s with nothing at the payoff"',
     'mute': '12 Nov "the payoff was a 4% scale change ... the fix is invisible"',
     'bulk': '13 Nov "the finger looks a bit bulky on screen"',
     'vibrancy': '13 Nov "the menu grid ... feels slightly dull"',
+    'sync': '13 Nov tech IP68 "the voice names an item (\'or the sauna\') while its card is still empty"',
     'grade': '13 Nov Turns Out "I don\'t find the colour selection better" (fog wash, white Taj on a pale sky)',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
@@ -39,7 +42,8 @@ FB = {   # the owner-feedback.md lines each check guards
 T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=.95, stray_p=.5,
          sat_s=.6, sat_v=.4, sat_frac=.25, hue_jump=45, ring_sat=.12,
          edge_frac=.06, edge_dist=48, edge_secs=1.0,
-         ocr_conf=70, num_win=1.0,
+         ocr_conf=70, num_win=1.0, sync_win=1.0, sync_pre=.5, sync_conf=50, sync_ratio=.8,
+         big_h=.08, big_edge=.03, big_ocr_h=.05, big_secs=.3, subs={'tech': [.66, .84], 'c3': [.66, .80], 'web': [.70, .90]},
          dead_secs=1.5, vis_px=20, vis_frac=.003, onset_db=9, onset_floor=-45,
          mute_frac=.02, grade_dl=.2, wash_p5=.3, wash_frac=.2,
          bulk_v=.82, bulk_s=.2, bulk_k=7, bulk_px=150, vib_s=.35, vib_v=.35, vib_med=.014)
@@ -97,6 +101,17 @@ def config(path):
     speeds = [v.get('speed')] + list(v.get('speeds') or [])
     ch = 'c3' if '/channel3/' in path or c.get('name', '').startswith('showreel-c3-') else 'web'
     return c, v.get('text', ''), [s for s in speeds if s is not None], float(c.get('cover', 1.6)), ch, c.get('name', '')
+
+
+def sync_words(c, qa, ch):
+    if qa.get('sync') is not None: return list(qa['sync']), 'config'
+    if ch != 'tech': return [], ''
+    got = []   # a tech topic: the items its scenes name on cards (cards, the verdict's good / bad) with a voice cue
+    for l in c.get('lines', []):
+        p = (l.get('scene') or {}).get('params') or {}
+        for it in list(p.get('cards') or []) + [p.get(k) for k in ('good', 'bad') if isinstance(p.get(k), dict)]:
+            if it.get('cue') and it.get('text'): got.append(it['text'])
+    return got, 'the scenes\' cards'
 
 
 def transcribe(mp4):
@@ -266,7 +281,7 @@ def vibrancy_check(F, fps):
          f'the dull 13 Nov grid 1.2%), least {min(v):.1%}, most {max(v):.1%}')
 
 
-def edge_checks(F, fps, ok=(), heard=None):
+def edge_checks(F, fps, ok=(), heard=None, mp4=None):
     h, w = F.shape[1:3]; th, tw = max(2, round(h * .02)), max(2, round(w * .02))
     def side(strip):   # strip: (frames, L, thickness, 3) -> share of the side that is content (far from its own running background)
         prof = strip.astype(np.float32).mean(2); L = prof.shape[1]; win = max(5, L // 3)
@@ -275,12 +290,13 @@ def edge_checks(F, fps, ok=(), heard=None):
         return (np.linalg.norm(prof - bg, axis=-1) > T['edge_dist']).mean(1)
     sides = {'top': side(F[:, :th].transpose(0, 2, 1, 3)), 'bottom': side(F[:, -th:].transpose(0, 2, 1, 3)),
              'left': side(F[:, :, :tw]), 'right': side(F[:, :, -tw:])}
-    need = int(round(T['edge_secs'] * fps)); bad = []; said = []
+    need = int(round(T['edge_secs'] * fps)); bad = []; said = []; skip = []
     for o in ok:   # declared full-bleed worlds: {"from": t | {"say"}, "to": t | {"say"}, "sides": [...], "why": "..."}
         a = window(o.get('from'), heard or [], 0); b = window(o.get('to'), heard or [], 0)
         if not a or not b: bad.append(f'edges_ok "{o.get("why", "")}" not found in the audio'); continue
         for sd in o.get('sides', []):
             if sd in sides: sides[sd] = sides[sd].copy(); sides[sd][int(a[0] * fps):int(b[0] * fps) + 1] = 0
+        skip.append((a[0], b[0], set(o.get('sides', []))))
         said.append(f'{"/".join(o.get("sides", []))} {a[0]:.1f}-{b[0]:.1f} s declared ({o.get("why", "")})')
     for name, fr in sides.items():
         on = fr > T['edge_frac']; run, start = 0, 0
@@ -289,7 +305,8 @@ def edge_checks(F, fps, ok=(), heard=None):
             else:
                 if run > need: bad.append(f'{name} {start / fps:.1f}-{(start + run) / fps:.1f} s (up to {fr[start:start + run].max():.0%} of the side)')
                 run = 0
-    line('EDGES', 'FAIL' if bad else 'PASS', f'content on the outer 2% border over {T["edge_frac"]:.0%} of a side for more than {T["edge_secs"]} s: {", ".join(bad) or "none"} '
+    big, bigbad = bigtype_check(F, fps, skip, mp4) if mp4 else ('big type SKIP', [])
+    line('EDGES', 'FAIL' if bad or bigbad else 'PASS', f'{big}; content on the outer 2% border over {T["edge_frac"]:.0%} of a side for more than {T["edge_secs"]} s: {", ".join(bad) or "none"} '
          f'(worst side share {max(float(v.max()) for v in sides.values()):.0%}' + (f'; {"; ".join(said)}' if said else '') + ')')
 
 
@@ -310,6 +327,127 @@ def guess_check(F, fps, g, heard):
     if after < .05: line('GUESS', 'FAIL', f'the answer colour fills only {after:.1%} of the subject after the reveal ({rv:.2f} s): box or colour wrong?')
     elif worst > lim: line('GUESS', 'FAIL', f'the answer shows before the reveal: {worst:.1%} of the subject is the answer colour at {wt:.1f} s (after {after:.1%}; limit {lim:.1%})')
     else: line('GUESS', 'PASS', f'answer hidden until {rv:.2f} s (at most {worst:.1%} of the subject before, {after:.1%} after)')
+
+
+STOP = set('a an the and or but nor of to in on at for with by as from into is are was were be been it its this that these those your you '
+           'my our their his her not no so if then than do does did can will just very'.split())
+
+
+def alnum(x): return re.sub(r'[^a-z0-9]', '', x.lower())
+
+
+def ocr(png):
+    """Tesseract words on a frame, inverted (light type on dark glass) at full size and at half size (it misses 70 px card words at 1080 wide
+    and reads them at 540), plus the frame as it is: (text, conf, l, t, r, b) in the PNG's pixels."""
+    from PIL import Image, ImageOps
+    res = []
+    g = Image.open(png).convert('L'); inv = ImageOps.invert(g)
+    for k, (im, sc) in enumerate(((g, 1), (inv, 1), (inv.resize((g.width // 2, g.height // 2)), 2))):
+        q = png + f'.{k}.png'; im.save(q)
+        tsv = subprocess.run(['tesseract', q, '-', '--psm', '11', 'tsv'], capture_output=True, text=True).stdout
+        for row in tsv.splitlines()[1:]:
+            c = row.split('\t')
+            if len(c) < 12 or not c[11].strip(): continue
+            try: conf = float(c[10]); l, t, w, h = (int(c[i]) * sc for i in (6, 7, 8, 9))
+            except ValueError: continue
+            res.append((c[11].strip(), conf, l, t, l + w, t + h))
+    return res
+
+
+def grab(mp4, t, p):
+    ff(['-y', '-ss', f'{max(0, t):.2f}', '-i', mp4, '-frames:v', '1', '-vf', 'scale=1080:1920:flags=area', p])
+
+
+def sync_check(mp4, items, src, heard, dur, band):
+    """Every on-screen item the voice names is readable while it is said: OCR the final frames from 0.5 s before the word to 1.0 s after it.
+    Words inside the subtitle band (qa.subs, [top, bottom] as shares of the height; a channel default) do not count: the subtitles always
+    show the word being said, the card must show it too. Calibrated on IP68 stills: the cards read "Swimming", "Showers", the subtitles "sauna."."""
+    if not items: line('SYNC', 'SKIP', 'no "qa": {"sync": [...]} in the config (the words the voice says that name a card or label)'); return
+    if heard is None: line('SYNC', 'SKIP', 'no recogniser on this runner'); return
+    if subprocess.run(['which', 'tesseract'], capture_output=True).returncode: line('SYNC', 'SKIP', 'tesseract not installed on this runner'); return
+    import difflib
+    got = [h[0] for h in heard]; bad, ok, unheard, cache = [], [], [], {}
+    with tempfile.TemporaryDirectory() as td:
+        def read(t):
+            t = round(min(max(0, t), dur - .05) * 4) / 4
+            if t not in cache:
+                p = os.path.join(td, f'{t:06.2f}.png'); grab(mp4, t, p)
+                cache[t] = {alnum(x[0]) for x in ocr(p) if x[1] >= T['sync_conf'] and len(alnum(x[0])) >= 2
+                            and not band[0] <= (x[3] + x[5]) / 2 / 1920 <= band[1]}
+            return cache[t]
+        for item in items:
+            ws = [w for w in vwords(item) if w not in STOP]; keys = [alnum(w) for w in item.split() if alnum(w) and alnum(w) not in STOP]
+            if not ws or not keys: continue
+            hits = [heard[i][1] for i in range(len(got) - len(ws) + 1) if got[i:i + len(ws)] == ws]
+            if not hits: unheard.append(item); continue
+            for ts in hits[:1]:   # the first time the voice names it (a later "mud facials" is not the chip)
+                seen = None
+                for d in np.arange(-T['sync_pre'], T['sync_win'] + .01, .25):
+                    words = read(ts + d)
+                    if all(any(k == x or (len(k) >= 4 and difflib.SequenceMatcher(None, k, x).ratio() >= T['sync_ratio']) for x in words) for k in keys):
+                        seen = d; break
+                if seen is None: bad.append(f'"{item}" said at {ts:.1f} s, not readable on screen {-T["sync_pre"]:.1f} to +{T["sync_win"]:.1f} s around it')
+                else: ok.append(f'"{item}" {ts:.1f} s (read {seen:+.2f} s)')
+    msg = (f'{len(items)} named items ({src}; subtitle band y {band[0]:.0%}-{band[1]:.0%} ignored): ' + ('; '.join(bad) + ' | ' if bad else '') + 'on screen: ' + (', '.join(ok) or 'none')
+           + (f'; not heard in the voice (recogniser): {", ".join(unheard)}' if unheard else ''))
+    line('SYNC', 'FAIL' if bad else 'PASS', msg)
+
+
+def lumf(a): a = a.astype(np.float32) / 255; return .2126 * a[..., 0] + .7152 * a[..., 1] + .0722 * a[..., 2]
+
+
+def edge_glyphs(f):
+    """Glyph-like ink blobs (bright on a dark frame, dark on a light one) over 8% of the frame tall that touch the outer 3% and sit in a row with
+    another glyph of the same height and top line (type, not a minaret or a pole)."""
+    from scipy import ndimage as nd
+    y = lumf(f); H, W = y.shape; dark = np.median(y) < .5
+    ink = y > .68 if dark else y < .32
+    k = max(3, round(W * .015)); core = nd.binary_erosion(ink, np.ones((k, k)))
+    lab, _ = nd.label(ink); res, gl = [], []
+    for i, sl in enumerate(nd.find_objects(lab), 1):
+        t, b, l, r = sl[0].start, sl[0].stop, sl[1].start, sl[1].stop; h, w = b - t, r - l
+        if not (T['big_h'] * H <= h <= .4 * H and w <= .6 * W): continue
+        m = lab[sl] == i; fill = float(m.mean())
+        if not (.2 <= fill <= .8 or w <= .4 * h) or not core[sl][m].any(): continue   # a letter (or a stem: I, 1, l), not a filled card
+        gl.append((l, t, r, b)); e = T['big_edge']
+        sides = {s for s, v in (('left', l <= e * W), ('right', r >= (1 - e) * W), ('top', t <= e * H), ('bottom', b >= (1 - e) * H)) if v}
+        if sides: res.append(((l, t, r, b), sides))
+    def row(a):
+        h = a[3] - a[1]
+        return any(g != a and abs(g[1] - a[1]) <= .15 * h and .75 <= (g[3] - g[1]) / h <= 1.33 and max(g[0] - a[2], a[0] - g[2]) <= h for g in gl)
+    return [x for x in res if row(x[0])], dark
+
+
+def big_words(mp4, t, H, td):
+    """Tesseract's words at least 5% of the frame tall in the final frame at t (540 wide; any confidence: a clipped giant title reads as
+    "IP6S"), 3+ letters or digits, boxes in the 270x480 frame's pixels."""
+    p = os.path.join(td, 'g.png'); ff(['-y', '-ss', f'{t:.2f}', '-i', mp4, '-frames:v', '1', '-vf', 'scale=540:960:flags=area', p])
+    return [(x[0], x[2] / 2, x[3] / 2, x[4] / 2, x[5] / 2) for x in ocr(p) if len(alnum(x[0])) >= 3 and (x[5] - x[3]) / 2 >= T['big_ocr_h'] * H]
+
+
+def bigtype_check(F, fps, skip, mp4):
+    """13 Nov 2026 (IP68: the giant title touched the left edge and EDGES passed, its 2% / 6% / 1 s limits are for cards): very large type
+    (glyphs over 8% of the frame tall, read as words by tesseract) touching the outer 3% for 0.3 s+ fails. Calibrated on the IP68 title
+    (stills shifted 100-250 px to the edges: caught; in place: clear) and the Turns Out minarets and poles (clear)."""
+    if subprocess.run(['which', 'tesseract'], capture_output=True).returncode: return 'big type SKIP (no tesseract)', []
+    hit = {}
+    with tempfile.TemporaryDirectory() as td:
+        for k in range(len(F)):
+            g, _ = edge_glyphs(F[k]); t = k / fps
+            g = [(bb, sd - {s for a0, b0, ss in skip if a0 <= t <= b0 for s in ss}) for bb, sd in g]; g = [x for x in g if x[1]]
+            if not g: continue
+            ws = big_words(mp4, t, F.shape[1], td)
+            for (l, tp, r, b), sides in g:
+                h = b - tp
+                w = next((x for x in ws if min(b, x[4]) - max(tp, x[2]) >= .5 * min(h, x[4] - x[2]) and x[1] <= r + h and x[3] >= l - h), None)
+                if w: hit[k] = f'"{w[0]}" {h / F.shape[1]:.0%} tall touches the {"/".join(sorted(sides))} edge'; break
+    need = max(1, int(round(T['big_secs'] * fps))); runs, ks = [], sorted(hit)
+    for k in ks:
+        if runs and runs[-1][1] == k - 1: runs[-1][1] = k
+        else: runs.append([k, k])
+    bad = [f'{a / fps:.1f}-{(b + 1) / fps:.1f} s: {hit[a]}' for a, b in runs if b - a + 1 >= need]
+    return (f'big type (glyphs over {T["big_h"]:.0%} of the frame tall) in the outer {T["big_edge"]:.0%} for {T["big_secs"]} s+: {"; ".join(bad[:6]) or "none"}'
+            + (f' ({len(ks)} single frames touched)' if ks and not bad else '')), bad
 
 
 NUMW = {w: i for i, w in enumerate('zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen'.split())}
@@ -412,7 +550,7 @@ def main():
     sound_checks(mp4, logs)
     F = frames(mp4, fps, 270, 480)
     colour_checks(F, fps, cover)
-    edge_checks(F, fps, qa.get('edges_ok', []), heard)
+    edge_checks(F, fps, qa.get('edges_ok', []), heard, mp4)
     if ch == 'c3': grade_check(F, fps, cover, qa.get('subject') or (qa.get('guess') or {}).get('box'), (qa.get('guess') or {}).get('css_width', 540))
     else: line('GRADE', 'SKIP', 'Turns Out only')
     if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps)
@@ -422,6 +560,7 @@ def main():
     else: line('GUESS', 'SKIP', 'not a guess reel')
     G = frames(mp4, fps, 135, 240, gray=True); del F
     numbers_check(mp4, text, heard)
+    sync_check(mp4, *sync_words(c, qa, ch), heard, dur, qa.get('subs') or T['subs'][ch])
     dead_check(G, fps, mp4, dur)
     if qa.get('mute'): mute_check(G, fps, qa['mute'], heard)
     else: line('MUTE', 'SKIP' if ch != 'web' else 'WARN', 'no "qa": {"mute": {before, after}} in the config' + (' (web: declare the before/after moments)' if ch == 'web' else ''))
