@@ -112,6 +112,13 @@ a social media manager, design manager, product manager, whatever you can be." S
   no stopping"). Content, design, sound, growth, audience, product, process, cost and research are all Claude's to improve every day, without
   waiting to be asked. The owner only posts, and answers what needs them (money, their accounts or devices).
 - The audit card adds one line per channel: "Today's experiment: X. Yesterday's: Y → result."
+- One researched improvement per channel per day (owner, 13 Nov 2026: "Add one improvement to each channel reel on a per-day basis, based on
+  your regular research of working content on Instagram or YouTube"): every day's web, tech and Turns Out reel carries ONE visible improvement
+  taken from what is working now on Instagram Reels or YouTube Shorts in that niche (a hook pattern, motion, layout, pacing, sound, caption,
+  format). Source: the next unused item for that channel in design/improvements.md (each item: date found, source link, the technique,
+  why it should help reach, which kit piece). If a channel has no unused item, the run does 2-3 quick web searches for that niche first and
+  adds 3 items. The weekly research pass refills 7 items per channel. The reel's review file and design/craft-log.md name the item applied;
+  the audit card says "Today's improvement: X (source)". Techniques only, never a copy (copyright rules).
 - Research what works now (owner, 11 Nov 2026: "keep researching video design that's working today and gaining traction on social media, and
   plan things around it"): once a week (the spare-usage night, step 2, before the tooling), a research pass with web search on short-form video
   design that is gaining reach right now (motion, layout, type, colour, pacing, sound, hooks, formats) for each channel's niche. Keep only what
