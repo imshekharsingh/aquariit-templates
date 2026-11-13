@@ -333,23 +333,24 @@ def set_barrier(cm, fr, s, t, sc):
     p = s.params
     ts = cue(s, p.get('seam_cue'))
     # the face (dark glass), seen at an angle, and the metal side under it; the seam between them is the seal
-    face = [(170, 860), (850, 860), (950, 1110), (70, 1110)]
+    face = [(240, 860), (780, 860), (860, 1110), (160, 1110)]   # kept whole inside the frame at the push (Output QA EDGES)
     cm.poly([(x + 10, y + 26) for x, y in face], fill=(0, 0, 0, 110))
     cm.poly(face, fill=(26, 28, 34))
     u = (t * .2) % 1.6 - .3
-    cm.poly([(170 + 700 * u, 860), (250 + 700 * u, 860), (190 + 760 * u, 1110), (90 + 760 * u, 1110)], fill=(255, 255, 255, 12))
-    cm.rect(70, 1110, 880, 92, r=40, fill=(70, 70, 80))
-    cm.rect(90, 1122, 840, 14, r=7, fill=(110, 110, 122))
+    xl_, xr_ = 240 + 540 * u, 160 + 700 * u
+    cm.poly([(max(240, min(780, xl_)), 860), (max(240, min(780, xl_ + 70)), 860), (max(160, min(860, xr_ + 30)), 1110), (max(160, min(860, xr_ - 70)), 1110)], fill=(255, 255, 255, 12))
+    cm.rect(160, 1110, 700, 92, r=40, fill=(70, 70, 80))
+    cm.rect(180, 1122, 660, 14, r=7, fill=(110, 110, 122))
     cm.rect(420, 1150, 180, 26, r=13, fill=(30, 30, 36))   # a port opening (sealed too)
-    cm.rect(860, 1124, 50, 12, r=6, fill=(54, 54, 62))
+    cm.rect(780, 1124, 50, 12, r=6, fill=(54, 54, 62))
     g = eo((t - ts) / .5)
-    cm.line([(70, 1110), (950, 1110)], (90, 90, 100), 6)
+    cm.line([(160, 1110), (860, 1110)], (90, 90, 100), 6)
     if g > 0:
-        x1 = 70 + 880 * g
-        cm.line([(70, 1110), (x1, 1110)], YEL, 8)
+        x1 = 160 + 700 * g
+        cm.line([(160, 1110), (x1, 1110)], YEL, 8)
         q = (t - ts) / .8
         if 0 <= q < 1:
-            cm.line([(70, 1110), (x1, 1110)], YEL + (int(120 * (1 - q)),), 8 + 26 * q)
+            cm.line([(160, 1110), (x1, 1110)], YEL + (int(120 * (1 - q)),), 8 + 26 * q)
     # particles: seeded paths, each falls, hits the face or the seam, and bounces away; none ever goes in
     n = p.get('particles', 40)
     for i in range(n):
@@ -357,7 +358,7 @@ def set_barrier(cm, fr, s, t, sc):
         t0 = s.start + .1 + (s.end - s.start - .6) * i / n + rr.uniform(-.1, .1)
         if t < t0:
             continue
-        xh = rr.uniform(120, 900)
+        xh = rr.uniform(200, 820)
         yh = 1110 if i % 3 else rr.uniform(900, 1100)
         x0, y0 = xh - rr.uniform(60, 220), rr.uniform(560, 680)
         tf = rr.uniform(.45, .7)
@@ -368,7 +369,7 @@ def set_barrier(cm, fr, s, t, sc):
             al = 1.0
         else:
             u = t - t0 - tf
-            vx, vy = rr.uniform(120, 300) * (1 if xh > CX else -1), -rr.uniform(260, 420)
+            vx, vy = rr.uniform(80, 200) * (1 if xh > CX else -1), -rr.uniform(260, 420)
             x, y = xh + vx * u, yh + vy * u + 600 * u * u
             al = 1 - clamp(u / .9)
             if u < .3 and i % 2 == 0:
