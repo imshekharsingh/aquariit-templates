@@ -17,6 +17,8 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 10. Do counters and dates on screen equal the facts said (12 Nov: "8" shown for "seven colours")?
 15. Does something small land and get heard every 0.5-1 s in every world (qa.mjs BUSY ok; 12 Nov: 2.4 s with nothing at the payoff), is each detail readable at phone size (not specks), and does no detail in the guess world hint at the answer?
 
+22. (13 Nov, colour) On the cover at phone size, does the subject pop off its background (a white icon never on a pale sky)? Does every scene look like the same film (one sky and light family, no fog wash, no sudden hue jump), every title on a solid dark plate, one accent colour, hardly any floating particles (Output QA GRADE)?
+
 ## @webin20sec
 11. Mute test: 1 s of "before" and 1 s of "after" at phone size: is it obvious which is broken (rules-web.md rule 15; 12 Nov: a 4% press dip was invisible)?
 12. Is the fixed state big in the frame at the end, not a list or empty space?

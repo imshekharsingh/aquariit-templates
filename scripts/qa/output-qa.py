@@ -30,6 +30,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'mute': '12 Nov "the payoff was a 4% scale change ... the fix is invisible"',
     'bulk': '13 Nov "the finger looks a bit bulky on screen"',
     'vibrancy': '13 Nov "the menu grid ... feels slightly dull"',
+    'grade': '13 Nov Turns Out "I don\'t find the colour selection better" (fog wash, white Taj on a pale sky)',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
 # last on the final mix, which reads fast: full sentences at natural speed 1.0 measured 4.10-4.17, so a full sentence fails over 4.5 (as the voice
@@ -40,11 +41,14 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          edge_frac=.06, edge_dist=48, edge_secs=1.0,
          ocr_conf=70, num_win=1.0,
          dead_secs=1.5, vis_px=20, vis_frac=.003, onset_db=9, onset_floor=-45,
-         mute_frac=.02,
+         mute_frac=.02, grade_dl=.2, wash_p5=.3, wash_frac=.2,
          bulk_v=.82, bulk_s=.2, bulk_k=7, bulk_px=150, vib_s=.35, vib_v=.35, vib_med=.014)
 # BULK and VIBRANCY (13 Nov 2026, web only), calibrated on the showreel-35-list stills at 270x480: the big white finger left 564-874 px of solid
 # near-white after a 7x7 erosion (text strokes vanish; 70 px bold numbers leave 0), the slim ring 0; coloured pixels (S>.35, V>.35) were a median
 # 1.2% of the frame on the dull grid and 2.3% after the vibrancy pass.
+# GRADE (13 Nov 2026, Turns Out), calibrated on showreel-c3-taj-mud at 270x480 every 0.5 s: the fogged first cut had the subject 0.03 brighter
+# than the ring around it on the cover (white Taj, pale grey sky) and its picture's black point (5th luminance percentile of the middle band)
+# over 0.3 in 43 of 46 samples; the golden-hour mood gave 0.40 and 0 of 46.
 
 out, fails = [], []
 
@@ -215,6 +219,26 @@ def colour_checks(F, fps, cover):
     msg = (f'saturated fill (S>{T["sat_s"]}, V>{T["sat_v"]}) at most {worst:.0%} of the frame at {wt:.1f} s, over {T["sat_frac"]:.0%} for 0.5 s+: {", ".join(long) or "never"}; '
            f'cover {cover:.1f} s {fc:.0%}; hard background colour cuts: {", ".join(jumps) or "none"}')
     line('COLOUR', 'FAIL' if (long or fc > T['sat_frac'] or jumps) else 'PASS', msg)
+
+
+def grade_check(F, fps, cover, box, css_w=540):
+    """Turns Out colour mood: the subject stands out from what is around it on the cover (luminance gap between the middle of its box and a
+    15 px ring around it), and no fog wash (the picture band's black point lifted over 0.3 in more than 20% of the 0.5 s samples)."""
+    def lum(a): a = a.astype(np.float32) / 255; return .2126 * a[..., 0] + .7152 * a[..., 1] + .0722 * a[..., 2]
+    h, w = F.shape[1:3]; step = max(1, int(round(fps * .5))); p5 = []
+    for k in range(0, len(F), step):
+        y = lum(F[k]); p5.append(float(np.percentile(y[int(h * .29):int(h * .67), int(w * .04):int(w * .93)], 5)))
+    washed = [i * step / fps for i, v in enumerate(p5) if v > T['wash_p5']]; wf = len(washed) / max(1, len(p5))
+    msg = f'washed-out frames (black point over {T["wash_p5"]}) {len(washed)} of {len(p5)} ({wf:.0%}, at most {T["wash_frac"]:.0%})'
+    bad = wf > T['wash_frac']
+    if box:
+        k = min(len(F) - 1, int(round(cover * fps))); y = lum(F[k]); sc = w / css_w; l, t, r, b = [int(round(v * sc)) for v in box]; bw, bh = r - l, b - t
+        inner = y[t + bh // 5:b - bh // 5, l + bw // 5:r - bw // 5]; m = np.zeros((h, w), bool); g = int(15 * sc * 2)
+        m[max(0, t - g):b + g, max(0, l - g):r + g] = True; m[t:b, l:r] = False
+        dl = abs(float(np.median(inner)) - float(np.median(y[m]))); bad = bad or dl < T['grade_dl']
+        msg = f'cover {cover:.1f} s: subject vs its surroundings {dl:.2f} (at least {T["grade_dl"]}; the fogged Taj 0.03); ' + msg
+    else: msg = 'cover contrast SKIP (no "qa": {"guess": {"box"}} or {"subject": [l, t, r, b]}); ' + msg
+    line('GRADE', 'FAIL' if bad else 'PASS', msg)
 
 
 def bulk_check(F, fps):
@@ -389,6 +413,8 @@ def main():
     F = frames(mp4, fps, 270, 480)
     colour_checks(F, fps, cover)
     edge_checks(F, fps, qa.get('edges_ok', []), heard)
+    if ch == 'c3': grade_check(F, fps, cover, qa.get('subject') or (qa.get('guess') or {}).get('box'), (qa.get('guess') or {}).get('css_width', 540))
+    else: line('GRADE', 'SKIP', 'Turns Out only')
     if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps)
     else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only')
     if qa.get('guess'): guess_check(F, fps, qa['guess'], heard)

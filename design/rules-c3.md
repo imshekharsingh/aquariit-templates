@@ -51,6 +51,14 @@ topic gate works; the format must now make people answer, send and finish.
    sound (`Kt.beatCues`). qa.mjs "BUSY: longest quiet run" must be 1.5 s or less with 80 %+ of the beats seen on the frames, and SOUND
    DETAIL 80 %+ after the render. In the guess world the details stay neutral until the reveal (rule 1).
 
+10. **One colour mood per reel, the subject pops** (owner, 13 Nov 2026: "I don't find the colour selection better in the overall reel
+   combination"; the fogged Taj reel measured 0.03 subject-vs-surroundings contrast on its cover and 93% washed-out frames). Set
+   `Kt.mood('dusk')` (both starters do): every world uses its sky (`Kt.sky`, `M.night` for night), air, dark ground and water; the subject is
+   lit warm (`Kt.warm`) with a gold rim (`Kt.rim`) against the deep blue; close-ups keep three clear values (bright panel, mid wall, dark
+   material); ONE accent (amber) for every highlighted word; every title, label and subtitle on a solid dark plate (`Kt.plate`, HOOK.plate);
+   `Kt.grade()` after the worlds every frame; at most a couple of particles in frame. Output QA GRADE must PASS (cover contrast 0.2+, washed
+   frames 20% or fewer), with COLOUR (no hard hue cut) and GUESS.
+
 **Quality gate (unchanged, design/mandatory.md):** SAFE ZONE ok, OVERLAP none, BAND and HOOK read on the stills, FLOW (cuts 0, dead runs
 none, continuity 85%+, strobes 0-1), DEPTH lines, SOUND GATE ok and SOUND DETAIL ok after the render (every moving element heard, small high,
 medium mid, large low), the voice check, and design/owner-feedback.md line by line on the finished output.
