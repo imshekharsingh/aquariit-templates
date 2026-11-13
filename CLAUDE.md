@@ -146,6 +146,20 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
 - Automate as we go (owner, 27 Oct 2026): any step done by hand twice becomes a script, check or workflow step in the same change that repeats it.
   The roadmap is in design/webin20sec.md, "Automation roadmap".
 
+## @techin20sec: gadget channel built for brand collabs (owner, 13 Nov 2026; overrides the "3 settings" format)
+Owner: "Can we make it around something so that electronic gadget brands contact me for collab when my followers grow?" The channel helps
+viewers understand and choose gadgets (phones, earbuds, watches, chargers, laptops): (1) specs decoded (what mAh, nits, Hz, IP68, ANC really
+mean for you, and when a number is marketing), (2) worth it or not (is a feature worth paying extra for), (3) gadget myths (fast charging,
+megapixels, battery habits). Faceless, drawn products in the dark premium look (design/rules-tech.md); no filming for now.
+- Brands (owner, 13 Nov 2026: "We don't demean any brand or make them look bad compared to the good one; we highlight pros conservatively and
+  diplomatically so people learn where they stand"): real brand and product names may be said and shown as text for factual comparisons, every
+  product shown at its strengths, no "winner/loser", no mocking, no negative framing of any brand; never their logos, trade dress, product
+  photos or marketing art (products are drawn generically); every spec from the maker's official spec page or a primary source, cited in the config.
+  This overrides the copyright section's "no real company names" for @techin20sec only.
+- Audience mix (owner, 13 Nov 2026): 7 reels a week, 3 for India (prices in ₹, brands and models sold in India, Indian buying questions) and
+  4 global; formats and categories rotate so no two days in a row repeat the same format or gadget type; design/topics.md plans the week with an
+  "audience: india|global" column, and the mix carries over week to week and month to month (the audit reads reach by audience).
+
 ## @techin20sec test, 31 Oct-6 Nov 2026 (owner, 30 Oct; overrides any daily-run instruction to pick "the freshest tech story")
 - @techin20sec makes "Tech, explained in 20 s" reels, not news: design/webin20sec.md, "@techin20sec reels", has the brief and the pass/fail targets.
   The 6 Nov audit gives the owner the verdict (keep the format, or pause the channel).
