@@ -25,6 +25,8 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 18. (13 Nov) Is every touch a slim ring that leaves the button visible (no finger or blob, Output QA BULK), inside the safe zone? Is the subject never cut at the bottom and the lower third (above the subtitles) used? Does the grid have colour (jewel avatars, accents; Output QA VIBRANCY) without loud fills?
 
 ## @techin20sec
+15. Is every item the voice names (a card, a label, a number) already on screen when it is said, never an empty slot (13 Nov: "or the sauna" over an empty card)?
+16. Does each idea scene SHOW the idea, not just a label next to an object (13 Nov: dust scene was a flat phone with dots), and does a before/after show both states?
 13. Is every setting's path readable for 2 s+ and correct on both iPhone and Android as stated?
 14. Is the drawn phone UI generic (no real logos) and still clearly recognisable?
 15. (12 Nov) Do the hook's switches show the RESULT the reel asks for (a "turn off" setting must not flip ON in frame 0)? Are the paths at least 34 px (about 12 pt on a phone)?
