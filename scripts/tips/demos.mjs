@@ -409,4 +409,27 @@ export const demos = {
     // Safari on iOS applies :active only when the page listens for touchstart (BCD css.selectors.active, safari_ios note)
     js: `function(){ document.addEventListener('touchstart', function(){}, { passive: true }); }`,
   },
+  // the list demo (showreel-35-list, 13 Nov 2026): delete a row with and without the grid-template-rows collapse
+  list: {
+    css: `
+#list .pane{padding:8px}
+#list ul{list-style:none;margin:0;padding:0}
+#list li{display:grid;grid-template-rows:1fr}
+#list li>div{overflow:hidden}
+#list li span{display:flex;justify-content:space-between;align-items:center;margin:0 0 6px;padding:10px 12px;border-radius:12px;background:#ffffff12;font:600 15px system-ui,-apple-system,"Segoe UI",sans-serif}
+#list li button{border:0;border-radius:50%;width:26px;height:26px;background:#ffffff1a;color:inherit;cursor:pointer}
+#list .fix li{transition:.3s}
+#list .fix li.gone{grid-template-rows:0fr;opacity:0}`,
+    html: `
+<div class="pair">
+  ${['', 'fix'].map((c) => `<div class="pane ${c}"><span class="tag${c ? ' ok' : ''}">${c ? 'Collapse, then remove' : 'Remove at once'}</span><ul>${['Mia', 'Leo', 'Ava', 'Noah', 'Zoe'].map((n) => `<li><div><span>${n}<button type="button" aria-label="Delete ${n}">×</button></span></div></li>`).join('')}</ul></div>`).join('')}
+</div>
+<button class="play" type="button">Reset</button>
+<p class="note">Tap × in each list. On the left the row is removed at once and every row under it jumps up; on the right it fades while its grid row collapses to 0fr, and it is removed on transitionend.</p>`,
+    js: `function(root, btn){ var html = [].map.call(root.querySelectorAll('ul'), function(u){ return u.innerHTML; });
+  root.addEventListener('click', function(e){ var b = e.target.closest('li button'); if (!b) return; var li = b.closest('li');
+    if (!li.closest('.fix')) { li.remove(); return; }
+    li.addEventListener('transitionend', function(){ li.remove(); }, { once: true }); li.classList.add('gone'); });
+  btn.addEventListener('click', function(){ root.querySelectorAll('ul').forEach(function(u, i){ u.innerHTML = html[i]; }); }); }`,
+  },
 };

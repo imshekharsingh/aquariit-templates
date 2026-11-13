@@ -102,3 +102,8 @@ lever under test is the format and look (E18, read 14-15 Nov). They stay until a
 +27%, saves 4% vs 1.7%, 98 saves + shares, the best save rate on the channel; menus LOSE 1,180, -11%). Rule 13 is its gate. After E18 (Sun 15),
 the web reels alternate it with the winning single-fix look, so each format is read against the other on the same weeks.
 
+
+**ESCALATE 13 Nov** (median reach 1,552 over the last 7 vs 2,000; watch 8.8 s; saves 2.1%; ALARM two days running, flat since 12 Nov): answered by
+E23 try 1 (showreel-35-list: the broken and fixed lists deleting the same row side by side, in sync, a change of how the fix is shown, not a
+tweak) on E18 try 2 (dark). Carousel read LOSE at 24 h (814 vs 1,486, -45%, the snap fix a stranger cannot see on mute: rule 15's reason).
+PROMOTE details-format (2 WINs, 1 LOSE) was written on 12 Nov (above); nothing new to add.

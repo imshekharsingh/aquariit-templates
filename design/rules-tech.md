@@ -76,3 +76,8 @@ lifted watch 4.7 → 6.0 s, never reach: 117-123), rule 11 (platform balance; no
 and dropped the same day in the rewrite: its wins are inside the 113-133 pool (watch 6.0 / 5.2 / 6.4 s vs 4.7, reach flat), so it lifts
 watch, not reach. It is the fallback format if E17 is dropped on Sun 15 (not a rule while E17 runs).
 
+
+**13 Nov audit:** ESCALATE tech (median reach 120, ALARM two days running) is answered by E17 try 2 (showreel-tech-scam-calls), a format that
+is one day old, not a tweak: stop-tracking (E17 try 1, dark look) is the channel's best reel of the 7 at ~18 h, 152 reached and 2 saves,
+already past E17's 150 WIN line (24 h verdict at the next collect). PROMOTE tech-myth-verdict (3 WINs, +1-8%) was handled on 12 Nov (above):
+it stays the fallback format, not a rule, while E17 runs.

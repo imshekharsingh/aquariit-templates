@@ -23,6 +23,8 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   - letters spread on guide lines that snap into a word (R3);
   - a hand-drawn ring that circles a final number (R4).
 
+- [ ] 13 Nov 2026: support.google.com (Android help pages) is refused by the session's network (proxy 403), so tech reels cannot re-read Android setting paths the morning they are built (rules-tech.md rule 3): read them on GitHub instead (a small workflow step that fetches the topic's support.google.com sources and prints the matching lines), or ask the owner to allow the host.
+
 ## P2
 - [ ] @techin20sec topic shortlist from primary sources each morning on GitHub (roadmap 4): 3 candidates with sources and a viewer-stake hook.
 - [ ] One daily routine per channel that writes the script, renders stills to a private review page and stops (roadmap 3).

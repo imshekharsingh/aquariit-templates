@@ -62,3 +62,5 @@ medium mid, large low), the voice check, and design/owner-feedback.md line by li
 **12 Nov audit:** PROMOTE c3-journey (2 WINs, 0 LOSEs at 24 h: Sphinx 1,258 vs median 1,023, +23%; Opera House 1,224 vs 1,041, +18%) is
 rule 5 already; the c3 channel is OK (median reach 1,103 vs target 500). E19 (guess) starts today with showreel-c3-eiffel-red.
 
+
+**13 Nov audit:** PROMOTE c3-journey printed again (same 2 WINs); it is rule 5 since 12 Nov. c3 OK (median reach 1,154 vs target 500).
