@@ -846,7 +846,7 @@ def cabin(cm, ox, kind, t, calm, lab, label, scene_t0):
                 h_ = (wall_pt(side, u, 1)[1] - p0[1]) * .55
                 x0_, x1_ = sorted((p0[0], p0[0] + (p1[0] - p0[0]) * .4 + side * -60 * (1 - u)))
                 cm.rect(min(p0[0], x0_), p0[1], abs(x1_ - x0_) + 40 * (1 - u * .6), h_, r=14 * (1 - u * .5), fill=(70, 50, 36), outline=(110, 82, 58), width=2)
-        for j, (u, xs_) in enumerate(((.18, .3), (.18, .7), (.5, .4), (.5, .6))):   # poles and their swaying handles
+        for j, (u, xs_) in enumerate(((.18, .16), (.18, .84), (.5, .3), (.5, .7))):   # poles and their swaying handles
             top = _lerp_pt(_lerp_pt(NL, NR, xs_), _lerp_pt(BLt, BRt, xs_), u)
             bot = _lerp_pt(_lerp_pt(FL, FR, xs_), _lerp_pt(BLb, BRb, xs_), u)
             dep = 1 - u * .65
@@ -893,10 +893,8 @@ def cabin(cm, ox, kind, t, calm, lab, label, scene_t0):
     # the sign on the ceiling: the cabin's name, lit on its word
     if lab > .01:
         k = min(1.0, lab)
-        cm.rect(ox + 540 - 210, 650, 420, 150, r=30, fill=(14, 14, 18, int(230 * clamp(lab * 2))), outline=YEL + (int(255 * clamp(lab * 2)),), width=4)
+        cm.rect(ox + 540 - 210, 650, 420, 150, r=30, fill=(14, 14, 18, int(255 * clamp(lab * 2))), outline=YEL + (int(255 * clamp(lab * 2)),), width=4)
         cm.text(ox + 540, 727 + (1 - k) * 16, label, 104, YEL, 900, 'mm', a=clamp(lab * 1.8))
-    if calm > .05:
-        cm.text(ox + 540, 1290, 'ANC ON', 46, YEL, 900, 'mm', a=clamp(calm * 1.6))
 
 
 def set_ride(cm, fr, s, t, sc):

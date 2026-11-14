@@ -154,6 +154,20 @@
        "text": "FLIGHT",
        "cue": "flight"
       }
+     ],
+     "chips": [
+      {
+       "text": "BUS · ANC ON",
+       "cue": "bus"
+      },
+      {
+       "text": "METRO · ANC ON",
+       "cue": "metro"
+      },
+      {
+       "text": "FLIGHT · ANC ON",
+       "cue": "flight"
+      }
      ]
     }
    }
