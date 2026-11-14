@@ -34,7 +34,7 @@ def get(url, raw=False, tries=3, timeout=60):
         except Exception as e:   # noqa: BLE001 (any network error: retry, then give up on this source)
             err = e
             if i + 1 < tries:
-                time.sleep((20 + 25 * i) if '429' in str(e) else (2 + 4 * i))
+                time.sleep((60 + 60 * i) if '429' in str(e) else (2 + 4 * i))
     print(f'  fetch failed: {url[:120]} ({err})')
     return None
 
@@ -65,7 +65,7 @@ def norm_licence(s):
 
 # ---------- sources: each returns candidates {title, w, h, url (download), thumb, source_url, author, licence, licence_url, source, tags} ----------
 def wikimedia(q, n=20, title=None, pageid=None):
-    p = {'action': 'query', 'format': 'json', 'prop': 'imageinfo', 'iiprop': 'url|size|mime|extmetadata', 'iiurlwidth': '640'}
+    p = {'action': 'query', 'format': 'json', 'prop': 'imageinfo', 'iiprop': 'url|size|mime|extmetadata', 'iiurlwidth': '3840'}   # a standard rendition width: Wikimedia throttles originals and odd widths
     if pageid:
         p['pageids'] = str(pageid)
     elif title:
@@ -83,7 +83,7 @@ def wikimedia(q, n=20, title=None, pageid=None):
         lic = norm_licence(ev('License')) or norm_licence(ev('LicenseShortName'))
         restr = ev('Restrictions').lower()
         out.append({'title': pg.get('title', '').replace('File:', ''), 'w': ii.get('width', 0), 'h': ii.get('height', 0),
-                    'url': ii['url'], 'thumb': ii.get('thumburl') or ii['url'], 'source_url': ii.get('descriptionurl'),
+                    'url': ii.get('thumburl') or ii['url'], 'thumb': None, 'source_url': ii.get('descriptionurl'),
                     'author': ev('Artist') or ev('Credit') or 'unknown', 'licence': lic, 'licence_name': ev('LicenseShortName'),
                     'licence_url': ev('LicenseUrl'), 'source': 'wikimedia', 'tags': (ev('ImageDescription') + ' ' + ev('Categories')).lower(),
                     'restrict': restr, 'date': ev('DateTimeOriginal')})
@@ -278,7 +278,7 @@ def main():
                 break
         thumbs = []
         for i, c in enumerate(ranked[:6]):
-            tb = get(c['thumb'], raw=True, tries=1, timeout=15) if c.get('thumb') and not c['thumb'].startswith('nasa:') else None
+            tb = get(c['thumb'], raw=True, tries=1, timeout=15) if c.get('thumb') and not c['thumb'].startswith('nasa:') else None   # (Wikimedia: none, to stay under its rate limit)
             try:
                 t = Image.open(io.BytesIO(tb)).convert('RGB') if tb else None
             except Exception:   # noqa: BLE001
