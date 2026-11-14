@@ -855,7 +855,9 @@ var K25 = (function(){
     KB3 = Kt.kb([[tw0(1), VBARE[0] - .06, VBARE[1], VBARE[2]], [tw1(2), VBARE[0] + .06, VBARE[1] + .02, VBARE[2] * 1.12]]);
     KB4 = Kt.kb([[tw0(2), VNOW[0] + .2, VNOW[1] - .02, VNOW[2] * 1.45], [DUR, VNOW[0], VNOW[1], VNOW[2]]]);
   }
-  function shadeBand(){ Kt.screen(); x.fillStyle = lg(0, 620, 0, 960, [[0, 'rgba(10,12,22,0)'], [1, 'rgba(10,12,22,.62)']]); x.fillRect(0, 620, 540, 340);
+  function shadeBand(){ Kt.screen(); x.fillStyle = lg(0, 545, 0, 960, [[0, 'rgba(10,12,22,0)'], [.3, 'rgba(10,12,22,.62)'], [1, 'rgba(10,12,22,.82)']]); x.fillRect(0, 545, 540, 415);
+    // the subject pops (rules-c3.md rule 10, Output QA GRADE): the sides fall off a little so the lit middle of the photo leads the eye
+    var vg = x.createRadialGradient(270, 470, 170, 270, 470, 520); vg.addColorStop(0, 'rgba(10,12,22,0)'); vg.addColorStop(1, 'rgba(10,12,22,.62)'); x.fillStyle = vg; x.fillRect(0, 0, 540, 960);
     x.fillStyle = lg(0, 0, 0, 380, [[0, 'rgba(10,12,22,.55)'], [1, 'rgba(10,12,22,0)']]); x.fillRect(0, 0, 540, 380); }
   function mistOver(t, k){ if (k <= 0) return; Kt.screen(); x.save(); x.globalAlpha = k; Kt.motes(t, 22, 5, [0, 300, 540, 700], 'rgba(244,248,250,.45)', 1.6); x.restore(); }
   // depth over the photo (rules-c3.md rule 11): the photo is the far plane; mist, drifting motes and a near foreground layer sit at their own

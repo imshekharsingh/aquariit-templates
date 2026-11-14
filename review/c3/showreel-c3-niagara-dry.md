@@ -31,7 +31,7 @@ from the real rock on the reveal frame (hue 26).
 13. After the render: PENDING: written after the one render (Showreel run, Output QA incl. LICENCE and GUESS)
 14. Cuts: PASS: FLOW: cuts 0 (window.TRANSITIONS declares 3: zoom-through, page, match)
 15. Dead runs: PASS: FLOW: dead runs none (no window.HOLDS)
-16. Continuity: PASS: FLOW: continuity 100% (median step 4.9, 3 declared transitions)
+16. Continuity: PASS: FLOW: continuity 100% (median step 3.7, 3 declared transitions)
 17. Strobes: PASS: FLOW: strobes 0
 18. Element sound (web): n/a (Turns Out; every element sound in item 8)
 19. Journey: PASS: scenes 4 (the falls today, the guess and the drain to 1969; the dried riverbed upstream; the bare rock close while the months pass; the falls back on); transitions: zoom-through, page, match
@@ -39,5 +39,7 @@ from the real rock on the reveal frame (hue 26).
 
 Owner feedback, line by line (design/owner-feedback.md) against the stills: "did not look like Niagara" (14 Nov): it is the real Niagara now,
 both in 2026 and 1969; the answer is not shown before the guess (GUESS 0.0% before); no text over text; the colour: one cool present, one warm archive.
+
+Render 1 (run 43597817472, green frames) failed Output QA on two checks, both fixed before the one re-render: EDGES (the full-bleed photo touched the right edge; the photo stage is full-bleed by design, now declared in qa.edges_ok) and GRADE (cover: the curtain vs its surroundings 0.11, the winter mist below it as bright as the water; the lower band and the sides are now darkened, 0.24 measured on the local cover frame); GUESS 19.8% after, DEPTH 4 planes per world, QA clean.
 
 Critic (CLAUDE.md): CRITIC: PENDING (a different session watches the photo remake's render and writes READY or NOT READY here).
