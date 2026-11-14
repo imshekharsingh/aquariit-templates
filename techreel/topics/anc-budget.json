@@ -1,0 +1,338 @@
+{
+ "slug": "anc-budget",
+ "topic": "ANC",
+ "look": "idea",
+ "format": "WORTH IT OR NOT",
+ "header": "ANC on budget earbuds",
+ "audience": "india",
+ "gadget": "earbuds",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "dur": 23.0,
+ "max_end": 22.5,
+ "say": {
+  "3": "three"
+ },
+ "experiment": {
+  "id": "tech-gadget-specs",
+  "change": "E24 try 2: worth it or not, earbuds, India, in the idea look with two new worlds (sound waves that cancel, battery bars); a rupee readout chip (design/improvements.md)",
+  "vs": "median"
+ },
+ "hook": [
+  "Is budget ANC",
+  "worth it?"
+ ],
+ "hook_key": "ANC",
+ "lines": [
+  {
+   "text": "Is budget ANC worth it?"
+  },
+  {
+   "text": "A tiny mic hears the noise around you.",
+   "chunks": [
+    3,
+    2,
+    3
+   ],
+   "scene": {
+    "label": "MIC",
+    "kind": "wave",
+    "params": {
+     "world": "wave",
+     "tag": {
+      "glyph": "N",
+      "from_hook": 1,
+      "words": [
+       {
+        "text": "NOISE",
+        "cue": "noise"
+       },
+       {
+        "text": "HEARD",
+        "cue": "hears",
+        "gold": true
+       }
+      ]
+     },
+     "mic_cue": "mic",
+     "noise_cue": "noise",
+     "push": [
+      1.04,
+      600,
+      975
+     ],
+     "chips": [
+      {
+       "text": "A MIC LISTENS",
+       "cue": "mic"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "Then your earbud plays the opposite wave, and the two cancel out.",
+   "chunks": [
+    3,
+    3,
+    3,
+    3
+   ],
+   "scene": {
+    "label": "CANCEL",
+    "kind": "wave",
+    "params": {
+     "world": "wave",
+     "tag": {
+      "glyph": "C",
+      "words": [
+       {
+        "text": "OPPOSITE",
+        "cue": "opposite",
+        "gold": true
+       },
+       {
+        "text": "CANCELS IT",
+        "cue": "cancel"
+       }
+      ]
+     },
+     "opp_cue": "opposite",
+     "cancel_cue": "cancel",
+     "push": [
+      1.02,
+      600,
+      990
+     ]
+    }
+   }
+  },
+  {
+   "text": "It works best on steady hum, like a bus, the metro, or a flight.",
+   "chunks": [
+    3,
+    3,
+    3,
+    2,
+    3
+   ],
+   "scene": {
+    "label": "BEST FOR",
+    "kind": "slam",
+    "params": {
+     "tag": {
+      "words": [
+       {
+        "text": "STEADY HUM",
+        "cue": "steady",
+        "gold": true
+       }
+      ],
+      "sub": "low, steady sound",
+      "sub_cue": "hum"
+     },
+     "cards": [
+      {
+       "icon": "bus",
+       "text": "Bus",
+       "cue": "bus",
+       "dot": "green"
+      },
+      {
+       "icon": "metro",
+       "text": "Metro",
+       "cue": "metro",
+       "dot": "green"
+      },
+      {
+       "icon": "plane",
+       "text": "Flight",
+       "cue": "flight",
+       "dot": "green"
+      }
+     ],
+     "push": [
+      1.07,
+      510,
+      975
+     ]
+    }
+   }
+  },
+  {
+   "text": "But it costs battery: Nord Buds 3 last twelve hours, or eight with ANC on.",
+   "chunks": [
+    4,
+    4,
+    3,
+    4
+   ],
+   "scene": {
+    "label": "BATTERY",
+    "kind": "bars",
+    "params": {
+     "tag": {
+      "words": [
+       {
+        "text": "IT COSTS",
+        "cue": "costs"
+       },
+       {
+        "text": "BATTERY",
+        "cue": "battery",
+        "gold": true
+       }
+      ],
+      "sub": "OnePlus Nord Buds 3, per OnePlus",
+      "sub_cue": "Nord"
+     },
+     "rows": [
+      {
+       "label": "ANC OFF",
+       "value": 12,
+       "unit": "H",
+       "cue": "twelve"
+      },
+      {
+       "label": "ANC ON",
+       "value": 8,
+       "unit": "H",
+       "cue": "eight",
+       "gold": true
+      }
+     ],
+     "max": 12,
+     "chips": [
+      {
+       "text": "₹2,799 WITH 32 dB ANC",
+       "cue": "Nord"
+      }
+     ],
+     "push": [
+      1.09,
+      510,
+      940
+     ]
+    }
+   }
+  },
+  {
+   "text": "So it's worth it on a noisy commute, not in a quiet room.",
+   "chunks": [
+    3,
+    3,
+    4,
+    3
+   ],
+   "scene": {
+    "label": "VERDICT",
+    "kind": "verdict",
+    "params": {
+     "tag": {
+      "words": [
+       {
+        "text": "THE VERDICT",
+        "cue": "so",
+        "gold": true
+       }
+      ]
+     },
+     "glyphs": "ANC",
+     "good": {
+      "icon": "bus",
+      "text": "COMMUTE",
+      "cue": "commute"
+     },
+     "bad": {
+      "icon": "home",
+      "text": "QUIET ROOM",
+      "cue": "quiet"
+     },
+     "push": [
+      1.07,
+      510,
+      1000
+     ]
+    }
+   }
+  }
+ ],
+ "post": {
+  "title": "Is ANC worth it on budget earbuds?",
+  "caption": "Is ANC worth it on budget earbuds? 🎧\n\nHow it works: a tiny mic on each earbud hears the sound around you, and the earbud plays the opposite wave, so the two cancel out.\nWhere it shines: steady, low hum (bus, metro, flights). Voices and sudden sounds still get through more.\nWhat it costs: battery. OnePlus Nord Buds 3 (₹2,799 with up to 32 dB ANC on OnePlus India) play up to 12 hours with ANC off and 8 hours with it on (earbuds alone, 50% volume, OnePlus's own tests).\n\nWorth it on a noisy commute, skip it for a quiet room. Would you pay for ANC? yes or no in the comments, and send this to the friend shopping for earbuds.",
+  "keywords": [
+   "is ANC worth it",
+   "ANC earbuds under 3000",
+   "how does ANC work",
+   "noise cancelling earbuds battery",
+   "best budget ANC earbuds India",
+   "active noise cancellation explained"
+  ],
+  "hashtags": [
+   "#anc",
+   "#tws",
+   "#earbuds",
+   "#budgetearbuds",
+   "#techtips"
+  ],
+  "sources": [
+   {
+    "url": "https://www.oneplus.in/oneplus-nord-buds-3/specs",
+    "note": "OnePlus India, Nord Buds 3 specs: up to 32 dB ANC (OnePlus lab results); earbuds up to 12 h with ANC off and 8 h with ANC on, 43 h / 28 h with the case (AAC, 50% volume, OnePlus tests) (read 14 Nov 2026 via search, the session cannot open oneplus.in)"
+   },
+   {
+    "url": "https://www.oneplus.in/product/oneplus-nord-buds-3",
+    "note": "OnePlus India store: Nord Buds 3 at ₹2,799 (MRP, inclusive of all taxes) (read 14 Nov 2026 via search)"
+   },
+   {
+    "url": "https://www.apple.com/in/airpods-4/specs/",
+    "note": "Apple India, AirPods specs: up to 4 h with Active Noise Cancellation enabled vs up to 6 h with noise control off: the same cost on another maker's buds (read directly 14 Nov 2026; not shown on screen)"
+   },
+   {
+    "url": "https://arxiv.org/pdf/2507.07043",
+    "note": "Feedforward ANC uses external microphones and anti-phase signals; effective primarily for stationary, low-frequency sounds (the mechanism and why steady hum)"
+   }
+  ]
+ },
+ "hook_glyphs": {
+  "text": "ANC",
+  "size": 330,
+  "y": 830,
+  "wave": {
+   "amp": 130,
+   "dy": 0,
+   "flat_from": 150,
+   "x0": 40,
+   "x1": 1040
+  },
+  "labels": [
+   {
+    "i": 0,
+    "text": "ACTIVE",
+    "t": 0.45
+   },
+   {
+    "i": 1,
+    "text": "NOISE",
+    "t": 0.8
+   },
+   {
+    "i": 2,
+    "text": "CANCELLING",
+    "t": 1.15,
+    "gold": true
+   }
+  ]
+ },
+ "qa": {
+  "sync": [
+   "bus",
+   "metro",
+   "flight",
+   "commute",
+   "quiet"
+  ]
+ }
+}

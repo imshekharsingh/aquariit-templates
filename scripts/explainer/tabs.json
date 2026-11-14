@@ -1,0 +1,84 @@
+{
+ "name": "showreel-36-tabs",
+ "seek": "scripts/explainer/tabs.html",
+ "dur": 20,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.6,
+ "style": "Ink and mint (E18 dark-return try 3, E23 dynamic fix try 2)",
+ "palette": "dark",
+ "voice": {
+  "text": "Why does your tab line jump? Each tab draws its own underline. Tap another, and it blinks across. The fix: one line for every tab. Move it with translate, and stretch it with scale. Watch it slowed down. It slides, and stretches to fit. Now your tabs glide.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": [
+   0.6,
+   0.35,
+   0.4,
+   0.6,
+   0.6,
+   0.5,
+   0.6
+  ]
+ },
+ "caption": "Why does your tab underline jump instead of slide? 〰️\n\nWhen every tab draws its own border-bottom, switching tabs turns one border off and another on in the same frame, so the line blinks across and the eye has to find it again. Use ONE indicator for the whole bar instead: a 1px-wide line with transform-origin: left and transition: transform .3s, and on every tap set its transform to translateX(the tab's offsetLeft) scaleX(the tab's offsetWidth). It slides to the new tab and stretches to its width, and transform is the cheapest thing a browser can animate. Works in every current browser.\nSave it for your next tab bar, or send it to whoever built your app's tabs.",
+ "keywords": [
+  "tab underline animation CSS",
+  "sliding tab indicator",
+  "animated tabs CSS",
+  "translateX scaleX indicator",
+  "tab bar animation",
+  "CSS tips"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#cssanimation",
+  "#webanimation",
+  "#uidesign",
+  "#frontenddev"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translateX",
+   "note": "MDN translateX(): repositions an element horizontally; transform functions (translateX, scaleX) are animatable and supported in every current browser (BCD css.properties.transform: Chrome 36, Firefox 16, Safari 9 unprefixed)"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/scaleX",
+   "note": "MDN scaleX(): resizes an element along the x-axis; with transform-origin: left a 1px line scaled by the tab's width covers the tab"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetLeft",
+   "note": "MDN offsetLeft / offsetWidth: the tab's position and width inside its bar, read on tap"
+  }
+ ],
+ "tip": {
+  "title": "Why does your tab underline jump instead of slide?",
+  "why": "A border-bottom on each tab turns off under one tab and on under the next in the same frame, so the line blinks across. One indicator for the whole bar, moved with translateX and stretched with scaleX under a transform transition, slides to the tapped tab and fits its width. Transforms are animatable in every current browser (MDN, BCD).",
+  "code": ".ink {\n  position: absolute; bottom: 0; left: 0;\n  width: 1px; height: 3px;\n  transform-origin: left;\n  transition: transform .3s;\n}\n/* on tap */\nink.style.transform =\n  `translateX(${tab.offsetLeft}px) scaleX(${tab.offsetWidth})`;",
+  "demo": "tabs",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translateX",
+   "label": "MDN, translateX()"
+  }
+ },
+ "experiment": {
+  "id": "dynamic-fix",
+  "change": "E23 try 2: dynamic before/after in sync (BEFORE blinks over AFTER slides), on E18's dark single fix (try 3); the code card lights only the changed line",
+  "vs": "median"
+ },
+ "format": "single",
+ "qa": {
+  "mute": {
+   "before": {
+    "say": "blinks"
+   },
+   "after": {
+    "say": "glide"
+   },
+   "span": 1.5
+  }
+ }
+}

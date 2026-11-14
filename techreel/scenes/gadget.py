@@ -122,6 +122,31 @@ def icon(sf, kind, cx, cy, s=1.0, col=TXT, a=255):
         for j in range(3):
             sf.line([(cx - 18 * s, cy - 16 * s + j * 12 * s), (cx - 8 * s, cy - 16 * s + j * 12 * s)], c, w * .6)
 
+    elif kind == 'bus':   # a city bus, side on (14 Nov 2026, ANC reel)
+        sf.rect(cx - 28 * s, cy - 18 * s, 56 * s, 32 * s, r=7 * s, outline=c, width=w)
+        for j in range(3):
+            sf.rect(cx - 22 * s + j * 15 * s, cy - 12 * s, 11 * s, 10 * s, r=2 * s, fill=c)
+        for x in (-16, 16):
+            sf.circle(cx + x * s, cy + 16 * s, 6 * s, fill=c)
+    elif kind == 'metro':   # a train front: rounded body, two windows' split, lights, rails
+        sf.rect(cx - 20 * s, cy - 26 * s, 40 * s, 44 * s, r=11 * s, outline=c, width=w)
+        sf.rect(cx - 13 * s, cy - 18 * s, 26 * s, 14 * s, r=3 * s, fill=c)
+        for x in (-10, 10):
+            sf.circle(cx + x * s, cy + 8 * s, 3.5 * s, fill=c)
+        sf.line([(cx - 14 * s, cy + 20 * s), (cx - 22 * s, cy + 30 * s)], c, w * .8)
+        sf.line([(cx + 14 * s, cy + 20 * s), (cx + 22 * s, cy + 30 * s)], c, w * .8)
+    elif kind == 'plane':   # a plane from above
+        sf.poly([(cx - 4 * s, cy - 28 * s), (cx + 4 * s, cy - 28 * s), (cx + 5 * s, cy + 22 * s), (cx - 5 * s, cy + 22 * s)], fill=c)
+        sf.poly([(cx - 30 * s, cy + 2 * s), (cx + 30 * s, cy + 2 * s), (cx + 4 * s, cy - 10 * s), (cx - 4 * s, cy - 10 * s)], fill=c)
+        sf.poly([(cx - 13 * s, cy + 24 * s), (cx + 13 * s, cy + 24 * s), (cx + 3 * s, cy + 16 * s), (cx - 3 * s, cy + 16 * s)], fill=c)
+    elif kind == 'home':   # a quiet room: a house with a closed door
+        sf.poly([(cx - 26 * s, cy - 4 * s), (cx, cy - 26 * s), (cx + 26 * s, cy - 4 * s)], fill=c)
+        sf.rect(cx - 19 * s, cy - 6 * s, 38 * s, 30 * s, r=3 * s, outline=c, width=w)
+        sf.rect(cx - 6 * s, cy + 6 * s, 12 * s, 18 * s, r=2 * s, fill=c)
+    elif kind == 'battery':
+        sf.rect(cx - 26 * s, cy - 14 * s, 48 * s, 28 * s, r=6 * s, outline=c, width=w)
+        sf.rect(cx + 23 * s, cy - 6 * s, 6 * s, 12 * s, r=2 * s, fill=c)
+        sf.rect(cx - 20 * s, cy - 8 * s, 26 * s, 16 * s, r=3 * s, fill=c)
 
 def tick(sf, cx, cy, s, col, width=5):
     sf.line([(cx - 13 * s, cy), (cx - 4 * s, cy + 10 * s), (cx + 14 * s, cy - 11 * s)], col, width)

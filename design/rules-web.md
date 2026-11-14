@@ -107,3 +107,11 @@ the web reels alternate it with the winning single-fix look, so each format is r
 E23 try 1 (showreel-35-list: the broken and fixed lists deleting the same row side by side, in sync, a change of how the fix is shown, not a
 tweak) on E18 try 2 (dark). Carousel read LOSE at 24 h (814 vs 1,486, -45%, the snap fix a stranger cannot see on mute: rule 15's reason).
 PROMOTE details-format (2 WINs, 1 LOSE) was written on 12 Nov (above); nothing new to add.
+
+**ESCALATE 14 Nov** (median reach 1,557 over the last 7 vs 2,000; watch 10 s; saves 2.1%; ALARM two days running, flat): the change is already in
+flight and winning early, so it continues rather than being swapped for a tweak: E23 try 1 (showreel-35-list, broken and fixed lists in sync)
+reached 2,273 at ~10 h, the best web reel of the last 7 (7 h: 1,818 vs the 6 h median 1,288, "fast start"), 17 saves and 5.3 shares per 1,000.
+Today: E23 try 2 on E18 try 3, showreel-36-tabs (a tab underline that blinks vs one that slides, BEFORE over AFTER, tapped in sync). PROMOTE
+details-format printed again (2 WINs, 1 LOSE): it is rule 13 since 12 Nov. RULE lines 2, 3, 4, 6, 8, 9 "question it" again: still hygiene
+(every reel passes them); the lever under test is how the fix is shown (E23).
+

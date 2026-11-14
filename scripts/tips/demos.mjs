@@ -432,4 +432,22 @@ export const demos = {
     li.addEventListener('transitionend', function(){ li.remove(); }, { once: true }); li.classList.add('gone'); });
   btn.addEventListener('click', function(){ root.querySelectorAll('ul').forEach(function(u, i){ u.innerHTML = html[i]; }); }); }`,
   },
+  tabs: {
+    css: `
+#tabs .bar{position:relative;display:flex;justify-content:space-around;border-bottom:1px solid #ffffff1f}
+#tabs .bar button{border:0;background:none;color:inherit;padding:12px 10px;font:600 15px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;opacity:.7;border-bottom:3px solid transparent}
+#tabs .bar button.on{opacity:1}
+#tabs .bad button.on{border-bottom-color:currentColor}
+#tabs .ink{position:absolute;left:0;bottom:-1px;width:1px;height:3px;background:currentColor;transform-origin:left;transition:transform .3s}`,
+    html: `
+<div class="pair">
+  ${['bad', 'fix'].map((c) => `<div class="pane ${c}"><span class="tag${c === 'fix' ? ' ok' : ''}">${c === 'fix' ? 'One line, translateX + scaleX' : 'A border on each tab'}</span><div class="bar">${['For you', 'Following', 'Saved'].map((n, i) => `<button type="button"${i ? '' : ' class="on"'}>${n}</button>`).join('')}${c === 'fix' ? '<span class="ink"></span>' : ''}</div></div>`).join('')}
+</div>
+<p class="note">Tap the tabs in each bar. On the left each tab draws its own border, so the line blinks from tab to tab; on the right one line slides to the tapped tab and stretches to its width.</p>`,
+    js: `function(root){ root.querySelectorAll('.bar').forEach(function(bar){ var ink = bar.querySelector('.ink');
+    function go(b){ bar.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+      if (ink) ink.style.transform = 'translateX(' + b.offsetLeft + 'px) scaleX(' + b.offsetWidth + ')'; }
+    bar.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) go(b); });
+    if (ink) { ink.style.transition = 'none'; go(bar.querySelector('button')); ink.getBoundingClientRect(); ink.style.transition = ''; } }); }`,
+  },
 };

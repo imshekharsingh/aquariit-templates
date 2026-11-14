@@ -22,6 +22,10 @@ attic/design/rules-tech-2026-11-12.md; its palette (L7), pronunciation, FLOW and
   generically by us); every spec from the maker's official spec or support page (or the standard), cited in the topic's "sources" with the date read.
 - **F4. One useful verdict a viewer can act on**, said in the last line and shown on the product ("IP68 saves a spill, not a swim"): the
   reason to save and send. The caption repeats it in text with the numbers and invites a send to a named kind of friend.
+- **F5. Myth days carry a verdict stamp** (PROMOTED 14 Nov 2026, tech-myth-verdict: 3 WINs of 3 at 24 h and 72 h: close-apps 123 vs median
+  114, +8%, watch 6.0 s vs 4.7; heat-battery 117 vs 116, watch 5.2 s; drain-zero 119 vs 117, watch 6.3 s): on a gadget-myths reel the belief
+  is stamped MYTH (or TRUE) in frame 0 and the stamp returns on the verdict. It lifted watch time every time, reach only a little, so it is a
+  rule for the myth format, not the lever that fixes reach.
 
 ## Look and motion: the idea look (G9-G13; techreel/scenes/idea.py, topic `"look": "idea"`; the default for every tech reel from 13 Nov)
 Owner, 13 Nov 2026: "Tech reel animation doesn't live up to expectation"; "Let's build it with new animation." The parent review of the gadget
@@ -82,3 +86,8 @@ showreel-tech-ip68 on; E24 (gadget format) keeps counting its 3 reels in this lo
 giant type stays inside the safe zone (x 60-1020); each idea scene shows the mechanism itself (dust stopped at a sealed seam, water rising
 against a ruler), not an object with a label; a before/after shows both states side by side. The Output QA gets a SYNC check (words read on
 screen vs the words spoken in the same 1 s) in design/todo.md.
+
+**14 Nov audit:** ALARM tech (median reach 121 over the last 7 vs 300) and ESCALATE (two days running): answered by the format change already
+running, the gadget channel (E24) in the idea look: try 1 IP68 reached 343 at 7 h (2.8x the channel median, the best tech reel since 1 Nov,
+hold 47% vs 29%); try 2 today is a different format and gadget (worth it or not, earbuds, India: showreel-tech-anc-budget, two new worlds,
+sound waves that cancel and battery bars). Not a tweak: the change is 2 reels old, so it is read at 3 (Sun 15) before anything else changes.

@@ -1,0 +1,32 @@
+# Review: showreel-tech-anc-budget (tech, postOn 2026-11-14 postAt 13:00 IST)
+
+The Mandatory Gate, design/mandatory.md. Gadget channel try 2 (E24): worth it or not, earbuds, India, in the idea look (techreel/scenes/idea.py,
+design/rules-tech.md F1-F5, G5-G13), built 14 Nov ~07:00-08:30 IST by the daily run. Two new worlds in the kit: `wave` (noise, the opposite wave,
+what you hear) and `bars` (batteries that fill to the hours said). AUTO lines from `make.py anc-budget --fake-vo --stills ...` (fake timings),
+one sheet of 12 stills read at 270 px wide.
+
+1. Topic: PASS: rule F1 pass (worth it or not, earbuds; yesterday was specs decoded, phone), F2 pass (india: ₹2,799, a model sold on OnePlus India, metro and bus commutes; the week's mix 3 india / 4 global), F3 pass (OnePlus named as text only, at its strengths: "₹2,799 with 32 dB ANC", "per OnePlus"; no logo, no product photo, the bud drawn generically; no winner or loser), F4 pass (the verdict said and shown two-up: worth it on a noisy commute, not in a quiet room; the caption repeats it with the numbers and asks who to send it to), F5 n/a (not a myth day), G5 pass (near-black, one gold accent, green only as small dots), G6 pass (frame 0 = the giant ANC with a noise wave rolling behind it and going flat behind the C), G9 pass (one subject per scene at full-frame scale: the giant term, the bud and its waves across the frame, three frame-wide cards, two frame-wide batteries, the verdict panels), G10 pass (5 worlds: giant type, the wave world, cards, batteries, verdict), G11 pass (the idea moves: the mic lights and the noise arcs reach it, the gold wave draws in from the bud and what you hear goes flat on "cancel", cards slam with a jolt, batteries fill to their hours with a charge sheen), G12 pass (a push towards each subject, the drift never stops, declared zoom-throughs), G13 pass (12 H and 8 H pop on "twelve" and "eight", no rolling digits), V1 pass (64 words, about 20.8 s at speed 1.0), V2 pass (ANC added to the shared lexicon as letters, "3" said "three"), V4 pass (13:00, not done on either channel before)
+2. Frame 0: PASS: the giant ANC (330 px) with a grey noise wave rolling through it that flattens into a gold line behind the C, ACTIVE / NOISE / CANCELLING springing in under the letters by 1.15 s, the hook "Is budget ANC worth it?" whole in the caption band with ANC gold; readable at thumbnail size
+3. Safe zone: PASS: SAFE ZONE: ok (first sheet: the battery labels at x 57 at the full push; the batteries moved in to x 140-880)
+4. No overlap: PASS: OVERLAP: none; captions in their own band over the dark bed
+5. Motion: PASS: a big change every 1.5-3 s (the word splitting, the wave rolling and the mic lighting, three tracks opening, the gold wave drawing in, the sum flattening, three slams, two batteries filling, the letters reassembling, two panels); waiting slots hold a faint bobbing ghost of their card; FLOW continuity 90% (first sheet 79%: the empty slots and batteries stood still; the ghosts, a charge sheen, marching dashes and stronger pushes fixed it)
+6. Subtitles: PASS: word-by-word captions, every chunk list covers its line (make.py refuses one short by a word: two were fixed, "it's" counts as two words); every line shown and finished on the stills
+7. Voice: PASS: PREFLIGHT voice: 250 letters, about 20.8 s at speed 1.00 (limit 22.5): fits; PRONUNCIATION: 2 overrides used: ANC, 3 (config); no unchecked words; speed 1.0 on every line; the shortest line "Is budget ANC worth it?" is the hook
+8. Sound: PASS: ELEMENTS: 54 element sounds (small high 25, medium mid 18, large low 11); longest gap 1.5 s at 8.3 s (first sheet 1.8 s: a ghost-landing tick per verdict panel, the WHAT YOU HEAR label, the gold wave reaching the far end and the flat line settling were added); recorded CC0 samples (render: SOUND SOURCE)
+9. Payoff: PASS: the last scene is the verdict two-up, COMMUTE (gold, a green dot) on "commute" and QUIET ROOM on "quiet", the giant ANC reassembled above them; it holds to the end
+10. Facts: PASS: OnePlus India Nord Buds 3 specs (up to 32 dB ANC; earbuds up to 12 h ANC off / 8 h ANC on at 50% volume, AAC, OnePlus tests) and store price ₹2,799 (read via search 14 Nov, the session cannot open oneplus.in); Apple India AirPods specs read directly (4 h with ANC vs 6 h with noise control off: the same cost on another maker's buds, caption source only); the mechanism and "steady, low sound" from a feedforward ANC review (arXiv 2507.07043)
+11. Post data: PASS: captions.json entry (channel tech, postOn 2026-11-14, postAt 13:00, concept, experiment); 6 keywords, 5 hashtags; 4 sources with dates
+12. Review file: PASS: this file, items 1-11 and 14-17
+13. After the render: PENDING
+14. Cuts: PASS: FLOW: cuts 0 (6 declared transitions: zoom-throughs into the wave world, the cards, the batteries and the verdict, a glide inside the wave world, the end fade)
+15. Dead runs: PASS: FLOW: dead runs none
+16. Continuity: PASS: FLOW: continuity 90% (median step 1.6, 6 declared transitions)
+17. Strobes: PASS: FLOW: strobes 0
+
+Owner-feedback lines against the stills (the render is checked again at 13): every named item on screen when said (bus, metro, flight cards, ghosts first; COMMUTE / QUIET ROOM panels on their words; qa.sync lists them); big type inside the safe zone; each idea scene shows the mechanism (the waves cancelling, the batteries filling), not an object with a label; the before/after (ANC off / on) shows both states one above the other; no saturated fills (the only colour is gold and two small green dots); natural speed 1.0; would an Android or iPhone owner feel it is for them? yes, earbuds of any brand, the example is a ₹2,799 pair.
+
+Would this make me stop scrolling and watch it twice? Stop: yes, a giant ANC with a sound wave dying behind it, asking the question every budget buyer asks. Twice: the three tracks cancelling to a flat line is the "oh, that's how" moment, and the battery bars give the number to send to a friend.
+
+Today's improvement (design/improvements.md, tech): a ₹ readout chip next to what it buys ("₹2,799 WITH 32 dB ANC") on an India worth-it day (source: https://velio.co/tag/viral-video-ideas-for-tech-youtube-channel/). The top item (frame 0 = a surprising number) waits for a specs-decoded day with one headline number.
+
+References used (design/references.md): none new.
