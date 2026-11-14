@@ -157,15 +157,15 @@
      ],
      "chips": [
       {
-       "text": "Bus · ANC on",
+       "text": "ANC on · Bus",
        "cue": "bus"
       },
       {
-       "text": "Metro · ANC on",
+       "text": "ANC on · Metro",
        "cue": "metro"
       },
       {
-       "text": "Flight · ANC on",
+       "text": "ANC on · Flight",
        "cue": "flight"
       }
      ]

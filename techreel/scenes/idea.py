@@ -808,8 +808,9 @@ def cabin(cm, ox, kind, t, calm, lab, label, scene_t0):
         u = 1 - (1 - j / 6) ** 1.8
         cm.line([_lerp_pt(FL, BLb, u), _lerp_pt(FR, BRb, u)], (255, 255, 255, 12), 2)
     # the light strip down the ceiling's middle, bright, with bloom from post()
-    cm.poly([_lerp_pt(NL, NR, .44), _lerp_pt(NL, NR, .56), _lerp_pt(BLt, BRt, .56), _lerp_pt(BLt, BRt, .44)], fill=(255, 236, 196, 120 if kind != 'plane' else 70))
-    cm.poly([_lerp_pt(NL, NR, .48), _lerp_pt(NL, NR, .52), _lerp_pt(BLt, BRt, .52), _lerp_pt(BLt, BRt, .48)], fill=(255, 246, 226, 230))
+    # (two strips off the middle, so the sign in the middle stays clear: clarity first, owner 14 Nov)
+    for u0 in (.2, .74):
+        cm.poly([_lerp_pt(NL, NR, u0), _lerp_pt(NL, NR, u0 + .06), _lerp_pt(BLt, BRt, u0 + .06), _lerp_pt(BLt, BRt, u0)], fill=(255, 236, 196, 70 if kind != 'plane' else 45))
 
     def wall_pt(side, u, v):   # a point on a side wall: u = depth (0 near, 1 back), v = height (0 top, 1 bottom)
         top = _lerp_pt(NL if side < 0 else NR, BLt if side < 0 else BRt, u)
@@ -846,7 +847,7 @@ def cabin(cm, ox, kind, t, calm, lab, label, scene_t0):
                 h_ = (wall_pt(side, u, 1)[1] - p0[1]) * .55
                 x0_, x1_ = sorted((p0[0], p0[0] + (p1[0] - p0[0]) * .4 + side * -60 * (1 - u)))
                 cm.rect(min(p0[0], x0_), p0[1], abs(x1_ - x0_) + 40 * (1 - u * .6), h_, r=14 * (1 - u * .5), fill=(70, 50, 36), outline=(110, 82, 58), width=2)
-        for j, (u, xs_) in enumerate(((.18, .16), (.18, .84), (.5, .3), (.5, .7))):   # poles and their swaying handles
+        for j, (u, xs_) in enumerate(((.18, .16), (.18, .84))):   # (the back poles crossed the sign and the chip: clarity first)   # poles and their swaying handles
             top = _lerp_pt(_lerp_pt(NL, NR, xs_), _lerp_pt(BLt, BRt, xs_), u)
             bot = _lerp_pt(_lerp_pt(FL, FR, xs_), _lerp_pt(BLb, BRb, xs_), u)
             dep = 1 - u * .65
@@ -888,12 +889,12 @@ def cabin(cm, ox, kind, t, calm, lab, label, scene_t0):
                 cm.rect(x0_ + 14 * dep, p0[1] + 10 * dep, x1_ - x0_ - 28 * dep, 46 * dep, r=12 * dep, fill=(220, 224, 232, 200))
     # the bud in the aisle and the noise rings round it (perspective: flattened)
     bx, by = ox + 540, 1110
-    rings(cm, bx, by + 20, t, calm, n=3, r0=110, r1=420, amp=24, a=1.0, ry=.62, ph=ox * .001)
+    rings(cm, bx, by + 20, t, calm, n=3, r0=100, r1=330, amp=20, a=.75, ry=.42, ph=ox * .001)
     earbud(cm, bx, by - 40, .5, t, calm)
     # the sign on the ceiling: the cabin's name, lit on its word
     if lab > .01:
         k = min(1.0, lab)
-        cm.rect(ox + 540 - 210, 650, 420, 150, r=30, fill=(14, 14, 18, int(255 * clamp(lab * 2))), outline=YEL + (int(255 * clamp(lab * 2)),), width=4)
+        cm.rect(ox + 540 - 240, 640, 480, 170, r=36, fill=(10, 10, 13, int(255 * clamp(lab * 2))))   # no outline: OCR read it as underscores
         cm.text(ox + 540, 727 + (1 - k) * 16, label, 104, YEL, 900, 'mm', a=clamp(lab * 1.8))
 
 
