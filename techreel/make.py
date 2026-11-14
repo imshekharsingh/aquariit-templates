@@ -390,11 +390,21 @@ def main():
     m = json.loads(meas[meas.rindex('{'):meas.rindex('}') + 1])
     ln = (f"loudnorm=I=-14.5:TP=-1.5:LRA=7:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
           f":measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
-    ln += ',alimiter=limit=0.75:attack=1:release=60:level=disabled'   # (15 Nov 2026, run 43633250649: AAC overshoot left -0.7 dBTP) peaks held near -2.5 dBFS so the encode stays under -1 dBTP
     final = os.path.join(out, slug + '.mp4')
-    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', mp4_silent, '-i', mix_wav, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-af', ln, '-ar', '48000',
-                    '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', final], check=True)
-    eb = subprocess.run(['ffmpeg', '-hide_banner', '-i', final, '-af', 'ebur128=peak=true', '-f', 'null', '-'], capture_output=True, text=True).stderr
+    # (15 Nov 2026, runs 43633250649 and 43634905195: -0.7 dBTP on the final AAC with and without a fixed limiter) encode, measure the true
+    # peak of the encoded file, and while it is over -1.2 dBTP encode again with the limiter lowered by the excess (at most 3 tries)
+    lim = .75
+    for _try in range(4):
+        af = ln + f',afade=t=out:st={DUR - .4:.2f}:d=0.4,alimiter=limit={lim:.4f}:attack=1:release=60:level=disabled'   # a 0.4 s fade: no hard stop for the encoder
+        subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', mp4_silent, '-i', mix_wav, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-af', af, '-ar', '48000',
+                        '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', final], check=True)
+        eb = subprocess.run(['ffmpeg', '-hide_banner', '-i', final, '-af', 'ebur128=peak=true', '-f', 'null', '-'], capture_output=True, text=True).stderr
+        tp0 = re.search(r'Peak:\s+(-?[\d.]+) dBFS', eb[eb.rfind('Summary:'):])
+        tpv0 = float(tp0.group(1)) if tp0 else 0.0
+        print(f'mux try {_try + 1}: limiter {20 * math.log10(lim):.1f} dBFS, true peak {tpv0} dBTP', flush=True)
+        if tpv0 <= -1.2:
+            break
+        lim *= 10 ** ((-1.6 - tpv0) / 20)
     summ = eb[eb.rfind('Summary:'):]
     lufs = re.search(r'I:\s+(-?[\d.]+) LUFS', summ)
     tp = re.search(r'Peak:\s+(-?[\d.]+) dBFS', summ)
