@@ -17,6 +17,8 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 10. Do counters and dates on screen equal the facts said (12 Nov: "8" shown for "seven colours")?
 15. Does something small land and get heard every 0.5-1 s in every world (qa.mjs BUSY ok; 12 Nov: 2.4 s with nothing at the payoff), is each detail readable at phone size (not specks), and does no detail in the guess world hint at the answer?
 
+24. (14 Nov, critic) Is no option word coloured as a key word before the reveal (the caption "Frozen, drained, or moved?" lit "drained" amber while the viewer was guessing: a STYLE.hl word must match the answer line only, e.g. /drained\./)?
+
 22. (13 Nov, colour) On the cover at phone size, does the subject pop off its background (a white icon never on a pale sky)? Does every scene look like the same film (one sky and light family, no fog wash, no sudden hue jump), every title on a solid dark plate, one accent colour, hardly any floating particles (Output QA GRADE)?
 
 ## @webin20sec
