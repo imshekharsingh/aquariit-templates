@@ -1,9 +1,9 @@
 {
  "name": "showreel-tech-charger-watts",
- "why": "Media request for the Sun 15 Nov tech reel (fetched before the build; the topic file techreel/topics/charger-watts.json carries the same list with the MEDIA_JSON fields)",
+ "why": "Media request for the Sun 15 Nov tech reel, second pass: run 43623733260 picked an electric-car plug and a burnt board; this pass pins a public-domain USB-C cable photo and asks for a generic wall charger cut-out (the sun stays as fetched)",
  "media": [
-  {"id": "cable", "queries": ["USB-C cable", "USB Type-C connector", "charging cable plug"], "sources": ["wikimedia", "openverse"], "avoid": ["apple", "samsung", "anker", "iphone", "logo", "person", "hand", "people"], "min_side": 1200},
-  {"id": "circuit", "queries": ["printed circuit board macro", "circuit board close up", "electronics circuit board"], "sources": ["wikimedia", "openverse"], "avoid": ["logo", "intel", "person", "hand", "people", "text"], "min_side": 1400},
+  {"id": "cable", "url": "https://commons.wikimedia.org/wiki/File:USB-C-connector-and-cable.png"},
+  {"id": "brick", "queries": ["USB wall charger", "USB power adapter white background", "phone charger adapter"], "sources": ["wikimedia", "openverse"], "avoid": ["apple", "samsung", "anker", "xiaomi", "huawei", "logo", "person", "hand", "people", "car", "ev"], "cut": true, "min_side": 900},
   {"id": "sun", "queries": ["Solar Dynamics Observatory sun", "sun SDO image"], "sources": ["nasa"], "min_side": 1200}
  ]
 }
