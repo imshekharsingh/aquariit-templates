@@ -10,6 +10,19 @@ and "more organised, with flow on the screen". Evidence: 1-13 Nov every tech ree
 it, and settings lists do not lead to gadget-brand collabs. The old rulebook (settings format, phone walkthrough look L1-L7) is in
 attic/design/rules-tech-2026-11-12.md; its palette (L7), pronunciation, FLOW and voice rules carry over below.
 
+## R0. Real media by default (owner, 14 Nov 2026: tech "still looks poor" after five renders of drawn shapes; "yes to free real images ... take those and work or animate your design around it")
+Every tech reel is built AROUND free real photos, animated by us; drawn shapes are the overlay (type, rings, waves, charts), not the subject.
+- The topic lists its photos in `"media"` ([{id, queries, sources, cut, avoid, min_side} or {id, url}]); the **Media** workflow (Actions -> Media ->
+  config) searches Wikimedia Commons / Openverse (cc0, pdm, by) / NASA / Library of Congress, keeps PD, CC0 and CC BY only, downloads, cuts a
+  product out when `"cut": true` and keeps the files in R2 (media/showreel-tech-<slug>/); copy its MEDIA_JSON line back into the topic
+  (file, author, licence, source_url per entry). Its contact sheet (artifact media-<name>, 7 days) is the picking review: `"pick": n` or a direct
+  `"url"` and run it again if a photo shows a logo, a brand's trade dress, a person's face or a watermark.
+- Engine (techreel/scenes/photo.py, idea look): a cut-out `earbuds`-style entry replaces the drawn product (`PH.sprite`); `ride` cabins use the
+  photo with the same id as the cabin kind (`bus`, `metro`, `flight`); a verdict panel takes `"photo": "<id>"`; `PH.rect` puts any photo through
+  the camera (push-in, drift). Missing files fall back to the drawn version, so stills before the Media run still work.
+- Gadgets only as generic products (no logos, no marketing photos, no product that is recognisably one brand's design, e.g. a white stem bud);
+  no identifiable people. CC BY: the author goes in the caption's sources line. Output QA LICENCE checks every file; design/safety.md 5-7, 13.
+
 ## Format (F1-F4)
 - **F1. Three formats, rotating**: (a) **specs decoded**: what a number on the box means for you (mAh, nits, Hz, IP68, ANC, watts, megapixels)
   and when it is marketing; (b) **worth it or not**: is a feature worth paying extra for (120 Hz, wireless charging, 1 TB, an ultra-wide);

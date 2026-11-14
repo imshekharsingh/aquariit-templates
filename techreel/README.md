@@ -45,6 +45,15 @@ switch flips) or "choice" (a tick moves from row `from` to row `pick`), `pick`, 
 (the result pill flips red to green), `paths` [["iPhone", "..."], ["Android", "..."]] (each path checked on the platform's own page).
 The phone is our own drawing (no platform's UI, icons or fonts); platform names appear only as text.
 
+## Real media (14 Nov 2026; design/rules-tech.md R0): the default for every tech reel
+The topic's `"media"` list is fetched by the **Media** workflow (scripts/media/fetch.py: Wikimedia Commons, Openverse cc0/pdm/by, NASA, Library of
+Congress; PD / CC0 / CC BY only; `"cut": true` makes a cut-out PNG with rembg, GrabCut as the fallback), kept in R2 under
+media/showreel-tech-<slug>/ and pulled to techreel/media/<slug>/ by the Tech reel workflow before the render (scripts/media/pull.sh). Copy the
+run's MEDIA_JSON line back into the topic. scenes/photo.py draws them through the idea look's camera: `PH.rect(cm, id, x, y, w, h, view)`,
+`PH.sprite(cm, id, cx, cy, h)` (a cut-out product), `PH.shade(...)` (a dark ramp for type over a photo); the earbud, the cabins (ids `bus`,
+`metro`, `flight`) and verdict panels (`"photo"`) use them when the files are there. For local stills, unzip the media-<name> artifact into
+techreel/media/<slug>/.
+
 ## The idea look (13 Nov 2026; topic `"look": "idea"`, scenes/idea.py; design/rules-tech.md G9-G13): the default for every tech reel
 Owner, 13 Nov: "Let's build it with new animation." The idea at full-frame scale, one subject per scene, a crisp camera (`Cam`: zoom about a
 focus point + drift; text scales with it), declared zoom-throughs between worlds. Copy topics/ip68.json to start one, and

@@ -18,6 +18,7 @@ from PIL import Image, ImageDraw
 
 from . import base as B
 from . import depth as D
+from . import photo as PH
 from .phonecam import background, YEL, GREEN, RED, TXT, GREY, CARDBG, EDGE, BG
 from .gadget import captions, icon, tick, rrect_path
 
@@ -606,7 +607,10 @@ def set_verdict(cm, fr, s, t, sc, topic):
         bob = 8 * math.sin(t * 2.6 + j)
         if pd.get('rings'):   # (14 Nov 2026) the calm gold halo of ANC round the commute
             rings(sub, cx, cy - 50, t, 1.0, n=3, r0=150, r1=260, amp=0, a=1.0)
-        icon(sub, pd['icon'], cx, cy - 50 + bob, 3.0, TXT, 255)
+        if pd.get('photo') and PH.has(pd['photo']):   # real media (14 Nov 2026): the case is a photo in the panel
+            PH.rect(sub, pd['photo'], cx - 180, cy - 175, 360, 240, view=(.5, .5, 1.0 + .05 * clamp((t - tc) / 3)), r=26)
+        else:
+            icon(sub, pd['icon'], cx, cy - 50 + bob, 3.0, TXT, 255)
         if pd['icon'] == 'cup':   # the spill: drops arc out of the cup and fall
             for i in range(4):
                 q = ((t * 1.1 + i / 4) % 1)
@@ -628,7 +632,20 @@ BUD_D, BUD_L = (26, 26, 31), (196, 196, 208)   # the earbud's shading ramp (dark
 def earbud(cm, cx, cy, sc=1.0, t=0.0, mic=0.0):
     """A generic in-ear bud with a stem (our own drawing, no maker's design), lit from the top left: a contact shadow, a shaded stem and
     head (radial ramps, a gold rim light on the far side, a specular dot), a dark silicone tip, a vent; mic (0..1) lights the mic at the
-    stem's foot with a glow and two rings."""
+    stem's foot with a glow and two rings. With real media (the topic's "earbuds" entry with a cut-out, 14 Nov 2026) the bud is the photo."""
+    if PH.has('earbuds', fg=True):
+        bob = 6 * math.sin(t * 1.7)
+        PH.sprite(cm, 'earbuds', cx, cy + 60 * sc + bob, 330 * sc)
+        my = cy + 190 * sc + bob
+        if mic > 0:
+            for k, f in ((3.2, .10), (2.2, .2), (1.5, .36)):
+                cm.circle(cx, my, 15 * sc * k, fill=YEL + (int(255 * f * mic),))
+            cm.circle(cx, my, 12 * sc, outline=YEL + (int(255 * mic),), width=4)
+            q = (t * 1.3) % 1
+            for j in range(2):
+                qq = (q + j * .5) % 1
+                cm.arc(cx, my, (30 + 80 * qq) * sc, 100, 260, YEL + (int(210 * mic * (1 - qq)),), 4)
+        return
     D.soft_shadow(cm, cx + 14 * sc, cy + 262 * sc, 130 * sc, 26 * sc, 190)
     D.capsule(cm, cx - 31 * sc, cy + 8 * sc, 62 * sc, 238 * sc, BUD_D, BUD_L, rim=YEL + (110,))
     D.sphere(cm, cx + 80 * sc, cy - 6 * sc, 46 * sc, (12, 12, 15), (96, 96, 108), ry=42 * sc)   # the silicone tip, behind the head's edge
@@ -790,6 +807,15 @@ def cabin(cm, ox, kind, t, calm, lab, label, scene_t0):
     oval windows and seat rows), a bud floating in the aisle with the noise rings round it (calm 0..1 shrinks them: ANC on), and the
     cabin's name lit on the ceiling sign (lab 0..1)."""
     L, R, T, Bt = ox - 60, ox + 1140, 590, 1520
+    mid = {'plane': 'flight'}.get(kind, kind)
+    if PH.has(mid):   # real media (14 Nov 2026): the cabin is the photo, pushing in slowly; the bud, the rings and the sign sit over it
+        u = clamp((t - scene_t0) / 5.0)
+        vu, vv = PH.view(mid)
+        PH.rect(cm, mid, L, T, R - L, Bt - T, view=(vu, vv, 1.0 + .07 * u))
+        PH.shade(cm, L, T, R - L, (Bt - T) * .42, top=.62, bottom=.05)
+        PH.shade(cm, L, T + (Bt - T) * .6, R - L, (Bt - T) * .4, top=0.0, bottom=.55)
+        _cabin_tail(cm, ox, t, calm, lab, label)
+        return
     bl, br, bt, bb = ox + 390, ox + 690, 860, 1060           # the back wall
     NL, NR = (L, T), (R, T)
     FL, FR = (L, Bt), (R, Bt)
@@ -887,6 +913,10 @@ def cabin(cm, ox, kind, t, calm, lab, label, scene_t0):
                 x0_, x1_ = sorted((p0[0], xin))
                 cm.rect(x0_, p0[1], x1_ - x0_, 230 * dep, r=24 * dep, fill=(44, 52, 72), outline=(84, 96, 124), width=2)
                 cm.rect(x0_ + 14 * dep, p0[1] + 10 * dep, x1_ - x0_ - 28 * dep, 46 * dep, r=12 * dep, fill=(220, 224, 232, 200))
+    _cabin_tail(cm, ox, t, calm, lab, label)
+
+
+def _cabin_tail(cm, ox, t, calm, lab, label):
     # the bud in the aisle and the noise rings round it (perspective: flattened)
     bx, by = ox + 540, 1110
     rings(cm, bx, by + 20, t, calm, n=3, r0=100, r1=330, amp=20, a=.75, ry=.42, ph=ox * .001)
@@ -1254,6 +1284,7 @@ def motion(gs, t):
 
 
 def draw(t, topic, vo, hook_out, scenes, chunks):
+    PH.setup(topic)
     dx0, dy0 = drift(t)
     bg, small = D.atmosphere(t, (dx0, dy0))
     fr = B.Frame(bg)
