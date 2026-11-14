@@ -33,6 +33,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'bulk': '13 Nov "the finger looks a bit bulky on screen"',
     'vibrancy': '13 Nov "the menu grid ... feels slightly dull"',
     'spread': '14 Nov "it seems we are squeezing most of it in one place of the screen"',
+    'demo': '14 Nov "the actual frame where everything is flowing with animation to show the difference looks faded grey"',
     'sync': '13 Nov tech IP68 "the voice names an item (\'or the sauna\') while its card is still empty"',
     'grade': '13 Nov Turns Out "I don\'t find the colour selection better" (fog wash, white Taj on a pale sky)',
     'licence': '14 Nov "yes to free real images" (design/safety.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
@@ -49,7 +50,12 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          dead_secs=1.5, vis_px=20, vis_frac=.003, onset_db=9, onset_floor=-45,
          mute_frac=.02, grade_dl=.2, wash_p5=.3, wash_frac=.2,
          bulk_v=.82, bulk_s=.2, bulk_k=7, bulk_px=150, vib_s=.35, vib_v=.35, vib_med=.014,
-         spr_y=(.589, .818), spr_k=8, spr_dl=14, spr_frac=.02, spr_max=.10)
+         spr_y=(.589, .818), spr_k=8, spr_dl=14, spr_frac=.02, spr_max=.10,
+         demo_lit=.12, demo_grey=.25, demo_s=.35, demo_m=32, demo_c=64, demo_box=(24, 125, 516, 672))
+# DEMO (15 Nov 2026, web only), calibrated on stills at 270x480 every 0.5 s inside the subject's box ([data-subject], recorded by the render):
+# median saturation of its lit pixels (V > .12; the faded-grey showreel-36-tabs 0.21, after the vivid kit 0.48; the newweb glass template 0.68 / 0.72),
+# Hasler-Suesstrunk colourfulness (glass template 24 before, 42 after; tabs 41 / 48) and the luminance spread p95-p5 in 0-255 (glass template 54 / 87,
+# tabs 74 / 80); each a median over the samples. Without a recorded box: the config's "qa": {"subject": [l, t, r, b]}, else the whole-frame hero zone.
 # SPREAD (14 Nov 2026, web only), calibrated on stills at 270x480 every 0.5 s (and again with noise of sigma 3 and 5 added: the same numbers):
 # the lower third of the safe zone (y 565-785 of 960) cut in 8 strips, a strip empty when under 2% of its pixels (at 135x240) differ by 14+
 # from the strip's median; showreel-35-list ("squeezing", lower third empty) 34% of the strips empty on average, showreel-36-tabs first cut 18%,
@@ -583,6 +589,34 @@ def mute_check(G, fps, m, heard):
          + (f'; the broken "before" {eb:.1%} ({b[0]:.1f}-{b[1]:.1f} s)' if b else ''))
 
 
+def demo_boxes(mp4, qa):
+    import glob
+    rows = []
+    for f in sorted(glob.glob(os.path.splitext(mp4)[0] + '.subject*.json')): rows += json.load(open(f))
+    if rows: return rows, 'the subject box the render recorded'
+    if qa.get('subject'): return [[None] + list(qa['subject'])], 'the config\'s qa.subject'
+    return [[None] + list(T['demo_box'])], 'the hero zone (no recorded box)'
+
+
+def demo_check(F, fps, mp4, qa, css_w=540):
+    rows, src = demo_boxes(mp4, qa); h, w = F.shape[1:3]; sc = w / css_w; step = max(1, int(round(fps * .5))); S_, M_, C_ = [], [], []
+    ks = [(min(len(F) - 1, int(round(r[0] * fps))), r[1:]) for r in rows] if rows[0][0] is not None else [(k, rows[0][1:]) for k in range(0, len(F), step)]
+    for k, b in ks:
+        l, t, r, bt = [int(round(v * sc)) for v in b]; l, t, r, bt = max(0, l), max(0, t), min(w, r), min(h, bt)
+        if (r - l) * (bt - t) < .05 * w * h: continue
+        a = F[k, t:bt, l:r].astype(np.float32); mx = a.max(-1); mn = a.min(-1); lit = mx > T['demo_lit'] * 255
+        if lit.sum() < 50: continue
+        S_.append(float(np.median(((mx - mn) / np.maximum(mx, 1))[lit])))
+        rg = a[..., 0] - a[..., 1]; yb = .5 * (a[..., 0] + a[..., 1]) - a[..., 2]
+        M_.append(float(np.hypot(rg.std(), yb.std()) + .3 * np.hypot(rg.mean(), yb.mean())))
+        y = .2126 * a[..., 0] + .7152 * a[..., 1] + .0722 * a[..., 2]; C_.append(float(np.percentile(y, 95) - np.percentile(y, 5)))
+    if not S_: line('DEMO', 'WARN', f'no subject box of 5%+ of the frame to measure ({src})'); return
+    s, m, c = (float(np.median(v)) for v in (S_, M_, C_))
+    bad = [x for x, ok in (('grey', s >= T['demo_s']), ('dull', m >= T['demo_m']), ('flat', c >= T['demo_c'])) if not ok]
+    line('DEMO', 'FAIL' if bad else 'PASS', f'inside {src} over {len(S_)} samples: saturation {s:.2f} (at least {T["demo_s"]}; the faded-grey 14 Nov tabs 0.21), '
+         f'colourfulness {m:.0f} (at least {T["demo_m"]}), contrast p95-p5 {c:.0f} (at least {T["demo_c"]})' + (f': {", ".join(bad)}' if bad else ''))
+
+
 def main():
     a = sys.argv[1:]; mp4, cfgp = a[0], a[1]
     logs = [a[i + 1] for i, x in enumerate(a) if x == '--log']
@@ -601,8 +635,8 @@ def main():
     edge_checks(F, fps, qa.get('edges_ok', []), heard, mp4)
     if ch == 'c3': grade_check(F, fps, cover, qa.get('subject') or (qa.get('guess') or {}).get('box'), (qa.get('guess') or {}).get('css_width', 540))
     else: line('GRADE', 'SKIP', 'Turns Out only')
-    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps); spread_check(F, fps)
-    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only'); line('SPREAD', 'SKIP', 'web only')
+    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps); spread_check(F, fps); demo_check(F, fps, mp4, qa)
+    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only'); line('SPREAD', 'SKIP', 'web only'); line('DEMO', 'SKIP', 'web only')
     if qa.get('guess'): guess_check(F, fps, qa['guess'], heard)
     elif ch == 'c3' and (c.get('experiment') or {}).get('id', '').startswith('c3-guess'): line('GUESS', 'FAIL', 'a guess reel without "qa": {"guess": {answer, reveal, box}} in its config')
     else: line('GUESS', 'SKIP', 'not a guess reel')
