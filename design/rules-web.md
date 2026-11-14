@@ -125,3 +125,12 @@ Today: E23 try 2 on E18 try 3, showreel-36-tabs (a tab underline that blinks vs 
 details-format printed again (2 WINs, 1 LOSE): it is rule 13 since 12 Nov. RULE lines 2, 3, 4, 6, 8, 9 "question it" again: still hygiene
 (every reel passes them); the lever under test is how the fix is shown (E23).
 
+
+## Channel brief (moved from CLAUDE.md, 14 Nov 2026)
+- How a web reel is made: design/runbook-reels.md ("Making a web reel"); plan, series and craft bar: design/webin20sec.md. Benchmark is
+  @techin20sec; the daily audit compares both (design/experiments.md, "Results log").
+- Look: style C, "Glass and light", from 8 Nov 2026 (owner: "Let's go with C."; EXCEPT the E18 test, 12-14 Nov 2026: dark theme + a
+  motion-feel single fix, design/experiments.md), through the kit theme (`KM.theme('glass')`, the default of both newweb.mjs modes: frosted
+  panes at three depths over drifting coloured light, a soft grade, Sora + DM Mono).
+- Cheap glass only (no backdrop-filter, no live blur on big layers, no full-frame mask); render at most 30 GitHub minutes for 20 s (rule 12).
+- One reel EVERY day at 13:00 IST, built that morning by the daily run.

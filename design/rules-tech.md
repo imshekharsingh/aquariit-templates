@@ -3,7 +3,7 @@
 Same use as design/rules-web.md: score every rule (pass / fail, one line each) in the stills review before the one render; fix or swap on a
 fail; the daily audit adds, changes or drops a rule with the number.
 
-**Rewritten 13 Nov 2026: the gadget channel** (CLAUDE.md, "@techin20sec: gadget channel built for brand collabs"). Owner, 13 Nov: "I'm not
+**Rewritten 13 Nov 2026: the gadget channel** (design/rules-tech.md, "Channel brief"). Owner, 13 Nov: "I'm not
 liking the content we are focusing on" (the "3 settings" format) and, on the scam-calls stills, make the animation "a similar grade as web"
 and "more organised, with flow on the screen". Evidence: 1-13 Nov every tech reel (explainers, myth-busts, settings lists) reached 113-152,
 0-2 saves; the settings format (E17) gave the best reel (stop-tracking, 152 reach, 2 saves) but the owner does not want the channel built on
@@ -109,3 +109,21 @@ screen vs the words spoken in the same 1 s) in design/todo.md.
 running, the gadget channel (E24) in the idea look: try 1 IP68 reached 343 at 7 h (2.8x the channel median, the best tech reel since 1 Nov,
 hold 47% vs 29%); try 2 today is a different format and gadget (worth it or not, earbuds, India: showreel-tech-anc-budget, two new worlds,
 sound waves that cancel and battery bars). Not a tweak: the change is 2 reels old, so it is read at 3 (Sun 15) before anything else changes.
+
+## Channel brief (moved from CLAUDE.md, 14 Nov 2026)
+- Gadget channel built for brand collabs (owner, 13 Nov 2026: "Can we make it around something so that electronic gadget brands contact me
+  for collab when my followers grow?"). The channel helps viewers understand and choose gadgets (phones, earbuds, watches, chargers,
+  laptops): (1) specs decoded (what mAh, nits, Hz, IP68, ANC really mean for you, and when a number is marketing), (2) worth it or not (is a
+  feature worth paying extra for), (3) gadget myths (fast charging, megapixels, battery habits). Faceless; built around free real media
+  (R0, design/safety.md "Free real images and footage").
+- Brands (owner, 13 Nov 2026: "We don't demean any brand or make them look bad compared to the good one; we highlight pros conservatively
+  and diplomatically so people learn where they stand"): real brand and product names may be said and shown as text for factual
+  comparisons, every product shown at its strengths, no "winner/loser", no mocking, no negative framing of any brand; never their logos,
+  trade dress, product photos or marketing art; every spec from the maker's official spec page or a primary source, cited in the config.
+  This overrides CLAUDE.md's "no real company names" for @techin20sec only.
+- Audience mix (owner, 13 Nov 2026): 7 reels a week, 3 for India (prices in ₹, brands and models sold in India, Indian buying questions) and
+  4 global; formats and categories rotate so no two days in a row repeat the same format or gadget type; design/topics.md plans the week
+  with an "audience: india|global" column, and the mix carries over week to week (the audit reads reach by audience).
+- One reel EVERY day at 13:00 IST, built that morning by the daily run. Engine: techreel/ (techreel/README.md); a camera that never stops
+  (drift + declared glides between scenes), so every topic passes FLOW.
+- Account Status checked by the owner on 1 Nov 2026: no issues (no reach limit), so low reach is distribution, not a restriction; don't ask again.

@@ -1,6 +1,6 @@
 # Playbook: what works, what didn't
 
-The daily improvement loop (owner, 7 Nov 2026; CLAUDE.md, "Daily improvement loop"): every run picks ONE small experiment per channel,
+The daily improvement loop (owner, 7 Nov 2026; design/runbook-daily.md, "Daily improvement loop"): every run picks ONE small experiment per channel,
 reads yesterday's result, and writes it here. Every reel starts from its channel's current "What works" combination.
 A change that wins 2 of 3 tries becomes a rule in the channel rulebook (design/rules-*.md); one that loses twice is dropped (moved to "What didn't").
 Numbers: reach and avg watch from the Instagram collect run (AUDIT_CHANNELS / AUDIT_SIGNALS), with the hour of the reading.

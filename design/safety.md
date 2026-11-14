@@ -39,3 +39,18 @@ policy change, a comment storm, a removed post anywhere in our niche). Each line
 19. Avoid topics that reliably attract hostile comments (country-vs-country, religion, politics, gender); if a reel draws hate, the audit
     flags it, the topic type goes on the never-list, and the owner can hide or limit comments.
 20. Never reply to provoke; pinned comment only to add sources or a correction.
+
+## Free real images and footage for @techin20sec and Turns Out (owner, 14 Nov 2026; moved from CLAUDE.md)
+Owner: "yes to free real images ... take those and work or animate your design around it". Code-drawn shapes hit a low ceiling for real
+places and products, so tech and Turns Out reels are built AROUND free real media, animated by us (parallax cut-outs, slow push-ins, masks,
+overlays, our type and sound). This overrides "Images: code only" for these two channels.
+- Allowed sources only, licence recorded per file in the config ("media": [{file, source_url, author, licence}]): public domain / CC0
+  (Wikimedia Commons PD/CC0, US government works such as NASA, NOAA, DVIDS, US Army Corps, Library of Congress "no known restrictions",
+  Openverse with licence cc0/pdm), and CC BY (credit in the caption's sources line). Never non-commercial (NC), no-derivatives (ND),
+  "editorial use only", stock-site watermarks, or anything taken from another creator's reel or video. Output QA LICENCE checks it.
+- Real media is a raw ingredient, always reframed and animated into our own design; never re-post someone's reel or a recognisable edit.
+- Tech: real photos of generic gadgets and parts; brand logos, product marketing photos and trade dress stay out.
+- No identifiable private people; historical figures only under the Turns Out exception.
+- GitHub does the fetching and processing: the session writes search terms or file URLs into the config; the "Media" workflow (Openverse /
+  Wikimedia / NASA / LoC APIs, no keys) downloads, checks the licence, cuts/resizes, stores in R2 and the render pulls it. Sessions do not
+  download media themselves.

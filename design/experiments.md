@@ -104,7 +104,7 @@ settings you change right now, each tapped on a phone on screen with its path on
   4) only if wanted: the vintage pages (Ledgerleaf, Shizuku, Maison Vesper, Understory, Quasarine) and the dropped Popcraft/Vantaris, after their copy is fixed for design/market.md.
 
 ## Results log
-From 2 Nov 2026 one line a day (`- DD Mon: lesson`); the full audit is a card in the app (CLAUDE.md, "Accounts and data").
+From 2 Nov 2026 one line a day (`- DD Mon: lesson`); the full audit is a card in the app (design/runbook-daily.md, "Audit card").
 - 02 Nov: Nº 09's 97k reach did not carry over: Nº 10 (sticky hover) has 312 at ~16 h, so reach follows the topic, not the account; keep picking annoyances people see daily. Tech's passkey explainer (110 reach, 4.9 s) beat every news reel since 26 Oct on reach and watch: the explainer format holds.
 - 03 Nov: Watch share decides reach: Nº 09 held 74% of its length and reached 99k; every other web reel held 42-63% and stayed at 373-4,046; tech explainers hold ~24% and never leave the ~115 test pool. Show the bug moving in frame 0 and fix it by ~8 s.
 - 04 Nov: Web 364 followers (+320 in 7 days), median reach 866, best hour 13:00 IST; Turns Out's Liberty reel is the channel's first at 1,000+ reach (1,023): a colour-change payoff carries; tech 8 followers, median 74, 0 saves; its last test reel (6 Nov) is an everyday puzzle you can see (earbuds still play in airplane mode).

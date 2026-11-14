@@ -1,7 +1,7 @@
 # References the owner shared: techniques and the kit piece that covers each (11 Nov 2026)
 
 Owner, 11 Nov 2026: "Do it now, I can't keep going back to something that needs improvement." Every reel the owner shares as a reference gets
-an entry here the same day (CLAUDE.md, "Daily improvement loop"): what it showed, its techniques as a short checklist, and for each the kit piece
+an entry here the same day (design/runbook-daily.md, "Daily improvement loop"): what it showed, its techniques as a short checklist, and for each the kit piece
 that covers it, or MISSING. A MISSING technique becomes a kit piece or a dated line in design/todo.md. A reel's review file names the reference
 techniques it uses. Techniques only, never a piece: no lines, sequence, signature image, look or character of the reference (copyright rule).
 Kits: kitmotion.js (KM, web), kitsfx.js (web element sound and entrances), kit25d.js (Kt, Turns Out), techreel/ (make.py, scenes/).
