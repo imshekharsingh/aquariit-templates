@@ -45,7 +45,7 @@ override G1-G4 below; G5-G8 (palette, frame 0, sound, captions) still apply.
   in the idea look): a lit room (key light, soft beams, a floor with a reflection under the captions: no black lower third), dust at three
   depths with parallax, shaded objects with a highlight and a contact shadow (D.sphere, D.capsule, D.panel, D.soft_shadow), giant type lit
   (a ramp, a lit edge, a soft shadow), bloom on the accents, a fine grain, motion blur on fast camera moves. Drawn worlds, not list cards;
-  the key idea happens on screen (the waves cancel, the battery drains). Check: critic question 24.
+  the key idea happens on screen (the waves cancel, the battery drains). Check: critic question 25.
 - **G13. Numbers on screen equal the voice**: a readout pops on its word with the value said (no rolling digits that Output QA NUMBERS could
   read as a different number); a ring or a bar may sweep.
 

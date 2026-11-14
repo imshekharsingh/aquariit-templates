@@ -516,7 +516,8 @@ var K25 = (function(){
   // reached the ~1,100 pool stopped there with 0-8 shares (Instagram collect, 11 Nov); a question the viewer answers (in the head, then in the
   // comments) and a short loop are the levers for the next pool. Screen space, every text reported to qa. ----
   // choices(opts, t, o): the options row. opts = [{ key: 'A', word: 'GOLD', col: '#d9a93a', at: when it is spoken }]; o = { y (centre, px),
-  // x (centre, default 255), pick (index of the answer), reveal (time of the answer), live(t) -> the index lit now (or -1), bg, ink, hi (ring) }.
+  // x (centre, default 255), pick (index of the answer), reveal (time of the answer), live(t) -> the index lit now (or -1), bg, ink, hi (ring),
+  // letters (14 Nov 2026, design/improvements.md: the option's letter A / B / C in its dot, so the guess is one letter to comment) }.
   // Each chip springs in on its word; at the reveal the answer pops and gets a ring and a tick, the others dim and get a strike.
   function choices(opts, t, o){ var n = opts.length, gap = 10, W = Math.min(142, (450 - gap * (n - 1)) / n), X0 = (o.x || 255) - (n * W + (n - 1) * gap) / 2, Y = o.y || 214, h = 50,
       rv = o.reveal == null ? 1e9 : o.reveal, kr = P(t, rv, rv + .35), live = o.live ? o.live(t) : -1, out = o.out == null ? 0 : P(t, o.out, o.out + .35);
@@ -527,6 +528,7 @@ var K25 = (function(){
       paper(rr(-W / 2, -h / 2, W, h, 13), o.bg || 'rgba(16,12,10,.9)', 3);
       if (lit || (win && kr > 0)) { x.save(); x.globalAlpha *= win && kr > 0 ? kr : 1; x.beginPath(); x.roundRect(-W / 2 - 3, -h / 2 - 3, W + 6, h + 6, 15); x.lineWidth = win && kr > 0 ? 3.5 : 2; x.strokeStyle = win && kr > 0 ? (o.hi || '#8fe39b') : 'rgba(255,240,215,.7)'; x.stroke(); x.restore(); }
       x.beginPath(); x.arc(-W / 2 + 23, 0, 13, 0, 7); x.fillStyle = op.col; x.fill(); x.lineWidth = 2; x.strokeStyle = 'rgba(255,246,228,.75)'; x.stroke();
+      if (o.letters && op.key) { var q0 = rgb(op.col.length === 7 ? op.col : '#808080'), lu = .2126 * q0[0] + .7152 * q0[1] + .0722 * q0[2]; txt(op.key, -W / 2 + 23, 5.5, 15, '800 ' + FI, lu > 140 ? '#10131f' : '#fbf3e0', 'center'); }
       txt(op.word, -W / 2 + 44, 7, 19, '800 ' + FI, o.ink || '#fbf3e0', 'left', 1.2);
       if (!win && kr > 0) { x.beginPath(); x.moveTo(-W / 2 + 40, 0); x.lineTo(-W / 2 + 40 + (W - 52) * eo(kr), 0); x.lineWidth = 2.5; x.strokeStyle = 'rgba(255,240,215,.8)'; x.stroke(); }
       if (win && kr > 0) { var e = eo(kr); x.save(); x.translate(W / 2 - 4, -h / 2 + 4); x.scale(e, e); x.beginPath(); x.arc(0, 0, 12, 0, 7); x.fillStyle = o.hi || '#8fe39b'; x.fill();
