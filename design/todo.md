@@ -80,3 +80,4 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   sticky header (5 Nov) and Nº 15 anchor under header (6 Nov), Turns Out "Was the Sahara always a desert?" (5 Nov) and "Tea or chai?" (6 Nov);
   CLAUDE.md buffer rule (a run builds for the first day without a reel).
 - 3 Nov 2026: scripts/reel-status.mjs: one command after a render for its result, voice check, issue and contact sheet (was done by hand).
+- 14 Nov 2026 (tech, anc-budget remake): Output QA SYNC never read the cabin sign "BUS" / "Bus" at 10.4 s in 4 renders (metro and flight read fine on the same sign); run 4 also read a "4" at 6.3 s (a wave peak?). Dump the OCR words for those frames from the run 4 MP4 (Output QA workflow, no re-render) and fix the check or the frame. The reel is NOT READY until then.
