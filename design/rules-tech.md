@@ -41,6 +41,11 @@ override G1-G4 below; G5-G8 (palette, frame 0, sound, captions) still apply.
   the divider wipes new into worn), and a travelling element ties the scenes (IP68's 6 and 8 fly out of the word into the tag row and back).
 - **G12. The camera leads the eye** (rules-web.md rule 14): each scene pushes towards what the voice names (`"push": [zoom, x, y]`), a drift
   that never stops, a declared zoom-through between worlds (FLOW reads them), a jolt on a slam.
+- **G14. Depth and light in every scene** (owner, 14 Nov 2026, on the ANC reel: "looks a bit flat"; techreel/scenes/depth.py, on by default
+  in the idea look): a lit room (key light, soft beams, a floor with a reflection under the captions: no black lower third), dust at three
+  depths with parallax, shaded objects with a highlight and a contact shadow (D.sphere, D.capsule, D.panel, D.soft_shadow), giant type lit
+  (a ramp, a lit edge, a soft shadow), bloom on the accents, a fine grain, motion blur on fast camera moves. Drawn worlds, not list cards;
+  the key idea happens on screen (the waves cancel, the battery drains). Check: critic question 25.
 - **G13. Numbers on screen equal the voice**: a readout pops on its word with the value said (no rolling digits that Output QA NUMBERS could
   read as a different number); a ring or a bar may sweep.
 
