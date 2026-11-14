@@ -314,7 +314,7 @@ So tech and Turns Out reels are built AROUND free real media, animated by us (pa
   (Wikimedia Commons PD/CC0, US government works such as NASA, NOAA, DVIDS, US Army Corps, Library of Congress "no known restrictions",
   Openverse with licence cc0/pdm), and CC BY (credit in the caption's sources line). Never non-commercial (NC), no-derivatives (ND),
   "editorial use only", stock-site watermarks, or anything taken from another creator's reel or video.
-- The owner's four checks on every reel: no plagiarism (never re-post someone's reel or a recognisable edit; real media is a raw ingredient,
+- design/safety.md is the channel safety checklist for EVERY channel (owner, 14 Nov 2026: "keep updating it to safeguard our channel from takedown or hate"): every reel is checked against it before it is ready (builder + Reel critic, Output QA where measurable), and a line is added the same day a new risk is found. The owner's four checks on every reel: no plagiarism (never re-post someone's reel or a recognisable edit; real media is a raw ingredient,
   always reframed and animated into our own design), no controversial content, no disrespect, nothing that may hurt anyone's sentiment.
 - Tech: real photos of generic gadgets and parts; brand logos, product marketing photos and trade dress stay out (the brand rules above).
 - No identifiable private people; historical figures only under the Turns Out exception.

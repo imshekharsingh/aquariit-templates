@@ -3,6 +3,7 @@
 Answer each with the frame times you looked at. Any "no" = not ready. Add a question here the same day the critic or the owner finds a new kind of miss.
 
 ## Every channel
+0. Does the reel pass every line of design/safety.md (plagiarism, controversy, disrespect, sentiment, licences, Instagram rules, maps, brands)?
 1. Frame 0: does it make a stranger stop? Is the hook readable in under 1 s at phone size?
 2. Does every frame make sense on its own: nothing cut at the frame edges, no stray marks, nothing overlapping, nothing that looks broken?
 3. Does what is on screen match what the voice says at that moment (numbers, names, colours, counts)? Never more or less than the claim.
