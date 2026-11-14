@@ -22,16 +22,19 @@ LONG = 2400        # the processed image's long side (px): a 1080x1920 frame wit
 FG_LONG = 1600
 
 
-def get(url, raw=False, tries=3):
+def get(url, raw=False, tries=3, timeout=60):
     for i in range(tries):
+        if 'wikimedia.org' in url:
+            time.sleep(1.2)   # Wikimedia's robot policy: one request at a time, a pause between
         try:
             req = urllib.request.Request(url, headers={'User-Agent': UA, 'Accept': '*/*' if raw else 'application/json'})
-            with urllib.request.urlopen(req, timeout=60) as r:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
                 b = r.read()
             return b if raw else json.loads(b.decode('utf-8'))
         except Exception as e:   # noqa: BLE001 (any network error: retry, then give up on this source)
             err = e
-            time.sleep(2 + 4 * i)
+            if i + 1 < tries:
+                time.sleep((20 + 25 * i) if '429' in str(e) else (2 + 4 * i))
     print(f'  fetch failed: {url[:120]} ({err})')
     return None
 
@@ -61,9 +64,11 @@ def norm_licence(s):
 
 
 # ---------- sources: each returns candidates {title, w, h, url (download), thumb, source_url, author, licence, licence_url, source, tags} ----------
-def wikimedia(q, n=20, title=None):
-    p = {'action': 'query', 'format': 'json', 'prop': 'imageinfo', 'iiprop': 'url|size|mime|extmetadata', 'iiurlwidth': str(LONG)}
-    if title:
+def wikimedia(q, n=20, title=None, pageid=None):
+    p = {'action': 'query', 'format': 'json', 'prop': 'imageinfo', 'iiprop': 'url|size|mime|extmetadata', 'iiurlwidth': '640'}
+    if pageid:
+        p['pageids'] = str(pageid)
+    elif title:
         p['titles'] = title
     else:
         p.update({'generator': 'search', 'gsrnamespace': '6', 'gsrsearch': q + ' filetype:bitmap', 'gsrlimit': str(n)})
@@ -78,7 +83,7 @@ def wikimedia(q, n=20, title=None):
         lic = norm_licence(ev('License')) or norm_licence(ev('LicenseShortName'))
         restr = ev('Restrictions').lower()
         out.append({'title': pg.get('title', '').replace('File:', ''), 'w': ii.get('width', 0), 'h': ii.get('height', 0),
-                    'url': ii.get('thumburl') or ii['url'], 'thumb': ii.get('thumburl') or ii['url'], 'source_url': ii.get('descriptionurl'),
+                    'url': ii['url'], 'thumb': ii.get('thumburl') or ii['url'], 'source_url': ii.get('descriptionurl'),
                     'author': ev('Artist') or ev('Credit') or 'unknown', 'licence': lic, 'licence_name': ev('LicenseShortName'),
                     'licence_url': ev('LicenseUrl'), 'source': 'wikimedia', 'tags': (ev('ImageDescription') + ' ' + ev('Categories')).lower(),
                     'restrict': restr, 'date': ev('DateTimeOriginal')})
@@ -137,6 +142,9 @@ SOURCES = {'wikimedia': wikimedia, 'openverse': openverse, 'nasa': nasa, 'loc': 
 
 def resolve_url(u):
     """A direct link: a Commons File: page, an upload.wikimedia.org file, or an Openverse image page."""
+    m = re.search(r'curid=(\d+)', u)
+    if m:
+        return wikimedia('', pageid=m.group(1))
     m = re.search(r'commons\.wikimedia\.org/wiki/(File:[^?#]+)', u)
     if m:
         return wikimedia('', title=urllib.parse.unquote(m.group(1)))
@@ -163,6 +171,8 @@ def score(c, words, e):
     if not c['licence'] or 'trademark' in c.get('restrict', ''):
         return -1
     text = (c['title'] + ' ' + c.get('tags', '')).lower()
+    if e.get('require') and not any(r.lower() in text for r in e['require']):
+        return -1
     if any(a.lower() in text for a in e.get('avoid', [])) or any(b in text for b in ('watermark', 'logo', 'shutterstock', 'getty', 'alamy', 'stock photo')):
         return -1
     side = min(c['w'], c['h']) if c['w'] and c['h'] else 1200
@@ -250,8 +260,9 @@ def main():
         seen, uniq = set(), []
         for c in cands:
             k = c.get('source_url') or c['url']
-            if k not in seen:
-                seen.add(k)
+            tk = re.sub(r'[^a-z0-9]', '', re.sub(r'\.(jpe?g|png|tiff?)$', '', c['title'].lower()))[:60]
+            if k not in seen and tk not in seen:
+                seen.update((k, tk))
                 uniq.append(c)
         words = [w for w in re.findall(r'[a-z0-9]+', ' '.join(e.get('queries') or [e.get('query', '')]).lower()) if len(w) > 2]
         ranked = sorted((c for c in uniq if score(c, words, e) >= 0), key=lambda c: -score(c, words, e))
@@ -267,7 +278,7 @@ def main():
                 break
         thumbs = []
         for i, c in enumerate(ranked[:6]):
-            tb = get(c['thumb'], raw=True) if c.get('thumb') and not c['thumb'].startswith('nasa:') else None
+            tb = get(c['thumb'], raw=True, tries=1, timeout=15) if c.get('thumb') and not c['thumb'].startswith('nasa:') else None
             try:
                 t = Image.open(io.BytesIO(tb)).convert('RGB') if tb else None
             except Exception:   # noqa: BLE001
@@ -282,7 +293,7 @@ def main():
             x0, y0, x1, y1 = e['crop']
             W0, H0 = im.size
             im = im.crop((round(x0 * W0), round(y0 * H0), round(x1 * W0), round(y1 * H0)))
-        im = fit(im, LONG)
+        im = fit(im, int(e.get('long', LONG)))
         fn = f'{e["id"]}.jpg'
         im.save(os.path.join(out, fn), quality=90, optimize=True)
         ent = {'id': e['id'], 'file': fn, 'w': im.size[0], 'h': im.size[1], 'title': ch['title'][:160], 'author': ch['author'][:160],
@@ -293,6 +304,14 @@ def main():
             fg.save(os.path.join(out, f'{e["id"]}-fg.png'), optimize=True)
             ent['fg'] = f'{e["id"]}-fg.png'
             ent['cut'] = how
+        os.makedirs(os.path.join(out, 'preview'), exist_ok=True)
+        pv = im.copy()
+        pv.thumbnail((1400, 1400))
+        pv.save(os.path.join(out, 'preview', fn), quality=72)
+        if ent.get('fg'):
+            fp = Image.open(os.path.join(out, ent['fg']))
+            fp.thumbnail((700, 700))
+            fp.save(os.path.join(out, 'preview', ent['fg']), optimize=True)
         entries.append(ent)
         print(f'MEDIA {e["id"]}: {fn} {im.size[0]}x{im.size[1]} | {ch["licence"]} | {ch["author"][:60]} | {ch["source_url"]}')
     json.dump({'name': name, 'media': entries}, open(os.path.join(out, 'manifest.json'), 'w'), indent=1, ensure_ascii=False)
@@ -327,6 +346,10 @@ def main():
             d.text((x, y + 54 + t.size[1]), c['title'][:34], fill=(170, 170, 170), font=font(14))
             x += t.size[0] + 14
     sheet.save(os.path.join(out, 'contact.png'))
+    os.makedirs(os.path.join(out, 'preview'), exist_ok=True)
+    sm = sheet.copy()
+    sm.thumbnail((1300, 1300))
+    sm.save(os.path.join(out, 'preview', 'contact.jpg'), quality=70)
     print('MEDIA_JSON ' + json.dumps(entries, ensure_ascii=False, separators=(',', ':')))
     bad = [x['id'] for x in entries if not x.get('file')]
     print('MEDIA: ' + (f'MISSING {", ".join(bad)}' if bad else f'all {len(entries)} found'))

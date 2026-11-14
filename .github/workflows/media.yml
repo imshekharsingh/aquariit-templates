@@ -41,6 +41,10 @@ jobs:
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           python3 scripts/media/fetch.py "$CFG" "out/media/$NAME" 2>&1 | tee fetch.log
           grep -q '^MEDIA: all' fetch.log || echo "::warning::$(grep '^MEDIA: ' fetch.log)"
+      - name: Previews in the log
+        # sessions cannot download artifacts (the blob host is blocked): small JPEG previews of every file and the contact sheet as
+        # base64 lines, which scripts/media/from-log.mjs <run id> turns back into files for the builder's and the critic's stills
+        run: for f in out/media/${{ steps.fetch.outputs.name }}/preview/*; do echo "B64 $(basename "$f") $(base64 -w0 "$f")"; done
       - uses: actions/setup-node@v4   # wrangler (package.json) uploads to R2
         with:
           node-version: 22
@@ -52,7 +56,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           N="${{ steps.fetch.outputs.name }}"
-          for f in out/media/$N/*; do bash scripts/r2.sh put "$f" "media/$N/$(basename "$f")" || exit 1; done
+          for f in out/media/$N/*; do [ -f "$f" ] || continue; bash scripts/r2.sh put "$f" "media/$N/$(basename "$f")" || exit 1; done
       - name: Files and contact sheet (kept 7 days)
         uses: actions/upload-artifact@v4
         with:

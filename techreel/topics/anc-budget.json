@@ -367,9 +367,11 @@
   {
    "id": "earbuds",
    "queries": [
-    "wireless earbuds",
-    "true wireless earbuds",
-    "bluetooth earbuds charging case"
+    "earphones",
+    "in-ear headphones",
+    "earbud",
+    "wireless earphones",
+    "earbuds"
    ],
    "sources": [
     "openverse",
@@ -392,6 +394,22 @@
     "google",
     "pixel",
     "logo",
+    "technics",
+    "panasonic",
+    "jbl",
+    "sennheiser",
+    "anker",
+    "soundcore",
+    "realme",
+    "oppo",
+    "vivo",
+    "redmi",
+    "skullcandy",
+    "marshall",
+    "nothing ear",
+    "shure",
+    "audio-technica",
+    "philips",
     "woman",
     "man ",
     "men ",
@@ -404,121 +422,34 @@
     "selfie",
     "child",
     "kid",
-    "ear ",
-    "hand"
+    "hand",
+    "ear canal"
    ],
-   "min_side": 900
+   "min_side": 800,
+   "require": [
+    "earbud",
+    "earphone",
+    "in-ear",
+    "headphone",
+    "earpiece"
+   ],
+   "long": 2000
   },
   {
    "id": "bus",
-   "queries": [
-    "empty bus interior",
-    "bus interior seats",
-    "city bus interior"
-   ],
-   "sources": [
-    "openverse",
-    "wikimedia"
-   ],
-   "avoid": [
-    "woman",
-    "man ",
-    "men ",
-    "girl",
-    "boy",
-    "person",
-    "people",
-    "wearing",
-    "portrait",
-    "selfie",
-    "child",
-    "kid",
-    "logo"
-   ],
-   "min_side": 1000
+   "url": "https://commons.wikimedia.org/wiki/File:Empty_seats_on_bus.jpg"
   },
   {
    "id": "metro",
-   "queries": [
-    "empty metro train interior",
-    "subway car interior empty",
-    "metro coach interior"
-   ],
-   "sources": [
-    "openverse",
-    "wikimedia"
-   ],
-   "avoid": [
-    "woman",
-    "man ",
-    "men ",
-    "girl",
-    "boy",
-    "person",
-    "people",
-    "wearing",
-    "portrait",
-    "selfie",
-    "child",
-    "kid",
-    "logo"
-   ],
-   "min_side": 1000
+   "url": "https://commons.wikimedia.org/wiki/File:Empty_Subway_Train_Toronto_(Unsplash).jpg"
   },
   {
    "id": "flight",
-   "queries": [
-    "airplane cabin interior empty",
-    "aircraft cabin seats",
-    "airliner cabin interior"
-   ],
-   "sources": [
-    "openverse",
-    "wikimedia"
-   ],
-   "avoid": [
-    "woman",
-    "man ",
-    "men ",
-    "girl",
-    "boy",
-    "person",
-    "people",
-    "wearing",
-    "portrait",
-    "selfie",
-    "child",
-    "kid",
-    "logo"
-   ],
-   "min_side": 1000
+   "url": "https://commons.wikimedia.org/wiki/File:Seats_and_tray_tables.jpg"
   },
   {
    "id": "room",
-   "queries": [
-    "quiet empty living room",
-    "empty room interior window",
-    "minimal living room interior"
-   ],
-   "sources": [
-    "openverse",
-    "wikimedia"
-   ],
-   "avoid": [
-    "woman",
-    "man ",
-    "men ",
-    "girl",
-    "boy",
-    "person",
-    "people",
-    "wearing",
-    "portrait",
-    "selfie",
-    "child",
-    "kid"
-   ],
-   "min_side": 1000
+   "url": "https://commons.wikimedia.org/wiki/File:Empty_Lecture_Room_Interior.jpg"
   }
  ]
 }
