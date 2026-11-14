@@ -63,6 +63,14 @@ when one is not readable on screen within 1 s of being said; without the list it
 - New kinds go in scenes/idea.py as `set_<name>(cm, fr, s, t, cur)` drawn through `cm` (world px), each element calling `hit()` for its sound.
 - Text: Pillow 12 draws text ink opaque whatever its alpha, so faded text goes through `ftext` (a mask); never fade text with an RGBA fill.
 
+- Depth and light (14 Nov 2026, owner: "looks a bit flat"; scenes/depth.py, rules-tech.md G14): `atmosphere()` replaces the flat background
+  (key light, beams, floor, vignette), `motes()` (parallax dust), `reflect()` (the stage mirrored on the floor under the captions), `post()`
+  (bloom, motion blur on zoom-throughs and pans outside the HUD and caption rows, film grain; every frame a pure function of t). Shading
+  helpers for new kinds: `sphere`, `capsule`, `panel`, `soft_shadow`, `cm_ellipse`; giant type (120 px+) is lit automatically. New kinds:
+  `wave` (two scenes: a shaded bud with noise rings; the money shot: noise + gold mirror wave flatten into a calm line: mic_cue, noise_cue,
+  opp_cue, cancel_cue), `ride` (cabins in perspective the camera pans through: rides [{kind bus|metro|plane, text, cue}]; declare
+  `"qa": {"edges_ok"}` for its full-bleed walls), `drain` (glass batteries draining against a clock with no digits: rows, max, clock_cue).
+
 ## The gadget look (13 Nov 2026, superseded the same day by the idea look; topic `"look": "gadget"`, scenes/gadget.py; design/rules-tech.md G1-G8)
 The default for every tech reel from 13 Nov (the gadget channel; owner: "a similar grade as web", "more organised, with flow on the screen").
 One fixed layout: the header row (`"format"` pill in gold + `"header"` title + a progress bar), the drawn product centred in the stage

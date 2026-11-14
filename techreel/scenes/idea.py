@@ -17,6 +17,7 @@ import random
 from PIL import Image, ImageDraw
 
 from . import base as B
+from . import depth as D
 from .phonecam import background, YEL, GREEN, RED, TXT, GREY, CARDBG, EDGE, BG
 from .gadget import captions, icon, tick, rrect_path
 
@@ -120,7 +121,10 @@ class Cam:
         w = B.text_w(s, sz, weight)
         x0 = X - (w / 2 if anchor[0] == 'm' else w if anchor[0] == 'r' else 0)
         ca = al * ((col[3] / 255) if len(col) > 3 else 1)
-        ftext(self.fr, X, Y, s, sz, col, ca, weight, anchor)
+        if sz >= 120:   # (14 Nov 2026, depth) giant type is lit: a ramp, a lit top edge and a soft shadow
+            lit_text(self.fr, X, Y, s, sz, col, ca, weight, anchor)
+        else:
+            ftext(self.fr, X, Y, s, sz, col, ca, weight, anchor)
         if record and ca >= .3:
             self.fr.boxes.append((s, x0, Y - sz * .5, x0 + w, Y + sz * .45, ca))
         return w
@@ -143,6 +147,15 @@ def ftext(fr, X, Y, s, size, rgb, alpha, weight=900, anchor='mm'):
     fr.img.paste(rgb, (x0, y0, x0 + w, y0 + h), m)
 
 
+def lit_text(fr, X, Y, s, size, col, alpha, weight=900, anchor='mm'):
+    """Giant type with light (depth.shade_text): white runs from white to a cool grey, gold from pale gold to amber, each with a lit edge."""
+    rgb = tuple(col[:3])
+    if rgb == YEL:
+        D.shade_text(fr, X, Y, s, size, (255, 226, 150), (214, 150, 58), alpha, weight, anchor, edge=(255, 244, 214))
+    else:
+        D.shade_text(fr, X, Y, s, size, (255, 255, 255), B.mixc(rgb, (120, 122, 136), .5), alpha, weight, anchor, edge=(255, 255, 255))
+
+
 def htext(fr, x, y, s, size, col, weight=900, anchor='mm', max_w=None):
     """HUD text (no camera) with real opacity; its box goes to the layout check."""
     a = (col[3] / 255) if len(col) > 3 else 1.0
@@ -152,7 +165,10 @@ def htext(fr, x, y, s, size, col, weight=900, anchor='mm', max_w=None):
     x0 = x - (w / 2 if anchor[0] == 'm' else w if anchor[0] == 'r' else 0)
     if a >= .05:
         fr.boxes.append((s, x0, y - size * .5, x0 + w, y + size * .45, a))
-    ftext(fr, x, y, s, size, col, a, weight, anchor)
+    if size >= 120:
+        lit_text(fr, x, y, s, size, col, a, weight, anchor)
+    else:
+        ftext(fr, x, y, s, size, col, a, weight, anchor)
     return w
 
 
@@ -586,9 +602,10 @@ def set_verdict(cm, fr, s, t, sc, topic):
         al = clamp(k * 1.6)
         cx, cy = x0 + 205, 1120
         sub = sub_cam(fr, cm, cx, cy, 1 + .2 * (1 - min(1.0, k)), al)
-        sub.rect(cx - 205, cy - 200 + 14, 410, 400, r=40, fill=(0, 0, 0, 120))
-        sub.rect(cx - 205, cy - 200, 410, 400, r=40, fill=CARDBG, outline=YEL if ok else EDGE, width=4 if ok else 2)
+        D.panel(sub, cx - 205, cy - 200, 410, 400, r=40, gold=ok)
         bob = 8 * math.sin(t * 2.6 + j)
+        if pd.get('rings'):   # (14 Nov 2026) the calm gold halo of ANC round the commute
+            rings(sub, cx, cy - 50, t, 1.0, n=3, r0=150, r1=260, amp=0, a=1.0)
         icon(sub, pd['icon'], cx, cy - 50 + bob, 3.0, TXT, 255)
         if pd['icon'] == 'cup':   # the spill: drops arc out of the cup and fall
             for i in range(4):
@@ -603,88 +620,407 @@ def set_verdict(cm, fr, s, t, sc, topic):
         hit(fr, s, f'{key}_dot', tc + .17, 's', cx + 150, .8)
 
 
-# ---------- ANC (14 Nov 2026): sound waves that cancel, and battery bars ----------
+# ---------- ANC (14 Nov 2026, remade the same day with depth and light; owner: "looks a bit flat"): a shaded earbud, the cancel money
+# shot, cabins with noise rings, batteries that drain against a ticking clock ----------
+BUD_D, BUD_L = (26, 26, 31), (196, 196, 208)   # the earbud's shading ramp (dark edge -> lit side)
+
+
 def earbud(cm, cx, cy, sc=1.0, t=0.0, mic=0.0):
-    """A generic in-ear bud with a stem (our own drawing, no maker's design), facing right; mic (0..1) lights the mic on the stem's foot."""
-    cm.circle(cx + 6, cy + 14, 78 * sc, fill=(0, 0, 0, 110))
-    cm.rect(cx - 26 * sc, cy, 52 * sc, 200 * sc, r=26 * sc, fill=(58, 58, 66), outline=(110, 110, 122), width=3)
-    cm.circle(cx, cy, 78 * sc, fill=(66, 66, 76), outline=(120, 120, 132), width=3)
-    cm.circle(cx + 52 * sc, cy - 6 * sc, 30 * sc, fill=(36, 36, 42))   # the ear tip
-    u = (t * .3) % 1.4 - .2
-    cm.circle(cx - 30 * sc + 40 * sc * u, cy - 34 * sc, 10 * sc, fill=(255, 255, 255, 30))
-    my = cy + 186 * sc
-    cm.circle(cx, my, 13 * sc, fill=YEL if mic > .5 else (30, 30, 36), outline=YEL + (int(255 * mic),), width=3)
+    """A generic in-ear bud with a stem (our own drawing, no maker's design), lit from the top left: a contact shadow, a shaded stem and
+    head (radial ramps, a gold rim light on the far side, a specular dot), a dark silicone tip, a vent; mic (0..1) lights the mic at the
+    stem's foot with a glow and two rings."""
+    D.soft_shadow(cm, cx + 14 * sc, cy + 262 * sc, 130 * sc, 26 * sc, 190)
+    D.capsule(cm, cx - 31 * sc, cy + 8 * sc, 62 * sc, 238 * sc, BUD_D, BUD_L, rim=YEL + (110,))
+    D.sphere(cm, cx + 80 * sc, cy - 6 * sc, 46 * sc, (12, 12, 15), (96, 96, 108), ry=42 * sc)   # the silicone tip, behind the head's edge
+    D.sphere(cm, cx, cy, 100 * sc, BUD_D, BUD_L, rim=YEL + (150,))
+    D.cm_ellipse(cm, cx - 34 * sc, cy + 30 * sc, 24 * sc, 9 * sc, fill=(16, 16, 20, 220))   # a vent
+    # the reflection band sliding over the shell
+    u = (t * .28) % 1.6 - .3
+    D.cm_ellipse(cm, cx - 60 * sc + 120 * sc * u, cy - 52 * sc, 16 * sc, 7 * sc, fill=(255, 255, 255, 40))
+    my = cy + 228 * sc
+    if mic > 0:
+        for k, f in ((2.6, .12), (1.9, .22), (1.4, .4)):
+            cm.circle(cx, my, 15 * sc * k, fill=YEL + (int(255 * f * mic),))
+    cm.circle(cx, my, 13 * sc, fill=B.mixc((30, 30, 36), (255, 228, 160), mic), outline=YEL + (int(255 * mic),), width=3)
     if mic > 0:
         q = (t * 1.3) % 1
         for j in range(2):
             qq = (q + j * .5) % 1
-            cm.arc(cx, my, (24 + 60 * qq) * sc, 120, 240, YEL + (int(200 * mic * (1 - qq)),), 4)
+            cm.arc(cx, my, (26 + 70 * qq) * sc, 100, 260, YEL + (int(210 * mic * (1 - qq)),), 4)
 
 
 def noise(x, t, amp, ph=0.0):
-    """A noise-like wave (two sines), travelling left towards the bud; the same x and t always give the same value."""
+    """A jagged, noise-like wave (three sines), travelling left towards the bud; the same x and t always give the same value."""
     a = 2 * math.pi * x / 230 + t * 5.2 + ph
-    return amp * (math.sin(a) + .38 * math.sin(2.3 * a + 1.3)) / 1.38
+    return amp * (math.sin(a) + .38 * math.sin(2.3 * a + 1.3) + .22 * math.sin(5.3 * a + t * 3.1)) / 1.6
+
+
+def wave_pts(y, amp, t, x0, x1, sign=1.0, step=7, taper=60):
+    pts = []
+    for i in range(0, int(x1 - x0) + 1, step):
+        x = x0 + i
+        e = min(1.0, (x - x0) / taper, (x1 - x) / taper) if taper else 1.0
+        pts.append((x, y + sign * noise(x, t, amp) * e))
+    return pts
+
+
+def glow_line(cm, pts, col, width, a=1.0):
+    """A line with light: a wide faint halo, a mid halo, the core and a bright centre."""
+    if len(pts) < 2 or a <= .01:
+        return
+    cm.line(pts, col + (int(40 * a),), width * 3.2)
+    cm.line(pts, col + (int(90 * a),), width * 1.8)
+    cm.line(pts, col + (int(255 * a),), width)
+    cm.line(pts, B.mixc(col, (255, 255, 255), .55) + (int(200 * a),), max(2, width * .35))
 
 
 def wave_line(cm, y, amp_f, t, col, width, x0=330, x1=1000, sign=1.0, fade=1.0):
+    glow_line(cm, wave_pts(y, amp_f, t, x0, x1, sign), tuple(col[:3]), width, fade)
+
+
+def noise_ring(cm, cx, cy, R, amp, t, col, width, ph=0.0, ry=1.0):
+    """A jagged ring (the sound around the bud): its radius wobbles with the noise; amp 0 is a calm circle."""
     pts = []
-    for i in range(0, int(x1 - x0) + 1, 8):
-        x = x0 + i
-        e = min(1.0, (x - x0) / 60, (x1 - x) / 60)   # the ends taper, so the line never stops on a cliff
-        pts.append((x, y + sign * noise(x, t, amp_f) * e))
-    cm.line(pts, col + (int(255 * fade),) if len(col) == 3 else col, width)
+    for i in range(73):
+        th = 2 * math.pi * i / 72
+        r = R + amp * (math.sin(7 * th + t * 6 + ph) + .5 * math.sin(13 * th - t * 9 + ph * 2)) / 1.5
+        pts.append((cx + r * math.cos(th), cy + r * math.sin(th) * ry))
+    cm.line(pts, col, width)
+
+
+def rings(cm, cx, cy, t, calm, n=3, r0=150, r1=470, amp=26, a=1.0, ry=1.0, ph=0.0):
+    """Noise arriving at the bud: n jagged rings travelling inwards from r1 to r0, grey; calm (0..1) shrinks them in to a soft gold
+    halo close round the bud and smooths them."""
+    for j in range(n):
+        q = ((t * .55 + j / n + ph) % 1)
+        R = mix(r1, r0, q)
+        R = mix(R, r0 * .62 + 18 * j, eio(calm))
+        al = math.sin(math.pi * q) * a
+        al = mix(al, .5 * a, calm)
+        col = B.mixc((205, 205, 212), YEL, calm) + (int(220 * al * (1 - .5 * calm)),)
+        noise_ring(cm, cx, cy, R, amp * (1 - calm), t, col, mix(7, 3, calm), ph=j * 1.7 + ph, ry=ry)
 
 
 def wave_world(cm, fr, ss, t, sc):
-    """One world over two scenes: the noise wave rolls in towards a bud and its mic lights (first scene); then the wave moves up, the bud
-    plays the opposite wave under it (gold, the mirror image) and the sum, what you hear, flattens to a line on the cancel word (second).
-    Params: first: mic_cue, noise_cue; second: opp_cue, cancel_cue."""
+    """One world over two scenes. First (MIC): a big shaded bud in the middle of the frame, a jagged noise wave rolling through behind it
+    across the whole width, noise rings closing in on it; the mic at the stem's foot lights on its word. Second (CANCEL, the money shot):
+    the bud moves up and left, the noise wave grows to the full frame; on "opposite" a gold mirror wave pours out of the bud along the same
+    line (the two make a mirror braid); on "cancel" both flatten into one calm glowing line, a pulse runs along it and the rings round the
+    bud shrink to a soft halo. Params: first: mic_cue, noise_cue; second: opp_cue, cancel_cue."""
     a, b = ss[0], (ss[1] if len(ss) > 1 else None)
     tm = cue(a, a.params.get('mic_cue'))
     tn = cue(a, a.params.get('noise_cue'), d=a.start + .2)
-    kb = eio((t - b.start + .1) / .8) if b else 0.0   # the layout opens into three tracks
+    kb = eio((t - b.start + .05) / .9) if b else 0.0
     to = cue(b, b.params.get('opp_cue')) if b else 1e9
     tc = cue(b, b.params.get('cancel_cue')) if b else 1e9
-    ko = eio((t - to + .1) / .6)
-    kc = eio((t - tc + .15) / .7)
+    ko = eio((t - to + .1) / .9)
+    kc = eio((t - tc + .1) / .8)
     km = eo((t - tm + .05) / .3)
-    earbud(cm, 190, mix(880, 905, kb), 1.0, t, km)
-    # track 1: the noise (grey, big in the middle at first; up top once the tracks open)
-    y1, amp1 = mix(975, 770, kb), mix(150, 80, kb)
     kin = eo((t - a.start + .1) / .6)
-    wave_line(cm, y1, amp1 * kin, t, (200, 200, 206), 10, fade=.95)
-    cm.text(330, y1 - amp1 - 50, 'NOISE', 44, TXT, 900, 'lm', a=clamp(sp(t, tn - .05, .5, 14) * 1.6))
-    for j in range(3):   # the noise arriving at the mic: small arcs crossing from the wave to the bud
-        q = ((t * .9 + j / 3) % 1)
-        cm.arc(330 - 100 * q, y1, 40 + 30 * q, 140, 220, (200, 200, 206, int(150 * (1 - q) * kin)), 4)
+    # the bud: centre stage, then up and to the left for the money shot
+    bx, by, bs = mix(540, 220, kb), mix(800, 760, kb), mix(1.3, .78, kb)
+    # the noise wave: behind the bud at head height across the frame (first), the full-frame subject on y 1080 (second)
+    wy = mix(830, 1080, kb)
+    wamp = mix(110, 150, kb) * kin * (1 - kc)
+    wx0 = mix(-40, bx + 110 * bs, kb)
+    noise_a = (1 - .25 * ko)
+    rings(cm, bx, by + 30 * bs, t, kc, r0=mix(170, 120, kb), r1=mix(500, 330, kb), amp=mix(28, 20, kb), a=kin)
+    if kb < 1:
+        glow_line(cm, wave_pts(wy, wamp, t, -40, 1120, taper=0), (205, 205, 212), 10, noise_a * (1 - kb) * .9)
+    earbud(cm, bx, by, bs, t, km)
+    if kb > 0:
+        pts = wave_pts(wy, wamp, t, wx0, 1120, taper=90)
+        glow_line(cm, pts, (205, 205, 212), mix(10, 12, kb), kb * noise_a)
+        if ko > 0:   # the mirror wave pours out of the bud's tip and runs to the frame's edge
+            xe = mix(wx0, 1120, ko)
+            gp = wave_pts(wy, wamp, t, wx0, xe, sign=-1.0, taper=90)
+            glow_line(cm, gp, YEL, 11, min(1.0, ko * 3))
+            if ko < 1:   # its front: a bright head
+                cm.circle(xe, wy, 16, fill=(255, 236, 190, 230))
+                cm.circle(xe, wy, 34, fill=YEL + (70,))
+        if kc > 0:   # calm: one flat glowing line and a pulse running along it
+            glow_line(cm, [(wx0, wy), (1120, wy)], B.mixc(YEL, (255, 255, 255), .3), 8, kc)
+            q = clamp((t - tc) / 1.1)
+            if 0 < q < 1:
+                px = mix(wx0, 1120, eo(q))
+                for k, f in ((60, .12), (34, .3), (14, .9)):
+                    D.cm_ellipse(cm, px, wy, k * 1.8, k * .5, fill=(255, 240, 200, int(255 * f * (1 - q))))
+        # the labels on the money shot
+        cm.text(wx0 + 20, wy - 205, 'NOISE', 50, TXT, 900, 'lm', a=clamp(kb * 1.5) * (1 - kc))
+        cm.text(wx0 + 20, wy + 205, 'OPPOSITE WAVE', 50, YEL, 900, 'lm', a=clamp(sp(t, to - .05, .5, 14) * 1.6) * (1 - kc))
+        kq = sp(t, tc + .25, .5, 13)
+        if kq > .01:
+            cm.text(mix(wx0, 1040, .5), wy - 120 - (1 - min(1, kq)) * 30, 'CALM', 120, YEL, 900, 'mm', a=clamp(kq * 1.6))
+    else:
+        cm.text(130, wy - 175, 'NOISE', 50, TXT, 900, 'lm', a=clamp(sp(t, tn - .05, .5, 14) * 1.6))
     hit(fr, a, 'noise', tn, 'l', 650, 1.1)
-    hit(fr, a, 'mic', tm, 's', 190, 1.0)
-    if not b or kb <= .01:
-        return
-    al = clamp(kb * 1.5)
-    # track 2: the opposite wave (gold, the mirror image), drawn in from the bud on its word
-    y2 = 990
-    cm.text(330, y2 - 98, 'OPPOSITE WAVE', 44, YEL, 900, 'lm', a=clamp(sp(t, to - .05, .5, 14) * 1.6) * al)
-    cm.line([(330, y2), (1000, y2)], (255, 255, 255, int(40 * al)), 3)
-    if ko > 0:
-        wave_line(cm, y2, 80, t, YEL, 10, 330, 330 + 670 * ko, sign=-1.0)
-    # track 3: what you hear = noise + opposite: it shrinks to a flat line on "cancel"
-    y3 = 1205
-    k3 = clamp(ko * (1 - kc))
-    hear = 80 * (1 - .5 * ko) * (1 - kc) if ko > 0 else 80
-    cm.text(330, y3 - 98, 'WHAT YOU HEAR', 44, TXT, 900, 'lm', a=al)
-    wave_line(cm, y3, hear, t, (255, 255, 255), 10 if kc < 1 else 8, fade=al)
-    if kc > 0:   # quiet: the flat line glows once
-        q = clamp((t - tc) / 1.0)
-        cm.line([(330, y3), (1000, y3)], YEL + (int(160 * kc * (1 - q)),), 8 + 30 * q)
-    _ = k3
-    hit(fr, b, 'tracks', b.start, 'm', 650, 1.0)
-    hit(fr, b, 'hear', b.start + .55, 's', 330, .8)   # the WHAT YOU HEAR label lands
-    hit(fr, b, 'opp', to, 'l', 650, 1.2)
-    hit(fr, b, 'oppend', to + .65, 's', 1000, .8)   # the gold wave reaches the far end
-    hit(fr, b, 'flat', tc + .7, 's', 1000, .8)   # the flat line settles
-    hit(fr, b, 'cancel', tc, 'm', 650, 1.1)
+    hit(fr, a, 'mic', tm, 's', 540, 1.0)
+    hit(fr, a, 'ring', a.start + .7, 's', 300, .7)
+    if b:
+        hit(fr, b, 'tracks', b.start, 'm', 650, 1.0)
+        hit(fr, b, 'noisel', b.start + .55, 's', 330, .8)
+        hit(fr, b, 'opp', to, 'l', 650, 1.2)
+        hit(fr, b, 'oppend', to + .7, 's', 1000, .8)
+        hit(fr, b, 'cancel', tc, 'm', 650, 1.1)
+        hit(fr, b, 'flat', tc + .25, 's', 540, .9)
+        hit(fr, b, 'pulse', tc + .9, 's', 1000, .7)
+
+
+# ---------- the cabins: a bus, a metro and a flight, drawn in one-point perspective, side by side in one world (the camera pans) ----------
+RIDE_GAP = 1200
+
+
+def ride_pan(s, t):
+    """The camera's pan through the cabins: a spring to each cabin just before its word (px in the world)."""
+    rides = s.params['rides']
+    x = 0.0
+    for i, rd in enumerate(rides[1:], 1):
+        tc = cue(s, rd.get('cue'), d=s.start + .5 + .8 * i) - .38
+        x += RIDE_GAP * min(1.04, sp(t, tc, .62, 11))
+    return x
+
+
+def _lerp_pt(a, b, u):
+    return (a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u)
+
+
+def cabin(cm, ox, kind, t, calm, lab, label, scene_t0):
+    """One cabin interior at world x offset ox: the room in perspective (ceiling, walls, floor, the lit back wall), windows with city or
+    cloud light sliding past, its furniture (bus seats and poles with swaying handles; metro benches, light strips and doors; plane bins,
+    oval windows and seat rows), a bud floating in the aisle with the noise rings round it (calm 0..1 shrinks them: ANC on), and the
+    cabin's name lit on the ceiling sign (lab 0..1)."""
+    L, R, T, Bt = ox - 60, ox + 1140, 590, 1520
+    bl, br, bt, bb = ox + 390, ox + 690, 860, 1060           # the back wall
+    NL, NR = (L, T), (R, T)
+    FL, FR = (L, Bt), (R, Bt)
+    BLt, BRt, BLb, BRb = (bl, bt), (br, bt), (bl, bb), (br, bb)
+    warm = (46, 40, 32) if kind != 'plane' else (44, 44, 48)
+    cm.poly([NL, NR, BRt, BLt], fill=B.mixc(warm, (0, 0, 0), .25))                    # ceiling
+    cm.poly([FL, FR, BRb, BLb], fill=(22, 20, 18))                                     # floor
+    cm.poly([NL, BLt, BLb, FL], fill=B.mixc(warm, (0, 0, 0), .45))                     # left wall
+    cm.poly([NR, BRt, BRb, FR], fill=B.mixc(warm, (0, 0, 0), .5))                      # right wall
+    cm.rect(bl, bt, br - bl, bb - bt, fill=B.mixc(warm, (255, 230, 180), .12))         # back wall, lit
+    # floor stripes converging on the back (depth)
+    for j in range(1, 6):
+        u = j / 6
+        cm.line([_lerp_pt(FL, FR, u), _lerp_pt(BLb, BRb, u)], (255, 255, 255, 10), 3)
+    for j in range(1, 6):   # cross lines, closer together with depth
+        u = 1 - (1 - j / 6) ** 1.8
+        cm.line([_lerp_pt(FL, BLb, u), _lerp_pt(FR, BRb, u)], (255, 255, 255, 12), 2)
+    # the light strip down the ceiling's middle, bright, with bloom from post()
+    cm.poly([_lerp_pt(NL, NR, .44), _lerp_pt(NL, NR, .56), _lerp_pt(BLt, BRt, .56), _lerp_pt(BLt, BRt, .44)], fill=(255, 236, 196, 120 if kind != 'plane' else 70))
+    cm.poly([_lerp_pt(NL, NR, .48), _lerp_pt(NL, NR, .52), _lerp_pt(BLt, BRt, .52), _lerp_pt(BLt, BRt, .48)], fill=(255, 246, 226, 230))
+
+    def wall_pt(side, u, v):   # a point on a side wall: u = depth (0 near, 1 back), v = height (0 top, 1 bottom)
+        top = _lerp_pt(NL if side < 0 else NR, BLt if side < 0 else BRt, u)
+        bot = _lerp_pt(FL if side < 0 else FR, BLb if side < 0 else BRb, u)
+        return _lerp_pt(top, bot, v)
+
+    # windows on both walls, with the outside sliding past (city lights for the bus and metro, cloud light for the plane)
+    wins = [(.08, .32), (.4, .58), (.64, .76)] if kind != 'plane' else [(.06, .16), (.3, .38), (.5, .56), (.66, .7)]
+    for side in (-1, 1):
+        for wi, (u0, u1) in enumerate(wins):
+            v0, v1 = (.2, .5) if kind != 'plane' else (.28, .44)
+            q = [wall_pt(side, u0, v0), wall_pt(side, u1, v0), wall_pt(side, u1, v1), wall_pt(side, u0, v1)]
+            sky = (24, 32, 46) if kind != 'plane' else (70, 92, 120)
+            cm.poly(q, fill=sky + (255,))
+            for k in range(4):   # lights or cloud puffs sliding towards the near edge
+                rr = random.Random(int(ox) * 7 + side * 31 + wi * 13 + k)
+                ph = (t * rr.uniform(.5, .9) + rr.random()) % 1
+                u = u1 - (u1 - u0) * ph
+                vv = mix(v0, v1, rr.uniform(.2, .8))
+                p_ = wall_pt(side, u, vv)
+                dep = 1 - u * .7
+                if kind == 'plane':
+                    D.cm_ellipse(cm, p_[0], p_[1], 26 * dep, 9 * dep, fill=(235, 240, 250, int(150 * math.sin(math.pi * ph))))
+                else:
+                    col = YEL if k % 2 else (255, 220, 170)
+                    cm.circle(p_[0], p_[1], 7 * dep, fill=col + (int(230 * math.sin(math.pi * ph)),))
+                    cm.circle(p_[0], p_[1], 16 * dep, fill=col + (int(60 * math.sin(math.pi * ph)),))
+            cm.poly(q, outline=(120, 110, 96, 200))
+    # furniture
+    if kind == 'bus':
+        for side in (-1, 1):
+            for u in (.1, .32, .54, .74):   # seat backs
+                p0, p1 = wall_pt(side, u, .55), wall_pt(side, u + .1, .55)
+                h_ = (wall_pt(side, u, 1)[1] - p0[1]) * .55
+                x0_, x1_ = sorted((p0[0], p0[0] + (p1[0] - p0[0]) * .4 + side * -60 * (1 - u)))
+                cm.rect(min(p0[0], x0_), p0[1], abs(x1_ - x0_) + 40 * (1 - u * .6), h_, r=14 * (1 - u * .5), fill=(70, 50, 36), outline=(110, 82, 58), width=2)
+        for j, (u, xs_) in enumerate(((.18, .3), (.18, .7), (.5, .4), (.5, .6))):   # poles and their swaying handles
+            top = _lerp_pt(_lerp_pt(NL, NR, xs_), _lerp_pt(BLt, BRt, xs_), u)
+            bot = _lerp_pt(_lerp_pt(FL, FR, xs_), _lerp_pt(BLb, BRb, xs_), u)
+            dep = 1 - u * .65
+            cm.line([top, bot], (196, 160, 90), 14 * dep)
+            cm.line([(top[0] - 4 * dep, top[1]), (bot[0] - 4 * dep, bot[1])], (255, 230, 170, 120), 4 * dep)
+    elif kind == 'metro':
+        for side in (-1, 1):   # long benches along the walls
+            q = [wall_pt(side, .05, .7), wall_pt(side, .7, .7), wall_pt(side, .7, .82), wall_pt(side, .05, .82)]
+            q = [(x + side * -40, y) for x, y in q]
+            cm.poly(q, fill=(62, 66, 76), outline=(98, 104, 118))
+        cm.rect(bl + 40, bt + 20, 100, bb - bt - 20, r=6, fill=(64, 70, 80), outline=(110, 118, 130), width=2)   # the doors at the back
+        cm.rect(br - 140, bt + 20, 100, bb - bt - 20, r=6, fill=(64, 70, 80), outline=(110, 118, 130), width=2)
+        for xx in (bl + 60, br - 120):
+            cm.rect(xx, bt + 40, 60, 80, r=6, fill=(24, 32, 46))
+        for j in range(3):   # the hand rail along the ceiling, with straps swaying
+            pass
+        for side in (-1, 1):
+            p0, p1 = _lerp_pt(_lerp_pt(NL, NR, .5 + side * .28), _lerp_pt(BLt, BRt, .5 + side * .28), .05), _lerp_pt(_lerp_pt(NL, NR, .5 + side * .28), _lerp_pt(BLt, BRt, .5 + side * .28), .8)
+            cm.line([p0, p1], (170, 176, 188), 7)
+            for k in range(5):
+                u = .1 + .15 * k
+                p_ = _lerp_pt(p0, p1, u / .8)
+                dep = 1 - u * .7
+                sw = .25 * math.sin(t * 2.3 + k * .9 + side) * math.exp(-0.0 * u)
+                ln = 70 * dep
+                e = (p_[0] + ln * math.sin(sw), p_[1] + ln * math.cos(sw))
+                cm.line([p_, e], (150, 156, 168), 4 * dep)
+                cm.circle(e[0], e[1] + 12 * dep, 13 * dep, outline=(190, 196, 208), width=4 * dep)
+    else:   # plane: overhead bins, seat rows with headrests
+        for side in (-1, 1):
+            q = [wall_pt(side, .02, 0), wall_pt(side, .8, 0), wall_pt(side, .8, .22), wall_pt(side, .02, .22)]
+            cm.poly(q, fill=(70, 70, 78), outline=(120, 120, 132))
+            for u in (.12, .3, .48, .64):
+                p0 = wall_pt(side, u, .52)
+                dep = 1 - u * .68
+                xin = p0[0] + side * -1 * (180 * dep)
+                x0_, x1_ = sorted((p0[0], xin))
+                cm.rect(x0_, p0[1], x1_ - x0_, 230 * dep, r=24 * dep, fill=(44, 52, 72), outline=(84, 96, 124), width=2)
+                cm.rect(x0_ + 14 * dep, p0[1] + 10 * dep, x1_ - x0_ - 28 * dep, 46 * dep, r=12 * dep, fill=(220, 224, 232, 200))
+    # the bud in the aisle and the noise rings round it (perspective: flattened)
+    bx, by = ox + 540, 1110
+    rings(cm, bx, by + 20, t, calm, n=3, r0=110, r1=420, amp=24, a=1.0, ry=.62, ph=ox * .001)
+    earbud(cm, bx, by - 40, .5, t, calm)
+    # the sign on the ceiling: the cabin's name, lit on its word
+    if lab > .01:
+        k = min(1.0, lab)
+        cm.rect(ox + 540 - 210, 650, 420, 150, r=30, fill=(14, 14, 18, int(230 * clamp(lab * 2))), outline=YEL + (int(255 * clamp(lab * 2)),), width=4)
+        cm.text(ox + 540, 727 + (1 - k) * 16, label, 104, YEL, 900, 'mm', a=clamp(lab * 1.8))
+    if calm > .05:
+        cm.text(ox + 540, 1290, 'ANC ON', 46, YEL, 900, 'mm', a=clamp(calm * 1.6))
+
+
+def set_ride(cm, fr, s, t, sc):
+    """Three cabins in one world (a bus, the metro, a flight), the camera panning from one to the next just before its word; in each the
+    noise rings round the bud shrink as ANC turns on (0.25 s after the word) and the cabin's name lights on the sign.
+    Params: rides [{kind, text, cue}]."""
+    rides = s.params['rides']
+    px = ride_pan(s, t)
+    for i, rd in enumerate(rides):
+        ox = RIDE_GAP * i - px
+        if ox < -1300 or ox > 1300:
+            continue
+        tc = cue(s, rd.get('cue'), d=s.start + .4 + .8 * i)
+        calm = eio((t - tc - .2) / .7)
+        lab = sp(t, tc - .05, .5, 14)
+        sub = Cam(fr, (cm.fx, cm.fy), cm.z, (cm.dx, cm.dy), cm.a, cm.ta)
+        sub.T = (lambda o: (lambda x, y: cm.T(x + o, y)))(ox)
+        cabin(sub, 0, rd['kind'], t, calm, lab, rd['text'], s.start)
+        hit(fr, s, f'ride{i}', tc, 'l', 540, 1.2)
+        hit(fr, s, f'anc{i}', tc + .3, 's', 540, .8)
+        if i:
+            hit(fr, s, f'pan{i}', tc - .38, 'm', 900, .9)
+
+
+# ---------- batteries that drain live against a ticking clock ----------
+def battery(cm, x, y, w, h, level, col, t, gold=False, seed=0):
+    """A tall glass battery: a soft shadow, a dark glass body with a lit rim, the cap, the liquid charge (a vertical ramp, a wavy lit
+    surface, bubbles rising) at level 0..1, a glass highlight down the left side."""
+    D.soft_shadow(cm, x + w / 2 + 10, y + h + 18, w * .62, 22, 200)
+    cm.rect(x + w * .32, y - 34, w * .36, 42, r=12, fill=(92, 92, 102), outline=(150, 150, 160), width=2)
+    cm.rect(x, y, w, h, r=46, fill=(18, 18, 22), outline=YEL if gold else (150, 150, 160), width=5 if gold else 4)
+    ih = h - 28
+    lh = ih * clamp(level)
+    if lh > 2:
+        top = y + 14 + ih - lh
+        dark = B.mixc(col, (0, 0, 0), .45)
+        n = 10
+        for k in range(n):   # the ramp: lighter at the top of the charge
+            f = k / n
+            cm.rect(x + 14, top + lh * f, w - 28, lh * (1 - f) + 1, r=min(32, lh * (1 - f) / 2), fill=B.mixc(col, dark, f ** .8) + (255,))
+        if level < .985:   # the lit surface, rocking
+            pts = [(x + 16 + (w - 32) * i / 20, top + 6 * math.sin(t * 5 + i * .7 + seed)) for i in range(21)]
+            cm.poly(pts + [(x + w - 16, top + 14), (x + 16, top + 14)], fill=B.mixc(col, (255, 255, 255), .45) + (255,))
+            cm.line(pts, (255, 255, 255, 200), 3)
+        for k in range(6):   # bubbles
+            rr = random.Random(seed * 50 + k)
+            per = rr.uniform(.9, 1.6)
+            q = ((t + rr.random() * per) % per) / per
+            by_ = y + 14 + ih - (lh - 20) * q
+            if by_ > top + 10:
+                cm.circle(x + 30 + rr.random() * (w - 60), by_, rr.uniform(4, 8), outline=(255, 255, 255, int(160 * (1 - q))), width=2)
+    cm.rect(x + 20, y + 30, 16, h - 60, r=8, fill=(255, 255, 255, 34))   # the glass highlight
+    cm.rect(x + 42, y + 30, 6, h * .4, r=3, fill=(255, 255, 255, 22))
+
+
+def clock(cm, cx, cy, r, hours, arcs, t):
+    """A clock face with no digits (Output QA NUMBERS reads digits): a shaded dial, 12 marks, the arcs of hours each battery lasted
+    (arcs: [(hours, colour, radius factor)]), a gold hand and a cap."""
+    D.soft_shadow(cm, cx + 8, cy + r + 20, r * .9, 18, 170)
+    D.sphere(cm, cx, cy, r, (14, 14, 18), (58, 58, 66), rim=YEL + (90,), spec=False)
+    cm.circle(cx, cy, r, outline=(170, 170, 180), width=4)
+    for i in range(12):
+        th = math.radians(i * 30 - 90)
+        r0 = r * (.78 if i % 3 else .7)
+        cm.line([(cx + r0 * math.cos(th), cy + r0 * math.sin(th)), (cx + r * .9 * math.cos(th), cy + r * .9 * math.sin(th))], (220, 220, 228), 6 if i % 3 == 0 else 3)
+    for hrs, col, f in arcs:
+        if hrs > .02:
+            cm.arc(cx, cy, r * f, -90, -90 + 30 * hrs, col, 12)
+    th = math.radians(hours * 30 - 90)
+    cm.line([(cx - r * .14 * math.cos(th), cy - r * .14 * math.sin(th)), (cx + r * .74 * math.cos(th), cy + r * .74 * math.sin(th))], YEL, 9)
+    cm.circle(cx, cy, 14, fill=YEL)
+    cm.circle(cx - 3, cy - 3, 5, fill=(255, 246, 220))
+
+
+def set_drain(cm, fr, s, t, sc):
+    """Two tall batteries drain live as a clock ticks hour by hour from the scene's start to the twelve: ANC on (gold) runs dry at eight,
+    ANC off at twelve; each one's hours pop on its word over its glass (the numbers said, no rolling digits: G13); the clock keeps an
+    arc of the hours each lasted. Params: rows [{label, value, unit, cue, gold?}] (the longer first), max, clock_cue (the word the clock
+    reaches the max on)."""
+    p = s.params
+    rows, mx = p['rows'], float(p.get('max', 12))
+    t0 = s.start + .3
+    t1 = cue(s, p.get('clock_cue'), d=s.start + 2.4) - .05
+    raw = mx * clamp((t - t0) / max(.3, t1 - t0))
+    n = int(raw)
+    per = (t1 - t0) / mx
+    hours = (n - 1 + min(1.06, B.spring((raw - n) * per + per, .45, 26) if n >= 1 else 0)) if raw < mx else mx
+    if n == 0:
+        hours = 0.0
+    hours = max(0.0, hours)
+    xs = (110, 690)
+    w, y, h = 280, 760, 450
+    arcs = []
+    for i, rw in enumerate(rows):
+        x = xs[i]
+        gold = rw.get('gold')
+        kin = eo((t - s.start - .05 - .12 * i) / .5)
+        if kin <= .01:
+            continue
+        lvl = clamp(1 - raw / rw['value'])
+        col = YEL if gold else (220, 222, 230)
+        sub = sub_cam(fr, cm, x + w / 2, y + h / 2, .9 + .1 * kin, kin)
+        battery(sub, x, y, w, h, lvl, col, t, gold, seed=i + 1)
+        sub.text(x + w / 2, y - 80, rw['label'], 50, YEL if gold else TXT, 900, 'mm')
+        tc = cue(s, rw.get('cue'), d=s.start + .3 + .5 * i)
+        kv = sp(t, tc, .5, 13)
+        if kv > .01:
+            sub.text(x + w / 2, y + h / 2 + (1 - min(1, kv)) * 24, f"{rw['value']} {rw.get('unit', 'H')}", 100, YEL if gold else TXT, 900, 'mm', a=clamp(kv * 1.6))
+        te = t0 + (t1 - t0) * rw['value'] / mx   # the moment it runs dry
+        if t >= te:   # empty: a small red dot and a ring that pulses once
+            q = clamp((t - te) / .6)
+            sub.circle(x + w - 34, y + 34, 16, fill=RED + (235,))
+            if q < 1:
+                sub.circle(x + w / 2, y + h - 40, 40 + 160 * q, outline=(255, 255, 255, int(160 * (1 - q))), width=4)
+        arcs.append((min(raw, rw['value']), col + (int(230 * kin),), .97 - .17 * i))
+        hit(fr, s, f'bat{i}', s.start + .05 + .12 * i, 'm', x + w / 2, .9)
+        hit(fr, s, f'empty{i}', te, 'l' if i == 0 else 'm', x + w / 2, 1.0)
+        hit(fr, s, f'val{i}', tc, 's', x + w / 2, .9)
+    kc = eo((t - s.start - .1) / .5)
+    if kc > .01:
+        sub = sub_cam(fr, cm, 540, 985, .8 + .2 * kc, kc)
+        clock(sub, 540, 985, 120, hours, arcs, t)
+    for k in range(1, int(mx) + 1, 2):   # the ticks (every other hour: a soft tick)
+        hit(fr, s, f'tick{k}', t0 + per * k, 's', 540, .6)
 
 
 def set_bars(cm, fr, s, t, sc):
@@ -734,7 +1070,7 @@ def set_bars(cm, fr, s, t, sc):
         hit(fr, s, f'val{i}', tc, 's', 800, .9)
 
 
-SETS = {'barrier': set_barrier, 'slam': set_slam, 'split': set_split, 'bars': set_bars}
+SETS = {'barrier': set_barrier, 'slam': set_slam, 'split': set_split, 'bars': set_bars, 'ride': set_ride, 'drain': set_drain}
 
 
 # ---------- the HUD: progress, format pill, the tag row, the chip ----------
@@ -839,11 +1175,12 @@ def chip(fr, s, t, kout):
 
 
 def caption_bed(fr):
-    """A soft dark bed under the caption band, so the words read over full-bleed worlds (water)."""
-    for j in range(12):
-        y = 1330 + j * 22
-        fr.rect(0, y, W, 24, fill=(6, 6, 8, int(min(200, 18 * (j + 1)))))
-    fr.rect(0, 1594, W, 326, fill=(6, 6, 8, 200))
+    """A soft dark band behind the caption words (y ~1340-1560), so they read over full-bleed worlds; below it the floor and its
+    reflection stay visible (14 Nov 2026: no empty lower third)."""
+    for j in range(16):
+        y = 1300 + j * 20
+        k = math.sin(math.pi * (j + .5) / 16)
+        fr.rect(0, y, W, 21, fill=(6, 6, 8, int(170 * k)))
 
 
 # ---------- groups (worlds), the camera, the frame ----------
@@ -867,6 +1204,11 @@ def transitions(topic, scenes):
         out.append([round(g[0].start - .05, 3), round(g[0].start + TR, 3), 'zoom'])
         for s in g[1:]:
             out.append([round(s.start - .05, 3), round(s.start + .5, 3), 'glide'])
+        for s in g:
+            if s.kind == 'ride':   # the pans from cabin to cabin
+                for i, rd in enumerate(s.params['rides'][1:], 1):
+                    tc = cue(s, rd.get('cue'), d=s.start + .5 + .8 * i) - .38
+                    out.append([round(tc - .05, 3), round(tc + .55, 3), 'glide'])
     out.append([round(B_DUR[0] - .3, 3), round(B_DUR[0], 3), 'fade'])
     return out + list(topic.get('transitions', []))
 
@@ -885,10 +1227,37 @@ def push(g, t):
     return z, fx, fy
 
 
+def zoom_of(gs, gi, t):
+    """The world camera's zoom factor from its zoom-through (in and out) at t, for the motion blur."""
+    g0 = gs[gi][0].start
+    kin = eio((t - (g0 - .05)) / TR)
+    nxt = gs[gi + 1][0].start if gi + 1 < len(gs) else 1e9
+    kout = eio((t - (nxt - .05)) / TR)
+    return (.78 + .22 * kin) * (1 + .6 * kout), min(kin, 1 - kout)
+
+
+def motion(gs, t):
+    """The camera's speed at t: the zoom change per frame (log ratio) of the most visible zooming world, and the pan in px per frame."""
+    zr, best = 0.0, 0.0
+    for gi in range(len(gs)):
+        z1, a1 = zoom_of(gs, gi, t)
+        z2, _ = zoom_of(gs, gi, t + 1 / 30)
+        if a1 > .02 and abs(math.log(z2 / z1)) * a1 > abs(zr) * best:
+            zr, best = math.log(z2 / z1), a1
+    pan = 0.0
+    for g in gs:
+        for s in g:
+            if s.kind == 'ride' and s.start - .1 <= t <= s.end + .2:
+                pan = ride_pan(s, t + 1 / 30) - ride_pan(s, t)
+    return zr, pan
+
+
 def draw(t, topic, vo, hook_out, scenes, chunks):
-    bg, small = background(t, BG)
+    dx0, dy0 = drift(t)
+    bg, small = D.atmosphere(t, (dx0, dy0))
     fr = B.Frame(bg)
     fr.t, fr.bare = t, small
+    D.motes(fr, t, (dx0 * 3, dy0 * 3), a=.8)
     gs = groups(scenes)
     first = scenes[0].start if scenes else 1e9
     k_hook_out = eio((t - (first - .05)) / TR)
@@ -923,6 +1292,7 @@ def draw(t, topic, vo, hook_out, scenes, chunks):
             set_verdict(cm, fr, g[0], t, cur, topic)
         else:
             SETS[g[0].kind](cm, fr, g[0], t, cur)
+    D.reflect(fr)
     caption_bed(fr)
     hud_top(fr, topic, scenes, hook_out, t)
     # the tag row: the travelling glyph and the words of the scene on screen
@@ -965,7 +1335,8 @@ def draw(t, topic, vo, hook_out, scenes, chunks):
                         c = ci
                 captions(fr, line['words'], t, ch[c])
     fade = 1 - B.prog(t, B_DUR[0] - .3, B_DUR[0])
-    return fr, fr.finish(glow_strength=0.0, fade=fade)
+    zr, pan = motion(gs, t)
+    return fr, D.post(fr.finish(glow_strength=0.0, fade=fade), t, zoom=zr, pan=pan * 1.0, focus=FOC)
 
 
 _unused = Image   # (PIL kept for parity with the other looks)

@@ -17,7 +17,7 @@
  },
  "experiment": {
   "id": "tech-gadget-specs",
-  "change": "E24 try 2: worth it or not, earbuds, India, in the idea look with two new worlds (sound waves that cancel, battery bars); a rupee readout chip (design/improvements.md)",
+  "change": "E24 try 2: worth it or not, earbuds, India, remade the same morning in the depth-and-light idea look (shaded earbud, the cancel money shot, cabins, batteries draining on a clock); a rupee readout chip (design/improvements.md)",
   "vs": "median"
  },
  "hook": [
@@ -59,9 +59,9 @@
      "mic_cue": "mic",
      "noise_cue": "noise",
      "push": [
-      1.04,
-      600,
-      975
+      1.06,
+      540,
+      1000
      ],
      "chips": [
       {
@@ -102,9 +102,9 @@
      "opp_cue": "opposite",
      "cancel_cue": "cancel",
      "push": [
-      1.02,
+      1.03,
       600,
-      990
+      1060
      ]
     }
    }
@@ -120,7 +120,7 @@
    ],
    "scene": {
     "label": "BEST FOR",
-    "kind": "slam",
+    "kind": "ride",
     "params": {
      "tag": {
       "words": [
@@ -133,30 +133,27 @@
       "sub": "low, steady sound",
       "sub_cue": "hum"
      },
-     "cards": [
-      {
-       "icon": "bus",
-       "text": "Bus",
-       "cue": "bus",
-       "dot": "green"
-      },
-      {
-       "icon": "metro",
-       "text": "Metro",
-       "cue": "metro",
-       "dot": "green"
-      },
-      {
-       "icon": "plane",
-       "text": "Flight",
-       "cue": "flight",
-       "dot": "green"
-      }
-     ],
      "push": [
-      1.07,
-      510,
-      975
+      1.03,
+      540,
+      1000
+     ],
+     "rides": [
+      {
+       "kind": "bus",
+       "text": "BUS",
+       "cue": "bus"
+      },
+      {
+       "kind": "metro",
+       "text": "METRO",
+       "cue": "metro"
+      },
+      {
+       "kind": "plane",
+       "text": "FLIGHT",
+       "cue": "flight"
+      }
      ]
     }
    }
@@ -171,7 +168,7 @@
    ],
    "scene": {
     "label": "BATTERY",
-    "kind": "bars",
+    "kind": "drain",
     "params": {
      "tag": {
       "words": [
@@ -211,10 +208,11 @@
       }
      ],
      "push": [
-      1.09,
-      510,
-      940
-     ]
+      1.04,
+      540,
+      985
+     ],
+     "clock_cue": "twelve"
     }
    }
   },
@@ -243,7 +241,8 @@
      "good": {
       "icon": "bus",
       "text": "COMMUTE",
-      "cue": "commute"
+      "cue": "commute",
+      "rings": true
      },
      "bad": {
       "icon": "home",
@@ -333,6 +332,21 @@
    "flight",
    "commute",
    "quiet"
+  ],
+  "edges_ok": [
+   {
+    "from": {
+     "say": "works best"
+    },
+    "to": {
+     "say": "costs battery"
+    },
+    "sides": [
+     "left",
+     "right"
+    ],
+    "why": "the bus, metro and plane cabins are full-bleed rooms whose walls run past the frame on purpose"
+   }
   ]
  }
 }
