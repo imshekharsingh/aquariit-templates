@@ -1,0 +1,10 @@
+{
+ "name": "showreel-c3-greek-colour",
+ "why": "Media request for the Sun 15 Nov Turns Out reel (fetched before the build; the config scripts/channel3/greek-colour.json carries the same list with the MEDIA_JSON fields)",
+ "media": [
+  {"id": "kore", "queries": ["Phrasikleia Kore", "Kore Acropolis Museum polychromy", "archaic kore paint traces"], "sources": ["wikimedia", "openverse"], "avoid": ["artemis", "athena", "goddess", "reconstruction", "replica", "copy", "nude"], "min_side": 1400},
+  {"id": "gallery", "queries": ["Zoffany Charles Townley Sculpture Gallery", "Townley sculpture gallery painting"], "sources": ["wikimedia"], "min_side": 1000},
+  {"id": "acropolis", "queries": ["Acropolis of Athens", "Parthenon Acropolis hill view"], "sources": ["wikimedia", "openverse"], "avoid": ["people", "person", "night", "tourists", "crowd"], "min_side": 1600},
+  {"id": "marble", "queries": ["archaic kouros marble", "Greek marble head museum"], "sources": ["wikimedia", "openverse"], "avoid": ["nude", "naked", "venus", "aphrodite", "zeus", "apollo", "athena", "goddess", "god"], "min_side": 1400}
+ ]
+}
