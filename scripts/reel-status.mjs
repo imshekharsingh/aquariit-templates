@@ -1,4 +1,4 @@
-// After a render (CLAUDE.md "Automate as we go", 3 Nov 2026: done by hand on the spare night): finds the latest "Showreel" run for a
+// After a render (design/runbook-reels.md "Automate as we go", 3 Nov 2026: done by hand on the spare night): finds the latest "Showreel" run for a
 // reel, says whether it is running, failed (which job, and its last error lines) or done, prints the voice check (pacing table, unsure
 // words, what the recogniser heard) and the "Showreel ready" issue, and saves the contact sheet (the run's "review" artifact) to look at. Uses `gh api` (REST), which
 // works from a session; one call per run, no polling (start it once, about 25 minutes after the dispatch).

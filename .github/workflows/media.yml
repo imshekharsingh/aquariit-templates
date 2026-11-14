@@ -1,7 +1,7 @@
 name: Media
 
 # Free real images for a tech or Turns Out reel (owner, 14 Nov 2026: "yes to free real images ... take those and work or animate your design
-# around it"; CLAUDE.md "Free real images and footage"). GitHub does the fetching: for each entry of the config's "media" list,
+# around it"; design/safety.md "Free real images and footage"). GitHub does the fetching: for each entry of the config's "media" list,
 # scripts/media/fetch.py searches keyless APIs (Wikimedia Commons, Openverse cc0/pdm/by, NASA, Library of Congress), keeps only allowed
 # licences, downloads, resizes and cuts a foreground layer when asked; the files go to the private R2 bucket under media/<reel name>/
 # (no expiry) and, with the contact sheet, to the run's "media-<name>" artifact (7 days: the builder's and the critic's stills).

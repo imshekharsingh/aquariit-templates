@@ -303,3 +303,33 @@ year-heavy scripts (81 script words in 32.1 s = 2.5 words/s). The sky and the lo
 The three pilots, after the premium pass, are the first three posts, 21:00-22:00 IST: Eiffel Tower (1 Nov), the sky (2 Nov), the lost day (3 Nov).
 Superseded (owner, 1 Nov 2026): the pilots were hidden and the channel moved to 3D at 3 posts a week (Mon, Wed, Fri). First post: the 3D
 Eiffel reel on Mon 2 Nov; the sky and the lost day follow once rebuilt in 3D.
+
+## Channel brief (moved from CLAUDE.md, 14 Nov 2026; overrides older sections above where they differ)
+- Promise: "The true story behind something everyone knows." Instagram **@itturns.out**, display name **Turns Out**, bio "True stories
+  behind things everyone knows. Sources in the comments." Logo: design/brand/accounts/turnsout-logo.svg. Internal ids stay `c3`
+  (scripts/channel3/, `showreel-c3-*`, `"channel": "c3"`). The app's "Turns Out" tab has the profile card and the reels.
+- ONE reel DAILY at 13:00 IST (ready by 12:00), built by the "Turns Out daily reel" scheduled task (~09:11 IST, fresh session): reads
+  Feedback first (design/runbook-daily.md step 0; Turns Out and c3 items), new globally known true story, lean (one stills sheet, one render,
+  no subagents, about $4), captions.json postOn = that day, and a "note" card in the app when it is ready.
+- Format: the GUESS format (E19, from 12 Nov 2026), 22-25 s: the viewer guesses (three options painted on the icon, a 3-2-1 countdown) before
+  the answer, and the reel loops to frame 0. Start every reel with `node scripts/channel3/new25d.mjs <slug> --guess ...`; design/rules-c3.md
+  is the gate and overrides the 25-35 s length below; topics in design/topics.md. Real free photos are the hero (rules-c3.md rule 0,
+  "Photo stage" above; design/safety.md).
+- Fixed Cell and the fictional pilots (rivals, pick-one, velmora and the silent first set) are retired: hidden, scenes in attic/.
+- Topics: general knowledge, recognisable on every continent (4+ continents a week), simple English, metric + imperial, universal dates.
+  Never: religion, active wars or disputed borders, living politicians, "which country is better", health and diet claims, tragedies as
+  entertainment, anything an official body disputes.
+- Facts: every claim in two reliable sources, not a known myth, no apocryphal quotes; a short credit on the last frame; the config's
+  "sources" list (2+, title + https url; npm run check fails without it) is shown in the app with "Copy as comment".
+- People: real historical figures who died 50+ years ago may appear, drawn as friendly cartoon figures recognised by props and setting, never
+  caricatured faces; no living or recently dead people, politicians in office or religious figures.
+- Narrated: hook question on screen and in the voice from frame 0, full sentences at about 2.3-2.6 words/s overall, every sentence shown, a
+  big change every ~3 s, payoff in the last 3 s, 25-35 s (guess format: 22-25 s), matte look (no glow), every frame a pure function of t.
+- Style (owner, 1 Nov 2026): 2.5D, continuous flow ("2.5D toolkit" above): illustrated layers with parallax, ONE camera that never cuts
+  (match cuts, push-ins, zoom-throughs), kinetic type in time with the voice. Real-time 3D is retired (~50 render minutes, toy-like people);
+  kit3d.js stays only for reference. "Quality bar" (points 1-9) still applies, read for 2.5D, and every beat of the stills sheet is scored
+  against it before the one render.
+- Scenes `scripts/channel3/<slug>.html` + `.json` (name `showreel-c3-<slug>`), entry in captions.json (`"channel": "c3"`, "concept",
+  "about"), built from the shared kit scripts/channel3/kit25d.js; render with Showreel "parts" 1 (about 22 GitHub minutes).
+- Before the one render: `node scripts/channel3/qa.mjs <config> --write` then clean (it prints SAFE ZONE and OVERLAP), preflight says
+  "fits", one stills sheet, and the Mandatory Gate passed with its review file review/c3/<name>.md.

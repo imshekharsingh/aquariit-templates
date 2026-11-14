@@ -1,4 +1,4 @@
-// Channel 3 pilot check before a render (CLAUDE.md, "Channel 3 pilots"): seeks the scene every 0.1 s and reports any text drawn past
+// Channel 3 pilot check before a render (design/channel3.md, "Channel brief"): seeks the scene every 0.1 s and reports any text drawn past
 // the frame's 12 px side margins or above 70 px / below 750 px (Instagram's top bar and caption zone), page errors, and whether the
 // scripted outcome held (window.OUTCOME.ok, for the physics pilots). The scenes record each text box they draw (window.__boxes).
 // Narrated pilots (owner, 31 Oct: "no audio, how do we expect the audience to connect?"): the scene says what the voice must say and

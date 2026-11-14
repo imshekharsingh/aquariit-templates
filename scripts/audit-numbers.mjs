@@ -272,7 +272,7 @@ console.log('AUDIT_REELS (last 7 per channel: reach | hold % of the reel | skip 
 for (const [k, v] of Object.entries(drv)) v.reels.forEach((r) => console.log(`REEL ${k} ${r.day} ${r.reel}: reach ${fmt(r.reach)} | hold ${r.holdPct != null ? r.holdPct + '%' : '–'}${r.watchS != null ? ` (${r.watchS} of ${r.lenS || '?'} s)` : ''} | skip ${r.skipPct != null ? r.skipPct + '%' : '–'} | ${r.savesPer1k} saves, ${r.sharesPer1k} shares per 1,000`));
 const sig = {}, chk = {}; for (const k of Object.keys(CH)) if (data[k]) { sig[k] = signals(data[k], today); chk[k] = checks(data[k], k, NOW); }
 // the results checks lead (the daily run's audit card opens with them and acts on every ALARM, ESCALATE, PROMOTE and DROP the same day)
-console.log('AUDIT_CHECKS (design/targets.md; CLAUDE.md "Daily run" step 2):'); Object.values(chk).forEach((c) => c.lines.forEach((l) => console.log(l)));
+console.log('AUDIT_CHECKS (design/targets.md; design/runbook-daily.md step 2):'); Object.values(chk).forEach((c) => c.lines.forEach((l) => console.log(l)));
 for (const [k, v] of Object.entries(drv)) if (sig[k]) sig[k].drivers = { last7: v.last7, discovery: v.discovery, reels: v.reels };
 for (const [k, c] of Object.entries(chk)) sig[k].checks = { lines: c.lines, trend: c.trend, experiments: c.experiments, rules: c.rules };
 console.log('AUDIT_SIGNALS=' + JSON.stringify(sig));

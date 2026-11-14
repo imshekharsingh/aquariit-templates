@@ -35,7 +35,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'spread': '14 Nov "it seems we are squeezing most of it in one place of the screen"',
     'sync': '13 Nov tech IP68 "the voice names an item (\'or the sauna\') while its card is still empty"',
     'grade': '13 Nov Turns Out "I don\'t find the colour selection better" (fog wash, white Taj on a pale sky)',
-    'licence': '14 Nov "yes to free real images" (CLAUDE.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
+    'licence': '14 Nov "yes to free real images" (design/safety.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
 # last on the final mix, which reads fast: full sentences at natural speed 1.0 measured 4.10-4.17, so a full sentence fails over 4.5 (as the voice
@@ -114,7 +114,7 @@ LIC_OK = ('cc0', 'pd', 'pdm', 'cc-by')
 
 
 def licence_check(c, ch):
-    """LICENCE (owner, 14 Nov 2026; CLAUDE.md "Free real images and footage"): every media file has an allowed licence (PD, CC0, CC BY; never
+    """LICENCE (owner, 14 Nov 2026; design/safety.md "Free real images and footage"): every media file has an allowed licence (PD, CC0, CC BY; never
     NC, ND, SA, editorial), its source page, file and author recorded in the config; a CC BY file is credited by author in the post text
     (the caption's sources line or the config's sources list)."""
     m = c.get('media') or []
