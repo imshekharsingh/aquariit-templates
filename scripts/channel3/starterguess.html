@@ -691,6 +691,107 @@ var K25 = (function(){
   function pin(X, Y, k, col, t, r){ if (k <= 0) return; r = r || 16; x.save(); x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha *= cl(k * 2, 0, 1); var s = mix(1.8, 1, es(k));
     x.beginPath(); x.arc(X, Y, r * s, 0, 7); x.lineWidth = 3; x.strokeStyle = col; x.stroke(); x.beginPath(); x.arc(X, Y, 3.5, 0, 7); x.fillStyle = col; x.fill();
     var q = ((t || 0) * .9) % 1; x.globalAlpha *= (1 - q) * .6; x.beginPath(); x.arc(X, Y, r * (1 + q * 1.4), 0, 7); x.lineWidth = 2; x.stroke(); x.restore(); }
+  // ---- the story stage (14 Nov 2026: the Turns Out engine rebuilt from the owner's reference kit, design/kits/echoes_kit.zip and
+  // echoes_history_prompt.md, techniques only; the same look as the tech engine's story look, PR #873; design/channel3.md "Story engine",
+  // design/rules-c3.md rule S). A reel is a list of full-frame SHOTS, one per story beat: payoff (frame 0 IS the "wait, what?" picture, the
+  // payoff said over it) -> question (one) -> 2-3 steps (one sourced fact each, revealed on its word) -> surprise (the thing worth saving),
+  // and an optional return to the payoff view so the reel loops. Every shot has its own colour MOOD laid over its picture (SMOODS: the colour
+  // changes with the story and flows during the move into the next shot, never a hard cut). Between shots the camera MOVES ("push": it dives
+  // into a point of the old shot and the new one opens from there; "pan": the two shots side by side, the camera slides; "match": the old
+  // shot's focus becomes the new one's; "zoom": the old shot flies past the lens and the new one settles from depth), never a plain fade;
+  // every move is declared in window.TRANSITIONS for FLOW. A photo shot is a 2.5D world (photoWorld): the real photo full-bleed on the far
+  // plane, the scene's illustration on a middle plane, haze and dust in front (one plane passes the lens), all through the shot's own
+  // drifting camera, so qa.mjs DEPTH reads every shot. No small furniture (no badge, title strip, dots or credit plates): credits go in the
+  // caption's sources line.
+  var SMOODS = {
+    ember:  { tint: '#d27a3a', shade: '#170b05', accent: '#ffc46a', ink: '#fff4e2', plate: 'rgba(23,11,5,.9)', mote: '#ffd9a0' },
+    dusk:   { tint: '#6f5fd0', shade: '#0b091d', accent: '#cdbdff', ink: '#f5f2ff', plate: 'rgba(12,10,31,.9)', mote: '#d8ccff' },
+    ocean:  { tint: '#2e93ab', shade: '#04131a', accent: '#8de6f1', ink: '#effbfd', plate: 'rgba(4,19,26,.9)', mote: '#bff3f8' },
+    jade:   { tint: '#3f9d6e', shade: '#05140d', accent: '#9debc0', ink: '#f0fbf4', plate: 'rgba(5,21,14,.9)', mote: '#c8f5dc' },
+    cobalt: { tint: '#4067cf', shade: '#060b21', accent: '#aac3ff', ink: '#f0f4ff', plate: 'rgba(6,11,33,.9)', mote: '#cfdcff' },
+    rose:   { tint: '#bd4a82', shade: '#1a0711', accent: '#ffb2d2', ink: '#fff0f6', plate: 'rgba(27,7,17,.9)', mote: '#ffd0e4' },
+    gold:   { tint: '#bf952f', shade: '#160f04', accent: '#ffd774', ink: '#fff8e4', plate: 'rgba(23,15,4,.9)', mote: '#ffe7a8' } };
+  var BEATMOODS = { payoff: ['ember'], question: ['dusk'], step: ['ocean', 'jade', 'cobalt'], surprise: ['rose'], end: ['ember'] }, MOVES = ['push', 'match', 'pan', 'zoom'];
+  var SH = [], TRM = .85;   // the shots; a move lasts TRM s, from .55 s before its sentence to .3 s into it (the new picture is settled on its first words)
+  // shots(list, dur): list of { at (s: the beat's sentence start), beat, mood?, move?, focus?: [x, y] (screen px: where a push dives, what
+  // a match keeps), draw: function(t, S) }; fills in each shot's t0/t1 (its time on screen, moves included), m0/m1 (its incoming move),
+  // mood (by beat, steps take the next step mood) and move (by order, never the same twice in a row); declares window.TRANSITIONS
+  function shots(list, dur){ var nStep = 0; SH = list.map(function(s, i){ var o = {}; for (var k in s) o[k] = s[k];
+      o.mood = o.mood || (o.beat === 'step' ? BEATMOODS.step[nStep++ % 3] : (BEATMOODS[o.beat] || ['dusk'])[0]);
+      o.move = i ? o.move || MOVES[(i - 1) % MOVES.length] : null; o.focus = o.focus || [270, 470]; o.m0 = i ? o.at - .55 : 0; o.m1 = i ? o.m0 + TRM : 0; o.i = i; return o; });
+    SH.forEach(function(s, i){ s.t0 = s.m0; s.t1 = i + 1 < SH.length ? SH[i + 1].m1 : dur; });
+    window.TRANSITIONS = SH.slice(1).map(function(s){ return [+s.m0.toFixed(2), +s.m1.toFixed(2), s.move === 'zoom' ? 'zoom-through' : s.move]; });
+    window.SHOTS = SH.map(function(s){ return { at: +s.at.toFixed(2), beat: s.beat, mood: s.mood, move: s.move }; }); return SH; }
+  function shotAt(t){ var i = SH.length - 1; while (i > 0 && t < SH[i].m0) i--; return SH[i]; }
+  // moodAt(t): the colours of the moment (during a move: the incoming shot's from its middle on), for type drawn over the stage
+  function moodAt(t){ var S = shotAt(t); if (S.i && t < S.m0 + TRM * .5) S = SH[S.i - 1]; return SMOODS[S.mood]; }
+  function drawShot(S, t){ screen(); x.globalAlpha = 1; x.fillStyle = SMOODS[S.mood].shade; x.fillRect(0, 0, 540, 960); x.save(); S.draw(t, S); x.restore(); wash(SMOODS[S.mood]); }
+  // wash(M): the mood over the picture: its tint in soft light, its shade in the corners, a dark ramp at the top (big words) and the bottom (captions)
+  function wash(M){ screen(); x.save(); x.globalAlpha = 1; x.globalCompositeOperation = 'soft-light'; x.fillStyle = M.tint; x.globalAlpha = .62; x.fillRect(0, 0, 540, 960);
+    x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; var v = x.createRadialGradient(262, 470, 240, 262, 470, 700), sh = M.shade;
+    v.addColorStop(0, sh + '00'); v.addColorStop(1, sh + 'c0'); x.fillStyle = v; x.fillRect(0, 0, 540, 960);
+    x.fillStyle = lg(0, 0, 0, 330, [[0, sh + 'b8'], [1, sh + '00']]); x.fillRect(0, 0, 540, 330);
+    x.fillStyle = lg(0, 600, 0, 960, [[0, sh + '00'], [.55, sh + 'a8'], [1, sh + 'e6']]); x.fillRect(0, 600, 540, 360); x.restore(); }
+  // the moves (k 0 -> 1 over the move, A the old shot's frame, B the new one's)
+  function about(b, s, cx, cy, tx, ty){ x.save(); x.setTransform(2 * s, 0, 0, 2 * s, 2 * (tx - cx * s), 2 * (ty - cy * s)); x.drawImage(b, 0, 0, 540, 960); x.restore(); }
+  function moveTo(kind, bA, bB, k, A, B){ var e = eio(cl(k, 0, 1)), f = B.focus, fa = A.focus, M = SMOODS[B.mood];
+    screen(); x.fillStyle = M.shade; x.fillRect(0, 0, 540, 960);
+    if (kind === 'push') {   // dive into the old shot's point f; the new shot opens from it in a growing circle, a ring of its accent on the edge
+      about(bA, Math.exp(mix(0, Math.log(2.6), e)), f[0], f[1], f[0], f[1]); var r = 1300 * Math.pow(eio(P(k, .12, 1)), 1.5);
+      if (r > .5) { x.save(); screen(); x.beginPath(); x.arc(f[0], f[1], r, 0, 7); x.clip(); about(bB, mix(1.4, 1, e), f[0], f[1], f[0], f[1]); x.restore();
+        x.save(); screen(); x.globalAlpha = 1 - P(k, .7, 1); x.beginPath(); x.arc(f[0], f[1], r, 0, 7); x.lineWidth = 5; x.strokeStyle = M.accent; x.stroke(); x.restore(); } }
+    else if (kind === 'pan') {   // the camera slides right: both shots side by side, a little depth between them (the old one slower)
+      var d = 540 * e; about(bA, mix(1, 1.05, e), 270, 480, 270 - d * .82, 480); x.save(); screen(); x.fillStyle = 'rgba(0,0,0,.35)'; x.fillRect(540 - d - 18, 0, 18, 960); x.restore();
+      about(bB, mix(1.05, 1, e), 270, 480, 810 - d, 480); }
+    else if (kind === 'match') match(bA, bB, k, [fa[0], fa[1], 70], [f[0], f[1], 70]);
+    else {   // zoom-through: the old shot flies past the lens (grows, thins out), the new one settles from depth behind it
+      about(bB, mix(.7, 1, e), 270, 480, 270, 480); x.save(); x.globalAlpha = 1 - eio(P(k, .3, .85)); about(bA, Math.exp(mix(0, Math.log(3.4), Math.pow(e, 1.3))), fa[0], fa[1], fa[0], fa[1]); x.restore(); } }
+  // stage(t): the shot on screen (or the move between two)
+  function stage(t){ var S = shotAt(t);
+    if (S.i && t < S.m1) { var A = SH[S.i - 1], bA = paint(0, function(){ drawShot(A, t); }), bB = paint(1, function(){ drawShot(S, t); }); moveTo(S.move, bA, bB, P(t, S.m0, S.m1), A, S); }
+    else drawShot(S, t); screen(); }
+  // ---- photoWorld(name, id, t, S, o): the shot's real photo full-bleed on the far plane of a 2.5D world, through the shot's own camera:
+  // o.u, o.v the photo point held at the centre (0-1), o.z0 -> o.z1 the push over the shot (zoom >= 1), o.drift the sideways drift (metres
+  // = px at rest; default 10, o.dir -1 drifts left), o.on(fn) / o.mid(fn) / o.near(fn): draws in SCREEN px of the shot's first frame that
+  // ride on the photo (pins on its features), on a middle plane (the illustration: cards, stamps, rings, big numbers) and on a near plane;
+  // haze and dust planes in front, the dust passing the lens. The photo is missing (a stills run before the Media workflow): a mood gradient.
+  function shotCam(t, S, o){ var k = P(t, S.t0, S.t1), e = .35 * k + .65 * k * k * (3 - 2 * k), d = o.drift == null ? 10 : o.drift, dir = o.dir || 1;
+    return { x: dir * mix(-d, d, e), y: mix(d * .3, -d * .3, e), z: -F / mix(o.z0 || 1.02, o.z1 || 1.12, e) }; }
+  function onPlane(cam, cam0, Z){ var s = F / (Z - cam.z), s0 = F / (Z - cam0.z), a = s / s0;
+    x.setTransform(2 * a, 0, 0, 2 * a, 2 * (270 + (cam0.x - cam.x) * s - 270 * a + OX), 2 * (480 - (cam0.y - cam.y) * s - 480 * a + OY)); }
+  function photoWorld(name, id, t, S, o){ o = o || {}; var M = SMOODS[S.mood], cam = shotCam(t, S, o), cam0 = shotCam(S.t0, S, o), im = PH[id], d = o.drift == null ? 10 : o.drift;
+    world(name, { haze: 0, ownAir: true, air: M.shade });
+    plane(cam, 0, { clear: true }); x.save(); x.scale(1, -1);   // metres, y down again for the picture
+    var BW = 540 + 2 * d + 16, BH = 960 + 2 * d + 16, q = fitPhoto(im, o);
+    if (im) x.drawImage(im, -q.cx, -q.cy, q.w, q.h);
+    else { x.fillStyle = lg(0, -BH / 2, 0, BH / 2, [[0, M.shade], [.55, M.tint], [1, M.shade]]); x.fillRect(-BW / 2, -BH / 2, BW, BH); }
+    x.restore(); if (o.on) { x.save(); onPlane(cam, cam0, 0); o.on(t, cam); x.restore(); }
+    var D0 = -Math.min(cam0.z, shotCam(S.t1, S, o).z), Zm = -.3 * D0, Zn = -.52 * D0, Zf = -.8 * D0;   // the planes in front, as shares of the photo's distance (a push up to x1.2 stays behind them)
+    plane(cam, Zm, { clear: true }); if (o.mid) { x.save(); onPlane(cam, cam0, Zm); o.mid(t, cam); x.restore(); }
+    plane(cam, Zn, { clear: true }); x.save(); onPlane(cam, cam0, Zn); haze(t, M, S.i * 7 + 3); if (o.near) o.near(t, cam); x.restore();
+    plane(cam, Zf, { clear: true, fg: true }); x.save(); onPlane(cam, cam0, Zf); dust(t, M, S.i * 13 + 5); x.restore(); screen(); }
+  // fitPhoto: the photo's size (metres on its plane) and the point held at the world's centre; photoAt(id, S, o, u, v): where the photo's
+  // point (u, v) (0-1) sits in the shot's o.on() px (the shot's first frame), to pin rings, outlines and labels on the photo's own features
+  function fitPhoto(im, o){ var d = o.drift == null ? 10 : o.drift, BW = 540 + 2 * d + 16, BH = 960 + 2 * d + 16; if (!im) return { w: BW, h: BH, cx: BW / 2, cy: BH / 2 };
+    var s = Math.max(BW / im.width, BH / im.height), w = im.width * s, h = im.height * s, z = Math.min(o.z0 || 1.02, o.z1 || 1.12), hw = 278 / z + d, hh = 488 / z + d * .3;   // the point may move as far as the shot's closest view still covers the frame
+    return { w: w, h: h, cx: cl((o.u == null ? .5 : o.u) * w, hw, w - hw), cy: cl((o.v == null ? .5 : o.v) * h, hh, h - hh) }; }
+  function photoAt(id, S, o, u, v){ var q = fitPhoto(PH[id], o), c0 = shotCam(S.t0, S, o), s0 = F / (0 - c0.z);
+    return [270 + (u * q.w - q.cx - c0.x) * s0, 480 + (v * q.h - q.cy + c0.y) * s0]; }
+  function haze(t, M, seed){ var r = rnd(seed); x.save(); for (var i = 0; i < 3; i++) { var X = r() * 540, Y = 300 + r() * 520, R = 160 + r() * 140, g = x.createRadialGradient(X + Math.sin(t * .3 + i) * 20, Y, 0, X, Y, R);
+      g.addColorStop(0, M.mote + '22'); g.addColorStop(1, M.mote + '00'); x.fillStyle = g; x.fillRect(X - R - 30, Y - R, 2 * R + 60, 2 * R); } x.restore(); }
+  function dust(t, M, seed){ var r = rnd(seed); x.save(); x.fillStyle = M.mote; for (var i = 0; i < 7; i++) { var X = r() * 600 - 30, Y = 30 + r() * 900 - t * (6 + r() * 8), R = 1.2 + r() * 2.4;
+      x.globalAlpha = .18 + .22 * (.5 + .5 * Math.sin(t * 1.7 + i * 2.1)); x.beginPath(); x.arc(X, Y, R, 0, 7); x.fill(); } x.restore(); }
+  // big(t, text, t0, X, Y, o): a big word or number (o.size, default 64; never small) on a solid plate of the moment's mood, landing on its
+  // spoken word at t0 with a spring (register its Kt.beat once at setup); o.col 'accent' (default) or 'ink'; o.sub: a second, smaller line (30 px+);
+  // o.pad: extra plate below (px) for a row the scene draws in it (a tally); o.w: a minimum width
+  function big(t, text, t0, X, Y, o){ o = o || {}; var k = lands(t, t0, .28); if (k <= 0) return; var M = o.mood || moodAt(t), size = o.size || 64, sub = o.sub, ss = o.subSize || 30;
+    var w = Math.max(tw(text, size, '800 ' + FD, 0), sub ? tw(sub, ss, '800 ' + FI, 1.5) : 0, o.w || 0) + 44, h = size * 1.08 + (sub ? ss * 1.5 : 0) + 22 + (o.pad || 0);
+    x.save(); screen(); x.globalAlpha *= (o.a == null ? 1 : o.a) * cl(k * 2, 0, 1); x.translate(X, Y); var sc = mix(1.25, 1, cl(k, 0, 1.2)); x.scale(sc, sc);
+    plate(-w / 2, -size * .92, w, h, 16, M.plate); txt(text, 0, 0, size, '800 ' + FD, o.col === 'ink' ? M.ink : M.accent, 'center', -.5);
+    if (sub) txt(sub, 0, size * .3 + ss * 1.05, ss, '800 ' + FI, M.ink, 'center', 1.5); x.restore(); }
+  // storyCues(Q): a low move for every camera move (panned along it), a soft touch as it settles
+  function storyCues(Q){ SH.slice(1).forEach(function(s){ var x0 = s.move === 'pan' ? 470 : s.focus[0], x2 = s.move === 'pan' ? 70 : 270;
+    Q.push({ t: s.m0 - .05, k: 'move', d: TRM + .2, g: s.move === 'zoom' ? .26 : .22, p: s.move === 'push' ? -.6 : -1.2, x: x0, x2: x2, r: .35 }, { t: s.m1 - .08, k: 'touch', g: .14, x: x2 }); }); }
   var FI_ = "'Inter',system-ui,sans-serif";
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
     paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb,
@@ -700,7 +801,8 @@ var K25 = (function(){
     choices: choices, countdown: countdown, repaint: repaint, guessCues: guessCues,
     MOODS: MOODS, mood: mood, sky: sky, warm: warm, rim: rim, plate: plate, grade: grade,
     beat: beat, beats: beats, beatCues: beatCues, lands: lands, stackOn: stackOn, rivet: rivet, sweep: sweep, sparks: sparks, tally: tally,
-    photos: photos, hasPhoto: hasPhoto, photo: photo, photoPt: photoPt, kb: kb, wipe: wipe, pin: pin };
+    photos: photos, hasPhoto: hasPhoto, photo: photo, photoPt: photoPt, kb: kb, wipe: wipe, pin: pin,
+    SMOODS: SMOODS, BEATMOODS: BEATMOODS, shots: shots, shotAt: shotAt, moodAt: moodAt, stage: stage, photoWorld: photoWorld, photoAt: photoAt, shotCam: shotCam, onPlane: onPlane, big: big, storyCues: storyCues };
 })();
 /*kit25:end*/
 

@@ -30,6 +30,13 @@ policy change, a comment storm, a removed post anywhere in our niche). Each line
 15. No engagement bait that Instagram demotes ("comment YES", "tag 10 friends", follow-for-follow); captions may invite a save, a send or
     an honest answer.
 16. Maps: never show contested borders; prefer globes or close crops without political lines (India-sensitive: Kashmir, Arunachal).
+16a. India-sensitive never-topics, every channel (owner, 14 Nov 2026; the reference kit's Taj episode turned on Aurangzeb seizing the throne,
+   so it is not reusable): Mughal succession and rulers' rivalries (Aurangzeb, Shah Jahan's imprisonment), temple / mosque histories and any
+   "who built it first" claim, Partition and its violence, caste and caste names, communal or religious conflict past or present, regional
+   language disputes (Hindi imposition, state language rows), state or border disputes (Kashmir, Arunachal, river water), freedom-movement
+   figures framed as heroes vs villains, and present-day politics. A topic that touches any of these is swapped, not softened. Indian
+   history stays welcome where it is shared pride with no side to take: science and engineering (Jantar Mantar, stepwells, the iron pillar),
+   art, food, trains, inventions, nature.
 
 ## Brand and legal (tech)
 17. Brand mentions factual, neutral and sourced; no "X is worse than Y", no unverified rumours or leaks, no price or spec we cannot cite.

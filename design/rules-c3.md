@@ -13,6 +13,15 @@ followers after 11 reels. Watch is 12-19 s of 31-35 s (40-55%). Instagram's head
 reach and sends per reach, and that sends matter most for reaching people who don't follow you (design/references.md, R-trend 11 Nov). So the
 topic gate works; the format must now make people answer, send and finish.
 
+S. **Story engine, the default format** (owner, 14 Nov 2026, the rebuild from the reference kit: "make the content rich in learning and
+   information; people stay engaged with good and smart storytelling"; design/channel3.md "Story engine"). Start every reel with
+   `node scripts/channel3/new25d.mjs <slug> "Payoff." "Question?" "Step." "Step." ["Step."] "Turns out, ..."`. Frame 0 is the payoff picture
+   (the "wait, what?" image, never a question card) with the payoff said over it in 6 words or fewer; ONE question; 2-3 steps, each one
+   concrete fact in two sources, its big word (44 px+) landing on its spoken word; the surprise worth saving last; the camera returns to
+   frame 0's view (rule 3's loop). One full-frame shot per beat with real media full-bleed, a colour mood per beat (this replaces rule 10's
+   one mood: rule 10's contrast, plates and GRADE still apply per shot), a camera move between shots (push, match, pan, zoom-through), no
+   small furniture (badge, title strip, dots, credit plates). Gates as before: qa.mjs clean (SAFE ZONE, OVERLAP, FLOW, DEPTH per shot, BUSY),
+   preflight fits, Output QA, review file. While E19 runs, `--guess` still makes a guess reel (rule 1); rules 1 and 4 apply only to those.
 0. **Real media by default** (owner, 14 Nov 2026: the Niagara reel "did not look like Niagara (a grey rectangle on rocks, toy shapes)"; "yes to
    free real images ... take those and work or animate your design around it"): the icon is a REAL photo (Wikimedia Commons PD / CC0 / CC BY,
    US government works such as the US Army Corps of Engineers, NASA, NOAA, the Library of Congress "no known restrictions"), animated by us in
