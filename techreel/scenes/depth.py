@@ -207,9 +207,9 @@ def reflect(fr, y_src=1140, y_dst=1520, h=300, a=.13):
     fr.img.paste(src, (0, y_dst * SS), _RMASK[key])
 
 
-def post(img, t, zoom=0.0, pan=0.0, focus=(540, 975), sharp=(1340, 1560)):
+def post(img, t, zoom=0.0, pan=0.0, focus=(540, 975), sharp=(1340, 1560), hud=560):
     """img: the finished RGB uint8 frame. zoom: the camera's zoom change per frame (log ratio), pan: px per frame; both blur the frame
-    outside the caption band (sharp rows) along the move. Then the bloom and the grain."""
+    outside the caption band (sharp rows) and the HUD rows above hud along the move. Then the bloom and the grain."""
     out = img.astype(np.float32)
     zb = min(.09, abs(zoom) * 2.2)
     pb = min(60.0, abs(pan) * .8)
@@ -229,7 +229,7 @@ def post(img, t, zoom=0.0, pan=0.0, focus=(540, 975), sharp=(1340, 1560)):
             acc += np.asarray(im2, np.float32)
         bl = acc / n
         r0, r1 = sharp
-        bl[:560] = out[:560]   # the HUD (progress, pill, tag row) stays sharp, as do the captions
+        bl[:hud] = out[:hud]   # the HUD (progress, pill, tag row) stays sharp, as do the captions
         bl[r0:r1] = out[r0:r1]
         out = bl
     # bloom from the brightest pixels (gold accents, highlights), painted at 1/8 and scaled up

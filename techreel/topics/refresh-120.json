@@ -1,0 +1,352 @@
+{
+ "slug": "refresh-120",
+ "sample": "the story look's engine sample (14 Nov 2026, the reference-kit rebuild): stills only, never scheduled; a reel session may adopt it after its own research and the Media run",
+ "topic": "120 Hz screens",
+ "look": "story",
+ "format": "SPECS DECODED",
+ "audience": "global",
+ "gadget": "phone",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "dur": 42.0,
+ "max_end": 41.3,
+ "hook_key": "number",
+ "lines": [
+  {
+   "text": "Smooth scrolling has a number.",
+   "beat": "payoff",
+   "scene": {
+    "kind": "hero",
+    "params": {
+     "draw": "phone",
+     "screen": "feed",
+     "h": 800,
+     "glow": 0.7,
+     "photo": "trails",
+     "view": [
+      0.5,
+      0.5,
+      1.0,
+      1.1
+     ],
+     "match": [
+      510,
+      975
+     ],
+     "words": [
+      {
+       "text": "120 Hz",
+       "accent": true,
+       "size": 190
+      }
+     ],
+     "y": 960
+    }
+   }
+  },
+  {
+   "text": "So why does a phone at a hundred and twenty hertz feel so much faster, even with the same chip inside?",
+   "beat": "question",
+   "chunks": [
+    5,
+    6,
+    4,
+    6
+   ],
+   "scene": {
+    "kind": "duo",
+    "move": "match",
+    "params": {
+     "match": [
+      720,
+      1010
+     ],
+     "left": {
+      "label": "60 Hz",
+      "hz": 60,
+      "cue": "phone"
+     },
+     "right": {
+      "label": "120 Hz",
+      "hz": 120,
+      "cue": "hundred",
+      "accent": true
+     },
+     "words": [
+      {
+       "text": "WHY SMOOTHER?",
+       "cue": "faster",
+       "accent": true
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "Hertz is how many new pictures your screen draws each second: sixty, or a hundred and twenty.",
+   "beat": "step",
+   "source": 0,
+   "chunks": [
+    4,
+    5,
+    2,
+    6
+   ],
+   "scene": {
+    "kind": "strip",
+    "move": "zoom",
+    "params": {
+     "rates": [
+      {
+       "value": "60",
+       "rate": 60,
+       "cue": "sixty"
+      },
+      {
+       "value": "120",
+       "rate": 120,
+       "cue": "hundred",
+       "accent": true
+      }
+     ],
+     "label": "new pictures every second",
+     "label_cue": "pictures",
+     "push": [
+      1.05,
+      510,
+      980
+     ],
+     "intro": [
+      {
+       "text": "HERTZ =",
+       "accent": true,
+       "size": 150
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "At a hundred and twenty, each picture stays up for about eight milliseconds, not seventeen.",
+   "beat": "step",
+   "source": 0,
+   "chunks": [
+    5,
+    4,
+    4,
+    2
+   ],
+   "scene": {
+    "kind": "clock",
+    "move": "pan",
+    "params": {
+     "slices": 120,
+     "value": "8 ms",
+     "cue": "eight",
+     "label": "each picture",
+     "match": [
+      510,
+      990
+     ],
+     "words": [
+      {
+       "text": "120 Hz",
+       "cue": "hundred",
+       "accent": true,
+       "size": 110
+      },
+      {
+       "text": "60 Hz: 17 ms",
+       "cue": "seventeen",
+       "dim": true,
+       "size": 84
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "So when you scroll, the page moves in smaller jumps, and your eyes read that as smooth.",
+   "beat": "step",
+   "source": 0,
+   "chunks": [
+    4,
+    6,
+    7
+   ],
+   "scene": {
+    "kind": "rate",
+    "move": "push",
+    "params": {
+     "match": [
+      510,
+      1080
+     ],
+     "lanes": [
+      {
+       "label": "60 Hz",
+       "hz": 60
+      },
+      {
+       "label": "120 Hz",
+       "hz": 120,
+       "cue": "page",
+       "accent": true
+      }
+     ],
+     "words": [
+      {
+       "text": "SMALLER JUMPS",
+       "cue": "jumps",
+       "accent": true
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "And the surprise: some newer phones drop to just one hertz on the always on lock screen, to save battery.",
+   "beat": "surprise",
+   "source": 1,
+   "chunks": [
+    3,
+    4,
+    4,
+    6,
+    3
+   ],
+   "scene": {
+    "kind": "hero",
+    "move": "match",
+    "params": {
+     "draw": "phone",
+     "screen": "lock",
+     "h": 790,
+     "match": [
+      510,
+      1000
+     ],
+     "y": 990,
+     "words": [
+      {
+       "text": "1 Hz",
+       "cue": "one",
+       "accent": true,
+       "size": 170
+      },
+      {
+       "text": "LOCK SCREEN",
+       "cue": "lock",
+       "size": 72
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "On a spec sheet, look for adaptive refresh: smooth when you scroll, easy on battery when you don't.",
+   "beat": "takeaway",
+   "chunks": [
+    4,
+    4,
+    4,
+    3,
+    3
+   ],
+   "scene": {
+    "kind": "hero",
+    "move": "zoom",
+    "params": {
+     "draw": "phone",
+     "screen": "feed",
+     "h": 800,
+     "glow": 0.8,
+     "photo": "trails",
+     "view": [
+      0.4,
+      0.55,
+      1.12,
+      1.22
+     ],
+     "words": [
+      {
+       "text": "ADAPTIVE",
+       "cue": "adaptive",
+       "accent": true,
+       "size": 150
+      },
+      {
+       "text": "1-120 Hz",
+       "cue": "refresh",
+       "size": 96
+      }
+     ],
+     "y": 975
+    }
+   }
+  }
+ ],
+ "media": [
+  {
+   "id": "trails",
+   "queries": [
+    "light trails night long exposure",
+    "city traffic light trails",
+    "highway light trails night"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "avoid": [
+    "logo",
+    "sign",
+    "billboard",
+    "person",
+    "people",
+    "face",
+    "woman",
+    "man"
+   ],
+   "min_side": 1600
+  }
+ ],
+ "qa": {
+  "sync": [
+   "smaller jumps",
+   "lock screen",
+   "adaptive"
+  ]
+ },
+ "post": {
+  "title": "What 120 Hz really means",
+  "caption": "What does 120 Hz on a phone really mean? 📱\n\nHertz = new pictures your screen draws each second. At 120 Hz each picture stays up about 8 ms (1000 ÷ 120), at 60 Hz about 17 ms, so a scroll moves in smaller jumps and looks smoother.\nThe surprise: adaptive screens slow right down when nothing moves. Apple's iPhone 14 Pro added a 1 Hz refresh for its always-on lock screen to save battery.\n\nOn a spec sheet, look for \"adaptive\" refresh: smooth when you scroll, easy on battery when you don't. Send this to the friend comparing phones.\n\nPhoto: see sources.",
+  "keywords": [
+   "what is 120hz",
+   "120hz vs 60hz",
+   "refresh rate explained",
+   "adaptive refresh rate",
+   "ltpo display",
+   "phone display specs"
+  ],
+  "hashtags": [
+   "#120hz",
+   "#refreshrate",
+   "#smartphone",
+   "#display",
+   "#techtips"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/111829",
+    "note": "Apple, iPhone 15 Pro tech specs: \"ProMotion technology with adaptive refresh rates up to 120Hz\" (read 14 Nov 2026). 1 s / 120 = 8.3 ms, 1 s / 60 = 16.7 ms (arithmetic)."
+   },
+   {
+    "url": "https://www.apple.com/newsroom/2022/09/apple-debuts-iphone-14-pro-and-iphone-14-pro-max/",
+    "note": "Apple Newsroom, 7 Sep 2022: the iPhone 14 Pro Always-On display is \"enabled by a new 1Hz refresh rate and multiple power-efficient technologies\" (read 14 Nov 2026)."
+   }
+  ]
+ }
+}

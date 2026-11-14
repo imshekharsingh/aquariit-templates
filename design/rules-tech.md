@@ -23,6 +23,28 @@ Every tech reel is built AROUND free real photos, animated by us; drawn shapes a
 - Gadgets only as generic products (no logos, no marketing photos, no product that is recognisably one brand's design, e.g. a white stem bud);
   no identifiable people. CC BY: the author goes in the caption's sources line. Output QA LICENCE checks every file; design/safety.md 5-7, 13.
 
+## Look, story and motion: the story look (S1-S8; techreel/scenes/story.py, topic `"look": "story"`; the default for every tech reel from 14 Nov)
+Owner, 14 Nov 2026 (approved L task): rebuild the engine from the reference kit (design/kits/motion_kit.zip, motion_content_prompt.md) and
+"make the content rich in learning and information; people stay engaged if we follow good and smart storytelling". Overrides G9-G13 and the
+HUD parts of the idea look (format pill, progress bar, tag row, chip); R0, F1-F5, G5's calm palette, G7, G13 and V2-V4 still apply.
+- **S1. Payoff first**: frame 0 is the striking ANSWER image (the product doing the thing, the number big), never a question card; the
+  payoff line (7 words or fewer) is said over it.
+- **S2. The story order**: payoff -> ONE question -> 2-3 steps, each one concrete fact with its source (the line's `"source"` indexes
+  post.sources) revealed on its word -> a surprise worth saving (sourced) -> an optional takeaway (F4). techreel/starter.py writes it;
+  STORY on the stills fails anything else. Each line says what, why and what it means for you.
+- **S3. The whole frame**: big words 90 px+ in the top band, the subject big in the stage (y 600-1330), full-bleed real photos (R0) under
+  it, captions low (centre y 1462, inside the safe zone). Nothing small: no series badge, title strip, progress dots or credit plates;
+  credits go in the caption. Check: every word on screen readable at phone size, no empty half of the frame.
+- **S4. A colour mood per beat** (ember, dusk, ocean, cobalt, jade, rose, gold): light, glow and accent change with the story, each mood
+  dark and calm (G5), flowing into the next during the move (Output QA COLOUR: no hard cut, no saturated fill over 25%).
+- **S5. Camera moves between shots**: push, pan, match-move, zoom-through (scene `"move"`), declared for FLOW; never a plain fade; the
+  old shot's type leaves before it flies past the lens (EDGES big type).
+- **S6. Two lengths**: 20 s (19-23.5 s, 50-70 words, 2 steps) or 40-45 s (39-46 s, 100-140 words, 3 steps; `"dur": 42`, `"max_end": 41.3`),
+  natural speed 1.0 (V1); LENGTH on the stills checks the class. A long reel earns its length with the third step and the surprise.
+- **S7. Captions never on the subject**: the drawn subject ends above y ~1360, the captions sit under it.
+- **S8. All gates unchanged**: SAFE ZONE, OVERLAP, FLOW, STORY, LENGTH on `--fake-vo --stills`; SOUND GATE, SOUND DETAIL and the GitHub
+  Output QA on the render; the review file and critic as before.
+
 ## Format (F1-F4)
 - **F1. Three formats, rotating**: (a) **specs decoded**: what a number on the box means for you (mAh, nits, Hz, IP68, ANC, watts, megapixels)
   and when it is marketing; (b) **worth it or not**: is a feature worth paying extra for (120 Hz, wireless charging, 1 TB, an ultra-wide);
@@ -40,7 +62,7 @@ Every tech reel is built AROUND free real photos, animated by us; drawn shapes a
   is stamped MYTH (or TRUE) in frame 0 and the stamp returns on the verdict. It lifted watch time every time, reach only a little, so it is a
   rule for the myth format, not the lever that fixes reach.
 
-## Look and motion: the idea look (G9-G13; techreel/scenes/idea.py, topic `"look": "idea"`; the default for every tech reel from 13 Nov)
+## Look and motion: the idea look (G9-G13; techreel/scenes/idea.py, topic `"look": "idea"`; the default 13-14 Nov, superseded by S1-S8)
 Owner, 13 Nov 2026: "Tech reel animation doesn't live up to expectation"; "Let's build it with new animation." The parent review of the gadget
 IP68 stills: everything happened inside a small phone screen (under half the frame width, numbers and labels tiny on a real phone, the rest of
 the frame black), every scene was the same phone with only its screen text changing (a slideshow), and the motion was small. These rules
@@ -85,7 +107,8 @@ override G1-G4 below; G5-G8 (palette, frame 0, sound, captions) still apply.
 - **G8. Word-by-word captions** 2-4 words at a time (`chunks`), 80 px heavy, white with a black outline, the spoken word gold.
 
 ## Voice, length and gates (V1-V4, kept from the old rulebook)
-- **V1. 20-22 s at the natural voice, speed 1.0**, about 3 words/s, 55-66 words, one sentence per scene, the hook 6 words or fewer (HOOK PACE).
+- **V1. 20-22 s at the natural voice, speed 1.0**, about 3 words/s, 55-66 words, one sentence per scene, the hook 6 words or fewer (HOOK PACE);
+  or the long story format, 40-45 s and 100-140 words (S6).
 - **V2. Tech terms said the way people say them** (scripts/voice/say.json or the topic's "say"; PRONUNCIATION: no "check:" words).
 - **V3. FLOW** (cuts 0, no dead runs, continuity 85%+, at most one declared strobe), SAFE ZONE ok, OVERLAP none, SOUND GATE, SOUND DETAIL, and
   the GitHub Output QA PASS on the final MP4.
