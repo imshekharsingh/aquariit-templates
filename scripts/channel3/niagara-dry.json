@@ -115,5 +115,70 @@
    468,
    600
   ]
- }
+ },
+ "media": [
+  {
+   "id": "falls-now",
+   "queries": [
+    "American Falls Niagara",
+    "American Falls Niagara Falls New York",
+    "American Falls and Bridal Veil Falls"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "avoid": [
+    "night",
+    "illuminat",
+    "winter",
+    "frozen",
+    "ice ",
+    "fireworks",
+    "map",
+    "woman",
+    "man ",
+    "men ",
+    "girl",
+    "boy",
+    "person",
+    "people",
+    "wearing",
+    "portrait",
+    "selfie",
+    "child",
+    "kid"
+   ],
+   "min_side": 1200
+  },
+  {
+   "id": "dry-1969",
+   "queries": [
+    "American Falls dewatered 1969",
+    "American Falls dry 1969",
+    "Niagara Falls 1969 dewatering",
+    "dry American Falls"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse",
+    "loc"
+   ],
+   "min_side": 500
+  },
+  {
+   "id": "dam-1969",
+   "queries": [
+    "cofferdam Niagara River 1969",
+    "American Falls cofferdam",
+    "Niagara 1969 cofferdam construction"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse",
+    "loc"
+   ],
+   "min_side": 500
+  }
+ ]
 }

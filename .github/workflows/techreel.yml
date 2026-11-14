@@ -64,6 +64,15 @@ jobs:
         run: |
           bash scripts/sound/fetch-samples.sh "$HOME/.cache/cc0-sounds"
           echo "SFX_SAMPLES=$HOME/.cache/cc0-sounds" >> "$GITHUB_ENV"
+      - name: Real media
+        # free real images (owner, 14 Nov 2026): the Media workflow keeps them in R2 under media/showreel-tech-<slug>/
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python3 -I -c "import json,sys; sys.exit(0 if json.load(open(sys.argv[1])).get('media') else 1)" "techreel/topics/$SLUG.json" || exit 0
+          npm ci --no-audit --no-fund
+          bash scripts/media/pull.sh "techreel/topics/$SLUG.json"
       - name: Render
         id: render
         run: |

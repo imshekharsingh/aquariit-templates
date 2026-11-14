@@ -7,3 +7,7 @@ templates/social-kits.json
 out/
 templates/reels/
 __pycache__/
+
+# real media pulled from R2 at render time (scripts/media/pull.sh) or from the Media artifact for stills
+scripts/channel3/media/
+techreel/media/
