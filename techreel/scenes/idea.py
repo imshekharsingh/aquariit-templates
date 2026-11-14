@@ -665,15 +665,16 @@ def wave_world(cm, fr, ss, t, sc):
     al = clamp(kb * 1.5)
     # track 2: the opposite wave (gold, the mirror image), drawn in from the bud on its word
     y2 = 990
-    cm.text(330, y2 - 98, 'OPPOSITE WAVE', 44, YEL, 900, 'lm', a=clamp(sp(t, to - .05, .5, 14) * 1.6) * al)
+    A2 = 62   # tracks 2-3: the label sits clear of the wave's peaks (critic 14 Nov: the 80 px peaks ran through both labels)
+    cm.text(330, y2 - 108, 'OPPOSITE WAVE', 44, YEL, 900, 'lm', a=clamp(sp(t, to - .05, .5, 14) * 1.6) * al)
     cm.line([(330, y2), (1000, y2)], (255, 255, 255, int(40 * al)), 3)
     if ko > 0:
-        wave_line(cm, y2, 80, t, YEL, 10, 330, 330 + 670 * ko, sign=-1.0)
+        wave_line(cm, y2, A2, t, YEL, 10, 330, 330 + 670 * ko, sign=-1.0)
     # track 3: what you hear = noise + opposite: it shrinks to a flat line on "cancel"
     y3 = 1205
     k3 = clamp(ko * (1 - kc))
-    hear = 80 * (1 - .5 * ko) * (1 - kc) if ko > 0 else 80
-    cm.text(330, y3 - 98, 'WHAT YOU HEAR', 44, TXT, 900, 'lm', a=al)
+    hear = A2 * (1 - .5 * ko) * (1 - kc) if ko > 0 else A2
+    cm.text(330, y3 - 108, 'WHAT YOU HEAR', 44, TXT, 900, 'lm', a=al)
     wave_line(cm, y3, hear, t, (255, 255, 255), 10 if kc < 1 else 8, fade=al)
     if kc > 0:   # quiet: the flat line glows once
         q = clamp((t - tc) / 1.0)
