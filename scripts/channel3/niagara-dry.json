@@ -1,11 +1,11 @@
 {
  "name": "showreel-c3-niagara-dry",
  "seek": "scripts/channel3/niagara-dry.html",
- "dur": 24.1,
+ "dur": 24.8,
  "fps": 30,
  "grain": 4,
  "voice": {
-  "text": "What happened to Niagara in 1969? Frozen, drained, or moved? Lock in your guess. Drained. Engineers dammed the river with rock, and the falls ran dry. For months, crews studied and bolted the bare cliff. Turns out, they switched it back on that November.",
+  "text": "What happened to Niagara in 1969? Frozen, drained, or moved? Lock in your guess. Drained. Engineers dammed the river with rock, and the falls ran dry. For months, crews studied and bolted the bare cliff. Turns out, they switched the whole falls back on that November.",
   "at": [
    0,
    3.33,
@@ -86,7 +86,34 @@
      "bottom"
     ],
     "why": "the dam, the river and the bare cliff run past the frame by design in the close worlds"
+   },
+   {
+    "from": 0,
+    "to": {
+     "say": "engineers dammed"
+    },
+    "sides": [
+     "left"
+    ],
+    "why": "the gorge wall and the talus run past the frame in the falls world"
+   },
+   {
+    "from": {
+     "say": "turns out"
+    },
+    "to": 24.8,
+    "sides": [
+     "left",
+     "right"
+    ],
+    "why": "the cliff and the gorge run past the frame as the camera pulls back to the falls"
    }
+  ],
+  "subject": [
+   38,
+   372,
+   468,
+   600
   ]
  }
 }
