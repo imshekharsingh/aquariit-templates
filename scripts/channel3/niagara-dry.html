@@ -660,6 +660,38 @@ var K25 = (function(){
     x.globalAlpha = M.vignette; x.fillStyle = v; x.fillRect(0, 0, 540, 960);
     var b = x.createLinearGradient(0, 640, 0, 960); b.addColorStop(0, 'rgba(255,255,255,1)'); b.addColorStop(1, 'rgba(30,32,48,1)'); x.globalAlpha = .55; x.fillStyle = b; x.fillRect(0, 640, 540, 320);
     x.restore(); }
+  // ---- the photo stage (14 Nov 2026; owner: "yes to free real images ... take those and work or animate your design around it"):
+  // free-licence photos (the config's "media", fetched and checked by the Media workflow, pulled next to the scene as media/<name>/<id>.jpg)
+  // are the hero; we animate round them: a slow push or pan (kb keys), a masked wipe from one photo to another (wipe), our type, labels,
+  // pins and motes over them. Each photo is graded ONCE at load into its own canvas (grade: a canvas filter string), so frames stay cheap.
+  var PH = {};
+  function photos(list, base){ return Promise.all((list || []).map(function(m){ return new Promise(function(res){ var im = new Image();
+    im.onload = function(){ var s = Math.min(1, 2400 / Math.max(im.width, im.height)), cv = document.createElement('canvas'); cv.width = Math.round(im.width * s); cv.height = Math.round(im.height * s);
+      var g = cv.getContext('2d'); g.filter = m.grade || 'none'; g.drawImage(im, 0, 0, cv.width, cv.height); PH[m.id] = cv; res(true); };
+    im.onerror = function(){ res(false); }; im.src = (base || '') + (m.file || m.id + '.jpg'); }); })); }
+  function hasPhoto(id){ return !!PH[id]; }
+  // photo(id, [u, v, z], o): cover-fitted into the frame (or o.box [x, y, w, h], CSS px), photo point (u, v) (0..1) at the box's centre, zoom z >= 1;
+  // o.a opacity, o.clip a path function (screen px) to draw through
+  function photo(id, view, o){ var im = PH[id]; if (!im) return false; o = o || {}; var b = o.box || [0, 0, 540, 960], z = Math.max(1, view[2] || 1);
+    var s = Math.max(b[2] / im.width, b[3] / im.height) * z, sw = b[2] / s, sh = b[3] / s, cx = cl(view[0] * im.width, sw / 2, im.width - sw / 2), cy = cl(view[1] * im.height, sh / 2, im.height - sh / 2);
+    x.save(); x.setTransform(2, 0, 0, 2, 0, 0); if (o.a != null) x.globalAlpha *= o.a; if (o.clip) { o.clip(); x.clip(); }
+    x.drawImage(im, cx - sw / 2, cy - sh / 2, sw, sh, b[0], b[1], b[2], b[3]); x.restore(); return true; }
+  // where a photo point lands on screen for a view (to pin labels, rings and arrows on the photo's own features)
+  function photoPt(id, view, u, v, o){ var im = PH[id]; if (!im) return [270, 480]; var b = (o && o.box) || [0, 0, 540, 960], z = Math.max(1, view[2] || 1);
+    var s = Math.max(b[2] / im.width, b[3] / im.height) * z, sw = b[2] / s, sh = b[3] / s, cx = cl(view[0] * im.width, sw / 2, im.width - sw / 2), cy = cl(view[1] * im.height, sh / 2, im.height - sh / 2);
+    return [b[0] + (u * im.width - (cx - sw / 2)) * s, b[1] + (v * im.height - (cy - sh / 2)) * s]; }
+  // kb(keys)(t) -> [u, v, z]: keys [[t, u, v, z]], eased between keys with a little speed kept (the camera never stops)
+  function kb(keys){ return function(t){ if (t <= keys[0][0]) return keys[0].slice(1); for (var i = 0; i + 1 < keys.length; i++) { var a = keys[i], b = keys[i + 1];
+    if (t <= b[0] || i + 2 === keys.length) { var k = cl((t - a[0]) / (b[0] - a[0]), 0, 1), e = .3 * k + .7 * k * k * (3 - 2 * k); return [mix(a[1], b[1], e), mix(a[2], b[2], e), Math.exp(mix(Math.log(a[3]), Math.log(b[3]), e))]; } } }; }
+  // wipe(k, dir, feather, drawB): the next photo drawn through a soft edge moving across the frame ('down' = top to bottom), k 0..1
+  function wipe(k, dir, feather, drawB){ k = cl(k, 0, 1); if (k <= 0) return; feather = feather || 40; var e = mix(-feather, 960 + feather, k);
+    x.save(); x.setTransform(2, 0, 0, 2, 0, 0); x.beginPath(); if (dir === 'up') x.rect(0, 960 - e, 540, e + 2); else x.rect(0, -2, 540, e + 2); x.clip(); drawB(); x.restore();
+    x.save(); x.setTransform(2, 0, 0, 2, 0, 0); var y0 = dir === 'up' ? 960 - e : e, g = x.createLinearGradient(0, y0 - feather * .6, 0, y0 + feather * .6); g.addColorStop(0, 'rgba(250,246,236,0)'); g.addColorStop(.5, 'rgba(250,246,236,.55)'); g.addColorStop(1, 'rgba(250,246,236,0)');
+    if (k < 1) { x.fillStyle = g; x.fillRect(0, y0 - feather * .6, 540, feather * 1.2); } x.restore(); }
+  // pin(X, Y, k, col): a ring that lands on a photo feature (screen px), with a soft pulse while it is shown
+  function pin(X, Y, k, col, t, r){ if (k <= 0) return; r = r || 16; x.save(); x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha *= cl(k * 2, 0, 1); var s = mix(1.8, 1, es(k));
+    x.beginPath(); x.arc(X, Y, r * s, 0, 7); x.lineWidth = 3; x.strokeStyle = col; x.stroke(); x.beginPath(); x.arc(X, Y, 3.5, 0, 7); x.fillStyle = col; x.fill();
+    var q = ((t || 0) * .9) % 1; x.globalAlpha *= (1 - q) * .6; x.beginPath(); x.arc(X, Y, r * (1 + q * 1.4), 0, 7); x.lineWidth = 2; x.stroke(); x.restore(); }
   var FI_ = "'Inter',system-ui,sans-serif";
   return { F: F, track: track, off: off, use: use, screen: screen, proj: proj, vis: vis, px: px, hatch: hatch, path: path, ink: ink, fill: fill, seg: seg, wtxt: wtxt,
     paperTex: paperTex, roll: roll, label: label, stamp: stamp, rings: rings, ground: ground, ridge: ridge, wave: wave, city: city, tree: tree, person: person, reach: reach, limb: limb,
@@ -668,7 +700,8 @@ var K25 = (function(){
     LIGHT: LIGHT, begin: begin, world: world, plane: plane, contact: contact, lit: lit, act: act, aes: aes, figure: figure, flick: flick, motes: motes, cloth: cloth, ambient: ambient,
     choices: choices, countdown: countdown, repaint: repaint, guessCues: guessCues,
     MOODS: MOODS, mood: mood, sky: sky, warm: warm, rim: rim, plate: plate, grade: grade,
-    beat: beat, beats: beats, beatCues: beatCues, lands: lands, stackOn: stackOn, rivet: rivet, sweep: sweep, sparks: sparks, tally: tally };
+    beat: beat, beats: beats, beatCues: beatCues, lands: lands, stackOn: stackOn, rivet: rivet, sweep: sweep, sparks: sparks, tally: tally,
+    photos: photos, hasPhoto: hasPhoto, photo: photo, photoPt: photoPt, kb: kb, wipe: wipe, pin: pin };
 })();
 /*kit25:end*/
 
@@ -805,15 +838,49 @@ var K25 = (function(){
       x.beginPath(); x.moveTo(gx - .9, gy + fl0 * .35); x.quadraticCurveTo(gx - .4, gy + .2, gx, gy); x.quadraticCurveTo(gx + .4, gy + .2, gx + .9, gy + fl0 * .35); Kt.ink(2.2, 'rgba(10,12,22,.85)'); }
     Kt.screen(); x.fillStyle = lg(0, 690, 0, 960, [[0, 'rgba(10,12,22,0)'], [1, 'rgba(10,12,22,.45)']]); x.fillRect(0, 690, 540, 270);
   }
-  function W1(t){ falls(C1(t), t, { name: 'falls' }); }
-  function W4(t){ falls(C4(t), t, { name: 'falls-again', w4: true }); }
+  // ---------- the photo stage (14 Nov 2026; owner: the drawn falls "did not look like Niagara"): real public-domain / free photos are the
+  // hero (the config's "media": today's American Falls pouring, the 1969 dry falls and the 1969 cofferdam), animated by us: slow pushes and
+  // pans (Kt.kb), the drain as a wipe from the pouring falls to the dry ones on the answer (never before: the guess rule), pins and labels on
+  // the photos' own features, mist and motes over them. The present is graded cool, 1969 warm sepia (the answer colour, ANSWERC).
+  // The drawn worlds below stay as the fallback when the files are not there (a stills run before the Media workflow).
+  var MEDIA = [{ id: 'falls-now', grade: 'saturate(.62) brightness(.9) contrast(1.06) hue-rotate(-6deg)' },
+    { id: 'dry-1969', grade: 'grayscale(1) sepia(1) saturate(2.3) brightness(.86) contrast(1.12)' },
+    { id: 'dam-1969', grade: 'grayscale(1) sepia(1) saturate(1.6) brightness(.84) contrast(1.12)' }];
+  var ANSWERC = '#8a6a45';
+  var VNOW = [.5, .5, 1.0], VDRY = [.5, .5, 1.0], VDAM = [.5, .5, 1.0], VBARE = [.5, .5, 2.0];   // the frame-0 views (tuned to the photos)
+  var KB1, KB2, KB3, KB4;
+  function photoCams(){
+    KB1 = Kt.kb([[0, VNOW[0], VNOW[1], VNOW[2]], [tRv, VNOW[0], VNOW[1] - .01, VNOW[2] * 1.05], [tw1(0), VNOW[0], VNOW[1] - .04, VNOW[2] * 1.5]]);
+    KB2 = Kt.kb([[tw0(0), VDAM[0] - .05, VDAM[1], VDAM[2] * 1.18], [tw1(1), VDAM[0] + .05, VDAM[1], VDAM[2] * 1.05]]);
+    KB3 = Kt.kb([[tw0(1), VBARE[0] - .06, VBARE[1], VBARE[2]], [tw1(2), VBARE[0] + .06, VBARE[1] + .02, VBARE[2] * 1.12]]);
+    KB4 = Kt.kb([[tw0(2), VNOW[0], VNOW[1] - .02, VNOW[2] * 1.45], [DUR, VNOW[0], VNOW[1], VNOW[2]]]);
+  }
+  function shadeBand(){ Kt.screen(); x.fillStyle = lg(0, 620, 0, 960, [[0, 'rgba(10,12,22,0)'], [1, 'rgba(10,12,22,.62)']]); x.fillRect(0, 620, 540, 340);
+    x.fillStyle = lg(0, 0, 0, 380, [[0, 'rgba(10,12,22,.55)'], [1, 'rgba(10,12,22,0)']]); x.fillRect(0, 0, 540, 380); }
+  function mistOver(t, k){ if (k <= 0) return; Kt.screen(); x.save(); x.globalAlpha = k; Kt.motes(t, 22, 5, [0, 300, 540, 700], 'rgba(244,248,250,.45)', 1.6); x.restore(); }
+  function P1(t){ var v = KB1(t); Kt.photo('falls-now', v); mistOver(t, 1 - P(t, tRv, tRv + 1.2));
+    // the answer: the water drains top to bottom and the 1969 dry falls show (the reveal, never before it)
+    Kt.wipe(P(t, tRv + .05, tRv + 1.25), 'down', 50, function(){ Kt.photo('dry-1969', [VDRY[0], VDRY[1], VDRY[2] * mix(1, 1.2, P(t, tRv, tw1(0)))]); });
+    if (t > tRv + .9) { var q = Kt.photoPt('dry-1969', VDRY, .5, .5); Kt.pin(q[0], q[1] + 40, P(t, tRv + 1.1, tRv + 1.6) * (1 - P(t, tw0(0) - .2, tw0(0))), AMBER, t, 22); }
+    shadeBand(); }
+  function P2(t){ var v = KB2(t); Kt.photo(DAM(), v); Kt.screen();
+    ROCKS.forEach(function(q, j){ var u = P(t, q[0] - .05, q[0] + .3); if (u <= 0) return; var X = 60 + j * 420 / Math.max(1, ROCKS.length - 1), Y = 520 + Math.sin(j * 1.7) * 6; Kt.pin(X, Y, u, AMBER, t, 7); });
+    shadeBand(); }
+  function P3(t){ var v = KB3(t); Kt.photo('dry-1969', v); Kt.screen();
+    BOLTS.forEach(function(b, j){ var u = P(t, b[0], b[0] + .3); if (u <= 0) return; var X = 150 + (j % 3) * 120 + (Math.floor(j / 3) % 2) * 40, Y = 440 + Math.floor(j / 3) * 70; Kt.pin(X, Y, u, AMBER, t, 9); });
+    shadeBand(); }
+  function P4(t){ var v = KB4(t); Kt.photo('dry-1969', [VDRY[0], VDRY[1], v[2] / VNOW[2] * VDRY[2]]);
+    Kt.wipe(P(t, tOn, tOn + 1.3), 'down', 50, function(){ Kt.photo('falls-now', v); }); mistOver(t, P(t, tOn + .6, tOn + 1.8)); shadeBand(); }
+  var REAL = function(){ return Kt.hasPhoto('falls-now') && Kt.hasPhoto('dry-1969'); }, DAM = function(){ return Kt.hasPhoto('dam-1969') ? 'dam-1969' : 'dry-1969'; };
+  function W1(t){ if (REAL()) return P1(t); falls(C1(t), t, { name: 'falls' }); }
+  function W4(t){ if (REAL()) return P4(t); falls(C4(t), t, { name: 'falls-again', w4: true }); }
   function crestHole(cam){ var p0 = proj(cam, 0, CREST + 4, 0) || { x: 270, y: 380, s: 6 }, s = p0.s; return function(){ x.beginPath(); x.ellipse(p0.x, p0.y, 30 * s, 9 * s, 0, 0, 7); }; }
 
   // ---------- W2 upstream: the rock dam ----------
   function headX(t){ return mix(-9, 15, eio(P(t, tD0, tD1))); }
   function C2(t){ var u = P(t, tw0(0), tw1(1)); return { x: mix(-9, 5, eio(u)), y: mix(3.2, 2.6, u), z: mix(-23, -19, u) }; }
   function rockPiece(X, Y, w, seed, col){ blob(X, Y, w, w * .72, seed); x.fillStyle = col || '#5d5a56'; x.fill(); x.save(); x.clip(); x.fillStyle = Kt.lit(X - w, Y - w, X + w, Y + w, .4, .22); x.fillRect(X - w, Y - w, w * 2, w * 2); x.restore(); }
-  function W2(t){ var cam = C2(t), V, i, r, hx = headX(t), shut = P(t, tD1 - .1, tD1 + 1.0); Kt.world('dam', { haze: .3, floor: 0 });
+  function W2(t){ if (REAL()) return P2(t); var cam = C2(t), V, i, r, hx = headX(t), shut = P(t, tD1 - .1, tD1 + 1.0); Kt.world('dam', { haze: .3, floor: 0 });
     Kt.sky();
     if (Kt.plane(cam, 600)) { V = Kt.vis(5); r = rnd(31); x.fillStyle = '#1a2133'; x.beginPath(); x.moveTo(V.x0, 0); for (var X = V.x0; X <= V.x1; X += 8) x.lineTo(X, 18 + Math.sin(X * .02) * 5 + r() * 3); x.lineTo(V.x1, 0); x.closePath(); x.fill(); }
     if (Kt.plane(cam, 150)) { V = Kt.vis(5); r = rnd(32); x.fillStyle = '#131b19'; x.fillRect(V.x0, -1, V.x1 - V.x0, 6); for (X = V.x0; X < V.x1; X += 4) { var h = 5 + r() * 6; blob(X, 5 + h * .5, 3, h * .55, 600 + Math.round(X)); x.fillStyle = r() > .5 ? '#131b19' : '#172019'; x.fill(); } }
@@ -841,7 +908,7 @@ var K25 = (function(){
   // ---------- W3 the bare cliff, close: the bolts go in while the months pass ----------
   function C3(t){ var u = P(t, tw0(1), tw1(2)); return { x: mix(-.3, .25, eio(u)), y: mix(1.2, 1.6, u), z: mix(-9.4, -8.4, u) }; }
   function boltPt(t){ var b = BOLTS[BOLTS.length - 1]; var p = b ? proj(C3(t), b[1], b[2], 0) : null; return p ? [p.x, p.y, .34 * p.s] : [270, 480, 30]; }
-  function W3(t){ var cam = C3(t), V, i, r; Kt.world('cliff', { haze: .3, floor: 0 });
+  function W3(t){ if (REAL()) return P3(t); var cam = C3(t), V, i, r; Kt.world('cliff', { haze: .3, floor: 0 });
     Kt.sky();
     if (Kt.plane(cam, 400)) { r = rnd(81); for (i = 0; i < 3; i++) { blob(-60 + i * 70 + t * .4, 70 + r() * 30, 30, 5, 1000 + i); x.fillStyle = 'rgba(70,74,116,.5)'; x.fill(); } }
     if (Kt.plane(cam, 30)) { V = Kt.vis(5); r = rnd(82); for (var X = V.x0; X < V.x1; X += 2.2) { var h = 3 + r() * 3; blob(X, 6.6 + h * .5, 1.8, h * .55, 1100 + Math.round(X * 5)); x.fillStyle = r() > .5 ? '#121a17' : '#17201b'; x.fill(); } x.fillStyle = '#141b19'; x.fillRect(V.x0, 5, V.x1 - V.x0, 2); }
@@ -933,7 +1000,8 @@ var K25 = (function(){
     window.CUES = { dur: DUR, cues: Q, mix: { duck: 8, room: .6 }, bed: { bpm: 76, origin: 0, gain: .3, soft: true, lift: +(A[A.length - 1] - .2).toFixed(2), chords: [[45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [48, 55, 60, 64, 67], [43, 50, 55, 59, 62]] } }; }
   window.seek = seek; window.DURATION = DUR;
   Promise.all([document.fonts.load("800 44px 'Playfair Display'"), document.fonts.load("700 44px 'Playfair Display'"), document.fonts.load("700 27px 'Inter'"), document.fonts.load("800 18px 'Inter'"), document.fonts.load("600 18px 'Inter'")]).then(function(){ return document.fonts.ready; })
-    .then(function(){ buildCam(); sfx(); PAPERTEX = Kt.paperTex(41);
+    .then(function(){ return Kt.photos(MEDIA, 'media/showreel-c3-niagara-dry/'); })
+    .then(function(){ buildCam(); photoCams(); if (REAL()) window.GUESS.answer = ANSWERC; sfx(); PAPERTEX = Kt.paperTex(41);
       seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 </script>

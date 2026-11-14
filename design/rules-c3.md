@@ -13,6 +13,15 @@ followers after 11 reels. Watch is 12-19 s of 31-35 s (40-55%). Instagram's head
 reach and sends per reach, and that sends matter most for reaching people who don't follow you (design/references.md, R-trend 11 Nov). So the
 topic gate works; the format must now make people answer, send and finish.
 
+0. **Real media by default** (owner, 14 Nov 2026: the Niagara reel "did not look like Niagara (a grey rectangle on rocks, toy shapes)"; "yes to
+   free real images ... take those and work or animate your design around it"): the icon is a REAL photo (Wikimedia Commons PD / CC0 / CC BY,
+   US government works such as the US Army Corps of Engineers, NASA, NOAA, the Library of Congress "no known restrictions"), animated by us in
+   kit25d.js's photo stage: `Kt.photos(MEDIA, 'media/<name>/')` at load (each graded once by a canvas filter), `Kt.photo(id, [u, v, z])` with
+   `Kt.kb(keys)` slow pushes and pans, `Kt.wipe` to change state (the answer reveal), `Kt.photoPt` + `Kt.pin` on the photo's own features, our type,
+   motes and mist over it. The config's `"media"` list is fetched by the Media workflow (Actions -> Media -> config; it keeps the files in R2 and
+   the Showreel render pulls them); copy its MEDIA_JSON line back into the config. Guess reels: frame 0 shows a photo that does NOT give the
+   answer (the icon as everyone knows it), the answer photo arrives only on the reveal; grade the two apart (e.g. present cool, archive sepia)
+   and set window.GUESS / qa.guess "answer" to the answer photo's grade colour. CC BY authors go in the caption's sources line; Output QA LICENCE.
 1. **Guess first** (E19, c3-guess, from Thu 12 Nov): the reel is a question the viewer answers before we do. The hook question in frame 0
    (at most 9 words), three options read aloud and shown as chips (`Kt.choices`), "Lock in your guess.", a 3-2-1 countdown (`Kt.countdown`,
    a 2.6 s breath in the story, placed beside the subject, never on it), then the answer with a tick on the right chip and strikes on the

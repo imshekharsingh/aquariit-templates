@@ -1,34 +1,36 @@
-# Review: showreel-tech-anc-budget (tech, postOn 2026-11-14 postAt 13:00 IST)
+# Review: showreel-tech-anc-budget (tech, postOn 2026-11-14 postAt 13:00 IST; posted late today by the owner)
 
-REMADE 14 Nov ~09:30-12:10 IST after the owner's "looks a bit flat, can we do something more with animation" (the first render, run
-43542936971, is replaced). The idea look now has depth and light for every tech reel (techreel/scenes/depth.py, rules-tech.md G14) and the
-reel has new worlds: a shaded earbud with noise rings, the cancel money shot, drawn bus / metro / plane cabins, glass batteries draining on a
-ticking clock. AUTO lines from `make.py anc-budget --fake-vo --stills 0,1,...,22` (fake timings), 23 stills read on one sheet at 220 px wide.
+REMADE AGAIN 14 Nov ~17:00-19:00 IST on REAL free photos (owner, 14 Nov: tech "still looks poor" after five renders of drawn shapes; "yes to free
+real images ... take those and work or animate your design around it"). The render of 13:07 (run 43571941057) is replaced. Media workflow runs
+43575860482 / 43591930329 / 43594273879 (picked by hand from their contact sheets, read in the session via scripts/media/from-log.mjs):
+earbuds = a public-domain photo of two generic buds (Hykker ActiveSound, Wikimedia Commons), the case with its name cropped away and the small
+emblem on each bud painted out (topic "cover"), cut out by rembg; bus = "Empty seats on bus" (lurkingherern, CC BY 4.0); metro = "Empty Subway Train
+Toronto" (CC0); flight = "Seats and tray tables" (Douglas Perkins, CC BY 4.0), framed low ("view" v .75) so the seat-back emblem stays out of frame;
+quiet room = "Empty Lecture Room Interior" (CC0). Rejected on the sheets: Yamaha and Technics earbuds (maker logos), a Delta News Hub cabin
+(airline marketing photo). Engine: techreel/scenes/photo.py (rules-tech.md R0). AUTO lines from `make.py anc-budget --fake-vo --stills 0,1,...,22`
+with the previews (1400 px), 23 stills read on one sheet.
 
-1. Topic: PASS: rule F1 pass (worth it or not, earbuds), F2 pass (india, ₹2,799), F3 pass (OnePlus named as text only at its strengths, "per OnePlus", bud drawn generically, no winner or loser), F4 pass (verdict two-up: commute yes, quiet room no), F5 n/a, G5 pass (near-black lit room, one gold accent, green / red only as small dots), G6 pass (frame 0: the lit giant ANC with a jagged noise wave dying into a gold flat line behind the C), G9 pass (one subject per scene at full-frame scale: the bud and waves across the frame, cabins full-bleed, two tall batteries and the clock, the verdict panels), G10 pass (5 worlds), G11 pass (the waves visibly cancel into one calm line, noise rings shrink when ANC turns on, batteries drain on the clock), G12 pass (push-ins, drift, pans between cabins, zoom-throughs, all declared), G13 pass (12 H and 8 H pop on their words; the clock has no digits), G14 pass (lit room with beams, floor reflection under the captions, parallax dust, shaded bud / batteries / panels, lit giant type, bloom, grain, motion blur), V1 pass (64 words, about 20.8 s at speed 1.0), V2 pass, V4 pass
-2. Frame 0: PASS: the giant lit ANC (330 px, light ramp and soft shadow) with a jagged grey noise wave going flat and gold behind the C, ACTIVE / NOISE / CANCELLING under it by 1.15 s, the hook whole in the caption band with ANC gold; readable at thumbnail size
-3. Safe zone: PASS: SAFE ZONE: ok after one fix (first sheet: "NOISE" at x 39 under the push-in at 3.5 s; moved in to x 130)
-4. No overlap: PASS: OVERLAP: none
-5. Motion: PASS: something big every 1-2 s (rings closing in, the mic lighting, the bud gliding up, the gold wave pouring out, the flatten and the pulse, three cabin pans, the drain against the ticking clock, the glyphs reassembling, two panels); FLOW continuity 98%
+1. Topic: PASS: rule R0 pass (real photos are the subject of 7 of 9 scenes: the bud cut-out in MIC / CANCEL / every cabin, the bus, metro and flight cabins, the bus and the room in the verdict; drawn waves, rings, batteries and type over them), F1 pass (worth it or not, earbuds), F2 pass (india, ₹2,799), F3 pass (OnePlus named as text only at its strengths, no OnePlus photo, no logos), F4 pass (verdict two-up: commute yes, quiet room no), G5 pass (dark room, one gold accent; photos graded darker and warmer), G6 pass (frame 0 the lit giant ANC with its noise wave), G9-G14 pass
+2. Frame 0: PASS: the giant lit ANC with a jagged noise wave going flat and gold behind the C, the hook whole in the caption band
+3. Safe zone: PASS: SAFE ZONE: ok (every caption, tag word, chip and cabin sign inside x 60-960, y 250-1570 on all 23 stills)
+4. No overlap: PASS: OVERLAP: none (the bud cut-out sits under the tag row and above the chip; NOISE and OPPOSITE WAVE clear of the photo)
+5. Motion: PASS: the real buds float and bob with noise rings closing in, the mic glows on its word, the gold wave pours out and flattens, each cabin photo pushes in (7% over the scene) while the camera pans cabin to cabin, the batteries drain on the clock, the verdict photos push in on their words
 6. Subtitles: PASS: word-by-word captions, every chunk list covers its line; every line shown and finished on the stills
 7. Voice: PASS: PREFLIGHT voice: 250 letters, about 20.8 s at speed 1.00 (limit 22.5): fits; PRONUNCIATION: 2 overrides used: ANC, 3 (config); no unchecked words
-8. Sound: PASS: ELEMENTS: 64 element sounds (small high 33, medium mid 21, large low 10); longest gap 1.5 s at 8.3 s; recorded CC0 samples (render: SOUND SOURCE)
-9. Payoff: PASS: the verdict two-up, COMMUTE (gold, green dot, a calm gold ANC halo) on "commute" and QUIET ROOM on "quiet", the lit ANC above; holds to the end
-10. Facts: PASS: unchanged from the first build: OnePlus India Nord Buds 3 specs (up to 32 dB ANC; up to 12 h ANC off / 8 h ANC on, 50% volume, OnePlus tests) and price ₹2,799; Apple India AirPods specs (caption source only); the mechanism and "steady, low sound" from a feedforward ANC review (arXiv 2507.07043)
-11. Post data: PASS: captions.json entry (channel tech, postOn 2026-11-14, postAt 13:00, concept updated for the remake, experiment); 6 keywords, 5 hashtags; 4 sources with dates; "qa": sync list and edges_ok for the full-bleed cabins
+8. Sound: PASS: ELEMENTS: 67 element sounds (small high 33, medium mid 24, large low 10); longest gap 1.5 s at 8.3 s; recorded CC0 samples (render: SOUND SOURCE)
+9. Payoff: PASS: the verdict two-up with REAL photos: COMMUTE (the bus seats, gold, green tick) on "commute", QUIET ROOM (the empty room, red cross) on "quiet"
+10. Facts: PASS: unchanged: OnePlus India Nord Buds 3 specs (up to 32 dB ANC; up to 12 h ANC off / 8 h ANC on, 50% volume, OnePlus tests) and price ₹2,799; the mechanism from a feedforward ANC review (arXiv 2507.07043)
+11. Post data: PASS: captions.json entry unchanged (tech, postOn 2026-11-14, postAt 13:00); the caption gains the photo credit line for the two CC BY photos; "media" carries file, author, licence and source_url for all 5 (Output QA LICENCE); design/safety.md 1-20 read: no logos (two emblems painted out, the seat emblem framed out), no people, no brand put down, licences PD / CC0 / CC BY only
 12. Review file: PASS: this file, items 1-11 and 14-17
-13. After the render: PASS: run 43571941057 green (14 Nov 13:07-13:17 IST, render 5 of the remake: renders 1-4 failed only SYNC on "bus", run 4 also a one-off NUMBERS "4"; the cause, found with tesseract on the stills in the session, was the sign's gold outline read as "__Bus" at low confidence and a bus pole crossing the chip; fixed in #844). Voice ends at 21.01 s (limit 22.5), speed 1.0; voice check 67 words, 66 heard: "Nord Buds" heard as "nordbud's" (the recogniser joining two words, the audio unchanged from the first render); SOUND GATE ok (-14.4 LUFS, true peak -2.4 dBTP); SOUND SOURCE recorded CC0 samples; SOUND DETAIL 55 of 55 audible; ELEMENTS 68, longest gap 1.4 s; OUTPUT QA: PASS (PACE 3.22 words/s, every sentence ok; STRAY, LOUD, SOUND, COLOUR 1% max, EDGES none (cabins declared 8.6-12.8 s), NUMBERS 4 spoken / 31 read / no contradictions, SYNC bus -0.50 s, metro +0.00, flight +0.00, commute +0.50, quiet +0.00, DEAD none). Five renders broke the one-render rule; the lesson is in design/todo.md and critic question 26 (test labels with the QA's own OCR before the render).
-14. Cuts: PASS: FLOW: cuts 0 (8 declared transitions: zoom-throughs, the glide in the wave world, two cabin pans, the end fade)
+13. After the render: PENDING: written after the one render (Tech reel run, Output QA incl. LICENCE)
+14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
-16. Continuity: PASS: FLOW: continuity 98% (median step 2.5, 8 declared transitions)
+16. Continuity: PASS: FLOW: continuity 98% (median step 2.2, 8 declared transitions)
 17. Strobes: PASS: FLOW: strobes 0
 
-Owner-feedback lines against the stills: "flat mock-up, no light or depth" (7 Nov) and "looks a bit flat" (14 Nov): every scene now has a light source, shaded objects with shadows and depth layers; each idea scene shows the mechanism (the waves cancel, the rings shrink, the batteries drain); every named item on screen when said (BUS / METRO / FLIGHT signs light on their words, COMMUTE / QUIET ROOM panels); big type inside the safe zone; the lower third is the floor and its reflection, not a void; no saturated fills; natural speed 1.0.
+Owner-feedback lines against the stills: "still looks poor" / drawn shapes (14 Nov): the bud and every place are now real photos; "looks a bit flat"
+(14 Nov): the photos sit in the lit room with push-ins, rings and glow over them; every named item on screen when said (Bus / Metro / Flight signs,
+COMMUTE / QUIET ROOM panels).
+Would I stop and watch twice? Stop: yes, the real buds in a ring of noise read as a real product at a glance. Twice: the cabins are real places now.
 
-Does it feel as deep and alive as our web reels? Yes on the stills at phone size: a lit room, glass and light on every object, and the camera never still. Would I stop and watch twice? Stop: a glowing ANC with a sound wave dying behind it. Twice: the jagged wave meeting its gold mirror and going calm is the "oh, that's how" moment.
-
-Today's improvement (design/improvements.md, tech): a ₹ readout chip next to what it buys ("₹2,799 WITH 32 dB ANC") on an India worth-it day.
-
-References used (design/references.md): none new.
-
-20. Critic: CRITIC: READY (Reel critic session, 14 Nov ~13:20 IST, the remake's render 5, run 43571941057, Output QA PASS incl. SYNC). Stills of the final scene every 1 s, 0-21.4 s, at phone size. Q1: frame 0 the lit giant ANC with the noise wave dying behind it, the hook whole: stops the thumb. Q2: nothing cut (EDGES pass, the cabins declared full-bleed); the NOISE label sits on the bud's rings at 4-6 s and faint floor reflections of OPPOSITE WAVE / COMMUTE show at the very foot (6-8 s, 20-21 s, under Instagram's caption zone): small, not a fail. Q3/Q15: Bus, Metro and Flight cabins with their signs on their words; 12 H / 8 H on 'twelve' / 'eight' equal OnePlus's spec; COMMUTE / QUIET ROOM on their words (SYNC 0.0-0.5 s). Q5: speed 1.0, 66 of 67 words heard ('Nord Buds' heard as one word: said right). Q6: 55 of 55 cues audible, -14.4 LUFS, recorded samples. Q16/Q21: each scene shows the idea at full-frame scale in a different world (noise rings round a lit bud, the gold opposite wave cancelling to CALM, cabins whose noise rings shrink, batteries draining on a ticking clock, the verdict two-up); the wave labels no longer cross the waves (the issue in the old render). Q19: OnePlus named as text at its strengths, the bud drawn generically, no winner or loser. Would I watch it twice? Yes, the waves cancelling to CALM. Posted late if after 13:00: the reel is ready now.
+20. Critic: PENDING: a different session watches the rendered reel and writes CRITIC: READY or NOT READY here.

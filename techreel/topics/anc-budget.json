@@ -17,7 +17,7 @@
  },
  "experiment": {
   "id": "tech-gadget-specs",
-  "change": "E24 try 2: worth it or not, earbuds, India, remade the same morning in the depth-and-light idea look (shaded earbud, the cancel money shot, cabins, batteries draining on a clock); a rupee readout chip (design/improvements.md)",
+  "change": "E24 try 3: worth it or not, earbuds, India, remade on REAL free photos (owner, 14 Nov: \"yes to free real images\"): a real earbud cut-out, real bus / metro / flight cabins, real bus and room in the verdict, our waves, rings and type over them",
   "vs": "median"
  },
  "hook": [
@@ -256,12 +256,14 @@
       "icon": "bus",
       "text": "COMMUTE",
       "cue": "commute",
-      "rings": true
+      "rings": true,
+      "photo": "bus"
      },
      "bad": {
       "icon": "home",
       "text": "QUIET ROOM",
-      "cue": "quiet"
+      "cue": "quiet",
+      "photo": "room"
      },
      "push": [
       1.07,
@@ -274,7 +276,7 @@
  ],
  "post": {
   "title": "Is ANC worth it on budget earbuds?",
-  "caption": "Is ANC worth it on budget earbuds? 🎧\n\nHow it works: a tiny mic on each earbud hears the sound around you, and the earbud plays the opposite wave, so the two cancel out.\nWhere it shines: steady, low hum (bus, metro, flights). Voices and sudden sounds still get through more.\nWhat it costs: battery. OnePlus Nord Buds 3 (₹2,799 with up to 32 dB ANC on OnePlus India) play up to 12 hours with ANC off and 8 hours with it on (earbuds alone, 50% volume, OnePlus's own tests).\n\nWorth it on a noisy commute, skip it for a quiet room. Would you pay for ANC? yes or no in the comments, and send this to the friend shopping for earbuds.",
+  "caption": "Is ANC worth it on budget earbuds? 🎧\n\nHow it works: a tiny mic on each earbud hears the sound around you, and the earbud plays the opposite wave, so the two cancel out.\nWhere it shines: steady, low hum (bus, metro, flights). Voices and sudden sounds still get through more.\nWhat it costs: battery. OnePlus Nord Buds 3 (₹2,799 with up to 32 dB ANC on OnePlus India) play up to 12 hours with ANC off and 8 hours with it on (earbuds alone, 50% volume, OnePlus's own tests).\n\nWorth it on a noisy commute, skip it for a quiet room. Would you pay for ANC? yes or no in the comments, and send this to the friend shopping for earbuds.\n\nPhotos: lurkingherern (CC BY 4.0, Wikimedia Commons); Douglas Perkins (CC BY 4.0, Wikimedia Commons); others CC0 / public domain.",
   "keywords": [
    "is ANC worth it",
    "ANC earbuds under 3000",
@@ -377,7 +379,7 @@
     "openverse",
     "wikimedia"
    ],
-   "cut": true,
+   "cut": "rembg",
    "avoid": [
     "apple",
     "airpods",
@@ -440,23 +442,85 @@
     0.42,
     0.8,
     0.98
+   ],
+   "file": "earbuds.jpg",
+   "fg": "earbuds-fg.png",
+   "w": 1546,
+   "h": 1082,
+   "title": "ActiveSound wireless earbuds by Hykker (POJM200483).jpg",
+   "author": "Warszawska róg Szerokiej w Tomaszowie Mazowieckim, w województwie łódzkim, PL, EU",
+   "licence": "pd",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:ActiveSound_wireless_earbuds_by_Hykker_(POJM200483).jpg",
+   "source": "wikimedia",
+   "cover": [
+    [
+     0.336,
+     0.414,
+     0.045
+    ],
+    [
+     0.666,
+     0.466,
+     0.045
+    ]
    ]
   },
   {
    "id": "bus",
-   "url": "https://commons.wikimedia.org/wiki/File:Empty_seats_on_bus.jpg"
+   "url": "https://commons.wikimedia.org/wiki/File:Empty_seats_on_bus.jpg",
+   "file": "bus.jpg",
+   "w": 1800,
+   "h": 2400,
+   "title": "Empty seats on bus.jpg",
+   "author": "lurkingherern",
+   "licence": "cc-by-4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Empty_seats_on_bus.jpg",
+   "source": "wikimedia"
   },
   {
    "id": "metro",
-   "url": "https://commons.wikimedia.org/wiki/File:Empty_Subway_Train_Toronto_(Unsplash).jpg"
+   "url": "https://commons.wikimedia.org/wiki/File:Empty_Subway_Train_Toronto_(Unsplash).jpg",
+   "file": "metro.jpg",
+   "w": 2400,
+   "h": 1628,
+   "title": "Empty Subway Train Toronto (Unsplash).jpg",
+   "author": "Justin Main photified",
+   "licence": "cc0",
+   "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Empty_Subway_Train_Toronto_(Unsplash).jpg",
+   "source": "wikimedia"
   },
   {
    "id": "flight",
-   "url": "https://commons.wikimedia.org/wiki/File:Seats_and_tray_tables.jpg"
+   "url": "https://commons.wikimedia.org/wiki/File:Seats_and_tray_tables.jpg",
+   "file": "flight.jpg",
+   "w": 1800,
+   "h": 2400,
+   "title": "Seats and tray tables.jpg",
+   "author": "Douglas Perkins",
+   "licence": "cc-by-4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Seats_and_tray_tables.jpg",
+   "source": "wikimedia",
+   "view": [
+    0.5,
+    0.75
+   ]
   },
   {
    "id": "room",
-   "url": "https://commons.wikimedia.org/wiki/File:Empty_Lecture_Room_Interior.jpg"
+   "url": "https://commons.wikimedia.org/wiki/File:Empty_Lecture_Room_Interior.jpg",
+   "file": "room.jpg",
+   "w": 2400,
+   "h": 1807,
+   "title": "Empty Lecture Room Interior.jpg",
+   "author": "Paul The Writer",
+   "licence": "cc0",
+   "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Empty_Lecture_Room_Interior.jpg",
+   "source": "wikimedia"
   }
  ]
 }

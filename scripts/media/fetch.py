@@ -140,14 +140,14 @@ def loc(q, n=15):
 SOURCES = {'wikimedia': wikimedia, 'openverse': openverse, 'nasa': nasa, 'loc': loc}
 
 
-def resolve_url(u):
+def resolve_url(u, width=3840):
     """A direct link: a Commons File: page, an upload.wikimedia.org file, or an Openverse image page."""
     m = re.search(r'curid=(\d+)', u)
     if m:
-        return wikimedia('', pageid=m.group(1))
+        return wikimedia('', pageid=m.group(1), width=width)
     m = re.search(r'commons\.wikimedia\.org/wiki/(File:[^?#]+)', u)
     if m:
-        return wikimedia('', title=urllib.parse.unquote(m.group(1)))
+        return wikimedia('', title=urllib.parse.unquote(m.group(1)), width=width)
     m = re.search(r'upload\.wikimedia\.org/.+/([^/]+\.(?:jpe?g|png|tiff?|webp))$', u, re.I)
     if m:
         return wikimedia('', title='File:' + urllib.parse.unquote(m.group(1)))
@@ -249,7 +249,7 @@ def main():
         print(f'MEDIA {e["id"]}: searching')
         cands = []
         if e.get('url'):
-            cands = resolve_url(e['url'])
+            cands = resolve_url(e['url'], int(e.get('width', 3840)))   # a width under the original's: a cached rendition, not the throttled original
         else:
             for q in e.get('queries') or [e.get('query', '')]:
                 for s in e.get('sources') or ['wikimedia', 'openverse', 'loc', 'nasa']:

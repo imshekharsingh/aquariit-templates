@@ -126,6 +126,16 @@ review flaws; the sky and lost-day reels reuse it.
   by area so the camera skips what it cannot see; streets are grey paving (the scene's ground), parks lay their own gravel and lawns.
 - Cost (Eiffel reel, 1 Nov): about 1.6-2 s a frame locally at 1080x1920 (the reel before the kit: 1.6 s); render it split in 2 parts.
 
+### Photo stage (14 Nov 2026; rules-c3.md rule 0): real free photos are the hero of every Turns Out reel
+Owner, 14 Nov: the drawn Niagara "did not look like Niagara"; "yes to free real images ... take those and work or animate your design around it".
+In kit25d.js: `Kt.photos(list, base)` (a Promise: load and grade each photo once; list [{id, file?, grade: 'canvas filter'}]), `Kt.hasPhoto(id)`,
+`Kt.photo(id, [u, v, z], {box, a, clip})` (cover-fitted, photo point u, v at the centre, zoom z), `Kt.photoPt(id, view, u, v)` (where a photo point
+lands on screen), `Kt.kb(keys)` ([t, u, v, z] keys, eased, never stopping), `Kt.wipe(k, 'down'|'up', feather, draw)` (a soft-edged reveal of the next
+photo), `Kt.pin(X, Y, k, col, t, r)` (a ring landing on a feature). Files: the config's "media" (Media workflow, R2 media/<name>/, pulled by the
+Showreel render into scripts/channel3/media/<name>/; for local stills unzip the run's media-<name> artifact there). Keep the drawn world as the
+fallback when the photo is not there. Sources: Wikimedia Commons PD / CC0 / CC BY, US Army Corps of Engineers, NASA, NOAA, Library of Congress
+("no known restrictions"); never NC, ND, SA or editorial; no living people's faces.
+
 ### 2.5D toolkit (scripts/channel3/kit25d.js, owner 1 Nov 2026: "2.5D, continuous flow", the lighter alternative to real-time 3D)
 > **11 Nov 2026: depth, figure motion, ambient life** (owner, 8-9 Nov; rules-c3.md rule 11; mandatory item 20). `Kt.begin()` first in seek();
 > `Kt.world(name, { air, haze, floor })` then `Kt.plane(cam, Z, { fg, clear })` per layer, far to near (the air between planes is laid for you);
