@@ -29,6 +29,8 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 
 - [ ] 13 Nov 2026: support.google.com (Android help pages) is refused by the session's network (proxy 403), so tech reels cannot re-read Android setting paths the morning they are built (rules-tech.md rule 3): read them on GitHub instead (a small workflow step that fetches the topic's support.google.com sources and prints the matching lines), or ask the owner to allow the host.
 
+- 14 Nov 2026 (real media, not done today): short real VIDEO clips (Wikimedia webm / NASA) in the Media workflow and both engines; DVIDS (needs a key) and NOAA as sources; a depth map (MiDaS) for true photo parallax instead of overlay layers; a real photo at tech frame 0 (the hook is still the drawn ANC glyph); Wikimedia throttles GitHub runners on originals: fetch.py asks for a cached rendition width ("width" per entry), keep it.
+
 ## P2
 - [ ] @techin20sec topic shortlist from primary sources each morning on GitHub (roadmap 4): 3 candidates with sources and a viewer-stake hook.
 - [ ] One daily routine per channel that writes the script, renders stills to a private review page and stops (roadmap 3).
