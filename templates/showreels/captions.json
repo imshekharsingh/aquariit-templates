@@ -1104,5 +1104,26 @@
   "concept": "Guess first · What happened to Niagara in 1969?",
   "about": "GUESS format, reel 3 of 3 (E19): the American Falls pouring at dusk while the question and the lettered options (A frozen, B drained, C moved) are asked, a 3-2-1 countdown above the crest, then the flow stops at the crest and the last water falls away, baring brown rock, with a tick on B; over the crest to the rock dam upstream (a truck tipping rock, the channel below draining); a page turn to the bare cliff close, bolts going in as the months pass; a match cut to the falls, the water coming back, ending on the frame-0 view so the reel loops.",
   "note": "Turns Out, Sat 14 Nov 13:00 IST. Built the same morning. The chips now carry A / B / C; the caption asks for the letter."
+ },
+ "showreel-tech-refresh-120": {
+  "caption": "What does 120 Hz on a phone really mean? 📱\n\nHertz = new pictures your screen draws each second. At 120 Hz each picture stays up about 8 ms (1000 ÷ 120), at 60 Hz about 17 ms, so a scroll moves in smaller jumps and looks smoother.\nThe surprise: adaptive screens slow right down when nothing moves. Apple's iPhone 14 Pro added a 1 Hz refresh for its always-on lock screen to save battery.\n\nOn a spec sheet, look for \"adaptive\" refresh: smooth when you scroll, easy on battery when you don't. Send this to the friend comparing phones.\n\nPhoto: see sources.",
+  "keywords": [
+   "what is 120hz",
+   "120hz vs 60hz",
+   "refresh rate explained",
+   "adaptive refresh rate",
+   "ltpo display",
+   "phone display specs"
+  ],
+  "hashtags": [
+   "#120hz",
+   "#refreshrate",
+   "#smartphone",
+   "#display",
+   "#techtips"
+  ],
+  "channel": "tech",
+  "hidden": true,
+  "concept": "Engine sample for the story look (14 Nov rebuild from the reference kit): what 120 Hz really means, 40-45 s; stills only, never scheduled"
  }
 }

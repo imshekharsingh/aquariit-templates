@@ -1,7 +1,8 @@
 # Tech explainer reel generator
 
-20-second, 9:16 (1080x1920, 30 fps) reels that explain one tech topic in plain words: a hook card, six scenes, a voice
-for the whole reel with karaoke captions, and synthesized sound. A new topic needs only a new topic file.
+9:16 (1080x1920, 30 fps) reels of 20 s or 40-45 s that explain one gadget topic as a story: the payoff image in frame 0, one question,
+2-3 sourced steps, a surprise worth saving; a voice for the whole reel with word-synced captions, and synthesized sound. A new topic needs
+only a new topic file: `python3 techreel/starter.py <slug> [--long]` lays out the beats (the story look, below).
 
 ## Run it
 - On GitHub (the normal way): Actions → **Tech reel** → slug. The MP4, contact sheet, QA report and word timings land in the
@@ -20,6 +21,33 @@ for the whole reel with karaoke captions, and synthesized sound. A new topic nee
 | `scenes/kinds.py` | scene kinds (visual metaphors): `portal`, `flow`, `nest`, `choice`, `guard`, `checklist` |
 | `audio/synth.py` | numpy synthesis: a pad per scene with chord changes, plucks, bells, clicks, whooshes, kick, thud, a resolving final chord, convolution reverb, ducking under the voice |
 | `topics/<slug>.json` | one topic: script, scenes, pronunciation, post text and sources |
+| `scenes/story.py` | the story look (the default from 14 Nov 2026): shots, colour moods, camera moves, low captions, the STORY / LENGTH preflight |
+| `starter.py` | the storytelling starter: writes a topic skeleton with the beats in order (`--long` for 40-45 s) |
+
+## The story look (14 Nov 2026; topic `"look": "story"`, scenes/story.py; design/rules-tech.md S1-S8): the default for every tech reel
+Rebuilt from the owner's reference kit (design/kits/motion_kit.zip + motion_content_prompt.md; techniques taken, no code copied: the kit is an
+HTML/canvas pipeline, this stays the Python engine so every gate keeps working). Sample: topics/refresh-120.json (stills only, hidden).
+- **Beats**: every line has `"beat"`: `payoff` (line 1: the striking answer image in frame 0, 7 words or fewer, said over it), `question`
+  (one), `step` x 2-3 (one concrete fact each, `"source"`: its index in post.sources), `surprise` (sourced, the thing worth saving), an
+  optional `takeaway` (the verdict, F4). `--stills` prints STORY (the order, the sources) and LENGTH (20 s: 19-23.5 s, 50-70 words, 2+ steps;
+  long: 39-46 s, 100-140 words, 2-3 steps; the voice ends 0.5 s+ before the end) and fails on either. For 40-45 s set `"dur": 42`,
+  `"max_end": 41.3`; the PREFLIGHT voice line still estimates the take at speed 1.0.
+- **Every line is a shot** (line 1 included; a shot starts 0.3 s before its line). The whole frame is used: big words (90 px+, `words`
+  [{text, cue, accent?, dim?, size?}]) in the top band (y ~330-560), the subject in the stage (y 600-1330), captions low (centre y 1462,
+  80 px, 2 rows), full-bleed photos under all of it. No series pill, title strip, progress bar or dots, chips or credit plates (credits go
+  in the caption).
+- **Moods** (`MOODS`): ember (payoff), dusk (question), ocean / cobalt / jade (steps), rose (surprise), gold (takeaway); a shot's
+  `"mood"` overrides. A mood is the room's key and fill light, the glow behind the subject, the big words' accent and the photo's tint;
+  moods flow into each other during the camera move (Output QA COLOUR: no hard colour cut).
+- **Camera moves** (`"move"` on the scene; default cycle match, zoom, pan, push), declared for FLOW: `push` (dive into the old shot's
+  `match` point, the new shot opens from it), `pan` (side by side, `"dir"`), `match` (the old subject slides and scales onto the new
+  shot's `match` point while the new shot opens around it), `zoom` (zoom-through; the old shot's type leaves first). Never a plain fade.
+- **Shots** (`kind`): `hero` (`photo` full-bleed with `view` [u, v, z0, z1], `product` (a media cut-out) or `draw` phone | earbud with
+  `screen` feed | lock and `hz`, `h`, `y`, `glow`), `duo` (left / right {label, hz, cue, accent}), `strip` (`rates` [{value, rate, cue,
+  accent}], `label`, `label_cue`, `intro` words), `clock` (`slices`, `value`, `cue`, `label`), `rate` (`lanes` [{label, hz, cue, accent}]),
+  and every idea-look set (barrier, slam, split, bars, ride, drain) through the same camera.
+- **Edges**: a slim dark feather on the frame border (48 px sides, 64 px top and bottom) keeps full-bleed photos clear of Output QA EDGES.
+- Local stills with a photo: drop the file in techreel/media/<slug>/ and give the media entry its `"file"` (the Media workflow does it for real).
 
 ## Look and motion (owner, 8 Nov 2026)
 - The sister of web's style C, "Glass and light" (scripts/explainer/kitmotion.js, theme 'glass'), with tech's own accent, warm gold: frosted panes
@@ -54,7 +82,7 @@ run's MEDIA_JSON line back into the topic. scenes/photo.py draws them through th
 `metro`, `flight`) and verdict panels (`"photo"`) use them when the files are there. For local stills, unzip the media-<name> artifact into
 techreel/media/<slug>/.
 
-## The idea look (13 Nov 2026; topic `"look": "idea"`, scenes/idea.py; design/rules-tech.md G9-G13): the default for every tech reel
+## The idea look (13 Nov 2026, superseded 14 Nov by the story look; topic `"look": "idea"`, scenes/idea.py; design/rules-tech.md G9-G13)
 Owner, 13 Nov: "Let's build it with new animation." The idea at full-frame scale, one subject per scene, a crisp camera (`Cam`: zoom about a
 focus point + drift; text scales with it), declared zoom-throughs between worlds. Copy topics/ip68.json to start one, and
 keep its `"qa": {"sync": [...]}` up to date: every word the voice says that names a card, verdict or label on screen (Output QA SYNC fails
@@ -101,7 +129,7 @@ switch?: bool, chevron?}], choice?: {from, pick}}), `before` / `after` (the noti
 `page`, `items` [{cue}], `stamp`, `stamp_cue`. Each tap time is its cue word (or spaced between its neighbours); each tap, page push, flip,
 banner, card and tick is an element sound. Copy topics/stop-tracking.json to start one.
 
-## The fixed structure
+## The fixed structure (the old glass look, no "look" key; the story look above replaces it)
 - 0–2 s: the hook card (the first line as a big three-or-four-line title, then IN 20 SECONDS); the voice reads it.
 - Six scenes, one per remaining script line, each with a label chip at y≈392 (THE NEWS, THE FIX, ...) and its own tint.
 - Header `<TOPIC> · EXPLAINED` at y≈300 and the part progress bar at y=262 (a segment per scene). The world is centred on x 510. Scene content stays between y 430 and 1196.

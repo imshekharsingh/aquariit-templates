@@ -18,7 +18,8 @@ from scenes import base as B          # noqa: E402
 from scenes.kinds import KINDS        # noqa: E402
 from scenes import phonecam as P      # noqa: E402  the phone walkthrough look (topic "look": "phone", 12 Nov 2026)
 from scenes import gadget as G       # noqa: E402  the gadget look (topic "look": "gadget", 13 Nov 2026): fixed header / centred product / caption band
-from scenes import idea as I         # noqa: E402  the idea look (topic "look": "idea", 13 Nov 2026, the default): the idea at full-frame scale, worlds, zoom-throughs
+from scenes import idea as I         # noqa: E402  the idea look (topic "look": "idea", 13 Nov 2026): the idea at full-frame scale, worlds, zoom-throughs
+from scenes import story as S        # noqa: E402  the story look (topic "look": "story", 14 Nov 2026, the default): payoff -> question -> steps -> surprise
 from vo import tts                    # noqa: E402
 from audio import synth               # noqa: E402
 
@@ -32,7 +33,7 @@ def norm(w):
 
 class Scene:
     def __init__(self, i, spec, line, start, end):
-        self.i, self.label, self.tint, self.kind = i, spec['label'], spec.get('tint', 'blue'), spec['kind']
+        self.i, self.label, self.tint, self.kind = i, spec.get('label', ''), spec.get('tint', 'blue'), spec['kind']
         self.params, self.line, self.start, self.end = spec.get('params', {}), line, start, end
 
     def cue(self, word, nth=1):
@@ -52,7 +53,9 @@ GLIDE, SPAN = .6, 1200   # the camera's glide from one scene to the next (s) and
 
 def timeline(topic, vo):
     """The hook card, then one scene per line. A scene starts 0.35 s before its line (its content arrives during the camera's glide, so it
-    never opens on its label alone) and ends where the next one starts."""
+    never opens on its label alone) and ends where the next one starts. The story look: every line is a shot, line 1 (the payoff) included."""
+    if topic.get('look') == 'story':
+        return S.timeline(topic, vo, Scene)
     L = vo['lines']
     hook_out = max(2.0, L[1]['start'] - .1)
     scenes = []
@@ -71,6 +74,8 @@ def transitions(topic, scenes):
         return G.transitions(topic, scenes)
     if topic.get('look') == 'idea':
         return I.transitions(topic, scenes)
+    if topic.get('look') == 'story':
+        return S.transitions(topic, scenes)
     return [[round(s.start, 3), round(s.start + GLIDE, 3), 'glide'] for s in scenes] + list(topic.get('transitions', []))
 
 
@@ -96,6 +101,8 @@ def elements(topic, vo, hook_out, scenes):
         t = round(t + .1, 2)
     ev = list(B.EVENTS.values())
     B.EVENTS = None
+    if topic.get('look') == 'story':   # no hook card or label chips: every sound comes from the shots and the camera moves
+        return sorted(ev, key=lambda e: e['t'])
     n = 0
     for ln in topic['hook']:
         for j, w in enumerate(ln.split()):
@@ -112,10 +119,12 @@ def elements(topic, vo, hook_out, scenes):
 
 
 def sound_events(topic, vo, hook_out, scenes, els=None):
-    ev = {'scenes': [(0, hook_out)] + [(s.start, s.end) for s in scenes], 'plucks': [], 'bells': [.12], 'clicks': [], 'whooshes': [], 'kicks': [.04], 'thuds': [],
+    story = topic.get('look') == 'story'
+    ev = {'scenes': ([] if story else [(0, hook_out)]) + [(s.start, s.end) for s in scenes], 'plucks': [], 'bells': [.12], 'clicks': [], 'whooshes': [], 'kicks': [.04], 'thuds': [],
           'elements': els if els is not None else elements(topic, vo, hook_out, scenes)}
     for s in scenes:
-        ev['whooshes'].append(s.start)
+        if not (story and s.i == 0):
+            ev['whooshes'].append(s.start)
         if s.kind == 'checklist':
             ev['bells'] += [s.cue(it.get('cue')) for it in s.params.get('items', [])]
     ev['final'] = max(vo['dur'] - .2, DUR - 1.7)
@@ -141,6 +150,8 @@ def draw(t, topic, vo, hook_out, scenes):
         return G.draw(t, topic, vo, hook_out, scenes, chunks)
     if topic.get('look') == 'idea':   # the idea look (scenes/idea.py): one subject at full-frame scale per scene, a camera that leads the eye
         return I.draw(t, topic, vo, hook_out, scenes, chunks)
+    if topic.get('look') == 'story':   # the story look (scenes/story.py): full-frame shots, a mood per beat, camera moves between shots
+        return S.draw(t, topic, vo, hook_out, scenes, chunks)
     cpos, ddx, ddy = camera(t, scenes)
     # the light: the framed scene's tint crossfades during the glide; the blooms follow the camera at a shallow depth
     ci = min(len(scenes) - 1, max(0, int(cpos) - 1))
@@ -325,6 +336,7 @@ def main():
     P.B_DUR[0] = DUR
     G.B_DUR[0] = DUR
     I.B_DUR[0] = DUR
+    S.B_DUR[0] = DUR
     out = os.path.join('out', 'techreel', slug)
     os.makedirs(out, exist_ok=True)
     vo_wav, vo_json = os.path.join(out, 'vo.wav'), os.path.join(out, 'vo.json')
@@ -339,6 +351,9 @@ def main():
             for w in fr.warnings:
                 print(f'{t:5.2f}s  {w}')
         lines, bad = layout_lines(topic, vo, hook_out, scenes)
+        if topic.get('look') == 'story':   # the storytelling preflight: beats in order, sourced steps, the length class and its words
+            sl, sbad = S.story_lines(topic, vo)
+            lines, bad = sl + lines, bad + sbad
         fl, fbad = flow_lines(topic, vo, hook_out, scenes)
         els = elements(topic, vo, hook_out, scenes)
         print('\n'.join(lines + fl + [element_line(els)]))
