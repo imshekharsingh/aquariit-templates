@@ -5,6 +5,7 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
+- [ ] 14 Nov 2026: the whole-frame tabs reel took 33 GitHub minutes (frames 29.2, was 19.5 before the rebuild; rule 12 caps 30): find the frame cost (the blurred line glow `.inkg` filter, the bigger cards) and bring a 20 s whole-frame reel back under 25.
 - [ ] 14 Nov 2026 (owner: "squeezing most of it in one place of the screen"): move the two web starters (starterweb.html, starterdetails.html,
   newweb.mjs) to the whole-frame layout of showreel-36-tabs (rules-web.md rule 16: KM.ZONES, subtitles under the top zone, hero to y 780,
   card edges locked with KM.worldY), so tomorrow's reel starts from it; Output QA SPREAD already fails a squeezed reel.
