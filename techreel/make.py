@@ -390,6 +390,7 @@ def main():
     m = json.loads(meas[meas.rindex('{'):meas.rindex('}') + 1])
     ln = (f"loudnorm=I=-14.5:TP=-1.5:LRA=7:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
           f":measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
+    ln += ',alimiter=limit=0.75:attack=1:release=60:level=disabled'   # (15 Nov 2026, run 43633250649: AAC overshoot left -0.7 dBTP) peaks held near -2.5 dBFS so the encode stays under -1 dBTP
     final = os.path.join(out, slug + '.mp4')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', mp4_silent, '-i', mix_wav, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-af', ln, '-ar', '48000',
                     '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', final], check=True)
