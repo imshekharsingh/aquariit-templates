@@ -21,7 +21,7 @@ import { judge } from '../showreel/layout.mjs';
 import { sample, judgeFlow } from '../showreel/flow.mjs';
 const { chromium } = createRequire(process.env.PW_FROM || join(process.cwd(), 'node_modules/'))('playwright');
 const cfg = JSON.parse(readFileSync(process.argv[2], 'utf8'));
-const b = await chromium.launch(), p = await b.newPage({ viewport: { width: 540, height: 960 } }), errors = [];
+const b = await chromium.launch({ args: ['--allow-file-access-from-files'] }), p = await b.newPage({ viewport: { width: 540, height: 960 } }), errors = [];
 p.on('pageerror', (e) => errors.push(e.message));
 await p.goto('file://' + resolve(cfg.seek)); await p.waitForSelector('html[data-ready]', { timeout: 60000 });
 const seen = new Map(), shown = new Set(), lay = [], depth = new Map(), lum = [];   // lay: the text boxes every 0.5 s for the Mandatory Gate layout lines (scripts/showreel/layout.mjs)

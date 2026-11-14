@@ -18,7 +18,7 @@
   "voice": "af_heart",
   "speed": 1
  },
- "caption": "A, B or C? Comment your letter before you watch it again 👇\n\nIn June 1969, US Army engineers built a dam of rock across the Niagara River above the American Falls, and the falls ran dry. For months, crews studied the bare rock face and bolted its cracks. That November they took the dam out, and the water came back.\n\nSend this to the friend who'd guess frozen.",
+ "caption": "A, B or C? Comment your letter before you watch it again 👇\n\nIn June 1969, US Army engineers built a dam of rock across the Niagara River above the American Falls, and the falls ran dry. For months, crews studied the bare rock face and bolted its cracks. That November they took the dam out, and the water came back.\n\nSend this to the friend who'd guess frozen.\n\nPhotos: James St. John, \"Dewatered American Falls (1969)\" (CC BY 2.0, Wikimedia Commons); the falls today by Mustang Joe (CC0).",
  "keywords": [
   "Niagara Falls turned off 1969",
   "American Falls dry",
@@ -50,16 +50,20 @@
   {
    "title": "American Dry Falls (NiagaraFallsInfo)",
    "url": "https://niagarafallsinfo.com/niagara-falls-history/niagara-falls-geology/american-dry-falls"
+  },
+  {
+   "title": "Photo: Dewatered American Falls (1969), James St. John, CC BY 2.0 (Wikimedia Commons)",
+   "url": "https://commons.wikimedia.org/wiki/File:Dewatered_American_Falls_(1969)_(Niagara_Falls,_northwest_of_Buffalo,_New_York_State,_USA)_(19936707609).jpg"
   }
  ],
  "experiment": {
   "id": "c3-guess",
-  "change": "the GUESS format, reel 3 of 3 (E19): lettered chips A / B / C (today's improvement), a 3-2-1 countdown, the flow stopping on the answer, a loop to frame 0; a North American icon (Niagara) after the Eiffel and Taj reels",
+  "change": "the GUESS format on REAL photos (owner, 14 Nov: the drawn falls \"did not look like Niagara\"): today's American Falls pouring (CC0), the real 1969 dry falls (CC BY) wiped in on the answer, our type, pins and motes over them",
   "vs": "median"
  },
  "qa": {
   "guess": {
-   "answer": "#83603f",
+   "answer": "#8c5e3c",
    "reveal": {
     "say": "Drained Engineers"
    },
@@ -120,13 +124,31 @@
   {
    "id": "falls-now",
    "url": "https://commons.wikimedia.org/wiki/File:The_American_Falls_and_Bridal_Veil_Falls_at_Niagara_(49554032207).jpg",
-   "long": 5200
+   "long": 5200,
+   "file": "falls-now.jpg",
+   "w": 3840,
+   "h": 1596,
+   "title": "The American Falls and Bridal Veil Falls at Niagara (49554032207).jpg",
+   "author": "Mustang Joe",
+   "licence": "cc0",
+   "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+   "source_url": "https://commons.wikimedia.org/wiki/File:The_American_Falls_and_Bridal_Veil_Falls_at_Niagara_(49554032207).jpg",
+   "source": "wikimedia"
   },
   {
    "id": "dry-1969",
    "url": "https://commons.wikimedia.org/w/index.php?curid=86371425",
    "long": 2800,
-   "width": 2560
+   "width": 2560,
+   "file": "dry-1969.jpg",
+   "w": 2800,
+   "h": 1935,
+   "title": "Dewatered American Falls (1969) (Niagara Falls, northwest of Buffalo, New York State, USA) (19936707609).jpg",
+   "author": "James St. John",
+   "licence": "cc-by-2.0",
+   "licence_url": "https://creativecommons.org/licenses/by/2.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Dewatered_American_Falls_(1969)_(Niagara_Falls,_northwest_of_Buffalo,_New_York_State,_USA)_(19936707609).jpg",
+   "source": "wikimedia"
   }
  ]
 }

@@ -22,7 +22,7 @@ with the previews (1400 px), 23 stills read on one sheet.
 10. Facts: PASS: unchanged: OnePlus India Nord Buds 3 specs (up to 32 dB ANC; up to 12 h ANC off / 8 h ANC on, 50% volume, OnePlus tests) and price ₹2,799; the mechanism from a feedforward ANC review (arXiv 2507.07043)
 11. Post data: PASS: captions.json entry unchanged (tech, postOn 2026-11-14, postAt 13:00); the caption gains the photo credit line for the two CC BY photos; "media" carries file, author, licence and source_url for all 5 (Output QA LICENCE); design/safety.md 1-20 read: no logos (two emblems painted out, the seat emblem framed out), no people, no brand put down, licences PD / CC0 / CC BY only
 12. Review file: PASS: this file, items 1-11 and 14-17
-13. After the render: PENDING: written after the one render (Tech reel run, Output QA incl. LICENCE)
+13. After the render: PASS: run 43596158198 green (14 Nov ~19:05-19:30 IST, the one render of the photo remake; MEDIA PULL: 6 files from R2); voice ends at 21.01 s (limit 22.5), speed 1.0; -14.4 LUFS, true peak -2.4 dBTP; SOUND SOURCE recorded CC0 samples; OUTPUT QA: PASS (LICENCE 5 files, 2 CC BY credited; PACE, STRAY, LOUD, SOUND 55 of 55 cues audible, COLOUR, EDGES, NUMBERS, SYNC bus 10.4 / metro 10.9 / flight 11.7 / commute 19.1 / quiet 20.2 s, DEAD). The run's contact-sheet artifact cannot be downloaded in this session (blob host blocked); the frames were judged on the session's stills of the same scene (a pure function of t) and by Output QA on the MP4
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 98% (median step 2.2, 8 declared transitions)
