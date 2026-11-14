@@ -119,66 +119,44 @@
  "media": [
   {
    "id": "falls-now",
-   "queries": [
-    "American Falls Niagara",
-    "American Falls Niagara Falls New York",
-    "American Falls and Bridal Veil Falls"
-   ],
-   "sources": [
-    "wikimedia",
-    "openverse"
-   ],
-   "avoid": [
-    "night",
-    "illuminat",
-    "winter",
-    "frozen",
-    "ice ",
-    "fireworks",
-    "map",
-    "woman",
-    "man ",
-    "men ",
-    "girl",
-    "boy",
-    "person",
-    "people",
-    "wearing",
-    "portrait",
-    "selfie",
-    "child",
-    "kid"
-   ],
-   "min_side": 1200
+   "url": "https://commons.wikimedia.org/wiki/File:The_American_Falls_and_Bridal_Veil_Falls_at_Niagara_(49554032207).jpg",
+   "long": 5200
   },
   {
    "id": "dry-1969",
-   "queries": [
-    "American Falls dewatered 1969",
-    "American Falls dry 1969",
-    "Niagara Falls 1969 dewatering",
-    "dry American Falls"
-   ],
-   "sources": [
-    "wikimedia",
-    "openverse",
-    "loc"
-   ],
-   "min_side": 500
+   "url": "https://commons.wikimedia.org/w/index.php?curid=86371425",
+   "long": 2800
   },
   {
    "id": "dam-1969",
    "queries": [
-    "cofferdam Niagara River 1969",
-    "American Falls cofferdam",
-    "Niagara 1969 cofferdam construction"
+    "American Falls 1969",
+    "Niagara Falls 1969",
+    "American Falls dewatering",
+    "American Falls cofferdam"
    ],
    "sources": [
     "wikimedia",
-    "openverse",
-    "loc"
+    "loc",
+    "openverse"
    ],
-   "min_side": 500
+   "require": [
+    "niagara",
+    "american falls"
+   ],
+   "avoid": [
+    "twin falls",
+    "coulee",
+    "idaho",
+    "sewall",
+    "bridge",
+    "horseshoe",
+    "postcard",
+    "map"
+   ],
+   "min_side": 500,
+   "pick": 1,
+   "long": 2800
   }
  ]
 }
