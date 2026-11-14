@@ -24,16 +24,16 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #subj{left:0;top:0;width:540px;height:960px}
 .card{position:absolute;overflow:hidden;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.035));box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.06)}
 .bar{position:absolute;left:0;top:0;width:414px;height:60px;display:flex;justify-content:space-around;padding:0 6px;border-bottom:1.5px solid rgba(255,255,255,.1)}
-.bar span{display:block;height:60px;padding:0 12px;font:650 20px/62px var(--f);letter-spacing:-.01em;white-space:nowrap;color:#c4c1b9;border-bottom:6px solid transparent}
+.bar span{display:block;height:60px;padding:0 12px;font:650 20px/62px var(--f);letter-spacing:-.01em;white-space:nowrap;color:#c4c1b9;border-bottom:7px solid transparent}
 .bar span em{display:inline-block;font-style:normal;line-height:22px;vertical-align:middle}
 .bar span.on{color:var(--paper)}
-.ink{position:absolute;left:0;top:54px;width:1px;height:6px;background:var(--acc);transform-origin:0 0}
+.ink{position:absolute;left:0;top:53px;width:1px;height:7px;background:var(--acc);transform-origin:0 0}
 .rows{position:absolute;left:10px;top:72px;right:10px;bottom:0}
 .row{position:absolute;left:0;top:0;height:62px;overflow:hidden;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.115),rgba(255,255,255,.07));box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.06)}
 .row .av{position:absolute;left:10px;top:12px;width:38px;height:38px;border-radius:50%;font:700 16px/38px var(--f);text-align:center;color:#fff;font-style:normal;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
 .row b{position:absolute;left:58px;top:13px;font:650 18px/1 var(--f);letter-spacing:-.01em;white-space:nowrap;color:var(--paper)}
 .row s{position:absolute;left:58px;top:40px;height:8px;border-radius:4px;background:rgba(255,255,255,.2);text-decoration:none}
-.row u{position:absolute;right:14px;top:22px;width:44px;height:18px;border-radius:9px;text-decoration:none;opacity:.85}
+.row u{position:absolute;right:12px;top:9px;width:68px;height:44px;border-radius:10px;text-decoration:none;opacity:.9;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
 .tg{position:absolute;font:500 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;opacity:0;padding:3px 8px;border-radius:7px;background:rgba(8,8,12,.88)}
 #tgA{color:#ffb0a6}#tgB{color:var(--acc)}
 .gh{position:absolute;border:2.5px dashed var(--red);border-radius:8px;opacity:0}
@@ -527,7 +527,7 @@ var KM = (function(){
 
   window.WEB_THEME = 'dark';   // E18 (12-14 Nov 2026): the dark theme, rules-web.md rule 12
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.theme('dark');
-  var TEXT = "Why does your tab line jump? Each tab draws its own underline. Tap another, and it blinks across. The fix: one line for every tab. Move it with translate, and stretch it with scale. Watch it slowed down. It slides, and stretches to fit. Now your tabs glide.";
+  var TEXT = "Why does your tab line jump? Each tab draws its own underline. Tap another, and it blinks across. The fix: a single line for all the tabs. Move it with translate, and stretch it with scale. Watch it slowed down. It slides, and stretches to fit. Now your tabs glide.";
   var DUR = 20, HOOK_N = 6;
   // the code the reel teaches (MDN transform, translateX(), scaleX(), transform-origin, transition): exactly what the AFTER bar does.
   // Only the changed line is lit (design/improvements.md, 13 Nov: the one property that matters, the rest dimmed); it pulses on "translate".
@@ -622,14 +622,14 @@ var KM = (function(){
       var x = mix(f.x, g.x, k), w = mix(f.w, g.w, k);
       c.querySelector('.ink').style.transform = 'translateX(' + x.toFixed(2) + 'px) scaleX(' + w.toFixed(2) + ')'; A.moved = d ? Math.abs(g.x - f.x) * k : 0; }
     // the feed under the bar: the tapped tab's rows (the same in both cards); whole rows only, a row that does not fit is faded, not cut
-    var feed = FEED[on], AV = bx.h - 72, bot = 60, pw = 414 - 20 - 58 - 80;
+    var feed = FEED[on], AV = bx.h - 72, bot = 60, pw = 214;
     ROWS[L].forEach(function(r, i){ var y = i * RH, fit = Math.pow(cl(1 - (y + 62 - AV) / 14), 3);
       if (fit <= .01) { r.style.display = 'none'; return; }
       var nm = feed[i % feed.length], ci = (on * 3 + i) % AVC.length;
       r.style.display = 'block'; r.style.width = '394px'; r.style.transform = 'translateY(' + y.toFixed(2) + 'px)'; r.style.opacity = fit.toFixed(3);
       r.querySelector('.av').style.background = AVC[ci]; r.querySelector('.av').textContent = nm[0]; r.querySelector('b').textContent = nm;
       r.querySelector('s').style.width = (pw * (.5 + .45 * (((i + on * 2) * 37) % 10) / 10)).toFixed(1) + 'px';
-      r.querySelector('u').style.background = AVC[(ci + 2) % AVC.length];
+      r.querySelector('u').style.background = 'linear-gradient(' + (on * 60 + i * 25) + 'deg,' + AVC[(ci + 2) % AVC.length] + ',' + AVC[(ci + 5) % AVC.length] + ')';   // each tab's own thumbnails, so a tap visibly changes the feed
       bot = Math.max(bot, 72 + mix(y - 6, y + 62, fit)); });
     return bot; }
   function upDown(t, a){ return E.inOut3(P(t, a - .22, a - .1)) * (1 - E.inOut3(P(t, a + .02, a + .25))); }   // the touch, 0 lifted .. 1 down
@@ -693,7 +693,7 @@ var KM = (function(){
     $('scl').style.opacity = $('spec').style.opacity; $('scl').querySelector('b').textContent = Math.round(t >= A.slowT - .01 && t < A.pay ? A.moved : 0) + ' px';
     // ---- payoff: the fix on three lines over the bar ----
     EL.line.apply(t);
-    KM.subs($('cap'), t, V, PH, HOOK_N, Math.min(DUR - .3, V.end + .7), function(w, j){ return /^(fix|one|translate|scale|slowed|slides|stretches|glide)/i.test(w) && V.words[j].s >= A.fix ? 'var(--acc)' : null; });
+    KM.subs($('cap'), t, V, PH, HOOK_N, Math.min(DUR - .3, V.end + .7), function(w, j){ return /^(fix|single|translate|scale|slowed|slides|stretches|glide)/i.test(w) && V.words[j].s >= A.fix ? 'var(--acc)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); } };
   window.seek = seek; window.DURATION = DUR;

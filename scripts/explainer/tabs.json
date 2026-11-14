@@ -11,7 +11,7 @@
  "style": "Ink and mint (E18 dark-return try 3, E23 dynamic fix try 2)",
  "palette": "dark",
  "voice": {
-  "text": "Why does your tab line jump? Each tab draws its own underline. Tap another, and it blinks across. The fix: one line for every tab. Move it with translate, and stretch it with scale. Watch it slowed down. It slides, and stretches to fit. Now your tabs glide.",
+  "text": "Why does your tab line jump? Each tab draws its own underline. Tap another, and it blinks across. The fix: a single line for all the tabs. Move it with translate, and stretch it with scale. Watch it slowed down. It slides, and stretches to fit. Now your tabs glide.",
   "voice": "af_heart",
   "speed": 1.0,
   "gap": [
