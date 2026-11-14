@@ -307,6 +307,22 @@ Reels carry their own sound from 23 Oct (owner: audio supports the hook): effect
 - Exception (owner, 31 Oct 2026), Turns Out only: real historical figures who died 50+ years ago may appear, drawn as friendly cartoon
   figures recognised by props and setting, never caricatured faces; no living or recently dead people, politicians in office or religious figures.
 
+## Free real images and footage for @techin20sec and Turns Out (owner, 14 Nov 2026: "yes to free real images ... take those and work or animate your design around it")
+Code-drawn shapes hit a low ceiling for real places and products (owner: the Niagara reel did not look like Niagara; tech "still looks poor").
+So tech and Turns Out reels are built AROUND free real media, animated by us (parallax cut-outs, slow push-ins, masks, overlays, our type and sound):
+- Allowed sources only, licence recorded per file in the config ("media": [{file, source_url, author, licence}]): public domain / CC0
+  (Wikimedia Commons PD/CC0, US government works such as NASA, NOAA, DVIDS, US Army Corps, Library of Congress "no known restrictions",
+  Openverse with licence cc0/pdm), and CC BY (credit in the caption's sources line). Never non-commercial (NC), no-derivatives (ND),
+  "editorial use only", stock-site watermarks, or anything taken from another creator's reel or video.
+- The owner's four checks on every reel: no plagiarism (never re-post someone's reel or a recognisable edit; real media is a raw ingredient,
+  always reframed and animated into our own design), no controversial content, no disrespect, nothing that may hurt anyone's sentiment.
+- Tech: real photos of generic gadgets and parts; brand logos, product marketing photos and trade dress stay out (the brand rules above).
+- No identifiable private people; historical figures only under the Turns Out exception.
+- GitHub does the fetching and processing: the session writes search terms or file URLs into the config; the "Media" workflow (Openverse /
+  Wikimedia / NASA / LoC APIs, no keys) downloads, checks the licence, cuts/resizes, stores in R2 and the render pulls it. Sessions do not
+  download media themselves.
+This overrides "Images: code only" in the copyright section for these two channels.
+
 ## Save Claude usage (owner, 14 Oct 2026)
 Heavy work runs on GitHub. In a session keep to quick stills and checks; never poll long jobs (one check-in after ~12 minutes is enough).
 Before any task, tell the owner its size, S (< 15 min) / M (30-60 min) / L (1-3 h) of session work, and wait for a go-ahead on M or bigger unless already approved.
