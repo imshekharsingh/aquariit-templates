@@ -349,6 +349,16 @@ per reel, not separate frames; read the voice check and qa.txt as text; at most 
 - Usage: a normal day is about $10-15 (daily run $5-8, Turns Out about $4 a day, one reel). The weekly limit resets Wednesday 04:30 IST and the 5-hour limit is
   shared by all sessions: don't start heavy work in parallel. Experiments (new formats, big app changes) are M/L tasks: say the size first.
 
+## Weekly owner chat and token budget (owner, 14 Nov 2026: "start a session weekly where I can continue chatting and archive the ongoing ones"; "segregate tasks and clean up after a job"; "do anything that reduces token usage daily")
+- The owner chats in ONE "Owner chat — week of <date>" session, started every Wednesday 05:13 IST by the "Weekly owner chat" scheduled task
+  (via the studio launcher); it archives the previous week's chat. The chat session only talks, decides and plans; it never builds.
+- One job = one fresh session with one channel and one task (e.g. "tech reel 15 Nov", "Turns Out engine rebuild"), reusing the shared kits;
+  when its job is pushed, merged and checked it is archived. One job session at a time. Scratch files stay in the session scratchpad (gone on archive).
+- Token budget, every session: read only the CLAUDE.md sections and design/ files the task needs; never read whole large files when a grep or a
+  line range answers; one stills sheet and one contact sheet per reel; no subagents; no polling (one check-in per GitHub job); text checks
+  (Output QA, reel-status) instead of viewing frames where a check exists; fix a reel with ONE re-render, never several; stop and report
+  instead of retrying a failing approach more than twice; a reply to the owner is short.
+
 ## Never do
 - Force-push, rewrite history, or delete branches yourself
 - Push to main or deploy manually
