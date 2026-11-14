@@ -165,20 +165,6 @@
     "loc"
    ],
    "min_side": 500
-  },
-  {
-   "id": "dam-1969",
-   "queries": [
-    "cofferdam Niagara River 1969",
-    "American Falls cofferdam",
-    "Niagara 1969 cofferdam construction"
-   ],
-   "sources": [
-    "wikimedia",
-    "openverse",
-    "loc"
-   ],
-   "min_side": 500
   }
  ]
 }

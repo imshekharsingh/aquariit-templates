@@ -260,8 +260,8 @@ def main():
         for i, c in enumerate(ranked[:8]):
             print(f'  [{i}] {c["licence"]:<9} {c["w"]}x{c["h"]} {c["source"]} | {c["title"][:70]} | {c["source_url"]}')
         pick, im, ch = int(e.get('pick', 0)), None, None
-        for c in ranked[pick:pick + 6]:   # the picked one, or the next that downloads
-            im = download(c)
+        for c in ranked[pick:pick + 6]:   # the picked one, or the next that downloads (a 429 gets one slow retry)
+            im = download(c) or (time.sleep(45) or download(c))
             if im is not None:
                 ch = c
                 break
