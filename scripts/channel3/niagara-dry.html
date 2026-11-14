@@ -847,13 +847,13 @@ var K25 = (function(){
     { id: 'dry-1969', grade: 'grayscale(1) sepia(1) saturate(2.3) brightness(.86) contrast(1.12)' },
     { id: 'dam-1969', grade: 'grayscale(1) sepia(1) saturate(1.6) brightness(.84) contrast(1.12)' }];
   var ANSWERC = '#8a6a45';
-  var VNOW = [.5, .5, 1.0], VDRY = [.5, .5, 1.0], VDAM = [.5, .5, 1.0], VBARE = [.5, .5, 2.0];   // the frame-0 views (tuned to the photos)
+  var VNOW = [.40, .40, 2.0], VDRY = [.5, .5, 1.0], VDAM = [.5, .5, 1.0], VBARE = [.5, .5, 2.0];   // the frame-0 views (tuned to the photos)
   var KB1, KB2, KB3, KB4;
   function photoCams(){
-    KB1 = Kt.kb([[0, VNOW[0], VNOW[1], VNOW[2]], [tRv, VNOW[0], VNOW[1] - .01, VNOW[2] * 1.05], [tw1(0), VNOW[0], VNOW[1] - .04, VNOW[2] * 1.5]]);
+    KB1 = Kt.kb([[0, VNOW[0], VNOW[1], VNOW[2]], [tRv, VNOW[0] + .12, VNOW[1] - .01, VNOW[2] * 1.05], [tw1(0), VNOW[0] + .16, VNOW[1] - .04, VNOW[2] * 1.5]]);
     KB2 = Kt.kb([[tw0(0), VDAM[0] - .05, VDAM[1], VDAM[2] * 1.18], [tw1(1), VDAM[0] + .05, VDAM[1], VDAM[2] * 1.05]]);
     KB3 = Kt.kb([[tw0(1), VBARE[0] - .06, VBARE[1], VBARE[2]], [tw1(2), VBARE[0] + .06, VBARE[1] + .02, VBARE[2] * 1.12]]);
-    KB4 = Kt.kb([[tw0(2), VNOW[0], VNOW[1] - .02, VNOW[2] * 1.45], [DUR, VNOW[0], VNOW[1], VNOW[2]]]);
+    KB4 = Kt.kb([[tw0(2), VNOW[0] + .2, VNOW[1] - .02, VNOW[2] * 1.45], [DUR, VNOW[0], VNOW[1], VNOW[2]]]);
   }
   function shadeBand(){ Kt.screen(); x.fillStyle = lg(0, 620, 0, 960, [[0, 'rgba(10,12,22,0)'], [1, 'rgba(10,12,22,.62)']]); x.fillRect(0, 620, 540, 340);
     x.fillStyle = lg(0, 0, 0, 380, [[0, 'rgba(10,12,22,.55)'], [1, 'rgba(10,12,22,0)']]); x.fillRect(0, 0, 540, 380); }

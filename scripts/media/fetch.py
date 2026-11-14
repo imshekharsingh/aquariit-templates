@@ -64,8 +64,8 @@ def norm_licence(s):
 
 
 # ---------- sources: each returns candidates {title, w, h, url (download), thumb, source_url, author, licence, licence_url, source, tags} ----------
-def wikimedia(q, n=20, title=None, pageid=None):
-    p = {'action': 'query', 'format': 'json', 'prop': 'imageinfo', 'iiprop': 'url|size|mime|extmetadata', 'iiurlwidth': '3840'}   # a standard rendition width: Wikimedia throttles originals and odd widths
+def wikimedia(q, n=20, title=None, pageid=None, width=3840):
+    p = {'action': 'query', 'format': 'json', 'prop': 'imageinfo', 'iiprop': 'url|size|mime|extmetadata', 'iiurlwidth': str(width)}   # a standard rendition width: Wikimedia throttles originals and odd widths
     if pageid:
         p['pageids'] = str(pageid)
     elif title:
