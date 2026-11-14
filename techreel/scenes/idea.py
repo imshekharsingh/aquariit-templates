@@ -911,7 +911,9 @@ def set_ride(cm, fr, s, t, sc):
             continue
         tc = cue(s, rd.get('cue'), d=s.start + .4 + .8 * i)
         calm = eio((t - tc - .2) / .7)
-        lab = sp(t, tc - .05, .5, 14)
+        # the first cabin's sign is lit from the scene's start: the pan to the next cabin begins 0.4 s before its word, so a sign that
+        # waited for its own word was readable for only 0.1 s (Output QA SYNC, 14 Nov: "bus" not readable)
+        lab = sp(t, (s.start + .25) if i == 0 else tc - .05, .5, 14)
         sub = Cam(fr, (cm.fx, cm.fy), cm.z, (cm.dx, cm.dy), cm.a, cm.ta)
         sub.T = (lambda o: (lambda x, y: cm.T(x + o, y)))(ox)
         cabin(sub, 0, rd['kind'], t, calm, lab, rd['text'], s.start)
