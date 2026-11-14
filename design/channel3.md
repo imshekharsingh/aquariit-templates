@@ -33,6 +33,8 @@ accounts read as siblings.
 
 ## Never (check every topic against this list first)
 - Religion; active wars and disputed borders; living politicians; "which country or people is better".
+- India-sensitive history (design/safety.md 16a): Mughal succession, Aurangzeb, temple / mosque origins, Partition, caste, communal history,
+  regional language disputes. Swap the topic.
 - Health and diet claims; tragedies as entertainment.
 - Anything an official body currently disputes.
 
@@ -135,6 +137,29 @@ photo), `Kt.pin(X, Y, k, col, t, r)` (a ring landing on a feature). Files: the c
 Showreel render into scripts/channel3/media/<name>/; for local stills unzip the run's media-<name> artifact there). Keep the drawn world as the
 fallback when the photo is not there. Sources: Wikimedia Commons PD / CC0 / CC BY, US Army Corps of Engineers, NASA, NOAA, Library of Congress
 ("no known restrictions"); never NC, ND, SA or editorial; no living people's faces.
+
+### Story engine (14 Nov 2026, the default; rules-c3.md rule S): payoff picture first, one shot per beat, a mood each, camera moves
+Rebuilt from the owner's reference kit (design/kits/echoes_kit.zip + echoes_history_prompt.md; techniques taken, nothing copied: its archival
+"framed / full / stack" shots, film finish and fixed series outro are not used) the same way as the tech story look (PR #873).
+Start: `node scripts/channel3/new25d.mjs <slug> "Payoff (6 words max)." "One question?" "Step fact." "Step fact." ["Step fact."] "Turns out, ..."`
+(copies scripts/channel3/starterstory.html; checks the arc: 5-6 lines, line 2 the only question, the last starts "Turns out").
+- Beats: payoff (frame 0 IS the "wait, what?" picture, the payoff line said over it, big on a plate in the low band) -> ONE question ->
+  2-3 steps, one concrete sourced fact each, its big word landing on the spoken word -> the surprise worth saving -> the camera pulls back
+  onto frame 0's view in the last 0.9 s (the loop). 20-24 s at about 2.5 words/s.
+- Kit (kit25d.js, "story stage"): `Kt.shots(list, DUR)` (list of { at: A[i], beat, mood?, move?, focus: [x, y], draw(t, S) }; fills each
+  shot's time, mood and move and declares window.TRANSITIONS / window.SHOTS); `Kt.stage(t)` draws the shot or the move between two;
+  `Kt.photoWorld(name, id, t, S, o)` = the shot's real photo full-bleed on the far plane of a 4-plane world (photo, illustration `o.mid`,
+  haze `o.near`, dust past the lens) through the shot's own drifting push (o.u, o.v the point held, o.z0 -> o.z1 the zoom, o.dir), with
+  `o.on(t)` drawing on the photo itself in the shot's first-frame px; `Kt.photoAt(id, S, o, u, v)` = where a photo feature sits, for pins,
+  rings and outlines; `Kt.big(t, text, t0, X, Y, o)` = a big word (64 px default, never under 44) on a solid plate of the moment's mood,
+  o.sub a second line (30 px), o.pad room for a tally; `Kt.moodAt(t)`; `Kt.storyCues(Q)` = a low move under every camera move.
+- Moods by beat (Kt.SMOODS): payoff ember, question dusk, steps ocean / jade / cobalt, surprise rose; each laid over its picture (tint in soft
+  light, its shade in the corners, dark ramps under the big words and the captions), flowing during the move. Moves by order: push, match,
+  pan, zoom-through (never a plain fade); set `move` or `focus` per shot where a dive or a match has a natural point.
+- Frame use: the photo full-bleed (pick views where the subject fills the middle; zoom past any mount, border or handwriting; never a ring
+  or mark on a face), big words in the top or low band clear of the subject, captions low (one dark card, bottom at y 763). No series
+  badge, title strip, progress dots or credit plates: credits go in the caption's sources line.
+- Sample: scripts/channel3/story-sample.html (hidden, stills only): radio saved the Eiffel Tower, five shots, all gates clean.
 
 ### 2.5D toolkit (scripts/channel3/kit25d.js, owner 1 Nov 2026: "2.5D, continuous flow", the lighter alternative to real-time 3D)
 > **11 Nov 2026: depth, figure motion, ambient life** (owner, 8-9 Nov; rules-c3.md rule 11; mandatory item 20). `Kt.begin()` first in seek();

@@ -1,0 +1,115 @@
+{
+ "name": "showreel-c3-story-sample",
+ "seek": "scripts/channel3/story-sample.html",
+ "dur": 23.5,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "A radio saved the Eiffel Tower. Then why could Paris legally demolish it? Eiffel's permit for his 1889 tower lasted only twenty years. In 1903, he let the army test radio from the top. Soon its signals crossed the Mediterranean. Turns out, the city then renewed his permit for seventy years.",
+  "at": [
+   0,
+   2.45,
+   5.48,
+   10.3,
+   14.28,
+   17.67
+  ],
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "A radio antenna saved the Eiffel Tower 📻\n\nEiffel's permit for his 1889 tower ran only twenty years, so from 1909 the City of Paris could take it down. In 1903 he let the army test radio from the top, and soon its signals crossed the Mediterranean. Too useful to lose: from 1910 the permit was renewed for seventy years.\n\nSend this to the friend who loves a good comeback story.\n\nPhotos: Library of Congress (public domain); Nadar, 1888 (public domain); 1889 Exposition print, Darmstadt library (public domain).",
+ "keywords": [
+  "Eiffel Tower history",
+  "Eiffel Tower radio",
+  "why the Eiffel Tower was not torn down",
+  "Eiffel Tower 1909 permit",
+  "Gustave Eiffel",
+  "history facts"
+ ],
+ "hashtags": [
+  "#eiffeltower",
+  "#paris",
+  "#historyfacts",
+  "#didyouknow",
+  "#history"
+ ],
+ "sources": [
+  {
+   "title": "Why was the Eiffel Tower kept? (Eiffel Tower official site)",
+   "url": "https://www.toureiffel.paris/en/news/130-years/how-did-radio-save-tower"
+  },
+  {
+   "title": "The Eiffel Tower laboratory (Eiffel Tower official site)",
+   "url": "https://www.toureiffel.paris/en/the-monument/eiffel-tower-and-science"
+  },
+  {
+   "title": "How the Eiffel Tower survived (History.com)",
+   "url": "https://www.history.com/articles/eiffel-tower-survival"
+  }
+ ],
+ "media": [
+  {
+   "id": "payoff",
+   "queries": [
+    "Eiffel Tower at night Paris Exposition 1889"
+   ],
+   "sources": [
+    "loc"
+   ],
+   "min_side": 900
+  },
+  {
+   "id": "question",
+   "url": "https://commons.wikimedia.org/wiki/File:Exposition_Universelle_de_Paris_1889_-_Universit%C3%A4ts-_und_Landesbibliothek_Darmstadt.jpg"
+  },
+  {
+   "id": "step1",
+   "url": "https://commons.wikimedia.org/wiki/File:Gustave_Eiffel_1888_Nadar2.jpg"
+  },
+  {
+   "id": "step2",
+   "queries": [
+    "Guard at Eiffel Tower wireless station"
+   ],
+   "sources": [
+    "loc"
+   ],
+   "min_side": 900
+  },
+  {
+   "id": "step3",
+   "url": "https://commons.wikimedia.org/wiki/File:Exposition_Universelle_de_Paris_1889_-_Universit%C3%A4ts-_und_Landesbibliothek_Darmstadt.jpg"
+  },
+  {
+   "id": "surprise",
+   "queries": [
+    "Eiffel Tower at night Paris Exposition 1889"
+   ],
+   "sources": [
+    "loc"
+   ],
+   "min_side": 900
+  }
+ ],
+ "qa": {
+  "subject": [
+   150,
+   160,
+   390,
+   640
+  ],
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 23.5,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the story engine: full-bleed real media fills the whole frame by design"
+   }
+  ]
+ }
+}
