@@ -22,7 +22,7 @@ topics were already posted: replan them on Tuesday's spare night, as myth-busts 
 | Wed 11 | Why does your carousel stop between photos? (built 11 Nov as showreel-33-carousel; swapped from the scrollbar jump, which phones never show: overlay scrollbars, rule 1; ESCALATE answer, rule 11) | scroll-snap-type: x mandatory + scroll-snap-align: center |
 | Thu 12 | Why does your button feel dead on tap? (built 12 Nov as showreel-34-press; E18 try 1) | :active { transform: scale(.96) } + a 120 ms transition: the press you can feel |
 | Fri 13 | Why does your list jump when you delete a row? (E18) | the row collapses first: grid-template-rows 1fr → 0fr with a transition, then it leaves |
-| Sat 14 | Why does your tab underline jump instead of slide? (E18 + E23 dynamic fix; swapped 12 Nov from the toggle, which fails rules-web.md rule 15) | one indicator moved with transform: translateX + scaleX and a transition, instead of a border per tab that blinks |
+| Sat 14 | Why does your tab underline jump instead of slide? (built 14 Nov as showreel-36-tabs; E18 + E23 dynamic fix; swapped 12 Nov from the toggle, which fails rules-web.md rule 15) | one indicator moved with transform: translateX + scaleX and a transition, instead of a border per tab that blinks |
 | Sun 15 | Why does your text jump when the font loads? (E23 dynamic fix; swapped 12 Nov: long name repeats showreel-26-longname) | @font-face size-adjust (+ ascent-override) on the fallback so the swap does not move a line |
 
 ### @techin20sec (only if the 6 Nov audit keeps the format; "How does / why does" + the mechanism step by step)
@@ -66,7 +66,7 @@ Rotation: no format and no gadget type two days in a row; 3 India + 4 global a w
 | Day | Format | Gadget | Audience | Hook | What it shows (check that morning) |
 |---|---|---|---|---|---|
 | Fri 13 | specs decoded | phone | global | What does IP68 really protect? (built 13 Nov as showreel-tech-ip68) | 6 = dust tight, 8 = fresh water at the maker's depth and time (new iPhones 6 m, 30 min); not for swimming, showers, sauna; seals wear; saves a spill, not a swim |
-| Sat 14 | worth it or not | earbuds | india | Is ANC worth it in budget earbuds? | what active noise cancelling does (a mic + an opposite wave), what it costs in battery (makers' own "ANC on / off" playtime), when it helps (bus, metro, flights) vs when it does not; prices in ₹ from the makers' Indian pages |
+| Sat 14 | worth it or not | earbuds | india | Is ANC worth it in budget earbuds? (built 14 Nov as showreel-tech-anc-budget: OnePlus Nord Buds 3, ₹2,799, 12 h / 8 h) | what active noise cancelling does (a mic + an opposite wave), what it costs in battery (makers' own "ANC on / off" playtime), when it helps (bus, metro, flights) vs when it does not; prices in ₹ from the makers' Indian pages |
 | Sun 15 | gadget myths | charger | global | Can a bigger charger hurt your phone? | the phone decides how much power it takes (USB Power Delivery), so a 65 W charger on a 25 W phone charges at the phone's rate; heat is what ages a battery (Apple, Google, Samsung battery pages) |
 | Mon 16 | specs decoded | smartwatch | india | What does 5 ATM on your watch mean? | 5 ATM = pressure like 50 m, fine for a swim in a pool, not for diving or a hot shower; IP68 vs 5 ATM; the makers' own care notes (watches sold in India) |
 | Tue 17 | worth it or not | phone screen | global | Is a 120Hz screen worth paying extra for? | 60 vs 120 refresh: smoother scrolling and games, the battery trade, adaptive refresh (makers' spec pages); who notices it and who does not |

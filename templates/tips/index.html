@@ -181,6 +181,11 @@
 #list li button{border:0;border-radius:50%;width:26px;height:26px;background:#ffffff1a;color:inherit;cursor:pointer}
 #list .fix li{transition:.3s}
 #list .fix li.gone{grid-template-rows:0fr;opacity:0}
+#tabs .bar{position:relative;display:flex;justify-content:space-around;border-bottom:1px solid #ffffff1f}
+#tabs .bar button{border:0;background:none;color:inherit;padding:12px 10px;font:600 15px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;opacity:.7;border-bottom:3px solid transparent}
+#tabs .bar button.on{opacity:1}
+#tabs .bad button.on{border-bottom-color:currentColor}
+#tabs .ink{position:absolute;left:0;bottom:-1px;width:1px;height:3px;background:currentColor;transform-origin:left;transition:transform .3s}
 </style>
 </head>
 <body>
@@ -190,6 +195,27 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="tabs">
+  <p class="no">Nº 26</p>
+  <h2>Why does your tab underline jump instead of slide?</h2>
+  <p class="why">A border-bottom on each tab turns off under one tab and on under the next in the same frame, so the line blinks across. One indicator for the whole bar, moved with translateX and stretched with scaleX under a transform transition, slides to the tapped tab and fits its width. Transforms are animatable in every current browser (MDN, BCD).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane bad"><span class="tag">A border on each tab</span><div class="bar"><button type="button" class="on">For you</button><button type="button">Following</button><button type="button">Saved</button></div></div><div class="pane fix"><span class="tag ok">One line, translateX + scaleX</span><div class="bar"><button type="button" class="on">For you</button><button type="button">Following</button><button type="button">Saved</button><span class="ink"></span></div></div>
+</div>
+<p class="note">Tap the tabs in each bar. On the left each tab draws its own border, so the line blinks from tab to tab; on the right one line slides to the tapped tab and stretches to its width.</p></div>
+  <div class="code"><pre><code>.ink {
+  position: absolute; bottom: 0; left: 0;
+  width: 1px; height: 3px;
+  transform-origin: left;
+  transition: transform .3s;
+}
+/* on tap */
+ink.style.transform =
+  `translateX(${tab.offsetLeft}px) scaleX(${tab.offsetWidth})`;</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/transform-function/translateX" rel="noopener">Source: MDN, translateX()</a></p>
+</article>
 
 <article class="tip" id="list">
   <p class="no">Nº 25</p>
@@ -651,11 +677,16 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>23 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>24 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "tabs": function(root){ root.querySelectorAll('.bar').forEach(function(bar){ var ink = bar.querySelector('.ink');
+    function go(b){ bar.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
+      if (ink) ink.style.transform = 'translateX(' + b.offsetLeft + 'px) scaleX(' + b.offsetWidth + ')'; }
+    bar.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) go(b); });
+    if (ink) { ink.style.transition = 'none'; go(bar.querySelector('button')); ink.getBoundingClientRect(); ink.style.transition = ''; } }); },
     "list": function(root, btn){ var html = [].map.call(root.querySelectorAll('ul'), function(u){ return u.innerHTML; });
   root.addEventListener('click', function(e){ var b = e.target.closest('li button'); if (!b) return; var li = b.closest('li');
     if (!li.closest('.fix')) { li.remove(); return; }

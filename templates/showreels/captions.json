@@ -1056,5 +1056,45 @@
   "concept": "Guess first · How does the Taj stay white?",
   "about": "GUESS format, reel 2 of 3 (E19): the Taj Mahal across its pool on a hazy morning, a dull film creeping up the marble while the question and the options (bleach, acid, mud) are asked, a 3-2-1 countdown in the sky beside the dome, then a coat of clay climbs the whole Taj with a tick on MUD; through the great arch to a worker spreading the clay over an inlaid flower panel; a page turn to the same panel at night, drying and cracking, then washed off with water; a match cut from the clean flower to the dome, ending on the frame-0 view so the reel loops.",
   "note": "Turns Out, Fri 13 Nov 13:00 IST. Built the same morning. Pin a comment asking for A, B or C if you like."
+ },
+ "showreel-36-tabs": {
+  "postOn": "2026-11-14",
+  "postAt": "13:00",
+  "caption": "Why does your tab underline jump instead of slide? 〰️\n\nWhen every tab draws its own border-bottom, switching tabs turns one border off and another on in the same frame, so the line blinks across and the eye has to find it again. Use ONE indicator for the whole bar instead: a 1px-wide line with transform-origin: left and transition: transform .3s, and on every tap set its transform to translateX(the tab's offsetLeft) scaleX(the tab's offsetWidth). It slides to the new tab and stretches to its width, and transform is the cheapest thing a browser can animate. Works in every current browser.\nSave it for your next tab bar, or send it to whoever built your app's tabs.",
+  "keywords": [
+   "tab underline animation CSS",
+   "sliding tab indicator",
+   "animated tabs CSS",
+   "translateX scaleX indicator",
+   "tab bar animation",
+   "CSS tips"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#cssanimation",
+   "#webanimation",
+   "#uidesign",
+   "#frontenddev"
+  ],
+  "channel": "web",
+  "concept": "one indicator for the whole tab bar, moved with translateX and stretched with scaleX under transition: transform .3s (the line slides to the tapped tab instead of blinking from border to border)",
+  "about": "E23 try 2 (dynamic fix, in sync) on E18 try 3 (dark): a tab bar whose underline blinks from tab to tab (a red ghost, \"blink!\", TAPS counter), then BEFORE over AFTER tapped at the same moment (blink vs slide), a 0.25x slide with its curve and the distance counting, a rhythm of gliding taps to the end",
+  "palette": "dark",
+  "experiment": {
+   "id": "dynamic-fix",
+   "change": "E23 try 2: dynamic before/after in sync (BEFORE blinks over AFTER slides), on E18's dark single fix (try 3); the code card lights only the changed line",
+   "vs": "median"
+  }
+ },
+ "showreel-tech-anc-budget": {
+  "channel": "tech",
+  "postOn": "2026-11-14",
+  "postAt": "13:00",
+  "concept": "Gadget channel try 2, worth it or not (India, earbuds): is budget ANC worth it? Frame 0 a giant ANC with a noise wave going flat behind the C; a mic on a drawn bud hears the wave, the bud plays the gold opposite wave and what you hear goes flat; bus, metro and flight cards slam in (steady hum); two batteries fill to 12 h (ANC off) and 8 h (ANC on) for OnePlus Nord Buds 3 with a ₹2,799 chip; the verdict two-up: commute yes, quiet room no",
+  "experiment": {
+   "id": "tech-gadget-specs",
+   "change": "E24 try 2: worth it or not, earbuds, India, in the idea look with two new worlds (sound waves that cancel, battery bars); a rupee readout chip (design/improvements.md)",
+   "vs": "median"
+  }
  }
 }

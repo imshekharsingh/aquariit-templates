@@ -292,6 +292,19 @@ def draw_hook(fr, topic, t, kout, scenes):
             top = y - size * .36
             yy = top - 240 * (1 - q) ** 2 if q < .7 else top - 60 * math.sin((q - .7) / .3 * math.pi)
             cm.circle(x + 20 * q, yy, rr.uniform(4, 7), fill=DUSTC + (int(200 * (1 - eio(kout * 2))),))
+    if hg.get('wave'):   # (14 Nov 2026, ANC) frame 0: a noise wave rolls across behind the letters and goes flat past the middle (cancelled)
+        wy, af = y + hg['wave'].get('dy', 0), 1 - eio(kout * 2)
+        xc = CX + hg['wave'].get('flat_from', 0)
+        pts, flat = [], []
+        wx0, wx1 = hg['wave'].get('x0', -60), hg['wave'].get('x1', 1140)
+        for i in range(0, int(wx1 - wx0) + 1, 8):
+            x = wx0 + i
+            k = clamp((x - xc) / 160)
+            v = noise(x, t, hg['wave'].get('amp', 130)) * (1 - eio(k)) * min(1.0, (x - wx0) / 90)
+            (pts if k < 1 else flat).append((x, wy + v))
+        cm.line(pts, (200, 200, 206, int(210 * af)), 12)
+        if flat:
+            cm.line([pts[-1]] + flat, YEL + (int(235 * af),), 10)
     for i, ch in enumerate(hg['text']):
         if i in taken and kout > 0:
             continue
@@ -462,7 +475,10 @@ def set_slam(cm, fr, s, t, sc):
         y = top + i * (h + gap)
         k = sp(t, tc - .06, .42, 17)
         cm.rect(80, y, 860, h, r=36, outline=(255, 255, 255, 40), width=3)
-        if k <= .01:
+        if k <= .01:   # (14 Nov 2026) the slot already holds a faint, bobbing ghost of its card: never a dead empty frame
+            gb = 8 * math.sin(t * 2.4 + i * 1.7)
+            icon(cm, cd['icon'], 210, y + h / 2 + gb, 1.75, TXT, 46)
+            cm.text(320, y + h / 2, cd['text'], 84, (255, 255, 255, 40), 900, 'lm')
             continue
         sc_ = 1 + .35 * (1 - min(1.0, k)) if k < 1 else 1 - .02 * (k - 1)
         al = clamp((t - tc + .1) / .12)
@@ -563,7 +579,9 @@ def set_verdict(cm, fr, s, t, sc, topic):
         tc = cue(s, pd.get('cue'))
         k = sp(t, tc - .08, .5, 14)
         cm.rect(x0, 920, 410, 400, r=40, outline=(255, 255, 255, 40), width=3)
-        if k <= .01:
+        hit(fr, s, f'slot{j}', s.start + .8 + .45 * j, 's', x0 + 205, .7)   # the empty panel's ghost lands (no quiet gap before the word)
+        if k <= .01:   # (14 Nov 2026) a faint bobbing ghost of the panel's icon until its word
+            icon(cm, pd['icon'], x0 + 205, 1070 + 10 * math.sin(t * 2.2 + j * 2), 3.0, TXT, 46)
             continue
         al = clamp(k * 1.6)
         cx, cy = x0 + 205, 1120
@@ -576,13 +594,147 @@ def set_verdict(cm, fr, s, t, sc, topic):
             for i in range(4):
                 q = ((t * 1.1 + i / 4) % 1)
                 sub.circle(cx + 40 + 90 * q, cy - 90 + 220 * q * q - 60 * q, 9, fill=WATER + (int(255 * (1 - q)),))
-        sub.text(cx, cy + 120, pd['text'], 80, YEL if ok else TXT, 900, 'mm')
+        fs = 80
+        while fs > 44 and B.text_w(pd['text'], fs, 900) > 360:
+            fs -= 2
+        sub.text(cx, cy + 120, pd['text'], fs, YEL if ok else TXT, 900, 'mm')
         badge(sub, cx + 150, cy - 150, ok, sp(t, tc + .15, .5, 14))
         hit(fr, s, f'{key}', tc, 'l', cx, 1.2)
         hit(fr, s, f'{key}_dot', tc + .17, 's', cx + 150, .8)
 
 
-SETS = {'barrier': set_barrier, 'slam': set_slam, 'split': set_split}
+# ---------- ANC (14 Nov 2026): sound waves that cancel, and battery bars ----------
+def earbud(cm, cx, cy, sc=1.0, t=0.0, mic=0.0):
+    """A generic in-ear bud with a stem (our own drawing, no maker's design), facing right; mic (0..1) lights the mic on the stem's foot."""
+    cm.circle(cx + 6, cy + 14, 78 * sc, fill=(0, 0, 0, 110))
+    cm.rect(cx - 26 * sc, cy, 52 * sc, 200 * sc, r=26 * sc, fill=(58, 58, 66), outline=(110, 110, 122), width=3)
+    cm.circle(cx, cy, 78 * sc, fill=(66, 66, 76), outline=(120, 120, 132), width=3)
+    cm.circle(cx + 52 * sc, cy - 6 * sc, 30 * sc, fill=(36, 36, 42))   # the ear tip
+    u = (t * .3) % 1.4 - .2
+    cm.circle(cx - 30 * sc + 40 * sc * u, cy - 34 * sc, 10 * sc, fill=(255, 255, 255, 30))
+    my = cy + 186 * sc
+    cm.circle(cx, my, 13 * sc, fill=YEL if mic > .5 else (30, 30, 36), outline=YEL + (int(255 * mic),), width=3)
+    if mic > 0:
+        q = (t * 1.3) % 1
+        for j in range(2):
+            qq = (q + j * .5) % 1
+            cm.arc(cx, my, (24 + 60 * qq) * sc, 120, 240, YEL + (int(200 * mic * (1 - qq)),), 4)
+
+
+def noise(x, t, amp, ph=0.0):
+    """A noise-like wave (two sines), travelling left towards the bud; the same x and t always give the same value."""
+    a = 2 * math.pi * x / 230 + t * 5.2 + ph
+    return amp * (math.sin(a) + .38 * math.sin(2.3 * a + 1.3)) / 1.38
+
+
+def wave_line(cm, y, amp_f, t, col, width, x0=330, x1=1000, sign=1.0, fade=1.0):
+    pts = []
+    for i in range(0, int(x1 - x0) + 1, 8):
+        x = x0 + i
+        e = min(1.0, (x - x0) / 60, (x1 - x) / 60)   # the ends taper, so the line never stops on a cliff
+        pts.append((x, y + sign * noise(x, t, amp_f) * e))
+    cm.line(pts, col + (int(255 * fade),) if len(col) == 3 else col, width)
+
+
+def wave_world(cm, fr, ss, t, sc):
+    """One world over two scenes: the noise wave rolls in towards a bud and its mic lights (first scene); then the wave moves up, the bud
+    plays the opposite wave under it (gold, the mirror image) and the sum, what you hear, flattens to a line on the cancel word (second).
+    Params: first: mic_cue, noise_cue; second: opp_cue, cancel_cue."""
+    a, b = ss[0], (ss[1] if len(ss) > 1 else None)
+    tm = cue(a, a.params.get('mic_cue'))
+    tn = cue(a, a.params.get('noise_cue'), d=a.start + .2)
+    kb = eio((t - b.start + .1) / .8) if b else 0.0   # the layout opens into three tracks
+    to = cue(b, b.params.get('opp_cue')) if b else 1e9
+    tc = cue(b, b.params.get('cancel_cue')) if b else 1e9
+    ko = eio((t - to + .1) / .6)
+    kc = eio((t - tc + .15) / .7)
+    km = eo((t - tm + .05) / .3)
+    earbud(cm, 190, mix(880, 905, kb), 1.0, t, km)
+    # track 1: the noise (grey, big in the middle at first; up top once the tracks open)
+    y1, amp1 = mix(975, 770, kb), mix(150, 80, kb)
+    kin = eo((t - a.start + .1) / .6)
+    wave_line(cm, y1, amp1 * kin, t, (200, 200, 206), 10, fade=.95)
+    cm.text(330, y1 - amp1 - 50, 'NOISE', 44, TXT, 900, 'lm', a=clamp(sp(t, tn - .05, .5, 14) * 1.6))
+    for j in range(3):   # the noise arriving at the mic: small arcs crossing from the wave to the bud
+        q = ((t * .9 + j / 3) % 1)
+        cm.arc(330 - 100 * q, y1, 40 + 30 * q, 140, 220, (200, 200, 206, int(150 * (1 - q) * kin)), 4)
+    hit(fr, a, 'noise', tn, 'l', 650, 1.1)
+    hit(fr, a, 'mic', tm, 's', 190, 1.0)
+    if not b or kb <= .01:
+        return
+    al = clamp(kb * 1.5)
+    # track 2: the opposite wave (gold, the mirror image), drawn in from the bud on its word
+    y2 = 990
+    cm.text(330, y2 - 98, 'OPPOSITE WAVE', 44, YEL, 900, 'lm', a=clamp(sp(t, to - .05, .5, 14) * 1.6) * al)
+    cm.line([(330, y2), (1000, y2)], (255, 255, 255, int(40 * al)), 3)
+    if ko > 0:
+        wave_line(cm, y2, 80, t, YEL, 10, 330, 330 + 670 * ko, sign=-1.0)
+    # track 3: what you hear = noise + opposite: it shrinks to a flat line on "cancel"
+    y3 = 1205
+    k3 = clamp(ko * (1 - kc))
+    hear = 80 * (1 - .5 * ko) * (1 - kc) if ko > 0 else 80
+    cm.text(330, y3 - 98, 'WHAT YOU HEAR', 44, TXT, 900, 'lm', a=al)
+    wave_line(cm, y3, hear, t, (255, 255, 255), 10 if kc < 1 else 8, fade=al)
+    if kc > 0:   # quiet: the flat line glows once
+        q = clamp((t - tc) / 1.0)
+        cm.line([(330, y3), (1000, y3)], YEL + (int(160 * kc * (1 - q)),), 8 + 30 * q)
+    _ = k3
+    hit(fr, b, 'tracks', b.start, 'm', 650, 1.0)
+    hit(fr, b, 'hear', b.start + .55, 's', 330, .8)   # the WHAT YOU HEAR label lands
+    hit(fr, b, 'opp', to, 'l', 650, 1.2)
+    hit(fr, b, 'oppend', to + .65, 's', 1000, .8)   # the gold wave reaches the far end
+    hit(fr, b, 'flat', tc + .7, 's', 1000, .8)   # the flat line settles
+    hit(fr, b, 'cancel', tc, 'm', 650, 1.1)
+
+
+def set_bars(cm, fr, s, t, sc):
+    """Battery bars: one big battery per row, filling to its hours on its word (the number said, no rolling digits: G13), the shorter one
+    in gold with the hours it gives up drawn as an empty, dashed stretch. Params: rows [{label, value, unit, cue, gold?}], max."""
+    p = s.params
+    rows, mx = p['rows'], float(p.get('max', 12))
+    x0, x1, h = 140, 880, 130
+    for i, rw in enumerate(rows):
+        y = 760 + i * 300
+        tc = cue(s, rw.get('cue'), d=s.start + .3 + .5 * i)
+        kin = eo((t - s.start - .05 - .12 * i) / .5)
+        if kin <= .01:
+            continue
+        gold = rw.get('gold')
+        cm.text(x0, y - 50, rw['label'], 48, YEL if gold else TXT, 900, 'lm', a=kin)
+        cm.rect(x0 + 8, y + 16, x1 - x0, h, r=30, fill=(0, 0, 0, int(110 * kin)))
+        cm.rect(x0, y, x1 - x0, h, r=30, fill=(30, 30, 36), outline=(150, 150, 160, int(255 * kin)), width=4)
+        cm.rect(x1 + 6, y + h / 2 - 26, 22, 52, r=8, fill=(150, 150, 160, int(255 * kin)))
+        k = sp(t, tc - .25, .62, 12)
+        w = (x1 - x0 - 24) * rw['value'] / mx * min(1.03, k)
+        if w <= 4:   # empty, waiting for its word: the outline breathes
+            cm.rect(x0 - 6, y - 6, x1 - x0 + 12, h + 12, r=34, outline=(255, 255, 255, int(70 + 60 * math.sin(t * 4 + i))), width=3)
+        if w > 4:
+            cm.rect(x0 + 12, y + 12, w, h - 24, r=20, fill=(YEL if gold else (214, 214, 220)))
+            sx = x0 + 12 + ((t * 420 + i * 300) % (w + 240)) - 120   # the charge sheen runs along the fill
+            for dx_, aa in ((0, 70), (30, 110), (60, 70)):
+                xa, xb = max(x0 + 14, sx + dx_), min(x0 + 10 + w, sx + dx_ + 30)
+                if xb > xa:
+                    cm.rect(xa, y + 14, xb - xa, h - 28, r=6, fill=(255, 255, 255, aa))
+            for j in range(1, int(rw['value'])):   # hour marks
+                xx = x0 + 12 + (x1 - x0 - 24) * j / mx
+                if xx < x0 + 12 + w - 6:
+                    cm.line([(xx, y + 22), (xx, y + h - 22)], (0, 0, 0, 70), 3)
+        if rw['value'] < mx and k > .9:   # the hours it gives up: an empty dashed stretch
+            xs_ = x0 + 12 + (x1 - x0 - 24) * rw['value'] / mx
+            off = int((t * 60) % 26)   # the dashes march towards the end
+            for xx in range(int(xs_ + 10) + off - 26, int(x1 - 16), 26):
+                if xx < xs_ + 8:
+                    continue
+                cm.line([(xx, y + h / 2), (min(xx + 14, x1 - 16), y + h / 2)], (150, 150, 160, 180), 5)
+        kv = sp(t, tc, .5, 13)
+        if kv > .01:
+            cm.text(x1 - 20, y - 50 + (1 - min(1, kv)) * 24, f"{rw['value']} {rw.get('unit', 'H')}", 96, YEL if gold else TXT, 900, 'rm', a=clamp(kv * 1.6))
+        hit(fr, s, f'bat{i}', s.start + .05 + .12 * i, 'm', 500, .9)
+        hit(fr, s, f'fill{i}', tc - .1, 'l', 500, 1.1)
+        hit(fr, s, f'val{i}', tc, 's', 800, .9)
+
+
+SETS = {'barrier': set_barrier, 'slam': set_slam, 'split': set_split, 'bars': set_bars}
 
 
 # ---------- the HUD: progress, format pill, the tag row, the chip ----------
@@ -765,6 +917,8 @@ def draw(t, topic, vo, hook_out, scenes, chunks):
         cur = max((s for s in g if t >= s.start - .05), key=lambda s: s.start, default=g[0])
         if g[0].kind in ('fill', 'depth'):
             water_world(cm, fr, g, t, cur, kin)
+        elif g[0].kind == 'wave':
+            wave_world(cm, fr, g, t, cur)
         elif g[0].kind == 'verdict':
             set_verdict(cm, fr, g[0], t, cur, topic)
         else:
