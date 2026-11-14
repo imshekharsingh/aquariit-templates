@@ -97,9 +97,10 @@
      "say": "engineers dammed"
     },
     "sides": [
-     "left"
+     "left",
+     "right"
     ],
-    "why": "the gorge wall and the talus run past the frame in the falls world"
+    "why": "the falls photo is full-bleed (the American Falls run the width of the frame), and the gorge wall and talus run past it"
    },
    {
     "from": {
@@ -114,10 +115,10 @@
    }
   ],
   "subject": [
-   38,
-   372,
-   468,
-   600
+   0,
+   385,
+   540,
+   620
   ]
  },
  "media": [

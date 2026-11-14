@@ -843,7 +843,7 @@ var K25 = (function(){
   // pans (Kt.kb), the drain as a wipe from the pouring falls to the dry ones on the answer (never before: the guess rule), pins and labels on
   // the photos' own features, mist and motes over them. The present is graded cool, 1969 warm sepia (the answer colour, ANSWERC).
   // The drawn worlds below stay as the fallback when the files are not there (a stills run before the Media workflow).
-  var MEDIA = [{ id: 'falls-now', grade: 'saturate(.62) brightness(.9) contrast(1.06) hue-rotate(-6deg)' },
+  var MEDIA = [{ id: 'falls-now', grade: 'saturate(.62) brightness(.9) contrast(1.25) hue-rotate(-6deg)' },
     { id: 'dry-1969', grade: 'sepia(.55) saturate(1.45) brightness(.86) contrast(1.12)' },
     { id: 'dam-1969', grade: 'grayscale(1) sepia(1) saturate(1.6) brightness(.84) contrast(1.12)' }];
   var ANSWERC = '#8c5e3c';
@@ -855,7 +855,7 @@ var K25 = (function(){
     KB3 = Kt.kb([[tw0(1), VBARE[0] - .06, VBARE[1], VBARE[2]], [tw1(2), VBARE[0] + .06, VBARE[1] + .02, VBARE[2] * 1.12]]);
     KB4 = Kt.kb([[tw0(2), VNOW[0] + .2, VNOW[1] - .02, VNOW[2] * 1.45], [DUR, VNOW[0], VNOW[1], VNOW[2]]]);
   }
-  function shadeBand(){ Kt.screen(); x.fillStyle = lg(0, 620, 0, 960, [[0, 'rgba(10,12,22,0)'], [1, 'rgba(10,12,22,.62)']]); x.fillRect(0, 620, 540, 340);
+  function shadeBand(){ Kt.screen(); x.fillStyle = lg(0, 600, 0, 960, [[0, 'rgba(10,12,22,0)'], [.45, 'rgba(10,12,22,.5)'], [1, 'rgba(10,12,22,.8)']]); x.fillRect(0, 600, 540, 360);
     x.fillStyle = lg(0, 0, 0, 380, [[0, 'rgba(10,12,22,.55)'], [1, 'rgba(10,12,22,0)']]); x.fillRect(0, 0, 540, 380); }
   function mistOver(t, k){ if (k <= 0) return; Kt.screen(); x.save(); x.globalAlpha = k; Kt.motes(t, 22, 5, [0, 300, 540, 700], 'rgba(244,248,250,.45)', 1.6); x.restore(); }
   // depth over the photo (rules-c3.md rule 11): the photo is the far plane; mist, drifting motes and a near foreground layer sit at their own
