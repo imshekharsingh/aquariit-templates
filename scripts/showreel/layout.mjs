@@ -5,7 +5,8 @@
 //              the subject's own UI text may run off the frame's edges but never under the right-side buttons.
 //   OVERLAP:   no two text boxes from different blocks intersect by more than 6 px each way.
 //   BAND:      the subject's visible box ([data-subject], cut by any overflow clip, clip-path inset, bottom mask fade or data-visible-bottom)
-//              never reaches into the subtitle band ([data-band]) while the band shows (30% opacity or more).
+//              never reaches into the subtitle band ([data-band]) while the band shows (30% opacity or more); the band may sit under the
+//              subject or above it (14 Nov 2026: the whole-frame layout puts it under the top zone, the subject below it).
 //   HOOK:      the hook ([data-hook]) never covers the subject.
 //   SUBTITLES: the subtitle box ([data-subs]) shows text at 52 px or more (1080 wide) and at most 6 words on a line.
 // Only boxes at 30% opacity or more count (a crossfade is not an overlap); a box wholly off the frame is not seen.
@@ -66,7 +67,7 @@ export const judge = (frames, needMarks = true) => {   // needMarks false: a sce
     for (let i = 0; i < on.length; i++) for (let j = i + 1; j < on.length; j++) { const a = on[i], b = on[j]; if ((a.g === b.g && a.g !== -1) || (a.s === b.s && Math.abs(a.l - b.l) < 12 && Math.abs(a.t - b.t) < 12)) continue;   // one paragraph, or a word and its own shadow
       if (cross(a, b)) first(over, a.s + '|' + b.s, `${T}: "${a.s}" x "${b.s}"`); }
     if (f.subs !== undefined) { if (f.subs) { subsMarked = true; if (f.subs.size < 52) first(subs, 'size', `${T}: ${f.subs.size} px (at least 52)`); if (f.subs.words > 6) first(subs, 'words', `${T}: ${f.subs.words} words on a line (at most 6)`); } }
-    if (f.band && f.subject) { marked = true; if (f.band.a >= MIN_A && f.subject.a >= .05 && f.subject.b > f.band.t + TOL && f.subject.r > f.band.l && f.subject.l < f.band.r) first(band, 'b', `${T}: subject bottom ${Math.round(f.subject.b)} px, band top ${Math.round(f.band.t)} px`); }
+    if (f.band && f.subject) { marked = true; if (f.band.a >= MIN_A && f.subject.a >= .05 && Math.min(f.subject.b, f.band.b) - Math.max(f.subject.t, f.band.t) > TOL && f.subject.r > f.band.l && f.subject.l < f.band.r) first(band, 'b', `${T}: subject bottom ${Math.round(f.subject.b)} px, band top ${Math.round(f.band.t)} px`); }
     if (f.hook && f.subject) { hookMarked = true; if (f.hook.a >= MIN_A && f.subject.a >= .05 && cross(f.hook, f.subject)) first(hook, 'h', `${T}: hook ${px(f.hook)} over subject ${px(f.subject)}`); }
   }
   const lines = [

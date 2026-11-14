@@ -32,6 +32,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'mute': '12 Nov "the payoff was a 4% scale change ... the fix is invisible"',
     'bulk': '13 Nov "the finger looks a bit bulky on screen"',
     'vibrancy': '13 Nov "the menu grid ... feels slightly dull"',
+    'spread': '14 Nov "it seems we are squeezing most of it in one place of the screen"',
     'sync': '13 Nov tech IP68 "the voice names an item (\'or the sauna\') while its card is still empty"',
     'grade': '13 Nov Turns Out "I don\'t find the colour selection better" (fog wash, white Taj on a pale sky)',
 }
@@ -46,7 +47,12 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          big_h=.08, big_edge=.03, big_ocr_h=.05, big_secs=.3, subs={'tech': [.66, .84], 'c3': [.66, .80], 'web': [.70, .90]},
          dead_secs=1.5, vis_px=20, vis_frac=.003, onset_db=9, onset_floor=-45,
          mute_frac=.02, grade_dl=.2, wash_p5=.3, wash_frac=.2,
-         bulk_v=.82, bulk_s=.2, bulk_k=7, bulk_px=150, vib_s=.35, vib_v=.35, vib_med=.014)
+         bulk_v=.82, bulk_s=.2, bulk_k=7, bulk_px=150, vib_s=.35, vib_v=.35, vib_med=.014,
+         spr_y=(.589, .818), spr_k=8, spr_dl=14, spr_frac=.02, spr_max=.10)
+# SPREAD (14 Nov 2026, web only), calibrated on stills at 270x480 every 0.5 s (and again with noise of sigma 3 and 5 added: the same numbers):
+# the lower third of the safe zone (y 565-785 of 960) cut in 8 strips, a strip empty when under 2% of its pixels (at 135x240) differ by 14+
+# from the strip's median; showreel-35-list ("squeezing", lower third empty) 34% of the strips empty on average, showreel-36-tabs first cut 18%,
+# its whole-frame rebuild 0%.
 # BULK and VIBRANCY (13 Nov 2026, web only), calibrated on the showreel-35-list stills at 270x480: the big white finger left 564-874 px of solid
 # near-white after a 7x7 erosion (text strokes vanish; 70 px bold numbers leave 0), the slim ring 0; coloured pixels (S>.35, V>.35) were a median
 # 1.2% of the frame on the dull grid and 2.3% after the vibrancy pass.
@@ -279,6 +285,18 @@ def vibrancy_check(F, fps):
     med = float(np.median(v)) if v else 0
     line('VIBRANCY', 'FAIL' if med < T['vib_med'] else 'PASS', f'coloured pixels (S>{T["vib_s"]}, V>{T["vib_v"]}) a median {med:.1%} of the frame (at least {T["vib_med"]:.1%}; '
          f'the dull 13 Nov grid 1.2%), least {min(v):.1%}, most {max(v):.1%}')
+
+
+def spread_check(F, fps):
+    step = max(1, int(round(fps * .5))); v = []
+    for i in range(0, len(F), step):
+        a = F[i].astype(np.float32); g = .2126 * a[..., 0] + .7152 * a[..., 1] + .0722 * a[..., 2]
+        H, W = g.shape; g = g[:H // 2 * 2, :W // 2 * 2].reshape(H // 2, 2, W // 2, 2).mean((1, 3)); H = g.shape[0]
+        z = g[int(H * T['spr_y'][0]):int(H * T['spr_y'][1])]
+        v.append(float(np.mean([(np.abs(s - np.median(s)) > T['spr_dl']).mean() < T['spr_frac'] for s in np.array_split(z, T['spr_k'], axis=0)])))
+    m = float(np.mean(v)) if v else 0; worst = int(np.argmax(v)) if v else 0
+    line('SPREAD', 'FAIL' if m > T['spr_max'] else 'PASS', f'the lower third of the safe zone (y {T["spr_y"][0]:.0%}-{T["spr_y"][1]:.0%} of the height) is {m:.0%} empty on average '
+         f'(at most {T["spr_max"]:.0%}; the squeezed 13 Nov list reel 34%), worst {max(v or [0]):.0%} at {worst * step / fps:.1f} s')
 
 
 def edge_checks(F, fps, ok=(), heard=None, mp4=None):
@@ -553,8 +571,8 @@ def main():
     edge_checks(F, fps, qa.get('edges_ok', []), heard, mp4)
     if ch == 'c3': grade_check(F, fps, cover, qa.get('subject') or (qa.get('guess') or {}).get('box'), (qa.get('guess') or {}).get('css_width', 540))
     else: line('GRADE', 'SKIP', 'Turns Out only')
-    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps)
-    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only')
+    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps); spread_check(F, fps)
+    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only'); line('SPREAD', 'SKIP', 'web only')
     if qa.get('guess'): guess_check(F, fps, qa['guess'], heard)
     elif ch == 'c3' and (c.get('experiment') or {}).get('id', '').startswith('c3-guess'): line('GUESS', 'FAIL', 'a guess reel without "qa": {"guess": {answer, reveal, box}} in its config')
     else: line('GUESS', 'SKIP', 'not a guess reel')

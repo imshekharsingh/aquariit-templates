@@ -125,6 +125,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 //     the camera's moves); KM.float(t, seed, amp) (a pane's slow sine float). 'glass' (style C, "Glass and light") is the web default from
 //     8 Nov 2026; 'dark' is the old ink-and-mint look. KM.theme('glass', palette) (or window.WEB_PALETTE) swaps the light and the accents:
 //     KM.PALETTES aurora (the original), ember, lagoon, orchid, glacier (owner, 8 Nov 2026: colour variety, reel to reel).
+//   the whole frame (owner, 14 Nov 2026: "we are squeezing most of it in one place of the screen"; rules-web.md rule 16): KM.ZONES = the
+//     screen bands a web reel fills top to bottom (top: hook, counters, code; hero: the subject of the fix, the biggest thing on screen, down
+//     to the band; band: subtitles), in CSS px of the 540x960 frame inside the safe zone; KM.worldY(c, y) = the world y at screen y under
+//     camera c, so a card's top and bottom edges can be locked to the zones while the camera pushes in (no gap opens, nothing enters the band).
 var KM = (function(){
   var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; };
   var P = function(t, a, b){ return b <= a ? (t >= a ? 1 : 0) : cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
@@ -367,10 +371,11 @@ var KM = (function(){
         card: '#262833', on: '#0c0d12' },
       v: { glass: '#262833', frost: '#1d1e26', edge: 'inset 0 1px 0 rgba(255,255,255,.11)', lift: '0 24px 60px rgba(0,0,0,.45)', glow: 'rgba(95,242,176,.6)', soft: 'rgba(95,242,176,.16)',
         ring: 'rgba(95,242,176,.55)', f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '800', ht: '-.024em' },
-      blooms: [['95,242,176', .13, 460, 140, 200, .2, .17, 0], ['110,120,255', .12, 420, 520, 640, .23, .19, 2], ['255,106,92', .07, 360, 500, 860, .17, .21, 4]], grade: null }
+      blooms: [['95,242,176', .17, 460, 140, 200, .2, .17, 0], ['124,108,255', .19, 440, 520, 640, .23, .19, 2], ['255,106,92', .1, 380, 500, 860, .17, .21, 4]], grade: null }
   };
-  // jewel tones for avatars and chips on the dark look (13 Nov 2026): rich, mid-dark, white text on each at 4.5:1 or more
-  var JEWELS = ['#1f7a5c', '#5b45c4', '#b03a5b', '#2f5fc0', '#8a4fb8', '#1d7186', '#a8451f'];
+  // jewel tones for avatars and chips on the dark look (13 Nov 2026): rich, mid-dark, white text on each at 4.5:1 or more;
+  // 14 Nov 2026 (owner: "main elements colouring can be made a bit more vibrant"): more saturated at the same lightness (white text 4.5:1+)
+  var JEWELS = ['#127a55', '#5a3ee0', '#c02a58', '#2257d6', '#8a3fd0', '#0b7590', '#b8420f'];
   // ---- palettes (owner, 8 Nov 2026: "introduce more colour combinations, video to video"; rules-web.md rule 12): the glass look keeps its
   // type, panes and layout; a palette swaps only the light (blooms, grade), the accent pair and the tints that follow them. newweb.mjs rotates
   // them reel to reel (the next after the last web reel's "palette" in captions.json) and writes the name into the config, so reach reads per
@@ -424,6 +429,8 @@ var KM = (function(){
     if (fe) { fe.style.cssText = 'position:absolute;left:0;top:' + (e - 28).toFixed(1) + 'px;width:540px;height:28px;pointer-events:none;background:linear-gradient(transparent,var(--ink));opacity:' + k.toFixed(3); } }
   // a pane at its own depth: it slides against the camera's moves (d > 0: nearer than the world, so it moves more), measured from (cx, cy),
   // the camera's centre when the pane is framed; extra = a transform to add (a float)
+  var ZONES = { top: [125, 300], hero: [300, 672], band: [680, 784] };
+  function worldY(c, y){ return c.y + (y - 480) / c.z; }
   function depth(el, c, cx, cy, d, extra){ el.style.transform = 'translate(' + (-(c.x - cx) * d).toFixed(2) + 'px,' + (-(c.y - cy) * d).toFixed(2) + 'px)' + (extra || ''); }
   function float(t, seed, amp){ return (amp == null ? 3 : amp) * Math.sin(t * (4.4 + seed % 1.2) / 1.2 + seed * 2.3); }
   function publish(extra){ extra = extra || {}; window.TRANSITIONS = TR.slice().sort(function(a, b){ return a[0] - b[0]; });
@@ -431,7 +438,7 @@ var KM = (function(){
   return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
     rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, touch: touch, voice: voice, subs: subs, publish: publish,
     curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
-    THEMES: THEMES, PALETTES: PALETTES, JEWELS: JEWELS, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float };
+    THEMES: THEMES, PALETTES: PALETTES, JEWELS: JEWELS, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float, ZONES: ZONES, worldY: worldY };
 })();
 /*kitmotion:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease;

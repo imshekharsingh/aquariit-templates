@@ -23,31 +23,32 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #sbox{position:absolute;left:0;top:0;width:10px;height:10px}
 #subj{left:0;top:0;width:540px;height:960px}
 .card{position:absolute;overflow:hidden;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.035));box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.06)}
-.bar{position:absolute;left:0;top:0;width:414px;height:60px;display:flex;justify-content:space-around;padding:0 6px;border-bottom:1.5px solid rgba(255,255,255,.1)}
-.bar span{display:block;height:60px;padding:0 12px;font:650 20px/62px var(--f);letter-spacing:-.01em;white-space:nowrap;color:#c4c1b9;border-bottom:7px solid transparent}
-.bar span em{display:inline-block;font-style:normal;line-height:22px;vertical-align:middle}
+.bar{position:absolute;left:0;top:0;width:430px;height:100px;display:flex;justify-content:space-around;padding:0 4px;border-bottom:2px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(124,108,255,.16),rgba(95,242,176,.05))}
+.bar span{display:block;height:100px;padding:0 8px;font:700 31px/96px var(--f);letter-spacing:-.025em;white-space:nowrap;color:#a9a6bb;border-bottom:12px solid transparent}
+.bar span em{display:inline-block;font-style:normal;line-height:34px;vertical-align:middle}
 .bar span.on{color:var(--paper)}
-.ink{position:absolute;left:0;top:53px;width:1px;height:7px;background:var(--acc);transform-origin:0 0}
-.rows{position:absolute;left:10px;top:72px;right:10px;bottom:0}
-.row{position:absolute;left:0;top:0;height:62px;overflow:hidden;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.115),rgba(255,255,255,.07));box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.06)}
-.row .av{position:absolute;left:10px;top:12px;width:38px;height:38px;border-radius:50%;font:700 16px/38px var(--f);text-align:center;color:#fff;font-style:normal;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
-.row b{position:absolute;left:58px;top:13px;font:650 18px/1 var(--f);letter-spacing:-.01em;white-space:nowrap;color:var(--paper)}
-.row s{position:absolute;left:58px;top:40px;height:8px;border-radius:4px;background:rgba(255,255,255,.2);text-decoration:none}
-.row u{position:absolute;right:12px;top:9px;width:68px;height:44px;border-radius:10px;text-decoration:none;opacity:.9;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
-.tg{position:absolute;font:500 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;opacity:0;padding:3px 8px;border-radius:7px;background:rgba(8,8,12,.88)}
+.ink{position:absolute;left:0;top:88px;width:1px;height:12px;background:var(--acc);transform-origin:0 0}
+.inkg{position:absolute;left:0;top:84px;height:20px;border-radius:10px;background:var(--acc);opacity:.55;filter:blur(9px)}
+.rows{position:absolute;left:10px;top:112px;right:10px;bottom:0}
+.row{position:absolute;left:0;top:0;height:66px;overflow:hidden;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.115),rgba(255,255,255,.07));box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.06)}
+.row .av{position:absolute;left:10px;top:10px;width:46px;height:46px;border-radius:50%;font:700 20px/46px var(--f);text-align:center;color:#fff;font-style:normal;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
+.row b{position:absolute;left:68px;top:13px;font:650 21px/1 var(--f);letter-spacing:-.01em;white-space:nowrap;color:var(--paper)}
+.row s{position:absolute;left:68px;top:43px;height:9px;border-radius:4px;background:rgba(255,255,255,.2);text-decoration:none}
+.row u{position:absolute;right:10px;top:8px;width:84px;height:50px;border-radius:10px;text-decoration:none;opacity:.9;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.tg{position:absolute;font:500 17px/1 var(--m);letter-spacing:.14em;white-space:nowrap;opacity:0;padding:6px 10px;border-radius:9px;background:rgba(8,8,12,.9);z-index:6}
 #tgA{color:#ffb0a6}#tgB{color:var(--acc)}
 .gh{position:absolute;border:2.5px dashed var(--red);border-radius:8px;opacity:0}
-.bub{position:absolute;font:750 26px/1 var(--f);color:var(--red);white-space:nowrap;opacity:0;z-index:7}
+.bub{position:absolute;font:750 32px/1 var(--f);color:var(--red);white-space:nowrap;opacity:0;z-index:7}
 #lbl{left:34px;top:132px;font:500 15px/1 var(--m);letter-spacing:.14em;color:#bdbab2;white-space:nowrap}
 #hook{left:34px;top:160px;font-weight:var(--hw);font-size:50px;line-height:.98;letter-spacing:var(--ht)}
 #hook .ln{display:block;white-space:nowrap}
 #hook .ln > span{display:inline-block;transform-origin:0 80%}
 #hook .acc{color:var(--red)}
-#code{left:30px;top:108px;width:450px;height:198px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);overflow:hidden;opacity:0;transform-origin:50% 0}
-#cd{position:absolute;left:20px;top:18px;font:500 18px/1.47 var(--m);white-space:pre;color:var(--paper)}
+#code{left:30px;top:108px;width:450px;height:180px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);overflow:hidden;opacity:0;transform-origin:50% 0}
+#cd{position:absolute;left:20px;top:16px;font:500 17.5px/1.4 var(--m);white-space:pre;color:var(--paper)}
 #cd b{font-weight:500;color:var(--acc);border-radius:4px;display:inline-block;transform-origin:0 50%}#cd .dim{color:var(--dim);opacity:.75}
 .km-caret{display:inline-block;width:3px;height:20px;margin-left:2px;vertical-align:-4px;background:var(--acc)}
-#slow{left:30px;top:134px;width:450px;height:178px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);opacity:0;transform-origin:50% 0}
+#slow{left:30px;top:114px;width:450px;height:178px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);opacity:0;transform-origin:50% 0}
 #slow .cg{position:absolute;left:12px;top:30px}
 #slow .ttl{position:absolute;left:20px;top:14px;font:500 12px/1 var(--m);letter-spacing:.14em;color:#bdbab2;white-space:nowrap}
 .cg-axis{stroke:rgba(255,255,255,.2);stroke-width:2}.cg-guide{stroke:rgba(255,255,255,.2);stroke-width:1.5;stroke-dasharray:4 5}
@@ -69,10 +70,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #stat small{display:block;font:500 14px/1 var(--m);letter-spacing:.16em;color:var(--dim);margin-bottom:10px}
 #stat b{display:inline-block;font:800 70px/1 var(--f);letter-spacing:-.04em;transform-origin:0 80%}
 #stat .c2 b{color:#ff8a7e}
-#line{left:30px;top:184px;width:450px;height:122px;padding:18px 22px;border-radius:20px;background:var(--frost);box-shadow:var(--edge),var(--lift);font:500 18px/1.47 var(--m);white-space:pre;color:var(--paper);opacity:0}
+#line{left:30px;top:166px;width:450px;height:122px;padding:18px 22px;border-radius:20px;background:var(--frost);box-shadow:var(--edge),var(--lift);font:500 18px/1.47 var(--m);white-space:pre;color:var(--paper);opacity:0}
 #line b{font-weight:500;color:var(--acc)}#line .dim{color:var(--dim);opacity:.75}
-#band{left:0;top:688px;width:540px;height:96px;background:transparent}
-#cap{left:34px;top:692px;width:450px;min-height:80px;padding:6px 0 0;font:600 30px/1.16 var(--f);letter-spacing:-.025em}
+#band{left:0;top:292px;width:540px;height:96px;background:transparent}
+#cap{left:34px;top:296px;width:450px;min-height:80px;padding:6px 0 0;font:600 30px/1.16 var(--f);letter-spacing:-.025em}
 #cap span{display:inline-block;margin-right:.24em}
 </style>
 </head>
@@ -82,8 +83,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   <div id="sbox" data-subject></div>
   <div id="subj" class="a" data-ui data-fit="free">
     <div class="tg" id="tgA">BEFORE</div><div class="tg" id="tgB">AFTER</div>
-    <div class="card" id="cA" data-contrast="skip"><div class="bar"></div><div class="rows"></div></div>
-    <div class="card" id="cB" data-contrast="skip"><div class="bar"></div><div class="ink"></div><div class="rows"></div></div>
+    <div class="card" id="cA" data-contrast="skip"><div class="bar"></div><div class="inkg"></div><div class="rows"></div></div>
+    <div class="card" id="cB" data-contrast="skip"><div class="bar"></div><div class="inkg"></div><div class="ink"></div><div class="rows"></div></div>
     <div class="gh" id="g0"></div>
   </div>
   <div class="bub" id="q0"></div>
@@ -131,6 +132,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 //     the camera's moves); KM.float(t, seed, amp) (a pane's slow sine float). 'glass' (style C, "Glass and light") is the web default from
 //     8 Nov 2026; 'dark' is the old ink-and-mint look. KM.theme('glass', palette) (or window.WEB_PALETTE) swaps the light and the accents:
 //     KM.PALETTES aurora (the original), ember, lagoon, orchid, glacier (owner, 8 Nov 2026: colour variety, reel to reel).
+//   the whole frame (owner, 14 Nov 2026: "we are squeezing most of it in one place of the screen"; rules-web.md rule 16): KM.ZONES = the
+//     screen bands a web reel fills top to bottom (top: hook, counters, code; hero: the subject of the fix, the biggest thing on screen, down
+//     to the band; band: subtitles), in CSS px of the 540x960 frame inside the safe zone; KM.worldY(c, y) = the world y at screen y under
+//     camera c, so a card's top and bottom edges can be locked to the zones while the camera pushes in (no gap opens, nothing enters the band).
 var KM = (function(){
   var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; };
   var P = function(t, a, b){ return b <= a ? (t >= a ? 1 : 0) : cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
@@ -373,10 +378,11 @@ var KM = (function(){
         card: '#262833', on: '#0c0d12' },
       v: { glass: '#262833', frost: '#1d1e26', edge: 'inset 0 1px 0 rgba(255,255,255,.11)', lift: '0 24px 60px rgba(0,0,0,.45)', glow: 'rgba(95,242,176,.6)', soft: 'rgba(95,242,176,.16)',
         ring: 'rgba(95,242,176,.55)', f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '800', ht: '-.024em' },
-      blooms: [['95,242,176', .13, 460, 140, 200, .2, .17, 0], ['110,120,255', .12, 420, 520, 640, .23, .19, 2], ['255,106,92', .07, 360, 500, 860, .17, .21, 4]], grade: null }
+      blooms: [['95,242,176', .17, 460, 140, 200, .2, .17, 0], ['124,108,255', .19, 440, 520, 640, .23, .19, 2], ['255,106,92', .1, 380, 500, 860, .17, .21, 4]], grade: null }
   };
-  // jewel tones for avatars and chips on the dark look (13 Nov 2026): rich, mid-dark, white text on each at 4.5:1 or more
-  var JEWELS = ['#1f7a5c', '#5b45c4', '#b03a5b', '#2f5fc0', '#8a4fb8', '#1d7186', '#a8451f'];
+  // jewel tones for avatars and chips on the dark look (13 Nov 2026): rich, mid-dark, white text on each at 4.5:1 or more;
+  // 14 Nov 2026 (owner: "main elements colouring can be made a bit more vibrant"): more saturated at the same lightness (white text 4.5:1+)
+  var JEWELS = ['#127a55', '#5a3ee0', '#c02a58', '#2257d6', '#8a3fd0', '#0b7590', '#b8420f'];
   // ---- palettes (owner, 8 Nov 2026: "introduce more colour combinations, video to video"; rules-web.md rule 12): the glass look keeps its
   // type, panes and layout; a palette swaps only the light (blooms, grade), the accent pair and the tints that follow them. newweb.mjs rotates
   // them reel to reel (the next after the last web reel's "palette" in captions.json) and writes the name into the config, so reach reads per
@@ -430,6 +436,8 @@ var KM = (function(){
     if (fe) { fe.style.cssText = 'position:absolute;left:0;top:' + (e - 28).toFixed(1) + 'px;width:540px;height:28px;pointer-events:none;background:linear-gradient(transparent,var(--ink));opacity:' + k.toFixed(3); } }
   // a pane at its own depth: it slides against the camera's moves (d > 0: nearer than the world, so it moves more), measured from (cx, cy),
   // the camera's centre when the pane is framed; extra = a transform to add (a float)
+  var ZONES = { top: [125, 300], hero: [300, 672], band: [680, 784] };
+  function worldY(c, y){ return c.y + (y - 480) / c.z; }
   function depth(el, c, cx, cy, d, extra){ el.style.transform = 'translate(' + (-(c.x - cx) * d).toFixed(2) + 'px,' + (-(c.y - cy) * d).toFixed(2) + 'px)' + (extra || ''); }
   function float(t, seed, amp){ return (amp == null ? 3 : amp) * Math.sin(t * (4.4 + seed % 1.2) / 1.2 + seed * 2.3); }
   function publish(extra){ extra = extra || {}; window.TRANSITIONS = TR.slice().sort(function(a, b){ return a[0] - b[0]; });
@@ -437,7 +445,7 @@ var KM = (function(){
   return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
     rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, touch: touch, voice: voice, subs: subs, publish: publish,
     curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
-    THEMES: THEMES, PALETTES: PALETTES, JEWELS: JEWELS, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float };
+    THEMES: THEMES, PALETTES: PALETTES, JEWELS: JEWELS, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float, ZONES: ZONES, worldY: worldY };
 })();
 /*kitmotion:end*/
 /*kitsfx:begin*/
@@ -533,8 +541,11 @@ var KM = (function(){
   // Only the changed line is lit (design/improvements.md, 13 Nov: the one property that matters, the rest dimmed); it pulses on "translate".
   var CODE = '<span class="dim">.ink {</span> width: 1px;\n  transform-origin: left;\n  transition: transform .3s; <span class="dim">}</span>\n<span class="dim">/* on tap: move + stretch */</span>\n<span class="dim">ink.style.transform =</span>\n  <b>`translateX(${x}px) scaleX(${w})`</b>;';
   var EASE = { bezier: [.25, .1, .25, 1] }, SL = .3;   // CSS "ease", the transition's default timing function; 300 ms
-  var RH = 68, TABS = ['For you', 'Following', 'Saved'];
-  var FULL = { x: 48, y: 340, w: 414, h: 340, r: 22 }, TOP = { x: 48, y: 346, w: 414, h: 146, r: 22 }, BOT = { x: 48, y: 522, w: 414, h: 146, r: 22 };
+  // the whole frame (owner, 14 Nov 2026: "we are squeezing most of it in one place of the screen"): the top zone holds the hook, the counters,
+  // the code or the slow-motion panel; the hero (the tab bar, 2x the old one, a 12 px glowing line) fills the rest down to the subtitle band.
+  // The cards' top and bottom edges are locked to the screen (KM.worldY), so the camera's moves never open a gap or reach into the band.
+  var BH = 100, RH = 78, X0 = 40, W0 = 430, TABS = ['All', 'Following', 'Saved'];
+  var FULL = { x: X0, y: 300, w: W0, h: 372, r: 26 };
   var TA, TB;   // the touch markers (KM.touch): one per bar
   var FEED = [['Mia', 'Leo', 'Ava', 'Noah', 'Zoe', 'Kai', 'Ivy'], ['Sam', 'Eli', 'Nia', 'Ray', 'Uma', 'Jay', 'Lou'], ['Bea', 'Max', 'Ada', 'Tom', 'Ana', 'Ben', 'Cleo']];
   var AVC = KM.JEWELS;   // jewel-tone avatars (13 Nov 2026, owner: "a little vibrancy")
@@ -572,20 +583,22 @@ var KM = (function(){
     DA = DB.filter(function(d){ return d.t < A.watch; });
     // ---- the camera: on the bar under the hook, closer on the blinks, back for the code, in for the slow motion and the payoff ----
     A.subEnd = Math.min(DUR - .3, V.end + .7);
-    CAM = KM.rig({ x: 255, y: 500, z: 1.04, drift: 1.6 })
-      .pushIn(A.leave, .9, 255, 506, 1.05)
+    // the camera pushes in on the line as it jumps (the blinks), pulls back for the fix, and pushes in again on the slow slide
+    CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 })
+      .pushIn(.2, .9, 255, 480, 1.05)
+      .pushIn(A.leave, .9, 255, 476, 1.07)
       .pull(A.fix - .2, .8, 255, 480, 1)
-      .pushIn(A.watch - .1, .9, 255, 486, 1.02)
-      .creep(A.watch + .8, A.pay - A.watch - 1, .005)
-      .pull(A.pay - .25, .9, 255, 488, 1.02)
+      .pushIn(A.watch - .1, .9, 255, 480, 1.03)
+      .pushIn(A.slowT - .45, .8, 255, 476, 1.07)
+      .pull(A.pay - .25, .9, 255, 480, 1.04)
       .creep(A.pay + .7, DUR - A.pay - .7, .005);
     T.split = KM.transition('sharedElement', A.fix - .05, .7);
     T.merge = KM.transition('sharedElement', A.watch - .1, .75);
     KM.cue({ t: 0, k: 'whoosh', d: .5, g: .3 });
     // ---- sound: a blink is a hard dry snap (the line teleports); a slide is a soft move and a light landing tick ----
     var seenB = function(d){ return d.t > A.fix + .4; };
-    DA.forEach(function(d){ var x = 48 + TX[d.to].x + TX[d.to].w / 2; KM.cue({ t: d.t, k: 'snap', g: .34, p: -2, x: x }); KM.cue({ t: d.t - .1, k: 'tick', g: .1, p: 3, x: x }); });
-    DB.forEach(function(d, i){ if (!seenB(d)) return; var x = 48 + TX[d.to].x + TX[d.to].w / 2;
+    DA.forEach(function(d){ var x = X0 + TX[d.to].x + TX[d.to].w / 2; KM.cue({ t: d.t, k: 'snap', g: .34, p: -2, x: x }); KM.cue({ t: d.t - .1, k: 'tick', g: .1, p: 3, x: x }); });
+    DB.forEach(function(d, i){ if (!seenB(d)) return; var x = X0 + TX[d.to].x + TX[d.to].w / 2;
       if (d.slow) { KM.cue({ t: d.t, k: 'move', d: 1.1, g: .2, dir: d.to > d.from ? 1 : -1, x: x }); KM.cue({ t: TS.real(A.c0 + SL) - .02, k: 'pop', g: .2, p: -2, x: x }); return; }
       KM.cue({ t: d.t - .1, k: 'tick', g: .1, p: 3, x: x }); KM.cue({ t: d.t + .02, k: 'move', d: .32, g: .14, dir: d.to > d.from ? 1 : -1, x: x }); KM.cue({ t: d.t + SL - .02, k: 'pop', g: .14, p: 4 + (i % 3), x: x }); });
     pre.forEach(function(t, i){ KM.cue({ t: t + .1, k: 'blip', g: .1, p: -6 + i, x: 380 }); });
@@ -618,19 +631,21 @@ var KM = (function(){
     var d = lastTap(list, t), on = d ? d.to : 0, sp = c.querySelectorAll('.bar span');
     for (var i = 0; i < sp.length; i++) { var a = i === on; sp[i].className = a ? 'on' : '';
       if (!fixed) sp[i].style.borderBottomColor = a ? 'var(--acc)' : 'transparent'; }
+    var gl = c.querySelector('.inkg'), gx = TX[on].x, gw = TX[on].w;   // the line's glow (a soft blurred bar under it; BEFORE: under the tab that has it)
     if (fixed) { var k = d ? kOf(d, t) : 1, f = d ? TX[d.from] : TX[0], g = d ? TX[d.to] : TX[0];
-      var x = mix(f.x, g.x, k), w = mix(f.w, g.w, k);
+      var x = mix(f.x, g.x, k), w = mix(f.w, g.w, k); gx = x; gw = w;
       c.querySelector('.ink').style.transform = 'translateX(' + x.toFixed(2) + 'px) scaleX(' + w.toFixed(2) + ')'; A.moved = d ? Math.abs(g.x - f.x) * k : 0; }
+    gl.style.left = (gx + 4).toFixed(2) + 'px'; gl.style.width = Math.max(0, gw - 8).toFixed(2) + 'px';
     // the feed under the bar: the tapped tab's rows (the same in both cards); whole rows only, a row that does not fit is faded, not cut
-    var feed = FEED[on], AV = bx.h - 72, bot = 60, pw = 214;
-    ROWS[L].forEach(function(r, i){ var y = i * RH, fit = Math.pow(cl(1 - (y + 62 - AV) / 14), 3);
+    var feed = FEED[on], AV = bx.h - 112, bot = BH, pw = 200;
+    ROWS[L].forEach(function(r, i){ var y = i * RH, fit = Math.pow(cl(1 - (y + 66 - AV) / 14), 3);
       if (fit <= .01) { r.style.display = 'none'; return; }
       var nm = feed[i % feed.length], ci = (on * 3 + i) % AVC.length;
-      r.style.display = 'block'; r.style.width = '394px'; r.style.transform = 'translateY(' + y.toFixed(2) + 'px)'; r.style.opacity = fit.toFixed(3);
+      r.style.display = 'block'; r.style.width = (bx.w - 20).toFixed(1) + 'px'; r.style.transform = 'translateY(' + y.toFixed(2) + 'px)'; r.style.opacity = fit.toFixed(3);
       r.querySelector('.av').style.background = AVC[ci]; r.querySelector('.av').textContent = nm[0]; r.querySelector('b').textContent = nm;
       r.querySelector('s').style.width = (pw * (.5 + .45 * (((i + on * 2) * 37) % 10) / 10)).toFixed(1) + 'px';
       r.querySelector('u').style.background = 'linear-gradient(' + (on * 60 + i * 25) + 'deg,' + AVC[(ci + 2) % AVC.length] + ',' + AVC[(ci + 5) % AVC.length] + ')';   // each tab's own thumbnails, so a tap visibly changes the feed
-      bot = Math.max(bot, 72 + mix(y - 6, y + 62, fit)); });
+      bot = Math.max(bot, 112 + mix(y - 6, y + 66, fit)); });
     return bot; }
   function upDown(t, a){ return E.inOut3(P(t, a - .22, a - .1)) * (1 - E.inOut3(P(t, a + .02, a + .25))); }   // the touch, 0 lifted .. 1 down
   function seek(t){
@@ -639,9 +654,14 @@ var KM = (function(){
     KM.lights(t, c);
     // ---- the two cards: one full BEFORE bar; it splits into BEFORE over AFTER; the AFTER one returns to full size ----
     var sk = T.split(t), mk = T.merge(t);
-    var bk = E.inOut3(P(t, A.leave - .25, A.leave + .2)) * (1 - E.inOut3(P(t, A.subEnd, A.subEnd + .5))), lim = mix(770, 672, bk), wb = c.y + (lim - 480) / c.z;
+    var bk = E.inOut3(P(t, A.leave - .25, A.leave + .2)) * (1 - E.inOut3(P(t, A.subEnd, A.subEnd + .5))), wb = KM.worldY(c, 780);
     $('band').style.opacity = bk.toFixed(3); $('cap').style.visibility = bk > .02 ? '' : 'hidden';
-    var full = { x: FULL.x, y: FULL.y, w: FULL.w, h: wb - FULL.y, r: FULL.r };
+    // the top edge on screen: under the hook (290) at first; under the subtitle band (392) while it shows (the top zone above it holds the
+    // counters, the code, the slow-motion panel or the 3-line fix); the bottom edge at 780, the foot of the safe zone
+    var tl = mix(290, 392, bk);
+    var wt = KM.worldY(c, tl), full = { x: FULL.x, y: wt, w: FULL.w, h: wb - wt, r: FULL.r };
+    // side by side: BEFORE over AFTER, full width, each half of the space from the code card to the band
+    var st0 = KM.worldY(c, 392), hh = (wb - st0 - 12) / 2, TOP = { x: X0, y: st0, w: W0, h: hh, r: 26 }, BOT = { x: X0, y: st0 + hh + 12, w: W0, h: hh, r: 26 };
     var boxA = lerpBox(full, TOP, sk), boxB = t < A.watch - .1 ? BOT : lerpBox(BOT, full, mk), popB = KM.enter('pop', P(t, A.fix + .4, A.fix + .8));
     var botA = paintCard('A', boxA, t, DA, false), botB = paintCard('B', boxB, t, DB, true);
     var cA = $('cA'), cB = $('cB');
@@ -651,27 +671,28 @@ var KM = (function(){
     // the subject box (data-subject): the cards on screen
     var sb = t < A.fix - .05 ? boxA : t < A.watch - .1 ? { x: boxA.x, y: Math.min(boxA.y, boxB.y), w: boxA.w, h: boxB.y + boxB.h - Math.min(boxA.y, boxB.y) } : boxB;
     box($('sbox'), sb);
-    box($('pane'), { x: sb.x - 10, y: sb.y - 40, w: sb.w + 20, h: sb.h + 56, r: 36 });
+    box($('pane'), { x: sb.x - 6, y: sb.y - 8, w: sb.w + 12, h: sb.h + 16, r: 32 });
     // ---- the blink: a red dashed ghost under the tab the line just left ----
     var g = $('g0'), gk = 0, gd = null; DA.forEach(function(d){ if (t >= d.t && t < d.t + .6 && d.t < A.watch - .4) gd = d; });
-    if (gd) { gk = 1 - E.inOut3(P(t, gd.t + .2, gd.t + .6)); var gb = gd.t < A.fix ? lerpBox(full, TOP, T.split(gd.t)) : boxA, f = TX[gd.from];
-      g.style.left = (gb.x + f.x - 4).toFixed(1) + 'px'; g.style.top = (gb.y + 6).toFixed(1) + 'px'; g.style.width = (f.w + 8).toFixed(1) + 'px'; g.style.height = '56px';
+    if (gd) { gk = 1 - E.inOut3(P(t, gd.t + .2, gd.t + .6)); var gb = boxA, f = TX[gd.from];
+      g.style.left = (gb.x + f.x - 2).toFixed(1) + 'px'; g.style.top = (gb.y + 10).toFixed(1) + 'px'; g.style.width = (f.w + 4).toFixed(1) + 'px'; g.style.height = (BH - 14) + 'px';
       g.style.transform = 'scale(' + mix(1, 1.06, 1 - gk).toFixed(4) + ')'; }
     g.style.opacity = (gk * .95).toFixed(3);
     EL.tgA.apply(t); EL.tgB.apply(t);
-    $('tgA').style.left = (boxA.x + 4).toFixed(1) + 'px'; $('tgA').style.top = (boxA.y - 22).toFixed(1) + 'px';
-    $('tgB').style.left = (boxB.x + 4).toFixed(1) + 'px'; $('tgB').style.top = (boxB.y - 22).toFixed(1) + 'px';
+    // the BEFORE / AFTER tags sit inside each card, over the first row's thumbnail (no text there)
+    $('tgA').style.left = (boxA.x + boxA.w - 128).toFixed(1) + 'px'; $('tgA').style.top = (boxA.y + BH + 22).toFixed(1) + 'px';
+    $('tgB').style.left = (boxB.x + boxB.w - 128).toFixed(1) + 'px'; $('tgB').style.top = (boxB.y + BH + 22).toFixed(1) + 'px';
     // ---- the touch markers (KM.touch): a slim ring on each bar's tapped tab; it presses in and ripples on every tap ----
     [[TA, DA, boxA, false, 1 - P(t, A.watch - .5, A.watch - .2)], [TB, DB, boxB, true, P(t, A.fix + .5, A.fix + .9) * (1 - P(t, DUR - .3, DUR))]].forEach(function(m){
       var fdl = null; m[1].forEach(function(d){ if (d.t - .3 <= t && (m[3] ? d.t > A.fix + .4 : d.t < A.watch - .4)) fdl = d; });
       var fd = fdl ? (fdl.slow ? E.inOut3(P(TS.at(t), A.c0 - .1, A.c0 - .03)) * (1 - E.inOut3(P(TS.at(t), A.c0 + .01, A.c0 + .08))) : upDown(t, fdl.t)) : 0;
       var tp = fdl ? (fdl.slow ? TS.real(A.c0 - .03) : fdl.t - .1) : null, tab = fdl ? TX[fdl.to] : TX[0];
-      m[0](t, { x: m[2].x + tab.x + tab.w / 2 + Math.sin(t * 1.6) * 1.5, y: m[2].y + 64 + Math.sin(t * 2.1 + 1) * 1.5, press: fd, tap: tp, o: m[4], c: c }); });
+      m[0](t, { x: m[2].x + tab.x + tab.w / 2 + Math.sin(t * 1.6) * 1.5, y: m[2].y + BH - 8 + Math.sin(t * 2.1 + 1) * 1.5, press: fd, tap: tp, o: m[4], c: c }); });
     // ---- the bubbles over the blinks before the fix ----
     var words = ['blink!', 'huh?', 'jump!', 'where?', 'blink!'], live = null, j = -1;
     A.pre.forEach(function(p, i){ if (t >= p + .04 && t < p + .9) { live = p; j = i; } });
     var q = $('q0'); if (live == null) q.style.opacity = 0; else { var kq = P(t, live + .04, live + .9);
-      q.textContent = words[j % words.length]; q.style.left = (FULL.x + FULL.w - 140).toFixed(1) + 'px'; q.style.top = (FULL.y + 150 - kq * 24).toFixed(1) + 'px';
+      q.textContent = words[j % words.length]; q.style.left = (FULL.x + FULL.w - 150).toFixed(1) + 'px'; q.style.top = (boxA.y + BH + 140 - kq * 24).toFixed(1) + 'px';
       q.style.opacity = (E.out3(P(kq, 0, .15)) * (1 - P(kq, .7, 1))).toFixed(3);
       q.style.transform = 'scale(' + (.8 + .2 * E.back(P(kq, 0, .3), 1.8)).toFixed(3) + ') rotate(' + (j % 2 ? -6 : 5) + 'deg)'; }
     // ---- the hook: word by word, blur to sharp; it lifts away before the first sentence ----
@@ -697,8 +718,8 @@ var KM = (function(){
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); } };
   window.seek = seek; window.DURATION = DUR;
-  build(); TA = KM.touch($('world'), { size: 50 }); TB = KM.touch($('world'), { size: 50 });
-  document.fonts.load("750 50px 'Sora'").then(function(){ return document.fonts.load("650 20px 'Sora'"); }).then(function(){ return document.fonts.load("500 20px 'DM Mono'"); }).then(function(){ return document.fonts.ready; })
+  build(); TA = KM.touch($('world'), { size: 64 }); TB = KM.touch($('world'), { size: 64 });
+  document.fonts.load("750 50px 'Sora'").then(function(){ return document.fonts.load("700 31px 'Sora'"); }).then(function(){ return document.fonts.load("500 20px 'DM Mono'"); }).then(function(){ return document.fonts.ready; })
     .then(function(){ measure(); anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 </script>
