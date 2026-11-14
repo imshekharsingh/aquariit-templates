@@ -126,37 +126,6 @@
    "id": "dry-1969",
    "url": "https://commons.wikimedia.org/w/index.php?curid=86371425",
    "long": 2800
-  },
-  {
-   "id": "dam-1969",
-   "queries": [
-    "American Falls 1969",
-    "Niagara Falls 1969",
-    "American Falls dewatering",
-    "American Falls cofferdam"
-   ],
-   "sources": [
-    "wikimedia",
-    "loc",
-    "openverse"
-   ],
-   "require": [
-    "niagara",
-    "american falls"
-   ],
-   "avoid": [
-    "twin falls",
-    "coulee",
-    "idaho",
-    "sewall",
-    "bridge",
-    "horseshoe",
-    "postcard",
-    "map"
-   ],
-   "min_side": 500,
-   "pick": 1,
-   "long": 2800
   }
  ]
 }
