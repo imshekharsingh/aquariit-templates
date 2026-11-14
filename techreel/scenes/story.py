@@ -431,7 +431,94 @@ def k_rate(cm, fr, s, t, topic):
         I.hit(fr, s, f'tk{j}', s.start + .45 + j * .45, 's', 700, .7)
 
 
-KINDS = {'hero': k_hero, 'duo': k_duo, 'strip': k_strip, 'clock': k_clock, 'rate': k_rate}
+def brick(cm, cx, cy, w, h, label, acc, t, lit=0.0):
+    """A generic wall charger (our own drawing, no maker's design): a shaded body, a lit top rim, one USB-C port slot, its wattage big."""
+    D.soft_shadow(cm, cx, cy + h * .54, w * .55, h * .05, 160)
+    D.panel(cm, cx - w / 2, cy - h / 2, w, h, r=w * .2, lit=1.0, gold=lit > .5)
+    cm.rect(cx - w * .2, cy + h * .3, w * .4, h * .07, r=h * .035, fill=(8, 8, 12), outline=(110, 110, 124), width=2)
+    cm.text(cx, cy - h * .06, label, text_fit(label, 96, w * .84), acc if lit > .5 else TXT, 900, 'mm')
+
+
+def k_charge(cm, fr, s, t, topic):
+    """The power handshake (15 Nov 2026, the charger reel): a charger brick (left) and a phone (right) joined by a cable that sags under
+    them. The charger's offers pop up one by one in the middle column on offer_cue ("5 V", "9 V", ...); on pick_cue the phone's pick
+    lights in the mood's accent, the others dim, and power pulses run along the cable; the phone's battery bar fills over the shot (no
+    digits: G13). Params: watts (the brick's label), offers [text], offer_cue, pick, pick_cue, label (under the phone), label_cue,
+    fill [from, to] (battery level 0-1), photo / view (a full-bleed photo under it), words."""
+    p = s.params
+    acc = moodc(s, 'accent')
+    photo_bg(cm, s, t)
+    k_in = sp(t, s.start + .02, .6, 11) if s.i else 1.0
+    kin = .9 + .1 * min(1.05, k_in)
+    bx, by, bw, bh = 215, 1000, 260 * kin, 340 * kin
+    px, py, ph = 770, 990, 600 * kin
+    pw = ph * .5
+    tp = cue(s, p.get('pick_cue'), d=s.start + 1.6) if p.get('offers') else s.start + .2
+    if s.i == 0:
+        tp = -1.0
+    flow = clamp((t - tp) / .5)
+    # the cable: from the brick's port down under the stage and up into the phone's foot
+    pts = []
+    for j in range(25):
+        u = j / 24
+        x0, y0, x1, y1 = bx, by + bh * .34, px, py + ph / 2 - 6
+        x = (1 - u) ** 3 * x0 + 3 * (1 - u) ** 2 * u * x0 + 3 * (1 - u) * u * u * x1 + u ** 3 * x1
+        y = (1 - u) ** 3 * y0 + 3 * (1 - u) ** 2 * u * (y0 + 230) + 3 * (1 - u) * u * u * (y1 + 200) + u ** 3 * y1
+        pts.append((x, y))
+    cm.line(pts, (40, 40, 48), 16)
+    cm.line(pts, mixc((70, 72, 84), acc, .55 * flow), 9)
+    if flow > 0:   # power pulses along the cable, brick to phone
+        for q in range(3):
+            u = ((t - tp) * .55 + q / 3) % 1.0
+            x, y = pts[min(24, int(u * 24))]
+            cm.circle(x, y, 13, fill=acc + (int(230 * flow),))
+    brick(cm, bx, by, bw, bh, p.get('watts', '65 W'), acc, t, lit=1.0 if p.get('lit') else 0.0)
+    # the phone, its battery bar filling (a bolt while power flows)
+    D.soft_shadow(cm, px, py + ph * .52, pw * .62, ph * .045, 170)
+    I.phone(cm, px, py, pw, ph, t, glow=.6 * flow)
+    f0, f1 = (p.get('fill') or [.3, .6])[:2]
+    lvl = mix(f0, f1, eio((t - s.start) / max(1.0, s.end - s.start)))
+    bw2, bh2 = pw * .52, ph * .5
+    x0, y0 = px - bw2 / 2, py - bh2 / 2 + ph * .04
+    cm.rect(px - bw2 * .2, y0 - 22, bw2 * .4, 24, r=8, fill=(90, 92, 104))
+    cm.rect(x0, y0, bw2, bh2, r=26, fill=(20, 21, 28), outline=(110, 112, 126), width=5)
+    fh = (bh2 - 20) * lvl
+    cm.rect(x0 + 10, y0 + bh2 - 10 - fh, bw2 - 20, fh, r=18, fill=mixc((120, 200, 140), acc, .35) + (235,))
+    if flow > 0:
+        cx_, cy_ = px, y0 + bh2 * .45
+        cm.poly([(cx_ + 14, cy_ - 60), (cx_ - 30, cy_ + 8), (cx_ - 2, cy_ + 8), (cx_ - 14, cy_ + 60), (cx_ + 30, cy_ - 8), (cx_ + 2, cy_ - 8)],
+                fill=(255, 255, 255, int(235 * flow)))
+    # the offers, one by one in the middle column; the pick lights, the rest dim
+    offers = p.get('offers') or []
+    to = cue(s, p.get('offer_cue'), d=s.start + .4)
+    for j, o in enumerate(offers):
+        tc = to + .22 * j
+        k = sp(t, tc, .5, 14)
+        if k <= .01:
+            continue
+        y = 720 + j * 128
+        picked = j == p.get('pick') and t >= tp
+        a = clamp(k * 1.6) * (.4 if t >= tp and not picked else 1.0)
+        cm.rect(492 - 80, y - 46, 160, 92, r=46, fill=(acc if picked else (30, 31, 40)) + (int(240 * a),),
+                outline=(acc if not picked else (255, 255, 255)) + (int(200 * a),), width=3)
+        cm.text(492, y, o, 48 * (.9 + .1 * min(1.1, k)), (16, 14, 12) if picked else TXT, 900, 'mm', a=a)
+        I.hit(fr, s, f'of{j}', tc, 's', 492, .9)
+    if offers:
+        I.hit(fr, s, 'pick', tp, 'm', 520, 1.1)
+    if p.get('label'):
+        tc = cue(s, p.get('label_cue'), d=s.start + .5)
+        k = sp(t, tc, .55, 13)
+        if k > .01:
+            cm.text(px, py + ph / 2 + 70, p['label'], text_fit(p['label'], 58, 330, 900), acc, 900, 'mm', a=clamp(k * 1.6))
+            I.hit(fr, s, 'label', tc, 'm', px, 1.0)
+    big_words(cm, fr, s, t)
+    if s.i:
+        I.hit(fr, s, 'in', s.start + .15, 'l', CX, 1.1)
+    for j in range(int((s.end - s.start) / .5) + 1):   # a soft tick per power pulse (G7: no quiet run)
+        I.hit(fr, s, f'tk{j}', s.start + .45 + j * .5, 's', 640, .6)
+
+
+KINDS = {'hero': k_hero, 'duo': k_duo, 'strip': k_strip, 'clock': k_clock, 'rate': k_rate, 'charge': k_charge}
 
 
 def shot(cm, fr, s, t, topic):
@@ -440,6 +527,8 @@ def shot(cm, fr, s, t, topic):
     elif s.kind in I.SETS:   # an idea-look world through the same camera
         I.SETS[s.kind](cm, fr, s, t, s)
         big_words(cm, fr, s, t)
+        for j in range(int((s.end - s.start) / .7) + 1):   # (15 Nov 2026) a soft tick every 0.7 s, as the story kinds have (G7: no quiet run)
+            I.hit(fr, s, f'stk{j}', s.start + .35 + j * .7, 's', 700, .6)
     else:
         raise SystemExit(f'unknown shot kind "{s.kind}" (story: {", ".join(KINDS)}; idea sets: {", ".join(I.SETS)})')
 

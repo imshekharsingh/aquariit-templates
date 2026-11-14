@@ -1,0 +1,114 @@
+{
+ "name": "showreel-c3-greek-colour",
+ "seek": "scripts/channel3/greek-colour.html",
+ "dur": 22.2,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "These white statues were once painted. So why do we picture marble statues pure white? Over two thousand years, sun, rain and burial wore most of the paint away. But tiny traces survive, and ultraviolet light makes them show. Turns out, one ancient blue still glows in infrared, so cameras can map it.",
+  "at": [
+   0,
+   3.04,
+   6.5,
+   11.26,
+   15.8
+  ],
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "Did you picture Greek statues pure white? 🎨\n\nThey were once painted. Ancient Greek marble sculptures were painted in bright colours. Over two thousand years, sun, rain and burial wore most of the paint away, but tiny traces survive, and ultraviolet light helps researchers see them. The best part: Egyptian blue, one of the oldest man-made pigments, still glows in infrared when light hits it, so a special camera can map exactly where the blue was painted.\n\nWhite or painted: what did you picture? Comment one word, and send this to the friend who loves museums.\n\nPhotos: marble sphinx, c. 530 BC, The Met (CC0); kore hair with paint traces, Lyon, by Mark Landon (CC BY 4.0) (Wikimedia Commons).",
+ "keywords": [
+  "ancient greek statues color",
+  "were greek statues painted",
+  "polychromy",
+  "egyptian blue infrared",
+  "greek sculpture history",
+  "history facts"
+ ],
+ "hashtags": [
+  "#ancientgreece",
+  "#greekstatues",
+  "#arthistory",
+  "#historyfacts",
+  "#didyouknow"
+ ],
+ "sources": [
+  {
+   "title": "Chroma: Ancient Sculpture in Color (The Metropolitan Museum of Art, 2022-23)",
+   "url": "https://www.metmuseum.org/exhibitions/chroma"
+  },
+  {
+   "title": "Chroma press release: painted ancient sculpture, ultraviolet imaging (The Met, 2022)",
+   "url": "https://www.metmuseum.org/press/exhibitions/2022/chroma"
+  },
+  {
+   "title": "Exciting Pigments: Egyptian blue luminescence imaging (Harvard Art Museums)",
+   "url": "https://harvardartmuseums.org/article/exciting-pigments"
+  },
+  {
+   "title": "Egyptian blue found by visible-induced luminescence imaging (Archaeology magazine, 2024)",
+   "url": "https://archaeology.org/issues/march-april-2024/digs-discoveries/the-parthenons-paint-job/"
+  }
+ ],
+ "media": [
+  {
+   "id": "sphinx",
+   "url": "https://commons.wikimedia.org/wiki/File:Marble_capital_and_finial_in_the_form_of_a_sphinx_MET_DT375020.jpg",
+   "file": "sphinx.jpg",
+   "w": 1858,
+   "h": 2400,
+   "title": "Marble capital and finial in the form of a sphinx MET DT375020.jpg",
+   "author": "The Metropolitan Museum of Art (Open Access)",
+   "licence": "cc0",
+   "licence_name": "CC0",
+   "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Marble_capital_and_finial_in_the_form_of_a_sphinx_MET_DT375020.jpg",
+   "source": "wikimedia",
+   "run": "Media run 43629461794"
+  },
+  {
+   "id": "kore",
+   "file": "kore.jpg",
+   "w": 1800,
+   "h": 2400,
+   "title": "Lyons kore (Lyon Mus Beaux-Arts H 1993) 15.jpg",
+   "author": "Mark Landon",
+   "licence": "cc-by-4.0",
+   "licence_name": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Lyons_kore_(Lyon_Mus_Beaux-Arts_H_1993)_15.jpg",
+   "source": "wikimedia",
+   "run": "Media run 43626616719",
+   "queries": [
+    "Phrasikleia Kore",
+    "Kore Acropolis Museum polychromy",
+    "archaic kore paint traces"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ]
+  }
+ ],
+ "qa": {
+  "subject": [
+   60,
+   330,
+   450,
+   640
+  ],
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 22.2,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the story engine: full-bleed real media fills the whole frame by design"
+   }
+  ]
+ }
+}

@@ -1,0 +1,338 @@
+{
+ "slug": "charger-watts",
+ "topic": "charger wattage",
+ "look": "story",
+ "format": "GADGET MYTHS",
+ "audience": "global",
+ "gadget": "charger",
+ "voice": "af_heart",
+ "flow": true,
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "dur": 42.0,
+ "max_end": 41.3,
+ "hook_key": "MYTH",
+ "experiment": {
+  "id": "tech-story-long",
+  "change": "40-45 s story format",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Bigger chargers don't hurt your phone.",
+   "beat": "payoff",
+   "scene": {
+    "kind": "charge",
+    "params": {
+     "watts": "96 W",
+     "lit": true,
+     "fill": [
+      0.35,
+      0.55
+     ],
+     "match": [
+      770,
+      990
+     ],
+     "words": [
+      {
+       "text": "MYTH",
+       "accent": true,
+       "size": 180
+      },
+      {
+       "text": "BIG CHARGERS HURT PHONES",
+       "dim": true,
+       "size": 62
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "So why doesn't a big laptop charger overload a small phone?",
+   "beat": "question",
+   "scene": {
+    "kind": "charge",
+    "move": "match",
+    "params": {
+     "watts": "96 W",
+     "fill": [
+      0.55,
+      0.6
+     ],
+     "match": [
+      520,
+      980
+     ],
+     "words": [
+      {
+       "text": "WHY NO OVERLOAD?",
+       "cue": "overload",
+       "accent": true,
+       "size": 112
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "Apple says an iPhone can use a higher wattage USB C adapter, even your Mac laptop's.",
+   "beat": "step",
+   "source": 0,
+   "scene": {
+    "kind": "slam",
+    "move": "zoom",
+    "params": {
+     "match": [
+      510,
+      980
+     ],
+     "cards": [
+      {
+       "icon": "battery",
+       "text": "20 W",
+       "cue": "iPhone",
+       "dot": "green"
+      },
+      {
+       "icon": "battery",
+       "text": "HIGHER W",
+       "cue": "higher",
+       "dot": "green"
+      },
+      {
+       "icon": "battery",
+       "text": "MAC 96 W",
+       "cue": "Mac",
+       "dot": "green"
+      }
+     ],
+     "words": [
+      {
+       "text": "APPLE SAYS: OK",
+       "cue": "Apple",
+       "accent": true,
+       "size": 120
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "That works because phone and charger agree on power first, using USB Power Delivery, so the phone takes only what it can handle.",
+   "beat": "step",
+   "source": 0,
+   "scene": {
+    "kind": "charge",
+    "move": "pan",
+    "params": {
+     "watts": "96 W",
+     "offers": [
+      "5 V",
+      "9 V",
+      "15 V",
+      "20 V"
+     ],
+     "offer_cue": "agree",
+     "pick": 1,
+     "pick_cue": "takes",
+     "fill": [
+      0.4,
+      0.55
+     ],
+     "match": [
+      520,
+      900
+     ],
+     "words": [
+      {
+       "text": "THEY AGREE FIRST",
+       "cue": "agree",
+       "accent": true,
+       "size": 110
+      },
+      {
+       "text": "USB POWER DELIVERY",
+       "cue": "Delivery",
+       "size": 64
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "And bigger can be faster: a new iPhone seventeen charges to half in about twenty minutes on forty watts or more.",
+   "beat": "step",
+   "source": 1,
+   "scene": {
+    "kind": "clock",
+    "move": "push",
+    "params": {
+     "slices": 60,
+     "value": "50%",
+     "cue": "half",
+     "match": [
+      510,
+      990
+     ],
+     "words": [
+      {
+       "text": "FASTER",
+       "cue": "faster",
+       "accent": true,
+       "size": 120
+      },
+      {
+       "text": "40 W OR MORE",
+       "cue": "forty",
+       "size": 76
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "The real danger is heat. Apple warns that above thirty five degrees, a battery can lose capacity for good.",
+   "beat": "surprise",
+   "source": 2,
+   "scene": {
+    "kind": "hero",
+    "move": "match",
+    "params": {
+     "draw": "phone",
+     "screen": "lock",
+     "h": 760,
+     "y": 1000,
+     "photo": "sun",
+     "view": [
+      0.5,
+      0.5,
+      1.1,
+      1.22
+     ],
+     "match": [
+      510,
+      1000
+     ],
+     "words": [
+      {
+       "text": "HEAT",
+       "cue": "heat",
+       "accent": true,
+       "size": 180
+      },
+      {
+       "text": "ABOVE 35 °C",
+       "cue": "thirty",
+       "size": 84
+      }
+     ]
+    }
+   }
+  },
+  {
+   "text": "Any good USB C charger is fine; if your phone gets hot while charging, take off its case.",
+   "beat": "takeaway",
+   "source": 2,
+   "scene": {
+    "kind": "charge",
+    "move": "zoom",
+    "params": {
+     "watts": "65 W",
+     "lit": true,
+     "fill": [
+      0.6,
+      0.85
+     ],
+     "words": [
+      {
+       "text": "ANY GOOD USB-C",
+       "cue": "good",
+       "accent": true,
+       "size": 116
+      },
+      {
+       "text": "HOT? CASE OFF",
+       "cue": "hot",
+       "size": 80
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "media": [
+  {
+   "id": "sun",
+   "file": "sun.jpg",
+   "w": 1920,
+   "h": 1920,
+   "title": " Image of Sun From NASA's Solar Dynamics Observatory",
+   "author": "NASA/JPL (SDO)",
+   "licence": "pd",
+   "licence_name": "Public domain (NASA)",
+   "licence_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "source_url": "https://images.nasa.gov/details/PIA26681",
+   "file_url": "https://images-assets.nasa.gov/image/PIA26681/PIA26681~large.jpg",
+   "source": "nasa",
+   "queries": [
+    "Solar Dynamics Observatory sun",
+    "sun SDO image"
+   ],
+   "sources": [
+    "nasa"
+   ],
+   "min_side": 1200,
+   "run": "Media runs 43623733260 and 43629144220 (14 Nov 2026); dropped on the sheets: an electric-car plug, a burnt circuit board, a charger held in a hand, a USB-C plug PNG whose transparent background flattened to grey blocks"
+  }
+ ],
+ "qa": {
+  "sync": [
+   "overload",
+   "Power Delivery",
+   "heat",
+   "case"
+  ]
+ },
+ "post": {
+  "title": "Can a bigger charger hurt your phone?",
+  "caption": "Myth: a bigger charger hurts your phone 🔌\n\nApple says you can charge an iPhone with a higher-wattage USB-C adapter, even the one from your Mac laptop. Phone and charger agree on power first (USB Power Delivery), so the phone only takes what it can handle. Bigger can be faster: an iPhone 17 gets to 50% in about 20 minutes on a 40 W adapter or more.\nThe real danger is heat: Apple warns that above 35 °C (95 °F) a battery can lose capacity for good.\n\nAny good USB-C charger is fine; if your phone gets hot while charging, take off its case. Send this to the friend who keeps three chargers \"just in case\".\n\nPhoto: the Sun by NASA/SDO (public domain).",
+  "keywords": [
+   "can a bigger charger damage my phone",
+   "higher wattage charger safe",
+   "usb power delivery explained",
+   "fast charging myth",
+   "laptop charger for phone",
+   "phone battery heat"
+  ],
+  "hashtags": [
+   "#chargingmyths",
+   "#fastcharging",
+   "#usbc",
+   "#batterytips",
+   "#techtips"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/105099",
+    "note": "Apple, Charge and connect with the USB-C connector on your iPhone: a power adapter that complies with the USB-C standard, \"This includes USB Power Delivery\"; \"If you have a 20W USB-C power adapter or higher-wattage USB-C power adapter, like the one that came with your Mac laptop, you can use it with your iPhone\" (read 14 Nov 2026)."
+   },
+   {
+    "url": "https://support.apple.com/en-us/102574",
+    "note": "Apple, Fast charge your iPhone: \"You can fast charge iPhone 17, iPhone 17 Pro, and iPhone 17 Pro Max up to 50 percent battery in around 20 minutes with a 40W adapter or higher\"; adapters that support USB Power Delivery (USB-PD) (read 14 Nov 2026)."
+   },
+   {
+    "url": "https://www.apple.com/batteries/maximizing-performance/",
+    "note": "Apple, Batteries, Maximizing performance: \"avoid exposing your device to ambient temperatures higher than 95 F (35 C), which can permanently damage battery capacity\"; \"Charging the device in high ambient temperatures can damage it further\"; \"If you notice that your device gets hot when you charge it, take it out of its case first\" (read 14 Nov 2026)."
+   }
+  ]
+ },
+ "holds": [
+  [
+   38.6,
+   42.0,
+   "the verdict rests on screen after the last word (the charger and phone stay lit, pulses running) so it can be read and saved"
+  ]
+ ]
+}

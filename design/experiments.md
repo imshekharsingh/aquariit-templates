@@ -375,3 +375,12 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
   replacing E17's settings lists. Config `"experiment": {"id": "tech-gadget-specs", ...}`.
 - Try 1: showreel-tech-ip68 (13 Nov, specs decoded, phone, global). Tries 2-3: the Sat 14 and Sun 15 rows of design/topics.md.
 - Decides: 150+ reach in 24 h or 3+ saves and shares per reel; 2 of 3 = the channel's format, read again by audience (india / global) after a week.
+- Try 3: showreel-tech-charger-watts (Sun 15 Nov, gadget myths, charger, global), built in the story look at 42 s, so it is also E25 try 1.
+
+## E25 · @techin20sec: 40-45 s story reels vs the 20 s reels (owner, 14 Nov 2026; one week, Sun 15 - Sat 21 Nov)
+- Change: the story look's long class (rules-tech.md S6: 39-46 s, 100-140 words, payoff -> question -> 3 sourced steps -> surprise ->
+  takeaway). Config `"experiment": {"id": "tech-story-long", "change": "40-45 s story format", "vs": "median"}`.
+- Read on hold % and saves per 1k reach (not reach alone: a longer reel lowers hold % by length, so hold is compared with the 20 s reels'
+  median watch seconds as well), at 24 h, against the channel's median of the last 7 reels.
+- Try 1: showreel-tech-charger-watts (Sun 15 Nov, 42 s). Decides after the week: WIN = saves per 1k at least 2x the median AND watch
+  seconds above the 20 s median; keep the long class if 4 of 7 WIN, else back to 20 s.

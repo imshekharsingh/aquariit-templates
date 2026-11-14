@@ -1146,5 +1146,23 @@
   "channel": "c3",
   "hidden": true,
   "concept": "Engine sample for the Turns Out story engine (14 Nov rebuild from the echoes reference kit): radio saved the Eiffel Tower, payoff -> question -> 3 steps -> surprise; stills only, never scheduled"
+ },
+ "showreel-tech-charger-watts": {
+  "channel": "tech",
+  "postOn": "2026-11-15",
+  "postAt": "13:00",
+  "concept": "Story look, 42 s (length test 1 of 7): gadget myths, charger, global. Can a bigger charger hurt your phone? MYTH in frame 0 over a 96 W charger charging a phone; the USB PD handshake shown (offers 5/9/15/20 V, the phone picks); heat is the real danger (Apple, 35 C).",
+  "experiment": {
+   "id": "tech-story-long",
+   "change": "40-45 s story format",
+   "vs": "median"
+  }
+ },
+ "showreel-c3-greek-colour": {
+  "channel": "c3",
+  "postOn": "2026-11-15",
+  "postAt": "13:00",
+  "concept": "Story engine · These white statues were once painted (weathering, UV traces, Egyptian blue glows in infrared)",
+  "note": "Turns Out, Sun 15 Nov 13:00 IST. First reel on the story engine (default length 20-24 s); the planned GUESS row for Sun 15 (Greek statues) told as a story instead, since E19 ends with 3 reels on 12-14 Nov."
  }
 }
