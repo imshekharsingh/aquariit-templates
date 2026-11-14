@@ -844,33 +844,42 @@ var K25 = (function(){
   // the photos' own features, mist and motes over them. The present is graded cool, 1969 warm sepia (the answer colour, ANSWERC).
   // The drawn worlds below stay as the fallback when the files are not there (a stills run before the Media workflow).
   var MEDIA = [{ id: 'falls-now', grade: 'saturate(.62) brightness(.9) contrast(1.06) hue-rotate(-6deg)' },
-    { id: 'dry-1969', grade: 'grayscale(1) sepia(1) saturate(2.3) brightness(.86) contrast(1.12)' },
+    { id: 'dry-1969', grade: 'sepia(.55) saturate(1.45) brightness(.86) contrast(1.12)' },
     { id: 'dam-1969', grade: 'grayscale(1) sepia(1) saturate(1.6) brightness(.84) contrast(1.12)' }];
-  var ANSWERC = '#8a6a45';
-  var VNOW = [.40, .40, 2.0], VDRY = [.5, .5, 1.0], VDAM = [.5, .5, 1.0], VBARE = [.5, .5, 2.0];   // the frame-0 views (tuned to the photos)
+  var ANSWERC = '#8c5e3c';
+  var VNOW = [.40, .40, 2.0], VDRY = [.55, .45, 1.0], VDAM = [.22, .3, 1.5], VBARE = [.66, .64, 1.7];   // the frame-0 views (tuned to the photos)
   var KB1, KB2, KB3, KB4;
   function photoCams(){
     KB1 = Kt.kb([[0, VNOW[0], VNOW[1], VNOW[2]], [tRv, VNOW[0] + .12, VNOW[1] - .01, VNOW[2] * 1.05], [tw1(0), VNOW[0] + .16, VNOW[1] - .04, VNOW[2] * 1.5]]);
-    KB2 = Kt.kb([[tw0(0), VDAM[0] - .05, VDAM[1], VDAM[2] * 1.18], [tw1(1), VDAM[0] + .05, VDAM[1], VDAM[2] * 1.05]]);
+    KB2 = Kt.kb([[tw0(0), VDAM[0] - .05, VDAM[1], VDAM[2] * 1.18], [tw1(1), VDAM[0] + .05, VDAM[1], VDAM[2] * 1.05]]); if (!Kt.hasPhoto('dam-1969')) KB2 = Kt.kb([[tw0(0), VDAM[0], VDAM[1] + .02, VDAM[2] * 1.15], [tw1(1), VDAM[0] + .1, VDAM[1], VDAM[2]]]);
     KB3 = Kt.kb([[tw0(1), VBARE[0] - .06, VBARE[1], VBARE[2]], [tw1(2), VBARE[0] + .06, VBARE[1] + .02, VBARE[2] * 1.12]]);
     KB4 = Kt.kb([[tw0(2), VNOW[0] + .2, VNOW[1] - .02, VNOW[2] * 1.45], [DUR, VNOW[0], VNOW[1], VNOW[2]]]);
   }
   function shadeBand(){ Kt.screen(); x.fillStyle = lg(0, 620, 0, 960, [[0, 'rgba(10,12,22,0)'], [1, 'rgba(10,12,22,.62)']]); x.fillRect(0, 620, 540, 340);
     x.fillStyle = lg(0, 0, 0, 380, [[0, 'rgba(10,12,22,.55)'], [1, 'rgba(10,12,22,0)']]); x.fillRect(0, 0, 540, 380); }
   function mistOver(t, k){ if (k <= 0) return; Kt.screen(); x.save(); x.globalAlpha = k; Kt.motes(t, 22, 5, [0, 300, 540, 700], 'rgba(244,248,250,.45)', 1.6); x.restore(); }
-  function P1(t){ var v = KB1(t); Kt.photo('falls-now', v); mistOver(t, 1 - P(t, tRv, tRv + 1.2));
+  // depth over the photo (rules-c3.md rule 11): the photo is the far plane; mist, drifting motes and a near foreground layer sit at their own
+  // depths in front of it and slide against the photo's pan (the camera follows the photo's view), so the overlays parallax with the picture
+  var CAMP = null;
+  function L0(name, v){ CAMP = { x: (v[0] - .5) * 24, y: 2 + (.5 - v[1]) * 10, z: -30 + 8 * Math.log(v[2]) }; Kt.world(name, { haze: 0 }); Kt.plane(CAMP, 600, { clear: true }); }
+  function L1(t, mist){ var cam = CAMP;
+    if (Kt.plane(cam, 60, { clear: true }) && mist > 0) { x.save(); x.globalAlpha *= mist; Kt.motes(t, 16, 5, [-40, -12, 40, 22], 'rgba(244,248,250,.42)', 7); x.restore(); }
+    if (Kt.plane(cam, 12, { clear: true })) Kt.motes(t, 16, 7, [-16, -8, 16, 12], 'rgba(255,246,226,.5)', 1.8);
+    if (Kt.plane(cam, cam.z + 5, { clear: true, fg: true })) Kt.motes(t, 7, 11, [cam.x - 5, cam.y - 6, cam.x + 9, cam.y + 6], 'rgba(255,250,240,.45)', 3.2);
+    Kt.screen(); }
+  function P1(t){ var v = KB1(t); L0('falls', v); Kt.photo('falls-now', v);
     // the answer: the water drains top to bottom and the 1969 dry falls show (the reveal, never before it)
     Kt.wipe(P(t, tRv + .05, tRv + 1.25), 'down', 50, function(){ Kt.photo('dry-1969', [VDRY[0], VDRY[1], VDRY[2] * mix(1, 1.2, P(t, tRv, tw1(0)))]); });
-    if (t > tRv + .9) { var q = Kt.photoPt('dry-1969', VDRY, .5, .5); Kt.pin(q[0], q[1] + 40, P(t, tRv + 1.1, tRv + 1.6) * (1 - P(t, tw0(0) - .2, tw0(0))), AMBER, t, 22); }
-    shadeBand(); }
-  function P2(t){ var v = KB2(t); Kt.photo(DAM(), v); Kt.screen();
+    if (t > tRv + .9) { var q = Kt.photoPt('dry-1969', VDRY, .55, .38); Kt.pin(q[0], q[1], P(t, tRv + 1.1, tRv + 1.6) * (1 - P(t, tw0(0) - .2, tw0(0))), AMBER, t, 22); }
+    L1(t, 1 - P(t, tRv, tRv + 1.2)); shadeBand(); }
+  function P2(t){ var v = KB2(t); L0('dam', v); Kt.photo(DAM(), v); Kt.screen();
     ROCKS.forEach(function(q, j){ var u = P(t, q[0] - .05, q[0] + .3); if (u <= 0) return; var X = 60 + j * 420 / Math.max(1, ROCKS.length - 1), Y = 520 + Math.sin(j * 1.7) * 6; Kt.pin(X, Y, u, AMBER, t, 7); });
-    shadeBand(); }
-  function P3(t){ var v = KB3(t); Kt.photo('dry-1969', v); Kt.screen();
+    L1(t, 0); shadeBand(); }
+  function P3(t){ var v = KB3(t); L0('cliff', v); Kt.photo('dry-1969', v); Kt.screen();
     BOLTS.forEach(function(b, j){ var u = P(t, b[0], b[0] + .3); if (u <= 0) return; var X = 150 + (j % 3) * 120 + (Math.floor(j / 3) % 2) * 40, Y = 440 + Math.floor(j / 3) * 70; Kt.pin(X, Y, u, AMBER, t, 9); });
-    shadeBand(); }
-  function P4(t){ var v = KB4(t); Kt.photo('dry-1969', [VDRY[0], VDRY[1], v[2] / VNOW[2] * VDRY[2]]);
-    Kt.wipe(P(t, tOn, tOn + 1.3), 'down', 50, function(){ Kt.photo('falls-now', v); }); mistOver(t, P(t, tOn + .6, tOn + 1.8)); shadeBand(); }
+    L1(t, 0); shadeBand(); }
+  function P4(t){ var v = KB4(t); L0('falls-again', v); Kt.photo('dry-1969', [VDRY[0], VDRY[1], v[2] / VNOW[2] * VDRY[2]]);
+    Kt.wipe(P(t, tOn, tOn + 1.3), 'down', 50, function(){ Kt.photo('falls-now', v); }); L1(t, P(t, tOn + .6, tOn + 1.8)); shadeBand(); }
   var REAL = function(){ return Kt.hasPhoto('falls-now') && Kt.hasPhoto('dry-1969'); }, DAM = function(){ return Kt.hasPhoto('dam-1969') ? 'dam-1969' : 'dry-1969'; };
   function W1(t){ if (REAL()) return P1(t); falls(C1(t), t, { name: 'falls' }); }
   function W4(t){ if (REAL()) return P4(t); falls(C4(t), t, { name: 'falls-again', w4: true }); }
