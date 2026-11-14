@@ -35,6 +35,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'spread': '14 Nov "it seems we are squeezing most of it in one place of the screen"',
     'sync': '13 Nov tech IP68 "the voice names an item (\'or the sauna\') while its card is still empty"',
     'grade': '13 Nov Turns Out "I don\'t find the colour selection better" (fog wash, white Taj on a pale sky)',
+    'licence': '14 Nov "yes to free real images" (CLAUDE.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
 # last on the final mix, which reads fast: full sentences at natural speed 1.0 measured 4.10-4.17, so a full sentence fails over 4.5 (as the voice
@@ -107,6 +108,34 @@ def config(path):
     speeds = [v.get('speed')] + list(v.get('speeds') or [])
     ch = 'c3' if '/channel3/' in path or c.get('name', '').startswith('showreel-c3-') else 'web'
     return c, v.get('text', ''), [s for s in speeds if s is not None], float(c.get('cover', 1.6)), ch, c.get('name', '')
+
+
+LIC_OK = ('cc0', 'pd', 'pdm', 'cc-by')
+
+
+def licence_check(c, ch):
+    """LICENCE (owner, 14 Nov 2026; CLAUDE.md "Free real images and footage"): every media file has an allowed licence (PD, CC0, CC BY; never
+    NC, ND, SA, editorial), its source page, file and author recorded in the config; a CC BY file is credited by author in the post text
+    (the caption's sources line or the config's sources list)."""
+    m = c.get('media') or []
+    if not m:
+        line('LICENCE', 'WARN' if ch in ('tech', 'c3') else 'SKIP', 'no real media in the config' + (' (tech and Turns Out are built on real media from 14 Nov 2026)' if ch in ('tech', 'c3') else ''))
+        return
+    post = c.get('post') or {}
+    credit = ' '.join([c.get('caption', ''), post.get('caption', ''), c.get('credits', ''), post.get('credits', '')]
+                      + [s.get('title', '') for s in (c.get('sources') or post.get('sources') or []) if isinstance(s, dict)]).lower()
+    bad, by = [], 0
+    for e in m:
+        lic, miss = str(e.get('licence') or '').lower(), [k for k in ('file', 'source_url', 'author', 'licence') if not e.get(k)]
+        tok = set(re.split(r'[-/ ]', lic))
+        if miss: bad.append(f'{e.get("id")}: no {"/".join(miss)}')
+        elif not lic.startswith(LIC_OK) or tok & {'nc', 'nd', 'sa', 'editorial'}: bad.append(f'{e["id"]}: licence "{lic}" not allowed')
+        elif not str(e['source_url']).startswith('https://'): bad.append(f'{e["id"]}: source_url is not an https page')
+        elif lic.startswith('cc-by'):
+            by += 1
+            a = re.sub(r'\s+', ' ', str(e['author'])).strip().lower()[:40]
+            if a not in credit: bad.append(f'{e["id"]}: CC BY by "{e["author"][:40]}" not credited in the post text')
+    line('LICENCE', 'FAIL' if bad else 'PASS', f'{len(m)} media files, {by} CC BY credited' + (': ' + '; '.join(bad) if bad else ''))
 
 
 def sync_words(c, qa, ch):
@@ -564,6 +593,7 @@ def main():
     print(f'Output QA: {name} ({ch}), {dur:.2f} s, {mp4}', flush=True)
     try: heard = transcribe(mp4) if text else []
     except ImportError as e: heard = None; print(f'::warning::no recogniser: {e}')
+    licence_check(c, ch)
     voice_checks(text, speeds, heard) if text else line('PACE', 'SKIP', 'no narration in the config')
     sound_checks(mp4, logs)
     F = frames(mp4, fps, 270, 480)

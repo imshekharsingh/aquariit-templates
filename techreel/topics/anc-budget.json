@@ -362,5 +362,163 @@
     "why": "the bus, metro and plane cabins are full-bleed rooms whose walls run past the frame on purpose"
    }
   ]
- }
+ },
+ "media": [
+  {
+   "id": "earbuds",
+   "queries": [
+    "wireless earbuds",
+    "true wireless earbuds",
+    "bluetooth earbuds charging case"
+   ],
+   "sources": [
+    "openverse",
+    "wikimedia"
+   ],
+   "cut": true,
+   "avoid": [
+    "apple",
+    "airpods",
+    "samsung",
+    "galaxy",
+    "sony",
+    "beats",
+    "bose",
+    "jabra",
+    "oneplus",
+    "xiaomi",
+    "boat",
+    "huawei",
+    "google",
+    "pixel",
+    "logo",
+    "woman",
+    "man ",
+    "men ",
+    "girl",
+    "boy",
+    "person",
+    "people",
+    "wearing",
+    "portrait",
+    "selfie",
+    "child",
+    "kid",
+    "ear ",
+    "hand"
+   ],
+   "min_side": 900
+  },
+  {
+   "id": "bus",
+   "queries": [
+    "empty bus interior",
+    "bus interior seats",
+    "city bus interior"
+   ],
+   "sources": [
+    "openverse",
+    "wikimedia"
+   ],
+   "avoid": [
+    "woman",
+    "man ",
+    "men ",
+    "girl",
+    "boy",
+    "person",
+    "people",
+    "wearing",
+    "portrait",
+    "selfie",
+    "child",
+    "kid",
+    "logo"
+   ],
+   "min_side": 1000
+  },
+  {
+   "id": "metro",
+   "queries": [
+    "empty metro train interior",
+    "subway car interior empty",
+    "metro coach interior"
+   ],
+   "sources": [
+    "openverse",
+    "wikimedia"
+   ],
+   "avoid": [
+    "woman",
+    "man ",
+    "men ",
+    "girl",
+    "boy",
+    "person",
+    "people",
+    "wearing",
+    "portrait",
+    "selfie",
+    "child",
+    "kid",
+    "logo"
+   ],
+   "min_side": 1000
+  },
+  {
+   "id": "flight",
+   "queries": [
+    "airplane cabin interior empty",
+    "aircraft cabin seats",
+    "airliner cabin interior"
+   ],
+   "sources": [
+    "openverse",
+    "wikimedia"
+   ],
+   "avoid": [
+    "woman",
+    "man ",
+    "men ",
+    "girl",
+    "boy",
+    "person",
+    "people",
+    "wearing",
+    "portrait",
+    "selfie",
+    "child",
+    "kid",
+    "logo"
+   ],
+   "min_side": 1000
+  },
+  {
+   "id": "room",
+   "queries": [
+    "quiet empty living room",
+    "empty room interior window",
+    "minimal living room interior"
+   ],
+   "sources": [
+    "openverse",
+    "wikimedia"
+   ],
+   "avoid": [
+    "woman",
+    "man ",
+    "men ",
+    "girl",
+    "boy",
+    "person",
+    "people",
+    "wearing",
+    "portrait",
+    "selfie",
+    "child",
+    "kid"
+   ],
+   "min_side": 1000
+  }
+ ]
 }
