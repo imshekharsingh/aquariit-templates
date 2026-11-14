@@ -141,31 +141,31 @@
      "rides": [
       {
        "kind": "bus",
-       "text": "BUS",
+       "text": "Bus",
        "cue": "bus"
       },
       {
        "kind": "metro",
-       "text": "METRO",
+       "text": "Metro",
        "cue": "metro"
       },
       {
        "kind": "plane",
-       "text": "FLIGHT",
+       "text": "Flight",
        "cue": "flight"
       }
      ],
      "chips": [
       {
-       "text": "BUS · ANC ON",
+       "text": "Bus · ANC on",
        "cue": "bus"
       },
       {
-       "text": "METRO · ANC ON",
+       "text": "Metro · ANC on",
        "cue": "metro"
       },
       {
-       "text": "FLIGHT · ANC ON",
+       "text": "Flight · ANC on",
        "cue": "flight"
       }
      ]
