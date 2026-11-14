@@ -851,8 +851,15 @@ var K25 = (function(){
     if (t > A[4]) { Kt.big(t, 'EGYPTIAN BLUE', WT(4, /blue/i), SX, 174, { size: 46, sub: t > WT(4, /infrared/i) ? 'GLOWS IN INFRARED' : ' ', a: 1 - P(t, DUR - 1.1, DUR - .7) });
       meander(t, 640, P(t, WT(4, /glows/i) - .1, WT(4, /glows/i) + 1.2) * (1 - P(t, DUR - 1.1, DUR - .7)), '#cfe6ff'); }
   }
+  // the colour vignette (15 Nov 2026, render 43633253387: Output QA COLOUR read hard hue cuts in the frame's outer ring as each shot opened
+  // over the last): the outer 8% keeps its light but loses its colour, fading back in over the next 40 px, so a shot change is never a hard cut
+  function vignette(){ x.save(); x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1; x.globalCompositeOperation = 'saturation';
+    [[0, 0, 0, 1, 80, 120], [0, 960, 0, -1, 80, 120], [0, 0, 1, 0, 46, 86], [540, 0, -1, 0, 46, 86]].forEach(function(e){ var X0 = e[0], Y0 = e[1], dx = e[2], dy = e[3], a = e[4], b = e[5];
+      var g = x.createLinearGradient(X0, Y0, X0 + dx * b, Y0 + dy * b); g.addColorStop(0, 'rgba(128,128,128,1)'); g.addColorStop(a / b, 'rgba(128,128,128,1)'); g.addColorStop(1, 'rgba(128,128,128,0)');
+      x.fillStyle = g; if (dx) x.fillRect(dx > 0 ? 0 : 540 - b, 0, b, 960); else x.fillRect(0, dy > 0 ? 0 : 960 - b, 540, b); });
+    x.restore(); }
   function seek(t){
-    t = cl(t, 0, DUR); BOXES.length = 0; x.globalAlpha = 1; Kt.begin(); Kt.off(0, 0); frame(t);
+    t = cl(t, 0, DUR); BOXES.length = 0; x.globalAlpha = 1; Kt.begin(); Kt.off(0, 0); frame(t); vignette();
     x.setTransform(2, 0, 0, 2, 0, 0); x.globalAlpha = 1; x.letterSpacing = '0px'; drawCaption(t);
   }
   // sound (scripts/showreel/sound.py): a low move under every camera move (Kt.storyCues), the beats (Kt.beatCues), a resolve on the surprise
