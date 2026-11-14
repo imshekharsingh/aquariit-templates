@@ -1,0 +1,92 @@
+{
+ "name": "showreel-c3-niagara-dry",
+ "seek": "scripts/channel3/niagara-dry.html",
+ "dur": 24.1,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "What happened to Niagara in 1969? Frozen, drained, or moved? Lock in your guess. Drained. Engineers dammed the river with rock, and the falls ran dry. For months, crews studied and bolted the bare cliff. Turns out, they switched it back on that November.",
+  "at": [
+   0,
+   3.33,
+   5.53,
+   9.28,
+   11.77,
+   15.73,
+   19.27
+  ],
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "A, B or C? Comment your letter before you watch it again 👇\n\nIn June 1969, US Army engineers built a dam of rock across the Niagara River above the American Falls, and the falls ran dry. For months, crews studied the bare rock face and bolted its cracks. That November they took the dam out, and the water came back.\n\nSend this to the friend who'd guess frozen.",
+ "keywords": [
+  "Niagara Falls turned off 1969",
+  "American Falls dry",
+  "Niagara Falls without water",
+  "Niagara Falls dewatering",
+  "Niagara Falls history",
+  "history facts"
+ ],
+ "hashtags": [
+  "#niagarafalls",
+  "#niagara",
+  "#historyfacts",
+  "#didyouknow",
+  "#history"
+ ],
+ "sources": [
+  {
+   "title": "The Time Engineers Turned Off Niagara Falls (History.com)",
+   "url": "https://www.history.com/articles/niagara-falls-dewatering-1969"
+  },
+  {
+   "title": "Buffalo District recalls the dewatering of the American Falls (DVIDS, US Army Corps of Engineers)",
+   "url": "https://www.dvidshub.net/news/printable/326866"
+  },
+  {
+   "title": "When, and why, the Falls stopped flowing (Niagara Falls USA)",
+   "url": "https://www.niagarafallsusa.com/the-source/when-and-why-the-falls-stopped-flowing"
+  },
+  {
+   "title": "American Dry Falls (NiagaraFallsInfo)",
+   "url": "https://niagarafallsinfo.com/niagara-falls-history/niagara-falls-geology/american-dry-falls"
+  }
+ ],
+ "experiment": {
+  "id": "c3-guess",
+  "change": "the GUESS format, reel 3 of 3 (E19): lettered chips A / B / C (today's improvement), a 3-2-1 countdown, the flow stopping on the answer, a loop to frame 0; a North American icon (Niagara) after the Eiffel and Taj reels",
+  "vs": "median"
+ },
+ "qa": {
+  "guess": {
+   "answer": "#83603f",
+   "reveal": {
+    "say": "Drained Engineers"
+   },
+   "box": [
+    40,
+    398,
+    470,
+    528
+   ],
+   "css_width": 540
+  },
+  "edges_ok": [
+   {
+    "from": {
+     "say": "engineers dammed"
+    },
+    "to": {
+     "say": "turns out"
+    },
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the dam, the river and the bare cliff run past the frame by design in the close worlds"
+   }
+  ]
+ }
+}
