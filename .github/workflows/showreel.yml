@@ -75,6 +75,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Real media
+        # free real images (owner, 14 Nov 2026): the Media workflow keeps them in R2 under media/<name>/; pulled next to the scene.
+        # Before Tools: npm ci empties node_modules, which would remove the Playwright that Tools installs (14 Nov: "Cannot find module 'playwright'")
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python3 -I -c "import json,sys; sys.exit(0 if json.load(open(sys.argv[1])).get('media') else 1)" "$CFG" || exit 0
+          npm ci --no-audit --no-fund
+          bash scripts/media/pull.sh "$CFG"
       - name: Tools
         # GitHub's Ubuntu mirror sometimes crawls (26 Oct: three renders stalled here for 15-20 minutes). Each apt install gets a
         # few minutes, then falls back to a source that does not need the mirror: Playwright's browser alone (the runner image
@@ -94,15 +104,6 @@ jobs:
         with:
           name: voice
           path: out
-      - name: Real media
-        # free real images (owner, 14 Nov 2026): the Media workflow keeps them in R2 under media/<name>/; pulled next to the scene
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          python3 -I -c "import json,sys; sys.exit(0 if json.load(open(sys.argv[1])).get('media') else 1)" "$CFG" || exit 0
-          npm ci --no-audit --no-fund
-          bash scripts/media/pull.sh "$CFG"
       - name: Capture
         run: |
           set -o pipefail
