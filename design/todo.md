@@ -5,6 +5,9 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
+- [ ] 14 Nov 2026 (owner: "squeezing most of it in one place of the screen"): move the two web starters (starterweb.html, starterdetails.html,
+  newweb.mjs) to the whole-frame layout of showreel-36-tabs (rules-web.md rule 16: KM.ZONES, subtitles under the top zone, hero to y 780,
+  card edges locked with KM.worldY), so tomorrow's reel starts from it; Output QA SPREAD already fails a squeezed reel.
 - [ ] 12 Nov 2026 (owner, E23): web kit "split" piece: the broken and fixed versions of the same component running side by side in sync (labels BEFORE / AFTER, the broken one visibly misbehaving), one call in kitmotion.js and an option in newweb.mjs, so every web reel can show its fix as motion; must pass SAFE ZONE, OVERLAP and FLOW on the starter. Needed by Fri 13 Nov 06:47 IST.
 - [ ] 11 Nov 2026, from the first research pass (design/references.md, R-trend 11 Nov), before the experiments that need them:
   - caption question line: newweb.mjs and the techreel starter write caption line 1 as a one-word-answer question and the last line as the

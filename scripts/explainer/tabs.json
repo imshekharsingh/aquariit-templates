@@ -8,7 +8,7 @@
  "grain": 2,
  "vignette": false,
  "cover": 1.6,
- "style": "Ink and mint (E18 dark-return try 3, E23 dynamic fix try 2)",
+ "style": "Ink and mint, whole frame (E18 dark-return try 3, E23 dynamic fix try 2; rebuilt 14 Nov for rules-web.md rule 16)",
  "palette": "dark",
  "voice": {
   "text": "Why does your tab line jump? Each tab draws its own underline. Tap another, and it blinks across. The fix: a single line for all the tabs. Move it with translate, and stretch it with scale. Watch it slowed down. It slides, and stretches to fit. Now your tabs glide.",
