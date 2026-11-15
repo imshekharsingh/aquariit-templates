@@ -187,6 +187,8 @@ window.render=function(T){if(!EP)timeline(null);build();
   $$('.shot').forEach(s=>{s.style.display='none'});
   EP.shots.forEach((sh,i)=>{if(T<sh.t0||T>sh.t1)return;const lt=T-sh.t0,el=sh.el,a=i===0?1:eio(prog(T,sh.t0,sh.t0+.7));el.style.display='block';el.style.opacity=a;el.style.zIndex=i+1;
     if(sh.type==='ill')animIll(sh,lt,T);
+    // numbers leave before the next shot fades in (Output QA NUMBERS, run 43708264631: the counter's 1913 under the map read as "1933")
+    {const nx=EP.shots[i+1];if(nx)el.querySelectorAll('.odo,.st2,.stamp').forEach(e=>{const f=1-prog(T,nx.t0-.25,nx.t0+.05);if(f<1)e.style.opacity=Math.min(+e.style.opacity||1,f)})}
     if(sh.type==='arch'&&sh.key){const img=el.querySelector('img'),dur=Math.max(1,Math.min(sh.t1,EP.total)-sh.t0),q=eio(prog(lt,0,dur)),full=sh.mode!=='framed';
       img.style.transform=`scale(${lerp(full?1.04:1.02,full?1.16:1.12,q)}) translate(${lerp(0,full?-18:-10,q)*(sh.pan||1)}px,${lerp(0,-14,q)}px)`;
       if(sh.develop){const d=eoc(prog(lt,0,1.1));img.style.filter=`${sh.filt} brightness(${lerp(2.2,1,d)}) blur(${(1-d)*6}px)`}
