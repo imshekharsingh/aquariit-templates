@@ -5,6 +5,7 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
+- [ ] 15 Nov 2026 (night): showreel-tech-screen-120hz (posts Tue 17 Nov 13:00) needs ONE re-render on Mon 16 evening before its post: the glass sheen was removed from techkit/scenes/screen-120hz.js and techkit/base.html changed (subject box, holds), so its R2 video no longer matches its source. Check its Output QA SHEEN and HERO lines (HERO may need a bigger, busier phone and no box around the hero, rules-tech.md K1: the 5 ATM rebuild is the pattern) and update review/tech/showreel-tech-screen-120hz.md item 13.
 - [ ] 15 Nov 2026 (owner Feedback 2, 14 Nov): a side menu in the app that shows one Feedback item and Claude's reply at a time, with "Mark read" and "Next", and the app organised more like a mobile app in its PWA version. App work waits until reach improves (owner, 5 Nov); this comes first when it opens.
 - [ ] 14 Nov 2026: the whole-frame tabs reel took 33 GitHub minutes (frames 29.2, was 19.5 before the rebuild; rule 12 caps 30): find the frame cost (the blurred line glow `.inkg` filter, the bigger cards) and bring a 20 s whole-frame reel back under 25.
 - [ ] 14 Nov 2026 (owner: "squeezing most of it in one place of the screen"): move the two web starters (starterweb.html, starterdetails.html,

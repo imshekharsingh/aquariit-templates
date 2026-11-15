@@ -17,6 +17,13 @@ recap + title slam) replaces S2's order; its drawn hero replaces R0's photos and
 y 1240, captions y 1430). Kept: SAFE ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voice, SOUND GATE + DETAIL,
 Output QA, the review file. Vivid, high-contrast colour, motion on every key word, search keywords in the post text (web channel's inputs).
 
+## K1. Calm, and the object does the thing (owner, 15 Nov 2026 night, on the 5 ATM frame: "covering the wave like coming in from left top corner to the right of the frame, it's happening in all videos"; "What's this in tech reels frame where actual object is? And I don't see much happening animation wise around watch"; and "too wiggly")
+- No decorative sweeps: no glass sheen, glare band or light bar crossing the picture (Output QA SHEEN fails 2+ straight bright bands sweeping the hero zone; the old kit sheen made 15).
+- No box around the hero: the world runs nearly the full width (x 24-1056, y 455-1228 on the kit frame); the object is a third of the width or more.
+- The idea happens ON the object, on its words (squeezed, sealed, turned, filled, leaking, fogging), and the camera makes one eased move to the part named and holds; no bob, wobble, drift or looping decoration on the subject (Output QA HERO: the subject's own change with a bob or slide aligned out, active in 35%+ of the samples, 33%+ of the width; a kit topic reports its box with subj()).
+- Calm FLOW line for tech from 16 Nov: continuity 55%+, dead runs still under 1 s (design/mandatory.md calibration); a deliberate end hold goes in TOPIC.holds.
+- On-screen shapes near a spoken number: no tick ladders, dashed rings or ring-and-dot clusters (Output QA NUMBERS read them as "6" and "7"); scan the numbers' windows with tesseract (psm 11) before the render.
+
 ## R0. Real media by default (owner, 14 Nov 2026: tech "still looks poor" after five renders of drawn shapes; "yes to free real images ... take those and work or animate your design around it")
 Every tech reel is built AROUND free real photos, animated by us; drawn shapes are the overlay (type, rings, waves, charts), not the subject.
 - The topic lists its photos in `"media"` ([{id, queries, sources, cut, avoid, min_side} or {id, url}]); the **Media** workflow (Actions -> Media ->

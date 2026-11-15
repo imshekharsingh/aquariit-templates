@@ -72,6 +72,8 @@ def main():
     bad = [p.wait() for p in procs]
     if any(bad): sys.exit(f'frame capture failed: exit codes {bad}')
     print(f'frames: {n} at {FPS_CAP} fps', flush=True)
+    subj = sorted(sum((json.load(open(os.path.join(fr, f))) for f in os.listdir(fr) if f.startswith('subject_') and f.endswith('.json')), []))
+    if subj: json.dump(subj, open(os.path.join(out, slug + '.subject0.json'), 'w'))   # the hero's box every 0.5 s (Output QA HERO)
     silent = os.path.join(out, 'video.mp4')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', str(FPS_CAP), '-i', os.path.join(fr, 'f%05d.jpg'),
                     '-vf', "tmix=frames=2:weights='1 1',fps=30,format=yuv420p", '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2',

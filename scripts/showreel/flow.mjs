@@ -22,7 +22,9 @@ export const FLOW = {
   // 7 Nov: "does something change every 1.5-2 s?"), and continuity only stops a slideshow: the calm form and follow rebuilds 54% and 42%
   // (design/mandatory.md, "FLOW calibration"); Output QA CALM measures the calm itself.
   web: { CUT: 25, DEAD: .5, DEAD_RUN: 2, CONT: .35, STROBE: 60 },
-  tech: { CUT: 25, DEAD: .5, DEAD_RUN: 1, CONT: .85, STROBE: 60 },
+  // tech, 15 Nov 2026 night (the same "too wiggly" note, and "not much happening around the watch"; rules-tech.md K1): no sheen, bob or drift;
+  // one camera move to the part named, then a hold; still something every 1 s. The calm 5 ATM rebuild 65% (its wiggly first cut 91%).
+  tech: { CUT: 25, DEAD: .5, DEAD_RUN: 1, CONT: .55, STROBE: 60 },
   c3: { CUT: 25, DEAD: .3, DEAD_RUN: 1, CONT: .85, STROBE: 60 },   // 2.5D paper: the slow parallax drift moves 0.2-0.5 a step (Sahara)
 };
 export const channelOf = (cfgPath) => /channel3/.test(cfgPath) ? 'c3' : /techreel/.test(cfgPath) ? 'tech' : 'web';

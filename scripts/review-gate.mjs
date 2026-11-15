@@ -19,6 +19,8 @@ export const SOUND_FROM = '2026-11-09', SOUND_ITEM = 18;
 // takes the calm web continuity line (35%+, scripts/showreel/flow.mjs FLOW.web) instead of 85%+
 export const CALM_FROM = '2026-11-16';
 const CALM16 = /FLOW: continuity (3[5-9]|[4-9]\d|100)%/;
+// tech reels posting from CALM_FROM too (the same note, and "not much happening around the watch"; rules-tech.md K1): 55%+ (FLOW.tech)
+const CALM16T = /FLOW: continuity (5[5-9]|[6-9]\d|100)%/;
 // JOURNEY (owner, 8 Nov 2026, design/rules-c3.md rule 9): item 19, Turns Out reels posting from JOURNEY_FROM: "19. Journey: PASS: scenes N (...); transitions: ...", N at least 4
 export const JOURNEY_FROM = '2026-11-09', JOURNEY_ITEM = 19;
 // DEPTH (owner, 8-9 Nov 2026, design/rules-c3.md rule 11): item 20, Turns Out reels posting from DEPTH_FROM: the qa.mjs DEPTH lines pasted, every world 4+ planes
@@ -48,7 +50,7 @@ export const reviewProblems = (name, e, { render = false, today = todayIST() } =
     else if (g.ev.length < 8) out.push(`${p}: item ${i} needs its evidence after "PASS:"`);
     // the Echoes engine (owner's kit, 15 Nov 2026: "a gate that blocks the kit's look is adjusted"): archival photo shots have no Kt.plane worlds, so
     // item 20 takes the film finish and the per-shot motion as its evidence instead of qa.mjs DEPTH lines (captions.json "engine": "echoes")
-    else if (NEED[i] && !(i === 2 && e.channel === 'tech') && !(i === DEPTH_ITEM && e.engine === 'echoes') && !((i === 16 && e.channel === 'web' && e.postOn >= CALM_FROM ? CALM16 : NEED[i]).test(g.ev))) out.push(`${p}: item ${i} must paste its AUTO line (${NEED[i].source})`);
+    else if (NEED[i] && !(i === 2 && e.channel === 'tech') && !(i === DEPTH_ITEM && e.engine === 'echoes') && !((i === 16 && e.postOn >= CALM_FROM && e.channel === 'web' ? CALM16 : i === 16 && e.postOn >= CALM_FROM && e.channel === 'tech' ? CALM16T : NEED[i]).test(g.ev))) out.push(`${p}: item ${i} must paste its AUTO line (${NEED[i].source})`);
   }
   return out;
 };

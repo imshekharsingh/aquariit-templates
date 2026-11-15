@@ -30,3 +30,11 @@ one topic file `techkit/scenes/<slug>.js` that sets `window.TOPIC` = {title, eye
 pills), cam(), hero(t) (world space, under the camera), labels(t) (screen space, `label()` reports boxes), panels(t)}. The topic's `"scene"`
 points at the .js; make.py assembles scene.html. Examples: scenes/watch-5atm.js, scenes/screen-120hz.js. `DIFFS=1` on `--stills` prints the
 still stretches FLOW counts against continuity.
+
+## Calm and the object (15 Nov 2026 night; rules-tech.md K1)
+No glass sheen (removed from every kit topic; Output QA SHEEN) and no box around the hero on new topics (watch-5atm; screen-120hz still has its box). A topic calls `subj(l, t, r, b)` with its subject's own rectangle under the
+current transform (capture.cjs records `window.__subject()` every 0.5 s, make.py writes `<slug>.subject0.json` next to the MP4 for Output QA HERO), and may
+declare `holds()` (window.HOLDS: a deliberate still, e.g. the title slam). Local look before the render: `KIT_SCALE=0.25 node techkit/capture.cjs
+out/techreel/<slug>/scene.html <dir> 10 0 <frames>` then `python3 scripts/qa/look.py techreel/topics/<slug>.json <dir>` (SHEEN and HERO lines).
+Example: scenes/watch-5atm.js (one watch on one track, `inWorld()` clips the near full-width world in screen space, the camera pushes to the part named).
+
