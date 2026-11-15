@@ -1,0 +1,25 @@
+{
+ "about": "Output QA HUE (scripts/qa/output-qa.py): each web reel's demo main hue in degrees, measured on its final frames with python3 scripts/qa/look.py (15 Nov 2026; owner: \"similar colour grading\"). A new web reel adds its line in the push that makes it.",
+ "reels": {
+  "showreel-34-press": {
+   "hue": 155
+  },
+  "showreel-35-list": {
+   "hue": 235
+  },
+  "showreel-36-tabs": {
+   "hue": 235
+  },
+  "showreel-37-fontswap": {
+   "hue": 225
+  },
+  "showreel-38-form": {
+   "hue": 25,
+   "world": "saffron"
+  },
+  "showreel-39-follow": {
+   "hue": 325,
+   "world": "berry"
+  }
+ }
+}

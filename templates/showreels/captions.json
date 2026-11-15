@@ -1222,7 +1222,7 @@
   "channel": "web",
   "concept": ".error { min-height: 1lh; } on the live-validation message, so the slot keeps one line of room when the message is empty and the Pay button under it never moves",
   "about": "E20 try 2 (caption question + comment ask, plus who to send it to) on E23 try 4 (dynamic fix, in sync; swapped from the counter, whose fixed version moves more than its broken one and would fail Output QA SPLIT) and the dark look: a checkout form; typing an email pops \"Enter a valid email\" and every key flips it, so the Pay button drops and jumps back one line (32 px) with a spring, a shake, a trail and a warm flash and the thumb lands on the message (\"missed!\", a red ghost where the button was); then BEFORE (coral) over AFTER (teal) typed in sync; then dashed lock guides hold the reserved line and the button while the message comes and goes",
-  "palette": "dark",
+  "palette": "saffron",
   "experiment": {
    "id": "web-comment-ask",
    "change": "E20 try 2: caption line 1 asks a one-word question (yes or never), the last line asks for it in the comments (and names who to send it to: design/improvements.md); on E23's dynamic before/after in sync (try 4) and the dark look",
@@ -1252,7 +1252,7 @@
   "channel": "web",
   "concept": "both words of the Follow / Following button in one grid cell (display: inline-grid; span { grid-area: 1 / 1 }; the word not shown visibility: hidden), so the button always has the longer word's width and Message next to it never slides",
   "about": "E20 try 3 (caption question + comment ask) on the in-sync before/after (E23 format, try 5) and the dark look: a profile page; every tap on Follow flips it to Following, the button grows and Message slides 37 px away and back with a spring, a shake, a trail and a warm flash (a red ghost where it was, \"jump!\"); then BEFORE (coral) over AFTER (teal) tapped in sync; then dashed lock guides round AFTER's two buttons while the word changes inside them",
-  "palette": "dark",
+  "palette": "berry",
   "experiment": {
    "id": "web-comment-ask",
    "change": "E20 try 3: caption line 1 asks a one-word question (yes or never), the last line asks for it in the comments; on E23's dynamic before/after in sync (try 5) and the dark look",
