@@ -16,7 +16,7 @@ on the kit engine's shared frame (techkit/base.html + techkit/scenes/screen-120h
 10. Facts: PASS: Samsung Support US (Standard 60 Hz best battery, High 120 Hz uses more battery, Adaptive up to 120 Hz) and PH (more refreshes per second need more battery power); 17 ms and 8 ms are 1 s / 60 and 1 s / 120; on screen: 60, 120 Hz, 17 ms, 8 ms, all said; npm run check passes
 11. Post data: PASS: captions.json entry (channel tech, postAt 13:00, concept, experiment tech-kit-engine); topic post: caption with the numbers and verdict, 6 keywords, 5 hashtags, sources
 12. Review file: PASS: this file, items 1-11 and 14-17
-13. After the render: PASS: run 43696499638 green (15 Nov 14:32 IST), one render, OUTPUT QA: PASS (PACE, STRAY, LOUD, SOUND, COLOUR, EDGES, NUMBERS, DEAD; LICENCE WARN: drawn, no media)
+13. After the render: PASS: re-render run 43749217132 green (16 Nov 00:36 IST, owner approved: light band fix), OUTPUT QA: PASS (SHEEN PASS 0 sweeps, best line 0.51; PACE, STRAY, LOUD -14.5 LUFS, SOUND 26/26 cues, COLOUR, EDGES, NUMBERS, DEAD PASS; HERO WARN: no subject box recorded, the scene does not call subj(); LICENCE WARN: drawn, no media). Scene on main 0d73651 had no sheen left (PR #943); local stills at phone size (1-18 s) and look.py on 415 local frames: no band, SHEEN 0. Note for the critic: the hero still sits in a lit box (the 5 ATM "box" note), not redesigned in this re-render. Earlier: run 43696499638 (15 Nov 14:32 IST) passed but predates the sheen fix.
 14. Cuts: PASS: FLOW: cuts 0 (8 declared: chapter camera moves, jolts, the title slam)
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 92% (median step 1.0, 8 declared transitions)
