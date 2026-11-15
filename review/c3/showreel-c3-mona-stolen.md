@@ -1,4 +1,4 @@
-# Review: showreel-c3-mona-stolen (c3, postOn 2026-11-16 postAt 13:00 IST; moved from Sun 15 Nov, not posted: Output QA NUMBERS on render 3, owner 15 Nov)
+# Review: showreel-c3-mona-stolen (c3, postOn 2026-11-17 postAt 13:00 IST; moved from Sun 15 Nov, not posted: Output QA NUMBERS on render 3, owner 15 Nov)
 
 First Turns Out reel on the Echoes engine: the owner's kit (design/kits/echoes_kit.zip) ported as it is into scripts/echoes/ (15 Nov 2026,
 owner: "port the owner's kit as it is ... get past our engine if it's not helping"), replacing showreel-c3-greek-colour (hidden: "one image
