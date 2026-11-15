@@ -1,0 +1,96 @@
+{
+ "name": "showreel-c3-liberty-arm",
+ "seek": "scripts/channel3/liberty-arm.html",
+ "engine": "echoes",
+ "dur": 40,
+ "fps": 30,
+ "voice": {
+  "text": "Liberty's arm arrived years before her. In 1876, only her arm and torch had crossed the ocean, for a world's fair in Philadelphia. For a small fee, visitors climbed a ladder up to the balcony around the flame. Then the arm stood in a New York park for years, raising money for her pedestal. In Paris, her giant head went on show at a world's fair, while workers built the rest. When the pedestal money ran out, Joseph Pulitzer promised to print every donor's name in his newspaper. Turns out, more than a hundred thousand people paid for her pedestal, most giving a dollar or less.",
+  "voice": "af_heart",
+  "speed": 1,
+  "gap": [
+   0.45,
+   0.4,
+   0.4,
+   0.45,
+   0.45,
+   0.5
+  ]
+ },
+ "echoes": {
+  "title": "The Arm That Came First",
+  "badge": "TURNS OUT · TRUE STORIES",
+  "lines": [
+   "Liberty's arm arrived years before her.",
+   "In 1876, only her arm and torch had crossed the ocean, for a world's fair in Philadelphia.",
+   "For a small fee, visitors climbed a ladder up to the balcony around the flame.",
+   "Then the arm stood in a New York park for years, raising money for her pedestal.",
+   "In Paris, her giant head went on show at a world's fair, while workers built the rest.",
+   "When the pedestal money ran out, Joseph Pulitzer promised to print every donor's name in his newspaper.",
+   "Turns out, more than a hundred thousand people paid for her pedestal, most giving a dollar or less."
+  ],
+  "keys": [
+   "arm",
+   "years",
+   "1876",
+   "torch",
+   "ocean",
+   "philadelphia",
+   "ladder",
+   "flame",
+   "park",
+   "money",
+   "pedestal",
+   "head",
+   "paris",
+   "built",
+   "pulitzer",
+   "name",
+   "hundred",
+   "dollar"
+  ],
+  "mono": [],
+  "titles": {},
+  "shots": [],
+  "credit": "SOURCES: NATIONAL PARK SERVICE · NYPL · WIKIPEDIA",
+  "chapters": [
+   "The Arm",
+   "The Fair",
+   "The Climb",
+   "The Park",
+   "The Head",
+   "The Appeal",
+   "The People"
+  ]
+ },
+ "caption": "Did you know the Statue of Liberty's arm arrived years before the rest of her? 🗽\n\nIn 1876 only her right arm and torch had crossed the Atlantic, shown at the Centennial Exposition in Philadelphia, where visitors bought tickets to climb a ladder up to the balcony around the flame. From 1876 to 1882 the arm stood in Madison Square Park in New York, a giant advert to raise money for her pedestal. Meanwhile her head went on show at the 1878 world's fair in Paris while workers built the rest. When the pedestal fund ran dry, Joseph Pulitzer promised to print the name of every donor in his newspaper, the World. Roughly 125,000 people gave, most about a dollar or less, and she was unveiled in New York Harbor on 28 October 1886.\n\nSend this to the friend who has climbed her crown.\n\nImages: Library of Congress, New York Public Library and Wikimedia Commons (public domain). Sources: National Park Service, NYPL, Wikipedia.",
+ "keywords": [
+  "statue of liberty arm",
+  "statue of liberty history",
+  "madison square park 1876",
+  "statue of liberty torch",
+  "joseph pulitzer pedestal",
+  "new york history facts"
+ ],
+ "hashtags": [
+  "#statueofliberty",
+  "#newyorkhistory",
+  "#historyfacts",
+  "#truestory",
+  "#didyouknow"
+ ],
+ "sources": [
+  {
+   "title": "The Arm That Clutched the Torch: the Statue of Liberty's campaign for a pedestal (New York Public Library, 2015)",
+   "url": "https://www.nypl.org/blog/2015/04/07/statue-liberty-pedestal"
+  },
+  {
+   "title": "Joseph Pulitzer (National Park Service, Statue of Liberty National Monument)",
+   "url": "https://www.nps.gov/stli/learn/historyculture/joseph-pulitzer.htm"
+  },
+  {
+   "title": "Statue of Liberty (Wikipedia, with its cited sources)",
+   "url": "https://en.wikipedia.org/wiki/Statue_of_Liberty"
+  }
+ ]
+}
