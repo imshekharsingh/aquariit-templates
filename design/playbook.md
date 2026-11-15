@@ -67,6 +67,9 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
 - **Open:** the answer's first step on screen inside 2 s; 18 s or shorter; a takeaway worth saving in the last 3 s.
 - **Time:** 13:00 IST every day from 8 Nov (owner); E15 ended (19:00 median 129 over 2 reels, inside the same ~110-130 pool).
 - **Verdict first (rule 9, promoted 11 Nov):** the answer stamped in frame 0 (MYTH / TRUE / NO BUG): watch 6.0 and 5.2 s vs 4.7, reach unchanged (117-123).
+- **Before/after shows visible motion (owner, 15 Nov):** "clearer wiggle and shift in animation has clearly helped our reels grow better" (numbers wiggle
+  104,925 reach): the broken pane jolts (spring drop, shake, trail, ghost, red flash), the fixed one holds still with a lock cue; panes in distinct
+  warm / cool colours. Two identical-looking cards read as "nothing happens" (fontswap first cut, 15 Nov). rules-web.md rule 15; Output QA SPLIT.
 
 ## What didn't
 - tech: settings lists (E17, 12-13 Nov), ended by the owner after 2 reels ("I'm not liking the content we are focusing on"): stop-tracking reached 152 with 2 saves, the best tech reel, but the channel moves to gadgets (brand collabs); scam-calls was replaced before posting.

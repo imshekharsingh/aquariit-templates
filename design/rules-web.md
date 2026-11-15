@@ -76,6 +76,11 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    topic. Evidence (Instagram collect, 11 Nov): dynamic before/after topics: numbers wiggle 104,925 reach, stagger 6,053, overscroll 4,645,
    flash 3,808, transform stutter 2,685; subtle or invisible ones: INP 272, squash 320, smooth 429, springs 440, hover 509. Today's press reel
    (a 4% dip, 12 Nov) failed this test and was rebuilt; owner: "it doesn't engage me".
+   **Before/after must show visible motion: wiggle and shift (owner, 15 Nov 2026: "clearer wiggle and shift in animation has clearly helped our reels
+   grow better").** When BEFORE and AFTER sit side by side, the broken pane jolts on every failure (the real shift shown as a fall from where it was,
+   a spring past it, a short shake, a trail, a ghost outline of the old place, a warm red flash) and the fixed pane stays rock-steady with a calm
+   lock cue (guides, a check chip "0 PX SHIFT"); BEFORE warm coral, AFTER fresh green / teal, never two matching cards. Exaggerate the motion,
+   never the fact. Output QA SPLIT fails a reel whose BEFORE pane moves under 1.8x its AFTER pane (fontswap first cut 1.31x, rebuild 1.9x+).
 16. **Use the whole frame; the subject of the fix is the biggest thing on screen (owner, 14 Nov 2026: "it seems we are squeezing most of it
    in one place of the screen"; "web reels' main elements colouring can be made a bit more vibrant").** The frame is filled top to bottom inside
    the safe zone (KM.ZONES, CSS px of 540x960): the top zone (125-290) holds the hook, then the counters, the code or the slow-motion panel; the

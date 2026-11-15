@@ -24,21 +24,22 @@
    0.6
   ]
  },
- "caption": "Has a page ever jumped while you were reading it? yes or never 👇\n\nA page draws its text in a backup font first (Arial, say) and swaps in the web font when it lands. The web font is wider, so every line rewraps and everything under it moves, right as you go to tap. The fix is one descriptor: give the backup font its own @font-face with src: local(\"Arial\") and size-adjust, a percentage that scales its glyphs to the web font's width (130% for Unbounded over Arial), and list it after the web font in font-family. The letters still change when the font lands, but the lines stay where they were. size-adjust works in Chrome and Firefox 92+ and Safari 17+.\nSave it for your next font, or send it to whoever picked yours. And answer in the comments: yes or never?",
+ "caption": "Has a page ever jumped while you were reading it? yes or never 👇\n\nWith font-display: swap, a page draws its text in a backup font first (Arial, say) and swaps in the web font when it lands. The web font is wider, so every line rewraps and everything under it moves, right as you go to tap. That is layout shift, the CLS in Core Web Vitals. The fix is one descriptor: give the backup font its own @font-face with src: local(\"Arial\") and size-adjust, a percentage that scales its glyphs to the web font's width (130% for Unbounded over Arial), and list it after the web font in font-family. The letters still change when the font lands, but the lines stay where they were. size-adjust works in Chrome and Firefox 92+ and Safari 17+.\nSave it for your next font, or send it to whoever picked yours. And answer in the comments: yes or never?",
  "keywords": [
-  "font swap layout shift",
-  "size-adjust CSS",
-  "font fallback size-adjust",
-  "web font layout shift fix",
-  "CLS fonts",
-  "CSS tips"
+  "font swap layout shift fix",
+  "size-adjust font fallback",
+  "font-display swap CLS",
+  "web fonts layout shift",
+  "Core Web Vitals CLS",
+  "web font loading",
+  "frontend tips"
  ],
  "hashtags": [
-  "#csstips",
-  "#webperformance",
   "#webfonts",
-  "#frontenddev",
-  "#uidesign"
+  "#corewebvitals",
+  "#webperformance",
+  "#csstips",
+  "#frontendtips"
  ],
  "sources": [
   {

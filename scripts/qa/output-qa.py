@@ -34,6 +34,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'vibrancy': '13 Nov "the menu grid ... feels slightly dull"',
     'spread': '14 Nov "it seems we are squeezing most of it in one place of the screen"',
     'demo': '14 Nov "the actual frame where everything is flowing with animation to show the difference looks faded grey"',
+    'split': '15 Nov "doesn\'t show the effect better; one cannot tell if something is really happening" (BEFORE and AFTER looked identical)',
     'sync': '13 Nov tech IP68 "the voice names an item (\'or the sauna\') while its card is still empty"',
     'grade': '13 Nov Turns Out "I don\'t find the colour selection better" (fog wash, white Taj on a pale sky)',
     'licence': '14 Nov "yes to free real images" (design/safety.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
@@ -51,7 +52,12 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          mute_frac=.02, grade_dl=.2, wash_p5=.3, wash_frac=.2,
          bulk_v=.82, bulk_s=.2, bulk_k=7, bulk_px=150, vib_s=.35, vib_v=.35, vib_med=.014,
          spr_y=(.589, .818), spr_k=8, spr_dl=14, spr_frac=.02, spr_max=.10,
-         demo_lit=.12, demo_grey=.25, demo_s=.35, demo_m=32, demo_c=64, demo_box=(24, 125, 516, 672))
+         demo_lit=.12, demo_grey=.25, demo_s=.35, demo_m=32, demo_c=64, demo_box=(24, 125, 516, 672),
+         split_ratio=1.8, split_min=.05, split_op=.9)
+# SPLIT (15 Nov 2026, any reel whose scene marks [data-pane="before"] and [data-pane="after"]; the render records their boxes every 0.1 s), calibrated
+# on showreel-37-fontswap's split window at 135x240, 10 fps: the share of pixels inside each pane (inset 1/16) that change by 20+ over 0.2 s, while
+# both panes are fully shown, averaged. The first cut the owner could not tell apart: BEFORE 0.167, AFTER 0.125 (1.34x; p90 1.72x); the jolt
+# rebuild 0.267 / 0.132 (2.02x). FAIL under 1.8x or when BEFORE moves under 5%: the broken pane must move visibly more than the fixed one.
 # DEMO (15 Nov 2026, web only), calibrated on stills at 270x480 every 0.5 s inside the subject's box ([data-subject], recorded by the render):
 # median saturation of its lit pixels (V > .12; the faded-grey showreel-36-tabs 0.21, after the vivid kit 0.48; the newweb glass template 0.68 / 0.72),
 # Hasler-Suesstrunk colourfulness (glass template 24 before, 42 after; tabs 41 / 48) and the luminance spread p95-p5 in 0-255 (glass template 54 / 87,
@@ -589,6 +595,25 @@ def mute_check(G, fps, m, heard):
          + (f'; the broken "before" {eb:.1%} ({b[0]:.1f}-{b[1]:.1f} s)' if b else ''))
 
 
+def split_check(G, fps, mp4, css_w=540):
+    import glob
+    rows = []
+    for f in sorted(glob.glob(os.path.splitext(mp4)[0] + '.panes*.json')): rows += json.load(open(f))
+    if not rows: line('SPLIT', 'SKIP', 'no [data-pane] before / after panes recorded'); return
+    h, w = G.shape[1:3]; sc = w / css_w; lag = max(1, int(round(.2 * fps))); at = {int(round(r[0] * fps)): {p[0]: p[1:] for p in r[1]} for r in rows}; M = {'before': [], 'after': []}
+    for k in range(lag, len(G)):
+        bx = at.get(k)
+        if not bx or 'before' not in bx or 'after' not in bx or min(bx['before'][4], bx['after'][4]) < T['split_op']: continue
+        for n in M:
+            l, t, r, b = [int(round(v * sc)) for v in bx[n][:4]]; dw, dh = (r - l) // 16, (b - t) // 16; l, t, r, b = max(0, l + dw), max(0, t + dh), min(w, r - dw), min(h, b - dh)
+            if r - l > 4 and b - t > 4: M[n].append(float((np.abs(G[k, t:b, l:r].astype(np.int16) - G[k - lag, t:b, l:r].astype(np.int16)) > T['vis_px']).mean()))
+    if len(M['before']) < 5: line('SPLIT', 'SKIP', f'BEFORE and AFTER fully shown together in under 5 samples ({len(M["before"])})'); return
+    mb, ma = float(np.mean(M['before'])), float(np.mean(M['after'])); q = mb / max(ma, 1e-3)
+    bad = q < T['split_ratio'] or mb < T['split_min']
+    line('SPLIT', 'FAIL' if bad else 'PASS', f'over {len(M["before"])} samples side by side: BEFORE moves {mb:.1%} of its pane in 0.2 s, AFTER {ma:.1%}: {q:.2f}x '
+         f'(at least {T["split_ratio"]}x and {T["split_min"]:.0%}; the 15 Nov fontswap first cut the owner could not tell apart 1.34x)')
+
+
 def demo_boxes(mp4, qa):
     import glob
     rows = []
@@ -646,6 +671,7 @@ def main():
     dead_check(G, fps, mp4, dur)
     if qa.get('mute'): mute_check(G, fps, qa['mute'], heard)
     else: line('MUTE', 'SKIP' if ch != 'web' else 'WARN', 'no "qa": {"mute": {before, after}} in the config' + (' (web: declare the before/after moments)' if ch == 'web' else ''))
+    split_check(G, fps, mp4)
     verdict = 'OUTPUT QA: PASS' if not fails else f'OUTPUT QA: FAIL ({len(fails)}): ' + ' | '.join(f[:160] for f in fails)
     print(verdict)
     if summary:
