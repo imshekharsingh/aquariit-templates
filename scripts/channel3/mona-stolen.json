@@ -208,7 +208,8 @@
     "from": 1911,
     "to": 1913,
     "stampTxt": "OVER TWO YEARS",
-    "bg": "wall"
+    "bg": "wall",
+    "bgBlur": 9
    },
    {
     "line": 5,
