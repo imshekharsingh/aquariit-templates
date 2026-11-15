@@ -16,7 +16,7 @@ on the kit engine's shared frame (techkit/base.html + techkit/scenes/screen-120h
 10. Facts: PASS: Samsung Support US (Standard 60 Hz best battery, High 120 Hz uses more battery, Adaptive up to 120 Hz) and PH (more refreshes per second need more battery power); 17 ms and 8 ms are 1 s / 60 and 1 s / 120; on screen: 60, 120 Hz, 17 ms, 8 ms, all said; npm run check passes
 11. Post data: PASS: captions.json entry (channel tech, postAt 13:00, concept, experiment tech-kit-engine); topic post: caption with the numbers and verdict, 6 keywords, 5 hashtags, sources
 12. Review file: PASS: this file, items 1-11 and 14-17
-13. After the render: PENDING
+13. After the render: PASS: run 43696499638 green (15 Nov 14:32 IST), one render, OUTPUT QA: PASS (PACE, STRAY, LOUD, SOUND, COLOUR, EDGES, NUMBERS, DEAD; LICENCE WARN: drawn, no media)
 14. Cuts: PASS: FLOW: cuts 0 (8 declared: chapter camera moves, jolts, the title slam)
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 92% (median step 1.0, 8 declared transitions)
