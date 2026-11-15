@@ -75,12 +75,12 @@ function timeline(vw){
         if(k<v.length&&NW(v[k].w)===want){times.push([v[k].s,v[k].e]);j=k+1}else{const a=v[Math.min(j,v.length-1)];times.push([a.s,a.e]);j=Math.min(j+1,v.length)}}}}
   else{let t=.35;times=[];lines.forEach((L,li)=>{L.forEach(w=>{const d=(w.replace(/[^\w]/g,'').length+1.6)*.062;times.push([t,t+d]);t+=d+(/[.?!]$/.test(w)?.5:/,$/.test(w)?.22:.05)});t+=.15})}
   let k=0;const scenes=lines.map(L=>{const words=L.map(w=>{const [a,b]=times[k++];return{w,t0:+a.toFixed(3),t1:+b.toFixed(3)}});return{start:words[0].t0,end:words[words.length-1].t1,words}});
-  const lastW=scenes[scenes.length-1].end,total=vw&&vw.length?+Math.min(E.dur,lastW+3.0).toFixed(3):E.dur;const W=(li,key)=>{let [kk,n]=key.split('#');n=+(n||0);const h=scenes[li].words.filter(x=>NW(x.w).startsWith(kk.toLowerCase()));return (h[n]||h[0]||scenes[li].words[0]).t0};
+  const lastW=scenes[scenes.length-1].end,total=vw&&vw.length?+Math.min(E.dur,lastW+1.4).toFixed(3):E.dur;const W=(li,key)=>{let [kk,n]=key.split('#');n=+(n||0);const h=scenes[li].words.filter(x=>NW(x.w).startsWith(kk.toLowerCase()));return (h[n]||h[0]||scenes[li].words[0]).t0};
   const shots=E.shots.map(s=>{const sh=Object.assign({},s);if(s.type==='arch'&&s.stamp&&typeof s.stamp==='object'){const k=pick(s.img);sh.stamp=s.stamp[k]||s.stamp['*']||''}sh.t0=s.line===0&&s.at==='start'?0:s.at==='start'?scenes[s.line].start-.35:W(s.line,s.at)-.25;if(s.words)sh.wt=s.words.map(x=>W(s.line,x));if(s.circleAt)sh.ct=W(s.line,s.circleAt);sh.t0=+sh.t0.toFixed(3);return sh});
   shots.forEach((sh,i)=>sh.t1=+(i+1<shots.length?shots[i+1].t0+.7:E.dur).toFixed(3));
   if(EP)shots.forEach((sh,i)=>{const o=EP.shots[i];['el','st','key','filt','fh','fw'].forEach(k=>{if(o[k]!==undefined)sh[k]=o[k]})});
   EP={total,scenes,shots};
-  // after the last word + 3 s the video ends (the sound is that long and the mux is -shortest): the frames past it are never seen
+  // after the last word + 1.4 s the video ends (run 43696792618: a 3 s tail failed Output QA DEAD) (the sound is that long and the mux is -shortest): the frames past it are never seen
   window.HOLDS=total<E.dur-.05?[[+total.toFixed(2),E.dur]]:[];
   window.TRANSITIONS=shots.slice(1).map(s=>[s.t0,+(s.t0+.7).toFixed(2),'crossfade']);
   const cov=shots[0].stamp?.35+1.0+.3:1.2;window.COVER=+Math.min(cov,shots[1]?shots[1].t0-.1:cov).toFixed(2);
@@ -200,7 +200,7 @@ window.render=function(T){if(!EP)timeline(null);build();
   if(ci>=0){const c=CH[ci],p=eoc(prog(T,c.t0-.05,c.t0+.25));$('#cap').style.opacity=clamp(p*1.5);$('#cap').style.transform=`translateY(${(1-p)*18}px)`;
     [...$('#cap').children].forEach((sp,i)=>{const w=c.words[i],on=T>=w.t0-.04,k=sp.dataset.k==='1';sp.style.color=on?(k?'#ffd56a':'#fff7e6'):'rgba(255,247,230,.38)';sp.style.fontStyle=k?'italic':'normal'})}
   else $('#cap').style.opacity=0;
-  $('#src').textContent=E.credit||'';$('#src').style.opacity=eoc(prog(T,EP.total-3.2,EP.total-2.6));
+  $('#src').textContent=E.credit||'';$('#src').style.opacity=eoc(prog(T,EP.total-1.25,EP.total-.85));$('#src').style.transform=`translateY(${(1-eoc(prog(T,EP.total-1.25,EP.total-.85)))*16}px)`;
   {const li=Math.max(0,EP.scenes.findLastIndex(x=>T>=x.start-.4)),ch=(E.chapters||[])[li];const R=['I','II','III','IV','V','VI','VII','VIII'];
    const h=ch?`<b>CHAPTER ${R[li]}</b>${ch}`:E.title;if($('#chap').dataset.h!==h){$('#chap').innerHTML=h;$('#chap').dataset.h=h}
    const st=EP.scenes[li]?EP.scenes[li].start-.4:0;$('#chap').style.opacity=li===0?1:eoc(prog(T,st,st+.5))}
