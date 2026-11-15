@@ -43,7 +43,7 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    9.5-14.7 s and saves 2.2-4.5% (numbers 103,105 · stagger 5,869 · overscroll 4,496 · transform 2,670 at 9.5 s · balance 1,677 at 12.6 s
    is the exception); every reel since 1 Nov is a layout fix: reach 305-2,267 (median 1,316), avg watch 5.9-11.8 s (median 8.7 s of ~20),
    saves 0.3-3.3% (median 1.3%). Hold and saves fell together, and reach followed.
-12. **E18 (12-14 Nov 2026) overrides the look: the dark theme `KM.theme('dark')` with a motion-feel single fix (design/experiments.md E18); after the 3 reels the audit keeps or drops it.** Otherwise: **Style C, "Glass and light", through the kit theme; render at most 30 GitHub minutes for a 20 s reel, measured** (owner, 8 Nov 2026:
+12. **The dark theme `KM.theme('dark')` is the web look (E18 KEPT, 15 Nov 2026: list 2,545 (+65%) and tabs 1,860 (+20%) vs the glass median 1,546, press 1,532 (-1%); 2 of 3 above, watch 10-12 s vs 8.8). The next look test is the background alone (dark vs glass on the same topic type).** Before 15 Nov: **E18 (12-14 Nov 2026) overrode the look: the dark theme `KM.theme('dark')` with a motion-feel single fix (design/experiments.md E18); after the 3 reels the audit keeps or drops it.** Otherwise: **Style C, "Glass and light", through the kit theme; render at most 30 GitHub minutes for a 20 s reel, measured** (owner, 8 Nov 2026:
    "Let's go with C."). Every web reel starts from newweb.mjs (normal or `--details N`), whose starters call `KM.theme('glass')`
    (scripts/explainer/kitmotion.js): frosted panes at three depths over slow coloured light, a soft grade, Sora + DM Mono, crisp white type.
    Cheap glass only: no backdrop-filter, no live `filter: blur` on big layers, no full-frame mask (KM.lights paints the light in a small canvas,
@@ -126,11 +126,15 @@ details-format printed again (2 WINs, 1 LOSE): it is rule 13 since 12 Nov. RULE 
 (every reel passes them); the lever under test is how the fix is shown (E23).
 
 
+**ESCALATE 15 Nov** (median reach 1,562 over the last 7 vs 2,000; watch 10 s; saves 2%; ALARM two days running): the window's floor is the old
+carousel (840) and menus (1,236); the in-sync before/after (E23) is the best run of the week (list 2,545, tabs 1,860 at ~24 h), so it continues on a
+new topic type (a page-load annoyance, not a tap: the font swap, showreel-37-fontswap) with the caption change E20 (a one-word question and a comment
+ask) as the day's one experiment. E18 read today: KEPT (rule 12). PROMOTE details-format printed again: rule 13 since 12 Nov.
+
 ## Channel brief (moved from CLAUDE.md, 14 Nov 2026)
 - How a web reel is made: design/runbook-reels.md ("Making a web reel"); plan, series and craft bar: design/webin20sec.md. Benchmark is
   @techin20sec; the daily audit compares both (design/experiments.md, "Results log").
-- Look: style C, "Glass and light", from 8 Nov 2026 (owner: "Let's go with C."; EXCEPT the E18 test, 12-14 Nov 2026: dark theme + a
-  motion-feel single fix, design/experiments.md), through the kit theme (`KM.theme('glass')`, the default of both newweb.mjs modes: frosted
+- Look: the dark theme from 15 Nov 2026 (E18 kept, rule 12); style C, "Glass and light" ran 8-11 Nov 2026 (owner: "Let's go with C."), through the kit theme (`KM.theme('glass')`, the default of both newweb.mjs modes: frosted
   panes at three depths over drifting coloured light, a soft grade, Sora + DM Mono).
 - Cheap glass only (no backdrop-filter, no live blur on big layers, no full-frame mask); render at most 30 GitHub minutes for 20 s (rule 12).
 - One reel EVERY day at 13:00 IST, built that morning by the daily run.

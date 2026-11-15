@@ -186,6 +186,11 @@
 #tabs .bar button.on{opacity:1}
 #tabs .bad button.on{border-bottom-color:currentColor}
 #tabs .ink{position:absolute;left:0;bottom:-1px;width:1px;height:3px;background:currentColor;transform-origin:left;transition:transform .3s}
+#fontswap .page{padding:12px 4px}
+#fontswap h4{margin:0 0 10px;font:700 19px/26px Arial,Helvetica,"Liberation Sans",Roboto,sans-serif}
+#fontswap h4.web{font-family:Verdana,"DejaVu Sans","Segoe UI",Tahoma,sans-serif;letter-spacing:.03em}
+#fontswap .fix h4:not(.web){font-family:"Demo Fallback",Arial,sans-serif}
+#fontswap .go{border:0;border-radius:18px;padding:8px 16px;font-weight:700;background:#5ff2b0;color:#0b0b10}
 </style>
 </head>
 <body>
@@ -195,6 +200,25 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="fontswap">
+  <p class="no">Nº 27</p>
+  <h2>Why does your text jump when the font loads?</h2>
+  <p class="why">The page draws text in a backup font, then swaps in the web font when it arrives. A wider web font rewraps every line, so the content under it jumps. An @font-face for the backup font with size-adjust scales its glyphs to the web font's width, so the lines wrap the same before and after the swap. size-adjust works in Chrome and Firefox 92+ and Safari 17+ (MDN, BCD).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane bad"><span class="tag">Plain backup font</span><div class="page"><h4 class="web">Your parcel is on its way and arrives by 6 pm</h4><button type="button" class="go">Track parcel</button></div></div><div class="pane fix"><span class="tag ok">Backup font with size-adjust</span><div class="page"><h4 class="web">Your parcel is on its way and arrives by 6 pm</h4><button type="button" class="go">Track parcel</button></div></div>
+</div>
+<p><button type="button" class="reload">Reload both</button></p>
+<p class="note">Tap Reload. Each page draws its headline in a backup font first and swaps in the wider web font 0.7 s later. On the left the lines rewrap and the button jumps; on the right the backup font is scaled with size-adjust (measured here from the two fonts, as a build tool does), so the lines stay put.</p></div>
+  <div class="code"><pre><code>@font-face {
+  font-family: Fallback;
+  src: local(&quot;Arial&quot;);
+  size-adjust: 130%; /* web font width / Arial width */
+}
+h1 { font-family: Unbounded, Fallback; }</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/size-adjust" rel="noopener">Source: MDN, size-adjust</a></p>
+</article>
 
 <article class="tip" id="tabs">
   <p class="no">Nº 26</p>
@@ -677,11 +701,17 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>24 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>25 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "fontswap": function(root){ var h = root.querySelectorAll('h4'), timer = 0;
+  var c = document.createElement('canvas').getContext('2d'), txt = h[0].textContent, cs = getComputedStyle(h[0]);
+  c.font = "700 19px " + cs.fontFamily; var w1 = c.measureText(txt).width + txt.length * .57; c.font = '700 19px Arial,Helvetica,"Liberation Sans",Roboto,sans-serif'; var w0 = c.measureText(txt).width;
+  var st = document.createElement('style'); st.textContent = '@font-face{font-family:"Demo Fallback";src:local("Arial"),local("Helvetica"),local("Liberation Sans"),local("Roboto");size-adjust:' + Math.round(w1 / w0 * 100) + '%}'; document.head.appendChild(st);
+  root.querySelector('.reload').addEventListener('click', function(){ clearTimeout(timer); h.forEach(function(e){ e.classList.remove('web'); });
+    timer = setTimeout(function(){ h.forEach(function(e){ e.classList.add('web'); }); }, 700); }); },
     "tabs": function(root){ root.querySelectorAll('.bar').forEach(function(bar){ var ink = bar.querySelector('.ink');
     function go(b){ bar.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on', x === b); });
       if (ink) ink.style.transform = 'translateX(' + b.offsetLeft + 'px) scaleX(' + b.offsetWidth + ')'; }

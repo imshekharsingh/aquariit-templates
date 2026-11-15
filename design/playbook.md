@@ -50,6 +50,9 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
   modes), cheap glass path only (style C's test with real backdrop blur: 52 GitHub minutes for 8 s; style A ~210 for 20 s). From the Sun 8 Nov
   13:00 details-format reel on (the 06:47 daily run builds it); sample: showreel-style-c-details, 21.2 s in 15 GitHub minutes (rules-web.md rule 12).
 
+- **Look KEPT (15 Nov, E18):** the dark theme with one dynamic fix: list 2,545 (+65%) and tabs 1,860 (+20%) vs the glass median 1,546; press 1,532 (-1%). rules-web.md rule 12.
+- **Under test (E23, 3 of 4 so far):** broken and fixed versions moving in sync, BEFORE over AFTER (list 2,545 WIN at 24 h, tabs 1,860 at ~24 h; Mon 16 is the 4th).
+
 ### Turns Out (c3)
 - **Topic:** a world-famous thing everyone pictures one way, shown in a state that looks wrong: a visible transformation (Liberty copper-brown 1,051 reach, 15.2 s watched; the green Sahara 1,041 at 5 h).
 - **Frame 0:** the payoff image in frame 0, the "wait, what?" picture (E14, running).
@@ -72,6 +75,7 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
 - web: a big hit does not carry the account (NÂº 09's 97k, then NÂº 10 at 312 at ~16 h): reach follows the topic.
 - c3: abstract "why" topics with nothing to see change (why 60 minutes 118, why the sky is blue 153).
 - c3: a transformation people don't recognise (flamingos, a grey chick in frame 0: 120 at 5 h vs the Sahara's 1,041).
+- c3: the GUESS format (E19), 2 LOSEs at 24 h: eiffel-red 1,141 vs 1,150 (-1%), taj-mud 136 vs 1,150 (-88%); 2 saves + shares at most, so a question alone does not make viewers act. The story engine replaced it from 15 Nov.
 - tech: news reels (Siri 8, MacBook 29, Discord 35); the 31 Oct-6 Nov test missed all three targets (median reach 115 vs 300).
 
 - 7 Nov 2026, web plateau: since 1 Nov every web reel is a layout fix and reach sits at 305-2,267 (median 1,316), avg watch ~8.7 s, saves ~1.3%.
