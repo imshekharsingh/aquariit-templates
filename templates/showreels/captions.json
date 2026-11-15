@@ -1156,7 +1156,8 @@
    "id": "tech-story-long",
    "change": "40-45 s story format",
    "vs": "median"
-  }
+  },
+  "hidden": true
  },
  "showreel-c3-greek-colour": {
   "channel": "c3",
@@ -1192,6 +1193,17 @@
   "experiment": {
    "id": "web-comment-ask",
    "change": "E20 try 1: caption line 1 asks a one-word question (yes or never), the last line asks for it in the comments; on E23's dynamic before/after in sync (try 3) and the dark look",
+   "vs": "median"
+  }
+ },
+ "showreel-tech-night-mode": {
+  "channel": "tech",
+  "postOn": "2026-11-15",
+  "postAt": "13:00",
+  "concept": "Kit engine (techkit/, the owner's motion kit ported), 43 s, specs decoded, phone camera, global. How Night mode works: the payoff split (one quick shot vs Night mode) in frame 0; the problem (few specks of light: grainy, dark, blurry); a burst of 15 frames; 15 x 1/3 s = 5 s (Google Research); align, merge, brighten as a lit step flow; why merging works (grain random, the city stays put) in two loupes; recap.",
+  "experiment": {
+   "id": "tech-kit-engine",
+   "change": "the owner's motion kit ported as the tech engine",
    "vs": "median"
   }
  }

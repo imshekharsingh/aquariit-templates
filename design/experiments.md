@@ -386,3 +386,12 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
   median watch seconds as well), at 24 h, against the channel's median of the last 7 reels.
 - Try 1: showreel-tech-charger-watts (Sun 15 Nov, 42 s). Decides after the week: WIN = saves per 1k at least 2x the median AND watch
   seconds above the 20 s median; keep the long class if 4 of 7 WIN, else back to 20 s.
+
+## E26 · @techin20sec: the owner's motion kit as the tech engine (owner, 15 Nov 2026: "port the owner's kit as it is"; from Sun 15 Nov)
+- Change: techkit/ (design/kits/motion_kit.zip ported: HTML scene + window.render(t), cue words, 7-beat arc, a chip and an animated panel per
+  chapter, numbered step flows, camera move every chapter, the kit's sound design), content-rich topics with a real mechanism shown as steps.
+  Config `"experiment": {"id": "tech-kit-engine", ...}`. Try 1: showreel-tech-night-mode (Sun 15 Nov, 43 s, specs decoded, phone camera,
+  global); it replaces charger-watts as E24 try 3 and E25 try 1 (long class).
+- Decides at 24 h and 72 h against the channel's last 7: WIN = reach 150+ or saves + shares 3+, and watch seconds above the 20 s median.
+  Keep the kit engine at 2 WINs of 3 (rules-tech.md), else change the topic style before the engine.
+

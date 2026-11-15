@@ -1,0 +1,499 @@
+{
+ "slug": "night-mode",
+ "engine": "kit",
+ "scene": "techkit/scenes/night-mode.html",
+ "topic": "phone camera Night mode",
+ "format": "SPECS DECODED",
+ "audience": "global",
+ "gadget": "phone camera",
+ "voice": "af_heart",
+ "speed": 1.05,
+ "max_speed": 1.11,
+ "gap": 0.45,
+ "max_end": 43.0,
+ "experiment": {
+  "id": "tech-kit-engine",
+  "change": "the owner's motion kit ported as the tech engine (techkit/: kit scene architecture, 7-beat arc, cue-synced panels, 43 s); also E25 try 1 (long class) and E24 try 3",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Why does your phone ask you to hold still... for a few seconds, just to take one night photo?",
+   "beat": "question",
+   "chip": "THE QUESTION",
+   "source": 2
+  },
+  {
+   "text": "In the dark, the sensor catches only a few specks of light. One quick shot comes out grainy. Dark. Blurry.",
+   "beat": "problem",
+   "chip": "THE PROBLEM"
+  },
+  {
+   "text": "Night mode fixes that. Instead of one photo, it shoots a fast burst of frames.",
+   "beat": "fix",
+   "chip": "THE FIX"
+  },
+  {
+   "text": "Google's Pixel takes up to fifteen frames, about a third of a second each. That's five seconds of light.",
+   "beat": "step",
+   "chip": "FIFTEEN FRAMES",
+   "source": 0
+  },
+  {
+   "text": "Then it aligns each frame to cancel your shaky hand, merges them to wash out grain, then brightens.",
+   "beat": "step",
+   "chip": "STEP BY STEP",
+   "source": 0
+  },
+  {
+   "text": "Why does merging work? Grain is random, it changes every frame. The city stays put, so it adds up.",
+   "beat": "surprise",
+   "chip": "WHY IT WORKS",
+   "source": 0
+  },
+  {
+   "text": "Burst. Align. Merge. Hold still... that's Night mode.",
+   "beat": "takeaway",
+   "chip": "RECAP"
+  }
+ ],
+ "cues": {
+  "q_still": [
+   0,
+   "still"
+  ],
+  "q_seconds": [
+   0,
+   "seconds"
+  ],
+  "q_night": [
+   0,
+   "night"
+  ],
+  "sensor": [
+   1,
+   "sensor"
+  ],
+  "specks": [
+   1,
+   "specks"
+  ],
+  "quick": [
+   1,
+   "quick"
+  ],
+  "grainy": [
+   1,
+   "grainy"
+  ],
+  "dark": [
+   1,
+   "Dark",
+   1
+  ],
+  "blurry": [
+   1,
+   "Blurry"
+  ],
+  "fix": [
+   2,
+   "fixes"
+  ],
+  "burst": [
+   2,
+   "burst"
+  ],
+  "frames": [
+   2,
+   "frames"
+  ],
+  "pixel": [
+   3,
+   "Pixel"
+  ],
+  "fifteen": [
+   3,
+   "fifteen"
+  ],
+  "third": [
+   3,
+   "third"
+  ],
+  "five": [
+   3,
+   "five"
+  ],
+  "light3": [
+   3,
+   "light"
+  ],
+  "align": [
+   4,
+   "aligns"
+  ],
+  "shaky": [
+   4,
+   "shaky"
+  ],
+  "merge": [
+   4,
+   "merges"
+  ],
+  "wash": [
+   4,
+   "wash"
+  ],
+  "brighten": [
+   4,
+   "brightens"
+  ],
+  "why": [
+   5,
+   "merging"
+  ],
+  "random": [
+   5,
+   "random"
+  ],
+  "changes": [
+   5,
+   "changes"
+  ],
+  "city": [
+   5,
+   "city"
+  ],
+  "adds": [
+   5,
+   "adds"
+  ],
+  "r_burst": [
+   6,
+   "Burst"
+  ],
+  "r_align": [
+   6,
+   "Align"
+  ],
+  "r_merge": [
+   6,
+   "Merge"
+  ],
+  "r_hold": [
+   6,
+   "Hold"
+  ],
+  "final": [
+   6,
+   "that's"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "q_still",
+   "pop",
+   0.6,
+   0
+  ],
+  [
+   "q_night",
+   "blip",
+   0.5,
+   0.3,
+   {
+    "f": 880,
+    "f2": 1320
+   }
+  ],
+  [
+   "sensor",
+   "tick",
+   0.4,
+   -0.3
+  ],
+  [
+   "specks",
+   "ticks",
+   0.35,
+   0.2,
+   {
+    "n": 8,
+    "step": 0.11,
+    "f": 2600
+   }
+  ],
+  [
+   "grainy",
+   "thud",
+   0.7,
+   0
+  ],
+  [
+   "dark",
+   "thud",
+   0.7,
+   0
+  ],
+  [
+   "blurry",
+   "thud",
+   0.7,
+   0
+  ],
+  [
+   "fix",
+   "riser_end",
+   0.25,
+   0
+  ],
+  [
+   "burst",
+   "shutters",
+   0.55,
+   0,
+   {
+    "n": 15,
+    "step": 0.085,
+    "off": -0.05
+   }
+  ],
+  [
+   "fifteen",
+   "chime",
+   0.32,
+   0,
+   {
+    "notes": [
+     "E6",
+     "G#6",
+     "B6"
+    ]
+   }
+  ],
+  [
+   "fifteen",
+   "fill",
+   0.3,
+   0,
+   {
+    "n": 15,
+    "step": 0.07,
+    "off": -0.3
+   }
+  ],
+  [
+   "third",
+   "pop",
+   0.55,
+   -0.4
+  ],
+  [
+   "five",
+   "chime",
+   0.34,
+   0.3,
+   {
+    "notes": [
+     "A5",
+     "C#6",
+     "E6",
+     "A6"
+    ]
+   }
+  ],
+  [
+   "align",
+   "snap",
+   0.6,
+   -0.3
+  ],
+  [
+   "align",
+   "whoosh",
+   0.18,
+   0.3,
+   {
+    "d": 0.6,
+    "off": 0.05
+   }
+  ],
+  [
+   "shaky",
+   "tick",
+   0.4,
+   0
+  ],
+  [
+   "merge",
+   "whoosh",
+   0.22,
+   0,
+   {
+    "d": 0.8,
+    "off": -0.1
+   }
+  ],
+  [
+   "merge",
+   "pop",
+   0.55,
+   0.2,
+   {
+    "off": 0.3
+   }
+  ],
+  [
+   "brighten",
+   "chime",
+   0.36,
+   0,
+   {
+    "notes": [
+     "C6",
+     "E6",
+     "G6",
+     "C7"
+    ]
+   }
+  ],
+  [
+   "random",
+   "zaps",
+   0.3,
+   0,
+   {
+    "n": 10,
+    "step": 0.07
+   }
+  ],
+  [
+   "city",
+   "blip",
+   0.5,
+   0.4,
+   {
+    "f": 660,
+    "f2": 990
+   }
+  ],
+  [
+   "adds",
+   "fill",
+   0.3,
+   0.3,
+   {
+    "n": 6,
+    "step": 0.12,
+    "off": -0.3
+   }
+  ],
+  [
+   "adds",
+   "chime",
+   0.3,
+   0.3,
+   {
+    "notes": [
+     "A5",
+     "E6"
+    ],
+    "off": 0.5
+   }
+  ],
+  [
+   "r_burst",
+   "pop",
+   0.55,
+   -0.4
+  ],
+  [
+   "r_align",
+   "pop",
+   0.55,
+   0.4
+  ],
+  [
+   "r_merge",
+   "pop",
+   0.55,
+   -0.4
+  ],
+  [
+   "r_hold",
+   "pop",
+   0.55,
+   0.4
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.4,
+   0,
+   {
+    "notes": [
+     "A4",
+     "C#5",
+     "E5",
+     "B5",
+     "E6"
+    ],
+    "d": 3.2
+   }
+  ]
+ ],
+ "say": {},
+ "post": {
+  "title": "How phone Night mode works",
+  "caption": "Why your phone says \"hold still\" at night 🌙📸\n\nNight mode doesn't take one photo. It takes a burst: Google's Night Sight on Pixel captures up to 15 frames (about 1/3 s each when handheld, so around 5 s of light), aligns them to cancel your hand shake, merges them and brightens the result. Grain is random and changes every frame, the scene doesn't, so merging washes the grain out and keeps the detail. iPhone Night mode works on the same idea and may take a quick shot or several seconds, depending on how dark it is.\n\nTip: brace your elbows or lean on something and keep still until it finishes; a moving subject is the one thing it can't merge cleanly. Send this to the friend whose night photos always come out blurry.\n\nSources: Google Research, \"Night Sight: Seeing in the Dark on Pixel Phones\" (2018); Apple Support, \"Use Night mode on your iPhone\".",
+  "keywords": [
+   "how does night mode work",
+   "night mode phone camera",
+   "why night photos are blurry",
+   "night sight explained",
+   "low light phone photography",
+   "computational photography explained"
+  ],
+  "hashtags": [
+   "#nightmode",
+   "#phonephotography",
+   "#nightphotography",
+   "#cameratips",
+   "#techexplained"
+  ],
+  "sources": [
+   {
+    "url": "https://research.google/blog/night-sight-seeing-in-the-dark-on-pixel-phones/",
+    "note": "Google Research, Night Sight: Seeing in the Dark on Pixel Phones (Levoy, Pritch; 14 Nov 2018): \"we also vary the number of frames we capture, 6 if the phone is on a tripod and up to 15 if it is handheld\"; caption: \"There was slight handshake, so Night Sight chose 333ms x 15 frames = 5.0 seconds of capture\"; \"capturing a burst of frames, aligning the frames in software, and merging them together\"; \"merging multiple pictures also reduces the impact of shot noise and read noise\"; \"Using PSL means you need to hold still for a short time after pressing the shutter\" (read 15 Nov 2026)."
+   },
+   {
+    "url": "https://research.google/blog/astrophotography-with-night-sight-on-pixel-phones/",
+    "note": "Google Research, Astrophotography with Night Sight on Pixel Phones (2019): a single Night Sight image is at most 15 frames (read 15 Nov 2026)."
+   },
+   {
+    "url": "https://support.apple.com/102519",
+    "note": "Apple Support, Use Night mode on your iPhone: depending on how dark the scene is, iPhone might take a Night mode photo quickly or it might take several seconds; hold still until it finishes; a tripod increases stability (read 15 Nov 2026)."
+   }
+  ]
+ }
+}

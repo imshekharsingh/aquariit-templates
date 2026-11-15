@@ -16,7 +16,7 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 75   # the kit engine screenshots ~2,700 frames in headless Chrome (techkit/README.md)
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
@@ -75,9 +75,18 @@ jobs:
           bash scripts/media/pull.sh "techreel/topics/$SLUG.json"
       - name: Render
         id: render
+        # a topic with "engine": "kit" renders on techkit/ (the owner's motion kit, 15 Nov 2026: HTML scene + window.render(t), frames from
+        # headless Chrome; the runner's Google Chrome driven by playwright-core); every other topic on techreel/make.py
         run: |
           set -o pipefail
-          python3 techreel/make.py "$SLUG" 2>&1 | grep -v "^frame " | tee render.log
+          if python3 -I -c "import json,sys; sys.exit(0 if json.load(open(sys.argv[1])).get('engine') == 'kit' else 1)" "techreel/topics/$SLUG.json"; then
+            npm i --no-save --no-audit --no-fund playwright-core@1.49.1
+            export CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+            echo "chrome: $CHROME_BIN"; node -v
+            python3 techkit/make.py "$SLUG" 2>&1 | tee render.log
+          else
+            python3 techreel/make.py "$SLUG" 2>&1 | grep -v "^frame " | tee render.log
+          fi
       - name: Voice check
         # the narration transcribed and compared with the script, and each line timed for pace and breaths (scripts/showreel/voicecheck.py)
         continue-on-error: true
