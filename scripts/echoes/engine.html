@@ -77,13 +77,13 @@ function timeline(vw){
   const lastW=scenes[scenes.length-1].end,total=vw&&vw.length?+Math.min(E.dur,lastW+1.4).toFixed(3):E.dur;const W=(li,key)=>{let [kk,n]=key.split('#');n=+(n||0);const h=scenes[li].words.filter(x=>NW(x.w).startsWith(kk.toLowerCase()));return (h[n]||h[0]||scenes[li].words[0]).t0};
   const shots=E.shots.map(s=>{const sh=Object.assign({},s);if(s.type==='arch'&&s.stamp&&typeof s.stamp==='object'){const k=pick(s.img);sh.stamp=s.stamp[k]||s.stamp['*']||''}sh.t0=s.line===0&&s.at==='start'?0:s.at==='start'?scenes[s.line].start-.35:W(s.line,s.at)-.25;if(s.words)sh.wt=s.words.map(x=>W(s.line,x));if(s.circleAt)sh.ct=W(s.line,s.circleAt);sh.t0=+sh.t0.toFixed(3);return sh});
   shots.forEach((sh,i)=>sh.t1=+(i+1<shots.length?shots[i+1].t0+.7:E.dur).toFixed(3));
-  if(EP)shots.forEach((sh,i)=>{const o=EP.shots[i];['el','st','key','filt','fh','fw'].forEach(k=>{if(o[k]!==undefined)sh[k]=o[k]})});
+  if(EP)shots.forEach((sh,i)=>{const o=EP.shots[i];['el','st','key','filt','fh','fw','base','motes','bgEl'].forEach(k=>{if(o[k]!==undefined)sh[k]=o[k]})});
   EP={total,scenes,shots};
   // after the last word + 1.4 s the video ends (run 43696792618: a 3 s tail failed Output QA DEAD) (the sound is that long and the mux is -shortest): the frames past it are never seen
   window.HOLDS=total<E.dur-.05?[[+total.toFixed(2),E.dur]]:[];
   window.TRANSITIONS=shots.slice(1).map(s=>[s.t0,+(s.t0+.7).toFixed(2),'crossfade']);
   const cov=shots[0].stamp?.35+1.0+.3:1.2;window.COVER=+Math.min(cov,shots[1]?shots[1].t0-.1:cov).toFixed(2);
-  window.CUES={engine:'echoes',dur:total,ep:{total,scenes,shots:shots.map(({el,st,...r})=>JSON.parse(JSON.stringify(r)))}};
+  window.CUES={engine:'echoes',dur:total,ep:{total,scenes,shots:shots.map(({el,st,base,motes,bgEl,...r})=>JSON.parse(JSON.stringify(r)))}};
   buildCaps();
 }
 window.setVoice=v=>{timeline(v&&(v.words||v));};
@@ -101,9 +101,47 @@ function buildArch(s){const k=pick(s.img),m=IMG[k];s.key=k;
     return el(`<div style="position:absolute;inset:-80px;background:url(${m.src}) center/cover;filter:blur(40px) brightness(${s.lit?2:.34}) sepia(.35) saturate(1.4)"></div>${tone(s.tone)}${s.lit?`<div style="position:absolute;inset:0;background:radial-gradient(54% 26% at 50% 43%,rgba(255,238,200,1),rgba(255,218,160,.6) 60%,transparent 80%);mix-blend-mode:screen"></div><div style="position:absolute;left:0;right:0;top:0;height:390px;background:linear-gradient(180deg,rgba(6,4,2,.92),rgba(6,4,2,.82) 86%,rgba(6,4,2,0))"></div>`:''}
      <div class="frm" data-subject style="position:absolute;left:${540-fw/2}px;top:${FR.cy-fh/2}px;width:${fw}px;height:${fh}px;overflow:hidden;box-shadow:0 0 0 2px #c9a04a,0 0 0 14px rgba(20,12,5,.92),0 0 0 16px rgba(201,160,74,.6),0 50px 100px rgba(0,0,0,.8)"><img src="${m.src}" alt="" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;filter:${filt};transform-origin:${s.focus||'50% 35%'}"></div>
      <div class="plate" style="position:absolute;left:120px;right:120px;top:${FR.cy+fh/2+30}px;text-align:center"><div style="font:italic 600 30px 'Cormorant Garamond';color:#efe2c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.title}</div><div style="margin-top:6px;font:600 14px Cinzel;letter-spacing:.24em;color:#b8a586">${m.credit}</div></div>`)}
+  if(s.mode==='depth')return buildDepth(s,m,filt);
   return el(`<img src="${m.src}" alt="" data-subject style="position:absolute;left:0;top:0;width:1080px;height:1920px;object-fit:cover;object-position:${s.focus||'50% 50%'};transform-origin:50% 45%;filter:${filt}">${s.tone?tone(s.tone):''}
      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,5,2,.15),transparent 30%,transparent 60%,rgba(8,5,2,.35))"></div>
      <div class="plate" style="position:absolute;right:120px;top:1236px;text-align:right;font:600 14px Cinzel;letter-spacing:.22em;color:rgba(239,226,196,.9);text-shadow:0 1px 6px #000">${m.title.toUpperCase()}<br><span style="color:rgba(210,190,150,.85)">${m.credit}</span></div>`)}
+
+// ---------- 2.5D depth shot (owner, 15 Nov 2026, the Mona Lisa reel: "use combination of 2.5D with such images to make it more available on the
+// screen (as it seems to be centered mostly)"): the photo fills the 9:16 frame on three planes that move at different speeds.
+//   far: the whole photo, cover-fitted through the shot's camera (cam: [[u, v, z] start, [u, v, z] end], photo point u, v held at the anchor),
+//        out of focus and dimmed; mid: the cut-out (cut: [u0, v0, u1, v1] of the photo, a feathered ellipse) sharp and lit, scaled about its own
+//        centre by 1 + d (d grows 0.05 -> 0.13 over the shot: it comes forward) and moved 1.4x the far plane's pan (parallax), with a soft
+//        contact shadow under it; near: out-of-focus motes that move 2.5x. Never stops: the camera eases but keeps some speed at both ends.
+const DEP={cx:540,cy:880,d0:.05,d1:.13,par:.4};
+function coverAt(m,u,v,z){const S=Math.max(1080/m.w,1920/m.h)*z,W=m.w*S,H=m.h*S;return{S,x:clamp(DEP.cx-u*W,1080-W,0),y:clamp(DEP.cy-v*H,1920-H,0)}}
+function buildDepth(s,m,filt){if(s.sat)filt+=` saturate(${s.sat})`;   // sat: a calmer colour for a vivid painting (pre-render COLOUR)
+const S0=Math.max(1080/m.w,1920/m.h),bw=m.w*S0,bh=m.h*S0,c=s.cut||[.2,.15,.8,.75];
+  const cx=(c[0]+c[2])/2*bw,cy=(c[1]+c[3])/2*bh,rx=(c[2]-c[0])/2*bw,ry=(c[3]-c[1])/2*bh;s.base=[bw,bh,cx,cy,rx,ry];
+  const mask=`radial-gradient(${rx}px ${ry}px at ${cx}px ${cy}px,#000 62%,transparent 100%)`;
+  const r=mulberry(97+(s.line||0)*7),motes=[...Array(7)].map(()=>[r()*1080,300+r()*1300,40+r()*90,.05+r()*.08]);s.motes=motes;
+  return el(`<div class="far" style="position:absolute;left:0;top:0;width:${bw}px;height:${bh}px;transform-origin:0 0"><img src="${m.src}" alt="" style="width:100%;height:100%;display:block;filter:${filt} blur(7px) brightness(.62) saturate(.85)"></div>
+     ${s.tone?tone(s.tone):''}
+     <div class="shd" style="position:absolute;left:0;top:0;width:${bw}px;height:${bh}px;transform-origin:0 0;background:radial-gradient(${rx*1.02}px ${ry*1.02}px at ${cx+rx*.05}px ${cy+ry*.06}px,rgba(0,0,0,.55),transparent 100%)"></div>
+     <div class="mid" style="position:absolute;left:0;top:0;width:${bw}px;height:${bh}px;transform-origin:0 0;-webkit-mask-image:${mask};mask-image:${mask}"><img src="${m.src}" alt="" style="width:100%;height:100%;display:block;filter:${filt} brightness(1.06) contrast(1.05)"></div>
+     <div class="sub" data-subject style="position:absolute;left:0;top:0;width:10px;height:10px;pointer-events:none"></div>
+     <div class="nr" style="position:absolute;inset:0">${motes.map(([x,y,R,a])=>`<i style="position:absolute;left:${x-R}px;top:${y-R}px;width:${2*R}px;height:${2*R}px;border-radius:50%;background:radial-gradient(rgba(255,236,200,${a}),transparent 70%)"></i>`).join('')}</div>
+     ${s.glow?'<div class="glw" style="position:absolute;inset:0;mix-blend-mode:screen;opacity:0;background:radial-gradient(48% 30% at 50% 44%,rgba(255,214,140,.5),transparent 75%)"></div>':''}
+     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,5,2,.25),transparent 26%,transparent 58%,rgba(8,5,2,.45))"></div>
+     <div class="plate" style="position:absolute;right:120px;top:1236px;text-align:right;font:600 14px Cinzel;letter-spacing:.22em;color:rgba(239,226,196,.9);text-shadow:0 1px 6px #000">${m.title.toUpperCase()}<br><span style="color:rgba(210,190,150,.85)">${m.credit}</span></div>`)}
+function animDepth(sh,lt,dur){const m=IMG[sh.key],[bw,bh,cx,cy,rx,ry]=sh.base,c=sh.cut||[.2,.15,.8,.75],cu=(c[0]+c[2])/2,cv=(c[1]+c[3])/2;
+  const K=sh.cam||[[cu,cv,1],[cu,cv,1.12]],x=clamp(lt/dur),q=.45*x+.55*eio(x);   // eased but never still
+  const k=[0,1,2].map(i=>lerp(K[0][i],K[1][i],q)),f=coverAt(m,k[0],k[1],k[2]),z=k[2],f0=coverAt(m,K[0][0],K[0][1],K[0][2]);
+  const T=(e,X,Y,Z)=>{e.style.transform=`translate(${X}px,${Y}px) scale(${Z})`};
+  T(sh.el.querySelector('.far'),f.x,f.y,z);
+  const px=f.x+cx*z,py=f.y+cy*z,p0x=f0.x+cx*K[0][2],p0y=f0.y+cy*K[0][2],d=lerp(DEP.d0,DEP.d1,q),ox=(px-p0x)*DEP.par,oy=(py-p0y)*DEP.par;   // the cut's centre on screen, then the mid plane's lead
+  const mx=px+(f.x-px)*(1+d)+ox,my=py+(f.y-py)*(1+d)+oy,mz=z*(1+d);
+  T(sh.el.querySelector('.mid'),mx,my,mz);T(sh.el.querySelector('.shd'),mx+(f.x-mx)*.5+10,my+(f.y-my)*.5+16,lerp(z,mz,.5));
+  const sb=sh.el.querySelector('.sub'),L=mx+(cx-rx*.62)*mz,Tp=my+(cy-ry*.62)*mz;sb.style.left=Math.max(0,L)+'px';sb.style.top=Math.max(0,Tp)+'px';
+  sb.style.width=Math.min(1080,L+rx*1.24*mz)-Math.max(0,L)+'px';sb.style.height=Math.min(1920,Tp+ry*1.24*mz)-Math.max(0,Tp)+'px';
+  sh.el.querySelectorAll('.nr i').forEach((e,i)=>{const s2=2.5+i*.3;e.style.transform=`translate(${(px-p0x)*s2*.6+Math.sin(lt*.7+i)*12}px,${(py-p0y)*s2*.6-lt*(10+i*3)}px)`});
+  const g=sh.el.querySelector('.glw');if(g)g.style.opacity=eoc(prog(lt,.3,1.6))*(.85+.15*Math.sin(lt*2.2));
+  if(sh.develop){const dv=eoc(prog(lt,0,1.1));sh.el.querySelector('.mid img').style.filter=`${sh.filt} brightness(${lerp(2.2,1.06,dv)}) blur(${(1-dv)*6}px)`}
+  const pl=sh.el.querySelector('.plate');if(pl)pl.style.opacity=eoc(prog(lt,.6,1.3))}
 
 // illustrated cards (code-drawn, clearly stylised; the kit's scene library, generalised: wall, dossier, counter, map)
 const ILL={
@@ -124,16 +162,16 @@ const ILL={
     ${[540].map(x=>`<rect x="${x-14}" y="1570" width="28" height="400" fill="url(#gilt)"/><circle cx="${x}" cy="1566" r="26" fill="url(#gilt)"/>`).join('')}</g></svg>
    <div class="stamp lbl" style="left:640px;top:1110px;transform:rotate(3deg)">${s.label||''}</div>`),
  dossier:s=>el(`<div style="position:absolute;inset:0;background:radial-gradient(90% 70% at 50% 45%,#1a3a7a,#0a1838 65%,#040814)"></div>
-   <div class="card" style="position:absolute;left:170px;top:520px;width:740px;height:560px;background:linear-gradient(170deg,#f1e6c8,#e0cfa4);box-shadow:0 40px 90px rgba(0,0,0,.7);transform:rotate(-2deg);padding:46px 50px">
+   <div class="card" style="position:absolute;left:90px;top:480px;width:900px;height:580px;background:linear-gradient(170deg,#f1e6c8,#e0cfa4);box-shadow:0 40px 90px rgba(0,0,0,.7);transform:rotate(-2deg);padding:46px 50px">
     <div style="font:700 26px Cinzel;letter-spacing:.24em;color:#3a2814;border-bottom:3px double #3a2814;padding-bottom:12px">${s.head||''}</div>
-    ${(s.rows||[]).map((r,i)=>`<div class="typed row" data-i="${i}" style="margin-top:30px">${r}</div>`).join('')}</div>
-   <div class="stamp red st2" style="left:540px;top:950px;font-size:40px;transform:rotate(-8deg)">${s.stampTxt||''}</div>`),
+    ${(s.rows||[]).map((r,i)=>`<div class="typed row" data-i="${i}" style="margin-top:48px;font-size:38px">${r}</div>`).join('')}</div>
+   <div class="stamp red st2" style="left:560px;top:990px;font-size:40px;transform:rotate(-8deg)">${s.stampTxt||''}</div>`),
  counter:s=>el(`<div style="position:absolute;inset:0;background:radial-gradient(80% 60% at 50% 42%,#14306a,#081430 70%,#02040b)"></div>
    <svg class="full" viewBox="0 0 1080 1920"><g class="rings" fill="none"></g></svg>
    <div style="position:absolute;left:0;right:0;top:600px"><div class="lab">${s.label||''}</div><div class="odo" style="margin:26px auto 0;display:flex;justify-content:center;gap:12px"></div></div>
    <div class="stamp red st2" style="left:300px;top:1020px;font-size:42px;transform:rotate(-4deg)">${s.stampTxt||''}</div>`),
  map:s=>el(`<div style="position:absolute;inset:0;background:radial-gradient(90% 70% at 50% 45%,#127070,#07383c 62%,#021416)"></div>
-   <svg class="full" viewBox="0 0 1080 1920"><g class="mapz"><g stroke="rgba(190,255,240,.11)" stroke-width="1.5">${[...Array(13)].map((_,i)=>`<path d="M${i*90} 0 V1920"/>`).join('')}${[...Array(22)].map((_,i)=>`<path d="M0 ${i*90} H1080"/>`).join('')}</g>
+   <svg class="full" viewBox="0 0 1080 1920"><g class="mapz"><g stroke="rgba(190,255,240,.2)" stroke-width="1.5">${[...Array(13)].map((_,i)=>`<path d="M${i*90} 0 V1920"/>`).join('')}${[...Array(22)].map((_,i)=>`<path d="M0 ${i*90} H1080"/>`).join('')}</g>
    <g fill="none" stroke="rgba(150,220,255,.55)" stroke-width="3" stroke-linecap="round"><path d="M120 660 C200 640 260 600 330 640 C380 660 420 610 470 600"/><path d="M520 820 C500 900 470 980 480 1080 C490 1160 470 1220 500 1300"/><path d="M640 1080 C690 1070 730 1060 760 1080 C800 1100 850 1090 900 1110"/></g>
    <g font-family="Cormorant Garamond" font-style="italic" font-size="26" fill="rgba(190,240,255,.75)"><text x="170" y="700">Seine</text><text x="440" y="1180" transform="rotate(-80 440 1180)">Rhône</text><text x="880" y="1066">Arno</text></g>
    <path d="M60 1500 C200 1440 380 1460 470 1400 C560 1350 640 1400 700 1320 C760 1260 860 1300 1080 1240" fill="none" stroke="rgba(220,255,245,.4)" stroke-width="3" stroke-dasharray="1 0"/><text x="300" y="1488" fill="rgba(200,240,255,.5)" font-family="Cinzel" font-size="20" letter-spacing="10">MEDITERRANEAN</text>
@@ -152,6 +190,11 @@ const ILL={
 let built=false;
 function build(){if(built)return;built=true;
   EP.shots.forEach((s,i)=>{const d=s.type==='arch'?buildArch(s):s.type==='ill'?ILL[s.kind](s):el('');s.el=d;d.dataset.shot=i;
+    // 2.5D behind a card (15 Nov 2026, owner: "make it more available on the screen"): bg = an archival photo as the far plane, toned into the
+    // card's own colour (luminosity) and drifting slower than the card, so the card stands in a full-frame world instead of on a flat field
+    const bk=s.type==='ill'&&pick(s.bg);if(bk){const m=IMG[bk],f=document.createElement('div');f.className='illbg';
+      f.style.cssText='position:absolute;inset:-60px;mix-blend-mode:luminosity;opacity:.5';f.innerHTML=`<img src="${m.src}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:${s.bgPos||'50% 40%'};filter:${m.mono?'':'grayscale(1) '}blur(3px) contrast(1.15)">`;
+      d.insertBefore(f,d.children[1]||null);s.bgEl=f}
     if(s.stamp&&typeof s.stamp==='object')s.stamp=s.stamp[s.key]||s.stamp['*']||'';
     if(s.stamp){const st=document.createElement('div');st.className='stamp'+(s.stampRed?' red':'');const fy=s.mode==='framed'?FR.cy+(s.fh||600)/2-28:1150;st.style.cssText=`left:${s.mode==='framed'?Math.max(140,540-(s.fw||600)/2-30):150}px;top:${fy}px`;st.dataset.full=s.stamp;d.appendChild(st);s.st=st}});
   $('#prog').innerHTML=E.lines.map(()=>'<i></i>').join('');$('#badge').innerHTML=(E.badge||'TURNS OUT · TRUE STORIES')+'<span class="rule"></span>';}
@@ -187,9 +230,11 @@ window.render=function(T){if(!EP)timeline(null);build();
   $$('.shot').forEach(s=>{s.style.display='none'});
   EP.shots.forEach((sh,i)=>{if(T<sh.t0||T>sh.t1)return;const lt=T-sh.t0,el=sh.el,a=i===0?1:eio(prog(T,sh.t0,sh.t0+.7));el.style.display='block';el.style.opacity=a;el.style.zIndex=i+1;
     if(sh.type==='ill')animIll(sh,lt,T);
+    if(sh.bgEl){const q=eio(prog(lt,0,Math.max(1,Math.min(sh.t1,EP.total)-sh.t0)));sh.bgEl.style.transform=`scale(${1.02+.1*q}) translate(${-24*q}px,${-14*q}px)`}
     // numbers leave before the next shot fades in (Output QA NUMBERS, run 43708264631: the counter's 1913 under the map read as "1933")
     {const nx=EP.shots[i+1];if(nx)el.querySelectorAll('.odo,.st2,.stamp').forEach(e=>{const f=1-prog(T,nx.t0-.25,nx.t0+.05);if(f<1)e.style.opacity=Math.min(+e.style.opacity||1,f)})}
-    if(sh.type==='arch'&&sh.key){const img=el.querySelector('img'),dur=Math.max(1,Math.min(sh.t1,EP.total)-sh.t0),q=eio(prog(lt,0,dur)),full=sh.mode!=='framed';
+    if(sh.type==='arch'&&sh.key&&sh.mode==='depth')animDepth(sh,lt,Math.max(1,Math.min(sh.t1,EP.total)-sh.t0));
+    else if(sh.type==='arch'&&sh.key){const img=el.querySelector('img'),dur=Math.max(1,Math.min(sh.t1,EP.total)-sh.t0),q=eio(prog(lt,0,dur)),full=sh.mode!=='framed';
       img.style.transform=`scale(${lerp(full?1.04:1.02,full?1.16:1.12,q)}) translate(${lerp(0,full?-18:-10,q)*(sh.pan||1)}px,${lerp(0,-14,q)}px)`;
       if(sh.develop){const d=eoc(prog(lt,0,1.1));img.style.filter=`${sh.filt} brightness(${lerp(2.2,1,d)}) blur(${(1-d)*6}px)`}
       const pl=el.querySelector('.plate');if(pl)pl.style.opacity=eoc(prog(lt,.6,1.3));

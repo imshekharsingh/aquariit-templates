@@ -37,6 +37,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'split': '15 Nov "doesn\'t show the effect better; one cannot tell if something is really happening" (BEFORE and AFTER looked identical)',
     'sync': '13 Nov tech IP68 "the voice names an item (\'or the sauna\') while its card is still empty"',
     'grade': '13 Nov Turns Out "I don\'t find the colour selection better" (fog wash, white Taj on a pale sky)',
+    'fill': '15 Nov Turns Out Mona Lisa "use 2.5D with such images to make it more available on the screen (as it seems to be centered mostly)"',
     'licence': '14 Nov "yes to free real images" (design/safety.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
@@ -53,7 +54,15 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          bulk_v=.82, bulk_s=.2, bulk_k=7, bulk_px=150, vib_s=.35, vib_v=.35, vib_med=.014,
          spr_y=(.589, .818), spr_k=8, spr_dl=14, spr_frac=.02, spr_max=.10,
          demo_lit=.12, demo_grey=.25, demo_s=.35, demo_m=32, demo_c=64, demo_box=(24, 125, 516, 672),
-         split_ratio=1.8, split_min=.05, split_op=.9)
+         split_ratio=1.8, split_min=.05, split_op=.9,
+         fill_y=(.20, .66), fill_g=6, fill_line=.25, fill_min=.80, fill_frac=.25)
+# FILL (15 Nov 2026, Turns Out), calibrated on stills of showreel-c3-mona-stolen at 270x480 every 0.5 s, read at 135x240: the picture zone (y 20-66%
+# of the height: under the chapter title, over the captions) has a pixel "busy" where the mean gradient of its 3x3 neighbourhood is 6+ of 255;
+# a column (row) holds the picture when 25%+ of its pixels in the zone are busy, and FILL = the picture's extent across (first to last column holding
+# it, as a share of the width) x its extent down (rows): a flat but full-frame card still spans the frame, a centred picture leaves empty margins. The centred framed
+# museum shots the owner called "centered mostly" measured 0.52-0.66 each (the old cut: median 0.59, 80% of the samples under 0.80; its flat centred
+# cards 0.05-0.52); the 2.5D depth rebuild 0.90-1.00 on every photo (median 0.98, 13% under 0.80: the map and the wall card mid-push).
+# A sample under 0.80 is a small centred picture; FAIL when over 25% of the samples are.
 # SPLIT (15 Nov 2026, any reel whose scene marks [data-pane="before"] and [data-pane="after"]; the render records their boxes every 0.1 s), calibrated
 # on showreel-37-fontswap's split window at 135x240, 10 fps: the share of pixels inside each pane (inset 1/16) that change by 20+ over 0.2 s, while
 # both panes are fully shown, averaged. The first cut the owner could not tell apart: BEFORE 0.167, AFTER 0.125 (1.34x; p90 1.72x); the jolt
@@ -614,6 +623,31 @@ def split_check(G, fps, mp4, css_w=540):
          f'(at least {T["split_ratio"]}x and {T["split_min"]:.0%}; the 15 Nov fontswap first cut the owner could not tell apart 1.34x)')
 
 
+def fill_share(g):
+    """g: one grey frame (H, W) uint8 -> (fill, column share, row share) of the picture zone"""
+    H = g.shape[0]; z = g[int(H * T['fill_y'][0]):int(H * T['fill_y'][1])].astype(np.float32)
+    gx = np.zeros_like(z); gy = np.zeros_like(z); gx[:, 1:] = np.abs(np.diff(z, axis=1)); gy[1:] = np.abs(np.diff(z, axis=0)); m = gx + gy
+    p = np.pad(m, 1, mode='edge'); m = sum(p[i:i + m.shape[0], j:j + m.shape[1]] for i in range(3) for j in range(3)) / 9
+    busy = m >= T['fill_g']
+    def ext(a):   # first to last line that holds the picture, as a share of the zone's width (height)
+        k = np.flatnonzero(a >= T['fill_line']); return float((k[-1] - k[0] + 1) / len(a)) if len(k) else 0.
+    cs, rs = ext(busy.mean(0)), ext(busy.mean(1))
+    return cs * rs, cs, rs
+
+
+def fill_check(G, fps, holds=()):
+    step = max(1, int(round(fps * .5))); v = []
+    for i in range(0, len(G), step): v.append((i / fps, *fill_share(G[i])))
+    if not v: line('FILL', 'SKIP', 'no frames'); return
+    low = [x for x in v if x[1] < T['fill_min']]; share = len(low) / len(v); med = float(np.median([x[1] for x in v]))
+    runs = []
+    for t, f, *_ in low:
+        if runs and t - runs[-1][1] <= .51: runs[-1][1] = t
+        else: runs.append([t, t])
+    line('FILL', 'FAIL' if share > T['fill_frac'] else 'PASS', f'the picture fills a median {med:.0%} of the zone over the captions (extent across x extent down); samples under '
+         f'{T["fill_min"]:.0%}: {share:.0%} (at most {T["fill_frac"]:.0%}; the centred framed 15 Nov Mona Lisa cut 80%): ' + (', '.join(f'{a:.1f}-{b + .5:.1f} s' for a, b in runs[:8]) or 'none'))
+
+
 def demo_boxes(mp4, qa):
     import glob
     rows = []
@@ -669,6 +703,8 @@ def main():
     numbers_check(mp4, text, heard)
     sync_check(mp4, *sync_words(c, qa, ch), heard, dur, qa.get('subs') or T['subs'][ch])
     dead_check(G, fps, mp4, dur)
+    if ch == 'c3': fill_check(G, fps)
+    else: line('FILL', 'SKIP', 'Turns Out only')
     if qa.get('mute'): mute_check(G, fps, qa['mute'], heard)
     else: line('MUTE', 'SKIP' if ch != 'web' else 'WARN', 'no "qa": {"mute": {before, after}} in the config' + (' (web: declare the before/after moments)' if ch == 'web' else ''))
     split_check(G, fps, mp4)
