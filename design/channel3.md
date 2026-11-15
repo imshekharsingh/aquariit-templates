@@ -179,7 +179,8 @@ scripts/echoes/sound.py (the kit's sound_h.py: score, effects on every shot, its
   z], [u, v, z]]` (the photo point held at the anchor and the zoom, start and end; pan across a landscape photo, push into a portrait). The photo
   fills the frame on three planes: far (whole photo, cover-fitted, blurred, dimmed), mid (the cut-out sharp, coming forward 1.05 -> 1.13 and panning
   1.4x, a soft shadow under it), near (motes, 2.5x); `sat` calms a vivid painting. An illustrated card takes `bg: "<image id>"` (+ `bgPos`): that
-  photo as a toned far plane drifting behind it. "framed" is retired for Turns Out (Output QA FILL fails a picture centred in the frame).
+  photo as a toned far plane drifting behind it. `grade` (a CSS filter, e.g. "contrast(1.6) brightness(.8)") deepens a bright print's
+  pale sky: liberty-arm render 1 failed Output QA GRADE (37% washed frames) and FILL (28% under 0.80) on sepia skies, render 2 with it 1% / 11%. "framed" is retired for Turns Out (Output QA FILL fails a picture centred in the frame).
   Keep printed numbers on a photo (a police number) out of the camera's view: Output QA NUMBERS reads them.
 - Voice (owner, 15 Nov 2026: "use previous voice (from last engine not the new kit)"): af_heart, speed 1, a gap after each sentence (was the kit's
   bm_george, 45-50 s); about 35 s for 7 lines, `dur` = the preflight estimate + 4 s. The scene follows the real word
