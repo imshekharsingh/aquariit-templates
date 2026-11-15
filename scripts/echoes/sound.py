@@ -39,6 +39,7 @@ def nf(n):
     return 440 * 2 ** ((m[n[:-1]] + 12 * (int(n[-1]) - 4)) / 12)
 music = np.zeros((N, 2)); sfx = np.zeros((N, 2)); amb = np.zeros((N, 2))
 end_t = TOTAL - 1.5
+put_src = TOTAL - 1.25   # the sources line lands in the tail with a soft bell (Output QA DEAD)
 
 # ---------- music (the kit's European score: A minor) ----------
 def strings(f, d, g):
@@ -116,6 +117,7 @@ for i, sh in enumerate(SH):
         for j in range(int((e - .4) / .18)): t = t0 + .4 + j * .18; put(sfx, t, fx('tick', tick(), t), 0.05)
         put(sfx, t0 + e, fx('thud', thud(), t0 + e), 0.3)
         if sh.get('label'): typing(t0 + 1.0, sh['label'], .9)
+put(sfx, put_src, fx('bell', ding(), put_src), 0.06)
 xw = T(TOTAL); put(amb, 0, lp(rng.standard_normal(len(xw)), 350) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.07 * xw)), 0.03)
 
 # ---------- mix (the kit's) ----------

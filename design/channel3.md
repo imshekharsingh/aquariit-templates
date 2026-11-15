@@ -175,7 +175,7 @@ scripts/echoes/sound.py (the kit's sound_h.py: score, effects on every shot, its
   (Wikimedia + Library of Congress; PD / CC0 / CC BY only, recorded per file; the MEDIA_JSON line goes into the config's "media").
 - Colour per beat (web channel's input, 15 Nov): every shot has its own tone (framed: tinted blur; illustrated: its own palette), never all brown.
 - Voice: the kit's narrator bm_george (British, voice.lang "b"), speed 1.0, a gap after each sentence; 45-50 s. The scene follows the real word
-  times; the video ends 3 s after the last word (the sound's length; the mux is -shortest).
+  times; the video ends 1.4 s after the last word (the sound's length; the mux is -shortest).
 - Kept gates: voice fit (preflight), safe zone, text fit, subtitles, Output QA, review file (item 20 takes the finish and per-shot motion as
   evidence: the captions entry has "engine": "echoes"), design/safety.md incl. the India never-topics. Dropped for this engine: the 18-25 s
   length (rule 3), "no small furniture" (rule S: the kit's badge, title, diamonds and credit plates are its look), DEPTH planes (rule 5).
