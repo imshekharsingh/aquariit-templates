@@ -8,10 +8,10 @@
  "grain": 2,
  "vignette": false,
  "cover": 1.2,
- "style": "Ink and mint, whole frame (dark, E18 kept 15 Nov; E23 dynamic fix try 4; E20 caption ask try 2; BEFORE coral jolting, AFTER teal locked, owner 15 Nov)",
- "palette": "dark",
+ "style": "Dark look in the saffron colour world, whole frame, calm (E18 kept 15 Nov; E23 dynamic fix try 4; E20 caption ask try 2; BEFORE one clean drop with red signals, AFTER solid with a green lock; owner 15 Nov evening: too wiggly, similar colour grading)",
+ "palette": "saffron",
  "voice": {
-  "text": "Why does your form jump? You type, and an error pops in. Everything under it moves, right as you tap. The fix: a min height of one line. The space stays when it is empty. Look closer. The message comes and goes, the button stays. Now your form holds still.",
+  "text": "Why does your form jump? You type, and an error pops in. Everything under it moves, right as you tap. The fix: a min height of one line. The space stays, even when it is empty. Look closer. The message comes and goes, the button stays. Now your form holds still.",
   "voice": "af_heart",
   "speed": 1.0,
   "gap": [

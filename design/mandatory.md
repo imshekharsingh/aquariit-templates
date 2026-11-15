@@ -37,7 +37,7 @@ Frame size is 1080x1920; the stills viewport is 540x960 (halve every number ther
 | 13 | After the render | `node scripts/reel-status.mjs` read (run green, `SOUND GATE: ok`, voice check, contact sheet looked at); if the contact sheet cannot be downloaded, the final scene's stills re-run locally. | REVIEW |
 | 14 | FLOW: cuts | No undeclared hard jump: `FLOW: cuts 0`. A planned one (a wipe, a push-through, a match cut) is declared in `window.TRANSITIONS = [[t0, t1, 'kind']]` (the web kit declares its own). | AUTO |
 | 15 | FLOW: dead runs | Nothing on screen is still for 1 s or more outside `window.HOLDS`: `FLOW: dead runs none`. | AUTO |
-| 16 | FLOW: continuity | The picture is always moving and never jumping, 85 % of the time or more: `FLOW: continuity nn%` (holds count as still time). | AUTO |
+| 16 | FLOW: continuity | The picture is always moving and never jumping, 85 % of the time or more: `FLOW: continuity nn%` (holds count as still time). Web reels posting from 16 Nov: 35 % or more (calm, rules-web.md rule 17). | AUTO |
 | 17 | FLOW: strobes | At most one full-frame flash, declared as a `'flash'` transition: `FLOW: strobes 0` (or `1 (..., declared)`). | AUTO |
 | 18 | ELEMENT SOUND (web, from 9 Nov) | Every element that enters, moves, changes or leaves has a sound cue matched to its size (small = high blip, medium = mid snap or touch, large = low move; in the bed's key, panned by x; a stagger is one pitched run): `ELEMENT SOUND: n of m animated elements have a cue (90%+): ok` (the stills run, scripts/showreel/elsound.mjs; the kit's scripts/explainer/kitsfx.js writes the cues). Owner, 8 Nov 2026: "Every element's flow should have a compatible sound." | AUTO |
 | 19 | Journey (Turns Out, from 9 Nov) | 4+ scenes (places, scales or eras), the transitions listed and no two alike: `19. Journey: PASS: scenes N (...); transitions: ...` (design/rules-c3.md rule 9). | REVIEW |
@@ -100,7 +100,11 @@ picture; one **step** = the mean absolute RGB change (0-255) between neighbourin
 | web details demo (scripts/explainer/demo/details, `newweb.mjs --details 3`, 8 Nov) | 0 (4 declared matchMoves) | none | 88% | 0 | 0.8 | pass (slow motion is slow by design: the drift 1.3, a 3% creep, the 1x replay after each detail and the recap spotlight keep it above 85%) |
 | web details sample in style C (scripts/explainer/styles/C-details, the kit theme 'glass', 8 Nov) | 0 (4 declared matchMoves) | none | 100% | 0 | 1.2 | pass (the softer glass did not cost continuity: the drifting light blooms, the panes floating at three depths and their parallax in each glide add change on every step) |
 
-Thresholds: web and tech cut 25, dead 0.5, continuity 85%, strobe 60; Turns Out the same with dead 0.3. Change a threshold only with a new row here.
+| web form, calm rebuild (showreel-38-form, 15 Nov evening; owner: "too wiggly": camera and light still, one clean move per change) | 0 (2 declared sharedElement) | none at 2 s (1 hold: the last beat) | 54% | 0 | 0.5 | pass with the calm web line (the wiggly first cut 93% / median step 2.6: its "continuity" was the drift and the shake the owner called wiggly) |
+| web follow, calm rebuild (showreel-39-follow, 15 Nov evening) | 0 (2 declared sharedElement) | none at 2 s (2 holds: "Look closer", the last beat) | 45% | 0 | 0.4 | pass with the calm web line (first cut 93% / 2.8) |
+
+Thresholds: tech cut 25, dead 0.5 (runs of 1 s), continuity 85%, strobe 60; Turns Out the same with dead 0.3. Web from 16 Nov (rule 17, owner 15 Nov
+"too wiggly"): dead runs of 2 s, continuity 35% (the rest unchanged); Output QA CALM measures the calm on the MP4. Change a threshold only with a new row here.
 
 ## The review file
 

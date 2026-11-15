@@ -86,7 +86,8 @@ Output QA fails is NOT READY. scripts/qa/output-qa.py runs by itself at the end 
 Actions -> "Output QA", config + R2 key, no re-render): one "OQA <CHECK>: PASS|FAIL" line per check with its numbers and the owner-feedback
 line it guards; any FAIL fails the run and posts "NOT READY" on the reel's issue (scripts/qa/notify.sh). Configs declare what the frames
 cannot tell: "qa": {"guess"} (Turns Out guess reels; new25d.mjs --guess writes it), "mute" (web before/after), "edges_ok" (a world built
-full-bleed on purpose).
+full-bleed on purpose). Web CALM, HUE and SPLIT can be read before the render on the scene's own frames: `node scripts/qa/frames.mjs <config> <dir>`
+then `python3 scripts/qa/look.py <config> <dir>` (same functions); the new reel's demo hue goes into scripts/qa/demo-hues.json in its push.
 
 ## Independent critic (owner, 12 Nov 2026): nobody approves their own reel
 A reel is ready only when a DIFFERENT session, the "Reel critic" (scheduled task, ~11:17 IST daily, fresh session, lean), has watched it as a

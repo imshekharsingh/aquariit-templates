@@ -172,6 +172,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--night);color
 //     the camera's moves); KM.float(t, seed, amp) (a pane's slow sine float). 'glass' (style C, "Glass and light") is the web default from
 //     8 Nov 2026; 'dark' is the old ink-and-mint look. KM.theme('glass', palette) (or window.WEB_PALETTE) swaps the light and the accents:
 //     KM.PALETTES aurora (the original), ember, lagoon, orchid, glacier (owner, 8 Nov 2026: colour variety, reel to reel).
+//     KM.theme('dark', world): KM.WORLDS saffron, berry, the dark look's own colour world per reel (owner, 15 Nov 2026: "similar colour grading");
+//     KM.lights(t, c, true) holds the light still and KM.rig({ drift: 0 }) holds the camera (owner, 15 Nov 2026: "too wiggly").
 //   the whole frame (owner, 14 Nov 2026: "we are squeezing most of it in one place of the screen"; rules-web.md rule 16): KM.ZONES = the
 //     screen bands a web reel fills top to bottom (top: hook, counters, code; hero: the subject of the fix, the biggest thing on screen, down
 //     to the band; band: subtitles), in CSS px of the 540x960 frame inside the safe zone; KM.worldY(c, y) = the world y at screen y under
@@ -472,11 +474,28 @@ var KM = (function(){
     var a = rgbOf(o.c.acc), r = rgbOf(o.c.red);
     o.v.tint = 'rgba(' + a + ',.1)'; o.v.tile = 'linear-gradient(180deg,rgba(' + a + ',.16),rgba(' + r + ',.08))';
     VIVID.hi.forEach(function(g, i){ o.v['hi' + (i + 1)] = g; }); return o; }
-  function withPalette(th, pal){ var p = PALETTES[pal], o = { name: th.name, c: {}, v: {}, blooms: p.blooms || th.blooms, grade: p.grade || th.grade }, k;
+  function withPalette(th, pal, src){ var p = src || PALETTES[pal], o = { name: th.name, c: {}, v: {}, blooms: p.blooms || th.blooms, grade: p.grade || th.grade }, k;
     for (k in th.c) o.c[k] = (p.c && p.c[k]) || th.c[k]; for (k in th.v) o.v[k] = (p.v && p.v[k]) || th.v[k]; return o; }
+  // ---- colour worlds for the dark look (owner, 15 Nov 2026: the main frame "seem[s] to show similar colour grading so doesn't look different
+  // from other videos"; rules-web.md rule 17): every web reel gives its demo pane and its background light their own hue family and accent,
+  // so two reels side by side in the grid never look alike; the type, layout, BEFORE red / AFTER green signals and the brand frame stay.
+  // KM.theme('dark', name); the vivid pass then lifts the surfaces at the world's hue. Output QA HUE fails a demo whose main hue sits within
+  // 40 degrees of any of the last 3 web reels (scripts/qa/demo-hues.json). Pick the next with node scripts/explainer/palette.mjs --world.
+  // A new world passes CONTRAST and HUE on a scene before it is used.
+  var WORLDS = {
+    // saffron: warm amber surfaces, a gold accent, tangerine and plum light (measured main hue ~35 deg)
+    saffron: { c: { ink: '#140b06', dim: '#d9c9b4', acc: '#ffc247', red: '#ff5f6d', ctl: '#4e2e12', raise: '#44280e', skel: '#38210c', pg: '#1e1108', card: '#3e240e', on: '#1d1102' },
+      v: { glass: 'linear-gradient(160deg,#723e12,#42220c 55%,#521a2e)', frost: '#2a180a', glow: 'rgba(255,194,71,.6)', soft: 'rgba(255,194,71,.16)', ring: 'rgba(255,194,71,.55)' },
+      blooms: [['255,150,40', .4, 540, 140, 220, .2, .17, 0], ['255,90,50', .26, 480, 520, 660, .23, .19, 2], ['190,50,120', .28, 440, 480, 900, .17, .21, 4]] },
+    // berry: magenta-rose surfaces, a pink accent, raspberry and violet light (measured main hue ~325 deg)
+    berry: { c: { ink: '#13060f', dim: '#e0c8d8', acc: '#ff8fd0', red: '#ff7a4a', ctl: '#4a1a3c', raise: '#3e1632', skel: '#36132c', pg: '#1d0a17', card: '#3a1230', on: '#22041a' },
+      v: { glass: 'linear-gradient(160deg,#6a1650,#3c0c30 55%,#2c1250)', frost: '#26101f', glow: 'rgba(255,143,208,.6)', soft: 'rgba(255,143,208,.16)', ring: 'rgba(255,143,208,.55)' },
+      blooms: [['255,60,170', .38, 540, 140, 220, .2, .17, 0], ['150,60,255', .3, 480, 520, 660, .23, .19, 2], ['255,90,120', .26, 440, 480, 900, .17, .21, 4]] }
+  };
   var LT = {};
   function theme(name, pal){ var th = THEMES[name] || THEMES.glass, R = document.documentElement, k;
     pal = pal || window.WEB_PALETTE; if (th === THEMES.glass && PALETTES[pal]) { th = withPalette(th, pal); R.dataset.palette = pal; }
+    if (th === THEMES.dark && WORLDS[pal]) { var w = WORLDS[pal]; th = withPalette(th, pal, w); th.grade = w.grade || null; R.dataset.palette = pal; }
     th = vividTokens(th);
     for (k in th.c) R.style.setProperty('--' + k, th.c[k]); for (k in th.v) R.style.setProperty('--' + k, th.v[k]);
     R.style.background = document.body.style.background = th.c.ink; R.dataset.theme = name in THEMES ? name : 'glass';
@@ -487,7 +506,9 @@ var KM = (function(){
     var T = {}; for (k in th.c) T[k] = th.c[k]; T.name = th.name; T.palette = R.dataset.palette || null; return T; }
   // the blooms drift on slow Lissajous paths (a pure function of t), breathe a little, and follow the camera at a shallow depth
   // (x .05: the camera crosses 560 px a part in the details format; y .2; zoom .25), so the light is never still; the grade is painted over them
-  function lights(t, c){ if (!LT.cx) return; c = c || { x: 270, y: 480, z: 1 }; var g = LT.cx, th = LT.th, q = .25, zs = 1 + (c.z - 1) * .25;
+  // still (owner, 15 Nov 2026: web reels "too wiggly"): KM.lights(t, c, true) holds the light where it is at t 0 and ignores the camera,
+  // so only the broken element moves (Output QA CALM)
+  function lights(t, c, still){ if (!LT.cx) return; if (still) { t = 0; c = null; } c = c || { x: 270, y: 480, z: 1 }; var g = LT.cx, th = LT.th, q = .25, zs = 1 + (c.z - 1) * .25;
     g.globalCompositeOperation = 'source-over'; g.fillStyle = th.c.ink; g.fillRect(0, 0, 135, 240); g.globalCompositeOperation = 'lighter';
     th.blooms.forEach(function(b, i){ var r = b[2] / 2 * zs * (1 + .08 * Math.sin(t * .5 + i)), a = Math.min(.85, b[1] * VIVID.light) * (.82 + .18 * Math.sin(t * .7 + i * 2.1));
       var x = (b[3] - 200 + Math.sin(t * b[5] + b[7]) * 90 - (c.x - 270) * .05 - 270) * zs + 270, y = (b[4] - 160 + Math.sin(t * b[6] + b[7] * 1.3) * 110 - (c.y - 480) * .2 - 480) * zs + 480;
@@ -510,7 +531,7 @@ var KM = (function(){
   return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
     rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, touch: touch, voice: voice, subs: subs, publish: publish,
     curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
-    THEMES: THEMES, PALETTES: PALETTES, JEWELS: JEWELS, VIVID: VIVID, vivid: vivid, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float, ZONES: ZONES, worldY: worldY };
+    THEMES: THEMES, PALETTES: PALETTES, WORLDS: WORLDS, JEWELS: JEWELS, VIVID: VIVID, vivid: vivid, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float, ZONES: ZONES, worldY: worldY };
 })();
 /*kitmotion:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;

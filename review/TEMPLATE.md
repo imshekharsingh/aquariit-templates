@@ -17,7 +17,7 @@ The Mandatory Gate, design/mandatory.md. One line per item: "N. <item>: PASS: <e
 13. After the render: PENDING
 14. Cuts: PASS: FLOW: cuts ... (0 undeclared; list the window.TRANSITIONS the reel declares)
 15. Dead runs: PASS: FLOW: dead runs ... (none; any window.HOLDS named with its reason)
-16. Continuity: PASS: FLOW: continuity nn% (85% or more)
+16. Continuity: PASS: FLOW: continuity nn% (85% or more; web from 16 Nov 35% or more)
 17. Strobes: PASS: FLOW: strobes ... (0, or 1 declared as a 'flash' transition)
 18. Element sound (web): PASS: ELEMENT SOUND: n of m animated elements have a cue (pct%): ok
 19. Journey (c3 only, from 9 Nov): PASS: scenes N (list them); transitions: list them, no two alike

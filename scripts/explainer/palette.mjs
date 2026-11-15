@@ -24,4 +24,18 @@ export function nextPalette() {
   const i = list.indexOf(lastPal);
   return { name: list[(i + 1) % list.length], last, lastPal };
 }
-if (process.argv[1] === fileURLToPath(import.meta.url)) { const n = nextPalette(); console.log(`PALETTE: next ${n.name} (last ${n.lastPal}${n.last ? ' on ' + n.last : ''}; order ${palettes().join(', ')})`); }
+if (process.argv[1] === fileURLToPath(import.meta.url) && !process.argv.includes('--world')) { const n = nextPalette(); console.log(`PALETTE: next ${n.name} (last ${n.lastPal}${n.last ? ' on ' + n.last : ''}; order ${palettes().join(', ')})`); }
+// Colour worlds for the dark look (15 Nov 2026; owner: "similar colour grading"; rules-web.md rule 17): KM.WORLDS in the kit. nextWorld() is the
+// next world after the last web reel's in captions.json order (a reel whose palette is not a world starts the list). Output QA HUE checks the result.
+export function worlds() {
+  const kit = readFileSync(join(root, 'scripts/explainer/kitmotion.js'), 'utf8'), a = kit.indexOf('var WORLDS = {'), z = kit.indexOf('\n  };', a);
+  return [...kit.slice(a, z).matchAll(/^ {4}([a-z]+): \{/gm)].map((m) => m[1]);
+}
+export function nextWorld() {
+  const list = worlds(), P = join(root, 'templates/showreels/captions.json');
+  const caps = existsSync(P) ? JSON.parse(readFileSync(P, 'utf8')) : {};
+  const web = Object.entries(caps).filter(([, e]) => e && e.channel === 'web' && e.postOn && !e.hidden).sort((x, y) => x[1].postOn.localeCompare(y[1].postOn));
+  const last = web.length ? web[web.length - 1][0] : null, lastPal = last ? paletteOf(last) : null;
+  return { name: list[(list.indexOf(lastPal) + 1) % list.length], last, lastPal };
+}
+if (process.argv[1] === fileURLToPath(import.meta.url) && process.argv.includes('--world')) { const n = nextWorld(); console.log(`WORLD: next ${n.name} (last ${n.lastPal}${n.last ? ' on ' + n.last : ''}; order ${worlds().join(', ')})`); }

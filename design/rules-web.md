@@ -32,7 +32,7 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    PRONUNCIATION line shows no "check:" words before the render; a new term goes into say.json (or the config's "say"). Evidence: 5 Nov,
    Wi-Fi was read "Wi" "Fi" on @techin20sec; Kokoro alone reads CSS-style units (px, vh, dvh) through its fallback voice.
 10. **Motion that never stops and never jumps: `FLOW: continuity` 85%+, `FLOW: cuts 0` (every planned jump declared in window.TRANSITIONS),
-   `FLOW: dead runs none`.** Start from scripts/explainer/newweb.mjs and the motion kit. Evidence (7 Nov, design/mandatory.md "FLOW calibration"):
+   `FLOW: dead runs none`.** Web from 16 Nov (rule 17, owner 15 Nov: "too wiggly"): dead runs of 2 s, continuity 35%+ (scripts/showreel/flow.mjs FLOW.web). Start from scripts/explainer/newweb.mjs and the motion kit. Evidence (7 Nov, design/mandatory.md "FLOW calibration"):
    the best web reel, Nº 09 numbers (100,928 reach, 74% hold), is 95% continuous with no cut and no dead run; Nº 13 sideways (1,872) is 35% with
    4 dead runs; the first flash cut was 65% with 2 cuts, an undeclared strobe and 3 dead runs, and 94% after its flow pass.
 11. **Satisfying to watch, saved to reuse (owner, 7 Nov 2026: "we haven't gone past 2k views on many of our last reels").** Pick a topic whose
@@ -80,7 +80,8 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    grow better").** When BEFORE and AFTER sit side by side, the broken pane jolts on every failure (the real shift shown as a fall from where it was,
    a spring past it, a short shake, a trail, a ghost outline of the old place, a warm red flash) and the fixed pane stays rock-steady with a calm
    lock cue (guides, a check chip "0 PX SHIFT"); BEFORE warm coral, AFTER fresh green / teal, never two matching cards. Exaggerate the motion,
-   never the fact. Output QA SPLIT fails a reel whose BEFORE pane moves under 1.8x its AFTER pane (fontswap first cut 1.31x, rebuild 1.9x+).
+   never the fact. From 16 Nov the jolt is ONE clean move with no shake or tilt (rule 17: "too wiggly"), and the panes carry the reel's colour world
+   with the coral / teal as washes and signals on it. Output QA SPLIT fails a reel whose BEFORE pane moves under 1.8x its AFTER pane (fontswap first cut 1.31x, rebuild 1.9x+).
 16. **Use the whole frame; the subject of the fix is the biggest thing on screen (owner, 14 Nov 2026: "it seems we are squeezing most of it
    in one place of the screen"; "web reels' main elements colouring can be made a bit more vibrant").** The frame is filled top to bottom inside
    the safe zone (KM.ZONES, CSS px of 540x960): the top zone (125-290) holds the hook, then the counters, the code or the slow-motion panel; the
@@ -91,6 +92,20 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    accent at full strength, never as a large saturated fill (Output QA COLOUR, VIBRANCY). Output QA SPREAD fails a web reel whose lower third of
    the safe zone is over 10% empty on average. Evidence (stills at 270x480 every 0.5 s): showreel-35-list 34% empty, showreel-36-tabs first cut
    18% (a 414 px card in the top 60%, the bottom empty but for the subtitles), its whole-frame rebuild 0%.
+
+17. **Calm motion, a colour world per reel (owner, 15 Nov 2026: the Mon / Tue web reels "are too wiggly and main frame where we see the changes seem
+   to show similar colour grading so doesn't look different from other videos").** Only the broken element moves: one clean eased move per change
+   (KM.ease.back at about 1.1, 0.4-0.6 s, a trail, the warm flash, the ghost of the old place), never a shake, tilt or multi-bounce spring, with a held
+   beat after it to read it; each move lands on the words that name it (rule 14); AFTER is solid (only the thing that changes on purpose, a word or a
+   message). Everything else holds still: KM.rig({ drift: 0 }), at most one slow push for "Look closer" and back, KM.lights(t, c, true), no bobbing
+   panes, no wobbling touch ring, no kicking hook word. The demo pane and the background light take the reel's own colour world (KM.theme('dark', world),
+   KM.WORLDS; next: node scripts/explainer/palette.mjs --world); BEFORE keeps its red signals (cross chip, flash, ghost) and AFTER its green lock (--ok,
+   check chip, guides), on top of the world. The type, layout and brand frame stay. Output QA CALM fails a frame that changes over 3.5% in 0.2 s at the
+   median (or 5% on average) outside the subtitle band; HUE fails a demo main hue within 40 deg of any of the last 3 web reels (scripts/qa/demo-hues.json:
+   add the new reel's hue, measured with node scripts/qa/frames.mjs + python3 scripts/qa/look.py, in the push that makes it). FLOW for web follows
+   (rule 10): dead runs 2 s, continuity 35%+. Evidence (the scenes' own frames at 135x240, 10 fps, 15 Nov): CALM median / mean: the wiggly cuts form 7.0 /
+   8.3%, follow 5.1 / 7.3%, fontswap 4.9 / 7.1%; calmer tabs 1.9 / 3.4%, list 2.9 / 4.5%; the calm rebuilds form 1.2 / 3.7%, follow 0.4 / 3.2%, with SPLIT
+   still 2.25x and 2.27x. HUE: fontswap 225, tabs 235, list 235, old form and follow 225; rebuilds saffron 25, berry 325.
 
 **ESCALATE 8 Nov** (median reach 1,247 over the last 7 vs target 2,000; watch 8.5 s; saves 1.3%; ALARM two days running): answered by a format
 change, the slow-mo "details" compilation (showreel-30-alive, 8 Nov 13:00, experiment details-format; rule 11). Read at 24 h (9 Nov) vs the median;

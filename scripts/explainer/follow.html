@@ -13,17 +13,21 @@
    shown kept with visibility: hidden, so the button is always as wide as "Following"); the page splits into BEFORE over AFTER and both are
    tapped in sync: BEFORE jolts on every tap, AFTER changes its word and nothing else. Beat 3: AFTER returns to full size with dashed lock
    guides round its two buttons while the word changes inside them. One camera, never still; every frame a pure function of t.
-   Owner, 15 Nov 2026: BEFORE visibly breaks (shift, spring, shake, trail, flash, ghost), AFTER holds; BEFORE coral, AFTER teal. */
-:root{--f:'Sora',system-ui,sans-serif;--m:'DM Mono',ui-monospace,monospace}
+   Owner, 15 Nov 2026: BEFORE visibly breaks (shift, trail, flash, ghost), AFTER holds; BEFORE coral, AFTER teal.
+   Owner, 15 Nov 2026 (evening): "too wiggly" and "similar colour grading": the camera and the light hold still, only the broken part moves
+   (Message makes one clean slide away or back per tap, with a held beat between taps; no shake or tilt of the page), and the reel has its
+   own colour world, berry (KM.WORLDS: magenta panes, a pink accent, raspberry and violet light); BEFORE keeps its red signals, AFTER its
+   green lock (--ok). */
+:root{--f:'Sora',system-ui,sans-serif;--m:'DM Mono',ui-monospace,monospace;--ok:#5ff2b0}
 *{box-sizing:border-box;margin:0}
 html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
 .a{position:absolute}
 #vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
 #world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
-#pane{left:30px;top:300px;width:450px;height:396px;border-radius:40px;background:linear-gradient(160deg,rgba(95,242,176,.08),rgba(110,120,255,.06) 55%,rgba(255,106,92,.05)),var(--glass);box-shadow:var(--edge),var(--lift)}
+#pane{left:30px;top:300px;width:450px;height:396px;border-radius:40px;background:var(--glass);box-shadow:var(--edge),var(--lift)}
 #sbox{position:absolute;left:0;top:0;width:10px;height:10px}
 #subj{left:0;top:0;width:540px;height:960px}
-.card{position:absolute;overflow:hidden;border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(95,242,176,.04) 60%,rgba(255,255,255,.035)),var(--card);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.07)}
+.card{position:absolute;overflow:hidden;border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.08),var(--tint) 60%,rgba(255,255,255,.035)),var(--card);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.07)}
 .art{position:absolute;left:22px;top:14px;width:386px}
 .head{position:relative;height:66px}
 .av{position:absolute;left:0;top:0;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#ff8a5c,#c02a58 55%,#5a3ee0);box-shadow:inset 0 0 0 3px rgba(255,255,255,.35)}
@@ -35,7 +39,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
    Message along. AFTER: both words sit in one grid cell (grid-area: 1 / 1) and the one not shown is visibility: hidden, so the button is
    always as wide as the longer word and nothing next to it moves. */
 .btnrow{position:relative;height:56px;margin-top:14px;display:flex;gap:12px;align-items:center}
-.fol{display:inline-flex;align-items:center;justify-content:center;height:56px;padding:0 22px;border-radius:28px;background:var(--acc);color:var(--on);font:700 22px/56px var(--f);white-space:nowrap;transform-origin:50% 50%;box-shadow:0 6px 22px rgba(95,242,176,.28)}
+.fol{display:inline-flex;align-items:center;justify-content:center;height:56px;padding:0 22px;border-radius:28px;background:var(--acc);color:var(--on);font:700 22px/56px var(--f);white-space:nowrap;transform-origin:50% 50%;box-shadow:0 6px 22px var(--soft)}
 .fol span{display:inline-flex;align-items:center;gap:8px}
 .fol svg{width:20px;height:20px;flex:none}
 
@@ -44,14 +48,14 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .body{font:400 19px/27px var(--f);color:#d9d6e8;margin-top:16px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
 .grid i{display:block;height:118px;border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
-.guide{position:absolute;border:2px dashed var(--acc);border-radius:10px;opacity:0;background:rgba(95,242,176,.07)}
+.guide{position:absolute;border:2px dashed var(--ok);border-radius:10px;opacity:0;background:rgba(95,242,176,.07)}
 /* owner, 15 Nov: BEFORE a warm coral page, AFTER a fresh teal one (cheap glass: gradients and shadows only; tints kept soft for Output QA COLOUR) */
 #cA{background:radial-gradient(120% 70% at 85% 0%,rgba(255,120,92,.16),rgba(255,120,92,0) 70%),linear-gradient(180deg,rgba(255,92,110,.11),rgba(255,140,90,.06) 60%,rgba(255,92,110,.08)),var(--card);box-shadow:inset 0 1px 0 rgba(255,220,210,.3),inset 0 0 0 2px rgba(255,120,100,.75),0 0 var(--gl,26px) rgba(255,84,72,var(--ga,.42))}
 #cB{background:radial-gradient(120% 70% at 85% 0%,rgba(80,255,200,.09),rgba(80,255,200,0) 70%),linear-gradient(180deg,rgba(40,220,190,.06),rgba(60,200,255,.03) 60%,rgba(40,220,190,.05)),var(--card);box-shadow:inset 0 1px 0 rgba(210,255,240,.3),inset 0 0 0 2px rgba(95,242,176,.75),0 0 26px rgba(60,240,180,.4)}
-#cA .fol{background:#ffd166;color:#2a1600}#cA::after{content:'';position:absolute;inset:0;border-radius:inherit;background:rgba(255,96,80,.3);opacity:var(--fl,0);pointer-events:none}
+#cA::after{content:'';position:absolute;inset:0;border-radius:inherit;background:rgba(255,96,80,.3);opacity:var(--fl,0);pointer-events:none}
 .tg{position:absolute;display:flex;align-items:center;gap:7px;white-space:nowrap;opacity:0;padding:5px 11px 5px 7px;border-radius:13px;z-index:6;box-shadow:0 4px 16px rgba(0,0,0,.35)}
 .tg svg{width:24px;height:24px;flex:none}.tg b{display:block;font:700 17px/1.05 var(--m);letter-spacing:.08em}.tg small{display:block;font:700 13px/1.2 var(--m);letter-spacing:.02em}
-#tgA{background:#ff5a4e;color:#1f0503}#tgB{background:var(--acc);color:#04261a}
+#tgA{background:#ff5a4e;color:#1f0503}#tgB{background:var(--ok);color:#04261a}
 .gh{position:absolute;border:3px dashed #ff6a5c;border-radius:29px;opacity:0;z-index:5;background:rgba(255,90,80,.16)}
 .bub{position:absolute;font:750 32px/1 var(--f);color:var(--red);white-space:nowrap;opacity:0;z-index:7}
 #lbl{left:34px;top:132px;font:500 15px/1 var(--m);letter-spacing:.14em;color:#bdbab2;white-space:nowrap}
@@ -134,6 +138,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 //     the camera's moves); KM.float(t, seed, amp) (a pane's slow sine float). 'glass' (style C, "Glass and light") is the web default from
 //     8 Nov 2026; 'dark' is the old ink-and-mint look. KM.theme('glass', palette) (or window.WEB_PALETTE) swaps the light and the accents:
 //     KM.PALETTES aurora (the original), ember, lagoon, orchid, glacier (owner, 8 Nov 2026: colour variety, reel to reel).
+//     KM.theme('dark', world): KM.WORLDS saffron, berry, the dark look's own colour world per reel (owner, 15 Nov 2026: "similar colour grading");
+//     KM.lights(t, c, true) holds the light still and KM.rig({ drift: 0 }) holds the camera (owner, 15 Nov 2026: "too wiggly").
 //   the whole frame (owner, 14 Nov 2026: "we are squeezing most of it in one place of the screen"; rules-web.md rule 16): KM.ZONES = the
 //     screen bands a web reel fills top to bottom (top: hook, counters, code; hero: the subject of the fix, the biggest thing on screen, down
 //     to the band; band: subtitles), in CSS px of the 540x960 frame inside the safe zone; KM.worldY(c, y) = the world y at screen y under
@@ -434,11 +440,28 @@ var KM = (function(){
     var a = rgbOf(o.c.acc), r = rgbOf(o.c.red);
     o.v.tint = 'rgba(' + a + ',.1)'; o.v.tile = 'linear-gradient(180deg,rgba(' + a + ',.16),rgba(' + r + ',.08))';
     VIVID.hi.forEach(function(g, i){ o.v['hi' + (i + 1)] = g; }); return o; }
-  function withPalette(th, pal){ var p = PALETTES[pal], o = { name: th.name, c: {}, v: {}, blooms: p.blooms || th.blooms, grade: p.grade || th.grade }, k;
+  function withPalette(th, pal, src){ var p = src || PALETTES[pal], o = { name: th.name, c: {}, v: {}, blooms: p.blooms || th.blooms, grade: p.grade || th.grade }, k;
     for (k in th.c) o.c[k] = (p.c && p.c[k]) || th.c[k]; for (k in th.v) o.v[k] = (p.v && p.v[k]) || th.v[k]; return o; }
+  // ---- colour worlds for the dark look (owner, 15 Nov 2026: the main frame "seem[s] to show similar colour grading so doesn't look different
+  // from other videos"; rules-web.md rule 17): every web reel gives its demo pane and its background light their own hue family and accent,
+  // so two reels side by side in the grid never look alike; the type, layout, BEFORE red / AFTER green signals and the brand frame stay.
+  // KM.theme('dark', name); the vivid pass then lifts the surfaces at the world's hue. Output QA HUE fails a demo whose main hue sits within
+  // 40 degrees of any of the last 3 web reels (scripts/qa/demo-hues.json). Pick the next with node scripts/explainer/palette.mjs --world.
+  // A new world passes CONTRAST and HUE on a scene before it is used.
+  var WORLDS = {
+    // saffron: warm amber surfaces, a gold accent, tangerine and plum light (measured main hue ~35 deg)
+    saffron: { c: { ink: '#140b06', dim: '#d9c9b4', acc: '#ffc247', red: '#ff5f6d', ctl: '#4e2e12', raise: '#44280e', skel: '#38210c', pg: '#1e1108', card: '#3e240e', on: '#1d1102' },
+      v: { glass: 'linear-gradient(160deg,#723e12,#42220c 55%,#521a2e)', frost: '#2a180a', glow: 'rgba(255,194,71,.6)', soft: 'rgba(255,194,71,.16)', ring: 'rgba(255,194,71,.55)' },
+      blooms: [['255,150,40', .4, 540, 140, 220, .2, .17, 0], ['255,90,50', .26, 480, 520, 660, .23, .19, 2], ['190,50,120', .28, 440, 480, 900, .17, .21, 4]] },
+    // berry: magenta-rose surfaces, a pink accent, raspberry and violet light (measured main hue ~325 deg)
+    berry: { c: { ink: '#13060f', dim: '#e0c8d8', acc: '#ff8fd0', red: '#ff7a4a', ctl: '#4a1a3c', raise: '#3e1632', skel: '#36132c', pg: '#1d0a17', card: '#3a1230', on: '#22041a' },
+      v: { glass: 'linear-gradient(160deg,#6a1650,#3c0c30 55%,#2c1250)', frost: '#26101f', glow: 'rgba(255,143,208,.6)', soft: 'rgba(255,143,208,.16)', ring: 'rgba(255,143,208,.55)' },
+      blooms: [['255,60,170', .38, 540, 140, 220, .2, .17, 0], ['150,60,255', .3, 480, 520, 660, .23, .19, 2], ['255,90,120', .26, 440, 480, 900, .17, .21, 4]] }
+  };
   var LT = {};
   function theme(name, pal){ var th = THEMES[name] || THEMES.glass, R = document.documentElement, k;
     pal = pal || window.WEB_PALETTE; if (th === THEMES.glass && PALETTES[pal]) { th = withPalette(th, pal); R.dataset.palette = pal; }
+    if (th === THEMES.dark && WORLDS[pal]) { var w = WORLDS[pal]; th = withPalette(th, pal, w); th.grade = w.grade || null; R.dataset.palette = pal; }
     th = vividTokens(th);
     for (k in th.c) R.style.setProperty('--' + k, th.c[k]); for (k in th.v) R.style.setProperty('--' + k, th.v[k]);
     R.style.background = document.body.style.background = th.c.ink; R.dataset.theme = name in THEMES ? name : 'glass';
@@ -449,7 +472,9 @@ var KM = (function(){
     var T = {}; for (k in th.c) T[k] = th.c[k]; T.name = th.name; T.palette = R.dataset.palette || null; return T; }
   // the blooms drift on slow Lissajous paths (a pure function of t), breathe a little, and follow the camera at a shallow depth
   // (x .05: the camera crosses 560 px a part in the details format; y .2; zoom .25), so the light is never still; the grade is painted over them
-  function lights(t, c){ if (!LT.cx) return; c = c || { x: 270, y: 480, z: 1 }; var g = LT.cx, th = LT.th, q = .25, zs = 1 + (c.z - 1) * .25;
+  // still (owner, 15 Nov 2026: web reels "too wiggly"): KM.lights(t, c, true) holds the light where it is at t 0 and ignores the camera,
+  // so only the broken element moves (Output QA CALM)
+  function lights(t, c, still){ if (!LT.cx) return; if (still) { t = 0; c = null; } c = c || { x: 270, y: 480, z: 1 }; var g = LT.cx, th = LT.th, q = .25, zs = 1 + (c.z - 1) * .25;
     g.globalCompositeOperation = 'source-over'; g.fillStyle = th.c.ink; g.fillRect(0, 0, 135, 240); g.globalCompositeOperation = 'lighter';
     th.blooms.forEach(function(b, i){ var r = b[2] / 2 * zs * (1 + .08 * Math.sin(t * .5 + i)), a = Math.min(.85, b[1] * VIVID.light) * (.82 + .18 * Math.sin(t * .7 + i * 2.1));
       var x = (b[3] - 200 + Math.sin(t * b[5] + b[7]) * 90 - (c.x - 270) * .05 - 270) * zs + 270, y = (b[4] - 160 + Math.sin(t * b[6] + b[7] * 1.3) * 110 - (c.y - 480) * .2 - 480) * zs + 480;
@@ -472,7 +497,7 @@ var KM = (function(){
   return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
     rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, touch: touch, voice: voice, subs: subs, publish: publish,
     curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
-    THEMES: THEMES, PALETTES: PALETTES, JEWELS: JEWELS, VIVID: VIVID, vivid: vivid, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float, ZONES: ZONES, worldY: worldY };
+    THEMES: THEMES, PALETTES: PALETTES, WORLDS: WORLDS, JEWELS: JEWELS, VIVID: VIVID, vivid: vivid, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float, ZONES: ZONES, worldY: worldY };
 })();
 /*kitmotion:end*/
 /*kitsfx:begin*/
@@ -561,7 +586,7 @@ var KM = (function(){
 /*kitsfx:end*/
 
   window.WEB_THEME = 'dark';   // the dark theme (E18 kept, 15 Nov 2026), rules-web.md rule 12
-  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.theme('dark');
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.theme('dark', 'berry');
   var TEXT = "Why does your button jump? Follow turns into Following, and the button grows. Everything next to it slides away. The fix: stack both words in one grid cell. The button keeps the longer width. Look closer. The word changes, the button stays. Now your buttons hold still.";
   var DUR = 20, HOOK_N = 5;
   var PLUS = '<svg viewBox="0 0 20 20"><path d="M10 3.5v13M3.5 10h13" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>';
@@ -607,10 +632,16 @@ var KM = (function(){
     // ---- the taps: each one flips Follow and Following. Before the fix only BEFORE is seen; side by side both are tapped together; then
     //      the fixed page alone. The first tap is just before frame 0, so the page is already shaking when the reel starts ----
     var pre = [], c;
-    for (c = -.45; c < A.fix - .4; c += 1.1) pre.push(c);
-    var side = []; for (c = A.fix + 1; c < A.watch - .5; c += .95) side.push(c);
-    var look = []; for (c = A.watch + .45; c < A.pay - .3; c += .95) look.push(c);
-    var post = []; for (c = A.pay + .3; c < DUR - .5; c += 1.1) post.push(c);
+    // calm (owner, 15 Nov: "too wiggly"): a held beat between taps, so each slide is read once; the first lands just before frame 0
+    // and each slide lands on the words that name it (rules-web.md rule 14): the page opens on Following (a tap before the reel), frame 0
+    // slides Message back, "Following" pushes it away, a tap back, "slides away" pushes it again
+    pre = [-2, -.12, at('Following') - .05, (at('Following') + at('slides')) / 2 - .05, at('slides') - .05];
+    var side = []; for (c = A.fix + 1; c < A.watch - .5; c += 1.6) side.push(c);
+    var look = []; for (c = A.watch + .45; c < A.pay - .3; c += 1.1) look.push(c);
+    var post = []; for (c = A.pay + .3; c < DUR - .5; c += 1.3) post.push(c);
+    // two deliberate holds, not dead runs: "Look closer" (the fixed page alone, only its word changes: the stillness is the point; owner,
+    // 15 Nov evening: "AFTER is calm and solid"; every tap still has its tick and pop) and the last beat on the copyable line (rules-web.md rule 8)
+    window.HOLDS = [[A.watch + .9, A.pay - .35], [post[post.length - 1] + .45, DUR]];
     A.pre = pre; A.side = side; A.look = look; A.post = post;
     RA = pre.concat(side).map(function(t, i){ return { t: t, on: i % 2 === 0 }; });
     RB = side.concat(look, post).map(function(t, i){ return { t: t, on: i % 2 === 0, tap: look.indexOf(t) < 0 }; });
@@ -618,13 +649,10 @@ var KM = (function(){
     var k0 = pre.length % 2; RB.forEach(function(r, i){ r.on = (i + k0) % 2 === 0; });
     A.subEnd = Math.min(DUR - .3, V.end + .7);
     // ---- the camera: on the page under the hook, closer on the jumps, back for the code, in on the fixed page, back for the payoff ----
-    CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 })
-      .pushIn(.2, .9, 255, 476, 1.04)
-      .pushIn(A.leave, .9, 255, 470, 1.07)
-      .pull(A.fix - .2, .8, 255, 480, 1)
-      .pushIn(A.watch - .1, .9, 255, 466, 1.06)
-      .pull(A.pay - .25, .9, 255, 480, 1.03)
-      .creep(A.pay + .7, DUR - A.pay - .7, .005);
+    // calm (owner, 15 Nov: "too wiggly"): no drift, no push on the jumps; one slow push in for "Look closer" and back out for the payoff
+    CAM = KM.rig({ x: 255, y: 480, z: 1, drift: 0 })
+      .pushIn(A.watch - .1, 1.1, 255, 472, 1.04)
+      .pull(A.pay - .25, 1.1, 255, 480, 1);
     T.split = KM.transition('sharedElement', A.fix - .05, .7);
     T.merge = KM.transition('sharedElement', A.watch - .1, .75);
     KM.cue({ t: 0, k: 'whoosh', d: .5, g: .3 });
@@ -661,13 +689,13 @@ var KM = (function(){
     //      AFTER gets none of it: its buttons do not move, so nothing jolts. ----
     var jo = { dx: 0, sx: 0, rot: 0, tr: 0, fl: 0 };
     if (L === 'A' && r && r.t >= -.5 && t - r.t < 1.1) { var u = t - r.t, dk = Math.exp(-5 * u), d = r.on ? 1 : -1;
-      jo = { dx: -d * A.shiftA * dk * Math.cos(16 * u), sx: 30 * Math.exp(-2.6 * u) * Math.sin(36 * u) * d, rot: 3.2 * Math.exp(-2.6 * u) * Math.sin(29 * u), dy: 14 * Math.exp(-3 * u) * Math.sin(30 * u), tr: d * A.shiftA * Math.exp(-7 * u), fl: Math.exp(-4 * u) }; }
+      // calm (owner, 15 Nov evening: "too wiggly"): one clean slide from the old place to the new one (ease out, a small single overshoot),
+      // a trail while it moves and the warm flash; no shake, no tilt, nothing else on the page moves
+      var km = P(u, 0, .62); jo = { dx: -d * A.shiftA * (1 - E.back(km, 1.1)), sx: 0, rot: 0, dy: 0, tr: d * A.shiftA * (1 - E.out3(P(u, 0, .45))), fl: Math.exp(-3 * u) }; }
     if (L === 'A') { var m = art.querySelector('.msg');
       m.style.transform = 'translateX(' + jo.dx.toFixed(2) + 'px)';
-      art.querySelector('.head').style.transform = 'translateX(' + (jo.sx * .6).toFixed(2) + 'px)'; art.querySelector('.body').style.transform = 'translateX(' + (-jo.sx * .5).toFixed(2) + 'px)';
-      art.querySelector('.grid').style.transform = 'translateY(' + ((jo.dy || 0) * .8).toFixed(2) + 'px)';
-      c.style.transform = jo.fl > .02 ? 'translate(' + (jo.sx > 0 ? jo.sx * .5 : jo.sx).toFixed(2) + 'px,' + (jo.dy || 0).toFixed(2) + 'px) rotate(' + jo.rot.toFixed(3) + 'deg)' : '';
-      c.style.setProperty('--ga', (.42 + .5 * jo.fl).toFixed(3)); c.style.setProperty('--fl', (jo.fl > .02 ? Math.pow(jo.fl, 2.5) : 0).toFixed(3)); c.style.setProperty('--gl', (26 + 30 * jo.fl).toFixed(1) + 'px');
+      c.style.transform = '';
+      c.style.setProperty('--ga', (.42 + .5 * jo.fl).toFixed(3)); c.style.setProperty('--fl', (jo.fl > .02 ? Math.pow(jo.fl, 1.6) : 0).toFixed(3)); c.style.setProperty('--gl', (26 + 30 * jo.fl).toFixed(1) + 'px');
       var tr = jo.tr; m.style.boxShadow = Math.abs(tr) > .5 ? (-tr * .45).toFixed(1) + 'px 0 0 rgba(255,209,102,.4),' + (-tr * .9).toFixed(1) + 'px 0 0 rgba(255,209,102,.2),inset 0 0 0 2px rgba(255,255,255,.3)' : ''; }
     // the bio and the grid under the buttons: an element that does not fit the card is faded, never cut
     var H = bx.h, els = [art.querySelector('.body')].concat([].slice.call(art.querySelectorAll('.grid i')));
@@ -678,7 +706,7 @@ var KM = (function(){
   function seek(t){
     t = Math.max(0, Math.min(DUR, t));
     var c = CAM.apply($('world'), t, null);
-    KM.lights(t, c);
+    KM.lights(t, c, true);   // the light holds still (owner, 15 Nov: "too wiggly")
     var sk = T.split(t), mk = T.merge(t);
     var bin = E.inOut3(P(t, A.leave - .1, A.leave + .25)), bic = E.inOut3(P(t, A.leave - .5, A.leave - .12)), bk = bin * (1 - E.inOut3(P(t, A.subEnd, A.subEnd + .3))), bkc = bic * (1 - E.inOut3(P(t, A.subEnd + .3, A.subEnd + .8))), wb = KM.worldY(c, 780);
     $('band').style.opacity = bk.toFixed(3); $('cap').style.visibility = bk > .02 ? '' : 'hidden';
@@ -712,10 +740,10 @@ var KM = (function(){
     [[TA, RA, sA, 1 - P(t, A.watch - .5, A.watch - .2)], [TB, RB, sB, P(t, A.fix + .5, A.fix + .9) * (1 - P(t, DUR - .3, DUR))]].forEach(function(m, k){
       var r = null; m[1].forEach(function(d){ if ((k === 0 || d.tap) && d.t - .35 <= t) r = d; }); if (k === 1 && r && r.t < A.fix + .4) r = null;
       var press = r ? upDown(t, r.t) : 0;
-      m[0](t, { x: m[2].folX + Math.sin(t * 1.6) * 1.5, y: m[2].rowY + 28 + Math.sin(t * 2.1 + 1) * 1.5, press: press, tap: r ? r.t : null, o: m[3] * (r ? 1 : 0), c: c }); });
-    // both Follow buttons take the tap: a squeeze and back
+      m[0](t, { x: m[2].folX, y: m[2].rowY + 28, press: press, tap: r ? r.t : null, o: m[3] * (r ? 1 : 0), c: c }); });
+    // BEFORE's Follow button takes the tap with a squeeze; AFTER's holds still (calm and solid, owner 15 Nov evening)
     [['A', RA], ['B', RB]].forEach(function(m){ var r = null; m[1].forEach(function(d){ if (d.t <= t) r = d; });
-      var sq = r ? Math.sin(Math.PI * P(t, r.t, r.t + .28)) : 0; $('c' + m[0]).querySelector('.fol').style.transform = 'scale(' + (1 - .06 * sq).toFixed(4) + ')'; });
+      var sq = r && m[0] === 'A' ? Math.sin(Math.PI * P(t, r.t, r.t + .28)) : 0; $('c' + m[0]).querySelector('.fol').style.transform = 'scale(' + (1 - .04 * sq).toFixed(4) + ')'; });   // AFTER stays solid (owner, 15 Nov evening): only its word changes
     // ---- the lock guides: AFTER's two buttons, dashed, drawn on and held while the word changes inside them ----
     var gkk = E.out3(P(t, A.watch + .3, A.watch + .8)) * (1 - P(t, A.pay - .3, A.pay)), gks = E.out3(P(t, A.fix + .9, A.fix + 1.3)) * (1 - P(t, A.watch - .4, A.watch - .15));
     [].forEach.call($('cB').querySelectorAll('.guide'), function(e, i){ var ks = E.inOut3(P(t, A.fix + .9 + i * .1, A.fix + 1.3 + i * .1)), kl = E.inOut3(P(t, A.watch + .3 + i * .1, A.watch + .75 + i * .1)), lk = t < A.watch ? ks : kl;
@@ -723,8 +751,6 @@ var KM = (function(){
     // ---- the hook: on screen from frame 0 (design/improvements.md, 13 Nov: the text overlay already on the moving bug); "jump?" kicks on every jump ----
     var gone = E.inOut3(P(t, A.leave, A.leave + .3));
     KM.rise($('hook').querySelectorAll('.ln > span'), t, [-1, -1, -1, -1, -1], gone);
-    var kick = 0; RA.forEach(function(r){ if (r.t < A.leave) kick = Math.max(kick, Math.sin(Math.PI * P(t, r.t, r.t + .3))); });
-    var acc = $('hook').querySelector('.acc'); acc.style.transform = (acc.style.transform || '') + ' translateY(' + (-10 * kick).toFixed(2) + 'px) rotate(' + (-3 * kick).toFixed(2) + 'deg)';
     $('lbl').style.opacity = (1 - P(t, A.leave - .2, A.leave)).toFixed(3);
     // ---- the counters: taps so far, and how far Message moved on the last one ----
     EL.stat.apply(t);

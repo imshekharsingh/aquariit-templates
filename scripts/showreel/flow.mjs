@@ -17,7 +17,11 @@ import { createRequire } from 'node:module';
 
 export const STEP = .1;
 export const FLOW = {
-  web: { CUT: 25, DEAD: .5, DEAD_RUN: 1, CONT: .85, STROBE: 60 },
+  // web, 15 Nov 2026 (owner: the web reels are "too wiggly"; rules-web.md rule 17): the camera and the light hold still and only the broken element
+  // moves, with a held beat after each move to read it, so "always moving" no longer fits web. Something still changes every 2 s at most (owner,
+  // 7 Nov: "does something change every 1.5-2 s?"), and continuity only stops a slideshow: the calm form and follow rebuilds 54% and 42%
+  // (design/mandatory.md, "FLOW calibration"); Output QA CALM measures the calm itself.
+  web: { CUT: 25, DEAD: .5, DEAD_RUN: 2, CONT: .35, STROBE: 60 },
   tech: { CUT: 25, DEAD: .5, DEAD_RUN: 1, CONT: .85, STROBE: 60 },
   c3: { CUT: 25, DEAD: .3, DEAD_RUN: 1, CONT: .85, STROBE: 60 },   // 2.5D paper: the slow parallax drift moves 0.2-0.5 a step (Sahara)
 };

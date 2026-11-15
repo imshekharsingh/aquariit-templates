@@ -15,6 +15,10 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const GATE_FROM = '2026-11-08', ITEMS = 13, FLOW_FROM = '2026-11-08', FLOW_ITEMS = [14, 15, 16, 17];
 // ELEMENT SOUND (owner, 8 Nov 2026: every element's flow has a compatible sound): item 18, web reels posting from SOUND_FROM (scripts/showreel/elsound.mjs)
 export const SOUND_FROM = '2026-11-09', SOUND_ITEM = 18;
+// CALM (owner, 15 Nov 2026: web reels "too wiggly"; rules-web.md rule 17): web reels posting from CALM_FROM hold still between clear moves, so item 16
+// takes the calm web continuity line (35%+, scripts/showreel/flow.mjs FLOW.web) instead of 85%+
+export const CALM_FROM = '2026-11-16';
+const CALM16 = /FLOW: continuity (3[5-9]|[4-9]\d|100)%/;
 // JOURNEY (owner, 8 Nov 2026, design/rules-c3.md rule 9): item 19, Turns Out reels posting from JOURNEY_FROM: "19. Journey: PASS: scenes N (...); transitions: ...", N at least 4
 export const JOURNEY_FROM = '2026-11-09', JOURNEY_ITEM = 19;
 // DEPTH (owner, 8-9 Nov 2026, design/rules-c3.md rule 11): item 20, Turns Out reels posting from DEPTH_FROM: the qa.mjs DEPTH lines pasted, every world 4+ planes
@@ -44,7 +48,7 @@ export const reviewProblems = (name, e, { render = false, today = todayIST() } =
     else if (g.ev.length < 8) out.push(`${p}: item ${i} needs its evidence after "PASS:"`);
     // the Echoes engine (owner's kit, 15 Nov 2026: "a gate that blocks the kit's look is adjusted"): archival photo shots have no Kt.plane worlds, so
     // item 20 takes the film finish and the per-shot motion as its evidence instead of qa.mjs DEPTH lines (captions.json "engine": "echoes")
-    else if (NEED[i] && !(i === 2 && e.channel === 'tech') && !(i === DEPTH_ITEM && e.engine === 'echoes') && !NEED[i].test(g.ev)) out.push(`${p}: item ${i} must paste its AUTO line (${NEED[i].source})`);
+    else if (NEED[i] && !(i === 2 && e.channel === 'tech') && !(i === DEPTH_ITEM && e.engine === 'echoes') && !((i === 16 && e.channel === 'web' && e.postOn >= CALM_FROM ? CALM16 : NEED[i]).test(g.ev))) out.push(`${p}: item ${i} must paste its AUTO line (${NEED[i].source})`);
   }
   return out;
 };

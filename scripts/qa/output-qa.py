@@ -38,6 +38,8 @@ FB = {   # the owner-feedback.md lines each check guards
     'sync': '13 Nov tech IP68 "the voice names an item (\'or the sauna\') while its card is still empty"',
     'grade': '13 Nov Turns Out "I don\'t find the colour selection better" (fog wash, white Taj on a pale sky)',
     'fill': '15 Nov Turns Out Mona Lisa "use 2.5D with such images to make it more available on the screen (as it seems to be centered mostly)"',
+    'calm': '15 Nov web "too wiggly" (Mon / Tue reels: constant drift, wobble, bobbing panes, a busy camera)',
+    'hue': '15 Nov web "main frame where we see the changes seem to show similar colour grading so doesn\'t look different from other videos"',
     'licence': '14 Nov "yes to free real images" (design/safety.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
@@ -55,7 +57,19 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          spr_y=(.589, .818), spr_k=8, spr_dl=14, spr_frac=.02, spr_max=.10,
          demo_lit=.12, demo_grey=.25, demo_s=.35, demo_m=32, demo_c=64, demo_box=(24, 125, 516, 672),
          split_ratio=1.8, split_min=.05, split_op=.9,
-         fill_y=(.20, .66), fill_g=6, fill_line=.25, fill_min=.80, fill_frac=.25)
+         fill_y=(.20, .66), fill_g=6, fill_line=.25, fill_min=.80, fill_frac=.25,
+         calm_px=20, calm_band=(288, 392), calm_med=.035, calm_mean=.05, calm_step=.10,
+         hue_s=.25, hue_v=.2, hue_min=40, hue_last=3)
+# CALM (15 Nov 2026, web only; owner: "too wiggly"): only the broken element may move; the rest of the frame holds still. The share of the frame
+# (the subtitle band calm_band left out: its words change on purpose) whose pixels change by calm_px+ over 0.2 s at 135x240, 10 fps; FAIL when the
+# median over the reel is over calm_med or the mean over calm_mean. Calibrated 15 Nov on the scenes' own frames (a scene is a pure function of t;
+# python3 scripts/qa/look.py) every 0.1 s: the "too wiggly" cuts (camera drift, drifting light, a page that shook and tilted on every jump) form
+# median 7.0% / mean 8.3%, follow 5.1 / 7.3, fontswap 4.9 / 7.1; calmer reels tabs 1.9 / 3.4, list 2.9 / 4.5, press 3.4 / 3.9; the calm rebuilds
+# (camera and light still, one clean move per error) form 0.9 / 3.2, follow 0.5 / 3.0.
+# HUE (15 Nov 2026, web only; owner: "similar colour grading"): the demo's main hue = the peak of a 10-degree hue histogram of its lit, coloured
+# pixels (S > hue_s, V > hue_v, weighted by S x V, circularly smoothed) inside the recorded subject box every 0.5 s; compared with the last
+# hue_last web reels before this one (captions.json "postOn") in scripts/qa/demo-hues.json (measured on their final frames: python3
+# scripts/qa/look.py). FAIL when it sits within hue_min degrees of any of them. A new web reel adds its line to demo-hues.json in the push that makes it.
 # FILL (15 Nov 2026, Turns Out), calibrated on stills of showreel-c3-mona-stolen at 270x480 every 0.5 s, read at 135x240: the picture zone (y 20-66%
 # of the height: under the chapter title, over the captions) has a pixel "busy" where the mean gradient of its 3x3 neighbourhood is 6+ of 255;
 # a column (row) holds the picture when 25%+ of its pixels in the zone are busy, and FILL = the picture's extent across (first to last column holding
@@ -676,6 +690,75 @@ def demo_check(F, fps, mp4, qa, css_w=540):
          f'colourfulness {m:.0f} (at least {T["demo_m"]}), contrast p95-p5 {c:.0f} (at least {T["demo_c"]})' + (f': {", ".join(bad)}' if bad else ''))
 
 
+def subj_at(rows, t):
+    """the recorded subject box nearest to t (rows: [t, l, t, r, b] every 0.5 s)"""
+    best = min(rows, key=lambda r: abs((r[0] or 0) - t)); return best[1:]
+
+
+def calm_series(G, fps, band, css_w=540):
+    """the share of the frame (the subtitle band left out) that changes by calm_px+ over 0.2 s, one value per 0.1 s step"""
+    h, w = G.shape[1:3]; sc = w / css_w; lag = max(1, int(round(.2 * fps)))
+    m = np.ones((h, w), bool); m[int(band[0] * sc):int(band[1] * sc)] = False
+    return np.array([float((np.abs(G[k].astype(np.int16) - G[k - lag].astype(np.int16))[m] > T['calm_px']).mean()) for k in range(lag, len(G))])
+
+
+def calm_check(G, fps, mp4, qa):
+    e = calm_series(G, fps, qa.get('band') or T['calm_band'])
+    if not len(e): line('CALM', 'SKIP', 'no frames'); return
+    med, mean = float(np.median(e)), float(e.mean())
+    bad = med > T['calm_med'] or mean > T['calm_mean']
+    runs = []
+    for i in np.flatnonzero(e > T['calm_step']):
+        t0 = (i + 2) / fps
+        if runs and t0 - runs[-1][1] <= .21: runs[-1][1] = t0
+        else: runs.append([t0, t0])
+    line('CALM', 'FAIL' if bad else 'PASS', f'the frame outside the subtitle band changes {med:.1%} in 0.2 s at the median (at most {T["calm_med"]:.1%}), {mean:.1%} on average '
+         f'(at most {T["calm_mean"]:.0%}; the 15 Nov "too wiggly" form cut 7.0% / 8.3%); busy moments (over {T["calm_step"]:.0%}): '
+         + (', '.join(f'{a:.1f}-{b + .1:.1f} s' for a, b in runs[:10]) or 'none'))
+
+
+def demo_hue(F, fps, rows, css_w=540):
+    """-> (main hue in degrees, its share of the coloured weight, samples) inside the subject box every 0.5 s"""
+    h, w = F.shape[1:3]; sc = w / css_w; step = max(1, int(round(fps * .5))); hist = np.zeros(36); n = 0
+    ks = [(min(len(F) - 1, int(round(r[0] * fps))), r[1:]) for r in rows] if rows[0][0] is not None else [(k, rows[0][1:]) for k in range(0, len(F), step)]
+    for k, b in ks:
+        l, t, r, bt = [int(round(v * sc)) for v in b]; l, t, r, bt = max(0, l), max(0, t), min(w, r), min(h, bt)
+        if (r - l) * (bt - t) < .05 * w * h: continue
+        H, S, V = hsv(F[k, t:bt, l:r]); m = (S > T['hue_s']) & (V > T['hue_v'])
+        if m.sum() < 50: continue
+        hist += np.bincount((H[m] // 10).astype(int) % 36, weights=(S * V)[m], minlength=36); n += 1
+    if not n or hist.sum() == 0: return None, 0, n
+    sm = sum(np.roll(hist, d) * wt for d, wt in ((-2, .25), (-1, .6), (0, 1), (1, .6), (2, .25)))
+    i = int(np.argmax(sm)); return i * 10 + 5, float(sm[i] / sm.sum()), n
+
+
+def hdist(a, b): d = abs(a - b) % 360; return min(d, 360 - d)
+
+
+def hue_refs(name):
+    """the last hue_last web reels before this one (captions.json postOn) that have a line in demo-hues.json"""
+    root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
+    try: caps = json.load(open(os.path.join(root, 'templates', 'showreels', 'captions.json')))
+    except (OSError, ValueError): caps = {}
+    try: hues = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'demo-hues.json')))['reels']
+    except (OSError, ValueError, KeyError): hues = {}
+    me = (caps.get(name) or {}).get('postOn') or '9999'
+    past = sorted(((v.get('postOn') or '', k) for k, v in caps.items() if isinstance(v, dict) and v.get('channel') == 'web' and k != name
+                   and k in hues and (v.get('postOn') or '') < me), reverse=True)
+    return [(k, hues[k]['hue']) for _, k in past[:T['hue_last']]]
+
+
+def hue_check(F, fps, mp4, qa, name):
+    rows, src = demo_boxes(mp4, qa); hue, share, n = demo_hue(F, fps, rows)
+    if hue is None: line('HUE', 'WARN', f'no coloured pixels in the demo to measure ({src})'); return
+    refs = hue_refs(name)
+    if not refs: line('HUE', 'WARN', f'demo main hue {hue} deg ({share:.0%} of its colour); no earlier web reels in scripts/qa/demo-hues.json'); return
+    near = [(k, h, hdist(hue, h)) for k, h in refs if hdist(hue, h) < T['hue_min']]
+    line('HUE', 'FAIL' if near else 'PASS', f'demo main hue {hue} deg ({share:.0%} of its colour, {n} samples in {src}) vs the last {len(refs)} web reels '
+         + ', '.join(f'{k.replace("showreel-", "")} {h}' for k, h in refs) + f' (at least {T["hue_min"]} deg from each)'
+         + (': too close to ' + ', '.join(f'{k} ({d} deg)' for k, h, d in near) if near else ''))
+
+
 def main():
     a = sys.argv[1:]; mp4, cfgp = a[0], a[1]
     logs = [a[i + 1] for i, x in enumerate(a) if x == '--log']
@@ -694,8 +777,8 @@ def main():
     edge_checks(F, fps, qa.get('edges_ok', []), heard, mp4)
     if ch == 'c3': grade_check(F, fps, cover, qa.get('subject') or (qa.get('guess') or {}).get('box'), (qa.get('guess') or {}).get('css_width', 540))
     else: line('GRADE', 'SKIP', 'Turns Out only')
-    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps); spread_check(F, fps); demo_check(F, fps, mp4, qa)
-    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only'); line('SPREAD', 'SKIP', 'web only'); line('DEMO', 'SKIP', 'web only')
+    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps); spread_check(F, fps); demo_check(F, fps, mp4, qa); hue_check(F, fps, mp4, qa, name)
+    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only'); line('SPREAD', 'SKIP', 'web only'); line('DEMO', 'SKIP', 'web only'); line('HUE', 'SKIP', 'web only')
     if qa.get('guess'): guess_check(F, fps, qa['guess'], heard)
     elif ch == 'c3' and (c.get('experiment') or {}).get('id', '').startswith('c3-guess'): line('GUESS', 'FAIL', 'a guess reel without "qa": {"guess": {answer, reveal, box}} in its config')
     else: line('GUESS', 'SKIP', 'not a guess reel')
@@ -705,6 +788,8 @@ def main():
     dead_check(G, fps, mp4, dur)
     if ch == 'c3': fill_check(G, fps)
     else: line('FILL', 'SKIP', 'Turns Out only')
+    if ch == 'web': calm_check(G, fps, mp4, qa)
+    else: line('CALM', 'SKIP', 'web only')
     if qa.get('mute'): mute_check(G, fps, qa['mute'], heard)
     else: line('MUTE', 'SKIP' if ch != 'web' else 'WARN', 'no "qa": {"mute": {before, after}} in the config' + (' (web: declare the before/after moments)' if ch == 'web' else ''))
     split_check(G, fps, mp4)
