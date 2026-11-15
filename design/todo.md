@@ -5,6 +5,7 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
+- [ ] 15 Nov 2026 (night): showreel-tech-screen-120hz (posts Tue 17 Nov 13:00) needs ONE re-render on Mon 16 evening before its post: the glass sheen was removed from techkit/scenes/screen-120hz.js and techkit/base.html changed (subject box, holds), so its R2 video no longer matches its source. Check its Output QA SHEEN and HERO lines (HERO may need a bigger, busier phone and no box around the hero, rules-tech.md K1: the 5 ATM rebuild is the pattern) and update review/tech/showreel-tech-screen-120hz.md item 13.
 - [ ] 15 Nov 2026 (owner, Owner chat; queued right after the 15-16 Nov night reels, before any other P1): **the reel journey in the app.**
   Owner: "build the Renders card ... make it cover the whole flow of reel making in the app and put it in right way in the app so that app
   gets a better outlook for this journey". One place (its own tab or the home screen's top, not a buried card) where each reel of each

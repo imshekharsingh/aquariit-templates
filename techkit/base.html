@@ -79,6 +79,10 @@ const toS=(x,y)=>[CX+(x-CX)*CAM[0]+CAM[1],CY+(y-CY)*CAM[0]+CAM[2]];
 function camOn(){g.setTransform(CAM[0],0,0,CAM[0],CX*(1-CAM[0])+CAM[1],CY*(1-CAM[0])+CAM[2])}
 function camOff(){g.setTransform(1,0,0,1,0,0)}
 let BOXES=[];window.__boxes=()=>BOXES;
+// the hero subject's box in screen px (Output QA HERO, 15 Nov 2026: the owner saw a static watch while only the water moved): a topic calls
+// subj(l, t, r, b) with the subject's own rectangle under the current transform; capture.cjs records it every 0.5 s
+let SUBJ=null;window.__subject=()=>SUBJ;
+function subj(l,t,r,b){const m=g.getTransform(),P=[[l,t],[r,t],[l,b],[r,b]].map(([x,y])=>[m.a*x+m.c*y+m.e,m.b*x+m.d*y+m.f]);SUBJ=[Math.min(...P.map(q=>q[0])),Math.min(...P.map(q=>q[1])),Math.max(...P.map(q=>q[0])),Math.max(...P.map(q=>q[1]))]}
 function glowDot(x,y,r,col,a=1){if(a<=0)return;g.globalAlpha=a;const gr=g.createRadialGradient(x,y,0,x,y,r*3.2);gr.addColorStop(0,'#fff');gr.addColorStop(.25,col);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.beginPath();g.arc(x,y,r*3.2,0,7);g.fill();g.globalAlpha=1}
 function ring(x,y,r,col,a,w=3){if(a<=0)return;g.globalAlpha=a;g.strokeStyle=col;g.lineWidth=w;g.beginPath();g.arc(x,y,r,0,7);g.stroke();g.globalAlpha=1}
 function ping(x,y,t,t0,col,R=70){const q=prog(t,t0,t0+.8);if(q>0&&q<1)ring(x,y,10+R*eoc(q),col,1-q,3)}
@@ -115,10 +119,10 @@ window.CHUNKS=CHUNKS;
 const capEl=$('#caps');let capIdx=-2;
 const JOLTS=TP.jolts||[];
 window.TRANSITIONS=[...SC.slice(1).map(s=>[+(s.start-.45).toFixed(2),+(s.start+.75).toFixed(2),'camera']),...JOLTS.map(k=>[+(C[k]-.1).toFixed(2),+(C[k]+.45).toFixed(2),'jolt']),[+(C.final-.2).toFixed(2),+(C.final+.8).toFixed(2),'slam']];
-window.HOLDS=[];
+window.HOLDS=TP.holds?TP.holds():[];
 if(TP.init)TP.init();
 window.render=function(t){
-  RT=t;BOXES=[];
+  RT=t;BOXES=[];SUBJ=null;
   CAM=track(t,TP.cam());
   let sh=0;JOLTS.forEach(k=>{const q=prog(t,C[k],C[k]+.4);if(q>0&&q<1)sh=Math.max(sh,(1-q)*clamp(q*12))});
   CAM[1]+=sh*12*Math.sin(t*90);CAM[2]+=sh*9*Math.cos(t*77);

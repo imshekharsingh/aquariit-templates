@@ -86,8 +86,7 @@ window.TOPIC={
       dial(CX,CY+120,v+.015*Math.sin(t*9),c5);phone(CX,CY-180,.42,t<C.slow?off:t<C.slowest?off*.2:0,120,c5,'#3a2a6a')}
     if(c6>0){phone(CX,CY,.9,off*.6,120,c6*(1-fin*.7),'#1f4a6a');
       if(fin>0){for(let i=0;i<5;i++){const an=t*(.9+i*.17)+i*1.3,x=CX+Math.cos(an)*(300+40*i),y=820+Math.sin(an)*(170+20*i);glowDot(x,y,10+4*(i%2),['#8ef0ff','#7a7cff','#ff7ad9','#6ff0a4','#ffd36b'][i],fin*.8)}}}
-    {g.save();rrect(g,PX,PY,PW,PH,26);g.clip();const u=(t*.6)%1.6-.3,x=PX+u*PW;const gr=g.createLinearGradient(x-160,0,x+160,0);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.5,'rgba(220,220,255,.22)');gr.addColorStop(1,'rgba(255,255,255,0)');
-      g.fillStyle=gr;g.translate(x,CY);g.rotate(.35);g.fillRect(-160,-900,320,1800);g.restore()}
+    // (no glass sheen: 15 Nov 2026, owner: a bright band sweeping across the hero every ~2.7 s; Output QA SHEEN)
     g.strokeStyle='rgba(255,255,255,.16)';g.lineWidth=2;rrect(g,PX,PY,PW,PH,26);g.stroke();
   },
   labels(t){

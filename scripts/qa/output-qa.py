@@ -40,6 +40,8 @@ FB = {   # the owner-feedback.md lines each check guards
     'fill': '15 Nov Turns Out Mona Lisa "use 2.5D with such images to make it more available on the screen (as it seems to be centered mostly)"',
     'calm': '15 Nov web "too wiggly" (Mon / Tue reels: constant drift, wobble, bobbing panes, a busy camera)',
     'hue': '15 Nov web "main frame where we see the changes seem to show similar colour grading so doesn\'t look different from other videos"',
+    'sheen': '15 Nov tech "covering the wave like coming in from left top corner to the right of the frame, it\'s happening in all videos" (a glass sheen swept the hero every 2.7 s)',
+    'hero': '15 Nov tech "I don\'t see much happening animation wise around watch in 5 ATM video" (a small static watch, only the water moved)',
     'licence': '14 Nov "yes to free real images" (design/safety.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
@@ -59,7 +61,21 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          split_ratio=1.8, split_min=.05, split_op=.9,
          fill_y=(.20, .66), fill_g=6, fill_line=.25, fill_min=.80, fill_frac=.25,
          calm_px=20, calm_band=(288, 392), calm_med=.035, calm_mean=.05, calm_step=.10,
-         hue_s=.25, hue_v=.2, hue_min=40, hue_last=3)
+         hue_s=.25, hue_v=.2, hue_min=40, hue_last=3,
+         sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=2,
+         hero_lag=.5, hero_shift=6, hero_px=30, hero_on=.02, hero_active=.35, hero_w=.33)
+# SHEEN (15 Nov 2026, tech; owner: "covering the wave like coming in from left top corner to the right of the frame, it's happening in all videos"):
+# a straight bright band sweeping across the hero. In the hero zone (sheen_y of the height) at 135x240, the pixels that brighten by sheen_d+ over
+# 0.2 s, projected across lines at every oblique angle (15-75 and 100-165 deg, 5-deg steps; 3 px wide lines at least 60% of the zone long): the
+# best line's lit share minus the median line's. A sweep = sheen_steps+ steps in a row over sheen_score at the same angle (within 10 deg) whose line
+# moves one way. Calibrated 15 Nov on showreel-tech-watch-5atm's frames (scene seeks every 0.1 s): with the glass sheen 15 sweeps (scores to 0.97,
+# 2.7 s apart), the same scene without it 0 (best 0.62: falling drops). FAIL at sheen_events+ sweeps (one is a WARN).
+# HERO (15 Nov 2026, tech; owner: "I don't see much happening animation wise around watch"): the hero's box as the kit scene reports it
+# (window.__subject, recorded every 0.5 s by techkit/capture.cjs into <reel>.subject0.json). Its own change: inside the box (inset 10%) at 270x480,
+# blurred 3x3, the share of pixels that change by hero_px+ over hero_lag s after the best shift of up to hero_shift px (a bob or a slide is not
+# the subject doing anything); a sample is "active" at hero_on+. FAIL when under hero_active of the samples are active, or when the box spans
+# under hero_w of the frame width at the median (a small subject in a big frame). Calibrated 15 Nov on the 5 ATM scene: the old watch (a static
+# drawing with a 9 px bob, 25% of the width) active in 22% of the samples, 0.6% change at the median, only at the chapter cuts.
 # CALM (15 Nov 2026, web only; owner: "too wiggly"): only the broken element may move; the rest of the frame holds still. The share of the frame
 # (the subtitle band calm_band left out: its words change on purpose) whose pixels change by calm_px+ over 0.2 s at 135x240, 10 fps; FAIL when the
 # median over the reel is over calm_med or the mean over calm_mean. Calibrated 15 Nov on the scenes' own frames (a scene is a pure function of t;
@@ -810,6 +826,59 @@ def hue_check(F, fps, mp4, qa, name):
          + (': too close to ' + ', '.join(f'{k} ({d} deg)' for k, h, d in near) if near else ''))
 
 
+def sheen_check(G, fps):
+    H, W = G.shape[1:]; y0, y1 = int(H * T['sheen_y'][0]), int(H * T['sheen_y'][1]); lag = max(1, int(round(.2 * fps)))
+    yy, xx = np.mgrid[0:y1 - y0, 0:W]; proj = []
+    for a in list(range(15, 80, 5)) + list(range(100, 170, 5)):
+        r = np.deg2rad(a); s_ = -xx * np.sin(r) + yy * np.cos(r); s_ = np.round(s_ - s_.min()).astype(int).ravel()
+        tot = np.convolve(np.bincount(s_), np.ones(3), 'same'); proj.append((a, s_, tot, tot >= (y1 - y0) * .6 * 3))
+    v = []
+    for k in range(lag, len(G)):
+        pos = ((G[k, y0:y1].astype(np.int16) - G[k - lag, y0:y1].astype(np.int16)) > T['sheen_d']).ravel(); best = (0, 0, 0)
+        for a, s_, tot, ok in proj:
+            if not ok.any(): continue
+            f = np.where(ok, np.convolve(np.bincount(s_, weights=pos, minlength=len(tot)), np.ones(3), 'same') / np.maximum(tot, 1), 0)
+            i = int(np.argmax(f)); sc = float(f[i] - np.median(f[ok]))
+            if sc > best[0]: best = (sc, a, i)
+        v.append(best)
+    ev, cur = [], None
+    for i, (sc, a, o) in enumerate(v):
+        if sc > T['sheen_score'] and cur and abs(a - cur[-1][1]) <= 10: cur.append((i, a, o))
+        elif sc > T['sheen_score']: cur = [(i, a, o)]; ev.append(cur)
+        else: cur = None
+    ev = [e for e in ev if len(e) >= T['sheen_steps'] and len({np.sign(e[j + 1][2] - e[j][2]) for j in range(len(e) - 1)} - {0}) == 1]
+    top = max((x[0] for x in v), default=0)
+    line('SHEEN', 'FAIL' if len(ev) >= T['sheen_events'] else 'WARN' if ev else 'PASS', f'straight bright bands sweeping the hero zone: {len(ev)} '
+         f'(at {", ".join(f"{(e[0][0] + lag) / fps:.1f} s" for e in ev[:8]) or "none"}; best line score {top:.2f}, a sweep over {T["sheen_score"]} for {T["sheen_steps"]}+ steps; '
+         f'the 15 Nov glass sheen: 15 sweeps)')
+
+
+def hero_check(F, fps, mp4):
+    import glob
+    rows = []
+    for f in sorted(glob.glob(os.path.splitext(mp4)[0] + '.subject*.json')): rows += json.load(open(f))
+    if not rows: line('HERO', 'WARN', 'no subject box recorded (a kit scene reports it with subj(); techkit/capture.cjs records it)'); return
+    h, w = F.shape[1:3]; sc = w / 1080; lag = max(1, int(round(T['hero_lag'] * fps))); S = T['hero_shift']
+    def grey(k):
+        y = lumf(F[k]) * 255; p = np.pad(y, 1, mode='edge'); return sum(p[i:i + h, j:j + w] for i in range(3) for j in range(3)) / 9
+    act, widths = [], []
+    for r in rows:
+        k = int(round(r[0] * fps)); l, t, rr, b = r[1:]
+        if k < lag or k >= len(F): continue
+        widths.append((rr - l) / 1080); ix, iy = (rr - l) * .1, (b - t) * .1
+        l, t, rr, b = [int(round(v * sc)) for v in (l + ix, t + iy, rr - ix, b - iy)]; l, t = max(S, l), max(S, t); rr, b = min(w - S, rr), min(h - S, b)
+        if rr - l < 4 or b - t < 4: continue
+        A, B = grey(k)[t:b, l:rr], grey(k - lag); best = 1.
+        for dy in range(-S, S + 1):
+            for dx in range(-S, S + 1): best = min(best, float((np.abs(A - B[t + dy:b + dy, l + dx:rr + dx]) > T['hero_px']).mean()))
+        act.append(best)
+    if not act: line('HERO', 'WARN', 'no usable subject boxes'); return
+    a = np.array(act); share = float((a >= T['hero_on']).mean()); wm = float(np.median(widths))
+    bad = [x for x, ok in ((f'the subject itself changes in only {share:.0%} of the samples', share >= T['hero_active']), (f'it spans {wm:.0%} of the width', wm >= T['hero_w'])) if not ok]
+    line('HERO', 'FAIL' if bad else 'PASS', f'the hero subject changes by itself (a bob or slide aligned out) in {share:.0%} of {len(a)} samples (at least {T["hero_active"]:.0%}; '
+         f'median change {np.median(a):.1%}), spans {wm:.0%} of the frame width (at least {T["hero_w"]:.0%}); the old static 5 ATM watch 22% / 25%' + (': ' + '; '.join(bad) if bad else ''))
+
+
 def main():
     a = sys.argv[1:]; mp4, cfgp = a[0], a[1]
     logs = [a[i + 1] for i, x in enumerate(a) if x == '--log']
@@ -833,10 +902,14 @@ def main():
     if qa.get('guess'): guess_check(F, fps, qa['guess'], heard)
     elif ch == 'c3' and (c.get('experiment') or {}).get('id', '').startswith('c3-guess'): line('GUESS', 'FAIL', 'a guess reel without "qa": {"guess": {answer, reveal, box}} in its config')
     else: line('GUESS', 'SKIP', 'not a guess reel')
+    if ch == 'tech': hero_check(F, fps, mp4)
+    else: line('HERO', 'SKIP', 'tech only')
     G = frames(mp4, fps, 135, 240, gray=True); del F
     numbers_check(mp4, text, heard, qa.get('subs') or T['subs'][ch])
     sync_check(mp4, *sync_words(c, qa, ch), heard, dur, qa.get('subs') or T['subs'][ch])
     dead_check(G, fps, mp4, dur)
+    if ch == 'tech': sheen_check(G, fps)
+    else: line('SHEEN', 'SKIP', 'tech only')
     if ch == 'c3': fill_check(G, fps)
     else: line('FILL', 'SKIP', 'Turns Out only')
     if ch == 'web': calm_check(G, fps, mp4, qa)
