@@ -1,0 +1,14 @@
+{
+ "name": "showreel-c3-mona-stolen",
+ "why": "Second pass: run 43669299385 timed out on searches; exact files from the Wikipedia media lists (Sources run 43671663267), plus one Library of Congress search for the Louvre. Same reel name, so the files join in R2.",
+ "media": [
+  {"id": "mona", "url": "https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg", "width": 1920},
+  {"id": "wall", "url": "https://commons.wikimedia.org/wiki/File:Mona_Lisa_stolen-1911.jpg", "width": 1920},
+  {"id": "peruggia", "url": "https://commons.wikimedia.org/wiki/File:Vincenzo_peruggia.jpg", "width": 1920},
+  {"id": "beroud", "url": "https://commons.wikimedia.org/wiki/File:Louis_Beroud_-_Mona_Lisa_au_Louvre_1911.jpg", "width": 1920},
+  {"id": "paper", "url": "https://commons.wikimedia.org/wiki/File:Mona_Lisa_Found,_La_Joconde_est_Retrouvée,_Le_Petit_Parisien,_Numéro_13559,_13_December_1913.jpg", "width": 1920},
+  {"id": "uffizi", "url": "https://commons.wikimedia.org/wiki/File:Monalisa_uffizi_1913.jpg", "width": 1920},
+  {"id": "return1914", "url": "https://commons.wikimedia.org/wiki/File:After_photo_for_the_return_of_Gioconda_at_the_Louvre_Museum_1914.jpg", "width": 1920},
+  {"id": "louvre", "queries": ["Louvre Paris"], "sources": ["loc"], "min_side": 800}
+ ]
+}
