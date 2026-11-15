@@ -1,0 +1,14 @@
+{
+ "name": "showreel-c3-mona-stolen",
+ "why": "Sun 15 Nov Turns Out reel on the ported Echoes engine (owner's kit): the 1911 Mona Lisa theft. 4-6 archival shots plus fallbacks (PD / CC0 / CC BY only).",
+ "media": [
+  {"id": "mona", "url": "https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg", "width": 1920},
+  {"id": "wall", "queries": ["Mona Lisa empty wall Louvre 1911", "Joconde vol 1911 Salon Carre", "Mona Lisa theft 1911"], "sources": ["wikimedia", "loc"], "min_side": 500},
+  {"id": "peruggia", "queries": ["Vincenzo Peruggia", "Peruggia 1911 Mona Lisa thief"], "sources": ["wikimedia", "loc"], "min_side": 300},
+  {"id": "paper", "queries": ["Mona Lisa stolen newspaper 1911", "Joconde volee 1911 journal", "Excelsior 1911 Joconde"], "sources": ["wikimedia", "loc"], "min_side": 600},
+  {"id": "uffizi", "queries": ["Mona Lisa Uffizi 1913", "Gioconda ritrovata 1913", "Mona Lisa recovered 1913 Florence"], "sources": ["wikimedia", "loc"], "min_side": 500},
+  {"id": "louvre", "queries": ["Louvre Paris photochrom", "Louvre Paris 1890"], "sources": ["loc", "wikimedia"], "min_side": 800},
+  {"id": "florence", "queries": ["Florence Ponte Vecchio photochrom", "Florence Italy photochrom"], "sources": ["loc", "wikimedia"], "min_side": 800},
+  {"id": "crowd", "queries": ["Mona Lisa returned Louvre 1914", "Joconde retour Louvre 1914", "Louvre Salon Carre visitors"], "sources": ["wikimedia", "loc"], "min_side": 500}
+ ]
+}
