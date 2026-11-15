@@ -223,6 +223,7 @@ window.render=function(t){
     g.globalAlpha=c1*.18;g.strokeStyle='#8ef0ff';g.lineWidth=1;for(let x=PX;x<=PX+PW;x+=38){g.beginPath();g.moveTo(x,PY);g.lineTo(x,PY+PH);g.stroke()}for(let y=PY;y<=PY+PH;y+=35){g.beginPath();g.moveTo(PX,y);g.lineTo(PX+PW,y);g.stroke()}g.globalAlpha=1;
     // photons falling, few and far between
     for(const p of PHOT){const q=prog(t,p.t0,p.t0+p.d);if(q<=0||q>=1)continue;const y=lerp(PY+12,PY+60+((p.x*7)%(PH-120)),eic(q));glowDot(p.x,y,4,'#ffe7a8',c1*(1-q*.4));if(q>.92)ring(p.x,y,8,'#ffe7a8',c1*.6,2)}
+    for(const p of PHOT){const q=prog(t,p.t0+p.d,p.t0+p.d+.7);if(q<=0||q>=1)continue;const y=PY+60+((p.x*7)%(PH-120)),cx=PX+Math.floor((p.x-PX)/38)*38,cy=PY+Math.floor((y-PY)/35)*35;g.globalAlpha=c1*(1-q)*.55;g.fillStyle='#ffe7a8';g.fillRect(cx+1,cy+1,36,33);g.globalAlpha=c1*(1-q);g.strokeStyle='#ffe7a8';g.lineWidth=2;g.strokeRect(cx+1,cy+1,36,33);g.globalAlpha=1}
   }
   // ---- ch2-ch3: the burst: fifteen frames, then time adds up ----
   const c2=win(t,C.burst-.2,C.merge+.9,.3,.4);
@@ -242,6 +243,14 @@ window.render=function(t){
       g.globalAlpha=a;g.strokeStyle=lit>0?`rgba(111,240,164,${.5+.5*lit})`:'rgba(140,220,255,.55)';g.lineWidth=lit>0?3:2;rrect(g,-w/2,-h/2,w,h,conv>0?26:12);g.stroke();
       const fl=1-prog(t,t0,t0+.22);if(fl>0){g.globalAlpha=a*fl*.8;g.fillStyle='#fff';rrect(g,-w/2,-h/2,w,h,12);g.fill()}
       g.restore();g.globalAlpha=1}
+    // light trails: each frame streaks from the lens to its slot
+    for(let i=0;i<NF;i++){const t0=burstT(i),q=prog(t,t0,t0+.5);if(q<=0||q>=1||conv>0)continue;const [sx,sy]=slot(i),ex=sx+TW/2,ey=sy+TH/2,e=eob(Math.min(1,q*1.4));
+      const gr=g.createLinearGradient(CX,CY,lerp(CX,ex,e),lerp(CY,ey,e));gr.addColorStop(0,'rgba(142,240,255,0)');gr.addColorStop(1,'rgba(142,240,255,.9)');g.globalAlpha=c2*(1-q);g.strokeStyle=gr;g.lineWidth=5;g.beginPath();g.moveTo(CX,CY);g.lineTo(lerp(CX,ex,e),lerp(CY,ey,e));g.stroke();g.globalAlpha=1;glowDot(lerp(CX,ex,e),lerp(CY,ey,e),6,'#8ef0ff',c2*(1-q))}
+    // the lens: an aperture iris that snaps once per frame
+    {const ia=c2*win(t,C.burst-.4,burstT(NF-1)+.6,.3,.4);if(ia>0){g.save();g.translate(CX,CY);g.globalAlpha=ia;const k=Math.max(0,...[...Array(NF)].map((_,i)=>{const q=prog(t,burstT(i),burstT(i)+.085);return q>0&&q<1?Math.sin(Math.PI*q):0}));const ro=78,ri=lerp(46,14,k);
+      g.fillStyle='rgba(8,8,24,.92)';g.beginPath();g.arc(0,0,ro,0,7);g.fill();g.strokeStyle='#8ef0ff';g.lineWidth=3;g.shadowColor='#3de0ff';g.shadowBlur=20;g.stroke();g.shadowBlur=0;
+      for(let b=0;b<6;b++){const an=b*Math.PI/3+t*.6+k*.5;g.fillStyle=b%2?'#1d2a52':'#24346a';g.beginPath();g.moveTo(Math.cos(an)*ri,Math.sin(an)*ri);g.lineTo(Math.cos(an)*ro,Math.sin(an)*ro);g.lineTo(Math.cos(an+Math.PI/3+.25)*ro,Math.sin(an+Math.PI/3+.25)*ro);g.lineTo(Math.cos(an+Math.PI/3)*ri,Math.sin(an+Math.PI/3)*ri);g.closePath();g.fill();g.strokeStyle='rgba(142,240,255,.35)';g.lineWidth=1.5;g.stroke()}
+      const gr=g.createRadialGradient(0,0,0,0,0,ri);gr.addColorStop(0,`rgba(255,255,255,${.4+.6*k})`);gr.addColorStop(1,'rgba(142,240,255,.1)');g.fillStyle=gr;g.beginPath();g.arc(0,0,ri,0,7);g.fill();g.restore();g.globalAlpha=1}}
     // shutter: a ring at the centre on every frame
     for(let i=0;i<NF;i++)ping(CX,CY,t,burstT(i),'#8ef0ff',90);
   }
@@ -251,17 +260,23 @@ window.render=function(t){
     for(let i=0;i<NF;i++){const f=prog(t,C.fifteen-.3+i*.07,C.fifteen-.1+i*.07);const x=x0+i*(sw+6);
       g.globalAlpha=c3;g.fillStyle='rgba(255,255,255,.08)';rrect(g,x,y,sw,26,6);g.fill();
       if(f>0){g.globalAlpha=c3*f;g.fillStyle=t>C.five-.1?'#6ff0a4':'#3de0ff';g.shadowColor=g.fillStyle;g.shadowBlur=14;rrect(g,x,y,sw,26,6);g.fill();g.shadowBlur=0}}
+    for(let i=0;i<NF;i++){const q=prog(t,C.fifteen-.75+i*.07,C.fifteen-.15+i*.07);if(q<=0||q>=1)continue;const [sx,sy]=slot(i),x1=sx+TW/2,y1=sy+TH,x2=x0+i*(sw+6)+sw/2,y2=y+13,u=eio(q),mx=(x1+x2)/2,my=Math.max(y1,y2)+30;
+      const px=(1-u)*(1-u)*x1+2*u*(1-u)*mx+u*u*x2,py=(1-u)*(1-u)*y1+2*u*(1-u)*my+u*u*y2;glowDot(px,py,6,'#ffe7a8',c3)}
+    // the light keeps flowing along the bar once it is full
+    if(t>C.five){for(let k=0;k<3;k++){const ph=((t-C.five)*.6+k/3)%1;glowDot(x0+ph*W,y+13,5,'#ffffff',c3*.8)}}
     g.globalAlpha=1;
   }
   // ---- ch4: align, merge, brighten (the photo comes back as one) ----
   const c4=win(t,st(4)+.2,st(5)+.3,.4,.6);
   if(c4>0||(t>st(4)&&t<st(5)+.6)){
     const a=prog(t,C.align+.2,C.merge+.4)*0+clamp(mer*1.2)*(1-prog(t,st(5)-.1,st(5)+.6)*.6);
-    if(a>0)photo(PX,PY,PW,PH,{a,b:lerp(.2,1,bri),n:lerp(.6,.04,mer),seed},t);
+    if(a>0)photo(PX,PY,PW,PH,{a,b:lerp(lerp(.22,.42,mer),1,bri),n:lerp(.6,.04,mer),seed},t);
     if(bri>0&&bri<1){g.globalAlpha=Math.sin(Math.PI*bri)*.22;g.fillStyle='#fff3d6';rrect(g,PX,PY,PW,PH,26);g.fill();g.globalAlpha=1}
     corners(PX-14,PY-14,PW+28,PH+28,'#ffb35c',c4*prog(t,C.align-.1,C.align+.3)*(1-mer*.6));
     // registration crosshair
     {const q=prog(t,C.align-.1,C.align+.7);if(q>0&&q<1){g.globalAlpha=1-q;g.strokeStyle='#ffd29a';g.lineWidth=2;g.beginPath();g.moveTo(CX-60,CY);g.lineTo(CX+60,CY);g.moveTo(CX,CY-60);g.lineTo(CX,CY+60);g.stroke();ring(CX,CY,30+30*q,'#ffd29a',1-q,2);g.globalAlpha=1}}
+    {const q0=prog(t,C.merge-.1,C.merge+1.6);if(q0>0&&q0<1){const r=mulberry(41);for(let i=0;i<90;i++){const x0=PX+r()*PW,y0=PY+r()*PH,an=r()*Math.PI*2,sp=40+r()*140,dl=r()*.5,q=clamp((q0*1.7-dl));if(q<=0||q>=1)continue;
+      const x=x0+Math.cos(an)*sp*eoc(q),y=y0+Math.sin(an)*sp*eoc(q)-60*q,col=['#ff7ad9','#8ef0ff','#ffe7a8'][i%3];g.globalAlpha=(1-q)*.9;g.fillStyle=col;g.fillRect(x-3,y-3,6,6)}g.globalAlpha=1}}
     ping(CX,CY,t,C.merge,'#ff7ad9',160);ping(CX,CY,t,C.brighten,'#ffe7a8',220);
   }
   // ---- ch5: why merging works: two loupes on the same lit window ----
@@ -270,6 +285,9 @@ window.render=function(t){
     const L=[[332,850,'#ff5d6c'],[748,850,'#4ee28a']],R=176,N=8,cell=R*2/N*.86;
     const r0=mulberry(77),base=[...Array(N*N)].map((_,k)=>{const cx=k%N,cy=Math.floor(k/N);return ((cx===1||cx===2||cx===5||cx===6)&&(cy===1||cy===2||cy===5||cy===6))?.85+.15*r0():.12+.06*r0()});
     const ent=eob(prog(t,st(5)-.1,st(5)+.5)),add=prog(t,C.adds-.2,C.adds+.8),rnd=prog(t,C.random-.1,C.random+.3),cit=prog(t,C.city-.1,C.city+.3);
+    {const hx=PX+300*PW/760,hy=PY+(462-300)*PH/700,hw=120*PW/760,hh=150*PH/700,ca=c5*prog(t,st(5)+.1,st(5)+.6);if(ca>0){g.globalAlpha=ca;g.strokeStyle='#ffd36b';g.lineWidth=3;g.shadowColor='#ffd36b';g.shadowBlur=14;g.strokeRect(hx,hy,hw,hh);g.shadowBlur=0;
+      g.setLineDash([6,8]);g.lineWidth=2;for(const [lx,ly,col] of L){g.strokeStyle=col;g.beginPath();g.moveTo(hx+hw/2,hy);g.lineTo(lx,ly-R);g.moveTo(hx+hw/2,hy+hh);g.lineTo(lx,ly+R);g.stroke()}g.setLineDash([]);g.globalAlpha=1}}
+    {const fa=c5*prog(t,st(5)+.3,st(5)+.8);for(let k=4;k>=1;k--){const off=k*10+3*Math.sin(t*2+k);ring(748+off,850-off,R,'#4ee28a',fa*(.12+.05*(4-k)),2)}}
     L.forEach(([lx,ly,col],li)=>{const s=ent;if(s<=0)return;g.save();g.translate(lx,ly);g.scale(s,s);
       g.shadowColor=col;g.shadowBlur=30;g.fillStyle='#07061a';g.beginPath();g.arc(0,0,R,0,7);g.fill();g.shadowBlur=0;
       g.save();g.beginPath();g.arc(0,0,R-6,0,7);g.clip();
@@ -300,7 +318,7 @@ window.render=function(t){
     label(PX+PW-150,PY+60,'✕ BLURRY','#ff8f9a',prog(t,C.blurry-.1,C.blurry+.2)*c1,26,'rgba(44,10,18,.92)');
     label(CX,PY+PH-60,'FEW SPECKS OF LIGHT','#ffe7a8',prog(t,C.specks-.1,C.specks+.3)*c1*(1-prog(t,C.grainy-.3,C.grainy)),24)}
   if(c3>0){const e1=eob(prog(t,C.fifteen-.1,C.fifteen+.3)),e2=eob(prog(t,C.third-.1,C.third+.3)),e3=eob(prog(t,C.five-.1,C.five+.3)),y=1100;
-    g.save();g.globalAlpha=c3;rrect(g,140,y-56,800,112,56);g.fillStyle='rgba(10,10,30,.92)';g.fill();g.strokeStyle='rgba(111,240,164,.6)';g.lineWidth=2;g.stroke();g.restore();
+    g.save();g.globalAlpha=c3*clamp(e1);rrect(g,140,y-56,800,112,56);g.fillStyle='rgba(10,10,30,.92)';g.fill();g.strokeStyle='rgba(111,240,164,.6)';g.lineWidth=2;g.stroke();g.restore();
     bigText(300,y,'15 frames',58,'#8ef0ff',c3*clamp(e1),'#3de0ff');bigText(560,y,'× ⅓ s',58,'#ffd29a',c3*clamp(e2),'#ffb35c');bigText(800,y,'= 5 s',58,'#6ff0a4',c3*clamp(e3),'#4ee28a');}
   if(c4>0){label(PX+150,PY+50,'✓ ALIGNED','#ffd29a',prog(t,C.align+.2,C.align+.5)*c4*(1-prog(t,C.merge,C.merge+.3)),24,'rgba(44,26,8,.92)');
     label(CX,PY+50,'✓ MERGED','#ffb3ea',prog(t,C.merge+.2,C.merge+.5)*c4*(1-prog(t,C.brighten,C.brighten+.3)),24,'rgba(44,10,40,.92)');
