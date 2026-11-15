@@ -10,6 +10,13 @@ and "more organised, with flow on the screen". Evidence: 1-13 Nov every tech ree
 it, and settings lists do not lead to gadget-brand collabs. The old rulebook (settings format, phone walkthrough look L1-L7) is in
 attic/design/rules-tech-2026-11-12.md; its palette (L7), pronunciation, FLOW and voice rules carry over below.
 
+## K0. The kit engine (owner, 15 Nov 2026: "port the owner's kit as it is ... get past our engine if it's not helping"; E26)
+Tech reels are built on techkit/ (techkit/README.md): the owner's motion kit (design/kits/motion_kit.zip, motion_content_prompt.md) as it is,
+topic `"engine": "kit"`, a scene in techkit/scenes/. Its 7-beat arc (question, problem, fix, how #1, how #2 as a numbered step flow, bonus,
+recap + title slam) replaces S2's order; its drawn hero replaces R0's photos and S3's layout (header y 250, chip y 408, hero y 500-1200, panel
+y 1240, captions y 1430). Kept: SAFE ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voice, SOUND GATE + DETAIL,
+Output QA, the review file. Vivid, high-contrast colour, motion on every key word, search keywords in the post text (web channel's inputs).
+
 ## R0. Real media by default (owner, 14 Nov 2026: tech "still looks poor" after five renders of drawn shapes; "yes to free real images ... take those and work or animate your design around it")
 Every tech reel is built AROUND free real photos, animated by us; drawn shapes are the overlay (type, rings, waves, charts), not the subject.
 - The topic lists its photos in `"media"` ([{id, queries, sources, cut, avoid, min_side} or {id, url}]); the **Media** workflow (Actions -> Media ->
