@@ -7,10 +7,10 @@
  "audience": "global",
  "gadget": "phone camera",
  "voice": "af_heart",
- "speed": 1.05,
- "max_speed": 1.11,
+ "speed": 1.0,
+ "max_speed": 1.0,
  "gap": 0.45,
- "max_end": 43.0,
+ "max_end": 43.5,
  "experiment": {
   "id": "tech-kit-engine",
   "change": "the owner's motion kit ported as the tech engine (techkit/: kit scene architecture, 7-beat arc, cue-synced panels, 43 s); also E25 try 1 (long class) and E24 try 3",
@@ -18,18 +18,18 @@
  },
  "lines": [
   {
-   "text": "Why does your phone ask you to hold still... for a few seconds, just to take one night photo?",
+   "text": "Why does your phone ask you to hold still... for a few seconds, just to take a night photo?",
    "beat": "question",
    "chip": "THE QUESTION",
    "source": 2
   },
   {
-   "text": "In the dark, the sensor catches only a few specks of light. One quick shot comes out grainy. Dark. Blurry.",
+   "text": "In the dark... the sensor catches only a few specks of light. A quick shot comes out grainy. Dark. Blurry.",
    "beat": "problem",
    "chip": "THE PROBLEM"
   },
   {
-   "text": "Night mode fixes that. Instead of one photo, it shoots a fast burst of frames.",
+   "text": "Night mode fixes that. Instead of a single photo, it shoots a fast burst of frames.",
    "beat": "fix",
    "chip": "THE FIX"
   },
