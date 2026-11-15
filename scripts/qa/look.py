@@ -1,5 +1,7 @@
 # CALM, HUE and SPLIT (Output QA, scripts/qa/output-qa.py) on local frames before the one render: the scene is a pure function of t, so its seeks are the
 # video's frames (15 Nov 2026; owner: web reels "too wiggly", main frame "similar colour grading"). Same functions as the GitHub check.
+# Margin (15 Nov 2026): the render's motion blur and real voice timings read SPLIT lower than these frames (follow 2.27x here, 1.78x on run
+# 43733641343; form 2.25x here, 2.10x / 1.45x after a chip change): aim for 2.5x+ and BEFORE 9%+ here. CALM and HUE matched the render.
 # Usage: node scripts/qa/frames.mjs <config> <dir>; python3 scripts/qa/look.py <config> <dir>   (prints the OQA CALM, HUE and SPLIT lines, the hue for demo-hues.json)
 import glob, importlib.util, json, os, sys
 import numpy as np
