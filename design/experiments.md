@@ -341,6 +341,8 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
   viewer's own site ("Does your button do this? yes or not yet"); the last line asks for that word in the comments (the save/send line stays,
   no "like"). Config `"experiment": {"id": "web-comment-ask", "change": "caption question + comment ask", "vs": "median"}`.
 - Try 1: showreel-37-fontswap (Sun 15 Nov): "Has a page ever jumped while you were reading it? yes or never", the last line asks for the word.
+- Try 2: showreel-38-form (Mon 16 Nov): "Has a form ever moved the button right as you tapped it? yes or never". Try 3: showreel-39-follow
+  (Tue 17 Nov): "Has a button ever slid away right as you tapped it? yes or never" (both built 15 Nov, owner-approved).
 - Decides (each reel at 24 h vs the last 7 web reels): WIN = comments per 1,000 reached at 2x the median or more AND reach not below 80% of
   the median. Keep at 2 WINs of 3 (rule in rules-web.md, the caption starter writes it), drop at 2 LOSEs. Verdict Wed 18 Nov.
 
@@ -368,6 +370,8 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
 - Change: every topic passes rules-web.md rule 15 (the mute test: 1 s of before and 1 s of after, obvious at a glance), and every reel shows the
   broken and fixed versions running SIDE BY SIDE in sync for at least 3 s (the kit's split piece, design/todo.md), so even a quieter fix reads as motion.
   Topics: list jumps on delete (Fri), tab underline jumps (Sat), text jumps when the font loads (Sun), counter jumps instead of counting (Mon).
+  15 Nov: Mon's counter swapped for the form that jumps while you type (showreel-38-form): a counter's fixed version moves more than its broken
+  one, against the owner's 15 Nov rule and Output QA SPLIT. Tue 17 (showreel-39-follow) keeps the in-sync format outside the 4-reel count.
   Runs on top of E18 (dark) and E20 (caption question); config `"experiment": {"id": "dynamic-fix", "change": "dynamic before/after + side by side", "vs": "median"}`.
 - Evidence it should help: dynamic topics 2,685-104,925 reach (numbers, stagger, overscroll, flash, transform) vs subtle ones 272-509 (INP, squash, smooth, springs, hover).
 - Decides: median reach of the 4 vs the last 7 web reels' median, and watch vs 8.8 s, at 24 h and 72 h; win on 3 of 4 = rule.

@@ -1,0 +1,95 @@
+{
+ "name": "showreel-38-form",
+ "seek": "scripts/explainer/form.html",
+ "dur": 20,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.2,
+ "style": "Ink and mint, whole frame (dark, E18 kept 15 Nov; E23 dynamic fix try 4; E20 caption ask try 2; BEFORE coral jolting, AFTER teal locked, owner 15 Nov)",
+ "palette": "dark",
+ "voice": {
+  "text": "Why does your form jump? You type, and an error pops in. Everything under it moves, right as you tap. The fix: a min height of one line. The space stays when it is empty. Look closer. The message comes and goes, the button stays. Now your form holds still.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": [
+   0.6,
+   0.45,
+   0.5,
+   0.6,
+   0.6,
+   0.5,
+   0.6
+  ],
+  "speeds": [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "caption": "Has a form ever moved the button right as you tapped it? yes or never 👇\n\nLive validation shows a message like \"Enter a valid email\" while you type and hides it once the email is valid. When the message element is empty it is 0 px tall, so every time it comes or goes, the Pay button and everything under it jump by one line. That is layout shift, and it makes people tap the wrong thing. The fix is one line: .error { min-height: 1lh; }. The lh unit is the element's own line height, so the slot always keeps exactly one line of room, empty or not, and the button never moves. lh works in Chrome 109+, Safari 16.4+ and Firefox 120+.\nSend this to whoever builds your sign-up form, or save it for your next one. And answer in the comments: yes or never?",
+ "keywords": [
+  "form layout shift fix",
+  "error message layout shift",
+  "min-height 1lh",
+  "CSS lh unit",
+  "form validation UX",
+  "Cumulative Layout Shift CLS",
+  "frontend tips"
+ ],
+ "hashtags": [
+  "#formvalidation",
+  "#webforms",
+  "#layoutshift",
+  "#csstips",
+  "#frontendtips"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/length#lh",
+   "note": "MDN <length>: lh, a font-relative unit equal to the computed line-height of the element it is used on"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data",
+   "note": "BCD 8.1.9 (checked 15 Nov 2026), css.types.length.lh: Chrome 109, Firefox 120, Safari 16.4, Safari iOS 16.4, Chrome Android 109"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/min-height",
+   "note": "MDN min-height: the element is never shorter than this, so an empty message block keeps its height"
+  }
+ ],
+ "tip": {
+  "title": "Why does your form jump while you type?",
+  "why": "Live validation fills a message element while the input is invalid and empties it when it is valid. An empty block is 0 px tall, so the button and everything under it jump by one line each time. min-height: 1lh keeps one line of room in the slot (lh is the element's own line height), so nothing moves. lh works in Chrome 109+, Safari 16.4+ and Firefox 120+ (MDN, BCD).",
+  "code": ".error {\n  min-height: 1lh; /* one line of room, empty or not */\n}",
+  "demo": "form",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/length#lh",
+   "label": "MDN, the lh unit"
+  }
+ },
+ "experiment": {
+  "id": "web-comment-ask",
+  "change": "E20 try 2: caption line 1 asks a one-word question (yes or never), the last line asks for it in the comments (and names who to send it to: design/improvements.md); on E23's dynamic before/after in sync (try 4) and the dark look",
+  "vs": "median"
+ },
+ "format": "single",
+ "qa": {
+  "mute": {
+   "before": {
+    "say": "moves"
+   },
+   "after": {
+    "say": "stays"
+   },
+   "span": 1.5
+  }
+ }
+}

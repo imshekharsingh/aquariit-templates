@@ -93,8 +93,8 @@ The day's topic stays the row above for its channel; these rows add the one expe
 | Day | Channel | Experiment | Topic and the one change |
 |---|---|---|---|
 | Sun 15 | web | E20 web-comment-ask | Why does your text jump when the font loads? · caption line 1 "Has a page ever jumped while you were reading? yes or never", last line asks for the word in the comments |
-| Mon 16 | web | E20 | Why does your counter jump instead of counting up? (`@property` --n registered as an integer + a transition, shown with counter(); swapped 12 Nov: popup repeats showreel-13-popup; check MDN + BCD) · "Does your counter count? yes or not yet" |
-| Tue 17 | web | E20 | SWAP on the Tue 17 spare night: "button stays lit after a tap" (`@media (hover: hover)`) repeats showreel-20-hover (1 Nov), found 12 Nov · "Seen this on your site? yes or no" |
+| Mon 16 | web | E20 | BUILT 15 Nov as showreel-38-form, "Why does your form jump?" (`.error { min-height: 1lh }`), swapped from: Why does your counter jump instead of counting up? (`@property` --n registered as an integer + a transition, shown with counter(); swapped 12 Nov: popup repeats showreel-13-popup; check MDN + BCD) · "Does your counter count? yes or not yet" |
+| Tue 17 | web | E20 | BUILT 15 Nov as showreel-39-follow, "Why does your button jump?" (Follow / Following in one grid cell, `grid-area: 1 / 1`), the swap for: SWAP on the Tue 17 spare night: "button stays lit after a tap" (`@media (hover: hover)`) repeats showreel-20-hover (1 Nov), found 12 Nov · "Seen this on your site? yes or no" |
 | Mon 16 | tech | E21 tech-default-hook | "Your phone ships with this ON": app background data / Background App Refresh (data, the E17 Tue 17 row moved up) |
 | Tue 17 | tech | E21 | "Your phone ships with this ON": precise location for the camera / photos keep where they were taken (location in photos; both platforms' paths checked that morning) |
 | Wed 18 | tech | E21 | "Your phone ships with this ON": keep messages forever (storage; the E17 Mon 16 row's setting) |
