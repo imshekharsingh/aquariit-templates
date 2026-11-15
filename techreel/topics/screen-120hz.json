@@ -1,0 +1,333 @@
+{
+ "slug": "screen-120hz",
+ "engine": "kit",
+ "scene": "techkit/scenes/screen-120hz.js",
+ "topic": "Is a 120 Hz screen worth it",
+ "format": "WORTH IT OR NOT",
+ "audience": "global",
+ "gadget": "phone screen",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.45,
+ "max_end": 44.0,
+ "experiment": {
+  "id": "tech-kit-engine",
+  "change": "E26 try 3: the kit engine, worth it or not, phone screen",
+  "vs": "median"
+ },
+ "say": {},
+ "lines": [
+  {
+   "text": "Phones brag about a hundred and twenty hertz... is it worth paying extra?",
+   "beat": "question"
+  },
+  {
+   "text": "Your screen never moves. It flashes still pictures, sixty a second on a basic phone. Fast scrolls look jumpy.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "A hundred and twenty hertz doubles that. A new picture about every eight milliseconds, instead of seventeen.",
+   "beat": "fix",
+   "source": 0
+  },
+  {
+   "text": "So scrolling and games look smoother. The motion fills in the gaps.",
+   "beat": "step"
+  },
+  {
+   "text": "The catch is battery. Every picture costs power, so a hundred and twenty all the time drains faster.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "That's why adaptive screens shift gears. Fast when you scroll, slow when you read, slowest when it's still.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Love scrolling? It's worth it. That's a hundred and twenty hertz.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "pictures": [
+   1,
+   "pictures"
+  ],
+  "sixty": [
+   1,
+   "sixty"
+  ],
+  "jumpy": [
+   1,
+   "jumpy"
+  ],
+  "doubles": [
+   2,
+   "doubles"
+  ],
+  "eight": [
+   2,
+   "eight"
+  ],
+  "seventeen": [
+   2,
+   "seventeen"
+  ],
+  "smoother": [
+   3,
+   "smoother"
+  ],
+  "gaps": [
+   3,
+   "gaps"
+  ],
+  "battery": [
+   4,
+   "battery"
+  ],
+  "power": [
+   4,
+   "power"
+  ],
+  "drains": [
+   4,
+   "drains"
+  ],
+  "adaptive": [
+   5,
+   "adaptive"
+  ],
+  "fast": [
+   5,
+   "Fast"
+  ],
+  "slow": [
+   5,
+   "slow"
+  ],
+  "slowest": [
+   5,
+   "slowest"
+  ],
+  "love": [
+   6,
+   "Love"
+  ],
+  "worth": [
+   6,
+   "worth"
+  ],
+  "final": [
+   6,
+   "That's"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "pictures",
+   "ticks",
+   0.35,
+   0,
+   {
+    "n": 12,
+    "step": 0.166,
+    "f": 2200
+   }
+  ],
+  [
+   "sixty",
+   "pop",
+   0.55,
+   -0.3
+  ],
+  [
+   "jumpy",
+   "thud",
+   0.7,
+   0
+  ],
+  [
+   "doubles",
+   "riser_end",
+   0.22,
+   0
+  ],
+  [
+   "doubles",
+   "chime",
+   0.3,
+   0,
+   {
+    "notes": [
+     "E6",
+     "G#6",
+     "B6"
+    ]
+   }
+  ],
+  [
+   "eight",
+   "pop",
+   0.55,
+   0.3
+  ],
+  [
+   "seventeen",
+   "pop",
+   0.55,
+   -0.3
+  ],
+  [
+   "smoother",
+   "whoosh",
+   0.2,
+   0,
+   {
+    "d": 0.9
+   }
+  ],
+  [
+   "gaps",
+   "chime",
+   0.3,
+   0.2,
+   {
+    "notes": [
+     "A5",
+     "E6"
+    ]
+   }
+  ],
+  [
+   "battery",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 520,
+    "f2": 300
+   }
+  ],
+  [
+   "power",
+   "zaps",
+   0.3,
+   0.3,
+   {
+    "n": 6,
+    "step": 0.12
+   }
+  ],
+  [
+   "drains",
+   "thud",
+   0.5,
+   0.3
+  ],
+  [
+   "adaptive",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "fast",
+   "snap",
+   0.6,
+   0.4
+  ],
+  [
+   "slow",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "slowest",
+   "snap",
+   0.6,
+   -0.4
+  ],
+  [
+   "love",
+   "pop",
+   0.55,
+   -0.4
+  ],
+  [
+   "worth",
+   "pop",
+   0.55,
+   0.4
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.4,
+   0,
+   {
+    "notes": [
+     "A4",
+     "C#5",
+     "E5",
+     "B5",
+     "E6"
+    ],
+    "d": 3.2
+   }
+  ]
+ ],
+ "post": {
+  "title": "Is a 120 Hz screen worth it?",
+  "caption": "Is 120 Hz worth paying extra for? 📱\n\nA screen shows still pictures, many times a second. A 60 Hz screen draws a new one about every 17 ms; 120 Hz about every 8 ms, so scrolling, swiping and games look smoother. The catch is battery: Samsung notes that the more times a display refreshes per second, the more power it needs, and its High setting (120 Hz all the time) uses more battery than Standard (60 Hz). That's why adaptive screens (Samsung's Adaptive motion smoothness, Apple's ProMotion) go up to 120 Hz when you scroll and drop lower when the screen is still.\n\nLove scrolling and games? It's worth it. Mostly reading and calls? A nice extra, not a must. Send this to the friend choosing their next phone.\n\nSources: Samsung Support (refresh rate options, Motion smoothness).",
+  "keywords": [
+   "is 120hz worth it",
+   "60hz vs 120hz",
+   "what is refresh rate",
+   "adaptive refresh rate explained",
+   "does 120hz drain battery",
+   "best phone screen to buy"
+  ],
+  "hashtags": [
+   "#120hz",
+   "#refreshrate",
+   "#smartphone",
+   "#phonetips",
+   "#techexplained"
+  ],
+  "sources": [
+   {
+    "url": "https://www.samsung.com/us/support/answer/ANS00086005/",
+    "note": "Samsung Support US, How to adjust refresh rate options: Standard 60 Hz gives the best battery life; High 120 Hz on supported models uses more battery; Adaptive dynamically adjusts the refresh rate up to 120 Hz, smooth when you need it and better battery life for less demanding situations (read 15 Nov 2026)."
+   },
+   {
+    "url": "https://www.samsung.com/ph/support/mobile-devices/refresh-rate-options",
+    "note": "Samsung Support PH, refresh rate options: as the display refreshes more times per second, more battery power is required (read 15 Nov 2026). Frame intervals: 1 s / 60 = 16.7 ms, 1 s / 120 = 8.3 ms (arithmetic)."
+   }
+  ]
+ }
+}

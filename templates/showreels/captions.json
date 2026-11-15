@@ -1206,5 +1206,27 @@
    "change": "the owner's motion kit ported as the tech engine",
    "vs": "median"
   }
+ },
+ "showreel-tech-watch-5atm": {
+  "channel": "tech",
+  "postOn": "2026-11-16",
+  "postAt": "13:00",
+  "concept": "Kit engine (shared frame), 43 s, specs decoded, smartwatch, global. What 5 ATM really means: frame 0 split pool vs hot shower; +1 atmosphere every 10 m (NOAA) with three squeezes; seals light up on crown, buttons, case back; Samsung's test (50 m still water, 10 min); dive / jet / stroke spikes past the test line; heat and age weaken seals; Pool yes, Sauna no.",
+  "experiment": {
+   "id": "tech-kit-engine",
+   "change": "E26 try 2",
+   "vs": "median"
+  }
+ },
+ "showreel-tech-screen-120hz": {
+  "channel": "tech",
+  "postOn": "2026-11-17",
+  "postAt": "13:00",
+  "concept": "Kit engine (shared frame), 42 s, worth it or not, phone screen, global. Is 120 Hz worth it: frame 0 the same swipe on 60 Hz (jumpy, ghost rows) and 120 Hz; a screen is still pictures (flip-book frames, a hopping ball); ticks every 17 ms vs 8 ms; two lanes, twice the pictures; batteries: always-120 drains faster (Samsung); adaptive gearbox: fast / slow / slowest; verdict.",
+  "experiment": {
+   "id": "tech-kit-engine",
+   "change": "E26 try 3",
+   "vs": "median"
+  }
  }
 }

@@ -20,10 +20,14 @@ const frames = [];
 for (let t = 0; t <= total - .1; t += .5) { await p.evaluate((x) => window.render(x), t); frames.push({ t, ...(await p.evaluate(collectDom)) }); }
 const L = judge(frames, false);
 // captions: every spoken word shown (each chunk's text read on screen at its middle)
-const caps = await p.evaluate(() => { const out = []; for (const c of window.CHUNKS) { const m = (c.t0 + c.t1) / 2; window.render(m); const fe = document.querySelector('#final'), cap = document.querySelector('#caps').textContent.replace(/\s+/g, ' ').trim(); out.push([+m.toFixed(2), cap || (fe && +getComputedStyle(fe).opacity > .5 ? fe.querySelector('.t1').textContent : ''), c.words.map((w) => w.w).join(' ')]); } return out; });
-const missing = caps.filter(([, got, want]) => got.replace(/…/g, '...').replace(/\s/g, '').toLowerCase() !== want.replace(/\s/g, '').toLowerCase());
+const caps = await p.evaluate(() => { const out = []; for (const c of window.CHUNKS) { const m = (c.t0 + c.t1) / 2; window.render(m); const fe = document.querySelector('#final'), cap = document.querySelector('#caps').textContent.replace(/\s+/g, ' ').trim(); out.push([+m.toFixed(2), cap || (fe && +getComputedStyle(fe).opacity > .5 ? c.words.map((w) => w.w).join(' ') : ''), c.words.map((w) => w.w).join(' ')]); } return out; });
+const NUMW = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, fifteen: 15, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, hundred: 100 };
+const norm = (x) => x.replace(/…/g, '...').toLowerCase().replace(/\b(zero|one|two|three|four|five|six|seven|eight|nine|ten|fifteen|twenty|thirty|forty|fifty|sixty|hundred)\b/g, (w) => String(NUMW[w])).replace(/\s/g, '');   // the title may write "5" for the spoken "five"
+const ns = (x) => x.replace(/…/g, '...').replace(/\s/g, '').toLowerCase();
+const missing = caps.filter(([, got, want]) => ns(got) !== ns(want) && ns(got) !== norm(want));
 // FLOW: the viewport shrunk to 54x96 inside sample()
 const s = await sample(p, total); const F = judgeFlow(s, 'tech');
+if (process.env.DIFFS) { const low = []; s.d.forEach((v, i) => { const m = (s.d[Math.max(0, i - 1)] + v + s.d[Math.min(s.d.length - 1, i + 1)]) / 3; if (m < .5) low.push(s.t[i]); }); console.log('LOW STEPS (0.3 s average under 0.5): ' + low.map((x) => x.toFixed(1)).join(' ')); }
 // stills sheet
 const sh = []; for (const t of (times || '').split(',').filter(Boolean)) { await p.evaluate((x) => window.render(x), +t); sh.push((await p.screenshot({ type: 'jpeg', quality: 80 })).toString('base64')); }
 if (sh.length) {

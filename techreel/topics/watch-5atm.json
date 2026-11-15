@@ -1,0 +1,466 @@
+{
+ "slug": "watch-5atm",
+ "engine": "kit",
+ "scene": "techkit/scenes/watch-5atm.js",
+ "topic": "What 5 ATM on a watch really means",
+ "format": "SPECS DECODED",
+ "audience": "global",
+ "gadget": "smartwatch",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.45,
+ "max_end": 43.5,
+ "experiment": {
+  "id": "tech-kit-engine",
+  "change": "E26 try 2: the kit engine on the shared frame (techkit/base.html), specs decoded, smartwatch",
+  "vs": "median"
+ },
+ "say": {
+  "ATM": "[ATM](/ˌAtˌiˈɛm/)"
+ },
+ "lines": [
+  {
+   "text": "Your watch says five ATM... so why shouldn't it go in a hot shower?",
+   "beat": "question"
+  },
+  {
+   "text": "Water pushes harder the deeper you go. Every ten metres adds one more atmosphere. Squeeze. Squeeze. Squeeze.",
+   "beat": "problem",
+   "source": 2
+  },
+  {
+   "text": "Watches fight back with seals. Rubber rings press into every gap... the crown, the buttons, the back.",
+   "beat": "fix"
+  },
+  {
+   "text": "Five ATM means a test at fifty metres of still water, for ten minutes. That's Samsung's own test.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "But real life moves. A dive, a water jet, a hard stroke... they all spike the pressure past the test.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "And heat is the sneaky part. Hot water and steam can weaken the seals, and seals wear out with age.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Pool, yes. Sauna, no. That's five ATM.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "hot": [
+   0,
+   "hot"
+  ],
+  "pushes": [
+   1,
+   "pushes"
+  ],
+  "ten": [
+   1,
+   "ten"
+  ],
+  "atmosphere": [
+   1,
+   "atmosphere"
+  ],
+  "sq0": [
+   1,
+   "Squeeze",
+   0
+  ],
+  "sq1": [
+   1,
+   "Squeeze",
+   1
+  ],
+  "sq2": [
+   1,
+   "Squeeze",
+   2
+  ],
+  "seals": [
+   2,
+   "seals"
+  ],
+  "rubber": [
+   2,
+   "Rubber"
+  ],
+  "crown": [
+   2,
+   "crown"
+  ],
+  "buttons": [
+   2,
+   "buttons"
+  ],
+  "back": [
+   2,
+   "back",
+   1
+  ],
+  "five": [
+   3,
+   "Five"
+  ],
+  "fifty": [
+   3,
+   "fifty"
+  ],
+  "still": [
+   3,
+   "still"
+  ],
+  "ten3": [
+   3,
+   "ten"
+  ],
+  "samsung": [
+   3,
+   "Samsung"
+  ],
+  "moves": [
+   4,
+   "moves"
+  ],
+  "dive": [
+   4,
+   "dive"
+  ],
+  "jet": [
+   4,
+   "jet"
+  ],
+  "stroke": [
+   4,
+   "stroke"
+  ],
+  "spikes": [
+   4,
+   "spike"
+  ],
+  "heat": [
+   5,
+   "heat"
+  ],
+  "steam": [
+   5,
+   "steam"
+  ],
+  "soften": [
+   5,
+   "weaken"
+  ],
+  "age": [
+   5,
+   "age"
+  ],
+  "pool": [
+   6,
+   "Pool"
+  ],
+  "sauna": [
+   6,
+   "Sauna"
+  ],
+  "final": [
+   6,
+   "That's"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "hot",
+   "thud",
+   0.5,
+   0.3
+  ],
+  [
+   "pushes",
+   "whoosh",
+   0.2,
+   0,
+   {
+    "d": 0.9,
+    "up": false
+   }
+  ],
+  [
+   "ten",
+   "pop",
+   0.55,
+   -0.3
+  ],
+  [
+   "atmosphere",
+   "blip",
+   0.5,
+   0.3,
+   {
+    "f": 660,
+    "f2": 990
+   }
+  ],
+  [
+   "sq0",
+   "thud",
+   0.7,
+   0
+  ],
+  [
+   "sq1",
+   "thud",
+   0.7,
+   0
+  ],
+  [
+   "sq2",
+   "thud",
+   0.7,
+   0
+  ],
+  [
+   "seals",
+   "riser_end",
+   0.22,
+   0
+  ],
+  [
+   "seals",
+   "chime",
+   0.3,
+   0,
+   {
+    "notes": [
+     "E6",
+     "G#6",
+     "B6"
+    ]
+   }
+  ],
+  [
+   "crown",
+   "snap",
+   0.6,
+   0.4
+  ],
+  [
+   "buttons",
+   "snap",
+   0.6,
+   0.4
+  ],
+  [
+   "back",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "five",
+   "pop",
+   0.55,
+   0
+  ],
+  [
+   "fifty",
+   "pop",
+   0.55,
+   -0.3
+  ],
+  [
+   "still",
+   "tick",
+   0.4,
+   0
+  ],
+  [
+   "ten3",
+   "fill",
+   0.3,
+   0,
+   {
+    "n": 8,
+    "step": 0.1
+   }
+  ],
+  [
+   "samsung",
+   "chime",
+   0.32,
+   0.2,
+   {
+    "notes": [
+     "A5",
+     "C#6",
+     "E6"
+    ]
+   }
+  ],
+  [
+   "dive",
+   "zaps",
+   0.35,
+   -0.4,
+   {
+    "n": 3,
+    "step": 0.06
+   }
+  ],
+  [
+   "jet",
+   "zaps",
+   0.35,
+   0,
+   {
+    "n": 3,
+    "step": 0.06
+   }
+  ],
+  [
+   "stroke",
+   "zaps",
+   0.35,
+   0.4,
+   {
+    "n": 3,
+    "step": 0.06
+   }
+  ],
+  [
+   "spikes",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 440,
+    "f2": 330
+   }
+  ],
+  [
+   "heat",
+   "whoosh",
+   0.2,
+   0,
+   {
+    "d": 0.8
+   }
+  ],
+  [
+   "steam",
+   "ticks",
+   0.3,
+   0.2,
+   {
+    "n": 6,
+    "step": 0.09,
+    "f": 1800
+   }
+  ],
+  [
+   "soften",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 520,
+    "f2": 300
+   }
+  ],
+  [
+   "age",
+   "thud",
+   0.45,
+   0
+  ],
+  [
+   "pool",
+   "pop",
+   0.55,
+   -0.4
+  ],
+  [
+   "sauna",
+   "pop",
+   0.55,
+   0.4
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.4,
+   0,
+   {
+    "notes": [
+     "A4",
+     "C#5",
+     "E5",
+     "B5",
+     "E6"
+    ],
+    "d": 3.2
+   }
+  ]
+ ],
+ "post": {
+  "title": "What 5 ATM on your watch really means",
+  "caption": "5 ATM on your watch doesn't mean \"safe in any water\" ⌚💧\n\n5 ATM is a pressure rating: Samsung tests its 5ATM watches in 50 metres of still fresh water for 10 minutes. Every 10 metres of water adds about one atmosphere of pressure, and real life moves: a dive, a water jet or a hard stroke can push the pressure past that still-water test. Apple rates its watches WR50 under ISO 22810 for shallow-water activities like swimming in a pool or the sea, not scuba diving or high-velocity water.\nHeat is the sneaky part: Samsung warns a sauna can damage water resistance, and the seals don't last forever.\n\nPool and sea swims: yes. Sauna, hot showers, diving: no. Send this to the friend who showers with their watch on.\n\nSources: Samsung Support (Galaxy Watch water resistance), Apple Developer (WR50, ISO 22810:2010), NOAA Ocean Service (water pressure).",
+  "keywords": [
+   "what does 5 atm mean",
+   "is my smartwatch waterproof",
+   "can i shower with my smartwatch",
+   "5atm vs ip68",
+   "smartwatch water resistance explained",
+   "can i swim with my watch"
+  ],
+  "hashtags": [
+   "#smartwatch",
+   "#waterresistant",
+   "#5atm",
+   "#wearables",
+   "#techexplained"
+  ],
+  "sources": [
+   {
+    "url": "https://www.samsung.com/au/support/mobile-devices/galaxy-watch-water-resistance/",
+    "note": "Samsung Support, What is 5ATM? / Galaxy Watch water resistance: 5ATM tested by submerging the device in 50 metres of still fresh water for 10 minutes; the water-resistant feature can be damaged in a sauna; avoid pressure washers (a rapid increase in water pressure can exceed it); water resistance is not permanent (read 15 Nov 2026)."
+   },
+   {
+    "url": "https://developer.apple.com/documentation/watchkit/wkwaterresistancerating/wr50",
+    "note": "Apple Developer, WR50: water resistance rating of 50 metres under ISO 22810:2010; shallow-water activities like swimming in a pool or ocean; not scuba diving, waterskiing or other high-velocity water (read 15 Nov 2026)."
+   },
+   {
+    "url": "https://oceanservice.noaa.gov/facts/pressure.html",
+    "note": "NOAA Ocean Service, How does pressure change with ocean depth?: every 33 feet (10.06 metres) of seawater increases the pressure by one atmosphere (read 15 Nov 2026)."
+   }
+  ]
+ }
+}
