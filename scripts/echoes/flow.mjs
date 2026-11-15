@@ -14,6 +14,6 @@ await p.goto('file://' + resolve(cfg.seek)); await p.waitForSelector('html[data-
 const end = await p.evaluate((ws) => { window.setVoice({ words: ws }); return window.CUES.dur; }, words);
 const f = judgeFlow(await sample(p, end), 'c3');
 for (const l of f.lines) console.log(l);
-console.log(`(scanned 0-${end.toFixed(1)} s: the video ends 3 s after the last word)` + (errs.length ? `; page errors: ${errs.join('; ')}` : ''));
+console.log(`(scanned 0-${end.toFixed(1)} s: the video ends 1.4 s after the last word)` + (errs.length ? `; page errors: ${errs.join('; ')}` : ''));
 await b.close();
 process.exit(f.bad || errs.length ? 1 : 0);
