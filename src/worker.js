@@ -3,6 +3,7 @@
 // BASIC_AUTH_USER_2 / BASIC_AUTH_PASS_2 (either account can sign in). Fails closed if no account is configured.
 // HTTP Basic headers are still accepted so scripts/CI can authenticate with curl --user.
 import { sendPush, PUSH_HOST } from './push.js';
+import { journeyApi } from './journey.js';
 
 const COOKIE = 'aq_session', TTL = 60 * 60 * 24 * 30; // 30 days
 // /tips/ (owner, 27 Oct 2026) is the one public page: the reels' fixes with live demos, static only (no data, no API calls)
@@ -346,11 +347,14 @@ async function asksApi(request, env, p, url) {
 let fbReady = null;
 async function fbDb(env) {
   if (!env.DB) return null;
-  fbReady = fbReady || env.DB.exec('CREATE TABLE IF NOT EXISTS owner_feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, created TEXT NOT NULL, channel TEXT, body TEXT NOT NULL, state TEXT NOT NULL DEFAULT \'new\', note TEXT, done_at TEXT)').catch((e) => { fbReady = null; throw e; });
+  fbReady = fbReady || env.DB.exec('CREATE TABLE IF NOT EXISTS owner_feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, created TEXT NOT NULL, channel TEXT, body TEXT NOT NULL, state TEXT NOT NULL DEFAULT \'new\', note TEXT, done_at TEXT)')
+    // read_at (owner, 14 Nov 2026: the side menu shows one reply at a time with "Mark read"): when the owner has read Claude's note
+    .then(() => env.DB.prepare('ALTER TABLE owner_feedback ADD COLUMN read_at TEXT').run().catch(() => {}))
+    .catch((e) => { fbReady = null; throw e; });
   await fbReady;
   return env.DB;
 }
-const FB_CH = ['web', 'tech', 'c3', 'app'], FB_ID = /^\/api\/feedback\/([0-9]{1,9})\/done$/;
+const FB_CH = ['web', 'tech', 'c3', 'app'], FB_ID = /^\/api\/feedback\/([0-9]{1,9})\/done$/, FB_READ = /^\/api\/feedback\/([0-9]{1,9})\/read$/;
 async function feedbackApi(request, env, p, url) {
   if (!(await isPrimary(request, env))) return request.method === 'GET' ? jres({ feedback: [] }) : jres({ error: 'forbidden' }, 403);
   let db;
@@ -358,8 +362,8 @@ async function feedbackApi(request, env, p, url) {
   if (!db) return jres({ error: 'no-db' }, 501);
   if (request.method === 'GET' && p === '/api/feedback') {   // newest first; ?state=new gives only the items waiting for Claude
     const onlyNew = url.searchParams.get('state') === 'new';
-    const { results } = await db.prepare(`SELECT id, created, channel, body, state, note, done_at FROM owner_feedback ${onlyNew ? "WHERE state = 'new' " : ''}ORDER BY id DESC LIMIT 50`).all();
-    return jres({ feedback: (results || []).map((r) => ({ id: r.id, created: r.created, channel: r.channel, text: r.body, state: r.state, note: r.note, done_at: r.done_at })) });
+    const { results } = await db.prepare(`SELECT id, created, channel, body, state, note, done_at, read_at FROM owner_feedback ${onlyNew ? "WHERE state = 'new' " : ''}ORDER BY id DESC LIMIT 50`).all();
+    return jres({ feedback: (results || []).map((r) => ({ id: r.id, created: r.created, channel: r.channel, text: r.body, state: r.state, note: r.note, done_at: r.done_at, read_at: r.read_at })) });
   }
   if (request.method !== 'POST' || request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403);
   let b = null; try { b = await request.json(); } catch { /* handled below */ }
@@ -369,6 +373,11 @@ async function feedbackApi(request, env, p, url) {
     const ch = b && FB_CH.includes(b.channel) ? b.channel : null;
     const r = await db.prepare('INSERT INTO owner_feedback (created, channel, body) VALUES (?1, ?2, ?3)').bind(new Date().toISOString(), ch, text.trim()).run();
     return jres({ ok: true, id: r.meta && r.meta.last_row_id });
+  }
+  const rd = FB_READ.exec(p);
+  if (rd) {   // the owner read Claude's reply (side menu "Mark read")
+    const r = await db.prepare('UPDATE owner_feedback SET read_at = ?2 WHERE id = ?1').bind(Number(rd[1]), new Date().toISOString()).run();
+    return jres({ ok: true, stored: !!(r.meta && r.meta.changes) });
   }
   const m = FB_ID.exec(p);
   if (m) {   // a Claude run marks an item done, with a short note of what it did
@@ -627,6 +636,19 @@ async function uploadedApi(request, env, p) {
   return jres({ error: 'bad-request' }, 400);
 }
 
+// GET /api/journey (owner, 15 Nov 2026): every scheduled reel's stages, planned to posted (src/journey.js). Posted comes from Mark posted / the
+// collector's marks (reel_uploaded) and the collector's caption match (ig_media.template_id). Every source is optional: what is missing shows as waiting.
+async function journey(env) {
+  let captions = {}, uploaded = {}, media = {};
+  try { captions = await captionsOf(env); } catch { /* empty journey */ }
+  if (env.DB) {
+    try { uploaded = Object.fromEntries(((await env.DB.prepare('SELECT id, at FROM reel_uploaded').all()).results || []).map((r) => [r.id, r.at])); } catch { /* none yet */ }
+    try { for (const r of (await env.DB.prepare('SELECT template_id, permalink, posted_at FROM ig_media WHERE template_id IS NOT NULL ORDER BY posted_at').all()).results || []) media[r.template_id] = r; } catch { /* none yet */ }
+  }
+  try { return jres(await journeyApi(env, { captions, postSlot, chOf: chOfReel, uploaded, media })); }
+  catch (e) { return jres({ error: 'journey-failed', note: String(e && e.message || e).slice(0, 80) }, 500); }
+}
+
 // reel media (owner, 3 Nov 2026) live in the PRIVATE R2 bucket "aquarii-reels" (binding REELS; scripts/r2.sh), served only to signed-in users.
 // The repo is public, so nothing goes to the GitHub releases any more. v/<name> = MP4 and review PNG (an R2 lifecycle rule deletes them
 // 15 days after upload), c/<name> = cover, config json and the minutes meter (kept). Range requests are answered so phones can seek.
@@ -706,7 +728,7 @@ export default {
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journey(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (signedIn) {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
       if (m) { try { const v = await reelFile(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }

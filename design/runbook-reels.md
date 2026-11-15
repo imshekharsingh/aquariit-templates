@@ -13,6 +13,17 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
 - No app work until reach improves (owner, 5 Nov 2026): only fixes for things that break, and the owner's "Feedback" box (home page under the
   cards; D1 table owner_feedback; /api/feedback; read and marked done through "Owner answers", design/runbook-daily.md step 0).
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
+- The app reads like a mobile app (owner, 14-15 Nov 2026): a bottom tab bar **Journey | Reels | Growth | Inbox** (the last one used is
+  remembered; Journey on first open), and a side menu (top left) with the same sections, Claude's replies to Feedback one at a time ("Mark read",
+  "Next"; /api/feedback/<id>/read), notifications, the GitHub minutes and Sign out. Inbox holds Needs you, the cards and the Feedback box.
+- **Journey** (owner, 15 Nov 2026): every reel posting from 3 days ago to 3 days ahead, grouped by post day (newest first), channel colour per
+  card, seven stages in order: Planned (captions.json) -> Built (the PR that first added its review file) -> Rendering (live step and % from
+  the Showreel / Tech reel run) -> Checks (Output QA PASS, or "Failed: <check in words>" with the reason) -> Critic (CRITIC: READY / NOT READY
+  on the review file's critic line) -> Ready to post (slot) -> Posted (Mark posted / the collect). Data: GET /api/journey (src/journey.js).
+  GitHub is read with the optional Worker secret GH_READ_TOKEN (read-only Actions + Contents; cached a minute in the Worker; the page asks
+  again every minute only while a reel renders and Journey is open). Without it, finished steps still show from R2, D1 and the review files.
+  Runs name their reel through run-name ("Showreel · <config>", "Tech reel · <slug>", "Output QA · <config>"); Output QA prints one
+  `::error title=Output QA::<CHECK>: ...` line per failing check, which the journey shows as the reason. Keep both when editing those workflows.
 
 ## Making a web reel
 - Every new @webin20sec reel starts from `node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ...` and the shared motion kit

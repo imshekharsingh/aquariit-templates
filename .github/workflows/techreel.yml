@@ -2,6 +2,8 @@ name: Tech reel
 
 # Tech explainer reels (owner, 24 Oct 2026): python3 techreel/make.py <slug> renders the voice, frames, sound and QA for one topic file.
 # The MP4, contact sheet, QA report and word timings go to the private R2 bucket under techreel/ (scripts/r2.sh; owner, 3 Nov 2026). Run by hand: Actions -> Tech reel -> slug.
+# the app's reel journey (src/journey.js) reads which reel a run is for from this name
+run-name: "Tech reel · ${{ inputs.slug }}"
 on:
   workflow_dispatch:
     inputs:
@@ -130,5 +132,6 @@ jobs:
         run: |
           bash scripts/qa/tools.sh
           set +e; python3 scripts/qa/output-qa.py "out/techreel/$SLUG/$SLUG.mp4" "techreel/topics/$SLUG.json" --log render.log --log "out/techreel/$SLUG/qa.txt" --summary "$GITHUB_STEP_SUMMARY" --fails oqa-fails.txt; rc=$?; set -e
+          [ -s oqa-fails.txt ] && head -8 oqa-fails.txt | sed 's/%/%25/g' | while IFS= read -r l; do echo "::error title=Output QA::$l"; done   # the app's journey shows these reasons
           bash scripts/qa/notify.sh "showreel-tech-$SLUG" oqa-fails.txt
           exit $rc
