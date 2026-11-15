@@ -22,6 +22,8 @@ the detail lives in the files indexed below. Read only the parts your task needs
   "postOn", "postAt", "concept"; npm run check fails without it). Learn-then-build: built the day it posts (evening before at most),
   never ahead, never a second reel for a channel and slot that already has one.
 - One experiment and one researched improvement per channel per day (design/runbook-daily.md).
+- **Turns Out is PARKED (owner, 15 Nov 2026):** no Turns Out build, render or post until the owner un-parks it in the Owner chat; the
+  "Turns Out daily reel" run stops after reading this. showreel-c3-mona-stolen stays as it is (render 6 result kept for later).
 
 ## Daily run
 The "Daily studio run" scheduled task (06:47 IST) follows **design/runbook-daily.md** (steps 0-5: Feedback first, Owner answers, audit card,
