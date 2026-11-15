@@ -40,7 +40,7 @@ if (cues && PI === 0) writeFileSync(base + '.cues.json', JSON.stringify(Object.a
 const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS * K), '-c:v', 'mjpeg', '-i', '-',
   ...(vf.length ? ['-vf', vf.join(',')] : []), '-r', String(FPS), '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
 const done = new Promise((ok, no) => ff.on('close', (c) => c === 0 ? ok() : no(new Error('ffmpeg exited ' + c))));
-const SUBJ = [];
+const SUBJ = [], PANES = [];
 for (let i = F0; i < F1; i++) {
   for (let j = 0; j < K; j++) {   // K sub-frames spread over the open shutter, centred on the frame's time
     const t = Math.min(DUR, Math.max(0, (i + (K > 1 ? SH * (j / (K - 1) - .5) : 0)) / FPS));
@@ -53,8 +53,14 @@ for (let i = F0; i < F1; i++) {
   // of the final MP4 inside it (scripts/qa/output-qa.py reads <name>.subject<part>.json next to the MP4)
   if (i % Math.max(1, Math.round(FPS / 2)) === 0) { const bx = await p.evaluate(() => { const e = document.querySelector('[data-subject]'); if (!e) return null;
     const r = e.getBoundingClientRect(); return [r.left, r.top, r.right, r.bottom].map((v) => Math.round(v)); }); if (bx) SUBJ.push([+(i / FPS).toFixed(2), ...bx]); }
+  // the BEFORE / AFTER panes ([data-pane="before|after"]) every 0.1 s with their opacity (15 Nov 2026; owner: "one cannot tell if something is
+  // really happening"): Output QA SPLIT compares how much each pane moves on the final MP4
+  if (i % Math.max(1, Math.round(FPS / 10)) === 0) { const pn = await p.evaluate(() => [...document.querySelectorAll('[data-pane]')].map((e) => { const r = e.getBoundingClientRect(); let o = 1;
+    for (let n = e; n && n.nodeType === 1; n = n.parentElement) o *= +getComputedStyle(n).opacity; return [e.dataset.pane, ...[r.left, r.top, r.right, r.bottom].map((v) => Math.round(v)), +o.toFixed(2)]; }));
+    if (pn.length) PANES.push([+(i / FPS).toFixed(2), pn]); }
 }
 if (SUBJ.length) writeFileSync(`${base}.subject${PI}.json`, JSON.stringify(SUBJ));
+if (PANES.length) writeFileSync(`${base}.panes${PI}.json`, JSON.stringify(PANES));
 ff.stdin.end(); await done; await b.close();
 if (errs.length) { console.error('page errors:', errs); process.exit(1); }
 console.log(`wrote ${out}: ${F1 - F0} frames` + (PN > 1 ? ` (part ${PI + 1} of ${PN}, frames ${F0}-${F1 - 1} of ${N})` : '') + ` at ${FPS} fps` + (K > 1 ? `, motion blur ${K} sub-frames, shutter ${SH}` : '') + (R.grain ? `, grain ${R.grain}` : ''));
