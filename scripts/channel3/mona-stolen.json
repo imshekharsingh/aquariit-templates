@@ -2,13 +2,12 @@
  "name": "showreel-c3-mona-stolen",
  "seek": "scripts/channel3/mona-stolen.html",
  "engine": "echoes",
- "dur": 50,
+ "dur": 40,
  "fps": 30,
  "voice": {
   "text": "Vanishing made the Mona Lisa famous. On Monday, 21 August 1911, a glazier who once worked there carried it out through a service door. Nobody noticed for a whole day. Then the papers went wild, and the Louvre shut for a week. When it reopened, crowds queued to stare at the empty wall where it hung. Police even questioned Pablo Picasso. Meanwhile, it sat in a trunk in the thief's Paris room for over two years. In December 1913, he tried to sell it to a dealer in Florence, and was caught. Turns out, the theft helped make her the most famous painting on Earth.",
-  "voice": "bm_george",
-  "lang": "b",
-  "speed": 1.0,
+  "voice": "af_heart",
+  "speed": 1,
   "gap": [
    0.45,
    0.35,
@@ -73,29 +72,82 @@
     "at": "start",
     "type": "arch",
     "img": "mona",
-    "mode": "framed",
+    "mode": "depth",
     "tone": "teal",
     "stamp": "STOLEN · 1911",
     "stampRed": true,
-    "lit": true
+    "cut": [
+     0.06,
+     0,
+     0.94,
+     0.66
+    ],
+    "cam": [
+     [
+      0.5,
+      0.36,
+      1.0
+     ],
+     [
+      0.5,
+      0.32,
+      1.14
+     ]
+    ]
    },
    {
     "line": 1,
     "at": "start",
     "type": "arch",
     "img": "beroud|wall",
-    "mode": "framed",
-    "tone": "amber",
-    "stamp": "PARIS · MONDAY 21 AUGUST 1911"
+    "mode": "depth",
+    "stamp": "PARIS · MONDAY 21 AUGUST 1911",
+    "cut": [
+     0.22,
+     0.04,
+     0.8,
+     0.86
+    ],
+    "cam": [
+     [
+      0.4,
+      0.46,
+      1.0
+     ],
+     [
+      0.5,
+      0.38,
+      1.3
+     ]
+    ],
+    "sat": 0.8
    },
    {
     "line": 1,
     "at": "glazier",
     "type": "arch",
     "img": "peruggia",
-    "mode": "framed",
+    "mode": "depth",
     "tone": "red",
-    "stamp": "VINCENZO PERUGGIA"
+    "stamp": "VINCENZO PERUGGIA",
+    "cut": [
+     0.18,
+     0.04,
+     0.82,
+     0.6
+    ],
+    "cam": [
+     [
+      0.5,
+      0.38,
+      1.24
+     ],
+     [
+      0.5,
+      0.33,
+      1.38
+     ]
+    ]
    },
    {
     "line": 2,
@@ -109,9 +161,27 @@
     "at": "start",
     "type": "arch",
     "img": "wall",
-    "mode": "framed",
+    "mode": "depth",
     "tone": "violet",
-    "stamp": "THE EMPTY WALL · 1911"
+    "stamp": "THE EMPTY WALL · 1911",
+    "cut": [
+     0.22,
+     0.18,
+     0.78,
+     0.72
+    ],
+    "cam": [
+     [
+      0.5,
+      0.52,
+      1.0
+     ],
+     [
+      0.5,
+      0.44,
+      1.18
+     ]
+    ]
    },
    {
     "line": 4,
@@ -125,7 +195,9 @@
      "OUTCOME: RELEASED"
     ],
     "stampTxt": "NOT THE THIEF",
-    "stampAt": 3.0
+    "stampAt": 3.0,
+    "bg": "beroud",
+    "bgPos": "30% 40%"
    },
    {
     "line": 4,
@@ -135,7 +207,8 @@
     "label": "MISSING",
     "from": 1911,
     "to": 1913,
-    "stampTxt": "OVER TWO YEARS"
+    "stampTxt": "OVER TWO YEARS",
+    "bg": "wall"
    },
    {
     "line": 5,
@@ -154,32 +227,85 @@
     "at": "florence",
     "type": "arch",
     "img": "uffizi|return1914",
-    "mode": "framed",
+    "mode": "depth",
     "tone": "terra",
     "stamp": {
      "uffizi": "FLORENCE · DECEMBER 1913",
      "return1914": "BACK IN PARIS · 1914"
-    }
+    },
+    "cut": [
+     0.52,
+     0.22,
+     0.95,
+     0.72
+    ],
+    "cam": [
+     [
+      0.38,
+      0.5,
+      1.0
+     ],
+     [
+      0.68,
+      0.45,
+      1.12
+     ]
+    ]
    },
    {
     "line": 6,
     "at": "start",
     "type": "arch",
     "img": "paper",
-    "mode": "framed",
+    "mode": "depth",
     "tone": "blue",
-    "stamp": "PARIS · 13 DECEMBER 1913"
+    "stamp": "PARIS · 13 DECEMBER 1913",
+    "cut": [
+     0.52,
+     0.1,
+     0.95,
+     0.44
+    ],
+    "cam": [
+     [
+      0.45,
+      0.3,
+      1.0
+     ],
+     [
+      0.7,
+      0.26,
+      1.3
+     ]
+    ]
    },
    {
     "line": 6,
     "at": "most",
     "type": "arch",
     "img": "mona",
-    "mode": "framed",
+    "mode": "depth",
     "tone": "teal",
     "glow": true,
     "stamp": "BACK IN THE LOUVRE · 4 JANUARY 1914",
-    "lit": true
+    "cut": [
+     0.06,
+     0,
+     0.94,
+     0.66
+    ],
+    "cam": [
+     [
+      0.5,
+      0.3,
+      1.2
+     ],
+     [
+      0.5,
+      0.38,
+      1.0
+     ]
+    ]
    }
   ],
   "credit": "SOURCES: WIKIPEDIA · NPR",
@@ -340,7 +466,7 @@
   "edges_ok": [
    {
     "from": 0,
-    "to": 50,
+    "to": 40,
     "sides": [
      "left",
      "right",

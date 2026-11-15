@@ -3,7 +3,7 @@ Reads the scene's cues (window.CUES = {engine: 'echoes', ep: {total, scenes, sho
 writes the mixed stereo 48 kHz WAV; the Showreel workflow then levels it to -14 LUFS and checks it (SOUND GATE, Output QA).
 The score stays the kit's (detuned string pads in 4.8 s chord cycles, a sparse piano motif, timpani on the turns, a cymbal swell before them,
 faint wind room tone); every EFFECT plays a recorded CC0 sample where the runner has them (scripts/showreel/samples.py swap: whoosh before
-every shot, typewriter clicks under every typed stamp plus a bell, a shutter snap on full-bleed photos, a thud on framed portraits, ticks
+every shot, typewriter clicks under every typed stamp plus a bell, a shutter snap on full-bleed photos, a thud on framed portraits and 2.5D depth shots, ticks
 under counters, a rustle on documents), the kit's synthesized one otherwise. The kit's mix: voice chain, 55% ducking, reverbs, gains.
 Usage: python3 scripts/echoes/sound.py <cues.json> <out.wav> [narration.wav]"""
 import sys, os, json, wave
@@ -100,6 +100,8 @@ for i, sh in enumerate(SH):
     if sh.get('stamp'): typing(t0 + .35, sh['stamp'])
     if sh['type'] == 'arch' and sh.get('mode') == 'full': put(sfx, t0 + 0.05, fx('snap', shutter(), t0), 0.25); put(sfx, t0 - 0.2, swell(0.6), 0.04)
     if sh['type'] == 'arch' and sh.get('mode') == 'framed' and i > 0: put(sfx, t0 + 0.1, fx('thud', thud(), t0), 0.18)
+    if sh['type'] == 'arch' and sh.get('mode') == 'depth' and i > 0:   # 2.5D shot (15 Nov 2026): the cut-out comes forward on a soft thud over a swell
+        put(sfx, t0 + 0.12, fx('thud', thud(), t0), 0.15); put(sfx, t0 - 0.2, swell(0.6), 0.04)
     k = sh.get('kind')
     if k == 'wall':
         for j in range(4): t = t0 + .5 + j * .28; put(sfx, t, fx('tap', thud(), t), 0.14)

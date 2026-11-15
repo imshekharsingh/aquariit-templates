@@ -174,7 +174,15 @@ scripts/echoes/sound.py (the kit's sound_h.py: score, effects on every shot, its
 - Images: 4-6 real archival images (>= 800 px where they exist), fetched by the Media workflow from a request in scripts/media/requests/
   (Wikimedia + Library of Congress; PD / CC0 / CC BY only, recorded per file; the MEDIA_JSON line goes into the config's "media").
 - Colour per beat (web channel's input, 15 Nov): every shot has its own tone (framed: tinted blur; illustrated: its own palette), never all brown.
-- Voice: the kit's narrator bm_george (British, voice.lang "b"), speed 1.0, a gap after each sentence; 45-50 s. The scene follows the real word
+- 2.5D depth shot (owner, 15 Nov 2026, Mona Lisa: "use combination of 2.5D with such images to make it more available on the screen (as it
+  seems to be centered mostly)"): `mode: "depth"` with `cut: [u0, v0, u1, v1]` (the subject, photo fractions: a feathered ellipse) and `cam: [[u, v,
+  z], [u, v, z]]` (the photo point held at the anchor and the zoom, start and end; pan across a landscape photo, push into a portrait). The photo
+  fills the frame on three planes: far (whole photo, cover-fitted, blurred, dimmed), mid (the cut-out sharp, coming forward 1.05 -> 1.13 and panning
+  1.4x, a soft shadow under it), near (motes, 2.5x); `sat` calms a vivid painting. An illustrated card takes `bg: "<image id>"` (+ `bgPos`): that
+  photo as a toned far plane drifting behind it. "framed" is retired for Turns Out (Output QA FILL fails a picture centred in the frame).
+  Keep printed numbers on a photo (a police number) out of the camera's view: Output QA NUMBERS reads them.
+- Voice (owner, 15 Nov 2026: "use previous voice (from last engine not the new kit)"): af_heart, speed 1, a gap after each sentence (was the kit's
+  bm_george, 45-50 s); about 35 s for 7 lines, `dur` = the preflight estimate + 4 s. The scene follows the real word
   times; the video ends 1.4 s after the last word (the sound's length; the mux is -shortest).
 - Kept gates: voice fit (preflight), safe zone, text fit, subtitles, Output QA, review file (item 20 takes the finish and per-shot motion as
   evidence: the captions entry has "engine": "echoes"), design/safety.md incl. the India never-topics. Dropped for this engine: the 18-25 s
