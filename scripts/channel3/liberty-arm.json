@@ -2,7 +2,7 @@
  "name": "showreel-c3-liberty-arm",
  "seek": "scripts/channel3/liberty-arm.html",
  "engine": "echoes",
- "dur": 40,
+ "dur": 39,
  "fps": 30,
  "voice": {
   "text": "Liberty's arm arrived years before her. In 1876, only her arm and torch had crossed the ocean, for a world's fair in Philadelphia. For a small fee, visitors climbed a ladder up to the balcony around the flame. Then the arm stood in a New York park for years, raising money for her pedestal. In Paris, her giant head went on show at a world's fair, while workers built the rest. When the pedestal money ran out, Joseph Pulitzer promised to print every donor's name in his newspaper. Turns out, more than a hundred thousand people paid for her pedestal, most giving a dollar or less.",
@@ -49,9 +49,285 @@
    "hundred",
    "dollar"
   ],
-  "mono": [],
-  "titles": {},
-  "shots": [],
+  "mono": [
+   "arm1876",
+   "armmad",
+   "headpark",
+   "pulitzer"
+  ],
+  "titles": {
+   "armst": "The arm and torch · Centennial Exhibition, Philadelphia, 1876",
+   "arm1876": "The arm at the Centennial Exhibition · Philadelphia, 1876",
+   "armmad": "The arm in Madison Square, New York · after Bartholdi's sketch, 1877",
+   "headpark": "Liberty's head on show in Paris · Albert Fernique, 1878",
+   "workshop": "The statue rising over Paris · Victor Dargaud, c. 1884",
+   "pulitzer": "Joseph Pulitzer, publisher of the World",
+   "moran": "Unveiling the Statue of Liberty · Edward Moran, 1886"
+  },
+  "shots": [
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 0,
+    "at": "start",
+    "img": "armst",
+    "tone": "teal",
+    "stamp": "ONLY THE ARM",
+    "stampRed": true,
+    "cut": [
+     0.58,
+     0.05,
+     0.82,
+     0.55
+    ],
+    "cam": [
+     [
+      0.7,
+      0.4,
+      1.3
+     ],
+     [
+      0.7,
+      0.38,
+      1.4
+     ]
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 1,
+    "at": "start",
+    "img": "arm1876|armst",
+    "tone": "amber",
+    "stamp": "PHILADELPHIA · 1876",
+    "cut": [
+     0.28,
+     0.06,
+     0.62,
+     0.6
+    ],
+    "cam": [
+     [
+      0.45,
+      0.46,
+      1.15
+     ],
+     [
+      0.45,
+      0.4,
+      1.3
+     ]
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 2,
+    "at": "start",
+    "img": "armst",
+    "tone": "terra",
+    "stamp": "A LADDER TO THE FLAME",
+    "cut": [
+     0.62,
+     0.13,
+     0.78,
+     0.42
+    ],
+    "cam": [
+     [
+      0.69,
+      0.36,
+      2.0
+     ],
+     [
+      0.69,
+      0.34,
+      2.25
+     ]
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 3,
+    "at": "start",
+    "img": "armmad",
+    "tone": "green",
+    "stamp": "NEW YORK · MADISON SQUARE",
+    "cut": [
+     0.42,
+     0.25,
+     0.68,
+     0.6
+    ],
+    "cam": [
+     [
+      0.5,
+      0.49,
+      2.0
+     ],
+     [
+      0.5,
+      0.47,
+      2.15
+     ]
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 4,
+    "at": "start",
+    "img": "headpark",
+    "tone": "blue",
+    "stamp": "PARIS · THE WORLD'S FAIR",
+    "cut": [
+     0.18,
+     0.08,
+     0.6,
+     0.55
+    ],
+    "cam": [
+     [
+      0.42,
+      0.36,
+      1.15
+     ],
+     [
+      0.38,
+      0.31,
+      1.3
+     ]
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 4,
+    "at": "workers",
+    "img": "workshop",
+    "tone": "violet",
+    "stamp": "PARIS · THE WORKSHOP",
+    "sat": 0.85,
+    "cut": [
+     0.34,
+     0.08,
+     0.66,
+     0.56
+    ],
+    "cam": [
+     [
+      0.5,
+      0.55,
+      1.1
+     ],
+     [
+      0.5,
+      0.36,
+      1.2
+     ]
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 5,
+    "at": "start",
+    "img": "pulitzer",
+    "tone": "red",
+    "stamp": "JOSEPH PULITZER",
+    "cut": [
+     0.18,
+     0.04,
+     0.86,
+     0.55
+    ],
+    "cam": [
+     [
+      0.5,
+      0.36,
+      1.05
+     ],
+     [
+      0.5,
+      0.31,
+      1.16
+     ]
+    ]
+   },
+   {
+    "line": 5,
+    "at": "print",
+    "type": "ill",
+    "kind": "dossier",
+    "head": "THE WORLD · PEDESTAL FUND",
+    "rows": [
+     "EVERY GIFT WELCOME",
+     "EVERY DONOR NAMED"
+    ],
+    "stampTxt": "NAMES PRINTED",
+    "stampAt": 2.0,
+    "bg": "workshop",
+    "bgPos": "50% 40%"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 6,
+    "at": "start",
+    "img": "moran",
+    "tone": "gold",
+    "stamp": "UNVEILED · NEW YORK HARBOR",
+    "sat": 0.85,
+    "cut": [
+     0.3,
+     0.03,
+     0.72,
+     0.55
+    ],
+    "cam": [
+     [
+      0.5,
+      0.42,
+      1.0
+     ],
+     [
+      0.5,
+      0.3,
+      1.15
+     ]
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 6,
+    "at": "most",
+    "img": "armst",
+    "tone": "teal",
+    "glow": true,
+    "stamp": "WHERE SHE BEGAN",
+    "cut": [
+     0.58,
+     0.05,
+     0.82,
+     0.55
+    ],
+    "cam": [
+     [
+      0.7,
+      0.36,
+      1.45
+     ],
+     [
+      0.7,
+      0.4,
+      1.3
+     ]
+    ]
+   }
+  ],
   "credit": "SOURCES: NATIONAL PARK SERVICE · NYPL · WIKIPEDIA",
   "chapters": [
    "The Arm",
@@ -92,5 +368,127 @@
    "title": "Statue of Liberty (Wikipedia, with its cited sources)",
    "url": "https://en.wikipedia.org/wiki/Statue_of_Liberty"
   }
- ]
+ ],
+ "media": [
+  {
+   "id": "arm1876",
+   "file": "arm1876.jpg",
+   "w": 512,
+   "h": 640,
+   "title": "SOLPhiladelphia1876.jpg",
+   "author": "Centennial Photographic Co.,",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:SOLPhiladelphia1876.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/6/60/SOLPhiladelphia1876.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+   "source": "wikimedia",
+   "run": "Media run 43743175066"
+  },
+  {
+   "id": "armmad",
+   "file": "armmad.jpg",
+   "w": 1697,
+   "h": 2400,
+   "title": "Inauguration d'un fragment de la statue de la Liberté dans Madison Square à New York - d'après un croquis qui nous a été communiqué par l'auteur, M. Bartholdi -",
+   "author": "Bartholdi, Auguste (1834-1904). Dessinateur",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Inauguration_d%27un_fragment_de_la_statue_de_la_Libert%C3%A9_dans_Madison_Square_%C3%A0_New_York_-_d%27apr%C3%A8s_un_croquis_qui_nous_a_%C3%A9t%C3%A9_communiqu%C3%A9_par_l%27auteur,_M._Bartholdi_-_impression_photom%C3%A9canique_-_bpt6k121863m.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Inauguration_d%27un_fragment_de_la_statue_de_la_Libert%C3%A9_dans_Madison_Square_%C3%A0_New_York_-_d%27apr%C3%A8s_un_croquis_qui_nous_a_%C3%A9t%C3%A9_communiqu%C3%A9_par_l%27auteur%2C_M._Bartholdi_-_impression_photom%C3%A9canique_-_bpt6k121863m.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+   "source": "wikimedia",
+   "run": "Media run 43743175066"
+  },
+  {
+   "id": "armst",
+   "file": "armst.jpg",
+   "w": 2400,
+   "h": 1230,
+   "title": "Collossal hand and torch. Bartholdi's statue of \"Liberty.\", from Robert N. Dennis collection of stereoscopic views.jpg",
+   "author": "Unknown artist Unknown artist",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Collossal_hand_and_torch._Bartholdi%27s_statue_of_%22Liberty.%22,_from_Robert_N._Dennis_collection_of_stereoscopic_views.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/0/03/Collossal_hand_and_torch._Bartholdi%27s_statue_of_%22Liberty.%22%2C_from_Robert_N._Dennis_collection_of_stereoscopic_views.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+   "source": "wikimedia",
+   "run": "Media run 43743175066"
+  },
+  {
+   "id": "headpark",
+   "file": "headpark.jpg",
+   "w": 1983,
+   "h": 2400,
+   "title": "Head of the Statue of Liberty on display in a park in Paris.jpg",
+   "author": "Albert Fernique",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Head_of_the_Statue_of_Liberty_on_display_in_a_park_in_Paris.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/Head_of_the_Statue_of_Liberty_on_display_in_a_park_in_Paris.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+   "source": "wikimedia",
+   "run": "Media run 43743175066"
+  },
+  {
+   "id": "workshop",
+   "file": "workshop.jpg",
+   "w": 1664,
+   "h": 2400,
+   "title": "Paul-Joseph-Victor Dargaud - La statue de la Liberté de Bartholdi, dans l'atelier du fondeur Gaget, rue de Chazelles - P1964 - Musée Carnavalet.jpg",
+   "author": "Paul Joseph Victor Dargaud",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Paul-Joseph-Victor_Dargaud_-_La_statue_de_la_Libert%C3%A9_de_Bartholdi,_dans_l%27atelier_du_fondeur_Gaget,_rue_de_Chazelles_-_P1964_-_Mus%C3%A9e_Carnavalet.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Paul-Joseph-Victor_Dargaud_-_La_statue_de_la_Libert%C3%A9_de_Bartholdi%2C_dans_l%27atelier_du_fondeur_Gaget%2C_rue_de_Chazelles_-_P1964_-_Mus%C3%A9e_Carnavalet.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+   "source": "wikimedia",
+   "run": "Media run 43743175066"
+  },
+  {
+   "id": "pulitzer",
+   "file": "pulitzer.jpg",
+   "w": 328,
+   "h": 480,
+   "title": "JosephPulitzerPinceNeznpsgov.jpg",
+   "author": "Unknown author Unknown author",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:JosephPulitzerPinceNeznpsgov.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/4/49/JosephPulitzerPinceNeznpsgov.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+   "source": "wikimedia",
+   "run": "Media run 43743175066"
+  },
+  {
+   "id": "moran",
+   "file": "moran.jpg",
+   "w": 1260,
+   "h": 1600,
+   "title": "EdwardMoran-UnveilingTheStatueofLiberty1886Large.jpg",
+   "author": "Edward Moran",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:EdwardMoran-UnveilingTheStatueofLiberty1886Large.jpg",
+   "file_url": "https://upload.wikimedia.org/wikipedia/commons/6/6e/EdwardMoran-UnveilingTheStatueofLiberty1886Large.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+   "source": "wikimedia",
+   "run": "Media run 43743175066"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 39,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the Echoes engine: full-bleed archival photos in 2.5D fill the frame by design"
+   }
+  ]
+ }
 }

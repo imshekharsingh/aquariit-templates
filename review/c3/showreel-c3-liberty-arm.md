@@ -1,0 +1,47 @@
+# Review: showreel-c3-liberty-arm (c3, postOn 2026-11-17 postAt 13:00 IST)
+
+Turns Out, Tue 17 Nov, built Sun 15 Nov evening (owner, Owner chat ~23:15 IST: "proceed with creating one for Tuesday, don't wait on that";
+an exception to built-the-day-it-posts). Same engine, look and voice as the Mona Lisa render 6 the owner approved ("looks good", Showreel
+run 43727633754): the Echoes engine with 2.5D "depth" shots, each real archival image full-frame, a new shot on almost every line, af_heart.
+Story: the Statue of Liberty's arm and torch arrived years before the rest of her (Philadelphia 1876, Madison Square 1876-1882), her head
+was shown at the Paris world's fair while the rest was built, and Pulitzer's appeal let ordinary people pay for her pedestal.
+7 lines, 10 shots: 9 archival in 2.5D depth (the Centennial stereoview of the arm, the Centennial Photographic Co. photo of the arm, the
+1877 engraving of the arm in Madison Square, Fernique's photo of the head in Paris, Dargaud's painting of the statue rising over Paris,
+Pulitzer's portrait, Moran's painting of the 1886 unveiling, the arm again for the loop) and 1 card (the World's pedestal fund, its stamp
+"NAMES PRINTED", over Dargaud's Paris street as a toned far plane). Images: Media run 43743175066 (exact Commons files found by search;
+all public domain or CC0, recorded per file in the config's "media"). Stills from that run's log previews.
+AUTO lines from `node scripts/showreel/preflight.mjs`, `node scripts/showreel/stills.mjs` (one sheet, 12 frames), `node scripts/echoes/flow.mjs`
+and `node scripts/echoes/colour.mjs` on scripts/channel3/liberty-arm.json.
+
+Lessons from the owner's feedback tonight, applied: calm, purposeful motion (the engine's slow push or pan per shot, no wobble or loops
+added, no light bands: the engine's corner light only); every subject large (the arm, the head, Pulitzer and the statue fill the frame
+at phone size on the stills); colours clean (saturated fill at most 5%, one tone per beat over sepia archives).
+
+1. Topic: PASS: anyone knows the Statue of Liberty in 1 s and few know her arm stood alone in a park for years; not done before on any channel (liberty-green, 3 Nov, was her colour); rulebook design/rules-c3.md: rule S pass as adjusted for the Echoes engine (payoff "Liberty's arm arrived years before her." over the arm alone in frame 0, 6 words; each line one sourced fact; "Turns out" surprise last; loop back to the arm), rule 0 pass (9 shots of real archival images, PD / CC0), rule 1 n/a (story), rule 2 pass (the world's best-known statue in a state nobody pictures: just an arm), rule 3 adjusted (Echoes engine, owner 15 Nov: about 35 s), rule 4 pass (caption opens with a question, asks for a send), rule 5 adjusted (10 shots with declared crossfades), rule 6 pass (item 10), rule 7 pass (item 7), rule 8 pass (one c3 reel for Tue 17 13:00; the Mona Lisa reel moves to Mon 16 in another session), rule 9 pass (a stamp, a card row or a new shot every 1-3 s with its sound), rule 10 pass (item 12 COLOUR)
+2. Frame 0: PASS: SUBJECT FILL: 92% at frame 0; the arm and torch fill the frame top to wrist, the whole flame in view (cut raised for it), the payoff line under it from frame 0, "ONLY THE ARM" typing in red; HOOK: the badge and chapter sit above the flame, clear of it on the stills
+3. Safe zone: PASS: SAFE ZONE: ok (every text box inside x 60-960, y 250-1570 on the 0.5 s scan; the card's stamp shortened to "NAMES PRINTED" for it)
+4. No overlap: PASS: OVERLAP: none; BAND: clear (every cut-out's subject box ends above the captions on a 0.5 s scan at 1080 px; the cuts were raised from a 1482 px bottom to clear it)
+5. Motion: PASS: STATIC STRETCH: none (least change 0.8 at 37.5 s, in the frames after the video ends; median 5.8); EMPTY FRAMES: none (least detail 43.9 at 20.5 s); TEXT FIT: all text inside its box
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; the engine's Cormorant captions in phrase chunks, every line shown and finished on the stills
+7. Voice: PASS: PREFLIGHT voice: 468 letters, 7 sentences, about 34.7 s at speed 1 with 2.65 s of breaths (reel 39 s, voice must end by 38.4 s): fits; HOOK PACE: the first sentence has 6 words: ok; PRONUNCIATION: 1 overrides used: 1876 (year); no unchecked words; af_heart at speed 1 (owner 15 Nov), a breath after each sentence; every shot, stamp and card is keyed to a word, so the scene re-times itself to the real word times at render
+8. Sound: PASS: the engine's score and effects as on Mona Lisa render 6 (whoosh before each shot, typewriter keys and bell under each stamp, a thud over a soft swell as each 2.5D cut-out comes forward, rustle and stamp hit on the card), recorded CC0 samples; the workflow's SOUND GATE checks the loudness
+9. Payoff: PASS: "Turns out, more than a hundred thousand people paid for her pedestal, most giving a dollar or less." over Moran's painting of the unveiling, then the arm again with a gold glow and "WHERE SHE BEGAN" (the loop to frame 0); "SOURCES: NATIONAL PARK SERVICE · NYPL · WIKIPEDIA" in the tail
+10. Facts: PASS: checked on GitHub (Sources run 43743177910, the pages printed): arm and torch shown at the 1876 Centennial Exposition in Philadelphia, visitors bought tickets to climb a ladder to the torch (NYPL 2015; Wikipedia: "displayed at the Centennial Exposition in Philadelphia in 1876"); then in Madison Square, New York, 1876-1882, to raise money for the pedestal (NYPL "Six Years in Madison Square", 50 cents to climb to the balcony; Wikipedia "in Madison Square Park in Manhattan from 1876 to 1882"); the head shown at the 1878 Paris world's fair (Wikipedia; Commons, Fernique's LoC photo dated 1878) while the statue was built in Paris (Dargaud's painting, c. 1884); the committee ran out of pedestal money and Pulitzer's World appealed, printing every donor's name (NPS, Joseph Pulitzer); roughly 125,000 people gave, most about a dollar or less (NPS), said as "more than a hundred thousand" and "a dollar or less"; only one number is shown on screen ("1876", on its spoken line); npm run check passes
+11. Post data: PASS: captions.json entry (c3, postOn 2026-11-17, postAt 13:00, concept, note, engine echoes); caption (opens with a question, ends with a send), 6 keywords, 5 hashtags chosen for search ("statue of liberty arm", "statue of liberty history", "madison square park 1876"); "media" carries file, author, licence and source_url per image (Output QA LICENCE); design/safety.md read: no living people (Pulitzer d. 1911, Bartholdi d. 1904, Fernique d. 1898, Moran d. 1901, Dargaud d. 1921), no politics, religion or India-sensitive history, nothing disputed shown as fact (the start year in Madison Square differs between sources, 1876 or 1877, so the voice says "for years")
+12. Review file: PASS: this file, items 1-11 and 14-20 PASS before the one render; COLOUR (pre-render): saturated fill at most 5% at 11.5 s; over 25%: never
+13. After the render: PENDING
+14. Cuts: PASS: FLOW: cuts 0 (window.TRANSITIONS declares 9 crossfades of 0.7 s, the engine's shot change)
+15. Dead runs: PASS: FLOW: dead runs none (window.HOLDS only marks the frames after the video ends, 1.4 s after the last word)
+16. Continuity: PASS: FLOW: continuity 100% (median step 3.2, 9 declared transitions)
+17. Strobes: PASS: FLOW: strobes 0
+18. Element sound (web): n/a (Turns Out; every effect in item 8)
+19. Journey: PASS: scenes 10 (the arm alone, close; the arm at the Philadelphia fair; the climb to the flame; the arm in Madison Square; the head in Paris; the statue rising over Paris; Pulitzer; the World's fund card; the unveiling in New York Harbor; the arm again, the loop); transitions: crossfade with a whoosh (the engine's), the card's own entry and stamp
+20. Depth and life: PASS: Echoes engine with 2.5D depth (owner 15 Nov): every photo on three planes (far blurred and dimmed, mid cut-out sharp, coming forward 1.05 -> 1.13 and panning 1.4x the far plane, near motes 2.5x) under a calm camera push or pan per shot; the card over a far plane that drifts slower than the card; film grain, dust and the corner light kept
+
+Owner feedback, line by line (design/owner-feedback.md) against the stills: "make it more available on the screen" and "use previous voice"
+(15 Nov): every photo full-frame in 2.5D, af_heart; "too wiggly" (15 Nov evening, web): no added motion, one slow move per shot; "one image
+throughout a 40+ sec run" (15 Nov): 10 shots; "did not look like Niagara / drawn shapes" (14 Nov): real archival images are the subject of 9
+shots; "colour selection" (13 Nov): one tone per beat, saturated fill at most 5%; "the voice names an item while its card is still empty"
+(13 Nov): every shot opens 0.25 s before its word.
+
+References used (design/references.md): the owner's Echoes kit (design/kits/echoes_kit.zip): depth shots, stamps, captions, card, finish, sound
