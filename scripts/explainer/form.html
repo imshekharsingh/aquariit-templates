@@ -639,7 +639,9 @@ var KM = (function(){
     window.HOLDS = [[post[post.length - 1] + TYPE + .45, DUR]];
     A.pre = pre; A.side = side; A.look = look; A.post = post;
     RA = pre.concat(side).map(function(t){ return { t: t, e: t + SHOW, s: t + TYPE, tap: true }; });
-    RB = side.concat(look, post).map(function(t){ return { t: t, e: t + SHOW, s: t + TYPE, tap: look.indexOf(t) < 0 }; });
+    // AFTER is fully still while it sits beside BEFORE (Output QA SPLIT, run 43733816886: BEFORE 7.0% vs AFTER 4.8%): no touch ring, no tap
+    // squeeze, no guide draw-on, no chip pop there; only the typed email and the message change in it. Its taps land once it is alone again.
+    RB = side.concat(look, post).map(function(t){ return { t: t, e: t + SHOW, s: t + TYPE, tap: look.indexOf(t) < 0 && side.indexOf(t) < 0 }; });
     // BEFORE's layout changes: the message in (everything drops one line), the message out (everything jumps back up)
     CA = []; RA.forEach(function(r){ CA.push({ t: r.e, d: 1, r: r }); CA.push({ t: r.s, d: -1, r: r }); });
     A.subEnd = Math.min(DUR - .3, V.end + .7);
@@ -663,7 +665,7 @@ var KM = (function(){
     A.typeA = A.fix + .3; A.typeB = Math.min(A.watch - .7, A.fix + 2.6);
     for (c = 0; A.typeA + c * .09 < A.typeB; c++) KM.cue({ t: A.typeA + c * .09, k: 'tick', g: .06, p: (c * 5) % 7 });
     KM.cue({ t: A.watch + .3, k: 'pop', g: .16, p: 5, x: 255 });   // the "look closer" guides draw
-    KM.cue({ t: A.fix + .9, k: 'pop', g: .14, p: 4, x: 255 });     // the lock guides draw on AFTER while it sits beside BEFORE
+    KM.cue({ t: A.fix + .1, k: 'pop', g: .14, p: 4, x: 255 });     // AFTER enters with its lock guides already on (nothing draws on beside BEFORE)
     // ---- element sound (kitsfx.js): every element that enters, moves or changes has a cue ----
     var hs = $('hook').querySelectorAll('.ln > span'); for (var h = 0; h < hs.length; h++) KM.sfx(hs[h], 0, 'enter', { size: 'small', g: .5, deg: h % 3 });
     KM.sfx($('lbl'), A.leave - .2, 'exit', { size: 'small' });
@@ -672,7 +674,7 @@ var KM = (function(){
     EL.look = KM.el($('look'), { t0: A.watch + .25, d: .5, variant: 'unfold', t1: A.pay - .3, d1: .35, out: 'slide', g: .7 }); KM.mark($('lA'), 'self', 'the panel'); KM.mark($('lB'), 'self', 'the panel');
     EL.line = KM.el($('line'), { t0: A.pay + .05, d: .5, variant: 'morph', g: .7 });
     EL.tgA = KM.el($('tgA'), { t0: A.fix + .35, d: .4, variant: 'pop', t1: A.watch - .45, d1: .3, g: .6 });
-    EL.tgB = KM.el($('tgB'), { t0: A.fix + .5, d: .4, variant: 'pop', t1: A.watch + .4, d1: .3, g: .6 });
+    EL.tgB = KM.el($('tgB'), { t0: A.fix + .05, d: .4, variant: 'pop', t1: A.watch + .4, d1: .3, g: .6 });
     KM.mark($('cA'), 'tree', 'the key ticks, the snap on every jump'); KM.mark($('cB'), 'tree', 'the key ticks, the message tick and the pop on every tap');
     KM.mark($('band'), 'self', 'with the subtitles'); KM.mark(TA.el, 'tree', 'the touch marker: the tap sounds'); KM.mark(TB.el, 'tree', 'the touch marker: the tap sounds'); KM.mark($('q0'), 'self', 'the miss blip'); KM.mark($('g0'), 'self', 'the snap');
     KM.mark($('cd'), 'tree', 'the typing ticks');
@@ -687,7 +689,7 @@ var KM = (function(){
     var er = art.querySelector('.err'), want = shown ? '1' : ''; if (er.dataset.v !== want) { er.innerHTML = shown ? ERRH : ''; er.dataset.v = want; }
     var fd = art.querySelector('.field'); fd.querySelector('.v').textContent = EM.slice(0, n);
     fd.className = 'field' + (shown ? ' bad' : n >= EM.length ? ' ok' : '');
-    var typing = r && t < r.s + .1; fd.querySelector('i').style.opacity = typing || Math.floor(t * 2.4) % 2 === 0 ? 1 : 0;
+    var typing = r && t < r.s + .1; fd.querySelector('i').style.opacity = typing || (L === 'A' && Math.floor(t * 2.4) % 2 === 0) ? 1 : 0;   // AFTER's caret never blinks: it shows only while typing
     var eta = art.querySelector('.eta'); eta.textContent = shown ? 'INVALID' : n >= EM.length ? 'VALID' : 'TYPING'; eta.style.color = shown ? '#ffb0a6' : n >= EM.length ? 'var(--acc)' : '#c9c5dc';
     // ---- the jolt (owner, 15 Nov: "clearer wiggle and shift"): on BEFORE the reflow is real (the button really sits shift px lower or
     //      higher); it is shown as a fall (or a jump) from where it was, a spring past it and back, a shake of the page, a trail and a red flash.
@@ -719,11 +721,11 @@ var KM = (function(){
     $('band').style.opacity = bk.toFixed(3); $('cap').style.visibility = bk > .02 ? '' : 'hidden';
     var tl = mix(290, 392, bkc), wt = KM.worldY(c, tl), full = { x: FULL.x, y: wt, w: FULL.w, h: wb - wt, r: FULL.r };
     var st0 = KM.worldY(c, 392), hh = (wb - st0 - 12) / 2, TOP = { x: X0, y: st0, w: W0, h: hh, r: 26 }, BOT = { x: X0, y: st0 + hh + 12, w: W0, h: hh, r: 26 };
-    var boxA = lerpBox(full, TOP, sk), boxB = t < A.watch - .1 ? BOT : lerpBox(BOT, full, mk), popB = KM.enter('pop', P(t, A.fix + .05, A.fix + .45));
+    var boxA = lerpBox(full, TOP, sk), boxB = t < A.watch - .1 ? BOT : lerpBox(BOT, full, mk);
     var sA = paintCard('A', boxA, t, RA), sB = paintCard('B', boxB, t, RB);
     var cA = $('cA'), cB = $('cB');
     cA.style.opacity = (1 - P(t, A.watch - .4, A.watch - .14)).toFixed(3);
-    cB.style.opacity = (t < A.fix + .05 ? 0 : t < A.watch - .1 ? popB.o * E.inOut3(P(t, A.fix + .05, A.fix + .52)) : 1).toFixed(3);   // AFTER fades in as it pops (an entrance, not a move) cB.style.transform = t < A.watch - .1 ? popB.tf : '';
+    cB.style.opacity = (t < A.fix + .05 ? 0 : t < A.watch - .1 ? E.out3(P(t, A.fix + .05, A.fix + .85)) : 1).toFixed(3);   // AFTER fades in softly in place (an entrance, not a move; no pop: it is the still pane) cB.style.transform = t < A.watch - .1 ? popB.tf : '';
     cB.style.zIndex = t >= A.watch ? 3 : 1; cA.style.zIndex = 2;
     var sb = t < A.fix - .05 ? boxA : t < A.watch - .1 ? { x: boxA.x, y: Math.min(boxA.y, boxB.y), w: boxA.w, h: boxB.y + boxB.h - Math.min(boxA.y, boxB.y) } : boxB;
     box($('sbox'), sb);
@@ -745,17 +747,17 @@ var KM = (function(){
       tg.style.left = (m[1].x + 22 + 386 - tg.offsetWidth).toFixed(1) + 'px'; tg.style.top = (m[1].y + 14 + LAY[m[0]].off.btn + 4).toFixed(1) + 'px';   // pinned beside the button's resting line: small text never rides the move (Output QA NUMBERS read the blurred "32" as "3", run 43730180559)
       $('c' + m[0]).querySelector('.eta').style.opacity = (1 - Math.min(1, o * 1.5)) * (m[0] === 'A' ? (live != null ? 0 : P(t, qEnd, qEnd + .2)) : 1); });
     // ---- the touch markers (KM.touch): aimed at the Pay button where it sat; pressed as the message pops in ----
-    [[TA, RA, boxA, 'A', 1 - P(t, A.watch - .5, A.watch - .2)], [TB, RB, boxB, 'B', P(t, A.fix + .5, A.fix + .9) * (1 - P(t, DUR - .3, DUR))]].forEach(function(m){
+    [[TA, RA, boxA, 'A', 1 - P(t, A.watch - .5, A.watch - .2)], [TB, RB, boxB, 'B', P(t, A.pay - .1, A.pay + .3) * (1 - P(t, DUR - .3, DUR))]].forEach(function(m){
       var r = null; m[1].forEach(function(d){ if (d.tap && d.e - .35 <= t) r = d; }); if (m[3] === 'B' && r && r.t < A.fix + .4) r = null;
       var press = r ? upDown(t, r.e) : 0, bw = $('c' + m[3]).querySelector('.btn').offsetWidth;
       var y = m[2].y + 14 + LAY[m[3]].off.btn + 26;   // where the button was before the message: the thumb is already on its way there
-      m[0](t, { x: m[2].x + 22 + bw / 2, y: y, press: press, tap: r ? r.e : null, o: m[4] * (r ? 1 : 0), c: c }); });
+      m[0](t, { x: m[2].x + 22 + bw / 2, y: y, press: press, tap: r ? r.e : null, o: m[4] * (r || m[3] === 'B' ? 1 : 0), c: c }); });   // AFTER's ring fades in once it is alone (none beside BEFORE)
     // the fixed button takes the tap: a squeeze and back
     var rb = null; RB.forEach(function(d){ if (d.tap && d.e <= t && d.t >= A.fix + .4) rb = d; });
     var sq = rb ? Math.sin(Math.PI * P(t, rb.e, rb.e + .28)) : 0; $('cB').querySelector('.btn').style.transform = 'scale(' + (1 - .03 * sq).toFixed(4) + ')';
     // ---- the lock guides: AFTER's reserved message line and its button row, dashed, drawn on and held while the message comes and goes ----
-    var gkk = E.out3(P(t, A.watch + .3, A.watch + .8)) * (1 - P(t, A.pay - .3, A.pay)), gks = E.out3(P(t, A.fix + .9, A.fix + 1.3)) * (1 - P(t, A.watch - .4, A.watch - .15));
-    [].forEach.call($('cB').querySelectorAll('.guide'), function(e, i){ var ks = E.inOut3(P(t, A.fix + .9 + i * .1, A.fix + 1.3 + i * .1)), kl = E.inOut3(P(t, A.watch + .3 + i * .1, A.watch + .75 + i * .1)), lk = t < A.watch ? ks : kl;
+    var gkk = E.out3(P(t, A.watch + .3, A.watch + .8)) * (1 - P(t, A.pay - .3, A.pay)), gks = (1 - P(t, A.watch - .4, A.watch - .15));   // beside BEFORE the guides arrive with the card (its opacity), drawn already
+    [].forEach.call($('cB').querySelectorAll('.guide'), function(e, i){ var kl = E.inOut3(P(t, A.watch + .3 + i * .1, A.watch + .75 + i * .1)), lk = t < A.watch ? 1 : kl;
       e.style.opacity = (Math.max(gkk * .9, gks * .75)).toFixed(3); e.style.clipPath = 'inset(0 ' + (100 * (1 - lk)).toFixed(1) + '% 0 0)'; });
     // ---- the hook: on screen from frame 0 (design/improvements.md, 13 Nov: the text overlay already on the moving bug); "jump?" kicks on every jump ----
     var gone = E.inOut3(P(t, A.leave, A.leave + .3));
