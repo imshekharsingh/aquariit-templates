@@ -47,7 +47,12 @@ def main():
     TL, order = timeline(topic, vo)
     open(os.path.join(out, 'timeline.js'), 'w').write('window.TL=' + json.dumps(TL) + ';')
     json.dump(TL, open(os.path.join(out, 'timeline.json'), 'w'), indent=1)
-    shutil.copy(os.path.join(ROOT, topic['scene']), os.path.join(out, 'scene.html'))
+    if topic['scene'].endswith('.js'):   # a topic file on the shared kit frame (techkit/base.html)
+        base = open(os.path.join(HERE, 'base.html')).read()
+        js = open(os.path.join(ROOT, topic['scene'])).read()
+        open(os.path.join(out, 'scene.html'), 'w').write(base.replace('/*TITLE*/', topic.get('topic', slug)).replace('/*TOPIC_JS*/', js))
+    else:
+        shutil.copy(os.path.join(ROOT, topic['scene']), os.path.join(out, 'scene.html'))
     words = sum(len(l['text'].split()) for l in topic['lines'])
     print(f'TIMELINE: {len(TL["scenes"])} chapters, {words} words, voice {TL["scenes"][0]["start"]:.2f}-{TL["scenes"][-1]["end"]:.2f} s, total {TL["total"]:.2f} s')
     print('CUES: ' + ', '.join(f'{k} {v:.2f}' for k, v in order))

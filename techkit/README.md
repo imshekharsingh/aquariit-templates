@@ -23,3 +23,10 @@ Copy techreel/topics/night-mode.json (lines, cues, sfx, post) and techkit/scenes
 panels, captions, post effects; replace the hero drawing and the panels' contents). Layout that passes the gates: header y 250, chip y 408,
 hero y 500-1200 (x 160-920), panel y 1240 (x 84-956), recap pills y 1000-1394, captions y 1430; canvas labels through `label()` (clamped
 to x 64-956). Write 7 lines (≤ 20 words, the last ≤ 10), 100-140 words for 40-45 s.
+
+## The shared frame (15 Nov 2026)
+New topics use `techkit/base.html` (header, chapter chip, panel helper, step flows, recap pills, kinetic captions, camera, post effects) plus
+one topic file `techkit/scenes/<slug>.js` that sets `window.TOPIC` = {title, eyebrow, final, vars (colours), chips, keyw, jolts, html (panels and
+pills), cam(), hero(t) (world space, under the camera), labels(t) (screen space, `label()` reports boxes), panels(t)}. The topic's `"scene"`
+points at the .js; make.py assembles scene.html. Examples: scenes/watch-5atm.js, scenes/screen-120hz.js. `DIFFS=1` on `--stills` prints the
+still stretches FLOW counts against continuity.
