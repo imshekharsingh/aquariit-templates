@@ -1,0 +1,9 @@
+{
+ "name": "showreel-c3-mona-stolen",
+ "why": "The Media run 43669299385 timed out on searches (Wikimedia rate limit): Actions -> Sources prints the articles' media lists, so the next Media request names exact files.",
+ "sources": [
+  {"title": "Media list: Vincenzo Peruggia", "url": "https://en.wikipedia.org/api/rest_v1/page/media-list/Vincenzo_Peruggia"},
+  {"title": "Media list: Mona Lisa", "url": "https://en.wikipedia.org/api/rest_v1/page/media-list/Mona_Lisa"},
+  {"title": "Media list: Salon Carre", "url": "https://en.wikipedia.org/api/rest_v1/page/media-list/Salon_Carr%C3%A9"}
+ ]
+}
