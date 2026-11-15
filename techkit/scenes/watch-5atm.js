@@ -15,7 +15,7 @@ function water(t,level,warm,calm,a=1){if(a<=0)return;g.save();rrect(g,PX,PY,PW,P
   // surface
   if(level>PY-10){g.strokeStyle='rgba(220,250,255,.8)';g.lineWidth=3;g.beginPath();for(let x=PX;x<=PX+PW;x+=10){const y=level+6*(1-calm)*Math.sin(x*.03+t*3);x===PX?g.moveTo(x,y):g.lineTo(x,y)}g.stroke()}
   // bubbles rising (fewer when calm)
-  BUB.forEach((b,i)=>{if(calm>.5&&i%3)return;const y=PY+PH-((t*b.v+b.ph*200)%(PH+40));if(y<level)return;g.globalAlpha=a*.5;g.strokeStyle='#cfefff';g.lineWidth=1.5;g.beginPath();g.arc(b.x+6*Math.sin(t*2+b.ph),y,b.s,0,7);g.stroke()});
+  BUB.forEach((b,i)=>{if(calm>.5&&i%3)return;const y=PY+PH-((t*b.v+b.ph*200)%(PH+40));if(y<level)return;g.globalAlpha=a*.35;g.fillStyle='#cfefff';g.beginPath();g.arc(b.x+6*Math.sin(t*2+b.ph),y,b.s*.8,0,7);g.fill()});   // filled, not rings: ring bubbles OCR as digits (NUMBERS)
   g.restore();g.globalAlpha=1}
 function steam(t,a){if(a<=0)return;STEAM.forEach(s=>{const q=(t*.25+s.ph)%1,y=PY+PH-q*PH;const gr=g.createRadialGradient(s.x,y,0,s.x,y,s.r);gr.addColorStop(0,`rgba(255,220,200,${.18*a*(1-q)})`);gr.addColorStop(1,'rgba(255,220,200,0)');g.fillStyle=gr;g.beginPath();g.arc(s.x+20*Math.sin(t+s.ph*9),y,s.r,0,7);g.fill()})}
 // the watch: centre (x, y), scale s; o.lit = {crown, button, back, glass} glow 0..1, o.screen text, o.squeeze 0..1, o.gap 0..1
@@ -98,8 +98,9 @@ window.TOPIC={
     // ch2: the seals light up on their words, water bounces off them
     if(c2>0){water(t,PY-40,0,.3,c2*.85);const l={glass:prog(t,C.seals-.1,C.seals+.3),crown:prog(t,C.crown-.1,C.crown+.3),button:prog(t,C.buttons-.1,C.buttons+.3),back:prog(t,C.back-.1,C.back+.3)};
       g.save();g.globalAlpha=c2;watch(CX,CY,.95,{screen:'SEALS',scol:'#ffb35c',lit:l});g.restore();
-      HITS.forEach(h=>{const q=((t-st(2))*1.1+h.ph)%1;if(t<st(2))return;const r=lerp(330,175,Math.min(1,q*2))+(q>.5?(q-.5)*160:0),x=CX+Math.cos(h.an)*r,y=CY+Math.sin(h.an)*r*1.15;glowDot(x,y,4,'#bfefff',c2*(q<.5?1:1-(q-.5)*2))});
-      [['crown',CX+134,CY-36],['buttons',CX+134,CY+42],['back',CX,CY+150]].forEach(([k,x,y])=>ping(x,y,t,C[k],'#ffb35c',60))}
+      const hf=1-prog(t,C.crown-.2,C.crown+.4);   // hit dots gone well before "Five": dot clusters OCR as a "6" (render 3 NUMBERS)
+      HITS.forEach(h=>{const q=((t-st(2))*1.1+h.ph)%1;if(t<st(2))return;const r=lerp(330,175,Math.min(1,q*2))+(q>.5?(q-.5)*160:0),x=CX+Math.cos(h.an)*r,y=CY+Math.sin(h.an)*r*1.15;glowDot(x,y,4,'#bfefff',c2*hf*(q<.5?1:1-(q-.5)*2))});
+      [['crown',CX+134,CY-36],['buttons',CX+134,CY+42],['back',CX,CY+150]].forEach(([k,x,y])=>{g.save();g.translate(x,y);g.scale(1,.35);ping(0,0,t,C[k],'#ffb35c',60);g.restore()})}   // flat pings: a round ring by a bubble OCRs as a digit (render 3 NUMBERS read "6")
     // ch3: the lab test: still water, 50 m, 10 minutes
     if(c3>0){water(t,PY+60,0,.3,c3);g.save();g.globalAlpha=c3*.55;g.strokeStyle='#8ef0ff';g.lineWidth=3;g.setLineDash([18,14]);g.lineDashOffset=-t*80;g.beginPath();g.arc(CX+40,CY+10,290,0,7);g.stroke();g.restore();gauge(t,50*prog(t,C.fifty-.1,C.fifty+.2),c3);
       g.save();g.globalAlpha=c3;g.strokeStyle='rgba(200,235,255,.45)';g.lineWidth=4;rrect(g,PX+120,PY+40,PW-200,PH-80,20);g.stroke();g.restore();
