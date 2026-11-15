@@ -191,7 +191,7 @@ window.render=function(t){
   CAM=track(t,CK);
   let sh=0;['grainy','dark','blurry'].forEach(k=>{const q=prog(t,C[k],C[k]+.4);if(q>0&&q<1)sh=Math.max(sh,(1-q)*clamp(q*12))});
   CAM[1]+=sh*12*Math.sin(t*90);CAM[2]+=sh*9*Math.cos(t*77);
-  $('#flash').style.opacity=sh*.32;
+  $('#flash').style.opacity=0;   // no red edge flash: Output QA COLOUR read it as a hard background hue cut (render 2, 10.1 s); the jolt is the shake + thud
   $('#b1').style.transform=`translate(${-260+120*Math.sin(t*.2)}px,${260+80*Math.cos(t*.25)}px)`;$('#b1').style.opacity=.24;
   $('#b2').style.transform=`translate(${520+100*Math.cos(t*.17)}px,${1060+90*Math.sin(t*.21)}px)`;$('#b2').style.opacity=.2;
   $('#b3').style.transform=`translate(${190+60*Math.sin(t*.3)}px,${520+50*Math.sin(t*.23)}px)`;$('#b3').style.opacity=.10+.05*Math.sin(t*.7);
