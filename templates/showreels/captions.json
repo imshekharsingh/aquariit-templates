@@ -1164,7 +1164,8 @@
   "postOn": "2026-11-15",
   "postAt": "13:00",
   "concept": "Story engine · These white statues were once painted (weathering, UV traces, Egyptian blue glows in infrared)",
-  "note": "Turns Out, Sun 15 Nov 13:00 IST. First reel on the story engine (default length 20-24 s); the planned GUESS row for Sun 15 (Greek statues) told as a story instead, since E19 ends with 3 reels on 12-14 Nov."
+  "note": "Turns Out, Sun 15 Nov 13:00 IST. First reel on the story engine (default length 20-24 s); the planned GUESS row for Sun 15 (Greek statues) told as a story instead, since E19 ends with 3 reels on 12-14 Nov. Hidden 15 Nov 2026 (owner: one image throughout a 40+ s run): replaced by showreel-c3-mona-stolen on the Echoes engine.",
+  "hidden": true
  },
  "showreel-37-fontswap": {
   "postOn": "2026-11-15",
@@ -1228,5 +1229,13 @@
    "change": "E26 try 3",
    "vs": "median"
   }
+ },
+ "showreel-c3-mona-stolen": {
+  "channel": "c3",
+  "postOn": "2026-11-15",
+  "postAt": "13:00",
+  "engine": "echoes",
+  "concept": "Echoes engine (owner's kit, ported) · The Theft That Made Her Famous: the 1911 Mona Lisa theft (Peruggia out through a service door, the empty wall, Picasso questioned, caught in Florence 1913); 11 shots, 7 archival",
+  "note": "Turns Out, Sun 15 Nov, replaces greek-colour. First reel on the ported Echoes engine (scripts/echoes/): a new shot on almost every line, real archival images, typed stamps, the kit's sound; 45-50 s per the kit. The owner posts it when ready (13:00 slot passed; owner: quality first)."
  }
 }

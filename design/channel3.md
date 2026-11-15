@@ -161,6 +161,26 @@ Start: `node scripts/channel3/new25d.mjs <slug> "Payoff (6 words max)." "One que
   badge, title strip, progress dots or credit plates: credits go in the caption's sources line.
 - Sample: scripts/channel3/story-sample.html (hidden, stills only): radio saved the Eiffel Tower, five shots, all gates clean.
 
+### Echoes engine (15 Nov 2026, the default from today; owner: "port the owner's kit as it is ... get past our engine if it's not helping")
+The owner's kit (design/kits/echoes_kit.zip + echoes_history_prompt.md) brought in as the Turns Out engine, after the greek-colour reel held
+one image for its whole run ("One image throughout a 40+ sec run?"). Files: scripts/echoes/engine.html (the kit's episode_tpl.html: shot
+types, captions, film finish), scripts/echoes/build.mjs (the kit's build_ep.py + mk.sh: inlines the episode into one scene),
+scripts/echoes/sound.py (the kit's sound_h.py: score, effects on every shot, its mix; effects play our recorded CC0 samples).
+- The config (scripts/channel3/<slug>.json) carries `"engine": "echoes"` and an `"echoes"` block = the kit's episodes.py: title, 7 lines
+  (each at most 22 words; line 1 is the payoff over the payoff picture, line 7 starts "Turns out," instead of the kit's fixed outro),
+  keys (gold italic caption words), shots `{line, at: start | word | word#n, type: arch | ill, img: "a|b" (a fallback per shot), mode: framed |
+  full, develop, stamp, stampRed, tone, glow}`; ill kinds: wall, dossier, counter, map (add a kind to ILL + animIll + sound.py for a new story).
+  voice.text = the lines joined; `node scripts/echoes/build.mjs <config>` writes the scene. A NEW shot on almost every line (10-12 shots).
+- Images: 4-6 real archival images (>= 800 px where they exist), fetched by the Media workflow from a request in scripts/media/requests/
+  (Wikimedia + Library of Congress; PD / CC0 / CC BY only, recorded per file; the MEDIA_JSON line goes into the config's "media").
+- Colour per beat (web channel's input, 15 Nov): every shot has its own tone (framed: tinted blur; illustrated: its own palette), never all brown.
+- Voice: the kit's narrator bm_george (British, voice.lang "b"), speed 1.0, a gap after each sentence; 45-50 s. The scene follows the real word
+  times; the video ends 3 s after the last word (the sound's length; the mux is -shortest).
+- Kept gates: voice fit (preflight), safe zone, text fit, subtitles, Output QA, review file (item 20 takes the finish and per-shot motion as
+  evidence: the captions entry has "engine": "echoes"), design/safety.md incl. the India never-topics. Dropped for this engine: the 18-25 s
+  length (rule 3), "no small furniture" (rule S: the kit's badge, title, diamonds and credit plates are its look), DEPTH planes (rule 5).
+- Never the kit's Aurangzeb / Taj succession episode (India-sensitive).
+
 ### 2.5D toolkit (scripts/channel3/kit25d.js, owner 1 Nov 2026: "2.5D, continuous flow", the lighter alternative to real-time 3D)
 > **11 Nov 2026: depth, figure motion, ambient life** (owner, 8-9 Nov; rules-c3.md rule 11; mandatory item 20). `Kt.begin()` first in seek();
 > `Kt.world(name, { air, haze, floor })` then `Kt.plane(cam, Z, { fg, clear })` per layer, far to near (the air between planes is laid for you);

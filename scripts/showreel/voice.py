@@ -27,7 +27,8 @@ SR = 48000
 def main(cfg_path, wav_path, words_path):
     cfg = json.load(open(cfg_path)); V = cfg['voice']
     from kokoro import KPipeline
-    pipe = KPipeline(lang_code='a', repo_id='hexgrad/Kokoro-82M')
+    # lang (15 Nov 2026, the Echoes engine's British narrator bm_george): Kokoro's 'b' pipeline (British English), 'a' (American) by default
+    pipe = KPipeline(lang_code=V.get('lang', 'a'), repo_id='hexgrad/Kokoro-82M')
     audio, words, off = [], [], 0.0
     gaps = V.get('gap', 0)   # one number for every breath, or a list: one breath per sentence (owner, 26 Oct: pauses that follow the thought)
     gap = (max(gaps) if gaps else 0) if isinstance(gaps, list) else float(gaps)
