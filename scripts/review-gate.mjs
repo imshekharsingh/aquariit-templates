@@ -42,7 +42,9 @@ export const reviewProblems = (name, e, { render = false, today = todayIST() } =
     if (g.st !== 'PASS') { out.push(`${p}: item ${i} is ${g.st}: fix the reel (or swap the topic) before it is rendered or called ready`); continue; }
     if (TEMPLATE.has(g.ev) || /\bnn\b|\.\.\.|<evidence>/.test(g.ev)) out.push(`${p}: item ${i} still has the template's placeholder evidence`);
     else if (g.ev.length < 8) out.push(`${p}: item ${i} needs its evidence after "PASS:"`);
-    else if (NEED[i] && !(i === 2 && e.channel === 'tech') && !NEED[i].test(g.ev)) out.push(`${p}: item ${i} must paste its AUTO line (${NEED[i].source})`);
+    // the Echoes engine (owner's kit, 15 Nov 2026: "a gate that blocks the kit's look is adjusted"): archival photo shots have no Kt.plane worlds, so
+    // item 20 takes the film finish and the per-shot motion as its evidence instead of qa.mjs DEPTH lines (captions.json "engine": "echoes")
+    else if (NEED[i] && !(i === 2 && e.channel === 'tech') && !(i === DEPTH_ITEM && e.engine === 'echoes') && !NEED[i].test(g.ev)) out.push(`${p}: item ${i} must paste its AUTO line (${NEED[i].source})`);
   }
   return out;
 };

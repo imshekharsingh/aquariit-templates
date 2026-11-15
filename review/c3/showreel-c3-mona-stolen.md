@@ -1,0 +1,46 @@
+# Review: showreel-c3-mona-stolen (c3, postOn 2026-11-15 postAt 13:00 IST)
+
+First Turns Out reel on the Echoes engine: the owner's kit (design/kits/echoes_kit.zip) ported as it is into scripts/echoes/ (15 Nov 2026,
+owner: "port the owner's kit as it is ... get past our engine if it's not helping"), replacing showreel-c3-greek-colour (hidden: "one image
+throughout a 40+ sec run"). Story: the 1911 Mona Lisa theft. 7 lines (the kit's), 11 shots, a new shot on almost every line: 7 archival
+(Mona Lisa framed, Béroud's 1911 painting of it on the Salon Carré wall, Peruggia's police photo, the empty wall photo of 1911, the Uffizi
+photo of December 1913, Le Petit Parisien of 13 December 1913 "La Joconde est retrouvée", the Mona Lisa again with a gold glow: the loop)
+and 4 illustrated cards (the wall with its four iron pegs, the police card for Picasso, the 1911-1913 counter, the Paris-Florence map).
+Images: Media runs 43671719499 and 43671885187 (exact files from the Wikipedia media lists, Sources run 43671663267; the first, search-based
+run 43669299385 timed out on Wikimedia's rate limit). All public domain, recorded per file in the config's "media".
+AUTO lines from `node scripts/showreel/preflight.mjs`, `node scripts/showreel/stills.mjs` (sheet at every shot), `node scripts/echoes/flow.mjs`
+and `node scripts/echoes/colour.mjs` on scripts/channel3/mona-stolen.json.
+
+Against the kit's samples.html (rendered side by side, 15 Nov): the archival shots (gold-hairline museum frame over a blurred tinted copy,
+caption plate, typed stamps, film grain, dust, chapter titles, gold key words in the captions) match the kit's level. The illustrated cards
+are the kit's kind (map with cartouche, rivers, compass, pen nib and wax seal; gallery wall with gilt frames, lights and a rope) but less
+intricate than the kit's best Taj scenes (blueprint draw-on, jali window): honest level, close, not equal.
+
+1. Topic: PASS: anyone knows the Mona Lisa in 1 s and few know it was stolen; not done before on any channel (captions.json); rulebook design/rules-c3.md: rule S pass as adjusted for the Echoes engine (payoff "Vanishing made the Mona Lisa famous." over the painting in frame 0, 6 words; steps each one sourced fact; "Turns out" surprise last; loop back to the painting), rule 0 pass (7 real archival images, PD), rule 1 n/a (story), rule 2 pass (the world's best-known painting in a state nobody pictures: gone, an empty wall), rule 3 adjusted (45-50 s per the kit, owner 15 Nov), rule 4 pass (caption opens with a question, asks for a send), rule 5 adjusted (11 shots with declared crossfades; no Kt planes in archival shots), rule 6 pass (two sources, below), rule 7 pass, rule 8 pass, rule 9 pass (a stamp, peg, tick, seal or key click lands every 0.5-1 s; whoosh before every shot), rule 10 pass (a colour per beat, Output QA GRADE measured below)
+2. Frame 0: PASS: SUBJECT FILL: 84% at frame 0; the framed Mona Lisa on a lit gallery wall, the payoff line under it from frame 0, "STOLEN · 1911" typing in; HOOK: the top title band (badge, chapter) sits above the frame, clear of the subject
+3. Safe zone: PASS: SAFE ZONE: ok (every text box inside x 60-960, y 250-1570 on the 0.5 s scan; the badge moved to y 262 for it)
+4. No overlap: PASS: OVERLAP: none; BAND: clear (the map's Arno label moved off FLORENCE, the wall's rope moved under the subtitles)
+5. Motion: PASS: STATIC STRETCH: none (least change 0.3 at 47 s, in the trimmed tail; median 1.9); EMPTY FRAMES: none; TEXT FIT: all text inside its box
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; 66 px Cormorant captions in phrase chunks of up to 6 words, every line shown and finished on the stills
+7. Voice: PASS: PREFLIGHT voice: 471 letters, 9 sentences, about 35.6 s at speed 1 with 3.35 s of breaths (reel 50 s, voice must end by 49.4 s): fits; HOOK PACE 6 words ok; PRONUNCIATION: 2 overrides used: 1911 (year), 1913 (year); no unchecked words; the kit's narrator bm_george (British, voice.lang "b"), speed 1.0, about 2.5 words/s
+8. Sound: PASS: the kit's score (string pads, piano motif, timpani on lines 4 and 6, final chord) and its effects on every shot (whoosh before each, typewriter keys and bell under each stamp, thud on framed shots, peg taps, rustle and stamp hit on the card, accelerating ticks and a hit on the counter, pen ticks and a seal on the map), recorded CC0 samples via scripts/showreel/samples.py; the kit's mix (55% ducking, reverbs); the workflow's SOUND GATE checks the loudness
+9. Payoff: PASS: "Turns out, the theft helped make her the most famous painting on Earth." over Le Petit Parisien's front page, then the Mona Lisa back on a lit wall with a gold glow and "BACK IN THE LOUVRE · 4 JANUARY 1914" (the loop to frame 0); "SOURCES: WIKIPEDIA · NPR" in the last 3 s
+10. Facts: PASS: checked on GitHub (Sources run 43670065503, the pages printed): stolen Monday 21 August 1911 by Vincenzo Peruggia, who had briefly worked at the Louvre as a glazier (Wikipedia, Peruggia; NPR); he left through a service door (Wikipedia; the "under his smock" story is disputed there, so it is not used); 28 hours before anyone noticed the four bare hooks, four iron pegs (NPR; Wikipedia); the Louvre shut for a week and reopened to crowds come to see the empty spot (NPR); Picasso questioned (NPR; Wikipedia: arrested); kept in a trunk in his Paris room for two years (Wikipedia; NPR: false-bottomed trunk in his boardinghouse); caught in Florence after contacting the dealer Alfredo Geri, arrested 12 December 1913 (Wikipedia; NPR: 28 months later); back at the Louvre 4 January 1914 (Wikipedia); the theft's part in its fame: Wikipedia ("global fame … partly stem from its 1911 theft"), NPR ("The Theft That Made The 'Mona Lisa' A Masterpiece"), hence "helped make"; 3 sources in the config; npm run check passes
+11. Post data: PASS: captions.json entry (c3, postOn 2026-11-15, postAt 13:00, concept, engine echoes); caption, 6 keywords, 5 hashtags chosen for search ("mona lisa stolen 1911", "mona lisa theft", "why is the mona lisa famous"); "media" carries file, author, licence and source_url per image (Output QA LICENCE); design/safety.md read: no living people (Peruggia d. 1925, Picasso d. 1973, both 50+ years), no religion, politics or India-sensitive history, nothing disputed shown as fact
+12. Review file: PASS: this file, items 1-11 and 14-20 PASS before the one render; Output QA GRADE checked before the render on the cover still: subject vs surroundings 0.29 (needs 0.2); COLOUR: saturated fill at most 12% at 8.5 s, over 25% never
+13. After the render: PENDING
+14. Cuts: PASS: FLOW: cuts 0 (window.TRANSITIONS declares 10 crossfades of 0.7 s, the kit's shot change)
+15. Dead runs: PASS: FLOW: dead runs none (window.HOLDS only marks the frames after the video ends: the sound, and so the muxed video, stops 3 s after the last word)
+16. Continuity: PASS: FLOW: continuity 100% (median step 1.4, 10 declared transitions)
+17. Strobes: PASS: FLOW: strobes 0
+18. Element sound (web): n/a (Turns Out; every effect in item 8)
+19. Journey: PASS: scenes 11 (the Mona Lisa; the Salon Carré in 1911; Peruggia; the wall with four pegs; the empty wall photo; the police card; the counter; the map; the Uffizi; the newspaper; the Mona Lisa back, the loop); transitions: crossfade with a whoosh (the kit's), the illustrated cards' own entries (card drop, pegs popping, route drawing, seal stamp)
+20. Depth and life: PASS: Echoes engine (captions.json "engine": "echoes", item 20 adjusted 15 Nov): every photo shot moves (Ken Burns 1.02-1.12, the frame drifting, its blurred copy pushing the other way, develop entries), film grain re-seeded at 15 fps, dust and scratches, projector flicker, a light leak; the illustrated cards push in with their own life (rope, compass, rings); no figures animated
+
+Owner feedback, line by line (design/owner-feedback.md) against the stills: "one image throughout a 40+ sec run" (15 Nov): 11 shots, a new one
+on almost every line; "did not look like Niagara / drawn shapes" (14 Nov): real archival photos are the subject of 7 shots; "colour selection"
+(13 Nov) and "colour grading is horrible" (12 Nov): a colour per beat with saturated fill at most 12%, the cover's subject 0.29 above its
+surroundings; "sound elements feel cheap" (12 Nov): recorded CC0 effects; "audio super slowed" (12 Nov): speed 1.0; "the voice names an item
+while its card is still empty" (13 Nov): every shot opens 0.25 s before its word.
+
+References used (design/references.md): the owner's Echoes kit (design/kits/echoes_kit.zip): framed / full archival shots, stamps, captions, finish, sound
