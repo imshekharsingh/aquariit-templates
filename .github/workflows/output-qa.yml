@@ -3,6 +3,8 @@ name: Output QA
 # Output QA by hand (owner, 12 Nov 2026: every owner complaint is a check that runs on GitHub, not in a session): downloads a finished reel's
 # MP4 from the private R2 bucket and runs scripts/qa/output-qa.py on it (frames + audio), no re-render. The Showreel and Tech reel workflows
 # run the same check by themselves after every render. Run by hand: Actions -> Output QA -> config (a reel config or techreel/topics/<slug>.json).
+# the app's reel journey (src/journey.js) reads which reel a run is for from this name
+run-name: "Output QA · ${{ inputs.config }}"
 on:
   workflow_dispatch:
     inputs:
@@ -55,5 +57,6 @@ jobs:
           # the render's sound lines (SOUND SOURCE / SOUND DETAIL): tech keeps its qa.txt in R2; a Showreel's log is only in its run
           LOG=; case "$KEY" in v/techreel/*) S=$(basename "$KEY" .mp4); bash scripts/r2.sh get "c/techreel/$S-qa.txt" qa.txt && LOG="--log qa.txt";; esac
           set +e; python3 scripts/qa/output-qa.py reel.mp4 "$CFG" $LOG --summary "$GITHUB_STEP_SUMMARY" --fails oqa-fails.txt; rc=$?; set -e
+          [ -s oqa-fails.txt ] && head -8 oqa-fails.txt | sed 's/%/%25/g' | while IFS= read -r l; do echo "::error title=Output QA::$l"; done   # the app's journey shows these reasons
           [ "${{ inputs.notify }}" = true ] && bash scripts/qa/notify.sh "$NAME" oqa-fails.txt
           exit $rc

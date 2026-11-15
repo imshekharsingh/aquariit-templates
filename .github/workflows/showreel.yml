@@ -3,6 +3,8 @@ name: Showreel
 # Three jobs: the narration, the frames (split across "parts" jobs, owner 1 Nov 2026), then join, sound, voice check and keep.
 # Renders one seekable scene (window.seek(t)) to MP4 with its code-made sound and voice, keeps it in the private R2 bucket (scripts/r2.sh;
 # owner, 3 Nov 2026: never in the public releases) and opens an issue that only says it is ready in the app. The older template-capture reels were retired with the template archive (owner, 31 Oct 2026). Run by hand: Actions -> Showreel -> config.
+# the app's reel journey (src/journey.js) reads which reel a run is for from this name
+run-name: "Showreel · ${{ inputs.config }}${{ inputs.seconds != '' && ' (preview)' || '' }}"
 on:
   workflow_dispatch:
     inputs:
@@ -286,5 +288,6 @@ jobs:
         run: |
           bash scripts/qa/tools.sh
           set +e; python3 scripts/qa/output-qa.py "out/$NAME.mp4" "$CFG" --log out/sound.log --summary "$GITHUB_STEP_SUMMARY" --fails oqa-fails.txt; rc=$?; set -e
+          [ -s oqa-fails.txt ] && head -8 oqa-fails.txt | sed 's/%/%25/g' | while IFS= read -r l; do echo "::error title=Output QA::$l"; done   # the app's journey shows these reasons
           bash scripts/qa/notify.sh "$NAME" oqa-fails.txt
           exit $rc
