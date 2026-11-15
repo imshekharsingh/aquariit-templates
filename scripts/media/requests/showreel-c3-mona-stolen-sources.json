@@ -1,0 +1,22 @@
+{
+ "name": "showreel-c3-mona-stolen",
+ "why": "Fact check for the Sun 15 Nov Turns Out reel (the session cannot reach Wikipedia or NPR): Actions -> Sources prints these pages.",
+ "sources": [
+  {
+   "title": "Mona Lisa: theft and vandalism (Wikipedia, with its cited sources)",
+   "url": "https://en.wikipedia.org/wiki/Mona_Lisa#Theft_and_vandalism"
+  },
+  {
+   "title": "Vincenzo Peruggia (Wikipedia)",
+   "url": "https://en.wikipedia.org/wiki/Vincenzo_Peruggia"
+  },
+  {
+   "title": "The Theft That Made The 'Mona Lisa' A Masterpiece (NPR, 30 July 2011)",
+   "url": "https://www.npr.org/2011/07/30/138800110/the-theft-that-made-the-mona-lisa-a-masterpiece"
+  },
+  {
+   "title": "Why Is the Mona Lisa So Famous? (Smithsonian Magazine)",
+   "url": "https://www.smithsonianmag.com/arts-culture/why-is-the-mona-lisa-so-famous-180979972/"
+  }
+ ]
+}
