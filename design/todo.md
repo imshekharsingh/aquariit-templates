@@ -6,6 +6,13 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 
 ## P1
 - [ ] 15 Nov 2026 (night): showreel-tech-screen-120hz (posts Tue 17 Nov 13:00) needs ONE re-render on Mon 16 evening before its post: the glass sheen was removed from techkit/scenes/screen-120hz.js and techkit/base.html changed (subject box, holds), so its R2 video no longer matches its source. Check its Output QA SHEEN and HERO lines (HERO may need a bigger, busier phone and no box around the hero, rules-tech.md K1: the 5 ATM rebuild is the pattern) and update review/tech/showreel-tech-screen-120hz.md item 13.
+- [ ] 15 Nov 2026 (owner, Owner chat; queued right after the 15-16 Nov night reels, before any other P1): **the reel journey in the app.**
+  Owner: "build the Renders card ... make it cover the whole flow of reel making in the app and put it in right way in the app so that app
+  gets a better outlook for this journey". One place (its own tab or the home screen's top, not a buried card) where each reel of each
+  channel shows its stages in order, in plain words: planned (captions.json entry) -> built (PR merged) -> rendering (live: voice / frames /
+  render, % and start time, from the Showreel / Tech reel / Output QA runs via GH_READ_TOKEN) -> checks (Output QA PASS, or "failed: <check>"
+  in words) -> critic (READY or not, from the review file) -> ready to post (13:00 slot) -> posted (Instagram collect). Newest first, grouped
+  by post day; failed steps red with the reason; no GitHub needed. Fold in the P1 side-menu / mobile-app layout item below where it fits.
 - [ ] 15 Nov 2026 (owner Feedback 2, 14 Nov): a side menu in the app that shows one Feedback item and Claude's reply at a time, with "Mark read" and "Next", and the app organised more like a mobile app in its PWA version. App work waits until reach improves (owner, 5 Nov); this comes first when it opens.
 - [ ] 14 Nov 2026: the whole-frame tabs reel took 33 GitHub minutes (frames 29.2, was 19.5 before the rebuild; rule 12 caps 30): find the frame cost (the blurred line glow `.inkg` filter, the bigger cards) and bring a 20 s whole-frame reel back under 25.
 - [ ] 14 Nov 2026 (owner: "squeezing most of it in one place of the screen"): move the two web starters (starterweb.html, starterdetails.html,

@@ -51,7 +51,7 @@ FB = {   # the owner-feedback.md lines each check guards
 T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=.95, stray_p=.5,
          sat_s=.6, sat_v=.4, sat_frac=.25, hue_jump=45, ring_sat=.12,
          edge_frac=.06, edge_dist=48, edge_secs=1.0,
-         ocr_conf=70, num_win=1.0, sync_win=1.0, sync_pre=.5, sync_conf=50, sync_ratio=.8,
+         ocr_conf=70, num_win=1.0, num_pre=2.0, num_step=.25, num_conf=80, num_h=.03, num_said=.5, sync_win=1.0, sync_pre=.5, sync_conf=50, sync_ratio=.8,
          big_h=.08, big_edge=.03, big_ocr_h=.05, big_secs=.3, subs={'tech': [.66, .84], 'c3': [.66, .80], 'web': [.70, .90]},
          dead_secs=1.5, vis_px=20, vis_frac=.003, onset_db=9, onset_floor=-45,
          mute_frac=.02, grade_dl=.2, wash_p5=.3, wash_frac=.2,
@@ -552,8 +552,15 @@ NUMW = {w: i for i, w in enumerate('zero one two three four five six seven eight
 NUMW.update({w: 20 + 10 * i for i, w in enumerate('twenty thirty forty fifty sixty seventy eighty ninety'.split())})
 
 
+# "one" heard as a word is a count only next to these (owner, 15 Nov 2026: web showreel-38-form failed on a "3" while the voice said "one" as
+# an article, "one field"); digits the recogniser wrote ("1") always count.
+ONE_PRE = set('to from only just number exactly than at about'.split())
+ONE_POST = set('hundred thousand million billion percent per out second seconds minute minutes hour hours day days year years'.split())
+
+
 def spoken_numbers(heard):
-    """(value, time) for each number the final audio says: digits the recogniser wrote, or number words (twenty five = 25)."""
+    """(value, time) for each number the final audio says: digits the recogniser wrote, or number words (twenty five = 25); "one" as a word only
+    when it is a count (ONE_PRE / ONE_POST next to it), not an article or pronoun."""
     res, k = [], 0
     while k < len(heard):
         raw = heard[k][4]; d = re.sub(r'[^\d]', '', raw)
@@ -565,38 +572,82 @@ def spoken_numbers(heard):
         if w in NUMW:
             v = NUMW[w]
             if v >= 20 and k + 1 < len(heard) and heard[k + 1][0] in NUMW and NUMW[heard[k + 1][0]] < 10: v += NUMW[heard[k + 1][0]]; k += 1
+            elif w == 'one':
+                pre = heard[k - 1][0] if k else ''; post = heard[k + 1][0] if k + 1 < len(heard) else ''
+                if pre not in ONE_PRE and post not in ONE_POST and post not in NUMW: k += 1; continue
             res.append((v, heard[k][1]))
         k += 1
     return [(v, t) for v, t in res if v is not None]
 
 
-def numbers_check(mp4, text, heard):
+def ocr_block(png, sc=4):
+    """Tesseract as one block (--psm 6) at a quarter size, as it is and inverted: --psm 11 drops a lone character, so a big single-digit counter
+    ("8", 300 px tall) never reads there; at 270x480 --psm 6 reads it at 95+ (15 Nov 2026). (text, conf, l, t, r, b) at full size."""
+    from PIL import Image, ImageOps
+    g = Image.open(png).convert('L'); g = g.resize((g.width // sc, g.height // sc), Image.LANCZOS); res = []
+    for k, im in enumerate((g, ImageOps.invert(g))):
+        q = png + f'.b{k}.png'; im.save(q)
+        tsv = subprocess.run(['tesseract', q, '-', '--psm', '6', 'tsv'], capture_output=True, text=True).stdout
+        for row in tsv.splitlines()[1:]:
+            c = row.split('\t')
+            if len(c) < 12 or not c[11].strip(): continue
+            try: conf = float(c[10]); l, t, w, h = (int(c[i]) * sc for i in (6, 7, 8, 9))
+            except ValueError: continue
+            res.append((c[11].strip(), conf, l, t, l + w, t + h))
+    return res
+
+
+def num_reads(mp4, tt, td, band):
+    """Large numbers on the frame at tt: (value, cx, cy, h) at 1080x1920, whole-token digits only, conf num_conf+, glyphs num_h+ of the height,
+    outside the subtitle band (the subtitles show the spoken words, and the next line's words, on purpose). Variants merged per place."""
+    p = os.path.join(td, f'n{tt:.2f}.png'); grab(mp4, tt, p)
+    got = []
+    for txt, conf, l, t, r, b in ocr(p) + ocr_block(p):
+        m = re.fullmatch(r'[$#(]?(\d{1,4})[%)+,.:!]?', txt)
+        if not m or conf < T['num_conf'] or b - t < T['num_h'] * 1920: continue
+        cy = (t + b) / 2
+        if band[0] * 1920 <= cy <= band[1] * 1920: continue
+        v, cx, h = int(m.group(1)), (l + r) / 2, b - t
+        if not any(v == g[0] and abs(cx - g[1]) < h and abs(cy - g[2]) < h / 2 for g in got): got.append((v, cx, cy, h))
+    return got
+
+
+def numbers_check(mp4, text, heard, band=(.66, .84)):
+    """12 Nov 2026: a counter rolled through 8 before the voice said "seven". FAIL only when a counter (a large number that changes in the same
+    place across frames) shows a value past the one the voice says near it, before the voice says that higher value. Rebuilt 15 Nov 2026: the old
+    check read every number on any frame (small labels, dates on cards, shapes read as digits) and flagged three reels the owner watched and
+    passed (Turns Out mona-stolen "22" / "4", web form "3" for "one", tech watch-5atm "7" / "6"). Frames every num_step s from num_pre s before each
+    spoken number to num_win s after it."""
     if heard is None: line('NUMBERS', 'SKIP', 'no recogniser on this runner'); return
     if subprocess.run(['which', 'tesseract'], capture_output=True).returncode: line('NUMBERS', 'SKIP', 'tesseract not installed on this runner'); return
     said = spoken_numbers(heard)
     if not said: line('NUMBERS', 'PASS', 'no number in the voice'); return
-    allv = {v for v, _ in said} | {int(x) for x in re.findall(r'\d+', text)}
-    times = sorted({round(t + d, 2) for _, t in said for d in np.arange(-T['num_win'], T['num_win'] + .01, .25) if t + d >= 0})
-    bad, seen = [], 0
+    times = sorted({round(t + d, 2) for _, t in said for d in np.arange(-T['num_pre'], T['num_win'] + .01, T['num_step']) if t + d >= 0})
+    reads = {}
     with tempfile.TemporaryDirectory() as td:
-        for tt in times:
-            p = os.path.join(td, 'f.png')
-            ff(['-y', '-ss', f'{tt:.2f}', '-i', mp4, '-frames:v', '1', p])
-            tsv = subprocess.run(['tesseract', p, '-', '--psm', '11', 'tsv'], capture_output=True, text=True).stdout
-            for row in tsv.splitlines()[1:]:
-                c = row.split('\t')
-                if len(c) < 12 or not c[11].strip(): continue
-                try: conf = float(c[10])
-                except ValueError: continue
-                for n in re.findall(r'\d+', c[11]):
-                    if conf < T['ocr_conf'] or len(n) > 4: continue
-                    n = int(n); seen += 1
-                    if n in allv: continue
-                    near = [v for v, ts in said if abs(ts - tt) <= T['num_win'] and n > v and n - v <= max(2, .2 * v)]
-                    if near: bad.append(f'"{n}" on screen at {tt:.1f} s while the voice says {near[0]}')
-    bad = sorted(set(bad))
-    line('NUMBERS', 'FAIL' if bad else 'PASS', f'{len(said)} spoken numbers ({", ".join(str(v) for v, _ in said)}), {seen} numbers read on screen within {T["num_win"]} s of them; '
-         f'contradictions: {"; ".join(bad[:6]) or "none"}')
+        for tt in times: reads[tt] = num_reads(mp4, tt, td, band)
+    tracks = []   # one per screen place: [cx, cy, h, [(t, value), ...]]
+    for tt in times:
+        for v, cx, cy, h in reads[tt]:
+            tr = next((x for x in tracks if abs(cx - x[0]) < max(1.5 * x[2], 65) and abs(cy - x[1]) < x[2] / 2 and .6 < h / x[2] < 1.6), None)
+            if tr: tr[3].append((tt, v))
+            else: tracks.append([cx, cy, h, [(tt, v)]])
+    counters = [x for x in tracks if len({v for _, v in x[3]}) >= 2]
+    bad = []
+    for v, ts in said:
+        for x in counters:
+            near = [(tt, n) for tt, n in x[3] if ts - T['num_pre'] <= tt <= ts + T['num_win']]
+            if not any(n <= v for _, n in near) and not any(n <= v for tt, n in x[3] if tt <= ts): continue   # not counting towards this number
+            for tt, n in near:
+                if n <= v or n - v > max(2, .25 * v): continue
+                if any(w == n and t2 <= tt + T['num_said'] for w, t2 in said): continue   # the voice says the higher value by then
+                bad.append((x[0], x[1], n, v, ts, tt))
+    first = {}
+    for cx, cy, n, v, ts, tt in bad: first.setdefault((cx, cy, n, v, ts), tt)
+    bad = [f'counter at ({cx:.0f}, {cy:.0f}) shows "{n}" from {tt:.1f} s while the voice says {v} at {ts:.1f} s' for (cx, cy, n, v, ts), tt in sorted(first.items(), key=lambda a: a[1])]
+    nread = sum(len(r) for r in reads.values())
+    line('NUMBERS', 'FAIL' if bad else 'PASS', f'{len(said)} spoken numbers ({", ".join(str(v) for v, _ in said)}); {nread} large numbers read in {len(times)} frames, '
+         f'{len(tracks)} places, {len(counters)} changing (counters); rolled past the voice: {"; ".join(bad[:6]) or "none"}')
 
 
 def dead_check(G, fps, mp4, dur):
@@ -854,7 +905,7 @@ def main():
     if ch == 'tech': hero_check(F, fps, mp4)
     else: line('HERO', 'SKIP', 'tech only')
     G = frames(mp4, fps, 135, 240, gray=True); del F
-    numbers_check(mp4, text, heard)
+    numbers_check(mp4, text, heard, qa.get('subs') or T['subs'][ch])
     sync_check(mp4, *sync_words(c, qa, ch), heard, dur, qa.get('subs') or T['subs'][ch])
     dead_check(G, fps, mp4, dur)
     if ch == 'tech': sheen_check(G, fps)

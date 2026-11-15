@@ -1,0 +1,11 @@
+{
+ "name": "showreel-c3-liberty-arm",
+ "why": "Fact check for the Tue 17 Nov Turns Out reel (the session cannot reach Wikipedia, NPS or NYPL): Actions -> Sources prints these pages.",
+ "sources": [
+  {"title": "Statue of Liberty (Wikipedia, with its cited sources)", "url": "https://en.wikipedia.org/wiki/Statue_of_Liberty"},
+  {"title": "The Statue's Torch in Madison Square (National Park Service)", "url": "https://www.nps.gov/Museum/exhibits/statue_liberty/exb/Fundraising/Torch%20Madison%20Square%20Park.html"},
+  {"title": "Joseph Pulitzer (National Park Service, Statue of Liberty)", "url": "https://www.nps.gov/stli/learn/historyculture/joseph-pulitzer.htm"},
+  {"title": "The Arm That Clutched the Torch (New York Public Library, 2015)", "url": "https://www.nypl.org/blog/2015/04/07/statue-liberty-pedestal"},
+  {"title": "Commons: Statue of Liberty in the 1870s", "url": "https://commons.wikimedia.org/wiki/Category:Statue_of_Liberty_in_the_1870s"}
+ ]
+}

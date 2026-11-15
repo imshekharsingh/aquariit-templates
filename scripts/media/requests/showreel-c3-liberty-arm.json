@@ -1,0 +1,15 @@
+{
+ "name": "showreel-c3-liberty-arm",
+ "why": "Turns Out Tue 17 Nov (owner, 15 Nov: build now): Liberty's arm stood alone years before the rest of her. Exact Commons files found by search; the Madison Square view by search with a stereoview fallback.",
+ "media": [
+  {"id": "arm1876", "url": "https://commons.wikimedia.org/wiki/File:SOLPhiladelphia1876.jpg", "min_side": 200},
+  {"id": "armmad", "queries": ["Statue of Liberty arm Madison Square", "Bartholdi Liberty torch Madison Square"], "sources": ["loc", "wikimedia"], "min_side": 500, "avoid": ["1984", "1985", "restoration", "lobby"]},
+  {"id": "armst", "url": "https://commons.wikimedia.org/wiki/File:Collossal_hand_and_torch._Bartholdi's_statue_of_%22Liberty.%22,_from_Robert_N._Dennis_collection_of_stereoscopic_views.jpg", "min_side": 200},
+  {"id": "head", "url": "https://commons.wikimedia.org/wiki/File:Head_Statue_of_Liberty,_Paris_1878.png", "min_side": 200},
+  {"id": "headpark", "url": "https://commons.wikimedia.org/wiki/File:Head_of_the_Statue_of_Liberty_on_display_in_a_park_in_Paris.jpg", "min_side": 200},
+  {"id": "build", "url": "https://commons.wikimedia.org/wiki/File:Assemblage_of_the_Statue_of_Liberty_in_Paris.jpg", "min_side": 200},
+  {"id": "workshop", "url": "https://commons.wikimedia.org/wiki/File:Paul-Joseph-Victor_Dargaud_-_La_statue_de_la_Libert%C3%A9_de_Bartholdi,_dans_l'atelier_du_fondeur_Gaget,_rue_de_Chazelles_-_P1964_-_Mus%C3%A9e_Carnavalet.jpg", "min_side": 200},
+  {"id": "pulitzer", "url": "https://commons.wikimedia.org/wiki/File:JosephPulitzerPinceNeznpsgov.jpg", "min_side": 200},
+  {"id": "moran", "url": "https://commons.wikimedia.org/wiki/File:EdwardMoran-UnveilingTheStatueofLiberty1886Large.jpg", "min_side": 200}
+ ]
+}
