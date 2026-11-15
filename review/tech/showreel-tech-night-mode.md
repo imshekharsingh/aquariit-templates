@@ -28,8 +28,12 @@ Stills vs the kit's reference (honest read, before the render): the same archite
 eyebrow + gradient title, a coloured chip per chapter, one glass panel per chapter with live bars / dots / a lit step flow, cue-timed status
 pills on the hero, kinetic captions with key words lit). First sheet failed my own read: the grain covered the city (TV static in chapters
 2-3) and the loupe pattern read as a digit 8; fixed (grain at 42% strength, four window panes), second sheet clean. Hero is a drawn
-night city instead of the kit's globe; the burst grid and the loupes are less layered than the globe's arcs and packets, which is the one
-place it sits below the reference.
+night city instead of the kit's globe. Third sheet (detail pass, after the owner's "match the kit's level of detail before the one render"):
+the burst and loupes were thinner than the globe's arcs and packets, so they gained the kit's layering: a lens iris snapping once per
+frame with light trails flying to each slot, light packets travelling from every frame into its time-bar segment and flowing on along it,
+sensor cells lighting where photons land, grain shedding off the photo on "merges", dashed callouts from the lit tower to both loupes and
+stacked frame rings behind the merged one. Two defects found and fixed on that sheet (the sum pill showed empty before "fifteen"; the merged
+photo sat near-black for 2 s before "brightens"). Now level with the reference's detail.
 
 Local Output QA pre-check on 89 full-size frames every 0.5 s: saturated fill worst 2% (limit 25%), no content on the outer 2% border.
 Critic: no different session has watched this reel yet; CRITIC: READY is not written by the builder.
