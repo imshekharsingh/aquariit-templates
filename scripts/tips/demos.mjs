@@ -450,4 +450,24 @@ export const demos = {
     bar.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) go(b); });
     if (ink) { ink.style.transition = 'none'; go(bar.querySelector('button')); ink.getBoundingClientRect(); ink.style.transition = ''; } }); }`,
   },
+  fontswap: {
+    css: `
+#fontswap .page{padding:12px 4px}
+#fontswap h4{margin:0 0 10px;font:700 19px/26px Arial,Helvetica,"Liberation Sans",Roboto,sans-serif}
+#fontswap h4.web{font-family:Verdana,"DejaVu Sans","Segoe UI",Tahoma,sans-serif;letter-spacing:.03em}
+#fontswap .fix h4:not(.web){font-family:"Demo Fallback",Arial,sans-serif}
+#fontswap .go{border:0;border-radius:18px;padding:8px 16px;font-weight:700;background:#5ff2b0;color:#0b0b10}`,
+    html: `
+<div class="pair">
+  ${['bad', 'fix'].map((c) => `<div class="pane ${c}"><span class="tag${c === 'fix' ? ' ok' : ''}">${c === 'fix' ? 'Backup font with size-adjust' : 'Plain backup font'}</span><div class="page"><h4 class="web">Your parcel is on its way and arrives by 6 pm</h4><button type="button" class="go">Track parcel</button></div></div>`).join('')}
+</div>
+<p><button type="button" class="reload">Reload both</button></p>
+<p class="note">Tap Reload. Each page draws its headline in a backup font first and swaps in the wider web font 0.7 s later. On the left the lines rewrap and the button jumps; on the right the backup font is scaled with size-adjust (measured here from the two fonts, as a build tool does), so the lines stay put.</p>`,
+    js: `function(root){ var h = root.querySelectorAll('h4'), timer = 0;
+  var c = document.createElement('canvas').getContext('2d'), txt = h[0].textContent, cs = getComputedStyle(h[0]);
+  c.font = "700 19px " + cs.fontFamily; var w1 = c.measureText(txt).width + txt.length * .57; c.font = '700 19px Arial,Helvetica,"Liberation Sans",Roboto,sans-serif'; var w0 = c.measureText(txt).width;
+  var st = document.createElement('style'); st.textContent = '@font-face{font-family:"Demo Fallback";src:local("Arial"),local("Helvetica"),local("Liberation Sans"),local("Roboto");size-adjust:' + Math.round(w1 / w0 * 100) + '%}'; document.head.appendChild(st);
+  root.querySelector('.reload').addEventListener('click', function(){ clearTimeout(timer); h.forEach(function(e){ e.classList.remove('web'); });
+    timer = setTimeout(function(){ h.forEach(function(e){ e.classList.add('web'); }); }, 700); }); }`,
+  },
 };

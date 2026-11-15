@@ -1,0 +1,84 @@
+{
+ "name": "showreel-37-fontswap",
+ "seek": "scripts/explainer/fontswap.html",
+ "dur": 20,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.2,
+ "style": "Ink and mint, whole frame (dark kept by E18's verdict, 15 Nov; E23 dynamic fix try 3; E20 caption ask try 1)",
+ "palette": "dark",
+ "voice": {
+  "text": "Why does your text jump? The page draws a backup font first. Then the real font lands, and every line moves. The fix: size adjust on the backup font. It scales it to the real font's width. Look closer. The letters change, the lines stay. Now your text holds still.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": [
+   0.6,
+   0.35,
+   0.4,
+   0.6,
+   0.6,
+   0.5,
+   0.6
+  ]
+ },
+ "caption": "Has a page ever jumped while you were reading it? yes or never 👇\n\nA page draws its text in a backup font first (Arial, say) and swaps in the web font when it lands. The web font is wider, so every line rewraps and everything under it moves, right as you go to tap. The fix is one descriptor: give the backup font its own @font-face with src: local(\"Arial\") and size-adjust, a percentage that scales its glyphs to the web font's width (130% for Unbounded over Arial), and list it after the web font in font-family. The letters still change when the font lands, but the lines stay where they were. size-adjust works in Chrome and Firefox 92+ and Safari 17+.\nSave it for your next font, or send it to whoever picked yours. And answer in the comments: yes or never?",
+ "keywords": [
+  "font swap layout shift",
+  "size-adjust CSS",
+  "font fallback size-adjust",
+  "web font layout shift fix",
+  "CLS fonts",
+  "CSS tips"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#webperformance",
+  "#webfonts",
+  "#frontenddev",
+  "#uidesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/size-adjust",
+   "note": "MDN size-adjust: an @font-face descriptor, a percentage that scales the face's glyph outlines and metrics; used to match a fallback font to a web font so a swap does not shift the layout"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data",
+   "note": "BCD 8.1.9 (checked 15 Nov 2026), css.at-rules.font-face.size-adjust: Chrome 92, Firefox 92, Safari 17, Safari iOS 17, Chrome Android 92. ascent-override: Chrome 87, Firefox 89, not in Safari, so the reel's fix uses size-adjust alone"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/src",
+   "note": "MDN src: local(\"Arial\") points the face at a font already installed on the device, so the fallback face costs no download"
+  }
+ ],
+ "tip": {
+  "title": "Why does your text jump when the font loads?",
+  "why": "The page draws text in a backup font, then swaps in the web font when it arrives. A wider web font rewraps every line, so the content under it jumps. An @font-face for the backup font with size-adjust scales its glyphs to the web font's width, so the lines wrap the same before and after the swap. size-adjust works in Chrome and Firefox 92+ and Safari 17+ (MDN, BCD).",
+  "code": "@font-face {\n  font-family: Fallback;\n  src: local(\"Arial\");\n  size-adjust: 130%; /* web font width / Arial width */\n}\nh1 { font-family: Unbounded, Fallback; }",
+  "demo": "fontswap",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/size-adjust",
+   "label": "MDN, size-adjust"
+  }
+ },
+ "experiment": {
+  "id": "web-comment-ask",
+  "change": "E20 try 1: caption line 1 asks a one-word question (yes or never), the last line asks for it in the comments; on E23's dynamic before/after in sync (try 3) and the dark look",
+  "vs": "median"
+ },
+ "format": "single",
+ "qa": {
+  "mute": {
+   "before": {
+    "say": "moves"
+   },
+   "after": {
+    "say": "stay"
+   },
+   "span": 1.5
+  }
+ }
+}

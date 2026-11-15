@@ -295,6 +295,7 @@ verdict, but it supports the switch to films (E6). **The bottleneck is reach, no
 Stories and send it by DM to 5-10 people in that business type (sends are the strongest signal), reply to every comment; (3) give viewers a reason to send it: end on a
 line addressed to a friend ("Send this to a café owner who closes at 10"); (4) trial reels need 1,000+ followers (third-party guides), so not yet;
 (5) re-check Dantika after 24 h and 48 h; first real E6 verdict once 3 films have 48 h of data.
+- 15 Nov: the dark look with the broken and fixed UI moving in sync gave web its best 3 days (list 2,545, tabs 1,860 vs the glass median 1,546), so E18 is kept; a guess question alone did not lift Turns Out (eiffel 1,141, taj 136: 2 LOSEs), the story engine replaces it.
 
 ## 14 Oct 2026: services pivot (owner feedback)
 The owner: the reels read as if Aquarii sells laundry, food delivery and dentistry. Every reel from now on sells one Aquarii service line (design/services.md:
@@ -339,6 +340,7 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
 - Change (one, the caption only; topic type and look follow E18's verdict on Sun 15): line 1 is a question with a one-word answer about the
   viewer's own site ("Does your button do this? yes or not yet"); the last line asks for that word in the comments (the save/send line stays,
   no "like"). Config `"experiment": {"id": "web-comment-ask", "change": "caption question + comment ask", "vs": "median"}`.
+- Try 1: showreel-37-fontswap (Sun 15 Nov): "Has a page ever jumped while you were reading it? yes or never", the last line asks for the word.
 - Decides (each reel at 24 h vs the last 7 web reels): WIN = comments per 1,000 reached at 2x the median or more AND reach not below 80% of
   the median. Keep at 2 WINs of 3 (rule in rules-web.md, the caption starter writes it), drop at 2 LOSEs. Verdict Wed 18 Nov.
 
