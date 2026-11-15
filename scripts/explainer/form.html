@@ -742,7 +742,7 @@ var KM = (function(){
       q.style.transform = 'scale(' + (.8 + .2 * E.back(P(kq, 0, .3), 1.8)).toFixed(3) + ') rotate(' + (j % 2 ? -6 : 5) + 'deg)'; }
     EL.tgA.apply(t); EL.tgB.apply(t);
     [['A', boxA, sA], ['B', boxB, sB]].forEach(function(m){ var tg = $('tg' + m[0]), o = +tg.style.opacity || 0;
-      tg.style.left = (m[1].x + 22 + 386 - tg.offsetWidth).toFixed(1) + 'px'; tg.style.top = (m[2].btnY + 4).toFixed(1) + 'px';
+      tg.style.left = (m[1].x + 22 + 386 - tg.offsetWidth).toFixed(1) + 'px'; tg.style.top = (m[1].y + 14 + LAY[m[0]].off.btn + 4).toFixed(1) + 'px';   // pinned beside the button's resting line: small text never rides the move (Output QA NUMBERS read the blurred "32" as "3", run 43730180559)
       $('c' + m[0]).querySelector('.eta').style.opacity = (1 - Math.min(1, o * 1.5)) * (m[0] === 'A' ? (live != null ? 0 : P(t, qEnd, qEnd + .2)) : 1); });
     // ---- the touch markers (KM.touch): aimed at the Pay button where it sat; pressed as the message pops in ----
     [[TA, RA, boxA, 'A', 1 - P(t, A.watch - .5, A.watch - .2)], [TB, RB, boxB, 'B', P(t, A.fix + .5, A.fix + .9) * (1 - P(t, DUR - .3, DUR))]].forEach(function(m){
