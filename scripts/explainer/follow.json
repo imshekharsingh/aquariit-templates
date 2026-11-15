@@ -1,0 +1,95 @@
+{
+ "name": "showreel-39-follow",
+ "seek": "scripts/explainer/follow.html",
+ "dur": 20,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.2,
+ "style": "Ink and mint, whole frame (dark, E18 kept 15 Nov; E23 dynamic fix try 5; E20 caption ask try 3; BEFORE coral jolting, AFTER teal locked, owner 15 Nov)",
+ "palette": "dark",
+ "voice": {
+  "text": "Why does your button jump? Follow turns into Following, and the button grows. Everything next to it slides away. The fix: stack both words in one grid cell. The button keeps the longer width. Look closer. The word changes, the button stays. Now your buttons hold still.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": [
+   0.6,
+   0.45,
+   0.5,
+   0.6,
+   0.6,
+   0.5,
+   0.6
+  ],
+  "speeds": [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ]
+ },
+ "caption": "Has a button ever slid away right as you tapped it? yes or never 👇\n\nA Follow button that turns into Following gets wider, and in a row of buttons everything next to it slides over, then slides back when you tap again. The fix is to stack both words in one grid cell: .follow { display: inline-grid; } and .follow span { grid-area: 1 / 1; }, with the word not shown kept as visibility: hidden. A hidden word still takes up its space, so the button is always as wide as \"Following\" and nothing next to it moves. The same trick works for Play / Pause, Save / Saved and Add / Added.\nSend this to whoever builds your profile page, or save it for your next toggle. And answer in the comments: yes or never?",
+ "keywords": [
+  "button width change fix",
+  "follow button layout shift",
+  "CSS grid stack labels",
+  "grid-area 1 / 1",
+  "visibility hidden keeps space",
+  "toggle button UI",
+  "frontend tips"
+ ],
+ "hashtags": [
+  "#microinteractions",
+  "#uidetails",
+  "#cssgrid",
+  "#csstips",
+  "#frontendtips"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area",
+   "note": "MDN grid-area: places an item by its grid lines; grid-area: 1 / 1 puts every label in the first row and column, so they share one cell and the cell is as wide as the widest"
+  },
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/visibility",
+   "note": "MDN visibility: hidden hides the box but it still affects layout (unlike display: none), so the hidden word keeps its width"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data",
+   "note": "BCD 8.1.9 (checked 15 Nov 2026), css.properties.grid-area: Chrome 57, Firefox 52, Safari 10.1, Safari iOS 10.3"
+  }
+ ],
+ "tip": {
+  "title": "Why does your Follow button jump?",
+  "why": "A toggle button that changes its word (Follow / Following) changes its width, so everything next to it slides each time it is tapped. Put both words in one grid cell with grid-area: 1 / 1 and hide the one not shown with visibility: hidden: a hidden box still takes its space, so the button always has the width of the longer word. grid-area works in every current browser (Chrome 57+, Firefox 52+, Safari 10.1+; MDN, BCD).",
+  "code": ".follow { display: inline-grid; }\n.follow span { grid-area: 1 / 1; } /* both words in one cell */\n.follow .off { visibility: hidden; }",
+  "demo": "follow",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area",
+   "label": "MDN, grid-area"
+  }
+ },
+ "experiment": {
+  "id": "web-comment-ask",
+  "change": "E20 try 3: caption line 1 asks a one-word question (yes or never), the last line asks for it in the comments; on E23's dynamic before/after in sync (try 5) and the dark look",
+  "vs": "median"
+ },
+ "format": "single",
+ "qa": {
+  "mute": {
+   "before": {
+    "say": "slides"
+   },
+   "after": {
+    "say": "stays"
+   },
+   "span": 1.5
+  }
+ }
+}

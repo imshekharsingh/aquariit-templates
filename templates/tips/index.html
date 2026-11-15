@@ -191,6 +191,20 @@
 #fontswap h4.web{font-family:Verdana,"DejaVu Sans","Segoe UI",Tahoma,sans-serif;letter-spacing:.03em}
 #fontswap .fix h4:not(.web){font-family:"Demo Fallback",Arial,sans-serif}
 #fontswap .go{border:0;border-radius:18px;padding:8px 16px;font-weight:700;background:#5ff2b0;color:#0b0b10}
+#form .pane{padding:10px}
+#form input{box-sizing:border-box;width:100%;padding:9px 10px;border-radius:10px;border:2px solid #ffffff33;background:#ffffff12;color:inherit;font:600 15px system-ui,-apple-system,"Segoe UI",sans-serif}
+#form input.bad{border-color:#ff7a6b}
+#form .err{font:600 13px/20px system-ui,-apple-system,"Segoe UI",sans-serif;color:#ff8f82}
+#form .fix .err{min-height:1lh}
+#form .go{margin-top:6px;border:0;border-radius:18px;padding:8px 16px;font-weight:700;background:#5ff2b0;color:#0b0b10}
+#follow .pane{padding:10px}
+#follow .row{display:flex;gap:6px;align-items:center}
+#follow .row button{border:0;border-radius:18px;padding:8px 12px;font:700 14px system-ui,-apple-system,"Segoe UI",sans-serif;white-space:nowrap;cursor:pointer}
+#follow .fol{background:#5ff2b0;color:#0b0b10}
+#follow .msg{background:#ffffff1f;color:inherit}
+#follow .fix .fol{display:inline-grid}
+#follow .fix .fol span{grid-area:1 / 1}
+#follow .fix .fol .off{visibility:hidden}
 </style>
 </head>
 <body>
@@ -200,6 +214,36 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="follow">
+  <p class="no">Nº 29</p>
+  <h2>Why does your Follow button jump?</h2>
+  <p class="why">A toggle button that changes its word (Follow / Following) changes its width, so everything next to it slides each time it is tapped. Put both words in one grid cell with grid-area: 1 / 1 and hide the one not shown with visibility: hidden: a hidden box still takes its space, so the button always has the width of the longer word. grid-area works in every current browser (Chrome 57+, Firefox 52+, Safari 10.1+; MDN, BCD).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane "><span class="tag">One word at a time</span><div class="row"><button type="button" class="fol"><span>Follow</span></button><button type="button" class="msg">Message</button></div></div><div class="pane fix"><span class="tag ok">Both words in one cell</span><div class="row"><button type="button" class="fol"><span>Follow</span><span class="off">Following</span></button><button type="button" class="msg">Message</button></div></div>
+</div>
+<p class="note">Tap Follow in each row. On the left the button grows to fit "Following" and Message slides away (and back on the next tap); on the right both words share one grid cell, the hidden one with visibility: hidden, so the button is always as wide as "Following" and Message stays put.</p></div>
+  <div class="code"><pre><code>.follow { display: inline-grid; }
+.follow span { grid-area: 1 / 1; } /* both words in one cell */
+.follow .off { visibility: hidden; }</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/grid-area" rel="noopener">Source: MDN, grid-area</a></p>
+</article>
+
+<article class="tip" id="form">
+  <p class="no">Nº 28</p>
+  <h2>Why does your form jump while you type?</h2>
+  <p class="why">Live validation fills a message element while the input is invalid and empties it when it is valid. An empty block is 0 px tall, so the button and everything under it jump by one line each time. min-height: 1lh keeps one line of room in the slot (lh is the element's own line height), so nothing moves. lh works in Chrome 109+, Safari 16.4+ and Firefox 120+ (MDN, BCD).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane "><span class="tag">Empty message, 0 px</span><input type="email" placeholder="you@mail.com" aria-label="Email"><div class="err"></div><button type="button" class="go">Pay</button></div><div class="pane fix"><span class="tag ok">.error { min-height: 1lh }</span><input type="email" placeholder="you@mail.com" aria-label="Email"><div class="err"></div><button type="button" class="go">Pay</button></div>
+</div>
+<p class="note">Type an email in each form. While it is not valid a message shows under the field. On the left the empty message is 0 px tall, so the Pay button jumps on every change; on the right the message keeps one line of room (1lh), so the button never moves.</p></div>
+  <div class="code"><pre><code>.error {
+  min-height: 1lh; /* one line of room, empty or not */
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/length#lh" rel="noopener">Source: MDN, the lh unit</a></p>
+</article>
 
 <article class="tip" id="fontswap">
   <p class="no">Nº 27</p>
@@ -701,11 +745,17 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>25 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>27 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "follow": function(root){ root.querySelectorAll('.fol').forEach(function(b){ var fix = !!b.closest('.fix');
+  b.addEventListener('click', function(){ var on = b.dataset.on !== '1'; b.dataset.on = on ? '1' : '';
+    b.innerHTML = fix ? '<span' + (on ? ' class="off"' : '') + '>Follow</span><span' + (on ? '' : ' class="off"') + '>Following</span>' : '<span>' + (on ? 'Following' : 'Follow') + '</span>'; }); }); },
+    "form": function(root){ root.querySelectorAll('input').forEach(function(i){ var e = i.parentNode.querySelector('.err');
+  i.addEventListener('input', function(){ var bad = i.value !== '' && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(i.value);
+    e.textContent = bad ? 'Enter a valid email' : ''; i.classList.toggle('bad', bad); }); }); },
     "fontswap": function(root){ var h = root.querySelectorAll('h4'), timer = 0;
   var c = document.createElement('canvas').getContext('2d'), txt = h[0].textContent, cs = getComputedStyle(h[0]);
   c.font = "700 19px " + cs.fontFamily; var w1 = c.measureText(txt).width + txt.length * .57; c.font = '700 19px Arial,Helvetica,"Liberation Sans",Roboto,sans-serif'; var w0 = c.measureText(txt).width;

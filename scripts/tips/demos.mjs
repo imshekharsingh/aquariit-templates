@@ -470,4 +470,42 @@ export const demos = {
   root.querySelector('.reload').addEventListener('click', function(){ clearTimeout(timer); h.forEach(function(e){ e.classList.remove('web'); });
     timer = setTimeout(function(){ h.forEach(function(e){ e.classList.add('web'); }); }, 700); }); }`,
   },
+  // the form demo (showreel-38-form, 16 Nov 2026): live validation with and without min-height: 1lh on the message
+  form: {
+    css: `
+#form .pane{padding:10px}
+#form input{box-sizing:border-box;width:100%;padding:9px 10px;border-radius:10px;border:2px solid #ffffff33;background:#ffffff12;color:inherit;font:600 15px system-ui,-apple-system,"Segoe UI",sans-serif}
+#form input.bad{border-color:#ff7a6b}
+#form .err{font:600 13px/20px system-ui,-apple-system,"Segoe UI",sans-serif;color:#ff8f82}
+#form .fix .err{min-height:1lh}
+#form .go{margin-top:6px;border:0;border-radius:18px;padding:8px 16px;font-weight:700;background:#5ff2b0;color:#0b0b10}`,
+    html: `
+<div class="pair">
+  ${['', 'fix'].map((c) => `<div class="pane ${c}"><span class="tag${c ? ' ok' : ''}">${c ? '.error { min-height: 1lh }' : 'Empty message, 0 px'}</span><input type="email" placeholder="you@mail.com" aria-label="Email"><div class="err"></div><button type="button" class="go">Pay</button></div>`).join('')}
+</div>
+<p class="note">Type an email in each form. While it is not valid a message shows under the field. On the left the empty message is 0 px tall, so the Pay button jumps on every change; on the right the message keeps one line of room (1lh), so the button never moves.</p>`,
+    js: `function(root){ root.querySelectorAll('input').forEach(function(i){ var e = i.parentNode.querySelector('.err');
+  i.addEventListener('input', function(){ var bad = i.value !== '' && !/^[^@\\s]+@[^@\\s]+\\.[^@\\s]{2,}$/.test(i.value);
+    e.textContent = bad ? 'Enter a valid email' : ''; i.classList.toggle('bad', bad); }); }); }`,
+  },
+  // the follow demo (showreel-39-follow, 17 Nov 2026): a toggle button with its two words stacked in one grid cell
+  follow: {
+    css: `
+#follow .pane{padding:10px}
+#follow .row{display:flex;gap:6px;align-items:center}
+#follow .row button{border:0;border-radius:18px;padding:8px 12px;font:700 14px system-ui,-apple-system,"Segoe UI",sans-serif;white-space:nowrap;cursor:pointer}
+#follow .fol{background:#5ff2b0;color:#0b0b10}
+#follow .msg{background:#ffffff1f;color:inherit}
+#follow .fix .fol{display:inline-grid}
+#follow .fix .fol span{grid-area:1 / 1}
+#follow .fix .fol .off{visibility:hidden}`,
+    html: `
+<div class="pair">
+  ${['', 'fix'].map((c) => `<div class="pane ${c}"><span class="tag${c ? ' ok' : ''}">${c ? 'Both words in one cell' : 'One word at a time'}</span><div class="row"><button type="button" class="fol">${c ? '<span>Follow</span><span class="off">Following</span>' : '<span>Follow</span>'}</button><button type="button" class="msg">Message</button></div></div>`).join('')}
+</div>
+<p class="note">Tap Follow in each row. On the left the button grows to fit "Following" and Message slides away (and back on the next tap); on the right both words share one grid cell, the hidden one with visibility: hidden, so the button is always as wide as "Following" and Message stays put.</p>`,
+    js: `function(root){ root.querySelectorAll('.fol').forEach(function(b){ var fix = !!b.closest('.fix');
+  b.addEventListener('click', function(){ var on = b.dataset.on !== '1'; b.dataset.on = on ? '1' : '';
+    b.innerHTML = fix ? '<span' + (on ? ' class="off"' : '') + '>Follow</span><span' + (on ? '' : ' class="off"') + '>Following</span>' : '<span>' + (on ? 'Following' : 'Follow') + '</span>'; }); }); }`,
+  },
 };
