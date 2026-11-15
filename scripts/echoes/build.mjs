@@ -4,7 +4,7 @@
 // The scene loads its images from media/<name>/<file> next to it (pulled from R2 at render time; Media previews for the session's stills).
 // Usage: node scripts/echoes/build.mjs scripts/channel3/<slug>.json      (writes the config's "seek" scene)
 // A shot (the kit's): {line, at: "start" | "<word>" | "<word>#n", type: "arch" | "ill", img: "a|b" (the first that arrived: a fallback per shot),
-//   mode: "framed" | "full" | "depth" (2.5D: cut, cam, sat; design/channel3.md), develop, stamp: "TEXT", stampRed, tone (colour of the beat: teal green red blue amber violet terra gold or #hex),
+//   mode: "framed" | "full" | "depth" (2.5D: cut, cam, sat; design/channel3.md), develop, stamp: "TEXT", stampRed, grade (depth: a CSS filter such as "contrast(1.3) brightness(.8)" for a bright print), tone (colour of the beat: teal green red blue amber violet terra gold or #hex),
 //   glow, focus, kind (ill: wall | dossier | counter | map, with their own fields; bg: an image id as the 2.5D far plane behind the card)}.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
