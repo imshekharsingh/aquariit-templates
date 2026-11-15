@@ -1,0 +1,27 @@
+{
+ "name": "showreel-c3-mona-stolen",
+ "why": "Third pass: run 43671719499 rejected the 1911 empty-wall photo and the Beroud painting on the size floor (min_side 700); the kit allows small archival photos as framed shots. Plus a Library of Congress Louvre photo.",
+ "media": [
+  {
+   "id": "wall",
+   "url": "https://commons.wikimedia.org/wiki/File:Mona_Lisa_stolen-1911.jpg",
+   "min_side": 200
+  },
+  {
+   "id": "beroud",
+   "url": "https://commons.wikimedia.org/wiki/File:Louis_Beroud_-_Mona_Lisa_au_Louvre_1911.jpg",
+   "min_side": 200
+  },
+  {
+   "id": "louvre",
+   "queries": [
+    "Louvre Paris France",
+    "Palais du Louvre"
+   ],
+   "sources": [
+    "loc"
+   ],
+   "min_side": 700
+  }
+ ]
+}
