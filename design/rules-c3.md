@@ -77,6 +77,14 @@ S. **Story engine, the default format** (owner, 14 Nov 2026, the rebuild from th
    `Kt.grade()` after the worlds every frame; at most a couple of particles in frame. Output QA GRADE must PASS (cover contrast 0.2+, washed
    frames 20% or fewer), with COLOUR (no hard hue cut) and GUESS.
 
+11. **Echoes: a new element at least every 2.5 s; no photo used twice** (owner, 16 Nov 2026, the Liberty arm reel: "elements are few and are
+   spread ... We should design it such that there are more elements to show on screen as the storyline moves forward"; 10 shots in ~40 s, one
+   photo 3 times, stretches of 3.5-4.1 s with nothing new). A new visual beat on a phrase or key word about every 2 s (18-24 beats in a 35-40 s
+   reel): a new photo, or a layered element that builds up as the story moves (the running year, the journey map's route, a label with an
+   arrow, a cut-out figure for scale, a newspaper cutting, a counter only for a figure the voice says; design/channel3.md "Layered elements").
+   Every photo is the picture of ONE shot. Output QA ELEMENTS (nothing new for over 3.0 s, or under 4 pictures in any 10 s) and REUSE must
+   PASS; read them before the render with `node scripts/qa/frames.mjs <config> <dir>` + `python3 scripts/qa/look.py <config> <dir>`.
+
 **Quality gate (unchanged, design/mandatory.md):** SAFE ZONE ok, OVERLAP none, BAND and HOOK read on the stills, FLOW (cuts 0, dead runs
 none, continuity 85%+, strobes 0-1), DEPTH lines, SOUND GATE ok and SOUND DETAIL ok after the render (every moving element heard, small high,
 medium mid, large low), the voice check, and design/owner-feedback.md line by line on the finished output.

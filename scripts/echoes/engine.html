@@ -33,6 +33,28 @@ svg.full{position:absolute;left:0;top:0;width:1080px;height:1920px}
 .lab{font:600 20px Cinzel;letter-spacing:.32em;color:#d9b866;text-align:center;padding-left:.32em}
 .big{font:700 120px Cinzel;color:#f2e2b0;text-align:center}
 .typed{font:34px 'Special Elite';color:#2a1d0e;letter-spacing:.04em;white-space:nowrap}
+/* layered elements (owner, 16 Nov 2026, the Liberty arm reel: "more elements to show on screen as the storyline moves forward"): a running year,
+   a journey inset map whose route draws on its words, and per-shot adds (labels with arrows, cut-out figures for scale, newspaper cuttings, a counter) */
+#hud{position:absolute;inset:0;z-index:100;pointer-events:none}
+/* the cover moment (owner, 16 Nov 2026: "I used to have reel cover element in video itself ... we should have that back so that people understand
+   what is it about from profile grid"): frame 0 shows the title over the subject, inside the centre 3:4 (y 240-1680) the profile grid keeps */
+#cover{position:absolute;left:90px;right:90px;z-index:100;text-align:center;background:rgba(10,6,3,.84);border:2px solid #d9b866;padding:16px 26px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+#cover b{display:block;font:600 22px Cinzel;letter-spacing:.4em;color:#d9b866;padding-left:.4em}
+#cover span{display:block;font:700 86px/1.04 Cinzel;color:#f6e3a8;margin-top:8px}
+#hud .yr{position:absolute;left:96px;top:436px;padding:6px 22px 8px;background:rgba(12,8,4,.82);border:2px solid #d9b866;box-shadow:0 10px 30px rgba(0,0,0,.6);text-align:center;opacity:0}
+#hud .yr b{display:block;font:600 14px Cinzel;letter-spacing:.34em;color:#bfa66e;padding-left:.34em}
+#hud .yr span{display:block;font:700 60px/1.05 Cinzel;color:#f6e3a8;letter-spacing:.04em}
+#hud .mm{position:absolute;left:640px;top:430px;width:320px;height:224px;opacity:0;background:rgba(6,26,30,.86);border:2px solid #d9b866;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.add{position:absolute;opacity:0}
+.tagp{font:700 26px Cinzel;letter-spacing:.14em;color:#fff3d0;background:rgba(14,9,4,.84);border:2px solid #e8c46a;padding:10px 18px 9px;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.figl{font:600 20px Cinzel;letter-spacing:.2em;color:#fff3d0;background:rgba(14,9,4,.8);padding:6px 12px;white-space:nowrap}
+.clip{background:linear-gradient(175deg,#f3e8cc,#dccb9e);color:#21160a;box-shadow:0 30px 70px rgba(0,0,0,.75);padding:20px 28px 22px}
+.clip .mh{font:700 44px Cinzel;letter-spacing:.12em;text-align:center;border-bottom:3px double #21160a;padding-bottom:6px}
+.clip .hl{font:700 30px 'Cormorant Garamond';text-align:center;margin-top:10px;white-space:nowrap}
+.clip .ln{height:7px;background:rgba(33,22,10,.32);margin-top:11px}
+.cnt{text-align:center;background:rgba(10,6,3,.84);border:2px solid #d9b866;padding:10px 36px 14px;box-shadow:0 14px 40px rgba(0,0,0,.7)}
+.cnt span{display:block;font:700 104px/1.05 Cinzel;color:#f6e3a8;font-variant-numeric:tabular-nums}
+.cnt b{display:block;font:600 22px Cinzel;letter-spacing:.3em;color:#d9b866;padding-left:.3em}
 </style></head>
 <body><div id="stage">
 <div id="shots"></div>
@@ -44,6 +66,8 @@ svg.full{position:absolute;left:0;top:0;width:1080px;height:1920px}
 <div id="prog"></div>
 <div id="badge"></div>
 <div id="chap"></div>
+<div id="hud"></div>
+<div id="cover" data-cover></div>
 <div id="cap" data-band data-subs></div>
 <div id="src" style="position:absolute;left:120px;right:120px;top:1496px;text-align:center;font:600 15px Cinzel;letter-spacing:.2em;color:rgba(232,214,176,.85);text-shadow:0 1px 6px #000;z-index:100;opacity:0"></div>
 <div id="dust" class="ov"></div>
@@ -75,15 +99,19 @@ function timeline(vw){
   else{let t=.35;times=[];lines.forEach((L,li)=>{L.forEach(w=>{const d=(w.replace(/[^\w]/g,'').length+1.6)*.062;times.push([t,t+d]);t+=d+(/[.?!]$/.test(w)?.5:/,$/.test(w)?.22:.05)});t+=.15})}
   let k=0;const scenes=lines.map(L=>{const words=L.map(w=>{const [a,b]=times[k++];return{w,t0:+a.toFixed(3),t1:+b.toFixed(3)}});return{start:words[0].t0,end:words[words.length-1].t1,words}});
   const lastW=scenes[scenes.length-1].end,total=vw&&vw.length?+Math.min(E.dur,lastW+1.4).toFixed(3):E.dur;const W=(li,key)=>{let [kk,n]=key.split('#');n=+(n||0);const h=scenes[li].words.filter(x=>NW(x.w).startsWith(kk.toLowerCase()));return (h[n]||h[0]||scenes[li].words[0]).t0};
-  const shots=E.shots.map(s=>{const sh=Object.assign({},s);if(s.type==='arch'&&s.stamp&&typeof s.stamp==='object'){const k=pick(s.img);sh.stamp=s.stamp[k]||s.stamp['*']||''}sh.t0=s.line===0&&s.at==='start'?0:s.at==='start'?scenes[s.line].start-.35:W(s.line,s.at)-.25;if(s.words)sh.wt=s.words.map(x=>W(s.line,x));if(s.circleAt)sh.ct=W(s.line,s.circleAt);sh.t0=+sh.t0.toFixed(3);return sh});
+  const shots=E.shots.map(s=>{const sh=Object.assign({},s);if(s.type==='arch'&&s.stamp&&typeof s.stamp==='object'){const k=pick(s.img);sh.stamp=s.stamp[k]||s.stamp['*']||''}sh.t0=s.line===0&&s.at==='start'?0:s.at==='start'?scenes[s.line].start-.35:W(s.line,s.at)-.25;if(s.words)sh.wt=s.words.map(x=>W(s.line,x));if(s.circleAt)sh.ct=W(s.line,s.circleAt);if(s.drawAt)sh.legT=+(W(s.line,s.drawAt)-(s.line===0&&s.at==='start'?0:s.at==='start'?scenes[s.line].start-.35:W(s.line,s.at)-.25)).toFixed(3);sh.t0=+sh.t0.toFixed(3);return sh});
   shots.forEach((sh,i)=>sh.t1=+(i+1<shots.length?shots[i+1].t0+.7:E.dur).toFixed(3));
-  if(EP)shots.forEach((sh,i)=>{const o=EP.shots[i];['el','st','key','filt','fh','fw','base','motes','bgEl'].forEach(k=>{if(o[k]!==undefined)sh[k]=o[k]})});
-  EP={total,scenes,shots};
+  // layered elements (16 Nov 2026): each add, year and route leg lands on its own spoken word (line, at: "start" | word | word#n; dt shifts it)
+  const AT=(li,key,dt)=>+((key==='start'?scenes[li].start:W(li,key))+(dt||0)).toFixed(3);
+  shots.forEach(sh=>{if(sh.adds)sh.adds=sh.adds.map(a=>Object.assign({},a,{t:AT(a.line??sh.line,a.at,a.dt)}))});
+  const H=E.hud||{},hud={years:(H.years||[]).map(y=>({y:String(y.y),t:AT(y.line,y.at,y.dt)})),legs:(H.legs||[]).map(g=>Object.assign({},g,{t:AT(g.line,g.at,g.dt)})),pulse:(H.pulse||[]).map(g=>Object.assign({},g,{t:AT(g.line,g.at,g.dt)}))};
+  if(EP)shots.forEach((sh,i)=>{const o=EP.shots[i];['el','st','key','filt','fh','fw','base','motes','bgEl','addEls'].forEach(k=>{if(o[k]!==undefined)sh[k]=o[k]})});
+  EP={total,scenes,shots,hud};
   // after the last word + 1.4 s the video ends (run 43696792618: a 3 s tail failed Output QA DEAD) (the sound is that long and the mux is -shortest): the frames past it are never seen
   window.HOLDS=total<E.dur-.05?[[+total.toFixed(2),E.dur]]:[];
   window.TRANSITIONS=shots.slice(1).map(s=>[s.t0,+(s.t0+.7).toFixed(2),'crossfade']);
-  const cov=shots[0].stamp?.35+1.0+.3:1.2;window.COVER=+Math.min(cov,shots[1]?shots[1].t0-.1:cov).toFixed(2);
-  window.CUES={engine:'echoes',dur:total,ep:{total,scenes,shots:shots.map(({el,st,base,motes,bgEl,...r})=>JSON.parse(JSON.stringify(r)))}};
+  const cov=shots[0].stamp?.35+1.0+.3:1.2;window.COVER=E.cover!==false?0:+Math.min(cov,shots[1]?shots[1].t0-.1:cov).toFixed(2);   // with the cover moment, frame 0 is the cover
+  window.CUES={engine:'echoes',dur:total,ep:{total,scenes,hud,shots:shots.map(({el,st,base,motes,bgEl,addEls,...r})=>JSON.parse(JSON.stringify(r)))}};
   buildCaps();
 }
 window.setVoice=v=>{timeline(v&&(v.words||v));};
@@ -144,6 +172,12 @@ function animDepth(sh,lt,dur){const m=IMG[sh.key],[bw,bh,cx,cy,rx,ry]=sh.base,c=
   if(sh.develop){const dv=eoc(prog(lt,0,1.1));sh.el.querySelector('.mid img').style.filter=`${sh.filt} brightness(${lerp(2.2,1.06,dv)}) blur(${(1-dv)*6}px)`}
   const pl=sh.el.querySelector('.plate');if(pl)pl.style.opacity=eoc(prog(lt,.6,1.3))}
 
+// ---------- the journey map (16 Nov 2026): a stylised North Atlantic, coasts only, no borders (design/safety.md 16), in a 1000 x 700 box ----------
+const MAP={P:{paris:[860,250],phila:[170,385],ny:[205,330]},N:{paris:'PARIS',phila:'PHILADELPHIA',ny:'NEW YORK'},
+  R:{'paris-phila':'M860 250 C700 110 380 140 170 385','phila-ny':'M170 385 C182 366 194 348 205 330','paris-ny':'M860 250 C720 400 420 440 205 330','ny-paris':'M205 330 C420 440 720 400 860 250'}};
+const mapLand=(fill,stroke)=>`<g fill="${fill}" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"><path d="M0 40 C80 70 150 120 190 205 C215 255 250 295 222 338 C196 372 188 404 150 436 C118 474 106 540 62 600 C40 640 20 680 0 700 Z"/>
+  <path d="M1000 0 L1000 700 C962 652 905 604 884 524 C866 470 902 432 864 402 C826 372 794 334 804 292 C812 252 792 204 822 164 C850 124 834 72 872 42 C902 16 942 8 1000 0 Z"/><path d="M752 156 C772 116 806 126 800 172 C795 206 772 214 758 196 Z"/></g>`;
+const SHIP='<path d="M-22 6 L22 6 L14 16 L-14 16 Z" fill="#ffe0a0" stroke="#5a3a10" stroke-width="2"/><path d="M-2 4 V-26 L16 2 Z" fill="#fff3d0"/><path d="M-6 4 V-18 L-20 2 Z" fill="#f1e3c2"/>';
 // illustrated cards (code-drawn, clearly stylised; the kit's scene library, generalised: wall, dossier, counter, map)
 const ILL={
  wall:s=>el(`<div style="position:absolute;inset:0;background:radial-gradient(90% 70% at 50% 40%,#7e2a22,#3e0c08 62%,#140302)"></div>
@@ -171,6 +205,24 @@ const ILL={
    <svg class="full" viewBox="0 0 1080 1920"><g class="rings" fill="none"></g></svg>
    <div style="position:absolute;left:0;right:0;top:600px"><div class="lab">${s.label||''}</div><div class="odo" style="margin:26px auto 0;display:flex;justify-content:center;gap:12px"></div></div>
    <div class="stamp red st2" style="left:300px;top:1020px;font-size:42px;transform:rotate(-4deg)">${s.stampTxt||''}</div>`),
+ journey:s=>el(`<div style="position:absolute;inset:0;background:radial-gradient(90% 70% at 50% 45%,#11555c,#06303a 62%,#021218)"></div>
+   <svg class="full" viewBox="0 0 1080 1920"><g class="jz"><g stroke="rgba(190,255,240,.24)" stroke-width="2">${[...Array(13)].map((_,i)=>`<path d="M${i*90} 0 V1920"/>`).join('')}${[...Array(22)].map((_,i)=>`<path d="M0 ${i*90} H1080"/>`).join('')}</g>
+   <g transform="translate(40 560)">${mapLand('rgba(214,196,150,.22)','rgba(240,226,190,.6)')}
+   <text x="520" y="560" fill="rgba(200,240,255,.45)" font-family="Cinzel" font-size="30" letter-spacing="14" text-anchor="middle">ATLANTIC OCEAN</text>
+   ${(s.legs||[]).map((k,i)=>`<path class="leg" data-i="${i}" d="${MAP.R[k]}" fill="none" stroke="#ff8a5a" stroke-width="7" stroke-linecap="round"${/paris-ny|ny-paris/.test(k)?' stroke-dasharray="1 0"':''}/>`).join('')}
+   <g class="ship">${SHIP}</g>
+   ${Object.entries(MAP.P).filter(([k])=>(s.pins||[]).includes(k)).map(([k,[x,y]])=>`<g class="pin" data-k="${k}" transform="translate(${x} ${y})"><circle r="13" fill="#fff3d0"/><circle r="26" fill="none" stroke="#fff3d0" stroke-width="3"/></g>`).join('')}</g></g></svg>
+   ${Object.entries(MAP.P).filter(([k])=>(s.pins||[]).includes(k)).map(([k,[x,y]])=>{const L=x>500;return `<div class="pinl" data-k="${k}" style="position:absolute;${L?`right:${1080-(40+x)-10}px;text-align:right`:`left:${Math.max(70,40+x-60)}px`};top:${560+y+(k==='ny'?-150:44)}px;opacity:0"><div style="font:700 34px Cinzel;letter-spacing:.12em;color:#fff3d0;text-shadow:0 2px 10px #000">${MAP.N[k]}</div>${(s.notes||{})[k]?`<div class="stamp" style="position:relative;display:inline-block;margin-top:8px;font-size:24px" data-full="${s.notes[k]}"></div>`:''}</div>`}).join('')}
+   <div class="cart" style="position:absolute;left:290px;width:500px;top:440px;padding:12px 0 10px;text-align:center;border:2px solid #e8c46a;outline:1px solid rgba(232,196,106,.5);outline-offset:6px;background:rgba(4,30,32,.8)"><div style="font:700 32px Cinzel;letter-spacing:.16em;color:#f6e6b8;padding-left:.16em">${s.title||''}</div><div style="margin-top:4px;font:600 15px Cinzel;letter-spacing:.3em;color:#bfe8e0;padding-left:.3em">${s.sub||''}</div></div>`),
+ paper:s=>el(`<div style="position:absolute;inset:0;background:radial-gradient(90% 70% at 50% 45%,#3a2a14,#160e06 65%,#060402)"></div>
+   <div class="card" style="position:absolute;left:70px;top:680px;width:940px;height:610px;background:linear-gradient(172deg,#f3e8cc,#dccb9e);box-shadow:0 40px 90px rgba(0,0,0,.75);padding:24px 50px;transform-origin:50% 40%">
+    <div style="font:600 18px Cinzel;letter-spacing:.3em;display:flex;justify-content:space-between;color:#3a2814;border-bottom:1px solid #3a2814;padding:0 16px 6px"><span>${s.left||''}</span><span>${s.right||''}</span></div>
+    <div style="font:700 88px/1.05 Cinzel;letter-spacing:.1em;text-align:center;color:#1a1108;margin-top:4px">${s.head||''}</div>
+    <div style="border-top:4px double #1a1108;border-bottom:1px solid #1a1108;height:9px;margin:4px 0 18px"></div>
+    <div style="font:700 48px/1.1 'Cormorant Garamond';text-align:center;color:#1a1108">${s.title||''}</div>
+    ${(s.rows||[]).map((r,i)=>`<div class="typed row" data-i="${i}" style="text-align:center;margin-top:12px;font-size:30px">${r}</div>`).join('')}
+    <div style="display:flex;gap:28px;margin-top:22px">${[0,1,2].map(c=>`<div style="flex:1">${[...Array(8)].map((_,j)=>`<div class="nm" data-i="${j*3+c}" style="height:8px;margin-top:13px;background:rgba(30,20,8,.5);width:${58+((c*7+j*13)%40)}%;opacity:0"></div>`).join('')}</div>`).join('')}</div></div>
+   <div class="stamp red st2" style="left:500px;top:1180px;font-size:40px;transform:rotate(-8deg)">${s.stampTxt||''}</div>`),
  map:s=>el(`<div style="position:absolute;inset:0;background:radial-gradient(90% 70% at 50% 45%,#127070,#07383c 62%,#021416)"></div>
    <svg class="full" viewBox="0 0 1080 1920"><g class="mapz"><g stroke="rgba(190,255,240,.2)" stroke-width="1.5">${[...Array(13)].map((_,i)=>`<path d="M${i*90} 0 V1920"/>`).join('')}${[...Array(22)].map((_,i)=>`<path d="M0 ${i*90} H1080"/>`).join('')}</g>
    <g fill="none" stroke="rgba(150,220,255,.55)" stroke-width="3" stroke-linecap="round"><path d="M120 660 C200 640 260 600 330 640 C380 660 420 610 470 600"/><path d="M520 820 C500 900 470 980 480 1080 C490 1160 470 1220 500 1300"/><path d="M640 1080 C690 1070 730 1060 760 1080 C800 1100 850 1090 900 1110"/></g>
@@ -188,6 +240,34 @@ const ILL={
    <div class="cityB" style="position:absolute;left:560px;top:1160px;width:400px;text-align:center;font:700 36px Cinzel;color:#fff3d0;letter-spacing:.12em">${s.to||''}</div>
    <div class="stamp lbl" style="left:600px;top:700px;transform:rotate(-4deg)">${s.label||''}</div>`),
 };
+// ---------- adds: layered elements on a shot, each landing on its word (16 Nov 2026, owner: "more elements to show on screen as the storyline moves forward") ----------
+//   tag {text, x, y, to: [x, y]}: a label plate with an arrow drawing to a point of the picture; figure {x, y (feet), h, label}: a cut-out visitor
+//   for scale; clip {head, title, x, y, w, rot, lines}: a newspaper cutting (original text); count {to, x, y, w, label, suffix, roll}: a counter
+//   that lands on its spoken number (never before it: Output QA NUMBERS). Screen px (1080 x 1920), inside the safe zone, clear of the captions.
+const FIG='<path d="M38 0 H62 V30 H38 Z"/><path d="M28 28 H72 V34 H28 Z"/><circle cx="50" cy="47" r="13"/><path d="M30 64 Q50 56 70 64 L80 150 L70 152 L66 248 L55 248 L50 166 L45 248 L34 248 L30 152 L20 150 Z"/>';
+const ADD={
+ tag:a=>{const w=a.text.length*19+40,ax=clamp(a.to[0],a.x+24,a.x+w-24),ay=a.to[1]>a.y+26?a.y+52:a.y;
+   return `<svg class="full" viewBox="0 0 1080 1920"><path class="ar" d="M${ax} ${ay} L${a.to[0]} ${a.to[1]}" stroke="#e8c46a" stroke-width="4" fill="none" stroke-linecap="round"/><circle class="ad" cx="${a.to[0]}" cy="${a.to[1]}" r="10" fill="#e8c46a" stroke="#140c04" stroke-width="3"/></svg><div class="tagp" style="position:absolute;left:${a.x}px;top:${a.y}px">${a.text}</div>`},
+ figure:a=>`<svg class="full" viewBox="0 0 1080 1920"><g class="fg" transform="translate(${a.x-a.h*.192} ${a.y-a.h}) scale(${a.h/248})" fill="#140c06" stroke="#f0cf78" stroke-width="${4*248/a.h}">${FIG}</g>
+   <path d="M${a.x+a.h*.3} ${a.y-a.h} h16 M${a.x+a.h*.3+8} ${a.y-a.h} V${a.y} M${a.x+a.h*.3} ${a.y} h16" stroke="#f0cf78" stroke-width="3" fill="none"/></svg>
+   <div class="figl" style="position:absolute;left:${a.lx??(a.x+a.h*.3+30)}px;top:${a.ly??(a.y-a.h/2-18)}px">${a.label||''}</div>`,
+ clip:a=>`<div class="clip" style="position:absolute;left:${a.x}px;top:${a.y}px;width:${a.w||400}px;transform:rotate(${a.rot||-3}deg)"><div class="mh">${a.head||''}</div><div class="hl">${a.title||''}</div>${[...Array(a.lines||4)].map((_,i)=>`<div class="ln" style="width:${100-(i*17)%34}%"></div>`).join('')}</div>`,
+ count:a=>`<div class="cnt" style="position:absolute;left:${a.x}px;top:${a.y}px;width:${a.w||600}px"><span></span><b>${a.label||''}</b></div>`,
+};
+function animAdds(sh,T){(sh.adds||[]).forEach((a,j)=>{const w=sh.addEls[j],t0=a.kind==='count'?a.t-(a.roll||1.3):a.t,p=eoc(prog(T,t0,t0+.45));w.style.opacity=p;
+  if(a.kind==='tag'){w.querySelector('.tagp').style.transform=`translateY(${(1-p)*16}px)`;const ar=w.querySelector('.ar'),L=ar.getTotalLength(),q=eio(prog(T,a.t+.15,a.t+.65));ar.setAttribute('stroke-dasharray',`${L*q} ${L+1}`);w.querySelector('.ad').setAttribute('r',q>=1?10:q>0?10*q:0)}
+  if(a.kind==='figure'){w.style.transform=`translateY(${(1-p)*36}px)`}
+  if(a.kind==='clip'){const c=w.firstElementChild;c.style.transform=`translate(${(1-p)*-40}px,${(1-p)*30}px) rotate(${(a.rot||-3)+(1-p)*-5}deg)`}
+  if(a.kind==='count'){const v=Math.round(a.to*eio(prog(T,t0,a.t)));w.querySelector('span').textContent=v.toLocaleString('en-US')+(T>=a.t&&a.suffix?a.suffix:'');w.style.transform=`scale(${.94+.06*p})`}})}
+function animHud(T){const H=EP.hud;
+  if(H.years.length){const yr=$('#hud .yr'),cur=H.years.filter(y=>T>=y.t).pop();yr.style.opacity=cur?eoc(prog(T,H.years[0].t,H.years[0].t+.4)):0;
+    if(cur){const sp=yr.querySelector('span'),p=eoc(prog(T,cur.t,cur.t+.35));if(sp.textContent!==cur.y)sp.textContent=cur.y;sp.style.transform=`translateY(${(1-p)*-26}px)`;sp.style.opacity=p}}
+  if(H.legs.length){const mm=$('#hud .mm'),top=EP.shots.filter(s=>T>=s.t0&&T<=s.t1).pop(),hide=top&&top.kind==='journey'?1-eio(prog(T,top.t0,top.t0+.5)):1;
+    mm.style.opacity=eoc(prog(T,H.legs[0].t,H.legs[0].t+.5))*hide;const when={};
+    H.legs.forEach((g,i)=>{const e=mm.querySelector(`.leg[data-i="${i}"]`),L=e.getTotalLength(),p=eio(prog(T,g.t,g.t+1.2));e.setAttribute('stroke-dasharray',`${L*p} ${L+1}`);
+      when[g.from]=Math.min(when[g.from]??99,g.t);when[g.to]=Math.min(when[g.to]??99,g.t+1.2)});
+    mm.querySelectorAll('.pin').forEach(g=>{const w=when[g.dataset.k]??99;g.setAttribute('opacity',eoc(prog(T,w,w+.3)));
+      const pu=H.pulse.filter(x=>x.stop===g.dataset.k&&T>=x.t).pop(),r=g.querySelector('.ring');if(pu){const q=prog(T,pu.t,pu.t+1.4);r.setAttribute('r',20+60*q);r.setAttribute('opacity',(1-q)*.9)}else r.setAttribute('opacity',0)})}}
 let built=false;
 function build(){if(built)return;built=true;
   EP.shots.forEach((s,i)=>{const d=s.type==='arch'?buildArch(s):s.type==='ill'?ILL[s.kind](s):el('');s.el=d;d.dataset.shot=i;
@@ -197,7 +277,13 @@ function build(){if(built)return;built=true;
       f.style.cssText='position:absolute;inset:-60px;mix-blend-mode:luminosity;opacity:.5';f.innerHTML=`<img src="${m.src}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:${s.bgPos||'50% 40%'};filter:${m.mono?'':'grayscale(1) '}blur(${s.bgBlur||3}px) contrast(1.15)">`;
       d.insertBefore(f,d.children[1]||null);s.bgEl=f}
     if(s.stamp&&typeof s.stamp==='object')s.stamp=s.stamp[s.key]||s.stamp['*']||'';
-    if(s.stamp){const st=document.createElement('div');st.className='stamp'+(s.stampRed?' red':'');const fy=s.mode==='framed'?FR.cy+(s.fh||600)/2-28:1150;st.style.cssText=`left:${s.mode==='framed'?Math.max(140,540-(s.fw||600)/2-30):150}px;top:${fy}px`;st.dataset.full=s.stamp;d.appendChild(st);s.st=st}});
+    if(s.stamp){const st=document.createElement('div');st.className='stamp'+(s.stampRed?' red':'');const fy=s.mode==='framed'?FR.cy+(s.fh||600)/2-28:(s.stampY||1150);st.style.cssText=`left:${s.mode==='framed'?Math.max(140,540-(s.fw||600)/2-30):150}px;top:${fy}px`;st.dataset.full=s.stamp;d.appendChild(st);s.st=st}
+    if(s.adds)s.addEls=s.adds.map(a=>{const w=document.createElement('div');w.className='add';w.style.inset='0';w.innerHTML=ADD[a.kind](a);d.appendChild(w);return w})});
+  // the running year and the journey inset (16 Nov 2026), above every shot, under the captions
+  if(E.cover!==false){$('#cover').innerHTML=`<b>${E.coverKicker||'TURNS OUT'}</b><span>${E.coverTitle||E.title}</span>`;$('#cover').style.top=(E.coverY||1000)+'px'}else $('#cover').remove();
+  const H=EP.hud;$('#hud').innerHTML=(H.years.length?'<div class="yr"><b>YEAR</b><span></span></div>':'')+(H.legs.length?`<svg class="mm" viewBox="0 0 1000 700">${mapLand('rgba(214,196,150,.25)','rgba(240,226,190,.7)')}
+    ${H.legs.map((g,i)=>`<path class="leg" data-i="${i}" d="${MAP.R[g.from+'-'+g.to]}" fill="none" stroke="#ff8a5a" stroke-width="12" stroke-linecap="round"/>`).join('')}
+    ${Object.entries(MAP.P).map(([k,[x,y]])=>`<g class="pin" data-k="${k}"><circle class="ring" cx="${x}" cy="${y}" r="20" fill="none" stroke="#fff3d0" stroke-width="5" opacity="0"/><circle cx="${x}" cy="${y}" r="16" fill="#fff3d0"/><text x="${x+(x>500?-30:28)}" y="${y+(k==='ny'?-26:k==='phila'?60:-30)}" text-anchor="${x>500?'end':'start'}" fill="#fff3d0" font-family="Cinzel" font-weight="700" font-size="54" letter-spacing="3">${k==='phila'?'PHILA.':MAP.N[k]}</text></g>`).join('')}</svg>`:'');
   $('#prog').innerHTML=E.lines.map(()=>'<i></i>').join('');$('#badge').innerHTML=(E.badge||'TURNS OUT · TRUE STORIES')+'<span class="rule"></span>';}
 const typeIn=(e,p)=>{const f=e.dataset.full||e.textContent;e.dataset.full=f;e.textContent=f.slice(0,Math.round(f.length*p))||' ';e.style.opacity=p>0?1:0};
 
@@ -211,6 +297,20 @@ function animIll(s,lt,T){const d=s.el,dur=Math.max(1,Math.min(s.t1,EP.total)-s.t
     d.querySelector('.odo').innerHTML=`<span style="display:inline-block;padding:0 40px;height:170px;line-height:170px;background:linear-gradient(180deg,#0a1430,#1c2c58 50%,#0a1430);border:1px solid rgba(217,184,102,.5);border-radius:14px;font:700 128px Cinzel;letter-spacing:.06em;color:#f2e2b0;box-shadow:inset 0 0 20px rgba(0,0,0,.8)">${yr}</span>`;
     let h='';for(let k=0;k<5;k++){const ph=((lt*.4+k/5)%1);h+=`<circle cx="540" cy="760" r="${120+ph*700}" stroke="rgba(150,190,255,${(1-ph)*.35})" stroke-width="${3-2*ph}"/>`}d.querySelector('.rings').innerHTML=h;
     const st=d.querySelector('.st2');const sa=Math.min(dur-.9,2.6)+.15;const sp=prog(lt,sa,sa+.3);st.style.opacity=sp>0?1:0;st.style.transform=`rotate(-4deg) scale(${1+.6*(1-eox(sp))})`}
+  if(s.kind==='journey'){const z=1+.05*eio(prog(lt,0,dur));d.querySelector('.jz').setAttribute('transform',`translate(540 900) scale(${z}) translate(-540 -900)`);
+    const cp=eoc(prog(lt,0,.6));d.querySelector('.cart').style.opacity=cp;
+    const dr=s.draw||0,legs=[...d.querySelectorAll('.leg')],when={};let ship=null;   // when: the shot time each pin is reached (pure in t)
+    (s.pins||[]).forEach(k=>when[k]=legs.length?99:0);
+    legs.forEach((g,i)=>{const L=g.getTotalLength(),a=i<dr?-9:(s.legT??.35)+(i-dr)*1.25,p=eio(prog(lt,a,a+1.1)),k=s.legs[i].split('-');g.setAttribute('stroke-dasharray',/paris-ny|ny-paris/.test(s.legs[i])&&p>=1?'14 12':`${L*p} ${L}`);
+      when[k[0]]=Math.min(when[k[0]]??99,Math.max(0,a));when[k[1]]=Math.min(when[k[1]]??99,Math.max(0,a+1.1));
+      if(p>0&&p<1){const pt=g.getPointAtLength(L*p),q=g.getPointAtLength(Math.max(0,L*p-4));ship=[pt.x,pt.y,pt.x<q.x?-1:1]}});
+    const sp=d.querySelector('.ship');sp.setAttribute('opacity',ship?1:0);if(ship)sp.setAttribute('transform',`translate(${ship[0]} ${ship[1]-10}) scale(${ship[2]*1.3} 1.3)`);
+    d.querySelectorAll('.pin').forEach(g=>{const w=when[g.dataset.k]??99,p=eox(prog(lt,w,w+.4));g.setAttribute('opacity',p>0?1:0);g.setAttribute('transform',g.getAttribute('transform').replace(/ scale\([^)]*\)/,'')+` scale(${p>0?1+.6*(1-p):0})`)});
+    d.querySelectorAll('.pinl').forEach(e=>{const w=when[e.dataset.k]??99;e.style.opacity=eoc(prog(lt,w,w+.4));const st=e.querySelector('.stamp');if(st)typeIn(st,prog(lt,w+.2,w+1.0))})}
+  if(s.kind==='paper'){const c=d.querySelector('.card');const p=eoc(prog(lt,0,.8));c.style.transform=`translateY(${(1-p)*70}px) rotate(${-1.5+(1-p)*-3}deg) scale(${1+.035*eio(prog(lt,0,dur))})`;
+    d.querySelectorAll('.row').forEach((r,i)=>typeIn(r,prog(lt,.5+i*.8,1.2+i*.8)));
+    d.querySelectorAll('.nm').forEach(e=>{const i=+e.dataset.i;e.style.opacity=lt>.9+i*.05?1:0});
+    const st=d.querySelector('.st2');const sp=prog(lt,s.stampAt||2.4,(s.stampAt||2.4)+.3);st.style.opacity=sp>0?1:0;st.style.transform=`rotate(-8deg) scale(${1+.6*(1-eox(sp))})`}
   if(s.kind==='map'){const r=d.querySelector('.route'),L=r.getTotalLength(),e=Math.min(dur-.8,2.6),p=eio(prog(lt,.4,e));r.setAttribute('stroke-dasharray',`${L*p} ${L}`);
     const pt=r.getPointAtLength(L*p);d.querySelector('.nib').setAttribute('transform',`translate(${pt.x} ${pt.y}) rotate(${-30+20*Math.sin(lt*9)})`);d.querySelector('.nib').setAttribute('opacity',p>0&&p<1?1:0);
     const sp=eox(prog(lt,e,e+.4));d.querySelector('.seal').setAttribute('transform',`translate(760 1080) rotate(-12) scale(${sp>0?1.6-.6*sp:0})`);
@@ -226,14 +326,16 @@ function buildCaps(){CH=[];EP.scenes.forEach((s,si)=>{let ph=[],cur=[];s.words.f
     ph.forEach(p=>{const k=Math.ceil(p.length/6),m=Math.ceil(p.length/k);for(let i=0;i<p.length;i+=m)CH.push({si,words:p.slice(i,i+m)})})});
   CH.forEach((c,i)=>{c.t0=i?c.words[0].t0:0;const nx=CH[i+1];c.t1=nx&&nx.si===c.si?nx.words[0].t0-.03:Math.min(c.words[c.words.length-1].t1+.5,nx?nx.words[0].t0-.05:1e9)});capI=-2}
 
+const CV={hold:1.0,out:1.45};   // the cover title holds 1.0 s, then fades by 1.45 s (the first stamp types after it)
 const DUST=[...Array(14)].map((_,i)=>({s:1.5+(i%4)}));
 window.render=function(T){if(!EP)timeline(null);build();
   $$('.shot').forEach(s=>{s.style.display='none'});
   EP.shots.forEach((sh,i)=>{if(T<sh.t0||T>sh.t1)return;const lt=T-sh.t0,el=sh.el,a=i===0?1:eio(prog(T,sh.t0,sh.t0+.7));el.style.display='block';el.style.opacity=a;el.style.zIndex=i+1;
     if(sh.type==='ill')animIll(sh,lt,T);
+    if(sh.adds)animAdds(sh,T);
     if(sh.bgEl){const q=eio(prog(lt,0,Math.max(1,Math.min(sh.t1,EP.total)-sh.t0)));sh.bgEl.style.transform=`scale(${1.02+.1*q}) translate(${-24*q}px,${-14*q}px)`}
     // numbers leave before the next shot fades in (Output QA NUMBERS, run 43708264631: the counter's 1913 under the map read as "1933")
-    {const nx=EP.shots[i+1];if(nx)el.querySelectorAll('.odo,.st2,.stamp').forEach(e=>{const f=1-prog(T,nx.t0-.25,nx.t0+.05);if(f<1)e.style.opacity=Math.min(+e.style.opacity||1,f)})}
+    {const nx=EP.shots[i+1];if(nx)el.querySelectorAll('.odo,.st2,.stamp,.cnt').forEach(e=>{const f=1-prog(T,nx.t0-.25,nx.t0+.05);if(f<1)e.style.opacity=Math.min(+e.style.opacity||1,f)})}
     if(sh.type==='arch'&&sh.key&&sh.mode==='depth')animDepth(sh,lt,Math.max(1,Math.min(sh.t1,EP.total)-sh.t0));
     else if(sh.type==='arch'&&sh.key){const img=el.querySelector('img'),dur=Math.max(1,Math.min(sh.t1,EP.total)-sh.t0),q=eio(prog(lt,0,dur)),full=sh.mode!=='framed';
       img.style.transform=`scale(${lerp(full?1.04:1.02,full?1.16:1.12,q)}) translate(${lerp(0,full?-18:-10,q)*(sh.pan||1)}px,${lerp(0,-14,q)}px)`;
@@ -241,7 +343,7 @@ window.render=function(T){if(!EP)timeline(null);build();
       const pl=el.querySelector('.plate');if(pl)pl.style.opacity=eoc(prog(lt,.6,1.3));
       if(sh.mode==='framed'){const f=el.querySelector('.frm'),p=i===0?1:eoc(prog(lt,0,.9));f.style.transform=`translateY(${(1-p)*40-18*q}px) scale(${.96+.04*p})`;const bg=el.firstElementChild;if(bg)bg.style.transform=`scale(${1+.1*q}) translateX(${-20*q}px)`;
         if(sh.glow)f.style.boxShadow=`0 0 0 2px #e8c46a,0 0 0 14px rgba(20,12,5,.92),0 0 0 16px rgba(232,196,106,.7),0 0 ${60+50*eoc(prog(lt,.3,1.5))}px rgba(255,210,120,${.25+.25*eoc(prog(lt,.3,1.5))}),0 50px 100px rgba(0,0,0,.8)`}}
-    if(sh.st){const p=prog(lt,.35,1.35);typeIn(sh.st,i===0?Math.max(p,T<.05?0:p):p);sh.st.style.transform=`rotate(-2deg) scale(${1+.15*(1-eoc(prog(lt,.35,.6)))})`}
+    if(sh.st){const s0=i===0&&E.cover!==false?CV.out:.35,p=prog(lt,s0,s0+1);typeIn(sh.st,i===0?Math.max(p,T<.05?0:p):p);sh.st.style.transform=`rotate(-2deg) scale(${1+.15*(1-eoc(prog(lt,.35,.6)))})`}
   });
   let ci=CH.findIndex(c=>T>=c.t0-.05&&T<c.t1);
   if(ci!==capI){capI=ci;$('#cap').innerHTML=ci<0?'':CH[ci].words.map(w=>`<span data-k="${KEYRE.test(NW(w.w))?1:0}">${w.w.replace(/\.\.\.$/,'…')}</span>`).join(' ')}
@@ -252,6 +354,8 @@ window.render=function(T){if(!EP)timeline(null);build();
   {const li=Math.max(0,EP.scenes.findLastIndex(x=>T>=x.start-.4)),ch=(E.chapters||[])[li];const R=['I','II','III','IV','V','VI','VII','VIII'];
    const h=ch?`<b>CHAPTER ${R[li]}</b>${ch}`:E.title;if($('#chap').dataset.h!==h){$('#chap').innerHTML=h;$('#chap').dataset.h=h}
    const st=EP.scenes[li]?EP.scenes[li].start-.4:0;$('#chap').style.opacity=li===0?1:eoc(prog(T,st,st+.5))}
+  animHud(T);
+  {const c=$('#cover');if(c){const p=prog(T,CV.hold,CV.out);c.style.opacity=1-eio(p);c.style.transform=`translateY(${eio(p)*20}px)`}}
   $$('#prog i').forEach((e,i)=>e.className=(EP.scenes[i]&&T>=EP.scenes[i].start-.3)?'on':'');
   const r=mulberry(Math.floor(T*15)+7);let h='';DUST.forEach(d=>{if(r()<.35)h+=`<i style="left:${r()*1080}px;top:${r()*1920}px;width:${d.s}px;height:${d.s}px;opacity:${.3+r()*.6}"></i>`});
   if(r()<.4)h+=`<b style="left:${r()*1080}px;top:0;height:1920px;opacity:${.25+r()*.4}"></b>`;$('#dust').innerHTML=h;

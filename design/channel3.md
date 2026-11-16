@@ -170,7 +170,7 @@ scripts/echoes/sound.py (the kit's sound_h.py: score, effects on every shot, its
   (each at most 22 words; line 1 is the payoff over the payoff picture, line 7 starts "Turns out," instead of the kit's fixed outro),
   keys (gold italic caption words), shots `{line, at: start | word | word#n, type: arch | ill, img: "a|b" (a fallback per shot), mode: framed |
   full, develop, stamp, stampRed, tone, glow}`; ill kinds: wall, dossier, counter, map (add a kind to ILL + animIll + sound.py for a new story).
-  voice.text = the lines joined; `node scripts/echoes/build.mjs <config>` writes the scene. A NEW shot on almost every line (10-12 shots).
+  voice.text = the lines joined; `node scripts/echoes/build.mjs <config>` writes the scene. A new beat about every 2 s (16 Nov: 10-12 shots was too few).
 - Images: 4-6 real archival images (>= 800 px where they exist), fetched by the Media workflow from a request in scripts/media/requests/
   (Wikimedia + Library of Congress; PD / CC0 / CC BY only, recorded per file; the MEDIA_JSON line goes into the config's "media").
 - Colour per beat (web channel's input, 15 Nov): every shot has its own tone (framed: tinted blur; illustrated: its own palette), never all brown.
@@ -182,6 +182,21 @@ scripts/echoes/sound.py (the kit's sound_h.py: score, effects on every shot, its
   photo as a toned far plane drifting behind it. `grade` (a CSS filter, e.g. "contrast(1.6) brightness(.8)") deepens a bright print's
   pale sky: liberty-arm render 1 failed Output QA GRADE (37% washed frames) and FILL (28% under 0.80) on sepia skies, render 2 with it 1% / 11%. "framed" is retired for Turns Out (Output QA FILL fails a picture centred in the frame).
   Keep printed numbers on a photo (a police number) out of the camera's view: Output QA NUMBERS reads them.
+- **Cover moment** (owner, 16 Nov 2026: "we should have that back so that people understand what is it about from profile grid, no add-on
+  cover"): every Echoes reel opens with the title over the subject at frame 0 (kicker "TURNS OUT", `coverTitle` or `title`, at `coverY`,
+  default 1000; `"cover": false` turns it off), inside the centre 3:4 of the frame (y 240-1680, what the profile grid shows); it holds 1.0 s
+  and fades by 1.45 s, the first stamp types after it; window.COVER = 0. Output QA COVER reads the title at frame 0.
+- **Layered elements** (owner, 16 Nov 2026, the Liberty arm reel: "elements are few and are spread ... more elements to show on screen as the
+  storyline moves forward"; rules-c3.md rule 11: **Echoes: a new element at least every 2.5 s; no photo used twice**). A new visual beat on
+  each phrase or key word, about every 2 s (18-24 beats), each photo used once (Output QA REUSE), and supporting elements that build up:
+  `"hud": {years: [{line, at, y}], legs: [{line, at, from, to}], pulse: [{line, at, stop}]}` = a running year (top left; it changes on the
+  spoken year, so the voice must say every year shown: Output QA NUMBERS) and a journey inset map (top right; stops paris / phila / ny in
+  scripts/echoes/engine.html MAP, add a stop there for a new story; coasts only, no borders) whose route draws on its word; per shot
+  `"adds": [{kind: tag | figure | clip | count, at, ...}]` = a label plate with an arrow to a point of the picture, a cut-out visitor for
+  scale, a newspaper cutting (original text, never an invented quote or name), a counter that lands on the word that says its number; ill
+  kinds `journey` (full-frame map: legs, pins, notes, draw = the legs already drawn) and `paper` (a newspaper page whose name lines print
+  one by one). Screen px; keep them in the safe zone and clear of the captions (y 1300+). Each element is heard (scripts/echoes/sound.py).
+  Output QA ELEMENTS fails a stretch over 3.0 s with nothing new on the final frames, or under 4 pictures in a 10 s window.
 - Voice (owner, 15 Nov 2026: "use previous voice (from last engine not the new kit)"): af_heart, speed 1, a gap after each sentence (was the kit's
   bm_george, 45-50 s); about 35 s for 7 lines, `dur` = the preflight estimate + 4 s. The scene follows the real word
   times; the video ends 1.4 s after the last word (the sound's length; the mux is -shortest).
