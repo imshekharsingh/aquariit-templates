@@ -302,7 +302,7 @@ function animIll(s,lt,T){const d=s.el,dur=Math.max(1,Math.min(s.t1,EP.total)-s.t
     const dr=s.draw||0,legs=[...d.querySelectorAll('.leg')],when={};let ship=null;   // when: the shot time each pin is reached (pure in t)
     (s.pins||[]).forEach(k=>when[k]=legs.length?99:0);
     legs.forEach((g,i)=>{const L=g.getTotalLength(),a=i<dr?-9:(s.legT??.35)+(i-dr)*1.25,p=eio(prog(lt,a,a+1.1)),k=s.legs[i].split('-');g.setAttribute('stroke-dasharray',/paris-ny|ny-paris/.test(s.legs[i])&&p>=1?'14 12':`${L*p} ${L}`);
-      when[k[0]]=Math.min(when[k[0]]??99,Math.max(0,a));when[k[1]]=Math.min(when[k[1]]??99,Math.max(0,a+1.1));
+      when[k[0]]=Math.min(when[k[0]]??99,i<dr?.2+i*.7:Math.max(0,a));when[k[1]]=Math.min(when[k[1]]??99,i<dr?.55+i*.7:Math.max(0,a+1.1));   // a recap (legs already drawn) lands its stops one by one
       if(p>0&&p<1){const pt=g.getPointAtLength(L*p),q=g.getPointAtLength(Math.max(0,L*p-4));ship=[pt.x,pt.y,pt.x<q.x?-1:1]}});
     const sp=d.querySelector('.ship');sp.setAttribute('opacity',ship?1:0);if(ship)sp.setAttribute('transform',`translate(${ship[0]} ${ship[1]-10}) scale(${ship[2]*1.3} 1.3)`);
     d.querySelectorAll('.pin').forEach(g=>{const w=when[g.dataset.k]??99,p=eox(prog(lt,w,w+.4));g.setAttribute('opacity',p>0?1:0);g.setAttribute('transform',g.getAttribute('transform').replace(/ scale\([^)]*\)/,'')+` scale(${p>0?1+.6*(1-p):0})`)});
