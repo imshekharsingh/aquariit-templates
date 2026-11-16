@@ -23,6 +23,10 @@ the detail lives in the files indexed below. Read only the parts your task needs
   never ahead, never a second reel for a channel and slot that already has one.
 - One experiment and one researched improvement per channel per day (design/runbook-daily.md).
 
+## Scheduled tasks: PAUSED (owner, 16 Nov 2026)
+No scheduled task or reminder fires or may be created until the owner says so; the Owner chat starts the critic and each build by hand
+(design/runbook-studio.md "Scheduled tasks"). The sections below describe the runs for when they return.
+
 ## Daily run
 The "Daily studio run" scheduled task (06:47 IST) follows **design/runbook-daily.md** (steps 0-5: Feedback first, Owner answers, audit card,
 rulebooks, build the web and tech reels, results line).
@@ -36,7 +40,8 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - Verify the output, not the input: checks measure the rendered MP4, frames at phone size and audible audio; read design/owner-feedback.md
   against the finished output; add a line there the same day the owner catches something.
 - Output QA: every owner complaint becomes a GitHub check in scripts/qa/ the same day; it runs on the final MP4 after every render; any FAIL = NOT READY.
-- Independent critic: a different session ("Reel critic", ~11:17 IST) must write "CRITIC: READY" in the review file; nobody approves their own reel.
+- Independent critic: a different session ("Reel critic", ~11:17 IST; started by hand while tasks are paused) must write "CRITIC: READY" in the
+  review file; nobody approves their own reel.
 - Preflight: settle everything first, then ONE render on GitHub; never render whole videos in the session; re-render only for a real defect.
 - Every reel feels premium, nothing looks broken, every spoken line is shown and finished, every reel teaches one concrete, useful thing.
 
