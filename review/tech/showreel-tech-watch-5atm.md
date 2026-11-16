@@ -1,4 +1,4 @@
-# Review: showreel-tech-watch-5atm (tech, postOn 2026-11-16 postAt 13:00 IST)
+# Review: showreel-tech-watch-5atm (tech, postOn 2026-11-17 postAt 13:00 IST)
 
 The Mandatory Gate, design/mandatory.md. Built Sun 15 Nov on the owner's ask ("Get reels ready for Web and Tech for Monday and Tuesday"),
 on the kit engine's shared frame (techkit/base.html + techkit/scenes/watch-5atm.js). Rebuilt Sun 15 Nov night on the owner's frame notes (the glass

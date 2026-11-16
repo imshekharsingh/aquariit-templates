@@ -1,4 +1,4 @@
-# Review: showreel-tech-screen-120hz (tech, postOn 2026-11-17 postAt 13:00 IST)
+# Review: showreel-tech-screen-120hz (tech, postOn 2026-11-16 postAt 13:00 IST)
 
 The Mandatory Gate, design/mandatory.md. Built Sun 15 Nov on the owner's ask ("Get reels ready for Web and Tech for Monday and Tuesday"),
 on the kit engine's shared frame (techkit/base.html + techkit/scenes/screen-120hz.js). AUTO lines from `python3 techkit/make.py screen-120hz --fake-vo --stills ...`
