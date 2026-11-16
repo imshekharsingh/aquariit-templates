@@ -44,6 +44,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'hero': '15 Nov tech "I don\'t see much happening animation wise around watch in 5 ATM video" (a small static watch, only the water moved)',
     'elements': '16 Nov Turns Out Liberty arm "elements are few and are spread ... through the whole video. We should design it such that there are more elements to show on screen as the storyline moves forward"',
     'reuse': '16 Nov Turns Out Liberty arm (one photo used 3 times; "elements are few")',
+    'cover': '16 Nov Turns Out "I used to have reel cover element in video itself ... we should have that back so that people understand what is it about from profile grid, no add-on cover"',
     'licence': '14 Nov "yes to free real images" (design/safety.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
@@ -727,6 +728,26 @@ def elements_check(G, fps, band, dur=None):
          + f'; pictures per {T["el_win"]} s: at least {lo} (from {lo_at:.1f} s; {T["el_pics"]}+)')
 
 
+def cover_png(png, title):
+    """COVER (16 Nov 2026, Echoes reels): the title is readable at frame 0 inside the centre 3:4 the profile grid keeps (y 240-1680 of 1920):
+    at least 60% of its words of 3+ letters read by tesseract (conf 60+) with their boxes inside that crop."""
+    want = [alnum(w) for w in title.split() if len(alnum(w)) >= 3]
+    got = [(alnum(t), b) for t, cf, l, tp, r, b in ocr(png) if cf >= 60 and tp >= 240 and b <= 1680]
+    hit = [w for w in want if any(w == g or (len(w) > 4 and w in g) for g, _ in got)]
+    return hit, want
+
+
+def cover_check(mp4, c):
+    X = c.get('echoes') or {}
+    if not X or X.get('cover') is False: line('COVER', 'SKIP', 'not an Echoes reel with a cover moment'); return
+    if subprocess.run(['which', 'tesseract'], capture_output=True).returncode: line('COVER', 'SKIP', 'tesseract not installed on this runner'); return
+    title = X.get('coverTitle') or X.get('title') or ''
+    with tempfile.TemporaryDirectory() as td:
+        p = os.path.join(td, 'c0.png'); grab(mp4, .05, p); hit, want = cover_png(p, title)
+    ok = want and len(hit) >= .6 * len(want)
+    line('COVER', 'PASS' if ok else 'FAIL', f'frame 0 shows the title "{title}" inside the centre 3:4 (y 240-1680): {len(hit)} of {len(want)} words read ({", ".join(hit) or "none"})')
+
+
 def reuse_check(c):
     X = c.get('echoes')
     if not X: line('REUSE', 'SKIP', 'not an Echoes config'); return
@@ -978,8 +999,8 @@ def main():
     dead_check(G, fps, mp4, dur)
     if ch == 'tech': sheen_check(G, fps)
     else: line('SHEEN', 'SKIP', 'tech only')
-    if ch == 'c3': fill_check(G, fps); elements_check(G, fps, qa.get('subs') or T['subs'][ch]); reuse_check(c)
-    else: line('FILL', 'SKIP', 'Turns Out only'); line('ELEMENTS', 'SKIP', 'Turns Out only'); line('REUSE', 'SKIP', 'Turns Out only')
+    if ch == 'c3': fill_check(G, fps); elements_check(G, fps, qa.get('subs') or T['subs'][ch]); reuse_check(c); cover_check(mp4, c)
+    else: line('FILL', 'SKIP', 'Turns Out only'); line('ELEMENTS', 'SKIP', 'Turns Out only'); line('REUSE', 'SKIP', 'Turns Out only'); line('COVER', 'SKIP', 'Turns Out only')
     if ch == 'web': calm_check(G, fps, mp4, qa)
     else: line('CALM', 'SKIP', 'web only')
     if qa.get('mute'): mute_check(G, fps, qa['mute'], heard)

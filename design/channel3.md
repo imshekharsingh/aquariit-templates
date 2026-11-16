@@ -182,6 +182,10 @@ scripts/echoes/sound.py (the kit's sound_h.py: score, effects on every shot, its
   photo as a toned far plane drifting behind it. `grade` (a CSS filter, e.g. "contrast(1.6) brightness(.8)") deepens a bright print's
   pale sky: liberty-arm render 1 failed Output QA GRADE (37% washed frames) and FILL (28% under 0.80) on sepia skies, render 2 with it 1% / 11%. "framed" is retired for Turns Out (Output QA FILL fails a picture centred in the frame).
   Keep printed numbers on a photo (a police number) out of the camera's view: Output QA NUMBERS reads them.
+- **Cover moment** (owner, 16 Nov 2026: "we should have that back so that people understand what is it about from profile grid, no add-on
+  cover"): every Echoes reel opens with the title over the subject at frame 0 (kicker "TURNS OUT", `coverTitle` or `title`, at `coverY`,
+  default 1000; `"cover": false` turns it off), inside the centre 3:4 of the frame (y 240-1680, what the profile grid shows); it holds 1.0 s
+  and fades by 1.45 s, the first stamp types after it; window.COVER = 0. Output QA COVER reads the title at frame 0.
 - **Layered elements** (owner, 16 Nov 2026, the Liberty arm reel: "elements are few and are spread ... more elements to show on screen as the
   storyline moves forward"; rules-c3.md rule 11: **Echoes: a new element at least every 2.5 s; no photo used twice**). A new visual beat on
   each phrase or key word, about every 2 s (18-24 beats), each photo used once (Output QA REUSE), and supporting elements that build up:

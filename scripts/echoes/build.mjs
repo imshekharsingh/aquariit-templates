@@ -26,7 +26,7 @@ for (const m of c.media || []) {
 }
 const bad = X.shots.filter((s) => s.type === 'arch' && !s.img.split('|').some((k) => img[k]));
 if (bad.length) console.log(`ECHOES: no image arrived for ${bad.map((s) => s.img).join(', ')} (the shot shows a dark card: change its "img" fallback)`);
-const EPC = { credit: X.credit, chapters: X.chapters, title: X.title, badge: X.badge, lines: X.lines, keys: X.keys, shots: X.shots, dur: c.dur, img };
+const EPC = { credit: X.credit, chapters: X.chapters, title: X.title, cover: X.cover, coverTitle: X.coverTitle, coverKicker: X.coverKicker, coverY: X.coverY, hud: X.hud, badge: X.badge, lines: X.lines, keys: X.keys, shots: X.shots, dur: c.dur, img };
 const html = readFileSync(join(here, 'engine.html'), 'utf8').replace('/*EPISODE*/', '/* facts and sources: ' + (c.sources || []).map((x) => x.title + ' ' + x.url).join(' | ').split('*/').join('') + ' */\nwindow.EPC=' + JSON.stringify(EPC) + ';');
 writeFileSync(c.seek, html);
 console.log(`ECHOES: ${c.seek}: ${X.lines.length} lines, ${X.shots.length} shots (${X.shots.filter((s) => s.type === 'arch').length} archival, ${Object.keys(img).length} images)`);

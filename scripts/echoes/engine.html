@@ -36,6 +36,11 @@ svg.full{position:absolute;left:0;top:0;width:1080px;height:1920px}
 /* layered elements (owner, 16 Nov 2026, the Liberty arm reel: "more elements to show on screen as the storyline moves forward"): a running year,
    a journey inset map whose route draws on its words, and per-shot adds (labels with arrows, cut-out figures for scale, newspaper cuttings, a counter) */
 #hud{position:absolute;inset:0;z-index:100;pointer-events:none}
+/* the cover moment (owner, 16 Nov 2026: "I used to have reel cover element in video itself ... we should have that back so that people understand
+   what is it about from profile grid"): frame 0 shows the title over the subject, inside the centre 3:4 (y 240-1680) the profile grid keeps */
+#cover{position:absolute;left:90px;right:90px;z-index:100;text-align:center;background:rgba(10,6,3,.84);border:2px solid #d9b866;padding:16px 26px 22px;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+#cover b{display:block;font:600 22px Cinzel;letter-spacing:.4em;color:#d9b866;padding-left:.4em}
+#cover span{display:block;font:700 86px/1.04 Cinzel;color:#f6e3a8;margin-top:8px}
 #hud .yr{position:absolute;left:96px;top:436px;padding:6px 22px 8px;background:rgba(12,8,4,.82);border:2px solid #d9b866;box-shadow:0 10px 30px rgba(0,0,0,.6);text-align:center;opacity:0}
 #hud .yr b{display:block;font:600 14px Cinzel;letter-spacing:.34em;color:#bfa66e;padding-left:.34em}
 #hud .yr span{display:block;font:700 60px/1.05 Cinzel;color:#f6e3a8;letter-spacing:.04em}
@@ -62,6 +67,7 @@ svg.full{position:absolute;left:0;top:0;width:1080px;height:1920px}
 <div id="badge"></div>
 <div id="chap"></div>
 <div id="hud"></div>
+<div id="cover" data-cover></div>
 <div id="cap" data-band data-subs></div>
 <div id="src" style="position:absolute;left:120px;right:120px;top:1496px;text-align:center;font:600 15px Cinzel;letter-spacing:.2em;color:rgba(232,214,176,.85);text-shadow:0 1px 6px #000;z-index:100;opacity:0"></div>
 <div id="dust" class="ov"></div>
@@ -104,7 +110,7 @@ function timeline(vw){
   // after the last word + 1.4 s the video ends (run 43696792618: a 3 s tail failed Output QA DEAD) (the sound is that long and the mux is -shortest): the frames past it are never seen
   window.HOLDS=total<E.dur-.05?[[+total.toFixed(2),E.dur]]:[];
   window.TRANSITIONS=shots.slice(1).map(s=>[s.t0,+(s.t0+.7).toFixed(2),'crossfade']);
-  const cov=shots[0].stamp?.35+1.0+.3:1.2;window.COVER=+Math.min(cov,shots[1]?shots[1].t0-.1:cov).toFixed(2);
+  const cov=shots[0].stamp?.35+1.0+.3:1.2;window.COVER=E.cover!==false?0:+Math.min(cov,shots[1]?shots[1].t0-.1:cov).toFixed(2);   // with the cover moment, frame 0 is the cover
   window.CUES={engine:'echoes',dur:total,ep:{total,scenes,hud,shots:shots.map(({el,st,base,motes,bgEl,addEls,...r})=>JSON.parse(JSON.stringify(r)))}};
   buildCaps();
 }
@@ -209,14 +215,14 @@ const ILL={
    ${Object.entries(MAP.P).filter(([k])=>(s.pins||[]).includes(k)).map(([k,[x,y]])=>{const L=x>500;return `<div class="pinl" data-k="${k}" style="position:absolute;${L?`right:${1080-(40+x)-10}px;text-align:right`:`left:${Math.max(70,40+x-60)}px`};top:${560+y+(k==='ny'?-150:44)}px;opacity:0"><div style="font:700 34px Cinzel;letter-spacing:.12em;color:#fff3d0;text-shadow:0 2px 10px #000">${MAP.N[k]}</div>${(s.notes||{})[k]?`<div class="stamp" style="position:relative;display:inline-block;margin-top:8px;font-size:24px" data-full="${s.notes[k]}"></div>`:''}</div>`}).join('')}
    <div class="cart" style="position:absolute;left:290px;width:500px;top:440px;padding:12px 0 10px;text-align:center;border:2px solid #e8c46a;outline:1px solid rgba(232,196,106,.5);outline-offset:6px;background:rgba(4,30,32,.8)"><div style="font:700 32px Cinzel;letter-spacing:.16em;color:#f6e6b8;padding-left:.16em">${s.title||''}</div><div style="margin-top:4px;font:600 15px Cinzel;letter-spacing:.3em;color:#bfe8e0;padding-left:.3em">${s.sub||''}</div></div>`),
  paper:s=>el(`<div style="position:absolute;inset:0;background:radial-gradient(90% 70% at 50% 45%,#3a2a14,#160e06 65%,#060402)"></div>
-   <div class="card" style="position:absolute;left:70px;top:410px;width:940px;height:880px;background:linear-gradient(172deg,#f3e8cc,#dccb9e);box-shadow:0 40px 90px rgba(0,0,0,.75);padding:30px 50px;transform-origin:50% 40%">
+   <div class="card" style="position:absolute;left:70px;top:680px;width:940px;height:610px;background:linear-gradient(172deg,#f3e8cc,#dccb9e);box-shadow:0 40px 90px rgba(0,0,0,.75);padding:24px 50px;transform-origin:50% 40%">
     <div style="font:600 18px Cinzel;letter-spacing:.3em;display:flex;justify-content:space-between;color:#3a2814;border-bottom:1px solid #3a2814;padding-bottom:6px"><span>${s.left||''}</span><span>${s.right||''}</span></div>
-    <div style="font:700 96px/1.1 Cinzel;letter-spacing:.1em;text-align:center;color:#1a1108;margin-top:6px">${s.head||''}</div>
+    <div style="font:700 88px/1.05 Cinzel;letter-spacing:.1em;text-align:center;color:#1a1108;margin-top:4px">${s.head||''}</div>
     <div style="border-top:4px double #1a1108;border-bottom:1px solid #1a1108;height:9px;margin:4px 0 18px"></div>
-    <div style="font:700 54px 'Cormorant Garamond';text-align:center;color:#1a1108">${s.title||''}</div>
+    <div style="font:700 48px/1.1 'Cormorant Garamond';text-align:center;color:#1a1108">${s.title||''}</div>
     ${(s.rows||[]).map((r,i)=>`<div class="typed row" data-i="${i}" style="text-align:center;margin-top:12px;font-size:30px">${r}</div>`).join('')}
-    <div style="display:flex;gap:28px;margin-top:22px">${[0,1,2].map(c=>`<div style="flex:1">${[...Array(13)].map((_,j)=>`<div class="nm" data-i="${j*3+c}" style="height:8px;margin-top:14px;background:rgba(30,20,8,.5);width:${58+((c*7+j*13)%40)}%;opacity:0"></div>`).join('')}</div>`).join('')}</div></div>
-   <div class="stamp red st2" style="left:520px;top:1120px;font-size:40px;transform:rotate(-8deg)">${s.stampTxt||''}</div>`),
+    <div style="display:flex;gap:28px;margin-top:22px">${[0,1,2].map(c=>`<div style="flex:1">${[...Array(8)].map((_,j)=>`<div class="nm" data-i="${j*3+c}" style="height:8px;margin-top:13px;background:rgba(30,20,8,.5);width:${58+((c*7+j*13)%40)}%;opacity:0"></div>`).join('')}</div>`).join('')}</div></div>
+   <div class="stamp red st2" style="left:500px;top:1180px;font-size:40px;transform:rotate(-8deg)">${s.stampTxt||''}</div>`),
  map:s=>el(`<div style="position:absolute;inset:0;background:radial-gradient(90% 70% at 50% 45%,#127070,#07383c 62%,#021416)"></div>
    <svg class="full" viewBox="0 0 1080 1920"><g class="mapz"><g stroke="rgba(190,255,240,.2)" stroke-width="1.5">${[...Array(13)].map((_,i)=>`<path d="M${i*90} 0 V1920"/>`).join('')}${[...Array(22)].map((_,i)=>`<path d="M0 ${i*90} H1080"/>`).join('')}</g>
    <g fill="none" stroke="rgba(150,220,255,.55)" stroke-width="3" stroke-linecap="round"><path d="M120 660 C200 640 260 600 330 640 C380 660 420 610 470 600"/><path d="M520 820 C500 900 470 980 480 1080 C490 1160 470 1220 500 1300"/><path d="M640 1080 C690 1070 730 1060 760 1080 C800 1100 850 1090 900 1110"/></g>
@@ -274,6 +280,7 @@ function build(){if(built)return;built=true;
     if(s.stamp){const st=document.createElement('div');st.className='stamp'+(s.stampRed?' red':'');const fy=s.mode==='framed'?FR.cy+(s.fh||600)/2-28:(s.stampY||1150);st.style.cssText=`left:${s.mode==='framed'?Math.max(140,540-(s.fw||600)/2-30):150}px;top:${fy}px`;st.dataset.full=s.stamp;d.appendChild(st);s.st=st}
     if(s.adds)s.addEls=s.adds.map(a=>{const w=document.createElement('div');w.className='add';w.style.inset='0';w.innerHTML=ADD[a.kind](a);d.appendChild(w);return w})});
   // the running year and the journey inset (16 Nov 2026), above every shot, under the captions
+  if(E.cover!==false){$('#cover').innerHTML=`<b>${E.coverKicker||'TURNS OUT'}</b><span>${E.coverTitle||E.title}</span>`;$('#cover').style.top=(E.coverY||1000)+'px'}else $('#cover').remove();
   const H=EP.hud;$('#hud').innerHTML=(H.years.length?'<div class="yr"><b>YEAR</b><span></span></div>':'')+(H.legs.length?`<svg class="mm" viewBox="0 0 1000 700">${mapLand('rgba(214,196,150,.25)','rgba(240,226,190,.7)')}
     ${H.legs.map((g,i)=>`<path class="leg" data-i="${i}" d="${MAP.R[g.from+'-'+g.to]}" fill="none" stroke="#ff8a5a" stroke-width="12" stroke-linecap="round"/>`).join('')}
     ${Object.entries(MAP.P).map(([k,[x,y]])=>`<g class="pin" data-k="${k}"><circle class="ring" cx="${x}" cy="${y}" r="20" fill="none" stroke="#fff3d0" stroke-width="5" opacity="0"/><circle cx="${x}" cy="${y}" r="16" fill="#fff3d0"/><text x="${x+(x>500?-30:28)}" y="${y+(k==='ny'?-26:k==='phila'?60:-30)}" text-anchor="${x>500?'end':'start'}" fill="#fff3d0" font-family="Cinzel" font-weight="700" font-size="54" letter-spacing="3">${k==='phila'?'PHILA.':MAP.N[k]}</text></g>`).join('')}</svg>`:'');
@@ -319,6 +326,7 @@ function buildCaps(){CH=[];EP.scenes.forEach((s,si)=>{let ph=[],cur=[];s.words.f
     ph.forEach(p=>{const k=Math.ceil(p.length/6),m=Math.ceil(p.length/k);for(let i=0;i<p.length;i+=m)CH.push({si,words:p.slice(i,i+m)})})});
   CH.forEach((c,i)=>{c.t0=i?c.words[0].t0:0;const nx=CH[i+1];c.t1=nx&&nx.si===c.si?nx.words[0].t0-.03:Math.min(c.words[c.words.length-1].t1+.5,nx?nx.words[0].t0-.05:1e9)});capI=-2}
 
+const CV={hold:1.0,out:1.45};   // the cover title holds 1.0 s, then fades by 1.45 s (the first stamp types after it)
 const DUST=[...Array(14)].map((_,i)=>({s:1.5+(i%4)}));
 window.render=function(T){if(!EP)timeline(null);build();
   $$('.shot').forEach(s=>{s.style.display='none'});
@@ -335,7 +343,7 @@ window.render=function(T){if(!EP)timeline(null);build();
       const pl=el.querySelector('.plate');if(pl)pl.style.opacity=eoc(prog(lt,.6,1.3));
       if(sh.mode==='framed'){const f=el.querySelector('.frm'),p=i===0?1:eoc(prog(lt,0,.9));f.style.transform=`translateY(${(1-p)*40-18*q}px) scale(${.96+.04*p})`;const bg=el.firstElementChild;if(bg)bg.style.transform=`scale(${1+.1*q}) translateX(${-20*q}px)`;
         if(sh.glow)f.style.boxShadow=`0 0 0 2px #e8c46a,0 0 0 14px rgba(20,12,5,.92),0 0 0 16px rgba(232,196,106,.7),0 0 ${60+50*eoc(prog(lt,.3,1.5))}px rgba(255,210,120,${.25+.25*eoc(prog(lt,.3,1.5))}),0 50px 100px rgba(0,0,0,.8)`}}
-    if(sh.st){const p=prog(lt,.35,1.35);typeIn(sh.st,i===0?Math.max(p,T<.05?0:p):p);sh.st.style.transform=`rotate(-2deg) scale(${1+.15*(1-eoc(prog(lt,.35,.6)))})`}
+    if(sh.st){const s0=i===0&&E.cover!==false?CV.out:.35,p=prog(lt,s0,s0+1);typeIn(sh.st,i===0?Math.max(p,T<.05?0:p):p);sh.st.style.transform=`rotate(-2deg) scale(${1+.15*(1-eoc(prog(lt,.35,.6)))})`}
   });
   let ci=CH.findIndex(c=>T>=c.t0-.05&&T<c.t1);
   if(ci!==capI){capI=ci;$('#cap').innerHTML=ci<0?'':CH[ci].words.map(w=>`<span data-k="${KEYRE.test(NW(w.w))?1:0}">${w.w.replace(/\.\.\.$/,'…')}</span>`).join(' ')}
@@ -347,6 +355,7 @@ window.render=function(T){if(!EP)timeline(null);build();
    const h=ch?`<b>CHAPTER ${R[li]}</b>${ch}`:E.title;if($('#chap').dataset.h!==h){$('#chap').innerHTML=h;$('#chap').dataset.h=h}
    const st=EP.scenes[li]?EP.scenes[li].start-.4:0;$('#chap').style.opacity=li===0?1:eoc(prog(T,st,st+.5))}
   animHud(T);
+  {const c=$('#cover');if(c){const p=prog(T,CV.hold,CV.out);c.style.opacity=1-eio(p);c.style.transform=`translateY(${eio(p)*20}px)`}}
   $$('#prog i').forEach((e,i)=>e.className=(EP.scenes[i]&&T>=EP.scenes[i].start-.3)?'on':'');
   const r=mulberry(Math.floor(T*15)+7);let h='';DUST.forEach(d=>{if(r()<.35)h+=`<i style="left:${r()*1080}px;top:${r()*1920}px;width:${d.s}px;height:${d.s}px;opacity:${.3+r()*.6}"></i>`});
   if(r()<.4)h+=`<b style="left:${r()*1080}px;top:0;height:1920px;opacity:${.25+r()*.4}"></b>`;$('#dust').innerHTML=h;
