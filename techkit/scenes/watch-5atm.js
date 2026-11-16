@@ -293,6 +293,8 @@ window.TOPIC={
     if(panel('#p4',st(4)+.15,en(4)+.45)>0)stepFlow('#p4s',[st(4)+.15,C.dive,C.jet,C.stroke],['#6ff0a4','#ff8f6c','#ff5d6c','#ff7ad9']);
     if(panel('#p5',st(5)+.1,en(5)+.45)>0){const so=prog(t,C.soften-.1,C.soften+.8),ag=prog(t,C.age-.1,C.age+.6);$('#p5bar').style.width=(100-40*so-25*ag)+'%';$('#p5h').style.opacity=prog(t,C.heat-.1,C.heat+.3)}
     pills(['pool','sauna']);
+    // the end hold (render 6, Output QA DEAD 41.0-42.6 s): "SAVE THIS · SHARE IT" lands 1.5 s after the title slam, with a soft pop
+    {const q=prog(t,C.final+1.4,C.final+1.8),el=$('#final .t2');el.style.opacity=q;el.style.transform=`translateY(${(1-eob(q))*30}px)`}
   }
 };
 })();
