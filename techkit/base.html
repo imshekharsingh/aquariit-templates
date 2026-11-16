@@ -135,7 +135,8 @@ window.render=function(t){
   camOn();TP.hero(t,{sh,fin});camOff();
   TP.labels(t,{sh,fin});
   progBars.forEach((b,i)=>b.style.width=(prog(t,st(i),i<NS-1?st(i+1):TL.total-1)*100)+'%');
-  {const h=eoc(prog(t,0,.7));$('#hdr').style.opacity=(.75+.25*h)*(1-fin*.9);$('#hdr').style.transform=`translateY(${(1-h)*-24}px)`}
+  {const h=TP.cover?1:eoc(prog(t,0,.7));   // TOPIC.cover: frame 0 is the reel's cover, the header already in place (rules-tech.md K3)
+   $('#hdr').style.opacity=(.75+.25*h)*(1-fin*.9);$('#hdr').style.transform=`translateY(${(1-h)*-24}px)`}
   {const ch=$('#chip');let on=null;TP.chips.forEach((c,i)=>{if(t>=(i?st(i)-.25:0)&&t<(i<NS-1?st(i+1)-.25:TL.total))on=[i,c[0],c[1]]});
    if(on){const t0=on[0]?st(on[0])-.25:0,p=eob(prog(t,t0,t0+.45));ch.textContent=on[1];ch.style.color=on[2];ch.style.borderColor=on[2];ch.style.background=on[2]+'1a';ch.style.boxShadow=`0 0 30px ${on[2]}44`;ch.style.opacity=clamp(.3+p*1.5)*(on[0]===NS-1?1-prog(t,C.final-.3,C.final):1);ch.style.transform=`translateX(-50%) scale(${.8+.2*p})`}}
   TP.panels(t,{sh,fin});

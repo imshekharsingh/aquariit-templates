@@ -138,6 +138,7 @@ window.TOPIC={
   chips:[['THE QUESTION','#8ef0ff'],['THE PROBLEM','#ff5d6c'],['THE FIX · SEALS','#ffb35c'],['THE TEST','#6ff0a4'],['REAL LIFE','#ff8f6c'],['THE SNEAKY ONE','#ff7ad9'],['RECAP','#b9b6ff']],
   keyw:/^(atm|five|ten|fifty|minutes|pressure|seals?|rubber|crown|buttons?|back|still|test|dive|jet|stroke|spikes|heat|steam|age|pool|sauna|hot|shower|squeeze|deeper|atmosphere)$/i,
   jolts:[],
+  cover:true,   // frame 0 is the reel's cover: the header at full strength from frame 0 (rules-tech.md K3)
   holds:()=>[[+(C.final+.8).toFixed(2),TL.total]],   // the title slam is read standing still
   css:'.cell{flex:1;height:84px;border-radius:18px;border:1.5px solid rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.04)}.cell b{font:800 34px "Inter Display",Inter;color:#6a7298}.cell small{font:700 13px Inter;letter-spacing:.14em;color:#7d84a8;margin-top:4px}',
   html:`
@@ -166,7 +167,7 @@ window.TOPIC={
   <div class="pill" id="pl2" style="top:1170px;border-color:rgba(255,93,108,.6)"><div class="ic" style="background:rgba(255,93,108,.18);color:#ff8f9a">✕</div>Sauna and hot showers</div>`,
   // the camera: one eased move with the watch or to the part being named, then it holds (no drift)
   cam(){const Z=[1,0,0];
-    return [[0,[1.04,0,-40]],[.25,[1.04,0,-40]],[1.0,Z],[1.6,[1.05,0,0],'expo'],[C.hot-.15,[1.05,0,0]],[C.hot+.45,focus(1.45,126,-38,600,800)],[st(1)-.45,focus(1.45,126,-38,600,800)],[st(1)+.35,Z],
+    return [[0,Z],[.6,Z],[1.6,[1.05,0,0],'expo'],[C.hot-.15,[1.05,0,0]],[C.hot+.45,focus(1.45,126,-38,600,800)],[st(1)-.45,focus(1.45,126,-38,600,800)],[st(1)+.35,Z],
       [C.sq0-.1,Z],[C.sq2+.45,[1.07,0,0]],[st(2)-.3,[1.07,0,0]],[st(2)+.3,Z],
       [C.crown-.35,Z],[C.crown+.3,focus(1.7,126,-38,560,820)],[C.buttons-.25,focus(1.7,126,-38,560,820)],[C.buttons+.3,focus(1.7,126,46,560,860)],[C.back-.2,focus(1.7,126,46,560,860)],[C.back+.45,Z],
       [st(3)-.3,Z],[st(3)+.4,Z],[C.ten3-.3,Z],[C.ten3+.4,[1.16,0,40]],[st(4)-.3,[1.16,0,40]],[st(4)+.4,[.9,0,-10]],
@@ -176,8 +177,9 @@ window.TOPIC={
     const c0=1-prog(t,st(1)-.35,st(1)+.35),c1=win(t,st(1)-.35,st(2)+.35,.7,.7),c2=win(t,st(2)-.35,st(3)+.35,.7,.7),c3=win(t,st(3)-.35,st(4)+.35,.7,.7),c4=win(t,st(4)-.35,st(5)+.35,.7,.7),c5=win(t,st(5)-.35,st(6)+.35,.7,.7),c6=prog(t,st(6)-.35,st(6)+.35);
     const POOL=[[96,150,176],[22,58,80]],DEEP=[[22,58,82],[6,18,30]],WARM=[[132,70,44],[44,18,12]];
     // ch0: the drop. The watch falls in, the camera follows it down (the surface rises out of the top)
-    const fall=prog(t,.25,.85),wyDrop=t<.85?lerp(560,800,fall*fall):lerp(800,WY,eoc(prog(t,.85,1.8)));
-    const surf=t<.78?985:lerp(985,-300,eio(prog(t,.78,2.6))),spl=prog(t,.78,1.9);
+    // frame 0 is the cover (rules-tech.md K3): the whole watch over the pool, held still for 0.6 s, inside the centre 3:4
+    const fall=prog(t,.6,1.0),wyDrop=t<1.0?lerp(730,810,fall*fall):lerp(810,WY,eoc(prog(t,1.0,1.9)));
+    const surf=t<.95?1000:lerp(1000,-300,eio(prog(t,.95,2.8))),spl=prog(t,.95,2.05);
     // ch1: depth (0 to 10 m on "ten"), then one step down on each Squeeze; the case flexes a little more each time
     const dsq=['sq0','sq1','sq2'].reduce((s,k)=>s+eio(prog(t,C[k]-.05,C[k]+.3)),0),dep=10*eio(prog(t,C.pushes-.1,C.ten+.05)),depth=dep+4*dsq;
     // ch4: the swimmer's arm. dive (down and back up), jet (pushed sideways), stroke (one swing on an arc)
@@ -232,7 +234,7 @@ window.TOPIC={
       const ir=c5>.5?[126,-38,440*eoc(prog(t,C.steam-.35,C.steam+.45))]:peek>0&&c0>.5?[126,-38,180*eoc(prog(t,C.hot-.15,C.hot+.4))]:c1>.5&&c1>c2?[0,0,420*eoc(prog(t,C.sq0-.25,C.sq0+.35))]:[0,0,420];
       const blk=k=>prog(t,C[k]+.05,C[k]+.5),arr=c2>.5?[['crown',prog(t,C.crown-.35,C.crown),blk('crown')],['button',prog(t,C.buttons-.35,C.buttons),blk('buttons')]]:[];
       const scr=gg=>{
-        if(c0>.5){wordAt(t,'5 ATM','#8ef0ff',-14,64,prog(t,.9,1.4)*(1-peek));gg.font='700 22px Inter';gg.fillStyle='#a3a9cc';gg.globalAlpha*=prog(t,1.2,1.7)*(1-peek);gg.textAlign='center';gg.fillText('WATER RESIST',0,50)}
+        if(c0>.5){wordAt(t,'5 ATM','#8ef0ff',-14,64,1-peek);gg.font='700 22px Inter';gg.fillStyle='#a3a9cc';gg.globalAlpha*=(1-peek);gg.textAlign='center';gg.fillText('WATER RESIST',0,50)}
         else if(c1>.5){const n=Math.round(dep);wordAt(t,'DEPTH','#8ef0ff',-62,26,prog(t,C.pushes-.3,C.pushes));wordAt(t,n+' m','#8ef0ff',-12,72,prog(t,C.pushes-.3,C.pushes));
           wordAt(t,'+1 ATM','#ff8f9a',62,40,prog(t,C.atmosphere-.1,C.atmosphere+.2))}
         else if(c3>.5){const lv=eio(prog(t,st(3)-.1,C.fifty)),rp=1-prog(t,C.still-.3,C.still+.3),yl=140-262*lv;   // the screen fills like the tank: 50 m on "fifty", flat on "still"
@@ -251,7 +253,7 @@ window.TOPIC={
           drop:c5*prog(t,C.soften+.25,C.soften+1.9),fog:c5*prog(t,C.soften+1.2,C.age+.2)});
         g.restore()}
       // ch0: bubbles rise off the watch, in front of it, after the splash
-      if(c0>0){const bq=prog(t,.85,3.6);if(bq>0&&bq<1)BUB.forEach(b=>{const q=bq*b.v*1.1-b.d*.5;if(q<0||q>1)return;const x=WX+b.x*95*WS,y=wyDrop+170*WS-q*720;ring(x,y,b.r*1.6,'#e8f8ff',c0*Math.sin(Math.PI*q)*.9,4);glowDot(x-b.r*.5,y-b.r*.5,b.r*.3,'#ffffff',c0*Math.sin(Math.PI*q)*.6)})}
+      if(c0>0){const bq=prog(t,1.0,3.7);if(bq>0&&bq<1)BUB.forEach(b=>{const q=bq*b.v*1.1-b.d*.5;if(q<0||q>1)return;const x=WX+b.x*95*WS,y=wyDrop+170*WS-q*720;ring(x,y,b.r*1.6,'#e8f8ff',c0*Math.sin(Math.PI*q)*.9,4);glowDot(x-b.r*.5,y-b.r*.5,b.r*.3,'#ffffff',c0*Math.sin(Math.PI*q)*.6)})}
       // ch6: the exploded view snaps together on "Pool"
       if(c6>0){const e=1-eob(prog(t,C.pool-.15,C.pool+.35)),gl=bump(t,C.pool+.1,.8);exploded(WX,WY+30,WS*.92,e,gl,c6)}
       if(fin>0){g.save();g.setTransform(1,0,0,1,0,0);g.fillStyle=`rgba(3,7,16,${.82*fin})`;g.fillRect(0,0,1080,1920);g.restore()}
@@ -268,7 +270,7 @@ window.TOPIC={
   },
   labels(t){
     const c0=1-prog(t,st(1)-.3,st(1)+.3),c1=win(t,st(1)-.35,st(2)+.3,.5,.5),c2=win(t,st(2)-.3,st(3)+.3,.5,.5),c3=win(t,st(3)-.3,st(4)+.3,.5,.5),c4=win(t,st(4)-.3,st(5)+.3,.5,.5),c5=win(t,st(5)-.3,st(6)+.3,.5,.5),c6=prog(t,st(6)-.2,st(6)+.3)*(1-prog(t,C.final-.3,C.final));
-    if(c0>0){label(200,1150,'✓ POOL','#6ff0a4',c0*prog(t,1.3,1.6),28,'rgba(10,40,24,.92)');label(860,1150,'✕ HOT SHOWER','#ff8f9a',c0*prog(t,C.hot-.1,C.hot+.2),28,'rgba(44,10,18,.92)')}
+    if(c0>0){label(200,1150,'✓ POOL','#6ff0a4',c0*prog(t,1.5,1.8),28,'rgba(10,40,24,.92)');label(860,1150,'✕ HOT SHOWER','#ff8f9a',c0*prog(t,C.hot-.1,C.hot+.2),28,'rgba(44,10,18,.92)')}
     if(c1>0){label(190,1150,'10 m DOWN','#8ef0ff',c1*prog(t,C.ten-.1,C.ten+.2),26);label(890,1150,'+1 ATM','#ff8f9a',c1*prog(t,C.atmosphere-.1,C.atmosphere+.2),28,'rgba(44,10,18,.92)');
       label(540,540,'THE CASE FLEXES','#ff8f9a',c1*prog(t,C.sq0-.1,C.sq0+.2),24,'rgba(44,10,18,.92)')}
     if(c2>0){label(250,560,'RUBBER RINGS','#ffd29a',c2*prog(t,C.rubber-.1,C.rubber+.2)*(1-prog(t,C.crown-.45,C.crown-.15)),26,'rgba(44,26,8,.92)');
