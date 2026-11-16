@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-liberty-arm",
+ "why": "Request 3 (run 43821989765) picked a hall interior for the fair; this is the 1876 lithograph of the Centennial main building it listed as [1], by exact file.",
+ "media": [
+  {"id": "fair", "url": "https://commons.wikimedia.org/wiki/File:Grand_United_States_centennial_exhibition_1876-_main_building,_Fairmount_Park,_Philadelphia_LCCN2001702133.jpg", "min_side": 500}
+ ]
+}
