@@ -121,7 +121,7 @@ for i, sh in enumerate(SH):
         if sh.get('label'): typing(t0 + 1.0, sh['label'], .9)
     if k == 'journey':   # the route drawing leg by leg (16 Nov 2026), a tick along each, a soft thud on arrival
         for j in range(len(sh.get('legs', [])) - sh.get('draw', 0)):
-            a = t0 + .35 + j * 1.25
+            a = t0 + sh.get('legT', .35) + j * 1.25
             for q in range(5): t = a + q * .2; put(sfx, t, fx('tick', tick(), t), 0.06)
             put(sfx, a + 1.1, fx('thud', thud(), a + 1.1), 0.22)
     if k == 'paper':
