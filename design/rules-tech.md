@@ -30,6 +30,11 @@ Output QA, the review file. Vivid, high-contrast colour, motion on every key wor
 - The change is inside the subject, not round it: Output QA HERO (16 Nov) warps out the subject box's move, zoom and squeeze and leaves out a rim of 20% per side; 55%+ of the half-second samples must show change inside (render 5's watch 44% FAIL, screen-120hz 67%). Check it on the scene's frames before the render (techkit/README.md, "Calm and the object"); its line lists the still moments.
 - Still K1: calm and purposeful, no constant wobble, loops or light sweeps; the subject a third of the width or more; every number on screen matches the voice (a counter stops at the spoken value).
 
+## K3. The cover is frame 0 (owner, 16 Nov 2026: the reel cover inside the video, no separate cover file to download and upload; the owner picks that frame as the cover in Instagram)
+- Frame 0, held still for the first 0.5-1 s, shows the title and the subject, readable at profile-grid size.
+- The title and the subject sit inside the centre 3:4 of the 9:16 frame (y 240-1680 of 1080 x 1920: Instagram's grid crop). Check it before the render: frame 0 cropped to y 240-1680 and shrunk to about 270 x 360.
+- Kit topics set `cover: true` in window.TOPIC (techkit/base.html: the header at full strength from frame 0, no fade-in) and keep the subject still until the hold ends.
+
 ## R0. Real media by default (owner, 14 Nov 2026: tech "still looks poor" after five renders of drawn shapes; "yes to free real images ... take those and work or animate your design around it")
 Every tech reel is built AROUND free real photos, animated by us; drawn shapes are the overlay (type, rings, waves, charts), not the subject.
 - The topic lists its photos in `"media"` ([{id, queries, sources, cut, avoid, min_side} or {id, url}]); the **Media** workflow (Actions -> Media ->
