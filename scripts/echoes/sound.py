@@ -119,6 +119,30 @@ for i, sh in enumerate(SH):
         for j in range(int((e - .4) / .18)): t = t0 + .4 + j * .18; put(sfx, t, fx('tick', tick(), t), 0.05)
         put(sfx, t0 + e, fx('thud', thud(), t0 + e), 0.3)
         if sh.get('label'): typing(t0 + 1.0, sh['label'], .9)
+    if k == 'journey':   # the route drawing leg by leg (16 Nov 2026), a tick along each, a soft thud on arrival
+        for j in range(len(sh.get('legs', [])) - sh.get('draw', 0)):
+            a = t0 + .35 + j * 1.25
+            for q in range(5): t = a + q * .2; put(sfx, t, fx('tick', tick(), t), 0.06)
+            put(sfx, a + 1.1, fx('thud', thud(), a + 1.1), 0.22)
+    if k == 'paper':
+        put(sfx, t0 + 0.1, fx('rustle', rustle(1.0), t0), 0.2)
+        for j, r in enumerate(sh.get('rows', [])): typing(t0 + .5 + j * .8, r, .7)
+        sa = t0 + sh.get('stampAt', 2.4); put(sfx, sa, fx('hit', thud(), sa), 0.4)
+    for a in sh.get('adds', []):   # layered elements (16 Nov 2026): every element that lands is heard
+        t, ak = a['t'], a['kind']
+        if ak == 'tag': put(sfx, t, fx('tap', thud(), t), 0.1); put(sfx, t + .15, fx('click', key_click(), t), 0.14)
+        if ak == 'figure': put(sfx, t + .05, fx('thud', thud(), t), 0.16)
+        if ak == 'clip': put(sfx, t, fx('rustle', rustle(.6), t), 0.18); put(sfx, t + .35, fx('tap', thud(), t), 0.12)
+        if ak == 'count':
+            r0 = t - a.get('roll', 1.3)
+            for j in range(16): tt = r0 + (t - r0) * (1 - (1 - j / 16) ** 1.5); put(sfx, tt, fx('tick', tick(), tt), 0.1)
+            put(sfx, t, fx('hit', thud(), t), 0.35); put(music, t, timp(48), 0.2)
+HUD = EP.get('hud') or {}
+for y in HUD.get('years', []): put(sfx, y['t'], fx('tick', tick(), y['t']), 0.2); put(sfx, y['t'] + .03, fx('tap', thud(), y['t']), 0.1)
+for g in HUD.get('legs', []):
+    for q in range(6): t = g['t'] + q * .2; put(sfx, t, fx('tick', tick(), t), 0.05)
+    put(sfx, g['t'] + 1.2, fx('tap', thud(), g['t'] + 1.2), 0.12)
+for g in HUD.get('pulse', []): put(sfx, g['t'], fx('bell', ding(), g['t']), 0.04)
 put(sfx, put_src, fx('bell', ding(), put_src), 0.06)
 xw = T(TOTAL); put(amb, 0, lp(rng.standard_normal(len(xw)), 350) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.07 * xw)), 0.03)
 

@@ -42,6 +42,8 @@ FB = {   # the owner-feedback.md lines each check guards
     'hue': '15 Nov web "main frame where we see the changes seem to show similar colour grading so doesn\'t look different from other videos"',
     'sheen': '15 Nov tech "covering the wave like coming in from left top corner to the right of the frame, it\'s happening in all videos" (a glass sheen swept the hero every 2.7 s)',
     'hero': '15 Nov tech "I don\'t see much happening animation wise around watch in 5 ATM video" (a small static watch, only the water moved)',
+    'elements': '16 Nov Turns Out Liberty arm "elements are few and are spread ... through the whole video. We should design it such that there are more elements to show on screen as the storyline moves forward"',
+    'reuse': '16 Nov Turns Out Liberty arm (one photo used 3 times; "elements are few")',
     'licence': '14 Nov "yes to free real images" (design/safety.md: PD / CC0 / CC BY only, licence and source per file, CC BY credited)',
 }
 # thresholds (calibrated 12 Nov 2026 on showreel-34-press, showreel-c3-eiffel-red and showreel-tech-stop-tracking): sentence pace is timed first word to
@@ -63,7 +65,16 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          calm_px=20, calm_band=(288, 392), calm_med=.035, calm_mean=.05, calm_step=.10,
          hue_s=.25, hue_v=.2, hue_min=40, hue_last=3,
          sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=2,
-         hero_lag=.5, hero_shift=6, hero_px=30, hero_on=.02, hero_active=.35, hero_w=.33)
+         hero_lag=.5, hero_shift=6, hero_px=30, hero_on=.02, hero_active=.35, hero_w=.33,
+         el_lag=.3, el_shift=3, el_cell=9, el_top=.21, el_px=18, el_k=4, el_cells=1, el_cut=.35, el_gap=3.0, el_win=10, el_pics=4)
+# ELEMENTS (16 Nov 2026, Turns Out; owner on the Liberty arm reel: "elements are few and are spread ... through the whole video"): a NEW visual
+# element is a place on the frame that changes on its own. At 135x240, 10 fps, the frame below the badge and chapter title (el_top) with the
+# subtitle band left out, softened by a 5x5 box, cut in 9 px cells: the mean change of each cell over el_lag s after its best shift of up to el_shift px (block
+# matching: a camera push, a pan or a cut-out drifting forward is motion, not a new element). A step brings something new when el_cells+ cell(s) change
+# by el_px+ AND by el_k x the frame's median cell change (a label, a stamp, a year, a route, a figure: local; a slow camera push moves every cell
+# a little and is not new), or when el_cut+ of the cells change by el_px+ (a new picture: a crossfade or a card). FAIL when the longest stretch
+# with nothing new is over el_gap s, or when any el_win s window shows under el_pics pictures (1 + the picture changes in it).
+# REUSE (16 Nov 2026, Echoes configs): no photo is the picture of two shots.
 # SHEEN (15 Nov 2026, tech; owner: "covering the wave like coming in from left top corner to the right of the frame, it's happening in all videos"):
 # a straight bright band sweeping across the hero. In the hero zone (sheen_y of the height) at 135x240, the pixels that brighten by sheen_d+ over
 # 0.2 s, projected across lines at every oblique angle (15-75 and 100-165 deg, 5-deg steps; 3 px wide lines at least 60% of the zone long): the
@@ -672,6 +683,63 @@ def dead_check(G, fps, mp4, dur):
          f'(visual change in {vis.mean():.0%} of 0.1 s steps, {int(onset.sum())} sound onsets)')
 
 
+def element_events(G, fps, band):
+    """(new, cut, res): per frame, does something new land (local change or a new picture), is it a new picture, and the cells' residuals.
+    Motion-compensated: each cell is matched against the frame el_lag s earlier at every shift up to el_shift px (block matching), so a camera
+    push, a pan or a cut-out drifting forward is not new; only what was not there before is (16 Nov 2026: without it, the 2.5D depth push of
+    every photo read as local change for seconds)."""
+    H, W = G.shape[1:]; c, R = T['el_cell'], T['el_shift']; lag = max(1, int(round(T['el_lag'] * fps)))
+    nr, nc = H // c, W // c
+    keep = np.array([[(r * c >= H * T['el_top']) and not (band[0] * H - c < r * c < band[1] * H) for _ in range(nc)] for r in range(nr)]).ravel()
+    new, cut = np.zeros(len(G), bool), np.zeros(len(G), bool)
+    def soft(g):   # a 5x5 box (two 3x3 passes): sub-pixel motion of fine detail (a slow zoom moves edges under a pixel) is not a change
+        g = g.astype(np.float32)
+        for _ in range(2): p = np.pad(g, 1, mode='edge'); g = sum(p[i:i + H, j:j + W] for i in range(3) for j in range(3)) / 9
+        return g
+    S = [soft(g) for g in G]
+    for k in range(lag, len(G)):
+        a = S[k]; b = np.pad(S[k - lag], R, mode='edge'); best = None
+        for dy in range(-R, R + 1):
+            for dx in range(-R, R + 1):
+                d = np.abs(a - b[R + dy:R + dy + H, R + dx:R + dx + W])[:nr * c, :nc * c].reshape(nr, c, nc, c).mean((1, 3)).ravel()
+                best = d if best is None else np.minimum(best, d)
+        cells = best[keep]; med = float(np.median(cells)); big = cells >= T['el_px']
+        cut[k] = big.mean() >= T['el_cut']
+        new[k] = cut[k] or int((big & (cells >= T['el_k'] * max(med, .5))).sum()) >= T['el_cells']
+    return new, cut
+
+
+def elements_check(G, fps, band, dur=None):
+    n = len(G) if dur is None else min(len(G), int(round(dur * fps)))
+    new, cut = element_events(G[:n], fps, band)
+    ts = list(np.flatnonzero(new) / fps); edges = [0.0] + ts + [n / fps]
+    gaps = sorted(((b - a, a, b) for a, b in zip(edges, edges[1:])), reverse=True)
+    onsets = [k / fps for k in np.flatnonzero(cut) if not cut[max(0, k - int(fps * .5)):k].any()]
+    pics, wins = [], np.arange(0, max(0.0, n / fps - T['el_win']) + .01, .5)
+    for a in wins: pics.append(1 + sum(1 for t in onsets if a < t <= a + T['el_win']))
+    lo = min(pics) if pics else 1 + len(onsets); lo_at = float(wins[int(np.argmin(pics))]) if pics else 0.0
+    long_ = [g for g in gaps if g[0] > T['el_gap']]
+    bad = bool(long_) or lo < T['el_pics']
+    starts = [k for k in np.flatnonzero(new) if k == 0 or not new[k - 1]]
+    line('ELEMENTS', 'FAIL' if bad else 'PASS', f'{len(starts)} new elements land ({len(starts) / max(1e-9, n / fps) * 10:.1f} per 10 s), {len(onsets)} picture changes; '
+         f'longest stretch with nothing new {gaps[0][0]:.1f} s at {gaps[0][1]:.1f}-{gaps[0][2]:.1f} s (at most {T["el_gap"]} s)'
+         + (f'; over it: {", ".join(f"{a:.1f}-{b:.1f} s" for _, a, b in long_[:6])}' if long_ else '')
+         + f'; pictures per {T["el_win"]} s: at least {lo} (from {lo_at:.1f} s; {T["el_pics"]}+)')
+
+
+def reuse_check(c):
+    X = c.get('echoes')
+    if not X: line('REUSE', 'SKIP', 'not an Echoes config'); return
+    have = {m['id'] for m in c.get('media', []) if m.get('file')}; seen = {}
+    for i, sh in enumerate(X.get('shots', [])):
+        if sh.get('type') != 'arch': continue
+        k = next((x for x in sh.get('img', '').split('|') if x in have), None)
+        if k: seen.setdefault(k, []).append(i)
+    dup = {k: v for k, v in seen.items() if len(v) > 1}
+    line('REUSE', 'FAIL' if dup else 'PASS', f'{len(seen)} photos over {sum(len(v) for v in seen.values())} archival shots; used twice: '
+         + ('; '.join(f'{k} in shots {", ".join(str(i + 1) for i in v)}' for k, v in dup.items()) or 'none'))
+
+
 def mute_check(G, fps, m, heard):
     span = float(m.get('span', 1.5)); a = window(m.get('after'), heard or [], span); b = window(m.get('before'), heard or [], span) if m.get('before') else None
     if not a: line('MUTE', 'FAIL', 'the "after" moment was not found in the audio (declare [t0, t1] or {"say": "..."})'); return
@@ -910,8 +978,8 @@ def main():
     dead_check(G, fps, mp4, dur)
     if ch == 'tech': sheen_check(G, fps)
     else: line('SHEEN', 'SKIP', 'tech only')
-    if ch == 'c3': fill_check(G, fps)
-    else: line('FILL', 'SKIP', 'Turns Out only')
+    if ch == 'c3': fill_check(G, fps); elements_check(G, fps, qa.get('subs') or T['subs'][ch]); reuse_check(c)
+    else: line('FILL', 'SKIP', 'Turns Out only'); line('ELEMENTS', 'SKIP', 'Turns Out only'); line('REUSE', 'SKIP', 'Turns Out only')
     if ch == 'web': calm_check(G, fps, mp4, qa)
     else: line('CALM', 'SKIP', 'web only')
     if qa.get('mute'): mute_check(G, fps, qa['mute'], heard)

@@ -14,7 +14,9 @@ mkdirSync(out, { recursive: true });
 const b = await chromium.launch(), p = await b.newPage({ viewport: { width: 540, height: 960 }, deviceScaleFactor: .5 });
 await p.goto('file://' + scene); await p.waitForSelector('html[data-ready]');
 await p.evaluate((ws) => { if (ws.length && window.setVoice) window.setVoice({ words: ws }); }, simWords(cfg).words);
-const SUBJ = [], PANES = [], N = Math.floor(cfg.dur * FPS);
+// the video ends at window.CUES.dur when the scene sets it (Echoes: 1.4 s after the last word); the frames past it are never seen
+const END = Math.min(cfg.dur, await p.evaluate(() => (window.CUES && window.CUES.dur) || 1e9));
+const SUBJ = [], PANES = [], N = Math.floor(END * FPS);
 for (let i = 0; i < N; i++) {
   const t = i / FPS; await p.evaluate((t) => window.seek(t), t);
   await p.screenshot({ path: join(out, 'f' + String(i).padStart(4, '0') + '.jpg'), type: 'jpeg', quality: 90 });
