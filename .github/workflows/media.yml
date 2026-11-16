@@ -39,7 +39,7 @@ jobs:
           set -o pipefail
           NAME=$(python3 -I -c "import json,sys; c=json.load(open(sys.argv[1])); print(c.get('name') or 'showreel-tech-' + c['slug'])" "$CFG")
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
-          python3 scripts/media/fetch.py "$CFG" "out/media/$NAME" 2>&1 | tee fetch.log
+          python3 -u scripts/media/fetch.py "$CFG" "out/media/$NAME" 2>&1 | tee fetch.log   # -u: progress shows in the log even if the job times out (run 43818208129 showed nothing)
           grep -q '^MEDIA: all' fetch.log || echo "::warning::$(grep '^MEDIA: ' fetch.log)"
       - name: Previews in the log
         # sessions cannot download artifacts (the blob host is blocked): small JPEG previews of every file and the contact sheet as

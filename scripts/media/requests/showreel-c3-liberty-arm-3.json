@@ -1,0 +1,14 @@
+{
+ "name": "showreel-c3-liberty-arm",
+ "why": "Request 2 (run 43818208129) hit the 30-minute limit on slow searches (Library of Congress and retries) and saved nothing. Same images, Wikimedia only, one query each.",
+ "media": [
+  {"id": "centen", "queries": ["Centennial Exhibition 1876 Main Building"], "sources": ["wikimedia"], "require": ["centennial"], "avoid": ["map", "ticket", "medal", "liberty", "torch", "stamp", "coin", "certificate", "plan"], "min_side": 700},
+  {"id": "torch2", "queries": ["Bartholdi hand torch Centennial Exhibition"], "sources": ["wikimedia"], "require": ["torch", "hand", "arm"], "avoid": ["dennis", "solphiladelphia", "madison", "1984", "1985", "1986", "replica", "restoration"], "min_side": 500},
+  {"id": "madpark", "queries": ["Statue of Liberty arm Madison Square"], "sources": ["wikimedia"], "require": ["madison"], "avoid": ["garden", "inauguration", "1984", "1985", "1986", "restoration", "lobby", "night", "flatiron"], "min_side": 500},
+  {"id": "shop", "queries": ["Statue of Liberty construction Paris workshop"], "sources": ["wikimedia"], "require": ["construction", "workshop", "atelier", "building", "built"], "avoid": ["dargaud", "carnavalet", "assemblage", "1984", "1985", "1986", "restoration", "replica"], "min_side": 500},
+  {"id": "model", "url": "https://commons.wikimedia.org/wiki/File:Committee_model_of_Liberty_enlightening_the_world.jpg", "min_side": 300},
+  {"id": "pedestal", "queries": ["Statue of Liberty pedestal construction"], "sources": ["wikimedia"], "require": ["pedestal"], "avoid": ["1984", "1986", "restoration", "fund", "cartoon", "puck"], "min_side": 500},
+  {"id": "crates", "queries": ["Statue of Liberty crates 1885"], "sources": ["wikimedia"], "require": ["crate", "isère", "isere", "arrival", "arrives", "shipment", "unloading"], "avoid": ["1984", "1986", "restoration", "replica"], "min_side": 400},
+  {"id": "unveil", "queries": ["unveiling Statue of Liberty 1886"], "sources": ["wikimedia"], "require": ["1886", "unveil", "inaugur", "dedicat"], "avoid": ["moran", "2016", "centennial", "1986", "stamp", "coin", "medal"], "min_side": 600}
+ ]
+}
