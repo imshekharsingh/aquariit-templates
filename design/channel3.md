@@ -197,6 +197,9 @@ scripts/echoes/sound.py (the kit's sound_h.py: score, effects on every shot, its
   kinds `journey` (full-frame map: legs, pins, notes, draw = the legs already drawn) and `paper` (a newspaper page whose name lines print
   one by one). Screen px; keep them in the safe zone and clear of the captions (y 1300+). Each element is heard (scripts/echoes/sound.py).
   Output QA ELEMENTS fails a stretch over 3.0 s with nothing new on the final frames, or under 4 pictures in a 10 s window.
+  `drawAt` (a journey card): the word its route starts drawing on. Leave margin: the real voice ran ~14% slower than the simulated one on the
+  Liberty render 3 (41 s, not 36), which opened a 3.2 s gap and a 3-picture window the simulation passed; aim for 2.5 s / 5 pictures on the
+  simulated frames, or rebuild word times from a render's PACE line (sentence starts and rates) and check again.
 - Voice (owner, 15 Nov 2026: "use previous voice (from last engine not the new kit)"): af_heart, speed 1, a gap after each sentence (was the kit's
   bm_george, 45-50 s); about 35 s for 7 lines, `dur` = the preflight estimate + 4 s. The scene follows the real word
   times; the video ends 1.4 s after the last word (the sound's length; the mux is -shortest).

@@ -72,7 +72,8 @@
    "fair": "The Main Building · Centennial Exhibition, 1876",
    "shop": "Workers building Liberty in Paris · Albert Fernique",
    "model": "The American Committee's model of Liberty",
-   "pedestal": "Building the pedestal · New York, 1885"
+   "pedestal": "Building the pedestal · New York, 1885",
+   "centen": "Inside the Main Building · Centennial Exhibition, 1876"
   },
   "shots": [
    {
@@ -108,7 +109,7 @@
     "type": "ill",
     "kind": "journey",
     "line": 1,
-    "at": "start",
+    "at": "only",
     "legs": [
      "paris-phila"
     ],
@@ -118,13 +119,26 @@
     ],
     "title": "ACROSS THE ATLANTIC",
     "sub": "FROM PARIS, BY SHIP",
-    "drawAt": "ocean"
+    "drawAt": "crossed",
+    "adds": [
+     {
+      "kind": "tag",
+      "at": "torch",
+      "text": "ONLY THE ARM AND TORCH",
+      "x": 330,
+      "y": 1175,
+      "to": [
+       880,
+       825
+      ]
+     }
+    ]
    },
    {
     "type": "arch",
     "mode": "depth",
     "line": 1,
-    "at": "philadelphia",
+    "at": "world's",
     "img": "fair",
     "tone": "amber",
     "stamp": "THE CENTENNIAL FAIR",
@@ -148,6 +162,34 @@
     ],
     "sat": 0.8,
     "grade": "contrast(1.15)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 2,
+    "at": "start",
+    "img": "centen",
+    "tone": "amber",
+    "stamp": "INSIDE THE FAIR",
+    "cut": [
+     0.2,
+     0.2,
+     0.8,
+     0.75
+    ],
+    "cam": [
+     [
+      0.45,
+      0.5,
+      1.25
+     ],
+     [
+      0.55,
+      0.48,
+      1.35
+     ]
+    ],
+    "grade": "contrast(1.4) brightness(.85)"
    },
    {
     "type": "arch",
@@ -785,6 +827,21 @@
    "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/14/Grand_United_States_centennial_exhibition_1876-_main_building%2C_Fairmount_Park%2C_Philadelphia_LCCN2001702133.jpg/3840px-Grand_United_States_centennial_exhibition_1876-_main_building%2C_Fairmount_Park%2C_Philadelphia_LCCN2001702133.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
    "source": "wikimedia",
    "run": "Media run 43822571626"
+  },
+  {
+   "id": "centen",
+   "file": "centen.jpg",
+   "w": 2400,
+   "h": 2147,
+   "title": "Construction of the Netherlands department in the main exhibition building of the Centennial Exposition in Philadelphia in 1876.jpg",
+   "author": "Centennial Photographic Co",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Construction_of_the_Netherlands_department_in_the_main_exhibition_building_of_the_Centennial_Exposition_in_Philadelphia_in_1876.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/Construction_of_the_Netherlands_department_in_the_main_exhibition_building_of_the_Centennial_Exposition_in_Philadelphia_in_1876.jpg/3840px-Construction_of_the_Netherlands_department_in_the_main_exhibition_building_of_the_Centennial_Exposition_in_Philadelphia_in_1876.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 43821989765"
   }
  ],
  "qa": {
