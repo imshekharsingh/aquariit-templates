@@ -1274,10 +1274,10 @@
   "channel": "tech",
   "postOn": "2026-11-17",
   "postAt": "13:00",
-  "concept": "Kit engine (shared frame), 43 s, specs decoded, smartwatch, global. What 5 ATM really means, rebuilt 15 Nov night (rules-tech K1: no sheen, no box, the idea happens on one big watch): frame 0 a clear pool | hot shower split with a still divider; +1 atmosphere every 10 m (NOAA), arrows squeeze the watch harder on each Squeeze; O-rings seat at the crown and buttons as the camera pushes in, the watch turns to its case-back seal; Samsung's test (50 m still water, 10 min timer on its screen); its pressure meter spikes past the test line on dive / jet / stroke; heat lets a drop past the crown seal and fogs the glass; Pool yes, Sauna no.",
+  "concept": "Kit engine (shared frame), 43 s, specs decoded, smartwatch, global. What 5 ATM really means, rebuilt 16 Nov (rules-tech K2: an object topic opens up; owner on render 5: \"still doesn't do much\"): the watch drops into a pool with a splash and the camera follows it down, its screen counting to 10 m; +1 atmosphere every 10 m (NOAA), the glass dents and the case flexes on each Squeeze; an x-ray opens the case to its gaskets, which lift out and press back into the gaps and light as crown, buttons and back are named; Samsung's test (the screen fills to 50 m, still water, a 10 min ring); on a swimmer's arm a pressure line spikes past the test line on dive / jet / stroke; heat warps the crown gasket, one drop gets in, the glass fogs; recap: an exploded view snaps together, Pool yes, Sauna no.",
   "experiment": {
    "id": "tech-kit-engine",
-   "change": "E26 try 2",
+   "change": "E26 try 2 + K2 cutaway (the object transforms on every beat)",
    "vs": "median"
   }
  },

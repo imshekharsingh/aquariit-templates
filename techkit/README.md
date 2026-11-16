@@ -38,3 +38,8 @@ declare `holds()` (window.HOLDS: a deliberate still, e.g. the title slam). Local
 out/techreel/<slug>/scene.html <dir> 10 0 <frames>` then `python3 scripts/qa/look.py techreel/topics/<slug>.json <dir>` (SHEEN and HERO lines).
 Example: scenes/watch-5atm.js (one watch on one track, `inWorld()` clips the near full-width world in screen space, the camera pushes to the part named).
 
+## The object opens up (16 Nov 2026; rules-tech.md K2)
+An object topic transforms the subject itself on every beat: cutaway / x-ray (an iris clip over the drawing), parts that lift out and press back,
+a case that flexes (`frect()` in scenes/watch-5atm.js: a rounded rect whose sides bow inward), an exploded view on an isometric stack. Output QA
+HERO counts only change inside the subject's box (its move, zoom and squeeze warped out, a 20% rim left out): 55%+ of the samples; its line
+lists the still moments to fix. The Tech reel run keeps `<slug>-subject.json` in R2 next to the MP4, so the Output QA workflow replays HERO by hand.

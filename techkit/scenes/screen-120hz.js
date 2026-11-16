@@ -58,6 +58,7 @@ window.TOPIC={
   cam(){return [[0,[1.03,0,0]],[st(1)-.3,[1.0,0,0]],[st(1)+.6,[1.05,0,0],'expo'],[en(1),[1.07,10,0]],[st(2)+.6,[1.0,0,0],'expo'],[en(2),[1.02,-10,0]],
     [st(3)+.6,[1.05,0,0],'expo'],[en(3),[1.06,10,0]],[st(4)+.6,[1.0,0,0],'expo'],[en(4),[1.03,0,-6]],[st(5)+.6,[1.04,0,10],'expo'],[en(5),[1.06,0,10]],[st(6)+.6,[.9,0,-70],'expo'],[TL.total,[.86,0,-80]]]},
   hero(t,{fin}){
+    subj(PX,PY,PX+PW,PY+PH);   // the subject is the whole screen box: every chapter draws its motion inside it (Output QA HERO, 16 Nov 2026)
     const pulse=.5+.5*Math.sin(t*1.7);g.save();g.shadowColor='rgba(122,124,255,.55)';g.shadowBlur=60+20*pulse;rrect(g,PX,PY,PW,PH,26);g.fillStyle='rgba(10,8,30,.92)';g.fill();g.restore();
     {g.save();rrect(g,PX,PY,PW,PH,26);g.clip();g.strokeStyle='rgba(150,140,255,.13)';g.lineWidth=1.5;for(let k=0;k<12;k++){const x=PX+((k*70+t*90)%PW);g.beginPath();g.moveTo(x,PY);g.lineTo(x,PY+PH);g.stroke()}for(let k=0;k<11;k++){const y=PY+((k*70+t*45)%PH);g.beginPath();g.moveTo(PX,y);g.lineTo(PX+PW,y);g.stroke()}g.restore()}
     const c0=1-prog(t,st(1)-.3,st(1)+.3),c1=win(t,st(1)-.35,st(2)+.3,.5,.5),c2=win(t,st(2)-.3,st(3)+.3,.5,.5),c3=win(t,st(3)-.3,st(4)+.3,.5,.5),c4=win(t,st(4)-.3,st(5)+.3,.5,.5),c5=win(t,st(5)-.3,st(6)+.3,.5,.5),c6=prog(t,st(6)-.3,st(6)+.5);
