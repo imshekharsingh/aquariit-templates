@@ -55,7 +55,7 @@ jobs:
           [ -n "$KEY" ] || KEY=$(python3 -I -c "import json,sys; c=json.load(open(sys.argv[1])); print('v/techreel/'+c['slug']+'.mp4' if 'slug' in c and 'lines' in c else 'v/'+c['name']+'.mp4')" "$CFG")
           bash scripts/r2.sh get "$KEY" reel.mp4 || { echo "::error::R2: $KEY not found (deleted 15 days after upload?)"; exit 1; }
           # the render's sound lines (SOUND SOURCE / SOUND DETAIL): tech keeps its qa.txt in R2; a Showreel's log is only in its run
-          LOG=; case "$KEY" in v/techreel/*) S=$(basename "$KEY" .mp4); bash scripts/r2.sh get "c/techreel/$S-qa.txt" qa.txt && LOG="--log qa.txt";; esac
+          LOG=; case "$KEY" in v/techreel/*) S=$(basename "$KEY" .mp4); bash scripts/r2.sh get "c/techreel/$S-qa.txt" qa.txt && LOG="--log qa.txt"; bash scripts/r2.sh get "c/techreel/$S-subject.json" reel.subject0.json || echo "no subject box in R2 (HERO WARN)";; esac
           set +e; python3 scripts/qa/output-qa.py reel.mp4 "$CFG" $LOG --summary "$GITHUB_STEP_SUMMARY" --fails oqa-fails.txt; rc=$?; set -e
           [ -s oqa-fails.txt ] && head -8 oqa-fails.txt | sed 's/%/%25/g' | while IFS= read -r l; do echo "::error title=Output QA::$l"; done   # the app's journey shows these reasons
           [ "${{ inputs.notify }}" = true ] && bash scripts/qa/notify.sh "$NAME" oqa-fails.txt

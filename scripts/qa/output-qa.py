@@ -63,7 +63,7 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          calm_px=20, calm_band=(288, 392), calm_med=.035, calm_mean=.05, calm_step=.10,
          hue_s=.25, hue_v=.2, hue_min=40, hue_last=3,
          sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=2,
-         hero_lag=.5, hero_shift=6, hero_px=30, hero_on=.02, hero_active=.35, hero_w=.33)
+         hero_lag=.5, hero_shift=3, hero_px=30, hero_on=.02, hero_active=.55, hero_w=.33, hero_inset=.2)
 # SHEEN (15 Nov 2026, tech; owner: "covering the wave like coming in from left top corner to the right of the frame, it's happening in all videos"):
 # a straight bright band sweeping across the hero. In the hero zone (sheen_y of the height) at 135x240, the pixels that brighten by sheen_d+ over
 # 0.2 s, projected across lines at every oblique angle (15-75 and 100-165 deg, 5-deg steps; 3 px wide lines at least 60% of the zone long): the
@@ -76,6 +76,11 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
 # the subject doing anything); a sample is "active" at hero_on+. FAIL when under hero_active of the samples are active, or when the box spans
 # under hero_w of the frame width at the median (a small subject in a big frame). Calibrated 15 Nov on the 5 ATM scene: the old watch (a static
 # drawing with a 9 px bob, 25% of the width) active in 22% of the samples, 0.6% change at the median, only at the chapter cuts.
+# Stricter 16 Nov 2026 (owner on render 5, which passed: "still doesn't do much in terms of animation around the main elements"): only change in
+# the subject's own shape or inside it counts. The earlier frame is first warped onto the subject's box (its move, zoom and squeeze are taken
+# out, so a rigid bob, slide, camera push or slight squeeze is not change), then a residual shift of up to hero_shift px; the box is inset
+# hero_inset per side (a glow outline round the rim is not change); hero_active of the samples. Calibrated 16 Nov on the scenes' own frames
+# (scripts/qa/look.py, every 0.1 s): render 5's watch (bob, glow, squeeze, screen words) 44% active, screen-120hz 67%.
 # CALM (15 Nov 2026, web only; owner: "too wiggly"): only the broken element may move; the rest of the frame holds still. The share of the frame
 # (the subtitle band calm_band left out: its words change on purpose) whose pixels change by calm_px+ over 0.2 s at 135x240, 10 fps; FAIL when the
 # median over the reel is over calm_med or the mean over calm_mean. Calibrated 15 Nov on the scenes' own frames (a scene is a pure function of t;
@@ -861,22 +866,28 @@ def hero_check(F, fps, mp4):
     h, w = F.shape[1:3]; sc = w / 1080; lag = max(1, int(round(T['hero_lag'] * fps))); S = T['hero_shift']
     def grey(k):
         y = lumf(F[k]) * 255; p = np.pad(y, 1, mode='edge'); return sum(p[i:i + h, j:j + w] for i in range(3) for j in range(3)) / 9
-    act, widths = [], []
+    act, ats, widths = [], [], []; rows = sorted(rows); ins = T['hero_inset']
     for r in rows:
-        k = int(round(r[0] * fps)); l, t, rr, b = r[1:]
+        k = int(round(r[0] * fps)); box = [v * sc for v in r[1:]]
         if k < lag or k >= len(F): continue
-        widths.append((rr - l) / 1080); ix, iy = (rr - l) * .1, (b - t) * .1
-        l, t, rr, b = [int(round(v * sc)) for v in (l + ix, t + iy, rr - ix, b - iy)]; l, t = max(S, l), max(S, t); rr, b = min(w - S, rr), min(h - S, b)
+        prev = [v * sc for v in min(rows, key=lambda q: abs(q[0] - (k - lag) / fps))[1:]]   # the subject's box lag s earlier
+        widths.append((r[3] - r[1]) / 1080); l0, t0, r0, b0 = box; ix, iy = (r0 - l0) * ins, (b0 - t0) * ins
+        l, t, rr, b = int(round(l0 + ix)), int(round(t0 + iy)), int(round(r0 - ix)), int(round(b0 - iy)); l, t = max(0, l), max(0, t); rr, b = min(w, rr), min(h, b)
         if rr - l < 4 or b - t < 4: continue
         A, B = grey(k)[t:b, l:rr], grey(k - lag); best = 1.
+        ys, xs = np.mgrid[t:b, l:rr].astype(np.float32)
+        fx, fy = (prev[2] - prev[0]) / max(1., r0 - l0), (prev[3] - prev[1]) / max(1., b0 - t0)   # this box onto the earlier one
         for dy in range(-S, S + 1):
-            for dx in range(-S, S + 1): best = min(best, float((np.abs(A - B[t + dy:b + dy, l + dx:rr + dx]) > T['hero_px']).mean()))
-        act.append(best)
+            for dx in range(-S, S + 1):
+                xi = np.clip(np.round(prev[0] + (xs + dx - l0) * fx).astype(int), 0, w - 1); yi = np.clip(np.round(prev[1] + (ys + dy - t0) * fy).astype(int), 0, h - 1)
+                best = min(best, float((np.abs(A - B[yi, xi]) > T['hero_px']).mean()))
+        act.append(best); ats.append(r[0])
     if not act: line('HERO', 'WARN', 'no usable subject boxes'); return
+    still = [f'{x:.1f}' for x, v in zip(ats, act) if v < T['hero_on']]
     a = np.array(act); share = float((a >= T['hero_on']).mean()); wm = float(np.median(widths))
     bad = [x for x, ok in ((f'the subject itself changes in only {share:.0%} of the samples', share >= T['hero_active']), (f'it spans {wm:.0%} of the width', wm >= T['hero_w'])) if not ok]
-    line('HERO', 'FAIL' if bad else 'PASS', f'the hero subject changes by itself (a bob or slide aligned out) in {share:.0%} of {len(a)} samples (at least {T["hero_active"]:.0%}; '
-         f'median change {np.median(a):.1%}), spans {wm:.0%} of the frame width (at least {T["hero_w"]:.0%}); the old static 5 ATM watch 22% / 25%' + (': ' + '; '.join(bad) if bad else ''))
+    line('HERO', 'FAIL' if bad else 'PASS', f'the hero subject changes by itself (the box move, zoom and squeeze and a rim glow taken out) in {share:.0%} of {len(a)} samples (at least {T["hero_active"]:.0%}; '
+         f'median change {np.median(a):.1%}), spans {wm:.0%} of the frame width (at least {T["hero_w"]:.0%}); still at {", ".join(still[:14]) or "none"}{" ..." if len(still) > 14 else ""} s; render 5 (bobbing, glowing 5 ATM watch) 44%, screen-120hz 67%' + (': ' + '; '.join(bad) if bad else ''))
 
 
 def main():

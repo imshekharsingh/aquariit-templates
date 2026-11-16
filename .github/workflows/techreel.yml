@@ -109,6 +109,8 @@ jobs:
           D="out/techreel/$SLUG"
           cp "$D/contact.png" "$D/$SLUG-contact.png"; cp "$D/qa.txt" "$D/$SLUG-qa.txt"; cp "$D/vo.json" "$D/$SLUG-vo.json"
           for f in "$SLUG.mp4" "$SLUG-contact.png" "$SLUG-qa.txt" "$SLUG-vo.json"; do bash scripts/r2.sh put "$D/$f" "$(case $f in *.mp4|*.png) echo v;; *) echo c;; esac)/techreel/$f" || exit 1; done
+          # the hero's box every 0.5 s (kit scenes), so the Output QA workflow can replay HERO on this MP4 (16 Nov 2026)
+          if [ -f "$D/$SLUG.subject0.json" ]; then cp "$D/$SLUG.subject0.json" "$D/$SLUG-subject.json"; bash scripts/r2.sh put "$D/$SLUG-subject.json" "c/techreel/$SLUG-subject.json" || exit 1; fi
           cat "$D/qa.txt"
           # also on the Showreels page with its post text (owner, 26 Oct), as showreel-tech-<slug>
           N="showreel-tech-$SLUG"; cp "$D/$SLUG.mp4" "$D/$N.mp4"
