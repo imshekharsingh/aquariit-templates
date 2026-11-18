@@ -23,7 +23,7 @@ in this order:
    hours late); the 06:47 and 09:11 builds read the nightly numbers, the same-morning run feeds the next day (the PROBE lines in its log say
    which Instagram metrics each account offers).
 3. Update the rulebooks (design/rules-web.md, rules-c3.md, rules-tech.md) when the numbers say so: add, change or drop a rule, with the number.
-4. Build that day's reels (learn-then-build, nothing ahead), only the channels that post today (owner, 18 Nov 2026: web Mon/Tue/Thu/Sat, tech Tue/Wed/Fri/Sat), each for 13:00 IST. Each is scored
+4. Build that day's reels (learn-then-build, nothing ahead), @webin20sec and @techin20sec, one each, both for 13:00 IST. Each is scored
    against its rulebook in the stills review before its ONE render; then reel-status. Every reel passes the Mandatory Gate with its review
    file (item 13 after reel-status), and each channel logs its one craft improvement in design/craft-log.md (design/runbook-reels.md).
    Turns Out keeps its own scheduled task (09:11 IST for the 13:00 reel), under the same rulebook gate (design/channel3.md, "Channel brief").

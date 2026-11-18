@@ -26,11 +26,10 @@ Moved from CLAUDE.md on 14 Nov 2026.
 - Owner, 18 Nov 2026: the 16 Nov "Don't schedule any tasks for now" was only for that day's handoff session. The tasks were never off;
   the launcher session (session_01AYvWRhkLkGsLRZfbwikeyL) still exists and fires them. Never call them paused from a note: check
   list_triggers.
-- Owner, 18 Nov 2026 (4 web + 4 tech + 3 Turns Out a week, built daily so each day's numbers shape the next reel): "Daily studio run"
-  06:47 IST Mon-Sat is a fresh-session task (no launcher), cheaper model, builds only that day's channels. Through the launcher session:
-  "Turns Out reel" 09:11 IST Mon/Wed/Fri, "Reel critic" 11:17 IST Mon-Sat, "Spare usage night" Tue 22:44 IST (design/runbook-spare.md),
-  "Weekly owner chat" Wed 05:13 IST. The launcher's old "Daily studio run" is switched off. A launcher task's prompt can only be edited
-  from the launcher session.
+- Owner, 18 Nov 2026 (one reel a day per channel): "Daily studio run" 06:47 IST every day is a fresh-session task (no launcher) on the
+  cheaper model, web + tech. Through the launcher session: "Turns Out daily reel" 09:11 IST (its prompt still says "Mon/Wed/Fri" in a label;
+  CLAUDE.md wins: it builds daily), "Reel critic" 11:17 IST, "Spare usage night" Tue 22:44 IST (design/runbook-spare.md), "Weekly owner chat"
+  Wed 05:13 IST. The launcher's old "Daily studio run" is switched off. A launcher task's prompt can only be edited from the launcher session.
 - Org seat (owner, 18 Nov 2026): ONLY once the owner's org admin has agreed, the owner may run, by hand and with no scheduled task there,
   sessions on the org seat for two kinds of work: studying reference reels (design/references.md) and app changes. Everything else stays here.
 - Rules every run must follow go into CLAUDE.md or these runbooks, not into a task prompt.
