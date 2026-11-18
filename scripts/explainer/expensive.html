@@ -61,6 +61,10 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .badge{right:60px;top:138px;height:28px;padding:0 12px 0 10px;border-radius:14px;background:var(--soft);border:1.5px solid var(--ring);color:var(--acc);font:700 12px/25px var(--m);letter-spacing:.12em;white-space:nowrap;opacity:0;transform-origin:100% 50%}
 .badge i{display:inline-block;width:8px;height:8px;margin-right:7px;border-radius:50%;background:var(--acc);vertical-align:0;box-shadow:0 0 8px var(--acc)}
 #band{left:0;top:668px;width:540px;height:140px;background:var(--ink)}
+#rule{left:30px;top:758px;width:480px;height:3px;border-radius:2px;background:var(--ring);opacity:.7}
+#fmt{left:30px;top:694px;width:480px;font:700 15px/1 var(--m);letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+#toc{left:30px;top:769px;width:480px;height:34px;display:flex;gap:10px}
+#toc span{flex:1;height:32px;border-radius:16px;border:1.5px solid var(--ring);font:700 13px/29px var(--m);letter-spacing:.08em;color:var(--dim);text-align:center;white-space:nowrap;overflow:hidden}
 #cap{left:30px;top:680px;width:450px;min-height:80px;font:600 30px/1.16 var(--f);letter-spacing:-.025em}
 #cap span{display:inline-block;margin-right:.24em}
 /* components (KINDS): coordinates inside the 450x190 stage */
@@ -151,6 +155,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 <div id="blks"></div>
 <div id="fe" class="a" aria-hidden="true"></div>
 <div id="band" class="a" data-band></div>
+<div id="rule" class="a" aria-hidden="true"></div><div id="fmt" class="a" aria-hidden="true">3 DETAILS · REAL SPEED, THEN SLOWED</div>
+<div id="toc" class="a" aria-hidden="true"></div>
 <div id="cap" class="a" data-subs></div>
 <script>
 (function(){
@@ -637,10 +643,10 @@ var KM = (function(){
 })(KM);
 /*kitsfx:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, T = KM.theme('dark', 'jade');   // the dark look (rules-web.md rule 12) in the jade world (rule 17; HUE clear of 25 / 225 / 325)
-  var TEXT = "Why do apps feel so expensive? One: labels float up, never vanish. Two: badge numbers roll, never blink. Three: the sheet springs, then settles. Save these three for your app.", DUR = 22.9, HOOK_N = 6;
+  var TEXT = "Why do apps feel so expensive? One: the label floats up as you type, never vanishing. Two: the badge number rolls up, it never just blinks. Three: the bottom sheet springs up, then gently settles. Save these three for your app.", DUR = 20.5, HOOK_N = 6;
   // calm pacing (owner, 8 Nov 2026: "too much in 20 s, it feels rushed"; rules-web.md rule 13): one beat of BEAT s per detail, every
   // sentence at its own time (config voice.at, the same list): the hook at 0.15, each detail's line 0.3 s into its beat, the recap line 0.3 s into the recap
-  var BEAT = 5.5, AT = [0.15,2.6,8.1,13.6,19.1];
+  var BEAT = 4.7, AT = [0.15,2.6,7.3,12,16.7];
   // ---- the details: one per beat, in order (kind = a component in KINDS; title = three words; acc = the accent word's index) ----
   var DETAILS = [{"kind":"float"},{"kind":"badge"},{"kind":"sheet"}];
   var RECAP = {"eyebrow":"RECAP · ALL 3 AT 1×","title":["All","three","together"],"acc":1};
@@ -668,7 +674,7 @@ var KM = (function(){
     badge: { title: ['Badges', 'that', 'roll'], acc: 2, say: 'the badge number rolls, it never blinks.', token: 'translate · 1lh', main: '.bd', hookZ: 1.2,
       css: '.count { height: 1lh;\n  overflow: hidden; }\n.digits { transition: translate .4s\n    cubic-bezier(.34, 1.56, .64, 1); }\n.new .digits { translate: 0 -1lh; }',
       curve: { bezier: [.34, 1.56, .64, 1] }, dur: .4, after: .35, chip: [{ label: 'rolls in', v: 400, unit: 'ms' }, { v: 1, unit: 'line up' }],
-      html: '<div class="bd-i"><svg width="56" height="52" viewBox="0 0 56 52"><path d="M8 6 H48 Q52 6 52 10 V34 Q52 38 48 38 H24 L12 48 V38 H8 Q4 38 4 34 V10 Q4 6 8 6Z"/></svg></div><i class="bd-r"></i><div class="bd"><div class="bd-d"><span>3</span><span>4</span></div></div><span class="bd-l tx">Messages</span><span class="bd-s tx">NEW FROM MIRA</span>',
+      html: '<div class="bd-i"><svg width="56" height="52" viewBox="0 0 56 52"><path d="M8 6 H48 Q52 6 52 10 V34 Q52 38 48 38 H24 L12 48 V38 H8 Q4 38 4 34 V10 Q4 6 8 6Z"/></svg></div><i class="bd-r"></i><div class="bd"><div class="bd-d"><span class="tx">3</span><span class="tx">4</span></div></div><span class="bd-l tx">Messages</span><span class="bd-s tx">NEW FROM MIRA</span>',
       draw: function(r, c, o){ var f = o.f(o.k), bd = r.querySelector('.bd'), rg = r.querySelector('.bd-r'), ping = P(c, 0, .6);
         r.querySelector('.bd-d').style.transform = 'translateY(' + (-60 * f).toFixed(2) + 'px)';
         bd.style.transform = 'scale(' + (1 + .12 * Math.sin(Math.PI * cl(o.k))).toFixed(4) + ')';
@@ -800,6 +806,8 @@ var KM = (function(){
     grid.appendChild(tl); d.tile = tl; d.mini = tl.querySelector('.comp'); });
   var rb = document.createElement('div'); rb.className = 'blk a'; rb.innerHTML = '<span class="eb">' + esc(RECAP.eyebrow) + '</span><div class="tt">' + RECAP.title.map(function(w, j){ return '<span' + (j === RECAP.acc ? ' class="acc"' : '') + '>' + esc(w) + '</span>'; }).join(' ') + '</div>'; blks.appendChild(rb);
   var V, PH, A = {}, CAM, BAR, B = [];
+  // the index under the subtitles: one tab per detail (its token), the current one lit (18 Nov 2026: Output QA SPREAD, the band's lower strip was empty)
+  var TOC = D.map(function(d, i){ var e = document.createElement('span'); e.textContent = ('0' + (i + 1)).slice(-2) + ' ' + d.title[0].toUpperCase(); $('toc').appendChild(e); return e; });
   // the ping-pong loop (the hook and the recap play each detail at full speed, forward then back): x = seconds into the loop, c starts at c0
   // the hook: the first detail finishing at frame 0 (result first), held done while the hook is said, played back to its start just
   // before part 1, so part 1 picks up seamlessly
@@ -889,6 +897,8 @@ var KM = (function(){
       [].forEach.call(d.tile.querySelectorAll('.tl'), function(e){ e.style.opacity = ra; }); });
     grid.toggleAttribute('data-subject', cur === N);
     BAR(t);
+    $('fmt').style.opacity = A.b ? (1 - P(t, A.b[0] - .6, A.b[0] - .3)).toFixed(3) : 1;
+    TOC.forEach(function(e, i){ var on = A.b && t >= A.b[i] - .3 && t < A.b[i + 1] - .3 ? 1 : (A.b && t >= A.b[N] - .3 ? .6 : 0); e.style.background = on ? 'var(--soft)' : 'transparent'; e.style.color = on ? T.acc : T.dim; e.style.borderColor = on ? T.acc : ''; });
     var rst = [A.b[N] + .02]; RECAP.title.forEach(function(w, j){ rst.push(A.b[N] + .1 + j * .09); }); KM.rise(rb.querySelectorAll('.eb, .tt > span'), t, rst, 0);
     // ---- the hook: word by word over the first detail, gone as the camera pulls back to the first part ----
     var gone = E.inOut3(P(t, A.b[0] - .5, A.b[0] - .25)), hs = [];
