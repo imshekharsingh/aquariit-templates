@@ -254,7 +254,7 @@ def main():
             for q in e.get('queries') or [e.get('query', '')]:
                 for s in e.get('sources') or ['wikimedia', 'openverse', 'loc', 'nasa']:
                     try:
-                        cands += SOURCES[s](q)
+                        cands += SOURCES[s](q, width=int(e['width'])) if s == 'wikimedia' and e.get('width') else SOURCES[s](q)   # a smaller cached rendition (18 Nov 2026: 3840 px drew 429s on every runner)
                     except Exception as ex:   # noqa: BLE001
                         print(f'  {s} failed for "{q}": {ex}')
         seen, uniq = set(), []
