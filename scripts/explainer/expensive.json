@@ -1,0 +1,79 @@
+{
+ "name": "showreel-40-expensive",
+ "seek": "scripts/explainer/expensive.html",
+ "dur": 22.9,
+ "fps": 60,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.2,
+ "style": "Dark, jade world",
+ "palette": "jade",
+ "format": "details",
+ "voice": {
+  "text": "Why do apps feel so expensive? One: labels float up, never vanish. Two: badge numbers roll, never blink. Three: the sheet springs, then settles. Save these three for your app.",
+  "voice": "af_heart",
+  "speed": 1,
+  "at": [
+   0.15,
+   2.6,
+   8.1,
+   13.6,
+   19.1
+  ]
+ },
+ "experiment": {
+  "id": "details-format",
+  "change": "slow-mo details compilation, try 4 (ESCALATE answer 18 Nov: a format change from the single before/after), dark look in a new jade world",
+  "vs": "median"
+ },
+ "caption": "Why do some apps feel so expensive? ✨ Three small motions, each played at real speed, then slowed down.\n\n1) Labels float up, never vanish: the label moves up and shrinks to 70% as you type, with translate, scale and cubic-bezier(.2, 0, 0, 1), 300 ms (input:not(:placeholder-shown) + label).\n2) Badge numbers roll, never blink: the digits sit in a column inside a 1lh window with overflow: hidden, and translate: 0 -1lh rolls the next one up with cubic-bezier(.34, 1.56, .64, 1), 400 ms.\n3) The sheet springs, then settles: translate from 0 100% to 0 with linear(0, 1.08 40%, .98 65%, 1), 600 ms, one small overshoot.\n\nWorks in Chrome, Edge, Firefox and Safari (linear() since Safari 17.2). Save these three for your next app, or send them to the designer you work with.",
+ "keywords": [
+  "floating label css",
+  "notification badge animation",
+  "bottom sheet animation css",
+  "css linear() easing",
+  "css micro interactions",
+  "premium app ui details"
+ ],
+ "hashtags": [
+  "#microinteractions",
+  "#cssanimation",
+  "#uidesign",
+  "#frontenddev",
+  "#webdev"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Selectors/:placeholder-shown",
+   "note": "MDN, :placeholder-shown (the input shows its placeholder, i.e. is empty; needs a placeholder attribute, \" \" is enough); BCD: Chrome 47, Firefox 51, Safari 9"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Properties/translate",
+   "note": "MDN, the translate and scale properties; BCD: Chrome 104, Firefox 72, Safari 14.1"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/length#lh",
+   "note": "MDN, the lh unit (the line height); BCD: Chrome 109, Firefox 120, Safari 16.4"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/linear",
+   "note": "MDN, linear() easing (points, so it can overshoot like a spring); BCD: Chrome 113, Firefox 112, Safari 17.2"
+  },
+  {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/cubic-bezier",
+   "note": "MDN, cubic-bezier(): y values may leave 0-1 (overshoot); BCD: Chrome 16, Firefox 4, Safari 6"
+  }
+ ],
+ "tip": {
+  "title": "Three motions that make an app feel expensive",
+  "why": "A label that floats up instead of vanishing, a badge that rolls to the next number instead of blinking, and a sheet that springs up and settles all show where things went, so the app feels made with care.",
+  "code": "label { transition: translate .3s, scale .3s; transition-timing-function: cubic-bezier(.2, 0, 0, 1); }\ninput:not(:placeholder-shown) + label { translate: 0 -22px; scale: .7; }\n.count { height: 1lh; overflow: hidden; }\n.digits { transition: translate .4s cubic-bezier(.34, 1.56, .64, 1); }\n.new .digits { translate: 0 -1lh; }\n.sheet { translate: 0 100%; transition: translate .6s linear(0, 1.08 40%, .98 65%, 1); }\n.open .sheet { translate: 0; }",
+  "demo": "expensive",
+  "source": {
+   "url": "https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/linear",
+   "label": "MDN, linear() easing"
+  }
+ },
+ "blur": 3
+}

@@ -1,0 +1,45 @@
+# Review: showreel-40-expensive (web, postOn 2026-11-18 postAt 13:00 IST)
+
+The Mandatory Gate, design/mandatory.md. Built 18 Nov by the daily run, the day it posts.
+Why this reel: the 17 Nov evening collect says ALARM web (median reach 1,543 vs target 2,000) and ESCALATE web (ALARM two days running):
+change the format, not a tweak. The last six web reels were all the single before/after; the details format is the other web format with
+wins (PROMOTE details-format: alive 1,536 (+5%), waiting 2,144 (+47%, 4.1% saves, the channel's best save rate), menus 1,216 (-17%)).
+E20 (caption question + comment ask) is DROPPED today (2 LOSEs: fontswap -3%, form -10%), so the caption has no question.
+Topic: "Why do apps feel so expensive?": three motions people meet in every polished app, none used before (captions.json: alive = heart,
+switch, tick; menus = tab line, accordion, cascade; waiting = send morph, photo fade, toast):
+- Nº 01 "Labels that float": an email field; the tap focuses it, the first letter makes the label rise and shrink to 70% instead of
+  vanishing like a placeholder (input:not(:placeholder-shown) + label, translate + scale, cubic-bezier(.2, 0, 0, 1), 300 ms); the address types in.
+- Nº 02 "Badges that roll": a Messages row; a new message pings the red badge and the 3 rolls up out of a one-line window as the 4 rolls in
+  (height: 1lh; overflow: hidden; translate: 0 -1lh with an overshoot cubic-bezier(.34, 1.56, .64, 1), 400 ms); the line under it reads 4 NEW.
+- Nº 03 "Sheets that spring": a tap on the share button; the bottom sheet rises with one small overshoot and settles (linear(0, 1.08 40%,
+  .98 65%, 1), 600 ms), the page dims behind it.
+- Recap: all three at 1x in a grid, "Save these three for your app."
+Look: the dark look (rules-web.md rule 12) in a NEW colour world, jade (kitmotion.js KM.WORLDS.jade, added today: saffron, the next world in
+order, measures ~35 deg, within 40 of the form reel's 25, so it would fail Output QA HUE). Calm (rule 17): camera drift 0, the light held
+still (KM.lights(t, c, true)), one declared glide per beat.
+Local Output QA on the scene's own frames (node scripts/qa/frames.mjs + python3 scripts/qa/look.py, 10 fps): HUE PASS 155 deg vs follow 325,
+form 25, fontswap 225 (needs 40); CALM PASS median 2.0%, mean 2.8% (needs 3.5% / 5%); SPLIT SKIP (no before/after panes in a details reel).
+
+1. Topic: PASS: anyone who has typed an email, seen a message badge or opened a share sheet has met these three in the last hour; not done before (list above). Rulebook (design/rules-web.md): rule 1 pass (everyday app moments, as a user), rule 2 pass (frame 0: the field already focused with "mira@mail.com" typed and the label floated, result first, then played back for part 1), rule 3 pass (the first CSS types under the live field from ~3 s), rule 4 pass (a new detail every 5.5 s, inside each a new pass every ~2 s: real speed, slow motion with the curve, settle), rule 5 pass (all visible motion), rule 6 pass ("Why do apps feel so expensive?", 6 words, over the field), rule 7 pass (13:00 IST), rule 8 pass (each line checked on MDN + BCD, item 10; the recap holds all three 4 s), rule 9 pass (no hard terms said; "one-l-h" is never spoken), rule 10 pass (cuts 0, strobes 0; continuity 74% on the calm web line, rule 17), rule 11 pass (satisfying to watch, saved to reuse: three copyable snippets), rule 12 pass (dark look), rule 13 pass (3 details, beats 5.5 s, 22.9 s, 1.44 words/s, breaths 0.67 s+, recap 4.1 s: PACE ok), rule 14 pass (each beat's title, the component and the code are where the voice is: the label on "labels", the badge on "badge numbers", the sheet on "the sheet"), rule 15 n/a (the details format shows each motion itself, real speed then slowed, not a broken / fixed pair; the reel is today's format change), rule 16 pass (the component stage is the biggest thing at every beat, SUBJECT FILL 44% at frame 0), rule 17 pass (drift 0, light still, CALM 2.0% / 2.8%, its own colour world jade, HUE 155)
+2. Frame 0: PASS: SUBJECT FILL: 44% at frame 0; HOOK: clear of the subject; the email field framed close under the hook, label already floated and the address typed with the caret blinking, then it plays back to empty for part 1
+3. Safe zone: PASS: SAFE ZONE: ok (camera drift 0; the hook frame at zoom 1.2 keeps the 390 px field and its label inside the frame; every beat's title, stage, code card and curve inside the safe zone on the stills)
+4. No overlap: PASS: OVERLAP: none; BAND: clear (the speed badge sits top right clear of the title; the curve under the code card clears the subtitle band; the recap tiles never touch)
+5. Motion: PASS: STATIC STRETCH: none (least change 0.8 at 21 s, median 2.9); EMPTY FRAMES: none (scanned 46 moments, least detail 17.6 at 19 s); TEXT FIT: all text inside its box
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; the hook on screen from frame 0, then all 5 sentences in the band, each shown whole and finished on the stills (4.0, 6.0, 10.2, 12.3, 16.4, 18.5, 20.5 s)
+7. Voice: PASS: HOOK PACE: the first sentence has 6 words: ok (6 or fewer); PREFLIGHT voice: 5 timed sentences, 30 words, voice ends about 20.9 s (reel 22.9 s, must end by 22.3 s), 3.0 words/s while speaking, 1.4 overall: fits; SENTENCE PACE ok (short lines 1 and 5 read quick at 5.3: warning only, 6 words or fewer); PRONUNCIATION: 0 overrides used; no unchecked words; speed 1.0
+8. Sound: PASS (by design; measured on the render at item 13): every tap a touch and blip sized by its element (the field, the badge, the share button), typing ticks for the address and each code card, the badge's ping and roll, the sheet's whoosh and settle, the recap pops; ELEMENT SOUND 150 of 150; recorded samples (render log SOUND SOURCE) and the SOUND GATE checked on the render
+9. Payoff: PASS: the recap at 19.1 s holds all three at full speed for 4 s with each token (translate · scale, translate · 1lh, linear()) under its tile, said "Save these three for your app."; the last frame is the grid, the reel ends on the reel
+10. Facts: PASS: MDN :placeholder-shown (BCD Chrome 47, Firefox 51, Safari 9; needs a placeholder attribute, " " is enough, said in the sources); MDN translate / scale properties (Chrome 104, Firefox 72, Safari 14.1); MDN lh unit (Chrome 109, Firefox 120, Safari 16.4); MDN linear() easing (Chrome 113, Firefox 112, Safari 17.2); MDN cubic-bezier() y outside 0-1 overshoots (Chrome 16, Firefox 4, Safari 6); the card code is the code in the tip; npm run check passes
+11. Post data: PASS: captions.json entry (channel web, postOn 2026-11-18, postAt 13:00, concept, about, palette jade, experiment details-format); keywords floating label css, notification badge animation, bottom sheet animation css, css linear() easing, css micro interactions, premium app ui details; hashtags #microinteractions #cssanimation #uidesign #frontenddev #webdev; tip block with demo "expensive" (scripts/tips/demos.mjs); demo hue 155 in scripts/qa/demo-hues.json
+12. Review file: PASS: this file, items 1-11, 14-18
+13. After the render: PENDING
+14. Cuts: PASS: FLOW: cuts 0 (4 declared transitions: the glide from the hook to each detail and to the recap)
+15. Dead runs: PASS: FLOW: dead runs none
+16. Continuity: PASS: FLOW: continuity 74% (median step 0.6, 4 declared transitions; the calm web line is 35%+, rule 17)
+17. Strobes: PASS: FLOW: strobes 0
+18. Element sound (web): PASS: ELEMENT SOUND: 150 of 150 animated elements have a cue (100%): ok
+
+Owner-feedback lines, read against the stills (the render is checked again at item 13): tech terms said right (no CSS terms spoken); something changes every 1.5-2 s (typing, rolling, springing, slow motion with the riding dot, the code typing); calm, not wiggly (camera and light still); a colour world of its own (jade, HUE 155); every spoken line shown and finished; the cover is frame 0 with the hook whole; nothing cut at the edges (SAFE ZONE ok, the hook frame at zoom 1.2 keeps the field inside the frame).
+Craft improvement (design/craft-log.md): KM.WORLDS.jade, a third dark colour world, so the next web reels have a world clear of the last three hues.
+Researched improvement (design/improvements.md): none applied today: the unused web items are a swipe divider, a caption question (E20, dropped today), a frame-0 loop (kit piece MISSING) and a story-not-list item that argues against today's ESCALATE format; the loop piece is in design/todo.md for the next details reel.
+References used (design/references.md): none

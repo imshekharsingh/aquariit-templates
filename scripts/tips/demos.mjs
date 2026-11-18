@@ -371,6 +371,32 @@ export const demos = {
     js: `function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
   panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Tap all three again' : 'Tap all three'; }); }`,
   },
+  expensive: {
+    css: `
+#expensive .pane{display:flex;flex-direction:column;align-items:center;gap:12px;height:190px;padding-top:30px;overflow:hidden;position:relative}
+#expensive .fld{position:relative;width:150px;height:34px;border-radius:9px;background:#11402f}
+#expensive .fld i{position:absolute;left:10px;top:0;font-size:12px;line-height:34px;color:#c2ded1;font-style:normal;transform-origin:0 50%}
+#expensive .fld b{position:absolute;left:10px;top:6px;font-size:12px;line-height:34px;opacity:0}
+#expensive .cnt{height:22px;width:22px;border-radius:11px;background:#ff7a6b;overflow:hidden;font-weight:800;font-size:13px;line-height:22px;text-align:center;color:#fff}
+#expensive .cnt span{display:block}
+#expensive .sh{position:absolute;left:12%;right:12%;bottom:0;height:46px;border-radius:12px 12px 0 0;background:#0f3828;font-size:12px;line-height:46px;text-align:center;translate:0 100%}
+#expensive .on .fld i{translate:0 -10px;scale:.7}
+#expensive .on .fld b{opacity:1}
+#expensive .on .cnt span{translate:0 -22px}
+#expensive .on .sh{translate:0}
+#expensive .fix .fld i{transition:translate .3s,scale .3s;transition-timing-function:cubic-bezier(.2, 0, 0, 1)}
+#expensive .fix .cnt span{transition:translate .4s cubic-bezier(.34, 1.56, .64, 1)}
+#expensive .fix .sh{transition:translate .6s linear(0, 1.08 40%, .98 65%, 1)}`,
+    html: `
+<div class="pair">${['', ' fix'].map((f) => `
+  <div class="pane${f}"><span class="tag${f ? ' ok' : ''}">${f ? 'With the motion' : 'Before'}</span>
+    <div class="fld"><i>Email</i><b>mira@mail.com</b></div><div class="cnt"><span>3</span><span>4</span></div><div class="sh">Share to story</div>
+  </div>`).join('')}
+</div>
+<button class="play" type="button">Play all three</button>`,
+    js: `function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
+  panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Reset' : 'Play all three'; }); }`,
+  },
   waiting: {
     css: `
 #waiting .pane{display:flex;flex-direction:column;align-items:center;gap:10px;height:170px;padding-top:30px;overflow:hidden}

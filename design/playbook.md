@@ -72,6 +72,8 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
   warm / cool colours. Two identical-looking cards read as "nothing happens" (fontswap first cut, 15 Nov). rules-web.md rule 15; Output QA SPLIT.
 
 ## What didn't
+- web: a one-word caption question with a comment ask (E20, DROPPED 18 Nov: fontswap 1,440 at 24 h, -3%; form 1,311, -10%; saves 0.9-1% vs 1.6%): comments did not lift reach.
+- c3: the GUESS format (E19, DROPPED 18 Nov: eiffel-red 1,141, -1%; taj-mud 136, -88%): the guess did not beat the plain story.
 - tech: settings lists (E17, 12-13 Nov), ended by the owner after 2 reels ("I'm not liking the content we are focusing on"): stop-tracking reached 152 with 2 saves, the best tech reel, but the channel moves to gadgets (brand collabs); scam-calls was replaced before posting.
 - web: fixes you must imagine or that only developers see (squashed photos 281, page jump 402, INP 258, springs 391, zero-JS transition 178).
 - web: cover-card openers before the bug (13-26% hold, 2.7-5.0 s).

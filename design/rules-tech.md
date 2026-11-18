@@ -11,6 +11,7 @@ it, and settings lists do not lead to gadget-brand collabs. The old rulebook (se
 attic/design/rules-tech-2026-11-12.md; its palette (L7), pronunciation, FLOW and voice rules carry over below.
 
 ## K0. The kit engine (owner, 15 Nov 2026: "port the owner's kit as it is ... get past our engine if it's not helping"; E26)
+PROMOTED 18 Nov 2026 (tech-kit-engine: 2 WINs, 0 LOSEs at 24 h: night mode 1,468 vs median 123, 120 Hz 958 vs 123; 5 ATM 1,203 at its first reading).
 Tech reels are built on techkit/ (techkit/README.md): the owner's motion kit (design/kits/motion_kit.zip, motion_content_prompt.md) as it is,
 topic `"engine": "kit"`, a scene in techkit/scenes/. Its 7-beat arc (question, problem, fix, how #1, how #2 as a numbered step flow, bonus,
 recap + title slam) replaces S2's order; its drawn hero replaces R0's photos and S3's layout (header y 250, chip y 408, hero y 500-1200, panel

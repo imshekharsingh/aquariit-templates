@@ -159,6 +159,20 @@
 #menus .fix .ink{transition-property:translate,width;transition-duration:.45s;transition-timing-function:cubic-bezier(.22, 1, .36, 1)}
 #menus .fix .panel{transition:grid-template-rows .4s cubic-bezier(.4, 0, .2, 1)}
 #menus .fix .menu li{transition:opacity .3s,translate .3s;transition-timing-function:ease-out;transition-delay:calc(var(--i) * 60ms)}
+#expensive .pane{display:flex;flex-direction:column;align-items:center;gap:12px;height:190px;padding-top:30px;overflow:hidden;position:relative}
+#expensive .fld{position:relative;width:150px;height:34px;border-radius:9px;background:#11402f}
+#expensive .fld i{position:absolute;left:10px;top:0;font-size:12px;line-height:34px;color:#c2ded1;font-style:normal;transform-origin:0 50%}
+#expensive .fld b{position:absolute;left:10px;top:6px;font-size:12px;line-height:34px;opacity:0}
+#expensive .cnt{height:22px;width:22px;border-radius:11px;background:#ff7a6b;overflow:hidden;font-weight:800;font-size:13px;line-height:22px;text-align:center;color:#fff}
+#expensive .cnt span{display:block}
+#expensive .sh{position:absolute;left:12%;right:12%;bottom:0;height:46px;border-radius:12px 12px 0 0;background:#0f3828;font-size:12px;line-height:46px;text-align:center;translate:0 100%}
+#expensive .on .fld i{translate:0 -10px;scale:.7}
+#expensive .on .fld b{opacity:1}
+#expensive .on .cnt span{translate:0 -22px}
+#expensive .on .sh{translate:0}
+#expensive .fix .fld i{transition:translate .3s,scale .3s;transition-timing-function:cubic-bezier(.2, 0, 0, 1)}
+#expensive .fix .cnt span{transition:translate .4s cubic-bezier(.34, 1.56, .64, 1)}
+#expensive .fix .sh{transition:translate .6s linear(0, 1.08 40%, .98 65%, 1)}
 #waiting .pane{display:flex;flex-direction:column;align-items:center;gap:10px;height:170px;padding-top:30px;overflow:hidden}
 #waiting .send{width:110px;height:30px;border-radius:15px;background:#7cf0b6;color:#10131c;font-weight:700;font-size:13px;line-height:30px;text-align:center;overflow:hidden;white-space:nowrap}
 #waiting .img{width:90px;height:44px;border-radius:8px;background:linear-gradient(180deg,#ffb38a,#ff7eb3 55%,#7a5cff);opacity:0;scale:1.06}
@@ -214,6 +228,30 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="expensive">
+  <p class="no">Nº 30</p>
+  <h2>Three motions that make an app feel expensive</h2>
+  <p class="why">A label that floats up instead of vanishing, a badge that rolls to the next number instead of blinking, and a sheet that springs up and settles all show where things went, so the app feels made with care.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Before</span>
+    <div class="fld"><i>Email</i><b>mira@mail.com</b></div><div class="cnt"><span>3</span><span>4</span></div><div class="sh">Share to story</div>
+  </div>
+  <div class="pane fix"><span class="tag ok">With the motion</span>
+    <div class="fld"><i>Email</i><b>mira@mail.com</b></div><div class="cnt"><span>3</span><span>4</span></div><div class="sh">Share to story</div>
+  </div>
+</div>
+<button class="play" type="button">Play all three</button></div>
+  <div class="code"><pre><code>label { transition: translate .3s, scale .3s; transition-timing-function: cubic-bezier(.2, 0, 0, 1); }
+input:not(:placeholder-shown) + label { translate: 0 -22px; scale: .7; }
+.count { height: 1lh; overflow: hidden; }
+.digits { transition: translate .4s cubic-bezier(.34, 1.56, .64, 1); }
+.new .digits { translate: 0 -1lh; }
+.sheet { translate: 0 100%; transition: translate .6s linear(0, 1.08 40%, .98 65%, 1); }
+.open .sheet { translate: 0; }</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/docs/Web/CSS/Reference/Values/easing-function/linear" rel="noopener">Source: MDN, linear() easing</a></p>
+</article>
 
 <article class="tip" id="follow">
   <p class="no">Nº 29</p>
@@ -745,11 +783,13 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>27 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>28 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "expensive": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
+  panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Reset' : 'Play all three'; }); },
     "follow": function(root){ root.querySelectorAll('.fol').forEach(function(b){ var fix = !!b.closest('.fix');
   b.addEventListener('click', function(){ var on = b.dataset.on !== '1'; b.dataset.on = on ? '1' : '';
     b.innerHTML = fix ? '<span' + (on ? ' class="off"' : '') + '>Follow</span><span' + (on ? '' : ' class="off"') + '>Following</span>' : '<span>' + (on ? 'Following' : 'Follow') + '</span>'; }); }); },
