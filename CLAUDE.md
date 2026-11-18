@@ -32,6 +32,8 @@ day's handoff session, never for the tasks (owner, 18 Nov 2026).
 "Web batch" (Sun 07:47 IST) and "Tech batch" (Sun 14:47 IST) each build their channel's 4 reels for Mon-Sat, following
 **design/runbook-daily.md** steps 0-5 once for the week (Feedback, Owner answers, audit card, rulebooks, build, results line).
 "Batch critic" (Sun 20:47 IST) reviews all 8. Turns Out keeps its own Mon/Wed/Fri task and the 11:17 critic on those days.
+Daily run (old, until Sat 21 Nov only): the "Daily studio run" task still builds that day's web AND tech reel on Thu 19, Fri 20 and
+Sat 21 Nov with design/runbook-daily.md steps 0-5 (one reel per channel, postOn = today, nothing ahead); from Sun 22 Nov the weekly batch takes over.
 
 ## Spare usage night
 The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook-spare.md** (Feedback first, Spare check, growth work only, stop by 04:00 IST).
