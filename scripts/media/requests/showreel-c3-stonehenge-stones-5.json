@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 5: one photo per run (Wikimedia 429s stopped requests 1 and 4 at the 30-minute limit).",
+ "media": [
+  {"id": "henge", "url": "https://commons.wikimedia.org/wiki/File:Stonehenge_sunset.jpg", "min_side": 1200}
+ ]
+}

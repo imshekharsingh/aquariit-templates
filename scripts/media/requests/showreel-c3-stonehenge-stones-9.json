@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 9: one photo per run (Wikimedia 429s stopped requests 1 and 4 at the 30-minute limit).",
+ "media": [
+  {"id": "orkney", "queries": ["Yesnaby"], "sources": ["wikimedia"], "min_side": 1000}
+ ]
+}
