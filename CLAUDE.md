@@ -17,19 +17,21 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - Gates: design/mandatory.md, design/critic.md, design/owner-feedback.md, design/safety.md, design/targets.md
 - Learning: design/playbook.md, design/experiments.md, design/improvements.md, design/references.md, design/craft-log.md, design/topics.md, design/todo.md
 
-## Schedule
-- ONE reel a day for web and tech; Turns Out 3 a week, Mon / Wed / Fri (owner, 18 Nov 2026); all at **13:00 IST** (owner, 8 Nov 2026), entry in templates/showreels/captions.json ("channel",
-  "postOn", "postAt", "concept"; npm run check fails without it). Learn-then-build: built the day it posts (evening before at most),
-  never ahead, never a second reel for a channel and slot that already has one.
-- One experiment and one researched improvement per channel per day (design/runbook-daily.md).
+## Schedule (owner, 18 Nov 2026)
+- All posts at **13:00 IST**. Web 4 a week: Mon / Tue / Thu / Sat. Tech 4 a week: Tue / Wed / Fri / Sat. Turns Out 3 a week: Mon / Wed / Fri.
+  Every reel needs its entry in templates/showreels/captions.json ("channel", "postOn", "postAt", "concept"; npm run check fails without it).
+- Web and tech are built a week ahead in one go on Sunday (the weekly batch, design/runbook-daily.md "Weekly batch"); Turns Out is still
+  built the day it posts, from design/c3-strategy.md. Never a second reel for a channel and day that already has one.
+- One experiment and one researched improvement per channel per WEEK, applied in the batch (design/runbook-daily.md).
 
 ## Scheduled tasks: ON
 All five run from the "Studio launcher (daily)" session (design/runbook-studio.md "Scheduled tasks"). The 16 Nov "pause" was only for that
 day's handoff session, never for the tasks (owner, 18 Nov 2026).
 
-## Daily run
-The "Daily studio run" scheduled task (06:47 IST) follows **design/runbook-daily.md** (steps 0-5: Feedback first, Owner answers, audit card,
-rulebooks, build the web and tech reels, results line).
+## Weekly batch (replaces the daily run from Sun 22 Nov 2026)
+"Web batch" (Sun 07:47 IST) and "Tech batch" (Sun 14:47 IST) each build their channel's 4 reels for Mon-Sat, following
+**design/runbook-daily.md** steps 0-5 once for the week (Feedback, Owner answers, audit card, rulebooks, build, results line).
+"Batch critic" (Sun 20:47 IST) reviews all 8. Turns Out keeps its own Mon/Wed/Fri task and the 11:17 critic on those days.
 
 ## Spare usage night
 The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook-spare.md** (Feedback first, Spare check, growth work only, stop by 04:00 IST).
@@ -40,7 +42,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - Verify the output, not the input: checks measure the rendered MP4, frames at phone size and audible audio; read design/owner-feedback.md
   against the finished output; add a line there the same day the owner catches something.
 - Output QA: every owner complaint becomes a GitHub check in scripts/qa/ the same day; it runs on the final MP4 after every render; any FAIL = NOT READY.
-- Independent critic: a different session ("Reel critic", ~11:17 IST) must write "CRITIC: READY" in the
+- Independent critic: a different session ("Batch critic" Sun for web/tech, "Reel critic" ~11:17 IST Mon/Wed/Fri for Turns Out) must write "CRITIC: READY" in the
   review file; nobody approves their own reel.
 - Preflight: settle everything first, then ONE render on GitHub; never render whole videos in the session; re-render only for a real defect; at most 2 renders per reel, then stop and report (owner, 18 Nov 2026).
 - Every reel feels premium, nothing looks broken, every spoken line is shown and finished, every reel teaches one concrete, useful thing.
