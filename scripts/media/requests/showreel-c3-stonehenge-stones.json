@@ -1,0 +1,18 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Wed 18 Nov Turns Out reel (Echoes engine, 2.5D depth): Stonehenge's bluestones came from the Preseli Hills in Wales, the Altar Stone from northeast Scotland. One photo per shot (PD / CC0 / CC BY only).",
+ "media": [
+  {"id": "henge", "queries": ["Stonehenge", "Stonehenge sunset", "Stonehenge panorama"], "sources": ["wikimedia", "openverse"], "min_side": 1200, "avoid": ["map", "plan", "drawing", "replica", "foamhenge", "carhenge"]},
+  {"id": "aerial", "queries": ["Stonehenge from the air 1906", "Stonehenge aerial photograph balloon"], "sources": ["wikimedia", "loc"], "min_side": 600},
+  {"id": "photochrom", "queries": ["Stonehenge photochrom", "Stonehenge Salisbury photochrom"], "sources": ["loc", "wikimedia"], "min_side": 700},
+  {"id": "sarsen", "queries": ["Stonehenge trilithon", "Stonehenge sarsen lintel"], "sources": ["wikimedia", "openverse"], "min_side": 900, "avoid": ["map", "plan"]},
+  {"id": "bluestone", "queries": ["Stonehenge bluestones", "Stonehenge bluestone"], "sources": ["wikimedia", "openverse"], "min_side": 700, "avoid": ["map", "plan", "Preseli", "Wales"]},
+  {"id": "westwoods", "queries": ["sarsen stones Fyfield Down", "Overton Down sarsens", "Grey Wethers sarsen"], "sources": ["wikimedia", "openverse"], "min_side": 800},
+  {"id": "preseli", "queries": ["Preseli Hills", "Mynydd Preseli", "Carn Menyn"], "sources": ["wikimedia", "openverse"], "min_side": 1000},
+  {"id": "goedog", "queries": ["Carn Goedog", "Carn Goedog dolerite"], "sources": ["wikimedia", "openverse"], "min_side": 700},
+  {"id": "rhos", "queries": ["Craig Rhos-y-felin", "Rhos-y-felin"], "sources": ["wikimedia", "openverse"], "min_side": 700},
+  {"id": "altar", "queries": ["Stonehenge Altar Stone", "Stonehenge altar stone fallen"], "sources": ["wikimedia", "openverse"], "min_side": 600},
+  {"id": "orkney", "queries": ["Yesnaby cliffs Orkney", "Orkney sandstone cliffs", "Caithness flagstone cliffs"], "sources": ["wikimedia", "openverse"], "min_side": 1000},
+  {"id": "engraving", "queries": ["Stonehenge Constable watercolour", "Stonehenge engraving 19th century", "Stonehenge Turner"], "sources": ["wikimedia", "loc"], "min_side": 800}
+ ]
+}
