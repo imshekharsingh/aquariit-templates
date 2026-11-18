@@ -514,6 +514,21 @@
    "file_url": "https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAyL2xyL2dldHR5MTA4cjZ5LWltYWdlLmpwZw.jpg",
    "source": "openverse:rawpixel",
    "run": "Media run 44255163979"
+  },
+  {
+   "id": "henge",
+   "file": "henge.jpg",
+   "w": 1280,
+   "h": 960,
+   "title": "Stonehenge sunset.jpg",
+   "author": "Bkamprath",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Stonehenge_sunset.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Stonehenge_sunset.jpg/1280px-Stonehenge_sunset.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44256764197"
   }
  ],
  "qa": {
