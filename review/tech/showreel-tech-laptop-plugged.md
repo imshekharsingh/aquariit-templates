@@ -1,0 +1,32 @@
+# Review: showreel-tech-laptop-plugged (tech, postOn 2026-11-18 postAt 13:00 IST)
+
+The Mandatory Gate, design/mandatory.md. Built 18 Nov by the daily run, the day it posts, on the kit engine's shared frame
+(techkit/base.html + techkit/scenes/laptop-plugged.js). AUTO lines from `python3 techkit/make.py laptop-plugged --fake-vo --stills ...`
+(fake timings; the render re-times to the real voice); stills sheet at 18 moments read at phone size.
+Why this reel: the 17 Nov evening collect says ALARM tech (median 154) and ESCALATE: change the topic type or format. The topic plan
+(design/topics.md, Wed 18) is a gadget-myths day after yesterday's specs decoded, so the format changes; the median is the old pre-kit reels
+ageing out (the kit reels: night mode 1,481, 120 Hz 1,013, 5 ATM 1,203), so the kit engine stays (PROMOTED today, rules-tech.md K0) and the
+myth format brings its promoted verdict stamp (F5).
+
+1. Topic: PASS: Should your laptop stay plugged in all day? (gadget myths, laptop, global; yesterday specs decoded, smartwatch): the most asked laptop battery question; never done on any channel (captions.json). Rulebook (design/rules-tech.md): K0 pass (kit engine, shared frame, 7-beat arc), K1 pass (no sheen: Output QA SHEEN PASS locally, 0 sweeps; no box round the hero; the idea happens on the laptop on its words; one eased camera move per beat; calm FLOW continuity 79%, line 55%+), K2 pass (the laptop opens up on every beat: the deck turns to x-ray and shows four cells charging, they lose a sliver on "wear", turn amber when full and red when hot, the screen shows charging on hold and the power path to the board, the cells settle to 80% with a live chart, a pointer works the settings, a pillow sinks under it and heat waves rise; local Output QA HERO PASS 63% of 91 samples, line 55%), K3 pass (frame 0 is the cover: title, the laptop at 100% and the MYTH? stamp, held still, inside the centre 3:4 crop), F1 pass (gadget myths, no format or gadget type two days running), F2 pass (global; the week's India / global mix: Mon 16 India, Thu 19 India), F3 pass (Apple, Mac, Dell as text for facts, no logos, the laptop drawn generically, no winner / loser), F4 pass (the verdict said and shown: "Plug it in, turn on the limit, keep it cool" with the pills "Plugged in all day: fine" and "Limit on, kept cool"), F5 pass (MYTH? stamped in frame 0, MYTH returns on the verdict at "Plug"), V1-V4 pass (item 7)
+2. Frame 0: PASS: the cover (K3): the title "Plugged in all day?", the whole laptop at 100% with its cable in and the red MYTH? stamp, the panel "PLUGGED IN = DEAD BATTERY?"; held still while the cover holds, then a sun starts crossing its screen (the day going by)
+3. Safe zone: PASS: SAFE ZONE: ok (DOM text and every canvas label every 0.5 s; the stamp moved inside x 60-960 after the first sheet)
+4. No overlap: PASS: OVERLAP: none (the BOARD label removed, the strip on the screen names it; HELD AT 80% and BATTERY RESTS moved under the deck clear of the screen's chart)
+5. Motion: PASS: the laptop transforms on every beat (K2, item 1); FLOW: dead runs none; local Output QA HERO PASS 63% (still moments left: the cover hold and the first second of a few beats), SHEEN PASS
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; CAPTIONS: 48 chunks, every spoken word shown (the last line as the title slam "That's the plugged-in myth.")
+7. Voice: PASS: PREFLIGHT voice: 505 letters, about 42.0 s at speed 1.00 (limit 44.0): fits; PRONUNCIATION: 1 override used: plugged-in (config, said "plugged in"); no unchecked words; natural speed 1.0; 120 words in 7 lines
+8. Sound: PASS (by design; measured on the render at item 13): kit bed + 25 cue effects (snap on "kills", thud on "wear", blip on "hundred", zaps on "hot", snap on "stop", whoosh on "charger", chime on "rests", pop on "eighty", tick on "sit", pops and blips on the settings, riser on "heat", thuds on "bed" / "pillow", zaps on "blocked", pops on "Plug" / "limit", the final impact and chime); recorded samples (render log SOUND SOURCE), SOUND GATE and DETAIL checked on the render
+9. Payoff: PASS: the recap: the laptop pulls back cool on its desk at 80%, the two pills land on "Plug" and "limit", the MYTH stamp returns green, then the title slam "That's the plugged-in myth." read standing still (a declared hold)
+10. Facts: PASS: Apple Support 102338 (Optimized Battery Charging delays charging past 80% when it expects a long time on power; Charge Limit 80-100% on Apple silicon with macOS Tahoe 26.4 or later), Dell Power Manager User's Guide (Primarily AC Use lowers the charge threshold for systems mostly on power; Custom start / stop), Apple Batteries: Maximizing Performance (heat above 35 °C can permanently damage battery capacity) and Apple Support 102589 (battery health management watches temperature history); "they stop charging when they're full" and "the charger runs the laptop" match Apple's "charging on hold" wording; no number on screen that is not said (100%, 80%); all read 18 Nov 2026; npm run check passes
+11. Post data: PASS: captions.json entry (channel tech, postOn 2026-11-18, postAt 13:00, concept, experiment tech-kit-engine); topic post: caption with the facts and the verdict and a send to a named friend, 6 keywords, 5 hashtags, 3 sources
+12. Review file: PASS: this file, items 1-11 and 14-17
+13. After the render: PENDING
+14. Cuts: PASS: FLOW: cuts 0 (7 declared camera transitions)
+15. Dead runs: PASS: FLOW: dead runs none (the title slam a declared hold)
+16. Continuity: PASS: FLOW: continuity 79% (median step 0.6, 7 declared transitions) (calm tech line 55%+)
+17. Strobes: PASS: FLOW: strobes 0
+
+Owner-feedback lines, read against the stills (the render is checked again at item 13): no light sweeps; the object does the thing on its words; nothing cut at the edges; every spoken line shown and finished; calm camera; numbers on screen match the voice.
+Researched improvement (design/improvements.md): the 13 Nov tech item "Myth days: a MYTH plate stamps on the belief, then the mechanism is shown and the verdict replaces it": the MYTH? stamp in frame 0, MYTH on the verdict.
+Craft improvement (design/craft-log.md): on-object state in the kit scene: the screen itself carries the beat (a day passing, the power path, a live charge chart, a pointer working the settings) so the hero changes inside its own box (HERO 63%).
+References used (design/references.md): none

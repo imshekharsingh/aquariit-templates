@@ -1,0 +1,378 @@
+{
+ "slug": "laptop-plugged",
+ "engine": "kit",
+ "scene": "techkit/scenes/laptop-plugged.js",
+ "topic": "Should your laptop stay plugged in all day",
+ "format": "GADGET MYTHS",
+ "audience": "global",
+ "gadget": "laptop",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.45,
+ "max_end": 44.0,
+ "experiment": {
+  "id": "tech-kit-engine",
+  "change": "E26 try 4: the kit engine on the shared frame, gadget myths (verdict stamp, F5), laptop, global; the object opens up (x-ray battery, power path, charge limit, heat)",
+  "vs": "median"
+ },
+ "say": {
+  "plugged-in": "plugged in"
+ },
+ "lines": [
+  {
+   "text": "Should your laptop stay plugged in all day? Most people think it kills the battery.",
+   "beat": "question"
+  },
+  {
+   "text": "Batteries do wear out. They age fastest when they sit full at a hundred percent, and when they get hot.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "But modern laptops stop charging when they're full. Then the charger runs the laptop, and the battery rests.",
+   "beat": "fix",
+   "source": 0
+  },
+  {
+   "text": "Many also hold the charge near eighty percent, so the battery doesn't sit full all day.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "On a Mac, that's Optimized Battery Charging, or a charge limit. Dell's Power Manager has a setting too.",
+   "beat": "step",
+   "source": 1
+  },
+  {
+   "text": "The real enemy is heat. Don't charge it on a bed or a pillow, where the vents get blocked.",
+   "beat": "surprise",
+   "source": 2
+  },
+  {
+   "text": "Plug it in, turn on the limit, keep it cool. That's the plugged-in myth.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "kills": [
+   0,
+   "kills"
+  ],
+  "wear": [
+   1,
+   "wear"
+  ],
+  "full1": [
+   1,
+   "full"
+  ],
+  "hundred": [
+   1,
+   "hundred"
+  ],
+  "hot": [
+   1,
+   "hot"
+  ],
+  "stop": [
+   2,
+   "stop"
+  ],
+  "charger": [
+   2,
+   "charger"
+  ],
+  "rests": [
+   2,
+   "rests"
+  ],
+  "eighty": [
+   3,
+   "eighty"
+  ],
+  "sit": [
+   3,
+   "sit"
+  ],
+  "mac": [
+   4,
+   "Mac"
+  ],
+  "optimized": [
+   4,
+   "Optimized"
+  ],
+  "limit": [
+   4,
+   "limit"
+  ],
+  "dell": [
+   4,
+   "Dell's"
+  ],
+  "setting": [
+   4,
+   "setting"
+  ],
+  "heat": [
+   5,
+   "heat"
+  ],
+  "bed": [
+   5,
+   "bed"
+  ],
+  "pillow": [
+   5,
+   "pillow"
+  ],
+  "blocked": [
+   5,
+   "blocked"
+  ],
+  "plug": [
+   6,
+   "Plug"
+  ],
+  "cool": [
+   6,
+   "cool"
+  ],
+  "final": [
+   6,
+   "That's"
+  ],
+  "lim2": [
+   6,
+   "limit"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "kills",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "wear",
+   "thud",
+   0.5,
+   0
+  ],
+  [
+   "hundred",
+   "blip",
+   0.5,
+   0.2,
+   {
+    "f": 520,
+    "f2": 300
+   }
+  ],
+  [
+   "hot",
+   "zaps",
+   0.3,
+   0.3,
+   {
+    "n": 6,
+    "step": 0.12
+   }
+  ],
+  [
+   "stop",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "charger",
+   "whoosh",
+   0.25,
+   -0.3,
+   {
+    "d": 0.8
+   }
+  ],
+  [
+   "rests",
+   "chime",
+   0.3,
+   0,
+   {
+    "notes": [
+     "A5",
+     "E6"
+    ]
+   }
+  ],
+  [
+   "eighty",
+   "pop",
+   0.55,
+   0.3
+  ],
+  [
+   "sit",
+   "tick",
+   0.4,
+   0
+  ],
+  [
+   "mac",
+   "pop",
+   0.5,
+   -0.3
+  ],
+  [
+   "optimized",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 600,
+    "f2": 900
+   }
+  ],
+  [
+   "limit",
+   "snap",
+   0.55,
+   0.3
+  ],
+  [
+   "dell",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "setting",
+   "blip",
+   0.45,
+   0,
+   {
+    "f": 700,
+    "f2": 1000
+   }
+  ],
+  [
+   "heat",
+   "riser_end",
+   0.22,
+   0
+  ],
+  [
+   "bed",
+   "thud",
+   0.5,
+   -0.2
+  ],
+  [
+   "pillow",
+   "thud",
+   0.5,
+   0.2
+  ],
+  [
+   "blocked",
+   "zaps",
+   0.3,
+   0,
+   {
+    "n": 6,
+    "step": 0.12
+   }
+  ],
+  [
+   "plug",
+   "pop",
+   0.55,
+   -0.4
+  ],
+  [
+   "cool",
+   "pop",
+   0.55,
+   0.4
+  ],
+  [
+   "lim2",
+   "pop",
+   0.5,
+   0.2
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.4,
+   0,
+   {
+    "notes": [
+     "A4",
+     "C#5",
+     "E5",
+     "B5",
+     "E6"
+    ],
+    "d": 3.2
+   }
+  ]
+ ],
+ "post": {
+  "title": "Should your laptop stay plugged in?",
+  "caption": "Should your laptop stay plugged in all day? 🔌 Mostly a myth that it kills the battery.\n\nLithium-ion batteries age fastest when they sit full at 100% and when they get hot. But modern laptops stop charging when they're full, and then the charger runs the laptop. Many also hold the charge near 80%: on a Mac, Optimized Battery Charging learns your routine and waits past 80%, and Apple silicon Macs on macOS Tahoe 26.4 or later have a Charge Limit you can set from 80 to 100%. Dell Power Manager has a Primarily AC Use mode and a Custom start / stop setting for the same job. The real enemy is heat: don't charge it on a bed or a pillow, where the vents are blocked.\n\nPlug it in, turn on the limit, keep it cool. Send this to the friend who unplugs their laptop every hour.",
+  "keywords": [
+   "should i keep my laptop plugged in",
+   "laptop battery health tips",
+   "macbook optimized battery charging",
+   "laptop charge limit 80",
+   "does charging overnight damage battery",
+   "laptop battery myths"
+  ],
+  "hashtags": [
+   "#laptop",
+   "#batteryhealth",
+   "#macbook",
+   "#techtips",
+   "#techmyths"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/102338",
+    "note": "Apple Support, About Optimized Battery Charging and Charge Limit on Mac: Optimized Battery Charging uses on-device learning to delay charging past 80% when it expects a long time on power; Charge Limit (Apple silicon, macOS Tahoe 26.4 or later) from 80% to 100%; the Mac charges to 100% now and then to keep its estimate accurate (read 18 Nov 2026)."
+   },
+   {
+    "url": "https://www.dell.com/support/manuals/en-us/power-manager/dpm_ug/battery-settings?guid=guid-ec7951b3-8445-4ec9-bf54-42d8af81cfd9&lang=en-us",
+    "note": "Dell Power Manager User's Guide, Battery settings: Primarily AC Use lowers the charge threshold to extend battery life for systems that mostly run plugged in; Custom sets start and stop thresholds (read 18 Nov 2026)."
+   },
+   {
+    "url": "https://www.apple.com/batteries/maximizing-performance/",
+    "note": "Apple, Batteries: Maximizing Performance: avoid ambient temperatures above 35 °C (95 °F), which can permanently damage battery capacity; charging in heat makes it worse (read 18 Nov 2026). Apple Support 102589, battery health management on Apple silicon: it watches the battery's temperature history and charging patterns to slow chemical ageing."
+   }
+  ]
+ }
+}
