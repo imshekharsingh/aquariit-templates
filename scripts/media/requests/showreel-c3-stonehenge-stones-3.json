@@ -1,0 +1,9 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 3 of 4: searches, Wikimedia only (Openverse timed out in request 1).",
+ "media": [
+  {"id": "aerial", "queries": ["Stonehenge from the air 1906"], "sources": ["wikimedia"], "min_side": 600},
+  {"id": "preseli", "queries": ["Preseli Hills", "Mynydd Preseli", "Carn Menyn"], "sources": ["wikimedia"], "min_side": 1000},
+  {"id": "westwoods", "queries": ["Piggledene sarsen", "Lockeridge Dene sarsen", "Fyfield Down sarsen"], "sources": ["wikimedia"], "min_side": 800}
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 4 of 4: searches, Wikimedia only.",
+ "media": [
+  {"id": "goedog", "queries": ["Carn Goedog"], "sources": ["wikimedia"], "min_side": 700},
+  {"id": "rhos", "queries": ["Craig Rhos-y-felin", "Rhos-y-felin"], "sources": ["wikimedia"], "min_side": 700},
+  {"id": "altar", "queries": ["Stonehenge Altar Stone"], "sources": ["wikimedia"], "min_side": 600},
+  {"id": "orkney", "queries": ["Yesnaby", "Caithness cliffs sandstone", "Orkney sandstone cliffs"], "sources": ["wikimedia"], "min_side": 1000}
+ ]
+}

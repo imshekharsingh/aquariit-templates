@@ -1,0 +1,11 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 2 of 4 (request 1, run 44244582093, hit the 30-minute limit on Wikimedia 429s and Openverse 504s): the picks it listed, by exact file.",
+ "media": [
+  {"id": "henge", "url": "https://commons.wikimedia.org/wiki/File:Stonehenge_sunset.jpg", "min_side": 1200},
+  {"id": "photochrom", "url": "https://commons.wikimedia.org/wiki/File:Stonehenge,_near_Salisbury,_England-LCCN2002708089.jpg", "min_side": 700},
+  {"id": "sarsen", "url": "https://commons.wikimedia.org/wiki/File:2_trilithons_at_Stonehenge.jpg", "min_side": 900},
+  {"id": "bluestone", "url": "https://commons.wikimedia.org/wiki/File:Stonehenge_(14342774836).jpg", "min_side": 700},
+  {"id": "engraving", "url": "https://commons.wikimedia.org/wiki/File:John_Constable_-_Stonehenge_at_Sunset_-_Google_Art_Project.jpg", "min_side": 800}
+ ]
+}
