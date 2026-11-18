@@ -13,5 +13,5 @@ Format (at most 6 lines):
 
 ## 2026-11-19 01:45 IST · main · handoff files
 - Done: design/handoff.md (start here for the second account) and this log; CLAUDE.md "Sessions" now asks every session to read and add to it.
-- Left: "Add reference" Inbox section and the branch-cleanup workflow are free for the second account (see design/handoff.md).
+- Left: the second account takes tasks only from the owner in its own chat; open app/tooling items are listed in design/handoff.md for context.
 - For the other account: schedule is one reel a day per channel; daily runs push between 06:47 and 13:00 IST.
