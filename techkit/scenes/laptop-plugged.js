@@ -68,7 +68,7 @@ window.TOPIC={
   jolts:[],
   cover:true,   // frame 0 is the reel's cover (rules-tech.md K3)
   holds:()=>[[+(C.final+.8).toFixed(2),TL.total]],   // the title slam is read standing still
-  css:'.cell{flex:1;height:84px;border-radius:18px;border:1.5px solid rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.04)}.cell b{font:800 34px "Inter Display",Inter;color:#e8ecff}.cell small{font:700 13px Inter;letter-spacing:.14em;color:#9aa3c8;margin-top:6px}',
+  css:'.step .s{font-size:28px;letter-spacing:0}.step .n{font-size:18px}.cell{flex:1;height:84px;border-radius:18px;border:1.5px solid rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.04)}.cell b{font:800 34px "Inter Display",Inter;color:#e8ecff}.cell small{font:700 13px Inter;letter-spacing:.14em;color:#9aa3c8;margin-top:6px}',
   html:`
   <div class="panel" id="p0"><div style="position:absolute;left:36px;top:26px" class="lab">THE BELIEF</div>
     <div class="big" style="position:absolute;left:36px;top:54px;font-size:46px;color:#ff8f9a">PLUGGED IN = DEAD BATTERY?</div></div>
@@ -130,15 +130,15 @@ window.TOPIC={
         txt(t<C.stop?'CHARGING':'CHARGING ON HOLD',cx,cy+48,26,t<C.stop?'#ffd36b':'#6ff0a4',sA*(t<C.stop?prog(t,.6,1.2):hold),'center',700);
         txt('HELD NEAR 80%',cx,cy+48,26,'#8ef0ff',sA*prog(t,C.eighty+.2,C.eighty+.6),'center',700)}
       if(sB>0){g.globalAlpha=sB;txt('Battery',x+40,y+40,34,'#ffffff',sB,'left');
-        const r1=y+96,r2=y+148;txt('Optimized Battery Charging',x+44,r1,26,'#d8def5',sB,'left',600);toggle(x+w-120,r1,prog(t,C.optimized-.1,C.optimized+.3),sB);
-        txt('Charge limit',x+44,r2,26,'#d8def5',sB,'left',600);const sl=prog(t,C.limit-.1,C.limit+.6),s0=x+230,s1=x+w-160,kx=lerp(s1,lerp(s0,s1,.8),eio(sl));g.globalAlpha=sB;g.fillStyle='rgba(255,255,255,.18)';rrect(g,s0,r2-5,s1-s0,10,5);g.fill();g.fillStyle='#6ff0a4';rrect(g,s0,r2-5,kx-s0,10,5);g.fill();g.fillStyle='#fff';g.beginPath();g.arc(kx,r2,16,0,7);g.fill();
-        txt((sl<.5?100:80)+'%',x+w-44,r2,26,'#6ff0a4',sB,'right',800);
+        const r1=y+96,r2=y+148;txt('Optimized Battery Charging',x+44,r1,32,'#d8def5',sB,'left',600);toggle(x+w-120,r1,prog(t,C.optimized-.1,C.optimized+.3),sB);
+        txt('Charge limit',x+44,r2,32,'#d8def5',sB,'left',600);const sl=prog(t,C.limit-.1,C.limit+.6),s0=x+250,s1=x+w-175,kx=lerp(s1,lerp(s0,s1,.8),eio(sl));g.globalAlpha=sB;g.fillStyle='rgba(255,255,255,.18)';rrect(g,s0,r2-5,s1-s0,10,5);g.fill();g.fillStyle='#6ff0a4';rrect(g,s0,r2-5,kx-s0,10,5);g.fill();g.fillStyle='#fff';g.beginPath();g.arc(kx,r2,16,0,7);g.fill();
+        txt((sl<.5?100:80)+'%',x+w-36,r2,32,'#6ff0a4',sB,'right',800);
         { const P1=[x+w-84,r1+6],P2=[kx+4,r2+6],P3=[x+w-94,y+h-37],P0=[x+w*.5,y+h*.6];
           const a1=eio(prog(t,C.optimized-.6,C.optimized-.1)),a2=eio(prog(t,C.optimized+.4,C.limit-.1)),a3=eio(prog(t,C.limit+.7,C.setting-.1));
           let px=lerp(P0[0],P1[0],a1),py=lerp(P0[1],P1[1],a1);px=lerp(px,P2[0],a2);py=lerp(py,P2[1],a2);px=lerp(px,P3[0],a3);py=lerp(py,P3[1],a3);
           const pr=Math.max(bump(t,C.optimized-.1,.3),t>C.limit-.1&&t<C.limit+.6?1:0,bump(t,C.setting-.1,.3));pointer(px,py,sB,pr) }
         const dA=sB*prog(t,C.dell-.15,C.dell+.3);if(dA>0){g.globalAlpha=dA;rrect(g,x+30,y+h-72,w-60,58,14);g.fillStyle='#1d2440';g.fill();g.strokeStyle='rgba(185,182,255,.6)';g.lineWidth=2;g.stroke();
-          txt('Power Manager · Primarily AC Use',x+52,y+h-43,22,'#d8def5',dA,'left',600);toggle(x+w-130,y+h-43,prog(t,C.setting-.1,C.setting+.3),dA)}g.globalAlpha=1}
+          txt('Primarily AC Use',x+52,y+h-43,32,'#d8def5',dA,'left',600);toggle(x+w-130,y+h-43,prog(t,C.setting-.1,C.setting+.3),dA)}g.globalAlpha=1}
       if(sC>0){const tq=hot5,th=lerp(.25,.95,tq);g.globalAlpha=sC;g.strokeStyle='#e8ecff';g.lineWidth=5;rrect(g,cx-22,y+26,44,150,22);g.stroke();g.beginPath();g.arc(cx,y+196,30,0,7);g.stroke();
         g.fillStyle=mixc(AMB,RED,tq);g.shadowColor='#ff4a2a';g.shadowBlur=20*tq;g.beginPath();g.arc(cx,y+196,21,0,7);g.fill();rrect(g,cx-12,y+176-140*th,24,140*th+10,12);g.fill();g.shadowBlur=0;g.globalAlpha=1;
         txt('HOT',cx+140,y+120,56,'#ff5d6c',sC*prog(t,C.blocked,C.blocked+.4))}
