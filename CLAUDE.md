@@ -11,6 +11,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - Daily run, improvement loop, audit card, post check, owner questions: **design/runbook-daily.md**
 - Spare usage night: **design/runbook-spare.md**
 - Sessions, scheduled tasks, usage and token budget, working with the owner: **design/runbook-studio.md**
+- Second account (app, tooling, references): **design/handoff.md**; both accounts log their work in **design/handoff-log.md**
 - Web: design/webin20sec.md (plan, series, craft bar), design/rules-web.md (gate + "Channel brief")
 - Tech: design/rules-tech.md (gate + "Channel brief": gadgets for brand collabs, brand rules, India/global mix)
 - Turns Out: design/channel3.md ("Channel brief" + toolkits), design/rules-c3.md (gate)
@@ -46,6 +47,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - Every reel feels premium, nothing looks broken, every spoken line is shown and finished, every reel teaches one concrete, useful thing.
 
 ## Sessions (lean)
+- Read the last 5 entries of design/handoff-log.md before starting; a session that changes the repo adds one entry there in its push.
 - One session = one task, one channel, one branch; finish it (pushed, merged, checked) and archive it before the next starts. One heavy
   session at a time. The owner chats in the weekly "Owner chat" session, which never builds.
 - No subagents; no polling (one check-in per GitHub job); one stills sheet and one contact sheet per reel; text checks before viewing frames;
