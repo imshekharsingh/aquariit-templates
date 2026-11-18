@@ -1,0 +1,722 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "seek": "scripts/channel3/stonehenge-stones.html",
+ "engine": "echoes",
+ "dur": 42,
+ "fps": 30,
+ "voice": {
+  "text": "Stonehenge's smaller stones aren't local. The giant sarsens came from nearby, but the bluestones matched no rock in the area. So where were they from? Geologists traced them to the Preseli Hills in Wales, over 200 kilometres, or 125 miles, away. Digs there found the rocky outcrops where Stone Age people prised the pillars loose, over 5,000 years ago. Then in 2024, scientists found the Altar Stone came from even farther: northeast Scotland, about 750 kilometres away. Turns out, Stonehenge was built from stones gathered across Britain, and nobody knows exactly how they got there.",
+  "voice": "af_heart",
+  "speed": 1,
+  "gap": [
+   0.45,
+   0.45,
+   0.45,
+   0.45,
+   0.5
+  ]
+ },
+ "echoes": {
+  "title": "The Stones That Travelled",
+  "coverTitle": "The Stones That Travelled",
+  "badge": "TURNS OUT · TRUE STORIES",
+  "lines": [
+   "Stonehenge's smaller stones aren't local.",
+   "The giant sarsens came from nearby, but the bluestones matched no rock in the area.",
+   "So where were they from? Geologists traced them to the Preseli Hills in Wales, over 200 kilometres, or 125 miles, away.",
+   "Digs there found the rocky outcrops where Stone Age people prised the pillars loose, over 5,000 years ago.",
+   "Then in 2024, scientists found the Altar Stone came from even farther: northeast Scotland, about 750 kilometres away.",
+   "Turns out, Stonehenge was built from stones gathered across Britain, and nobody knows exactly how they got there."
+  ],
+  "keys": [
+   "local",
+   "sarsens",
+   "nearby",
+   "bluestones",
+   "where",
+   "preseli",
+   "wales",
+   "200",
+   "125",
+   "outcrops",
+   "pillars",
+   "5,000",
+   "2024",
+   "altar",
+   "farther",
+   "scotland",
+   "750",
+   "britain",
+   "nobody",
+   "exactly"
+  ],
+  "mono": [
+   "h6",
+   "altarst"
+  ],
+  "titles": {
+   "bluestone": "Stonehenge, Salisbury Plain, England",
+   "sarsen": "Sarsen trilithons at Stonehenge",
+   "engraving": "Stonehenge at Sunset · John Constable",
+   "altar": "Inside the stone circle",
+   "preseli": "The Preseli Hills, west Wales",
+   "h6": "Stonehenge · 19th-century print",
+   "photochrom": "Stonehenge · photochrom print, c. 1890s",
+   "rhos": "Craig Rhos-y-felin, Preseli Hills",
+   "altarst": "Trilithon beside the Altar Stone · 19th-century print",
+   "henge": "Stonehenge at sunset"
+  },
+  "credit": "SOURCES: ENGLISH HERITAGE · UCL · NATURE (2024)",
+  "chapters": [
+   "The Stones",
+   "The Puzzle",
+   "The Answer",
+   "The Quarries",
+   "The Altar",
+   "The Journey"
+  ],
+  "shots": [
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 0,
+    "at": "start",
+    "img": "bluestone",
+    "tone": "teal",
+    "stamp": "NOT ALL LOCAL",
+    "stampRed": true,
+    "cut": [
+     0.25,
+     0.3,
+     0.75,
+     0.75
+    ],
+    "cam": [
+     [
+      0.52,
+      0.55,
+      1
+     ],
+     [
+      0.52,
+      0.53,
+      1.08
+     ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 1,
+    "at": "start",
+    "img": "sarsen",
+    "tone": "amber",
+    "stamp": "THE GIANT SARSENS",
+    "cut": [
+     0.15,
+     0.15,
+     0.85,
+     0.85
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.52,
+      0.47,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 1,
+    "at": "nearby",
+    "img": "engraving",
+    "tone": "terra",
+    "stamp": "FROM NEARBY HILLS",
+    "cut": [
+     0.5,
+     0.35,
+     0.85,
+     0.7
+    ],
+    "cam": [
+     [
+      0.6,
+      0.55,
+      1.2
+     ],
+     [
+      0.66,
+      0.55,
+      1.32
+     ]
+    ],
+    "sat": 0.85
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 1,
+    "at": "bluestones",
+    "img": "altar",
+    "tone": "blue",
+    "stamp": "THE SMALLER BLUESTONES",
+    "cut": [
+     0.05,
+     0.4,
+     0.6,
+     0.88
+    ],
+    "cam": [
+     [
+      0.38,
+      0.6,
+      1.35
+     ],
+     [
+      0.42,
+      0.58,
+      1.45
+     ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)",
+    "adds": [
+     {
+      "kind": "tag",
+      "at": "rock",
+      "text": "NO LOCAL MATCH",
+      "x": 110,
+      "y": 1060,
+      "to": [
+       470,
+       880
+      ]
+     }
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 2,
+    "at": "start",
+    "img": "photochrom",
+    "tone": "violet",
+    "stamp": "SO WHERE FROM?",
+    "cut": [
+     0.15,
+     0.3,
+     0.85,
+     0.7
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.25
+     ],
+     [
+      0.5,
+      0.48,
+      1.37
+     ]
+    ],
+    "sat": 0.85
+   },
+   {
+    "type": "ill",
+    "kind": "dossier",
+    "line": 2,
+    "at": "geologists",
+    "head": "BLUESTONE SAMPLE",
+    "rows": [
+     "MINERALS COMPARED",
+     "SOURCE ROCK: TRACED"
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 2,
+    "at": "preseli",
+    "img": "preseli",
+    "tone": "green",
+    "stamp": "PRESELI HILLS · WALES",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.55
+    ],
+    "cam": [
+     [
+      0.5,
+      0.45,
+      1.1
+     ],
+     [
+      0.56,
+      0.43,
+      1.2
+     ]
+    ],
+    "adds": [
+     {
+      "kind": "tag",
+      "at": "wales",
+      "text": "WEST WALES",
+      "x": 600,
+      "y": 1060,
+      "to": [
+       560,
+       700
+      ]
+     }
+    ]
+   },
+   {
+    "type": "ill",
+    "kind": "journey",
+    "map": "britain",
+    "line": 2,
+    "at": "kilometres",
+    "legs": [
+     "preseli-henge"
+    ],
+    "pins": [
+     "preseli",
+     "henge"
+    ],
+    "title": "200 KM · 125 MILES",
+    "sub": "WALES TO STONEHENGE"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 3,
+    "at": "start",
+    "img": "rhos",
+    "tone": "green",
+    "stamp": "THE ROCKY OUTCROPS",
+    "cut": [
+     0.1,
+     0.15,
+     0.9,
+     0.85
+    ],
+    "cam": [
+     [
+      0.5,
+      0.45,
+      1.05
+     ],
+     [
+      0.5,
+      0.5,
+      1.15
+     ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)",
+    "adds": [
+     {
+      "kind": "tag",
+      "at": "people",
+      "text": "CRAIG RHOS-Y-FELIN",
+      "x": 110,
+      "y": 1060,
+      "to": [
+       540,
+       820
+      ]
+     },
+     {
+      "kind": "tag",
+      "at": "pillars",
+      "text": "PILLARS PRISED LOOSE",
+      "x": 520,
+      "y": 960,
+      "to": [
+       600,
+       700
+      ]
+     }
+    ]
+   },
+   {
+    "type": "ill",
+    "kind": "counter",
+    "line": 3,
+    "at": "over",
+    "from": 5000,
+    "to": 5000,
+    "label": "OVER · YEARS AGO",
+    "stampTxt": "STONE AGE"
+   },
+   {
+    "type": "ill",
+    "kind": "dossier",
+    "line": 4,
+    "at": "start",
+    "head": "A 2024 STUDY",
+    "rows": [
+     "MINERAL GRAINS DATED",
+     "THE ALTAR STONE"
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 4,
+    "at": "altar",
+    "img": "altarst",
+    "tone": "red",
+    "stamp": "BESIDE THE ALTAR STONE",
+    "cut": [
+     0.2,
+     0.05,
+     0.8,
+     0.75
+    ],
+    "cam": [
+     [
+      0.5,
+      0.42,
+      1.12
+     ],
+     [
+      0.5,
+      0.4,
+      1.22
+     ]
+    ],
+    "sat": 0.8,
+    "grade": "contrast(1.3) brightness(.85)",
+    "adds": []
+   },
+   {
+    "type": "ill",
+    "kind": "paper",
+    "line": 4,
+    "at": "farther",
+    "head": "STONEHENGE · 2024",
+    "left": "A NEW STUDY",
+    "right": "MINERAL TESTS",
+    "title": "The Altar Stone came from even farther"
+   },
+   {
+    "type": "ill",
+    "kind": "journey",
+    "map": "britain",
+    "line": 4,
+    "at": "scotland",
+    "legs": [
+     "preseli-henge",
+     "scot-henge"
+    ],
+    "draw": 1,
+    "legT": 0.1,
+    "pins": [
+     "preseli",
+     "henge",
+     "scot"
+    ],
+    "title": "750 KM",
+    "sub": "SCOTLAND TO STONEHENGE"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 5,
+    "at": "start",
+    "img": "henge",
+    "tone": "gold",
+    "stamp": "TURNS OUT",
+    "cut": [
+     0.4,
+     0.5,
+     0.85,
+     0.72
+    ],
+    "cam": [
+     [
+      0.62,
+      0.6,
+      1.5
+     ],
+     [
+      0.62,
+      0.6,
+      1.62
+     ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)"
+   },
+   {
+    "type": "ill",
+    "kind": "journey",
+    "map": "britain",
+    "line": 5,
+    "at": "gathered",
+    "legs": [
+     "preseli-henge",
+     "scot-henge"
+    ],
+    "draw": 2,
+    "pins": [
+     "preseli",
+     "henge",
+     "scot"
+    ],
+    "title": "ACROSS BRITAIN",
+    "sub": "STONES FROM FAR AND NEAR"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 5,
+    "at": "nobody",
+    "img": "h6",
+    "tone": "gold",
+    "stamp": "STILL A MYSTERY",
+    "cut": [
+     0.15,
+     0.12,
+     0.85,
+     0.75
+    ],
+    "cam": [
+     [
+      0.5,
+      0.38,
+      1.3
+     ],
+     [
+      0.5,
+      0.36,
+      1.42
+     ]
+    ],
+    "sat": 0.8,
+    "grade": "contrast(1.3) brightness(.85)"
+   }
+  ]
+ },
+ "caption": "Where do you think Stonehenge's smaller stones came from? 🪨\n\nThe giant sarsens came from about 25 km away, but the smaller bluestones match no local rock. Geologists traced them to the Preseli Hills in west Wales, over 200 km (125 miles) from Stonehenge, and digs there found the rocky outcrops where Stone Age people prised pillars loose more than 5,000 years ago. Then a 2024 study in Nature traced the Altar Stone to northeast Scotland, about 750 km (460 miles) away. How the stones were moved is still debated.\n\nSend this to the friend who thinks they know Stonehenge.\n\nImages: Wikimedia Commons, Library of Congress, Yale Center for British Art, Getty Open Content via Rawpixel, Flickr (public domain / CC0; CC BY: TobyEditor (CC-BY-4.0), Arian Zwegers from Brussels, Belgium (CC-BY-2.0), Stonehenge Stone Circle News www.Stonehenge.News (CC-BY-2.0), Kieran Roy Powell (CC-BY-4.0)). Sources: English Heritage, UCL, Nature (2024).",
+ "keywords": [
+  "stonehenge bluestones",
+  "stonehenge facts",
+  "preseli hills",
+  "stonehenge altar stone scotland",
+  "how was stonehenge built",
+  "ancient britain history"
+ ],
+ "hashtags": [
+  "#stonehenge",
+  "#ancienthistory",
+  "#historyfacts",
+  "#truestory",
+  "#didyouknow"
+ ],
+ "sources": [
+  {
+   "title": "Building Stonehenge (English Heritage)",
+   "url": "https://www.english-heritage.org.uk/visit/places/stonehenge/history-and-stories/building-stonehenge/"
+  },
+  {
+   "title": "Megalith quarries for Stonehenge bluestones (UCL, 2019, on Parker Pearson et al., Antiquity)",
+   "url": "https://www.ucl.ac.uk/archaeology/news/2019/feb/megalith-quarries-stonehenge-bluestones"
+  },
+  {
+   "title": "Stonehenge Altar Stone came from Scotland, not Wales (UCL, 2024, on Clarke et al., Nature 632)",
+   "url": "https://www.ucl.ac.uk/news/2024/aug/stonehenge-altar-stone-came-scotland-not-wales"
+  },
+  {
+   "title": "Stonehenge's Altar Stone came all the way from Scotland (Al Jazeera, 2024)",
+   "url": "https://www.aljazeera.com/news/2024/8/14/stonehenges-altar-stone-came-all-the-way-from-scotland-new-research-shows"
+  },
+  {
+   "title": "Stonehenge bluestone quarries found 140 miles away in Wales (Phys.org / UCL, 2015)",
+   "url": "https://phys.org/news/2015-12-stonehenge-bluestone-quarries-miles-wales.html"
+  }
+ ],
+ "media": [
+  {
+   "id": "sarsen",
+   "file": "sarsen.jpg",
+   "w": 2400,
+   "h": 1600,
+   "title": "2 trilithons at Stonehenge.jpg",
+   "author": "TobyEditor",
+   "licence": "cc-by-4.0",
+   "licence_name": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:2_trilithons_at_Stonehenge.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/2_trilithons_at_Stonehenge.jpg/3840px-2_trilithons_at_Stonehenge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44248211949"
+  },
+  {
+   "id": "bluestone",
+   "file": "bluestone.jpg",
+   "w": 2400,
+   "h": 1600,
+   "title": "Stonehenge (14342774836).jpg",
+   "author": "Arian Zwegers from Brussels, Belgium",
+   "licence": "cc-by-2.0",
+   "licence_name": "CC BY 2.0",
+   "licence_url": "https://creativecommons.org/licenses/by/2.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Stonehenge_(14342774836).jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Stonehenge_%2814342774836%29.jpg/3840px-Stonehenge_%2814342774836%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44248211949"
+  },
+  {
+   "id": "engraving",
+   "file": "engraving.jpg",
+   "w": 2400,
+   "h": 1560,
+   "title": "John Constable - Stonehenge at Sunset - Google Art Project.jpg",
+   "author": "John Constable",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:John_Constable_-_Stonehenge_at_Sunset_-_Google_Art_Project.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/John_Constable_-_Stonehenge_at_Sunset_-_Google_Art_Project.jpg/3840px-John_Constable_-_Stonehenge_at_Sunset_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44248211949"
+  },
+  {
+   "id": "preseli",
+   "file": "preseli.jpg",
+   "w": 2400,
+   "h": 1802,
+   "title": "Preseli Hills H2a.jpg",
+   "author": "Helge Klaus Rieder",
+   "licence": "cc0",
+   "licence_name": "CC0",
+   "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Preseli_Hills_H2a.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Preseli_Hills_H2a.jpg/3840px-Preseli_Hills_H2a.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44248216029"
+  },
+  {
+   "id": "altar",
+   "file": "altar.jpg",
+   "w": 1024,
+   "h": 768,
+   "title": "Visit Stonehenge. Experience the magic of Stonehenge from within the inner circle at sunrise",
+   "author": "Stonehenge Stone Circle News www.Stonehenge.News",
+   "licence": "cc-by-2.0",
+   "licence_name": "by 2.0",
+   "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+   "source_url": "https://www.flickr.com/photos/47415925@N03/8735539508",
+   "file_url": "https://live.staticflickr.com/7295/8735539508_ba0c3ab206_b.jpg",
+   "source": "openverse:flickr",
+   "run": "Media run 44253965958"
+  },
+  {
+   "id": "h6",
+   "file": "h6.jpg",
+   "w": 742,
+   "h": 1024,
+   "title": "Stonehenge: Trilithons (B C) South",
+   "author": "thegetty",
+   "licence": "cc0",
+   "licence_name": "cc0 1.0",
+   "licence_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "source_url": "https://www.rawpixel.com/image/14318599/stonehenge-trilithons-and-from-the-south-west-col-sir-henry-james",
+   "file_url": "https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAyL2xyL2dldHR5MTA4cjZ5LWltYWdlLmpwZw.jpg",
+   "source": "openverse:rawpixel",
+   "run": "Media run 44255163979"
+  },
+  {
+   "id": "henge",
+   "file": "henge.jpg",
+   "w": 1280,
+   "h": 960,
+   "title": "Stonehenge sunset.jpg",
+   "author": "Bkamprath",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Stonehenge_sunset.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Stonehenge_sunset.jpg/1280px-Stonehenge_sunset.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44256764197"
+  },
+  {
+   "id": "photochrom",
+   "file": "photochrom.jpg",
+   "w": 1280,
+   "h": 949,
+   "title": "Stonehenge, near Salisbury, England-LCCN2002708089.jpg",
+   "author": "Photochrom Print Collection",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Stonehenge,_near_Salisbury,_England-LCCN2002708089.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Stonehenge%2C_near_Salisbury%2C_England-LCCN2002708089.jpg/1280px-Stonehenge%2C_near_Salisbury%2C_England-LCCN2002708089.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44257691291"
+  },
+  {
+   "id": "rhos",
+   "file": "rhos.jpg",
+   "w": 1280,
+   "h": 1707,
+   "title": "Struthiopteris spicant Craig Rhosyfelin Crevice.jpg",
+   "author": "Kieran Roy Powell",
+   "licence": "cc-by-4.0",
+   "licence_name": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Struthiopteris_spicant_Craig_Rhosyfelin_Crevice.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Struthiopteris_spicant_Craig_Rhosyfelin_Crevice.jpg/1280px-Struthiopteris_spicant_Craig_Rhosyfelin_Crevice.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44257896048"
+  },
+  {
+   "id": "altarst",
+   "file": "altarst.jpg",
+   "w": 1280,
+   "h": 1745,
+   "title": "James Waterhouse - Stonehenge, Trilithon (On the left of altar stone) - B2018.7.51 - Yale Center for British Art.jpg",
+   "author": "Yale Center for British Art",
+   "licence": "cc0",
+   "licence_name": "CC0",
+   "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+   "source_url": "https://commons.wikimedia.org/wiki/File:James_Waterhouse_-_Stonehenge,_Trilithon_(On_the_left_of_altar_stone)_-_B2018.7.51_-_Yale_Center_for_British_Art.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/James_Waterhouse_-_Stonehenge%2C_Trilithon_%28On_the_left_of_altar_stone%29_-_B2018.7.51_-_Yale_Center_for_British_Art.jpg/1280px-James_Waterhouse_-_Stonehenge%2C_Trilithon_%28On_the_left_of_altar_stone%29_-_B2018.7.51_-_Yale_Center_for_British_Art.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44257961006"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 42,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the Echoes engine: full-bleed archival photos in 2.5D fill the frame by design"
+   }
+  ],
+  "subject": [
+   200,
+   180,
+   400,
+   520
+  ]
+ }
+}

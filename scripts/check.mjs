@@ -88,7 +88,8 @@ if (caps) {
     if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(j.postAt || '')) { err(`captions.json ${name}: add "postAt" (HH:MM IST, the exact slot: 13:00 for every channel from 8 Nov 2026)`); continue; }
     if (j.postOn >= '2026-11-08' && j.postAt !== '13:00' && !j.slotNote) err(`captions.json ${name}: postAt ${j.postAt}: every channel posts at 13:00 IST from 8 Nov 2026 (owner); a deliberate one-off slot needs "slotNote" with the reason`);
     const [h, m] = j.postAt.split(':').map(Number), utc = (((h * 60 + m - 10 - 330) % 1440) + 1440) % 1440;
-    if (!fired.has(utc)) err(`captions.json ${name}: no reminder for ${j.postAt} IST; add a cron at ${String(utc % 60)} ${Math.floor(utc / 60)} UTC to wrangler.jsonc ("triggers")`);
+    // a one-off late slot may skip the push reminder: "noReminder": true next to its "slotNote" (owner, 18 Nov 2026: Turns Out at 14:00, no new cron)
+    if (!fired.has(utc) && !(j.slotNote && j.noReminder)) err(`captions.json ${name}: no reminder for ${j.postAt} IST; add a cron at ${String(utc % 60)} ${Math.floor(utc / 60)} UTC to wrangler.jsonc ("triggers")`);
   }
 }
 
