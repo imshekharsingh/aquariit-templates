@@ -26,9 +26,13 @@ Moved from CLAUDE.md on 14 Nov 2026.
 - Owner, 18 Nov 2026: the 16 Nov "Don't schedule any tasks for now" was only for that day's handoff session. The tasks were never off;
   the launcher session (session_01AYvWRhkLkGsLRZfbwikeyL) still exists and fires them. Never call them paused from a note: check
   list_triggers.
-- All post into the launcher, which starts a fresh session each time: "Daily studio run" 06:47 IST (audit + @webin20sec + @techin20sec,
-  design/runbook-daily.md), "Turns Out daily reel (13:00)" 09:11 IST Mon/Wed/Fri, "Reel critic (11:17 IST)", "Spare usage night" Tue 22:44 IST
-  (design/runbook-spare.md), "Weekly owner chat" Wed 05:13 IST. A task's prompt can only be edited from the session it posts into.
+- Owner, 18 Nov 2026: web and tech moved to a weekly batch. New tasks start a fresh session each time (no launcher): "Web batch" Sun 07:47 IST,
+  "Tech batch" Sun 14:47 IST, "Batch critic" Sun 20:47 IST (design/runbook-daily.md "Weekly batch"). Through the launcher session:
+  "Turns Out reel" 09:11 IST Mon/Wed/Fri, "Reel critic" 11:17 IST Mon/Wed/Fri (Turns Out), "Spare usage night" Tue 22:44 IST
+  (design/runbook-spare.md), "Weekly owner chat" Wed 05:13 IST. "Daily studio run" runs Thu 19 - Sat 21 Nov only, then is switched off.
+  A launcher task's prompt can only be edited from the launcher session.
+- Org seat (owner, 18 Nov 2026): ONLY once the owner's org admin has agreed, the owner may run, by hand and with no scheduled task there,
+  sessions on the org seat for two kinds of work: studying reference reels (design/references.md) and app changes. Everything else stays here.
 - Rules every run must follow go into CLAUDE.md or these runbooks, not into a task prompt.
 
 ## Owner chat lessons (15-16 Nov 2026)
