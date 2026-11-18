@@ -1336,5 +1336,16 @@
    "change": "slow-mo details compilation, try 4 (ESCALATE answer 18 Nov: a format change from the single before/after), dark look in a new jade world",
    "vs": "median"
   }
+ },
+ "showreel-tech-laptop-plugged": {
+  "channel": "tech",
+  "postOn": "2026-11-18",
+  "postAt": "13:00",
+  "concept": "Kit engine (shared frame), ~45 s, gadget myths, laptop, global. Should your laptop stay plugged in all day? MYTH? stamp in frame 0 (F5); one drawn laptop opens up on every beat (K2): x-ray cells charging, full + hot turning them amber and red, charging on hold with the charger feeding the board, the charge held near 80% (live chart), the settings worked by a pointer (Optimized Battery Charging, Charge limit, Dell Power Manager), a pillow that blocks the vents and heats the cells; recap and MYTH verdict.",
+  "experiment": {
+   "id": "tech-kit-engine",
+   "change": "E26 try 4: the kit engine on the shared frame, gadget myths (verdict stamp, F5), laptop, global; the object opens up (x-ray battery, power path, charge limit, heat)",
+   "vs": "median"
+  }
  }
 }

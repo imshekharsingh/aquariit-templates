@@ -57,7 +57,7 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    the old dim labels read 2.9). A new palette passes CONTRAST on both starters and a phone-size palettesheet.mjs review first (citrus failed it).
 
 13. **A details reel is calm: 3 details, one beat of ~5.5 s each (never under 4.5 s), 24-26 s in all, the voice at most 2.4 words/s overall
-   *(PROMOTED 18 Nov 2026, details-format: 2 WINs, 1 LOSE at 24 h and 72 h: waiting 2,144 (+47%, 4.1% saves), alive 1,536 (+5%), menus 1,216 (-17%); the format to switch to on a web ESCALATE after a run of single fixes.)
+   (PROMOTED 18 Nov 2026, details-format: 2 WINs, 1 LOSE at 24 h and 72 h: waiting 2,144 (+47%, 4.1% saves), alive 1,536 (+5%), menus 1,216 (-17%); the format to switch to on a web ESCALATE after a run of single fixes.)
    with 0.6 s+ of breath between sentences** (owner, 8 Nov 2026: "The web reel seems to have too much in 20 s ... It feels rushed."). Each beat:
    the motion once at real speed, once in slow motion with its curve (the curve only then), a settle hold; one chip at a time (the speed chip);
    the hook ~2-2.6 s, the recap grid 3 s+ with a real hold. `newweb.mjs --details` writes it (default 3 beats of 5.5 s, sentences timed with
@@ -72,7 +72,7 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    next to the focus it describes. Check in the stills review: at every beat, write where the eye is and why (one line each); a beat where the
    focus is not what the voice says, or the eye has to jump more than half the frame with no motion leading it, fails.
 15. **The fix is dynamic: the broken thing visibly misbehaves in motion, and the fixed thing visibly behaves, both obvious at a glance
-   *(PROMOTED 18 Nov 2026, dynamic-fix: 2 WINs, 0 LOSEs: list 2,609 at 72 h (+70%), tabs 2,085 (+36%).)
+   (PROMOTED 18 Nov 2026, dynamic-fix: 2 WINs, 0 LOSEs: list 2,609 at 72 h (+70%), tabs 2,085 (+36%).)
    (owner, 12 Nov 2026: "people engage with fixes that are more dynamic when they show up; number wiggle is the right example").** Topic test
    before building: mute the reel and watch 1 s of "before" and 1 s of "after" at phone size; if a stranger cannot tell which is broken, swap the
    topic. Evidence (Instagram collect, 11 Nov): dynamic before/after topics: numbers wiggle 104,925 reach, stagger 6,053, overscroll 4,645,
