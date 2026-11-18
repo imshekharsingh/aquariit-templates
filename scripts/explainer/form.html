@@ -138,7 +138,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 //     the camera's moves); KM.float(t, seed, amp) (a pane's slow sine float). 'glass' (style C, "Glass and light") is the web default from
 //     8 Nov 2026; 'dark' is the old ink-and-mint look. KM.theme('glass', palette) (or window.WEB_PALETTE) swaps the light and the accents:
 //     KM.PALETTES aurora (the original), ember, lagoon, orchid, glacier (owner, 8 Nov 2026: colour variety, reel to reel).
-//     KM.theme('dark', world): KM.WORLDS saffron, berry, the dark look's own colour world per reel (owner, 15 Nov 2026: "similar colour grading");
+//     KM.theme('dark', world): KM.WORLDS saffron, berry, jade, the dark look's own colour world per reel (owner, 15 Nov 2026: "similar colour grading");
 //     KM.lights(t, c, true) holds the light still and KM.rig({ drift: 0 }) holds the camera (owner, 15 Nov 2026: "too wiggly").
 //   the whole frame (owner, 14 Nov 2026: "we are squeezing most of it in one place of the screen"; rules-web.md rule 16): KM.ZONES = the
 //     screen bands a web reel fills top to bottom (top: hook, counters, code; hero: the subject of the fix, the biggest thing on screen, down
@@ -456,7 +456,12 @@ var KM = (function(){
     // berry: magenta-rose surfaces, a pink accent, raspberry and violet light (measured main hue ~325 deg)
     berry: { c: { ink: '#13060f', dim: '#e0c8d8', acc: '#ff8fd0', red: '#ff7a4a', ctl: '#4a1a3c', raise: '#3e1632', skel: '#36132c', pg: '#1d0a17', card: '#3a1230', on: '#22041a' },
       v: { glass: 'linear-gradient(160deg,#6a1650,#3c0c30 55%,#2c1250)', frost: '#26101f', glow: 'rgba(255,143,208,.6)', soft: 'rgba(255,143,208,.16)', ring: 'rgba(255,143,208,.55)' },
-      blooms: [['255,60,170', .38, 540, 140, 220, .2, .17, 0], ['150,60,255', .3, 480, 520, 660, .23, .19, 2], ['255,90,120', .26, 440, 480, 900, .17, .21, 4]] }
+      blooms: [['255,60,170', .38, 540, 140, 220, .2, .17, 0], ['150,60,255', .3, 480, 520, 660, .23, .19, 2], ['255,90,120', .26, 440, 480, 900, .17, .21, 4]] },
+    // jade: emerald surfaces, a mint accent, emerald, teal and leaf light (18 Nov 2026: saffron's ~35 deg sits within 40 of the form reel's 25;
+    // jade's ~155 deg is clear of the last three web reels, 25 / 225 / 325)
+    jade: { c: { ink: '#04120d', dim: '#c2ded1', acc: '#62f0bf', red: '#ff7a6b', ctl: '#11402f', raise: '#0f3828', skel: '#0c3022', pg: '#071a13', card: '#0f3626', on: '#03140d' },
+      v: { glass: 'linear-gradient(160deg,#0f5a40,#093626 55%,#0b3a44)', frost: '#0a2219', glow: 'rgba(98,240,191,.6)', soft: 'rgba(98,240,191,.16)', ring: 'rgba(98,240,191,.55)' },
+      blooms: [['40,220,150', .38, 540, 140, 220, .2, .17, 0], ['30,170,190', .3, 480, 520, 660, .23, .19, 2], ['120,230,120', .22, 440, 480, 900, .17, .21, 4]] }
   };
   var LT = {};
   function theme(name, pal){ var th = THEMES[name] || THEMES.glass, R = document.documentElement, k;

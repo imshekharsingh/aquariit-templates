@@ -1307,5 +1307,34 @@
   "engine": "echoes",
   "concept": "Echoes engine, 2.5D depth (the look the owner approved on Mona Lisa render 6) · The Arm That Came First: Liberty's arm and torch in Philadelphia 1876 and Madison Square 1876-1882, her head at the Paris fair, Pulitzer's appeal; real archival photos full-frame",
   "note": "Turns Out, Tue 17 Nov (owner, Owner chat 15 Nov ~23:15 IST: build it now, an exception to built-the-day-it-posts). Rebuilt 16 Nov (owner: more elements as the story moves; cover in the video): 14 shots, 11 photos each once, a running year, a journey map, labels, a counter; frame 0 is the cover (pick it in Instagram). Voice af_heart."
+ },
+ "showreel-40-expensive": {
+  "postOn": "2026-11-18",
+  "postAt": "13:00",
+  "caption": "Why do some apps feel so expensive? ✨ Three small motions, each played at real speed, then slowed down.\n\n1) Labels float up, never vanish: the label moves up and shrinks to 70% as you type, with translate, scale and cubic-bezier(.2, 0, 0, 1), 300 ms (input:not(:placeholder-shown) + label).\n2) Badge numbers roll, never blink: the digits sit in a column inside a 1lh window with overflow: hidden, and translate: 0 -1lh rolls the next one up with cubic-bezier(.34, 1.56, .64, 1), 400 ms.\n3) The sheet springs, then settles: translate from 0 100% to 0 with linear(0, 1.08 40%, .98 65%, 1), 600 ms, one small overshoot.\n\nWorks in Chrome, Edge, Firefox and Safari (linear() since Safari 17.2). Save these three for your next app, or send them to the designer you work with.",
+  "keywords": [
+   "floating label css",
+   "notification badge animation",
+   "bottom sheet animation css",
+   "css linear() easing",
+   "css micro interactions",
+   "premium app ui details"
+  ],
+  "hashtags": [
+   "#microinteractions",
+   "#cssanimation",
+   "#uidesign",
+   "#frontenddev",
+   "#webdev"
+  ],
+  "channel": "web",
+  "concept": "three premium details in slow motion: a floating label (input:not(:placeholder-shown) + label, translate + scale), a badge digit that rolls (1lh window, translate: 0 -1lh, overshoot cubic-bezier) and a bottom sheet that springs (linear() easing)",
+  "about": "ESCALATE answer 18 Nov (web ALARM two days running): the details format (PROMOTE, 2 WINs of 3: waiting +47%, alive +5%) instead of a single before/after; dark look in the new jade world; no caption question (E20 dropped)",
+  "palette": "jade",
+  "experiment": {
+   "id": "details-format",
+   "change": "slow-mo details compilation, try 4 (ESCALATE answer 18 Nov: a format change from the single before/after), dark look in a new jade world",
+   "vs": "median"
+  }
  }
 }
