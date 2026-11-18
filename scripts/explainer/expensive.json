@@ -1,7 +1,7 @@
 {
  "name": "showreel-40-expensive",
  "seek": "scripts/explainer/expensive.html",
- "dur": 22.9,
+ "dur": 20.5,
  "fps": 60,
  "shutter": 0.45,
  "grain": 2,
@@ -11,15 +11,15 @@
  "palette": "jade",
  "format": "details",
  "voice": {
-  "text": "Why do apps feel so expensive? One: labels float up, never vanish. Two: badge numbers roll, never blink. Three: the sheet springs, then settles. Save these three for your app.",
+  "text": "Why do apps feel so expensive? One: the label floats up as you type, never vanishing. Two: the badge number rolls up, it never just blinks. Three: the bottom sheet springs up, then gently settles. Save these three for your app.",
   "voice": "af_heart",
   "speed": 1,
   "at": [
    0.15,
    2.6,
-   8.1,
-   13.6,
-   19.1
+   7.3,
+   12,
+   16.7
   ]
  },
  "experiment": {
