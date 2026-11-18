@@ -23,22 +23,11 @@ in this order:
    hours late); the 06:47 and 09:11 builds read the nightly numbers, the same-morning run feeds the next day (the PROBE lines in its log say
    which Instagram metrics each account offers).
 3. Update the rulebooks (design/rules-web.md, rules-c3.md, rules-tech.md) when the numbers say so: add, change or drop a rule, with the number.
-4. Build that day's reels (learn-then-build, nothing ahead): @webin20sec and @techin20sec, one each, both for 13:00 IST. Each is scored
+4. Build that day's reels (learn-then-build, nothing ahead), only the channels that post today (owner, 18 Nov 2026: web Mon/Tue/Thu/Sat, tech Tue/Wed/Fri/Sat), each for 13:00 IST. Each is scored
    against its rulebook in the stills review before its ONE render; then reel-status. Every reel passes the Mandatory Gate with its review
    file (item 13 after reel-status), and each channel logs its one craft improvement in design/craft-log.md (design/runbook-reels.md).
    Turns Out keeps its own scheduled task (09:11 IST for the 13:00 reel), under the same rulebook gate (design/channel3.md, "Channel brief").
 5. One lesson line in design/experiments.md "Results log" (`- DD Mon: lesson`), in the same push as the day's first reel.
-
-## Weekly batch (owner, 18 Nov 2026; first run Sun 22 Nov)
-- Web and tech each post 4 a week at 13:00 IST (web Mon/Tue/Thu/Sat, tech Tue/Wed/Fri/Sat). One Sunday session per channel builds all 4,
-  on the cheaper model: steps 0-3 above once (Feedback, Owner answers, ONE weekly audit card, rulebooks), then 4 reels with postOn set to
-  their days, each scored against its rulebook before its render, at most 2 renders per reel, then step 5 (one results line for the week).
-- Plan the 4 as a set: 4 different topics, one of them the week's experiment, the week's researched improvement applied to all 4.
-  Render them one after another on GitHub (one check-in per render), never all at once.
-- The web batch runs first; the tech batch starts after it and merges origin/main before each push (shared: captions.json, owner-feedback.md).
-- "Batch critic" reviews all 8 on Sunday evening and writes item 20 in each review file; a NOT READY reel is fixed (at most 1 re-render)
-  by Monday 11:00 IST or swapped with a later-day reel of the same channel.
-- The improvement loop below runs weekly inside the batch instead of daily.
 
 ## Daily improvement loop (owner, 7 Nov 2026)
 Claude is social media manager, design manager and product manager; content, design, sound, growth, audience, product, process, cost and
