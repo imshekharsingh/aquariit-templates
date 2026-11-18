@@ -45,12 +45,12 @@
    "source": 1
   },
   {
-   "text": "The real enemy is heat. Don't charge it on a bed or a pillow, where the vents get blocked.",
+   "text": "The real enemy is heat. Don't charge it on a bed. Pillows block the vents.",
    "beat": "surprise",
    "source": 2
   },
   {
-   "text": "Plug it in, turn on the limit, keep it cool. That's the plugged-in myth.",
+   "text": "Plug it in. Turn on the limit. Keep it cool. That's the plugged-in myth.",
    "beat": "takeaway"
   }
  ],
@@ -125,11 +125,11 @@
   ],
   "pillow": [
    5,
-   "pillow"
+   "Pillows"
   ],
   "blocked": [
    5,
-   "blocked"
+   "block"
   ],
   "plug": [
    6,
