@@ -639,7 +639,68 @@
    "url": "https://phys.org/news/2015-12-stonehenge-bluestone-quarries-miles-wales.html"
   }
  ],
- "media": [],
+ "media": [
+  {
+   "id": "sarsen",
+   "file": "sarsen.jpg",
+   "w": 2400,
+   "h": 1600,
+   "title": "2 trilithons at Stonehenge.jpg",
+   "author": "TobyEditor",
+   "licence": "cc-by-4.0",
+   "licence_name": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:2_trilithons_at_Stonehenge.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/2_trilithons_at_Stonehenge.jpg/3840px-2_trilithons_at_Stonehenge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44248211949"
+  },
+  {
+   "id": "bluestone",
+   "file": "bluestone.jpg",
+   "w": 2400,
+   "h": 1600,
+   "title": "Stonehenge (14342774836).jpg",
+   "author": "Arian Zwegers from Brussels, Belgium",
+   "licence": "cc-by-2.0",
+   "licence_name": "CC BY 2.0",
+   "licence_url": "https://creativecommons.org/licenses/by/2.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Stonehenge_(14342774836).jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Stonehenge_%2814342774836%29.jpg/3840px-Stonehenge_%2814342774836%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44248211949"
+  },
+  {
+   "id": "engraving",
+   "file": "engraving.jpg",
+   "w": 2400,
+   "h": 1560,
+   "title": "John Constable - Stonehenge at Sunset - Google Art Project.jpg",
+   "author": "John Constable",
+   "licence": "pd",
+   "licence_name": "Public domain",
+   "licence_url": "",
+   "source_url": "https://commons.wikimedia.org/wiki/File:John_Constable_-_Stonehenge_at_Sunset_-_Google_Art_Project.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/John_Constable_-_Stonehenge_at_Sunset_-_Google_Art_Project.jpg/3840px-John_Constable_-_Stonehenge_at_Sunset_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44248211949"
+  },
+  {
+   "id": "preseli",
+   "file": "preseli.jpg",
+   "w": 2400,
+   "h": 1802,
+   "title": "Preseli Hills H2a.jpg",
+   "author": "Helge Klaus Rieder",
+   "licence": "cc0",
+   "licence_name": "CC0",
+   "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Preseli_Hills_H2a.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Preseli_Hills_H2a.jpg/3840px-Preseli_Hills_H2a.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44248216029"
+  }
+ ],
  "qa": {
   "edges_ok": [
    {
