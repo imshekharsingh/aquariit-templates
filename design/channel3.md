@@ -380,7 +380,7 @@ Eiffel reel on Mon 2 Nov; the sky and the lost day follow once rebuilt in 3D.
 - Promise: "The true story behind something everyone knows." Instagram **@itturns.out**, display name **Turns Out**, bio "True stories
   behind things everyone knows. Sources in the comments." Logo: design/brand/accounts/turnsout-logo.svg. Internal ids stay `c3`
   (scripts/channel3/, `showreel-c3-*`, `"channel": "c3"`). The app's "Turns Out" tab has the profile card and the reels.
-- ONE reel DAILY at 13:00 IST (ready by 12:00), built by the "Turns Out daily reel" scheduled task (~09:11 IST, fresh session): reads
+- THREE reels a week, Mon / Wed / Fri at 13:00 IST (owner, 18 Nov 2026; was daily), ready by 12:00, built by the "Turns Out daily reel" scheduled task (~09:11 IST on those days, fresh session): reads
   Feedback first (design/runbook-daily.md step 0; Turns Out and c3 items), new globally known true story, lean (one stills sheet, one render,
   no subagents, about $4), captions.json postOn = that day, and a "note" card in the app when it is ready.
 - Format: the GUESS format (E19, from 12 Nov 2026), 22-25 s: the viewer guesses (three options painted on the icon, a 3-2-1 countdown) before

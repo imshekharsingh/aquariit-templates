@@ -18,7 +18,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - Learning: design/playbook.md, design/experiments.md, design/improvements.md, design/references.md, design/craft-log.md, design/topics.md, design/todo.md
 
 ## Schedule
-- ONE reel a day per channel, all three at **13:00 IST** (owner, 8 Nov 2026), entry in templates/showreels/captions.json ("channel",
+- ONE reel a day for web and tech; Turns Out 3 a week, Mon / Wed / Fri (owner, 18 Nov 2026); all at **13:00 IST** (owner, 8 Nov 2026), entry in templates/showreels/captions.json ("channel",
   "postOn", "postAt", "concept"; npm run check fails without it). Learn-then-build: built the day it posts (evening before at most),
   never ahead, never a second reel for a channel and slot that already has one.
 - One experiment and one researched improvement per channel per day (design/runbook-daily.md).
@@ -42,7 +42,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - Output QA: every owner complaint becomes a GitHub check in scripts/qa/ the same day; it runs on the final MP4 after every render; any FAIL = NOT READY.
 - Independent critic: a different session ("Reel critic", ~11:17 IST) must write "CRITIC: READY" in the
   review file; nobody approves their own reel.
-- Preflight: settle everything first, then ONE render on GitHub; never render whole videos in the session; re-render only for a real defect.
+- Preflight: settle everything first, then ONE render on GitHub; never render whole videos in the session; re-render only for a real defect; at most 2 renders per reel, then stop and report (owner, 18 Nov 2026).
 - Every reel feels premium, nothing looks broken, every spoken line is shown and finished, every reel teaches one concrete, useful thing.
 
 ## Sessions (lean)
