@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 30: Wikimedia at a 1280 px cached rendition, one photo per run (3840 px renditions drew 429s on 18 Nov).",
+ "media": [
+  {"id": "rhos", "queries": ["Craig Rhos-y-felin"], "sources": ["wikimedia"], "width": 1280, "min_side": 700}
+ ]
+}

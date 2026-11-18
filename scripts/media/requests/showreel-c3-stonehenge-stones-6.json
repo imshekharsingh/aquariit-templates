@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 6: one photo per run (Wikimedia 429s stopped requests 1 and 4 at the 30-minute limit).",
+ "media": [
+  {"id": "altar", "queries": ["Stonehenge Altar Stone"], "sources": ["wikimedia"], "min_side": 600}
+ ]
+}

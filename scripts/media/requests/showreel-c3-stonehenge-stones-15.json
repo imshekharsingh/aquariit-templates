@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 15: Library of Congress / Openverse instead of Wikimedia (its file host answered 429 to every runner on 18 Nov).",
+ "media": [
+  {"id": "goedog", "queries": ["Carn Goedog", "Preseli bluestone outcrop"], "sources": ["openverse"], "min_side": 700}
+ ]
+}
