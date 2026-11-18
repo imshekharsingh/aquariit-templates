@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 10: one photo per run (Wikimedia 429s stopped requests 1 and 4 at the 30-minute limit).",
+ "media": [
+  {"id": "photochrom", "url": "https://commons.wikimedia.org/wiki/File:Stonehenge,_near_Salisbury,_England-LCCN2002708089.jpg", "min_side": 700}
+ ]
+}
