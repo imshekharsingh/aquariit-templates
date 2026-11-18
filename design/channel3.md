@@ -3,6 +3,8 @@
 **Promise: "The true story behind something everyone knows."** A 25-35 s narrated reel that takes something the whole world recognises
 (a landmark, the sky, a calendar, an invention, an animal) and tells the true, surprising story behind it.
 
+> **18 Nov 2026: read design/c3-strategy.md first** (why new reels get no reach, the 3-a-week plan, the next 6 topics, the weekly experiments). It overrides older sections here where they differ.
+
 ## The account (owner, 31 Oct 2026)
 | | |
 |---|---|
