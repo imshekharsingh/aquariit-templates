@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 36: render 1 (run 44263651165) failed Output QA FILL and ELEMENTS on too many drawn cards; more photos by exact file at a 1280 px rendition.",
+ "media": [
+  {"id": "birds", "url": "https://commons.wikimedia.org/wiki/File:Birds_on_Stonehenge_trilithon.jpg", "width": 1280, "min_side": 700}
+ ]
+}
