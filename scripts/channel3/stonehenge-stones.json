@@ -699,6 +699,21 @@
    "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Preseli_Hills_H2a.jpg/3840px-Preseli_Hills_H2a.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
    "source": "wikimedia",
    "run": "Media run 44248216029"
+  },
+  {
+   "id": "altar",
+   "file": "altar.jpg",
+   "w": 1024,
+   "h": 768,
+   "title": "Visit Stonehenge. Experience the magic of Stonehenge from within the inner circle at sunrise",
+   "author": "Stonehenge Stone Circle News www.Stonehenge.News",
+   "licence": "cc-by-2.0",
+   "licence_name": "by 2.0",
+   "licence_url": "https://creativecommons.org/licenses/by/2.0/",
+   "source_url": "https://www.flickr.com/photos/47415925@N03/8735539508",
+   "file_url": "https://live.staticflickr.com/7295/8735539508_ba0c3ab206_b.jpg",
+   "source": "openverse:flickr",
+   "run": "Media run 44253965958"
   }
  ],
  "qa": {
