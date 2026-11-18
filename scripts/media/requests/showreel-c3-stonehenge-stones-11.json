@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 11: Library of Congress / Openverse instead of Wikimedia (its file host answered 429 to every runner on 18 Nov).",
+ "media": [
+  {"id": "photochrom", "queries": ["Stonehenge"], "sources": ["loc"], "min_side": 600}
+ ]
+}
