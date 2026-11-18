@@ -1354,6 +1354,8 @@
   "postAt": "14:00",
   "engine": "echoes",
   "concept": "Echoes engine, 2.5D depth · The Stones That Travelled: Stonehenge's bluestones came from the Preseli Hills in Wales (over 200 km), the Altar Stone from northeast Scotland (2024 study); the answer stays hidden until it is said; real photos full-frame and a coasts-only map of Britain",
-  "note": "Turns Out, Wed 18 Nov. Built late on the day: the 09:11 IST run did not start (usage limit), started by hand from the Owner chat; postAt 14:00. Voice af_heart, speed 1."
+  "note": "Turns Out, Wed 18 Nov. Built late on the day: the 09:11 IST run did not start (usage limit), started by hand from the Owner chat; postAt 14:00. Voice af_heart, speed 1.",
+  "slotNote": "One-off 14:00 IST: the 09:11 IST Turns Out run did not start (usage limit), so the reel was built late on the day (Owner chat task, 18 Nov 2026). No push reminder for this slot (owner, 18 Nov: no new cron).",
+  "noReminder": true
  }
 }
