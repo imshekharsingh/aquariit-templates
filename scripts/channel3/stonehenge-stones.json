@@ -64,7 +64,12 @@
    "photochrom": "Stonehenge · photochrom print, c. 1890s",
    "rhos": "Craig Rhos-y-felin, Preseli Hills",
    "altarst": "Trilithon beside the Altar Stone · 19th-century print",
-   "henge": "Stonehenge at sunset"
+   "henge": "Stonehenge at sunset",
+   "pano": "Stonehenge from the north-east",
+   "dressed": "A bluestone, shaped by hand",
+   "birds": "Starlings on a sarsen trilithon",
+   "trilithons": "The great trilithons",
+   "s2007": "Stonehenge on Salisbury Plain"
   },
   "credit": "SOURCES: ENGLISH HERITAGE · UCL · NATURE (2024)",
   "chapters": [
@@ -231,15 +236,32 @@
     "sat": 0.85
    },
    {
-    "type": "ill",
-    "kind": "dossier",
+    "type": "arch",
+    "mode": "depth",
     "line": 2,
     "at": "geologists",
-    "head": "BLUESTONE SAMPLE",
-    "rows": [
-     "MINERALS COMPARED",
-     "SOURCE ROCK: TRACED"
-    ]
+    "img": "dressed",
+    "tone": "terra",
+    "stamp": "A BLUESTONE · TRACED",
+    "cut": [
+     0.2,
+     0.05,
+     0.85,
+     0.8
+    ],
+    "cam": [
+     [
+      0.55,
+      0.45,
+      1.1
+     ],
+     [
+      0.55,
+      0.42,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.1)"
    },
    {
     "type": "arch",
@@ -295,7 +317,20 @@
      "henge"
     ],
     "title": "200 KM · 125 MILES",
-    "sub": "WALES TO STONEHENGE"
+    "sub": "WALES TO STONEHENGE",
+    "adds": [
+     {
+      "kind": "tag",
+      "at": "away",
+      "text": "A LONG HAUL",
+      "x": 640,
+      "y": 960,
+      "to": [
+       600,
+       1150
+      ]
+     }
+    ]
    },
    {
     "type": "arch",
@@ -335,40 +370,103 @@
        540,
        820
       ]
-     },
-     {
-      "kind": "tag",
-      "at": "pillars",
-      "text": "PILLARS PRISED LOOSE",
-      "x": 520,
-      "y": 960,
-      "to": [
-       600,
-       700
-      ]
      }
     ]
    },
    {
-    "type": "ill",
-    "kind": "counter",
+    "type": "arch",
+    "mode": "depth",
     "line": 3,
-    "at": "over",
-    "from": 5000,
-    "to": 5000,
-    "label": "OVER · YEARS AGO",
-    "stampTxt": "STONE AGE"
+    "at": "people",
+    "img": "pano",
+    "tone": "teal",
+    "stamp": "THE PILLARS",
+    "cut": [
+     0.15,
+     0.2,
+     0.85,
+     0.85
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.15
+     ],
+     [
+      0.52,
+      0.49,
+      1.22
+     ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)"
    },
    {
-    "type": "ill",
-    "kind": "dossier",
+    "type": "arch",
+    "mode": "depth",
+    "line": 3,
+    "at": "pillars",
+    "img": "birds",
+    "tone": "gold",
+    "stamp": "STONE AGE WORK",
+    "cut": [
+     0.15,
+     0.2,
+     0.85,
+     0.85
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.12
+     ],
+     [
+      0.52,
+      0.48,
+      1.24
+     ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)",
+    "adds": [
+     {
+      "kind": "count",
+      "at": "5,000",
+      "to": 5000,
+      "suffix": "+",
+      "label": "YEARS AGO",
+      "x": 240,
+      "y": 1000
+     }
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
     "line": 4,
     "at": "start",
-    "head": "A 2024 STUDY",
-    "rows": [
-     "MINERAL GRAINS DATED",
-     "THE ALTAR STONE"
-    ]
+    "img": "trilithons",
+    "tone": "blue",
+    "stamp": "A 2024 STUDY",
+    "cut": [
+     0.15,
+     0.2,
+     0.85,
+     0.85
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.12
+     ],
+     [
+      0.52,
+      0.48,
+      1.24
+     ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)"
    },
    {
     "type": "arch",
@@ -401,14 +499,32 @@
     "adds": []
    },
    {
-    "type": "ill",
-    "kind": "paper",
+    "type": "arch",
+    "mode": "depth",
     "line": 4,
     "at": "farther",
-    "head": "STONEHENGE · 2024",
-    "left": "A NEW STUDY",
-    "right": "MINERAL TESTS",
-    "title": "The Altar Stone came from even farther"
+    "img": "s2007",
+    "tone": "violet",
+    "stamp": "EVEN FARTHER",
+    "cut": [
+     0.15,
+     0.2,
+     0.85,
+     0.85
+    ],
+    "cam": [
+     [
+      0.5,
+      0.6,
+      1.2
+     ],
+     [
+      0.52,
+      0.59,
+      1.28
+     ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)"
    },
    {
     "type": "ill",
@@ -428,7 +544,20 @@
      "scot"
     ],
     "title": "750 KM",
-    "sub": "SCOTLAND TO STONEHENGE"
+    "sub": "SCOTLAND TO STONEHENGE",
+    "adds": [
+     {
+      "kind": "tag",
+      "at": "kilometres",
+      "text": "THE ALTAR STONE",
+      "x": 560,
+      "y": 960,
+      "to": [
+       620,
+       800
+      ]
+     }
+    ]
    },
    {
     "type": "arch",
@@ -508,7 +637,7 @@
    }
   ]
  },
- "caption": "Where do you think Stonehenge's smaller stones came from? 🪨\n\nThe giant sarsens came from about 25 km away, but the smaller bluestones match no local rock. Geologists traced them to the Preseli Hills in west Wales, over 200 km (125 miles) from Stonehenge, and digs there found the rocky outcrops where Stone Age people prised pillars loose more than 5,000 years ago. Then a 2024 study in Nature traced the Altar Stone to northeast Scotland, about 750 km (460 miles) away. How the stones were moved is still debated.\n\nSend this to the friend who thinks they know Stonehenge.\n\nImages: Wikimedia Commons, Library of Congress, Yale Center for British Art, Getty Open Content via Rawpixel, Flickr (public domain / CC0; CC BY: TobyEditor (CC-BY-4.0), Arian Zwegers from Brussels, Belgium (CC-BY-2.0), Stonehenge Stone Circle News www.Stonehenge.News (CC-BY-2.0), Kieran Roy Powell (CC-BY-4.0)). Sources: English Heritage, UCL, Nature (2024).",
+ "caption": "Where do you think Stonehenge's smaller stones came from? 🪨\n\nThe giant sarsens came from about 25 km away, but the smaller bluestones match no local rock. Geologists traced them to the Preseli Hills in west Wales, over 200 km (125 miles) from Stonehenge, and digs there found the rocky outcrops where Stone Age people prised pillars loose more than 5,000 years ago. Then a 2024 study in Nature traced the Altar Stone to northeast Scotland, about 750 km (460 miles) away. How the stones were moved is still debated.\n\nSend this to the friend who thinks they know Stonehenge.\n\nImages: Wikimedia Commons, Library of Congress, Yale Center for British Art, Getty Open Content via Rawpixel, Flickr (public domain / CC0; CC BY: TobyEditor (CC-BY-4.0), Arian Zwegers from Brussels, Belgium (CC-BY-2.0), Stonehenge Stone Circle News www.Stonehenge.News (CC-BY-2.0), Kieran Roy Powell (CC-BY-4.0), -JvL- (CC-BY-2.0), TobyEditor (CC-BY-4.0), TobyEditor (CC-BY-4.0), garethwiscombe (CC-BY-2.0)), Arian Zwegers from Brussels, Belgium (CC-BY-2.0), Stonehenge Stone Circle News www.Stonehenge.News (CC-BY-2.0), Kieran Roy Powell (CC-BY-4.0)). Sources: English Heritage, UCL, Nature (2024).",
  "keywords": [
   "stonehenge bluestones",
   "stonehenge facts",
@@ -696,6 +825,81 @@
    "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/James_Waterhouse_-_Stonehenge%2C_Trilithon_%28On_the_left_of_altar_stone%29_-_B2018.7.51_-_Yale_Center_for_British_Art.jpg/1280px-James_Waterhouse_-_Stonehenge%2C_Trilithon_%28On_the_left_of_altar_stone%29_-_B2018.7.51_-_Yale_Center_for_British_Art.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
    "source": "wikimedia",
    "run": "Media run 44257961006"
+  },
+  {
+   "id": "pano",
+   "file": "pano.jpg",
+   "w": 1280,
+   "h": 502,
+   "title": "Stonehenge 2011 2.jpg",
+   "author": "Perituss",
+   "licence": "cc0",
+   "licence_name": "CC0",
+   "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Stonehenge_2011_2.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Stonehenge_2011_2.jpg/1280px-Stonehenge_2011_2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44274773691"
+  },
+  {
+   "id": "dressed",
+   "file": "dressed.jpg",
+   "w": 1280,
+   "h": 785,
+   "title": "Dressed Welsh bluestone World of Stonehenge.jpg",
+   "author": "-JvL-",
+   "licence": "cc-by-2.0",
+   "licence_name": "CC BY 2.0",
+   "licence_url": "https://creativecommons.org/licenses/by/2.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Dressed_Welsh_bluestone_World_of_Stonehenge.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Dressed_Welsh_bluestone_World_of_Stonehenge.jpg/1280px-Dressed_Welsh_bluestone_World_of_Stonehenge.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44274829825"
+  },
+  {
+   "id": "birds",
+   "file": "birds.jpg",
+   "w": 1280,
+   "h": 1920,
+   "title": "Birds on Stonehenge trilithon.jpg",
+   "author": "TobyEditor",
+   "licence": "cc-by-4.0",
+   "licence_name": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Birds_on_Stonehenge_trilithon.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Birds_on_Stonehenge_trilithon.jpg/1280px-Birds_on_Stonehenge_trilithon.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44275063619"
+  },
+  {
+   "id": "trilithons",
+   "file": "trilithons.jpg",
+   "w": 1280,
+   "h": 853,
+   "title": "Stonehenge trilithons.jpg",
+   "author": "TobyEditor",
+   "licence": "cc-by-4.0",
+   "licence_name": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Stonehenge_trilithons.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f8/Stonehenge_trilithons.jpg/1280px-Stonehenge_trilithons.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44275120225"
+  },
+  {
+   "id": "s2007",
+   "file": "s2007.jpg",
+   "w": 1280,
+   "h": 960,
+   "title": "Stonehenge2007 07 30.jpg",
+   "author": "garethwiscombe",
+   "licence": "cc-by-2.0",
+   "licence_name": "CC BY 2.0",
+   "licence_url": "https://creativecommons.org/licenses/by/2.0",
+   "source_url": "https://commons.wikimedia.org/wiki/File:Stonehenge2007_07_30.jpg",
+   "file_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Stonehenge2007_07_30.jpg/1280px-Stonehenge2007_07_30.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+   "source": "wikimedia",
+   "run": "Media run 44275178185"
   }
  ],
  "qa": {
