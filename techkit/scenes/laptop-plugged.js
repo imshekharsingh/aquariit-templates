@@ -124,15 +124,15 @@ window.TOPIC={
       const ch3=win(t,C.eighty-.2,st(4)+.1,.4,.4);if(ch3>0){const gx=x+70,gw=w-140,gy=y+h-14,gh=34,u=prog(t,C.eighty-.2,st(4)-.2),F=k=>k<.2?lerp(.6,1,k/.2):k<.35?lerp(1,.8,(k-.2)/.15):.8;
         g.globalAlpha=ch3*.4;g.strokeStyle='#8ef0ff';g.lineWidth=2;g.beginPath();g.moveTo(gx,gy);g.lineTo(gx+gw,gy);g.stroke();g.globalAlpha=ch3;g.strokeStyle='#6ff0a4';g.lineWidth=5;g.beginPath();
         for(let k=0;k<=40;k++){const q=k/40*u;const px=gx+gw*q,py=gy-gh*F(q);k?g.lineTo(px,py):g.moveTo(px,py)}g.stroke();glowDot(gx+gw*u,gy-gh*F(u),7,'#6ff0a4',ch3);g.globalAlpha=1}
-      if(sA>0){const pc=Math.round(lerp(100,80,eio(prog(t,C.eighty-.2,C.eighty+.8)))),col=mixc(GRN,AMB,full*(1-hot1)),col2=hot1>.3?mixc(AMB,RED,hot1):col;
-        batt(cx-90,cy-18,pc/100,col2,sA,t<C.stop?(t*1.1)%1:-1);txt(pc+'%',cx+110,cy-18,76,'#ffffff',sA);
+      if(sA>0){const pc=t<C.eighty?100:80,col=mixc(GRN,AMB,full*(1-hot1)),col2=hot1>.3?mixc(AMB,RED,hot1):col;
+        batt(cx-90,cy-18,pc/100,col2,sA,t<C.stop?(t*1.1)%1:-1);txt(pc+'%',cx+110,cy-18,76,'#ffffff',sA*(1-bump(t,C.eighty-.12,.24)));
         const hold=prog(t,C.stop-.1,C.stop+.3)*(1-prog(t,C.eighty-.3,C.eighty));
         txt(t<C.stop?'CHARGING':'CHARGING ON HOLD',cx,cy+48,26,t<C.stop?'#ffd36b':'#6ff0a4',sA*(t<C.stop?prog(t,.6,1.2):hold),'center',700);
         txt('HELD NEAR 80%',cx,cy+48,26,'#8ef0ff',sA*prog(t,C.eighty+.2,C.eighty+.6),'center',700)}
       if(sB>0){g.globalAlpha=sB;txt('Battery',x+40,y+40,34,'#ffffff',sB,'left');
         const r1=y+96,r2=y+148;txt('Optimized Battery Charging',x+44,r1,26,'#d8def5',sB,'left',600);toggle(x+w-120,r1,prog(t,C.optimized-.1,C.optimized+.3),sB);
         txt('Charge limit',x+44,r2,26,'#d8def5',sB,'left',600);const sl=prog(t,C.limit-.1,C.limit+.6),s0=x+230,s1=x+w-160,kx=lerp(s1,lerp(s0,s1,.8),eio(sl));g.globalAlpha=sB;g.fillStyle='rgba(255,255,255,.18)';rrect(g,s0,r2-5,s1-s0,10,5);g.fill();g.fillStyle='#6ff0a4';rrect(g,s0,r2-5,kx-s0,10,5);g.fill();g.fillStyle='#fff';g.beginPath();g.arc(kx,r2,16,0,7);g.fill();
-        txt(Math.round(lerp(100,80,eio(sl)))+'%',x+w-44,r2,26,'#6ff0a4',sB,'right',800);
+        txt((sl<.5?100:80)+'%',x+w-44,r2,26,'#6ff0a4',sB,'right',800);
         { const P1=[x+w-84,r1+6],P2=[kx+4,r2+6],P3=[x+w-94,y+h-37],P0=[x+w*.5,y+h*.6];
           const a1=eio(prog(t,C.optimized-.6,C.optimized-.1)),a2=eio(prog(t,C.optimized+.4,C.limit-.1)),a3=eio(prog(t,C.limit+.7,C.setting-.1));
           let px=lerp(P0[0],P1[0],a1),py=lerp(P0[1],P1[1],a1);px=lerp(px,P2[0],a2);py=lerp(py,P2[1],a2);px=lerp(px,P3[0],a3);py=lerp(py,P3[1],a3);
