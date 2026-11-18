@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 20: Openverse (Flickr) only; Wikimedia answered 429 to every runner on 18 Nov.",
+ "media": [
+  {"id": "h3", "queries": ["Stonehenge sunrise"], "pick": 1, "sources": ["openverse"], "min_side": 800, "avoid": ["model", "replica", "carhenge", "foamhenge", "lego", "cake"]}
+ ]
+}

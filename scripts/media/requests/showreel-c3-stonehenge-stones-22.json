@@ -1,0 +1,7 @@
+{
+ "name": "showreel-c3-stonehenge-stones",
+ "why": "Request 22: Openverse (Flickr) only; Wikimedia answered 429 to every runner on 18 Nov.",
+ "media": [
+  {"id": "wales2", "queries": ["Preseli mountains", "Pembrokeshire Preseli"], "sources": ["openverse"], "min_side": 800, "avoid": ["model", "replica", "carhenge", "foamhenge", "lego", "cake"]}
+ ]
+}
