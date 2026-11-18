@@ -5,11 +5,10 @@
  "dur": 50,
  "fps": 30,
  "voice": {
-  "text": "Stonehenge's smaller stones aren't local. The giant sarsens came from nearby, but the bluestones matched no rock in the area. So where were they from? Geologists traced them to the Preseli Hills in Wales, over 200 kilometres, or 125 miles, away. Digs there found the rocky outcrops where Stone Age people prised the pillars loose, over 5,000 years ago. Each bluestone weighs several tonnes, and nobody knows for sure how they were hauled to Stonehenge. Then in 2024, scientists found the Altar Stone came from even farther: northeast Scotland, about 750 kilometres away. Turns out, Stonehenge was built from stones gathered across Britain, and we still don't know exactly how they got there.",
+  "text": "Stonehenge's smaller stones aren't local. The giant sarsens came from nearby, but the bluestones matched no rock in the area. So where were they from? Geologists traced them to the Preseli Hills in Wales, over 200 kilometres, or 125 miles, away. Digs there found the rocky outcrops where Stone Age people prised the pillars loose, over 5,000 years ago. Then in 2024, scientists found the Altar Stone came from even farther: northeast Scotland, about 750 kilometres away. Turns out, Stonehenge was built from stones gathered across Britain, and nobody knows exactly how they got there.",
   "voice": "af_heart",
   "speed": 1,
   "gap": [
-   0.45,
    0.45,
    0.45,
    0.45,
@@ -26,9 +25,8 @@
    "The giant sarsens came from nearby, but the bluestones matched no rock in the area.",
    "So where were they from? Geologists traced them to the Preseli Hills in Wales, over 200 kilometres, or 125 miles, away.",
    "Digs there found the rocky outcrops where Stone Age people prised the pillars loose, over 5,000 years ago.",
-   "Each bluestone weighs several tonnes, and nobody knows for sure how they were hauled to Stonehenge.",
    "Then in 2024, scientists found the Altar Stone came from even farther: northeast Scotland, about 750 kilometres away.",
-   "Turns out, Stonehenge was built from stones gathered across Britain, and we still don't know exactly how they got there."
+   "Turns out, Stonehenge was built from stones gathered across Britain, and nobody knows exactly how they got there."
   ],
   "keys": [
    "local",
@@ -77,7 +75,6 @@
    "The Puzzle",
    "The Answer",
    "The Quarries",
-   "The Haul",
    "The Altar",
    "The Journey"
   ],
