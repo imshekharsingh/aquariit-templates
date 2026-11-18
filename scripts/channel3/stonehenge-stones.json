@@ -2,7 +2,7 @@
  "name": "showreel-c3-stonehenge-stones",
  "seek": "scripts/channel3/stonehenge-stones.html",
  "engine": "echoes",
- "dur": 50,
+ "dur": 42,
  "fps": 30,
  "voice": {
   "text": "Stonehenge's smaller stones aren't local. The giant sarsens came from nearby, but the bluestones matched no rock in the area. So where were they from? Geologists traced them to the Preseli Hills in Wales, over 200 kilometres, or 125 miles, away. Digs there found the rocky outcrops where Stone Age people prised the pillars loose, over 5,000 years ago. Then in 2024, scientists found the Altar Stone came from even farther: northeast Scotland, about 750 kilometres away. Turns out, Stonehenge was built from stones gathered across Britain, and nobody knows exactly how they got there.",
@@ -41,33 +41,25 @@
    "outcrops",
    "pillars",
    "5,000",
-   "tonnes",
-   "nobody",
    "2024",
    "altar",
+   "farther",
    "scotland",
    "750",
    "britain",
+   "nobody",
    "exactly"
   ],
   "mono": [
-   "photochrom",
-   "engraving",
-   "aerial"
+   "h6"
   ],
   "titles": {
-   "henge": "Stonehenge, Salisbury Plain, England",
-   "aerial": "Stonehenge from the air",
-   "photochrom": "Stonehenge · photochrom print",
-   "sarsen": "A sarsen trilithon at Stonehenge",
-   "bluestone": "The bluestones inside the circle",
-   "westwoods": "Sarsen stones on the Marlborough Downs",
+   "bluestone": "Stonehenge, Salisbury Plain, England",
+   "sarsen": "Sarsen trilithons at Stonehenge",
+   "engraving": "Stonehenge at Sunset · John Constable",
+   "altar": "Inside the stone circle",
    "preseli": "The Preseli Hills, west Wales",
-   "goedog": "Carn Goedog, Preseli Hills",
-   "rhos": "Craig Rhos-y-felin, Preseli Hills",
-   "altar": "The Altar Stone, under a fallen sarsen",
-   "orkney": "Old Red Sandstone cliffs, northern Scotland",
-   "engraving": "Stonehenge in an old print"
+   "h6": "Stonehenge · 19th-century print"
   },
   "credit": "SOURCES: ENGLISH HERITAGE · UCL · NATURE (2024)",
   "chapters": [
@@ -84,28 +76,29 @@
     "mode": "depth",
     "line": 0,
     "at": "start",
-    "img": "henge",
+    "img": "bluestone",
     "tone": "teal",
     "stamp": "NOT ALL LOCAL",
     "stampRed": true,
     "cut": [
-     0.2,
+     0.25,
      0.3,
-     0.8,
+     0.75,
      0.75
     ],
     "cam": [
      [
       0.5,
-      0.52,
-      1.15
+      0.55,
+      1.25
      ],
      [
       0.5,
-      0.5,
-      1.25
+      0.53,
+      1.35
      ]
-    ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)"
    },
    {
     "type": "arch",
@@ -116,10 +109,10 @@
     "tone": "amber",
     "stamp": "THE GIANT SARSENS",
     "cut": [
-     0.2,
      0.15,
-     0.8,
-     0.8
+     0.15,
+     0.85,
+     0.85
     ],
     "cam": [
      [
@@ -129,117 +122,79 @@
      ],
      [
       0.52,
-      0.46,
+      0.47,
       1.2
      ]
-    ]
+    ],
+    "grade": "contrast(1.3) brightness(.85)"
    },
    {
     "type": "arch",
     "mode": "depth",
     "line": 1,
     "at": "nearby",
-    "img": "westwoods",
-    "tone": "green",
+    "img": "engraving",
+    "tone": "terra",
     "stamp": "FROM NEARBY HILLS",
     "cut": [
-     0.2,
-     0.4,
-     0.8,
-     0.85
+     0.5,
+     0.35,
+     0.85,
+     0.7
     ],
     "cam": [
      [
-      0.45,
-      0.55,
-      1.1
-     ],
-     [
-      0.55,
+      0.6,
       0.55,
       1.2
+     ],
+     [
+      0.66,
+      0.55,
+      1.32
      ]
-    ]
+    ],
+    "sat": 0.85
    },
    {
     "type": "arch",
     "mode": "depth",
     "line": 1,
     "at": "bluestones",
-    "img": "bluestone",
+    "img": "altar",
     "tone": "blue",
     "stamp": "THE SMALLER BLUESTONES",
     "cut": [
-     0.2,
-     0.3,
-     0.8,
-     0.85
+     0.05,
+     0.4,
+     0.6,
+     0.88
     ],
     "cam": [
      [
-      0.5,
-      0.55,
-      1.15
+      0.38,
+      0.6,
+      1.35
      ],
      [
-      0.5,
-      0.5,
-      1.28
+      0.42,
+      0.58,
+      1.45
      ]
     ],
-    "adds": [
-     {
-      "kind": "tag",
-      "at": "rock",
-      "text": "NO MATCH NEARBY",
-      "x": 110,
-      "y": 1060,
-      "to": [
-       520,
-       900
-      ]
-     }
-    ]
+    "grade": "contrast(1.3) brightness(.85)"
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "journey",
+    "map": "britain",
     "line": 2,
     "at": "start",
-    "img": "photochrom",
-    "tone": "violet",
-    "stamp": "SO WHERE FROM?",
-    "cut": [
-     0.2,
-     0.3,
-     0.8,
-     0.8
+    "pins": [
+     "henge"
     ],
-    "cam": [
-     [
-      0.5,
-      0.52,
-      1.1
-     ],
-     [
-      0.5,
-      0.5,
-      1.22
-     ]
-    ],
-    "adds": [
-     {
-      "kind": "tag",
-      "at": "where",
-      "text": "THE BIG QUESTION",
-      "x": 110,
-      "y": 1060,
-      "to": [
-       540,
-       860
-      ]
-     }
-    ]
+    "title": "SO WHERE FROM?",
+    "sub": "THE BLUESTONES"
    },
    {
     "type": "ill",
@@ -261,20 +216,20 @@
     "tone": "green",
     "stamp": "PRESELI HILLS · WALES",
     "cut": [
-     0.15,
-     0.3,
-     0.85,
-     0.75
+     0.1,
+     0.1,
+     0.9,
+     0.55
     ],
     "cam": [
      [
-      0.4,
       0.5,
+      0.45,
       1.1
      ],
      [
-      0.6,
-      0.5,
+      0.56,
+      0.43,
       1.2
      ]
     ],
@@ -286,8 +241,8 @@
       "x": 600,
       "y": 1060,
       "to": [
-       540,
-       860
+       560,
+       700
       ]
      }
     ]
@@ -309,291 +264,124 @@
     "sub": "WALES TO STONEHENGE"
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "dossier",
     "line": 3,
     "at": "start",
-    "img": "goedog",
-    "tone": "terra",
-    "stamp": "THE OUTCROPS",
-    "cut": [
-     0.2,
-     0.25,
-     0.8,
-     0.8
-    ],
-    "cam": [
-     [
-      0.5,
-      0.5,
-      1.1
-     ],
-     [
-      0.46,
-      0.46,
-      1.22
-     ]
-    ],
-    "adds": [
-     {
-      "kind": "tag",
-      "at": "outcrops",
-      "text": "CARN GOEDOG",
-      "x": 110,
-      "y": 1060,
-      "to": [
-       540,
-       860
-      ]
-     },
-     {
-      "kind": "tag",
-      "at": "people",
-      "text": "A STONE AGE QUARRY",
-      "x": 520,
-      "y": 960,
-      "to": [
-       560,
-       760
-      ]
-     }
+    "head": "THE QUARRIES",
+    "rows": [
+     "ROCKY OUTCROPS",
+     "PILLARS PRISED LOOSE"
     ]
    },
    {
     "type": "arch",
     "mode": "depth",
     "line": 3,
-    "at": "pillars",
-    "img": "rhos",
-    "tone": "amber",
-    "stamp": "PILLARS PRISED LOOSE",
-    "cut": [
-     0.2,
-     0.2,
-     0.8,
-     0.8
-    ],
-    "cam": [
-     [
-      0.5,
-      0.5,
-      1.1
-     ],
-     [
-      0.5,
-      0.45,
-      1.22
-     ]
-    ],
-    "adds": [
-     {
-      "kind": "count",
-      "at": "5,000",
-      "to": 5000,
-      "suffix": "+",
-      "label": "YEARS AGO",
-      "x": 240,
-      "y": 980
-     }
-    ]
-   },
-   {
-    "type": "arch",
-    "mode": "depth",
-    "line": 4,
-    "at": "start",
-    "img": "engraving",
+    "at": "people",
+    "img": "h6",
     "tone": "gold",
-    "stamp": "HAULED TO THE PLAIN",
+    "stamp": "A STONE AGE FEAT",
     "cut": [
-     0.2,
-     0.3,
-     0.8,
-     0.8
+     0.15,
+     0.12,
+     0.85,
+     0.75
     ],
     "cam": [
      [
       0.5,
-      0.52,
-      1.1
+      0.38,
+      1.6
      ],
      [
       0.5,
-      0.48,
-      1.22
+      0.36,
+      1.75
      ]
     ],
-    "adds": [
-     {
-      "kind": "tag",
-      "at": "tonnes",
-      "text": "SEVERAL TONNES EACH",
-      "x": 110,
-      "y": 1060,
-      "to": [
-       540,
-       880
-      ]
-     },
-     {
-      "kind": "tag",
-      "at": "nobody",
-      "text": "HOW? NOBODY KNOWS",
-      "x": 520,
-      "y": 960,
-      "to": [
-       600,
-       760
-      ]
-     }
-    ]
+    "sat": 0.8,
+    "grade": "contrast(1.3) brightness(.85)"
+   },
+   {
+    "type": "ill",
+    "kind": "counter",
+    "line": 3,
+    "at": "5,000",
+    "from": 5000,
+    "to": 5000,
+    "label": "OVER · YEARS AGO",
+    "stampTxt": "STONE AGE"
    },
    {
     "type": "ill",
     "kind": "dossier",
     "line": 4,
-    "at": "hauled",
-    "head": "THE HAUL",
-    "rows": [
-     "WEIGHT: SEVERAL TONNES",
-     "METHOD: UNKNOWN"
-    ]
-   },
-   {
-    "type": "arch",
-    "mode": "depth",
-    "line": 5,
     "at": "start",
-    "img": "altar",
-    "tone": "red",
-    "stamp": "A 2024 DISCOVERY",
-    "cut": [
-     0.2,
-     0.3,
-     0.8,
-     0.8
-    ],
-    "cam": [
-     [
-      0.5,
-      0.52,
-      1.1
-     ],
-     [
-      0.5,
-      0.48,
-      1.22
-     ]
-    ],
-    "adds": [
-     {
-      "kind": "tag",
-      "at": "altar",
-      "text": "THE ALTAR STONE",
-      "x": 110,
-      "y": 1060,
-      "to": [
-       540,
-       880
-      ]
-     },
-     {
-      "kind": "tag",
-      "at": "farther",
-      "text": "EVEN FARTHER",
-      "x": 560,
-      "y": 960,
-      "to": [
-       600,
-       760
-      ]
-     }
+    "head": "A 2024 STUDY",
+    "rows": [
+     "THE ALTAR STONE",
+     "EVEN FARTHER"
     ]
    },
    {
-    "type": "arch",
-    "mode": "depth",
-    "line": 5,
+    "type": "ill",
+    "kind": "paper",
+    "line": 4,
+    "at": "altar",
+    "head": "STONEHENGE · 2024",
+    "left": "A NEW STUDY",
+    "right": "MINERAL TESTS",
+    "title": "The Altar Stone came from even farther"
+   },
+   {
+    "type": "ill",
+    "kind": "journey",
+    "map": "britain",
+    "line": 4,
     "at": "scotland",
-    "img": "orkney",
-    "tone": "blue",
-    "stamp": "NORTHEAST SCOTLAND",
-    "cut": [
-     0.2,
-     0.25,
-     0.8,
-     0.8
+    "legs": [
+     "preseli-henge",
+     "scot-henge"
     ],
-    "cam": [
-     [
-      0.45,
-      0.5,
-      1.1
-     ],
-     [
-      0.55,
-      0.5,
-      1.2
-     ]
-    ]
+    "draw": 1,
+    "legT": 0.1,
+    "pins": [
+     "preseli",
+     "henge",
+     "scot"
+    ],
+    "title": "750 KM",
+    "sub": "SCOTLAND TO STONEHENGE"
    },
    {
     "type": "ill",
     "kind": "journey",
     "map": "britain",
     "line": 5,
-    "at": "kilometres",
+    "at": "start",
     "legs": [
      "preseli-henge",
      "scot-henge"
     ],
-    "draw": 1,
+    "draw": 2,
     "pins": [
      "preseli",
      "henge",
      "scot"
     ],
-    "title": "750 KM · 460 MILES",
-    "sub": "SCOTLAND TO STONEHENGE"
+    "title": "ACROSS BRITAIN",
+    "sub": "STONES FROM FAR AND NEAR"
    },
    {
-    "type": "arch",
-    "mode": "depth",
-    "line": 6,
-    "at": "start",
-    "img": "aerial",
-    "tone": "teal",
-    "stamp": "STONES FROM ACROSS BRITAIN",
-    "cut": [
-     0.2,
-     0.25,
-     0.8,
-     0.8
-    ],
-    "cam": [
-     [
-      0.5,
-      0.5,
-      1.15
-     ],
-     [
-      0.5,
-      0.5,
-      1.3
-     ]
-    ],
-    "adds": [
-     {
-      "kind": "tag",
-      "at": "exactly",
-      "text": "STILL A MYSTERY",
-      "x": 110,
-      "y": 1060,
-      "to": [
-       540,
-       860
-      ]
-     }
+    "type": "ill",
+    "kind": "dossier",
+    "line": 5,
+    "at": "nobody",
+    "head": "STILL A MYSTERY",
+    "rows": [
+     "HOW THEY MOVED THEM",
+     "NOBODY KNOWS"
     ]
    }
   ]
@@ -711,13 +499,28 @@
    "file_url": "https://live.staticflickr.com/7295/8735539508_ba0c3ab206_b.jpg",
    "source": "openverse:flickr",
    "run": "Media run 44253965958"
+  },
+  {
+   "id": "h6",
+   "file": "h6.jpg",
+   "w": 742,
+   "h": 1024,
+   "title": "Stonehenge: Trilithons (B C) South",
+   "author": "thegetty",
+   "licence": "cc0",
+   "licence_name": "cc0 1.0",
+   "licence_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+   "source_url": "https://www.rawpixel.com/image/14318599/stonehenge-trilithons-and-from-the-south-west-col-sir-henry-james",
+   "file_url": "https://images.rawpixel.com/editor_1024/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTAyL2xyL2dldHR5MTA4cjZ5LWltYWdlLmpwZw.jpg",
+   "source": "openverse:rawpixel",
+   "run": "Media run 44255163979"
   }
  ],
  "qa": {
   "edges_ok": [
    {
     "from": 0,
-    "to": 50,
+    "to": 42,
     "sides": [
      "left",
      "right",
