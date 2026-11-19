@@ -1385,5 +1385,32 @@
    "change": "swipe-reveal compare (ESCALATE answer 19 Nov): one divider across the same card shows sRGB then oklch; two states share one layout; a computed middle-colour readout (design/improvements.md web item 1)",
    "vs": "median"
   }
+ },
+ "showreel-tech-phone-claim": {
+  "channel": "tech",
+  "postOn": "2026-11-19",
+  "postAt": "13:00",
+  "concept": "Kit engine (shared frame), ~44 s, specs decoded, phone, India. What does 'up to 22 hours' on a phone really mean? Frame 0 is the number 22 HOURS at full-frame scale on the screen with an UP TO stamp; the lab test brackets, then video 22 h / streamed 18 h / audio 80 h drawn to scale, the ends blur for 'varies by use and settings', a ceiling line and YOUR DAY row; every figure Apple India's iPhone 16 spec page, read 19 Nov 2026",
+  "experiment": {
+   "id": "tech-number-open",
+   "change": "frame 0 is the surprising number itself at full-frame scale on the phone's screen (22 HOURS, UP TO stamped), the claim it questions in the title; specs decoded, phone, India; kit engine (design/improvements.md tech item 1)",
+   "vs": "median"
+  },
+  "caption": "What does \"up to 22 hours\" on a phone really mean? 🔋 It's a ceiling from one test, not a promise about your day.\n\nOn Apple's iPhone 16 page for India, the same phone lists three battery numbers: video playback up to 22 hours, streamed video up to 18 hours and audio playback up to 80 hours. The small print says the tests were run by Apple on specific units, and that battery life varies by use and settings. So the number to compare is the one closest to how you use your phone, and for most scrolling and streaming that's the streamed one. The same rule works for any phone you're shopping for: read the footnote, find the streamed or mixed-use figure, and treat \"up to\" as the top of the range.\n\nSend this to the friend who's choosing a new phone, or save it for your next upgrade.",
+  "keywords": [
+   "phone battery life claim",
+   "up to 22 hours video playback",
+   "iphone 16 battery life",
+   "streamed video battery hours",
+   "how to read phone battery specs",
+   "phone battery life india"
+  ],
+  "hashtags": [
+   "#phonebattery",
+   "#iphone16",
+   "#techtips",
+   "#smartphone",
+   "#techexplained"
+  ]
  }
 }

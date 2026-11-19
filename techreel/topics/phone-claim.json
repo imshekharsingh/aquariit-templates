@@ -1,0 +1,318 @@
+{
+ "slug": "phone-claim",
+ "engine": "kit",
+ "scene": "techkit/scenes/phone-claim.js",
+ "topic": "What does up to 22 hours on a phone really mean",
+ "format": "SPECS DECODED",
+ "audience": "india",
+ "gadget": "phone",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.45,
+ "max_end": 44.0,
+ "experiment": {
+  "id": "tech-number-open",
+  "change": "frame 0 is the surprising number itself at full-frame scale on the phone's screen (22 HOURS, UP TO stamped), the claim it questions in the title; specs decoded, phone, India; kit engine (design/improvements.md tech item 1)",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Your phone says up to twenty-two hours of video. Will that get you through your day?",
+   "beat": "question"
+  },
+  {
+   "text": "That number comes from a test. Apple ran it on specific phones, with video playing the whole time.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "Read the small print. Twenty-two hours is video playing from the phone. Streamed video is eighteen hours.",
+   "beat": "fix",
+   "source": 0
+  },
+  {
+   "text": "Music gets its own number: up to eighty hours. Three activities, three very different claims.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "And Apple's page adds one more line: battery life varies by use and settings. Your apps decide your day.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "So read up to as a ceiling, not a promise. Pick the number closest to how you use it.",
+   "beat": "surprise"
+  },
+  {
+   "text": "Up to is a ceiling. Check the streamed number.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "day": [
+   0,
+   "day"
+  ],
+  "test": [
+   1,
+   "test"
+  ],
+  "specific": [
+   1,
+   "specific"
+  ],
+  "whole": [
+   1,
+   "whole"
+  ],
+  "print": [
+   2,
+   "print"
+  ],
+  "tt": [
+   2,
+   "Twenty"
+  ],
+  "streamed": [
+   2,
+   "Streamed"
+  ],
+  "eighteen": [
+   2,
+   "eighteen"
+  ],
+  "music": [
+   3,
+   "Music"
+  ],
+  "eighty": [
+   3,
+   "eighty"
+  ],
+  "three": [
+   3,
+   "Three"
+  ],
+  "varies": [
+   4,
+   "varies"
+  ],
+  "apps": [
+   4,
+   "apps"
+  ],
+  "settings": [
+   4,
+   "settings"
+  ],
+  "ceiling": [
+   5,
+   "ceiling"
+  ],
+  "promise": [
+   5,
+   "promise"
+  ],
+  "closest": [
+   5,
+   "closest"
+  ],
+  "final": [
+   6,
+   "Check"
+  ],
+  "ceil2": [
+   6,
+   "ceiling"
+  ],
+  "chk": [
+   6,
+   "streamed"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "day",
+   "blip",
+   0.5,
+   0.2,
+   {
+    "f": 520,
+    "f2": 300
+   }
+  ],
+  [
+   "test",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "whole",
+   "tick",
+   0.4,
+   0
+  ],
+  [
+   "print",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "tt",
+   "pop",
+   0.55,
+   -0.3
+  ],
+  [
+   "eighteen",
+   "pop",
+   0.55,
+   0.3
+  ],
+  [
+   "music",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 600,
+    "f2": 900
+   }
+  ],
+  [
+   "eighty",
+   "snap",
+   0.6,
+   0.3
+  ],
+  [
+   "three",
+   "tick",
+   0.4,
+   0
+  ],
+  [
+   "varies",
+   "riser_end",
+   0.22,
+   0
+  ],
+  [
+   "apps",
+   "pop",
+   0.5,
+   -0.3
+  ],
+  [
+   "settings",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "ceiling",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "promise",
+   "thud",
+   0.5,
+   0
+  ],
+  [
+   "closest",
+   "chime",
+   0.3,
+   0,
+   {
+    "notes": [
+     "A5",
+     "E6"
+    ]
+   }
+  ],
+  [
+   "ceil2",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "chk",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.4,
+   0,
+   {
+    "notes": [
+     "A4",
+     "C#5",
+     "E5",
+     "B5",
+     "E6"
+    ],
+    "d": 3.2
+   }
+  ]
+ ],
+ "post": {
+  "title": "What does 'up to 22 hours' really mean?",
+  "caption": "What does \"up to 22 hours\" on a phone really mean? 🔋 It's a ceiling from one test, not a promise about your day.\n\nOn Apple's iPhone 16 page for India, the same phone lists three battery numbers: video playback up to 22 hours, streamed video up to 18 hours and audio playback up to 80 hours. The small print says the tests were run by Apple on specific units, and that battery life varies by use and settings. So the number to compare is the one closest to how you use your phone, and for most scrolling and streaming that's the streamed one. The same rule works for any phone you're shopping for: read the footnote, find the streamed or mixed-use figure, and treat \"up to\" as the top of the range.\n\nSend this to the friend who's choosing a new phone, or save it for your next upgrade.",
+  "keywords": [
+   "phone battery life claim",
+   "up to 22 hours video playback",
+   "iphone 16 battery life",
+   "streamed video battery hours",
+   "how to read phone battery specs",
+   "phone battery life india"
+  ],
+  "hashtags": [
+   "#phonebattery",
+   "#iphone16",
+   "#techtips",
+   "#smartphone",
+   "#techexplained"
+  ],
+  "sources": [
+   {
+    "url": "https://www.apple.com/in/iphone-16/specs/",
+    "note": "Apple India, iPhone 16 Technical Specifications, Power and Battery (read 19 Nov 2026): Video playback up to 22 hours; Video playback (streamed) up to 18 hours; Audio playback up to 80 hours. Footnote: Battery life and charge cycles vary by use and settings. Battery tests are conducted using specific iPhone units."
+   }
+  ]
+ },
+ "say": {
+  "twenty-two": "twenty two"
+ }
+}
