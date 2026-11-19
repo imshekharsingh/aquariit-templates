@@ -36,7 +36,7 @@ reads the same card).
 10. Facts: PASS: MDN linear-gradient(), BCD (Chrome and Edge 111, Firefox 127, Safari 16.2, read 19 Nov 2026), a real-browser check in Chrome 157 (grey middle vs teal middle); npm run check passes
 11. Post data: PASS: captions.json entry (channel web, postOn 2026-11-19, postAt 13:00, concept, experiment web-swipe-compare); 6 keywords, 5 hashtags; caption names who to send it to and invites a save; tip block with its demo in scripts/tips/demos.mjs
 12. Review file: PASS: this file, items 1-11 and 14-18 PASS
-13. After the render: PENDING
+13. After the render: PASS: render 1, Showreel run 44442284105 green (about 14 minutes; issue 1012); OUTPUT QA: PASS on the final MP4 (18.00 s): PACE 45 words in 16.0 s = 2.81 words/s (one short quick line, warning), LOUD -14.0 LUFS / -2.9 dBTP, SOUND recorded CC0 samples with 30 of 30 element cues audible, COLOUR at most 20% saturated fill, EDGES none, VIBRANCY median 23.7%, DEMO sat 0.70, HUE 65 deg (the render measured 65, local frames said 245: demo-hues.json now 65; 40 deg from saffron's 25, the limit), CALM median 0.3% / mean 1.8%, MUTE fix 8.2% vs before 8.2%, DEAD none (visual change 63% of steps); voice check: no unsure words, heard 'gray' for grey and 'colors' for colours (spelling only)
 14. Cuts: PASS: FLOW: cuts 0 (declared: the swipe, wipeRestyle; the settle, sharedElement)
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 70% (median step 0.8, 2 declared transitions; web from 16 Nov 35%+)

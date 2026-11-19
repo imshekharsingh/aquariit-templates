@@ -18,7 +18,7 @@
  },
  "lines": [
   {
-   "text": "Your phone says up to twenty-two hours of video. Will that get you through your day?",
+   "text": "Your phone promises up to twenty-two hours of video. Does that actually cover your day?",
    "beat": "question"
   },
   {
@@ -27,7 +27,7 @@
    "source": 0
   },
   {
-   "text": "Read the small print. Twenty-two hours is video playing from the phone. Streamed video is eighteen hours.",
+   "text": "Read the small print. Twenty-two hours is plain video playback. Streamed video is eighteen hours.",
    "beat": "fix",
    "source": 0
   },
@@ -42,7 +42,7 @@
    "source": 0
   },
   {
-   "text": "So read up to as a ceiling, not a promise. Pick the number closest to how you use it.",
+   "text": "So treat up to as a ceiling, not a promise. Choose the figure closest to your habits.",
    "beat": "surprise"
   },
   {

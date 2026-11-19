@@ -13,7 +13,7 @@ Format (at most 6 lines):
 
 ## 2026-11-19 07:55 IST · main · daily run by hand (web + tech)
 - Done: web Nº 41 showreel-41-gradient (swipe-reveal compare, ESCALATE answer; review file, tip demo, captions entry); audit card posted; tech showreel-tech-phone-claim (topic swapped from the power bank: the maker pages were unreachable from this environment, Apple's India spec page was readable).
-- Left: web and tech renders dispatched by hand after their merges; the 11:17 critic; the Turns Out run still owes PROMOTE c3-journey and DROP c3-guess (the DROP is already in playbook "What didn't").
+- Left: web render passed Output QA (run 44442284105); tech render 1 failed only PACE, reworded, render 2 dispatched; the 11:17 critic; the Turns Out run still owes PROMOTE c3-journey and DROP c3-guess (the DROP is already in playbook "What didn't").
 - For the other account: the 06:47 scheduled run had no repo access; this run was started by hand from the Owner chat.
 
 ## 2026-11-19 01:45 IST · main · handoff files
