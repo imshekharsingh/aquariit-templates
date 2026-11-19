@@ -1,0 +1,141 @@
+{
+ "name": "showreel-c3-hollywoodland",
+ "seek": "scripts/channel3/hollywoodland.html",
+ "dur": 30,
+ "fps": 30,
+ "grain": 4,
+ "voice": {
+  "text": "This sign once said HOLLYWOODLAND. So why did four letters vanish? It began in 1923 as an advert for a housing estate. It was meant to stand for just eighteen months. In 1949 the city agreed to repair it, if LAND came down. Turns out, a billboard for houses became the name of an industry. Send this to someone who thinks it was always like this. Not how you picture it, number four.",
+  "at": [],
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "",
+ "keywords": [],
+ "hashtags": [],
+ "sources": [],
+ "media": [
+  {
+   "id": "payoff",
+   "queries": [
+    "Hollywoodland sign",
+    "Hollywoodland sign 1920s Mount Lee",
+    "Hollywood sign Hollywoodland"
+   ],
+   "sources": [
+    "loc",
+    "openverse",
+    "nasa"
+   ],
+   "min_side": 1600,
+   "avoid": [
+    "logo"
+   ]
+  },
+  {
+   "id": "question",
+   "queries": [
+    "Hollywood sign Los Angeles hillside",
+    "Hollywood sign Mount Lee"
+   ],
+   "sources": [
+    "loc",
+    "openverse",
+    "nasa"
+   ],
+   "min_side": 1600,
+   "avoid": [
+    "logo"
+   ]
+  },
+  {
+   "id": "step1",
+   "queries": [
+    "Hollywoodland real estate subdivision Beachwood Canyon",
+    "Hollywoodland 1920s Los Angeles",
+    "Hollywoodland entrance gates"
+   ],
+   "sources": [
+    "loc",
+    "openverse",
+    "nasa"
+   ],
+   "min_side": 1600,
+   "avoid": [
+    "logo"
+   ]
+  },
+  {
+   "id": "step2",
+   "queries": [
+    "Hollywood hills 1920s Los Angeles",
+    "Hollywood sign letters",
+    "Hollywood sign light bulbs"
+   ],
+   "sources": [
+    "loc",
+    "openverse",
+    "nasa"
+   ],
+   "min_side": 1600,
+   "avoid": [
+    "logo"
+   ]
+  },
+  {
+   "id": "step3",
+   "queries": [
+    "Hollywood sign restoration 1949",
+    "Hollywood sign 1950s",
+    "Hollywood sign workers letters"
+   ],
+   "sources": [
+    "loc",
+    "openverse",
+    "nasa"
+   ],
+   "min_side": 1600,
+   "avoid": [
+    "logo"
+   ]
+  },
+  {
+   "id": "surprise",
+   "queries": [
+    "Hollywood sign Los Angeles",
+    "Hollywood Boulevard Los Angeles",
+    "Hollywood sign sunset"
+   ],
+   "sources": [
+    "loc",
+    "openverse",
+    "nasa"
+   ],
+   "min_side": 1600,
+   "avoid": [
+    "logo"
+   ]
+  }
+ ],
+ "qa": {
+  "subject": [
+   60,
+   330,
+   450,
+   640
+  ],
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 30,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the story engine: full-bleed real media fills the whole frame by design"
+   }
+  ]
+ }
+}
