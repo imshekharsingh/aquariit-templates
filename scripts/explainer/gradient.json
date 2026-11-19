@@ -1,0 +1,78 @@
+{
+ "name": "showreel-41-gradient",
+ "seek": "scripts/explainer/gradient.html",
+ "dur": 18,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.2,
+ "style": "Dark look, whole frame, calm (rule 17). ESCALATE answer 19 Nov: the swipe-reveal compare, one divider across the same card (improvements.md web item 1)",
+ "voice": {
+  "text": "Why does your gradient go grey? Blue to yellow runs through a dead grey in the middle. The browser blends in sRGB, and the middle goes dull. The fix: blend in oklch. Same two colours, and the middle stays vivid. Now your gradients stay alive.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "Why does your gradient go grey? 🎨 Blue to yellow runs through a dead grey in the middle: the exact middle is #808080.\n\nBy default the browser blends the two colours in sRGB, where blue and yellow average out to grey. Tell it to blend in oklch and the same two colours keep their colour all the way across: linear-gradient(in oklch, blue, yellow). Drag the divider in the reel: left is sRGB, right is oklch.\n\nWorks in Chrome and Edge 111+, Firefox 127+ and Safari 16.2+. Older browsers ignore the line and show the sRGB blend.\n\nSend this to the designer whose gradients look muddy, or save it for your next hero banner.",
+ "keywords": [
+  "css gradient grey middle",
+  "linear-gradient in oklch",
+  "css gradient color interpolation",
+  "fix muddy gradient css",
+  "oklch gradient",
+  "css gradient tips"
+ ],
+ "hashtags": [
+  "#css",
+  "#webdesign",
+  "#frontend",
+  "#uidesign",
+  "#cssgradient"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient",
+   "note": "MDN linear-gradient(): a color interpolation method such as `in oklch` sets the colour space the stops are blended in; without one, the stops are blended in sRGB (the legacy default)"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data",
+   "note": "BCD (read 19 Nov 2026), css.types.gradient.linear-gradient.interpolation_color_space: Chrome 111, Edge 111, Firefox 127, Safari 16.2"
+  },
+  {
+   "url": "https://www.w3.org/TR/css-color-4/",
+   "note": "CSS Color Module Level 4, interpolation: oklch is a polar space; hue interpolation takes the shorter arc by default. Checked in Chrome 157 (headless, 19 Nov 2026): linear-gradient(90deg, blue, yellow) at its middle renders rgb(122, 122, 132) to rgb(128,128,128) (grey), linear-gradient(90deg in oklch, blue, yellow) at its middle renders rgb(0, 203, 194) (teal)"
+  }
+ ],
+ "tip": {
+  "title": "Why does your gradient go grey in the middle?",
+  "why": "CSS blends gradient stops in sRGB by default. Blue (#00f) and yellow (#ff0) are opposite colours, so their sRGB average is #808080, a dead grey band across the middle. linear-gradient(in oklch, ...) blends in the oklch colour space instead (lightness, chroma and hue), so the middle keeps its chroma and passes through teal and green. Supported since Chrome and Edge 111, Safari 16.2 and Firefox 127 (MDN, BCD); older browsers ignore the unknown `in oklch` and show the sRGB blend.",
+  "code": ".hero { background: linear-gradient(blue, yellow); }              /* grey middle */\n.hero { background: linear-gradient(in oklch, blue, yellow); }    /* vivid middle */",
+  "demo": "gradient",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient",
+   "label": "MDN, linear-gradient()"
+  }
+ },
+ "format": "single",
+ "say": {
+  "oklch": "[oklch](/ˌoʊkˌeɪˌɛlsˌiˈeɪtʃ/)",
+  "sRGB": "[sRGB](/ˌɛsˌɑɹdʒˌiˈbi/)"
+ },
+ "experiment": {
+  "id": "web-swipe-compare",
+  "change": "swipe-reveal compare (ESCALATE answer 19 Nov): one divider across the same card shows sRGB then oklch; two states share one layout; a computed middle-colour readout (design/improvements.md web item 1)",
+  "vs": "median"
+ },
+ "qa": {
+  "mute": {
+   "before": {
+    "say": "dead"
+   },
+   "after": {
+    "say": "vivid"
+   },
+   "span": 1.5
+  }
+ }
+}

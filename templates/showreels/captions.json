@@ -1357,5 +1357,33 @@
   "note": "Turns Out, Wed 18 Nov. Built late on the day: the 09:11 IST run did not start (usage limit), started by hand from the Owner chat; postAt 14:00. Voice af_heart, speed 1.",
   "slotNote": "One-off 18:00 IST: the 09:11 IST Turns Out run did not start (usage limit); built late on the day, and Wikimedia refused 10 of 12 photo downloads (HTTP 429 to every runner) so the render could not be ready by 13:30 (Owner chat task, 18 Nov 2026). No push reminder for this slot (owner, 18 Nov: no new cron).",
   "noReminder": true
+ },
+ "showreel-41-gradient": {
+  "postOn": "2026-11-19",
+  "postAt": "13:00",
+  "caption": "Why does your gradient go grey? 🎨 Blue to yellow runs through a dead grey in the middle: the exact middle is #808080.\n\nBy default the browser blends the two colours in sRGB, where blue and yellow average out to grey. Tell it to blend in oklch and the same two colours keep their colour all the way across: linear-gradient(in oklch, blue, yellow). Drag the divider in the reel: left is sRGB, right is oklch.\n\nWorks in Chrome and Edge 111+, Firefox 127+ and Safari 16.2+. Older browsers ignore the line and show the sRGB blend.\n\nSend this to the designer whose gradients look muddy, or save it for your next hero banner.",
+  "keywords": [
+   "css gradient grey middle",
+   "linear-gradient in oklch",
+   "css gradient color interpolation",
+   "fix muddy gradient css",
+   "oklch gradient",
+   "css gradient tips"
+  ],
+  "hashtags": [
+   "#css",
+   "#webdesign",
+   "#frontend",
+   "#uidesign",
+   "#cssgradient"
+  ],
+  "channel": "web",
+  "concept": "a blue-to-yellow gradient with a dead grey middle (sRGB blend, #808080) fixed with linear-gradient(in oklch, blue, yellow); the swipe-reveal compare: one divider across the same card, middle colour readout computed from the real blend",
+  "about": "ESCALATE answer 19 Nov (web ALARM two days running, median 1,552): a new format after the details reel, the swipe-reveal compare (improvements.md web item 1); dark look, saffron world, whole frame, calm",
+  "experiment": {
+   "id": "web-swipe-compare",
+   "change": "swipe-reveal compare (ESCALATE answer 19 Nov): one divider across the same card shows sRGB then oklch; two states share one layout; a computed middle-colour readout (design/improvements.md web item 1)",
+   "vs": "median"
+  }
  }
 }
