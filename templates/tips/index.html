@@ -219,6 +219,9 @@
 #follow .fix .fol{display:inline-grid}
 #follow .fix .fol span{grid-area:1 / 1}
 #follow .fix .fol .off{visibility:hidden}
+#gradient .bar{height:96px;margin:8px 10px;border-radius:12px}
+#gradient .bar.a{background:linear-gradient(var(--ang, 90deg), blue, yellow)}
+#gradient .bar.b{background:linear-gradient(in oklch var(--ang, 90deg), blue, yellow)}
 </style>
 </head>
 <body>
@@ -228,6 +231,22 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="gradient">
+  <p class="no">Nº 31</p>
+  <h2>Why does your gradient go grey in the middle?</h2>
+  <p class="why">CSS blends gradient stops in sRGB by default. Blue (#00f) and yellow (#ff0) are opposite colours, so their sRGB average is #808080, a dead grey band across the middle. linear-gradient(in oklch, ...) blends in the oklch colour space instead (lightness, chroma and hue), so the middle keeps its chroma and passes through teal and green. Supported since Chrome and Edge 111, Safari 16.2 and Firefox 127 (MDN, BCD); older browsers ignore the unknown `in oklch` and show the sRGB blend.</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">Default (sRGB)</span><div class="bar a"></div></div>
+  <div class="pane fix"><span class="tag ok">in oklch</span><div class="bar b"></div></div>
+</div>
+<button class="play" type="button">Turn both</button>
+<p class="note">Both bars are blue to yellow. The left one is blended in sRGB, so its middle is a flat grey; the right one says in oklch, so the middle stays colourful. The button turns both gradients together.</p></div>
+  <div class="code"><pre><code>.hero { background: linear-gradient(blue, yellow); }              /* grey middle */
+.hero { background: linear-gradient(in oklch, blue, yellow); }    /* vivid middle */</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/linear-gradient" rel="noopener">Source: MDN, linear-gradient()</a></p>
+</article>
 
 <article class="tip" id="expensive">
   <p class="no">Nº 30</p>
@@ -783,11 +802,12 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>28 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>29 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "gradient": function(root, btn){ var a = 90; btn.addEventListener('click', function(){ a = (a + 40) % 360; root.style.setProperty('--ang', a + 'deg'); }); },
     "expensive": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
   panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Reset' : 'Play all three'; }); },
     "follow": function(root){ root.querySelectorAll('.fol').forEach(function(b){ var fix = !!b.closest('.fix');

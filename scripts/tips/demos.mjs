@@ -534,4 +534,19 @@ export const demos = {
   b.addEventListener('click', function(){ var on = b.dataset.on !== '1'; b.dataset.on = on ? '1' : '';
     b.innerHTML = fix ? '<span' + (on ? ' class="off"' : '') + '>Follow</span><span' + (on ? '' : ' class="off"') + '>Following</span>' : '<span>' + (on ? 'Following' : 'Follow') + '</span>'; }); }); }`,
   },
+  // the gradient demo (showreel-41-gradient, 19 Nov 2026): the same two colours blended in sRGB and in oklch, turned together
+  gradient: {
+    css: `
+#gradient .bar{height:96px;margin:8px 10px;border-radius:12px}
+#gradient .bar.a{background:linear-gradient(var(--ang, 90deg), blue, yellow)}
+#gradient .bar.b{background:linear-gradient(in oklch var(--ang, 90deg), blue, yellow)}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">Default (sRGB)</span><div class="bar a"></div></div>
+  <div class="pane fix"><span class="tag ok">in oklch</span><div class="bar b"></div></div>
+</div>
+<button class="play" type="button">Turn both</button>
+<p class="note">Both bars are blue to yellow. The left one is blended in sRGB, so its middle is a flat grey; the right one says in oklch, so the middle stays colourful. The button turns both gradients together.</p>`,
+    js: `function(root, btn){ var a = 90; btn.addEventListener('click', function(){ a = (a + 40) % 360; root.style.setProperty('--ang', a + 'deg'); }); }`,
+  },
 };
