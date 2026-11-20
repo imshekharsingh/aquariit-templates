@@ -1,0 +1,20 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'building': one photo per run (the one-config run hit the 30-minute limit on Wikimedia and Library of Congress 429s).",
+ "media": [
+  {
+   "id": "building",
+   "queries": [
+    "Washington Monument Setting the capstone Harper's Weekly"
+   ],
+   "sources": [
+    "wikimedia"
+   ],
+   "min_side": 700,
+   "avoid": [
+    "cropped"
+   ],
+   "width": 1280
+  }
+ ]
+}
