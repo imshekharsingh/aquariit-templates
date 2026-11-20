@@ -15,7 +15,7 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
 - The app reads like a mobile app (owner, 14-15 Nov 2026): a bottom tab bar **Journey | Reels | Growth | Inbox** (the last one used is
   remembered; Journey on first open), and a side menu (top left) with the same sections, Claude's replies to Feedback one at a time ("Mark read",
-  "Next"; /api/feedback/<id>/read), notifications, the GitHub minutes and Sign out. Inbox holds Needs you, the cards and the Feedback box.
+  "Next"; /api/feedback/<id>/read), notifications, the GitHub minutes and Sign out. Inbox holds Needs you, the cards, the Feedback box and References (owner, 20 Nov 2026: a link, a screenshot or a short clip up to 50 MB with a note and channel; files in private R2 under refs/; /api/refs; Claude reads them with Owner answers `refs`, design/runbook-daily.md step 0).
 - **Journey** (owner, 15 Nov 2026): every reel posting from 3 days ago to 3 days ahead, grouped by post day (newest first), channel colour per
   card, seven stages in order: Planned (captions.json) -> Built (the PR that first added its review file) -> Rendering (live step and % from
   the Showreel / Tech reel run) -> Checks (Output QA PASS, or "Failed: <check in words>" with the reason) -> Critic (CRITIC: READY / NOT READY

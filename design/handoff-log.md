@@ -14,7 +14,8 @@ Format (at most 6 lines):
 
 ## 2026-11-21 02:00 IST · second · Turns Out restart: plan, rules, first myth reel (code-drawn)
 - Done: design/c3-plan.md (myth topics, frozen format, keep-or-stop at day 7/14/28); rules-c3.md R1-R3; E30 (experiments.md, targets.md); 5 profile asks sent to Needs you (c3-name, c3-bio, c3-pin, c3-trial, c3-archive); owner banned media downloads, so a new Echoes shot kind `sketch` (engine.html + sound.py, channel3.md "Sketch plates"); reel showreel-c3-viking-horns (config, scene, review file, captions entry hidden until render 1 passes Output QA).
-- Left: render 1 (Showreel, dispatched from this branch) + its Output QA, item 13, unhide; critic item is open (owner may post on Output QA). aluminium-tip (20 Nov) was never built: it needs media, so it is dropped.
+- Also (owner ask): app Inbox "References": paste a link or upload a screenshot / short clip (≤50 MB, private R2 refs/), note + channel; src/worker.js /api/refs; scripts/asks.mjs + asks.yml actions `refs` (REF lines + B64 previews) and `refs-done`; runbook-daily.md step 0 reads them; sw.js v17.
+- Left: viking-horns render 1 failed GRADE only (fixed: lit dome); render 2 (run 44797402226, last allowed) + item 13 + unhide. aluminium-tip (20 Nov) was never built: it needs media, so it is dropped.
 - For the other account: the Turns Out daily task stays off until the owner says; when it restarts, it follows c3-plan.md and builds sketch plates only (no Media runs). CLAUDE.md Images line now says Turns Out is code-drawn. Tech still uses media; the owner's remark may apply there too: ask in the Owner chat.
 
 ## 2026-11-20 19:55 IST · main · second account: open scope

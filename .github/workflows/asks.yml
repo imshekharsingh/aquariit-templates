@@ -6,12 +6,12 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: read (answers + new feedback), add, clear, mark, unmark, feedback (new feedback only) or feedback-done
+        description: read (answers + new feedback), add, clear, mark, unmark, feedback (new feedback only), feedback-done, refs (new references + previews) or refs-done
         type: choice
-        options: [read, add, clear, mark, unmark, feedback, feedback-done]
+        options: [read, add, clear, mark, unmark, feedback, feedback-done, refs, refs-done]
         default: read
       asks:
-        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"] · mark: {"showreel-x":"ISO time"} · unmark: ["showreel-x"] · feedback-done: {"ids":[3],"note":"what was done"}'
+        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"] · mark: {"showreel-x":"ISO time"} · unmark: ["showreel-x"] · feedback-done: {"ids":[3],"note":"what was done"} · refs-done: {"ids":[3],"state":"studied|used","note":"..."}'
         type: string
         required: false
 
@@ -21,12 +21,15 @@ permissions:
 jobs:
   asks:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           sparse-checkout: scripts
+      - name: ffmpeg for reference previews
+        if: inputs.action == 'refs'
+        run: which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg >/dev/null)
       - name: Owner answers
         env:
           ACTION: ${{ inputs.action }}

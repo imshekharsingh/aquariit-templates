@@ -154,6 +154,17 @@
   .fbi .st.done{color:var(--ok)}
   .fbi p{margin-top:3px;white-space:pre-wrap;overflow-wrap:anywhere}
   .fbi p.note{color:var(--mute);font-size:.8rem}
+  /* References (owner, 20 Nov 2026): a link, a screenshot or a short clip for Claude to study (private R2, never the repo) */
+  .ref input[type=url]{width:100%;min-height:44px;margin-top:8px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--well);color:var(--ink);font:400 16px system-ui,sans-serif}
+  .ref .pick{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+  .ref .pick label{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:999px;border:1.5px dashed var(--line);cursor:pointer;font:600 .8rem system-ui,sans-serif;color:var(--ink)}
+  .ref .pick input{position:absolute;width:1px;height:1px;opacity:0}
+  .ref .pick span{color:var(--mute);font-size:.78rem;overflow-wrap:anywhere}
+  .ref textarea{min-height:56px}
+  .ref .msg{color:var(--mute);font-size:.78rem;margin-top:6px;min-height:1em}
+  .refi .th{display:block;max-width:100%;max-height:220px;margin-top:6px;border-radius:10px;border:1px solid var(--line);background:var(--well)}
+  .refi a{color:var(--accent);overflow-wrap:anywhere}
+  .refi .del{margin-top:6px;min-height:32px;padding:0 12px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--mute);font:600 .75rem system-ui,sans-serif;cursor:pointer}
   /* cards (owner, 1 Nov 2026): the daily audit and the spare-usage night's report, under the alert; "Mark read" deletes one for good */
   .card{margin:0 0 14px;padding:14px 16px 12px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:16px;font-size:.88rem}
   .card .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
@@ -340,7 +351,7 @@
   </section>
   <section class="pg" id="s-inbox" hidden>
     <h1>Inbox</h1>
-    <p class="lede">Questions only you can answer, Claude's daily cards, and your feedback.</p>
+    <p class="lede">Questions only you can answer, Claude's daily cards, your feedback and references.</p>
     <section class="needs" id="needs" hidden><h2>Needs you</h2><div id="needs-list"></div></section>
     <div id="cards"></div>
     <details class="fb" id="fb"><summary>Feedback <span id="fb-n">Write to Claude</span></summary>
@@ -348,6 +359,15 @@
       <textarea id="fb-text" aria-label="Your feedback" placeholder="What should Claude change or look at? Read first when work resumes."></textarea>
       <div class="row"><button class="btn" id="fb-send" type="button">Send</button></div>
       <div id="fb-list"></div>
+    </details>
+    <details class="fb ref" id="ref"><summary>References <span id="ref-n">Add a link or a file</span></summary>
+      <div class="chips" id="ref-ch" role="group" aria-label="For"><button type="button" data-ch="" aria-pressed="true">Any</button><button type="button" data-ch="web" aria-pressed="false">Web</button><button type="button" data-ch="tech" aria-pressed="false">Tech</button><button type="button" data-ch="c3" aria-pressed="false">Turns Out</button><button type="button" data-ch="app" aria-pressed="false">App</button></div>
+      <input type="url" id="ref-url" aria-label="Link" placeholder="Paste a link (Instagram reel, site)" inputmode="url" autocomplete="off">
+      <div class="pick"><label for="ref-file">Upload a screenshot or clip</label><input type="file" id="ref-file" accept="image/png,image/jpeg,image/webp,image/gif,image/heic,video/mp4,video/quicktime,video/webm"><span id="ref-fname">Images or clips up to 50 MB</span></div>
+      <textarea id="ref-note" aria-label="Note" placeholder="What should Claude look at? (optional)"></textarea>
+      <div class="row"><button class="btn" id="ref-send" type="button">Add reference</button></div>
+      <p class="msg" id="ref-msg" aria-live="polite"></p>
+      <div id="ref-list"></div>
     </details>
     <p class="empty" id="inbox-empty" hidden>Nothing waiting for you.</p>
   </section>
@@ -854,6 +874,41 @@
     fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ text: v, channel: fbCh || null }) })
       .then(function(r){ if (!r.ok) throw 0; fbText.value = ''; fbSend.disabled = false; fbSend.textContent = 'Send'; fbLoad(); }).catch(function(){ fbSend.disabled = false; fbSend.textContent = 'Try again'; }); });
   fbLoad();
+  // References: a link or a file (screenshot, short clip) with an optional note; Claude runs study the new ones and reply with a state and a note
+  var refList = document.getElementById('ref-list'), refUrl = document.getElementById('ref-url'), refFile = document.getElementById('ref-file'), refNote = document.getElementById('ref-note'),
+    refSend = document.getElementById('ref-send'), refMsg = document.getElementById('ref-msg'), refN = document.getElementById('ref-n'), refFname = document.getElementById('ref-fname'), refCh = '';
+  var REFST = { 'new': 'New', studied: 'Studied', used: 'Used' }, REF_MAX = 50 * 1024 * 1024;
+  Array.prototype.forEach.call(document.querySelectorAll('#ref-ch button'), function(b){ b.addEventListener('click', function(){ refCh = b.getAttribute('data-ch');
+    Array.prototype.forEach.call(document.querySelectorAll('#ref-ch button'), function(x){ x.setAttribute('aria-pressed', String(x === b)); }); }); });
+  refFile.addEventListener('change', function(){ var f = refFile.files && refFile.files[0]; refFname.textContent = f ? f.name + ' · ' + (f.size / 1048576).toFixed(1) + ' MB' : 'Images or clips up to 50 MB'; });
+  function refItem(r){ var box = el('div', 'fbi refi'), h = el('div', 'h');
+    h.appendChild(el('span', null, fbWhen(r.created) + (r.channel && FBN[r.channel] ? ' · ' + FBN[r.channel] : ''))); h.appendChild(el('span', 'st' + (r.state !== 'new' ? ' done' : ''), REFST[r.state] || r.state));
+    box.appendChild(h);
+    if (r.url) { var a = el('a', null, r.url); a.href = r.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; var p0 = el('p'); p0.appendChild(a); box.appendChild(p0); }
+    if (r.file) { if (/^image\//.test(r.file.type) && r.file.type !== 'image/heic') { var im = el('img', 'th'); im.loading = 'lazy'; im.alt = r.file.name || 'Reference'; im.src = '/api/refs/' + r.id + '/file'; box.appendChild(im); }
+      else if (/^video\//.test(r.file.type)) { var v = el('video', 'th'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = '/api/refs/' + r.id + '/file'; box.appendChild(v); }
+      else box.appendChild(el('p', null, r.file.name || 'File')); }
+    if (r.note) box.appendChild(el('p', null, r.note)); if (r.reply) box.appendChild(el('p', 'note', 'Claude: ' + r.reply));
+    var d = el('button', 'del', 'Delete'); d.type = 'button'; d.addEventListener('click', function(){ if (!confirm('Delete this reference?')) return; d.disabled = true;
+      fetch('/api/refs/' + r.id + '/delete', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: '{}' })
+        .then(function(x){ if (!x.ok) throw 0; refLoad(); }).catch(function(){ d.disabled = false; d.textContent = 'Try again'; }); });
+    box.appendChild(d); return box; }
+  function refLoad(){ fetch('/api/refs', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
+    .then(function(j){ var a = j.refs || [], n = a.filter(function(r){ return r.state === 'new'; }).length; refList.textContent = ''; a.forEach(function(r){ refList.appendChild(refItem(r)); });
+      refN.textContent = n ? n + ' new' : a.length ? a.length + ' added' : 'Add a link or a file'; }).catch(function(){}); }
+  function refDone(ok, m){ refSend.disabled = false; refSend.textContent = ok ? 'Add reference' : 'Try again'; refMsg.textContent = m || ''; if (ok) { refUrl.value = ''; refNote.value = ''; refFile.value = ''; refFname.textContent = 'Images or clips up to 50 MB'; refLoad(); } }
+  refSend.addEventListener('click', function(){ var u = refUrl.value.trim(), f = refFile.files && refFile.files[0], note = refNote.value.trim();
+    if (!u && !f) { refMsg.textContent = 'Paste a link or choose a file.'; refUrl.focus(); return; }
+    if (u && !/^https:\/\/\S+$/i.test(u)) { refMsg.textContent = 'The link must start with https://'; refUrl.focus(); return; }
+    if (f && f.size > REF_MAX) { refMsg.textContent = 'That file is over 50 MB.'; return; }
+    refSend.disabled = true; refMsg.textContent = f ? 'Uploading…' : 'Saving…';
+    var H = { 'X-Requested-With': 'reel' }, jobs = [];
+    if (f) jobs.push(fetch('/api/refs/upload?' + new URLSearchParams({ channel: refCh, note: note + (u ? (note ? '\n' : '') + u : ''), name: f.name }), { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': f.type || 'application/octet-stream' }, H), body: f }));
+    else jobs.push(fetch('/api/refs', { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': 'application/json' }, H), body: JSON.stringify({ url: u, note: note || null, channel: refCh || null }) }));
+    Promise.all(jobs).then(function(rs){ var bad = rs.filter(function(r){ return !r.ok; })[0]; if (!bad) return refDone(true, 'Added. Claude reads it on the next run.');
+      return bad.json().catch(function(){ return {}; }).then(function(j){ refDone(false, j.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : j.error === 'too-big' ? 'That file is over 50 MB.' : 'Could not save it. Try again.'); }); })
+      .catch(function(){ refDone(false, 'Could not save it. Try again.'); }); });
+  refLoad();
   // cards: one per daily audit (and the spare-usage night's report), newest first; "Mark read" deletes the card for good (no archive)
   var cardsBox = document.getElementById('cards'), CC = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' };
   function cardEl(cd){ var box = el('section', 'card'), hd = el('div', 'hd');
