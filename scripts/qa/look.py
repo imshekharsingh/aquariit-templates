@@ -23,6 +23,6 @@ if 'slug' in c:   # a tech kit topic: the subject boxes capture.cjs wrote, in th
     oqa.sheen_check(G, 10); oqa.hero_check(F, 10, mp4); sys.exit(1 if oqa.fails else 0)
 if '/channel3/' in cfgp or name.startswith('showreel-c3-'):   # Turns Out (16 Nov 2026): FILL, ELEMENTS and REUSE on the scene's own frames
     oqa.fill_check(G, 10); oqa.elements_check(G, 10, qa.get('subs') or oqa.T['subs']['c3']); oqa.reuse_check(c); sys.exit(1 if oqa.fails else 0)
-oqa.hue_check(F, 10, mp4, qa, name); oqa.calm_check(G, 10, mp4, qa); oqa.split_check(G, 10, mp4); oqa.spread_check(F, 10)   # SPREAD (18 Nov 2026: showreel-40-expensive's first render failed it; it reads the same on the scene's frames)
+oqa.hue_check(F, 10, mp4, qa, name); oqa.calm_check(G, 10, mp4, qa); oqa.split_check(G, 10, mp4); oqa.spread_check(F, 10); oqa.focus_check(F, 10, qa)   # SPREAD (18 Nov 2026: showreel-40-expensive's first render failed it; it reads the same on the scene's frames)
 rows, _ = oqa.demo_boxes(mp4, qa); e = oqa.calm_series(G, 10, qa.get('band') or oqa.T['calm_band'])
 print(f'LOOK {name}: hue {oqa.demo_hue(F, 10, rows)[0]} (demo-hues.json), calm median {np.median(e):.3f} mean {e.mean():.3f}')
