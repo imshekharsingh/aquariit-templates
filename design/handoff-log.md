@@ -12,6 +12,11 @@ Format (at most 6 lines):
 ```
 
 
+
+## 2026-11-20 19:20 IST · main · second-account wording
+- Done: design/runbook-studio.md: removed the "only once the org admin has agreed" condition; it was added by the main account, not asked for by the owner.
+- Left: nothing.
+- For the other account: scope stays as in design/handoff.md until the owner widens it.
 ## 2026-11-20 19:05 IST · main · tech 20 Nov posted by the owner
 - Done: review/tech/showreel-tech-wireless-worth.md item 13: render 3 (run 44739214595) posted by the owner as is; its only Output QA miss was SYNC ("adapter" at 11.3 s). Render 3 was an owner exception to the 2-render cap.
 - Left: no critic verdict on render 3 (the owner decided). Turns Out paused.
