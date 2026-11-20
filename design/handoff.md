@@ -7,10 +7,13 @@ those, never builds or reviews reels, and picks nothing up on its own. This file
 - App (src/, templates/ app shell, the Worker): e.g. the "Add reference" Inbox section (design/todo.md P1).
 - Tooling: scripts/, scripts/qa/ checks, .github/workflows/ (read a workflow before changing it), cost and speed of renders.
 - References: study shared reels or screenshots into design/references.md (techniques only, never copy a piece).
+- Turns Out (c3) replan (owner, 20 Nov 2026): Turns Out is paused and this account owns its replan: design/channel3.md, design/rules-c3.md,
+  design/c3-strategy.md, a new design/c3-plan.md, scripts/channel3/, the c3 kit and Media workflow config. The main account does not touch c3
+  files until the owner restarts Turns Out.
 
 ## Off limits (the main account's daily runs own these; touching them causes merge conflicts)
-- templates/showreels/captions.json, review/**, scenes and reel configs (scripts/explainer/*.json, scripts/channel3/*.json, techkit/scenes/).
-- design/rules-*.md, design/owner-feedback.md, design/experiments.md, design/c3-strategy.md, CLAUDE.md (propose changes in your log entry instead).
+- templates/showreels/captions.json, review/web/**, review/tech/**, web and tech scenes and configs (scripts/explainer/*, techkit/scenes/).
+- design/rules-web.md, design/rules-tech.md, design/owner-feedback.md, design/experiments.md, CLAUDE.md (propose changes in your log entry instead).
 - Scheduled tasks: create none on this account.
 
 ## How to work
