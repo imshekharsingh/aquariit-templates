@@ -1,0 +1,18 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'tip': one photo per run (the one-config run hit the 30-minute limit on Wikimedia and Library of Congress 429s).",
+ "media": [
+  {
+   "id": "tip",
+   "queries": [
+    "Washington Monument aluminum tip"
+   ],
+   "sources": [
+    "openverse",
+    "wikimedia"
+   ],
+   "min_side": 500,
+   "width": 1280
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'stump': one photo per run (the one-config run hit the 30-minute limit on Wikimedia and Library of Congress 429s).",
+ "media": [
+  {
+   "id": "stump",
+   "queries": [
+    "uncompleted Washington Monument roof"
+   ],
+   "sources": [
+    "wikimedia"
+   ],
+   "min_side": 700,
+   "width": 1280
+  }
+ ]
+}
