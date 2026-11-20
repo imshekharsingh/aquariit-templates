@@ -212,6 +212,16 @@ scripts/echoes/sound.py (the kit's sound_h.py: score, effects on every shot, its
   length (rule 3), "no small furniture" (rule S: the kit's badge, title, diamonds and credit plates are its look), DEPTH planes (rule 5).
 - Never the kit's Aurangzeb / Taj succession episode (India-sensitive).
 
+### Sketch plates (20 Nov 2026, the Turns Out default: no media downloads, owner)
+`{type: "ill", kind: "sketch", line, at, art: "<SK id>", tone, stamp, opt: {...}, crossAt: "<word>", xz: [x0, y0, x1, y1], drawn: true (frame 0 only)}`
+in scripts/echoes/engine.html. A full-frame engraved plate: a calm colour per beat (tone, brightened and desaturated), coarse horizontal
+engraving lines edge to edge (they keep Output QA FILL at ~98%), the drawing's lines draw on in ~0.5 s (pathLength 1), fills follow, a slow
+push and parallax; `crossAt` draws a red cross over `xz` on its word. Drawings: SKH parts (horned, round, ghost, vekso, warrior, ship, waves,
+plinth) and SK compositions (warrior, horned, ship, round, vekso, timeline, theatre, costume, stage, spot); a new myth adds its objects there.
+People only as faceless silhouettes. Heard in scripts/echoes/sound.py (pen strokes, thud, a hit + drum on the cross). Word keys are normalised
+(punctuation dropped): "2,900" is `at: "2900"`. Alternate light and dark tones so each new plate reads as a new picture (Output QA ELEMENTS).
+First reel: showreel-c3-viking-horns.
+
 ### 2.5D toolkit (scripts/channel3/kit25d.js, owner 1 Nov 2026: "2.5D, continuous flow", the lighter alternative to real-time 3D)
 > **11 Nov 2026: depth, figure motion, ambient life** (owner, 8-9 Nov; rules-c3.md rule 11; mandatory item 20). `Kt.begin()` first in seek();
 > `Kt.world(name, { air, haze, floor })` then `Kt.plane(cam, Z, { fg, clear })` per layer, far to near (the air between planes is laid for you);

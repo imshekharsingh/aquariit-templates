@@ -128,6 +128,11 @@ for i, sh in enumerate(SH):
         put(sfx, t0 + 0.1, fx('rustle', rustle(1.0), t0), 0.2)
         for j, r in enumerate(sh.get('rows', [])): typing(t0 + .5 + j * .8, r, .7)
         sa = t0 + sh.get('stampAt', 2.4); put(sfx, sa, fx('hit', thud(), sa), 0.4)
+    if k == 'sketch':   # code-drawn engraved panel (20 Nov 2026): pen strokes while the lines draw on, a soft thud as it fills, a hit on the cross
+        for j in range(7): t = t0 + .08 + j * .16; put(sfx, t, fx('rustle', rustle(.14), t), 0.06 * rng.uniform(.7, 1), rng.uniform(-.4, .4))
+        put(sfx, t0 + .5, fx('thud', thud(), t0 + .5), 0.1)
+        if sh.get('xt') is not None:
+            put(sfx, sh['xt'], fx('hit', thud(), sh['xt']), 0.38); put(sfx, sh['xt'] + .12, fx('snap', shutter(), sh['xt']), 0.14); put(music, sh['xt'], timp(48), 0.18)
     for a in sh.get('adds', []):   # layered elements (16 Nov 2026): every element that lands is heard
         t, ak = a['t'], a['kind']
         if ak == 'tag': put(sfx, t, fx('tap', thud(), t), 0.1); put(sfx, t + .15, fx('click', key_click(), t), 0.14)

@@ -24,12 +24,12 @@ for the next one. "Turns out..." is already the myth-buster's phrase; the name f
 **Topic gate (all 4 yes, on paper, before any build):**
 1. Most people on every continent believe it or picture it this way (a school-book myth, a famous "fact", an icon's wrong name).
 2. The truth is checked in 2 primary or reliable sources (museum, official body, space agency, encyclopedia), and no expert body disputes it.
-3. There is a real free photo or print for the myth AND for the truth (fetch.py `loc`, `nasa`, Openverse; Wikimedia last).
+3. The myth and the truth can be DRAWN as simple objects or places (a helmet, a ship, a building, a map, a timeline); no photo, no face.
 4. Not on the never-list (channel3.md): no health or diet myths, religion, nations ranked, living or recent people, tragedies, India 16a.
 
 ## 3. One frozen format for 4 weeks (no engine or kit work on Turns Out until 18 Dec)
-- **Engine:** the Echoes engine's 2.5D depth shot (the look the owner approved on Mona Lisa render 6), as used by aluminium-tip.
-  Per reel we write only the config and fetch media. Any engine bug found is noted in design/todo.md and fixed after the 4 weeks, unless it
+- **Engine:** the Echoes engine with code-drawn `sketch` plates (owner, 20 Nov: no media downloads, "highly time consuming and waste of
+  resource"; design/channel3.md "Sketch plates"). Per reel we write only the config and, when a myth needs a new object, one drawing in SK. Any engine bug found is noted in design/todo.md and fixed after the 4 weeks, unless it
   breaks a reel (then the smallest fix).
 - **Length 15-22 s, 40-55 words, 6-8 photos, a new element every ~2 s** (rule 11 holds).
 - **0.0 s:** the myth as everyone pictures it, full-bleed, with the cover title in the centre 3:4 (`COVER` check), e.g. "VIKINGS NEVER

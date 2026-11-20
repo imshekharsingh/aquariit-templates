@@ -44,21 +44,7 @@
    "stage"
   ],
   "mono": [],
-  "titles": {
-   "myth": "Vikings as the 1800s pictured them",
-   "myth2": "A horned warrior, 19th-century print",
-   "ship": "A Viking ship",
-   "helmet": "The Gjermundbu helmet, Norway",
-   "helmet2": "An iron Viking-age helmet",
-   "vekso": "The Veksø helmets, Denmark",
-   "bronze": "Bronze Age Denmark",
-   "vekso2": "A Veksø helmet",
-   "bayreuth": "The Bayreuth festival theatre",
-   "costume": "An 1876 opera costume design",
-   "singer": "An opera singer in a horned helmet",
-   "singer2": "An opera singer in costume",
-   "end": "The Viking we picture"
-  },
+  "titles": {},
   "credit": "SOURCES: NATIONAL MUSEUM OF DENMARK · ARCHAEOLOGY MAGAZINE · HISTORY.COM",
   "chapters": [
    "The Myth",
@@ -69,368 +55,170 @@
   ],
   "shots": [
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 0,
     "at": "start",
-    "img": "myth|myth2",
+    "art": "warrior",
     "tone": "amber",
     "stamp": "THE VIKING WE PICTURE",
-    "cut": [
-     0.15,
-     0.08,
-     0.85,
-     0.8
-    ],
-    "cam": [
-     [
-      0.5,
-      0.42,
-      1.05
-     ],
-     [
-      0.5,
-      0.38,
-      1.18
-     ]
-    ],
-    "grade": "contrast(1.2) brightness(.9)"
+    "drawn": true
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 0,
     "at": "horned",
-    "img": "myth2|myth",
+    "art": "horned",
     "tone": "red",
     "stamp": "HORNS?",
     "stampRed": true,
-    "cut": [
-     0.15,
-     0.08,
-     0.85,
-     0.8
-    ],
-    "cam": [
-     [
-      0.5,
-      0.35,
-      1.15
-     ],
-     [
-      0.5,
-      0.3,
-      1.3
-     ]
-    ],
-    "grade": "contrast(1.2) brightness(.9)"
-   },
-   {
-    "type": "arch",
-    "mode": "depth",
-    "line": 1,
-    "at": "start",
-    "img": "ship",
-    "tone": "blue",
-    "stamp": "THE VIKING AGE",
-    "cut": [
-     0.1,
-     0.2,
-     0.9,
-     0.85
-    ],
-    "cam": [
-     [
-      0.4,
-      0.5,
-      1.05
-     ],
-     [
-      0.6,
-      0.5,
-      1.12
-     ]
-    ],
-    "grade": "contrast(1.2) brightness(.9)"
-   },
-   {
-    "type": "arch",
-    "mode": "depth",
-    "line": 1,
-    "at": "found",
-    "img": "helmet|helmet2",
-    "tone": "teal",
-    "stamp": "GJERMUNDBU · NORWAY",
-    "cut": [
-     0.15,
-     0.15,
-     0.85,
-     0.85
-    ],
-    "cam": [
-     [
-      0.5,
-      0.5,
-      1.0
-     ],
-     [
-      0.5,
-      0.48,
-      1.15
-     ]
+    "crossAt": "helmets",
+    "xz": [
+     180,
+     440,
+     900,
+     1000
     ]
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 1,
-    "at": "horns",
-    "img": "helmet2|helmet",
+    "at": "start",
+    "art": "ship",
     "tone": "gold",
+    "stamp": "THE VIKING AGE"
+   },
+   {
+    "type": "ill",
+    "kind": "sketch",
+    "line": 1,
+    "at": "has",
+    "art": "round",
+    "tone": "blue",
     "stamp": "NO HORNS",
-    "cut": [
-     0.15,
-     0.15,
-     0.85,
-     0.85
-    ],
-    "cam": [
-     [
-      0.5,
-      0.45,
-      1.1
-     ],
-     [
-      0.5,
-      0.42,
-      1.25
-     ]
+    "opt": {
+     "ghost": true,
+     "label": "GJERMUNDBU · NORWAY"
+    },
+    "crossAt": "horns",
+    "xz": [
+     140,
+     240,
+     940,
+     700
     ]
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 2,
     "at": "start",
-    "img": "vekso|vekso2",
-    "tone": "violet",
-    "stamp": "VEKSØ · DENMARK",
-    "cut": [
-     0.12,
-     0.12,
-     0.88,
-     0.88
-    ],
-    "cam": [
-     [
-      0.5,
-      0.5,
-      1.0
-     ],
-     [
-      0.5,
-      0.46,
-      1.14
-     ]
-    ]
+    "art": "vekso",
+    "tone": "amber",
+    "stamp": "FOUND IN DENMARK",
+    "opt": {
+     "label": "VEKSØ"
+    }
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 2,
-    "at": "2,900",
-    "img": "bronze",
-    "tone": "terra",
-    "stamp": "2,900 YEARS OLD",
-    "cut": [
-     0.12,
-     0.12,
-     0.88,
-     0.88
-    ],
-    "cam": [
-     [
-      0.45,
-      0.5,
-      1.05
-     ],
-     [
-      0.55,
-      0.5,
-      1.15
-     ]
+    "at": "2900",
+    "art": "timeline",
+    "tone": "blue",
+    "stamp": "THE BRONZE AGE",
+    "adds": [
+     {
+      "kind": "count",
+      "at": "2900",
+      "to": 2900,
+      "suffix": " YEARS",
+      "label": "OLD",
+      "x": 240,
+      "y": 400
+     }
     ]
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 2,
     "at": "before",
-    "img": "vekso2|vekso",
-    "tone": "amber",
+    "art": "timeline",
+    "tone": "violet",
     "stamp": "LONG BEFORE THE VIKINGS",
-    "cut": [
-     0.12,
-     0.12,
-     0.88,
-     0.88
-    ],
-    "cam": [
-     [
-      0.5,
-      0.45,
-      1.1
-     ],
-     [
-      0.5,
-      0.42,
-      1.24
-     ]
-    ]
+    "opt": {
+     "gap": true
+    }
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 3,
     "at": "start",
-    "img": "bayreuth",
-    "tone": "blue",
-    "stamp": "BAYREUTH, 1876",
-    "cut": [
-     0.1,
-     0.15,
-     0.9,
-     0.85
-    ],
-    "cam": [
-     [
-      0.42,
-      0.5,
-      1.05
-     ],
-     [
-      0.58,
-      0.5,
-      1.12
-     ]
-    ],
-    "grade": "contrast(1.2) brightness(.9)"
+    "art": "theatre",
+    "tone": "gold",
+    "stamp": "AN OPERA HOUSE, 1876",
+    "opt": {
+     "label": "FESTSPIELHAUS"
+    }
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 3,
     "at": "costumes",
-    "img": "costume|singer2",
-    "tone": "gold",
+    "art": "costume",
+    "tone": "blue",
     "stamp": "OPERA COSTUMES",
-    "cut": [
-     0.15,
-     0.08,
-     0.85,
-     0.85
-    ],
-    "cam": [
-     [
-      0.5,
-      0.4,
-      1.05
-     ],
-     [
-      0.5,
-      0.36,
-      1.18
-     ]
-    ],
-    "grade": "contrast(1.2) brightness(.9)"
+    "opt": {
+     "label": "COSTUME DESIGN"
+    }
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 3,
     "at": "opera",
-    "img": "singer|singer2",
+    "art": "stage",
     "tone": "red",
-    "stamp": "A WAGNER OPERA",
-    "cut": [
-     0.15,
-     0.08,
-     0.85,
-     0.85
-    ],
-    "cam": [
-     [
-      0.5,
-      0.35,
-      1.1
-     ],
-     [
-      0.5,
-      0.3,
-      1.25
-     ]
-    ],
-    "grade": "contrast(1.2) brightness(.9)"
+    "stamp": "A WAGNER OPERA"
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 4,
     "at": "start",
-    "img": "singer2|costume",
+    "art": "spot",
     "tone": "violet",
     "stamp": "TURNS OUT",
-    "cut": [
-     0.15,
-     0.08,
-     0.85,
-     0.85
-    ],
-    "cam": [
-     [
-      0.5,
-      0.4,
-      1.05
-     ],
-     [
-      0.5,
-      0.36,
-      1.18
-     ]
-    ],
-    "grade": "contrast(1.2) brightness(.9)"
+    "opt": {
+     "label": "A STAGE PROP"
+    }
    },
    {
-    "type": "arch",
-    "mode": "depth",
+    "type": "ill",
+    "kind": "sketch",
     "line": 4,
-    "at": "stage",
-    "img": "end|myth2",
+    "at": "not",
+    "art": "warrior",
     "tone": "amber",
     "stamp": "NOT THE VIKINGS",
-    "cut": [
-     0.15,
-     0.08,
-     0.85,
-     0.8
-    ],
-    "cam": [
-     [
-      0.5,
-      0.42,
-      1.18
-     ],
-     [
-      0.5,
-      0.42,
-      1.05
-     ]
-    ],
-    "grade": "contrast(1.2) brightness(.9)"
+    "crossAt": "Vikings",
+    "xz": [
+     330,
+     280,
+     710,
+     620
+    ]
    }
-  ]
+  ],
+  "coverY": 1060
  },
- "caption": "Did Vikings wear horned helmets? No. ⚔️\n\nThe one almost complete Viking helmet ever found, at Gjermundbu in Norway (1943), is an iron cap with no horns. Denmark's famous horned helmets from Veksø were made about 900 BC, some 1,500 years before the Viking Age. The horned look spread after 1876, when Carl Emil Doepler designed the costumes for Wagner's Ring operas at Bayreuth.\n\nWhich myth did you believe the longest? Tell us in the comments and we will check it next. Send this to whoever told you Vikings had horns.\n\nImages: IMAGES_LINE",
+ "caption": "Did Vikings wear horned helmets? No. ⚔️\n\nThe one almost complete Viking helmet ever found, at Gjermundbu in Norway (1943), is an iron cap with no horns. Denmark's famous horned helmets from Veksø were made about 900 BC, some 1,500 years before the Viking Age. The horned look spread after 1876, when Carl Emil Doepler designed the costumes for Wagner's Ring operas at Bayreuth.\n\nWhich myth did you believe the longest? Tell us in the comments and we will check it next. Send this to whoever told you Vikings had horns.\n\nIllustrations: drawn in code by Turns Out. Sources: National Museum of Denmark, Archaeology (AIA), History.com, History Hit.",
  "keywords": [
   "did vikings wear horned helmets",
   "viking helmet myth",
@@ -462,269 +250,6 @@
   {
    "title": "What Types of Helmets Did Vikings Wear? (History Hit)",
    "url": "https://www.historyhit.com/types-of-viking-helmets/"
-  }
- ],
- "media": [
-  {
-   "id": "myth",
-   "queries": [
-    "Vikings horned helmets illustration",
-    "Norsemen horned helmet engraving",
-    "viking warrior horned helmet"
-   ],
-   "sources": [
-    "loc",
-    "openverse",
-    "wikimedia"
-   ],
-   "min_side": 800,
-   "avoid": [
-    "costume party",
-    "toy",
-    "lego",
-    "cartoon",
-    "logo",
-    "football",
-    "minnesota",
-    "game"
-   ]
-  },
-  {
-   "id": "myth2",
-   "queries": [
-    "Viking chief horned helmet painting",
-    "Norse warrior horns print",
-    "Vikings landing illustration"
-   ],
-   "sources": [
-    "loc",
-    "wikimedia",
-    "openverse"
-   ],
-   "min_side": 800,
-   "avoid": [
-    "costume party",
-    "toy",
-    "lego",
-    "cartoon",
-    "logo",
-    "football",
-    "minnesota",
-    "game"
-   ],
-   "pick": 1
-  },
-  {
-   "id": "ship",
-   "queries": [
-    "Oseberg ship",
-    "Gokstad ship",
-    "Viking ship museum Oslo"
-   ],
-   "sources": [
-    "loc",
-    "openverse",
-    "wikimedia"
-   ],
-   "min_side": 900,
-   "avoid": [
-    "model",
-    "toy",
-    "lego",
-    "replica"
-   ]
-  },
-  {
-   "id": "helmet",
-   "queries": [
-    "Gjermundbu helmet",
-    "Gjermundbu hjelmen"
-   ],
-   "sources": [
-    "wikimedia",
-    "openverse"
-   ],
-   "min_side": 600,
-   "avoid": [
-    "replica",
-    "reconstruction",
-    "lego"
-   ]
-  },
-  {
-   "id": "helmet2",
-   "queries": [
-    "Viking Age iron helmet museum",
-    "Gjermundbu helmet Oslo museum"
-   ],
-   "sources": [
-    "openverse",
-    "wikimedia"
-   ],
-   "min_side": 600,
-   "avoid": [
-    "replica",
-    "reconstruction",
-    "lego",
-    "horn",
-    "costume"
-   ],
-   "pick": 1
-  },
-  {
-   "id": "vekso",
-   "queries": [
-    "Veksø helmets",
-    "Viksø helmets",
-    "Vikso helmets National Museum Denmark"
-   ],
-   "sources": [
-    "wikimedia",
-    "openverse"
-   ],
-   "min_side": 600,
-   "avoid": [
-    "replica",
-    "lego",
-    "costume"
-   ]
-  },
-  {
-   "id": "vekso2",
-   "queries": [
-    "Viksø hjelmene",
-    "Vikso horned helmet bronze",
-    "Veksø helmet"
-   ],
-   "sources": [
-    "openverse",
-    "wikimedia"
-   ],
-   "min_side": 600,
-   "avoid": [
-    "replica",
-    "lego",
-    "costume"
-   ],
-   "pick": 1
-  },
-  {
-   "id": "bronze",
-   "queries": [
-    "Bronze Age lur Denmark",
-    "Nordic Bronze Age National Museum Denmark",
-    "bronze age lurs"
-   ],
-   "sources": [
-    "wikimedia",
-    "openverse"
-   ],
-   "min_side": 700,
-   "avoid": [
-    "replica",
-    "lego",
-    "sun chariot",
-    "temple",
-    "god"
-   ]
-  },
-  {
-   "id": "bayreuth",
-   "queries": [
-    "Bayreuth Festspielhaus",
-    "Festspielhaus Bayreuth photochrom",
-    "Bayreuth theatre"
-   ],
-   "sources": [
-    "loc",
-    "openverse",
-    "wikimedia"
-   ],
-   "min_side": 900,
-   "avoid": [
-    "map",
-    "plan",
-    "ticket"
-   ]
-  },
-  {
-   "id": "costume",
-   "queries": [
-    "Doepler costume design Ring 1876",
-    "Carl Emil Doepler Walküre costume",
-    "Wagner Ring costume design 1876"
-   ],
-   "sources": [
-    "wikimedia",
-    "openverse",
-    "loc"
-   ],
-   "min_side": 600
-  },
-  {
-   "id": "singer",
-   "queries": [
-    "Brunnhilde opera singer helmet",
-    "Walkure singer costume helmet",
-    "Valkyrie opera singer 1900s"
-   ],
-   "sources": [
-    "loc",
-    "wikimedia",
-    "openverse"
-   ],
-   "min_side": 600,
-   "avoid": [
-    "cartoon",
-    "poster",
-    "lego"
-   ]
-  },
-  {
-   "id": "singer2",
-   "queries": [
-    "Wagner opera singer costume Siegfried",
-    "Gadski Brunnhilde",
-    "Nordica Brunnhilde"
-   ],
-   "sources": [
-    "loc",
-    "wikimedia",
-    "openverse"
-   ],
-   "min_side": 600,
-   "avoid": [
-    "cartoon",
-    "poster",
-    "lego"
-   ],
-   "pick": 1
-  },
-  {
-   "id": "end",
-   "queries": [
-    "Viking horned helmet painting 19th century",
-    "Leif Erikson painting",
-    "Vikings painting romantic"
-   ],
-   "sources": [
-    "wikimedia",
-    "loc",
-    "openverse"
-   ],
-   "min_side": 800,
-   "avoid": [
-    "costume party",
-    "toy",
-    "lego",
-    "cartoon",
-    "logo",
-    "football",
-    "minnesota",
-    "game",
-    "statue"
-   ],
-   "pick": 2
   }
  ],
  "qa": {
