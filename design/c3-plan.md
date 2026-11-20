@@ -28,7 +28,7 @@ for the next one. "Turns out..." is already the myth-buster's phrase; the name f
 4. Not on the never-list (channel3.md): no health or diet myths, religion, nations ranked, living or recent people, tragedies, India 16a.
 
 ## 3. One frozen format for 4 weeks (no engine or kit work on Turns Out until 18 Dec)
-- **Engine:** the Echoes engine with code-drawn `sketch` plates (owner, 20 Nov: no media downloads, "highly time consuming and waste of
+- **Engine (21 Nov: the UI look, design/channel3.md "UI look", replaces the sketch plates):** the Echoes engine with code-drawn `sketch` plates (owner, 20 Nov: no media downloads, "highly time consuming and waste of
   resource"; design/channel3.md "Sketch plates"). Per reel we write only the config and, when a myth needs a new object, one drawing in SK. Any engine bug found is noted in design/todo.md and fixed after the 4 weeks, unless it
   breaks a reel (then the smallest fix).
 - **Length 15-22 s, 40-55 words, 6-8 photos, a new element every ~2 s** (rule 11 holds).

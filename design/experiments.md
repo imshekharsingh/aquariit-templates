@@ -409,5 +409,5 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
   Config `"experiment": {"id": "c3-myth", "change": "myth topic (design/c3-plan.md E30)", "vs": "median"}`.
 - Read at 24 h and 72 h. PASS = 3+ of the 7 reels past 1,300 reach OR shares + comments 10+ per 1,000 reached in 3+ reels. Verdict Sat 28 Nov;
   keep-or-stop checkpoints in design/c3-plan.md section 7.
-- First reel: showreel-c3-viking-horns (Vikings never wore horned helmets).
+- First reel: showreel-c3-viking-steps (Vikings' horns, in the UI look; the engraved showreel-c3-viking-horns was removed before posting, owner 21 Nov).
 
