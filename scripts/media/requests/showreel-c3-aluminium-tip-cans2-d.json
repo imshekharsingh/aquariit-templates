@@ -1,0 +1,25 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'cans2' (L4/L5 need two more pictures).",
+ "media": [
+  {
+   "id": "cans2",
+   "queries": [
+    "aluminum cans stack",
+    "aluminium cans pile",
+    "soda cans"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 600,
+   "avoid": [
+    "person",
+    "woman",
+    "man",
+    "street",
+    "people"
+   ]
+  }
+ ]
+}
