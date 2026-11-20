@@ -128,6 +128,9 @@ for i, sh in enumerate(SH):
         put(sfx, t0 + 0.1, fx('rustle', rustle(1.0), t0), 0.2)
         for j, r in enumerate(sh.get('rows', [])): typing(t0 + .5 + j * .8, r, .7)
         sa = t0 + sh.get('stampAt', 2.4); put(sfx, sa, fx('hit', thud(), sa), 0.4)
+    if k == 'ui':   # flat UI cards (21 Nov 2026): a soft tap and a click as each piece pops in, a hit on a red cross
+        for d in sh.get('pops', []): t = t0 + d; put(sfx, t, fx('tap', thud(), t), 0.09 * rng.uniform(.8, 1), rng.uniform(-.3, .3)); put(sfx, t + .02, fx('click', key_click(), t), 0.1)
+        if sh.get('xt') is not None: put(sfx, sh['xt'], fx('hit', thud(), sh['xt']), 0.34); put(music, sh['xt'], timp(48), 0.16)
     if k == 'sketch':   # code-drawn engraved panel (20 Nov 2026): pen strokes while the lines draw on, a soft thud as it fills, a hit on the cross
         for j in range(7): t = t0 + .08 + j * .16; put(sfx, t, fx('rustle', rustle(.14), t), 0.06 * rng.uniform(.7, 1), rng.uniform(-.4, .4))
         put(sfx, t0 + .5, fx('thud', thud(), t0 + .5), 0.1)

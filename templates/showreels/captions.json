@@ -1477,12 +1477,13 @@
   "note": "Turns Out, Fri 20 Nov. Photos chosen from Openverse and the Library of Congress as well as Wikimedia (Wikimedia often refuses GitHub runners). Voice af_heart, speed 1.",
   "hidden": true
  },
- "showreel-c3-viking-horns": {
+ "showreel-c3-viking-steps": {
   "channel": "c3",
   "postOn": "2026-11-21",
   "postAt": "13:00",
   "engine": "echoes",
-  "concept": "Echoes engine, 2.5D depth · Myth Nº 1 (design/c3-plan.md, E30): Vikings never wore horned helmets; the one almost complete Viking helmet (Gjermundbu, Norway) has none, Denmark's horned Veksø helmets are about 2,900 years old, and the look took off with the 1876 Wagner opera costumes; code-drawn engraved panels (no media)",
-  "note": "Turns Out restart (owner go, 20 Nov late: one reel to upload as soon as it is ready). Voice af_heart, speed 1. ~21 s."
+  "concept": "Echoes engine, UI look (the owner's reference reel style, 21 Nov) · Myth Nº 1: where the Vikings' horns came from, in 3 steps: the only almost complete Viking helmet has no horns, Denmark's horned helmets are 2,900 years old, and the look took off with the 1876 Wagner opera costumes; flat UI cards, step bar, big word-by-word captions",
+  "note": "Turns Out, replaces the engraved showreel-c3-viking-horns (owner, 21 Nov: \"remove the one you added ... make one based on this animation style\"). Voice af_heart, speed 1.",
+  "hidden": true
  }
 }
