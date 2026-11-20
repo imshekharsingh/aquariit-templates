@@ -11,6 +11,11 @@ Format (at most 6 lines):
 - For the other account: anything it must know or must not touch; a proposed rule change goes here.
 ```
 
+## 2026-11-20 10:40 IST · main · web colour fix, step 1 (snapback re-tint)
+- Done: scripts/explainer/snapback.html re-tinted (tonal tiles, menu panel brightest with the accent, coral = before / blue = after); rules-web.md rule 18; owner-feedback line; review item 13 note.
+- Left: step 2 (per-palette demo tokens in KM.PALETTES, KM helper, starters, Output QA FOCUS) is a later push; this render's Output QA is pending.
+- For the other account: do not touch kitmotion.js or the starters until step 2 is merged.
+
 ## 2026-11-20 10:00 IST · main · Turns Out reel (in progress)
 - Done: topic Washington Monument's aluminium tip (config scripts/channel3/aluminium-tip.json, media request, hidden captions entry); NPS and National Archives Prologue agree on the facts, the price claim is left out (sources disagree on silver vs twice silver).
 - Left: Media run, MEDIA_JSON into the config, stills review, one render, Output QA, unhide the captions entry.

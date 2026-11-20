@@ -101,7 +101,7 @@ Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch
    beat after it to read it; each move lands on the words that name it (rule 14); AFTER is solid (only the thing that changes on purpose, a word or a
    message). Everything else holds still: KM.rig({ drift: 0 }), at most one slow push for "Look closer" and back, KM.lights(t, c, true), no bobbing
    panes, no wobbling touch ring, no kicking hook word. The demo pane and the background light take the reel's own colour world (KM.theme('dark', world),
-   KM.WORLDS; next: node scripts/explainer/palette.mjs --world); BEFORE keeps its red signals (cross chip, flash, ghost) and AFTER its green lock (--ok,
+   KM.WORLDS; next: node scripts/explainer/palette.mjs --world); BEFORE keeps its warm signals (cross chip, flash, ghost) and AFTER its cool lock (--ok, from rule 18 the same blue as the accent, not green;
    check chip, guides), on top of the world. The type, layout and brand frame stay. Output QA CALM fails a frame that changes over 3.5% in 0.2 s at the
    median (or 5% on average) outside the subtitle band; HUE fails a demo main hue within 40 deg of any of the last 3 web reels (scripts/qa/demo-hues.json:
    add the new reel's hue, measured with node scripts/qa/frames.mjs + python3 scripts/qa/look.py, in the push that makes it). FLOW for web follows
@@ -154,6 +154,14 @@ new topic type (a page-load annoyance, not a tap: the font swap, showreel-37-fon
 ask) as the day's one experiment. E18 read today: KEPT (rule 12). PROMOTE details-format printed again: rule 13 since 12 Nov.
 
 **ESCALATE 20 Nov** (median reach 1,673 over the last 7 vs 2,000, up from 1,552; watch 9.9 s; saves 1.6%; hold 48%; ALARM, ESCALATE two days running): the formats were changed on 18 Nov (details, 24 h +8%: 1,582 vs 1,461) and 19 Nov (swipe compare, 7 h: 309, slow start, read at 24 h), so today changes the TOPIC TYPE inside the winning in-sync before/after (rule 15, 2 WINs): an animation that ends wrong, not another layout / tap / load / colour bug (Nº 42, showreel-42-snapback, `animation-fill-mode: forwards`), told as one bug story (design/improvements.md web item 7). PROMOTE details-format and dynamic-fix: rules 13 and 15 since 18 Nov. DROP web-comment-ask (1 WIN, 2 LOSEs): in playbook "What didn't" since 18 Nov. RULE lines 2, 3, 4, 6, 8, 9, 11, 12 "question it" again: still hygiene (7 of 7 pass).
+
+18. **Demo colours are chosen, not scattered (owner, 20 Nov 2026: "the colour combination doesn't give a feeling that any thought was put into it; it matters a lot and many reels are designed like this").**
+    (a) Demo content (tiles, cards, dots, rows) is ONE base hue in 3 tonal steps (same hue, lighter / darker, low saturation) plus ONE accent, from the
+    palette; never rainbow tiles or per-item hues. (b) The subject (what the reel is about: the menu, the toggle, the card) carries the accent and the
+    highest contrast and saturation in the demo; everything else is muted tonal steps, so the eye lands on the subject and the filler never outshines it.
+    (c) Fixed meaning across the whole reel: one warm hue = broken / before, one cool hue = fixed / after; headline words, counters, tags, border and
+    glow states all use the same two. (d) At most 3 hues in the demo area (base + warm + cool, the cool may be the base's own accent).
+    Check: the stills sheet read with "could I name the palette in one line?"; Output QA FOCUS from 20 Nov 2026 (scripts/qa/).
 
 ## Channel brief (moved from CLAUDE.md, 14 Nov 2026)
 - How a web reel is made: design/runbook-reels.md ("Making a web reel"); plan, series and craft bar: design/webin20sec.md. Benchmark is

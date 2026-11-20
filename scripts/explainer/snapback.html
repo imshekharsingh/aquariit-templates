@@ -13,7 +13,7 @@
    the screen splits into BEFORE over AFTER and both are tapped in sync: BEFORE jolts (the snap, a ghost of where the drawer was, a warm
    flash), AFTER's drawer lands and stays. Beat 3: AFTER alone, one tap, the drawer stays open with a dashed lock round it.
    Calm (rule 17): the camera and the light hold still, only the drawer moves; its own colour world, cobalt (defined here on KM.WORLDS). */
-:root{--f:'Sora',system-ui,sans-serif;--m:'DM Mono',ui-monospace,monospace;--ok:#5ff2b0}
+:root{--f:'Sora',system-ui,sans-serif;--m:'DM Mono',ui-monospace,monospace;--ok:#7db8ff;--warm:#ff7a6b;--cool:#7db8ff;--s1:#1d3370;--s2:#243f82;--s3:#172a5e}
 *{box-sizing:border-box;margin:0}
 html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
 .a{position:absolute}
@@ -30,25 +30,26 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .burger{position:absolute;right:0;top:0;width:56px;height:56px;border-radius:28px;background:var(--acc);display:flex;align-items:center;justify-content:center}
 .burger svg{width:26px;height:26px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
-.grid i{display:block;height:118px;border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.grid i{display:block;height:118px;border-radius:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.grid i:nth-child(3n+1){background:var(--s1)}.grid i:nth-child(3n+2){background:var(--s2)}.grid i:nth-child(3n){background:var(--s3)}
 /* the bug and the fix: the same drawer, the same keyframes, one word apart. BEFORE: after its .5 s slide-in the element returns to its own
    style (off to the left). AFTER: animation-fill-mode forwards keeps the last frame. */
-.drawer{position:absolute;left:0;top:0;bottom:0;width:236px;padding:12px 14px;border-radius:0 24px 24px 0;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0) 40%),var(--raise);box-shadow:inset -1px 0 0 rgba(255,255,255,.22),10px 0 30px rgba(2,6,20,.55);will-change:transform;z-index:3}
-.it{display:flex;align-items:center;gap:12px;height:44px;margin-bottom:2px;padding:0 12px;border-radius:14px;font:700 21px/1 var(--f);color:var(--paper);white-space:nowrap}
-.it i{display:block;width:12px;height:12px;border-radius:50%;background:var(--hi1)}
-.it:nth-child(2) i{background:var(--hi2)}.it:nth-child(3) i{background:var(--hi3)}
-.it.on{background:rgba(125,184,255,.2);box-shadow:inset 0 0 0 2px rgba(125,184,255,.5)}
+.drawer{position:absolute;left:0;top:0;bottom:0;width:236px;padding:12px 14px;border-radius:0 24px 24px 0;background:linear-gradient(180deg,#8fc3ff,#5a9cff);box-shadow:inset -1px 0 0 rgba(255,255,255,.5),10px 0 30px rgba(2,6,20,.6);will-change:transform;z-index:3}
+.it{display:flex;align-items:center;gap:12px;height:44px;margin-bottom:2px;padding:0 12px;border-radius:14px;font:700 21px/1 var(--f);color:#04122e;white-space:nowrap}
+.it i{display:block;width:12px;height:12px;border-radius:50%;background:#04122e}
+.it:nth-child(2) i{background:rgba(4,18,46,.62)}.it:nth-child(3) i{background:rgba(4,18,46,.4)}
+.it.on{background:rgba(255,255,255,.5);box-shadow:inset 0 0 0 2px rgba(4,18,46,.55)}
 
 
-.guide{position:absolute;border:2px dashed var(--ok);border-radius:10px;opacity:0;background:rgba(95,242,176,.07)}
+.guide{position:absolute;border:2px dashed var(--ok);border-radius:10px;opacity:0;background:rgba(125,184,255,.08)}
 /* owner, 15 Nov: BEFORE a warm coral page, AFTER a fresh teal one (cheap glass: gradients and shadows only; tints kept soft for Output QA COLOUR) */
-#cA{background:radial-gradient(120% 70% at 85% 0%,rgba(255,120,92,.16),rgba(255,120,92,0) 70%),linear-gradient(180deg,rgba(255,92,110,.11),rgba(255,140,90,.06) 60%,rgba(255,92,110,.08)),var(--card);box-shadow:inset 0 1px 0 rgba(255,220,210,.3),inset 0 0 0 2px rgba(255,120,100,.75),0 0 var(--gl,26px) rgba(255,84,72,var(--ga,.42))}
-#cB{background:radial-gradient(120% 70% at 85% 0%,rgba(80,255,200,.09),rgba(80,255,200,0) 70%),linear-gradient(180deg,rgba(40,220,190,.06),rgba(60,200,255,.03) 60%,rgba(40,220,190,.05)),var(--card);box-shadow:inset 0 1px 0 rgba(210,255,240,.3),inset 0 0 0 2px rgba(95,242,176,.75),0 0 26px rgba(60,240,180,.4)}
-#cA::after{content:'';position:absolute;inset:0;border-radius:inherit;background:rgba(255,80,64,.6);opacity:var(--fl,0);pointer-events:none}
+#cA{background:radial-gradient(120% 70% at 85% 0%,rgba(255,122,107,.14),rgba(255,122,107,0) 70%),linear-gradient(180deg,rgba(255,122,107,.09),rgba(255,122,107,.04) 60%,rgba(255,122,107,.06)),var(--card);box-shadow:inset 0 1px 0 rgba(255,220,210,.3),inset 0 0 0 2px rgba(255,122,107,.8),0 0 var(--gl,26px) rgba(255,122,107,var(--ga,.42))}
+#cB{background:radial-gradient(120% 70% at 85% 0%,rgba(125,184,255,.12),rgba(125,184,255,0) 70%),linear-gradient(180deg,rgba(125,184,255,.07),rgba(125,184,255,.03) 60%,rgba(125,184,255,.05)),var(--card);box-shadow:inset 0 1px 0 rgba(220,236,255,.3),inset 0 0 0 2px rgba(125,184,255,.85),0 0 26px rgba(125,184,255,.4)}
+#cA::after{content:'';position:absolute;inset:0;border-radius:inherit;background:rgba(255,122,107,.6);opacity:var(--fl,0);pointer-events:none}
 .tg{position:absolute;display:flex;align-items:center;gap:7px;white-space:nowrap;opacity:0;padding:5px 11px 5px 7px;border-radius:13px;z-index:6;box-shadow:0 4px 16px rgba(0,0,0,.35)}
 .tg svg{width:24px;height:24px;flex:none}.tg b{display:block;font:700 17px/1.05 var(--m);letter-spacing:.08em}.tg small{display:block;font:700 13px/1.2 var(--m);letter-spacing:.02em}
-#tgA{background:#ff5a4e;color:#1f0503}#tgB{background:var(--ok);color:#04261a}
-.gh{position:absolute;border:3px dashed #ff6a5c;border-radius:29px;opacity:0;z-index:5;background:rgba(255,90,80,.16)}
+#tgA{background:var(--warm);color:#2a0905}#tgB{background:var(--cool);color:#04122e}
+.gh{position:absolute;border:3px dashed var(--warm);border-radius:29px;opacity:0;z-index:5;background:rgba(255,122,107,.14)}
 .bub{position:absolute;font:750 32px/1 var(--f);color:var(--red);white-space:nowrap;opacity:0;z-index:7}
 #lbl{left:34px;top:132px;font:500 15px/1 var(--m);letter-spacing:.14em;color:#bdbab2;white-space:nowrap}
 #hook{left:34px;top:160px;font-weight:var(--hw);font-size:47px;line-height:.98;letter-spacing:var(--ht)}
@@ -63,13 +64,13 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #stat .c{position:absolute;top:0;white-space:nowrap}
 #stat small{display:block;font:500 14px/1 var(--m);letter-spacing:.16em;color:var(--dim);margin-bottom:10px}
 #stat b{display:inline-block;font:800 66px/1 var(--f);letter-spacing:-.04em;transform-origin:0 80%}
-#stat .c2 b{color:#ff8a7e}
+#stat .c2 b{color:var(--warm)}
 #look{left:30px;top:122px;width:450px;height:166px;border-radius:22px;background:var(--frost);box-shadow:var(--edge),var(--lift);opacity:0;transform-origin:50% 0}
 #look .ttl{position:absolute;left:22px;top:18px;font:500 13px/1 var(--m);letter-spacing:.14em;color:#bdbab2;white-space:nowrap}
 #look .c{position:absolute;top:52px;white-space:nowrap}
 #look small{display:block;font:500 13px/1 var(--m);letter-spacing:.14em;color:#bdbab2;margin-bottom:10px}
 #look b{display:inline-block;font:800 56px/1 var(--f);letter-spacing:-.04em}
-#look .l1 b{color:#ff8a7e}#look .l2 b{color:var(--acc)}
+#look .l1 b{color:var(--warm)}#look .l2 b{color:var(--cool)}
 #line{left:30px;top:150px;width:450px;height:136px;padding:20px 22px;border-radius:20px;background:var(--frost);box-shadow:var(--edge),var(--lift);font:500 19px/1.5 var(--m);white-space:pre;color:var(--paper);opacity:0}
 #line b{font-weight:500;color:var(--acc)}#line .dim{color:var(--dim);opacity:.75}
 #band{left:0;top:292px;width:540px;height:96px;background:transparent}
@@ -81,7 +82,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
   <div id="pane" class="a"></div>
   <div id="sbox" data-subject></div>
   <div id="subj" class="a" data-ui data-fit="free">
-    <div class="tg" id="tgA"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#1f0503"/><path d="M8 8l8 8M16 8l-8 8" stroke="#ff5a4e" stroke-width="3" stroke-linecap="round"/></svg><span><b>BEFORE</b><small id="tgAs">SNAPS BACK</small></span></div><div class="tg" id="tgB"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#04261a"/><path d="M7 12.5l3.4 3.4L17.5 8.6" fill="none" stroke="#5ff2b0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>AFTER</b><small>STAYS OPEN</small></span></div>
+    <div class="tg" id="tgA"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2a0905"/><path d="M8 8l8 8M16 8l-8 8" stroke="#ff7a6b" stroke-width="3" stroke-linecap="round"/></svg><span><b>BEFORE</b><small id="tgAs">SNAPS BACK</small></span></div><div class="tg" id="tgB"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#04122e"/><path d="M7 12.5l3.4 3.4L17.5 8.6" fill="none" stroke="#7db8ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>AFTER</b><small>STAYS OPEN</small></span></div>
     <div class="card" id="cA" data-contrast="skip" data-pane="before"></div>
     <div class="card" id="cB" data-contrast="skip" data-pane="after"></div>
     <div class="gh" id="g0"></div>
@@ -584,7 +585,7 @@ var KM = (function(){
   // the reel's own colour world (rule 17): cobalt, a blue family clear of the last three web reels (jade 155, berry 325, saffron 65)
   KM.WORLDS.cobalt = { c: { ink: '#050a1a', dim: '#c4d2ee', acc: '#7db8ff', red: '#ff7a6b', ctl: '#1a2f5e', raise: '#16296a', skel: '#12234a', pg: '#080f26', card: '#14275a', on: '#041030' },
     v: { glass: 'linear-gradient(160deg,#17408f,#0c2358 55%,#1a1a5c)', frost: '#0b1530', glow: 'rgba(125,184,255,.6)', soft: 'rgba(125,184,255,.16)', ring: 'rgba(125,184,255,.55)' },
-    blooms: [['60,130,255', .38, 540, 140, 220, .2, .17, 0], ['40,200,230', .28, 480, 520, 660, .23, .19, 2], ['110,80,255', .26, 440, 480, 900, .17, .21, 4]] };
+    blooms: [['60,130,255', .38, 540, 140, 220, .2, .17, 0], ['70,150,255', .28, 480, 520, 660, .23, .19, 2], ['60,100,255', .26, 440, 480, 900, .17, .21, 4]] };
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.theme('dark', 'cobalt');
   var TEXT = "Why does your menu snap back? You tap, and it slides in. Then it jumps right back out. The fix: add forwards to the animation. The menu keeps its last frame. Look closer. Same tap, but this one stays open. Now your menus stay put.";
   var DUR = 17, HOOK_N = 6, DW = 236, OFF = DW + 24, DIN = .9, DOUT = .9;
@@ -598,7 +599,7 @@ var KM = (function(){
   function build(){ ['A', 'B'].forEach(function(L){ var c = $('c' + L);
     c.innerHTML = '<div class="art"><div class="top"><div class="ttl">Fresh today</div><div class="sub">6 NEW · BAKERY</div><div class="burger" style="color:var(--on)">' + BARS + '</div></div><div class="grid"></div></div>'
       + '<div class="drawer"><div class="it on"><i></i>Home</div><div class="it"><i></i>Saved</div><div class="it"><i></i>Settings</div></div><div class="guide"></div>';
-    var gr = c.querySelector('.grid'); for (var i = 0; i < 6; i++) { var d = document.createElement('i'); d.style.background = 'var(--hi' + (1 + (i * 3) % 4) + ')'; gr.appendChild(d); } });
+    var gr = c.querySelector('.grid'); for (var i = 0; i < 6; i++) { var d = document.createElement('i'); gr.appendChild(d); } });
     CODE = '.menu {\n  animation: slide-in .5s\n    <b>forwards</b>;\n}\n<span class="dim">/* keep the last frame */</span>';
     LINE = '<span class="dim">/* keeps its last frame */</span>\nanimation: slide-in .5s <b>forwards</b>;';
     $('line').innerHTML = LINE;
