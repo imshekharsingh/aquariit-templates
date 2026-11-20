@@ -14,7 +14,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - Second account (app, tooling, references): **design/handoff.md**; both accounts log their work in **design/handoff-log.md**
 - Web: design/webin20sec.md (plan, series, craft bar), design/rules-web.md (gate + "Channel brief")
 - Tech: design/rules-tech.md (gate + "Channel brief": gadgets for brand collabs, brand rules, India/global mix)
-- Turns Out: design/channel3.md ("Channel brief" + toolkits), design/rules-c3.md (gate)
+- Turns Out: **design/c3-plan.md** (restart plan, 20 Nov: read first), design/channel3.md ("Channel brief" + toolkits), design/rules-c3.md (gate)
 - Gates: design/mandatory.md, design/critic.md, design/owner-feedback.md, design/safety.md, design/targets.md
 - Learning: design/playbook.md, design/experiments.md, design/improvements.md, design/references.md, design/craft-log.md, design/topics.md, design/todo.md
 

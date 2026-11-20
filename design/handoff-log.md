@@ -12,6 +12,10 @@ Format (at most 6 lines):
 ```
 
 
+## 2026-11-20 23:20 IST · second · Turns Out restart plan
+- Done: design/c3-plan.md (diagnosis, "You were taught this wrong" myth topics, one frozen 15-20 s Echoes format for 4 weeks, profile asks, E30/E31, keep-or-stop at day 7/14/28, 14 topics); pointers in CLAUDE.md, channel3.md, rules-c3.md, handoff.md.
+- Left: owner's go to restart; then the restart session (c3-plan.md section 10: rewrite rules-c3.md 2-4, add the Needs-you asks, E30 rows). No asks sent yet. aluminium-tip (20 Nov) not built or touched.
+- For the other account: plan says stop Turns Out at day 28 under 150 followers and move its budget to web; restarting the daily task stays yours on the owner's word.
 
 
 

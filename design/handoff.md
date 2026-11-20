@@ -17,7 +17,7 @@ Read this file, then CLAUDE.md, then the last 5 entries of design/handoff-log.md
 ## Current state (20 Nov 2026; the log is newer than this)
 - Web and tech: one reel a day each, posted any time 13:00-21:00 IST. Main account's scheduled tasks: daily run 06:47 (web + tech, cheaper
   model, at most 2 renders a reel), critic 11:17, spare night Tue 22:44, owner chat Wed 05:13.
-- Turns Out: paused; its daily task is off. Its replan is with this account (design/channel3.md, rules-c3.md, c3-strategy.md). Restarting
+- Turns Out: paused; its daily task is off. Its replan is with this account: design/c3-plan.md (20 Nov, read first; then channel3.md, rules-c3.md). Restarting
   its daily task is done by the main account when the owner says so.
 - Open items for context: "Add reference" Inbox section (design/todo.md P1); Wikimedia refuses many GitHub-runner downloads (HTTP 429),
   the Media workflow also uses Openverse and the Library of Congress.
