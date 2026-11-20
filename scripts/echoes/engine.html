@@ -256,10 +256,10 @@ const skL=(d,w,c)=>`<path class="ln" pathLength="1" d="${d}" fill="none" stroke=
 const skF=(d,c,o)=>`<path class="fl" d="${d}" fill="${c||DARK}" opacity="0" data-o="${o??1}"/>`;
 const skT=(x,y,txt,sz,c,anc)=>`<text class="tx" x="${x}" y="${y}" fill="${c||GILT}" font-family="Cinzel" font-weight="700" font-size="${sz||34}" letter-spacing="6" text-anchor="${anc||'middle'}" opacity="0">${txt}</text>`;
 const SKH={
- horned:(x,y,k)=>{const dome=`M${x-130*k} ${y} C${x-130*k} ${y-150*k} ${x+130*k} ${y-150*k} ${x+130*k} ${y} Z`,
+ horned:(x,y,k,lit)=>{const dome=`M${x-130*k} ${y} C${x-130*k} ${y-150*k} ${x+130*k} ${y-150*k} ${x+130*k} ${y} Z`,
    hl=`M${x-110*k} ${y-60*k} C${x-210*k} ${y-110*k} ${x-250*k} ${y-250*k} ${x-180*k} ${y-340*k} C${x-200*k} ${y-250*k} ${x-170*k} ${y-160*k} ${x-80*k} ${y-100*k} Z`,
    hr=`M${x+110*k} ${y-60*k} C${x+210*k} ${y-110*k} ${x+250*k} ${y-250*k} ${x+180*k} ${y-340*k} C${x+200*k} ${y-250*k} ${x+170*k} ${y-160*k} ${x+80*k} ${y-100*k} Z`;
-   return skF(hl,'#d8c49a',.9)+skF(hr,'#d8c49a',.9)+skF(dome,'#3a2c1c')+skL(hl,5*k+1)+skL(hr,5*k+1)+skL(dome,6*k+1)+skL(`M${x-136*k} ${y} H${x+136*k}`,10*k+2,GILT)+skL(`M${x} ${y-140*k} V${y+70*k}`,9*k+2)
+   return skF(hl,'#d8c49a',.9)+skF(hr,'#d8c49a',.9)+skF(dome,lit?'#d9b46a':'#3a2c1c')+skL(hl,5*k+1)+skL(hr,5*k+1)+skL(dome,6*k+1)+skL(`M${x-136*k} ${y} H${x+136*k}`,10*k+2,GILT)+skL(`M${x} ${y-140*k} V${y+70*k}`,9*k+2)
      +skL(`M${x-90*k} ${y-40*k} C${x-40*k} ${y-120*k} ${x+40*k} ${y-120*k} ${x+90*k} ${y-40*k}`,2.5*k+1,'rgba(241,227,194,.5)')},
  round:(x,y,k)=>{const cap=`M${x-150*k} ${y} C${x-150*k} ${y-210*k} ${x+150*k} ${y-210*k} ${x+150*k} ${y} Z`,ring=(cx)=>`M${cx-42*k} ${y+40*k} A${42*k} ${38*k} 0 1 0 ${cx+42*k} ${y+40*k} A${42*k} ${38*k} 0 1 0 ${cx-42*k} ${y+40*k}`;
    return skF(cap,'#2c2a26')+skL(cap,6*k+1)+skL(`M${x} ${y-158*k} V${y}`,8*k+1,GILT)+skL(`M${x-150*k} ${y-30*k} C${x-60*k} ${y-110*k} ${x+60*k} ${y-110*k} ${x+150*k} ${y-30*k}`,8*k+1,GILT)
@@ -293,7 +293,7 @@ const SKH={
 };
 const SK={
  warrior:o=>SKH.waves(1300)+SKH.warrior(520,1300,1.16,o),
- horned:o=>SKH.horned(540,980,1.6),
+ horned:o=>SKH.horned(540,980,1.6,1),   // the close-up's dome lit bronze: it pops off the plate (Output QA GRADE, render 1: 0.01)
  ship:o=>SKH.ship(540,1130,1.05)+SKH.waves(1150),
  round:o=>(o.ghost?SKH.ghost(540,700,1.3):'')+SKH.round(540,820,1.6)+SKH.plinth(640,1095,520,o.label||''),
  spot:o=>skF('M410 300 L670 300 L900 1180 L180 1180 Z','rgba(255,226,170,.2)')+skF('M40 1180 H1040 V1240 H40 Z','#3a2414')+skL('M40 1180 H1040',6,GILT)
