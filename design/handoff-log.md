@@ -13,6 +13,11 @@ Format (at most 6 lines):
 
 
 
+
+## 2026-11-20 19:40 IST · main · Turns Out replan handed to the second account
+- Done: design/handoff.md: the second account owns the Turns Out replan and the c3 files; reels, captions.json and web/tech files stay with the main account.
+- Left: scheduled tasks unchanged (daily web + tech 06:47, critic 11:17, spare night Tue, owner chat Wed; Turns Out task off).
+- For the other account: Turns Out is yours to replan; restarting its daily task is the owner's call in the Owner chat.
 ## 2026-11-20 19:20 IST · main · second-account wording
 - Done: design/runbook-studio.md: removed the "only once the org admin has agreed" condition; it was added by the main account, not asked for by the owner.
 - Left: nothing.
