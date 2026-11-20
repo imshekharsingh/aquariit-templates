@@ -11,6 +11,11 @@ Format (at most 6 lines):
 - For the other account: anything it must know or must not touch; a proposed rule change goes here.
 ```
 
+## 2026-11-20 07:15 IST · main · daily run (web, tech to follow)
+- Done: Owner answers read (0 feedback, 0 answers); audit acted on (web ESCALATE answered by a new topic type, rules-web.md "ESCALATE 20 Nov"; the PROMOTEs and the DROP were already rules since 18 Nov); web Nº 42 showreel-42-snapback (animation-fill-mode forwards; review file, tip demo, captions entry, cobalt world).
+- Left: web render 1 and its Output QA check; the tech reel for 20 Nov; the 11:17 critic. The audit card was not dispatched by this session if the next line says so.
+- For the other account: the scene's local SPLIT / CALM / HUE read on frames (PW_FROM=$(npm root -g)/ node scripts/qa/frames.mjs; python3 scripts/qa/look.py); mean CALM was 4.8% of 5%, so a calmer next web reel starts from fewer taps.
+
 ## 2026-11-19 11:40 IST · main · reel critic (19 Nov)
 - Done: CRITIC: READY on showreel-41-gradient (web) and showreel-tech-phone-claim (tech), item 20 + ENHANCE in each review file; no re-render.
 - Left: no Turns Out reel in captions.json for 19 Nov (nothing to review); the Turns Out daily task should check why.

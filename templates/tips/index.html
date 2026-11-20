@@ -222,6 +222,11 @@
 #gradient .bar{height:96px;margin:8px 10px;border-radius:12px}
 #gradient .bar.a{background:linear-gradient(var(--ang, 90deg), blue, yellow)}
 #gradient .bar.b{background:linear-gradient(in oklch var(--ang, 90deg), blue, yellow)}
+#snapback .stage{position:relative;height:92px;margin:8px 10px;overflow:hidden;border-radius:12px;background:rgba(255,255,255,.07)}
+#snapback .drawer{position:absolute;left:0;top:0;bottom:0;width:46%;border-radius:0 12px 12px 0;background:#3a6fd8;transform:translateX(-110%);color:#fff;font:700 15px/1 system-ui,sans-serif;padding:14px}
+@keyframes slide-in-42{from{transform:translateX(-110%)}to{transform:translateX(0)}}
+#snapback .stage.go .drawer{animation:slide-in-42 .5s}
+#snapback .stage.go.fix .drawer{animation:slide-in-42 .5s forwards}
 </style>
 </head>
 <body>
@@ -231,6 +236,22 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="snapback">
+  <p class="no">Nº 32</p>
+  <h2>Why does your menu snap back after it slides in?</h2>
+  <p class="why">By default (animation-fill-mode: none) a CSS animation only styles the element while it runs. When the animation ends the element goes back to its own style, so a drawer that starts off-screen jumps back off-screen the moment its slide-in finishes. animation-fill-mode: forwards keeps the computed values of the last keyframe, so the drawer stays where it landed. Supported since Chrome 43, Edge 12, Firefox 16 and Safari 9 (MDN, BCD).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">animation: slide-in .5s</span><div class="stage"><div class="drawer">Menu</div></div></div>
+  <div class="pane fix"><span class="tag ok">... .5s forwards</span><div class="stage fix"><div class="drawer">Menu</div></div></div>
+</div>
+<button class="play" type="button">Open both menus</button>
+<p class="note">Tap the button. Both menus run the same slide-in keyframes. On the left the menu jumps back off-screen the moment the animation ends, because without a fill mode the element returns to its own style; on the right the word forwards keeps the last keyframe, so the menu stays open.</p></div>
+  <div class="code"><pre><code>.menu { animation: slide-in .5s; }            /* snaps back at the end */
+.menu { animation: slide-in .5s forwards; }   /* stays where it landed */</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-fill-mode" rel="noopener">Source: MDN, animation-fill-mode</a></p>
+</article>
 
 <article class="tip" id="gradient">
   <p class="no">Nº 31</p>
@@ -802,11 +823,12 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>29 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>30 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "snapback": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
     "gradient": function(root, btn){ var a = 90; btn.addEventListener('click', function(){ a = (a + 40) % 360; root.style.setProperty('--ang', a + 'deg'); }); },
     "expensive": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');
   panes.forEach(function(p){ p.classList.toggle('on', on); }); btn.textContent = on ? 'Reset' : 'Play all three'; }); },

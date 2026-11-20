@@ -73,6 +73,9 @@ Rotation: no format and no gadget type two days in a row; 3 India + 4 global a w
 | Wed 18 | gadget myths | laptop | global | Should your laptop stay plugged in all day? | modern laptops stop charging at full and many have a charge limit (Apple optimised charging, Windows makers' battery modes); heat and 100% for weeks are what age it |
 | Thu 19 | specs decoded | phone | india | SWAPPED 19 Nov (built as showreel-tech-phone-claim): What does "up to 22 hours" on a phone really mean? (Apple India iPhone 16 spec page: video 22 h, streamed 18 h, audio 80 h, footnote "varies by use and settings"). The power bank row below moves to a day when a maker page (mi.com, anker.com, samsung.com) can be read: they were unreachable on 19 Nov. | (was) Why doesn't a 20,000 mAh power bank give 20,000 mAh? | mAh is rated at the cell's 3.7 V; at the phone's 5 V and with conversion loss you get about 60-70% (the makers' "rated capacity" line); how many phone charges that means |
 
+## @webin20sec, Fri 20 Nov 2026 (set 20 Nov by the daily run; no web rows were planned past 19 Nov)
+| Fri 20 | Why does your menu snap back? (BUILT 20 Nov as showreel-42-snapback; ESCALATE answer: a new topic type, an animation that ends wrong) | `animation: slide-in .5s forwards` (animation-fill-mode keeps the last keyframe) |
+
 ## @techin20sec, Thu 12 - Wed 18 Nov 2026: "3 settings to change today" (ENDED 13 Nov by the owner: replaced by the gadget rows above) (E17; planned 11 Nov, rules-tech.md rewritten the same day)
 Each reel: one benefit, three settings that exist on iPhone AND Android (rule 3: both paths on screen, each checked on Apple's and Google's
 own pages that morning; swap any setting one platform lacks), kind `phone` x3 + the recap checklist, `hook_toggles` in frame 0, 20-22 s.

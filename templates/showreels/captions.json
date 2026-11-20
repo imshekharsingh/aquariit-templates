@@ -1412,5 +1412,33 @@
    "#smartphone",
    "#techexplained"
   ]
+ },
+ "showreel-42-snapback": {
+  "postOn": "2026-11-20",
+  "postAt": "13:00",
+  "caption": "Why does your menu snap back? 📱 You tap, the menu slides in, and at the very end of the animation it jumps right back out.\n\nBy default a CSS animation only styles the element while it runs. When it finishes, the element returns to its own style, so a menu that starts off-screen goes straight back off-screen. Add one word, forwards, and it keeps its last frame: animation: slide-in .5s forwards. Watch the reel: the top menu snaps back, the bottom one stays.\n\nanimation-fill-mode works in Chrome 43, Edge 12, Firefox 16 and Safari 9 and up, so it is safe everywhere.\n\nSend this to whoever built your site's menu, or save it for your next slide-in panel.",
+  "keywords": [
+   "css animation snaps back",
+   "animation-fill-mode forwards",
+   "css menu slides then disappears",
+   "css animation ends then resets",
+   "css slide in menu",
+   "css animation tips"
+  ],
+  "hashtags": [
+   "#css",
+   "#webdesign",
+   "#frontend",
+   "#uidesign",
+   "#cssanimation"
+  ],
+  "channel": "web",
+  "concept": "animation: slide-in .5s forwards (a menu that slides in, then jumps back out because animation-fill-mode is none by default); one bug told as a story, BEFORE over AFTER tapped in sync, cobalt world",
+  "about": "ESCALATE answer 20 Nov (web ALARM, median 1,673): a new topic type, an animation that ends wrong, told as one bug story (improvements.md web item 7); dark look, cobalt world, whole frame, calm",
+  "experiment": {
+   "id": "web-story-bug",
+   "change": "one bug told as a story (it breaks, you feel it, one word fixes it, it behaves) on a new topic type, an animation that ends wrong; dynamic before/after in sync (design/improvements.md web item 7)",
+   "vs": "median"
+  }
  }
 }

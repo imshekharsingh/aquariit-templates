@@ -1,0 +1,75 @@
+{
+ "name": "showreel-42-snapback",
+ "seek": "scripts/explainer/snapback.html",
+ "dur": 17,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.2,
+ "style": "Dark look, whole frame, calm (rule 17), cobalt colour world. ESCALATE answer 20 Nov: a new topic type (an animation that ends wrong), one bug told as a story (design/improvements.md web item 7)",
+ "voice": {
+  "text": "Why does your menu snap back? You tap, and it slides in. Then it jumps right back out. The fix: add forwards to the animation. The menu keeps its last frame. Look closer. Same tap, but this one stays open. Now your menus stay put.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "Why does your menu snap back? 📱 You tap, the menu slides in, and at the very end of the animation it jumps right back out.\n\nBy default a CSS animation only styles the element while it runs. When it finishes, the element returns to its own style, so a menu that starts off-screen goes straight back off-screen. Add one word, forwards, and it keeps its last frame: animation: slide-in .5s forwards. Watch the reel: the top menu snaps back, the bottom one stays.\n\nanimation-fill-mode works in Chrome 43, Edge 12, Firefox 16 and Safari 9 and up, so it is safe everywhere.\n\nSend this to whoever built your site's menu, or save it for your next slide-in panel.",
+ "keywords": [
+  "css animation snaps back",
+  "animation-fill-mode forwards",
+  "css menu slides then disappears",
+  "css animation ends then resets",
+  "css slide in menu",
+  "css animation tips"
+ ],
+ "hashtags": [
+  "#css",
+  "#webdesign",
+  "#frontend",
+  "#uidesign",
+  "#cssanimation"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-fill-mode",
+   "note": "MDN animation-fill-mode (read 20 Nov 2026): sets how a CSS animation applies styles to its target before and after its execution; forwards keeps the computed values of the last keyframe; the default is none"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data",
+   "note": "BCD 8.1.10 (read 20 Nov 2026), css.properties.animation-fill-mode: Chrome 43, Edge 12, Firefox 16, Safari 9, iOS Safari 9"
+  },
+  {
+   "url": "https://www.w3.org/TR/css-animations-1/#animation-fill-mode",
+   "note": "CSS Animations Level 1: with none the animation has no effect on the element before it starts and after it ends. Checked in Chrome 157 (headless, 20 Nov 2026): a translateX(-100%) element animated to 0 over .5 s sits at x -100 px after the animation with animation: slide-in .5s and at 0 px with animation: slide-in .5s forwards"
+  }
+ ],
+ "tip": {
+  "title": "Why does your menu snap back after it slides in?",
+  "why": "By default (animation-fill-mode: none) a CSS animation only styles the element while it runs. When the animation ends the element goes back to its own style, so a drawer that starts off-screen jumps back off-screen the moment its slide-in finishes. animation-fill-mode: forwards keeps the computed values of the last keyframe, so the drawer stays where it landed. Supported since Chrome 43, Edge 12, Firefox 16 and Safari 9 (MDN, BCD).",
+  "code": ".menu { animation: slide-in .5s; }            /* snaps back at the end */\n.menu { animation: slide-in .5s forwards; }   /* stays where it landed */",
+  "demo": "snapback",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-fill-mode",
+   "label": "MDN, animation-fill-mode"
+  }
+ },
+ "format": "single",
+ "say": {},
+ "experiment": {
+  "id": "web-story-bug",
+  "change": "one bug told as a story (it breaks, you feel it, one word fixes it, it behaves) on a new topic type, an animation that ends wrong; dynamic before/after in sync (design/improvements.md web item 7)",
+  "vs": "median"
+ },
+ "qa": {
+  "mute": {
+   "before": {
+    "say": "jumps"
+   },
+   "after": {
+    "say": "stays"
+   },
+   "span": 1.5
+  }
+ }
+}

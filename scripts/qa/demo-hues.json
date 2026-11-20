@@ -28,6 +28,10 @@
   "showreel-41-gradient": {
    "hue": 65,
    "world": "saffron"
+  },
+  "showreel-42-snapback": {
+   "hue": 225,
+   "world": "cobalt"
   }
  }
 }
