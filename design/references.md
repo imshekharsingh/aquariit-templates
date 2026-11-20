@@ -152,3 +152,16 @@ tech starters, a series tag in kit25d.js) and 1 owner item (Trial Reels), all in
 - Kit piece: MISSING (a seeded "odd one out" field generator: grid of N items, one rule-breaker, difficulty knobs, optional delayed reveal).
 - Fit: perfect for code-only, faceless, cheap renders (no voice, seconds of render time); could be its own channel. Owner: "We should be
   able to create a channel with such puzzles; we don't copy but take reference. Mark it to pick up in the future."
+
+## R-ref 21 Nov 2026 · owner upload (app References 1 and 2): a Hinglish "AI video editing pipeline" tutorial reel (screen recordings)
+- Seen: 47.1K likes, 49.4K comments, 65K shares, 115K saves (the on-screen counts, 17 Nov). Faceless motion graphics on dark UI cards, one accent
+  colour; a top progress bar with named steps (SETUP · TOOLS · STYLE · EDIT) and "STEP 02 · ..." headers; big word-by-word captions mid-frame
+  with one accent word; hook "But nobody shows the EXACT PROCESS" over a blurred, padlocked timeline, then the payoff promise "$0"; Hinglish voice.
+- Why it worked (our read, not measured): saves come from a promised, step-by-step useful outcome; comments almost match likes, which points to a
+  comment-to-get-it ask (caption cut off: not verified); the step bar tells the viewer how much is left, so they stay to the end.
+- Techniques for us: (1) a labelled step bar at the top (Turns Out: MYTH · PROOF · ORIGIN · TRUTH); (2) captions as big mid-frame words, one accent
+  word, instead of a small bottom band; (3) a locked-reveal hook (the answer blurred under a padlock until its word); (4) "the exact ..." framing
+  that promises the full story; (5) a voice in the audience's own language (a test only: @itturns.out has 9 followers, no country data yet).
+- Not for Turns Out: the topic (AI tools) belongs to @webin20sec / @techin20sec; a comment-to-DM ask needs a DM automation on the owner's account.
+- Used: Turns Out E31 (design/c3-plan.md). Refs 1-2 marked studied.
+
