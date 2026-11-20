@@ -24,19 +24,20 @@ for the next one. "Turns out..." is already the myth-buster's phrase; the name f
 **Topic gate (all 4 yes, on paper, before any build):**
 1. Most people on every continent believe it or picture it this way (a school-book myth, a famous "fact", an icon's wrong name).
 2. The truth is checked in 2 primary or reliable sources (museum, official body, space agency, encyclopedia), and no expert body disputes it.
-3. There is a real free photo or print for the myth AND for the truth (fetch.py `loc`, `nasa`, Openverse; Wikimedia last).
+3. The myth and the truth can be DRAWN as simple objects or places (a helmet, a ship, a building, a map, a timeline); no photo, no face.
 4. Not on the never-list (channel3.md): no health or diet myths, religion, nations ranked, living or recent people, tragedies, India 16a.
 
 ## 3. One frozen format for 4 weeks (no engine or kit work on Turns Out until 18 Dec)
-- **Engine:** the Echoes engine's 2.5D depth shot (the look the owner approved on Mona Lisa render 6), as used by aluminium-tip.
-  Per reel we write only the config and fetch media. Any engine bug found is noted in design/todo.md and fixed after the 4 weeks, unless it
+- **Engine:** the Echoes engine with code-drawn `sketch` plates (owner, 20 Nov: no media downloads, "highly time consuming and waste of
+  resource"; design/channel3.md "Sketch plates"). Per reel we write only the config and, when a myth needs a new object, one drawing in SK. Any engine bug found is noted in design/todo.md and fixed after the 4 weeks, unless it
   breaks a reel (then the smallest fix).
-- **Length 15-20 s, 40-48 words, 6-8 photos, a new element every ~2 s** (rule 11 holds).
+- **Length 15-22 s, 40-55 words, 6-8 photos, a new element every ~2 s** (rule 11 holds).
 - **0.0 s:** the myth as everyone pictures it, full-bleed, with the cover title in the centre 3:4 (`COVER` check), e.g. "VIKINGS NEVER
   WORE THESE". Voice from 0.0 s, the myth denied in 8 words or fewer. No question, no countdown, no logo.
 - **1-13 s:** where the myth came from (the satisfying part: the opera costume, the cartoonist, the mistranslation), then the truth,
   3 beats, each one photo and one fact landing on its spoken word.
-- **13-18 s:** "Turns out, ..." payoff, then the send line in the voice and on screen: "Send this to whoever told you." Loop to frame 0.
+- **13-20 s:** "Turns out, ..." payoff, then loop to frame 0. No call to action in the video (owner, 21 Oct: reels end on the reel itself);
+  the send line lives in the caption: "Send this to whoever told you ..."
 - **Caption:** line 1 = the myth as people search it ("Did Vikings wear horned helmets? No."), line 2 = "Which myth did you believe
   longest? Comment it, we will check it next." (the comment ask feeds the topic list), sources line, sources pinned as the first comment.
 - **Series tag:** none on screen (E22 never read). The bio carries the promise instead (section 5).
@@ -96,7 +97,7 @@ Columbus dropped (contested in the Americas). People shown are long dead and dra
 - Topics that are only "interesting" (a monument fact with no belief to correct); 25+ s reels; questions and countdowns in frame 0.
 - Reading one reel as a trend; spending more than one render on a reel.
 
-## 10. What the restart session does (S, ~15 min, after the owner's go)
+## 10. What the restart session does (S, ~15 min, after the owner's go) — done 20-21 Nov (owner's go, 20 Nov 23:30 IST)
 1. Rewrite design/rules-c3.md rules 2, 3 and 4 to match sections 2-3 (gate, 15-20 s, caption) and mark rules 1 and S as retired.
 2. Add the section 5 asks; add E30 to design/experiments.md and its rows to design/targets.md.
 3. Build topic 1 only, on its post day (learn-then-build).

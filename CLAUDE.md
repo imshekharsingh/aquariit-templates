@@ -75,7 +75,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - All copy original; invented fictional brands only; no real company names, logos, trademarks or characters (exception: @techin20sec may
   name real brands and products as text for factual, diplomatic comparisons; design/rules-tech.md).
 - Never imitate or clone an existing site, reel or template; take techniques, never a piece.
-- Images: code only (inline SVG, CSS, canvas), except tech and Turns Out, which build around free real media (PD / CC0 / CC BY only,
+- Images: code only (inline SVG, CSS, canvas), except tech, which builds around free real media (Turns Out is code-drawn again, owner 20 Nov 2026) (PD / CC0 / CC BY only,
   licence per file, fetched by the "Media" workflow; design/safety.md). Fonts: open-licensed Google Fonts or system fonts. Icons: hand-drawn inline SVG.
 - Scenes are single self-contained files; the only external origins allowed are fonts.googleapis.com and fonts.gstatic.com.
 - Facts shown on screen are checked against a primary source and cited.

@@ -1,6 +1,16 @@
 # Turns Out rulebook (the gate every Turns Out reel passes before its one render)
 
-> **20 Nov 2026: design/c3-plan.md overrides rules 1-4 and S below** (topic gate, 15-20 s, caption, frozen Echoes format); the restart session rewrites them (c3-plan.md section 10).
+> **Restart rules (20 Nov 2026, design/c3-plan.md; owner's go 20 Nov). They replace rules S, 0, 1, 2, 3 and 4 below (kept as history); rules 5-11 stand.
+> No media downloads (owner, 20 Nov): every shot is a code-drawn `sketch` plate (design/channel3.md "Sketch plates").**
+> - **R1 Topic: a myth people believe** about something everyone knows, all 4 of c3-plan.md section 2 yes on paper (believed worldwide; truth in 2
+>   reliable sources, undisputed; a real free photo for the myth and the truth; not on the never-list). An icon in a wrong state still passes if
+>   people picture it one way (the old rule 2), but a myth comes first.
+> - **R2 Format, frozen until 18 Dec:** Echoes engine, `sketch` plates only (no media), config-only (new drawings go in SK; no other engine change); 15-22 s, 40-55 words, 5 lines;
+>   frame 0 = the myth picture with the cover title in the centre 3:4 and the voice denying the myth in 8 words or fewer; where the myth came
+>   from, then the truth; "Turns out, ..." last; a new photo every ~2 s, each used once; loops to the myth picture. No call to action in the video.
+> - **R3 Caption:** line 1 = the myth as people search it, answered ("Did Vikings wear horned helmets? No."); the facts; then the comment ask
+>   ("Which myth did you believe the longest?") and the send line; images line; sources pinned as the first comment.
+> - Experiment E30 (c3-myth) runs on every reel of week 1 (design/experiments.md).
 
 Same use as design/rules-web.md: score every rule (pass / fail, one line each) in the stills review before the one render; fix or swap on a fail;
 the daily audit adds, changes or drops a rule with the number. design/channel3.md (fact rules, never-list, quality bar) still applies.
