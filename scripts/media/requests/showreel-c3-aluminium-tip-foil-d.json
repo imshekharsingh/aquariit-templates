@@ -1,0 +1,24 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'foil' (L4/L5 need two more pictures).",
+ "media": [
+  {
+   "id": "foil",
+   "queries": [
+    "aluminium foil roll",
+    "aluminum foil"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 600,
+   "avoid": [
+    "person",
+    "woman",
+    "man",
+    "food",
+    "cooking"
+   ]
+  }
+ ]
+}
