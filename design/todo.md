@@ -6,7 +6,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 
 ## P1
 - [ ] 18 Nov 2026 (owner: "new ones don't get much visibility"): **run design/c3-strategy.md for Turns Out** from Mon 23 Nov: 20-26 s reels, frame 0 = the wrong-looking icon, a send line, series "NOT HOW YOU PICTURE IT"; add targets.md rows for E27 (week 1) and E28 (week 2); check the Echoes config can be 5 lines, else use the story engine. Size S per reel.
-- [ ] 16 Nov 2026 (owner: "mark to-do"; not started yet): **"Add reference" in the app's Inbox tab**: paste a link (Instagram reel, site), upload a
+- [x] 16 Nov 2026 (done 21 Nov, second account: Inbox "References", /api/refs, Owner answers `refs` / `refs-done`): **"Add reference" in the app's Inbox tab**: paste a link (Instagram reel, site), upload a
   screenshot or a short clip (private R2 under refs/, size cap per file, never in the repo), optional note and channel. The daily run reads new
   references with Feedback, studies each into design/references.md (techniques only, never a piece) and replies on the item; status per
   reference: new -> studied -> used in <reel>. Size M.

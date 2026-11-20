@@ -5,6 +5,11 @@
 //          read also prints the owner's new Feedback items (owner, 11 Nov 2026), one line each: FEEDBACK <id> <time> <channel|-> <text>
 //   feedback:      prints only the FEEDBACK lines (new items) and the count
 //   feedback-done: ASKS = {"ids": [3, 4], "note": "what was done, short"} marks those items done; the app shows the note under each
+//   refs:          prints the owner's new References (owner, 20 Nov 2026: links, screenshots, short clips), one line each:
+//                  REF <id> <time> <channel|-> <url|-> <file type|-> <note>; for each file a small JPEG preview (an image scaled to 720 px, a clip as
+//                  a 4x2 sheet of one frame a second) as a "B64 ref-<id>.jpg <base64>" log line (stderr, not the summary):
+//                  node scripts/media/from-log.mjs <run id> <dir> turns them back into files. Study each into design/references.md, then refs-done
+//   refs-done:     ASKS = {"ids": [3], "state": "studied" | "used", "note": "what was taken, or the reel it went into"}; the app shows the note
 //   add:   ASKS = [{ "id": "tech-bio", "question": "plain English", "why": "why it matters", "kind": "yesno" | "done" | "text", "channel": "web"|"tech"|"c3" }]
 //   clear: ASKS = ["tech-bio", ...] (after acting on the replies; removes them for good)
 //   mark:  ASKS = {"showreel-19-numbers": "2026-10-31T07:51:00Z", ...} marks reels uploaded at their real post time (an answer such as
@@ -15,7 +20,7 @@
 const SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, ''), ACTION = process.env.ACTION || 'read';
 const die = (m) => { console.error('✗ ' + m); process.exit(1); };
 let items = [];
-if (ACTION !== 'read' && ACTION !== 'feedback' && ACTION !== 'feedback-done') { try { items = JSON.parse(process.env.ASKS || '[]'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); } if (ACTION === 'unmark' && (!Array.isArray(items) || !items.length || !items.every((id) => /^showreel-[a-z0-9-]{1,60}$/.test(id)))) die('unmark: ASKS is ["showreel-..."]');
+if (ACTION !== 'read' && ACTION !== 'feedback' && ACTION !== 'feedback-done' && ACTION !== 'refs' && ACTION !== 'refs-done') { try { items = JSON.parse(process.env.ASKS || '[]'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); } if (ACTION === 'unmark' && (!Array.isArray(items) || !items.length || !items.every((id) => /^showreel-[a-z0-9-]{1,60}$/.test(id)))) die('unmark: ASKS is ["showreel-..."]');
 if (ACTION !== 'mark' && (!Array.isArray(items) || !items.length)) die('ASKS must be a non-empty list'); }
 if (ACTION === 'mark') { if (!items || Array.isArray(items) || typeof items !== 'object' || !Object.keys(items).length) die('mark: ASKS is {"showreel-...": "ISO time"}'); for (const [id, at] of Object.entries(items)) if (!/^showreel-[a-z0-9-]{1,60}$/.test(id) || isNaN(Date.parse(at))) die(`mark: bad entry ${id}`); }
 const ID = /^[a-z0-9-]{1,60}$/;
@@ -24,7 +29,10 @@ if (ACTION === 'clear') for (const id of items) if (!ID.test(String(id))) die(`b
 let fbDone = null;
 if (ACTION === 'feedback-done') { try { fbDone = JSON.parse(process.env.ASKS || '{}'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); }
   if (!fbDone || !Array.isArray(fbDone.ids) || !fbDone.ids.length || !fbDone.ids.every((i) => /^[0-9]{1,9}$/.test(String(i))) || typeof fbDone.note !== 'string' || !fbDone.note.trim()) die('feedback-done: ASKS is {"ids": [3], "note": "what was done"}'); }
-if (!['read', 'add', 'clear', 'mark', 'unmark', 'feedback', 'feedback-done'].includes(ACTION)) die('ACTION is read, add, clear, mark, unmark, feedback or feedback-done');
+let refDone = null;
+if (ACTION === 'refs-done') { try { refDone = JSON.parse(process.env.ASKS || '{}'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); }
+  if (!refDone || !Array.isArray(refDone.ids) || !refDone.ids.length || !refDone.ids.every((i) => /^[0-9]{1,9}$/.test(String(i))) || !['new', 'studied', 'used'].includes(refDone.state) || typeof refDone.note !== 'string' || !refDone.note.trim()) die('refs-done: ASKS is {"ids": [3], "state": "studied", "note": "what was taken"}'); }
+if (!['read', 'add', 'clear', 'mark', 'unmark', 'feedback', 'feedback-done', 'refs', 'refs-done'].includes(ACTION)) die('ACTION is read, add, clear, mark, unmark, feedback, feedback-done, refs or refs-done');
 const U = process.env.BASIC_AUTH_USER, P = process.env.BASIC_AUTH_PASS;
 if (!U || !P) die('BASIC_AUTH_USER / BASIC_AUTH_PASS are missing');
 const login = await fetch(SITE + '/login', { method: 'POST', redirect: 'manual', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ username: U, password: P }) });
@@ -47,6 +55,29 @@ if (ACTION === 'read' || ACTION === 'feedback') {
 if (ACTION === 'feedback-done') for (const id of fbDone.ids) {
   const r = await fetch(`${SITE}/api/feedback/${id}/done`, { method: 'POST', headers: H, body: JSON.stringify({ note: fbDone.note.trim() }) });
   if (!r.ok) die(`could not mark feedback ${id} done (HTTP ${r.status})`); const j = await r.json(); console.log(j.stored ? `✓ feedback ${id} done` : `✗ no feedback item ${id}`);
+}
+if (ACTION === 'refs') {
+  const r = await fetch(SITE + '/api/refs?state=new', { headers: { Cookie: cookie } });
+  if (!r.ok) die(`could not read the references (HTTP ${r.status})`);
+  const refs = ((await r.json()).refs || []).slice().reverse();   // oldest first
+  const { execFileSync } = await import('node:child_process'), { mkdtempSync, writeFileSync, readFileSync, existsSync } = await import('node:fs'), { tmpdir } = await import('node:os'), { join } = await import('node:path');
+  let ff = true; try { execFileSync('ffmpeg', ['-version'], { stdio: 'ignore' }); } catch { ff = false; }
+  const td = mkdtempSync(join(tmpdir(), 'refs-'));
+  for (const f of refs) {
+    console.log(`REF ${f.id} ${f.created} ${f.channel || '-'} ${f.url || '-'} ${f.file ? f.file.type + ' ' + JSON.stringify(f.file.name) + ' ' + f.file.size + ' B' : '-'} ${JSON.stringify(f.note || '')}`);
+    if (!f.file || !ff) continue;
+    const g = await fetch(`${SITE}/api/refs/${f.id}/file`, { headers: { Cookie: cookie } });
+    if (!g.ok) { console.log(`  (file ${f.id}: HTTP ${g.status})`); continue; }
+    const src = join(td, `in-${f.id}`), out = join(td, `ref-${f.id}.jpg`); writeFileSync(src, Buffer.from(await g.arrayBuffer()));
+    const vf = /^video\//.test(f.file.type) ? 'fps=1,scale=240:-2,tile=4x2' : "scale='min(720,iw)':-2";
+    try { execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', src, '-vf', vf, '-frames:v', '1', '-q:v', '5', out], { stdio: 'ignore', timeout: 60000 }); } catch { /* no preview */ }
+    if (existsSync(out)) console.error(`B64 ref-${f.id}.jpg ${readFileSync(out).toString('base64')}`); else console.log(`  (no preview for ${f.id})`);
+  }
+  console.log(`${refs.length} new reference${refs.length === 1 ? '' : 's'}${ff ? '' : ' (ffmpeg missing: no previews)'} (study each into design/references.md, then refs-done with a note)`);
+}
+if (ACTION === 'refs-done') for (const id of refDone.ids) {
+  const r = await fetch(`${SITE}/api/refs/${id}/state`, { method: 'POST', headers: H, body: JSON.stringify({ state: refDone.state, note: refDone.note.trim() }) });
+  if (!r.ok) die(`could not set reference ${id} (HTTP ${r.status})`); const j = await r.json(); console.log(j.stored ? `✓ reference ${id} ${refDone.state}` : `✗ no reference ${id}`);
 }
 if (ACTION === 'add') for (const a of items) {
   const r = await fetch(`${SITE}/api/asks/${a.id}`, { method: 'PUT', headers: H, body: JSON.stringify(a) });

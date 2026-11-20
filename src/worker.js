@@ -389,6 +389,84 @@ async function feedbackApi(request, env, p, url) {
   return jres({ error: 'bad-request' }, 400);
 }
 
+// ---- References (owner, 20 Nov 2026: "build the option to upload in app so that I can put the references"; design/todo.md 16 Nov spec): the owner adds
+// a link (an Instagram reel, a site) or uploads a screenshot or a short clip, with an optional note and channel. Files go to the private R2 bucket
+// under refs/ (never the repo), at most REF_MAX bytes. Claude runs read the new ones with the "Owner answers" workflow (scripts/asks.mjs, action refs:
+// REF lines and small previews), study each into design/references.md (techniques only, never a piece) and set its state with a note (refs-done):
+// new -> studied -> used. The owner may delete one (row and file). Primary account only.
+let refReady = null;
+async function refDb(env) {
+  if (!env.DB) return null;
+  refReady = refReady || env.DB.exec("CREATE TABLE IF NOT EXISTS owner_refs (id INTEGER PRIMARY KEY AUTOINCREMENT, created TEXT NOT NULL, channel TEXT, url TEXT, file_key TEXT, file_type TEXT, file_name TEXT, size INTEGER, note TEXT, state TEXT NOT NULL DEFAULT 'new', reply TEXT, done_at TEXT)")
+    .catch((e) => { refReady = null; throw e; });
+  await refReady;
+  return env.DB;
+}
+const REF_MAX = 50 * 1024 * 1024, REF_TYPES = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/heic': 'heic', 'video/mp4': 'mp4', 'video/quicktime': 'mov', 'video/webm': 'webm' };
+const REF_ST = ['new', 'studied', 'used'], REF_ID = /^\/api\/refs\/([0-9]{1,9})(\/file|\/state|\/delete)?$/;
+const refOut = (r) => ({ id: r.id, created: r.created, channel: r.channel, url: r.url, file: r.file_key ? { type: r.file_type, name: r.file_name, size: r.size } : null, note: r.note, state: r.state, reply: r.reply, done_at: r.done_at });
+async function refsApi(request, env, p, url) {
+  if (!(await isPrimary(request, env))) return request.method === 'GET' ? jres({ refs: [] }) : jres({ error: 'forbidden' }, 403);
+  let db;
+  try { db = await refDb(env); } catch { return jres({ error: 'db-unavailable' }, 503); }
+  if (!db) return jres({ error: 'no-db' }, 501);
+  const m = REF_ID.exec(p);
+  if (request.method === 'GET' && p === '/api/refs') {   // newest first; ?state=new gives only the ones waiting for Claude
+    const onlyNew = url.searchParams.get('state') === 'new';
+    const { results } = await db.prepare(`SELECT * FROM owner_refs ${onlyNew ? "WHERE state = 'new' " : ''}ORDER BY id DESC LIMIT 60`).all();
+    return jres({ refs: (results || []).map(refOut) });
+  }
+  if (request.method === 'GET' && m && m[2] === '/file') {   // the file itself, for the app's thumbnail and the workflow's preview
+    if (!env.REELS) return jres({ error: 'no-store' }, 503);
+    const r = await db.prepare('SELECT file_key, file_type FROM owner_refs WHERE id = ?1').bind(Number(m[1])).first();
+    if (!r || !r.file_key) return jres({ error: 'not-found' }, 404);
+    const o = await env.REELS.get(r.file_key);
+    if (!o) return jres({ error: 'not-found' }, 404);
+    return new Response(o.body, { headers: { 'Content-Type': r.file_type || 'application/octet-stream', 'Cache-Control': 'private, max-age=3600', 'X-Content-Type-Options': 'nosniff', 'Content-Disposition': 'inline' } });
+  }
+  if (request.method !== 'POST' || request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403);
+  const ch = (v) => (FB_CH.includes(v) ? v : null), now = new Date().toISOString();
+  if (p === '/api/refs/upload') {   // raw file body; channel, note and name in the query
+    if (!env.REELS) return jres({ error: 'no-store' }, 503);
+    const type = (request.headers.get('Content-Type') || '').split(';')[0].trim().toLowerCase(), ext = REF_TYPES[type];
+    if (!ext) return jres({ error: 'type', allowed: Object.keys(REF_TYPES) }, 415);
+    const len = Number(request.headers.get('Content-Length') || 0);
+    if (len > REF_MAX) return jres({ error: 'too-big', max: REF_MAX }, 413);
+    const buf = await request.arrayBuffer();
+    if (!buf.byteLength) return jres({ error: 'bad-request' }, 400);
+    if (buf.byteLength > REF_MAX) return jres({ error: 'too-big', max: REF_MAX }, 413);
+    const name = (nStr(url.searchParams.get('name'), 120) || 'file').replace(/[^\w. -]/g, '_'), note = nStr(url.searchParams.get('note'), 1000);
+    const ins = await db.prepare('INSERT INTO owner_refs (created, channel, file_type, file_name, size, note) VALUES (?1, ?2, ?3, ?4, ?5, ?6)')
+      .bind(now, ch(url.searchParams.get('channel')), type, name, buf.byteLength, note && note.trim() ? note.trim() : null).run();
+    const id = ins.meta && ins.meta.last_row_id, key = `refs/${id}.${ext}`;
+    try { await env.REELS.put(key, buf, { httpMetadata: { contentType: type } }); }
+    catch { await db.prepare('DELETE FROM owner_refs WHERE id = ?1').bind(id).run(); return jres({ error: 'store-failed' }, 502); }
+    await db.prepare('UPDATE owner_refs SET file_key = ?2 WHERE id = ?1').bind(id, key).run();
+    return jres({ ok: true, id });
+  }
+  let b = null; try { b = await request.json(); } catch { /* handled below */ }
+  if (p === '/api/refs') {   // a link, with an optional note
+    const link = b && nStr(b.url, 600), note = b && nStr(b.note, 1000);
+    if (!link || !/^https:\/\/[^\s]+$/i.test(link.trim())) return jres({ error: 'bad-url' }, 400);
+    const r = await db.prepare('INSERT INTO owner_refs (created, channel, url, note) VALUES (?1, ?2, ?3, ?4)').bind(now, ch(b.channel), link.trim(), note && note.trim() ? note.trim() : null).run();
+    return jres({ ok: true, id: r.meta && r.meta.last_row_id });
+  }
+  if (m && m[2] === '/state') {   // a Claude run: studied / used, with a short note the app shows
+    const st = b && REF_ST.includes(b.state) ? b.state : null, note = b && nStr(b.note, 500);
+    if (!st || !note || !note.trim()) return jres({ error: 'bad-request' }, 400);
+    const r = await db.prepare('UPDATE owner_refs SET state = ?2, reply = ?3, done_at = ?4 WHERE id = ?1').bind(Number(m[1]), st, note.trim(), now).run();
+    return jres({ ok: true, stored: !!(r.meta && r.meta.changes) });
+  }
+  if (m && m[2] === '/delete') {   // the owner removes one: the row and its file
+    const r = await db.prepare('SELECT file_key FROM owner_refs WHERE id = ?1').bind(Number(m[1])).first();
+    if (!r) return jres({ ok: true, stored: false });
+    if (r.file_key && env.REELS) { try { await env.REELS.delete(r.file_key); } catch { /* the row still goes */ } }
+    await db.prepare('DELETE FROM owner_refs WHERE id = ?1').bind(Number(m[1])).run();
+    return jres({ ok: true, stored: true });
+  }
+  return jres({ error: 'bad-request' }, 400);
+}
+
 // ---- Spare-usage night (owner, 1 Nov 2026): the owner's weekly Claude limit resets Wednesday 04:30 IST. From Tuesday 21:00 IST the app shows a card
 // saying Claude uses the spare usage tonight, with one "Skip tonight" button (owner, 3 Nov 2026: opt-out; a skip flag for that week, stored here).
 // /api/spare reports on = not skipped, and the "Spare check" workflow prints SPARE=yes unless skipped. The Worker's cron sends a Web Push reminder
@@ -728,7 +806,7 @@ export default {
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journey(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journey(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (signedIn) {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
       if (m) { try { const v = await reelFile(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }
