@@ -1,0 +1,429 @@
+{
+ "slug": "wireless-worth",
+ "engine": "kit",
+ "scene": "techkit/scenes/wireless-worth.js",
+ "topic": "Is wireless charging worth it",
+ "format": "WORTH IT OR NOT",
+ "audience": "global",
+ "gadget": "charger",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.45,
+ "max_end": 44.0,
+ "experiment": {
+  "id": "tech-worth-race",
+  "change": "worth it or not as a race: two lanes (cable vs wireless pad) charge side by side to the same 50% in the same 30 minutes, then the kit and the convenience decide; the object opens up (coil cutaway, plug and drop); no rolling digits; qa.sync set (design/improvements.md tech items 2 and 6)",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Is wireless charging worth it? Or is a plain cable just as quick?",
+   "beat": "question"
+  },
+  {
+   "text": "Many people assume wireless is slower. Apple's own iPhone sixteen page says otherwise.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "Cable and a twenty watt adapter reach up to fifty percent in thirty minutes. MagSafe with thirty watts matches it.",
+   "beat": "fix",
+   "source": 0
+  },
+  {
+   "text": "So speed is a tie. The kit differs: wireless wants a thirty watt adapter, and the pad is sold separately.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "You are paying for convenience. Drop the phone on the pad and it charges. No cable to plug in.",
+   "beat": "step"
+  },
+  {
+   "text": "Here's the catch. Those are up to numbers from Apple's own tests, on a drained phone with the right adapter.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Convenience, not speed. Check the adapter.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "wire": [
+   0,
+   "wireless"
+  ],
+  "cabl": [
+   0,
+   "cable"
+  ],
+  "quick": [
+   0,
+   "quick"
+  ],
+  "assume": [
+   1,
+   "assume"
+  ],
+  "slow": [
+   1,
+   "slower"
+  ],
+  "page": [
+   1,
+   "page"
+  ],
+  "other": [
+   1,
+   "otherwise"
+  ],
+  "cab2": [
+   2,
+   "cable"
+  ],
+  "tw": [
+   2,
+   "twenty"
+  ],
+  "ff": [
+   2,
+   "fifty"
+  ],
+  "thm": [
+   2,
+   "thirty"
+  ],
+  "mag": [
+   2,
+   "magsafe"
+  ],
+  "t30": [
+   2,
+   "thirty",
+   1
+  ],
+  "same": [
+   2,
+   "matches"
+  ],
+  "tie": [
+   3,
+   "tie"
+  ],
+  "kit": [
+   3,
+   "kit"
+  ],
+  "want": [
+   3,
+   "wants"
+  ],
+  "a30": [
+   3,
+   "thirty"
+  ],
+  "sep": [
+   3,
+   "separately"
+  ],
+  "conv": [
+   4,
+   "convenience"
+  ],
+  "drop": [
+   4,
+   "drop"
+  ],
+  "plug": [
+   4,
+   "plug"
+  ],
+  "catch": [
+   5,
+   "catch"
+  ],
+  "upto": [
+   5,
+   "up"
+  ],
+  "tests": [
+   5,
+   "tests"
+  ],
+  "drained": [
+   5,
+   "drained"
+  ],
+  "adap": [
+   5,
+   "adapter"
+  ],
+  "final": [
+   6,
+   "check"
+  ],
+  "cv2": [
+   6,
+   "convenience"
+  ],
+  "sp2": [
+   6,
+   "speed"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "wire",
+   "blip",
+   0.5,
+   0.2,
+   {
+    "f": 520,
+    "f2": 300
+   }
+  ],
+  [
+   "cabl",
+   "tick",
+   0.45,
+   -0.2
+  ],
+  [
+   "quick",
+   "snap",
+   0.55,
+   0
+  ],
+  [
+   "assume",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 400,
+    "f2": 260
+   }
+  ],
+  [
+   "slow",
+   "thud",
+   0.5,
+   0.3
+  ],
+  [
+   "page",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "other",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "cab2",
+   "pop",
+   0.5,
+   -0.3
+  ],
+  [
+   "tw",
+   "tick",
+   0.45,
+   -0.3
+  ],
+  [
+   "thm",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 600,
+    "f2": 900
+   }
+  ],
+  [
+   "ff",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "mag",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "same",
+   "chime",
+   0.35,
+   0,
+   {
+    "notes": [
+     "A5",
+     "E6"
+    ]
+   }
+  ],
+  [
+   "tie",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "kit",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "a30",
+   "tick",
+   0.45,
+   0.3
+  ],
+  [
+   "sep",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "conv",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 520,
+    "f2": 780
+   }
+  ],
+  [
+   "drop",
+   "thud",
+   0.6,
+   0
+  ],
+  [
+   "plug",
+   "tick",
+   0.4,
+   -0.3
+  ],
+  [
+   "catch",
+   "riser_end",
+   0.22,
+   0
+  ],
+  [
+   "upto",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "drained",
+   "pop",
+   0.5,
+   -0.3
+  ],
+  [
+   "adap",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "cv2",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "sp2",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.4,
+   0,
+   {
+    "notes": [
+     "A4",
+     "C#5",
+     "E5",
+     "B5",
+     "E6"
+    ],
+    "d": 3.2
+   }
+  ]
+ ],
+ "post": {
+  "title": "Is wireless charging worth it?",
+  "caption": "Is wireless charging worth it? 🔌 Not for speed: for convenience.\n\nOn Apple's iPhone 16 page for India, the fast-charge line says up to 50% in 30 minutes with a 20W adapter and a USB-C cable, or with a 30W adapter and a MagSafe charger. So on speed it's a tie. What differs is the kit: the faster wireless figure needs the 30W adapter, and Apple lists wireless chargers as sold separately. The footnote adds that these are Apple's own tests on drained phones, and that charge time varies with settings and environment.\n\nWorth it if you charge at a desk or bedside and like to just drop the phone down. Not worth it if you only want speed: a cable with a 20W adapter does the same job. Check your own phone's spec page for its numbers.\n\nSend this to a friend who's deciding whether to buy a wireless charger, or save it for your next upgrade.",
+  "keywords": [
+   "is wireless charging worth it",
+   "wireless charging vs cable",
+   "wireless charging speed",
+   "magsafe 30w adapter",
+   "iphone 16 fast charge 50 percent",
+   "wireless charger worth buying"
+  ],
+  "hashtags": [
+   "#wirelesscharging",
+   "#iphone16",
+   "#techtips",
+   "#chargingtips",
+   "#techexplained"
+  ],
+  "sources": [
+   {
+    "url": "https://www.apple.com/in/iphone-16/specs/",
+    "note": "Apple India, iPhone 16 Technical Specifications, Power and Battery and footnotes (read 20 Nov 2026): Fast-charge capable: up to 50% charge in 30 minutes with 20W adapter or higher (available separately) paired with USB-C charging cable, or 30W adapter or higher paired with MagSafe Charger (both available separately). MagSafe wireless charging up to 25W with 30W adapter or higher; Qi2 wireless charging up to 25W. Footnote: testing conducted by Apple with drained iPhone units; charge time varies with settings and environmental factors; wireless chargers sold separately."
+   }
+  ]
+ },
+ "say": {
+  "MagSafe": "mag safe"
+ },
+ "qa": {
+  "sync": [
+   "wireless",
+   "cable",
+   "adapter",
+   "convenience"
+  ]
+ }
+}
