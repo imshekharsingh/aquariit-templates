@@ -1,4 +1,4 @@
-# Review: showreel-tech-wireless-worth (tech, postOn 2026-11-20 postAt 13:00 IST)
+# Review: showreel-tech-wireless-worth (tech, postOn 2026-11-20 postAt 20:30 IST)
 
 The Mandatory Gate, design/mandatory.md. Built 20 Nov by the daily run, the day it posts, on the kit engine's shared frame (techkit/base.html + techkit/scenes/wireless-worth.js).
 AUTO lines from `python3 techkit/make.py wireless-worth --fake-vo --stills ...` (fake timings; the render re-times to the real voice), stills sheet at 12 moments.
@@ -15,9 +15,10 @@ Critic ENHANCE of 19 Nov applied: qa.sync set (wireless, cable, adapter, conveni
 8. Sound: PASS (by design; measured at item 13): 30 cue effects (blips, snaps, pops, thuds, ticks, risers, impact and chime on the slam)
 9. Payoff: PASS: recap pills "Wireless buys convenience" and "Check the adapter watts", then the title slam "Convenience, not speed."
 10. Facts: PASS: Apple India iPhone 16 Technical Specifications (read 20 Nov 2026 with curl): "Fast-charge capable: Up to 50% charge in 30 minutes with 20W adapter or higher and paired with USB-C charging cable, or 30W adapter or higher paired with MagSafe Charger"; footnote "Fast-charge testing conducted with drained iPhone units and Wireless chargers sold separately"; npm run check passes
-11. Post data: PASS: captions.json entry (channel tech, postOn 2026-11-20, postAt 13:00, concept, experiment tech-worth-race); topic post with caption, 6 keywords, 5 hashtags, 1 source
+11. Post data: PASS: captions.json entry (channel tech, postOn 2026-11-20, postAt 20:30, concept, experiment tech-worth-race); topic post with caption, 6 keywords, 5 hashtags, 1 source
 12. Review file: PASS: this file, items 1-11 and 14-17
-13. After the render: PASS: render 2, run 44735202835, Output QA PASS (PACE PASS; only the LICENCE warning)
+13. After the render: PENDING render 3 (owner exception, 20 Nov: "fix it within the 13:00-21:00 window; nothing should be blocked", so this one reel gets a 3rd render). Render 2, run 44735202835, Output QA passed but the critic said NOT READY (item 20, layout).
+Layout fix for render 3 (20 Nov): lane label "WIRELESS PAD" moved up and both lane labels now reported to the overlap check; "A TIE" stamp and stopwatch moved right (x 650); the phone lift cut from 90 to 45 px so it never reaches the label; the ch4/ch5 camera push (1.16/-150, 1.18/-150) replaced by a calm 1.05/-12 so lane A no longer runs under the "THE CONVENIENCE" chip; "PLUG IN EVERY TIME" chip moved to the free slot above the cable phone; the 30 W adapter grows 15% not 25%; lane labels fade under the end card. Checked: stills every 0.5 s 18-31 s (no chip, card or badge on a label, nothing cut); preflight SAFE ZONE ok, OVERLAP none (now includes both lane labels), FLOW cuts 0, dead runs none, continuity 97%, strobes 0.
 14. Cuts: PASS: FLOW: cuts 0 (7 declared camera transitions)
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 98% (median step 0.8; first cut 36% FAIL, fixed with a moving camera and orbit dots)

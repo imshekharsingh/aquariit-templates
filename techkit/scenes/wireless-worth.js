@@ -65,14 +65,15 @@ window.TOPIC={
     <div class="big" style="position:absolute;left:36px;top:54px;font-size:38px;color:#ffd36b" id="p5a">DRAINED PHONE · RIGHT ADAPTER</div></div>
   <div class="pill" id="pl1" style="top:1060px;border-color:rgba(255,143,154,.6)"><div class="ic" style="background:rgba(255,143,154,.18);color:#ffc2c9">✓</div>Wireless buys convenience</div>
   <div class="pill" id="pl2" style="top:1170px;border-color:rgba(255,211,107,.6)"><div class="ic" style="background:rgba(255,211,107,.18);color:#ffe7a8">W</div>Check the adapter watts</div>`,
-  cam(){const F=[1.16,0,-150];
-    return [[0,[1,0,0]],[st(1),[1.04,0,-8]],[st(2),[1,0,0]],[st(3),[1.05,0,-14]],[st(4)-.3,[1.02,0,-6]],[st(4)+.6,F,'expo'],[st(5)-.3,[1.18,0,-150]],[st(5)+.6,[1.04,0,0],'expo'],[st(6)-.3,[1.06,0,-6]],[st(6)+.6,[.85,0,-110],'expo']]},
+  cam(){const F=[1.05,0,-12];
+    return [[0,[1,0,0]],[st(1),[1.04,0,-8]],[st(2),[1,0,0]],[st(3),[1.05,0,-14]],[st(4)-.3,[1.02,0,-6]],[st(4)+.6,F,'expo'],[st(5)-.3,F],[st(5)+.6,[1.04,0,0],'expo'],[st(6)-.3,[1.06,0,-6]],[st(6)+.6,[.85,0,-110],'expo']]},
   hero(t,{fin}){
     const WT=t,eRace=prog(t,st(2)+.05,C.thm+.35),lA=lvl(0,t),lB=lvl(1,t),MID=(LA+LB)/2+4;
     for(const m of MOTES){const y=1230-((m.y+t*m.v)%1)*780;glowDot(m.x+10*Math.sin(t*.4+m.ph),y,m.r,'#8ef0ff',.28)}
     subj(170,555,910,1195);
     // ---- lane names ----
-    txt('CABLE',175,LA-128,40,COLA,1,'left',800);txt('WIRELESS PAD',175,LB-168,40,COLB,1,'left',800);
+    txt('CABLE',175,LA-128,40,COLA,1-fin,'left',800);txt('WIRELESS PAD',175,LB-193,40,COLB,1-fin,'left',800);
+    if(fin<.3){const [a,b]=toS(175,LA-128),[c,d]=toS(175,LB-193),k=CAM[0];BOXES.push(['CABLE',a,a+150*k,b-24*k,b+24*k]);BOXES.push(['WIRELESS PAD',c,c+295*k,d-24*k,d+24*k])}
     const fz=eio(prog(t,C.upto-.2,C.upto+.7)),glow=win(t,C.same-.1,C.same+1.1,.2,.5);
     // ---- lane A: the adapter, the cable (the plug is pulled out and pushed in on "plug"), the phone ----
     const out=54*eoc(prog(t,C.plug-.4,C.plug+.1))*(1-eoc(prog(t,C.plug+.5,C.plug+1.0))),plugged=1-clamp(out/24);
@@ -80,26 +81,26 @@ window.TOPIC={
     cable(LA,t,out,plugged*.9);
     phone(PX0,LA-PH0/2,lA,COLA,1,1,plugged,t,fz);
     // ---- lane B: the adapter, its cable to the pad, the pad with its coil rings, the phone (lifted, then dropped on "drop") ----
-    const bs=1+.25*eoc(prog(t,C.a30-.2,C.a30+.5));
+    const bs=1+.15*eoc(prog(t,C.a30-.2,C.a30+.5));
     brick(215,LB+44,bs,COLB,1,'30 W',prog(t,C.t30-.1,C.t30+.25));
     g.save();g.lineCap='round';g.strokeStyle='#cfd6ff';g.lineWidth=11;g.beginPath();g.moveTo(262,LB+44);g.bezierCurveTo(270,LB+80,262,LB+6,PADX,LB);g.stroke();g.strokeStyle='#1a2048';g.lineWidth=5;g.stroke();g.restore();
     g.save();g.shadowColor='rgba(142,240,255,.35)';g.shadowBlur=34;rrect(g,PADX,LB-PADH/2,PADW,PADH,60);g.fillStyle='#161d46';g.fill();g.shadowBlur=0;g.strokeStyle='rgba(142,240,255,.6)';g.lineWidth=4;g.stroke();g.restore();
     const sep=win(t,C.sep-.3,en(3)+.2,.3,.4);
     if(sep>0){g.save();g.globalAlpha=sep;g.strokeStyle=GLD;g.lineWidth=7;rrect(g,PADX-9,LB-PADH/2-9,PADW+18,PADH+18,68);g.stroke();g.restore()}
-    const lift=-90*eoc(prog(t,st(4)+.1,st(4)+.6))*(1-eob(prog(t,C.drop-.2,C.drop+.4))),held=lift<-6?0:1;
+    const lift=-45*eoc(prog(t,st(4)+.1,st(4)+.6))*(1-eob(prog(t,C.drop-.2,C.drop+.4))),held=lift<-6?0:1;
     for(let k=0;k<3;k++){const r=62+k*34+5*Math.sin(WT*2+k);ring(PADX+PADW/2,LB,r,COLB,.5-k*.1,5)}
     // the field: rings reach out of the pad toward the phone while it charges (not while the phone is lifted); sparks rise with them
     for(let k=0;k<3;k++){const q=((WT*.7+k/3)%1);ring(PADX+PADW/2,LB,40+q*150,COLB,(1-q)*.45*held,4)}
     if(held)for(let k=0;k<6;k++){const q=((WT*.6+k/6)%1),ang=k*1.05+WT*.3;glowDot(PADX+PADW/2+Math.cos(ang)*(50+q*90),LB+Math.sin(ang)*(30+q*50),5,COLB,(1-q)*.8)}
     const land=prog(t,C.drop+.1,C.drop+.7);if(land>0&&land<1)ring(PADX+PADW/2,LB,90+110*eoc(land),COLB,(1-land)*.9,8);
     for(const [cy,col,on] of [[LA,COLA,plugged],[LB+lift,COLB,held]])if(on>0)for(let k=0;k<4;k++){const an=WT*1.6+k*Math.PI/2,x=PX0+PW0/2+Math.cos(an)*(PW0/2+26),y=cy+Math.sin(an)*(PH0/2+26);glowDot(x,y,8,col,.85*on)}
-    phone(PX0,LB-PH0/2+lift,lB,COLB,1,1+.1*(-lift/90),held,t,fz);
+    phone(PX0,LB-PH0/2+lift,lB,COLB,1,1+.06*(-lift/45),held,t,fz);
     // ---- 50% pops beside both phones when "fifty" is said (static figures, nothing rolls); both phones glow green together on "matches" ----
     const pf=prog(t,C.ff-.1,C.ff+.25);txt('50%',855,LA,64,'#ffffff',pf,'center',900);txt('50%',855,LB,64,'#ffffff',pf,'center',900);
     if(glow>0){g.save();g.globalAlpha=glow;g.strokeStyle=GRN;g.lineWidth=6;g.shadowColor=GRN;g.shadowBlur=30;rrect(g,PX0-8,LA-PH0/2-8,PW0+16,PH0+16,50);g.stroke();rrect(g,PX0-8,LB-PH0/2-8,PW0+16,PH0+16,50);g.stroke();g.restore()}
     txt('=',855,MID,110,GRN,prog(t,C.same,C.same+.35)*(1-prog(t,st(4)-.2,st(4)+.2)),'center',900);
     // the stopwatch ring runs with the race and closes at "thirty minutes"; the stamp "A TIE" takes its place on "tie"
-    {const a=prog(t,st(2)-.1,st(2)+.3)*(1-prog(t,C.tie-.2,C.tie+.2));if(a>0){const cx=530,cy=MID;g.globalAlpha=a;g.strokeStyle='rgba(111,240,164,.25)';g.lineWidth=10;g.beginPath();g.arc(cx,cy,38,0,7);g.stroke();
+    {const a=prog(t,st(2)-.1,st(2)+.3)*(1-prog(t,C.tie-.2,C.tie+.2));if(a>0){const cx=650,cy=MID;g.globalAlpha=a;g.strokeStyle='rgba(111,240,164,.25)';g.lineWidth=10;g.beginPath();g.arc(cx,cy,38,0,7);g.stroke();
       g.strokeStyle=GRN;g.lineCap='round';g.beginPath();g.arc(cx,cy,38,-Math.PI/2,-Math.PI/2+eRace*Math.PI*2);g.stroke();g.globalAlpha=1}}
     // ch5: the test bench: amber corners round both lanes, the fills' ends fuzzed (above)
     const tb=win(t,C.catch-.1,en(5)+.1,.4,.4);if(tb>0){corners(166,560,748,264,GLD,tb);corners(166,872,748,330,GLD,tb)}
@@ -109,9 +110,9 @@ window.TOPIC={
   labels(t){
     const MID=(LA+LB)/2+4;
     const c1=win(t,st(1)-.2,st(2)-.2,.4,.4);if(c1>0)label(700,LB-170,'WHAT PEOPLE ASSUME',COLA,c1*prog(t,C.assume-.1,C.assume+.25),28,'rgba(44,24,8,.92)');
-    const tie=win(t,C.tie-.1,st(4)-.1,.3,.4);if(tie>0)stamp(530,MID,'A TIE',GRN,tie*prog(t,C.tie-.1,C.tie+.3),-.06);
+    const tie=win(t,C.tie-.1,st(4)-.1,.3,.4);if(tie>0)stamp(650,MID,'A TIE',GRN,tie*prog(t,C.tie-.1,C.tie+.3),-.06);
     const c3=win(t,C.sep-.2,st(4)-.1,.35,.4);if(c3>0)label(530,LB+150,'PAD SOLD SEPARATELY',GLD,c3*prog(t,C.sep-.1,C.sep+.2),28,'rgba(44,36,8,.92)');
-    const c4=win(t,st(4)-.1,st(5)-.1,.4,.4);if(c4>0){label(700,LB+150,'DROP IT: NO CABLE',COLB,c4*prog(t,C.drop-.1,C.drop+.25),28,'rgba(8,32,44,.92)');label(360,LA+135,'PLUG IN EVERY TIME',COLA,c4*prog(t,C.plug-.1,C.plug+.25),28,'rgba(44,24,8,.92)')}
+    const c4=win(t,st(4)-.1,st(5)-.1,.4,.4);if(c4>0){label(700,LB+150,'DROP IT: NO CABLE',COLB,c4*prog(t,C.drop-.1,C.drop+.25),28,'rgba(8,32,44,.92)');label(700,LA-128,'PLUG IN EVERY TIME',COLA,c4*prog(t,C.plug-.1,C.plug+.25),28,'rgba(44,24,8,.92)')}
     const c5=win(t,C.catch-.1,st(6)-.1,.4,.4);if(c5>0){label(700,LA-128,'DRAINED PHONE',GLD,c5*prog(t,C.drained-.1,C.drained+.25),28,'rgba(44,36,8,.92)');label(700,LB-170,'RIGHT ADAPTER',GLD,c5*prog(t,C.adap-.1,C.adap+.25),28,'rgba(44,36,8,.92)');label(855,LB+80,'UP TO',COLB,c5*prog(t,C.upto-.1,C.upto+.2),28,'rgba(8,32,44,.92)')}
   },
   panels(t){
