@@ -30,8 +30,9 @@ Moved from CLAUDE.md on 14 Nov 2026.
   cheaper model, web + tech. Through the launcher session: "Turns Out daily reel" 09:11 IST (its prompt still says "Mon/Wed/Fri" in a label;
   CLAUDE.md wins: it builds daily), "Reel critic" 11:17 IST, "Spare usage night" Tue 22:44 IST (design/runbook-spare.md), "Weekly owner chat"
   Wed 05:13 IST. The launcher's old "Daily studio run" is switched off. A launcher task's prompt can only be edited from the launcher session.
-- Second account (owner, 18-20 Nov 2026): the owner starts its sessions by hand (no scheduled tasks there) and gives each its task;
-  scope and boundaries in design/handoff.md. Everything else stays here.
+- Second account (owner, 20 Nov 2026): the owner gives it any task, by hand; it never touches scheduled tasks (design/handoff.md).
+  Sync is the main account's job: every Owner chat and daily run reads the newest design/handoff-log.md entries and the merged commits
+  since its last run, adapts its own work to them (rules, kit or reels the second account changed), and says so in its own log entry.
 - Rules every run must follow go into CLAUDE.md or these runbooks, not into a task prompt.
 
 ## Owner chat lessons (15-16 Nov 2026)
