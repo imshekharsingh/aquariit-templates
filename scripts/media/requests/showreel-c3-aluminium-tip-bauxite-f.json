@@ -1,0 +1,26 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'bauxite': more pictures for lines 2 and 4 (Output QA ELEMENTS wants 4+ per 10 s).",
+ "media": [
+  {
+   "id": "bauxite",
+   "queries": [
+    "bauxite ore",
+    "bauxite"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 600,
+   "avoid": [
+    "person",
+    "woman",
+    "man",
+    "food",
+    "cooking",
+    "people",
+    "child"
+   ]
+  }
+ ]
+}
