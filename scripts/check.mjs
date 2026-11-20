@@ -86,10 +86,12 @@ if (caps) {
     // only reels still to post need a reminder (past slots may have lost their cron); from 8 Nov 2026 every channel posts at 13:00 IST (owner)
     if (!j || j.hidden || !j.postOn || j.postOn < '2026-11-05' || j.postOn < todayIST) continue;
     if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(j.postAt || '')) { err(`captions.json ${name}: add "postAt" (HH:MM IST, the exact slot: 13:00 for every channel from 8 Nov 2026)`); continue; }
-    if (j.postOn >= '2026-11-08' && j.postAt !== '13:00' && !j.slotNote) err(`captions.json ${name}: postAt ${j.postAt}: every channel posts at 13:00 IST from 8 Nov 2026 (owner); a deliberate one-off slot needs "slotNote" with the reason`);
+    // posting window (owner, 20 Nov 2026): any slot from 13:00 to 21:00 IST is fine without a note; a reel that fails is fixed and posted inside it
+    const inWindow = j.postAt >= '13:00' && j.postAt <= '21:00';
+    if (j.postOn >= '2026-11-08' && j.postAt !== '13:00' && !inWindow && !j.slotNote) err(`captions.json ${name}: postAt ${j.postAt}: every channel posts at 13:00 IST from 8 Nov 2026 (owner); a deliberate one-off slot needs "slotNote" with the reason`);
     const [h, m] = j.postAt.split(':').map(Number), utc = (((h * 60 + m - 10 - 330) % 1440) + 1440) % 1440;
     // a one-off late slot may skip the push reminder: "noReminder": true next to its "slotNote" (owner, 18 Nov 2026: Turns Out at 14:00, no new cron)
-    if (!fired.has(utc) && !(j.slotNote && j.noReminder)) err(`captions.json ${name}: no reminder for ${j.postAt} IST; add a cron at ${String(utc % 60)} ${Math.floor(utc / 60)} UTC to wrangler.jsonc ("triggers")`);
+    if (!fired.has(utc) && !(j.slotNote && j.noReminder) && !(inWindow && j.postAt !== '13:00')) err(`captions.json ${name}: no reminder for ${j.postAt} IST; add a cron at ${String(utc % 60)} ${Math.floor(utc / 60)} UTC to wrangler.jsonc ("triggers")`);
   }
 }
 
