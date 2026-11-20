@@ -1,0 +1,219 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out reel (Echoes engine, 2.5D depth): the Washington Monument's 1884 aluminium tip. One photo per shot (PD / CC0 / CC BY only).",
+ "media": [
+  {
+   "id": "monument",
+   "queries": [
+    "Washington Monument",
+    "Washington Monument blue sky"
+   ],
+   "sources": [
+    "openverse",
+    "wikimedia"
+   ],
+   "min_side": 1200,
+   "avoid": [
+    "map",
+    "plan",
+    "replica",
+    "drawing",
+    "night"
+   ]
+  },
+  {
+   "id": "stump",
+   "queries": [
+    "Washington Monument unfinished stump 1870s",
+    "Washington Monument 1860 unfinished"
+   ],
+   "sources": [
+    "loc",
+    "wikimedia"
+   ],
+   "min_side": 600
+  },
+  {
+   "id": "building",
+   "queries": [
+    "Washington Monument under construction scaffolding",
+    "Washington Monument construction 1880s"
+   ],
+   "sources": [
+    "loc",
+    "wikimedia"
+   ],
+   "min_side": 600
+  },
+  {
+   "id": "capstone",
+   "queries": [
+    "Washington Monument capstone 1884",
+    "Washington Monument capstone placement"
+   ],
+   "sources": [
+    "loc",
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 500
+  },
+  {
+   "id": "tip",
+   "queries": [
+    "Washington Monument aluminum tip",
+    "Washington Monument aluminium pyramid"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse",
+    "loc"
+   ],
+   "min_side": 500
+  },
+  {
+   "id": "ingots",
+   "queries": [
+    "aluminium ingots",
+    "aluminum ingot"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 900,
+   "avoid": [
+    "can",
+    "foil"
+   ]
+  },
+  {
+   "id": "coins",
+   "queries": [
+    "Morgan silver dollar",
+    "silver dollars coins"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 900
+  },
+  {
+   "id": "hall",
+   "queries": [
+    "Charles Martin Hall"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse",
+    "loc"
+   ],
+   "min_side": 400
+  },
+  {
+   "id": "heroult",
+   "queries": [
+    "Paul Héroult",
+    "Paul Heroult"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 400
+  },
+  {
+   "id": "smelter",
+   "queries": [
+    "aluminium smelter potline",
+    "aluminium smelter"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 900
+  },
+  {
+   "id": "cans",
+   "queries": [
+    "aluminium cans",
+    "aluminum cans recycling"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 1000
+  },
+  {
+   "id": "tip2",
+   "queries": [
+    "Washington Monument top",
+    "Washington Monument pyramidion"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 900,
+   "avoid": [
+    "night",
+    "unfinished"
+   ]
+  },
+  {
+   "id": "lightning",
+   "queries": [
+    "lightning storm city",
+    "lightning over Washington"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 1200
+  },
+  {
+   "id": "night",
+   "queries": [
+    "Washington Monument at night",
+    "Washington Monument night"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 1200
+  },
+  {
+   "id": "dc1880",
+   "queries": [
+    "Washington D.C. 1880s panorama",
+    "Washington City 1880s",
+    "Washington D.C. 1890 view"
+   ],
+   "sources": [
+    "loc",
+    "wikimedia"
+   ],
+   "min_side": 700
+  },
+  {
+   "id": "dusk",
+   "queries": [
+    "Washington Monument sunset",
+    "Washington Monument dusk"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 1200,
+   "avoid": [
+    "night"
+   ]
+  }
+ ]
+}
