@@ -1,0 +1,25 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'mon5': more pictures for the closing lines (Output QA ELEMENTS).",
+ "media": [
+  {
+   "id": "mon5",
+   "queries": [
+    "Washington Monument cherry blossoms Highsmith",
+    "Washington Monument blossoms Tidal Basin"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 700,
+   "avoid": [
+    "night",
+    "bridge",
+    "kutz",
+    "person",
+    "woman",
+    "man"
+   ]
+  }
+ ]
+}
