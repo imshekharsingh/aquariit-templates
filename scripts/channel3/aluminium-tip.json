@@ -1,0 +1,813 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "seek": "scripts/channel3/aluminium-tip.html",
+ "engine": "echoes",
+ "dur": 40,
+ "fps": 30,
+ "voice": {
+  "text": "Its tip was once a luxury. In 1884, the tallest structure on Earth was capped with a 100-ounce pyramid of a rare metal. So which metal? Aluminium. It was so hard to make that it was worth about as much as silver. Then in 1886, two young chemists, one in America and one in France, found an electric method that made it cheap. Today it is in cans and foil, and the 8.9-inch pyramid still helps carry lightning to the ground. Turns out, the tallest tower on Earth wore a precious metal tip, and within years that metal became cheap.",
+  "voice": "af_heart",
+  "speed": 1,
+  "gap": [
+   0.45,
+   0.45,
+   0.45,
+   0.45,
+   0.5
+  ]
+ },
+ "echoes": {
+  "title": "The Metal Tip",
+  "coverTitle": "The Metal Tip",
+  "badge": "TURNS OUT · TRUE STORIES",
+  "lines": [
+   "Its tip was once a luxury.",
+   "In 1884, the tallest structure on Earth was capped with a 100-ounce pyramid of a rare metal.",
+   "So which metal? Aluminium. It was so hard to make that it was worth about as much as silver.",
+   "Then in 1886, two young chemists, one in America and one in France, found an electric method that made it cheap.",
+   "Today it is in cans and foil, and the 8.9-inch pyramid still helps carry lightning to the ground.",
+   "Turns out, the tallest tower on Earth wore a precious metal tip, and within years that metal became cheap."
+  ],
+  "keys": [
+   "luxury",
+   "1884",
+   "tallest",
+   "100-ounce",
+   "rare",
+   "aluminium",
+   "silver",
+   "1886",
+   "electric",
+   "cheap",
+   "cans",
+   "8.9-inch",
+   "lightning",
+   "precious"
+  ],
+  "mono": [
+   "stump",
+   "dc1880",
+   "hall",
+   "heroult"
+  ],
+  "titles": {
+   "monument": "The Washington Monument",
+   "stump": "The unfinished monument",
+   "building": "The monument rising",
+   "capstone": "The capstone, 1884",
+   "tip": "The aluminium tip",
+   "ingots": "Aluminium ingots",
+   "coins": "Silver dollars",
+   "hall": "Charles Martin Hall",
+   "heroult": "Paul Héroult",
+   "smelter": "An aluminium smelter",
+   "cans": "Aluminium cans",
+   "tip2": "The monument's tip",
+   "lightning": "Lightning over a city",
+   "night": "The Washington Monument at night",
+   "dc1880": "Washington, D.C. in the 1880s",
+   "dusk": "The monument at dusk"
+  },
+  "credit": "SOURCES: NATIONAL PARK SERVICE · NATIONAL ARCHIVES · BRITANNICA",
+  "chapters": [
+   "The Tower",
+   "The Metal",
+   "The Rival",
+   "The Change",
+   "The Tip"
+  ],
+  "shots": [
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 0,
+    "at": "start",
+    "img": "monument",
+    "tone": "amber",
+    "stamp": "THE WASHINGTON MONUMENT",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.0
+     ],
+     [
+      0.5,
+      0.46,
+      1.1
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 1,
+    "at": "start",
+    "img": "stump",
+    "tone": "terra",
+    "stamp": "1884",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)",
+    "adds": []
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 1,
+    "at": "tallest",
+    "img": "building",
+    "tone": "blue",
+    "stamp": "THE TALLEST ON EARTH",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 1,
+    "at": "pyramid",
+    "img": "capstone",
+    "tone": "gold",
+    "stamp": "A 100-OUNCE PYRAMID",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)",
+    "adds": [
+     {
+      "kind": "count",
+      "at": "100-ounce",
+      "to": 100,
+      "suffix": " OZ",
+      "label": "OF A RARE METAL",
+      "x": 240,
+      "y": 1000
+     }
+    ]
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 2,
+    "at": "start",
+    "img": "tip",
+    "tone": "violet",
+    "stamp": "SO WHICH METAL?",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 2,
+    "at": "aluminium",
+    "img": "ingots",
+    "tone": "teal",
+    "stamp": "ALUMINIUM",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 2,
+    "at": "silver",
+    "img": "coins",
+    "tone": "gold",
+    "stamp": "AS PRECIOUS AS SILVER",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 3,
+    "at": "start",
+    "img": "hall",
+    "tone": "terra",
+    "stamp": "CHARLES MARTIN HALL · USA",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "sat": 0.8
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 3,
+    "at": "France",
+    "img": "heroult",
+    "tone": "blue",
+    "stamp": "PAUL HÉROULT · FRANCE",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "sat": 0.8
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 3,
+    "at": "electric",
+    "img": "smelter",
+    "tone": "red",
+    "stamp": "AN ELECTRIC METHOD",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 4,
+    "at": "start",
+    "img": "cans",
+    "tone": "teal",
+    "stamp": "TODAY: CANS AND FOIL",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 4,
+    "at": "pyramid",
+    "img": "tip2",
+    "tone": "violet",
+    "stamp": "8.9 INCHES",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 4,
+    "at": "lightning",
+    "img": "lightning",
+    "tone": "blue",
+    "stamp": "TO THE GROUND",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 5,
+    "at": "start",
+    "img": "night",
+    "tone": "gold",
+    "stamp": "TURNS OUT",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.0
+     ],
+     [
+      0.5,
+      0.46,
+      1.12
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 5,
+    "at": "within",
+    "img": "dc1880",
+    "tone": "terra",
+    "stamp": "WITHIN YEARS",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "sat": 0.8,
+    "grade": "contrast(1.2) brightness(.9)"
+   },
+   {
+    "type": "arch",
+    "mode": "depth",
+    "line": 5,
+    "at": "cheap",
+    "img": "dusk",
+    "tone": "amber",
+    "stamp": "CHEAP",
+    "cut": [
+     0.1,
+     0.1,
+     0.9,
+     0.9
+    ],
+    "cam": [
+     [
+      0.5,
+      0.5,
+      1.1
+     ],
+     [
+      0.5,
+      0.48,
+      1.2
+     ]
+    ],
+    "grade": "contrast(1.2) brightness(.9)"
+   }
+  ]
+ },
+ "caption": "Which metal do you think topped the Washington Monument in 1884? 🗼\n\nWhen the tower was finished it was the tallest structure on Earth, and its tip was a 100-ounce pyramid of aluminium, then a metal so hard to make that it was about as precious as silver. Two years later, in 1886, Charles Martin Hall in the USA and Paul Héroult in France found an electric method that made aluminium cheap. The 8.9-inch pyramid is still up there, and it helps carry lightning to the ground.\n\nSend this to the friend who thinks aluminium was always cheap.\n\nImages: IMAGES_LINE",
+ "keywords": [
+  "washington monument facts",
+  "aluminium history",
+  "washington monument aluminum tip",
+  "hall héroult process",
+  "history facts",
+  "how aluminium became cheap"
+ ],
+ "hashtags": [
+  "#washingtonmonument",
+  "#historyfacts",
+  "#truestory",
+  "#aluminium",
+  "#didyouknow"
+ ],
+ "sources": [
+  {
+   "title": "The Aluminum Capstone (National Park Service)",
+   "url": "https://www.nps.gov/articles/000/wamocap.htm"
+  },
+  {
+   "title": "The Aluminum Tip of the Washington Monument (Prologue, U.S. National Archives, 2014)",
+   "url": "https://www.archives.gov/publications/prologue/2014/summer/aluminum-tip-monument"
+  },
+  {
+   "title": "Hall-Héroult process (Britannica)",
+   "url": "https://www.britannica.com/technology/Hall-Heroult-process"
+  },
+  {
+   "title": "Why Is There a Pyramid Atop the Washington Monument? (Mental Floss)",
+   "url": "https://www.mentalfloss.com/article/31360/whats-point-pyramid-atop-washington-monument"
+  }
+ ],
+ "media": [
+  {
+   "id": "monument",
+   "queries": [
+    "Washington Monument",
+    "Washington Monument blue sky"
+   ],
+   "sources": [
+    "openverse",
+    "wikimedia"
+   ],
+   "min_side": 1200,
+   "avoid": [
+    "map",
+    "plan",
+    "replica",
+    "drawing",
+    "night"
+   ]
+  },
+  {
+   "id": "stump",
+   "queries": [
+    "Washington Monument unfinished stump 1870s",
+    "Washington Monument 1860 unfinished"
+   ],
+   "sources": [
+    "loc",
+    "wikimedia"
+   ],
+   "min_side": 600
+  },
+  {
+   "id": "building",
+   "queries": [
+    "Washington Monument under construction scaffolding",
+    "Washington Monument construction 1880s"
+   ],
+   "sources": [
+    "loc",
+    "wikimedia"
+   ],
+   "min_side": 600
+  },
+  {
+   "id": "capstone",
+   "queries": [
+    "Washington Monument capstone 1884",
+    "Washington Monument capstone placement"
+   ],
+   "sources": [
+    "loc",
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 500
+  },
+  {
+   "id": "tip",
+   "queries": [
+    "Washington Monument aluminum tip",
+    "Washington Monument aluminium pyramid"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse",
+    "loc"
+   ],
+   "min_side": 500
+  },
+  {
+   "id": "ingots",
+   "queries": [
+    "aluminium ingots",
+    "aluminum ingot"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 900,
+   "avoid": [
+    "can",
+    "foil"
+   ]
+  },
+  {
+   "id": "coins",
+   "queries": [
+    "Morgan silver dollar",
+    "silver dollars coins"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 900
+  },
+  {
+   "id": "hall",
+   "queries": [
+    "Charles Martin Hall"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse",
+    "loc"
+   ],
+   "min_side": 400
+  },
+  {
+   "id": "heroult",
+   "queries": [
+    "Paul Héroult",
+    "Paul Heroult"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 400
+  },
+  {
+   "id": "smelter",
+   "queries": [
+    "aluminium smelter potline",
+    "aluminium smelter"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 900
+  },
+  {
+   "id": "cans",
+   "queries": [
+    "aluminium cans",
+    "aluminum cans recycling"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 1000
+  },
+  {
+   "id": "tip2",
+   "queries": [
+    "Washington Monument top",
+    "Washington Monument pyramidion"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 900,
+   "avoid": [
+    "night",
+    "unfinished"
+   ]
+  },
+  {
+   "id": "lightning",
+   "queries": [
+    "lightning storm city",
+    "lightning over Washington"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 1200
+  },
+  {
+   "id": "night",
+   "queries": [
+    "Washington Monument at night",
+    "Washington Monument night"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 1200
+  },
+  {
+   "id": "dc1880",
+   "queries": [
+    "Washington D.C. 1880s panorama",
+    "Washington City 1880s",
+    "Washington D.C. 1890 view"
+   ],
+   "sources": [
+    "loc",
+    "wikimedia"
+   ],
+   "min_side": 700
+  },
+  {
+   "id": "dusk",
+   "queries": [
+    "Washington Monument sunset",
+    "Washington Monument dusk"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 1200,
+   "avoid": [
+    "night"
+   ]
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 40,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the Echoes engine: full-bleed archival photos in 2.5D fill the frame by design"
+   }
+  ],
+  "subject": [
+   200,
+   180,
+   400,
+   520
+  ]
+ }
+}

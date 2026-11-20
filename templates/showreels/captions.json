@@ -1467,5 +1467,14 @@
    "#chargingtips",
    "#techexplained"
   ]
+ },
+ "showreel-c3-aluminium-tip": {
+  "channel": "c3",
+  "postOn": "2026-11-20",
+  "postAt": "13:00",
+  "engine": "echoes",
+  "concept": "Echoes engine, 2.5D depth · The Metal Tip: the Washington Monument was capped in 1884 with a 100-ounce aluminium pyramid, then as precious as silver; two years later the Hall-Héroult process made aluminium cheap; the metal's name stays hidden until said; real photos (Library of Congress, Openverse, Wikimedia)",
+  "note": "Turns Out, Fri 20 Nov. Photos chosen from Openverse and the Library of Congress as well as Wikimedia (Wikimedia often refuses GitHub runners). Voice af_heart, speed 1.",
+  "hidden": true
  }
 }
