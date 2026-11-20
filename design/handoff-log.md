@@ -14,6 +14,11 @@ Format (at most 6 lines):
 
 
 
+
+## 2026-11-20 19:55 IST · main · second account: open scope
+- Done: design/handoff.md: the second account may work on anything the owner asks except scheduled tasks; design/runbook-studio.md: keeping both accounts in sync is the main account's job.
+- Left: nothing.
+- For the other account: leave one log entry per session; merge origin/main right before each push.
 ## 2026-11-20 19:40 IST · main · Turns Out replan handed to the second account
 - Done: design/handoff.md: the second account owns the Turns Out replan and the c3 files; reels, captions.json and web/tech files stay with the main account.
 - Left: scheduled tasks unchanged (daily web + tech 06:47, critic 11:17, spare night Tue, owner chat Wed; Turns Out task off).
