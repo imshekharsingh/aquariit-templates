@@ -161,7 +161,13 @@ ask) as the day's one experiment. E18 read today: KEPT (rule 12). PROMOTE detail
     highest contrast and saturation in the demo; everything else is muted tonal steps, so the eye lands on the subject and the filler never outshines it.
     (c) Fixed meaning across the whole reel: one warm hue = broken / before, one cool hue = fixed / after; headline words, counters, tags, border and
     glow states all use the same two. (d) At most 3 hues in the demo area (base + warm + cool, the cool may be the base's own accent).
-    Check: the stills sheet read with "could I name the palette in one line?"; Output QA FOCUS from 20 Nov 2026 (scripts/qa/).
+    How: no hex colours in demo content. The kit sets --d1 / --d2 / --d3 (the 3 tonal steps of the palette's surface hue), --dacc (the subject's accent),
+    --dwarm / --dcool (the fixed pair) in every KM.theme() call; KM.demo() reads them in JS, KM.demoFill(i) is the i-th step. A palette or world lists
+    d: { warm, cool } in KM.PALETTES / KM.WORLDS (else warm = c.red, cool = c.acc); the web starters use the tokens.
+    Check: the stills sheet read with "could I name the palette in one line?"; Output QA FOCUS (scripts/qa/output-qa.py, 20 Nov 2026): at most 3 hues in the
+    demo area and the subject more colourful (mean chroma) than the rest of the demo, over a window the config declares: "qa": {"focus": {"demo": [l, t, r, b],
+    "subject": [l, t, r, b], "from": t0, "to": t1}} in CSS px (a reel without it gets a WARN). Run it before the render with scripts/qa/frames.mjs + look.py.
+    Calibration (snapback frames, 12.3-14.8 s): the old rainbow scene subject 101 vs rest 124 = FAIL, the re-tinted one 123 vs 75 = PASS.
 
 ## Channel brief (moved from CLAUDE.md, 14 Nov 2026)
 - How a web reel is made: design/runbook-reels.md ("Making a web reel"); plan, series and craft bar: design/webin20sec.md. Benchmark is

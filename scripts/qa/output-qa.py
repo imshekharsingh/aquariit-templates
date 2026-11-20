@@ -39,6 +39,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'grade': '13 Nov Turns Out "I don\'t find the colour selection better" (fog wash, white Taj on a pale sky)',
     'fill': '15 Nov Turns Out Mona Lisa "use 2.5D with such images to make it more available on the screen (as it seems to be centered mostly)"',
     'calm': '15 Nov web "too wiggly" (Mon / Tue reels: constant drift, wobble, bobbing panes, a busy camera)',
+    'focus': '20 Nov web "the colour combination doesn\'t give a feeling that any thought was put into it" (about eight unrelated hues, filler tiles more vivid than the subject)',
     'hue': '15 Nov web "main frame where we see the changes seem to show similar colour grading so doesn\'t look different from other videos"',
     'sheen': '15 Nov tech "covering the wave like coming in from left top corner to the right of the frame, it\'s happening in all videos" (a glass sheen swept the hero every 2.7 s)',
     'hero': '15 Nov tech "I don\'t see much happening animation wise around watch in 5 ATM video" (a small static watch, only the water moved)',
@@ -65,6 +66,7 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          fill_y=(.20, .66), fill_g=6, fill_line=.25, fill_min=.80, fill_frac=.25,
          calm_px=20, calm_band=(288, 392), calm_med=.035, calm_mean=.05, calm_step=.10,
          hue_s=.25, hue_v=.2, hue_min=40, hue_last=3,
+         focus_s=.3, focus_v=.3, focus_share=.05, focus_gap=30, focus_hues=3, focus_pad=1.0,
          sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=2,
          hero_lag=.5, hero_shift=3, hero_px=30, hero_on=.02, hero_active=.55, hero_w=.33, hero_inset=.2,
          el_lag=.3, el_shift=3, el_cell=9, el_top=.21, el_px=18, el_k=4, el_cells=1, el_cut=.35, el_gap=3.0, el_win=10, el_pics=4)
@@ -851,6 +853,42 @@ def demo_check(F, fps, mp4, qa, css_w=540):
          f'colourfulness {m:.0f} (at least {T["demo_m"]}), contrast p95-p5 {c:.0f} (at least {T["demo_c"]})' + (f': {", ".join(bad)}' if bad else ''))
 
 
+def focus_check(F, fps, qa, css_w=540):
+    """FOCUS (20 Nov 2026, web only; rules-web.md rule 18): the demo area uses at most focus_hues distinct hues, and nothing outside the subject is
+    more colourful than the subject. qa.focus = {"demo": [l, t, r, b], "subject": [l, t, r, b], "from": t0, "to": t1} in CSS px (540 wide); the window
+    is when the subject is on screen at that place. Hues: pixels with S > focus_s and V > focus_v, weighted by S x V in 10-degree bins, a hue counts
+    when its cluster (bins of 1.5%+ of the weight, closer than focus_gap degrees, merge) holds focus_share of the weight, medians over the samples every 0.5 s. Colourfulness =
+    the mean chroma (max - min channel, 0-255) of the lit pixels inside vs outside the subject box (the saturation S would call a dark navy tile
+    more vivid than a bright pale panel); the subject must be the higher one. The 20 Nov snapback tiles / dots / tags (eight hues) are the failing case."""
+    f = qa.get('focus')
+    if not f: line('FOCUS', 'WARN', 'no "qa": {"focus": {demo, subject, from, to}} in the config: declare the demo area and the subject box'); return
+    sb, db = f.get('subject'), f.get('demo') or list(T['demo_box'])
+    if not (isinstance(sb, list) and len(sb) == 4): line('FOCUS', 'WARN', 'qa.focus.subject is not a [l, t, r, b] box yet: declare what the reel is about'); return
+    h, w = F.shape[1:3]; sc = w / css_w; t0, t1 = f.get('from', 0), f.get('to', len(F) / fps)
+    px = lambda b: [int(round(v * sc)) for v in b]
+    dl, dt, dr, dbm = px(db); sl, st, sr, sbm = px(sb); N, S_, R_ = [], [], []
+    for k in range(int(t0 * fps), min(len(F), int(t1 * fps) + 1), max(1, int(round(fps * .5)))):
+        A = F[k, dt:dbm, dl:dr]; H, Sa, Va = hsv(A); m = (Sa > T['focus_s']) & (Va > T['focus_v'])
+        if m.sum() < 50: continue
+        hist = np.bincount((H[m] // 10).astype(int) % 36, weights=(Sa * Va)[m], minlength=36); tot = hist.sum()
+        on = [i for i in range(36) if hist[i] >= .015 * tot]; cl = []   # clusters of neighbouring bins (gaps under focus_gap degrees merge)
+        for i in on:
+            if cl and (i * 10 - cl[-1][-1] * 10) < T['focus_gap']: cl[-1].append(i)
+            else: cl.append([i])
+        if len(cl) > 1 and (cl[0][0] * 10 + 360 - cl[-1][-1] * 10) < T['focus_gap']: cl[0] = cl.pop() + cl[0]
+        N.append(sum(1 for c in cl if sum(hist[i] for i in c) >= T['focus_share'] * tot))
+        a = A.astype(np.float32); mx = a.max(-1); ch = mx - a.min(-1); lit = mx > T['demo_lit'] * 255
+        ins = np.zeros(lit.shape, bool); ins[max(0, st - dt):max(0, sbm - dt), max(0, sl - dl):max(0, sr - dl)] = True
+        if (lit & ins).sum() < 50 or (lit & ~ins).sum() < 50: continue
+        S_.append(float(ch[lit & ins].mean())); R_.append(float(ch[lit & ~ins].mean()))
+    if not N or not S_: line('FOCUS', 'WARN', f'no samples with a coloured demo and a subject box in {t0:.1f}-{t1:.1f} s'); return
+    n, sv, rv = float(np.median(N)), float(np.median(S_)), float(np.median(R_)); bad = []
+    if n > T['focus_hues']: bad.append(f'{n:.0f} hues in the demo (at most {T["focus_hues"]})')
+    if rv >= sv: bad.append(f'the rest of the demo (chroma {rv:.0f}) is as colourful as the subject ({sv:.0f})')
+    line('FOCUS', 'FAIL' if bad else 'PASS', f'{t0:.1f}-{t1:.1f} s, {len(N)} samples: {n:.0f} hues in the demo (at most {T["focus_hues"]}), colourfulness subject {sv:.0f} vs the rest {rv:.0f} '
+         f'(the subject must be higher)' + (': ' + '; '.join(bad) if bad else ''))
+
+
 def subj_at(rows, t):
     """the recorded subject box nearest to t (rows: [t, l, t, r, b] every 0.5 s)"""
     best = min(rows, key=lambda r: abs((r[0] or 0) - t)); return best[1:]
@@ -997,8 +1035,8 @@ def main():
     edge_checks(F, fps, qa.get('edges_ok', []), heard, mp4)
     if ch == 'c3': grade_check(F, fps, cover, qa.get('subject') or (qa.get('guess') or {}).get('box'), (qa.get('guess') or {}).get('css_width', 540))
     else: line('GRADE', 'SKIP', 'Turns Out only')
-    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps); spread_check(F, fps); demo_check(F, fps, mp4, qa); hue_check(F, fps, mp4, qa, name)
-    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only'); line('SPREAD', 'SKIP', 'web only'); line('DEMO', 'SKIP', 'web only'); line('HUE', 'SKIP', 'web only')
+    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps); spread_check(F, fps); demo_check(F, fps, mp4, qa); hue_check(F, fps, mp4, qa, name); focus_check(F, fps, qa)
+    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only'); line('SPREAD', 'SKIP', 'web only'); line('DEMO', 'SKIP', 'web only'); line('HUE', 'SKIP', 'web only'); line('FOCUS', 'SKIP', 'web only')
     if qa.get('guess'): guess_check(F, fps, qa['guess'], heard)
     elif ch == 'c3' and (c.get('experiment') or {}).get('id', '').startswith('c3-guess'): line('GUESS', 'FAIL', 'a guess reel without "qa": {"guess": {answer, reveal, box}} in its config')
     else: line('GUESS', 'SKIP', 'not a guess reel')

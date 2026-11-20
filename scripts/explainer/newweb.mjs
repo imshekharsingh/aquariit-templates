@@ -50,6 +50,7 @@ const seek = relative(root, html);
 // the glass theme's render: 3 motion-blur sub-frames, grain 2, no vignette (the grade does it): 15 GitHub minutes for the 21.2 s sample (rules-web.md rule 12)
 const cfg = { name: `showreel-00-${slug}`, seek, dur, fps: 60, blur: 3, shutter: .45, grain: 2, vignette: false, cover: 1.6, style: 'Glass and light', palette,
   voice: { text, voice: 'af_heart', speed },
+  qa: { focus: { demo: [24, 125, 516, 672], subject: 'TODO [l, t, r, b] of what the reel is about, in CSS px', from: 0, to: dur } },   // Output QA FOCUS (rules-web.md rule 18)
   caption: 'TODO: the caption (hook, the why in two sentences, the fix, browser support), then "Save it for ..., or send it to ...".',
   keywords: ['TODO 1', 'TODO 2', 'TODO 3', 'TODO 4', 'TODO 5', 'TODO 6'], hashtags: ['#todo1', '#todo2', '#todo3', '#todo4', '#todo5'],
   sources: [{ url: 'https://developer.mozilla.org/', note: 'TODO: the MDN page and BCD versions' }],

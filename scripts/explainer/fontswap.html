@@ -360,6 +360,7 @@ var KM = (function(){
   // it: four bloom layers and a grade layer at full size cost ~160 ms a frame to composite in the headless capture, the canvas almost nothing.
   var THEMES = {
     glass: { name: 'Glass and light',
+      d: { warm: '#ff8a7a', cool: '#8fe6ff' },
       c: { ink: '#070816', paper: '#f7f8ff', dim: '#9ea4c9', acc: '#8fe6ff', red: '#ff7aa8', ctl: '#272b55', raise: '#1e2148', skel: '#1b1d40', pg: '#0c0d26',
         card: '#161939', on: '#0b0c1d' },
       // glass: the pane's frost; 15 Nov 2026 (owner, 14 Nov: the live demo "looks faded grey"): less white (.17 -> .1 at the top, .03 in the middle),
@@ -377,6 +378,7 @@ var KM = (function(){
     // dark (E18), 13 Nov 2026 (owner: "a little vibrancy in the colour grading, it feels slightly dull"): stronger mint and coral, cards a touch
     // lighter with a soft top highlight, a faint mint / violet / coral glow behind the subject; KM.JEWELS = the avatar and chip tints
     dark: { name: 'Ink and mint',
+      d: { warm: '#ff6a5c', cool: '#5ff2b0' },
       c: { ink: '#101116', paper: '#f4f1ea', dim: '#9a978f', acc: '#5ff2b0', red: '#ff6a5c', ctl: '#3c3e4a', raise: '#363845', skel: '#30323d', pg: '#171820',
         card: '#262833', on: '#0c0d12' },
       v: { glass: 'linear-gradient(160deg,#262a63,#191b42 55%,#2a1c4a)', frost: '#1d1e26', edge: 'inset 0 1px 0 rgba(255,255,255,.11)', lift: '0 24px 60px rgba(0,0,0,.45)', glow: 'rgba(95,242,176,.6)', soft: 'rgba(95,242,176,.16)',
@@ -393,20 +395,20 @@ var KM = (function(){
   // KM.theme('glass', name) or window.WEB_PALETTE; 'aurora' is the original glass light.
   var PALETTES = {
     // aurora: the original light; its labels lifted for CONTRAST (the old --dim read 2.9:1 over the top bloom). A scene with no palette keeps the old tokens.
-    aurora: { c: { dim: '#cdd1ee', red: '#ff8ab4' } },
-    ember: { c: { ink: '#0d0710', dim: '#e6d2ce', acc: '#ffcf7a', red: '#ff8a7a', ctl: '#3a2630', raise: '#2c1c26', skel: '#28192a', pg: '#150b12', card: '#211520', on: '#140a0c' },
+    aurora: { d: { warm: '#ff8a7a', cool: '#8fe6ff' }, c: { dim: '#cdd1ee', red: '#ff8ab4' } },
+    ember: { d: { warm: '#ff7a6b', cool: '#6fd8c8' }, c: { ink: '#0d0710', dim: '#e6d2ce', acc: '#ffcf7a', red: '#ff8a7a', ctl: '#3a2630', raise: '#2c1c26', skel: '#28192a', pg: '#150b12', card: '#211520', on: '#140a0c' },
       v: { frost: 'linear-gradient(155deg,#4a2a3a,#241521 46%,#33202c)', lift: '0 18px 28px rgba(50,10,20,.55)', glow: 'rgba(255,207,122,.6)', soft: 'rgba(255,207,122,.16)', ring: 'rgba(255,207,122,.55)' },
       blooms: [['255,96,84', .5, 640, 180, 220, .31, .23, 0], ['255,170,60', .4, 580, 460, 640, .27, .35, 1.7], ['214,64,150', .42, 540, 120, 860, .37, .21, 3.1], ['130,60,210', .34, 480, 520, 260, .22, .29, 4.4]],
       grade: [[0, 'rgba(160,40,60,.2)'], [.4, 'rgba(13,7,16,0)'], [1, 'rgba(170,90,20,.14)']] },
-    lagoon: { c: { ink: '#04101a', dim: '#c4dde2', acc: '#8ff7dc', red: '#ffc27a', ctl: '#1d3a4a', raise: '#16303e', skel: '#142b38', pg: '#081a24', card: '#0f2633', on: '#04121a' },
+    lagoon: { d: { warm: '#ff8a6b', cool: '#8ff7dc' }, c: { ink: '#04101a', dim: '#c4dde2', acc: '#8ff7dc', red: '#ffc27a', ctl: '#1d3a4a', raise: '#16303e', skel: '#142b38', pg: '#081a24', card: '#0f2633', on: '#04121a' },
       v: { frost: 'linear-gradient(155deg,#1d4a5e,#0f2a38 46%,#173c4c)', lift: '0 18px 28px rgba(0,30,50,.55)', glow: 'rgba(143,247,220,.6)', soft: 'rgba(143,247,220,.16)', ring: 'rgba(143,247,220,.55)' },
       blooms: [['30,200,180', .38, 640, 180, 220, .31, .23, 0], ['50,120,255', .44, 580, 460, 640, .27, .35, 1.7], ['120,240,160', .32, 540, 120, 860, .37, .21, 3.1], ['20,150,210', .4, 480, 520, 260, .22, .29, 4.4]],
       grade: [[0, 'rgba(0,120,140,.2)'], [.4, 'rgba(4,16,26,0)'], [1, 'rgba(30,60,180,.14)']] },
-    orchid: { c: { ink: '#0e0718', dim: '#ddd2ea', acc: '#ffb8e4', red: '#c6a8ff', ctl: '#352650', raise: '#2a1d42', skel: '#261a3c', pg: '#140b22', card: '#1f1534', on: '#120818' },
+    orchid: { d: { warm: '#ff8a7a', cool: '#a8b8ff' }, c: { ink: '#0e0718', dim: '#ddd2ea', acc: '#ffb8e4', red: '#c6a8ff', ctl: '#352650', raise: '#2a1d42', skel: '#261a3c', pg: '#140b22', card: '#1f1534', on: '#120818' },
       v: { frost: 'linear-gradient(155deg,#432a66,#22153a 46%,#30204e)', lift: '0 18px 28px rgba(40,8,60,.55)', glow: 'rgba(255,184,228,.6)', soft: 'rgba(255,184,228,.16)', ring: 'rgba(255,184,228,.55)' },
       blooms: [['200,80,255', .52, 640, 180, 220, .31, .23, 0], ['255,80,170', .44, 580, 460, 640, .27, .35, 1.7], ['110,100,255', .44, 540, 120, 860, .37, .21, 3.1], ['255,150,200', .26, 480, 520, 260, .22, .29, 4.4]],
       grade: [[0, 'rgba(120,40,200,.2)'], [.4, 'rgba(14,7,24,0)'], [1, 'rgba(200,40,140,.14)']] },
-    glacier: { c: { ink: '#060b18', dim: '#cdd8ea', acc: '#a6d8ff', red: '#ff9cb4', ctl: '#24314f', raise: '#1c2742', skel: '#18223a', pg: '#0a1222', card: '#141d34', on: '#081020' },
+    glacier: { d: { warm: '#ff8a7a', cool: '#a6d8ff' }, c: { ink: '#060b18', dim: '#cdd8ea', acc: '#a6d8ff', red: '#ff9cb4', ctl: '#24314f', raise: '#1c2742', skel: '#18223a', pg: '#0a1222', card: '#141d34', on: '#081020' },
       v: { frost: 'linear-gradient(155deg,#2a3d66,#141f3a 46%,#1e2c50)', lift: '0 18px 28px rgba(0,15,50,.55)', glow: 'rgba(166,216,255,.6)', soft: 'rgba(166,216,255,.16)', ring: 'rgba(166,216,255,.55)' },
       blooms: [['80,150,255', .5, 640, 180, 220, .31, .23, 0], ['150,200,255', .34, 580, 460, 640, .27, .35, 1.7], ['70,80,240', .46, 540, 120, 860, .37, .21, 3.1], ['190,150,255', .3, 480, 520, 260, .22, .29, 4.4]],
       grade: [[0, 'rgba(40,80,200,.2)'], [.4, 'rgba(6,11,24,0)'], [1, 'rgba(60,140,200,.14)']] }
@@ -443,24 +445,37 @@ var KM = (function(){
   // A new world passes CONTRAST and HUE on a scene before it is used.
   var WORLDS = {
     // saffron: warm amber surfaces, a gold accent, tangerine and plum light (measured main hue ~35 deg)
-    saffron: { c: { ink: '#140b06', dim: '#d9c9b4', acc: '#ffc247', red: '#ff5f6d', ctl: '#4e2e12', raise: '#44280e', skel: '#38210c', pg: '#1e1108', card: '#3e240e', on: '#1d1102' },
+    saffron: { d: { warm: '#ff6b5a', cool: '#5fd8c8' }, c: { ink: '#140b06', dim: '#d9c9b4', acc: '#ffc247', red: '#ff5f6d', ctl: '#4e2e12', raise: '#44280e', skel: '#38210c', pg: '#1e1108', card: '#3e240e', on: '#1d1102' },
       v: { glass: 'linear-gradient(160deg,#723e12,#42220c 55%,#521a2e)', frost: '#2a180a', glow: 'rgba(255,194,71,.6)', soft: 'rgba(255,194,71,.16)', ring: 'rgba(255,194,71,.55)' },
       blooms: [['255,150,40', .4, 540, 140, 220, .2, .17, 0], ['255,90,50', .26, 480, 520, 660, .23, .19, 2], ['190,50,120', .28, 440, 480, 900, .17, .21, 4]] },
     // berry: magenta-rose surfaces, a pink accent, raspberry and violet light (measured main hue ~325 deg)
-    berry: { c: { ink: '#13060f', dim: '#e0c8d8', acc: '#ff8fd0', red: '#ff7a4a', ctl: '#4a1a3c', raise: '#3e1632', skel: '#36132c', pg: '#1d0a17', card: '#3a1230', on: '#22041a' },
+    berry: { d: { warm: '#ff7a4a', cool: '#7fd8ff' }, c: { ink: '#13060f', dim: '#e0c8d8', acc: '#ff8fd0', red: '#ff7a4a', ctl: '#4a1a3c', raise: '#3e1632', skel: '#36132c', pg: '#1d0a17', card: '#3a1230', on: '#22041a' },
       v: { glass: 'linear-gradient(160deg,#6a1650,#3c0c30 55%,#2c1250)', frost: '#26101f', glow: 'rgba(255,143,208,.6)', soft: 'rgba(255,143,208,.16)', ring: 'rgba(255,143,208,.55)' },
       blooms: [['255,60,170', .38, 540, 140, 220, .2, .17, 0], ['150,60,255', .3, 480, 520, 660, .23, .19, 2], ['255,90,120', .26, 440, 480, 900, .17, .21, 4]] },
     // jade: emerald surfaces, a mint accent, emerald, teal and leaf light (18 Nov 2026: saffron's ~35 deg sits within 40 of the form reel's 25;
     // jade's ~155 deg is clear of the last three web reels, 25 / 225 / 325)
-    jade: { c: { ink: '#04120d', dim: '#c2ded1', acc: '#62f0bf', red: '#ff7a6b', ctl: '#11402f', raise: '#0f3828', skel: '#0c3022', pg: '#071a13', card: '#0f3626', on: '#03140d' },
+    jade: { d: { warm: '#ff7a6b', cool: '#62f0bf' }, c: { ink: '#04120d', dim: '#c2ded1', acc: '#62f0bf', red: '#ff7a6b', ctl: '#11402f', raise: '#0f3828', skel: '#0c3022', pg: '#071a13', card: '#0f3626', on: '#03140d' },
       v: { glass: 'linear-gradient(160deg,#0f5a40,#093626 55%,#0b3a44)', frost: '#0a2219', glow: 'rgba(98,240,191,.6)', soft: 'rgba(98,240,191,.16)', ring: 'rgba(98,240,191,.55)' },
       blooms: [['40,220,150', .38, 540, 140, 220, .2, .17, 0], ['30,170,190', .3, 480, 520, 660, .23, .19, 2], ['120,230,120', .22, 440, 480, 900, .17, .21, 4]] }
   };
+  // demo tokens (owner, 20 Nov 2026: "the colour combination doesn't give a feeling that any thought was put into it"; rules-web.md rule 18).
+  // Every demo's colours come from here, never hard-coded: ONE base hue in 3 tonal steps for content (--d1 mid, --d2 lighter, --d3 darker: tiles,
+  // cards, dots, rows), ONE accent (--dacc) for the subject, and the fixed pair (--dwarm = broken / before, --dcool = fixed / after). The steps
+  // follow the surface hue (c.card) at low saturation; a palette or world may list d: { warm, cool }, otherwise warm = c.red and cool = c.acc.
+  // KM.demo() reads them in JS, KM.demoFill(i) is the i-th content step as a CSS value (rows and tiles rotate through the 3 steps).
+  var DEMO = null;
+  function demoTokens(th, src){ var d = (src && src.d) || {}, q = hsl(th.c.card);
+    return { s: [hex(q[0], .42, .22), hex(q[0], .42, .29), hex(q[0], .4, .16)], acc: th.c.acc, warm: d.warm || th.c.red, cool: d.cool || th.c.acc }; }
+  function demo(){ return DEMO; }
+  function demoFill(i){ return 'var(--d' + (1 + ((i % 3) + 3) % 3) + ')'; }
   var LT = {};
   function theme(name, pal){ var th = THEMES[name] || THEMES.glass, R = document.documentElement, k;
     pal = pal || window.WEB_PALETTE; if (th === THEMES.glass && PALETTES[pal]) { th = withPalette(th, pal); R.dataset.palette = pal; }
     if (th === THEMES.dark && WORLDS[pal]) { var w = WORLDS[pal]; th = withPalette(th, pal, w); th.grade = w.grade || null; R.dataset.palette = pal; }
-    th = vividTokens(th);
+    var dsrc = (th === THEMES.dark && WORLDS[pal]) ? WORLDS[pal] : (th === THEMES.glass && PALETTES[pal]) ? PALETTES[pal] : th;
+    th = vividTokens(th); DEMO = demoTokens(th, dsrc);
+    R.style.setProperty('--d1', DEMO.s[0]); R.style.setProperty('--d2', DEMO.s[1]); R.style.setProperty('--d3', DEMO.s[2]);
+    R.style.setProperty('--dacc', DEMO.acc); R.style.setProperty('--dwarm', DEMO.warm); R.style.setProperty('--dcool', DEMO.cool);
     for (k in th.c) R.style.setProperty('--' + k, th.c[k]); for (k in th.v) R.style.setProperty('--' + k, th.v[k]);
     R.style.background = document.body.style.background = th.c.ink; R.dataset.theme = name in THEMES ? name : 'glass';
     // the light and the grade in one tiny canvas (135x240, a quarter of the frame) scaled up to the frame: the upscale is the blur, for free
@@ -495,7 +510,7 @@ var KM = (function(){
   return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
     rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, touch: touch, voice: voice, subs: subs, publish: publish,
     curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
-    THEMES: THEMES, PALETTES: PALETTES, WORLDS: WORLDS, JEWELS: JEWELS, VIVID: VIVID, vivid: vivid, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float, ZONES: ZONES, worldY: worldY };
+    THEMES: THEMES, PALETTES: PALETTES, WORLDS: WORLDS, JEWELS: JEWELS, VIVID: VIVID, vivid: vivid, demo: demo, demoFill: demoFill, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float, ZONES: ZONES, worldY: worldY };
 })();
 /*kitmotion:end*/
 /*kitsfx:begin*/
