@@ -1,0 +1,17 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'heroult': one photo per run (the one-config run hit the 30-minute limit on Wikimedia and Library of Congress 429s).",
+ "media": [
+  {
+   "id": "heroult",
+   "queries": [
+    "Paul Héroult"
+   ],
+   "sources": [
+    "wikimedia"
+   ],
+   "min_side": 400,
+   "width": 1280
+  }
+ ]
+}

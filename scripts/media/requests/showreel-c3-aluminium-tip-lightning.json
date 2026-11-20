@@ -1,0 +1,16 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'lightning': one photo per run (the one-config run hit the 30-minute limit on Wikimedia and Library of Congress 429s).",
+ "media": [
+  {
+   "id": "lightning",
+   "queries": [
+    "lightning storm city skyline"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 1200
+  }
+ ]
+}
