@@ -30,8 +30,8 @@ Moved from CLAUDE.md on 14 Nov 2026.
   cheaper model, web + tech. Through the launcher session: "Turns Out daily reel" 09:11 IST (its prompt still says "Mon/Wed/Fri" in a label;
   CLAUDE.md wins: it builds daily), "Reel critic" 11:17 IST, "Spare usage night" Tue 22:44 IST (design/runbook-spare.md), "Weekly owner chat"
   Wed 05:13 IST. The launcher's old "Daily studio run" is switched off. A launcher task's prompt can only be edited from the launcher session.
-- Org seat (owner, 18 Nov 2026): ONLY once the owner's org admin has agreed, the owner may run, by hand and with no scheduled task there,
-  sessions on the org seat for two kinds of work: studying reference reels (design/references.md) and app changes. Everything else stays here.
+- Second account (owner, 18-20 Nov 2026): the owner starts its sessions by hand (no scheduled tasks there) and gives each its task;
+  scope and boundaries in design/handoff.md. Everything else stays here.
 - Rules every run must follow go into CLAUDE.md or these runbooks, not into a task prompt.
 
 ## Owner chat lessons (15-16 Nov 2026)
