@@ -1,5 +1,7 @@
 # Turns Out rulebook (the gate every Turns Out reel passes before its one render)
 
+> **20 Nov 2026: design/c3-plan.md overrides rules 1-4 and S below** (topic gate, 15-20 s, caption, frozen Echoes format); the restart session rewrites them (c3-plan.md section 10).
+
 Same use as design/rules-web.md: score every rule (pass / fail, one line each) in the stills review before the one render; fix or swap on a fail;
 the daily audit adds, changes or drops a rule with the number. design/channel3.md (fact rules, never-list, quality bar) still applies.
 Rewritten 11 Nov 2026 (owner: "Go all in on ... Turns Out ... don't bother about the existing pattern, theme or anything"). The old rules 1-11
