@@ -44,7 +44,7 @@ export const reviewProblems = (name, e, { render = false, today = todayIST() } =
   for (const i of items) {
     const g = got.get(i);
     if (!g) { if (!(render && i === ITEMS)) out.push(`${p}: item ${i} is missing ("${i}. <item>: PASS: <evidence>")`); continue; }
-    if (i === ITEMS && g.st === 'PENDING') { if (!render && e.postOn < today) out.push(`${p}: item 13 is still PENDING; read reel-status and write "13. After the render: PASS: <evidence>"`); continue; }
+    if (i === ITEMS && g.st === 'PENDING') { if (!render && e.postOn < today) console.warn(`REVIEW GATE warning: ${p}: item 13 is still PENDING; read reel-status and write it (owner, 20 Nov 2026: a warning, it never blocks a push)`); continue; }
     if (g.st !== 'PASS') { out.push(`${p}: item ${i} is ${g.st}: fix the reel (or swap the topic) before it is rendered or called ready`); continue; }
     if (TEMPLATE.has(g.ev) || /\bnn\b|\.\.\.|<evidence>/.test(g.ev)) out.push(`${p}: item ${i} still has the template's placeholder evidence`);
     else if (g.ev.length < 8) out.push(`${p}: item ${i} needs its evidence after "PASS:"`);

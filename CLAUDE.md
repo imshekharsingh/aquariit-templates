@@ -19,7 +19,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - Learning: design/playbook.md, design/experiments.md, design/improvements.md, design/references.md, design/craft-log.md, design/topics.md, design/todo.md
 
 ## Schedule (owner, 18 Nov 2026)
-- ONE reel a day per channel (web, tech, Turns Out), every day, all at **13:00 IST** (owner, 18 Nov 2026, back to daily after a day of 4/4/3 a week).
+- ONE reel a day per channel (web, tech, Turns Out), every day, aim for **13:00 IST**; any time in the **13:00-21:00 IST window** is fine (owner, 20 Nov 2026). A reel that fails is fixed and posted inside the window; nothing blocks the next push. Turns Out is PAUSED for a replan (owner, 20 Nov 2026).
   Every reel needs its entry in templates/showreels/captions.json ("channel", "postOn", "postAt", "concept"; npm run check fails without it).
 - Learn-then-build: each reel is built the day it posts (evening before at most), never ahead, never a second reel for a channel and day.
 - One experiment and one researched improvement per channel per day (design/runbook-daily.md).
