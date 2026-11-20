@@ -1,0 +1,25 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'mon7': more pictures for the closing lines (Output QA ELEMENTS).",
+ "media": [
+  {
+   "id": "mon7",
+   "queries": [
+    "Washington Monument American flags Highsmith",
+    "Washington Monument base flags"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 700,
+   "avoid": [
+    "night",
+    "bridge",
+    "kutz",
+    "person",
+    "woman",
+    "man"
+   ]
+  }
+ ]
+}
