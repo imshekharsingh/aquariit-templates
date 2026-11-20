@@ -1,0 +1,17 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'dusk', second try with wider queries.",
+ "media": [
+  {
+   "id": "dusk",
+   "queries": [
+    "Washington Monument dusk",
+    "Washington Monument twilight"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 700
+  }
+ ]
+}

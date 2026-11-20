@@ -1,0 +1,17 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'night', second try with wider queries.",
+ "media": [
+  {
+   "id": "night",
+   "queries": [
+    "Washington Monument night",
+    "Washington Monument illuminated"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 700
+  }
+ ]
+}

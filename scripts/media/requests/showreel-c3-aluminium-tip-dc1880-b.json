@@ -1,0 +1,18 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'dc1880', second try with wider queries.",
+ "media": [
+  {
+   "id": "dc1880",
+   "queries": [
+    "Washington Monument 1880s historic photograph",
+    "Washington D.C. 19th century photograph Washington Monument"
+   ],
+   "sources": [
+    "wikimedia"
+   ],
+   "min_side": 500,
+   "width": 1280
+  }
+ ]
+}
