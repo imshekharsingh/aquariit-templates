@@ -59,7 +59,11 @@ Add these to the app's "Needs you" list (Owner answers `add`, channel c3) on the
 ## 6. Experiments: one per week, read at 24 h and 72 h (rows in design/targets.md)
 - **Week 1, E30 "myth topic"** (frozen format, 7 reels): PASS = 3+ reels past 1,300 reach (the best ever was 1,277) OR shares + comments
   10+ per 1,000 reached in 3+ reels (best ever ~7). This is the main test: it says whether belief beats curiosity.
-- **Week 2, E31 "comment line"** (if E30 passes): the caption's comment ask vs none, alternate days. PASS = 3x the comments of the no-ask days.
+- **Week 2, E31 "step bar + big words"** (owner's reference, 21 Nov; design/references.md R-ref 21 Nov): the same myth reels with a labelled step
+  bar at the top (MYTH · PROOF · ORIGIN · TRUTH), big mid-frame word-by-word captions with one accent word, and a padlocked blur over the answer
+  until its word. Engine change before week 2 starts (Echoes: a `steps` option, a `bigCaps` option, a `lock` add). PASS = median watch +20% vs
+  week 1 AND saves + shares per 1,000 reached up in 2 of 3 reels. The caption's comment ask stays on every reel.
+- **Later, E32 "Hinglish voice"** (only once Instagram shows country data and India leads it): the same reel format with a Hinglish script.
   If E30 fails, week 2 instead tests Trial Reels (if `c3-trial` is yes): the same reel's 2 hooks, one as a trial.
 - **Weeks 3-4:** keep the winners, no new test; read followers.
 - Never read a single reel as a trend; decide on whole weeks only.
