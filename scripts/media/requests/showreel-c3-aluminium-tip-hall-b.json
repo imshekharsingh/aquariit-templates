@@ -1,0 +1,25 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'hall', second try with wider queries.",
+ "media": [
+  {
+   "id": "hall",
+   "queries": [
+    "Charles Martin Hall aluminum inventor",
+    "Charles Martin Hall Oberlin"
+   ],
+   "sources": [
+    "wikimedia",
+    "openverse"
+   ],
+   "min_side": 400,
+   "avoid": [
+    "pickwick",
+    "chuzzlewit",
+    "illustration",
+    "dickens"
+   ],
+   "width": 1280
+  }
+ ]
+}

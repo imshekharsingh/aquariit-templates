@@ -1,0 +1,17 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'cans', second try with wider queries.",
+ "media": [
+  {
+   "id": "cans",
+   "queries": [
+    "aluminum cans",
+    "aluminium drink cans"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 500
+  }
+ ]
+}

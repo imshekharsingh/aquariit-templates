@@ -1,0 +1,17 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'lightning', second try with wider queries.",
+ "media": [
+  {
+   "id": "lightning",
+   "queries": [
+    "lightning storm",
+    "lightning strike night city"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 700
+  }
+ ]
+}
