@@ -549,4 +549,21 @@ export const demos = {
 <p class="note">Both bars are blue to yellow. The left one is blended in sRGB, so its middle is a flat grey; the right one says in oklch, so the middle stays colourful. The button turns both gradients together.</p>`,
     js: `function(root, btn){ var a = 90; btn.addEventListener('click', function(){ a = (a + 40) % 360; root.style.setProperty('--ang', a + 'deg'); }); }`,
   },
+  // the snap-back demo (showreel-42-snapback, 20 Nov 2026): the same slide-in keyframes on two menus, one with animation-fill-mode: forwards
+  snapback: {
+    css: `
+#snapback .stage{position:relative;height:92px;margin:8px 10px;overflow:hidden;border-radius:12px;background:rgba(255,255,255,.07)}
+#snapback .drawer{position:absolute;left:0;top:0;bottom:0;width:46%;border-radius:0 12px 12px 0;background:#3a6fd8;transform:translateX(-110%);color:#fff;font:700 15px/1 system-ui,sans-serif;padding:14px}
+@keyframes slide-in-42{from{transform:translateX(-110%)}to{transform:translateX(0)}}
+#snapback .stage.go .drawer{animation:slide-in-42 .5s}
+#snapback .stage.go.fix .drawer{animation:slide-in-42 .5s forwards}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">animation: slide-in .5s</span><div class="stage"><div class="drawer">Menu</div></div></div>
+  <div class="pane fix"><span class="tag ok">... .5s forwards</span><div class="stage fix"><div class="drawer">Menu</div></div></div>
+</div>
+<button class="play" type="button">Open both menus</button>
+<p class="note">Tap the button. Both menus run the same slide-in keyframes. On the left the menu jumps back off-screen the moment the animation ends, because without a fill mode the element returns to its own style; on the right the word forwards keeps the last keyframe, so the menu stays open.</p>`,
+    js: `function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); }`,
+  },
 };

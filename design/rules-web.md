@@ -153,6 +153,8 @@ carousel (840) and menus (1,236); the in-sync before/after (E23) is the best run
 new topic type (a page-load annoyance, not a tap: the font swap, showreel-37-fontswap) with the caption change E20 (a one-word question and a comment
 ask) as the day's one experiment. E18 read today: KEPT (rule 12). PROMOTE details-format printed again: rule 13 since 12 Nov.
 
+**ESCALATE 20 Nov** (median reach 1,673 over the last 7 vs 2,000, up from 1,552; watch 9.9 s; saves 1.6%; hold 48%; ALARM, ESCALATE two days running): the formats were changed on 18 Nov (details, 24 h +8%: 1,582 vs 1,461) and 19 Nov (swipe compare, 7 h: 309, slow start, read at 24 h), so today changes the TOPIC TYPE inside the winning in-sync before/after (rule 15, 2 WINs): an animation that ends wrong, not another layout / tap / load / colour bug (Nº 42, showreel-42-snapback, `animation-fill-mode: forwards`), told as one bug story (design/improvements.md web item 7). PROMOTE details-format and dynamic-fix: rules 13 and 15 since 18 Nov. DROP web-comment-ask (1 WIN, 2 LOSEs): in playbook "What didn't" since 18 Nov. RULE lines 2, 3, 4, 6, 8, 9, 11, 12 "question it" again: still hygiene (7 of 7 pass).
+
 ## Channel brief (moved from CLAUDE.md, 14 Nov 2026)
 - How a web reel is made: design/runbook-reels.md ("Making a web reel"); plan, series and craft bar: design/webin20sec.md. Benchmark is
   @techin20sec; the daily audit compares both (design/experiments.md, "Results log").
