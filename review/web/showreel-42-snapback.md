@@ -35,7 +35,7 @@ snapping, and the slide is slower, 0.9 s, so the snap is what is measured).
 10. Facts: PASS: MDN animation-fill-mode, BCD (Chrome 43, Edge 12, Firefox 16, Safari 9, read 20 Nov 2026), a real-browser check in Chrome 157 (x -100 px vs 0 px after the animation); npm run check passes
 11. Post data: PASS: captions.json entry (channel web, postOn 2026-11-20, postAt 13:00, concept, experiment web-story-bug); 6 keywords, 5 hashtags; caption names who to send it to and invites a save; tip block with its demo in scripts/tips/demos.mjs (/tips/ rebuilt)
 12. Review file: PASS: this file, items 1-11 and 14-18 PASS
-13. After the render: PENDING (re-tinted 20 Nov by rules-web.md rule 18: tiles and dots are tonal steps of the cobalt base, the menu panel is the brightest, most saturated element with the accent, BEFORE words / tags / border are one coral, AFTER words / tags / border one blue; 2 hues in the demo; stills re-read, one render, then Output QA)
+13. After the render: PENDING render 2 (re-tinted 20 Nov by rules-web.md rule 18; render 1, run 44670948229, failed only BULK (the 50%-white highlight on the bright panel, 9.0-10.0 s) and CALM (mean 5.6%); fixed: dark highlight, panel #6aa8ff-#4585f2, flash .3 -> .16; local BULK none, CALM 2.5% / 4.2%, FOCUS PASS subject 146 vs rest 75; render 2 dispatched, the last allowed)
 14. Cuts: PASS: FLOW: cuts 0 (declared: the split and the merge, sharedElement; the snap is a 0.14 s move, not a cut)
 15. Dead runs: PASS: FLOW: dead runs none (declared holds: the fixed drawer simply staying, and the last beat on the copyable line)
 16. Continuity: PASS: FLOW: continuity 74% (median step 1.3, 2 declared transitions; web from 16 Nov 35%+)

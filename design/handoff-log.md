@@ -13,7 +13,7 @@ Format (at most 6 lines):
 
 ## 2026-11-20 11:15 IST · main · web colour fix, step 2 (palette demo tokens, FOCUS check)
 - Done: kitmotion.js demo tokens (--d1..--d3, --dacc, --dwarm, --dcool, KM.demo, KM.demoFill, d: { warm, cool } per palette and world); starters use them; newweb.mjs writes qa.focus; Output QA FOCUS (output-qa.py, look.py); the 19 stale kit copies re-inlined; snapback.json qa.focus.
-- Left: FOCUS on the snapback MP4 (Output QA workflow, no new render); other web reels have no qa.focus (WARN only).
+- Also: snapback render 1 failed BULK + CALM (run 44670948229), fixed, render 2 dispatched after merge. Left: FOCUS on the render 2 MP4 (it runs inside the render's Output QA); other web reels have no qa.focus (WARN only).
 - For the other account: nothing in c3 touched; kit copies of Turns Out scenes were not stale.
 
 ## 2026-11-20 10:40 IST · main · web colour fix, step 1 (snapback re-tint)
