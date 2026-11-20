@@ -402,3 +402,12 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
 - Decides at 24 h and 72 h against the channel's last 7: WIN = reach 150+ or saves + shares 3+, and watch seconds above the 20 s median.
   Keep the kit engine at 2 WINs of 3 (rules-tech.md), else change the topic style before the engine.
 
+## E30 · Turns Out: myth topics, "You were taught this wrong" (20 Nov 2026, design/c3-plan.md; 7 reels from Sat 21 Nov)
+- Why: 25 reels, 10 followers; the icon topics reach the ~1,100 first pool and stop because nobody sends, saves or comments. A myth the viewer
+  believes gives them something to say and someone to send it to.
+- Change: topic = a myth (rules-c3.md R1) in one frozen 15-22 s Echoes format (R2), caption with the comment ask and send line (R3).
+  Config `"experiment": {"id": "c3-myth", "change": "myth topic (design/c3-plan.md E30)", "vs": "median"}`.
+- Read at 24 h and 72 h. PASS = 3+ of the 7 reels past 1,300 reach OR shares + comments 10+ per 1,000 reached in 3+ reels. Verdict Sat 28 Nov;
+  keep-or-stop checkpoints in design/c3-plan.md section 7.
+- First reel: showreel-c3-viking-horns (Vikings never wore horned helmets).
+

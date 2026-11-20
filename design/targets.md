@@ -33,3 +33,4 @@ config forgets. Two WINs of one id print PROMOTE (becomes a rulebook rule that d
 | tech | 2026-11-14 | 13:00 | tech-settings-list | E17: 3 phone settings to change today, tapped on a drawn phone | median |
 | c3 | 2026-11-13 | 13:00 | c3-guess | E19: GUESS format (three options on the icon, 3-2-1, the answer, loops) | median |
 | c3 | 2026-11-14 | 13:00 | c3-guess | E19: GUESS format (three options on the icon, 3-2-1, the answer, loops) | median |
+| c3 | 2026-11-21 | 13:00 | c3-myth | E30: myth topic, frozen 15-22 s Echoes format (design/c3-plan.md) | median |
