@@ -1,0 +1,22 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'monument', third try (Openverse only).",
+ "media": [
+  {
+   "id": "monument",
+   "queries": [
+    "Washington Monument Carol Highsmith",
+    "Washington Monument Reflecting Pool"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 700,
+   "avoid": [
+    "night",
+    "bridge",
+    "statue"
+   ]
+  }
+ ]
+}
