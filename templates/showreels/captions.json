@@ -1440,5 +1440,32 @@
    "change": "one bug told as a story (it breaks, you feel it, one word fixes it, it behaves) on a new topic type, an animation that ends wrong; dynamic before/after in sync (design/improvements.md web item 7)",
    "vs": "median"
   }
+ },
+ "showreel-tech-wireless-worth": {
+  "channel": "tech",
+  "postOn": "2026-11-20",
+  "postAt": "13:00",
+  "concept": "Kit engine (shared frame), ~40 s, worth it or not, charger, global. Is wireless charging worth it? Frame 0: two lanes already charging side by side, a cable with a 20 W adapter and a pad with a 30 W adapter; they race to the same 50% in the same 30 minutes (a tie), then the kit and the convenience decide; every figure Apple India's iPhone 16 spec page, read 20 Nov 2026",
+  "experiment": {
+   "id": "tech-worth-race",
+   "change": "worth it or not as a race: two lanes (cable vs wireless pad) charge side by side to the same 50% in the same 30 minutes, then the kit and the convenience decide; the object opens up (coil cutaway, plug and drop); no rolling digits; qa.sync set (design/improvements.md tech items 2 and 6)",
+   "vs": "median"
+  },
+  "caption": "Is wireless charging worth it? 🔌 Not for speed: for convenience.\n\nOn Apple's iPhone 16 page for India, the fast-charge line says up to 50% in 30 minutes with a 20W adapter and a USB-C cable, or with a 30W adapter and a MagSafe charger. So on speed it's a tie. What differs is the kit: the faster wireless figure needs the 30W adapter, and Apple lists wireless chargers as sold separately. The footnote adds that these are Apple's own tests on drained phones, and that charge time varies with settings and environment.\n\nWorth it if you charge at a desk or bedside and like to just drop the phone down. Not worth it if you only want speed: a cable with a 20W adapter does the same job. Check your own phone's spec page for its numbers.\n\nSend this to a friend who's deciding whether to buy a wireless charger, or save it for your next upgrade.",
+  "keywords": [
+   "is wireless charging worth it",
+   "wireless charging vs cable",
+   "wireless charging speed",
+   "magsafe 30w adapter",
+   "iphone 16 fast charge 50 percent",
+   "wireless charger worth buying"
+  ],
+  "hashtags": [
+   "#wirelesscharging",
+   "#iphone16",
+   "#techtips",
+   "#chargingtips",
+   "#techexplained"
+  ]
  }
 }
