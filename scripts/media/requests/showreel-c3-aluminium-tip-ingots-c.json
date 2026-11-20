@@ -1,0 +1,22 @@
+{
+ "name": "showreel-c3-aluminium-tip",
+ "why": "Fri 20 Nov Turns Out photo 'ingots', third try (Openverse only).",
+ "media": [
+  {
+   "id": "ingots",
+   "queries": [
+    "aluminum ingots",
+    "aluminium metal bars",
+    "raw aluminium metal"
+   ],
+   "sources": [
+    "openverse"
+   ],
+   "min_side": 500,
+   "avoid": [
+    "can",
+    "foil"
+   ]
+  }
+ ]
+}
