@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/tap-targets.json.
 10. Facts: PASS: touch targets should be at least about 1 cm x 1 cm, targets packed close together cause wrong taps, and primary calls to action deserve a larger tap target (Nielsen Norman Group, Touch Targets on Touchscreens); WCAG 2.2 SC 2.5.8 asks for a minimum target size or spacing; the app and restaurant are invented; sources (read in full in the Sources run 44949452447 and the second Sources run for WCAG 2.5.8): Touch Targets on Touchscreens (Nielsen Norman Group); Understanding SC 2.5.8 Target Size (Minimum) (W3C WCAG 2.2)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list with one reason each, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (1 groups); local Output QA copy: FILL median 92% (0% of samples under 80%), GRADE subject vs surroundings 0.73, ELEMENTS longest gap 1.6 s at 14.4-16.0 s
-13. After the render: PENDING
+13. After the render: PASS: render 1 (run 44951340021): OUTPUT QA PASS (PACE 2.66 words/s, GRADE 0.73, FILL median 92%, ELEMENTS longest gap 1.5 s, NUMBERS none past the voice, DEAD none, SOUND 100% cues audible, LOUD -14 LUFS)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.4, 0 declared transitions)
