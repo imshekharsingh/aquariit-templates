@@ -27,7 +27,7 @@
 /*board:end*/
 /*script:begin*/
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout');
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#ff8a5a', '#ff5f7a');
   var TEXT = "You asked us to fix a birthday invite. Move one: pick one hero, the age. Move two: one font, two sizes. Move three: one colour, used once. Turns out, a kids' party can look this good. Comment what we fix next.";
   var DUR = 18, V, PH, A = {}, CAM, CUR = [], IX = 90, IY = 440, W = {};
   var ST = {   // A: everything shouts (four fonts, all centred, one size); B: one hero, one font in two sizes, one colour

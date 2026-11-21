@@ -10,15 +10,15 @@
 #tr{left:0;top:0;opacity:0;z-index:23}
 /*css:end*/
 /*board:begin*/
-<div class="lbl" id="cardA"><div class="t" id="aT1">EMBER</div><div class="t" id="aT2">LANE</div><div class="ci" id="aC"></div><div class="ru" id="aR"></div><div class="t" id="aT3">vanilla!!</div></div>
-<div class="lbl" id="cardB"><div class="t" style="top:122px;font:700 19px 'Space Grotesk';letter-spacing:.32em;color:#e9dcc3;padding-left:.32em">EMBER</div><div class="t" style="top:150px;font:700 19px 'Space Grotesk';letter-spacing:.32em;color:#e9dcc3;padding-left:.32em">LANE</div><div class="ru" style="top:186px;width:56px;margin-left:-28px"></div><div class="t" style="top:202px;font:500 11px 'Space Grotesk';letter-spacing:.24em;color:#9a9080;padding-left:.24em">VANILLA · 200 G</div></div>
+<div class="lbl board" id="cardA"><div class="t" id="aT1">EMBER</div><div class="t" id="aT2">LANE</div><div class="ci" id="aC"></div><div class="ru" id="aR"></div><div class="t" id="aT3">vanilla!!</div></div>
+<div class="lbl board" id="cardB"><div class="t" style="top:122px;font:700 19px 'Space Grotesk';letter-spacing:.32em;color:#e9dcc3;padding-left:.32em">EMBER</div><div class="t" style="top:150px;font:700 19px 'Space Grotesk';letter-spacing:.32em;color:#e9dcc3;padding-left:.32em">LANE</div><div class="ru" style="top:186px;width:56px;margin-left:-28px"></div><div class="t" style="top:202px;font:500 11px 'Space Grotesk';letter-spacing:.24em;color:#9a9080;padding-left:.24em">VANILLA · 200 G</div></div>
 <div class="vote" id="vA">A</div><div class="vote" id="vB">B</div>
 <div class="pal" id="p0" style="background:#f2c94c"></div><div class="pal" id="p1" style="background:#c0392b"></div><div class="pal" id="p2" style="background:#2e86c1"></div><div class="pal" id="p3" style="background:#e67e22"></div><div class="pal" id="p4" style="background:#6c3483"></div>
 <svg id="tr" class="a" width="540" height="960" viewBox="0 0 540 960"></svg>
 /*board:end*/
 /*script:begin*/
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout');
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#d9b46a', '#a8783a');
   var TEXT = "Same words. Which one would you pay more for? It's B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.";
   var DUR = 17, V, PH, A = {}, CAM, CUR = [];
   var AX = 50, BXp = 290, Y = 452, CX = 170;   // the two labels side by side, then A moves to the centre and becomes the premium one

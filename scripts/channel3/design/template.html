@@ -17,32 +17,43 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .a{position:absolute}
 #vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
 #world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
-#grid{left:-200px;top:-200px;width:940px;height:1360px;background:repeating-linear-gradient(0deg,rgba(255,255,255,.045) 0 1px,transparent 1px 24px),repeating-linear-gradient(90deg,rgba(255,255,255,.045) 0 1px,transparent 1px 24px)}
+/* premium staging (owner, 21 Nov 2026: "more premium in design experience ... effective colour definitions and design patterns"): a dot grid that
+   fades out, the Turns Out ring turning slowly behind the design, a spotlight in the format's own tint, a contact shadow on the floor */
+:root{--tint:#ffb35a;--tint2:#ff7a45}
+#grid{left:-200px;top:-200px;width:940px;height:1360px;background:radial-gradient(circle,rgba(255,255,255,.085) 1.1px,transparent 1.5px) 0 0/22px 22px;-webkit-mask-image:radial-gradient(60% 50% at 50% 48%,#000 30%,transparent 100%)}
+#spot{left:-60px;top:300px;width:660px;height:640px;background:radial-gradient(50% 50% at 50% 50%,color-mix(in srgb,var(--tint) 26%,transparent),transparent 70%);pointer-events:none}
+#ring{left:-50px;top:280px;width:640px;height:640px;opacity:.55;pointer-events:none}
+#floor{left:70px;top:770px;width:400px;height:40px;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.55),transparent 70%);filter:blur(6px);pointer-events:none}
 #ov{left:0;top:0;width:540px;height:960px;overflow:visible;pointer-events:none;z-index:20}
 #cur{left:0;top:0;width:30px;height:30px;z-index:30;opacity:0;pointer-events:none}
 #dial{left:30px;top:132px;display:flex;align-items:center;gap:12px;z-index:40}
-#dial svg{width:66px;height:66px}
+#dial svg{width:66px;height:66px;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--tint) 45%,transparent))}
 #dial .lb{font:700 15px/1 var(--f);letter-spacing:.24em;color:var(--amb)}
 #dial .n{font:900 26px var(--d);fill:#fff}
 #ttl{left:30px;top:212px;width:480px;font:900 31px/1.08 var(--d);letter-spacing:-.02em;z-index:40}
-#ttl em{font-style:normal;color:var(--amb)}
+#ttl em{font-style:normal;background:linear-gradient(100deg,color-mix(in srgb,var(--tint) 80%,#fff),var(--tint2));-webkit-background-clip:text;background-clip:text;color:transparent}
 #band{left:0;top:292px;width:540px;height:96px}
 #cap{left:30px;top:298px;width:480px;min-height:80px;font:700 29px/1.15 var(--f);letter-spacing:-.02em;z-index:40}
 #cap span{display:inline-block;margin-right:.24em}
-.chip{position:absolute;white-space:nowrap;padding:8px 14px 8px 12px;border-radius:12px;background:#141827;border:1.5px solid var(--amb);color:var(--amb);font:700 17px/1 var(--f);letter-spacing:.04em;z-index:25;opacity:0;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.chip{position:absolute;white-space:nowrap;padding:9px 15px 9px 13px;border-radius:999px;background:linear-gradient(rgba(18,21,34,.82),rgba(18,21,34,.82)) padding-box,linear-gradient(120deg,var(--tint),var(--tint2) 60%,rgba(255,255,255,.25)) border-box;border:1.5px solid transparent;backdrop-filter:blur(10px);color:color-mix(in srgb,var(--tint) 85%,#fff);font:700 16px/1 var(--f);letter-spacing:.08em;z-index:25;opacity:0;box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12)}
 .chip b{color:#fff;font-weight:700}
-.chip.g{border-color:var(--good);color:var(--good)}.chip.r{border-color:var(--bad);color:var(--bad)}
-.board{position:absolute;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06)}
+.chip.g{background:linear-gradient(rgba(14,28,24,.85),rgba(14,28,24,.85)) padding-box,linear-gradient(120deg,#5ee0a0,#2fb37a) border-box;color:#7ef0b8}.chip.r{background:linear-gradient(rgba(34,14,18,.85),rgba(34,14,18,.85)) padding-box,linear-gradient(120deg,#ff6b6b,#ff9a6a) border-box;color:#ff8e8e}
+.board{position:absolute;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.4),0 12px 24px rgba(0,0,0,.35),0 40px 90px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.55)}
+/* print feel: a fine paper grain and a soft sheen over every designed object */
+.board::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:30;opacity:.5;mix-blend-mode:multiply;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .4  0 0 0 .16 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>"),linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,0) 40%,rgba(0,0,0,.04))}
 /*CSS*/
 </style>
 </head>
 <body>
 <div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
+  <div id="spot" class="a"></div>
   <div id="grid" class="a" data-fit="free"></div>
+  <svg id="ring" class="a" viewBox="-320 -320 640 640"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--tint);stop-opacity:0"/><stop offset="1" style="stop-color:var(--tint);stop-opacity:.55"/></linearGradient></defs><circle r="300" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="26"/><g id="ringarc"><path d="M-212 -212 A300 300 0 1 1 -300 0" fill="none" stroke="url(#rg)" stroke-width="26" stroke-linecap="round"/></g></svg>
+  <div id="floor" class="a"></div>
   <div id="sbox" data-subject style="position:absolute;left:40px;top:400px;width:460px;height:380px"></div>
   <!--BOARD-->
   <svg id="ov" class="a" viewBox="0 0 540 960"></svg>
-  <svg id="cur" class="a" viewBox="0 0 30 30"><path d="M4 2 L4 24 L10 18 L14 27 L18 25 L14 16 L22 16 Z" fill="#fff" stroke="#0b0d16" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  <svg id="cur" class="a" viewBox="0 0 30 30" style="filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))"><path d="M4 2 L4 24 L10 18 L14 27 L18 25 L14 16 L22 16 Z" fill="#fff" stroke="#0b0d16" stroke-width="1.6" stroke-linejoin="round"/></svg>
 </div></div>
 <div id="dial" class="a"><svg viewBox="-40 -40 80 80"><defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset="1" stop-color="#ff7a45"/></linearGradient></defs><circle r="34" fill="#0b0d16"/><circle r="28" fill="none" stroke="#1f2538" stroke-width="7"/><path class="arc" fill="none" stroke="url(#dg)" stroke-width="7" stroke-linecap="round"/><text class="n" y="9" text-anchor="middle"></text></svg><div class="lb"></div></div>
 <div id="ttl" class="a" data-hook></div>

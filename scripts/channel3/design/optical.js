@@ -11,13 +11,13 @@
 /*css:end*/
 /*board:begin*/
 <div id="art" class="board"><div id="felt"><b>FELT CENTRE</b></div><div id="ghost"></div><div id="dot"></div></div>
-<div class="mini" id="m0"><div class="gh"></div><div class="obj" style="font:700 19px/1 'Space Grotesk';color:#1d1a16;white-space:nowrap">Night Market</div><div class="tg">TITLE</div></div>
-<div class="mini" id="m1"><div class="gh"></div><div class="obj" style="padding:12px 22px;border-radius:999px;background:#ff7a45;color:#fff;font:700 16px/1 'Space Grotesk';white-space:nowrap">Book now</div><div class="tg">BUTTON</div></div>
-<div class="mini" id="m2"><div class="gh"></div><div class="obj" style="width:62px;height:62px;border-radius:50%;border:5px solid #1d1a16;display:grid;place-items:center;font:900 22px/1 'Unbounded';color:#1d1a16">K</div><div class="tg">BADGE</div></div>
+<div class="mini board" id="m0"><div class="gh"></div><div class="obj" style="font:700 19px/1 'Space Grotesk';color:#1d1a16;white-space:nowrap">Night Market</div><div class="tg">TITLE</div></div>
+<div class="mini board" id="m1"><div class="gh"></div><div class="obj" style="padding:12px 22px;border-radius:999px;background:#ff7a45;color:#fff;font:700 16px/1 'Space Grotesk';white-space:nowrap">Book now</div><div class="tg">BUTTON</div></div>
+<div class="mini board" id="m2"><div class="gh"></div><div class="obj" style="width:62px;height:62px;border-radius:50%;border:5px solid #1d1a16;display:grid;place-items:center;font:900 22px/1 'Unbounded';color:#1d1a16">K</div><div class="tg">BADGE</div></div>
 /*board:end*/
 /*script:begin*/
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout');
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#8fb0ff', '#6a7dff');
   var TEXT = "This dot is in the exact centre. So why does it look too low? Turns out, your eyes see the middle a little higher than it really is. So designers nudge things up. Titles, buttons, even logos.";
   var DUR = 16, V, PH, A = {}, CAM, CUR = [], AX = 100, AY = 432, S = 340, NUDGE = 17;
   function at(w, n){ return V.at(w, n); }

@@ -25,7 +25,7 @@
 /*board:end*/
 /*script:begin*/
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout');
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#ffb35a', '#ff7a45');
   var TEXT = "This menu looks cheap. Turns out, it's not the colours. Fix one: line every item up to one edge. Fix two: one font, in two weights. Fix three: double the space between groups. Same words. Now it looks twice the price.";
   var DUR = 18, BX = 50, BY = 408, BW = 440, V, PH, A = {}, CAM, W = {}, CUR = [];
   // the two looks of every line: A (cheap: centred, four fonts, cramped) and B (one edge, one font in two weights, room to breathe)
@@ -113,7 +113,7 @@
     // fix three: two brackets measure the gaps between groups and roll 8 -> 24 px as the groups move apart
     var mk = P(t, A.f3 + .2, A.f3 + .6) * (1 - P(t, A.same - .3, A.same)), gp = DT.roll(8, 24, P(t, A.dbl, A.dbl + .6));
     var y1 = BY + mix(IT.i1.A.y + 20, IT.i1.B.y + 16, S.k3), y2 = BY + mix(IT.r0.A.y, IT.r0.B.y, S.k3), y3 = BY + mix(IT.r3.A.y + 22, IT.r3.B.y + 24, S.k3), y4 = BY + mix(IT.foot.A.y, IT.foot.B.y, S.k3);
-    DT.measure('g1', BX + BW - 14, y1, y2, mk, gp + ' px', -1); DT.measure('g2', BX + BW - 14, y3, y4, mk, gp + ' px', -1);
+    DT.measure('g1', BX + 272, y1, y2, mk, gp + ' px', 1); DT.measure('g2', BX + 272, y3, y4, mk, gp + ' px', 1);
     DT.chip('c3', 'SPACE <b>×2</b>', 360, 396, P(t, A.dbl + .5, A.dbl + .8) - P(t, A.same - .3, A.same));
     // the scrub bar: before <-> after once, then the verdict
     var so = P(t, A.same - .2, A.same + .1) * (1 - P(t, A.price - .3, A.price)); $('scrub').style.opacity = so.toFixed(3); $('scrub').querySelector('.hd').style.left = (S.sc * 100).toFixed(1) + '%';
