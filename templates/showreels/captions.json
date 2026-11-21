@@ -1602,5 +1602,26 @@
   "onGo": true,
   "concept": "Design series · Everything on this CV is bold. So nothing stands out. 📄 (a CV on a desk where every line is bold and one size, fixed in three moves: the name biggest, headings one size down, details plain)",
   "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-c3-line-length": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · Your eyes get lost here. Every line is too long. 📖 (a blog post on a laptop set full width in tiny tight lines, fixed in three moves: narrow the column, about ten words a line, more space between lines)",
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-c3-event-poster": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · When is this event? You can't tell. 🏮 (a lantern-walk poster on a notice board whose date, time and place are scattered, tiny and tilted, fixed in three moves: date and time in one block, the place right under, space between groups)",
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-c3-all-caps": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · Stop writing in all caps. It's hard to read. 🛍️ (a sale flyer on a shop's glass door set entirely in bold caps, fixed in three moves: sentence case, caps only for a short label, letterspacing on those caps)",
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
  }
 }

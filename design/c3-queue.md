@@ -38,3 +38,6 @@ Order: 1, 5, 6, 3, 7, 4, 10, 2, 8, 9 (strongest visual flaw first). Max 2 render
 larger target; the Apple page has no readable text and "where the thumb rests" is not in the fetched sources); second source WCAG 2.5.8.
 #6 resume: second source Butterick "Bold or italic" ("if everything is emphasized, then nothing is emphasized"). Scenes:
 design/photo.js (#1), thumb.js (#5), resume.js (#6).
+Batch 2: #3 line-length voice says "short lines are easier" (Butterick: more comfortable, not faster); before 90-97 characters a line, after
+49-61 (inside 45-90). #4 all-caps: "lowercase words have shapes" and "caps for short labels" (6-word lines). #7 event-poster: "related things
+sit together", "date and time together". Scenes: design/measure.js (#3), caps.js (#4), group.js (#7).
