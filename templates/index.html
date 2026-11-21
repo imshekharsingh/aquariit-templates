@@ -479,7 +479,7 @@
     return k === 'tech' ? '19:00' : k === 'c3' ? '20:00' : /\b19:00\b/.test(m.note || '') ? '19:00' : '13:00'; }
   function dueOf(s, m){ return m.postOn ? Date.parse(m.postOn + 'T' + slotOf(s, m) + ':00+05:30') : Infinity; }
   function when(s, m){ if (m.sample) return ['Sample · not scheduled', ''];   // sample (6 Nov 2026, temporary)
-    if (!m.postOn) return ['Not scheduled', '']; var t = slotOf(s, m), diff = Math.round((Date.parse(m.postOn) - Date.parse(istToday())) / DAY);
+    if (!m.postOn) return m.onGo ? ['Ready · post when you choose', ' now'] : ['Not scheduled', '']; var t = slotOf(s, m), diff = Math.round((Date.parse(m.postOn) - Date.parse(istToday())) / DAY);
     if (Date.now() > dueOf(s, m)) return ['Overdue since ' + (diff === 0 ? '' : diff === -1 ? 'yesterday ' : nice(m.postOn) + ' ') + t, ' late'];
     return [diff === 0 ? 'Today ' + t : diff === 1 ? 'Tomorrow ' + t : nice(m.postOn) + ' · ' + t, diff === 0 ? ' now' : '']; }
   var ticks = {}, trackOk = true;

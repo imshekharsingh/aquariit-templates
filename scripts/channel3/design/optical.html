@@ -743,7 +743,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('This');
     A.exact = at('exact'); A.why = at('why'); A.low = at('low'); A.turns = at('Turns'); A.higher = at('higher'); A.nudge = at('nudge'); A.titles = at('Titles'); A.buttons = at('buttons'); A.logos = at('logos'); A.end = Math.min(DUR - .2, V.end + .8);
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.why - .1, 1.2, 255, 500, 1.03).pull(A.titles - .4, .8, 255, 480, 1);
+    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: 1 }).pull(0, .55, 255, 480, 1).pushIn(.5, 1.6, 255, 482, 1.025).pull(A.exact - .1, .5, 255, 480, 1).pushIn(A.why - .1, 1.2, 255, 486, 1.03).pull(A.titles - .4, .8, 255, 480, 1);
     var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); S.land(.2, 270, 0); S.land(.45, 270, 4);
     S.rise(A.exact - .3, .3); S.roll(A.exact + .1, .5, 330, 8); S.land(A.exact + .5, 270, 2); S.land(A.exact + .6, 270, 4);
     S.stamp(A.low, 330); S.rise(A.higher - .4, .6); S.tint(A.higher + .1, 270); S.land(A.higher + .45, 270, 6);
@@ -758,7 +758,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     DT.mood(t, (.5 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .5 * E.out3(P(t, A.logos + .2, A.logos + .9)))); DT.sweep(t, [A.d1, A.titles + .45, A.buttons + .45, A.logos + .45]); DT.hook(t, '<i>Your</i> <i>eyes</i> <i>are</i> <em><i>lying.</i></em>', A.hook);
     var art = $('art'), out = E.inOut3(P(t, A.titles - .35, A.titles + .2)); art.style.opacity = (1 - out).toFixed(3); var ia = 1; art.style.opacity = (1 - out).toFixed(3); art.style.transform = 'translateY(' + (-30 * out + (1 - ia) * 60).toFixed(1) + 'px) perspective(1200px) rotateX(' + ((1 - ia) * 18).toFixed(1) + 'deg) scale(' + ((1 - .1 * out) * (.92 + .08 * ia)).toFixed(3) + ')';
     // the dot: in the exact centre, then nudged up by the cursor (a ghost stays where the maths put it)
-    var nk = DT.spring(t, A.nudge + .05, .6), cy = S / 2 - NUDGE * nk; $('dot').style.left = S / 2 + 'px'; $('dot').style.top = cy.toFixed(1) + 'px';
+    var nk = DT.spring(t, A.nudge + .05, .6), cy = S / 2 - NUDGE * nk; $('dot').style.left = S / 2 + 'px'; $('dot').style.top = cy.toFixed(1) + 'px'; $('dot').style.transform = 'scale(' + (1 + .09 * Math.sin(t * 4.2) * (1 - P(t, A.exact - .3, A.exact))).toFixed(3) + ')';   /* the dot breathes while the claim lands */
     var g = $('ghost'); g.style.left = S / 2 + 'px'; g.style.top = S / 2 + 'px'; g.style.opacity = (P(t, A.nudge + .1, A.nudge + .4) * (1 - out)).toFixed(3);
     // the proof: crosshairs and two equal measurements (180 / 180)
     var pk = P(t, A.exact, A.exact + .5) * (1 - P(t, A.titles - .4, A.titles - .1));

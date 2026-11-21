@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-fix-invite",
+ "seek": "scripts/channel3/fix-invite.html",
+ "engine": "design",
+ "dur": 18,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "Let's fix this birthday invite. Move one: pick one hero, the age. Move two: one font, two sizes. Move three: one colour, used once. Turns out, a kids' party can look this good. Comment what we fix next.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format",
+  "vs": "median"
+ },
+ "caption": "Let's fix this birthday invite. Three moves. 🎈\n\n1. Pick one hero: the age, big.\n2. One font, two sizes.\n3. One colour, used once.\n\nTurns out, a kids' party can look this good. Save this for your next invite. What should we fix next? Comment it.",
+ "keywords": [
+  "invitation design tips",
+  "birthday invite design",
+  "visual hierarchy",
+  "typography tips",
+  "graphic design for beginners",
+  "canva design tips"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#invitationdesign",
+  "#typography",
+  "#designhacks"
+ ],
+ "sources": [
+  {
+   "title": "Visual Hierarchy in UX: Definition (Nielsen Norman Group)",
+   "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"
+  },
+  {
+   "title": "Typography in ten minutes (Butterick's Practical Typography)",
+   "url": "https://practicaltypography.com/typography-in-ten-minutes.html"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (the fridge door) fills the frame by design"
+   }
+  ],
+  "subject": [
+   90,
+   430,
+   450,
+   790
+  ]
+ }
+}

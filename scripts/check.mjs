@@ -64,6 +64,7 @@ if (caps) {
   for (const dir of ['scripts/explainer', 'scripts/explainer/styles', 'scripts/channel3']) { const D = join(root, dir); for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.json')) : []) { try { const n = JSON.parse(readFileSync(join(D, f), 'utf8')).name; if (n) need.push([n, `${dir}/${f}`]); } catch {} } }
   const TD = join(root, 'techreel', 'topics');
   for (const f of existsSync(TD) ? readdirSync(TD).filter((x) => x.endsWith('.json')) : []) { try { const s = JSON.parse(readFileSync(join(TD, f), 'utf8')).slug; if (s) need.push(['showreel-tech-' + s, `techreel/topics/${f}`]); } catch {} }
+  // onGo (owner, 21 Nov 2026, Turns Out design series: "Don't mark these with dates yet, I'll upload based on response"): a finished reel with no date
   // sample (6 Nov 2026, temporary): a "sample": true entry is for review only, never scheduled, so it needs "channel" but no "postOn"
   // samples expire (owner, 11 Nov 2026: "why do we keep such things?"): a visible "sample" needs "until" (YYYY-MM-DD IST, at most 3 days
   // after it was made); once that day has passed the check fails until it is hidden, so no sample lingers in the app.
@@ -71,7 +72,7 @@ if (caps) {
     for (const [n, e] of Object.entries(caps)) if (e && e.sample && !e.hidden) {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(e.until || '')) err(`captions.json ${n}: a sample needs "until" (YYYY-MM-DD IST, at most 3 days ahead), then "hidden": true`);
       else if (e.until < today) err(`captions.json ${n}: sample expired on ${e.until}: hide it ("hidden": true) or post it`); } }
-  for (const [n, from] of need) { const e = caps[n]; if (!e || (!e.hidden && (!e.channel || (!e.postOn && !e.sample)))) err(`${from}: add "${n}" to templates/showreels/captions.json with "channel" and "postOn" (YYYY-MM-DD IST), or "hidden": true`); }
+  for (const [n, from] of need) { const e = caps[n]; if (!e || (!e.hidden && (!e.channel || (!e.postOn && !e.sample && !e.onGo)))) err(`${from}: add "${n}" to templates/showreels/captions.json with "channel" and "postOn" (YYYY-MM-DD IST), or "hidden": true`); }
 }
 
 // 4c. exact post time (owner, 5 Nov 2026): every reel posting from 5 Nov on has "postAt" (HH:MM IST), and the Worker has a cron 10 minutes

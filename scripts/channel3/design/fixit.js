@@ -1,7 +1,7 @@
 /*css:begin*/
 #inv{left:90px;top:440px;width:360px;height:340px;border-radius:16px;background:#d6f0ff}
 .iv{position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 0}
-#big7{position:absolute;left:0;top:0;font:900 150px/1 'Unbounded';color:#1d1a16;transform-origin:0 0}
+#big7{position:absolute;left:0;top:0;font:900 132px/1 'Unbounded';color:#1d1a16;transform-origin:0 0}
 .cf{position:absolute;width:16px;height:16px;border-radius:50%}
 #cmt{left:40px;top:470px;width:460px;padding:16px 20px;border-radius:20px;background:#1c2133;border:1.5px solid #2a3150;display:flex;gap:14px;align-items:center;z-index:28;opacity:0}
 #cmt i{flex:none;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#ffb35a,#7a3d9a)}
@@ -22,13 +22,13 @@
   <div class="cf" id="c4" style="background:#ff9800"></div><div class="cf" id="c5" style="background:#9c27b0"></div><div class="cf" id="c6" style="background:#ffeb3b"></div><div class="cf" id="c7" style="background:#e91e63"></div>
 </div>
 <div class="rk" id="k1">1</div><div class="rk" id="k2">2</div><div class="rk" id="k3">3</div>
-<div id="cmt" class="a"><i></i><div><small>a viewer asked</small><b id="cmtT"></b></div></div>
+<div id="cmt" class="a"><i></i><div><small>the invite</small><b id="cmtT"></b></div></div>
 <div id="ask" class="a"></div>
 /*board:end*/
 /*script:begin*/
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ff8a5a', '#ff5f7a');
-  var TEXT = "You asked us to fix a birthday invite. Move one: pick one hero, the age. Move two: one font, two sizes. Move three: one colour, used once. Turns out, a kids' party can look this good. Comment what we fix next.";
+  var TEXT = "Let's fix this birthday invite. Move one: pick one hero, the age. Move two: one font, two sizes. Move three: one colour, used once. Turns out, a kids' party can look this good. Comment what we fix next.";
   var DUR = 18, V, PH, A = {}, CAM, CUR = [], IX = 90, IY = 440, W = {};
   var ST = {   // A: everything shouts (four fonts, all centred, one size); B: one hero, one font in two sizes, one colour
     v0: { A: { f: "400 30px/1.2 'Pacifico'", c: '#e91e63', y: 26 }, B: { f: "700 26px/1 'Space Grotesk'", c: '#1d1a16', y: 176 } },
@@ -43,7 +43,7 @@
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('Move') - .2;
     A.m1 = at('Move'); A.hero = at('hero'); A.m2 = at('Move', 2); A.sizes = at('sizes'); A.m3 = at('Move', 3); A.once = at('once'); A.turns = at('Turns'); A.cmt = at('Comment'); A.end = Math.min(DUR - .2, V.end + 1.2);
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.m1, 1, 255, 500, 1.03).pull(A.turns - .2, .8, 255, 480, 1);
+    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: 1 }).pull(0, .55, 255, 480, 1).pushIn(A.m1, 1, 255, 486, 1.03).pull(A.turns - .2, .8, 255, 480, 1);
     var S = DT.S; S.sting(0); [.35, .65, .95].forEach(function(t0, i){ S.land(t0 + .05, 270, i + 1); KM.cue({ t: t0, k: 'tick', g: .08, p: i, x: 270, synth: true }); }); S.whoosh(0, 270, .4); S.land(.1, 270, 0); 
     S.whoosh(A.m1 - .9, 270, .3); IDS.forEach(function(id, i){ S.land(A.m1 - .7 + i * .06, 270, i); });
     // move 1: the hero grows (a swell and a shimmer), the read order lands 1-2-3 as rising notes
@@ -58,7 +58,7 @@
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5)))); DT.sweep(t, [A.d1, A.d2, A.d3, A.turns + .2]); DT.hook(t, '<i>You</i> <i>asked:</i> <em><i>fix</i> <i>this</i> <i>invite.</i></em>', A.hook);
+    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5)))); DT.sweep(t, [A.d1, A.d2, A.d3, A.turns + .2]); DT.hook(t, '<i>Let\'s</i> <em><i>fix</i> <i>this</i> <i>invite.</i></em>', A.hook);
     // the request: a comment types in, holds, then lifts away as the invite arrives
     var cm = $('cmt'), ci = 0, co = E.inOut3(P(t, A.m1 - .25, A.m1 + .15)), txt = 'Fix a birthday invite, please!';
     cm.style.opacity = (ci * (1 - co)).toFixed(3); cm.style.transform = 'translateY(' + ((1 - ci) * 20 - 60 * co).toFixed(1) + 'px)';
@@ -72,7 +72,7 @@
       var sh = kf >= 1 ? 1 : mix(1, id === 'v0' ? .72 : .66, k1); el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + sh.toFixed(3) + ')'; });
     { var ro = 1 - P(t, A.hook - .3, A.hook); [[.35, { x: IX + 14, y: IY + 14, w: 332, h: 56, r: 14 }, 'NO HERO', IX + 20], [.65, { x: IX + 40, y: IY + 74, w: 280, h: 140, r: 16 }, '4 FONTS', IX + 128], [.95, { x: IX + 6, y: IY + 228, w: 348, h: 90, r: 16 }, '6 COLOURS', IX + 236]].forEach(function(r, i){
       DT.box('fr' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); DT.chip('frl' + i, r[2], r[3], IY + 302, P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); }); }
-    var b7 = $('big7'), s = mix(.2, 1, k1); b7.style.transform = 'translate(' + mix(250, 26, k1).toFixed(1) + 'px,' + mix(24, 10, k1).toFixed(1) + 'px) scale(' + s.toFixed(3) + ')'; b7.style.opacity = P(t, A.hero - .1, A.hero + .1).toFixed(3);
+    var k7 = DT.spring(t, A.hero + .45, .7), b7 = $('big7'), s = mix(.2, 1, k7); b7.style.transform = 'translate(26px,10px) scale(' + s.toFixed(3) + ')'; b7.style.opacity = P(t, A.hero + .35, A.hero + .55).toFixed(3);   /* the 7 grows once the old lines have stepped down (no crossing) */
     b7.style.color = 'rgb(' + [Math.round(mix(29, 255, k3)), Math.round(mix(26, 122, k3)), Math.round(mix(22, 69, k3))].join(',') + ')';
     // the read order: 1 the hero, 2 whose party, 3 when and where
     [[1, IX + 178, IY + 40], [2, IX + 300, IY + 186], [3, IX + 250, IY + 256]].forEach(function(r, i){ var e = $('k' + r[0]), k = E.back(P(t, A.hero + .55 + i * .12, A.hero + .9 + i * .12), 2), o = k * (1 - P(t, A.m3 - .2, A.m3 + .1));
@@ -80,13 +80,13 @@
     DT.chip('h', 'ONE <b>HERO</b>', 300, 412, P(t, A.hero, A.hero + .3) - P(t, A.m2 - .1, A.m2 + .2));
     // move 2: the scan, the font count, the two sizes
     var sk = P(t, A.m2 + .35, A.m2 + 1.1); DT.line('scan', IX + 4, IY + 10 + sk * 320, IX + 356, IY + 10 + sk * 320, sk > 0 && sk < 1 ? 1 : 0, '#ffb35a', 3);
-    DT.chip('f', 'FONTS <b>' + DT.roll(3, 1, sk) + '</b>', 300, 412, P(t, A.m2 + .2, A.m2 + .5) - P(t, A.m3 - .1, A.m3 + .2));
+    DT.chip('f', 'ONE <b>FONT</b>', 300, 412, P(t, A.m2 + .2, A.m2 + .5) - P(t, A.m3 - .1, A.m3 + .2));
     DT.chip('s', 'SIZES <b>2</b>', 180, 412, P(t, A.sizes, A.sizes + .3) - P(t, A.m3 - .1, A.m3 + .2));
     // move 3: the confetti flies into the 7, which takes the one colour; the background calms
     for (var i = 0; i < 8; i++) { var e = $('c' + i), fk = E.inOut3(P(t, A.m3 + .3 + i * .05, A.m3 + .75 + i * .05)), x0 = CF[i][0], y0 = CF[i][1];
       e.style.left = mix(x0, 80, fk).toFixed(1) + 'px'; e.style.top = mix(y0, 80, fk).toFixed(1) + 'px'; e.style.opacity = (1 - P(fk, .8, 1)).toFixed(3); e.style.transform = 'scale(' + mix(1, .4, fk).toFixed(3) + ')'; }
     inv.style.background = 'rgb(' + [Math.round(mix(214, 255, k3)), Math.round(mix(240, 246, k3)), Math.round(mix(255, 232, k3))].join(',') + ')';
-    DT.chip('c', 'COLOURS <b>' + DT.roll(6, 1, P(t, A.m3 + .3, A.m3 + 1)) + '</b>', 300, 412, P(t, A.m3 + .2, A.m3 + .5) - P(t, A.turns - .1, A.turns + .2));
+    DT.chip('c', 'ONE <b>COLOUR</b>', 300, 412, P(t, A.m3 + .2, A.m3 + .5) - P(t, A.turns - .1, A.turns + .2));
     [[A.d1, IX + 90, IY + 90], [A.d2, IX + 180, IY + 230], [A.d3, IX + 90, IY + 90]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], i === 2 ? '#ff7a45' : '#ffb35a'); });
     var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35))); inv.style.boxShadow = '0 30px 70px rgba(0,0,0,.55),0 0 0 ' + (3 * br).toFixed(1) + 'px rgba(255,179,90,.55)';
     DT.chip('done', 'DONE · <b>3 MOVES</b>', 300, 412, P(t, A.turns, A.turns + .3) - P(t, A.cmt - .2, A.cmt), 'g');

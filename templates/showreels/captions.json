@@ -1536,8 +1536,8 @@
   "channel": "c3",
   "engine": "design",
   "concept": "Design tutorial (Turns Out design series, reference cut) · This menu is costing them customers: one edge, one font in two weights, double the space; a café that lights up as the fixes land",
-  "note": "Design series reel 1 (21 Nov 2026). No date (owner: \"Don't mark these with dates yet, I'll upload based on response\"); the owner posts it from Inbox → Previews when ready.",
-  "hidden": true
+  "note": "Design series reel 1 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
+  "onGo": true
  },
  "showreel-c3-viking-horns": {
   "channel": "c3",
@@ -1553,5 +1553,33 @@
   "channel": "c3",
   "hidden": true,
   "note": "Withdrawn 21 Nov 2026 (owner: remove it; Turns Out moved to the design series). Hidden so the app no longer lists its MP4."
+ },
+ "showreel-c3-looks-expensive": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · One of these looks 5× pricier. Same product, same shelf. 🛍️ (two labels for the same invented product (no real brand) on a shop shelf; which looks pricier, then the three reasons: empty space, small spaced-out capitals, only two colours)",
+  "note": "Design series (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-c3-optical-centre": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · This dot is in the exact centre. So why does it look too low? 👀 (the optical centre: a dot measured to the exact centre looks low; designers nudge things up a little (titles, buttons, logos))",
+  "note": "Design series (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-c3-stop-centring": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · Stop centring everything. It looks neat, but it's hard to read. 📄 (centred text on a street poster makes the eye zigzag; left-aligned text reads in one path)",
+  "note": "Design series (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-c3-fix-invite": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · Let's fix this birthday invite. Three moves. 🎈 (a cluttered kids' birthday invite on a fridge door fixed in three moves: one hero (the age), one font in two sizes, one colour used once)",
+  "note": "Design series (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
  }
 }
