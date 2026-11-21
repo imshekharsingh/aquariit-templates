@@ -28,3 +28,5 @@ qa/align.mjs on scripts/channel3/looks-expensive.json.
 Owner feedback (design/owner-feedback.md) against the stills: "doesn't look aligned": ALIGN where the scene declares groups; "drum-like sounds": no drum kinds; "frame 0": one message first; numbers on screen never run ahead of the voice (21 Nov: end states as words); "same background": its own stage.
 
 Critic: PENDING (an independent session writes CRITIC: READY or NOT READY; the owner's watch decides the post).
+
+Owner, 21 Nov 2026 (after render 2): label B sat unchanged beside A through the lesson and "feels useless". Fixed in the scene (B steps aside after the vote, A moves to the centre at 1.3x and changes; stills OVERLAP none, SAFE ok, local FILL median 95%, GRADE 0.43). Needs render 3 (owner's go).
