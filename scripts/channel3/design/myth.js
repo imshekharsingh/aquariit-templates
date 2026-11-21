@@ -18,31 +18,32 @@
 /*board:end*/
 /*script:begin*/
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#ff7f7f', '#ff9a6a');
-  var TEXT = "Centre everything to look neat? Turns out, that's why it's hard to read. Watch your eye. Every centred line starts somewhere new, so it jumps. Line them up on the left, and it reads in one smooth path.";
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ff7f7f', '#ff9a6a');
+  var TEXT = "Stop centring everything. It looks neat, but turns out, it's hard to read. Watch your eye. Every centred line starts somewhere new, so it jumps. Line them up on the left, and it reads in one smooth path.";
   var DUR = 16, V, PH, A = {}, CAM, CUR = [], PX = 60, PY = 420, PW = 420, LX = 36, YS = [40, 92, 150, 186, 222, 280], W = [];
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
-    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
+    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('It');
     A.turns = at('Turns'); A.watch = at('Watch'); A.every = at('Every'); A.jumps = at('jumps'); A.line = at('Line', 2); A.left = at('left'); A.smooth = at('smooth'); A.end = Math.min(DUR - .2, V.end + .8);
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.watch, 1, 255, 500, 1.02).pull(A.smooth, .8, 255, 480, 1);
-    var S = DT.S; S.whoosh(0, 270, .4); for (var q = 0; q < 6; q++) S.land(.12 + q * .05, 270, q); S.stamp(.12, 400); S.stamp(A.turns + .05, 350);
+    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.watch, 1, 255, 500, 1.02).pull(A.smooth, .8, 255, 480, 1);
+    var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); for (var q = 0; q < 6; q++) S.land(.12 + q * .05, 270, q); S.stamp(.12, 400); S.stamp(A.turns + .05, 350);
     // the eye: each jump to a new line start is a pitched hop (a restless, broken little tune); after the fix one rising glide
     A.e1 = A.watch + .2; A.e1d = Math.max(2, A.line - A.watch - .6); A.e2 = A.left + .55; A.e2d = 1.4;
     S.rise(A.watch - .3, .3); for (var i = 0; i < 6; i++) S.land(A.e1 + i * A.e1d / 5, 200 + (i % 2) * 140, [0, 5, 1, 6, 2, 7][i]);
     CUR = [[A.line - .3, 440, 700, 0], [A.line, 100, 440, 0], [A.line + .15, 100, 440, 1], [A.line + .6, 470, 730, 1], [A.line + .8, 470, 730, 0], [A.left + .3, 470, 760, 0]];
     S.click(A.line + .15, 100); S.drag(A.line + .15, .45, 100, 470);
     for (i = 0; i < 6; i++) S.snap(A.left + .05 + i * .07 + .3, 96, i); A.d1 = A.left + .9; S.done(A.d1, 96, 0);
-    S.rise(A.e2 - .2, .3); S.drag(A.e2, A.e2d, 96, 96); A.d2 = A.e2 + A.e2d; S.done(A.d2, 96, 4); S.resolve(A.smooth + .3);
+    S.rise(A.e2 - .2, .3); S.drag(A.e2, A.e2d, 96, 96); A.d2 = A.e2 + A.e2d; S.done(A.d2, 96, 4); S.reveal(A.smooth + .3);
     window.ALIGN = [{ at: A.end - .05, sel: '.pl', edge: 'left', why: 'every line starts on one edge' }];
-    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.smooth));
+    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.score(A.smooth, A.line));
   }
   function xAt(i, k){ var xc = (PW - W[i]) / 2; return mix(xc, LX, k); }
   function eyePath(t, k){ // the reading path at progress u (0..1) over the six lines: start of each line, then across it
     var pts = []; YS.forEach(function(y, i){ pts.push([PX + xAt(i, k) - 16, PY + y + 11]); }); return pts; }   // where the eye lands at the start of each line
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
+    DT.mood(t, (.5 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .5 * E.out3(P(t, A.d2 - .2, A.d2 + .5))), [$('poster')]); DT.sweep(t, [A.d1, A.d2]); DT.hook(t, '<i>Stop</i> <em><i>centring</i></em> <i>everything.</i>', A.hook);
     DT.intro($('poster'), t, .55); DT.burst('b1', PX + LX - 8, PY + 160, t, A.d1, '#ffb35a'); DT.burst('b2', PX + LX - 16, PY + 291, t, A.d2, '#5ee0a0');
     var ks = []; for (var i = 0; i < 6; i++) { ks.push(DT.spring(t, A.left + .05 + i * .07, .6)); var el = $('l' + i); el.style.transform = 'translate(' + xAt(i, ks[i]).toFixed(1) + 'px,' + YS[i] + 'px)'; }
     // the myth stamp slams on, then leaves when the eye starts
@@ -73,3 +74,12 @@
     .then(function(){ for (var i = 0; i < 6; i++) W.push($('l' + i).offsetWidth); anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 /*script:end*/
+
+/*stage:begin*/
+<div style="position:absolute;inset:0;background:#9a5944"></div>
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 34px,rgba(225,210,190,.55) 34px 38px)"></div>
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 76px,rgba(225,210,190,.5) 76px 80px);-webkit-mask-image:repeating-linear-gradient(180deg,#000 0 38px,transparent 38px 76px)"></div>
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 36px,rgba(225,210,190,.5) 36px 40px,transparent 40px 80px);-webkit-mask-image:repeating-linear-gradient(180deg,transparent 0 38px,#000 38px 76px)"></div>
+<div style="position:absolute;inset:0;background:radial-gradient(120% 80% at 30% 20%,rgba(255,255,255,.06),rgba(0,0,0,.25))"></div>
+<div class="lit" style="background:linear-gradient(115deg,rgba(255,214,150,.55) 0%,rgba(255,214,150,.15) 45%,transparent 70%)"></div>
+/*stage:end*/

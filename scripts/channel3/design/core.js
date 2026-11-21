@@ -40,9 +40,9 @@ var DT = (function(){
   function sel(id, b, k){ box(id + '-r', b, k, '#7aa2ff'); var hs = [[b.x, b.y], [b.x + b.w, b.y], [b.x, b.y + b.h], [b.x + b.w, b.y + b.h]];
     hs.forEach(function(h, i){ var e = svg(id + '-h' + i, 'rect'), s = 9 * E.back(cl((k - .4) / .6), 2); e.setAttribute('x', h[0] - s / 2); e.setAttribute('y', h[1] - s / 2); e.setAttribute('width', Math.max(0, s)); e.setAttribute('height', Math.max(0, s)); e.setAttribute('fill', '#fff'); e.setAttribute('stroke', '#7aa2ff'); e.setAttribute('stroke-width', 2); e.style.opacity = k > .4 ? 1 : 0; }); }
   // measurement labels sit in small dark pills (premium pass, 21 Nov 2026)
-  function label(id, x, y, txt, k, col, anchor){ var bg = svg(id + '-bg', 'rect'), e = svg(id, 'text'); if (bg.nextSibling !== e) OV.insertBefore(bg, e); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('fill', col || '#ffb35a'); e.setAttribute('font-family', 'Space Grotesk'); e.setAttribute('font-weight', 700); e.setAttribute('font-size', 15);
+  function label(id, x, y, txt, k, col, anchor){ var bg = svg(id + '-bg', 'rect'), e = svg(id, 'text'); if (bg.nextSibling !== e) OV.insertBefore(bg, e); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('fill', col || '#ffb35a'); e.setAttribute('font-family', 'Space Grotesk'); e.setAttribute('font-weight', 700); e.setAttribute('font-size', 19);
     e.setAttribute('text-anchor', anchor || 'start'); e.textContent = txt; e.style.opacity = cl(k).toFixed(3);
-    var w = txt.length * 8.6 + 14, x0 = (anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w + 7 : x - 7); bg.setAttribute('x', x0); bg.setAttribute('y', y - 15); bg.setAttribute('width', w); bg.setAttribute('height', 22); bg.setAttribute('rx', 11);
+    var w = txt.length * 11 + 18, x0 = (anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w + 7 : x - 7); bg.setAttribute('x', x0); bg.setAttribute('y', y - 19); bg.setAttribute('width', w); bg.setAttribute('height', 28); bg.setAttribute('rx', 14);
     bg.setAttribute('fill', 'rgba(14,17,28,.88)'); bg.setAttribute('stroke', 'rgba(255,179,90,.45)'); bg.setAttribute('stroke-width', 1); bg.style.opacity = cl(k).toFixed(3); return e; }
   function measure(id, x, y1, y2, k, txt, side){ var s = side || 1, kk = E.out3(cl(k)), ym = (y1 + y2) / 2, h = (y2 - y1) / 2 * kk;
     line(id + 'm', x, ym, x, ym - h, k > .01 ? 1 : 0, '#ffb35a', 2); line(id + 'n', x, ym, x, ym + h, k > .01 ? 1 : 0, '#ffb35a', 2);
@@ -55,6 +55,8 @@ var DT = (function(){
   var CH = {};
   function chip(id, html, x, y, k, cls){ var e = CH[id]; if (!e) { e = document.createElement('div'); e.className = 'chip' + (cls ? ' ' + cls : ''); $('world').appendChild(e); CH[id] = e; }
     if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; } k = cl(k); var s = E.back(k, 2.2);
+    if (y >= 380 && y <= 420) y = 374;   // round 6: chips sit just above the design, never on its first line
+    x = Math.max(36, Math.min(x, 464 - e.offsetWidth));   // and inside the safe zone whatever their width
     e.style.left = x + 'px'; e.style.top = y + 'px'; e.style.opacity = k.toFixed(3); e.style.transform = 'translateY(' + ((1 - k) * 10).toFixed(2) + 'px) scale(' + (.7 + .3 * s).toFixed(3) + ')'; return e; }
   // a sound for a chip / a guide / a snap / a measure, all from the kit's cue list (so every element that lands is heard)
   function snd(t, kind, x, g, p){ KM.cue({ t: t, k: kind, g: g || .16, p: p || 0, x: x || 270 }); }
@@ -110,4 +112,32 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     board.style.transform = (board._tf || '') + ' perspective(1200px) rotateX(' + ((1 - k) * 18).toFixed(2) + 'deg) translateY(' + ((1 - k) * 60).toFixed(1) + 'px) scale(' + (.92 + .08 * k).toFixed(4) + ')';
     board.style.opacity = o.toFixed(3); var ch = board.children; for (var i = 0; i < ch.length; i++) { var q = P(t, .12 + i * .05, .4 + i * .05); if (q < 1) { ch[i].style.opacity = q.toFixed(3); ch[i]._io = 1; } else if (ch[i]._io) { ch[i].style.opacity = ''; ch[i]._io = 0; } } };
   DT.bed = function(lift){ return { bed: { bpm: 96, origin: 0, gain: .3, soft: true, lift: lift, chords: [[45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] }, mix: { duck: 8, room: .5 } }; };
+})();
+
+// ---- round 6: the context stage, the hook, the dramatic score ----
+//   DT.ctx()                 marks the scene as staged (hides the dark stage; the dark band holds the brand)
+//   DT.mood(t, k)            the place: k 0 = problem (dim, grey, a little cold), 1 = lit (warm, full colour); #ctx .lit layers fade in with k
+//   DT.sweep(t, t0)          a light sweep across the design as a fix lands
+//   DT.hook(t, html, out)    frame 0: the claim slams in word by word over the problem (scale, blur, a small shake), leaves at out
+//   DT.score(lift, fix)      the bed: tense minor chords until fix (s), then bright major ones, lifting into the payoff
+//   DT.S.sting(t), DT.S.reveal(t) the opening sting (air + a tense plucked cluster) and the reveal (a riser ending on t, then a bright chord)
+(function(){
+  var P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;
+  DT.ctx = function(){ document.body.classList.add('ctx'); };
+  DT.mood = function(t, k, subj){ var e = DT.$('ctx'); if (!e) return; k = cl(k);
+    (subj || []).forEach(function(b){ if (b) b.style.filter = 'grayscale(' + (.55 * (1 - k)).toFixed(3) + ') brightness(' + (.82 + .18 * k).toFixed(3) + ')'; });   // the design itself shares the mood
+    e.style.filter = 'grayscale(' + (.75 * (1 - k)).toFixed(3) + ') brightness(' + (.55 + .45 * k).toFixed(3) + ') contrast(' + (.9 + .1 * k).toFixed(3) + ') hue-rotate(' + (-12 * (1 - k)).toFixed(1) + 'deg)';
+    var L = e.querySelectorAll('.lit'); for (var i = 0; i < L.length; i++) L[i].style.opacity = k.toFixed(3); };
+  DT.sweep = function(t, list){ var e = DT.$('sweep'), on = null; list.forEach(function(t0){ if (t >= t0 && t < t0 + .7) on = t0; });
+    if (on == null) { e.style.opacity = 0; return; } var u = E.inOut3(P(t, on, on + .7)); e.style.opacity = Math.sin(Math.PI * u).toFixed(3); e.style.transform = 'translateX(' + (u * 900).toFixed(1) + 'px) skewX(-12deg)'; };
+  DT.hook = function(t, html, out){ var e = DT.$('hook'); if (!e._w) { e.innerHTML = html; e._w = [].slice.call(e.querySelectorAll('i')); }
+    var o = 1 - P(t, out - .25, out); e.style.opacity = o.toFixed(3); var sh = (1 - P(t, 0, .45)) * 3;
+    e.style.transform = 'translate(' + (Math.sin(t * 61) * sh).toFixed(2) + 'px,' + (Math.cos(t * 47) * sh - 30 * P(t, out - .25, out)).toFixed(2) + 'px)';
+    e._w.forEach(function(w, i){ var a = .04 + i * .07, k = P(t, a, a + .22), s = E.back(k, 2.4); w.style.opacity = cl(k * 2).toFixed(3); w.style.transform = 'scale(' + (1.5 - .5 * s).toFixed(3) + ')'; w.style.filter = 'blur(' + ((1 - k) * 8).toFixed(2) + 'px)'; }); };
+  DT.score = function(lift, fix){ var n = Math.ceil(fix / 2.5); var tense = [[45, 57, 60, 64], [41, 53, 60, 65], [44, 56, 59, 64], [45, 57, 60, 64]], bright = [[48, 60, 64, 67, 72], [43, 55, 62, 67, 71], [45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [48, 60, 64, 67, 76]];
+    var ch = []; for (var i = 0; i < n; i++) ch.push(tense[i % tense.length]); for (i = 0; i < 6; i++) ch.push(bright[i % bright.length]);
+    return { bed: { bpm: 96, origin: 0, soft: true, lift: lift, chords: ch }, mix: { duck: 7, room: .6 } }; };
+  var c = function(o){ KM.cue(o); }, pl = function(t, x, n, g){ c({ t: t, k: 'blip', g: g || .12, p: n, x: x, synth: true }); };
+  DT.S.sting = function(t){ c({ t: t, k: 'swish', d: .4, g: .2, x: 270, r: .6 }); c({ t: t + .05, k: 'snap', g: .22, x: 270 }); [0, 1, 6, 7].forEach(function(n, j){ pl(t + .05 + j * .015, 200 + j * 50, n - 5, .13); }); c({ t: t + .1, k: 'shimmer', g: .08, x: 270, r: .7 }); };
+  DT.S.reveal = function(t){ c({ t: t, k: 'riser', d: .9, g: .14 }); c({ t: t, k: 'snap', g: .2, x: 270 }); [0, 4, 7, 12].forEach(function(n, j){ pl(t + .02 + j * .03, 180 + j * 60, n, .13); }); c({ t: t + .05, k: 'shimmer', g: .16, x: 270, r: .6 }); };
 })();

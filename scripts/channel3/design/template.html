@@ -41,20 +41,37 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .board{position:absolute;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.4),0 12px 24px rgba(0,0,0,.35),0 40px 90px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.55)}
 /* print feel: a fine paper grain and a soft sheen over every designed object */
 .board::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:30;opacity:.5;mix-blend-mode:multiply;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .4  0 0 0 .16 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>"),linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,0) 40%,rgba(0,0,0,.04))}
+/* round 6 (owner, 21 Nov 2026: "more dramatic change so that it hooks audience ... audio should also transition in that fashion"):
+   each design lives in its own place (a context stage, light, drawn in code) and the place itself switches from its problem mood (dim, grey)
+   to lit as the fixes land; the brand sits in a dark band at the top (dial, title, captions); frame 0 is a hook in motion */
+body.ctx #spot,body.ctx #grid,body.ctx #ring,body.ctx #floor{display:none}
+#ctx{left:-40px;top:-40px;width:620px;height:1040px;transform-origin:50% 60%}
+#ctx .lit{position:absolute;inset:0;pointer-events:none;opacity:0}
+#sweep{left:-300px;top:380px;width:240px;height:460px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);opacity:0;pointer-events:none;z-index:24;mix-blend-mode:soft-light}
+#topband{left:0;top:0;width:540px;height:372px;background:linear-gradient(180deg,#0b0d16 0%,#0b0d16 88%,rgba(11,13,22,0) 100%);z-index:35;pointer-events:none}
+body:not(.ctx) #topband{display:none}
+#hook{left:24px;top:470px;width:492px;padding:22px 24px 26px;border-radius:26px;background:rgba(11,13,22,.86);box-shadow:0 30px 80px rgba(0,0,0,.6);font:900 46px/1.06 var(--d);letter-spacing:-.03em;color:#fff;z-index:45;opacity:0;pointer-events:none}
+#hook em{font-style:normal;color:#ff5f5f}
+#hook i{display:inline-block;font-style:normal}
+.chip{font-size:20px!important;padding:11px 18px 11px 16px!important}
 /*CSS*/
 </style>
 </head>
 <body>
 <div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
+  <div id="ctx" class="a"><!--STAGE--></div>
   <div id="spot" class="a"></div>
   <div id="grid" class="a" data-fit="free"></div>
   <svg id="ring" class="a" viewBox="-320 -320 640 640"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--tint);stop-opacity:0"/><stop offset="1" style="stop-color:var(--tint);stop-opacity:.55"/></linearGradient></defs><circle r="300" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="26"/><g id="ringarc"><path d="M-212 -212 A300 300 0 1 1 -300 0" fill="none" stroke="url(#rg)" stroke-width="26" stroke-linecap="round"/></g></svg>
   <div id="floor" class="a"></div>
   <div id="sbox" data-subject style="position:absolute;left:40px;top:400px;width:460px;height:380px"></div>
   <!--BOARD-->
+  <div id="sweep" class="a"></div>
   <svg id="ov" class="a" viewBox="0 0 540 960"></svg>
   <svg id="cur" class="a" viewBox="0 0 30 30" style="filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))"><path d="M4 2 L4 24 L10 18 L14 27 L18 25 L14 16 L22 16 Z" fill="#fff" stroke="#0b0d16" stroke-width="1.6" stroke-linejoin="round"/></svg>
 </div></div>
+<div id="topband" class="a"></div>
+<div id="hook" class="a"></div>
 <div id="dial" class="a"><svg viewBox="-40 -40 80 80"><defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset="1" stop-color="#ff7a45"/></linearGradient></defs><circle r="34" fill="#0b0d16"/><circle r="28" fill="none" stroke="#1f2538" stroke-width="7"/><path class="arc" fill="none" stroke="url(#dg)" stroke-width="7" stroke-linecap="round"/><text class="n" y="9" text-anchor="middle"></text></svg><div class="lb"></div></div>
 <div id="ttl" class="a" data-hook></div>
 <div id="band" class="a" data-band></div>

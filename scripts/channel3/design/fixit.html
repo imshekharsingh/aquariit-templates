@@ -41,6 +41,19 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .board{position:absolute;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.4),0 12px 24px rgba(0,0,0,.35),0 40px 90px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.55)}
 /* print feel: a fine paper grain and a soft sheen over every designed object */
 .board::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:30;opacity:.5;mix-blend-mode:multiply;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .4  0 0 0 .16 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>"),linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,0) 40%,rgba(0,0,0,.04))}
+/* round 6 (owner, 21 Nov 2026: "more dramatic change so that it hooks audience ... audio should also transition in that fashion"):
+   each design lives in its own place (a context stage, light, drawn in code) and the place itself switches from its problem mood (dim, grey)
+   to lit as the fixes land; the brand sits in a dark band at the top (dial, title, captions); frame 0 is a hook in motion */
+body.ctx #spot,body.ctx #grid,body.ctx #ring,body.ctx #floor{display:none}
+#ctx{left:-40px;top:-40px;width:620px;height:1040px;transform-origin:50% 60%}
+#ctx .lit{position:absolute;inset:0;pointer-events:none;opacity:0}
+#sweep{left:-300px;top:380px;width:240px;height:460px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);opacity:0;pointer-events:none;z-index:24;mix-blend-mode:soft-light}
+#topband{left:0;top:0;width:540px;height:372px;background:linear-gradient(180deg,#0b0d16 0%,#0b0d16 88%,rgba(11,13,22,0) 100%);z-index:35;pointer-events:none}
+body:not(.ctx) #topband{display:none}
+#hook{left:24px;top:470px;width:492px;padding:22px 24px 26px;border-radius:26px;background:rgba(11,13,22,.86);box-shadow:0 30px 80px rgba(0,0,0,.6);font:900 46px/1.06 var(--d);letter-spacing:-.03em;color:#fff;z-index:45;opacity:0;pointer-events:none}
+#hook em{font-style:normal;color:#ff5f5f}
+#hook i{display:inline-block;font-style:normal}
+.chip{font-size:20px!important;padding:11px 18px 11px 16px!important}
 #inv{left:90px;top:440px;width:360px;height:340px;border-radius:16px;background:#d6f0ff}
 .iv{position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 0}
 #big7{position:absolute;left:0;top:0;font:900 150px/1 'Unbounded';color:#1d1a16;transform-origin:0 0}
@@ -55,6 +68,13 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 </head>
 <body>
 <div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
+  <div id="ctx" class="a"><div style="position:absolute;inset:0;background:linear-gradient(90deg,#e8efee 0%,#f6f8f7 40%,#eef3f2 100%)"></div>
+<div style="position:absolute;left:60px;top:380px;width:14px;height:520px;border-radius:7px;background:linear-gradient(90deg,#c9d2d1,#f4f7f6,#b9c3c2);box-shadow:4px 6px 12px rgba(0,0,0,.18)"></div>
+<div style="position:absolute;left:470px;top:440px;width:34px;height:34px;border-radius:50%;background:#ff6b6b;box-shadow:0 6px 10px rgba(0,0,0,.25)"></div>
+<div style="position:absolute;left:520px;top:860px;width:30px;height:30px;border-radius:50%;background:#4fc3f7;box-shadow:0 6px 10px rgba(0,0,0,.25)"></div>
+<div style="position:absolute;left:96px;top:870px;width:44px;height:26px;border-radius:8px;background:#ffd54f;box-shadow:0 6px 10px rgba(0,0,0,.25)"></div>
+<div class="lit" style="background:radial-gradient(60% 45% at 60% 45%,rgba(255,255,255,.7),transparent 75%)"></div>
+<div class="lit" style="background:linear-gradient(160deg,rgba(255,236,200,.18),transparent 50%)"></div></div>
   <div id="spot" class="a"></div>
   <div id="grid" class="a" data-fit="free"></div>
   <svg id="ring" class="a" viewBox="-320 -320 640 640"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--tint);stop-opacity:0"/><stop offset="1" style="stop-color:var(--tint);stop-opacity:.55"/></linearGradient></defs><circle r="300" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="26"/><g id="ringarc"><path d="M-212 -212 A300 300 0 1 1 -300 0" fill="none" stroke="url(#rg)" stroke-width="26" stroke-linecap="round"/></g></svg>
@@ -73,9 +93,12 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 <div class="rk" id="k1">1</div><div class="rk" id="k2">2</div><div class="rk" id="k3">3</div>
 <div id="cmt" class="a"><i></i><div><small>a viewer asked</small><b id="cmtT"></b></div></div>
 <div id="ask" class="a"></div>
+  <div id="sweep" class="a"></div>
   <svg id="ov" class="a" viewBox="0 0 540 960"></svg>
   <svg id="cur" class="a" viewBox="0 0 30 30" style="filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))"><path d="M4 2 L4 24 L10 18 L14 27 L18 25 L14 16 L22 16 Z" fill="#fff" stroke="#0b0d16" stroke-width="1.6" stroke-linejoin="round"/></svg>
 </div></div>
+<div id="topband" class="a"></div>
+<div id="hook" class="a"></div>
 <div id="dial" class="a"><svg viewBox="-40 -40 80 80"><defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset="1" stop-color="#ff7a45"/></linearGradient></defs><circle r="34" fill="#0b0d16"/><circle r="28" fill="none" stroke="#1f2538" stroke-width="7"/><path class="arc" fill="none" stroke="url(#dg)" stroke-width="7" stroke-linecap="round"/><text class="n" y="9" text-anchor="middle"></text></svg><div class="lb"></div></div>
 <div id="ttl" class="a" data-hook></div>
 <div id="band" class="a" data-band></div>
@@ -620,9 +643,9 @@ var DT = (function(){
   function sel(id, b, k){ box(id + '-r', b, k, '#7aa2ff'); var hs = [[b.x, b.y], [b.x + b.w, b.y], [b.x, b.y + b.h], [b.x + b.w, b.y + b.h]];
     hs.forEach(function(h, i){ var e = svg(id + '-h' + i, 'rect'), s = 9 * E.back(cl((k - .4) / .6), 2); e.setAttribute('x', h[0] - s / 2); e.setAttribute('y', h[1] - s / 2); e.setAttribute('width', Math.max(0, s)); e.setAttribute('height', Math.max(0, s)); e.setAttribute('fill', '#fff'); e.setAttribute('stroke', '#7aa2ff'); e.setAttribute('stroke-width', 2); e.style.opacity = k > .4 ? 1 : 0; }); }
   // measurement labels sit in small dark pills (premium pass, 21 Nov 2026)
-  function label(id, x, y, txt, k, col, anchor){ var bg = svg(id + '-bg', 'rect'), e = svg(id, 'text'); if (bg.nextSibling !== e) OV.insertBefore(bg, e); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('fill', col || '#ffb35a'); e.setAttribute('font-family', 'Space Grotesk'); e.setAttribute('font-weight', 700); e.setAttribute('font-size', 15);
+  function label(id, x, y, txt, k, col, anchor){ var bg = svg(id + '-bg', 'rect'), e = svg(id, 'text'); if (bg.nextSibling !== e) OV.insertBefore(bg, e); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('fill', col || '#ffb35a'); e.setAttribute('font-family', 'Space Grotesk'); e.setAttribute('font-weight', 700); e.setAttribute('font-size', 19);
     e.setAttribute('text-anchor', anchor || 'start'); e.textContent = txt; e.style.opacity = cl(k).toFixed(3);
-    var w = txt.length * 8.6 + 14, x0 = (anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w + 7 : x - 7); bg.setAttribute('x', x0); bg.setAttribute('y', y - 15); bg.setAttribute('width', w); bg.setAttribute('height', 22); bg.setAttribute('rx', 11);
+    var w = txt.length * 11 + 18, x0 = (anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w + 7 : x - 7); bg.setAttribute('x', x0); bg.setAttribute('y', y - 19); bg.setAttribute('width', w); bg.setAttribute('height', 28); bg.setAttribute('rx', 14);
     bg.setAttribute('fill', 'rgba(14,17,28,.88)'); bg.setAttribute('stroke', 'rgba(255,179,90,.45)'); bg.setAttribute('stroke-width', 1); bg.style.opacity = cl(k).toFixed(3); return e; }
   function measure(id, x, y1, y2, k, txt, side){ var s = side || 1, kk = E.out3(cl(k)), ym = (y1 + y2) / 2, h = (y2 - y1) / 2 * kk;
     line(id + 'm', x, ym, x, ym - h, k > .01 ? 1 : 0, '#ffb35a', 2); line(id + 'n', x, ym, x, ym + h, k > .01 ? 1 : 0, '#ffb35a', 2);
@@ -635,6 +658,8 @@ var DT = (function(){
   var CH = {};
   function chip(id, html, x, y, k, cls){ var e = CH[id]; if (!e) { e = document.createElement('div'); e.className = 'chip' + (cls ? ' ' + cls : ''); $('world').appendChild(e); CH[id] = e; }
     if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; } k = cl(k); var s = E.back(k, 2.2);
+    if (y >= 380 && y <= 420) y = 374;   // round 6: chips sit just above the design, never on its first line
+    x = Math.max(36, Math.min(x, 464 - e.offsetWidth));   // and inside the safe zone whatever their width
     e.style.left = x + 'px'; e.style.top = y + 'px'; e.style.opacity = k.toFixed(3); e.style.transform = 'translateY(' + ((1 - k) * 10).toFixed(2) + 'px) scale(' + (.7 + .3 * s).toFixed(3) + ')'; return e; }
   // a sound for a chip / a guide / a snap / a measure, all from the kit's cue list (so every element that lands is heard)
   function snd(t, kind, x, g, p){ KM.cue({ t: t, k: kind, g: g || .16, p: p || 0, x: x || 270 }); }
@@ -692,8 +717,36 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
   DT.bed = function(lift){ return { bed: { bpm: 96, origin: 0, gain: .3, soft: true, lift: lift, chords: [[45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] }, mix: { duck: 8, room: .5 } }; };
 })();
 
+// ---- round 6: the context stage, the hook, the dramatic score ----
+//   DT.ctx()                 marks the scene as staged (hides the dark stage; the dark band holds the brand)
+//   DT.mood(t, k)            the place: k 0 = problem (dim, grey, a little cold), 1 = lit (warm, full colour); #ctx .lit layers fade in with k
+//   DT.sweep(t, t0)          a light sweep across the design as a fix lands
+//   DT.hook(t, html, out)    frame 0: the claim slams in word by word over the problem (scale, blur, a small shake), leaves at out
+//   DT.score(lift, fix)      the bed: tense minor chords until fix (s), then bright major ones, lifting into the payoff
+//   DT.S.sting(t), DT.S.reveal(t) the opening sting (air + a tense plucked cluster) and the reveal (a riser ending on t, then a bright chord)
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#ff8a5a', '#ff5f7a');
+  var P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;
+  DT.ctx = function(){ document.body.classList.add('ctx'); };
+  DT.mood = function(t, k, subj){ var e = DT.$('ctx'); if (!e) return; k = cl(k);
+    (subj || []).forEach(function(b){ if (b) b.style.filter = 'grayscale(' + (.55 * (1 - k)).toFixed(3) + ') brightness(' + (.82 + .18 * k).toFixed(3) + ')'; });   // the design itself shares the mood
+    e.style.filter = 'grayscale(' + (.75 * (1 - k)).toFixed(3) + ') brightness(' + (.55 + .45 * k).toFixed(3) + ') contrast(' + (.9 + .1 * k).toFixed(3) + ') hue-rotate(' + (-12 * (1 - k)).toFixed(1) + 'deg)';
+    var L = e.querySelectorAll('.lit'); for (var i = 0; i < L.length; i++) L[i].style.opacity = k.toFixed(3); };
+  DT.sweep = function(t, list){ var e = DT.$('sweep'), on = null; list.forEach(function(t0){ if (t >= t0 && t < t0 + .7) on = t0; });
+    if (on == null) { e.style.opacity = 0; return; } var u = E.inOut3(P(t, on, on + .7)); e.style.opacity = Math.sin(Math.PI * u).toFixed(3); e.style.transform = 'translateX(' + (u * 900).toFixed(1) + 'px) skewX(-12deg)'; };
+  DT.hook = function(t, html, out){ var e = DT.$('hook'); if (!e._w) { e.innerHTML = html; e._w = [].slice.call(e.querySelectorAll('i')); }
+    var o = 1 - P(t, out - .25, out); e.style.opacity = o.toFixed(3); var sh = (1 - P(t, 0, .45)) * 3;
+    e.style.transform = 'translate(' + (Math.sin(t * 61) * sh).toFixed(2) + 'px,' + (Math.cos(t * 47) * sh - 30 * P(t, out - .25, out)).toFixed(2) + 'px)';
+    e._w.forEach(function(w, i){ var a = .04 + i * .07, k = P(t, a, a + .22), s = E.back(k, 2.4); w.style.opacity = cl(k * 2).toFixed(3); w.style.transform = 'scale(' + (1.5 - .5 * s).toFixed(3) + ')'; w.style.filter = 'blur(' + ((1 - k) * 8).toFixed(2) + 'px)'; }); };
+  DT.score = function(lift, fix){ var n = Math.ceil(fix / 2.5); var tense = [[45, 57, 60, 64], [41, 53, 60, 65], [44, 56, 59, 64], [45, 57, 60, 64]], bright = [[48, 60, 64, 67, 72], [43, 55, 62, 67, 71], [45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [48, 60, 64, 67, 76]];
+    var ch = []; for (var i = 0; i < n; i++) ch.push(tense[i % tense.length]); for (i = 0; i < 6; i++) ch.push(bright[i % bright.length]);
+    return { bed: { bpm: 96, origin: 0, soft: true, lift: lift, chords: ch }, mix: { duck: 7, room: .6 } }; };
+  var c = function(o){ KM.cue(o); }, pl = function(t, x, n, g){ c({ t: t, k: 'blip', g: g || .12, p: n, x: x, synth: true }); };
+  DT.S.sting = function(t){ c({ t: t, k: 'swish', d: .4, g: .2, x: 270, r: .6 }); c({ t: t + .05, k: 'snap', g: .22, x: 270 }); [0, 1, 6, 7].forEach(function(n, j){ pl(t + .05 + j * .015, 200 + j * 50, n - 5, .13); }); c({ t: t + .1, k: 'shimmer', g: .08, x: 270, r: .7 }); };
+  DT.S.reveal = function(t){ c({ t: t, k: 'riser', d: .9, g: .14 }); c({ t: t, k: 'snap', g: .2, x: 270 }); [0, 4, 7, 12].forEach(function(n, j){ pl(t + .02 + j * .03, 180 + j * 60, n, .13); }); c({ t: t + .05, k: 'shimmer', g: .16, x: 270, r: .6 }); };
+})();
+
+(function(){
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ff8a5a', '#ff5f7a');
   var TEXT = "You asked us to fix a birthday invite. Move one: pick one hero, the age. Move two: one font, two sizes. Move three: one colour, used once. Turns out, a kids' party can look this good. Comment what we fix next.";
   var DUR = 18, V, PH, A = {}, CAM, CUR = [], IX = 90, IY = 440, W = {};
   var ST = {   // A: everything shouts (four fonts, all centred, one size); B: one hero, one font in two sizes, one colour
@@ -706,11 +759,11 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
   function font(el, s){ el.style.font = s.f; el.style.color = s.c; el.style.letterSpacing = s.ls || 'normal'; }
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
-    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
+    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('birthday');
     A.m1 = at('Move'); A.hero = at('hero'); A.m2 = at('Move', 2); A.sizes = at('sizes'); A.m3 = at('Move', 3); A.once = at('once'); A.turns = at('Turns'); A.cmt = at('Comment'); A.end = Math.min(DUR - .2, V.end + 1.2);
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.m1, 1, 255, 500, 1.03).pull(A.turns - .2, .8, 255, 480, 1);
-    var S = DT.S; S.whoosh(0, 270, .4); S.land(.1, 270, 0); S.roll(.25, 1.25, 300, 14); S.done(1.5, 300, 4);
+    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.m1, 1, 255, 500, 1.03).pull(A.turns - .2, .8, 255, 480, 1);
+    var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); S.land(.1, 270, 0); S.roll(A.hook + .15, 1.05, 300, 12); S.done(A.hook + 1.25, 300, 4);
     S.whoosh(A.m1 - .9, 270, .3); IDS.forEach(function(id, i){ S.land(A.m1 - .7 + i * .06, 270, i); });
     // move 1: the hero grows (a swell and a shimmer), the read order lands 1-2-3 as rising notes
     S.rise(A.hero - .4, .45); S.tint(A.hero + .35, 150); [0, 1, 2].forEach(function(n){ S.land(A.hero + .6 + n * .12, 200 + n * 60, n * 2); }); A.d1 = A.hero + .95; S.done(A.d1, 150, 0);
@@ -718,17 +771,18 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     S.rise(A.m2 - .1, .4); IDS.forEach(function(id, i){ S.swap(A.m2 + .4 + i * .14, .4, 270, 6); }); S.roll(A.m2 + .35, .75, 400, 4); S.land(A.sizes, 180, 6); A.d2 = A.m2 + 1.25; S.done(A.d2, 270, 2);
     // move 3: the confetti flies into the 7 (a run of plucks), the 7 takes the colour (shimmer)
     S.rise(A.m3 - .1, .4); for (var i = 0; i < 8; i++) S.land(A.m3 + .35 + i * .05, 120 + i * 40, i); S.tint(A.m3 + .7, 150); A.d3 = A.once + .1; S.done(A.d3, 150, 4);
-    S.resolve(A.turns + .2); S.roll(A.cmt + .4, 1.2, 270, 15); S.click(A.cmt + .2, 270);
+    S.reveal(A.turns + .2); S.roll(A.cmt + .4, 1.2, 270, 15); S.click(A.cmt + .2, 270);
     window.ALIGN = [{ at: A.end - .05, sel: '.iv > span:first-child', edge: 'left', why: 'every line starts on one edge' }, { at: A.end - .05, sel: 'span', each: '.iv', edge: 'bottom', why: 'every letter on its line' }];
-    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.turns));
+    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.score(A.turns, A.m1));
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
+    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5))), [$('inv')]); DT.sweep(t, [A.d1, A.d2, A.d3, A.turns + .2]); DT.hook(t, '<i>This</i> <i>invite</i> <em><i>needs</i> <i>help.</i></em>', A.hook);
     // the request: a comment types in, holds, then lifts away as the invite arrives
-    var cm = $('cmt'), ci = E.out3(P(t, .1, .4)), co = E.inOut3(P(t, A.m1 - .9, A.m1 - .4)), txt = 'Fix a birthday invite, please!';
+    var cm = $('cmt'), ci = E.out3(P(t, A.hook, A.hook + .3)), co = E.inOut3(P(t, A.m1 - .25, A.m1 + .15)), txt = 'Fix a birthday invite, please!';
     cm.style.opacity = (ci * (1 - co)).toFixed(3); cm.style.transform = 'translateY(' + ((1 - ci) * 20 - 60 * co).toFixed(1) + 'px)';
-    $('cmtT').textContent = txt.slice(0, Math.round(txt.length * P(t, .25, 1.5))) + (t < 1.6 ? '|' : '');
-    var inv = $('inv'), ia = E.out3(P(t, A.m1 - .8, A.m1 - .2)); inv.style.opacity = (t < .1 ? 1 : mix(.35, 1, ia)).toFixed(3); inv.style.transform = 'translateY(' + ((1 - ia) * 30).toFixed(1) + 'px)';
+    $('cmtT').textContent = txt.slice(0, Math.round(txt.length * P(t, A.hook + .15, A.hook + 1.2))) + (t < A.hook + 1.3 ? '|' : '');
+    var inv = $('inv'), ia = E.out3(P(t, A.m1 - .15, A.m1 + .35)); inv.style.opacity = (t < .1 ? 1 : mix(.35, 1, ia)).toFixed(3); inv.style.transform = 'translateY(' + ((1 - ia) * 30).toFixed(1) + 'px)';
     // move 1: the 7 grows into the hero; everything else steps down; read-order badges
     var k1 = DT.spring(t, A.hero, .8), k2 = P(t, A.m2 + .35, A.m2 + 1.1), k3 = DT.spring(t, A.m3 + .3, .7);
     IDS.forEach(function(id, i){ var el = $(id), a = ST[id].A, b = ST[id].B, t0f = A.m2 + .4 + i * .14, kf = P(t, t0f, t0f + .45);

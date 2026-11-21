@@ -18,19 +18,19 @@
 /*board:end*/
 /*script:begin*/
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#d9b46a', '#a8783a');
-  var TEXT = "Same words. Which one would you pay more for? It's B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.";
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#d9b46a', '#a8783a');
+  var TEXT = "One of these looks five times pricier. Which one would you pay more for? It's B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.";
   var DUR = 17, V, PH, A = {}, CAM, CUR = [];
   var AX = 50, BXp = 290, Y = 452, CX = 170;   // the two labels side by side, then A moves to the centre and becomes the premium one
   function hexMix(a, b, k){ var p = function(h){ return [1, 3, 5].map(function(i){ return parseInt(h.slice(i, i + 2), 16); }); }, x = p(a), y = p(b);
     return 'rgb(' + x.map(function(v, i){ return Math.round(mix(v, y[i], cl(k))); }).join(',') + ')'; }
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
-    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
+    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('Which');
     A.which = at('Which'); A.b = at('B'); A.three = at('three'); A.space = at('Empty'); A.small = at('Small'); A.two = at('only'); A.quiet = at('Quiet'); A.end = Math.min(DUR - .2, V.end + .8);
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.space - .1, 1, 255, 500, 1.03).pull(A.quiet - .2, .9, 255, 480, 1);
-    var S = DT.S; S.whoosh(0, 120, .4); S.land(.1, 120, 0); S.whoosh(.25, 420, .4); S.land(.35, 420, 2);
+    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.space - .1, 1, 255, 500, 1.03).pull(A.quiet - .2, .9, 255, 480, 1);
+    var S = DT.S; S.sting(0); S.whoosh(0, 120, .4); S.land(.1, 120, 0); S.whoosh(.25, 420, .4); S.land(.35, 420, 2);
     S.land(A.which + .1, 120, 2); S.land(A.which + .25, 420, 4);
     CUR = [[A.which + .3, 300, 700, 0], [A.b - .15, 392, 760, 0], [A.b + .05, 392, 760, 1], [A.b + .35, 392, 760, 0], [A.three + .2, 470, 720, 0]];
     S.click(A.b + .05, 392); S.done(A.b + .12, 392, 4);
@@ -39,9 +39,9 @@
     S.rise(A.space - .3, .3); S.roll(A.space + .1, .6, 270, 8); A.d1 = A.space + .75; S.done(A.d1, 270, 0);
     S.rise(A.small - .3, .3); S.swap(A.small + .1, .5, 270, 8); S.roll(A.small + .1, .8, 270, 8); A.d2 = A.small + .95; S.done(A.d2, 270, 2);
     S.rise(A.two - .3, .3); for (var i = 0; i < 5; i++) S.land(A.two + i * .05, 150 + i * 50, i); [1, 2, 3].forEach(function(n){ S.whoosh(A.two + .5 + n * .08, 150 + n * 50, .2); }); S.tint(A.two + .3, 270); A.d3 = A.two + 1.05; S.done(A.d3, 270, 4);
-    S.resolve(A.quiet);
+    S.reveal(A.quiet);
     window.ALIGN = [{ at: A.end - .05, sel: 'span', each: '#aT1, #aT2', edge: 'bottom', why: 'every letter on its line' }];
-    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.quiet));
+    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.score(A.quiet, A.space));
   }
   function paintA(t){ var mv = E.inOut3(P(t, A.three, A.three + .7)), ks = DT.spring(t, A.space + .1, .7), kl = DT.spring(t, A.small + .1, .8), kc = E.inOut3(P(t, A.two + .2, A.two + .8));
     var c = $('cardA'), x = mix(AX, CX, mv), sc = mix(1, 1.2, mv), ia = E.settle(P(t, 0, .55), 1.1), br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
@@ -67,6 +67,7 @@
     return { x: x, mv: mv, ks: ks, kl: kl, kc: kc }; }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
+    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5))), [$('cardA')]); DT.sweep(t, [A.d1, A.d2, A.d3, A.quiet]); DT.hook(t, '<i>One</i> <i>looks</i> <em><i>5×</i> <i>pricier.</i></em>', A.hook);
     var S = paintA(t);
     // B: the answer to the vote; it lifts when picked, then steps aside as A becomes it
     var b = $('cardB'), pick = DT.spring(t, A.b + .05, .6), away = E.inOut3(P(t, A.three, A.three + .6)), ib = E.settle(P(t, .25, .8), 1.1);
@@ -103,3 +104,11 @@
     .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 /*script:end*/
+
+/*stage:begin*/
+<div style="position:absolute;inset:0;background:linear-gradient(180deg,#e9e2d6 0%,#ddd3c3 70%,#cfc3b0 100%)"></div>
+<div style="position:absolute;left:0;right:0;top:800px;height:26px;background:linear-gradient(180deg,#b88a5a,#8f643c);box-shadow:0 14px 26px rgba(0,0,0,.35),inset 0 2px 0 rgba(255,235,205,.5)"></div>
+<div style="position:absolute;left:0;right:0;top:826px;bottom:0;background:linear-gradient(180deg,#c6b8a2,#b3a48c)"></div>
+<div class="lit" style="background:radial-gradient(22% 38% at 30% 52%,rgba(255,236,200,.75),transparent 70%),radial-gradient(22% 38% at 72% 52%,rgba(255,236,200,.75),transparent 70%)"></div>
+<div class="lit" style="background:linear-gradient(180deg,rgba(255,220,170,.12),transparent)"></div>
+/*stage:end*/

@@ -17,26 +17,27 @@
 /*board:end*/
 /*script:begin*/
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#8fb0ff', '#6a7dff');
-  var TEXT = "This dot is in the exact centre. So why does it look too low? Turns out, your eyes see the middle a little higher than it really is. So designers nudge things up. Titles, buttons, even logos.";
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#8fb0ff', '#6a7dff');
+  var TEXT = "Your eyes are lying to you. This dot is in the exact centre. So why does it look too low? Turns out, your eyes see the middle a little higher than it really is. So designers nudge things up. Titles, buttons, even logos.";
   var DUR = 16, V, PH, A = {}, CAM, CUR = [], AX = 100, AY = 432, S = 340, NUDGE = 17;
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
-    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
+    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('This');
     A.exact = at('exact'); A.why = at('why'); A.low = at('low'); A.turns = at('Turns'); A.higher = at('higher'); A.nudge = at('nudge'); A.titles = at('Titles'); A.buttons = at('buttons'); A.logos = at('logos'); A.end = Math.min(DUR - .2, V.end + .8);
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.why - .1, 1.2, 255, 500, 1.03).pull(A.titles - .4, .8, 255, 480, 1);
-    var S = DT.S; S.whoosh(0, 270, .4); S.land(.2, 270, 0); S.land(.45, 270, 4);
+    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.why - .1, 1.2, 255, 500, 1.03).pull(A.titles - .4, .8, 255, 480, 1);
+    var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); S.land(.2, 270, 0); S.land(.45, 270, 4);
     S.rise(A.exact - .3, .3); S.roll(A.exact + .1, .5, 330, 8); S.land(A.exact + .5, 270, 2); S.land(A.exact + .6, 270, 4);
     S.stamp(A.low, 330); S.rise(A.higher - .4, .6); S.tint(A.higher + .1, 270); S.land(A.higher + .45, 270, 6);
     CUR = [[A.nudge - .5, 420, 720, 0], [A.nudge - .1, 288, 602, 0], [A.nudge + .05, 288, 602, 1], [A.nudge + .5, 288, 585, 1], [A.nudge + .7, 288, 585, 0], [A.titles - .1, 470, 700, 0]];
     S.click(A.nudge + .05, 288); S.drag(A.nudge + .05, .45, 288, 288); S.roll(A.nudge + .1, .4, 330, 6); A.d1 = A.nudge + .55; S.done(A.d1, 288, 2);
     [A.titles, A.buttons, A.logos].forEach(function(t0, i){ S.whoosh(t0 - .15, 110 + i * 160, .2); S.land(t0, 110 + i * 160, i * 2); S.snap(t0 + .45, 110 + i * 160, 3 + i * 2); });
-    S.resolve(A.logos + .7);
-    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.titles));
+    S.reveal(A.logos + .7);
+    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.score(A.titles, A.nudge));
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
+    DT.mood(t, (.5 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .5 * E.out3(P(t, A.logos + .2, A.logos + .9))), [$('art')]); DT.sweep(t, [A.d1, A.titles + .45, A.buttons + .45, A.logos + .45]); DT.hook(t, '<i>Your</i> <i>eyes</i> <i>are</i> <em><i>lying.</i></em>', A.hook);
     var art = $('art'), out = E.inOut3(P(t, A.titles - .35, A.titles + .2)); art.style.opacity = (1 - out).toFixed(3); var ia = E.settle(P(t, 0, .55), 1.1); art.style.opacity = ((1 - out) * E.out3(P(t, 0, .3))).toFixed(3); art.style.transform = 'translateY(' + (-30 * out + (1 - ia) * 60).toFixed(1) + 'px) perspective(1200px) rotateX(' + ((1 - ia) * 18).toFixed(1) + 'deg) scale(' + ((1 - .1 * out) * (.92 + .08 * ia)).toFixed(3) + ')';
     // the dot: in the exact centre, then nudged up by the cursor (a ghost stays where the maths put it)
     var nk = DT.spring(t, A.nudge + .05, .6), cy = S / 2 - NUDGE * nk; $('dot').style.left = S / 2 + 'px'; $('dot').style.top = cy.toFixed(1) + 'px';
@@ -69,3 +70,10 @@
     .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 /*script:end*/
+
+/*stage:begin*/
+<div style="position:absolute;inset:0;background:radial-gradient(90% 60% at 50% 40%,#fbfaf7,#e6e2da 80%)"></div>
+<div style="position:absolute;left:0;right:0;top:820px;bottom:0;background:linear-gradient(180deg,#e2ddd3,#d4cec2)"></div>
+<div class="lit" style="background:radial-gradient(50% 40% at 50% 48%,rgba(255,255,255,.85),transparent 75%)"></div>
+<div class="lit" style="background:linear-gradient(120deg,rgba(150,180,255,.12),transparent 60%)"></div>
+/*stage:end*/

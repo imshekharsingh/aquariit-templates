@@ -1,25 +1,25 @@
 {
- "note": "Turns Out design series, round 5 (21 Nov 2026): premium look, and a sound palette with no drums (tuned plucks, finger snaps, paper, air, shimmer). Not posts.",
+ "note": "Turns Out design series, round 6 (21 Nov 2026): each design in its own place (café, shelf, studio, street wall, fridge) that goes from dim to lit as the fixes land, a hook in motion at frame 0, and a score that turns from tense to bright. Not posts.",
  "items": [
   {
    "name": "showreel-c3-dt-spacing",
    "title": "1 · Turns Out It's the Spacing",
-   "about": "A café menu fixed live in 3 steps: one edge, one font, double the space."
+   "about": "A café menu that is costing them customers, fixed live: one edge, one font, double the space."
   },
   {
    "name": "showreel-c3-dt-expensive",
    "title": "2 · Why It Looks Expensive",
-   "about": "Pick A or B, then the cheap label becomes the premium one lever by lever."
+   "about": "One label looks five times pricier: the three levers, on a shop shelf."
   },
   {
    "name": "showreel-c3-dt-optical",
    "title": "3 · Your Eyes Are Lying",
-   "about": "The centred dot that looks too low, and why designers nudge things up."
+   "about": "Your eyes are lying: the optical centre, in a photo studio."
   },
   {
    "name": "showreel-c3-dt-myth",
    "title": "4 · Design Myths",
-   "about": "\"Centre it to look neat\": watch the eye zigzag, then read in one path."
+   "about": "Stop centring everything: watch the eye zigzag on a street poster, then read in one path."
   },
   {
    "name": "showreel-c3-dt-fixit",
@@ -27,5 +27,5 @@
    "about": "A viewer's birthday invite fixed in 3 moves: one hero, one font, one colour."
   }
  ],
- "v": 6
+ "v": 7
 }

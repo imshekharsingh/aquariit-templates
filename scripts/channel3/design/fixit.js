@@ -27,7 +27,7 @@
 /*board:end*/
 /*script:begin*/
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#ff8a5a', '#ff5f7a');
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ff8a5a', '#ff5f7a');
   var TEXT = "You asked us to fix a birthday invite. Move one: pick one hero, the age. Move two: one font, two sizes. Move three: one colour, used once. Turns out, a kids' party can look this good. Comment what we fix next.";
   var DUR = 18, V, PH, A = {}, CAM, CUR = [], IX = 90, IY = 440, W = {};
   var ST = {   // A: everything shouts (four fonts, all centred, one size); B: one hero, one font in two sizes, one colour
@@ -40,11 +40,11 @@
   function font(el, s){ el.style.font = s.f; el.style.color = s.c; el.style.letterSpacing = s.ls || 'normal'; }
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
-    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
+    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('birthday');
     A.m1 = at('Move'); A.hero = at('hero'); A.m2 = at('Move', 2); A.sizes = at('sizes'); A.m3 = at('Move', 3); A.once = at('once'); A.turns = at('Turns'); A.cmt = at('Comment'); A.end = Math.min(DUR - .2, V.end + 1.2);
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.m1, 1, 255, 500, 1.03).pull(A.turns - .2, .8, 255, 480, 1);
-    var S = DT.S; S.whoosh(0, 270, .4); S.land(.1, 270, 0); S.roll(.25, 1.25, 300, 14); S.done(1.5, 300, 4);
+    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.m1, 1, 255, 500, 1.03).pull(A.turns - .2, .8, 255, 480, 1);
+    var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); S.land(.1, 270, 0); S.roll(A.hook + .15, 1.05, 300, 12); S.done(A.hook + 1.25, 300, 4);
     S.whoosh(A.m1 - .9, 270, .3); IDS.forEach(function(id, i){ S.land(A.m1 - .7 + i * .06, 270, i); });
     // move 1: the hero grows (a swell and a shimmer), the read order lands 1-2-3 as rising notes
     S.rise(A.hero - .4, .45); S.tint(A.hero + .35, 150); [0, 1, 2].forEach(function(n){ S.land(A.hero + .6 + n * .12, 200 + n * 60, n * 2); }); A.d1 = A.hero + .95; S.done(A.d1, 150, 0);
@@ -52,17 +52,18 @@
     S.rise(A.m2 - .1, .4); IDS.forEach(function(id, i){ S.swap(A.m2 + .4 + i * .14, .4, 270, 6); }); S.roll(A.m2 + .35, .75, 400, 4); S.land(A.sizes, 180, 6); A.d2 = A.m2 + 1.25; S.done(A.d2, 270, 2);
     // move 3: the confetti flies into the 7 (a run of plucks), the 7 takes the colour (shimmer)
     S.rise(A.m3 - .1, .4); for (var i = 0; i < 8; i++) S.land(A.m3 + .35 + i * .05, 120 + i * 40, i); S.tint(A.m3 + .7, 150); A.d3 = A.once + .1; S.done(A.d3, 150, 4);
-    S.resolve(A.turns + .2); S.roll(A.cmt + .4, 1.2, 270, 15); S.click(A.cmt + .2, 270);
+    S.reveal(A.turns + .2); S.roll(A.cmt + .4, 1.2, 270, 15); S.click(A.cmt + .2, 270);
     window.ALIGN = [{ at: A.end - .05, sel: '.iv > span:first-child', edge: 'left', why: 'every line starts on one edge' }, { at: A.end - .05, sel: 'span', each: '.iv', edge: 'bottom', why: 'every letter on its line' }];
-    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.turns));
+    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.score(A.turns, A.m1));
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
+    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5))), [$('inv')]); DT.sweep(t, [A.d1, A.d2, A.d3, A.turns + .2]); DT.hook(t, '<i>This</i> <i>invite</i> <em><i>needs</i> <i>help.</i></em>', A.hook);
     // the request: a comment types in, holds, then lifts away as the invite arrives
-    var cm = $('cmt'), ci = E.out3(P(t, .1, .4)), co = E.inOut3(P(t, A.m1 - .9, A.m1 - .4)), txt = 'Fix a birthday invite, please!';
+    var cm = $('cmt'), ci = E.out3(P(t, A.hook, A.hook + .3)), co = E.inOut3(P(t, A.m1 - .25, A.m1 + .15)), txt = 'Fix a birthday invite, please!';
     cm.style.opacity = (ci * (1 - co)).toFixed(3); cm.style.transform = 'translateY(' + ((1 - ci) * 20 - 60 * co).toFixed(1) + 'px)';
-    $('cmtT').textContent = txt.slice(0, Math.round(txt.length * P(t, .25, 1.5))) + (t < 1.6 ? '|' : '');
-    var inv = $('inv'), ia = E.out3(P(t, A.m1 - .8, A.m1 - .2)); inv.style.opacity = (t < .1 ? 1 : mix(.35, 1, ia)).toFixed(3); inv.style.transform = 'translateY(' + ((1 - ia) * 30).toFixed(1) + 'px)';
+    $('cmtT').textContent = txt.slice(0, Math.round(txt.length * P(t, A.hook + .15, A.hook + 1.2))) + (t < A.hook + 1.3 ? '|' : '');
+    var inv = $('inv'), ia = E.out3(P(t, A.m1 - .15, A.m1 + .35)); inv.style.opacity = (t < .1 ? 1 : mix(.35, 1, ia)).toFixed(3); inv.style.transform = 'translateY(' + ((1 - ia) * 30).toFixed(1) + 'px)';
     // move 1: the 7 grows into the hero; everything else steps down; read-order badges
     var k1 = DT.spring(t, A.hero, .8), k2 = P(t, A.m2 + .35, A.m2 + 1.1), k3 = DT.spring(t, A.m3 + .3, .7);
     IDS.forEach(function(id, i){ var el = $(id), a = ST[id].A, b = ST[id].B, t0f = A.m2 + .4 + i * .14, kf = P(t, t0f, t0f + .45);
@@ -101,3 +102,13 @@
     .then(function(){ IDS.forEach(function(id){ font($(id), ST[id].A); }); anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 /*script:end*/
+
+/*stage:begin*/
+<div style="position:absolute;inset:0;background:linear-gradient(90deg,#e8efee 0%,#f6f8f7 40%,#eef3f2 100%)"></div>
+<div style="position:absolute;left:60px;top:380px;width:14px;height:520px;border-radius:7px;background:linear-gradient(90deg,#c9d2d1,#f4f7f6,#b9c3c2);box-shadow:4px 6px 12px rgba(0,0,0,.18)"></div>
+<div style="position:absolute;left:470px;top:440px;width:34px;height:34px;border-radius:50%;background:#ff6b6b;box-shadow:0 6px 10px rgba(0,0,0,.25)"></div>
+<div style="position:absolute;left:520px;top:860px;width:30px;height:30px;border-radius:50%;background:#4fc3f7;box-shadow:0 6px 10px rgba(0,0,0,.25)"></div>
+<div style="position:absolute;left:96px;top:870px;width:44px;height:26px;border-radius:8px;background:#ffd54f;box-shadow:0 6px 10px rgba(0,0,0,.25)"></div>
+<div class="lit" style="background:radial-gradient(60% 45% at 60% 45%,rgba(255,255,255,.7),transparent 75%)"></div>
+<div class="lit" style="background:linear-gradient(160deg,rgba(255,236,200,.18),transparent 50%)"></div>
+/*stage:end*/
