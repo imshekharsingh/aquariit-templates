@@ -35,6 +35,7 @@
     S.click(A.line + .15, 100); S.drag(A.line + .15, .45, 100, 470);
     for (i = 0; i < 6; i++) S.snap(A.left + .05 + i * .07 + .3, 96, i); A.d1 = A.left + .9; S.done(A.d1, 96, 0);
     S.rise(A.e2 - .2, .3); S.drag(A.e2, A.e2d, 96, 96); A.d2 = A.e2 + A.e2d; S.done(A.d2, 96, 4); S.resolve(A.smooth + .3);
+    window.ALIGN = [{ at: A.end - .05, sel: '.pl', edge: 'left', why: 'every line starts on one edge' }];
     window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.smooth));
   }
   function xAt(i, k){ var xc = (PW - W[i]) / 2; return mix(xc, LX, k); }

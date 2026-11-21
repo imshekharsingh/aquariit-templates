@@ -93,9 +93,9 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
       e.style.transform = 'translate(' + (x + Math.cos(a) * r).toFixed(1) + 'px,' + (y + Math.sin(a) * r).toFixed(1) + 'px) scale(' + (1 - p * .6).toFixed(3) + ')'; e.style.opacity = (p > 0 && p < 1 ? 1 - p : 0).toFixed(3); }); };
   DT.flipChars = function(el, t, t0, d, A, B){ if (!el._ch) { var tx = el._txt || el.textContent; el._txt = tx; el.textContent = ''; el._ch = [];
       for (var i = 0; i < tx.length; i++) { var s = document.createElement('span'); s.textContent = tx[i]; s.style.display = 'inline-block'; s.style.whiteSpace = 'pre'; s.style.transformOrigin = '50% 60%'; el.appendChild(s); el._ch.push(s); } }
-    var n = el._ch.length; el._ch.forEach(function(s, i){ var a = t0 + d * i / Math.max(1, n - 1) * .7, k = P(t, a, a + d * .35), on = k >= .5, st = on ? B : A;
+    var n = el._ch.length; el._ch.forEach(function(s, i){ var a = t0 + d * .65 * i / Math.max(1, n - 1), k = P(t, a, a + d * .35), on = k >= .5, st = on ? B : A;   // every letter finishes by t0 + d (owner, 21 Nov: the last letters froze mid-flip, raised off the line)
       s.style.font = st.f; s.style.color = st.c; s.style.letterSpacing = st.ls || 'normal';
-      s.style.transform = 'rotateX(' + ((k > 0 && k < 1) ? (on ? (1 - k) * 2 * 90 : k * 2 * 90) : 0).toFixed(1) + 'deg) translateY(' + (Math.sin(Math.PI * k) * -4).toFixed(2) + 'px)'; });
+      s.style.transform = k > 0 && k < 1 ? 'rotateX(' + (on ? (1 - k) * 2 * 90 : k * 2 * 90).toFixed(1) + 'deg) translateY(' + (Math.sin(Math.PI * k) * -4).toFixed(2) + 'px)' : 'none'; });
     return P(t, t0, t0 + d); };
   DT.intro = function(board, t, d){ d = d || .55; var k = E.settle(P(t, 0, d), 1.1), o = E.out3(P(t, 0, d * .6));
     board.style.transform = (board._tf || '') + ' perspective(1200px) rotateX(' + ((1 - k) * 18).toFixed(2) + 'deg) translateY(' + ((1 - k) * 60).toFixed(1) + 'px) scale(' + (.92 + .08 * k).toFixed(4) + ')';

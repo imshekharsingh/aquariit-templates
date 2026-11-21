@@ -106,6 +106,12 @@ jobs:
         with:
           name: voice
           path: out
+      - name: Align
+        # ALIGN (owner, 21 Nov 2026: "Doesn't look aligned"): a scene's declared edges and baselines (window.ALIGN) must line up on the real
+        # voice's timing before any frame is captured; scenes without ALIGN skip (scripts/qa/align.mjs)
+        run: |
+          [ -s out/words.json ] && export VOICE_WORDS=out/words.json
+          node scripts/qa/align.mjs "$CFG"
       - name: Capture
         run: |
           set -o pipefail

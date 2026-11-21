@@ -40,6 +40,7 @@
     S.rise(A.small - .3, .3); S.swap(A.small + .1, .5, 270, 8); S.roll(A.small + .1, .8, 270, 8); A.d2 = A.small + .95; S.done(A.d2, 270, 2);
     S.rise(A.two - .3, .3); for (var i = 0; i < 5; i++) S.land(A.two + i * .05, 150 + i * 50, i); [1, 2, 3].forEach(function(n){ S.whoosh(A.two + .5 + n * .08, 150 + n * 50, .2); }); S.tint(A.two + .3, 270); A.d3 = A.two + 1.05; S.done(A.d3, 270, 4);
     S.resolve(A.quiet);
+    window.ALIGN = [{ at: A.end - .05, sel: 'span', each: '#aT1, #aT2', edge: 'bottom', why: 'every letter on its line' }];
     window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.quiet));
   }
   function paintA(t){ var mv = E.inOut3(P(t, A.three, A.three + .7)), ks = DT.spring(t, A.space + .1, .7), kl = DT.spring(t, A.small + .1, .8), kc = E.inOut3(P(t, A.two + .2, A.two + .8));

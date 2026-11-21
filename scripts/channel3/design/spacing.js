@@ -36,7 +36,7 @@
     r1: { A: { f: "400 20px 'Courier Prime'", c: '#333', y: 137, j: -10 }, B: { f: "500 23px 'Space Grotesk'", c: '#1d1a16', y: 182 } },
     r2: { A: { f: "400 20px 'Courier Prime'", c: '#333', y: 166, j: 16 }, B: { f: "500 23px 'Space Grotesk'", c: '#1d1a16', y: 226 } },
     r3: { A: { f: "400 20px 'Courier Prime'", c: '#333', y: 195, j: -6 }, B: { f: "500 23px 'Space Grotesk'", c: '#1d1a16', y: 270 } },
-    foot: { A: { f: "400 23px 'Anton'", c: '#2d5a8c', y: 232, j: 4, bg: '#e9c443' }, B: { f: "700 16px 'Space Grotesk'", c: '#c4572a', y: 302, ls: '.16em', bg: 'rgba(233,196,67,0)' } } };
+    foot: { A: { f: "400 23px 'Anton'", c: '#2d5a8c', y: 232, j: 4, bg: '#e9c443' }, B: { f: "700 16px 'Space Grotesk'", c: '#c4572a', y: 318, ls: '.16em', bg: 'rgba(233,196,67,0)' } } };
   var IDS = ['i0', 'i1', 'r0', 'r1', 'r2', 'r3', 'foot'], L = 38, R = 402;
   function font(el, s){ el.style.font = s.f; el.style.color = s.c; el.style.letterSpacing = s.ls || 'normal'; el.style.textTransform = s.up ? 'uppercase' : 'none'; }
   function build(){ IDS.forEach(function(id){ var el = $(id); font(el, IT[id].A); W[id] = el.offsetWidth; if (id === 'foot') el.style.background = IT[id].A.bg; }); }
@@ -61,6 +61,10 @@
     S.rise(A.f3 - .1, .4); S.roll(A.dbl, .6, 440, 9); S.drag(A.dbl + .1, .6, 255, 255); A.d3 = A.dbl + .85; S.done(A.d3, 270, 4);
     // the scrub: before and after, back and forth once, then the verdict chord
     S.whoosh(A.same, 200, .5); S.whoosh(A.same + .7, 340, .5); S.tint(A.same + 1.2, 270); S.resolve(A.price - .1);
+    // ALIGN (owner, 21 Nov 2026: "Doesn't look aligned"): on the final frame every line starts on one edge, the prices end on one edge, every letter sits on its line
+    window.ALIGN = [{ at: A.end - .05, sel: '#i0 > span:first-child, #i1 > span:first-child, .row .nm > span:first-child, #foot > span:first-child', edge: 'left', why: 'every line starts on one edge' },
+      { at: A.end - .05, sel: '.row .pr', edge: 'right', why: 'the prices end on one edge' },
+      { at: A.end - .05, sel: 'span', each: '#i0, #i1, .row .nm, .row .pr, #foot', edge: 'bottom', why: 'every letter on its line' }];
     window.HOLDS = [[A.end, DUR]];
     KM.publish(DT.bed(A.same));
   }
@@ -70,7 +74,7 @@
     return { k1: k1 * sc, k2: k2 * (sc > .5 || t < A.same ? 1 : sc * 2), k3: k3 * sc, sc: sc }; }
   function paint(t, S){
     IDS.forEach(function(id, i){ var el = $(id), a = IT[id].A, b = IT[id].B, row = id[0] === 'r';
-      var ka = cl((S.k1 - i * .03) / .9), kf = cl((S.k2 * 1.3 - i * .13) / .25), ks = S.k3;
+      var ka = cl((S.k1 - i * .03) / (1 - 6 * .03)), kf = cl((S.k2 * 1.3 - i * .13) / .25), ks = S.k3;
       // fix two: each line flips into the one font letter by letter as the scan passes (vt: the switch's own clock, so the scrub can run it backwards)
       var t0f = A.scan + .1 + i * .13, vt = t0f + kf * .45; font(el, kf >= .5 ? b : a); var fl = 0;
       if (row) { DT.flipChars(el.querySelector('.nm'), vt, t0f, .45, a, b); DT.flipChars(el.querySelector('.pr'), vt, t0f, .45, a, { f: b.f.replace('500', '700'), c: b.c }); }
@@ -78,6 +82,7 @@
       var wA = W[id], xA = (BW - wA) / 2 + (a.j || 0), x = mix(xA, L, ka);
       if (row) { var ww = mix(wA, R - L, ka); el.style.width = ww.toFixed(1) + 'px'; el.querySelector('.dots').style.opacity = (1 - ka).toFixed(3); el.querySelector('.dots').style.maxWidth = (60 * (1 - ka)).toFixed(1) + 'px';
       }
+      if (id === 'foot') x -= 12 * ka;   // the badge's own padding: its text lines up with the edge once the badge is gone
       var y = mix(a.y, b.y, ks); el.style.transform = 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px) scale(' + (1 + .05 * fl) + ')';
       if (id === 'foot') el.style.background = kf >= 1 ? b.bg : a.bg; }); }
   function seek(t){
@@ -97,8 +102,8 @@
     DT.sel('marq', { x: 76, y: 418, w: 394 * E.out3(m), h: 272 * E.out3(m) }, m > 0 ? mo : 0);
     var g = P(t, A.edge - .1, A.edge + .3) * (1 - P(t, A.f2 + .2, A.f2 + .6));
     DT.line('guide', BX + L, 400, BX + L, 780, g, '#ffb35a', 2, '6 5');
-    IDS.forEach(function(id, i){ var a = IT[id].A, xA = (BW - W[id]) / 2 + (a.j || 0), x = BX + mix(xA, L, cl((S.k1 - i * .03) / .9)), y = BY + mix(a.y, IT[id].B.y, S.k3) + 4;
-      var on = P(t, A.f1 + .5, A.f1 + .8) * (1 - P(t, A.f2 + .2, A.f2 + .5)), ok = cl((S.k1 - i * .03) / .9);
+    IDS.forEach(function(id, i){ var a = IT[id].A, xA = (BW - W[id]) / 2 + (a.j || 0), x = BX + mix(xA, L, cl((S.k1 - i * .03) / (1 - 6 * .03))), y = BY + mix(a.y, IT[id].B.y, S.k3) + 4;
+      var on = P(t, A.f1 + .5, A.f1 + .8) * (1 - P(t, A.f2 + .2, A.f2 + .5)), ok = cl((S.k1 - i * .03) / (1 - 6 * .03));
       DT.line('tick' + i, x - 6, y, x - 6, y + 22, on, ok > .98 ? '#ffb35a' : '#ff6b6b', 3); });
     DT.chip('c1', 'ALIGN <b>LEFT</b> · 1 EDGE', 236, 394, P(t, A.edge, A.edge + .3) - P(t, A.f2 - .1, A.f2 + .2));
     // fix two: the scan line, then the font count rolls 4 -> 1 and the weights chip

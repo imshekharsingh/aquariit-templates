@@ -53,6 +53,7 @@
     // move 3: the confetti flies into the 7 (a run of plucks), the 7 takes the colour (shimmer)
     S.rise(A.m3 - .1, .4); for (var i = 0; i < 8; i++) S.land(A.m3 + .35 + i * .05, 120 + i * 40, i); S.tint(A.m3 + .7, 150); A.d3 = A.once + .1; S.done(A.d3, 150, 4);
     S.resolve(A.turns + .2); S.roll(A.cmt + .4, 1.2, 270, 15); S.click(A.cmt + .2, 270);
+    window.ALIGN = [{ at: A.end - .05, sel: '.iv > span:first-child', edge: 'left', why: 'every line starts on one edge' }, { at: A.end - .05, sel: 'span', each: '.iv', edge: 'bottom', why: 'every letter on its line' }];
     window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.turns));
   }
   function seek(t){
