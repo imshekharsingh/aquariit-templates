@@ -1,6 +1,41 @@
 # Turns Out restart plan (20 Nov 2026, second account; owner: "everything has failed so far with no growth")
 
-> **21 Nov 2026 (later): the direction moved to the Turns Out design series** (the owner liked all five design-tutorial concepts: scripts/channel3/design, previews and the reference cut showreel-c3-menu-spacing in the app's Inbox → Previews). The myth plan below is superseded once the owner says go; its five profile asks (section 5) were withdrawn from Needs you the same day.
+> **21 Nov 2026 (owner: "start today ... with this strategy"): Turns Out is the DESIGN SERIES now. Section 0 below is the plan; sections 1-10 (myths) are history.**
+
+## 0. Turns Out design series (live from 21 Nov 2026)
+**Promise:** one design fix a day you can use on your own menu, poster, slide or invite. "Turns out, it's not the colours. It's the spacing."
+Why it can grow where the fun facts did not: each reel is something the viewer *has* (their own menu, invite, slide) to save and send,
+the same reason @webin20sec gets saves. Owner, 21 Nov: "I actually liked all five ... defining design across usage".
+
+**Format (frozen 4 weeks, to 19 Dec; engine "design", scripts/channel3/design):** 18 s, ~45 words, a real-world stage behind the design
+(café, shop shelf, studio, brick wall, fridge door), the stage changes with the topic. Frame 0: the claim alone in the top band, the design
+fully lit, its problems ringed. Then 2-3 fixes with cursor, guides and a "FIX n OF N" dial; the score turns from tense to bright as the
+fixes land; ends on the fixed design. Caption: the 3 fixes as a numbered list, "Save this for your next ...", one question. No CTA on screen.
+
+**Order (one a day, 13:00-21:00 IST, built on its post day from the approved preview; learn-then-build):**
+| Day | Reel | Preview config | Status |
+|---|---|---|---|
+| Sat 21 Nov | It's the spacing (café menu) | design/spacing.json → menu-spacing.json | full reel, render 3 |
+| Sun 22 Nov | One looks 5× pricier (shelf) | design/expensive.json | preview approved; build the full reel |
+| Mon 23 Nov | Your eyes are lying (optical centre) | design/optical.json | same |
+| Tue 24 Nov | Stop centring everything (poster) | design/myth.json | same |
+| Wed 25 Nov | You asked: fix this invite (fridge) | design/fixit.json | same |
+| from 26 Nov | new topics in the same format | one new scene file a day | see list below |
+A full reel = copy the preview's JSON to scripts/channel3/<name>.json the way menu-spacing.json was made (name, seek, caption, keywords,
+hashtags, 2 sources, qa.subject), add it to build.mjs COPIES, a review/c3 file and a captions.json entry, then ONE render.
+Next topics (gate: a fix anyone can apply in a minute, checked against a design source): contrast for readability, the 60-30-10 colour
+split, button size and tap space, line length, hierarchy in 3 sizes, logo on a busy photo, the resume page, the slide with too much text,
+price tags (charm vs round), the shop sign seen from the street.
+
+**Channel changes (owner, one time, ~10 minutes; listed in the app's Needs you as c3-design-profile):**
+1. Name field: "Turns Out · Design Tips" (search reads the name; the handle @itturns.out stays).
+2. Bio: "Design fixes you can use today. Menus, posters, slides, invites. One a day." (no link needed yet)
+3. Category: Education (or Graphic Designer).
+4. Grid: archive (reversible) the old history/myth reels so a stranger who opens the profile sees one channel; keep at most the 3 with the
+   most reach, unpinned. Pin the café menu reel once it is posted.
+5. Profile picture: unchanged for now; a design-series picture can follow once 5 reels are up.
+Read after 7 reels (28 Nov): reach per reel vs the old ~1,100 pool, saves + shares per 1,000 reached, followers. Keep the format if saves
+beat the old reels; the section 7 checkpoints still decide keep or stop.
 Read this first for Turns Out. It overrides design/c3-strategy.md (18 Nov, kept as history) and, where they differ, design/channel3.md and
 design/rules-c3.md. Restarting the daily task is the owner's call (design/handoff.md); nothing here starts it.
 

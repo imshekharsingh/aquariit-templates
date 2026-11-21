@@ -120,7 +120,7 @@
     DT.chip('c1', 'ALIGN <b>LEFT</b> · 1 EDGE', 236, 394, P(t, A.edge, A.edge + .3) - P(t, A.f2 - .1, A.f2 + .2));
     // fix two: the scan line, then the font count rolls 4 -> 1 and the weights chip
     var sk = P(t, A.scan, A.scan + 1.1); DT.line('scan', BX + 4, BY + 10 + sk * 340, BX + BW - 4, BY + 10 + sk * 340, sk > 0 && sk < 1 ? 1 : 0, '#ffb35a', 3);
-    DT.chip('c2', 'FONTS <b>' + DT.roll(4, 1, P(t, A.scan, A.scan + 1.1)) + '</b>', 150, 396, P(t, A.f2 + .2, A.f2 + .5) - P(t, A.f3 - .1, A.f3 + .2));
+    DT.chip('c2', 'ONE <b>FONT</b>', 150, 396, P(t, A.f2 + .2, A.f2 + .5) - P(t, A.f3 - .1, A.f3 + .2));
     DT.chip('c2b', 'WEIGHTS <b>2</b>', 300, 396, P(t, A.weights, A.weights + .3) - P(t, A.f3 - .1, A.f3 + .2));
     // fix three: two brackets measure the gaps between groups and roll 8 -> 24 px as the groups move apart
     var mk = P(t, A.f3 + .2, A.f3 + .6) * (1 - P(t, A.same - .3, A.same)), gp = DT.roll(8, 24, P(t, A.dbl, A.dbl + .6));
