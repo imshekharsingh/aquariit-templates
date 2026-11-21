@@ -46,8 +46,8 @@
     CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.m1, 1, 255, 500, 1.03).pull(A.turns - .2, .8, 255, 480, 1);
     var S = DT.S; S.whoosh(0, 270, .4); S.land(.1, 270, 0); S.roll(.25, 1.25, 300, 14); S.done(1.5, 300, 4);
     S.whoosh(A.m1 - .9, 270, .3); IDS.forEach(function(id, i){ S.land(A.m1 - .7 + i * .06, 270, i); });
-    // move 1: the hero grows (a swell and a low boom), the read order lands 1-2-3 as rising notes
-    S.rise(A.hero - .4, .45); c1(); function c1(){ KM.cue({ t: A.hero + .35, k: 'boom', g: .22, x: 150, r: .5 }); } [0, 1, 2].forEach(function(n){ S.land(A.hero + .6 + n * .12, 200 + n * 60, n * 2); }); A.d1 = A.hero + .95; S.done(A.d1, 150, 0);
+    // move 1: the hero grows (a swell and a shimmer), the read order lands 1-2-3 as rising notes
+    S.rise(A.hero - .4, .45); S.tint(A.hero + .35, 150); [0, 1, 2].forEach(function(n){ S.land(A.hero + .6 + n * .12, 200 + n * 60, n * 2); }); A.d1 = A.hero + .95; S.done(A.d1, 150, 0);
     // move 2: the scan flips every line, letter by letter, into one font
     S.rise(A.m2 - .1, .4); IDS.forEach(function(id, i){ S.swap(A.m2 + .4 + i * .14, .4, 270, 6); }); S.roll(A.m2 + .35, .75, 400, 4); S.land(A.sizes, 180, 6); A.d2 = A.m2 + 1.25; S.done(A.d2, 270, 2);
     // move 3: the confetti flies into the 7 (a run of plucks), the 7 takes the colour (shimmer)

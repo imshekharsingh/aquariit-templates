@@ -350,7 +350,7 @@ def main(cues_path, out_path, narration=None):
             if k == 'move': kw['dir'] = c.get('dir', 1)
             if k == 'resolve' and c.get('notes'): kw['notes'] = c['notes']
             s = NEW_KINDS[k](g=g, p=p, **kw)
-            s = samples.swap(k, s, t, p)
+            if not c.get('synth'): s = samples.swap(k, s, t, p)   # synth: true keeps the tuned synthesized sound (21 Nov 2026: the fallback pack's blip is a tom drum)
             if k == 'swell': t -= kw['d']   # ends on the cue
             s = place(s, c.get('x', 270), c.get('x2'))
             if k in AIR: s = air(s, k != 'swell')
@@ -363,7 +363,7 @@ def main(cues_path, out_path, narration=None):
         elif k == 'riser': s = riser(c.get('d', 1), g, p); t -= c.get('d', 1)   # ends on the cue
         elif k == 'boom': s = hit(g, p, True)
         else: s = {'hit': hit, 'pop': pop, 'tick': tick, 'click': click, 'shimmer': shimmer, 'tap': tap, 'thud': thud}[k](g, p)
-        s = samples.swap(k, s, t, p)
+        if not c.get('synth'): s = samples.swap(k, s, t, p)
         if c.get('x') is not None: s = place(s, c['x'], c.get('x2'))
         if k in AIR: s = air(s, k != 'riser')
         s = _detail(s, k, g, t)
