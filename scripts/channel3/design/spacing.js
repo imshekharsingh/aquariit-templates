@@ -46,7 +46,7 @@
     A.col = at('colours'); A.f1 = at('Fix'); A.edge = at('edge'); A.f2 = at('Fix', 2); A.weights = at('weights'); A.f3 = at('Fix', 3); A.dbl = at('double'); A.same = at('Same'); A.price = at('price'); A.end = Math.min(DUR - .2, V.end + .8);
     A.sw = A.col - .5; A.hook = at('Turns');
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
+    CAM = KM.rig({ x: 255, y: 480, z: 1.08, drift: 1 }).pull(0, .55, 255, 480, 1).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
     var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); IDS.forEach(function(id, i){ S.land(.12 + i * .05, 270, i); });
     // the colours beat: five swatches pop out of the menu (a rising run), then a strike: it's not them
     for (var i = 0; i < 5; i++) S.land(A.sw + i * .09, 330 + i * 30, i + 2); S.stamp(A.col + .35, 400);

@@ -80,7 +80,7 @@ body:not(.ctx) #topband{display:none}
   <div id="grid" class="a" data-fit="free"></div>
   <svg id="ring" class="a" viewBox="-320 -320 640 640"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--tint);stop-opacity:0"/><stop offset="1" style="stop-color:var(--tint);stop-opacity:.55"/></linearGradient></defs><circle r="300" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="26"/><g id="ringarc"><path d="M-212 -212 A300 300 0 1 1 -300 0" fill="none" stroke="url(#rg)" stroke-width="26" stroke-linecap="round"/></g></svg>
   <div id="floor" class="a"></div>
-  <div id="sbox" data-subject style="position:absolute;left:40px;top:400px;width:460px;height:380px"></div>
+  <div id="sbox" data-subject style="position:absolute;left:40px;top:412px;width:460px;height:366px"></div>
   <div id="board" class="board">
   <div class="it" id="i0">Kettle &amp; Crumb</div>
   <div class="it" id="i1">fresh every morning</div>
@@ -766,7 +766,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     A.col = at('colours'); A.f1 = at('Fix'); A.edge = at('edge'); A.f2 = at('Fix', 2); A.weights = at('weights'); A.f3 = at('Fix', 3); A.dbl = at('double'); A.same = at('Same'); A.price = at('price'); A.end = Math.min(DUR - .2, V.end + .8);
     A.sw = A.col - .5; A.hook = at('Turns');
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
+    CAM = KM.rig({ x: 255, y: 480, z: 1.08, drift: 1 }).pull(0, .55, 255, 480, 1).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
     var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); IDS.forEach(function(id, i){ S.land(.12 + i * .05, 270, i); });
     // the colours beat: five swatches pop out of the menu (a rising run), then a strike: it's not them
     for (var i = 0; i < 5; i++) S.land(A.sw + i * .09, 330 + i * 30, i + 2); S.stamp(A.col + .35, 400);

@@ -2,6 +2,12 @@
  "note": "Turns Out design series, round 6 (21 Nov 2026): each design in its own place (café, shelf, studio, street wall, fridge) that goes from dim to lit as the fixes land, a hook in motion at frame 0, and a score that turns from tense to bright. Not posts.",
  "items": [
   {
+   "name": "showreel-c3-menu-spacing",
+   "title": "★ Reference cut · Turns Out It's the Spacing (full reel)",
+   "about": "The complete version: full render, quality checks, caption and sources. Not scheduled.",
+   "src": "/reels/showreel-c3-menu-spacing.mp4"
+  },
+  {
    "name": "showreel-c3-dt-spacing",
    "title": "1 · Turns Out It's the Spacing",
    "about": "A café menu that is costing them customers, fixed live: one edge, one font, double the space."

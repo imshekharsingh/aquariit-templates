@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-menu-spacing",
+ "seek": "scripts/channel3/menu-spacing.html",
+ "engine": "design",
+ "dur": 18,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "This menu is costing them customers. Turns out, it's not the colours. Fix one: line every item up to one edge. Fix two: one font, in two weights. Fix three: double the space between groups. Same words. Now it looks twice the price.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format (reference cut, round 6)",
+  "vs": "median"
+ },
+ "caption": "This menu was costing them customers. Three fixes, same words. ☕\n\n1. Line every item up to one edge. Centred lines each start somewhere new, so the eye has to hunt.\n2. One font, in two weights. Four fonts read as noise; one font with a bold and a regular reads as a plan.\n3. Double the space between groups. Space tells the eye what belongs together.\n\nSave this for your next menu, slide or poster. Which fix would you do first?",
+ "keywords": [
+  "menu design tips",
+  "how to make a menu look expensive",
+  "typography tips",
+  "graphic design for beginners",
+  "alignment in design",
+  "white space design"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#typography",
+  "#menudesign",
+  "#smallbusiness"
+ ],
+ "sources": [
+  {
+   "title": "Centered text (Butterick's Practical Typography)",
+   "url": "https://practicaltypography.com/centered-text.html"
+  },
+  {
+   "title": "Proximity Principle in Visual Design (Nielsen Norman Group)",
+   "url": "https://www.nngroup.com/articles/gestalt-proximity/"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (the café) fills the frame by design"
+   }
+  ],
+  "subject": [
+   50,
+   408,
+   490,
+   780
+  ]
+ }
+}

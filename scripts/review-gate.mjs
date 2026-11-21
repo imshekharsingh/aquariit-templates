@@ -50,7 +50,8 @@ export const reviewProblems = (name, e, { render = false, today = todayIST() } =
     else if (g.ev.length < 8) out.push(`${p}: item ${i} needs its evidence after "PASS:"`);
     // the Echoes engine (owner's kit, 15 Nov 2026: "a gate that blocks the kit's look is adjusted"): archival photo shots have no Kt.plane worlds, so
     // item 20 takes the film finish and the per-shot motion as its evidence instead of qa.mjs DEPTH lines (captions.json "engine": "echoes")
-    else if (NEED[i] && !(i === 2 && e.channel === 'tech') && !(i === DEPTH_ITEM && e.engine === 'echoes') && !((i === 16 && e.postOn >= CALM_FROM && e.channel === 'web' ? CALM16 : i === 16 && e.postOn >= CALM_FROM && e.channel === 'tech' ? CALM16T : NEED[i]).test(g.ev))) out.push(`${p}: item ${i} must paste its AUTO line (${NEED[i].source})`);
+    // the design-tutorial scenes (21 Nov 2026, scripts/channel3/design: a live artboard on a context stage, no Kt.plane worlds) take the same evidence ("engine": "design")
+    else if (NEED[i] && !(i === 2 && e.channel === 'tech') && !(i === DEPTH_ITEM && (e.engine === 'echoes' || e.engine === 'design')) && !((i === 16 && e.postOn >= CALM_FROM && e.channel === 'web' ? CALM16 : i === 16 && e.postOn >= CALM_FROM && e.channel === 'tech' ? CALM16T : NEED[i]).test(g.ev))) out.push(`${p}: item ${i} must paste its AUTO line (${NEED[i].source})`);
   }
   return out;
 };
