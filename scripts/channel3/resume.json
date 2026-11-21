@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-resume",
+ "seek": "scripts/channel3/resume.html",
+ "engine": "design",
+ "dur": 16,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "Everything on this CV is bold. So nothing stands out. Turns out, eyes need an order. Fix one: the name, biggest. Fix two: headings, one size down. Fix three: details plain. Now it reads top to bottom.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format (queue of 10)",
+  "vs": "median"
+ },
+ "caption": "Everything on this CV is bold. So nothing stands out. 📄\n\n1. The name, biggest. Make the most important thing the largest; Nielsen Norman Group suggests no more than three sizes.\n2. Headings, one size down. They guide the eye without shouting over the content.\n3. Details plain. If everything is emphasised, nothing is; keep bold for the few words that matter.\n\nSave this for your next CV, cover letter or portfolio. What's the first thing you read on a CV?",
+ "keywords": [
+  "resume design tips",
+  "cv design",
+  "visual hierarchy",
+  "typography tips",
+  "graphic design for beginners",
+  "how to format a resume"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#typography",
+  "#resumetips",
+  "#cvtips"
+ ],
+ "sources": [
+  {
+   "title": "Visual Hierarchy in UX: Definition (Nielsen Norman Group)",
+   "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"
+  },
+  {
+   "title": "Bold or italic (Butterick's Practical Typography)",
+   "url": "https://practicaltypography.com/bold-or-italic.html"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (a CV on a desk next to a coffee cup) fills the frame by design"
+   }
+  ],
+  "subject": [
+   66,
+   400,
+   474,
+   780
+  ]
+ }
+}
