@@ -1,4 +1,6 @@
 # Turns Out restart plan (20 Nov 2026, second account; owner: "everything has failed so far with no growth")
+
+> **21 Nov 2026 (later): the direction moved to the Turns Out design series** (the owner liked all five design-tutorial concepts: scripts/channel3/design, previews and the reference cut showreel-c3-menu-spacing in the app's Inbox → Previews). The myth plan below is superseded once the owner says go; its five profile asks (section 5) were withdrawn from Needs you the same day.
 Read this first for Turns Out. It overrides design/c3-strategy.md (18 Nov, kept as history) and, where they differ, design/channel3.md and
 design/rules-c3.md. Restarting the daily task is the owner's call (design/handoff.md); nothing here starts it.
 
