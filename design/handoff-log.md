@@ -44,6 +44,7 @@ Format (at most 6 lines):
 - 21 Nov (owner + a viewer: optical centre "looks centered"): showreel-c3-optical-centre withdrawn (hidden, review NOT READY), owner-feedback line, rebuild idea in todo.md P2.
 - 21 Nov (owner): menu-spacing and stop-centring posted. looks-expensive: B no longer sits idle (steps aside, A centred at 1.3x and changes); local checks pass; render 3 waits for the owner's go.
 - 21 Nov (owner: render it; add 10 more to the Turns Out section, owner picks upload times): looks-expensive render 3 dispatched on main (run 44949072234). design/c3-queue.md: 10 design reels scripted (claims, voices, fixes, stages, 2 sources each, build order, lessons); a fresh build session works through it.
+- 21 Nov: looks-expensive render 3 OUTPUT QA PASS (B steps aside, A centred and changing).
 - Refs: owner's 2 uploads (one Hinglish AI-editing tutorial reel) studied into references.md R-ref 21 Nov; c3-plan.md week 2 is now E31 step bar + big words (engine work needed first).
 - For the other account: the Turns Out daily task stays off until the owner says; when it restarts, it follows c3-plan.md and builds sketch plates only (no Media runs). CLAUDE.md Images line now says Turns Out is code-drawn. Tech still uses media; the owner's remark may apply there too: ask in the Owner chat.
 

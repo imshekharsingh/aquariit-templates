@@ -29,4 +29,4 @@ Owner feedback (design/owner-feedback.md) against the stills: "doesn't look alig
 
 Critic: PENDING (an independent session writes CRITIC: READY or NOT READY; the owner's watch decides the post).
 
-Owner, 21 Nov 2026 (after render 2): label B sat unchanged beside A through the lesson and "feels useless". Fixed in the scene (B steps aside after the vote, A moves to the centre at 1.3x and changes; stills OVERLAP none, SAFE ok, local FILL median 95%, GRADE 0.43). Needs render 3 (owner's go).
+Owner, 21 Nov 2026 (after render 2): label B sat unchanged beside A through the lesson and "feels useless". Fixed in the scene (B steps aside after the vote, A moves to the centre at 1.3x and changes; stills OVERLAP none, SAFE ok, local FILL median 95%, GRADE 0.43). Render 3 (run 44949072234, owner's go): OUTPUT QA PASS (PACE 2.75 words/s, GRADE 0.42, FILL median 94%, ELEMENTS longest gap 2.1 s, NUMBERS none past the voice, DEAD none).
