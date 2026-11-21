@@ -45,3 +45,4 @@ Batch 3: #10 line-spacing claim "Nobody can cook from this." (the queue's 7-word
 can read it. ... Fix three: check the ratio. Four and a half to one." (the checker computes the real WCAG ratio and shows FAIL / PASS, the
 4.5:1 minimum only as the voice says it); #8 price-list "one right edge", "digits, all one width" (Space Grotesk tabular figures), "dots to each
 name". Scenes: design/leading.js (#10), contrast.js (#2), prices.js (#8).
+Batch 4: #9 card-margins (design/card.js); the card's lines start 12 px from its edges (closer fails the safe zone under the camera push).

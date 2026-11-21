@@ -1644,5 +1644,12 @@
   "onGo": true,
   "concept": "Design series · These prices are hard to compare. They jump around. ✂️ (a salon price list with every row centred so the prices jump left and right, fixed in three moves: one right edge for prices, same-width (tabular) digits, dot leaders to each name)",
   "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-c3-card-margins": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · This business card feels cheap. Why? Everything touches the edges. 💼 (a business card with every line pushed to its edges, fixed in three moves: pull everything inside a margin, fewer lines, one strong corner holding the text block)",
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
  }
 }

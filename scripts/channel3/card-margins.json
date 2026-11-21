@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-card-margins",
+ "seek": "scripts/channel3/card-margins.html",
+ "engine": "design",
+ "dur": 16,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "This business card feels cheap. Why? Everything touches the edges. Turns out, margins make it calm. Fix one: pull everything in. Fix two: fewer lines. Fix three: one strong corner. Same card, now it feels premium.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format (queue of 10)",
+  "vs": "median"
+ },
+ "caption": "This business card feels cheap. Why? Everything touches the edges. 💼\n\n1. Pull everything in. A margin all round gives the card a frame; don't fear the empty space.\n2. Fewer lines. Name, role, one way to reach you. The rest can live on your website.\n3. One strong corner. Group what's left in one place, so it reads as one block, not a scatter.\n\nSave this for your next card, badge or social post. What's the one line your card can't lose?",
+ "keywords": [
+  "business card design",
+  "white space in design",
+  "margins in design",
+  "minimal design tips",
+  "graphic design for beginners",
+  "premium design"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#typography",
+  "#businesscard",
+  "#minimaldesign"
+ ],
+ "sources": [
+  {
+   "title": "Page margins (Butterick's Practical Typography)",
+   "url": "https://practicaltypography.com/page-margins.html"
+  },
+  {
+   "title": "Proximity Principle in Visual Design (Nielsen Norman Group)",
+   "url": "https://www.nngroup.com/articles/gestalt-proximity/"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (a business card on a wooden desk) fills the frame by design"
+   }
+  ],
+  "subject": [
+   50,
+   420,
+   490,
+   672
+  ]
+ }
+}

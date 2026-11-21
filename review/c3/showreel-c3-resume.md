@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/resume.json.
 10. Facts: PASS: "if everything is emphasized, then nothing is emphasized" (Butterick, Bold or italic); make the most important element biggest and use no more than 3 sizes; "if everything is contrasted, then nothing stands out" (Nielsen Norman Group, Visual Hierarchy in UX); the person, studio and school are invented; sources (read in full in the Sources run 44949452447): Visual Hierarchy in UX: Definition (Nielsen Norman Group); Bold or italic (Butterick's Practical Typography)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list with one reason each, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (2 groups); local Output QA copy: FILL median 92% (6% of samples under 80%), GRADE subject vs surroundings 0.78, ELEMENTS longest gap 1.5 s at 14.5-16.0 s
-13. After the render: PENDING
+13. After the render: PASS: render 1 (run 44951342431): OUTPUT QA PASS (PACE 2.62 words/s, GRADE 0.78, FILL median 93%, ELEMENTS longest gap 1.8 s, NUMBERS none past the voice, DEAD none, SOUND 100% cues audible, LOUD -14 LUFS)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.5, 0 declared transitions)
