@@ -2,7 +2,7 @@
  "name": "showreel-c3-looks-expensive",
  "seek": "scripts/channel3/looks-expensive.html",
  "engine": "design",
- "dur": 18,
+ "dur": 15,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -10,7 +10,7 @@
  "vignette": false,
  "cover": 0.6,
  "voice": {
-  "text": "One looks five times pricier. Which one would you pay more for? It's B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.",
+  "text": "One looks five times pricier. Which would you pay more for? The answer is B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.",
   "voice": "af_heart",
   "speed": 1
  },
@@ -60,10 +60,10 @@
    }
   ],
   "subject": [
-   40,
-   400,
-   500,
-   790
+   50,
+   452,
+   250,
+   752
   ]
  }
 }

@@ -1,4 +1,6 @@
 /*css:begin*/
+.rul{position:absolute;width:24px;border-radius:6px;background:repeating-linear-gradient(180deg,rgba(24,26,36,.9) 0 2px,transparent 2px 12px) left/9px 100% no-repeat,repeating-linear-gradient(180deg,rgba(24,26,36,.75) 0 2px,transparent 2px 60px) left/16px 100% no-repeat,linear-gradient(90deg,#ece7dd,#dcd5c7);box-shadow:0 10px 26px rgba(0,0,0,.35);z-index:1}
+.rul.r{transform:scaleX(-1)}
 #art{left:100px;top:432px;width:340px;height:340px;border-radius:14px;background:#f4efe6}
 #dot{position:absolute;left:0;top:0;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:#ff7a45;box-shadow:0 8px 24px rgba(255,122,69,.45);z-index:3}
 #ghost{position:absolute;left:0;top:0;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;border:3px dashed #ff7a45;opacity:0;z-index:2}
@@ -10,6 +12,7 @@
 .mini .tg{position:absolute;left:0;right:0;bottom:8px;text-align:center;font:700 11px var(--f);letter-spacing:.16em;color:#8a7f70}
 /*css:end*/
 /*board:begin*/
+<div class="rul" style="left:8px;top:400px;height:246px"></div><div class="rul r" style="left:508px;top:400px;height:246px"></div>
 <div id="art" class="board"><div id="felt"><b>FELT CENTRE</b></div><div id="ghost"></div><div id="dot"></div></div>
 <div class="mini board" id="m0"><div class="gh"></div><div class="obj" style="font:700 19px/1 'Space Grotesk';color:#1d1a16;white-space:nowrap">Night Market</div><div class="tg">TITLE</div></div>
 <div class="mini board" id="m1"><div class="gh"></div><div class="obj" style="padding:12px 22px;border-radius:999px;background:#ff7a45;color:#fff;font:700 16px/1 'Space Grotesk';white-space:nowrap">Book now</div><div class="tg">BUTTON</div></div>
@@ -18,12 +21,12 @@
 /*script:begin*/
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#8fb0ff', '#6a7dff');
-  var TEXT = "Your eyes are lying to you. This dot is in the exact centre. So why does it look too low? Turns out, your eyes see the middle a little higher than it really is. So designers nudge things up. Titles, buttons, even logos.";
-  var DUR = 18, V, PH, A = {}, CAM, CUR = [], AX = 100, AY = 432, S = 340, NUDGE = 17;
+  var TEXT = "Your eyes are lying to you. This dot is exactly centred. So why does it look low? Turns out, your eyes see the middle a little higher than it really is. So designers nudge things up. Titles, buttons, even logos.";
+  var DUR = 15, V, PH, A = {}, CAM, CUR = [], AX = 100, AY = 432, S = 340, NUDGE = 17;
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('This');
-    A.exact = at('exact'); A.why = at('why'); A.low = at('low'); A.turns = at('Turns'); A.higher = at('higher'); A.nudge = at('nudge'); A.titles = at('Titles'); A.buttons = at('buttons'); A.logos = at('logos'); A.end = Math.min(DUR - .2, V.end + .8);
+    A.exact = at('exactly'); A.why = at('why'); A.low = at('low'); A.turns = at('Turns'); A.higher = at('higher'); A.nudge = at('nudge'); A.titles = at('Titles'); A.buttons = at('buttons'); A.logos = at('logos'); A.end = Math.min(DUR - .2, V.end + .8);
     window.COVER = .6;
     CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: 1 }).pull(0, .55, 255, 480, 1).pushIn(.5, 1.6, 255, 482, 1.025).pull(A.exact - .1, .5, 255, 480, 1).pushIn(A.why - .1, 1.2, 255, 486, 1.03).pull(A.titles - .4, .8, 255, 480, 1);
     var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); S.land(.2, 270, 0); S.land(.45, 270, 4);
