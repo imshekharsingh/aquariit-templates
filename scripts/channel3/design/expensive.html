@@ -737,7 +737,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#d9b46a', '#a8783a');
   var TEXT = "One of these looks five times pricier. Which one would you pay more for? It's B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.";
-  var DUR = 17, V, PH, A = {}, CAM, CUR = [];
+  var DUR = 18, V, PH, A = {}, CAM, CUR = [];
   var AX = 50, BXp = 290, Y = 452, CX = 170;   // the two labels side by side, then A moves to the centre and becomes the premium one
   function hexMix(a, b, k){ var p = function(h){ return [1, 3, 5].map(function(i){ return parseInt(h.slice(i, i + 2), 16); }); }, x = p(a), y = p(b);
     return 'rgb(' + x.map(function(v, i){ return Math.round(mix(v, y[i], cl(k))); }).join(',') + ')'; }

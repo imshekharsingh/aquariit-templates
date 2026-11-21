@@ -735,7 +735,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#8fb0ff', '#6a7dff');
   var TEXT = "Your eyes are lying to you. This dot is in the exact centre. So why does it look too low? Turns out, your eyes see the middle a little higher than it really is. So designers nudge things up. Titles, buttons, even logos.";
-  var DUR = 16, V, PH, A = {}, CAM, CUR = [], AX = 100, AY = 432, S = 340, NUDGE = 17;
+  var DUR = 18, V, PH, A = {}, CAM, CUR = [], AX = 100, AY = 432, S = 340, NUDGE = 17;
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('This');
