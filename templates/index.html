@@ -162,6 +162,12 @@
   .ref .pick span{color:var(--mute);font-size:.78rem;overflow-wrap:anywhere}
   .ref textarea{min-height:56px}
   .ref .msg{color:var(--mute);font-size:.78rem;margin-top:6px;min-height:1em}
+  /* Previews (owner, 21 Nov 2026: "put these 5 in app somewhere"): short concept videos to review, from templates/showreels/previews.json */
+  .pvi{padding:12px 0;border-top:1px solid var(--line)}
+  .pvi:first-of-type{margin-top:10px}
+  .pvi b{display:block;font:700 .9rem system-ui,sans-serif;color:var(--ink)}
+  .pvi p{margin:2px 0 8px;color:var(--mute);font-size:.8rem}
+  .pvi video{display:block;width:100%;max-width:320px;aspect-ratio:9/16;border-radius:12px;background:#000}
   .refi .th{display:block;max-width:100%;max-height:220px;margin-top:6px;border-radius:10px;border:1px solid var(--line);background:var(--well)}
   .refi a{color:var(--accent);overflow-wrap:anywhere}
   .refi .del{margin-top:6px;min-height:32px;padding:0 12px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--mute);font:600 .75rem system-ui,sans-serif;cursor:pointer}
@@ -360,6 +366,7 @@
       <div class="row"><button class="btn" id="fb-send" type="button">Send</button></div>
       <div id="fb-list"></div>
     </details>
+    <details class="fb" id="pv" open hidden><summary>Previews <span id="pv-n"></span></summary><p class="mute" id="pv-note" style="margin-top:8px"></p><div id="pv-list"></div></details>
     <details class="fb ref" id="ref"><summary>References <span id="ref-n">Add a link or a file</span></summary>
       <div class="chips" id="ref-ch" role="group" aria-label="For"><button type="button" data-ch="" aria-pressed="true">Any</button><button type="button" data-ch="web" aria-pressed="false">Web</button><button type="button" data-ch="tech" aria-pressed="false">Tech</button><button type="button" data-ch="c3" aria-pressed="false">Turns Out</button><button type="button" data-ch="app" aria-pressed="false">App</button></div>
       <input type="url" id="ref-url" aria-label="Link" placeholder="Paste a link (Instagram reel, site)" inputmode="url" autocomplete="off">
@@ -909,6 +916,13 @@
       return bad.json().catch(function(){ return {}; }).then(function(j){ refDone(false, j.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : j.error === 'too-big' ? 'That file is over 50 MB.' : 'Could not save it. Try again.'); }); })
       .catch(function(){ refDone(false, 'Could not save it. Try again.'); }); });
   refLoad();
+  // Previews: concept videos to review (not posts); the list lives in templates/showreels/previews.json, the files at /reels/study/<name>-preview.mp4
+  fetch('/showreels/previews.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
+    var it = (j && j.items) || [], box = document.getElementById('pv-list'); if (!it.length) return;
+    document.getElementById('pv-note').textContent = j.note || ''; document.getElementById('pv-n').textContent = it.length + ' to review';
+    it.forEach(function(p){ var d = el('div', 'pvi'); d.appendChild(el('b', null, p.title)); if (p.about) d.appendChild(el('p', null, p.about));
+      var v = el('video'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = '/reels/study/' + p.name + '-preview.mp4'; d.appendChild(v); box.appendChild(d); });
+    document.getElementById('pv').hidden = false; }).catch(function(){});
   // cards: one per daily audit (and the spare-usage night's report), newest first; "Mark read" deletes the card for good (no archive)
   var cardsBox = document.getElementById('cards'), CC = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' };
   function cardEl(cd){ var box = el('section', 'card'), hd = el('div', 'hd');
