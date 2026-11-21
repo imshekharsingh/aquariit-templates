@@ -3,7 +3,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 const D = new URL('./', import.meta.url).pathname;
-const COPIES = { spacing: 'menu-spacing.html', expensive: 'looks-expensive.html', optical: 'optical-centre.html', myth: 'stop-centring.html', fixit: 'fix-invite.html', photo: 'text-on-photo.html', thumb: 'tap-targets.html', resume: 'resume.html', measure: 'line-length.html', group: 'event-poster.html', caps: 'all-caps.html' };   // scene -> scripts/channel3/<copy> (showreel-c3-menu-spacing, the reference cut)
+const COPIES = { spacing: 'menu-spacing.html', expensive: 'looks-expensive.html', optical: 'optical-centre.html', myth: 'stop-centring.html', fixit: 'fix-invite.html', photo: 'text-on-photo.html', thumb: 'tap-targets.html', resume: 'resume.html', measure: 'line-length.html', group: 'event-poster.html', caps: 'all-caps.html', leading: 'line-spacing.html', contrast: 'grey-text.html', prices: 'price-list.html' };   // scene -> scripts/channel3/<copy> (showreel-c3-menu-spacing, the reference cut)
 for (const slug of process.argv.slice(2)) {
   const src = readFileSync(D + slug + '.js', 'utf8'), part = (k) => { const m = src.match(new RegExp('/\\*' + k + ':begin\\*/([\\s\\S]*?)/\\*' + k + ':end\\*/')); return m ? m[1].trim() : ''; };
   let h = readFileSync(D + 'template.html', 'utf8').replace('/*CSS*/', () => part('css')).replace('<!--BOARD-->', () => part('board')).replace('<!--STAGE-->', () => part('stage')).replace('/*CORE*/', () => readFileSync(D + 'core.js', 'utf8')).replace('/*CONCEPT*/', () => part('script'));

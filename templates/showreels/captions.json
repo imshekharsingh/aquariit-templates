@@ -1623,5 +1623,26 @@
   "onGo": true,
   "concept": "Design series · Stop writing in all caps. It's hard to read. 🛍️ (a sale flyer on a shop's glass door set entirely in bold caps, fixed in three moves: sentence case, caps only for a short label, letterspacing on those caps)",
   "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-c3-line-spacing": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · Nobody can cook from this. The lines are too tight. 🍋 (a soup recipe card on a kitchen counter set as one tight wall of text, fixed in three moves: more line spacing, space between steps, a number on each step)",
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-c3-grey-text": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · Grey on beige looks soft. Nobody can read it. ☕ (a café specials board in grey text on beige, fixed in three moves: darker words, a lighter board, checking the contrast ratio)",
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-c3-price-list": {
+  "channel": "c3",
+  "engine": "design",
+  "onGo": true,
+  "concept": "Design series · These prices are hard to compare. They jump around. ✂️ (a salon price list with every row centred so the prices jump left and right, fixed in three moves: one right edge for prices, same-width (tabular) digits, dot leaders to each name)",
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
  }
 }
