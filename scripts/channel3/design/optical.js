@@ -26,18 +26,18 @@
     A.exact = at('exact'); A.why = at('why'); A.low = at('low'); A.turns = at('Turns'); A.higher = at('higher'); A.nudge = at('nudge'); A.titles = at('Titles'); A.buttons = at('buttons'); A.logos = at('logos'); A.end = Math.min(DUR - .2, V.end + .8);
     window.COVER = .6;
     CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.why - .1, 1.2, 255, 500, 1.03).pull(A.titles - .4, .8, 255, 480, 1);
-    KM.cue({ t: 0, k: 'whoosh', d: .5, g: .3 });
-    for (var i = 0; i < 6; i++) DT.snd(A.exact + .1 + i * .06, 'tick', 270, .07, i); DT.snd(A.exact + .5, 'pop', 270, .16, 5);
-    DT.snd(A.low, 'swell', 270, .14); KM.cue({ t: A.higher - .1, k: 'swell', d: .6, g: .12 }); DT.snd(A.higher + .45, 'blip', 270, .16, 7);
-    CUR = [[A.nudge - .5, 420, 720, 0], [A.nudge - .1, 288, 598, 0], [A.nudge + .05, 288, 598, 1], [A.nudge + .5, 288, 580, 1], [A.nudge + .7, 288, 580, 0], [A.titles - .1, 470, 700, 0]];
-    DT.snd(A.nudge + .05, 'touch', 288); KM.cue({ t: A.nudge + .05, k: 'move', d: .45, g: .14, x: 288 }); DT.snd(A.nudge + .5, 'snap', 288, .2, 4);
-    [A.titles, A.buttons, A.logos].forEach(function(s, i){ DT.snd(s - .05, 'blip', 110 + i * 160, .16, 3 + i); DT.snd(s + .4, 'snap', 110 + i * 160, .18, 2 + i); });
-    KM.cue({ t: A.logos + .7, k: 'resolve', g: .28, notes: [57, 64, 69, 76] });
-    window.HOLDS = [[A.end, DUR]]; KM.publish();
+    var S = DT.S; S.whoosh(0, 270, .4); S.land(.2, 270, 0); S.land(.45, 270, 4);
+    S.rise(A.exact - .3, .3); S.roll(A.exact + .1, .5, 330, 8); S.land(A.exact + .5, 270, 2); S.land(A.exact + .6, 270, 4);
+    S.stamp(A.low, 330); S.rise(A.higher - .4, .6); S.tint(A.higher + .1, 270); S.land(A.higher + .45, 270, 6);
+    CUR = [[A.nudge - .5, 420, 720, 0], [A.nudge - .1, 288, 602, 0], [A.nudge + .05, 288, 602, 1], [A.nudge + .5, 288, 585, 1], [A.nudge + .7, 288, 585, 0], [A.titles - .1, 470, 700, 0]];
+    S.click(A.nudge + .05, 288); S.drag(A.nudge + .05, .45, 288, 288); S.roll(A.nudge + .1, .4, 330, 6); A.d1 = A.nudge + .55; S.done(A.d1, 288, 2);
+    [A.titles, A.buttons, A.logos].forEach(function(t0, i){ S.whoosh(t0 - .15, 110 + i * 160, .2); S.land(t0, 110 + i * 160, i * 2); S.snap(t0 + .45, 110 + i * 160, 3 + i * 2); });
+    S.resolve(A.logos + .7);
+    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.titles));
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    var art = $('art'), out = E.inOut3(P(t, A.titles - .35, A.titles + .2)); art.style.opacity = (1 - out).toFixed(3); art.style.transform = 'translateY(' + (-30 * out).toFixed(1) + 'px) scale(' + (1 - .1 * out).toFixed(3) + ')';
+    var art = $('art'), out = E.inOut3(P(t, A.titles - .35, A.titles + .2)); art.style.opacity = (1 - out).toFixed(3); var ia = E.settle(P(t, 0, .55), 1.1); art.style.opacity = ((1 - out) * E.out3(P(t, 0, .3))).toFixed(3); art.style.transform = 'translateY(' + (-30 * out + (1 - ia) * 60).toFixed(1) + 'px) perspective(1200px) rotateX(' + ((1 - ia) * 18).toFixed(1) + 'deg) scale(' + ((1 - .1 * out) * (.92 + .08 * ia)).toFixed(3) + ')';
     // the dot: in the exact centre, then nudged up by the cursor (a ghost stays where the maths put it)
     var nk = DT.spring(t, A.nudge + .05, .6), cy = S / 2 - NUDGE * nk; $('dot').style.left = S / 2 + 'px'; $('dot').style.top = cy.toFixed(1) + 'px';
     var g = $('ghost'); g.style.left = S / 2 + 'px'; g.style.top = S / 2 + 'px'; g.style.opacity = (P(t, A.nudge + .1, A.nudge + .4) * (1 - out)).toFixed(3);
@@ -56,6 +56,7 @@
       m.style.left = (35 + i * 160) + 'px'; m.style.top = (470 + (1 - k) * 40) + 'px'; m.style.opacity = cl(k).toFixed(3);
       var o = m.querySelector('.obj'), w = o.offsetWidth, h = o.offsetHeight; o.style.transform = 'translate(' + (-w / 2) + 'px,' + (-h / 2 - 12 * up).toFixed(1) + 'px)';
       var gh = m.querySelector('.gh'); gh.style.width = w + 'px'; gh.style.height = h + 'px'; gh.style.transform = 'translate(' + (-w / 2) + 'px,' + (-h / 2) + 'px)'; gh.style.opacity = (P(t, s + .35, s + .6) * .9).toFixed(3); });
+    DT.burst('b0', AX + S / 2, AY + S / 2 - NUDGE, t, A.d1, '#5ee0a0'); [A.titles, A.buttons, A.logos].forEach(function(t0, i){ DT.burst('m' + i, 110 + i * 160, 565, t, t0 + .45, '#ffb35a'); });
     DT.chip('all', 'NUDGE IT <b>UP</b>', 190, 690, P(t, A.logos + .6, A.logos + .9), 'g');
     DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '?', label: 'LOOK' }, { t: A.exact, n: 1, word: 'STEP' }, { t: A.turns, n: 2, word: 'STEP' }, { t: A.nudge, n: 3, word: 'STEP' }, { t: A.titles, end: 1, sym: '✓', label: 'EVERYWHERE' }]);

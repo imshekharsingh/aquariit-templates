@@ -27,21 +27,22 @@
     A.turns = at('Turns'); A.watch = at('Watch'); A.every = at('Every'); A.jumps = at('jumps'); A.line = at('Line', 2); A.left = at('left'); A.smooth = at('smooth'); A.end = Math.min(DUR - .2, V.end + .8);
     window.COVER = .6;
     CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.watch, 1, 255, 500, 1.02).pull(A.smooth, .8, 255, 480, 1);
-    KM.cue({ t: 0, k: 'whoosh', d: .5, g: .3 }); KM.cue({ t: A.turns + .05, k: 'hit', g: .3, x: 350 });
-    // the eye: a dot that reads line by line; each jump to a new start is a tick; after the fix it glides down one edge
+    var S = DT.S; S.whoosh(0, 270, .4); for (var q = 0; q < 6; q++) S.land(.12 + q * .05, 270, q); S.stamp(.12, 400); S.stamp(A.turns + .05, 350);
+    // the eye: each jump to a new line start is a pitched hop (a restless, broken little tune); after the fix one rising glide
     A.e1 = A.watch + .2; A.e1d = Math.max(2, A.line - A.watch - .6); A.e2 = A.left + .55; A.e2d = 1.4;
-    for (var i = 0; i < 6; i++) DT.snd(A.e1 + i * A.e1d / 5, 'tick', 200 + (i % 2) * 140, .14, i);
+    S.rise(A.watch - .3, .3); for (var i = 0; i < 6; i++) S.land(A.e1 + i * A.e1d / 5, 200 + (i % 2) * 140, [0, 5, 1, 6, 2, 7][i]);
     CUR = [[A.line - .3, 440, 700, 0], [A.line, 100, 440, 0], [A.line + .15, 100, 440, 1], [A.line + .6, 470, 730, 1], [A.line + .8, 470, 730, 0], [A.left + .3, 470, 760, 0]];
-    DT.snd(A.line + .15, 'touch', 100); KM.cue({ t: A.line + .15, k: 'move', d: .45, g: .14, x: 100, x2: 470 });
-    for (i = 0; i < 6; i++) DT.snd(A.left + .05 + i * .07, 'snap', 96, .16, i % 4);
-    KM.cue({ t: A.e2, k: 'swell', d: A.e2d, g: .1 }); KM.cue({ t: A.smooth + .3, k: 'resolve', g: .28, notes: [57, 64, 69, 73] });
-    window.HOLDS = [[A.end, DUR]]; KM.publish();
+    S.click(A.line + .15, 100); S.drag(A.line + .15, .45, 100, 470);
+    for (i = 0; i < 6; i++) S.snap(A.left + .05 + i * .07 + .3, 96, i); A.d1 = A.left + .9; S.done(A.d1, 96, 0);
+    S.rise(A.e2 - .2, .3); S.drag(A.e2, A.e2d, 96, 96); A.d2 = A.e2 + A.e2d; S.done(A.d2, 96, 4); S.resolve(A.smooth + .3);
+    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.smooth));
   }
   function xAt(i, k){ var xc = (PW - W[i]) / 2; return mix(xc, LX, k); }
   function eyePath(t, k){ // the reading path at progress u (0..1) over the six lines: start of each line, then across it
     var pts = []; YS.forEach(function(y, i){ pts.push([PX + xAt(i, k) - 16, PY + y + 11]); }); return pts; }   // where the eye lands at the start of each line
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
+    DT.intro($('poster'), t, .55); DT.burst('b1', PX + LX - 8, PY + 160, t, A.d1, '#ffb35a'); DT.burst('b2', PX + LX - 16, PY + 291, t, A.d2, '#5ee0a0');
     var ks = []; for (var i = 0; i < 6; i++) { ks.push(DT.spring(t, A.left + .05 + i * .07, .6)); var el = $('l' + i); el.style.transform = 'translate(' + xAt(i, ks[i]).toFixed(1) + 'px,' + YS[i] + 'px)'; }
     // the myth stamp slams on, then leaves when the eye starts
     var sk = P(t, .05, .35), so = 1 - P(t, A.watch - .3, A.watch); $('stamp').style.opacity = (cl(sk * 3) * so).toFixed(3); $('stamp').style.transform = 'rotate(-10deg) scale(' + mix(1.8, 1, E.out3(sk)).toFixed(3) + ')';

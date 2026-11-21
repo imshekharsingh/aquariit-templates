@@ -44,14 +44,16 @@
     A.m1 = at('Move'); A.hero = at('hero'); A.m2 = at('Move', 2); A.sizes = at('sizes'); A.m3 = at('Move', 3); A.once = at('once'); A.turns = at('Turns'); A.cmt = at('Comment'); A.end = Math.min(DUR - .2, V.end + 1.2);
     window.COVER = .6;
     CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.m1, 1, 255, 500, 1.03).pull(A.turns - .2, .8, 255, 480, 1);
-    KM.cue({ t: 0, k: 'whoosh', d: .5, g: .3 });
-    for (var i = 0; i < 18; i++) DT.snd(.25 + i * .07, 'tick', 300, .06, i % 7); DT.snd(1.5, 'pop', 300, .18, 5);
-    KM.cue({ t: A.hero - .1, k: 'swell', d: .5, g: .14 }); DT.snd(A.hero + .4, 'boom', 200, .22); [1, 2, 3].forEach(function(n){ DT.snd(A.hero + .6 + n * .12, 'blip', 200, .15, n * 2); });
-    KM.cue({ t: A.m2 + .3, k: 'swell', d: .8, g: .12 }); IDS.forEach(function(id, i){ DT.snd(A.m2 + .4 + i * .14, 'tick', 270, .12, i); }); DT.snd(A.sizes, 'pop', 400, .16, 6);
-    for (i = 0; i < 8; i++) DT.snd(A.m3 + .35 + i * .05, 'blip', 120 + i * 40, .12, i); DT.snd(A.once, 'snap', 160, .22, 5);
-    KM.cue({ t: A.turns + .2, k: 'resolve', g: .3, notes: [57, 64, 69, 76] });
-    for (i = 0; i < 16; i++) DT.snd(A.cmt + .4 + i * .08, 'tick', 270, .06, i % 7);
-    window.HOLDS = [[A.end, DUR]]; KM.publish();
+    var S = DT.S; S.whoosh(0, 270, .4); S.land(.1, 270, 0); S.roll(.25, 1.25, 300, 14); S.done(1.5, 300, 4);
+    S.whoosh(A.m1 - .9, 270, .3); IDS.forEach(function(id, i){ S.land(A.m1 - .7 + i * .06, 270, i); });
+    // move 1: the hero grows (a swell and a low boom), the read order lands 1-2-3 as rising notes
+    S.rise(A.hero - .4, .45); c1(); function c1(){ KM.cue({ t: A.hero + .35, k: 'boom', g: .22, x: 150, r: .5 }); } [0, 1, 2].forEach(function(n){ S.land(A.hero + .6 + n * .12, 200 + n * 60, n * 2); }); A.d1 = A.hero + .95; S.done(A.d1, 150, 0);
+    // move 2: the scan flips every line, letter by letter, into one font
+    S.rise(A.m2 - .1, .4); IDS.forEach(function(id, i){ S.swap(A.m2 + .4 + i * .14, .4, 270, 6); }); S.roll(A.m2 + .35, .75, 400, 4); S.land(A.sizes, 180, 6); A.d2 = A.m2 + 1.25; S.done(A.d2, 270, 2);
+    // move 3: the confetti flies into the 7 (a run of plucks), the 7 takes the colour (shimmer)
+    S.rise(A.m3 - .1, .4); for (var i = 0; i < 8; i++) S.land(A.m3 + .35 + i * .05, 120 + i * 40, i); S.tint(A.m3 + .7, 150); A.d3 = A.once + .1; S.done(A.d3, 150, 4);
+    S.resolve(A.turns + .2); S.roll(A.cmt + .4, 1.2, 270, 15); S.click(A.cmt + .2, 270);
+    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.bed(A.turns));
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
@@ -62,8 +64,8 @@
     var inv = $('inv'), ia = E.out3(P(t, A.m1 - .8, A.m1 - .2)); inv.style.opacity = (t < .1 ? 1 : mix(.35, 1, ia)).toFixed(3); inv.style.transform = 'translateY(' + ((1 - ia) * 30).toFixed(1) + 'px)';
     // move 1: the 7 grows into the hero; everything else steps down; read-order badges
     var k1 = DT.spring(t, A.hero, .8), k2 = P(t, A.m2 + .35, A.m2 + 1.1), k3 = DT.spring(t, A.m3 + .3, .7);
-    IDS.forEach(function(id, i){ var el = $(id), a = ST[id].A, b = ST[id].B, kf = cl((k2 * 1.25 - i * .12) / .25);
-      font(el, kf >= 1 ? b : a); var fl = Math.sin(Math.PI * cl(kf)); el.style.filter = 'blur(' + (fl * 3).toFixed(2) + 'px)';
+    IDS.forEach(function(id, i){ var el = $(id), a = ST[id].A, b = ST[id].B, t0f = A.m2 + .4 + i * .14, kf = P(t, t0f, t0f + .45);
+      font(el, kf >= .5 ? b : a); DT.flipChars(el, t, t0f, .45, a, b);
       var w = el.offsetWidth, xA = (360 - w) / 2, x = mix(xA, 30, k1), y = mix(a.y, b.y, k1);
       var sh = kf >= 1 ? 1 : mix(1, id === 'v0' ? .72 : .66, k1); el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + sh.toFixed(3) + ')'; });
     var b7 = $('big7'), s = mix(.2, 1, k1); b7.style.transform = 'translate(' + mix(250, 26, k1).toFixed(1) + 'px,' + mix(24, 10, k1).toFixed(1) + 'px) scale(' + s.toFixed(3) + ')'; b7.style.opacity = P(t, A.hero - .1, A.hero + .1).toFixed(3);
@@ -81,6 +83,8 @@
       e.style.left = mix(x0, 80, fk).toFixed(1) + 'px'; e.style.top = mix(y0, 80, fk).toFixed(1) + 'px'; e.style.opacity = (1 - P(fk, .8, 1)).toFixed(3); e.style.transform = 'scale(' + mix(1, .4, fk).toFixed(3) + ')'; }
     inv.style.background = 'rgb(' + [Math.round(mix(214, 255, k3)), Math.round(mix(240, 246, k3)), Math.round(mix(255, 232, k3))].join(',') + ')';
     DT.chip('c', 'COLOURS <b>' + DT.roll(6, 1, P(t, A.m3 + .3, A.m3 + 1)) + '</b>', 300, 412, P(t, A.m3 + .2, A.m3 + .5) - P(t, A.turns - .1, A.turns + .2));
+    [[A.d1, IX + 90, IY + 90], [A.d2, IX + 180, IY + 230], [A.d3, IX + 90, IY + 90]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], i === 2 ? '#ff7a45' : '#ffb35a'); });
+    var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35))); inv.style.boxShadow = '0 30px 70px rgba(0,0,0,.55),0 0 0 ' + (3 * br).toFixed(1) + 'px rgba(255,179,90,.55)';
     DT.chip('done', 'DONE · <b>3 MOVES</b>', 300, 412, P(t, A.turns, A.turns + .3) - P(t, A.cmt - .2, A.cmt), 'g');
     // the ask: a comment box types the next request
     var ak = E.out3(P(t, A.cmt, A.cmt + .3)), ask = $('ask'), q = 'Fix my CV next!'; ask.style.opacity = ak.toFixed(3); ask.style.transform = 'translateY(' + ((1 - ak) * 16).toFixed(1) + 'px)';

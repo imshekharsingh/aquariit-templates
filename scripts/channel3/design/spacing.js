@@ -47,22 +47,22 @@
     A.sw = A.col - .5;
     window.COVER = .6;
     CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
-    KM.cue({ t: 0, k: 'whoosh', d: .5, g: .3 });
-    // the colours beat: five swatches pop out of the menu, then a strike: it's not them
-    for (var i = 0; i < 5; i++) DT.snd(A.sw + i * .09, 'blip', 330 + i * 30, .16, i * 2);
-    DT.snd(A.col + .35, 'hit', 400, .22);
-    // fix one: the cursor drags a marquee over every line, a guide drops on the edge, each line snaps to it
-    CUR = [[A.f1 - .2, 420, 720, 0], [A.f1 + .15, 76, 418, 1], [A.f1 + .7, 470, 690, 1], [A.f1 + .95, 474, 694, 0], [A.edge - .3, 88, 404, 0], [A.edge + .2, 88, 408, 1], [A.f2 - .4, 300, 760, 0]];
-    DT.snd(A.f1 + .15, 'touch', 96); KM.cue({ t: A.f1 + .15, k: 'move', d: .55, g: .14, x: 96, x2: 440 }); DT.snd(A.edge - .05, 'swish', 106, .2);
-    A.snap = IDS.map(function(id, i){ return A.edge + .15 + i * .1; }); A.snap.forEach(function(s, i){ DT.snd(s + .18, 'snap', 106, .2, i % 4); });
-    // fix two: a scan line sweeps the menu; each line takes the one font as it passes, then the weights land
-    A.scan = A.f2 + .35; KM.cue({ t: A.scan, k: 'swell', d: .8, g: .12 }); IDS.forEach(function(id, i){ DT.snd(A.scan + .1 + i * .13, 'tick', 270, .12, i); }); DT.snd(A.f2 + .3, 'pop', 400, .16, 4); DT.snd(A.weights, 'pop', 400, .16, 6);
-    // fix three: the brackets measure the gaps and roll from 8 to 24 px while the groups spring apart
-    for (var j = 0; j < 8; j++) DT.snd(A.dbl + j * .07, 'tick', 440, .07, j); KM.cue({ t: A.dbl + .1, k: 'move', d: .6, g: .14, x: 255 }); DT.snd(A.dbl + .7, 'snap', 255, .18, 3);
-    // the scrub: before and after, back and forth once, then the after holds
-    KM.cue({ t: A.same, k: 'whoosh', d: .4, g: .2 }); KM.cue({ t: A.same + .7, k: 'whoosh', d: .4, g: .2 }); KM.cue({ t: A.price - .1, k: 'resolve', g: .3, notes: [57, 64, 69, 73] });
+    var S = DT.S; S.whoosh(0, 270, .4); IDS.forEach(function(id, i){ S.land(.12 + i * .05, 270, i); });
+    // the colours beat: five swatches pop out of the menu (a rising run), then a strike: it's not them
+    for (var i = 0; i < 5; i++) S.land(A.sw + i * .09, 330 + i * 30, i + 2); S.stamp(A.col + .35, 400);
+    // fix one: the cursor drags a marquee over every line, a guide drops on the edge, each line snaps to it (a rising arpeggio)
+    S.rise(A.f1 - .5, .5); S.click(A.f1 + .15, 96); S.drag(A.f1 + .15, .55, 96, 440); S.whoosh(A.edge - .05, 106, .2);
+    A.snap = IDS.map(function(id, i){ return A.edge + .15 + i * .1; }); A.snap.forEach(function(t0, i){ S.snap(t0 + .18, 106, i); });
+    A.d1 = A.snap[6] + .45; S.done(A.d1, 270, 0);
+    // fix two: a scan line sweeps the menu; each line flips letter by letter into the one font
+    A.scan = A.f2 + .35; S.rise(A.f2 - .1, .45); IDS.forEach(function(id, i){ S.swap(A.scan + .1 + i * .13, .4, 270, 6); }); S.land(A.f2 + .3, 400, 4); S.roll(A.scan, 1.1, 400, 4); S.land(A.weights, 400, 6);
+    A.d2 = A.scan + 1.25; S.done(A.d2, 270, 2);
+    // fix three: the brackets measure the gaps and roll from 8 to 22 px while the groups spring apart
+    S.rise(A.f3 - .1, .4); S.roll(A.dbl, .6, 440, 9); S.drag(A.dbl + .1, .6, 255, 255); A.d3 = A.dbl + .85; S.done(A.d3, 270, 4);
+    // the scrub: before and after, back and forth once, then the verdict chord
+    S.whoosh(A.same, 200, .5); S.whoosh(A.same + .7, 340, .5); S.tint(A.same + 1.2, 270); S.resolve(A.price - .1);
     window.HOLDS = [[A.end, DUR]];
-    KM.publish();
+    KM.publish(DT.bed(A.same));
   }
   // progress of each fix (springs), and the scrub that replays before -> after once on "Same words"
   function state(t){ var k1 = DT.spring(t, A.edge + .1, .8), k2 = P(t, A.scan, A.scan + 1.1), k3 = DT.spring(t, A.dbl + .05, .8);
@@ -71,16 +71,22 @@
   function paint(t, S){
     IDS.forEach(function(id, i){ var el = $(id), a = IT[id].A, b = IT[id].B, row = id[0] === 'r';
       var ka = cl((S.k1 - i * .03) / .9), kf = cl((S.k2 * 1.3 - i * .13) / .25), ks = S.k3;
-      // fix two: the font flips as the scan passes, with a quick blur and lift (the swap itself)
-      font(el, kf >= 1 ? b : a); var fl = Math.sin(Math.PI * cl(kf)); el.style.filter = 'blur(' + (fl * 3).toFixed(2) + 'px)';
+      // fix two: each line flips into the one font letter by letter as the scan passes (vt: the switch's own clock, so the scrub can run it backwards)
+      var t0f = A.scan + .1 + i * .13, vt = t0f + kf * .45; font(el, kf >= .5 ? b : a); var fl = 0;
+      if (row) { DT.flipChars(el.querySelector('.nm'), vt, t0f, .45, a, b); DT.flipChars(el.querySelector('.pr'), vt, t0f, .45, a, { f: b.f.replace('500', '700'), c: b.c }); }
+      else DT.flipChars(el, vt, t0f, .45, a, b);
       var wA = W[id], xA = (BW - wA) / 2 + (a.j || 0), x = mix(xA, L, ka);
       if (row) { var ww = mix(wA, R - L, ka); el.style.width = ww.toFixed(1) + 'px'; el.querySelector('.dots').style.opacity = (1 - ka).toFixed(3); el.querySelector('.dots').style.maxWidth = (60 * (1 - ka)).toFixed(1) + 'px';
-        el.querySelector('.pr').style.fontWeight = kf >= 1 ? 700 : 400; }
+      }
       var y = mix(a.y, b.y, ks); el.style.transform = 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px) scale(' + (1 + .05 * fl) + ')';
       if (id === 'foot') el.style.background = kf >= 1 ? b.bg : a.bg; }); }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    var S = state(t); paint(t, S);
+    DT.intro($('board'), t, .55); var S = state(t); paint(t, S);
+    // each fix lands with a spark burst and a breath of the whole menu
+    [[A.d1, BX + L, BY + 150], [A.d2, BX + BW / 2, BY + 170], [A.d3, BX + BW - 20, BY + 200]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); });
+    var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
+    if (t > .6) $('board').style.transform = 'scale(' + (1 + .015 * br).toFixed(4) + ')'; $('board').style.boxShadow = '0 30px 70px rgba(0,0,0,.55),0 0 0 ' + (3 * br).toFixed(1) + 'px rgba(255,179,90,.55)';
     // the colour swatches: out of the menu, a strike through them (it's not the colours), back in
     for (var i = 0; i < 5; i++) { var s = $('s' + i), k = E.back(P(t, A.sw + i * .09, A.sw + i * .09 + .4), 2), o = P(t, A.sw + i * .09, A.sw + i * .09 + .2) * (1 - P(t, A.f1 - .4, A.f1 - .1));
       s.style.opacity = o.toFixed(3); s.style.left = (150 + i * 50).toFixed(1) + 'px'; s.style.top = mix(560, 470, k).toFixed(1) + 'px'; s.style.transform = 'rotate(' + ((i - 2) * 6 * k).toFixed(1) + 'deg) scale(' + (.6 + .4 * k).toFixed(3) + ')'; }
