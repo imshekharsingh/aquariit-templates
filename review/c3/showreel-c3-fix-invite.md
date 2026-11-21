@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/fix-invite.json.
 10. Facts: PASS: one focal element and fewer sizes and colours make a clear hierarchy (Nielsen Norman Group, Visual hierarchy); few fonts and sizes keep text calm (Butterick, Typography in ten minutes); the invite and child's name are invented; sources: Visual Hierarchy in UX: Definition (Nielsen Norman Group); Typography in ten minutes (Butterick's Practical Typography)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (2 groups)
-13. After the render: PENDING: render 2 (the last allowed); render 1 (run 44922113506) failed Output QA FILL (median 79%) and ELEMENTS (4.1 s with nothing new at the end); fixed: design-tool rulers on both sides, 16 s; a local copy of Output QA FILL and GRADE on the scene's frames now passes (FILL median 95%)
+13. After the render: PASS: render 2 (run 44926328347): OUTPUT QA PASS (PACE 2.77 words/s, GRADE 0.47, FILL median 95%, ELEMENTS longest gap 2.1 s, NUMBERS none past the voice, DEAD none). Before: render 1 (run 44922113506) failed Output QA FILL (median 79%) and ELEMENTS (4.1 s with nothing new at the end); fixed: design-tool rulers on both sides, 16 s; a local copy of Output QA FILL and GRADE on the scene's frames now passes (FILL median 95%)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 97% (median step 0.9, 0 declared transitions)
