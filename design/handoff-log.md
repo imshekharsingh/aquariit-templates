@@ -12,6 +12,11 @@ Format (at most 6 lines):
 ```
 
 
+## 2026-11-21 16:30 IST · second · Turns Out queue: 10 design reels (design/c3-queue.md)
+- Done: design/c3-queue-sources.json (every queue source, for the Sources workflow: webaim.org, w3.org, nngroup.com and practicaltypography.com are blocked from sessions).
+- Left: the reels, batch by batch (this entry is updated in each push).
+- For the other account: read a blocked source with Actions → Sources (configs input takes any JSON with "sources", plus --chars N).
+
 ## 2026-11-21 02:00 IST · second · Turns Out restart: plan, rules, first myth reel (code-drawn)
 - Done: design/c3-plan.md (myth topics, frozen format, keep-or-stop at day 7/14/28); rules-c3.md R1-R3; E30 (experiments.md, targets.md); 5 profile asks sent to Needs you (c3-name, c3-bio, c3-pin, c3-trial, c3-archive); owner banned media downloads, so a new Echoes shot kind `sketch` (engine.html + sound.py, channel3.md "Sketch plates"); reel showreel-c3-viking-horns (config, scene, review file, captions entry hidden until render 1 passes Output QA).
 - Also (owner ask): app Inbox "References": paste a link or upload a screenshot / short clip (≤50 MB, private R2 refs/), note + channel; src/worker.js /api/refs; scripts/asks.mjs + asks.yml actions `refs` (REF lines + B64 previews) and `refs-done`; runbook-daily.md step 0 reads them; sw.js v17.
