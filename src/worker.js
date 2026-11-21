@@ -716,6 +716,21 @@ async function uploadedApi(request, env, p) {
 
 // GET /api/journey (owner, 15 Nov 2026): every scheduled reel's stages, planned to posted (src/journey.js). Posted comes from Mark posted / the
 // collector's marks (reel_uploaded) and the collector's caption match (ig_media.template_id). Every source is optional: what is missing shows as waiting.
+// stale-while-revalidate (owner, 21 Nov 2026: "Journey takes time in populating, why?"): building the journey asks GitHub for the run
+// lists, each reel's jobs and review files (several round trips, 3-8 s on a cold minute). The last answer is kept in this data centre's
+// cache for a day and served at once; when it is over 60 s old a fresh one is built in the background for the next open.
+const J_KEY = 'https://journey.cache/answer-v1', J_FRESH = 60e3;
+async function journeyFast(env, ctx) {
+  const c = typeof caches !== 'undefined' ? caches.default : null;
+  const build = async () => { const r = await journey(env); if (r.ok && c) { const body = await r.clone().text();
+    try { await c.put(J_KEY, new Response(body, { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=86400', 'X-Built': String(Date.now()) } })); } catch { /* no cache */ } } return r; };
+  if (!c) return build();
+  let hit = null; try { hit = await c.match(J_KEY); } catch { /* build */ }
+  if (!hit) return build();
+  const age = Date.now() - +(hit.headers.get('X-Built') || 0);
+  if (age > J_FRESH && ctx) ctx.waitUntil(build().catch(() => {}));
+  return new Response(hit.body, { headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Journey-Age': String(Math.round(age / 1000)) } });
+}
 async function journey(env) {
   let captions = {}, uploaded = {}, media = {};
   try { captions = await captionsOf(env); } catch { /* empty journey */ }
@@ -779,7 +794,7 @@ async function reelFile(request, env, name) {
 
 export default {
   async scheduled(controller, env, ctx) { ctx.waitUntil(runCron(env, controller.cron, controller.scheduledTime)); },
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url), p = url.pathname;
     const configured = accounts(env).length > 0;
     const secure = url.protocol === 'https:' ? '; Secure' : '';
@@ -806,7 +821,7 @@ export default {
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journey(env) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (signedIn) {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
       if (m) { try { const v = await reelFile(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }
