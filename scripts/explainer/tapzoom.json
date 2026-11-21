@@ -63,7 +63,7 @@
     "say": "closer"
    },
    "after": {
-    "say": "count"
+    "say": "now"
    },
    "span": 1.5
   },
