@@ -1,0 +1,29 @@
+{
+ "name": "showreel-c3-dt-expensive",
+ "seek": "scripts/channel3/design/expensive.html",
+ "dur": 17,
+ "fps": 30,
+ "cover": 0.6,
+ "voice": {
+  "text": "Same words. Which one would you pay more for? It's B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "Preview: Turns Out design tutorial concept (Why It Looks Expensive).",
+ "keywords": [
+  "design tips"
+ ],
+ "hashtags": [
+  "#designtips"
+ ],
+ "sources": [
+  {
+   "title": "Concept preview (no factual claims)",
+   "url": "https://templates.aquariit.com/"
+  },
+  {
+   "title": "Turns Out design concepts",
+   "url": "https://templates.aquariit.com/"
+  }
+ ]
+}

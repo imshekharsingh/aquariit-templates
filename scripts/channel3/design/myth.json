@@ -1,0 +1,29 @@
+{
+ "name": "showreel-c3-dt-myth",
+ "seek": "scripts/channel3/design/myth.html",
+ "dur": 16,
+ "fps": 30,
+ "cover": 0.6,
+ "voice": {
+  "text": "Centre everything to look neat? Turns out, that's why it's hard to read. Watch your eye. Every centred line starts somewhere new, so it jumps. Line them up on the left, and it reads in one smooth path.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "Preview: Turns Out design tutorial concept (Design Myths).",
+ "keywords": [
+  "design tips"
+ ],
+ "hashtags": [
+  "#designtips"
+ ],
+ "sources": [
+  {
+   "title": "Concept preview (no factual claims)",
+   "url": "https://templates.aquariit.com/"
+  },
+  {
+   "title": "Turns Out design concepts",
+   "url": "https://templates.aquariit.com/"
+  }
+ ]
+}

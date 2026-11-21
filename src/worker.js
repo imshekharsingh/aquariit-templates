@@ -731,7 +731,7 @@ async function journey(env) {
 // The repo is public, so nothing goes to the GitHub releases any more. v/<name> = MP4 and review PNG (an R2 lifecycle rule deletes them
 // 15 days after upload), c/<name> = cover, config json and the minutes meter (kept). Range requests are answered so phones can seek.
 // /api/showreels lists a reel while its MP4 or its cover is there: after 15 days only the cover (and the post text) remain.
-const REEL = /^\/reels\/(showreel-[a-z0-9-]{1,60}\.(?:mp4|jpg|json|png))$/;
+const REEL = /^\/reels\/((?:study\/)?showreel-[a-z0-9-]{1,60}\.(?:mp4|jpg|json|png))$/;   // study/: the Showreel workflow's short previews (21 Nov 2026), opened by link
 const TYPES = { mp4: 'video/mp4', jpg: 'image/jpeg', json: 'application/json; charset=utf-8', png: 'image/png' };
 const reelKey = (name) => (/\.(mp4|png)$/.test(name) ? 'v/' : 'c/') + name;
 async function listAll(bucket, prefix) {
