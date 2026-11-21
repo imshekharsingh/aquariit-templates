@@ -1,0 +1,10 @@
+{
+ "note": "Turns Out design-tutorial concepts (21 Nov 2026): animated previews to review before Turns Out switches format. Not posts.",
+ "items": [
+  { "name": "showreel-c3-dt-spacing", "title": "1 · Turns Out It's the Spacing", "about": "A café menu fixed live in 3 steps: one edge, one font, double the space." },
+  { "name": "showreel-c3-dt-expensive", "title": "2 · Why It Looks Expensive", "about": "Pick A or B, then the cheap label becomes the premium one lever by lever." },
+  { "name": "showreel-c3-dt-optical", "title": "3 · Your Eyes Are Lying", "about": "The centred dot that looks too low, and why designers nudge things up." },
+  { "name": "showreel-c3-dt-myth", "title": "4 · Design Myths", "about": "\"Centre it to look neat\": watch the eye zigzag, then read in one path." },
+  { "name": "showreel-c3-dt-fixit", "title": "5 · Fix It in 60 Seconds", "about": "A viewer's birthday invite fixed in 3 moves: one hero, one font, one colour." }
+ ]
+}
