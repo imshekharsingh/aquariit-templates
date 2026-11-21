@@ -870,9 +870,11 @@
       jBox.appendChild(jCard(r)); }); }
   function jSchedule(){ clearTimeout(jTimer); if (sec !== 'journey' || document.hidden) return;
     var live = jLast && (jLast.reels || []).some(function(r){ return r.live; }); jTimer = setTimeout(jLoad, live ? 60000 : 300000); }
-  function jLoad(){ clearTimeout(jTimer);
+  // the last journey shows at once from this device (21 Nov 2026: "Journey takes time in populating"); the fresh one replaces it when it lands
+  try { var jc = JSON.parse(localStorage.getItem('studio-journey') || 'null'); if (jc && jc.reels) { jLast = jc; } } catch (e) {}
+  function jLoad(){ clearTimeout(jTimer); if (jLast && !jAt) jRender();
     return fetch('/api/journey', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
-      .then(function(j){ jLast = j; jAt = Date.now(); jRender(); }, function(){ if (!jLast) { jBox.textContent = ''; jBox.appendChild(el('p', 'empty', 'Could not load the journey right now. Try again in a minute.')); } })
+      .then(function(j){ jLast = j; jAt = Date.now(); jRender(); try { localStorage.setItem('studio-journey', JSON.stringify(j)); } catch (e) {} }, function(){ if (!jLast) { jBox.textContent = ''; jBox.appendChild(el('p', 'empty', 'Could not load the journey right now. Try again in a minute.')); } })
       .then(jSchedule); }
   document.addEventListener('visibilitychange', function(){ if (document.hidden) clearTimeout(jTimer); else if (sec === 'journey') { if (Date.now() - jAt > 60000) jLoad(); else jSchedule(); } });
   go(sec);
