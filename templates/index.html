@@ -921,7 +921,7 @@
     var it = (j && j.items) || [], box = document.getElementById('pv-list'); if (!it.length) return;
     document.getElementById('pv-note').textContent = j.note || ''; document.getElementById('pv-n').textContent = it.length + ' to review';
     it.forEach(function(p){ var d = el('div', 'pvi'); d.appendChild(el('b', null, p.title)); if (p.about) d.appendChild(el('p', null, p.about));
-      var v = el('video'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = '/reels/study/' + p.name + '-preview.mp4'; d.appendChild(v); box.appendChild(d); });
+      var v = el('video'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = '/reels/study/' + p.name + '-preview.mp4?v=' + (j.v || 1); d.appendChild(v); box.appendChild(d); });
     document.getElementById('pv').hidden = false; }).catch(function(){});
   // cards: one per daily audit (and the spare-usage night's report), newest first; "Mark read" deletes the card for good (no archive)
   var cardsBox = document.getElementById('cards'), CC = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' };

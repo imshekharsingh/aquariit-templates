@@ -59,3 +59,46 @@ var DT = (function(){
 KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red: '#ff6b6b', ctl: '#1f2538', raise: '#1a1f30', skel: '#151a28', pg: '#0b0d16', card: '#141827', on: '#0b0d16' },
   v: { glass: 'linear-gradient(160deg,#1a2036,#0e1120 60%,#1a1630)', frost: '#10131f', glow: 'rgba(255,179,90,.5)', soft: 'rgba(255,179,90,.16)', ring: 'rgba(255,179,90,.5)' },
   blooms: [['255,140,70', .30, 520, 160, 200, .18, .15, 0], ['90,110,255', .20, 480, 520, 640, .21, .17, 2], ['255,120,90', .16, 420, 460, 900, .15, .2, 4]] };
+// ---- final-cut layer (owner, 21 Nov 2026: "amazingly defined animation, motion, flow, switch other elements ... with range of sound elements") ----
+//   DT.KEY: the bed's chords (A minor family); DT.note(i) a pitch step from the scale so element sounds play in key
+//   DT.S.*: one sound per design action, the same in every reel (the channel's sound vocabulary):
+//     click(t, x) cursor press · drag(t, d, x, x2) a stereo move · snap(t, x, i) lands on a guide (pitched, rising with i) · land(t, x, i) an element arrives
+//     swap(t, d, x, n) letters flip into a new font (paper flicks) · roll(t, d, x, n) numbers count (accelerating ticks) · tint(t, x) a colour change (shimmer)
+//     stamp(t, x) a slam · rise(t, d) a swell into a fix · done(t, x) a fix lands (snap + blip chord + shimmer) · whoosh(t, x, r) · resolve(t) the payoff chord
+//   DT.burst(id, x, y, t, t0, col) a spark burst where a fix lands · DT.flipChars(el, t, t0, d, A, B) letter-by-letter font switch (A/B = {f, c, ls})
+//   DT.intro(board, t, d) the cold open: the design drops in, tilted, and settles; its children cascade in (opacity)
+//   DT.bed(extra) -> the publish block: a soft pad in the channel's key, lifting into the payoff, ducking under the voice
+(function(){
+  var P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;
+  var SC = [0, 2, 3, 5, 7, 9, 10, 12, 14, 15];   // A natural minor steps from the bed's root
+  DT.note = function(i){ return SC[((i % SC.length) + SC.length) % SC.length]; };
+  var c = function(o){ KM.cue(o); };
+  DT.S = {
+    click: function(t, x){ c({ t: t, k: 'touch', g: .2, x: x }); c({ t: t + .01, k: 'click', g: .12, x: x }); },
+    drag: function(t, d, x, x2){ c({ t: t, k: 'move', d: d, g: .16, x: x, x2: x2 == null ? x : x2 }); },
+    snap: function(t, x, i){ c({ t: t, k: 'snap', g: .2, p: DT.note(i || 0), x: x }); c({ t: t + .02, k: 'blip', g: .1, p: DT.note((i || 0) + 2), x: x }); },
+    land: function(t, x, i){ c({ t: t, k: 'blip', g: .14, p: DT.note(i || 0), x: x }); c({ t: t + .015, k: 'tap', g: .08, x: x }); },
+    swap: function(t, d, x, n){ n = n || 8; for (var i = 0; i < n; i++) c({ t: t + d * i / n, k: 'rustle', d: .06, g: .05, p: i % 5, x: x }); c({ t: t + d, k: 'blip', g: .12, p: DT.note(4), x: x }); },
+    roll: function(t, d, x, n){ n = n || 10; for (var i = 0; i < n; i++) { var u = 1 - Math.pow(1 - i / n, 1.8); c({ t: t + d * u, k: 'tick', g: .07, p: i % 7, x: x }); } },
+    tint: function(t, x){ c({ t: t, k: 'shimmer', g: .14, x: x, r: .4 }); },
+    stamp: function(t, x){ c({ t: t, k: 'hit', g: .3, x: x }); c({ t: t + .01, k: 'boom', g: .16, x: x, r: .5 }); },
+    rise: function(t, d){ c({ t: t, k: 'swell', d: d || .6, g: .12 }); },
+    done: function(t, x, i){ c({ t: t, k: 'snap', g: .2, p: DT.note(7), x: x }); [0, 2, 4].forEach(function(s, j){ c({ t: t + .03 + j * .045, k: 'blip', g: .1, p: DT.note((i || 0) + s), x: x }); }); c({ t: t + .05, k: 'shimmer', g: .1, x: x, r: .5 }); },
+    whoosh: function(t, x, r){ c({ t: t, k: 'swish', d: .35, g: .16, x: x || 270, r: r == null ? .3 : r }); },
+    resolve: function(t){ c({ t: t, k: 'resolve', g: .3, notes: [57, 64, 69, 72, 76] }); }
+  };
+  var BU = {};
+  DT.burst = function(id, x, y, t, t0, col){ var host = DT.$('world'), b = BU[id]; if (!b) { b = []; for (var i = 0; i < 12; i++) { var e = document.createElement('i'); e.style.cssText = 'position:absolute;left:0;top:0;width:7px;height:7px;margin:-3.5px;border-radius:50%;pointer-events:none;z-index:29;opacity:0'; host.appendChild(e); b.push(e); } BU[id] = b; }
+    var p = P(t, t0, t0 + .7); b.forEach(function(e, i){ var a = i / 12 * Math.PI * 2 + (i % 2) * .2, r = (i % 3 ? 54 : 78) * E.out3(p); e.style.background = col || '#ffb35a';
+      e.style.transform = 'translate(' + (x + Math.cos(a) * r).toFixed(1) + 'px,' + (y + Math.sin(a) * r).toFixed(1) + 'px) scale(' + (1 - p * .6).toFixed(3) + ')'; e.style.opacity = (p > 0 && p < 1 ? 1 - p : 0).toFixed(3); }); };
+  DT.flipChars = function(el, t, t0, d, A, B){ if (!el._ch) { var tx = el._txt || el.textContent; el._txt = tx; el.textContent = ''; el._ch = [];
+      for (var i = 0; i < tx.length; i++) { var s = document.createElement('span'); s.textContent = tx[i]; s.style.display = 'inline-block'; s.style.whiteSpace = 'pre'; s.style.transformOrigin = '50% 60%'; el.appendChild(s); el._ch.push(s); } }
+    var n = el._ch.length; el._ch.forEach(function(s, i){ var a = t0 + d * i / Math.max(1, n - 1) * .7, k = P(t, a, a + d * .35), on = k >= .5, st = on ? B : A;
+      s.style.font = st.f; s.style.color = st.c; s.style.letterSpacing = st.ls || 'normal';
+      s.style.transform = 'rotateX(' + ((k > 0 && k < 1) ? (on ? (1 - k) * 2 * 90 : k * 2 * 90) : 0).toFixed(1) + 'deg) translateY(' + (Math.sin(Math.PI * k) * -4).toFixed(2) + 'px)'; });
+    return P(t, t0, t0 + d); };
+  DT.intro = function(board, t, d){ d = d || .55; var k = E.settle(P(t, 0, d), 1.1), o = E.out3(P(t, 0, d * .6));
+    board.style.transform = (board._tf || '') + ' perspective(1200px) rotateX(' + ((1 - k) * 18).toFixed(2) + 'deg) translateY(' + ((1 - k) * 60).toFixed(1) + 'px) scale(' + (.92 + .08 * k).toFixed(4) + ')';
+    board.style.opacity = o.toFixed(3); var ch = board.children; for (var i = 0; i < ch.length; i++) { var q = P(t, .12 + i * .05, .4 + i * .05); if (q < 1) { ch[i].style.opacity = q.toFixed(3); ch[i]._io = 1; } else if (ch[i]._io) { ch[i].style.opacity = ''; ch[i]._io = 0; } } };
+  DT.bed = function(lift){ return { bed: { bpm: 96, origin: 0, gain: .3, soft: true, lift: lift, chords: [[45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] }, mix: { duck: 8, room: .5 } }; };
+})();

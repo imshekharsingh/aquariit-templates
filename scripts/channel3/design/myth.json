@@ -25,5 +25,9 @@
    "title": "Turns Out design concepts",
    "url": "https://templates.aquariit.com/"
   }
- ]
+ ],
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false
 }
