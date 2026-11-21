@@ -57,3 +57,5 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 34. (18 Nov, critic, tech laptop-plugged) Is every setting name the reel teaches readable where it is drawn: text on the device's own screen at least 34 px in the final frame after the camera zoom (scene px x zoom), the path cards too? (Settings rows were 26 px and 22 px, about 28 / 24 px after the 1.08 push-in.) Does a pointer never sit on the value it changes?
 
 35. (20 Nov, critic, tech wireless-worth) Freeze every frame where a chip, badge or card appears, lifts or moves: does it sit in clear space, never on a lane label, a badge or another chip (19-30 s: "A TIE" over "WIRELESS PAD", the lifted card cutting it to "WIREL", the pad card clipping the "30 W" badge)? Preflight OVERLAP does not see these; look at the stills.
+
+36. (21 Nov, critic, tech wifi-button) Freeze the recap and end card: does every stamp or chip that lands on the recap sit in clear space, whole and on top (37 s: the MYTH stamp half under the Wi-Fi tile; the second recap line almost invisible)? Is the lower half of the frame used in every still, never a dark void under the subject?
