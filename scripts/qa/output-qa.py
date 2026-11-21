@@ -717,7 +717,9 @@ def element_events(G, fps, band):
     return new, cut
 
 
-def elements_check(G, fps, band, dur=None):
+def elements_check(G, fps, band, dur=None, one_stage=False):
+    """one_stage (21 Nov 2026, owner go): a design-series reel keeps ONE design on its stage and changes it in place, so the photo-reel
+    'pictures per window' minimum does not apply; new elements and the longest gap still do."""
     n = len(G) if dur is None else min(len(G), int(round(dur * fps)))
     new, cut = element_events(G[:n], fps, band)
     ts = list(np.flatnonzero(new) / fps); edges = [0.0] + ts + [n / fps]
@@ -727,12 +729,12 @@ def elements_check(G, fps, band, dur=None):
     for a in wins: pics.append(1 + sum(1 for t in onsets if a < t <= a + T['el_win']))
     lo = min(pics) if pics else 1 + len(onsets); lo_at = float(wins[int(np.argmin(pics))]) if pics else 0.0
     long_ = [g for g in gaps if g[0] > T['el_gap']]
-    bad = bool(long_) or lo < T['el_pics']
+    bad = bool(long_) or (lo < T['el_pics'] and not one_stage)
     starts = [k for k in np.flatnonzero(new) if k == 0 or not new[k - 1]]
     line('ELEMENTS', 'FAIL' if bad else 'PASS', f'{len(starts)} new elements land ({len(starts) / max(1e-9, n / fps) * 10:.1f} per 10 s), {len(onsets)} picture changes; '
          f'longest stretch with nothing new {gaps[0][0]:.1f} s at {gaps[0][1]:.1f}-{gaps[0][2]:.1f} s (at most {T["el_gap"]} s)'
          + (f'; over it: {", ".join(f"{a:.1f}-{b:.1f} s" for _, a, b in long_[:6])}' if long_ else '')
-         + f'; pictures per {T["el_win"]} s: at least {lo} (from {lo_at:.1f} s; {T["el_pics"]}+)')
+         + f'; pictures per {T["el_win"]} s: at least {lo} (from {lo_at:.1f} s; ' + ('not required: one design changed in place, engine design)' if one_stage else f'{T["el_pics"]}+)'))
 
 
 def cover_png(png, title):
@@ -1048,7 +1050,7 @@ def main():
     dead_check(G, fps, mp4, dur)
     if ch == 'tech': sheen_check(G, fps)
     else: line('SHEEN', 'SKIP', 'tech only')
-    if ch == 'c3': fill_check(G, fps); elements_check(G, fps, qa.get('subs') or T['subs'][ch]); reuse_check(c); cover_check(mp4, c)
+    if ch == 'c3': fill_check(G, fps); elements_check(G, fps, qa.get('subs') or T['subs'][ch], one_stage=c.get('engine') == 'design'); reuse_check(c); cover_check(mp4, c)
     else: line('FILL', 'SKIP', 'Turns Out only'); line('ELEMENTS', 'SKIP', 'Turns Out only'); line('REUSE', 'SKIP', 'Turns Out only'); line('COVER', 'SKIP', 'Turns Out only')
     if ch == 'web': calm_check(G, fps, mp4, qa)
     else: line('CALM', 'SKIP', 'web only')
