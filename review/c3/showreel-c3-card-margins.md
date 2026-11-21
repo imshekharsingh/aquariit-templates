@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/card-margins.json.
 10. Facts: PASS: bigger margins frame the text and give a comfortable line length; don't fear white space (Butterick, Page margins); elements close together read as one group, whitespace separates groups (Nielsen Norman Group, Proximity Principle in Visual Design); the name, studio and email are invented; sources (read in full in the Sources run 44949452447): Page margins (Butterick's Practical Typography); Proximity Principle in Visual Design (Nielsen Norman Group)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list with one reason each, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (1 groups); local Output QA copy: FILL median 90% (6% of samples under 80%), GRADE subject vs surroundings 0.48, ELEMENTS longest gap 1.4 s at 0.4-1.8 s
-13. After the render: PENDING
+13. After the render: PASS: render 1 (run 44956621843): OUTPUT QA PASS (PACE 2.49 words/s, GRADE 0.47, FILL median 91%, ELEMENTS longest gap 1.4 s, NUMBERS none past the voice, DEAD none, SOUND every cue audible, LOUD about -14 LUFS)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 99% (median step 1.0, 0 declared transitions)

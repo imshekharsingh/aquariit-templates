@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/price-list.json.
 10. Facts: PASS: tabular figures are set on a fixed width and are essential for vertically aligned columns, as in grids of numbers (Butterick, Alternate figures); tables are the right tool for grids of numbers and side-by-side layouts (Butterick, Tables); the scene switches Space Grotesk to its real tabular figures (font-variant-numeric: tabular-nums); the salon and prices are invented; sources (read in full in the Sources run 44949452447): Alternate figures (Butterick's Practical Typography); Tables (Butterick's Practical Typography)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list with one reason each, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (2 groups); local Output QA copy: FILL median 92% (6% of samples under 80%), GRADE subject vs surroundings 0.49, ELEMENTS longest gap 1.5 s at 14.5-16.0 s
-13. After the render: PENDING
+13. After the render: PASS: render 1 (run 44953978128): OUTPUT QA PASS (PACE 2.74 words/s, GRADE 0.49, FILL median 92%, ELEMENTS longest gap 1.5 s, NUMBERS none past the voice, DEAD none, SOUND every cue audible, LOUD about -14 LUFS)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 97% (median step 1.2, 0 declared transitions)

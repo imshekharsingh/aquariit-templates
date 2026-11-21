@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/all-caps.json.
 10. Facts: PASS: all-caps text is harder to read at body sizes; lowercase letters have varied shapes (some tall, some short, some descend), caps are rectangular; caps are fine for headings shorter than one line and labels; always add letterspacing to caps (Butterick, All caps); 5-12% extra letterspacing for caps (Butterick, Letterspacing); the shop is invented; sources (read in full in the Sources run 44949452447): All caps (Butterick's Practical Typography); Letterspacing (Butterick's Practical Typography)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list with one reason each, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (1 groups); local Output QA copy: FILL median 92% (3% of samples under 80%), GRADE subject vs surroundings 0.74, ELEMENTS longest gap 1.5 s at 14.5-16.0 s
-13. After the render: PENDING
+13. After the render: PASS: render 1 (run 44952636392): OUTPUT QA PASS (PACE 2.58 words/s, GRADE 0.74, FILL median 92%, ELEMENTS longest gap 1.4 s, NUMBERS none past the voice, DEAD none, SOUND every cue audible, LOUD about -14 LUFS)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.5, 0 declared transitions)

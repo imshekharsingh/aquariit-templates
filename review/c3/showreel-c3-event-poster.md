@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/event-poster.json.
 10. Facts: PASS: elements near each other are perceived as related, elements spaced apart as separate groups; far-away elements appear unrelated and are easily overlooked; whitespace separates groups (Nielsen Norman Group, Proximity Principle in Visual Design); grouping is one of the tools of visual hierarchy (Nielsen Norman Group, Visual Hierarchy in UX); the event and park are invented; sources (read in full in the Sources run 44949452447): Proximity Principle in Visual Design (Nielsen Norman Group); Visual Hierarchy in UX: Definition (Nielsen Norman Group)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list with one reason each, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (1 groups); local Output QA copy: FILL median 94% (3% of samples under 80%), GRADE subject vs surroundings 0.51, ELEMENTS longest gap 1.6 s at 12.3-13.9 s
-13. After the render: PENDING
+13. After the render: PASS: render 1 (run 44952634275): OUTPUT QA PASS (PACE 2.77 words/s, GRADE 0.51, FILL median 95%, ELEMENTS longest gap 1.6 s, NUMBERS none past the voice, DEAD none, SOUND every cue audible, LOUD about -14 LUFS)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.3, 0 declared transitions)

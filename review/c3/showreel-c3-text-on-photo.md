@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/text-on-photo.json.
 10. Facts: PASS: text needs enough contrast with what is behind it, 4.5:1 for normal text, also for text inside images (WCAG 2.2 SC 1.4.3; WebAIM: the white text on the photo example "has insufficient contrast"); bold text counts as large at a smaller size, so it holds up better (WebAIM); the band and gig are invented; sources (read in full in the Sources run 44949452447): Contrast and Color Accessibility (WebAIM); Understanding SC 1.4.3 Contrast (Minimum) (W3C WCAG 2.2)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list with one reason each, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (1 groups); local Output QA copy: FILL median 92% (0% of samples under 80%), GRADE subject vs surroundings 0.70, ELEMENTS longest gap 1.1 s at 13.2-14.3 s
-13. After the render: PENDING
+13. After the render: PASS: render 1 (run 44951337638): OUTPUT QA PASS (PACE 2.64 words/s, GRADE 0.70, FILL median 93%, ELEMENTS longest gap 0.7 s, NUMBERS none past the voice, DEAD none, SOUND every cue audible, LOUD about -14 LUFS)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.3, 0 declared transitions)
