@@ -13,7 +13,9 @@ var DT = (function(){
   function spring(t, t0, d){ return E.settle(P(t, t0, t0 + (d || .7)), 1.3); }
   function go(t, t0, d){ return E.inOut3(P(t, t0, t0 + (d || .5))); }
   function roll(a, b, k){ return Math.round(mix(a, b, cl(k))); }
-  function dial(t, steps){ var cur = steps[0], N = steps.filter(function(s){ return s.n; }).length; steps.forEach(function(s){ if (t >= s.t) cur = s; });
+  function decor(t){ var r = $('ringarc'); if (r) r.setAttribute('transform', 'rotate(' + (t * 9).toFixed(2) + ')'); var sp = $('spot'); if (sp) sp.style.opacity = (.85 + .15 * Math.sin(t * 1.3)).toFixed(3); }
+  function tint(a, b){ var R = document.documentElement.style; R.setProperty('--tint', a); R.setProperty('--tint2', b || a); }
+  function dial(t, steps){ decor(t); var cur = steps[0], N = steps.filter(function(s){ return s.n; }).length; steps.forEach(function(s){ if (t >= s.t) cur = s; });
     var i = steps.indexOf(cur), nx = steps[i + 1], f = nx ? cl((t - cur.t) / Math.max(.1, nx.t - cur.t)) : 1, done = steps.slice(0, i).filter(function(s){ return s.n; }).length;
     var frac = cur.n ? (done + E.out3(P(t, cur.t, cur.t + .6))) / N : (cur.end ? 1 : done / N);
     var a = -Math.PI / 2 + Math.max(.0001, frac) * Math.PI * 2 * .999, R = 28, arc = document.querySelector('#dial .arc');
@@ -37,8 +39,11 @@ var DT = (function(){
     if (!dash) { e.style.strokeDasharray = '1 1'; e.style.strokeDashoffset = (1 - E.out3(cl(k))).toFixed(4); } e.style.opacity = k > .001 ? (dash ? cl(k) : 1) : 0; return e; }
   function sel(id, b, k){ box(id + '-r', b, k, '#7aa2ff'); var hs = [[b.x, b.y], [b.x + b.w, b.y], [b.x, b.y + b.h], [b.x + b.w, b.y + b.h]];
     hs.forEach(function(h, i){ var e = svg(id + '-h' + i, 'rect'), s = 9 * E.back(cl((k - .4) / .6), 2); e.setAttribute('x', h[0] - s / 2); e.setAttribute('y', h[1] - s / 2); e.setAttribute('width', Math.max(0, s)); e.setAttribute('height', Math.max(0, s)); e.setAttribute('fill', '#fff'); e.setAttribute('stroke', '#7aa2ff'); e.setAttribute('stroke-width', 2); e.style.opacity = k > .4 ? 1 : 0; }); }
-  function label(id, x, y, txt, k, col, anchor){ var e = svg(id, 'text'); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('fill', col || '#ffb35a'); e.setAttribute('font-family', 'Space Grotesk'); e.setAttribute('font-weight', 700); e.setAttribute('font-size', 15);
-    e.setAttribute('text-anchor', anchor || 'start'); e.textContent = txt; e.style.opacity = cl(k).toFixed(3); return e; }
+  // measurement labels sit in small dark pills (premium pass, 21 Nov 2026)
+  function label(id, x, y, txt, k, col, anchor){ var bg = svg(id + '-bg', 'rect'), e = svg(id, 'text'); if (bg.nextSibling !== e) OV.insertBefore(bg, e); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('fill', col || '#ffb35a'); e.setAttribute('font-family', 'Space Grotesk'); e.setAttribute('font-weight', 700); e.setAttribute('font-size', 15);
+    e.setAttribute('text-anchor', anchor || 'start'); e.textContent = txt; e.style.opacity = cl(k).toFixed(3);
+    var w = txt.length * 8.6 + 14, x0 = (anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w + 7 : x - 7); bg.setAttribute('x', x0); bg.setAttribute('y', y - 15); bg.setAttribute('width', w); bg.setAttribute('height', 22); bg.setAttribute('rx', 11);
+    bg.setAttribute('fill', 'rgba(14,17,28,.88)'); bg.setAttribute('stroke', 'rgba(255,179,90,.45)'); bg.setAttribute('stroke-width', 1); bg.style.opacity = cl(k).toFixed(3); return e; }
   function measure(id, x, y1, y2, k, txt, side){ var s = side || 1, kk = E.out3(cl(k)), ym = (y1 + y2) / 2, h = (y2 - y1) / 2 * kk;
     line(id + 'm', x, ym, x, ym - h, k > .01 ? 1 : 0, '#ffb35a', 2); line(id + 'n', x, ym, x, ym + h, k > .01 ? 1 : 0, '#ffb35a', 2);
     line(id + 't', x - 6, ym - h, x + 6, ym - h, k > .01 ? 1 : 0, '#ffb35a', 2); line(id + 'b', x - 6, ym + h, x + 6, ym + h, k > .01 ? 1 : 0, '#ffb35a', 2);
@@ -53,7 +58,7 @@ var DT = (function(){
     e.style.left = x + 'px'; e.style.top = y + 'px'; e.style.opacity = k.toFixed(3); e.style.transform = 'translateY(' + ((1 - k) * 10).toFixed(2) + 'px) scale(' + (.7 + .3 * s).toFixed(3) + ')'; return e; }
   // a sound for a chip / a guide / a snap / a measure, all from the kit's cue list (so every element that lands is heard)
   function snd(t, kind, x, g, p){ KM.cue({ t: t, k: kind, g: g || .16, p: p || 0, x: x || 270 }); }
-  return { $: $, svg: svg, spring: spring, go: go, roll: roll, dial: dial, title: title, cursor: cursor, line: line, box: box, sel: sel, label: label, measure: measure, hmeasure: hmeasure, chip: chip, snd: snd };
+  return { tint: tint, decor: decor, $: $, svg: svg, spring: spring, go: go, roll: roll, dial: dial, title: title, cursor: cursor, line: line, box: box, sel: sel, label: label, measure: measure, hmeasure: hmeasure, chip: chip, snd: snd };
 })();
 // the Turns Out colour world on the kit's dark theme: ink, amber light, a cool fill (so every reel shares the brand look)
 KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red: '#ff6b6b', ctl: '#1f2538', raise: '#1a1f30', skel: '#151a28', pg: '#0b0d16', card: '#141827', on: '#0b0d16' },
