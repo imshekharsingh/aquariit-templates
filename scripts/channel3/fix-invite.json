@@ -2,7 +2,7 @@
  "name": "showreel-c3-fix-invite",
  "seek": "scripts/channel3/fix-invite.html",
  "engine": "design",
- "dur": 18,
+ "dur": 16,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,

@@ -19,8 +19,8 @@
 /*script:begin*/
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ff7f7f', '#ff9a6a');
-  var TEXT = "Stop centring everything. It looks neat, but turns out, it's hard to read. Watch your eye. Every centred line starts somewhere new, so it jumps. Line them up on the left, and it reads in one smooth path.";
-  var DUR = 18, V, PH, A = {}, CAM, CUR = [], PX = 60, PY = 420, PW = 420, LX = 36, YS = [40, 92, 150, 186, 222, 280], W = [];
+  var TEXT = "Stop centring everything. It looks neat. Turns out, it's hard to read. Watch your eye. Every centred line starts somewhere new, so it jumps. Line them up on the left. It reads in one smooth path.";
+  var DUR = 15, V, PH, A = {}, CAM, CUR = [], PX = 60, PY = 420, PW = 420, LX = 36, YS = [40, 92, 150, 186, 222, 280], W = [];
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('It');

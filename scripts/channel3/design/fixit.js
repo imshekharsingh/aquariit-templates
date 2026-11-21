@@ -1,4 +1,6 @@
 /*css:begin*/
+.rul{position:absolute;width:24px;border-radius:6px;background:repeating-linear-gradient(180deg,rgba(24,26,36,.9) 0 2px,transparent 2px 12px) left/9px 100% no-repeat,repeating-linear-gradient(180deg,rgba(24,26,36,.75) 0 2px,transparent 2px 60px) left/16px 100% no-repeat,linear-gradient(90deg,#ece7dd,#dcd5c7);box-shadow:0 10px 26px rgba(0,0,0,.35);z-index:1}
+.rul.r{transform:scaleX(-1)}
 #inv{left:90px;top:440px;width:360px;height:340px;border-radius:16px;background:#d6f0ff}
 .iv{position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 0}
 #big7{position:absolute;left:0;top:0;font:900 132px/1 'Unbounded';color:#1d1a16;transform-origin:0 0}
@@ -11,6 +13,7 @@
 #ask{left:60px;top:396px;width:420px;height:50px;border-radius:25px;background:#141827;border:1.5px solid #ffb35a;padding:0 20px;font:600 19px/50px var(--f);color:#fff;white-space:nowrap;overflow:hidden;opacity:0;z-index:28}
 /*css:end*/
 /*board:begin*/
+<div class="rul" style="left:8px;top:400px;height:246px"></div><div class="rul r" style="left:508px;top:400px;height:246px"></div>
 <div id="inv" class="board">
   <div class="iv" id="v0">Aarav is 7!!</div>
   <div class="iv" id="v1">PARTY TIME</div>
@@ -29,7 +32,7 @@
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ff8a5a', '#ff5f7a');
   var TEXT = "Let's fix this birthday invite. Move one: pick one hero, the age. Move two: one font, two sizes. Move three: one colour, used once. Turns out, a kids' party can look this good. Comment what we fix next.";
-  var DUR = 18, V, PH, A = {}, CAM, CUR = [], IX = 90, IY = 440, W = {};
+  var DUR = 16, V, PH, A = {}, CAM, CUR = [], IX = 90, IY = 440, W = {};
   var ST = {   // A: everything shouts (four fonts, all centred, one size); B: one hero, one font in two sizes, one colour
     v0: { A: { f: "400 30px/1.2 'Pacifico'", c: '#e91e63', y: 26 }, B: { f: "700 26px/1 'Space Grotesk'", c: '#1d1a16', y: 176 } },
     v1: { A: { f: "400 26px/1 'Anton'", c: '#ff9800', y: 84 }, B: { f: "700 13px/1 'Space Grotesk'", c: '#8a7f70', y: 212, ls: '.2em' } },
