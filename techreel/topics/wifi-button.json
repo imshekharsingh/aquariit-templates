@@ -1,0 +1,443 @@
+{
+ "slug": "wifi-button",
+ "engine": "kit",
+ "scene": "techkit/scenes/wifi-button.js",
+ "topic": "Does the Control Center Wi-Fi button really turn Wi-Fi off",
+ "format": "GADGET MYTHS",
+ "audience": "global",
+ "gadget": "phone",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.45,
+ "max_end": 44.0,
+ "experiment": {
+  "id": "tech-myth-radio",
+  "change": "a gadget myth settled by the maker's own support page on the shared kit frame, global audience (worth-it and India days read weak: phone-claim 125 vs 958); the tile LOOKS off while a green radio LED and four badges stay on; MYTH? stamp frame 0 and verdict (design/improvements.md tech item 4 + F5); qa.sync set",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Does the Control Center Wi-Fi button really turn Wi-Fi off?",
+   "beat": "question"
+  },
+  {
+   "text": "Most people tap it and assume it is off. Apple's support page says it only disconnects.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "The radio stays on, so AirDrop, AirPlay, your Apple Watch and Location Services keep working.",
+   "beat": "fix",
+   "source": 0
+  },
+  {
+   "text": "Wi-Fi auto join stays paused until you turn it back on, reach a new place, hit five in the morning, or restart.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "To switch it fully off, open Settings, tap Wi-Fi, and turn it off. Bluetooth works the same way.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "Here's the catch: Apple itself says to keep Wi-Fi and Bluetooth on for the best experience.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Control disconnects. Settings turns off.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "ctrl": [
+   0,
+   "control"
+  ],
+  "butn": [
+   0,
+   "button"
+  ],
+  "tap": [
+   1,
+   "tap"
+  ],
+  "assume": [
+   1,
+   "assume"
+  ],
+  "page": [
+   1,
+   "page"
+  ],
+  "only": [
+   1,
+   "only"
+  ],
+  "disc": [
+   1,
+   "disconnects"
+  ],
+  "radio": [
+   2,
+   "radio"
+  ],
+  "airdrop": [
+   2,
+   "airdrop"
+  ],
+  "airplay": [
+   2,
+   "airplay"
+  ],
+  "watch": [
+   2,
+   "watch"
+  ],
+  "loc": [
+   2,
+   "location"
+  ],
+  "paused": [
+   3,
+   "paused"
+  ],
+  "turn": [
+   3,
+   "turn"
+  ],
+  "newp": [
+   3,
+   "place"
+  ],
+  "five": [
+   3,
+   "five"
+  ],
+  "restart": [
+   3,
+   "restart"
+  ],
+  "fully": [
+   4,
+   "fully"
+  ],
+  "setg": [
+   4,
+   "settings"
+  ],
+  "tap4": [
+   4,
+   "tap"
+  ],
+  "offw": [
+   4,
+   "off",
+   1
+  ],
+  "bluet": [
+   4,
+   "bluetooth"
+  ],
+  "same": [
+   4,
+   "same"
+  ],
+  "catch": [
+   5,
+   "catch"
+  ],
+  "keep": [
+   5,
+   "keep"
+  ],
+  "best": [
+   5,
+   "best"
+  ],
+  "ctrl2": [
+   6,
+   "control"
+  ],
+  "set2": [
+   6,
+   "settings"
+  ],
+  "final": [
+   6,
+   "turns"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "ctrl",
+   "blip",
+   0.5,
+   -0.2,
+   {
+    "f": 520,
+    "f2": 300
+   }
+  ],
+  [
+   "butn",
+   "tick",
+   0.45,
+   0.2
+  ],
+  [
+   "tap",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "assume",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 400,
+    "f2": 260
+   }
+  ],
+  [
+   "page",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "only",
+   "thud",
+   0.5,
+   0.3
+  ],
+  [
+   "disc",
+   "snap",
+   0.6,
+   0
+  ],
+  [
+   "radio",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 600,
+    "f2": 900
+   }
+  ],
+  [
+   "airdrop",
+   "pop",
+   0.5,
+   -0.3
+  ],
+  [
+   "airplay",
+   "pop",
+   0.5,
+   -0.1
+  ],
+  [
+   "watch",
+   "pop",
+   0.5,
+   0.1
+  ],
+  [
+   "loc",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "paused",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 520,
+    "f2": 300
+   }
+  ],
+  [
+   "turn",
+   "tick",
+   0.45,
+   -0.3
+  ],
+  [
+   "newp",
+   "tick",
+   0.45,
+   0
+  ],
+  [
+   "five",
+   "snap",
+   0.55,
+   0.2
+  ],
+  [
+   "restart",
+   "tick",
+   0.45,
+   0.3
+  ],
+  [
+   "fully",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "setg",
+   "tick",
+   0.45,
+   -0.2
+  ],
+  [
+   "tap4",
+   "tick",
+   0.45,
+   0.2
+  ],
+  [
+   "offw",
+   "thud",
+   0.6,
+   0
+  ],
+  [
+   "bluet",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "same",
+   "snap",
+   0.5,
+   0
+  ],
+  [
+   "catch",
+   "riser_end",
+   0.22,
+   0
+  ],
+  [
+   "keep",
+   "chime",
+   0.35,
+   0,
+   {
+    "notes": [
+     "A5",
+     "E6"
+    ]
+   }
+  ],
+  [
+   "best",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "ctrl2",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "set2",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.4,
+   0,
+   {
+    "notes": [
+     "A4",
+     "C#5",
+     "E5",
+     "B5",
+     "E6"
+    ],
+    "d": 3.2
+   }
+  ]
+ ],
+ "post": {
+  "title": "Does the Control Center Wi-Fi button turn Wi-Fi off?",
+  "caption": "Does the Control Center Wi-Fi button really turn Wi-Fi off? 📶 Not completely: it disconnects.\n\nApple's support page says that when you tap the Wi-Fi or Bluetooth button in Control Center, your iPhone immediately disconnects, but both radios stay available, so AirDrop, AirPlay, Apple Pencil, Apple Watch, Handoff, Instant Hotspot, Location Services and Unlock with Apple Watch keep working. Wi-Fi auto-join stays paused until you turn it back on in Control Center, connect to a network in Settings, move to a new location, hit 5 a.m. local time or restart the phone. To switch Wi-Fi or Bluetooth fully off, use Settings > Wi-Fi (or Bluetooth). Apple adds that for the best experience you should try to keep both on.\n\nSend this to a friend who taps that button to save battery.",
+  "keywords": [
+   "control center wifi button",
+   "does wifi button turn off wifi",
+   "iphone wifi disconnect vs off",
+   "airdrop wifi off",
+   "iphone control center bluetooth",
+   "turn off wifi iphone settings"
+  ],
+  "hashtags": [
+   "#iphone",
+   "#iphonetips",
+   "#techtips",
+   "#wifi",
+   "#techexplained"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-in/HT208086",
+    "note": "Apple Support (India), Use Bluetooth and Wi-Fi in Control Centre, page dated 28 Sep 2026 (read 21 Nov 2026): when you toggle the Wi-Fi or Bluetooth buttons in Control Centre, your device immediately disconnects from Wi-Fi and Bluetooth accessories; both stay available for AirDrop, AirPlay, Apple Pencil, Apple Watch, Continuity features such as Handoff and Instant Hotspot, Location Services and Unlock with Apple Watch; while Wi-Fi is disabled this way auto-join is disabled until you turn on Wi-Fi in Control Centre, connect to a network in Settings, walk or drive to a new location, it is 5 a.m. local time, or you restart; to completely disable, open Settings, tap Wi-Fi and turn it off (same for Bluetooth); for the best experience try to keep Wi-Fi and Bluetooth on."
+   }
+  ]
+ },
+ "say": {
+  "AirDrop": "air drop",
+  "AirPlay": "air play"
+ },
+ "qa": {
+  "sync": [
+   "disconnects",
+   "radio",
+   "airdrop",
+   "airplay",
+   "watch",
+   "location",
+   "settings",
+   "bluetooth"
+  ]
+ }
+}
