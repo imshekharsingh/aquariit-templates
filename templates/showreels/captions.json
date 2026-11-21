@@ -1564,9 +1564,9 @@
  "showreel-c3-optical-centre": {
   "channel": "c3",
   "engine": "design",
-  "onGo": true,
   "concept": "Design series · This dot is in the exact centre. So why does it look too low? 👀 (the optical centre: a dot measured to the exact centre looks low; designers nudge things up a little (titles, buttons, logos))",
-  "note": "Design series (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+  "note": "Withdrawn 21 Nov 2026 (owner + a viewer: \"it looks centred\"): the dot in a square does not read as low, so the reel's claim fails on screen. Rebuild idea in design/todo.md.",
+  "hidden": true
  },
  "showreel-c3-stop-centring": {
   "channel": "c3",
