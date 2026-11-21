@@ -227,6 +227,13 @@
 @keyframes slide-in-42{from{transform:translateX(-110%)}to{transform:translateX(0)}}
 #snapback .stage.go .drawer{animation:slide-in-42 .5s}
 #snapback .stage.go.fix .drawer{animation:slide-in-42 .5s forwards}
+#tapzoom .stage{position:relative;height:92px;margin:8px 10px;overflow:hidden;border-radius:12px;background:rgba(255,255,255,.07)}
+#tapzoom .pg{position:absolute;inset:0;transform-origin:88% 22%;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+#tapzoom .stage.z .pg{transform:scale(1.9)}
+#tapzoom .n{position:absolute;left:14px;top:12px;font:800 34px/1 system-ui,sans-serif;color:#fff}
+#tapzoom .like{position:absolute;right:12px;top:10px;width:38px;height:38px;border-radius:50%;border:0;background:#c76cf0;color:#240838;font:700 18px/1 system-ui,sans-serif;touch-action:auto}
+#tapzoom .fix .like{touch-action:manipulation}
+#tapzoom .row{position:absolute;left:14px;right:14px;bottom:10px;height:20px;border-radius:7px;background:rgba(255,255,255,.14)}
 </style>
 </head>
 <body>
@@ -236,6 +243,21 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="tapzoom">
+  <p class="no">Nº 33</p>
+  <h2>Why does tapping fast zoom your page?</h2>
+  <p class="why">On a touch screen the browser treats two quick taps on the same spot as a double-tap, and a double-tap means zoom, so a like or counter button that people tap fast zooms the page instead of counting twice. touch-action: manipulation keeps panning and pinch-zoom but turns off the double-tap zoom (MDN), which also lets the browser fire click events without waiting to see if a second tap follows. Supported since Chrome 36, Edge 12, Firefox 52 and Safari 13 (MDN, BCD).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">touch-action: auto</span><div class="stage" data-fix="0"><div class="pg"><div class="n">12</div><button class="like" type="button">&#9829;</button><div class="row"></div></div></div></div>
+  <div class="pane fix"><span class="tag ok">touch-action: manipulation</span><div class="stage fix" data-fix="1"><div class="pg"><div class="n">12</div><button class="like" type="button">&#9829;</button><div class="row"></div></div></div></div>
+</div>
+<p class="note">Tap a heart twice, fast. Phones read two quick taps on the same spot as a double-tap and zoom the page (here the left page simulates it); with touch-action: manipulation on the button the taps just count. On a real phone the zoom is the browser's own.</p></div>
+  <div class="code"><pre><code>.like { }                            /* a fast double tap zooms the page */
+.like { touch-action: manipulation; } /* taps stay taps */</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/touch-action" rel="noopener">Source: MDN, touch-action</a></p>
+</article>
 
 <article class="tip" id="snapback">
   <p class="no">Nº 32</p>
@@ -823,11 +845,12 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>30 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>31 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "tapzoom": function(root){ root.querySelectorAll('.stage').forEach(function(st){ var last = 0, n = 12; st.querySelector('.like').addEventListener('click', function(){ var now = Date.now(); n++; st.querySelector('.n').textContent = n; if (st.dataset.fix === '0' && now - last < 450) st.classList.toggle('z'); last = now; }); }); },
     "snapback": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
     "gradient": function(root, btn){ var a = 90; btn.addEventListener('click', function(){ a = (a + 40) % 360; root.style.setProperty('--ang', a + 'deg'); }); },
     "expensive": function(root, btn){ btn.addEventListener('click', function(){ var panes = root.querySelectorAll('.pane'), on = !panes[0].classList.contains('on');

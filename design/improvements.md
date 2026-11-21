@@ -35,6 +35,8 @@ Format: `- [ ] date · technique · why it should help reach · kit piece (exist
 - [ ] 13 Nov 2026 · A 0.8 s globe-to-place pin before the guess (the globe turns, a pin drops on the city, the camera dives into the world) so every continent knows where it is · history reels guides recommend placing the viewer fast; it also serves our 4+ continents a week · Kt globe + map + through, existing · source https://fluxnote.io/guides/instagram-reels-history-strategy
 - [ ] 13 Nov 2026 · Cutaway reveal: the landmark's outer layer peels back like a paper cut to show the hidden inside (the iron frame under the copper, the core of a tower) on the answer word · showing the inside is the reason exploded and cutaway views draw attention; it makes the true story visible, not told · cutaway / peel layer in kit25d.js: MISSING (Kt.fold existing) · source https://maverickframe.com/blog/product-animation-use-cases/
 
+- note 21 Nov: web item 3 (caption names who to send it to) used again by showreel-43-tapzoom; tech item 4 (MYTH stamp) used again by showreel-tech-wifi-button; a standard web search found only general guides, no new items.
+
 ## Top item per channel
 - web: swipe-reveal before/after (KM.wipe + KM.sweep), both states in one glance, on a reel whose two states share one layout.
 - tech: frame 0 = the surprising number at full-frame scale with the claim it breaks.

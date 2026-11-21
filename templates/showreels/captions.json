@@ -1485,5 +1485,60 @@
   "concept": "Echoes engine, the Turns Out 'turn' look (our brand dial, Space Grotesk captions, cards that turn over, turn wipes) over engraved sketch plates · Myth Nº 1 in 3 clues: the only almost complete Viking helmet has no horns, Denmark's horned helmets are 2,900 years old, the look took off with the 1876 Wagner opera costumes",
   "note": "DRAFT, not rendered: paused 21 Nov while the owner reviews the design-tutorial direction (artifact 'Turns Out Design Concepts'). Turns Out. Learnings from the owner's reference (structure, big captions, a held answer, quick changes) built in our own design (owner, 21 Nov: \"take the design learning from references and use it in our design mechanisms\"). Voice af_heart, speed 1.",
   "hidden": true
+ },
+ "showreel-43-tapzoom": {
+  "postOn": "2026-11-21",
+  "postAt": "13:00",
+  "caption": "Why does tapping zoom your page? 📱 You tap a button twice, fast, and the whole screen jumps closer instead of counting two taps.\n\nOn a phone the browser reads two quick taps on the same spot as a double-tap, which means zoom. Add one line to the element and it stops: touch-action: manipulation. Panning and pinch-zoom still work, only the double-tap zoom goes away, so fast taps are just taps. Watch the reel: the top page zooms in and out, the bottom one just counts.\n\ntouch-action: manipulation works in Chrome 36, Edge 12, Firefox 52 and Safari 13 and up (iOS Safari 9.3), so it is safe everywhere.\n\nSend this to whoever built your site's like or counter button, or save it for your next tap target.",
+  "keywords": [
+   "css touch-action manipulation",
+   "stop double tap zoom css",
+   "css button zooms on double tap",
+   "mobile double tap zoom fix",
+   "touch-action css",
+   "css mobile tips"
+  ],
+  "hashtags": [
+   "#css",
+   "#webdesign",
+   "#frontend",
+   "#mobiledev",
+   "#uidesign"
+  ],
+  "channel": "web",
+  "concept": "touch-action: manipulation (two quick taps on a like button zoom the page on a phone; one line stops the double-tap zoom, panning and pinch-zoom stay); one bug told as a story, BEFORE over AFTER tapped in sync, mauve-violet world",
+  "about": "21 Nov: the next web reel after snapback; a touch-behaviour topic (a gesture the browser claims), a visible zoom on mute (rule 15); dark look, mauve-violet world, whole frame, calm",
+  "experiment": {
+   "id": "web-touch-bug",
+   "change": "a touch-behaviour topic (a gesture the browser claims: double-tap zoom) told as one bug story; dynamic before/after in sync",
+   "vs": "median"
+  }
+ },
+ "showreel-tech-wifi-button": {
+  "channel": "tech",
+  "postOn": "2026-11-21",
+  "postAt": "13:00",
+  "concept": "Kit engine (shared frame), ~40 s, gadget myths, phone, global. Does the Control Center Wi-Fi button really turn Wi-Fi off? Frame 0: MYTH? stamp over two toggle tiles; the tapped Wi-Fi tile LOOKS off while a green radio LED and four badges (AirDrop, AirPlay, Watch, Location) stay on; Settings turns it fully off; every fact Apple Support's Control Centre page (28 Sep 2026), read 21 Nov 2026",
+  "experiment": {
+   "id": "tech-myth-radio",
+   "change": "a gadget myth settled by the maker's own support page on the shared kit frame, global audience (worth-it and India days read weak: phone-claim 125 vs 958); the tile LOOKS off while a green radio LED and four badges stay on; MYTH? stamp frame 0 and verdict (design/improvements.md tech item 4 + F5); qa.sync set",
+   "vs": "median"
+  },
+  "caption": "Does the Control Center Wi-Fi button really turn Wi-Fi off? 📶 Not completely: it disconnects.\n\nApple's support page says that when you tap the Wi-Fi or Bluetooth button in Control Center, your iPhone immediately disconnects, but both radios stay available, so AirDrop, AirPlay, Apple Pencil, Apple Watch, Handoff, Instant Hotspot, Location Services and Unlock with Apple Watch keep working. Wi-Fi auto-join stays paused until you turn it back on in Control Center, connect to a network in Settings, move to a new location, hit 5 a.m. local time or restart the phone. To switch Wi-Fi or Bluetooth fully off, use Settings > Wi-Fi (or Bluetooth). Apple adds that for the best experience you should try to keep both on.\n\nSend this to a friend who taps that button to save battery.",
+  "keywords": [
+   "control center wifi button",
+   "does wifi button turn off wifi",
+   "iphone wifi disconnect vs off",
+   "airdrop wifi off",
+   "iphone control center bluetooth",
+   "turn off wifi iphone settings"
+  ],
+  "hashtags": [
+   "#iphone",
+   "#iphonetips",
+   "#techtips",
+   "#wifi",
+   "#techexplained"
+  ]
  }
 }

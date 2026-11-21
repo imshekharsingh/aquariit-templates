@@ -1,0 +1,87 @@
+{
+ "name": "showreel-43-tapzoom",
+ "seek": "scripts/explainer/tapzoom.html",
+ "dur": 17,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.2,
+ "style": "Dark look, whole frame, calm (rule 17), violet colour world. A touch-behaviour topic (the browser reads two quick taps as a double-tap zoom), one bug told as a story (design/improvements.md web item 7 again, now on a phone-gesture bug)",
+ "voice": {
+  "text": "Why does tapping zoom your page? Tap twice, and the screen jumps closer. Phones read that as zoom. The fix: touch action manipulation. Taps stay taps. Look closer. Same taps, but this page holds still. Now fast taps just count.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "Why does tapping zoom your page? 📱 You tap a button twice, fast, and the whole screen jumps closer instead of counting two taps.\n\nOn a phone the browser reads two quick taps on the same spot as a double-tap, which means zoom. Add one line to the element and it stops: touch-action: manipulation. Panning and pinch-zoom still work, only the double-tap zoom goes away, so fast taps are just taps. Watch the reel: the top page zooms in and out, the bottom one just counts.\n\ntouch-action: manipulation works in Chrome 36, Edge 12, Firefox 52 and Safari 13 and up (iOS Safari 9.3), so it is safe everywhere.\n\nSend this to whoever built your site's like or counter button, or save it for your next tap target.",
+ "keywords": [
+  "css touch-action manipulation",
+  "stop double tap zoom css",
+  "css button zooms on double tap",
+  "mobile double tap zoom fix",
+  "touch-action css",
+  "css mobile tips"
+ ],
+ "hashtags": [
+  "#css",
+  "#webdesign",
+  "#frontend",
+  "#mobiledev",
+  "#uidesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/touch-action",
+   "note": "MDN touch-action (mdn/content, read 21 Nov 2026): manipulation enables panning and pinch zoom gestures but disables additional non-standard gestures such as double-tap to zoom; disabling double-tap to zoom removes the need for browsers to delay the generation of click events"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data",
+   "note": "BCD (read 21 Nov 2026), css.properties.touch-action: Chrome 36, Edge 12, Firefox 52, Safari 13, iOS Safari 9.3"
+  }
+ ],
+ "tip": {
+  "title": "Why does tapping fast zoom your page?",
+  "why": "On a touch screen the browser treats two quick taps on the same spot as a double-tap, and a double-tap means zoom, so a like or counter button that people tap fast zooms the page instead of counting twice. touch-action: manipulation keeps panning and pinch-zoom but turns off the double-tap zoom (MDN), which also lets the browser fire click events without waiting to see if a second tap follows. Supported since Chrome 36, Edge 12, Firefox 52 and Safari 13 (MDN, BCD).",
+  "code": ".like { }                            /* a fast double tap zooms the page */\n.like { touch-action: manipulation; } /* taps stay taps */",
+  "demo": "tapzoom",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/touch-action",
+   "label": "MDN, touch-action"
+  }
+ },
+ "format": "single",
+ "say": {},
+ "experiment": {
+  "id": "web-touch-bug",
+  "change": "a touch-behaviour topic (a gesture the browser claims: double-tap zoom) told as one bug story; dynamic before/after in sync",
+  "vs": "median"
+ },
+ "qa": {
+  "mute": {
+   "before": {
+    "say": "closer"
+   },
+   "after": {
+    "say": "now"
+   },
+   "span": 1.5
+  },
+  "focus": {
+   "demo": [
+    40,
+    392,
+    470,
+    780
+   ],
+   "subject": [
+    40,
+    392,
+    470,
+    470
+   ],
+   "from": 12.3,
+   "to": 14.8
+  }
+ }
+}
