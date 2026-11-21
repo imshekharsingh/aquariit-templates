@@ -1,0 +1,23 @@
+{
+ "note": "Every source the Turns Out queue (design/c3-queue.md) cites, for the Sources workflow (python3 scripts/showreel/sources.py design/c3-queue-sources.json): the session network blocks these hosts, the run log shows each page before the reels use it.",
+ "sources": [
+  {"title": "Contrast and Color Accessibility (WebAIM)", "url": "https://webaim.org/articles/contrast/"},
+  {"title": "Contrast Checker (WebAIM)", "url": "https://webaim.org/resources/contrastchecker/"},
+  {"title": "Understanding SC 1.4.3 Contrast (Minimum) (W3C WCAG 2.2)", "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"},
+  {"title": "Line length (Butterick's Practical Typography)", "url": "https://practicaltypography.com/line-length.html"},
+  {"title": "Line spacing (Butterick's Practical Typography)", "url": "https://practicaltypography.com/line-spacing.html"},
+  {"title": "All caps (Butterick's Practical Typography)", "url": "https://practicaltypography.com/all-caps.html"},
+  {"title": "Letterspacing (Butterick's Practical Typography)", "url": "https://practicaltypography.com/letterspacing.html"},
+  {"title": "Touch Targets on Touchscreens (Nielsen Norman Group)", "url": "https://www.nngroup.com/articles/touch-target-size/"},
+  {"title": "Accessibility (Apple Human Interface Guidelines)", "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility"},
+  {"title": "Visual Hierarchy in UX: Definition (Nielsen Norman Group)", "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"},
+  {"title": "Resumes (Butterick's Practical Typography)", "url": "https://practicaltypography.com/resumes.html"},
+  {"title": "Proximity Principle in Visual Design (Nielsen Norman Group)", "url": "https://www.nngroup.com/articles/gestalt-proximity/"},
+  {"title": "Tables (Butterick's Practical Typography)", "url": "https://practicaltypography.com/tables.html"},
+  {"title": "Alternate figures (Butterick's Practical Typography)", "url": "https://practicaltypography.com/alternate-figures.html"},
+  {"title": "Page margins (Butterick's Practical Typography)", "url": "https://practicaltypography.com/page-margins.html"},
+  {"title": "Space between paragraphs (Butterick's Practical Typography)", "url": "https://practicaltypography.com/space-between-paragraphs.html"},
+  {"title": "Bold or italic (Butterick's Practical Typography)", "url": "https://practicaltypography.com/bold-or-italic.html"},
+  {"title": "Point size (Butterick's Practical Typography)", "url": "https://practicaltypography.com/point-size.html"}
+ ]
+}
