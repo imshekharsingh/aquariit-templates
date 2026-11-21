@@ -19,7 +19,7 @@
 /*script:begin*/
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#d9b46a', '#a8783a');
-  var TEXT = "One of these looks five times pricier. Which one would you pay more for? It's B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.";
+  var TEXT = "One looks five times pricier. Which one would you pay more for? It's B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.";
   var DUR = 18, V, PH, A = {}, CAM, CUR = [];
   var AX = 50, BXp = 290, Y = 452, CX = 170;   // the two labels side by side, then A moves to the centre and becomes the premium one
   function hexMix(a, b, k){ var p = function(h){ return [1, 3, 5].map(function(i){ return parseInt(h.slice(i, i + 2), 16); }); }, x = p(a), y = p(b);
@@ -29,7 +29,7 @@
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('Which');
     A.which = at('Which'); A.b = at('B'); A.three = at('three'); A.space = at('Empty'); A.small = at('Small'); A.two = at('only'); A.quiet = at('Quiet'); A.end = Math.min(DUR - .2, V.end + .8);
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.space - .1, 1, 255, 500, 1.03).pull(A.quiet - .2, .9, 255, 480, 1);
+    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: 1 }).pull(0, .55, 255, 480, 1).pushIn(.6, 1.8, 255, 482, 1.025).pull(A.b, .5, 255, 480, 1).pushIn(A.space - .1, 1, 255, 486, 1.03).pull(A.quiet - .2, .9, 255, 480, 1).pushIn(A.quiet + .8, 1.6, 255, 482, 1.025);
     var S = DT.S; S.sting(0); S.whoosh(0, 120, .4); S.land(.1, 120, 0); S.whoosh(.25, 420, .4); S.land(.35, 420, 2);
     S.land(A.which + .1, 120, 2); S.land(A.which + .25, 420, 4);
     CUR = [[A.which + .3, 300, 700, 0], [A.b - .15, 392, 760, 0], [A.b + .05, 392, 760, 1], [A.b + .35, 392, 760, 0], [A.three + .2, 470, 720, 0]];
@@ -59,7 +59,7 @@
     T3.style.font = big ? "400 18px/1.3 'Pacifico'" : "500 11px/1 'Space Grotesk'"; T3.style.letterSpacing = (kl * .24).toFixed(3) + 'em'; T3.textContent = big ? 'vanilla!!' : 'VANILLA · 200 G';
     var fl = Math.sin(Math.PI * cl(kl)); T3.style.filter = 'blur(' + (fl * 3).toFixed(2) + 'px)';
     var y1 = mix(big ? 44 : 112, 112, 0), place = function(e, y){ e.style.top = (cy + (y - cy) * z).toFixed(1) + 'px'; e.style.transform = 'scale(' + z.toFixed(3) + ')'; };
-    place(T1, big ? 36 : 108); place(T2, big ? 96 : 140); place(T3, big ? 230 : 206);
+    place(T1, big ? 28 : 108); place(T2, big ? 104 : 140); place(T3, big ? 230 : 206);
     // lever 3, two colours: the five colours drop away; the loud ones fade to cream and a gold rule
     T3.style.color = hexMix('#6c3483', '#9a9080', kc);
     var cs = mix(56, 0, kl), cz = cs * z; C.style.width = C.style.height = cz.toFixed(1) + 'px'; C.style.marginLeft = (-cz / 2).toFixed(1) + 'px'; C.style.top = (cy + ((big ? 182 : 170) - cy) * z - cz / 2).toFixed(1) + 'px'; C.style.background = hexMix('#e67e22', '#c9a46a', kc); C.style.opacity = (1 - P(kl, 0, .35)).toFixed(3);
@@ -85,13 +85,13 @@
     var tk = P(t, A.small + .05, A.small + .35) * (1 - P(t, A.two - .1, A.two + .2)), tw = mix(70, 190, S.kl), ry = 602 + (108 - 150) * .74 * 1.2 - 18;
     for (var i = 0; i < 6; i++) { var x = 270 - tw / 2 + tw * i / 5; DT.line('tk' + i, x, ry, x, ry + 12, tk, '#ffb35a', 2); }
     DT.line('tkb', 270 - tw / 2, ry + 12, 270 + tw / 2, ry + 12, tk, '#ffb35a', 2);
-    DT.chip('l2', 'TRACKING <b>+' + DT.roll(0, 320, P(t, A.small + .1, A.small + .9)) + '</b>', 300, 414, P(t, A.small, A.small + .3) - P(t, A.two - .1, A.two + .2));
+    DT.chip('l2', 'TRACKING <b>WIDE</b>', 300, 414, P(t, A.small, A.small + .3) - P(t, A.two - .1, A.two + .2));
     // lever 3: the palette: five swatches line up under the label, three drop away, two stay
     for (i = 0; i < 5; i++) { var e = $('p' + i), k = E.back(P(t, A.two + i * .05, A.two + .35 + i * .05), 2), keep = i === 0 || i === 4, drop = keep ? 0 : E.inOut3(P(t, A.two + .5 + i * .08, A.two + .9 + i * .08));
       e.style.left = (150 + i * 50).toFixed(1) + 'px'; e.style.top = (Y + 338 + drop * 120).toFixed(1) + 'px'; e.style.opacity = (k * (1 - drop) * (1 - P(t, A.quiet + .4, A.quiet + .8))).toFixed(3);
       e.style.background = keep ? (i === 0 ? '#1b1d26' : '#c9a46a') : e.style.background; e.style.transform = 'scale(' + (.6 + .4 * k).toFixed(3) + ') rotate(' + (drop * (i - 2) * 30).toFixed(1) + 'deg)'; e.style.border = keep ? '2px solid rgba(255,255,255,.3)' : 'none'; }
-    DT.chip('l3', 'COLOURS <b>' + DT.roll(5, 2, P(t, A.two + .2, A.two + .8)) + '</b>', 300, 414, P(t, A.two, A.two + .3) - P(t, A.quiet - .1, A.quiet + .2));
-    DT.chip('end', 'QUIET <b>COSTS MORE</b>', 170, 414, P(t, A.quiet, A.quiet + .3), 'g');
+    DT.chip('l3', 'COLOURS <b>ONLY TWO</b>', 300, 414, P(t, A.two, A.two + .3) - P(t, A.quiet - .1, A.quiet + .2));
+    DT.chip('end', 'QUIET <b>COSTS MORE</b>', 170, 414, P(t, A.quiet + .2, A.quiet + .5), 'g');
     [[A.d1, 270, 600], [A.d2, 270, 560], [A.d3, 270, 790]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); }); DT.burst('bw', 392, 790, t, A.b + .12, '#5ee0a0');
     DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '?', label: 'A OR B' }, { t: A.space, n: 1, word: 'LEVER' }, { t: A.small, n: 2, word: 'LEVER' }, { t: A.two, n: 3, word: 'LEVER' }, { t: A.quiet, end: 1, sym: '✓', label: 'QUIET' }]);

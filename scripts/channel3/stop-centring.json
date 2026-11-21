@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-stop-centring",
+ "seek": "scripts/channel3/stop-centring.html",
+ "engine": "design",
+ "dur": 18,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "Stop centring everything. It looks neat, but turns out, it's hard to read. Watch your eye. Every centred line starts somewhere new, so it jumps. Line them up on the left, and it reads in one smooth path.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format",
+  "vs": "median"
+ },
+ "caption": "Stop centring everything. It looks neat, but it's hard to read. 📄\n\nEvery centred line starts somewhere new, so your eye has to jump to find it.\n\n1. Line the text up on the left.\n2. Keep centring for one short title.\n3. Let the right edge be ragged.\n\nSave this for your next poster, menu or slide. Team centre or team left?",
+ "keywords": [
+  "centered text vs left aligned",
+  "text alignment tips",
+  "poster design tips",
+  "typography tips",
+  "graphic design for beginners",
+  "readability"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#typography",
+  "#posterdesign",
+  "#designhacks"
+ ],
+ "sources": [
+  {
+   "title": "Centered text (Butterick's Practical Typography)",
+   "url": "https://practicaltypography.com/centered-text.html"
+  },
+  {
+   "title": "F-Shaped Pattern of Reading on the Web (Nielsen Norman Group)",
+   "url": "https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (the brick wall) fills the frame by design"
+   }
+  ],
+  "subject": [
+   60,
+   420,
+   480,
+   780
+  ]
+ }
+}
