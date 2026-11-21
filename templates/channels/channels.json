@@ -3,21 +3,21 @@
   "name": "Web in 20 Sec",
   "username": "@webin20sec",
   "bio": "One Web fix a day, in 20 seconds. Save it, ship it.",
-  "slot": "12:30–13:30 IST",
+  "slot": "13:00–21:00 IST",
   "logo": "/channels/webin20sec-logo.png"
  },
  "tech": {
   "name": "Tech in 20 Sec",
   "username": "@techin20sec",
   "bio": "How everyday tech actually works, in 20 seconds.",
-  "slot": "15:00–19:00 IST",
+  "slot": "13:00–21:00 IST",
   "logo": "/channels/techin20sec-logo.png"
  },
  "c3": {
-  "name": "Turns Out",
+  "name": "Turns Out · Design Tips",
   "username": "@itturns.out",
-  "bio": "True stories behind things everyone knows. Sources in the comments.",
-  "slot": "21:00–22:00 IST",
+  "bio": "Design fixes you can use today. Menus, posters, slides, invites. One a day.",
+  "slot": "13:00–21:00 IST",
   "logo": "/channels/turnsout-logo.png"
  }
 }

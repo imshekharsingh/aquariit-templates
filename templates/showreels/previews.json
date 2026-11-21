@@ -1,37 +1,5 @@
 {
- "note": "Turns Out design series, round 7 (21 Nov 2026): one message first (the claim alone, the design fully lit, its problems ringed), then the lesson. Not posts.",
- "items": [
-  {
-   "name": "showreel-c3-menu-spacing",
-   "title": "★ Reference cut · Turns Out It's the Spacing (full reel)",
-   "about": "The complete version: full render, quality checks, caption and sources. Not scheduled.",
-   "src": "/reels/showreel-c3-menu-spacing.mp4"
-  },
-  {
-   "name": "showreel-c3-dt-spacing",
-   "title": "1 · Turns Out It's the Spacing",
-   "about": "A café menu that is costing them customers, fixed live: one edge, one font, double the space."
-  },
-  {
-   "name": "showreel-c3-dt-expensive",
-   "title": "2 · Why It Looks Expensive",
-   "about": "One label looks five times pricier: the three levers, on a shop shelf."
-  },
-  {
-   "name": "showreel-c3-dt-optical",
-   "title": "3 · Your Eyes Are Lying",
-   "about": "Your eyes are lying: the optical centre, in a photo studio."
-  },
-  {
-   "name": "showreel-c3-dt-myth",
-   "title": "4 · Design Myths",
-   "about": "Stop centring everything: watch the eye zigzag on a street poster, then read in one path."
-  },
-  {
-   "name": "showreel-c3-dt-fixit",
-   "title": "5 · Fix It in 60 Seconds",
-   "about": "Let's fix this invite. Three moves: one hero, one font, one colour."
-  }
- ],
- "v": 9
+ "note": "Previews to review (not posts). Empty since 21 Nov 2026: the five design concepts became full reels in Reels → @itturns.out.",
+ "items": [],
+ "v": 10
 }

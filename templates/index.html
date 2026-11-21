@@ -82,7 +82,9 @@
   .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:6px 0 14px;padding:5px;background:var(--card);border:1px solid var(--line);border-radius:18px}
   .tab{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;min-height:56px;padding:9px 8px;border:0;border-radius:13px;background:transparent;color:var(--mute);text-align:left;cursor:pointer;font:inherit}
   .tab b{font:800 .8rem system-ui,sans-serif;color:var(--ink);letter-spacing:-.02em;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .tab span{font:600 .7rem system-ui,sans-serif}
+  .tab span{font:600 .7rem system-ui,sans-serif;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tab i.n{font:700 .66rem system-ui,sans-serif;font-style:normal;color:var(--mute);white-space:nowrap}
+  .tab i.n.due{color:var(--tc)}
   .tab[aria-selected="true"]{background:var(--soft);box-shadow:inset 0 0 0 1.5px var(--tc)}
   .tab[aria-selected="true"] span{color:var(--tc)}
   .tab.web{--tc:var(--c-web)}
@@ -331,6 +333,29 @@
   .ico-wait circle{fill:none;stroke:var(--mute);stroke-width:1.6;stroke-dasharray:3 3}
   .ico-now circle{fill:none;stroke:var(--soft);stroke-width:2.4}.ico-now path{fill:none;stroke:var(--cc,var(--accent));stroke-width:2.4;stroke-linecap:round;transform-origin:12px 12px;animation:spin 1.1s linear infinite}
   @media (prefers-reduced-motion: reduce){.ico-now path{animation:none}}
+  /* desktop and tablets in landscape (owner, 21 Nov 2026: "we use it from desktop and mobile"): the tab bar becomes a side rail, the
+     content widens to two columns of cards; phones keep the bottom bar and one column */
+  .how{margin-top:6px}.how summary{cursor:pointer;color:var(--ink);font:700 .85rem system-ui,sans-serif}.how p{margin-top:6px;font-size:.88rem}
+  #lede p{margin:0}
+  @media (min-width: 960px){
+    body{padding-left:232px}
+    .bnav{top:0;right:auto;bottom:0;width:232px;display:flex;flex-direction:column;gap:4px;padding:76px 14px 20px;border-top:0;border-right:1px solid var(--line);background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}
+    .bnav::before{content:'Studio';position:absolute;top:22px;left:26px;font:800 1.15rem system-ui,sans-serif;color:var(--ink)}
+    .bnav button{flex-direction:row;justify-content:flex-start;gap:12px;min-height:46px;padding:0 14px;font-size:.92rem}
+    .bnav button[aria-current="page"]::before{top:0;left:0;width:100%;height:100%}
+    .bnav button:hover{background:var(--soft)}
+    .appbar,.wrap{max-width:1120px}
+    .wrap{padding:0 32px 48px}
+    .appbar{padding-left:24px;padding-right:24px}
+    #list:not([hidden]),#journey{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px;align-items:start}
+    #list>*:not(article):not(.tile),#journey>*:not(article){grid-column:1/-1}
+    .dnav{display:none}
+    #s-chan .tabs,#prof{max-width:760px}
+    #s-inbox:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px;align-items:start}
+    #s-inbox>h1,#s-inbox>.lede,#s-inbox>#cards,#s-inbox>#inbox-empty{grid-column:1/-1}
+    #growth{max-width:900px}
+  }
+  @media (min-width: 1500px){ #list,#journey{grid-template-columns:repeat(3,minmax(0,1fr))} }
 </style>
 </head>
 <body>
@@ -347,17 +372,17 @@
     <div class="tabs" role="tablist" aria-label="Channel">
       <button class="tab web" role="tab" type="button" data-ch="web" aria-selected="true"><b>@webin20sec</b><span>Web fixes</span></button>
       <button class="tab tech" role="tab" type="button" data-ch="tech" aria-selected="false"><b>@techin20sec</b><span>Tech explained</span></button>
-      <button class="tab c3" role="tab" type="button" data-ch="c3" aria-selected="false"><b>@itturns.out</b><span>True stories</span></button>
+      <button class="tab c3" role="tab" type="button" data-ch="c3" aria-selected="false"><b>@itturns.out</b><span>Design fixes</span></button>
     </div>
     <details class="prof" id="prof" hidden><summary>Profile</summary></details>
     <h1 id="title">Showreels</h1>
-    <p class="lede" id="lede">Up next shows each reel with its exact time to post; tap a cover to play it. Copy the post text, save the video, post it at that time (paste its sources as the first comment when it has them), then tap Mark posted: it moves to the Posted list below. A reminder comes 10 minutes before each time.</p>
+    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>Mark posted</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (any time 13:00–21:00 IST). Paste its sources as the first comment when it has them. Mark posted moves it to the Posted list below; a reminder comes 10 minutes before each time. Turns Out reels have no date: post them when you choose.</p></details></div>
     <div id="list"><p class="empty">Loading…</p></div>
     <div id="growth" hidden></div>
   </section>
   <section class="pg" id="s-inbox" hidden>
     <h1>Inbox</h1>
-    <p class="lede">Questions only you can answer, Claude's daily cards, your feedback and references.</p>
+    <p class="lede">What needs you, Claude's cards, your feedback and references.</p>
     <section class="needs" id="needs" hidden><h2>Needs you</h2><div id="needs-list"></div></section>
     <div id="cards"></div>
     <details class="fb" id="fb"><summary>Feedback <span id="fb-n">Write to Claude</span></summary>
@@ -463,8 +488,8 @@
   // each channel has its own reels, posting window and look (owner, 27 Oct 2026). A reel belongs to @techin20sec when its name starts with
   // showreel-tech- or showreel-t<digit> (the tech reels), to Turns Out (internal id c3) when it starts with showreel-c3- (owner, 31 Oct 2026:
   // the channel's name), or to the channel captions.json names ("channel": "tech" / "c3" / "web"); everything else is @webin20sec
-  var CH = { web: { name: '@webin20sec', slot: '12:30–13:30 IST', sub: 'Web fixes' }, tech: { name: '@techin20sec', slot: '15:00–19:00 IST', sub: 'Tech explained' },
-    c3: { name: '@itturns.out', slot: '21:00–22:00 IST', sub: 'True stories' } };
+  var CH = { web: { name: '@webin20sec', slot: '13:00–21:00 IST', sub: 'Web fixes' }, tech: { name: '@techin20sec', slot: '13:00–21:00 IST', sub: 'Tech explained' },
+    c3: { name: '@itturns.out', slot: '13:00–21:00 IST', sub: 'Design fixes' } };
   function chOf(s, c){ var m = c[s.name] || {}; return CH[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(s.name) ? 'tech' : /^showreel-c3-/.test(s.name) ? 'c3' : 'web'; }
   // a reel's title, the same way on every tab: its concept, else the first line of its caption (once loaded), else its name made readable
   var TITLES = {};
@@ -515,7 +540,8 @@
     document.body.setAttribute('data-ch', ch); document.getElementById('title').textContent = CH[ch].name; profile();
     Array.prototype.forEach.call(tabs, function(t){ var k = t.getAttribute('data-ch'), n = counts && counts[k], sp = t.querySelector('span');
       t.setAttribute('aria-selected', k === ch ? 'true' : 'false');
-      sp.textContent = CH[k].sub + (n ? ' · ' + n + ' to post' : ''); sp.className = n ? 'due' : ''; });
+      sp.textContent = CH[k].sub; sp.className = n ? 'due' : '';
+      var nb = t.querySelector('i.n') || t.appendChild(el('i', 'n')); nb.textContent = n ? n + ' to post' : 'all posted'; nb.className = 'n' + (n ? ' due' : ''); });   /* the count on its own line (21 Nov 2026: it wrapped on phones) */
   }
   // the "Posted" list (owner, 1 Nov 2026): cover, title, posted date and the reel's Instagram numbers once the nightly collector has them.
   // No video here: 15 days after upload the MP4 is deleted from the private R2 store (cover, post text and sources stay).
@@ -543,7 +569,7 @@
   var openPosted = {};
   function postedDetail(s, meta){ var d = el('div', 'pdet');
     if (s.video || s.play) d.appendChild(player(s));
-    else { if (s.cover) { var im = document.createElement('img'); im.src = s.cover; im.alt = 'Cover of ' + (meta.concept || label(s)); d.appendChild(im); } d.appendChild(el('p', 'gone', 'Video removed 15 days after upload. The post text and sources stay.')); }
+    else { if (s.cover) { var im = document.createElement('img'); im.src = s.cover; im.alt = 'Cover of ' + label(s); d.appendChild(im); } d.appendChild(el('p', 'gone', 'Video removed 15 days after upload. The post text and sources stay.')); }
     var cap = el('div', 'cap wait', 'Loading post text…'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), src = el('div', 'src'); copy.type = 'button'; copy.disabled = true; src.hidden = true;
     copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
     row.appendChild(copy); d.appendChild(cap); d.appendChild(row); d.appendChild(src);
@@ -557,11 +583,11 @@
     done.forEach(function(s){ var meta = c[s.name] || {}, at = ticks[s.name], r = el('div', 'prow'), op = el('button', 'pbtn'), th = el('span', 'th'), tx = el('span', 'tx'), isOpen = openPosted[k] === s.name;
       op.type = 'button'; op.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       if (s.cover) th.style.backgroundImage = 'url(' + s.cover + ')'; op.appendChild(th);
-      tx.appendChild(el('span', 'name', meta.concept || label(s))); tx.appendChild(el('span', 'meta', '✓ Posted ' + nice(istDay(at))));
+      tx.appendChild(el('span', 'name', label(s))); tx.appendChild(el('span', 'meta', '✓ Posted ' + nice(istDay(at))));
       var nums = el('span', 'nums'); nums.hidden = true; tx.appendChild(nums); op.appendChild(tx); op.appendChild(el('span', 'chev', isOpen ? '⌄' : '›')); r.appendChild(op); rows[s.name] = nums;
       op.addEventListener('click', function(){ openPosted[k] = isOpen ? null : s.name; render(); });
       if (Date.now() - Date.parse(at) < DAY) {   // a wrong tap is easy to undo on the first day
-        var u = el('button', 'btn g undo', 'Undo'); u.type = 'button'; u.setAttribute('aria-label', 'Not posted yet: move ' + (meta.concept || label(s)) + ' back');
+        var u = el('button', 'btn g undo', 'Undo'); u.type = 'button'; u.setAttribute('aria-label', 'Not posted yet: move ' + label(s) + ' back');
         u.addEventListener('click', function(){ u.disabled = true; mark(s.name, false).then(render, function(){ u.disabled = false; u.textContent = 'Try again'; }); }); r.appendChild(u); }
       box.appendChild(r); if (isOpen) box.appendChild(postedDetail(s, meta)); });
     perfFor(k).then(function(j){ if (!j || k !== ch) return; var hit = matchPosts(done, j.media);
@@ -697,7 +723,7 @@
       if (s.name === openName[ch]) { put(reelCard(s, meta, false)); return; }
       var w = when(s, meta), tl = el('button', 'tile'); tl.type = 'button'; tl.setAttribute('aria-label', 'Open ' + s.name); tl.setAttribute('data-reel', s.name);   // collapsed tile: cover, name, slot; tap to open it
       var th = el('span', 'th'); if (s.cover) th.style.backgroundImage = 'url(' + s.cover + ')'; tl.appendChild(th);
-      var tx = el('span', 'tx'); tx.appendChild(el('span', 'name', meta.concept || label(s))); tx.appendChild(el('span', 'when' + w[1], w[0]));
+      var tx = el('span', 'tx'); tx.appendChild(el('span', 'name', label(s))); tx.appendChild(el('span', 'when' + w[1], w[0]));
       tl.appendChild(tx); tl.appendChild(el('span', 'chev', '›'));
       tl.addEventListener('click', function(){ openReel(s.name, false); });
       put(tl);
@@ -709,8 +735,8 @@
   // and the same three buttons, so every due slot can be copied, saved and marked without opening it
   function reelCard(s, meta, compact){
     var w = when(s, meta), card = el('article', 'reel' + (compact ? ' compact' : '')), b = el('div', 'body'); card.setAttribute('data-reel', s.name);
-    var nm = el('div', 'name', meta.concept || label(s));
-    if (compact) { var t2 = el('div', 'top2'), pl = el('button', 'play'), tx = el('div'); pl.type = 'button'; pl.setAttribute('aria-label', 'Play ' + (meta.concept || label(s)));
+    var nm = el('div', 'name', label(s));   // the post's first line once it loads (21 Nov 2026: the build note read as jargon)
+    if (compact) { var t2 = el('div', 'top2'), pl = el('button', 'play'), tx = el('div'); pl.type = 'button'; pl.setAttribute('aria-label', 'Play ' + label(s));
       if (s.cover) pl.style.backgroundImage = 'url(' + s.cover + ')'; pl.addEventListener('click', function(){ openReel(s.name, false); });
       tx.appendChild(el('div', 'when' + w[1], w[0])); tx.appendChild(nm); t2.appendChild(pl); t2.appendChild(tx); b.appendChild(t2); }
     else { card.appendChild(player(s));
@@ -732,7 +758,7 @@
     get().catch(function(){ return new Promise(function(ok){ setTimeout(ok, 1500); }).then(get); }).catch(function(){ return {}; }).then(function(j){
       var m = Object.assign({}, j, meta);
       if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false;
-        if (!meta.concept) { TITLES[s.name] = firstLine(m.caption); nm.textContent = TITLES[s.name]; } }
+        TITLES[s.name] = firstLine(m.caption); nm.textContent = TITLES[s.name]; }
       else { cap.textContent = 'No post text for this reel yet.'; }
       if (!compact && Array.isArray(m.sources) && m.sources.length) sources(src, m.sources); });
     b.appendChild(row); card.appendChild(b); return card;
@@ -1021,7 +1047,7 @@
     // a re-render keeps the file name, so the Worker's video, play and cover URLs carry each object's upload time (?v=): the phone never plays a cached older cut
     DATA = { d: r[0], c: r[1] }; if (!fromLink(location.hash)) { if (pendingReel) openReel(pendingReel, true); else render(); }
     // titles for the collapsed tiles too: each reel's caption first line (one small request per reel), then one re-render
-    Promise.all((r[0].showreels || []).filter(function(s){ return !(r[1][s.name] || {}).concept; }).map(function(s){
+    Promise.all((r[0].showreels || []).filter(function(s){ return !ticks[s.name] && !(r[1][s.name] || {}).hidden; })   /* every reel still to post (titles are the post's first line, 21 Nov 2026) */.map(function(s){
       return fetch(s.info || '/reels/' + s.name + '.json', { credentials: 'same-origin' }).then(function(x){ return x.ok ? x.json() : {}; }).then(function(j){ if (j && j.caption) TITLES[s.name] = firstLine(j.caption); }).catch(function(){}); }))
       .then(function(){ render(); }); })
     .catch(function(){ list.textContent = ''; list.appendChild(el('p', 'empty', 'Could not load the list right now.')); });
