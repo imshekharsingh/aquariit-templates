@@ -1,5 +1,5 @@
 /*css:begin*/
-#board{left:50px;top:408px;width:440px;height:372px;border-radius:18px;background:#f2ebdd}
+#board{left:50px;top:392px;width:440px;height:372px;border-radius:18px;background:#f2ebdd}
 .it{position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 50%}
 .row{display:flex;justify-content:space-between;align-items:baseline}
 .row .dots{overflow:hidden;color:#999;flex:none}
@@ -9,6 +9,9 @@
 #scrub .tr{position:absolute;left:0;right:0;top:9px;height:4px;border-radius:2px;background:rgba(255,255,255,.25)}
 #scrub .hd{position:absolute;top:0;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:#ffb35a;box-shadow:0 0 0 4px rgba(255,179,90,.25)}
 #scrub b{position:absolute;top:3px;font:700 12px var(--f);letter-spacing:.16em;color:#fff}
+/* frame 0 (owner, 21 Nov 2026: "do you find it right for initial frames?"): ONE message first, the claim alone in the dark band, the cheap menu
+   fully visible under it with its problems ringed; title, captions and dial arrive when the lesson starts */
+#hook{top:132px!important;background:none!important;box-shadow:none!important;padding:0 6px!important;font-size:46px!important}
 /*css:end*/
 /*board:begin*/
 <div id="board" class="board">
@@ -27,7 +30,7 @@
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ffb35a', '#ff7a45');
   var TEXT = "This menu is costing them customers. Turns out, it's not the colours. Fix one: line every item up to one edge. Fix two: one font, in two weights. Fix three: double the space between groups. Same words. Now it looks twice the price.";
-  var DUR = 18, BX = 50, BY = 408, BW = 440, V, PH, A = {}, CAM, W = {}, CUR = [];
+  var DUR = 18, BX = 50, BY = 392, BW = 440, V, PH, A = {}, CAM, W = {}, CUR = [];
   // the two looks of every line: A (cheap: centred, four fonts, cramped) and B (one edge, one font in two weights, room to breathe)
   var IT = {
     i0: { A: { f: "italic 700 34px 'Playfair Display'", c: '#a1342b', y: 20, j: 0 }, B: { f: "700 34px 'Space Grotesk'", c: '#1d1a16', y: 30 } },
@@ -47,7 +50,7 @@
     A.sw = A.col - .5; A.hook = at('Turns');
     window.COVER = .6;
     CAM = KM.rig({ x: 255, y: 480, z: 1.08, drift: 1 }).pull(0, .55, 255, 480, 1).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
-    var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); IDS.forEach(function(id, i){ S.land(.12 + i * .05, 270, i); });
+    var S = DT.S; S.sting(0); [.35, .65, .95].forEach(function(t0, i){ S.land(t0 + .05, 300, i + 1); KM.cue({ t: t0, k: 'tick', g: .08, p: i, x: 300, synth: true }); }); S.whoosh(0, 270, .4); IDS.forEach(function(id, i){ S.land(.12 + i * .05, 270, i); });
     // the colours beat: five swatches pop out of the menu (a rising run), then a strike: it's not them
     for (var i = 0; i < 5; i++) S.land(A.sw + i * .09, 330 + i * 30, i + 2); S.stamp(A.col + .35, 400);
     // fix one: the cursor drags a marquee over every line, a guide drops on the edge, each line snaps to it (a rising arpeggio)
@@ -87,11 +90,15 @@
       if (id === 'foot') el.style.background = kf >= 1 ? b.bg : a.bg; }); }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    DT.intro($('board'), t, .55); var S = state(t); paint(t, S);
+    DT.intro($('board'), t + .6, .55); var S = state(t); paint(t, S);   // the menu is fully there at frame 0; the claim is the motion
     // the café itself: dim and grey while the menu is cheap, warm and lit as each fix lands (and back down with the scrub)
-    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5))) * (t >= A.same && t < A.same + 1.5 ? S.sc : 1), [$('board')]);
+    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5))) * (t >= A.same && t < A.same + 1.5 ? S.sc : 1));
     DT.sweep(t, [A.d1, A.d2, A.d3, A.price - .05]);
     DT.hook(t, '<i>This</i> <i>menu</i> <i>is</i> <i>costing</i> <i>them</i> <em><i>customers.</i></em>', A.hook);
+    var ringOut = 1 - P(t, A.col - .7, A.col - .4);
+    [[.35, { x: BX + 70, y: BY + 8, w: 300, h: 102, r: 18 }, '4 FONTS', BX + 24, BY + 306], [.65, { x: BX + 150, y: BY + 218, w: 142, h: 54, r: 14 }, '5 COLOURS', BX + 150, BY + 306], [.95, { x: BX + 60, y: BY + 104, w: 100, h: 116, r: 16 }, 'NO EDGE', BX + 300, BY + 306]].forEach(function(r, i){
+      var k = P(t, r[0], r[0] + .3) * ringOut; DT.box('ring' + i, r[1], k, '#ff5f5f'); DT.chip('rl' + i, r[2], r[3], r[4], P(t, r[0] + .1, r[0] + .35) * ringOut, 'r sm'); });
+    $('dial').style.opacity = P(t, A.f1 - .4, A.f1).toFixed(3);
     // each fix lands with a spark burst and a breath of the whole menu
     [[A.d1, BX + L, BY + 150], [A.d2, BX + BW / 2, BY + 170], [A.d3, BX + BW - 20, BY + 200]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); });
     var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
@@ -124,8 +131,8 @@
     DT.chip('win', 'LOOKS <b>2× THE PRICE</b>', 150, 396, P(t, A.price - .1, A.price + .25), 'g');
     DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '3', label: '3 FIXES' }, { t: A.f1, n: 1 }, { t: A.f2, n: 2 }, { t: A.f3, n: 3 }, { t: A.same, end: 1, sym: '✓', label: 'SAME WORDS' }]);
-    DT.title(t, [{ t: 0, html: 'Why does this menu look <em>cheap</em>?' }, { t: A.f1, html: 'Fix 1 · <em>one edge</em>' }, { t: A.f2, html: 'Fix 2 · <em>one font</em>' }, { t: A.f3, html: 'Fix 3 · <em>double the space</em>' }, { t: A.same, html: 'Same words. <em>Twice the price.</em>' }]);
-    KM.subs($('cap'), t, V, PH, 0, A.end, function(w){ return /^(cheap|colours|edge|font|weights|double|space|price)/i.test(w) ? 'var(--amb)' : null; });
+    DT.title(t, [{ t: A.hook, html: 'Why does this menu look <em>cheap</em>?' }, { t: A.f1, html: 'Fix 1 · <em>one edge</em>' }, { t: A.f2, html: 'Fix 2 · <em>one font</em>' }, { t: A.f3, html: 'Fix 3 · <em>double the space</em>' }, { t: A.same, html: 'Same words. <em>Twice the price.</em>' }]);
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), A.end, function(w){ return /^(cheap|colours|edge|font|weights|double|space|price)/i.test(w) ? 'var(--amb)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
   window.seek = seek; window.DURATION = DUR;
@@ -139,8 +146,6 @@
 <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(90,50,20,.07) 0 3px,transparent 3px 52px)"></div>
 <div style="position:absolute;left:0;right:0;top:830px;height:210px;background:linear-gradient(180deg,#8a5634 0%,#6e4124 30%,#4a2a16 100%);box-shadow:0 -2px 0 rgba(255,220,180,.35)"></div>
 <div style="position:absolute;left:0;right:0;top:830px;height:10px;background:linear-gradient(180deg,rgba(255,230,200,.35),transparent)"></div>
-<div style="position:absolute;left:520px;top:752px;width:62px;height:78px;border-radius:6px 6px 14px 14px;background:linear-gradient(90deg,#f3efe8,#d9d2c6);box-shadow:0 10px 18px rgba(0,0,0,.3)"></div>
-<div style="position:absolute;left:578px;top:768px;width:20px;height:34px;border:6px solid #e5ded2;border-left:0;border-radius:0 14px 14px 0"></div>
 <div class="lit" style="background:radial-gradient(48% 34% at 50% 52%,rgba(255,196,120,.55),transparent 75%)"></div>
 <div class="lit" style="background:linear-gradient(180deg,rgba(255,170,90,.18),rgba(255,140,60,.08))"></div>
 /*stage:end*/
