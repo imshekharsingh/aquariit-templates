@@ -32,3 +32,9 @@ Captions follow the café reel: line 1 = the claim, then the three fixes as a nu
 Check every source page on the build day (WebFetch) and drop any claim it does not support.
 
 Order: 1, 5, 6, 3, 7, 4, 10, 2, 8, 9 (strongest visual flaw first). Max 2 renders each; a reel that fails twice is reported, not re-rendered.
+
+**Build notes (21 Nov 2026, build session):** the four source hosts are blocked from sessions; every page is read in the Sources workflow
+(design/c3-queue-sources.json, run 44949452447). #5 tap-targets: fix three is now "the main one, biggest" (NN/g: primary actions deserve a
+larger target; the Apple page has no readable text and "where the thumb rests" is not in the fetched sources); second source WCAG 2.5.8.
+#6 resume: second source Butterick "Bold or italic" ("if everything is emphasized, then nothing is emphasized"). Scenes:
+design/photo.js (#1), thumb.js (#5), resume.js (#6).

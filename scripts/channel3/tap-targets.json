@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-tap-targets",
+ "seek": "scripts/channel3/tap-targets.html",
+ "engine": "design",
+ "dur": 16,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "Your thumb keeps missing this button. It's tiny. Turns out, a thumb needs room. Fix one: make it bigger. Fix two: space between buttons. Fix three: the main one, biggest. One tap, every time.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format (queue of 10)",
+  "vs": "median"
+ },
+ "caption": "Your thumb keeps missing this button. Three fixes. 👍\n\n1. Make it bigger. Nielsen Norman Group puts the minimum for a touch target at about 1 cm × 1 cm.\n2. Space between buttons. Targets packed close together cause taps on the wrong one.\n3. The main one, biggest. The action people came for deserves the largest target.\n\nSave this for your next app, form or website. Which app makes you miss the most?",
+ "keywords": [
+  "tap target size",
+  "button design tips",
+  "mobile ux design",
+  "ui design for beginners",
+  "app design tips",
+  "touch target"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#typography",
+  "#uxdesign",
+  "#uidesign"
+ ],
+ "sources": [
+  {
+   "title": "Touch Targets on Touchscreens (Nielsen Norman Group)",
+   "url": "https://www.nngroup.com/articles/touch-target-size/"
+  },
+  {
+   "title": "Understanding SC 2.5.8 Target Size (Minimum) (W3C WCAG 2.2)",
+   "url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (a phone on a café table) fills the frame by design"
+   }
+  ],
+  "subject": [
+   110,
+   400,
+   430,
+   780
+  ]
+ }
+}

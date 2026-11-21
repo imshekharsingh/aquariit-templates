@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-text-on-photo",
+ "seek": "scripts/channel3/text-on-photo.html",
+ "engine": "design",
+ "dur": 16,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "Nobody can read this poster. The photo is too busy. Turns out, text needs calm. Fix one: darken the photo. Fix two: a solid band. Fix three: one bold colour. Now it reads across the street.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format (queue of 10)",
+  "vs": "median"
+ },
+ "caption": "Nobody can read this poster. Three fixes, same photo. 🎤\n\n1. Darken the photo. A dark layer over a busy picture gives the words calm behind them.\n2. Put the words on a solid band. A flat colour behind text is easier to read than any photo.\n3. One bold colour for the text. Thin, pale letters disappear into bright light; bold ones hold.\n\nSave this for your next poster, flyer or story. Which fix would you try first?",
+ "keywords": [
+  "poster design tips",
+  "text on image",
+  "how to make text readable on photos",
+  "typography tips",
+  "graphic design for beginners",
+  "colour contrast"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#typography",
+  "#posterdesign",
+  "#contrast"
+ ],
+ "sources": [
+  {
+   "title": "Contrast and Color Accessibility (WebAIM)",
+   "url": "https://webaim.org/articles/contrast/"
+  },
+  {
+   "title": "Understanding SC 1.4.3 Contrast (Minimum) (W3C WCAG 2.2)",
+   "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (a gig poster on a lamp post at night) fills the frame by design"
+   }
+  ],
+  "subject": [
+   70,
+   400,
+   470,
+   776
+  ]
+ }
+}

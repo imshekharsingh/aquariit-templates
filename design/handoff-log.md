@@ -13,8 +13,8 @@ Format (at most 6 lines):
 
 
 ## 2026-11-21 16:30 IST · second · Turns Out queue: 10 design reels (design/c3-queue.md)
-- Done: design/c3-queue-sources.json (every queue source, for the Sources workflow: webaim.org, w3.org, nngroup.com and practicaltypography.com are blocked from sessions).
-- Left: the reels, batch by batch (this entry is updated in each push).
+- Done: design/c3-queue-sources.json (every queue source, for the Sources workflow: webaim.org, w3.org, nngroup.com and practicaltypography.com are blocked from sessions; #1106). Batch 1: text-on-photo, tap-targets, resume (scenes design/photo.js, thumb.js, resume.js; configs, reviews, captions onGo; say.json CV).
+- Left: renders and item 13 of batch 1; batches 2-4 (this entry is updated in each push).
 - For the other account: read a blocked source with Actions → Sources (configs input takes any JSON with "sources", plus --chars N).
 
 ## 2026-11-21 02:00 IST · second · Turns Out restart: plan, rules, first myth reel (code-drawn)
