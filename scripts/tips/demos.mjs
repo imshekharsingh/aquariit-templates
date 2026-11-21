@@ -566,4 +566,22 @@ export const demos = {
 <p class="note">Tap the button. Both menus run the same slide-in keyframes. On the left the menu jumps back off-screen the moment the animation ends, because without a fill mode the element returns to its own style; on the right the word forwards keeps the last keyframe, so the menu stays open.</p>`,
     js: `function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); }`,
   },
+  // the double-tap zoom demo (showreel-43-tapzoom, 21 Nov 2026): a simulation, two like buttons; two quick taps zoom the left page (what a phone does) and not the one with touch-action: manipulation
+  tapzoom: {
+    css: `
+#tapzoom .stage{position:relative;height:92px;margin:8px 10px;overflow:hidden;border-radius:12px;background:rgba(255,255,255,.07)}
+#tapzoom .pg{position:absolute;inset:0;transform-origin:88% 22%;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+#tapzoom .stage.z .pg{transform:scale(1.9)}
+#tapzoom .n{position:absolute;left:14px;top:12px;font:800 34px/1 system-ui,sans-serif;color:#fff}
+#tapzoom .like{position:absolute;right:12px;top:10px;width:38px;height:38px;border-radius:50%;border:0;background:#c76cf0;color:#240838;font:700 18px/1 system-ui,sans-serif;touch-action:auto}
+#tapzoom .fix .like{touch-action:manipulation}
+#tapzoom .row{position:absolute;left:14px;right:14px;bottom:10px;height:20px;border-radius:7px;background:rgba(255,255,255,.14)}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">touch-action: auto</span><div class="stage" data-fix="0"><div class="pg"><div class="n">12</div><button class="like" type="button">&#9829;</button><div class="row"></div></div></div></div>
+  <div class="pane fix"><span class="tag ok">touch-action: manipulation</span><div class="stage fix" data-fix="1"><div class="pg"><div class="n">12</div><button class="like" type="button">&#9829;</button><div class="row"></div></div></div></div>
+</div>
+<p class="note">Tap a heart twice, fast. Phones read two quick taps on the same spot as a double-tap and zoom the page (here the left page simulates it); with touch-action: manipulation on the button the taps just count. On a real phone the zoom is the browser's own.</p>`,
+    js: `function(root){ root.querySelectorAll('.stage').forEach(function(st){ var last = 0, n = 12; st.querySelector('.like').addEventListener('click', function(){ var now = Date.now(); n++; st.querySelector('.n').textContent = n; if (st.dataset.fix === '0' && now - last < 450) st.classList.toggle('z'); last = now; }); }); }`,
+  },
 };
