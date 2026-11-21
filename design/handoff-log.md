@@ -33,6 +33,7 @@ Format (at most 6 lines):
 - 21 Nov (owner: fix it, render the third): FONTS chip now ONE FONT (no rolling 4-3-2-1); Output QA ELEMENTS skips the picture count for engine design; render 3 dispatched.
 - 21 Nov (owner: "start today ... with this strategy"): Turns Out = design series (c3-plan.md section 0: format, 5-day order, next topics, channel changes); rules-c3 D1-D4; CLAUDE.md unpaused; Needs you c3-design-profile added.
 - 21 Nov (owner: no dates yet, upload based on response): plan order undated; menu-spacing undated and hidden (in Previews); Turns Out builds the next only on the owner's go.
+- 21 Nov (owner screenshot: the Viking reel still under To post): its captions entry had been deleted, but its MP4 is still in R2 and the app lists every MP4 not marked hidden; viking entries are back as hidden.
 - Refs: owner's 2 uploads (one Hinglish AI-editing tutorial reel) studied into references.md R-ref 21 Nov; c3-plan.md week 2 is now E31 step bar + big words (engine work needed first).
 - For the other account: the Turns Out daily task stays off until the owner says; when it restarts, it follows c3-plan.md and builds sketch plates only (no Media runs). CLAUDE.md Images line now says Turns Out is code-drawn. Tech still uses media; the owner's remark may apply there too: ask in the Owner chat.
 

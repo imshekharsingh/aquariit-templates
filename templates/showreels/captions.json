@@ -1538,5 +1538,20 @@
   "concept": "Design tutorial (Turns Out design series, reference cut) · This menu is costing them customers: one edge, one font in two weights, double the space; a café that lights up as the fixes land",
   "note": "Design series reel 1 (21 Nov 2026). No date (owner: \"Don't mark these with dates yet, I'll upload based on response\"); the owner posts it from Inbox → Previews when ready.",
   "hidden": true
+ },
+ "showreel-c3-viking-horns": {
+  "channel": "c3",
+  "hidden": true,
+  "note": "Withdrawn 21 Nov 2026 (owner: remove it; Turns Out moved to the design series). Hidden so the app no longer lists its MP4."
+ },
+ "showreel-c3-viking-steps": {
+  "channel": "c3",
+  "hidden": true,
+  "note": "Withdrawn 21 Nov 2026 (owner: remove it; Turns Out moved to the design series). Hidden so the app no longer lists its MP4."
+ },
+ "showreel-c3-viking-clues": {
+  "channel": "c3",
+  "hidden": true,
+  "note": "Withdrawn 21 Nov 2026 (owner: remove it; Turns Out moved to the design series). Hidden so the app no longer lists its MP4."
  }
 }
