@@ -50,10 +50,11 @@ body.ctx #spot,body.ctx #grid,body.ctx #ring,body.ctx #floor{display:none}
 #sweep{left:-300px;top:380px;width:240px;height:460px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);opacity:0;pointer-events:none;z-index:24;mix-blend-mode:soft-light}
 #topband{left:0;top:0;width:540px;height:372px;background:linear-gradient(180deg,#0b0d16 0%,#0b0d16 88%,rgba(11,13,22,0) 100%);z-index:35;pointer-events:none}
 body:not(.ctx) #topband{display:none}
-#hook{left:24px;top:470px;width:492px;padding:22px 24px 26px;border-radius:26px;background:rgba(11,13,22,.86);box-shadow:0 30px 80px rgba(0,0,0,.6);font:900 46px/1.06 var(--d);letter-spacing:-.03em;color:#fff;z-index:45;opacity:0;pointer-events:none}
+#hook{left:24px;top:132px;width:492px;padding:0 6px;font:900 46px/1.06 var(--d);letter-spacing:-.03em;color:#fff;z-index:45;opacity:0;pointer-events:none}
 #hook em{font-style:normal;color:#ff5f5f}
 #hook i{display:inline-block;font-style:normal}
 .chip{font-size:20px!important;padding:11px 18px 11px 16px!important}
+.chip.sm{font-size:15px!important;padding:8px 12px!important}
 .lbl{position:absolute;top:0;left:0;width:200px;height:300px;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.55)}
 .lbl .t{position:absolute;left:0;right:0;text-align:center;white-space:nowrap;line-height:1}
 .lbl .ci{position:absolute;left:50%;border-radius:50%}
@@ -607,7 +608,7 @@ var DT = (function(){
   function roll(a, b, k){ return Math.round(mix(a, b, cl(k))); }
   function decor(t){ var r = $('ringarc'); if (r) r.setAttribute('transform', 'rotate(' + (t * 9).toFixed(2) + ')'); var sp = $('spot'); if (sp) sp.style.opacity = (.85 + .15 * Math.sin(t * 1.3)).toFixed(3); }
   function tint(a, b){ var R = document.documentElement.style; R.setProperty('--tint', a); R.setProperty('--tint2', b || a); }
-  function dial(t, steps){ decor(t); var cur = steps[0], N = steps.filter(function(s){ return s.n; }).length; steps.forEach(function(s){ if (t >= s.t) cur = s; });
+  function dial(t, steps){ decor(t); var f1 = steps.filter(function(s){ return s.n; })[0]; $('dial').style.opacity = f1 ? P(t, f1.t - .4, f1.t).toFixed(3) : 1; /* the dial waits for the first step (frame 0 says one thing) */ var cur = steps[0], N = steps.filter(function(s){ return s.n; }).length; steps.forEach(function(s){ if (t >= s.t) cur = s; });
     var i = steps.indexOf(cur), nx = steps[i + 1], f = nx ? cl((t - cur.t) / Math.max(.1, nx.t - cur.t)) : 1, done = steps.slice(0, i).filter(function(s){ return s.n; }).length;
     var frac = cur.n ? (done + E.out3(P(t, cur.t, cur.t + .6))) / N : (cur.end ? 1 : done / N);
     var a = -Math.PI / 2 + Math.max(.0001, frac) * Math.PI * 2 * .999, R = 28, arc = document.querySelector('#dial .arc');
@@ -725,7 +726,8 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
   DT.hook = function(t, html, out){ var e = DT.$('hook'); if (!e._w) { e.innerHTML = html; e._w = [].slice.call(e.querySelectorAll('i')); }
     var o = 1 - P(t, out - .25, out); e.style.opacity = o.toFixed(3); var sh = (1 - P(t, 0, .45)) * 3;
     e.style.transform = 'translate(' + (Math.sin(t * 61) * sh).toFixed(2) + 'px,' + (Math.cos(t * 47) * sh - 30 * P(t, out - .25, out)).toFixed(2) + 'px)';
-    e._w.forEach(function(w, i){ var a = .04 + i * .07, k = P(t, a, a + .22), s = E.back(k, 2.4); w.style.opacity = cl(k * 2).toFixed(3); w.style.transform = 'scale(' + (1.5 - .5 * s).toFixed(3) + ')'; w.style.filter = 'blur(' + ((1 - k) * 8).toFixed(2) + 'px)'; }); };
+    e._w.forEach(function(w, i){ var a = -.22 + i * .07, k = P(t, a, a + .22),   // the first word is fully there at frame 0 (owner, 21 Nov: frame 0 must already say it)
+      s = E.back(k, 2.4); w.style.opacity = cl(k * 2).toFixed(3); w.style.visibility = k > 0 ? 'visible' : 'hidden'; w.style.transformOrigin = '0 70%'; w.style.transform = 'scale(' + (1.5 - .5 * s).toFixed(3) + ')'; w.style.filter = 'blur(' + ((1 - k) * 8).toFixed(2) + 'px)'; }); };
   DT.score = function(lift, fix){ var n = Math.ceil(fix / 2.5); var tense = [[45, 57, 60, 64], [41, 53, 60, 65], [44, 56, 59, 64], [45, 57, 60, 64]], bright = [[48, 60, 64, 67, 72], [43, 55, 62, 67, 71], [45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [48, 60, 64, 67, 76]];
     var ch = []; for (var i = 0; i < n; i++) ch.push(tense[i % tense.length]); for (i = 0; i < 6; i++) ch.push(bright[i % bright.length]);
     return { bed: { bpm: 96, origin: 0, soft: true, lift: lift, chords: ch }, mix: { duck: 7, room: .6 } }; };
@@ -761,7 +763,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     window.HOLDS = [[A.end, DUR]]; KM.publish(DT.score(A.quiet, A.space));
   }
   function paintA(t){ var mv = E.inOut3(P(t, A.three, A.three + .7)), ks = DT.spring(t, A.space + .1, .7), kl = DT.spring(t, A.small + .1, .8), kc = E.inOut3(P(t, A.two + .2, A.two + .8));
-    var c = $('cardA'), x = mix(AX, CX, mv), sc = mix(1, 1.2, mv), ia = E.settle(P(t, 0, .55), 1.1), br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
+    var c = $('cardA'), x = mix(AX, CX, mv), sc = mix(1, 1.2, mv), ia = 1, br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
     c.style.transform = 'translate(' + x.toFixed(1) + 'px,' + (Y + (1 - ia) * 70).toFixed(1) + 'px) perspective(1000px) rotateY(' + ((1 - ia) * 25).toFixed(1) + 'deg) scale(' + (sc * (1 + .02 * br)).toFixed(4) + ')';
     c.style.background = hexMix('#f2c94c', '#1b1d26', kc);
     // lever 1, empty space: everything draws in towards the middle (the content block shrinks, the margins grow)
@@ -784,12 +786,12 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     return { x: x, mv: mv, ks: ks, kl: kl, kc: kc }; }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5))), [$('cardA')]); DT.sweep(t, [A.d1, A.d2, A.d3, A.quiet]); DT.hook(t, '<i>One</i> <i>looks</i> <em><i>5×</i> <i>pricier.</i></em>', A.hook);
+    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5)))); DT.sweep(t, [A.d1, A.d2, A.d3, A.quiet]); DT.hook(t, '<i>One</i> <i>looks</i> <em><i>5×</i> <i>pricier.</i></em>', A.hook);
     var S = paintA(t);
     // B: the answer to the vote; it lifts when picked, then steps aside as A becomes it
-    var b = $('cardB'), pick = DT.spring(t, A.b + .05, .6), away = E.inOut3(P(t, A.three, A.three + .6)), ib = E.settle(P(t, .25, .8), 1.1);
-    b.style.transform = 'translate(' + mix(BXp, 420, away).toFixed(1) + 'px,' + (Y - 14 * pick + (1 - ib) * 70).toFixed(1) + 'px) perspective(1000px) rotateY(' + ((1 - ib) * -25).toFixed(1) + 'deg)'; b.style.opacity = ((1 - P(t, A.three, A.three + .25)) * P(t, .25, .5)).toFixed(3); b.style.boxShadow = '0 24px 60px rgba(0,0,0,.55),0 0 0 ' + (3 * pick).toFixed(1) + 'px #5ee0a0';
-    $('cardA').style.opacity = ((1 - .45 * pick * (1 - away)) * P(t, 0, .3)).toFixed(3);
+    var b = $('cardB'), pick = DT.spring(t, A.b + .05, .6), away = E.inOut3(P(t, A.three, A.three + .6)), ib = 1;
+    b.style.transform = 'translate(' + mix(BXp, 420, away).toFixed(1) + 'px,' + (Y - 14 * pick + (1 - ib) * 70).toFixed(1) + 'px) perspective(1000px) rotateY(' + ((1 - ib) * -25).toFixed(1) + 'deg)'; b.style.opacity = ((1 - P(t, A.three, A.three + .25)) * 1).toFixed(3); b.style.boxShadow = '0 24px 60px rgba(0,0,0,.55),0 0 0 ' + (3 * pick).toFixed(1) + 'px #5ee0a0';
+    $('cardA').style.opacity = ((1 - .45 * pick * (1 - away)) * 1).toFixed(3);
     // the vote buttons under each label
     [['vA', AX + 69], ['vB', BXp + 69]].forEach(function(v, i){ var e = $(v[0]), k = E.back(P(t, A.which + .1 + i * .15, A.which + .5 + i * .15), 2), o = k * (1 - P(t, A.three - .2, A.three + .1));
       e.style.left = v[1] + 'px'; e.style.top = (Y + 270) + 'px'; e.style.opacity = cl(o).toFixed(3); e.style.transform = 'scale(' + (.6 + .4 * k) + ')'; e.className = 'vote' + (i === 1 && t >= A.b + .05 ? ' on' : ''); });
@@ -812,8 +814,8 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     [[A.d1, 270, 600], [A.d2, 270, 560], [A.d3, 270, 790]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); }); DT.burst('bw', 392, 790, t, A.b + .12, '#5ee0a0');
     DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '?', label: 'A OR B' }, { t: A.space, n: 1, word: 'LEVER' }, { t: A.small, n: 2, word: 'LEVER' }, { t: A.two, n: 3, word: 'LEVER' }, { t: A.quiet, end: 1, sym: '✓', label: 'QUIET' }]);
-    DT.title(t, [{ t: 0, html: 'Same words. Which costs <em>more</em>?' }, { t: A.three, html: 'Why <em>B</em> looks expensive' }, { t: A.space, html: 'Lever 1 · <em>empty space</em>' }, { t: A.small, html: 'Lever 2 · <em>spaced letters</em>' }, { t: A.two, html: 'Lever 3 · <em>two colours</em>' }, { t: A.quiet, html: 'Quiet <em>costs more.</em>' }]);
-    KM.subs($('cap'), t, V, PH, 0, A.end, function(w){ return /^(B|expensive|empty|space|spaced|letters|two|colours|quiet|more)/i.test(w) ? 'var(--amb)' : null; });
+    DT.title(t, [{ t: A.hook, html: 'Same words. Which costs <em>more</em>?' }, { t: A.three, html: 'Why <em>B</em> looks expensive' }, { t: A.space, html: 'Lever 1 · <em>empty space</em>' }, { t: A.small, html: 'Lever 2 · <em>spaced letters</em>' }, { t: A.two, html: 'Lever 3 · <em>two colours</em>' }, { t: A.quiet, html: 'Quiet <em>costs more.</em>' }]);
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), A.end, function(w){ return /^(B|expensive|empty|space|spaced|letters|two|colours|quiet|more)/i.test(w) ? 'var(--amb)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
   window.seek = seek; window.DURATION = DUR;

@@ -44,7 +44,7 @@
     window.HOLDS = [[A.end, DUR]]; KM.publish(DT.score(A.quiet, A.space));
   }
   function paintA(t){ var mv = E.inOut3(P(t, A.three, A.three + .7)), ks = DT.spring(t, A.space + .1, .7), kl = DT.spring(t, A.small + .1, .8), kc = E.inOut3(P(t, A.two + .2, A.two + .8));
-    var c = $('cardA'), x = mix(AX, CX, mv), sc = mix(1, 1.2, mv), ia = E.settle(P(t, 0, .55), 1.1), br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
+    var c = $('cardA'), x = mix(AX, CX, mv), sc = mix(1, 1.2, mv), ia = 1, br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
     c.style.transform = 'translate(' + x.toFixed(1) + 'px,' + (Y + (1 - ia) * 70).toFixed(1) + 'px) perspective(1000px) rotateY(' + ((1 - ia) * 25).toFixed(1) + 'deg) scale(' + (sc * (1 + .02 * br)).toFixed(4) + ')';
     c.style.background = hexMix('#f2c94c', '#1b1d26', kc);
     // lever 1, empty space: everything draws in towards the middle (the content block shrinks, the margins grow)
@@ -67,12 +67,12 @@
     return { x: x, mv: mv, ks: ks, kl: kl, kc: kc }; }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5))), [$('cardA')]); DT.sweep(t, [A.d1, A.d2, A.d3, A.quiet]); DT.hook(t, '<i>One</i> <i>looks</i> <em><i>5×</i> <i>pricier.</i></em>', A.hook);
+    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5)))); DT.sweep(t, [A.d1, A.d2, A.d3, A.quiet]); DT.hook(t, '<i>One</i> <i>looks</i> <em><i>5×</i> <i>pricier.</i></em>', A.hook);
     var S = paintA(t);
     // B: the answer to the vote; it lifts when picked, then steps aside as A becomes it
-    var b = $('cardB'), pick = DT.spring(t, A.b + .05, .6), away = E.inOut3(P(t, A.three, A.three + .6)), ib = E.settle(P(t, .25, .8), 1.1);
-    b.style.transform = 'translate(' + mix(BXp, 420, away).toFixed(1) + 'px,' + (Y - 14 * pick + (1 - ib) * 70).toFixed(1) + 'px) perspective(1000px) rotateY(' + ((1 - ib) * -25).toFixed(1) + 'deg)'; b.style.opacity = ((1 - P(t, A.three, A.three + .25)) * P(t, .25, .5)).toFixed(3); b.style.boxShadow = '0 24px 60px rgba(0,0,0,.55),0 0 0 ' + (3 * pick).toFixed(1) + 'px #5ee0a0';
-    $('cardA').style.opacity = ((1 - .45 * pick * (1 - away)) * P(t, 0, .3)).toFixed(3);
+    var b = $('cardB'), pick = DT.spring(t, A.b + .05, .6), away = E.inOut3(P(t, A.three, A.three + .6)), ib = 1;
+    b.style.transform = 'translate(' + mix(BXp, 420, away).toFixed(1) + 'px,' + (Y - 14 * pick + (1 - ib) * 70).toFixed(1) + 'px) perspective(1000px) rotateY(' + ((1 - ib) * -25).toFixed(1) + 'deg)'; b.style.opacity = ((1 - P(t, A.three, A.three + .25)) * 1).toFixed(3); b.style.boxShadow = '0 24px 60px rgba(0,0,0,.55),0 0 0 ' + (3 * pick).toFixed(1) + 'px #5ee0a0';
+    $('cardA').style.opacity = ((1 - .45 * pick * (1 - away)) * 1).toFixed(3);
     // the vote buttons under each label
     [['vA', AX + 69], ['vB', BXp + 69]].forEach(function(v, i){ var e = $(v[0]), k = E.back(P(t, A.which + .1 + i * .15, A.which + .5 + i * .15), 2), o = k * (1 - P(t, A.three - .2, A.three + .1));
       e.style.left = v[1] + 'px'; e.style.top = (Y + 270) + 'px'; e.style.opacity = cl(o).toFixed(3); e.style.transform = 'scale(' + (.6 + .4 * k) + ')'; e.className = 'vote' + (i === 1 && t >= A.b + .05 ? ' on' : ''); });
@@ -95,8 +95,8 @@
     [[A.d1, 270, 600], [A.d2, 270, 560], [A.d3, 270, 790]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); }); DT.burst('bw', 392, 790, t, A.b + .12, '#5ee0a0');
     DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '?', label: 'A OR B' }, { t: A.space, n: 1, word: 'LEVER' }, { t: A.small, n: 2, word: 'LEVER' }, { t: A.two, n: 3, word: 'LEVER' }, { t: A.quiet, end: 1, sym: '✓', label: 'QUIET' }]);
-    DT.title(t, [{ t: 0, html: 'Same words. Which costs <em>more</em>?' }, { t: A.three, html: 'Why <em>B</em> looks expensive' }, { t: A.space, html: 'Lever 1 · <em>empty space</em>' }, { t: A.small, html: 'Lever 2 · <em>spaced letters</em>' }, { t: A.two, html: 'Lever 3 · <em>two colours</em>' }, { t: A.quiet, html: 'Quiet <em>costs more.</em>' }]);
-    KM.subs($('cap'), t, V, PH, 0, A.end, function(w){ return /^(B|expensive|empty|space|spaced|letters|two|colours|quiet|more)/i.test(w) ? 'var(--amb)' : null; });
+    DT.title(t, [{ t: A.hook, html: 'Same words. Which costs <em>more</em>?' }, { t: A.three, html: 'Why <em>B</em> looks expensive' }, { t: A.space, html: 'Lever 1 · <em>empty space</em>' }, { t: A.small, html: 'Lever 2 · <em>spaced letters</em>' }, { t: A.two, html: 'Lever 3 · <em>two colours</em>' }, { t: A.quiet, html: 'Quiet <em>costs more.</em>' }]);
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), A.end, function(w){ return /^(B|expensive|empty|space|spaced|letters|two|colours|quiet|more)/i.test(w) ? 'var(--amb)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
   window.seek = seek; window.DURATION = DUR;

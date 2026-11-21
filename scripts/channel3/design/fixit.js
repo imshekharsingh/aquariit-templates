@@ -40,11 +40,11 @@
   function font(el, s){ el.style.font = s.f; el.style.color = s.c; el.style.letterSpacing = s.ls || 'normal'; }
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
-    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('birthday');
+    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('Move') - .2;
     A.m1 = at('Move'); A.hero = at('hero'); A.m2 = at('Move', 2); A.sizes = at('sizes'); A.m3 = at('Move', 3); A.once = at('once'); A.turns = at('Turns'); A.cmt = at('Comment'); A.end = Math.min(DUR - .2, V.end + 1.2);
     window.COVER = .6;
     CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.m1, 1, 255, 500, 1.03).pull(A.turns - .2, .8, 255, 480, 1);
-    var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); S.land(.1, 270, 0); S.roll(A.hook + .15, 1.05, 300, 12); S.done(A.hook + 1.25, 300, 4);
+    var S = DT.S; S.sting(0); [.35, .65, .95].forEach(function(t0, i){ S.land(t0 + .05, 270, i + 1); KM.cue({ t: t0, k: 'tick', g: .08, p: i, x: 270, synth: true }); }); S.whoosh(0, 270, .4); S.land(.1, 270, 0); 
     S.whoosh(A.m1 - .9, 270, .3); IDS.forEach(function(id, i){ S.land(A.m1 - .7 + i * .06, 270, i); });
     // move 1: the hero grows (a swell and a shimmer), the read order lands 1-2-3 as rising notes
     S.rise(A.hero - .4, .45); S.tint(A.hero + .35, 150); [0, 1, 2].forEach(function(n){ S.land(A.hero + .6 + n * .12, 200 + n * 60, n * 2); }); A.d1 = A.hero + .95; S.done(A.d1, 150, 0);
@@ -58,18 +58,20 @@
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5))), [$('inv')]); DT.sweep(t, [A.d1, A.d2, A.d3, A.turns + .2]); DT.hook(t, '<i>This</i> <i>invite</i> <em><i>needs</i> <i>help.</i></em>', A.hook);
+    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5)))); DT.sweep(t, [A.d1, A.d2, A.d3, A.turns + .2]); DT.hook(t, '<i>You</i> <i>asked:</i> <em><i>fix</i> <i>this</i> <i>invite.</i></em>', A.hook);
     // the request: a comment types in, holds, then lifts away as the invite arrives
-    var cm = $('cmt'), ci = E.out3(P(t, A.hook, A.hook + .3)), co = E.inOut3(P(t, A.m1 - .25, A.m1 + .15)), txt = 'Fix a birthday invite, please!';
+    var cm = $('cmt'), ci = 0, co = E.inOut3(P(t, A.m1 - .25, A.m1 + .15)), txt = 'Fix a birthday invite, please!';
     cm.style.opacity = (ci * (1 - co)).toFixed(3); cm.style.transform = 'translateY(' + ((1 - ci) * 20 - 60 * co).toFixed(1) + 'px)';
     $('cmtT').textContent = txt.slice(0, Math.round(txt.length * P(t, A.hook + .15, A.hook + 1.2))) + (t < A.hook + 1.3 ? '|' : '');
-    var inv = $('inv'), ia = E.out3(P(t, A.m1 - .15, A.m1 + .35)); inv.style.opacity = (t < .1 ? 1 : mix(.35, 1, ia)).toFixed(3); inv.style.transform = 'translateY(' + ((1 - ia) * 30).toFixed(1) + 'px)';
+    var inv = $('inv'), ia = E.out3(P(t, A.m1 - .15, A.m1 + .35)); inv.style.opacity = mix(.35, 1, Math.max(ia, 1 - P(t, A.hook, A.hook + .3))).toFixed(3);   // fully there under the claim, dimmed behind the comment, back for the moves inv.style.transform = 'translateY(' + ((1 - ia) * 30).toFixed(1) + 'px)';
     // move 1: the 7 grows into the hero; everything else steps down; read-order badges
     var k1 = DT.spring(t, A.hero, .8), k2 = P(t, A.m2 + .35, A.m2 + 1.1), k3 = DT.spring(t, A.m3 + .3, .7);
     IDS.forEach(function(id, i){ var el = $(id), a = ST[id].A, b = ST[id].B, t0f = A.m2 + .4 + i * .14, kf = P(t, t0f, t0f + .45);
       font(el, kf >= .5 ? b : a); DT.flipChars(el, t, t0f, .45, a, b);
       var w = el.offsetWidth, xA = (360 - w) / 2, x = mix(xA, 30, k1), y = mix(a.y, b.y, k1);
       var sh = kf >= 1 ? 1 : mix(1, id === 'v0' ? .72 : .66, k1); el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + sh.toFixed(3) + ')'; });
+    { var ro = 1 - P(t, A.hook - .3, A.hook); [[.35, { x: IX + 14, y: IY + 14, w: 332, h: 56, r: 14 }, 'NO HERO', IX + 20], [.65, { x: IX + 40, y: IY + 74, w: 280, h: 140, r: 16 }, '4 FONTS', IX + 128], [.95, { x: IX + 6, y: IY + 228, w: 348, h: 90, r: 16 }, '6 COLOURS', IX + 236]].forEach(function(r, i){
+      DT.box('fr' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); DT.chip('frl' + i, r[2], r[3], IY + 302, P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); }); }
     var b7 = $('big7'), s = mix(.2, 1, k1); b7.style.transform = 'translate(' + mix(250, 26, k1).toFixed(1) + 'px,' + mix(24, 10, k1).toFixed(1) + 'px) scale(' + s.toFixed(3) + ')'; b7.style.opacity = P(t, A.hero - .1, A.hero + .1).toFixed(3);
     b7.style.color = 'rgb(' + [Math.round(mix(29, 255, k3)), Math.round(mix(26, 122, k3)), Math.round(mix(22, 69, k3))].join(',') + ')';
     // the read order: 1 the hero, 2 whose party, 3 when and where
@@ -93,8 +95,8 @@
     ask.textContent = 'Add a comment… ' + q.slice(0, Math.round(q.length * P(t, A.cmt + .4, A.cmt + 1.6))) + (Math.floor(t * 3) % 2 ? '|' : '');
     DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '?', label: 'YOU ASKED' }, { t: A.m1, n: 1, word: 'MOVE' }, { t: A.m2, n: 2, word: 'MOVE' }, { t: A.m3, n: 3, word: 'MOVE' }, { t: A.turns, end: 1, sym: '✓', label: 'FIXED' }]);
-    DT.title(t, [{ t: 0, html: 'You asked: <em>fix it</em>' }, { t: A.m1, html: 'Move 1 · <em>one hero</em>' }, { t: A.m2, html: 'Move 2 · <em>one font</em>' }, { t: A.m3, html: 'Move 3 · <em>one colour</em>' }, { t: A.cmt, html: 'What do we fix <em>next</em>?' }]);
-    KM.subs($('cap'), t, V, PH, 0, A.end, function(w){ return /^(invite|hero|age|font|sizes|colour|once|good|comment|next)/i.test(w) ? 'var(--amb)' : null; });
+    DT.title(t, [{ t: A.m1, html: 'Move 1 · <em>one hero</em>' }, { t: A.m2, html: 'Move 2 · <em>one font</em>' }, { t: A.m3, html: 'Move 3 · <em>one colour</em>' }, { t: A.cmt, html: 'What do we fix <em>next</em>?' }]);
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), A.end, function(w){ return /^(invite|hero|age|font|sizes|colour|once|good|comment|next)/i.test(w) ? 'var(--amb)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
   window.seek = seek; window.DURATION = DUR;

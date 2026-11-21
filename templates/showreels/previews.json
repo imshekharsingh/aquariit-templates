@@ -1,5 +1,5 @@
 {
- "note": "Turns Out design series, round 6 (21 Nov 2026): each design in its own place (café, shelf, studio, street wall, fridge) that goes from dim to lit as the fixes land, a hook in motion at frame 0, and a score that turns from tense to bright. Not posts.",
+ "note": "Turns Out design series, round 7 (21 Nov 2026): one message first (the claim alone, the design fully lit, its problems ringed), then the lesson. Not posts.",
  "items": [
   {
    "name": "showreel-c3-menu-spacing",
@@ -30,8 +30,8 @@
   {
    "name": "showreel-c3-dt-fixit",
    "title": "5 · Fix It in 60 Seconds",
-   "about": "A viewer's birthday invite fixed in 3 moves: one hero, one font, one colour."
+   "about": "You asked: fix this invite. Three moves: one hero, one font, one colour."
   }
  ],
- "v": 7
+ "v": 8
 }

@@ -27,7 +27,7 @@
     A.turns = at('Turns'); A.watch = at('Watch'); A.every = at('Every'); A.jumps = at('jumps'); A.line = at('Line', 2); A.left = at('left'); A.smooth = at('smooth'); A.end = Math.min(DUR - .2, V.end + .8);
     window.COVER = .6;
     CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.watch, 1, 255, 500, 1.02).pull(A.smooth, .8, 255, 480, 1);
-    var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); for (var q = 0; q < 6; q++) S.land(.12 + q * .05, 270, q); S.stamp(.12, 400); S.stamp(A.turns + .05, 350);
+    var S = DT.S; S.sting(0); S.land(.55, 120, 2); KM.cue({ t: .5, k: 'tick', g: .08, x: 120, synth: true }); S.whoosh(0, 270, .4); for (var q = 0; q < 6; q++) S.land(.12 + q * .05, 270, q); S.stamp(.12, 400); S.stamp(A.turns + .05, 350);
     // the eye: each jump to a new line start is a pitched hop (a restless, broken little tune); after the fix one rising glide
     A.e1 = A.watch + .2; A.e1d = Math.max(2, A.line - A.watch - .6); A.e2 = A.left + .55; A.e2d = 1.4;
     S.rise(A.watch - .3, .3); for (var i = 0; i < 6; i++) S.land(A.e1 + i * A.e1d / 5, 200 + (i % 2) * 140, [0, 5, 1, 6, 2, 7][i]);
@@ -43,8 +43,9 @@
     var pts = []; YS.forEach(function(y, i){ pts.push([PX + xAt(i, k) - 16, PY + y + 11]); }); return pts; }   // where the eye lands at the start of each line
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    DT.mood(t, (.5 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .5 * E.out3(P(t, A.d2 - .2, A.d2 + .5))), [$('poster')]); DT.sweep(t, [A.d1, A.d2]); DT.hook(t, '<i>Stop</i> <em><i>centring</i></em> <i>everything.</i>', A.hook);
-    DT.intro($('poster'), t, .55); DT.burst('b1', PX + LX - 8, PY + 160, t, A.d1, '#ffb35a'); DT.burst('b2', PX + LX - 16, PY + 291, t, A.d2, '#5ee0a0');
+    DT.mood(t, (.5 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .5 * E.out3(P(t, A.d2 - .2, A.d2 + .5)))); DT.sweep(t, [A.d1, A.d2]); DT.hook(t, '<i>Stop</i> <em><i>centring</i></em> <i>everything.</i>', A.hook);
+    DT.intro($('poster'), t + .6, .55); DT.burst('b1', PX + LX - 8, PY + 160, t, A.d1, '#ffb35a'); DT.burst('b2', PX + LX - 16, PY + 291, t, A.d2, '#5ee0a0');
+    { var ro = 1 - P(t, A.hook - .3, A.hook); DT.box('rag', { x: PX + 22, y: PY + 70, w: 150, h: 240, r: 18 }, P(t, .5, .85) * ro, '#ff5f5f'); DT.chip('ragl', 'NO SHARED EDGE', PX + 20, PY + 318, P(t, .65, .9) * ro, 'r sm'); }
     var ks = []; for (var i = 0; i < 6; i++) { ks.push(DT.spring(t, A.left + .05 + i * .07, .6)); var el = $('l' + i); el.style.transform = 'translate(' + xAt(i, ks[i]).toFixed(1) + 'px,' + YS[i] + 'px)'; }
     // the myth stamp slams on, then leaves when the eye starts
     var sk = P(t, .05, .35), so = 1 - P(t, A.watch - .3, A.watch); $('stamp').style.opacity = (cl(sk * 3) * so).toFixed(3); $('stamp').style.transform = 'rotate(-10deg) scale(' + mix(1.8, 1, E.out3(sk)).toFixed(3) + ')';
@@ -65,8 +66,8 @@
     DT.chip('path', 'ONE <b>SMOOTH PATH</b>', 280, 412, P(t, A.smooth, A.smooth + .3), 'g');
     DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '!', label: 'MYTH' }, { t: A.watch, n: 1, word: 'STEP' }, { t: A.line, n: 2, word: 'STEP' }, { t: A.smooth, end: 1, sym: '✓', label: 'TURNS OUT' }]);
-    DT.title(t, [{ t: 0, html: '"Centre it to look <em>neat</em>"' }, { t: A.turns, html: 'Turns out: <em>hard to read</em>' }, { t: A.watch, html: 'Watch your <em>eye</em>' }, { t: A.line, html: 'One edge. <em>One path.</em>' }]);
-    KM.subs($('cap'), t, V, PH, 0, A.end, function(w){ return /^(centre|neat|hard|eye|jumps|left|smooth|path)/i.test(w) ? 'var(--amb)' : null; });
+    DT.title(t, [{ t: A.hook, html: '"Centre it to look <em>neat</em>"' }, { t: A.turns, html: 'Turns out: <em>hard to read</em>' }, { t: A.watch, html: 'Watch your <em>eye</em>' }, { t: A.line, html: 'One edge. <em>One path.</em>' }]);
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), A.end, function(w){ return /^(centre|neat|hard|eye|jumps|left|smooth|path)/i.test(w) ? 'var(--amb)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
   window.seek = seek; window.DURATION = DUR;

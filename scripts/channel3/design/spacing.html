@@ -50,7 +50,7 @@ body.ctx #spot,body.ctx #grid,body.ctx #ring,body.ctx #floor{display:none}
 #sweep{left:-300px;top:380px;width:240px;height:460px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);opacity:0;pointer-events:none;z-index:24;mix-blend-mode:soft-light}
 #topband{left:0;top:0;width:540px;height:372px;background:linear-gradient(180deg,#0b0d16 0%,#0b0d16 88%,rgba(11,13,22,0) 100%);z-index:35;pointer-events:none}
 body:not(.ctx) #topband{display:none}
-#hook{left:24px;top:470px;width:492px;padding:22px 24px 26px;border-radius:26px;background:rgba(11,13,22,.86);box-shadow:0 30px 80px rgba(0,0,0,.6);font:900 46px/1.06 var(--d);letter-spacing:-.03em;color:#fff;z-index:45;opacity:0;pointer-events:none}
+#hook{left:24px;top:132px;width:492px;padding:0 6px;font:900 46px/1.06 var(--d);letter-spacing:-.03em;color:#fff;z-index:45;opacity:0;pointer-events:none}
 #hook em{font-style:normal;color:#ff5f5f}
 #hook i{display:inline-block;font-style:normal}
 .chip{font-size:20px!important;padding:11px 18px 11px 16px!important}
@@ -67,7 +67,6 @@ body:not(.ctx) #topband{display:none}
 #scrub b{position:absolute;top:3px;font:700 12px var(--f);letter-spacing:.16em;color:#fff}
 /* frame 0 (owner, 21 Nov 2026: "do you find it right for initial frames?"): ONE message first, the claim alone in the dark band, the cheap menu
    fully visible under it with its problems ringed; title, captions and dial arrive when the lesson starts */
-#hook{top:132px!important;background:none!important;box-shadow:none!important;padding:0 6px!important;font-size:46px!important}
 </style>
 </head>
 <body>
@@ -619,7 +618,7 @@ var DT = (function(){
   function roll(a, b, k){ return Math.round(mix(a, b, cl(k))); }
   function decor(t){ var r = $('ringarc'); if (r) r.setAttribute('transform', 'rotate(' + (t * 9).toFixed(2) + ')'); var sp = $('spot'); if (sp) sp.style.opacity = (.85 + .15 * Math.sin(t * 1.3)).toFixed(3); }
   function tint(a, b){ var R = document.documentElement.style; R.setProperty('--tint', a); R.setProperty('--tint2', b || a); }
-  function dial(t, steps){ decor(t); var cur = steps[0], N = steps.filter(function(s){ return s.n; }).length; steps.forEach(function(s){ if (t >= s.t) cur = s; });
+  function dial(t, steps){ decor(t); var f1 = steps.filter(function(s){ return s.n; })[0]; $('dial').style.opacity = f1 ? P(t, f1.t - .4, f1.t).toFixed(3) : 1; /* the dial waits for the first step (frame 0 says one thing) */ var cur = steps[0], N = steps.filter(function(s){ return s.n; }).length; steps.forEach(function(s){ if (t >= s.t) cur = s; });
     var i = steps.indexOf(cur), nx = steps[i + 1], f = nx ? cl((t - cur.t) / Math.max(.1, nx.t - cur.t)) : 1, done = steps.slice(0, i).filter(function(s){ return s.n; }).length;
     var frac = cur.n ? (done + E.out3(P(t, cur.t, cur.t + .6))) / N : (cur.end ? 1 : done / N);
     var a = -Math.PI / 2 + Math.max(.0001, frac) * Math.PI * 2 * .999, R = 28, arc = document.querySelector('#dial .arc');
@@ -738,7 +737,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     var o = 1 - P(t, out - .25, out); e.style.opacity = o.toFixed(3); var sh = (1 - P(t, 0, .45)) * 3;
     e.style.transform = 'translate(' + (Math.sin(t * 61) * sh).toFixed(2) + 'px,' + (Math.cos(t * 47) * sh - 30 * P(t, out - .25, out)).toFixed(2) + 'px)';
     e._w.forEach(function(w, i){ var a = -.22 + i * .07, k = P(t, a, a + .22),   // the first word is fully there at frame 0 (owner, 21 Nov: frame 0 must already say it)
-      s = E.back(k, 2.4); w.style.opacity = cl(k * 2).toFixed(3); w.style.transform = 'scale(' + (1.5 - .5 * s).toFixed(3) + ')'; w.style.filter = 'blur(' + ((1 - k) * 8).toFixed(2) + 'px)'; }); };
+      s = E.back(k, 2.4); w.style.opacity = cl(k * 2).toFixed(3); w.style.visibility = k > 0 ? 'visible' : 'hidden'; w.style.transformOrigin = '0 70%'; w.style.transform = 'scale(' + (1.5 - .5 * s).toFixed(3) + ')'; w.style.filter = 'blur(' + ((1 - k) * 8).toFixed(2) + 'px)'; }); };
   DT.score = function(lift, fix){ var n = Math.ceil(fix / 2.5); var tense = [[45, 57, 60, 64], [41, 53, 60, 65], [44, 56, 59, 64], [45, 57, 60, 64]], bright = [[48, 60, 64, 67, 72], [43, 55, 62, 67, 71], [45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [48, 60, 64, 67, 76]];
     var ch = []; for (var i = 0; i < n; i++) ch.push(tense[i % tense.length]); for (i = 0; i < 6; i++) ch.push(bright[i % bright.length]);
     return { bed: { bpm: 96, origin: 0, soft: true, lift: lift, chords: ch }, mix: { duck: 7, room: .6 } }; };
@@ -769,7 +768,6 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     A.col = at('colours'); A.f1 = at('Fix'); A.edge = at('edge'); A.f2 = at('Fix', 2); A.weights = at('weights'); A.f3 = at('Fix', 3); A.dbl = at('double'); A.same = at('Same'); A.price = at('price'); A.end = Math.min(DUR - .2, V.end + .8);
     A.sw = A.col - .5; A.hook = at('Turns');
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1.08, drift: 1 }).pull(0, .55, 255, 480, 1).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
     var S = DT.S; S.sting(0); [.35, .65, .95].forEach(function(t0, i){ S.land(t0 + .05, 300, i + 1); KM.cue({ t: t0, k: 'tick', g: .08, p: i, x: 300, synth: true }); }); S.whoosh(0, 270, .4); IDS.forEach(function(id, i){ S.land(.12 + i * .05, 270, i); });
     // the colours beat: five swatches pop out of the menu (a rising run), then a strike: it's not them
     for (var i = 0; i < 5; i++) S.land(A.sw + i * .09, 330 + i * 30, i + 2); S.stamp(A.col + .35, 400);
@@ -782,6 +780,9 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     A.d2 = A.scan + 1.25; S.done(A.d2, 270, 2);
     // fix three: the brackets measure the gaps and roll from 8 to 22 px while the groups spring apart
     S.rise(A.f3 - .1, .4); S.roll(A.dbl, .6, 440, 9); S.drag(A.dbl + .1, .6, 255, 255); A.d3 = A.dbl + .85; S.done(A.d3, 270, 4);
+    // the camera punches in as each fix lands and eases back (owner, 21 Nov: "more dramatic change"; Output QA ELEMENTS wants whole-picture changes)
+    CAM = KM.rig({ x: 255, y: 480, z: 1.08, drift: 1 }).pull(0, .55, 255, 480, 1);
+    [A.d1, A.d2, A.d3].forEach(function(d){ CAM.pushIn(d - .12, .28, 262, 486, 1.07).pull(d + .55, .6, 255, 480, 1); });
     // the scrub: before and after, back and forth once, then the verdict chord
     S.whoosh(A.same, 200, .5); S.whoosh(A.same + .7, 340, .5); S.tint(A.same + 1.2, 270); S.reveal(A.price - .05);
     // ALIGN (owner, 21 Nov 2026: "Doesn't look aligned"): on the final frame every line starts on one edge, the prices end on one edge, every letter sits on its line
@@ -818,7 +819,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     var ringOut = 1 - P(t, A.col - .7, A.col - .4);
     [[.35, { x: BX + 70, y: BY + 8, w: 300, h: 102, r: 18 }, '4 FONTS', BX + 24, BY + 306], [.65, { x: BX + 150, y: BY + 218, w: 142, h: 54, r: 14 }, '5 COLOURS', BX + 150, BY + 306], [.95, { x: BX + 60, y: BY + 104, w: 100, h: 116, r: 16 }, 'NO EDGE', BX + 300, BY + 306]].forEach(function(r, i){
       var k = P(t, r[0], r[0] + .3) * ringOut; DT.box('ring' + i, r[1], k, '#ff5f5f'); DT.chip('rl' + i, r[2], r[3], r[4], P(t, r[0] + .1, r[0] + .35) * ringOut, 'r sm'); });
-    $('dial').style.opacity = P(t, A.f1 - .4, A.f1).toFixed(3);
+
     // each fix lands with a spark burst and a breath of the whole menu
     [[A.d1, BX + L, BY + 150], [A.d2, BX + BW / 2, BY + 170], [A.d3, BX + BW - 20, BY + 200]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); });
     var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));

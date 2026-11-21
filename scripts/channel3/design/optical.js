@@ -37,8 +37,8 @@
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    DT.mood(t, (.5 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .5 * E.out3(P(t, A.logos + .2, A.logos + .9))), [$('art')]); DT.sweep(t, [A.d1, A.titles + .45, A.buttons + .45, A.logos + .45]); DT.hook(t, '<i>Your</i> <i>eyes</i> <i>are</i> <em><i>lying.</i></em>', A.hook);
-    var art = $('art'), out = E.inOut3(P(t, A.titles - .35, A.titles + .2)); art.style.opacity = (1 - out).toFixed(3); var ia = E.settle(P(t, 0, .55), 1.1); art.style.opacity = ((1 - out) * E.out3(P(t, 0, .3))).toFixed(3); art.style.transform = 'translateY(' + (-30 * out + (1 - ia) * 60).toFixed(1) + 'px) perspective(1200px) rotateX(' + ((1 - ia) * 18).toFixed(1) + 'deg) scale(' + ((1 - .1 * out) * (.92 + .08 * ia)).toFixed(3) + ')';
+    DT.mood(t, (.5 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .5 * E.out3(P(t, A.logos + .2, A.logos + .9)))); DT.sweep(t, [A.d1, A.titles + .45, A.buttons + .45, A.logos + .45]); DT.hook(t, '<i>Your</i> <i>eyes</i> <i>are</i> <em><i>lying.</i></em>', A.hook);
+    var art = $('art'), out = E.inOut3(P(t, A.titles - .35, A.titles + .2)); art.style.opacity = (1 - out).toFixed(3); var ia = 1; art.style.opacity = (1 - out).toFixed(3); art.style.transform = 'translateY(' + (-30 * out + (1 - ia) * 60).toFixed(1) + 'px) perspective(1200px) rotateX(' + ((1 - ia) * 18).toFixed(1) + 'deg) scale(' + ((1 - .1 * out) * (.92 + .08 * ia)).toFixed(3) + ')';
     // the dot: in the exact centre, then nudged up by the cursor (a ghost stays where the maths put it)
     var nk = DT.spring(t, A.nudge + .05, .6), cy = S / 2 - NUDGE * nk; $('dot').style.left = S / 2 + 'px'; $('dot').style.top = cy.toFixed(1) + 'px';
     var g = $('ghost'); g.style.left = S / 2 + 'px'; g.style.top = S / 2 + 'px'; g.style.opacity = (P(t, A.nudge + .1, A.nudge + .4) * (1 - out)).toFixed(3);
@@ -61,8 +61,8 @@
     DT.chip('all', 'NUDGE IT <b>UP</b>', 190, 690, P(t, A.logos + .6, A.logos + .9), 'g');
     DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '?', label: 'LOOK' }, { t: A.exact, n: 1, word: 'STEP' }, { t: A.turns, n: 2, word: 'STEP' }, { t: A.nudge, n: 3, word: 'STEP' }, { t: A.titles, end: 1, sym: '✓', label: 'EVERYWHERE' }]);
-    DT.title(t, [{ t: 0, html: 'Is this dot <em>centred</em>?' }, { t: A.exact, html: 'Measured: <em>centre</em>' }, { t: A.turns, html: 'Your eye aims <em>higher</em>' }, { t: A.nudge, html: 'Designers <em>nudge it up</em>' }, { t: A.titles, html: 'Titles, buttons, <em>logos</em>' }]);
-    KM.subs($('cap'), t, V, PH, 0, A.end, function(w){ return /^(exact|centre|low|eyes|higher|nudge|up|titles|buttons|logos)/i.test(w) ? 'var(--amb)' : null; });
+    DT.title(t, [{ t: A.hook, html: 'Is this dot <em>centred</em>?' }, { t: A.exact, html: 'Measured: <em>centre</em>' }, { t: A.turns, html: 'Your eye aims <em>higher</em>' }, { t: A.nudge, html: 'Designers <em>nudge it up</em>' }, { t: A.titles, html: 'Titles, buttons, <em>logos</em>' }]);
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), A.end, function(w){ return /^(exact|centre|low|eyes|higher|nudge|up|titles|buttons|logos)/i.test(w) ? 'var(--amb)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
   window.seek = seek; window.DURATION = DUR;
