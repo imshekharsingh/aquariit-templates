@@ -46,6 +46,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - 14 Nov 2026 (real media, not done today): short real VIDEO clips (Wikimedia webm / NASA) in the Media workflow and both engines; DVIDS (needs a key) and NOAA as sources; a depth map (MiDaS) for true photo parallax instead of overlay layers; a real photo at tech frame 0 (the hook is still the drawn ANC glyph); Wikimedia throttles GitHub runners on originals: fetch.py asks for a cached rendition width ("width" per entry), keep it.
 
 ## P2
+- [ ] 21 Nov 2026 (owner: the optical centre reel "looks centered"): rebuild only if the illusion can be made obvious at phone size: two tall posters side by side, the same heavy title at the maths centre (left) and nudged up ~5% (right), "which one is centred?", then the measure reveals the left one is exact; test the stills on 3 people first. Otherwise drop the topic. Size M.
 - [ ] @techin20sec topic shortlist from primary sources each morning on GitHub (roadmap 4): 3 candidates with sources and a viewer-stake hook.
 - [ ] One daily routine per channel that writes the script, renders stills to a private review page and stops (roadmap 3).
 

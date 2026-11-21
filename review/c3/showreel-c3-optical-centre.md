@@ -28,3 +28,5 @@ qa/align.mjs on scripts/channel3/optical-centre.json.
 Owner feedback (design/owner-feedback.md) against the stills: "doesn't look aligned": ALIGN where the scene declares groups; "drum-like sounds": no drum kinds; "frame 0": one message first; numbers on screen never run ahead of the voice (21 Nov: end states as words); "same background": its own stage.
 
 Critic: PENDING (an independent session writes CRITIC: READY or NOT READY; the owner's watch decides the post).
+
+Owner, 21 Nov 2026: "Got feedback that it looks centered and I feel so too." NOT READY: the claim "why does it look too low?" does not hold on screen (a dot in a square reads as centred to most eyes). Withdrawn (captions.json hidden).
