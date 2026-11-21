@@ -15,7 +15,7 @@ var DT = (function(){
   function roll(a, b, k){ return Math.round(mix(a, b, cl(k))); }
   function decor(t){ var r = $('ringarc'); if (r) r.setAttribute('transform', 'rotate(' + (t * 9).toFixed(2) + ')'); var sp = $('spot'); if (sp) sp.style.opacity = (.85 + .15 * Math.sin(t * 1.3)).toFixed(3); }
   function tint(a, b){ var R = document.documentElement.style; R.setProperty('--tint', a); R.setProperty('--tint2', b || a); }
-  function dial(t, steps){ decor(t); var cur = steps[0], N = steps.filter(function(s){ return s.n; }).length; steps.forEach(function(s){ if (t >= s.t) cur = s; });
+  function dial(t, steps){ decor(t); var f1 = steps.filter(function(s){ return s.n; })[0]; $('dial').style.opacity = f1 ? P(t, f1.t - .4, f1.t).toFixed(3) : 1; /* the dial waits for the first step (frame 0 says one thing) */ var cur = steps[0], N = steps.filter(function(s){ return s.n; }).length; steps.forEach(function(s){ if (t >= s.t) cur = s; });
     var i = steps.indexOf(cur), nx = steps[i + 1], f = nx ? cl((t - cur.t) / Math.max(.1, nx.t - cur.t)) : 1, done = steps.slice(0, i).filter(function(s){ return s.n; }).length;
     var frac = cur.n ? (done + E.out3(P(t, cur.t, cur.t + .6))) / N : (cur.end ? 1 : done / N);
     var a = -Math.PI / 2 + Math.max(.0001, frac) * Math.PI * 2 * .999, R = 28, arc = document.querySelector('#dial .arc');
@@ -134,7 +134,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     var o = 1 - P(t, out - .25, out); e.style.opacity = o.toFixed(3); var sh = (1 - P(t, 0, .45)) * 3;
     e.style.transform = 'translate(' + (Math.sin(t * 61) * sh).toFixed(2) + 'px,' + (Math.cos(t * 47) * sh - 30 * P(t, out - .25, out)).toFixed(2) + 'px)';
     e._w.forEach(function(w, i){ var a = -.22 + i * .07, k = P(t, a, a + .22),   // the first word is fully there at frame 0 (owner, 21 Nov: frame 0 must already say it)
-      s = E.back(k, 2.4); w.style.opacity = cl(k * 2).toFixed(3); w.style.transform = 'scale(' + (1.5 - .5 * s).toFixed(3) + ')'; w.style.filter = 'blur(' + ((1 - k) * 8).toFixed(2) + 'px)'; }); };
+      s = E.back(k, 2.4); w.style.opacity = cl(k * 2).toFixed(3); w.style.visibility = k > 0 ? 'visible' : 'hidden'; w.style.transformOrigin = '0 70%'; w.style.transform = 'scale(' + (1.5 - .5 * s).toFixed(3) + ')'; w.style.filter = 'blur(' + ((1 - k) * 8).toFixed(2) + 'px)'; }); };
   DT.score = function(lift, fix){ var n = Math.ceil(fix / 2.5); var tense = [[45, 57, 60, 64], [41, 53, 60, 65], [44, 56, 59, 64], [45, 57, 60, 64]], bright = [[48, 60, 64, 67, 72], [43, 55, 62, 67, 71], [45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [48, 60, 64, 67, 76]];
     var ch = []; for (var i = 0; i < n; i++) ch.push(tense[i % tense.length]); for (i = 0; i < 6; i++) ch.push(bright[i % bright.length]);
     return { bed: { bpm: 96, origin: 0, soft: true, lift: lift, chords: ch }, mix: { duck: 7, room: .6 } }; };
