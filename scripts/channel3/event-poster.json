@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-event-poster",
+ "seek": "scripts/channel3/event-poster.html",
+ "engine": "design",
+ "dur": 16,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "When is this event? You can't tell. Turns out, related things sit together. Fix one: date and time together. Fix two: the place right under. Fix three: space between groups. Found it in a second.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format (queue of 10)",
+  "vs": "median"
+ },
+ "caption": "When is this event? You can't tell. 🏮\n\n1. Date and time together, in one block. Things placed close together are read as one group.\n2. The place right under it. When, then where: one look answers both.\n3. Space between groups. Extra space tells the eye where one group ends and the next begins.\n\nSave this for your next poster, flyer or event post. What do you look for first on a poster?",
+ "keywords": [
+  "poster design tips",
+  "event flyer design",
+  "proximity in design",
+  "gestalt principles",
+  "graphic design for beginners",
+  "layout tips"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#typography",
+  "#posterdesign",
+  "#layoutdesign"
+ ],
+ "sources": [
+  {
+   "title": "Proximity Principle in Visual Design (Nielsen Norman Group)",
+   "url": "https://www.nngroup.com/articles/gestalt-proximity/"
+  },
+  {
+   "title": "Visual Hierarchy in UX: Definition (Nielsen Norman Group)",
+   "url": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (a cork community notice board) fills the frame by design"
+   }
+  ],
+  "subject": [
+   70,
+   400,
+   470,
+   766
+  ]
+ }
+}

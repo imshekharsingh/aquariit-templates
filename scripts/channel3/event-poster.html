@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>Turns Out · design tutorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Space+Grotesk:wght@400;500;700&family=Pacifico&family=Anton&family=Courier+Prime&family=Playfair+Display:ital,wght@0,700;1,700&display=block" rel="stylesheet">
+<style>
+/* Turns Out design tutorials (owner, 21 Nov 2026: "rich design mechanism, not just flat this-to-that"; references = learnings, our own look).
+   One shared layer (scripts/channel3/design/core.js) on the @webin20sec motion kit: a live artboard whose layout springs between states,
+   guides that draw, measurements that roll, a design-tool cursor with a selection box, property chips, the before as a ghost, and the
+   Turns Out dial (the logo's ring) counting the fixes. Zones (CSS px of 540x960, safe zone y 125-785): top 125-285 dial + step title,
+   band 292-388 captions, hero 400-780 the artboard. */
+:root{--f:'Space Grotesk',system-ui,sans-serif;--d:'Unbounded',system-ui,sans-serif;--ink:#0b0d16;--paper:#eef0f7;--dim:#9aa1b8;--amb:#ffb35a;--org:#ff7a45;--good:#5ee0a0;--bad:#ff6b6b;--sel:#7aa2ff}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#vp{left:0;top:0;width:540px;height:960px;overflow:hidden}
+#world{left:0;top:0;width:540px;height:960px;transform-origin:0 0}
+/* premium staging (owner, 21 Nov 2026: "more premium in design experience ... effective colour definitions and design patterns"): a dot grid that
+   fades out, the Turns Out ring turning slowly behind the design, a spotlight in the format's own tint, a contact shadow on the floor */
+:root{--tint:#ffb35a;--tint2:#ff7a45}
+#grid{left:-200px;top:-200px;width:940px;height:1360px;background:radial-gradient(circle,rgba(255,255,255,.085) 1.1px,transparent 1.5px) 0 0/22px 22px;-webkit-mask-image:radial-gradient(60% 50% at 50% 48%,#000 30%,transparent 100%)}
+#spot{left:-60px;top:300px;width:660px;height:640px;background:radial-gradient(50% 50% at 50% 50%,color-mix(in srgb,var(--tint) 26%,transparent),transparent 70%);pointer-events:none}
+#ring{left:-50px;top:280px;width:640px;height:640px;opacity:.55;pointer-events:none}
+#floor{left:70px;top:770px;width:400px;height:40px;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.55),transparent 70%);filter:blur(6px);pointer-events:none}
+#ov{left:0;top:0;width:540px;height:960px;overflow:visible;pointer-events:none;z-index:20}
+#cur{left:0;top:0;width:30px;height:30px;z-index:30;opacity:0;pointer-events:none}
+#dial{left:30px;top:132px;display:flex;align-items:center;gap:12px;z-index:40}
+#dial svg{width:66px;height:66px;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--tint) 45%,transparent))}
+#dial .lb{font:700 15px/1 var(--f);letter-spacing:.24em;color:var(--amb)}
+#dial .n{font:900 26px var(--d);fill:#fff}
+#ttl{left:30px;top:212px;width:480px;font:900 31px/1.08 var(--d);letter-spacing:-.02em;z-index:40}
+#ttl em{font-style:normal;background:linear-gradient(100deg,color-mix(in srgb,var(--tint) 80%,#fff),var(--tint2));-webkit-background-clip:text;background-clip:text;color:transparent}
+#band{left:0;top:292px;width:540px;height:96px}
+#cap{left:30px;top:298px;width:480px;min-height:80px;font:700 29px/1.15 var(--f);letter-spacing:-.02em;z-index:40}
+#cap span{display:inline-block;margin-right:.24em}
+.chip{position:absolute;white-space:nowrap;padding:9px 15px 9px 13px;border-radius:999px;background:linear-gradient(rgba(18,21,34,.82),rgba(18,21,34,.82)) padding-box,linear-gradient(120deg,var(--tint),var(--tint2) 60%,rgba(255,255,255,.25)) border-box;border:1.5px solid transparent;backdrop-filter:blur(10px);color:color-mix(in srgb,var(--tint) 85%,#fff);font:700 16px/1 var(--f);letter-spacing:.08em;z-index:25;opacity:0;box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12)}
+.chip b{color:#fff;font-weight:700}
+.chip.g{background:linear-gradient(rgba(14,28,24,.85),rgba(14,28,24,.85)) padding-box,linear-gradient(120deg,#5ee0a0,#2fb37a) border-box;color:#7ef0b8}.chip.r{background:linear-gradient(rgba(34,14,18,.85),rgba(34,14,18,.85)) padding-box,linear-gradient(120deg,#ff6b6b,#ff9a6a) border-box;color:#ff8e8e}
+.board{position:absolute;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.4),0 12px 24px rgba(0,0,0,.35),0 40px 90px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.55)}
+/* print feel: a fine paper grain and a soft sheen over every designed object */
+.board::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:30;opacity:.5;mix-blend-mode:multiply;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .4  0 0 0 .16 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>"),linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,0) 40%,rgba(0,0,0,.04))}
+/* round 6 (owner, 21 Nov 2026: "more dramatic change so that it hooks audience ... audio should also transition in that fashion"):
+   each design lives in its own place (a context stage, light, drawn in code) and the place itself switches from its problem mood (dim, grey)
+   to lit as the fixes land; the brand sits in a dark band at the top (dial, title, captions); frame 0 is a hook in motion */
+body.ctx #spot,body.ctx #grid,body.ctx #ring,body.ctx #floor{display:none}
+#ctx{left:-40px;top:-40px;width:620px;height:1040px;transform-origin:50% 60%}
+#ctx .lit{position:absolute;inset:0;pointer-events:none;opacity:0}
+#sweep{left:-300px;top:380px;width:240px;height:460px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);opacity:0;pointer-events:none;z-index:24;mix-blend-mode:soft-light}
+#topband{left:0;top:0;width:540px;height:372px;background:linear-gradient(180deg,#0b0d16 0%,#0b0d16 88%,rgba(11,13,22,0) 100%);z-index:35;pointer-events:none}
+body:not(.ctx) #topband{display:none}
+#hook{left:24px;top:132px;width:492px;padding:0 6px;font:900 46px/1.06 var(--d);letter-spacing:-.03em;color:#fff;z-index:45;opacity:0;pointer-events:none}
+#hook em{font-style:normal;color:#ff5f5f}
+#hook i{display:inline-block;font-style:normal}
+.chip{font-size:20px!important;padding:11px 18px 11px 16px!important}
+.chip.sm{font-size:15px!important;padding:8px 12px!important}
+.rul{position:absolute;width:24px;border-radius:6px;background:repeating-linear-gradient(180deg,rgba(24,26,36,.9) 0 2px,transparent 2px 12px) left/9px 100% no-repeat,repeating-linear-gradient(180deg,rgba(24,26,36,.75) 0 2px,transparent 2px 60px) left/16px 100% no-repeat,linear-gradient(90deg,#ece7dd,#dcd5c7);box-shadow:0 10px 26px rgba(0,0,0,.35);z-index:1}
+.rul.r{transform:scaleX(-1)}
+#board{left:70px;top:396px;width:400px;height:370px;border-radius:4px;background:linear-gradient(170deg,#fdf6e6,#f0e2c6)}
+.ev{position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 0;font-family:'Space Grotesk'}
+#tt{font:900 34px var(--d);color:#1d2a52;letter-spacing:-.01em}
+.lan{position:absolute;width:44px;height:58px;border-radius:16px;background:radial-gradient(60% 55% at 50% 50%,#fff2c4,#ffb347 60%,#e0701f);box-shadow:0 0 30px rgba(255,180,80,.7);transform-origin:50% -30px}
+.lan::before{content:'';position:absolute;left:21px;top:-30px;width:2px;height:30px;background:rgba(255,230,190,.6)}
+.pin{position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff9a8a,#c62f2f);box-shadow:0 3px 4px rgba(0,0,0,.4);z-index:5}
+#beam{position:absolute;left:0;top:0;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28),rgba(255,255,255,.08) 60%,transparent 70%);border:2px dashed rgba(255,255,255,.6);opacity:0;z-index:26}
+</style>
+</head>
+<body>
+<div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
+  <div id="ctx" class="a"><div style="position:absolute;inset:0;background:linear-gradient(180deg,#b88d5e 0%,#a87d50 50%,#946a42 100%)"></div>
+<div style="position:absolute;inset:0;background:radial-gradient(circle,rgba(70,40,15,.35) 1px,transparent 1.6px) 0 0/7px 7px,radial-gradient(circle,rgba(255,230,190,.18) 1px,transparent 1.6px) 3px 4px/9px 9px"></div>
+<div style="position:absolute;left:-20px;top:-20px;width:580px;height:30px;background:linear-gradient(180deg,#6b4a2c,#4e341e)"></div>
+<div style="position:absolute;left:-10px;top:300px;width:90px;height:120px;background:#f4efe4;transform:rotate(-8deg);box-shadow:0 6px 12px rgba(0,0,0,.3)"></div>
+<div style="position:absolute;left:470px;top:520px;width:100px;height:130px;background:#ffe27a;transform:rotate(7deg);box-shadow:0 6px 12px rgba(0,0,0,.3)"></div>
+<div style="position:absolute;left:60px;top:800px;width:150px;height:110px;background:#cfe8ff;transform:rotate(4deg);box-shadow:0 6px 12px rgba(0,0,0,.3)"></div>
+<div style="position:absolute;left:330px;top:810px;width:140px;height:100px;background:#ffd0d8;transform:rotate(-6deg);box-shadow:0 6px 12px rgba(0,0,0,.3)"></div>
+<div class="lit" style="background:radial-gradient(55% 40% at 50% 55%,rgba(255,226,170,.5),transparent 75%)"></div>
+<div class="lit" style="background:linear-gradient(180deg,rgba(255,200,130,.14),rgba(255,170,100,.05))"></div></div>
+  <div id="spot" class="a"></div>
+  <div id="grid" class="a" data-fit="free"></div>
+  <svg id="ring" class="a" viewBox="-320 -320 640 640"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--tint);stop-opacity:0"/><stop offset="1" style="stop-color:var(--tint);stop-opacity:.55"/></linearGradient></defs><circle r="300" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="26"/><g id="ringarc"><path d="M-212 -212 A300 300 0 1 1 -300 0" fill="none" stroke="url(#rg)" stroke-width="26" stroke-linecap="round"/></g></svg>
+  <div id="floor" class="a"></div>
+  <div id="sbox" data-subject style="position:absolute;left:40px;top:412px;width:460px;height:366px"></div>
+  <div class="rul" style="left:8px;top:400px;height:246px"></div><div class="rul r" style="left:508px;top:400px;height:246px"></div>
+<div id="board" class="board">
+  <div class="lan" id="ln0" style="left:318px;top:196px"></div><div class="lan" id="ln1" style="left:352px;top:262px"></div><div class="lan" id="ln2" style="left:290px;top:282px"></div>
+  <div class="ev" id="tt">LANTERN WALK</div>
+  <div class="ev" id="d1">Saturday 23 Nov</div>
+  <div class="ev" id="d2">7 PM</div>
+  <div class="ev" id="pl">Riverside Park, east gate</div>
+  <div class="ev" id="ex">Free · bring a torch</div>
+  <div class="pin" style="left:8px;top:8px"></div><div class="pin" style="left:376px;top:8px"></div>
+</div>
+<div id="beam"></div>
+  <div id="sweep" class="a"></div>
+  <svg id="ov" class="a" viewBox="0 0 540 960"></svg>
+  <svg id="cur" class="a" viewBox="0 0 30 30" style="filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))"><path d="M4 2 L4 24 L10 18 L14 27 L18 25 L14 16 L22 16 Z" fill="#fff" stroke="#0b0d16" stroke-width="1.6" stroke-linejoin="round"/></svg>
+</div></div>
+<div id="topband" class="a"></div>
+<div id="hook" class="a"></div>
+<div id="dial" class="a"><svg viewBox="-40 -40 80 80"><defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset="1" stop-color="#ff7a45"/></linearGradient></defs><circle r="34" fill="#0b0d16"/><circle r="28" fill="none" stroke="#1f2538" stroke-width="7"/><path class="arc" fill="none" stroke="url(#dg)" stroke-width="7" stroke-linecap="round"/><text class="n" y="9" text-anchor="middle"></text></svg><div class="lb"></div></div>
+<div id="ttl" class="a" data-hook></div>
+<div id="band" class="a" data-band></div>
+<div id="cap" class="a" data-subs></div>
+<script>
+/*kitmotion:begin*/
+// ---- @webin20sec motion kit (scripts/explainer/kitmotion.js; owner, 7 Nov 2026: "Can we further improve the overall animation and flow?") ----
+// Premium motion by default for every web reel, like kit25d.js for Turns Out. Inlined into a scene's main script between the kitmotion
+// begin and end markers by node scripts/channel3/kit-inline.mjs <scene.html> (npm run check fails on a stale copy); start a reel with
+// node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ... Every frame is a pure function of t: moves, transitions and taps are
+// registered once (in the scene's anchors(), after the voice timings are known), then drawn from t alone in seek(t).
+// Registering a move, transition or tap also writes its sound cue (move / swell / snap / blip / touch, with x) and declares a transition in
+// window.TRANSITIONS, so the FLOW gate (scripts/showreel/flow.mjs: no undeclared cuts, no dead runs, continuity 85%+) knows it was meant.
+//   KM.reset(dur)                         before registering (anchors()); KM.publish(extra) after: window.CUES and window.TRANSITIONS
+//   eases: KM.ease.out3 / inOut3 / expoInOut / back(k, s) / spring(k) (critically damped) / settle(k, f) (overshoot and settle)
+//   KM.rig({ x, y, z, drift })            the camera: a continuous eased drift (never still) + named moves, rig.at(t) -> { x, y, z, vx, vy, vz }
+//     rig.pushIn(t0, d, x, y, z) · rig.pan(t0, d, x, y) · rig.pushThrough(t0, d, x, y, z) (a fast zoom through, declared) ·
+//     rig.matchMove(t0, d, x, y, z) (follows a shared element, declared) · rig.creep(t0, d, dz) (a slow steady push through a held beat) · rig.apply(worldEl, t, tiltEl) · rig.toScreen(c, x, y)
+//   KM.transition(kind, t0, d, cue)       declares [t0, t0 + d, kind], writes its cue, returns k(t) (0 -> 1, eased) for the setters:
+//     KM.shared(el, a, b, k) (sharedElement: a box glides and scales between layouts, a/b = { x, y, w, h, r }) · KM.pushThrough(el, k, dir) ·
+//     KM.morph(el, a, b, k, colA, colB) · KM.wipe(newLayer, k) (wipeRestyle: the new theme comes down top to bottom)
+//   text: KM.rise(spans, t, starts, gone) (blur to sharp, word by word) · KM.type(el, html, t, t0, t1) (typing with a caret) ·
+//     KM.sweep(el, t, t0, d, col) (a highlight sweep) · KM.leader(line, label, from, to, k) (a leader-line label, SVG line + text)
+//   secondary: KM.parallax(el, c, depth) · KM.stagger(els, t, t0, gap, d) · KM.squeeze(el, t, tTap) (press and pop) ·
+//     KM.ripple(el, t, tTap, x, y) · KM.tap(t, x) (the touch cue for a tap at screen x) · KM.touch(host) -> draw(t, s) (the slim ring touch marker, 13 Nov 2026)
+//   details format (8 Nov 2026): KM.curve(spec) · KM.linearCss(f, n) · KM.timeScale(t0, t1, factor) (slow motion; the camera keeps reel time) ·
+//     KM.curveGraph(svg, spec, c0, d, { clock, real }) (the live easing curve with a riding dot) · KM.slowmoBadge(el, ts, label) ·
+//     KM.specChip(el, items, t0, d) (numbers roll in) · KM.partProgress(el, parts) (the segmented top bar); start a reel with newweb.mjs --details N
+//   voice and subtitles: KM.voice(text, lead) -> { words, at(word, nth), phrases(max) } · KM.subs(capEl, t, V, PH, from, until, colour)
+//   look (owner, 8 Nov 2026: "Let's go with C."): KM.theme(name) -> T (hex colours for KM.mixCol) sets the :root tokens (--ink, --paper, --dim,
+//     --acc, --red, --ctl, --raise, --skel, --pg, --card, --on, --glass, --frost, --edge, --lift, --glow, --soft, --ring, --f, --m, --hw, --ht) and lays a
+//     light canvas behind everything; KM.lights(t, c) paints it every frame: the blooms drifting (with the camera c, at depth) and the grade; KM.cutBelow(vp, fe, y, k) ends the world
+//     at y (an overflow cut under a soft feather: a mask costs ~75 ms a frame); KM.depth(el, c, cx, cy, d) (a pane at its own depth: parallax in
+//     the camera's moves); KM.float(t, seed, amp) (a pane's slow sine float). 'glass' (style C, "Glass and light") is the web default from
+//     8 Nov 2026; 'dark' is the old ink-and-mint look. KM.theme('glass', palette) (or window.WEB_PALETTE) swaps the light and the accents:
+//     KM.PALETTES aurora (the original), ember, lagoon, orchid, glacier (owner, 8 Nov 2026: colour variety, reel to reel).
+//     KM.theme('dark', world): KM.WORLDS saffron, berry, jade, the dark look's own colour world per reel (owner, 15 Nov 2026: "similar colour grading");
+//     KM.lights(t, c, true) holds the light still and KM.rig({ drift: 0 }) holds the camera (owner, 15 Nov 2026: "too wiggly").
+//   the whole frame (owner, 14 Nov 2026: "we are squeezing most of it in one place of the screen"; rules-web.md rule 16): KM.ZONES = the
+//     screen bands a web reel fills top to bottom (top: hook, counters, code; hero: the subject of the fix, the biggest thing on screen, down
+//     to the band; band: subtitles), in CSS px of the 540x960 frame inside the safe zone; KM.worldY(c, y) = the world y at screen y under
+//     camera c, so a card's top and bottom edges can be locked to the zones while the camera pushes in (no gap opens, nothing enters the band).
+var KM = (function(){
+  var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; };
+  var P = function(t, a, b){ return b <= a ? (t >= a ? 1 : 0) : cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var win = function(t, a, b, f){ return Math.min(P(t, a - f, a), 1 - P(t, b - f, b)); };
+  var ease = {
+    linear: function(k){ return k; },
+    out3: function(k){ return 1 - Math.pow(1 - k, 3); },
+    inOut3: function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; },
+    expoInOut: function(k){ return k <= 0 ? 0 : k >= 1 ? 1 : k < .5 ? Math.pow(2, 20 * k - 10) / 2 : (2 - Math.pow(2, -20 * k + 10)) / 2; },
+    back: function(k, s){ s = s == null ? 1.3 : s; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2); },
+    // a critically damped spring over the move's length (no overshoot, a fast start and a long soft landing), exactly 1 at the end
+    spring: function(k){ if (k <= 0) return 0; if (k >= 1) return 1; var w = 9; return (1 - (1 + w * k) * Math.exp(-w * k)) / (1 - (1 + w) * Math.exp(-w)); },
+    // overshoot and settle (an underdamped spring): about f wobbles, dying out, exactly 1 at the end
+    settle: function(k, f){ if (k <= 0) return 0; if (k >= 1) return 1; f = f || 1.4; return 1 - Math.exp(-5 * k) * Math.cos(k * Math.PI * f) * (1 - k); }
+  };
+  var Q = [], TR = [], DUR = 20;
+  function reset(dur){ Q = []; TR = []; DUR = dur || DUR; }
+  function cue(c){ Q.push(c); return c; }
+  function declare(t0, t1, kind){ TR.push([+t0.toFixed(2), +t1.toFixed(2), kind]); }
+  // ---- the camera: base framing, a drift that never stops, and named moves folded in order ----
+  function rig(o){
+    var base = [o.x, o.y, o.z], D = o.drift == null ? 1 : o.drift, moves = [], last = base.slice();
+    function add(t0, d, x, y, z, kind, e){ var to = [x, y, z == null ? last[2] : z], m = { t0: t0, d: d, to: to, kind: kind, e: e };
+      moves.push(m); var dz = to[2] - last[2];
+      cue({ t: t0, k: 'move', d: Math.max(.4, d * .8), g: kind === 'pan' ? .26 : .34, dir: dz >= 0 ? 1 : -1, x: 255, x2: cl(255 + (x - last[0]) * 2, 40, 500), r: .25 });
+      if (kind === 'pushThrough') { cue({ t: t0, k: 'swell', d: Math.max(.5, d), g: .4, x: 255 }); cue({ t: t0 + d * .55, k: 'snap', g: .3, p: 5, x: 255, r: .2 }); declare(t0, t0 + d, 'pushThrough'); }
+      if (kind === 'matchMove') declare(t0, t0 + d, 'matchMove');
+      last = to; return R; }
+    var R = {
+      moves: moves,
+      pushIn: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pushIn', 'settle'); },
+      pan: function(t0, d, x, y){ return add(t0, d, x, y, null, 'pan', 'inOut3'); },
+      pushThrough: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pushThrough', 'expoInOut'); },
+      matchMove: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'matchMove', 'inOut3'); },
+      pull: function(t0, d, x, y, z){ return add(t0, d, x, y, z, 'pull', 'settle'); },
+      // creep: a slow, steady push to the end of a beat (a held shot that still breathes: FLOW dead runs), no cue
+      creep: function(t0, d, dz){ moves.push({ t0: t0, d: d, to: [last[0], last[1], last[2] * (1 + (dz || .08))], kind: 'creep', e: 'linear' }); last = moves[moves.length - 1].to; return R; },
+      at: function(t){ var c = base.slice();
+        moves.forEach(function(m){ var k = P(t, m.t0, m.t0 + m.d), e = m.e === 'settle' ? ease.settle(k, 1.2) : ease[m.e](k); if (k > 0) c = [mix(c[0], m.to[0], e), mix(c[1], m.to[1], e), mix(c[2], m.to[2], e)]; });
+        // the drift: a slow sway and breathing zoom, so no stretch of the reel is ever still (FLOW: dead runs)
+        c[0] += D * (Math.sin(t * .55) * 9 + Math.sin(t * 1.3 + 2) * 2.5); c[1] += D * (Math.sin(t * .41 + 1) * 11 + Math.sin(t * 1.1) * 3); c[2] *= 1 + D * (Math.sin(t * .33) * .012 + Math.sin(t * .9 + 1) * .004);
+        return { x: c[0], y: c[1], z: c[2] }; },
+      vel: function(t){ var a = R.at(t - .05), b = R.at(t + .05); return { vx: (b.x - a.x) * 10, vy: (b.y - a.y) * 10, vz: (b.z - a.z) * 10 }; },
+      // world point -> screen point (the world is laid out at 540x960 and the camera centres (x, y) at (255, 480): the safe zone's middle)
+      toScreen: function(c, x, y){ return [(x - c.x) * c.z + 255, (y - c.y) * c.z + 480]; },
+      apply: function(world, t, tiltEl){ var c = R.at(t); world.style.transform = 'translate(' + (255 - c.x * c.z).toFixed(2) + 'px,' + (480 - c.y * c.z).toFixed(2) + 'px) scale(' + c.z.toFixed(4) + ')';
+        if (tiltEl) { var v = R.vel(t); tiltEl.style.transform = 'perspective(1600px) rotateX(' + cl(v.vy * .02 + v.vz * 3, -5, 5).toFixed(2) + 'deg) rotateY(' + cl(-v.vx * .03, -5, 5).toFixed(2) + 'deg)'; }
+        return c; }
+    };
+    return R;
+  }
+  // ---- transitions: declared once, drawn from k ----
+  var CUE = { sharedElement: 'move', pushThrough: 'swell', morph: 'snap', wipeRestyle: 'swell' };
+  function transition(kind, t0, d, sound){ declare(t0, t0 + d, kind);
+    var s = sound === false ? null : sound || CUE[kind] || 'move';
+    if (s === 'move') cue({ t: t0, k: 'move', d: Math.max(.4, d), g: .3, dir: 1, x: 255, x2: 255, r: .25 });
+    else if (s === 'swell') cue({ t: t0, k: 'swell', d: Math.max(.5, d), g: .42, x: 255 });
+    else if (s) cue({ t: t0, k: s, g: .35, p: 5, x: 255, r: .2 });
+    if (kind !== 'sharedElement') cue({ t: t0 + d, k: 'snap', g: .3, p: 7, x: 255, r: .2 });
+    var e = kind === 'pushThrough' ? ease.expoInOut : kind === 'sharedElement' ? function(k){ return ease.settle(k, 1.1); } : ease.inOut3;
+    return function(t){ return e(P(t, t0, t0 + d)); }; }
+  function box(el, b){ el.style.left = b.x.toFixed(2) + 'px'; el.style.top = b.y.toFixed(2) + 'px'; el.style.width = b.w.toFixed(2) + 'px'; el.style.height = b.h.toFixed(2) + 'px'; if (b.r != null) el.style.borderRadius = b.r.toFixed(2) + 'px'; }
+  function lerpBox(a, b, k){ return { x: mix(a.x, b.x, k), y: mix(a.y, b.y, k), w: mix(a.w, b.w, k), h: mix(a.h, b.h, k), r: mix(a.r || 0, b.r || 0, cl(k)) }; }
+  // sharedElement: the element glides and scales from layout a to layout b; it lifts (a shadow) in the middle of the glide
+  function shared(el, a, b, k){ box(el, lerpBox(a, b, k)); var lift = Math.sin(cl(k) * Math.PI); el.style.boxShadow = '0 ' + (8 + lift * 22).toFixed(1) + 'px ' + (20 + lift * 40).toFixed(1) + 'px rgba(0,0,0,' + (.25 + lift * .2).toFixed(2) + ')'; }
+  // pushThrough: the layer scales up past the camera and blurs out (dir -1: comes in from behind the camera instead)
+  function pushThrough(el, k, dir){ var q = dir === -1 ? 1 - k : k; el.style.transform = 'scale(' + (1 + q * q * 2.4).toFixed(3) + ')'; el.style.opacity = (1 - P(q, .35, .9)).toFixed(3); el.style.filter = 'blur(' + (q * 10).toFixed(2) + 'px)'; }
+  function rgb(h){ var n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+  function mixCol(a, b, k){ var x = rgb(a), y = rgb(b); return 'rgb(' + x.map(function(v, i){ return Math.round(mix(v, y[i], k)); }).join(',') + ')'; }
+  // morph: a box becomes another box (position, size, corner radius and colour)
+  function morph(el, a, b, k, colA, colB){ box(el, lerpBox(a, b, k)); if (colA) el.style.background = mixCol(colA, colB, k); }
+  // wipeRestyle: the new-theme copy of a layer is revealed top to bottom (it sits over the old one); clip-path inset in px for the BAND check
+  function wipe(el, k){ var h = el.offsetHeight || 1000; el.style.clipPath = k >= 1 ? 'none' : 'inset(0px 0px ' + ((1 - k) * h).toFixed(1) + 'px 0px)'; el.style.visibility = k > 0 ? 'visible' : 'hidden'; }
+  // ---- text ----
+  // rise: each word comes up from blur to sharp with a little overshoot at its own start time; gone (0 -> 1) blurs the line away, lifting it
+  // only a little (it fades before it can leave the safe zone)
+  function rise(spans, t, starts, gone){ gone = gone || 0;
+    [].forEach.call(spans, function(sp, i){ var s = starts[i], k = ease.back(P(t, s, s + .34), 1.6);
+      sp.style.filter = 'blur(' + ((1 - P(t, s, s + .24)) * 8 + gone * 6).toFixed(2) + 'px)'; sp.style.opacity = (cl((t - s) * 9) * (1 - gone) * (1 - gone)).toFixed(3); sp.style.transform = 'translateY(' + ((1 - k) * 44 - gone * 24).toFixed(2) + 'px)'; }); }
+  // type: html (tags and entities allowed) typed from t0 to t1 with a caret that blinks when idle
+  function typed(src, n){ var o = '', k = 0, open = [];
+    for (var i = 0; i < src.length; i++) { if (src[i] === '<') { var e = src.indexOf('>', i), tag = src.slice(i, e + 1); o += tag; if (tag[1] === '/') open.pop(); else open.push(tag.match(/<(\w+)/)[1]); i = e; continue; }
+      if (k >= n) break; if (src[i] === '&') { var e2 = src.indexOf(';', i); o += src.slice(i, e2 + 1); i = e2; } else o += src[i]; k++; }
+    while (open.length) o += '</' + open.pop() + '>'; return o; }
+  function type(el, html, t, t0, t1){ var N = html.replace(/<[^>]+>/g, '').replace(/&\w+;/g, '_').length, n = Math.floor(N * P(t, t0, t1)), busy = t >= t0 && t < t1 + .15;
+    el.innerHTML = typed(html, n) + (t >= t0 - .3 ? '<span class="km-caret" style="opacity:' + (busy || Math.floor((t - t1) * 2.4) % 2 === 0 ? 1 : 0) + '"></span>' : ''); }
+  function sweep(el, t, t0, d, col){ var k = ease.inOut3(P(t, t0, t0 + d)); el.style.backgroundImage = 'linear-gradient(' + col + ',' + col + ')'; el.style.backgroundRepeat = 'no-repeat'; el.style.backgroundSize = (k * 100).toFixed(1) + '% 100%'; }
+  // leader: an SVG line drawn from the thing to its label, then the label fades up at the end of the line
+  function leader(line, label, from, to, k){ var e = ease.out3(cl(k / .7)); line.setAttribute('x1', from[0]); line.setAttribute('y1', from[1]); line.setAttribute('x2', mix(from[0], to[0], e).toFixed(1)); line.setAttribute('y2', mix(from[1], to[1], e).toFixed(1));
+    line.style.opacity = k > 0 ? 1 : 0; label.style.opacity = ease.out3(P(k, .55, 1)).toFixed(3); label.style.transform = 'translateY(' + ((1 - ease.back(P(k, .55, 1), 1.4)) * 10).toFixed(2) + 'px)'; }
+  // ---- secondary motion ----
+  function parallax(el, c, depth){ el.style.transform = 'translate(' + (-(c.x - 270) * depth).toFixed(2) + 'px,' + (-(c.y - 480) * depth).toFixed(2) + 'px) scale(' + (1 + (c.z - 1) * depth).toFixed(4) + ')'; }
+  function stagger(els, t, t0, gap, d){ [].forEach.call(els, function(el, i){ var k = ease.settle(P(t, t0 + i * gap, t0 + i * gap + (d || .6)), 1.2);
+    el.style.opacity = cl(k * 2.5).toFixed(3); el.style.transform = 'translateY(' + ((1 - k) * 44).toFixed(2) + 'px) scale(' + mix(.94, 1, k).toFixed(4) + ')'; }); }
+  // squeeze: pressed in 0.12 s before the tap, popped past full size after it, settled by 0.5 s
+  function squeeze(el, t, tap){ var press = win(t, tap - .12, tap + .06, .1), pop = t > tap ? Math.sin(P(t, tap, tap + .5) * Math.PI) * (1 - P(t, tap, tap + .5)) : 0;
+    el.style.transform = 'scale(' + (1 - press * .07 + pop * .09).toFixed(4) + ')'; }
+  function ripple(el, t, tap, x, y){ var k = P(t, tap, tap + .55); el.style.left = (x - 32) + 'px'; el.style.top = (y - 32) + 'px'; el.style.opacity = (k > 0 && k < 1 ? 1 - k : 0).toFixed(3); el.style.transform = 'scale(' + mix(.5, 2.6, ease.out3(k)).toFixed(3) + ')'; }
+  function tap(t, x){ cue({ t: t, k: 'touch', g: .38, x: cl(x, 30, 510) }); cue({ t: t + .05, k: 'blip', g: .24, x: cl(x, 30, 510) }); }
+  // touch marker (owner, 13 Nov 2026: "the finger looks a bit bulky on screen"): a slim soft-white ring (60 px) around the button it taps,
+  // never over it (the button stays visible inside the ring); it presses in on each tap and sends out one ripple, with a faint shadow.
+  // KM.touch(host) makes the marker in host (the world, so it moves with the camera) and returns draw(t, s), s = { x, y (world centre of the
+  // button), press (0 lifted .. 1 down), tap (time of the last tap, for the ripple), o (opacity), c (the camera: the ring is kept inside the
+  // safe zone, x 30-480 / y 125-785 on screen, by at most 14 px, so the button stays inside it) }. Its sound: KM.tap(t, x) on each tap.
+  // The ring carries data-key, so the SAFE ZONE line checks it on every still; Output QA BULK fails a solid white shape on the final frames.
+  function touch(host, o){ o = o || {}; var D = o.size || 60, el = document.createElement('div'), rp = document.createElement('div'), rg = document.createElement('div');
+    el.className = 'km-touch'; el.setAttribute('data-key', 'touch'); el.setAttribute('aria-hidden', 'true');
+    el.style.cssText = 'position:absolute;left:0;top:0;width:' + D + 'px;height:' + D + 'px;pointer-events:none;z-index:8;opacity:0';
+    rp.style.cssText = 'position:absolute;left:0;top:0;width:' + D + 'px;height:' + D + 'px;border-radius:50%;border:2px solid rgba(255,255,255,.7);opacity:0';
+    rg.style.cssText = 'position:absolute;left:0;top:0;width:' + D + 'px;height:' + D + 'px;border-radius:50%;border:2.5px solid rgba(255,255,255,.92);background:rgba(255,255,255,.08);box-shadow:0 6px 16px rgba(0,0,0,.35),inset 0 0 10px rgba(255,255,255,.12)';
+    el.appendChild(rp); el.appendChild(rg); host.appendChild(el);
+    var draw = function(t, s){ var x = s.x, y = s.y, p = cl(s.press || 0), R = D / 2;
+      if (s.c) { var z = s.c.z, sx = (x - s.c.x) * z + 255, sy = (y - s.c.y) * z + 480, r = R * z + 3;
+        var nx = cl(sx, 30 + r, 480 - r), ny = cl(sy, 125 + r, 785 - r); nx = sx + cl(nx - sx, -14, 14); ny = sy + cl(ny - sy, -14, 14);
+        x += (nx - sx) / z; y += (ny - sy) / z; }
+      el.style.left = (x - R).toFixed(2) + 'px'; el.style.top = (y - R).toFixed(2) + 'px'; el.style.opacity = cl(s.o == null ? 1 : s.o).toFixed(3);
+      rg.style.transform = 'scale(' + mix(1, .84, p).toFixed(4) + ')'; rg.style.background = 'rgba(255,255,255,' + (.08 + .16 * p).toFixed(3) + ')';
+      var k = s.tap == null ? 1 : P(t, s.tap, s.tap + .55);
+      rp.style.opacity = (k > 0 && k < 1 ? .75 * (1 - ease.out3(k)) : 0).toFixed(3); rp.style.transform = 'scale(' + mix(.9, 1.9, ease.out3(k)).toFixed(4) + ')'; };
+    draw.el = el; return draw; }
+  // ---- voice timings and subtitles ----
+  var norm = function(w){ return w.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  function voice(text, lead, words){ lead = lead == null ? .15 : lead; var T = text.split(/\s+/).filter(Boolean), W = [];
+    if (words && words.length) { var j = 0; words.forEach(function(w){ var o = { w: w.w, s: w.s, e: w.e, d: w.w }; for (var k = j; k < Math.min(T.length, j + 4); k++) if (norm(T[k]) === norm(w.w)) { o.d = T[k]; j = k + 1; break; } W.push(o); }); }
+    else { var t = .2; T.forEach(function(w){ var d = .14 + w.length * .03; W.push({ w: w, d: w, s: t, e: t + d }); t += d + (/[.?:,;!]$/.test(w) ? .32 : .06); }); }
+    return { words: W, lead: lead, end: W.length ? W[W.length - 1].e : 0,
+      at: function(word, nth){ var n = nth || 1; for (var i = 0; i < W.length; i++) if (norm(W[i].w) === norm(word) && --n === 0) return W[i].s - lead; return 99; },
+      // sentence starts (minus the lead), and whole phrases of at most max words, split at a comma where it can
+      starts: function(){ var o = []; W.forEach(function(w, i){ if (i === 0 || /[.?!]$/.test(W[i - 1].d)) o.push(w.s - lead); }); return o; },
+      phrases: function(max){ max = max || 6; var PH = [], cur = [];
+        W.forEach(function(w, i){ cur.push(i); if (/[.?!]$/.test(w.d) || i === W.length - 1) { while (cur.length > max) { var best = -1;
+              cur.forEach(function(q, k){ if (/[,:;]$/.test(W[q].d) && k >= 1 && k < max && (best < 0 || k > best)) best = k; });
+              if (best < 0) best = Math.min(max, Math.ceil(cur.length / 2)) - 1; PH.push(cur.slice(0, best + 1)); cur = cur.slice(best + 1); }
+            if (cur.length) PH.push(cur); cur = []; } });
+        return PH; } };
+  }
+  // subtitles: the phrase being spoken, each word sharpening as it is said; colour(word, i) -> a CSS colour (or null)
+  function subs(capEl, t, V, PH, from, until, colour){ var W = V.words, L = V.lead, ph = null, html = '';
+    for (var i = 0; i < PH.length; i++) if (t >= W[PH[i][0]].s - L - .05 && (i === PH.length - 1 || t < W[PH[i + 1][0]].s - L - .05)) ph = PH[i];
+    if (ph && ph[0] >= from && t < until) ph.forEach(function(j){ var w = W[j], on = t >= w.s - L, k = ease.out3(P(t, w.s - L, w.s - L + .2)), c = colour ? colour(w.d, j) : null;
+      html += '<span style="opacity:' + (on ? 1 : .32) + ';filter:blur(' + (on ? (1 - k) * 4 : 1.2).toFixed(2) + 'px);transform:translateY(' + ((1 - k) * 5).toFixed(2) + 'px)' + (c ? ';color:' + c : '') + '">' + w.d.replace(/</g, '') + '</span>'; });
+    capEl.innerHTML = html; capEl.style.opacity = html ? 1 : 0; }
+  // ---- the details format (owner, 8 Nov 2026: small UI motions in slow motion, each with its live easing curve and its CSS) ----
+  // KM.curve(spec) -> { f(k), css, min, max }: spec = a kit ease name ('settle', 'spring', 'back', 'out3' ...), { bezier: [x1, y1, x2, y2] }
+  //   (CSS cubic-bezier: y may leave 0-1 for an overshoot), { linear: [0, [.62, 18], 1.1, 1] } (CSS linear(): a value, or [value, percent];
+  //   stops without a percent are spread evenly, as the spec does) or { keyframes: [[0, 1], [40, 1.3], [100, 1]] } (percent, value).
+  //   KM.linearCss(f, n) writes any ease (a kit spring included) as a CSS linear() string, so the curve on screen is the curve in the code.
+  function bezier(x1, y1, x2, y2){ var B = function(a, b, s){ return 3 * a * s * (1 - s) * (1 - s) + 3 * b * s * s * (1 - s) + s * s * s; };
+    return function(k){ if (k <= 0) return 0; if (k >= 1) return 1; var lo = 0, hi = 1, s = k; for (var i = 0; i < 40; i++) { s = (lo + hi) / 2; if (B(x1, x2, s) < k) lo = s; else hi = s; } return B(y1, y2, s); }; }
+  function stops(list){ var S = list.map(function(s){ return Array.isArray(s) ? { v: s[0], p: s[1] / 100 } : { v: s, p: null }; });
+    if (S[0].p == null) S[0].p = 0; if (S[S.length - 1].p == null) S[S.length - 1].p = 1;
+    for (var i = 1; i < S.length; i++) if (S[i].p == null) { var j = i; while (S[j].p == null) j++; for (var q = i; q < j; q++) S[q].p = S[i - 1].p + (S[j].p - S[i - 1].p) * (q - i + 1) / (j - i + 1); }
+    for (var m = 1; m < S.length; m++) S[m].p = Math.max(S[m].p, S[m - 1].p);
+    return function(k){ if (k <= S[0].p) return S[0].v; for (var i = 1; i < S.length; i++) if (k <= S[i].p) return S[i].p === S[i - 1].p ? S[i].v : mix(S[i - 1].v, S[i].v, (k - S[i - 1].p) / (S[i].p - S[i - 1].p)); return S[S.length - 1].v; }; }
+  var num = function(v){ return (+v.toFixed(3)).toString().replace(/^0\./, '.').replace(/^-0\./, '-.'); };
+  function linearCss(f, n){ n = n || 10; var o = []; for (var i = 0; i <= n; i++) o.push(i === 0 || i === n ? num(f(i / n)) : num(f(i / n)) + ' ' + Math.round(i / n * 100) + '%'); return 'linear(' + o.join(', ') + ')'; }
+  function curve(spec){ var f, css;
+    if (typeof spec === 'string') { f = ease[spec]; css = linearCss(f, 10); }
+    else if (spec.bezier) { f = bezier.apply(null, spec.bezier); css = 'cubic-bezier(' + spec.bezier.map(num).join(', ') + ')'; }
+    else if (spec.linear) { f = stops(spec.linear); css = 'linear(' + spec.linear.map(function(s){ return Array.isArray(s) ? num(s[0]) + ' ' + s[1] + '%' : num(s); }).join(', ') + ')'; }
+    else { f = stops(spec.keyframes.map(function(s){ return [s[1], s[0]]; })); css = '@keyframes'; }
+    var lo = 0, hi = 1; for (var i = 0; i <= 80; i++) { var v = f(i / 80); lo = Math.min(lo, v); hi = Math.max(hi, v); }
+    return { f: f, css: css, min: lo, max: hi }; }
+  // KM.timeScale(t0, t1, factor, ramp): a slow-motion stretch of the reel. The component's own clock, at(t) (seconds, 0 at t0), runs at
+  //   1x before t0, eases down to factor over ramp, runs at factor, eases back to 1x by t1; the camera keeps reel time, so it never slows.
+  //   on(t) 0 -> 1 (how slow it is, for the badge), real(c) = the reel time the component clock reaches c. Cues: a falling swell into the
+  //   slow motion, a whoosh as it speeds back up.
+  function timeScale(t0, t1, f, ramp){ ramp = ramp == null ? .25 : Math.min(ramp, (t1 - t0) / 2);
+    var a1 = t0 + ramp, b0 = t1 - ramp, A1 = ramp * (1 + f) / 2, B0 = A1 + (b0 - a1) * f, B1 = B0 + ramp * (1 + f) / 2;
+    cue({ t: a1, k: 'swell', d: .55, g: .3, x: 255 }); cue({ t: t1 - .05, k: 'whoosh', d: .4, g: .22 });
+    var at = function(t){ if (t <= t0) return t - t0; if (t <= a1) { var u = t - t0; return u - (1 - f) * u * u / (2 * ramp); }
+      if (t <= b0) return A1 + (t - a1) * f; if (t <= t1) { var w = t - b0; return B0 + f * w + (1 - f) * w * w / (2 * ramp); } return B1 + t - t1; };
+    return { t0: t0, t1: t1, f: f, at: at,
+      speed: function(t){ return t <= t0 || t >= t1 ? 1 : t < a1 ? mix(1, f, (t - t0) / ramp) : t > b0 ? mix(f, 1, (t - b0) / ramp) : f; },
+      on: function(t){ return f >= 1 ? 0 : (1 - this.speed(t)) / (1 - f); },
+      real: function(c){ var lo = t0 - 50, hi = t1 + 50; for (var i = 0; i < 50; i++) { var m = (lo + hi) / 2; if (at(m) < c) lo = m; else hi = m; } return hi; } }; }
+  // KM.curveGraph(svg, spec, c0, d, o): the easing curve drawn live, synced to the element it describes: the curve draws itself behind a dot
+  //   that rides it, on a time axis (0 to d, in the component's own seconds), with dashed guides at 0 and 1 and the dot's value on the left edge.
+  //   o.clock(t) = the component's clock (a timeScale's at, or reel time when left out); o.real(c) = the reel time of clock c (for the cues).
+  //   Returns { k(t), v(t), draw(t, alpha) }. Cues: a soft move while it draws, a snap when the dot lands.
+  function curveGraph(svg, spec, c0, d, o){ o = o || {}; var C = curve(spec), clock = o.clock || function(t){ return t; }, real = o.real || function(c){ return c; };
+    var W = +svg.getAttribute('width'), H = +svg.getAttribute('height'), pl = 6, pr = 10, pt = 10, pb = 22, lo = Math.min(0, C.min) - .06, hi = Math.max(1, C.max) + .06;
+    var X = function(k){ return pl + k * (W - pl - pr); }, Y = function(v){ return pt + (hi - v) / (hi - lo) * (H - pt - pb); }, NS = 'http://www.w3.org/2000/svg';
+    var mk = function(tag, at){ var e = document.createElementNS(NS, tag); for (var a in at) e.setAttribute(a, at[a]); svg.appendChild(e); return e; };
+    svg.innerHTML = '';
+    var g0 = mk('line', { x1: X(0), x2: X(1), y1: Y(0), y2: Y(0), class: 'cg-axis' }), g1 = mk('line', { x1: X(0), x2: X(1), y1: Y(1), y2: Y(1), class: 'cg-guide' });
+    var full = '', N = 72; for (var i = 0; i <= N; i++) full += (i ? 'L' : 'M') + X(i / N).toFixed(1) + ' ' + Y(C.f(i / N)).toFixed(1);
+    var ghost = mk('path', { d: full, class: 'cg-ghost' }), line = mk('path', { d: '', class: 'cg-line' }), hz = mk('line', { class: 'cg-h' }), dot = mk('circle', { r: 5.5, class: 'cg-dot' });
+    var l0 = mk('text', { x: X(0), y: H - 5, class: 'cg-t' }), l1 = mk('text', { x: X(1), y: H - 5, class: 'cg-t', 'text-anchor': 'end' });
+    l0.textContent = '0'; l1.textContent = Math.round(d * 1000) + ' ms';
+    cue({ t: real(c0), k: 'move', d: Math.max(.4, real(c0 + d) - real(c0)), g: .16, dir: 1, x: 120, x2: 230, r: .2 }); cue({ t: real(c0 + d), k: 'snap', g: .22, p: 9, x: 230, r: .2 });
+    var R = { css: C.css, f: C.f, k: function(t){ return cl((clock(t) - c0) / d); }, v: function(t){ return C.f(R.k(t)); },
+      draw: function(t, alpha){ var k = R.k(t), p = '', n = Math.max(1, Math.round(N * k)); for (var i = 0; i <= n; i++) { var q = k * i / n; p += (i ? 'L' : 'M') + X(q).toFixed(1) + ' ' + Y(C.f(q)).toFixed(1); }
+        line.setAttribute('d', p); var x = X(k), y = Y(C.f(k)); dot.setAttribute('cx', x.toFixed(1)); dot.setAttribute('cy', y.toFixed(1));
+        hz.setAttribute('x1', X(0)); hz.setAttribute('x2', x.toFixed(1)); hz.setAttribute('y1', y.toFixed(1)); hz.setAttribute('y2', y.toFixed(1));
+        dot.style.opacity = hz.style.opacity = clock(t) >= c0 - .05 ? 1 : 0; svg.style.opacity = alpha == null ? 1 : alpha; } };
+    return R; }
+  // KM.slowmoBadge(el, ts, label): a pill that pops in as the slow motion starts (a blip) and lets go as it ends; its dot pulses with the speed.
+  function slowmoBadge(el, ts, label){ el.innerHTML = '<i></i><span>' + label + '</span>'; cue({ t: ts.t0 + .05, k: 'blip', g: .2, x: 430 });
+    return function(t){ var on = ts.on(t), k = ease.back(P(t, ts.t0, ts.t0 + .35), 1.8) * (1 - ease.inOut3(P(t, ts.t1 - .2, ts.t1 + .1)));
+      el.style.opacity = cl(k * 1.4).toFixed(3); el.style.transform = 'scale(' + mix(.7, 1, cl(k)).toFixed(3) + ')';
+      el.firstChild.style.transform = 'scale(' + (1 + .35 * on * Math.max(0, Math.sin(t * 7))).toFixed(3) + ')'; }; }
+  // KM.specChip(el, items, t0, d, kf): the numbers roll up from 0 (ticks as they count) and land; items = [{ label, v, unit, dp }];
+  //   kf(t) -> 0-1 (optional) drives the roll instead of t0 + d, e.g. a curveGraph's k: the "ms" counter then is the component's own clock
+  function specChip(el, items, t0, d, kf){ d = d || .55; for (var i = 0; i < 6; i++) cue({ t: t0 + i * d / 6, k: 'tick', g: .07, p: i * 2 }); cue({ t: t0 + d, k: 'pop', g: .22, p: 6 });
+    el.innerHTML = items.map(function(it, i){ return '<div class="sc-r' + i + '">' + (it.label ? '<small>' + it.label + '</small>' : '') + '<b></b>' + (it.unit && it.unit[0] !== '%' ? ' ' : '') + '<span>' + (it.unit || '') + '</span></div>'; }).join('');
+    var B = el.querySelectorAll('b');
+    return function(t){ var k = kf ? kf(t) : P(t, t0, t0 + d);
+      items.forEach(function(it, i){ var q = kf ? (i ? ease.out3(P(t, t0 + d, t0 + d + .4)) : k) : ease.out3(P(k, i * .2, Math.min(1, .7 + i * .2))); B[i].textContent = (it.v * q).toFixed(it.dp || 0); if (kf && i) B[i].parentNode.style.opacity = P(t, t0 + d - .05, t0 + d + .15).toFixed(3); });
+      el.style.opacity = ease.out3(P(t, t0 - .15, t0 + .1)).toFixed(3); el.style.transform = 'translateY(' + ((1 - ease.back(P(t, t0 - .15, t0 + .3), 1.5)) * 10).toFixed(2) + 'px)'; }; }
+  // KM.partProgress(el, parts): a segmented bar, one segment per part ([[t0, t1], ...]); the current one fills as its part plays (a click at each)
+  function partProgress(el, parts){ el.innerHTML = parts.map(function(){ return '<i><b></b></i>'; }).join(''); var S = el.querySelectorAll('b');
+    parts.forEach(function(p){ cue({ t: p[0], k: 'click', g: .08, p: 3 }); });
+    return function(t){ parts.forEach(function(p, i){ var k = P(t, p[0], p[1]); S[i].style.transform = 'scaleX(' + k.toFixed(4) + ')'; S[i].parentNode.style.opacity = t >= p[0] && t < p[1] ? 1 : .6; }); }; }
+  // ---- the look: themes (owner, 8 Nov 2026: "Let's go with C."; scripts/explainer/styles/C.html was the test) ----
+  // Style C, "Glass and light": layered frosted panes over slow coloured light, a soft gradient grade, crisp white type, floating code panes.
+  // The cheap path (render minutes): no backdrop-filter (style C's test took 52 GitHub minutes for 8 s; real backdrop blur roughly doubles the
+  // cost of a frame), no live filter blur on big layers, no full-frame mask. The blooms are soft radial gradients, so blurring them would change
+  // nothing you can see: a translucent gradient pane with a 1 px lit edge over them reads as frosted glass. Each bloom and the grade is its own
+  // The light is painted in a 135x240 canvas scaled up to the frame (soft light needs no resolution: the upscale is the blur), with the grade on
+  // it: four bloom layers and a grade layer at full size cost ~160 ms a frame to composite in the headless capture, the canvas almost nothing.
+  var THEMES = {
+    glass: { name: 'Glass and light',
+      d: { warm: '#ff8a7a', cool: '#8fe6ff' },
+      c: { ink: '#070816', paper: '#f7f8ff', dim: '#9ea4c9', acc: '#8fe6ff', red: '#ff7aa8', ctl: '#272b55', raise: '#1e2148', skel: '#1b1d40', pg: '#0c0d26',
+        card: '#161939', on: '#0b0c1d' },
+      // glass: the pane's frost; 15 Nov 2026 (owner, 14 Nov: the live demo "looks faded grey"): less white (.17 -> .1 at the top, .03 in the middle),
+      // so the coloured light shows through the pane instead of a grey wash
+      v: { glass: 'linear-gradient(155deg,rgba(255,255,255,.1),rgba(255,255,255,.03) 46%,rgba(255,255,255,.06))',
+        // frost: the opaque pane for glass that sits over other content (a code pane over the phone): what frosted glass shows, an averaged colour
+        frost: 'linear-gradient(155deg,#2c2c66,#17183c 46%,#1f2050)',
+        edge: 'inset 0 0 0 1px rgba(255,255,255,.22),inset 0 1.5px 0 rgba(255,255,255,.5)', lift: '0 18px 28px rgba(18,8,60,.55)',
+        glow: 'rgba(143,230,255,.6)', soft: 'rgba(143,230,255,.16)', ring: 'rgba(143,230,255,.55)',
+        f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '680', ht: '-.04em' },
+      // [rgb, alpha, size, x, y, fx, fy, phase] in a 940x1280 field behind the frame (violet, rose, cyan, amber: light, never fills)
+      blooms: [['122,92,255', .62, 640, 180, 220, .31, .23, 0], ['255,111,207', .42, 580, 460, 640, .27, .35, 1.7], ['63,216,255', .4, 540, 120, 860, .37, .21, 3.1],
+        ['255,180,92', .3, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(90,60,200,.2)'], [.4, 'rgba(7,8,22,0)'], [1, 'rgba(0,150,170,.14)']] },
+    // dark (E18), 13 Nov 2026 (owner: "a little vibrancy in the colour grading, it feels slightly dull"): stronger mint and coral, cards a touch
+    // lighter with a soft top highlight, a faint mint / violet / coral glow behind the subject; KM.JEWELS = the avatar and chip tints
+    dark: { name: 'Ink and mint',
+      d: { warm: '#ff6a5c', cool: '#5ff2b0' },
+      c: { ink: '#101116', paper: '#f4f1ea', dim: '#9a978f', acc: '#5ff2b0', red: '#ff6a5c', ctl: '#3c3e4a', raise: '#363845', skel: '#30323d', pg: '#171820',
+        card: '#262833', on: '#0c0d12' },
+      v: { glass: 'linear-gradient(160deg,#262a63,#191b42 55%,#2a1c4a)', frost: '#1d1e26', edge: 'inset 0 1px 0 rgba(255,255,255,.11)', lift: '0 24px 60px rgba(0,0,0,.45)', glow: 'rgba(95,242,176,.6)', soft: 'rgba(95,242,176,.16)',
+        ring: 'rgba(95,242,176,.55)', f: "'Sora',system-ui,sans-serif", m: "'DM Mono',ui-monospace,monospace", hw: '800', ht: '-.024em' },
+      blooms: [['95,242,176', .17, 460, 140, 200, .2, .17, 0], ['124,108,255', .19, 440, 520, 640, .23, .19, 2], ['255,106,92', .1, 380, 500, 860, .17, .21, 4]], grade: null }
+  };
+  // jewel tones for avatars and chips on the dark look (13 Nov 2026): rich, mid-dark, white text on each at 4.5:1 or more;
+  // 14 Nov 2026 (owner: "main elements colouring can be made a bit more vibrant"): more saturated at the same lightness (white text 4.5:1+)
+  var JEWELS = ['#127a55', '#5a3ee0', '#c02a58', '#2257d6', '#8a3fd0', '#0b7590', '#b8420f'];
+  // ---- palettes (owner, 8 Nov 2026: "introduce more colour combinations, video to video"; rules-web.md rule 12): the glass look keeps its
+  // type, panes and layout; a palette swaps only the light (blooms, grade), the accent pair and the tints that follow them. newweb.mjs rotates
+  // them reel to reel (the next after the last web reel's "palette" in captions.json) and writes the name into the config, so reach reads per
+  // palette; preflight's CONTRAST line measures captions and labels over the light on rendered frames (4.5:1 or it fails).
+  // KM.theme('glass', name) or window.WEB_PALETTE; 'aurora' is the original glass light.
+  var PALETTES = {
+    // aurora: the original light; its labels lifted for CONTRAST (the old --dim read 2.9:1 over the top bloom). A scene with no palette keeps the old tokens.
+    aurora: { d: { warm: '#ff8a7a', cool: '#8fe6ff' }, c: { dim: '#cdd1ee', red: '#ff8ab4' } },
+    ember: { d: { warm: '#ff7a6b', cool: '#6fd8c8' }, c: { ink: '#0d0710', dim: '#e6d2ce', acc: '#ffcf7a', red: '#ff8a7a', ctl: '#3a2630', raise: '#2c1c26', skel: '#28192a', pg: '#150b12', card: '#211520', on: '#140a0c' },
+      v: { frost: 'linear-gradient(155deg,#4a2a3a,#241521 46%,#33202c)', lift: '0 18px 28px rgba(50,10,20,.55)', glow: 'rgba(255,207,122,.6)', soft: 'rgba(255,207,122,.16)', ring: 'rgba(255,207,122,.55)' },
+      blooms: [['255,96,84', .5, 640, 180, 220, .31, .23, 0], ['255,170,60', .4, 580, 460, 640, .27, .35, 1.7], ['214,64,150', .42, 540, 120, 860, .37, .21, 3.1], ['130,60,210', .34, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(160,40,60,.2)'], [.4, 'rgba(13,7,16,0)'], [1, 'rgba(170,90,20,.14)']] },
+    lagoon: { d: { warm: '#ff8a6b', cool: '#8ff7dc' }, c: { ink: '#04101a', dim: '#c4dde2', acc: '#8ff7dc', red: '#ffc27a', ctl: '#1d3a4a', raise: '#16303e', skel: '#142b38', pg: '#081a24', card: '#0f2633', on: '#04121a' },
+      v: { frost: 'linear-gradient(155deg,#1d4a5e,#0f2a38 46%,#173c4c)', lift: '0 18px 28px rgba(0,30,50,.55)', glow: 'rgba(143,247,220,.6)', soft: 'rgba(143,247,220,.16)', ring: 'rgba(143,247,220,.55)' },
+      blooms: [['30,200,180', .38, 640, 180, 220, .31, .23, 0], ['50,120,255', .44, 580, 460, 640, .27, .35, 1.7], ['120,240,160', .32, 540, 120, 860, .37, .21, 3.1], ['20,150,210', .4, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(0,120,140,.2)'], [.4, 'rgba(4,16,26,0)'], [1, 'rgba(30,60,180,.14)']] },
+    orchid: { d: { warm: '#ff8a7a', cool: '#a8b8ff' }, c: { ink: '#0e0718', dim: '#ddd2ea', acc: '#ffb8e4', red: '#c6a8ff', ctl: '#352650', raise: '#2a1d42', skel: '#261a3c', pg: '#140b22', card: '#1f1534', on: '#120818' },
+      v: { frost: 'linear-gradient(155deg,#432a66,#22153a 46%,#30204e)', lift: '0 18px 28px rgba(40,8,60,.55)', glow: 'rgba(255,184,228,.6)', soft: 'rgba(255,184,228,.16)', ring: 'rgba(255,184,228,.55)' },
+      blooms: [['200,80,255', .52, 640, 180, 220, .31, .23, 0], ['255,80,170', .44, 580, 460, 640, .27, .35, 1.7], ['110,100,255', .44, 540, 120, 860, .37, .21, 3.1], ['255,150,200', .26, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(120,40,200,.2)'], [.4, 'rgba(14,7,24,0)'], [1, 'rgba(200,40,140,.14)']] },
+    glacier: { d: { warm: '#ff8a7a', cool: '#a6d8ff' }, c: { ink: '#060b18', dim: '#cdd8ea', acc: '#a6d8ff', red: '#ff9cb4', ctl: '#24314f', raise: '#1c2742', skel: '#18223a', pg: '#0a1222', card: '#141d34', on: '#081020' },
+      v: { frost: 'linear-gradient(155deg,#2a3d66,#141f3a 46%,#1e2c50)', lift: '0 18px 28px rgba(0,15,50,.55)', glow: 'rgba(166,216,255,.6)', soft: 'rgba(166,216,255,.16)', ring: 'rgba(166,216,255,.55)' },
+      blooms: [['80,150,255', .5, 640, 180, 220, .31, .23, 0], ['150,200,255', .34, 580, 460, 640, .27, .35, 1.7], ['70,80,240', .46, 540, 120, 860, .37, .21, 3.1], ['190,150,255', .3, 480, 520, 260, .22, .29, 4.4]],
+      grade: [[0, 'rgba(40,80,200,.2)'], [.4, 'rgba(6,11,24,0)'], [1, 'rgba(60,140,200,.14)']] }
+  };
+  // ---- vivid demo (owner, 14 Nov 2026: "the actual frame where everything is flowing with animation to show the difference looks faded grey;
+  // it can be made more radiant and vibrant"): the demo's surfaces (--pg, --card, --raise, --ctl, --skel and a hex --glass / --frost) are lifted
+  // to at least VIVID.s saturation in HSL at the same hue (a grey #262833 becomes a deep indigo), cards a touch lighter (VIVID.l) for contrast
+  // with the ink; --tint and --tile are hued washes (accent and second accent) for the rows and panels a scene used to paint with white at
+  // 5-12% (white over dark reads grey); --hi1..--hi4 are full-saturation thumbnail gradients (KM.VIVID.hi). VIVID.light scales the blooms: kept at 1, since 1.22 added nothing inside
+  // the demo box and took the hook's CONTRAST from 4.1 to 3.4:1; the thinner frost on --glass lets the light through the panes instead.
+  // Cheap: token values only, no filter (rules-web.md rule 12). Output QA DEMO measures the result on the final MP4.
+  var VIVID = { s: .55, l: 1.3, light: 1, keys: ['pg', 'card', 'raise', 'ctl', 'skel'], lift: ['card', 'raise', 'ctl'],
+    hi: ['linear-gradient(150deg,#8a6bff,#4b2fe0)', 'linear-gradient(150deg,#ff5fae,#b0279b)', 'linear-gradient(150deg,#2fd2ff,#2466f0)', 'linear-gradient(150deg,#ffbf4a,#ff5a5f)'] };
+  function hsl(hex){ var n = parseInt(hex.slice(1), 16), r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255, M = Math.max(r, g, b), m = Math.min(r, g, b), l = (M + m) / 2, d = M - m, h = 0, s = 0;
+    if (d) { s = d / (1 - Math.abs(2 * l - 1)); h = M === r ? ((g - b) / d + 6) % 6 : M === g ? (b - r) / d + 2 : (r - g) / d + 4; } return [h * 60, s, l]; }
+  function hex(h, s, l){ var c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(h / 60 % 2 - 1)), m = l - c / 2, k = Math.floor(h / 60) % 6,
+    v = [[c, x, 0], [x, c, 0], [0, c, x], [0, x, c], [x, 0, c], [c, 0, x]][k];
+    return '#' + v.map(function(q){ return ('0' + Math.round(Math.min(1, Math.max(0, q + m)) * 255).toString(16)).slice(-2); }).join(''); }
+  function vivid(col, lift){ if (!/^#[0-9a-f]{6}$/i.test(col)) return col; var q = hsl(col); return hex(q[0], Math.max(q[1], VIVID.s), Math.min(.6, q[2] * (lift ? VIVID.l : 1))); }
+  function rgbOf(col){ var n = parseInt(col.slice(1), 16); return (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255); }
+  function vividTokens(th){ var o = { name: th.name, c: {}, v: {}, blooms: th.blooms, grade: th.grade }, k;
+    for (k in th.c) o.c[k] = VIVID.keys.indexOf(k) < 0 ? th.c[k] : vivid(th.c[k], VIVID.lift.indexOf(k) >= 0);
+    for (k in th.v) o.v[k] = k === 'glass' || k === 'frost' ? vivid(th.v[k]) : th.v[k];
+    var a = rgbOf(o.c.acc), r = rgbOf(o.c.red);
+    o.v.tint = 'rgba(' + a + ',.1)'; o.v.tile = 'linear-gradient(180deg,rgba(' + a + ',.16),rgba(' + r + ',.08))';
+    VIVID.hi.forEach(function(g, i){ o.v['hi' + (i + 1)] = g; }); return o; }
+  function withPalette(th, pal, src){ var p = src || PALETTES[pal], o = { name: th.name, c: {}, v: {}, blooms: p.blooms || th.blooms, grade: p.grade || th.grade }, k;
+    for (k in th.c) o.c[k] = (p.c && p.c[k]) || th.c[k]; for (k in th.v) o.v[k] = (p.v && p.v[k]) || th.v[k]; return o; }
+  // ---- colour worlds for the dark look (owner, 15 Nov 2026: the main frame "seem[s] to show similar colour grading so doesn't look different
+  // from other videos"; rules-web.md rule 17): every web reel gives its demo pane and its background light their own hue family and accent,
+  // so two reels side by side in the grid never look alike; the type, layout, BEFORE red / AFTER green signals and the brand frame stay.
+  // KM.theme('dark', name); the vivid pass then lifts the surfaces at the world's hue. Output QA HUE fails a demo whose main hue sits within
+  // 40 degrees of any of the last 3 web reels (scripts/qa/demo-hues.json). Pick the next with node scripts/explainer/palette.mjs --world.
+  // A new world passes CONTRAST and HUE on a scene before it is used.
+  var WORLDS = {
+    // saffron: warm amber surfaces, a gold accent, tangerine and plum light (measured main hue ~35 deg)
+    saffron: { d: { warm: '#ff6b5a', cool: '#5fd8c8' }, c: { ink: '#140b06', dim: '#d9c9b4', acc: '#ffc247', red: '#ff5f6d', ctl: '#4e2e12', raise: '#44280e', skel: '#38210c', pg: '#1e1108', card: '#3e240e', on: '#1d1102' },
+      v: { glass: 'linear-gradient(160deg,#723e12,#42220c 55%,#521a2e)', frost: '#2a180a', glow: 'rgba(255,194,71,.6)', soft: 'rgba(255,194,71,.16)', ring: 'rgba(255,194,71,.55)' },
+      blooms: [['255,150,40', .4, 540, 140, 220, .2, .17, 0], ['255,90,50', .26, 480, 520, 660, .23, .19, 2], ['190,50,120', .28, 440, 480, 900, .17, .21, 4]] },
+    // berry: magenta-rose surfaces, a pink accent, raspberry and violet light (measured main hue ~325 deg)
+    berry: { d: { warm: '#ff7a4a', cool: '#7fd8ff' }, c: { ink: '#13060f', dim: '#e0c8d8', acc: '#ff8fd0', red: '#ff7a4a', ctl: '#4a1a3c', raise: '#3e1632', skel: '#36132c', pg: '#1d0a17', card: '#3a1230', on: '#22041a' },
+      v: { glass: 'linear-gradient(160deg,#6a1650,#3c0c30 55%,#2c1250)', frost: '#26101f', glow: 'rgba(255,143,208,.6)', soft: 'rgba(255,143,208,.16)', ring: 'rgba(255,143,208,.55)' },
+      blooms: [['255,60,170', .38, 540, 140, 220, .2, .17, 0], ['150,60,255', .3, 480, 520, 660, .23, .19, 2], ['255,90,120', .26, 440, 480, 900, .17, .21, 4]] },
+    // jade: emerald surfaces, a mint accent, emerald, teal and leaf light (18 Nov 2026: saffron's ~35 deg sits within 40 of the form reel's 25;
+    // jade's ~155 deg is clear of the last three web reels, 25 / 225 / 325)
+    jade: { d: { warm: '#ff7a6b', cool: '#62f0bf' }, c: { ink: '#04120d', dim: '#c2ded1', acc: '#62f0bf', red: '#ff7a6b', ctl: '#11402f', raise: '#0f3828', skel: '#0c3022', pg: '#071a13', card: '#0f3626', on: '#03140d' },
+      v: { glass: 'linear-gradient(160deg,#0f5a40,#093626 55%,#0b3a44)', frost: '#0a2219', glow: 'rgba(98,240,191,.6)', soft: 'rgba(98,240,191,.16)', ring: 'rgba(98,240,191,.55)' },
+      blooms: [['40,220,150', .38, 540, 140, 220, .2, .17, 0], ['30,170,190', .3, 480, 520, 660, .23, .19, 2], ['120,230,120', .22, 440, 480, 900, .17, .21, 4]] }
+  };
+  // demo tokens (owner, 20 Nov 2026: "the colour combination doesn't give a feeling that any thought was put into it"; rules-web.md rule 18).
+  // Every demo's colours come from here, never hard-coded: ONE base hue in 3 tonal steps for content (--d1 mid, --d2 lighter, --d3 darker: tiles,
+  // cards, dots, rows), ONE accent (--dacc) for the subject, and the fixed pair (--dwarm = broken / before, --dcool = fixed / after). The steps
+  // follow the surface hue (c.card) at low saturation; a palette or world may list d: { warm, cool }, otherwise warm = c.red and cool = c.acc.
+  // KM.demo() reads them in JS, KM.demoFill(i) is the i-th content step as a CSS value (rows and tiles rotate through the 3 steps).
+  var DEMO = null;
+  function demoTokens(th, src){ var d = (src && src.d) || {}, q = hsl(th.c.card);
+    return { s: [hex(q[0], .42, .22), hex(q[0], .42, .29), hex(q[0], .4, .16)], acc: th.c.acc, warm: d.warm || th.c.red, cool: d.cool || th.c.acc }; }
+  function demo(){ return DEMO; }
+  function demoFill(i){ return 'var(--d' + (1 + ((i % 3) + 3) % 3) + ')'; }
+  var LT = {};
+  function theme(name, pal){ var th = THEMES[name] || THEMES.glass, R = document.documentElement, k;
+    pal = pal || window.WEB_PALETTE; if (th === THEMES.glass && PALETTES[pal]) { th = withPalette(th, pal); R.dataset.palette = pal; }
+    if (th === THEMES.dark && WORLDS[pal]) { var w = WORLDS[pal]; th = withPalette(th, pal, w); th.grade = w.grade || null; R.dataset.palette = pal; }
+    var dsrc = (th === THEMES.dark && WORLDS[pal]) ? WORLDS[pal] : (th === THEMES.glass && PALETTES[pal]) ? PALETTES[pal] : th;
+    th = vividTokens(th); DEMO = demoTokens(th, dsrc);
+    R.style.setProperty('--d1', DEMO.s[0]); R.style.setProperty('--d2', DEMO.s[1]); R.style.setProperty('--d3', DEMO.s[2]);
+    R.style.setProperty('--dacc', DEMO.acc); R.style.setProperty('--dwarm', DEMO.warm); R.style.setProperty('--dcool', DEMO.cool);
+    for (k in th.c) R.style.setProperty('--' + k, th.c[k]); for (k in th.v) R.style.setProperty('--' + k, th.v[k]);
+    R.style.background = document.body.style.background = th.c.ink; R.dataset.theme = name in THEMES ? name : 'glass';
+    // the light and the grade in one tiny canvas (135x240, a quarter of the frame) scaled up to the frame: the upscale is the blur, for free
+    var L = document.createElement('canvas'); L.id = 'km-lights'; L.className = 'a'; L.width = 135; L.height = 240; L.setAttribute('data-fit', 'free'); L.setAttribute('aria-hidden', 'true');
+    L.style.cssText = 'position:absolute;left:0;top:0;width:540px;height:960px;pointer-events:none';
+    document.body.insertBefore(L, document.body.firstChild); LT = { cx: L.getContext('2d'), th: th };
+    var T = {}; for (k in th.c) T[k] = th.c[k]; T.name = th.name; T.palette = R.dataset.palette || null; return T; }
+  // the blooms drift on slow Lissajous paths (a pure function of t), breathe a little, and follow the camera at a shallow depth
+  // (x .05: the camera crosses 560 px a part in the details format; y .2; zoom .25), so the light is never still; the grade is painted over them
+  // still (owner, 15 Nov 2026: web reels "too wiggly"): KM.lights(t, c, true) holds the light where it is at t 0 and ignores the camera,
+  // so only the broken element moves (Output QA CALM)
+  function lights(t, c, still){ if (!LT.cx) return; if (still) { t = 0; c = null; } c = c || { x: 270, y: 480, z: 1 }; var g = LT.cx, th = LT.th, q = .25, zs = 1 + (c.z - 1) * .25;
+    g.globalCompositeOperation = 'source-over'; g.fillStyle = th.c.ink; g.fillRect(0, 0, 135, 240); g.globalCompositeOperation = 'lighter';
+    th.blooms.forEach(function(b, i){ var r = b[2] / 2 * zs * (1 + .08 * Math.sin(t * .5 + i)), a = Math.min(.85, b[1] * VIVID.light) * (.82 + .18 * Math.sin(t * .7 + i * 2.1));
+      var x = (b[3] - 200 + Math.sin(t * b[5] + b[7]) * 90 - (c.x - 270) * .05 - 270) * zs + 270, y = (b[4] - 160 + Math.sin(t * b[6] + b[7] * 1.3) * 110 - (c.y - 480) * .2 - 480) * zs + 480;
+      var gr = g.createRadialGradient(x * q, y * q, 0, x * q, y * q, r * q); gr.addColorStop(0, 'rgba(' + b[0] + ',' + a.toFixed(3) + ')'); gr.addColorStop(.5, 'rgba(' + b[0] + ',' + (a * .5).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(' + b[0] + ',0)');
+      g.fillStyle = gr; g.fillRect(0, 0, 135, 240); });
+    if (th.grade) { g.globalCompositeOperation = 'source-over'; var gd = g.createLinearGradient(0, 0, 0, 240);
+      th.grade.forEach(function(s){ gd.addColorStop(s[0], s[1]); }); g.fillStyle = gd; g.fillRect(0, 0, 135, 240); } }
+  // the world ends at y (viewport px) by k (0: the full frame, 1: cut at y): an overflow cut (cheap, and the BAND check reads it) under a soft
+  // feather (fe: a gradient from transparent to the ink, 28 px tall, ending at the cut) that fades the panes and the light into the band
+  function cutBelow(vp, fe, y, k){ var e = mix(960, y, k); vp.style.height = e.toFixed(1) + 'px';
+    if (fe) { fe.style.cssText = 'position:absolute;left:0;top:' + (e - 28).toFixed(1) + 'px;width:540px;height:28px;pointer-events:none;background:linear-gradient(transparent,var(--ink));opacity:' + k.toFixed(3); } }
+  // a pane at its own depth: it slides against the camera's moves (d > 0: nearer than the world, so it moves more), measured from (cx, cy),
+  // the camera's centre when the pane is framed; extra = a transform to add (a float)
+  var ZONES = { top: [125, 300], hero: [300, 672], band: [680, 784] };
+  function worldY(c, y){ return c.y + (y - 480) / c.z; }
+  function depth(el, c, cx, cy, d, extra){ el.style.transform = 'translate(' + (-(c.x - cx) * d).toFixed(2) + 'px,' + (-(c.y - cy) * d).toFixed(2) + 'px)' + (extra || ''); }
+  function float(t, seed, amp){ return (amp == null ? 3 : amp) * Math.sin(t * (4.4 + seed % 1.2) / 1.2 + seed * 2.3); }
+  function publish(extra){ extra = extra || {}; window.TRANSITIONS = TR.slice().sort(function(a, b){ return a[0] - b[0]; });
+    window.CUES = { dur: DUR, cues: Q.slice().sort(function(a, b){ return a.t - b.t; }), mix: extra.mix || { duck: 8 }, bed: extra.bed || { bpm: 240 / (DUR / 8), origin: 0, gain: .3, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } }; }
+  return { cl: cl, P: P, mix: mix, win: win, ease: ease, reset: reset, cue: cue, declare: declare, rig: rig, transition: transition, shared: shared, pushThrough: pushThrough, morph: morph, wipe: wipe, mixCol: mixCol,
+    rise: rise, type: type, typed: typed, sweep: sweep, leader: leader, parallax: parallax, stagger: stagger, squeeze: squeeze, ripple: ripple, tap: tap, touch: touch, voice: voice, subs: subs, publish: publish,
+    curve: curve, linearCss: linearCss, timeScale: timeScale, curveGraph: curveGraph, slowmoBadge: slowmoBadge, specChip: specChip, partProgress: partProgress,
+    THEMES: THEMES, PALETTES: PALETTES, WORLDS: WORLDS, JEWELS: JEWELS, VIVID: VIVID, vivid: vivid, demo: demo, demoFill: demoFill, theme: theme, lights: lights, cutBelow: cutBelow, depth: depth, float: float, ZONES: ZONES, worldY: worldY };
+})();
+/*kitmotion:end*/
+/*kitsfx:begin*/
+// ---- @webin20sec element sound + entrance variants (scripts/explainer/kitsfx.js; owner, 8 Nov 2026: "Each element should have a flow,
+// whether it's a small, medium or large element on the screen. Every element's flow should have a compatible sound, low, medium or high
+// pitch based on the need.") Part of the motion kit: inlined after kitmotion.js between the kitsfx begin and end markers (the starters
+// carry both markers; node scripts/channel3/kit-inline.mjs <scene> fills them; npm run check fails on a stale copy). It extends KM:
+//   KM.sfx(el, t, verb, o)     the element's sound, picked by its rendered size (layout box, transform-free): small (chips, icons, dots,
+//                              under 4,000 px²) = a high blip; medium (buttons, cards, rows, under 45,000 px²) = a mid snap (enter, land) or
+//                              touch (change, tap); large (panels, screens) = a low move with reverb. Panned by the element's x in its frame
+//                              (the nearest [data-sfx-frame], else the page), pitched to the bed's chord at t (at publish). verb: enter |
+//                              land | change | exit. o: { g (gain x), x, size: 'small'|'medium'|'large', sizeEl, mode: 'tree'|'self' }.
+//   KM.sfxRun(els, t0, gap, verb, o)  a stagger as ONE pitched run (rising chord tones, gain falling, at most 6 notes), not a click storm
+//   KM.mark(el, mode, why)     an animated element whose sound another kit piece already writes (the camera, the voice, a curve graph)
+//   KM.enter(variant, k) / KM.leave(variant, k) -> { o, tf } (k 0..1 raw; eased inside): 'pop' (scale-pop) · 'slide' (slide-settle) ·
+//     'unfold' · 'flip' · 'morph' (stretch out of a pill) · 'drop' (fall and settle); KM.VARIANTS; KM.variant(i) rotates them so neighbours
+//     never move alike; KM.cascade(els, t, t0, gap, d, variant) (stagger-cascade: each element its own entrance, offset by gap)
+//   KM.el(el, { t0, d, variant, t1, d1, out, verb, g }) -> h(t) = { o, tf }, h.apply(t, base): an entrance (and an exit at t1) with its sound
+// Every registration marks the element (data-sfx = tree: it and its children; self: it alone), so the stills run can print
+// "ELEMENT SOUND: n of m animated elements have a cue" (scripts/showreel/elsound.mjs; pass at 90%). Cues stay sparse: two sound cues of one
+// kind closer than 70 ms merge into one (the element still counts), gains stay under the voice (the mix ducks them by 8 dB).
+(function(KM){
+  if (!KM || KM.sfx) return;
+  var cl = KM.cl, P = KM.P, mix = KM.mix, E = KM.ease, REG = [], LAST = {}, PEND = [];
+  var oReset = KM.reset, oPublish = KM.publish, oRig = KM.rig, oDepth = KM.depth, oSubs = KM.subs, oCut = KM.cutBelow, oBar = KM.partProgress, oCG = KM.curveGraph, oBadge = KM.slowmoBadge;
+  KM.reset = function(d){ REG = []; LAST = {}; PEND = []; return oReset(d); };
+  function mark(el, mode, why){ if (!el || !el.setAttribute) return el; if (el.getAttribute('data-sfx') !== 'tree') el.setAttribute('data-sfx', mode || 'tree'); if (REG.indexOf(el) < 0) REG.push(el); return el; }
+  // the layout box (offset chain, transform-free) up to the element's frame (a panel the width of the screen) or the page
+  function box(el){ var w, h, x = 0, y = 0, e = el;
+    if (el instanceof SVGElement && !(el instanceof SVGSVGElement) && el.getBBox) { var bb; try { bb = el.getBBox(); } catch (er) { bb = { x: 0, y: 0, width: 20, height: 20 }; } w = bb.width; h = bb.height; x = bb.x; y = bb.y; e = el.ownerSVGElement; }
+    else { w = el.offsetWidth || (el.getBoundingClientRect ? el.getBoundingClientRect().width : 0); h = el.offsetHeight || (el.getBoundingClientRect ? el.getBoundingClientRect().height : 0); }
+    for (; e && e !== document.body && !(e.hasAttribute && e.hasAttribute('data-sfx-frame')); e = e.offsetParent) { x += e.offsetLeft || 0; y += e.offsetTop || 0; }
+    return { x: x, y: y, w: w, h: h }; }
+  function sizeOf(el){ var b = box(el), a = b.w * b.h; return a < 4000 ? 'small' : a < 45000 ? 'medium' : 'large'; }
+  // a cue whose pitch is set at publish from the bed's chord at its time: reg = 'hi' (small, blip around A5-A6), 'blo' (a small exit, a blip an octave down), 'mid' (snap around A4-A5),
+  // 'low' (touch around A3-A4); deg = which chord tone (a run climbs it)
+  function tuned(c, reg, deg){ var k = c.k + (reg || ''); if (LAST[k] != null && Math.abs(LAST[k] - c.t) < .07) return null; LAST[k] = c.t;
+    c._reg = reg; c._deg = deg || 0; KM.cue(c); if (reg) PEND.push(c); return c; }
+  function sfx(el, t, verb, o){ o = o || {}; verb = verb || 'enter'; if (!el) return null; mark(el, o.mode || 'tree');
+    var b = box(o.sizeEl || el), size = o.size || sizeOf(o.sizeEl || el), g = o.g == null ? 1 : o.g, x = o.x != null ? o.x : cl(b.x + b.w / 2, 30, 510), deg = o.deg || 0;
+    if (size === 'small') return verb === 'exit' ? tuned({ t: t, k: 'blip', g: .07 * g, x: x, r: .15 }, 'blo', deg) : tuned({ t: t, k: 'blip', g: .13 * g, x: x, r: .12 }, 'hi', deg);
+    if (size === 'medium') { if (verb === 'exit') return tuned({ t: t, k: 'move', d: .32, g: .1 * g, dir: -1, p: -.3, x: x, r: .2 });
+      return verb === 'change' ? tuned({ t: t, k: 'touch', g: .26 * g, x: x, r: .15 }, 'low', deg) : tuned({ t: t, k: 'snap', g: .17 * g, x: x, r: .2 }, 'mid', deg); }
+    return tuned({ t: t, k: 'move', d: verb === 'exit' ? .45 : .6, g: (verb === 'exit' ? .12 : .18) * g, dir: verb === 'exit' ? -1 : 1, p: -1, x: x, r: .38 }); }
+  function sfxRun(els, t0, gap, verb, o){ o = o || {}; els = [].slice.call(els || []); if (!els.length) return;
+    var size = o.size || sizeOf(els[0]), step = Math.max(1, Math.ceil(els.length / 6)), n = 0;
+    els.forEach(function(el, i){ mark(el, o.mode || 'tree'); if (i % step) return;
+      var t = t0 + i * gap, g = (o.g == null ? 1 : o.g) * Math.pow(.84, n), x = o.x != null ? o.x : null;
+      sfx(el, t, verb, { g: g, x: x, size: size === 'large' ? 'medium' : size, deg: n, mode: o.mode }); n++; }); }
+  // ---- entrance and exit variants (k raw 0..1, the ease is inside; tf = a transform to append) ----
+  var V = {
+    pop: function(k){ var e = E.back(k, 1.9); return { o: cl(k * 3.5), tf: ' scale(' + mix(.55, 1, e).toFixed(4) + ')' }; },
+    slide: function(k){ var e = E.settle(k, 1.3); return { o: cl(k * 3), tf: ' translateY(' + ((1 - e) * 30).toFixed(2) + 'px)' }; },
+    unfold: function(k){ var e = E.out3(k); return { o: cl(k * 2.5), tf: ' perspective(700px) rotateX(' + ((1 - e) * -78).toFixed(2) + 'deg) scaleY(' + mix(.6, 1, e).toFixed(4) + ')' }; },
+    flip: function(k){ var e = E.settle(k, 1.1); return { o: cl(k * 4), tf: ' perspective(700px) rotateY(' + ((1 - e) * 84).toFixed(2) + 'deg)' }; },
+    morph: function(k){ var e = E.spring(k), sx = mix(.18, 1, E.out3(cl(k * 1.4))), sy = mix(.08, 1, e); return { o: cl(k * 4), tf: ' scale(' + sx.toFixed(4) + ',' + sy.toFixed(4) + ')' }; },
+    drop: function(k){ var e = E.settle(k, 1.6); return { o: cl(k * 3), tf: ' translateY(' + ((1 - e) * -34).toFixed(2) + 'px) rotate(' + ((1 - e) * -3).toFixed(2) + 'deg)' }; }
+  };
+  var VARIANTS = ['pop', 'slide', 'unfold', 'flip', 'morph', 'drop'];
+  function enter(v, k){ k = cl(k); if (k >= 1) return { o: 1, tf: '' }; return (V[v] || V.slide)(k); }
+  function leave(v, k){ k = cl(k); if (k <= 0) return { o: 1, tf: '' }; var r = (V[v] || V.slide)(1 - E.inOut3(k)); return { o: Math.min(r.o, 1 - k), tf: r.tf }; }
+  function variant(i){ return VARIANTS[((i % VARIANTS.length) + VARIANTS.length) % VARIANTS.length]; }
+  function cascade(els, t, t0, gap, d, v){ [].forEach.call(els, function(el, i){ var r = enter(v || 'pop', P(t, t0 + i * gap, t0 + i * gap + d)); el.style.opacity = r.o.toFixed(3); el.style.transform = r.tf; }); }
+  function el(node, o){ var d = o.d || .5, d1 = o.d1 || .35, v = o.variant || 'slide', out = o.out || v;
+    if (o.sound !== false) { sfx(node, o.t0, o.verb || 'enter', { g: o.g, mode: o.mode }); if (o.t1 != null) sfx(node, o.t1, 'exit', { g: o.g, mode: o.mode }); } else mark(node, o.mode);
+    var h = function(t){ var a = enter(v, P(t, o.t0, o.t0 + d)); if (o.t1 == null) return a; var b = leave(out, P(t, o.t1, o.t1 + d1)); return t < o.t1 ? a : { o: Math.min(a.o, b.o), tf: b.tf }; };
+    h.apply = function(t, base){ var r = h(t); node.style.opacity = r.o.toFixed(3); node.style.transform = (base || '') + r.tf; return r; };
+    return h; }
+  // ---- the kit pieces that already write a cue mark their element ----
+  KM.rig = function(o){ var R = oRig(o), ap = R.apply; R.apply = function(w, t, tilt){ mark(w, 'self', 'camera'); if (tilt) mark(tilt, 'self', 'camera'); return ap.apply(R, arguments); }; return R; };
+  KM.depth = function(node){ mark(node, 'self', 'camera'); return oDepth.apply(KM, arguments); };
+  KM.subs = function(cap){ mark(cap, 'tree', 'voice'); return oSubs.apply(KM, arguments); };
+  KM.cutBelow = function(vp, fe){ mark(vp, 'self', 'band'); if (fe) mark(fe, 'self', 'band'); return oCut.apply(KM, arguments); };
+  if (oBar) KM.partProgress = function(node){ mark(node, 'tree', 'clicks'); return oBar.apply(KM, arguments); };
+  if (oCG) KM.curveGraph = function(svg){ mark(svg, 'tree', 'move + snap'); return oCG.apply(KM, arguments); };
+  if (oBadge) KM.slowmoBadge = function(node){ mark(node, 'tree', 'blip'); return oBadge.apply(KM, arguments); };
+  // at publish: every tuned cue takes a chord tone of the bed at its time, in its register
+  KM.publish = function(extra){ var r = oPublish(extra), C = window.CUES, bd = C && C.bed;
+    if (bd && bd.chords) { var bar = 240 / bd.bpm, org = bd.origin || 0, RG = { hi: [79, 81, 92], blo: [67, 81, 79], mid: [69, 76, 81], low: [57, 62, 69] };
+      PEND.forEach(function(c){ var ch = bd.chords[((Math.floor((c.t - org) / bar) % bd.chords.length) + bd.chords.length) % bd.chords.length], rg = RG[c._reg], ns = [];
+        ch.forEach(function(m){ for (var q = m - 48; q <= rg[2]; q += 12) if (q >= rg[0] && ns.indexOf(q) < 0) ns.push(q); }); ns.sort(function(a, b){ return a - b; });
+        var note = ns.length ? ns[c._deg % ns.length] : rg[1]; c.p = note - rg[1]; delete c._reg; delete c._deg; }); }
+    window.ELEMENT_SOUND = { marked: REG.length }; return r; };
+  KM.sfx = sfx; KM.sfxRun = sfxRun; KM.mark = mark; KM.enter = enter; KM.leave = leave; KM.VARIANTS = VARIANTS; KM.variant = variant; KM.cascade = cascade; KM.el = el; KM.sizeOf = sizeOf;
+})(KM);
+/*kitsfx:end*/
+// ---- Turns Out design-tutorial layer (scripts/channel3/design/core.js, 21 Nov 2026), on the web motion kit (KM) ----
+//   DT.dial(t, steps)              the brand dial: steps [{t, n (0 = intro), label}] -> the ring fills fix by fix, "FIX n OF N"
+//   DT.title(t, list)              the step title in the top zone: list [{t, html}] (each rises in, the old one leaves)
+//   DT.cursor(t, keys)             a design-tool cursor: keys [[t, x, y, press 0/1], ...] (smooth between keys); returns {x, y, p}
+//   DT.line(id, x1, y1, x2, y2, k, col, w, dash)   a line that draws from its start (k 0..1); DT.box(id, b, k, col, dash) a drawn rectangle
+//   DT.sel(id, b, k)               a selection box with corner handles (the design app's own mark)
+//   DT.measure(id, x, y1, y2, k, label, side)      a vertical bracket with a live label; DT.hmeasure(id, x1, x2, y, k, label)
+//   DT.chip(id, html, x, y, k, cls) a property chip that pops in (k 0..1, 1..0 to leave)
+//   DT.spring(t, t0, d) -> 0..1 with a small overshoot (KM.ease.settle); DT.go(t, t0, d) -> 0..1 eased in-out; DT.roll(a, b, k) -> rounded number
+var DT = (function(){
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, NS = 'http://www.w3.org/2000/svg', OV = null, MADE = {};
+  function svg(id, tag){ OV = OV || $('ov'); if (MADE[id]) return MADE[id]; var e = document.createElementNS(NS, tag); e.setAttribute('id', 'dt-' + id); OV.appendChild(e); MADE[id] = e; return e; }
+  function spring(t, t0, d){ return E.settle(P(t, t0, t0 + (d || .7)), 1.3); }
+  function go(t, t0, d){ return E.inOut3(P(t, t0, t0 + (d || .5))); }
+  function roll(a, b, k){ return Math.round(mix(a, b, cl(k))); }
+  function decor(t){ var r = $('ringarc'); if (r) r.setAttribute('transform', 'rotate(' + (t * 9).toFixed(2) + ')'); var sp = $('spot'); if (sp) sp.style.opacity = (.85 + .15 * Math.sin(t * 1.3)).toFixed(3); }
+  function tint(a, b){ var R = document.documentElement.style; R.setProperty('--tint', a); R.setProperty('--tint2', b || a); }
+  function dial(t, steps){ decor(t); var f1 = steps.filter(function(s){ return s.n; })[0]; $('dial').style.opacity = f1 ? P(t, f1.t - .4, f1.t).toFixed(3) : 1; /* the dial waits for the first step (frame 0 says one thing) */ var cur = steps[0], N = steps.filter(function(s){ return s.n; }).length; steps.forEach(function(s){ if (t >= s.t) cur = s; });
+    var i = steps.indexOf(cur), nx = steps[i + 1], f = nx ? cl((t - cur.t) / Math.max(.1, nx.t - cur.t)) : 1, done = steps.slice(0, i).filter(function(s){ return s.n; }).length;
+    var frac = cur.n ? (done + E.out3(P(t, cur.t, cur.t + .6))) / N : (cur.end ? 1 : done / N);
+    var a = -Math.PI / 2 + Math.max(.0001, frac) * Math.PI * 2 * .999, R = 28, arc = document.querySelector('#dial .arc');
+    arc.setAttribute('d', 'M0 ' + -R + ' A' + R + ' ' + R + ' 0 ' + (frac > .5 ? 1 : 0) + ' 1 ' + (R * Math.cos(a)).toFixed(2) + ' ' + (R * Math.sin(a)).toFixed(2)); arc.style.opacity = frac > .001 ? 1 : 0;
+    document.querySelector('#dial .n').textContent = cur.n ? cur.n : (cur.sym || '');
+    var lb = document.querySelector('#dial .lb'), tx = cur.n ? (cur.word || 'FIX') + ' ' + cur.n + ' OF ' + N : (cur.label || ''); if (lb.textContent !== tx) lb.textContent = tx;
+    var pop = E.back(P(t, cur.t, cur.t + .45), 2); document.querySelector('#dial svg').style.transform = 'scale(' + (i === 0 ? 1 : .8 + .2 * pop).toFixed(3) + ') rotate(' + ((1 - (i === 0 ? 1 : E.out3(P(t, cur.t, cur.t + .5)))) * -60).toFixed(1) + 'deg)'; }
+  function title(t, list){ var el = $('ttl'), cur = null, nx = null; list.forEach(function(s, i){ if (t >= s.t) { cur = s; nx = list[i + 1] || null; } });
+    if (!cur) { el.style.opacity = 0; return; } if (el.dataset.h !== cur.html) { el.innerHTML = cur.html; el.dataset.h = cur.html; }
+    var k = E.out3(P(t, cur.t, cur.t + .4)), o = nx ? 1 - P(t, nx.t - .18, nx.t) : (cur.until ? 1 - P(t, cur.until - .2, cur.until) : 1);
+    el.style.opacity = (k * o).toFixed(3); el.style.transform = 'translateY(' + ((1 - k) * 18).toFixed(2) + 'px)'; el.style.filter = 'blur(' + ((1 - k) * 4).toFixed(2) + 'px)'; }
+  function cursor(t, keys){ var c = $('cur'); if (!keys.length || t < keys[0][0] - .3) { c.style.opacity = 0; return null; }
+    var a = keys[0], b = keys[0]; for (var i = 0; i < keys.length; i++) { if (keys[i][0] <= t) { a = keys[i]; b = keys[i + 1] || keys[i]; } }
+    var k = b === a ? 1 : E.inOut3(P(t, a[0], b[0])), x = mix(a[1], b[1], k), y = mix(a[2], b[2], k), p = b === a ? a[3] : (k < .5 ? a[3] : b[3]);
+    var last = keys[keys.length - 1], o = P(t, keys[0][0] - .3, keys[0][0]) * (1 - P(t, last[0] + .4, last[0] + .7));
+    c.style.opacity = o.toFixed(3); c.style.transform = 'translate(' + (x - 4).toFixed(2) + 'px,' + (y - 2).toFixed(2) + 'px) scale(' + (p ? .86 : 1) + ')'; return { x: x, y: y, p: p }; }
+  function line(id, x1, y1, x2, y2, k, col, w, dash){ var e = svg(id, 'line'); k = cl(k); e.setAttribute('x1', x1); e.setAttribute('y1', y1); e.setAttribute('x2', mix(x1, x2, E.out3(k))); e.setAttribute('y2', mix(y1, y2, E.out3(k)));
+    e.setAttribute('stroke', col || '#ffb35a'); e.setAttribute('stroke-width', w || 2); e.setAttribute('stroke-linecap', 'round'); if (dash) e.setAttribute('stroke-dasharray', dash); e.style.opacity = k > .001 ? 1 : 0; return e; }
+  function box(id, b, k, col, dash, fill){ var e = svg(id, 'rect'); e.setAttribute('x', b.x); e.setAttribute('y', b.y); e.setAttribute('width', Math.max(0, b.w)); e.setAttribute('height', Math.max(0, b.h)); e.setAttribute('rx', b.r || 0);
+    e.setAttribute('fill', fill || 'none'); e.setAttribute('stroke', col || '#ffb35a'); e.setAttribute('stroke-width', 2); if (dash) e.setAttribute('stroke-dasharray', dash); e.setAttribute('pathLength', 1);
+    if (!dash) { e.style.strokeDasharray = '1 1'; e.style.strokeDashoffset = (1 - E.out3(cl(k))).toFixed(4); } e.style.opacity = k > .001 ? (dash ? cl(k) : 1) : 0; return e; }
+  function sel(id, b, k){ box(id + '-r', b, k, '#7aa2ff'); var hs = [[b.x, b.y], [b.x + b.w, b.y], [b.x, b.y + b.h], [b.x + b.w, b.y + b.h]];
+    hs.forEach(function(h, i){ var e = svg(id + '-h' + i, 'rect'), s = 9 * E.back(cl((k - .4) / .6), 2); e.setAttribute('x', h[0] - s / 2); e.setAttribute('y', h[1] - s / 2); e.setAttribute('width', Math.max(0, s)); e.setAttribute('height', Math.max(0, s)); e.setAttribute('fill', '#fff'); e.setAttribute('stroke', '#7aa2ff'); e.setAttribute('stroke-width', 2); e.style.opacity = k > .4 ? 1 : 0; }); }
+  // measurement labels sit in small dark pills (premium pass, 21 Nov 2026)
+  function label(id, x, y, txt, k, col, anchor){ var bg = svg(id + '-bg', 'rect'), e = svg(id, 'text'); if (bg.nextSibling !== e) OV.insertBefore(bg, e); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('fill', col || '#ffb35a'); e.setAttribute('font-family', 'Space Grotesk'); e.setAttribute('font-weight', 700); e.setAttribute('font-size', 19);
+    e.setAttribute('text-anchor', anchor || 'start'); e.textContent = txt; e.style.opacity = cl(k).toFixed(3);
+    var w = txt.length * 11 + 18, x0 = (anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w + 7 : x - 7); bg.setAttribute('x', x0); bg.setAttribute('y', y - 19); bg.setAttribute('width', w); bg.setAttribute('height', 28); bg.setAttribute('rx', 14);
+    bg.setAttribute('fill', 'rgba(14,17,28,.88)'); bg.setAttribute('stroke', 'rgba(255,179,90,.45)'); bg.setAttribute('stroke-width', 1); bg.style.opacity = cl(k).toFixed(3); return e; }
+  function measure(id, x, y1, y2, k, txt, side){ var s = side || 1, kk = E.out3(cl(k)), ym = (y1 + y2) / 2, h = (y2 - y1) / 2 * kk;
+    line(id + 'm', x, ym, x, ym - h, k > .01 ? 1 : 0, '#ffb35a', 2); line(id + 'n', x, ym, x, ym + h, k > .01 ? 1 : 0, '#ffb35a', 2);
+    line(id + 't', x - 6, ym - h, x + 6, ym - h, k > .01 ? 1 : 0, '#ffb35a', 2); line(id + 'b', x - 6, ym + h, x + 6, ym + h, k > .01 ? 1 : 0, '#ffb35a', 2);
+    label(id + 'l', x + 12 * s, ym + 5, txt, P(k, .5, 1), '#ffb35a', s > 0 ? 'start' : 'end'); }
+  function hmeasure(id, x1, x2, y, k, txt){ var kk = E.out3(cl(k)), xm = (x1 + x2) / 2, w = (x2 - x1) / 2 * kk;
+    line(id + 'm', xm, y, xm - w, y, k > .01 ? 1 : 0, '#ffb35a', 2); line(id + 'n', xm, y, xm + w, y, k > .01 ? 1 : 0, '#ffb35a', 2);
+    line(id + 'l', xm - w, y - 6, xm - w, y + 6, k > .01 ? 1 : 0, '#ffb35a', 2); line(id + 'r', xm + w, y - 6, xm + w, y + 6, k > .01 ? 1 : 0, '#ffb35a', 2);
+    label(id + 't', xm, y - 10, txt, P(k, .5, 1), '#ffb35a', 'middle'); }
+  var CH = {};
+  function chip(id, html, x, y, k, cls){ var e = CH[id]; if (!e) { e = document.createElement('div'); e.className = 'chip' + (cls ? ' ' + cls : ''); $('world').appendChild(e); CH[id] = e; }
+    if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; } k = cl(k); var s = E.back(k, 2.2);
+    if (y >= 380 && y <= 420) y = 374;   // round 6: chips sit just above the design, never on its first line
+    x = Math.max(36, Math.min(x, 464 - e.offsetWidth));   // and inside the safe zone whatever their width
+    e.style.left = x + 'px'; e.style.top = y + 'px'; e.style.opacity = k.toFixed(3); e.style.transform = 'translateY(' + ((1 - k) * 10).toFixed(2) + 'px) scale(' + (.7 + .3 * s).toFixed(3) + ')'; return e; }
+  // a sound for a chip / a guide / a snap / a measure, all from the kit's cue list (so every element that lands is heard)
+  function snd(t, kind, x, g, p){ KM.cue({ t: t, k: kind, g: g || .16, p: p || 0, x: x || 270 }); }
+  return { tint: tint, decor: decor, $: $, svg: svg, spring: spring, go: go, roll: roll, dial: dial, title: title, cursor: cursor, line: line, box: box, sel: sel, label: label, measure: measure, hmeasure: hmeasure, chip: chip, snd: snd };
+})();
+// the Turns Out colour world on the kit's dark theme: ink, amber light, a cool fill (so every reel shares the brand look)
+KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red: '#ff6b6b', ctl: '#1f2538', raise: '#1a1f30', skel: '#151a28', pg: '#0b0d16', card: '#141827', on: '#0b0d16' },
+  v: { glass: 'linear-gradient(160deg,#1a2036,#0e1120 60%,#1a1630)', frost: '#10131f', glow: 'rgba(255,179,90,.5)', soft: 'rgba(255,179,90,.16)', ring: 'rgba(255,179,90,.5)' },
+  blooms: [['255,140,70', .30, 520, 160, 200, .18, .15, 0], ['90,110,255', .20, 480, 520, 640, .21, .17, 2], ['255,120,90', .16, 420, 460, 900, .15, .2, 4]] };
+// ---- final-cut layer (owner, 21 Nov 2026: "amazingly defined animation, motion, flow, switch other elements ... with range of sound elements") ----
+//   DT.KEY: the bed's chords (A minor family); DT.note(i) a pitch step from the scale so element sounds play in key
+//   DT.S.*: one sound per design action, the same in every reel (the channel's sound vocabulary):
+//     click(t, x) cursor press · drag(t, d, x, x2) a stereo move · snap(t, x, i) lands on a guide (pitched, rising with i) · land(t, x, i) an element arrives
+//     swap(t, d, x, n) letters flip into a new font (paper flicks) · roll(t, d, x, n) numbers count (accelerating ticks) · tint(t, x) a colour change (shimmer)
+//     stamp(t, x) a slam · rise(t, d) a swell into a fix · done(t, x) a fix lands (snap + blip chord + shimmer) · whoosh(t, x, r) · resolve(t) the payoff chord
+//   DT.burst(id, x, y, t, t0, col) a spark burst where a fix lands · DT.flipChars(el, t, t0, d, A, B) letter-by-letter font switch (A/B = {f, c, ls})
+//   DT.intro(board, t, d) the cold open: the design drops in, tilted, and settles; its children cascade in (opacity)
+//   DT.bed(extra) -> the publish block: a soft pad in the channel's key, lifting into the payoff, ducking under the voice
+(function(){
+  var P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;
+  var SC = [0, 2, 3, 5, 7, 9, 10, 12, 14, 15];   // A natural minor steps from the bed's root
+  DT.note = function(i){ return SC[((i % SC.length) + SC.length) % SC.length]; };
+  var c = function(o){ KM.cue(o); };
+  // no drums (owner, 21 Nov 2026: "few sound elements are too much like drum sound ... chose better sound variations"): on the runner's sample pack
+  // blip / pop are soft toms, hit / boom a bass drum, tap / touch / tick a hi-hat pedal, so the tuned and ticking parts stay synthesized (synth: true)
+  // and the only recorded effects are the finger snap (snap, click), paper (rustle) and air (move, swish)
+  var pl = function(t, x, i, g){ c({ t: t, k: 'blip', g: g || .13, p: DT.note(i || 0), x: x, synth: true }); };
+  DT.S = {
+    click: function(t, x){ c({ t: t, k: 'click', g: .12, x: x }); },
+    drag: function(t, d, x, x2){ c({ t: t, k: 'move', d: d, g: .15, x: x, x2: x2 == null ? x : x2 }); },
+    snap: function(t, x, i){ c({ t: t, k: 'snap', g: .16, x: x }); pl(t + .02, x, (i || 0) + 2, .12); },
+    land: function(t, x, i){ pl(t, x, i || 0, .13); c({ t: t + .01, k: 'click', g: .05, x: x }); },
+    swap: function(t, d, x, n){ n = n || 8; for (var i = 0; i < n; i++) c({ t: t + d * i / n, k: 'rustle', d: .06, g: .05, p: i % 5, x: x }); pl(t + d, x, 4, .11); },
+    roll: function(t, d, x, n){ n = n || 10; for (var i = 0; i < n; i++) { var u = 1 - Math.pow(1 - i / n, 1.8); c({ t: t + d * u, k: 'tick', g: .06, p: i % 7, x: x, synth: true }); } },
+    tint: function(t, x){ c({ t: t, k: 'shimmer', g: .14, x: x, r: .4 }); },
+    stamp: function(t, x){ c({ t: t, k: 'snap', g: .24, x: x }); c({ t: t + .01, k: 'rustle', d: .12, g: .1, x: x }); pl(t + .03, x, 0, .1); pl(t + .03, x, 4, .08); },
+    rise: function(t, d){ c({ t: t, k: 'swell', d: d || .6, g: .12 }); },
+    done: function(t, x, i){ c({ t: t, k: 'snap', g: .14, x: x }); [0, 2, 4].forEach(function(s, j){ pl(t + .03 + j * .05, x, (i || 0) + s, .1); }); c({ t: t + .05, k: 'shimmer', g: .1, x: x, r: .5 }); },
+    whoosh: function(t, x, r){ c({ t: t, k: 'swish', d: .35, g: .15, x: x || 270, r: r == null ? .3 : r }); },
+    resolve: function(t){ c({ t: t - .5, k: 'swell', d: .5, g: .1 }); [0, 4, 7, 9, 11].forEach(function(s, j){ pl(t + j * .07, 200 + j * 40, s, .12); }); c({ t: t + .1, k: 'shimmer', g: .16, x: 270, r: .7 }); }
+  };
+  var BU = {};
+  DT.burst = function(id, x, y, t, t0, col){ var host = DT.$('world'), b = BU[id]; if (!b) { b = []; for (var i = 0; i < 12; i++) { var e = document.createElement('i'); e.style.cssText = 'position:absolute;left:0;top:0;width:7px;height:7px;margin:-3.5px;border-radius:50%;pointer-events:none;z-index:29;opacity:0'; host.appendChild(e); b.push(e); } BU[id] = b; }
+    var p = P(t, t0, t0 + .7); b.forEach(function(e, i){ var a = i / 12 * Math.PI * 2 + (i % 2) * .2, r = (i % 3 ? 54 : 78) * E.out3(p); e.style.background = col || '#ffb35a';
+      e.style.transform = 'translate(' + (x + Math.cos(a) * r).toFixed(1) + 'px,' + (y + Math.sin(a) * r).toFixed(1) + 'px) scale(' + (1 - p * .6).toFixed(3) + ')'; e.style.opacity = (p > 0 && p < 1 ? 1 - p : 0).toFixed(3); }); };
+  DT.flipChars = function(el, t, t0, d, A, B){ if (!el._ch) { var tx = el._txt || el.textContent; el._txt = tx; el.textContent = ''; el._ch = [];
+      for (var i = 0; i < tx.length; i++) { var s = document.createElement('span'); s.textContent = tx[i]; s.style.display = 'inline-block'; s.style.whiteSpace = 'pre'; s.style.transformOrigin = '50% 60%'; el.appendChild(s); el._ch.push(s); } }
+    var n = el._ch.length; el._ch.forEach(function(s, i){ var a = t0 + d * .65 * i / Math.max(1, n - 1), k = P(t, a, a + d * .35), on = k >= .5, st = on ? B : A;   // every letter finishes by t0 + d (owner, 21 Nov: the last letters froze mid-flip, raised off the line)
+      s.style.font = st.f; s.style.color = st.c; s.style.letterSpacing = st.ls || 'normal';
+      s.style.transform = k > 0 && k < 1 ? 'rotateX(' + (on ? (1 - k) * 2 * 90 : k * 2 * 90).toFixed(1) + 'deg) translateY(' + (Math.sin(Math.PI * k) * -4).toFixed(2) + 'px)' : 'none'; });
+    return P(t, t0, t0 + d); };
+  DT.intro = function(board, t, d){ d = d || .55; var k = E.settle(P(t, 0, d), 1.1), o = E.out3(P(t, 0, d * .6));
+    board.style.transform = (board._tf || '') + ' perspective(1200px) rotateX(' + ((1 - k) * 18).toFixed(2) + 'deg) translateY(' + ((1 - k) * 60).toFixed(1) + 'px) scale(' + (.92 + .08 * k).toFixed(4) + ')';
+    board.style.opacity = o.toFixed(3); var ch = board.children; for (var i = 0; i < ch.length; i++) { var q = P(t, .12 + i * .05, .4 + i * .05); if (q < 1) { ch[i].style.opacity = q.toFixed(3); ch[i]._io = 1; } else if (ch[i]._io) { ch[i].style.opacity = ''; ch[i]._io = 0; } } };
+  DT.bed = function(lift){ return { bed: { bpm: 96, origin: 0, gain: .3, soft: true, lift: lift, chords: [[45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] }, mix: { duck: 8, room: .5 } }; };
+})();
+
+// ---- round 6: the context stage, the hook, the dramatic score ----
+//   DT.ctx()                 marks the scene as staged (hides the dark stage; the dark band holds the brand)
+//   DT.mood(t, k)            the place: k 0 = problem (dim, grey, a little cold), 1 = lit (warm, full colour); #ctx .lit layers fade in with k
+//   DT.sweep(t, t0)          a light sweep across the design as a fix lands
+//   DT.hook(t, html, out)    frame 0: the claim slams in word by word over the problem (scale, blur, a small shake), leaves at out
+//   DT.score(lift, fix)      the bed: tense minor chords until fix (s), then bright major ones, lifting into the payoff
+//   DT.S.sting(t), DT.S.reveal(t) the opening sting (air + a tense plucked cluster) and the reveal (a riser ending on t, then a bright chord)
+(function(){
+  var P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;
+  DT.ctx = function(){ document.body.classList.add('ctx'); };
+  DT.mood = function(t, k, subj){ var e = DT.$('ctx'); if (!e) return; k = cl(k);
+    (subj || []).forEach(function(b){ if (b) b.style.filter = 'grayscale(' + (.55 * (1 - k)).toFixed(3) + ') brightness(' + (.82 + .18 * k).toFixed(3) + ')'; });   // the design itself shares the mood
+    e.style.filter = 'grayscale(' + (.75 * (1 - k)).toFixed(3) + ') brightness(' + (.55 + .45 * k).toFixed(3) + ') contrast(' + (.9 + .1 * k).toFixed(3) + ') hue-rotate(' + (-12 * (1 - k)).toFixed(1) + 'deg)';
+    var L = e.querySelectorAll('.lit'); for (var i = 0; i < L.length; i++) L[i].style.opacity = k.toFixed(3); };
+  DT.sweep = function(t, list){ var e = DT.$('sweep'), on = null; list.forEach(function(t0){ if (t >= t0 && t < t0 + .7) on = t0; });
+    if (on == null) { e.style.opacity = 0; return; } var u = E.inOut3(P(t, on, on + .7)); e.style.opacity = Math.sin(Math.PI * u).toFixed(3); e.style.transform = 'translateX(' + (u * 900).toFixed(1) + 'px) skewX(-12deg)'; };
+  DT.hook = function(t, html, out){ var e = DT.$('hook'); if (!e._w) { e.innerHTML = html; e._w = [].slice.call(e.querySelectorAll('i')); }
+    var o = 1 - P(t, out - .25, out); e.style.opacity = o.toFixed(3); var sh = (1 - P(t, 0, .45)) * 3;
+    e.style.transform = 'translate(' + (Math.sin(t * 61) * sh).toFixed(2) + 'px,' + (Math.cos(t * 47) * sh - 30 * P(t, out - .25, out)).toFixed(2) + 'px)';
+    e._w.forEach(function(w, i){ var a = -.22 + i * .07, k = P(t, a, a + .22),   // the first word is fully there at frame 0 (owner, 21 Nov: frame 0 must already say it)
+      s = E.back(k, 2.4); w.style.opacity = cl(k * 2).toFixed(3); w.style.visibility = k > 0 ? 'visible' : 'hidden'; w.style.transformOrigin = '0 70%'; w.style.transform = 'scale(' + (1.5 - .5 * s).toFixed(3) + ')'; w.style.filter = 'blur(' + ((1 - k) * 8).toFixed(2) + 'px)'; }); };
+  DT.score = function(lift, fix){ var n = Math.ceil(fix / 2.5); var tense = [[45, 57, 60, 64], [41, 53, 60, 65], [44, 56, 59, 64], [45, 57, 60, 64]], bright = [[48, 60, 64, 67, 72], [43, 55, 62, 67, 71], [45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [48, 60, 64, 67, 76]];
+    var ch = []; for (var i = 0; i < n; i++) ch.push(tense[i % tense.length]); for (i = 0; i < 6; i++) ch.push(bright[i % bright.length]);
+    return { bed: { bpm: 96, origin: 0, soft: true, lift: lift, chords: ch }, mix: { duck: 7, room: .6 } }; };
+  var c = function(o){ KM.cue(o); }, pl = function(t, x, n, g){ c({ t: t, k: 'blip', g: g || .12, p: n, x: x, synth: true }); };
+  DT.S.sting = function(t){ c({ t: t, k: 'swish', d: .4, g: .2, x: 270, r: .6 }); c({ t: t + .05, k: 'snap', g: .22, x: 270 }); [0, 1, 6, 7].forEach(function(n, j){ pl(t + .05 + j * .015, 200 + j * 50, n - 5, .13); }); c({ t: t + .1, k: 'shimmer', g: .08, x: 270, r: .7 }); };
+  DT.S.reveal = function(t){ c({ t: t, k: 'riser', d: .9, g: .14 }); c({ t: t, k: 'snap', g: .2, x: 270 }); [0, 4, 7, 12].forEach(function(n, j){ pl(t + .02 + j * .03, 180 + j * 60, n, .13); }); c({ t: t + .05, k: 'shimmer', g: .16, x: 270, r: .6 }); };
+})();
+
+(function(){
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ffd27a', '#ff7a45');
+  var TEXT = "When is this event? You can't tell. Turns out, related things sit together. Fix one: date and time together. Fix two: the place right under. Fix three: space between groups. Found it in a second.";
+  var DUR = 16, BX = 70, BY = 396, V, PH, A = {}, CAM;
+  // A: date, time and place scattered, tiny and tilted; 1: date and time in one block; 2: the place under it; 3: space between the groups
+  var EV = {
+    tt: { A: { x: 22, y: 112, s: 1, r: -3 }, B: { x: 28, y: 34, s: 1, r: 0 }, g: 0 },
+    d1: { A: { x: 252, y: 24, s: .62, r: 7 }, B: { x: 28, y: 92, s: 1, r: 0 }, f: 1 },
+    d2: { A: { x: 28, y: 318, s: .62, r: -9 }, B: { x: 28, y: 124, s: 1, r: 0 }, f: 1 },
+    pl: { A: { x: 168, y: 246, s: .66, r: 11 }, B: { x: 28, y: 160, s: 1, r: 0 }, f: 2 },
+    ex: { A: { x: 30, y: 190, s: .8, r: -5 }, B: { x: 28, y: 300, s: 1, r: 0 }, f: 2 } };
+  var IDS = ['tt', 'd1', 'd2', 'pl', 'ex'];
+  function at(w, n){ return V.at(w, n); }
+  function anchors(words){
+    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
+    A.hook = at('You') - .1; A.tell = at('tell'); A.turns = at('Turns'); A.tog = at('together'); A.f1 = at('Fix'); A.date = at('date'); A.tog2 = at('together', 2); A.f2 = at('Fix', 2); A.under = at('under'); A.f3 = at('Fix', 3); A.groups = at('groups');
+    A.found = at('Found'); A.second = at('second'); A.end = Math.min(DUR - .2, V.end + .8); A.e1 = Math.min(DUR - 1.8, A.second + .9); A.e2 = Math.min(DUR - .8, A.second + 2);
+    window.COVER = .6;
+    var S = DT.S; S.sting(0); [.35, .65, .95].forEach(function(t0, i){ S.land(t0 + .05, 270, i + 1); KM.cue({ t: t0, k: 'tick', g: .08, p: i, x: 270, synth: true }); }); S.whoosh(0, 270, .4);
+    S.drag(A.hook, .5, 400, 120); S.drag(A.hook + .5, .5, 120, 360); S.stamp(A.tell + .1, 270); S.tint(A.tog, 270);
+    S.rise(A.f1 - .4, .45); S.click(A.date - .1, 380); S.drag(A.date, .6, 380, 120); S.snap(A.tog2, 120, 0); S.snap(A.tog2 + .15, 120, 1); A.d1 = A.tog2 + .45; S.done(A.d1, 150, 0);
+    S.rise(A.f2 - .1, .4); S.drag(A.under - .2, .4, 300, 120); S.snap(A.under + .2, 120, 2); A.d2 = A.under + .5; S.done(A.d2, 150, 2);
+    S.rise(A.f3 - .1, .4); S.drag(A.groups - .1, .6, 270, 270); A.d3 = A.groups + .6; S.done(A.d3, 270, 4);
+    S.whoosh(A.found - .1, 270, .3); S.reveal(A.second); S.land(A.e1, 200, 5); S.done(A.e2, 270, 6);
+    CAM = KM.rig({ x: 270, y: 490, z: 1.06, drift: 1 }).pull(0, .55, 270, 490, 1);
+    [A.d1, A.d2, A.d3].forEach(function(d){ CAM.pushIn(d - .12, .28, 270, 490, 1.06).pull(d + .55, .6, 270, 490, 1); });
+    window.ALIGN = [{ at: A.end - .05, sel: '.ev', edge: 'left', why: 'every group starts on one edge' }];
+    window.HOLDS = [[A.end, DUR]];
+    KM.publish(DT.score(A.found, A.f1));
+  }
+  function seek(t){
+    t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
+    DT.intro($('board'), t + .6, .55);
+    var K = [0, DT.spring(t, A.date + .1, .8), DT.spring(t, A.under - .1, .7), DT.spring(t, A.groups - .05, .8)], k3 = K[3];
+    IDS.forEach(function(id){ var e = EV[id], el = $(id), k = id === 'tt' ? K[1] : K[e.f], a = e.A, b = e.B, gy = id === 'tt' ? 0 : (id === 'ex' ? 0 : 14 * k3);
+      var x = mix(a.x, b.x, k), y = mix(a.y, b.y, k) + gy - (id === 'tt' ? 0 : 0), s = mix(a.s, b.s, k), r = mix(a.r, b.r, k);
+      if (id === 'd1' || id === 'd2') { el.style.font = '700 20px var(--f)'; el.style.color = '#1d1a16'; } else if (id === 'pl') { el.style.font = '500 17px var(--f)'; el.style.color = '#44506e'; } else if (id === 'ex') { el.style.font = '500 15px var(--f)'; el.style.color = '#c4572a'; el.style.letterSpacing = '.04em'; }
+      el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + r.toFixed(2) + 'deg) scale(' + s.toFixed(3) + ')'; });
+    for (var i = 0; i < 3; i++) { var ln = $('ln' + i); ln.style.transform = 'rotate(' + (Math.sin(t * 1.6 + i * 1.3) * 6).toFixed(2) + 'deg) scale(' + [1, .8, .7][i] + ')'; }
+    DT.mood(t, .34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5)));
+    DT.sweep(t, [A.d1, A.d2, A.d3, A.second]);
+    DT.hook(t, '<i>When</i> <i>is</i> <i>this</i> <em><i>event?</i></em>', A.hook);
+    // frame 0: the three facts ringed where they hide
+    var ro = 1 - P(t, A.turns - .3, A.turns);
+    [[.35, { x: BX + 244, y: BY + 14, w: 120, h: 34, r: 10 }, 'DATE?', BX + 290, BY + 330], [.65, { x: BX + 20, y: BY + 306, w: 66, h: 34, r: 10 }, 'TIME?', BX + 20, BY + 330], [.95, { x: BX + 160, y: BY + 238, w: 150, h: 58, r: 12 }, 'WHERE?', BX + 150, BY + 330]].forEach(function(q, i){
+      DT.box('ring' + i, q[1], P(t, q[0], q[0] + .3) * ro, '#ff5f5f'); DT.chip('rl' + i, q[2], q[3], q[4], P(t, q[0] + .1, q[0] + .35) * ro, 'r sm'); });
+    // the search beam hunts across the poster (lost), and at the end finds the block at once
+    var bm = $('beam'), hu = P(t, A.hook, A.turns), pts = [[BX + 80, BY + 60], [BX + 320, BY + 300], [BX + 120, BY + 220], [BX + 300, BY + 90], [BX + 200, BY + 180]], si = Math.min(3, Math.floor(hu * 4)), sf = E.inOut3(hu * 4 - si);
+    var bx = mix(pts[si][0], pts[si + 1][0], sf), by = mix(pts[si][1], pts[si + 1][1], sf), fo = P(t, A.found - .2, A.found + .2), fx = BX + 100, fy = BY + mix(EV.d1.B.y, EV.d2.B.y, .5) + 20;
+    if (t >= A.found - .2) { bx = mix(BX + 300, fx, E.out3(P(t, A.found - .2, A.found + .2))); by = mix(BY + 300, fy, E.out3(P(t, A.found - .2, A.found + .2))); }
+    bm.style.left = bx.toFixed(1) + 'px'; bm.style.top = by.toFixed(1) + 'px'; bm.style.opacity = Math.max(P(t, A.hook, A.hook + .2) * (1 - P(t, A.turns, A.turns + .3)), fo * (1 - P(t, A.e1, A.e1 + .3))).toFixed(3);
+    DT.chip('lost', 'DATE · <b>LOST</b>', 300, 396, P(t, A.tell - .1, A.tell + .2) - P(t, A.turns - .2, A.turns + .1), 'r');
+    DT.chip('tg', 'RELATED · <b>TOGETHER</b>', 120, 396, P(t, A.tog - .1, A.tog + .2) - P(t, A.f1 - .2, A.f1 + .1));
+    // fix one: date and time pulled into one block
+    var b1 = { x: BX + 22, y: BY + 86 + 14 * k3, w: 210, h: 66 }; DT.sel('s1', b1, P(t, A.tog2 - .2, A.tog2 + .2) * (1 - P(t, A.d1 + .2, A.d1 + .5)));
+    DT.chip('c1', 'DATE + TIME · <b>ONE BLOCK</b>', 120, 396, P(t, A.tog2, A.tog2 + .3) - P(t, A.f2 - .1, A.f2 + .2));
+    // fix two: the place snaps in right under
+    DT.line('g2', BX + 28, BY + 154 + 14 * k3, BX + 300, BY + 154 + 14 * k3, P(t, A.under - .2, A.under + .2) * (1 - P(t, A.d2 + .2, A.d2 + .5)), '#ffb35a', 2, '6 5');
+    DT.chip('c2', 'PLACE · <b>RIGHT UNDER</b>', 160, 396, P(t, A.under, A.under + .3) - P(t, A.f3 - .1, A.f3 + .2));
+    // fix three: the gaps between groups open, measured
+    var mk = P(t, A.groups - .1, A.groups + .3) * (1 - P(t, A.found - .2, A.found + .1));
+    DT.measure('gA', BX + 300, BY + 76, BY + 86 + 14 * k3, mk, 'GAP', 1); DT.measure('gB', BX + 300, BY + 186 + 14 * k3, BY + 296, mk, 'GAP', 1);
+    DT.chip('c3', 'SPACE · <b>BETWEEN GROUPS</b>', 120, 396, P(t, A.groups, A.groups + .3) - P(t, A.found - .2, A.found + .1));
+    [[A.d1, BX + 120, BY + 120], [A.d2, BX + 120, BY + 175], [A.d3, BX + 300, BY + 200]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); });
+    var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
+    $('board').style.boxShadow = '0 30px 70px rgba(0,0,0,.55),0 0 0 ' + (3 * br).toFixed(1) + 'px rgba(255,179,90,.55)';
+    DT.box('fd', { x: BX + 18, y: BY + 84 + 14 * k3, w: 240, h: 110, r: 12 }, P(t, A.second - .2, A.second + .3), '#5ee0a0');
+    DT.chip('win', 'FOUND IN <b>A SECOND</b>', 150, 396, P(t, A.second - .2, A.second + .1) - P(t, A.e2 - .2, A.e2 + .1), 'g');
+    DT.chip('win2', 'WHEN · WHERE · <b>GROUPED</b>', 120, 396, P(t, A.e2, A.e2 + .3), 'g');
+    DT.burst('b3', BX + 250, BY + 100, t, A.e1, '#5ee0a0');
+    DT.dial(t, [{ t: 0, sym: '3', label: '3 FIXES' }, { t: A.f1, n: 1 }, { t: A.f2, n: 2 }, { t: A.f3, n: 3 }, { t: A.found, end: 1, sym: '✓', label: 'FOUND' }]);
+    DT.title(t, [{ t: A.hook, html: 'Where is the <em>date</em>?' }, { t: A.f1, html: 'Fix 1 · <em>one block</em>' }, { t: A.f2, html: 'Fix 2 · <em>place under</em>' }, { t: A.f3, html: 'Fix 3 · <em>space groups</em>' }, { t: A.found, html: 'Found it. <em>Fast.</em>' }]);
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), A.end, function(w){ return /^(tell|together|date|time|place|under|space|groups|second)/i.test(w) ? 'var(--amb)' : null; });
+  }
+  window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
+  window.seek = seek; window.DURATION = DUR; window.__A = A;
+  Promise.all(["700 20px 'Space Grotesk'", "500 17px 'Space Grotesk'", "900 34px 'Unbounded'", "900 31px 'Unbounded'"].map(function(f){ return document.fonts.load(f); }))
+    .then(function(){ anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>

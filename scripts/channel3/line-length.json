@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-line-length",
+ "seek": "scripts/channel3/line-length.html",
+ "engine": "design",
+ "dur": 16,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "Your eyes get lost here. Every line is too long. Turns out, short lines are easier. Fix one: narrow the column. Fix two: ten words a line. Fix three: more space between lines. Now it reads like a book.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format (queue of 10)",
+  "vs": "median"
+ },
+ "caption": "Your eyes get lost here. Every line is too long. 📖\n\n1. Narrow the column. The longer the line, the further your eye travels back to find the next one.\n2. About ten words a line. Butterick's rule of thumb: 45 to 90 characters, spaces included.\n3. More space between lines. Line spacing of 120 to 145% of the text size keeps lines apart.\n\nSave this for your next blog, newsletter or slide. Do you read long lines or skip them?",
+ "keywords": [
+  "line length typography",
+  "readable web design",
+  "typography tips",
+  "blog design tips",
+  "graphic design for beginners",
+  "line spacing"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#typography",
+  "#webdesign",
+  "#readability"
+ ],
+ "sources": [
+  {
+   "title": "Line length (Butterick's Practical Typography)",
+   "url": "https://practicaltypography.com/line-length.html"
+  },
+  {
+   "title": "Line spacing (Butterick's Practical Typography)",
+   "url": "https://practicaltypography.com/line-spacing.html"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (a blog page on a laptop on a desk) fills the frame by design"
+   }
+  ],
+  "subject": [
+   40,
+   400,
+   500,
+   780
+  ]
+ }
+}

@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-all-caps",
+ "seek": "scripts/channel3/all-caps.html",
+ "engine": "design",
+ "dur": 16,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "Stop writing in all caps. It's hard to read. Turns out, lowercase words have shapes. Fix one: sentence case. Fix two: caps for short labels. Fix three: space out those caps. Calm, and easy to read.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format (queue of 10)",
+  "vs": "median"
+ },
+ "caption": "Stop writing in all caps. It's hard to read. 🛍️\n\n1. Sentence case. Lowercase letters are taller and shorter (d, h, k, p, y), so words get shapes the eye knows; caps are all one height.\n2. Caps for short labels only. A tag or a heading under one line is fine in caps; a paragraph is not.\n3. Space out those caps. Add about 5 to 12% letterspacing to text in caps.\n\nSave this for your next flyer, sign or slide. Who in your life types in all caps?",
+ "keywords": [
+  "all caps typography",
+  "flyer design tips",
+  "sentence case",
+  "typography tips",
+  "graphic design for beginners",
+  "letter spacing"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#typography",
+  "#flyerdesign",
+  "#smallbusiness"
+ ],
+ "sources": [
+  {
+   "title": "All caps (Butterick's Practical Typography)",
+   "url": "https://practicaltypography.com/all-caps.html"
+  },
+  {
+   "title": "Letterspacing (Butterick's Practical Typography)",
+   "url": "https://practicaltypography.com/letterspacing.html"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (a sale flyer taped to a shop's glass door) fills the frame by design"
+   }
+  ],
+  "subject": [
+   66,
+   400,
+   474,
+   764
+  ]
+ }
+}
