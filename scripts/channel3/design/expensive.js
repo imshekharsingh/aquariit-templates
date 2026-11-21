@@ -24,7 +24,7 @@
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#d9b46a', '#a8783a');
   var TEXT = "One looks five times pricier. Which would you pay more for? The answer is B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.";
   var DUR = 15, V, PH, A = {}, CAM, CUR = [];
-  var AX = 50, BXp = 290, Y = 452;   // the two labels side by side; A changes into B's look while B stays as the target (21 Nov: fills the frame)
+  var AX = 50, BXp = 290, Y = 452, CX = 170, SC = 1.3;   // the two labels side by side, then B steps aside and A moves to the centre, grows and changes (owner, 21 Nov: a label that sits unchanged "feels useless")
   function hexMix(a, b, k){ var p = function(h){ return [1, 3, 5].map(function(i){ return parseInt(h.slice(i, i + 2), 16); }); }, x = p(a), y = p(b);
     return 'rgb(' + x.map(function(v, i){ return Math.round(mix(v, y[i], cl(k))); }).join(',') + ')'; }
   function at(w, n){ return V.at(w, n); }
@@ -47,7 +47,7 @@
     window.HOLDS = [[A.end, DUR]]; KM.publish(DT.score(A.quiet, A.space));
   }
   function paintA(t){ var mv = E.inOut3(P(t, A.three, A.three + .7)), ks = DT.spring(t, A.space + .1, .7), kl = DT.spring(t, A.small + .1, .8), kc = E.inOut3(P(t, A.two + .2, A.two + .8));
-    var c = $('cardA'), x = AX, sc = 1, ia = 1, br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
+    var c = $('cardA'), x = mix(AX, CX, mv), sc = mix(1, SC, mv), ia = 1, br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
     c.style.transform = 'translate(' + x.toFixed(1) + 'px,' + (Y + (1 - ia) * 70).toFixed(1) + 'px) perspective(1000px) rotateY(' + ((1 - ia) * 25).toFixed(1) + 'deg) scale(' + (sc * (1 + .02 * br)).toFixed(4) + ')';
     c.style.background = hexMix('#f2c94c', '#1b1d26', kc);
     // lever 1, empty space: everything draws in towards the middle (the content block shrinks, the margins grow)
@@ -74,7 +74,7 @@
     var S = paintA(t);
     // B: the answer to the vote; it lifts when picked, then steps aside as A becomes it
     var b = $('cardB'), pick = DT.spring(t, A.b + .05, .6), away = E.inOut3(P(t, A.three, A.three + .6)), ib = 1;
-    b.style.transform = 'translate(' + BXp.toFixed(1) + 'px,' + (Y - 14 * pick + (1 - ib) * 70).toFixed(1) + 'px) perspective(1000px) rotateY(' + ((1 - ib) * -25).toFixed(1) + 'deg)'; b.style.opacity = (1 - .35 * P(t, A.three, A.three + .4)).toFixed(3);   /* B stays as the target while A changes into it */ b.style.boxShadow = '0 24px 60px rgba(0,0,0,.55),0 0 0 ' + (3 * pick).toFixed(1) + 'px #5ee0a0';
+    b.style.transform = 'translate(' + mix(BXp, 600, away).toFixed(1) + 'px,' + (Y - 14 * pick + (1 - ib) * 70).toFixed(1) + 'px) perspective(1000px) rotateY(' + ((1 - ib) * -25).toFixed(1) + 'deg)'; b.style.opacity = (1 - P(t, A.three, A.three + .35)).toFixed(3); b.style.boxShadow = '0 24px 60px rgba(0,0,0,.55),0 0 0 ' + (3 * pick).toFixed(1) + 'px #5ee0a0';
     $('cardA').style.opacity = ((1 - .45 * pick * (1 - away)) * 1).toFixed(3);
     // the vote buttons under each label
     [['vA', AX + 69], ['vB', BXp + 69]].forEach(function(v, i){ var e = $(v[0]), k = E.back(P(t, A.which + .1 + i * .15, A.which + .5 + i * .15), 2), o = k * (1 - P(t, A.three - .2, A.three + .1));
@@ -82,12 +82,12 @@
     DT.chip('pick', 'B <b>WINS</b>', 330, 414, P(t, A.b + .15, A.b + .45) - P(t, A.three - .2, A.three + .1), 'g');
     // lever 1: margin brackets roll from 8% to 30%
     var cx = S.x, mk = P(t, A.space + .05, A.space + .35) * (1 - P(t, A.small - .1, A.small + .2)), m = DT.roll(8, 30, P(t, A.space + .1, A.space + .7));
-    var sc2 = 1, L0 = 150 - 100 * sc2, R0 = 150 + 100 * sc2, mm = mix(18, 64, S.ks); DT.hmeasure('ml', L0 + 4, L0 + 4 + mm, Y + 150, mk, m + '%'); DT.hmeasure('mr', R0 - 4 - mm, R0 - 4, Y + 150, mk, m + '%');
+    var sc2 = SC, L0 = 270 - 100 * sc2, R0 = 270 + 100 * sc2, mm = mix(18, 64, S.ks); DT.hmeasure('ml', L0 + 4, L0 + 4 + mm, Y + 150, mk, m + '%'); DT.hmeasure('mr', R0 - 4 - mm, R0 - 4, Y + 150, mk, m + '%');
     DT.chip('l1', 'EMPTY <b>SPACE</b>', 300, 414, P(t, A.space, A.space + .3) - P(t, A.small - .1, A.small + .2));
     // lever 2: a tracking ruler opens under the name
-    var tk = P(t, A.small + .05, A.small + .35) * (1 - P(t, A.two - .1, A.two + .2)), tw = mix(70, 190, S.kl), ry = Y + 150 + (108 - 150) * .74 - 18;
-    for (var i = 0; i < 6; i++) { var x = 150 - tw / 2 + tw * i / 5; DT.line('tk' + i, x, ry, x, ry + 12, tk, '#ffb35a', 2); }
-    DT.line('tkb', 150 - tw / 2, ry + 12, 150 + tw / 2, ry + 12, tk, '#ffb35a', 2);
+    var tk = P(t, A.small + .05, A.small + .35) * (1 - P(t, A.two - .1, A.two + .2)), tw = mix(70, 190, S.kl), ry = Y + 150 + (108 - 150) * .74 * SC - 18;
+    for (var i = 0; i < 6; i++) { var x = 270 - tw / 2 + tw * i / 5; DT.line('tk' + i, x, ry, x, ry + 12, tk, '#ffb35a', 2); }
+    DT.line('tkb', 270 - tw / 2, ry + 12, 270 + tw / 2, ry + 12, tk, '#ffb35a', 2);
     DT.chip('l2', 'TRACKING <b>WIDE</b>', 300, 414, P(t, A.small, A.small + .3) - P(t, A.two - .1, A.two + .2));
     // lever 3: the palette: five swatches line up under the label, three drop away, two stay
     for (i = 0; i < 5; i++) { var e = $('p' + i), k = E.back(P(t, A.two + i * .05, A.two + .35 + i * .05), 2), keep = i === 0 || i === 4, drop = keep ? 0 : E.inOut3(P(t, A.two + .5 + i * .08, A.two + .9 + i * .08));
@@ -95,7 +95,7 @@
       e.style.background = keep ? (i === 0 ? '#1b1d26' : '#c9a46a') : e.style.background; e.style.transform = 'scale(' + (.6 + .4 * k).toFixed(3) + ') rotate(' + (drop * (i - 2) * 30).toFixed(1) + 'deg)'; e.style.border = keep ? '2px solid rgba(255,255,255,.3)' : 'none'; }
     DT.chip('l3', 'COLOURS <b>ONLY TWO</b>', 300, 414, P(t, A.two, A.two + .3) - P(t, A.quiet - .1, A.quiet + .2));
     DT.chip('end', 'QUIET <b>COSTS MORE</b>', 170, 414, P(t, A.quiet + .2, A.quiet + .5), 'g');
-    [[A.d1, 150, 600], [A.d2, 150, 560], [A.d3, 150, 790]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); }); DT.burst('bw', 392, 790, t, A.b + .12, '#5ee0a0');
+    [[A.d1, 270, 600], [A.d2, 270, 560], [A.d3, 270, 790]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); }); DT.burst('bw', 392, 790, t, A.b + .12, '#5ee0a0');
     DT.cursor(t, CUR);
     DT.dial(t, [{ t: 0, sym: '?', label: 'A OR B' }, { t: A.space, n: 1, word: 'LEVER' }, { t: A.small, n: 2, word: 'LEVER' }, { t: A.two, n: 3, word: 'LEVER' }, { t: A.quiet, end: 1, sym: '✓', label: 'QUIET' }]);
     DT.title(t, [{ t: A.hook, html: 'Same words. Which costs <em>more</em>?' }, { t: A.three, html: 'Why <em>B</em> looks expensive' }, { t: A.space, html: 'Lever 1 · <em>empty space</em>' }, { t: A.small, html: 'Lever 2 · <em>spaced letters</em>' }, { t: A.two, html: 'Lever 3 · <em>two colours</em>' }, { t: A.quiet, html: 'Quiet <em>costs more.</em>' }]);
