@@ -649,19 +649,23 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
   var SC = [0, 2, 3, 5, 7, 9, 10, 12, 14, 15];   // A natural minor steps from the bed's root
   DT.note = function(i){ return SC[((i % SC.length) + SC.length) % SC.length]; };
   var c = function(o){ KM.cue(o); };
+  // no drums (owner, 21 Nov 2026: "few sound elements are too much like drum sound ... chose better sound variations"): on the runner's sample pack
+  // blip / pop are soft toms, hit / boom a bass drum, tap / touch / tick a hi-hat pedal, so the tuned and ticking parts stay synthesized (synth: true)
+  // and the only recorded effects are the finger snap (snap, click), paper (rustle) and air (move, swish)
+  var pl = function(t, x, i, g){ c({ t: t, k: 'blip', g: g || .13, p: DT.note(i || 0), x: x, synth: true }); };
   DT.S = {
-    click: function(t, x){ c({ t: t, k: 'touch', g: .2, x: x }); c({ t: t + .01, k: 'click', g: .12, x: x }); },
-    drag: function(t, d, x, x2){ c({ t: t, k: 'move', d: d, g: .16, x: x, x2: x2 == null ? x : x2 }); },
-    snap: function(t, x, i){ c({ t: t, k: 'snap', g: .2, p: DT.note(i || 0), x: x }); c({ t: t + .02, k: 'blip', g: .1, p: DT.note((i || 0) + 2), x: x }); },
-    land: function(t, x, i){ c({ t: t, k: 'blip', g: .14, p: DT.note(i || 0), x: x }); c({ t: t + .015, k: 'tap', g: .08, x: x }); },
-    swap: function(t, d, x, n){ n = n || 8; for (var i = 0; i < n; i++) c({ t: t + d * i / n, k: 'rustle', d: .06, g: .05, p: i % 5, x: x }); c({ t: t + d, k: 'blip', g: .12, p: DT.note(4), x: x }); },
-    roll: function(t, d, x, n){ n = n || 10; for (var i = 0; i < n; i++) { var u = 1 - Math.pow(1 - i / n, 1.8); c({ t: t + d * u, k: 'tick', g: .07, p: i % 7, x: x }); } },
+    click: function(t, x){ c({ t: t, k: 'click', g: .12, x: x }); },
+    drag: function(t, d, x, x2){ c({ t: t, k: 'move', d: d, g: .15, x: x, x2: x2 == null ? x : x2 }); },
+    snap: function(t, x, i){ c({ t: t, k: 'snap', g: .16, x: x }); pl(t + .02, x, (i || 0) + 2, .12); },
+    land: function(t, x, i){ pl(t, x, i || 0, .13); c({ t: t + .01, k: 'click', g: .05, x: x }); },
+    swap: function(t, d, x, n){ n = n || 8; for (var i = 0; i < n; i++) c({ t: t + d * i / n, k: 'rustle', d: .06, g: .05, p: i % 5, x: x }); pl(t + d, x, 4, .11); },
+    roll: function(t, d, x, n){ n = n || 10; for (var i = 0; i < n; i++) { var u = 1 - Math.pow(1 - i / n, 1.8); c({ t: t + d * u, k: 'tick', g: .06, p: i % 7, x: x, synth: true }); } },
     tint: function(t, x){ c({ t: t, k: 'shimmer', g: .14, x: x, r: .4 }); },
-    stamp: function(t, x){ c({ t: t, k: 'hit', g: .3, x: x }); c({ t: t + .01, k: 'boom', g: .16, x: x, r: .5 }); },
+    stamp: function(t, x){ c({ t: t, k: 'snap', g: .24, x: x }); c({ t: t + .01, k: 'rustle', d: .12, g: .1, x: x }); pl(t + .03, x, 0, .1); pl(t + .03, x, 4, .08); },
     rise: function(t, d){ c({ t: t, k: 'swell', d: d || .6, g: .12 }); },
-    done: function(t, x, i){ c({ t: t, k: 'snap', g: .2, p: DT.note(7), x: x }); [0, 2, 4].forEach(function(s, j){ c({ t: t + .03 + j * .045, k: 'blip', g: .1, p: DT.note((i || 0) + s), x: x }); }); c({ t: t + .05, k: 'shimmer', g: .1, x: x, r: .5 }); },
-    whoosh: function(t, x, r){ c({ t: t, k: 'swish', d: .35, g: .16, x: x || 270, r: r == null ? .3 : r }); },
-    resolve: function(t){ c({ t: t, k: 'resolve', g: .3, notes: [57, 64, 69, 72, 76] }); }
+    done: function(t, x, i){ c({ t: t, k: 'snap', g: .14, x: x }); [0, 2, 4].forEach(function(s, j){ pl(t + .03 + j * .05, x, (i || 0) + s, .1); }); c({ t: t + .05, k: 'shimmer', g: .1, x: x, r: .5 }); },
+    whoosh: function(t, x, r){ c({ t: t, k: 'swish', d: .35, g: .15, x: x || 270, r: r == null ? .3 : r }); },
+    resolve: function(t){ c({ t: t - .5, k: 'swell', d: .5, g: .1 }); [0, 4, 7, 9, 11].forEach(function(s, j){ pl(t + j * .07, 200 + j * 40, s, .12); }); c({ t: t + .1, k: 'shimmer', g: .16, x: 270, r: .7 }); }
   };
   var BU = {};
   DT.burst = function(id, x, y, t, t0, col){ var host = DT.$('world'), b = BU[id]; if (!b) { b = []; for (var i = 0; i < 12; i++) { var e = document.createElement('i'); e.style.cssText = 'position:absolute;left:0;top:0;width:7px;height:7px;margin:-3.5px;border-radius:50%;pointer-events:none;z-index:29;opacity:0'; host.appendChild(e); b.push(e); } BU[id] = b; }
