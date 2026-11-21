@@ -1,0 +1,29 @@
+{
+ "name": "showreel-c3-dt-fixit",
+ "seek": "scripts/channel3/design/fixit.html",
+ "dur": 18,
+ "fps": 30,
+ "cover": 0.6,
+ "voice": {
+  "text": "You asked us to fix a birthday invite. Move one: pick one hero, the age. Move two: one font, two sizes. Move three: one colour, used once. Turns out, a kids' party can look this good. Comment what we fix next.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "Preview: Turns Out design tutorial concept (Fix It in 60 Seconds).",
+ "keywords": [
+  "design tips"
+ ],
+ "hashtags": [
+  "#designtips"
+ ],
+ "sources": [
+  {
+   "title": "Concept preview (no factual claims)",
+   "url": "https://templates.aquariit.com/"
+  },
+  {
+   "title": "Turns Out design concepts",
+   "url": "https://templates.aquariit.com/"
+  }
+ ]
+}

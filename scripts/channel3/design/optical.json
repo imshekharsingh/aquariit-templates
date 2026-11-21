@@ -1,0 +1,29 @@
+{
+ "name": "showreel-c3-dt-optical",
+ "seek": "scripts/channel3/design/optical.html",
+ "dur": 16,
+ "fps": 30,
+ "cover": 0.6,
+ "voice": {
+  "text": "This dot is in the exact centre. So why does it look too low? Turns out, your eyes see the middle a little higher than it really is. So designers nudge things up. Titles, buttons, even logos.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "Preview: Turns Out design tutorial concept (Your Eyes Are Lying).",
+ "keywords": [
+  "design tips"
+ ],
+ "hashtags": [
+  "#designtips"
+ ],
+ "sources": [
+  {
+   "title": "Concept preview (no factual claims)",
+   "url": "https://templates.aquariit.com/"
+  },
+  {
+   "title": "Turns Out design concepts",
+   "url": "https://templates.aquariit.com/"
+  }
+ ]
+}
