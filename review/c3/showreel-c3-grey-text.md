@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/grey-text.json.
 10. Facts: PASS: contrast is the difference in luminance between text and background; WCAG asks for at least 4.5:1 for normal text and 3:1 for large text; #777777 on white is 4.47:1 and fails (WebAIM, Contrast and Color Accessibility; WCAG 2.2 SC 1.4.3); the checker in the scene computes the real WCAG ratio of the colours on screen (before about 1.6:1, after about 14:1) and shows only FAIL / PASS and the 4.5:1 minimum as the voice says it; the café is invented; sources (read in full in the Sources run 44949452447): Contrast and Color Accessibility (WebAIM); Understanding SC 1.4.3 Contrast (Minimum) (W3C WCAG 2.2)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list with one reason each, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (1 groups); local Output QA copy: FILL median 92% (9% of samples under 80%), GRADE subject vs surroundings 0.60, ELEMENTS longest gap 1.3 s at 13.4-14.7 s
-13. After the render: PENDING
+13. After the render: PASS: render 1 (run 44953976460): OUTPUT QA PASS (PACE 2.82 words/s, GRADE 0.58, FILL median 91%, ELEMENTS longest gap 1.4 s, NUMBERS none past the voice, DEAD none, SOUND every cue audible, LOUD about -14 LUFS)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 98% (median step 1.2, 0 declared transitions)

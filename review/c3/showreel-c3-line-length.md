@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/line-length.json.
 10. Facts: PASS: aim for 45-90 characters a line (2-3 alphabets); longer lines make the eye travel further back to the next line, so it is harder to track; line spacing 120-145% of the point size (Butterick, Line length; Line spacing); the blog and its text are invented; sources (read in full in the Sources run 44949452447): Line length (Butterick's Practical Typography); Line spacing (Butterick's Practical Typography)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list with one reason each, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (1 groups); local Output QA copy: FILL median 91% (3% of samples under 80%), GRADE subject vs surroundings 0.67, ELEMENTS longest gap 2.0 s at 13.4-15.4 s
-13. After the render: PENDING
+13. After the render: PASS: render 1 (run 44952631004): OUTPUT QA PASS (PACE 2.88 words/s, GRADE 0.66, FILL median 91%, ELEMENTS longest gap 1.2 s, NUMBERS none past the voice, DEAD none, SOUND every cue audible, LOUD about -14 LUFS)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100% (median step 1.4, 0 declared transitions)
