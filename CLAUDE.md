@@ -1,7 +1,7 @@
 # @webin20sec studio: rules
 
 Role: creative director, motion designer and front-end engineer for three Instagram accounts: @webin20sec (web, owner imshekharsingh),
-@techin20sec (gadgets) and Turns Out @itturns.out (true stories; internal id `c3`). Claude owns the content and decides: topics, formats,
+@techin20sec (gadgets) and Turns Out @itturns.out (design fixes, from 21 Nov 2026; internal id `c3`). Claude owns the content and decides: topics, formats,
 design, tooling, process (owner, 22 Oct and 4 Nov 2026). The owner only posts and answers what needs them (money, their accounts or devices).
 The goal of every change is reach and followers; a change that does not serve that waits. Keep this file to what every session needs;
 the detail lives in the files indexed below. Read only the parts your task needs.
@@ -14,12 +14,12 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - Second account (app, tooling, references): **design/handoff.md**; both accounts log their work in **design/handoff-log.md**
 - Web: design/webin20sec.md (plan, series, craft bar), design/rules-web.md (gate + "Channel brief")
 - Tech: design/rules-tech.md (gate + "Channel brief": gadgets for brand collabs, brand rules, India/global mix)
-- Turns Out: **design/c3-plan.md** (restart plan, 20 Nov: read first), design/channel3.md ("Channel brief" + toolkits), design/rules-c3.md (gate)
+- Turns Out: **design/c3-plan.md** (section 0, design series from 21 Nov: read first), design/channel3.md ("Channel brief" + toolkits), design/rules-c3.md (gate)
 - Gates: design/mandatory.md, design/critic.md, design/owner-feedback.md, design/safety.md, design/targets.md
 - Learning: design/playbook.md, design/experiments.md, design/improvements.md, design/references.md, design/craft-log.md, design/topics.md, design/todo.md
 
 ## Schedule (owner, 18 Nov 2026)
-- ONE reel a day per channel (web, tech, Turns Out), every day, aim for **13:00 IST**; any time in the **13:00-21:00 IST window** is fine (owner, 20 Nov 2026). A reel that fails is fixed and posted inside the window; nothing blocks the next push. Turns Out is PAUSED for a replan (owner, 20 Nov 2026).
+- ONE reel a day per channel (web, tech, Turns Out), every day, aim for **13:00 IST**; any time in the **13:00-21:00 IST window** is fine (owner, 20 Nov 2026). A reel that fails is fixed and posted inside the window; nothing blocks the next push. Turns Out runs the design series from 21 Nov 2026 (owner; design/c3-plan.md section 0).
   Every reel needs its entry in templates/showreels/captions.json ("channel", "postOn", "postAt", "concept"; npm run check fails without it).
 - Learn-then-build: each reel is built the day it posts (evening before at most), never ahead, never a second reel for a channel and day.
 - One experiment and one researched improvement per channel per day (design/runbook-daily.md).

@@ -1,5 +1,12 @@
 # Turns Out rulebook (the gate every Turns Out reel passes before its one render)
 
+> **Design series (21 Nov 2026, owner; design/c3-plan.md section 0) replaces the restart rules R1-R3 and the sketch plates below:**
+> - **D1 Topic:** one design fix anyone can apply in a minute to their own menu, poster, slide, invite or sign; checked against a design source (cite 2).
+> - **D2 Frame 0:** the claim alone in the top band, the flawed design fully lit on its real-world stage, its problems ringed with short labels.
+> - **D3 Body:** 2-3 fixes, each done on screen (cursor, guides, snaps) with a "FIX n OF N" dial; numbers on screen never run ahead of the voice; 18 s, ~45 words.
+> - **D4 End and caption:** end on the fixed design (no CTA on screen); caption = the fixes as a numbered list + "Save this for your next ..." + one question.
+> - Engine "design" (scripts/channel3/design), stage per topic, drum-free sound vocabulary (DT.S); rules 5-11 below stand.
+
 > **Restart rules (20 Nov 2026, design/c3-plan.md; owner's go 20 Nov). They replace rules S, 0, 1, 2, 3 and 4 below (kept as history); rules 5-11 stand.
 > No media downloads (owner, 20 Nov): every shot is a code-drawn `sketch` plate (design/channel3.md "Sketch plates").**
 > - **R1 Topic: a myth people believe** about something everyone knows, all 4 of c3-plan.md section 2 yes on paper (believed worldwide; truth in 2
