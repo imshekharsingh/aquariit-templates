@@ -12,15 +12,15 @@ the same reason @webin20sec gets saves. Owner, 21 Nov: "I actually liked all fiv
 fully lit, its problems ringed. Then 2-3 fixes with cursor, guides and a "FIX n OF N" dial; the score turns from tense to bright as the
 fixes land; ends on the fixed design. Caption: the 3 fixes as a numbered list, "Save this for your next ...", one question. No CTA on screen.
 
-**Order (one a day, 13:00-21:00 IST, built on its post day from the approved preview; learn-then-build):**
-| Day | Reel | Preview config | Status |
+**Order (no dates; owner, 21 Nov: "Don't mark these with dates yet, I'll upload based on response"). The owner posts one, reads its reach, then says go for the next; each full reel is built only on that go, from its approved preview:**
+| # | Reel | Preview config | Status |
 |---|---|---|---|
-| Sat 21 Nov | It's the spacing (café menu) | design/spacing.json → menu-spacing.json | full reel, render 3 |
-| Sun 22 Nov | One looks 5× pricier (shelf) | design/expensive.json | preview approved; build the full reel |
-| Mon 23 Nov | Your eyes are lying (optical centre) | design/optical.json | same |
-| Tue 24 Nov | Stop centring everything (poster) | design/myth.json | same |
-| Wed 25 Nov | You asked: fix this invite (fridge) | design/fixit.json | same |
-| from 26 Nov | new topics in the same format | one new scene file a day | see list below |
+| 1 | It's the spacing (café menu) | design/spacing.json → menu-spacing.json | full reel, render 3 |
+| 2 | One looks 5× pricier (shelf) | design/expensive.json | preview approved; build the full reel |
+| 3 | Your eyes are lying (optical centre) | design/optical.json | same |
+| 4 | Stop centring everything (poster) | design/myth.json | same |
+| 5 | You asked: fix this invite (fridge) | design/fixit.json | same |
+| 6+ | new topics in the same format | one new scene file a day | see list below |
 A full reel = copy the preview's JSON to scripts/channel3/<name>.json the way menu-spacing.json was made (name, seek, caption, keywords,
 hashtags, 2 sources, qa.subject), add it to build.mjs COPIES, a review/c3 file and a captions.json entry, then ONE render.
 Next topics (gate: a fix anyone can apply in a minute, checked against a design source): contrast for readability, the 60-30-10 colour
@@ -34,7 +34,7 @@ price tags (charm vs round), the shop sign seen from the street.
 4. Grid: archive (reversible) the old history/myth reels so a stranger who opens the profile sees one channel; keep at most the 3 with the
    most reach, unpinned. Pin the café menu reel once it is posted.
 5. Profile picture: unchanged for now; a design-series picture can follow once 5 reels are up.
-Read after 7 reels (28 Nov): reach per reel vs the old ~1,100 pool, saves + shares per 1,000 reached, followers. Keep the format if saves
+Read after each post (24 h and 72 h) and after 7 reels: reach per reel vs the old ~1,100 pool, saves + shares per 1,000 reached, followers. Keep the format if saves
 beat the old reels; the section 7 checkpoints still decide keep or stop.
 Read this first for Turns Out. It overrides design/c3-strategy.md (18 Nov, kept as history) and, where they differ, design/channel3.md and
 design/rules-c3.md. Restarting the daily task is the owner's call (design/handoff.md); nothing here starts it.
