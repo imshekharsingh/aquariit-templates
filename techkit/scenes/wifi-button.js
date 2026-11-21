@@ -111,7 +111,9 @@ window.TOPIC={
     // the MYTH? stamp is the cover's first thing (frame 0), gone on the second line; it returns as MYTH on the verdict (rules-tech.md F5)
     const m0=win(t,0,st(1)-.1,.01,.35);if(m0>0)stamp(540,540,'MYTH?',GLD,m0,-.05);
     const c1=win(t,C.tap-.1,st(2)-.2,.4,.4);if(c1>0)label(WC[0],TY-26,'LOOKS OFF',COLA,c1*prog(t,C.tap,C.tap+.3),28,'rgba(44,24,8,.92)');
-    const c2=win(t,C.bluet-.1,st(5)-.1,.4,.4);if(c2>0)label(BC[0],TY-26,'SAME TRICK',COLA,c2*prog(t,C.same-.1,C.same+.25),28,'rgba(44,24,8,.92)');
+    const c4=win(t,C.setg-.15,C.offw+.7,.3,.3);if(c4>0)label(WC[0],TY-26,'SETTINGS',LIL,c4*prog(t,C.setg-.1,C.setg+.2),32,'rgba(24,22,56,.92)');
+    const c5=win(t,C.bluet-.15,C.same-.05,.3,.3);if(c5>0)label(BC[0],TY-26,'BLUETOOTH',COLC,c5*prog(t,C.bluet-.1,C.bluet+.2),32,'rgba(8,32,44,.92)');
+    const c2=win(t,C.same-.1,st(5)-.1,.3,.4);if(c2>0)label(BC[0],TY-26,'SAME TRICK',COLA,c2*prog(t,C.same-.05,C.same+.25),28,'rgba(44,24,8,.92)');
     const c3=win(t,C.catch-.1,st(6)-.1,.4,.4);if(c3>0)label(540,TY-26,'APPLE: KEEP BOTH ON',GRN,c3*prog(t,C.keep-.2,C.keep+.25),28,'rgba(8,36,26,.92)');
     const v=win(t,st(6)+.2,C.final-.3,.3,.3);if(v>0)stamp(540,540,'MYTH',PNK,v*prog(t,st(6)+.2,st(6)+.6),-.05);
   },
