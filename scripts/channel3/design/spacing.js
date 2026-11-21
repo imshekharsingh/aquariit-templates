@@ -25,8 +25,8 @@
 /*board:end*/
 /*script:begin*/
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#ffb35a', '#ff7a45');
-  var TEXT = "This menu looks cheap. Turns out, it's not the colours. Fix one: line every item up to one edge. Fix two: one font, in two weights. Fix three: double the space between groups. Same words. Now it looks twice the price.";
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ffb35a', '#ff7a45');
+  var TEXT = "This menu is costing them customers. Turns out, it's not the colours. Fix one: line every item up to one edge. Fix two: one font, in two weights. Fix three: double the space between groups. Same words. Now it looks twice the price.";
   var DUR = 18, BX = 50, BY = 408, BW = 440, V, PH, A = {}, CAM, W = {}, CUR = [];
   // the two looks of every line: A (cheap: centred, four fonts, cramped) and B (one edge, one font in two weights, room to breathe)
   var IT = {
@@ -44,10 +44,10 @@
   function anchors(words){
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
     A.col = at('colours'); A.f1 = at('Fix'); A.edge = at('edge'); A.f2 = at('Fix', 2); A.weights = at('weights'); A.f3 = at('Fix', 3); A.dbl = at('double'); A.same = at('Same'); A.price = at('price'); A.end = Math.min(DUR - .2, V.end + .8);
-    A.sw = A.col - .5;
+    A.sw = A.col - .5; A.hook = at('Turns');
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
-    var S = DT.S; S.whoosh(0, 270, .4); IDS.forEach(function(id, i){ S.land(.12 + i * .05, 270, i); });
+    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
+    var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); IDS.forEach(function(id, i){ S.land(.12 + i * .05, 270, i); });
     // the colours beat: five swatches pop out of the menu (a rising run), then a strike: it's not them
     for (var i = 0; i < 5; i++) S.land(A.sw + i * .09, 330 + i * 30, i + 2); S.stamp(A.col + .35, 400);
     // fix one: the cursor drags a marquee over every line, a guide drops on the edge, each line snaps to it (a rising arpeggio)
@@ -60,13 +60,13 @@
     // fix three: the brackets measure the gaps and roll from 8 to 22 px while the groups spring apart
     S.rise(A.f3 - .1, .4); S.roll(A.dbl, .6, 440, 9); S.drag(A.dbl + .1, .6, 255, 255); A.d3 = A.dbl + .85; S.done(A.d3, 270, 4);
     // the scrub: before and after, back and forth once, then the verdict chord
-    S.whoosh(A.same, 200, .5); S.whoosh(A.same + .7, 340, .5); S.tint(A.same + 1.2, 270); S.resolve(A.price - .1);
+    S.whoosh(A.same, 200, .5); S.whoosh(A.same + .7, 340, .5); S.tint(A.same + 1.2, 270); S.reveal(A.price - .05);
     // ALIGN (owner, 21 Nov 2026: "Doesn't look aligned"): on the final frame every line starts on one edge, the prices end on one edge, every letter sits on its line
     window.ALIGN = [{ at: A.end - .05, sel: '#i0 > span:first-child, #i1 > span:first-child, .row .nm > span:first-child, #foot > span:first-child', edge: 'left', why: 'every line starts on one edge' },
       { at: A.end - .05, sel: '.row .pr', edge: 'right', why: 'the prices end on one edge' },
       { at: A.end - .05, sel: 'span', each: '#i0, #i1, .row .nm, .row .pr, #foot', edge: 'bottom', why: 'every letter on its line' }];
     window.HOLDS = [[A.end, DUR]];
-    KM.publish(DT.bed(A.same));
+    KM.publish(DT.score(A.same, A.f1));
   }
   // progress of each fix (springs), and the scrub that replays before -> after once on "Same words"
   function state(t){ var k1 = DT.spring(t, A.edge + .1, .8), k2 = P(t, A.scan, A.scan + 1.1), k3 = DT.spring(t, A.dbl + .05, .8);
@@ -88,6 +88,10 @@
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
     DT.intro($('board'), t, .55); var S = state(t); paint(t, S);
+    // the café itself: dim and grey while the menu is cheap, warm and lit as each fix lands (and back down with the scrub)
+    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5))) * (t >= A.same && t < A.same + 1.5 ? S.sc : 1), [$('board')]);
+    DT.sweep(t, [A.d1, A.d2, A.d3, A.price - .05]);
+    DT.hook(t, '<i>This</i> <i>menu</i> <i>is</i> <i>costing</i> <i>them</i> <em><i>customers.</i></em>', A.hook);
     // each fix lands with a spark burst and a breath of the whole menu
     [[A.d1, BX + L, BY + 150], [A.d2, BX + BW / 2, BY + 170], [A.d3, BX + BW - 20, BY + 200]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); });
     var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
@@ -108,8 +112,8 @@
     DT.chip('c1', 'ALIGN <b>LEFT</b> · 1 EDGE', 236, 394, P(t, A.edge, A.edge + .3) - P(t, A.f2 - .1, A.f2 + .2));
     // fix two: the scan line, then the font count rolls 4 -> 1 and the weights chip
     var sk = P(t, A.scan, A.scan + 1.1); DT.line('scan', BX + 4, BY + 10 + sk * 340, BX + BW - 4, BY + 10 + sk * 340, sk > 0 && sk < 1 ? 1 : 0, '#ffb35a', 3);
-    DT.chip('c2', 'FONTS <b>' + DT.roll(4, 1, P(t, A.scan, A.scan + 1.1)) + '</b>', 330, 396, P(t, A.f2 + .2, A.f2 + .5) - P(t, A.f3 - .1, A.f3 + .2));
-    DT.chip('c2b', 'WEIGHTS <b>2</b>', 330, 440, P(t, A.weights, A.weights + .3) - P(t, A.f3 - .1, A.f3 + .2));
+    DT.chip('c2', 'FONTS <b>' + DT.roll(4, 1, P(t, A.scan, A.scan + 1.1)) + '</b>', 150, 396, P(t, A.f2 + .2, A.f2 + .5) - P(t, A.f3 - .1, A.f3 + .2));
+    DT.chip('c2b', 'WEIGHTS <b>2</b>', 300, 396, P(t, A.weights, A.weights + .3) - P(t, A.f3 - .1, A.f3 + .2));
     // fix three: two brackets measure the gaps between groups and roll 8 -> 24 px as the groups move apart
     var mk = P(t, A.f3 + .2, A.f3 + .6) * (1 - P(t, A.same - .3, A.same)), gp = DT.roll(8, 24, P(t, A.dbl, A.dbl + .6));
     var y1 = BY + mix(IT.i1.A.y + 20, IT.i1.B.y + 16, S.k3), y2 = BY + mix(IT.r0.A.y, IT.r0.B.y, S.k3), y3 = BY + mix(IT.r3.A.y + 22, IT.r3.B.y + 24, S.k3), y4 = BY + mix(IT.foot.A.y, IT.foot.B.y, S.k3);
@@ -129,3 +133,14 @@
     .then(function(){ build(); anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 /*script:end*/
+
+/*stage:begin*/
+<div style="position:absolute;inset:0;background:linear-gradient(180deg,#e2cdb0 0%,#d4b893 55%,#c9a985 100%)"></div>
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(90,50,20,.07) 0 3px,transparent 3px 52px)"></div>
+<div style="position:absolute;left:0;right:0;top:830px;height:210px;background:linear-gradient(180deg,#8a5634 0%,#6e4124 30%,#4a2a16 100%);box-shadow:0 -2px 0 rgba(255,220,180,.35)"></div>
+<div style="position:absolute;left:0;right:0;top:830px;height:10px;background:linear-gradient(180deg,rgba(255,230,200,.35),transparent)"></div>
+<div style="position:absolute;left:520px;top:752px;width:62px;height:78px;border-radius:6px 6px 14px 14px;background:linear-gradient(90deg,#f3efe8,#d9d2c6);box-shadow:0 10px 18px rgba(0,0,0,.3)"></div>
+<div style="position:absolute;left:578px;top:768px;width:20px;height:34px;border:6px solid #e5ded2;border-left:0;border-radius:0 14px 14px 0"></div>
+<div class="lit" style="background:radial-gradient(48% 34% at 50% 52%,rgba(255,196,120,.55),transparent 75%)"></div>
+<div class="lit" style="background:linear-gradient(180deg,rgba(255,170,90,.18),rgba(255,140,60,.08))"></div>
+/*stage:end*/

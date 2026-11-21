@@ -41,6 +41,19 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .board{position:absolute;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.4),0 12px 24px rgba(0,0,0,.35),0 40px 90px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.55)}
 /* print feel: a fine paper grain and a soft sheen over every designed object */
 .board::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:30;opacity:.5;mix-blend-mode:multiply;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .4  0 0 0 .16 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>"),linear-gradient(160deg,rgba(255,255,255,.18),rgba(255,255,255,0) 40%,rgba(0,0,0,.04))}
+/* round 6 (owner, 21 Nov 2026: "more dramatic change so that it hooks audience ... audio should also transition in that fashion"):
+   each design lives in its own place (a context stage, light, drawn in code) and the place itself switches from its problem mood (dim, grey)
+   to lit as the fixes land; the brand sits in a dark band at the top (dial, title, captions); frame 0 is a hook in motion */
+body.ctx #spot,body.ctx #grid,body.ctx #ring,body.ctx #floor{display:none}
+#ctx{left:-40px;top:-40px;width:620px;height:1040px;transform-origin:50% 60%}
+#ctx .lit{position:absolute;inset:0;pointer-events:none;opacity:0}
+#sweep{left:-300px;top:380px;width:240px;height:460px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);opacity:0;pointer-events:none;z-index:24;mix-blend-mode:soft-light}
+#topband{left:0;top:0;width:540px;height:372px;background:linear-gradient(180deg,#0b0d16 0%,#0b0d16 88%,rgba(11,13,22,0) 100%);z-index:35;pointer-events:none}
+body:not(.ctx) #topband{display:none}
+#hook{left:24px;top:470px;width:492px;padding:22px 24px 26px;border-radius:26px;background:rgba(11,13,22,.86);box-shadow:0 30px 80px rgba(0,0,0,.6);font:900 46px/1.06 var(--d);letter-spacing:-.03em;color:#fff;z-index:45;opacity:0;pointer-events:none}
+#hook em{font-style:normal;color:#ff5f5f}
+#hook i{display:inline-block;font-style:normal}
+.chip{font-size:20px!important;padding:11px 18px 11px 16px!important}
 #board{left:50px;top:408px;width:440px;height:372px;border-radius:18px;background:#f2ebdd}
 .it{position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 50%}
 .row{display:flex;justify-content:space-between;align-items:baseline}
@@ -55,6 +68,14 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 </head>
 <body>
 <div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
+  <div id="ctx" class="a"><div style="position:absolute;inset:0;background:linear-gradient(180deg,#e2cdb0 0%,#d4b893 55%,#c9a985 100%)"></div>
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(90,50,20,.07) 0 3px,transparent 3px 52px)"></div>
+<div style="position:absolute;left:0;right:0;top:830px;height:210px;background:linear-gradient(180deg,#8a5634 0%,#6e4124 30%,#4a2a16 100%);box-shadow:0 -2px 0 rgba(255,220,180,.35)"></div>
+<div style="position:absolute;left:0;right:0;top:830px;height:10px;background:linear-gradient(180deg,rgba(255,230,200,.35),transparent)"></div>
+<div style="position:absolute;left:520px;top:752px;width:62px;height:78px;border-radius:6px 6px 14px 14px;background:linear-gradient(90deg,#f3efe8,#d9d2c6);box-shadow:0 10px 18px rgba(0,0,0,.3)"></div>
+<div style="position:absolute;left:578px;top:768px;width:20px;height:34px;border:6px solid #e5ded2;border-left:0;border-radius:0 14px 14px 0"></div>
+<div class="lit" style="background:radial-gradient(48% 34% at 50% 52%,rgba(255,196,120,.55),transparent 75%)"></div>
+<div class="lit" style="background:linear-gradient(180deg,rgba(255,170,90,.18),rgba(255,140,60,.08))"></div></div>
   <div id="spot" class="a"></div>
   <div id="grid" class="a" data-fit="free"></div>
   <svg id="ring" class="a" viewBox="-320 -320 640 640"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--tint);stop-opacity:0"/><stop offset="1" style="stop-color:var(--tint);stop-opacity:.55"/></linearGradient></defs><circle r="300" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="26"/><g id="ringarc"><path d="M-212 -212 A300 300 0 1 1 -300 0" fill="none" stroke="url(#rg)" stroke-width="26" stroke-linecap="round"/></g></svg>
@@ -71,9 +92,12 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 </div>
 <div class="sw" id="s0" style="background:#a1342b"></div><div class="sw" id="s1" style="background:#2d5a8c"></div><div class="sw" id="s2" style="background:#7a3d9a"></div><div class="sw" id="s3" style="background:#e9c443"></div><div class="sw" id="s4" style="background:#333"></div>
 <div id="scrub" class="a"><b style="right:252px">BEFORE</b><b style="left:252px">AFTER</b><div class="tr"></div><div class="hd"></div></div>
+  <div id="sweep" class="a"></div>
   <svg id="ov" class="a" viewBox="0 0 540 960"></svg>
   <svg id="cur" class="a" viewBox="0 0 30 30" style="filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))"><path d="M4 2 L4 24 L10 18 L14 27 L18 25 L14 16 L22 16 Z" fill="#fff" stroke="#0b0d16" stroke-width="1.6" stroke-linejoin="round"/></svg>
 </div></div>
+<div id="topband" class="a"></div>
+<div id="hook" class="a"></div>
 <div id="dial" class="a"><svg viewBox="-40 -40 80 80"><defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd27a"/><stop offset="1" stop-color="#ff7a45"/></linearGradient></defs><circle r="34" fill="#0b0d16"/><circle r="28" fill="none" stroke="#1f2538" stroke-width="7"/><path class="arc" fill="none" stroke="url(#dg)" stroke-width="7" stroke-linecap="round"/><text class="n" y="9" text-anchor="middle"></text></svg><div class="lb"></div></div>
 <div id="ttl" class="a" data-hook></div>
 <div id="band" class="a" data-band></div>
@@ -618,9 +642,9 @@ var DT = (function(){
   function sel(id, b, k){ box(id + '-r', b, k, '#7aa2ff'); var hs = [[b.x, b.y], [b.x + b.w, b.y], [b.x, b.y + b.h], [b.x + b.w, b.y + b.h]];
     hs.forEach(function(h, i){ var e = svg(id + '-h' + i, 'rect'), s = 9 * E.back(cl((k - .4) / .6), 2); e.setAttribute('x', h[0] - s / 2); e.setAttribute('y', h[1] - s / 2); e.setAttribute('width', Math.max(0, s)); e.setAttribute('height', Math.max(0, s)); e.setAttribute('fill', '#fff'); e.setAttribute('stroke', '#7aa2ff'); e.setAttribute('stroke-width', 2); e.style.opacity = k > .4 ? 1 : 0; }); }
   // measurement labels sit in small dark pills (premium pass, 21 Nov 2026)
-  function label(id, x, y, txt, k, col, anchor){ var bg = svg(id + '-bg', 'rect'), e = svg(id, 'text'); if (bg.nextSibling !== e) OV.insertBefore(bg, e); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('fill', col || '#ffb35a'); e.setAttribute('font-family', 'Space Grotesk'); e.setAttribute('font-weight', 700); e.setAttribute('font-size', 15);
+  function label(id, x, y, txt, k, col, anchor){ var bg = svg(id + '-bg', 'rect'), e = svg(id, 'text'); if (bg.nextSibling !== e) OV.insertBefore(bg, e); e.setAttribute('x', x); e.setAttribute('y', y); e.setAttribute('fill', col || '#ffb35a'); e.setAttribute('font-family', 'Space Grotesk'); e.setAttribute('font-weight', 700); e.setAttribute('font-size', 19);
     e.setAttribute('text-anchor', anchor || 'start'); e.textContent = txt; e.style.opacity = cl(k).toFixed(3);
-    var w = txt.length * 8.6 + 14, x0 = (anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w + 7 : x - 7); bg.setAttribute('x', x0); bg.setAttribute('y', y - 15); bg.setAttribute('width', w); bg.setAttribute('height', 22); bg.setAttribute('rx', 11);
+    var w = txt.length * 11 + 18, x0 = (anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w + 7 : x - 7); bg.setAttribute('x', x0); bg.setAttribute('y', y - 19); bg.setAttribute('width', w); bg.setAttribute('height', 28); bg.setAttribute('rx', 14);
     bg.setAttribute('fill', 'rgba(14,17,28,.88)'); bg.setAttribute('stroke', 'rgba(255,179,90,.45)'); bg.setAttribute('stroke-width', 1); bg.style.opacity = cl(k).toFixed(3); return e; }
   function measure(id, x, y1, y2, k, txt, side){ var s = side || 1, kk = E.out3(cl(k)), ym = (y1 + y2) / 2, h = (y2 - y1) / 2 * kk;
     line(id + 'm', x, ym, x, ym - h, k > .01 ? 1 : 0, '#ffb35a', 2); line(id + 'n', x, ym, x, ym + h, k > .01 ? 1 : 0, '#ffb35a', 2);
@@ -633,6 +657,8 @@ var DT = (function(){
   var CH = {};
   function chip(id, html, x, y, k, cls){ var e = CH[id]; if (!e) { e = document.createElement('div'); e.className = 'chip' + (cls ? ' ' + cls : ''); $('world').appendChild(e); CH[id] = e; }
     if (e.dataset.h !== html) { e.innerHTML = html; e.dataset.h = html; } k = cl(k); var s = E.back(k, 2.2);
+    if (y >= 380 && y <= 420) y = 374;   // round 6: chips sit just above the design, never on its first line
+    x = Math.max(36, Math.min(x, 464 - e.offsetWidth));   // and inside the safe zone whatever their width
     e.style.left = x + 'px'; e.style.top = y + 'px'; e.style.opacity = k.toFixed(3); e.style.transform = 'translateY(' + ((1 - k) * 10).toFixed(2) + 'px) scale(' + (.7 + .3 * s).toFixed(3) + ')'; return e; }
   // a sound for a chip / a guide / a snap / a measure, all from the kit's cue list (so every element that lands is heard)
   function snd(t, kind, x, g, p){ KM.cue({ t: t, k: kind, g: g || .16, p: p || 0, x: x || 270 }); }
@@ -690,9 +716,37 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
   DT.bed = function(lift){ return { bed: { bpm: 96, origin: 0, gain: .3, soft: true, lift: lift, chords: [[45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] }, mix: { duck: 8, room: .5 } }; };
 })();
 
+// ---- round 6: the context stage, the hook, the dramatic score ----
+//   DT.ctx()                 marks the scene as staged (hides the dark stage; the dark band holds the brand)
+//   DT.mood(t, k)            the place: k 0 = problem (dim, grey, a little cold), 1 = lit (warm, full colour); #ctx .lit layers fade in with k
+//   DT.sweep(t, t0)          a light sweep across the design as a fix lands
+//   DT.hook(t, html, out)    frame 0: the claim slams in word by word over the problem (scale, blur, a small shake), leaves at out
+//   DT.score(lift, fix)      the bed: tense minor chords until fix (s), then bright major ones, lifting into the payoff
+//   DT.S.sting(t), DT.S.reveal(t) the opening sting (air + a tense plucked cluster) and the reveal (a riser ending on t, then a bright chord)
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.tint('#ffb35a', '#ff7a45');
-  var TEXT = "This menu looks cheap. Turns out, it's not the colours. Fix one: line every item up to one edge. Fix two: one font, in two weights. Fix three: double the space between groups. Same words. Now it looks twice the price.";
+  var P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl;
+  DT.ctx = function(){ document.body.classList.add('ctx'); };
+  DT.mood = function(t, k, subj){ var e = DT.$('ctx'); if (!e) return; k = cl(k);
+    (subj || []).forEach(function(b){ if (b) b.style.filter = 'grayscale(' + (.55 * (1 - k)).toFixed(3) + ') brightness(' + (.82 + .18 * k).toFixed(3) + ')'; });   // the design itself shares the mood
+    e.style.filter = 'grayscale(' + (.75 * (1 - k)).toFixed(3) + ') brightness(' + (.55 + .45 * k).toFixed(3) + ') contrast(' + (.9 + .1 * k).toFixed(3) + ') hue-rotate(' + (-12 * (1 - k)).toFixed(1) + 'deg)';
+    var L = e.querySelectorAll('.lit'); for (var i = 0; i < L.length; i++) L[i].style.opacity = k.toFixed(3); };
+  DT.sweep = function(t, list){ var e = DT.$('sweep'), on = null; list.forEach(function(t0){ if (t >= t0 && t < t0 + .7) on = t0; });
+    if (on == null) { e.style.opacity = 0; return; } var u = E.inOut3(P(t, on, on + .7)); e.style.opacity = Math.sin(Math.PI * u).toFixed(3); e.style.transform = 'translateX(' + (u * 900).toFixed(1) + 'px) skewX(-12deg)'; };
+  DT.hook = function(t, html, out){ var e = DT.$('hook'); if (!e._w) { e.innerHTML = html; e._w = [].slice.call(e.querySelectorAll('i')); }
+    var o = 1 - P(t, out - .25, out); e.style.opacity = o.toFixed(3); var sh = (1 - P(t, 0, .45)) * 3;
+    e.style.transform = 'translate(' + (Math.sin(t * 61) * sh).toFixed(2) + 'px,' + (Math.cos(t * 47) * sh - 30 * P(t, out - .25, out)).toFixed(2) + 'px)';
+    e._w.forEach(function(w, i){ var a = .04 + i * .07, k = P(t, a, a + .22), s = E.back(k, 2.4); w.style.opacity = cl(k * 2).toFixed(3); w.style.transform = 'scale(' + (1.5 - .5 * s).toFixed(3) + ')'; w.style.filter = 'blur(' + ((1 - k) * 8).toFixed(2) + 'px)'; }); };
+  DT.score = function(lift, fix){ var n = Math.ceil(fix / 2.5); var tense = [[45, 57, 60, 64], [41, 53, 60, 65], [44, 56, 59, 64], [45, 57, 60, 64]], bright = [[48, 60, 64, 67, 72], [43, 55, 62, 67, 71], [45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [48, 60, 64, 67, 76]];
+    var ch = []; for (var i = 0; i < n; i++) ch.push(tense[i % tense.length]); for (i = 0; i < 6; i++) ch.push(bright[i % bright.length]);
+    return { bed: { bpm: 96, origin: 0, soft: true, lift: lift, chords: ch }, mix: { duck: 7, room: .6 } }; };
+  var c = function(o){ KM.cue(o); }, pl = function(t, x, n, g){ c({ t: t, k: 'blip', g: g || .12, p: n, x: x, synth: true }); };
+  DT.S.sting = function(t){ c({ t: t, k: 'swish', d: .4, g: .2, x: 270, r: .6 }); c({ t: t + .05, k: 'snap', g: .22, x: 270 }); [0, 1, 6, 7].forEach(function(n, j){ pl(t + .05 + j * .015, 200 + j * 50, n - 5, .13); }); c({ t: t + .1, k: 'shimmer', g: .08, x: 270, r: .7 }); };
+  DT.S.reveal = function(t){ c({ t: t, k: 'riser', d: .9, g: .14 }); c({ t: t, k: 'snap', g: .2, x: 270 }); [0, 4, 7, 12].forEach(function(n, j){ pl(t + .02 + j * .03, 180 + j * 60, n, .13); }); c({ t: t + .05, k: 'shimmer', g: .16, x: 270, r: .6 }); };
+})();
+
+(function(){
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ffb35a', '#ff7a45');
+  var TEXT = "This menu is costing them customers. Turns out, it's not the colours. Fix one: line every item up to one edge. Fix two: one font, in two weights. Fix three: double the space between groups. Same words. Now it looks twice the price.";
   var DUR = 18, BX = 50, BY = 408, BW = 440, V, PH, A = {}, CAM, W = {}, CUR = [];
   // the two looks of every line: A (cheap: centred, four fonts, cramped) and B (one edge, one font in two weights, room to breathe)
   var IT = {
@@ -710,10 +764,10 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
   function anchors(words){
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
     A.col = at('colours'); A.f1 = at('Fix'); A.edge = at('edge'); A.f2 = at('Fix', 2); A.weights = at('weights'); A.f3 = at('Fix', 3); A.dbl = at('double'); A.same = at('Same'); A.price = at('price'); A.end = Math.min(DUR - .2, V.end + .8);
-    A.sw = A.col - .5;
+    A.sw = A.col - .5; A.hook = at('Turns');
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1, drift: .5 }).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
-    var S = DT.S; S.whoosh(0, 270, .4); IDS.forEach(function(id, i){ S.land(.12 + i * .05, 270, i); });
+    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: .5 }).pull(0, .55, 255, 480, 1).pushIn(A.f1 + .1, 1.1, 250, 500, 1.04).pull(A.f2 + .2, 1, 255, 490, 1.02).pushIn(A.f3, .9, 255, 500, 1.03).pull(A.same - .1, .9, 255, 480, 1);
+    var S = DT.S; S.sting(0); S.whoosh(0, 270, .4); IDS.forEach(function(id, i){ S.land(.12 + i * .05, 270, i); });
     // the colours beat: five swatches pop out of the menu (a rising run), then a strike: it's not them
     for (var i = 0; i < 5; i++) S.land(A.sw + i * .09, 330 + i * 30, i + 2); S.stamp(A.col + .35, 400);
     // fix one: the cursor drags a marquee over every line, a guide drops on the edge, each line snaps to it (a rising arpeggio)
@@ -726,13 +780,13 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     // fix three: the brackets measure the gaps and roll from 8 to 22 px while the groups spring apart
     S.rise(A.f3 - .1, .4); S.roll(A.dbl, .6, 440, 9); S.drag(A.dbl + .1, .6, 255, 255); A.d3 = A.dbl + .85; S.done(A.d3, 270, 4);
     // the scrub: before and after, back and forth once, then the verdict chord
-    S.whoosh(A.same, 200, .5); S.whoosh(A.same + .7, 340, .5); S.tint(A.same + 1.2, 270); S.resolve(A.price - .1);
+    S.whoosh(A.same, 200, .5); S.whoosh(A.same + .7, 340, .5); S.tint(A.same + 1.2, 270); S.reveal(A.price - .05);
     // ALIGN (owner, 21 Nov 2026: "Doesn't look aligned"): on the final frame every line starts on one edge, the prices end on one edge, every letter sits on its line
     window.ALIGN = [{ at: A.end - .05, sel: '#i0 > span:first-child, #i1 > span:first-child, .row .nm > span:first-child, #foot > span:first-child', edge: 'left', why: 'every line starts on one edge' },
       { at: A.end - .05, sel: '.row .pr', edge: 'right', why: 'the prices end on one edge' },
       { at: A.end - .05, sel: 'span', each: '#i0, #i1, .row .nm, .row .pr, #foot', edge: 'bottom', why: 'every letter on its line' }];
     window.HOLDS = [[A.end, DUR]];
-    KM.publish(DT.bed(A.same));
+    KM.publish(DT.score(A.same, A.f1));
   }
   // progress of each fix (springs), and the scrub that replays before -> after once on "Same words"
   function state(t){ var k1 = DT.spring(t, A.edge + .1, .8), k2 = P(t, A.scan, A.scan + 1.1), k3 = DT.spring(t, A.dbl + .05, .8);
@@ -754,6 +808,10 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
     DT.intro($('board'), t, .55); var S = state(t); paint(t, S);
+    // the café itself: dim and grey while the menu is cheap, warm and lit as each fix lands (and back down with the scrub)
+    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5))) * (t >= A.same && t < A.same + 1.5 ? S.sc : 1), [$('board')]);
+    DT.sweep(t, [A.d1, A.d2, A.d3, A.price - .05]);
+    DT.hook(t, '<i>This</i> <i>menu</i> <i>is</i> <i>costing</i> <i>them</i> <em><i>customers.</i></em>', A.hook);
     // each fix lands with a spark burst and a breath of the whole menu
     [[A.d1, BX + L, BY + 150], [A.d2, BX + BW / 2, BY + 170], [A.d3, BX + BW - 20, BY + 200]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], '#ffb35a'); });
     var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35)));
@@ -774,8 +832,8 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     DT.chip('c1', 'ALIGN <b>LEFT</b> · 1 EDGE', 236, 394, P(t, A.edge, A.edge + .3) - P(t, A.f2 - .1, A.f2 + .2));
     // fix two: the scan line, then the font count rolls 4 -> 1 and the weights chip
     var sk = P(t, A.scan, A.scan + 1.1); DT.line('scan', BX + 4, BY + 10 + sk * 340, BX + BW - 4, BY + 10 + sk * 340, sk > 0 && sk < 1 ? 1 : 0, '#ffb35a', 3);
-    DT.chip('c2', 'FONTS <b>' + DT.roll(4, 1, P(t, A.scan, A.scan + 1.1)) + '</b>', 330, 396, P(t, A.f2 + .2, A.f2 + .5) - P(t, A.f3 - .1, A.f3 + .2));
-    DT.chip('c2b', 'WEIGHTS <b>2</b>', 330, 440, P(t, A.weights, A.weights + .3) - P(t, A.f3 - .1, A.f3 + .2));
+    DT.chip('c2', 'FONTS <b>' + DT.roll(4, 1, P(t, A.scan, A.scan + 1.1)) + '</b>', 150, 396, P(t, A.f2 + .2, A.f2 + .5) - P(t, A.f3 - .1, A.f3 + .2));
+    DT.chip('c2b', 'WEIGHTS <b>2</b>', 300, 396, P(t, A.weights, A.weights + .3) - P(t, A.f3 - .1, A.f3 + .2));
     // fix three: two brackets measure the gaps between groups and roll 8 -> 24 px as the groups move apart
     var mk = P(t, A.f3 + .2, A.f3 + .6) * (1 - P(t, A.same - .3, A.same)), gp = DT.roll(8, 24, P(t, A.dbl, A.dbl + .6));
     var y1 = BY + mix(IT.i1.A.y + 20, IT.i1.B.y + 16, S.k3), y2 = BY + mix(IT.r0.A.y, IT.r0.B.y, S.k3), y3 = BY + mix(IT.r3.A.y + 22, IT.r3.B.y + 24, S.k3), y4 = BY + mix(IT.foot.A.y, IT.foot.B.y, S.k3);
