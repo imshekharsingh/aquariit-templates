@@ -1,0 +1,69 @@
+{
+ "name": "showreel-c3-grey-text",
+ "seek": "scripts/channel3/grey-text.html",
+ "engine": "design",
+ "dur": 16,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "Grey on beige. Nobody can read it. Turns out, text needs contrast. Fix one: darken the words. Fix two: a lighter board. Fix three: check the ratio. Four and a half to one. Same board, now readable.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "experiment": {
+  "id": "c3-design-series",
+  "change": "design-tutorial format (queue of 10)",
+  "vs": "median"
+ },
+ "caption": "Grey on beige looks soft. Nobody can read it. ☕\n\n1. Darken the words. Contrast is the difference in brightness between text and what's behind it.\n2. A lighter board. Pull the background the other way and the gap grows from both sides.\n3. Check the ratio. Aim for at least 4.5 to 1 for normal text (WCAG); a free contrast checker gives the number in seconds.\n\nSave this for your next menu, slide or sign. Which soft colour combo have you seen that nobody could read?",
+ "keywords": [
+  "colour contrast",
+  "text contrast ratio",
+  "accessible design",
+  "menu design tips",
+  "graphic design for beginners",
+  "wcag contrast"
+ ],
+ "hashtags": [
+  "#designtips",
+  "#graphicdesign",
+  "#typography",
+  "#accessibility",
+  "#colourcontrast"
+ ],
+ "sources": [
+  {
+   "title": "Contrast and Color Accessibility (WebAIM)",
+   "url": "https://webaim.org/articles/contrast/"
+  },
+  {
+   "title": "Understanding SC 1.4.3 Contrast (Minimum) (W3C WCAG 2.2)",
+   "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+  }
+ ],
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (a café specials board on a counter) fills the frame by design"
+   }
+  ],
+  "subject": [
+   66,
+   400,
+   474,
+   764
+  ]
+ }
+}

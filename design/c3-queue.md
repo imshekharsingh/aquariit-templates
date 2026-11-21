@@ -41,3 +41,7 @@ design/photo.js (#1), thumb.js (#5), resume.js (#6).
 Batch 2: #3 line-length voice says "short lines are easier" (Butterick: more comfortable, not faster); before 90-97 characters a line, after
 49-61 (inside 45-90). #4 all-caps: "lowercase words have shapes" and "caps for short labels" (6-word lines). #7 event-poster: "related things
 sit together", "date and time together". Scenes: design/measure.js (#3), caps.js (#4), group.js (#7).
+Batch 3: #10 line-spacing claim "Nobody can cook from this." (the queue's 7-word first line split); #2 grey-text voice "Grey on beige. Nobody
+can read it. ... Fix three: check the ratio. Four and a half to one." (the checker computes the real WCAG ratio and shows FAIL / PASS, the
+4.5:1 minimum only as the voice says it); #8 price-list "one right edge", "digits, all one width" (Space Grotesk tabular figures), "dots to each
+name". Scenes: design/leading.js (#10), contrast.js (#2), prices.js (#8).
