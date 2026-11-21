@@ -16,7 +16,7 @@ qa/align.mjs on scripts/channel3/stop-centring.json.
 10. Facts: PASS: centred text is harder to read than left-aligned because each line starts in a new place; use it sparingly (Butterick, Centered text); readers scan from a fixed left edge (Nielsen Norman Group, F-shaped pattern); sources: Centered text (Butterick's Practical Typography); F-Shaped Pattern of Reading on the Web (Nielsen Norman Group)
 11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
 12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (1 groups)
-13. After the render: PENDING: render 2 (the last allowed); render 1 (run 44922111751) failed Output QA PACE (a 10-word line at 4.5 words/s, a 12-word line at 4.8) and ELEMENTS (5.4 s with nothing new at the end); fixed: the long lines split, 15 s; a local copy of Output QA FILL and GRADE on the scene's frames now passes (FILL median 95%)
+13. After the render: PASS: render 2 (run 44926326201): OUTPUT QA PASS (PACE 2.93 words/s, GRADE 0.74, FILL median 90%, ELEMENTS longest gap 2.6 s, DEAD none). Before: render 1 (run 44922111751) failed Output QA PACE (a 10-word line at 4.5 words/s, a 12-word line at 4.8) and ELEMENTS (5.4 s with nothing new at the end); fixed: the long lines split, 15 s; a local copy of Output QA FILL and GRADE on the scene's frames now passes (FILL median 95%)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 96% (median step 0.6, 0 declared transitions)
