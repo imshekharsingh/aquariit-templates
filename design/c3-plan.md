@@ -23,7 +23,7 @@ fixes land; ends on the fixed design. Caption: the 3 fixes as a numbered list, "
 | 6+ | new topics in the same format | one new scene file a day | see list below |
 A full reel = copy the preview's JSON to scripts/channel3/<name>.json the way menu-spacing.json was made (name, seek, caption, keywords,
 hashtags, 2 sources, qa.subject), add it to build.mjs COPIES, a review/c3 file and a captions.json entry, then ONE render.
-Next topics (gate: a fix anyone can apply in a minute, checked against a design source): contrast for readability, the 60-30-10 colour
+**Queue of 10 more (owner, 21 Nov 2026): design/c3-queue.md** (scripts, stages, sources, build order). Next topics (gate: a fix anyone can apply in a minute, checked against a design source): contrast for readability, the 60-30-10 colour
 split, button size and tap space, line length, hierarchy in 3 sizes, logo on a busy photo, the resume page, the slide with too much text,
 price tags (charm vs round), the shop sign seen from the street.
 
