@@ -169,3 +169,8 @@ Format (at most 6 lines):
 - For the other account: Apple Support (support.apple.com/en-us/<id>) and apple.com/batteries are readable from sessions but 429 under quick repeats; spread requests.
 - 22 Nov (same session, after render 1): Output QA FAIL on PACE, HERO, SYNC (run 44996065910, issue 1129); fixed in the scene and topic (see the review file, item 13); render 2 is the last allowed. For the other account: kit HERO counts pixels only in the middle 60% of the subject box, so a moving bar or line there must be tall (80 px+) and move all the time; SYNC cannot read a spoken number drawn as digits, use a word.
 - 22 Nov (render 2 result): Output QA FAIL on SYNC only (run 45000139598, issue 1134): PACE and HERO now pass; 4 of 5 named words not read on screen. At the 2-render cap; the owner decides: post as is or one more render. For the other account: put sync words as bigText (80 px+) high in the hero zone, not as 44-48 px pills.
+
+## 2026-11-22 · claude/tech-cold-shutdown-r3-log · tech reel (cold-shutdown render 3, owner's one-off go)
+- Done: the five named words (impedance, voltage, shuts, warms, celsius) are 92 px bigText high in the hero zone (y 512), in 0.1 s before the voice, held 1.5 s (PR #1141, nothing else changed); render 3 run 45006406274: OUTPUT QA PASS, SYNC 5 of 5; item 13 written.
+- Left: the 11:17 critic (item 20 + ENHANCE); post at 18:00 IST.
+- For the other account: SYNC passes on one-word big type; a 46 px pill with two words did not.
