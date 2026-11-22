@@ -163,4 +163,4 @@ Format (at most 6 lines):
 - Done: tech showreel-tech-cold-shutdown (specs decoded, phone, global; Apple Support battery pages read 22 Nov; kit scene techkit/scenes/cold-shutdown.js; local SAFE ZONE ok, OVERLAP none, FLOW cuts 0 / dead runs none / continuity 66%, 2 pronunciation overrides); topic, review file, captions entry (postOn 2026-11-22, postAt 18:00).
 - Left: ONE render on GitHub (Tech reel, slug cold-shutdown), Output QA, item 13, the critic.
 - For the other account: Apple Support (support.apple.com/en-us/<id>) and apple.com/batteries are readable from sessions but 429 under quick repeats; spread requests.
-
+- 22 Nov (same session, after render 1): Output QA FAIL on PACE, HERO, SYNC (run 44996065910, issue 1129); fixed in the scene and topic (see the review file, item 13); render 2 is the last allowed. For the other account: kit HERO counts pixels only in the middle 60% of the subject box, so a moving bar or line there must be tall (80 px+) and move all the time; SYNC cannot read a spoken number drawn as digits, use a word.

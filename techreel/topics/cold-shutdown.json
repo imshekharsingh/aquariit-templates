@@ -42,7 +42,7 @@
    "source": 0
   },
   {
-   "text": "Apple says iPhones work best between zero and thirty-five degrees Celsius. Heat can harm a battery for good.",
+   "text": "Apple says iPhones work best between zero and thirty-five degrees Celsius. Heat can permanently damage a battery.",
    "beat": "surprise",
    "source": 0
   },
@@ -150,7 +150,7 @@
   ],
   "good": [
    5,
-   "good"
+   "permanently"
   ],
   "cold2": [
    6,
@@ -411,7 +411,6 @@
  },
  "qa": {
   "sync": [
-   "thirty",
    "impedance",
    "voltage",
    "shuts",
