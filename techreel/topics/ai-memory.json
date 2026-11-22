@@ -14,7 +14,7 @@
  "max_end": 32.0,
  "experiment": {
   "id": "tech-direction-3d",
-  "change": "the new tech direction (design/tech-direction.md, owner approved 22 Nov): real 3D (three.js, inlined) with lighting and depth, ink + white + cyan + amber only, one bold number or word at a time, 7 distinct shots (x-ray hero, phone lineup, AI server hall, macro on a server memory module, board macro, server corridor, hero loop), a news topic of the month",
+  "change": "the new tech direction (design/tech-direction.md, owner approved 22 Nov): real 3D (three.js, inlined) with lighting and depth, ink + white + cyan + amber only, one bold number or word at a time, 7 distinct shots (x-ray hero, phone lineup, AI server hall, macro on a server memory module, board macro, server corridor, hero loop), a news topic of the month; drama pass (owner, 22 Nov: 'not dramatic and detailed, quality low'): 1.5x supersampled, depth of field with rack focus, sparks and slow-mo on the chip rip, a laser slicing the board on CUT, an amber pulse through the racks on AI, slams with camera shake, light sweeps on metal",
   "vs": "median"
  },
  "lines": [
@@ -317,6 +317,24 @@
    "final",
    "impact",
    0.55,
+   0
+  ],
+  [
+   "next",
+   "zaps",
+   0.35,
+   0.2
+  ],
+  [
+   "cutting",
+   "impact",
+   0.5,
+   0
+  ],
+  [
+   "ninety",
+   "thud",
+   0.45,
    0
   ]
  ],

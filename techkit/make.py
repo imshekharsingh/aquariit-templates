@@ -81,7 +81,7 @@ def main():
     silent = os.path.join(out, 'video.mp4')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', str(FPS_CAP), '-i', os.path.join(fr, 'f%05d.jpg'),
                     '-vf', "tmix=frames=2:weights='1 1',fps=30,format=yuv420p", '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2',
-                    '-preset', 'slow', '-crf', '17', '-g', '60', silent], check=True)
+                    '-preset', 'slow', '-crf', '16', '-g', '60', silent], check=True)
     meas = subprocess.run(['ffmpeg', '-hide_banner', '-i', mix_wav, '-af', 'loudnorm=I=-14.5:TP=-1.5:LRA=7:print_format=json', '-f', 'null', '-'], capture_output=True, text=True).stderr
     m = json.loads(meas[meas.rindex('{'):meas.rindex('}') + 1])
     ln = (f"loudnorm=I=-14.5:TP=-1.5:LRA=7:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
