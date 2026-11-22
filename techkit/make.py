@@ -64,10 +64,11 @@ def main():
         ts = sys.argv[sys.argv.index('--stills') + 1]
         r = subprocess.run(['node', os.path.join(HERE, 'preflight.mjs'), out, ts])
         sys.exit(r.returncode)
-    # ---- frames: 4 workers, 60 fps ----
+    # ---- frames: 4 workers, 60 fps (a topic with its own motion blur may ask for "fps": 30: half the frames, no frame blend) ----
+    FPS = int(topic.get('fps', FPS_CAP))
     fr = os.path.join(out, 'frames'); os.makedirs(fr, exist_ok=True)
-    n = int(math.ceil(TL['total'] * FPS_CAP)); per = (n + WORKERS - 1) // WORKERS
-    procs = [subprocess.Popen(['node', os.path.join(HERE, 'capture.cjs'), os.path.join(out, 'scene.html'), fr, str(FPS_CAP), str(i * per), str(min(n, (i + 1) * per))])
+    n = int(math.ceil(TL['total'] * FPS)); per = (n + WORKERS - 1) // WORKERS
+    procs = [subprocess.Popen(['node', os.path.join(HERE, 'capture.cjs'), os.path.join(out, 'scene.html'), fr, str(FPS), str(i * per), str(min(n, (i + 1) * per))])
              for i in range(WORKERS) if i * per < n]
     # the sound while the frames render
     sys.path.insert(0, HERE); import sound   # noqa: E402
@@ -75,13 +76,13 @@ def main():
     lv = sound.render(TL, topic, vo_wav, mix_wav)
     bad = [p.wait() for p in procs]
     if any(bad): sys.exit(f'frame capture failed: exit codes {bad}')
-    print(f'frames: {n} at {FPS_CAP} fps', flush=True)
+    print(f'frames: {n} at {FPS} fps', flush=True)
     subj = sorted(sum((json.load(open(os.path.join(fr, f))) for f in os.listdir(fr) if f.startswith('subject_') and f.endswith('.json')), []))
     if subj: json.dump(subj, open(os.path.join(out, slug + '.subject0.json'), 'w'))   # the hero's box every 0.5 s (Output QA HERO)
     silent = os.path.join(out, 'video.mp4')
-    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', str(FPS_CAP), '-i', os.path.join(fr, 'f%05d.jpg'),
-                    '-vf', "tmix=frames=2:weights='1 1',fps=30,format=yuv420p", '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2',
-                    '-preset', 'slow', '-crf', '17', '-g', '60', silent], check=True)
+    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-framerate', str(FPS), '-i', os.path.join(fr, 'f%05d.jpg'),
+                    '-vf', "tmix=frames=2:weights='1 1',fps=30,format=yuv420p" if FPS > 30 else 'format=yuv420p', '-c:v', 'libx264', '-profile:v', 'high', '-level', '4.2',
+                    '-preset', 'slow', '-crf', '16', '-g', '60', silent], check=True)
     meas = subprocess.run(['ffmpeg', '-hide_banner', '-i', mix_wav, '-af', 'loudnorm=I=-14.5:TP=-1.5:LRA=7:print_format=json', '-f', 'null', '-'], capture_output=True, text=True).stderr
     m = json.loads(meas[meas.rindex('{'):meas.rindex('}') + 1])
     ln = (f"loudnorm=I=-14.5:TP=-1.5:LRA=7:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
@@ -102,7 +103,7 @@ def main():
     # contact sheet: one frame every ~4 s
     sheet = os.path.join(out, 'contact.png')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', final, '-vf', 'fps=1/4,scale=270:-1,tile=6x2', '-frames:v', '1', sheet], check=True)
-    qa = [f'ENGINE: techkit (the owner\'s motion kit), {len(TL["scenes"])} chapters, {n} frames at {FPS_CAP} fps blended to 30',
+    qa = [f'ENGINE: techkit (the owner\'s motion kit), {len(TL["scenes"])} chapters, {n} frames at {FPS} fps' + (' blended to 30' if FPS > 30 else ' (own motion blur)'),
           f'voice ends at {vo["dur"]:.2f} s (limit {topic.get("max_end")}); speed {vo.get("speed")}; reel {dur:.2f} s',
           f'voice over background during speech: {lv["voice_over_bg_db"]} dB (kit target 10+)',
           f'SOUND GATE: {"ok" if loud_ok else "OUT OF RANGE"} ({li} LUFS, true peak {tpv} dBTP; need -15 to -13, at most -1)',
