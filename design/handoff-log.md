@@ -13,6 +13,10 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-23 01:25 IST · main · owner chat: reference reel logged
+- Done: owner's "60-30-10 colour rule" reference reel studied; techniques in design/references.md (R-ref 23 Nov): split screen, live transformation, stacking data cards, sensory colour background, ~1 s pace, comment-keyword CTA.
+- Left: owner decisions on AI-generated imagery and a DM auto-reply for comment-keyword CTAs; build split screen + live transformation into the web/Turns Out kits.
+- For the other account: none.
 ## 2026-11-23 00:55 IST · main · owner chat (late): two previews waiting on the owner
 - Tech reel "Your next phone may have less memory" (ai-memory, postOn 23 Nov 13:00): session_01AYvWRjY38sTbizkhdraaeY is making a full-res drama/detail pass (owner: "not dramatic or detailed, quality feels low"); page https://claude.ai/artifact/RP2Hjr3sM6MzL7b1Vt5FKi republishes ~01:30 IST. It renders ONLY after the owner's OK: the next owner chat relays it with send_message to that session.
 - App renovation mockups: session_01AYvWRgoCcdR7rXR9CGVFuw (file app-redesign.html shown in that session; publishing needs the owner there). Builds only on the owner's OK.
