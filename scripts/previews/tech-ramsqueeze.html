@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>The AI memory squeeze</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="../../techkit/vendor/three-0.149.0.min.js"></script>
+<style>
+/* Preview (owner, 23 Nov 2026): @techin20sec, split screen. Techniques from R-ref 23 Nov (design/references.md): the spec on top as one
+   bold number that changes live, the object below changing with it (a three.js phone, real metal and glass), a new state about every
+   second, word-by-word captions with the key word in its colour. Look: design/tech-direction.md (ink, white, signal cyan, heat amber;
+   one bold number; four framings: hero, macro, wide, hero). Fact: TrendForce expects 4 GB of RAM in entry phones in 2026 where 8 GB was
+   common (design/tech-research-2026-11-22.md, topic 1; re-read on the primary source before any post). Pure function of t (window.seek). */
+:root{--ink:#07080c;--sig:#38e1ff;--heat:#ffae3d;--f:'Inter Tight',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased;color:#fff}
+.a{position:absolute}
+#glow{left:0;top:0;width:540px;height:500px}
+#eyebrow{left:30px;top:34px;font:700 14px/1 var(--m);letter-spacing:.16em;color:rgba(255,255,255,.7);white-space:nowrap}
+#num{left:24px;top:64px;width:500px;height:250px;overflow:hidden}
+#num .d{position:absolute;left:0;top:0;font:900 236px/1 var(--f);letter-spacing:-.06em;white-space:nowrap}
+#num .d small{font-size:92px;letter-spacing:-.03em;margin-left:10px}
+#sub{left:30px;top:322px;font:700 21px/1.3 var(--f);color:rgba(255,255,255,.82);white-space:nowrap}
+#src{left:30px;top:384px;font:500 12px/1 var(--m);letter-spacing:.08em;color:rgba(255,255,255,.45);white-space:nowrap}
+#bar{left:30px;top:356px;width:480px;height:10px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden}
+#bar i{position:absolute;left:0;top:0;height:10px;border-radius:5px}
+#seam{left:0;top:500px;width:540px;height:2px;background:rgba(255,255,255,.18)}
+#gl{left:0;top:502px;width:540px;height:458px}
+#cap{left:16px;right:16px;top:446px;text-align:center;font:800 25px/1.15 var(--f);letter-spacing:-.015em;color:#fff;white-space:nowrap;z-index:5}
+#cap .bx{display:inline-block;padding:9px 16px 10px;border-radius:14px;background:rgba(18,20,26,.92);box-shadow:0 10px 26px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.08)}
+#cap span{display:inline-block;margin:0 .12em}
+</style>
+</head>
+<body>
+<canvas id="glow" class="a" width="1080" height="1000"></canvas>
+<div id="eyebrow" class="a">RAM · ENTRY PHONES · 2026</div>
+<div id="num" class="a"></div>
+<div id="bar" class="a"><i id="bari"></i></div>
+<div id="sub" class="a"></div>
+<div id="src" class="a">FORECAST · TRENDFORCE</div>
+<canvas id="gl" class="a" width="1080" height="916" data-subject></canvas>
+<div id="seam" class="a"></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var back = function(k){ var c = 1.7; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+  var DUR = 11.5, SIG = [56, 225, 255], HEAT = [255, 174, 61];
+  var LEAVE = [1.7, 2.5, 3.3, 4.1];   // four 1 GB chips leave the phone
+  function gbAt(t){ return 8 - LEAVE.filter(function(x){ return t >= x + .55; }).length; }
+  function heatK(t){ return io(P(t, 1.6, 4.8)); }
+  function rgb(c, a){ return 'rgba(' + c.map(Math.round).join(',') + ',' + (a == null ? 1 : a) + ')'; }
+  function colAt(t){ var k = heatK(t); return SIG.map(function(v, i){ return mix(v, HEAT[i], k); }); }
+  // ---- the top: one soft key light behind the number
+  var g2 = $('glow').getContext('2d');
+  function drawGlow(t){ var c = colAt(t); g2.clearRect(0, 0, 1080, 1000); g2.fillStyle = '#07080c'; g2.fillRect(0, 0, 1080, 1000);
+    var pulse = 1 + .06 * Math.sin(t * 2.2), gr = g2.createRadialGradient(360, 360, 10, 360, 360, 620 * pulse);
+    gr.addColorStop(0, rgb(c, .34)); gr.addColorStop(.45, rgb(c, .10)); gr.addColorStop(1, 'rgba(7,8,12,0)'); g2.fillStyle = gr; g2.fillRect(0, 0, 1080, 1000); }
+  function drawNum(t){ var box = $('num'), gb = gbAt(t), prev = gb + 1, ch = LEAVE.filter(function(x){ return t >= x + .55; }), last = ch.length ? ch[ch.length - 1] + .55 : -9;
+    var k = out(P(t, last, last + .32)), c = colAt(t);
+    var html = '<div class="d" style="color:' + rgb(c) + ';transform:translateY(' + ((1 - k) * 120).toFixed(1) + 'px);opacity:' + k.toFixed(2) + '">' + gb + '<small>GB</small></div>';
+    if (k < 1 && ch.length) html += '<div class="d" style="color:' + rgb(c) + ';transform:translateY(' + (-k * 140).toFixed(1) + 'px);opacity:' + (1 - k).toFixed(2) + '">' + prev + '<small>GB</small></div>';
+    if (box.innerHTML !== html) box.innerHTML = html;
+    var bi = $('bari'); bi.style.width = (gb / 8 * 100).toFixed(1) + '%'; bi.style.background = rgb(c); bi.style.boxShadow = '0 0 14px ' + rgb(c, .7);
+    $('sub').innerHTML = t < 5.4 ? 'RAM in an entry-level phone' : t < 8.6 ? 'Where <b style="color:#fff">8 GB</b> was common' : 'Check the RAM before you buy'; }
+  // ---- captions
+  var LINES = [
+    { a: 0, b: 1.6, w: ['Your', 'next', 'phone:', 'LESS', 'memory?'], k: 3 },
+    { a: 1.6, b: 5.4, w: ['AI', 'servers', 'are', 'buying', 'it', 'up'], k: 1 },
+    { a: 5.4, b: 8.6, w: ['Chip', 'makers', 'sell', 'to', 'AI', 'first'], k: 4 },
+    { a: 8.6, b: 99, w: ['Need', '8', 'GB?', 'Buy', 'it', 'now'], k: 1 }];
+  function caption(t){ var L = LINES.filter(function(l){ return t >= l.a && t < l.b; })[0] || LINES[0], box = $('cap'), key = L.a + '|' + L.w.join(' ');
+    if (box.dataset.k !== key) { box.dataset.k = key; box.innerHTML = '<div class="bx">' + L.w.map(function(w){ return '<span>' + w + '</span>'; }).join('') + '</div>'; }
+    box.querySelectorAll('span').forEach(function(s, i){ var k = P(t, L.a + i * .085, L.a + i * .085 + .16); s.style.opacity = k;
+      s.style.transform = 'translateY(' + ((1 - out(k)) * 10).toFixed(1) + 'px) scale(' + mix(.86, 1, back(k)).toFixed(3) + ')';
+      s.style.color = i === L.k ? rgb(colAt(t).map(function(v){ return Math.min(255, v + 20); })) : '#fff'; }); }
+  // ---- the 3D world
+  var T = THREE, cv = $('gl');
+  var R = new T.WebGLRenderer({ canvas: cv, antialias: true, preserveDrawingBuffer: true });
+  R.setPixelRatio(1); R.setSize(1080, 916, false); R.outputEncoding = T.sRGBEncoding; R.toneMapping = T.ACESFilmicToneMapping; R.toneMappingExposure = 1.05;
+  var S = new T.Scene(); S.background = new T.Color('#07080c'); S.fog = new T.Fog('#07080c', 18, 46);
+  var cam = new T.PerspectiveCamera(30, 1080 / 916, .1, 200);
+  // studio reflections: a dark room with three soft panels, prefiltered for metal and glass
+  (function(){ var es = new T.Scene(), box = new T.Mesh(new T.BoxGeometry(30, 30, 30), new T.MeshBasicMaterial({ color: '#0a0c12', side: T.BackSide })); es.add(box);
+    [[0, 9, 4, 18, 3, 1.0], [-12, 2, 3, 3, 14, .55], [12, 3, -2, 3, 12, .35]].forEach(function(p){ var m = new T.Mesh(new T.PlaneGeometry(p[3], p[4]), new T.MeshBasicMaterial({ color: new T.Color(p[5] * 3, p[5] * 3, p[5] * 3.2), side: T.DoubleSide }));
+      m.position.set(p[0], p[1], p[2]); m.lookAt(0, 0, 0); es.add(m); });
+    var pm = new T.PMREMGenerator(R); S.environment = pm.fromScene(es, .04).texture; })();
+  var key = new T.DirectionalLight('#ffffff', 1.4); key.position.set(-4, 8, 6); S.add(key);
+  var rim = new T.PointLight('#38e1ff', 3, 12); rim.position.set(3, -1, 3); S.add(rim);
+  var amb = new T.AmbientLight('#8090a0', .15); S.add(amb);
+  function rrect(w, h, r){ var s = new T.Shape(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r);
+    s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; }
+  var phone = new T.Group(); S.add(phone);
+  var PW = 3, PH = 6.2, PD = .34;
+  var frameM = new T.MeshPhysicalMaterial({ color: '#b9bec7', metalness: 1, roughness: .26, clearcoat: .4 });
+  var frame = new T.Mesh(new T.ExtrudeGeometry(rrect(PW, PH, .46), { depth: PD, bevelEnabled: true, bevelSize: .05, bevelThickness: .05, bevelSegments: 4, curveSegments: 18 }), frameM);
+  frame.position.z = -PD / 2; phone.add(frame);
+  var front = new T.Mesh(new T.ShapeGeometry(rrect(PW - .08, PH - .08, .42), 18), new T.MeshPhysicalMaterial({ color: '#05060a', metalness: .2, roughness: .08, clearcoat: 1 }));
+  front.position.z = -PD / 2 - .056; front.rotation.y = Math.PI; phone.add(front);
+  // the open back: a board under smoked glass
+  var board = new T.Mesh(new T.ShapeGeometry(rrect(PW - .3, PH - .3, .32), 18), new T.MeshStandardMaterial({ color: '#0a120e', roughness: .55, metalness: .35, envMapIntensity: .5 }));
+  board.position.z = PD / 2 + .051; phone.add(board);
+  var traceM = new T.MeshStandardMaterial({ color: '#b08a3a', metalness: 1, roughness: .35 });
+  for (var i = 0; i < 26; i++) { var tr = new T.Mesh(new T.BoxGeometry(.012, .3 + (i * 37 % 11) / 10, .004), traceM); tr.position.set(-1.25 + (i * 0.1), -1.9 - (i * 13 % 7) / 10, PD / 2 + .055); phone.add(tr); }
+  var soc = new T.Mesh(new T.BoxGeometry(1.05, 1.05, .09), new T.MeshPhysicalMaterial({ color: '#c9ccd2', metalness: 1, roughness: .18 })); soc.position.set(0, .55, PD / 2 + .1); phone.add(soc);
+  var socD = new T.Mesh(new T.BoxGeometry(.6, .6, .01), new T.MeshStandardMaterial({ color: '#8b9097', metalness: 1, roughness: .4 })); socD.position.set(0, .55, PD / 2 + .15); phone.add(socD);
+  // camera bump
+  var bump = new T.Mesh(new T.ExtrudeGeometry(rrect(1.25, 1.25, .34), { depth: .08, bevelEnabled: true, bevelSize: .03, bevelThickness: .03, bevelSegments: 3 }), new T.MeshPhysicalMaterial({ color: '#1a1d24', metalness: .6, roughness: .2, clearcoat: 1 }));
+  bump.position.set(-.72, 2.2, PD / 2 + .06); phone.add(bump);
+  [[-.98, 2.46], [-.46, 2.46], [-.98, 1.94]].forEach(function(p){ var r = new T.Mesh(new T.CylinderGeometry(.2, .2, .1, 40), frameM); r.rotation.x = Math.PI / 2; r.position.set(p[0], p[1], PD / 2 + .2); phone.add(r);
+    var l = new T.Mesh(new T.CylinderGeometry(.15, .15, .11, 40), new T.MeshPhysicalMaterial({ color: '#020306', metalness: .1, roughness: .02, clearcoat: 1 })); l.rotation.x = Math.PI / 2; l.position.set(p[0], p[1], PD / 2 + .21); phone.add(l); });
+  // eight 1 GB memory packages in two rows of four, each with gold contacts and a lit edge
+  var chips = [], slots = [];
+  var chipM = new T.MeshPhysicalMaterial({ color: '#15171c', metalness: .3, roughness: .38, clearcoat: .6 }), pinM = new T.MeshStandardMaterial({ color: '#d4a84a', metalness: 1, roughness: .25 });
+  for (var r2 = 0; r2 < 2; r2++) for (var c2 = 0; c2 < 4; c2++) {
+    var g = new T.Group(), body = new T.Mesh(new T.BoxGeometry(.56, .44, .08), chipM); g.add(body);
+    for (var q = 0; q < 6; q++) { var pn = new T.Mesh(new T.BoxGeometry(.05, .06, .03), pinM); pn.position.set(-.21 + q * .084, -.25, -.02); g.add(pn); var pn2 = pn.clone(); pn2.position.y = .25; g.add(pn2); }
+    var edge = new T.Mesh(new T.BoxGeometry(.5, .025, .01), new T.MeshBasicMaterial({ color: '#38e1ff' })); edge.position.set(0, -.12, .046); g.add(edge);
+    var x = -1.05 + c2 * .7, y = -.55 - r2 * .62;
+    g.position.set(x, y, PD / 2 + .1); g.userData = { home: g.position.clone(), edge: edge }; phone.add(g); chips.push(g);
+    var sl = new T.Mesh(new T.PlaneGeometry(.6, .48), new T.MeshBasicMaterial({ color: '#ffae3d', transparent: true, opacity: 0, wireframe: false })); sl.position.set(x, y, PD / 2 + .057); phone.add(sl); slots.push(sl); }
+  var glass = new T.Mesh(new T.ShapeGeometry(rrect(PW - .06, PH - .06, .42), 18), new T.MeshPhysicalMaterial({ color: '#0b0e14', metalness: 0, roughness: .05, transparent: true, opacity: .1, clearcoat: 1, clearcoatRoughness: .05 }));
+  glass.position.z = PD / 2 + .2; phone.add(glass);
+  // the AI server: a tall rack of amber-lit memory trays, far right
+  var rack = new T.Group(); S.add(rack); rack.position.set(9.5, 1.5, -5);
+  rack.add(new T.Mesh(new T.BoxGeometry(5, 11, 3.2), new T.MeshPhysicalMaterial({ color: '#1b1e25', metalness: .9, roughness: .35 })));
+  var leds = [];
+  for (var k2 = 0; k2 < 14; k2++) { var tray = new T.Mesh(new T.BoxGeometry(4.4, .5, .1), new T.MeshPhysicalMaterial({ color: '#2a2e37', metalness: 1, roughness: .3 })); tray.position.set(0, -4.9 + k2 * .72, 1.62); rack.add(tray);
+    var led = new T.Mesh(new T.BoxGeometry(3.6, .06, .02), new T.MeshBasicMaterial({ color: '#ffae3d' })); led.position.set(0, -4.9 + k2 * .72, 1.68); rack.add(led); leds.push(led); }
+  var rackLight = new T.PointLight('#ffae3d', 0, 18); rackLight.position.set(7.5, 1.5, -1); S.add(rackLight);
+  // a stream of other memory heading to the rack (seeded)
+  var stream = [], sGeo = new T.BoxGeometry(.4, .3, .06);
+  for (var s2 = 0; s2 < 40; s2++) { var m = new T.Mesh(sGeo, new T.MeshBasicMaterial({ color: '#ffae3d', transparent: true, opacity: .0 })); m.userData = { o: (s2 * 0.618) % 1, y: ((s2 * 7) % 13) / 13 * 8 - 4, z: ((s2 * 5) % 9) / 9 * 6 - 5 }; S.add(m); stream.push(m); }
+  function bez(a, b, c, k){ return new T.Vector3().copy(a).multiplyScalar((1 - k) * (1 - k)).add(b.clone().multiplyScalar(2 * k * (1 - k))).add(c.clone().multiplyScalar(k * k)); }
+  var SHOTS = [   // [time, camera position, look-at, fov]
+    [0,    [3.2, -1.0, 10.4], [0, 0, 0], 30],
+    [1.4,  [2.4, -2.2, 6.2], [-.2, -.8, 0], 30],
+    [4.9,  [1.4, -1.5, 5.4], [0, -.6, 0], 30],
+    [5.7,  [-2, 0, 24], [5.2, .6, -2], 34],
+    [8.4,  [-1.2, 0, 22], [5.2, .6, -2], 34],
+    [9.1,  [-3.4, -1.0, 13.2], [0, .1, 0], 30],
+    [11.5, [-2.8, -.8, 12.4], [0, .1, 0], 30]];
+  function camAt(t){ for (var i = 0; i < SHOTS.length - 1; i++) { var a = SHOTS[i], b = SHOTS[i + 1]; if (t <= b[0]) {
+      var hold = (i === 1 || i === 4) ? 0 : 0, k = io(P(t, a[0], b[0]));
+      if (i === 0 || i === 2 || i === 4) k = io(P(t, b[0] - .7, b[0]));   // hold, then a fast eased move into the next shot
+      if (i === 1 || i === 3 || i === 5) k = out(P(t, a[0], b[0]));       // slow drift within the shot
+      return [a[1].map(function(v, j){ return mix(v, b[1][j], k); }), a[2].map(function(v, j){ return mix(v, b[2][j], k); }), mix(a[3], b[3], k)]; } }
+    var L = SHOTS[SHOTS.length - 1]; return [L[1], L[2], L[3]]; }
+  var ORDER = [6, 1, 4, 3];   // which chips leave
+  function seek3(t){
+    var c = camAt(t); cam.position.set(c[0][0], c[0][1], c[0][2]); cam.fov = c[2]; cam.updateProjectionMatrix(); cam.lookAt(c[1][0], c[1][1], c[1][2]);
+    phone.rotation.set(-.12 + Math.sin(t * .6) * .03, -.42 + t * .035, .05); phone.position.y = Math.sin(t * 1.1) * .06;
+    var hk = heatK(t), ce = new T.Color().setRGB(mix(SIG[0], HEAT[0], hk) / 255, mix(SIG[1], HEAT[1], hk) / 255, mix(SIG[2], HEAT[2], hk) / 255);
+    rim.color.copy(ce);
+    var target = rack.position.clone().add(new T.Vector3(-2.6, -1.5 + 0, 1.8));
+    chips.forEach(function(ch, i){ var j = ORDER.indexOf(i), ud = ch.userData;
+      ud.edge.material.color.setRGB(.22, .88, 1);
+      if (j < 0) { ch.position.copy(ud.home); ch.rotation.set(0, 0, 0); ch.visible = true; ud.edge.material.color.copy(ce); return; }
+      var t0 = LEAVE[j], lift = out(P(t, t0, t0 + .45)), fly = P(t, t0 + .45, t0 + 2.6);
+      ud.edge.material.color.setRGB(mix(.22, 1, lift), mix(.88, .68, lift), mix(1, .24, lift));
+      if (fly <= 0) { ch.position.set(ud.home.x, ud.home.y, ud.home.z + lift * .9); ch.rotation.set(-lift * .25, lift * .3, 0); ch.visible = true; slots[i].material.opacity = lift * .5; return; }
+      phone.updateMatrixWorld(); var start = phone.localToWorld(new T.Vector3(ud.home.x, ud.home.y, ud.home.z + .9)), dest = target.clone().add(new T.Vector3(0, j * .72, 0));
+      var ctrl = start.clone().add(new T.Vector3(1.2, 3.2, 2)), wp = bez(start, ctrl, dest, io(fly)), lp = phone.worldToLocal(wp.clone());
+      ch.position.copy(lp); ch.rotation.set(-.25 + fly * 2.4, .3 + fly * 3.1, fly * 1.2); ch.visible = fly < .985; slots[i].material.opacity = .5 + .3 * Math.sin(t * 6 + i); });
+    var wide = P(t, 5.2, 6.2) * (1 - P(t, 8.4, 9.1));
+    rackLight.intensity = 2.5 + wide * 4 + Math.sin(t * 3) * .4;
+    leds.forEach(function(l, i){ var on = .55 + .45 * Math.sin(t * 5 + i * 1.7); l.material.color.setRGB(1 * on, .68 * on, .24 * on); });
+    stream.forEach(function(m){ var ud = m.userData, k = (ud.o + t * .45) % 1; m.position.set(mix(-9, 7, k), ud.y * (1 - k) + (-1 + ud.y * .1) * k, ud.z); m.rotation.set(k * 6, k * 4, 0);
+      m.material.opacity = wide * Math.sin(k * Math.PI) * .9; m.visible = wide > .01; });
+    R.render(S, cam); }
+  function seek(t){ drawGlow(t); drawNum(t); caption(t); seek3(t); }
+  var Q = [{ t: 0, k: 'swell', d: .6, g: .5 }];
+  LEAVE.forEach(function(x, i){ Q.push({ t: x, k: 'blip', p: 7 - i, g: .7 }, { t: x + .45, k: 'whoosh', d: .5, g: .45 }, { t: x + .55, k: 'tick', g: .8 }); });
+  Q.push({ t: 4.9, k: 'swell', d: .6, g: .4 }, { t: 5.6, k: 'boom', g: .7 }, { t: 8.5, k: 'whoosh', d: .5, g: .45 }, { t: 9.1, k: 'hit', g: .7 }, { t: 9.2, k: 'resolve', notes: [52, 59, 64, 68], g: .6 });
+  window.CUES = { dur: DUR, cues: Q, bed: { bpm: 100, origin: 0, gain: .34, chords: [[45, 52, 57, 60, 64], [41, 48, 57, 60, 65], [43, 50, 55, 62, 67], [40, 47, 55, 59, 64]] } };
+  window.seek = seek; window.DURATION = DUR; window.COVER = 3.0;
+  document.fonts.ready.then(function(){ seek(0); document.documentElement.setAttribute('data-ready', ''); });
+})();
+</script>
+</body>
+</html>
