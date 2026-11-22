@@ -209,3 +209,8 @@ Format (at most 6 lines):
 - Done: render 2 (run 45021673906) OUTPUT QA PASS (SYNC 4 of 4, HERO 83%, SHEEN 0, DEAD none, EDGES pass); item 13 written. The tech reset (PR #1148) and its first reel are live for 20:30 IST.
 - Left: the Reel critic (item 20 + ENHANCE) on showreel-tech-heart-green; post at 20:30 IST.
 - For the other account: next tech reel must change format and device class (check.mjs rotation): not xray, not wearables.
+
+## 2026-11-22 · claude/critic-heart-green · Reel critic: showreel-tech-heart-green render 2
+- Done: item 20 CRITIC: NOT READY: the trace crosses out the "LIGHT BACK" label ~15-27 s, and the end card (34-36.5 s) lays "SAVE THIS · SHARE IT" over the watch with the lower 45% empty. Otherwise sound: Output QA PASS, voice word for word, SOUND 26/26, facts re-read on Apple's page (incl. the caption's 30-210 bpm). Clearly richer and more hooking than cold-shutdown (wrist world, x-ray, blood-cell dive, live trace, night chapter, question answered at the end). ENHANCE written. critic.md question 41.
+- Left: the owner decides: post at 20:30 as is (cosmetic, late or small) or allow a 3rd render; the ~3-line fix is in item 20.
+- For the other account: stills on the real voice timing: map the run log's CUES line onto the fake-vo timeline.json, then techkit/preflight.mjs; a chart label must sit outside its line's range.
