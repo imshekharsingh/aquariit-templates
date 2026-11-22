@@ -1709,5 +1709,34 @@
   ],
   "hidden": true,
   "slotNote": "replaced by the reset reel, owner 22 Nov"
+ },
+ "showreel-tech-heart-green": {
+  "channel": "tech",
+  "postOn": "2026-11-22",
+  "postAt": "20:30",
+  "format": "xray",
+  "device": "wearables",
+  "concept": "Tech reset reel (22 Nov): xray format, wearables, global, ~39 s. Why does your watch flash green? A wrist cut open in layers, the sensor lifts out, blood cells soak up green, a live pulse trace, infrared at night; loops to the opening.",
+  "experiment": {
+   "id": "tech-reset-detail",
+   "change": "the reset bar (22 Nov): xray format, a drawn wrist cut open in layers (watch, skin, capillaries, fat, artery), the sensor lifts out and faces the camera, light particles absorbed or bounced back, blood cells streaming, capillaries swelling on each beat, a live pulse trace built from light samples, night/infrared; frame 0 the light inside the wrist, the end loops to it",
+   "vs": "median"
+  },
+  "caption": "Ever noticed your watch flashing green on your wrist? 👀💚 It's counting your blood.\n\nApple explains it on its support page: blood is red because it reflects red light and absorbs green light. Apple Watch pairs green LED lights with light-sensitive photodiodes to see how much blood flows through your wrist at any moment. When your heart beats, more blood flows and more green light is absorbed; between beats, less. By flashing its LEDs hundreds of times per second, the watch works out the beats per minute: your heart rate (its optical sensor supports 30-210 beats per minute). The sensor can also use infrared light: Apple Watch Series 12 and Ultra 4 use infrared LEDs during your sleep schedule.\n\nDid you know it switches to infrared at night? Yes or no 👇 Send this to the friend who never takes their watch off.",
+  "keywords": [
+   "why does my watch flash green",
+   "smartwatch heart rate sensor",
+   "how apple watch measures heart rate",
+   "green light on smartwatch",
+   "optical heart rate sensor explained",
+   "photoplethysmography explained"
+  ],
+  "hashtags": [
+   "#smartwatch",
+   "#applewatch",
+   "#heartrate",
+   "#techexplained",
+   "#gadgets"
+  ]
  }
 }

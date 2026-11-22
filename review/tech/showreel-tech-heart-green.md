@@ -1,0 +1,28 @@
+# Review: showreel-tech-heart-green (tech, postOn 2026-11-22 postAt 20:30 IST)
+
+The Mandatory Gate, design/mandatory.md. Built 22 Nov by the tech reset session (owner's go, ~16:30 IST: "go ahead with the reset now, build one after that"); it replaces showreel-tech-cold-shutdown (hidden, slotNote "replaced by the reset reel, owner 22 Nov"). The first reel on the reset bar (rules-tech.md D, P, X). Kit engine: techkit/base.html + techkit/scenes/heart-green.js.
+AUTO lines from `python3 techkit/make.py heart-green --fake-vo --stills 0,5,7,10.5,12,15,19,22,24,27,30,32,34.5,37,38.5` (fake timings; the render re-times to the real voice). Output QA preview on the scene's own frames (10 fps, `scripts/qa/look.py`): SHEEN PASS 0 sweeps, HERO PASS 82% of 77 samples, 97% of the width.
+Why this reel: the owner's verdict of 22 Nov (every reel the same, no detail, no pull). Format xray (not specs decoded), device wearables (not phone / charging / battery; the last wearable was watch-5atm on 17 Nov), global.
+
+1. Topic: PASS: everyone with a smartwatch has seen the green light on their wrist; not done on any channel. Rulebook: K0 pass (kit), K1 pass (no sweep: SHEEN 0; no box round the hero; no whole-frame wobble), K2 pass (the wrist opens in layers, the disc lifts out, capillaries swell, HERO 82%), K3 pass (frame 0: title "Watch flashing green?" over the wrist with the green light fanning in, inside the centre 3:4). D1 pass (a drawn wrist: skin, collagen fibres, capillary loops, fat, artery, a metal watch with crown, band holes, glass dome), D2 pass (8 named parts on their words: green light, case goes clear with battery / board / haptic engine / screws, the sensor disc with LEDs and photodiodes, the blood cell, the artery, the trace, the hearts, infrared), D3 pass (far specks with parallax, the wrist and watch, foreground light particles and labels; the pulse trace as a front plane), D4 pass (cells streaming, capillaries and artery pulsing, LEDs flickering, fibres drifting, light particles absorbed or bouncing back; no sweeps), D5 pass (a push in, a dive to 2x on one blood cell, a pull back, a pan to the right, a pull back to the opening), D6 pass (screws, crown ridges, band holes, epidermis texture, fresnel rings, photodiode grid, PCB traces, fat globules, sample dots), D7 pass (wide, x-ray, close-up, beat, trace, night, loop), P1 pass (light inside a wrist at 0 s), P2 pass ("why green?" answered at the end), P3 pass (the last frame is the opening framing), P4 pass (caption: "Did you know it switches to infrared at night? Yes or no"). F2 global, F3 pass (Apple named once as the source, in voice and caption; the watch drawn generically, no logo or trade dress), F4 pass (the verdict: the green flash is your pulse being counted).
+2. Frame 0: PASS: the title, the watch on the wrist, the green fan and light particles in the skin; SUBJECT FILL: the wrist spans x 36-1044 (97% of the width)
+3. Safe zone: PASS: SAFE ZONE: ok (every text and canvas label every 0.5 s on the stills)
+4. No overlap: PASS: OVERLAP: none
+5. Motion: PASS: something moves in every chapter (HERO 82%); FLOW dead runs none
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; CAPTIONS: 39 chunks, every spoken word shown
+7. Voice: PASS: PREFLIGHT voice: 451 letters, about 37.5 s at speed 1.00 (limit 40.0): fits; PRONUNCIATION: 0 overrides used; no unchecked words
+8. Sound: PASS (by design; measured on the render at item 13): impact at frame 0, a chime on "green", pops on the parts, a snap on "photodiodes", blips for red bounced / green soaked up, thuds on "heartbeat" and "pushes", ticks and zaps on "flash" / "hundreds", a chime on "rate", the final chime
+9. Payoff: PASS: the last frames: the opening picture again under the end card "Green flash = your pulse."
+10. Facts: PASS: Apple Support "Monitor your heart rate with Apple Watch" (support.apple.com/en-us/120277, published 14 Sep 2026, read 22 Nov 2026): blood reflects red and absorbs green; green LEDs with light-sensitive photodiodes; more blood and more green absorbed on each beat, less between; LEDs flash hundreds of times per second to calculate beats per minute; Series 12 and Ultra 4 use infrared LEDs during the sleep schedule (said as "Apple's newest watches"). No digits on screen. In post.sources; npm run check passes
+11. Post data: PASS: captions.json entry (channel tech, postOn 2026-11-22, postAt 20:30, format xray, device wearables, concept, experiment tech-reset-detail); 6 keywords, 5 hashtags; the caption asks a yes/no comment question and names who to send it to
+12. Review file: PASS: this file, items 1-11 and 14-17 PASS
+13. After the render: PENDING
+14. Cuts: PASS: FLOW: cuts 0 (8 declared transitions)
+15. Dead runs: PASS: FLOW: dead runs none (declared hold: the end card)
+16. Continuity: PASS: FLOW: continuity 95% (tech 55%+)
+17. Strobes: PASS: FLOW: strobes 0
+
+Researched improvement (design/improvements.md): the curiosity loop (P2/P3): the first line's question is answered by the last, and the last frame returns to the opening framing so the replay is seamless.
+Craft improvement (design/craft-log.md): one world shown at several scales (wide, x-ray, a 2x dive onto one cell, a pulled-back trace), with the world clipped under the header so a close-up never runs into the title.
+Critic ENHANCE of 22 Nov (cold-shutdown: "open on the moment itself"): applied: frame 0 is the light inside the wrist, not a title over a diagram.
+References used (design/references.md): the owner's kit (design/kits/motion_kit.zip): packets with trails, ping rings on arrival, a glass data panel with a live trace.

@@ -1,0 +1,441 @@
+{
+ "slug": "heart-green",
+ "engine": "kit",
+ "scene": "techkit/scenes/heart-green.js",
+ "topic": "Why a smartwatch flashes green: how optical heart rate works",
+ "format": "xray",
+ "audience": "global",
+ "gadget": "watch",
+ "device": "wearables",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.45,
+ "max_end": 40.0,
+ "experiment": {
+  "id": "tech-reset-detail",
+  "change": "the reset bar (22 Nov): xray format, a drawn wrist cut open in layers (watch, skin, capillaries, fat, artery), the sensor lifts out and faces the camera, light particles absorbed or bounced back, blood cells streaming, capillaries swelling on each beat, a live pulse trace built from light samples, night/infrared; frame 0 the light inside the wrist, the end loops to it",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Why does your watch flash green on your wrist?",
+   "beat": "question"
+  },
+  {
+   "text": "Under the glass sit green lights, and next to them, tiny light sensors called photodiodes.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "Blood is red because it reflects red light, and soaks up green.",
+   "beat": "fix",
+   "source": 0
+  },
+  {
+   "text": "Every heartbeat pushes more blood through your wrist, so more green gets absorbed.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "Between beats, less blood, so more light bounces back to the sensor.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "Flash that hundreds of times a second, and the dips become your heart rate.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "While you sleep, Apple's newest watches switch to infrared, a light you can't see.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "So that green flash? It's your watch counting your blood.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "watch0": [
+   0,
+   "watch"
+  ],
+  "green0": [
+   0,
+   "green"
+  ],
+  "wrist": [
+   0,
+   "wrist"
+  ],
+  "glass": [
+   1,
+   "glass"
+  ],
+  "lights": [
+   1,
+   "lights"
+  ],
+  "sensors": [
+   1,
+   "sensors"
+  ],
+  "photo": [
+   1,
+   "photodiodes"
+  ],
+  "blood2": [
+   2,
+   "blood"
+  ],
+  "reflects": [
+   2,
+   "reflects"
+  ],
+  "soaks": [
+   2,
+   "soaks"
+  ],
+  "green2": [
+   2,
+   "green"
+  ],
+  "heartbeat": [
+   3,
+   "heartbeat"
+  ],
+  "pushes": [
+   3,
+   "pushes"
+  ],
+  "absorbed": [
+   3,
+   "absorbed"
+  ],
+  "between": [
+   4,
+   "between"
+  ],
+  "less": [
+   4,
+   "less"
+  ],
+  "bounces": [
+   4,
+   "bounces"
+  ],
+  "sensor": [
+   4,
+   "sensor"
+  ],
+  "flash5": [
+   5,
+   "flash"
+  ],
+  "hundreds": [
+   5,
+   "hundreds"
+  ],
+  "dips": [
+   5,
+   "dips"
+  ],
+  "rate": [
+   5,
+   "rate"
+  ],
+  "sleep": [
+   6,
+   "sleep"
+  ],
+  "apple": [
+   6,
+   "apple"
+  ],
+  "infrared": [
+   6,
+   "infrared"
+  ],
+  "see": [
+   6,
+   "see"
+  ],
+  "green7": [
+   7,
+   "green"
+  ],
+  "counting": [
+   7,
+   "counting"
+  ],
+  "final": [
+   7,
+   "blood"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "green0",
+   "chime",
+   0.3,
+   0.1,
+   {
+    "notes": [
+     "E5",
+     "B5"
+    ]
+   }
+  ],
+  [
+   "wrist",
+   "pop",
+   0.45,
+   -0.2
+  ],
+  [
+   "glass",
+   "whoosh",
+   0.3,
+   0
+  ],
+  [
+   "lights",
+   "pop",
+   0.5,
+   -0.3
+  ],
+  [
+   "sensors",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "photo",
+   "snap",
+   0.55,
+   0
+  ],
+  [
+   "blood2",
+   "thud",
+   0.45,
+   0
+  ],
+  [
+   "reflects",
+   "blip",
+   0.5,
+   0.3,
+   {
+    "f": 520,
+    "f2": 820
+   }
+  ],
+  [
+   "soaks",
+   "blip",
+   0.5,
+   -0.3,
+   {
+    "f": 700,
+    "f2": 300
+   }
+  ],
+  [
+   "green2",
+   "tick",
+   0.45,
+   -0.2
+  ],
+  [
+   "heartbeat",
+   "thud",
+   0.6,
+   0
+  ],
+  [
+   "pushes",
+   "thud",
+   0.5,
+   0
+  ],
+  [
+   "absorbed",
+   "snap",
+   0.5,
+   0.1
+  ],
+  [
+   "between",
+   "tick",
+   0.45,
+   -0.2
+  ],
+  [
+   "less",
+   "tick",
+   0.45,
+   0.2
+  ],
+  [
+   "bounces",
+   "blip",
+   0.5,
+   0.2,
+   {
+    "f": 400,
+    "f2": 900
+   }
+  ],
+  [
+   "sensor",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "flash5",
+   "ticks",
+   0.35,
+   0
+  ],
+  [
+   "hundreds",
+   "zaps",
+   0.3,
+   0
+  ],
+  [
+   "dips",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "rate",
+   "chime",
+   0.35,
+   0,
+   {
+    "notes": [
+     "A5",
+     "E6"
+    ]
+   }
+  ],
+  [
+   "sleep",
+   "whoosh",
+   0.3,
+   0
+  ],
+  [
+   "apple",
+   "tick",
+   0.4,
+   0.2
+  ],
+  [
+   "infrared",
+   "snap",
+   0.5,
+   0
+  ],
+  [
+   "see",
+   "blip",
+   0.45,
+   0,
+   {
+    "f": 300,
+    "f2": 200
+   }
+  ],
+  [
+   "green7",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "counting",
+   "tick",
+   0.45,
+   0.2
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.4,
+   0,
+   {
+    "notes": [
+     "A4",
+     "C#5",
+     "E5",
+     "B5",
+     "E6"
+    ],
+    "d": 3.2
+   }
+  ]
+ ],
+ "post": {
+  "title": "Why does your watch flash green?",
+  "caption": "Ever noticed your watch flashing green on your wrist? 👀💚 It's counting your blood.\n\nApple explains it on its support page: blood is red because it reflects red light and absorbs green light. Apple Watch pairs green LED lights with light-sensitive photodiodes to see how much blood flows through your wrist at any moment. When your heart beats, more blood flows and more green light is absorbed; between beats, less. By flashing its LEDs hundreds of times per second, the watch works out the beats per minute: your heart rate (its optical sensor supports 30-210 beats per minute). The sensor can also use infrared light: Apple Watch Series 12 and Ultra 4 use infrared LEDs during your sleep schedule.\n\nDid you know it switches to infrared at night? Yes or no 👇 Send this to the friend who never takes their watch off.",
+  "keywords": [
+   "why does my watch flash green",
+   "smartwatch heart rate sensor",
+   "how apple watch measures heart rate",
+   "green light on smartwatch",
+   "optical heart rate sensor explained",
+   "photoplethysmography explained"
+  ],
+  "hashtags": [
+   "#smartwatch",
+   "#applewatch",
+   "#heartrate",
+   "#techexplained",
+   "#gadgets"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/120277",
+    "note": "Apple Support, Monitor your heart rate with Apple Watch (published 14 Sep 2026, read 22 Nov 2026): the optical heart sensor uses photoplethysmography; blood is red because it reflects red light and absorbs green light; green LED lights paired with light-sensitive photodiodes detect the amount of blood flowing through the wrist; when the heart beats, blood flow and green light absorption are greater, between beats less; flashing its LEDs hundreds of times per second lets it calculate beats per minute; range 30-210 bpm; the sensor can also use infrared light; Series 12 and Ultra 4 use infrared LEDs during the sleep schedule."
+   }
+  ]
+ },
+ "qa": {
+  "sync": [
+   "photodiodes",
+   "absorbed",
+   "hundreds",
+   "infrared"
+  ]
+ },
+ "say": {}
+}
