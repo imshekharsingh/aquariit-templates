@@ -4,7 +4,7 @@
 // (read 22 Nov 2026). The object changes on every beat (zigzag, voltage bar, fill, thermometer, current dots); no rolling digits; named words are 40 px+ pills.
 (function(){
 const COLC='#8ef0ff',COLA='#ffb35c',GRN='#6ff0a4',GLD='#ffd36b',LIL='#b9b6ff',PNK='#ff8f9a',SLT='#5a6290',ICE='#bfe9ff';
-const BX=340,BY=630,BW=520,BH=160,ZY=935,ZX0=340,ZX1=860,GY=1075,GH=52,MINV=.40,TX=235,TT=650,TB=1130;
+const BX=340,BY=630,BW=520,BH=160,ZY=935,ZX0=340,ZX1=860,GY=1020,GH=84,MINV=.40,TX=235,TT=650,TB=1130;
 const RM=mulberry(5),SNOW=[...Array(36)].map(()=>({x:RM()*1000+40,y:RM(),r:2+RM()*3.5,v:.05+RM()*.06,ph:RM()*6}));
 function txt(s,x,y,size,col,a=1,al='center',w=800){if(a<=0)return;g.globalAlpha=clamp(a);g.font=`${w} ${size}px "Inter Display",Inter`;g.textAlign=al;g.textBaseline='middle';g.fillStyle=col;g.fillText(s,x,y);g.globalAlpha=1}
 // state curves from the spoken cues
@@ -13,7 +13,7 @@ const coldK=t=>eio(prog(t,C.cold0,C.cold0+1.1))*(1-rec(t));            // 0 warm
 const impK=t=>eio(prog(t,C.imped-.25,C.imped+.55))*(1-rec(t));         // inner resistance grown
 const sagK=t=>eio(prog(t,C.sags-.1,C.sags+.55))*(1-eio(prog(t,C.warms,C.warms+.9)));
 const offK=t=>eio(prog(t,C.shuts-.1,C.shuts+.35))*(1-eio(prog(t,C.warms,C.warms+.5)));
-function volt(t){const cf=coldK(t),vb=.82-.18*cf;return vb-(vb-.2)*sagK(t)+.012*Math.sin(t*9)}
+function volt(t){const cf=coldK(t),vb=.82-.18*cf,ld=.09*(.5+.5*Math.sin(t*5.2));return Math.max(.05,vb-(vb-.2)*sagK(t)-ld*(1-.6*sagK(t)))}   // the phone's load pulses keep the bar moving
 function therm(t){const L=.64-.46*coldK(t);return L}
 function zig(t,amp){const N=14,pts=[];for(let i=0;i<=N;i++){const x=lerp(ZX0,ZX1,i/N),y=ZY+(i===0||i===N?0:(i%2?-1:1)*amp);pts.push([x,y])}return pts}
 function onPath(pts,u){const n=pts.length-1,f=u*n,i=Math.min(n-1,Math.floor(f)),k=f-i;return[lerp(pts[i][0],pts[i+1][0],k),lerp(pts[i][1],pts[i+1][1],k)]}
@@ -46,7 +46,10 @@ function gauge(t){const v=volt(t),low=v<MINV,col=low?PNK:GRN,mx=BX+BW*MINV,ge=ei
   g.save();g.globalAlpha=gs;rrect(g,BX,GY,BW,GH,26);g.fillStyle='#10163a';g.fill();g.strokeStyle='rgba(185,182,255,.4)';g.lineWidth=4;g.stroke();
   g.save();rrect(g,BX,GY,BW,GH,26);g.clip();const gr=g.createLinearGradient(BX,0,BX+BW,0);gr.addColorStop(0,col);gr.addColorStop(1,low?'#ff5c78':'#b6ffd6');g.fillStyle=gr;g.shadowColor=col;g.shadowBlur=22;g.fillRect(BX,GY,BW*v,GH);g.restore();
   g.setLineDash([9,8]);g.strokeStyle=GLD;g.lineWidth=5;g.beginPath();g.moveTo(mx,GY-22);g.lineTo(mx,GY+GH+22);g.stroke();g.setLineDash([]);g.restore();
-  txt('MIN',mx,GY+GH+42,32,GLD,gs,'center',800);txt('VOLTAGE',BX+8,GY-34,30,'#aab0d8',gs*(1-win(t,C.volt-.1,TL.scenes[3].start-.15,.2,.2)),'left',700)}
+  txt('MIN',mx,GY+GH+42,32,GLD,gs,'center',800);txt('VOLTAGE',BX+8,GY-28,30,'#aab0d8',gs*(1-win(t,C.volt-.1,TL.scenes[3].start-.15,.2,.2)),'left',700)}
+function pill2(wx,wy,word,col,a,size,bg){if(a<=.01)return;const [sx,sy]=toS(wx,wy);g.font=`800 ${size}px Inter`;const w=g.measureText(word).width+size*1.4,h=size*1.9;const x=clamp(sx,64+w/2,956-w/2),y=clamp(sy,470,1200);
+  const sc=.85+.15*eob(clamp(a));g.save();g.globalAlpha=clamp(a);g.translate(x,y);g.scale(sc,sc);rrect(g,-w/2,-h/2,w,h,h/2);g.fillStyle=bg;g.fill();g.strokeStyle=col;g.lineWidth=4;g.stroke();
+  g.fillStyle='#ffffff';g.textAlign='center';g.textBaseline='middle';g.fillText(word,0,2);g.restore();if(a>.3)BOXES.push([word,x-w/2*sc,x+w/2*sc,y-h/2*sc,y+h/2*sc])}
 function stampT(x,y,word,col,a,rot){if(a<=0)return;const sc=1+.3*(1-eob(clamp(a)));g.save();g.globalAlpha=clamp(a);g.translate(x,y);g.rotate(rot);g.scale(sc,sc);g.font='900 52px "Inter Display",Inter';
   const w=g.measureText(word).width+50;g.strokeStyle=col;g.lineWidth=7;rrect(g,-w/2,-44,w,88,14);g.stroke();g.fillStyle=col;g.textAlign='center';g.textBaseline='middle';g.fillText(word,0,4);g.restore();
   if(a>.3){const r=w/2+16;BOXES.push([word,x-r,x+r,y-60,y+60])}}
@@ -55,7 +58,7 @@ window.TOPIC={
   title:'Phone dies in the <em>cold?</em>',eyebrow:'PHONES · SPECS DECODED',final:"Cold pauses<br>it. <em>Warm</em> it.",
   vars:{'--bg1':'#0f2a4a','--bg2':'#070c1e','--blob1':'#2a8cff','--blob2':'#8ef0ff','--blob3':'#ffb35c','--tgrad':'linear-gradient(100deg,#8ef0ff,#bfe9ff 50%,#ffd36b)'},
   chips:[['THE QUESTION','#8ef0ff'],['THE CAUSE','#ffb35c'],['THE SAG','#ff8f9a'],['THE SHUTDOWN','#ff8f9a'],['THE RECOVERY','#6ff0a4'],['WHAT APPLE SAYS','#ffd36b'],['RECAP','#8ef0ff']],
-  keyw:/^(thirty|cold|impedance|resistance|voltage|sags|power|minimum|shuts|purpose|temporary|warms|normal|zero|celsius|heat|good|warm|low|old)$/i,
+  keyw:/^(thirty|cold|impedance|resistance|voltage|sags|power|minimum|shuts|purpose|temporary|warms|normal|zero|celsius|heat|permanently|warm|low|old)$/i,
   jolts:[],
   cover:true,
   holds:()=>[[+(C.final+.8).toFixed(2),TL.total]],
@@ -80,7 +83,7 @@ window.TOPIC={
     <div class="step"><div class="n">PERFORMANCE</div><div class="s">NORMAL</div></div></div></div>
   <div class="panel" id="p5"><div style="position:absolute;left:36px;top:26px" class="lab">APPLE SAYS BEST AT</div>
     <div class="big" style="position:absolute;left:36px;top:54px;font-size:46px;color:#6ff0a4" id="p5a">0 TO 35 °C</div>
-    <div class="big" style="position:absolute;right:36px;top:54px;font-size:46px;color:#ff8f9a" id="p5b">HEAT: FOR GOOD</div></div>
+    <div class="big" style="position:absolute;right:36px;top:54px;font-size:46px;color:#ff8f9a" id="p5b">HEAT: PERMANENT</div></div>
   <div class="pill" id="pl1" style="top:1060px;border-color:rgba(191,233,255,.6)"><div class="ic" style="background:rgba(191,233,255,.18);color:#bfe9ff">C</div>Cold: pauses it</div>
   <div class="pill" id="pl2" style="top:1170px;border-color:rgba(255,179,92,.6)"><div class="ic" style="background:rgba(255,179,92,.18);color:#ffd9a8">W</div>Warm it back up</div>`,
   cam(){const Z=[[1.0,-30,0],[1.07,20,-40],[1.05,10,-110],[1.08,0,-20],[1.02,-20,-10],[1.07,40,10],[1.02,0,-14]],k=[[0,[1,0,0]]];
@@ -96,13 +99,13 @@ window.TOPIC={
   labels(t){
     const q=(a,b,fi=.3,fo=.3)=>win(t,a,b,fi,fo);
     const c0=q(C.cold0-.1,C.cold0+1.5);if(c0>0)label(TX,TT-18,'COLD',ICE,c0*prog(t,C.cold0-.05,C.cold0+.25),44,'rgba(8,32,44,.94)');
-    const im=q(C.imped-.15,C.resist+.9);if(im>0)label(600,842,'IMPEDANCE',PNK,im*prog(t,C.imped-.1,C.imped+.25),44,'rgba(44,12,22,.94)');
-    const vo=q(C.volt-.1,C.minimum-.1);if(vo>0)label(600,1020,'VOLTAGE SAGS',COLA,vo*prog(t,C.volt-.05,C.volt+.25),40,'rgba(44,24,8,.94)');
-    const mn=q(C.minimum-.1,st(3)-.15);if(mn>0)label(600,1020,'BELOW MINIMUM',PNK,mn*prog(t,C.minimum-.05,C.minimum+.25),40,'rgba(44,12,22,.94)');
-    const sh=q(C.shuts-.15,C.left+.9);if(sh>0)label(600,842,'SHUTS DOWN',PNK,sh*prog(t,C.shuts-.1,C.shuts+.25),44,'rgba(44,12,22,.94)');
-    const wm=q(C.warms-.15,C.normal+.8);if(wm>0)label(600,842,'WARMS UP',GRN,wm*prog(t,C.warms-.1,C.warms+.25),44,'rgba(8,36,26,.94)');
-    const ce=q(C.celsius-.2,C.heat-.1);if(ce>0)label(600,842,'0 – 35 °C BEST',GRN,ce*prog(t,C.celsius-.15,C.celsius+.2),44,'rgba(8,36,26,.94)');
-    const he=q(C.heat-.15,st(6)-.1);if(he>0)label(600,842,'HEAT HARMS FOR GOOD',PNK,he*prog(t,C.heat-.1,C.heat+.25),38,'rgba(44,12,22,.94)');
+    const R=842,im=q(C.imped-.15,C.resist+.9);if(im>0)pill2(600,R,'IMPEDANCE',PNK,im*prog(t,C.imped-.1,C.imped+.25),48,'#3a1020');
+    const vo=q(C.volt-.1,C.minimum-.1);if(vo>0)pill2(600,R,'VOLTAGE SAGS',COLA,vo*prog(t,C.volt-.05,C.volt+.25),46,'#3a2408');
+    const mn=q(C.minimum-.1,C.shuts-.2);if(mn>0)pill2(600,R,'BELOW MINIMUM',PNK,mn*prog(t,C.minimum-.05,C.minimum+.25),46,'#3a1020');
+    const sh=q(C.shuts-.15,C.left+.9);if(sh>0)pill2(600,R,'SHUTS DOWN',PNK,sh*prog(t,C.shuts-.1,C.shuts+.25),48,'#3a1020');
+    const wm=q(C.warms-.15,C.normal+.8);if(wm>0)pill2(600,R,'WARMS UP',GRN,wm*prog(t,C.warms-.1,C.warms+.25),48,'#0c3022');
+    const ce=q(C.zero-.2,C.heat-.1);if(ce>0)pill2(600,R,'0 TO 35 CELSIUS',GRN,ce*prog(t,C.zero-.15,C.zero+.2),46,'#0c3022');
+    const he=q(C.heat-.15,st(6)-.1);if(he>0)pill2(600,R,'PERMANENT DAMAGE',PNK,he*prog(t,C.heat-.1,C.heat+.25),44,'#3a1020');
   },
   panels(t){
     if(panel('#p0',0,st(1)-.15)>0){}
