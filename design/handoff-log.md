@@ -185,3 +185,7 @@ Format (at most 6 lines):
 - Supersedes claude/critic-2026-11-22-r2 (PR #1131): its pending verdicts are replaced by these; that PR can be closed unmerged.
 - Waiting on the owner: both reels are at the render cap. Post as is (both blemishes are small and late) or allow one more render each; the fixes are written in each review file, item 20.
 - For the other account: a recap pill cued on the same word as the end card never shows; read the topic's cue list next to the stills. A chip over a row must be on top and opaque, not under the row's text.
+
+## 2026-11-22 · claude/journey-critic-reason · app, Journey Critic row (owner, size S)
+- Done: design/critic.md "Item 20 format": CRITIC: NOT READY: <one plain sentence, what and when in seconds> first, then Detail:. src/journey.js criticOf() takes the first sentence (to "Detail:" or the first ". " after 20 chars, ~220 chars, no cut at ")") and keeps ~1200 chars as `more`; templates/index.html shows it tap-to-expand ("More"/"Less") in the Journey list. Also fixed the critic-line regex: it missed lines with a time like "16:10" before "CRITIC:", so those reels showed no critic verdict. scripts/test-critic-reason.mjs prints the parse for the darkflash and cold-shutdown review files.
+- Left: the 11:17 critic writes the new format from the next run; /api/journey not checked (behind sign-in).

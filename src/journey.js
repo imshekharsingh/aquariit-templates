@@ -80,6 +80,16 @@ async function github(env, names, reels) {
     return { state: 'ok', runs, built };
   } catch (e) { return { state: 'error', note: String(e.message || e).slice(0, 80) }; }
 }
+// the critic's reason: the first plain sentence (up to "Detail:" or the first ". " after 20 chars), ~220 chars, never cut at ")"; the full text (~1200 chars) is kept for "More"
+export function criticOf(verdict, rest) {
+  const full = String(rest || '').replace(/^[\s:,(.-]+/, '').trim(), d = full.search(/\bDetail:/i);
+  let end = d >= 0 ? d : full.length;
+  if (d < 0) { const m = /\.\s/g; let x; while ((x = m.exec(full))) { if (x.index >= 20) { end = x.index + 1; break; } } }
+  let why = full.slice(0, end).trim();
+  if (why.length > 220) why = why.slice(0, 219).replace(/\s+\S*$/, '') + '…';
+  const ready = verdict.toUpperCase() === 'READY';
+  return { ready, why, more: !ready && full.length > why.length ? full.slice(0, 1200) : '' };
+}
 // the review file: CRITIC: READY / NOT READY on the critic line (item 20), and item 13 (the render's Output QA line) as a fallback for checks
 async function review(ch, name) {
   return cached(`review-${name}`, REVIEW_TTL, async () => {
@@ -88,8 +98,8 @@ async function review(ch, name) {
       if (!r.ok) return { exists: false };
       const t = await r.text(), out = { exists: true, critic: null, qa: null };
       for (const l of t.split('\n')) {
-        const c = /^\s*(?:20\.\s*)?Critic[^:\n]*:\s*CRITIC:\s*(NOT READY|READY)\b(.*)$/i.exec(l);
-        if (c) out.critic = { ready: c[1].toUpperCase() === 'READY', why: c[2].replace(/^[\s:,(.-]+/, '').replace(/\).*$/, '').slice(0, 140) };
+        const c = /^\s*(?:20\.\s*)?Critic\b.*?\bCRITIC:\s*(NOT READY|READY)\b(.*)$/i.exec(l);
+        if (c) out.critic = criticOf(c[1], c[2]);
         if (/^\s*13\.\s/.test(l)) { const p = l.lastIndexOf('OUTPUT QA: PASS'), f = Math.max(l.lastIndexOf('OUTPUT QA: FAIL'), l.search(/Output QA[^.]{0,40}fail/i));
           if (p >= 0 && p > f) out.qa = { pass: true }; else if (f >= 0) out.qa = { pass: false, why: l.slice(f).replace(/^OUTPUT QA: FAIL\s*/, '').slice(0, 140) }; }
       }
@@ -167,7 +177,7 @@ export async function journeyApi(env, { captions, postSlot, chOf, uploaded, medi
     st.built = b && b.at ? { s: 'done', t: b.pr ? 'PR #' + b.pr + ' merged' : 'Merged', at: b.at } : rv.exists || r2[name] || run ? { s: 'done', t: 'On main' } : { s: 'wait', t: 'Not built yet' };
     st.render = renderStage(run, r2[name], rv);
     st.checks = qaStage(run, qaRun, rv, st.render);
-    st.critic = rv.critic ? (rv.critic.ready ? { s: 'done', t: 'READY' } : { s: 'fail', t: 'Not ready', why: rv.critic.why || 'See the review file.' })
+    st.critic = rv.critic ? (rv.critic.ready ? { s: 'done', t: 'READY' } : { s: 'fail', t: 'Not ready', why: rv.critic.why || 'See the review file.', more: rv.critic.more || '' })
       : { s: 'wait', t: st.checks.s === 'done' ? 'Waiting for the critic' : 'After the checks' };
     const postedAt = uploaded[name] || (media[name] && media[name].posted_at) || null;
     const ok = st.render.s === 'done' && st.checks.s === 'done' && st.critic.s === 'done';

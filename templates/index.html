@@ -325,6 +325,8 @@
   .jlist .tx{grid-column:2;color:var(--capink)}
   .jlist .tx a{color:var(--cc)}
   .jlist .jwhy{grid-column:2;margin-top:2px}
+  .jmore{background:none;border:0;color:inherit;text-decoration:underline;font:inherit;padding:4px 2px;cursor:pointer}
+  .jdet{margin-top:6px;opacity:.85}
   .jlist li.wait .tx{color:var(--mute)}
   .jacts{display:flex;gap:8px;padding:4px 14px 14px}
   .jacts .btn{min-height:40px;font-size:.82rem}
@@ -856,7 +858,7 @@
         top.appendChild(el('b', null, s[1])); top.appendChild(el('span', null, x.at ? (x.at.slice(0, 10) === jLast.today ? x.at.slice(11) : nice(x.at.slice(0, 10)) + ' ' + x.at.slice(11)) : SAY[x.s])); li.appendChild(top);
         var tx = el('div', 'tx', x.t + (x.pct != null ? ' · about ' + x.pct + '%' : ''));
         if (x.link) { tx.appendChild(document.createTextNode(' · ')); var a = el('a', null, 'Open on Instagram'); a.href = x.link; a.target = '_blank'; a.rel = 'noopener'; tx.appendChild(a); }
-        li.appendChild(tx); if (x.s === 'fail' && x.why) li.appendChild(el('div', 'jwhy', x.why)); ol.appendChild(li); });
+        li.appendChild(tx); if (x.s === 'fail' && x.why) { var w = el('div', 'jwhy', x.why); if (x.more) { var mb = el('button', 'jmore', 'More'), mt = el('div', 'jdet', x.more); mt.hidden = true; mb.type = 'button'; mb.setAttribute('aria-expanded', 'false'); mb.addEventListener('click', function(e){ e.stopPropagation(); mt.hidden = !mt.hidden; mb.textContent = mt.hidden ? 'More' : 'Less'; mb.setAttribute('aria-expanded', String(!mt.hidden)); }); w.appendChild(document.createTextNode(' ')); w.appendChild(mb); w.appendChild(mt); } li.appendChild(w); } ol.appendChild(li); });
       card.appendChild(ol);
       var acts = el('div', 'jacts'), ob = el('button', 'btn g', 'Open in Reels'); ob.type = 'button';
       ob.addEventListener('click', function(){ go('reels'); openReel(r.name, true); }); acts.appendChild(ob); card.appendChild(acts); }
