@@ -165,3 +165,17 @@ tech starters, a series tag in kit25d.js) and 1 owner item (Trial Reels), all in
 - Not for Turns Out: the topic (AI tools) belongs to @webin20sec / @techin20sec; a comment-to-DM ask needs a DM automation on the owner's account.
 - Used: Turns Out E31 (design/c3-plan.md). Refs 1-2 marked studied.
 
+
+## R-ref 23 Nov 2026 · owner upload in chat: a "60-30-10 colour rule" brand reel (13 s, 3 examples, labelled "AI content")
+Showed: top half a glossy liquid/silk background in the active colour with stacking swatch cards (name, %, CMYK/RGB/HEX); bottom half a
+realistic website that recolours live as each colour is added (accent lands on buttons, the glasses turn yellow, headphones go violet);
+word-by-word captions with the colour word in its colour; three brands in 13 s; CTA "Comment COLOR and I'll DM you the 3 ...".
+- [ ] Split screen: the rule on top, its application below, both moving at once. MISSING (web/Turns Out kit).
+- [ ] Live transformation of ONE object as each element is added (the payoff happens while you watch). Partly: KM.wipe / theme tokens.
+- [ ] Collectible data cards (exact values) that stack: save-worthy. MISSING.
+- [ ] A rich, sensory background in the active colour (liquid/silk 3D), changing with each step. MISSING (three.js now used in tech).
+- [ ] A new state every ~1 s; 3 examples in 13 s; no setup. Pace rule for web/Turns Out.
+- [ ] Comment-keyword CTA ("Comment X and I'll DM you ..."): needs a DM auto-reply on the owner's side. Owner decision.
+- [ ] Realistic photo-grade product imagery: the reference uses AI-generated images; our rule is code-drawn only. Owner decision.
+Fits: Turns Out design series (design fixes) and web first; tech can borrow split screen + live transformation (spec card on top, the
+gadget changing below).
