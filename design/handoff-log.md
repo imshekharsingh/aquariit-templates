@@ -13,6 +13,10 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-22 18:35 IST · main · owner chat: tech on hold
+- Done: owner rejected heart-green ("horrible"); neither heart-green nor cold-shutdown posts today. CLAUDE.md: no tech builds until design/tech-direction.md says "owner approved". Research + direction + 6 s prototype session started (claude/tech-direction), stills to the owner on an Artifact page, no render.
+- Left: owner reviews the prototype; web darkflash posts as is (no 4th render, owner).
+- For the other account: none.
 ## 2026-11-22 16:20 IST · main · owner chat: wake-up rule
 - Done: CLAUDE.md Sessions: a session waiting on a merge or render must set a send_later wake-up before ending its turn (the darkflash render-3 session stopped after its merge).
 - Left: Journey step 3 (merge starts the render by itself) removes the wait entirely.
