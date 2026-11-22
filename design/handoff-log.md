@@ -19,6 +19,11 @@ Format (at most 6 lines):
 - Left: the owner reviews the page; on sign-off, build the full reel (facts re-read on primary sources) and rewrite rules-tech.md around tech-direction.md.
 - For the other account: a standalone scene with window.render(t) runs through techkit/capture.cjs as is; temporal blur = average 4-8 sub-frames; canvas filter blur makes capture 10x slower.
 
+## 2026-11-22 20:40 IST · main · owner chat (end of day)
+- Decisions: small launcher v2 + Daily owner chat 08:31 (from 23 Nov; it archives this chat). Repo cleanup workflow (stale branches deleted, old bot notices auto-closed nightly). Web darkflash posted as is (no 4th render). Tech: cold-shutdown and heart-green rejected ("horrible": unrecognisable watch, one static framing, tiny subject, clutter, trivia); TECH ON HOLD in CLAUDE.md until design/tech-direction.md says "owner approved".
+- Tech direction: research + direction + 6 s prototype "Your next phone may have less memory" (AI memory squeeze): https://claude.ai/artifact/E32WfuCBRA4ydVEUdNKLno. Its branch claude/tech-direction sits unpushed in session_01AYvWRh5aMcmsghNhiZeYTp (push needs the owner's OK). Owner-chat notes on it: big step up (recognisable phone, one big number, clean palette); fix the wide shot (chips read as scattered confetti, not a stream into the servers; 3.5-5.5 s nearly static), the caption sitting on the phone, and the number flipping white/amber.
+- Waiting on owner: verdict on the prototype; "push it" for the direction branch; 2-3 creators/reels whose style tech should feel like (optional).
+- Tomorrow: daily run builds web only; Journey step 2 (hard/soft QA fails) next; archive the old launcher session_01AYvWRhkLkGsLRZfbwikeyL once 23 Nov's launcher v2 runs are confirmed.
 ## 2026-11-22 18:35 IST · main · owner chat: tech on hold
 - Done: owner rejected heart-green ("horrible"); neither heart-green nor cold-shutdown posts today. CLAUDE.md: no tech builds until design/tech-direction.md says "owner approved". Research + direction + 6 s prototype session started (claude/tech-direction), stills to the owner on an Artifact page, no render.
 - Left: owner reviews the prototype; web darkflash posts as is (no 4th render, owner).
