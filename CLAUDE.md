@@ -50,7 +50,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - Read the last 5 entries of design/handoff-log.md before starting; a session that changes the repo adds one entry there in its push.
 - One session = one task, one channel, one branch; finish it (pushed, merged, checked) and archive it before the next starts. One heavy
   session at a time. The owner chats in the daily "Owner chat <date>" session, which never builds.
-- No subagents; no polling (one check-in per GitHub job); one stills sheet and one contact sheet per reel; text checks before viewing frames;
+- No subagents; no polling (one check-in per GitHub job); never end a turn while waiting on a merge or render without a send_later wake-up for when it should be done (owner, 22 Nov 2026: a session stopped after its merge and never rendered); one stills sheet and one contact sheet per reel; text checks before viewing frames;
   stop and report instead of retrying a failing approach more than twice. Heavy work runs on GitHub.
 - Say a task's size first (S < 15 min / M 30-60 min / L 1-3 h) and wait for a go-ahead on M or bigger unless already approved.
 - Questions for the owner go to the app's "Needs you" list (Owner answers `add`), never into chat; never ask whether something was posted
