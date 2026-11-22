@@ -37,14 +37,14 @@ const RACK = { x0: -610, x1: 1690, y0: -2900, y1: -501 };
 function cam(t) {
   if (t < 2.75) return { s: 1 + 0.035 * (t / 2.75), cx: 540, cy: 960 - 30 * (t / 2.75) };
   if (t < 3.65) { const e = ease((t - 2.75) / 0.9); return { s: Math.exp(lerp(Math.log(1.035), Math.log(0.42), e)), cx: 540, cy: lerp(930, -130, e) }; }
-  const u = clamp((t - 3.65) / 2.35); return { s: 0.42 + 0.035 * eout(u), cx: 540, cy: -130 - 50 * eout(u) };
+  const u = clamp((t - 3.65) / 2.35), e = ease(u * 0.85 + 0.15 * u * u); return { s: 0.42 + 0.14 * e, cx: 540, cy: -130 - 230 * e };
 }
 
 // chip flight: lift 0.35 s, then accelerate to the server intake over 1.55 s
 function flight(j, t) {
   const [slot, t0] = LEAVE[j], [x0, y0] = SLOTS[slot];
   const lift = eout((t - t0) / 0.35), u = clamp((t - t0 - 0.35) / 1.5), p = ein(u, 2.1);
-  const tx = x0 < 540 ? 250 : 830, ty = INTAKE.y - 60;
+  const tx = x0 < 540 ? 480 : 600, ty = -600;
   const cx = x0 < 540 ? -140 : 1220, cy = y0 - 420;
   const q = 1 - p, x = q * q * x0 + 2 * q * p * cx + p * p * tx, y = q * q * (y0 - 26 * lift) + 2 * q * p * cy + p * p * ty;
   return { x, y, lift, u, p, rot: (x0 < 540 ? -1 : 1) * 0.35 * Math.sin(p * Math.PI) + 0.05 * lift, sc: (1 + 0.14 * lift) * (1 - 0.55 * p), done: u >= 1 };
@@ -179,15 +179,36 @@ function servers(c, t, vis) {
 }
 
 // the stream: memory from everywhere (other phones, laptops, off-frame) converging on the intake
-const STREAM = []; { const R = rng(21); for (let i = 0; i < 46; i++) STREAM.push({ sx: lerp(-1300, 2380, R()), sy: lerp(150, 950, R()), tx: lerp(-200, 1280, R()), seed: R(), sp: 0.42 + R() * 0.25, rot: (R() - .5) * 0.8 }); }
+const LANES = [
+  { a: [540, 560], c: [540, 0], b: [540, -600], n: 7, sp: 0.42 },
+  { a: [-1500, 1300], c: [-260, 250], b: [430, -600], n: 9, sp: 0.36 },
+  { a: [2580, 1300], c: [1340, 250], b: [650, -600], n: 9, sp: 0.36 },
+];
+const bez = (L, p) => { const q = 1 - p; return [q * q * L.a[0] + 2 * q * p * L.c[0] + p * p * L.b[0], q * q * L.a[1] + 2 * q * p * L.c[1] + p * p * L.b[1]]; };
+const tan = (L, p) => Math.atan2(2 * (1 - p) * (L.c[1] - L.a[1]) + 2 * p * (L.b[1] - L.c[1]), 2 * (1 - p) * (L.c[0] - L.a[0]) + 2 * p * (L.b[0] - L.c[0]));
 function stream(c, t) {
   const a = clamp((t - 2.95) / 0.5); if (a <= 0) return;
-  for (const s of STREAM) {
-    const p = (((t - 2.9) * s.sp + s.seed) % 1 + 1) % 1, q = 1 - p, ty = RACK.y1 - 70;
-    const cx = lerp(s.sx, s.tx, .5), cy = lerp(s.sy, ty, .15);
-    const x = q * q * s.sx + 2 * q * p * cx + p * p * s.tx, y = q * q * s.sy + 2 * q * p * cy + p * p * ty;
-    const fade = clamp(p * 6) * clamp((1 - p) * 10) * a;
-    chip(c, x, y, 0.8 * (1 - 0.4 * p), s.rot * q, 0.9, fade, 9);
+  c.save(); c.globalCompositeOperation = 'lighter';
+  for (const L of LANES) {           // the river bed: a soft cyan path
+    c.beginPath(); c.moveTo(L.a[0], L.a[1]); c.quadraticCurveTo(L.c[0], L.c[1], L.b[0], L.b[1]);
+    c.lineCap = 'round'; c.strokeStyle = `rgba(56,225,255,${0.05 * a})`; c.lineWidth = 150; c.stroke();
+    c.strokeStyle = `rgba(56,225,255,${0.16 * a})`; c.lineWidth = 8; c.stroke();
+  }
+  c.restore();
+  for (const L of LANES) for (let k = 0; k < L.n; k++) {
+    const p = (((t - 2.9) * L.sp + k / L.n) % 1 + 1) % 1;
+    const fade = clamp(p * 8) * a, sc = 0.78 - 0.33 * p;
+    c.save(); c.globalCompositeOperation = 'lighter';
+    for (let g = 1; g <= 6; g++) { const pg = p - g * 0.018; if (pg < 0) break; const [gx, gy] = bez(L, pg);
+      c.globalAlpha = 0.10 * (1 - g / 7) * fade; c.fillStyle = SIG; c.save(); c.translate(gx, gy); c.rotate(tan(L, pg) + Math.PI / 2); c.scale(sc, sc); rr(c, -CW / 2, -CH / 2, CW, CH, 12); c.fill(); c.restore(); }
+    c.restore();
+    const [x, y] = bez(L, p), sink = clamp((p - 0.9) / 0.1);
+    chip(c, x, y, sc * (1 - 0.6 * sink), tan(L, p) + Math.PI / 2, 0.9, fade * (1 - sink), 9);
+    if (p > 0.88) {                    // arrival: an amber flash at the slot
+      const f = Math.sin(clamp((p - 0.88) / 0.12) * Math.PI);
+      c.save(); c.globalCompositeOperation = 'lighter'; const fg = c.createRadialGradient(L.b[0], L.b[1], 0, L.b[0], L.b[1], 260);
+      fg.addColorStop(0, `rgba(255,196,100,${0.55 * f * a})`); fg.addColorStop(1, 'rgba(255,174,61,0)'); c.fillStyle = fg; c.fillRect(L.b[0] - 260, L.b[1] - 260, 520, 520); c.restore();
+    }
   }
 }
 
@@ -200,8 +221,8 @@ function bigNumber(c, t) {
   c.textBaseline = 'alphabetic'; c.textAlign = 'right';
   c.font = '900 300px "Inter Display", Inter, sans-serif';
   const digitX = 600, base = 470;
-  if (k < 1) { c.globalAlpha = a * clamp(1 - k * 2.2); c.fillStyle = '#f4f6f8'; c.fillText(String(n + 1), digitX, base - 50 * k); }
-  c.globalAlpha = a * clamp(k * 1.6); c.fillStyle = t - lastChange < 0.6 ? HEAT : '#f4f6f8'; c.fillText(String(n), digitX, base + 50 * (1 - k));
+  if (k < 1) { c.globalAlpha = a * clamp(1 - k * 2.2); c.fillStyle = n + 1 === 8 ? '#f4f6f8' : HEAT; c.fillText(String(n + 1), digitX, base - 50 * k); }
+  c.globalAlpha = a * clamp(k * 1.6); c.fillStyle = n === 8 ? '#f4f6f8' : HEAT; c.fillText(String(n), digitX, base + 50 * (1 - k));
   c.globalAlpha = a; c.textAlign = 'left'; c.fillStyle = '#f4f6f8'; c.font = '800 150px "Inter Display", Inter, sans-serif'; c.fillText('GB', digitX + 26, base);
   c.restore();
 }
@@ -216,9 +237,9 @@ const CAPS = [[0, 2.85, ['Your next phone may', 'have less memory.']], [2.85, 9,
 function captions(c, t) {
   const cap = CAPS.find(([a, b]) => t >= a && t < b); if (!cap) return;
   const u = cap[0] === 0 ? 1 : eout((t - cap[0]) / 0.25);
-  c.save(); c.globalAlpha = u; c.textAlign = 'center'; c.font = '700 54px Inter, sans-serif';
+  c.save(); c.globalAlpha = u; c.textAlign = 'center'; c.font = '700 50px Inter, sans-serif';
   c.shadowColor = 'rgba(0,0,0,.9)'; c.shadowBlur = 24; c.fillStyle = '#f4f6f8';
-  cap[2].forEach((l, i) => c.fillText(l, 540, 1452 + i * 68 + 14 * (1 - u)));
+  cap[2].forEach((l, i) => c.fillText(l, 540, 1500 + i * 64 + 14 * (1 - u)));
   c.restore();
 }
 
@@ -236,6 +257,7 @@ function drawFrame(c, t) {
   // screen space
   c.setTransform(1, 0, 0, 1, 0, 0);
   const vg = c.createRadialGradient(540, 900, 500, 540, 900, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.55)'); c.fillStyle = vg; c.fillRect(0, 0, W, H);
+  const bf = c.createLinearGradient(0, 1350, 0, 1445); bf.addColorStop(0, 'rgba(7,8,12,0)'); bf.addColorStop(1, INK); c.fillStyle = bf; c.fillRect(0, 1350, W, H - 1350);
   bigNumber(c, t); bigWord(c, t); captions(c, t);
 }
 

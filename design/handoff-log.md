@@ -15,6 +15,7 @@ Format (at most 6 lines):
 
 ## 2026-11-22 18:45 IST · claude/tech-direction · tech research, direction, 6 s prototype (owner's ask, size L)
 - Done: design/tech-research-2026-11-22.md (10 hot topics with sources, 10 hook techniques), design/tech-direction.md (one visual system: ink + white + cyan signal + amber heat, one bold word, 4+ shots, what to drop from the techkit rules), techkit/scenes/proto-ram-squeeze.html (first 6 s of "AI is eating your phone's memory": x-ray phone, chips fly out, 8 GB -> 4 GB, rise and pull-out to an AI server room). Local stills + 540 px clip only, no render, no captions entry. Owner page: https://claude.ai/artifact/E32WfuCBRA4ydVEUdNKLno
+- 22 Nov ~21:15 IST (owner: "push it, and fix those three things first ... I like this though"): the wide shot is now three chip streams flowing into the server intake with a camera push and arrival flashes; captions sit in clear ink below the subject; the number is white at 8 and amber as it falls. Page republished (version 2).
 - Left: the owner reviews the page; on sign-off, build the full reel (facts re-read on primary sources) and rewrite rules-tech.md around tech-direction.md.
 - For the other account: a standalone scene with window.render(t) runs through techkit/capture.cjs as is; temporal blur = average 4-8 sub-frames; canvas filter blur makes capture 10x slower.
 
