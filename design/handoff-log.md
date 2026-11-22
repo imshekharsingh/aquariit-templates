@@ -13,6 +13,11 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-22 22:30 IST · claude/tech-ai-memory · first reel in the new tech direction (owner's go, size L)
+- Done: design/tech-direction.md "owner approved" (owner chat 22 Nov: "I like this though ... go with your plan"). showreel-tech-ai-memory for 23 Nov 13:00 (xray, phone): techkit/scenes/ai-memory.html in real 3D (three.js r149 MIT in techkit/vendor, inlined by make.py at <!--THREE-->), topic, captions entry, review file (1-12, 14-17 PASS; FLOW cuts 0 / dead none / 87%). Facts read today on TrendForce press pages (environment now allows www.trendforce.com, www.idc.com). Rejected heart-green hidden.
+- Left: the owner OKs the preview page (stills + 540 px clip, no voice: the Kokoro model cannot be fetched here); then ONE render (Tech reel, slug ai-memory), Output QA, item 13, the critic. The installed design skills were not available in this session.
+- For the other account: make.py without --stills renders the whole reel locally; never run it bare. three r149 takes hex colours as linear (dark looks grey: use ~0x08-0x10 for blacks); metals facing the camera mirror the studio boxes.
+
 ## 2026-11-22 20:40 IST · main · owner chat (end of day)
 - Decisions: small launcher v2 + Daily owner chat 08:31 (from 23 Nov; it archives this chat). Repo cleanup workflow (stale branches deleted, old bot notices auto-closed nightly). Web darkflash posted as is (no 4th render). Tech: cold-shutdown and heart-green rejected ("horrible": unrecognisable watch, one static framing, tiny subject, clutter, trivia); TECH ON HOLD in CLAUDE.md until design/tech-direction.md says "owner approved".
 - Tech direction: research + direction + 6 s prototype "Your next phone may have less memory" (AI memory squeeze): https://claude.ai/artifact/E32WfuCBRA4ydVEUdNKLno. Its branch claude/tech-direction sits unpushed in session_01AYvWRh5aMcmsghNhiZeYTp (push needs the owner's OK). Owner-chat notes on it: big step up (recognisable phone, one big number, clean palette); fix the wide shot (chips read as scattered confetti, not a stream into the servers; 3.5-5.5 s nearly static), the caption sitting on the phone, and the number flipping white/amber.
