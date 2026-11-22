@@ -1651,5 +1651,34 @@
   "onGo": true,
   "concept": "Design series · This business card feels cheap. Why? Everything touches the edges. 💼 (a business card with every line pushed to its edges, fixed in three moves: pull everything inside a margin, fewer lines, one strong corner holding the text block)",
   "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+ },
+ "showreel-44-darkflash": {
+  "postOn": "2026-11-22",
+  "postAt": "13:00",
+  "caption": "Why does dark mode flash white? 🌙 You open it at night, and for a split second the screen blinks bright before the dark page arrives.\n\nUntil the browser knows your page is dark, it paints its default white canvas. Tell it first with one line in the head, before any CSS: <meta name=\"color-scheme\" content=\"dark light\">. MDN says the tag, placed before the styles, helps prevent unwanted screen flashes during the page load. Watch the reel: the top page blinks bright on every reload, the bottom one stays dark.\n\ncolor-scheme works in Chrome 81, Edge 81, Firefox 96 and Safari 13 and up (MDN BCD).\n\nSend this to whoever built your dark mode.",
+  "keywords": [
+   "css dark mode flash",
+   "dark mode white flash fix",
+   "meta color-scheme dark",
+   "stop white flash on page load",
+   "color-scheme css",
+   "dark mode flicker",
+   "css dark mode tips"
+  ],
+  "hashtags": [
+   "#css",
+   "#darkmode",
+   "#webdev",
+   "#frontend",
+   "#webdesign"
+  ],
+  "channel": "web",
+  "concept": "meta color-scheme in the head before any CSS (a dark page blinks its default white canvas on every load; the tag tells the browser first, MDN: helps prevent unwanted screen flashes during the page load); one bug told as a story, BEFORE over AFTER reloaded in sync, berry world",
+  "about": "22 Nov: the next web reel after tapzoom; a page-load topic (the white flash before a dark page), visible on mute (rule 15); dark look, berry world, whole frame, calm (the flash eased, declared as blinks)",
+  "experiment": {
+   "id": "web-load-bug",
+   "change": "a page-load topic (the white flash before a dark page) told as one bug story; dynamic before/after in sync, the flash eased not strobed",
+   "vs": "median"
+  }
  }
 }

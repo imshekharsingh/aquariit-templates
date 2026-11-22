@@ -143,3 +143,8 @@ Format (at most 6 lines):
 - Left: the owner decides on both (post as is, or allow a third render). Turns Out c3-viking-clues is hidden (paused), not reviewed.
 - For the other account: next tech reel fills the lower half and shows the settings path as one 40 px+ card; next web reel keeps the top zone filled through the "look closer" beat.
 - 21 Nov (second, Turns Out restart session): looks-expensive render 3 (run 44949072234, owner's go) OUTPUT QA PASS (B steps aside, A centred and changing).
+
+## 2026-11-22 · claude/daily-2026-11-22 · daily run (web; tech not built yet)
+- Done: Owner answers read (0 feedback; c3-design-profile answer left for the Turns Out run, it needs the owner's Instagram account); audit read (web ALARM 1,522 vs 2,000, tech OK); web Nº 44 showreel-44-darkflash (meta color-scheme, MDN; berry world; local HUE, CALM 4.5%, SPLIT 4.68x, FOCUS, SPREAD pass; FLOW cuts 0); review file, captions entry, tip demo.
+- Left: ONE render (Showreel config scripts/explainer/darkflash.json) after the merge, Output QA, item 13, the critic; tech reel for 22 Nov (not built); audit card not dispatched.
+- For the other account: declare a flash with KM.declare(t0, t1, 'blink') and ease it; CALM counts any full-card flash, so keep blinks to three.
