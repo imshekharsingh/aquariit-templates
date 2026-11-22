@@ -1737,6 +1737,38 @@
    "#heartrate",
    "#techexplained",
    "#gadgets"
+  ],
+  "hidden": true,
+  "slotNote": "rejected by the owner, 22 Nov (\"horrible\"); not posted"
+ },
+ "showreel-tech-ai-memory": {
+  "channel": "tech",
+  "postOn": "2026-11-23",
+  "postAt": "13:00",
+  "format": "xray",
+  "device": "phone",
+  "concept": "The new tech direction's first reel (design/tech-direction.md, owner approved 22 Nov): real 3D, ~30 s, phone, global + India. Your next phone may have less memory: an x-ray phone loses chips (8 GB -> 4 GB), three phones with 12 / 8 / 4 chips, memory streaming into an AI server hall, a macro on a server memory module (+90%), the board's chips cut, a server aisle to 2027, check the RAM; loops to the opening. TrendForce, read 22 Nov 2026.",
+  "experiment": {
+   "id": "tech-direction-3d",
+   "change": "the new tech direction (design/tech-direction.md, owner approved 22 Nov): real 3D (three.js, inlined) with lighting and depth, ink + white + cyan + amber only, one bold number or word at a time, 7 distinct shots (x-ray hero, phone lineup, AI server hall, macro on a server memory module, board macro, server corridor, hero loop), a news topic of the month",
+   "vs": "median"
+  },
+  "caption": "Your next phone may have LESS memory 📉📱 and AI is the reason.\n\nMemory makers are putting AI servers first. TrendForce (5 Jan 2026) says suppliers are prioritising server applications, which limits supply for everything else; on 2 Feb 2026 it expected server DRAM contract prices to rise about 90% in a single quarter (1Q26), the biggest jump on record, with phone memory (LPDDR4X and LPDDR5X) up about 90% too.\n\nPhones are paying for it. TrendForce (14 May 2026): high-end phones settle on 12GB as 16GB fades, mid-range reverts to 8GB, and entry-level models mostly settle around 4GB. In July it said a server DRAM shortage is already expected for 2027.\n\nBuying a phone soon, in India or anywhere? Check the RAM before the price. How much RAM is in yours? 👇 Send this to the friend who's about to buy one.",
+  "keywords": [
+   "ram shortage 2026",
+   "why phones have less ram",
+   "ai memory shortage",
+   "dram prices 2026",
+   "4gb ram phones",
+   "phone ram explained",
+   "memory chip shortage ai"
+  ],
+  "hashtags": [
+   "#smartphone",
+   "#ram",
+   "#ai",
+   "#techexplained",
+   "#gadgets"
   ]
  }
 }

@@ -51,8 +51,12 @@ def main():
         base = open(os.path.join(HERE, 'base.html')).read()
         js = open(os.path.join(ROOT, topic['scene'])).read()
         open(os.path.join(out, 'scene.html'), 'w').write(base.replace('/*TITLE*/', topic.get('topic', slug)).replace('/*TOPIC_JS*/', js))
-    else:
-        shutil.copy(os.path.join(ROOT, topic['scene']), os.path.join(out, 'scene.html'))
+    else:   # a standalone scene; <!--THREE--> becomes three.js r149 (MIT, techkit/vendor), inlined so the page stays one file with no origins
+        html = open(os.path.join(ROOT, topic['scene'])).read()
+        if '<!--THREE-->' in html:
+            lib = open(os.path.join(HERE, 'vendor', 'three-0.149.0.min.js')).read()
+            html = html.replace('<!--THREE-->', '<script>' + lib + '</script>', 1)
+        open(os.path.join(out, 'scene.html'), 'w').write(html)
     words = sum(len(l['text'].split()) for l in topic['lines'])
     print(f'TIMELINE: {len(TL["scenes"])} chapters, {words} words, voice {TL["scenes"][0]["start"]:.2f}-{TL["scenes"][-1]["end"]:.2f} s, total {TL["total"]:.2f} s')
     print('CUES: ' + ', '.join(f'{k} {v:.2f}' for k, v in order))

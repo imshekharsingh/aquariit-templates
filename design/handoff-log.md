@@ -13,6 +13,11 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-22 22:30 IST · claude/tech-ai-memory · first reel in the new tech direction (owner's go, size L)
+- Done: design/tech-direction.md "owner approved" (owner chat 22 Nov: "I like this though ... go with your plan"). showreel-tech-ai-memory for 23 Nov 13:00 (xray, phone): techkit/scenes/ai-memory.html in real 3D (three.js r149 MIT in techkit/vendor, inlined by make.py at <!--THREE-->), topic, captions entry, review file (1-12, 14-17 PASS; FLOW cuts 0 / dead none / 87%). Facts read today on TrendForce press pages (environment now allows www.trendforce.com, www.idc.com). Rejected heart-green hidden.
+- Left: the owner OKs the preview page (stills + 540 px clip, no voice: the Kokoro model cannot be fetched here); then ONE render (Tech reel, slug ai-memory), Output QA, item 13, the critic. The installed design skills were not available in this session.
+- For the other account: make.py without --stills renders the whole reel locally; never run it bare. three r149 takes hex colours as linear (dark looks grey: use ~0x08-0x10 for blacks); metals facing the camera mirror the studio boxes.
+
 ## 2026-11-22 18:45 IST · claude/tech-direction · tech research, direction, 6 s prototype (owner's ask, size L)
 - Done: design/tech-research-2026-11-22.md (10 hot topics with sources, 10 hook techniques), design/tech-direction.md (one visual system: ink + white + cyan signal + amber heat, one bold word, 4+ shots, what to drop from the techkit rules), techkit/scenes/proto-ram-squeeze.html (first 6 s of "AI is eating your phone's memory": x-ray phone, chips fly out, 8 GB -> 4 GB, rise and pull-out to an AI server room). Local stills + 540 px clip only, no render, no captions entry. Owner page: https://claude.ai/artifact/E32WfuCBRA4ydVEUdNKLno
 - 22 Nov ~21:15 IST (owner: "push it, and fix those three things first ... I like this though"): the wide shot is now three chip streams flowing into the server intake with a camera push and arrival flashes; captions sit in clear ink below the subject; the number is white at 8 and amber as it falls. Page republished (version 2).
