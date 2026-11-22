@@ -13,6 +13,10 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-22 16:20 IST · main · owner chat: wake-up rule
+- Done: CLAUDE.md Sessions: a session waiting on a merge or render must set a send_later wake-up before ending its turn (the darkflash render-3 session stopped after its merge).
+- Left: Journey step 3 (merge starts the render by itself) removes the wait entirely.
+- For the other account: none.
 ## 2026-11-22 13:50 IST · main · owner chat: small launcher, daily owner chat, cleanup
 - Done: new "Studio launcher (v2)" session (cheaper model) runs the tasks: Daily studio 06:47, Daily owner chat 08:31 (new, replaces weekly), Reel critic 11:17, Spare night Tue 22:44. Old launcher tasks switched off. Repo cleanup workflow added (.github/workflows/branch-cleanup.yml): daily it closes bot notice issues older than 3 days; by hand it deletes named stale branches (closing their PR). Stale 14 Nov critic session archived.
 - Left: darkflash (web) and cold-shutdown (tech) post-as-is decisions are with the owner. Journey plan steps 2-5 next (hard/soft QA fails first).
