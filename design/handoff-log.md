@@ -199,3 +199,8 @@ Format (at most 6 lines):
 - Done: showreel-tech-heart-green (xray, wearables, global; Apple Support 120277 read 22 Nov): techkit/scenes/heart-green.js, topic, review file, captions entry (postOn 2026-11-22, postAt 20:30). Local: SAFE ZONE ok, OVERLAP none, FLOW cuts 0 / dead none / continuity 95%; look.py SHEEN 0, HERO 82%.
 - Left: ONE render (Tech reel, slug heart-green) after the merge, Output QA, item 13, the critic.
 - For the other account: a kit close-up beyond 1.5x needs the world clipped under the header (screen y 450+); labels go into clear tissue, not on the watch.
+
+## 2026-11-22 · claude/tech-heart-green-r2 · heart-green render 1 result and fix
+- Done: render 1 (run 45018742866) Output QA FAIL on EDGES and SYNC only (issue 1150); fixed in the scene (world clipped 28 px in from both sides; the SYNC words on a solid dark plate); local tesseract reads both missed words; review item 13 updated.
+- Left: render 2 (last allowed) after the merge, item 13, the critic.
+- For the other account: a kit world wider than the frame must be clipped 28 px in once the camera zooms past 1.1 (Output QA EDGES reads the outer 2%); SYNC words need a plate when they overlap any drawing.

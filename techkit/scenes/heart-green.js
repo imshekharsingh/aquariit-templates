@@ -177,7 +177,7 @@ window.TOPIC={
   hero(t,{fin}){
     const x=xr(t),L=lift(t),d=dive(t),n=night(t);
     // the world lives under the header: clipped to screen y 450-1300 so a close-up never runs into the title
-    {const m=g.getTransform();g.save();g.setTransform(1,0,0,1,0,0);g.beginPath();g.rect(0,450,1080,850);g.clip();g.setTransform(m)}
+    {const m=g.getTransform();g.save();g.setTransform(1,0,0,1,0,0);g.beginPath();g.rect(28,450,1024,850);g.clip();g.setTransform(m)}
     // far plane: floating specks of light at their own depths (parallax with the camera)
     for(const s of SPECK){const px=s.x+(CAM[1]*(s.z-1))*.3+12*Math.sin(t*.4*s.z+s.ph),py=s.y+8*Math.cos(t*.3+s.ph);glowDot(px,py,1.6+2*s.z,n>.5?'#b9c4ff':'#9fffd0',.08+.12*s.z)}
     nightSky(t,n);
@@ -199,8 +199,8 @@ window.TOPIC={
   },
   labels(t){
     const q=(a,b,fi=.3,fo=.3)=>win(t,a,b,fi,fo);
-    // the four words Output QA SYNC reads: one word of 92 px type high in the hero zone, in 0.1 s before the voice, held 1.5 s
-    for(const [w,c0,col] of [['PHOTODIODES',C.photo,CYN],['ABSORBED',C.absorbed,RED2],['HUNDREDS',C.hundreds,GRN],['INFRARED',C.infrared,LIL]]){const a=win(t,c0-.1,c0+1.5,.12,.2);if(a>0)bigText(CX,512,w,92,col,a,col)}
+    // the four words Output QA SYNC reads: one word of 92 px type on a solid dark plate high in the hero zone (render 1: two words over the watch's rim were not read), in 0.1 s before the voice, held 1.5 s
+    for(const [w,c0,col] of [['PHOTODIODES',C.photo,CYN],['ABSORBED',C.absorbed,RED2],['HUNDREDS',C.hundreds,GRN],['INFRARED',C.infrared,LIL]]){const a=win(t,c0-.1,c0+1.5,.12,.2);if(a>0){g.save();g.font='800 92px "Inter Display",Inter';const m=g.measureText(w).width;g.globalAlpha=clamp(a);rrect(g,CX-m/2-34,512-62,m+68,124,30);g.fillStyle='rgba(4,6,16,.94)';g.fill();g.restore();bigText(CX,512,w,92,col,a)}}
     const gl=q(C.green0-.1,st(1)-.1);if(gl>0)label(540,690,'GREEN LIGHT',GRN,gl*prog(t,C.green0-.05,C.green0+.2),40,'rgba(6,30,20,.94)');
     const le=q(C.lights-.1,C.photo-.2);if(le>0)label(800,900,'GREEN LEDs',GRN,le*prog(t,C.lights-.05,C.lights+.25),40,'rgba(6,30,20,.94)');
     const pd=q(C.photo-.2,st(2)-.3);if(pd>0)label(300,1100,'LIGHT SENSORS',CYN,pd*prog(t,C.sensors-.05,C.sensors+.25),38,'rgba(6,24,34,.94)');
