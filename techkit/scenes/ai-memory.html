@@ -231,10 +231,11 @@ const dimm = new THREE.Group(); dimm.position.set(0, 0, -300); scene.add(dimm);
 
 // F: the server aisle (two rows of racks to the vanishing point)
 const aisle = new THREE.Group(); aisle.position.set(0, 0, -450); scene.add(aisle);
-for (let i = 0; i < 18; i++) for (const s of [-1, 1]) { const r = rack(); r.position.set(s * 2.9, .3, -i * 1.95); r.rotation.y = -s * Math.PI / 2; aisle.add(r); }
+const AISLE_R = []; for (let i = 0; i < 18; i++) for (const s of [-1, 1]) { const r = rack(); r.position.set(s * 2.9, .3, -i * 1.95); r.rotation.y = -s * Math.PI / 2; aisle.add(r); AISLE_R.push([r, s]); }
+let aisleStrip = null;
 { const fl = new THREE.Mesh(new THREE.PlaneGeometry(14, 80), M.floor); fl.rotation.x = -Math.PI / 2; fl.position.set(0, -3, -30); aisle.add(fl);
   const strip = new THREE.InstancedMesh(new THREE.BoxGeometry(.08, .02, .9), new THREE.MeshBasicMaterial({ color: HEAT }), 36), d = new THREE.Object3D();
-  for (let i = 0; i < 36; i++) { d.position.set(0, -2.98, -i * 1.4 + 2); d.updateMatrix(); strip.setMatrixAt(i, d.matrix); } aisle.add(strip);
+  for (let i = 0; i < 36; i++) { d.position.set(0, -2.98, -i * 1.4 + 2); d.updateMatrix(); strip.setMatrixAt(i, d.matrix); } aisle.add(strip); aisleStrip = strip;
   const end = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: HEAT, transparent: true, opacity: .8, blending: THREE.AdditiveBlending, depthWrite: false })); end.scale.set(16, 12, 1); end.position.set(0, 1, -36); aisle.add(end); }
 const aisleFog = new THREE.FogExp2(0x0d0a07, .045);
 
@@ -307,9 +308,10 @@ const A_CAM = { pos: V(-1.3, .4, 13.6), look: V(0, 1.78, 0), fov: 31 };
 function shotCam(t, sh) {
   const u = prog(t, B[sh], B[sh + 1]);
   if (sh === 0) { const k = ease(u), a = lerp(-.1, .06, k), d = lerp(13.7, 12.2, k); return { pos: V(Math.sin(a) * d - .4, lerp(.4, .75, k), Math.cos(a) * d), look: V(0, lerp(1.78, 1.9, k), 0), fov: 31 }; }
-  if (sh === 1) { const z = -60, k = ease(u);   // all three phones whole, a slow push and drift
-    const fx = lerp(3.28, 0, ease(prog(t, C.mid - .3, C.mid + .3)));   // rack focus: the 4 GB phone, then the 8 GB one
-    return { pos: V(lerp(-.4, .4, k), lerp(2.4, 1.8, k), z + lerp(31, 29.2, k)), look: V(lerp(-.15, .15, k), .5, z), fov: 34, ap: .35, focus: V(fx, .5, z) }; }
+  if (sh === 1) { const z = -60, w = ease(prog(t, B[1], C.four - .35)), pin = ease(prog(t, C.four - .35, C.four + .35)), sl = ease(prog(t, C.mid - .3, C.mid + .45)), back = ease(prog(t, C.eight + .2, B[2]));
+    // wide on all three, push in on the 4 GB phone on "four", slide to the 8 GB phone on "mid-range", ease back out
+    const x = lerp(lerp(.05 * w, 3.28, pin), 0, sl), d = lerp(lerp(lerp(31, 28.5, w), 15.5, pin), lerp(15.5, 19, back), sl), y = lerp(lerp(2.4, 1.9, w), 1.0, pin);
+    return { pos: V(x + .5 * pin, y, z + d), look: V(x, lerp(.5, .9, pin), z), fov: 34, ap: lerp(.35, .2, pin), focus: V(x, .6, z) }; }
   if (sh === 2) { const z = -160, k = ease(u); return { pos: V(lerp(-1.5, .8, k), lerp(-.8, 1.2, k), z + lerp(31, 26, k)), look: V(0, lerp(3.2, 3.8, k), z + 6), fov: 44 }; }
   if (sh === 3) { const z = -300, k = ease(u), rf = ease(prog(t, C.jump - .35, C.jump + .25));   // rack focus: the near chips, then the gold contacts as +90% lands
     return { pos: V(lerp(-4.6, .4, k), lerp(1.9, 1.6, k), z + lerp(7.6, 6.6, k)), look: V(lerp(-1.6, .9, k), -.9, z), fov: 30, ap: .16, focus: V(lerp(-2.9, .6, rf), lerp(.3, -.85, rf), z) }; }
@@ -362,7 +364,9 @@ function apply(t) {
     stream.instanceMatrix.needsUpdate = true; streamGlow.instanceMatrix.needsUpdate = true;
   }
   if (sh === 3) { const h = prog(t, C.jump - .3, C.ninety + .1); dimm.userData.top.emissiveIntensity = .1 * h; dimm.userData.hl.intensity = 4 * h; dimm.userData.hg.material.opacity = .55 * h; dimm.rotation.set(-.42, .28, .08); }
-  if (sh === 5) { M.rack.emissiveIntensity = 1.1 + .3 * Math.sin(t * 5); }
+  if (sh === 5) { M.rack.emissiveIntensity = 1.1 + .3 * Math.sin(t * 5);
+    const sq = ease(prog(t, C.squeeze - .25, C.last + .2)); AISLE_R.forEach(([r, sd], i) => { r.position.x = sd * lerp(2.9, 2.15, sq) * (1 + .04 * Math.sin(i * 1.7)); });
+    const d = new THREE.Object3D(), off = (t * 7) % 1.4; for (let i = 0; i < 36; i++) { d.position.set(0, -2.98, -i * 1.4 + 2 - off); d.updateMatrix(); aisleStrip.setMatrixAt(i, d.matrix); } aisleStrip.instanceMatrix.needsUpdate = true; }
   // the blade and its seam (board shot only)
   blade.visible = sh === 4 && t > BL0() && t < BL1() + .05; seam.visible = sh === 4 && t > BL0();
   if (sh === 4) { const by = bladeY(t); blade.position.set(0, by, .14); seam.position.set(0, by + .02, .12); seam.scale.y = 1; seam.material.opacity = .7 * (1 - prog(t, BL1(), BL1() + .8)); }
@@ -411,9 +415,10 @@ function typeLayer(t) {
   if (sh === 1) [[0, '12 GB', -1, -1], [1, '8 GB', C.eight, 9e9], [2, '4 GB', C.four, C.mid - .1]].forEach(([i, txt, t0, t1]) => {   // each phone's label; the one being said grows
     const p = LP[i].getWorldPosition(V(0, 0, 0)).add(V(0, 3.75, 0)).project(cam), x = (p.x + 1) / 2 * W, y = (1 - p.y) / 2 * H;
     const on = t0 < 0 ? 0 : prog(t, t0 - .1, t0 + .15) * (1 - prog(t, t1, t1 + .3)), size = 64 + 50 * eout(on), col = on > .02 ? (i === 2 ? HEATC : WHITE) : 'rgba(244,246,248,.72)';
-    const a = prog(t, B[1] + .05, B[1] + .4);
-    o.save(); o.globalAlpha = a; o.font = `900 ${size}px "Inter Display", Inter, sans-serif`; o.textAlign = 'center'; o.fillStyle = col; o.fillText(txt, x, y); const w = o.measureText(txt).width; o.restore();
-    if (a > .3) BOXES.push([txt, x - w / 2, x + w / 2, y - size * .74, y + 4]); });
+    const a = prog(t, B[1] + .05, B[1] + .4); o.font = `900 ${size}px "Inter Display", Inter, sans-serif`; const w = o.measureText(txt).width, cx = clamp(x, 70 + w / 2, 950 - w / 2), cy = Math.max(y, 270 + size * .74);
+    if (cx !== x && Math.abs(cx - x) > w) return;   // a phone pushed out of frame drops its label
+    o.save(); o.globalAlpha = a; o.textAlign = 'center'; o.fillStyle = col; o.fillText(txt, cx, cy); o.restore();
+    if (a > .3) BOXES.push([txt, cx - w / 2, cx + w / 2, cy - size * .74, cy + 4]); });
   if (sh === 2) big('AI', HEATC, t, C.ai, B[3], { size: 320, glow: 'rgba(255,150,40,.6)', slam: 1 });
   if (sh === 3) { const v = Math.round(90 * eout(prog(t, C.jump - .1, C.ninety + .05))); if (t >= C.jump - .1) big('+' + v + '%', HEATC, t, C.jump - .1, B[4], { size: 270, glow: 'rgba(255,150,40,.45)', slam: 1 }); }
   if (sh === 4) big('CUT', HEATC, t, C.cutting, B[5], { size: 290, slam: 1 });
@@ -454,7 +459,7 @@ function post() {
 const nearCut = (t) => B.slice(1, -1).some((b) => Math.abs(t - b) < WHIP + .02);
 window.render = (t) => {
   t = clamp(t, 0, TOTAL);
-  const c0 = camAt(t), dof = c0.ap > 0, fast = nearCut(t), K = fast ? 5 : dof ? 5 : 2, shut = fast ? 1 / 45 : 1 / 120;
+  const c0 = camAt(t), dof = c0.ap > 0, fast = nearCut(t), K = fast ? 5 : dof ? 5 : 2, shut = fast ? 1 / 40 : 1 / 70;
   o.setTransform(1, 0, 0, 1, 0, 0); o.globalAlpha = 1; o.fillStyle = '#07080c'; o.fillRect(0, 0, W, H);
   for (let i = 0; i < K; i++) { const ts = Math.max(0, t - shut * (i / K)), c = apply(ts);
     if (c.ap > 0) { const r = c.ap * Math.sqrt((i + .5) / K), th = i * 2.39996, rx = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 0), uy = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 1);
@@ -465,7 +470,7 @@ window.render = (t) => {
   post(); typeLayer(t); captions(t);
 };
 window.TRANSITIONS = [...B.slice(1, -1).map((b) => [+(b - .3).toFixed(2), +(b + .35).toFixed(2), 'camera']), ...SHAKES().map(([t0]) => [+(t0 - .1).toFixed(2), +(t0 + .5).toFixed(2), 'jolt']), [+(C.india - .45).toFixed(2), +(C.india + .45).toFixed(2), 'turn']];
-window.HOLDS = [];
+window.HOLDS = [[+(TOTAL - 1.2).toFixed(2), +TOTAL.toFixed(2)]];
 window.seek = window.render;
 window.DUR = TOTAL;
 window.render(0);
