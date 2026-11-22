@@ -11,7 +11,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - Daily run, improvement loop, audit card, post check, owner questions: **design/runbook-daily.md**
 - Spare usage night: **design/runbook-spare.md**
 - Sessions, scheduled tasks, usage and token budget, working with the owner: **design/runbook-studio.md**
-- Second account (app, tooling, references): **design/handoff.md**; both accounts log their work in **design/handoff-log.md**
+- Work log (one entry per session that changes the repo): **design/handoff-log.md** (the second account was closed on 22 Nov 2026)
 - Web: design/webin20sec.md (plan, series, craft bar), design/rules-web.md (gate + "Channel brief")
 - Tech: design/rules-tech.md (gate + "Channel brief": gadgets for brand collabs, brand rules, India/global mix)
 - Turns Out: **design/c3-plan.md** (section 0, design series from 21 Nov: read first), design/channel3.md ("Channel brief" + toolkits), design/rules-c3.md (gate)
