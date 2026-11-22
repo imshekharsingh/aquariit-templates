@@ -1,3 +1,10 @@
+# Handoff: CLOSED (owner, 22 Nov 2026)
+
+The second account is no longer used; all work runs from the main account again. This file and design/handoff-log.md stay as history.
+What the second account built (19-21 Nov) is listed in design/handoff-log.md; it is now owned by the main account.
+
+---
+
 # Handoff: start here (second account)
 
 For sessions on the second account. The owner gives it its tasks in its own chat and it may work on anything in this repo the owner asks
