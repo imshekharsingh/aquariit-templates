@@ -67,7 +67,7 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          calm_px=20, calm_band=(288, 392), calm_med=.035, calm_mean=.05, calm_step=.10,
          hue_s=.25, hue_v=.2, hue_min=40, hue_last=3,
          focus_s=.3, focus_v=.3, focus_share=.05, focus_gap=30, focus_hues=3, focus_pad=1.0,
-         sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=2,
+         sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=4,
          hero_lag=.5, hero_shift=3, hero_px=30, hero_on=.02, hero_active=.55, hero_w=.33, hero_inset=.2,
          el_lag=.3, el_shift=3, el_cell=9, el_top=.21, el_px=18, el_k=4, el_cells=1, el_cut=.35, el_gap=3.0, el_win=10, el_pics=4)
 # ELEMENTS (16 Nov 2026, Turns Out; owner on the Liberty arm reel: "elements are few and are spread ... through the whole video"): a NEW visual
@@ -83,7 +83,9 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
 # 0.2 s, projected across lines at every oblique angle (15-75 and 100-165 deg, 5-deg steps; 3 px wide lines at least 60% of the zone long): the
 # best line's lit share minus the median line's. A sweep = sheen_steps+ steps in a row over sheen_score at the same angle (within 10 deg) whose line
 # moves one way. Calibrated 15 Nov on showreel-tech-watch-5atm's frames (scene seeks every 0.1 s): with the glass sheen 15 sweeps (scores to 0.97,
-# 2.7 s apart), the same scene without it 0 (best 0.62: falling drops). FAIL at sheen_events+ sweeps (one is a WARN).
+# 2.7 s apart), the same scene without it 0 (best 0.62: falling drops). FAIL at sheen_events+ sweeps (1 to sheen_events-1 a WARN to look at).
+# Loosened 22 Nov 2026 (the tech reset, owner: "no detail"; rules-tech.md D4): FAIL from 4 sweeps, not 2, so a light trail or a beam that
+# belongs to the object may cross the hero once or twice; the glass sheen the owner saw (15 sweeps) still fails.
 # HERO (15 Nov 2026, tech; owner: "I don't see much happening animation wise around watch"): the hero's box as the kit scene reports it
 # (window.__subject, recorded every 0.5 s by techkit/capture.cjs into <reel>.subject0.json). Its own change: inside the box (inset 10%) at 270x480,
 # blurred 3x3, the share of pixels that change by hero_px+ over hero_lag s after the best shift of up to hero_shift px (a bob or a slide is not

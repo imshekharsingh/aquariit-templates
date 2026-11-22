@@ -106,7 +106,7 @@ picture; one **step** = the mean absolute RGB change (0-255) between neighbourin
 
 Thresholds: tech cut 25, dead 0.5 (runs of 1 s), continuity 85%, strobe 60; Turns Out the same with dead 0.3. Web from 16 Nov (rule 17, owner 15 Nov
 "too wiggly"): dead runs of 2 s, continuity 35% (the rest unchanged); Output QA CALM measures the calm on the MP4. Tech from 16 Nov (rules-tech.md K1,
-the same note): continuity 55%, dead runs still 1 s (something changes every second); Output QA HERO and SHEEN measure the subject itself. Change a threshold only with a new row here.
+the same note): continuity 55%, dead runs still 1 s (something changes every second); Output QA HERO and SHEEN measure the subject itself (SHEEN fails from 4 sweeps from 22 Nov, the tech reset). Change a threshold only with a new row here.
 
 ## The review file
 

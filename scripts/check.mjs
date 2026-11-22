@@ -96,6 +96,30 @@ if (caps) {
   }
 }
 
+// 4e. tech rotation (owner, 22 Nov 2026: "every reel looks the same, no variation"; design/rules-tech.md "X" and "Rotation"): every visible tech
+// entry posting from 2026-11-22 has "format" and "device"; no two consecutive posting days share a format or a device class; at most one
+// "charging" (battery or charging) reel in any 7 days
+if (caps) {
+  const FORMATS = ['xray', 'showdown', 'quickmyth', 'indiapick'], DEVICES = ['audio', 'camera', 'wearables', 'laptop', 'home', 'car', 'phone', 'charging'];
+  const tech = Object.entries(caps).filter(([, e]) => e && e.channel === 'tech' && !e.hidden && !e.sample && /^\d{4}-\d{2}-\d{2}$/.test(e.postOn || '') && e.postOn >= '2026-11-22')
+    .sort((a, b) => a[1].postOn.localeCompare(b[1].postOn));
+  const day = (d) => Date.parse(d + 'T00:00:00Z') / 864e5;
+  for (const [n, e] of tech) {
+    if (!FORMATS.includes(e.format)) err(`captions.json ${n}: tech needs "format": one of ${FORMATS.join(', ')} (design/rules-tech.md "X")`);
+    if (!DEVICES.includes(e.device)) err(`captions.json ${n}: tech needs "device": one of ${DEVICES.join(', ')} (battery or charging topics are "charging")`);
+  }
+  for (let i = 1; i < tech.length; i++) {
+    const [pn, p] = tech[i - 1], [n, e] = tech[i];
+    if (p.postOn === e.postOn) err(`captions.json ${n}: a second visible tech reel on ${e.postOn} (with ${pn}); one a day (hide the replaced one)`);
+    else if (day(e.postOn) - day(p.postOn) === 1) {
+      if (p.format && p.format === e.format) err(`captions.json ${n}: format "${e.format}" again the day after ${pn}; rotate formats (design/rules-tech.md "Rotation")`);
+      if (p.device && p.device === e.device) err(`captions.json ${n}: device "${e.device}" again the day after ${pn}; rotate device classes (design/rules-tech.md "Rotation")`);
+    }
+  }
+  const chg = tech.filter(([, e]) => e.device === 'charging');
+  for (let i = 1; i < chg.length; i++) if (day(chg[i][1].postOn) - day(chg[i - 1][1].postOn) < 7) err(`captions.json ${chg[i][0]}: a second battery / charging reel within 7 days of ${chg[i - 1][0]} (at most one a week)`);
+}
+
 // 4d. the Mandatory Gate (owner, 7 Nov 2026; design/mandatory.md): every reel posting from 2026-11-08 on has review/<channel>/<name>.md with
 // all 13 items PASS and their evidence (item 13, after the render, may be PENDING until its post day is past); scripts/review-gate.mjs
 if (caps) for (const m of gateProblems(caps)) err(m);

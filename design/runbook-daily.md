@@ -29,6 +29,9 @@ in this order:
 4. Build that day's reels (learn-then-build, nothing ahead), @webin20sec and @techin20sec, one each, both for 13:00 IST. Each is scored
    against its rulebook in the stills review before its ONE render; then reel-status. Every reel passes the Mandatory Gate with its review
    file (item 13 after reel-status), and each channel logs its one craft improvement in design/craft-log.md (design/runbook-reels.md).
+   Tech (owner, 22 Nov 2026, the reset): pick the day's format (xray, showdown, quickmyth, indiapick) and device class (audio, camera,
+   wearables, laptop, home, car, phone, charging) so neither repeats the day before and battery / charging comes at most once a week; write
+   both into the captions entry ("format", "device"; npm run check enforces it) and meet the Detail bar and audience pull (rules-tech.md D, P).
    Turns Out keeps its own scheduled task (09:11 IST for the 13:00 reel), under the same rulebook gate (design/channel3.md, "Channel brief").
 5. One lesson line in design/experiments.md "Results log" (`- DD Mon: lesson`), in the same push as the day's first reel.
 
