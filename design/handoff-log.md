@@ -204,3 +204,8 @@ Format (at most 6 lines):
 - Done: render 1 (run 45018742866) Output QA FAIL on EDGES and SYNC only (issue 1150); fixed in the scene (world clipped 28 px in from both sides; the SYNC words on a solid dark plate); local tesseract reads both missed words; review item 13 updated.
 - Left: render 2 (last allowed) after the merge, item 13, the critic.
 - For the other account: a kit world wider than the frame must be clipped 28 px in once the camera zooms past 1.1 (Output QA EDGES reads the outer 2%); SYNC words need a plate when they overlap any drawing.
+
+## 2026-11-22 · claude/tech-heart-green-item13 · heart-green render 2: OUTPUT QA PASS
+- Done: render 2 (run 45021673906) OUTPUT QA PASS (SYNC 4 of 4, HERO 83%, SHEEN 0, DEAD none, EDGES pass); item 13 written. The tech reset (PR #1148) and its first reel are live for 20:30 IST.
+- Left: the Reel critic (item 20 + ENHANCE) on showreel-tech-heart-green; post at 20:30 IST.
+- For the other account: next tech reel must change format and device class (check.mjs rotation): not xray, not wearables.
