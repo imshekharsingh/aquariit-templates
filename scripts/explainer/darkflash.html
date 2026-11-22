@@ -590,7 +590,11 @@ var KM = (function(){
 })(KM);
 /*kitsfx:end*/
   window.WEB_THEME = 'dark';   // the dark theme (E18 kept, 15 Nov 2026), rules-web.md rule 12
+  // critic, 22 Nov 2026 (render 1 Output QA: DEMO colourfulness 29 < 32, FOCUS 4 hues at 10.2-10.8 s): berry without its violet (the glass end
+  // and the second bloom read ~265 deg between the cool wash and the rows), a deeper page, and the rows at 62% saturation (the kit's 42% read dull)
+  (function(w){ w.c.pg = '#2a0a22'; w.v.glass = 'linear-gradient(160deg,#6a1650,#3c0c30 55%,#420c3e)'; w.blooms[1][0] = '230,50,190'; })(KM.WORLDS.berry);
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.theme('dark', 'berry');
+  (function(R){ R.setProperty('--d1', '#631750'); R.setProperty('--d2', '#801e68'); R.setProperty('--d3', '#451138'); })(document.documentElement.style);   // hsl 315 at 62% (the kit's steps, 20 points more saturated)
   var TEXT = "Why does dark mode flash white? Open it at night, and the screen blinks bright first. The browser paints white until it learns your page is dark. The fix: one meta tag, color scheme. Dark from the very first frame. Look closer. Same reload, but this page stays dark. Now every load opens dark.";
   var DUR = 19, HOOK_N = 6, X0 = 40, W0 = 430, FULL = { x: X0, y: 300, w: W0, h: 480, r: 26 };
   var ROWS = [['Morning run', '6:30'], ['Team call', '10:00'], ['Lunch with Ana', '13:00'], ['Read a chapter', '21:00']];

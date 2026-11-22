@@ -148,3 +148,8 @@ Format (at most 6 lines):
 - Done: Owner answers read (0 feedback; c3-design-profile answer left for the Turns Out run, it needs the owner's Instagram account); audit read (web ALARM 1,522 vs 2,000, tech OK); web Nº 44 showreel-44-darkflash (meta color-scheme, MDN; berry world; local HUE, CALM 4.5%, SPLIT 4.68x, FOCUS, SPREAD pass; FLOW cuts 0); review file, captions entry, tip demo.
 - Left: ONE render (Showreel config scripts/explainer/darkflash.json) after the merge, Output QA, item 13, the critic; tech reel for 22 Nov (not built); audit card not dispatched.
 - For the other account: declare a flash with KM.declare(t0, t1, 'blink') and ease it; CALM counts any full-card flash, so keep blinks to three.
+
+## 2026-11-22 12:40 IST · claude/critic-2026-11-22 · reel critic (22 Nov)
+- Done: only one reel in captions.json for 22 Nov (web showreel-44-darkflash; no tech or Turns Out entry). The daily run had not dispatched its render: the critic dispatched render 1 (run 44991053925). Viewer questions all pass on the scene stills; voice, PACE, sound and SPLIT pass on the render; Output QA FAIL on DEMO (colourfulness 29 < 32) and FOCUS (4 hues at 10.2-10.8 s). Fix: berry without its violet and rows at 62% saturation, set in the scene (kit untouched); local DEMO 38, FOCUS 2-3 hues on every frame. design/critic.md question 37.
+- Left: after the merge, render 2 (the last allowed, Showreel config scripts/explainer/darkflash.json), then item 13 and item 20 + ENHANCE in the review file (this session does it). No tech reel was built for 22 Nov.
+- For the other account: read the FOCUS hue count on every frame of its window, not only look.py's two samples; keep demo rows at 55%+ saturation on a dark world.
