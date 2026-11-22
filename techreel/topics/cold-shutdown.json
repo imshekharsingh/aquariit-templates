@@ -1,0 +1,426 @@
+{
+ "slug": "cold-shutdown",
+ "engine": "kit",
+ "scene": "techkit/scenes/cold-shutdown.js",
+ "topic": "Why does an iPhone shut down in the cold with charge left",
+ "format": "SPECS DECODED",
+ "audience": "global",
+ "gadget": "phone",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.45,
+ "max_end": 44.0,
+ "experiment": {
+  "id": "tech-battery-voltage",
+  "change": "a battery % decoded on the object: the cell shows 30% while its voltage bar sags under a shutdown line as resistance rises in the cold, then recovers on warming; the lower half filled (a gauge row, a temperature stack, a big readout), named words as 40 px+ type above the subtitle band (critic fixes of 21 Nov)",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Why does your phone die at thirty percent when it's cold?",
+   "beat": "question"
+  },
+  {
+   "text": "Apple says a low charge, the cold or an old battery raises its impedance. Think of it as inner resistance.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "Then the voltage sags the moment the phone asks for power, and the chips need a minimum voltage to keep running.",
+   "beat": "fix",
+   "source": 0
+  },
+  {
+   "text": "So the phone shuts itself down on purpose, to protect its parts, even when there's charge left.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "It's only temporary. Once the battery warms back up, its performance returns to normal.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "Apple says iPhones work best between zero and thirty-five degrees Celsius. Heat can harm a battery for good.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Cold pauses it. Keep it warm.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "phone": [
+   0,
+   "phone"
+  ],
+  "thirty": [
+   0,
+   "thirty"
+  ],
+  "cold0": [
+   0,
+   "cold"
+  ],
+  "apple": [
+   1,
+   "apple"
+  ],
+  "low": [
+   1,
+   "low"
+  ],
+  "cold1": [
+   1,
+   "cold"
+  ],
+  "old": [
+   1,
+   "old"
+  ],
+  "imped": [
+   1,
+   "impedance"
+  ],
+  "resist": [
+   1,
+   "resistance"
+  ],
+  "volt": [
+   2,
+   "voltage"
+  ],
+  "sags": [
+   2,
+   "sags"
+  ],
+  "power": [
+   2,
+   "power"
+  ],
+  "minimum": [
+   2,
+   "minimum"
+  ],
+  "run": [
+   2,
+   "running"
+  ],
+  "shuts": [
+   3,
+   "shuts"
+  ],
+  "purpose": [
+   3,
+   "purpose"
+  ],
+  "parts": [
+   3,
+   "parts"
+  ],
+  "left": [
+   3,
+   "left"
+  ],
+  "temp": [
+   4,
+   "temporary"
+  ],
+  "warms": [
+   4,
+   "warms"
+  ],
+  "normal": [
+   4,
+   "normal"
+  ],
+  "zero": [
+   5,
+   "zero"
+  ],
+  "celsius": [
+   5,
+   "celsius"
+  ],
+  "heat": [
+   5,
+   "heat"
+  ],
+  "good": [
+   5,
+   "good"
+  ],
+  "cold2": [
+   6,
+   "cold"
+  ],
+  "warm2": [
+   6,
+   "warm"
+  ],
+  "final": [
+   6,
+   "warm"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "thirty",
+   "blip",
+   0.5,
+   -0.2,
+   {
+    "f": 520,
+    "f2": 300
+   }
+  ],
+  [
+   "cold0",
+   "riser_end",
+   0.22,
+   0.2
+  ],
+  [
+   "low",
+   "tick",
+   0.45,
+   -0.2
+  ],
+  [
+   "cold1",
+   "blip",
+   0.5,
+   0.2,
+   {
+    "f": 380,
+    "f2": 240
+   }
+  ],
+  [
+   "old",
+   "tick",
+   0.45,
+   0.3
+  ],
+  [
+   "imped",
+   "thud",
+   0.55,
+   0
+  ],
+  [
+   "resist",
+   "pop",
+   0.5,
+   0.1
+  ],
+  [
+   "volt",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "sags",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 600,
+    "f2": 220
+   }
+  ],
+  [
+   "power",
+   "snap",
+   0.55,
+   0.2
+  ],
+  [
+   "minimum",
+   "tick",
+   0.45,
+   -0.2
+  ],
+  [
+   "run",
+   "tick",
+   0.45,
+   0.2
+  ],
+  [
+   "shuts",
+   "thud",
+   0.6,
+   0
+  ],
+  [
+   "purpose",
+   "tick",
+   0.45,
+   0.2
+  ],
+  [
+   "parts",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "left",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 300,
+    "f2": 520
+   }
+  ],
+  [
+   "temp",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "warms",
+   "blip",
+   0.5,
+   0,
+   {
+    "f": 400,
+    "f2": 800
+   }
+  ],
+  [
+   "normal",
+   "chime",
+   0.35,
+   0,
+   {
+    "notes": [
+     "A5",
+     "E6"
+    ]
+   }
+  ],
+  [
+   "zero",
+   "tick",
+   0.45,
+   -0.3
+  ],
+  [
+   "celsius",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "heat",
+   "snap",
+   0.55,
+   0.2
+  ],
+  [
+   "good",
+   "thud",
+   0.5,
+   0
+  ],
+  [
+   "cold2",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "warm2",
+   "pop",
+   0.5,
+   0.2
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.4,
+   0,
+   {
+    "notes": [
+     "A4",
+     "C#5",
+     "E5",
+     "B5",
+     "E6"
+    ],
+    "d": 3.2
+   }
+  ]
+ ],
+ "post": {
+  "title": "Why does your phone die at 30% in the cold?",
+  "caption": "Why does your phone die at 30% when it's cold? 🥶🔋 The percent is not the problem: the cold is.\n\nApple says a low charge, a higher chemical age or cold temperatures make a lithium-ion battery's impedance (inner resistance) rise. With high impedance the battery's voltage drops further when the phone pulls power, and the electronics need a minimum voltage to work, so the phone can shut down on purpose to protect them, even with charge left. The cold effect is temporary: once the battery warms back up to its normal range, performance returns. Apple says iPhone, iPad and Apple Watch work best at 0° to 35° C (32° to 95° F), and heat above 35° C can permanently damage battery capacity.\n\nSend this to a friend who lives somewhere cold.",
+  "keywords": [
+   "iphone shuts down in cold",
+   "phone dies at 30 percent",
+   "battery impedance explained",
+   "why phone turns off cold weather",
+   "iphone battery cold temperature",
+   "lithium ion battery cold"
+  ],
+  "hashtags": [
+   "#iphone",
+   "#batterylife",
+   "#techtips",
+   "#techexplained",
+   "#gadgets"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/101575",
+    "note": "Apple Support, iPhone battery and performance (read 22 Nov 2026): low state of charge, higher chemical age and cold raise impedance; voltage drops; electronic components need a minimum voltage; the device shuts down intentionally to preserve them; unexpected shutdowns more likely at low charge, higher chemical age or cold."
+   },
+   {
+    "url": "https://www.apple.com/batteries/maximizing-performance/",
+    "note": "Apple, Maximizing battery performance (read 22 Nov 2026): a very cold environment can decrease battery life, but this is temporary and performance returns once the battery warms to its normal range; iPhone, iPad, iPod and Apple Watch work best at 0° to 35° C (32° to 95° F); above 35° C can permanently damage battery capacity."
+   }
+  ]
+ },
+ "qa": {
+  "sync": [
+   "thirty",
+   "impedance",
+   "voltage",
+   "shuts",
+   "warms",
+   "celsius"
+  ]
+ },
+ "say": {
+  "iPhones": "[iPhones](/ˈIfˌOnz/)",
+  "thirty-five": "thirty five"
+ }
+}
