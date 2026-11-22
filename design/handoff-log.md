@@ -13,6 +13,10 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-23 01:50 IST · claude/tech-ai-memory-polish · AI memory reel: owner's polish notes + drama and quality pass
+- Done: techkit/scenes/ai-memory.html: 1.5x supersampling, depth of field and rack focus, sparks and slow-mo on the chip rip, laser slicing the board on CUT, amber pulse through the racks on AI, slams with camera shake, light sweeps, finer board, bevelled chips, cables, ordered chip streams, all three phones whole with labels. techkit/make.py: a topic may set "fps": 30 (own motion blur, no frame blend), encode CRF 16. Preflight: SAFE ok, OVERLAP none, FLOW cuts 0 / dead none / 81%.
+- Left: the ONE render waits for the owner's OK on the preview page (stills + full-res clip, no voice locally); then item 13 + Output QA.
+
 ## 2026-11-22 22:30 IST · claude/tech-ai-memory · first reel in the new tech direction (owner's go, size L)
 - Done: design/tech-direction.md "owner approved" (owner chat 22 Nov: "I like this though ... go with your plan"). showreel-tech-ai-memory for 23 Nov 13:00 (xray, phone): techkit/scenes/ai-memory.html in real 3D (three.js r149 MIT in techkit/vendor, inlined by make.py at <!--THREE-->), topic, captions entry, review file (1-12, 14-17 PASS; FLOW cuts 0 / dead none / 87%). Facts read today on TrendForce press pages (environment now allows www.trendforce.com, www.idc.com). Rejected heart-green hidden.
 - Left: the owner OKs the preview page (stills + 540 px clip, no voice: the Kokoro model cannot be fetched here); then ONE render (Tech reel, slug ai-memory), Output QA, item 13, the critic. The installed design skills were not available in this session.
