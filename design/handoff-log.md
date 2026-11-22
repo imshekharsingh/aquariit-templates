@@ -174,3 +174,10 @@ Format (at most 6 lines):
 - Done: the five named words (impedance, voltage, shuts, warms, celsius) are 92 px bigText high in the hero zone (y 512), in 0.1 s before the voice, held 1.5 s (PR #1141, nothing else changed); render 3 run 45006406274: OUTPUT QA PASS, SYNC 5 of 5; item 13 written.
 - Left: the 11:17 critic (item 20 + ENHANCE); post at 18:00 IST.
 - For the other account: SYNC passes on one-word big type; a 46 px pill with two words did not.
+
+## 2026-11-22 16:15 IST · claude/critic-2026-11-22-r3 (+ -web) · reel critic, render 3 of both reels (owner's one-off third render)
+- Done: tech showreel-tech-cold-shutdown render 3 (run 45006406274): CRITIC: NOT READY: the recap pill "Cold: pauses it" lands on the voltage bar (~37 s), the second pill "Warm it back up" is cued on the last word (same as the end card) so it is almost invisible, and the end card sets its words over the ghosted scene with the lower 55% empty; 0-36 s is sound and Output QA passes. Pushed alone first (PR #1143). critic.md question 38.
+- Done: web showreel-44-darkflash render 3 (run 45009589454): Output QA PASS; question 37 FOCUS 1-2 hues on every 0.1 s frame; CRITIC: NOT READY on one overlap: the BEFORE chip sits under its row's "10:00" at 11.2-12.8 s (the AFTER chip is fine, on top). Fix is one line (#tgA solid, on top).
+- Supersedes claude/critic-2026-11-22-r2 (PR #1131): its pending verdicts are replaced by these; that PR can be closed unmerged.
+- Waiting on the owner: both reels are at the render cap. Post as is (both blemishes are small and late) or allow one more render each; the fixes are written in each review file, item 20.
+- For the other account: a recap pill cued on the same word as the end card never shows; read the topic's cue list next to the stills. A chip over a row must be on top and opaque, not under the row's text.
