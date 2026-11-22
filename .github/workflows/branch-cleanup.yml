@@ -1,18 +1,23 @@
-name: Branch cleanup
+name: Repo cleanup
 
-# Owner, 22 Nov 2026: keep the repo free of stale branches. Sessions cannot delete remote branches, so they name them here.
-# Run by hand with the branch names. It never touches main, protected names, or a branch with an open pull request,
-# and it prints each deleted branch's last commit so it can be restored (git push origin <sha>:refs/heads/<name>).
+# Owner, 22 Nov 2026: keep the repo tidy as we go. Sessions cannot delete remote branches, so they name them here.
+# Daily (03:05 IST): closes the bot's notice issues ("Showreel ready", "Output QA NOT READY", "Pipeline failed") older than 3 days.
+# By hand: also deletes the named stale branches, closing their open pull request first. It never touches main or other prefixes,
+# and prints each deleted branch's last commit so it can be restored (git push origin <sha>:refs/heads/<name>).
 on:
+  schedule:
+    - cron: '35 21 * * *'
   workflow_dispatch:
     inputs:
       branches:
-        description: 'Branch names to delete, separated by spaces (claude/, wip/ or template/ only)'
-        required: true
+        description: 'Stale branch names to delete, separated by spaces (claude/, wip/ or template/ only); empty = only close old notices'
+        required: false
+        default: ''
 
 permissions:
   contents: write
-  pull-requests: read
+  pull-requests: write
+  issues: write
 
 jobs:
   cleanup:
@@ -23,16 +28,25 @@ jobs:
       BRANCHES: ${{ inputs.branches }}
     steps:
       - name: Delete the named stale branches
+        if: ${{ inputs.branches != '' }}
         run: |
           for b in $BRANCHES; do
             case "$b" in
               claude/*|wip/*|template/*) ;;
               *) echo "SKIP $b: only claude/, wip/ or template/ branches"; continue ;;
             esac
-            if [ -n "$(gh pr list --repo "$REPO" --head "$b" --state open --json number -q '.[0].number')" ]; then
-              echo "SKIP $b: it has an open pull request"; continue
-            fi
+            for pr in $(gh pr list --repo "$REPO" --head "$b" --state open --json number -q '.[].number'); do
+              gh pr close "$pr" --repo "$REPO" --comment "Closed as stale by Repo cleanup (owner, 22 Nov 2026)." && echo "CLOSED PR #$pr ($b)"
+            done
             tip=$(gh api "repos/$REPO/git/ref/heads/$b" -q .object.sha 2>/dev/null || true)
             if [ -z "$tip" ]; then echo "GONE $b"; continue; fi
             gh api -X DELETE "repos/$REPO/git/refs/heads/$b" && echo "DELETED $b (last commit $tip)"
+          done
+      - name: Close the bot's notice issues older than 3 days
+        run: |
+          cutoff=$(date -u -d '3 days ago' +%Y-%m-%dT%H:%M:%SZ)
+          gh issue list --repo "$REPO" --state open --limit 1000 --json number,title,createdAt \
+            -q ".[] | select(.createdAt < \"$cutoff\") | select(.title | test(\"^(Showreel ready|Output QA NOT READY|Pipeline failed|Voice check|Render failed)\")) | .number" |
+          while read -r n; do
+            gh issue close "$n" --repo "$REPO" --reason "not planned" >/dev/null && echo "closed #$n"
           done
