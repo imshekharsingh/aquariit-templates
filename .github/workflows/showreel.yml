@@ -264,6 +264,8 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           bash scripts/r2.sh put "out/$NAME.mp4" "v/study/$NAME.mp4"
+          # the stills sheet (2 frames a second) next to it: the app's Previews section shows it (owner, 23 Nov 2026)
+          if [ -f "out/$NAME-review.png" ]; then bash scripts/r2.sh put "out/$NAME-review.png" "v/study/$NAME-stills.png"; fi
           if [ -f out/words.json ]; then bash scripts/r2.sh put out/words.json "c/study/$NAME-words.json"; fi
       - name: Keep it in R2 and tell the owner
         if: inputs.seconds == ''

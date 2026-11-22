@@ -170,6 +170,11 @@
   .pvi b{display:block;font:700 .9rem system-ui,sans-serif;color:var(--ink)}
   .pvi p{margin:2px 0 8px;color:var(--mute);font-size:.8rem}
   .pvi video{display:block;width:100%;max-width:320px;aspect-ratio:9/16;border-radius:12px;background:#000}
+  .pvi .ch{display:inline-block;margin:0 0 4px;font:800 .68rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--cc,var(--mute))}
+  .pvi .tq{margin-top:-4px;font-size:.76rem}
+  .pvi .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+  .pvi .row a{color:var(--mute);font-size:.8rem;margin-left:4px}
+  .pvi .ans{font-size:.82rem;color:var(--mute)}
   .refi .th{display:block;max-width:100%;max-height:220px;margin-top:6px;border-radius:10px;border:1px solid var(--line);background:var(--well)}
   .refi a{color:var(--accent);overflow-wrap:anywhere}
   .refi .del{margin-top:6px;min-height:32px;padding:0 12px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--mute);font:600 .75rem system-ui,sans-serif;cursor:pointer}
@@ -386,6 +391,7 @@
     <h1>Inbox</h1>
     <p class="lede">What needs you, Claude's cards, your feedback and references.</p>
     <section class="needs" id="needs" hidden><h2>Needs you</h2><div id="needs-list"></div></section>
+    <details class="fb" id="pv" open hidden><summary>Previews to review <span id="pv-n"></span></summary><p class="mute" id="pv-note" style="margin-top:8px"></p><div id="pv-list"></div></details>
     <div id="cards"></div>
     <details class="fb" id="fb"><summary>Feedback <span id="fb-n">Write to Claude</span></summary>
       <div class="chips" id="fb-ch" role="group" aria-label="About"><button type="button" data-ch="" aria-pressed="true">Any</button><button type="button" data-ch="web" aria-pressed="false">Web</button><button type="button" data-ch="tech" aria-pressed="false">Tech</button><button type="button" data-ch="c3" aria-pressed="false">Turns Out</button><button type="button" data-ch="app" aria-pressed="false">App</button></div>
@@ -393,7 +399,6 @@
       <div class="row"><button class="btn" id="fb-send" type="button">Send</button></div>
       <div id="fb-list"></div>
     </details>
-    <details class="fb" id="pv" open hidden><summary>Previews <span id="pv-n"></span></summary><p class="mute" id="pv-note" style="margin-top:8px"></p><div id="pv-list"></div></details>
     <details class="fb ref" id="ref"><summary>References <span id="ref-n">Add a link or a file</span></summary>
       <div class="chips" id="ref-ch" role="group" aria-label="For"><button type="button" data-ch="" aria-pressed="true">Any</button><button type="button" data-ch="web" aria-pressed="false">Web</button><button type="button" data-ch="tech" aria-pressed="false">Tech</button><button type="button" data-ch="c3" aria-pressed="false">Turns Out</button><button type="button" data-ch="app" aria-pressed="false">App</button></div>
       <input type="url" id="ref-url" aria-label="Link" placeholder="Paste a link (Instagram reel, site)" inputmode="url" autocomplete="off">
@@ -823,7 +828,7 @@
     nx.addEventListener('click', function(){ rIdx = (rIdx + 1) % REPLIES.length; replies(); });
     row.appendChild(rd); row.appendChild(nx); replyBox.appendChild(row); }
   // the Inbox badge: open questions plus unread cards
-  function inboxCount(){ var n = document.getElementById('needs-list').children.length + document.getElementById('cards').children.length, b = document.getElementById('inbox-n');
+  function inboxCount(){ var n = document.getElementById('needs-list').children.length + document.getElementById('cards').children.length + (pvPending || 0), b = document.getElementById('inbox-n');
     b.textContent = n; b.hidden = !n; document.getElementById('inbox-empty').hidden = !!n; }
   // ---- the reel journey (owner, 15 Nov 2026: "cover the whole flow of reel making in the app"): GET /api/journey, one card per reel, its seven
   // stages in order. The Worker caches GitHub for a minute; this page asks again every minute only while a reel is rendering and Journey is open.
@@ -946,13 +951,33 @@
       return bad.json().catch(function(){ return {}; }).then(function(j){ refDone(false, j.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : j.error === 'too-big' ? 'That file is over 50 MB.' : 'Could not save it. Try again.'); }); })
       .catch(function(){ refDone(false, 'Could not save it. Try again.'); }); });
   refLoad();
-  // Previews: concept videos to review (not posts); the list lives in templates/showreels/previews.json, the files at /reels/study/<name>-preview.mp4
+  // Previews: concept videos to review (not posts); the list lives in templates/showreels/previews.json, the files in R2 at
+  // /reels/study/<name>-preview.mp4 and <name>-preview-stills.png (the Showreel workflow's "seconds" mode). "Like" / "Not this" go to the
+  // owner's Feedback (D1, /api/feedback) as "Preview <name>: Like|Not this", which the daily run reads (owner, 23 Nov 2026).
+  var pvPending = 0;
   fetch('/showreels/previews.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
-    var it = (j && j.items) || [], box = document.getElementById('pv-list'); if (!it.length) return;
-    document.getElementById('pv-note').textContent = j.note || ''; document.getElementById('pv-n').textContent = it.length + ' to review';
-    it.forEach(function(p){ var d = el('div', 'pvi'); d.appendChild(el('b', null, p.title)); if (p.about) d.appendChild(el('p', null, p.about));
-      var v = el('video'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = (p.src || '/reels/study/' + p.name + '-preview.mp4') + '?v=' + (j.v || 1); d.appendChild(v); box.appendChild(d); });
-    document.getElementById('pv').hidden = false; }).catch(function(){});
+    var it = (j && j.items) || [], box = document.getElementById('pv-list'), n = document.getElementById('pv-n'); if (!it.length) return;
+    document.getElementById('pv-note').textContent = j.note || '';
+    var CCV = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' }, rows = {};
+    function count(){ pvPending = it.filter(function(p){ return !rows[p.name].done; }).length; n.textContent = pvPending ? '(' + pvPending + ')' : '(all answered)'; inboxCount(); }
+    function answered(p, txt){ var r = rows[p.name]; r.done = true; r.row.innerHTML = ''; r.row.appendChild(el('span', 'ans', 'Your answer: ' + txt + '. Claude reads it on the next run.')); count(); }
+    it.forEach(function(p){ var d = el('div', 'pvi'), src = p.src || '/reels/study/' + p.name + '-preview.mp4', v = el('video'), row = el('div', 'row');
+      var c = el('span', 'ch', (CH[p.channel] && CH[p.channel].name) || p.channel || ''); c.style.setProperty('--cc', CCV[p.channel] || 'var(--mute)'); d.appendChild(c);
+      d.appendChild(el('b', null, p.title)); if (p.about) d.appendChild(el('p', null, p.about)); if (p.techniques) d.appendChild(el('p', 'tq', 'From the reference: ' + p.techniques));
+      v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = src + '?v=' + (j.v || 1) + '#t=0.6'; d.appendChild(v);
+      [['Like', 'btn'], ['Not this', 'btn g']].forEach(function(b){ var bt = el('button', b[1], b[0]); bt.type = 'button';
+        bt.addEventListener('click', function(){ [].forEach.call(row.querySelectorAll('button'), function(x){ x.disabled = true; });
+          fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' },
+            body: JSON.stringify({ channel: p.channel || null, text: 'Preview ' + p.name + ': ' + b[0] + ' (' + p.title + ')' }) })
+            .then(function(r){ if (!r.ok) throw 0; answered(p, b[0]); }).catch(function(){ [].forEach.call(row.querySelectorAll('button'), function(x){ x.disabled = false; }); bt.textContent = 'Try again'; }); });
+        row.appendChild(bt); });
+      var st = el('a', null, 'Stills'); st.href = (p.stills || '/reels/study/' + p.name + '-preview-stills.png') + '?v=' + (j.v || 1); st.target = '_blank'; st.rel = 'noopener'; row.appendChild(st);
+      d.appendChild(row); box.appendChild(d); rows[p.name] = { row: row, done: false }; });
+    document.getElementById('pv').hidden = false; count();
+    // answers already sent (from any device) come back from the Feedback list
+    fetch('/api/feedback', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(f){
+      (f.feedback || []).slice().reverse().forEach(function(x){ var m = /^Preview ([a-z0-9-]+): (Like|Not this)/.exec(x.text || ''); if (m && rows[m[1]] && !rows[m[1]].done) answered(it.filter(function(p){ return p.name === m[1]; })[0], m[2]); }); }).catch(function(){});
+  }).catch(function(){});
   // cards: one per daily audit (and the spare-usage night's report), newest first; "Mark read" deletes the card for good (no archive)
   var cardsBox = document.getElementById('cards'), CC = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' };
   function cardEl(cd){ var box = el('section', 'card'), hd = el('div', 'hd');

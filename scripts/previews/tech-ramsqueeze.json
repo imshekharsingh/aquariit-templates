@@ -1,0 +1,11 @@
+{
+ "name": "showreel-pv-tech-ramsqueeze",
+ "seek": "scripts/previews/tech-ramsqueeze.html",
+ "dur": 11.5,
+ "fps": 60,
+ "width": 540,
+ "height": 960,
+ "vignette": false,
+ "grain": 3,
+ "note": "Preview for the owner's review (23 Nov 2026), not a post: no voice, no captions.json entry. Rendered with Showreel 'seconds' into R2 study/."
+}

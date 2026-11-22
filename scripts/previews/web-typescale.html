@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>One number sets every text size</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Preview (owner, 23 Nov 2026: "make some previews based on references"): @webin20sec, a split-screen "one rule, live" reel.
+   Techniques from R-ref 23 Nov (design/references.md, the 60-30-10 reel): the rule on top as stacking cards with exact values, a glossy
+   silk background in the active colour, a realistic page below changing live as each card lands, word-by-word captions with the key word
+   in its colour, a new state about every second. Our content: a modular type scale (each size = the last x 1.25), shown on an invented
+   brand's page (Lumen & Loam, a plant studio). Every frame is a pure function of t (window.seek). */
+:root{--ink:#0d0f12;--paper:#fbfaf7;--f:'Inter Tight',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased}
+.a{position:absolute}
+#silk{left:0;top:0;width:540px;height:500px}
+#shade{left:0;top:0;width:540px;height:500px;background:linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,0,0,0) 34%,rgba(0,0,0,0) 70%,rgba(0,0,0,.42))}
+#eyebrow{left:28px;top:30px;font:700 13px/1 var(--m);letter-spacing:.16em;color:rgba(255,255,255,.86)}
+#rule{left:26px;top:52px;font:900 54px/1 var(--f);letter-spacing:-.035em;color:#fff;white-space:nowrap;text-shadow:0 6px 24px rgba(0,0,0,.25)}
+#rule i{font-style:normal;display:inline-block}
+#stack{left:26px;top:128px;width:488px;height:300px}
+.cd{position:absolute;left:0;width:488px;height:58px;border-radius:16px;background:rgba(255,255,255,.94);box-shadow:0 14px 30px rgba(0,0,0,.22),inset 0 0 0 1px rgba(255,255,255,.6);display:flex;align-items:center;padding:0 16px 0 14px;gap:12px;transform-origin:50% 100%}
+.cd .sw{width:34px;height:34px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;font:800 13px/1 var(--m);color:#fff}
+.cd .nm{font:800 19px/1 var(--f);color:#111;letter-spacing:-.01em;white-space:nowrap}
+.cd .nm small{display:block;font:500 12px/1.2 var(--m);color:#6b6b6b;letter-spacing:.02em;margin-top:5px}
+.cd .px{margin-left:auto;font:800 28px/1 var(--m);color:#111;letter-spacing:-.03em;white-space:nowrap}
+.cd .px span{font-size:15px;color:#777;margin-left:2px}
+#seam{left:0;top:498px;width:540px;height:4px;background:rgba(255,255,255,.9)}
+#cap{left:20px;right:20px;top:446px;text-align:center;font:800 25px/1.15 var(--f);letter-spacing:-.015em;color:#fff;white-space:nowrap;z-index:5}
+#cap .bx{display:inline-block;padding:9px 16px 10px;border-radius:14px;background:rgba(10,11,14,.86);box-shadow:0 10px 26px rgba(0,0,0,.35)}
+#cap span{display:inline-block;margin:0 .12em}
+/* the page: a real layout whose font sizes are set from the scale every frame */
+#page{left:0;top:502px;width:540px;height:458px;background:#f6f3ec;overflow:hidden;color:#1d2a22}
+#nav{position:absolute;left:24px;right:24px;top:16px;display:flex;align-items:center;gap:16px}
+#logo{display:flex;align-items:center;gap:8px;font-weight:800;color:#1d2a22;white-space:nowrap}
+#logo svg{width:22px;height:22px}
+#nav .lk{color:#45524a;font-weight:600;white-space:nowrap}
+#nav .bt{margin-left:auto;background:#1f5135;color:#fff;border-radius:999px;padding:7px 14px;font-weight:700;white-space:nowrap}
+#hero{position:absolute;left:24px;top:62px;width:300px}
+#eb{color:#2f7a4d;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+#h1{font-weight:800;letter-spacing:-.03em;line-height:1.02;margin-top:8px;color:#13201a}
+#lead{color:#4a574f;line-height:1.45;margin-top:10px}
+#cta{display:inline-block;margin-top:14px;background:#1f5135;color:#fff;border-radius:12px;padding:10px 16px;font-weight:700}
+#plant{position:absolute;right:14px;top:56px;width:196px;height:232px}
+#h2{position:absolute;left:24px;top:318px;font-weight:800;letter-spacing:-.02em;color:#13201a;white-space:nowrap}
+#cards{position:absolute;left:24px;right:24px;top:362px;display:flex;gap:12px}
+.fc{flex:1;background:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 6px 16px rgba(30,40,30,.08)}
+.fc h3{font-weight:800;letter-spacing:-.01em;color:#13201a;white-space:nowrap}
+.fc p{color:#5b665f;line-height:1.4;margin-top:4px}
+#flag{left:392px;top:520px;font:800 13px/1 var(--m);letter-spacing:.14em;padding:7px 10px;border-radius:8px;color:#fff;z-index:4}
+#rings .rg{position:absolute;border:3px solid;border-radius:10px;pointer-events:none;z-index:3}
+#end{left:26px;top:128px;width:488px;height:300px;border-radius:22px;background:rgba(255,255,255,.96);box-shadow:0 20px 44px rgba(0,0,0,.28);padding:26px 24px;opacity:0}
+#end .k{font:700 13px/1 var(--m);letter-spacing:.16em;color:#666}
+#end .row{display:flex;align-items:baseline;gap:12px;margin-top:16px;color:#111;font-weight:800;letter-spacing:-.03em;white-space:nowrap}
+#end .sc{font:700 15px/1.5 var(--m);color:#333;margin-top:18px}
+#end .sc b{color:#111}
+</style>
+</head>
+<body>
+<canvas id="silk" class="a" width="1080" height="1000"></canvas>
+<div id="shade" class="a"></div>
+<div id="eyebrow" class="a">ONE RULE · TYPE SCALE</div>
+<div id="rule" class="a"></div>
+<div id="stack" class="a"></div>
+<div id="end" class="a"><div class="k">SAVE THIS SCALE · × 1.25</div><div class="row" id="endrow"></div><div class="sc"><b>13</b> labels · <b>16</b> body · <b>20</b> card titles<br><b>25</b> sections · <b>39</b> headline</div></div>
+<div id="page" class="a" data-subject>
+  <div id="nav"><div id="logo"><svg viewBox="0 0 24 24"><path d="M12 21c0-6 1-10 7-14-1 7-3 11-7 14z" fill="#2f7a4d"/><path d="M12 21C11 15 9 12 4 10c0 6 3 9 8 11z" fill="#5aa874"/></svg><span id="lg">Lumen &amp; Loam</span></div><span class="lk">Shop</span><span class="lk">Care</span><span class="bt">Basket</span></div>
+  <div id="hero"><div id="eb">New season</div><div id="h1">Plants that thrive where you live</div><div id="lead">Matched to your light, delivered potted and ready.</div><div id="cta">Find my plant</div></div>
+  <svg id="plant" viewBox="0 0 196 232"><defs><linearGradient id="pot" x1="0" x2="1"><stop offset="0" stop-color="#c8643f"/><stop offset=".55" stop-color="#e07a52"/><stop offset="1" stop-color="#a94f30"/></linearGradient><linearGradient id="lf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6cc08a"/><stop offset="1" stop-color="#1f6b40"/></linearGradient><radialGradient id="glow" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#fff6dc"/><stop offset="1" stop-color="#f6f3ec" stop-opacity="0"/></radialGradient></defs>
+    <circle cx="98" cy="100" r="96" fill="url(#glow)"/>
+    <g id="leaves"><path d="M98 150C70 120 52 92 58 48c26 18 40 52 40 102z" fill="url(#lf)"/><path d="M98 150c26-34 50-52 84-54-10 30-40 50-84 54z" fill="url(#lf)"/><path d="M98 150C66 140 34 124 16 96c34-6 62 14 82 54z" fill="url(#lf)"/><path d="M98 150c4-44 22-80 56-106 4 40-14 76-56 106z" fill="url(#lf)"/><path d="M98 150v-52" stroke="#1f5135" stroke-width="3"/></g>
+    <path d="M58 150h80l-10 72a8 8 0 0 1-8 7H76a8 8 0 0 1-8-7z" fill="url(#pot)"/><rect x="52" y="144" width="92" height="16" rx="5" fill="#d36d47"/><ellipse cx="98" cy="229" rx="52" ry="4" fill="rgba(0,0,0,.1)"/>
+  </svg>
+  <div id="h2">Popular this week</div>
+  <div id="cards"><div class="fc"><h3>Low light</h3><p>Happy on a north window.</p></div><div class="fc"><h3>Pet safe</h3><p>Nothing to worry about.</p></div></div>
+</div>
+<div id="flag" class="a"></div><div id="rings"></div>
+<div id="seam" class="a"></div>
+<div id="cap" class="a"></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+  var back = function(k){ var c = 1.9; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+  var DUR = 11.5;
+  // the five steps of the scale: role, exponent, colour of the silk and the card while it is the active step
+  var STEPS = [
+    { t: .8,  role: 'Labels',      ex: -1, col: [44, 168, 160] },
+    { t: 1.8, role: 'Body',        ex: 0,  col: [58, 120, 238] },
+    { t: 2.8, role: 'Card titles', ex: 1,  col: [124, 88, 232] },
+    { t: 3.8, role: 'Sections',    ex: 2,  col: [222, 70, 140] },
+    { t: 4.8, role: 'Headline',    ex: 4,  col: [240, 140, 30] }];
+  var BOLD = { t: 7.4, col: [228, 72, 52] };   // the second example: the same page on x 1.333
+  var sup = { '-1': '⁻¹', 0: '⁰', 1: '¹', 2: '²', 4: '⁴' };
+  function ratioAt(t){ return mix(mix(1.25, 1.333, io(P(t, BOLD.t, BOLD.t + .7))), 1.25, io(P(t, 9.3, 9.9))); }
+  var stack = $('stack'), cards = STEPS.map(function(s, i){ var d = document.createElement('div'); d.className = 'cd';
+    d.innerHTML = '<div class="sw"></div><div class="nm">' + s.role + '<small></small></div><div class="px"></div>'; stack.appendChild(d); return d; });
+  var gl, prog, uT, uC, uR;
+  (function initGL(){ var c = $('silk'); gl = c.getContext('webgl', { antialias: true, preserveDrawingBuffer: true }); if (!gl) return;
+    var vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+    var fs = 'precision highp float;uniform vec2 R;uniform float T;uniform vec3 C;' +
+      'float h(vec2 p){p.x+=.42*sin(p.y*1.6+T*.55);p.y+=.30*sin(p.x*1.25-T*.45);' +
+      'return .55*sin(p.x*2.0+p.y*.7+T*.8)+.32*sin(-p.x*1.15+p.y*2.4-T*.6)+.16*sin((p.x+p.y)*3.6+T*1.1);}' +
+      'void main(){vec2 uv=gl_FragCoord.xy/R.y*2.2;float e=.004;float a=h(uv);vec2 g=vec2(h(uv+vec2(e,0.))-a,h(uv+vec2(0.,e))-a)/e;' +
+      'vec3 n=normalize(vec3(-g*.55,1.));vec3 L=normalize(vec3(-.45,.55,.75));float d=max(dot(n,L),0.);' +
+      'float s=pow(max(dot(reflect(-L,n),vec3(0.,0.,1.)),0.),36.);float r=pow(1.-n.z,2.);' +
+      'vec3 col=C*(.30+.85*d)+vec3(1.)*s*.55+C*r*.6;col=mix(col,col*col*1.4,.25);gl_FragColor=vec4(col,1.);}';
+    function sh(type, src){ var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+    prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(prog); gl.useProgram(prog);
+    var b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    uT = gl.getUniformLocation(prog, 'T'); uC = gl.getUniformLocation(prog, 'C'); uR = gl.getUniformLocation(prog, 'R'); })();
+  function colAt(t){ var c = [26, 92, 96], i;
+    for (i = 0; i < STEPS.length; i++) { var k = io(P(t, STEPS[i].t - .1, STEPS[i].t + .45)); c = c.map(function(v, j){ return mix(v, STEPS[i].col[j], k); }); }
+    var kb = io(P(t, BOLD.t - .1, BOLD.t + .5)); c = c.map(function(v, j){ return mix(v, BOLD.col[j], kb); });
+    var ke = io(P(t, 9.5, 10.1)); c = c.map(function(v, j){ return mix(v, [40, 150, 96][j], ke); });
+    return c; }
+  // captions: word by word, the key word in the active colour
+  var LINES = [
+    { a: 0, b: .8, w: ['Every', 'size', '=', 'the', 'last', '×', '1.25'], k: 6 },
+    { a: .8, b: 4.8, w: ['Start', 'at', '16', 'px', 'body'], k: 2, step: 1 },
+    { a: 4.8, b: 6.0, w: ['Headline:', '16', '×', '1.25⁴', '=', '39'], k: 5 },
+    { a: 6.0, b: 7.4, w: ['Same', 'page,', 'no', 'scale'], k: 3 },
+    { a: 7.4, b: 9.5, w: ['Louder', 'brand?', 'Use', '×', '1.333'], k: 4 },
+    { a: 9.5, b: 99, w: ['Send', 'this', 'to', 'your', 'designer'], k: 4 }];
+  function rgb(c, a){ return 'rgba(' + c.map(Math.round).join(',') + ',' + (a == null ? 1 : a) + ')'; }
+  function caption(t, col){ var L = LINES.filter(function(l){ return t >= l.a && t < l.b; })[0] || LINES[0], box = $('cap');
+    var key = L.a + '|' + L.w.join(' ');
+    if (box.dataset.k !== key) { box.dataset.k = key; box.innerHTML = '<div class="bx">' + L.w.map(function(w){ return '<span>' + w + '</span>'; }).join('') + '</div>'; }
+    var sp = box.querySelectorAll('span'), bx = box.firstChild;
+    sp.forEach(function(s, i){ var k = P(t, L.a + i * .085, L.a + i * .085 + .16); s.style.opacity = k; s.style.transform = 'translateY(' + ((1 - out(k)) * 10).toFixed(1) + 'px) scale(' + mix(.86, 1, back(k)).toFixed(3) + ')';
+      s.style.color = i === L.k ? rgb(col.map(function(v){ return Math.min(255, v * 1.25 + 30); })) : '#fff'; });
+    bx.style.opacity = 1; }
+  function sizes(t){ var r = ratioAt(t), base = 16, s = {};   // each role's size grows from 16 px the moment its card lands
+    STEPS.forEach(function(st){ var target = base * Math.pow(r, st.ex), k = back(P(t, st.t, st.t + .42));
+      var flat = t >= 6.15 && t < 7.05 ? io(P(t, 6.15, 6.35)) * (1 - io(P(t, 6.85, 7.05))) : 0;
+      s[st.role] = mix(mix(16, target, k), 16, flat); s[st.role + 'k'] = k * (1 - flat); });
+    return s; }
+  var TG = [['#eb', '#nav .lk'], ['#lead'], ['.fc h3'], ['#h2'], ['#h1']];
+  function rings(t){ var box = $('rings'), html = '';
+    STEPS.forEach(function(st, i){ var k = P(t, st.t + .05, st.t + .25) * (1 - P(t, st.t + .8, st.t + 1.05)); if (k <= 0) return;
+      TG[i].forEach(function(sel){ document.querySelectorAll(sel).forEach(function(n){ var r = n.getBoundingClientRect(), pad = 4 + (1 - out(P(t, st.t + .05, st.t + .35))) * 10;
+        var top = Math.max(504, r.top - pad);
+        html += '<div class="rg" style="left:' + (r.left - pad) + 'px;top:' + top + 'px;width:' + (r.width + pad * 2) + 'px;height:' + (r.bottom + pad - top) + 'px;border-color:' + rgb(st.col) + ';opacity:' + k.toFixed(2) + ';box-shadow:0 0 18px ' + rgb(st.col, .45) + '"></div>'; }); }); });
+    box.innerHTML = html; }
+  function seek(t){
+    var col = colAt(t);
+    if (gl) { gl.viewport(0, 0, 1080, 1000); gl.uniform2f(uR, 1080, 1000); gl.uniform1f(uT, 1.2 + t * .9 + Math.sin(t * .7) * .2); gl.uniform3f(uC, col[0] / 255, col[1] / 255, col[2] / 255); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); }
+    var r = ratioAt(t);
+    $('rule').innerHTML = 'Each size <i>×&nbsp;' + (r > 1.29 ? '1.333' : '1.25') + '</i>';
+    var rk = P(t, BOLD.t, BOLD.t + .3); $('rule').querySelector('i').style.transform = 'scale(' + (1 + Math.sin(rk * Math.PI) * .12).toFixed(3) + ')';
+    // the stack: each card drops in, the older ones slide down and shrink behind it (a deck)
+    var shown = STEPS.filter(function(s){ return t >= s.t; }).length, endK = io(P(t, 9.5, 10.1));
+    cards.forEach(function(d, i){ var st = STEPS[i], k = P(t, st.t, st.t + .38), above = shown - 1 - i;
+      var px = 16 * Math.pow(r, st.ex);
+      d.querySelector('.px').innerHTML = (Math.round(px * 10) / 10).toFixed(px % 1 > .05 && px % 1 < .95 ? 1 : 0).replace('.0', '') + '<span>px</span>';
+      d.querySelector('small').textContent = '16 × ' + r.toFixed(r > 1.3 ? 3 : 2).replace(/0$/, '') + (sup[st.ex] || '');
+      d.querySelector('.sw').style.background = rgb(st.col); d.querySelector('.sw').textContent = st.ex < 0 ? '−1' : st.ex;
+      var y = above >= 0 ? 242 - above * 60 : -40, sc = 1;
+      if (above >= 0) { y = mix(242 - (above - 1) * 60, 242 - above * 60, out(P(t, STEPS[Math.min(STEPS.length - 1, i + above)].t, STEPS[Math.min(STEPS.length - 1, i + above)].t + .38))); }
+      if (above === 0) y = mix(-70, 242, back(k));
+      d.style.transform = 'translateY(' + y.toFixed(1) + 'px) scale(' + sc + ') rotate(' + ((1 - out(k)) * -4).toFixed(2) + 'deg)';
+      d.style.opacity = (t >= st.t ? Math.min(1, k * 3) : 0) * (1 - io(P(t, 9.4, 9.7)));
+      d.style.zIndex = 10 + i;
+      var pulse = P(t, BOLD.t + .1, BOLD.t + .8); d.querySelector('.px').style.color = pulse > 0 && pulse < 1 ? rgb(BOLD.col) : '#111'; });
+    // end card: the scale to save
+    var e = $('end'); e.style.opacity = endK; e.style.transform = 'translateY(' + ((1 - out(P(t, 9.5, 10.2))) * 40).toFixed(1) + 'px)';
+    var row = $('endrow'); if (!row.children.length) { [13, 16, 20, 25, 39].forEach(function(v){ var s = document.createElement('span'); s.style.fontSize = (v * 1.45) + 'px'; s.textContent = v; row.appendChild(s); }); }
+    [].forEach.call(row.children, function(s, i){ var k = P(t, 9.7 + i * .12, 9.95 + i * .12); s.style.opacity = k; s.style.transform = 'translateY(' + ((1 - back(k)) * 18).toFixed(1) + 'px)'; });
+    // the page, live
+    var s = sizes(t), fw = function(k, a, b){ return Math.round(mix(a, b, cl(k))); };
+    var lab = s['Labels'], bod = s['Body'], h3 = s['Card titles'], h2 = s['Sections'], h1 = s['Headline'];
+    document.querySelectorAll('#nav .lk').forEach(function(n){ n.style.fontSize = lab + 'px'; });
+    $('nav').querySelector('.bt').style.fontSize = lab + 'px'; $('lg').style.fontSize = mix(16, 16, 0) + 'px';
+    $('eb').style.fontSize = lab + 'px'; $('eb').style.letterSpacing = (s['Labelsk'] * .12).toFixed(3) + 'em';
+    $('eb').style.fontWeight = fw(s['Labelsk'], 400, 800);
+    $('lead').style.fontSize = bod + 'px'; $('lead').style.color = 'rgb(' + [mix(29, 74, s['Bodyk']), mix(42, 87, s['Bodyk']), mix(34, 79, s['Bodyk'])].map(Math.round) + ')';
+    $('cta').style.fontSize = bod + 'px';
+    document.querySelectorAll('.fc p').forEach(function(n){ n.style.fontSize = bod * .875 + 'px'; });
+    document.querySelectorAll('.fc h3').forEach(function(n){ n.style.fontSize = h3 + 'px'; n.style.fontWeight = fw(s['Card titlesk'], 400, 800); });
+    $('h2').style.fontSize = h2 + 'px'; $('h2').style.fontWeight = fw(s['Sectionsk'], 400, 800);
+    $('h1').style.fontSize = h1 + 'px'; $('h1').style.fontWeight = fw(s['Headlinek'], 400, 800); $('h1').style.letterSpacing = (-.03 * s['Headlinek']) + 'em';
+    $('h1').style.lineHeight = mix(1.4, 1.02, s['Headlinek']);
+    $('h2').style.top = mix(318, 318, 0) + 'px';
+    var hb = $('hero').getBoundingClientRect(); $('h2').style.top = Math.max(300, hb.bottom - 502 + 16) + 'px';
+    var h2b = $('h2').getBoundingClientRect(); $('cards').style.top = (h2b.bottom - 502 + 10) + 'px';
+    $('leaves').style.transform = 'rotate(' + (Math.sin(t * 1.3) * 1.6).toFixed(2) + 'deg)'; $('leaves').style.transformOrigin = '98px 150px';
+    // BEFORE / AFTER flag while the page flips flat and back
+    var f = $('flag'), fb = t >= 6.1 && t < 6.95, fa = t >= 6.95 && t < 7.6;
+    f.style.opacity = fb || fa ? 1 : 0; f.textContent = fb ? 'NO SCALE' : 'WITH SCALE'; f.style.background = fb ? '#3a3d44' : rgb(STEPS[4].col);
+    f.style.left = fb ? '402px' : '388px'; f.style.top = '556px';
+    rings(t);
+    caption(t, col);
+  }
+  // sound: a soft bed, a snap per card, a whoosh into the flat flip and the ratio change, a resolve on the end card
+  var Q = [{ t: 0, k: 'swell', d: .6, g: .5 }];
+  STEPS.forEach(function(s, i){ Q.push({ t: s.t, k: 'whoosh', d: .28, g: .35 }, { t: s.t + .3, k: 'snap', p: [0, 2, 4, 5, 7][i], g: .8 }); });
+  Q.push({ t: 6.1, k: 'thud', g: .7 }, { t: 6.95, k: 'pop', p: 7, g: .8 }, { t: BOLD.t, k: 'whoosh', d: .5, g: .5 }, { t: BOLD.t + .5, k: 'hit', g: .6 }, { t: 9.5, k: 'swell', d: .5, g: .5 }, { t: 10, k: 'resolve', notes: [57, 64, 69, 73], g: .7 });
+  [0, 1, 2, 3, 4].forEach(function(i){ Q.push({ t: 9.7 + i * .12, k: 'blip', p: i * 2, g: .6 }); });
+  window.CUES = { dur: DUR, cues: Q, bed: { bpm: 100, origin: 0, gain: .32, chords: [[45, 57, 64, 69, 72], [41, 57, 60, 65, 69], [43, 55, 62, 67, 71], [40, 55, 59, 64, 67]] } };
+  window.seek = seek; window.DURATION = DUR; window.COVER = 5.6;
+  document.fonts.ready.then(function(){ seek(0); document.documentElement.setAttribute('data-ready', ''); });
+})();
+</script>
+</body>
+</html>
