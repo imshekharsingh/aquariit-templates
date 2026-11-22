@@ -234,6 +234,15 @@
 #tapzoom .like{position:absolute;right:12px;top:10px;width:38px;height:38px;border-radius:50%;border:0;background:#c76cf0;color:#240838;font:700 18px/1 system-ui,sans-serif;touch-action:auto}
 #tapzoom .fix .like{touch-action:manipulation}
 #tapzoom .row{position:absolute;left:14px;right:14px;bottom:10px;height:20px;border-radius:7px;background:rgba(255,255,255,.14)}
+#darkflash .stage{position:relative;height:92px;margin:8px 10px;overflow:hidden;border-radius:12px;background:#15101c}
+#darkflash .pg{position:absolute;inset:0;padding:12px 14px}
+#darkflash .pg b{display:block;font:800 22px/1 system-ui,sans-serif;color:#fff}
+#darkflash .pg i{display:block;margin-top:9px;height:16px;border-radius:6px;background:rgba(255,255,255,.14)}
+#darkflash .white{position:absolute;inset:0;background:#e6e2d8;opacity:0}
+#darkflash .stage[data-fix="0"].go .white{animation:dfflash 1s ease both}
+#darkflash .stage.go .pg{animation:dfpage 1s ease both}
+@keyframes dfflash{0%{opacity:0}30%{opacity:1}60%{opacity:1}100%{opacity:0}}
+@keyframes dfpage{0%,40%{opacity:0}100%{opacity:1}}
 </style>
 </head>
 <body>
@@ -243,6 +252,23 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="darkflash">
+  <p class="no">Nº 34</p>
+  <h2>Why does dark mode flash white on load?</h2>
+  <p class="why">Until the browser knows a page is dark it paints its default (white) canvas, so a dark page can blink bright for a moment on every load. MDN: put &lt;meta name=&quot;color-scheme&quot; content=&quot;dark light&quot;&gt; in the head, before any CSS, to tell the browser the preferred color scheme early, which helps prevent unwanted screen flashes during the page load. color-scheme is supported since Chrome 81, Firefox 96 and Safari 13 (MDN, BCD).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">no meta tag</span><div class="stage" data-fix="0"><div class="pg"><b>Today</b><i></i><i></i></div><div class="white"></div></div></div>
+  <div class="pane fix"><span class="tag ok">meta color-scheme</span><div class="stage fix" data-fix="1"><div class="pg"><b>Today</b><i></i><i></i></div><div class="white"></div></div></div>
+</div>
+<button class="play" type="button">Reload both pages</button>
+<p class="note">Tap the button. The left page blinks its default white canvas before the dark page arrives (simulated); the right page, whose head has &lt;meta name="color-scheme" content="dark light"&gt; before any CSS, stays dark. MDN: the tag helps prevent unwanted screen flashes during the page load.</p></div>
+  <div class="code"><pre><code>&lt;head&gt;
+  &lt;meta name=&quot;color-scheme&quot; content=&quot;dark light&quot;&gt;
+  &lt;!-- before any CSS --&gt;</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/color-scheme" rel="noopener">Source: MDN, color-scheme</a></p>
+</article>
 
 <article class="tip" id="tapzoom">
   <p class="no">Nº 33</p>
@@ -845,11 +871,12 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>31 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>32 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "darkflash": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
     "tapzoom": function(root){ root.querySelectorAll('.stage').forEach(function(st){ var last = 0, n = 12; st.querySelector('.like').addEventListener('click', function(){ var now = Date.now(); n++; st.querySelector('.n').textContent = n; if (st.dataset.fix === '0' && now - last < 450) st.classList.toggle('z'); last = now; }); }); },
     "snapback": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
     "gradient": function(root, btn){ var a = 90; btn.addEventListener('click', function(){ a = (a + 40) % 360; root.style.setProperty('--ang', a + 'deg'); }); },

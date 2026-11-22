@@ -1,0 +1,88 @@
+{
+ "name": "showreel-44-darkflash",
+ "seek": "scripts/explainer/darkflash.html",
+ "dur": 19,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.1,
+ "style": "Dark look, whole frame, calm (rule 17), berry colour world. A page-load topic (the browser paints its white canvas until it learns the page is dark), one bug told as a story (design/improvements.md web item 7 again): BEFORE blinks pale on every reload, AFTER stays dark",
+ "voice": {
+  "text": "Why does dark mode flash white? Open it at night, and the screen blinks bright first. The browser paints white until it learns your page is dark. The fix: one meta tag, color scheme. Dark from the very first frame. Look closer. Same reload, but this page stays dark. Now every load opens dark.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "caption": "Why does dark mode flash white? 🌙 You open it at night, and for a split second the screen blinks bright before the dark page arrives.\n\nUntil the browser knows your page is dark, it paints its default white canvas. Tell it first with one line in the head, before any CSS: <meta name=\"color-scheme\" content=\"dark light\">. MDN says the tag, placed before the styles, helps prevent unwanted screen flashes during the page load. Watch the reel: the top page blinks bright on every reload, the bottom one stays dark.\n\ncolor-scheme works in Chrome 81, Edge 81, Firefox 96 and Safari 13 and up (MDN BCD).\n\nSend this to whoever built your dark mode.",
+ "keywords": [
+  "css dark mode flash",
+  "dark mode white flash fix",
+  "meta color-scheme dark",
+  "stop white flash on page load",
+  "color-scheme css",
+  "dark mode flicker",
+  "css dark mode tips"
+ ],
+ "hashtags": [
+  "#css",
+  "#darkmode",
+  "#webdev",
+  "#frontend",
+  "#webdesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/color-scheme",
+   "note": "MDN color-scheme (mdn/content, read 22 Nov 2026): the property sets the color of the canvas surface, scrollbars and form controls; include the <meta name=\"color-scheme\"> tag in the head, before any CSS, to inform user agents about the preferred color scheme, helping prevent unwanted screen flashes during the page load"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data",
+   "note": "BCD (read 22 Nov 2026), css.properties.color-scheme: Chrome 81, Firefox 96, Safari 13"
+  }
+ ],
+ "tip": {
+  "title": "Why does dark mode flash white on load?",
+  "why": "Until the browser knows a page is dark it paints its default (white) canvas, so a dark page can blink bright for a moment on every load. MDN: put <meta name=\"color-scheme\" content=\"dark light\"> in the head, before any CSS, to tell the browser the preferred color scheme early, which helps prevent unwanted screen flashes during the page load. color-scheme is supported since Chrome 81, Firefox 96 and Safari 13 (MDN, BCD).",
+  "code": "<head>\n  <meta name=\"color-scheme\" content=\"dark light\">\n  <!-- before any CSS -->",
+  "demo": "darkflash",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/color-scheme",
+   "label": "MDN, color-scheme"
+  }
+ },
+ "format": "single",
+ "say": {},
+ "experiment": {
+  "id": "web-load-bug",
+  "change": "a page-load topic (the white flash before a dark page) told as one bug story; dynamic before/after in sync, the flash eased not strobed",
+  "vs": "median"
+ },
+ "qa": {
+  "mute": {
+   "before": {
+    "say": "bright"
+   },
+   "after": {
+    "say": "now"
+   },
+   "span": 1.5
+  },
+  "focus": {
+   "demo": [
+    40,
+    392,
+    470,
+    780
+   ],
+   "subject": [
+    40,
+    592,
+    470,
+    780
+   ],
+   "from": 10.25,
+   "to": 10.75
+  }
+ }
+}

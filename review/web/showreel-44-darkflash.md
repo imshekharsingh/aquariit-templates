@@ -1,0 +1,39 @@
+# Review: showreel-44-darkflash (web, postOn 2026-11-22 postAt 13:00 IST)
+
+The Mandatory Gate, design/mandatory.md. Built 22 Nov by the daily run, the day it posts (learn-then-build). 22 Nov audit (latest Instagram collect, 00:18 IST): web ALARM (median reach 1,522 over the last 7 vs target 2,000); the
+ESCALATE answer of 20 and 21 Nov stands (a different topic type again, not a tweak): Nº 42 was an animation that ends wrong, Nº 43 a phone gesture the browser claims, today's is a page-LOAD annoyance
+(a dark page blinks its default white canvas before it paints). Tech PROMOTEs (tech-myth-verdict, tech-kit-engine) are already rules F5 and K0 since 14 and 18 Nov; the c3 lines belong to the Turns Out run.
+Dynamic before / after in sync (rule 15): BEFORE blinks pale on every reload (an eased blink, never a strobe), AFTER stays dark. Dark look, new colour world berry (hue ~325; the last three web reels were 225, 65, 155; the one before 285).
+- frame 0: hook over ONE frame-wide "Today" app screen that is already blinking (pale at frame 0, fading to dark);
+- "Open it at night, and the screen blinks bright first.": counters RELOADS and SCREEN (DARK / WHITE) in the top zone; the page blinks pale on "bright";
+- "The fix: one meta tag, color scheme.": code card types `<meta name="color-scheme" content="dark light">` with the word lit; the screen splits into BEFORE over AFTER, same reload: BEFORE blinks pale, AFTER only dims its rows and stays dark;
+- "Look closer. Same reload, but this page stays dark.": AFTER alone full size, "SAME RELOAD · ONE SECOND LATER: white | dark";
+- payoff: AFTER reloads dark once more, the line to copy over the screen, steady to the last frame.
+Facts: MDN color-scheme (mdn/content on GitHub, read 22 Nov 2026): include the `<meta name="color-scheme">` tag in the head, before any CSS, to inform user agents about the preferred color scheme, helping prevent unwanted screen flashes during the page load; the property also sets the canvas surface colour; BCD (read 22 Nov 2026): css.properties.color-scheme Chrome 81, Edge 81, Firefox 96, Safari 13. Not run in a real browser (the blink is a simulation of the default canvas; the tip demo says so).
+Local Output QA on the scene's own frames (PW_FROM=$(npm root -g)/ node scripts/qa/frames.mjs + python3 scripts/qa/look.py, 10 fps): HUE 315 (needs 40 from 225 / 65 / 155); CALM median 0.2%, mean 4.5% (needs 3.5% / 5%: the camera holds still, three blinks only, AFTER's rows only dim; the first cut with five blinks and a camera push was 5.9% FAIL, the one with ramp-less flashes 10.8%); SPLIT 4.68x (BEFORE 18.1% vs AFTER 3.9%; needs 1.8x); SPREAD 0%; FOCUS PASS (subject 36 vs rest 29; the AFTER card carries a cool wash and rim).
+
+1. Topic: PASS: anyone who uses a dark site or app at night has felt the white blink on load, in 1 s; not done before (captions.json: no colour-scheme reel). Rulebook (design/rules-web.md): rule 1 pass (a phone annoyance felt as a user), rule 2 pass (the page is already blinking at frame 0, hook on it), rule 3 pass (the fix is typed from ~8 s), rule 4 target 60%+ hold (a new beat every ~3 s: blink, counters, code, split, look closer, payoff), rule 5 pass (visible at a glance), rule 6 pass (hook "Why does dark mode flash white?" 6 words over the broken page), rule 7 pass (13:00), rule 8 pass (one line to copy, on screen for the last 3 s, checked on MDN + BCD), rule 9 pass (PRONUNCIATION: no unchecked words), rule 10 pass (FLOW below), rule 11 pass (the finished dark page is the pleasure), rule 12 pass (cheap glass, no filter), rule 13/15 pass (dynamic fix in sync), rule 14 pass (eye path below), rule 16 pass (whole frame used), rule 17 pass (calm: camera and light hold still, only the page blinks), rule 18 pass (berry base + warm coral = before, cool sky blue = after, 3 hues at most)
+2. Frame 0: PASS: SUBJECT FILL: 67% at frame 0; HOOK: clear of the subject; the page is already pale and fading to dark, the hook on screen
+3. Safe zone: PASS: SAFE ZONE: ok (every text and canvas label every 0.5 s on the stills; the label row was lowered to y 130 after the first sheet)
+4. No overlap: PASS: OVERLAP: none; BAND: clear (the first cut's "bright!" bubble overlapped "Today" and was removed)
+5. Motion: PASS: STATIC STRETCH: none (least change 0.2 at 16 s, median 4.7)
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; all eight sentences shown word by word and finished
+7. Voice: PASS: PREFLIGHT voice: 228 letters, 8 sentences, about 17.6 s at speed 1 in one take (reel 19 s, voice must end by 18.4 s): fits; HOOK PACE: 6 words ok; PRONUNCIATION: 0 overrides used; no unchecked words; natural speed 1.0
+8. Sound: PASS (by design; measured on the render at item 13): whoosh at frame 0, a swell and a dry snap on every BEFORE blink, a soft pop as the rows land, a tick and a pop on every AFTER reload, typing ticks, element cues; no drum kinds
+9. Payoff: PASS: the last 3 s: AFTER reloads dark, the three-line fix over the page, the page steady, last frame a saveable fixed state
+10. Facts: PASS: MDN color-scheme and BCD (read 22 Nov 2026), see above; npm run check passes
+11. Post data: PASS: captions.json entry (channel web, postOn 2026-11-22, postAt 13:00, concept, experiment web-load-bug); 7 keywords, 5 hashtags; caption names who to send it to; tip block with demo in scripts/tips/demos.mjs (/tips/ rebuilt)
+12. Review file: PASS: this file, items 1-11 and 14-18 PASS
+13. After the render: PENDING
+14. Cuts: PASS: FLOW: cuts 0 (declared: the split and the merge, sharedElement; the three blinks as 'blink' windows, each an eased pale in and out)
+15. Dead runs: PASS: FLOW: dead runs none (declared hold: the loaded, steady page at the end)
+16. Continuity: PASS: FLOW: continuity 38% (web needs 35%+; the AFTER rim breathes slowly so the cool state is alive; the first cut was 34%)
+17. Strobes: PASS: FLOW: strobes 0 (the blink eases in over 0.3 s and out over 0.4 s with a hold between: never a hard flash)
+18. Element sound (web): PASS: ELEMENT SOUND: 91 of 91 animated elements have a cue (100%): ok
+20. CRITIC: PENDING
+
+Rule 14, where the eye is at each beat: hook (top) -> the page under it, already blinking -> the counters above it (RELOADS, SCREEN) -> the code card (top) on "The fix", `color-scheme` lit -> BEFORE and AFTER together, the top one blinking -> "Look closer": the panel then the one dark page -> the line to copy over the steady page.
+Owner-feedback lines, read against the stills: no wiggle (the camera and the light hold still, one eased blink per reload); a colour world per reel, not the last three; whole frame used; nothing cut at the edges; every spoken line shown and finished; no brand card or call to action in the video; no saturated fill over the subject (the pale blink is #e6e2d8, a soft off-white); never keep an idle element to fill the frame (AFTER's rim breathes and its rows dim on every reload, so it takes part).
+Researched improvement (design/improvements.md): web item 7 again (one bug told as a story: it breaks, you feel it, one line fixes it, it behaves) on a page-load bug; item 3 (the caption names who to send it to). Techniques only.
+Craft improvement (design/craft-log.md): the blink is eased and declared as a planned transition instead of a hard flash, so a bright flash reads as a blink and never as a strobe; the second blink lands on the word "bright".
+References used (design/references.md): none

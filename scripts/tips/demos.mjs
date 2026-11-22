@@ -584,4 +584,25 @@ export const demos = {
 <p class="note">Tap a heart twice, fast. Phones read two quick taps on the same spot as a double-tap and zoom the page (here the left page simulates it); with touch-action: manipulation on the button the taps just count. On a real phone the zoom is the browser's own.</p>`,
     js: `function(root){ root.querySelectorAll('.stage').forEach(function(st){ var last = 0, n = 12; st.querySelector('.like').addEventListener('click', function(){ var now = Date.now(); n++; st.querySelector('.n').textContent = n; if (st.dataset.fix === '0' && now - last < 450) st.classList.toggle('z'); last = now; }); }); }`,
   },
+  // the dark-mode flash demo (showreel-44-darkflash, 22 Nov 2026): a simulation, two dark pages that "reload"; the left one paints its default white canvas for a moment first (a page with no colour-scheme), the right one (meta color-scheme) stays dark
+  darkflash: {
+    css: `
+#darkflash .stage{position:relative;height:92px;margin:8px 10px;overflow:hidden;border-radius:12px;background:#15101c}
+#darkflash .pg{position:absolute;inset:0;padding:12px 14px}
+#darkflash .pg b{display:block;font:800 22px/1 system-ui,sans-serif;color:#fff}
+#darkflash .pg i{display:block;margin-top:9px;height:16px;border-radius:6px;background:rgba(255,255,255,.14)}
+#darkflash .white{position:absolute;inset:0;background:#e6e2d8;opacity:0}
+#darkflash .stage[data-fix="0"].go .white{animation:dfflash 1s ease both}
+#darkflash .stage.go .pg{animation:dfpage 1s ease both}
+@keyframes dfflash{0%{opacity:0}30%{opacity:1}60%{opacity:1}100%{opacity:0}}
+@keyframes dfpage{0%,40%{opacity:0}100%{opacity:1}}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">no meta tag</span><div class="stage" data-fix="0"><div class="pg"><b>Today</b><i></i><i></i></div><div class="white"></div></div></div>
+  <div class="pane fix"><span class="tag ok">meta color-scheme</span><div class="stage fix" data-fix="1"><div class="pg"><b>Today</b><i></i><i></i></div><div class="white"></div></div></div>
+</div>
+<button class="play" type="button">Reload both pages</button>
+<p class="note">Tap the button. The left page blinks its default white canvas before the dark page arrives (simulated); the right page, whose head has &lt;meta name="color-scheme" content="dark light"&gt; before any CSS, stays dark. MDN: the tag helps prevent unwanted screen flashes during the page load.</p>`,
+    js: `function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); }`,
+  },
 };
