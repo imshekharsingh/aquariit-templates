@@ -158,3 +158,8 @@ Format (at most 6 lines):
 - Done: only one reel in captions.json for 22 Nov (web showreel-44-darkflash; no tech or Turns Out entry). The daily run had not dispatched its render: the critic dispatched render 1 (run 44991053925). Viewer questions all pass on the scene stills; voice, PACE, sound and SPLIT pass on the render; Output QA FAIL on DEMO (colourfulness 29 < 32) and FOCUS (4 hues at 10.2-10.8 s). Fix: berry without its violet and rows at 62% saturation, set in the scene (kit untouched); local DEMO 38, FOCUS 2-3 hues on every frame. design/critic.md question 37.
 - Left: after the merge, render 2 (the last allowed, Showreel config scripts/explainer/darkflash.json), then item 13 and item 20 + ENHANCE in the review file (this session does it). No tech reel was built for 22 Nov.
 - For the other account: read the FOCUS hue count on every frame of its window, not only look.py's two samples; keep demo rows at 55%+ saturation on a dark world.
+
+## 2026-11-22 12:55 IST · claude/critic-2026-11-22-r2 · reel critic verdict (22 Nov)
+- Done: web showreel-44-darkflash render 2 (run 44995244702): DEMO fixed (40), FOCUS still FAIL on subject vs rest chroma (49 vs 53); every other Output QA line and every viewer question pass. Item 13 FAIL, item 20 CRITIC: NOT READY (cap of 2 renders reached), critic advice: safe to post as is; ENHANCE line written. Owner asked in Needs you (darkflash-post). critic.md 37 extended.
+- Left: the owner decides post-as-is or a third render (fix: BEFORE rows back to 42% during the split). No tech or Turns Out reel for 22 Nov.
+- For the other account: raise colour on the subject only when fixing DEMO; FOCUS compares the subject with the rest of the demo.
