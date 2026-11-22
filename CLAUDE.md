@@ -13,7 +13,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - Sessions, scheduled tasks, usage and token budget, working with the owner: **design/runbook-studio.md**
 - Work log (one entry per session that changes the repo): **design/handoff-log.md** (the second account was closed on 22 Nov 2026)
 - Web: design/webin20sec.md (plan, series, craft bar), design/rules-web.md (gate + "Channel brief")
-- Tech: design/rules-tech.md (gate + "Channel brief": gadgets for brand collabs, brand rules, India/global mix)
+- Tech: design/tech-direction.md (the new look, proposal 22 Nov), design/tech-research-2026-11-22.md, design/rules-tech.md (gate + "Channel brief": gadgets for brand collabs, brand rules, India/global mix)
 - Turns Out: **design/c3-plan.md** (section 0, design series from 21 Nov: read first), design/channel3.md ("Channel brief" + toolkits), design/rules-c3.md (gate)
 - Gates: design/mandatory.md, design/critic.md, design/owner-feedback.md, design/safety.md, design/targets.md
 - Learning: design/playbook.md, design/experiments.md, design/improvements.md, design/references.md, design/craft-log.md, design/topics.md, design/todo.md

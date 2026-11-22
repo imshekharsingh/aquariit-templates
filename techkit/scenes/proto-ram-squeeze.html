@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>proto ram-squeeze</title>
+<!-- @techin20sec direction prototype (22 Nov 2026, design/tech-direction.md): the first 6 s of "AI is eating your phone's memory".
+     Not a reel: no voice, no captions.json entry, not wired to make.py. Pure window.render(t), seeded, one canvas, code-drawn.
+     Shot A 0-2.75 s: hero, phone in x-ray, memory chips lift out and fly up, the big number counts 8 GB -> 4 GB.
+     Move 2.75-3.65 s: rise and pull out (temporal blur). Shot B 3.65-6 s: wide, the phone small, chips from everywhere stream into an AI server wall. -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#07080c}
+canvas{position:absolute;left:0;top:0;width:1080px;height:1920px}
+</style></head><body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+(() => {
+const W = 1080, H = 1920, DUR = 6;
+const INK = '#07080c', SIG = '#38e1ff', HEAT = '#ffae3d';
+const cv = document.getElementById('c'), out = cv.getContext('2d');
+const off = document.createElement('canvas'); off.width = W; off.height = H; const g = off.getContext('2d');
+
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, u) => a + (b - a) * u;
+const ease = (u) => (u = clamp(u), u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+const eout = (u) => 1 - Math.pow(1 - clamp(u), 3);
+const ein = (u, p = 2.4) => Math.pow(clamp(u), p);
+function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+
+// ---------- world layout ----------
+const PH = { x: 160, y: 560, w: 760, h: 1540, r: 118 };          // the phone (world units = screen px in shot A)
+const COLS = [370, 710], ROWS = [748, 928, 1108, 1288], CW = 262, CH = 140;
+const SLOTS = []; ROWS.forEach((y) => COLS.forEach((x) => SLOTS.push([x, y])));
+// four chips leave, in this order, at these times (the first is already lifting at frame 0)
+const LEAVE = [[2, -0.8], [5, 0.2], [1, 0.8], [6, 1.4]];
+const INTAKE = { x: 540, y: -501 };
+const RACK = { x0: -610, x1: 1690, y0: -2900, y1: -501 };
+
+function cam(t) {
+  if (t < 2.75) return { s: 1 + 0.035 * (t / 2.75), cx: 540, cy: 960 - 30 * (t / 2.75) };
+  if (t < 3.65) { const e = ease((t - 2.75) / 0.9); return { s: Math.exp(lerp(Math.log(1.035), Math.log(0.42), e)), cx: 540, cy: lerp(930, -130, e) }; }
+  const u = clamp((t - 3.65) / 2.35); return { s: 0.42 + 0.035 * eout(u), cx: 540, cy: -130 - 50 * eout(u) };
+}
+
+// chip flight: lift 0.35 s, then accelerate to the server intake over 1.55 s
+function flight(j, t) {
+  const [slot, t0] = LEAVE[j], [x0, y0] = SLOTS[slot];
+  const lift = eout((t - t0) / 0.35), u = clamp((t - t0 - 0.35) / 1.5), p = ein(u, 2.1);
+  const tx = x0 < 540 ? 250 : 830, ty = INTAKE.y - 60;
+  const cx = x0 < 540 ? -140 : 1220, cy = y0 - 420;
+  const q = 1 - p, x = q * q * x0 + 2 * q * p * cx + p * p * tx, y = q * q * (y0 - 26 * lift) + 2 * q * p * cy + p * p * ty;
+  return { x, y, lift, u, p, rot: (x0 < 540 ? -1 : 1) * 0.35 * Math.sin(p * Math.PI) + 0.05 * lift, sc: (1 + 0.14 * lift) * (1 - 0.55 * p), done: u >= 1 };
+}
+const leftAt = (j) => LEAVE[j][1] + 0.35 + 0.5;                       // the number ticks when the chip has cleared the phone
+const count = (t) => 8 - LEAVE.filter((_, j) => t >= leftAt(j)).length;
+
+// ---------- drawing ----------
+function chip(c, x, y, sc, rot, glow, alpha = 1, rimW = 3) {
+  c.save(); c.translate(x, y); c.rotate(rot); c.scale(sc, sc); c.globalAlpha = alpha;
+  const w = CW, h = CH;
+  // pins (silver) along the long sides
+  c.fillStyle = '#8d939c';
+  for (let i = 0; i < 13; i++) { const px = -w / 2 + 22 + i * ((w - 44) / 12) - 4; c.fillRect(px, -h / 2 - 12, 8, 14); c.fillRect(px, h / 2 - 2, 8, 14); }
+  // shadow + body
+  c.shadowColor = 'rgba(0,0,0,.75)'; c.shadowBlur = 18 + 50 * glow; c.shadowOffsetY = 10 + 34 * glow;
+  rr(c, -w / 2, -h / 2, w, h, 12); const bg = c.createLinearGradient(0, -h / 2, 0, h / 2); bg.addColorStop(0, '#22262e'); bg.addColorStop(.18, '#14171c'); bg.addColorStop(1, '#0a0b0e');
+  c.fillStyle = bg; c.fill(); c.shadowColor = 'transparent';
+  // signal rim (memory = cyan)
+  c.lineWidth = rimW; c.strokeStyle = `rgba(56,225,255,${0.35 + 0.5 * glow})`; c.stroke();
+  if (rimW > 3) { c.globalCompositeOperation = 'lighter'; c.fillStyle = 'rgba(56,225,255,.16)'; c.fill(); c.globalCompositeOperation = 'source-over'; }
+  rr(c, -w / 2 + 3, -h / 2 + 3, w - 6, h * 0.42, 9); const hi = c.createLinearGradient(0, -h / 2, 0, 0); hi.addColorStop(0, 'rgba(255,255,255,.10)'); hi.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = hi; c.fill();
+  // laser marking + pin-1 dot
+  c.fillStyle = '#4c525c'; c.beginPath(); c.arc(-w / 2 + 22, -h / 2 + 22, 6, 0, 7); c.fill();
+  c.font = '600 22px "JetBrains Mono", monospace'; c.textAlign = 'left'; c.fillStyle = '#5d646f';
+  c.fillText('LPDDR5X', -w / 2 + 44, -6); c.font = '500 18px "JetBrains Mono", monospace'; c.fillStyle = '#454b55'; c.fillText('8Gb  x64  2026', -w / 2 + 44, 24);
+  c.restore();
+}
+
+function phone(c, t, sB) {
+  const { x, y, w, h, r } = PH;
+  // key light behind the phone
+  const kl = c.createRadialGradient(540, 980, 60, 540, 980, 1100); kl.addColorStop(0, 'rgba(120,170,210,.16)'); kl.addColorStop(1, 'rgba(120,170,210,0)'); c.fillStyle = kl; c.fillRect(-700, -200, 2500, 2400);
+  // body shadow
+  c.save(); c.shadowColor = 'rgba(0,0,0,.8)'; c.shadowBlur = 80; c.shadowOffsetY = 40; rr(c, x, y, w, h, r); c.fillStyle = '#16181d'; c.fill(); c.restore();
+  // metal rim
+  rr(c, x, y, w, h, r); const rim = c.createLinearGradient(x, 0, x + w, 0);
+  rim.addColorStop(0, '#2b2f36'); rim.addColorStop(.06, '#9aa1ab'); rim.addColorStop(.12, '#3a3f47'); rim.addColorStop(.88, '#30343b'); rim.addColorStop(.95, '#b9c0c9'); rim.addColorStop(1, '#2a2d33');
+  c.fillStyle = rim; c.fill();
+  // side buttons
+  c.fillStyle = '#5c626b'; rr(c, x + w - 2, y + 300, 9, 150, 4); c.fill(); rr(c, x + w - 2, y + 490, 9, 90, 4); c.fill();
+  // glass
+  const gx = x + 16, gy = y + 16, gw = w - 32, gh = h - 32;
+  rr(c, gx, gy, gw, gh, r - 14); c.fillStyle = '#040507'; c.fill();
+  c.save(); rr(c, gx, gy, gw, gh, r - 14); c.clip();
+  // x-ray board seen through the glass
+  const bx = gx + 40, by = gy + 82, bw = gw - 80, bh = 900;
+  rr(c, bx, by, bw, bh, 34); c.fillStyle = '#0e1116'; c.fill(); c.lineWidth = 2; c.strokeStyle = 'rgba(120,140,160,.18)'; c.stroke();
+  // traces: thin lines from each slot to the spine, a soft cyan pulse running along them
+  c.lineWidth = 2.5;
+  SLOTS.forEach(([sx, sy], i) => {
+    const toward = sx < 540 ? sx + CW / 2 : sx - CW / 2;
+    for (let k = -2; k <= 2; k++) { c.strokeStyle = 'rgba(140,160,180,.16)'; c.beginPath(); c.moveTo(toward, sy + k * 16); c.lineTo(540 + (sx < 540 ? -14 : 14), sy + k * 16 + (sx < 540 ? 6 : -6)); c.stroke(); }
+  });
+  c.strokeStyle = 'rgba(140,160,180,.2)'; c.lineWidth = 4; c.beginPath(); c.moveTo(540, by + 40); c.lineTo(540, by + bh - 40); c.stroke();
+  // pulse on the spine (memory traffic)
+  const pp = (t * 0.9) % 1, py = lerp(by + 40, by + bh - 40, pp);
+  const pg = c.createLinearGradient(0, py - 120, 0, py + 20); pg.addColorStop(0, 'rgba(56,225,255,0)'); pg.addColorStop(1, 'rgba(56,225,255,.75)');
+  c.strokeStyle = pg; c.lineWidth = 4; c.beginPath(); c.moveTo(540, Math.max(by + 40, py - 120)); c.lineTo(540, py); c.stroke();
+  // empty sockets (where chips left): pads
+  const gone = new Set(LEAVE.filter((_, j) => t >= LEAVE[j][1]).map(([s]) => s));
+  SLOTS.forEach(([sx, sy], i) => {
+    if (!gone.has(i)) return;
+    c.fillStyle = 'rgba(150,160,175,.10)'; rr(c, sx - CW / 2, sy - CH / 2, CW, CH, 12); c.fill();
+    c.setLineDash([10, 9]); c.lineWidth = 2; c.strokeStyle = 'rgba(160,170,185,.35)'; c.stroke(); c.setLineDash([]);
+    c.fillStyle = 'rgba(150,158,170,.35)'; for (let k = 0; k < 13; k++) { const px = sx - CW / 2 + 22 + k * ((CW - 44) / 12) - 4; c.fillRect(px, sy - CH / 2 - 10, 8, 10); c.fillRect(px, sy + CH / 2, 8, 10); }
+  });
+  // chips still in place
+  SLOTS.forEach(([sx, sy], i) => { if (!gone.has(i)) chip(c, sx, sy, 1, 0, 0.0); });
+  // under-glass lower half: battery outline, quiet
+  rr(c, bx, by + bh + 40, bw, 520, 34); c.lineWidth = 2; c.strokeStyle = 'rgba(120,140,160,.14)'; c.stroke();
+  // glass reflection (static, top-left)
+  const rf = c.createLinearGradient(gx, gy, gx + gw * .7, gy + gh * .35); rf.addColorStop(0, 'rgba(255,255,255,.07)'); rf.addColorStop(.5, 'rgba(255,255,255,.015)'); rf.addColorStop(.5001, 'rgba(255,255,255,0)');
+  c.fillStyle = rf; c.fillRect(gx, gy, gw, gh);
+  c.restore();
+  // punch-hole camera
+  c.fillStyle = '#000'; c.beginPath(); c.arc(540, gy + 40, 17, 0, 7); c.fill(); c.strokeStyle = '#1e2229'; c.lineWidth = 3; c.stroke();
+  c.fillStyle = 'rgba(80,110,150,.5)'; c.beginPath(); c.arc(535, gy + 35, 5, 0, 7); c.fill();
+}
+
+function trail(c, j, t) {
+  const f = flight(j, t); if (t < LEAVE[j][1] || f.done) return;
+  for (let k = 18; k >= 1; k--) {
+    const b = flight(j, t - k * 0.011); if (b.u <= 0) continue;
+    c.save(); c.globalCompositeOperation = 'lighter'; c.globalAlpha = 0.05 * (1 - k / 19) * clamp(f.u * 4);
+    c.translate(b.x, b.y); c.rotate(b.rot); c.scale(b.sc, b.sc); rr(c, -CW / 2, -CH / 2, CW, CH, 12); c.fillStyle = HEAT; c.fill(); c.restore();
+  }
+}
+
+// AI server wall: a centre rack face-on and two side racks receding (bilinear quads), blades, LEDs, a glowing intake
+const LED = []; { const R = rng(7); for (let i = 0; i < 400; i++) LED.push([R(), 0.6 + R() * 2.4, R()]); }
+const WALLS = [
+  { q: [[-1000, -3300], [-60, -2900], [-60, -501], [-1000, -60]], side: 1 },
+  { q: [[1140, -2900], [2080, -3300], [2080, -60], [1140, -501]], side: 1 },
+  { q: [[0, -2900], [1080, -2900], [1080, -501], [0, -501]], side: 0 },
+];
+function mp(Q, u, v) { const tx = lerp(Q[0][0], Q[1][0], u), ty = lerp(Q[0][1], Q[1][1], u), bx = lerp(Q[3][0], Q[2][0], u), by = lerp(Q[3][1], Q[2][1], u); return [lerp(tx, bx, v), lerp(ty, by, v)]; }
+function quad(c, Q, u0, v0, u1, v1) { const a = mp(Q, u0, v0), b = mp(Q, u1, v0), d = mp(Q, u1, v1), e = mp(Q, u0, v1); c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.lineTo(d[0], d[1]); c.lineTo(e[0], e[1]); c.closePath(); }
+function servers(c, t, vis) {
+  if (vis <= 0) return;
+  c.save(); c.globalAlpha = vis;
+  const hg = c.createRadialGradient(540, -700, 100, 540, -700, 2200); hg.addColorStop(0, 'rgba(255,174,61,.34)'); hg.addColorStop(.45, 'rgba(255,140,40,.09)'); hg.addColorStop(1, 'rgba(255,140,40,0)');
+  c.fillStyle = hg; c.fillRect(-1800, -3300, 4700, 4200);
+  // floor glow under the intake
+  c.save(); c.translate(540, -380); c.scale(1, 0.22); const fg = c.createRadialGradient(0, 0, 0, 0, 0, 1300); fg.addColorStop(0, 'rgba(255,174,61,.45)'); fg.addColorStop(1, 'rgba(255,174,61,0)'); c.fillStyle = fg; c.beginPath(); c.arc(0, 0, 1300, 0, 7); c.fill(); c.restore();
+  WALLS.forEach((Wl, k) => {
+    const Q = Wl.q;
+    quad(c, Q, 0, 0, 1, 1); const cg = c.createLinearGradient(Q[0][0], 0, Q[1][0], 0);
+    if (Wl.side) { cg.addColorStop(0, k === 0 ? '#0a0b0e' : '#191b21'); cg.addColorStop(1, k === 0 ? '#191b21' : '#0a0b0e'); } else { cg.addColorStop(0, '#111318'); cg.addColorStop(.5, '#1b1e24'); cg.addColorStop(1, '#111318'); }
+    c.fillStyle = cg; c.fill(); c.lineWidth = 10; c.strokeStyle = '#2e323a'; c.stroke();
+    const N = 22, vb = 0.86 / N;
+    for (let n = 0; n < N; n++) {
+      const v0 = 0.02 + n * vb, v1 = v0 + vb * 0.8;
+      quad(c, Q, 0.04, v0, 0.96, v1); c.fillStyle = Wl.side ? '#16181d' : '#1d2026'; c.fill();
+      c.fillStyle = '#2a2e35'; for (let vv = 0; vv < 16; vv++) { quad(c, Q, 0.08 + vv * 0.026, v0 + vb * 0.18, 0.08 + vv * 0.026 + 0.009, v1 - vb * 0.18); c.fill(); }
+      const L = LED[(k * 40 + n) % LED.length]; const fill = clamp(0.3 + 0.5 * L[2] + 0.2 * Math.sin(t * L[1] + L[0] * 6));
+      quad(c, Q, 0.58, v0 + vb * 0.28, 0.80, v1 - vb * 0.28); c.fillStyle = '#0a0b0e'; c.fill();
+      quad(c, Q, 0.58, v0 + vb * 0.28, 0.58 + 0.22 * fill, v1 - vb * 0.28); c.fillStyle = 'rgba(56,225,255,.9)'; c.fill();
+      for (let d = 0; d < 3; d++) { const q = LED[(k * 97 + n * 3 + d) % LED.length]; const on = Math.sin(t * (4 + q[1] * 5) + q[0] * 40) > 0.1;
+        const [lx, ly] = mp(Q, 0.85 + d * 0.035, (v0 + v1) / 2), hh = Math.abs(mp(Q, 0.85, v1)[1] - mp(Q, 0.85, v0)[1]);
+        c.fillStyle = on ? HEAT : '#3a2a14'; c.beginPath(); c.arc(lx, ly, hh * 0.13, 0, 7); c.fill(); }
+    }
+    // intake mouth at the foot of every rack
+    quad(c, Q, 0.05, 0.905, 0.95, 0.975); c.fillStyle = '#050506'; c.fill();
+    const a = mp(Q, .5, .905), b = mp(Q, .5, .975); const ig = c.createLinearGradient(0, a[1], 0, b[1]); ig.addColorStop(0, 'rgba(255,174,61,0)'); ig.addColorStop(1, `rgba(255,196,100,${0.75 + 0.2 * Math.sin(t * 9 + k)})`);
+    c.fillStyle = ig; quad(c, Q, 0.05, 0.905, 0.95, 0.975); c.fill();
+  });
+  // top fade into the dark (the wall keeps going)
+  const tf = c.createLinearGradient(0, -1420, 0, -1060); tf.addColorStop(0, INK); tf.addColorStop(1, 'rgba(7,8,12,0)');
+  c.fillStyle = tf; c.fillRect(-1800, -3400, 4700, 2280);
+  c.restore();
+}
+
+// the stream: memory from everywhere (other phones, laptops, off-frame) converging on the intake
+const STREAM = []; { const R = rng(21); for (let i = 0; i < 46; i++) STREAM.push({ sx: lerp(-1300, 2380, R()), sy: lerp(150, 950, R()), tx: lerp(-200, 1280, R()), seed: R(), sp: 0.42 + R() * 0.25, rot: (R() - .5) * 0.8 }); }
+function stream(c, t) {
+  const a = clamp((t - 2.95) / 0.5); if (a <= 0) return;
+  for (const s of STREAM) {
+    const p = (((t - 2.9) * s.sp + s.seed) % 1 + 1) % 1, q = 1 - p, ty = RACK.y1 - 70;
+    const cx = lerp(s.sx, s.tx, .5), cy = lerp(s.sy, ty, .15);
+    const x = q * q * s.sx + 2 * q * p * cx + p * p * s.tx, y = q * q * s.sy + 2 * q * p * cy + p * p * ty;
+    const fade = clamp(p * 6) * clamp((1 - p) * 10) * a;
+    chip(c, x, y, 0.8 * (1 - 0.4 * p), s.rot * q, 0.9, fade, 9);
+  }
+}
+
+// ---------- screen-space type ----------
+function bigNumber(c, t) {
+  const a = clamp(1 - (t - 2.6) / 0.35); if (a <= 0) return;
+  const n = count(t); const lastChange = Math.max(-9, ...LEAVE.map((_, j) => leftAt(j)).filter((x) => x <= t));
+  const k = eout((t - lastChange) / 0.28);
+  c.save(); c.globalAlpha = a; c.translate(0, -60 * (1 - a));
+  c.textBaseline = 'alphabetic'; c.textAlign = 'right';
+  c.font = '900 300px "Inter Display", Inter, sans-serif';
+  const digitX = 600, base = 470;
+  if (k < 1) { c.globalAlpha = a * clamp(1 - k * 2.2); c.fillStyle = '#f4f6f8'; c.fillText(String(n + 1), digitX, base - 50 * k); }
+  c.globalAlpha = a * clamp(k * 1.6); c.fillStyle = t - lastChange < 0.6 ? HEAT : '#f4f6f8'; c.fillText(String(n), digitX, base + 50 * (1 - k));
+  c.globalAlpha = a; c.textAlign = 'left'; c.fillStyle = '#f4f6f8'; c.font = '800 150px "Inter Display", Inter, sans-serif'; c.fillText('GB', digitX + 26, base);
+  c.restore();
+}
+function bigWord(c, t) {
+  const u = clamp((t - 3.45) / 0.4); if (u <= 0) return;
+  const s = lerp(1.25, 1, eout(u));
+  c.save(); c.globalAlpha = clamp(u * 1.6); c.translate(540, 350); c.scale(s, s);
+  c.textAlign = 'center'; c.textBaseline = 'alphabetic'; c.font = '900 260px "Inter Display", Inter, sans-serif';
+  c.shadowColor = 'rgba(255,150,40,.55)'; c.shadowBlur = 60; c.fillStyle = HEAT; c.fillText('AI', 0, 0); c.restore();
+}
+const CAPS = [[0, 2.85, ['Your next phone may', 'have less memory.']], [2.85, 9, ['Because AI servers', 'are buying it all.']]];
+function captions(c, t) {
+  const cap = CAPS.find(([a, b]) => t >= a && t < b); if (!cap) return;
+  const u = cap[0] === 0 ? 1 : eout((t - cap[0]) / 0.25);
+  c.save(); c.globalAlpha = u; c.textAlign = 'center'; c.font = '700 54px Inter, sans-serif';
+  c.shadowColor = 'rgba(0,0,0,.9)'; c.shadowBlur = 24; c.fillStyle = '#f4f6f8';
+  cap[2].forEach((l, i) => c.fillText(l, 540, 1452 + i * 68 + 14 * (1 - u)));
+  c.restore();
+}
+
+function drawFrame(c, t) {
+  c.setTransform(1, 0, 0, 1, 0, 0); c.fillStyle = INK; c.fillRect(0, 0, W, H);
+  const k = cam(t); c.setTransform(k.s, 0, 0, k.s, 540 - k.cx * k.s, 960 - k.cy * k.s);
+  // heat glow from above already pulling in shot A
+  const pull = clamp((t - 0.2) / 2.2) * (t < 3.6 ? 1 : 0.6);
+  if (pull > 0) { const hg = c.createRadialGradient(540, -260, 40, 540, -260, 900); hg.addColorStop(0, `rgba(255,174,61,${0.42 * pull})`); hg.addColorStop(1, 'rgba(255,174,61,0)'); c.fillStyle = hg; c.fillRect(-500, -1300, 2100, 1900); }
+  servers(c, t, clamp((t - 2.7) / 0.6));
+  stream(c, t);
+  phone(c, t);
+  LEAVE.forEach((_, j) => trail(c, j, t));
+  LEAVE.forEach((_, j) => { if (t >= LEAVE[j][1]) { const f = flight(j, t); if (!f.done) chip(c, f.x, f.y, f.sc, f.rot, f.lift); } });
+  // screen space
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  const vg = c.createRadialGradient(540, 900, 500, 540, 900, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.55)'); c.fillStyle = vg; c.fillRect(0, 0, W, H);
+  bigNumber(c, t); bigWord(c, t); captions(c, t);
+}
+
+// temporal blur: average sub-frames across a 1/60 s shutter; more during the fast camera move
+window.render = (t) => {
+  const fast = t > 2.8 && t < 3.6, K = fast ? 8 : 4, sh = fast ? 1 / 40 : 1 / 90;
+  out.setTransform(1, 0, 0, 1, 0, 0); out.globalAlpha = 1;
+  for (let i = 0; i < K; i++) { drawFrame(g, Math.max(0, t - sh * (i / K))); out.globalAlpha = 1 / (i + 1); out.drawImage(off, 0, 0); }
+  out.globalAlpha = 1;
+};
+window.DUR = DUR;
+window.render(0);
+})();
+</script>
+</body></html>
