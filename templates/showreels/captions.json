@@ -1706,6 +1706,8 @@
    "#techtips",
    "#techexplained",
    "#gadgets"
-  ]
+  ],
+  "hidden": true,
+  "slotNote": "replaced by the reset reel, owner 22 Nov"
  }
 }
