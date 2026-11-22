@@ -68,5 +68,7 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 
 40. (22 Nov, owner: "no audience pull ... I'm not hooked to my own content") Tech audience pull (rules-tech.md P1-P4): does frame 0-1 s show a picture a stranger has not seen? Does the first line open a question that only the end answers? Does the last frame return to the opening picture so the replay loops? Does the caption ask one easy comment question (and never claim a viewer asked)?
 
+41. (22 Nov, critic, tech heart-green) Freeze every frame of a live chart or trace panel: does its label sit outside the line's range, never struck through by it (15-27 s: "LIGHT BACK" crossed out by the trace for 12 s)? On the end card: is the subject still whole and the payoff plate in the empty lower half, not laid over the subject's body?
+
 ## Item 20 format (owner, 22 Nov 2026)
 The app's Journey shows only the start of the critic line to the owner, so write it plain first: `CRITIC: NOT READY: <one plain sentence the owner understands: what is wrong, and where in seconds>` and only then `Detail: ...` with question numbers, frames and the fix. No question numbers in the first sentence. Example: `CRITIC: NOT READY: the "10:00" time prints over the BEFORE label at 11-13 s. Detail: questions 2 and 35, ...`. `CRITIC: READY` needs no sentence. The app shows the first sentence (up to "Detail:") and the rest under "More"; older files without "Detail:" still work.
