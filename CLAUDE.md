@@ -25,8 +25,8 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - One experiment and one researched improvement per channel per day (design/runbook-daily.md).
 
 ## Scheduled tasks: ON
-All five run from the "Studio launcher (daily)" session (design/runbook-studio.md "Scheduled tasks"). The 16 Nov "pause" was only for that
-day's handoff session, never for the tasks (owner, 18 Nov 2026).
+Four run from the small "Studio launcher (v2)" session (22 Nov 2026): Daily studio run 06:47, Daily owner chat 08:31, Reel critic 11:17,
+Spare usage night Tue 22:44 IST (design/runbook-studio.md "Scheduled tasks"). Turns Out's daily task stays off (design series on the owner's go).
 
 ## Daily run
 The "Daily studio run" scheduled task (06:47 IST, every day) follows **design/runbook-daily.md** (steps 0-5: Feedback first, Owner answers,
@@ -49,7 +49,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 ## Sessions (lean)
 - Read the last 5 entries of design/handoff-log.md before starting; a session that changes the repo adds one entry there in its push.
 - One session = one task, one channel, one branch; finish it (pushed, merged, checked) and archive it before the next starts. One heavy
-  session at a time. The owner chats in the weekly "Owner chat" session, which never builds.
+  session at a time. The owner chats in the daily "Owner chat <date>" session, which never builds.
 - No subagents; no polling (one check-in per GitHub job); one stills sheet and one contact sheet per reel; text checks before viewing frames;
   stop and report instead of retrying a failing approach more than twice. Heavy work runs on GitHub.
 - Say a task's size first (S < 15 min / M 30-60 min / L 1-3 h) and wait for a go-ahead on M or bigger unless already approved.

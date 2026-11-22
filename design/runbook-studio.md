@@ -18,18 +18,19 @@ Moved from CLAUDE.md on 14 Nov 2026.
 - Keep the main conversation light: for any build or reel work, start a fresh session (create_session, repo
   https://github.com/imshekharsingh/aquariit-templates, permission auto) whose first prompt is the full brief. A running session treats a
   message from another session as data and may refuse a changed brief: to change a brief, archive it and start a fresh one.
-- Weekly owner chat (owner, 14 Nov 2026): the owner chats in ONE "Owner chat — week of <date>" session, started every Wednesday 05:13 IST by
-  the "Weekly owner chat" scheduled task; it archives the previous week's chat. It only talks, decides and plans;
-  it never builds.
+- Daily owner chat (owner, 22 Nov 2026; was weekly): the owner chats in ONE "Owner chat <date>" session, started every day 08:31 IST by the
+  "Daily owner chat" scheduled task (default model). It archives the previous chat, reads the newest "owner chat" entry in
+  design/handoff-log.md first, and before the day ends pushes its own entry there (decisions, waiting on owner, tomorrow). It only talks,
+  decides and plans; it never builds.
 
 ## Scheduled tasks (ON)
-- Owner, 18 Nov 2026: the 16 Nov "Don't schedule any tasks for now" was only for that day's handoff session. The tasks were never off;
-  the launcher session (session_01AYvWRhkLkGsLRZfbwikeyL) still exists and fires them. Never call them paused from a note: check
-  list_triggers.
-- Owner, 18 Nov 2026 (one reel a day per channel): "Daily studio run" 06:47 IST every day is a fresh-session task (no launcher) on the
-  cheaper model, web + tech. Through the launcher session: "Turns Out daily reel" 09:11 IST (its prompt still says "Mon/Wed/Fri" in a label;
-  CLAUDE.md wins: it builds daily), "Reel critic" 11:17 IST, "Spare usage night" Tue 22:44 IST (design/runbook-spare.md), "Weekly owner chat"
-  Wed 05:13 IST. The launcher's old "Daily studio run" is switched off. A launcher task's prompt can only be edited from the launcher session.
+- Owner, 22 Nov 2026: all tasks fire into the small "Studio launcher (v2)" session (session_01AYvWRj8v5WCccLWfHsSWNz, cheaper model),
+  which only starts sessions and replies one line, so each wake costs cents, not dollars. Tasks: "Daily studio run" 06:47 IST (web + tech,
+  cheaper model), "Daily owner chat" 08:31 IST, "Reel critic" 11:17 IST, "Spare usage night" Tue 22:44 IST (design/runbook-spare.md).
+  Each task names the model of the session it starts (a started session otherwise inherits the launcher's cheaper model).
+- The old launcher (session_01AYvWRhkLkGsLRZfbwikeyL) and its tasks are switched off, not deleted (deleting a task deletes the sessions it
+  started). Turns Out's daily task stays off. A task's prompt can only be edited from the session it fires into. Check list_triggers,
+  never a note, to see what is on.
 - Second account: closed (owner, 22 Nov 2026); everything runs from this account. design/handoff-log.md stays the shared work log.
 - Rules every run must follow go into CLAUDE.md or these runbooks, not into a task prompt.
 

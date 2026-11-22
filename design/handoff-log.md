@@ -13,6 +13,10 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-22 13:50 IST · main · owner chat: small launcher, daily owner chat, cleanup
+- Done: new "Studio launcher (v2)" session (cheaper model) runs the tasks: Daily studio 06:47, Daily owner chat 08:31 (new, replaces weekly), Reel critic 11:17, Spare night Tue 22:44. Old launcher tasks switched off. Branch cleanup workflow added (.github/workflows/branch-cleanup.yml). Stale 14 Nov critic session archived.
+- Left: darkflash (web) and cold-shutdown (tech) post-as-is decisions are with the owner. Journey plan steps 2-5 next (hard/soft QA fails first).
+- For the other account: none.
 ## 2026-11-22 12:15 IST · main · handoff closed
 - Done: owner: no more second-account sessions; design/handoff.md marked CLOSED, CLAUDE.md and runbook-studio.md updated. Its work (Turns Out design series, 14 onGo reels, References inbox, Sources workflow, app desktop layout, Journey cache) is now owned here.
 - Left: Turns Out builds stay on the owner's go (CLAUDE.md); the 21 Nov web and tech reels were NOT READY (owner decides).

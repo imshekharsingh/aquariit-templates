@@ -1,0 +1,38 @@
+name: Branch cleanup
+
+# Owner, 22 Nov 2026: keep the repo free of stale branches. Sessions cannot delete remote branches, so they name them here.
+# Run by hand with the branch names. It never touches main, protected names, or a branch with an open pull request,
+# and it prints each deleted branch's last commit so it can be restored (git push origin <sha>:refs/heads/<name>).
+on:
+  workflow_dispatch:
+    inputs:
+      branches:
+        description: 'Branch names to delete, separated by spaces (claude/, wip/ or template/ only)'
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      BRANCHES: ${{ inputs.branches }}
+    steps:
+      - name: Delete the named stale branches
+        run: |
+          for b in $BRANCHES; do
+            case "$b" in
+              claude/*|wip/*|template/*) ;;
+              *) echo "SKIP $b: only claude/, wip/ or template/ branches"; continue ;;
+            esac
+            if [ -n "$(gh pr list --repo "$REPO" --head "$b" --state open --json number -q '.[0].number')" ]; then
+              echo "SKIP $b: it has an open pull request"; continue
+            fi
+            tip=$(gh api "repos/$REPO/git/ref/heads/$b" -q .object.sha 2>/dev/null || true)
+            if [ -z "$tip" ]; then echo "GONE $b"; continue; fi
+            gh api -X DELETE "repos/$REPO/git/refs/heads/$b" && echo "DELETED $b (last commit $tip)"
+          done
