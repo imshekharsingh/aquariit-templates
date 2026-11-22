@@ -17,6 +17,14 @@ Format (at most 6 lines):
 - Done: techkit/scenes/ai-memory.html: 1.5x supersampling, depth of field and rack focus, sparks and slow-mo on the chip rip, laser slicing the board on CUT, amber pulse through the racks on AI, slams with camera shake, light sweeps, finer board, bevelled chips, cables, ordered chip streams, all three phones whole with labels. techkit/make.py: a topic may set "fps": 30 (own motion blur, no frame blend), encode CRF 16. Preflight: SAFE ok, OVERLAP none, FLOW cuts 0 / dead none / 81%.
 - Left: the ONE render waits for the owner's OK on the preview page (stills + full-res clip, no voice locally); then item 13 + Output QA.
 
+## 2026-11-23 01:25 IST · main · owner chat: reference reel logged
+- Done: owner's "60-30-10 colour rule" reference reel studied; techniques in design/references.md (R-ref 23 Nov): split screen, live transformation, stacking data cards, sensory colour background, ~1 s pace, comment-keyword CTA.
+- Left: owner decisions on AI-generated imagery and a DM auto-reply for comment-keyword CTAs; build split screen + live transformation into the web/Turns Out kits.
+- For the other account: none.
+## 2026-11-23 00:55 IST · main · owner chat (late): two previews waiting on the owner
+- Tech reel "Your next phone may have less memory" (ai-memory, postOn 23 Nov 13:00): session_01AYvWRjY38sTbizkhdraaeY is making a full-res drama/detail pass (owner: "not dramatic or detailed, quality feels low"); page https://claude.ai/artifact/RP2Hjr3sM6MzL7b1Vt5FKi republishes ~01:30 IST. It renders ONLY after the owner's OK: the next owner chat relays it with send_message to that session.
+- App renovation mockups: session_01AYvWRgoCcdR7rXR9CGVFuw (file app-redesign.html shown in that session; publishing needs the owner there). Builds only on the owner's OK.
+- Design plugins installed by the owner do NOT reach cloud sessions; reviews are done by eye.
 ## 2026-11-22 22:30 IST · claude/tech-ai-memory · first reel in the new tech direction (owner's go, size L)
 - Done: design/tech-direction.md "owner approved" (owner chat 22 Nov: "I like this though ... go with your plan"). showreel-tech-ai-memory for 23 Nov 13:00 (xray, phone): techkit/scenes/ai-memory.html in real 3D (three.js r149 MIT in techkit/vendor, inlined by make.py at <!--THREE-->), topic, captions entry, review file (1-12, 14-17 PASS; FLOW cuts 0 / dead none / 87%). Facts read today on TrendForce press pages (environment now allows www.trendforce.com, www.idc.com). Rejected heart-green hidden.
 - Left: the owner OKs the preview page (stills + 540 px clip, no voice: the Kokoro model cannot be fetched here); then ONE render (Tech reel, slug ai-memory), Output QA, item 13, the critic. The installed design skills were not available in this session.
