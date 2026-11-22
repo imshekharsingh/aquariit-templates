@@ -1680,5 +1680,32 @@
    "change": "a page-load topic (the white flash before a dark page) told as one bug story; dynamic before/after in sync, the flash eased not strobed",
    "vs": "median"
   }
+ },
+ "showreel-tech-cold-shutdown": {
+  "channel": "tech",
+  "postOn": "2026-11-22",
+  "postAt": "18:00",
+  "concept": "Kit engine (shared frame), ~40 s, specs decoded, phone, global. Why does your phone die at 30% when it's cold? Frame 0: the 30% cell, a thermometer and the voltage bar; the cold drops the thermometer, the inner-resistance zigzag grows (impedance), the voltage bar sags under the MIN line, the cell shuts down on purpose, then warms back up and recovers; Apple's 0 to 35 C range. Every fact from Apple Support 'iPhone battery and performance' and apple.com/batteries, read 22 Nov 2026",
+  "experiment": {
+   "id": "tech-battery-voltage",
+   "change": "a battery % decoded on the object: the cell shows 30% while its voltage bar sags under a shutdown line as resistance rises in the cold, then recovers on warming; the lower half filled (a gauge row, a temperature stack, a big readout), named words as 40 px+ type above the subtitle band (critic fixes of 21 Nov)",
+   "vs": "median"
+  },
+  "caption": "Why does your phone die at 30% when it's cold? 🥶🔋 The percent is not the problem: the cold is.\n\nApple says a low charge, a higher chemical age or cold temperatures make a lithium-ion battery's impedance (inner resistance) rise. With high impedance the battery's voltage drops further when the phone pulls power, and the electronics need a minimum voltage to work, so the phone can shut down on purpose to protect them, even with charge left. The cold effect is temporary: once the battery warms back up to its normal range, performance returns. Apple says iPhone, iPad and Apple Watch work best at 0° to 35° C (32° to 95° F), and heat above 35° C can permanently damage battery capacity.\n\nSend this to a friend who lives somewhere cold.",
+  "keywords": [
+   "iphone shuts down in cold",
+   "phone dies at 30 percent",
+   "battery impedance explained",
+   "why phone turns off cold weather",
+   "iphone battery cold temperature",
+   "lithium ion battery cold"
+  ],
+  "hashtags": [
+   "#iphone",
+   "#batterylife",
+   "#techtips",
+   "#techexplained",
+   "#gadgets"
+  ]
  }
 }
