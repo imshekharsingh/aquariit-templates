@@ -12,6 +12,11 @@ Format (at most 6 lines):
 ```
 
 
+
+## 2026-11-22 12:15 IST · main · handoff closed
+- Done: owner: no more second-account sessions; design/handoff.md marked CLOSED, CLAUDE.md and runbook-studio.md updated. Its work (Turns Out design series, 14 onGo reels, References inbox, Sources workflow, app desktop layout, Journey cache) is now owned here.
+- Left: Turns Out builds stay on the owner's go (CLAUDE.md); the 21 Nov web and tech reels were NOT READY (owner decides).
+- For the other account: none.
 ## 2026-11-21 16:30 IST · second · Turns Out queue: 10 design reels (design/c3-queue.md)
 - Done: design/c3-queue-sources.json (every queue source, for the Sources workflow: webaim.org, w3.org, nngroup.com and practicaltypography.com are blocked from sessions; #1106). Batch 1: text-on-photo, tap-targets, resume (scenes design/photo.js, thumb.js, resume.js; configs, reviews, captions onGo; say.json CV). Batch 2: line-length, event-poster, all-caps (design/measure.js, group.js, caps.js). Batch 3: line-spacing, grey-text, price-list (leading.js, contrast.js, prices.js). Batch 4: card-margins (card.js). All 10 rendered once, every one OUTPUT QA PASS on render 1 (item 13 in each review file); all in the app's Turns Out list as onGo ("Ready · post when you choose").
 - Left: the Reel critic's item 20 for the 10; the owner picks upload times.
