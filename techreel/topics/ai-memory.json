@@ -1,0 +1,374 @@
+{
+ "slug": "ai-memory",
+ "engine": "kit",
+ "scene": "techkit/scenes/ai-memory.html",
+ "topic": "Your next phone may have less memory: AI servers are buying it first",
+ "format": "xray",
+ "audience": "global",
+ "gadget": "phone",
+ "device": "phone",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.4,
+ "max_end": 32.0,
+ "experiment": {
+  "id": "tech-direction-3d",
+  "change": "the new tech direction (design/tech-direction.md, owner approved 22 Nov): real 3D (three.js, inlined) with lighting and depth, ink + white + cyan + amber only, one bold number or word at a time, 7 distinct shots (x-ray hero, phone lineup, AI server hall, macro on a server memory module, board macro, server corridor, hero loop), a news topic of the month",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Your next phone may have less memory.",
+   "beat": "question",
+   "source": 0
+  },
+  {
+   "text": "TrendForce says budget phones are settling around four gigabytes, mid-range back to eight.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "Why? Memory makers are serving AI servers first.",
+   "beat": "fix",
+   "source": 1
+  },
+  {
+   "text": "Server memory was expected to jump about 90% in one quarter.",
+   "beat": "step",
+   "source": 2
+  },
+  {
+   "text": "Phone memory got pricier too, so makers are cutting gigabytes.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "And the squeeze is expected to last into 2027.",
+   "beat": "surprise",
+   "source": 3
+  },
+  {
+   "text": "Buying a phone, in India or anywhere? Check the RAM first.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "next": [
+   0,
+   "next"
+  ],
+  "less": [
+   0,
+   "less"
+  ],
+  "memory0": [
+   0,
+   "memory"
+  ],
+  "budget": [
+   1,
+   "budget"
+  ],
+  "four": [
+   1,
+   "four"
+  ],
+  "mid": [
+   1,
+   "mid"
+  ],
+  "eight": [
+   1,
+   "eight"
+  ],
+  "why": [
+   2,
+   "why"
+  ],
+  "makers2": [
+   2,
+   "makers"
+  ],
+  "ai": [
+   2,
+   "ai"
+  ],
+  "first": [
+   2,
+   "first"
+  ],
+  "server3": [
+   3,
+   "server"
+  ],
+  "jump": [
+   3,
+   "jump"
+  ],
+  "ninety": [
+   3,
+   "90"
+  ],
+  "quarter": [
+   3,
+   "quarter"
+  ],
+  "phone4": [
+   4,
+   "phone"
+  ],
+  "pricier": [
+   4,
+   "pricier"
+  ],
+  "cutting": [
+   4,
+   "cutting"
+  ],
+  "gigabytes4": [
+   4,
+   "gigabytes"
+  ],
+  "squeeze": [
+   5,
+   "squeeze"
+  ],
+  "last": [
+   5,
+   "last"
+  ],
+  "year": [
+   5,
+   "2027"
+  ],
+  "buying": [
+   6,
+   "buying"
+  ],
+  "india": [
+   6,
+   "india"
+  ],
+  "anywhere": [
+   6,
+   "anywhere"
+  ],
+  "check": [
+   6,
+   "check"
+  ],
+  "ram": [
+   6,
+   "ram"
+  ],
+  "final": [
+   6,
+   "first"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "less",
+   "thud",
+   0.5,
+   0
+  ],
+  [
+   "memory0",
+   "whoosh",
+   0.3,
+   0
+  ],
+  [
+   "budget",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "four",
+   "impact",
+   0.5,
+   -0.2
+  ],
+  [
+   "eight",
+   "pop",
+   0.5,
+   0.2
+  ],
+  [
+   "why",
+   "whoosh",
+   0.4,
+   0
+  ],
+  [
+   "ai",
+   "impact",
+   0.55,
+   0
+  ],
+  [
+   "first",
+   "zaps",
+   0.25,
+   0
+  ],
+  [
+   "server3",
+   "whoosh",
+   0.4,
+   0
+  ],
+  [
+   "ninety",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "quarter",
+   "tick",
+   0.4,
+   0.2
+  ],
+  [
+   "phone4",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "pricier",
+   "blip",
+   0.45,
+   0.2,
+   {
+    "f": 500,
+    "f2": 900
+   }
+  ],
+  [
+   "cutting",
+   "snap",
+   0.55,
+   0
+  ],
+  [
+   "gigabytes4",
+   "thud",
+   0.45,
+   0
+  ],
+  [
+   "squeeze",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "year",
+   "impact",
+   0.55,
+   0
+  ],
+  [
+   "buying",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "check",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "ram",
+   "chime",
+   0.35,
+   0,
+   {
+    "notes": [
+     "E5",
+     "B5"
+    ]
+   }
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.55,
+   0
+  ]
+ ],
+ "post": {
+  "title": "Your next phone may have less memory",
+  "caption": "Your next phone may have LESS memory 📉📱 and AI is the reason.\n\nMemory makers are putting AI servers first. TrendForce (5 Jan 2026) says suppliers are prioritising server applications, which limits supply for everything else; on 2 Feb 2026 it expected server DRAM contract prices to rise about 90% in a single quarter (1Q26), the biggest jump on record, with phone memory (LPDDR4X and LPDDR5X) up about 90% too.\n\nPhones are paying for it. TrendForce (14 May 2026): high-end phones settle on 12GB as 16GB fades, mid-range reverts to 8GB, and entry-level models mostly settle around 4GB. In July it said a server DRAM shortage is already expected for 2027.\n\nBuying a phone soon, in India or anywhere? Check the RAM before the price. How much RAM is in yours? 👇 Send this to the friend who's about to buy one.",
+  "keywords": [
+   "ram shortage 2026",
+   "why phones have less ram",
+   "ai memory shortage",
+   "dram prices 2026",
+   "4gb ram phones",
+   "phone ram explained",
+   "memory chip shortage ai"
+  ],
+  "hashtags": [
+   "#smartphone",
+   "#ram",
+   "#ai",
+   "#techexplained",
+   "#gadgets"
+  ],
+  "sources": [
+   {
+    "url": "https://www.trendforce.com/presscenter/news/20260514-13044.html",
+    "note": "TrendForce, 14 May 2026, Mobile DRAM Contract Prices Continue Rising in 2Q26 (read 22 Nov 2026): 'In the high-end segment, 12GB is becoming the mainstream configuration while 16GB adoption declines. Meanwhile, mid-range devices are reverting to 8GB as the core specification, and entry-level models mostly settle around 4GB.' LPDDR4X ASP +70-75% QoQ, LPDDR5X +78-83% QoQ in 2Q26."
+   },
+   {
+    "url": "https://www.trendforce.com/presscenter/news/20260105-12860.html",
+    "note": "TrendForce, 5 Jan 2026, Memory Makers Prioritize Server Applications, Driving Across-the-Board Price Increases in 1Q26 (read 22 Nov 2026): 'This shift has significantly limited supply in other markets'; 'The global server market is expected to reach its peak in 2026 as North American CSPs speed up investments in AI infrastructure.'"
+   },
+   {
+    "url": "https://www.trendforce.com/presscenter/news/20260202-12911.html",
+    "note": "TrendForce, 2 Feb 2026, Memory Price Outlook for 1Q26 Sharply Upgraded (read 22 Nov 2026): 'Intense competition among buyers for the limited supply is expected to drive server DRAM prices up by around 90% QoQ in 1Q26, marking the largest quarterly increase on record.' 'Contract prices for LPDDR4X and LPDDR5X are both expected to surge by around 90% QoQ in 1Q26.'"
+   },
+   {
+    "url": "https://www.trendforce.com/presscenter/news/20260709-13140.html",
+    "note": "TrendForce, 9 Jul 2026, Server DRAM Contract Prices Expected to Rise 13-18% QoQ in 3Q26 (read 22 Nov 2026): 'Meanwhile, a server DRAM shortage is already anticipated for 2027.' Also 30 Sep 2026 (20260930-13258): 'DRAM supply will remain tight in 2027.'"
+   }
+  ]
+ },
+ "qa": {
+  "sync": [
+   "90%",
+   "2027",
+   "RAM"
+  ]
+ },
+ "say": {
+  "TrendForce": "trend force",
+  "90%": "ninety percent",
+  "2027": "twenty twenty seven",
+  "RAM": "ram"
+ }
+}
