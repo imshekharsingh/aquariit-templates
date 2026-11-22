@@ -194,3 +194,8 @@ Format (at most 6 lines):
 - Done: design/rules-tech.md: the reset section (shot-by-shot table night-mode / screen-120hz vs the last six), Detail bar D1-D8, audience pull P1-P4, four formats X (xray, showdown, quickmyth, indiapick: own look, pacing, length), rotation; K1 / K3 loosened (no-bob / no-loop / one-move-then-hold / still-cover removed; sweeps, hero box and whole-frame wobble still out); retired R0, S1-S8, G1-G14 and the E24 notes to attic/design/rules-tech-2026-11-22.md. Output QA SHEEN fails from 4 sweeps (1-3 warn; the glass sheen made 15). scripts/check.mjs 4e: tech entries from 22 Nov need "format" and "device", no repeat of either on consecutive days, at most one "charging" in 7 days. critic.md 39-40, runbook-daily step 4, owner-feedback line (22 Nov), techkit/README, mandatory.md calibration note. showreel-tech-cold-shutdown hidden ("replaced by the reset reel, owner 22 Nov").
 - Left: Part 2, the reset reel for today (claude/tech-heart-green), its ONE render, item 13, the critic.
 - For the other account: a tech captions entry now needs "format" and "device"; read the day before's before choosing.
+
+## 2026-11-22 · claude/tech-heart-green · tech reset, Part 2: the reset reel
+- Done: showreel-tech-heart-green (xray, wearables, global; Apple Support 120277 read 22 Nov): techkit/scenes/heart-green.js, topic, review file, captions entry (postOn 2026-11-22, postAt 20:30). Local: SAFE ZONE ok, OVERLAP none, FLOW cuts 0 / dead none / continuity 95%; look.py SHEEN 0, HERO 82%.
+- Left: ONE render (Tech reel, slug heart-green) after the merge, Output QA, item 13, the critic.
+- For the other account: a kit close-up beyond 1.5x needs the world clipped under the header (screen y 450+); labels go into clear tissue, not on the watch.
