@@ -98,6 +98,9 @@ window.TOPIC={
   },
   labels(t){
     const q=(a,b,fi=.3,fo=.3)=>win(t,a,b,fi,fo);
+    // the five words Output QA SYNC reads: one word of big type (92 px) high in the hero zone, in from 0.1 s before the voice, held 1.5 s after it
+    const BW5=[['IMPEDANCE',C.imped,PNK],['VOLTAGE',C.volt,COLA],['SHUTS',C.shuts,PNK],['WARMS',C.warms,GRN],['CELSIUS',C.celsius,GRN]];
+    for(const [w,c0,col] of BW5){const a=win(t,c0-.1,c0+1.5,.12,.2);if(a>0)bigText(CX,512,w,92,col,a,col)}
     const c0=q(C.cold0-.1,C.cold0+1.5);if(c0>0)label(TX,TT-18,'COLD',ICE,c0*prog(t,C.cold0-.05,C.cold0+.25),44,'rgba(8,32,44,.94)');
     const R=842,im=q(C.imped-.15,C.resist+.9);if(im>0)pill2(600,R,'IMPEDANCE',PNK,im*prog(t,C.imped-.1,C.imped+.25),48,'#3a1020');
     const vo=q(C.volt-.1,C.minimum-.1);if(vo>0)pill2(600,R,'VOLTAGE SAGS',COLA,vo*prog(t,C.volt-.05,C.volt+.25),46,'#3a2408');
