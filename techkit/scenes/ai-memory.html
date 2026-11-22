@@ -11,8 +11,8 @@
 html,body{width:1080px;height:1920px;overflow:hidden;background:#07080c}
 #out{position:absolute;left:0;top:0;width:1080px;height:1920px}
 #gl{position:absolute;left:-4000px;top:0}
-#caps{position:absolute;left:90px;right:90px;top:1452px;text-align:center;color:#f4f6f8;font-family:"Inter Display",Inter,sans-serif;font-weight:700;
-  font-size:50px;line-height:1.16;letter-spacing:-.01em;text-shadow:0 3px 18px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.9)}
+#caps{position:absolute;left:130px;right:130px;top:1448px;text-align:center;color:#f4f6f8;font-family:"Inter Display",Inter,sans-serif;font-weight:700;
+  font-size:52px;line-height:1.14;letter-spacing:-.01em;text-shadow:0 3px 18px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.9)}
 </style></head><body>
 <canvas id="out" width="1080" height="1920"></canvas>
 <div id="caps" data-subs></div>
@@ -90,20 +90,20 @@ const wallTex = ctex(512, 1024, (c, w, h) => {
 
 // ---------- materials ----------
 const M = {
-  metal: new THREE.MeshPhysicalMaterial({ color: 0xc3cad3, metalness: 1, roughness: .22, clearcoat: .6, clearcoatRoughness: .2 }),
+  metal: new THREE.MeshPhysicalMaterial({ color: 0xc3cad3, metalness: 1, roughness: .2, clearcoat: .6, clearcoatRoughness: .2, envMapIntensity: 1.8 }),
   darkMetal: new THREE.MeshPhysicalMaterial({ color: 0x5c636d, metalness: 1, roughness: .3 }),
   screen: new THREE.MeshPhysicalMaterial({ color: 0x07090c, metalness: .2, roughness: .08, clearcoat: 1, clearcoatRoughness: .04, emissive: 0xffffff, emissiveMap: wallTex, emissiveIntensity: 0 }),
   pcb: new THREE.MeshStandardMaterial({ color: 0xffffff, map: pcbTex, metalness: .35, roughness: .62 }),
-  shield: new THREE.MeshPhysicalMaterial({ color: 0x9aa2ac, metalness: 1, roughness: .34 }),
-  battery: new THREE.MeshPhysicalMaterial({ color: 0x23272e, metalness: .5, roughness: .42, clearcoat: .4 }),
+  shield: new THREE.MeshStandardMaterial({ color: 0x1c1f24, metalness: .3, roughness: .8, envMapIntensity: .2 }),
+  battery: new THREE.MeshPhysicalMaterial({ color: 0x0b0c0f, metalness: .5, roughness: .55, clearcoat: .1, envMapIntensity: .25 }),
   chipSide: new THREE.MeshStandardMaterial({ color: 0x0d0f12, roughness: .5, metalness: .1 }),
   pad: new THREE.MeshStandardMaterial({ color: 0x59606a, metalness: .9, roughness: .38 }),
   comp: new THREE.MeshStandardMaterial({ color: 0x8a9099, metalness: .7, roughness: .4 }),
   lens: new THREE.MeshPhysicalMaterial({ color: 0x020305, metalness: .1, roughness: .05, clearcoat: 1 }),
-  gold: new THREE.MeshPhysicalMaterial({ color: 0xe0a64a, metalness: 1, roughness: .22 }),
+  gold: new THREE.MeshPhysicalMaterial({ color: 0xc98f36, metalness: 1, roughness: .3, envMapIntensity: .55 }),
   dimm: new THREE.MeshStandardMaterial({ color: 0x1a2028, map: pcbTex, metalness: .4, roughness: .55 }),
   floor: new THREE.MeshStandardMaterial({ color: 0x0c0d10, metalness: .85, roughness: .32 }),
-  rack: new THREE.MeshStandardMaterial({ color: 0xffffff, map: RACK_MAP, emissive: 0xffffff, emissiveMap: RACK_EM, emissiveIntensity: 1.2, metalness: .5, roughness: .5 }),
+  rack: new THREE.MeshStandardMaterial({ color: 0x8a8f98, map: RACK_MAP, emissive: 0xffffff, emissiveMap: RACK_EM, emissiveIntensity: 1.2, metalness: .6, roughness: .45, envMapIntensity: .3 }),
   rackSide: new THREE.MeshStandardMaterial({ color: 0x181a1f, metalness: .7, roughness: .45 }),
 };
 
@@ -119,12 +119,12 @@ function makeChip() {
   const top = new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: chipTop, roughness: .3, metalness: .15, clearcoat: .7, emissive: SIG, emissiveIntensity: 0 });
   const g = new THREE.Group(), m = new THREE.Mesh(chipGeo, [M.chipSide, M.chipSide, M.chipSide, M.chipSide, top, M.chipSide]); g.add(m);
   const e = new THREE.LineSegments(chipEdges, new THREE.LineBasicMaterial({ color: SIG, transparent: true, opacity: .55 })); g.add(e);
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: SIG, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })); s.scale.set(1.6, 1.1, 1); s.position.z = -.02; g.add(s);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: SIG, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })); s.scale.set(1.25, .8, 1); s.position.z = -.02; g.add(s);
   g.userData = { top, e, s };
   return g;
 }
 function chipGlow(ch, k, heat = 0) { const u = ch.userData; const col = heat > 0 ? new THREE.Color(SIG).lerp(new THREE.Color(HEAT), heat) : new THREE.Color(SIG);
-  u.top.emissive.copy(col); u.top.emissiveIntensity = .55 * k; u.e.material.color.copy(col); u.e.material.opacity = .45 + .55 * clamp(k); u.s.material.color.copy(col); u.s.material.opacity = .85 * clamp(k); }
+  u.top.emissive.copy(col); u.top.emissiveIntensity = .28 * k; u.e.material.color.copy(col); u.e.material.opacity = .5 + .5 * clamp(k); u.s.material.color.copy(col); u.s.material.opacity = .38 * clamp(k); }
 
 // a phone, back facing +z; n memory chips on the board (2 columns)
 function makePhone(n, seed) {
@@ -142,13 +142,13 @@ function makePhone(n, seed) {
   { const uv = board.geometry.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * .35, uv.getY(i) * .35); }
   board.position.set(0, 1.18, -.06); P.add(board);
   const bat = new THREE.Mesh(new THREE.ExtrudeGeometry(rrShape(PW - .5, 2.3, .14), { depth: .12, bevelEnabled: true, bevelThickness: .02, bevelSize: .02, bevelSegments: 3 }), M.battery); bat.position.set(0, -1.75, -.1); P.add(bat);
-  const shield = new THREE.Mesh(new THREE.BoxGeometry(.95, .95, .07), M.shield); shield.position.set(-.45, 2.35, .03); P.add(shield);
+  const shield = new THREE.Mesh(new THREE.BoxGeometry(.95, .95, .07), M.chipSide); shield.position.set(.6, 2.62, .03); shield.scale.set(.75, .5, 1);
   // tiny parts (detail on the object)
   const comps = new THREE.InstancedMesh(new THREE.BoxGeometry(.07, .035, .035), M.comp, 70); const dm = new THREE.Object3D();
-  for (let i = 0; i < 70; i++) { dm.position.set((R() - .5) * 2.3, -.4 + R() * 3.1, .01); dm.rotation.z = R() < .5 ? 0 : Math.PI / 2; dm.updateMatrix(); comps.setMatrixAt(i, dm.matrix); }
+  for (let i = 0; i < 70; i++) { dm.position.set((R() - .5) * 2.3, -.45 + R() * 2.45, .01); dm.rotation.z = R() < .5 ? 0 : Math.PI / 2; dm.updateMatrix(); comps.setMatrixAt(i, dm.matrix); }
   P.add(comps);
   // chip slots: pads + chips
-  const chips = [], cols = [-.58, .58], rowH = .46, rows = Math.ceil(n / 2), top = 1.85;
+  const chips = [], cols = [-.58, .58], rowH = .46, rows = Math.ceil(n / 2), top = 2.33;
   for (let i = 0; i < n; i++) {
     const x = cols[i % 2], y = top - Math.floor(i / 2) * rowH - (rows > 4 ? 0 : 0);
     const pad = new THREE.Mesh(new THREE.BoxGeometry(CHW - .04, CHH - .04, .01), M.pad); pad.position.set(x, y - .38, .0); P.add(pad);
@@ -156,10 +156,10 @@ function makePhone(n, seed) {
   }
   // back glass (+z), see-through in the x-ray shots
   const back = new THREE.Mesh(new THREE.ShapeGeometry(rrShape(PW - .1, PHh - .1, PR - .05), 24),
-    new THREE.MeshPhysicalMaterial({ color: 0x1a1e25, metalness: .1, roughness: .12, clearcoat: 1, transparent: true, opacity: .25, depthWrite: false }));
+    new THREE.MeshPhysicalMaterial({ color: 0x0b0d11, metalness: .1, roughness: .1, clearcoat: 1, transparent: true, opacity: .25, depthWrite: false, envMapIntensity: .45 }));
   back.position.z = PD / 2 + .012; back.renderOrder = 5; P.add(back);
   // camera bump (top-left of the back)
-  const bump = new THREE.Group(); bump.position.set(-.68, 2.28, PD / 2 + .02); P.add(bump);
+  const bump = new THREE.Group(); bump.position.set(-.78, 2.55, PD / 2 + .02); bump.scale.setScalar(.78); P.add(bump);
   { const bg = new THREE.ExtrudeGeometry(rrShape(1.12, 1.12, .3), { depth: .06, bevelEnabled: true, bevelThickness: .02, bevelSize: .02, bevelSegments: 3 }); const b = new THREE.Mesh(bg, new THREE.MeshPhysicalMaterial({ color: 0x16191e, metalness: .4, roughness: .2, clearcoat: 1 })); bump.add(b);
     [[-.24, .24], [-.24, -.24], [.25, .24]].forEach(([x, y]) => { const ring = new THREE.Mesh(new THREE.CylinderGeometry(.2, .2, .1, 40), M.metal); ring.rotation.x = Math.PI / 2; ring.position.set(x, y, .1); bump.add(ring);
       const l = new THREE.Mesh(new THREE.CylinderGeometry(.155, .155, .11, 40), M.lens); l.rotation.x = Math.PI / 2; l.position.set(x, y, .11); bump.add(l); });
@@ -170,7 +170,7 @@ function makePhone(n, seed) {
 
 // ---------- the worlds (each in its own place, shown only in its shot) ----------
 const keyL = new THREE.DirectionalLight(0xffffff, 2.4); keyL.position.set(4, 7, 9); scene.add(keyL);
-const rimL = new THREE.DirectionalLight(0x9fdcff, 1.2); rimL.position.set(-6, 2, -4); scene.add(rimL);
+const rimL = new THREE.DirectionalLight(0xbfe9ff, 2.2); rimL.position.set(-6, 2, -4); scene.add(rimL);
 scene.add(new THREE.HemisphereLight(0x8aa0b8, 0x050506, .35));
 
 // A / E / G: the hero phone
@@ -191,18 +191,18 @@ const INTAKES = [];
 for (let i = -6; i <= 6; i++) { const a = i * .13, r = rack(); r.position.set(Math.sin(a) * 15, 3.3 - 3, -Math.cos(a) * 15 + 15 - 0); r.rotation.y = -a; hall.add(r); INTAKES.push(r.position.clone().add(V(-Math.sin(a) * .75, 0, Math.cos(a) * .75))); }
 for (let i = -6; i <= 6; i++) { const a = i * .13, r = rack(); r.position.set(Math.sin(a) * 18.5, 6.6 + .3 - 3 + 3.3, -Math.cos(a) * 18.5 + 15); r.rotation.y = -a; hall.add(r); }
 { const fl = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), M.floor); fl.rotation.x = -Math.PI / 2; fl.position.y = -3; hall.add(fl);
-  const hg = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: HEAT, transparent: true, opacity: .5, blending: THREE.AdditiveBlending, depthWrite: false })); hg.scale.set(40, 22, 1); hg.position.set(0, 3, -4); hall.add(hg); }
-const hallLight = new THREE.PointLight(HEAT, 30, 40, 1.6); hallLight.position.set(0, 4, 6); hall.add(hallLight);
+  const hg = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: HEAT, transparent: true, opacity: .5, blending: THREE.AdditiveBlending, depthWrite: false })); hg.scale.set(40, 22, 1); hg.position.set(0, 3, -4); hg.material.opacity = .32; hall.add(hg); }
+const hallLight = new THREE.PointLight(HEAT, 8, 40, 1.6); hallLight.position.set(0, 4, 6); hall.add(hallLight);
 // the stream: memory chips from the phones (below, near the camera) into the racks
-const STREAM_N = 150, stream = new THREE.InstancedMesh(new THREE.BoxGeometry(CHW, CHH, CHD), new THREE.MeshStandardMaterial({ color: 0x111418, emissive: SIG, emissiveIntensity: 1.6, roughness: .4 }), STREAM_N);
+const STREAM_N = 150, stream = new THREE.InstancedMesh(new THREE.BoxGeometry(CHW, CHH, CHD), new THREE.MeshStandardMaterial({ color: 0x0c0e11, emissive: SIG, emissiveIntensity: .7, roughness: .4, metalness: .3 }), STREAM_N);
 hall.add(stream);
 const SR = rng(99), SPATH = []; for (let i = 0; i < STREAM_N; i++) { const tgt = INTAKES[Math.floor(SR() * INTAKES.length)]; SPATH.push({ a: V((SR() - .5) * 12, -4 - SR() * 2, 19 + SR() * 4), c: V((SR() - .5) * 8, 4 + SR() * 4, 13), b: tgt.clone().add(V(0, (SR() - .5) * 5, 0)), off: SR(), sp: .28 + SR() * .12, rot: SR() * 6 }); }
-const streamGlow = new THREE.InstancedMesh(new THREE.PlaneGeometry(1.5, 1.0), new THREE.MeshBasicMaterial({ map: glowTex, color: SIG, transparent: true, opacity: .55, blending: THREE.AdditiveBlending, depthWrite: false }), STREAM_N); hall.add(streamGlow);
+const streamGlow = new THREE.InstancedMesh(new THREE.PlaneGeometry(1.5, 1.0), new THREE.MeshBasicMaterial({ map: glowTex, color: SIG, transparent: true, opacity: .28, blending: THREE.AdditiveBlending, depthWrite: false }), STREAM_N); hall.add(streamGlow);
 
 // D: a server memory module (RDIMM), macro
 const dimm = new THREE.Group(); dimm.position.set(0, 0, -300); scene.add(dimm);
 { const b = new THREE.Mesh(new THREE.BoxGeometry(9.4, 2.2, .08), M.dimm); dimm.add(b);
-  const top = new THREE.MeshPhysicalMaterial({ color: 0xffffff, map: dramTop, roughness: .32, metalness: .15, clearcoat: .7, emissive: HEAT, emissiveIntensity: 0 }); dimm.userData.top = top;
+  const top = new THREE.MeshPhysicalMaterial({ color: 0xb8bcc2, map: dramTop, roughness: .45, metalness: .1, clearcoat: .2, envMapIntensity: .25, emissive: HEAT, emissiveIntensity: 0 }); dimm.userData.top = top;
   for (let i = 0; i < 10; i++) { const x = -4.1 + i * .82 + (i >= 5 ? .55 : 0); if (i === 5) continue; const c = new THREE.Mesh(new THREE.BoxGeometry(.62, .95, .09), [M.chipSide, M.chipSide, M.chipSide, M.chipSide, top, M.chipSide]); c.position.set(x, .25, .085); dimm.add(c); }
   const reg = new THREE.Mesh(new THREE.BoxGeometry(.7, .55, .07), M.shield); reg.position.set(.1 + .27, .2, .075); dimm.add(reg);
   const fing = new THREE.InstancedMesh(new THREE.BoxGeometry(.075, .34, .012), M.gold, 90), d = new THREE.Object3D();
@@ -254,19 +254,20 @@ const heroState = (t, sh) => {
 };
 
 // ---------- camera per shot ----------
-const A_CAM = { pos: V(-1.2, -2.2, 13.2), look: V(0, -.35, 0), fov: 31 };
+const A_CAM = { pos: V(-1.3, .4, 13.6), look: V(0, 1.78, 0), fov: 31 };
 function shotCam(t, sh) {
   const u = prog(t, B[sh], B[sh + 1]);
-  if (sh === 0) { const k = ease(u); return { pos: V(lerp(-1.2, -.7, k), lerp(-2.2, -2.0, k), lerp(13.2, 12.1, k)), look: V(0, lerp(-.35, -.1, k), 0), fov: 31 }; }
-  if (sh === 1) { const z = -60, m = ease(prog(t, C.mid - .35, C.mid + .55)); const x = lerp(4.1, .1, m), k = u;
-    return { pos: V(x + 1.3 - .3 * k, lerp(1.6, 1.2, k), z + lerp(11, 10.2, k)), look: V(x - .1, -.4, z), fov: 34 }; }
+  if (sh === 0) { const k = ease(u); return { pos: V(lerp(-1.3, -.8, k), lerp(.4, .7, k), lerp(13.6, 12.4, k)), look: V(0, lerp(1.78, 1.9, k), 0), fov: 31 }; }
+  if (sh === 1) { const z = -60, a = ease(prog(t, B[1], C.four + .1)), m = ease(prog(t, C.mid - .35, C.mid + .55));   // wide on all three, push to the 4, slide to the 8
+    const x = lerp(lerp(.2, 3.9, a), 0, m), d = lerp(lerp(30, 17, a), 16, m) - 1.2 * u, ly = lerp(lerp(-1.2, .1, a), .1, m);
+    return { pos: V(x + .6, ly + 2.4, z + d), look: V(x, ly + 1.4, z), fov: 34 }; }
   if (sh === 2) { const z = -160, k = ease(u); return { pos: V(lerp(-1.5, .8, k), lerp(-.8, 1.2, k), z + lerp(31, 26, k)), look: V(0, lerp(3.2, 3.8, k), z + 6), fov: 44 }; }
-  if (sh === 3) { const z = -300, k = ease(u); return { pos: V(lerp(-5.2, 1.4, k), lerp(.9, .5, k), z + lerp(3.4, 3.0, k)), look: V(lerp(-2.4, 3.6, k), .05, z), fov: 30 }; }
-  if (sh === 4) { const k = ease(u); return { pos: V(lerp(.6, -.3, k), lerp(.7, 1.1, k), lerp(6.2, 5.3, k)), look: V(0, lerp(.75, 1.0, k), 0), fov: 34 }; }
+  if (sh === 3) { const z = -300, k = ease(u); return { pos: V(lerp(-4.6, .4, k), lerp(1.9, 1.6, k), z + lerp(7.6, 6.6, k)), look: V(lerp(-1.6, .9, k), -.9, z), fov: 30 }; }
+  if (sh === 4) { const k = ease(u); return { pos: V(lerp(.6, -.3, k), lerp(.4, .7, k), lerp(6.6, 5.8, k)), look: V(0, lerp(1.4, 1.5, k), 0), fov: 34 }; }
   if (sh === 5) { const z = -450, k = u; return { pos: V(.15, lerp(.4, .2, k), z + lerp(9, -3, k)), look: V(0, .2, z - 30), fov: 46 }; }
   // G: the phone turns from its screen to its back, then the camera settles on A's framing
   const k = ease(prog(t, C.final + .2, TOTAL - .05));
-  const p0 = V(.4, -1.4, 11.5), l0 = V(0, .2, 0);
+  const p0 = V(.5, .5, 13.2), l0 = V(0, 1.8, 0);
   return { pos: p0.clone().lerp(A_CAM.pos, k), look: l0.clone().lerp(A_CAM.look, k), fov: lerp(30, A_CAM.fov, k) };
 }
 // whips between shots: the outgoing camera pans away fast, the incoming one arrives from the other side (temporal blur makes the streak)
@@ -283,7 +284,7 @@ function apply(t) {
   const c = camAt(t), sh = c.sh;
   hero.visible = sh === 0 || sh === 4 || sh === 6; heroGlow.visible = sh === 0 || sh === 6; lineup.visible = sh === 1; hall.visible = sh === 2; dimm.visible = sh === 3; aisle.visible = sh === 5;
   scene.fog = sh === 5 ? aisleFog : sh === 2 ? new THREE.FogExp2(0x0b0907, .018) : null;
-  keyL.intensity = sh === 5 ? .4 : sh === 2 ? .7 : 2.4; rimL.intensity = sh === 3 ? .5 : 1.2;
+  keyL.intensity = sh === 5 ? .4 : sh === 2 ? .7 : sh === 3 ? 1.1 : 2.4; rimL.intensity = sh === 3 ? .5 : 2.2;
   // hero pose
   if (hero.visible) {
     hero.position.set(0, 0, 0);
@@ -306,8 +307,8 @@ function apply(t) {
       d.position.copy(pos); d.rotation.set(s.rot + p * 3, s.rot * .5 + p * 2, s.rot); d.scale.setScalar(sc); d.updateMatrix(); stream.setMatrixAt(i, d.matrix);
       g.position.copy(pos); g.lookAt(camp); g.scale.setScalar(sc); g.updateMatrix(); streamGlow.setMatrixAt(i, g.matrix); });
     stream.instanceMatrix.needsUpdate = true; streamGlow.instanceMatrix.needsUpdate = true;
-    M.rack.emissiveIntensity = 1.0 + .35 * Math.sin(t * 7) * Math.sin(t * 3.1); hallLight.intensity = 26 + 10 * prog(t, C.ai - .2, C.ai + .3); }
-  if (sh === 3) { const h = prog(t, C.jump - .3, C.ninety + .1); dimm.userData.top.emissiveIntensity = .55 * h; dimm.userData.hl.intensity = 18 * h; dimm.userData.hg.material.opacity = .5 * h; dimm.rotation.set(-.2, .12, 0); }
+    M.rack.emissiveIntensity = 1.0 + .35 * Math.sin(t * 7) * Math.sin(t * 3.1); hallLight.intensity = 5 + 6 * prog(t, C.ai - .2, C.ai + .3); }
+  if (sh === 3) { const h = prog(t, C.jump - .3, C.ninety + .1); dimm.userData.top.emissiveIntensity = .1 * h; dimm.userData.hl.intensity = 4 * h; dimm.userData.hg.material.opacity = .55 * h; dimm.rotation.set(-.42, .28, .08); }
   if (sh === 5) { M.rack.emissiveIntensity = 1.1 + .3 * Math.sin(t * 5); }
   cam.fov = c.fov; cam.updateProjectionMatrix(); cam.position.copy(c.pos); cam.lookAt(c.look);
   if (c.yaw) cam.rotateY(c.yaw);
@@ -350,7 +351,7 @@ function typeLayer(t) {
 }
 
 // ---------- captions (stable phrases, bottom third) ----------
-const CHUNKS = []; SC.forEach((s, si) => { let cur = []; s.words.forEach((w, i) => { cur.push(w); if (/[.,?!]$/.test(w.w) || cur.length === 6 || i === s.words.length - 1) { CHUNKS.push({ si, words: cur }); cur = []; } }); });
+const CHUNKS = []; SC.forEach((s, si) => { let cur = []; s.words.forEach((w, i) => { cur.push(w); if (/[.,?!]$/.test(w.w) || cur.length === 5 || i === s.words.length - 1) { CHUNKS.push({ si, words: cur }); cur = []; } }); });
 CHUNKS.forEach((c, i) => { c.t0 = c.words[0].t0; const nx = CHUNKS[i + 1]; c.t1 = nx && nx.si === c.si ? nx.words[0].t0 - .03 : c.words[c.words.length - 1].t1 + .35; });
 window.CHUNKS = CHUNKS;
 const capEl = document.getElementById('caps'); let capIdx = -2;
@@ -386,7 +387,7 @@ window.render = (t) => {
   o.globalAlpha = 1; apply(t); subjectBox(shotAt(t));
   post(); typeLayer(t); captions(t);
 };
-window.TRANSITIONS = B.slice(1, -1).map((b) => [+(b - .3).toFixed(2), +(b + .35).toFixed(2), 'camera']);
+window.TRANSITIONS = [...B.slice(1, -1).map((b) => [+(b - .3).toFixed(2), +(b + .35).toFixed(2), 'camera']), [+(C.buying - .2).toFixed(2), +(C.india + .3).toFixed(2), 'turn']];
 window.HOLDS = [];
 window.seek = window.render;
 window.DUR = TOTAL;
