@@ -97,8 +97,8 @@ const M = {
   shield: new THREE.MeshStandardMaterial({ color: 0x1c1f24, metalness: .3, roughness: .8, envMapIntensity: .2 }),
   battery: new THREE.MeshPhysicalMaterial({ color: 0x0b0c0f, metalness: .5, roughness: .55, clearcoat: .1, envMapIntensity: .25 }),
   chipSide: new THREE.MeshStandardMaterial({ color: 0x0d0f12, roughness: .5, metalness: .1 }),
-  pad: new THREE.MeshStandardMaterial({ color: 0x59606a, metalness: .9, roughness: .38 }),
-  comp: new THREE.MeshStandardMaterial({ color: 0x8a9099, metalness: .7, roughness: .4 }),
+  pad: new THREE.MeshStandardMaterial({ color: 0x08090b, metalness: .1, roughness: .7, envMapIntensity: .3 }),
+  comp: new THREE.MeshStandardMaterial({ color: 0x6d737c, metalness: .3, roughness: .55 }),
   lens: new THREE.MeshPhysicalMaterial({ color: 0x020305, metalness: .1, roughness: .05, clearcoat: 1 }),
   gold: new THREE.MeshPhysicalMaterial({ color: 0xc98f36, metalness: 1, roughness: .3, envMapIntensity: .55 }),
   dimm: new THREE.MeshStandardMaterial({ color: 0x1a2028, map: pcbTex, metalness: .4, roughness: .55 }),
@@ -227,7 +227,7 @@ const S = SC.map((s) => s.start);
 const B = [0, S[1] - .2, S[2] - .2, S[3] - .2, S[4] - .2, S[5] - .2, S[6] - .2, TOTAL];   // shot k runs B[k]..B[k+1]
 const shotAt = (t) => { for (let k = B.length - 2; k >= 0; k--) if (t >= B[k]) return k; return 0; };
 // hook: four chips leave the hero phone; the count ticks when each has cleared
-const LEAVE = [[2, -.55], [5, C.next - .05], [1, (C.next + C.less) / 2 - .05], [6, C.less + .05]];
+const LEAVE = [[2, -.15], [5, C.next - .05], [1, (C.next + C.less) / 2 - .05], [6, C.less + .05]];
 const leftAt = (j) => LEAVE[j][1] + .62;
 const count = (t) => 8 - LEAVE.filter((_, j) => t >= leftAt(j)).length;
 const flightOf = (j, t, home) => {          // a chip lifts off the board, then rises toward the camera and out of the top
@@ -243,7 +243,7 @@ const heroState = (t, sh) => {
     const heat = Math.sin(clamp((t - C.pricier + .1) / .9) * Math.PI);
     st.forEach((s) => { s.glow = .35 + .65 * heat; s.heat = heat; });
     [[7, 0], [6, .12], [3, .24]].forEach(([slot, d]) => { const t0 = C.cutting - .05 + d, u = clamp((t - t0) / .7), p = ein(u), h = chips[slot].home; if (t < t0) return;
-      st[slot] = { pos: V(h.x + (h.x < 0 ? -1 : 1) * 2.4 * p, h.y + .8 * p, h.z + .3 + 5.5 * p), rot: V(.8 * p, 0, (h.x < 0 ? -1 : 1) * 1.4 * p), glow: 1, heat: 1, vis: u < 1 }; });
+      st[slot] = { pos: V(h.x + (h.x < 0 ? -1 : 1) * 2.4 * p, h.y + .8 * p, h.z + .3 + 5.5 * p), rot: V(.8 * p, 0, (h.x < 0 ? -1 : 1) * 1.4 * p), glow: .55 * (1 - p), heat: 1, vis: u < 1 }; });
   }
   if (sh === 6) {
     st.forEach((s, i) => { s.glow = .25 + .75 * eout((t - C.check - i * .06) / .35) * (1 - .45 * prog(t, C.final + .3, C.final + 1.0)); });
@@ -351,7 +351,8 @@ function typeLayer(t) {
 }
 
 // ---------- captions (stable phrases, bottom third) ----------
-const CHUNKS = []; SC.forEach((s, si) => { let cur = []; s.words.forEach((w, i) => { cur.push(w); if (/[.,?!]$/.test(w.w) || cur.length === 5 || i === s.words.length - 1) { CHUNKS.push({ si, words: cur }); cur = []; } }); });
+const CHUNKS = []; SC.forEach((s, si) => { let cur = []; s.words.forEach((w, i) => { cur.push(w); const nx = s.words[i + 1], len = cur.map((x) => x.w).join(' ').length + (nx ? nx.w.length + 1 : 0);
+    if (/[.,?!]$/.test(w.w) || (cur.length >= 6 && !(nx && /[.,?!]$/.test(nx.w))) || (len > 30 && !(nx && /[.,?!]$/.test(nx.w))) || i === s.words.length - 1) { CHUNKS.push({ si, words: cur }); cur = []; } }); });
 CHUNKS.forEach((c, i) => { c.t0 = c.words[0].t0; const nx = CHUNKS[i + 1]; c.t1 = nx && nx.si === c.si ? nx.words[0].t0 - .03 : c.words[c.words.length - 1].t1 + .35; });
 window.CHUNKS = CHUNKS;
 const capEl = document.getElementById('caps'); let capIdx = -2;
