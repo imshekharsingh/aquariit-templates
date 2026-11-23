@@ -13,6 +13,10 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-23 09:00 IST · claude/tech-ai-memory-item13 · AI memory: OUTPUT QA PASS, item 13
+- Done: Output QA re-run 45104989180 on render 1 (run 45096638390) PASS after qa.edges_ok (#1175); item 13 PASS in review/tech/showreel-tech-ai-memory.md. Reel for 23 Nov 13:00 IST waits only on the Reel critic.
+- Left: the critic judges the 6.8-8.4 s slide (neighbour phones cut while the camera moves). Render time 71 of 75 min: a future 3D reel needs lower SS or fewer samples.
+
 ## 2026-11-23 08:45 IST · claude/tech-ai-memory-edges · AI memory render 1: one QA fail, declared, QA re-run
 - Done: render 1 (run 45096638390, owner's typed go) took 71 of 75 min; Output QA all PASS except EDGES (hall, memory module and the 8 GB push run past the frame by design), declared in techreel/topics/ai-memory.json qa.edges_ok; Output QA re-run on the same MP4 (no render). Facts re-read on TrendForce 23 Nov.
 - Left: item 13 after the QA re-run; the critic judges the 6.8-8.4 s slide. A second render would risk the 75-min limit (lower SS first).
