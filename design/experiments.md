@@ -412,3 +412,4 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
   keep-or-stop checkpoints in design/c3-plan.md section 7.
 - First reel: showreel-c3-viking-steps (Vikings' horns, in the UI look; the engraved showreel-c3-viking-horns was removed before posting, owner 21 Nov).
 
+- 23 Nov: a phone-edge topic with the screen reacting to each tap: BEFORE sags on every tap (the swipe line wins), AFTER pads the bar and lifts the button (showreel-45-homebar; web-phone-edge, read at 24 h and 72 h vs the web median).

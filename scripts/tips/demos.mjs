@@ -605,4 +605,20 @@ export const demos = {
 <p class="note">Tap the button. The left page blinks its default white canvas before the dark page arrives (simulated); the right page, whose head has &lt;meta name="color-scheme" content="dark light"&gt; before any CSS, stays dark. MDN: the tag helps prevent unwanted screen flashes during the page load.</p>`,
     js: `function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); }`,
   },
+  // the home-bar demo (showreel-45-homebar, 23 Nov 2026): a simulation, two phone bottoms; the left bar sits flush so its button hides under the swipe line, the right one has padding-bottom: env(safe-area-inset-bottom)
+  homebar: {
+    css: `
+#homebar .stage{position:relative;height:104px;margin:8px 10px;overflow:hidden;border-radius:12px;background:#1a1410}
+#homebar .btn2{position:absolute;left:14px;right:14px;height:38px;border-radius:19px 19px 0 0;background:#f6b94a;color:#201400;font:700 15px/52px system-ui,sans-serif;text-align:center;bottom:0;transition:bottom .6s cubic-bezier(.3,1.4,.5,1);overflow:hidden}
+#homebar .stage.go[data-fix="1"] .btn2{bottom:22px}
+#homebar .pill{position:absolute;left:50%;margin-left:-34px;bottom:5px;width:68px;height:5px;border-radius:3px;background:#fff}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">no safe-area padding</span><div class="stage" data-fix="0"><div class="btn2">Save the day</div><i class="pill"></i></div></div>
+  <div class="pane fix"><span class="tag ok">env(safe-area-inset-bottom)</span><div class="stage fix" data-fix="1"><div class="btn2">Save the day</div><i class="pill"></i></div></div>
+</div>
+<button class="play" type="button">Add the padding</button>
+<p class="note">Tap the button. The right bar gains padding-bottom: env(safe-area-inset-bottom) and its button lifts clear of the swipe line (simulated; on a real phone the inset is 0 where nothing covers the screen). MDN, env().</p>`,
+    js: `function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); }`,
+  },
 };

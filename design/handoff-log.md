@@ -13,6 +13,12 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-23 IST · claude/daily-2026-11-23 · daily run: web Nº 45 homebar (tech waits for the owner's OK)
+- Done: Owner answers read (darkflash-post = "no", so it is not posted; c3 profile = done; 0 new feedback). Web showreel-45-homebar for 13:00 (padding-bottom: env(safe-area-inset-bottom); MDN env() + caniuse read today): scripts/explainer/homebar.html/.json, review file (1-12, 14-18 PASS locally: SAFE ZONE ok, OVERLAP none, FLOW 100% / cuts 0, HUE 25, CALM 3.0%, SPREAD 0%), captions entry, tip demo, demo hue, experiment web-phone-edge.
+- Not done: audit card and rulebook update (AUDIT_CHANNELS not read this run); tech showreel-tech-ai-memory was already built for today and waits for the owner's OK on its preview (nothing in Owner answers), so it is NOT rendered; no tech reel built.
+- Left: ONE render of showreel-45-homebar after the merge (Showreel, config scripts/explainer/homebar.json), Output QA, item 13, the critic.
+- For the other account: the web starter's phone must be cut to its lower half and moved into 392-780 with the subtitle band at 292 (SPREAD fails 50% on the starter layout).
+
 ## 2026-11-23 01:50 IST · claude/tech-ai-memory-polish · AI memory reel: owner's polish notes + drama and quality pass
 - Done: techkit/scenes/ai-memory.html: 1.5x supersampling, depth of field and rack focus, sparks and slow-mo on the chip rip, laser slicing the board on CUT, amber pulse through the racks on AI, slams with camera shake, light sweeps, finer board, bevelled chips, cables, ordered chip streams, all three phones whole with labels. techkit/make.py: a topic may set "fps": 30 (own motion blur, no frame blend), encode CRF 16. Preflight: SAFE ok, OVERLAP none, FLOW cuts 0 / dead none / 81%.
 - Left: the ONE render waits for the owner's OK on the preview page (stills + full-res clip, no voice locally); then item 13 + Output QA.
