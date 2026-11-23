@@ -11,7 +11,11 @@ Format (at most 6 lines):
 - For the other account: anything it must know or must not touch; a proposed rule change goes here.
 ```
 
-
+## 2026-11-23 18:30 IST · claude/tech-kit-premium · tech kit premium pass + ai-memory preview r2 (owner chat job, size L, owner: "put the fixes in kit first")
+- Done: techkit/kit3d.js (five shot changes drawn as two live shots, never through black; sampled + smeared motion blur; glide and push so nothing is ever still; six word entrances; epoxy / metal / gold / battery / glass / rack materials; key + rim + kicker light), make.py inlines it at `<!--KIT3D-->`; scenes/ai-memory.html rebuilt on it (stream as single chips, lit aisle, the turn on "Buying", "+90%" and "CUT" off the objects, an "About phone" screen); rules-tech.md M1-M6; README "The 3D kit"; scripts/tech-assemble.py + KIT_Q for quick local looks.
+- Done: Tech reel workflow = three jobs (voice, frames in `parts` parallel jobs, join) and a `preview` input: the result goes only to R2 study/ as showreel-tech-<slug>-<preview>-preview.mp4 (+ -stills.png), listed in templates/showreels/previews.json; the reel's own R2 files and issue are not touched. make.py: --voice-only, --part i/n, --join.
+- Left: after the merge, Tech reel (slug ai-memory, preview r2, parts 6), its Output QA, PREMIUM line in the review file, report to the owner chat. Render 1 stays the reel until the owner says swap (then: Tech reel ai-memory without preview = render 2, item 13).
+- For the other account: a 3D tech scene starts from scenes/ai-memory.html + kit3d.js; a normal Tech reel run now also uses the three jobs (parts default 6); a kit topic's render log is split (voice job + join job).
 
 ## 2026-11-23 09:00 IST · claude/tech-ai-memory-item13 · AI memory: OUTPUT QA PASS, item 13
 - Done: Output QA re-run 45104989180 on render 1 (run 45096638390) PASS after qa.edges_ok (#1175); item 13 PASS in review/tech/showreel-tech-ai-memory.md. Reel for 23 Nov 13:00 IST waits only on the Reel critic.

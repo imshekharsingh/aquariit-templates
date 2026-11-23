@@ -7,6 +7,9 @@ python3 techkit/make.py <slug> [--fake-vo] [--stills t1,t2,...]   (topic: techre
 3. --stills: techkit/preflight.mjs (SAFE ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW, a stills sheet) and stops.
 4. Render: headless Chromium calls window.render(i/60) and screenshots (4 workers), ffmpeg blends frame pairs (tmix, then 30 fps),
    techkit/sound.py mixes the kit's synthesized bed with recorded CC0 effects, two-pass loudness to -14.5 LUFS, true peak under -1.2 dBTP.
+Split render (owner, 23 Nov 2026: real motion blur inside the 75 min limit; .github/workflows/techreel.yml): the same run in three steps,
+   --voice-only (1, 2 and the sound mix, kept in lv.json), --part i/n (only that share of the frames, from the saved timeline; needs no
+   Python packages), --join (the frames are already in out/.../frames: encode, mux, QA lines). Without these flags it runs start to end.
 Outputs (as techreel/make.py, so the Tech reel workflow, R2 upload, voice check and Output QA work unchanged): <slug>.mp4, vo.wav, vo.json,
 qa.txt (SOUND GATE, SOUND SOURCE, SOUND DETAIL) and contact.png."""
 import json, math, os, re, shutil, subprocess, sys
@@ -14,7 +17,6 @@ import json, math, os, re, shutil, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, '..')
 sys.path.insert(0, os.path.join(ROOT, 'techreel', 'vo'))
-import tts   # noqa: E402
 
 LEAD, TAIL, FPS_CAP, WORKERS = 0.6, 2.2, 60, int(os.environ.get('KIT_WORKERS', '4'))
 
@@ -42,40 +44,58 @@ def main():
     topic = json.load(open(os.path.join(ROOT, 'techreel', 'topics', slug + '.json')))
     out = os.path.join('out', 'techreel', slug); os.makedirs(out, exist_ok=True)
     vo_wav, vo_json = os.path.join(out, 'vo.wav'), os.path.join(out, 'vo.json')
-    vo = tts.generate(topic, vo_wav, fake=fake)
-    json.dump(vo, open(vo_json, 'w'), indent=1)
-    TL, order = timeline(topic, vo)
-    open(os.path.join(out, 'timeline.js'), 'w').write('window.TL=' + json.dumps(TL) + ';')
-    json.dump(TL, open(os.path.join(out, 'timeline.json'), 'w'), indent=1)
-    if topic['scene'].endswith('.js'):   # a topic file on the shared kit frame (techkit/base.html)
-        base = open(os.path.join(HERE, 'base.html')).read()
-        js = open(os.path.join(ROOT, topic['scene'])).read()
-        open(os.path.join(out, 'scene.html'), 'w').write(base.replace('/*TITLE*/', topic.get('topic', slug)).replace('/*TOPIC_JS*/', js))
-    else:   # a standalone scene; <!--THREE--> becomes three.js r149 (MIT, techkit/vendor), inlined so the page stays one file with no origins
-        html = open(os.path.join(ROOT, topic['scene'])).read()
-        if '<!--THREE-->' in html:
-            lib = open(os.path.join(HERE, 'vendor', 'three-0.149.0.min.js')).read()
-            html = html.replace('<!--THREE-->', '<script>' + lib + '</script>', 1)
-        open(os.path.join(out, 'scene.html'), 'w').write(html)
-    words = sum(len(l['text'].split()) for l in topic['lines'])
-    print(f'TIMELINE: {len(TL["scenes"])} chapters, {words} words, voice {TL["scenes"][0]["start"]:.2f}-{TL["scenes"][-1]["end"]:.2f} s, total {TL["total"]:.2f} s')
-    print('CUES: ' + ', '.join(f'{k} {v:.2f}' for k, v in order))
-    if '--stills' in sys.argv:
-        ts = sys.argv[sys.argv.index('--stills') + 1]
-        r = subprocess.run(['node', os.path.join(HERE, 'preflight.mjs'), out, ts])
-        sys.exit(r.returncode)
+    part = sys.argv[sys.argv.index('--part') + 1] if '--part' in sys.argv else None; join = '--join' in sys.argv
+    if part or join:   # a later step of a split render: the voice and the timeline are already made
+        TL = json.load(open(os.path.join(out, 'timeline.json'))); vo = json.load(open(vo_json)) if join else None
+    else:
+        import tts   # noqa: E402  (numpy, the voice model: not needed by --part / --join)
+        vo = tts.generate(topic, vo_wav, fake=fake)
+        json.dump(vo, open(vo_json, 'w'), indent=1)
+        TL, order = timeline(topic, vo)
+        open(os.path.join(out, 'timeline.js'), 'w').write('window.TL=' + json.dumps(TL) + ';')
+        json.dump(TL, open(os.path.join(out, 'timeline.json'), 'w'), indent=1)
+        if topic['scene'].endswith('.js'):   # a topic file on the shared kit frame (techkit/base.html)
+            base = open(os.path.join(HERE, 'base.html')).read()
+            js = open(os.path.join(ROOT, topic['scene'])).read()
+            open(os.path.join(out, 'scene.html'), 'w').write(base.replace('/*TITLE*/', topic.get('topic', slug)).replace('/*TOPIC_JS*/', js))
+        else:   # a standalone scene; <!--THREE--> becomes three.js r149 (MIT, techkit/vendor), inlined so the page stays one file with no origins
+            html = open(os.path.join(ROOT, topic['scene'])).read()
+            if '<!--THREE-->' in html:
+                lib = open(os.path.join(HERE, 'vendor', 'three-0.149.0.min.js')).read()
+                html = html.replace('<!--THREE-->', '<script>' + lib + '</script>', 1)
+            if '<!--KIT3D-->' in html:   # the shared 3D craft (shot changes, motion blur, words, materials): techkit/kit3d.js
+                html = html.replace('<!--KIT3D-->', '<script>' + open(os.path.join(HERE, 'kit3d.js')).read() + '</script>', 1)
+            open(os.path.join(out, 'scene.html'), 'w').write(html)
+        words = sum(len(l['text'].split()) for l in topic['lines'])
+        print(f'TIMELINE: {len(TL["scenes"])} chapters, {words} words, voice {TL["scenes"][0]["start"]:.2f}-{TL["scenes"][-1]["end"]:.2f} s, total {TL["total"]:.2f} s')
+        print('CUES: ' + ', '.join(f'{k} {v:.2f}' for k, v in order))
+        if '--stills' in sys.argv:
+            ts = sys.argv[sys.argv.index('--stills') + 1]
+            r = subprocess.run(['node', os.path.join(HERE, 'preflight.mjs'), out, ts])
+            sys.exit(r.returncode)
     # ---- frames: 4 workers, 60 fps (a topic with its own motion blur may ask for "fps": 30: half the frames, no frame blend) ----
     FPS = int(topic.get('fps', FPS_CAP))
     fr = os.path.join(out, 'frames'); os.makedirs(fr, exist_ok=True)
-    n = int(math.ceil(TL['total'] * FPS)); per = (n + WORKERS - 1) // WORKERS
-    procs = [subprocess.Popen(['node', os.path.join(HERE, 'capture.cjs'), os.path.join(out, 'scene.html'), fr, str(FPS), str(i * per), str(min(n, (i + 1) * per))])
-             for i in range(WORKERS) if i * per < n]
-    # the sound while the frames render
-    sys.path.insert(0, HERE); import sound   # noqa: E402
-    mix_wav = os.path.join(out, 'mix.wav')
-    lv = sound.render(TL, topic, vo_wav, mix_wav)
+    n = int(math.ceil(TL['total'] * FPS))
+    lo, hi = 0, n
+    if part: i, parts = (int(x) for x in part.split('/')); lo, hi = n * i // parts, n * (i + 1) // parts
+    per = (hi - lo + WORKERS - 1) // WORKERS
+    procs = [] if join or '--voice-only' in sys.argv else [subprocess.Popen(['node', os.path.join(HERE, 'capture.cjs'), os.path.join(out, 'scene.html'), fr, str(FPS), str(lo + i * per), str(min(hi, lo + (i + 1) * per))])
+                             for i in range(WORKERS) if lo + i * per < hi]
+    mix_wav = os.path.join(out, 'mix.wav'); lv_json = os.path.join(out, 'lv.json')
+    if part:
+        bad = [p.wait() for p in procs]
+        if any(bad): sys.exit(f'frame capture failed: exit codes {bad}')
+        print(f'frames {lo}-{hi - 1} of {n} at {FPS} fps', flush=True); return
+    if join: lv = json.load(open(lv_json))
+    else:   # the sound while the frames render
+        sys.path.insert(0, HERE); import sound   # noqa: E402
+        lv = sound.render(TL, topic, vo_wav, mix_wav); json.dump(lv, open(lv_json, 'w'), default=float)
+        if '--voice-only' in sys.argv: print(lv['source']); print(lv['detail']); return
     bad = [p.wait() for p in procs]
     if any(bad): sys.exit(f'frame capture failed: exit codes {bad}')
+    have = len([f for f in os.listdir(fr) if f.endswith('.jpg')])
+    if have != n: sys.exit(f'frames: {have} of {n} captured (a part is missing)')
     print(f'frames: {n} at {FPS} fps', flush=True)
     subj = sorted(sum((json.load(open(os.path.join(fr, f))) for f in os.listdir(fr) if f.startswith('subject_') and f.endswith('.json')), []))
     if subj: json.dump(subj, open(os.path.join(out, slug + '.subject0.json'), 'w'))   # the hero's box every 0.5 s (Output QA HERO)

@@ -13,6 +13,7 @@ const [dir, times] = process.argv.slice(2);
 const opt = { args: ['--force-color-profile=srgb', '--hide-scrollbars'] }; if (process.env.CHROME_BIN) opt.executablePath = process.env.CHROME_BIN;
 const b = await pw.chromium.launch(opt), p = await b.newPage({ viewport: { width: 1080, height: 1920 } });
 const errs = []; p.on('pageerror', (e) => errs.push(e.message));
+if (process.env.KIT_Q) await p.addInitScript((q) => { window.KITQ = q; }, +process.env.KIT_Q);   // a quicker local preflight of a kit3d scene
 await p.goto('file://' + resolve(dir, 'scene.html')); await p.evaluate(() => document.fonts.ready);
 const total = await p.evaluate(() => window.TL.total);
 // layout every 0.5 s

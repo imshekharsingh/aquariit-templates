@@ -64,6 +64,16 @@ not the default.
 - No two consecutive posting days with the same format or the same device class; at most one `charging` reel in any 7 days.
 - design/topics.md plans the week across all eight device classes.
 
+## M. Motion and material bar for the 3D direction (owner, 23 Nov 2026: "Put the fixes in kit first ... we go premium and all in on improvements"; two independent reviews scored ai-memory render 1 at animation 6, cleanliness 6-8, premium 5-6.5)
+Every tech reel from 24 Nov is built on techkit/kit3d.js and must reach 7+ on all three Premium check scores before its render. Score each line on the stills sheet.
+- **M1. Shot changes**: 3+ different kinds a reel (match cut on a shape, push-through, rack-focus dissolve, light wipe, at most one whip), each with a cause in the picture, each carried into the next shot (the next shot is already moving the same way). Never through black, never the same change twice in a row.
+- **M2. Motion blur**: smooth streaks only (the kit's sampled + smeared blur). A frame that shows stepped copies of an edge is a defect. The render stays inside the limit by splitting the frames over parallel jobs, not by dropping samples.
+- **M3. Never fully still**: a slow eased push or drift under every hold (about 2-3% a second), a move that keeps speed at both ends of its shot, and something already in motion at frame 0. A bold word does not move after it lands.
+- **M4. Materials and light**: chips are dark epoxy with a faint laser mark, cyan (or amber) only as an edge glow; a cool rim and a warm kicker on the hero; exposure about 15% over render 1; metal and gold keep their colour under a moving light (no white burn); battery, screen and rack sides each have a material (no flat grey slabs, no blank screen).
+- **M5. Composition**: the top band (y 250-560) stays empty for the bold word; the word never touches the object; the object is large and low and the picture runs to the bottom of the frame (no empty black third); a subject is whole unless the shot is a declared full-bleed (qa.edges_ok with the reason).
+- **M6. Words**: one per shot, each arriving its own way (slam, drop, rise, track, stamp, wipe); no two neighbours alike.
+Why: the first 3D reel had seven real shots but one sideways whip six times, stepped ghost copies in every whip, shots that slammed in and froze, flat teal chips, and two words on top of the object. What changed in the kit: techkit/README.md "The 3D kit".
+
 ## K0. The kit engine (owner, 15 Nov 2026: "port the owner's kit as it is ... get past our engine if it's not helping"; E26)
 PROMOTED 18 Nov 2026 (tech-kit-engine: 2 WINs, 0 LOSEs at 24 h: night mode 1,468 vs median 123, 120 Hz 958 vs 123; 5 ATM 1,203 at its first reading).
 Tech reels are built on techkit/ (techkit/README.md): the owner's motion kit (design/kits/motion_kit.zip, motion_content_prompt.md), topic
