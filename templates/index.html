@@ -404,7 +404,7 @@
   .reel{border-radius:14px}
   .reel.compact.rdy{margin:0 0 10px;border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}
   .reel.compact .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .reel.compact .row .btn:first-child{flex:none}
+  .reel.compact .row .btn:first-child{flex:none;grid-column:1/-1}
   .btn{border-radius:11px;font-weight:650}
   .btn.tick.post{background:var(--ok);color:var(--okink)}
   .reel.compact .row .btn.post{grid-column:1/-1}
@@ -498,7 +498,7 @@
     </div>
     <details class="prof" id="prof" hidden><summary>Profile</summary></details>
     <h1 id="title">Showreels</h1>
-    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (any time 13:00–21:00 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes 10 minutes before each time. Turns Out reels have no date: post them when you choose.</p></details></div>
+    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (any time 13:00–21:00 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes 10 minutes before each time. Save the cover too, then on Instagram: Edit cover → Add from camera roll. Turns Out reels have no date: post them when you choose.</p></details></div>
     <div id="list"><p class="empty">Loading…</p></div>
   </section>
   <section class="pg" id="s-growth" hidden>
@@ -586,11 +586,11 @@
   function postText(j){ var t = j.caption.trim(); if (j.keywords && j.keywords.length) t += '\n\n' + j.keywords.slice(0, 6).join(' · '); if (j.hashtags && j.hashtags.length) t += '\n\n' + j.hashtags.slice(0, 5).join(' '); return t; }
   // never navigate to the mp4: in the installed iOS app that opens a file viewer with no way back. Fetch it, then hand it to the share sheet ("Save Video"),
   // or download it from a blob URL where sharing files is not supported
-  function save(s, btn){
+  function save(s, btn, cover){
     if (btn.file) return share(btn);
     if (btn.disabled) return; btn.disabled = true; btn.textContent = 'Preparing…';
-    fetch(s.video, { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.blob(); }).then(function(blob){
-      var f = new File([blob], s.name + '.mp4', { type: 'video/mp4' }); btn.disabled = false;
+    fetch(cover ? s.cover : s.video, { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.blob(); }).then(function(blob){
+      var f = cover ? new File([blob], s.name + '-cover.jpg', { type: 'image/jpeg' }) : new File([blob], s.name + '.mp4', { type: 'video/mp4' }); btn.disabled = false;
       if (navigator.canShare && navigator.canShare({ files: [f] })) { btn.file = f; return share(btn); }
       var u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function(){ URL.revokeObjectURL(u); }, 60000); flash(btn, 'Downloaded');
@@ -598,9 +598,9 @@
   }
   // the share sheet needs a fresh tap: if the download took too long, the file is kept and the next tap opens it straight away
   function share(btn){
-    navigator.share({ files: [btn.file] }).then(function(){ flash(btn, 'Saved'); }, function(e){ btn.textContent = e && e.name === 'NotAllowedError' ? 'Ready: tap to save' : 'Save video'; });
+    navigator.share({ files: [btn.file] }).then(function(){ flash(btn, 'Saved'); }, function(e){ btn.textContent = e && e.name === 'NotAllowedError' ? 'Ready: tap to save' : (btn.lab || 'Save video'); });
   }
-  function flash(btn, t){ btn.textContent = t; setTimeout(function(){ if (btn.textContent === t) btn.textContent = 'Save video'; }, 1800); }
+  function flash(btn, t){ btn.textContent = t; setTimeout(function(){ if (btn.textContent === t) btn.textContent = btn.lab || 'Save video'; }, 1800); }
   function mb(n){ return (n / 1048576).toFixed(1) + ' MB'; }
   // a reel's sources (Turns Out, owner 31 Oct 2026: every fact in two sources): listed on the card, and one comment text to paste under the post
   function sources(box, list){ box.textContent = ''; box.hidden = false; box.appendChild(el('small', null, 'Sources'));
@@ -702,7 +702,9 @@
     else { if (s.cover) { var im = document.createElement('img'); im.src = s.cover; im.alt = 'Cover of ' + label(s); d.appendChild(im); } d.appendChild(el('p', 'gone', 'Video removed 15 days after upload. The post text and sources stay.')); }
     var cap = el('div', 'cap wait', 'Loading post text…'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), src = el('div', 'src'); copy.type = 'button'; copy.disabled = true; src.hidden = true;
     copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
-    row.appendChild(copy); d.appendChild(cap); d.appendChild(row); d.appendChild(src);
+    row.appendChild(copy);
+    if (s.cover) { var cv = el('button', 'btn g', 'Save cover'); cv.type = 'button'; cv.lab = 'Save cover'; cv.addEventListener('click', function(){ save(s, cv, true); }); row.appendChild(cv); }
+    d.appendChild(cap); d.appendChild(row); d.appendChild(src);
     fetch(s.info || '/reels/' + s.name + '.json', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; }).then(function(j){
       var m = Object.assign({}, j, meta);
       if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false; } else cap.textContent = 'No post text for this reel.';
@@ -904,12 +906,13 @@
       b.appendChild(el('div', 'when' + w[1], w[0])); b.appendChild(nm);
       if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a reel's one-line description
       b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size))); }
-    var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), tick = el('button', 'btn tick post', 'I posted it');
+    var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), cv = s.cover ? el('button', 'btn g', 'Save cover') : null, tick = el('button', 'btn tick post', 'I posted it');
     copy.type = 'button'; copy.disabled = true; dl.type = 'button'; tick.type = 'button'; tick.disabled = !trackOk; if (!trackOk) tick.title = 'Upload tracking is unavailable right now';
     dl.addEventListener('click', function(){ save(s, dl); });
+    if (cv) { cv.type = 'button'; cv.lab = 'Save cover'; cv.addEventListener('click', function(){ save(s, cv, true); }); }
     tick.addEventListener('click', function(){ tick.disabled = true; mark(s.name, true).then(rerender, function(){ tick.disabled = false; tick.textContent = 'Try again'; }); });
     copy.addEventListener('click', function(){ (navigator.clipboard ? navigator.clipboard.writeText(cap.textContent) : Promise.reject()).then(function(){ copy.textContent = 'Copied'; copy.classList.add('done'); setTimeout(function(){ copy.textContent = 'Copy post text'; copy.classList.remove('done'); }, 1800); }, function(){}); });
-    row.appendChild(copy); row.appendChild(dl); row.appendChild(tick);
+    row.appendChild(copy); row.appendChild(dl); if (cv) row.appendChild(cv); row.appendChild(tick);
     // the post text sits on the card, above the buttons (owner, 24 Oct: "Where?"). It comes from the reel's NAME.json, asked for even when the
     // list did not link it (a re-render can briefly hide it from a cached list), with one retry; fields in captions.json win
     cap.textContent = 'Loading post text…'; cap.classList.add('wait'); cap.hidden = compact; b.appendChild(cap);
