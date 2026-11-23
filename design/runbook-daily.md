@@ -11,7 +11,11 @@ in this order:
    file (`node scripts/media/from-log.mjs <run id> <dir>` makes the files). Study each into design/references.md (techniques only, never a
    piece), then `refs-done` with `{"ids":[..],"state":"studied","note":"what was taken"}` (`"used"` + the reel name once a reel uses it).
 1. Dispatch "Owner answers" with action `read` (the same dispatch as step 0), act on each ANSWER line, then `clear` the ids acted on.
-2. Audit card: numbers from the latest "Instagram collect" run's AUDIT_CHANNELS line, plan from its AUDIT_SIGNALS line, add only the lesson;
+2. Audit card FIRST (owner, 23 Nov 2026: a skipped audit went unseen): write and dispatch the card BEFORE building any reel (step 4). The app shows
+   "Audit: done at HH:MM · web ESCALATE, tech OK · n changes" at the top of Journey (card lines "ESCALATE web" / "OK tech" and points starting
+   "Change: ..." feed it; the same-day card id is audit-YYYY-MM-DD) and "Audit: skipped today" in amber after 12:00 IST with no card. If the card
+   cannot be written (no collect run, workflow failing), do NOT carry on silently: post the reason to Owner answers `add` (the "Needs you" list)
+   as "Audit skipped: <why>" and then continue with step 3 and 4. Numbers:  from the latest "Instagram collect" run's AUDIT_CHANNELS line, plan from its AUDIT_SIGNALS line, add only the lesson;
    dispatch "Audit card" (kind audit). Results checks (owner, 7 Nov 2026): the card MUST lead with the run's AUDIT_CHECKS lines
    (scripts/audit-numbers.mjs, targets in design/targets.md): "ALARM/OK <ch>" (last 7 reels vs target and best window), "ESCALATE <ch>"
    (ALARM two days running), "EXPERIMENT ... → WIN | LOSE | TOO EARLY" and "PROMOTE / DROP", and the RULE lines flagged "question it". The

@@ -13,6 +13,7 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
 - No app work until reach improves (owner, 5 Nov 2026): only fixes for things that break, and the owner's "Feedback" box (home page under the
   cards; D1 table owner_feedback; /api/feedback; read and marked done through "Owner answers", design/runbook-daily.md step 0).
 - Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
+- Today's audit line (owner, 23 Nov 2026): top of Journey, from /api/cards (templates/index.html `auditShow`): grey "not run yet", green "done at HH:MM · <ch> ESCALATE|ALARM|OK · n changes", amber "skipped today" after 12:00 IST; tap opens Inbox. "Mark read" deletes the card, so its summary is kept on that device only.
 - The app reads like a mobile app (owner, 14-15 Nov 2026): a bottom tab bar **Journey | Reels | Growth | Inbox** (the last one used is
   remembered; Journey on first open), and a side menu (top left) with the same sections, Claude's replies to Feedback one at a time ("Mark read",
   "Next"; /api/feedback/<id>/read), notifications, the GitHub minutes and Sign out. Inbox holds Needs you, the cards, the Feedback box and References (owner, 20 Nov 2026: a link, a screenshot or a short clip up to 50 MB with a note and channel; files in private R2 under refs/; /api/refs; Claude reads them with Owner answers `refs`, design/runbook-daily.md step 0).

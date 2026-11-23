@@ -270,3 +270,9 @@ Format (at most 6 lines):
 - App: Inbox → "Previews to review (n)" at the top (templates/showreels/previews.json): channel, idea, reference techniques, the clip, Stills, and Like / Not this, stored as Feedback "Preview <name>: Like|Not this" (D1 owner_feedback, existing /api/feedback); counted in the Inbox badge until answered. No Worker change. Showreel "Keep the preview" also keeps <name>-stills.png in R2 study/.
 - Left: after the merge, Showreel (seconds 11.5) for scripts/previews/{web-typescale,c3-poster,tech-ramsqueeze}.json puts the clips in R2 (v/study/, 15-day rule). The daily run reads the answers in Owner answers.
 - For the other account: a preview is a Showreel config with "seconds"; the app reads /reels/study/<name>-preview.mp4 and -preview-stills.png.
+
+## 2026-11-23 · claude/app-audit-status · "Audit: ..." status line at the top of Journey (owner's ask ~07:45 IST)
+- Done: templates/index.html: one line above the reels from /api/cards (no Worker change, no new secrets): grey not run yet / green done at HH:MM · channel states · n changes / amber skipped today (after 12:00 IST); tap opens Inbox at the audit card. design/runbook-daily.md step 2: the audit card is written BEFORE any reel; if it cannot be, post "Audit skipped: <why>" to Owner answers.
+- Limits: "running" is not shown (nothing in the app can tell); after "Mark read" the green line comes from this device's saved summary only.
+- Left: the audit card should carry lines "ESCALATE web" / "OK tech" and points starting "Change:" for the summary to fill.
+- For the other account: the renovation session can restyle `.astat`.
