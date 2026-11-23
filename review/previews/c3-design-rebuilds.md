@@ -63,6 +63,21 @@ P1: t=18-21 · thumbnail · a faint menu shrunk to a pale card → larger (about
 
 ENHANCE: split the first frame down the middle of the menu: left half as the pale before, right half dark, with "Hard to read." on top, so the cover itself is the before/after.
 
+### B, render 2 (second look, 24 Nov 2026 03:50 IST; real MP4, 21.2 s, rendered from main 8808421)
+
+CRITIC (render 2): READY
+
+Detail (render 2): judged on the real MP4 at 390 px (fps 5 for 0-3 s, fps 2 for the rest, 30 fps frame differences around each fix), the render's word times and the voice-band level. Not heard: tone, stress, clipped word ends, how the effects sit under the voice. The CV was not re-scored (no new file).
+- First-look faults: rings now sit clear of every line (0.4-4.3 s, cover 0.6 s included): fixed. "MIN 4.5 : 1" is about 14 px at phone size, the second line of the card: fixed. Checker ends on PASS: fixed. Tail: last change 18.6 s, then a slow push to 21.2 s (2.6 s): fine.
+- D1 voice, measured: 49 words, speech 0.0-16.1 s = 3.05 words/s while speaking, 2.3 over the reel; each sentence 2.4-3.6 words/s. Audible pauses after the sentences: 0.5, 0.5, 0.7, 0.5, 0.6, 0.6 s, plus a breath at each comma; no sentence starts within 0.15 s of the last. -14.0 LUFS, LRA 1.7.
+- D2 sync (word against the first frame that moves): "darken" 7.46 s, words start to darken 7.40-7.47 s. "lighten" 9.17 s, board selected 9.0 s, lightens 9.1-9.4 s. "ratio" 11.18 s, checker card lands 10.97-11.1 s. "four" 12.57 s, "MIN 4.5 : 1" appears 12.47 s. "read" 15.49 s, chip 15.4 s; BEFORE flash 16.2 s, thumbnail 16.8-17.1 s, ticks 17.5-18.0 s, frame and "CONTRAST · PASS" 18.5 s. All on the word.
+- D3 before: pale grey on cream, title and dish names readable, small lines only just; a real "soft and elegant" choice. PASS.
+- D4: both shown, tagged, inside the safe zone, held 2.6 s; the thumbnail covers no line. The before thumbnail is a pale card whose title can just be made out; for this topic that is the point.
+- Q2 small notes, not blocking: the checker card's corner touches the last letter of "brewed slow with fresh ginger" (11.0-15.6 s); the two hook chips touch edge to edge (0.9-4.3 s); the AFTER tag sits on the white cup.
+- Q3 small note: the card shows FAIL at 11.0-11.4 s on a menu that is already dark on light, then PASS. Fix 2 ("lighten the board a touch") is honest but hard to see at phone size; the selection handles and chip carry it.
+
+PREMIUM (render 2): animation 7.5/10 (t 7.40 sweep and darken, 9.0 selection, 16.2-17.1 flash and shrink; t 9.1-9.4 the lighter board is faint), cleanliness 7.5/10 (t 0.4-4.3 rings clear; t 11.0-15.6 card corner on one letter), premium 7.5/10 (t 18.6-21.2 the two-state frame with ticks and PASS); voice 7.5/10 (measured and read, not heard); before 7/10; weakest: t 9.1-9.4, fix 2 is nearly invisible. Fix for the next one: let the board lighten a little more (or sweep a light band across it as it changes), move the checker card 14 px right and down, and show the card's reading as "..." until the dropper has sampled.
+
 ## For both
 - The owner's two points: the before is answered in both (CV 4 to 7.5, menu 4.5 to 7). The voice wording is answered on paper (4.5 to 7, 4 to 7.5); whether it now SOUNDS natural is not something any session here can confirm. The owner should listen to the CV preview once (Inbox, Previews) before the other five are rebuilt this way.
 - "Aligned": the old reels were already anchored on words. The one real miss in the new CV is fix 3 (1.0 s ahead of "lighter").
