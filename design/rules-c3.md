@@ -120,3 +120,5 @@ rule 5 already; the c3 channel is OK (median reach 1,103 vs target 500). E19 (gu
 **14 Nov audit:** PROMOTE c3-journey printed again (2 WINs); rule 5 since 12 Nov. c3 OK. E19 so far: Eiffel 1,141 (LOSE at 24 h, -1%), Taj 135 at
 ~9 h (posted 15:56, late); Niagara today is try 3, verdict Sun 15 (the Turns Out run reads it).
 
+**23 Nov audit:** c3 ALARM (median reach 132 over the last 7 vs target 500; best window 1,157) and ESCALATE (second day running). The answer is already running: the design series from 21 Nov (stop-centring 366 vs 131 at 24 h, thumb-targets reel 1,112 reached on 22 Nov). PROMOTE c3-journey is rule 5 since 12 Nov. DROP c3-guess (2 LOSEs: Eiffel -1%, Taj -88%) is in design/playbook.md.
+

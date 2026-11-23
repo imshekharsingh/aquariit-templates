@@ -428,3 +428,4 @@ already in rules-web.md 1-6 and 15, but the last 2 weeks drifted to developer-on
   End the caption with "Save it for ..., or send it to whoever builds your UI."
 Read: 24 h and 72 h reach vs the web median (~1,650). WIN = 2 of 3 above 3,000. Keep the series on a WIN; on a LOSE, the topic universality,
 not the format, is the lever (hand to the research round).
+- 23 Nov: web 13:00 median reach 4,744 vs 2,507 at 19:00, yet the 7-reel median is 1,426 against 2,000: five page-behaviour fixes in a row read flat, so today's reel changes the topic type to a phone-edge bug (web-phone-edge).
