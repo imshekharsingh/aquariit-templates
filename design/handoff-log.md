@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-23 21:30 IST · claude/r2-promote-ffmpeg · R2 promote: ffmpeg install retries (owner chat job follow-up)
+- Done: the first promote run (45219340856) failed before touching R2: the 180 s ffmpeg apt install timed out on a slow mirror. Promote step now retries the install up to 3 x 420 s (25 min step limit). Nothing was written to R2.
+- Left: after the merge, dispatch R2 promote again (src study/showreel-tech-ai-memory-r3-preview, dst showreel-tech-ai-memory, backup study/showreel-tech-ai-memory-r1-backup); reel-fetch must show ~30.73 s.
+- For the other account: none.
+
 ## 2026-11-23 21:20 IST · claude/tech-ai-memory-promote-r3 · tech ai-memory: preview r3 becomes the posted reel (owner chat job, size S)
 - Done: owner's choice (23 Nov): "I'll post R3". New `promote <src> <dst> [backup]` in scripts/r2.sh and an R2 workflow action `promote` (inputs src, dst, backup): backs up the old MP4 and cover, writes src to v/<dst>.mp4 (moov first, duration checked) with a cover, reads it back. Review file item 13 notes the posted file is preview r3. r3 leaves Inbox -> Previews (previews.json).
 - Left: dispatch R2 promote after the merge (src study/showreel-tech-ai-memory-r3-preview, dst showreel-tech-ai-memory, backup study/showreel-tech-ai-memory-r1-backup), then `node scripts/reel-fetch.mjs showreel-tech-ai-memory` shows ~30.73 s. Captions entry unchanged.
