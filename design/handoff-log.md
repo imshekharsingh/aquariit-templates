@@ -6,6 +6,13 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 02:35 IST · claude/critic-web-homebar2 · critic on the web-homebar2 preview (hook kit, rule 20)
+- Done: judged the real MP4s (preview, showreel-45-homebar, showreel-35-list); result in review/previews/web-homebar2.md. No scene or posted reel changed.
+- Verdict: NOT READY. Before 6.5 / 8 / 6.5, after 6 / 6 / 6.5 (animation / cleanliness / premium). The new hook does more but explains less.
+- Weakest: 0.4-2.4 s. No tap shown, the fall takes 0.1 s and reads as a glitch, the home screen is a dull grey grid for 1.9 s, "gone!" prints over the subtitle at 1.3-1.6 s (the cover frame).
+- Good and worth keeping: the hatched SWIPE ZONE on "under" (3.0 s), the fall on "swipes" (5.1 s), the payoff.
+- Next: kit fix in kithook.js (KM.away needs a visible tap, a 0.35 s swipe up, a reopen; KM.react kept out of the subtitle band), then one new preview. Sound was measured (-14.0 LUFS), not heard.
+
 ## 2026-11-24 02:10 IST · claude/tech-kit-r4, claude/web-hook-kit, claude/c3-before-after, claude/c3-natural-before · premium program: kit lifts for all three channels (owner chat job, size L)
 - Done, tech (#1205): kit3d.js countTo, reframe, server rack faces; sound.py "cutsound" (swell + low hit on each shot change, a riser on the payoff); rules-tech.md M7-M10; a preview can carry its own scene (techreel/previews/<slug>-<tag>.json), so scenes/ai-memory-r4.html renders only with preview=r4.
 - Done, web (#1206): scripts/explainer/kithook.js (KM.black, bugs, away, react, meter) between its own markers; the starter uses it and the black look; stills prints HOOK BUG; rules-web.md rule 20; scripts/previews/web-homebar2 is the example.
