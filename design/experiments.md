@@ -413,3 +413,18 @@ drop at 2 LOSEs (back to 25-35 s journeys). Verdict Sun 15 Nov, written here and
 - First reel: showreel-c3-viking-steps (Vikings' horns, in the UI look; the engraved showreel-c3-viking-horns was removed before posting, owner 21 Nov).
 
 - 23 Nov: a phone-edge topic with the screen reacting to each tap: BEFORE sags on every tap (the swipe line wins), AFTER pads the bar and lifts the button (showreel-45-homebar; web-phone-edge, read at 24 h and 72 h vs the web median).
+
+## E30 · @webin20sec: the "wiggle family" (owner, 23 Nov 2026: "web reels aren't getting as much views lately ... can we try something like number wiggle and similar keywords and hashtags where it went past 150k, designed with current kit"; 24-26 Nov, 3 reels)
+Why: Nº 09 "Why do your numbers wiggle when they change?" (31 Oct) is still the one breakout (~100K reach, 74% hold, 2,296 saves). Its shape is
+already in rules-web.md 1-6 and 15, but the last 2 weeks drifted to developer-only topics. This test copies its exact anatomy, not just the rule:
+- Topic: a JITTER every phone user has watched happen (something on screen twitches, jumps or wobbles), fixed by ONE CSS line. Pick, in order:
+  (1) bold-on-hover/tap text that shoves its neighbours sideways (reserve the bold width), (2) the page that jumps sideways when a popup or
+  menu opens because the scrollbar vanishes (`scrollbar-gutter: stable`), (3) a spinner or icon that wobbles instead of spinning true
+  (`transform-origin` / box centring). Check each fix on MDN + BCD.
+- Frame 0: the jitter is already happening, large, centre frame; hook "Why does your X <jump/wobble>?" in at most 8 words.
+- Same kit and look as Nº 09 era: current kitmotion, dark theme, BEFORE jitters / AFTER holds still, ~18-22 s, fix typed by ~8 s.
+- Post text copied from Nº 09's pattern: keywords = the CSS property first, then "CSS <thing> jumping", "CSS layout shift", "CSS tips",
+  "UI design"; hashtags exactly Nº 09's set (#csstips #css #typography #uidesign #frontenddev, swapping #typography for #webdesign when not type).
+  End the caption with "Save it for ..., or send it to whoever builds your UI."
+Read: 24 h and 72 h reach vs the web median (~1,650). WIN = 2 of 3 above 3,000. Keep the series on a WIN; on a LOSE, the topic universality,
+not the format, is the lever (hand to the research round).

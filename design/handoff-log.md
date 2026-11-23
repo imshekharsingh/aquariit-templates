@@ -13,6 +13,9 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-23 07:30 IST · main · owner chat: web "wiggle family" test (E30)
+- Owner: web views are down; try reels like the number-wiggle breakout with similar keywords and hashtags, on the current kit. Added E30 in design/experiments.md: 3 jitter-fix reels 24-26 Nov (bold-text shove, scrollbar page jump, wobbling spinner), Nº 09's anatomy, keywords and hashtags. Today's web reel (homebar) stays as built.
+- Tech ai-memory: owner said "Go ahead for tech"; relayed to session_01AYvWRjY38sTbizkhdraaeY for its one render; critic 11:17.
 ## 2026-11-23 02:45 IST · main · owner chat: previews reviewed, AI images parked
 - Owner on the app previews (Inbox -> Previews): web and Turns Out "the reference looked quite better". Main gap: the reference uses AI-generated photo imagery; ours is code-drawn.
 - Owner decision: "For now continue with what we have been doing, take note and we will go another round on this approach." So: rules unchanged (code-drawn), AI imagery is a parked proposal for a later round (research: design/research-jump-2026-11-23.md, ~$15-30/mo image key, AI-info label, no stated reach penalty).
