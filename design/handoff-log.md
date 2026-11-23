@@ -299,3 +299,8 @@ Format (at most 6 lines):
 - Done: showreel-45-homebar now uses the black look of the top three reels (numbers 165K, list 10K, popup 6.2K): near-black ink, no blooms, neutral surfaces (KM.VIVID.s = 0), no coloured or glowing phone frame, one gold accent word in the hook; topic, voice, captions, safe zones unchanged. Local preflight clean (CONTRAST 5.7:1, SUBJECT FILL 41%, SAFE ZONE ok, OVERLAP none, FLOW ok). Owner rule: owner-feedback.md line, rules-web.md rule 19, new Output QA BLACKBG (median background brightness outside the subject at most 32; FAIL for palette "black", WARN otherwise).
 - Left: render 3 (owner-approved) after the merge, Output QA, item 13, then the critic session.
 - For the other account: new web scenes set KM.WORLDS.black as in homebar.html and write "palette": "black"; coloured worlds are retired for web.
+
+## 2026-11-23 · claude/critic-homebar-r3 · Reel critic: showreel-45-homebar render 3 (black look)
+- Done: watched render 3 (run 45109878508) as a viewer: stills every 1 s from the scene, crops of the end, the render's voice and sound lines, every web question in design/critic.md. Item 20: CRITIC: READY (HUE soft: owner decides). Only Output QA HUE failed (35 deg vs 41-gradient 65 deg); on the near-black frame no viewer sees it. Nit: "ONE LINE" chip touches a dimmed check at 12-13 s, not visible at phone size.
+- Left: the owner decides on posting render 3 or a render 4; no render started here. Item 13 still names render 2's numbers (render 3's are in item 20's Detail).
+- For the other account: stills.mjs needs PW_FROM=/opt/node22/lib/node_modules/ in a session without node_modules.
