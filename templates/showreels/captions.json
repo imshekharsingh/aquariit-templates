@@ -1792,7 +1792,7 @@
    "#uidesign"
   ],
   "channel": "web",
-  "concept": "padding-bottom: env(safe-area-inset-bottom) with viewport-fit=cover (a fixed bottom button sits under the phone's home bar; every tap lands on the swipe line and the screen sags; the fix lifts the button clear); dark look, saffron world",
+  "concept": "padding-bottom: env(safe-area-inset-bottom) with viewport-fit=cover (a fixed bottom button sits under the phone's home bar; every tap lands on the swipe line and the screen sags; the fix lifts the button clear); black look (rule 19)",
   "about": "23 Nov: the owner declined to post darkflash (44), so today's web reel is new; a phone-edge topic everyone with a modern phone has met, visible on mute (rule 15)",
   "experiment": {
    "id": "web-phone-edge",

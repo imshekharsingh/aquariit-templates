@@ -8,8 +8,8 @@
  "grain": 2,
  "vignette": false,
  "cover": 1.6,
- "style": "Dark look, saffron colour world, whole frame, calm (rule 17). A phone-bottom topic: a fixed bottom button sits under the home bar; BEFORE the screen sags on every tap (the home swipe wins), AFTER the bar's bottom padding grows with env(safe-area-inset-bottom) and the button rises clear",
- "palette": "saffron",
+ "style": "Black look (rule 19): near-black, no frame or glow, one gold accent word, whole frame, calm. A phone-bottom topic: a fixed bottom button sits under the home bar; BEFORE the screen sags on every tap (the home swipe wins), AFTER the bar's bottom padding grows with env(safe-area-inset-bottom) and the button rises clear",
+ "palette": "black",
  "voice": {
   "text": "Why does your button hide? Stuck to the bottom, it sits right under the swipe line. Tap it and the phone swipes home instead. The fix: pad the bar with the safe area inset. Now the button sits clear, and one tap lands.",
   "voice": "af_heart",

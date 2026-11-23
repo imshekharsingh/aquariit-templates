@@ -40,6 +40,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'fill': '15 Nov Turns Out Mona Lisa "use 2.5D with such images to make it more available on the screen (as it seems to be centered mostly)"',
     'calm': '15 Nov web "too wiggly" (Mon / Tue reels: constant drift, wobble, bobbing panes, a busy camera)',
     'focus': '20 Nov web "the colour combination doesn\'t give a feeling that any thought was put into it" (about eight unrelated hues, filler tiles more vivid than the subject)',
+    'blackbg': '23 Nov web owner grid: the three plain black reels (165K, 10K, 6.2K) beat every coloured, framed reel (1.7K-2.9K); web reels use the black look, never a coloured frame or glow (rules-web.md rule 19)',
     'hue': '15 Nov web "main frame where we see the changes seem to show similar colour grading so doesn\'t look different from other videos"',
     'sheen': '15 Nov tech "covering the wave like coming in from left top corner to the right of the frame, it\'s happening in all videos" (a glass sheen swept the hero every 2.7 s)',
     'hero': '15 Nov tech "I don\'t see much happening animation wise around watch in 5 ATM video" (a small static watch, only the water moved)',
@@ -65,7 +66,7 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          split_ratio=1.8, split_min=.05, split_op=.9,
          fill_y=(.20, .66), fill_g=6, fill_line=.25, fill_min=.80, fill_frac=.25,
          calm_px=20, calm_band=(288, 392), calm_med=.035, calm_mean=.05, calm_step=.10,
-         hue_s=.25, hue_v=.2, hue_min=40, hue_last=3,
+         hue_s=.25, hue_v=.2, hue_min=40, hue_last=3, black_v=32,
          focus_s=.3, focus_v=.3, focus_share=.05, focus_gap=30, focus_hues=3, focus_pad=1.0,
          sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=4,
          hero_lag=.5, hero_shift=3, hero_px=30, hero_on=.02, hero_active=.55, hero_w=.33, hero_inset=.2,
@@ -893,6 +894,22 @@ def focus_check(F, fps, qa, css_w=540):
          f'(the subject must be higher)' + (': ' + '; '.join(bad) if bad else ''))
 
 
+def black_check(F, fps, c, qa, mp4):
+    """BLACKBG (23 Nov 2026, web only; rules-web.md rule 19; owner: the three plain black reels beat every framed, coloured one): the background
+    outside the subject is near black. Median brightness (max channel, 0-255) of every pixel outside the recorded subject box, every 0.5 s (text is
+    too few pixels to move a median); the median over the samples must stay at or under black_v. FAIL on a reel whose config palette is "black"
+    (or qa.black true); a WARN on any other web reel, so the old coloured looks are still measured but not blocked."""
+    rows, src = demo_boxes(mp4, qa); h, w = F.shape[1:3]; sc = w / 540; V = []
+    ks = [(min(len(F) - 1, int(round(r[0] * fps))), r[1:]) for r in rows] if rows[0][0] is not None else [(k, rows[0][1:]) for k in range(0, len(F), max(1, int(round(fps * .5))))]
+    for k, b in ks:
+        l, t, r, bt = [int(round(v * sc)) for v in b]; m = np.ones((h, w), bool); m[max(0, t):bt, max(0, l):r] = False
+        V.append(float(np.median(F[k].max(-1)[m])))
+    if not V: line('BLACKBG', 'SKIP', 'no samples'); return
+    med = float(np.median(V)); must = c.get('palette') == 'black' or qa.get('black'); bad = med > T['black_v']
+    line('BLACKBG', 'FAIL' if bad and must else 'WARN' if bad else 'PASS', f'background outside the subject: median brightness {med:.0f} of 255 over {len(V)} samples (at most {T["black_v"]}'
+         + ('' if must else '; not a black-look reel, so only a warning') + ')')
+
+
 def subj_at(rows, t):
     """the recorded subject box nearest to t (rows: [t, l, t, r, b] every 0.5 s)"""
     best = min(rows, key=lambda r: abs((r[0] or 0) - t)); return best[1:]
@@ -1039,8 +1056,8 @@ def main():
     edge_checks(F, fps, qa.get('edges_ok', []), heard, mp4)
     if ch == 'c3': grade_check(F, fps, cover, qa.get('subject') or (qa.get('guess') or {}).get('box'), (qa.get('guess') or {}).get('css_width', 540))
     else: line('GRADE', 'SKIP', 'Turns Out only')
-    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps); spread_check(F, fps); demo_check(F, fps, mp4, qa); hue_check(F, fps, mp4, qa, name); focus_check(F, fps, qa)
-    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only'); line('SPREAD', 'SKIP', 'web only'); line('DEMO', 'SKIP', 'web only'); line('HUE', 'SKIP', 'web only'); line('FOCUS', 'SKIP', 'web only')
+    if ch == 'web': bulk_check(F, fps); vibrancy_check(F, fps); spread_check(F, fps); demo_check(F, fps, mp4, qa); hue_check(F, fps, mp4, qa, name); focus_check(F, fps, qa); black_check(F, fps, c, qa, mp4)
+    else: line('BULK', 'SKIP', 'web only'); line('VIBRANCY', 'SKIP', 'web only'); line('SPREAD', 'SKIP', 'web only'); line('DEMO', 'SKIP', 'web only'); line('HUE', 'SKIP', 'web only'); line('FOCUS', 'SKIP', 'web only'); line('BLACKBG', 'SKIP', 'web only')
     if qa.get('guess'): guess_check(F, fps, qa['guess'], heard)
     elif ch == 'c3' and (c.get('experiment') or {}).get('id', '').startswith('c3-guess'): line('GUESS', 'FAIL', 'a guess reel without "qa": {"guess": {answer, reveal, box}} in its config')
     else: line('GUESS', 'SKIP', 'not a guess reel')

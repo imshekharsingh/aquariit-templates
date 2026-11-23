@@ -294,3 +294,8 @@ Format (at most 6 lines):
 - Limits: "running" is not shown (nothing in the app can tell); after "Mark read" the green line comes from this device's saved summary only.
 - Left: the audit card should carry lines "ESCALATE web" / "OK tech" and points starting "Change:" for the summary to fill.
 - For the other account: the renovation session can restyle `.astat`.
+
+## 2026-11-23 · claude/homebar-black · homebar redone in the black look (owner chat: "Redo homebar in black today and run the critic right after")
+- Done: showreel-45-homebar now uses the black look of the top three reels (numbers 165K, list 10K, popup 6.2K): near-black ink, no blooms, neutral surfaces (KM.VIVID.s = 0), no coloured or glowing phone frame, one gold accent word in the hook; topic, voice, captions, safe zones unchanged. Local preflight clean (CONTRAST 5.7:1, SUBJECT FILL 41%, SAFE ZONE ok, OVERLAP none, FLOW ok). Owner rule: owner-feedback.md line, rules-web.md rule 19, new Output QA BLACKBG (median background brightness outside the subject at most 32; FAIL for palette "black", WARN otherwise).
+- Left: render 3 (owner-approved) after the merge, Output QA, item 13, then the critic session.
+- For the other account: new web scenes set KM.WORLDS.black as in homebar.html and write "palette": "black"; coloured worlds are retired for web.

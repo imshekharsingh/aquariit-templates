@@ -48,7 +48,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #hook{left:34px;top:158px;font-weight:var(--hw);font-size:50px;line-height:.98;letter-spacing:var(--ht)}
 #hook .ln{display:block;white-space:nowrap}
 #hook .ln > span{display:inline-block;transform-origin:0 80%}
-#hook .acc{color:#ff8f7a}
+#hook .acc{color:var(--acc)}
 #code{left:30px;top:128px;width:450px;height:132px;border-radius:20px;background:var(--frost);box-shadow:var(--edge),var(--lift);overflow:hidden;opacity:0}
 #tagt{position:absolute;left:14px;top:10px;font:500 15px/1 var(--m);letter-spacing:.14em;white-space:nowrap;color:var(--red)}
 #cd{position:absolute;left:22px;top:18px;font:500 20px/1.45 var(--m);white-space:pre;color:var(--paper)}
@@ -75,7 +75,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 </div></div>
 <div id="ghost" class="a" aria-hidden="true">env(safe-area-inset-bottom)</div>
 <div id="lbl" class="a">Nº 45 · HOMEBAR</div>
-<div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span class="acc">button</span> <span class="acc">hide?</span></span></div>
+<div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span>does</span> <span>your</span></span><span class="ln"><span class="acc">button</span> <span>hide?</span></span></div>
 <div id="code" class="a"><div id="tagt">BEFORE · IT BREAKS</div><div id="cd"></div></div>
 <svg id="lead" class="a" aria-hidden="true"><line id="ll" x1="0" y1="0" x2="0" y2="0"/></svg>
 <div id="lab" class="a">ONE LINE</div>
@@ -581,7 +581,13 @@ var KM = (function(){
   KM.sfx = sfx; KM.sfxRun = sfxRun; KM.mark = mark; KM.enter = enter; KM.leave = leave; KM.VARIANTS = VARIANTS; KM.variant = variant; KM.cascade = cascade; KM.el = el; KM.sizeOf = sizeOf;
 })(KM);
 /*kitsfx:end*/
-  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, TH = KM.theme('dark', 'saffron');
+  var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, TH = (function(){
+    // 23 Nov 2026 (owner: the three plain black reels beat every framed, coloured one; rules-web.md rule 19): the BLACK look = near-black ink, no light blooms,
+    // neutral surfaces (no vivid lift, no coloured phone frame or glow), one accent (gold) on one hook word. window tokens only; the kit is untouched.
+    KM.VIVID.s = 0;
+    KM.WORLDS.black = { d: { warm: '#ff5f6d', cool: '#5fd8c8' }, c: { ink: '#060608', dim: '#c9c5bd', acc: '#ffc247', red: '#ff5f6d', ctl: '#34302a', raise: '#2c2822', skel: '#1f1d19', pg: '#141416', card: '#2a2418', on: '#1d1102' },
+      v: { glass: '#17171b', frost: '#17171b', glow: 'rgba(255,194,71,.0)', soft: 'rgba(255,194,71,.1)', ring: 'rgba(255,194,71,.55)' }, blooms: [] };
+    return KM.theme('dark', 'black'); })();
   var TEXT = "Why does your button hide? Stuck to the bottom, it sits right under the swipe line. Tap it and the phone swipes home instead. The fix: pad the bar with the safe area inset. Now the button sits clear, and one tap lands.", DUR = 15.4, HOOK_N = 5, HOOK_LINES = 2, FIX_S = 3;
   // the code: the line the reel teaches (the <b> part is the fix, swept with the highlight); the ghost copy glides into the page
   var CODE = '<span class="dim">.bar {</span>\n  padding-bottom:\n  <b>env(safe-area-inset-bottom);</b>';

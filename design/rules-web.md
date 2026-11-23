@@ -169,6 +169,8 @@ ask) as the day's one experiment. E18 read today: KEPT (rule 12). PROMOTE detail
     "subject": [l, t, r, b], "from": t0, "to": t1}} in CSS px (a reel without it gets a WARN). Run it before the render with scripts/qa/frames.mjs + look.py.
     Calibration (snapback frames, 12.3-14.8 s): the old rainbow scene subject 101 vs rest 124 = FAIL, the re-tinted one 123 vs 75 = PASS.
 
+19. **Web reels use the black look of the top three, never the coloured frame (owner, 23 Nov 2026, grid screenshot: the three plain black reels at the top of @webin20sec, numbers wiggle 165K, list feels flat 10K and page scroll behind popup 6.2K, beat every framed, coloured reel, Nº 39-44 with a purple / magenta glowing frame, 1.7K-2.9K).** Anatomy (design/experiments.md E30): plain near-black background (no light blooms, no gradient, no coloured or glowing phone frame; surfaces neutral dark, `KM.VIVID.s = 0`), a big bold left-aligned question with ONE accent-coloured word, a small UI card under it, one accent colour. Scenes set the `black` world in the scene (see homebar.html `KM.WORLDS.black`) and write `"palette": "black"` in the config; the colour worlds (saffron, berry, jade, cobalt) are retired for the web channel until the owner says otherwise. Output QA BLACKBG fails a black-look render whose background outside the subject has a median brightness over 32 of 255.
+
 ## Channel brief (moved from CLAUDE.md, 14 Nov 2026)
 - How a web reel is made: design/runbook-reels.md ("Making a web reel"); plan, series and craft bar: design/webin20sec.md. Benchmark is
   @techin20sec; the daily audit compares both (design/experiments.md, "Results log").
