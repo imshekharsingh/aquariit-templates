@@ -32,7 +32,15 @@
    "about": "Yesterday's home bar reel rebuilt on the new hook kit, same voice: the app now falls away to the home screen on the first tap (0.3 s) and again at 1.3 s, a red word marks it (gone!, again?!), a counter shows TAPS 3 / SAVED 0, the swipe zone is drawn when the voice names it, and the fix ends on SAVED · 1 TAP. The posted reel is not changed.",
    "techniques": "the bug inside the first half second and again before 2 s, reaction words where it happens, a measurement in the hook's place, the cause marked on screen, a low hit on each failure; the black look from the kit.",
    "added": "2026-11-24"
+  },
+  {
+   "name": "showreel-pv-c3-resume2",
+   "channel": "c3",
+   "title": "Turns Out kit, next step: the CV reel again",
+   "about": "The posted CV reel rebuilt on the improved design kit, same voice: the camera now goes in a little on each fix, and at the end the old CV flashes back for half a second, then stays as a small BEFORE thumbnail next to the fixed AFTER page, so the last frame shows both. The posted reel is not changed.",
+   "techniques": "a close-up on each fix, a before flash at the payoff, a BEFORE thumbnail and an AFTER tag on the last frame, paper sounds on the flip, one more second on the final frame.",
+   "added": "2026-11-24"
   }
  ],
- "v": 16
+ "v": 17
 }

@@ -142,3 +142,35 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
   DT.S.sting = function(t){ c({ t: t, k: 'swish', d: .4, g: .2, x: 270, r: .6 }); c({ t: t + .05, k: 'snap', g: .22, x: 270 }); [0, 1, 6, 7].forEach(function(n, j){ pl(t + .05 + j * .015, 200 + j * 50, n - 5, .13); }); c({ t: t + .1, k: 'shimmer', g: .08, x: 270, r: .7 }); };
   DT.S.reveal = function(t){ c({ t: t, k: 'riser', d: .9, g: .14 }); c({ t: t, k: 'snap', g: .2, x: 270 }); [0, 4, 7, 12].forEach(function(n, j){ pl(t + .02 + j * .03, 180 + j * 60, n, .13); }); c({ t: t + .05, k: 'shimmer', g: .16, x: 270, r: .6 }); };
 })();
+
+// ---- premium program, 24 Nov 2026: the before/after proof and the fix seen close ----
+// Why: on resume and card-margins the fixed design is the only thing on the last frame; a viewer who joins late or sends the frame on
+// cannot see what changed, and each fix is a small change on a small page. So:
+//   DT.keep(board)             call once when the design is in its "before" state (after fonts, e.g. after a first seek): keeps a still copy
+//   DT.proof(t, t0, o)         the payoff: at t0 the kept "before" flashes back over the design for o.flash (0.5 s) under a red BEFORE tag,
+//                              then shrinks to a tilted thumbnail at the design's lower corner (o.x, o.y, o.s; its tag beside it, inside the safe zone) and stays, while
+//                              the design itself is tagged AFTER: the last frame shows both. Returns 0..1 (the thumbnail's way down).
+//   DT.S.flip(t)               its sound: paper back, paper forward, a bright snap
+//   DT.close(CAM, t0, z, top)  a fix seen close: the camera goes in (z, default 1.1) before the fix lands and comes back after
+(function(){
+  var P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, WAS = null, TAG = null, TAG2 = null;
+  DT.keep = function(board){ if (WAS) WAS.remove(); var cs = getComputedStyle(board), c = board.cloneNode(true); c.removeAttribute('id'); c.id = 'dt-was';
+    [].forEach.call(c.querySelectorAll('[id]'), function(e){ if (/^stamp$/.test(e.id)) e.remove(); else e.removeAttribute('id'); });
+    [].forEach.call(c.children, function(e){ e.style.opacity = ''; });
+    c.style.cssText = 'position:absolute;left:' + board.offsetLeft + 'px;top:' + board.offsetTop + 'px;width:' + board.offsetWidth + 'px;height:' + board.offsetHeight + 'px;background:' + cs.backgroundColor + ';background-image:' + cs.backgroundImage +
+      ';border-radius:' + cs.borderRadius + ';overflow:hidden;transform-origin:0 0;opacity:0;z-index:27;pointer-events:none;box-shadow:0 18px 40px rgba(0,0,0,.5)';
+    c.setAttribute('aria-hidden', 'true'); board.parentNode.appendChild(c); WAS = c; WAS._b = { x: board.offsetLeft, y: board.offsetTop, w: board.offsetWidth, h: board.offsetHeight };
+    var mk = function(txt, col){ var e = document.createElement('div'); e.textContent = txt; e.style.cssText = 'position:absolute;left:0;top:0;padding:7px 12px;border-radius:9px;font:900 15px/1 var(--d);letter-spacing:.1em;color:#0b0d16;background:' + col + ';opacity:0;z-index:28;white-space:nowrap;box-shadow:0 8px 18px rgba(0,0,0,.4)'; board.parentNode.appendChild(e); return e; };
+    if (!TAG) { TAG = mk('BEFORE', '#ff6b6b'); TAG2 = mk('AFTER', '#5ee0a0'); } };
+  DT.proof = function(t, t0, o){ if (!WAS) return 0; o = o || {}; var b = WAS._b, fl = o.flash || .5, sx = o.x == null ? 44 : o.x, sy = o.y == null ? b.y + b.h + 26 : o.y, sc = o.s || .36;
+    var on = P(t, t0, t0 + .07), k = E.inOut3(P(t, t0 + fl, t0 + fl + .55)), sh = (1 - P(t, t0, t0 + .25)) * 4 * (t >= t0 ? 1 : 0);
+    WAS.style.opacity = on.toFixed(3); WAS.style.filter = 'grayscale(' + (.5 * k).toFixed(3) + ') brightness(' + (1 - .14 * k).toFixed(3) + ')';
+    WAS.style.transform = 'translate(' + (mix(0, sx - b.x, k) + Math.sin(t * 70) * sh).toFixed(2) + 'px,' + mix(0, sy - b.y, k).toFixed(2) + 'px) rotate(' + (-5 * k).toFixed(2) + 'deg) scale(' + mix(1, sc, k).toFixed(4) + ')';
+    var bx = mix(b.x + 14, o.tx == null ? sx + b.w * sc + 10 : o.tx, k), by = mix(b.y + b.h - 18, o.ty == null ? sy + 10 : o.ty, k);   // the tags sit on the design's lower edge: the chips own its top edge
+    TAG.style.opacity = on.toFixed(3); TAG.style.transform = 'translate(' + bx.toFixed(1) + 'px,' + by.toFixed(1) + 'px) scale(' + (1 + .5 * (1 - E.out3(P(t, t0, t0 + .3)))).toFixed(3) + ')';
+    var a = E.back(P(t, t0 + fl + .1, t0 + fl + .5), 2.2); TAG2.style.opacity = cl(a * 3).toFixed(3); TAG2.style.transform = 'translate(' + (b.x + b.w - 96).toFixed(1) + 'px,' + (b.y + b.h - 18).toFixed(1) + 'px) scale(' + (.6 + .4 * a).toFixed(3) + ')';
+    return k; };
+  DT.S.flip = function(t, fl){ fl = fl || .5; KM.cue({ t: t, k: 'rustle', d: .12, g: .14, x: 270 }); KM.cue({ t: t + .02, k: 'snap', g: .16, x: 200 }); KM.cue({ t: t + fl, k: 'rustle', d: .14, g: .12, x: 270 }); KM.cue({ t: t + fl + .05, k: 'swish', d: .4, g: .14, x: 160, r: .3 }); KM.cue({ t: t + fl + .5, k: 'click', g: .1, x: 120 }); };
+  // (the zoom is anchored on the design's top edge, so the design grows down into the stage and never up into the words; slow enough to be a move, not a jump)
+  DT.close = function(CAM, t0, z, top){ z = z || 1.1; top = top == null ? 396 : top; return CAM.pushIn(t0 - .9, .8, 270, top + (480 - top) / z, z).pull(t0 + .7, .7, 270, 490, 1); };
+})();

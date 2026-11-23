@@ -1,0 +1,39 @@
+{
+ "name": "showreel-pv-c3-resume2",
+ "seek": "scripts/previews/c3-resume2.html",
+ "engine": "design",
+ "dur": 17.2,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "Everything on this CV is bold. So nothing stands out. Turns out, eyes need an order. Fix one: the name, biggest. Fix two: headings, one size down. Fix three: details plain. Now it reads top to bottom.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (a CV on a desk next to a coffee cup) fills the frame by design"
+   }
+  ],
+  "subject": [
+   66,
+   400,
+   474,
+   780
+  ]
+ },
+ "note": "Preview study for the premium program (24 Nov 2026), not a post: the posted CV reel rebuilt with the before/after proof (DT.keep, DT.proof) and each fix seen close (DT.close); rules-c3.md. Same voice text. Rendered with Showreel 'seconds' into R2 study/. No captions.json entry."
+}
