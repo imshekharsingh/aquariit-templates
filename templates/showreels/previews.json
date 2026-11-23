@@ -1,34 +1,30 @@
 {
- "note": "Top: today's tech reel again on the improved kit (full reel, with voice), to compare with render 1. Below: three concepts from your 60-30-10 reference (23 Nov 2026), 11.5 s each, no voice. Tap Like or Not this; the daily run reads your answer.",
+ "note": "Tap Like or Not this: the preview leaves this list and Claude reads your answer on the next run. A preview also leaves 7 days after it was added.",
  "items": [
   {
    "name": "showreel-tech-ai-memory-r3",
    "channel": "tech",
    "title": "AI memory reel, premium pass (full reel with voice)",
    "about": "The whole 30 s reel \"Your next phone may have less memory\" on the improved tech kit, third pass after the critic's notes (subjects fill the frame, a word on screen in every shot). Render 1 is untouched; this is the benchmark for the next tech reels.",
-   "techniques": "five kinds of shot change instead of one whip (match cut, push-through, focus dissolve, light wipe, one whip), smooth motion blur, a slow push under every hold, dark epoxy chips with a cyan edge glow, rim light, words in the empty top band, each arriving its own way; the memory stream is now single chips flying into the racks."
+   "techniques": "five kinds of shot change instead of one whip (match cut, push-through, focus dissolve, light wipe, one whip), smooth motion blur, a slow push under every hold, dark epoxy chips with a cyan edge glow, rim light, words in the empty top band, each arriving its own way; the memory stream is now single chips flying into the racks.",
+   "added": "2026-11-23"
   },
   {
    "name": "showreel-pv-web-typescale",
    "channel": "web",
    "title": "One number sets every text size (×1.25)",
    "about": "A type scale stacks on top as cards (13, 16, 20, 25, 39 px) while an invented plant shop's page below grows each size live; a quick 'no scale' flip, then ×1.333 for a louder brand, then a save card.",
-   "techniques": "split screen, stacking cards with exact values, the page changing live per card, glossy silk background in the active colour, word-by-word captions with the key word in colour, a new state every ~1 s; ends on a line worth sending (research 23 Nov, P1)."
+   "techniques": "split screen, stacking cards with exact values, the page changing live per card, glossy silk background in the active colour, word-by-word captions with the key word in colour, a new state every ~1 s; ends on a line worth sending (research 23 Nov, P1).",
+   "added": "2026-11-23"
   },
   {
    "name": "showreel-pv-c3-poster",
    "channel": "c3",
    "title": "Fix this poster live: 5 fixes",
    "about": "A loud school bake-sale poster on a brick wall, its five problems ringed; one font, three sizes, one edge, grouping, one colour land as cards with values, the poster fixing itself with each; before/after flip; a 5-step save list.",
-   "techniques": "split screen, fix cards stacking with exact values (54/22/14 px, 26 px, #C8402A), the design changing live, silk background in each fix's colour, word-by-word captions, a FIX n/5 dial, ~1.5 s per fix; ends on a line worth sending (research 23 Nov, P1)."
-  },
-  {
-   "name": "showreel-pv-tech-ramsqueeze",
-   "channel": "tech",
-   "title": "The AI memory squeeze: 8 GB → 4 GB",
-   "about": "One bold number on top counts down 8 → 4 GB as memory chips lift out of a 3D phone (metal frame, open back) and fly to an amber-lit AI server; hero, macro, wide and hero shots. Fact: TrendForce's forecast for entry phones in 2026 (to re-check on the source before any post).",
-   "techniques": "split screen, the spec number changing live with the object below, one colour shift (cyan to amber) carrying the story, word-by-word captions with the key word in colour, a new state every ~0.8 s."
+   "techniques": "split screen, fix cards stacking with exact values (54/22/14 px, 26 px, #C8402A), the design changing live, silk background in each fix's colour, word-by-word captions, a FIX n/5 dial, ~1.5 s per fix; ends on a line worth sending (research 23 Nov, P1).",
+   "added": "2026-11-23"
   }
  ],
- "v": 13
+ "v": 14
 }

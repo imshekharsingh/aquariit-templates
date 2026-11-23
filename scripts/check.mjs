@@ -59,6 +59,12 @@ const caps = existsSync(join(T, 'showreels', 'captions.json')) ? readJSON(join(T
 if (caps) for (const [name, j] of Object.entries(caps)) postText(j, `captions.json ${name}`);
 
 // 4b. every reel of every channel is scheduled the same way (owner, 2 Nov 2026): a captions.json entry with "channel" and "postOn" (or "hidden"), added in the push that makes the reel
+// previews leave the Inbox by code (owner, 23 Nov 2026): the app hides a preview once the owner answered it or 7 days after its "added" date; the
+// file must not pile up either, so every entry needs "added" (YYYY-MM-DD IST) and an entry past 7 days is a warning (the daily read lists it for removal).
+{ const pvf = join(T, 'showreels', 'previews.json');
+  if (existsSync(pvf)) { const pv = readJSON(pvf, 'templates/showreels/previews.json'), t0 = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
+    for (const it of (pv && pv.items) || []) { if (!/^\d{4}-\d{2}-\d{2}$/.test(it.added || '')) err(`previews.json ${it.name}: add "added" (YYYY-MM-DD IST); the app hides a preview 7 days after it`);
+      else if ((Date.parse(t0) - Date.parse(it.added)) / 864e5 > 7) console.warn(`  ⚠ previews.json ${it.name}: added ${it.added}, past 7 days: the app already hides it; remove it from the file`); } } }
 if (caps) {
   const need = [];
   for (const dir of ['scripts/explainer', 'scripts/explainer/styles', 'scripts/channel3']) { const D = join(root, dir); for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.json')) : []) { try { const n = JSON.parse(readFileSync(join(D, f), 'utf8')).name; if (n) need.push([n, `${dir}/${f}`]); } catch {} } }
