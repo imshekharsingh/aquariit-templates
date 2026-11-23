@@ -188,6 +188,8 @@ jobs:
           [ -s out/words.json ] && echo "VOICE_WORDS=out/words.json" >> "$GITHUB_ENV"
           [ -s "out/$NAME.cover.txt" ] && COVER=$(cat "out/$NAME.cover.txt") && echo "cover at $COVER s (from the scene: its title is fully on screen)"
           ffmpeg -y -loglevel error -ss "$COVER" -i "out/$NAME.mp4" -frames:v 1 -q:v 3 "out/$NAME-cover.jpg"
+          # a designed cover (the reel's "cover" in captions.json: frame, band, text lines; owner, 23 Nov 2026) replaces the frame; none or a failure = the frame stays
+          node scripts/cover.mjs "out/$NAME.mp4" "out/$NAME-cover.jpg" --reel "${NAME%-preview}" --t-default "$COVER" || echo "::warning::the designed cover failed; the automatic frame is used"
           mkdir -p out/review && ffmpeg -y -loglevel error -i "out/$NAME.mp4" -vf "fps=2,scale=270:-1,tile=8x5" -frames:v 1 "out/$NAME-review.png"
       - name: Voice model
         # the hook voice (owner, 23 Oct: "audio similar to techin20sec"): Kokoro-82M, Apache-2.0, CPU only, no key.

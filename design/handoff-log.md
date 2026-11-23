@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-23 23:40 IST · claude/designed-covers · designed reel covers, by script (owner chat job, size S-M)
+- Done: scripts/cover.mjs builds a cover from the finished MP4: one frame, a solid band (y 1360, #0B0D12), one or two lines in Inter Display Bold (white, accent line amber #FFB23A), JPEG q 2. The recipe is the reel's `"cover": {"t", "lines", "accent"}` in templates/showreels/captions.json (accent counts from 0). Font vendored as a 55 KB Latin subset with its OFL text (scripts/cover/). scripts/r2.sh `cover <name> ['<json>']` + R2 workflow action "cover" (dst = reel name): the automatic cover is kept once as c/study/<name>-cover-auto.jpg (c/, because v/ is deleted after 15 days), the new one goes to c/<name>-cover.jpg (where the app reads covers). Showreel, Tech reel and R2 promote build the designed cover after the automatic frame; no recipe or a failure = the automatic frame stays. `node scripts/cover.mjs --check` is in npm run check. showreel-tech-ai-memory carries the owner's approved recipe (4 GB frame at 6.5 s). runbook-reels.md "Render": the cover line.
+- Left: run R2 -> cover for showreel-tech-ai-memory after the merge and look at the result (this session does it).
+- For the other account: add "cover" to the captions.json entry when you build a reel; pick a frame where the hook number or word is complete.
+
 ## 2026-11-23 21:30 IST · claude/r2-promote-ffmpeg · R2 promote: ffmpeg install retries (owner chat job follow-up)
 - Done: the first promote run (45219340856) failed before touching R2: the 180 s ffmpeg apt install timed out on a slow mirror. Promote step now retries the install up to 3 x 420 s (25 min step limit). Nothing was written to R2.
 - Left: after the merge, dispatch R2 promote again (src study/showreel-tech-ai-memory-r3-preview, dst showreel-tech-ai-memory, backup study/showreel-tech-ai-memory-r1-backup); reel-fetch must show ~30.73 s.

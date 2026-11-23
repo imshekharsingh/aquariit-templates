@@ -51,6 +51,7 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
   goes to the GitHub releases, which stay empty; scripts/r2.sh, Worker binding REELS, only the signed-in app serves it). The Showreels page
   lists them; the public "Showreel ready" issue only names the reel (no links, no post text: the app has it). The contact sheet is also the
   run's "review" artifact for 2 days (scripts/reel-status.mjs reads it).
+- Cover (owner, 23 Nov 2026: an automatic cover caught "7 GB" mid-count): give each reel a designed cover in its captions.json entry, `"cover": {"t": seconds, "lines": ["one or two lines"], "accent": 1}`; pick a frame where the hook number or word is complete, never mid-count. The render builds it (scripts/cover.mjs; no "cover" = the old automatic frame); for a reel already in the app: Actions -> R2 -> cover (dst = the reel's name).
 - Sound: reels carry their own sound (owner, 23 Oct: audio supports the hook): effects, bed and hook voice made in code from the scene's
   window.CUES (scripts/showreel/sound.py, on GitHub); the owner may add an Instagram track under it.
 - Workflows: read the workflow file first (which ref it checks out, its inputs, what it uploads). Most check out main, so a branch must be
