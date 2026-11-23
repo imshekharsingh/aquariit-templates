@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-23 20:43 IST · claude/critic-ai-memory-r3 · Reel critic: tech ai-memory preview r3 (second look)
+- Done: critic pass on the real r3 preview MP4; review/tech/showreel-tech-ai-memory.md: CRITIC (preview r3): READY, PREMIUM animation 7, cleanliness 7.5, premium 7.5.
+- Left: next tech reel: a count runs in under 1 s (3.25-5.5 s here is slow), and the opening 8 s get more than one framing. Render 1 stays the reel unless the owner swaps.
+- For the other account: nothing.
+
 ## 2026-11-23 20:25 IST · main · owner chat (end of day)
 - Decisions: stages start as soon as the one before is done (critic right after Output QA, not 11:17). Web uses the black look of the top-3 reels (homebar redone in black, posted 10:29). Patterns from any reel may be reused and tweaked (CLAUDE.md); craft skills in .claude/skills. Fable for everything that shapes posts through 25 Nov (CLAUDE.md "Models"; Daily studio + Reel critic tasks switched by the owner). "Don't park anything": premium first, cost accepted. New daily "Improvement lab" task 14:23 IST (fresh Fable session, full preview in Inbox -> Previews). App redesign live (#1184, smoke fixed #1187). Read-only reel key live (#1188): critics fetch the real MP4 (scripts/reel-fetch.mjs). GitHub artifact hosts allowed on the environment.
 - Tech ai-memory: render 1 READY (old critic); kit premium pass (#1185, #1189) -> preview r2 Output QA PASS, Fable critic 7.5/6.5/7 = NOT READY on cleanliness (#1191); r3 with the framing fixes renders tonight. Owner posts r1 or r2 before 21:00.
