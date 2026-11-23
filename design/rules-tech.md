@@ -129,3 +129,5 @@ ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voic
   with an "audience: india|global" column, and the mix carries over week to week (the audit reads reach by audience).
 - One reel EVERY day (13:00-21:00 IST), built that day by the daily run. Engine: techkit/ (K0).
 - Account Status checked by the owner on 1 Nov 2026: no issues (no reach limit), so low reach is distribution, not a restriction; don't ask again.
+
+**23 Nov audit:** PROMOTE tech-myth-verdict (3 WINs, 0 LOSEs) and tech-kit-engine (4 WINs, 0 LOSEs) printed again; both are already rules (F5, and the kit-engine rule, 18 Nov). Tech OK (median reach 1,212 over the last 7 vs target 300). The 22 Nov reset replaces these formats; rules here keep the facts, brand and safety.
