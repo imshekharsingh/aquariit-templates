@@ -6,6 +6,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-23 21:00 IST · claude/tech-kit-closing-notes · tech kit premium pass: closing notes (owner chat job, size L, done)
+- Done: preview r3 (Tech reel run 45194307387) OUTPUT QA: PASS; the critic's second look: CRITIC (preview r3): READY, animation 7, cleanliness 7.5, premium 7.5 (render 1: 6 / 6-8 / 5-6.5). The Output QA lines for preview r2 and r3 are in review/tech/showreel-tech-ai-memory.md; render timing in design/craft-log.md.
+- Kit state: techkit/kit3d.js (shot changes, smeared blur, push under every hold, materials, light, word entrances), make.py --voice-only / --part / --join, Tech reel workflow in 6 parallel frame jobs with a `preview` input (R2 study/, app Inbox -> Previews); rules-tech.md M1-M6.
+- Left: the owner decides whether the r3 preview replaces render 1 (no render 2 was made). Next tech reel: a count runs in under 1 s, the first 8 s get two framings, hall racks must read as servers, no black lower third under a macro subject.
+- For the other account: a preview render is `Tech reel` with preview=<tag>; it never touches the reel's own MP4 and sends no notify.
+
 ## 2026-11-23 20:43 IST · claude/critic-ai-memory-r3 · Reel critic: tech ai-memory preview r3 (second look)
 - Done: critic pass on the real r3 preview MP4; review/tech/showreel-tech-ai-memory.md: CRITIC (preview r3): READY, PREMIUM animation 7, cleanliness 7.5, premium 7.5.
 - Left: next tech reel: a count runs in under 1 s (3.25-5.5 s here is slow), and the opening 8 s get more than one framing. Render 1 stays the reel unless the owner swaps.
