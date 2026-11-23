@@ -2,10 +2,10 @@
  "note": "Tap Like or Not this: the preview leaves this list and Claude reads your answer on the next run. A preview also leaves 7 days after it was added.",
  "items": [
   {
-   "name": "showreel-tech-ai-memory-r2",
+   "name": "showreel-tech-ai-memory-r3",
    "channel": "tech",
    "title": "AI memory reel, premium pass (full reel with voice)",
-   "about": "The whole 30 s reel \"Your next phone may have less memory\" again on the improved tech kit. Render 1 is untouched; this is a second version to compare. If you prefer it, say so in the Owner chat and it replaces render 1.",
+   "about": "The whole 30 s reel \"Your next phone may have less memory\" on the improved tech kit, third pass after the critic's notes (subjects fill the frame, a word on screen in every shot). Render 1 is untouched; this is the benchmark for the next tech reels.",
    "techniques": "five kinds of shot change instead of one whip (match cut, push-through, focus dissolve, light wipe, one whip), smooth motion blur, a slow push under every hold, dark epoxy chips with a cyan edge glow, rim light, words in the empty top band, each arriving its own way; the memory stream is now single chips flying into the racks.",
    "added": "2026-11-23"
   },
@@ -26,5 +26,5 @@
    "added": "2026-11-23"
   }
  ],
- "v": 13
+ "v": 14
 }

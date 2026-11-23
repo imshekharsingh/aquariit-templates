@@ -94,11 +94,11 @@ const wallTex = ctex(512, 1024, (c, w, h) => {
 const screenTex = ctex(512, 1024, (c, w, h) => {
   c.fillStyle = '#05070a'; c.fillRect(0, 0, w, h);
   const g = c.createRadialGradient(256, 400, 10, 256, 400, 520); g.addColorStop(0, 'rgba(56,225,255,.30)'); g.addColorStop(1, 'rgba(56,225,255,0)'); c.fillStyle = g; c.fillRect(0, 0, w, h);
-  c.textAlign = 'center'; c.fillStyle = 'rgba(244,246,248,.55)'; c.font = '600 30px "Inter Display", Inter, sans-serif'; c.fillText('About phone', 256, 150);
-  c.fillStyle = 'rgba(244,246,248,.8)'; c.font = '700 44px "Inter Display", Inter, sans-serif'; c.fillText('RAM', 256, 318);
-  c.fillStyle = '#f4f6f8'; c.font = '900 150px "Inter Display", Inter, sans-serif'; c.fillText('8 GB', 256, 462);
-  for (let i = 0; i < 8; i++) { c.fillStyle = '#38e1ff'; c.fillRect(74 + i * 46, 508, 38, 16); }
-  c.fillStyle = 'rgba(244,246,248,.16)'; for (let i = 0; i < 4; i++) { c.fillRect(74, 620 + i * 84, 150 + ((i * 67) % 90), 14); c.fillRect(330, 620 + i * 84, 108, 14); }
+  c.textAlign = 'center'; c.fillStyle = 'rgba(244,246,248,.55)'; c.font = '600 30px "Inter Display", Inter, sans-serif'; c.fillText('About phone', 256, 96);
+  c.fillStyle = 'rgba(244,246,248,.8)'; c.font = '700 44px "Inter Display", Inter, sans-serif'; c.fillText('RAM', 256, 176);
+  c.fillStyle = '#f4f6f8'; c.font = '900 150px "Inter Display", Inter, sans-serif'; c.fillText('8 GB', 256, 306);
+  for (let i = 0; i < 8; i++) { c.fillStyle = '#38e1ff'; c.fillRect(74 + i * 46, 340, 38, 16); }   // the card sits in the upper part: the caption band (about 62-78% down the screen) stays empty
+  c.fillStyle = 'rgba(244,246,248,.16)'; for (let i = 0; i < 2; i++) { c.fillRect(74, 420 + i * 60, 150 + ((i * 67) % 90), 14); c.fillRect(330, 420 + i * 60, 108, 14); }
 });
 
 // ---------- materials ----------
@@ -139,7 +139,7 @@ function makeChip() {
   return g;
 }
 function chipGlow(ch, k, heat = 0) { const u = ch.userData; const col = heat > 0 ? new THREE.Color(SIG).lerp(new THREE.Color(HEAT), heat) : new THREE.Color(SIG);
-  u.top.emissive.copy(col); u.top.emissiveIntensity = .035 * k; u.e.material.color.copy(col); u.e.material.opacity = .35 + .65 * clamp(k); u.s.material.color.copy(col); u.s.material.opacity = .62 * clamp(k); }   // dark epoxy; the colour is the edge glow
+  u.top.emissive.copy(col); u.top.emissiveIntensity = .035 * k + .09 * heat; u.e.material.color.copy(col); u.e.material.opacity = .35 + .65 * clamp(k); u.s.material.color.copy(col); u.s.material.opacity = .62 * clamp(k); }   // dark epoxy; the colour is the edge glow
 
 // a phone, back facing +z; n memory chips on the board (2 columns)
 function makePhone(n, seed) {
@@ -223,7 +223,7 @@ const streamGlow = new THREE.InstancedMesh(new THREE.PlaneGeometry(CHW * 2.3, CH
 // D: a server memory module (RDIMM), macro
 const dimm = new THREE.Group(); dimm.position.set(0, 0, -300); scene.add(dimm);
 { const b = new THREE.Mesh(new THREE.BoxGeometry(9.4, 2.2, .08), M.dimm); dimm.add(b);
-  const top = KM.chipTop(dramTop, HEAT); dimm.userData.top = top;
+  const top = Object.assign(KM.chipTop(dramTop, HEAT), { envMapIntensity: .28, clearcoat: .2 }); dimm.userData.top = top;   // matte: they stay dark under the moving light
   for (let i = 0; i < 10; i++) { const x = -4.1 + i * .82 + (i >= 5 ? .55 : 0); if (i === 5) continue; const c = new THREE.Mesh(new THREE.BoxGeometry(.62, .95, .09), [M.chipSide, M.chipSide, M.chipSide, M.chipSide, top, M.chipSide]); c.position.set(x, .25, .085); dimm.add(c); }
   const reg = new THREE.Mesh(new THREE.BoxGeometry(.7, .55, .07), M.shield); reg.position.set(.1 + .27, .2, .075); dimm.add(reg);
   const fing = new THREE.InstancedMesh(new THREE.BoxGeometry(.075, .34, .012), M.gold, 90), d = new THREE.Object3D();
@@ -291,6 +291,7 @@ const flightOf = (j, t, home) => {          // a chip lifts off the board, then 
   const side = home.x < 0 ? -1 : 1;
   return { pos: V(home.x + side * (3.6 * p), home.y + 2.2 * p + .1 * lift, home.z + .45 * lift + 3.4 * p), rot: V(-.9 * p, side * .7 * p, side * .6 * p), glow: lift, gone: u >= 1, started: t >= t0 };
 };
+const LIT4 = (k) => lerp(B[1] + .5, C.four, k / 3), LIT8 = (k) => lerp(C.mid + .55, C.eight, (k - 4) / 3);   // the line-up's chips light one by one: a count that lands on the spoken number
 const TURN0 = () => C.buying + .15;   // the phone starts to turn on "Buying"
 const BL0 = () => C.cutting - .5, BL1 = () => C.cutting + .3, bladeY = (t) => lerp(2.55, -.1, ease(prog(t, BL0(), BL1())));
 const bladePass = (y) => { for (let x = BL0(); x < BL1(); x += .01) if (bladeY(x) <= y) return x; return BL1(); };
@@ -323,20 +324,18 @@ const MATCH0 = frontOf(V(0, 0, 0)), MATCH1 = frontOf(V(LSP, 0, -60));
 function shotCam(t, sh) {
   const u = prog(t, B[sh], B[sh + 1]);
   if (sh === 0) { const k = G(u), a = lerp(-.1, .07, k), d = lerp(12.9, 11.5, k); return { pos: V(Math.sin(a) * d - .4, lerp(.5, .9, k), Math.cos(a) * d), look: V(0, lerp(2.02, 2.1, k), 0), fov: 31 }; }
-  if (sh === 1) { const z = -60, m = 1 - ease(prog(t, B[1] - .05, B[1] + 1.0)), pin = ease(prog(t, C.four - .5, C.four + .25)), sl = ease(prog(t, C.mid - .3, C.mid + .5));
-    // starts on the 4 GB phone (the match), pulls out to all three, pushes back to it on "four", slides to the 8 GB phone on "mid-range"; a slow push under each hold
-    const hold = KIT.push(Math.max(0, t - C.four - .25), .03);
-    const x = lerp(lerp(0, LSP, pin), 0, sl), d = lerp(36, 13.0, pin) * (1 - hold), y = lerp(1.6, 1.3, pin);
-    const c = { pos: V(x + .5 * pin * (1 - sl) - .4 * sl, y, z + d), look: V(x, lerp(.9, 2.02, pin), z), fov: lerp(33, 31, pin), ap: lerp(.3, .17, pin), focus: V(x, .8, z) };
-    c.pos.lerp(MATCH1.pos, m); c.look.lerp(MATCH1.look, m); c.fov = lerp(c.fov, 31, m); c.focus = V(lerp(x, LSP, m), .8, z); return c; }
-  if (sh === 2) { const z = -160, k = G(u); return { pos: V(lerp(-1.6, .9, k), lerp(-.9, 1.3, k), z + lerp(31.5, 25.5, k)), look: V(0, lerp(5.6, 6.2, k), z + 6), fov: 44 }; }
-  if (sh === 3) { const z = -300, k = G(u), rf = ease(prog(t, C.jump - .35, C.jump + .25));   // rack focus: the near chips, then the gold contacts as +90% lands
-    return { pos: V(lerp(-4.4, .5, k), lerp(2.5, 2.1, k), z + lerp(9.2, 8.2, k)), look: V(lerp(-1.5, .9, k), .25, z), fov: 30, ap: .16, focus: V(lerp(-2.9, .6, rf), lerp(.3, -.85, rf), z) }; }
+  if (sh === 1) { const z = -60, sl = ease(prog(t, C.mid - .3, C.mid + .5)), hold = KIT.push(Math.max(0, t - B[1]), .012);
+    // starts on the 4 GB phone (the match) and stays close: its chips are counted, then a slide to the 8 GB phone on "mid-range"; a slow push all the way
+    const x = lerp(LSP, 0, sl), d = 12.4 * (1 - hold);
+    return { pos: V(x + .5 * (1 - sl) - .4 * sl, 1.3, z + d), look: V(x, 2.02, z), fov: 31, ap: .17, focus: V(x, .8, z) }; }
+  if (sh === 2) { const z = -160, k = G(u); return { pos: V(lerp(-1.4, .8, k), lerp(-1.6, -.4, k), z + lerp(21.5, 17.5, k)), look: V(0, lerp(6.6, 7.0, k), z + 2), fov: 44 }; }   // low and close: the wall of racks fills the frame to the bottom
+  if (sh === 3) { const z = -300, k = G(u), rf = ease(prog(t, C.jump - .35, C.jump + .25)), dn = ease(prog(t, C.jump - .7, C.jump));   // rack focus: the near chips, then the gold contacts as +90% lands; the module fills the top until it makes room for the number
+    return { pos: V(lerp(-4.4, .5, k), lerp(2.5, 2.1, k), z + lerp(9.2, 8.2, k)), look: V(lerp(-1.5, .9, k), lerp(-.75, .25, dn), z), fov: 30, ap: .16, focus: V(lerp(-2.9, .6, rf), lerp(.3, -.85, rf), z) }; }
   if (sh === 4) { const k = G(u); return { pos: V(lerp(.7, -.4, k), lerp(1.5, 1.9, k), lerp(11, 10.2, k)), look: V(0, lerp(1.96, 1.9, k), 0), fov: 34 }; }   // the open top half of the phone, whole, under an empty band
   if (sh === 5) { const z = -450, k = u, y = lerp(2.5, 2.2, k); return { pos: V(.15, y, z + lerp(9.5, -4, k)), look: V(0, y + 1.25, z - 30), fov: 46 }; }   // from above the floor: the dark between the rack tops holds the word
   // G: the phone turns from its screen to its back while the camera settles on A's framing (the loop)
   const k = G(prog(t, B[6], TOTAL - .05), .45), A0 = shotCam(0, 0);
-  return { pos: V(.5, .9, 12.4).lerp(A0.pos, k), look: V(0, 1.95, 0).lerp(A0.look, k), fov: 31 };
+  return { pos: V(.5, .9, 12.4).lerp(A0.pos, k), look: V(0, 1.72, 0).lerp(A0.look, k), fov: 31 };
 }
 const SHAKES = () => [[C.ai, .22], [C.ninety, .09], [C.cutting, .07], [C.year, .12]];
 // what a cut asks of one side's camera (KIT.cut): match framing, a push toward a part, a pull back, a truck, a yaw
@@ -375,8 +374,8 @@ function apply(t, sh = shotAt(t), mod = null) {
     const st = heroState(t, sh);
     hero.userData.chips.forEach(({ ch }, i) => { const s = st[i]; ch.visible = s.vis; ch.position.copy(s.pos); ch.rotation.set(s.rot.x, s.rot.y, s.rot.z); chipGlow(ch, s.glow, s.heat || 0); });
   }
-  if (sh === 1) LP.forEach((p, i) => { p.userData.back.material.opacity = .2; const on = i === 2 ? prog(t, C.four - .3, C.four + .1) * (1 - .6 * prog(t, C.mid - .2, C.mid + .3)) : i === 1 ? prog(t, C.eight - .3, C.eight + .1) : 0;
-    p.userData.chips.forEach(({ ch }, k) => chipGlow(ch, .3 + .7 * clamp(on * 1.6 - k * .05))); });
+  if (sh === 1) LP.forEach((p, i) => { p.userData.back.material.opacity = .2;
+    p.userData.chips.forEach(({ ch }, k) => { const t0 = i === 2 ? LIT4(k) : i === 1 ? (k < 4 ? C.mid + .2 + k * .04 : LIT8(k)) : 9e9, q = (t - t0) / .3; chipGlow(ch, .25 + .75 * eout(q) + .5 * Math.sin(Math.PI * clamp(q / 1.5))); }); });
   if (sh === 2) { const d = new THREE.Object3D(), g = new THREE.Object3D();
     const camp = c.pos.clone().sub(hall.position);
     SPATH.forEach((s, i) => { const p = (((t - B[2] + 3) * s.sp + s.off) % 1 + 1) % 1; const q = 1 - p;
@@ -386,7 +385,7 @@ function apply(t, sh = shotAt(t), mod = null) {
       g.position.copy(pos); g.lookAt(camp); g.scale.setScalar(sc); g.translateZ(-.12 * sc); g.updateMatrix(); streamGlow.setMatrixAt(i, g.matrix); });
     stream.instanceMatrix.needsUpdate = true; streamGlow.instanceMatrix.needsUpdate = true;
   }
-  if (sh === 3) { const h = prog(t, C.jump - .3, C.ninety + .1); dimm.userData.top.emissiveIntensity = .05 * h; dimm.userData.hl.intensity = 2.4 * h; dimm.userData.hg.material.opacity = .5 * h; dimm.rotation.set(-.42, .28, .08); }
+  if (sh === 3) { const h = prog(t, C.jump - .3, C.ninety + .1); dimm.userData.top.emissiveIntensity = .05 * h; dimm.userData.hl.intensity = 1.1 * h; dimm.userData.hg.material.opacity = .5 * h; dimm.rotation.set(-.42, .28, .08); }
   if (sh === 5) { M.rack.emissiveIntensity = 1.35 + .3 * Math.sin(t * 5);
     const sq = ease(prog(t, C.squeeze - .25, C.last + .2)); AISLE_R.forEach(([r, sd], i) => { r.position.x = sd * lerp(2.9, 2.15, sq) * (1 + .04 * Math.sin(i * 1.7)); });
     const d = new THREE.Object3D(), off = (t * 7) % 1.4; for (let i = 0; i < 36; i++) { d.position.set(0, -2.98, -i * 1.4 + 2 - off); d.updateMatrix(); aisleStrip.setMatrixAt(i, d.matrix); } aisleStrip.instanceMatrix.needsUpdate = true; }
@@ -399,7 +398,7 @@ function apply(t, sh = shotAt(t), mod = null) {
   if (sh === 2) { HALL_RACKS.forEach(([m, d, row]) => { const w = t - C.ai - .07 * d - .05 * row; m.emissiveIntensity = (1.0 + .3 * Math.sin(t * 7 + d)) + 1.3 * (w > 0 ? Math.exp(-w * 5) : 0); });
     hallLight.intensity = 5 + 6 * prog(t, C.ai - .2, C.ai + .3) + 22 * (t > C.ai ? Math.exp(-(t - C.ai) * 4) : 0);
     SHAFTS.forEach((m, i) => { m.material.opacity = .05 + .03 * Math.sin(t * 1.3 + i) + .16 * (t > C.ai ? Math.exp(-(t - C.ai) * 3) : 0); m.rotation.z = (i - 2.5) * .06 + .03 * Math.sin(t * .7 + i); }); }
-  if (sh === 3) { const q = prog(t, B[3] + .3, B[4] - .2); sweepL.intensity = 1.5; sweepL.distance = 3; sweepL.color.setHex(0xffd9a0); sweepL.position.set(dimm.position.x + lerp(-4.5, 4.5, q), -.6, dimm.position.z + .9); }
+  if (sh === 3) { const q = prog(t, B[3] + .3, B[4] - .2); sweepL.intensity = .8; sweepL.distance = 3; sweepL.color.setHex(0xffd9a0); sweepL.position.set(dimm.position.x + lerp(-4.5, 4.5, q), -.6, dimm.position.z + .9); }
   else { sweepL.distance = 6; sweepL.color.setHex(0xffffff); }
   hero.updateMatrixWorld(true); dimm.updateMatrixWorld(true); updateSparks(t);
   { const b = BURSTS.find((x) => x.flash && t >= x.t0 && t < x.t0 + .35 && x.on()); ripFlash.visible = !!b;   // a hot flash where a chip tears out
@@ -426,16 +425,13 @@ function typeLayer(t) {
   BOXES = [];
   const sh = shotAt(t), Y = 540;
   if (sh === 0) { const n = count(t), lc = Math.max(-9, ...LEAVE.map((_, j) => leftAt(j)).filter((x) => x <= t)); gbNumber(t, n, n + (t - lc < .3 ? 1 : 0), lc, Y, 1 - prog(t, B[1] - .15, B[1])); }
-  if (sh === 1) { const wide = (1 - ease(prog(t, C.four - .5, C.four + .1))) * prog(t, B[1] + .75, B[1] + 1.1);   // the three tiers, named while all three are in view
-    if (wide > .02) [[0, '12 GB'], [1, '8 GB'], [2, '4 GB']].forEach(([i, txt]) => { const p = LP[i].getWorldPosition(V(0, 0, 0)).add(V(0, 3.9, 0)).project(cam), x = (p.x + 1) / 2 * W, y = (1 - p.y) / 2 * H, size = 72;
-      o.font = `900 ${size}px "Inter Display", Inter, sans-serif`; const w = o.measureText(txt).width, cx = clamp(x, 70 + w / 2, 950 - w / 2), cy = Math.max(y, 270 + size * .74);
-      if (Math.abs(cx - x) > 60) return;   // a phone leaving the frame drops its label
-      o.save(); o.globalAlpha = wide; o.textAlign = 'center'; o.fillStyle = i === 2 ? HEATC : WHITE; o.fillText(txt, cx, cy); o.restore();
-      if (wide > .3) BOXES.push([txt, cx - w / 2, cx + w / 2, cy - size * .74, cy + 4]); });
-    big('4 GB', 'drop', HEATC, t, C.four, C.mid - .12, { size: 250, y: Y, glow: 'rgba(255,150,40,.4)' });
-    big('8 GB', 'rise', WHITE, t, C.mid + .4, wEnd(2), { size: 250, y: Y }); }
+  if (sh === 1) { const lit = [0, 1, 2, 3].filter((k) => t >= LIT4(k)).length + (t > C.mid ? [4, 5, 6, 7].filter((k) => t >= LIT8(k)).length : 0);   // the number counts the chips as they light: 1-4, then 5-8
+    const last = Math.max(-9, ...[...[0, 1, 2, 3].map(LIT4), ...(t > C.mid ? [4, 5, 6, 7].map(LIT8) : [])].filter((x) => x <= t));
+    if (lit > 0) gbNumber(t, lit, lit - (t - last < .3 ? 1 : 0), last, Y, prog(t, LIT4(0) - .05, LIT4(0) + .15) * (1 - prog(t, wEnd(2) - .16, wEnd(2)))); }
+  if (sh === 2 && t < C.makers2 + .25) big('WHY?', 'drop', WHITE, t, C.why, C.makers2 + .25, { size: 250, y: 520 });
   if (sh === 2) big('AI', 'slam', HEATC, t, C.ai, wEnd(3), { size: 320, y: 530, glow: 'rgba(255,150,40,.6)' });
   if (sh === 3) { const v = Math.round(90 * eout(prog(t, C.jump - .1, C.ninety + .05))); big('+' + v + '%', 'wipe', HEATC, t, C.jump - .1, wEnd(4), { size: 260, y: 500, glow: 'rgba(255,150,40,.4)' }); }
+  if (sh === 4 && t < C.cutting - .08) big('PRICIER', 'rise', HEATC, t, C.pricier, C.cutting - .08, { size: 168, y: 470, glow: 'rgba(255,150,40,.35)' });
   if (sh === 4) big('CUT', 'stamp', HEATC, t, C.cutting, wEnd(5), { size: 250, y: 480, split: prog(t, C.cutting + .12, C.cutting + .3) });
   if (sh === 5) big('2027', 'track', WHITE, t, C.year, wEnd(6), { size: 270, y: 520, glow: 'rgba(255,170,60,.45)' });
   if (sh === 6) { if (t < C.final + .55) big('RAM', 'rise', SIGC, t, C.check, C.final + .55, { size: 300, y: Y, glow: 'rgba(56,225,255,.5)' });

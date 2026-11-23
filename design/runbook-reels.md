@@ -98,7 +98,9 @@ Tech reel workflows refuse a reel without it (scripts/review-gate.mjs).
 Claude is the critic. Every check measures what the viewer gets: the rendered MP4, its frames at phone size and its audio (levels, what is
 audible), never only the scene code, cue lists or counts. Before calling any reel ready, read design/owner-feedback.md line by line against
 the finished output, and add a line there the same day whenever the owner catches something. When a new rule or check is added, ask "would
-this have caught the owner's last complaint on the final video?" If not, it isn't done.
+this have caught the owner's last complaint on the final video?" If not, it isn't done. Critics, the Improvement lab and every quality
+review fetch the real render with `node scripts/reel-fetch.mjs <reel-name>` (read-only reel key; see "Independent critic" below) and judge
+its frames and audio, not frames rebuilt from the scene.
 
 ## Output QA (owner, 12 Nov 2026: every owner complaint is a GitHub check)
 Every issue the owner reports becomes an automated Output QA check (scripts/qa/) the same day, run on GitHub on the final MP4; a reel whose
@@ -112,8 +114,8 @@ then `python3 scripts/qa/look.py <config> <dir>` (same functions); the new reel'
 ## Independent critic (owner, 12 Nov 2026): nobody approves their own reel
 A reel is ready only when a DIFFERENT session, the "Reel critic" (scheduled task, ~11:17 IST daily, fresh session, lean), has watched it as a
 viewer and written "CRITIC: READY" in its review file (item 20). The critic:
-- renders stills of the final scene every 1 s (stills.mjs / qa.mjs / techreel --stills: the scenes are a pure function of t, so these are
-  the video's frames) and reads the render's voice check and sound lines; looks at every frame at phone size;
+- fetches the final render and judges that (23 Nov 2026): `node scripts/reel-fetch.mjs <reel-name>` downloads the final MP4, cover and json from the app into reel-files/ (git-ignored; never commit or upload them); then `ffmpeg -i reel-files/<name>.mp4 -vf "fps=4,scale=390:-2" reel-files/f-%04d.png` gives frames at phone size every 0.25 s (look closely around every cut), and listen to the audio (`ffmpeg -i reel-files/<name>.mp4 -af ebur128 -f null -` for levels, then the words against the voice script). If reel-fetch says "read key not set up yet", fall back to the scene stills and say so in the review.
+  Scene stills every 1 s (stills.mjs / qa.mjs / techreel --stills) are only for planning a fix; reads the render's voice check and sound lines;
 - answers the format's own questions in design/critic.md (e.g. guess: is the answer hidden until the reveal? web: is the before/after obvious
   on mute? tech: is every setting path readable and correct?) plus design/owner-feedback.md line by line, and "would I stop scrolling and
   watch it twice?";

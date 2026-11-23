@@ -5,6 +5,28 @@ Every session on either account that changes the repo adds ONE entry at the top,
 
 Format (at most 6 lines):
 ```
+
+## 2026-11-23 20:43 IST · claude/critic-ai-memory-r3 · Reel critic: tech ai-memory preview r3 (second look)
+- Done: critic pass on the real r3 preview MP4; review/tech/showreel-tech-ai-memory.md: CRITIC (preview r3): READY, PREMIUM animation 7, cleanliness 7.5, premium 7.5.
+- Left: next tech reel: a count runs in under 1 s (3.25-5.5 s here is slow), and the opening 8 s get more than one framing. Render 1 stays the reel unless the owner swaps.
+- For the other account: nothing.
+
+## 2026-11-23 20:25 IST · main · owner chat (end of day)
+- Decisions: stages start as soon as the one before is done (critic right after Output QA, not 11:17). Web uses the black look of the top-3 reels (homebar redone in black, posted 10:29). Patterns from any reel may be reused and tweaked (CLAUDE.md); craft skills in .claude/skills. Fable for everything that shapes posts through 25 Nov (CLAUDE.md "Models"; Daily studio + Reel critic tasks switched by the owner). "Don't park anything": premium first, cost accepted. New daily "Improvement lab" task 14:23 IST (fresh Fable session, full preview in Inbox -> Previews). App redesign live (#1184, smoke fixed #1187). Read-only reel key live (#1188): critics fetch the real MP4 (scripts/reel-fetch.mjs). GitHub artifact hosts allowed on the environment.
+- Tech ai-memory: render 1 READY (old critic); kit premium pass (#1185, #1189) -> preview r2 Output QA PASS, Fable critic 7.5/6.5/7 = NOT READY on cleanliness (#1191); r3 with the framing fixes renders tonight. Owner posts r1 or r2 before 21:00.
+- Waiting on owner: which tech version tonight; Like/reject previews in the app.
+- Tomorrow: check the 06:47 build and 11:17 critic run on Fable (get_session); check the first Improvement lab run (it has no GitHub connector: if it cannot dispatch, start it from the owner chat with create_session); 30-min post probe after each post; E30 wiggle-family web reel in black.
+
+## 2026-11-23 20:05 IST · claude/tech-kit-r3 · ai-memory preview r3 after the critic's notes on r2
+- Done: preview r2 (run 45183681322) Output QA PASS, but the Fable critic said NOT READY on cleanliness 6.5 (subject a middle band in three shots, caption on the screen's RAM bar, 2.4 s with no word, chips washed white). Fixed in scenes/ai-memory.html: the line-up stays close on one phone and counts its chips 1-4 then 5-8 in the top band (no small wide shot), the hall is seen low and close (racks to the bottom) with "WHY?" before "AI", the module fills the top until its number arrives, "PRICIER" before "CUT", the About-phone card sits above the caption band, matte module chips. previews.json now lists showreel-tech-ai-memory-r3.
+- Left: Tech reel (ai-memory, preview r3), Output QA, the critic's second look, closing notes. Render 1 stays the reel (the owner chat was advised to post it today).
+- For the other account: in a portrait frame a row of three objects cannot fill the height; show one at a time and count, or stack them in depth.
+
+## 2026-11-23 20:05 IST · claude/critic-ai-memory-r2 · Reel critic: tech ai-memory preview r2 (owner chat job)
+- Done: full critic pass on the real preview MP4 (study/ path works with the read key via curl; scripts/reel-fetch.mjs only takes top-level names). review/tech/showreel-tech-ai-memory.md "Preview r2": CRITIC (preview r2): NOT READY, PREMIUM animation 7.5, cleanliness 6.5, premium 7.
+- Left: r2 needs layout fixes (line-up 3.5-5.2 s, hall 8.5-11.5 s, module 11.8-13.6 s fill the frame; caption off the About screen at 24.6-25.3 s; a beat for "pricier" at 16.8-19.2 s), then one more preview. Render 1 stays the reel.
+- For the other account: nothing.
+
 ## YYYY-MM-DD HH:MM IST · main | second · <task in a few words>
 - Done: what changed (files or feature), PR number.
 - Left: what is unfinished or broken, if anything.
@@ -14,6 +36,7 @@ Format (at most 6 lines):
 ## 2026-11-23 18:30 IST · claude/tech-kit-premium · tech kit premium pass + ai-memory preview r2 (owner chat job, size L, owner: "put the fixes in kit first")
 - Done: techkit/kit3d.js (five shot changes drawn as two live shots, never through black; sampled + smeared motion blur; glide and push so nothing is ever still; six word entrances; epoxy / metal / gold / battery / glass / rack materials; key + rim + kicker light), make.py inlines it at `<!--KIT3D-->`; scenes/ai-memory.html rebuilt on it (stream as single chips, lit aisle, the turn on "Buying", "+90%" and "CUT" off the objects, an "About phone" screen); rules-tech.md M1-M6; README "The 3D kit"; scripts/tech-assemble.py + KIT_Q for quick local looks.
 - Done: Tech reel workflow = three jobs (voice, frames in `parts` parallel jobs, join) and a `preview` input: the result goes only to R2 study/ as showreel-tech-<slug>-<preview>-preview.mp4 (+ -stills.png), listed in templates/showreels/previews.json; the reel's own R2 files and issue are not touched. make.py: --voice-only, --part i/n, --join.
+- Fix (claude/tech-capture-timeout, 18:52 IST): the first split run (45180422848) failed in a frames job, page.goto timed out at 30 s while the scene drew its first frame; techkit/capture.cjs now waits up to 300 s for the load.
 - Left: after the merge, Tech reel (slug ai-memory, preview r2, parts 6), its Output QA, PREMIUM line in the review file, report to the owner chat. Render 1 stays the reel until the owner says swap (then: Tech reel ai-memory without preview = render 2, item 13).
 - For the other account: a 3D tech scene starts from scenes/ai-memory.html + kit3d.js; a normal Tech reel run now also uses the three jobs (parts default 6); a kit topic's render log is split (voice job + join job).
 
@@ -319,6 +342,16 @@ Format (at most 6 lines):
 - Checked locally against a mock of every API at 390 px (light and dark) and 1280 px: no script errors, no sideways scroll; npm run check passes.
 - Left: the owner looks at the live app on the phone (behind sign-in). A render-cap decision shows on Today only when it is added as an Owner answers question.
 - For the other account: status words live in `status()` and `plain()` in templates/index.html; add a new stage there, not on screen.
+
+## 2026-11-23 · claude/smoke-test-tabs · smoke test follows the new app tabs (owner chat job, size S)
+- Done: pipeline.yml smoke test looked for id="s-journey", gone since the app renovation, so every deploy went red. It now checks the signed-in page has id="s-today", "s-growth" and "s-inbox" (each one fails the step if missing). Checked the rest against templates/index.html: fb-text box, sw.js (served 200, no version check), and the /api/journey checks (the app and Worker still use that API) all still hold; unchanged.
+- Left: confirm the deploy and smoke test are green on this PR's run.
+- For the other account: when a tab is renamed again, update the section list in the "Smoke test performance API" step.
+
+## 2026-11-23 · claude/reels-read-key · read-only reel key: sessions fetch the real MP4 (owner chat job, size M, owner's go)
+- Done: src/worker.js accepts `Authorization: Bearer <REELS_READ_KEY>` only for GET/HEAD of /reels/<file> from R2 (constant-time compare; off when the secret is unset or empty; no API, no app pages, no writes, no site-copy fallback; cookie and sign-in unchanged). pipeline.yml publishes REELS_READ_KEY to the Worker when the GitHub secret exists. scripts/reel-fetch.mjs <name> [dir] downloads MP4 + cover + json from templates.aquariit.com via curl; the session proxy adds the header (network secret), the script reads no key. scripts/qa/reel-key-test.mjs (in npm run check): key opens a reel; API, app page, POST/PUT, wrong key, unset/empty secret all stay shut. critic.md, runbook-reels.md, CLAUDE.md Secrets updated.
+- Left: the owner adds the GitHub secret REELS_READ_KEY (then any deploy publishes it) and the same value as a network secret for templates.aquariit.com (Authorization: Bearer) on the session environment. Until then reel-fetch says "read key not set up yet" (today the proxy refuses the host).
+- For the other account: critics fetch the render first: `node scripts/reel-fetch.mjs showreel-45-homebar`, then ffmpeg frames at fps=4, scale=390.
 
 ## 2026-11-23 · claude/inbox-cleanup · Inbox and Needs you cleaned, and kept clean by code (owner chat job, size S-M)
 - Done: rules in code, in the daily path. templates/index.html: a preview leaves the list once answered (Like / Not this from any device) or 7 days after its "added" date; studied or used references older than 2 days leave the list. scripts/asks.mjs (Asks workflow): new `list` (everything the owner sees) and `tidy`; `read` runs tidy too: open ask past its `until` date removed (src/worker.js stores `until` on `add`), answered ask removed 3 days after the answer, unread Claude replies marked read 2 days after done, daily reports older than 2 days removed, PREVIEW lines name entries to drop from previews.json. scripts/check.mjs: every preview needs "added". previews.json: ramsqueeze (liked) removed, dates added. sw.js v22.
