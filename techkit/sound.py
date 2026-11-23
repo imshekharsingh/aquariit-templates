@@ -141,8 +141,20 @@ def render(TL, topic, vo_wav, out_wav):
         else: put(sfx, t0, s, gain, pan)
 
     put(sfx, 0.05, whoosh(1.0, False), 0.2)
+    CUT = topic.get('cutsound')   # sound designed on the cuts (rules-tech.md M9; 24 Nov 2026): the picture changes at st(i) - 0.2
+    def subhit():   # a short low hit that lands on the cut and rings over it
+        x = T(0.9); f = 38 + 44 * np.exp(-x / 0.05)
+        return np.sin(2 * np.pi * np.cumsum(f) / SR) * env(len(x), 0.004, 0.22) + 0.25 * lp(rng.standard_normal(len(x)), 700) * env(len(x), 0.001, 0.03)
+    def swell(d=0.5):   # air that rises into the cut and stops on it
+        n = int(d * SR); x = T(d); return hp(lp(rng.standard_normal(n), 5000), 500) * (x / d) ** 3
     for i in range(1, NS):   # a whoosh into every chapter (the camera move)
-        fx('whoosh', st(i) - 0.45, whoosh(0.75, True), 0.2, (-1) ** i * 0.3)
+        if CUT:
+            b = st(i) - 0.2; pan = (-1) ** i * 0.35
+            put(sfx, b - 0.5, swell(0.5), 0.16, pan); put(sfx, b - 0.02, subhit(), 0.34, 0); fx('whoosh', b - 0.3, whoosh(0.6, True), 0.14, -pan)
+        else: fx('whoosh', st(i) - 0.45, whoosh(0.75, True), 0.2, (-1) ** i * 0.3)
+    if CUT and isinstance(CUT, dict) and CUT.get('payoff') in C:   # a long riser that crests exactly on the payoff word, the bed held back under it
+        tp = C[CUT['payoff']]; d = float(CUT.get('rise', 1.8)); put(sfx, tp - d, riser(d), 0.2); put(sfx, tp - 0.01, subhit(), 0.4)
+        ft_ = np.arange(N) / SR; dip = 1 - 0.75 * np.clip(1 - np.abs(ft_ - (tp - 0.18)) / 0.2, 0, 1); music *= dip[:, None]; drums *= dip[:, None]
     if 'fix' in C: put(sfx, st(2) - 1.3, riser(1.2), 0.2)
     pent = [nf(n) for n in ['A5', 'C6', 'D6', 'E6', 'G6', 'A6', 'C7', 'D7', 'E7', 'G7', 'A7', 'C8', 'D8', 'E8', 'G8']]
     C['start'] = 0.0

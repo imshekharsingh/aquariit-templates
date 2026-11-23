@@ -16,7 +16,15 @@
    "about": "A loud school bake-sale poster on a brick wall, its five problems ringed; one font, three sizes, one edge, grouping, one colour land as cards with values, the poster fixing itself with each; before/after flip; a 5-step save list.",
    "techniques": "split screen, fix cards stacking with exact values (54/22/14 px, 26 px, #C8402A), the design changing live, silk background in each fix's colour, word-by-word captions, a FIX n/5 dial, ~1.5 s per fix; ends on a line worth sending (research 23 Nov, P1).",
    "added": "2026-11-23"
+  },
+  {
+   "name": "showreel-tech-ai-memory-r4",
+   "channel": "tech",
+   "title": "Tech kit, next step: the memory reel again (r4)",
+   "about": "The posted memory reel rebuilt on the improved tech kit, to compare: the count now snaps to 4 GB and 8 GB, the first 8 seconds use three camera angles, the server hall shows real server racks, the memory module sits in a tray that fills the frame, and every cut has its own sound. The posted reel is not changed.",
+   "techniques": "count in half a second landing on the spoken number, low macro and three-quarter framings, server rack faces with drive bays and status lights, a tray of modules to the bottom of the frame, swell and low hit on each cut, a riser that crests on RAM.",
+   "added": "2026-11-24"
   }
  ],
- "v": 14
+ "v": 15
 }
