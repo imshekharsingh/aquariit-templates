@@ -6,6 +6,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 02:40 IST · claude/critic-ai-memory-r4 · Reel critic on tech preview r4 of ai-memory (owner chat job, premium program, size S-M)
+- Done: review/tech/showreel-tech-ai-memory.md, four new lines at the end: CRITIC (preview r4): READY; PREMIUM animation 7.5, cleanliness 7.5, premium 7.5. Judged on the real MP4 beside the posted r3; sound measured, not heard.
+- r3 notes: slow count fixed; 0-8 s framings fixed (the third, the 8 GB phone, only partly: near the front view); black lower third fixed; hall racks fixed (server faces); module chip partly (no white burn, but flat tan chips and a blank grey part at 13.75-16.4 s).
+- Left for the builder: 6.8-7.45 s "4 GB" stays over the eight-chip phone (clear it in the whip); no cut sound on the 6.5-6.9 s whip; the riser before "RAM" measures only in its last 0.5 s. The posted reel is unchanged; a swap is the owner's call.
+- For the other account: compare a preview's audio with the posted file in 0.25 s windows, full band, under 90 Hz and over 5 kHz; it shows where cut sounds were added and where they are missing.
+
 ## 2026-11-24 02:10 IST · claude/tech-kit-r4, claude/web-hook-kit, claude/c3-before-after, claude/c3-natural-before · premium program: kit lifts for all three channels (owner chat job, size L)
 - Done, tech (#1205): kit3d.js countTo, reframe, server rack faces; sound.py "cutsound" (swell + low hit on each shot change, a riser on the payoff); rules-tech.md M7-M10; a preview can carry its own scene (techreel/previews/<slug>-<tag>.json), so scenes/ai-memory-r4.html renders only with preview=r4.
 - Done, web (#1206): scripts/explainer/kithook.js (KM.black, bugs, away, react, meter) between its own markers; the starter uses it and the black look; stills prints HOOK BUG; rules-web.md rule 20; scripts/previews/web-homebar2 is the example.
