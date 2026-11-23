@@ -20,6 +20,11 @@ Format (at most 6 lines):
 - Owner on the app previews (Inbox -> Previews): web and Turns Out "the reference looked quite better". Main gap: the reference uses AI-generated photo imagery; ours is code-drawn.
 - Owner decision: "For now continue with what we have been doing, take note and we will go another round on this approach." So: rules unchanged (code-drawn), AI imagery is a parked proposal for a later round (research: design/research-jump-2026-11-23.md, ~$15-30/mo image key, AI-info label, no stated reach penalty).
 - Still open for the owner: OK or skip for the tech reel ai-memory (23 Nov 13:00; preview https://claude.ai/artifact/RP2Hjr3sM6MzL7b1Vt5FKi; render only on the owner's OK, relayed to session_01AYvWRjY38sTbizkhdraaeY); research decisions (DM funnel, voice keys, web at 19:00); app renovation OK.
+## 2026-11-23 IST · claude/homebar-item13 · homebar render 2: OUTPUT QA PASS
+- Done: render 2 (run 45098664045) OUTPUT QA PASS (DEMO contrast 124, SOUND recorded 34 of 34, LOUD -14.0 LUFS, MUTE 4.6%, SPREAD 0%); item 13 written. showreel-45-homebar is ready for the Reel critic and the 13:00 IST slot (postOn 2026-11-23).
+- Left: the Reel critic (item 20) on showreel-45-homebar; the owner posts after CRITIC: READY. No second render left.
+- For the other account: a peer-session message asked for an E30 wiggle-family reel to replace this one and to hide it; not done here (not verified as the owner's word); the owner decides.
+
 ## 2026-11-23 IST · claude/homebar-r2 · homebar render 1 result and fix
 - Done: render 1 (run 45095467616) Output QA FAIL on DEMO only (contrast 61 vs 64, flat BEFORE frames); fix: coral BEFORE button, demo box on the phone; item 13 updated.
 - Left: render 2 (the last allowed) after the merge, item 13, the critic.
