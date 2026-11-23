@@ -241,8 +241,9 @@ jobs:
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/feedback")" = "401" ] || { echo "Feedback API must be closed to signed-out requests"; exit 1; }
           if [ "$code" = "200" ]; then command curl -sf -b "$J" "$B/api/feedback" | grep -q '"feedback"' || { echo "Feedback API did not answer"; exit 1; }; echo "OK Feedback API"; fi
           command curl -sf -b "$J" "$B/" | grep -q 'id="fb-text"' || { echo "the signed-in page has no Feedback box"; exit 1; }; echo "OK Feedback box on the page"
-          # the reel journey (owner, 15 Nov 2026): its tab on the page, its API closed when signed out, and its answer (github: ok / no-token / error)
-          command curl -sf -b "$J" "$B/" | grep -q 'id="s-journey"' || { echo "the signed-in page has no Journey section"; exit 1; }; echo "OK Journey section on the page"
+          # the app's three tabs (owner, 23 Nov 2026: Today | Growth | Inbox replaced Journey); the reel journey API stays: closed when signed out, and its answer (github: ok / no-token / error)
+          command curl -sf -b "$J" "$B/" > page.html || { echo "the signed-in page did not load"; exit 1; }
+          for s in s-today s-growth s-inbox; do grep -q "id=\"$s\"" page.html || { echo "the signed-in page has no $s section"; exit 1; }; done; echo "OK Today, Growth and Inbox sections on the page"
           [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/api/journey")" = "401" ] || { echo "journey API must be closed to signed-out requests"; exit 1; }
           command curl -sf -b "$J" "$B/api/journey" > journey.json || { echo "journey API did not answer"; exit 1; }
           node -e 'const j=JSON.parse(require("fs").readFileSync("journey.json","utf8")); if(!Array.isArray(j.reels)) process.exit(1); console.log(`OK Journey API: github=${j.github} reels=${j.reels.length}`); for (const r of j.reels) console.log(`  ${r.day} ${r.ch} ${r.name}: ` + Object.entries(r.stages).map(([k,v])=>k+"="+v.s).join(" "))' || { echo "journey API answer has no reels list"; exit 1; }
