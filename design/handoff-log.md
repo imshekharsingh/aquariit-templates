@@ -319,3 +319,8 @@ Format (at most 6 lines):
 - Checked locally against a mock of every API at 390 px (light and dark) and 1280 px: no script errors, no sideways scroll; npm run check passes.
 - Left: the owner looks at the live app on the phone (behind sign-in). A render-cap decision shows on Today only when it is added as an Owner answers question.
 - For the other account: status words live in `status()` and `plain()` in templates/index.html; add a new stage there, not on screen.
+
+## 2026-11-23 · claude/smoke-test-tabs · smoke test follows the new app tabs (owner chat job, size S)
+- Done: pipeline.yml smoke test looked for id="s-journey", gone since the app renovation, so every deploy went red. It now checks the signed-in page has id="s-today", "s-growth" and "s-inbox" (each one fails the step if missing). Checked the rest against templates/index.html: fb-text box, sw.js (served 200, no version check), and the /api/journey checks (the app and Worker still use that API) all still hold; unchanged.
+- Left: confirm the deploy and smoke test are green on this PR's run.
+- For the other account: when a tab is renamed again, update the section list in the "Smoke test performance API" step.
