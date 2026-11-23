@@ -1,0 +1,52 @@
+{
+ "name": "showreel-pv-c3-greytext2",
+ "seek": "scripts/previews/c3-greytext2.html",
+ "engine": "design",
+ "dt": 2,
+ "dur": 21.2,
+ "fps": 30,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 0.6,
+ "voice": {
+  "text": "This menu is hard to read. The soft grey looked nice, but it's too light. Turns out, text needs contrast. First, darken the words. Next, lighten the board a touch. Then check the ratio, and aim for four and a half to one. Same menu, now easy to read.",
+  "voice": "af_heart",
+  "speed": 1,
+  "gap": [
+   0.25,
+   0.3,
+   0.35,
+   0.3,
+   0.3,
+   0.4
+  ]
+ },
+ "before": {
+  "mistake": "light grey text on a cream board (about 2.4 to 1): the soft, elegant look that fails the 4.5 to 1 minimum for body text",
+  "source": "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html"
+ },
+ "qa": {
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 18,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the design-tutorial stage (a café specials board on a counter) fills the frame by design"
+   }
+  ],
+  "subject": [
+   66,
+   400,
+   474,
+   764
+  ]
+ },
+ "note": "Preview study (24 Nov 2026), not a post: the held grey-text reel rebuilt on the improved design kit (rules-c3.md V1-V3, B1-B3, P1-P2). Rendered with Showreel 'seconds' into R2 study/. No captions.json entry."
+}
