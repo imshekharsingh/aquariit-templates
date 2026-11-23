@@ -14,6 +14,12 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 6. Is every moving element's sound audible (SOUND DETAIL) and the mix -14 LUFS?
 7. Does the end land on the payoff (not drift into filler)? Would I watch it twice or send it to a friend?
 
+## Turns Out, design series (owner, 23 Nov 2026 night)
+D1. Does the voice sound like a person talking: full sentences, a breath after each, no list of labels ("Fix one: ..."), no line that runs into the next? Listen to the real audio; give the times of any clipped or rushed line.
+D2. Does each spoken line land on its visual change (the change starts within 0.3 s of the word that names it)? Give the frame time of every fix against its word.
+D3. Is the "before" a first draft a real person would make: one common, honest mistake (name it), left the way a tool's defaults leave it? A before nobody would make (every line bold, text too faint to exist, a layout scrambled on purpose) = NOT READY.
+D4. Does the last frame show both the before (thumbnail, tagged) and the after, readable at phone size, held for 1 s or more?
+
 ## Turns Out, guess format (E19)
 8. Is the answer hidden in EVERY frame before the reveal (colour, state, label, icon)? (12 Nov: the Eiffel tower was red while asking "gold, grey or red?")
 9. Is the 3-2-1 countdown clear, complete and placed away from the subject?

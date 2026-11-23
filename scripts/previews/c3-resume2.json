@@ -2,7 +2,7 @@
  "name": "showreel-pv-c3-resume2",
  "seek": "scripts/previews/c3-resume2.html",
  "engine": "design",
- "dur": 17.2,
+ "dur": 20.4,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -10,9 +10,17 @@
  "vignette": false,
  "cover": 0.6,
  "voice": {
-  "text": "Everything on this CV is bold. So nothing stands out. Turns out, eyes need an order. Fix one: the name, biggest. Fix two: headings, one size down. Fix three: details plain. Now it reads top to bottom.",
+  "text": "Every line here looks the same. So nothing stands out. Turns out, your eyes need an order. First, make the name the biggest. Next, give the headings a colour, one size down. Then let the details go lighter. Now it reads from top to bottom.",
   "voice": "af_heart",
-  "speed": 1
+  "speed": 1,
+  "gap": [
+   0.25,
+   0.3,
+   0.35,
+   0.3,
+   0.3,
+   0.4
+  ]
  },
  "qa": {
   "edges_ok": [
@@ -35,5 +43,10 @@
    780
   ]
  },
- "note": "Preview study for the premium program (24 Nov 2026), not a post: the posted CV reel rebuilt with the before/after proof (DT.keep, DT.proof) and each fix seen close (DT.close); rules-c3.md. Same voice text. Rendered with Showreel 'seconds' into R2 study/. No captions.json entry."
+ "note": "Preview study for the premium program (24 Nov 2026), not a post: the posted CV reel rebuilt with the before/after proof (DT.keep, DT.proof) and each fix seen close (DT.close); rules-c3.md. A new voice script (spoken sentences with breaths, rules-c3.md V1-V3) and a believable before (B1-B2). Rendered with Showreel 'seconds' into R2 study/. No captions.json entry.",
+ "dt": 2,
+ "before": {
+  "mistake": "every line in one size and weight, the way a blank document starts; only the headings are bold",
+  "source": "https://www.nngroup.com/articles/visual-hierarchy-ux-definition/"
+ }
 }
