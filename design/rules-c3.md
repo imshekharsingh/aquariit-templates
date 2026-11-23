@@ -122,3 +122,9 @@ rule 5 already; the c3 channel is OK (median reach 1,103 vs target 500). E19 (gu
 
 **23 Nov audit:** c3 ALARM (median reach 132 over the last 7 vs target 500; best window 1,157) and ESCALATE (second day running). The answer is already running: the design series from 21 Nov (stop-centring 366 vs 131 at 24 h, thumb-targets reel 1,112 reached on 22 Nov). PROMOTE c3-journey is rule 5 since 12 Nov. DROP c3-guess (2 LOSEs: Eiffel -1%, Taj -88%) is in design/playbook.md.
 
+## Design series: the proof and the close-up (premium program, 24 Nov 2026)
+Why: resume (reach 132) and card-margins end on the fixed design alone; a viewer who joins late, pauses or sends the last frame cannot see what changed, and each fix is a small change on a small page (real MP4s, frames at phone size).
+- **P1. The last frame shows both.** After the payoff word the "before" flashes back over the design for half a second under a red BEFORE tag, then shrinks to a tilted thumbnail at the design's lower corner and stays; the design is tagged AFTER (`DT.keep(board)` once in the before state, `DT.proof(t, t0, o)`, sound `DT.S.flip`). The thumbnail never covers a line of the design; both tags stay inside the safe zone. The reel holds this frame for at least 1 s (17 s is fine).
+- **P2. Each fix is seen close.** The camera goes in before a fix lands and back out after (`DT.close(CAM, t, z)`, z 1.07-1.1, anchored on the design's top edge so it grows down into the stage, never up into the words). A slow move, never a jump (FLOW: cuts 0).
+- Worked example: scripts/channel3/design/resume2.js (preview config scripts/previews/c3-resume2.json). New design scenes use both; posted scenes are not rebuilt.
+
