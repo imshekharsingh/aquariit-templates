@@ -6,6 +6,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-23 20:25 IST · main · owner chat (end of day)
+- Decisions: stages start as soon as the one before is done (critic right after Output QA, not 11:17). Web uses the black look of the top-3 reels (homebar redone in black, posted 10:29). Patterns from any reel may be reused and tweaked (CLAUDE.md); craft skills in .claude/skills. Fable for everything that shapes posts through 25 Nov (CLAUDE.md "Models"; Daily studio + Reel critic tasks switched by the owner). "Don't park anything": premium first, cost accepted. New daily "Improvement lab" task 14:23 IST (fresh Fable session, full preview in Inbox -> Previews). App redesign live (#1184, smoke fixed #1187). Read-only reel key live (#1188): critics fetch the real MP4 (scripts/reel-fetch.mjs). GitHub artifact hosts allowed on the environment.
+- Tech ai-memory: render 1 READY (old critic); kit premium pass (#1185, #1189) -> preview r2 Output QA PASS, Fable critic 7.5/6.5/7 = NOT READY on cleanliness (#1191); r3 with the framing fixes renders tonight. Owner posts r1 or r2 before 21:00.
+- Waiting on owner: which tech version tonight; Like/reject previews in the app.
+- Tomorrow: check the 06:47 build and 11:17 critic run on Fable (get_session); check the first Improvement lab run (it has no GitHub connector: if it cannot dispatch, start it from the owner chat with create_session); 30-min post probe after each post; E30 wiggle-family web reel in black.
+
 ## 2026-11-23 20:05 IST · claude/tech-kit-r3 · ai-memory preview r3 after the critic's notes on r2
 - Done: preview r2 (run 45183681322) Output QA PASS, but the Fable critic said NOT READY on cleanliness 6.5 (subject a middle band in three shots, caption on the screen's RAM bar, 2.4 s with no word, chips washed white). Fixed in scenes/ai-memory.html: the line-up stays close on one phone and counts its chips 1-4 then 5-8 in the top band (no small wide shot), the hall is seen low and close (racks to the bottom) with "WHY?" before "AI", the module fills the top until its number arrives, "PRICIER" before "CUT", the About-phone card sits above the caption band, matte module chips. previews.json now lists showreel-tech-ai-memory-r3.
 - Left: Tech reel (ai-memory, preview r3), Output QA, the critic's second look, closing notes. Render 1 stays the reel (the owner chat was advised to post it today).
