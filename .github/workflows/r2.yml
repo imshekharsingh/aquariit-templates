@@ -7,14 +7,27 @@ name: R2
 #   move:  the same, then delete the verified assets from the releases
 #   site:  sign in to the app: the Showreels list loads, a reel plays (Range -> 206), and its old public release URL is gone (404);
 #          and the first 256 KB of the newest reel's full MP4 (what the app plays, owner 11 Nov 2026) hold its moov atom
+#   promote: make a kept render the reel the app plays (src, dst, backup inputs; scripts/r2.sh promote): the old dst is backed up first
 #   faststart: reels in the app whose full MP4 has its moov atom after mdat get it moved first (-c copy, no re-encode)
 on:
   workflow_dispatch:
     inputs:
       action:
         type: choice
-        options: [check, copy, move, site, faststart]
+        options: [check, copy, move, site, faststart, promote]
         default: check
+      src:
+        description: promote only, name without .mp4 (e.g. study/showreel-x-r3-preview)
+        type: string
+        default: ''
+      dst:
+        description: promote only (e.g. showreel-x)
+        type: string
+        default: ''
+      backup:
+        description: promote only, where the old dst is kept (e.g. study/showreel-x-r1-backup)
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -49,6 +62,17 @@ jobs:
       - name: Move
         if: inputs.action == 'move'
         run: bash scripts/r2.sh migrate --delete
+      - name: Promote
+        if: inputs.action == 'promote'
+        env:
+          P_SRC: ${{ inputs.src }}
+          P_DST: ${{ inputs.dst }}
+          P_BACKUP: ${{ inputs.backup }}
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            timeout 180 sh -c 'sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg' || { echo "::error::no ffmpeg"; exit 1; }
+          fi
+          bash scripts/r2.sh promote "$P_SRC" "$P_DST" "$P_BACKUP"
       - name: Faststart
         if: inputs.action == 'faststart'
         env:

@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-23 21:20 IST · claude/tech-ai-memory-promote-r3 · tech ai-memory: preview r3 becomes the posted reel (owner chat job, size S)
+- Done: owner's choice (23 Nov): "I'll post R3". New `promote <src> <dst> [backup]` in scripts/r2.sh and an R2 workflow action `promote` (inputs src, dst, backup): backs up the old MP4 and cover, writes src to v/<dst>.mp4 (moov first, duration checked) with a cover, reads it back. Review file item 13 notes the posted file is preview r3. r3 leaves Inbox -> Previews (previews.json).
+- Left: dispatch R2 promote after the merge (src study/showreel-tech-ai-memory-r3-preview, dst showreel-tech-ai-memory, backup study/showreel-tech-ai-memory-r1-backup), then `node scripts/reel-fetch.mjs showreel-tech-ai-memory` shows ~30.73 s. Captions entry unchanged.
+- For the other account: a swap of a posted reel is always `promote` with a backup name, never a hand copy.
+
 ## 2026-11-23 21:00 IST · claude/tech-kit-closing-notes · tech kit premium pass: closing notes (owner chat job, size L, done)
 - Done: preview r3 (Tech reel run 45194307387) OUTPUT QA: PASS; the critic's second look: CRITIC (preview r3): READY, animation 7, cleanliness 7.5, premium 7.5 (render 1: 6 / 6-8 / 5-6.5). The Output QA lines for preview r2 and r3 are in review/tech/showreel-tech-ai-memory.md; render timing in design/craft-log.md.
 - Kit state: techkit/kit3d.js (shot changes, smeared blur, push under every hold, materials, light, word entrances), make.py --voice-only / --part / --join, Tech reel workflow in 6 parallel frame jobs with a `preview` input (R2 study/, app Inbox -> Previews); rules-tech.md M1-M6.
