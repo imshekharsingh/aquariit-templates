@@ -319,3 +319,9 @@ Format (at most 6 lines):
 - Checked locally against a mock of every API at 390 px (light and dark) and 1280 px: no script errors, no sideways scroll; npm run check passes.
 - Left: the owner looks at the live app on the phone (behind sign-in). A render-cap decision shows on Today only when it is added as an Owner answers question.
 - For the other account: status words live in `status()` and `plain()` in templates/index.html; add a new stage there, not on screen.
+
+## 2026-11-23 · claude/inbox-cleanup · Inbox and Needs you cleaned, and kept clean by code (owner chat job, size S-M)
+- Done: rules in code, in the daily path. templates/index.html: a preview leaves the list once answered (Like / Not this from any device) or 7 days after its "added" date; studied or used references older than 2 days leave the list. scripts/asks.mjs (Asks workflow): new `list` (everything the owner sees) and `tidy`; `read` runs tidy too: open ask past its `until` date removed (src/worker.js stores `until` on `add`), answered ask removed 3 days after the answer, unread Claude replies marked read 2 days after done, daily reports older than 2 days removed, PREVIEW lines name entries to drop from previews.json. scripts/check.mjs: every preview needs "added". previews.json: ramsqueeze (liked) removed, dates added. sw.js v22.
+- Left: after the merge, run the Asks workflow `clear` for c3-design-profile and darkflash-post, then `tidy` once, then `list` to see what is left.
+- For the other account: new asks that expire should carry "until": "YYYY-MM-DD"; a new preview needs "added".
+

@@ -16,11 +16,18 @@
 //          "these are already on Instagram"); a reel already marked keeps its own time (POST /api/uploaded/import, insert-or-ignore)
 //   unmark: ASKS = ["showreel-tech-watch-5atm", ...] clears a "posted" mark tapped by mistake (owner, 15 Nov 2026), as the app's own untick does
 //          (PUT /api/uploaded/<id> {"on": false}); prints whether each reel was marked before
+//   list:  prints everything the owner sees in the app, one line each (ASK / ANSWER / REPLY / REF / CARD / PREVIEW), to review before a cleanup
+//   tidy:  the Inbox cleanup rules (owner, 23 Nov 2026), run by `read` too, so the daily run applies them without a new task:
+//          asks:     an open ask past its "until" date (add: {"id","question","until":"YYYY-MM-DD"}) is removed; an answered ask is removed 3 days after the answer
+//          replies:  Claude's replies (done feedback) still unread 2 days after done are marked read
+//          cards:    daily reports older than 2 days (IST) are removed
+//          previews: PREVIEW lines name entries of templates/showreels/previews.json that the owner answered or that are past 7 days (the app already hides them; remove them from the file)
+//          refs:     studied/used references older than 2 days are hidden by the app (nothing deleted here)
 // Usage: node scripts/asks.mjs
 const SITE = (process.env.SITE_BASE || 'https://templates.aquariit.com').replace(/\/$/, ''), ACTION = process.env.ACTION || 'read';
 const die = (m) => { console.error('✗ ' + m); process.exit(1); };
 let items = [];
-if (ACTION !== 'read' && ACTION !== 'feedback' && ACTION !== 'feedback-done' && ACTION !== 'refs' && ACTION !== 'refs-done') { try { items = JSON.parse(process.env.ASKS || '[]'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); } if (ACTION === 'unmark' && (!Array.isArray(items) || !items.length || !items.every((id) => /^showreel-[a-z0-9-]{1,60}$/.test(id)))) die('unmark: ASKS is ["showreel-..."]');
+if (ACTION !== 'read' && ACTION !== 'list' && ACTION !== 'tidy' && ACTION !== 'feedback' && ACTION !== 'feedback-done' && ACTION !== 'refs' && ACTION !== 'refs-done') { try { items = JSON.parse(process.env.ASKS || '[]'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); } if (ACTION === 'unmark' && (!Array.isArray(items) || !items.length || !items.every((id) => /^showreel-[a-z0-9-]{1,60}$/.test(id)))) die('unmark: ASKS is ["showreel-..."]');
 if (ACTION !== 'mark' && (!Array.isArray(items) || !items.length)) die('ASKS must be a non-empty list'); }
 if (ACTION === 'mark') { if (!items || Array.isArray(items) || typeof items !== 'object' || !Object.keys(items).length) die('mark: ASKS is {"showreel-...": "ISO time"}'); for (const [id, at] of Object.entries(items)) if (!/^showreel-[a-z0-9-]{1,60}$/.test(id) || isNaN(Date.parse(at))) die(`mark: bad entry ${id}`); }
 const ID = /^[a-z0-9-]{1,60}$/;
@@ -32,7 +39,7 @@ if (ACTION === 'feedback-done') { try { fbDone = JSON.parse(process.env.ASKS || 
 let refDone = null;
 if (ACTION === 'refs-done') { try { refDone = JSON.parse(process.env.ASKS || '{}'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); }
   if (!refDone || !Array.isArray(refDone.ids) || !refDone.ids.length || !refDone.ids.every((i) => /^[0-9]{1,9}$/.test(String(i))) || !['new', 'studied', 'used'].includes(refDone.state) || typeof refDone.note !== 'string' || !refDone.note.trim()) die('refs-done: ASKS is {"ids": [3], "state": "studied", "note": "what was taken"}'); }
-if (!['read', 'add', 'clear', 'mark', 'unmark', 'feedback', 'feedback-done', 'refs', 'refs-done'].includes(ACTION)) die('ACTION is read, add, clear, mark, unmark, feedback, feedback-done, refs or refs-done');
+if (!['read', 'list', 'tidy', 'add', 'clear', 'mark', 'unmark', 'feedback', 'feedback-done', 'refs', 'refs-done'].includes(ACTION)) die('ACTION is read, list, tidy, add, clear, mark, unmark, feedback, feedback-done, refs or refs-done');
 const U = process.env.BASIC_AUTH_USER, P = process.env.BASIC_AUTH_PASS;
 if (!U || !P) die('BASIC_AUTH_USER / BASIC_AUTH_PASS are missing');
 const login = await fetch(SITE + '/login', { method: 'POST', redirect: 'manual', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ username: U, password: P }) });
@@ -98,5 +105,34 @@ if (ACTION === 'unmark') {
     const r = await fetch(`${SITE}/api/uploaded/${id}`, { method: 'PUT', headers: H, body: JSON.stringify({ on: false }) });
     if (!r.ok) die(`could not clear the mark on ${id} (HTTP ${r.status})`);
     console.log(before[id] ? `✓ cleared the posted mark on ${id} (it was marked ${before[id]})` : `✓ ${id} was not marked (nothing to clear)`);
+  }
+}
+
+// ---- list / tidy (owner, 23 Nov 2026: keep the Inbox and Needs you clear of what no longer needs the owner)
+if (ACTION === 'list' || ACTION === 'tidy' || ACTION === 'read') {
+  const J = async (path) => { const r = await fetch(SITE + path, { headers: { Cookie: cookie } }); if (!r.ok) die(`could not read ${path} (HTTP ${r.status})`); return r.json(); };
+  const day = (t) => new Date(Date.parse(t) + 5.5 * 36e5).toISOString().slice(0, 10), todayIST = day(new Date().toISOString()), ageDays = (t) => (Date.now() - Date.parse(t)) / 864e5;
+  const open = (await J('/api/asks')).asks || [], answered = (await J('/api/asks?answered=1')).asks || [], fb = (await J('/api/feedback')).feedback || [],
+    refs = (await J('/api/refs')).refs || [], cards = (await J('/api/cards')).cards || [];
+  let pv = []; try { pv = JSON.parse((await import('node:fs')).readFileSync('templates/showreels/previews.json', 'utf8')).items || []; } catch { /* not checked out */ }
+  const said = new Map(); for (const f of fb.slice().reverse()) { const m = /^Preview ([a-z0-9-]+): (Like|Not this)/.exec(f.text || ''); if (m) said.set(m[1], m[2]); }
+  const pvOld = pv.filter((p) => said.has(p.name) || !p.added || ageDays(p.added + 'T00:00:00+05:30') > 7);
+  if (ACTION === 'list') {
+    for (const a of open) console.log(`ASK ${a.id} ${a.created} ${a.channel || '-'} until ${a.until || '-'} ${JSON.stringify(a.question)}`);
+    for (const a of answered) console.log(`ANSWERED ${a.id} ${a.answered_at} ${JSON.stringify(a.answer)}`);
+    for (const f of fb) if (f.state === 'done' && f.note) console.log(`REPLY ${f.id} done ${f.done_at} ${f.read_at ? 'read' : 'UNREAD'} ${JSON.stringify(f.text.slice(0, 80))}`); else console.log(`MESSAGE ${f.id} ${f.created} ${f.state} ${JSON.stringify(f.text.slice(0, 80))}`);
+    for (const r of refs) console.log(`REF ${r.id} ${r.created} ${r.state} ${r.done_at || '-'} ${r.url || (r.file && r.file.name) || '-'}`);
+    for (const c of cards) console.log(`CARD ${c.id} ${c.day} ${c.kind || 'audit'} ${JSON.stringify(c.title)}`);
+    for (const p of pv) console.log(`PREVIEW ${p.name} added ${p.added || '-'} ${said.get(p.name) ? 'answered: ' + said.get(p.name) : 'waiting'}`);
+  }
+  if (ACTION === 'tidy' || ACTION === 'read') {
+    let n = 0; const del = async (path, what) => { const r = await fetch(SITE + path, { method: 'DELETE', headers: H }); console.log(r.ok ? `✓ tidy: removed ${what}` : `✗ tidy: could not remove ${what} (HTTP ${r.status})`); n += r.ok ? 1 : 0; };
+    for (const a of open) if (a.until && a.until < todayIST) await del('/api/asks/' + a.id, `ask ${a.id} (past ${a.until})`);
+    for (const a of answered) if (a.answered_at && ageDays(a.answered_at) > 3 ) await del('/api/asks/' + a.id, `answered ask ${a.id}`);
+    for (const f of fb) if (f.state === 'done' && f.note && !f.read_at && f.done_at && ageDays(f.done_at) > 2) {
+      const r = await fetch(`${SITE}/api/feedback/${f.id}/read`, { method: 'POST', headers: H, body: '{}' }); console.log(r.ok ? `✓ tidy: reply ${f.id} marked read` : `✗ tidy: reply ${f.id} (HTTP ${r.status})`); n += r.ok ? 1 : 0; }
+    for (const c of cards) if (c.day && ageDays(c.day + 'T00:00:00+05:30') > 2) await del('/api/cards/' + encodeURIComponent(c.id), `report ${c.id} (${c.day})`);
+    for (const p of pvOld) console.log(`PREVIEW ${p.name}: ${said.has(p.name) ? 'answered (' + said.get(p.name) + ')' : 'past 7 days'}; the app hides it; remove it from templates/showreels/previews.json (and its study/ files)`);
+    console.log(`tidy: ${n} item${n === 1 ? '' : 's'} cleaned, ${pvOld.length} preview${pvOld.length === 1 ? '' : 's'} to drop from the file`);
   }
 }

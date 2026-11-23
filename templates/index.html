@@ -1146,7 +1146,7 @@
         .then(function(x){ if (!x.ok) throw 0; refLoad(); }).catch(function(){ d.disabled = false; d.textContent = 'Try again'; }); });
     box.appendChild(d); return box; }
   function refLoad(){ fetch('/api/refs', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
-    .then(function(j){ var a = j.refs || [], n = a.filter(function(r){ return r.state === 'new'; }).length; refList.textContent = ''; a.forEach(function(r){ refList.appendChild(refItem(r)); });
+    .then(function(j){ var a = (j.refs || []).filter(function(r){ return r.state === 'new' || !r.done_at || Date.now() - Date.parse(r.done_at) <= 2 * 864e5; }), n = a.filter(function(r){ return r.state === 'new'; }).length; refList.textContent = ''; a.forEach(function(r){ refList.appendChild(refItem(r)); });  // studied or used more than 2 days ago leaves the list (owner, 23 Nov 2026)
       refN.textContent = n ? n + ' new' : a.length ? a.length + ' added' : 'Add a link or a file'; }).catch(function(){}); }
   function refDone(ok, m){ refSend.disabled = false; refSend.textContent = ok ? 'Add reference' : 'Try again'; refMsg.textContent = m || ''; if (ok) { refUrl.value = ''; refNote.value = ''; refFile.value = ''; refFname.textContent = 'Images or clips up to 50 MB'; refLoad(); } }
   refSend.addEventListener('click', function(){ var u = refUrl.value.trim(), f = refFile.files && refFile.files[0], note = refNote.value.trim();
@@ -1166,11 +1166,13 @@
   // owner's Feedback (D1, /api/feedback) as "Preview <name>: Like|Not this", which the daily run reads (owner, 23 Nov 2026).
   var pvPending = 0;
   fetch('/showreels/previews.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
-    var it = (j && j.items) || [], box = document.getElementById('pv-list'), n = document.getElementById('pv-n'); if (!it.length) return;
+    // cleanup rule (owner, 23 Nov 2026): a preview leaves the list once answered (Like / Not this, from any device) or 7 days after its "added" date
+    var now0 = Date.now(), it = ((j && j.items) || []).filter(function(p){ var t = Date.parse((p.added || '') + 'T00:00:00+05:30'); return !isNaN(t) && now0 - t <= 7 * 864e5; }),
+      box = document.getElementById('pv-list'), n = document.getElementById('pv-n'); if (!it.length) return;
     document.getElementById('pv-note').textContent = j.note || '';
     var CCV = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' }, rows = {};
-    function count(){ pvPending = it.filter(function(p){ return !rows[p.name].done; }).length; n.textContent = pvPending ? '(' + pvPending + ')' : '(all answered)'; inboxCount(); }
-    function answered(p, txt){ var r = rows[p.name]; r.done = true; r.row.innerHTML = ''; r.row.appendChild(el('span', 'ans', 'Your answer: ' + txt + '. Claude reads it on the next run.')); count(); }
+    function count(){ pvPending = it.filter(function(p){ return !rows[p.name].done; }).length; n.textContent = pvPending ? '(' + pvPending + ')' : ''; inboxCount(); }
+    function answered(p, txt){ var r = rows[p.name]; r.done = true; r.item.remove(); count(); if (!box.children.length) document.getElementById('pv').hidden = true; }
     it.forEach(function(p){ var d = el('div', 'pvi'), src = p.src || '/reels/study/' + p.name + '-preview.mp4', v = el('video'), row = el('div', 'row');
       var c = el('span', 'ch', (CH[p.channel] && CH[p.channel].name) || p.channel || ''); c.style.setProperty('--cc', CCV[p.channel] || 'var(--mute)'); d.appendChild(c);
       d.appendChild(el('b', null, p.title)); if (p.about) d.appendChild(el('p', null, p.about)); if (p.techniques) d.appendChild(el('p', 'tq', 'From the reference: ' + p.techniques));
@@ -1182,7 +1184,7 @@
             .then(function(r){ if (!r.ok) throw 0; answered(p, b[0]); }).catch(function(){ [].forEach.call(row.querySelectorAll('button'), function(x){ x.disabled = false; }); bt.textContent = 'Try again'; }); });
         row.appendChild(bt); });
       var st = el('a', null, 'Stills'); st.href = (p.stills || '/reels/study/' + p.name + '-preview-stills.png') + '?v=' + (j.v || 1); st.target = '_blank'; st.rel = 'noopener'; row.appendChild(st);
-      d.appendChild(row); box.appendChild(d); rows[p.name] = { row: row, done: false }; });
+      d.appendChild(row); box.appendChild(d); rows[p.name] = { row: row, item: d, done: false }; });
     document.getElementById('pv').hidden = false; count();
     // answers already sent (from any device) come back from the Feedback list
     fetch('/api/feedback', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(f){
