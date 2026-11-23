@@ -6,6 +6,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 03:50 IST · claude/critic-c3-greytext2-r2 · critic second look: Turns Out grey menu preview, render 2
+- Done: judged the real MP4 (21.2 s, from main 8808421) with its word times; "CRITIC (render 2): READY" in review/previews/c3-design-rebuilds.md. Scores 7.5 / 7.5 / 7.5, voice 7.5 (measured, not heard), before 7. No scene changed.
+- Every fix lands on its word (darken 7.46 s, lighten 9.17 s, ratio 11.18 s, four 12.57 s); pauses 0.5-0.7 s; rings clear of the text; ratio readable.
+- Left: small notes only (fix 2 is faint, the checker card touches one letter at 11.0-15.6 s, FAIL shows for 0.4 s on the fixed menu). The CV (resume2) was not re-scored: its re-render failed, the first-look verdict NOT READY stands until a new file exists.
+- For the other account: nothing.
+
 ## 2026-11-24 03:17 IST · claude/critic-web-homebar2-r2 · critic, second look at the web-homebar2 preview (render 2)
 - Done: judged render 2 on the real MP4 against render 1 and the posted homebar; lines added to review/previews/web-homebar2.md. No scene changed.
 - Verdict: READY (passes the gate). Render 2: 7.5 / 7 / 7 (animation / cleanliness / premium); render 1 was 6 / 6 / 6.5, the posted reel 6.5 / 8 / 6.5.
