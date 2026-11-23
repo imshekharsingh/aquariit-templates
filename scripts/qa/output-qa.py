@@ -179,7 +179,7 @@ def config(path):
         return c, text, [s for s in speeds if s is not None], 2.0, 'tech', f"showreel-tech-{c['slug']}"
     v = c.get('voice') or {}
     speeds = [v.get('speed')] + list(v.get('speeds') or [])
-    ch = 'c3' if '/channel3/' in path or c.get('name', '').startswith('showreel-c3-') else 'web'
+    ch = 'c3' if '/channel3/' in path or c.get('name', '').startswith(('showreel-c3-', 'showreel-pv-c3-')) or c.get('engine') == 'design' else 'web'   # a Turns Out preview (scripts/previews/c3-*.json) is judged as Turns Out, not as a web reel (24 Nov 2026: it failed the web DEMO and CALM checks)
     return c, v.get('text', ''), [s for s in speeds if s is not None], float(c.get('cover', 1.6)), ch, c.get('name', '')
 
 
