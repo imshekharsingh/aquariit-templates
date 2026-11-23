@@ -77,6 +77,14 @@ async function authed(request, env) {
   return !!b && (await matchAccount(b.user, b.pass, env)) >= 0;
 }
 
+// the read-only reel key: constant-time compare, fails closed when the secret is unset or empty
+async function readKeyOk(request, env) {
+  const key = typeof env.REELS_READ_KEY === 'string' ? env.REELS_READ_KEY.trim() : '';
+  const m = /^Bearer\s+(\S+)\s*$/i.exec(request.headers.get('Authorization') || '');
+  if (!key || !m) return false;
+  return safeEqual(m[1], key);
+}
+
 const safeNext = (n) => (typeof n === 'string' && n.startsWith('/') && !n.startsWith('//') && !n.startsWith('/login') && !n.startsWith('/logout') && !/[\\\r\n]/.test(n) ? n : '/');
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const noStore = { 'Cache-Control': 'no-store' };
@@ -822,6 +830,12 @@ export default {
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
     if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    // Read-only reel key (owner, 23 Nov 2026): critic and review sessions fetch the final reel files with Authorization: Bearer <REELS_READ_KEY>.
+    // It opens ONLY GET/HEAD of /reels/<file> from R2: no API, no app pages, no writes, no site-copy fallback. Unset or empty secret = off.
+    if (!signedIn && (await readKeyOk(request, env))) {
+      const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
+      if (m) { try { const v = await reelFile(request, env, m[1]); if (v) return v; } catch { /* not found below */ } return new Response('Not found', { status: 404, headers: noStore }); }
+    }
     if (signedIn) {
       const m = (request.method === 'GET' || request.method === 'HEAD') && p.match(REEL);
       if (m) { try { const v = await reelFile(request, env, m[1]); if (v) return v; } catch { /* fall back to a site copy, if any */ } }

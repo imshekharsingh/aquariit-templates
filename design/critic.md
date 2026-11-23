@@ -1,5 +1,7 @@
 # Reel critic: the questions every finished reel must answer (owner, 12 Nov 2026)
 
+Judge the REAL video (owner chat, 23 Nov 2026): `node scripts/reel-fetch.mjs <reel-name>` downloads the final MP4, cover and json from the app into reel-files/ (git-ignored; never commit or upload them); then `ffmpeg -i reel-files/<name>.mp4 -vf "fps=4,scale=390:-2" reel-files/f-%04d.png` gives frames at phone size every 0.25 s (look closely around every cut), and listen to the audio (`ffmpeg -i reel-files/<name>.mp4 -af ebur128 -f null -` for levels, then the words against the voice script). If reel-fetch says "read key not set up yet", fall back to the scene stills and say so in the review.
+
 Answer each with the frame times you looked at. Any "no" = not ready. Add a question here the same day the critic or the owner finds a new kind of miss.
 
 ## Every channel

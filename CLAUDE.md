@@ -73,6 +73,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 ## Secrets
 - The site sits behind a sign-in page + 30-day session cookie (src/worker.js). BASIC_AUTH_USER / BASIC_AUTH_PASS (+ optional
   BASIC_AUTH_USER_2 / BASIC_AUTH_PASS_2) exist only as GitHub + Worker secrets. NEVER write them into any file.
+- REELS_READ_KEY (GitHub + Worker secret, plus a network secret on the session environment): read-only reel files only (GET/HEAD /reels/); scripts/reel-fetch.mjs.
 - Instagram tokens only in the GitHub secrets INSTAGRAM_TOKEN, INSTAGRAM_TOKEN_2, INSTAGRAM_TOKEN_3 (Turns Out) (+ optional Worker secret
   GH_READ_TOKEN); VAPID keys and any music or sound API keys only as secrets. Never print them or put them in files or chat.
 - Reels and their MP4s live in the private R2 bucket "aquarii-reels"; the repo is public, so nothing goes to GitHub releases.
