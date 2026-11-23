@@ -5,6 +5,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 
 Format (at most 6 lines):
 ```
+## 2026-11-23 20:05 IST · claude/critic-ai-memory-r2 · Reel critic: tech ai-memory preview r2 (owner chat job)
+- Done: full critic pass on the real preview MP4 (study/ path works with the read key via curl; scripts/reel-fetch.mjs only takes top-level names). review/tech/showreel-tech-ai-memory.md "Preview r2": CRITIC (preview r2): NOT READY, PREMIUM animation 7.5, cleanliness 6.5, premium 7.
+- Left: r2 needs layout fixes (line-up 3.5-5.2 s, hall 8.5-11.5 s, module 11.8-13.6 s fill the frame; caption off the About screen at 24.6-25.3 s; a beat for "pricier" at 16.8-19.2 s), then one more preview. Render 1 stays the reel.
+- For the other account: nothing.
+
 ## YYYY-MM-DD HH:MM IST · main | second · <task in a few words>
 - Done: what changed (files or feature), PR number.
 - Left: what is unfinished or broken, if anything.
