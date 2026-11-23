@@ -13,6 +13,12 @@
 #   bash scripts/r2.sh faststart <list.json>   for each reel in the app's /api/showreels list (saved to list.json) with an MP4 uploaded less
 #                                             than 14 days ago: moov atom first (-c copy, no re-encode), verified (moov before mdat, same
 #                                             duration) before it is uploaded. The app plays the full MP4 (owner, 11 Nov 2026); no 720p copy
+#   bash scripts/r2.sh promote <src> <dst> [backup]
+#                                             make a kept render the reel the app plays (owner's choice, e.g. a preview r3 over render 1):
+#                                             names without .mp4, folders allowed (src study/showreel-x-r3-preview, dst showreel-x, backup
+#                                             study/showreel-x-r1-backup). The old dst MP4 and cover are copied to backup first; src goes to
+#                                             v/<dst>.mp4 with the moov atom first (same duration checked) and a new cover (src's cover if it
+#                                             has one, else the frame at 1.0 s). Only these keys are written; other reels are untouched
 #   bash scripts/r2.sh migrate [--delete]     copy every asset of the reels, techreel and study releases into the bucket, verify each one
 #                                             (downloaded back, same bytes); with --delete, then remove the verified assets from the releases
 set -uo pipefail
@@ -140,6 +146,30 @@ faststart() { # list.json from /api/showreels (owner, 6 Nov 2026: videos were sl
   [ "$failed" = 0 ]
 }
 
+promote() { # src dst [backup]: see the usage line above
+  local src=$1 dst=$2 bak=${3:-} W d0 d1 b; W=$(mktemp -d)
+  [[ "$src" =~ ^(study/)?showreel-[a-z0-9-]+$ && "$dst" =~ ^showreel-[a-z0-9-]+$ && ( -z "$bak" || "$bak" =~ ^study/showreel-[a-z0-9-]+$ ) ]] || { echo "::error::promote: bad names"; return 1; }
+  get "v/$src.mp4" "$W/src.mp4" || { echo "::error::promote: v/$src.mp4 not found"; return 1; }
+  d0=$(dur "$W/src.mp4")
+  if [ -n "$bak" ]; then
+    get "v/$dst.mp4" "$W/old.mp4" || { echo "::error::promote: v/$dst.mp4 not found, nothing to back up"; return 1; }
+    put "$W/old.mp4" "v/$bak.mp4" || return 1
+    if get "c/$dst-cover.jpg" "$W/old.jpg"; then put "$W/old.jpg" "c/$bak-cover.jpg" || return 1; fi
+    b=$(dur "$W/old.mp4"); echo "BACKUP v/$dst.mp4 -> v/$bak.mp4 (${b}s, $(stat -c%s "$W/old.mp4") bytes)"
+  fi
+  ffmpeg -y -loglevel error -i "$W/src.mp4" -map 0 -c copy -movflags +faststart "$W/new.mp4" || { echo "::error::promote: remux failed"; return 1; }
+  d1=$(dur "$W/new.mp4")
+  if ! node scripts/showreel/mp4boxes.mjs "$W/new.mp4" --need-moov-first >/dev/null || [ "$(awk -v a="$d0" -v b="$d1" 'BEGIN{print (a-b<0.01 && b-a<0.01)}')" != 1 ]; then
+    echo "::error::promote: remuxed file failed its check (duration $d0 -> $d1)"; return 1; fi
+  if ! get "c/$src-cover.jpg" "$W/cover.jpg"; then
+    ffmpeg -y -loglevel error -ss 1.0 -i "$W/new.mp4" -frames:v 1 -q:v 2 "$W/cover.jpg" || { echo "::error::promote: no cover"; return 1; }; fi
+  put "$W/new.mp4" "v/$dst.mp4" || return 1
+  put "$W/cover.jpg" "c/$dst-cover.jpg" || return 1
+  get "v/$dst.mp4" "$W/back.mp4" && cmp -s "$W/new.mp4" "$W/back.mp4" || { echo "::error::promote: read-back differs"; return 1; }
+  echo "PROMOTED v/$src.mp4 -> v/$dst.mp4 (${d1}s, $(stat -c%s "$W/new.mp4") bytes, moov first); cover $(stat -c%s "$W/cover.jpg") bytes"
+  echo "PROMOTE_OK=yes"
+}
+
 RUNNER_TMP_ERR=$(mktemp)
 cmd=${1:-}; shift || true
 case "$cmd" in
@@ -149,5 +179,6 @@ case "$cmd" in
   get) get "$@";;
   migrate) migrate "$@";;
   faststart) faststart "$@";;
-  *) sed -n '2,17p' "$0"; exit 2;;
+  promote) promote "$@";;
+  *) sed -n '2,23p' "$0"; exit 2;;
 esac
