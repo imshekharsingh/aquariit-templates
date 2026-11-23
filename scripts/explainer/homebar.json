@@ -1,0 +1,89 @@
+{
+ "name": "showreel-45-homebar",
+ "seek": "scripts/explainer/homebar.html",
+ "dur": 15.4,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.6,
+ "style": "Dark look, saffron colour world, whole frame, calm (rule 17). A phone-bottom topic: a fixed bottom button sits under the home bar; BEFORE the screen sags on every tap (the home swipe wins), AFTER the bar's bottom padding grows with env(safe-area-inset-bottom) and the button rises clear",
+ "palette": "saffron",
+ "voice": {
+  "text": "Why does your button hide? Stuck to the bottom, it sits right under the swipe line. Tap it and the phone swipes home instead. The fix: pad the bar with the safe area inset. Now the button sits clear, and one tap lands.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "qa": {
+  "focus": {
+   "demo": [
+    24,
+    125,
+    516,
+    672
+   ],
+   "subject": [
+    40,
+    690,
+    470,
+    784
+   ],
+   "from": 12.6,
+   "to": 13.3
+  },
+  "mute": {
+   "before": {
+    "say": "swipes"
+   },
+   "after": {
+    "say": "clear"
+   },
+   "span": 1.5
+  }
+ },
+ "caption": "Why does your button hide behind the home bar? 📱 On a phone with a swipe bar, a button stuck to the bottom edge sits right under it, so a tap lands on the swipe line and the app slides away instead.\n\nTell the page about the safe area, then pad the bar with it: add viewport-fit=cover to the viewport meta tag, and give the bar padding-bottom: env(safe-area-inset-bottom). MDN: the inset is 0 where nothing covers the screen and grows where the home indicator sits, so the button rises just enough. Watch the reel: the left phone sags on every tap, the fixed one stays put.\n\nenv() works in Chrome 69, Firefox 65 and Safari 11 and up (MDN, caniuse).\n\nSave this for your next bottom bar, or send it to whoever built your checkout button.",
+ "keywords": [
+  "css safe area inset",
+  "button behind iphone home bar",
+  "env safe-area-inset-bottom",
+  "viewport-fit cover",
+  "fixed bottom button iphone",
+  "css sticky footer mobile",
+  "mobile web design tips"
+ ],
+ "hashtags": [
+  "#css",
+  "#webdev",
+  "#frontend",
+  "#mobiledesign",
+  "#uidesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/env",
+   "note": "MDN env() (read 23 Nov 2026): safe-area insets are 0 on a rectangular viewport with nothing covering it, otherwise a px value above 0; viewport-fit=cover scales the page to fill the display and MDN recommends the safe area insets so important content is not outside it; example sticky footer padding-bottom: calc(1em + env(safe-area-inset-bottom, 1em))"
+  },
+  {
+   "url": "https://caniuse.com/mdn-css_types_env_safe-area-inset-bottom",
+   "note": "caniuse (MDN BCD), env() safe-area-inset-bottom, read 23 Nov 2026: Chrome 69, Firefox 65, Safari 11 / iOS Safari 11"
+  }
+ ],
+ "tip": {
+  "title": "Why does a fixed bottom button hide behind the home bar?",
+  "why": "On a phone with a home indicator, a bar fixed to the bottom edge puts its button right under the swipe line, so taps land on it. MDN: with viewport-fit=cover the page fills the whole display and the safe area inset variables keep content out of the covered parts; env(safe-area-inset-bottom) is 0 where nothing covers the screen and grows where the home indicator sits. env() works in Chrome 69, Firefox 65 and Safari 11 and up (MDN, caniuse).",
+  "code": "<meta name=\"viewport\" content=\"width=device-width, viewport-fit=cover\">\n\n.bar {\n  padding-bottom: env(safe-area-inset-bottom);\n}",
+  "demo": "homebar",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/env",
+   "label": "MDN, env()"
+  }
+ },
+ "format": "single",
+ "say": {},
+ "experiment": {
+  "id": "web-phone-edge",
+  "change": "a phone-edge topic (the home bar) with the dynamic fix: the screen sags on every tap in BEFORE, the bar's padding grows and the button rises in AFTER, the dark look in the saffron world",
+  "vs": "median"
+ }
+}

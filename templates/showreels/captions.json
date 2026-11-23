@@ -1770,5 +1770,34 @@
    "#techexplained",
    "#gadgets"
   ]
+ },
+ "showreel-45-homebar": {
+  "postOn": "2026-11-23",
+  "postAt": "13:00",
+  "caption": "Why does your button hide behind the home bar? 📱 On a phone with a swipe bar, a button stuck to the bottom edge sits right under it, so a tap lands on the swipe line and the app slides away instead.\n\nTell the page about the safe area, then pad the bar with it: add viewport-fit=cover to the viewport meta tag, and give the bar padding-bottom: env(safe-area-inset-bottom). MDN: the inset is 0 where nothing covers the screen and grows where the home indicator sits, so the button rises just enough. Watch the reel: the left phone sags on every tap, the fixed one stays put.\n\nenv() works in Chrome 69, Firefox 65 and Safari 11 and up (MDN, caniuse).\n\nSave this for your next bottom bar, or send it to whoever built your checkout button.",
+  "keywords": [
+   "css safe area inset",
+   "button behind iphone home bar",
+   "env safe-area-inset-bottom",
+   "viewport-fit cover",
+   "fixed bottom button iphone",
+   "css sticky footer mobile",
+   "mobile web design tips"
+  ],
+  "hashtags": [
+   "#css",
+   "#webdev",
+   "#frontend",
+   "#mobiledesign",
+   "#uidesign"
+  ],
+  "channel": "web",
+  "concept": "padding-bottom: env(safe-area-inset-bottom) with viewport-fit=cover (a fixed bottom button sits under the phone's home bar; every tap lands on the swipe line and the screen sags; the fix lifts the button clear); dark look, saffron world",
+  "about": "23 Nov: the owner declined to post darkflash (44), so today's web reel is new; a phone-edge topic everyone with a modern phone has met, visible on mute (rule 15)",
+  "experiment": {
+   "id": "web-phone-edge",
+   "change": "a phone-edge topic (the home bar) with the dynamic fix: the screen sags on every tap in BEFORE, the bar's padding grows and the button rises in AFTER, the dark look in the saffron world",
+   "vs": "median"
+  }
  }
 }

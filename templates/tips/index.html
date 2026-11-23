@@ -243,6 +243,10 @@
 #darkflash .stage.go .pg{animation:dfpage 1s ease both}
 @keyframes dfflash{0%{opacity:0}30%{opacity:1}60%{opacity:1}100%{opacity:0}}
 @keyframes dfpage{0%,40%{opacity:0}100%{opacity:1}}
+#homebar .stage{position:relative;height:104px;margin:8px 10px;overflow:hidden;border-radius:12px;background:#1a1410}
+#homebar .btn2{position:absolute;left:14px;right:14px;height:38px;border-radius:19px 19px 0 0;background:#f6b94a;color:#201400;font:700 15px/52px system-ui,sans-serif;text-align:center;bottom:0;transition:bottom .6s cubic-bezier(.3,1.4,.5,1);overflow:hidden}
+#homebar .stage.go[data-fix="1"] .btn2{bottom:22px}
+#homebar .pill{position:absolute;left:50%;margin-left:-34px;bottom:5px;width:68px;height:5px;border-radius:3px;background:#fff}
 </style>
 </head>
 <body>
@@ -252,6 +256,25 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="homebar">
+  <p class="no">Nº 35</p>
+  <h2>Why does a fixed bottom button hide behind the home bar?</h2>
+  <p class="why">On a phone with a home indicator, a bar fixed to the bottom edge puts its button right under the swipe line, so taps land on it. MDN: with viewport-fit=cover the page fills the whole display and the safe area inset variables keep content out of the covered parts; env(safe-area-inset-bottom) is 0 where nothing covers the screen and grows where the home indicator sits. env() works in Chrome 69, Firefox 65 and Safari 11 and up (MDN, caniuse).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">no safe-area padding</span><div class="stage" data-fix="0"><div class="btn2">Save the day</div><i class="pill"></i></div></div>
+  <div class="pane fix"><span class="tag ok">env(safe-area-inset-bottom)</span><div class="stage fix" data-fix="1"><div class="btn2">Save the day</div><i class="pill"></i></div></div>
+</div>
+<button class="play" type="button">Add the padding</button>
+<p class="note">Tap the button. The right bar gains padding-bottom: env(safe-area-inset-bottom) and its button lifts clear of the swipe line (simulated; on a real phone the inset is 0 where nothing covers the screen). MDN, env().</p></div>
+  <div class="code"><pre><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, viewport-fit=cover&quot;&gt;
+
+.bar {
+  padding-bottom: env(safe-area-inset-bottom);
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/env" rel="noopener">Source: MDN, env()</a></p>
+</article>
 
 <article class="tip" id="darkflash">
   <p class="no">Nº 34</p>
@@ -871,11 +894,12 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>32 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>33 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "homebar": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
     "darkflash": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
     "tapzoom": function(root){ root.querySelectorAll('.stage').forEach(function(st){ var last = 0, n = 12; st.querySelector('.like').addEventListener('click', function(){ var now = Date.now(); n++; st.querySelector('.n').textContent = n; if (st.dataset.fix === '0' && now - last < 450) st.classList.toggle('z'); last = now; }); }); },
     "snapback": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
