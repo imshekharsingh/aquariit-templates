@@ -5,6 +5,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 
 Format (at most 6 lines):
 ```
+
+## 2026-11-23 20:05 IST · claude/tech-kit-r3 · ai-memory preview r3 after the critic's notes on r2
+- Done: preview r2 (run 45183681322) Output QA PASS, but the Fable critic said NOT READY on cleanliness 6.5 (subject a middle band in three shots, caption on the screen's RAM bar, 2.4 s with no word, chips washed white). Fixed in scenes/ai-memory.html: the line-up stays close on one phone and counts its chips 1-4 then 5-8 in the top band (no small wide shot), the hall is seen low and close (racks to the bottom) with "WHY?" before "AI", the module fills the top until its number arrives, "PRICIER" before "CUT", the About-phone card sits above the caption band, matte module chips. previews.json now lists showreel-tech-ai-memory-r3.
+- Left: Tech reel (ai-memory, preview r3), Output QA, the critic's second look, closing notes. Render 1 stays the reel (the owner chat was advised to post it today).
+- For the other account: in a portrait frame a row of three objects cannot fill the height; show one at a time and count, or stack them in depth.
+
 ## 2026-11-23 20:05 IST · claude/critic-ai-memory-r2 · Reel critic: tech ai-memory preview r2 (owner chat job)
 - Done: full critic pass on the real preview MP4 (study/ path works with the read key via curl; scripts/reel-fetch.mjs only takes top-level names). review/tech/showreel-tech-ai-memory.md "Preview r2": CRITIC (preview r2): NOT READY, PREMIUM animation 7.5, cleanliness 6.5, premium 7.
 - Left: r2 needs layout fixes (line-up 3.5-5.2 s, hall 8.5-11.5 s, module 11.8-13.6 s fill the frame; caption off the About screen at 24.6-25.3 s; a beat for "pricier" at 16.8-19.2 s), then one more preview. Render 1 stays the reel.
