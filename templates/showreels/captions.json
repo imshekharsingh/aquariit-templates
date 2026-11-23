@@ -1745,6 +1745,7 @@
   "channel": "tech",
   "postOn": "2026-11-23",
   "postAt": "13:00",
+  "cover": {"t": 6.5, "lines": ["Your next phone", "may have LESS memory"], "accent": 1},
   "format": "xray",
   "device": "phone",
   "concept": "The new tech direction's first reel (design/tech-direction.md, owner approved 22 Nov): real 3D, ~30 s, phone, global + India. Your next phone may have less memory: an x-ray phone loses chips (8 GB -> 4 GB), three phones with 12 / 8 / 4 chips, memory streaming into an AI server hall, a macro on a server memory module (+90%), the board's chips cut, a server aisle to 2027, check the RAM; loops to the opening. TrendForce, read 22 Nov 2026.",

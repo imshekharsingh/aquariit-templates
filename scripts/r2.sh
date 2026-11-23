@@ -19,6 +19,10 @@
 #                                             study/showreel-x-r1-backup). The old dst MP4 and cover are copied to backup first; src goes to
 #                                             v/<dst>.mp4 with the moov atom first (same duration checked) and a new cover (src's cover if it
 #                                             has one, else the frame at 1.0 s). Only these keys are written; other reels are untouched
+#   bash scripts/r2.sh cover <name> ['<json>']
+#                                             a designed cover for a reel in the app (scripts/cover.mjs: a frame of v/<name>.mp4, a band, one or
+#                                             two text lines). The recipe is the reel's "cover" in templates/showreels/captions.json, or the JSON
+#                                             given here. The automatic cover is kept once as c/study/<name>-cover-auto.jpg (c/ is not deleted)
 #   bash scripts/r2.sh migrate [--delete]     copy every asset of the reels, techreel and study releases into the bucket, verify each one
 #                                             (downloaded back, same bytes); with --delete, then remove the verified assets from the releases
 set -uo pipefail
@@ -163,11 +167,30 @@ promote() { # src dst [backup]: see the usage line above
     echo "::error::promote: remuxed file failed its check (duration $d0 -> $d1)"; return 1; fi
   if ! get "c/$src-cover.jpg" "$W/cover.jpg"; then
     ffmpeg -y -loglevel error -ss 1.0 -i "$W/new.mp4" -frames:v 1 -q:v 2 "$W/cover.jpg" || { echo "::error::promote: no cover"; return 1; }; fi
+  # a designed cover (the reel's "cover" in captions.json) replaces the frame; if it fails the frame stays
+  node scripts/cover.mjs "$W/new.mp4" "$W/cover.jpg" --reel "$dst" || echo "::warning::promote: the designed cover failed; the automatic frame is used"
   put "$W/new.mp4" "v/$dst.mp4" || return 1
   put "$W/cover.jpg" "c/$dst-cover.jpg" || return 1
   get "v/$dst.mp4" "$W/back.mp4" && cmp -s "$W/new.mp4" "$W/back.mp4" || { echo "::error::promote: read-back differs"; return 1; }
   echo "PROMOTED v/$src.mp4 -> v/$dst.mp4 (${d1}s, $(stat -c%s "$W/new.mp4") bytes, moov first); cover $(stat -c%s "$W/cover.jpg") bytes"
   echo "PROMOTE_OK=yes"
+}
+
+cover() { # name [json]: see the usage line above
+  local n=$1 json=${2:-} W; W=$(mktemp -d)
+  [[ "$n" =~ ^showreel-[a-z0-9-]+$ ]] || { echo "::error::cover: bad name"; return 1; }
+  get "v/$n.mp4" "$W/reel.mp4" || { echo "::error::cover: v/$n.mp4 not found (MP4s are deleted 15 days after upload)"; return 1; }
+  if [ -n "$json" ]; then node scripts/cover.mjs "$W/reel.mp4" "$W/cover.jpg" --cover "$json" || return 1
+  else node scripts/cover.mjs "$W/reel.mp4" "$W/cover.jpg" --reel "$n" || return 1; fi
+  [ -s "$W/cover.jpg" ] || { echo "::error::cover: $n has no \"cover\" in templates/showreels/captions.json and no recipe was given"; return 1; }
+  # keep the automatic cover once (a second run must not overwrite it with a designed one)
+  if get "c/$n-cover.jpg" "$W/old.jpg"; then
+    if get "c/study/$n-cover-auto.jpg" "$W/kept.jpg"; then echo "automatic cover already kept as c/study/$n-cover-auto.jpg"
+    else put "$W/old.jpg" "c/study/$n-cover-auto.jpg" || return 1; fi
+  fi
+  put "$W/cover.jpg" "c/$n-cover.jpg" || return 1
+  get "c/$n-cover.jpg" "$W/back.jpg" && cmp -s "$W/cover.jpg" "$W/back.jpg" || { echo "::error::cover: read-back differs"; return 1; }
+  echo "COVER_OK=yes ($n, $(stat -c%s "$W/cover.jpg") bytes)"
 }
 
 RUNNER_TMP_ERR=$(mktemp)
@@ -180,5 +203,6 @@ case "$cmd" in
   migrate) migrate "$@";;
   faststart) faststart "$@";;
   promote) promote "$@";;
-  *) sed -n '2,23p' "$0"; exit 2;;
+  cover) cover "$@";;
+  *) sed -n '2,27p' "$0"; exit 2;;
 esac
