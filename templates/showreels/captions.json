@@ -1557,9 +1557,10 @@
  "showreel-c3-looks-expensive": {
   "channel": "c3",
   "engine": "design",
-  "onGo": true,
   "concept": "Design series · One of these looks 5× pricier. Same product, same shelf. 🛍️ (two labels for the same invented product (no real brand) on a shop shelf; which looks pricier, then the three reasons: empty space, small spaced-out capitals, only two colours)",
-  "note": "Design series (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+  "note": "Design series (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
+  "hidden": true,
+  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
  },
  "showreel-c3-optical-centre": {
   "channel": "c3",
@@ -1578,16 +1579,18 @@
  "showreel-c3-fix-invite": {
   "channel": "c3",
   "engine": "design",
-  "onGo": true,
   "concept": "Design series · Let's fix this birthday invite. Three moves. 🎈 (a cluttered kids' birthday invite on a fridge door fixed in three moves: one hero (the age), one font in two sizes, one colour used once)",
-  "note": "Design series (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+  "note": "Design series (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
+  "hidden": true,
+  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
  },
  "showreel-c3-text-on-photo": {
   "channel": "c3",
   "engine": "design",
-  "onGo": true,
   "concept": "Design series · Nobody can read this poster. Three fixes, same photo. 🎤 (a gig poster on a lamp post at night whose thin pale text sits on a busy, bright crowd photo, fixed in three moves: darken the photo, put the title on a solid band, one bold colour for the text)",
-  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
+  "hidden": true,
+  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
  },
  "showreel-c3-tap-targets": {
   "channel": "c3",
@@ -1620,30 +1623,34 @@
  "showreel-c3-all-caps": {
   "channel": "c3",
   "engine": "design",
-  "onGo": true,
   "concept": "Design series · Stop writing in all caps. It's hard to read. 🛍️ (a sale flyer on a shop's glass door set entirely in bold caps, fixed in three moves: sentence case, caps only for a short label, letterspacing on those caps)",
-  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
+  "hidden": true,
+  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
  },
  "showreel-c3-line-spacing": {
   "channel": "c3",
   "engine": "design",
-  "onGo": true,
   "concept": "Design series · Nobody can cook from this. The lines are too tight. 🍋 (a soup recipe card on a kitchen counter set as one tight wall of text, fixed in three moves: more line spacing, space between steps, a number on each step)",
-  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
+  "hidden": true,
+  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
  },
  "showreel-c3-grey-text": {
   "channel": "c3",
   "engine": "design",
-  "onGo": true,
   "concept": "Design series · Grey on beige looks soft. Nobody can read it. ☕ (a café specials board in grey text on beige, fixed in three moves: darker words, a lighter board, checking the contrast ratio)",
-  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
+  "hidden": true,
+  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
  },
  "showreel-c3-price-list": {
   "channel": "c3",
   "engine": "design",
-  "onGo": true,
   "concept": "Design series · These prices are hard to compare. They jump around. ✂️ (a salon price list with every row centred so the prices jump left and right, fixed in three moves: one right edge for prices, same-width (tabular) digits, dot leaders to each name)",
-  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
+  "hidden": true,
+  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
  },
  "showreel-c3-card-margins": {
   "channel": "c3",
@@ -1745,7 +1752,14 @@
   "channel": "tech",
   "postOn": "2026-11-23",
   "postAt": "13:00",
-  "cover": {"t": 6.5, "lines": ["Your next phone", "may have LESS memory"], "accent": 1},
+  "cover": {
+   "t": 6.5,
+   "lines": [
+    "Your next phone",
+    "may have LESS memory"
+   ],
+   "accent": 1
+  },
   "format": "xray",
   "device": "phone",
   "concept": "The new tech direction's first reel (design/tech-direction.md, owner approved 22 Nov): real 3D, ~30 s, phone, global + India. Your next phone may have less memory: an x-ray phone loses chips (8 GB -> 4 GB), three phones with 12 / 8 / 4 chips, memory streaming into an AI server hall, a macro on a server memory module (+90%), the board's chips cut, a server aisle to 2027, check the RAM; loops to the opening. TrendForce, read 22 Nov 2026.",

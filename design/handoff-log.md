@@ -6,6 +6,18 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 02:10 IST · claude/tech-kit-r4, claude/web-hook-kit, claude/c3-before-after, claude/c3-natural-before · premium program: kit lifts for all three channels (owner chat job, size L)
+- Done, tech (#1205): kit3d.js countTo, reframe, server rack faces; sound.py "cutsound" (swell + low hit on each shot change, a riser on the payoff); rules-tech.md M7-M10; a preview can carry its own scene (techreel/previews/<slug>-<tag>.json), so scenes/ai-memory-r4.html renders only with preview=r4.
+- Done, web (#1206): scripts/explainer/kithook.js (KM.black, bugs, away, react, meter) between its own markers; the starter uses it and the black look; stills prints HOOK BUG; rules-web.md rule 20; scripts/previews/web-homebar2 is the example.
+- Done, Turns Out: design/core.js DT.keep, proof, close, S.flip (rules-c3.md P1-P2); after the owner's note (voice not natural, before forced): rules V1-V3, B1-B3, scripts/qa/c3-script.mjs in npm run check, critic.md D1-D4, design/c3-research-2026-11-24.md (research + audit), the seven unposted design reels held in captions.json ("hidden" + "hold"), the CV reel rebuilt as scripts/previews/c3-resume2 (design/resume2.js).
+- Left: Output QA and an independent critic on each preview (tech r4, web homebar2, c3 resume2), improvements.md lines with the scores, then the other six held Turns Out reels rebuilt one by one.
+- For the other account: a posted reel's scene is never edited for a study: copy it and render through the preview path. A new design reel needs "dt": 2, voice.gap and "before" in its config. New web scenes call KM.bugs.
+
+## 2026-11-24 01:50 IST · claude/skills-3d-steer · premium program phase 0: two craft references added (owner chat job, size L, owner's go 23 Nov night)
+- Done: .claude/skills/hyperframes/references/types/3d.md (camera, light and bloom rules for tech's real 3D) and references/steer.md (motion faults in plain words with the fix for each, seven motion ideas, transitions by energy, three sound-placement lines), both from heygen-com/hyperframes 5906174, Apache-2.0, every file read. THIRD_PARTY.md: the two rows, plus what was read and left out and why (theme-factory, brand-guidelines, algorithmic-art, slack-gif-creator, the registry, media-use and its Pixabay MP3s, colour-grading and caption docs).
+- Left: phases 1-3 (tech, web, Turns Out kit lifts), each with one preview render and an independent critic.
+- For the other account: builder and critic name a motion fault with steer.md's words ("it feels like slides", "scene 3 is dead") and apply its fix.
+
 ## 2026-11-23 23:40 IST · claude/designed-covers · designed reel covers, by script (owner chat job, size S-M)
 - Done: scripts/cover.mjs builds a cover from the finished MP4: one frame, a solid band (y 1360, #0B0D12), one or two lines in Inter Display Bold (white, accent line amber #FFB23A), JPEG q 2. The recipe is the reel's `"cover": {"t", "lines", "accent"}` in templates/showreels/captions.json (accent counts from 0). Font vendored as a 55 KB Latin subset with its OFL text (scripts/cover/). scripts/r2.sh `cover <name> ['<json>']` + R2 workflow action "cover" (dst = reel name): the automatic cover is kept once as c/study/<name>-cover-auto.jpg (c/, because v/ is deleted after 15 days), the new one goes to c/<name>-cover.jpg (where the app reads covers). Showreel, Tech reel and R2 promote build the designed cover after the automatic frame; no recipe or a failure = the automatic frame stays. `node scripts/cover.mjs --check` is in npm run check. showreel-tech-ai-memory carries the owner's approved recipe (4 GB frame at 6.5 s). runbook-reels.md "Render": the cover line.
 - Left: run R2 -> cover for showreel-tech-ai-memory after the merge and look at the result (this session does it).
@@ -53,11 +65,6 @@ Format (at most 6 lines):
 - Left: what is unfinished or broken, if anything.
 - For the other account: anything it must know or must not touch; a proposed rule change goes here.
 ```
-
-## 2026-11-24 01:50 IST · claude/skills-3d-steer · premium program phase 0: two craft references added (owner chat job, size L, owner's go 23 Nov night)
-- Done: .claude/skills/hyperframes/references/types/3d.md (camera, light and bloom rules for tech's real 3D) and references/steer.md (motion faults in plain words with the fix for each, seven motion ideas, transitions by energy, three sound-placement lines), both from heygen-com/hyperframes 5906174, Apache-2.0, every file read. THIRD_PARTY.md: the two rows, plus what was read and left out and why (theme-factory, brand-guidelines, algorithmic-art, slack-gif-creator, the registry, media-use and its Pixabay MP3s, colour-grading and caption docs).
-- Left: phases 1-3 (tech, web, Turns Out kit lifts), each with one preview render and an independent critic.
-- For the other account: builder and critic name a motion fault with steer.md's words ("it feels like slides", "scene 3 is dead") and apply its fix.
 
 ## 2026-11-23 18:30 IST · claude/tech-kit-premium · tech kit premium pass + ai-memory preview r2 (owner chat job, size L, owner: "put the fixes in kit first")
 - Done: techkit/kit3d.js (five shot changes drawn as two live shots, never through black; sampled + smeared motion blur; glide and push so nothing is ever still; six word entrances; epoxy / metal / gold / battery / glass / rack materials; key + rim + kicker light), make.py inlines it at `<!--KIT3D-->`; scenes/ai-memory.html rebuilt on it (stream as single chips, lit aisle, the turn on "Buying", "+90%" and "CUT" off the objects, an "About phone" screen); rules-tech.md M1-M6; README "The 3D kit"; scripts/tech-assemble.py + KIT_Q for quick local looks.

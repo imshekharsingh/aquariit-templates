@@ -128,3 +128,12 @@ Why: resume (reach 132) and card-margins end on the fixed design alone; a viewer
 - **P2. Each fix is seen close.** The camera goes in before a fix lands and back out after (`DT.close(CAM, t, z)`, z 1.07-1.1, anchored on the design's top edge so it grows down into the stage, never up into the words). A slow move, never a jump (FLOW: cuts 0).
 - Worked example: scripts/channel3/design/resume2.js (preview config scripts/previews/c3-resume2.json). New design scenes use both; posted scenes are not rebuilt.
 
+## Design series: the voice and the before (owner, 23 Nov 2026 night; design/c3-research-2026-11-24.md)
+- **V1. Spoken sentences, not labels.** No "Fix one: the name, biggest." Say it the way a person would: "First, make the name the biggest." At most one sentence under 4 words. Contractions where a person would use them. One idea a sentence.
+- **V2. A breath after every sentence** (`voice.gap`, 0.25-0.4 s, a little longer before the fixes start and before the payoff): each sentence is spoken on its own, so it does not run into the next change.
+- **V3. Each sentence lands on its change**: the change starts on the word that names it (anchors from that word, as resume2.js does), never earlier. The first sentence is 6 words or fewer. Overall at most 2.6 words a second; a reel may run 18-21 s to keep the breaths.
+- **B1. The before is a believable first draft.** It has ONE common mistake that a design source names (the config's `"before": {"mistake", "source"}`), and it looks the way a tool's defaults leave it: one size for every line, centred text, a default font, tight line spacing, edges touched. Everything else in the before is ordinary and tidy.
+- **B2. Never a strawman.** Not every line bold, not text too faint to exist, not prices scattered on purpose. Test: would a stranger say "mine looks like that"? If the answer needs explaining, change the before.
+- **B3. The claim names what the viewer sees, plainly** ("Every line looks the same."), not a verdict on the maker.
+- Checks: `scripts/qa/c3-script.mjs` (npm run check) for V1, V2, V3's first sentence and B1; the critic's D1-D4 for the rest. A design config on these rules carries `"dt": 2`; a design reel may wait for the owner's go only with it.
+

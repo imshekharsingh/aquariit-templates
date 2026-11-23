@@ -3,6 +3,7 @@
 > **21 Nov 2026 (owner: "start today ... with this strategy"): Turns Out is the DESIGN SERIES now. Section 0 below is the plan; sections 1-10 (myths) are history.**
 
 ## 0. Turns Out design series (live from 21 Nov 2026)
+**24 Nov 2026 (owner, 23 Nov night): read design/c3-research-2026-11-24.md and rules-c3.md V1-V3, B1-B3, P1-P2 before building or posting a design reel. The seven unposted reels are held until rebuilt.**
 **Promise:** one design fix a day you can use on your own menu, poster, slide or invite. "Turns out, it's not the colours. It's the spacing."
 Why it can grow where the fun facts did not: each reel is something the viewer *has* (their own menu, invite, slide) to save and send,
 the same reason @webin20sec gets saves. Owner, 21 Nov: "I actually liked all five ... defining design across usage".
