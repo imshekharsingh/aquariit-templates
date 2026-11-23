@@ -22,3 +22,25 @@ P1: t=7-15 · counter never resolves → TAPS 1 / SAVED 1 in the meter's place a
 P2: t=3.0-6.5 · SWIPE ZONE tag about 9 px at phone size → a size up.
 
 ENHANCE: make the cause visible in the first half second: a ring taps the coral button, the app follows the white bar up and away, and the hook word "button" is still on screen with it.
+
+## Render 2 (second look, the last render allowed)
+
+CRITIC (render 2): READY
+Detail (render 2): judged on the real MP4 (5,421,451 bytes, 15.4 s), frames at 390 px, fps 4 for the whole reel, fps 10 for 0-3 s, close frames at each fall; against render 1 and the posted homebar. READY means it passes the gate (nothing under 7); it is still under the 7.5 target on cleanliness and premium.
+- First 3 s (Q1, rules 2 and 20): a soft ring presses the coral button at 0.2-0.3 s; the app shrinks over 0.40-0.70 s into its own coral icon; "oops!" 0.7-0.9 s; the app is open again by 1.0 s; second tap 1.5 s, fall 1.6-1.9 s, "again?!" 1.9-2.3 s; app back at 2.5 s. A stranger now sees by 1 s: a tap on the bottom button, the app goes home. Both first-look P0s are fixed. The home screen no longer reads dull or empty: eight icons in muted navy, olive, green and plum, and the app's coral icon is the one bright thing, so the eye follows the app into it. It is still dark; I did not re-run Output QA DEMO, so its number is unknown.
+- Cover: the frame at 1.4 s is good (hook + app + button + ring). But scripts/previews/web-homebar2.json on main still says "cover": 1.6, and 1.6 s is mid-fall with the counter fading in over the hook. Set the cover to 1.4 before anything is posted from this pattern.
+- Q2: nothing prints over the subtitles now. Small faults left: the tap ring sits on the button's label at 0.2-0.3 s, 1.4 s and 11.6 s ("Save the day" is partly covered); the red ripple ring crosses "oops!" / "home?!" for about 0.1 s (0.72 s, 5.7 s); hook and counter cross through each other at 1.50-1.55 s; the counter label TAPS ON THE LINE and the SWIPE ZONE tag are about 7-9 px at phone size, hard to read.
+- Q3 / truth: better. TAPS ON THE LINE says which taps are counted, and each fall has its tap. Still 3 of 3 taps go home, which is the voice's claim, a little more than real life; acceptable as "exaggerate the motion".
+- Q4: SWIPE ZONE on "under" at 3.0-3.25 s; third tap 5.3 s, fall 5.4-5.7 s on "swipes"; good. The app reopens three times with no tap on its icon (1.0, 2.5, 6.0 s): fine at this pace.
+- Q7: payoff unchanged and clean (12-15 s); the big counter still leaves at 7 s and never shows SAVED 1 (known, not done).
+- Sound (measured, not heard): -14.0 LUFS, LRA 1.8, peak -2.5 dBFS. Full-band level at the falls is within 1 dB of the posted reel because the voice sits on top. Under 110 Hz the hit shows: fall 1 at 0.4 s -26 dB (render 1 -27, posted -39); fall 2 at 1.6 s -27 dB (render 1 -28 at 1.4 s, posted -43); fall 3 at 5.5 s -29 dB (render 1 -30, posted -46). So the low hit is real and on each fall, but only about 1 dB louder than render 1, not clearly "louder". NOT JUDGED: how it sounds, the swish, the voice's clarity.
+
+PREMIUM (homebar2 render 2): animation 7.5/10 (t 0.2-1.0: tap, 0.3 s shrink into the icon, reopen; t 5.3-5.7 on the word; three falls are the same move), cleanliness 7/10 (t 0.25, 1.4, 11.6: ring on the button label; t 0.72: ripple through "oops!"; t 1.50: hook and counter cross; tiny counter label), premium 7/10 (t 0-2.5 now tells the story, t 3.0 SWIPE ZONE; the counter has no payoff and the lower fifth is empty as before); weakest: t 7-15, the meter leaves and never turns to SAVED 1, so the number the hook builds is not paid off; fix: TAPS 1 / SAVED 1 in the meter's place when the tap lands at 11.6 s (the code card moves down or shrinks).
+
+P1: config "cover": 1.6 → 1.4.
+P1: t=11.6-15 · meter → show SAVED 1 big.
+P2: t=0.25, 1.4, 11.6 · ring on the label → ring around the button's right end, label clear.
+P2: t=1.50 · hook ends before the counter starts (0.1 s gap).
+P2: counter label and SWIPE ZONE tag one size up.
+
+ENHANCE (render 2): pay off the counter: the same big number the viewer watched fail turns to SAVED 1 in gold on the one clean tap.

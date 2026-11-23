@@ -6,6 +6,13 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 03:17 IST · claude/critic-web-homebar2-r2 · critic, second look at the web-homebar2 preview (render 2)
+- Done: judged render 2 on the real MP4 against render 1 and the posted homebar; lines added to review/previews/web-homebar2.md. No scene changed.
+- Verdict: READY (passes the gate). Render 2: 7.5 / 7 / 7 (animation / cleanliness / premium); render 1 was 6 / 6 / 6.5, the posted reel 6.5 / 8 / 6.5.
+- Fixed: the tap is seen, the app shrinks into its coral icon in 0.3 s and comes back, words clear of the subtitles, the home screen no longer reads empty.
+- Left: "cover" in scripts/previews/web-homebar2.json is still 1.6 (mid-fall); 1.4 is the good frame. The counter never turns to SAVED 1. Ring sits on the button label.
+- Sound measured, not heard: -14.0 LUFS; the low hit is on each fall but only about 1 dB above render 1. Output QA DEMO not re-run.
+
 ## 2026-11-24 03:10 IST · claude/critic-c3-rebuilds · critic on the Turns Out design rebuilds (CV resume2, grey menu greytext2)
 - Done: judged the real MP4 of the CV preview against the posted showreel-c3-resume; the grey-menu preview is not rendered (404 twice), so it was judged from stills against the old showreel-c3-grey-text MP4. Result in review/previews/c3-design-rebuilds.md. No scene or posted reel changed.
 - Verdict: both NOT READY. CV old 6.5 / 6.5 / 6, voice 4.5, before 4; new 7 / 6.5 / 7, voice 7, before 7.5. Menu old 6.5 / 6 / 6, voice 4, before 4.5; new (stills) 6.5 / 6.5 / 7, voice 7.5 (script only), before 7.
