@@ -14,7 +14,8 @@ let pw; try { pw = require('playwright'); } catch { pw = require('playwright-cor
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: +(process.env.KIT_SCALE || 1) });
   page.on('pageerror', (e) => { console.error('PAGEERR', e.message); process.exitCode = 2; });
   if (process.env.KIT_Q) await page.addInitScript((q) => { window.KITQ = q; }, +process.env.KIT_Q);   // KIT_Q=0.5: a quick draft of a kit3d scene (fewer blur samples)
-  await page.goto('file://' + path.resolve(scene));
+  // a 3D scene draws its first frame while it loads (shaders compile on the runner's software GPU, four workers at once): 30 s was not enough (23 Nov 2026)
+  await page.goto('file://' + path.resolve(scene), { timeout: 300000 });
   await page.evaluate(() => document.fonts.ready);
   let jobs = [];
   if (mode === 'times') jobs = a.split(',').map((t) => [`t_${(+t).toFixed(2)}`, +t]);
