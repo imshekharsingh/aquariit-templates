@@ -41,6 +41,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .good .btn{background:var(--acc);color:var(--on)}
 .good{visibility:hidden}
 #fg{position:absolute;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.75);z-index:6;opacity:0}
+  .tr{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid var(--red);z-index:6;opacity:0}
 #rip{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid var(--acc);z-index:6;opacity:0}
 #ghost{left:0;top:0;padding:8px 12px;border-radius:12px;background:var(--raise);border:2px solid var(--acc);font:500 18px/1 var(--m);color:var(--acc);white-space:nowrap;opacity:0;z-index:5}
 /* screen space: the label row, the hook, the tag that becomes the code card, the leader label, the subtitles */
@@ -65,6 +66,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #home i{position:absolute;width:74px;height:74px;border-radius:20px;background:#1d1d22;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
 #home u{position:absolute;left:30px;bottom:18px;width:400px;height:92px;border-radius:30px;background:#16161a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
 .pg{transform-origin:50% 50%}
+#home i:nth-child(2){background:#e9795c;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}#home i:nth-child(1){background:#2a2f3a}#home i:nth-child(3){background:#33302a}#home i:nth-child(4){background:#2b3330}#home i:nth-child(6){background:#322a33}
 #zone{position:absolute;left:0;bottom:0;width:460px;height:42px;background:repeating-linear-gradient(135deg,rgba(6,6,8,.6) 0 7px,rgba(6,6,8,0) 7px 14px);border-top:3px dashed var(--red);z-index:5;opacity:0}
 #zone em{position:absolute;right:22px;top:-36px;padding:6px 9px;border-radius:7px;background:var(--red);font:500 13px/1 var(--m);font-style:normal;letter-spacing:.14em;color:#1d0c07;white-space:nowrap}
 .rx{font:800 italic 40px/1 var(--f);letter-spacing:-.03em;color:var(--red);white-space:nowrap;opacity:0;transform-origin:0 100%;text-shadow:0 2px 14px rgba(0,0,0,.8);z-index:7}
@@ -82,7 +84,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
       <div id="home" aria-hidden="true"><i style="left:34px;top:20px"></i><i style="left:138px;top:20px"></i><i style="left:242px;top:20px"></i><i style="left:346px;top:20px"></i><i style="left:34px;top:116px"></i><i style="left:138px;top:116px"></i><i style="left:242px;top:116px"></i><i style="left:346px;top:116px"></i><u></u></div>
       <div class="pg bad" id="bad"><div class="lst" id="lb"><div class="row" style="top:8px"><div class="th" style="background:var(--d1)"></div><b>Morning run</b><small>6:30 · 5 KM</small><s></s></div><div class="row" style="top:112px"><div class="th" style="background:var(--d2)"></div><b>Team call</b><small>10:00 · 30 MIN</small><s></s></div><div class="row" style="top:216px"><div class="th" style="background:var(--d3)"></div><b>Lunch with Ana</b><small>13:00 · CAFE</small><s></s></div><div class="row" style="top:320px"><div class="th" style="background:var(--d1)"></div><b>Read a chapter</b><small>21:00 · 20 MIN</small><s></s></div><div class="row" style="top:424px"><div class="th" style="background:var(--d2)"></div><b>Pay rent</b><small>23:00 · APP</small><s></s></div></div><div class="bar"><div class="btn" id="btnb">Save the day</div><i class="pill"></i><div id="miss"></div></div></div>
       <div class="pg good" id="good"><div class="lst" id="lg"><div class="row" style="top:8px"><div class="th" style="background:var(--d1)"></div><b>Morning run</b><small>6:30 · 5 KM</small><s></s></div><div class="row" style="top:112px"><div class="th" style="background:var(--d2)"></div><b>Team call</b><small>10:00 · 30 MIN</small><s></s></div><div class="row" style="top:216px"><div class="th" style="background:var(--d3)"></div><b>Lunch with Ana</b><small>13:00 · CAFE</small><s></s></div><div class="row" style="top:320px"><div class="th" style="background:var(--d1)"></div><b>Read a chapter</b><small>21:00 · 20 MIN</small><s></s></div><div class="row" style="top:424px"><div class="th" style="background:var(--d2)"></div><b>Pay rent</b><small>23:00 · APP</small><s></s></div></div><div class="bar" id="barg"><div class="btn" id="btn">Save the day</div><i class="pill"></i></div></div>
-      <div id="zone" aria-hidden="true"><em>SWIPE ZONE</em></div><div id="rip"></div><div id="fg"></div>
+      <div id="zone" aria-hidden="true"><em>SWIPE ZONE</em></div><div id="rip"></div><div class="tr" id="tr0"></div><div class="tr" id="tr1"></div><div class="tr" id="tr2"></div><div id="fg"></div>
     </div>
   </div>
 </div></div>
@@ -92,7 +94,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 <div id="code" class="a"><div id="tagt">BEFORE · IT BREAKS</div><div id="cd"></div></div>
 <svg id="lead" class="a" aria-hidden="true"><line id="ll" x1="0" y1="0" x2="0" y2="0"/></svg>
 <div id="lab" class="a">SAVED · 1 TAP</div>
-<div id="rx1" class="a rx">gone!</div><div id="rx2" class="a rx">again?!</div><div id="rx3" class="a rx">home?!</div>
+<div id="rx1" class="a rx">oops!</div><div id="rx2" class="a rx">again?!</div><div id="rx3" class="a rx">home?!</div>
 <div id="meter" class="a"></div>
 <div id="fe" class="a" aria-hidden="true"></div>
 <div id="band" class="a" data-band></div>
@@ -652,9 +654,10 @@ var KM = (function(){
     T.wipe = KM.transition('wipeRestyle', A.typeEnd + .7, .6);
     A.tap = Math.min(A.pay + .5, DUR - 1.6); KM.tap(A.tap, 255);
     // the bug happens at once and again before 2 s (rule 20): a tap on the button, the app falls away to the home screen, comes back; a third time on "swipes"
-    TB = KM.bugs([.3, 1.3, Math.min(V.at('swipes') < 90 ? V.at('swipes') - .25 : A.leave + 2.2, A.fix - 1.4)]); TB.forEach(function(x){ KM.tap(x, 255); KM.cue({ t: x + .1, k: 'swish', d: .4, g: .3, p: -.4 }); });
+    TB = KM.bugs([.3, 1.5, Math.min(V.at('swipes') < 90 ? V.at('swipes') - .25 : A.leave + 2.2, A.fix - 1.4)], { g: .4 }); TB.forEach(function(x){ KM.tap(x, 255); KM.cue({ t: x + .08, k: 'swish', d: .45, g: .42, p: -.4 }); });
+    window.COVER = +(TB[1] - .1).toFixed(2);   // the cover: the hook complete, the app back, the button under the finger
     A.zone = Math.min(V.at('under') < 90 ? V.at('under') - .1 : A.leave + 1.2, A.fix - 2); KM.sfx($('zone'), A.zone, 'enter', { size: 'medium', g: .7 });
-    KM.mark($('home'), 'self', 'shown when the app falls away (the bug cues)'); ['rx1', 'rx2', 'rx3'].forEach(function(id, i){ KM.sfx($(id), TB[i] + .24, 'enter', { size: 'small', g: .7, deg: i }); });
+    KM.mark($('home'), 'self', 'shown when the app falls away (the bug cues)'); ['rx1', 'rx2', 'rx3'].forEach(function(id, i){ KM.sfx($(id), TB[i] + .3, 'enter', { size: 'small', g: .7, deg: i }); });
     KM.cue({ t: 0, k: 'hit', g: .45, p: -.3 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .35 });
     for (var c = 0, t0 = A.fix + .4; t0 + c * .09 < A.typeEnd; c++) KM.cue({ t: t0 + c * .09, k: 'tick', g: .08, p: (c * 5) % 7 });
     KM.cue({ t: A.typeEnd + .15, k: 'pop', g: .3, p: 4 }); KM.cue({ t: A.tap + .55, k: 'resolve', g: .42, x: 255, r: .3, notes: [57, 64, 69, 76] });
@@ -662,7 +665,7 @@ var KM = (function(){
     // element sound (scripts/explainer/kitsfx.js; ELEMENT SOUND in the stills run): every element that enters, moves or changes has a cue by
     // its size; an element whose cue is written above is marked. Give the reel's own moving parts their KM.sfx / KM.mark here too.
     KM.mark($('ph'), 'tree', 'the camera moves the phone; the rows, the wipe and the tap have their cues');
-    KM.mark($('fg'), 'self', 'the tap cue'); KM.mark($('rip'), 'self', 'the tap cue'); KM.mark($('btn'), 'self', 'the tap cue');
+    KM.mark($('fg'), 'self', 'the tap cue'); ['tr0', 'tr1', 'tr2'].forEach(function(id){ KM.mark($(id), 'self', 'the tap cue'); }); KM.mark($('rip'), 'self', 'the tap cue'); KM.mark($('btn'), 'self', 'the tap cue');
     KM.sfx($('lbl'), A.leave - .2, 'exit', { size: 'small' }); KM.sfx($('band'), A.leave - .1, 'enter', { size: 'medium', g: .6 });
     KM.sfx($('meter'), A.leave + .1, 'enter', { size: 'small', g: .6 });
     KM.sfx($('code'), A.fix - .1, 'change', { size: 'medium' }); KM.mark($('tagt'), 'self', 'with the code card'); KM.mark($('cd'), 'tree', 'the typing ticks');
@@ -679,19 +682,19 @@ var KM = (function(){
     // ---- beat 1: the broken thing, moving from frame 0 (here: rows that will not sit still; draw the reel's own bug) ----
     var sc0 = -((t * 14) % 104); $('lb').style.transform = 'translateY(' + sc0.toFixed(2) + 'px)'; $('lg').style.transform = 'translateY(' + sc0.toFixed(2) + 'px)';
     // the app falls away to the home screen on each tap (the swipe line wins), then comes back
-    var aw = 0, hit = 0; TB.forEach(function(x){ aw = Math.max(aw, KM.away(t, x + .1)); hit = Math.max(hit, E.out3(P(t, x, x + .1)) * (1 - P(t, x + .1, x + .5))); });
-    // (as a phone does it: the app shrinks up into its icon and is gone)
-    $('bad').style.transform = 'translate(' + (-98 * aw).toFixed(2) + 'px,' + (-150 * aw).toFixed(2) + 'px) scale(' + (1 - .84 * aw).toFixed(4) + ')'; $('bad').style.borderRadius = (90 * aw).toFixed(1) + 'px'; $('bad').style.opacity = (1 - KM.cl(aw * 1.25)).toFixed(3); $('bad').style.visibility = aw > .8 ? 'hidden' : 'visible';
+    var aw = 0, hit = 0; TB.forEach(function(x, i){ aw = Math.max(aw, KM.away(t, x + .06, { out: .34, hold: i === 0 ? .12 : .42, back: .3 })); hit = Math.max(hit, E.out3(P(t, x, x + .1)) * (1 - P(t, x + .1, x + .5))); });
+    // (as a phone does it: the app slides up and shrinks into its own icon on the home screen, then is opened again)
+    $('bad').style.transform = 'translate(' + (-55 * aw).toFixed(2) + 'px,' + (-107 * aw).toFixed(2) + 'px) scale(' + (1 - .84 * aw).toFixed(4) + ')'; $('bad').style.borderRadius = (110 * aw).toFixed(1) + 'px'; $('bad').style.opacity = (1 - KM.cl((aw - .8) * 5)).toFixed(3); $('bad').style.visibility = aw > .995 ? 'hidden' : 'visible';
+    TB.forEach(function(x, i){ var ts = CAM.toScreen(c, 270, 744); KM.ripple($('tr' + i), t, x, ts[0] - 40, ts[1] - 402); });
     $('miss').style.opacity = (hit * .95).toFixed(3); $('home').style.opacity = (t < A.typeEnd + 1.4 ? 1 : 0);
     // the reaction words sit where it happens; the measurement takes the hook's place once the hook has left
-    // the first two sit right above the phone, under the hook (free until the subtitles come); the third inside the phone, over the dock
-    $('rx1').style.left = '292px'; $('rx1').style.top = '316px'; KM.react($('rx1'), t, TB[0] + .24, { rot: -7, hold: .9 });
-    [['rx2', 126, 1, .42], ['rx3', 140, 2, .56]].forEach(function(q){ var s3 = CAM.toScreen(c, q[1], 692); $(q[0]).style.left = s3[0].toFixed(1) + 'px'; $(q[0]).style.top = s3[1].toFixed(1) + 'px'; KM.react($(q[0]), t, TB[q[2]] + .24, { rot: q[2] % 2 ? 5 : -7, hold: q[3] }); });
+    // the reaction words sit inside the phone, over the dock, while the app is away: never in the subtitle band, never on the cover
+    [['rx1', 150, 0, .1], ['rx2', 126, 1, .3], ['rx3', 140, 2, .3]].forEach(function(q){ var s3 = CAM.toScreen(c, q[1], 692); $(q[0]).style.left = s3[0].toFixed(1) + 'px'; $(q[0]).style.top = s3[1].toFixed(1) + 'px'; KM.react($(q[0]), t, TB[q[2]] + .3, { rot: q[2] % 2 ? 5 : -7, hold: q[3] }); });
     // why it happens: the swipe zone lights up over the button's lower edge on "under", and stays until the fix
     var zk = E.out3(P(t, A.zone, A.zone + .35)) * (1 - P(t, A.typeEnd + .6, A.typeEnd + .9)) * (1 - aw); $('zone').style.opacity = (zk * (.75 + .25 * Math.sin((t - A.zone) * 6))).toFixed(3);
     var mIn = E.out3(P(t, A.leave + .1, A.leave + .45)) * (1 - P(t, A.fix - .35, A.fix - .1));
     $('meter').style.opacity = mIn.toFixed(3); $('meter').style.transform = 'translateY(' + ((1 - mIn) * 14).toFixed(2) + 'px)';
-    KM.meter($('meter'), t, [{ label: 'TAPS', at: TB }, { label: 'SAVED', at: [], tone: 'bad' }]);
+    KM.meter($('meter'), t, [{ label: 'TAPS ON THE LINE', at: TB }, { label: 'SAVED', at: [], tone: 'bad' }]);
     $('bad').querySelector('.pill').style.boxShadow = '0 0 ' + (8 + 10 * Math.abs(Math.sin(t * 5))).toFixed(1) + 'px var(--red)';
     // ---- beat 2: the page re-themes top to bottom once the fix lands, the rows settle one after another ----
     var wk = T.wipe(t); KM.wipe($('good'), wk);
@@ -702,11 +705,11 @@ var KM = (function(){
     var scr = 0;
     // the tap: the finger comes in, presses, the ring opens
     var fx = 320, fy = 760, fo = 0, fk2 = [];
-    TB.forEach(function(x){ fk2.push([x, 280, 752]); }); fk2.push([A.tap, 280, 712]);
+    TB.forEach(function(x){ fk2.push([x, 270, 744]); }); fk2.push([A.tap, 270, 712]);
     fk2.forEach(function(q){ var a0 = E.inOut3(P(t, q[0] - .45, q[0] - .05)), l0 = E.inOut3(P(t, q[0] + .12, q[0] + .5)), o = KM.cl((t - q[0] + .45) * 5) * (1 - l0);
       if (o > fo) { var s2 = CAM.toScreen(c, q[1], q[2]); fo = o; fx = mix(s2[0] + 90, s2[0], a0) + l0 * 40; fy = mix(s2[1] + 110, s2[1], a0) + l0 * 70; } });
-    $('fg').style.left = (fx - 32) + 'px'; $('fg').style.top = (fy - 32) + 'px'; $('fg').style.opacity = fo.toFixed(3);
-    var rs = CAM.toScreen(c, 280, 712); KM.ripple($('rip'), t, A.tap, rs[0], rs[1]);
+    $('fg').style.left = (fx - 40 - 32) + 'px'; $('fg').style.top = (fy - 402 - 32) + 'px'; $('fg').style.opacity = fo.toFixed(3);
+    var rs = CAM.toScreen(c, 270, 712); KM.ripple($('rip'), t, A.tap, rs[0] - 40, rs[1] - 402);
     // ---- the hook: word by word, blur to sharp; it lifts away before the first sentence ----
     var gone = E.inOut3(P(t, A.leave, A.leave + .25)), st = [];
     for (var i = 0; i < HOOK_N; i++) st.push(i === 0 ? -.3 : V.words[i].s - V.lead);
