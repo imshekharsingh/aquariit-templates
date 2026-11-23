@@ -14,7 +14,7 @@ Rulebook (rules-web.md): 1 pass (every phone owner has hit a button under the ho
 10. Facts: PASS: MDN env() (zero where nothing covers the viewport, grows otherwise; viewport-fit=cover; sticky footer example with env(safe-area-inset-bottom)); caniuse / BCD: Chrome 69, Firefox 65, Safari 11 (read 23 Nov 2026); npm run check passes
 11. Post data: PASS: captions.json entry (web, postOn 2026-11-23, postAt 13:00, concept, experiment web-phone-edge); 7 keywords, 5 hashtags; tip demo homebar
 12. Review file: PASS: this file
-13. After the render: PENDING
+13. After the render: PENDING (render 1, run 45095467616: Output QA FAIL on DEMO only, contrast p95-p5 61 vs 64: the BEFORE button was a dim grey; fixed with a coral BEFORE button and the demo box set to the phone; local contrast 73 -> 125 on the same frames; every other check PASS: PACE, STRAY, LOUD -14.0 LUFS, SOUND recorded 34 of 34, COLOUR, EDGES, SPREAD, HUE, CALM, MUTE 4.7%, DEAD; render 2 is the last allowed)
 14. Cuts: PASS: FLOW: cuts 0 (3 declared transitions: morph, glide, wipe)
 15. Dead runs: PASS: FLOW: dead runs none
 16. Continuity: PASS: FLOW: continuity 100%
