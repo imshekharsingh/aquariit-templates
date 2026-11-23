@@ -1,0 +1,46 @@
+{
+ "name": "showreel-pv-web-homebar2",
+ "seek": "scripts/previews/web-homebar2.html",
+ "dur": 15.4,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.6,
+ "style": "Black look (rule 19): near-black, no frame or glow, one gold accent word, whole frame, calm. A phone-bottom topic: a fixed bottom button sits under the home bar; BEFORE the screen sags on every tap (the home swipe wins), AFTER the bar's bottom padding grows with env(safe-area-inset-bottom) and the button rises clear",
+ "palette": "black",
+ "voice": {
+  "text": "Why does your button hide? Stuck to the bottom, it sits right under the swipe line. Tap it and the phone swipes home instead. The fix: pad the bar with the safe area inset. Now the button sits clear, and one tap lands.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "qa": {
+  "focus": {
+   "demo": [
+    40,
+    392,
+    470,
+    780
+   ],
+   "subject": [
+    40,
+    690,
+    470,
+    784
+   ],
+   "from": 12.6,
+   "to": 13.3
+  },
+  "mute": {
+   "before": {
+    "say": "swipes"
+   },
+   "after": {
+    "say": "clear"
+   },
+   "span": 1.5
+  }
+ },
+ "note": "Preview study for the premium program (24 Nov 2026), not a post: the posted homebar reel rebuilt on the hook kit (scripts/explainer/kithook.js; rules-web.md rule 20). Same voice text. Rendered with Showreel 'seconds' into R2 study/. No captions.json entry."
+}

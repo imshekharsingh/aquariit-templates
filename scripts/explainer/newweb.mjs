@@ -25,7 +25,7 @@ const out = flag('--out') || 'scripts/explainer', force = args.includes('--force
 let details = null; { const i = args.indexOf('--details'); if (i >= 0) { const v = args[i + 1]; details = /^\d+$/.test(v || '') ? +v : 3; args.splice(i, /^\d+$/.test(v || '') ? 2 : 1); } }
 const beat = +(flag('--beat') || 5.5);
 // the palette (rules-web.md rule 12): the next after the last web reel's, or --palette <name>
-const palette = flag('--palette') || nextPalette().name;
+const palette = flag('--palette') || 'black';   // the black look is the web look (rules-web.md rule 19, 23 Nov 2026); the coloured worlds are retired
 const [slug, hook, ...sentences] = args;
 if (details) { await import('./newdetails.mjs').then((m) => m.write({ root, here, out, force, slug, hook, sentences, n: details, beat, palette })); process.exit(0); }
 if (!slug || !/^[a-z0-9-]+$/.test(slug) || !hook || sentences.length < 2) { console.error('usage: node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." "The fix: ..." "Now ..." [--out dir] [--force]'); process.exit(1); }
@@ -48,7 +48,7 @@ writeFileSync(html, page);
 execFileSync('node', [join(root, 'scripts/channel3/kit-inline.mjs'), html], { stdio: 'inherit' });
 const seek = relative(root, html);
 // the glass theme's render: 3 motion-blur sub-frames, grain 2, no vignette (the grade does it): 15 GitHub minutes for the 21.2 s sample (rules-web.md rule 12)
-const cfg = { name: `showreel-00-${slug}`, seek, dur, fps: 60, blur: 3, shutter: .45, grain: 2, vignette: false, cover: 1.6, style: 'Glass and light', palette,
+const cfg = { name: `showreel-00-${slug}`, seek, dur, fps: 60, blur: 3, shutter: .45, grain: 2, vignette: false, cover: 1.6, style: palette === 'black' ? 'Black look (rule 19): near-black, no frame or glow, one accent word, whole frame, calm' : 'Glass and light', palette,
   voice: { text, voice: 'af_heart', speed },
   qa: { focus: { demo: [24, 125, 516, 672], subject: 'TODO [l, t, r, b] of what the reel is about, in CSS px', from: 0, to: dur } },   // Output QA FOCUS (rules-web.md rule 18)
   caption: 'TODO: the caption (hook, the why in two sentences, the fix, browser support), then "Save it for ..., or send it to ...".',
