@@ -49,6 +49,10 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - Every reel feels premium, nothing looks broken, every spoken line is shown and finished, every reel teaches one concrete, useful thing.
 
 ## Sessions (lean)
+- Models (owner, 23 Nov 2026): through Wed 25 Nov IST, every session that shapes what gets posted (reel builds, fixes and renders,
+  critic, quality reviews, research, reference studies) runs on claude-fable-5-2; light jobs (launcher, owner chat, cleanup, status
+  checks, QA re-runs) stay on cheaper models. From 26 Nov: back to claude-sonnet-5-5 (builds) / claude-opus-5-5 (critic) unless the owner
+  says otherwise. A session that starts a child for such work passes model claude-fable-5-2; the owner chat checks each day that they did.
 - Read the last 5 entries of design/handoff-log.md before starting; a session that changes the repo adds one entry there in its push.
 - One session = one task, one channel, one branch; finish it (pushed, merged, checked) and archive it before the next starts. One heavy
   session at a time. The owner chats in the daily "Owner chat <date>" session, which never builds.
