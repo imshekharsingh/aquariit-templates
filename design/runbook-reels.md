@@ -4,27 +4,35 @@ Moved from CLAUDE.md on 14 Nov 2026 (owner: slim CLAUDE.md). CLAUDE.md keeps the
 Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel brief"), Turns Out design/channel3.md ("Channel brief").
 
 ## The app
-- https://templates.aquariit.com/, an installed PWA behind a sign-in. Home = **Showreels** (templates/index.html): play a reel, copy its
-  post text, save the video. One tab per channel, all built the same way from templates/channels/channels.json (profile card) and the reel
-  list (owner, 31 Oct 2026: the tabs must look consistent).
-- Each tab has a "Reels | Growth" switch (owner, 1 Nov 2026): Growth charts followers over time and reach per reel from the collector's D1
-  data (inline SVG, no libraries); the app follows the phone's light or dark setting through its color tokens. Cards (audit, spare night)
-  sit at the top.
-- No app work until reach improves (owner, 5 Nov 2026): only fixes for things that break, and the owner's "Feedback" box (home page under the
-  cards; D1 table owner_feedback; /api/feedback; read and marked done through "Owner answers", design/runbook-daily.md step 0).
-- Hide a reel from the Showreels page with `"hidden": true` under its name in templates/showreels/captions.json.
-- Today's audit line (owner, 23 Nov 2026): top of Journey, from /api/cards (templates/index.html `auditShow`): grey "not run yet", green "done at HH:MM · <ch> ESCALATE|ALARM|OK · n changes", amber "skipped today" after 12:00 IST; tap opens Inbox. "Mark read" deletes the card, so its summary is kept on that device only.
-- The app reads like a mobile app (owner, 14-15 Nov 2026): a bottom tab bar **Journey | Reels | Growth | Inbox** (the last one used is
-  remembered; Journey on first open), and a side menu (top left) with the same sections, Claude's replies to Feedback one at a time ("Mark read",
-  "Next"; /api/feedback/<id>/read), notifications, the GitHub minutes and Sign out. Inbox holds Needs you, the cards, the Feedback box and References (owner, 20 Nov 2026: a link, a screenshot or a short clip up to 50 MB with a note and channel; files in private R2 under refs/; /api/refs; Claude reads them with Owner answers `refs`, design/runbook-daily.md step 0).
-- **Journey** (owner, 15 Nov 2026): every reel posting from 3 days ago to 3 days ahead, grouped by post day (newest first), channel colour per
-  card, seven stages in order: Planned (captions.json) -> Built (the PR that first added its review file) -> Rendering (live step and % from
-  the Showreel / Tech reel run) -> Checks (Output QA PASS, or "Failed: <check in words>" with the reason) -> Critic (CRITIC: READY / NOT READY
-  on the review file's critic line) -> Ready to post (slot) -> Posted (Mark posted / the collect). Data: GET /api/journey (src/journey.js).
-  GitHub is read with the optional Worker secret GH_READ_TOKEN (read-only Actions + Contents; cached a minute in the Worker; the page asks
-  again every minute only while a reel renders and Journey is open). Without it, finished steps still show from R2, D1 and the review files.
+- https://templates.aquariit.com/, an installed PWA behind a sign-in (templates/index.html, templates/sw.js; APIs in src/worker.js and
+  src/journey.js). Renovated on 23 Nov 2026 (owner, 22 Nov: "clean, and I can see where my primary focus lies"; mockups approved 23 Nov).
+- Three tabs: **Today | Growth | Inbox** (bottom bar on phones, side rail on desktop; the last one used is remembered). The gear (top right)
+  opens Settings: notifications, GitHub minutes, "All reels and channel profiles", Sign out. Nothing else lives in a menu.
+- **Today** answers "what needs me" and "where is today's reel": Needs you (the open questions from Owner answers `add`, with their buttons,
+  then every reel ready to post due by the end of today: Copy post text, Save video, I posted it), Today's reels and Tomorrow (one row per
+  channel, one status in plain words), "All reels and posted", the daily report line (`auditShow`, from /api/cards) and when it updated.
+  The Today badge counts questions plus reels ready to post.
+- Status words (templates/index.html `status()`, from the seven stages of GET /api/journey): Planned, Building, Making the video n%,
+  Checking, Fixing (+ the reason in one line), Not ready yet (amber, the second look's first sentence, More/Less for the rest),
+  Ready to post (green), Posted. No stage jargon on screen (Checks / Critic / Output QA / PR numbers); the reel page's "How it was made"
+  list uses Planned, Built, Video, Machine checks, Second look, Ready to post, Posted (`plain()`).
+- A decision for the owner ("post as is or one more try", "approve a preview") is an Owner answers `add` question: it shows at the top of
+  Today with Yes / No (or Done / a reply). There is no separate decision API.
+- Each reel has its own page (tap any row; post reminders `/#reel=<name>` open it too): step bar Planned, Made, Checked, Ready, Posted,
+  the status and reason, the video, Copy post text / Save video / I posted it (Undo for a day), the post text, sources, How it was made.
+- **All reels** (from Today or Settings): the old per-channel list (channel tabs, profile card, Up next / Later / Posted with each post's
+  numbers). Hide a reel with `"hidden": true` under its name in templates/showreels/captions.json.
+- **Growth**: All shows the three channels on one screen (followers, change this week, 30-day line, typical reach / seconds watched /
+  saves of the last 7 reels); Web / Tech / Turns Out show that channel's charts, "What each reel did" and "What works" (/api/perf, inline SVG).
+- **Inbox**: Previews to review (templates/showreels/previews.json, Like / Not this stored as Feedback), Claude's replies (Mark read, Next;
+  /api/feedback/<id>/read), Message Claude (D1 owner_feedback, /api/feedback; read first by every run), Ideas and references (/api/refs,
+  private R2 refs/), Daily reports (/api/cards). The Inbox badge counts unread replies, previews to answer and reports.
+- Look: ink and paper, amber = needs you, green = ready; channel colours only as 8 px dots; type 28 / 16 / 14.5 / 12; cards 14 px radius,
+  hairline borders; follows the phone's light or dark setting. Bump VERSION in templates/sw.js when the page changes.
+- Journey data: GitHub is read with the optional Worker secret GH_READ_TOKEN (read-only Actions + Contents; cached a minute in the Worker;
+  Today asks again every minute only while a reel renders). Without it, finished steps still show from R2, D1 and the review files.
   Runs name their reel through run-name ("Showreel · <config>", "Tech reel · <slug>", "Output QA · <config>"); Output QA prints one
-  `::error title=Output QA::<CHECK>: ...` line per failing check, which the journey shows as the reason. Keep both when editing those workflows.
+  `::error title=Output QA::<CHECK>: ...` line per failing check, which becomes the Fixing reason. Keep both when editing those workflows.
 
 ## Making a web reel
 - Every new @webin20sec reel starts from `node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ...` and the shared motion kit
