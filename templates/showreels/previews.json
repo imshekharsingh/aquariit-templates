@@ -24,7 +24,15 @@
    "about": "The posted memory reel rebuilt on the improved tech kit, to compare: the count now snaps to 4 GB and 8 GB, the first 8 seconds use three camera angles, the server hall shows real server racks, the memory module sits in a tray that fills the frame, and every cut has its own sound. The posted reel is not changed.",
    "techniques": "count in half a second landing on the spoken number, low macro and three-quarter framings, server rack faces with drive bays and status lights, a tray of modules to the bottom of the frame, swell and low hit on each cut, a riser that crests on RAM.",
    "added": "2026-11-24"
+  },
+  {
+   "name": "showreel-pv-web-homebar2",
+   "channel": "web",
+   "title": "Web kit, next step: the home bar reel again",
+   "about": "Yesterday's home bar reel rebuilt on the new hook kit, same voice: the app now falls away to the home screen on the first tap (0.3 s) and again at 1.3 s, a red word marks it (gone!, again?!), a counter shows TAPS 3 / SAVED 0, the swipe zone is drawn when the voice names it, and the fix ends on SAVED · 1 TAP. The posted reel is not changed.",
+   "techniques": "the bug inside the first half second and again before 2 s, reaction words where it happens, a measurement in the hook's place, the cause marked on screen, a low hit on each failure; the black look from the kit.",
+   "added": "2026-11-24"
   }
  ],
- "v": 15
+ "v": 16
 }
