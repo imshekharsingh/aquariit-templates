@@ -381,6 +381,26 @@
    "90%",
    "2027",
    "RAM"
+  ],
+  "edges_ok": [
+   {
+    "from": 6.5,
+    "to": 8.4,
+    "sides": [
+     "left",
+     "right"
+    ],
+    "why": "the camera pushes onto the 8 GB phone; its neighbours slide past the frame (all three are whole in the wide shot before)"
+   },
+   {
+    "from": 8.4,
+    "to": 17.0,
+    "sides": [
+     "left",
+     "right"
+    ],
+    "why": "the AI server hall and the macro server memory module are full-bleed worlds: racks and the module run past the frame by design"
+   }
   ]
  },
  "say": {

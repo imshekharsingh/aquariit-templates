@@ -13,6 +13,10 @@ Format (at most 6 lines):
 
 
 
+## 2026-11-23 08:45 IST · claude/tech-ai-memory-edges · AI memory render 1: one QA fail, declared, QA re-run
+- Done: render 1 (run 45096638390, owner's typed go) took 71 of 75 min; Output QA all PASS except EDGES (hall, memory module and the 8 GB push run past the frame by design), declared in techreel/topics/ai-memory.json qa.edges_ok; Output QA re-run on the same MP4 (no render). Facts re-read on TrendForce 23 Nov.
+- Left: item 13 after the QA re-run; the critic judges the 6.8-8.4 s slide. A second render would risk the 75-min limit (lower SS first).
+
 ## 2026-11-23 07:30 IST · main · owner chat: web "wiggle family" test (E30)
 - Owner: web views are down; try reels like the number-wiggle breakout with similar keywords and hashtags, on the current kit. Added E30 in design/experiments.md: 3 jitter-fix reels 24-26 Nov (bold-text shove, scrollbar page jump, wobbling spinner), Nº 09's anatomy, keywords and hashtags. Today's web reel (homebar) stays as built.
 - Tech ai-memory: owner said "Go ahead for tech"; relayed to session_01AYvWRjY38sTbizkhdraaeY for its one render; critic 11:17.
