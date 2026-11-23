@@ -155,8 +155,10 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
 (function(){
   var P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, WAS = null, TAG = null, TAG2 = null;
   DT.keep = function(board){ if (WAS) WAS.remove(); var cs = getComputedStyle(board), c = board.cloneNode(true); c.removeAttribute('id'); c.id = 'dt-was';
-    [].forEach.call(c.querySelectorAll('[id]'), function(e){ if (/^stamp$/.test(e.id)) e.remove(); else e.removeAttribute('id'); });
-    [].forEach.call(c.children, function(e){ e.style.opacity = ''; });
+    // the copy carries its look inline and drops ids and classes, so no rule, selector or check (ALIGN, OVERLAP) takes it for the live design
+    var src = board.querySelectorAll('*'), dst = c.querySelectorAll('*'), KEEP = ['position', 'left', 'top', 'right', 'bottom', 'width', 'height', 'display', 'whiteSpace', 'font', 'color', 'letterSpacing', 'lineHeight', 'textAlign',
+      'background', 'border', 'borderRadius', 'padding', 'margin', 'boxSizing', 'transform', 'transformOrigin', 'boxShadow', 'opacity'];
+    for (var i = 0; i < src.length; i++) { var q = getComputedStyle(src[i]), d = dst[i]; KEEP.forEach(function(k){ d.style[k] = q[k]; }); d.removeAttribute('class'); if (src[i].parentNode === board) d.style.opacity = src[i].id === 'stamp' ? '0' : '1'; d.removeAttribute('id'); }
     c.style.cssText = 'position:absolute;left:' + board.offsetLeft + 'px;top:' + board.offsetTop + 'px;width:' + board.offsetWidth + 'px;height:' + board.offsetHeight + 'px;background:' + cs.backgroundColor + ';background-image:' + cs.backgroundImage +
       ';border-radius:' + cs.borderRadius + ';overflow:hidden;transform-origin:0 0;opacity:0;z-index:27;pointer-events:none;box-shadow:0 18px 40px rgba(0,0,0,.5)';
     c.setAttribute('aria-hidden', 'true'); board.parentNode.appendChild(c); WAS = c; WAS._b = { x: board.offsetLeft, y: board.offsetTop, w: board.offsetWidth, h: board.offsetHeight };
