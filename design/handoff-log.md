@@ -294,3 +294,8 @@ Format (at most 6 lines):
 - Limits: "running" is not shown (nothing in the app can tell); after "Mark read" the green line comes from this device's saved summary only.
 - Left: the audit card should carry lines "ESCALATE web" / "OK tech" and points starting "Change:" for the summary to fill.
 - For the other account: the renovation session can restyle `.astat`.
+
+## 2026-11-23 · claude/critic-ai-memory · Reel critic: showreel-tech-ai-memory render 1
+- Done: item 20 CRITIC: READY. Stills every 1 s on the render's real timing (local fake-vo timeline warped onto the run log's CUES line; stills only, no frame render), voice 73/73, SOUND 13/13, -14.5 LUFS; TrendForce 2 Feb 2026 page re-read (server and LPDDR4X/5X ~90% QoQ 1Q26). The 6.8-8.4 s neighbour-phone crop judged an intended lineup. Minor: a flying chip crosses "GB" at 2.0 s (~0.3 s). ENHANCE written.
+- Left: the owner posts it in today's 13:00-21:00 IST window.
+- For the other account: preflight.mjs takes over 10 min on this three.js scene (FLOW at 0.1 s); for critic stills, call window.render(t) on scene.html directly at warped times.
