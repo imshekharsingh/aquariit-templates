@@ -379,3 +379,8 @@ Format (at most 6 lines):
 - Left: after the merge, run the Asks workflow `clear` for c3-design-profile and darkflash-post, then `tidy` once, then `list` to see what is left.
 - For the other account: new asks that expire should carry "until": "YYYY-MM-DD"; a new preview needs "added".
 
+
+## 2026-11-23 · claude/save-cover · "Save cover" button (owner chat job, size S)
+- Done: templates/index.html: a "Save cover" button next to "Save video" on every To-post card that has a cover, and in the Posted detail; same method as Save video (fetch, share sheet or download), file name <name>-cover.jpg. Compact cards: Copy full width, Save video and Save cover side by side, I posted it full width. "How posting works" gets: "Save the cover too, then on Instagram: Edit cover → Add from camera roll." sw.js v23. Checked locally with a mocked API at 390 px: buttons show, no script errors, no sideways scroll.
+- Left: confirm the deploy and smoke test are green on this PR's run; the owner tries the button on the phone.
+- For the other account: save() in index.html takes a third argument (true = cover); a button's `lab` is its resting label.
