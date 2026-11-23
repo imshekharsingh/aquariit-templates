@@ -2,7 +2,7 @@
  "name": "showreel-pv-c3-resume2",
  "seek": "scripts/previews/c3-resume2.html",
  "engine": "design",
- "dur": 20.4,
+ "dur": 17.8,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -10,7 +10,7 @@
  "vignette": false,
  "cover": 0.6,
  "voice": {
-  "text": "Every line here looks the same. So nothing stands out. Turns out, your eyes need an order. First, make the name the biggest. Next, give the headings a colour, one size down. Then let the details go lighter. Now it reads from top to bottom.",
+  "text": "Every line here looks the same. So nothing stands out. Turns out, your eyes need an order. First, make the name the biggest. Next, give the headings their own colour. Then let the details go lighter. Now it reads from top to bottom.",
   "voice": "af_heart",
   "speed": 1,
   "gap": [

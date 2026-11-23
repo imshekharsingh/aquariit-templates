@@ -782,25 +782,25 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#7aa2ff', '#ff7a45');
   // spoken sentences, not labels (rules-c3.md V1): a believable first draft (one size for every line, the way a blank document starts; B1)
-  var TEXT = "Every line here looks the same. So nothing stands out. Turns out, your eyes need an order. First, make the name the biggest. Next, give the headings a colour, one size down. Then let the details go lighter. Now it reads from top to bottom.";
-  var DUR = 20.4, BX = 66, BY = 396, L = 30, V, PH, A = {}, CAM;
+  var TEXT = "Every line here looks the same. So nothing stands out. Turns out, your eyes need an order. First, make the name the biggest. Next, give the headings their own colour. Then let the details go lighter. Now it reads from top to bottom.";
+  var DUR = 17.8, BX = 66, BY = 396, L = 30, V, PH, A = {}, CAM;
   var IDS = ['n0', 'n1', 'h0', 'e0', 'e1', 'h1', 'd0', 'h2', 's0'], KIND = { n0: 'name', h0: 'head', h1: 'head', h2: 'head' };
   // A: every line one size and one colour, evenly spaced, headings only bold (a document's defaults); B: the name biggest, headings one step down (accent, tracked), details plain and grouped
   var YA = [24, 58, 92, 126, 160, 194, 228, 262, 296], YB = [26, 74, 116, 144, 172, 218, 246, 292, 320];
-  var SAME = { f: "400 18px 'Space Grotesk'", c: '#1d1a16' }, HSAME = { f: "700 18px 'Space Grotesk'", c: '#1d1a16' }, PLAIN = { f: "400 17px 'Space Grotesk'", c: '#6a645b' }, HEAD = { f: "700 19px 'Space Grotesk'", c: '#c4572a', ls: '.1em' };
+  var SAME = { f: "400 18px 'Space Grotesk'", c: '#1d1a16' }, HSAME = { f: "700 18px 'Space Grotesk'", c: '#1d1a16' }, PLAIN = { f: "400 17px 'Space Grotesk'", c: '#6a645b' }, HEAD = { f: "700 17px 'Space Grotesk'", c: '#c4572a', ls: '.1em' };
   function font(el, s){ el.style.font = s.f; el.style.color = s.c; el.style.letterSpacing = s.ls || 'normal'; }
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
-    A.hook = at('So') - .1; A.out = at('out'); A.turns = at('Turns'); A.order = at('order'); A.f1 = at('First'); A.name = at('name'); A.big = at('biggest'); A.f2 = at('Next'); A.head = at('headings'); A.down = at('down');
-    A.f3 = at('Then'); A.plain = at('lighter'); A.now = at('Now'); A.bottom = at('bottom'); A.proof = A.bottom + .75; A.e2 = A.proof + 1.25; A.end = Math.min(DUR - .2, A.e2 + 1.6);   // the before/after proof, then the stamp, then a hold on the frame that shows both
+    A.hook = at('So') - .1; A.out = at('out'); A.turns = at('Turns'); A.order = at('order'); A.f1 = at('First'); A.name = at('name'); A.big = at('biggest'); A.f2 = at('Next'); A.head = at('headings'); A.down = at('colour');
+    A.f3 = at('Then'); A.plain = at('lighter'); A.now = at('Now'); A.bottom = at('bottom'); A.proof = A.bottom + .7; A.e2 = A.proof + 1.05; A.end = Math.min(DUR - .2, A.e2 + 1.4);   // the before/after proof, then the stamp, then a hold on the frame that shows both
     window.COVER = .6;
     var S = DT.S; S.sting(0); [.35, .65, .95].forEach(function(t0, i){ S.land(t0 + .05, 270, i + 1); KM.cue({ t: t0, k: 'tick', g: .08, p: i, x: 270, synth: true }); }); S.whoosh(0, 270, .4);
     for (var i = 0; i < 5; i++) KM.cue({ t: A.hook + .1 + i * .22, k: 'tick', g: .07, p: i * 2 % 7, x: 150 + (i % 2) * 240, synth: true });
     S.stamp(A.out + .1, 270); S.tint(A.order, 270);
     S.rise(A.f1 - .4, .45); S.click(A.name - .1, 150); S.drag(A.name, .5, 150, 300); A.d1 = A.big + .4; S.done(A.d1, 200, 0);
     S.rise(A.f2 - .1, .4); [0, 1, 2].forEach(function(j){ S.snap(A.head + .2 + j * .15, 120, j); }); A.d2 = A.down + .4; S.done(A.d2, 270, 2);
-    A.scan = A.f3 + .3; S.rise(A.f3 - .1, .4); [3, 4, 6, 8, 1].forEach(function(j, i){ S.swap(A.scan + i * .14, .35, 270, 5); }); A.d3 = A.scan + 1.1; S.done(A.d3, 270, 4);
+    A.scan = at('details') - .05;   // the details change on the word that names them (critic, 24 Nov: it started 1 s early) S.rise(A.f3 - .1, .4); [3, 4, 6, 8, 1].forEach(function(j, i){ S.swap(A.scan + i * .14, .35, 270, 5); }); A.d3 = A.scan + 1.1; S.done(A.d3, 270, 4);
     [0, 1, 2].forEach(function(j){ S.land(A.now + .2 + j * .3, 180 + j * 60, j * 2); }); S.reveal(A.bottom); S.flip(A.proof, .5); S.stamp(A.e2, 420);
     CAM = KM.rig({ x: 270, y: 490, z: 1.06, drift: 1 }).pull(0, .55, 270, 490, 1);
     // each fix seen close (DT.close): the camera goes in before it lands and back out after
@@ -819,15 +819,15 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
       else { var j = ['n1', 'e0', 'e1', 'd0', 's0'].indexOf(id), t1 = A.scan + j * .14; DT.flipChars(el, t, t1, .35, SAME, PLAIN); }
       el.style.transform = 'translate(' + L + 'px,' + y.toFixed(2) + 'px)'; });
     DT.mood(t, .34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5)));
-    DT.sweep(t, [A.d1, A.d2, A.d3, A.bottom]);
+    DT.sweep(t, [A.d1, A.d2, A.d3, A.bottom, A.e2 + .55]);
     DT.hook(t, '<i>Every</i> <i>line</i> <i>looks</i> <em><i>the</i> <i>same.</i></em>', A.hook);
     // frame 0: the problems ringed
     var ro = 1 - P(t, A.turns - .3, A.turns);
-    [[.35, { x: BX + 20, y: BY + 14, w: 360, h: 312, r: 16 }, 'ONE SIZE', BX + 24, BY + 336], [.65, { x: BX + 22, y: BY + 16, w: 140, h: 30, r: 10 }, 'NAME = TEXT', BX + 150, BY + 336], [.95, { x: BX + 22, y: BY + 84, w: 140, h: 30, r: 10 }, 'NO ORDER', BX + 290, BY + 336]].forEach(function(r, i){
+    [[.35, { x: BX + 20, y: BY + 14, w: 360, h: 312, r: 16 }, 'ONE SIZE', BX + 24, BY + 336], [.65, { x: BX + 22, y: BY + 16, w: 140, h: 30, r: 10 }, 'NAME = TEXT', BX + 122, BY + 336], [.95, { x: BX + 22, y: BY + 84, w: 140, h: 30, r: 10 }, 'NO ORDER', BX + 262, BY + 336]].forEach(function(r, i){
       DT.box('ring' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); DT.chip('rl' + i, r[2], r[3], r[4], P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); });
     // "nothing stands out": a red eye dot zigzags from line to line, lost
-    var ez = P(t, A.hook, A.turns), ee = $('eye'), seg = ez * 6, sI = Math.floor(seg), sf = E.inOut3(seg - sI), pts = [[60, 40], [330, 140], [90, 270], [300, 60], [120, 200], [320, 300], [200, 160]];
-    var p0 = pts[Math.min(6, sI)], p1 = pts[Math.min(6, sI + 1)]; ee.style.left = (BX + mix(p0[0], p1[0], sf)).toFixed(1) + 'px'; ee.style.top = (BY + mix(p0[1], p1[1], sf)).toFixed(1) + 'px'; ee.style.opacity = (P(t, A.hook, A.hook + .2) * (1 - P(t, A.turns, A.turns + .3))).toFixed(3);
+    var ez = P(t, .25, A.turns), ee = $('eye'), seg = ez * 6, sI = Math.floor(seg), sf = E.inOut3(seg - sI), pts = [[60, 40], [330, 140], [90, 270], [300, 60], [120, 200], [320, 300], [200, 160]];
+    var p0 = pts[Math.min(6, sI)], p1 = pts[Math.min(6, sI + 1)]; ee.style.left = (BX + mix(p0[0], p1[0], sf)).toFixed(1) + 'px'; ee.style.top = (BY + mix(p0[1], p1[1], sf)).toFixed(1) + 'px'; ee.style.opacity = (P(t, .25, .45) * (1 - P(t, A.turns, A.turns + .3))).toFixed(3);
     DT.chip('out', 'NOTHING <b>STANDS OUT</b>', 150, 396, P(t, A.out - .1, A.out + .2) - P(t, A.turns - .2, A.turns + .1), 'r');
     DT.chip('ord', 'EYES NEED <b>AN ORDER</b>', 150, 396, P(t, A.order - .1, A.order + .2) - P(t, A.f1 - .2, A.f1 + .1));
     // fix one: the name selected and dragged bigger
@@ -836,7 +836,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     DT.chip('c1', 'NAME · <b>BIGGEST</b>', 260, 396, P(t, A.big - .1, A.big + .2) - P(t, A.f2 - .1, A.f2 + .2));
     // fix two: the headings flip, tick marks on each
     ['h0', 'h1', 'h2'].forEach(function(id, j){ var y = BY + mix(YA[IDS.indexOf(id)], YB[IDS.indexOf(id)], kg) + 2, o = P(t, A.head + .2 + j * .15, A.head + .4 + j * .15) * (1 - P(t, A.f3, A.f3 + .3)); DT.line('hk' + j, BX + 14, y, BX + 14, y + 18, o, '#ffb35a', 4); });
-    DT.chip('c2', 'HEADINGS · <b>ONE SIZE DOWN</b>', 120, 396, P(t, A.down - .2, A.down + .1) - P(t, A.f3 - .1, A.f3 + .2));
+    DT.chip('c2', 'HEADINGS · <b>OWN COLOUR</b>', 120, 396, P(t, A.down - .2, A.down + .1) - P(t, A.f3 - .1, A.f3 + .2));
     // fix three: the scan, details turn plain, the groups open up
     var sk = P(t, A.scan, A.scan + 1); DT.line('scan', BX + 4, BY + 60 + sk * 280, BX + 404, BY + 60 + sk * 280, sk > 0 && sk < 1 ? 1 : 0, '#ffb35a', 3);
     DT.chip('c3', 'DETAILS · <b>LIGHTER</b>', 260, 396, P(t, A.plain, A.plain + .3) - P(t, A.now - .2, A.now + .1));
@@ -848,7 +848,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
       e.style.left = r[1] + 'px'; e.style.top = r[2] + 'px'; e.style.opacity = cl(k).toFixed(3); e.style.transform = 'scale(' + (.5 + .5 * k).toFixed(3) + ')'; });
     DT.line('path', BX + 16, BY + 28, BX + 16, BY + 340, P(t, A.bottom - .3, A.bottom + .5), '#5ee0a0', 4);
     DT.chip('win', 'READS <b>TOP TO BOTTOM</b>', 150, 396, P(t, A.bottom - .2, A.bottom + .1), 'g');
-    DT.proof(t, A.proof, { flash: .5, x: 30, y: 760, s: .38, tx: 196, ty: 750 });
+    DT.proof(t, A.proof, { flash: .5, x: 12, y: 762, s: .46, tx: 212, ty: 754 });
     var sp = E.back(P(t, A.e2, A.e2 + .35), 2.5), st = $('stamp'); st.style.opacity = cl(sp * 3).toFixed(3); st.style.transform = 'rotate(-8deg) scale(' + (1.8 - .8 * sp).toFixed(3) + ')';
     DT.dial(t, [{ t: 0, sym: '3', label: '3 FIXES' }, { t: A.f1, n: 1 }, { t: A.f2, n: 2 }, { t: A.f3, n: 3 }, { t: A.now, end: 1, sym: '✓', label: 'IN ORDER' }]);
     DT.title(t, [{ t: A.hook, html: 'What <em>stands out</em>?' }, { t: A.f1, html: 'Fix 1 · <em>name biggest</em>' }, { t: A.f2, html: 'Fix 2 · <em>headings</em>' }, { t: A.f3, html: 'Fix 3 · <em>details lighter</em>' }, { t: A.now, html: 'One, two, <em>three.</em>' }]);

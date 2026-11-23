@@ -6,11 +6,11 @@
 #h0{top:20px;font:700 30px 'Space Grotesk';letter-spacing:-.01em}
 #h1{top:60px;font:500 14px 'Space Grotesk';letter-spacing:.18em}
 .it{font:700 21px 'Space Grotesk'}.ds{font:400 15px 'Space Grotesk'}
-#chk{left:312px;top:690px;width:156px;padding:9px 11px;border-radius:16px;background:#141827;border:1.5px solid #2a3150;box-shadow:0 14px 30px rgba(0,0,0,.5);z-index:28;opacity:0;font-family:'Space Grotesk'}
+#chk{left:292px;top:676px;width:176px;padding:9px 11px;border-radius:16px;background:#141827;border:1.5px solid #2a3150;box-shadow:0 14px 30px rgba(0,0,0,.5);z-index:28;opacity:0;font-family:'Space Grotesk'}
 #chk .sw{display:inline-block;width:24px;height:24px;border-radius:8px;vertical-align:middle;border:2px solid rgba(255,255,255,.2)}
 #chk .lb{display:block;font:700 11px 'Space Grotesk';letter-spacing:.16em;color:#9aa1b8;margin-bottom:5px}
-#chk .rs{display:inline-block;margin-left:8px;font:900 17px var(--d);vertical-align:middle}
-#chk .rt{display:block;margin-top:5px;font:700 13px 'Space Grotesk';color:#fff;letter-spacing:.04em}
+#chk .rs{display:inline-block;margin-left:8px;font:900 19px var(--d);vertical-align:middle}
+#chk .rt{display:block;margin-top:6px;font:700 21px 'Space Grotesk';color:#fff;letter-spacing:.02em;white-space:nowrap}
 #drop{position:absolute;left:0;top:0;width:34px;height:34px;z-index:31;opacity:0;pointer-events:none}
 /*css:end*/
 /*board:begin*/
@@ -66,7 +66,7 @@
     DT.sweep(t, [A.d1, A.d2, A.d3, A.readable]);
     DT.hook(t, '<i>Hard</i> <i>to</i> <em><i>read.</i></em>', A.hook);
     var ro = 1 - P(t, A.turns - .3, A.turns);
-    [[.35, { x: BX + 20, y: BY + 14, w: 300, h: 70, r: 12 }, 'LIGHT GREY', BX + 24, BY + 330], [.65, { x: BX + 20, y: BY + 94, w: 368, h: 230, r: 14 }, 'LOW CONTRAST', BX + 160, BY + 330]].forEach(function(q, i){
+    [[.35, { x: BX + 20, y: BY + 16, w: 300, h: 82, r: 12 }, 'LIGHT GREY', BX + 24, BY + 350], [.65, { x: BX + 20, y: BY + 102, w: 368, h: 240, r: 14 }, 'LOW CONTRAST', BX + 160, BY + 350]].forEach(function(q, i){
       DT.box('ring' + i, q[1], P(t, q[0], q[0] + .3) * ro, '#ff5f5f'); DT.chip('rl' + i, q[2], q[3], q[4], P(t, q[0] + .1, q[0] + .35) * ro, 'r sm'); });
     DT.chip('rd', 'TOO <b>LIGHT</b>', 300, 396, P(t, A.read - .1, A.read + .2) - P(t, A.turns - .2, A.turns + .1), 'r');
     DT.chip('con', 'TEXT NEEDS <b>CONTRAST</b>', 120, 396, P(t, A.con - .1, A.con + .2) - P(t, A.f1 - .2, A.f1 + .1));
