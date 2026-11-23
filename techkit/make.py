@@ -43,6 +43,13 @@ def main():
     slug = sys.argv[1]; fake = '--fake-vo' in sys.argv
     topic = json.load(open(os.path.join(ROOT, 'techreel', 'topics', slug + '.json')))
     out = os.path.join('out', 'techreel', slug); os.makedirs(out, exist_ok=True)
+    # a preview may carry its own scene and settings (techreel/previews/<slug>-<tag>.json; PREVIEW=<tag>): its keys replace the topic's, so a
+    # posted reel's own files never change for a study render (owner, 23 Nov 2026 night). The merged topic is kept in out/ for Output QA.
+    pv = os.path.join(ROOT, 'techreel', 'previews', f"{slug}-{os.environ.get('PREVIEW', '')}.json")
+    if os.environ.get('PREVIEW') and os.path.exists(pv):
+        over = json.load(open(pv)); topic.update({k: v for k, v in over.items() if k != 'note'})
+        print(f"PREVIEW {os.environ['PREVIEW']}: {', '.join(k for k in over if k != 'note')} from techreel/previews/{os.path.basename(pv)}")
+    json.dump(topic, open(os.path.join(out, 'topic.json'), 'w'), ensure_ascii=False, indent=1)
     vo_wav, vo_json = os.path.join(out, 'vo.wav'), os.path.join(out, 'vo.json')
     part = sys.argv[sys.argv.index('--part') + 1] if '--part' in sys.argv else None; join = '--join' in sys.argv
     if part or join:   # a later step of a split render: the voice and the timeline are already made

@@ -1,0 +1,13 @@
+{
+ "note": "Preview study r4 of the posted reel ai-memory (premium program, 24 Nov 2026). Rendered only with Tech reel preview=r4; these keys replace the topic's for that run. The posted reel's topic and scene stay as they are.",
+ "scene": "techkit/scenes/ai-memory-r4.html",
+ "cutsound": {"payoff": "ram", "rise": 1.8},
+ "qa": {
+  "sync": ["90%", "2027", "RAM"],
+  "edges_ok": [
+   {"from": 3.0, "to": 8.9, "sides": ["left", "right", "bottom"], "why": "a low macro looks up across the 4 GB phone's board (its lower half runs out of the bottom by design), then a three-quarter view of the 8 GB phone, then the push through one of its chips; the phone is whole in the opening shot"},
+   {"from": 8.4, "to": 16.4, "sides": ["left", "right", "bottom"], "why": "the AI server hall and the tray of server memory modules are full-bleed worlds: racks and modules run past the frame by design"},
+   {"from": 19.6, "to": 24.4, "sides": ["left", "right", "top"], "why": "the server aisle is a full-bleed corridor seen from inside: the near racks run past the frame on both sides and above; the push into its light fills the frame"}
+  ]
+ }
+}

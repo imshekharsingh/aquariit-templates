@@ -9,6 +9,9 @@
 //   KIT3D.word(o, text, kind, ..)  six ways a bold word arrives: slam, rise, track, stamp, wipe, drop
 //   KIT3D.materials(THREE, ctex)   dark epoxy chips (cyan only as an edge glow), metal and gold that stay metal, battery, screen glass, rack sides
 //   KIT3D.light(THREE, scene)      key + two rim lights + fill, about 15% brighter than the first 3D reel
+//   KIT3D.countTo(t, t1, a, b)     a count that runs in under a second and lands on the spoken number (rules-tech.md M7)
+//   KIT3D.reframe(A, B, k)         a second framing inside one shot: no stretch of 4 s sits on one picture (M8)
+//   materials().server()           a rack face that reads as servers: units with handles, vents, drive bays, small status lights (M4)
 window.KIT3D = (() => {
   const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
   const lerp = (a, b, u) => a + (b - a) * u;
@@ -78,6 +81,13 @@ window.KIT3D = (() => {
   const glide = (u, k = .3) => lerp(clamp(u), ease(u), k);            // a move that still has speed at both ends of its shot
   const push = (secs, rate = .022) => 1 - Math.exp(-rate * secs);     // share of the way to the subject after `secs` of hold (about 2% a second)
 
+  // a count never crawls (critic, ai-memory r3: a slow 1-2-3-4 read as "2 GB" on a paused frame): it runs a..b in `dur` (0.9 s at most),
+  // even steps, the last one lands at t1 (the spoken word); before it starts there is no number. Returns { n, since } or null.
+  function countTo(t, t1, a, b, dur = .55) { dur = Math.min(dur, .9); const steps = Math.abs(b - a), t0 = t1 - dur; if (t < t0) return null;
+    const i = Math.min(steps, Math.floor((t - t0) / (dur / steps)) + 1), n = a + Math.sign(b - a) * i; return { n, since: t0 + (i - 1) * (dur / steps), done: i >= steps }; }
+  // a second framing inside a shot: mixes two framings { pos, look, fov } (three.js vectors); drive k with an ease and let the hold's push run on
+  const reframe = (A, B, k) => ({ pos: A.pos.clone().lerp(B.pos, k), look: A.look.clone().lerp(B.look, k), fov: lerp(A.fov, B.fov, k) });
+
   // ---------- 4. bold words: six ways to arrive (a word never moves after it has landed; exits are shorter than arrivals) ----------
   const IN = { slam: .27, rise: .36, track: .42, stamp: .1, wipe: .3, drop: .32 };
   function word(o, text, kind, t, t0, t1, opt = {}) {
@@ -133,6 +143,22 @@ window.KIT3D = (() => {
       c.strokeStyle = 'rgba(255,255,255,.1)'; c.lineWidth = 4; c.strokeRect(10, 10, w - 20, h - 20);
       c.fillStyle = 'rgba(255,255,255,.14)'; c.fillRect(0, 0, 5, h); c.fillRect(w - 5, 0, 5, h);
     });
+    // a server rack face: 1U and 2U units, each a dark bezel with two handles, a vent grille, a row of drive bays and small status lights.
+    // emis = the light map: only the small lights and one thin activity bar per unit glow (cyan, a few amber), never a panel of colour.
+    const serverFace = (emis) => ctex(256, 1024, (c, w, h) => {
+      c.fillStyle = emis ? '#000' : '#0b0d10'; c.fillRect(0, 0, w, h); let seed = 5; const R = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+      if (!emis) { c.fillStyle = '#1a1d22'; c.fillRect(0, 0, 14, h); c.fillRect(w - 14, 0, 14, h); c.fillStyle = '#050607'; for (let y = 10; y < h; y += 14) { c.fillRect(4, y, 6, 6); c.fillRect(w - 10, y, 6, 6); } }   // rails with mounting holes
+      for (let y = 6; y < h - 30;) { const two = R() < .3, uh = two ? 84 : 42, x0 = 18, x1 = w - 18;
+        if (!emis) { const g = c.createLinearGradient(0, y, 0, y + uh); g.addColorStop(0, '#23272e'); g.addColorStop(.12, '#171a1f'); g.addColorStop(1, '#101216'); c.fillStyle = g; c.fillRect(x0, y, x1 - x0, uh - 4);
+          c.fillStyle = 'rgba(255,255,255,.16)'; c.fillRect(x0, y, x1 - x0, 1.5);                                   // the bezel's lit top edge
+          c.fillStyle = '#2c3138'; c.fillRect(x0 + 4, y + 6, 5, uh - 16); c.fillRect(x1 - 9, y + 6, 5, uh - 16);    // handles
+          c.fillStyle = '#050607'; for (let yy = y + 8; yy < y + uh - 10; yy += 6) for (let xx = x0 + 16; xx < x0 + 70; xx += 6) c.fillRect(xx + ((yy / 6) % 2) * 3, yy, 3, 3);   // vent grille
+          const bays = two ? 10 : 5; for (let b = 0; b < bays; b++) { const bx = x0 + 78 + (b % 5) * 26, by = y + 6 + Math.floor(b / 5) * 40; c.fillStyle = '#0a0c0f'; c.fillRect(bx, by, 22, 28); c.strokeStyle = 'rgba(255,255,255,.1)'; c.lineWidth = 1; c.strokeRect(bx + .5, by + .5, 21, 27); c.fillStyle = '#1d2127'; c.fillRect(bx + 3, by + 20, 16, 4); }
+        } else { const bays = two ? 10 : 5; for (let b = 0; b < bays; b++) { const bx = x0 + 78 + (b % 5) * 26, by = y + 6 + Math.floor(b / 5) * 40, r = R(); c.fillStyle = r < .72 ? '#38e1ff' : r < .86 ? '#ffae3d' : '#06181c'; c.fillRect(bx + 3, by + 4, 5, 5); }
+          c.fillStyle = '#38e1ff'; c.fillRect(x0 + 16, y + uh - 9, 14 + 40 * R(), 2.5); }
+        y += uh; }
+    });
+    const SV = { map: null, em: null };
     const P = THREE.MeshPhysicalMaterial, S = THREE.MeshStandardMaterial;
     return {
       epoxy, tex: { battery, rackSide },
@@ -145,6 +171,7 @@ window.KIT3D = (() => {
       glass: (map) => new P({ color: 0x06080b, metalness: .2, roughness: .08, clearcoat: 1, clearcoatRoughness: .04, emissive: 0xffffff, emissiveMap: map, emissiveIntensity: 0 }),
       rackSide: new S({ color: 0xffffff, map: rackSide, metalness: .75, roughness: .4, envMapIntensity: .6 }),
       floor: new S({ color: 0x101216, metalness: .9, roughness: .28 }),
+      server: () => { SV.map = SV.map || serverFace(false); SV.em = SV.em || serverFace(true); return new S({ color: 0xffffff, map: SV.map, emissive: 0xffffff, emissiveMap: SV.em, emissiveIntensity: 1.2, metalness: .55, roughness: .5, envMapIntensity: .3 }); },
     };
   }
   function light(THREE, scene) {
@@ -155,5 +182,5 @@ window.KIT3D = (() => {
     return { key, rim, rim2, fill, exposure: 1.2 };
   }
 
-  return { clamp, lerp, prog, ease, eout, eout5, ein, eback, smooth, DUR, cut, compose, plan, smear, jitter, glide, push, word, materials, light };
+  return { clamp, lerp, prog, ease, eout, eout5, ein, eback, smooth, DUR, cut, compose, plan, smear, jitter, glide, push, countTo, reframe, word, materials, light };
 })();

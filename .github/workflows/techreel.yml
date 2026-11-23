@@ -245,7 +245,9 @@ jobs:
         if: always() && steps.render.outcome == 'success'
         run: |
           bash scripts/qa/tools.sh
-          set +e; python3 scripts/qa/output-qa.py "out/techreel/$SLUG/$SLUG.mp4" "techreel/topics/$SLUG.json" --log render.log --log "out/techreel/$SLUG/qa.txt" --summary "$GITHUB_STEP_SUMMARY" --fails oqa-fails.txt; rc=$?; set -e
+          # a preview with its own settings (techreel/previews/<slug>-<tag>.json) is checked against the merged topic make.py kept in out/
+          T="techreel/topics/$SLUG.json"; if [ -n "$PREVIEW" ] && [ -f "techreel/previews/$SLUG-$PREVIEW.json" ] && [ -f "out/techreel/$SLUG/topic.json" ]; then T="out/techreel/$SLUG/topic.json"; fi
+          set +e; python3 scripts/qa/output-qa.py "out/techreel/$SLUG/$SLUG.mp4" "$T" --log render.log --log "out/techreel/$SLUG/qa.txt" --summary "$GITHUB_STEP_SUMMARY" --fails oqa-fails.txt; rc=$?; set -e
           [ -s oqa-fails.txt ] && head -8 oqa-fails.txt | sed 's/%/%25/g' | while IFS= read -r l; do echo "::error title=Output QA::$l"; done   # the app's journey shows these reasons
           [ -n "$PREVIEW" ] || bash scripts/qa/notify.sh "showreel-tech-$SLUG" oqa-fails.txt   # a preview posts nothing on the reel's issue
           exit $rc

@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>ai-memory r4 (preview study)</title>
+<!-- PREVIEW STUDY r4 (premium program, 24 Nov 2026): a copy of scenes/ai-memory.html, rendered only through the preview path
+     (techreel/previews/ai-memory-r4.json); the posted reel's scene is not touched. What changed against r3: the count runs in under 1 s
+     (KIT3D.countTo), the first 8 s have three framings (hero front, a low macro on the 4 GB board, a three-quarter 8 GB phone), the hall's
+     racks are servers (KIT3D materials: server face), the module shot is a tray of modules that runs to the bottom of the frame.
+     @techin20sec, the new direction (design/tech-direction.md, owner approved 22 Nov 2026): "Your next phone may have less memory".
+     Real 3D: three.js r149 (MIT, techkit/vendor/three-0.149.0.min.js), inlined by techkit/make.py at the THREE marker below, so the
+     assembled out/.../scene.html is one self-contained file. window.render(t) sets everything from t (no rAF, seeded randomness).
+     Shots (cut on the voice cues from timeline.js): A hero x-ray phone, chips leave, 8 -> 4 GB | B three phones, 12 / 8 / 4 chips |
+     C AI server hall, memory streams in | D macro on a server memory module, +90% | E the phone's board, chips cut |
+     F the server aisle, 2027 | G the phone turns, check the RAM, back to A (loop). Ink + white + cyan (memory) + amber (AI, heat) only.
+     Premium pass (owner, 23 Nov 2026), on techkit/kit3d.js (inlined at the KIT3D marker): five kinds of shot change carried into the next
+     shot (match cut A>B, push-through B>C and F>G, rack-focus dissolve C>D, light wipe D>E, one whip E>F), smeared motion blur, a slow
+     push under every hold, epoxy chips with an edge glow, rim lights, each bold word in the empty top band with its own way in. -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#07080c}
+#out{position:absolute;left:0;top:0;width:1080px;height:1920px}
+#gl{position:absolute;left:-4000px;top:0}
+#caps{position:absolute;left:130px;right:130px;top:1448px;text-align:center;color:#f4f6f8;font-family:"Inter Display",Inter,sans-serif;font-weight:700;
+  font-size:52px;line-height:1.14;letter-spacing:-.01em;text-shadow:0 3px 18px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.9)}
+</style></head><body>
+<canvas id="out" width="1080" height="1920"></canvas>
+<div id="caps" data-subs></div>
+<script src="timeline.js"></script>
+<!--THREE-->
+<!--KIT3D-->
+<script>
+(() => {
+const W = 1080, H = 1920;
+const INK = 0x07080c, SIG = 0x38e1ff, HEAT = 0xffae3d, SIGC = '#38e1ff', HEATC = '#ffae3d', WHITE = '#f4f6f8';
+const TL = window.TL, C = TL.cues, SC = TL.scenes, TOTAL = TL.total;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, u) => a + (b - a) * u;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = (u) => (u = clamp(u), u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+const eout = (u) => 1 - Math.pow(1 - clamp(u), 3);
+const ein = (u) => Math.pow(clamp(u), 3);
+const eback = (u) => { u = clamp(u); const c = 1.6; return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); };
+function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const KIT = window.KIT3D, Q = window.KITQ || 1;   // KITQ < 1: a quick local draft (fewer samples)
+
+// ---------- renderer ----------
+const gl = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+const SS = 1; gl.setPixelRatio(1); gl.setSize(W * SS, H * SS, false); gl.domElement.id = 'gl'; document.body.appendChild(gl.domElement);
+gl.outputEncoding = THREE.sRGBEncoding; gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.2;
+gl.setClearColor(INK, 1);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(INK);
+const cam = new THREE.PerspectiveCamera(30, W / H, 0.05, 400);
+const out = document.getElementById('out'), o = out.getContext('2d'); o.imageSmoothingEnabled = true; o.imageSmoothingQuality = 'high';
+
+// studio reflections: a dark room with three soft boxes (deterministic PMREM)
+{ const env = new THREE.Scene(); env.background = new THREE.Color(0x050608);
+  const box = (w, h, x, y, z, c) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m); };
+  box(8, 3, 0, 7, 5, 0xdde2e8); box(2, 9, -8, 1, 3, 0x9fb4c8); box(2, 9, 8, 0, 2, 0xd8c8b0); box(10, 2, 0, -8, -4, 0x202428);
+  const pm = new THREE.PMREMGenerator(gl); scene.environment = pm.fromScene(env, 0.02).texture; }
+
+// ---------- textures (canvas, code-drawn) ----------
+function ctex(w, h, draw) { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t; }
+const KM = KIT.materials(THREE, ctex);
+const chipTop = KM.epoxy(512, 256, 'LPDDR5X', '1 GB   2026'), dramTop = KM.epoxy(256, 384, 'DDR5 16Gb', 'x8  5600', true);
+const pcbTex = ctex(2048, 2048, (c, w, h) => {
+  c.fillStyle = '#0c1015'; c.fillRect(0, 0, w, h); const R = rng(11);
+  // buses: parallel traces routed at right angles with 45-degree corners
+  for (let b = 0; b < 46; b++) { const n = 3 + Math.floor(R() * 6), gap = 9, lw = 2.2; let x = R() * w, y = R() * h; const horiz = R() < .5, len1 = 120 + R() * 420, len2 = 80 + R() * 360, dir = R() < .5 ? -1 : 1;
+    c.strokeStyle = `rgba(150,172,195,${.10 + .08 * R()})`; c.lineWidth = lw;
+    for (let k = 0; k < n; k++) { const o2 = k * gap; c.beginPath();
+      if (horiz) { c.moveTo(x, y + o2); c.lineTo(x + len1 - o2, y + o2); c.lineTo(x + len1 - o2 + 40, y + o2 + 40 * dir); c.lineTo(x + len1 - o2 + 40, y + o2 + 40 * dir + len2 * dir); }
+      else { c.moveTo(x + o2, y); c.lineTo(x + o2, y + len1 - o2); c.lineTo(x + o2 + 40 * dir, y + len1 - o2 + 40); c.lineTo(x + o2 + 40 * dir + len2 * dir, y + len1 - o2 + 40); }
+      c.stroke(); } }
+  // vias (rings) and solder pads (small silver rectangles in rows)
+  for (let i = 0; i < 420; i++) { const x = R() * w, y = R() * h; c.strokeStyle = 'rgba(175,185,198,.22)'; c.lineWidth = 2; c.beginPath(); c.arc(x, y, 4 + R() * 3, 0, 7); c.stroke(); }
+  for (let i = 0; i < 70; i++) { const x = R() * w, y = R() * h, n = 4 + Math.floor(R() * 10), v = R() < .5; c.fillStyle = 'rgba(185,192,204,.20)'; for (let k = 0; k < n; k++) c.fillRect(v ? x : x + k * 14, v ? y + k * 14 : y, v ? 18 : 8, v ? 8 : 18); }
+  c.fillStyle = 'rgba(170,180,195,.10)'; for (let i = 0; i < 40; i++) { c.beginPath(); c.arc(R() * w, R() * h, 2 + R() * 3, 0, 7); c.fill(); }
+});
+const glowTex = ctex(256, 256, (c, w, h) => { const g = c.createRadialGradient(128, 128, 0, 128, 128, 128); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.25, 'rgba(255,255,255,.35)'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, w, h); });
+glowTex.encoding = THREE.LinearEncoding;
+const wallTex = ctex(512, 1024, (c, w, h) => {
+  const g = c.createRadialGradient(256, 380, 20, 256, 380, 560); g.addColorStop(0, '#2c3a4c'); g.addColorStop(.5, '#121820'); g.addColorStop(1, '#07080c'); c.fillStyle = g; c.fillRect(0, 0, w, h);
+  const a = c.createRadialGradient(330, 620, 0, 330, 620, 300); a.addColorStop(0, 'rgba(56,225,255,.55)'); a.addColorStop(1, 'rgba(56,225,255,0)'); c.fillStyle = a; c.fillRect(0, 0, w, h);
+  const b = c.createRadialGradient(160, 280, 0, 160, 280, 260); b.addColorStop(0, 'rgba(255,255,255,.25)'); b.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = b; c.fillRect(0, 0, w, h);
+});
+
+// the phone's screen: an "About phone" card that shows where to look (code-drawn, no brand)
+const screenTex = ctex(512, 1024, (c, w, h) => {
+  c.fillStyle = '#05070a'; c.fillRect(0, 0, w, h);
+  const g = c.createRadialGradient(256, 400, 10, 256, 400, 520); g.addColorStop(0, 'rgba(56,225,255,.30)'); g.addColorStop(1, 'rgba(56,225,255,0)'); c.fillStyle = g; c.fillRect(0, 0, w, h);
+  c.textAlign = 'center'; c.fillStyle = 'rgba(244,246,248,.55)'; c.font = '600 30px "Inter Display", Inter, sans-serif'; c.fillText('About phone', 256, 96);
+  c.fillStyle = 'rgba(244,246,248,.8)'; c.font = '700 44px "Inter Display", Inter, sans-serif'; c.fillText('RAM', 256, 176);
+  c.fillStyle = '#f4f6f8'; c.font = '900 150px "Inter Display", Inter, sans-serif'; c.fillText('8 GB', 256, 306);
+  for (let i = 0; i < 8; i++) { c.fillStyle = '#38e1ff'; c.fillRect(74 + i * 46, 340, 38, 16); }   // the card sits in the upper part: the caption band (about 62-78% down the screen) stays empty
+  c.fillStyle = 'rgba(244,246,248,.16)'; for (let i = 0; i < 2; i++) { c.fillRect(74, 420 + i * 60, 150 + ((i * 67) % 90), 14); c.fillRect(330, 420 + i * 60, 108, 14); }
+});
+
+// ---------- materials ----------
+const M = {
+  metal: KM.metal,
+  darkMetal: KM.darkMetal,
+  screen: KM.glass(screenTex),
+  pcb: new THREE.MeshStandardMaterial({ color: 0xffffff, map: pcbTex, metalness: .35, roughness: .62 }),
+  shield: new THREE.MeshStandardMaterial({ color: 0x1c1f24, metalness: .3, roughness: .8, envMapIntensity: .2 }),
+  battery: KM.battery,
+  chipSide: KM.chipSide,
+  pad: new THREE.MeshStandardMaterial({ color: 0x08090b, metalness: .1, roughness: .7, envMapIntensity: .3 }),
+  comp: new THREE.MeshStandardMaterial({ color: 0x1c1f24, metalness: .3, roughness: .6 }),
+  lens: new THREE.MeshPhysicalMaterial({ color: 0x020305, metalness: .1, roughness: .05, clearcoat: 1 }),
+  gold: KM.gold,
+  dimm: new THREE.MeshStandardMaterial({ color: 0x1a2028, map: pcbTex, metalness: .4, roughness: .55 }),
+  floor: KM.floor,
+  rack: KM.server(),   // a rack face that reads as servers: units with handles, vents, drive bays and small status lights (kit3d.js)
+  rackSide: KM.rackSide,
+};
+
+// ---------- shapes ----------
+function rrShape(w, h, r) { const s = new THREE.Shape(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; }
+function rrPath(w, h, r) { const s = new THREE.Path(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.quadraticCurveTo(x, y, x, y + r); s.lineTo(x, y + h - r); s.quadraticCurveTo(x, y + h, x + r, y + h); s.lineTo(x + w - r, y + h); s.quadraticCurveTo(x + w, y + h, x + w, y + h - r); s.lineTo(x + w, y + r); s.quadraticCurveTo(x + w, y, x + w - r, y); s.lineTo(x + r, y); return s; }
+const PW = 3, PHh = 6.3, PD = .3, PR = .46;
+
+// a memory chip (1 GB each in the story): body, marked top, cyan edge, glow sprite
+const CHW = .74, CHH = .36, CHD = .07;
+const chipGeo = (() => { const g = new THREE.ExtrudeGeometry(rrShape(CHW - .02, CHH - .02, .035), { depth: CHD - .02, bevelEnabled: true, bevelThickness: .01, bevelSize: .01, bevelSegments: 3, curveSegments: 6 }); g.translate(0, 0, -(CHD - .02) / 2);
+  const uv = g.attributes.uv, pos = g.attributes.position; for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / CHW + .5, pos.getY(i) / CHH + .5); return g; })();
+const chipEdges = new THREE.EdgesGeometry(new THREE.BoxGeometry(CHW, CHH, CHD));
+function makeChip() {
+  const top = KM.chipTop(chipTop, SIG);
+  const g = new THREE.Group(), m = new THREE.Mesh(chipGeo, [top, M.chipSide]); g.add(m);
+  const e = new THREE.LineSegments(chipEdges, new THREE.LineBasicMaterial({ color: SIG, transparent: true, opacity: .55 })); g.add(e);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: SIG, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })); s.scale.set(1.3, .86, 1); s.position.z = -.03; g.add(s);
+  g.userData = { top, e, s };
+  return g;
+}
+function chipGlow(ch, k, heat = 0) { const u = ch.userData; const col = heat > 0 ? new THREE.Color(SIG).lerp(new THREE.Color(HEAT), heat) : new THREE.Color(SIG);
+  u.top.emissive.copy(col); u.top.emissiveIntensity = .035 * k + .09 * heat; u.e.material.color.copy(col); u.e.material.opacity = .35 + .65 * clamp(k); u.s.material.color.copy(col); u.s.material.opacity = .62 * clamp(k); }   // dark epoxy; the colour is the edge glow
+
+// a phone, back facing +z; n memory chips on the board (2 columns)
+function makePhone(n, seed) {
+  const P = new THREE.Group(), R = rng(seed);
+  const frameShape = rrShape(PW, PHh, PR); frameShape.holes.push(rrPath(PW - .16, PHh - .16, PR - .08));
+  const fg = new THREE.ExtrudeGeometry(frameShape, { depth: PD, bevelEnabled: true, bevelThickness: .035, bevelSize: .035, bevelSegments: 5, curveSegments: 28 }); fg.translate(0, 0, -PD / 2);
+  P.add(new THREE.Mesh(fg, M.metal));
+  // side buttons
+  [[1.55, .5], [.85, .3]].forEach(([y, h]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(.06, h, .12), M.metal); b.position.set(PW / 2 + .02, y, 0); P.add(b); });
+  // screen (front, -z)
+  const scr = new THREE.Mesh(new THREE.ShapeGeometry(rrShape(PW - .1, PHh - .1, PR - .05), 24), M.screen.clone()); scr.rotation.y = Math.PI; scr.position.z = -PD / 2 - .012; P.add(scr);
+  { const uv = scr.geometry.attributes.uv, pos = scr.geometry.attributes.position; for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / (PW - .1) + .5, pos.getY(i) / (PHh - .1) + .5); }
+  // board (upper half), battery (lower half)
+  const board = new THREE.Mesh(new THREE.ExtrudeGeometry(rrShape(PW - .42, 3.45, .2), { depth: .05, bevelEnabled: false }), M.pcb);
+  { const uv = board.geometry.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * .35, uv.getY(i) * .35); }
+  board.position.set(0, 1.18, -.06); P.add(board);
+  const bat = new THREE.Mesh(new THREE.ExtrudeGeometry(rrShape(PW - .5, 2.3, .14), { depth: .12, bevelEnabled: true, bevelThickness: .02, bevelSize: .02, bevelSegments: 3 }), M.battery); bat.position.set(0, -1.75, -.1); P.add(bat);
+  { const uv = bat.geometry.attributes.uv, pos = bat.geometry.attributes.position; for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / (PW - .5) + .5, pos.getY(i) / 2.3 + .5); }
+  const shield = new THREE.Mesh(new THREE.BoxGeometry(.95, .95, .07), M.chipSide); shield.position.set(.6, 2.62, .03); shield.scale.set(.75, .5, 1);
+  // tiny parts (detail on the object)
+  const comps = new THREE.InstancedMesh(new THREE.BoxGeometry(.07, .035, .035), M.comp, 12); const dm = new THREE.Object3D();
+  for (let i = 0; i < 12; i++) { dm.position.set((R() - .5) * 2.3, -.45 + R() * 2.45, .01); dm.rotation.z = R() < .5 ? 0 : Math.PI / 2; dm.updateMatrix(); comps.setMatrixAt(i, dm.matrix); }
+  P.add(comps);
+  // chip slots: pads + chips
+  const chips = [], cols = [-.58, .58], rowH = .46, rows = Math.ceil(n / 2), top = 2.33;
+  for (let i = 0; i < n; i++) {
+    const x = cols[i % 2], y = top - Math.floor(i / 2) * rowH - (rows > 4 ? 0 : 0);
+    const pad = new THREE.Mesh(new THREE.BoxGeometry(CHW - .04, CHH - .04, .01), M.pad); pad.position.set(x, y - .38, .0); P.add(pad);
+    const ch = makeChip(); ch.position.set(x, y - .38, .045); P.add(ch); chips.push({ ch, home: ch.position.clone() });
+  }
+  // back glass (+z), see-through in the x-ray shots
+  const back = new THREE.Mesh(new THREE.ShapeGeometry(rrShape(PW - .1, PHh - .1, PR - .05), 24),
+    new THREE.MeshPhysicalMaterial({ color: 0x0b0d11, metalness: .1, roughness: .1, clearcoat: 1, transparent: true, opacity: .25, depthWrite: false, envMapIntensity: .45 }));
+  back.position.z = PD / 2 + .012; back.renderOrder = 5; P.add(back);
+  // camera bump (top-left of the back)
+  const bump = new THREE.Group(); bump.position.set(-.78, 2.55, PD / 2 + .02); bump.scale.setScalar(.78); P.add(bump);
+  { const bg = new THREE.ExtrudeGeometry(rrShape(1.12, 1.12, .3), { depth: .06, bevelEnabled: true, bevelThickness: .02, bevelSize: .02, bevelSegments: 3 }); const b = new THREE.Mesh(bg, new THREE.MeshPhysicalMaterial({ color: 0x16191e, metalness: .4, roughness: .2, clearcoat: 1 })); bump.add(b);
+    [[-.24, .24], [-.24, -.24], [.25, .24]].forEach(([x, y]) => { const ring = new THREE.Mesh(new THREE.CylinderGeometry(.2, .2, .1, 40), M.metal); ring.rotation.x = Math.PI / 2; ring.position.set(x, y, .1); bump.add(ring);
+      const l = new THREE.Mesh(new THREE.CylinderGeometry(.155, .155, .11, 40), M.lens); l.rotation.x = Math.PI / 2; l.position.set(x, y, .11); bump.add(l); });
+    const fl = new THREE.Mesh(new THREE.CylinderGeometry(.06, .06, .08, 20), new THREE.MeshStandardMaterial({ color: 0xeeeeee, emissive: 0x222222 })); fl.rotation.x = Math.PI / 2; fl.position.set(.25, -.24, .09); bump.add(fl); }
+  P.userData = { chips, back, scr, bump };
+  return P;
+}
+
+// ---------- the worlds (each in its own place, shown only in its shot) ----------
+const LIT = KIT.light(THREE, scene), keyL = LIT.key, rimL = LIT.rim, rim2L = LIT.rim2;
+
+// A / E / G: the hero phone
+const hero = makePhone(8, 3); scene.add(hero);
+const heroGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0x6aa8d8, transparent: true, opacity: .22, blending: THREE.AdditiveBlending, depthWrite: false }));
+heroGlow.scale.set(16, 22, 1); heroGlow.position.set(0, 1, -3); scene.add(heroGlow);
+
+// B: three phones (12, 8, 4 chips)
+const LSP = 3.9;   // far enough apart that a close-up on one phone leaves its neighbours out of the frame
+const lineup = new THREE.Group(); lineup.position.set(0, 0, -60); scene.add(lineup);
+const LP = [makePhone(12, 21), makePhone(8, 22), makePhone(4, 23)]; LP.forEach((p, i) => { p.position.set((i - 1) * LSP, 0, 0); p.rotation.y = (i - 1) * -.04; lineup.add(p); });
+{ const fl = new THREE.Mesh(new THREE.PlaneGeometry(60, 30), M.floor); fl.rotation.x = -Math.PI / 2; fl.position.y = -3.25; lineup.add(fl); }
+
+// C: the AI server hall (a curved wall of racks, a reflective floor, amber heat)
+const hall = new THREE.Group(); hall.position.set(0, 0, -160); scene.add(hall);
+const RACK_GEO = new THREE.BoxGeometry(1.9, 6.6, 1.4);
+function rack(mat = M.rack) { const r = new THREE.Mesh(RACK_GEO, [M.rackSide, M.rackSide, M.rackSide, M.rackSide, mat, M.rackSide]); return r; }
+const HALL_RACKS = [];
+const INTAKES = [];
+for (let i = -6; i <= 6; i++) { const a = i * .13, mt = M.rack.clone(), r = rack(mt); HALL_RACKS.push([mt, Math.abs(i), 0]); r.position.set(Math.sin(a) * 15, 3.3 - 3, -Math.cos(a) * 15 + 15 - 0); r.rotation.y = -a; hall.add(r); INTAKES.push(r.position.clone().add(V(-Math.sin(a) * .75, 0, Math.cos(a) * .75))); }
+for (let i = -6; i <= 6; i++) { const a = i * .13, mt = M.rack.clone(), r = rack(mt); HALL_RACKS.push([mt, Math.abs(i), 1]); r.position.set(Math.sin(a) * 18.5, 6.6 + .3 - 3 + 3.3, -Math.cos(a) * 18.5 + 15); r.rotation.y = -a; hall.add(r); }
+{ const fl = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), M.floor); fl.rotation.x = -Math.PI / 2; fl.position.y = -3; hall.add(fl);
+  const hg = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: HEAT, transparent: true, opacity: .5, blending: THREE.AdditiveBlending, depthWrite: false })); hg.scale.set(40, 22, 1); hg.position.set(0, 3, -4); hg.material.opacity = .16; hall.add(hg); }
+const hallLight = new THREE.PointLight(0xffd2a0, 8, 40, 1.6); hallLight.position.set(0, 4, 6); hall.add(hallLight);
+{ const cm = new THREE.MeshStandardMaterial({ color: 0x0a0b0d, roughness: .6, metalness: .3 }), cs = new THREE.MeshStandardMaterial({ color: 0x0a0b0d, emissive: SIG, emissiveIntensity: .5 });
+  for (let i = -6; i < 6; i++) { const a0 = i * .13, a1 = (i + 1) * .13, y = 3.5, p0 = V(Math.sin(a0) * 14.25, y, -Math.cos(a0) * 14.25 + 15), p1 = V(Math.sin(a1) * 14.25, y, -Math.cos(a1) * 14.25 + 15);
+    for (let k = 0; k < 2; k++) { const mid = p0.clone().lerp(p1, .5).add(V(0, -.6 - .35 * k, .15 * k)); const tube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.QuadraticBezierCurve3(p0.clone().add(V(0, -.1 * k, .05 * k)), mid, p1.clone().add(V(0, -.1 * k, .05 * k))), 16, .035, 6), (i + k) % 5 === 0 ? cs : cm); hall.add(tube); } } }
+const SHAFTS = []; { for (let i = 0; i < 6; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 16), new THREE.MeshBasicMaterial({ map: glowTex, color: HEAT, transparent: true, opacity: .07, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+  m.position.set((i - 2.5) * 3.1, 4, 4 + (i % 2)); m.rotation.z = (i - 2.5) * .06; hall.add(m); SHAFTS.push(m); } }
+// the stream: memory chips from the phones (below, near the camera) into the racks
+const LANES = 5, PER = 5, STREAM_N = LANES * PER, stream = new THREE.InstancedMesh(chipGeo, [Object.assign(KM.chipTop(chipTop, SIG), { emissiveIntensity: .16, envMapIntensity: .3 }), KM.chipSide], STREAM_N);
+stream.frustumCulled = false; hall.add(stream);
+const SPATH = []; for (let l = 0; l < LANES; l++) { const tgt = INTAKES[2 + l * 2], sx = (l - 2) * 4.2; for (let k = 0; k < PER; k++) SPATH.push({ a: V(sx * .12, -6.5, 21), c: V(sx * .8, 7.2, 12), b: tgt.clone().add(V(0, 1.8, 0)), off: (k + l * .37) / PER, sp: .17, tw: l * 1.3 + k * 2.1 }); }   // countable chips, well apart, from below (the phones) into five racks
+const streamGlow = new THREE.InstancedMesh(new THREE.PlaneGeometry(CHW * 2.3, CHH * 3.4), new THREE.MeshBasicMaterial({ map: glowTex, color: SIG, transparent: true, opacity: .8, blending: THREE.AdditiveBlending, depthWrite: false }), STREAM_N); streamGlow.frustumCulled = false; hall.add(streamGlow);
+
+// D: a server memory module (RDIMM), macro
+const dimm = new THREE.Group(); dimm.position.set(0, 0, -300); scene.add(dimm);
+const dimmTop = Object.assign(KM.chipTop(dramTop, HEAT), { envMapIntensity: .22, clearcoat: 0, roughness: .62 });   // matte: the chips stay dark under the moving light
+function makeDimm(g, seed) {
+  const b = new THREE.Mesh(new THREE.BoxGeometry(9.4, 2.2, .08), M.dimm); g.add(b);
+  for (let i = 0; i < 10; i++) { const x = -4.1 + i * .82 + (i >= 5 ? .55 : 0); if (i === 5) continue; const c = new THREE.Mesh(new THREE.BoxGeometry(.62, .95, .09), [M.chipSide, M.chipSide, M.chipSide, M.chipSide, dimmTop, M.chipSide]); c.position.set(x, .25, .085); g.add(c); }
+  const reg = new THREE.Mesh(new THREE.BoxGeometry(.7, .55, .07), M.shield); reg.position.set(.1 + .27, .2, .075); g.add(reg);
+  const fing = new THREE.InstancedMesh(new THREE.BoxGeometry(.075, .34, .012), M.gold, 90), d = new THREE.Object3D();
+  for (let i = 0; i < 90; i++) { d.position.set(-4.5 + i * .101 + (i >= 45 ? .1 : 0), -.88, .046); d.updateMatrix(); fing.setMatrixAt(i, d.matrix); } g.add(fing);
+  const notch = new THREE.Mesh(new THREE.BoxGeometry(.12, .4, .1), new THREE.MeshBasicMaterial({ color: INK })); notch.position.set(.05, -.95, 0); g.add(notch);
+  const comps = new THREE.InstancedMesh(new THREE.BoxGeometry(.08, .04, .04), M.comp, 20), R = rng(seed);
+  for (let i = 0; i < 20; i++) { d.position.set(-4.5 + R() * 9, -.55 + R() * .2 + (R() < .3 ? 1.35 : 0), .05); d.rotation.z = R() < .5 ? 0 : Math.PI / 2; d.updateMatrix(); comps.setMatrixAt(i, d.matrix); } g.add(comps);
+}
+{ makeDimm(dimm, 41); dimm.userData.top = dimmTop;
+  // a tray of modules: three more in the same plane below the hero one, so the picture runs to the bottom of the frame (M5); they sit outside the focus
+  for (let i = 1; i <= 3; i++) { const g = new THREE.Group(); makeDimm(g, 41 + i); g.position.set(.42 * i, -2.34 * i, 0); dimm.add(g); }
+  const hl = new THREE.PointLight(HEAT, 0, 12, 1.5); hl.position.set(0, 2.4, -1.2); dimm.add(hl); dimm.userData.hl = hl;
+  const hg = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: HEAT, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })); hg.scale.set(16, 8, 1); hg.position.set(0, .8, -1.5); dimm.add(hg); dimm.userData.hg = hg; }
+
+// F: the server aisle (two rows of racks to the vanishing point)
+const aisle = new THREE.Group(); aisle.position.set(0, 0, -450); scene.add(aisle);
+const AISLE_R = []; for (let i = 0; i < 18; i++) for (const s of [-1, 1]) { const r = rack(); r.position.set(s * 2.9, .3, -i * 1.95); r.rotation.y = -s * Math.PI / 2; aisle.add(r); AISLE_R.push([r, s]); }
+let aisleStrip = null;
+{ const fl = new THREE.Mesh(new THREE.PlaneGeometry(14, 80), M.floor); fl.rotation.x = -Math.PI / 2; fl.position.set(0, -3, -30); aisle.add(fl);
+  const strip = new THREE.InstancedMesh(new THREE.BoxGeometry(.08, .02, .9), new THREE.MeshBasicMaterial({ color: HEAT }), 36), d = new THREE.Object3D();
+  for (let i = 0; i < 36; i++) { d.position.set(0, -2.98, -i * 1.4 + 2); d.updateMatrix(); strip.setMatrixAt(i, d.matrix); } aisle.add(strip); aisleStrip = strip;
+  const end = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: HEAT, transparent: true, opacity: .8, blending: THREE.AdditiveBlending, depthWrite: false })); end.scale.set(22, 17, 1); end.position.set(0, 1.4, -36); aisle.add(end);
+  for (let i = 0; i < 4; i++) { const pl = new THREE.PointLight(i % 2 ? 0xbfe9ff : HEAT, i % 2 ? 1.0 : 1.7, 16, 1.6); pl.position.set(0, 3.2, -3 - i * 7.5); aisle.add(pl); } }
+M.rack.envMapIntensity = .1;   // the aisle's rack faces are lit by their own lights, not by the studio boxes (they burnt to white)
+const aisleFog = new THREE.FogExp2(0x140d06, .02);
+
+// sparks: bursts of hot particles, a pure function of t
+const SPARK_N = 900, sparkPos = new Float32Array(SPARK_N * 3), sparkCol = new Float32Array(SPARK_N * 3), sparkGeo = new THREE.BufferGeometry();
+sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3)); sparkGeo.setAttribute('color', new THREE.BufferAttribute(sparkCol, 3));
+const sparks = new THREE.Points(sparkGeo, new THREE.PointsMaterial({ size: .2, map: glowTex, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true }));
+sparks.frustumCulled = false; scene.add(sparks);
+const BURSTS = [];    // { t0, at: () => world point, n, seed, sp, life, up, sz }
+function updateSparks(t) {
+  let k = 0; const hot = new THREE.Color(0xfff2d8), amb = new THREE.Color(HEAT);
+  for (const b of BURSTS) { const dt = t - b.t0; if (dt < 0 || dt > 1.2 || !b.on()) continue; const R = rng(b.seed), p0 = b.at();
+    for (let i = 0; i < b.n && k < SPARK_N; i++) { const th = R() * Math.PI * 2, ph = R() * 1.2, v = b.sp * (.35 + .65 * R()), life = b.life * (.5 + .5 * R());
+      const dx = Math.cos(th) * Math.sin(ph), dy = Math.sin(th) * Math.sin(ph) * .8 + b.up, dz = Math.cos(ph) * .9;
+      const a = 1 - dt / life; if (a <= 0) continue;
+      sparkPos[k * 3] = p0.x + dx * v * dt; sparkPos[k * 3 + 1] = p0.y + dy * v * dt - 4.5 * dt * dt * b.g; sparkPos[k * 3 + 2] = p0.z + dz * v * dt;
+      const col = hot.clone().lerp(amb, clamp(dt / (life * .5))).multiplyScalar(a * 1.6); sparkCol[k * 3] = col.r; sparkCol[k * 3 + 1] = col.g; sparkCol[k * 3 + 2] = col.b; k++; } }
+  for (let i = k; i < SPARK_N; i++) { sparkPos[i * 3 + 1] = -9999; sparkCol[i * 3] = sparkCol[i * 3 + 1] = sparkCol[i * 3 + 2] = 0; }
+  sparkGeo.attributes.position.needsUpdate = true; sparkGeo.attributes.color.needsUpdate = true; sparkGeo.setDrawRange(0, Math.max(1, k));
+}
+// the laser that slices the board on "cutting" (a bright amber line sweeping down the board)
+const blade = new THREE.Group(); hero.add(blade);
+{ const core = new THREE.Mesh(new THREE.BoxGeometry(2.9, .022, .02), new THREE.MeshBasicMaterial({ color: 0xffe2b0 })); blade.add(core);
+  const gw = new THREE.Mesh(new THREE.PlaneGeometry(3.6, .5), new THREE.MeshBasicMaterial({ map: glowTex, color: HEAT, transparent: true, opacity: .9, blending: THREE.AdditiveBlending, depthWrite: false })); gw.position.z = .02; blade.add(gw); }
+const seam = new THREE.Mesh(new THREE.PlaneGeometry(2.6, .012), new THREE.MeshBasicMaterial({ color: HEAT, transparent: true, opacity: 0 })); hero.add(seam);
+// a light that sweeps across the metal when a number lands
+const sweepL = new THREE.PointLight(0xffffff, 0, 6, 2); scene.add(sweepL);
+const ripFlash = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xffd9a0, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })); scene.add(ripFlash);
+
+// ---------- shot timing (from the voice) ----------
+const S = SC.map((s) => s.start);
+const B = [0, S[1] - .2, S[2] - .2, S[3] - .2, S[4] - .2, S[5] - .2, S[6] - .2, TOTAL];   // shot k runs B[k]..B[k+1]
+const shotAt = (t) => { for (let k = B.length - 2; k >= 0; k--) if (t >= B[k]) return k; return 0; };
+// the six shot changes, each a different kind where it has a cause (techkit/kit3d.js): CUTS[k] is the change at B[k]
+const CUTS = [null, { kind: 'match' }, { kind: 'push', color: '56,225,255', depth: .86 }, { kind: 'rack' }, { kind: 'wipe', dir: 1 }, { kind: 'whip', dir: 1, yaw: .3 }, { kind: 'push', color: '255,206,150', depth: .7, flash: .7 }];
+const cutAt = (t) => { for (let k = 1; k <= 6; k++) { const d = KIT.DUR[CUTS[k].kind]; if (t > B[k] - d / 2 && t < B[k] + d / 2) return { k, u: (t - (B[k] - d / 2)) / d, ...CUTS[k] }; } return null; };
+const wEnd = (k) => B[k] - KIT.DUR[CUTS[k].kind] / 2 - .02;   // a bold word is gone before its shot starts to change
+// hook: four chips leave the hero phone; the count ticks when each has cleared
+const LEAVE = [[2, -.75], [5, C.next - .05], [1, (C.next + C.less) / 2 - .05], [6, C.less + .05]];   // the first chip is already in the air at frame 0
+const leftAt = (j) => LEAVE[j][1] + (j === 1 ? .82 : j === 0 ? 1.0 : .62);
+const count = (t) => 8 - LEAVE.filter((_, j) => t >= leftAt(j)).length;
+const slow = (j, x) => j === 0 ? x * .62 : j !== 1 ? x : x < .5 ? x * .35 : .175 + (x - .5) * 1.5;   // the second chip tears out in slow motion
+const flightOf = (j, t, home) => {          // a chip lifts off the board, then rises toward the camera and out of the top
+  t = LEAVE[j][1] + slow(j, t - LEAVE[j][1]);
+  const t0 = LEAVE[j][1], lift = eout((t - t0) / .32), u = clamp((t - t0 - .3) / 1.2), p = ein(u);
+  const side = home.x < 0 ? -1 : 1;
+  return { pos: V(home.x + side * (3.6 * p), home.y + 2.2 * p + .1 * lift, home.z + .45 * lift + 3.4 * p), rot: V(-.9 * p, side * .7 * p, side * .6 * p), glow: lift, gone: u >= 1, started: t >= t0 };
+};
+const LIT4 = (k) => lerp(C.four - .6, C.four - .06, k / 3), LIT8 = (k) => lerp(C.eight - .6, C.eight - .06, (k - 4) / 3);   // each count runs in 0.54 s and lands on the spoken number (rules-tech.md M7)   // the line-up's chips light one by one: a count that lands on the spoken number
+const TURN0 = () => C.buying + .15;   // the phone starts to turn on "Buying"
+const BL0 = () => C.cutting - .5, BL1 = () => C.cutting + .3, bladeY = (t) => lerp(2.55, -.1, ease(prog(t, BL0(), BL1())));
+const bladePass = (y) => { for (let x = BL0(); x < BL1(); x += .01) if (bladeY(x) <= y) return x; return BL1(); };
+// G's end mirrors A's start (the loop): the first chip lifts again from TOTAL - .55
+const heroState = (t, sh) => {
+  const chips = hero.userData.chips, st = chips.map((c) => ({ pos: c.home.clone(), rot: V(0, 0, 0), glow: 0, vis: true }));
+  if (sh === 0) LEAVE.forEach(([slot], j) => { const f = flightOf(j, t, chips[slot].home); if (!f.started) return; st[slot] = { pos: f.pos, rot: f.rot, glow: f.glow, vis: !f.gone }; });
+  if (sh === 4) {   // the board: chips flash amber at "pricier", two pop out at "cutting"
+    const heat = Math.sin(clamp((t - C.pricier + .1) / .9) * Math.PI);
+    st.forEach((s) => { s.glow = .35 + .65 * heat; s.heat = heat; });
+    [[3, 0], [6, 0], [7, 0]].forEach(([slot]) => { const t0 = bladePass(chips[slot].home.y), u = clamp((t - t0) / .7), p = ein(u), h = chips[slot].home; if (t < t0) return;
+      st[slot] = { pos: V(h.x + (h.x < 0 ? -1 : 1) * 2.4 * p, h.y + .8 * p, h.z + .3 + 5.5 * p), rot: V(.8 * p, 0, (h.x < 0 ? -1 : 1) * 1.4 * p), glow: .55 * (1 - p), heat: 1, vis: u < 1 }; });
+  }
+  if (sh === 6) {
+    st.forEach((s, i) => { const q = (t - TURN0() - .5 - i * .16) / .3; s.glow = (.2 + .8 * eout(q) + .5 * Math.sin(Math.PI * clamp(q / 1.6))) * (1 - .45 * prog(t, C.final + .3, C.final + 1.0)); });   // the eight light one by one as the back comes round: a count you can see
+    const f = flightOf(0, t - TOTAL, chips[2].home); if (f.started) st[2] = { pos: f.pos, rot: f.rot, glow: Math.max(st[2].glow, f.glow), vis: !f.gone };
+  }
+  if (sh === 0) st.forEach((s, i) => { if (!LEAVE.some(([sl]) => sl === i)) s.glow = .25; });
+  return st;
+};
+
+LEAVE.forEach(([slot, t0], j) => { if (j === 0) return; BURSTS.push({ t0: t0 + (j === 1 ? .12 : .04), at: () => hero.localToWorld(hero.userData.chips[slot].home.clone().add(V(0, 0, .06))), n: j === 1 ? 120 : 60, seed: 300 + j, sp: j === 1 ? 3.6 : 4.2, life: .8, up: .5, g: 1, flash: 1, on: () => shotAt(t0 + .1) === 0 }); });
+for (let i = 0; i < 14; i++) BURSTS.push({ t0: lerp(C.cutting - .5, C.cutting + .3, i / 13), at: () => hero.localToWorld(V(lerp(-1.3, 1.3, (i * .618) % 1), bladeY(lerp(C.cutting - .5, C.cutting + .3, i / 13)), .15)), n: 26, seed: 500 + i, sp: 3.4, life: .55, up: .3, g: 1.2, on: () => true });
+BURSTS.push({ t0: C.ninety, at: () => dimm.localToWorld(V(.4, -.88, .12)), n: 90, seed: 777, sp: 2.6, life: .8, up: .6, g: .8, on: () => true });
+// ---------- camera per shot ----------
+// Every shot keeps moving: KIT.glide has speed at both ends, and holds carry a slow push. The object sits low and large; the top band stays empty for the word.
+const G = KIT.glide;
+const frontOf = (c) => ({ pos: V(c.x, c.y + 1.3, c.z + 12.4), look: V(c.x, c.y + 2.02, c.z), fov: 31 });   // the shared shape of the match cut: one phone, upright
+const MATCH0 = frontOf(V(0, 0, 0)), MATCH1 = frontOf(V(LSP, 0, -60));
+function shotCam(t, sh) {
+  const u = prog(t, B[sh], B[sh + 1]);
+  if (sh === 0) { const k = G(u), a = lerp(-.1, .07, k), d = lerp(12.9, 11.5, k); return { pos: V(Math.sin(a) * d - .4, lerp(.5, .9, k), Math.cos(a) * d), look: V(0, lerp(2.02, 2.1, k), 0), fov: 31 }; }
+  if (sh === 1) { const z = -60, hold = KIT.push(Math.max(0, t - B[1]), .012);
+    // three framings in one shot (M8): it opens on the match framing of the 4 GB phone, drops into a low macro that looks up across its board
+    // (its four chips are counted there), then swings to a three-quarter view of the 8 GB phone on "mid-range"
+    const F0 = { pos: V(LSP + .5, 1.3, z + 12.4), look: V(LSP, 2.02, z), fov: 31 }, F1 = { pos: V(LSP + .95, -1.25, z + 6.3 * (1 - hold)), look: V(LSP, 2.42, z), fov: 40 },
+      F2 = { pos: V(-3.3, 3.0, z + 10.6 * (1 - hold)), look: V(0, 2.12, z), fov: 33 };
+    const a = KIT.reframe(F0, F1, ease(prog(t, B[1] + .05, B[1] + .95))), f = KIT.reframe(a, F2, ease(prog(t, C.mid - .35, C.mid + .5))), sl = prog(t, C.mid - .35, C.mid + .5);
+    return { ...f, ap: .15, focus: V(lerp(LSP, 0, ease(sl)), 1.7, z) }; }
+  if (sh === 2) { const z = -160, k = G(u); return { pos: V(lerp(-1.4, .8, k), lerp(-1.6, -.4, k), z + lerp(21.5, 17.5, k)), look: V(0, lerp(6.6, 7.0, k), z + 2), fov: 44 }; }   // low and close: the wall of racks fills the frame to the bottom
+  if (sh === 3) { const z = -300, k = G(u), rf = ease(prog(t, C.jump - .35, C.jump + .25)), dn = ease(prog(t, C.jump - .7, C.jump));   // rack focus: the near chips, then the gold contacts as +90% lands; the module fills the top until it makes room for the number
+    return { pos: V(lerp(-4.4, .5, k), lerp(2.5, 2.1, k), z + lerp(9.2, 8.2, k)), look: V(lerp(-1.5, .9, k), lerp(-.75, .25, dn), z), fov: 30, ap: .16, focus: V(lerp(-2.9, .6, rf), lerp(.3, -.85, rf), z) }; }
+  if (sh === 4) { const k = G(u); return { pos: V(lerp(.7, -.4, k), lerp(1.5, 1.9, k), lerp(11, 10.2, k)), look: V(0, lerp(1.96, 1.9, k), 0), fov: 34 }; }   // the open top half of the phone, whole, under an empty band
+  if (sh === 5) { const z = -450, k = u, y = lerp(2.5, 2.2, k); return { pos: V(.15, y, z + lerp(9.5, -4, k)), look: V(0, y + 1.25, z - 30), fov: 46 }; }   // from above the floor: the dark between the rack tops holds the word
+  // G: the phone turns from its screen to its back while the camera settles on A's framing (the loop)
+  const k = G(prog(t, B[6], TOTAL - .05), .45), A0 = shotCam(0, 0);
+  return { pos: V(.5, .9, 12.4).lerp(A0.pos, k), look: V(0, 1.72, 0).lerp(A0.look, k), fov: 31 };
+}
+const SHAKES = () => [[C.ai, .22], [C.ninety, .09], [C.cutting, .07], [C.year, .12]];
+// what a cut asks of one side's camera (KIT.cut): match framing, a push toward a part, a pull back, a truck, a yaw
+const pushTarget = (k) => k === 2 ? lineup.localToWorld(LP[1].position.clone().add(LP[1].userData.chips[2].home)) : V(0, 2.6, -450 - 34);
+function cutMod(t, k, side) { const d = KIT.DUR[CUTS[k].kind], u = (t - (B[k] - d / 2)) / d; return { ...KIT.cut(CUTS[k].kind, clamp(u), CUTS[k])[side], k, side }; }
+function camAt(t, sh, mod) {
+  const c = shotCam(t, sh), pos = c.pos.clone(), look = c.look.clone(); let fov = c.fov, yaw = 0, rot = 0;
+  if (mod) {
+    if (mod.match && mod.k === 1 && mod.side === 'out') { pos.lerp(MATCH0.pos, mod.match); look.lerp(MATCH0.look, mod.match); fov = lerp(fov, MATCH0.fov, mod.match); rot = mod.match; }
+    if (mod.dolly > 0) { const tg = pushTarget(mod.k); pos.lerp(tg, mod.dolly); look.lerp(tg, mod.dolly * .6); }
+    if (mod.dolly < 0) pos.add(pos.clone().sub(look).multiplyScalar(-mod.dolly));
+    if (mod.truck) { const dx = mod.truck * pos.distanceTo(look) * .12; pos.x += dx; look.x += dx; }
+    yaw = mod.yaw || 0;
+  }
+  const sk = SHAKES().reduce((acc, [t0, amp]) => { const d = t - t0; if (d < 0 || d > .6) return acc; const e = amp * Math.exp(-d * 9); return acc.add(V(Math.sin(d * 83) * e, Math.cos(d * 67) * e, 0)); }, V(0, 0, 0));
+  return { ...c, pos: pos.add(sk), look: look.add(sk.clone().multiplyScalar(.5)), fov, yaw, sh, rot };
+}
+
+const HALL_FOG = new THREE.FogExp2(0x0b0907, .018);
+// ---------- apply state at t (sh and mod let a cut draw the outgoing and the incoming shot at the same moment) ----------
+function pose(cm, c) { cm.fov = c.fov; cm.updateProjectionMatrix(); cm.position.copy(c.pos); cm.lookAt(c.look); if (c.yaw) cm.rotateY(c.yaw); cm.updateMatrixWorld(true); }
+function apply(t, sh = shotAt(t), mod = null) {
+  const c = camAt(t, sh, mod);
+  hero.visible = sh === 0 || sh === 4 || sh === 6; heroGlow.visible = sh === 0 || sh === 6; lineup.visible = sh === 1; hall.visible = sh === 2; dimm.visible = sh === 3; aisle.visible = sh === 5;
+  scene.fog = sh === 5 ? aisleFog : sh === 2 ? HALL_FOG : null;
+  keyL.intensity = sh === 5 ? .7 : sh === 2 ? .8 : sh === 3 ? 1.25 : 2.5; rimL.intensity = sh === 3 ? 1.0 : 2.9; rim2L.intensity = sh === 3 ? .5 : sh === 5 ? .6 : 1.5;
+  // hero pose
+  if (hero.visible) {
+    hero.position.set(0, 0, 0);
+    if (sh === 0) { const r = 1 - (c.rot || 0); hero.rotation.set(.1 * r, (-.32 + .07 * prog(t, 0, B[1])) * r, .02 * r); hero.userData.back.material.opacity = .22; }   // squares up for the match cut
+    if (sh === 4) { hero.rotation.set(0, 0, 0); hero.userData.back.material.opacity = 0; }
+    if (sh === 6) { const turn = ease(prog(t, TURN0(), TURN0() + .8)), sway = .3 - .22 * G(prog(t, B[6] - .3, TURN0())); hero.rotation.set(lerp(.04, .1, turn), lerp(Math.PI - sway, -.32, turn), .02 * turn);
+      hero.userData.back.material.opacity = .22; }
+    hero.userData.scr.material.emissiveIntensity = sh === 6 ? 1.15 : 0;
+    hero.userData.bump.visible = sh !== 4;
+    const st = heroState(t, sh);
+    hero.userData.chips.forEach(({ ch }, i) => { const s = st[i]; ch.visible = s.vis; ch.position.copy(s.pos); ch.rotation.set(s.rot.x, s.rot.y, s.rot.z); chipGlow(ch, s.glow, s.heat || 0); });
+  }
+  if (sh === 1) LP.forEach((p, i) => { p.userData.back.material.opacity = .2; if (i === 1) p.rotation.y = .3 * ease(prog(t, C.mid - .35, C.mid + .5));
+    p.userData.chips.forEach(({ ch }, k) => { const t0 = i === 2 ? LIT4(k) : i === 1 ? (k < 4 ? C.mid + .15 + k * .04 : LIT8(k)) : 9e9, q = (t - t0) / .3; chipGlow(ch, .25 + .75 * eout(q) + .5 * Math.sin(Math.PI * clamp(q / 1.5))); }); });
+  if (sh === 2) { const d = new THREE.Object3D(), g = new THREE.Object3D();
+    const camp = c.pos.clone().sub(hall.position);
+    SPATH.forEach((s, i) => { const p = (((t - B[2] + 3) * s.sp + s.off) % 1 + 1) % 1; const q = 1 - p;
+      const pos = s.a.clone().multiplyScalar(q * q).add(s.c.clone().multiplyScalar(2 * q * p)).add(s.b.clone().multiplyScalar(p * p));
+      const sc = 1.25 * (1 - .5 * p) * clamp(p * 9) * (1 - clamp((p - .94) / .06));   // each one a chip you can count; it shrinks into its rack
+      d.position.copy(pos); d.lookAt(camp); d.rotateZ(.35 * Math.sin(s.tw + p * 5)); d.rotateX(-.2 + .2 * Math.sin(s.tw * 1.7 + p * 4)); d.scale.setScalar(sc); d.updateMatrix(); stream.setMatrixAt(i, d.matrix);
+      g.position.copy(pos); g.lookAt(camp); g.scale.setScalar(sc); g.translateZ(-.12 * sc); g.updateMatrix(); streamGlow.setMatrixAt(i, g.matrix); });
+    stream.instanceMatrix.needsUpdate = true; streamGlow.instanceMatrix.needsUpdate = true;
+  }
+  if (sh === 3) { const h = prog(t, C.jump - .3, C.ninety + .1); dimm.userData.top.emissiveIntensity = .05 * h; dimm.userData.hl.intensity = 1.1 * h; dimm.userData.hg.material.opacity = .5 * h; dimm.rotation.set(-.42, .28, .08); }
+  if (sh === 5) { M.rack.emissiveIntensity = 1.35 + .3 * Math.sin(t * 5);
+    const sq = ease(prog(t, C.squeeze - .25, C.last + .2)); AISLE_R.forEach(([r, sd], i) => { r.position.x = sd * lerp(2.9, 2.15, sq) * (1 + .04 * Math.sin(i * 1.7)); });
+    const d = new THREE.Object3D(), off = (t * 7) % 1.4; for (let i = 0; i < 36; i++) { d.position.set(0, -2.98, -i * 1.4 + 2 - off); d.updateMatrix(); aisleStrip.setMatrixAt(i, d.matrix); } aisleStrip.instanceMatrix.needsUpdate = true; }
+  // the blade and its seam (board shot only)
+  blade.visible = sh === 4 && t > BL0() && t < BL1() + .05; seam.visible = sh === 4 && t > BL0();
+  if (sh === 4) { const by = bladeY(t); blade.position.set(0, by, .14); seam.position.set(0, by + .02, .12); seam.scale.y = 1; seam.material.opacity = .7 * (1 - prog(t, BL1(), BL1() + .8)); }
+  // a white light sweeping the metal: on the final "4 GB" of the hook, and on "RAM"
+  { const sw = [[leftAt(3) - .1, 0], [C.ram - .15, 6]].find(([t0, s]) => s === sh && t > t0 && t < t0 + .7);
+    if (sw) { const q = (t - sw[0]) / .7; sweepL.intensity = 3 * Math.sin(q * Math.PI); sweepL.position.set(lerp(-3, 3, q), lerp(3.5, .5, q), 1.4); } else sweepL.intensity = 0; }
+  if (sh === 2) { HALL_RACKS.forEach(([m, d, row]) => { const w = t - C.ai - .07 * d - .05 * row; m.emissiveIntensity = (1.0 + .3 * Math.sin(t * 7 + d)) + 1.3 * (w > 0 ? Math.exp(-w * 5) : 0); });
+    hallLight.intensity = 4 + 4 * prog(t, C.ai - .2, C.ai + .3) + 16 * (t > C.ai ? Math.exp(-(t - C.ai) * 4) : 0);
+    SHAFTS.forEach((m, i) => { m.material.opacity = .05 + .03 * Math.sin(t * 1.3 + i) + .16 * (t > C.ai ? Math.exp(-(t - C.ai) * 3) : 0); m.rotation.z = (i - 2.5) * .06 + .03 * Math.sin(t * .7 + i); }); }
+  if (sh === 3) { const q = prog(t, B[3] + .3, B[4] - .2); sweepL.intensity = .45; sweepL.distance = 3; sweepL.color.setHex(0xffd9a0); sweepL.position.set(dimm.position.x + lerp(-4.5, 4.5, q), -.6, dimm.position.z + .9); }
+  else { sweepL.distance = 6; sweepL.color.setHex(0xffffff); }
+  hero.updateMatrixWorld(true); dimm.updateMatrixWorld(true); updateSparks(t);
+  { const b = BURSTS.find((x) => x.flash && t >= x.t0 && t < x.t0 + .35 && x.on()); ripFlash.visible = !!b;   // a hot flash where a chip tears out
+    if (b) { const q = (t - b.t0) / .35; ripFlash.position.copy(b.at()); ripFlash.material.opacity = .95 * Math.pow(1 - q, 2); ripFlash.scale.setScalar(1.2 + 2.2 * q); } }
+  pose(cam, c);
+  return c;
+}
+
+// ---------- type: one bold word or number at a time (2D, screen space) ----------
+let BOXES = []; window.__boxes = () => BOXES;
+const big = (text, kind, color, t, t0, t1, opt = {}) => { const bx = KIT.word(o, text, kind, t, t0, t1, { color, ...opt }); if (bx) BOXES.push(bx); };
+function gbNumber(t, n, prev, since, y, a) {            // "8 GB": the digit rolls when it changes; white at 8, amber below
+  if (a <= 0) return; const k = eout((t - since) / .3), size = 270;
+  o.save(); o.globalAlpha = a; o.textBaseline = 'alphabetic'; o.font = `900 ${size}px "Inter Display", Inter, sans-serif`;
+  const gw = (o.font = `800 ${size * .52}px "Inter Display", Inter, sans-serif`, o.measureText('GB').width); o.font = `900 ${size}px "Inter Display", Inter, sans-serif`;
+  const dw = o.measureText(String(n)).width, x0 = 540 - (dw + 24 + gw) / 2;
+  o.textAlign = 'left';
+  const pop = prev !== n ? 1 + .14 * (1 - k) : 1;   // a clean cut to the new digit with a small pop (no ghost of the old one)
+  o.save(); o.translate(x0 + dw / 2, y); o.scale(pop, pop); o.globalAlpha = a; o.fillStyle = n >= 8 ? WHITE : HEATC; o.textAlign = 'center'; o.fillText(String(n), 0, 0); o.restore();
+  o.globalAlpha = a; o.fillStyle = WHITE; o.font = `800 ${size * .52}px "Inter Display", Inter, sans-serif`; o.fillText('GB', x0 + dw + 24, y);
+  o.restore(); BOXES.push([n + ' GB', x0, x0 + dw + 24 + gw, y - size * .74, y + 6]);
+}
+function typeLayer(t) {
+  BOXES = [];
+  const sh = shotAt(t), Y = 540;
+  if (sh === 0) { const n = count(t), lc = Math.max(-9, ...LEAVE.map((_, j) => leftAt(j)).filter((x) => x <= t)); gbNumber(t, n, n + (t - lc < .3 ? 1 : 0), lc, Y, 1 - prog(t, B[1] - .15, B[1])); }
+  if (sh === 1) {   // "BUDGET", then the number: each count runs in about half a second and lands on the spoken value (M7)
+    if (t < LIT4(3) - .1) big('BUDGET', 'track', WHITE, t, C.budget, LIT4(3) - .1, { size: 190, y: 500 });
+    // the chips do the counting (they light one by one in about half a second); the number shows only the end value, on the spoken word
+    const n = t >= LIT8(7) ? 8 : 4, since = n === 8 ? LIT8(7) : LIT4(3);
+    if (t >= LIT4(3)) gbNumber(t, n, t - since < .2 ? (n === 8 ? 4 : 0) : n, since, Y, prog(t, LIT4(3), LIT4(3) + .08) * (1 - prog(t, wEnd(2) - .16, wEnd(2)))); }
+  if (sh === 2 && t < C.makers2 + .25) big('WHY?', 'drop', WHITE, t, C.why, C.makers2 + .25, { size: 250, y: 520 });
+  if (sh === 2) big('AI', 'slam', HEATC, t, C.ai, wEnd(3), { size: 320, y: 530, glow: 'rgba(255,150,40,.6)' });
+  if (sh === 3) { const v = Math.round(90 * eout(prog(t, C.jump - .1, C.ninety + .05))); big('+' + v + '%', 'wipe', HEATC, t, C.jump - .1, wEnd(4), { size: 260, y: 500, glow: 'rgba(255,150,40,.4)' }); }
+  if (sh === 4 && t < C.cutting - .08) big('PRICIER', 'rise', HEATC, t, C.pricier, C.cutting - .08, { size: 168, y: 470, glow: 'rgba(255,150,40,.35)' });
+  if (sh === 4) big('CUT', 'stamp', HEATC, t, C.cutting, wEnd(5), { size: 250, y: 480, split: prog(t, C.cutting + .12, C.cutting + .3) });
+  if (sh === 5) big('2027', 'track', WHITE, t, C.year, wEnd(6), { size: 270, y: 520, glow: 'rgba(255,170,60,.45)' });
+  if (sh === 6) { if (t < C.final + .55) big('RAM', 'rise', SIGC, t, C.check, C.final + .55, { size: 300, y: Y, glow: 'rgba(56,225,255,.5)' });
+    else gbNumber(t, 8, 8, 0, Y, prog(t, C.final + .55, C.final + .9)); }
+}
+
+// ---------- captions (stable phrases, bottom third) ----------
+const CHUNKS = []; SC.forEach((s, si) => { let cur = []; s.words.forEach((w, i) => { cur.push(w); const nx = s.words[i + 1], len = cur.map((x) => x.w).join(' ').length + (nx ? nx.w.length + 1 : 0);
+    if (/[.,?!]$/.test(w.w) || (cur.length >= 6 && !(nx && /[.,?!]$/.test(nx.w))) || (len > 30 && !(nx && /[.,?!]$/.test(nx.w))) || i === s.words.length - 1) { CHUNKS.push({ si, words: cur }); cur = []; } }); });
+CHUNKS.forEach((c, i) => { c.t0 = c.words[0].t0; const nx = CHUNKS[i + 1]; c.t1 = nx && nx.si === c.si ? nx.words[0].t0 - .03 : c.words[c.words.length - 1].t1 + .35; });
+window.CHUNKS = CHUNKS;
+const capEl = document.getElementById('caps'); let capIdx = -2;
+function captions(t) {
+  const ci = CHUNKS.findIndex((c) => t >= c.t0 - .05 && t < c.t1);
+  if (ci !== capIdx) { capIdx = ci; capEl.textContent = ci < 0 ? '' : CHUNKS[ci].words.map((w) => w.w).join(' '); }
+  if (ci >= 0) { const p = eout(prog(t, CHUNKS[ci].t0 - .05, CHUNKS[ci].t0 + .15)); capEl.style.opacity = clamp(p * 1.5); capEl.style.transform = `translateY(${(1 - p) * 10}px)`; }
+}
+
+// ---------- the hero's box (Output QA HERO) ----------
+let SUBJ = null; window.__subject = () => SUBJ;
+function subjectBox(sh) {
+  const obj = [hero, LP[1], hall, dimm, hero, aisle, hero][sh]; const bx = new THREE.Box3();
+  if (sh === 2 || sh === 5) { SUBJ = [90, 300, 990, 1400]; return; }
+  bx.setFromObject(obj);
+  let l = 1e9, r = -1e9, tp = 1e9, b = -1e9;
+  for (const x of [bx.min.x, bx.max.x]) for (const y of [bx.min.y, bx.max.y]) for (const z of [bx.min.z, bx.max.z]) { const p = V(x, y, z).project(cam); const sx = (p.x + 1) / 2 * W, sy = (1 - p.y) / 2 * H; l = Math.min(l, sx); r = Math.max(r, sx); tp = Math.min(tp, sy); b = Math.max(b, sy); }
+  SUBJ = [clamp(l, 0, W), clamp(tp, 0, H), clamp(r, 0, W), clamp(b, 0, H)];
+}
+
+// ---------- frame ----------
+function post() {
+  const vg = o.createRadialGradient(540, 980, 560, 540, 980, 1340); vg.addColorStop(0, 'rgba(7,8,12,0)'); vg.addColorStop(1, 'rgba(7,8,12,.55)'); o.fillStyle = vg; o.fillRect(0, 0, W, H);
+  // the picture runs to the bottom of the frame; it only dims behind the captions and goes to ink at the very edge
+  const bf = o.createLinearGradient(0, 1280, 0, 1920); bf.addColorStop(0, 'rgba(7,8,12,0)'); bf.addColorStop(.2, 'rgba(7,8,12,.5)'); bf.addColorStop(.3, 'rgba(7,8,12,.76)'); bf.addColorStop(.55, 'rgba(7,8,12,.78)'); bf.addColorStop(.93, 'rgba(7,8,12,.97)'); bf.addColorStop(1, 'rgba(7,8,12,1)'); o.fillStyle = bf; o.fillRect(0, 1280, W, H - 1280);
+  const tf = o.createLinearGradient(0, 180, 0, 0); tf.addColorStop(0, 'rgba(7,8,12,0)'); tf.addColorStop(1, 'rgba(7,8,12,.6)'); o.fillStyle = tf; o.fillRect(0, 0, W, 180);
+}
+// real motion blur (techkit/kit3d.js): a few time samples across the shutter, each smeared along the camera's own screen motion to the next
+// sample, so a fast move is one smooth streak. The samples are also offset by part of a pixel, which antialiases what stands still.
+const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c.getContext('2d'); };
+const ACC = [mk(), mk()], TMP = mk(), SMR = mk(), cam2 = new THREE.PerspectiveCamera(30, W / H, 0.05, 400), SHUT = 1 / 50;
+const scr2 = (p) => { p.project(cam2); return [(p.x + 1) / 2 * W, (1 - p.y) / 2 * H]; };
+function refs(cHere, cThere) {   // two world points near the subject, seen by the camera now and one step later
+  pose(cam2, cHere); const up = new THREE.Vector3().setFromMatrixColumn(cam2.matrixWorld, 1), P1 = cHere.look.clone(), P2 = P1.clone().add(up.multiplyScalar(cHere.pos.distanceTo(cHere.look) * .2));
+  const a = [...scr2(P1.clone()), ...scr2(P2.clone())]; pose(cam2, cThere); return [a, [...scr2(P1.clone()), ...scr2(P2.clone())]];
+}
+const busy = (t, sh) => (sh === 0 && t < leftAt(3) + .4) || (sh === 4 && t > BL0() - .1 && t < BL1() + .8) || (sh === 6 && t > TOTAL - .6);   // parts flying: more time samples
+function accumulate(ctx, t, sh, side, k) {
+  const modAt = (ts) => side ? cutMod(ts, k, side) : null, at = (ts) => camAt(ts, sh, modAt(ts));
+  const [a0, b0] = refs(at(t - SHUT / 2), at(t + SHUT / 2)), la = Math.hypot(a0[2] - a0[0], a0[3] - a0[1]) || 1;
+  const px = Math.hypot(b0[0] - a0[0], b0[1] - a0[1]) + Math.abs(Math.hypot(b0[2] - b0[0], b0[3] - b0[1]) / la - 1) * 1100;
+  const c0 = at(t), K = Math.max(2, Math.round(KIT.plan(px, c0.ap > 0, busy(t, sh)) * Q));
+  for (let i = 0; i < K; i++) { const ts = clamp(t + SHUT * ((i + .5) / K - .5), 0, TOTAL), c = apply(ts, sh, modAt(ts)), [jx, jy] = KIT.jitter(i);
+    if (c.ap > 0) { const r = c.ap * Math.sqrt((i + .5) / K), th = i * 2.39996, rx = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 0), uy = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 1);
+      const fw = new THREE.Vector3(); cam.getWorldDirection(fw); const dl = c.look.clone().sub(cam.position).dot(fw), df = Math.max(.5, c.focus.clone().sub(cam.position).dot(fw));
+      const dd = rx.multiplyScalar(Math.cos(th) * r).add(uy.multiplyScalar(Math.sin(th) * r)); cam.position.add(dd); cam.lookAt(c.look.clone().add(dd.multiplyScalar(1 - dl / df))); }
+    cam.setViewOffset(W, H, jx * .9, jy * .9, W, H); gl.render(scene, cam); cam.clearViewOffset();
+    TMP.globalAlpha = 1; TMP.drawImage(gl.domElement, 0, 0, W, H);
+    const [a, b] = refs(c, at(ts + SHUT / K)); ctx.globalAlpha = 1 / (i + 1);
+    if (Math.hypot(b[0] - a[0], b[1] - a[1]) + Math.abs(Math.hypot(b[2] - b[0], b[3] - b[1]) / (Math.hypot(a[2] - a[0], a[3] - a[1]) || 1) - 1) * 1100 < 1.5) ctx.drawImage(TMP.canvas, 0, 0);
+    else { SMR.globalAlpha = 1; SMR.fillStyle = '#07080c'; SMR.fillRect(0, 0, W, H); KIT.smear(SMR, TMP.canvas, a, b, W, H); ctx.drawImage(SMR.canvas, 0, 0); } }
+  ctx.globalAlpha = 1;
+}
+window.render = (t) => {
+  t = clamp(t, 0, TOTAL);
+  const cu = cutAt(t), st = cu && KIT.cut(cu.kind, cu.u, cu);
+  o.setTransform(1, 0, 0, 1, 0, 0); o.globalAlpha = 1; o.filter = 'none'; o.fillStyle = '#07080c'; o.fillRect(0, 0, W, H);
+  if (!cu) { accumulate(ACC[0], t, shotAt(t), null, 0); o.drawImage(ACC[0].canvas, 0, 0); }
+  else {   // both shots at once: the outgoing one keeps moving, the incoming one is already moving
+    const needA = st.wipe != null || st.mix < 1, needB = st.wipe != null || st.mix > 0;
+    if (needA) accumulate(ACC[0], t, cu.k - 1, 'out', cu.k); if (needB) accumulate(ACC[1], t, cu.k, 'in', cu.k);
+    KIT.compose(o, ACC[0].canvas, ACC[1].canvas, st, W, H, { color: cu.color, fy: .5 });
+  }
+  o.globalAlpha = 1; apply(t, shotAt(t), cu ? cutMod(t, cu.k, t >= B[cu.k] ? 'in' : 'out') : null); subjectBox(shotAt(t));
+  post(); typeLayer(t); captions(t);
+};
+window.TRANSITIONS = [...[1, 2, 3, 4, 5, 6].map((k) => { const d = KIT.DUR[CUTS[k].kind]; return [+(B[k] - d / 2 - .1).toFixed(2), +(B[k] + d / 2 + (k === 1 ? .7 : .15)).toFixed(2), 'camera']; }), ...SHAKES().map(([t0]) => [+(t0 - .1).toFixed(2), +(t0 + .5).toFixed(2), 'jolt']), [+(TURN0() - .1).toFixed(2), +(TURN0() + .9).toFixed(2), 'turn']];
+window.HOLDS = [[+(TOTAL - 1.2).toFixed(2), +TOTAL.toFixed(2)]];
+window.seek = window.render;
+window.DUR = TOTAL;
+window.render(0);
+})();
+</script>
+</body></html>
