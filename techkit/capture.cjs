@@ -13,6 +13,7 @@ let pw; try { pw = require('playwright'); } catch { pw = require('playwright-cor
   const browser = await pw.chromium.launch(opt);
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: +(process.env.KIT_SCALE || 1) });
   page.on('pageerror', (e) => { console.error('PAGEERR', e.message); process.exitCode = 2; });
+  if (process.env.KIT_Q) await page.addInitScript((q) => { window.KITQ = q; }, +process.env.KIT_Q);   // KIT_Q=0.5: a quick draft of a kit3d scene (fewer blur samples)
   await page.goto('file://' + path.resolve(scene));
   await page.evaluate(() => document.fonts.ready);
   let jobs = [];

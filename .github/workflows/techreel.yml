@@ -2,27 +2,44 @@ name: Tech reel
 
 # Tech explainer reels (owner, 24 Oct 2026): python3 techreel/make.py <slug> renders the voice, frames, sound and QA for one topic file.
 # The MP4, contact sheet, QA report and word timings go to the private R2 bucket under techreel/ (scripts/r2.sh; owner, 3 Nov 2026). Run by hand: Actions -> Tech reel -> slug.
-# the app's reel journey (src/journey.js) reads which reel a run is for from this name
-run-name: "Tech reel · ${{ inputs.slug }}"
+# Three jobs (owner, 23 Nov 2026: real motion blur inside the 75 min limit): the voice and the sound (voice), the frames split across
+# "parts" jobs that run side by side (frames; kit topics only), then join, voice check, keep and Output QA (join).
+# "preview": a name ending (for example r2). The finished reel then goes only to R2 study/ as showreel-tech-<slug>-<preview>-preview.mp4 with
+# its stills sheet (the app's Inbox -> Previews, templates/showreels/previews.json); the reel's own files in R2 are NOT touched, and no issue is posted.
+# the app's reel journey (src/journey.js) reads which reel a run is for from this name; a "(preview)" run is not counted as a render
+run-name: "Tech reel · ${{ inputs.slug }}${{ inputs.preview != '' && ' (preview)' || '' }}"
 on:
   workflow_dispatch:
     inputs:
       slug:
         description: Topic file in techreel/topics (without .json)
         default: walmart-agents
+      parts:
+        description: Frame jobs side by side (kit topics; 1-8)
+        default: '6'
+      preview:
+        description: Preview only, a name ending such as r2 (goes to R2 study/, the reel's own files stay). Empty = the reel's render.
+        required: false
+        default: ''
 
 permissions:
   contents: read
   issues: write   # Output QA posts NOT READY (scripts/qa/notify.sh)
 
+env:
+  GH_TOKEN: ${{ github.token }}
+  REPO: ${{ github.repository }}
+  SLUG: ${{ inputs.slug }}
+  PREVIEW: ${{ inputs.preview }}
+
 jobs:
-  render:
+  # 1. the narration, the timeline, the assembled scene and the sound mix (a topic on the old engine renders whole here)
+  voice:
     runs-on: ubuntu-24.04
-    timeout-minutes: 75   # the kit engine screenshots ~2,700 frames in headless Chrome (techkit/README.md)
-    env:
-      GH_TOKEN: ${{ github.token }}
-      REPO: ${{ github.repository }}
-      SLUG: ${{ inputs.slug }}
+    timeout-minutes: 75
+    outputs:
+      kit: ${{ steps.kind.outputs.kit }}
+      parts: ${{ steps.kind.outputs.parts }}
     steps:
       - uses: actions/checkout@v4
       - name: Mandatory Gate
@@ -75,20 +92,103 @@ jobs:
           python3 -I -c "import json,sys; sys.exit(0 if json.load(open(sys.argv[1])).get('media') else 1)" "techreel/topics/$SLUG.json" || exit 0
           npm ci --no-audit --no-fund
           bash scripts/media/pull.sh "techreel/topics/$SLUG.json"
-      - name: Render
-        id: render
+      - name: Engine
+        id: kind
+        run: |
+          if python3 -I -c "import json,sys; sys.exit(0 if json.load(open(sys.argv[1])).get('engine') == 'kit' else 1)" "techreel/topics/$SLUG.json"; then echo "kit=true" >> "$GITHUB_OUTPUT"; else echo "kit=false" >> "$GITHUB_OUTPUT"; fi
+          python3 -I -c "import sys; n=max(1, min(8, int(sys.argv[1] or 6))); print('parts=' + str(list(range(n))).replace(' ', ''))" "${{ inputs.parts }}" >> "$GITHUB_OUTPUT"
+      - name: Voice, timeline and sound
         # a topic with "engine": "kit" renders on techkit/ (the owner's motion kit, 15 Nov 2026: HTML scene + window.render(t), frames from
-        # headless Chrome; the runner's Google Chrome driven by playwright-core); every other topic on techreel/make.py
+        # headless Chrome in the frames jobs); every other topic renders whole here on techreel/make.py
         run: |
           set -o pipefail
-          if python3 -I -c "import json,sys; sys.exit(0 if json.load(open(sys.argv[1])).get('engine') == 'kit' else 1)" "techreel/topics/$SLUG.json"; then
-            npm i --no-save --no-audit --no-fund playwright-core@1.49.1
-            export CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
-            echo "chrome: $CHROME_BIN"; node -v
-            python3 techkit/make.py "$SLUG" 2>&1 | tee render.log
+          if [ "${{ steps.kind.outputs.kit }}" = true ]; then
+            python3 techkit/make.py "$SLUG" --voice-only 2>&1 | tee render.log
           else
             python3 techreel/make.py "$SLUG" 2>&1 | grep -v "^frame " | tee render.log
           fi
+          cp render.log "out/techreel/$SLUG/render.log"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voice
+          path: out/techreel/${{ inputs.slug }}
+          retention-days: 2
+
+  # 2. the frames: one job per part, four Chrome workers each (kit topics)
+  frames:
+    needs: voice
+    if: needs.voice.outputs.kit == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: true
+      matrix:
+        part: ${{ fromJSON(needs.voice.outputs.parts) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: voice
+          path: out/techreel/${{ inputs.slug }}
+      - name: Fonts
+        # Inter, as the voice job's Tools step installs it: apt first, then Inter's own release
+        timeout-minutes: 6
+        run: |
+          if ! timeout 150 sh -c 'sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends fonts-inter'; then
+            curl -sSL -o /tmp/inter.zip https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip
+            sudo mkdir -p /usr/share/fonts/truetype/inter && sudo unzip -oj -q /tmp/inter.zip 'extras/ttf/Inter-*.ttf' -d /usr/share/fonts/truetype/inter
+          fi
+          fc-cache -f >/dev/null 2>&1 || true; fc-list | grep -ci inter
+      - name: Frames
+        run: |
+          npm i --no-save --no-audit --no-fund playwright-core@1.49.1
+          export CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          echo "chrome: $CHROME_BIN"; node -v
+          N=$(python3 -I -c "import json,sys; print(len(json.loads(sys.argv[1])))" '${{ needs.voice.outputs.parts }}')
+          python3 techkit/make.py "$SLUG" --part "${{ matrix.part }}/$N"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frames-${{ matrix.part }}
+          path: out/techreel/${{ inputs.slug }}/frames
+          retention-days: 1
+          compression-level: 0
+
+  # 3. join the parts, then the voice check, keep it in R2, Output QA
+  join:
+    needs: [voice, frames]
+    if: always() && needs.voice.result == 'success' && (needs.frames.result == 'success' || needs.frames.result == 'skipped')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Tools
+        timeout-minutes: 10
+        run: |
+          if ! timeout 240 sh -c 'sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg'; then
+            python3 -m pip install --quiet --target "$RUNNER_TEMP/iff" imageio-ffmpeg==0.6.0
+            f=$(find "$RUNNER_TEMP/iff" -type f -name "ffmpeg-*" | head -1); [ -n "$f" ] || { echo "::error::no ffmpeg in imageio-ffmpeg"; exit 1; }; chmod +x "$f"; sudo ln -sf "$f" /usr/local/bin/ffmpeg
+          fi
+          ffmpeg -hide_banner -version | head -1
+      - uses: actions/download-artifact@v4
+        with:
+          name: voice
+          path: out/techreel/${{ inputs.slug }}
+      - uses: actions/download-artifact@v4
+        if: needs.voice.outputs.kit == 'true'
+        with:
+          pattern: frames-*
+          merge-multiple: true
+          path: out/techreel/${{ inputs.slug }}/frames
+      - name: Render
+        id: render
+        run: |
+          set -o pipefail
+          cp "out/techreel/$SLUG/render.log" render.log
+          if [ "${{ needs.voice.outputs.kit }}" = true ]; then python3 techkit/make.py "$SLUG" --join 2>&1 | tee -a render.log; fi
+          rm -rf "out/techreel/$SLUG/frames"
       - name: Voice check
         # the narration transcribed and compared with the script, and each line timed for pace and breaths (scripts/showreel/voicecheck.py)
         continue-on-error: true
@@ -108,6 +208,16 @@ jobs:
         run: |
           D="out/techreel/$SLUG"
           cp "$D/contact.png" "$D/$SLUG-contact.png"; cp "$D/qa.txt" "$D/$SLUG-qa.txt"; cp "$D/vo.json" "$D/$SLUG-vo.json"
+          if [ -n "$PREVIEW" ]; then   # a preview: only R2 study/, under its own name; the reel's files stay as they are
+            P="showreel-tech-$SLUG-$PREVIEW-preview"
+            node scripts/showreel/mp4boxes.mjs "$D/$SLUG.mp4" --need-moov-first
+            ffmpeg -y -loglevel error -i "$D/$SLUG.mp4" -vf "fps=2,scale=216:-1,tile=10x7" -frames:v 1 "$D/stills.png"   # two frames a second
+            bash scripts/r2.sh put "$D/$SLUG.mp4" "v/study/$P.mp4" || exit 1
+            bash scripts/r2.sh put "$D/stills.png" "v/study/$P-stills.png" || exit 1
+            bash scripts/r2.sh put "$D/qa.txt" "c/study/$P-qa.txt" || exit 1
+            if [ -f "$D/$SLUG.subject0.json" ]; then bash scripts/r2.sh put "$D/$SLUG.subject0.json" "c/study/$P-subject.json" || exit 1; fi
+            cat "$D/qa.txt"; echo "preview kept: /reels/study/$P.mp4"; exit 0
+          fi
           for f in "$SLUG.mp4" "$SLUG-contact.png" "$SLUG-qa.txt" "$SLUG-vo.json"; do bash scripts/r2.sh put "$D/$f" "$(case $f in *.mp4|*.png) echo v;; *) echo c;; esac)/techreel/$f" || exit 1; done
           # the hero's box every 0.5 s (kit scenes), so the Output QA workflow can replay HERO on this MP4 (16 Nov 2026)
           if [ -f "$D/$SLUG.subject0.json" ]; then cp "$D/$SLUG.subject0.json" "$D/$SLUG-subject.json"; bash scripts/r2.sh put "$D/$SLUG-subject.json" "c/techreel/$SLUG-subject.json" || exit 1; fi
@@ -135,5 +245,5 @@ jobs:
           bash scripts/qa/tools.sh
           set +e; python3 scripts/qa/output-qa.py "out/techreel/$SLUG/$SLUG.mp4" "techreel/topics/$SLUG.json" --log render.log --log "out/techreel/$SLUG/qa.txt" --summary "$GITHUB_STEP_SUMMARY" --fails oqa-fails.txt; rc=$?; set -e
           [ -s oqa-fails.txt ] && head -8 oqa-fails.txt | sed 's/%/%25/g' | while IFS= read -r l; do echo "::error title=Output QA::$l"; done   # the app's journey shows these reasons
-          bash scripts/qa/notify.sh "showreel-tech-$SLUG" oqa-fails.txt
+          [ -n "$PREVIEW" ] || bash scripts/qa/notify.sh "showreel-tech-$SLUG" oqa-fails.txt   # a preview posts nothing on the reel's issue
           exit $rc

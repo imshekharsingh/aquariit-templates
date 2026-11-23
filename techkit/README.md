@@ -48,3 +48,21 @@ An object topic transforms the subject itself on every beat: cutaway / x-ray (an
 a case that flexes (`frect()` in scenes/watch-5atm.js: a rounded rect whose sides bow inward), an exploded view on an isometric stack. Output QA
 HERO counts only change inside the subject's box (its move, zoom and squeeze warped out, a 20% rim left out): 55%+ of the samples; its line
 lists the still moments to fix. The Tech reel run keeps `<slug>-subject.json` in R2 next to the MP4, so the Output QA workflow replays HERO by hand.
+
+## The 3D kit: techkit/kit3d.js (23 Nov 2026; owner: "put the fixes in kit first"; rules-tech.md M1-M6)
+A standalone 3D scene (three.js at `<!--THREE-->`) puts `<!--KIT3D-->` after it; make.py inlines techkit/kit3d.js there. First reel on it: scenes/ai-memory.html.
+- **Shot changes**: `KIT3D.cut(kind, u, opt)` + `KIT3D.compose(...)`: `match` (both shots frame the same shape, three-frame dissolve), `push` (the camera goes
+  into a part, a glow in the story's colour, the next shot is already moving forward), `rack` (focus dissolve), `wipe` (a band of light crosses, the next
+  shot is behind it), `whip` (one fast pan, small yaw so the frame never empties). The scene draws the outgoing and the incoming shot at the same
+  moment (`apply(t, shot, mod)`), so a change never passes through black. Use 3+ kinds a reel, each where it has a cause.
+- **Motion blur**: `accumulate()` in the scene: 4-10 time samples over a 1/50 s shutter (`KIT3D.plan`), each smeared along the camera's own screen motion
+  to the next sample (`KIT3D.smear`: shift + zoom), offset by part of a pixel (`KIT3D.jitter`), drawn at 1x (no supersampling). No stepped copies.
+- **Never still**: `KIT3D.glide(u)` for a shot's move (speed at both ends) and `KIT3D.push(secs)` under a hold; something already in the air at frame 0.
+- **Words**: `KIT3D.word(o, text, kind, t, t0, t1, opt)`: slam, drop, rise, track, stamp (+ `split`), wipe. One per shot, a different kind each time,
+  in the empty top band (baseline y 450-540), gone before the shot starts to change; never on the object.
+- **Materials and light**: `KIT3D.materials(THREE, ctex)` (epoxy chip tops with a faint laser mark, colour only as the edge glow; metal and gold that
+  do not burn; a wrapped battery; screen glass that takes a drawn UI; perforated rack sides) and `KIT3D.light(THREE, scene)` (key, cool rim, warm kicker, exposure 1.2).
+- **Frame**: the object large and low, the picture running to the bottom under a soft scrim (ink only in the last 2%), subjects whole unless the shot is a declared full-bleed.
+- Local look: `python3 techkit/make.py <slug> --fake-vo --stills <times>` once (timeline), then `python3 scripts/tech-assemble.py <slug>` after each edit and
+  `KIT_Q=0.5 KIT_SCALE=0.25 node techkit/capture.cjs out/techreel/<slug>/scene.html <dir> times <t1,t2,...>` (about 2.5 s a frame). `KIT_Q=0.5` also speeds up the preflight.
+- Render: the Tech reel workflow splits the frames over `parts` jobs (default 6) and joins them; `preview: r2` keeps the result only in R2 study/ for the app's Previews.

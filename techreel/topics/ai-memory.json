@@ -14,7 +14,7 @@
  "max_end": 32.0,
  "experiment": {
   "id": "tech-direction-3d",
-  "change": "the new tech direction (design/tech-direction.md, owner approved 22 Nov): real 3D (three.js, inlined) with lighting and depth, ink + white + cyan + amber only, one bold number or word at a time, 7 distinct shots (x-ray hero, phone lineup, AI server hall, macro on a server memory module, board macro, server corridor, hero loop), a news topic of the month; drama pass (owner, 22 Nov: 'not dramatic and detailed, quality low'): 1.5x supersampled, depth of field with rack focus, sparks and slow-mo on the chip rip, a laser slicing the board on CUT, an amber pulse through the racks on AI, slams with camera shake, light sweeps on metal",
+  "change": "the new tech direction (design/tech-direction.md, owner approved 22 Nov): real 3D (three.js, inlined) with lighting and depth, ink + white + cyan + amber only, one bold number or word at a time, 7 distinct shots (x-ray hero, phone lineup, AI server hall, macro on a server memory module, board macro, server corridor, hero loop), a news topic of the month; drama pass (owner, 22 Nov: 'not dramatic and detailed, quality low'): 1.5x supersampled, depth of field with rack focus, sparks and slow-mo on the chip rip, a laser slicing the board on CUT, an amber pulse through the racks on AI, slams with camera shake, light sweeps on metal; premium pass on techkit/kit3d.js (owner, 23 Nov: 'put the fixes in kit first'): five kinds of shot change carried into the next shot, smeared motion blur, a push under every hold, epoxy chips with an edge glow, rim light, words in the empty top band with six different entrances, the memory stream as single chips",
   "vs": "median"
  },
  "lines": [
@@ -384,22 +384,32 @@
   ],
   "edges_ok": [
    {
-    "from": 6.5,
-    "to": 8.4,
+    "from": 3.0,
+    "to": 8.9,
     "sides": [
      "left",
      "right"
     ],
-    "why": "the camera pushes onto the 8 GB phone; its neighbours slide past the frame (all three are whole in the wide shot before)"
+    "why": "the camera starts on the 4 GB phone (match cut), pulls out to all three, pushes back and slides to the 8 GB phone, then pushes through one of its chips: the neighbours pass the frame edge while it moves (all three are whole in the wide shot)"
    },
    {
     "from": 8.4,
-    "to": 17.0,
+    "to": 16.4,
     "sides": [
      "left",
      "right"
     ],
     "why": "the AI server hall and the macro server memory module are full-bleed worlds: racks and the module run past the frame by design"
+   },
+   {
+    "from": 19.6,
+    "to": 24.4,
+    "sides": [
+     "left",
+     "right",
+     "top"
+    ],
+    "why": "the server aisle is a full-bleed corridor seen from inside: the near racks run past the frame on both sides and above; the push into its light fills the frame"
    }
   ]
  },
