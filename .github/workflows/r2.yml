@@ -64,13 +64,14 @@ jobs:
         run: bash scripts/r2.sh migrate --delete
       - name: Promote
         if: inputs.action == 'promote'
+        timeout-minutes: 25
         env:
           P_SRC: ${{ inputs.src }}
           P_DST: ${{ inputs.dst }}
           P_BACKUP: ${{ inputs.backup }}
         run: |
           if ! command -v ffmpeg >/dev/null; then
-            timeout 180 sh -c 'sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg' || { echo "::error::no ffmpeg"; exit 1; }
+            for t in 1 2 3; do timeout 420 sh -c 'sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg' && break; done; command -v ffmpeg >/dev/null || { echo "::error::no ffmpeg"; exit 1; }
           fi
           bash scripts/r2.sh promote "$P_SRC" "$P_DST" "$P_BACKUP"
       - name: Faststart
