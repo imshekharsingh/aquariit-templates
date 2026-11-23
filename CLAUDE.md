@@ -76,7 +76,9 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 ## Copyright and safety (strict)
 - All copy original; invented fictional brands only; no real company names, logos, trademarks or characters (exception: @techin20sec may
   name real brands and products as text for factual, diplomatic comparisons; design/rules-tech.md).
-- Never imitate or clone an existing site, reel or template; take techniques, never a piece.
+- Learning and reusing design patterns (layout, motion, pacing, type, transitions) from any reel or video is encouraged, tweaked for our use;
+  never republish someone's actual footage, copy, art or a near-identical look of one specific piece (owner, 23 Nov 2026).
+- Craft skills live in .claude/skills/ (frontend-design, canvas-design, hyperframes, reverse-any-video, style-sampling; .claude/skills/THIRD_PARTY.md).
 - Images: code only (inline SVG, CSS, canvas), except tech, which builds around free real media (Turns Out is code-drawn again, owner 20 Nov 2026) (PD / CC0 / CC BY only,
   licence per file, fetched by the "Media" workflow; design/safety.md). Fonts: open-licensed Google Fonts or system fonts. Icons: hand-drawn inline SVG.
 - Scenes are single self-contained files; the only external origins allowed are fonts.googleapis.com and fonts.gstatic.com.

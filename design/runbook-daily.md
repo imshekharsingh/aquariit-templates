@@ -8,8 +8,8 @@ in this order:
    `{"ids":[..],"note":"what was done"}` (the app shows the note under the item). Every run reads it first: the daily run, the Turns Out run
    and the spare-usage night.
    References (owner, 20 Nov 2026): dispatch "Owner answers" `refs` too: REF lines (link, file, note, channel) and a "B64 ref-<id>.jpg" preview per
-   file (`node scripts/media/from-log.mjs <run id> <dir>` makes the files). Study each into design/references.md (techniques only, never a
-   piece), then `refs-done` with `{"ids":[..],"state":"studied","note":"what was taken"}` (`"used"` + the reel name once a reel uses it).
+   file (`node scripts/media/from-log.mjs <run id> <dir>` makes the files). Study each into design/references.md (reverse-any-video skill: a pattern card,
+   patterns tweaked for our use, never the piece; owner, 23 Nov 2026), then `refs-done` with `{"ids":[..],"state":"studied","note":"what was taken"}` (`"used"` + the reel name once a reel uses it).
 1. Dispatch "Owner answers" with action `read` (the same dispatch as step 0), act on each ANSWER line, then `clear` the ids acted on.
 2. Audit card FIRST (owner, 23 Nov 2026: a skipped audit went unseen): write and dispatch the card BEFORE building any reel (step 4). The app shows
    "Audit: done at HH:MM · web ESCALATE, tech OK · n changes" at the top of Journey (card lines "ESCALATE web" / "OK tech" and points starting

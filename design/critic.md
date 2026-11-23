@@ -70,5 +70,19 @@ Answer each with the frame times you looked at. Any "no" = not ready. Add a ques
 
 41. (22 Nov, critic, tech heart-green) Freeze every frame of a live chart or trace panel: does its label sit outside the line's range, never struck through by it (15-27 s: "LIGHT BACK" crossed out by the trace for 12 s)? On the end card: is the subject still whole and the payoff plate in the empty lower half, not laid over the subject's body?
 
+## Premium check (owner, 23 Nov 2026): before any verdict
+Load the skills frontend-design and hyperframes (.claude/skills/; Skill tool) and read hyperframes/references/motion.md and review.md, plus
+types/vertical.md. Then score the reel on its stills and the render (frame times for every point), each out of 10:
+- Animation: arrivals land on a long tail, exits shorter, overlap and stagger, one hero move at a time, eases by role, cuts with a cause,
+  no generated-looking defaults (breathing loops, everything fading and sliding up, titles moving after they land).
+- Cleanliness: one focus per frame, nothing clipped, crowded or overlapping, type sizes and holds readable at phone size, safe zones, the
+  frame used top to bottom.
+- Premium feel: a deliberate look (frontend-design: no template defaults, boldness spent in one place), light and depth, sound on what moves,
+  a payoff frame worth sending.
+Write one line in the review file: `PREMIUM: animation n/10 (t ..), cleanliness n/10 (t ..), premium n/10 (t ..); weakest: <t, what, fix>`.
+Under 7 on any of the three = CRITIC: NOT READY, unless the owner says otherwise. (The hyperframes review.md says never to score out of 10; we
+score because the owner asked, and still write its P0/P1 notes with times.) Also check question 0 against design/safety.md rule 1: a reel
+built from a pattern card uses the patterns, not the piece.
+
 ## Item 20 format (owner, 22 Nov 2026)
 The app's Journey shows only the start of the critic line to the owner, so write it plain first: `CRITIC: NOT READY: <one plain sentence the owner understands: what is wrong, and where in seconds>` and only then `Detail: ...` with question numbers, frames and the fix. No question numbers in the first sentence. Example: `CRITIC: NOT READY: the "10:00" time prints over the BEFORE label at 11-13 s. Detail: questions 2 and 35, ...`. `CRITIC: READY` needs no sentence. The app shows the first sentence (up to "Detail:") and the rest under "More"; older files without "Detail:" still work.

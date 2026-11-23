@@ -128,6 +128,12 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
     window.TRANSITIONS = [[t0, t1, 'kind']], a tech topic's "transitions") (scripts/showreel/layout.mjs; the scene marks data-subject,
     data-band, data-hook, data-subs);
   - stills at every beat checked. All of it goes into the reel's review file. Re-render only for a real defect in the output.
+  - Premium check (owner, 23 Nov 2026): the builder runs the same check as the critic (design/critic.md "Premium check": frontend-design +
+    hyperframes skills, animation, cleanliness and premium feel out of 10 with frame times) on the stills before the one render, and writes
+    the PREMIUM line in the review file. Under 7 on any of them: fix before the render.
+  - References (owner, 23 Nov 2026): a reference reel from the owner's Inbox is studied with the reverse-any-video skill (.claude/skills/),
+    producing a pattern card in design/references.md; a series style goes through style-sampling. Patterns, tweaked for our use; never the
+    piece (design/safety.md rule 1). A reel that uses a card names it in its review file.
 - Rulebooks are a gate (owner, 5 Nov 2026): design/rules-web.md, rules-c3.md, rules-tech.md, 5-8 hard rules each with the numbers behind
   them. Before the one render, every reel is scored rule by rule (pass / fail, one line each) in the stills review. A reel that fails a rule
   is fixed or its topic swapped. The daily audit adds, changes or drops a rule when the numbers say so (always with the number).

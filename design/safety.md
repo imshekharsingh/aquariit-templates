@@ -7,6 +7,11 @@ policy change, a comment storm, a removed post anywhere in our niche). Each line
 ## The owner's four (13-14 Nov 2026)
 1. No plagiarism: never re-post or closely re-edit another creator's reel, voice, script, music or layout; real media is a raw ingredient,
    reframed and animated into our own design; techniques only.
+   Updated (owner, 23 Nov 2026: "we are against plagiarism it doesn't mean we cannot copy design pattern from a video and tweak it for our
+   usage. Motto: learn and improve, don't block ourselves from gaining skills and experience."): learning and reusing design patterns (layout,
+   motion, pacing, type, transitions) from any reel or video is encouraged, tweaked for our use; never republish someone's actual footage,
+   copy, voice, music, art or a near-identical look of one specific piece. Study a reference with the reverse-any-video skill (a pattern card
+   in design/references.md). Check: put one still of ours next to the reference; a stranger must not take ours for theirs.
 2. No controversial content: no politics, elections, living politicians, wars, disputed borders, religion, caste, gender or culture-war topics.
 3. No disrespect: no mocking of people, places, brands, countries, accents, cultures or beliefs; brands at their strengths only.
 4. Nothing that may hurt anyone's sentiment: national symbols, flags, maps, monuments of worship, tragedies and disasters treated with care
