@@ -7,7 +7,7 @@
  "shutter": 0.45,
  "grain": 2,
  "vignette": false,
- "cover": 1.6,
+ "cover": 1.4,
  "style": "Black look (rule 19): near-black, no frame or glow, one gold accent word, whole frame, calm. A phone-bottom topic: a fixed bottom button sits under the home bar; BEFORE the screen sags on every tap (the home swipe wins), AFTER the bar's bottom padding grows with env(safe-area-inset-bottom) and the button rises clear",
  "palette": "black",
  "voice": {
