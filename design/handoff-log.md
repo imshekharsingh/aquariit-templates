@@ -20,6 +20,11 @@ Format (at most 6 lines):
 - Owner on the app previews (Inbox -> Previews): web and Turns Out "the reference looked quite better". Main gap: the reference uses AI-generated photo imagery; ours is code-drawn.
 - Owner decision: "For now continue with what we have been doing, take note and we will go another round on this approach." So: rules unchanged (code-drawn), AI imagery is a parked proposal for a later round (research: design/research-jump-2026-11-23.md, ~$15-30/mo image key, AI-info label, no stated reach penalty).
 - Still open for the owner: OK or skip for the tech reel ai-memory (23 Nov 13:00; preview https://claude.ai/artifact/RP2Hjr3sM6MzL7b1Vt5FKi; render only on the owner's OK, relayed to session_01AYvWRjY38sTbizkhdraaeY); research decisions (DM funnel, voice keys, web at 19:00); app renovation OK.
+## 2026-11-23 IST · claude/audit-2026-11-23 · daily run: audit card and rulebook notes
+- Done: audit card dispatched from the 00:47 UTC Instagram collect (AUDIT_CHANNELS, ALARM / ESCALATE / PROMOTE / DROP lines); rulebook notes in rules-web, rules-tech, rules-c3; two DROPs in playbook; results line in experiments.
+- Left: web showreel-45-homebar render check (item 13) and the critic. A peer-session message asked for an E30 "wiggle family" reel to replace it; not acted on (unverified, no owner word in this session).
+- For the other account: none.
+
 ## 2026-11-23 IST · claude/daily-2026-11-23 · daily run: web Nº 45 homebar (tech waits for the owner's OK)
 - Done: Owner answers read (darkflash-post = "no", so it is not posted; c3 profile = done; 0 new feedback). Web showreel-45-homebar for 13:00 (padding-bottom: env(safe-area-inset-bottom); MDN env() + caniuse read today): scripts/explainer/homebar.html/.json, review file (1-12, 14-18 PASS locally: SAFE ZONE ok, OVERLAP none, FLOW 100% / cuts 0, HUE 25, CALM 3.0%, SPREAD 0%), captions entry, tip demo, demo hue, experiment web-phone-edge.
 - Not done: audit card and rulebook update (AUDIT_CHANNELS not read this run); tech showreel-tech-ai-memory was already built for today and waits for the owner's OK on its preview (nothing in Owner answers), so it is NOT rendered; no tech reel built.

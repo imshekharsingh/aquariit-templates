@@ -176,3 +176,6 @@ ask) as the day's one experiment. E18 read today: KEPT (rule 12). PROMOTE detail
   panes at three depths over drifting coloured light, a soft grade, Sora + DM Mono).
 - Cheap glass only (no backdrop-filter, no live blur on big layers, no full-frame mask); render at most 30 GitHub minutes for 20 s (rule 12).
 - One reel EVERY day at 13:00 IST, built that morning by the daily run.
+
+**23 Nov audit:** web ALARM (median reach 1,426 over the last 7 vs target 2,000; watch 8.3 s vs 12; saves 1.2% vs 3%) and ESCALATE (second day running, yesterday 1,522). Answer: a new topic type for today's reel, a phone-edge bug (a fixed bottom button under the home bar, showreel-45-homebar, experiment web-phone-edge) after five page-behaviour fixes, in the dark look. PROMOTE details-format (3 WINs, 1 LOSE) and dynamic-fix (2 WINs, 0 LOSEs) are already rules 13 and 15. Best hour stays 13:00 (median reach 4,744 over 5 reels vs 19:00 2,507). The 13:00 hour and rules 6, 9, 11, 12 pass on all 7 reels yet reach is flat, so the lever is the topic's pull, not the rulebook.
+

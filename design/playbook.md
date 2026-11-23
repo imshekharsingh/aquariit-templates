@@ -87,3 +87,5 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
   The winners (numbers 103k, stagger 5.9k, overscroll 4.5k) were satisfying motion or polish tricks with 14 s watch and 3-4.5% saves.
   Next experiment (8 Nov 13:00): result-first opening on a satisfying motion trick (rules-web.md rule 11); read reach, watch and saves at 24 h vs the median above.
   Marked in design/targets.md (id result-first) so its verdict prints by itself; the 8 Nov config also carries it as "experiment".
+- 23 Nov audit, DROP web web-comment-ask (2 LOSEs, 1 WIN) and web-touch-bug (2 LOSEs, 0 WINs): comment-word asks and touch-bug topics did not lift reach over the web median (1,426); the web reels keep the caption ending "Save this for ..., or send it to ...".
+- 23 Nov audit, DROP c3 c3-guess (2 LOSEs, 0 WINs: Eiffel 1,141 vs 1,150, Taj 136 vs 1,150): the guess format is retired; Turns Out runs the design series.
