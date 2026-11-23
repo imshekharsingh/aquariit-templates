@@ -180,6 +180,9 @@
   .refi .del{margin-top:6px;min-height:32px;padding:0 12px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--mute);font:600 .75rem system-ui,sans-serif;cursor:pointer}
   /* cards (owner, 1 Nov 2026): the daily audit and the spare-usage night's report, under the alert; "Mark read" deletes one for good */
   .card{margin:0 0 14px;padding:14px 16px 12px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:16px;font-size:.88rem}
+  .astat{display:block;width:100%;margin:0 0 14px;padding:10px 14px;text-align:left;font:600 .86rem system-ui,sans-serif;color:var(--ink);background:var(--card);border:1px solid var(--line);border-left:3px solid var(--mute);border-radius:12px;cursor:pointer}
+  .astat.ok{border-left-color:var(--ok)}.astat.warn{border-left-color:#e0a030}
+  .astat.warn b{color:#e0a030}.astat.ok b{color:var(--ok)}
   .card .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
   .card .hd b{font:800 .95rem system-ui,sans-serif}
   .card .hd span{color:var(--mute);font-size:.78rem;white-space:nowrap}
@@ -372,6 +375,7 @@
   <section class="pg" id="s-journey" aria-labelledby="j-title">
     <h1 id="j-title">Reel journey</h1>
     <p class="lede" id="j-note">Every reel, from plan to post, in order.</p>
+    <button type="button" class="astat" id="astat" aria-label="Today's audit, open the audit card"><b>Audit:</b> <span id="astat-t">checking…</span></button>
     <div class="jkey" aria-hidden="true"><span><i class="k done"></i>Done</span><span><i class="k now"></i>Working now</span><span><i class="k fail"></i>Needs a fix</span><span><i class="k wait"></i>Not yet</span></div>
     <div id="journey"><p class="empty">Loading…</p></div>
   </section>
@@ -987,12 +991,29 @@
     ['web', 'tech', 'c3'].forEach(function(k){ var a = cd.channels && cd.channels[k]; if (!a || !a.length) return;
       var h = el('h3', null, CH[k].name + ' · last 7 days'); h.style.setProperty('--cc', CC[k]); box.appendChild(h); box.appendChild(ul(a)); });
     var row = el('div', 'row'), b = el('button', 'btn g', 'Mark read'); b.type = 'button';
-    b.addEventListener('click', function(){ b.disabled = true;
+    b.addEventListener('click', function(){ b.disabled = true; if (cd.kind === 'audit' || !cd.kind) auditKeep(cd);
       fetch('/api/cards/' + encodeURIComponent(cd.id), { method: 'DELETE', credentials: 'same-origin', headers: { 'X-Requested-With': 'reel' } })
         .then(function(r){ if (!r.ok) throw 0; box.remove(); inboxCount(); }).catch(function(){ b.disabled = false; b.textContent = 'Try again'; }); });
     row.appendChild(b); box.appendChild(row); return box; }
+  // Today's audit (owner, 23 Nov 2026): one line at the top of Journey, from the day's audit card (/api/cards). "Mark read" deletes the card, so
+  // its one-line summary is kept on this device. Done = a card for today; "skipped" = nothing by 12:00 IST. Card points that start "Change:" are counted.
+  var aBtn = document.getElementById('astat'), aTxt = document.getElementById('astat-t');
+  function istNow(){ var d = new Date(Date.now() + 5.5 * 36e5); return { day: d.toISOString().slice(0, 10), h: d.getUTCHours() }; }
+  function auditSum(cd){ var all = (cd.points || []).concat([].concat.apply([], ['web', 'tech', 'c3'].map(function(k){ return (cd.channels && cd.channels[k]) || []; }))), seen = {}, out = [], n = 0;
+    all.forEach(function(t){ var m = /^\s*(ALARM|ESCALATE|OK)\s+(web|tech|c3)\b/i.exec(t); if (m) { var k = m[2].toLowerCase(); if (!seen[k] || /ESCALATE/i.test(m[1])) seen[k] = m[1].toUpperCase(); } if (/^\s*change/i.test(t)) n++; });
+    Object.keys(seen).forEach(function(k){ out.push(k + ' ' + seen[k]); });
+    var at = cd.at && new Date(Date.parse(cd.at) + 5.5 * 36e5), hm = at && !isNaN(at) ? ' at ' + at.toISOString().slice(11, 16) : '';
+    return 'done' + hm + (out.length ? ' · ' + out.join(', ') : '') + (n ? ' · ' + n + ' change' + (n === 1 ? '' : 's') : ''); }
+  function auditKeep(cd){ try { localStorage.setItem('studio-audit', JSON.stringify({ day: cd.day, text: auditSum(cd) })); } catch (e) {} }
+  function auditShow(cards){ var t = istNow(), cd = (cards || []).filter(function(c){ return c && c.day === t.day && (c.kind || 'audit') === 'audit'; })[0], kept = null;
+    try { kept = JSON.parse(localStorage.getItem('studio-audit') || 'null'); } catch (e) {}
+    var cls = '', txt;
+    if (cd) { cls = 'ok'; txt = auditSum(cd); } else if (kept && kept.day === t.day) { cls = 'ok'; txt = kept.text + ' (read)'; }
+    else if (t.h >= 12) { cls = 'warn'; txt = 'skipped today'; } else txt = 'not run yet';
+    aTxt.textContent = txt; aBtn.className = 'astat ' + cls; }
+  aBtn.addEventListener('click', function(){ go('inbox'); var c = document.querySelector('#cards .card'); if (c && c.scrollIntoView) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
   fetch('/api/cards', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
-    .then(function(j){ (j.cards || []).forEach(function(cd){ if (cd && cd.id && cd.day) cardsBox.appendChild(cardEl(cd)); }); inboxCount(); }).catch(function(){});
+    .then(function(j){ (j.cards || []).forEach(function(cd){ if (cd && cd.id && cd.day) cardsBox.appendChild(cardEl(cd)); }); inboxCount(); auditShow(j.cards); }).catch(function(){ aTxt.textContent = 'could not load'; });
   // spare-usage night (owner, 3 Nov 2026: opt-out): from Tuesday 21:00 IST until the weekly reset (Wednesday 04:30 IST) one card saying Claude uses
   // the spare usage tonight, with a "Skip tonight" switch for that week, and when the last push reminder went out (so a missed one is visible)
   fetch('/api/spare', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(sp){
