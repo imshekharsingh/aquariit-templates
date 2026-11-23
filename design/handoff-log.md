@@ -11,6 +11,11 @@ Format (at most 6 lines):
 - For the other account: anything it must know or must not touch; a proposed rule change goes here.
 ```
 
+## 2026-11-24 01:50 IST · claude/skills-3d-steer · premium program phase 0: two craft references added (owner chat job, size L, owner's go 23 Nov night)
+- Done: .claude/skills/hyperframes/references/types/3d.md (camera, light and bloom rules for tech's real 3D) and references/steer.md (motion faults in plain words with the fix for each, seven motion ideas, transitions by energy, three sound-placement lines), both from heygen-com/hyperframes 5906174, Apache-2.0, every file read. THIRD_PARTY.md: the two rows, plus what was read and left out and why (theme-factory, brand-guidelines, algorithmic-art, slack-gif-creator, the registry, media-use and its Pixabay MP3s, colour-grading and caption docs).
+- Left: phases 1-3 (tech, web, Turns Out kit lifts), each with one preview render and an independent critic.
+- For the other account: builder and critic name a motion fault with steer.md's words ("it feels like slides", "scene 3 is dead") and apply its fix.
+
 ## 2026-11-23 18:30 IST · claude/tech-kit-premium · tech kit premium pass + ai-memory preview r2 (owner chat job, size L, owner: "put the fixes in kit first")
 - Done: techkit/kit3d.js (five shot changes drawn as two live shots, never through black; sampled + smeared motion blur; glide and push so nothing is ever still; six word entrances; epoxy / metal / gold / battery / glass / rack materials; key + rim + kicker light), make.py inlines it at `<!--KIT3D-->`; scenes/ai-memory.html rebuilt on it (stream as single chips, lit aisle, the turn on "Buying", "+90%" and "CUT" off the objects, an "About phone" screen); rules-tech.md M1-M6; README "The 3D kit"; scripts/tech-assemble.py + KIT_Q for quick local looks.
 - Done: Tech reel workflow = three jobs (voice, frames in `parts` parallel jobs, join) and a `preview` input: the result goes only to R2 study/ as showreel-tech-<slug>-<preview>-preview.mp4 (+ -stills.png), listed in templates/showreels/previews.json; the reel's own R2 files and issue are not touched. make.py: --voice-only, --part i/n, --join.

@@ -11,7 +11,8 @@ description: Read first to make, edit, animate or render any video with HyperFra
 > look.py, scripts/qa/). The contract's data attributes are their file format, not ours. Our rules win where they differ: CLAUDE.md,
 > design/rules-*.md, design/safety.md, design/owner-feedback.md (e.g. our 1080x1920 and safe zones, our voice and sound pipeline, our looks).
 > Removed here: the CLI-launcher and usage-note lines, the desktop-app section. Kept references: motion, captions, look, review, sound, story,
-> spec, film, types/vertical, types/explainer, types/data; the other files the table names were left out (see THIRD_PARTY.md).
+> spec, film, types/vertical, types/explainer, types/data, types/3d (24 Nov, for tech's real 3D), steer (24 Nov: motion faults in plain words,
+> the fix for each, transitions by energy; from their docs); the other files the table names were left out (see THIRD_PARTY.md).
 > Used in the Premium check (design/critic.md, design/runbook-reels.md).
 
 
