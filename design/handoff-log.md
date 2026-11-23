@@ -6,6 +6,13 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 03:10 IST · claude/critic-c3-rebuilds · critic on the Turns Out design rebuilds (CV resume2, grey menu greytext2)
+- Done: judged the real MP4 of the CV preview against the posted showreel-c3-resume; the grey-menu preview is not rendered (404 twice), so it was judged from stills against the old showreel-c3-grey-text MP4. Result in review/previews/c3-design-rebuilds.md. No scene or posted reel changed.
+- Verdict: both NOT READY. CV old 6.5 / 6.5 / 6, voice 4.5, before 4; new 7 / 6.5 / 7, voice 7, before 7.5. Menu old 6.5 / 6 / 6, voice 4, before 4.5; new (stills) 6.5 / 6.5 / 7, voice 7.5 (script only), before 7.
+- Weakest: CV 1.1-3.5 s "NO ORDER" chip over "NAME = TEXT" (the posted reel has it too); fix 3 starts 1.0 s before "lighter"; "one size down" has no picture; 4.1 s still at the end; before thumbnail letters 2-3 px. Menu: hook rings cross out "FROM THE KITCHEN" and "Carrot cake" (cover too); "4.5 : 1" is about 9 px at phone size.
+- Not judged: how any voice sounds (no session can listen; the transcription model host is blocked, so the render's words.json and voice-band levels were used); the menu's motion, sync and sound.
+- For the other account: a preview's word times are at /reels/study/<name>-preview-words.json (the read key opens them). The old reels had pauses of 0.3-0.8 s already; the gain is the wording. Preflight OVERLAP does not see a ring edge through a text line or a chip over a chip.
+
 ## 2026-11-24 02:35 IST · claude/critic-web-homebar2 · critic on the web-homebar2 preview (hook kit, rule 20)
 - Done: judged the real MP4s (preview, showreel-45-homebar, showreel-35-list); result in review/previews/web-homebar2.md. No scene or posted reel changed.
 - Verdict: NOT READY. Before 6.5 / 8 / 6.5, after 6 / 6 / 6.5 (animation / cleanliness / premium). The new hook does more but explains less.
