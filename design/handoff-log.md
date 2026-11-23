@@ -6,6 +6,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 04:05 IST · claude/premium-close · premium program: closing notes, CV scene fix, cue-time check
+- Done: design/improvements.md has the before/after scores for tech, web and Turns Out; scripts/channel3/design/resume2.js fixed (a comment had swallowed the fix-three sound line, so two cues had no time and sound.py stopped render 2); scripts/showreel/stills.mjs prints "CUE TIMES" and fails on a cue without a time.
+- State: tech r4 preview READY (7.5 / 7.5 / 7.5, QA PASS). Web homebar2 render 2: critic READY (7.5 / 7 / 7) but Output QA FAIL (HUE, CALM) = NOT READY, both renders used, kit kept. Turns Out: grey menu render 2 is in (21.2 s), critic second look asked; CV has no render 2 file (both renders used; one more needs the owner's yes, asked in "Needs you").
+- Next: read the critic's "CRITIC (render 2)" lines in review/previews/c3-design-rebuilds.md and the Output QA run for c3-greytext2; rebuild the other five held Turns Out reels only after one preview passes and the owner has heard the voice.
+- Do not: post any of the seven held Turns Out reels; use kithook in a daily web reel before the open points in improvements.md are closed.
+
 ## 2026-11-24 03:17 IST · claude/critic-web-homebar2-r2 · critic, second look at the web-homebar2 preview (render 2)
 - Done: judged render 2 on the real MP4 against render 1 and the posted homebar; lines added to review/previews/web-homebar2.md. No scene changed.
 - Verdict: READY (passes the gate). Render 2: 7.5 / 7 / 7 (animation / cleanliness / premium); render 1 was 6 / 6 / 6.5, the posted reel 6.5 / 8 / 6.5.

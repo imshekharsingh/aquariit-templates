@@ -800,7 +800,8 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     S.stamp(A.out + .1, 270); S.tint(A.order, 270);
     S.rise(A.f1 - .4, .45); S.click(A.name - .1, 150); S.drag(A.name, .5, 150, 300); A.d1 = A.big + .4; S.done(A.d1, 200, 0);
     S.rise(A.f2 - .1, .4); [0, 1, 2].forEach(function(j){ S.snap(A.head + .2 + j * .15, 120, j); }); A.d2 = A.down + .4; S.done(A.d2, 270, 2);
-    A.scan = at('details') - .05;   // the details change on the word that names them (critic, 24 Nov: it started 1 s early) S.rise(A.f3 - .1, .4); [3, 4, 6, 8, 1].forEach(function(j, i){ S.swap(A.scan + i * .14, .35, 270, 5); }); A.d3 = A.scan + 1.1; S.done(A.d3, 270, 4);
+    A.scan = at('details') - .05;   // the details change on the word that names them (critic, 24 Nov: it started 1 s early)
+    S.rise(A.f3 - .1, .4); [3, 4, 6, 8, 1].forEach(function(j, i){ S.swap(A.scan + i * .14, .35, 270, 5); }); A.d3 = A.scan + 1.1; S.done(A.d3, 270, 4);
     [0, 1, 2].forEach(function(j){ S.land(A.now + .2 + j * .3, 180 + j * 60, j * 2); }); S.reveal(A.bottom); S.flip(A.proof, .5); S.stamp(A.e2, 420);
     CAM = KM.rig({ x: 270, y: 490, z: 1.06, drift: 1 }).pull(0, .55, 270, 490, 1);
     // each fix seen close (DT.close): the camera goes in before it lands and back out after
