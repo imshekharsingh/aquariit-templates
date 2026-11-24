@@ -1924,5 +1924,20 @@
   ],
   "hidden": true,
   "hold": "Not good enough to post (owner, 24 Nov 2026: 'horrible'). Flat washed-out grey light, the same cable close-up for about 10 s, no premium look next to showreel-tech-ai-memory."
+ },
+ "showreel-tech-storage-gap": {
+  "channel": "tech",
+  "postOn": "2026-11-25",
+  "postAt": "13:00",
+  "hidden": true,
+  "format": "xray",
+  "device": "phone",
+  "concept": "A 256 GB phone can show 238: ai-memory's look on a new topic. An x-ray phone, a grid of 256 tiles re-measured by the software's bigger gigabyte, three phones (128>119, 512>477, 1TB>931), the 69 GB gap, the Storage screen, take 7% off. Apple Support, read 24 Nov 2026.",
+  "experiment": {
+   "id": "tech-direction-3d-b",
+   "change": "ai-memory's look and kit (dark ink, one hero phone, bold numbers that change, 7 different shots) on a new topic: a 256 GB box that shows 238, the gigabyte re-measured as one grid of tiles, three phones with changing numbers, a screen shot, the loop back to the hero",
+   "vs": "median"
+  },
+  "caption": "A 256 GB phone can show 238 GB 📱 and nothing is missing.\n\nThe box counts a gigabyte the way storage makers do: 1 GB = 1 billion bytes (Apple's support page says so for every iPhone, iPad and Mac). Some apps and systems count the other way: 1 GB = 1,073,741,824 bytes. Same chip, bigger gigabytes, so a smaller number: 128 → 119, 256 → 238, 512 → 477, 1 TB → 931.\n\nThe gap grows with size: about 69 GB on a 1 TB phone, more than a whole 64 GB phone. And the formatting and the system use some space too (\"actual formatted capacity less\").\n\nBuying a phone? Take about 7% off the box number, then choose for what's left. Which size is yours? 👇 Send this to the friend who's about to buy one."
  }
 }
