@@ -44,3 +44,5 @@ How:
 - A 6 s payoff of one picture (grey-text 15-21 s): the payoff lands, holds 1.5-2 s, then loops.
 - Small title lines (31 px) as the only type: one kinetic headline per fix (FIX 1 · DARKER at 120+ px on 1080).
 - A voice line near the pace limit (render 2 read 4.55 words/s): shorter sentences, a breath after each.
+
+- (owner, 24 Nov 2026, storage-gap) The starter copies the look, light, type and pacing of the gold reel, never its hero object or layout. The critic fails a reel whose main object matches any of our last 5 reels.
