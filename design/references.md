@@ -138,6 +138,12 @@ has numbers, comes from Instagram itself, or repeats across several sources. Eac
   Technique: the hook title in a heavy face with the result already flipping on the phone (red → green) by 1.1 s. Kit piece: topic "hook_page".
 - Not kept: "zoom on every tap" has no measured source (taken as craft, the screen-recording look, not as evidence); vendor 3 s benchmarks.
 
+## R-trend: weekly research pass, 24 Nov 2026 (spare night, web search, standard)
+- Ranking signals: no change since Mosseri's Jan 2025 list. Watch time, likes per reach and sends per reach lead; he said sends count slightly more for people who do not follow you, likes slightly more for followers; no exact weights (Buffer, Oct 2026; SocialPilot, Sep 2026; Social Media Today). Comments are not on his list.
+- Hook: every source says show the payoff or the problem in the first 3 s and make a clear promise by 3-5 s. The numbers are creator anecdotes (one 120-video sample, r 0.84 between 3 s retention and total performance), so treated as direction, not proof. Sound-off viewing is large (one unnamed study: 54% of Reels views start muted): every spoken line stays shown.
+- Kept: no new technique; confirms rules already in place (frame-0 hook, send line at the end, every line shown). Nothing needs a kit piece or a new experiment. Worth testing next: a closing line written to be sent to one person ("send this to whoever ...") on all three channels, read against sends per reach in the audit.
+- Dropped: "real person in the first 3 s" (no data, and our copyright rules).
+
 ## Count
 5 references, 28 techniques: 21 covered, 7 MISSING (6 pieces: a pivot-word beat, a travelling object as the transition (R2 and R3), an organic
 wipe, icons inside sentences, letters snapping into a word, a hand-drawn ring around a number); 3 more not taken by rule.

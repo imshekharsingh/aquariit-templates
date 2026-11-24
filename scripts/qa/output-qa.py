@@ -23,6 +23,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'pace': '12 Nov "audio is super slowed"; 8 Nov "rushed"',
     'stray': '11 Nov voice check: words heard that the script never says',
     'sound': '12 Nov "sound elements feel cheap, as if from kids\' toys"; 8 Nov "tick sounds missing"',
+    'look': '24 Nov tech USB-C reel "horrible": flat washed-out grey light; match the channel\'s gold reel (design/gold.md)',
     'variety': '24 Nov one screen across the whole reel (tech miniled-zones): change the subject or the view every few seconds',
     'loud': '8 Nov "LISTEN to the finished audio" (-14 LUFS, Mandatory Gate 8)',
     'colour': '12 Nov "colour grading is horrible"',
@@ -132,6 +133,9 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
 # BULK and VIBRANCY (13 Nov 2026, web only), calibrated on the showreel-35-list stills at 270x480: the big white finger left 564-874 px of solid
 # near-white after a 7x7 erosion (text strokes vanish; 70 px bold numbers leave 0), the slim ring 0; coloured pixels (S>.35, V>.35) were a median
 # 1.2% of the frame on the dull grid and 2.3% after the vibrancy pass.
+# LOOK (24 Nov 2026, every channel; owner on the tech USB-C reel: "horrible", flat washed-out grey light): brightness, background level, dark
+# share, washed-out grey, contrast and washed-out frames against the channel's GOLD reel (design/gold.md; numbers scripts/qa/gold.json; the
+# measures and the calibration in scripts/qa/gold_look.py). FAIL when 2+ are clearly off, one = WARN. USB-C 5 off; every gold and 7 posted reels 0.
 # GRADE (13 Nov 2026, Turns Out), calibrated on showreel-c3-taj-mud at 270x480 every 0.5 s: the fogged first cut had the subject 0.03 brighter
 # than the ring around it on the cover (white Taj, pale grey sky) and its picture's black point (5th luminance percentile of the middle band)
 # over 0.3 in 43 of 46 samples; the golden-hour mood gave 0.40 and 0 of 46.
@@ -478,6 +482,22 @@ def ocr(png):
 
 def grab(mp4, t, p):
     ff(['-y', '-ss', f'{max(0, t):.2f}', '-i', mp4, '-frames:v', '1', '-vf', 'scale=1080:1920:flags=area', p])
+
+
+def look_check(mp4, ch, name):
+    # LOOK (24 Nov 2026, owner chat): brightness, background level, dark background, washed-out grey and contrast against the channel's
+    # gold reel (scripts/qa/gold_look.py has the measures and the calibration; scripts/qa/gold.json the gold numbers; design/gold.md why).
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('gold_look', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gold_look.py'))
+    gl = importlib.util.module_from_spec(spec); spec.loader.exec_module(gl)
+    g = gl.gold(ch)
+    if not g: line('LOOK', 'SKIP', f'no gold reel for {ch}'); return
+    m = gl.measure(mp4); offs, bad = gl.judge(m, g); n = len(m['_per']['bg'])
+    fails = len(offs) >= 2
+    line('LOOK', 'FAIL' if fails else 'WARN' if offs else 'PASS',
+         f"vs gold {g['name']}: bright {m['bright']:.3f} (gold {g['look']['bright']:.3f}), background {m['bg']:.3f} ({g['look']['bg']:.3f}), dark {m['dark']:.0%} "
+         f"({g['look']['dark']:.0%}), grey {m['grey']:.0%} ({g['look']['grey']:.0%}), contrast {m['contrast']:.3f} ({g['look']['contrast']:.3f}); washed-out frames "
+         f"{len(bad)} of {n} ({gl.spans(bad, 1 / m['_fps']) or 'none'} s)" + (': ' + '; '.join(offs) + ('. Re-light it like the gold reel: dark background, one lit hero, one accent' if fails else '') if offs else ''))
 
 
 def variety_check(mp4, subs):
@@ -1092,6 +1112,7 @@ def main():
     else: line('HERO', 'SKIP', 'tech only')
     G = frames(mp4, fps, 135, 240, gray=True); del F
     variety_check(mp4, qa.get('subs') or T['subs'][ch])
+    look_check(mp4, ch, name)
     numbers_check(mp4, text, heard, qa.get('subs') or T['subs'][ch])
     sync_check(mp4, *sync_words(c, qa, ch), heard, dur, qa.get('subs') or T['subs'][ch])
     dead_check(G, fps, mp4, dur)
