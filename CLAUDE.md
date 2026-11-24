@@ -86,6 +86,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - REELS_READ_KEY (GitHub + Worker secret, plus a network secret on the session environment): read-only reel files only (GET/HEAD /reels/); scripts/reel-fetch.mjs.
 - Instagram tokens only in the GitHub secrets INSTAGRAM_TOKEN, INSTAGRAM_TOKEN_2, INSTAGRAM_TOKEN_3 (Turns Out) (+ optional Worker secret
   GH_READ_TOKEN); VAPID keys and any music or sound API keys only as secrets. Never print them or put them in files or chat.
+- GH_DISPATCH_TOKEN (GitHub secret, synced to the Worker; fine-grained, Actions write on this repo only): lets the app's Post now button start ig-publish.yml; the Instagram tokens stay in GitHub (design/runbook-reels.md "Post now").
 - Reels and their MP4s live in the private R2 bucket "aquarii-reels"; the repo is public, so nothing goes to GitHub releases.
 
 ## Copyright and safety (strict)

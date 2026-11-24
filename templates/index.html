@@ -491,6 +491,20 @@
   .reel.compact .row .btn:first-child{flex:none;grid-column:1/-1}
   .btn{border-radius:11px;font-weight:650}
   .btn.tick.post{background:var(--ok);color:var(--okink)}
+  .postnow{display:flex;width:100%;min-height:54px;margin-top:12px;font-size:1.02rem;background:var(--ok);color:var(--okink)}
+  .postnow:disabled{opacity:.5}
+  .pscrim{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}
+  .psheet{width:min(560px,100%);max-height:88vh;overflow-y:auto;background:var(--card);color:var(--ink);border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.25)}
+  .psheet h2{margin:0 0 4px;font:800 1.15rem system-ui,sans-serif}
+  .psheet .pwho{color:var(--mute);font-size:.85rem;margin:0 0 10px}
+  .psheet .cap{max-height:34vh;overflow-y:auto;margin-top:6px}
+  .psheet .prow2{display:flex;gap:10px;margin-top:14px}.psheet .prow2 .btn{flex:1;min-height:50px}
+  .psteps{list-style:none;margin:6px 0 0;padding:0}.psteps li{display:flex;gap:10px;align-items:center;padding:9px 0;color:var(--mute);font-size:.95rem}
+  .psteps li i{flex:none;width:12px;height:12px;border-radius:50%;border:2px solid var(--line)}
+  .psteps li.now{color:var(--ink);font-weight:700}.psteps li.now i{border-color:var(--ok);animation:pp 1s ease-in-out infinite alternate}
+  .psteps li.did{color:var(--ink)}.psteps li.did i{background:var(--ok);border-color:var(--ok)}
+  .psheet .perr{margin:10px 0 0;padding:12px 14px;border-radius:14px;background:var(--well);border:1px solid var(--line);font-size:.92rem}
+  @keyframes pp{from{opacity:.35}to{opacity:1}}@media (prefers-reduced-motion:reduce){.psteps li.now i{animation:none}}
   .reel.compact .row .btn.post{grid-column:1/-1}
   .reel:not(.compact) .row .btn{flex:1 1 40%}
   .reel:not(.compact) .row .btn.post{flex:1 1 100%}
@@ -987,6 +1001,42 @@
     if (h) { h.classList.add('hl'); if (!hl.scrolled) { hl.scrolled = true; setTimeout(function(){ h.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60); } }
   }
   // one reel to post: the open one has the video, the post text and its sources; a compact one (in "Up next") has the cover (tap to play)
+  // One-tap "Post now" (owner, 24 Nov 2026): a confirm sheet with the post text, then live status (Uploading, Processing, Publishing, Posted with the link, or
+  // Failed with the reason and Try again). The Worker starts the publish workflow (POST /api/post); the Instagram tokens never reach this page.
+  var PSTEPS = ['Uploading', 'Processing', 'Publishing', 'Posted'], PIDX = { queued: 0, uploading: 0, processing: 1, publishing: 2, posted: 3 };
+  function postJson(path, body){ return fetch(path, { method: body ? 'POST' : 'GET', credentials: 'same-origin', headers: body ? { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' } : {}, body: body ? JSON.stringify(body) : undefined })
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ j.http = r.status; return j; }); }); }
+  function postSheet(s, text){
+    var k = chOf(s, DATA ? DATA.c : {}), scrim = el('div', 'pscrim'), sh = el('div', 'psheet'), timer = null, closed = false;
+    sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-modal', 'true'); sh.setAttribute('aria-label', 'Post now'); scrim.appendChild(sh);
+    function close(){ closed = true; clearInterval(timer); if (scrim.parentNode) scrim.parentNode.removeChild(scrim); }
+    scrim.addEventListener('click', function(e){ if (e.target === scrim) close(); });
+    function confirmView(){ sh.textContent = ''; sh.appendChild(el('h2', null, 'Post this reel now?')); sh.appendChild(el('p', 'pwho', 'It goes live on ' + CH[k].name + ' at once. This cannot be undone from here.'));
+      sh.appendChild(el('div', 'cap', text)); var r = el('div', 'prow2'), no = el('button', 'btn g', 'Cancel'), go2 = el('button', 'btn tick post', 'Post now'); no.type = 'button'; go2.type = 'button';
+      no.addEventListener('click', close); go2.addEventListener('click', function(){ go2.disabled = true; start(); }); r.appendChild(no); r.appendChild(go2); sh.appendChild(r); }
+    function view(row){ sh.textContent = ''; var st = row.state, bad = st === 'failed', ok = st === 'posted';
+      sh.appendChild(el('h2', null, ok ? 'Posted' : bad ? 'Not posted' : (row.line || 'Starting') + '…')); sh.appendChild(el('p', 'pwho', CH[k].name));
+      if (!bad) { var ul = el('ul', 'psteps'), at = PIDX[st] == null ? 0 : PIDX[st];
+        PSTEPS.forEach(function(n, i){ var li = el('li', i < at || ok ? 'did' : i === at ? 'now' : null); li.appendChild(el('i')); li.appendChild(el('span', null, n)); ul.appendChild(li); }); sh.appendChild(ul); }
+      if (bad) sh.appendChild(el('p', 'perr', row.error || 'Something went wrong.'));
+      var r = el('div', 'prow2');
+      if (ok) { if (row.permalink) { var a = el('a', 'btn g', 'Open the post'); a.href = row.permalink; a.target = '_blank'; a.rel = 'noopener'; r.appendChild(a); }
+        var d = el('button', 'btn', 'Done'); d.type = 'button'; d.addEventListener('click', function(){ close(); load().then(rerender); }); r.appendChild(d); }
+      else if (bad) { var c = el('button', 'btn g', 'Close'), t = el('button', 'btn tick post', 'Try again'); c.type = 'button'; t.type = 'button'; c.addEventListener('click', close); t.addEventListener('click', function(){ t.disabled = true; start(); }); r.appendChild(c); r.appendChild(t); }
+      else { var h = el('button', 'btn g', 'Hide'); h.type = 'button'; h.addEventListener('click', close); r.appendChild(h); }
+      sh.appendChild(r); }
+    function watch(){ clearInterval(timer); timer = setInterval(function(){ postJson('/api/post/' + s.name).then(function(j){ if (closed || !j.row) return; view(j.row); if (j.row.state === 'posted' || j.row.state === 'failed') clearInterval(timer); }); }, 3000); }
+    function start(){ view({ state: 'queued', line: 'Starting' });
+      postJson('/api/post', { reel: s.name }).then(function(j){
+        if (closed) return;
+        if (j.row && j.row.state !== 'failed') { view(j.row); watch(); return; }
+        view({ state: 'failed', error: j.message || 'Could not start. Try again.' }); }, function(){ if (!closed) view({ state: 'failed', error: 'No connection. Try again.' }); }); }
+    document.body.appendChild(scrim);
+    // a post already running for this reel (the app was closed and opened again): show its status instead of asking again
+    postJson('/api/post/' + s.name).then(function(j){ if (closed) return; var x = j.row;
+      if (x && x.state !== 'failed') { view(x); if (x.state !== 'posted') watch(); } else confirmView(); }, confirmView); }
+  function postNowBtn(s, meta, cap){ var b = el('button', 'btn tick post postnow', 'Post now'); b.type = 'button'; b.disabled = true;
+    b.addEventListener('click', function(){ postSheet(s, cap.textContent); }); return b; }
   // and the same three buttons, so every due slot can be copied, saved and marked without opening it
   function reelCard(s, meta, compact){
     var w = when(s, meta), card = el('article', 'reel' + (compact ? ' compact' : '')), b = el('div', 'body'); card.setAttribute('data-reel', s.name);
@@ -1013,10 +1063,12 @@
     var get = function(){ return fetch(info, { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw r.status; return r.json(); }); };
     get().catch(function(){ return new Promise(function(ok){ setTimeout(ok, 1500); }).then(get); }).catch(function(){ return {}; }).then(function(j){
       var m = Object.assign({}, j, meta);
-      if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false;
+      if (m.caption) { cap.textContent = postText(m); cap.classList.remove('wait'); copy.disabled = false; if (pn) pn.disabled = false;
         TITLES[s.name] = firstLine(m.caption); nm.textContent = TITLES[s.name]; }
       else { cap.textContent = 'No post text for this reel yet.'; }
       if (!compact && Array.isArray(m.sources) && m.sources.length) sources(src, m.sources); });
+    var jr = jLast ? (jLast.reels || []).filter(function(y){ return y.name === s.name; })[0] : null, pn = null;
+    if (s.video && !ticks[s.name] && !meta.hidden && !meta.sample && (!jr || status(jr).k === 'ready')) { pn = postNowBtn(s, meta, cap); b.appendChild(pn); }
     b.appendChild(row); card.appendChild(b); return card;
   }
   // open one reel: a tap on a tile or cover, or a post reminder's link /#reel=<name> (owner, 5 Nov 2026): its tab, open, scrolled to and highlighted

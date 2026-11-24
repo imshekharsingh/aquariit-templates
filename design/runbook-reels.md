@@ -44,6 +44,12 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
   Runs name their reel through run-name ("Showreel · <config>", "Tech reel · <slug>", "Output QA · <config>"); Output QA prints one
   `::error title=Output QA::<CHECK>: ...` line per failing check, which becomes the Fixing reason. Keep both when editing those workflows.
 
+## Post now (owner, 24 Nov 2026)
+- Every Ready-to-post reel (critic READY, not hidden, not posted) has a big green **Post now** on its card and its page. Tap, a sheet shows the post text and the account, confirm, then live status: Uploading, Processing, Publishing, Posted (link to the post) or Failed (plain reason, Try again). Nothing ever posts by itself.
+- Flow: the Worker `POST /api/post {reel}` locks the reel (D1 `ig_publish`; a Posted reel or a running one is refused; a run silent for 30 min counts as dead) and dispatches `.github/workflows/ig-publish.yml` with secret **GH_DISPATCH_TOKEN** (fine-grained, Actions write on this repo only; GitHub secret synced to the Worker by pipeline.yml, like STAGE_KEY). `scripts/ig-publish.mjs` signs in like the collector, asks `POST /api/post/sign` for 1-hour signed links to the MP4 and cover (`/pub/<exp>/<sig>/<file>`, one file each), checks the account's last posts for the same first caption line (never twice), creates the REELS container (`video_url`, `caption` = the app's Copy post text, `cover_url`, `share_to_feed`), polls `status_code` until FINISHED, publishes, and reports each stage to `POST /api/post/status`; "posted" also marks the reel Posted (same as I posted it).
+- Tokens (GitHub secrets only): web INSTAGRAM_TOKEN, tech INSTAGRAM_TOKEN_2, Turns Out INSTAGRAM_TOKEN_3 (as ig-collect; the refreshed copy kept on the site is tried first). They need the permission `instagram_business_content_publish` besides the read one; without it the app says "The Instagram token for @x can't post yet: add the content publish permission and paste a new token."
+- Tests: `scripts/qa/post-now-test.mjs` (mock GitHub, R2 and Instagram; nothing is posted for real). Without GH_DISPATCH_TOKEN the button says Post now is not switched on.
+
 ## Making a web reel
 - Every new @webin20sec reel starts from `node scripts/explainer/newweb.mjs <slug> "Hook?" "Sentence." ...` and the shared motion kit
   scripts/explainer/kitmotion.js (camera rig with drift and named moves, declared transitions, springs, text and secondary motion, cues, and
