@@ -78,6 +78,8 @@ D4. Does the last frame show both the before (thumbnail, tagged) and the after, 
 
 41. (22 Nov, critic, tech heart-green) Freeze every frame of a live chart or trace panel: does its label sit outside the line's range, never struck through by it (15-27 s: "LIGHT BACK" crossed out by the trace for 12 s)? On the end card: is the subject still whole and the payoff plate in the empty lower half, not laid over the subject's body?
 
+42. (24 Nov, critic, web tabwiggle) Read frame 0 alone at phone size: is the WHOLE hook question on screen (dim words that light up as they are spoken are fine), not built word by word so that frame 0 shows one word ("Why" until 1.2 s)? Does the touch dot rest clear of every label and reaction word between taps, and does no pointer line end right after a word like a cursor?
+
 ## Premium check (owner, 23 Nov 2026): before any verdict
 Load the skills frontend-design and hyperframes (.claude/skills/; Skill tool) and read hyperframes/references/motion.md and review.md, plus
 types/vertical.md. Then score the reel on its stills and the render (frame times for every point), each out of 10:
