@@ -608,3 +608,10 @@ Format (at most 6 lines):
 - Done: "This week" cards at the top of Growth (All channels): per channel, the last 7 days vs the 7 before: reach per reel, watched on average, saves per 1,000, new followers, critic's average score, changes kept or dropped; "not measured yet" where missing. src/journey.js reads the PREMIUM numbers from a review file's critic line (score per reel); kept/dropped counts read "verdict" inside a captions.json experiment. runbook-reels "Weekly scorecard". sw.js v32.
 - Left: critic score and kept/dropped show "not measured yet" until the critic writes PREMIUM numbers on its line and the daily run writes experiment verdicts (design/runbook-daily.md was off limits tonight: add one line there). Hold % and per-reel follows are not available from Instagram.
 - For the other account: put `"verdict": "keep"|"drop"` in the experiment object when the 72 h verdict is decided.
+
+
+
+## 2026-11-25 · claude/plain-words · Plain words on every screen (owner chat job, size L, part 5 of 5)
+- Done: pw() in templates/index.html turns codes from the server, review files and the daily report into plain words (video checks, below target, the rule, ...) and is applied to status reasons, Needs you, audit cards, collector alerts; the daily report line says "on target / below target"; Post now's "not switched on" and "key refused" messages and the collector fix lines no longer name secrets or menus (the access-key fix still names the secret to update). scripts/qa/plain-words-test.mjs is in npm run check. sw.js v33.
+- Left: Claude replies and the owner's own words are shown as written (not filtered).
+- For the other account: write plainly in review files, asks and cards; pw() is a net.

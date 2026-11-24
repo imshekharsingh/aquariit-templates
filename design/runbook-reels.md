@@ -112,6 +112,11 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
 - Growth > All channels opens with "This week": one card per channel, the last 7 days against the 7 before: reach per reel, watched on average (% of the reel), saves per 1,000 reached, new followers, the critic's average score and changes kept or dropped. Anything missing says "not measured yet".
 - Reach, watch, saves and followers come from the nightly collect (/api/perf). **Critic score**: the critic writes `PREMIUM a / b / c` (0-10 each) in the review file's critic line; /api/journey averages the numbers (src/journey.js) and the app averages the week's reels. **Kept or dropped**: when an experiment's 24 h / 72 h verdict is decided, put `"verdict": "keep"` or `"drop"` inside that reel's captions.json `"experiment"` object (the daily run does this at the verdict step; design/runbook-daily.md does not mention it yet).
 
+## Plain words on every screen (owner plan, 24 Nov 2026; built 25 Nov)
+- No screen shows a code or jargon (ALARM, ESCALATE, OQA, run numbers, PR numbers, rule or item ids, secret names). Text that comes from the server, the review files or the daily report goes through `pw()` in templates/index.html (the PW list; add a line there when new jargon appears); the daily report line says "on target" or "below target".
+- scripts/qa/plain-words-test.mjs (in `npm run check`) fails if the page's own text has a code or `pw()` lets one through. Writers (builders, critics, the audit) should still write plainly: the filter is a net, not a licence.
+- The one place that still names a secret is the access-key fix line (Settings alert), because the owner needs the exact name to update it.
+
 ## Archiving
 - A reel marked uploaded leaves the main list at once for its channel's compact "Posted" list (cover, title, posted date, its numbers once
   the collector has them; no video) (owner, 1 Nov 2026).
