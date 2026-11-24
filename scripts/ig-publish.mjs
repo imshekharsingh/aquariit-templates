@@ -95,8 +95,9 @@ if (!sr.ok) await fail('The app would not give out the video link (HTTP ' + sr.s
 const links = await sr.json();
 const params = { media_type: 'REELS', video_url: links.video, caption, share_to_feed: 'true' };
 if (links.cover) params.cover_url = links.cover;
+if (m.aiLabel === true) params.is_ai_generated = 'true';   // the AI info label (Meta changelog, 22 Jun 2026: is_ai_generated on POST /{ig-user}/media); set per reel as "aiLabel" in captions.json
 const made = await ig('/me/media', { method: 'POST', params });
-if (!made.ok) await fail(plain(made.error));
+if (!made.ok) await fail(m.aiLabel === true ? 'Instagram would not take the AI label, so nothing was posted. Post it by hand and turn on AI info in Instagram for this reel.' : plain(made.error));
 const cid = made.json.id;
 
 // 6. wait until Instagram has processed the video

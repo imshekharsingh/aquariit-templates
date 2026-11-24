@@ -588,3 +588,8 @@ Format (at most 6 lines):
 - Done: src/notify.js (the plan) + Worker: ready at the slot, one nudge at +45 min, one last call 20:30 IST, "Posted ✓" with the link and the plain reason on a failure (from Post now), a 08:00 IST morning summary; cron `*/10 * * * *`; one switch per type in Settings (/api/push/prefs, D1 push_prefs; notif_log keys stop repeats). sw.js v30 (an Instagram link opens on its own). scripts/qa/notify-test.mjs is in npm run check. The old 10-minutes-before reminder (postPush) is removed.
 - Left: nothing for the owner; pushes need the device signed up as before. Real pushes have not been seen on a phone yet (the plan and switches are tested, the send path is the existing one).
 - For the other account: a reel gets "ready" only when the journey says the second look cleared it.
+
+## 2026-11-25 · claude/ai-label · AI label per reel (owner chat job, size L, part 3 of 5)
+- Done: "aiLabel" true/false in captions.json (required from 27 Nov, check.mjs); shown on the reel card and the Post now confirm sheet; scripts/ig-publish.mjs sends is_ai_generated=true when it is true (Meta changelog, 22 Jun 2026) and stops with a plain message if Instagram refuses it; critic item 0b (design/critic.md); runbook-reels "AI label" (YouTube containsSyntheticMedia reserved). sw.js v31.
+- Left: the parameter has not been tried on a real post (Post now is still off); the first real post will show it. Builders set aiLabel on new entries from 26 Nov (enforced from 27 Nov).
+- For the other account: existing entries are untouched; no aiLabel yet shows "not decided yet" on the card.
