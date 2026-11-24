@@ -68,7 +68,9 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
   stop and report instead of retrying a failing approach more than twice. Heavy work runs on GitHub.
 - Say a task's size first (S < 15 min / M 30-60 min / L 1-3 h) and wait for a go-ahead on M or bigger unless already approved.
 - Questions for the owner go to the app's "Needs you" list (Owner answers `add`), never into chat; never ask whether something was posted
-  (read the Instagram collect POSTED lines). Short, simple English.
+  (read the Instagram collect POSTED lines). Every message to the owner (chat, app, reports; owner, 24 Nov 2026): the answer in one line first,
+  then numbered steps or short bullets, plain words with no tool names, run numbers, branch names or check codes, and anything that needs the
+  owner last as one action. Tell the owner each stage of a reel without being asked (owner, 24 Nov 2026).
 - Read workflow files before dispatching; most check out main, so merge before a run tests a branch. Any step done by hand twice becomes a script.
 
 ## Git and deploy

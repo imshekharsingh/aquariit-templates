@@ -6,6 +6,13 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 21:30 IST · claude/owner-chat-24nov · owner chat: decisions, waiting on owner, tomorrow
+- Decisions (owner, 24 Nov): critic starts the moment a reel passes Output QA (11:17 task is a fallback); no reel questions to the owner; SHOT VARIETY check; Fable budget (daily builds + critics only); Turns Out daily and dated again (task 09:11 IST created by the owner chat); every owner message answer-first, numbered, plain words (CLAUDE.md); tell the owner each reel stage unasked. Workflow plan to 30 Nov in the owner's doc "Studio workflow plan (to 30 Nov)": Sonnet researches 5 topics, Fable picks / checks stills / judges; feedback reviewed by Fable (first two a day) then Opus with flags to Closed; references studied by Fable into a checklist; live studio board.
+- Today: web 46 tabwiggle posted; Turns Out grey menu (render 3) and tech usbc-two-numbers (render 3, owner approved) ready to post. Tech miniled-zones rejected by the owner (one screen all reel). App v27: live board, feedback flags, references up to 1 GB.
+- Waiting on owner: add STAGE_KEY (GitHub secret, plus a network secret with header X-Stage-Key for templates.aquariit.com) so stage lines reach the board.
+- Tomorrow: CV (resume2, critic READY) is 25 Nov's Turns Out reel, its critic verdict was not pushed (403), so the Turns Out task re-checks and records it; tech reruns lean on the new rules; 26 Nov to-do: write the Fable-decides split into the daily run. Improvement lab stays paused. CLAUDE.md "Scheduled tasks" still lists 4 launcher tasks; launcher prompts for critic-on-ready were not changed (launcher refused without the owner).
+- Do not: render past 2 without the owner's word (CV got 4, tech 3 today); use the Tech reel workflow's preview input for a real render (any value makes a preview).
+
 ## 2026-11-24 13:50 IST · claude/fable-budget-24nov · Fable budget rule replaces "Fable is out" (owner chat correction to studio-lean-24nov)
 - Done: CLAUDE.md "Models" and runbook-studio.md now say Fable only for daily builds and critics (about 3 + 3, lean), never side work; a limit hit continues on opus; scheduled-task models and the 26 Nov switch unchanged.
 - Left: the CV render (one) is still to dispatch from main.
