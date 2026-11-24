@@ -1927,8 +1927,6 @@
  },
  "showreel-tech-storage-gap": {
   "channel": "tech",
-  "postOn": "2026-11-25",
-  "postAt": "15:00",
   "hidden": true,
   "format": "xray",
   "device": "phone",
@@ -1938,6 +1936,7 @@
    "change": "ai-memory's look and kit (dark ink, one hero phone, bold numbers that change, 7 different shots) on a new topic: a 256 GB box that shows 238, the gigabyte re-measured as one grid of tiles, three phones with changing numbers, a screen shot, the loop back to the hero",
    "vs": "median"
   },
-  "caption": "A 256 GB phone can show 238 GB 📱 and nothing is missing.\n\nThe box counts a gigabyte the way storage makers do: 1 GB = 1 billion bytes (Apple's support page says so for every iPhone, iPad and Mac). Some apps and systems count the other way: 1 GB = 1,073,741,824 bytes. Same chip, bigger gigabytes, so a smaller number: 128 → 119, 256 → 238, 512 → 477, 1 TB → 931.\n\nThe gap grows with size: about 69 GB on a 1 TB phone, more than a whole 64 GB phone. And the formatting and the system use some space too (\"actual formatted capacity less\").\n\nBuying a phone? Take about 7% off the box number, then choose for what's left. Which size is yours? 👇 Send this to the friend who's about to buy one."
+  "caption": "A 256 GB phone can show 238 GB 📱 and nothing is missing.\n\nThe box counts a gigabyte the way storage makers do: 1 GB = 1 billion bytes (Apple's support page says so for every iPhone, iPad and Mac). Some apps and systems count the other way: 1 GB = 1,073,741,824 bytes. Same chip, bigger gigabytes, so a smaller number: 128 → 119, 256 → 238, 512 → 477, 1 TB → 931.\n\nThe gap grows with size: about 69 GB on a 1 TB phone, more than a whole 64 GB phone. And the formatting and the system use some space too (\"actual formatted capacity less\").\n\nBuying a phone? Take about 7% off the box number, then choose for what's left. Which size is yours? 👇 Send this to the friend who's about to buy one.",
+  "hold": "Not ready, no post day (owner, 24 Nov 2026 night: no third render). Render 2 failed Output QA (NUMBERS rolling counts, SYNC 931, EDGES 1 TB box) and has a 26 s back-of-box slip; the fix is on branch claude/storage-gap-fix3 and in review/tech/showreel-tech-storage-gap.md item 13."
  }
 }
