@@ -17,6 +17,7 @@ Format (at most 6 lines):
 - Facts read today on primary pages: Apple Studio Display XDR specs (5120 x 2880, Mini-LED backlight with 2304 dimming zones; 6,400 pixels a zone is our sum), TrendForce 16 Nov 2026 (Mini LED TVs 28.78 million in 2026, +116%, near 15%; "premium LCD TV market").
 - Preview p1 (run 45318302714) passed Output QA; two fixes from its real frames (the count blooms from the centre, not a diagonal band; a clean pixel macro) go into preview p2 (claude/tech-miniled-zones-p2).
 - Owner gate: a preview render (Tech reel, preview p2) goes to the app's Previews with ONE yes/no in "Needs you" (tech-miniled-ok, until 24 Nov). The reel's own render or `scripts/r2.sh promote` waits for the yes.
+- Preview p2 (run 45324556198): Output QA PASS on the real MP4; the yes/no is in "Needs you" (tech-miniled-ok).
 - Left: after the owner's yes: promote or render, reel-status, item 13, owner-feedback.md and critic.md against the real MP4; then the critic. Builder's PREMIUM line is in the review file; weakest shot is the pixel macro (20-24 s).
 - For the other account: nothing.
 
