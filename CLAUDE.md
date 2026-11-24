@@ -54,8 +54,11 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - Every reel feels premium, nothing looks broken, every spoken line is shown and finished, every reel teaches one concrete, useful thing.
 
 ## Sessions (lean)
-- Models (owner, 24 Nov 2026, weekly limit low): claude-fable-5-2 is out this week. Builds run on claude-sonnet-5-5, critics on claude-opus-5-5,
-  light jobs (launcher, owner chat, cleanup, status checks, QA re-runs) on claude-haiku-5-5 or sonnet. A session that starts a child passes the model.
+- Fable budget (owner, 24 Nov 2026; the weekly limit resets 25 Nov, do not burn it on day one): claude-fable-5-2 only for the daily reel builds and
+  their critics, about 3 builds and 3 critics a day at most, lean (one stills sheet, one contact sheet, at most 2 renders). Never for side
+  programs, previews, kit studies, the owner chat, tooling or cleanups: those run on sonnet or haiku. If a Fable session hits a limit, the job
+  continues on claude-opus-5-5. Scheduled-task models stay as planned; the 26 Nov switch to sonnet (builds) / opus (critic) stands.
+  Light jobs (launcher, owner chat, cleanup, status checks, QA re-runs) run on claude-haiku-5-5 or sonnet. A session that starts a child passes the model.
 - No side programs while the weekly limit is low (owner, 24 Nov 2026): the Improvement lab task is paused; no preview studies, no kit programs.
   One reel per channel a day, and that is it.
 - Read the last 5 entries of design/handoff-log.md before starting; a session that changes the repo adds one entry there in its push.
