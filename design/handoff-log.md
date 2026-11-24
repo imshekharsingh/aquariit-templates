@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 11:54 IST · claude/critic-c3-greytext2-r3 · Reel critic: Turns Out grey menu preview, render 3 is READY
+- Why: the script changed after render 2 ("Next, lighten the board slightly. Then check the ratio. Aim for four point five."), so the independent look had to be done again on the new MP4 before it is made postable.
+- Done: judged the real MP4 (run 45331264071, 21.2 s) at phone size with its word times; "CRITIC (render 3): READY" in review/previews/c3-design-rebuilds.md, PREMIUM 7.5 / 7.5 / 7.5. "Aim for four point five." lands on "MIN 4.5 : 1" (card 12.53 s, word 12.63 s) and reads right after "ratio".
+- Left: the builder makes it postable. For the next design reel, not this one: end about 1 s sooner (3.1 s slow push after the last change), move the checker card off "fresh ginger", a bigger "4.5 : 1". Not heard by anyone here: the voice's tone.
+
 ## 2026-11-24 10:40 IST · claude/c3-greymenu-r3 · Turns Out today: the grey menu, script settled for its render 3 (owner chat decision after the CV failed PACE)
 - Why: Output QA PACE reads this voice 1.1-1.5 times faster than the render's own word times (a line that opens "Next," or "First," loses its pause), and only lines over 6 words can FAIL. So the script keeps every line but one at 6 words or fewer and takes the 1-beat word runs out.
 - Done: "Next, lighten the board slightly. Then check the ratio. Aim for four point five." (was "... a touch. ... For body text, aim for four and a half to one."; the screen shows MIN 4.5 : 1). The one long line left, "The soft grey looked nice, but it's too light.", read 4.21 on render 2. Scene rebuilt (contrast2), anchors unchanged; stills, preflight, c3-script clean.
