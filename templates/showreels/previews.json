@@ -52,16 +52,6 @@
    "ask": "Listen: does the new voice sound natural, and does the BEFORE look like a real first draft? Like or Reject"
   },
   {
-   "name": "showreel-pv-c3-greytext2",
-   "channel": "c3",
-   "title": "Turns Out, rebuilt: the grey menu",
-   "about": "The held grey-text reel rebuilt after your note. The before is now a real choice people make: soft light-grey text on a cream menu, readable but tiring (about 2.4 to 1), not text too faint to exist. The voice speaks full sentences with breaths. The contrast checker now turns from FAIL to PASS (it stayed on FAIL in the old one), and the last frame shows BEFORE next to AFTER.",
-   "techniques": "a believable before with one common mistake, spoken sentences with breaths, a close-up on each fix, a working contrast checker, a before flash and a BEFORE thumbnail on the last frame.",
-   "added": "2026-11-24",
-   "needsOwner": true,
-   "ask": "Look: is the grey menu BEFORE easy enough to read, but tiring? Does the contrast check turn FAIL to PASS? Like or Reject"
-  },
-  {
    "name": "showreel-tech-miniled-zones-p2",
    "channel": "tech",
    "title": "Today's tech reel: Mini LED is not a new kind of screen",

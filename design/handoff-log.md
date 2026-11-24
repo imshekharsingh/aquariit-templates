@@ -6,6 +6,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 12:00 IST · claude/c3-grey-menu-post · Turns Out today: the grey menu is ready to post (owner chat job; owner: one Turns Out reel a day, on need)
+- Result: grey menu render 3 (Showreel run 45331264071, 21.2 s) passed Output QA on every check (run 45338746481); every line 2.4-3.6 words/s on its own word times; the critic said READY (7.5 / 7.5 / 7.5; review/previews/c3-design-rebuilds.md "B, render 3").
+- Done: showreel-c3-grey-text is no longer hidden or held: "onGo" like every posted design reel (a dated c3 entry would need the journey line "scenes N ... transitions" in review item 19, which a design scene does not have). Its config, scene and review file now carry the rebuilt scene and voice (contrast2); build.mjs keeps a second copy of that scene as scripts/channel3/grey-text.html. The preview MP4 is promoted to v/showreel-c3-grey-text.mp4 (R2 workflow "promote", old video kept as study/showreel-c3-grey-text-v1-backup). previews.json: the answered grey menu preview removed.
+- Left: the owner posts it from the app in the 13:00-21:00 IST window. CV (resume2) is next in line on a later day: reword "Next, give the headings their own colour." and "Now it reads from top to bottom." (6 words or fewer, or slower words), move the three hook chips apart, then a render the owner allows (three are used). The other five held reels are untouched.
+- For the other account: Output QA PACE can only fail a line of 7+ words and reads this voice 1.1-1.5 times faster than the render's word times; write design scripts in lines of 6 words or fewer, with one longer line at most.
+
 ## 2026-11-24 11:54 IST · claude/critic-c3-greytext2-r3 · Reel critic: Turns Out grey menu preview, render 3 is READY
 - Why: the script changed after render 2 ("Next, lighten the board slightly. Then check the ratio. Aim for four point five."), so the independent look had to be done again on the new MP4 before it is made postable.
 - Done: judged the real MP4 (run 45331264071, 21.2 s) at phone size with its word times; "CRITIC (render 3): READY" in review/previews/c3-design-rebuilds.md, PREMIUM 7.5 / 7.5 / 7.5. "Aim for four point five." lands on "MIN 4.5 : 1" (card 12.53 s, word 12.63 s) and reads right after "ratio".

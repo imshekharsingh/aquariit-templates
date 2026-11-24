@@ -1639,10 +1639,9 @@
  "showreel-c3-grey-text": {
   "channel": "c3",
   "engine": "design",
-  "concept": "Design series · Grey on beige looks soft. Nobody can read it. ☕ (a café specials board in grey text on beige, fixed in three moves: darker words, a lighter board, checking the contrast ratio)",
-  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses.",
-  "hidden": true,
-  "hold": "Not ready to post (owner, 23 Nov 2026: the voice does not sound natural and the 'before' looks forced). Being rebuilt on the improved design kit; the new version comes to Inbox -> Previews first."
+  "onGo": true,
+  "concept": "Design series · This menu is hard to read. The soft grey looked nice, but it's too light. ☕ (a café specials board in soft grey on cream, fixed in three moves: darker words, a lighter board, checking the contrast ratio; the last frame shows BEFORE next to AFTER)",
+  "note": "Rebuilt on the improved design kit after the owner's note of 23 Nov (natural voice, believable before); the owner liked its preview (24 Nov), Output QA passed on render 3 and the critic said READY (review/previews/c3-design-rebuilds.md, B, render 3). Today's Turns Out reel (owner, 24 Nov: one a day, on need): ready from 24 Nov, posted from the Turns Out section in the 13:00-21:00 IST window like the rest of the design series (no fixed date, so \"onGo\")."
  },
  "showreel-c3-price-list": {
   "channel": "c3",
