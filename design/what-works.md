@@ -4,8 +4,8 @@ Source: one read-only Instagram collect (dry run, up to 50 posts per account) on
 (for the last 7 reels per channel only) hold % and skip % in the first 3 s. Reels posted in the last 24 h are left out (their numbers are not settled).
 Saves and shares are per 1,000 reached. Instagram gives **no follows per reel** (the API refuses it), so "followers gained" cannot be ranked per reel.
 Followers now: web 484 (+22 follows / -3 unfollows in 7 days), tech 13, Turns Out 9.
-**Not stored per reel, so not compared:** length, pace (words/s, shot changes), one hero object vs many, a measured "tension in the first second".
-Only the last 7 reels per channel have a length (from hold %); look is only known by date (glass look 1-11 Nov, dark look from 12 Nov). Anything about those is weak.
+**Style fields (from 25 Nov 2026 stored per reel in captions.json "style"; see "Style record" at the end):** length, pace (words/s, shot changes), hook type, look, hero, first-second tension, payoff. Until the Sunday review has 5+ reels per value, anything about them is weak.
+(This review of 24 Nov was written before they existed: it only knew length for the last 7 reels, and look by date.)
 Mark: **[weak]** = fewer than 5 reels behind it.
 
 ## Account-level facts that frame everything
@@ -51,4 +51,26 @@ Top: tap targets 1,115 (watch 10.3 s, hold 64%, skip 33%), line length 749, stop
 - Web: claims about how fast it was built (built-film, zero JS, six heroes): the three weakest hooks. Fixes the viewer must imagine (squash, hover).
 - Tech: news and brand-news reels; spec explainers that open with a claim, not a decision.
 - Turns Out: print-object topics (CV, card, menu) for now.
-- Everywhere: do not call a hook, look or length a winner yet; the data to rank them is not stored. Next step (not done here): store duration and a look tag per reel in captions.json so the next review can rank them.
+- Everywhere: do not call a hook, look or length a winner yet; the Style record (below) now stores them, and the Sunday review ranks them.
+
+## Style record (method, owner chat 25 Nov 2026)
+Every posted web, tech and Turns Out reel carries a "style" object in templates/showreels/captions.json; npm run check requires it on any reel posting from 25 Nov.
+Fields: **lengthS** (seconds), **wordsPerS** (spoken words / length), **shotChanges** (cuts), **hookType** (question / claim / number / contrast, from the first spoken
+sentence), **look** (dark / light), **hero** (the main object, a short phrase), **firstSecondTension** (yes / no: something is already wrong or moving in the first second),
+**payoff** (tip = the viewer can do something / fact = the viewer learns something), **source** (mp4 = measured from the real video; config = from the config and text only).
+Unknown = null, never a guess. How each is measured is at the top of scripts/style-measure.mjs. 24 Nov backfill: every posted reel from 25 Oct to 24 Nov; 32 of them
+(the last 15 days, the MP4s still in the app) are measured from the MP4, the older ones carry what their config and text say, and hero is only known for tech (its gadget) and for new reels.
+
+How to fill: when the reel's captions.json entry is made, plan hookType, look, hero, firstSecondTension, payoff (the direction card has them). After the one render:
+`node scripts/reel-fetch.mjs <name> reel-files` then `node scripts/style-measure.mjs reel-files --names <name> --write` fills the measured fields and `source`.
+Keep the planned values the script leaves as they are; check hero and firstSecondTension by hand (the script only fills hero for tech, tension from a review line "first-second tension: yes|no").
+
+Sunday review (design/runbook-spare.md and the weekly audit) ranks styles:
+1. Join each reel's style with its settled numbers (reel older than 24 h): reach, average watch, hold %, skip % in 3 s, saves and shares per 1,000 (Instagram collect REEL lines).
+2. For each field, group the reels by value (length: under 15 s, 15-25 s, over 25 s; pace: under 2.2, 2.2-2.8, over 2.8 words/s; cuts per 10 s: under 3, 3-5, over 5) and
+   print per group: n, median reach, median watch, median skip in 3 s, median saves per 1,000. Compare inside one channel only; never mix channels.
+3. A group counts only with n of 5 or more; mark smaller ones [weak]. Report a difference only if it is 30% or more on reach AND the same direction on watch or skip.
+   Two fields that move together (e.g. dark look and number hooks) are one finding, not two.
+4. Output: a "Style ranking" block per channel in this file (replace the previous one): best and worst group per field, with n and numbers, then 1-3 rules for the next week's
+   builds ("Do more" / "Stop doing"), and the experiment each rule becomes in design/experiments.md. A rule needs the same result in two Sundays to go into the rulebook.
+5. The per-reel hero field answers the "one hero vs many" question; firstSecondTension answers the skip-in-3-s question; payoff answers the saves question (tips should save more than facts).
