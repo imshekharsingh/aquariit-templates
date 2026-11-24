@@ -500,3 +500,8 @@ Format (at most 6 lines):
 - Left: confirm the merge and deploy are green.
 - For the other account: a dated design-engine c3 entry no longer needs item 19 in its review file.
 - Also (owner chat, same branch): Turns Out back to one dated reel a day (CLAUDE.md Schedule and Scheduled tasks; design/c3-plan.md section 0 order); the CV entry showreel-c3-resume is dated 2026-11-25 13:00, onGo dropped, video and hidden/hold flags untouched.
+
+## 2026-11-24 · claude/tech-usbc-shot2-fix · Tech reel usbc-two-numbers: render 1 failed SYNC (shot 2), fix for render 2 (owner chat job)
+- Done: render 1 (run 45368585690) passed every Output QA check incl. VARIETY (9%) except SYNC: "2 LANES" not readable at 10.4 s. Real frames showed a pale haze (an additive glow sprite near the camera) and ghost arches from depth-of-field in shot 2. Fix in techkit/scenes/usbc-two-numbers.html: glows smaller and weaker, no depth-of-field on shot 2, a dark band behind the word. Local stills of the fixed shot checked. Review file has the render 1 notes.
+- Left: render 2 (the last), Output QA, then the critic.
+- For the other account: an additive sprite close to a bright subject washes a whole shot; keep glows small or draw them behind.
