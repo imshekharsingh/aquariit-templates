@@ -6,6 +6,10 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 22:10 IST · claude/hide-usbc-24nov · owner chat: tech usbc hidden after the owner called it horrible
+- Done: showreel-tech-usbc-two-numbers hidden + hold (owner: "horrible again"; only ai-memory was good); owner-feedback.md line: the critic compares every tech reel side by side with showreel-tech-ai-memory and says NOT READY unless it matches or beats it.
+- Next: 25 Nov tech is built on Fable (weekly reset) to the ai-memory standard; its critic gets that side-by-side rule in its prompt.
+
 ## 2026-11-24 21:30 IST · claude/owner-chat-24nov · owner chat: decisions, waiting on owner, tomorrow
 - Decisions (owner, 24 Nov): critic starts the moment a reel passes Output QA (11:17 task is a fallback); no reel questions to the owner; SHOT VARIETY check; Fable budget (daily builds + critics only); Turns Out daily and dated again (task 09:11 IST created by the owner chat); every owner message answer-first, numbered, plain words (CLAUDE.md); tell the owner each reel stage unasked. Workflow plan to 30 Nov in the owner's doc "Studio workflow plan (to 30 Nov)": Sonnet researches 5 topics, Fable picks / checks stills / judges; feedback reviewed by Fable (first two a day) then Opus with flags to Closed; references studied by Fable into a checklist; live studio board.
 - Today: web 46 tabwiggle posted; Turns Out grey menu (render 3) and tech usbc-two-numbers (render 3, owner approved) ready to post. Tech miniled-zones rejected by the owner (one screen all reel). App v27: live board, feedback flags, references up to 1 GB.
