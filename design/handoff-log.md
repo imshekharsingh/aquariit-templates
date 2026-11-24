@@ -6,6 +6,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 10:40 IST · claude/c3-greymenu-r3 · Turns Out today: the grey menu, script settled for its render 3 (owner chat decision after the CV failed PACE)
+- Why: Output QA PACE reads this voice 1.1-1.5 times faster than the render's own word times (a line that opens "Next," or "First," loses its pause), and only lines over 6 words can FAIL. So the script keeps every line but one at 6 words or fewer and takes the 1-beat word runs out.
+- Done: "Next, lighten the board slightly. Then check the ratio. Aim for four point five." (was "... a touch. ... For body text, aim for four and a half to one."; the screen shows MIN 4.5 : 1). The one long line left, "The soft grey looked nice, but it's too light.", read 4.21 on render 2. Scene rebuilt (contrast2), anchors unchanged; stills, preflight, c3-script clean.
+- Left (this session): ONE render (render 3, the owner's go), Output QA, then an independent critic; READY = made postable for today. A fail = stop and report, no 4th render.
+- CV for a later day: reword "Next, give the headings their own colour." and "Now it reads from top to bottom." (6 words or fewer, or slower words), move the three hook chips apart; needs the owner's OK for a 4th render.
+
 ## 2026-11-24 10:05 IST · claude/c3-cv-r3-greymenu-pace · Turns Out today: CV render 3, grey menu PACE fix (owner chat job, size M-L)
 - Owner (Owner answers, 24 Nov): YES to c3-resume2-render3; Like on both previews. Owner chat, 09:57 IST: "We need turns out today, make them ready one after the other" = the go for the grey menu's render 3 too (no ask added).
 - Done: CV render 3 started from main a29f59a (Showreel run 45326427558, preview path, 17.8 s; stills checks clean). Grey menu: the ratio sentence split in two, "Then check the ratio. For body text, aim for four and a half to one." (render 2 read 4.55 words/s on the one long sentence; the number phrase alone runs near 5 words/s, so the second sentence carries slower words; WCAG's 4.5 to 1 is the body-text minimum). Scene rebuilt (contrast2), 7 breaths for 8 sentences, anchors unchanged ("ratio", "four"); stills, preflight and c3-script clean. Ask c3-resume2-render3 cleared.
