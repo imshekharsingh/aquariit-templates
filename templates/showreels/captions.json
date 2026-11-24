@@ -1886,6 +1886,7 @@
   ]
  },
  "showreel-tech-usbc-two-numbers": {
+  "hidden": true,
   "channel": "tech",
   "postOn": "2026-11-24",
   "postAt": "20:00",
