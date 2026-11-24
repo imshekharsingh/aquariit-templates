@@ -115,7 +115,7 @@ if (ACTION === 'list' || ACTION === 'tidy' || ACTION === 'read') {
   const open = (await J('/api/asks')).asks || [], answered = (await J('/api/asks?answered=1')).asks || [], fb = (await J('/api/feedback')).feedback || [],
     refs = (await J('/api/refs')).refs || [], cards = (await J('/api/cards')).cards || [];
   let pv = []; try { pv = JSON.parse((await import('node:fs')).readFileSync('templates/showreels/previews.json', 'utf8')).items || []; } catch { /* not checked out */ }
-  const said = new Map(); for (const f of fb.slice().reverse()) { const m = /^Preview ([a-z0-9-]+): (Like|Not this)/.exec(f.text || ''); if (m) said.set(m[1], m[2]); }
+  const said = new Map(); for (const f of fb.slice().reverse()) { const m = /^Preview ([a-z0-9-]+): (Like|Reject|Not this)/.exec(f.text || ''); if (m) said.set(m[1], m[2]); }
   const pvOld = pv.filter((p) => said.has(p.name) || !p.added || ageDays(p.added + 'T00:00:00+05:30') > 7);
   if (ACTION === 'list') {
     for (const a of open) console.log(`ASK ${a.id} ${a.created} ${a.channel || '-'} until ${a.until || '-'} ${JSON.stringify(a.question)}`);
