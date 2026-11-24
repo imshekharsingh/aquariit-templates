@@ -1602,10 +1602,9 @@
  "showreel-c3-resume": {
   "channel": "c3",
   "engine": "design",
-  "postOn": "2026-11-25",
-  "postAt": "13:00",
   "concept": "Design series · Everything on this CV is bold. So nothing stands out. 📄 (a CV on a desk where every line is bold and one size, fixed in three moves: the name biggest, headings one size down, details plain)",
-  "note": "Design series, queue of 10 (21 Nov 2026). No date (owner: upload based on response); posted from the Turns Out section when the owner chooses."
+  "note": "Already posted on Instagram (owner, 25 Nov 2026). The resume2 rebuild is not posted again; it stays as a kit study only.",
+  "onGo": true
  },
  "showreel-c3-line-length": {
   "channel": "c3",
