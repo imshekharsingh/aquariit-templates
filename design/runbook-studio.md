@@ -57,6 +57,7 @@ Moved from CLAUDE.md on 14 Nov 2026.
 - Heavy work runs on GitHub. In a session keep to quick stills and checks; never poll long jobs (one check-in after ~12 minutes is enough).
 - Before any task, tell the owner its size, S (< 15 min) / M (30-60 min) / L (1-3 h) of session work, and wait for a go-ahead on M or bigger
   unless already approved. Scheduled runs are approved standing work.
+- Models and side work (owner, 24 Nov 2026, weekly limit low): no claude-fable-5-2 this week; builds claude-sonnet-5-5, critics claude-opus-5-5, light jobs haiku or sonnet. Improvement lab paused; no preview studies, no kit programs; one reel per channel a day.
 - Usage (owner, 18 Nov 2026): build sessions (daily run, Turns Out, tooling) run on the cheaper model (claude-sonnet-5-5); the critic and
   the Owner chat stay on the default model. At most 2 renders per reel. 18 Nov cost about $50 (long sessions, 3 renders, media blocks).
 - A normal day is about $10-15 (daily run $5-8, Turns Out about $4). The weekly limit resets Wednesday 04:30 IST and the 5-hour limit is

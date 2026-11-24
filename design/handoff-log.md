@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 13:30 IST · claude/studio-lean-24nov · lean flow, SHOT VARIETY check, CV wording (owner chat job, size M)
+- Done: owner-feedback 24 Nov line; Output QA VARIETY (scripts/qa/output-qa.py, all channels; tabwiggle 53% passes, a static clip 100% fails); the builder starts the critic (opus) after Output QA, 11:17 task is a fallback; owner asked nothing about reels, tech owner gate removed; previews.json all needsOwner false and npm run check fails on true; Fable out, side programs paused, Turns Out one reel a day in order; CV (resume2) two fast lines reworded ("Next, headings get their own colour." / "Now it reads top to bottom.") and hook chips spread (x 40 / 166 / 320).
+- Left: the CV render (one) after this merges, then Output QA and the critic started by the builder; the owner chat resets the scheduled-task prompts/models if they still say Fable.
+- For the other account: VARIETY = 1 fps, 135x240, SSIM 0.65, over 60% one shot fails.
+
 ## 2026-11-24 12:00 IST · claude/c3-grey-menu-post · Turns Out today: the grey menu is ready to post (owner chat job; owner: one Turns Out reel a day, on need)
 - Result: grey menu render 3 (Showreel run 45331264071, 21.2 s) passed Output QA on every check (run 45338746481); every line 2.4-3.6 words/s on its own word times; the critic said READY (7.5 / 7.5 / 7.5; review/previews/c3-design-rebuilds.md "B, render 3").
 - Done: showreel-c3-grey-text is no longer hidden or held: "onGo" like every posted design reel (a dated c3 entry would need the journey line "scenes N ... transitions" in review item 19, which a design scene does not have). Its config, scene and review file now carry the rebuilt scene and voice (contrast2); build.mjs keeps a second copy of that scene as scripts/channel3/grey-text.html. The preview MP4 is promoted to v/showreel-c3-grey-text.mp4 (R2 workflow "promote", old video kept as study/showreel-c3-grey-text-v1-backup). previews.json: the answered grey menu preview removed.

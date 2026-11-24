@@ -4,7 +4,7 @@ Owner, 22 Nov: "pick up technological aspects that are discussed in the market t
 get hooked to knowing better." Research: design/tech-research-2026-11-22.md. Prototype: techkit/scenes/proto-ram-squeeze.html (first 6 s).
 Status: owner approved (22 Nov 2026, owner chat: 'I like this though ... go with your plan'): the owner's own words in the Owner chat at ~21:10-21:14 IST
 ("push it, and fix those three things first ... (I like this though)" on the 6 s prototype, then "installed both, go with your plan" on the plan: the full first
-reel in this direction with real 3D, stills and a short clip to the owner before any render). Each tech reel: the owner sees stills + a short preview before its render.
+reel in this direction with real 3D, stills and a short clip to the owner before any render). (Owner, 24 Nov 2026: no owner preview any more; the critic decides.)
 This page sets the look; design/rules-tech.md keeps the facts, brand and safety rules (F2-F4, V1-V4) and drops what is listed at the end.
 
 ## 1. Topic: this week's tech, explained by one picture

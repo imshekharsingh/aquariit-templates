@@ -7,9 +7,8 @@ most sources are vendor or creator guides; only Instagram's own ranking signals 
 view-count rule are first-party. Each item is a technique, never a copy of a reel; none conflicts with design/owner-feedback.md (natural voice
 speed, recorded sounds, dark calm palettes, no saturated fills, no brand card or call to action in the video).
 **Previews (owner, 24 Nov 2026).** The Improvement lab and every session that adds an entry to templates/showreels/previews.json
-must set `"needsOwner"` (true/false) and `"ask"` (one plain line: what to check, what to tap). Only an item the owner must listen to or look at
-(and whose critic already says READY) gets true, with an ask ending "Like or Reject". A study, a record or an item not yet READY gets false and
-lands in the Studio log. When unsure: false. `npm run check` fails without both fields. Detail: design/runbook-reels.md "The app", Inbox.
+must set `"needsOwner": false` and `"ask"` (owner, 24 Nov 2026: the owner is asked nothing about reels; `npm run check` fails on true). No preview
+studies while the weekly limit is low. Detail: design/runbook-reels.md "The app", Inbox.
 
 Format: `- [ ] date · technique · why it should help reach · kit piece (existing or MISSING) · source`. Order: most impactful and easiest first.
 

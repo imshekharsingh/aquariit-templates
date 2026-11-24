@@ -19,16 +19,16 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - Learning: design/playbook.md, design/experiments.md, design/improvements.md, design/references.md, design/craft-log.md, design/topics.md, design/todo.md
 
 ## Schedule (owner, 18 Nov 2026)
-- ONE reel a day per channel (web, tech, Turns Out), every day, aim for **13:00 IST**; any time in the **13:00-21:00 IST window** is fine (owner, 20 Nov 2026). A reel that fails is fixed and posted inside the window; nothing blocks the next push. Turns Out runs the design series from 21 Nov 2026, built one at a time on the owner's go, no dates (owner; design/c3-plan.md section 0).
+- ONE reel a day per channel (web, tech, Turns Out), every day, aim for **13:00 IST**; any time in the **13:00-21:00 IST window** is fine (owner, 20 Nov 2026). A reel that fails is fixed and posted inside the window; nothing blocks the next push. Turns Out runs the design series from 21 Nov 2026: one design reel a day, taken in order from the held list (design/c3-research-2026-11-24.md) and rebuilt only on the day it posts, no owner go needed (owner, 24 Nov 2026; design/c3-plan.md section 0).
   Every reel needs its entry in templates/showreels/captions.json ("channel", "postOn", "postAt", "concept"; npm run check fails without it).
-- TECH ON HOLD (owner, 22 Nov 2026, rejected heart-green): the daily run builds NO tech reel until design/tech-direction.md on main has a
-  line "owner approved"; after that, tech follows that file and the owner sees stills + a short preview before its render.
+- Tech follows design/tech-direction.md (owner approved 22 Nov 2026). The owner is NOT asked to approve a tech preview or render (owner, 24 Nov 2026):
+  the critic decides.
 - Learn-then-build: each reel is built the day it posts (evening before at most), never ahead, never a second reel for a channel and day.
 - One experiment and one researched improvement per channel per day (design/runbook-daily.md).
 
 ## Scheduled tasks: ON
 Four run from the small "Studio launcher (v2)" session (22 Nov 2026): Daily studio run 06:47, Daily owner chat 08:31, Reel critic 11:17,
-Spare usage night Tue 22:44 IST (design/runbook-studio.md "Scheduled tasks"). Turns Out's daily task stays off (design series on the owner's go).
+Spare usage night Tue 22:44 IST (design/runbook-studio.md "Scheduled tasks"). Turns Out's daily task stays off; its one reel a day is started from the owner chat.
 
 ## Daily run
 The "Daily studio run" scheduled task (06:47 IST, every day) follows **design/runbook-daily.md** (steps 0-5: Feedback first, Owner answers,
@@ -43,16 +43,21 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - Verify the output, not the input: checks measure the rendered MP4, frames at phone size and audible audio; read design/owner-feedback.md
   against the finished output; add a line there the same day the owner catches something.
 - Output QA: every owner complaint becomes a GitHub check in scripts/qa/ the same day; it runs on the final MP4 after every render; any FAIL = NOT READY.
-- Independent critic: a different session ("Reel critic", ~11:17 IST, every day) must write "CRITIC: READY" in the
-  review file; nobody approves their own reel.
+  SHOT VARIETY (24 Nov 2026) fails a reel when over 60% of it looks like one shot.
+- Independent critic: a different session must write "CRITIC: READY" in the review file; nobody approves their own reel. The builder starts
+  that critic session (tag critic, model claude-opus-5-5) the moment the final render passes Output QA (owner, 24 Nov 2026). The 11:17 IST
+  "Reel critic" task is only a fallback for reels with no verdict.
+- The owner is asked nothing about reels (owner, 24 Nov 2026): no preview yes/no gates, no "one more render?" asks. The critic decides: the reel
+  reaches "Ready to post" or is skipped for the day. Owner answers asks are only for money, accounts or devices. Inbox: Ready to post reels and
+  Claude's replies only (previews.json needsOwner is always false; npm run check fails otherwise).
 - Preflight: settle everything first, then ONE render on GitHub; never render whole videos in the session; re-render only for a real defect; at most 2 renders per reel, then stop and report (owner, 18 Nov 2026).
 - Every reel feels premium, nothing looks broken, every spoken line is shown and finished, every reel teaches one concrete, useful thing.
 
 ## Sessions (lean)
-- Models (owner, 23 Nov 2026): through Wed 25 Nov IST, every session that shapes what gets posted (reel builds, fixes and renders,
-  critic, quality reviews, research, reference studies) runs on claude-fable-5-2; light jobs (launcher, owner chat, cleanup, status
-  checks, QA re-runs) stay on cheaper models. From 26 Nov: back to claude-sonnet-5-5 (builds) / claude-opus-5-5 (critic) unless the owner
-  says otherwise. A session that starts a child for such work passes model claude-fable-5-2; the owner chat checks each day that they did.
+- Models (owner, 24 Nov 2026, weekly limit low): claude-fable-5-2 is out this week. Builds run on claude-sonnet-5-5, critics on claude-opus-5-5,
+  light jobs (launcher, owner chat, cleanup, status checks, QA re-runs) on claude-haiku-5-5 or sonnet. A session that starts a child passes the model.
+- No side programs while the weekly limit is low (owner, 24 Nov 2026): the Improvement lab task is paused; no preview studies, no kit programs.
+  One reel per channel a day, and that is it.
 - Read the last 5 entries of design/handoff-log.md before starting; a session that changes the repo adds one entry there in its push.
 - One session = one task, one channel, one branch; finish it (pushed, merged, checked) and archive it before the next starts. One heavy
   session at a time. The owner chats in the daily "Owner chat <date>" session, which never builds.

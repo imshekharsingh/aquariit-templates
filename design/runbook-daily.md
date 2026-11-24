@@ -79,6 +79,7 @@ research are all Claude's to improve every day without waiting to be asked. The 
   23:43 IST (input `post_check` to run it by hand; latest 5 posts per account, auto-marked at Instagram's time). Its log has one line per
   reel due today: "POSTED web: showreel-29-flash at 19:04 IST (marked)" or "NOT POSTED web 19:00: showreel-29-flash". Sessions read these
   lines (latest Instagram collect run) to know what went out; never ask the owner whether something was posted.
+- Owner answers asks are only for money, accounts or devices (owner, 24 Nov 2026); never about a reel, a preview or a render.
 - Questions for the owner (owner, 1 Nov 2026) go into the app's "Needs you" list, never into chat: dispatch "Owner answers" (main) with
   action `add` and `asks` = `[{"id":"short-id","question":"plain English","why":"why it matters","kind":"yesno|done|text","channel":"web|tech|c3"}]`
   (format in scripts/asks.mjs).

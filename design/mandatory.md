@@ -120,3 +120,6 @@ Start from review/TEMPLATE.md. One line per item, exactly `N. <item>: PASS: <evi
 - The Showreel and Tech reel workflows refuse to render without items 1-12 (and 14-17) PASS (their first step, "Mandatory Gate", prints a REVIEW GATE
   error line). A Showreel preview (the "seconds" input) is exempt.
 - Reels posting before 2026-11-08 are grandfathered (rendered before the gate).
+
+## Output QA: SHOT VARIETY (24 Nov 2026, owner on tech miniled-zones: "one screen across the reel")
+One frame a second, structural similarity between frames (subtitle band left out); FAIL when over 60% of the reel looks like one shot. Applies to every channel; showreel-46-tabwiggle passes (53%). Plan a new subject or view every few seconds.
