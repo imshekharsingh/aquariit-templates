@@ -519,3 +519,5 @@ Format (at most 6 lines):
 - Done: POST /api/stage (header X-Stage-Key = secret STAGE_KEY, D1 studio_stage, optional thumb in R2 stage/) and GET /api/stage (signed in) in src/worker.js; scripts/stage.mjs for sessions and workflows; scripts/qa/stage-test.mjs in npm run check; STAGE_KEY passed to the Worker in pipeline.yml; Today board (ring N of 3, one card per channel, 6 stage dots, % bar, model, live line, tap for the stage list, render line on the card's bottom edge, reduce motion = fades). sw.js v25. Runbooks updated.
 - Left: the owner adds STAGE_KEY (GitHub secret + Worker deploy picks it up; a network secret with header X-Stage-Key on the session environment). Until then the board still shows journey data (render %, Ready, Posted).
 - For the other account: --pct in stage.mjs is progress inside the current stage, not overall.
+## 2026-11-24 tech-usbc-ready (branch claude/tech-usbc-ready)
+- usbc-two-numbers render 3 passed Output QA (run 45414365903) and the critic said READY; unhidden, postOn 2026-11-24, postAt 20:30. Lesson: the Tech reel workflow's preview input must be left out for a real render (any value, even false, makes a preview).
