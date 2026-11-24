@@ -358,11 +358,14 @@ async function fbDb(env) {
   fbReady = fbReady || env.DB.exec('CREATE TABLE IF NOT EXISTS owner_feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, created TEXT NOT NULL, channel TEXT, body TEXT NOT NULL, state TEXT NOT NULL DEFAULT \'new\', note TEXT, done_at TEXT)')
     // read_at (owner, 14 Nov 2026: the side menu shows one reply at a time with "Mark read"): when the owner has read Claude's note
     .then(() => env.DB.prepare('ALTER TABLE owner_feedback ADD COLUMN read_at TEXT').run().catch(() => {}))
+    // flow (owner, 24 Nov 2026): flag = received | reviewed | in_progress | done | closed; reviewed_by = Fable / Opus; report + proof (a check name, or an image in R2 fb/<id>.jpg)
+    .then(() => Promise.all(['flag', 'reviewed_by', 'report', 'proof', 'proof_img', 'closed_at'].map((c) => env.DB.prepare(`ALTER TABLE owner_feedback ADD COLUMN ${c} TEXT`).run().catch(() => {}))))
     .catch((e) => { fbReady = null; throw e; });
   await fbReady;
   return env.DB;
 }
 const FB_CH = ['web', 'tech', 'c3', 'app'], FB_ID = /^\/api\/feedback\/([0-9]{1,9})\/done$/, FB_READ = /^\/api\/feedback\/([0-9]{1,9})\/read$/;
+const FB_FLAG = /^\/api\/feedback\/([0-9]{1,9})\/flag$/, FB_CLOSE = /^\/api\/feedback\/([0-9]{1,9})\/(close|reopen)$/;
 async function feedbackApi(request, env, p, url) {
   if (!(await isPrimary(request, env))) return request.method === 'GET' ? jres({ feedback: [] }) : jres({ error: 'forbidden' }, 403);
   let db;
@@ -370,8 +373,17 @@ async function feedbackApi(request, env, p, url) {
   if (!db) return jres({ error: 'no-db' }, 501);
   if (request.method === 'GET' && p === '/api/feedback') {   // newest first; ?state=new gives only the items waiting for Claude
     const onlyNew = url.searchParams.get('state') === 'new';
-    const { results } = await db.prepare(`SELECT id, created, channel, body, state, note, done_at, read_at FROM owner_feedback ${onlyNew ? "WHERE state = 'new' " : ''}ORDER BY id DESC LIMIT 50`).all();
-    return jres({ feedback: (results || []).map((r) => ({ id: r.id, created: r.created, channel: r.channel, text: r.body, state: r.state, note: r.note, done_at: r.done_at, read_at: r.read_at })) });
+    const FL = "COALESCE(flag, CASE WHEN state = 'done' THEN 'done' ELSE 'received' END)";   // old rows have no flag yet
+    const { results } = await db.prepare(`SELECT id, created, channel, body, state, note, done_at, read_at, ${FL} AS fl, reviewed_by, report, proof, proof_img FROM owner_feedback WHERE ${FL} <> 'closed'${onlyNew ? " AND state = 'new'" : ''} ORDER BY id DESC LIMIT 50`).all();   // closed items leave the app
+    return jres({ feedback: (results || []).map((r) => ({ id: r.id, created: r.created, channel: r.channel, text: r.body, state: r.state, note: r.note, done_at: r.done_at, read_at: r.read_at,
+      flag: r.fl, by: r.reviewed_by || null, report: r.report || r.note || null, proof: r.proof || null, proofImg: r.proof_img ? `/api/feedback/${r.id}/proof` : null })) });
+  }
+  const pf = /^\/api\/feedback\/([0-9]{1,9})\/proof$/.exec(p);
+  if (request.method === 'GET' && pf) {
+    const r = await db.prepare('SELECT proof_img FROM owner_feedback WHERE id = ?1').bind(Number(pf[1])).first();
+    const o = r && r.proof_img && env.REELS ? await env.REELS.get(r.proof_img) : null;
+    if (!o) return jres({ error: 'not-found' }, 404);
+    return new Response(o.body, { headers: { 'Content-Type': o.httpMetadata && o.httpMetadata.contentType || 'image/jpeg', 'Cache-Control': 'private, max-age=600', 'X-Content-Type-Options': 'nosniff' } });
   }
   if (request.method !== 'POST' || request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403);
   let b = null; try { b = await request.json(); } catch { /* handled below */ }
@@ -387,11 +399,40 @@ async function feedbackApi(request, env, p, url) {
     const r = await db.prepare('UPDATE owner_feedback SET read_at = ?2 WHERE id = ?1').bind(Number(rd[1]), new Date().toISOString()).run();
     return jres({ ok: true, stored: !!(r.meta && r.meta.changes) });
   }
+  const fl = FB_FLAG.exec(p);
+  if (fl) {   // a Claude run moves an item along: reviewed (by Fable or Opus), in_progress, done (report + proof: a check name or an image)
+    const f = b && b.flag, id = Number(fl[1]);
+    if (!['reviewed', 'in_progress', 'done'].includes(f)) return jres({ error: 'bad-request' }, 400);
+    const by = b && /fable/i.test(b.by || '') ? 'Fable' : b && /opus/i.test(b.by || '') ? 'Opus' : b && /sonnet|haiku/i.test(b.by || '') ? (/sonnet/i.test(b.by) ? 'Sonnet' : 'Haiku') : null;
+    const report = b && nStr(b.report, 600), proof = b && nStr(b.proof, 160), now = new Date().toISOString();
+    if (f === 'reviewed' && !by) return jres({ error: 'bad-request', need: 'by' }, 400);
+    if (f === 'done' && (!report || !report.trim() || !((proof && proof.trim()) || (b.image && typeof b.image === 'string')))) return jres({ error: 'bad-request', need: 'report and proof' }, 400);
+    let img = null;
+    if (f === 'done' && typeof b.image === 'string' && env.REELS) {
+      try { const bin = Uint8Array.from(atob(b.image.replace(/^data:image\/[a-z]+;base64,/, '')), (c) => c.charCodeAt(0)), png = bin[0] === 0x89, jpg = bin[0] === 0xff && bin[1] === 0xd8;
+        if (bin.length <= 400 * 1024 && (png || jpg)) { img = `fb/${id}.${png ? 'png' : 'jpg'}`; await env.REELS.put(img, bin, { httpMetadata: { contentType: png ? 'image/png' : 'image/jpeg' } }); }
+      } catch { /* a check name still counts */ }
+    }
+    let r;
+    if (f === 'done') r = await db.prepare("UPDATE owner_feedback SET flag = 'done', state = 'done', note = ?2, report = ?2, proof = ?3, proof_img = ?4, done_at = ?5, read_at = NULL WHERE id = ?1 AND COALESCE(flag, 'received') <> 'closed'").bind(id, report.trim(), proof && proof.trim() || null, img, now).run();
+    else if (f === 'reviewed') r = await db.prepare("UPDATE owner_feedback SET flag = 'reviewed', reviewed_by = ?2 WHERE id = ?1 AND COALESCE(flag, 'received') IN ('received', 'reviewed')").bind(id, by).run();
+    else r = await db.prepare("UPDATE owner_feedback SET flag = 'in_progress', reviewed_by = COALESCE(?2, reviewed_by) WHERE id = ?1 AND COALESCE(flag, 'received') IN ('received', 'reviewed', 'in_progress')").bind(id, by).run();
+    return jres({ ok: true, stored: !!(r.meta && r.meta.changes) });
+  }
+  const cl = FB_CLOSE.exec(p);
+  if (cl) {   // the owner closes it (it leaves the app) or reopens it with a note (back to Received, read again by the next run)
+    const id = Number(cl[1]), now = new Date().toISOString();
+    if (cl[2] === 'close') { const r = await db.prepare("UPDATE owner_feedback SET flag = 'closed', closed_at = ?2, read_at = COALESCE(read_at, ?2) WHERE id = ?1").bind(id, now).run(); return jres({ ok: true, stored: !!(r.meta && r.meta.changes) }); }
+    const note = b && nStr(b.note, 600);
+    if (!note || !note.trim()) return jres({ error: 'bad-request' }, 400);
+    const r = await db.prepare("UPDATE owner_feedback SET flag = 'received', state = 'new', body = body || ?2, note = NULL, report = NULL, proof = NULL, proof_img = NULL, reviewed_by = NULL, done_at = NULL, read_at = NULL, closed_at = NULL WHERE id = ?1").bind(id, '\n\nReopened: ' + note.trim()).run();
+    return jres({ ok: true, stored: !!(r.meta && r.meta.changes) });
+  }
   const m = FB_ID.exec(p);
   if (m) {   // a Claude run marks an item done, with a short note of what it did
     const note = b && nStr(b.note, 500);
     if (!note || !note.trim()) return jres({ error: 'bad-request' }, 400);
-    const r = await db.prepare("UPDATE owner_feedback SET state = 'done', note = ?2, done_at = ?3 WHERE id = ?1").bind(Number(m[1]), note.trim(), new Date().toISOString()).run();
+    const r = await db.prepare("UPDATE owner_feedback SET state = 'done', flag = 'done', note = ?2, report = ?2, done_at = ?3 WHERE id = ?1 AND COALESCE(flag, 'received') <> 'closed'").bind(Number(m[1]), note.trim(), new Date().toISOString()).run();
     return jres({ ok: true, stored: !!(r.meta && r.meta.changes) });
   }
   return jres({ error: 'bad-request' }, 400);

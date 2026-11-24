@@ -7,8 +7,10 @@ Stage board (owner, 24 Nov 2026): at every stage change of a reel build (researc
 `node scripts/stage.mjs <channel> <stage> --model <name> --line "plain words"` (design/runbook-reels.md "Live studio board"). Never blocks work.
 
 0. Feedback first (owner, 11 Nov 2026): the "Owner answers" `read` prints the app's new Feedback items as FEEDBACK lines (id, time, channel,
-   text). Act on each new item that day, or put it in design/todo.md with a date, then dispatch `feedback-done` with
-   `{"ids":[..],"note":"what was done"}` (the app shows the note under the item). Every run reads it first: the daily run, the Turns Out run
+   text). Act on each new item that day, or put it in design/todo.md with a date, then move it along with `feedback-done`
+   (message flow, owner 24 Nov 2026: Received > Reviewed > In progress > Done > Closed): when you have read it `{"ids":[..],"flag":"reviewed","by":"fable"|"opus"}`,
+   when you start `{"ids":[..],"flag":"in_progress"}`, when finished `{"ids":[..],"note":"action report","proof":"check name"}` (or `"image":"<base64 JPEG/PNG under 400 KB>"`; a Done needs a proof).
+   The app shows the flag, the report and the proof under the item; the owner Closes it (it leaves the app) or Reopens it with a note (it comes back as a new item). Every run reads it first: the daily run, the Turns Out run
    and the spare-usage night.
    References (owner, 20 Nov 2026): dispatch "Owner answers" `refs` too: REF lines (link, file, note, channel) and a "B64 ref-<id>.jpg" preview per
    file (`node scripts/media/from-log.mjs <run id> <dir>` makes the files). Study each into design/references.md (reverse-any-video skill: a pattern card,

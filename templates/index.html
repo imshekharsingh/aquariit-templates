@@ -152,6 +152,12 @@
   .fbi .st.done{color:var(--ok)}
   .fbi p{margin-top:3px;white-space:pre-wrap;overflow-wrap:anywhere}
   .fbi p.note{color:var(--mute);font-size:.8rem}
+  .fflow{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 2px}
+  .fflow span{font:600 .68rem system-ui,sans-serif;padding:3px 8px;border-radius:99px;background:var(--soft);color:var(--mute);transition:background .25s ease,color .25s ease}
+  .fflow span.y{background:var(--okbg);color:var(--ok)}.fflow span.n{background:var(--ink);color:var(--bg)}
+  .fbi .proof{display:block;max-width:100%;max-height:220px;margin-top:6px;border-radius:10px;border:1px solid var(--line)}
+  .fbi .fact{display:flex;gap:8px;margin-top:8px}.fbi .fact .btn{min-height:36px}
+  .fbi textarea{min-height:60px}
   /* References (owner, 20 Nov 2026): a link, a screenshot or a short clip for Claude to study (private R2, never the repo) */
   .ref input[type=url]{width:100%;min-height:44px;margin-top:8px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--well);color:var(--ink);font:400 16px system-ui,sans-serif}
   .ref .pick{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
@@ -1266,11 +1272,28 @@
   Array.prototype.forEach.call(document.querySelectorAll('#fb-ch button'), function(b){ b.addEventListener('click', function(){ fbCh = b.getAttribute('data-ch');
     Array.prototype.forEach.call(document.querySelectorAll('#fb-ch button'), function(x){ x.setAttribute('aria-pressed', String(x === b)); }); }); });
   function fbWhen(t){ var d = new Date(t); return isNaN(d) ? '' : d.toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }) + ' IST'; }
-  function fbItem(f){ var box = el('div', 'fbi'), h = el('div', 'h');
-    h.appendChild(el('span', null, fbWhen(f.created) + (f.channel && FBN[f.channel] ? ' · ' + FBN[f.channel] : ''))); h.appendChild(el('span', 'st' + (f.state === 'done' ? ' done' : ''), f.state === 'done' ? 'Done' : 'New'));
-    box.appendChild(h); box.appendChild(el('p', null, f.text)); if (f.note) box.appendChild(el('p', 'note', 'Claude: ' + f.note)); return box; }
+  // each message shows its flag (owner, 24 Nov 2026): Received, Reviewed (by Fable or Opus), In progress, Done (report + proof), then Closed (it leaves the app)
+  var FLAGS = [['received', 'Received'], ['reviewed', 'Reviewed'], ['in_progress', 'In progress'], ['done', 'Done']];
+  function fbPost(id, what, body){ return fetch('/api/feedback/' + id + '/' + what, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify(body || {}) }).then(function(r){ if (!r.ok) throw 0; return r.json(); }); }
+  function fbItem(f){ var box = el('div', 'fbi'), h = el('div', 'h'), fl = f.flag || (f.state === 'done' ? 'done' : 'received'), at = 0;
+    FLAGS.forEach(function(x, i){ if (x[0] === fl) at = i; });
+    h.appendChild(el('span', null, fbWhen(f.created) + (f.channel && FBN[f.channel] ? ' · ' + FBN[f.channel] : ''))); h.appendChild(el('span', 'st' + (fl === 'done' ? ' done' : ''), FLAGS[at][1]));
+    box.appendChild(h); box.appendChild(el('p', null, f.text));
+    var fw = el('div', 'fflow'); fw.setAttribute('role', 'img'); fw.setAttribute('aria-label', 'Status: ' + FLAGS[at][1] + (f.by && at >= 1 ? ', reviewed by ' + f.by : ''));
+    FLAGS.forEach(function(x, i){ var c = el('span', i < at ? 'y' : i === at ? 'n' : '', x[1] + (i === 1 && f.by && at >= 1 ? ' · ' + f.by : '')); fw.appendChild(c); });
+    box.appendChild(fw);
+    if (fl === 'done') { box.appendChild(el('p', 'note', 'Claude: ' + (f.report || f.note || '')));
+      if (f.proofImg) { var im = document.createElement('img'); im.className = 'proof'; im.alt = 'Proof'; im.loading = 'lazy'; im.src = f.proofImg; box.appendChild(im); }
+      if (f.proof) box.appendChild(el('p', 'note', 'Proof: ' + f.proof));
+      var row = el('div', 'fact'), cl = el('button', 'btn g', 'Close'), ro = el('button', 'btn g', 'Reopen'), ta = el('textarea'), go = el('button', 'btn', 'Send back'); cl.type = ro.type = go.type = 'button';
+      ta.placeholder = 'What is still wrong?'; ta.setAttribute('aria-label', 'Reopen note'); ta.hidden = go.hidden = true;
+      cl.addEventListener('click', function(){ cl.disabled = true; fbPost(f.id, 'close').then(function(){ box.remove(); fbLoad(); }, function(){ cl.disabled = false; cl.textContent = 'Try again'; }); });
+      ro.addEventListener('click', function(){ ta.hidden = go.hidden = false; ro.hidden = true; ta.focus(); });
+      go.addEventListener('click', function(){ var v = ta.value.trim(); if (!v) { ta.focus(); return; } go.disabled = true; fbPost(f.id, 'reopen', { note: v }).then(fbLoad, function(){ go.disabled = false; go.textContent = 'Try again'; }); });
+      row.appendChild(cl); row.appendChild(ro); box.appendChild(row); box.appendChild(ta); box.appendChild(go); }
+    return box; }
   function fbLoad(){ fetch('/api/feedback', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
-    .then(function(j){ var a = j.feedback || [], n = a.filter(function(f){ return f.state !== 'done'; }).length; fbList.textContent = ''; a.forEach(function(f){ fbList.appendChild(fbItem(f)); });
+    .then(function(j){ var a = j.feedback || [], n = a.filter(function(f){ return f.flag !== 'done' && f.state !== 'done'; }).length; fbList.textContent = ''; a.forEach(function(f){ fbList.appendChild(fbItem(f)); });
       fbN.textContent = n ? n + ' new' : a.length ? 'All done' : 'Write to Claude';
       REPLIES = a.filter(function(f){ return f.state === 'done' && f.note && !f.read_at; }); replies(); }).catch(function(){ replyBox.textContent = ''; replyBox.appendChild(el('p', 'mute', 'Replies could not load.')); }); }
   fbSend.addEventListener('click', function(){ var v = fbText.value.trim(); if (!v) { fbText.focus(); return; } fbSend.disabled = true;
