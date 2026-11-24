@@ -7,6 +7,11 @@ Format (at most 6 lines):
 ```
 
 
+## 2026-11-25 · claude/fable-decides · "Fable decides" daily flow + plain audit card (owner chat job, size M, part 2)
+- Done: design/runbook-daily.md: the 8-step build flow for web and tech with the exact create_session settings (Fable claude-fable-5-2 for pick, stills check, critic; Sonnet claude-sonnet-5-5 for research and build; Opus claude-opus-5-5 as the fallback), the 25 Nov note (tech storage-gap READY = web only; NOT READY = fresh tech reel today), the rejection watch (8 of 10 rejected two days running = research to Opus); the audit card rewritten to at most 6 plain lines with one example. scripts/pick-sheet.mjs (the day's options on one sheet; --log counts rejects), design/pick-log.md. CLAUDE.md: Fable budget names the two short calls.
+- Left: part 1 (style records in captions.json, check requirement, what-works method) follows in claude/reel-style-records. The app's Today header still reads "OK/ALARM <channel>" lines to show its status; the plain card no longer carries them, so that header shows only the time and changes until the app is changed to read something else.
+- For the owner: nothing to paste. The daily task prompt already says to follow runbook-daily.md exactly, and the runbook now starts the Fable and Sonnet sessions itself.
+
 ## 2026-11-24 · claude/what-works-24nov · What works + posting slots from real numbers (owner chat job, size M)
 - Done: design/what-works.md (per channel, top 5 vs bottom 5, do more / stop doing; weak evidence marked) and design/posting-slots.md. Data: one read-only dry collect (up to 50 posts per account). Strongest: web = fixes visible at a glance (Nov top 5 median 2,753 vs bottom 867); tech = gadget "worth it" questions (median 119 before 15 Nov, 1,206 since) with ~0 saves; Turns Out = 8 reels, too thin. Skip in 3 s (last 7 only) separates hits from misses on all channels.
 - Slots: online_followers returns no rows for all three accounts, so the slots (tech 15:00, Turns Out 17:00, web 19:00) are from post time vs reach, low confidence.
