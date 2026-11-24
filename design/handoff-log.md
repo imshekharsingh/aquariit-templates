@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 23:55 IST · claude/topic-bank-24nov · topic bank for 25-27 Nov (Sonnet research, Fable only picks)
+- Done: design/topic-bank.md: web 15 options (25, 26, 27 Nov), tech 10 (26, 27 Nov; 25 Nov skipped), each with hook, the one lesson, 2 facts with URLs, gold-look fit, a prop and the 2 picks per day. Web facts read in MDN's page source and browser-compat-data; tech facts read on apple.com, support.apple.com and developer.android.com (the only maker hosts reachable from here).
+- Not done: the CV critic verdict was NOT written into the review file; the write was blocked (it needs the critic's own session to write it, not a copy). Turns Out's task on 25 Nov re-checks and records it.
+- Left: weak options are marked in the file (popover, inert and the T27 options need a support or footnote re-read the morning of the build).
+
 ## 2026-11-24 22:10 IST · claude/hide-usbc-24nov · owner chat: tech usbc hidden after the owner called it horrible
 - Done: showreel-tech-usbc-two-numbers hidden + hold (owner: "horrible again"; only ai-memory was good); owner-feedback.md line: the critic compares every tech reel side by side with showreel-tech-ai-memory and says NOT READY unless it matches or beats it.
 - Next: 25 Nov tech is built on Fable (weekly reset) to the ai-memory standard; its critic gets that side-by-side rule in its prompt.
