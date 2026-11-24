@@ -585,7 +585,7 @@
       <div id="b-cards"></div>
     </section>
     <section class="tsec" id="needs" hidden><h2 class="lbl">Needs you</h2><div id="needs-list"></div><div id="t-ready"></div></section>
-    <h2 class="lbl">Today’s reels <span>post 13:00–21:00 IST</span></h2>
+    <h2 class="lbl">Today’s reels <span>each has its own time</span></h2>
     <div class="tlist" id="t-today"><p class="empty">Loading…</p></div>
     <h2 class="lbl">Tomorrow</h2>
     <div class="tlist" id="t-tomorrow"></div>
@@ -602,7 +602,7 @@
     </div>
     <details class="prof" id="prof" hidden><summary>Profile</summary></details>
     <h1 id="title">Showreels</h1>
-    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (any time 13:00–21:00 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes 10 minutes before each time. Save the cover too, then on Instagram: Edit cover → Add from camera roll. Turns Out reels have no date: post them when you choose.</p></details></div>
+    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (tech 15:00, Turns Out 17:00, web 19:00 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes at each time. Save the cover too, then on Instagram: Edit cover → Add from camera roll. Turns Out reels have no date: post them when you choose.</p></details></div>
     <div id="list"><p class="empty">Loading…</p></div>
   </section>
   <section class="pg" id="s-growth" hidden>
@@ -736,8 +736,10 @@
   if (CH[location.hash.slice(1)]) ch = location.hash.slice(1);
   // the exact slot (owner, 5 Nov 2026): "postAt" (HH:MM IST) in captions.json, else the channel's default: web 13:00 (19:00 when the note says so),
   // tech 19:00, Turns Out 20:00 (E15 from 6 Nov). The same rule is in src/worker.js (the reminders) and scripts/check.mjs
-  function slotOf(s, m){ if (/^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt; var k = chOf(s, DATA ? DATA.c : {});
-    return k === 'tech' ? '19:00' : k === 'c3' ? '20:00' : /\b19:00\b/.test(m.note || '') ? '19:00' : '13:00'; }
+  // channel defaults come from design/slots.json (25 Nov 2026; GET /api/slots): tech 15:00, Turns Out 17:00, web 19:00
+  var SLOTS = { tech: '15:00', c3: '17:00', web: '19:00' };
+  fetch('/api/slots', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.slots) { SLOTS = j.slots; Object.keys(SLOTS).forEach(function(k){ if (CH[k]) CH[k].slot = SLOTS[k] + ' IST'; }); } }).catch(function(){});
+  function slotOf(s, m){ if (/^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt; return SLOTS[chOf(s, DATA ? DATA.c : {})] || '13:00'; }
   function dueOf(s, m){ return m.postOn ? Date.parse(m.postOn + 'T' + slotOf(s, m) + ':00+05:30') : Infinity; }
   function when(s, m){ if (m.sample) return ['Sample · not scheduled', ''];   // sample (6 Nov 2026, temporary)
     if (!m.postOn) return m.onGo ? ['Ready · post when you choose', ' now'] : ['Not scheduled', '']; var t = slotOf(s, m), diff = Math.round((Date.parse(m.postOn) - Date.parse(istToday())) / DAY);
@@ -1266,7 +1268,9 @@
     var fr = rows[BST.length]; fr.className = o.fin === 'skipped' ? '' : o.fin ? 'on' : ''; fr.querySelector('em').textContent = o.fin === 'skipped' ? 'Skipped today' : o.fin === 'posted' ? 'Posted' : 'Ready to post'; fr.lastChild.textContent = o.fin ? (o.fin === 'skipped' ? 'not today' : 'done') : '';
     c.bi.style.width = p + '%'; c.bp.textContent = p + '%';
     c.ei.style.width = (o.making && o.pct != null ? Math.max(3, o.pct) : 0) + '%';
-    c.meta.textContent = o.fin ? (o.model ? 'Last worked on by ' + o.model : '') : o.model ? o.model + ' is working on it' : '';
+    var sm = o.name && DATA && DATA.c ? DATA.c[o.name] : null, slot = sm && /^\d{2}:\d{2}$/.test(sm.postAt || '') ? sm.postAt : SLOTS[c.k],
+        mm = o.fin === 'posted' ? '' : o.fin ? (o.model ? 'Last worked on by ' + o.model : '') : o.model ? o.model + ' is working on it' : '';
+    c.meta.textContent = (o.fin === 'posted' ? 'Posted' : 'Posts at ' + slot + ' IST') + (mm ? ' · ' + mm : '');   // the slot comes from design/slots.json
     var want = o.thumb ? o.thumb + '?v=' + encodeURIComponent((SROWS.filter(function(x){ return x.ch === c.k; })[0] || {}).at || '') : null;
     if (want !== c.img) { c.img = want; c.th.textContent = ''; if (want) { var im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.src = want; im.onerror = function(){ im.remove(); c.th.appendChild(chDot(c.k)); }; c.th.appendChild(im); } else c.th.appendChild(chDot(c.k)); }
     c.prev = o; }
