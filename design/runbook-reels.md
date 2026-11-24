@@ -103,6 +103,11 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
 - Settings (gear) > "What to be told about": one switch per type (GET/PUT /api/push/prefs, D1 push_prefs; all on until switched off). Every send has a key in D1 notif_log, so a reel
   never gets more than 1 nudge and 1 last call. The old "10 minutes before" reminder is gone; the 12:50 cron stays only so old 13:00 entries pass `npm run check`.
 
+## AI label (owner plan, 24 Nov 2026; built 25 Nov)
+- Every reel posting from 27 Nov has `"aiLabel": true|false` in its captions.json entry (npm run check fails without it). **true when anything looks realistic enough to pass as real footage** (photoreal 3D or media, a real-looking person, place or screen, a voice that could pass as a real person); false for clearly drawn or flat graphics. The builder sets it; the critic checks it (design/critic.md item 0b).
+- The reel card and the Post now confirm sheet show it. Post now sends `is_ai_generated=true` with the container when it is true (Meta changelog 22 Jun 2026, Instagram API with Instagram login; scripts/ig-publish.mjs); if Instagram refuses it nothing is posted and the app says to post by hand and turn on AI info. For a post made by hand the card says to turn on AI info in Instagram for that reel.
+- YouTube is reserved for later: its field is `containsSyntheticMedia`; nothing sends it yet.
+
 ## Archiving
 - A reel marked uploaded leaves the main list at once for its channel's compact "Posted" list (cover, title, posted date, its numbers once
   the collector has them; no video) (owner, 1 Nov 2026).
