@@ -9,7 +9,8 @@ Format (at most 6 lines):
 ## 2026-11-24 08:45 IST · claude/tech-miniled-zones · today's tech reel, built to the owner's preview gate (showreel-tech-miniled-zones)
 - Done: "Mini LED is not a new kind of screen" (quickmyth, home, global; Black Friday week). 3D on kit3d.js, one TV through seven shots: see-through hero with MYTH (frame 0), the picture sheet lifts (LCD), a low macro over the LEDs (LIGHTS), zones follow the moon (ZONES), all 2,304 light in 0.55 s, one zone behind its 6,400 pixels, a spec card (ZONES?), loop. Experiment tech-direction-3d try 2 (countTo idea, a second framing inside 4 s, cutsound).
 - Facts read today on primary pages: Apple Studio Display XDR specs (5120 x 2880, Mini-LED backlight with 2304 dimming zones; 6,400 pixels a zone is our sum), TrendForce 16 Nov 2026 (Mini LED TVs 28.78 million in 2026, +116%, near 15%; "premium LCD TV market").
-- Owner gate: a preview render (Tech reel, preview p1) goes to the app's Previews with ONE yes/no in "Needs you" (tech-miniled-ok, until 24 Nov). The reel's own render or `scripts/r2.sh promote` waits for the yes.
+- Preview p1 (run 45318302714) passed Output QA; two fixes from its real frames (the count blooms from the centre, not a diagonal band; a clean pixel macro) go into preview p2 (claude/tech-miniled-zones-p2).
+- Owner gate: a preview render (Tech reel, preview p2) goes to the app's Previews with ONE yes/no in "Needs you" (tech-miniled-ok, until 24 Nov). The reel's own render or `scripts/r2.sh promote` waits for the yes.
 - Left: after the owner's yes: promote or render, reel-status, item 13, owner-feedback.md and critic.md against the real MP4; then the critic. Builder's PREMIUM line is in the review file; weakest shot is the pixel macro (20-24 s).
 - For the other account: nothing.
 

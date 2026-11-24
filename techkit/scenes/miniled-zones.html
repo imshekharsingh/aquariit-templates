@@ -178,15 +178,15 @@ function zoneLum(i, j, t, sh) {
   if (sh === 1) { const q = (t - lerp(C.lcd - .75, C.lcd - .1, i / NX)) / .2; return lerp(.1 + .9 * picLum(i, j, t, 0), .42, ease(prog(t, B[1], C.lift + .5))) + .5 * eout(q) + .3 * Math.sin(Math.PI * clamp(q / 1.6)); }   // the backlight comes up across the board as "LCD" lands
   if (sh === 2) { const d = Math.hypot(zx(i) - (MX - .9), (zy(j) - (MY - .8)) * 1.15), q = (t - lerp(WAVE0(), WAVE1(), clamp(d / 4.4))) / .16; return .04 + .96 * eout(q) + .5 * Math.sin(Math.PI * clamp(q / 1.4)); }
   if (sh === 3) return .02 + 1.1 * picLum(i, j, t, 3);
-  if (sh === 4) { const q = (t - lerp(CNT0(), CNT1() - .05, (i + (NY - 1 - j) * .9) / (NX + NY * .9))) / .1; return .03 + .8 * eout(q) + .6 * Math.sin(Math.PI * clamp(q / 2.4)); }
+  if (sh === 4) { const q = (t - lerp(CNT0(), CNT1() - .05, Math.min(1, Math.hypot((i + .5 - NX / 2) / NX, (j + .5 - NY / 2) / NX) / .574))) / .1; return .03 + .8 * eout(q) + .6 * Math.sin(Math.PI * clamp(q / 2.4)); }
   if (sh === 5) return i === ZI && j === ZJ ? .55 + .6 * ease(prog(t, B[5] + .1, C.pixel)) : .0;
   return 0;
 }
 const cSig = new THREE.Color(0xdff6ff), cOff = new THREE.Color(0x2a2616), cTmp = new THREE.Color();
 function setZones(t, sh) {
-  const haloK = sh === 2 ? .085 : sh === 5 ? .3 : sh === 4 ? .34 : .42, cellK = sh === 5 ? .62 : sh === 2 ? .0 : sh === 4 ? .26 : sh === 3 ? .34 : .13;
+  const haloK = sh === 2 ? .085 : sh === 5 ? .1 : sh === 4 ? .34 : .42, cellK = sh === 5 ? .4 : sh === 2 ? .0 : sh === 4 ? .26 : sh === 3 ? .34 : .13;
   for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) { const n = (j * NX + i) * 3, a = clamp(zoneLum(i, j, t, sh), 0, 1.6);
-    cTmp.copy(cOff).lerp(cSig, clamp(a)).multiplyScalar(sh === 2 ? .5 + .45 * a : sh === 5 ? 2.2 * a : .6 + .9 * a); colTop[n] = cTmp.r; colTop[n + 1] = cTmp.g; colTop[n + 2] = cTmp.b;
+    cTmp.copy(cOff).lerp(cSig, clamp(a)).multiplyScalar(sh === 2 ? .5 + .45 * a : sh === 5 ? .9 * a : .6 + .9 * a); colTop[n] = cTmp.r; colTop[n + 1] = cTmp.g; colTop[n + 2] = cTmp.b;
     const hk = haloK * a * a; colHalo[n] = .55 * hk; colHalo[n + 1] = .86 * hk; colHalo[n + 2] = 1 * hk;
     const ck = cellK * a; colCell[n] = (sh === 5 ? .3 : .62) * ck; colCell[n + 1] = (sh === 5 ? .78 : .88) * ck; colCell[n + 2] = 1 * ck; }
   ledTop.instanceColor.needsUpdate = true; ledHalo.instanceColor.needsUpdate = true; ledCell.instanceColor.needsUpdate = true;
@@ -204,7 +204,7 @@ function shotCam(t, sh) {
   if (sh === 2) { const k = G(u); return { pos: V(MX - lerp(1.5, 1.15, k), MY - lerp(1.5, 1.42, k), lerp(.5, .42, k)), look: V(MX + lerp(.35, .55, k), MY + .75, 0), fov: 40, ap: .012, focus: V(MX - .5 + .5 * k, MY - .55 + .35 * k, 0) }; }
   if (sh === 3) { const k = G(u), F0 = ORB(lerp(-.52, -.36, k), lerp(28.6, 27.2, k), 4.4, 4.3), k2 = ease(prog(t, B[4] - .8, B[4])); return KIT.reframe(F0, FRONT, 0 * k2); }
   if (sh === 4) { const F1 = { pos: V(3.4, 1.5, 28.6 * (1 - hold(.01))), look: V(0, 4.3, 0), fov: 31 }; return KIT.reframe(FRONT, F1, ease(prog(t, B[4] + .05, B[4] + 1.1))); }
-  if (sh === 5) { const k = G(u); return { pos: V(ZC.x + lerp(.13, .09, k), ZC.y - lerp(.15, .12, k), lerp(.5, .455, k)), look: V(ZC.x, ZC.y + .016, 0), fov: 34 }; }
+  if (sh === 5) { const k = G(u); return { pos: V(ZC.x + lerp(.06, .035, k), ZC.y - lerp(.075, .055, k), lerp(.47, .425, k)), look: V(ZC.x, ZC.y + .016, 0), fov: 34 }; }
   const k = G(prog(t, B[6], TOTAL), .45), A0 = shotCam(0, 0);
   return { pos: V(3.4, 3.9, 29.6).lerp(A0.pos, k), look: V(0, 4.3, 0).lerp(A0.look, k), fov: 31 };
 }
@@ -242,7 +242,7 @@ function apply(t, sh = shotAt(t), mod = null) {
   if (lcd.visible) drawScreen(t, sh);
   setZones(t, sh);
   room.visible = sh !== 2 && sh !== 5; tvGlow.visible = room.visible; tvGlow.material.opacity = sh === 4 ? .1 + .2 * prog(t, CNT0(), CNT1()) : .2;
-  ledPad.visible = ledPkg.visible = sh !== 5;   // behind the pixels only the light itself shows ledCell.visible = sh !== 2;
+  ledPad.visible = ledPkg.visible = ledTop.visible = sh !== 5;   // behind the pixels only the light itself shows ledCell.visible = sh !== 2;
   keyL.intensity = sh === 2 ? .8 : sh === 5 ? .12 : 2.3; rimL.intensity = sh === 2 ? 1.7 : sh === 5 ? .3 : 2.9; rim2L.intensity = sh === 2 ? 1.1 : sh === 5 ? .2 : 1.5;
   scrLight.intensity = sh === 2 || sh === 5 ? 0 : sh === 4 ? .6 + 3.4 * prog(t, CNT0(), CNT1()) : sh === 3 ? 1.2 : 2.6;
   pose(cam, c);
