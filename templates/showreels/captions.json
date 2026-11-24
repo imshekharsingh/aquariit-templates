@@ -2839,5 +2839,54 @@
   },
   "caption": "A 256 GB phone can show 238 GB 📱 and nothing is missing.\n\nThe box counts a gigabyte the way storage makers do: 1 GB = 1 billion bytes (Apple's support page says so for every iPhone, iPad and Mac). Some apps and systems count the other way: 1 GB = 1,073,741,824 bytes. Same chip, bigger gigabytes, so a smaller number: 128 → 119, 256 → 238, 512 → 477, 1 TB → 931.\n\nThe gap grows with size: about 69 GB on a 1 TB phone, more than a whole 64 GB phone. And the formatting and the system use some space too (\"actual formatted capacity less\").\n\nBuying a phone? Take about 7% off the box number, then choose for what's left. Which size is yours? 👇 Send this to the friend who's about to buy one.",
   "hold": "Not ready, no post day (owner, 24 Nov 2026 night: no third render). Render 2 failed Output QA (NUMBERS rolling counts, SYNC 931, EDGES 1 TB box) and has a 26 s back-of-box slip; the fix is on branch claude/storage-gap-fix3 and in review/tech/showreel-tech-storage-gap.md item 13."
+ },
+ "showreel-tech-battery-cycles": {
+  "channel": "tech",
+  "postOn": "2026-11-25",
+  "postAt": "15:00",
+  "cover": {
+   "t": 4.7,
+   "lines": [
+    "Your battery has",
+    "a number of lives"
+   ],
+   "accent": 1
+  },
+  "format": "xray",
+  "device": "charging",
+  "aiLabel": true,
+  "concept": "Your phone battery has a number of lives: a pouch battery cell opened like an x-ray with a tally scratched into its glass: 500 marks (iPhone 14 and earlier), then 1000 (iPhone 15) at 80% of original capacity, under ideal conditions (Apple Support, read 25 Nov 2026); one cycle = using 100% in total; 80% is a design target, not a deadline; how you use and charge it decides the real number; check battery health. Global with India in the post text; loops to the opening.",
+  "experiment": {
+   "id": "verdict-card",
+   "change": "improvements.md tech item 'side-by-side verdict card': in shot D both cells (500 marks and 1000 marks) stand whole side by side for the last 2 s of the shot as one saveable frame; hero is its own object (a pouch cell with a scratched tally), not a phone; numbers change on the spoken word, never roll",
+   "vs": "median"
+  },
+  "caption": "Your battery is rated for 500 charges. On newer phones, DOUBLE 🔋📈\n\nApple says batteries of iPhone 14 models and earlier are designed to keep 80% of their original capacity at 500 complete charge cycles, and iPhone 15 batteries at 1000 complete charge cycles, under ideal conditions.\n\nA charge cycle isn't one plug-in: you complete one when you've used an amount that equals 100% of the battery's capacity, added up. And 80% is a design target, not a deadline: the real number depends on how you use and charge your phone.\n\nCheck your battery health in settings, in India or anywhere. What does yours say? 👇 Send this to the friend who charges at 3% every night.",
+  "keywords": [
+   "phone battery cycles",
+   "how many charge cycles",
+   "iphone 15 battery 1000 cycles",
+   "battery health explained",
+   "charge cycle meaning",
+   "battery capacity 80 percent",
+   "how long does a phone battery last"
+  ],
+  "hashtags": [
+   "#battery",
+   "#smartphone",
+   "#iphone",
+   "#techexplained",
+   "#gadgets"
+  ],
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "number",
+   "look": "dark",
+   "hero": "battery cell",
+   "firstSecondTension": "a tally of marks being scratched into a battery cell by amber sparks",
+   "payoff": "tip"
+  }
  }
 }

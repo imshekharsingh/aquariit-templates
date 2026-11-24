@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>battery-cycles</title>
+<!-- @techin20sec, 25 Nov 2026: "Your battery is rated for 500 charges. On newer phones, double." (Apple Support, iPhone battery and performance).
+     Built from the GOLD tech reel (showreel-tech-ai-memory) look: ink background (#07080c), one lit hero low and large, the empty top band for ONE bold
+     word or number at a time (white, cyan for the better number, amber for the target), 7 shots with different cut kinds, a slow push under every hold,
+     real motion blur, the caption plate at y 1448. The hero is its OWN object (a pouch battery cell opened up like an x-ray, a tally scratched into its face),
+     never a phone. Numbers change on the spoken word (500 -> 1000), never a rolling counter; every object stays whole inside the frame.
+     Real 3D: three.js r149 (MIT), inlined by techkit/make.py at the THREE marker; window.render(t) sets everything from t (no rAF, seeded randomness).
+     Shots (cut on the voice cues from timeline.js): A the cell and its tally, 500 then 1000 | B one cycle = a ring of four quarters that closes |
+     C the 80% line on a low three-quarter cell | D two cells side by side, 500 and 1000 | E the target ring, the cell keeps going |
+     F three worn cells in a row (habits) | G the health card, the tally wipes, back to A (loop). Ink + white + cyan (charge) + amber (target, heat) only. -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#07080c}
+#out{position:absolute;left:0;top:0;width:1080px;height:1920px}
+#gl{position:absolute;left:-4000px;top:0}
+#caps{position:absolute;left:130px;right:130px;top:1448px;text-align:center;color:#f4f6f8;font-family:"Inter Display",Inter,sans-serif;font-weight:700;
+  font-size:52px;line-height:1.14;letter-spacing:-.01em;text-shadow:0 3px 18px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.9)}
+</style></head><body>
+<canvas id="out" width="1080" height="1920"></canvas>
+<div id="caps" data-subs></div>
+<script src="timeline.js"></script>
+<!--THREE-->
+<!--KIT3D-->
+<script>
+(() => {
+const W = 1080, H = 1920;
+const INK = 0x07080c, SIG = 0x38e1ff, HEAT = 0xffae3d, SIGC = '#38e1ff', HEATC = '#ffae3d', WHITE = '#f4f6f8';
+const TL = window.TL, C = TL.cues, SC = TL.scenes, TOTAL = TL.total;
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const lerp = (a, b, u) => a + (b - a) * u;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = (u) => (u = clamp(u), u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+const eout = (u) => 1 - Math.pow(1 - clamp(u), 3);
+const ein = (u) => Math.pow(clamp(u), 3);
+const eback = (u) => { u = clamp(u); const c = 1.6; return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); };
+function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const KIT = window.KIT3D, Q = window.KITQ || 1;   // KITQ < 1: a quick local draft (fewer samples)
+
+// ---------- renderer ----------
+const gl = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+const SS = 1; gl.setPixelRatio(1); gl.setSize(W * SS, H * SS, false); gl.domElement.id = 'gl'; document.body.appendChild(gl.domElement);
+gl.outputEncoding = THREE.sRGBEncoding; gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.2;
+gl.setClearColor(INK, 1);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(INK);
+const cam = new THREE.PerspectiveCamera(30, W / H, 0.05, 400);
+const out = document.getElementById('out'), o = out.getContext('2d'); o.imageSmoothingEnabled = true; o.imageSmoothingQuality = 'high';
+
+// studio reflections: a dark room with three soft boxes (deterministic PMREM)
+{ const env = new THREE.Scene(); env.background = new THREE.Color(0x050608);
+  const box = (w, h, x, y, z, c) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m); };
+  box(8, 3, 0, 7, 5, 0xdde2e8); box(2, 9, -8, 1, 3, 0x9fb4c8); box(2, 9, 8, 0, 2, 0xd8c8b0); box(10, 2, 0, -8, -4, 0x202428);
+  const pm = new THREE.PMREMGenerator(gl); scene.environment = pm.fromScene(env, 0.02).texture; }
+
+// ---------- textures (canvas, code-drawn) ----------
+function ctex(w, h, draw) { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t; }
+const KM = KIT.materials(THREE, ctex);
+const glowTex = ctex(256, 256, (c, w, h) => { const g = c.createRadialGradient(128, 128, 0, 128, 128, 128); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.25, 'rgba(255,255,255,.35)'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, w, h); });
+glowTex.encoding = THREE.LinearEncoding;
+function rrShape(w, h, r) { const s = new THREE.Shape(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; }
+function rrPath(w, h, r) { const s = new THREE.Path(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.quadraticCurveTo(x, y, x, y + r); s.lineTo(x, y + h - r); s.quadraticCurveTo(x, y + h, x + r, y + h); s.lineTo(x + w - r, y + h); s.quadraticCurveTo(x + w, y + h, x + w, y + h - r); s.lineTo(x + w, y + r); s.quadraticCurveTo(x + w, y, x + w - r, y); s.lineTo(x + r, y); return s; }
+
+// ---------- the cell: a pouch battery opened up like an x-ray, a tally scratched into its glass face ----------
+const CW = 2.5, CH = 4.7, CD = .34, FW = CW - .16, FH = CH - .16, TG = .15, PXU = 437;   // TG: one tally group (4 strokes and a strike = 5 marks) is TG wide and tall
+const TW = Math.round(FW * PXU), TH = Math.round(FH * PXU);
+const BLK = 10 * TG, GAP = .22, TOP0 = .16;                      // two blocks of 10 x 10 groups = 500 marks each; the second block opens at "double"
+// r1, r2 (0..1): how much of each block is scratched in; the newest groups glow hot amber, the old ones are warm white
+function drawTally(c, w, h, r1, r2, one) {
+  c.clearRect(0, 0, w, h); c.fillStyle = 'rgba(6,12,20,.2)'; c.fillRect(0, 0, w, h); c.lineCap = 'round';
+  if (one != null) {   // one big group (the single cycle on B): four strokes and a strike, each drawn in turn
+    const s = w * .62, gx = (w - s) / 2, gy = h * .3, R = rng(5);
+    for (let k = 0; k < 5; k++) { const p = clamp(one * 5 - k); if (p <= 0) continue; c.strokeStyle = p < 1 ? '#ffb347' : '#fff1d6'; c.lineWidth = 16; c.shadowColor = '#ff9a2e'; c.shadowBlur = 26; c.beginPath();
+      if (k < 4) { const xx = gx + s * (.12 + k * .25), j = (R() - .5) * 12; c.moveTo(xx + j, gy); c.lineTo(xx - j * .6, gy + s * .66 * p); }
+      else { c.moveTo(gx - 6, gy + s * .6); c.lineTo(gx - 6 + (s + 12) * p, gy + s * .6 - s * .55 * p); }
+      c.stroke(); }
+    c.shadowBlur = 0; return; }
+  [[r1, 0], [r2, 1]].forEach(([r, b]) => {
+    const R = rng(90 + b), g0 = Math.round(r * 100), x0 = (FW - BLK) / 2, y0 = TOP0 + b * (BLK + GAP), s = TG * PXU;
+    for (let g = 0; g < g0; g++) { const col = g % 10, row = Math.floor(g / 10), gx = (x0 + col * TG) * PXU, gy = (y0 + row * TG) * PXU, hot = r < 1 && g > g0 - 9;
+      c.strokeStyle = hot ? '#ffb347' : 'rgba(255,238,205,.95)'; c.lineWidth = hot ? 5.5 : 4.5; c.shadowColor = hot ? '#ff9a2e' : 'rgba(255,200,120,.8)'; c.shadowBlur = hot ? 14 : 5;
+      for (let k = 0; k < 4; k++) { const xx = gx + s * (.13 + k * .2) + (R() - .5) * 2.5, j = (R() - .5) * 5; c.beginPath(); c.moveTo(xx + j, gy + s * .12); c.lineTo(xx - j * .6, gy + s * .88); c.stroke(); }
+      c.beginPath(); c.moveTo(gx + s * .02, gy + s * .78 + (R() - .5) * 4); c.lineTo(gx + s * .98, gy + s * .2); c.stroke(); } });
+  c.shadowBlur = 0;
+}
+const tallyTex = (r1, r2, one) => { const t = ctex(TW, TH, (c, w, h) => drawTally(c, w, h, r1, r2, one)); t.encoding = THREE.sRGBEncoding; return t; };
+const tallyKey = new Map();   // redraw a live tally only when it changed
+function tallySet(tex, r1, r2, one) { const key = Math.round(r1 * 100) + '/' + Math.round(r2 * 100) + '/' + (one == null ? '-' : Math.round(one * 60)); if (tallyKey.get(tex) === key) return; tallyKey.set(tex, key); drawTally(tex.image.getContext('2d'), TW, TH, r1, r2, one); tex.needsUpdate = true; }
+
+const M_COPPER = new THREE.MeshStandardMaterial({ color: 0xb87333, metalness: 1, roughness: .35, envMapIntensity: .9 });
+const foil = new THREE.MeshPhysicalMaterial({ color: 0x6c7b8e, metalness: .92, roughness: .34, clearcoat: .4, clearcoatRoughness: .3, envMapIntensity: .85 });
+const backPlate = new THREE.MeshStandardMaterial({ color: 0x070a0f, metalness: .2, roughness: .8, envMapIntensity: .05 });
+const fillTex = ctex(8, 256, (c, w, h) => { const g = c.createLinearGradient(0, h, 0, 0); g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(1, 'rgba(255,255,255,.3)'); c.fillStyle = g; c.fillRect(0, 0, w, h); });
+fillTex.encoding = THREE.LinearEncoding;
+const IW = FW - .3, IH = FH - .5;   // the inner stack (what the charge fills)
+const edgesGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(CW, CH, CD));
+const plateGeo = new THREE.PlaneGeometry(IW, IH);
+const faceGeo = (() => { const g = new THREE.ShapeGeometry(rrShape(FW, FH, .14), 20), uv = g.attributes.uv, pos = g.attributes.position; for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / FW + .5, pos.getY(i) / FH + .5); return g; })();
+const frameGeo = (() => { const s = rrShape(CW, CH, .2); s.holes.push(rrPath(FW, FH, .13)); const g = new THREE.ExtrudeGeometry(s, { depth: CD, bevelEnabled: true, bevelThickness: .03, bevelSize: .03, bevelSegments: 4, curveSegments: 20 }); g.translate(0, 0, -CD / 2); return g; })();
+// a cell facing +z; tex is the tally on its glass. setLevel(0..1) fills the stack with charge, mark(0..1) places the 80% line.
+function makeCell(tex) {
+  const G = new THREE.Group(), U = {};
+  G.add(new THREE.Mesh(frameGeo, foil));
+  const bk = new THREE.Mesh(new THREE.PlaneGeometry(FW, FH), backPlate); bk.position.z = -CD / 2 + .012; bk.rotation.y = Math.PI; G.add(bk);
+  for (let i = 0; i < 9; i++) { const p = new THREE.Mesh(plateGeo, new THREE.MeshStandardMaterial({ color: i % 2 ? 0x0b141c : 0x16100c, metalness: .2, roughness: .8, envMapIntensity: .02, transparent: true, opacity: .45, side: THREE.DoubleSide, depthWrite: false })); p.position.z = -CD / 2 + .06 + i * .027; G.add(p); }
+  const fill = new THREE.Mesh(plateGeo, new THREE.MeshBasicMaterial({ map: fillTex, color: 0x0b9bbd, transparent: true, opacity: .62, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); fill.position.z = CD / 2 - .05; fill.renderOrder = 2; G.add(fill);
+  const surf = new THREE.Mesh(new THREE.PlaneGeometry(IW, .05), new THREE.MeshBasicMaterial({ color: 0x7fe9ff, transparent: true, opacity: .9, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); surf.position.z = CD / 2 - .04; surf.renderOrder = 3; G.add(surf);
+  const mk = new THREE.Mesh(new THREE.PlaneGeometry(FW + .25, .03), new THREE.MeshBasicMaterial({ color: 0xff7a00, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); mk.position.z = CD / 2 + .045; mk.renderOrder = 6; G.add(mk);
+  const mkg = new THREE.Mesh(new THREE.PlaneGeometry(FW + .5, .3), new THREE.MeshBasicMaterial({ map: glowTex, color: HEAT, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); mkg.position.z = CD / 2 + .05; mkg.renderOrder = 6; G.add(mkg);
+  const face = new THREE.Mesh(faceGeo, new THREE.MeshStandardMaterial({ map: tex, transparent: true, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: .85, roughness: .35, metalness: 0, depthWrite: false })); face.position.z = CD / 2 + .03; face.renderOrder = 4; G.add(face);
+  const glass = new THREE.Mesh(faceGeo, new THREE.MeshPhysicalMaterial({ color: 0x0b0d11, metalness: .1, roughness: .1, clearcoat: .3, transparent: true, opacity: .05, depthWrite: false, envMapIntensity: .12 })); glass.position.z = CD / 2 + .04; glass.renderOrder = 5; G.add(glass);
+  const tabs = [[-.5, foil], [.5, M_COPPER]].map(([x, m]) => { const t = new THREE.Mesh(new THREE.BoxGeometry(.52, .5, .05), m); t.position.set(x, CH / 2 + .25, 0); G.add(t); return t; });
+  const flange = new THREE.Mesh(new THREE.BoxGeometry(CW * .9, .16, .1), foil); flange.position.set(0, CH / 2 + .02, 0); G.add(flange);
+  const ed = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: SIG, transparent: true, opacity: .5 })); G.add(ed);
+  const base = -IH / 2;
+  U.setLevel = (l) => { l = clamp(l); fill.scale.y = Math.max(.001, l); fill.position.y = base + IH * l / 2; surf.position.y = base + IH * l; surf.visible = l > .01; };
+  U.tint = (hex) => { fill.material.color.setHex(hex === SIG ? 0x0b9bbd : 0xd0780a); ed.material.color.setHex(hex); };
+  U.mark = (level, a) => { mk.position.y = mkg.position.y = base + IH * level; mk.material.opacity = a; mkg.material.opacity = .55 * a; };
+  U.ed = ed; U.face = face; U.tex = tex; U.setLevel(1);
+  G.userData = U; return G;
+}
+// sparks: bursts of hot particles, a pure function of t
+const SPARK_N = 900, sparkPos = new Float32Array(SPARK_N * 3), sparkCol = new Float32Array(SPARK_N * 3), sparkGeo = new THREE.BufferGeometry();
+sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3)); sparkGeo.setAttribute('color', new THREE.BufferAttribute(sparkCol, 3));
+const sparks = new THREE.Points(sparkGeo, new THREE.PointsMaterial({ size: .2, map: glowTex, vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true }));
+sparks.frustumCulled = false; scene.add(sparks);
+const BURSTS = [];    // { t0, at: () => world point, n, seed, sp, life, up, sz }
+function updateSparks(t) {
+  let k = 0; const hot = new THREE.Color(0xfff2d8), amb = new THREE.Color(HEAT);
+  for (const b of BURSTS) { const dt = t - b.t0; if (dt < 0 || dt > 1.2 || !b.on()) continue; const R = rng(b.seed), p0 = b.at();
+    for (let i = 0; i < b.n && k < SPARK_N; i++) { const th = R() * Math.PI * 2, ph = R() * 1.2, v = b.sp * (.35 + .65 * R()), life = b.life * (.5 + .5 * R());
+      const dx = Math.cos(th) * Math.sin(ph), dy = Math.sin(th) * Math.sin(ph) * .8 + b.up, dz = Math.cos(ph) * .9;
+      const a = 1 - dt / life; if (a <= 0) continue;
+      sparkPos[k * 3] = p0.x + dx * v * dt; sparkPos[k * 3 + 1] = p0.y + dy * v * dt - 4.5 * dt * dt * b.g; sparkPos[k * 3 + 2] = p0.z + dz * v * dt;
+      const col = hot.clone().lerp(amb, clamp(dt / (life * .5))).multiplyScalar(a * 1.6); sparkCol[k * 3] = col.r; sparkCol[k * 3 + 1] = col.g; sparkCol[k * 3 + 2] = col.b; k++; } }
+  for (let i = k; i < SPARK_N; i++) { sparkPos[i * 3 + 1] = -9999; sparkCol[i * 3] = sparkCol[i * 3 + 1] = sparkCol[i * 3 + 2] = 0; }
+  sparkGeo.attributes.position.needsUpdate = true; sparkGeo.attributes.color.needsUpdate = true; sparkGeo.setDrawRange(0, Math.max(1, k));
+}
+
+// ---------- lights, floor and the worlds (each in its own place, shown only in its shot) ----------
+const LIT = KIT.light(THREE, scene), keyL = LIT.key, rimL = LIT.rim, rim2L = LIT.rim2;
+const FLOOR_Y = -CH / 2 - .05;
+const floorM = new THREE.Mesh(new THREE.PlaneGeometry(90, 90), new THREE.MeshStandardMaterial({ color: 0x0b0e13, metalness: .85, roughness: .3, envMapIntensity: .45 })); floorM.rotation.x = -Math.PI / 2; floorM.visible = false; scene.add(floorM);   // no lit floor: its soft-box reflection was a grey slab (Output QA LOOK)
+const WORLD = [V(0, 0, 0), V(0, 0, -60), V(0, 0, -160), V(0, 0, -300), V(0, 0, -450), V(0, 0, -600), V(0, 0, 0)];   // A B C D E F G
+const sprite = (color, op, sx, sy) => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false })); s.scale.set(sx, sy, 1); return s; };
+
+// A, C, E, G: the hero cell (its tally is redrawn live)
+const heroTex = tallyTex(0, 0), hero = makeCell(heroTex); scene.add(hero);
+const heroGlow = sprite(0x6aa8d8, .2, 14, 20); scene.add(heroGlow);
+// the gauge beside the hero in C: ticks every 10%, the 80% one in amber
+const gauge = new THREE.Group(); hero.add(gauge);
+{ const tm = new THREE.MeshBasicMaterial({ color: 0x9fb4c8, transparent: true, opacity: .7 }), am = new THREE.MeshBasicMaterial({ color: HEAT });
+  for (let i = 0; i <= 10; i++) { const major = i % 5 === 0, m = new THREE.Mesh(new THREE.BoxGeometry(i === 8 ? .62 : major ? .46 : .26, i === 8 ? .06 : .035, .03), i === 8 ? am : tm); m.position.set(CW / 2 + .5 + (i === 8 ? .15 : 0), -IH / 2 + IH * i / 10, 0); gauge.add(m); }
+  const sp = new THREE.Mesh(new THREE.BoxGeometry(.03, IH, .03), tm); sp.position.set(CW / 2 + .33, 0, 0); gauge.add(sp); }
+// C's backdrop: rows of dark cells far behind, out of focus, lit by the rim
+const bgC = new THREE.InstancedMesh(new THREE.BoxGeometry(CW * .7, CH * .7, CD * .7), new THREE.MeshBasicMaterial({ color: 0x010203 }), 21); bgC.position.copy(WORLD[2]); scene.add(bgC);
+{ const d = new THREE.Object3D(); for (let j = 0; j < 3; j++) for (let i = 0; i < 7; i++) { d.position.set((i - 3) * 2.3, (j - 1) * 3.9 + 1, -15 - (j % 2) * 1.6); d.rotation.y = (i - 3) * .05; d.updateMatrix(); bgC.setMatrixAt(j * 7 + i, d.matrix); } }
+// B: one cycle is a ring of four quarters that closes around a small cell
+const RR = 1.4, ringG = new THREE.Group(); ringG.position.copy(WORLD[1]); scene.add(ringG);
+const bTex = tallyTex(0, 0, 0), cellB = makeCell(bTex); cellB.scale.setScalar(.42); ringG.add(cellB);
+const ARC = [], baseRing = new THREE.Mesh(new THREE.TorusGeometry(RR, .03, 10, 72), new THREE.MeshBasicMaterial({ color: 0x5a7388, transparent: true, opacity: .45 })); ringG.add(baseRing);
+for (let k = 0; k < 4; k++) { const g = new THREE.Group(), a = new THREE.Mesh(new THREE.TorusGeometry(RR, .075, 12, 40, Math.PI / 2 - .14), new THREE.MeshBasicMaterial({ color: SIG, transparent: true, opacity: 0, toneMapped: false })),
+    h = new THREE.Mesh(new THREE.TorusGeometry(RR, .26, 10, 40, Math.PI / 2 - .14), new THREE.MeshBasicMaterial({ color: 0x0b9bbd, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  g.rotation.z = Math.PI / 2 - (k + 1) * Math.PI / 2 + .07; g.add(a, h); ringG.add(g); ARC.push({ a, h }); }
+const bead = sprite(0xffffff, 0, 1.3, 1.3); ringG.add(bead); const ringGlow = sprite(SIG, 0, 9, 9); ringGlow.position.z = -.5; ringG.add(ringGlow);
+// D: two cells side by side, 500 marks and 1000 marks
+const cellsD = new THREE.Group(); cellsD.position.copy(WORLD[3]); scene.add(cellsD);
+const cellL = makeCell(tallyTex(1, 0)), cellR = makeCell(tallyTex(1, 1)); cellL.position.set(-1.3, 0, 0); cellL.rotation.y = .3; cellR.position.set(6, 0, -.3); cellR.rotation.y = -.3; cellL.scale.setScalar(.88); cellR.scale.setScalar(.88); cellsD.add(cellL, cellR);
+[cellL, cellR].forEach((c) => { c.userData.setLevel(.8); c.userData.mark(.8, .9); }); const dGlow = sprite(0x6aa8d8, .16, 22, 16); dGlow.position.set(0, .5, -3); cellsD.add(dGlow);
+// E: the target rings behind the hero
+const tgtE = new THREE.Group(); tgtE.position.set(WORLD[4].x, .5, WORLD[4].z - 6); scene.add(tgtE);
+const TG_R = [1.6, 2.3, 3.0].map((r, i) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, .035 + i * .004, 8, 90), new THREE.MeshBasicMaterial({ color: HEAT, transparent: true, opacity: .55 - i * .12, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); tgtE.add(m); return m; });
+const tgtGlow = sprite(HEAT, .22, 12, 12); tgtE.add(tgtGlow);
+// F: three worn cells in a row, going back
+const rowF = new THREE.Group(); rowF.position.copy(WORLD[5]); scene.add(rowF);
+const ROW = [[-.9, 0, .3, .78, .9], [1.1, -6.5, -.3, .6, .55], [-.6, -13, .3, .45, .25]].map(([x, z, ry, lv, r]) => { const c = makeCell(tallyTex(r, 0)); c.position.set(x, 0, z); c.rotation.y = ry; c.userData.setLevel(lv); rowF.add(c); return c; });
+ROW[0].userData.tint(HEAT); const rowGlow = sprite(HEAT, .12, 14, 16); rowGlow.position.set(0, .5, -2); rowF.add(rowGlow);
+const FOGF = new THREE.FogExp2(0x090b10, .02);
+// G: the health card in front of the hero (code-drawn, no brand)
+const cardTex = ctex(640, 480, (c, w, h) => {
+  c.fillStyle = 'rgba(8,14,22,.9)'; c.beginPath(); c.roundRect ? c.roundRect(8, 8, w - 16, h - 16, 40) : c.rect(8, 8, w - 16, h - 16); c.fill();
+  c.strokeStyle = 'rgba(56,225,255,.85)'; c.lineWidth = 5; c.stroke();
+  c.fillStyle = '#f4f6f8'; c.font = '800 54px "Inter Display", Inter, sans-serif'; c.fillText('Battery health', 52, 118);
+  c.fillStyle = 'rgba(244,246,248,.6)'; c.font = '600 36px "Inter Display", Inter, sans-serif'; c.fillText('Maximum capacity', 52, 218);
+  c.fillStyle = 'rgba(244,246,248,.14)'; c.fillRect(52, 262, w - 104, 34); c.fillStyle = '#38e1ff'; c.fillRect(52, 262, (w - 104) * .84, 34);
+  c.fillStyle = 'rgba(244,246,248,.18)'; c.fillRect(52, 346, 300, 18); c.fillRect(52, 386, 210, 18); });
+cardTex.encoding = THREE.sRGBEncoding;
+const card = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 2.18), new THREE.MeshBasicMaterial({ map: cardTex, transparent: true, depthWrite: false })); card.position.set(0, -.2, CD / 2 + 1.2); card.renderOrder = 9; hero.add(card);
+
+// sparks (the scratch on the face, the single tally on B)
+let CUR = 0;
+const T1 = () => C.n500 + .1, r1A = (t) => lerp(.1, 1, prog(t, 0, T1())), r2A = (t) => prog(t, C.double - .15, C.double + .7);
+const tallyPt = (b, row, f) => V(-FW / 2 + (FW - BLK) / 2 + f * BLK, FH / 2 - (TOP0 + b * (BLK + GAP) + (row + .5) * TG), CD / 2 + .08);
+for (let i = 1; i < 10; i++) BURSTS.push({ t0: T1() * ((i + 1) / 10 - .1) / .9 - .12, at: () => hero.localToWorld(tallyPt(0, i, .5 + .3 * Math.sin(i))), n: 22, seed: 600 + i, sp: 2.4, life: .5, up: .2, g: .8, on: () => CUR === 0 });
+for (let i = 0; i < 10; i++) BURSTS.push({ t0: C.double - .15 + .85 * (i + .5) / 10 - .06, at: () => hero.localToWorld(tallyPt(1, i, .5 + .3 * Math.cos(i))), n: 22, seed: 700 + i, sp: 2.6, life: .5, up: .2, g: .8, on: () => CUR === 0 });
+BURSTS.push({ t0: C.total + .05, at: () => cellB.localToWorld(V(0, .4, CD / 2 + .1)), n: 60, seed: 801, sp: 2.2, life: .7, up: .4, g: .8, on: () => CUR === 1 });
+
+// ---------- shot timing (from the voice) ----------
+const S = SC.map((s) => s.start);
+const B = [0, S[1] - .2, S[2] - .2, S[3] - .2, S[4] - .2, S[5] - .2, S[6] - .2, TOTAL];   // shot k runs B[k]..B[k+1]
+const shotAt = (t) => { for (let k = B.length - 2; k >= 0; k--) if (t >= B[k]) return k; return 0; };
+// the six shot changes, each a different kind where it has a cause (techkit/kit3d.js): CUTS[k] is the change at B[k]
+const CUTS = [null, { kind: 'push', color: '56,225,255', depth: .82, flash: .6 }, { kind: 'rack' }, { kind: 'wipe', dir: 1 }, { kind: 'whip', dir: 1, yaw: .3 }, { kind: 'rack' }, { kind: 'push', color: '255,206,150', depth: .7, flash: .6 }];
+const cutAt = (t) => { for (let k = 1; k <= 6; k++) { const d = KIT.DUR[CUTS[k].kind]; if (t > B[k] - d / 2 && t < B[k] + d / 2) return { k, u: (t - (B[k] - d / 2)) / d, ...CUTS[k] }; } return null; };
+const wEnd = (k) => B[k] - KIT.DUR[CUTS[k].kind] / 2 - .02;   // a bold word is gone before its shot starts to change
+
+// ---------- camera per shot ----------
+// Every shot keeps moving (KIT.glide has speed at both ends, holds carry a slow push); the cell sits low and large, the top band stays empty for the word.
+const G = KIT.glide;
+const orb = (w, d, az, el, ly, fov = 31, ox = 0) => ({ pos: V(w.x + ox + Math.sin(az) * Math.cos(el) * d, w.y + ly * .5 + Math.sin(el) * d, w.z + Math.cos(az) * Math.cos(el) * d), look: V(w.x + ox, w.y + ly, w.z), fov });
+function shotCam(t, sh) {
+  const u = prog(t, B[sh], B[sh + 1]), g = G(u), w = WORLD[sh];
+  if (sh === 0) { const F0 = orb(w, lerp(14.8, 13.4, g), lerp(-.12, .1, g), .03, 1.55), F1 = { pos: V(1.9, -.7, 10.8), look: V(0, 1.2, 0), fov: 38 };   // the front view, then a low macro looking up at the second block of marks
+    return KIT.reframe(F0, F1, ease(prog(t, C.double - .3, C.double + .55))); }
+  if (sh === 1) { const hold = KIT.push(Math.max(0, t - B[1]), .012);   // a wide look at the ring, an orbit as it fills, then a push to the cell for the single mark
+    const F0 = orb(w, 12.4 * (1 - hold), lerp(-.25, .2, g), .03, 1.0, 32), F1 = { pos: V(w.x + .5, w.y - .1, w.z + 5.6), look: V(w.x, w.y + .15, w.z), fov: 30 };
+    return KIT.reframe(F0, F1, ease(prog(t, C.total - .4, C.total + .2))); }
+  if (sh === 2) { const F0 = { pos: V(w.x - 4.2, -.7, w.z + 13.4), look: V(w.x + .1, 1.35, w.z), fov: 33 }, F1 = orb(w, 13.4, .12, .02, 1.6, 31, .55), F2 = { pos: V(w.x + 3.2, 1.9, w.z + 6.4), look: V(w.x, .9, w.z), fov: 36 };   // a low three-quarter, the front with the gauge, a slide across the marks
+    const a = KIT.reframe(F0, F1, ease(prog(t, C.p80 - .5, C.p80 + .35))); return KIT.reframe(a, F2, ease(prog(t, C.c500 - .4, C.c500 + .45))); }
+  if (sh === 3) { const hold = KIT.push(Math.max(0, t - B[3]), .012), F0 = { pos: V(w.x - 1.0, .9, w.z + 11.5 * (1 - hold)), look: V(w.x - 1.3, 1.2, w.z), fov: 31 },
+      F1 = { pos: V(w.x, 1.0, w.z + 17.8 * (1 - KIT.push(Math.max(0, t - C.i15 - .6), .02))), look: V(w.x, 1.1, w.z), fov: 31 };   // the 500 cell whole, a pull back as the 1000 cell arrives, both side by side (a saveable frame) held
+    const F2 = { pos: V(w.x + 2.3, .7, w.z + 13.8), look: V(w.x + 1.3, 1.3, w.z - .3), fov: 31 };   // then a push on the 1000 cell's marks, and back out to both
+    const x = KIT.reframe(F0, F1, ease(prog(t, C.i15 - .15, C.i15 + .7))), y = KIT.reframe(x, F2, ease(prog(t, C.c1000 - 1.7, C.c1000 - .7)));
+    return KIT.reframe(y, F1, ease(prog(t, C.c1000 + .75, C.c1000 + 1.5))); }
+  if (sh === 4) return orb(w, lerp(13.8, 12.2, g), lerp(-.5, .45, g), .03, 1.3);   // an orbit round the cell in front of the target rings
+  if (sh === 5) return { pos: V(w.x + .5, .4, w.z + lerp(15.5, 12.5, g)), look: V(w.x + .1, 1.5, w.z - 8), fov: 36 };   // a dolly down the row of worn cells
+  const k = G(prog(t, B[6], TOTAL - .05), .45), A0 = shotCam(0, 0), F = orb(WORLD[0], 13.6, .05, .03, 1.6);   // G settles on A's framing (the loop)
+  return { pos: F.pos.clone().lerp(A0.pos, k), look: F.look.clone().lerp(A0.look, k), fov: 31 };
+}
+const SHAKES = () => [[C.n500, .16], [C.double, .13], [C.c500, .07], [C.c1000, .13], [C.deadline, .07]];
+// what a cut asks of one side's camera (KIT.cut): a push toward a part, a pull back, a truck, a yaw
+const pushTarget = (k) => k === 1 ? V(0, .4, 0) : V(WORLD[5].x, .5, WORLD[5].z - 15);
+function cutMod(t, k, side) { const d = KIT.DUR[CUTS[k].kind], u = (t - (B[k] - d / 2)) / d; return { ...KIT.cut(CUTS[k].kind, clamp(u), CUTS[k])[side], k, side }; }
+function camAt(t, sh, mod) {
+  const c = shotCam(t, sh), pos = c.pos.clone(), look = c.look.clone(); let fov = c.fov, yaw = 0;
+  if (mod) {
+    if (mod.dolly > 0) { const tg = pushTarget(mod.k); pos.lerp(tg, mod.dolly); look.lerp(tg, mod.dolly * .6); }
+    if (mod.dolly < 0) pos.add(pos.clone().sub(look).multiplyScalar(-mod.dolly));
+    if (mod.truck) { const dx = mod.truck * pos.distanceTo(look) * .12; pos.x += dx; look.x += dx; }
+    yaw = mod.yaw || 0;
+  }
+  const sk = SHAKES().reduce((acc, [t0, amp]) => { const d = t - t0; if (d < 0 || d > .6) return acc; const e = amp * Math.exp(-d * 9); return acc.add(V(Math.sin(d * 83) * e, Math.cos(d * 67) * e, 0)); }, V(0, 0, 0));
+  return { ...c, pos: pos.add(sk), look: look.add(sk.clone().multiplyScalar(.5)), fov, yaw, sh };
+}
+// ---------- apply state at t (sh and mod let a cut draw the outgoing and the incoming shot at the same moment) ----------
+function pose(cm, c) { cm.fov = c.fov; cm.updateProjectionMatrix(); cm.position.copy(c.pos); cm.lookAt(c.look); if (c.yaw) cm.rotateY(c.yaw); cm.updateMatrixWorld(true); }
+const FLOORS = [FLOOR_Y, -1.62, FLOOR_Y, FLOOR_Y, FLOOR_Y, FLOOR_Y, FLOOR_Y];
+function apply(t, sh = shotAt(t), mod = null) {
+  CUR = sh; const c = camAt(t, sh, mod), w = WORLD[sh], hv = sh === 0 || sh === 2 || sh === 4 || sh === 6;
+  hero.visible = hv; heroGlow.visible = hv; ringG.visible = sh === 1; cellsD.visible = sh === 3; rowF.visible = sh === 5; bgC.visible = sh === 2; tgtE.visible = sh === 4; gauge.visible = sh === 2; card.visible = sh === 6;
+  scene.fog = sh === 5 ? FOGF : null;
+  keyL.intensity = sh === 5 ? 1.6 : sh === 1 ? 2.1 : 2.5; rimL.intensity = sh === 5 ? 2.2 : 2.9; rim2L.intensity = sh === 5 ? .8 : 1.5;
+  const U = hero.userData;
+  if (hv) { hero.position.copy(w); heroGlow.position.set(w.x, w.y + .6, w.z - 3.2); U.tint(SIG); U.mark(.8, 0); hero.rotation.set(0, 0, 0);
+    if (sh === 0) { tallySet(heroTex, r1A(t), r2A(t)); U.setLevel(1); hero.rotation.set(.05, lerp(-.3, -.2, prog(t, 0, B[1])), .015); }
+    if (sh === 2) { tallySet(heroTex, 1, 0); const lv = lerp(1, .8, ease(prog(t, C.p80 - .1, C.p80 + .55))); U.setLevel(lv); U.mark(.8, ease(prog(t, C.p80 - .1, C.p80 + .3))); hero.rotation.set(.07, .38, .0); }
+    if (sh === 4) { tallySet(heroTex, 1, 1); const d = ease(prog(t, C.deadline - .05, C.deadline + .9)); U.setLevel(lerp(.8, .7, d)); U.mark(.8, 1); hero.rotation.set(0, 0, 0);
+      TG_R.forEach((r, i) => { r.material.opacity = (.55 - i * .12) * (.7 + .3 * Math.sin(t * 2.2 + i)) * (1 - .35 * d); r.scale.setScalar(1 + .015 * Math.sin(t * 1.6 + i)); }); }
+    if (sh === 6) { const wipe = ease(prog(t, C.final + .3, TOTAL - .15)); tallySet(heroTex, 1 - wipe, 1 - wipe); U.setLevel(lerp(.8, .86, prog(t, B[6], C.health))); hero.rotation.set(lerp(.05, .05, 1), lerp(.55, -.3, ease(prog(t, B[6], TOTAL - .1))), .015);
+      const a = prog(t, C.health - .1, C.health + .3) * (1 - prog(t, C.final + .1, C.final + .6)); card.material.opacity = a; card.position.y = -.2 + .25 * (1 - eout(prog(t, C.health - .1, C.health + .5))); } }
+  if (sh === 1) {   // the ring: four quarters light as the charge drains; at "total" it closes, the cell refills and one mark is scratched in
+    const tk = [C.using, C.full, C.bat, C.worth]; let used = 0;
+    ARC.forEach(({ a, h }, k) => { const p = ease(prog(t, tk[k], tk[k] + .5)); used += p / 4; a.material.opacity = p; h.material.opacity = .22 * p * (1 - .6 * prog(t, C.total, C.total + .8)); });
+    const ang = Math.PI / 2 - used * Math.PI * 2; bead.position.set(Math.cos(ang) * RR, Math.sin(ang) * RR, .05); bead.material.opacity = used > .01 && used < .999 ? .95 : 0;
+    const back = ease(prog(t, C.total - .05, C.total + .5)); cellB.userData.setLevel(used < .999 ? 1 - used : back); cellB.userData.tint(used >= .999 && back < 1 ? HEAT : SIG);
+    tallySet(bTex, 0, 0, prog(t, C.total, C.total + .55)); ringGlow.material.opacity = .5 * Math.sin(Math.PI * prog(t, C.p100 - .05, C.p100 + .6)); ringG.rotation.set(0, 0, 0); }
+  if (sh === 3) { cellL.userData.mark(.8, .9); cellR.userData.mark(.8, .9); cellR.position.x = lerp(6, 1.3, eout(prog(t, C.i15 - .1, C.i15 + .75))); cellR.visible = t > C.i15 - .2; { const s = .88 * (1 - ease(prog(t, C.c1000 - 1.7, C.c1000 - 1.3)) + ease(prog(t, C.c1000 + .9, C.c1000 + 1.3))); cellL.scale.setScalar(Math.max(.001, Math.min(.88, s))); } cellsD.updateMatrixWorld(true); }
+  if (sh === 5) { const a = 1 + .12 * Math.sin(t * 3); rowGlow.material.opacity = .12 * a; }
+  hero.updateMatrixWorld(true); cellB.updateMatrixWorld(true); updateSparks(t);
+  pose(cam, c);
+  return c;
+}
+
+// ---------- type: one bold word or number at a time (2D, screen space) ----------
+let BOXES = []; window.__boxes = () => BOXES;
+const big = (text, kind, color, t, t0, t1, opt = {}) => { const bx = KIT.word(o, text, kind, t, t0, t1, { color, ...opt }); if (bx) BOXES.push(bx); return bx; };
+function numCard(t, text, color, since, y, size, a = 1) {   // a number that CHANGES on the spoken word (a clean cut with a small pop), never a rolling counter
+  if (a <= 0) return; const k = eout((t - since) / .3), pop = 1 + .14 * (1 - k);
+  o.save(); o.globalAlpha = clamp(a); o.textBaseline = 'alphabetic'; o.textAlign = 'center'; o.font = `900 ${size}px "Inter Display", Inter, sans-serif`; const wd = o.measureText(text).width;
+  o.translate(540, y); o.scale(pop, pop); o.fillStyle = color; o.shadowColor = color === SIGC ? 'rgba(56,225,255,.5)' : color === HEATC ? 'rgba(255,150,40,.4)' : 'rgba(255,255,255,.25)'; o.shadowBlur = 60; o.fillText(text, 0, 0); o.restore();
+  BOXES.push([text, 540 - wd / 2, 540 + wd / 2, y - size * .74, y + 6]);
+}
+function typeLayer(t) {
+  BOXES = [];
+  const sh = shotAt(t), Y = 540;
+  if (sh === 0 && t >= C.n500 - .02) { const dbl = t >= C.double; numCard(t, dbl ? '1000' : '500', dbl ? SIGC : WHITE, dbl ? C.double : C.n500, Y, 270, prog(t, C.n500 - .02, C.n500 + .05) * (1 - prog(t, B[1] - .2, B[1] - .02))); }
+  if (sh === 1) { if (t < C.p100 - .08) big('CYCLE', 'track', WHITE, t, C.cycle, C.p100 - .08, { size: 200, y: 500 });
+    if (t >= C.p100) numCard(t, '100%', WHITE, C.p100, Y, 270, prog(t, C.p100, C.p100 + .06) * (1 - prog(t, wEnd(2) - .16, wEnd(2)))); }
+  if (sh === 2) { if (t < C.p80 - .04) big('iPHONE 14', 'track', WHITE, t, C.i14, C.p80 - .04, { size: 150, y: 500 });
+    else numCard(t, t >= C.c500 ? '500' : '80%', t >= C.c500 ? WHITE : HEATC, t >= C.c500 ? C.c500 : C.p80, Y, 270, prog(t, C.p80, C.p80 + .05) * (1 - prog(t, wEnd(3) - .16, wEnd(3)))); }
+  if (sh === 3) { if (t < C.c1000 - .04) big('iPHONE 15', 'rise', WHITE, t, C.i15, C.c1000 - .04, { size: 150, y: 500 });
+    else numCard(t, '1000', SIGC, C.c1000, Y, 270, prog(t, C.c1000 - .02, C.c1000 + .05) * (1 - prog(t, wEnd(4) - .16, wEnd(4)))); }
+  if (sh === 4) { if (t < C.deadline - .06) big('TARGET', 'stamp', HEATC, t, C.target, C.deadline - .06, { size: 230, y: 500, glow: 'rgba(255,150,40,.4)' });
+    const bx = big('DEADLINE', 'drop', WHITE, t, C.deadline, wEnd(5), { size: 190, y: 510 });
+    if (bx) { const p = ease(prog(t, C.deadline + .3, C.deadline + .65)); o.save(); o.strokeStyle = HEATC; o.lineWidth = 14; o.lineCap = 'round'; o.shadowColor = 'rgba(255,150,40,.7)'; o.shadowBlur = 24; o.beginPath();
+      const ym = (bx[3] + bx[4]) / 2 + 6; o.moveTo(bx[1] - 20, ym + 8); o.lineTo(bx[1] - 20 + (bx[2] - bx[1] + 40) * p, ym + 8 - 14 * p); o.stroke(); o.restore(); } }
+  if (sh === 5) big('HABITS', 'wipe', WHITE, t, C.real, wEnd(6), { size: 230, y: 510 });
+  if (sh === 6 && t < TOTAL - .45) big('CHECK', 'rise', SIGC, t, C.check, TOTAL - .45, { size: 260, y: Y, glow: 'rgba(56,225,255,.5)' });
+}
+
+// ---------- the subject's box (Output QA HERO) ----------
+let SUBJ = null; window.__subject = () => SUBJ;
+function subjectBox(sh) {
+  const obj = [hero, cellB, hero, cellsD, hero, rowF, hero][sh], bx = new THREE.Box3(); bx.setFromObject(obj);
+  let l = 1e9, r = -1e9, tp = 1e9, b = -1e9;
+  for (const x of [bx.min.x, bx.max.x]) for (const y of [bx.min.y, bx.max.y]) for (const z of [bx.min.z, bx.max.z]) { const p = V(x, y, z).project(cam); const sx = (p.x + 1) / 2 * W, sy = (1 - p.y) / 2 * H; l = Math.min(l, sx); r = Math.max(r, sx); tp = Math.min(tp, sy); b = Math.max(b, sy); }
+  SUBJ = [clamp(l, 0, W), clamp(tp, 0, H), clamp(r, 0, W), clamp(b, 0, H)];
+}
+// ---------- captions (stable phrases, bottom third) ----------
+const CHUNKS = []; SC.forEach((s, si) => { let cur = []; s.words.forEach((w, i) => { cur.push(w); const nx = s.words[i + 1], len = cur.map((x) => x.w).join(' ').length + (nx ? nx.w.length + 1 : 0);
+    if (/[.,?!]$/.test(w.w) || (cur.length >= 6 && !(nx && /[.,?!]$/.test(nx.w))) || (len > 30 && !(nx && /[.,?!]$/.test(nx.w))) || i === s.words.length - 1) { CHUNKS.push({ si, words: cur }); cur = []; } }); });
+CHUNKS.forEach((c, i) => { c.t0 = c.words[0].t0; const nx = CHUNKS[i + 1]; c.t1 = nx && nx.si === c.si ? nx.words[0].t0 - .03 : c.words[c.words.length - 1].t1 + .35; });
+window.CHUNKS = CHUNKS;
+const capEl = document.getElementById('caps'); let capIdx = -2;
+function captions(t) {
+  const ci = CHUNKS.findIndex((c) => t >= c.t0 - .05 && t < c.t1);
+  if (ci !== capIdx) { capIdx = ci; capEl.textContent = ci < 0 ? '' : CHUNKS[ci].words.map((w) => w.w).join(' '); }
+  if (ci >= 0) { const p = eout(prog(t, CHUNKS[ci].t0 - .05, CHUNKS[ci].t0 + .15)); capEl.style.opacity = clamp(p * 1.5); capEl.style.transform = `translateY(${(1 - p) * 10}px)`; }
+}
+// ---------- frame ----------
+function post() {
+  const vg = o.createRadialGradient(540, 980, 560, 540, 980, 1340); vg.addColorStop(0, 'rgba(7,8,12,0)'); vg.addColorStop(1, 'rgba(7,8,12,.55)'); o.fillStyle = vg; o.fillRect(0, 0, W, H);
+  // the picture runs to the bottom of the frame; it only dims behind the captions and goes to ink at the very edge
+  const bf = o.createLinearGradient(0, 1280, 0, 1920); bf.addColorStop(0, 'rgba(7,8,12,0)'); bf.addColorStop(.2, 'rgba(7,8,12,.5)'); bf.addColorStop(.3, 'rgba(7,8,12,.76)'); bf.addColorStop(.55, 'rgba(7,8,12,.78)'); bf.addColorStop(.93, 'rgba(7,8,12,.97)'); bf.addColorStop(1, 'rgba(7,8,12,1)'); o.fillStyle = bf; o.fillRect(0, 1280, W, H - 1280);
+  const tf = o.createLinearGradient(0, 180, 0, 0); tf.addColorStop(0, 'rgba(7,8,12,0)'); tf.addColorStop(1, 'rgba(7,8,12,.6)'); o.fillStyle = tf; o.fillRect(0, 0, W, 180);
+}
+// real motion blur (techkit/kit3d.js): a few time samples across the shutter, each smeared along the camera's own screen motion to the next
+// sample, so a fast move is one smooth streak. The samples are also offset by part of a pixel, which antialiases what stands still.
+const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c.getContext('2d'); };
+const ACC = [mk(), mk()], TMP = mk(), SMR = mk(), cam2 = new THREE.PerspectiveCamera(30, W / H, 0.05, 400), SHUT = 1 / 50;
+const scr2 = (p) => { p.project(cam2); return [(p.x + 1) / 2 * W, (1 - p.y) / 2 * H]; };
+function refs(cHere, cThere) {   // two world points near the subject, seen by the camera now and one step later
+  pose(cam2, cHere); const up = new THREE.Vector3().setFromMatrixColumn(cam2.matrixWorld, 1), P1 = cHere.look.clone(), P2 = P1.clone().add(up.multiplyScalar(cHere.pos.distanceTo(cHere.look) * .2));
+  const a = [...scr2(P1.clone()), ...scr2(P2.clone())]; pose(cam2, cThere); return [a, [...scr2(P1.clone()), ...scr2(P2.clone())]];
+}
+const busy = (t, sh) => sh === 0 || (sh === 1 && t > C.total - .1 && t < C.total + .9);   // sparks flying: more time samples
+function accumulate(ctx, t, sh, side, k) {
+  const modAt = (ts) => side ? cutMod(ts, k, side) : null, at = (ts) => camAt(ts, sh, modAt(ts));
+  const [a0, b0] = refs(at(t - SHUT / 2), at(t + SHUT / 2)), la = Math.hypot(a0[2] - a0[0], a0[3] - a0[1]) || 1;
+  const px = Math.hypot(b0[0] - a0[0], b0[1] - a0[1]) + Math.abs(Math.hypot(b0[2] - b0[0], b0[3] - b0[1]) / la - 1) * 1100;
+  const c0 = at(t), K = Math.max(2, Math.round(KIT.plan(px, c0.ap > 0, busy(t, sh)) * Q));
+  for (let i = 0; i < K; i++) { const ts = clamp(t + SHUT * ((i + .5) / K - .5), 0, TOTAL), c = apply(ts, sh, modAt(ts)), [jx, jy] = KIT.jitter(i);
+    if (c.ap > 0) { const r = c.ap * Math.sqrt((i + .5) / K), th = i * 2.39996, rx = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 0), uy = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 1);
+      const fw = new THREE.Vector3(); cam.getWorldDirection(fw); const dl = c.look.clone().sub(cam.position).dot(fw), df = Math.max(.5, c.focus.clone().sub(cam.position).dot(fw));
+      const dd = rx.multiplyScalar(Math.cos(th) * r).add(uy.multiplyScalar(Math.sin(th) * r)); cam.position.add(dd); cam.lookAt(c.look.clone().add(dd.multiplyScalar(1 - dl / df))); }
+    cam.setViewOffset(W, H, jx * .9, jy * .9, W, H); gl.render(scene, cam); cam.clearViewOffset();
+    TMP.globalAlpha = 1; TMP.drawImage(gl.domElement, 0, 0, W, H);
+    const [a, b] = refs(c, at(ts + SHUT / K)); ctx.globalAlpha = 1 / (i + 1);
+    if (Math.hypot(b[0] - a[0], b[1] - a[1]) + Math.abs(Math.hypot(b[2] - b[0], b[3] - b[1]) / (Math.hypot(a[2] - a[0], a[3] - a[1]) || 1) - 1) * 1100 < 1.5) ctx.drawImage(TMP.canvas, 0, 0);
+    else { SMR.globalAlpha = 1; SMR.fillStyle = '#07080c'; SMR.fillRect(0, 0, W, H); KIT.smear(SMR, TMP.canvas, a, b, W, H); ctx.drawImage(SMR.canvas, 0, 0); } }
+  ctx.globalAlpha = 1;
+}
+window.render = (t) => {
+  t = clamp(t, 0, TOTAL);
+  const cu = cutAt(t), st = cu && KIT.cut(cu.kind, cu.u, cu);
+  o.setTransform(1, 0, 0, 1, 0, 0); o.globalAlpha = 1; o.filter = 'none'; o.fillStyle = '#07080c'; o.fillRect(0, 0, W, H);
+  if (!cu) { accumulate(ACC[0], t, shotAt(t), null, 0); o.drawImage(ACC[0].canvas, 0, 0); }
+  else {   // both shots at once: the outgoing one keeps moving, the incoming one is already moving
+    const needA = st.wipe != null || st.mix < 1, needB = st.wipe != null || st.mix > 0;
+    if (needA) accumulate(ACC[0], t, cu.k - 1, 'out', cu.k); if (needB) accumulate(ACC[1], t, cu.k, 'in', cu.k);
+    KIT.compose(o, ACC[0].canvas, ACC[1].canvas, st, W, H, { color: cu.color, fy: .5 });
+  }
+  o.globalAlpha = 1; apply(t, shotAt(t), cu ? cutMod(t, cu.k, t >= B[cu.k] ? 'in' : 'out') : null); subjectBox(shotAt(t));
+  post(); typeLayer(t); captions(t);
+};
+window.TRANSITIONS = [...[1, 2, 3, 4, 5, 6].map((k) => { const d = KIT.DUR[CUTS[k].kind]; return [+(B[k] - d / 2 - .1).toFixed(2), +(B[k] + d / 2 + .15).toFixed(2), 'camera']; }), ...SHAKES().map(([t0]) => [+(t0 - .1).toFixed(2), +(t0 + .5).toFixed(2), 'jolt'])];
+window.HOLDS = [[+(TOTAL - 1.2).toFixed(2), +TOTAL.toFixed(2)]];
+window.seek = window.render;
+window.DUR = TOTAL;
+window.render(0);
+})();
+</script>
+</body></html>

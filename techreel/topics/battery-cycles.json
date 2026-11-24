@@ -1,0 +1,416 @@
+{
+ "slug": "battery-cycles",
+ "engine": "kit",
+ "scene": "techkit/scenes/battery-cycles.html",
+ "topic": "Your phone battery has a number of lives: rated for 500 complete charge cycles, 1000 on iPhone 15 (Apple Support)",
+ "format": "xray",
+ "audience": "global",
+ "gadget": "battery",
+ "device": "charging",
+ "voice": "af_heart",
+ "speed": 1,
+ "max_speed": 1,
+ "gap": 0.4,
+ "max_end": 34,
+ "lines": [
+  {
+   "text": "Your battery is rated for 500 charges. On newer phones, double.",
+   "beat": "question",
+   "source": 0
+  },
+  {
+   "text": "A cycle isn't one plug in. It's using a full battery's worth, 100 percent, in total.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "iPhone 14 and earlier are designed to keep 80 percent capacity at 500 cycles.",
+   "beat": "fix",
+   "source": 0
+  },
+  {
+   "text": "iPhone 15 batteries are designed to keep 80 percent at 1000 cycles.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "That's a design target, under ideal conditions. Not a deadline.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "Real numbers depend on how you use and charge it.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Check your battery health, in India or anywhere.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "n500": [
+   0,
+   "500"
+  ],
+  "charges": [
+   0,
+   "charges"
+  ],
+  "newer": [
+   0,
+   "newer"
+  ],
+  "double": [
+   0,
+   "double"
+  ],
+  "cycle": [
+   1,
+   "cycle"
+  ],
+  "plug": [
+   1,
+   "plug"
+  ],
+  "using": [
+   1,
+   "using"
+  ],
+  "full": [
+   1,
+   "full"
+  ],
+  "bat": [
+   1,
+   "battery"
+  ],
+  "worth": [
+   1,
+   "worth"
+  ],
+  "p100": [
+   1,
+   "100"
+  ],
+  "total": [
+   1,
+   "total"
+  ],
+  "i14": [
+   2,
+   "iphone"
+  ],
+  "p80": [
+   2,
+   "80"
+  ],
+  "c500": [
+   2,
+   "500"
+  ],
+  "i15": [
+   3,
+   "iphone"
+  ],
+  "c1000": [
+   3,
+   "1000"
+  ],
+  "target": [
+   4,
+   "target"
+  ],
+  "ideal": [
+   4,
+   "ideal"
+  ],
+  "deadline": [
+   4,
+   "deadline"
+  ],
+  "real": [
+   5,
+   "real"
+  ],
+  "use": [
+   5,
+   "use"
+  ],
+  "charge": [
+   5,
+   "charge"
+  ],
+  "check": [
+   6,
+   "check"
+  ],
+  "health": [
+   6,
+   "health"
+  ],
+  "india": [
+   6,
+   "india"
+  ],
+  "final": [
+   6,
+   "anywhere"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "n500",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "charges",
+   "tick",
+   0.35,
+   0.2
+  ],
+  [
+   "newer",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "double",
+   "impact",
+   0.55,
+   0
+  ],
+  [
+   "double",
+   "zaps",
+   0.3,
+   0.2
+  ],
+  [
+   "cycle",
+   "whoosh",
+   0.4,
+   0
+  ],
+  [
+   "using",
+   "tick",
+   0.45,
+   -0.2
+  ],
+  [
+   "full",
+   "tick",
+   0.45,
+   -0.1
+  ],
+  [
+   "bat",
+   "tick",
+   0.45,
+   0.1
+  ],
+  [
+   "worth",
+   "tick",
+   0.5,
+   0.2
+  ],
+  [
+   "p100",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "total",
+   "snap",
+   0.55,
+   0
+  ],
+  [
+   "total",
+   "thud",
+   0.45,
+   0
+  ],
+  [
+   "i14",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "p80",
+   "impact",
+   0.5,
+   0
+  ],
+  [
+   "c500",
+   "pop",
+   0.5,
+   0.2
+  ],
+  [
+   "i15",
+   "whoosh",
+   0.4,
+   0
+  ],
+  [
+   "c1000",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "c1000",
+   "zaps",
+   0.3,
+   -0.2
+  ],
+  [
+   "target",
+   "impact",
+   0.5,
+   0
+  ],
+  [
+   "ideal",
+   "tick",
+   0.35,
+   0
+  ],
+  [
+   "deadline",
+   "snap",
+   0.55,
+   0
+  ],
+  [
+   "real",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "use",
+   "tick",
+   0.4,
+   -0.2
+  ],
+  [
+   "charge",
+   "tick",
+   0.4,
+   0.2
+  ],
+  [
+   "check",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "health",
+   "blip",
+   0.4,
+   0.2,
+   {
+    "f": 500,
+    "f2": 900
+   }
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.55,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.35,
+   0,
+   {
+    "notes": [
+     "E5",
+     "B5"
+    ]
+   }
+  ]
+ ],
+ "cutsound": {
+  "payoff": "final",
+  "rise": 1.8
+ },
+ "post": {
+  "title": "Your phone battery has a number of lives",
+  "caption": "Your battery is rated for 500 charges. On newer phones, DOUBLE 🔋📈\n\nApple says batteries of iPhone 14 models and earlier are designed to keep 80% of their original capacity at 500 complete charge cycles, and iPhone 15 batteries at 1000 complete charge cycles, under ideal conditions.\n\nA charge cycle isn't one plug-in: you complete one when you've used an amount that equals 100% of the battery's capacity, added up. And 80% is a design target, not a deadline: the real number depends on how you use and charge your phone.\n\nCheck your battery health in settings, in India or anywhere. What does yours say? 👇 Send this to the friend who charges at 3% every night.",
+  "keywords": [
+   "phone battery cycles",
+   "how many charge cycles",
+   "iphone 15 battery 1000 cycles",
+   "battery health explained",
+   "charge cycle meaning",
+   "battery capacity 80 percent",
+   "how long does a phone battery last"
+  ],
+  "hashtags": [
+   "#battery",
+   "#smartphone",
+   "#iphone",
+   "#techexplained",
+   "#gadgets"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-us/101575",
+    "note": "Apple Support, iPhone battery and performance (published 1 Jun 2026, read 25 Nov 2026): 'Batteries of iPhone 14 models and earlier are designed to retain 80 percent of their original capacity at 500 complete charge cycles under ideal conditions. Batteries of iPhone 15 models are designed to retain 80 percent of their original capacity at 1000 complete charge cycles under ideal conditions.' 'With all models, the exact capacity percentage depends on how the devices are regularly used and charged.' 'You complete one charge cycle when you've used an amount that represents 100 percent of your battery's capacity.'"
+   }
+  ]
+ },
+ "qa": {
+  "sync": [
+   "500",
+   "100%",
+   "80%",
+   "1000"
+  ],
+  "edges_ok": []
+ },
+ "say": {
+  "500": "five hundred",
+  "1000": "one thousand",
+  "100": "one hundred",
+  "80": "eighty",
+  "14": "fourteen",
+  "15": "fifteen",
+  "iPhone": "i phone"
+ },
+ "fps": 30,
+ "experiment": {
+  "id": "verdict-card",
+  "change": "improvements.md tech item 'side-by-side verdict card': in shot D both cells (500 marks and 1000 marks) stand whole side by side for the last 2 s of the shot as one saveable frame; hero is its own object (a pouch cell with a scratched tally), not a phone; numbers change on the spoken word, never roll",
+  "vs": "median"
+ }
+}
