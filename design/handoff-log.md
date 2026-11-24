@@ -6,6 +6,21 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+
+## 2026-11-25 01:25 IST · claude/c3-cv-already-posted · owner chat: Turns Out CV was already posted
+- Done: showreel-c3-resume loses its 25 Nov date (the owner posted the CV reel days ago; resume2 was a rebuild of a posted reel, my mistake). c3-plan section 0: only unposted reels are built; 25 Nov Turns Out = #2 looks-expensive, rebuilt on the improved kit by the 05:11 task.
+- Tech 25 Nov: storage-gap render 2 failed 3 small checks; owner said no third render; the 04:47 run builds today's tech reel on the new flow.
+
+## 2026-11-25 · claude/fable-decides · "Fable decides" daily flow + plain audit card (owner chat job, size M, part 2)
+- Done: design/runbook-daily.md: the 8-step build flow for web and tech with the exact create_session settings (Fable claude-fable-5-2 for pick, stills check, critic; Sonnet claude-sonnet-5-5 for research and build; Opus claude-opus-5-5 as the fallback), the 25 Nov note (tech storage-gap READY = web only; NOT READY = fresh tech reel today), the rejection watch (8 of 10 rejected two days running = research to Opus); the audit card rewritten to at most 6 plain lines with one example. scripts/pick-sheet.mjs (the day's options on one sheet; --log counts rejects), design/pick-log.md. CLAUDE.md: Fable budget names the two short calls.
+- Left: part 1 (style records in captions.json, check requirement, what-works method) follows in claude/reel-style-records. The app's Today header still reads "OK/ALARM <channel>" lines to show its status; the plain card no longer carries them, so that header shows only the time and changes until the app is changed to read something else.
+- For the owner: nothing to paste. The daily task prompt already says to follow runbook-daily.md exactly, and the runbook now starts the Fable and Sonnet sessions itself.
+
+## 2026-11-24 · claude/what-works-24nov · What works + posting slots from real numbers (owner chat job, size M)
+- Done: design/what-works.md (per channel, top 5 vs bottom 5, do more / stop doing; weak evidence marked) and design/posting-slots.md. Data: one read-only dry collect (up to 50 posts per account). Strongest: web = fixes visible at a glance (Nov top 5 median 2,753 vs bottom 867); tech = gadget "worth it" questions (median 119 before 15 Nov, 1,206 since) with ~0 saves; Turns Out = 8 reels, too thin. Skip in 3 s (last 7 only) separates hits from misses on all channels.
+- Slots: online_followers returns no rows for all three accounts, so the slots (tech 15:00, Turns Out 17:00, web 19:00) are from post time vs reach, low confidence.
+- Left: length, pace, look and hero object are not stored per reel; add duration and a look tag to captions.json to rank them next time. Instagram gives no follows per reel.
+
 ## 2026-11-24 23:55 IST · claude/topic-bank-24nov · topic bank for 25-27 Nov (Sonnet research, Fable only picks)
 - Done: design/topic-bank.md: web 15 options (25, 26, 27 Nov), tech 10 (26, 27 Nov; 25 Nov skipped), each with hook, the one lesson, 2 facts with URLs, gold-look fit, a prop and the 2 picks per day. Web facts read in MDN's page source and browser-compat-data; tech facts read on apple.com, support.apple.com and developer.android.com (the only maker hosts reachable from here).
 - Not done: the CV critic verdict was NOT written into the review file; the write was blocked (it needs the critic's own session to write it, not a copy). Turns Out's task on 25 Nov re-checks and records it.
@@ -583,10 +598,18 @@ Format (at most 6 lines):
 - Left: the parameter has not been tried on a real post (Post now is still off); the first real post will show it. Builders set aiLabel on new entries from 26 Nov (enforced from 27 Nov).
 - For the other account: existing entries are untouched; no aiLabel yet shows "not decided yet" on the card.
 
+## 2026-11-24 · claude/storage-gap-fix3 · Tech reel for 25 Nov: storage-gap, NOT READY (owner chat job, size L)
+- Done: a new tech reel "A 256 GB phone can show 238" (Apple Support source), built twice: the first version reused ai-memory's phone and was rebuilt with its own props (retail box and ruler, 256-tile wall, three tiered boxes, a storage chip under a lens, a Storage card); direction card (review/tech/showreel-tech-storage-gap.direction.md) with two independent stills checks (the second APPROVED: as rich as ai-memory YES, not a copy YES); starter-rule line added to design/gold.md and design/direction.md. Render 2 (run 45467259029) failed Output QA: NUMBERS (rolling counts), SYNC (931 not readable), EDGES (1 TB box on both sides 18.4-20.2 s), plus a back-of-box grey slab at 26 s. The owner said no third render, so the reel stays hidden with no post day.
+- For the 04:47 daily run: storage-gap does NOT cover 25 Nov; build the day's tech reel on the new flow. The ready fix (no rolling numbers, a whole 1 TB box, the box turning from its side) is on branch claude/storage-gap-fix3 and the review file's "Status after render 2" lists every finding; reuse the idea only with one render and a critic.
+- Left: nothing for the owner.
+- For the other account: a rolling counter fails NUMBERS even when it lands on the spoken word under a second; let an object do the counting or switch straight to the value.
+
 ## 2026-11-25 · claude/scorecard · Weekly scorecard on Growth (owner chat job, size L, part 4 of 5)
 - Done: "This week" cards at the top of Growth (All channels): per channel, the last 7 days vs the 7 before: reach per reel, watched on average, saves per 1,000, new followers, critic's average score, changes kept or dropped; "not measured yet" where missing. src/journey.js reads the PREMIUM numbers from a review file's critic line (score per reel); kept/dropped counts read "verdict" inside a captions.json experiment. runbook-reels "Weekly scorecard". sw.js v32.
 - Left: critic score and kept/dropped show "not measured yet" until the critic writes PREMIUM numbers on its line and the daily run writes experiment verdicts (design/runbook-daily.md was off limits tonight: add one line there). Hold % and per-reel follows are not available from Instagram.
 - For the other account: put `"verdict": "keep"|"drop"` in the experiment object when the 72 h verdict is decided.
+
+
 
 ## 2026-11-25 · claude/plain-words · Plain words on every screen (owner chat job, size L, part 5 of 5)
 - Done: pw() in templates/index.html turns codes from the server, review files and the daily report into plain words (video checks, below target, the rule, ...) and is applied to status reasons, Needs you, audit cards, collector alerts; the daily report line says "on target / below target"; Post now's "not switched on" and "key refused" messages and the collector fix lines no longer name secrets or menus (the access-key fix still names the secret to update). scripts/qa/plain-words-test.mjs is in npm run check. sw.js v33.

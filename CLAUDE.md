@@ -56,7 +56,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 
 ## Sessions (lean)
 - Fable budget (owner, 24 Nov 2026; the weekly limit resets 25 Nov, do not burn it on day one): claude-fable-5-2 only for the daily reel builds and
-  their critics, about 3 builds and 3 critics a day at most, lean (one stills sheet, one contact sheet, at most 2 renders). Never for side
+  their critics, about 3 builds and 3 critics a day at most, lean (one stills sheet, one contact sheet, at most 2 renders). Plus the two short Fable calls of design/runbook-daily.md "Fable decides" (the topic pick on one sheet, the one stills check). Never for side
   programs, previews, kit studies, the owner chat, tooling or cleanups: those run on sonnet or haiku. If a Fable session hits a limit, the job
   continues on claude-opus-5-5. Scheduled-task models stay as planned; the 26 Nov switch to sonnet (builds) / opus (critic) stands.
   Light jobs (launcher, owner chat, cleanup, status checks, QA re-runs) run on claude-haiku-5-5 or sonnet. A session that starts a child passes the model.
