@@ -1100,7 +1100,7 @@ async function postApi(request, env, p) {
   if (p === '/api/post') {   // start: every refusal is a plain sentence the app shows as it is
     const no = (error, message, status = 409) => jres({ error, message }, status);
     const token = typeof env.GH_DISPATCH_TOKEN === 'string' ? env.GH_DISPATCH_TOKEN.trim() : '';
-    if (!token) return no('not-switched-on', 'Post now is not switched on yet: the GitHub key GH_DISPATCH_TOKEN has not been added.', 503);
+    if (!token) return no('not-switched-on', 'Post now is not switched on yet. It needs a GitHub key and Instagram access added first.', 503);
     let caps = {}; try { caps = await captionsOf(env); } catch { /* handled below */ }
     const m = caps[reel];
     if (!m || m.hidden || m.sample) return no('not-found', 'This reel is not on the posting list.', 404);
@@ -1118,7 +1118,7 @@ async function postApi(request, env, p) {
       headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json', 'User-Agent': 'studio-app', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' },
       body: JSON.stringify({ ref: 'main', inputs: { reel, channel: ch } }) }); } catch { /* shown below */ }
     if (!res || res.status !== 204) {
-      const why = !res ? 'GitHub did not answer.' : res.status === 401 || res.status === 403 || res.status === 404 ? 'The GitHub key GH_DISPATCH_TOKEN was refused or cannot start workflows. It needs Actions write on this repo.' : 'GitHub refused to start it (HTTP ' + res.status + ').';
+      const why = !res ? 'GitHub did not answer.' : res.status === 401 || res.status === 403 || res.status === 404 ? 'GitHub refused the key that lets this button post. The key needs permission to start jobs on this repo.' : 'GitHub refused to start it (HTTP ' + res.status + ').';
       await db.prepare('UPDATE ig_publish SET state = \'failed\', line = \'Failed\', error = ?2, at = ?3 WHERE reel = ?1').bind(reel, why, new Date().toISOString()).run();
       await notifyPostResult(env, db, reel, 'failed', await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(reel).first());
       return jres({ error: 'dispatch-failed', message: why, row: postRow(await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(reel).first()) }, 502);

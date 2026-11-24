@@ -1193,6 +1193,14 @@
     if (state === 'fail') i.appendChild(sv('path', { d: 'M8.8 8.9l6.4 6.2M15.2 8.8l-6.3 6.4' }));
     if (state === 'now') i.appendChild(sv('path', { d: 'M12 2.5a9.5 9.5 0 0 1 9.5 9.5' }));
     return i; }
+  // plain words (owner plan, 25 Nov 2026): codes and jargon that reach the screen from the server, the review files or the daily report are replaced here, so a screen never shows
+  // ALARM, ESCALATE, OQA, run numbers or rule ids. New jargon: add a line here and tell the writer to say it plainly.
+  var PW = [[/\bOutput QA\b/gi, 'the video checks'], [/\bOQA\b/g, 'video checks'], [/\bSHOT VARIETY\b|\bVARIETY\b/g, 'too much of one shot'], [/\bSYNC\b/g, 'words and picture out of step'], [/\bDEAD\b/g, 'a frozen stretch'],
+    [/\bHERO\b/g, 'main subject'], [/\bSTRAY\b/g, 'stray words'], [/\bPACE\b/g, 'voice speed'], [/\bLOUD\b/g, 'loudness'], [/\bESCALATE\b/g, 'below target two days running'], [/\bALARM\b/g, 'below target'],
+    [/\bPROMOTE\b/g, 'make it a rule'], [/\bDROP\b/g, 'drop it'], [/\bNOT READY\b/g, 'not ready'], [/\bCRITIC:?\s*/g, 'Second look: '], [/\bPR #\d+\b/g, 'the change'],
+    [/\b(?:run|render)\s+#?\d{6,}\b/gi, 'the run'], [/\bitem \d+\b/gi, 'the checklist'], [/\brules? \d+\b/gi, 'the rule'], [/\bR-[A-Za-z0-9-]+\b/g, 'the rule'], [/\bE\d{1,2}\b/g, 'the experiment'], [/\bGH_DISPATCH_TOKEN\b/g, 'the GitHub key'],
+    [/\b[a-z]+\.(?:json|mjs)\b/gi, 'the settings file']];
+  function pw(t){ t = String(t == null ? '' : t); for (var i = 0; i < PW.length; i++) t = t.replace(PW[i][0], PW[i][1]); return t.replace(/^([a-z])/, function(c){ return c.toUpperCase(); }).replace(/(: ){2,}/g, ': '); }
   var SAY = { done: 'done', now: 'working now', fail: 'needs a fix', wait: 'not yet' };
   // ---- one status in plain words per reel (owner, 22 Nov 2026: "no stage jargon"), from the seven stages /api/journey gives:
   // Planned -> Building -> Making the video (n%) -> Checking -> Ready to post -> Posted; Fixing (with the reason) when a check or the second
@@ -1201,10 +1209,10 @@
     if (g('posted').s === 'done') return { k: 'posted', t: 'Posted', c: 'ok', step: 5 };
     if (g('ready').s === 'done') return { k: 'ready', t: 'Ready to post', c: 'ok', step: 3, why: g('posted').s === 'fail' ? 'The slot passed. If it went out, tap I posted it.' : '' };
     if (g('render').s === 'now') return { k: 'making', t: 'Making the video' + (g('render').pct != null ? ' · ' + g('render').pct + '%' : ''), c: 'run', step: 1, pct: g('render').pct };
-    if (g('render').s === 'fail') return { k: 'fixing', t: 'Fixing', c: '', step: 1, why: 'The video did not finish: ' + (g('render').why || g('render').t) };
+    if (g('render').s === 'fail') return { k: 'fixing', t: 'Fixing', c: '', step: 1, why: 'The video did not finish: ' + pw(g('render').why || g('render').t) };
     if (g('checks').s === 'now') return { k: 'checking', t: 'Checking', c: 'run', step: 2 };
-    if (g('checks').s === 'fail') return { k: 'fixing', t: 'Fixing', c: '', step: 2, why: 'A check found a problem: ' + String(g('checks').t || '').replace(/^Failed:\s*/, '') + '.' };
-    if (g('critic').s === 'fail') return { k: 'fixing', t: 'Not ready yet', c: 'act', step: 2, why: g('critic').why || '', more: g('critic').more || '' };
+    if (g('checks').s === 'fail') return { k: 'fixing', t: 'Fixing', c: '', step: 2, why: 'A check found a problem: ' + pw(String(g('checks').t || '').replace(/^Failed:\s*/, '')) + '.' };
+    if (g('critic').s === 'fail') return { k: 'fixing', t: 'Not ready yet', c: 'act', step: 2, why: pw(g('critic').why || ''), more: pw(g('critic').more || '') };
     if (g('render').s === 'done') return { k: 'checking', t: 'Checking', c: 'run', step: 2 };
     if (r.day > today) return { k: 'planned', t: 'Planned', c: '', step: 0, why: g('built').s === 'done' ? '' : 'Made on the day it posts.' };
     return { k: 'building', t: g('built').s === 'done' ? 'Built, video next' : 'Building', c: 'run', step: 1 }; }
@@ -1220,10 +1228,10 @@
   var STAGE = { planned: 'Planned', built: 'Built', render: 'Video', checks: 'Machine checks', critic: 'Second look', ready: 'Ready to post', posted: 'Posted' };
   function plain(k, x){ var t = String(x.t || '');
     if (k === 'built' && /^PR #|^Merged|^On main/.test(t)) return 'Done';
-    if (k === 'checks') return t === 'Output QA PASS' ? 'All passed' : t.replace(/^Failed: /, 'Problem: ');
-    if (k === 'critic') return t === 'READY' ? 'Looks good' : t === 'Not ready' ? 'Found a problem' : t.replace('the critic', 'the second look');
-    if (k === 'render') return t.replace('Output QA', 'checks');
-    return t.replace(/ IST$/, ''); }
+    if (k === 'checks') return t === 'Output QA PASS' ? 'All passed' : pw(t.replace(/^Failed: /, 'Problem: '));
+    if (k === 'critic') return t === 'READY' ? 'Looks good' : t === 'Not ready' ? 'Found a problem' : pw(t.replace('the critic', 'the second look'));
+    if (k === 'render') return pw(t);
+    return pw(t.replace(/ IST$/, '')); }
   function chDot(k){ return el('i', 'dot d-' + k); }
   function trow(r){ var stt = status(r), b = el('button', 'trow'), m = el('span', 'm'); b.type = 'button';
     b.appendChild(chDot(r.ch)); m.appendChild(el('span', 'n', headline(r.title))); m.appendChild(el('span', 's', CH[r.ch].name + (stt.why && stt.k !== 'planned' ? ' · ' + stt.why : stt.why ? ' · ' + stt.why : '')));
@@ -1245,7 +1253,7 @@
         b.forEach(function(r){ mBox.appendChild(trow(r)); });
         if (!b.length) mBox.appendChild(tEmpty(k, 'Nothing planned yet')); });
       var t = new Date(j.now).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' });
-      jNote.textContent = 'Updated ' + t + ' IST' + (j.github === 'ok' ? '.' : j.github === 'no-token' ? '. Live video progress needs the GitHub read key.' : '. GitHub did not answer; finished steps still show.'); }
+      jNote.textContent = 'Updated ' + t + ' IST' + (j.github === 'ok' ? '.' : j.github === 'no-token' ? '. Live video progress needs a GitHub key.' : '. GitHub did not answer; finished steps still show.'); }
     // ready to post, at the top: every reel with a video, not posted, due by the end of today (or overdue), that the checks passed
     rBox.textContent = '';
     if (DATA) { var c = DATA.c, end = Date.parse(today + 'T00:00:00+05:30') + DAY;
@@ -1364,7 +1372,7 @@
   go(sec);
   // "Needs you": each item has buttons that fit it (Yes / No, Done, or a short reply); the reply is stored and the item leaves the list
   function askEl(a){ var box = el('div', 'ask'), row = el('div', 'row'), ta = null;
-    box.appendChild(el('b', null, (a.channel && CH[a.channel] ? CH[a.channel].name + ': ' : '') + a.question)); if (a.why) box.appendChild(el('p', null, a.why));
+    box.appendChild(el('b', null, (a.channel && CH[a.channel] ? CH[a.channel].name + ': ' : '') + pw(a.question))); if (a.why) box.appendChild(el('p', null, pw(a.why)));
     function answer(v, btn){ if (!v || !v.trim()) { if (ta) ta.focus(); return; } btn.disabled = true;
       fetch('/api/asks/' + encodeURIComponent(a.id) + '/answer', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ answer: v.trim() }) })
         .then(function(r){ if (!r.ok) throw 0; box.remove(); syncNeeds(); }).catch(function(){ btn.disabled = false; btn.textContent = 'Try again'; }); }
@@ -1528,7 +1536,7 @@
   var cardsBox = document.getElementById('cards'), CC = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' };
   function cardEl(cd){ var box = el('section', 'card'), hd = el('div', 'hd');
     hd.appendChild(el('b', null, cd.title || 'Daily audit')); hd.appendChild(el('span', null, nice(cd.day))); box.appendChild(hd);
-    function ul(a){ var u = el('ul'); a.forEach(function(t){ u.appendChild(el('li', null, t)); }); return u; }
+    function ul(a){ var u = el('ul'); a.forEach(function(t){ u.appendChild(el('li', null, pw(t))); }); return u; }
     if (cd.points && cd.points.length) box.appendChild(ul(cd.points));
     ['web', 'tech', 'c3'].forEach(function(k){ var a = cd.channels && cd.channels[k]; if (!a || !a.length) return;
       var h = el('h3', null, CH[k].name + ' · last 7 days'); h.style.setProperty('--cc', CC[k]); box.appendChild(h); box.appendChild(ul(a)); });
@@ -1543,7 +1551,7 @@
   function istNow(){ var d = new Date(Date.now() + 5.5 * 36e5); return { day: d.toISOString().slice(0, 10), h: d.getUTCHours() }; }
   function auditSum(cd){ var all = (cd.points || []).concat([].concat.apply([], ['web', 'tech', 'c3'].map(function(k){ return (cd.channels && cd.channels[k]) || []; }))), seen = {}, out = [], n = 0;
     all.forEach(function(t){ var m = /^\s*(ALARM|ESCALATE|OK)\s+(web|tech|c3)\b/i.exec(t); if (m) { var k = m[2].toLowerCase(); if (!seen[k] || /ESCALATE/i.test(m[1])) seen[k] = m[1].toUpperCase(); } if (/^\s*change/i.test(t)) n++; });
-    Object.keys(seen).forEach(function(k){ out.push(k + ' ' + seen[k]); });
+    Object.keys(seen).forEach(function(k){ out.push(CH[k].name + ' ' + (seen[k] === 'OK' ? 'on target' : seen[k] === 'ESCALATE' ? 'below target two days running' : 'below target')); });
     var at = cd.at && new Date(Date.parse(cd.at) + 5.5 * 36e5), hm = at && !isNaN(at) ? ' at ' + at.toISOString().slice(11, 16) : '';
     return 'done' + hm + (out.length ? ' · ' + out.join(', ') : '') + (n ? ' · ' + n + ' change' + (n === 1 ? '' : 's') : ''); }
   function auditKeep(cd){ try { localStorage.setItem('studio-audit', JSON.stringify({ day: cd.day, text: auditSum(cd) })); } catch (e) {} }
@@ -1627,12 +1635,12 @@
   fetch('/api/perf/status', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(st){
     var ACC = { 1: '@webin20sec', 2: '@techin20sec', 3: '@itturns.out' }, box = document.getElementById('alert'), lines = [];
     (st.alerts || []).forEach(function(a){
-      var fix = /^INSTAGRAM_TOKEN/.test(a.secret) ? 'Fix: Meta developer app → Instagram → API setup with Instagram login → Generate token for ' + (ACC[a.slot] || 'this account') + ', then GitHub → Settings → Secrets and variables → Actions → update ' + a.secret + '.'
-        : a.secret === 'BASIC_AUTH' ? 'Fix: check the GitHub secrets BASIC_AUTH_USER and BASIC_AUTH_PASS.' : 'Fix: the site could not store the numbers; ask Claude to look at the "Instagram collect" run.';
-      lines.push({ t: (ACC[a.slot] || 'Account ' + a.slot) + ': numbers are not being collected', m: a.message, f: fix, at: a.at }); });
+      var fix = /^INSTAGRAM_TOKEN/.test(a.secret) ? 'Fix: make a new Instagram access key for ' + (ACC[a.slot] || 'this account') + ', then give it to Claude, or paste it on GitHub (Settings, Secrets, update ' + a.secret + ').'
+        : a.secret === 'BASIC_AUTH' ? 'Fix: the sign-in details saved for the numbers collection no longer match the app. Ask Claude to look.' : 'Fix: the app could not save the numbers. Ask Claude to look.';
+      lines.push({ t: (ACC[a.slot] || 'Account ' + a.slot) + ': numbers are not being collected', m: pw(a.message), f: fix, at: a.at }); });
     var newest = (st.last || []).reduce(function(m, x){ return x.day > m ? x.day : m; }, '');
     if (newest && Date.now() - new Date(newest + 'T23:59:00+05:30').getTime() > 36 * 3600e3 && !lines.length)
-      lines.push({ t: 'No new Instagram numbers since ' + newest, m: 'The nightly "Instagram collect" run has not saved anything for over a day.', f: 'Fix: ask Claude to check the "Instagram collect" workflow.' });
+      lines.push({ t: 'No new Instagram numbers since ' + newest, m: 'The nightly numbers collection has not saved anything for over a day.', f: 'Fix: ask Claude to check it.' });
     if (!lines.length) return;
     lines.forEach(function(x){ box.appendChild(el('b', null, '⚠ ' + x.t)); box.appendChild(el('p', null, x.m)); box.appendChild(el('p', null, x.f));
       if (x.at) box.appendChild(el('small', null, 'Since ' + new Date(x.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · clears itself after the next good run')); });

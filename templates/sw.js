@@ -1,7 +1,7 @@
 // studio app service worker (home = Showreels).
 // Network-first: HTML + the reel and channel lists (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v32';
+const VERSION = 'v33';
 const CACHE = `aquarii-${VERSION}`;
 const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/channels/channels.json', '/showreels/captions.json', '/icons/icon.svg'];
 
