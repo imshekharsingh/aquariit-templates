@@ -3,6 +3,9 @@
 Moved from CLAUDE.md "Daily run", "Daily improvement loop" and "Accounts and data" on 14 Nov 2026. A fresh session, lean, no subagents,
 in this order:
 
+Stage board (owner, 24 Nov 2026): at every stage change of a reel build (research, topic, build, stills, video, checking, ready or skipped) run
+`node scripts/stage.mjs <channel> <stage> --model <name> --line "plain words"` (design/runbook-reels.md "Live studio board"). Never blocks work.
+
 0. Feedback first (owner, 11 Nov 2026): the "Owner answers" `read` prints the app's new Feedback items as FEEDBACK lines (id, time, channel,
    text). Act on each new item that day, or put it in design/todo.md with a date, then dispatch `feedback-done` with
    `{"ids":[..],"note":"what was done"}` (the app shows the note under the item). Every run reads it first: the daily run, the Turns Out run

@@ -94,6 +94,7 @@ jobs:
           VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           REELS_READ_KEY: ${{ secrets.REELS_READ_KEY }}
+          STAGE_KEY: ${{ secrets.STAGE_KEY }}
         run: | # the optional second account (and the Web Push keys) are published only when BOTH of their secrets exist
           {
             echo "names<<EOF"
@@ -101,6 +102,7 @@ jobs:
             echo BASIC_AUTH_PASS
             if [ -n "$BASIC_AUTH_USER_2" ] && [ -n "$BASIC_AUTH_PASS_2" ]; then echo BASIC_AUTH_USER_2; echo BASIC_AUTH_PASS_2; fi
             if [ -n "$VAPID_PUBLIC_KEY" ] && [ -n "$VAPID_PRIVATE_KEY" ]; then echo VAPID_PUBLIC_KEY; echo VAPID_PRIVATE_KEY; fi   # Web Push (owner adds both)
+            if [ -n "$STAGE_KEY" ]; then echo STAGE_KEY; fi   # optional key for POST /api/stage (the live studio board)
             if [ -n "$REELS_READ_KEY" ]; then echo REELS_READ_KEY; fi   # optional read-only reel key for critic and review sessions (GET/HEAD /reels/ only)
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
@@ -155,6 +157,7 @@ jobs:
           VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           REELS_READ_KEY: ${{ secrets.REELS_READ_KEY }}
+          STAGE_KEY: ${{ secrets.STAGE_KEY }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
