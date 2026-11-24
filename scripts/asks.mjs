@@ -9,7 +9,7 @@
 //                  REF <id> <time> <channel|-> <url|-> <file type|-> <note>; for each file a small JPEG preview (an image scaled to 720 px, a clip as
 //                  a 4x2 sheet of one frame a second) as a "B64 ref-<id>.jpg <base64>" log line (stderr, not the summary):
 //                  node scripts/media/from-log.mjs <run id> <dir> turns them back into files. Study each into design/references.md, then refs-done
-//   refs-done:     ASKS = {"ids": [3], "state": "studied" | "used", "note": "what was taken, or the reel it went into"}; the app shows the note
+//   refs-done:     (also "checklist", "stills", "replies", see below) ASKS = {"ids": [3], "state": "studied" | "used", "note": "what was taken, or the reel it went into"}; the app shows the note
 //   add:   ASKS = [{ "id": "tech-bio", "question": "plain English", "why": "why it matters", "kind": "yesno" | "done" | "text", "channel": "web"|"tech"|"c3" }]
 //   clear: ASKS = ["tech-bio", ...] (after acting on the replies; removes them for good)
 //   mark:  ASKS = {"showreel-19-numbers": "2026-10-31T07:51:00Z", ...} marks reels uploaded at their real post time (an answer such as
@@ -79,16 +79,28 @@ if (ACTION === 'refs') {
     if (!f.file || !ff) continue;
     const g = await fetch(`${SITE}/api/refs/${f.id}/file`, { headers: { Cookie: cookie } });
     if (!g.ok) { console.log(`  (file ${f.id}: HTTP ${g.status})`); continue; }
-    const src = join(td, `in-${f.id}`), out = join(td, `ref-${f.id}.jpg`); writeFileSync(src, Buffer.from(await g.arrayBuffer()));
+    const src = join(td, `in-${f.id}`), out = join(td, `ref-${f.id}.jpg`);
+    { const { createWriteStream } = await import('node:fs'), { Readable } = await import('node:stream'), { pipeline } = await import('node:stream/promises');   // files up to 1 GB: stream to disk, never into memory
+      await pipeline(Readable.fromWeb(g.body), createWriteStream(src)); }
     const vf = /^video\//.test(f.file.type) ? 'fps=1,scale=240:-2,tile=4x2' : "scale='min(720,iw)':-2";
     try { execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', src, '-vf', vf, '-frames:v', '1', '-q:v', '5', out], { stdio: 'ignore', timeout: 60000 }); } catch { /* no preview */ }
     if (existsSync(out)) console.error(`B64 ref-${f.id}.jpg ${readFileSync(out).toString('base64')}`); else console.log(`  (no preview for ${f.id})`);
   }
   console.log(`${refs.length} new reference${refs.length === 1 ? '' : 's'}${ff ? '' : ' (ffmpeg missing: no previews)'} (study each into design/references.md, then refs-done with a note)`);
+  // the owner's answers on earlier reports (owner, 24 Nov 2026): Keep / Skip on each checklist line, and the Ask questions waiting for a reply
+  const all = (await (await fetch(SITE + '/api/refs', { headers: { Cookie: cookie } })).json()).refs || [];
+  for (const f of all) { if (f.closed) continue; (f.checklist || []).forEach((c, i) => { if (c.c === 'keep' || c.c === 'skip') console.log(`REFCHECK ${f.id} ${i} ${c.c} ${JSON.stringify(c.t)}`);
+    const last = (c.th || [])[(c.th || []).length - 1]; if (last && last.w === 'owner') console.log(`REFASK ${f.id} ${i} ${JSON.stringify(c.t)} QUESTION ${JSON.stringify(last.t)} (answer with refs-done "replies": [{"item": ${i}, "text": "..."}])`); }); }
 }
 if (ACTION === 'refs-done') for (const id of refDone.ids) {
-  const r = await fetch(`${SITE}/api/refs/${id}/state`, { method: 'POST', headers: H, body: JSON.stringify({ state: refDone.state, note: refDone.note.trim() }) });
-  if (!r.ok) die(`could not set reference ${id} (HTTP ${r.status})`); const j = await r.json(); console.log(j.stored ? `✓ reference ${id} ${refDone.state}` : `✗ no reference ${id}`);
+  // report (owner, 24 Nov 2026): "checklist": ["short line the owner marks Keep / Skip / Ask", ...], "stills": [a JPEG path or base64, at most 8, 200 KB each], "replies": [{"item": 0, "text": "answer to an Ask"}]
+  const { readFileSync, existsSync } = await import('node:fs');
+  const stills = (refDone.stills || []).slice(0, 8).map((x) => (typeof x === 'string' && x.length < 400 && existsSync(x) ? readFileSync(x).toString('base64') : x));
+  const rich = (refDone.checklist && refDone.checklist.length) || stills.length;
+  const r = rich ? await fetch(`${SITE}/api/refs/${id}/report`, { method: 'POST', headers: H, body: JSON.stringify({ state: refDone.state, note: refDone.note.trim(), checklist: refDone.checklist || [], stills }) })
+    : await fetch(`${SITE}/api/refs/${id}/state`, { method: 'POST', headers: H, body: JSON.stringify({ state: refDone.state, note: refDone.note.trim() }) });
+  if (!r.ok) die(`could not set reference ${id} (HTTP ${r.status})`); const j = await r.json(); console.log(j.stored ? `✓ reference ${id} ${refDone.state}${rich ? ` (${j.items || 0} checklist lines, ${j.stills || 0} stills)` : ''}` : `✗ no reference ${id}`);
+  for (const q of refDone.replies || []) { const t = await fetch(`${SITE}/api/refs/${id}/thread`, { method: 'POST', headers: H, body: JSON.stringify({ item: q.item, text: q.text, who: 'claude' }) }); console.log(t.ok ? `✓ reference ${id} line ${q.item} answered` : `✗ reference ${id} line ${q.item} (HTTP ${t.status})`); }
 }
 if (ACTION === 'add') for (const a of items) {
   const r = await fetch(`${SITE}/api/asks/${a.id}`, { method: 'PUT', headers: H, body: JSON.stringify(a) });

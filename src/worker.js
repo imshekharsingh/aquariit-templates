@@ -447,13 +447,19 @@ let refReady = null;
 async function refDb(env) {
   if (!env.DB) return null;
   refReady = refReady || env.DB.exec("CREATE TABLE IF NOT EXISTS owner_refs (id INTEGER PRIMARY KEY AUTOINCREMENT, created TEXT NOT NULL, channel TEXT, url TEXT, file_key TEXT, file_type TEXT, file_name TEXT, size INTEGER, note TEXT, state TEXT NOT NULL DEFAULT 'new', reply TEXT, done_at TEXT)")
+    // flow (owner, 24 Nov 2026): checklist = JSON [{t, c: keep|skip|ask|null, th: [{w, t, at}]}], stills = number of report stills in R2 (refs/<id>-still-<n>.jpg), upload_id = a multipart upload in progress, closed_at = closed (video deleted)
+    .then(() => Promise.all(['checklist', 'stills', 'upload_id', 'closed_at'].map((c) => env.DB.prepare(`ALTER TABLE owner_refs ADD COLUMN ${c} TEXT`).run().catch(() => {}))))
     .catch((e) => { refReady = null; throw e; });
   await refReady;
   return env.DB;
 }
-const REF_MAX = 50 * 1024 * 1024, REF_TYPES = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/heic': 'heic', 'video/mp4': 'mp4', 'video/quicktime': 'mov', 'video/webm': 'webm' };
-const REF_ST = ['new', 'studied', 'used'], REF_ID = /^\/api\/refs\/([0-9]{1,9})(\/file|\/state|\/delete)?$/;
-const refOut = (r) => ({ id: r.id, created: r.created, channel: r.channel, url: r.url, file: r.file_key ? { type: r.file_type, name: r.file_name, size: r.size } : null, note: r.note, state: r.state, reply: r.reply, done_at: r.done_at });
+// up to 1 GB (owner, 24 Nov 2026): a file over REF_SINGLE goes up in parts (R2 multipart through this Worker, each part under REF_PART, which stays below the 100 MB request limit)
+const REF_MAX = 1024 * 1024 * 1024, REF_SINGLE = 50 * 1024 * 1024, REF_PART = 90 * 1024 * 1024, REF_PART_SIZE = 64 * 1024 * 1024, REF_TYPES = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/heic': 'heic', 'video/mp4': 'mp4', 'video/quicktime': 'mov', 'video/webm': 'webm' };
+const REF_ST = ['new', 'studied', 'used'], REF_ID = /^\/api\/refs\/([0-9]{1,9})(\/file|\/state|\/delete|\/part|\/complete|\/abort|\/report|\/check|\/thread|\/close|\/still\/[0-9]{1,2})?$/;
+const jparse = (t) => { try { const v = JSON.parse(t); return Array.isArray(v) ? v : []; } catch { return []; } };
+const refOut = (r) => ({ id: r.id, created: r.created, channel: r.channel, url: r.url, file: r.file_key ? { type: r.file_type, name: r.file_name, size: r.size } : r.closed_at && r.file_name ? { type: r.file_type, name: r.file_name, size: r.size, deleted: true } : null,
+  note: r.note, state: r.state, reply: r.reply, done_at: r.done_at, closed: r.closed_at || null, uploading: r.state === 'uploading',
+  checklist: jparse(r.checklist), stills: Array.from({ length: Math.min(8, Number(r.stills) || 0) }, (_, i) => `/api/refs/${r.id}/still/${i + 1}`) });
 async function refsApi(request, env, p, url) {
   if (!(await isPrimary(request, env))) return request.method === 'GET' ? jres({ refs: [] }) : jres({ error: 'forbidden' }, 403);
   let db;
@@ -462,7 +468,7 @@ async function refsApi(request, env, p, url) {
   const m = REF_ID.exec(p);
   if (request.method === 'GET' && p === '/api/refs') {   // newest first; ?state=new gives only the ones waiting for Claude
     const onlyNew = url.searchParams.get('state') === 'new';
-    const { results } = await db.prepare(`SELECT * FROM owner_refs ${onlyNew ? "WHERE state = 'new' " : ''}ORDER BY id DESC LIMIT 60`).all();
+    const { results } = await db.prepare(`SELECT * FROM owner_refs ${onlyNew ? "WHERE state = 'new' AND closed_at IS NULL " : ''}ORDER BY id DESC LIMIT 60`).all();
     return jres({ refs: (results || []).map(refOut) });
   }
   if (request.method === 'GET' && m && m[2] === '/file') {   // the file itself, for the app's thumbnail and the workflow's preview
@@ -473,17 +479,58 @@ async function refsApi(request, env, p, url) {
     if (!o) return jres({ error: 'not-found' }, 404);
     return new Response(o.body, { headers: { 'Content-Type': r.file_type || 'application/octet-stream', 'Cache-Control': 'private, max-age=3600', 'X-Content-Type-Options': 'nosniff', 'Content-Disposition': 'inline' } });
   }
+  if (request.method === 'GET' && m && /^\/still\//.test(m[2] || '')) {   // a still from the report
+    if (!env.REELS) return jres({ error: 'no-store' }, 503);
+    const o = await env.REELS.get(`refs/${m[1]}-still-${m[2].slice(7)}.jpg`);
+    if (!o) return jres({ error: 'not-found' }, 404);
+    return new Response(o.body, { headers: { 'Content-Type': 'image/jpeg', 'Cache-Control': 'private, max-age=3600', 'X-Content-Type-Options': 'nosniff' } });
+  }
   if (request.method !== 'POST' || request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403);
   const ch = (v) => (FB_CH.includes(v) ? v : null), now = new Date().toISOString();
+  if (p === '/api/refs/mp/start') {   // a big file: start a multipart upload; the app sends it in parts of partSize bytes, then completes
+    if (!env.REELS || !env.REELS.createMultipartUpload) return jres({ error: 'no-store' }, 503);
+    let b0 = null; try { b0 = await request.json(); } catch { /* below */ }
+    const type = String(b0 && b0.type || '').toLowerCase(), ext = REF_TYPES[type], size = Number(b0 && b0.size);
+    if (!ext) return jres({ error: 'type', allowed: Object.keys(REF_TYPES) }, 415);
+    if (!(size > 0)) return jres({ error: 'bad-request' }, 400);
+    if (size > REF_MAX) return jres({ error: 'too-big', max: REF_MAX }, 413);
+    const name = (nStr(b0.name, 120) || 'file').replace(/[^\w. -]/g, '_'), note = nStr(b0.note, 1000);
+    const ins = await db.prepare("INSERT INTO owner_refs (created, channel, file_type, file_name, size, note, state) VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'uploading')").bind(now, ch(b0.channel), type, name, size, note && note.trim() ? note.trim() : null).run();
+    const id = ins.meta && ins.meta.last_row_id, key = `refs/${id}.${ext}`;
+    try { const mp = await env.REELS.createMultipartUpload(key, { httpMetadata: { contentType: type } });
+      await db.prepare('UPDATE owner_refs SET file_key = ?2, upload_id = ?3 WHERE id = ?1').bind(id, key, mp.uploadId).run(); }
+    catch { await db.prepare('DELETE FROM owner_refs WHERE id = ?1').bind(id).run(); return jres({ error: 'store-failed' }, 502); }
+    return jres({ ok: true, id, partSize: REF_PART_SIZE, max: REF_PART });
+  }
+  if (m && (m[2] === '/part' || m[2] === '/complete' || m[2] === '/abort')) {
+    const r = await db.prepare("SELECT file_key, upload_id, size FROM owner_refs WHERE id = ?1 AND state = 'uploading'").bind(Number(m[1])).first();
+    if (!r || !r.upload_id || !env.REELS) return jres({ error: 'not-found' }, 404);
+    const mp = env.REELS.resumeMultipartUpload(r.file_key, r.upload_id);
+    if (m[2] === '/part') {   // raw part body (at most REF_PART bytes); returns its etag for /complete
+      const n = Number(url.searchParams.get('n')), len = Number(request.headers.get('Content-Length') || 0);
+      if (!(n >= 1 && n <= 10000) || !len) return jres({ error: 'bad-request' }, 400);
+      if (len > REF_PART) return jres({ error: 'too-big', max: REF_PART }, 413);
+      try { const part = await mp.uploadPart(n, request.body); return jres({ ok: true, partNumber: part.partNumber, etag: part.etag }); }
+      catch { return jres({ error: 'store-failed' }, 502); }
+    }
+    if (m[2] === '/abort') { try { await mp.abort(); } catch { /* gone already */ } await db.prepare('DELETE FROM owner_refs WHERE id = ?1').bind(Number(m[1])).run(); return jres({ ok: true }); }
+    let b1 = null; try { b1 = await request.json(); } catch { /* below */ }
+    const parts = b1 && Array.isArray(b1.parts) ? b1.parts.filter((x) => x && Number(x.partNumber) >= 1 && typeof x.etag === 'string').map((x) => ({ partNumber: Number(x.partNumber), etag: x.etag })).sort((a, c) => a.partNumber - c.partNumber) : [];
+    if (!parts.length) return jres({ error: 'bad-request' }, 400);
+    let obj; try { obj = await mp.complete(parts); } catch { return jres({ error: 'store-failed' }, 502); }
+    if (obj.size > REF_MAX) { try { await env.REELS.delete(r.file_key); } catch { /* row goes anyway */ } await db.prepare('DELETE FROM owner_refs WHERE id = ?1').bind(Number(m[1])).run(); return jres({ error: 'too-big', max: REF_MAX }, 413); }
+    await db.prepare("UPDATE owner_refs SET state = 'new', upload_id = NULL, size = ?2 WHERE id = ?1").bind(Number(m[1]), obj.size).run();
+    return jres({ ok: true, id: Number(m[1]) });
+  }
   if (p === '/api/refs/upload') {   // raw file body; channel, note and name in the query
     if (!env.REELS) return jres({ error: 'no-store' }, 503);
     const type = (request.headers.get('Content-Type') || '').split(';')[0].trim().toLowerCase(), ext = REF_TYPES[type];
     if (!ext) return jres({ error: 'type', allowed: Object.keys(REF_TYPES) }, 415);
     const len = Number(request.headers.get('Content-Length') || 0);
-    if (len > REF_MAX) return jres({ error: 'too-big', max: REF_MAX }, 413);
+    if (len > REF_SINGLE) return jres({ error: 'too-big', max: REF_SINGLE, multipart: true }, 413);   // bigger files use /api/refs/mp/start
     const buf = await request.arrayBuffer();
     if (!buf.byteLength) return jres({ error: 'bad-request' }, 400);
-    if (buf.byteLength > REF_MAX) return jres({ error: 'too-big', max: REF_MAX }, 413);
+    if (buf.byteLength > REF_SINGLE) return jres({ error: 'too-big', max: REF_SINGLE, multipart: true }, 413);
     const name = (nStr(url.searchParams.get('name'), 120) || 'file').replace(/[^\w. -]/g, '_'), note = nStr(url.searchParams.get('note'), 1000);
     const ins = await db.prepare('INSERT INTO owner_refs (created, channel, file_type, file_name, size, note) VALUES (?1, ?2, ?3, ?4, ?5, ?6)')
       .bind(now, ch(url.searchParams.get('channel')), type, name, buf.byteLength, note && note.trim() ? note.trim() : null).run();
@@ -499,6 +546,40 @@ async function refsApi(request, env, p, url) {
     if (!link || !/^https:\/\/[^\s]+$/i.test(link.trim())) return jres({ error: 'bad-url' }, 400);
     const r = await db.prepare('INSERT INTO owner_refs (created, channel, url, note) VALUES (?1, ?2, ?3, ?4)').bind(now, ch(b.channel), link.trim(), note && note.trim() ? note.trim() : null).run();
     return jres({ ok: true, id: r.meta && r.meta.last_row_id });
+  }
+  if (m && m[2] === '/report') {   // a Claude run: the report, a checklist (short lines the owner marks Keep / Skip / Ask) and up to 8 stills (base64 JPEG, 200 KB each)
+    const id = Number(m[1]), st = b && REF_ST.includes(b.state) ? b.state : 'studied', note = b && nStr(b.note, 1500);
+    if (!note || !note.trim()) return jres({ error: 'bad-request' }, 400);
+    const list = Array.isArray(b.checklist) ? b.checklist.filter((x) => typeof x === 'string' && x.trim()).slice(0, 12).map((x) => ({ t: x.trim().slice(0, 200), c: null, th: [] })) : [];
+    let n = 0;
+    if (Array.isArray(b.stills) && env.REELS) for (const x of b.stills.slice(0, 8)) {
+      try { const bin = Uint8Array.from(atob(String(x).replace(/^data:image\/jpeg;base64,/, '')), (c) => c.charCodeAt(0));
+        if (bin.length <= 200 * 1024 && bin[0] === 0xff && bin[1] === 0xd8) { n++; await env.REELS.put(`refs/${id}-still-${n}.jpg`, bin, { httpMetadata: { contentType: 'image/jpeg' } }); } } catch { /* skip this still */ }
+    }
+    const old0 = await db.prepare('SELECT checklist FROM owner_refs WHERE id = ?1').bind(id).first();
+    const keep = old0 && jparse(old0.checklist).length ? null : JSON.stringify(list);   // a checklist the owner already marked is never replaced
+    const r = await db.prepare('UPDATE owner_refs SET state = ?2, reply = ?3, done_at = ?4, checklist = COALESCE(?5, checklist), stills = CASE WHEN ?6 > 0 THEN ?6 ELSE stills END WHERE id = ?1').bind(id, st, note.trim(), now, keep, n).run();
+    return jres({ ok: true, stored: !!(r.meta && r.meta.changes), stills: n, items: list.length });
+  }
+  if (m && (m[2] === '/check' || m[2] === '/thread')) {   // the owner marks a line Keep / Skip / Ask; Ask opens a short thread; Claude answers in it (who: claude)
+    const id = Number(m[1]), i = Number(b && b.item), row = await db.prepare('SELECT checklist FROM owner_refs WHERE id = ?1').bind(id).first(), list = row ? jparse(row.checklist) : [];
+    if (!row || !Number.isInteger(i) || !list[i]) return jres({ error: 'bad-request' }, 400);
+    if (m[2] === '/check') { const c = b.choice === null ? null : ['keep', 'skip', 'ask'].includes(b.choice) ? b.choice : undefined; if (c === undefined) return jres({ error: 'bad-request' }, 400); list[i].c = c; }
+    else { const t = nStr(b.text, 500), who = b.who === 'claude' ? 'claude' : 'owner'; if (!t || !t.trim()) return jres({ error: 'bad-request' }, 400);
+      list[i].th = (list[i].th || []).concat([{ w: who, t: t.trim(), at: now }]).slice(-30); if (who === 'owner') list[i].c = 'ask'; }
+    await db.prepare('UPDATE owner_refs SET checklist = ?2 WHERE id = ?1').bind(id, JSON.stringify(list)).run();
+    return jres({ ok: true, item: list[i] });
+  }
+  if (m && m[2] === '/close') {   // the owner closes it: the video is deleted from R2 the same day; the report, stills and checklist stay
+    const id = Number(m[1]), r = await db.prepare('SELECT file_key, file_type, upload_id FROM owner_refs WHERE id = ?1').bind(id).first();
+    if (!r) return jres({ ok: true, stored: false });
+    let gone = false;
+    if (r.file_key && /^video\//.test(r.file_type || '') && env.REELS) {
+      if (r.upload_id) { try { await env.REELS.resumeMultipartUpload(r.file_key, r.upload_id).abort(); } catch { /* none */ } }
+      try { await env.REELS.delete(r.file_key); gone = true; } catch { return jres({ error: 'store-failed' }, 502); }   // not closed until the video is really gone
+    }
+    await db.prepare(`UPDATE owner_refs SET closed_at = ?2, upload_id = NULL${gone ? ', file_key = NULL' : ''}, state = CASE WHEN state = 'uploading' THEN 'new' ELSE state END WHERE id = ?1`).bind(id, now).run();
+    return jres({ ok: true, stored: true, videoDeleted: gone });
   }
   if (m && m[2] === '/state') {   // a Claude run: studied / used, with a short note the app shows
     const st = b && REF_ST.includes(b.state) ? b.state : null, note = b && nStr(b.note, 500);

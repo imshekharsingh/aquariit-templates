@@ -155,6 +155,19 @@
   .fflow{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 2px}
   .fflow span{font:600 .68rem system-ui,sans-serif;padding:3px 8px;border-radius:99px;background:var(--soft);color:var(--mute);transition:background .25s ease,color .25s ease}
   .fflow span.y{background:var(--okbg);color:var(--ok)}.fflow span.n{background:var(--ink);color:var(--bg)}
+  .refi .stills{display:flex;gap:6px;overflow-x:auto;margin-top:8px}
+  .refi .stills img{flex:none;height:96px;border-radius:8px;border:1px solid var(--line)}
+  .rcheck{margin-top:10px}.rcheck small{color:var(--mute);font-weight:700}
+  .rc{padding:8px 0;border-top:1px solid var(--line)}.rc p{margin:0}
+  .rcb{display:flex;gap:6px;margin-top:6px}
+  .rcb button{min-height:34px;padding:0 14px;border-radius:99px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font:600 .78rem system-ui,sans-serif;cursor:pointer;transition:background .2s ease,color .2s ease}
+  .rcb button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .rcb button[data-c=keep][aria-pressed=true]{background:var(--ok);border-color:var(--ok);color:var(--okink)}
+  .rth{margin-top:6px;padding:8px 10px;border-radius:10px;background:var(--well);font-size:.82rem}
+  .rth .msg{margin:2px 0}.rth .msg.claude{color:var(--ok)}
+  .rth .tin{display:flex;gap:6px;margin-top:6px}.rth .tin input{flex:1;min-width:0;min-height:38px;padding:0 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font:400 16px system-ui,sans-serif}
+  .rth .tin .btn{min-height:38px;flex:none;padding:0 12px}
+  .refi .fact{display:flex;gap:8px;margin-top:8px;align-items:center}.refi .fact .btn{min-height:32px;padding:0 12px;font-size:.75rem}
   .fbi .proof{display:block;max-width:100%;max-height:220px;margin-top:6px;border-radius:10px;border:1px solid var(--line)}
   .fbi .fact{display:flex;gap:8px;margin-top:8px}.fbi .fact .btn{min-height:36px}
   .fbi textarea{min-height:60px}
@@ -600,7 +613,7 @@
     <details class="fb ref" id="ref"><summary>Ideas and references <span id="ref-n">Add a link or a file</span></summary>
       <div class="chips" id="ref-ch" role="group" aria-label="For"><button type="button" data-ch="" aria-pressed="true">Any</button><button type="button" data-ch="web" aria-pressed="false">Web</button><button type="button" data-ch="tech" aria-pressed="false">Tech</button><button type="button" data-ch="c3" aria-pressed="false">Turns Out</button><button type="button" data-ch="app" aria-pressed="false">App</button></div>
       <input type="url" id="ref-url" aria-label="Link" placeholder="Paste a link (Instagram reel, site)" inputmode="url" autocomplete="off">
-      <div class="pick"><label for="ref-file">Upload a screenshot or clip</label><input type="file" id="ref-file" accept="image/png,image/jpeg,image/webp,image/gif,image/heic,video/mp4,video/quicktime,video/webm"><span id="ref-fname">Images or clips up to 50 MB</span></div>
+      <div class="pick"><label for="ref-file">Upload a screenshot or clip</label><input type="file" id="ref-file" accept="image/png,image/jpeg,image/webp,image/gif,image/heic,video/mp4,video/quicktime,video/webm"><span id="ref-fname">Up to 1 GB</span></div>
       <textarea id="ref-note" aria-label="Note" placeholder="What should Claude look at? (optional)"></textarea>
       <div class="row"><button class="btn" id="ref-send" type="button">Add reference</button></div>
       <p class="msg" id="ref-msg" aria-live="polite"></p>
@@ -1303,10 +1316,10 @@
   // References: a link or a file (screenshot, short clip) with an optional note; Claude runs study the new ones and reply with a state and a note
   var refList = document.getElementById('ref-list'), refUrl = document.getElementById('ref-url'), refFile = document.getElementById('ref-file'), refNote = document.getElementById('ref-note'),
     refSend = document.getElementById('ref-send'), refMsg = document.getElementById('ref-msg'), refN = document.getElementById('ref-n'), refFname = document.getElementById('ref-fname'), refCh = '';
-  var REFST = { 'new': 'New', studied: 'Studied', used: 'Used' }, REF_MAX = 50 * 1024 * 1024;
+  var REFST = { uploading: 'Uploading', 'new': 'New', studied: 'Studied', used: 'Used' }, REF_MAX = 1024 * 1024 * 1024, REF_SINGLE = 50 * 1024 * 1024, REF_WARN = 100 * 1024 * 1024;
   Array.prototype.forEach.call(document.querySelectorAll('#ref-ch button'), function(b){ b.addEventListener('click', function(){ refCh = b.getAttribute('data-ch');
     Array.prototype.forEach.call(document.querySelectorAll('#ref-ch button'), function(x){ x.setAttribute('aria-pressed', String(x === b)); }); }); });
-  refFile.addEventListener('change', function(){ var f = refFile.files && refFile.files[0]; refFname.textContent = f ? f.name + ' · ' + (f.size / 1048576).toFixed(1) + ' MB' : 'Images or clips up to 50 MB'; });
+  refFile.addEventListener('change', function(){ var f = refFile.files && refFile.files[0]; refFname.textContent = f ? f.name + ' · ' + (f.size / 1048576).toFixed(1) + ' MB' : 'Up to 1 GB'; });
   function refItem(r){ var box = el('div', 'fbi refi'), h = el('div', 'h');
     h.appendChild(el('span', null, fbWhen(r.created) + (r.channel && FBN[r.channel] ? ' · ' + FBN[r.channel] : ''))); h.appendChild(el('span', 'st' + (r.state !== 'new' ? ' done' : ''), REFST[r.state] || r.state));
     box.appendChild(h);
@@ -1314,25 +1327,68 @@
     if (r.file) { if (/^image\//.test(r.file.type) && r.file.type !== 'image/heic') { var im = el('img', 'th'); im.loading = 'lazy'; im.alt = r.file.name || 'Reference'; im.src = '/api/refs/' + r.id + '/file'; box.appendChild(im); }
       else if (/^video\//.test(r.file.type)) { var v = el('video', 'th'); v.controls = true; v.preload = 'metadata'; v.playsInline = true; v.src = '/api/refs/' + r.id + '/file'; box.appendChild(v); }
       else box.appendChild(el('p', null, r.file.name || 'File')); }
-    if (r.note) box.appendChild(el('p', null, r.note)); if (r.reply) box.appendChild(el('p', 'note', 'Claude: ' + r.reply));
+    if (r.file && r.file.deleted) box.appendChild(el('p', 'note', 'The video was deleted when you closed this. The report, stills and checklist are kept.'));
+    if (r.note) box.appendChild(el('p', null, r.note));
+    if (r.uploading) box.appendChild(el('p', 'note', 'Still uploading, or the upload stopped. Delete it and add it again if it does not finish.'));
+    if (r.reply) box.appendChild(el('p', 'note', 'Claude: ' + r.reply));
+    if ((r.stills || []).length) { var sw = el('div', 'stills'); r.stills.forEach(function(u){ var si = el('img'); si.loading = 'lazy'; si.alt = 'Still from the report'; si.src = u; sw.appendChild(si); }); box.appendChild(sw); }
+    if ((r.checklist || []).length) { var cl = el('div', 'rcheck'); cl.appendChild(el('small', null, 'Checklist: mark what to keep'));
+      r.checklist.forEach(function(c, i){ var li = el('div', 'rc'), t = el('p', null, c.t), bs = el('div', 'rcb'), th = el('div', 'rth');
+        function post(what, body){ return fetch('/api/refs/' + r.id + '/' + what, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify(Object.assign({ item: i }, body)) }).then(function(x){ if (!x.ok) throw 0; return x.json(); }); }
+        function paint(){ Array.prototype.forEach.call(bs.children, function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-c') === c.c)); });
+          th.textContent = ''; th.hidden = c.c !== 'ask';
+          if (c.c === 'ask') { (c.th || []).forEach(function(m){ th.appendChild(el('p', 'msg ' + m.w, (m.w === 'claude' ? 'Claude: ' : 'You: ') + m.t)); });
+            var row = el('div', 'tin'), ti = el('input'), go = el('button', 'btn g', 'Send'); ti.type = 'text'; ti.placeholder = 'Ask Claude about this line'; ti.setAttribute('aria-label', 'Question'); ti.maxLength = 500; go.type = 'button';
+            go.addEventListener('click', function(){ var v = ti.value.trim(); if (!v) { ti.focus(); return; } go.disabled = true; post('thread', { text: v }).then(function(j){ c.th = j.item.th; c.c = 'ask'; paint(); }, function(){ go.disabled = false; go.textContent = 'Try again'; }); });
+            row.appendChild(ti); row.appendChild(go); th.appendChild(row); } }
+        [['keep', 'Keep'], ['skip', 'Skip'], ['ask', 'Ask']].forEach(function(o){ var b = el('button', null, o[1]); b.type = 'button'; b.setAttribute('data-c', o[0]);
+          b.addEventListener('click', function(){ var want = c.c === o[0] ? null : o[0]; post('check', { choice: want }).then(function(){ c.c = want; paint(); }, function(){}); }); bs.appendChild(b); });
+        li.appendChild(t); li.appendChild(bs); li.appendChild(th); cl.appendChild(li); paint(); });
+      box.appendChild(cl); }
+    var act = el('div', 'fact');
+    if (!r.closed && (r.state === 'studied' || r.state === 'used')) { var cb = el('button', 'btn g', 'Close'); cb.type = 'button';
+      cb.addEventListener('click', function(){ if (!confirm(r.file && /^video\//.test(r.file.type) ? 'Close this reference? The video is deleted today. The report, stills and checklist stay.' : 'Close this reference? The report, stills and checklist stay.')) return; cb.disabled = true;
+        fetch('/api/refs/' + r.id + '/close', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: '{}' })
+          .then(function(x){ if (!x.ok) throw 0; refLoad(); }).catch(function(){ cb.disabled = false; cb.textContent = 'Try again'; }); }); act.appendChild(cb); }
+    if (r.closed) box.appendChild(el('p', 'note', 'Closed'));
     var d = el('button', 'del', 'Delete'); d.type = 'button'; d.addEventListener('click', function(){ if (!confirm('Delete this reference?')) return; d.disabled = true;
-      fetch('/api/refs/' + r.id + '/delete', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: '{}' })
+      fetch('/api/refs/' + r.id + '/' + (r.uploading ? 'abort' : 'delete'), { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: '{}' })
         .then(function(x){ if (!x.ok) throw 0; refLoad(); }).catch(function(){ d.disabled = false; d.textContent = 'Try again'; }); });
-    box.appendChild(d); return box; }
+    act.appendChild(d); box.appendChild(act); return box; }
   function refLoad(){ fetch('/api/refs', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
-    .then(function(j){ var a = (j.refs || []).filter(function(r){ return r.state === 'new' || !r.done_at || Date.now() - Date.parse(r.done_at) <= 2 * 864e5; }), n = a.filter(function(r){ return r.state === 'new'; }).length; refList.textContent = ''; a.forEach(function(r){ refList.appendChild(refItem(r)); });  // studied or used more than 2 days ago leaves the list (owner, 23 Nov 2026)
+    .then(function(j){ var a = (j.refs || []).filter(function(r){ var undecided = (r.checklist || []).some(function(c){ return !c.c; }); if (r.closed) return Date.now() - Date.parse(r.closed) <= 2 * 864e5; return r.state === 'new' || r.state === 'uploading' || !r.done_at || undecided || Date.now() - Date.parse(r.done_at) <= 2 * 864e5; }), n = a.filter(function(r){ return r.state === 'new'; }).length; refList.textContent = ''; a.forEach(function(r){ refList.appendChild(refItem(r)); });  // studied or used more than 2 days ago leaves the list (owner, 23 Nov 2026)
       refN.textContent = n ? n + ' new' : a.length ? a.length + ' added' : 'Add a link or a file'; }).catch(function(){}); }
-  function refDone(ok, m){ refSend.disabled = false; refSend.textContent = ok ? 'Add reference' : 'Try again'; refMsg.textContent = m || ''; if (ok) { refUrl.value = ''; refNote.value = ''; refFile.value = ''; refFname.textContent = 'Images or clips up to 50 MB'; refLoad(); } }
+  function refDone(ok, m){ refSend.disabled = false; refSend.textContent = ok ? 'Add reference' : 'Try again'; refMsg.textContent = m || ''; if (ok) { refUrl.value = ''; refNote.value = ''; refFile.value = ''; refFname.textContent = 'Up to 1 GB'; refLoad(); } }
+  // a file over 50 MB goes up in parts (R2 multipart through the Worker, each part 64 MB; owner, 24 Nov 2026: up to 1 GB)
+  function bigUpload(f, note){ var H = { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, id = null, parts = [], sent = 0; refSend.disabled = true;
+    function say(t){ refMsg.textContent = t; }
+    function fail(m){ if (id) fetch('/api/refs/' + id + '/abort', { method: 'POST', credentials: 'same-origin', headers: H, body: '{}' }).catch(function(){}); refDone(false, m || 'The upload stopped. Try again.'); }
+    say('Starting…');
+    fetch('/api/refs/mp/start', { method: 'POST', credentials: 'same-origin', headers: H, body: JSON.stringify({ name: f.name, type: f.type, size: f.size, channel: refCh || null, note: note || null }) })
+      .then(function(r){ return r.json().then(function(j){ if (!r.ok) throw j; return j; }); })
+      .then(function(j){ id = j.id; var size = j.partSize, n = Math.ceil(f.size / size);
+        function next(k){ if (k > n) return Promise.resolve();
+          function once(left){ say('Uploading part ' + k + ' of ' + n + ' · ' + Math.round(sent / f.size * 100) + '%');
+            return fetch('/api/refs/' + id + '/part?n=' + k, { method: 'POST', credentials: 'same-origin', headers: { 'X-Requested-With': 'reel', 'Content-Type': 'application/octet-stream' }, body: f.slice((k - 1) * size, Math.min(f.size, k * size)) })
+              .then(function(r){ if (!r.ok) throw 0; return r.json(); }, function(e){ throw 0; })
+              .catch(function(){ if (left > 0) return new Promise(function(ok){ setTimeout(ok, 1500); }).then(function(){ return once(left - 1); }); throw 0; }); }
+          return once(2).then(function(pt){ parts.push({ partNumber: pt.partNumber, etag: pt.etag }); sent += Math.min(size, f.size - (k - 1) * size); return next(k + 1); }); }
+        return next(1); })
+      .then(function(){ say('Finishing…'); return fetch('/api/refs/' + id + '/complete', { method: 'POST', credentials: 'same-origin', headers: H, body: JSON.stringify({ parts: parts }) }); })
+      .then(function(r){ if (!r.ok) throw 0; refDone(true, 'Added. Claude reads it on the next run.'); })
+      .catch(function(e){ fail(e && e.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : e && e.error === 'too-big' ? 'That file is over 1 GB.' : null); }); }
   refSend.addEventListener('click', function(){ var u = refUrl.value.trim(), f = refFile.files && refFile.files[0], note = refNote.value.trim();
     if (!u && !f) { refMsg.textContent = 'Paste a link or choose a file.'; refUrl.focus(); return; }
     if (u && !/^https:\/\/\S+$/i.test(u)) { refMsg.textContent = 'The link must start with https://'; refUrl.focus(); return; }
-    if (f && f.size > REF_MAX) { refMsg.textContent = 'That file is over 50 MB.'; return; }
+    if (f && f.size > REF_MAX) { refMsg.textContent = 'That file is ' + (f.size / 1073741824).toFixed(1) + ' GB. The limit is 1 GB, so choose a shorter clip.'; return; }
+    if (f && f.size > REF_WARN && !confirm('This file is ' + Math.round(f.size / 1048576) + ' MB. It uploads in parts and can take a few minutes. Keep this page open until it says Added. Start now?')) return;
+    if (f && f.size > REF_SINGLE) return bigUpload(f, note + (u ? (note ? '\n' : '') + u : ''));
     refSend.disabled = true; refMsg.textContent = f ? 'Uploading…' : 'Saving…';
     var H = { 'X-Requested-With': 'reel' }, jobs = [];
     if (f) jobs.push(fetch('/api/refs/upload?' + new URLSearchParams({ channel: refCh, note: note + (u ? (note ? '\n' : '') + u : ''), name: f.name }), { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': f.type || 'application/octet-stream' }, H), body: f }));
     else jobs.push(fetch('/api/refs', { method: 'POST', credentials: 'same-origin', headers: Object.assign({ 'Content-Type': 'application/json' }, H), body: JSON.stringify({ url: u, note: note || null, channel: refCh || null }) }));
     Promise.all(jobs).then(function(rs){ var bad = rs.filter(function(r){ return !r.ok; })[0]; if (!bad) return refDone(true, 'Added. Claude reads it on the next run.');
-      return bad.json().catch(function(){ return {}; }).then(function(j){ refDone(false, j.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : j.error === 'too-big' ? 'That file is over 50 MB.' : 'Could not save it. Try again.'); }); })
+      return bad.json().catch(function(){ return {}; }).then(function(j){ refDone(false, j.error === 'type' ? 'That file type is not supported (images: PNG, JPEG, WebP, GIF, HEIC; clips: MP4, MOV, WebM).' : j.error === 'too-big' ? 'That file is over 1 GB.' : 'Could not save it. Try again.'); }); })
       .catch(function(){ refDone(false, 'Could not save it. Try again.'); }); });
   refLoad();
   // Previews: concept videos to review (not posts); the list lives in templates/showreels/previews.json, the files in R2 at
