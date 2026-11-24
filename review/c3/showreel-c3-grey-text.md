@@ -1,4 +1,4 @@
-# Review: showreel-c3-grey-text (c3, no date: onGo, the owner posts on response)
+# Review: showreel-c3-grey-text (c3, onGo: ready 24 Nov 2026, the owner posts it in the 13:00-21:00 IST window)
 
 Turns Out design series, queue of 10 (owner, 21 Nov 2026: "add 10 more to Turns Out upload section, I'll decide upload time"; design/c3-queue.md).
 Scene scripts/channel3/design/contrast.js (copy for the tools: scripts/channel3/grey-text.html). AUTO lines from preflight.mjs, stills.mjs, flow.mjs and
@@ -27,4 +27,8 @@ qa/align.mjs on scripts/channel3/grey-text.json.
 
 Owner feedback (design/owner-feedback.md) against the stills: "doesn't look aligned": ALIGN where the scene declares groups; "drum-like sounds": no drum kinds; "frame 0": one message first, the flaw obvious at phone size; "feels useless": every element on screen takes part; numbers on screen never run ahead of the voice (end states as words); "same background": its own stage.
 
-Critic: PENDING (an independent session writes CRITIC: READY or NOT READY; the owner's watch decides the post).
+Rebuild (24 Nov 2026): the scene is now scripts/channel3/design/contrast2.js (the improved kit: rules-c3.md V1-V3, B1-B3, P1-P2), built as the preview scripts/previews/c3-greytext2.json; items 1-12 and 14-20 above describe the first build and still hold on the new scene's AUTO lines (SUBJECT FILL 93%, SAFE ZONE ok, OVERLAP none, BAND clear, FLOW cuts 0, dead runs none, continuity 96%, CUE TIMES ok, 24 Nov stills). The reel's MP4 is that preview's render 3 (Showreel run 45331264071, 21.2 s, from main 676ec64), promoted to v/showreel-c3-grey-text.mp4; no separate render.
+13 (render 3). After the render: PASS: OUTPUT QA PASS (run 45338746481: LOUD -14.0 LUFS, EDGES none, GRADE 0.68, NUMBERS none past the voice, DEAD none, FILL median 92%, ELEMENTS longest gap 2.6 s); frames read at phone size against design/owner-feedback.md (voice in full sentences with a breath after each, each fix on its word, a believable before, BEFORE next to AFTER on the last frame).
+Owner: Like on the preview (Inbox, 24 Nov 2026).
+
+CRITIC: READY (render 3; independent session, 24 Nov 2026; detail and PREMIUM 7.5 / 7.5 / 7.5 in review/previews/c3-design-rebuilds.md, "B, render 3"; not heard: the voice's tone).

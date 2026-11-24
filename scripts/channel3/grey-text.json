@@ -2,7 +2,8 @@
  "name": "showreel-c3-grey-text",
  "seek": "scripts/channel3/grey-text.html",
  "engine": "design",
- "dur": 16,
+ "dt": 2,
+ "dur": 21.2,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -10,16 +11,25 @@
  "vignette": false,
  "cover": 0.6,
  "voice": {
-  "text": "Grey on beige. Nobody can read it. Turns out, text needs contrast. Fix one: darken the words. Fix two: a lighter board. Fix three: check the ratio. Four and a half to one. Same board, now readable.",
+  "text": "This menu is hard to read. The soft grey looked nice, but it's too light. Turns out, text needs contrast. First, darken the words. Next, lighten the board slightly. Then check the ratio. Aim for four point five. Same menu, now easy to read.",
   "voice": "af_heart",
-  "speed": 1
+  "speed": 1,
+  "gap": [
+   0.25,
+   0.3,
+   0.35,
+   0.3,
+   0.3,
+   0.3,
+   0.4
+  ]
  },
  "experiment": {
   "id": "c3-design-series",
   "change": "design-tutorial format (queue of 10)",
   "vs": "median"
  },
- "caption": "Grey on beige looks soft. Nobody can read it. ☕\n\n1. Darken the words. Contrast is the difference in brightness between text and what's behind it.\n2. A lighter board. Pull the background the other way and the gap grows from both sides.\n3. Check the ratio. Aim for at least 4.5 to 1 for normal text (WCAG); a free contrast checker gives the number in seconds.\n\nSave this for your next menu, slide or sign. Which soft colour combo have you seen that nobody could read?",
+ "caption": "This menu is hard to read. The soft grey looked nice, but it's too light. ☕\n\n1. Darken the words. Contrast is the difference in brightness between text and what's behind it.\n2. A lighter board. Pull the background the other way and the gap grows from both sides.\n3. Check the ratio. Aim for at least 4.5 to 1 for normal text (WCAG); a free contrast checker gives the number in seconds.\n\nSave this for your next menu, slide or sign. Which soft colour combo have you seen that nobody could read?",
  "keywords": [
   "colour contrast",
   "text contrast ratio",
@@ -49,7 +59,7 @@
   "edges_ok": [
    {
     "from": 0,
-    "to": 18,
+    "to": 21.2,
     "sides": [
      "left",
      "right",
@@ -65,5 +75,10 @@
    474,
    764
   ]
- }
+ },
+ "before": {
+  "mistake": "light grey text on a cream board (about 2.4 to 1): the soft, elegant look that fails the 4.5 to 1 minimum for body text",
+  "source": "https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html"
+ },
+ "note": "Rebuilt on the improved design kit (24 Nov 2026; rules-c3.md V1-V3, B1-B3, P1-P2). The MP4 is the preview render 3 (scripts/previews/c3-greytext2.json, Showreel run 45331264071, Output QA run 45338746481 PASS), promoted to this reel; the scene and voice here are that render's."
 }
