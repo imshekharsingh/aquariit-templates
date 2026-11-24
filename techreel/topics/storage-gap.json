@@ -1,0 +1,371 @@
+{
+ "slug": "storage-gap",
+ "engine": "kit",
+ "scene": "techkit/scenes/storage-gap.html",
+ "topic": "A 256 GB phone can show 238 GB: the box and the software count a gigabyte differently",
+ "format": "xray",
+ "audience": "global",
+ "gadget": "phone",
+ "device": "phone",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.4,
+ "max_end": 32.0,
+ "experiment": {
+  "id": "tech-direction-3d-b",
+  "change": "ai-memory's look and kit (dark ink, one hero phone, bold numbers that change, 7 different shots) on a new topic: a 256 GB box that shows 238, the gigabyte re-measured as one grid of tiles, three phones with changing numbers, a screen shot, the loop back to the hero",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "A 256 gigabyte phone can show 238.",
+   "beat": "question",
+   "source": 0
+  },
+  {
+   "text": "Nothing is missing. The box counts a gigabyte as a billion bytes.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "Some software counts bigger gigabytes: 1.07 billion bytes.",
+   "beat": "fix",
+   "source": 0
+  },
+  {
+   "text": "So a 128 shows 119, a 512 shows 477, a terabyte shows 931.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "The gap grows: about 69 gigabytes on a terabyte phone.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "Then the system takes its share.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Buying a phone? Take about seven percent off the box number first.",
+   "beat": "takeaway",
+   "source": 0
+  }
+ ],
+ "cues": {
+  "two56": [
+   0,
+   "256"
+  ],
+  "shows": [
+   0,
+   "show"
+  ],
+  "n238": [
+   0,
+   "238"
+  ],
+  "nothing": [
+   1,
+   "nothing"
+  ],
+  "box": [
+   1,
+   "box"
+  ],
+  "billion": [
+   1,
+   "billion"
+  ],
+  "software": [
+   2,
+   "software"
+  ],
+  "bigger": [
+   2,
+   "bigger"
+  ],
+  "n107": [
+   2,
+   "107"
+  ],
+  "a128": [
+   3,
+   "128"
+  ],
+  "a119": [
+   3,
+   "119"
+  ],
+  "a512": [
+   3,
+   "512"
+  ],
+  "a477": [
+   3,
+   "477"
+  ],
+  "tb": [
+   3,
+   "terabyte"
+  ],
+  "a931": [
+   3,
+   "931"
+  ],
+  "gap": [
+   4,
+   "gap"
+  ],
+  "grows": [
+   4,
+   "grows"
+  ],
+  "n69": [
+   4,
+   "69"
+  ],
+  "system": [
+   5,
+   "system"
+  ],
+  "share": [
+   5,
+   "share"
+  ],
+  "buying": [
+   6,
+   "buying"
+  ],
+  "seven": [
+   6,
+   "seven"
+  ],
+  "boxn": [
+   6,
+   "box"
+  ],
+  "final": [
+   6,
+   "first"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "shows",
+   "thud",
+   0.5,
+   0
+  ],
+  [
+   "n238",
+   "impact",
+   0.5,
+   0
+  ],
+  [
+   "nothing",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "box",
+   "pop",
+   0.45,
+   -0.2
+  ],
+  [
+   "billion",
+   "tick",
+   0.4,
+   0.2
+  ],
+  [
+   "software",
+   "whoosh",
+   0.4,
+   0
+  ],
+  [
+   "bigger",
+   "impact",
+   0.55,
+   0
+  ],
+  [
+   "n107",
+   "blip",
+   0.45,
+   0.2,
+   {
+    "f": 500,
+    "f2": 900
+   }
+  ],
+  [
+   "a119",
+   "pop",
+   0.5,
+   -0.2
+  ],
+  [
+   "a477",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "a931",
+   "impact",
+   0.55,
+   0.2
+  ],
+  [
+   "gap",
+   "whoosh",
+   0.4,
+   0
+  ],
+  [
+   "n69",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "grows",
+   "zaps",
+   0.25,
+   0
+  ],
+  [
+   "system",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "share",
+   "snap",
+   0.5,
+   0
+  ],
+  [
+   "buying",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "seven",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "boxn",
+   "tick",
+   0.4,
+   0.2
+  ],
+  [
+   "final",
+   "riser_end",
+   0.2,
+   0
+  ],
+  [
+   "final",
+   "impact",
+   0.55,
+   0
+  ],
+  [
+   "two56",
+   "zaps",
+   0.3,
+   0.2
+  ]
+ ],
+ "post": {
+  "title": "A 256 GB phone shows 238?",
+  "caption": "A 256 GB phone can show 238 GB \ud83d\udcf1 and nothing is missing.\n\nThe box counts a gigabyte the way storage makers do: 1 GB = 1 billion bytes (Apple's support page says so for every iPhone, iPad and Mac). Some apps and systems count the other way: 1 GB = 1,073,741,824 bytes. Same chip, bigger gigabytes, so a smaller number: 128 \u2192 119, 256 \u2192 238, 512 \u2192 477, 1 TB \u2192 931.\n\nThe gap grows with size: about 69 GB on a 1 TB phone, more than a whole 64 GB phone. And the formatting and the system use some space too (\"actual formatted capacity less\").\n\nBuying a phone? Take about 7% off the box number, then choose for what's left. Which size is yours? \ud83d\udc47 Send this to the friend who's about to buy one.",
+  "keywords": [
+   "phone storage explained",
+   "256gb shows less",
+   "why storage shows less",
+   "gb vs gib",
+   "how much storage do i need",
+   "phone storage 2026",
+   "storage capacity measured"
+  ],
+  "hashtags": [
+   "#smartphone",
+   "#storage",
+   "#techexplained",
+   "#gadgets",
+   "#iphone"
+  ],
+  "sources": [
+   {
+    "url": "https://support.apple.com/en-in/102119",
+    "note": "Apple Support, How storage capacity is measured on Apple devices (published 21 May 2024, read 24 Nov 2026): 'Manufacturers of storage devices measure storage capacity using the decimal system (base 10)... 1 GB = 1 billion bytes and 1 TB = 1 trillion bytes; actual formatted capacity less.' 'Additional storage space is used by factors such as the device's operating system.' Binary: '1 GB = 1,073,741,824 bytes and 1 TB = 1,099,511,627,776 bytes. Some apps and operating systems, such as iOS 10 and earlier ... report storage capacity using the binary system.' Our numbers are that division: 128e9/1,073,741,824 = 119.2; 256e9 = 238.4; 512e9 = 476.8; 1e12 = 931.3; 1 TB gap 68.7 GB (6.9%)."
+   }
+  ]
+ },
+ "qa": {
+  "sync": [
+   "238",
+   "931"
+  ],
+  "edges_ok": [
+   {
+    "from": 2.5,
+    "to": 9.5,
+    "sides": [
+     "left",
+     "right",
+     "bottom"
+    ],
+    "why": "the tile slab is a full-bleed world: a low macro across its tiles, then a wide pull-back; the slab runs past the frame by design"
+   },
+   {
+    "from": 9.0,
+    "to": 14.5,
+    "sides": [
+     "left",
+     "right"
+    ],
+    "why": "the three phones: the camera tracks along the line so the neighbours pass the frame edge while it moves"
+   }
+  ]
+ },
+ "say": {
+  "256": "two fifty six",
+  "238": "two thirty eight",
+  "128": "one twenty eight",
+  "119": "one nineteen",
+  "512": "five twelve",
+  "477": "four seventy seven",
+  "931": "nine thirty one",
+  "69": "sixty nine",
+  "1.07": "one point oh seven"
+ },
+ "fps": 30,
+ "cutsound": {
+  "payoff": "seven",
+  "rise": 1.8
+ }
+}
