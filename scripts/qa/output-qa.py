@@ -23,6 +23,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'pace': '12 Nov "audio is super slowed"; 8 Nov "rushed"',
     'stray': '11 Nov voice check: words heard that the script never says',
     'sound': '12 Nov "sound elements feel cheap, as if from kids\' toys"; 8 Nov "tick sounds missing"',
+    'variety': '24 Nov one screen across the whole reel (tech miniled-zones): change the subject or the view every few seconds',
     'loud': '8 Nov "LISTEN to the finished audio" (-14 LUFS, Mandatory Gate 8)',
     'colour': '12 Nov "colour grading is horrible"',
     'edges': '12 Nov "cards and photos cut at the frame edges ... a lamp cut at the edge"; 13 Nov IP68 "the giant title touched the left frame edge"',
@@ -70,6 +71,7 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          focus_s=.3, focus_v=.3, focus_share=.05, focus_gap=30, focus_hues=3, focus_pad=1.0,
          sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=4,
          hero_lag=.5, hero_shift=3, hero_px=30, hero_on=.02, hero_active=.55, hero_w=.33, hero_inset=.2,
+         var_ssim=.65, var_max=.60,
          el_lag=.3, el_shift=3, el_cell=9, el_top=.21, el_px=18, el_k=4, el_cells=1, el_cut=.35, el_gap=3.0, el_win=10, el_pics=4)
 # ELEMENTS (16 Nov 2026, Turns Out; owner on the Liberty arm reel: "elements are few and are spread ... through the whole video"): a NEW visual
 # element is a place on the frame that changes on its own. At 135x240, 10 fps, the frame below the badge and chapter title (el_top) with the
@@ -476,6 +478,31 @@ def ocr(png):
 
 def grab(mp4, t, p):
     ff(['-y', '-ss', f'{max(0, t):.2f}', '-i', mp4, '-frames:v', '1', '-vf', 'scale=1080:1920:flags=area', p])
+
+
+def variety_check(mp4, subs):
+    # SHOT VARIETY (24 Nov 2026; owner on the tech miniled-zones reel: "one screen across the reel, what's that and how did it pass?"):
+    # one frame a second at 135x240, the subtitle band left out; two frames are the SAME SHOT when their structural similarity (SSIM, 7x7 windows,
+    # taken over the windows where either frame has detail) is var_ssim+. FAIL when more than var_max of the reel is one shot (the most frames
+    # that all match one frame). Tuned 24 Nov on the posted web reel showreel-46-tabwiggle (largest group 53% at 0.65, so it passes under 60%) and a static
+    # one-object frame with moving captions (100%).
+    raw = ff(['-i', mp4, '-vf', 'fps=1,scale=135:240:flags=area', '-f', 'rawvideo', '-pix_fmt', 'gray', '-'])
+    G = np.frombuffer(raw, np.uint8).reshape(-1, 240, 135).astype(np.float32); n = len(G)
+    if n < 6: line('VARIETY', 'SKIP', f'{n} frames'); return
+    def box(a, k=7):
+        c = np.cumsum(np.cumsum(np.pad(a, ((1, 0), (1, 0))), 0), 1)
+        return (c[k:, k:] - c[:-k, k:] - c[k:, :-k] + c[:-k, :-k]) / (k * k)
+    keep = np.ones((240 - 6, 135 - 6), bool); keep[int(subs[0] * 240):int(subs[1] * 240)] = False
+    M = [box(g) for g in G]; V = [box(g * g) - m * m for g, m in zip(G, M)]
+    def ssim(i, j):
+        cv = box(G[i] * G[j]) - M[i] * M[j]
+        m = ((2 * M[i] * M[j] + 6.5025) * (2 * cv + 58.5225)) / ((M[i] ** 2 + M[j] ** 2 + 6.5025) * (V[i] + V[j] + 58.5225))
+        act = ((V[i] > 25) | (V[j] > 25)) & keep
+        return float(m[act].mean()) if act.sum() > 20 else 1.0
+    S = np.array([[1.0 if i == j else ssim(i, j) for j in range(n)] for i in range(n)])
+    cnt = (S >= T['var_ssim']).sum(1); k = int(cnt.argmax()); share = cnt[k] / n
+    line('VARIETY', 'FAIL' if share > T['var_max'] else 'PASS', f'{cnt[k]} of {n} one-second frames look like frame {k} ({share:.0%}; at most {T["var_max"]:.0%}, same shot = SSIM {T["var_ssim"]}+): '
+         + ('one subject fills the reel; change the subject or the view every few seconds' if share > T['var_max'] else 'the shot changes'))
 
 
 def sync_check(mp4, items, src, heard, dur, band):
@@ -1064,6 +1091,7 @@ def main():
     if ch == 'tech': hero_check(F, fps, mp4)
     else: line('HERO', 'SKIP', 'tech only')
     G = frames(mp4, fps, 135, 240, gray=True); del F
+    variety_check(mp4, qa.get('subs') or T['subs'][ch])
     numbers_check(mp4, text, heard, qa.get('subs') or T['subs'][ch])
     sync_check(mp4, *sync_words(c, qa, ch), heard, dur, qa.get('subs') or T['subs'][ch])
     dead_check(G, fps, mp4, dur)

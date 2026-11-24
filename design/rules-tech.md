@@ -145,3 +145,7 @@ ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voic
 - Account Status checked by the owner on 1 Nov 2026: no issues (no reach limit), so low reach is distribution, not a restriction; don't ask again.
 
 **23 Nov audit:** PROMOTE tech-myth-verdict (3 WINs, 0 LOSEs) and tech-kit-engine (4 WINs, 0 LOSEs) printed again; both are already rules (F5, and the kit-engine rule, 18 Nov). Tech OK (median reach 1,212 over the last 7 vs target 300). The 22 Nov reset replaces these formats; rules here keep the facts, brand and safety.
+
+## Owner gate removed, shot variety (owner, 24 Nov 2026)
+- The owner is not asked to approve a tech preview or render; the critic decides (tech-direction.md's "stills + a short preview to the owner" no longer applies).
+- Never one subject or view for more than a few seconds: Output QA VARIETY fails a reel when over 60% of its one-second frames look like one shot (owner on miniled-zones: "one screen across the reel"). Plan a new subject or view every 2-4 s.

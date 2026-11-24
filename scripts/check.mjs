@@ -65,7 +65,7 @@ if (caps) for (const [name, j] of Object.entries(caps)) postText(j, `captions.js
   if (existsSync(pvf)) { const pv = readJSON(pvf, 'templates/showreels/previews.json'), t0 = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
     for (const it of (pv && pv.items) || []) { if (typeof it.needsOwner !== 'boolean') err(`previews.json ${it.name}: add "needsOwner": true or false (true only when the owner must act; false goes to the Studio log)`);
       if (typeof it.ask !== 'string' || !it.ask.trim()) err(`previews.json ${it.name}: add "ask", one plain line for the owner (what to check, what to tap)`);
-      else if (it.needsOwner === true && !/\b(Like or Reject|Yes \/ No)\b/.test(it.ask)) err(`previews.json ${it.name}: a needsOwner ask must end with what to tap, "Like or Reject"`);
+      if (it.needsOwner === true) err(`previews.json ${it.name}: needsOwner must be false (owner, 24 Nov 2026: the owner is asked nothing about reels; the critic decides)`);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(it.added || '')) err(`previews.json ${it.name}: add "added" (YYYY-MM-DD IST); the app hides a preview 7 days after it`);
       else if ((Date.parse(t0) - Date.parse(it.added)) / 864e5 > 7) console.warn(`  ⚠ previews.json ${it.name}: added ${it.added}, past 7 days: the app already hides it; remove it from the file`); } } }
 if (caps) {

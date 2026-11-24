@@ -782,7 +782,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#7aa2ff', '#ff7a45');
   // spoken sentences, not labels (rules-c3.md V1): a believable first draft (one size for every line, the way a blank document starts; B1)
-  var TEXT = "Every line here looks the same. So nothing stands out. Turns out, your eyes need an order. First, make the name the biggest. Next, give the headings their own colour. Then let the details go lighter. Now it reads from top to bottom.";
+  var TEXT = "Every line here looks the same. So nothing stands out. Turns out, your eyes need an order. First, make the name the biggest. Next, headings get their own colour. Then let the details go lighter. Now it reads top to bottom.";
   var DUR = 17.8, BX = 66, BY = 396, L = 30, V, PH, A = {}, CAM;
   var IDS = ['n0', 'n1', 'h0', 'e0', 'e1', 'h1', 'd0', 'h2', 's0'], KIND = { n0: 'name', h0: 'head', h1: 'head', h2: 'head' };
   // A: every line one size and one colour, evenly spaced, headings only bold (a document's defaults); B: the name biggest, headings one step down (accent, tracked), details plain and grouped
@@ -824,7 +824,7 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     DT.hook(t, '<i>Every</i> <i>line</i> <i>looks</i> <em><i>the</i> <i>same.</i></em>', A.hook);
     // frame 0: the problems ringed
     var ro = 1 - P(t, A.turns - .3, A.turns);
-    [[.35, { x: BX + 20, y: BY + 14, w: 360, h: 312, r: 16 }, 'ONE SIZE', BX + 24, BY + 336], [.65, { x: BX + 22, y: BY + 16, w: 140, h: 30, r: 10 }, 'NAME = TEXT', BX + 122, BY + 336], [.95, { x: BX + 22, y: BY + 84, w: 140, h: 30, r: 10 }, 'NO ORDER', BX + 262, BY + 336]].forEach(function(r, i){
+    [[.35, { x: BX + 20, y: BY + 14, w: 360, h: 312, r: 16 }, 'ONE SIZE', 40, BY + 336], [.65, { x: BX + 22, y: BY + 16, w: 140, h: 30, r: 10 }, 'NAME = TEXT', 166, BY + 336], [.95, { x: BX + 22, y: BY + 84, w: 140, h: 30, r: 10 }, 'NO ORDER', 320, BY + 336]].forEach(function(r, i){
       DT.box('ring' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); DT.chip('rl' + i, r[2], r[3], r[4], P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); });
     // "nothing stands out": a red eye dot zigzags from line to line, lost
     var ez = P(t, .25, A.turns), ee = $('eye'), seg = ez * 6, sI = Math.floor(seg), sf = E.inOut3(seg - sI), pts = [[60, 40], [330, 140], [90, 270], [300, 60], [120, 200], [320, 300], [200, 160]];
