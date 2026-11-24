@@ -35,7 +35,11 @@ if (ACTION === 'add') for (const a of items) { if (!a || !ID.test(a.id || '') ||
 if (ACTION === 'clear') for (const id of items) if (!ID.test(String(id))) die(`bad id ${id}`);
 let fbDone = null;
 if (ACTION === 'feedback-done') { try { fbDone = JSON.parse(process.env.ASKS || '{}'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); }
-  if (!fbDone || !Array.isArray(fbDone.ids) || !fbDone.ids.length || !fbDone.ids.every((i) => /^[0-9]{1,9}$/.test(String(i))) || typeof fbDone.note !== 'string' || !fbDone.note.trim()) die('feedback-done: ASKS is {"ids": [3], "note": "what was done"}'); }
+  if (!fbDone || !Array.isArray(fbDone.ids) || !fbDone.ids.length || !fbDone.ids.every((i) => /^[0-9]{1,9}$/.test(String(i)))) die('feedback-done: ASKS is {"ids": [3], "flag": "done", "note": "action report", "proof": "check name"}');
+  fbDone.flag = fbDone.flag || 'done';
+  if (!['reviewed', 'in_progress', 'done'].includes(fbDone.flag)) die('feedback-done: flag is reviewed, in_progress or done');
+  if (fbDone.flag === 'reviewed' && !/fable|opus|sonnet|haiku/i.test(fbDone.by || '')) die('feedback-done: flag reviewed needs "by": "fable" or "opus"');
+  if (fbDone.flag === 'done' && (typeof fbDone.note !== 'string' || !fbDone.note.trim() || !((fbDone.proof || '').trim() || fbDone.image))) die('feedback-done: flag done needs "note" (the action report) and "proof" (a check name) or "image" (base64 JPEG/PNG under 400 KB)'); }
 let refDone = null;
 if (ACTION === 'refs-done') { try { refDone = JSON.parse(process.env.ASKS || '{}'); } catch (e) { die('ASKS is not valid JSON: ' + e.message); }
   if (!refDone || !Array.isArray(refDone.ids) || !refDone.ids.length || !refDone.ids.every((i) => /^[0-9]{1,9}$/.test(String(i))) || !['new', 'studied', 'used'].includes(refDone.state) || typeof refDone.note !== 'string' || !refDone.note.trim()) die('refs-done: ASKS is {"ids": [3], "state": "studied", "note": "what was taken"}'); }
@@ -60,8 +64,8 @@ if (ACTION === 'read' || ACTION === 'feedback') {
   console.log(`${fb.length} new feedback item${fb.length === 1 ? '' : 's'} (act on each or file it in design/todo.md, then feedback-done with a note)`);
 }
 if (ACTION === 'feedback-done') for (const id of fbDone.ids) {
-  const r = await fetch(`${SITE}/api/feedback/${id}/done`, { method: 'POST', headers: H, body: JSON.stringify({ note: fbDone.note.trim() }) });
-  if (!r.ok) die(`could not mark feedback ${id} done (HTTP ${r.status})`); const j = await r.json(); console.log(j.stored ? `✓ feedback ${id} done` : `✗ no feedback item ${id}`);
+  const r = await fetch(`${SITE}/api/feedback/${id}/flag`, { method: 'POST', headers: H, body: JSON.stringify({ flag: fbDone.flag, by: fbDone.by, report: (fbDone.note || '').trim(), proof: fbDone.proof, image: fbDone.image }) });
+  if (!r.ok) die(`could not set feedback ${id} to ${fbDone.flag} (HTTP ${r.status})`); const j = await r.json(); console.log(j.stored ? `✓ feedback ${id} ${fbDone.flag}` : `✗ feedback ${id}: not changed (closed, or no such item)`);
 }
 if (ACTION === 'refs') {
   const r = await fetch(SITE + '/api/refs?state=new', { headers: { Cookie: cookie } });

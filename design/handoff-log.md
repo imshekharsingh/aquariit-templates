@@ -521,3 +521,8 @@ Format (at most 6 lines):
 - For the other account: --pct in stage.mjs is progress inside the current stage, not overall.
 ## 2026-11-24 tech-usbc-ready (branch claude/tech-usbc-ready)
 - usbc-two-numbers render 3 passed Output QA (run 45414365903) and the critic said READY; unhidden, postOn 2026-11-24, postAt 20:30. Lesson: the Tech reel workflow's preview input must be left out for a real render (any value, even false, makes a preview).
+
+## 2026-11-24 · claude/feedback-flow · Message Claude flags (owner chat job, size L, part 2 of 3)
+- Done: owner_feedback gets flag, reviewed_by, report, proof, proof_img, closed_at (added on first use, old rows read as received or done). POST /api/feedback/<id>/flag (reviewed needs by Fable/Opus, done needs report + proof or image), /close (leaves the app), /reopen (note, back to Received); GET /api/feedback/<id>/proof. asks.mjs feedback-done takes flag, by, proof, image. The Inbox shows the five-step flag line, the report, the proof and Close / Reopen. sw.js v26. Runbooks updated.
+- Left: nothing for the owner. Runs should now set Reviewed and In progress, and every Done needs a proof.
+- For the other account: old feedback-done calls ({"ids","note"}) now fail with a message asking for a proof; the plain /done endpoint still works.
