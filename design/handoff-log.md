@@ -505,3 +505,9 @@ Format (at most 6 lines):
 - Done: render 1 (run 45368585690) passed every Output QA check incl. VARIETY (9%) except SYNC: "2 LANES" not readable at 10.4 s. Real frames showed a pale haze (an additive glow sprite near the camera) and ghost arches from depth-of-field in shot 2. Fix in techkit/scenes/usbc-two-numbers.html: glows smaller and weaker, no depth-of-field on shot 2, a dark band behind the word. Local stills of the fixed shot checked. Review file has the render 1 notes.
 - Left: render 2 (the last), Output QA, then the critic.
 - For the other account: an additive sprite close to a bright subject washes a whole shot; keep glows small or draw them behind.
+
+## 2026-11-24 · claude/tech-usbc-skipped · Tech reel usbc-two-numbers skipped for today: critic NOT READY on render 2 (owner chat job)
+- Done: render 2 passed Output QA; the independent critic (opus) wrote NOT READY: shot 4 (Thunderbolt cutaway, about 18-24 s) is a pale motion-blur smear, no cable visible; the builder confirmed on frames 18.6-23.9 s of the real MP4. Two renders used, so the reel is skipped (hidden in captions.json, review item 13 PASS, item 20 NOT READY with the cause). No tech reel posts on 24 Nov.
+- Lesson: Output QA (VARIETY, DEAD, HERO) passes a motion-blur smear; the stills sheet shows single frames and never the blur. A fast camera move in a close macro needs one real-frame check before the render (render 4 frames at 0.1 s steps with KIT_Q 0.5 on the move). Cause guess: camera pan 12 units in 5.5 s plus depth-of-field and 30 units/s pulses.
+- Left: if the owner wants this topic later, rebuild shot 4 (camera a third as fast, no depth-of-field, pulses at 8 units/s) and render again.
+- For the other account: the critic session could not push (its container had no push access to the repo); its verdict reached the builder through its transcript. The builder wrote the verdict into the review file.
