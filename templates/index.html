@@ -247,6 +247,9 @@
   .works li{display:flex;flex-direction:column;gap:2px;padding:9px 0;border-top:1px solid var(--line)}
   .works li span{color:var(--mute);font:700 .72rem system-ui,sans-serif;text-transform:uppercase;letter-spacing:.04em}
   .works li b{font:700 .9rem/1.35 system-ui,sans-serif}
+  .score .row3{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);font:600 .88rem system-ui,sans-serif}
+  .score .row3:first-of-type{border-top:0}.score .row3 span{color:var(--mute)}.score .row3 b{text-align:right;font-variant-numeric:tabular-nums}.score .row3 b.no{color:var(--mute);font-weight:600}
+  .score .who2{display:flex;align-items:center;gap:8px;font:800 .95rem system-ui,sans-serif;margin:0 0 4px}
   .rtiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 8px}
   .rtile{display:flex;flex-direction:column;gap:2px;padding:10px;border:1px solid var(--line);border-radius:12px;min-width:0}
   .rtile span{color:var(--mute);font:700 .72rem system-ui,sans-serif;text-transform:uppercase;letter-spacing:.04em}
@@ -944,6 +947,37 @@
     }); }
   // ---- Growth, all channels on one screen (owner, 22 Nov 2026): followers, this week's change, a 30-day line, and the typical reel of the last
   // 7 (reach, seconds watched, saves per reach). Tap a channel (or its chip) for its charts, "What each reel did" and "What works".
+  // ---- the weekly scorecard (owner plan, 24 Nov 2026): per channel, the last 7 days against the 7 before. Reach per reel, watch %, saves per 1,000 reached, new followers,
+  // the critic's average craft score (the PREMIUM numbers in each review file, via /api/journey) and the changes kept vs dropped (captions.json "experiment": {"verdict": "keep"|"drop"}).
+  // Whatever is missing says "not measured yet" in plain words.
+  var NM = 'not measured yet';
+  function weekOf(media, from, to){ return media.filter(function(m){ var t = Date.parse(m.posted_at); return t >= from && t < to; }); }
+  function mean(v){ v = v.filter(function(x){ return x != null && isFinite(x); }); return v.length ? v.reduce(function(a, b){ return a + b; }, 0) / v.length : null; }
+  function arrow(a, b, f){ if (a == null) return NM; var t = f(a); if (b == null || b === 0) return t; var d = Math.round((a - b) / b * 100); return t + (Math.abs(d) < 3 ? ' · level' : ' · ' + (d > 0 ? 'up ' : 'down ') + Math.abs(d) + '% on last week'); }
+  function scoreCard(k, jr){ var c = el('section', 'gcard score'), who = el('div', 'who2'); who.appendChild(chDot(k)); who.appendChild(document.createTextNode(CH[k].name)); c.appendChild(who);
+    var body = el('div'); c.appendChild(body); body.appendChild(el('p', 'sub', 'Loading…'));
+    perfFor(k).then(function(j){ body.textContent = ''; var now = Date.now(), media = ((j && j.media) || []).filter(function(m){ return m.reach != null && m.posted_at; }),
+        cur = weekOf(media, now - 7 * DAY, now + DAY), prev = weekOf(media, now - 14 * DAY, now - 7 * DAY), acc = ((j && j.account) || []).filter(function(r){ return r.followers != null; });
+      function reachOf(a){ return a.length ? mean(a.map(function(m){ return m.reach; })) : null; }
+      function watchOf(a){ return mean(a.map(function(m){ return m.watch_avg_ms != null && m.duration_s ? Math.min(100, m.watch_avg_ms / 10 / m.duration_s) : null; })); }
+      function savesOf(a){ var r = a.reduce(function(x, m){ return x + (m.reach || 0); }, 0), sv2 = a.filter(function(m){ return m.saves != null; }); return r && sv2.length ? sv2.reduce(function(x, m){ return x + m.saves; }, 0) * 1000 / sv2.reduce(function(x, m){ return x + (m.reach || 0); }, 0) : null; }
+      var fol = null; if (acc.length > 1) { var old = acc.filter(function(r){ return r.day <= istDay(new Date(now - 7 * DAY).toISOString()); }).pop() || acc[0]; fol = acc[acc.length - 1].followers - old.followers; }
+      var sc = jr ? (jr.reels || []).filter(function(r){ return r.ch === k && r.score != null && r.day >= istDay(new Date(now - 7 * DAY).toISOString()); }).map(function(r){ return r.score; }) : [],
+          ex = Object.keys((DATA && DATA.c) || {}).map(function(n){ return DATA.c[n]; }).filter(function(m){ return m && m.channel === k && m.postOn && m.postOn >= istDay(new Date(now - 7 * DAY).toISOString()) && m.experiment && m.experiment.verdict; }),
+          kept = ex.filter(function(m){ return m.experiment.verdict === 'keep'; }).length, dropped = ex.filter(function(m){ return m.experiment.verdict === 'drop'; }).length;
+      var f0 = function(v){ return Math.round(v).toLocaleString('en-IN'); };
+      var rows = [['Reach per reel', cur.length ? arrow(reachOf(cur), reachOf(prev), f0) : NM],
+        ['Watched on average', cur.length && watchOf(cur) != null ? arrow(watchOf(cur), watchOf(prev), function(v){ return Math.round(v) + '% of the reel'; }) : NM],
+        ['Saves per 1,000 reached', cur.length && savesOf(cur) != null ? arrow(savesOf(cur), savesOf(prev), function(v){ return v.toFixed(1); }) : NM],
+        ['New followers this week', fol == null ? NM : (fol > 0 ? '+' : '') + fol.toLocaleString('en-IN')],
+        ['Critic’s average score', sc.length ? mean(sc).toFixed(1) + ' out of 10 (' + sc.length + ' reel' + (sc.length === 1 ? '' : 's') + ')' : NM],
+        ['Changes kept or dropped', ex.length ? kept + ' kept, ' + dropped + ' dropped' : NM]];
+      body.appendChild(el('p', 'sub', cur.length + ' reel' + (cur.length === 1 ? '' : 's') + ' in the last 7 days'));
+      rows.forEach(function(r){ var rw = el('div', 'row3'); rw.appendChild(el('span', null, r[0])); rw.appendChild(el('b', r[1] === NM ? 'no' : null, r[1])); body.appendChild(rw); }); });
+    return c; }
+  function scoreAll(){ var box = el('div', 'scoreAll'), h = el('h2', 'sec', 'This week'); box.appendChild(h);
+    fetch('/api/journey', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; }).then(function(jr){ ['web', 'tech', 'c3'].forEach(function(k){ box.appendChild(scoreCard(k, jr)); }); });
+    return box; }
   var gSel = 'all';
   try { var gs = localStorage.getItem('studio-g'); if (gs === 'all' || CH[gs]) gSel = gs; } catch (e) {}
   function med(v){ v = v.filter(function(x){ return x != null && isFinite(x); }).sort(function(a, b){ return a - b; }); if (!v.length) return null; var h = v.length >> 1; return v.length % 2 ? v[h] : (v[h - 1] + v[h]) / 2; }
@@ -970,7 +1004,7 @@
   function gShow(){ var all = document.getElementById('g-all');
     Array.prototype.forEach.call(document.querySelectorAll('#g-seg button'), function(b){ b.setAttribute('aria-selected', String(b.getAttribute('data-g') === gSel)); });
     all.hidden = gSel !== 'all'; gBox.hidden = gSel === 'all';
-    if (gSel === 'all') { all.textContent = ''; ['web', 'tech', 'c3'].forEach(function(k){ all.appendChild(gCard(k)); }); }
+    if (gSel === 'all') { all.textContent = ''; all.appendChild(scoreAll()); ['web', 'tech', 'c3'].forEach(function(k){ all.appendChild(gCard(k)); }); }
     else { ch = gSel; growth(); } }
   Array.prototype.forEach.call(document.querySelectorAll('#g-seg button'), function(b){ b.addEventListener('click', function(){ gPick(b.getAttribute('data-g')); }); });
   function render(){

@@ -582,3 +582,8 @@ Format (at most 6 lines):
 - Done: "aiLabel" true/false in captions.json (required from 27 Nov, check.mjs); shown on the reel card and the Post now confirm sheet; scripts/ig-publish.mjs sends is_ai_generated=true when it is true (Meta changelog, 22 Jun 2026) and stops with a plain message if Instagram refuses it; critic item 0b (design/critic.md); runbook-reels "AI label" (YouTube containsSyntheticMedia reserved). sw.js v31.
 - Left: the parameter has not been tried on a real post (Post now is still off); the first real post will show it. Builders set aiLabel on new entries from 26 Nov (enforced from 27 Nov).
 - For the other account: existing entries are untouched; no aiLabel yet shows "not decided yet" on the card.
+
+## 2026-11-25 · claude/scorecard · Weekly scorecard on Growth (owner chat job, size L, part 4 of 5)
+- Done: "This week" cards at the top of Growth (All channels): per channel, the last 7 days vs the 7 before: reach per reel, watched on average, saves per 1,000, new followers, critic's average score, changes kept or dropped; "not measured yet" where missing. src/journey.js reads the PREMIUM numbers from a review file's critic line (score per reel); kept/dropped counts read "verdict" inside a captions.json experiment. runbook-reels "Weekly scorecard". sw.js v32.
+- Left: critic score and kept/dropped show "not measured yet" until the critic writes PREMIUM numbers on its line and the daily run writes experiment verdicts (design/runbook-daily.md was off limits tonight: add one line there). Hold % and per-reel follows are not available from Instagram.
+- For the other account: put `"verdict": "keep"|"drop"` in the experiment object when the 72 h verdict is decided.
