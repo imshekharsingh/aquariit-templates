@@ -7,9 +7,17 @@ Format (at most 6 lines):
 ```
 
 
+## 2026-11-25 · claude/style-records · merged main into the style-records branch
+- Done: kept both log entries and main's captions.json flags (c3-resume onGo, no date); added the branch's style fields; check passes.
+
 ## 2026-11-25 01:25 IST · claude/c3-cv-already-posted · owner chat: Turns Out CV was already posted
 - Done: showreel-c3-resume loses its 25 Nov date (the owner posted the CV reel days ago; resume2 was a rebuild of a posted reel, my mistake). c3-plan section 0: only unposted reels are built; 25 Nov Turns Out = #2 looks-expensive, rebuilt on the improved kit by the 05:11 task.
 - Tech 25 Nov: storage-gap render 2 failed 3 small checks; owner said no third render; the 04:47 run builds today's tech reel on the new flow.
+
+## 2026-11-25 · claude/style-records · Reel style records (owner chat job, size M, part 1)
+- Done: every posted web, tech and Turns Out reel of 25 Oct-24 Nov (81) now has a "style" object in captions.json (lengthS, wordsPerS, shotChanges, hookType, look, hero, firstSecondTension, payoff, source). 33 are measured from the real MP4 (the last 15 days; older MP4s are gone), 49 from config and spoken text only; unknown = null. scripts/style-measure.mjs does it (shot changes = frame-difference jumps, look = mean light). npm run check now requires the fields on any visible reel from 25 Nov (planned values with the entry, the three numbers filled by the post day). design/what-works.md has the Style record method for the Sunday review; design/runbook-spare.md points to it.
+- Left: hero is only known for tech (its gadget) and the 25 Nov Turns Out reel; firstSecondTension is null for all older reels (a human call, not guessed). Slow camera moves in 3D reels can read 0 shot changes, so compare shotChanges inside one channel only.
+- For the other account: a new reel's entry must carry style (hookType, look, hero, firstSecondTension, payoff) the day it is added, or npm run check fails.
 
 ## 2026-11-25 · claude/fable-decides · "Fable decides" daily flow + plain audit card (owner chat job, size M, part 2)
 - Done: design/runbook-daily.md: the 8-step build flow for web and tech with the exact create_session settings (Fable claude-fable-5-2 for pick, stills check, critic; Sonnet claude-sonnet-5-5 for research and build; Opus claude-opus-5-5 as the fallback), the 25 Nov note (tech storage-gap READY = web only; NOT READY = fresh tech reel today), the rejection watch (8 of 10 rejected two days running = research to Opus); the audit card rewritten to at most 6 plain lines with one example. scripts/pick-sheet.mjs (the day's options on one sheet; --log counts rejects), design/pick-log.md. CLAUDE.md: Fable budget names the two short calls.

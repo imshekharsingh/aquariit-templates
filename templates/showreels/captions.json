@@ -151,7 +151,18 @@
  },
  "showreel-10-zero-js-transition": {
   "postOn": "2026-10-26",
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 16,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": null,
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": null,
+   "source": "config"
+  }
  },
  "showreel-11-springs": {
   "postOn": "2026-10-24",
@@ -191,7 +202,18 @@
    "#frontenddev",
    "#webdev"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 18,
+   "wordsPerS": 2.44,
+   "shotChanges": null,
+   "hookType": "claim",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-13-popup": {
   "postOn": "2026-10-25",
@@ -211,7 +233,18 @@
    "#frontenddev",
    "#uianimation"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 18,
+   "wordsPerS": 2.78,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-14-stagger": {
   "postOn": "2026-10-26",
@@ -231,7 +264,18 @@
    "#frontenddev",
    "#uianimation"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.35,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-15-transform": {
   "postOn": "2026-10-27",
@@ -251,7 +295,18 @@
    "#frontenddev",
    "#uianimation"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 21,
+   "wordsPerS": 2.19,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-16-balance": {
   "postOn": "2026-10-28",
@@ -271,7 +326,18 @@
    "#frontenddev",
    "#webdesign"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.6,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-17-smooth": {
   "postOn": "2026-10-29",
@@ -291,7 +357,18 @@
    "#frontenddev",
    "#webdesign"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 21,
+   "wordsPerS": 2.71,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-18-overscroll": {
   "postOn": "2026-10-30",
@@ -311,7 +388,18 @@
    "#frontenddev",
    "#webdesign"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 21,
+   "wordsPerS": 2.38,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-19-numbers": {
   "postOn": "2026-10-31",
@@ -331,7 +419,18 @@
    "#uidesign",
    "#frontenddev"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 21,
+   "wordsPerS": 2.29,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-fc01-lookup-column": {
   "channel": "fc",
@@ -396,13 +495,35 @@
   "channel": "c3",
   "postOn": "2026-11-01",
   "concept": "2.5D flow · Why the Eiffel Tower was almost torn down",
-  "about": "The same story in engraved paper layers and one camera that never cuts: through the arch into the 1889 crowd, up a 300 m measure, out to Eiffel's permit, through the 0 of 1909, up to the radio at the top, out to Bizerte on the map and back for the stamp."
+  "about": "The same story in engraved paper layers and one camera that never cuts: through the arch into the 1889 crowd, up a 300 m measure, out to Eiffel's permit, through the 0 of 1909, up to the radio at the top, out to Bizerte on the map and back for the stamp.",
+  "style": {
+   "lengthS": 34.4,
+   "wordsPerS": 2.35,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-c3-blue-flow": {
   "channel": "c3",
   "postOn": "2026-11-02",
   "concept": "2.5D flow · Why is the sky blue (and not violet)?",
-  "about": "One camera that never cuts: from a navy sky over blue ridges up a sunbeam that splits into its colours, into the air where molecules scatter blue in rings, let red pass and scatter violet most; back out to a violet sky for the turn (less violet in sunlight, eyes see blue better), ending on a person under a blue sky."
+  "about": "One camera that never cuts: from a navy sky over blue ridges up a sunbeam that splits into its colours, into the air where molecules scatter blue in rings, let red pass and scatter violet most; back out to a violet sky for the turn (less violet in sunlight, eyes see blue better), ending on a person under a blue sky.",
+  "style": {
+   "lengthS": 31.3,
+   "wordsPerS": 2.46,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-c3-blue-sky": {
   "channel": "c3",
@@ -436,7 +557,18 @@
    "#frontenddev",
    "#webdesign"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.4,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-21-dvh": {
   "postOn": "2026-11-02",
@@ -456,7 +588,18 @@
    "#frontenddev",
    "#webdesign"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.3,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-22-squash": {
   "postOn": "2026-11-03",
@@ -476,7 +619,18 @@
    "#frontenddev",
    "#responsivedesign"
   ],
-  "channel": "web"
+  "channel": "web",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-t01-passkeys": {
   "hidden": true,
@@ -501,7 +655,18 @@
    "#webdesign"
   ],
   "channel": "web",
-  "concept": "overflow-wrap: anywhere"
+  "concept": "overflow-wrap: anywhere",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.25,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-24-sticky": {
   "postOn": "2026-11-05",
@@ -524,7 +689,18 @@
   ],
   "channel": "web",
   "concept": "position: sticky + overflow: clip",
-  "note": "19:00 IST (two-a-day test)"
+  "note": "19:00 IST (two-a-day test)",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.2,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-25-anchor": {
   "postOn": "2026-11-06",
@@ -546,57 +722,178 @@
    "#uxdesign"
   ],
   "channel": "web",
-  "concept": "scroll-padding-top"
+  "concept": "scroll-padding-top",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.3,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-tech-php2shell": {
   "channel": "tech",
   "postOn": "2026-10-26",
-  "concept": "PHP security"
+  "concept": "PHP security",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "claim",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-tech-gitlab-10": {
   "channel": "tech",
   "postOn": "2026-10-26",
-  "concept": "GitLab security"
+  "concept": "GitLab security",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "claim",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-tech-eu-satellites": {
   "channel": "tech",
   "postOn": "2026-10-27",
-  "concept": "Satellite phones"
+  "concept": "Satellite phones",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "claim",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-tech-siri-memory": {
   "channel": "tech",
   "postOn": "2026-10-28",
-  "concept": "Your iPhone"
+  "concept": "Your iPhone",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "claim",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-tech-discord-web": {
   "channel": "tech",
   "postOn": "2026-10-29",
-  "concept": "Your privacy"
+  "concept": "Your privacy",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "claim",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-tech-macbook-touch": {
   "channel": "tech",
   "postOn": "2026-10-30",
-  "concept": "Your next laptop"
+  "concept": "Your next laptop",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "claim",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-tech-charge-80": {
   "channel": "tech",
   "postOn": "2026-10-31",
-  "concept": "Phone charging"
+  "concept": "Phone charging",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-tech-passkey-login": {
   "channel": "tech",
   "postOn": "2026-11-01",
-  "concept": "Passkeys"
+  "concept": "Passkeys",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-tech-offline-find": {
   "channel": "tech",
   "postOn": "2026-11-02",
-  "concept": "Find My"
+  "concept": "Find My",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-tech-faceid-dark": {
   "channel": "tech",
   "postOn": "2026-11-03",
-  "concept": "Face ID"
+  "concept": "Face ID",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-tech-walmart-agents": {
   "channel": "tech",
@@ -611,14 +908,36 @@
   "channel": "c3",
   "postOn": "2026-11-03",
   "concept": "2.5D flow · Why is the Statue of Liberty green?",
-  "about": "One camera that never cuts: New York harbour at dusk, back to 1886 as her skin turns copper again, a magnifier on the 2.4 mm skin, rain and sea salt over 20 years as she turns green, the 1906 paint plan, a crowd on the pier protesting, and the green layer that protects the copper."
+  "about": "One camera that never cuts: New York harbour at dusk, back to 1886 as her skin turns copper again, a magnifier on the 2.4 mm skin, rain and sea salt over 20 years as she turns green, the 1906 paint plan, a crowd on the pier protesting, and the green layer that protects the copper.",
+  "style": {
+   "lengthS": 33.3,
+   "wordsPerS": 2.28,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-c3-sixty-minutes": {
   "channel": "c3",
   "postOn": "2026-11-04",
   "concept": "2.5D flow · Why are there 60 minutes in an hour?",
   "about": "One camera that flies through a circle into each era: a study wall clock, a Mesopotamian clay tablet ringed by 60 beads that split by 2, 3, 4, 5 and 6, Egypt's 24-hour ring by the pyramids, a Greek bronze circle it zooms into (one degree, 1/60, 1/3600), and the clock again with the Latin first and second small parts.",
-  "note": "Built on the spare-usage night (3 Nov) for Wed 4 Nov 21:00 IST; that day the Turns Out daily run builds for the next free day instead."
+  "note": "Built on the spare-usage night (3 Nov) for Wed 4 Nov 21:00 IST; that day the Turns Out daily run builds for the next free day instead.",
+  "style": {
+   "lengthS": 34.6,
+   "wordsPerS": 2.25,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-c3-green-sahara": {
   "channel": "c3",
@@ -626,7 +945,18 @@
   "postAt": "21:00",
   "concept": "2.5D flow · Was the Sahara always a desert?",
   "about": "One camera that never cuts: through the noon sun over the dunes into the green Sahara of 10,000 years ago (a lake with hippos and a crocodile), a rock wall where cattle are painted in red ochre, the Earth in space as its axis wobbles and the rain belt slides north over the Sahara and back south, and a sand-and-green cycle ring at dusk.",
-  "note": "Built on the spare-usage night (3 Nov) for Thu 5 Nov 21:00 IST."
+  "note": "Built on the spare-usage night (3 Nov) for Thu 5 Nov 21:00 IST.",
+  "style": {
+   "lengthS": 32.7,
+   "wordsPerS": 2.29,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-c3-tea-chai": {
   "channel": "c3",
@@ -639,19 +969,52 @@
  "showreel-tech-applepay-number": {
   "channel": "tech",
   "postOn": "2026-11-04",
-  "concept": "Apple Pay"
+  "concept": "Apple Pay",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-tech-wifi-address": {
   "channel": "tech",
   "postOn": "2026-11-05",
   "postAt": "17:00",
-  "concept": "Wi-Fi privacy"
+  "concept": "Wi-Fi privacy",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-tech-airplane-bluetooth": {
   "channel": "tech",
   "postOn": "2026-11-06",
   "postAt": "17:30",
-  "concept": "Airplane mode"
+  "concept": "Airplane mode",
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-tech-close-apps": {
   "channel": "tech",
@@ -662,6 +1025,17 @@
    "id": "tech-myth-verdict",
    "change": "myth-bust format: the verdict (MYTH) stamped in frame 0, then why",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
   }
  },
  "showreel-tech-heat-battery": {
@@ -673,6 +1047,17 @@
    "id": "tech-myth-verdict",
    "change": "myth-bust format, try 2: the verdict stamped in frame 0, then why; every element with its own flow and a sound by size",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
   }
  },
  "showreel-tech-drain-zero": {
@@ -684,6 +1069,17 @@
    "id": "tech-myth-verdict",
    "change": "myth-bust format, try 3: the verdict stamped in frame 0, then why; every element with its own flow and a sound by size",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": null,
+   "wordsPerS": null,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
   }
  },
  "showreel-c3-marathon": {
@@ -715,7 +1111,18 @@
   ],
   "channel": "web",
   "concept": "min-width: 0 on a flex item",
-  "note": "reworked 7 Nov, post as soon as ready"
+  "note": "reworked 7 Nov, post as soon as ready",
+  "style": {
+   "lengthS": 21,
+   "wordsPerS": 2.24,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-27-keyboard": {
   "postOn": "2026-11-05",
@@ -738,7 +1145,18 @@
   ],
   "channel": "web",
   "concept": "inputmode=\"numeric\" (number pad on a code field)",
-  "note": "posted 13:00 IST"
+  "note": "posted 13:00 IST",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 1.95,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-28-thumb": {
   "postOn": "2026-11-06",
@@ -761,7 +1179,18 @@
   ],
   "channel": "web",
   "concept": "min-height: 44px on menu links (tap targets)",
-  "note": "19:00 IST (two-a-day test)"
+  "note": "19:00 IST (two-a-day test)",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 1.9,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "config"
+  }
  },
  "showreel-c3-flamingo-pink": {
   "channel": "c3",
@@ -769,7 +1198,18 @@
   "postAt": "20:00",
   "concept": "2.5D flow · Why are flamingos pink?",
   "about": "One camera that never cuts: a GREY young flamingo and its chick in a dusk lagoon (frame 0, E14 reel 1), the bill dips and the camera dives into the water (algae, brine shrimp, a carrot for carotenoids), up into daylight as the same bird turns pink (legs and bill first), two zoo birds by their trays (with pigment pink, without pale), and a pink flock at sunset.",
-  "note": "Turns Out daily run, 6 Nov: E14 reel 1 (payoff image in frame 0)."
+  "note": "Turns Out daily run, 6 Nov: E14 reel 1 (payoff image in frame 0).",
+  "style": {
+   "lengthS": 31.6,
+   "wordsPerS": 2.47,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-s02-snap": {
   "channel": "web",
@@ -793,7 +1233,18 @@
   "postAt": "13:30",
   "concept": "2.5D flow · Why did the Great Pyramid stop shining white?",
   "about": "One camera that never cuts: the three Giza pyramids shining WHITE at noon (frame 0, E14: an icon in a state that looks wrong), a push onto the polished face, a barge carrying a white block across the Nile from the quarry cliffs, the Great Pyramid stripped from the top down as the blocks fly off toward Cairo, the stepped core and the casing stones still at its foot, Khafre's cap, and the core at dusk with the dashed ghost of its white shell.",
-  "note": "Turns Out morning run, 7 Nov: the 13:30 reel (E16 slot 1, E14 reel 2: a world icon in an unexpected state)."
+  "note": "Turns Out morning run, 7 Nov: the 13:30 reel (E16 slot 1, E14 reel 2: a world icon in an unexpected state).",
+  "style": {
+   "lengthS": 32.4,
+   "wordsPerS": 2.35,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-29-flash": {
   "postOn": "2026-11-07",
@@ -816,7 +1267,18 @@
   ],
   "channel": "web",
   "concept": "<meta name=\"color-scheme\" content=\"dark light\"> (no white flash, dark form boxes)",
-  "note": "19:00 IST, flow pass 7 Nov, post as soon as ready"
+  "note": "19:00 IST, flow pass 7 Nov, post as soon as ready",
+  "style": {
+   "lengthS": 20.5,
+   "wordsPerS": 2.05,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-c3-pisa-lean": {
   "channel": "c3",
@@ -824,7 +1286,18 @@
   "postAt": "20:00",
   "concept": "2.5D flow · Was the Leaning Tower of Pisa built to lean?",
   "about": "One camera that never cuts: the Leaning Tower of Pisa standing STRAIGHT on its lawn (frame 0, E14: an icon in a state that looks wrong), the upper floors fading to a dashed ghost (built straight, 1173), the cut-away ground with its soft clay as the tower tips at the third floor, a century of suns while war stops the work, new floors built taller on the low side (the curve) as it sinks further, 1990 and CLOSED, drills pulling soil from under the high side, and the tower today, 40 cm (16 in) back from the ghost of its 1990 lean.",
-  "note": "Turns Out daily run, 7 Nov: the 20:00 reel (E16 slot 2, E14 reel 3: a world icon in an unexpected state)."
+  "note": "Turns Out daily run, 7 Nov: the 20:00 reel (E16 slot 2, E14 reel 3: a world icon in an unexpected state).",
+  "style": {
+   "lengthS": 34.7,
+   "wordsPerS": 2.36,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-style-a-studio": {
   "hidden": true,
@@ -864,7 +1337,18 @@
   "postAt": "13:00",
   "concept": "Slow-mo details (look C), calm cut: heart pop, stretchy switch knob, self-drawing checkmark",
   "about": "Result first: a heart already popped to 129 likes under the hook, then three small app motions, one calm beat of ~5.9 s each: the tap at real speed, the same tap in slow motion with its live easing curve and a speed chip, a settle hold, and its one CSS line typed (linear(), cubic-bezier overshoot, stroke-dashoffset); a recap grid of all three that plays once and holds. Reworked 8 Nov after the owner said the 4-detail 20 s cut felt rushed.",
-  "note": "13:00 IST, experiment details-format (the slow-mo details compilation in look C)"
+  "note": "13:00 IST, experiment details-format (the slow-mo details compilation in look C)",
+  "style": {
+   "lengthS": 24.6,
+   "wordsPerS": 1.46,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-c3-golden-gate": {
   "channel": "c3",
@@ -872,7 +1356,18 @@
   "postAt": "13:00",
   "concept": "2.5D flow · Was the Golden Gate Bridge nearly black and yellow?",
   "about": "One camera that never cuts: the Golden Gate Bridge painted in the Navy's black and yellow stripes over the fog (frame 0, E14: an icon in a state that looks wrong), a Navy ship passing under it, the Army pilots' biplane as the towers turn red and white from the top, the red primer washing up the steel, Irving Morrow on the Marin headland with the fog, the hills and the sea, International Orange rolling up the tower in slow motion, 1937 and traffic, and the orange bridge in the evening.",
-  "note": "Turns Out, 8 Nov 13:00 IST (built overnight; the slot moved from 20:00 to 13:00 today)."
+  "note": "Turns Out, 8 Nov 13:00 IST (built overnight; the slot moved from 20:00 to 13:00 today).",
+  "style": {
+   "lengthS": 34.8,
+   "wordsPerS": 2.36,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-31-menus": {
   "channel": "web",
@@ -880,7 +1375,18 @@
   "postAt": "13:00",
   "concept": "Slow-mo details (look C), menus: gliding tab line, accordion row via grid-template-rows, cascading menu items",
   "about": "Result first: the tab line already on \"Live\" under the hook, then three menu motions, one calm beat of ~5.8 s each (real speed, slow motion with its live curve, a settle hold), its CSS typed; a recap grid that plays once and holds. Every element has a size-matched sound (the kit's element sound, 8 Nov).",
-  "note": "13:00 IST, experiment details-format (try 2) with element sound"
+  "note": "13:00 IST, experiment details-format (try 2) with element sound",
+  "style": {
+   "lengthS": 24.6,
+   "wordsPerS": 1.54,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-32-waiting": {
   "channel": "web",
@@ -888,7 +1394,18 @@
   "postAt": "13:00",
   "concept": "Slow-mo details (look C), waiting: send button morphs into a spinner, photo fades in, toast settles",
   "about": "Result first: the send button already turned into a check under the hook, then three waiting motions, one calm beat of ~5.8 s each (real speed, slow motion with its live curve, a settle hold), its CSS typed; a recap grid that plays once and holds. Every element has a size-matched sound (the kit's element sound, 8 Nov).",
-  "note": "13:00 IST, experiment details-format (try 3) with element sound"
+  "note": "13:00 IST, experiment details-format (try 3) with element sound",
+  "style": {
+   "lengthS": 24.5,
+   "wordsPerS": 1.43,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-c3-sphinx-sand": {
   "channel": "c3",
@@ -896,7 +1413,18 @@
   "postAt": "13:00",
   "concept": "2.5D journey · Why was the Sphinx buried up to its shoulders?",
   "about": "Seven worlds: the Sphinx's head above a sea of sand in the 1850s (frame 0), a dive through the sand into the quarry pit in 2500 BC (workers carve, the wind fills it), a page turn to Prince Thutmose asleep in its shadow, a zoom through his dream cloud into the night where a crown descends, a match cut from the moon to the Dream Stele as the Sphinx is dug out, the sand flowing back in a time-lapse that freezes into an 1800s photograph on a desk, and a fold to 1936: the whole body cleared, the old sand line left as a ghost.",
-  "note": "Turns Out, Mon 9 Nov 13:00 IST (built ahead on 8 Nov, owner override)."
+  "note": "Turns Out, Mon 9 Nov 13:00 IST (built ahead on 8 Nov, owner override).",
+  "style": {
+   "lengthS": 34.5,
+   "wordsPerS": 2.49,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-c3-opera-sphere": {
   "channel": "c3",
@@ -904,7 +1432,18 @@
   "postAt": "13:00",
   "concept": "2.5D journey · How did one ball shape the Sydney Opera House?",
   "about": "Six worlds: a tiled ball on the Opera House's podium in Sydney Harbour, its sails lifting out (frame 0), a match cut to the compass circle on the 1957 drawing, a fold to the engineers' office where every curve is crossed out, a parallax pan to one wooden sphere with a sail cut from its surface, a page turn to the casting yard of identical rib pieces, a zoom through the rib arch to the finished building in 1973, ghost circles showing every sail on the same curve.",
-  "note": "Turns Out, Tue 10 Nov 13:00 IST (built ahead on 8 Nov, owner override)."
+  "note": "Turns Out, Tue 10 Nov 13:00 IST (built ahead on 8 Nov, owner override).",
+  "style": {
+   "lengthS": 32.2,
+   "wordsPerS": 2.36,
+   "shotChanges": null,
+   "hookType": "question",
+   "look": null,
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "config"
+  }
  },
  "showreel-c3-terracotta-colour": {
   "channel": "c3",
@@ -912,7 +1451,18 @@
   "postAt": "13:00",
   "concept": "2.5D journey · Was the Terracotta Army once painted in bright colours?",
   "about": "Six worlds: the pit today with ONE soldier in full colour among the grey ranks, the colour spreading (frame 0); a fold to the 1974 wheat field where a farmer's hoe strikes a clay head; a dive through the well into the dig, the soil sinking off rank after rank; a parallax pan to the workshop where a painter gives a soldier pink skin and bright robes; a match cut on the painted face to the surface up close (paint on lacquer on clay, the lacquer curling in dry air, the colour flaking away); a page turn back to the pit, a wave of colour crossing the whole army. First reel on the depth kit: 4+ parallax planes with air between them in every world, keyframed figures, ambient life.",
-  "note": "Turns Out, Wed 11 Nov 13:00 IST slot (built late: the morning session died; owner: upload a bit late today)."
+  "note": "Turns Out, Wed 11 Nov 13:00 IST slot (built late: the morning session died; owner: upload a bit late today).",
+  "style": {
+   "lengthS": 32.3,
+   "wordsPerS": 2.29,
+   "shotChanges": 7,
+   "hookType": "question",
+   "look": "light",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
+  }
  },
  "showreel-33-carousel": {
   "postOn": "2026-11-11",
@@ -941,6 +1491,17 @@
    "id": "web-single-satisfying",
    "change": "ESCALATE answer: back to ONE narrated fix with a satisfying motion payoff (a photo row that snaps), not a details compilation; style C, element sound",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 18.5,
+   "wordsPerS": 2.11,
+   "shotChanges": 9,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-tech-black-screenshot": {
@@ -952,6 +1513,17 @@
    "id": "tech-screen-puzzle",
    "change": "ESCALATE answer: a new topic type, a weird thing your screen does (black screenshots of videos), not a battery habit; verdict stamp kept",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 22,
+   "wordsPerS": 2.27,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-tech-stop-tracking": {
@@ -963,6 +1535,17 @@
    "id": "tech-settings-list",
    "change": "New format (owner, 11 Nov: go all in): 3 phone settings to change today, tapped on a drawn phone, both platforms' paths, a recap to save; replaces the explainer / myth-bust",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 22.6,
+   "wordsPerS": 2.79,
+   "shotChanges": 0,
+   "hookType": "number",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-c3-eiffel-red": {
@@ -971,7 +1554,18 @@
   "postAt": "13:00",
   "concept": "Guess first · What colour was the Eiffel Tower at first?",
   "about": "The new GUESS format (E19): Paris at dusk, the tower drains to a silhouette while the question and the three options are asked, a 3-2-1 countdown beside it, then the answer painted up the tower with a tick on RED; through the arch into Eiffel's 1887 workshop where a girder is brushed Venetian red; a page turn to seven colour chips fanning over a blueprint; a match cut on today's chip back to Paris, ending on the frame-0 view so the reel loops. 24.6 s.",
-  "note": "Turns Out, Thu 12 Nov 13:00 IST. Built 11 Nov in the format session (swapped from Tower Bridge: its first colour is disputed by a paint historian). Pin a comment asking for A, B or C if you like."
+  "note": "Turns Out, Thu 12 Nov 13:00 IST. Built 11 Nov in the format session (swapped from Tower Bridge: its first colour is disputed by a paint historian). Pin a comment asking for A, B or C if you like.",
+  "style": {
+   "lengthS": 23.2,
+   "wordsPerS": 1.9,
+   "shotChanges": 3,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
+  }
  },
  "showreel-34-press": {
   "postOn": "2026-11-12",
@@ -1000,6 +1594,17 @@
    "id": "dark-return",
    "change": "E18: dark theme + motion-feel single fix (October formula), try 1 (a button that presses)",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.35,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "mp4"
   }
  },
  "showreel-35-list": {
@@ -1023,7 +1628,18 @@
   ],
   "channel": "web",
   "concept": "grid-template-rows 1fr -> 0fr + opacity 0 with a .3s transition, overflow: hidden on the child, then remove on transitionend (a deleted row collapses, the rows glide up instead of jumping)",
-  "about": "E23 try 1 (dynamic fix, side by side) on E18 try 2 (dark): an inbox where every delete makes the rows below SNAP up (a red ghost, \"jump!\", DELETED counter), then BEFORE vs AFTER side by side deleting the same message at the same moment (snap vs collapse), one collapse replayed at 0.25x with its live curve and the height counting 68 → 0 px, and a rhythm of smooth deletes to the end."
+  "about": "E23 try 1 (dynamic fix, side by side) on E18 try 2 (dark): an inbox where every delete makes the rows below SNAP up (a red ghost, \"jump!\", DELETED counter), then BEFORE vs AFTER side by side deleting the same message at the same moment (snap vs collapse), one collapse replayed at 0.25x with its live curve and the height counting 68 → 0 px, and a rhythm of smooth deletes to the end.",
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.25,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
+  }
  },
  "showreel-tech-scam-calls": {
   "channel": "tech",
@@ -1047,6 +1663,17 @@
    "id": "tech-idea-look",
    "change": "The idea look (techreel/scenes/idea.py): the idea at full-frame scale, one subject per scene, worlds with zoom-throughs, giant type that travels between scenes, instead of widgets inside a small phone screen",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 23,
+   "wordsPerS": 2.7,
+   "shotChanges": 2,
+   "hookType": "question",
+   "look": "dark",
+   "hero": "phone",
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-c3-taj-mud": {
@@ -1055,7 +1682,18 @@
   "postAt": "13:00",
   "concept": "Guess first · How does the Taj stay white?",
   "about": "GUESS format, reel 2 of 3 (E19): the Taj Mahal across its pool on a hazy morning, a dull film creeping up the marble while the question and the options (bleach, acid, mud) are asked, a 3-2-1 countdown in the sky beside the dome, then a coat of clay climbs the whole Taj with a tick on MUD; through the great arch to a worker spreading the clay over an inlaid flower panel; a page turn to the same panel at night, drying and cracking, then washed off with water; a match cut from the clean flower to the dome, ending on the frame-0 view so the reel loops.",
-  "note": "Turns Out, Fri 13 Nov 13:00 IST. Built the same morning. Pin a comment asking for A, B or C if you like."
+  "note": "Turns Out, Fri 13 Nov 13:00 IST. Built the same morning. Pin a comment asking for A, B or C if you like.",
+  "style": {
+   "lengthS": 22.7,
+   "wordsPerS": 1.94,
+   "shotChanges": 3,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
+  }
  },
  "showreel-36-tabs": {
   "postOn": "2026-11-14",
@@ -1084,6 +1722,17 @@
    "id": "dynamic-fix",
    "change": "E23 try 2: dynamic before/after in sync (BEFORE blinks over AFTER slides), on E18's dark single fix (try 3); the code card lights only the changed line",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.5,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-tech-anc-budget": {
@@ -1197,6 +1846,17 @@
    "id": "web-comment-ask",
    "change": "E20 try 1: caption line 1 asks a one-word question (yes or never), the last line asks for it in the comments; on E23's dynamic before/after in sync (try 3) and the dark look",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.5,
+   "shotChanges": 1,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-38-form": {
@@ -1227,6 +1887,17 @@
    "id": "web-comment-ask",
    "change": "E20 try 2: caption line 1 asks a one-word question (yes or never), the last line asks for it in the comments (and names who to send it to: design/improvements.md); on E23's dynamic before/after in sync (try 4) and the dark look",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.55,
+   "shotChanges": 1,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-39-follow": {
@@ -1257,6 +1928,17 @@
    "id": "web-comment-ask",
    "change": "E20 try 3: caption line 1 asks a one-word question (yes or never), the last line asks for it in the comments; on E23's dynamic before/after in sync (try 5) and the dark look",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.35,
+   "shotChanges": 3,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-tech-night-mode": {
@@ -1268,6 +1950,17 @@
    "id": "tech-kit-engine",
    "change": "the owner's motion kit ported as the tech engine",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 43.3,
+   "wordsPerS": 2.75,
+   "shotChanges": 0,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": "phone camera",
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-tech-watch-5atm": {
@@ -1279,6 +1972,17 @@
    "id": "tech-kit-engine",
    "change": "E26 try 2 + K2 cutaway (the object transforms on every beat)",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 43.1,
+   "wordsPerS": 2.58,
+   "shotChanges": 1,
+   "hookType": "question",
+   "look": "dark",
+   "hero": "smartwatch",
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-tech-screen-120hz": {
@@ -1290,6 +1994,17 @@
    "id": "tech-kit-engine",
    "change": "E26 try 3",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 42.3,
+   "wordsPerS": 2.55,
+   "shotChanges": 0,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": "phone screen",
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-c3-mona-stolen": {
@@ -1298,7 +2013,18 @@
   "postAt": "13:00",
   "engine": "echoes",
   "concept": "Echoes engine (owner's kit, ported) · The Theft That Made Her Famous: the 1911 Mona Lisa theft (Peruggia out through a service door, the empty wall, Picasso questioned, caught in Florence 1913); 11 shots, 7 archival",
-  "note": "Turns Out, Sun 15 Nov, replaces greek-colour. First reel on the ported Echoes engine (scripts/echoes/): a new shot on almost every line, real archival images, typed stamps, the kit's sound; 45-50 s per the kit. Not posted Sun 15 (Output QA NUMBERS, run 43711845193; fixed in #921): moved to Mon 16 Nov 13:00 IST as Monday's Turns Out reel (owner, 15 Nov). Render 5 (owner, 15 Nov evening): 2.5D depth shots, every photo full-frame (Output QA FILL), voice af_heart again. Owner watched render 6 and liked it (15 Nov); its two NUMBERS flags were false (owner checked both moments). Posts Mon 16 Nov 13:00 IST (owner, 15 Nov: \"Mona Lisa one gets posted tomorrow (Monday)\") after the critic, once Output QA passes on this same MP4 (no new render) with the rebuilt NUMBERS check (claude/qa-numbers-fix)."
+  "note": "Turns Out, Sun 15 Nov, replaces greek-colour. First reel on the ported Echoes engine (scripts/echoes/): a new shot on almost every line, real archival images, typed stamps, the kit's sound; 45-50 s per the kit. Not posted Sun 15 (Output QA NUMBERS, run 43711845193; fixed in #921): moved to Mon 16 Nov 13:00 IST as Monday's Turns Out reel (owner, 15 Nov). Render 5 (owner, 15 Nov evening): 2.5D depth shots, every photo full-frame (Output QA FILL), voice af_heart again. Owner watched render 6 and liked it (15 Nov); its two NUMBERS flags were false (owner checked both moments). Posts Mon 16 Nov 13:00 IST (owner, 15 Nov: \"Mona Lisa one gets posted tomorrow (Monday)\") after the critic, once Output QA passes on this same MP4 (no new render) with the rebuilt NUMBERS check (claude/qa-numbers-fix).",
+  "style": {
+   "lengthS": 36.7,
+   "wordsPerS": 2.86,
+   "shotChanges": 7,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "mp4"
+  }
  },
  "showreel-c3-liberty-arm": {
   "channel": "c3",
@@ -1306,7 +2032,18 @@
   "postAt": "13:00",
   "engine": "echoes",
   "concept": "Echoes engine, 2.5D depth (the look the owner approved on Mona Lisa render 6) · The Arm That Came First: Liberty's arm and torch in Philadelphia 1876 and Madison Square 1876-1882, her head at the Paris fair, Pulitzer's appeal; real archival photos full-frame",
-  "note": "Turns Out, Tue 17 Nov (owner, Owner chat 15 Nov ~23:15 IST: build it now, an exception to built-the-day-it-posts). Rebuilt 16 Nov (owner: more elements as the story moves; cover in the video): 14 shots, 11 photos each once, a running year, a journey map, labels, a counter; frame 0 is the cover (pick it in Instagram). Voice af_heart."
+  "note": "Turns Out, Tue 17 Nov (owner, Owner chat 15 Nov ~23:15 IST: build it now, an exception to built-the-day-it-posts). Rebuilt 16 Nov (owner: more elements as the story moves; cover in the video): 14 shots, 11 photos each once, a running year, a journey map, labels, a counter; frame 0 is the cover (pick it in Instagram). Voice af_heart.",
+  "style": {
+   "lengthS": 42.9,
+   "wordsPerS": 2.63,
+   "shotChanges": 10,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
+  }
  },
  "showreel-40-expensive": {
   "postOn": "2026-11-18",
@@ -1335,6 +2072,17 @@
    "id": "details-format",
    "change": "slow-mo details compilation, try 4 (ESCALATE answer 18 Nov: a format change from the single before/after), dark look in a new jade world",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 20.5,
+   "wordsPerS": 2,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-tech-laptop-plugged": {
@@ -1346,6 +2094,17 @@
    "id": "tech-kit-engine",
    "change": "E26 try 4: the kit engine on the shared frame, gadget myths (verdict stamp, F5), laptop, global; the object opens up (x-ray battery, power path, charge limit, heat)",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 41.2,
+   "wordsPerS": 2.82,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": "laptop",
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-c3-stonehenge-stones": {
@@ -1356,7 +2115,18 @@
   "concept": "Echoes engine, 2.5D depth · The Stones That Travelled: Stonehenge's bluestones came from the Preseli Hills in Wales (over 200 km), the Altar Stone from northeast Scotland (2024 study); the answer stays hidden until it is said; real photos full-frame and a coasts-only map of Britain",
   "note": "Turns Out, Wed 18 Nov. Built late on the day: the 09:11 IST run did not start (usage limit), started by hand from the Owner chat; postAt 14:00. Voice af_heart, speed 1.",
   "slotNote": "One-off 18:00 IST: the 09:11 IST Turns Out run did not start (usage limit); built late on the day, and Wikimedia refused 10 of 12 photo downloads (HTTP 429 to every runner) so the render could not be ready by 13:30 (Owner chat task, 18 Nov 2026). No push reminder for this slot (owner, 18 Nov: no new cron).",
-  "noReminder": true
+  "noReminder": true,
+  "style": {
+   "lengthS": 41.5,
+   "wordsPerS": 2.29,
+   "shotChanges": 7,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
+  }
  },
  "showreel-41-gradient": {
   "postOn": "2026-11-19",
@@ -1384,6 +2154,17 @@
    "id": "web-swipe-compare",
    "change": "swipe-reveal compare (ESCALATE answer 19 Nov): one divider across the same card shows sRGB then oklch; two states share one layout; a computed middle-colour readout (design/improvements.md web item 1)",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 18,
+   "wordsPerS": 2.5,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-tech-phone-claim": {
@@ -1411,7 +2192,18 @@
    "#techtips",
    "#smartphone",
    "#techexplained"
-  ]
+  ],
+  "style": {
+   "lengthS": 42.3,
+   "wordsPerS": 2.55,
+   "shotChanges": 0,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": "phone",
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "mp4"
+  }
  },
  "showreel-42-snapback": {
   "postOn": "2026-11-20",
@@ -1439,6 +2231,17 @@
    "id": "web-story-bug",
    "change": "one bug told as a story (it breaks, you feel it, one word fixes it, it behaves) on a new topic type, an animation that ends wrong; dynamic before/after in sync (design/improvements.md web item 7)",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 17,
+   "wordsPerS": 2.65,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "mp4"
   }
  },
  "showreel-tech-wireless-worth": {
@@ -1466,7 +2269,18 @@
    "#techtips",
    "#chargingtips",
    "#techexplained"
-  ]
+  ],
+  "style": {
+   "lengthS": 41.7,
+   "wordsPerS": 2.57,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": "charger",
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "mp4"
+  }
  },
  "showreel-c3-aluminium-tip": {
   "channel": "c3",
@@ -1503,6 +2317,17 @@
    "id": "web-touch-bug",
    "change": "a touch-behaviour topic (a gesture the browser claims: double-tap zoom) told as one bug story; dynamic before/after in sync",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 17,
+   "wordsPerS": 2.35,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-tech-wifi-button": {
@@ -1530,7 +2355,18 @@
    "#techtips",
    "#wifi",
    "#techexplained"
-  ]
+  ],
+  "style": {
+   "lengthS": 40.5,
+   "wordsPerS": 2.52,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": "phone",
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
+  }
  },
  "showreel-c3-menu-spacing": {
   "channel": "c3",
@@ -1604,7 +2440,18 @@
   "engine": "design",
   "concept": "Design series · Everything on this CV is bold. So nothing stands out. 📄 (a CV on a desk where every line is bold and one size, fixed in three moves: the name biggest, headings one size down, details plain)",
   "note": "Already posted on Instagram (owner, 25 Nov 2026). The resume2 rebuild is not posted again; it stays as a kit study only.",
-  "onGo": true
+  "onGo": true,
+  "style": {
+   "lengthS": 16,
+   "wordsPerS": 2.31,
+   "shotChanges": 3,
+   "hookType": "claim",
+   "look": "light",
+   "hero": "a CV page",
+   "firstSecondTension": "yes",
+   "payoff": "tip",
+   "source": "mp4"
+  }
  },
  "showreel-c3-line-length": {
   "channel": "c3",
@@ -1642,7 +2489,18 @@
   "postOn": "2026-11-24",
   "postAt": "13:00",
   "concept": "Design series · This menu is hard to read. The soft grey looked nice, but it's too light. ☕ (a café specials board in soft grey on cream, fixed in three moves: darker words, a lighter board, checking the contrast ratio; the last frame shows BEFORE next to AFTER)",
-  "note": "Rebuilt on the improved design kit after the owner's note of 23 Nov (natural voice, believable before); the owner liked its preview (24 Nov), Output QA passed on render 3 and the critic said READY (review/previews/c3-design-rebuilds.md, B, render 3). Today's Turns Out reel (owner, 24 Nov: one a day, on need): ready from 24 Nov, posted 24 Nov in the 13:00-21:00 IST window (owner, 24 Nov: move it to Turns Out reels)."
+  "note": "Rebuilt on the improved design kit after the owner's note of 23 Nov (natural voice, believable before); the owner liked its preview (24 Nov), Output QA passed on render 3 and the critic said READY (review/previews/c3-design-rebuilds.md, B, render 3). Today's Turns Out reel (owner, 24 Nov: one a day, on need): ready from 24 Nov, posted 24 Nov in the 13:00-21:00 IST window (owner, 24 Nov: move it to Turns Out reels).",
+  "style": {
+   "lengthS": 21.2,
+   "wordsPerS": 1.75,
+   "shotChanges": 2,
+   "hookType": "claim",
+   "look": "light",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
+  }
  },
  "showreel-c3-price-list": {
   "channel": "c3",
@@ -1686,6 +2544,17 @@
    "id": "web-load-bug",
    "change": "a page-load topic (the white flash before a dark page) told as one bug story; dynamic before/after in sync, the flash eased not strobed",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 19,
+   "wordsPerS": 2.84,
+   "shotChanges": 6,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
   }
  },
  "showreel-tech-cold-shutdown": {
@@ -1784,7 +2653,18 @@
    "#ai",
    "#techexplained",
    "#gadgets"
-  ]
+  ],
+  "style": {
+   "lengthS": 30.7,
+   "wordsPerS": 2.25,
+   "shotChanges": 10,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": "phone",
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "mp4"
+  }
  },
  "showreel-45-homebar": {
   "postOn": "2026-11-23",
@@ -1813,6 +2693,17 @@
    "id": "web-phone-edge",
    "change": "a phone-edge topic (the home bar) with the dynamic fix: the screen sags on every tap in BEFORE, the bar's padding grows and the button rises in AFTER, the dark look in the saffron world",
    "vs": "median"
+  },
+  "style": {
+   "lengthS": 15.4,
+   "wordsPerS": 2.79,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "tip",
+   "source": "mp4"
   }
  },
  "showreel-46-tabwiggle": {
@@ -1843,7 +2734,18 @@
    "change": "E30 try 1: a wiggle every phone user has seen (tabs that jump when the tapped one turns bold), told in the numbers reel's shape, on the hook kit (the bug at 0.25 s and 1.45 s, a reaction word, TAPS / WIGGLES counted to the last frame), black look with a mint accent",
    "vs": "median"
   },
-  "palette": "black"
+  "palette": "black",
+  "style": {
+   "lengthS": 15,
+   "wordsPerS": 2.73,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": null,
+   "firstSecondTension": null,
+   "payoff": "fact",
+   "source": "mp4"
+  }
  },
  "showreel-tech-miniled-zones": {
   "hidden": true,
@@ -1851,7 +2753,7 @@
   "postOn": "2026-11-24",
   "postAt": "13:00",
   "cover": {
-   "t": 1.0,
+   "t": 1,
    "lines": [
     "MINI LED is not",
     "a new kind of screen"
@@ -1889,7 +2791,7 @@
   "postOn": "2026-11-24",
   "postAt": "20:30",
   "cover": {
-   "t": 1.0,
+   "t": 1,
    "lines": [
     "240 W cable,",
     "slow data?"

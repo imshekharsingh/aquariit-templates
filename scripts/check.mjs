@@ -147,6 +147,30 @@ if (caps) {
   for (let i = 1; i < chg.length; i++) if (day(chg[i][1].postOn) - day(chg[i - 1][1].postOn) < 7) err(`captions.json ${chg[i][0]}: a second battery / charging reel within 7 days of ${chg[i - 1][0]} (at most one a week)`);
 }
 
+// 4f. style record (owner chat, 25 Nov 2026; design/what-works.md "Style record"): every visible web / tech / Turns Out entry posting from 2026-11-25
+// carries a "style" object so the Sunday review can rank hooks, length, pace, look and hero. Planned values go in with the entry (hookType, look, hero,
+// firstSecondTension, payoff); the three measured numbers (lengthS, wordsPerS, shotChanges) may be null until the reel's post day, then they must be
+// filled from the MP4 (scripts/style-measure.mjs). null is only for a value that is truly unknown, never a guess.
+if (caps) {
+  const HOOKS = ['question', 'claim', 'number', 'contrast'], LOOKS = ['dark', 'light'], YN = ['yes', 'no'], PAY = ['tip', 'fact'];
+  const nowIST = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
+  for (const [n, e] of Object.entries(caps)) {
+    if (!e || e.hidden || e.sample || !['web', 'tech', 'c3'].includes(e.channel) || !/^\d{4}-\d{2}-\d{2}$/.test(e.postOn || '') || e.postOn < '2026-11-25') continue;
+    const st = e.style;
+    if (!st || typeof st !== 'object') { err(`captions.json ${n}: add a "style" object (lengthS, wordsPerS, shotChanges, hookType, look, hero, firstSecondTension, payoff; design/what-works.md "Style record")`); continue; }
+    const num = (k) => st[k] === null || (typeof st[k] === 'number' && st[k] >= 0);
+    for (const k of ['lengthS', 'wordsPerS', 'shotChanges']) {
+      if (!num(k)) err(`captions.json ${n}: style.${k} must be a number or null`);
+      else if (st[k] === null && e.postOn <= nowIST) err(`captions.json ${n}: style.${k} is still null on its post day: run scripts/style-measure.mjs on the rendered MP4`);
+    }
+    if (!HOOKS.includes(st.hookType)) err(`captions.json ${n}: style.hookType must be one of ${HOOKS.join(' / ')}`);
+    if (!LOOKS.includes(st.look)) err(`captions.json ${n}: style.look must be dark or light`);
+    if (typeof st.hero !== 'string' || !st.hero.trim()) err(`captions.json ${n}: style.hero must name the main object (a short phrase)`);
+    if (!YN.includes(st.firstSecondTension)) err(`captions.json ${n}: style.firstSecondTension must be yes or no`);
+    if (!PAY.includes(st.payoff)) err(`captions.json ${n}: style.payoff must be tip or fact`);
+  }
+}
+
 // 4d. the Mandatory Gate (owner, 7 Nov 2026; design/mandatory.md): every reel posting from 2026-11-08 on has review/<channel>/<name>.md with
 // all 13 items PASS and their evidence (item 13, after the render, may be PENDING until its post day is past); scripts/review-gate.mjs
 if (caps) for (const m of gateProblems(caps)) err(m);
