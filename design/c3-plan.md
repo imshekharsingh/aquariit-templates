@@ -13,7 +13,7 @@ the same reason @webin20sec gets saves. Owner, 21 Nov: "I actually liked all fiv
 fully lit, its problems ringed. Then 2-3 fixes with cursor, guides and a "FIX n OF N" dial; the score turns from tense to bright as the
 fixes land; ends on the fixed design. Caption: the 3 fixes as a numbered list, "Save this for your next ...", one question. No CTA on screen.
 
-**Order (daily and dated, in order; owner, 24 Nov 2026: Turns Out goes back to one reel a day like web and tech, each built only on its own day). Next is the CV (showreel-c3-resume / resume2, critic READY on 24 Nov) on 25 Nov:**
+**Order (daily and dated, in order; owner, 24 Nov 2026: Turns Out goes back to one reel a day like web and tech, each built only on its own day). Only reels NOT yet posted are built (check the posted marks first; the CV reel was already posted, so it is never rebuilt for posting; owner, 25 Nov 2026). Next on 25 Nov is #2, One looks 5x pricier (showreel-c3-looks-expensive, held), rebuilt on the improved kit:**
 | # | Reel | Preview config | Status |
 |---|---|---|---|
 | 1 | It's the spacing (café menu) | design/spacing.json → menu-spacing.json | full reel, render 3 |

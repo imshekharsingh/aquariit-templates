@@ -14,7 +14,7 @@
  "max_end": 32.0,
  "experiment": {
   "id": "tech-direction-3d-b",
-  "change": "ai-memory's look and kit (dark ink, one hero phone, bold numbers that change, 7 different shots) on a new topic: a 256 GB box that shows 238, the gigabyte re-measured as one grid of tiles, three phones with changing numbers, a screen shot, the loop back to the hero",
+  "change": "the gold look of ai-memory (dark ink, one accent, big changing numbers, 7 different shots) with the reel's own props: a retail box and a ruler of bytes, a 256-tile wall that re-measures, three tiered boxes, a storage chip under a macro lens, a glass Storage card; rebuilt after the owner found the first version a re-skin",
   "vs": "median"
  },
  "lines": [
@@ -332,23 +332,45 @@
   ],
   "edges_ok": [
    {
-    "from": 2.5,
-    "to": 9.5,
+    "from": 4.4,
+    "to": 13.2,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the tile wall is a full-bleed world: a low macro across its tiles, a lift, then the whole wall seen from far; the wall runs past the frame by design"
+   },
+   {
+    "from": 13.0,
+    "to": 16.0,
     "sides": [
      "left",
      "right",
      "bottom"
     ],
-    "why": "the tile slab is a full-bleed world: a low macro across its tiles, then a wide pull-back; the slab runs past the frame by design"
+    "why": "a low macro looks up at the 128 box (its lower edge runs out of the bottom), then the camera slides to a three-quarter view of the 512 box"
    },
    {
-    "from": 9.0,
-    "to": 14.5,
+    "from": 20.2,
+    "to": 24.9,
     "sides": [
      "left",
-     "right"
+     "right",
+     "bottom"
     ],
-    "why": "the three phones: the camera tracks along the line so the neighbours pass the frame edge while it moves"
+    "why": "the storage chip under the macro lens is a full-bleed world: the ring, the PCB and the gold pads run past the frame by design"
+   },
+   {
+    "from": 24.5,
+    "to": 27.2,
+    "sides": [
+     "left",
+     "right",
+     "bottom"
+    ],
+    "why": "the wide glass Storage card fills the frame width and its lower rows sit under the caption band"
    }
   ]
  },
