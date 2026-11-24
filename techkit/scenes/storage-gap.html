@@ -171,10 +171,10 @@ const slice = new THREE.Mesh(new THREE.BoxGeometry(SLW, PKH, .36), [M.chipSide, 
   for (let i = 0; i < 28; i++) for (let r = 0; r < 2; r++) { dd.position.set(-3.55 + i * .26, -PKH / 2 - .5 - r * .34, -.2); dd.updateMatrix(); pads.setMatrixAt(i * 2 + r, dd.matrix); } chipG.add(pads);
   const caps = new THREE.InstancedMesh(new THREE.BoxGeometry(.3, .16, .12), M.comp, 44), RR = rng(9);
   for (let i = 0; i < 44; i++) { let x, y; do { x = (RR() - .5) * 17; y = (RR() - .5) * 17; } while (Math.abs(x) < 4 && Math.abs(y) < 3.4); dd.position.set(x, y, -.2); dd.rotation.z = RR() < .5 ? 0 : Math.PI / 2; dd.updateMatrix(); caps.setMatrixAt(i, dd.matrix); } chipG.add(caps);
-  const lens = new THREE.Mesh(new THREE.TorusGeometry(4.0, .1, 20, 120), M.metal); lens.position.z = 2.2; chipG.add(lens);
-  const lens2 = new THREE.Mesh(new THREE.TorusGeometry(3.7, .05, 12, 120), M.darkMetal); lens2.position.z = 2.0; chipG.add(lens2);
+  const lens = new THREE.Mesh(new THREE.TorusGeometry(3.0, .1, 20, 120), M.metal); lens.position.z = 2.2; chipG.add(lens);
+  const lens2 = new THREE.Mesh(new THREE.TorusGeometry(2.78, .05, 12, 120), M.darkMetal); lens2.position.z = 2.0; chipG.add(lens2);
   const kn = new THREE.InstancedMesh(new THREE.BoxGeometry(.1, .3, .12), M.metal, 60);
-  for (let i = 0; i < 60; i++) { const a = i / 60 * Math.PI * 2; dd.position.set(Math.cos(a) * 4.3, Math.sin(a) * 4.3, 2.2); dd.rotation.set(0, 0, a); dd.updateMatrix(); kn.setMatrixAt(i, dd.matrix); } chipG.add(kn);
+  for (let i = 0; i < 60; i++) { const a = i / 60 * Math.PI * 2; dd.position.set(Math.cos(a) * 3.3, Math.sin(a) * 3.3, 2.2); dd.rotation.set(0, 0, a); dd.updateMatrix(); kn.setMatrixAt(i, dd.matrix); } chipG.add(kn);
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: SIG, transparent: true, opacity: .28, blending: THREE.AdditiveBlending, depthWrite: false })); glow.scale.set(22, 16, 1); glow.position.z = -1; chipG.add(glow); }
 
 // F: a floating Storage screen (glass only: no phone body, no chips)
@@ -198,6 +198,7 @@ const tileGlowTex = ctex(128, 128, (c, w, h) => { c.shadowColor = '#fff'; c.shad
   c.shadowBlur = 0; c.fillStyle = 'rgba(255,255,255,.16)'; c.fill(); });
 tileGlowTex.encoding = THREE.LinearEncoding;
 const tileGlow = new THREE.InstancedMesh(new THREE.PlaneGeometry(1.14, 1.14), new THREE.MeshBasicMaterial({ map: tileGlowTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }), TN); tileGlow.frustumCulled = false; slab.add(tileGlow);
+const tileHeat = new THREE.InstancedMesh(new THREE.BoxGeometry(.9, .9, .26), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1, blending: THREE.AdditiveBlending, depthWrite: false }), TN); tileHeat.frustumCulled = false; slab.add(tileHeat);
 const TR = rng(77), TF = []; for (let i = 0; i < TN; i++) TF.push({ dx: (TR() - .5) * 7, dy: 3 + TR() * 6, dz: 6 + TR() * 5, rx: (TR() - .5) * 4, rz: (TR() - .5) * 5 });
 const tileC = { cyan: new THREE.Color(SIG), white: new THREE.Color(0xdff4ff), amber: new THREE.Color(HEAT) }, td = new THREE.Object3D(), tcol = new THREE.Color();
 const tileLit = (i) => { const c = i % GN, r = Math.floor(i / GN); return ((GN - 1 - r) + c) / (2 * GN - 2); };   // 0 at the near corner, 1 far
@@ -208,11 +209,11 @@ function updateSlab(t) {
     const c = i % GN, r = Math.floor(i / GN), x = (c - 7.5) * PIT, y = (7.5 - r) * PIT, ti = B[1] + .1 + tileLit(i) * (C.billion - .15 - B[1] - .1);
     const L = eout(prog(t, ti, ti + .3)), flies = i >= GONE0, tf = tileFly(i), u = flies ? clamp((t - tf) / 1.0) : 0, p = ein(u), f = TF[i];
     const s = (1 + .13 * g) * (u >= 1 ? 0 : 1), fl = flies ? prog(t, tf - .12, tf + .1) : 0;
-    td.position.set(x + f.dx * p, y + f.dy * p, .02 + f.dz * p); td.rotation.set(f.rx * p, 0, f.rz * p); td.scale.setScalar(s); td.updateMatrix(); tiles.setMatrixAt(i, td.matrix);
+    td.position.set(x + f.dx * p, y + f.dy * p, .02 + f.dz * p); td.rotation.set(f.rx * p, 0, f.rz * p); td.scale.setScalar(s); td.updateMatrix(); tiles.setMatrixAt(i, td.matrix); tileHeat.setMatrixAt(i, td.matrix); tcol.copy(tileC.amber).multiplyScalar(flies ? .75 * fl * (1 - .5 * u) : 0); tileHeat.setColorAt(i, tcol);
     td.position.z += .14; td.scale.setScalar(s * (1 - .12 * g) * (1 + .5 * fl * (1 - u)) * (L > 0 ? 1 : 0)); td.updateMatrix(); tileGlow.setMatrixAt(i, td.matrix);
     tcol.copy(tileC.cyan).lerp(tileC.white, g * .12).lerp(tileC.amber, fl).multiplyScalar(L * ((.62 + .12 * Math.sin(t * 3 + i * .7)) * (1 - g) + .62 * g + 1.9 * fl) * (1 - .3 * u)); tileGlow.setColorAt(i, tcol);
   }
-  tiles.instanceMatrix.needsUpdate = true; tileGlow.instanceMatrix.needsUpdate = true; tileGlow.instanceColor.needsUpdate = true;
+  tiles.instanceMatrix.needsUpdate = true; tileGlow.instanceMatrix.needsUpdate = true; tileGlow.instanceColor.needsUpdate = true; tileHeat.instanceMatrix.needsUpdate = true; tileHeat.instanceColor.needsUpdate = true;
 }
 const slabFog = new THREE.FogExp2(0x07080c, .028);
 
@@ -277,7 +278,7 @@ function shotCam(t, sh) {
       FC = { pos: V(x2 + .4, 1.5, z + 18.5), look: V(x2, 1.5, z), fov: 31 };
     const f = KIT.reframe(KIT.reframe(FA, FB, ease(prog(t, C.a512 - .45, C.a512 + .2))), FC, ease(prog(t, C.tb - .45, C.tb + .2)));
     return { ...f, ap: .12, focus: V(lineX(t), 1.0, z) }; }
-  if (sh === 4) { const z = -300, k = G(u); return { pos: V(lerp(-.5, .5, k), lerp(1.2, .6, k), z + lerp(27, 23, k)), look: V(lerp(-.2, .5, k), -.4, z), fov: 30 }; }   // a close view of the package under the ring
+  if (sh === 4) { const z = -300, k = G(u); return { pos: V(lerp(-.5, .5, k), lerp(1.2, .6, k), z + lerp(27, 23, k)), look: V(lerp(-.2, .5, k), 1.1, z), fov: 30 }; }   // a close view of the package under the ring
   if (sh === 5) { const z = -420, k = G(u); return { pos: V(lerp(1.6, .6, k), lerp(1.0, .7, k), z + lerp(14.5, 16.5, k)), look: V(0, .3, z), fov: 32 }; }   // the Storage screen
   // G: the box turns from its back to its front while the camera settles on A's framing (the loop)
   const k = G(prog(t, B[6], TOTAL - .05), .45), A0 = shotCam(0, 0);
