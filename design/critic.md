@@ -86,6 +86,12 @@ times, with both LOOK numbers. Read Output QA LOOK (brightness, background, dark
 NOT READY unless the reel matches or beats gold on the sheet** (as dark and deep, one lit hero, one accent, the shot changing as often, the
 number or word as bold). Write one line: `GOLD: matches | beats | below (<the frame, what is weaker>)`.
 
+44. (24 Nov, owner: "1,000 safe choices, one boring video"; design/direction.md) Read the reel's direction card
+(review/<channel>/<name>.direction.md) and check the render delivers it: the hook's tension is SHOWN in the first second, the pacing curve
+and its one pause, the rewatch moment (give its time), the payoff. Then score, beside the defects:
+`STOP: n/10 (would I stop scrolling in the first second? frames 0-1 s)` and `REWATCH: n/10 (would I watch it twice? the moment and its time)`.
+Under 7 on either = CRITIC: NOT READY. **A reel that is clean but safe is NOT READY**: no defects is the floor, not the bar.
+
 ## Premium check (owner, 23 Nov 2026): before any verdict
 Load the skills frontend-design and hyperframes (.claude/skills/; Skill tool) and read hyperframes/references/motion.md and review.md, plus
 types/vertical.md. Then score the reel on its stills and the render (frame times for every point), each out of 10:

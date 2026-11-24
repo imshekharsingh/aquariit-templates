@@ -148,6 +148,8 @@ Every render, workflow run and push costs usage; a failed or repeated one is was
     scripts/showreel/flow.mjs, also printed by channel3/qa.mjs and techreel --stills; a planned jump is declared in
     window.TRANSITIONS = [[t0, t1, 'kind']], a tech topic's "transitions") (scripts/showreel/layout.mjs; the scene marks data-subject,
     data-band, data-hook, data-subs);
+  - the direction card (owner, 24 Nov 2026; design/direction.md): filled before the build; the stills check (Fable) reads it against the
+    stills and writes "STILLS CHECK: APPROVED (<session>, <date>): ..." or "REDO: <lines>" in it; scripts/review-gate.mjs refuses the render without APPROVED.
   - stills at every beat checked. All of it goes into the reel's review file. Re-render only for a real defect in the output.
   - Premium check (owner, 23 Nov 2026): the builder runs the same check as the critic (design/critic.md "Premium check": frontend-design +
     hyperframes skills, animation, cleanliness and premium feel out of 10 with frame times) on the stills before the one render, and writes

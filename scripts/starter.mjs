@@ -13,11 +13,13 @@
 // The copy keeps the gold reel's light, framing, type sizes, shot rhythm, cut kinds, motion and sound. Every place the builder may change is
 // marked "CHANGE:" in the copy (the topic's words and numbers, the objects, the voice lines, the post text); everything else stays as gold
 // unless the review file says why it changed. Each config gets a "_starter" block listing those places; delete it once they are done.
+// It also writes the empty direction card review/<channel>/<name>.direction.md (design/direction.md): fill it BEFORE the build.
 // Then: the captions.json entry, the review file, stills (tech: KIT_Q=0.5 python3 techkit/make.py <slug> --fake-vo --stills ...; web and
 // Turns Out: node scripts/showreel/stills.mjs <config>), ONE render, Output QA (LOOK vs gold), python3 scripts/qa/side-by-side.py for the critic.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { cardTemplate, cardPath } from './direction.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2), force = args.includes('--force');
@@ -129,4 +131,8 @@ if (ch === 'c3') {
   out.caption = `${TODO}${c.caption}`; delete out.note;
   put(`scripts/channel3/${slug}.json`, JSON.stringify(out, null, 1) + '\n');
 }
+// the direction card (owner, 24 Nov 2026; design/direction.md): filled BEFORE the build, approved with the stills
+{ const name = ch === 'tech' ? `showreel-tech-${slug}` : ch === 'c3' ? `showreel-c3-${slug}` : `showreel-NN-${slug}`;
+  put(cardPath(ch, name), cardTemplate(ch, name));
+  if (ch === 'web') console.log(`  (web: rename ${cardPath(ch, name)} with the reel's Nº once it has one)`); }
 console.log(`starter: ${ch} ${slug} from gold ${gold.name}. Fill every "CHANGE:" (grep -n CHANGE: on the new files), delete "_starter", then the captions.json entry and review file.`);
