@@ -6,6 +6,13 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 08:45 IST · claude/tech-miniled-zones · today's tech reel, built to the owner's preview gate (showreel-tech-miniled-zones)
+- Done: "Mini LED is not a new kind of screen" (quickmyth, home, global; Black Friday week). 3D on kit3d.js, one TV through seven shots: see-through hero with MYTH (frame 0), the picture sheet lifts (LCD), a low macro over the LEDs (LIGHTS), zones follow the moon (ZONES), all 2,304 light in 0.55 s, one zone behind its 6,400 pixels, a spec card (ZONES?), loop. Experiment tech-direction-3d try 2 (countTo idea, a second framing inside 4 s, cutsound).
+- Facts read today on primary pages: Apple Studio Display XDR specs (5120 x 2880, Mini-LED backlight with 2304 dimming zones; 6,400 pixels a zone is our sum), TrendForce 16 Nov 2026 (Mini LED TVs 28.78 million in 2026, +116%, near 15%; "premium LCD TV market").
+- Owner gate: a preview render (Tech reel, preview p1) goes to the app's Previews with ONE yes/no in "Needs you" (tech-miniled-ok, until 24 Nov). The reel's own render or `scripts/r2.sh promote` waits for the yes.
+- Left: after the owner's yes: promote or render, reel-status, item 13, owner-feedback.md and critic.md against the real MP4; then the critic. Builder's PREMIUM line is in the review file; weakest shot is the pixel macro (20-24 s).
+- For the other account: nothing.
+
 ## 2026-11-24 08:10 IST · claude/premium-close · premium program: closing notes, CV scene fix, cue-time check
 - Done: design/improvements.md has the before/after scores for tech, web and Turns Out; scripts/channel3/design/resume2.js fixed (a comment had swallowed the fix-three sound line, so two cues had no time and sound.py stopped render 2); scripts/showreel/stills.mjs prints "CUE TIMES" and fails on a cue without a time.
 - State: tech r4 preview READY (7.5 / 7.5 / 7.5, QA PASS). Web homebar2 render 2: critic READY (7.5 / 7 / 7) but Output QA FAIL (HUE, CALM) = NOT READY, both renders used, kit kept. Turns Out: grey menu render 2: critic READY (7.5 / 7.5 / 7.5, voice 7.5, before 7) but Output QA FAIL (PACE 4.55 words/s on the ratio sentence, limit 4.5; EDGES on the closing push-in, which is by design and is now declared to the end) = NOT READY, both renders used; CV has no render 2 file (both renders used; one more needs the owner's yes, asked in "Needs you").

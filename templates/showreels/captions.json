@@ -1844,5 +1844,43 @@
    "vs": "median"
   },
   "palette": "black"
+ },
+ "showreel-tech-miniled-zones": {
+  "channel": "tech",
+  "postOn": "2026-11-24",
+  "postAt": "13:00",
+  "cover": {
+   "t": 1.0,
+   "lines": [
+    "MINI LED is not",
+    "a new kind of screen"
+   ],
+   "accent": 1
+  },
+  "format": "quickmyth",
+  "device": "home",
+  "concept": "3D direction, try 2 (design/tech-direction.md; kit lift M7-M10), ~26 s, quick myth, TV (home), global. Mini LED is not a new kind of screen: a TV you can see through with MYTH stamped in frame 0; the picture sheet lifts off (still an LCD); a low macro across the board as the LEDs light in a wave; the moon crosses the glass and only the zones under it light; all 2,304 zones light in half a second (64 x 36 drawn to the count); one zone behind its 80 x 80 pixels (6,400); a spec card: ask how many zones; loops to frame 0. News peg: Black Friday week, TrendForce 16 Nov 2026 (Mini LED TVs +116% in 2026). Apple Studio Display XDR spec page and TrendForce read 24 Nov 2026.",
+  "experiment": {
+   "id": "tech-direction-3d",
+   "change": "try 2 of the 3D direction, built on the 24 Nov kit lift (rules-tech.md M7-M10): the grid lights up in half a second and the number lands on its word (countTo idea, the object counts), a second framing inside the first 4 s (reframe), sound designed on the cuts (cutsound, the riser crests on 6,400); a myth day (F5) with a verdict worth sending (ask how many zones)",
+   "vs": "median"
+  },
+  "caption": "\"Mini LED\" on a TV box is NOT a new kind of screen 📺\n\nIt is still an LCD. The new part is the light behind the picture: a grid of tiny LEDs that dim in zones, so dark parts of the picture stay dark.\n\nWhy now: TrendForce (16 Nov 2026) expects Mini LED TV shipments to reach 28.78 million in 2026, up 116% in a year, close to 15% of all TVs. You will see the label a lot this Black Friday.\n\nBut a zone is not a pixel. Apple's Studio Display XDR spec page lists 5120 x 2880 pixels (14.7 million) and a Mini-LED backlight with 2304 dimming zones. That works out to 6,400 pixels sharing each zone. Apple's own page says more precise zones mean deeper blacks and less halo.\n\nSo before you buy a Mini LED TV or monitor, ask one thing: how many dimming zones?\n\nDid you know this? Yes or no 👇 Send this to the friend who is TV shopping this week.",
+  "keywords": [
+   "mini led explained",
+   "mini led vs lcd",
+   "what is mini led tv",
+   "dimming zones explained",
+   "mini led tv black friday",
+   "local dimming zones",
+   "tv buying guide 2026"
+  ],
+  "hashtags": [
+   "#miniled",
+   "#tv",
+   "#blackfriday",
+   "#techexplained",
+   "#gadgets"
+  ]
  }
 }

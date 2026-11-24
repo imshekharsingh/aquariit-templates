@@ -1,0 +1,335 @@
+{
+ "slug": "miniled-zones",
+ "engine": "kit",
+ "scene": "techkit/scenes/miniled-zones.html",
+ "topic": "Mini LED is not a new kind of screen: it is an LCD with a grid of lights behind it",
+ "format": "quickmyth",
+ "audience": "global",
+ "gadget": "tv",
+ "device": "home",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.4,
+ "max_end": 30.0,
+ "experiment": {
+  "id": "tech-direction-3d",
+  "change": "try 2 of the 3D direction, built on the 24 Nov kit lift (rules-tech.md M7-M10): the grid lights up in half a second and the number lands on its word (countTo idea, the object counts), a second framing inside the first 4 s (reframe), sound designed on the cuts (cutsound, the riser crests on 6,400); a myth day (F5) with a verdict worth sending (ask how many zones)",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Mini LED is not a new kind of screen.",
+   "beat": "question",
+   "source": 0
+  },
+  {
+   "text": "Lift the picture off: it is still an LCD.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "The new part is behind it, a grid of tiny lights.",
+   "beat": "fix",
+   "source": 1
+  },
+  {
+   "text": "They dim in zones, so the dark stays dark.",
+   "beat": "step",
+   "source": 1
+  },
+  {
+   "text": "One pro monitor has 2,304 zones.",
+   "beat": "step",
+   "source": 2
+  },
+  {
+   "text": "A zone is not a pixel: each one lights 6,400 pixels.",
+   "beat": "surprise",
+   "source": 2
+  },
+  {
+   "text": "So before you buy, ask how many zones.",
+   "beat": "takeaway"
+  }
+ ],
+ "cues": {
+  "mini": [
+   0,
+   "mini"
+  ],
+  "not0": [
+   0,
+   "not"
+  ],
+  "screen": [
+   0,
+   "screen"
+  ],
+  "lift": [
+   1,
+   "lift"
+  ],
+  "off": [
+   1,
+   "off"
+  ],
+  "lcd": [
+   1,
+   "lcd"
+  ],
+  "behind": [
+   2,
+   "behind"
+  ],
+  "grid": [
+   2,
+   "grid"
+  ],
+  "lights": [
+   2,
+   "lights"
+  ],
+  "dim": [
+   3,
+   "dim"
+  ],
+  "zones3": [
+   3,
+   "zones"
+  ],
+  "dark": [
+   3,
+   "dark"
+  ],
+  "stays": [
+   3,
+   "stays"
+  ],
+  "one": [
+   4,
+   "one"
+  ],
+  "num": [
+   4,
+   "2304"
+  ],
+  "zones4": [
+   4,
+   "zones"
+  ],
+  "pixel": [
+   5,
+   "pixel"
+  ],
+  "each": [
+   5,
+   "each"
+  ],
+  "n64": [
+   5,
+   "6400"
+  ],
+  "so": [
+   6,
+   "so"
+  ],
+  "buy": [
+   6,
+   "buy"
+  ],
+  "ask": [
+   6,
+   "ask"
+  ],
+  "zones6": [
+   6,
+   "zones"
+  ],
+  "final": [
+   6,
+   "zones"
+  ]
+ },
+ "cutsound": {
+  "payoff": "n64",
+  "rise": 1.8
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "not0",
+   "thud",
+   0.45,
+   0
+  ],
+  [
+   "lift",
+   "whoosh",
+   0.35,
+   0
+  ],
+  [
+   "lcd",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "grid",
+   "ticks",
+   0.3,
+   0
+  ],
+  [
+   "lights",
+   "chime",
+   0.3,
+   0,
+   {
+    "notes": [
+     "E5",
+     "B5"
+    ]
+   }
+  ],
+  [
+   "zones3",
+   "blip",
+   0.4,
+   0.2,
+   {
+    "f": 500,
+    "f2": 900
+   }
+  ],
+  [
+   "dark",
+   "thud",
+   0.4,
+   0
+  ],
+  [
+   "num",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "pixel",
+   "snap",
+   0.45,
+   0
+  ],
+  [
+   "n64",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "so",
+   "thud",
+   0.5,
+   0
+  ],
+  [
+   "zones6",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "final",
+   "chime",
+   0.35,
+   0,
+   {
+    "notes": [
+     "E5",
+     "B5"
+    ]
+   }
+  ]
+ ],
+ "say": {
+  "LED": "L E D",
+  "LCD": "L C D",
+  "2,304": "twenty three hundred and four",
+  "6,400": "sixty four hundred"
+ },
+ "qa": {
+  "sync": [
+   "LCD",
+   "LIGHTS",
+   "ZONES"
+  ],
+  "edges_ok": [
+   {
+    "from": 6.0,
+    "to": 12.8,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the camera pushes through the gap behind the lifted picture sheet into a low macro across the backlight board: the board runs past the frame on every side by design (the TV is whole in the shots before and after); window set wide on the fake timeline, tightened after the first render"
+   },
+   {
+    "from": 15.6,
+    "to": 23.6,
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the camera pushes into one dimming zone: a full-bleed macro of one zone behind its 80 x 80 pixels, the pixel sheet runs past the frame by design; window set wide on the fake timeline, tightened after the first render"
+   }
+  ]
+ },
+ "post": {
+  "title": "Mini LED is not a new kind of screen",
+  "caption": "\"Mini LED\" on a TV box is NOT a new kind of screen 📺\n\nIt is still an LCD. The new part is the light behind the picture: a grid of tiny LEDs that dim in zones, so dark parts of the picture stay dark.\n\nWhy now: TrendForce (16 Nov 2026) expects Mini LED TV shipments to reach 28.78 million in 2026, up 116% in a year, close to 15% of all TVs. You will see the label a lot this Black Friday.\n\nBut a zone is not a pixel. Apple's Studio Display XDR spec page lists 5120 x 2880 pixels (14.7 million) and a Mini-LED backlight with 2304 dimming zones. That works out to 6,400 pixels sharing each zone. Apple's own page says more precise zones mean deeper blacks and less halo.\n\nSo before you buy a Mini LED TV or monitor, ask one thing: how many dimming zones?\n\nDid you know this? Yes or no 👇 Send this to the friend who is TV shopping this week.",
+  "keywords": [
+   "mini led explained",
+   "mini led vs lcd",
+   "what is mini led tv",
+   "dimming zones explained",
+   "mini led tv black friday",
+   "local dimming zones",
+   "tv buying guide 2026"
+  ],
+  "hashtags": [
+   "#miniled",
+   "#tv",
+   "#blackfriday",
+   "#techexplained",
+   "#gadgets"
+  ],
+  "sources": [
+   {
+    "url": "https://www.trendforce.com/presscenter/news/20261116-13306.html",
+    "note": "TrendForce, 16 Nov 2026, Global TV Shipments Decline 3.6% YoY in 3Q26 as Brands Target Premium Mini LED and RGB Mini LED Markets (read 24 Nov 2026): 'global Mini LED TV shipments will reach 28.78 million units in 2026, representing a remarkable 116% YoY increase and bringing market penetration close to 15%'; 'a broader shift in the premium LCD TV market. Competition is no longer centered solely on Mini LED backlight specifications and the number of local dimming zones' (Mini LED TVs are LCD TVs with a Mini LED backlight)."
+   },
+   {
+    "url": "https://www.apple.com/studio-display-xdr/",
+    "note": "Apple, Studio Display XDR page (read 24 Nov 2026): '27-inch 5K Retina XDR display with mini-LED backlight'; '2304 dimming zones deliver remarkably precise lighting. For deeper blacks, brighter whites, and reduced halo and blooming.'"
+   },
+   {
+    "url": "https://www.apple.com/studio-display-xdr/specs/",
+    "note": "Apple, Studio Display XDR technical specifications (read 24 Nov 2026): '5120-by-2880 resolution at 218 pixels per inch'; 'Mini-LED backlight with 2304 dimming zones'. Our sum: 5120 x 2880 = 14,745,600 pixels; 14,745,600 / 2304 = 6,400 pixels per zone (64 x 36 zones of 80 x 80 pixels is our drawing of that sum; Apple does not state the zone layout)."
+   }
+  ]
+ },
+ "fps": 30
+}
