@@ -1,0 +1,27 @@
+# Review: showreel-tech-usbc-two-numbers (tech, postOn 2026-11-24 postAt 20:00 IST)
+
+The Mandatory Gate, design/mandatory.md. Built 24 Nov afternoon (owner chat job, size L, approved: "make one anyway") after the owner rejected miniled-zones for "one screen across the reel". 3D direction on techkit/kit3d.js, standalone scene techkit/scenes/usbc-two-numbers.html. No owner preview (24 Nov rule): the critic decides.
+AUTO lines from `KIT_Q=0.3 python3 techkit/make.py usbc-two-numbers --fake-vo --stills list` (fake timings; real voice about 28.7 s of speech, reel about 31 s).
+Why this reel: SHOT VARIETY. Seven shots, seven different objects or views, a cut every 4-5 s: (0) the plug macro, (1) laptop and drive wide, (2) a sliced cable end-on, (3) cutaway of the 240 W cable, (4) cutaway of the Thunderbolt 4 Pro cable, (5) four bars, (6) the plug with a spec tag, back to frame 0.
+
+1. Topic: PASS: anyone buying a cable or charger in Black Friday week; one sentence for a stranger: "a cable's watts and its data speed are two different numbers, read both". Not covered on any channel; rotation: format quickmyth (yesterday quickmyth: miniled; format repeats, noted: the 22 Nov formats are retired by the 3D direction), device laptop (yesterday home, before that phone), not a charging-topic reel by device. tech-direction.md 1-4: ink, white, amber (power, heat) and cyan (data, signal) only; real 3D objects with materials (metal shell, 24 gold pins, braided cable, copper conductors, twisted cyan pairs); one bold word a shot in the top band; 7 shots, 7 framings.
+2. Frame 0: PASS: SUBJECT FILL: the plug fills about 55% of the width and the braided cable runs up and out of the frame; 240 W stamped in amber above it; amber pulses already running along the cable (something in motion at frame 0).
+3. Safe zone: PASS: SAFE ZONE: ok (the first run had 240 W and 2 LANES past x 960, set smaller)
+4. No overlap: PASS: OVERLAP: none
+5. Motion: PASS: FLOW: dead runs none; the camera never rests, pulses run in every shot
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; CAPTIONS: 18 chunks, every spoken word shown
+7. Voice: PASS: PREFLIGHT voice: 345 letters, about 28.7 s at speed 1.00 (limit 34.0): fits; PRONUNCIATION: 7 overrides used: USB-C, 240, USB, 2, 4, 40, 100; no unchecked words
+8. Sound: PASS (by design, measured on the render at item 13): impact at frame 0 and on 240, thud on "hard", ticks on "crawl", pop on "lanes", two blips (power low, data high), snap on USB, pops and impacts on Thunderbolt and 40, thud on 100, snap and impact on "bigger" and "faster", pops on watts and speed, chime on the last word; "cutsound": swell + low hit on all six shot changes, the riser crests on "faster".
+9. Payoff: PASS: the four bars with the not-equal sign at 27.5-30 s (watts bar tall and speed bar short for the 240 W cable, the reverse for the Thunderbolt 4 Pro cable), then the WATTS / SPEED tag and "read both numbers"; the last frame is the opening plug with 240 W.
+10. Facts: PASS: read 24 Nov 2026 on primary pages. apple.com/shop/product/myqt3am/a/240w-usb-c-charge-cable-2-m: "It supports charging of up to 240 watts and transfers data at USB 2 rates." support.apple.com/en-us/118204 (About the Apple Thunderbolt Pro Cables): "The Apple Thunderbolt 4 Pro Cable supports Thunderbolt 4, Thunderbolt 3, and USB 4 data-transfer speeds up to 40Gbps"; "delivers a maximum of 100W"; "The Apple USB-C Charge Cable also supports charging, but data-transfer speed is limited to 480Mbps (USB 2.0)". apple.com/shop/product/mw5j3am: "data transfer up to 40Gb/s - charging up to 100W". The bar heights are our drawing (relative: 240 vs 100 W, USB 2 vs 40 Gb/s), no numbers on the bars. The two lanes (thicker power wires, thinner data pairs) are an illustration, not an Apple statement; no on-screen claim about wire sizes.
+11. Post data: PASS: captions.json entry (channel tech, postOn 2026-11-24, postAt 20:00, format quickmyth, device laptop, concept, experiment tech-shot-variety, cover); 7 keywords, 5 hashtags; the caption asks "charging or files" and names who to send it to.
+12. Review file: PASS: this file, items 1-11 and 14-17 PASS
+13. After the render: PENDING
+14. Cuts: PASS: FLOW: cuts 0 (8 declared transitions: the six shot changes, two jolts)
+15. Dead runs: PASS: FLOW: dead runs none
+16. Continuity: PASS: FLOW: continuity 94% (median step 3.1, 8 declared transitions)
+17. Strobes: PASS: FLOW: strobes 0
+
+PREMIUM (the builder's own check on the local stills sheet at 0.3 scale; not the critic's verdict): animation 7/10 (pulses running in every shot, a camera move in every shot, the wires pulling out of the slice), cleanliness 7/10 (one word a shot in the top band, objects whole in the plug, laptop and bar shots, full-bleed macros declared), premium 7/10 (gold pins, braid, copper, twisted pairs); weakest: the laptop shot (small objects in a big dark room) and the pale floor haze behind the plug in frame 0.
+Safety (design/safety.md): original drawings, a generic plug, no logo or trade dress; Apple is named only as the source of two cable specs, at their strengths; claims dated; nothing political or sensitive.
+References used (design/references.md): none

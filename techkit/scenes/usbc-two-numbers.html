@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>usbc-two-numbers</title>
+<!-- @techin20sec, 24 Nov 2026 (design/tech-direction.md; rules-tech.md M1-M10, Output QA SHOT VARIETY): "A USB-C cable's watts and its data speed are two numbers".
+     Real 3D on techkit/kit3d.js. Seven shots, seven different objects or views, one per spoken line, cut 0.2 s before the line:
+       0 the plug, macro (24 gold pins, braided cable, amber power running in): 240 W | 1 laptop and drive, wide: a copy bar crawls: CRAWL |
+       2 a sliced cable, end-on, the two lanes pull out of the jacket: 2 LANES | 3 cutaway of the 240 W cable: fat amber power, one thin cyan pair: USB 2 |
+       4 cutaway of the Thunderbolt 4 Pro cable: four cyan pairs streaming: 40 Gb/s | 5 four bars (watts, speed) of the two cables: not equal |
+       6 the plug again with a spec tag, WATTS and SPEED, back to frame 0.
+     Shot changes: push > rack > wipe > push > rack > wipe. Ink + white + cyan (data) + amber (power) only. -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#07080c}
+#out{position:absolute;left:0;top:0;width:1080px;height:1920px}
+#gl{position:absolute;left:-4000px;top:0}
+#caps{position:absolute;left:130px;right:130px;top:1448px;text-align:center;color:#f4f6f8;font-family:"Inter Display",Inter,sans-serif;font-weight:700;
+  font-size:52px;line-height:1.14;letter-spacing:-.01em;text-shadow:0 3px 18px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.9)}
+</style></head><body>
+<canvas id="out" width="1080" height="1920"></canvas>
+<div id="caps" data-subs></div>
+<script src="timeline.js"></script>
+<!--THREE-->
+<!--KIT3D-->
+<script>
+(() => {
+const W = 1080, H = 1920;
+const INK = 0x07080c, SIG = 0x38e1ff, HEAT = 0xffae3d, SIGC = '#38e1ff', HEATC = '#ffae3d', WHITE = '#f4f6f8';
+const FONT = '"Inter Display", Inter, sans-serif';
+const TL = window.TL, C = TL.cues, SC = TL.scenes, TOTAL = TL.total;
+const KIT = window.KIT3D, Q = window.KITQ || 1;
+const { clamp, lerp, prog, ease, eout, ein } = KIT;
+function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+
+// ---------- renderer ----------
+const gl = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+gl.setPixelRatio(1); gl.setSize(W, H, false); gl.domElement.id = 'gl'; document.body.appendChild(gl.domElement);
+gl.outputEncoding = THREE.sRGBEncoding; gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.2;
+gl.setClearColor(INK, 1);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(INK);
+const cam = new THREE.PerspectiveCamera(30, W / H, 0.02, 400);
+const out = document.getElementById('out'), o = out.getContext('2d'); o.imageSmoothingEnabled = true; o.imageSmoothingQuality = 'high';
+{ const env = new THREE.Scene(); env.background = new THREE.Color(0x050608);
+  const box = (w, h, x, y, z, c) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m); };
+  box(8, 3, 0, 7, 5, 0xdde2e8); box(2, 9, -8, 1, 3, 0x9fb4c8); box(2, 9, 8, 0, 2, 0xd8c8b0); box(10, 2, 0, -8, -4, 0x202428);
+  const pm = new THREE.PMREMGenerator(gl); scene.environment = pm.fromScene(env, 0.02).texture; }
+function ctex(w, h, draw) { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t; }
+const KM = KIT.materials(THREE, ctex);
+const LIT = KIT.light(THREE, scene), keyL = LIT.key, rimL = LIT.rim, rim2L = LIT.rim2;
+
+// ---------- shots: one per spoken line, the picture changes 0.2 s before the line ----------
+const S = SC.map((s) => s.start);
+const B = [0, ...S.slice(1).map((x) => x - .2), TOTAL];
+const shotAt = (t) => { for (let k = B.length - 2; k >= 0; k--) if (t >= B[k]) return k; return 0; };
+const CUTS = [null, { kind: 'push', color: '255,174,61', depth: .9, flash: .3 }, { kind: 'rack', blur: 26 }, { kind: 'wipe', dir: 1 }, { kind: 'push', color: '56,225,255', depth: .88, flash: .25 }, { kind: 'rack', blur: 30 }, { kind: 'wipe', dir: -1 }];
+const cutAt = (t) => { for (let k = 1; k <= 6; k++) { const d = KIT.DUR[CUTS[k].kind]; if (t > B[k] - d / 2 && t < B[k] + d / 2) return { k, u: (t - (B[k] - d / 2)) / d, ...CUTS[k] }; } return null; };
+const wEnd = (k) => B[k] - KIT.DUR[CUTS[k].kind] / 2 - .02;
+const WORLD = [0, 1, 2, 3, 4, 5, 0];                 // the world each shot lives in (shot 6 comes back to the plug of shot 0)
+const WX = (w) => w * 100;
+const AMB = 0xffae3d, CYA = 0x38e1ff;
+
+// ---------- textures ----------
+const glowTex = ctex(256, 256, (c) => { const g = c.createRadialGradient(128, 128, 0, 128, 128, 128); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.25, 'rgba(255,255,255,.35)'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, 256, 256); });
+glowTex.encoding = THREE.LinearEncoding;
+const braidTex = ctex(256, 256, (c, w, h) => { c.fillStyle = '#1b1e24'; c.fillRect(0, 0, w, h);
+  for (let i = -h; i < w + h; i += 8) { c.strokeStyle = 'rgba(205,214,226,.22)'; c.lineWidth = 3; c.beginPath(); c.moveTo(i, 0); c.lineTo(i + h, h); c.stroke(); c.strokeStyle = 'rgba(0,0,0,.45)'; c.beginPath(); c.moveTo(i + 4, 0); c.lineTo(i + 4 + h, h); c.stroke(); c.strokeStyle = 'rgba(205,214,226,.12)'; c.beginPath(); c.moveTo(i + h, 0); c.lineTo(i, h); c.stroke(); } });
+braidTex.wrapS = braidTex.wrapT = THREE.RepeatWrapping;
+const keyTex = ctex(512, 340, (c, w, h) => { c.fillStyle = '#16181c'; c.fillRect(0, 0, w, h); c.fillStyle = '#0a0b0e';
+  for (let r = 0; r < 6; r++) for (let k = 0; k < 15; k++) c.fillRect(14 + k * 32.5, 14 + r * 29, 29, 25); c.fillStyle = '#1d2026'; c.fillRect(150, 196, 220, 25); c.fillStyle = '#101216'; c.fillRect(180, 250, 150, 70); c.strokeStyle = 'rgba(255,255,255,.08)'; c.strokeRect(180, 250, 150, 70); });
+const braid = (rx, ry) => { const t = braidTex.clone(); t.needsUpdate = true; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx, ry); return t; };
+const rubber = new THREE.MeshStandardMaterial({ color: 0x0b0c0f, roughness: .75, metalness: .05, envMapIntensity: .1 });
+const copperM = new THREE.MeshPhysicalMaterial({ color: 0xc87a2e, metalness: 1, roughness: .3, emissive: 0xff8a1f, emissiveIntensity: .28, envMapIntensity: .9 });
+const wireM = new THREE.MeshStandardMaterial({ color: 0x1fb6d4, emissive: CYA, emissiveIntensity: .85, metalness: .1, roughness: .4, envMapIntensity: .3 });
+const jacketM = (len) => new THREE.MeshStandardMaterial({ color: 0xffffff, map: braid(len / 3, 3), color: 0x8a9099, roughness: .7, metalness: .1, side: THREE.DoubleSide, envMapIntensity: .15 });
+const innerM = new THREE.MeshStandardMaterial({ color: 0x0b0c0f, roughness: .8, side: THREE.BackSide });
+
+// ---------- helpers ----------
+const worlds = [0, 1, 2, 3, 4, 5].map((w) => { const g = new THREE.Group(); g.position.set(WX(w), 0, 0); scene.add(g); return g; });
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(260, 200), new THREE.MeshStandardMaterial({ color: 0x040507, metalness: .4, roughness: .55, envMapIntensity: .06 })); floor.rotation.x = -Math.PI / 2; scene.add(floor);
+const pool = new THREE.Mesh(new THREE.PlaneGeometry(60, 40), new THREE.MeshBasicMaterial({ map: glowTex, color: 0x6f8aa4, transparent: true, opacity: .16, blending: THREE.AdditiveBlending, depthWrite: false })); pool.rotation.x = -Math.PI / 2; pool.position.y = .02; scene.add(pool);
+function rr(w, h, r) { const s = new THREE.Shape(); const x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.absarc(x + w - r, y + r, r, -Math.PI / 2, 0); s.lineTo(x + w, y + h - r); s.absarc(x + w - r, y + h - r, r, 0, Math.PI / 2); s.lineTo(x + r, y + h); s.absarc(x + r, y + h - r, r, Math.PI / 2, Math.PI); s.lineTo(x, y + r); s.absarc(x + r, y + r, r, Math.PI, Math.PI * 1.5); return s; }
+function xrude(shape, depth, bev = 0) { return new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: bev > 0, bevelThickness: bev, bevelSize: bev, bevelSegments: 2, curveSegments: 14 }); }
+function mesh(geo, mat, x = 0, y = 0, z = 0, parent) { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); if (parent) parent.add(m); return m; }
+function sprite(color, parent) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false })); parent.add(s); return s; }
+// a USB-C plug along +z: the mouth at z = 2.2 with 24 gold pins on its tongue, an overmould behind it, a braided cable out of the back
+function makePlug(withCable, scale = 1) {
+  const g = new THREE.Group();
+  const sh = rr(2.52, .78, .39); sh.holes.push(rr(2.34, .6, .3));
+  const shell = mesh(xrude(sh, 2.2), KM.metal, 0, 0, 0, g); shell.position.z = 0;
+  mesh(new THREE.BoxGeometry(2.1, .22, 1.9), new THREE.MeshStandardMaterial({ color: 0x0d0e11, roughness: .6 }), 0, 0, 1.15, g);
+  for (const sy of [-1, 1]) for (let p = 0; p < 12; p++) mesh(new THREE.BoxGeometry(.1, .018, .8), KM.gold, -0.93 + p * .17, sy * .118, 1.32, g);
+  const mold = mesh(xrude(rr(3.9, 2.3, .55), 5.4, .1), rubber, 0, 0, -5.4, g);
+  for (let r = 0; r < 3; r++) mesh(xrude(rr(3.5 - r * .35, 1.9 - r * .2, .45), .14, .02), new THREE.MeshStandardMaterial({ color: 0x23262c, roughness: .5, metalness: .2 }), 0, 0, -5.5 + r * .6, g);
+  mesh(new THREE.BoxGeometry(1.5, .02, 2.4), new THREE.MeshStandardMaterial({ color: 0x2f3239, roughness: .5, metalness: .6 }), 0, 1.16, -3.4, g);
+  if (withCable) { const pts = [V(0, 0, -5.4), V(0, 0, -8), V(-1.4, -.5, -12), V(-5, -.9, -17), V(-10, -.95, -21), V(-16, -.95, -22), V(-24, -.95, -28), V(-32, -.95, -32)];
+    const cv = new THREE.CatmullRomCurve3(pts); const tube = mesh(new THREE.TubeGeometry(cv, 80, .62, 14, false), new THREE.MeshStandardMaterial({ color: 0xffffff, map: braid(30, 1), color: 0x8a9099, roughness: .7, metalness: .1, envMapIntensity: .15 }), 0, 0, 0, g); g.userData.curve = cv; }
+  g.scale.setScalar(scale); return g;
+}
+// a lengthwise cutaway cable along +x (jacket open towards +z): `power` = [radius, pulses/s], pairs = [[y, z], ...]
+function makeCut(len, powerR, pairs) {
+  const g = new THREE.Group(); const R = 1.3;
+  const jg = new THREE.CylinderGeometry(R, R, len, 56, 1, true, Math.PI * .05, Math.PI * 1.4); jg.rotateZ(-Math.PI / 2); mesh(jg, jacketM(len), 0, 0, 0, g);
+  const jg2 = new THREE.CylinderGeometry(R - .1, R - .1, len, 56, 1, true, Math.PI * .05, Math.PI * 1.4); jg2.rotateZ(-Math.PI / 2); mesh(jg2, innerM, 0, 0, 0, g);
+  for (const sy of [-1, 1]) { const cg = new THREE.CylinderGeometry(powerR, powerR, len - .4, 24); cg.rotateZ(-Math.PI / 2); mesh(cg, copperM, 0, sy * .5, -.5, g); }
+  pairs.forEach(([py, pz]) => { for (const ph of [0, Math.PI]) { const pts = []; for (let i = 0; i <= 120; i++) { const x = -len / 2 + .2 + (len - .4) * i / 120, a = ph + x * 1.35; pts.push(V(x, py + Math.cos(a) * .13, pz + Math.sin(a) * .13)); }
+      mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 240, .075, 8, false), wireM, 0, 0, 0, g); } });
+  const sp = { amber: [], cyan: [] }; g.userData = { len, powerR, pairs, sp };
+  for (let i = 0; i < 18; i++) sp.amber.push([sprite(AMB, g), i % 2]);
+  pairs.forEach(([py, pz]) => { for (let i = 0; i < 14; i++) sp.cyan.push([sprite(CYA, g), py, pz, i]); });
+  return g;
+}
+// pulses along a cutaway: amber ones run on the power conductors, cyan ones on the data pairs; speeds (units/s) tell the story
+function runCut(g, t, t0, ampSpeed, ampOn, cySpeed, cyOn) {
+  const { len, powerR, sp } = g.userData, n = sp.amber.length;
+  sp.amber.forEach(([s, side], i) => { const ph = (((t - t0) * ampSpeed / len + i / n * 1.0) % 1 + 1) % 1; s.position.set(-len / 2 + ph * len, (side ? 1 : -1) * .5, -.5 + powerR + .02); s.scale.set(powerR * 4.4, powerR * 4.4, 1); s.material.opacity = ampOn * (.35 + .65 * Math.sin(Math.PI * ph)); });
+  const m = sp.cyan.length; sp.cyan.forEach(([s, py, pz, i], k) => { const per = 14, ph = (((t - t0) * cySpeed / len + (i + (k % 3) * .3) / per) % 1 + 1) % 1; s.position.set(-len / 2 + ph * len, py, pz + .22); s.scale.set(.55, .55, 1); s.material.opacity = cyOn * (.4 + .6 * Math.sin(Math.PI * ph)); });
+}
+
+// ---------- world 0: the plug (shots 0 and 6) ----------
+const W0 = worlds[0], plug0 = makePlug(true); plug0.position.y = 1.2; W0.add(plug0);
+const pulse0 = []; for (let i = 0; i < 26; i++) pulse0.push(sprite(AMB, W0));
+const mouthGlow = sprite(AMB, W0); mouthGlow.position.set(0, 1.2, 2.5);
+const tagTex = ctex(768, 512, (c, w, h) => { c.clearRect(0, 0, w, h); });
+const tagC = tagTex.image, tg = tagC.getContext('2d');
+const tag = new THREE.Mesh(new THREE.PlaneGeometry(7.2, 4.8), new THREE.MeshBasicMaterial({ map: tagTex, transparent: true, depthWrite: false })); tag.position.set(-4.2, 6.6, -2.4); tag.rotation.y = .3; W0.add(tag);
+function drawTag(t, k) {      // the spec tag of the last shot: two rows, both must be read
+  tg.clearRect(0, 0, 768, 512); if (k <= 0) { tagTex.needsUpdate = true; return; }
+  tg.globalAlpha = k; tg.fillStyle = 'rgba(10,12,16,.9)'; tg.beginPath(); tg.roundRect(8, 8, 752, 496, 40); tg.fill(); tg.lineWidth = 6; tg.strokeStyle = 'rgba(244,246,248,.38)'; tg.stroke();
+  const pu = .5 + .5 * Math.sin((t - B[6]) * 6);
+  [['WATTS', AMB, 'rgba(255,174,61,', 70], ['SPEED', CYA, 'rgba(56,225,255,', 290]].forEach(([w, col, rgb, y], i) => {
+    const on = clamp((t - (C.watts6 - .05 + i * (C.speed - C.watts6))) * 6); tg.fillStyle = rgb + (.1 + .12 * on) + ')'; tg.fillRect(52, y, 664, 148); tg.strokeStyle = rgb + (.45 + .5 * on * (.7 + .3 * pu)) + ')'; tg.lineWidth = 8; tg.strokeRect(52, y, 664, 148);
+    tg.fillStyle = rgb + (.45 + .55 * on) + ')'; tg.font = `900 104px ${FONT}`; tg.textAlign = 'left'; tg.textBaseline = 'middle'; tg.fillText(w, 84, y + 80); });
+  tg.globalAlpha = 1; tagTex.needsUpdate = true;
+}
+
+// ---------- world 1: laptop + drive, wide (shot 1) ----------
+const W1 = worlds[1];
+const scrC = document.createElement('canvas'); scrC.width = 1024; scrC.height = 640; const sc = scrC.getContext('2d');
+const scrTex = new THREE.CanvasTexture(scrC); scrTex.encoding = THREE.sRGBEncoding; scrTex.anisotropy = 8;
+const lap = new THREE.Group(); lap.position.set(-10.5, 0, 0); W1.add(lap);
+mesh(new THREE.BoxGeometry(24, .9, 16), KM.metal, 0, .45, 0, lap);
+mesh(new THREE.PlaneGeometry(22, 14.4), new THREE.MeshStandardMaterial({ map: keyTex, roughness: .6, metalness: .3 }), 0, .91, -.6, lap).rotation.x = -Math.PI / 2;
+{ const lid = new THREE.Group(); lid.position.set(0, .9, -8); lid.rotation.x = -.2; lap.add(lid);
+  mesh(new THREE.BoxGeometry(24, 15.6, .55), KM.metal, 0, 7.8, 0, lid);
+  mesh(new THREE.PlaneGeometry(22.6, 14.1), KM.glass(scrTex), 0, 7.9, .29, lid).material.emissiveIntensity = 1.15; }
+mesh(new THREE.BoxGeometry(.3, .5, 1.6), new THREE.MeshStandardMaterial({ color: 0x050607 }), 12.04, .45, 3, lap);
+const drv = new THREE.Group(); drv.position.set(14.8, 0, 3); drv.scale.setScalar(1.05); W1.add(drv);
+mesh(xrude(rr(14, 3.2, 1.2), 9, .15), KM.darkMetal, 0, 1.6, 0, drv).rotation.x = Math.PI / 2;
+for (let i = 0; i < 6; i++) mesh(new THREE.BoxGeometry(.18, .08, 8), new THREE.MeshStandardMaterial({ color: 0x20242a, roughness: .5, metalness: .6 }), -4 + i * .5, 3.24, 0, drv);
+mesh(new THREE.BoxGeometry(.5, .5, .1), new THREE.MeshBasicMaterial({ color: CYA }), 5.2, 3.24, 3.6, drv);
+const cab1 = new THREE.CatmullRomCurve3([V(1.7, .8, 2.6), V(3, .7, 5.5), V(4.6, .6, 8.5), V(6.6, .6, 8), V(7.6, .7, 5.6), V(7.9, 1, 3.4), V(8, 1.6, 3)]);
+mesh(new THREE.TubeGeometry(cab1, 90, .55, 12, false), new THREE.MeshStandardMaterial({ color: 0xffffff, map: braid(14, 1), color: 0x8a9099, roughness: .7, metalness: .1, envMapIntensity: .15 }), 0, 0, 0, W1);
+const pk1 = []; for (let i = 0; i < 5; i++) pk1.push(sprite(CYA, W1));
+const drvLed = sprite(CYA, W1); drvLed.position.set(19.6, 3.5, 7); drvLed.scale.set(3, 3, 1);
+function drawScr(t, k) {   // a file copy on the laptop: the bar crawls
+  sc.fillStyle = '#0a0d12'; sc.fillRect(0, 0, 1024, 640); sc.fillStyle = '#111620'; sc.fillRect(0, 0, 1024, 70); sc.fillStyle = '#1b2230'; for (let i = 0; i < 4; i++) sc.fillRect(40 + i * 120, 24, 90, 22);
+  sc.fillStyle = '#161c27'; sc.fillRect(70, 120, 884, 400); sc.strokeStyle = 'rgba(244,246,248,.2)'; sc.lineWidth = 3; sc.strokeRect(70, 120, 884, 400);
+  sc.fillStyle = '#e9edf3'; sc.beginPath(); sc.roundRect(130, 200, 150, 190, 18); sc.fill(); sc.fillStyle = '#38e1ff'; sc.fillRect(130, 330, 150, 60);
+  sc.fillStyle = '#242c3b'; sc.beginPath(); sc.roundRect(340, 280, 540, 52, 26); sc.fill();
+  const f = .06 + .16 * k; sc.fillStyle = '#38e1ff'; sc.beginPath(); sc.roundRect(340, 280, Math.max(60, 540 * f), 52, 26); sc.fill();
+  sc.fillStyle = 'rgba(244,246,248,.4)'; sc.fillRect(340, 220, 300, 22); sc.fillRect(340, 380, 200, 18); scrTex.needsUpdate = true;
+}
+
+// ---------- world 2: the sliced cable (shot 2) ----------
+const W2 = worlds[2];
+const sliceTube = (() => { const s = new THREE.Shape(); s.absarc(0, 0, 1.3, 0, Math.PI * 2, false); const h = new THREE.Path(); h.absarc(0, 0, 1.15, 0, Math.PI * 2, true); s.holes.push(h);
+  return mesh(xrude(s, 3.6), new THREE.MeshStandardMaterial({ color: 0xffffff, map: braid(2, 1), color: 0x8a9099, roughness: .7, metalness: .1, envMapIntensity: .15 }), 0, 0, 0, W2); })();
+const sliceCore = mesh(new THREE.CylinderGeometry(1.15, 1.15, .02, 40).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x0b0c0f, roughness: .8 }), 0, 0, 3.6, W2);
+const sA = [-1, 1].map((sy) => mesh(new THREE.CylinderGeometry(.38, .38, 3.2, 28).rotateX(Math.PI / 2), copperM, 0, sy * .5, 1.6, W2));
+const sC = [0, Math.PI].map((ph) => { const pts = []; for (let i = 0; i <= 80; i++) { const z = i / 80 * 3.2, a = ph + z * 2.6; pts.push(V(Math.cos(a) * .13, Math.sin(a) * .13, z)); } const m = mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 160, .075, 8, false), wireM, 0, 0, 0, W2); return m; });
+const sRing = [0, 1].map(() => sprite(0xffffff, W2));
+const glowA = sprite(AMB, W2), glowC = sprite(CYA, W2);
+
+// ---------- worlds 3 and 4: the two cutaway cables ----------
+const W3 = worlds[3], cut3 = makeCut(90, .38, [[0, .5]]); cut3.position.y = 1.4; W3.add(cut3);
+const W4 = worlds[4], cut4 = makeCut(90, .3, [[.72, .5], [.26, .5], [-.26, .5], [-.72, .5]]); cut4.position.y = 1.4; W4.add(cut4);
+
+// ---------- world 5: bars (shot 5) ----------
+const W5 = worlds[5];
+const barM = (hex, em) => new THREE.MeshPhysicalMaterial({ color: hex, metalness: .2, roughness: .35, clearcoat: .3, clearcoatRoughness: .3, emissive: hex, emissiveIntensity: em, envMapIntensity: .25 });
+const BARS = [[-5.8, AMB, 13, 'A'], [-2.4, CYA, .9, 'A'], [2.4, AMB, 5.4, 'B'], [5.8, CYA, 13.4, 'B']].map(([x, hex, h, id]) => { const m = mesh(new THREE.BoxGeometry(3, 1, 3), barM(hex === AMB ? 0xb86a0c : 0x0d8fae, .12), x, 0, 0, W5); const cap = sprite(hex, W5); return { m, cap, x, h, hex, id }; });
+const plugA = makePlug(false, .62), plugB = makePlug(false, .62); [[plugA, -4.1], [plugB, 4.1]].forEach(([p, x]) => { p.position.set(x, .8, 7); p.rotation.y = Math.PI; W5.add(p); });
+mesh(xrude(rr(15.6, 4.6, .6), .5, .08), new THREE.MeshStandardMaterial({ color: 0x15171c, metalness: .7, roughness: .38 }), 0, .25, 0, W5).rotation.x = Math.PI / 2;
+const barRise = (t, i) => { const c = [C.bigger - .2, C.bigger + .1, C.not5, C.faster][i]; return KIT.eout5(prog(t, c, c + .6)); };
+
+// ---------- camera per shot (local to its world) ----------
+const G = KIT.glide, LOOKUP = {};
+function shotCam(t, sh) {
+  const u = prog(t, B[sh], B[sh + 1]), k = G(u), X = WX(WORLD[sh]), hold = (r = .012) => KIT.push(Math.max(0, t - B[sh]), r);
+  let p, l, fov = 29;
+  if (sh === 0) { p = V(lerp(17, 14, k), lerp(11.5, 10, k), lerp(19, 21, k)); l = V(lerp(-.4, 0, k), lerp(3.9, 3.6, k), -1.4); }
+  else if (sh === 1) { const a = lerp(-.1, .1, k), d = 112 * (1 - hold(.03)); p = V(Math.sin(a) * d, lerp(52, 44, k), Math.cos(a) * d); l = V(lerp(-1, 2, k), 15, 3); fov = 36; }
+  else if (sh === 2) { const e = KIT.ease(prog(t, B[2] + .15, B[2] + 2.1)); p = V(lerp(.4, 6.2, e), lerp(.6, 4.4, e), lerp(14.5, 11, e) * (1 - hold(.02))); l = V(0, lerp(-.8, -.5, e), lerp(3.5, 1.8, e)); fov = 31; }
+  else if (sh === 3) { p = V(lerp(-15, 1, k), lerp(7.4, 6.6, k), lerp(11.5, 9.5, k)); l = V(lerp(-4, 8, k), 1.0, 0); }
+  else if (sh === 4) { p = V(lerp(16, 0, k), lerp(6.4, 7.6, k), lerp(9.5, 11.5, k)); l = V(lerp(5, -7, k), 1.0, 0); }
+  else if (sh === 5) { p = V(lerp(-5, 4, k), lerp(11, 16, k), lerp(52, 47, k)); l = V(0, lerp(9, 9.6, k), 1); fov = 32; }
+  else { const e = G(prog(t, B[6], TOTAL), .45), A0 = shotCam(0, 0); p = V(12, 12, 36).lerp(A0.pos, e); l = V(-3.2, 6.6, -1).lerp(A0.look, e); fov = lerp(30, 29, e); return { pos: p.add(V(X, 0, 0)), look: l.add(V(X, 0, 0)), fov }; }
+  return { pos: p.add(V(X, 0, 0)), look: l.add(V(X, 0, 0)), fov, ap: sh === 2 || sh === 3 || sh === 4 ? .014 : 0, focus: l.clone().add(V(X, 0, 0)) };
+}
+const SHAKES = () => [[C.c240, .06], [C.faster, .08]];
+function cutMod(t, k, side) { const d = KIT.DUR[CUTS[k].kind], u = (t - (B[k] - d / 2)) / d; return { ...KIT.cut(CUTS[k].kind, clamp(u), CUTS[k])[side], k, side }; }
+function camAt(t, sh, mod) {
+  const c = shotCam(t, sh), pos = c.pos.clone(), look = c.look.clone(); let fov = c.fov, yaw = 0;
+  if (mod) {
+    if (mod.dolly > 0) { const tg = look.clone().add(pos.clone().sub(look).multiplyScalar(.1)); pos.lerp(tg, mod.dolly); look.lerp(tg, mod.dolly * .6); }
+    if (mod.dolly < 0) pos.add(pos.clone().sub(look).multiplyScalar(-mod.dolly));
+    if (mod.truck) { const dx = mod.truck * pos.distanceTo(look) * .12; pos.x += dx; look.x += dx; }
+    yaw = mod.yaw || 0;
+  }
+  const sk = SHAKES().reduce((acc, [t0, amp]) => { const d = t - t0; if (d < 0 || d > .6) return acc; const e = amp * Math.exp(-d * 9); return acc.add(V(Math.sin(d * 83) * e, Math.cos(d * 67) * e, 0)); }, V(0, 0, 0));
+  return { ...c, pos: pos.add(sk), look: look.add(sk.clone().multiplyScalar(.5)), fov, yaw, sh };
+}
+
+// ---------- apply state at t ----------
+function pose(cm, c) { cm.fov = c.fov; cm.near = .05; cm.updateProjectionMatrix(); cm.position.copy(c.pos); cm.lookAt(c.look); if (c.yaw) cm.rotateY(c.yaw); cm.updateMatrixWorld(true); }
+function apply(t, sh = shotAt(t), mod = null) {
+  const c = camAt(t, sh, mod), w = WORLD[sh], X = WX(w);
+  worlds.forEach((g, i) => { g.visible = i === w; });
+  floor.position.x = X; pool.position.x = X + (sh === 1 ? 4 : 0); pool.scale.set(sh === 1 ? 2.2 : 1, sh === 1 ? 1.6 : 1, 1);
+  keyL.intensity = sh === 1 ? 2.5 : w === 0 ? 1.5 : 2.2; rimL.intensity = w === 0 ? 1.3 : 2.6; rim2L.intensity = w === 0 ? .9 : 1.4;
+  // world 0: amber pulses run along the cable into the plug (power, fast), the mouth glows on the beat; shot 6 keeps them running
+  if (w === 0) { const cv = plug0.userData.curve, n = pulse0.length; pulse0.forEach((s, i) => { const ph = (((t * .45 + i / n) % 1) + 1) % 1, p = cv.getPoint(1 - ph); p.y += plug0.position.y; s.position.copy(p); s.scale.setScalar(1.7); s.material.opacity = .9 * Math.sin(Math.PI * ph); });
+    const on = sh === 6 ? 1 - ease(prog(t, C.speed - .15, C.speed + .5)) * .6 : 1; mouthGlow.scale.setScalar(2.8 + .5 * Math.sin(t * 5)); mouthGlow.material.opacity = (.35 + .25 * Math.sin(t * 5)) * on;
+    drawTag(t, sh === 6 ? ease(prog(t, B[6] + .1, B[6] + .7)) * (1 - ease(prog(t, LOOP0(), LOOP1()))) : 0); tag.visible = sh === 6; }
+  if (w === 1) { const k = clamp((t - B[1]) / 4.2); drawScr(t, k);
+    pk1.forEach((s, i) => { const ph = ((((t - B[1]) * .075 + i / 5) % 1) + 1) % 1, p = cab1.getPoint(ph); s.position.copy(p).add(V(0, .9, 0)); s.scale.setScalar(2.4); s.material.opacity = .95 * Math.sin(Math.PI * ph); });
+    drvLed.material.opacity = .5 + .35 * Math.sin(t * 2.1); }
+  if (w === 2) { const ex = ease(prog(t, B[2] + .5, C.lanes + .1)), pl = ease(prog(t, C.power - .1, C.data2 + .5));
+    sA.forEach((m, i) => { m.position.z = 1.6 + 3 * ex; m.position.x = (i ? 1 : -1) * .12 * ex * 0; }); sC.forEach((m) => { m.position.z = 3.2 * ex; m.position.y = .3 * ex; });
+    glowA.position.set(0, 0, 5.6 + 1.8 * ex); glowA.scale.setScalar(6 + 1.2 * Math.sin(t * 6)); glowA.material.opacity = (.12 + .25 * clamp((t - C.power + .15) * 4)) * (1 - ease(prog(t, C.data2 - .1, C.data2 + .25)) * .5);
+    glowC.position.set(0, .3, 5.8 * ex + 3.4); glowC.scale.setScalar(2.6); glowC.material.opacity = .1 + .6 * ease(prog(t, C.data2 - .05, C.data2 + .4)) * (.6 + .4 * Math.sin(t * 7));
+    sRing.forEach((s) => { s.visible = false; }); }
+  if (w === 3) { runCut(cut3, t, B[3], 18, 1, .8, 1); }
+  if (w === 4) { runCut(cut4, t, B[4], 5, 1, 30, 1); }
+  if (w === 5) { const on = (i) => barRise(t, i);
+    BARS.forEach((b, i) => { const h = Math.max(.05, b.h * on(i)); b.m.scale.y = h; b.m.position.y = .5 + h / 2 - .5 + .5 * 0 + .0; b.m.position.y = .5 + h / 2; b.cap.position.set(b.x, .5 + h + .1, 0); b.cap.scale.setScalar(4.2); b.cap.material.opacity = .35 + .3 * on(i) * (.7 + .3 * Math.sin(t * 4 + i)); }); }
+  pose(cam, c);
+  return c;
+}
+const LOOP0 = () => C.final + .55, LOOP1 = () => C.final + 1.2;
+
+// ---------- type: one bold word or number at a time (2D, screen space, the empty top band) ----------
+let BOXES = []; window.__boxes = () => BOXES;
+const big = (text, kind, color, t, t0, t1, opt = {}) => { const bx = KIT.word(o, text, kind, t, t0, t1, { color, ...opt }); if (bx) BOXES.push(bx); };
+function typeLayer(t) {
+  BOXES = [];
+  const sh = shotAt(t);
+  if (sh === 0) big('240 W', 'stamp', HEATC, t, -.4, wEnd(1), { size: 232, y: 520, glow: 'rgba(255,150,40,.4)' });
+  if (sh === 1) big('CRAWL', 'track', SIGC, t, C.crawl, wEnd(2), { size: 235, y: 510, glow: 'rgba(56,225,255,.4)' });
+  if (sh === 2) big('2 LANES', 'drop', WHITE, t, C.lanes, wEnd(3), { size: 180, y: 520 });
+  if (sh === 3) big('USB 2', 'rise', SIGC, t, C.usb, wEnd(4), { size: 250, y: 505, glow: 'rgba(56,225,255,.45)' });
+  if (sh === 4) big('40 Gb/s', 'slam', SIGC, t, C.g40, wEnd(5), { size: 215, y: 520, glow: 'rgba(56,225,255,.5)' });
+  if (sh === 5) big('\u2260', 'stamp', HEATC, t, C.not5, wEnd(6), { size: 330, y: 560, glow: 'rgba(255,150,40,.4)' });
+  if (sh === 6) { if (t < LOOP0() - .05) big('BOTH', 'wipe', WHITE, t, C.both, LOOP0() - .05, { size: 290, y: 520 });
+    else big('240 W', 'stamp', HEATC, t, LOOP1() - .1, TOTAL + 9, { size: 232, y: 520, glow: 'rgba(255,150,40,.4)' }); }
+}
+
+// ---------- captions (stable phrases, bottom third) ----------
+const CHUNKS = []; SC.forEach((s, si) => { let cur = []; s.words.forEach((w, i) => { cur.push(w); const nx = s.words[i + 1], len = cur.map((x) => x.w).join(' ').length + (nx ? nx.w.length + 1 : 0);
+    if (/[.,?!:]$/.test(w.w) || (cur.length >= 6 && !(nx && /[.,?!:]$/.test(nx.w))) || (len > 30 && !(nx && /[.,?!:]$/.test(nx.w))) || i === s.words.length - 1) { CHUNKS.push({ si, words: cur }); cur = []; } }); });
+CHUNKS.forEach((c, i) => { c.t0 = c.words[0].t0; const nx = CHUNKS[i + 1]; c.t1 = nx && nx.si === c.si ? nx.words[0].t0 - .03 : c.words[c.words.length - 1].t1 + .35; });
+window.CHUNKS = CHUNKS;
+const capEl = document.getElementById('caps'); let capIdx = -2;
+function captions(t) {
+  const ci = CHUNKS.findIndex((c) => t >= c.t0 - .05 && t < c.t1);
+  if (ci !== capIdx) { capIdx = ci; capEl.textContent = ci < 0 ? '' : CHUNKS[ci].words.map((w) => w.w).join(' '); }
+  if (ci >= 0) { const p = eout(prog(t, CHUNKS[ci].t0 - .05, CHUNKS[ci].t0 + .15)); capEl.style.opacity = clamp(p * 1.5); capEl.style.transform = `translateY(${(1 - p) * 10}px)`; }
+}
+
+// ---------- the hero's box (Output QA HERO) ----------
+let SUBJ = null; window.__subject = () => SUBJ;
+function subjectBox(sh) { SUBJ = sh === 1 ? [60, 640, 1020, 1380] : [40, 600, 1040, 1400]; }
+
+// ---------- frame ----------
+function post() {
+  const vg = o.createRadialGradient(540, 980, 560, 540, 980, 1340); vg.addColorStop(0, 'rgba(7,8,12,0)'); vg.addColorStop(1, 'rgba(7,8,12,.55)'); o.fillStyle = vg; o.fillRect(0, 0, W, H);
+  const bf = o.createLinearGradient(0, 1280, 0, 1920); bf.addColorStop(0, 'rgba(7,8,12,0)'); bf.addColorStop(.2, 'rgba(7,8,12,.34)'); bf.addColorStop(.3, 'rgba(7,8,12,.52)'); bf.addColorStop(.55, 'rgba(7,8,12,.6)'); bf.addColorStop(.93, 'rgba(7,8,12,.97)'); bf.addColorStop(1, 'rgba(7,8,12,1)'); o.fillStyle = bf; o.fillRect(0, 1280, W, H - 1280);
+  const tf = o.createLinearGradient(0, 180, 0, 0); tf.addColorStop(0, 'rgba(7,8,12,0)'); tf.addColorStop(1, 'rgba(7,8,12,.6)'); o.fillStyle = tf; o.fillRect(0, 0, W, 180);
+}
+// the macro shots keep the top band dark for the word: a soft shade over the far part of the board
+function shade(sh, a) { if ((sh !== 2 && sh !== 5) || a <= 0) return; const g = o.createLinearGradient(0, 200, 0, sh === 2 ? 760 : 640); g.addColorStop(0, `rgba(7,8,12,${(.92 * a).toFixed(3)})`); g.addColorStop(.55, `rgba(7,8,12,${(.8 * a).toFixed(3)})`); g.addColorStop(1, 'rgba(7,8,12,0)'); o.fillStyle = g; o.fillRect(0, 0, W, 780); }
+const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c.getContext('2d'); };
+const ACC = [mk(), mk()], TMP = mk(), SMR = mk(), cam2 = new THREE.PerspectiveCamera(30, W / H, 0.02, 400), SHUT = 1 / 50;
+const scr2 = (p) => { p.project(cam2); return [(p.x + 1) / 2 * W, (1 - p.y) / 2 * H]; };
+function refs(cHere, cThere) {
+  pose(cam2, cHere); const up = new THREE.Vector3().setFromMatrixColumn(cam2.matrixWorld, 1), P1 = cHere.look.clone(), P2 = P1.clone().add(up.multiplyScalar(cHere.pos.distanceTo(cHere.look) * .2));
+  const a = [...scr2(P1.clone()), ...scr2(P2.clone())]; pose(cam2, cThere); return [a, [...scr2(P1.clone()), ...scr2(P2.clone())]];
+}
+const busy = (t, sh) => sh === 0 && t < 1.2;
+function accumulate(ctx, t, sh, side, k) {
+  const modAt = (ts) => side ? cutMod(ts, k, side) : null, at = (ts) => camAt(ts, sh, modAt(ts));
+  const [a0, b0] = refs(at(t - SHUT / 2), at(t + SHUT / 2)), la = Math.hypot(a0[2] - a0[0], a0[3] - a0[1]) || 1;
+  const px = Math.hypot(b0[0] - a0[0], b0[1] - a0[1]) + Math.abs(Math.hypot(b0[2] - b0[0], b0[3] - b0[1]) / la - 1) * 1100;
+  const c0 = at(t), K = Math.max(2, Math.round(KIT.plan(px, c0.ap > 0, busy(t, sh)) * Q));
+  for (let i = 0; i < K; i++) { const ts = clamp(t + SHUT * ((i + .5) / K - .5), 0, TOTAL), c = apply(ts, sh, modAt(ts)), [jx, jy] = KIT.jitter(i);
+    if (c.ap > 0) { const r = c.ap * Math.sqrt((i + .5) / K), th = i * 2.39996, rx = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 0), uy = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 1);
+      const fw = new THREE.Vector3(); cam.getWorldDirection(fw); const dl = c.look.clone().sub(cam.position).dot(fw), df = Math.max(.1, c.focus.clone().sub(cam.position).dot(fw));
+      const dd = rx.multiplyScalar(Math.cos(th) * r).add(uy.multiplyScalar(Math.sin(th) * r)); cam.position.add(dd); cam.lookAt(c.look.clone().add(dd.multiplyScalar(1 - dl / df))); }
+    cam.setViewOffset(W, H, jx * .9, jy * .9, W, H); gl.render(scene, cam); cam.clearViewOffset();
+    TMP.globalAlpha = 1; TMP.drawImage(gl.domElement, 0, 0, W, H);
+    const [a, b] = refs(c, at(ts + SHUT / K)); ctx.globalAlpha = 1 / (i + 1);
+    if (Math.hypot(b[0] - a[0], b[1] - a[1]) + Math.abs(Math.hypot(b[2] - b[0], b[3] - b[1]) / (Math.hypot(a[2] - a[0], a[3] - a[1]) || 1) - 1) * 1100 < 1.5) ctx.drawImage(TMP.canvas, 0, 0);
+    else { SMR.globalAlpha = 1; SMR.fillStyle = '#07080c'; SMR.fillRect(0, 0, W, H); KIT.smear(SMR, TMP.canvas, a, b, W, H); ctx.drawImage(SMR.canvas, 0, 0); } }
+  ctx.globalAlpha = 1;
+}
+window.render = (t) => {
+  t = clamp(t, 0, TOTAL);
+  const cu = cutAt(t), st = cu && KIT.cut(cu.kind, cu.u, cu), sh = shotAt(t);
+  o.setTransform(1, 0, 0, 1, 0, 0); o.globalAlpha = 1; o.filter = 'none'; o.fillStyle = '#07080c'; o.fillRect(0, 0, W, H);
+  if (!cu) { accumulate(ACC[0], t, sh, null, 0); o.drawImage(ACC[0].canvas, 0, 0); }
+  else {
+    const needA = st.wipe != null || st.mix < 1, needB = st.wipe != null || st.mix > 0;
+    if (needA) accumulate(ACC[0], t, cu.k - 1, 'out', cu.k); if (needB) accumulate(ACC[1], t, cu.k, 'in', cu.k);
+    KIT.compose(o, ACC[0].canvas, ACC[1].canvas, st, W, H, { color: cu.color, fy: .5 });
+  }
+  o.globalAlpha = 1; apply(t, sh, cu ? cutMod(t, cu.k, t >= B[cu.k] ? 'in' : 'out') : null); subjectBox(sh);
+  post(); typeLayer(t); captions(t);
+};
+window.TRANSITIONS = [...[1, 2, 3, 4, 5, 6].map((k) => { const d = KIT.DUR[CUTS[k].kind]; return [+(B[k] - d / 2 - .1).toFixed(2), +(B[k] + d / 2 + .15).toFixed(2), 'camera']; }), ...SHAKES().map(([t0]) => [+(t0 - .1).toFixed(2), +(t0 + .5).toFixed(2), 'jolt'])];
+window.HOLDS = [[+(TOTAL - 1.2).toFixed(2), +TOTAL.toFixed(2)]];
+window.seek = window.render;
+window.DUR = TOTAL;
+window.render(0);
+})();
+</script>
+</body></html>
