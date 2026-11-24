@@ -6,7 +6,7 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
-## 2026-11-24 10:30 IST · claude/tech-miniled-zones · today's tech reel, built to the owner's preview gate (showreel-tech-miniled-zones)
+## 2026-11-24 08:45 IST · claude/tech-miniled-zones · today's tech reel, built to the owner's preview gate (showreel-tech-miniled-zones)
 - Done: "Mini LED is not a new kind of screen" (quickmyth, home, global; Black Friday week). 3D on kit3d.js, one TV through seven shots: see-through hero with MYTH (frame 0), the picture sheet lifts (LCD), a low macro over the LEDs (LIGHTS), zones follow the moon (ZONES), all 2,304 light in 0.55 s, one zone behind its 6,400 pixels, a spec card (ZONES?), loop. Experiment tech-direction-3d try 2 (countTo idea, a second framing inside 4 s, cutsound).
 - Facts read today on primary pages: Apple Studio Display XDR specs (5120 x 2880, Mini-LED backlight with 2304 dimming zones; 6,400 pixels a zone is our sum), TrendForce 16 Nov 2026 (Mini LED TVs 28.78 million in 2026, +116%, near 15%; "premium LCD TV market").
 - Owner gate: a preview render (Tech reel, preview p1) goes to the app's Previews with ONE yes/no in "Needs you" (tech-miniled-ok, until 24 Nov). The reel's own render or `scripts/r2.sh promote` waits for the yes.
