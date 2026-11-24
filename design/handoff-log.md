@@ -6,6 +6,10 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 13:50 IST · claude/fable-budget-24nov · Fable budget rule replaces "Fable is out" (owner chat correction to studio-lean-24nov)
+- Done: CLAUDE.md "Models" and runbook-studio.md now say Fable only for daily builds and critics (about 3 + 3, lean), never side work; a limit hit continues on opus; scheduled-task models and the 26 Nov switch unchanged.
+- Left: the CV render (one) is still to dispatch from main.
+
 ## 2026-11-24 13:30 IST · claude/studio-lean-24nov · lean flow, SHOT VARIETY check, CV wording (owner chat job, size M)
 - Done: owner-feedback 24 Nov line; Output QA VARIETY (scripts/qa/output-qa.py, all channels; tabwiggle 53% passes, a static clip 100% fails); the builder starts the critic (opus) after Output QA, 11:17 task is a fallback; owner asked nothing about reels, tech owner gate removed; previews.json all needsOwner false and npm run check fails on true; Fable out, side programs paused, Turns Out one reel a day in order; CV (resume2) two fast lines reworded ("Next, headings get their own colour." / "Now it reads top to bottom.") and hook chips spread (x 40 / 166 / 320).
 - Left: the CV render (one) after this merges, then Output QA and the critic started by the builder; the owner chat resets the scheduled-task prompts/models if they still say Fable.
