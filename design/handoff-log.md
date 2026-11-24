@@ -567,3 +567,8 @@ Format (at most 6 lines):
 - Done: read Feedback 7 and 8 (tech Mini LED reel, one screen all reel; already guarded by Output QA VARIETY, owner-feedback.md 24 Nov); dropped the two answered previews (c3-resume2, miniled-zones-p2) from templates/showreels/previews.json.
 - Answer to Feedback 8: no independent critic ran on that reel; it went to you as a preview and only the builder scored it. Since 24 Nov the critic (a different session) decides and the owner is not asked.
 - Left: growth work from design/runbook-spare.md (research pass, topics, rulebooks, tooling).
+
+## 2026-11-25 · claude/slots-config · Posting slots in one file (owner chat job, size L, part 1 of 5)
+- Done: design/slots.json (tech 15:00, Turns Out 17:00, web 19:00 IST; web is a one-week test, review 2 Dec). The Worker takes channel defaults from it (reels without a postAt), GET /api/slots gives it to the app, the app's slotOf and the board cards show "Posts at HH:MM IST". scripts/check.mjs validates the file (13:00-21:00). One line each in CLAUDE.md "Schedule" and design/runbook-reels.md "Scheduling". sw.js v29.
+- Left: nothing for the owner. Existing captions.json entries are untouched; builders use the file for new ones.
+- For the other account: new entries take postAt from design/slots.json, not 13:00.

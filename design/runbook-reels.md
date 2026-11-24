@@ -89,7 +89,8 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
   made), "postAt" (the exact IST slot, HH:MM: 13:00 for every channel; the app's "Up next" shows it and a push reminder goes out 10 minutes
   before, so a new slot needs its cron in wrangler.jsonc; the only reminder cron is 12:50 IST) and "concept", in the push that makes it;
   npm run check fails without it.
-- One reel a day per channel, all at 13:00 IST (owner, 8 Nov 2026). Learn-then-build (owner, 5 Nov 2026): every reel is built the day it
+- **Slots (owner plan, 24 Nov 2026): every new captions.json entry takes its "postAt" from design/slots.json (tech 15:00, Turns Out 17:00, web 19:00 IST); one config file, reviewed weekly from the numbers (web 19:00 is a one-week test, review 2 Dec). The app and the Worker use the same file for any reel without a postAt. Reminders and nudges: see "Notifications" below.**
+- One reel a day per channel (owner, 8 Nov 2026; the 13:00 slot is now replaced by the file above). Learn-then-build (owner, 5 Nov 2026): every reel is built the day it
   posts (or the evening before at most), from the latest numbers and its channel's rulebook. No reels ahead. Before building, a run reads
   captions.json and never builds a second reel for a channel and slot that already has one.
 - Topics for each channel and day are planned a week ahead in design/topics.md (spare-usage night); runs take theirs from it, and swap it for

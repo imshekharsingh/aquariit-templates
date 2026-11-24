@@ -4,6 +4,7 @@
 // HTTP Basic headers are still accepted so scripts/CI can authenticate with curl --user.
 import { sendPush, PUSH_HOST } from './push.js';
 import { journeyApi } from './journey.js';
+import SLOT_CONFIG from '../design/slots.json' with { type: 'json' };
 
 const COOKIE = 'aq_session', TTL = 60 * 60 * 24 * 30; // 30 days
 // /tips/ (owner, 27 Oct 2026) is the one public page: the reels' fixes with live demos, static only (no data, no API calls)
@@ -762,7 +763,7 @@ const CH_NAME = { web: '@webin20sec', tech: '@techin20sec', c3: '@itturns.out' }
 export function postSlot(name, m) {
   if (m && /^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt;
   const ch = m && CH_NAME[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(name) ? 'tech' : /^showreel-c3-/.test(name) ? 'c3' : 'web';
-  return ch === 'tech' ? '19:00' : ch === 'c3' ? '20:00' : /\b19:00\b/.test((m && m.note) || '') ? '19:00' : '13:00';
+  return (SLOT_CONFIG.slots && SLOT_CONFIG.slots[ch]) || '13:00';   // design/slots.json (25 Nov 2026): tech 15:00, Turns Out 17:00, web 19:00
 }
 const chOfReel = (name, m) => (m && CH_NAME[m.channel] ? m.channel : /^showreel-(tech-|t\d)/.test(name) ? 'tech' : /^showreel-c3-/.test(name) ? 'c3' : 'web');
 const hookLine = (c) => String(c || '').split('\n')[0].replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}️]/gu, '').trim();
@@ -1110,6 +1111,7 @@ export default {
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
     if (p === '/api/stage' && request.method === 'POST') return (await stageKeyOk(request, env)) ? stageApi(request, env, p, ctx) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
+    if (p === '/api/slots' && request.method === 'GET') return signedIn ? jres({ slots: SLOT_CONFIG.slots, reviewOn: SLOT_CONFIG.reviewOn }) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/stage') ? stageApi(request, env, p, ctx) : (p === '/api/post' || p.startsWith('/api/post/')) ? postApi(request, env, p) : p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     // Read-only reel key (owner, 23 Nov 2026): critic and review sessions fetch the final reel files with Authorization: Bearer <REELS_READ_KEY>.
     // It opens ONLY GET/HEAD of /reels/<file> from R2: no API, no app pages, no writes, no site-copy fallback. Unset or empty secret = off.

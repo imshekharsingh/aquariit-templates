@@ -21,6 +21,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 ## Schedule (owner, 18 Nov 2026)
 - ONE reel a day per channel (web, tech, Turns Out), every day, aim for **13:00 IST**; any time in the **13:00-21:00 IST window** is fine (owner, 20 Nov 2026). A reel that fails is fixed and posted inside the window; nothing blocks the next push. Turns Out posts one dated reel a day like web and tech (postOn + postAt), taken in order from the held design list (design/c3-research-2026-11-24.md), each rebuilt only on its own day; its own daily task builds it (owner, 24 Nov 2026; design/c3-plan.md section 0).
   Every reel needs its entry in templates/showreels/captions.json ("channel", "postOn", "postAt", "concept"; npm run check fails without it).
+- Posting slots come from design/slots.json (tech 15:00, Turns Out 17:00, web 19:00 IST; owner plan, 24 Nov 2026), reviewed weekly from the numbers.
 - Tech follows design/tech-direction.md (owner approved 22 Nov 2026). The owner is NOT asked to approve a tech preview or render (owner, 24 Nov 2026):
   the critic decides.
 - Learn-then-build: each reel is built the day it posts (evening before at most), never ahead, never a second reel for a channel and day.
