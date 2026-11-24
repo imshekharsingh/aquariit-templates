@@ -1,0 +1,362 @@
+{
+ "slug": "usbc-two-numbers",
+ "engine": "kit",
+ "scene": "techkit/scenes/usbc-two-numbers.html",
+ "topic": "A USB-C cable's watts and its data speed are two different numbers",
+ "format": "quickmyth",
+ "audience": "global",
+ "gadget": "usb-c cable",
+ "device": "laptop",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.4,
+ "max_end": 34.0,
+ "experiment": {
+  "id": "tech-shot-variety",
+  "change": "first reel built for the SHOT VARIETY check (24 Nov): seven different objects or views (plug macro, laptop and drive wide, sliced cable, two cutaway cables, bars, spec tag), a cut every 3-5 s, each cut a different kind; the cable's two lanes (amber power, cyan data) are the one picture",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "A USB-C cable can charge a laptop at 240 watts.",
+   "beat": "question",
+   "source": 0
+  },
+  {
+   "text": "Plug the same cable into a hard drive, and the data can crawl.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "One cable, two lanes: power and data.",
+   "beat": "fix",
+   "source": 0
+  },
+  {
+   "text": "Apple's own 240 watt cable sends data at USB 2 rates.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "Its Thunderbolt 4 Pro cable moves 40 gigabits a second, and charges up to 100 watts.",
+   "beat": "step",
+   "source": 0
+  },
+  {
+   "text": "So a bigger watt number does not mean faster data.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Before you buy, read both numbers: watts and speed.",
+   "beat": "takeaway",
+   "source": 0
+  }
+ ],
+ "cues": {
+  "c240": [
+   0,
+   "240"
+  ],
+  "watts0": [
+   0,
+   "watts"
+  ],
+  "hard": [
+   1,
+   "hard"
+  ],
+  "crawl": [
+   1,
+   "crawl"
+  ],
+  "lanes": [
+   2,
+   "lanes"
+  ],
+  "power": [
+   2,
+   "power"
+  ],
+  "data2": [
+   2,
+   "data"
+  ],
+  "apple": [
+   3,
+   "240"
+  ],
+  "usb": [
+   3,
+   "usb"
+  ],
+  "rates": [
+   3,
+   "rates"
+  ],
+  "tb": [
+   4,
+   "thunderbolt"
+  ],
+  "g40": [
+   4,
+   "40"
+  ],
+  "gbits": [
+   4,
+   "gigabits"
+  ],
+  "h100": [
+   4,
+   "100"
+  ],
+  "bigger": [
+   5,
+   "bigger"
+  ],
+  "not5": [
+   5,
+   "not"
+  ],
+  "faster": [
+   5,
+   "faster"
+  ],
+  "buy": [
+   6,
+   "buy"
+  ],
+  "both": [
+   6,
+   "both"
+  ],
+  "watts6": [
+   6,
+   "watts"
+  ],
+  "speed": [
+   6,
+   "speed"
+  ],
+  "final": [
+   6,
+   "speed"
+  ]
+ },
+ "cutsound": {
+  "payoff": "faster",
+  "rise": 1.8
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "c240",
+   "impact",
+   0.55,
+   0
+  ],
+  [
+   "hard",
+   "thud",
+   0.4,
+   0
+  ],
+  [
+   "crawl",
+   "ticks",
+   0.3,
+   0
+  ],
+  [
+   "lanes",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "power",
+   "blip",
+   0.4,
+   -0.2,
+   {
+    "f": 300,
+    "f2": 600
+   }
+  ],
+  [
+   "data2",
+   "blip",
+   0.4,
+   0.2,
+   {
+    "f": 700,
+    "f2": 1100
+   }
+  ],
+  [
+   "usb",
+   "snap",
+   0.45,
+   0
+  ],
+  [
+   "tb",
+   "pop",
+   0.45,
+   0
+  ],
+  [
+   "g40",
+   "impact",
+   0.55,
+   0
+  ],
+  [
+   "h100",
+   "thud",
+   0.4,
+   0
+  ],
+  [
+   "bigger",
+   "snap",
+   0.4,
+   0
+  ],
+  [
+   "faster",
+   "impact",
+   0.6,
+   0
+  ],
+  [
+   "buy",
+   "thud",
+   0.45,
+   0
+  ],
+  [
+   "watts6",
+   "pop",
+   0.45,
+   -0.2
+  ],
+  [
+   "speed",
+   "pop",
+   0.45,
+   0.2
+  ],
+  [
+   "final",
+   "chime",
+   0.35,
+   0,
+   {
+    "notes": [
+     "E5",
+     "B5"
+    ]
+   }
+  ]
+ ],
+ "say": {
+  "USB-C": "U S B C",
+  "USB": "U S B",
+  "240": "two hundred and forty",
+  "40": "forty",
+  "100": "one hundred",
+  "2": "two",
+  "4": "four"
+ },
+ "qa": {
+  "sync": [
+   "CRAWL",
+   "LANES",
+   "BOTH"
+  ],
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": {
+     "say": "Plug the"
+    },
+    "sides": [
+     "right",
+     "top"
+    ],
+    "why": "the braided cable leaves the frame at the top right by design (the plug is whole)"
+   },
+   {
+    "from": {
+     "say": "One cable"
+    },
+    "to": {
+     "say": "So a bigger"
+    },
+    "sides": [
+     "left",
+     "right",
+     "top",
+     "bottom"
+    ],
+    "why": "the three cutaway shots are macros of a cable: the jacket and the wires run past the frame on every side by design"
+   },
+   {
+    "from": {
+     "say": "Before you"
+    },
+    "to": 40,
+    "sides": [
+     "right",
+     "bottom"
+    ],
+    "why": "the cable leaves the frame at the right as the camera comes back to the plug of frame 0"
+   }
+  ]
+ },
+ "post": {
+  "title": "Your USB-C cable has two numbers",
+  "caption": "A USB-C cable has TWO numbers, and most people only read one \ud83d\udd0c\n\nWatts = how much power it can carry. Speed = how fast it moves data. They are separate.\n\nApple's own 240W USB-C Charge Cable supports charging of up to 240 watts but transfers data at USB 2 rates. Apple's Thunderbolt 4 Pro Cable supports data up to 40Gb/s and charging up to 100W.\n\nSo a bigger watt number does NOT mean faster data. (Same plug, different jobs.)\n\nBefore you buy a cable for a laptop, a drive or a phone, read both numbers: watts and speed. If the box only lists one, it is only half the story.\n\nWhich do you buy cables for more: charging or transferring files? Charging or files \ud83d\udc47 Send this to the friend who has a drawer full of random cables.",
+  "keywords": [
+   "usb c cable explained",
+   "usb c cable watts vs speed",
+   "240w usb c cable",
+   "thunderbolt 4 cable",
+   "which usb c cable to buy",
+   "usb c charging vs data",
+   "usb 2 vs thunderbolt"
+  ],
+  "hashtags": [
+   "#usbc",
+   "#thunderbolt",
+   "#techexplained",
+   "#gadgets",
+   "#blackfriday"
+  ],
+  "sources": [
+   {
+    "url": "https://www.apple.com/shop/product/myqt3am/a/240w-usb-c-charge-cable-2-m",
+    "note": "Apple, 240W USB-C Charge Cable (2 m) (read 24 Nov 2026): 'It supports charging of up to 240 watts and transfers data at USB 2 rates.'"
+   },
+   {
+    "url": "https://support.apple.com/en-us/118204",
+    "note": "Apple Support, About the Apple Thunderbolt Pro Cables (read 24 Nov 2026): 'The Apple Thunderbolt 4 Pro Cable supports Thunderbolt 4, Thunderbolt 3, and USB 4 data-transfer speeds up to 40Gbps and USB 3.2 Gen 2 data-transfer speeds up to 10Gbps.' 'The Apple Thunderbolt 4 Pro Cable ... delivers a maximum of 100W'; 'The Apple USB-C Charge Cable also supports charging, but data-transfer speed is limited to 480Mbps (USB 2.0).'"
+   },
+   {
+    "url": "https://www.apple.com/shop/product/mw5j3am/a/thunderbolt-4-usb%E2%80%91c-pro-cable-18-m",
+    "note": "Apple, Thunderbolt 4 (USB-C) Pro Cable (1.8 m) (read 24 Nov 2026): 'supports Thunderbolt 3, Thunderbolt 4, and USB 4 data transfer up to 40Gb/s ... and charging up to 100W.'"
+   }
+  ]
+ },
+ "fps": 30
+}

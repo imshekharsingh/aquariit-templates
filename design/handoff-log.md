@@ -489,3 +489,8 @@ Format (at most 6 lines):
 - Left: the owner posts it in the 13:00-21:00 IST window.
 - For the other account: ffmpeg's fps=1 filter gives the frame at the END of each second (0.98, 1.98 ...), so take frame 0 by number (select='eq(n,0)'); the next web reel shows the whole hook from frame 0 (ENHANCE).
 
+
+## 2026-11-24 · claude/tech-shotvariety-reel · Tech reel usbc-two-numbers built for the SHOT VARIETY check (owner chat job, size L)
+- Done: new topic (a USB-C cable's watts and its data speed are two numbers; Apple product and support pages, read today), techkit/scenes/usbc-two-numbers.html (7 shots, 7 different objects or views, cuts push / rack / wipe / push / rack / wipe), techreel/topics/usbc-two-numbers.json, captions.json entry (postOn 2026-11-24, 20:00), review/tech/showreel-tech-usbc-two-numbers.md (items 1-12, 14-17; item 13 pending the render). Stills checked locally at 0.3 scale four times (floor and plug brightness, bar and laptop framing, tag position fixed).
+- Left: one Tech reel render on GitHub, Output QA (incl. SHOT VARIETY), then the critic (item 20); the reel posts at 20:00 only on CRITIC: READY.
+- For the other account: the scene keeps each shot's object in its own world group at x = 100 * world, so the outgoing and incoming shots of a cut never share a picture.

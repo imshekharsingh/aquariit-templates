@@ -1845,6 +1845,7 @@
   "palette": "black"
  },
  "showreel-tech-miniled-zones": {
+  "hidden": true,
   "channel": "tech",
   "postOn": "2026-11-24",
   "postAt": "13:00",
@@ -1880,6 +1881,44 @@
    "#blackfriday",
    "#techexplained",
    "#gadgets"
+  ]
+ },
+ "showreel-tech-usbc-two-numbers": {
+  "channel": "tech",
+  "postOn": "2026-11-24",
+  "postAt": "20:00",
+  "cover": {
+   "t": 1.0,
+   "lines": [
+    "240 W cable,",
+    "slow data?"
+   ],
+   "accent": 1
+  },
+  "format": "quickmyth",
+  "device": "laptop",
+  "concept": "Rebuilt for the SHOT VARIETY check (24 Nov), ~29 s, quick myth, laptop and cables (laptop class), global. A USB-C cable's watts and its data speed are two numbers: the plug macro with 240 W in frame 0; a laptop and a drive wide, a copy bar crawling; a sliced cable with the two lanes pulling out; cutaway of Apple's 240 W cable (USB 2 data); cutaway of Apple's Thunderbolt 4 Pro cable (40 Gb/s, up to 100 W); four bars; the plug with a WATTS / SPEED tag; loops to frame 0. Apple product and support pages read 24 Nov 2026.",
+  "experiment": {
+   "id": "tech-shot-variety",
+   "change": "first reel built for the SHOT VARIETY check (24 Nov): seven different objects or views (plug macro, laptop and drive wide, sliced cable, two cutaway cables, bars, spec tag), a cut every 3-5 s, each cut a different kind; the cable's two lanes (amber power, cyan data) are the one picture",
+   "vs": "median"
+  },
+  "caption": "A USB-C cable has TWO numbers, and most people only read one \ud83d\udd0c\n\nWatts = how much power it can carry. Speed = how fast it moves data. They are separate.\n\nApple's own 240W USB-C Charge Cable supports charging of up to 240 watts but transfers data at USB 2 rates. Apple's Thunderbolt 4 Pro Cable supports data up to 40Gb/s and charging up to 100W.\n\nSo a bigger watt number does NOT mean faster data. (Same plug, different jobs.)\n\nBefore you buy a cable for a laptop, a drive or a phone, read both numbers: watts and speed. If the box only lists one, it is only half the story.\n\nWhich do you buy cables for more: charging or transferring files? Charging or files \ud83d\udc47 Send this to the friend who has a drawer full of random cables.",
+  "keywords": [
+   "usb c cable explained",
+   "usb c cable watts vs speed",
+   "240w usb c cable",
+   "thunderbolt 4 cable",
+   "which usb c cable to buy",
+   "usb c charging vs data",
+   "usb 2 vs thunderbolt"
+  ],
+  "hashtags": [
+   "#usbc",
+   "#thunderbolt",
+   "#techexplained",
+   "#gadgets",
+   "#blackfriday"
   ]
  }
 }
