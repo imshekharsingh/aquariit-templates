@@ -89,3 +89,4 @@ One line per channel per day: `- DD Mon, channel: experiment (the one change) â†
   Marked in design/targets.md (id result-first) so its verdict prints by itself; the 8 Nov config also carries it as "experiment".
 - 23 Nov audit, DROP web web-comment-ask (2 LOSEs, 1 WIN) and web-touch-bug (2 LOSEs, 0 WINs): comment-word asks and touch-bug topics did not lift reach over the web median (1,426); the web reels keep the caption ending "Save this for ..., or send it to ...".
 - 23 Nov audit, DROP c3 c3-guess (2 LOSEs, 0 WINs: Eiffel 1,141 vs 1,150, Taj 136 vs 1,150): the guess format is retired; Turns Out runs the design series.
+- 25 Nov (audit DROP): web-comment-ask (1 WIN, 2 LOSEs: reach -3%, -10%, then one +38%) and web-touch-bug (0 WINs, 2 LOSEs: -30%, -5%) are dropped as a reason to choose a topic; c3-guess (0 WINs, 2 LOSEs: -1%, -88%) is dropped too.
