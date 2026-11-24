@@ -11,7 +11,7 @@
  "style": "Black look (rule 19) with a mint accent: near-black, no frame or glow, one accent word, whole frame, calm. E30 wiggle family, try 1: three tabs; BEFORE every tap turns one tab bold (Open Sans 400 to 800, real measured widths) and the others jump sideways, ghost of the old place, TAPS / WIGGLES counted; AFTER every tab keeps a slot as wide as its bold copy and nothing moves",
  "palette": "black",
  "voice": {
-  "text": "Why do your tabs wiggle? The one you tap turns bold, and bold letters are wider. So it shoves its neighbours aside. The fix: hide a bold copy inside every tab. Now the width is held, and nothing moves.",
+  "text": "Why do your tabs wiggle? The one you tap turns bold, and bold letters are wider. So it shoves its neighbours aside. The fix: hide a bold copy inside every tab. Now every tab is already wide enough, so nothing moves.",
   "voice": "af_heart",
   "speed": 1
  },

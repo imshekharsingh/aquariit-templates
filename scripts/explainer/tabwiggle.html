@@ -643,7 +643,7 @@ var KM = (function(){
 /*kithook:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.black({ acc: '#5fe3c0' });   // the black look (rules-web.md rule 19) with a mint accent: one accent a reel, a new one each time (rule 17, Output QA HUE)
   [['--soft', 'rgba(95,227,192,.16)'], ['--ring', 'rgba(95,227,192,.55)'], ['--on', '#04140f']].forEach(function(q){ document.documentElement.style.setProperty(q[0], q[1]); });
-  var TEXT = "Why do your tabs wiggle? The one you tap turns bold, and bold letters are wider. So it shoves its neighbours aside. The fix: hide a bold copy inside every tab. Now the width is held, and nothing moves.", DUR = 15, HOOK_N = 5, FIX_S = 3;
+  var TEXT = "Why do your tabs wiggle? The one you tap turns bold, and bold letters are wider. So it shoves its neighbours aside. The fix: hide a bold copy inside every tab. Now every tab is already wide enough, so nothing moves.", DUR = 15, HOOK_N = 5, FIX_S = 3;
   // the code: the hidden bold copy (the two lit lines are the fix; the dim lines keep it out of sight)
   var CODE = '<span class="dim">.tab::after {</span>\n  <b>content: attr(data-text);</b>\n  <b>font-weight: 800;</b>\n  <span class="dim">display: block; height: 0;</span>\n  <span class="dim">visibility: hidden; }</span>';
   var V, PH, A = {}, CAM, T = {}, TB = [], TG = [];
@@ -680,7 +680,7 @@ var KM = (function(){
     TB.forEach(function(x, k){ KM.tap(x, 28 + LB[k ? SEQ[k - 1] : 0][SEQ[k]] + 40); KM.cue({ t: x + .06, k: 'swish', d: .32, g: .34, p: k % 2 ? .3 : -.3 }); });
     window.COVER = +(Math.min(TB[1] - .06, A.leave - .02)).toFixed(2);   // the cover: the hook complete, the finger on a tab, no reaction word
     // after the fix the same taps move nothing
-    var tg = [Math.max(A.wipe + 1, at('held', 1, A.pay + 1) - .1), at('nothing', 1, A.pay + 1.7) - .05, at('nothing', 1, A.pay + 1.7) + .95, at('nothing', 1, A.pay + 1.7) + 1.9];
+    var tg = [Math.max(A.wipe + 1, at('already', 1, A.pay + 1) - .1), at('nothing', 1, A.pay + 1.7) - .05, at('nothing', 1, A.pay + 1.7) + .95, at('nothing', 1, A.pay + 1.7) + 1.9];
     for (i = 1; i < tg.length; i++) tg[i] = Math.max(tg[i], tg[i - 1] + .8);
     TG = tg.filter(function(x){ return x < DUR - .9; });
     TG.forEach(function(x, k){ KM.tap(x, 28 + LG[GSEQ[k]] + 40); KM.cue({ t: x + .08, k: 'pop', g: .22, p: 2 + 2 * k }); });
@@ -773,7 +773,7 @@ var KM = (function(){
     KM.cutBelow($('vp'), $('fe'), 960, 0);
     var bk = E.out3(P(t, A.leave - .1, A.leave + .35)) * (1 - E.out3(P(t, A.end + 1.1, A.end + 1.6)));
     $('band').style.opacity = bk.toFixed(3);
-    KM.subs($('cap'), t, V, PH, HOOK_N, Math.min(DUR - .9, A.end + 1.1), function(w, j2){ return V.words[j2].s >= A.fix + V.lead && /^(fix|bold|copy|now|held|nothing)/i.test(w) ? 'var(--acc)' : null; });
+    KM.subs($('cap'), t, V, PH, HOOK_N, Math.min(DUR - .9, A.end + 1.1), function(w, j2){ return V.words[j2].s >= A.fix + V.lead && /^(fix|bold|copy|now|wide|nothing)/i.test(w) ? 'var(--acc)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) { anchors(v.words); } };
   window.seek = seek; window.DURATION = DUR;
