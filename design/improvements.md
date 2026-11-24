@@ -41,3 +41,4 @@ Format: `- [ ] date · technique · why it should help reach · kit piece (exist
 - web: swipe-reveal before/after (KM.wipe + KM.sweep), both states in one glance, on a reel whose two states share one layout.
 - tech: frame 0 = the surprising number at full-frame scale with the claim it breaks.
 - Turns Out: options labelled A / B / C, a 3 s countdown hold, caption asks for the letter.
+- note 24 Nov: web used the hook kit (premium program, 24 Nov; rules-web.md rule 20; source: our own top three reels frame by frame, review/previews/web-homebar2.md, critic 7.5 / 7 / 7 on render 2) on showreel-46-tabwiggle; the two open web items (caption question: its experiment web-comment-ask was dropped 18 Nov; seamless loop) stay open.

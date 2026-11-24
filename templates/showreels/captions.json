@@ -1814,5 +1814,35 @@
    "change": "a phone-edge topic (the home bar) with the dynamic fix: the screen sags on every tap in BEFORE, the bar's padding grows and the button rises in AFTER, the dark look in the saffron world",
    "vs": "median"
   }
+ },
+ "showreel-46-tabwiggle": {
+  "postOn": "2026-11-24",
+  "postAt": "13:00",
+  "caption": "Why do your tabs wiggle when you tap them? 👆 You tap one, it turns bold, and every tab beside it jumps sideways.\n\nBold letters are wider than regular ones, so the bold tab needs more room and shoves its neighbours along. The fix: hide a bold copy of the label inside every tab, so each tab is always as wide as its bold self. Put the label in a data-text attribute too, then: .tab::after { content: attr(data-text); font-weight: 800; display: block; height: 0; visibility: hidden; } Make the tab an inline-block, and use the same weight as your active tab. Watch the reel: before, every tap is a wiggle; after the fix, the count stays at 0.\n\nattr() inside content works in every browser, old ones too (MDN).\n\nSave it for your next tab bar, or send it to whoever builds your UI.",
+  "keywords": [
+   "content attr data-text bold",
+   "CSS tabs jumping",
+   "CSS layout shift on bold",
+   "bold text shifts layout",
+   "CSS typography tips",
+   "UI design",
+   "CSS tips"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#typography",
+   "#uidesign",
+   "#frontenddev"
+  ],
+  "channel": "web",
+  "concept": ".tab::after { content: attr(data-text); font-weight: 800; display: block; height: 0; visibility: hidden } (a hidden bold copy keeps every tab as wide as its bold self, so the tapped tab no longer shoves its neighbours); black look with a mint accent (rule 19), hook kit (rule 20)",
+  "about": "24 Nov: E30 wiggle family, try 1 of 3 (owner, 23 Nov: 'something like number wiggle'); web ESCALATE answered with a new topic type, a wiggle people see as users; visible on mute (rule 15)",
+  "experiment": {
+   "id": "web-wiggle-family",
+   "change": "E30 try 1: a wiggle every phone user has seen (tabs that jump when the tapped one turns bold), told in the numbers reel's shape, on the hook kit (the bug at 0.25 s and 1.45 s, a reaction word, TAPS / WIGGLES counted to the last frame), black look with a mint accent",
+   "vs": "median"
+  },
+  "palette": "black"
  }
 }
