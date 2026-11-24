@@ -159,3 +159,5 @@ ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voic
 ## Owner gate removed, shot variety (owner, 24 Nov 2026)
 - The owner is not asked to approve a tech preview or render; the critic decides (tech-direction.md's "stills + a short preview to the owner" no longer applies).
 - Never one subject or view for more than a few seconds: Output QA VARIETY fails a reel when over 60% of its one-second frames look like one shot (owner on miniled-zones: "one screen across the reel"). Plan a new subject or view every 2-4 s.
+
+**25 Nov audit:** tech OK (median reach 1,199 over the last 7). PROMOTE: tech-kit-engine (4 WINs, 0 LOSEs, +312% to +1,104%) and tech-myth-verdict (3 WINs, 0 LOSEs) stay as the way tech reels are built. ai-memory (the gold) reached 1,199 at 24 h, level with the median (-1%): the look is not the lever, the topic and the first second are. Today: a new device type (battery cycles), the 500 to 1000 number changing on the spoken word.
