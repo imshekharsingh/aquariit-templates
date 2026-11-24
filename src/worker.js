@@ -4,6 +4,7 @@
 // HTTP Basic headers are still accepted so scripts/CI can authenticate with curl --user.
 import { sendPush, PUSH_HOST } from './push.js';
 import { journeyApi } from './journey.js';
+import { plan, NOTIFY_TYPES, istParts } from './notify.js';
 import SLOT_CONFIG from '../design/slots.json' with { type: 'json' };
 
 const COOKIE = 'aq_session', TTL = 60 * 60 * 24 * 30; // 30 days
@@ -700,6 +701,15 @@ async function spareApi(request, env, p, url) {
     const last = await db.prepare('SELECT at, devices, sent, failed, note FROM spare_push_log ORDER BY at DESC LIMIT 1').first();
     return jres({ ...w, week, on: !row, skipped: !!row, at: row ? row.at : null, lastPush: last || null });
   }
+  if (p === '/api/push/prefs') {   // one switch per notification type (all on until switched off)
+    const d = await notifyDb(env);
+    if (request.method === 'PUT') {
+      let b = null; try { b = await request.json(); } catch { /* handled below */ }
+      if (!b || !NOTIFY_TYPES.includes(b.type) || typeof b.on !== 'boolean') return jres({ error: 'bad-request' }, 400);
+      await d.prepare('INSERT INTO push_prefs (type, on_) VALUES (?1, ?2) ON CONFLICT(type) DO UPDATE SET on_ = excluded.on_').bind(b.type, b.on ? 1 : 0).run();
+    }
+    return jres({ prefs: await notifyPrefs(d) });
+  }
   if (p === '/api/push/status' && request.method === 'GET') return jres(await pushStatus(env, db));   // read-only: the "Push check" workflow prints it
   if (p === '/api/push/ack' && request.method === 'POST') {   // the service worker's delivery receipt for each push it showed (kept 14 days)
     let b = null; try { b = await request.json(); } catch { /* handled below */ }
@@ -728,7 +738,7 @@ async function spareApi(request, env, p, url) {
       .bind(ep, k.p256dh, k.auth, new Date().toISOString()).run();
     if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return jres({ ok: true, sent: null });
     if (url.searchParams.get('quiet') === '1') return jres({ ok: true });   // the app re-saves an existing subscription on open: no message
-    const status = await sendPush({ endpoint: ep, keys: k }, { title: 'Notifications are on', body: 'You will get a reminder 10 minutes before each post time, and the Tuesday 9 PM spare-usage reminder.', url: '/' }, env, 600).catch(() => 0);
+    const status = await sendPush({ endpoint: ep, keys: k }, { title: 'Notifications are on', body: 'You will get a reminder when each reel is ready to post, and the Tuesday 9 PM spare-usage reminder.', url: '/' }, env, 600).catch(() => 0);
     return jres({ ok: true, sent: status });
   }
   return jres({ error: 'bad-request' }, 400);
@@ -773,8 +783,9 @@ async function reelTitle(env, name, m) {
   if (!t && m.concept) t = String(m.concept).split(' · ').pop();
   return t || name.replace(/^showreel-(tech-|c3-|t\d+-)?(\d+-)?/, '').replace(/-/g, ' ');
 }
+const CH_SHORT = { web: 'Web', tech: 'Tech', c3: 'Turns Out' };
 export function postPayload(name, m, title) {
-  return { title: 'Time to post', body: `Post now: ${title} (${CH_NAME[chOfReel(name, m)]}, ${postSlot(name, m)})`, url: '/#reel=' + name, tag: 'post-' + name };
+  return { title: `${CH_SHORT[chOfReel(name, m)]} reel is ready to post`, body: `${title} · ${postSlot(name, m)} IST. Tap to open it.`, url: '/#reel=' + name, tag: 'ready-' + name };
 }
 async function captionsOf(env) {
   const r = await env.ASSETS.fetch(new Request('https://assets.local/showreels/captions.json'));
@@ -794,30 +805,83 @@ async function postDb(env) {
     db.prepare('CREATE TABLE IF NOT EXISTS post_push_log (reel TEXT NOT NULL, due TEXT NOT NULL, at TEXT NOT NULL, devices INTEGER NOT NULL, sent INTEGER NOT NULL, failed INTEGER NOT NULL, note TEXT, PRIMARY KEY (reel, due))')]);
   return db;
 }
-async function postPush(env, now = Date.now()) {
+// ---- Notifications (owner, 25 Nov 2026): at a reel's slot "<Channel> reel is ready to post"; 45 min later one gentle nudge; 20:30 IST one last call; "Posted ✓" with
+// the link and the plain reason on a failure (both sent when Post now reports them); 08:00 IST one morning summary. One switch per type (D1 push_prefs; all on
+// until switched off). Every send has a key in D1 notif_log, written first, so a type is never sent twice for the same reel (1 nudge and 1 last call at most).
+// The cron "*/10 * * * *" runs the plan in src/notify.js; a reel the second look has not cleared gets no "ready" push (it shows in the morning summary instead).
+async function notifyDb(env) {
   const db = await postDb(env);
-  if (!db) return { sent: 0 };
-  const reels = await dueReels(env, db, now + 3 * 60e3, now + 20 * 60e3);   // the slot 10 minutes ahead (a cron may run a few minutes late or early)
-  const out = [];
-  for (const { name, m, due } of reels) {
-    const dueIso = new Date(due).toISOString();
-    if (await db.prepare('SELECT 1 FROM post_push_log WHERE reel = ?1 AND due = ?2').bind(name, dueIso).first()) continue;   // already reminded
-    const log = (devices, sent, failed, note) => db.prepare('INSERT OR REPLACE INTO post_push_log (reel, due, at, devices, sent, failed, note) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)')
-      .bind(name, dueIso, new Date().toISOString(), devices, sent, failed, note || null).run().catch(() => {});
-    if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) { await log(0, 0, 0, 'no-keys'); continue; }
-    const payload = postPayload(name, m, await reelTitle(env, name, m));
-    const { results } = await db.prepare('SELECT endpoint, p256dh, auth FROM push_subs').all();
-    let sent = 0, failed = 0;
-    for (const r of results || []) {
-      const status = await sendPush({ endpoint: r.endpoint, keys: { p256dh: r.p256dh, auth: r.auth } }, payload, env).catch(() => 0);
-      if (status === 404 || status === 410) { failed++; await db.prepare('DELETE FROM push_subs WHERE endpoint = ?1').bind(r.endpoint).run(); }
-      else if (status >= 200 && status < 300) sent++;
-      else failed++;
-    }
-    await log((results || []).length, sent, failed, payload.body.slice(0, 200));
-    out.push({ name, sent, failed });
+  if (!db) return null;
+  await db.batch([db.prepare('CREATE TABLE IF NOT EXISTS push_prefs (type TEXT PRIMARY KEY, on_ INTEGER NOT NULL)'),
+    db.prepare('CREATE TABLE IF NOT EXISTS notif_log (key TEXT PRIMARY KEY, at TEXT NOT NULL, type TEXT, sent INTEGER, failed INTEGER)')]);
+  return db;
+}
+async function notifyPrefs(db) {
+  const o = Object.fromEntries(NOTIFY_TYPES.map((t) => [t, true]));
+  for (const r of ((await db.prepare('SELECT type, on_ FROM push_prefs').all().catch(() => ({}))).results || [])) if (r.type in o) o[r.type] = !!r.on_;
+  return o;
+}
+// send one notification to every device unless its switch is off or its key was already used; returns { skipped } or { sent, failed }
+async function sendType(env, db, type, key, payload) {
+  if (!(await notifyPrefs(db))[type]) return { skipped: 'off' };
+  if (!env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY) return { skipped: 'no-keys' };
+  const claim = await db.prepare('INSERT OR IGNORE INTO notif_log (key, at, type, sent, failed) VALUES (?1, ?2, ?3, 0, 0)').bind(key, new Date().toISOString(), type).run();
+  if (!claim || !claim.meta || claim.meta.changes !== 1) return { skipped: 'already-sent' };
+  const { results } = await db.prepare('SELECT endpoint, p256dh, auth FROM push_subs').all();
+  let sent = 0, failed = 0;
+  for (const r of results || []) {
+    const status = await sendPush({ endpoint: r.endpoint, keys: { p256dh: r.p256dh, auth: r.auth } }, { ...payload, tag: payload.tag || type }, env).catch(() => 0);
+    if (status === 404 || status === 410) { failed++; await db.prepare('DELETE FROM push_subs WHERE endpoint = ?1').bind(r.endpoint).run(); }
+    else if (status >= 200 && status < 300) sent++;
+    else failed++;
   }
+  await db.prepare('UPDATE notif_log SET sent = ?2, failed = ?3 WHERE key = ?1').bind(key, sent, failed).run().catch(() => {});
+  return { sent, failed };
+}
+async function readyMap(env) {   // reel name -> true when the second look cleared it, 'blocked' when a stage failed; empty when the journey cannot be read
+  const out = {};
+  try { const j = await (await journeyFast(env, null)).json();
+    for (const r of (j && j.reels) || []) { const st = r.stages || {}; out[r.name] = st.ready && st.ready.s === 'done' ? true : Object.values(st).some((x) => x && x.s === 'fail') ? 'blocked' : false; } } catch { /* fail open below */ }
   return out;
+}
+async function digestPayload(env, db, caps, day, ready) {
+  const rows = Object.entries(caps).filter(([, m]) => m && !m.hidden && !m.sample && m.postOn === day)
+    .map(([n, m]) => ({ n, m, ch: chOfReel(n, m), at: postSlot(n, m) })).sort((a, b) => a.at.localeCompare(b.at));
+  const lines = rows.map((r) => `${r.at} ${CH_SHORT[r.ch]}`);
+  const missing = ['tech', 'c3', 'web'].filter((k) => !rows.some((r) => r.ch === k)).map((k) => `${CH_SHORT[k]}: nothing planned yet`);
+  const blocked = rows.filter((r) => ready[r.n] === 'blocked').map((r) => `${CH_SHORT[r.ch]} needs a fix first`);
+  const fails = ((await db.prepare("SELECT ch FROM ig_publish WHERE state = 'failed' AND at > ?1").bind(new Date(Date.now() - 864e5).toISOString()).all().catch(() => ({}))).results || []).map((r) => `${CH_SHORT[r.ch] || r.ch}: the last post did not go through`);
+  const stuck = [...blocked, ...fails];
+  return { title: 'Today’s reels', body: (lines.length ? lines.join(' · ') : 'No reel is planned yet') + '. ' + (stuck.length ? 'Blocked: ' + stuck.join('; ') + '.' : 'Nothing is blocked.') + (missing.length && lines.length ? ' ' + missing.join('. ') + '.' : ''), url: '/', tag: 'digest-' + day };
+}
+async function notifyTick(env, now = Date.now()) {
+  const db = await notifyDb(env);
+  if (!db) return { sent: 0 };
+  const caps = await captionsOf(env), up = new Set(((await db.prepare('SELECT id FROM reel_uploaded').all().catch(() => ({}))).results || []).map((r) => r.id));
+  const ready = await readyMap(env), day = istParts(now).day;
+  const reels = Object.entries(caps).filter(([, m]) => m && !m.hidden && !m.sample && m.postOn === day)
+    .map(([n, m]) => ({ name: n, m, day: m.postOn, due: Date.parse(`${m.postOn}T${postSlot(n, m)}:00+05:30`), ready: ready[n] === undefined ? true : ready[n] === true, posted: up.has(n) }));
+  const out = [];
+  for (const x of plan(now, reels)) {
+    let payload;
+    if (x.type === 'digest') payload = await digestPayload(env, db, caps, day, ready);
+    else { const r = reels.find((q) => q.name === x.reel), title = await reelTitle(env, r.name, r.m), ch = CH_SHORT[chOfReel(r.name, r.m)], url = '/#reel=' + r.name;
+      payload = x.type === 'ready' ? postPayload(r.name, r.m, title)
+        : x.type === 'nudge' ? { title: `${ch} reel is still waiting`, body: `${title}. Tap to post it when you are ready.`, url, tag: 'nudge-' + r.name }
+        : { title: `Last call: ${ch} reel`, body: `${title} is not posted yet today. Tap to open it.`, url, tag: 'last-' + r.name }; }
+    out.push({ type: x.type, reel: x.reel, ...(await sendType(env, db, x.type, x.key, payload)) });
+  }
+  await db.prepare('DELETE FROM notif_log WHERE at < ?1').bind(new Date(now - 14 * DAY_MS).toISOString()).run().catch(() => {});
+  return out;
+}
+// Post now reports back: "Posted ✓" with the link, or the plain reason
+async function notifyPostResult(env, db, reel, state, row) {
+  try {
+    await notifyDb(env);
+    const caps = await captionsOf(env).catch(() => ({})), m = caps[reel] || {}, ch = CH_SHORT[chOfReel(reel, m)], title = await reelTitle(env, reel, m);
+    if (state === 'posted') return await sendType(env, db, 'posted', 'posted:' + reel, { title: 'Posted ✓', body: `${ch}: ${title}`, url: row.permalink || '/#reel=' + reel, tag: 'posted-' + reel });
+    if (state === 'failed') return await sendType(env, db, 'failed', 'failed:' + reel + ':' + row.started, { title: `${ch} reel did not post`, body: String(row.error || 'Something went wrong.').slice(0, 160) + ' Tap to try again.', url: '/#reel=' + reel, tag: 'failed-' + reel });
+  } catch { /* a missing notification never breaks posting */ }
 }
 // Every cron run is logged (owner, 6 Nov 2026: a 12:50 reminder never came and nothing showed why), kept 14 days
 async function cronLog(env, cron, scheduled, result) {
@@ -829,7 +893,7 @@ async function cronLog(env, cron, scheduled, result) {
 }
 async function runCron(env, cron, scheduled) {
   let r;
-  try { r = cron === SPARE_CRON ? await sparePush(env) : await postPush(env, scheduled || Date.now()); } catch (e) { r = { error: String(e && e.message || e) }; }
+  try { r = cron === SPARE_CRON ? await sparePush(env) : await notifyTick(env, scheduled || Date.now()); } catch (e) { r = { error: String(e && e.message || e) }; }
   await cronLog(env, cron, scheduled, JSON.stringify(r));
 }
 // GET /api/push/status (signed in, read-only): devices by push host only (never endpoints or keys), the send logs, the cron runs, and the reels due
@@ -1056,6 +1120,7 @@ async function postApi(request, env, p) {
     if (!res || res.status !== 204) {
       const why = !res ? 'GitHub did not answer.' : res.status === 401 || res.status === 403 || res.status === 404 ? 'The GitHub key GH_DISPATCH_TOKEN was refused or cannot start workflows. It needs Actions write on this repo.' : 'GitHub refused to start it (HTTP ' + res.status + ').';
       await db.prepare('UPDATE ig_publish SET state = \'failed\', line = \'Failed\', error = ?2, at = ?3 WHERE reel = ?1').bind(reel, why, new Date().toISOString()).run();
+      await notifyPostResult(env, db, reel, 'failed', await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(reel).first());
       return jres({ error: 'dispatch-failed', message: why, row: postRow(await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(reel).first()) }, 502);
     }
     return jres({ ok: true, row: postRow(await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(reel).first()) });
@@ -1075,6 +1140,7 @@ async function postApi(request, env, p) {
     await db.prepare('UPDATE ig_publish SET state = ?2, line = ?3, error = ?4, media_id = COALESCE(?5, media_id), permalink = COALESCE(?6, permalink), at = ?7 WHERE reel = ?1')
       .bind(reel, state, clip(b.line, 120) || POST_LINE[state], state === 'failed' ? clip(b.error, 400) || 'Something went wrong.' : null, clip(b.media_id, 40), permalink && /^https:\/\/(www\.)?instagram\.com\//.test(permalink) ? permalink : null, at).run();
     if (state === 'posted') await db.prepare('INSERT INTO reel_uploaded (id, at) VALUES (?1, ?2) ON CONFLICT(id) DO UPDATE SET at = excluded.at').bind(reel, at).run();   // same as "I posted it"
+    if (state === 'posted' || state === 'failed') await notifyPostResult(env, db, reel, state, await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(reel).first());   // "Posted ✓" or the plain reason
     return jres({ ok: true });
   }
   return jres({ error: 'not-found' }, 404);

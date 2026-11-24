@@ -314,6 +314,8 @@
   .mute{color:var(--mute)}
   #s-inbox .lede{margin-bottom:16px}
   .drawer .notify,.drawer .use{margin:0 0 14px}
+  .npr{display:flex;align-items:center;gap:10px;padding:9px 0;font:600 .88rem system-ui,sans-serif;min-height:44px}
+  .npr input{width:20px;height:20px;accent-color:var(--ok,#2a9d5c)}
   .drawer .notify{flex-direction:column;align-items:flex-start}
   /* the reel journey (owner, 15 Nov 2026): each reel's seven stages in order, grouped by post day, newest first */
   .jkey{display:flex;flex-wrap:wrap;gap:6px 14px;margin:10px 0 2px;color:var(--mute);font-size:.75rem}
@@ -643,7 +645,8 @@
 <div class="scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" aria-label="Settings">
   <div class="dh"><b>Settings</b><button class="ib" id="menu-close" type="button" aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6.2l11.8 11.6M17.9 6.1L6.1 17.9"/></svg></button></div>
-  <div class="notify" id="notify" hidden><span>Get a reminder 10 minutes before each post time on this phone.</span><button class="btn g" id="notify-on" type="button">Turn on notifications</button></div>
+  <div class="notify" id="notify" hidden><span>Get a notification when each reel is ready to post on this phone.</span><button class="btn g" id="notify-on" type="button">Turn on notifications</button></div>
+  <details class="use" id="nprefs"><summary><span class="r"><span>What to be told about</span><span id="np-n"></span></span></summary><div id="np-box"><p class="mute">Loading…</p></div></details>
   <details class="use" id="use" hidden><summary><span class="r"><span>GitHub minutes</span><span id="use-n"></span></span><span class="bar" id="use-bar"><i></i></span></summary><div id="use-note"></div><ul id="use-list"></ul></details>
   <button type="button" class="dlink" id="d-reels"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5.2" y="3.4" width="13.6" height="17.2" rx="3.2"/><path d="M10.4 9.3l4.6 2.8-4.7 2.6z"/></svg><span>All reels and channel profiles</span></button>
   <a class="dlink" href="/logout"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4.4H6.2c-.8 0-1.4.6-1.4 1.4v12.4c0 .8.6 1.4 1.4 1.4H10"/><path d="M10.4 12.1h9.2M16.4 8.6l3.4 3.5-3.4 3.4"/></svg><span>Sign out</span></a>
@@ -1533,6 +1536,19 @@
     show(sp.on !== false); row.appendChild(b); box.appendChild(row); cardsBox.insertBefore(box, cardsBox.firstChild); inboxCount();
     var left = Date.parse(sp.until) - Date.now(); if (left > 0) setTimeout(function(){ box.remove(); inboxCount(); }, Math.min(left, 2e9));   // gone at the reset
   }).catch(function(){});
+  // one switch per notification type (25 Nov 2026): GET/PUT /api/push/prefs; every type is on until switched off
+  var NP = [['ready', 'A reel is ready to post (at its time)'], ['nudge', 'A gentle nudge, 45 minutes later'], ['last', 'A last call at 8:30 PM'], ['posted', 'Posted, with the link'], ['failed', 'Posting failed, and why'], ['digest', 'A morning summary at 8:00 AM']];
+  function npLoad(){ var box = document.getElementById('np-box');
+    fetch('/api/push/prefs', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
+      box.textContent = ''; var on = 0;
+      NP.forEach(function(t){ var row = el('label', 'npr'), cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = j.prefs[t[0]] !== false; if (cb.checked) on++;
+        cb.addEventListener('change', function(){ cb.disabled = true;
+          fetch('/api/push/prefs', { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ type: t[0], on: cb.checked }) })
+            .then(function(r){ if (!r.ok) throw 0; cb.disabled = false; }).catch(function(){ cb.checked = !cb.checked; cb.disabled = false; }); });
+        row.appendChild(cb); row.appendChild(el('span', null, t[1])); box.appendChild(row); });
+      document.getElementById('np-n').textContent = on + ' of ' + NP.length + ' on'; })
+      .catch(function(){ box.textContent = ''; box.appendChild(el('p', 'mute', 'The switches could not load. Try again in a moment.')); }); }
+  npLoad();
   // notifications: the service worker (offline copies + push) and one line that always says where this device stands (owner, 1 Nov 2026:
   // "turn on notifications doesn't do anything"): never silent. iPhone: iOS 16.4+ and the app added to the Home Screen (Safari in a tab has no push)
   var nBox = document.getElementById('notify'), nTxt = nBox.querySelector('span'), nBtn = document.getElementById('notify-on'), nMode = null, nReg = null, nKey = null;
@@ -1567,7 +1583,7 @@
       if (!nKey) return nState('Notifications: not ready yet, the server key is missing (see "Needs you" on Today).', null);
       if (Notification.permission === 'denied') return nState(BLOCKED, null);
       if (sub && Notification.permission === 'granted') { pushPost('/api/push/subscribe?quiet=1', sub.toJSON()).catch(function(){}); return nState('Notifications are on for this device.', 'Send a test notification', 'test'); }
-      nState('Get a reminder 10 minutes before each post time on this phone.', 'Turn on notifications', 'on');
+      nState('Get a notification when each reel is ready to post on this phone.', 'Turn on notifications', 'on');
     });
   }).catch(function(e){ nState('Notifications: ' + ((e && e.message) || 'not available here') + '.', null); });
   // Instagram collector health: an open alert per account, or no new numbers for 36+ hours (the run itself failed or stopped)

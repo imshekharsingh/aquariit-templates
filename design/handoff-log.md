@@ -583,3 +583,8 @@ Format (at most 6 lines):
 - Done: design/slots.json (tech 15:00, Turns Out 17:00, web 19:00 IST; web is a one-week test, review 2 Dec). The Worker takes channel defaults from it (reels without a postAt), GET /api/slots gives it to the app, the app's slotOf and the board cards show "Posts at HH:MM IST". scripts/check.mjs validates the file (13:00-21:00). One line each in CLAUDE.md "Schedule" and design/runbook-reels.md "Scheduling". sw.js v29.
 - Left: nothing for the owner. Existing captions.json entries are untouched; builders use the file for new ones.
 - For the other account: new entries take postAt from design/slots.json, not 13:00.
+
+## 2026-11-25 · claude/notifications · Notifications per type (owner chat job, size L, part 2 of 5)
+- Done: src/notify.js (the plan) + Worker: ready at the slot, one nudge at +45 min, one last call 20:30 IST, "Posted ✓" with the link and the plain reason on a failure (from Post now), a 08:00 IST morning summary; cron `*/10 * * * *`; one switch per type in Settings (/api/push/prefs, D1 push_prefs; notif_log keys stop repeats). sw.js v30 (an Instagram link opens on its own). scripts/qa/notify-test.mjs is in npm run check. The old 10-minutes-before reminder (postPush) is removed.
+- Left: nothing for the owner; pushes need the device signed up as before. Real pushes have not been seen on a phone yet (the plan and switches are tested, the send path is the existing one).
+- For the other account: a reel gets "ready" only when the journey says the second look cleared it.
