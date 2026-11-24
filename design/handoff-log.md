@@ -6,6 +6,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 10:05 IST · claude/c3-cv-r3-greymenu-pace · Turns Out today: CV render 3, grey menu PACE fix (owner chat job, size M-L)
+- Owner (Owner answers, 24 Nov): YES to c3-resume2-render3; Like on both previews. Owner chat, 09:57 IST: "We need turns out today, make them ready one after the other" = the go for the grey menu's render 3 too (no ask added).
+- Done: CV render 3 started from main a29f59a (Showreel run 45326427558, preview path, 17.8 s; stills checks clean). Grey menu: the ratio sentence split in two, "Then check the ratio. For body text, aim for four and a half to one." (render 2 read 4.55 words/s on the one long sentence; the number phrase alone runs near 5 words/s, so the second sentence carries slower words; WCAG's 4.5 to 1 is the body-text minimum). Scene rebuilt (contrast2), 7 breaths for 8 sentences, anchors unchanged ("ratio", "four"); stills, preflight and c3-script clean. Ask c3-resume2-render3 cleared.
+- Left (this session carries on): Output QA on CV render 3 and its frames against review/previews/c3-design-rebuilds.md; grey menu render 3 + Output QA after this merge; an independent critic for each one that passes; a READY one is made postable for today.
+- For the other account: a spoken ratio ("four and a half to one") is about 5 words/s on its own; give its sentence a slow lead-in or keep it to 6 words.
+
 ## 2026-11-24 08:45 IST · claude/tech-miniled-zones · today's tech reel, built to the owner's preview gate (showreel-tech-miniled-zones)
 - Done: "Mini LED is not a new kind of screen" (quickmyth, home, global; Black Friday week). 3D on kit3d.js, one TV through seven shots: see-through hero with MYTH (frame 0), the picture sheet lifts (LCD), a low macro over the LEDs (LIGHTS), zones follow the moon (ZONES), all 2,304 light in 0.55 s, one zone behind its 6,400 pixels, a spec card (ZONES?), loop. Experiment tech-direction-3d try 2 (countTo idea, a second framing inside 4 s, cutsound).
 - Facts read today on primary pages: Apple Studio Display XDR specs (5120 x 2880, Mini-LED backlight with 2304 dimming zones; 6,400 pixels a zone is our sum), TrendForce 16 Nov 2026 (Mini LED TVs 28.78 million in 2026, +116%, near 15%; "premium LCD TV market").
