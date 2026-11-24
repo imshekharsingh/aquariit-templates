@@ -33,17 +33,21 @@
    "hue": 225,
    "world": "cobalt"
   },
+  "showreel-43-tapzoom": {
+   "hue": 285,
+   "world": "mauve-violet"
+  },
   "showreel-44-darkflash": {
    "hue": 315,
    "world": "berry"
+  },
+  "showreel-45-homebar": {
+   "hue": 25,
+   "world": "black"
+  },
+  "showreel-46-tabwiggle": {
+   "hue": 165,
+   "world": "black, mint accent"
   }
- },
- "showreel-43-tapzoom": {
-  "hue": 285,
-  "world": "mauve-violet"
- },
- "showreel-45-homebar": {
-  "hue": 25,
-  "world": "black"
  }
 }

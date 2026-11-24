@@ -6,6 +6,13 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 07:20 IST · claude/web-tabwiggle · daily run: audit card + today's web reel (showreel-46-tabwiggle)
+- Done: Feedback first (0 new items, 0 answers, 0 references). The nightly Instagram collect had not started (the 01:44 run was the late post check), so this run dispatched one (run 45304135719) and wrote the audit card from it: web ALARM + ESCALATE (median 1,428 vs 2,000), tech OK, c3 ESCALATE.
+- Web reel: "Why do your tabs wiggle?" (E30 wiggle family, try 1, experiment web-wiggle-family): the tapped tab turns bold and shoves the others (real measured widths, Open Sans 400 vs 800), fixed with a hidden bold copy (::after, content: attr(data-text)); hook kit (rule 20), black look with a mint accent. Local preflight, stills and the Output QA functions all pass (HUE 165, DEMO 35, FOCUS 58 vs 39, CALM 1.2%, MUTE 4.5%).
+- Also: scripts/qa/demo-hues.json had tapzoom and homebar outside "reels", so HUE compared against older reels; fixed. rules-web.md 24 Nov audit note, craft-log, experiments Results log, improvements note, tip demo tabwiggle.
+- Left: the one render after the merge, Output QA, item 13, then the critic (11:17 IST). Tech reel: built next in its own branch; the owner sees stills + a preview before its render.
+- For the other account: a black-look reel needs colour inside the phone to pass DEMO and SUBJECT FILL (a pill, tinted cards); give each black reel its own single accent so HUE passes.
+
 ## 2026-11-24 03:50 IST · claude/critic-c3-greytext2-r2 · critic second look: Turns Out grey menu preview, render 2
 - Done: judged the real MP4 (21.2 s, from main 8808421) with its word times; "CRITIC (render 2): READY" in review/previews/c3-design-rebuilds.md. Scores 7.5 / 7.5 / 7.5, voice 7.5 (measured, not heard), before 7. No scene changed.
 - Every fix lands on its word (darken 7.46 s, lighten 9.17 s, ratio 11.18 s, four 12.57 s); pauses 0.5-0.7 s; rings clear of the text; ratio readable.

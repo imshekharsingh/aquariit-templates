@@ -621,4 +621,20 @@ export const demos = {
 <p class="note">Tap the button. The right bar gains padding-bottom: env(safe-area-inset-bottom) and its button lifts clear of the swipe line (simulated; on a real phone the inset is 0 where nothing covers the screen). MDN, env().</p>`,
     js: `function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); }`,
   },
+  // the tab wiggle demo (showreel-46-tabwiggle, 24 Nov 2026): real CSS, two tab rows; each tap makes the next tab bold; the left row is laid out again and its tabs jump, the right row's tabs carry a hidden bold copy (::after, content: attr(data-text)) and stay put
+  tabwiggle: {
+    css: `
+#tabwiggle .stage{margin:8px 10px;padding:14px 10px;border-radius:12px;background:#10171a;white-space:nowrap;overflow:hidden}
+#tabwiggle .tab{display:inline-block;margin-right:12px;font:400 17px/1.4 system-ui,sans-serif;color:#b9c4c1;text-align:center}
+#tabwiggle .tab.on{font-weight:800;color:#5fe3c0}
+#tabwiggle .fix .tab::after{content:attr(data-text);font-weight:800;display:block;height:0;visibility:hidden}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">bold only</span><div class="stage"><span class="tab on" data-text="Following">Following</span><span class="tab" data-text="Popular">Popular</span><span class="tab" data-text="New">New</span></div></div>
+  <div class="pane fix"><span class="tag ok">hidden bold copy</span><div class="stage fix"><span class="tab on" data-text="Following">Following</span><span class="tab" data-text="Popular">Popular</span><span class="tab" data-text="New">New</span></div></div>
+</div>
+<button class="play" type="button">Tap the next tab</button>
+<p class="note">Tap the button a few times. On the left the bold tab is wider, so the tabs after it jump. On the right every tab has a hidden bold copy of its label (::after with content: attr(data-text)), so it is always as wide as its bold self and nothing moves. MDN, attr().</p>`,
+    js: `function(root, btn){ var n = 0; btn.addEventListener('click', function(){ n = (n + 1) % 3; root.querySelectorAll('.stage').forEach(function(st){ st.querySelectorAll('.tab').forEach(function(t, i){ t.classList.toggle('on', i === n); }); }); }); }`,
+  },
 };
