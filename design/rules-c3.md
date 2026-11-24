@@ -1,5 +1,11 @@
 # Turns Out rulebook (the gate every Turns Out reel passes before its one render)
 
+## Start from gold (owner chat, 24 Nov 2026; design/gold.md)
+Every new Turns Out reel starts as a copy of the gold reel showreel-c3-grey-text (render 3): `node scripts/starter.mjs c3 <slug>` copies scripts/channel3/design/contrast2.js and scripts/channel3/grey-text.json, then `node scripts/channel3/design/build.mjs <slug>` and marks the only places to
+change with "CHANGE:" (the board's design, the before mistake, the three fixes, the check chip, the voice text). Keep the rest as gold (light, framing, type sizes, shot rhythm, motion, sound) unless the review file says
+why. `npm run check` fails while a config still has "_starter" or "CHANGE: ". After the render: Output QA LOOK compares its light with gold,
+and `python3 scripts/qa/side-by-side.py reel-files/<name>.mp4` makes the sheet the critic must view (critic.md question 43).
+
 > **Design series (21 Nov 2026, owner; design/c3-plan.md section 0) replaces the restart rules R1-R3 and the sketch plates below:**
 > - **D1 Topic:** one design fix anyone can apply in a minute to their own menu, poster, slide, invite or sign; checked against a design source (cite 2).
 > - **D2 Frame 0:** the claim alone in the top band, the flawed design fully lit on its real-world stage, its problems ringed with short labels.

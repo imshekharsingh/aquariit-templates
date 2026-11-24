@@ -1,5 +1,11 @@
 # @webin20sec rulebook (the gate every web reel passes before its one render)
 
+## Start from gold (owner chat, 24 Nov 2026; design/gold.md)
+Every new web reel starts as a copy of the gold reel showreel-46-tabwiggle: `node scripts/starter.mjs web <slug>` copies scripts/explainer/tabwiggle.html/.json (also `node scripts/explainer/newweb.mjs <slug> --gold`) and marks the only places to
+change with "CHANGE:" (the phone's broken and fixed content, the hook words, the measurement, the code, the reaction words, the meter labels and the voice text). Keep the rest as gold (light, framing, type sizes, shot rhythm, motion, sound) unless the review file says
+why. `npm run check` fails while a config still has "_starter" or "CHANGE: ". After the render: Output QA LOOK compares its light with gold,
+and `python3 scripts/qa/side-by-side.py reel-files/<name>.mp4` makes the sheet the critic must view (critic.md question 43).
+
 How to use: before the one render, score the reel rule by rule (pass / fail, one line each) in the stills review. A reel that fails a rule
 is fixed or its topic is swapped. The daily audit adds, changes or drops a rule when the numbers say so, always with the number.
 Evidence = the Instagram collect run of 5 Nov 2026 (lifetime reach and avg watch per reel; reels are ~20 s, so hold = avg watch / 20).
