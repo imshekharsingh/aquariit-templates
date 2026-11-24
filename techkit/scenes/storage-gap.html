@@ -83,7 +83,7 @@ const screenTex = new THREE.CanvasTexture(scrC); screenTex.encoding = THREE.sRGB
 let scrP = -1;
 function drawScreen(p) { p = Math.round(p * 200) / 200; if (p === scrP) return; scrP = p; const c = scrC.getContext('2d'), w = 512, h = 1024;
   c.fillStyle = '#05070a'; c.fillRect(0, 0, w, h);
-  const g = c.createRadialGradient(256, 400, 10, 256, 400, 520); g.addColorStop(0, 'rgba(56,225,255,.26)'); g.addColorStop(1, 'rgba(56,225,255,0)'); c.fillStyle = g; c.fillRect(0, 0, w, h);
+  const g = c.createRadialGradient(256, 400, 10, 256, 400, 520); g.addColorStop(0, 'rgba(56,225,255,.14)'); g.addColorStop(1, 'rgba(56,225,255,0)'); c.fillStyle = g; c.fillRect(0, 0, w, h);
   c.textAlign = 'left'; c.fillStyle = 'rgba(244,246,248,.9)'; c.font = '800 54px "Inter Display", Inter, sans-serif'; c.fillText('Storage', 56, 120);
   const x0 = 56, bw = 400, by = 170, bh = 64, parts = [[.26, '#38e1ff', 'Apps'], [.24, '#f4f6f8', 'Photos'], [.22 * p / 1, '#ffae3d', 'System']];
   c.fillStyle = 'rgba(244,246,248,.12)'; c.beginPath(); c.roundRect ? c.roundRect(x0, by, bw, bh, 18) : c.rect(x0, by, bw, bh); c.fill();
@@ -213,7 +213,7 @@ function updateSlab(t) {
     const s = (1 + .13 * g) * (u >= 1 ? 0 : 1), fl = flies ? prog(t, tf - .12, tf + .1) : 0;
     td.position.set(x + f.dx * p, y + f.dy * p, .02 + f.dz * p); td.rotation.set(f.rx * p, 0, f.rz * p); td.scale.setScalar(s); td.updateMatrix(); tiles.setMatrixAt(i, td.matrix);
     td.position.z += .14; td.scale.setScalar(s * (1 - .12 * g) * (1 + .5 * fl * (1 - u)) * (L > 0 ? 1 : 0)); td.updateMatrix(); tileGlow.setMatrixAt(i, td.matrix);
-    tcol.copy(tileC.cyan).lerp(tileC.white, g * .12).lerp(tileC.amber, fl).multiplyScalar(L * ((.5 + .12 * Math.sin(t * 3 + i * .7)) * (1 - g) + .46 * g + 1.1 * fl) * (1 - .3 * u)); tileGlow.setColorAt(i, tcol);
+    tcol.copy(tileC.cyan).lerp(tileC.white, g * .12).lerp(tileC.amber, fl).multiplyScalar(L * ((.42 + .12 * Math.sin(t * 3 + i * .7)) * (1 - g) + .4 * g + 1.1 * fl) * (1 - .3 * u)); tileGlow.setColorAt(i, tcol);
   }
   tiles.instanceMatrix.needsUpdate = true; tileGlow.instanceMatrix.needsUpdate = true; tileGlow.instanceColor.needsUpdate = true;
 }
@@ -302,14 +302,14 @@ function shotCam(t, sh) {
   if (sh === 1) { const z = -160, k = G(u), hold = KIT.push(Math.max(0, t - B[1]), .012);   // a low macro across the tiles, then a lift to a higher view
     const F0 = { pos: V(-1.3, 1.1, z + 9.4 * (1 - hold)), look: V(.4, .3, z - 3.5), fov: 38 }, F1 = { pos: V(2.4, 3.8, z + 11.5 * (1 - hold)), look: V(0, .2, z - 1.5), fov: 40 };
     const f = KIT.reframe(F0, F1, ease(prog(t, C.box - .25, C.billion + .5))); return { ...f, ap: .14, focus: V(0, 0, lerp(z + 2, z - 1, ease(prog(t, C.box, C.billion + .5)))) }; }
-  if (sh === 2) { const z = -160, k = G(u); return { pos: V(0, lerp(7, 4.2, k), z + lerp(37, 29, k)), look: V(0, lerp(2.0, 1.5, k), z), fov: 36 }; }   // the whole slab from far: the top band stays empty for the word
+  if (sh === 2) { const z = -160, k = G(u); return { pos: V(0, lerp(8, 5.5, k), z + lerp(52, 44, k)), look: V(0, lerp(3.6, 3.0, k), z), fov: 34 }; }   // the whole slab from far: the top band stays empty for the word
   if (sh === 3) { const z = -60, hold = KIT.push(Math.max(0, t - B[3]), .012), x0 = -LSP, x1 = 0, x2 = LSP,
       FA = { pos: V(x0 + .95, -1.25, z + 6.3 * (1 - hold)), look: V(x0, 2.42, z), fov: 40 }, FB = { pos: V(x1 - 3.3, 3.0, z + 10.6 * (1 - hold)), look: V(x1, 2.12, z), fov: 33 },
       FC = { pos: V(x2 + .5, 1.3, z + 12.4), look: V(x2, 2.02, z), fov: 31 };   // the last one is the match framing of the cut into the board
     const f = KIT.reframe(KIT.reframe(FA, FB, ease(prog(t, C.a512 - .45, C.a512 + .2))), FC, ease(prog(t, C.tb - .45, C.tb + .2)));
     return { ...f, ap: .12, focus: V(lineX(t), 1.7, z) }; }
-  if (sh === 4) { const k = G(u); return { pos: V(lerp(0, -.4, k), lerp(1.3, 1.9, k), lerp(12.4, 10.2, k)), look: V(0, lerp(2.02, 1.9, k), 0), fov: lerp(31, 34, k) }; }   // starts on the match framing, then the open top half under an empty band
-  if (sh === 5) { const k = G(u); return { pos: V(lerp(.9, .4, k), lerp(2.3, 1.9, k), lerp(8.6, 10, k)), look: V(0, 1.4, 0), fov: 31 }; }   // the Storage screen
+  if (sh === 4) { const k = G(u), d = ease(prog(t, B[4] + .25, B[4] + 1.3)); return { pos: V(lerp(0, -1.1, d), lerp(1.3, 1.5, d), lerp(12.4, 7.6, d) - 1.7 * k), look: V(lerp(0, .5, k), lerp(2.02, 1.65, d), 0), fov: lerp(31, 30, d) }; }   // starts on the match framing, then the open top half under an empty band
+  if (sh === 5) { const k = G(u); return { pos: V(lerp(1.4, .5, k), lerp(1.4, 1.0, k), lerp(11.5, 13.2, k)), look: V(0, 1.5, 0), fov: 32 }; }   // the Storage screen
   // G: the phone turns from its screen to its back while the camera settles on A's framing (the loop)
   const k = G(prog(t, B[6], TOTAL - .05), .45), A0 = shotCam(0, 0);
   return { pos: V(.5, .9, 12.4).lerp(A0.pos, k), look: V(0, 1.72, 0).lerp(A0.look, k), fov: 31 };
@@ -337,7 +337,7 @@ function apply(t, sh = shotAt(t), mod = null) {
   const c = camAt(t, sh, mod);
   hero.visible = sh === 0 || sh >= 4; heroGlow.visible = sh === 0 || sh === 6; lineup.visible = sh === 3; slab.visible = sh === 1 || sh === 2;
   scene.fog = sh === 1 ? slabFog : null;
-  keyL.intensity = sh === 1 || sh === 2 ? 1.5 : 2.5; rimL.intensity = sh === 1 ? 1.6 : 2.9; rim2L.intensity = 1.5;
+  keyL.intensity = sh === 1 ? 1.2 : sh === 2 ? .7 : 2.5; rimL.intensity = sh === 1 ? 1.6 : 2.9; if (sh === 4) keyL.intensity = 1.5; rim2L.intensity = 1.5;
   // hero pose
   if (hero.visible) {
     hero.position.set(0, 0, 0);
@@ -347,13 +347,13 @@ function apply(t, sh = shotAt(t), mod = null) {
     if (sh === 6) { const turn = ease(prog(t, TURN0(), TURN0() + .8)), sway = .3 - .22 * G(prog(t, B[6] - .3, TURN0())); hero.rotation.set(lerp(.04, .1, turn), lerp(Math.PI - sway, -.32, turn), .02 * turn);
       hero.userData.back.material.opacity = .22; }
     drawScreen(sh >= 5 ? ease(prog(t, C.share - .15, C.share + .5)) : 0);
-    hero.userData.scr.material.emissiveIntensity = sh >= 5 ? 1.15 : 0;
+    hero.userData.scr.material.emissiveIntensity = sh >= 5 ? .85 : 0;
     hero.userData.bump.visible = sh !== 4;
     const st = heroState(t, sh);
     hero.userData.chips.forEach(({ ch }, i) => { const s = st[i]; ch.visible = s.vis; ch.position.copy(s.pos); ch.rotation.set(s.rot.x, s.rot.y, s.rot.z); chipGlow(ch, s.glow, s.heat || 0); });
   }
   if (sh === 1 || sh === 2) { slab.rotation.set(sh === 1 ? -1.2 : -.7, sh === 1 ? .14 : 0, 0); updateSlab(t); }
-  if (sh === 3) LP.forEach((p, i) => { p.userData.back.material.opacity = .2; const cue = [C.a128, C.a512, C.tb][i], n = p.userData.chips.length;
+  if (sh === 3) LP.forEach((p, i) => { p.userData.back.material.opacity = .2; p.rotation.y = [-.55, .6, -.04][i] + (i === 2 ? .16 * Math.sin((t - B[3]) * 1.5) : .06 * Math.sin((t - B[3]) * 1.1 + i)); p.rotation.x = [.05, -.08, 0][i]; const cue = [C.a128, C.a512, C.tb][i], n = p.userData.chips.length;
     p.userData.chips.forEach(({ ch }, k) => { const q = (t - LITK(cue, k, n)) / .3; chipGlow(ch, .25 + .75 * eout(q) + .5 * Math.sin(Math.PI * clamp(q / 1.5))); }); });
   // the blade and its seam (board shot only)
   blade.visible = sh === 4 && t > BL0() && t < BL1() + .05; seam.visible = sh === 4 && t > BL0();
@@ -384,22 +384,22 @@ function gbNumber(t, n, since, y, a, color = WHITE, unit = 'GB', pop = 0) {     
   o.restore(); BOXES.push([n + ' ' + unit, x0, x0 + dw + 24 + gw, y - size * .74, y + 6]);
 }
 // one box number rolls to its result on the spoken value: [box shown from, box value, unit, result cue, result value]
-const TIERS = () => [[C.a128, 128, 'GB', C.a119, 119], [C.a512, 512, 'GB', C.a477, 477], [C.tb, 1000, 'GB', C.a931, 931]];
+const TIERS = () => [[B[3] + .3, 128, 'GB', C.a119, 119], [C.a512, 512, 'GB', C.a477, 477], [C.tb, 1000, 'GB', C.a931, 931]];
 function typeLayer(t) {
   BOXES = [];
   const sh = shotAt(t), Y = 540;
   if (sh === 0) { const ct = KIT.countTo(t, C.n238, 256, 238); gbNumber(t, ct ? ct.n : 256, ct ? ct.since : 0, Y, 1 - prog(t, B[1] - .15, B[1]), ct ? HEATC : WHITE); }
   if (sh === 1) {
-    if (t < C.billion - .05) big('NOTHING', 'drop', WHITE, t, C.nothing, C.billion - .05, { size: 190, y: 520 });
+    if (t < C.billion - .05) big('NOTHING', 'drop', WHITE, t, C.nothing, C.billion - .05, { size: 150, y: 520 });
     big('1 BILLION', 'track', SIGC, t, C.billion, wEnd(2), { size: 150, y: 500, glow: 'rgba(56,225,255,.5)' }); }
-  if (sh === 2) { if (t < C.bigger - .05) big('SOFTWARE', 'rise', WHITE, t, C.software, C.bigger - .05, { size: 170, y: 500 });
+  if (sh === 2) { if (t < C.bigger - .05) big('SOFTWARE', 'rise', WHITE, t, C.software, C.bigger - .05, { size: 130, y: 500 });
     big('BIGGER', 'slam', HEATC, t, C.bigger, wEnd(3), { size: 225, y: 520, glow: 'rgba(255,150,40,.6)' }); }
   if (sh === 3) { const T = TIERS(); for (let i = 0; i < 3; i++) { const [t0, b, unit, tr, res] = T[i], end = i < 2 ? T[i + 1][0] - .12 : wEnd(4);
       if (t < t0 || t >= end) continue; const ct = KIT.countTo(t, tr, b, res), a = prog(t, t0, t0 + .06) * (1 - prog(t, end - .12, end));
       gbNumber(t, ct ? ct.n : b, ct ? ct.since : t0, Y, a, ct ? HEATC : WHITE, unit, !ct ? 1 : 0); } }
-  if (sh === 4) { if (t < C.n69 - .05) big('GAP', 'rise', HEATC, t, C.gap, C.n69 - .05, { size: 290, y: 500, glow: 'rgba(255,150,40,.4)' });
+  if (sh === 4) { if (t < C.n69 - .62) big('GAP', 'rise', HEATC, t, C.gap, C.n69 - .62, { size: 290, y: 500, glow: 'rgba(255,150,40,.4)' });
     const ct = KIT.countTo(t, C.n69, 0, 69); if (ct) gbNumber(t, ct.n, ct.since, Y, prog(t, C.n69 - .6, C.n69 - .5) * (1 - prog(t, wEnd(5) - .12, wEnd(5))), HEATC); }
-  if (sh === 5) big('SYSTEM', 'rise', WHITE, t, C.system, wEnd(6), { size: 220, y: 500 });
+  if (sh === 5) big('SYSTEM', 'rise', WHITE, t, C.system, wEnd(6), { size: 165, y: 480 });
   if (sh === 6) { if (t < C.final + .55) big('7%', 'rise', SIGC, t, C.seven, C.final + .55, { size: 330, y: Y, glow: 'rgba(56,225,255,.5)' });
     else gbNumber(t, 256, 0, Y, prog(t, C.final + .55, C.final + .9)); }
 }
