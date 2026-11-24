@@ -6,6 +6,13 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-24 10:30 IST · claude/tech-miniled-zones · today's tech reel, built to the owner's preview gate (showreel-tech-miniled-zones)
+- Done: "Mini LED is not a new kind of screen" (quickmyth, home, global; Black Friday week). 3D on kit3d.js, one TV through seven shots: see-through hero with MYTH (frame 0), the picture sheet lifts (LCD), a low macro over the LEDs (LIGHTS), zones follow the moon (ZONES), all 2,304 light in 0.55 s, one zone behind its 6,400 pixels, a spec card (ZONES?), loop. Experiment tech-direction-3d try 2 (countTo idea, a second framing inside 4 s, cutsound).
+- Facts read today on primary pages: Apple Studio Display XDR specs (5120 x 2880, Mini-LED backlight with 2304 dimming zones; 6,400 pixels a zone is our sum), TrendForce 16 Nov 2026 (Mini LED TVs 28.78 million in 2026, +116%, near 15%; "premium LCD TV market").
+- Owner gate: a preview render (Tech reel, preview p1) goes to the app's Previews with ONE yes/no in "Needs you" (tech-miniled-ok, until 24 Nov). The reel's own render or `scripts/r2.sh promote` waits for the yes.
+- Left: after the owner's yes: promote or render, reel-status, item 13, owner-feedback.md and critic.md against the real MP4; then the critic. Builder's PREMIUM line is in the review file; weakest shot is the pixel macro (20-24 s).
+- For the other account: nothing.
+
 ## 2026-11-24 07:20 IST · claude/web-tabwiggle · daily run: audit card + today's web reel (showreel-46-tabwiggle)
 - Done: Feedback first (0 new items, 0 answers, 0 references). The nightly Instagram collect had not started (the 01:44 run was the late post check), so this run dispatched one (run 45304135719) and wrote the audit card from it: web ALARM + ESCALATE (median 1,428 vs 2,000), tech OK, c3 ESCALATE.
 - Web reel: "Why do your tabs wiggle?" (E30 wiggle family, try 1, experiment web-wiggle-family): the tapped tab turns bold and shoves the others (real measured widths, Open Sans 400 vs 800), fixed with a hidden bold copy (::after, content: attr(data-text)); hook kit (rule 20), black look with a mint accent. Local preflight, stills and the Output QA functions all pass (HUE 165, DEMO 35, FOCUS 58 vs 39, CALM 1.2%, MUTE 4.5%).

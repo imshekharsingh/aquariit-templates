@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>miniled-zones</title>
+<!-- @techin20sec, 24 Nov 2026 (design/tech-direction.md; rules-tech.md M1-M10): "Mini LED is not a new kind of screen".
+     Real 3D on techkit/kit3d.js (three.js r149 inlined at the THREE marker, the kit at the KIT3D marker). window.render(t) sets everything
+     from t (no rAF, seeded randomness). One TV in a dark room; ink + white + cyan (the light) + amber (the myth, the verdict) only.
+     Shots (one per spoken line, cut 0.2 s before the line):
+       0 hero: a TV you can see through, its picture over a grid of lights, MYTH stamped | 1 the picture sheet lifts off: LCD |
+       2 low macro across the board: the LEDs light in a wave | 3 the moon crosses the glass, only the zones under it are lit: ZONES |
+       4 the bare board front-on, all 2,304 zones light in half a second (64 x 36, drawn to the count) | 5 one zone behind its 80 x 80
+       pixels: a three-pixel star, a whole zone of light behind it: 6,400 | 6 the TV again, a spec card: ZONES? and back to frame 0.
+     Shot changes: match (the TV squares up) > push (through the gap) > rack > match (the board) > push (into one zone) > wipe. -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#07080c}
+#out{position:absolute;left:0;top:0;width:1080px;height:1920px}
+#gl{position:absolute;left:-4000px;top:0}
+#caps{position:absolute;left:130px;right:130px;top:1448px;text-align:center;color:#f4f6f8;font-family:"Inter Display",Inter,sans-serif;font-weight:700;
+  font-size:52px;line-height:1.14;letter-spacing:-.01em;text-shadow:0 3px 18px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.9)}
+</style></head><body>
+<canvas id="out" width="1080" height="1920"></canvas>
+<div id="caps" data-subs></div>
+<script src="timeline.js"></script>
+<!--THREE-->
+<!--KIT3D-->
+<script>
+(() => {
+const W = 1080, H = 1920;
+const INK = 0x07080c, SIG = 0x38e1ff, HEAT = 0xffae3d, SIGC = '#38e1ff', HEATC = '#ffae3d', WHITE = '#f4f6f8';
+const FONT = '"Inter Display", Inter, sans-serif';
+const TL = window.TL, C = TL.cues, SC = TL.scenes, TOTAL = TL.total;
+const KIT = window.KIT3D, Q = window.KITQ || 1;
+const { clamp, lerp, prog, ease, eout, ein } = KIT;
+function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+
+// ---------- renderer ----------
+const gl = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+gl.setPixelRatio(1); gl.setSize(W, H, false); gl.domElement.id = 'gl'; document.body.appendChild(gl.domElement);
+gl.outputEncoding = THREE.sRGBEncoding; gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.2;
+gl.setClearColor(INK, 1);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(INK);
+const cam = new THREE.PerspectiveCamera(30, W / H, 0.02, 400);
+const out = document.getElementById('out'), o = out.getContext('2d'); o.imageSmoothingEnabled = true; o.imageSmoothingQuality = 'high';
+{ const env = new THREE.Scene(); env.background = new THREE.Color(0x050608);
+  const box = (w, h, x, y, z, c) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m); };
+  box(8, 3, 0, 7, 5, 0xdde2e8); box(2, 9, -8, 1, 3, 0x9fb4c8); box(2, 9, 8, 0, 2, 0xd8c8b0); box(10, 2, 0, -8, -4, 0x202428);
+  const pm = new THREE.PMREMGenerator(gl); scene.environment = pm.fromScene(env, 0.02).texture; }
+function ctex(w, h, draw) { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; t.anisotropy = 8; return t; }
+const KM = KIT.materials(THREE, ctex);
+const LIT = KIT.light(THREE, scene), keyL = LIT.key, rimL = LIT.rim, rim2L = LIT.rim2;
+
+// ---------- the TV: 64 x 36 zones (2,304), one LED each ----------
+const TW = 8, TH = 4.5, NX = 64, NY = 36, NZ = NX * NY, PITCH = TW / NX, CY = 3.05;
+const zx = (i) => (i + .5 - NX / 2) * PITCH, zy = (j) => CY + (j + .5 - NY / 2) * PITCH;
+
+// shot boundaries: one shot per spoken line, the picture changes 0.2 s before the line (the cut sound sits there: techkit/sound.py)
+const S = SC.map((s) => s.start);
+const B = [0, ...S.slice(1).map((x) => x - .2), TOTAL];
+const shotAt = (t) => { for (let k = B.length - 2; k >= 0; k--) if (t >= B[k]) return k; return 0; };
+const CUTS = [null, { kind: 'match' }, { kind: 'push', color: '56,225,255', depth: .9, flash: .35 }, { kind: 'rack', blur: 26 }, { kind: 'match' }, { kind: 'push', color: '56,225,255', depth: .92, flash: .12 }, { kind: 'wipe', dir: 1 }];
+const cutAt = (t) => { for (let k = 1; k <= 6; k++) { const d = KIT.DUR[CUTS[k].kind]; if (t > B[k] - d / 2 && t < B[k] + d / 2) return { k, u: (t - (B[k] - d / 2)) / d, ...CUTS[k] }; } return null; };
+const wEnd = (k) => B[k] - KIT.DUR[CUTS[k].kind] / 2 - .02;
+
+// ---------- the picture on the screen (a canvas redrawn from t): a night sky with a moon; a shop label; a spec card ----------
+const SCW = 1024, SCH = 576, scrC = document.createElement('canvas'); scrC.width = SCW; scrC.height = SCH; const sc = scrC.getContext('2d');
+const scrTex = new THREE.CanvasTexture(scrC); scrTex.encoding = THREE.sRGBEncoding; scrTex.anisotropy = 8;
+const STARS = (() => { const R = rng(7), a = []; for (let i = 0; i < 46; i++) a.push([R(), .34 + R() * .64, .6 + R() * 1.5, R() * 6.28]); return a; })();
+const moonAt = (t, sh) => sh === 3 ? [lerp(.2, .8, KIT.glide(prog(t, B[3], B[4]), .5)), .6 + .1 * Math.sin(Math.PI * prog(t, B[3], B[4]))] : ((x) => [.6 + .055 * x, .7 + .012 * Math.sin(x * .9)])(sh === 6 ? t - TOTAL : sh === 1 ? B[1] + .012 * (t - B[1]) : t);   // the moon drifts and its zones follow it, from frame 0; the last shot ends where frame 0 starts
+const LOOP0 = () => C.final + .75, LOOP1 = () => C.final + 1.35;         // the spec card gives way to the opening picture (the loop)
+const cardMix = (t, sh) => sh === 6 ? 1 - ease(prog(t, LOOP0(), LOOP1())) : 0;
+function drawScreen(t, sh) {
+  sc.globalAlpha = 1; sc.fillStyle = '#020305'; sc.fillRect(0, 0, SCW, SCH);
+  const k = cardMix(t, sh), [mu, mv] = moonAt(t, sh);
+  if (k < 1) { sc.globalAlpha = 1 - k;
+    STARS.forEach(([u, v, r, ph], i) => { sc.fillStyle = `rgba(244,246,248,${(.45 + .4 * Math.sin(t * 2.2 + ph)).toFixed(3)})`; sc.beginPath(); sc.arc(u * SCW, (1 - v) * SCH, sh === 3 && i % 3 ? 0 : r, 0, 7); sc.fill(); });
+    const mx = mu * SCW, my = (1 - mv) * SCH, g = sc.createRadialGradient(mx, my, 20, mx, my, 150); g.addColorStop(0, 'rgba(190,236,255,.5)'); g.addColorStop(1, 'rgba(190,236,255,0)'); sc.fillStyle = g; sc.fillRect(mx - 160, my - 160, 320, 320);
+    sc.fillStyle = '#f4f8fb'; sc.beginPath(); sc.arc(mx, my, 62, 0, 7); sc.fill();
+    sc.fillStyle = 'rgba(150,170,186,.5)'; [[-20, -14, 13], [18, 10, 17], [-8, 26, 8], [24, -24, 7]].forEach(([dx, dy, r]) => { sc.beginPath(); sc.arc(mx + dx, my + dy, r, 0, 7); sc.fill(); });
+    if (sh !== 3) { sc.fillStyle = '#f4f6f8'; sc.textAlign = 'left'; sc.textBaseline = 'alphabetic'; sc.font = `900 148px ${FONT}`; sc.fillText('MINI LED', 64, 470);   // the label on the box, on the shop demo
+      sc.fillStyle = '#38e1ff'; sc.fillRect(68, 500, 300, 10); }
+  }
+  if (k > 0) { sc.globalAlpha = k;      // the spec card: where to look
+    sc.fillStyle = 'rgba(244,246,248,.2)'; for (let i = 0; i < 2; i++) { sc.fillRect(110, 92 + i * 86, 250 + i * 70, 22); sc.fillRect(700, 92 + i * 86, 190, 22); }
+    const pu = .5 + .5 * Math.sin((t - B[6]) * 5);
+    sc.strokeStyle = `rgba(56,225,255,${(.65 + .35 * pu).toFixed(3)})`; sc.lineWidth = 8; sc.strokeRect(74, 262, 876, 234);
+    sc.fillStyle = 'rgba(56,225,255,.12)'; sc.fillRect(74, 262, 876, 234);
+    sc.fillStyle = '#f4f6f8'; sc.textAlign = 'left'; sc.font = `800 76px ${FONT}`; sc.fillText('Dimming zones', 112, 408);
+    sc.fillStyle = '#ffae3d'; sc.textAlign = 'right'; sc.font = `900 150px ${FONT}`; sc.fillText('?', 912, 434); }
+  sc.globalAlpha = 1; scrTex.needsUpdate = true;
+}
+// how bright the picture is over zone (i, j): the zone under a bright thing lights, the rest stays off
+function picLum(i, j, t, sh) {
+  const u = (i + .5) / NX, v = (j + .5) / NY, k = cardMix(t, sh), [mu, mv] = moonAt(t, sh);
+  const d2 = ((u - mu) * (u - mu) + (v - mv) * (v - mv) * (TH / TW) * (TH / TW)) / (.062 * .062);
+  let a = Math.exp(-d2 * .9);
+  if (sh !== 3) a = Math.max(a, (u > .05 && u < .8 && v > .1 && v < .42) ? .5 : 0);
+  if (k > 0) a = lerp(a, (u > .06 && u < .94 && v > .12 && v < .56) ? .7 : .12, k);
+  return a;
+}
+
+// ---------- textures ----------
+const glowTex = ctex(256, 256, (c) => { const g = c.createRadialGradient(128, 128, 0, 128, 128, 128); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.25, 'rgba(255,255,255,.35)'); g.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, 256, 256); });
+glowTex.encoding = THREE.LinearEncoding;
+const cellTex = ctex(128, 128, (c) => { c.fillStyle = '#000'; c.fillRect(0, 0, 128, 128); const g = c.createRadialGradient(64, 64, 4, 64, 64, 84); g.addColorStop(0, '#fff'); g.addColorStop(.3, '#a8a8a8'); g.addColorStop(.7, '#5c5c5c'); g.addColorStop(1, '#2c2c2c'); c.fillStyle = g; c.fillRect(5, 5, 118, 118); });
+cellTex.encoding = THREE.LinearEncoding;
+const boardTex = ctex(2048, 1152, (c, w, h) => {      // the backlight board: a white-grey reflector sheet would wash out, so a dark board with its zone grid, traces and marks
+  c.fillStyle = '#0b0e13'; c.fillRect(0, 0, w, h); const R = rng(5), p = w / NX;
+  c.strokeStyle = 'rgba(150,172,195,.13)'; c.lineWidth = 1.2; for (let i = 0; i <= NX; i++) { c.beginPath(); c.moveTo(i * p, 0); c.lineTo(i * p, h); c.stroke(); } for (let j = 0; j <= NY; j++) { c.beginPath(); c.moveTo(0, j * p); c.lineTo(w, j * p); c.stroke(); }
+  c.strokeStyle = 'rgba(150,172,195,.1)'; c.lineWidth = 2; for (let j = 0; j < NY; j++) { c.beginPath(); c.moveTo(0, (j + .5) * p + 9); c.lineTo(w, (j + .5) * p + 9); c.stroke(); }     // the power rail under each row
+  c.fillStyle = 'rgba(175,185,198,.2)'; for (let i = 0; i < 700; i++) { c.beginPath(); c.arc(R() * w, R() * h, 1.6, 0, 7); c.fill(); }
+  c.fillStyle = 'rgba(176,184,196,.3)'; c.font = `600 7px ${FONT}`; for (let i = 0; i < NX; i += 4) for (let j = 0; j < NY; j += 4) c.fillText('Z' + String(j * NX + i + 1).padStart(4, '0'), i * p + 3, j * p + 9);
+});
+const wallTex = ctex(512, 512, (c, w, h) => { c.fillStyle = '#07080c'; c.fillRect(0, 0, w, h);
+  const g = c.createRadialGradient(256, 236, 10, 256, 236, 250); g.addColorStop(0, 'rgba(104,116,132,.42)'); g.addColorStop(.5, 'rgba(58,66,78,.16)'); g.addColorStop(1, 'rgba(7,8,12,0)'); c.fillStyle = g; c.fillRect(0, 0, w, h); });
+const woodTex = ctex(1024, 256, (c, w, h) => { c.fillStyle = '#22252b'; c.fillRect(0, 0, w, h); const R = rng(9);
+  for (let i = 0; i < 260; i++) { c.strokeStyle = `rgba(255,255,255,${(.012 + .03 * R()).toFixed(3)})`; c.lineWidth = 1 + R() * 2; const y = R() * h; c.beginPath(); c.moveTo(0, y); c.bezierCurveTo(w * .3, y + R() * 8 - 4, w * .6, y + R() * 8 - 4, w, y + R() * 6 - 3); c.stroke(); }
+  c.fillStyle = 'rgba(0,0,0,.6)'; [1 / 3, 2 / 3].forEach((f) => c.fillRect(w * f - 2, 0, 4, h)); c.fillStyle = 'rgba(185,192,204,.4)'; [1 / 6, .5, 5 / 6].forEach((f) => c.fillRect(w * f - 50, 30, 100, 7)); });
+const grilleTex = ctex(512, 64, (c, w, h) => { c.fillStyle = '#0c0d10'; c.fillRect(0, 0, w, h); c.fillStyle = 'rgba(255,255,255,.07)'; for (let y = 5; y < h; y += 7) for (let x = 5 + (y % 2) * 3; x < w; x += 7) { c.beginPath(); c.arc(x, y, 1.5, 0, 7); c.fill(); } });
+grilleTex.wrapS = THREE.RepeatWrapping; grilleTex.repeat.set(2, 1);
+const PXN = 240, PXS = 12;   // one zone (80 x 80 pixels) with a rim of its neighbours' pixels, each pixel drawn
+const pixTex = ctex(PXN * PXS, PXN * PXS, (c, w) => { c.clearRect(0, 0, w, w); c.fillStyle = 'rgba(2,3,5,.9)'; c.fillRect(0, 0, w, w);
+  c.clearRect(0, 0, 0, 0); c.globalCompositeOperation = 'destination-out'; c.fillStyle = 'rgba(0,0,0,.42)'; for (let i = 0; i < PXN; i++) for (let j = 0; j < PXN; j++) c.fillRect(i * PXS + 1.5, j * PXS + 1.5, PXS - 3, PXS - 3);   // each pixel is a slightly clearer window: the grid reads
+  c.globalCompositeOperation = 'source-over'; c.fillStyle = '#ffffff'; for (let a = -4; a <= 4; a++) for (let b = -4; b <= 4; b++) if (Math.abs(a) + Math.abs(b) <= 2 || (a === 0 && Math.abs(b) <= 4) || (b === 0 && Math.abs(a) <= 4)) c.fillRect((120 + a) * PXS + .5, (120 + b) * PXS + .5, PXS - 1, PXS - 1); });   // a star five pixels big
+
+// ---------- the room ----------
+const room = new THREE.Group(); scene.add(room);
+{ const fl = new THREE.Mesh(new THREE.PlaneGeometry(90, 60), KM.floor); fl.rotation.x = -Math.PI / 2; fl.position.set(0, -1.62, 8); room.add(fl);
+  const wall = new THREE.Mesh(new THREE.PlaneGeometry(44, 44), new THREE.MeshBasicMaterial({ map: wallTex })); wall.position.set(0, 4, -1.6); room.add(wall);
+  const con = new THREE.Mesh(new THREE.BoxGeometry(11.6, 1.3, 2.6), [new THREE.MeshStandardMaterial({ color: 0x15171b, roughness: .6, metalness: .2 }), new THREE.MeshStandardMaterial({ color: 0x15171b, roughness: .6, metalness: .2 }), new THREE.MeshStandardMaterial({ color: 0x2a2e35, roughness: .45, metalness: .35 }), KM.chipSide, new THREE.MeshStandardMaterial({ color: 0xffffff, map: woodTex, roughness: .55, metalness: .25 }), KM.chipSide]);
+  con.position.set(0, -.65, 0); room.add(con);
+  for (const sx of [-5.2, 5.2]) { const leg = new THREE.Mesh(new THREE.BoxGeometry(.16, .34, 2.2), KM.darkMetal); leg.position.set(sx, -1.46, 0); room.add(leg); }
+  const bar = new THREE.Mesh(new THREE.BoxGeometry(5.2, .36, .5), [KM.chipSide, KM.chipSide, new THREE.MeshStandardMaterial({ color: 0x1b1e23, roughness: .5, metalness: .4 }), KM.chipSide, new THREE.MeshStandardMaterial({ color: 0xffffff, map: grilleTex, roughness: .7, metalness: .3 }), KM.chipSide]); bar.position.set(0, .18, .85); room.add(bar);
+  { const pool = new THREE.Mesh(new THREE.PlaneGeometry(20, 9), new THREE.MeshBasicMaterial({ map: glowTex, color: 0x6f8aa4, transparent: true, opacity: .62, blending: THREE.AdditiveBlending, depthWrite: false })); pool.rotation.x = -Math.PI / 2; pool.position.set(0, -1.6, 4.2); room.add(pool); }
+  const dot = new THREE.Mesh(new THREE.BoxGeometry(.05, .05, .01), new THREE.MeshBasicMaterial({ color: SIG })); dot.position.set(2.3, .18, 1.105); room.add(dot); }
+
+const tv = new THREE.Group(); scene.add(tv);
+const chassis = new THREE.Mesh(new THREE.BoxGeometry(TW + .26, TH + .26, .22), new THREE.MeshStandardMaterial({ color: 0x14161a, metalness: .6, roughness: .5 })); chassis.position.set(0, CY, -.13); tv.add(chassis);
+{ const sh = new THREE.Shape(); const w = TW + .26, h = TH + .26; sh.moveTo(-w / 2, -h / 2); sh.lineTo(w / 2, -h / 2); sh.lineTo(w / 2, h / 2); sh.lineTo(-w / 2, h / 2); sh.lineTo(-w / 2, -h / 2);
+  const ho = new THREE.Path(); ho.moveTo(-TW / 2, -TH / 2); ho.lineTo(-TW / 2, TH / 2); ho.lineTo(TW / 2, TH / 2); ho.lineTo(TW / 2, -TH / 2); ho.lineTo(-TW / 2, -TH / 2); sh.holes.push(ho);
+  const bez = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: .2, bevelEnabled: true, bevelThickness: .015, bevelSize: .015, bevelSegments: 2 }), KM.metal); bez.position.set(0, CY, -.02); tv.add(bez);
+  for (const sx of [-2.9, 2.9]) { const ft = new THREE.Mesh(new THREE.BoxGeometry(.14, .82, .14), KM.metal); ft.position.set(sx, .38, -.1); tv.add(ft); const pad = new THREE.Mesh(new THREE.BoxGeometry(.9, .06, 1.2), KM.darkMetal); pad.position.set(sx, .03, 0); tv.add(pad); } }
+const board = new THREE.Mesh(new THREE.PlaneGeometry(TW, TH), new THREE.MeshStandardMaterial({ color: 0xffffff, map: boardTex, metalness: .35, roughness: .6, envMapIntensity: .5 })); board.position.set(0, CY, 0); tv.add(board);
+// the LEDs: a ceramic package with two gold pads, a phosphor top that lights, a pool of light on the board
+const dmy = new THREE.Object3D();
+const ledPkg = new THREE.InstancedMesh(new THREE.BoxGeometry(.036, .036, .014), new THREE.MeshStandardMaterial({ color: 0x9aa0a8, roughness: .55, metalness: .1 }), NZ);
+const ledTop = new THREE.InstancedMesh(new THREE.BoxGeometry(.026, .026, .006), new THREE.MeshBasicMaterial({ color: 0xffffff }), NZ);
+const ledPad = new THREE.InstancedMesh(new THREE.BoxGeometry(.016, .03, .004), KM.gold, NZ * 2);
+const ledHalo = new THREE.InstancedMesh(new THREE.PlaneGeometry(PITCH * 2.1, PITCH * 2.1), new THREE.MeshBasicMaterial({ map: glowTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }), NZ);
+const ledCell = new THREE.InstancedMesh(new THREE.PlaneGeometry(PITCH * .98, PITCH * .98), new THREE.MeshBasicMaterial({ map: cellTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }), NZ);
+for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) { const n = j * NX + i, x = zx(i), y = zy(j);
+  dmy.rotation.set(0, 0, 0); dmy.scale.setScalar(1);
+  dmy.position.set(x, y, .008); dmy.updateMatrix(); ledPkg.setMatrixAt(n, dmy.matrix);
+  dmy.position.set(x, y, .017); dmy.updateMatrix(); ledTop.setMatrixAt(n, dmy.matrix);
+  dmy.position.set(x - .028, y, .003); dmy.updateMatrix(); ledPad.setMatrixAt(n * 2, dmy.matrix); dmy.position.set(x + .028, y, .003); dmy.updateMatrix(); ledPad.setMatrixAt(n * 2 + 1, dmy.matrix);
+  dmy.position.set(x, y, .004); dmy.updateMatrix(); ledHalo.setMatrixAt(n, dmy.matrix);
+  dmy.position.set(x, y, .03); dmy.updateMatrix(); ledCell.setMatrixAt(n, dmy.matrix); }
+[ledPkg, ledTop, ledPad, ledHalo, ledCell].forEach((m) => { m.frustumCulled = false; tv.add(m); });
+const colTop = new Float32Array(NZ * 3), colHalo = new Float32Array(NZ * 3), colCell = new Float32Array(NZ * 3);
+ledTop.instanceColor = new THREE.InstancedBufferAttribute(colTop, 3); ledHalo.instanceColor = new THREE.InstancedBufferAttribute(colHalo, 3); ledCell.instanceColor = new THREE.InstancedBufferAttribute(colCell, 3);
+// the diffuser sheet and the LCD sheet (black glass + the picture, which adds light)
+const diffuser = new THREE.Mesh(new THREE.PlaneGeometry(TW, TH), new THREE.MeshPhysicalMaterial({ color: 0xcfd8e2, transparent: true, opacity: .2, roughness: .9, metalness: 0, side: THREE.DoubleSide, depthWrite: false })); tv.add(diffuser);
+const lcd = new THREE.Group(); tv.add(lcd);
+const lcdBack = new THREE.Mesh(new THREE.PlaneGeometry(TW, TH), new THREE.MeshPhysicalMaterial({ color: 0x020305, transparent: true, opacity: 1, roughness: .1, metalness: .2, clearcoat: 1, clearcoatRoughness: .05, side: THREE.DoubleSide, depthWrite: false })); lcd.add(lcdBack);
+const lcdPic = new THREE.Mesh(new THREE.PlaneGeometry(TW, TH), new THREE.MeshBasicMaterial({ map: scrTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })); lcdPic.position.z = .004; lcd.add(lcdPic);
+const lcdEdge = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(TW, TH)), new THREE.LineBasicMaterial({ color: 0xbfe9ff, transparent: true, opacity: 0 })); lcd.add(lcdEdge);
+// one zone and its pixels (shot 5)
+const ZI = 41, ZJ = 21, ZC = V(zx(ZI), zy(ZJ), 0);
+const pix = new THREE.Mesh(new THREE.PlaneGeometry(PITCH * PXN / 80, PITCH * PXN / 80), new THREE.MeshBasicMaterial({ map: pixTex, transparent: true, depthWrite: false })); pix.position.set(ZC.x, ZC.y, .075); tv.add(pix);
+const tvGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0x6aa8d8, transparent: true, opacity: .2, blending: THREE.AdditiveBlending, depthWrite: false })); tvGlow.scale.set(22, 15, 1); tvGlow.position.set(0, CY, -1.2); scene.add(tvGlow);
+const scrLight = new THREE.PointLight(0xcfeaff, 0, 14, 1.6); scrLight.position.set(0, .25, 1.7); scene.add(scrLight);   // the screen lights the console and the floor in front of it
+
+// ---------- what each zone does at t ----------
+const WAVE0 = () => C.grid - .25, WAVE1 = () => C.lights + .05;      // the macro: the LEDs light in a wave, near to far, done on "lights"
+const CNT0 = () => C.num - .55, CNT1 = () => C.num;                    // all 2,304 light in 0.55 s and the number lands on its word (M7)
+const MX = -1.6, MY = CY - .9;                                         // where the macro looks
+function zoneLum(i, j, t, sh) {
+  if (sh === 0 || sh === 6) return .1 + .9 * picLum(i, j, t, sh);
+  if (sh === 1) { const q = (t - lerp(C.lcd - .75, C.lcd - .1, i / NX)) / .2; return lerp(.1 + .9 * picLum(i, j, t, 0), .42, ease(prog(t, B[1], C.lift + .5))) + .5 * eout(q) + .3 * Math.sin(Math.PI * clamp(q / 1.6)); }   // the backlight comes up across the board as "LCD" lands
+  if (sh === 2) { const d = Math.hypot(zx(i) - (MX - .9), (zy(j) - (MY - .8)) * 1.15), q = (t - lerp(WAVE0(), WAVE1(), clamp(d / 4.4))) / .16; return .04 + .96 * eout(q) + .5 * Math.sin(Math.PI * clamp(q / 1.4)); }
+  if (sh === 3) return .02 + 1.1 * picLum(i, j, t, 3);
+  if (sh === 4) { const q = (t - lerp(CNT0(), CNT1() - .05, (i + (NY - 1 - j) * .9) / (NX + NY * .9))) / .1; return .03 + .8 * eout(q) + .6 * Math.sin(Math.PI * clamp(q / 2.4)); }
+  if (sh === 5) return i === ZI && j === ZJ ? .55 + .6 * ease(prog(t, B[5] + .1, C.pixel)) : .0;
+  return 0;
+}
+const cSig = new THREE.Color(0xdff6ff), cOff = new THREE.Color(0x2a2616), cTmp = new THREE.Color();
+function setZones(t, sh) {
+  const haloK = sh === 2 ? .085 : sh === 5 ? .3 : sh === 4 ? .34 : .42, cellK = sh === 5 ? .62 : sh === 2 ? .0 : sh === 4 ? .26 : sh === 3 ? .34 : .13;
+  for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) { const n = (j * NX + i) * 3, a = clamp(zoneLum(i, j, t, sh), 0, 1.6);
+    cTmp.copy(cOff).lerp(cSig, clamp(a)).multiplyScalar(sh === 2 ? .5 + .45 * a : sh === 5 ? 2.2 * a : .6 + .9 * a); colTop[n] = cTmp.r; colTop[n + 1] = cTmp.g; colTop[n + 2] = cTmp.b;
+    const hk = haloK * a * a; colHalo[n] = .55 * hk; colHalo[n + 1] = .86 * hk; colHalo[n + 2] = 1 * hk;
+    const ck = cellK * a; colCell[n] = (sh === 5 ? .3 : .62) * ck; colCell[n + 1] = (sh === 5 ? .78 : .88) * ck; colCell[n + 2] = 1 * ck; }
+  ledTop.instanceColor.needsUpdate = true; ledHalo.instanceColor.needsUpdate = true; ledCell.instanceColor.needsUpdate = true;
+}
+
+// ---------- camera per shot ----------
+const G = KIT.glide;
+const FRONT = { pos: V(0, 3.7, 30), look: V(0, 4.35, 0), fov: 31 };                 // the shared shape of the two match cuts: the screen, square on
+const ORB = (a, d, y, ly) => ({ pos: V(Math.sin(a) * d, y, Math.cos(a) * d), look: V(0, ly, 0), fov: 31 });
+function shotCam(t, sh) {
+  const u = prog(t, B[sh], B[sh + 1]), hold = (r = .012) => KIT.push(Math.max(0, t - B[sh]), r);
+  if (sh === 0) { const k = G(u); return ORB(lerp(-.56, -.2, k), lerp(29.4, 27.2, k), lerp(2.9, 3.9, k), 4.4); }
+  if (sh === 1) {   // front-on (the match), then round to the side as the sheets lift off
+    const F1 = { pos: V(12.5, 6.6, 31 * (1 - hold(.03))), look: V(-.45, 4.3, 1.2), fov: 33 }; return KIT.reframe(FRONT, F1, ease(prog(t, B[1] + .02, B[1] + 1.05))); }
+  if (sh === 2) { const k = G(u); return { pos: V(MX - lerp(1.5, 1.15, k), MY - lerp(1.5, 1.42, k), lerp(.5, .42, k)), look: V(MX + lerp(.35, .55, k), MY + .75, 0), fov: 40, ap: .012, focus: V(MX - .5 + .5 * k, MY - .55 + .35 * k, 0) }; }
+  if (sh === 3) { const k = G(u), F0 = ORB(lerp(-.52, -.36, k), lerp(28.6, 27.2, k), 4.4, 4.3), k2 = ease(prog(t, B[4] - .8, B[4])); return KIT.reframe(F0, FRONT, 0 * k2); }
+  if (sh === 4) { const F1 = { pos: V(3.4, 1.5, 28.6 * (1 - hold(.01))), look: V(0, 4.3, 0), fov: 31 }; return KIT.reframe(FRONT, F1, ease(prog(t, B[4] + .05, B[4] + 1.1))); }
+  if (sh === 5) { const k = G(u); return { pos: V(ZC.x + lerp(.13, .09, k), ZC.y - lerp(.15, .12, k), lerp(.5, .455, k)), look: V(ZC.x, ZC.y + .016, 0), fov: 34 }; }
+  const k = G(prog(t, B[6], TOTAL), .45), A0 = shotCam(0, 0);
+  return { pos: V(3.4, 3.9, 29.6).lerp(A0.pos, k), look: V(0, 4.3, 0).lerp(A0.look, k), fov: 31 };
+}
+const SHAKES = () => [[C.num, .1], [C.n64, .004], [B[6] + .42, .06]];
+const pushTarget = (k) => k === 2 ? V(MX - .4, MY - .3, .2) : V(ZC.x, ZC.y, .3);
+function cutMod(t, k, side) { const d = KIT.DUR[CUTS[k].kind], u = (t - (B[k] - d / 2)) / d; return { ...KIT.cut(CUTS[k].kind, clamp(u), CUTS[k])[side], k, side }; }
+function camAt(t, sh, mod) {
+  const c = shotCam(t, sh), pos = c.pos.clone(), look = c.look.clone(); let fov = c.fov, yaw = 0;
+  if (mod) {
+    if (mod.match) { pos.lerp(FRONT.pos, mod.match); look.lerp(FRONT.look, mod.match); fov = lerp(fov, FRONT.fov, mod.match); }
+    if (mod.dolly > 0) { const tg = pushTarget(mod.k); pos.lerp(tg, mod.dolly); look.lerp(tg, mod.dolly * .6); }
+    if (mod.dolly < 0) pos.add(pos.clone().sub(look).multiplyScalar(-mod.dolly));
+    if (mod.truck) { const dx = mod.truck * pos.distanceTo(look) * .12; pos.x += dx; look.x += dx; }
+    yaw = mod.yaw || 0;
+  }
+  const sk = SHAKES().reduce((acc, [t0, amp]) => { const d = t - t0; if (d < 0 || d > .6) return acc; const e = amp * Math.exp(-d * 9); return acc.add(V(Math.sin(d * 83) * e, Math.cos(d * 67) * e, 0)); }, V(0, 0, 0));
+  return { ...c, pos: pos.add(sk), look: look.add(sk.clone().multiplyScalar(.5)), fov, yaw, sh };
+}
+
+// ---------- apply state at t (sh and mod let a cut draw the outgoing and the incoming shot at the same moment) ----------
+function pose(cm, c) { cm.fov = c.fov; cm.near = c.sh === 5 || c.sh === 2 ? .02 : .2; cm.updateProjectionMatrix(); cm.position.copy(c.pos); cm.lookAt(c.look); if (c.yaw) cm.rotateY(c.yaw); cm.updateMatrixWorld(true); }
+const LIFT = (t) => ease(prog(t, C.lift - .12, C.off + .35));
+const BACK = (t) => 1 - eout(prog(t, B[6] - .1, B[6] + .45));              // the sheet presses back on at the start of the last shot
+function apply(t, sh = shotAt(t), mod = null) {
+  const c = camAt(t, sh, mod);
+  // the sheets
+  let lz = .12, dz = .06, lo = 1, pic = 1, edge = 0, dop = 0;
+  if (sh === 0) { const pop = eout(prog(t, C.not0 - .05, C.not0 + .3)); lz = .12 + .3 * pop; edge = .4 * pop; lo = .5; }   // on "not" the picture sheet comes loose
+  if (sh === 1) { const l = LIFT(t), dr = .25 * prog(t, C.off, B[2]); lz = .42 + 2.2 * l + dr; dz = .06 + 1.15 * l + .4 * dr; lo = lerp(.5, .3, l); edge = .5 * l; dop = .26 * l; }
+  if (sh === 3) { lz = 1.9; lo = .22; edge = .45; }
+  if (sh === 6) { const b = BACK(t); lz = .12 + 2.4 * b; edge = .45 * b; lo = lerp(lerp(1, .5, ease(prog(t, LOOP0(), LOOP1()))), .3, b); }
+  lcd.visible = sh === 0 || sh === 1 || sh === 3 || sh === 6; diffuser.visible = sh === 1 && dop > .01; pix.visible = sh === 5;
+  lcd.position.set(0, CY + (sh === 1 ? .35 * LIFT(t) : 0), lz); diffuser.position.set(0, CY, dz); diffuser.material.opacity = dop;
+  lcdBack.material.opacity = lo; lcdPic.material.opacity = pic; lcdEdge.material.opacity = edge;
+  if (lcd.visible) drawScreen(t, sh);
+  setZones(t, sh);
+  room.visible = sh !== 2 && sh !== 5; tvGlow.visible = room.visible; tvGlow.material.opacity = sh === 4 ? .1 + .2 * prog(t, CNT0(), CNT1()) : .2;
+  ledPad.visible = ledPkg.visible = sh !== 5;   // behind the pixels only the light itself shows ledCell.visible = sh !== 2;
+  keyL.intensity = sh === 2 ? .8 : sh === 5 ? .12 : 2.3; rimL.intensity = sh === 2 ? 1.7 : sh === 5 ? .3 : 2.9; rim2L.intensity = sh === 2 ? 1.1 : sh === 5 ? .2 : 1.5;
+  scrLight.intensity = sh === 2 || sh === 5 ? 0 : sh === 4 ? .6 + 3.4 * prog(t, CNT0(), CNT1()) : sh === 3 ? 1.2 : 2.6;
+  pose(cam, c);
+  return c;
+}
+
+// ---------- type: one bold word or number at a time (2D, screen space, the empty top band) ----------
+let BOXES = []; window.__boxes = () => BOXES;
+const big = (text, kind, color, t, t0, t1, opt = {}) => { const bx = KIT.word(o, text, kind, t, t0, t1, { color, ...opt }); if (bx) BOXES.push(bx); };
+function typeLayer(t) {
+  BOXES = [];
+  const sh = shotAt(t);
+  if (sh === 0) big('MYTH', 'stamp', HEATC, t, -.4, wEnd(1), { size: 270, y: 520, glow: 'rgba(255,150,40,.4)' });       // F5: the belief on the screen ("MINI LED" as a new screen), stamped in frame 0
+  if (sh === 1) big('LCD', 'drop', WHITE, t, C.lcd, wEnd(2), { size: 280, y: 520 });
+  if (sh === 2) big('LIGHTS', 'rise', SIGC, t, C.lights, wEnd(3), { size: 215, y: 500, glow: 'rgba(56,225,255,.45)' });
+  if (sh === 3) big('ZONES', 'track', WHITE, t, C.zones3, wEnd(4), { size: 230, y: 510 });
+  if (sh === 4) big('2,304', 'slam', SIGC, t, C.num, wEnd(5), { size: 270, y: 520, glow: 'rgba(56,225,255,.5)' });
+  if (sh === 5) big('6,400', 'wipe', HEATC, t, C.n64, wEnd(6), { size: 270, y: 500, glow: 'rgba(255,150,40,.4)' });
+  if (sh === 6) { if (t < LOOP0() - .05) big('ZONES?', 'rise', SIGC, t, C.ask, LOOP0() - .05, { size: 192, y: 515, glow: 'rgba(56,225,255,.45)' });
+    else big('MYTH', 'stamp', HEATC, t, LOOP1() - .1, TOTAL + 9, { size: 270, y: 520, glow: 'rgba(255,150,40,.4)' }); }    // the stamp returns on the verdict; the last frame is frame 0
+}
+
+// ---------- captions (stable phrases, bottom third) ----------
+const CHUNKS = []; SC.forEach((s, si) => { let cur = []; s.words.forEach((w, i) => { cur.push(w); const nx = s.words[i + 1], len = cur.map((x) => x.w).join(' ').length + (nx ? nx.w.length + 1 : 0);
+    if (/[.,?!:]$/.test(w.w) || (cur.length >= 6 && !(nx && /[.,?!:]$/.test(nx.w))) || (len > 30 && !(nx && /[.,?!:]$/.test(nx.w))) || i === s.words.length - 1) { CHUNKS.push({ si, words: cur }); cur = []; } }); });
+CHUNKS.forEach((c, i) => { c.t0 = c.words[0].t0; const nx = CHUNKS[i + 1]; c.t1 = nx && nx.si === c.si ? nx.words[0].t0 - .03 : c.words[c.words.length - 1].t1 + .35; });
+window.CHUNKS = CHUNKS;
+const capEl = document.getElementById('caps'); let capIdx = -2;
+function captions(t) {
+  const ci = CHUNKS.findIndex((c) => t >= c.t0 - .05 && t < c.t1);
+  if (ci !== capIdx) { capIdx = ci; capEl.textContent = ci < 0 ? '' : CHUNKS[ci].words.map((w) => w.w).join(' '); }
+  if (ci >= 0) { const p = eout(prog(t, CHUNKS[ci].t0 - .05, CHUNKS[ci].t0 + .15)); capEl.style.opacity = clamp(p * 1.5); capEl.style.transform = `translateY(${(1 - p) * 10}px)`; }
+}
+
+// ---------- the hero's box (Output QA HERO) ----------
+let SUBJ = null; window.__subject = () => SUBJ;
+function subjectBox(sh) {
+  if (sh === 2 || sh === 5) { SUBJ = [60, 560, 1020, 1440]; return; }
+  let l = 1e9, r = -1e9, tp = 1e9, b = -1e9;
+  for (const x of [-TW / 2, TW / 2]) for (const y of [CY - TH / 2, CY + TH / 2]) { const p = V(x, y, 0).project(cam); const sx = (p.x + 1) / 2 * W, sy = (1 - p.y) / 2 * H; l = Math.min(l, sx); r = Math.max(r, sx); tp = Math.min(tp, sy); b = Math.max(b, sy); }
+  SUBJ = [clamp(l, 0, W), clamp(tp, 0, H), clamp(r, 0, W), clamp(b, 0, H)];
+}
+
+// ---------- frame ----------
+function post() {
+  const vg = o.createRadialGradient(540, 980, 560, 540, 980, 1340); vg.addColorStop(0, 'rgba(7,8,12,0)'); vg.addColorStop(1, 'rgba(7,8,12,.55)'); o.fillStyle = vg; o.fillRect(0, 0, W, H);
+  const bf = o.createLinearGradient(0, 1280, 0, 1920); bf.addColorStop(0, 'rgba(7,8,12,0)'); bf.addColorStop(.2, 'rgba(7,8,12,.34)'); bf.addColorStop(.3, 'rgba(7,8,12,.52)'); bf.addColorStop(.55, 'rgba(7,8,12,.6)'); bf.addColorStop(.93, 'rgba(7,8,12,.97)'); bf.addColorStop(1, 'rgba(7,8,12,1)'); o.fillStyle = bf; o.fillRect(0, 1280, W, H - 1280);
+  const tf = o.createLinearGradient(0, 180, 0, 0); tf.addColorStop(0, 'rgba(7,8,12,0)'); tf.addColorStop(1, 'rgba(7,8,12,.6)'); o.fillStyle = tf; o.fillRect(0, 0, W, 180);
+}
+// the macro shots keep the top band dark for the word: a soft shade over the far part of the board
+function shade(sh, a) { if ((sh !== 2 && sh !== 5) || a <= 0) return; const g = o.createLinearGradient(0, 200, 0, sh === 2 ? 760 : 640); g.addColorStop(0, `rgba(7,8,12,${(.92 * a).toFixed(3)})`); g.addColorStop(.55, `rgba(7,8,12,${(.8 * a).toFixed(3)})`); g.addColorStop(1, 'rgba(7,8,12,0)'); o.fillStyle = g; o.fillRect(0, 0, W, 780); }
+const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c.getContext('2d'); };
+const ACC = [mk(), mk()], TMP = mk(), SMR = mk(), cam2 = new THREE.PerspectiveCamera(30, W / H, 0.02, 400), SHUT = 1 / 50;
+const scr2 = (p) => { p.project(cam2); return [(p.x + 1) / 2 * W, (1 - p.y) / 2 * H]; };
+function refs(cHere, cThere) {
+  pose(cam2, cHere); const up = new THREE.Vector3().setFromMatrixColumn(cam2.matrixWorld, 1), P1 = cHere.look.clone(), P2 = P1.clone().add(up.multiplyScalar(cHere.pos.distanceTo(cHere.look) * .2));
+  const a = [...scr2(P1.clone()), ...scr2(P2.clone())]; pose(cam2, cThere); return [a, [...scr2(P1.clone()), ...scr2(P2.clone())]];
+}
+const busy = (t, sh) => (sh === 1 && t < C.off + .5) || (sh === 4 && t > CNT0() - .05 && t < CNT1() + .3) || (sh === 6 && t < B[6] + .6);
+function accumulate(ctx, t, sh, side, k) {
+  const modAt = (ts) => side ? cutMod(ts, k, side) : null, at = (ts) => camAt(ts, sh, modAt(ts));
+  const [a0, b0] = refs(at(t - SHUT / 2), at(t + SHUT / 2)), la = Math.hypot(a0[2] - a0[0], a0[3] - a0[1]) || 1;
+  const px = Math.hypot(b0[0] - a0[0], b0[1] - a0[1]) + Math.abs(Math.hypot(b0[2] - b0[0], b0[3] - b0[1]) / la - 1) * 1100;
+  const c0 = at(t), K = Math.max(2, Math.round(KIT.plan(px, c0.ap > 0, busy(t, sh)) * Q));
+  for (let i = 0; i < K; i++) { const ts = clamp(t + SHUT * ((i + .5) / K - .5), 0, TOTAL), c = apply(ts, sh, modAt(ts)), [jx, jy] = KIT.jitter(i);
+    if (c.ap > 0) { const r = c.ap * Math.sqrt((i + .5) / K), th = i * 2.39996, rx = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 0), uy = new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld, 1);
+      const fw = new THREE.Vector3(); cam.getWorldDirection(fw); const dl = c.look.clone().sub(cam.position).dot(fw), df = Math.max(.1, c.focus.clone().sub(cam.position).dot(fw));
+      const dd = rx.multiplyScalar(Math.cos(th) * r).add(uy.multiplyScalar(Math.sin(th) * r)); cam.position.add(dd); cam.lookAt(c.look.clone().add(dd.multiplyScalar(1 - dl / df))); }
+    cam.setViewOffset(W, H, jx * .9, jy * .9, W, H); gl.render(scene, cam); cam.clearViewOffset();
+    TMP.globalAlpha = 1; TMP.drawImage(gl.domElement, 0, 0, W, H);
+    const [a, b] = refs(c, at(ts + SHUT / K)); ctx.globalAlpha = 1 / (i + 1);
+    if (Math.hypot(b[0] - a[0], b[1] - a[1]) + Math.abs(Math.hypot(b[2] - b[0], b[3] - b[1]) / (Math.hypot(a[2] - a[0], a[3] - a[1]) || 1) - 1) * 1100 < 1.5) ctx.drawImage(TMP.canvas, 0, 0);
+    else { SMR.globalAlpha = 1; SMR.fillStyle = '#07080c'; SMR.fillRect(0, 0, W, H); KIT.smear(SMR, TMP.canvas, a, b, W, H); ctx.drawImage(SMR.canvas, 0, 0); } }
+  ctx.globalAlpha = 1;
+}
+window.render = (t) => {
+  t = clamp(t, 0, TOTAL);
+  const cu = cutAt(t), st = cu && KIT.cut(cu.kind, cu.u, cu), sh = shotAt(t);
+  o.setTransform(1, 0, 0, 1, 0, 0); o.globalAlpha = 1; o.filter = 'none'; o.fillStyle = '#07080c'; o.fillRect(0, 0, W, H);
+  if (!cu) { accumulate(ACC[0], t, sh, null, 0); o.drawImage(ACC[0].canvas, 0, 0); shade(sh, 1); }
+  else {
+    const needA = st.wipe != null || st.mix < 1, needB = st.wipe != null || st.mix > 0;
+    if (needA) accumulate(ACC[0], t, cu.k - 1, 'out', cu.k); if (needB) accumulate(ACC[1], t, cu.k, 'in', cu.k);
+    KIT.compose(o, ACC[0].canvas, ACC[1].canvas, st, W, H, { color: cu.color, fy: .5 });
+    shade(cu.k - 1, 1 - st.mix); shade(cu.k, st.mix);
+  }
+  o.globalAlpha = 1; apply(t, sh, cu ? cutMod(t, cu.k, t >= B[cu.k] ? 'in' : 'out') : null); subjectBox(sh);
+  post(); typeLayer(t); captions(t);
+};
+window.TRANSITIONS = [...[1, 2, 3, 4, 5, 6].map((k) => { const d = KIT.DUR[CUTS[k].kind]; return [+(B[k] - d / 2 - .1).toFixed(2), +(B[k] + d / 2 + (k === 1 || k === 4 ? 1.1 : .15)).toFixed(2), 'camera']; }), ...SHAKES().map(([t0]) => [+(t0 - .1).toFixed(2), +(t0 + .5).toFixed(2), 'jolt'])];
+window.HOLDS = [[+(TOTAL - 1.2).toFixed(2), +TOTAL.toFixed(2)]];
+window.seek = window.render;
+window.DUR = TOTAL;
+window.render(0);
+})();
+</script>
+</body></html>
