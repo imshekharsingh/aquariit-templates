@@ -514,3 +514,6 @@ Format (at most 6 lines):
 
 ## 2026-11-24 tech-usbc-r3 (branch claude/tech-usbc-r3)
 - usbc-two-numbers render 3 prep: shot 4 camera about a third as fast, no depth blur on shots 3 and 4, cyan pulses 30 to 8 units/s. Checked on stills at 16.5-25 s. Render 3 next, then Output QA and critic.
+
+## 2026-11-24 tech-usbc-ready (branch claude/tech-usbc-ready)
+- usbc-two-numbers render 3 passed Output QA (run 45414365903) and the critic said READY; unhidden, postOn 2026-11-24, postAt 20:30. Lesson: the Tech reel workflow's preview input must be left out for a real render (any value, even false, makes a preview).
