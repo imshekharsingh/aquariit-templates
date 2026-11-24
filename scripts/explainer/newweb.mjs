@@ -5,6 +5,7 @@
 // re-themed top to bottom (wipeRestyle), a tap that squeezes the button with a ripple, a leader-line label on the result; one camera with a
 // continuous drift and named moves; the safe zone, the subtitle band and the data-subject / data-band / data-hook / data-subs markers;
 // window.TRANSITIONS declared by the kit, window.CUES from every move.
+// Gold start (24 Nov 2026, the default for daily builds): node scripts/explainer/newweb.mjs <slug> --gold (= node scripts/starter.mjs web <slug>).
 // Usage: node scripts/explainer/newweb.mjs <slug> "Why does your X ...?" "Sentence." "The fix: ..." "Now ..." [--out dir] [--force] [--palette name]
 //   Palette (11 Nov 2026): the next after the last web reel's in captions.json (scripts/explainer/palette.mjs), written into the scene and the config.
 //   Details mode (owner, 8 Nov 2026): node scripts/explainer/newweb.mjs <slug> --details [N] [--beat S] "Hook?" ["One: ..." x N "Save all N ..."]:
@@ -19,6 +20,8 @@ import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { nextPalette } from './palette.mjs';
 const here = dirname(fileURLToPath(import.meta.url)), root = join(here, '..', '..');
+// --gold (24 Nov 2026, design/gold.md): start from the gold web reel (showreel-46-tabwiggle) instead of this template: scripts/starter.mjs web <slug>
+if (process.argv.includes('--gold')) { const r = process.argv.slice(2).filter((x) => x !== '--gold'); execFileSync('node', [join(dirname(fileURLToPath(import.meta.url)), '..', 'starter.mjs'), 'web', ...r], { stdio: 'inherit' }); process.exit(0); }
 const args = process.argv.slice(2), flag = (f) => { const i = args.indexOf(f); if (i < 0) return null; const v = args[i + 1]; args.splice(i, 2); return v; };
 const out = flag('--out') || 'scripts/explainer', force = args.includes('--force'); if (force) args.splice(args.indexOf('--force'), 1);
 // --details [N]: N details (default 3; owner, 8 Nov 2026: calm by default), --beat S: seconds a detail (default 5.5)

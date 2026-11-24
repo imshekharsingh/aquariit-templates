@@ -1,5 +1,11 @@
 # @techin20sec rulebook (the gate every tech reel passes before its one render)
 
+## Start from gold (owner chat, 24 Nov 2026; design/gold.md)
+Every new tech reel starts as a copy of the gold reel showreel-tech-ai-memory: `node scripts/starter.mjs tech <slug>` copies techkit/scenes/ai-memory-r4.html and techreel/topics/ai-memory.json (+ the r4 preview keys) and marks the only places to
+change with "CHANGE:" (the objects in each world, the bold words and numbers, the hook motion, the screen card, the 7 voice lines, cues, sfx and post text). Keep the rest as gold (light, framing, type sizes, shot rhythm, motion, sound) unless the review file says
+why. `npm run check` fails while a config still has "_starter" or "CHANGE: ". After the render: Output QA LOOK compares its light with gold,
+and `python3 scripts/qa/side-by-side.py reel-files/<name>.mp4` makes the sheet the critic must view (critic.md question 43).
+
 Same use as design/rules-web.md: score every rule (pass / fail, one line each) in the stills review before the one render; fix or swap on a
 fail; the daily audit adds, changes or drops a rule with the number. History: the gadget channel from 13 Nov (owner: "make it around something
 so that electronic gadget brands contact me"), the kit engine from 15 Nov (K0), **the reset of 22 Nov** (below). Retired sections (R0 real media,

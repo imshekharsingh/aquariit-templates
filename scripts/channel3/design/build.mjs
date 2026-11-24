@@ -1,6 +1,6 @@
 // Builds a Turns Out design-tutorial scene: template.html + core.js + <slug>.js (the concept: CSS, BOARD markup, script) -> <slug>.html,
 // then inlines the web motion kit. Usage: node scripts/channel3/design/build.mjs <slug> [more slugs]
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 const D = new URL('./', import.meta.url).pathname;
 const COPIES = { spacing: 'menu-spacing.html', expensive: 'looks-expensive.html', optical: 'optical-centre.html', myth: 'stop-centring.html', fixit: 'fix-invite.html', photo: 'text-on-photo.html', thumb: 'tap-targets.html', resume: 'resume.html', measure: 'line-length.html', group: 'event-poster.html', caps: 'all-caps.html', leading: 'line-spacing.html', contrast: [], prices: 'price-list.html', card: 'card-margins.html', resume2: '../previews/c3-resume2.html', contrast2: ['../previews/c3-greytext2.html', 'grey-text.html'] };   // scene -> scripts/channel3/<copy> (showreel-c3-menu-spacing, the reference cut)
@@ -11,4 +11,7 @@ for (const slug of process.argv.slice(2)) {
   execFileSync('node', [D + '../kit-inline.mjs', D + slug + '.html'], { stdio: 'inherit' });
   // a finished reel made from this scene keeps a copy next to its config (the stills and gate tools read the scene beside the config)
   for (const [scene, copy] of Object.entries(COPIES)) if (scene === slug) for (const f of [].concat(copy)) writeFileSync(D + '../' + f, readFileSync(D + slug + '.html', 'utf8'));
+  // a reel made with scripts/starter.mjs c3 <slug> (24 Nov 2026): its config scripts/channel3/<slug>.json seeks scripts/channel3/<slug>.html
+  if (!(slug in COPIES) && existsSync(D + '../' + slug + '.json') && (JSON.parse(readFileSync(D + '../' + slug + '.json', 'utf8')).seek || '').endsWith('/' + slug + '.html'))
+    writeFileSync(D + '../' + slug + '.html', readFileSync(D + slug + '.html', 'utf8'));
 }

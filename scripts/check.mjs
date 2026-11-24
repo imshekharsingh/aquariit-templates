@@ -68,6 +68,9 @@ if (caps) for (const [name, j] of Object.entries(caps)) postText(j, `captions.js
       if (it.needsOwner === true) err(`previews.json ${it.name}: needsOwner must be false (owner, 24 Nov 2026: the owner is asked nothing about reels; the critic decides)`);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(it.added || '')) err(`previews.json ${it.name}: add "added" (YYYY-MM-DD IST); the app hides a preview 7 days after it`);
       else if ((Date.parse(t0) - Date.parse(it.added)) / 864e5 > 7) console.warn(`  ⚠ previews.json ${it.name}: added ${it.added}, past 7 days: the app already hides it; remove it from the file`); } } }
+// starter copies (scripts/starter.mjs, 24 Nov 2026): a config pushed with a "_starter" block or an unfilled "CHANGE:" would voice the marker
+for (const dir of ['scripts/explainer', 'scripts/channel3', 'techreel/topics']) { const D = join(root, dir); for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.json')) : []) {
+  const s = readFileSync(join(D, f), 'utf8'); if (/"_starter"|CHANGE: /.test(s)) err(`${dir}/${f}: a starter copy still has "_starter" or "CHANGE: " (fill every CHANGE: place, then delete the _starter block)`); } }
 if (caps) {
   const need = [];
   for (const dir of ['scripts/explainer', 'scripts/explainer/styles', 'scripts/channel3']) { const D = join(root, dir); for (const f of existsSync(D) ? readdirSync(D).filter((x) => x.endsWith('.json')) : []) { try { const n = JSON.parse(readFileSync(join(D, f), 'utf8')).name; if (n) need.push([n, `${dir}/${f}`]); } catch {} } }
