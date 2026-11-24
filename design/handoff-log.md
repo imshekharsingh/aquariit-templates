@@ -514,3 +514,8 @@ Format (at most 6 lines):
 
 ## 2026-11-24 tech-usbc-r3 (branch claude/tech-usbc-r3)
 - usbc-two-numbers render 3 prep: shot 4 camera about a third as fast, no depth blur on shots 3 and 4, cyan pulses 30 to 8 units/s. Checked on stills at 16.5-25 s. Render 3 next, then Output QA and critic.
+
+## 2026-11-24 · claude/studio-board · Live studio board on Today (owner chat job, size L, part 1 of 3)
+- Done: POST /api/stage (header X-Stage-Key = secret STAGE_KEY, D1 studio_stage, optional thumb in R2 stage/) and GET /api/stage (signed in) in src/worker.js; scripts/stage.mjs for sessions and workflows; scripts/qa/stage-test.mjs in npm run check; STAGE_KEY passed to the Worker in pipeline.yml; Today board (ring N of 3, one card per channel, 6 stage dots, % bar, model, live line, tap for the stage list, render line on the card's bottom edge, reduce motion = fades). sw.js v25. Runbooks updated.
+- Left: the owner adds STAGE_KEY (GitHub secret + Worker deploy picks it up; a network secret with header X-Stage-Key on the session environment). Until then the board still shows journey data (render %, Ready, Posted).
+- For the other account: --pct in stage.mjs is progress inside the current stage, not overall.

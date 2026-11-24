@@ -8,6 +8,15 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
   src/journey.js). Renovated on 23 Nov 2026 (owner, 22 Nov: "clean, and I can see where my primary focus lies"; mockups approved 23 Nov).
 - Three tabs: **Today | Growth | Inbox** (bottom bar on phones, side rail on desktop; the last one used is remembered). The gear (top right)
   opens Settings: notifications, GitHub minutes, "All reels and channel profiles", Sign out. Nothing else lives in a menu.
+- **Live studio board** (owner, 24 Nov 2026; top of Today): a ring "N of 3 ready" and one card per channel's reel of today: latest frame, six stage dots
+  (Researching, Topic picked, Building, Stills check, Making the video, Checking), then Ready to post / Skipped today / Posted, a % bar, the model working
+  now and one live line ("Rendering 62%"). Tap a card to open its stage list. Motion is under 0.4 s; reduce motion = fades only.
+  Sessions and workflows report with `node scripts/stage.mjs <reel|web|tech|c3> <stage> [--model fable] [--line "text"] [--pct n] [--thumb frame.jpg]`
+  (stages: researching, topic, building, stills, video, checking, ready, skipped, posted; use the channel until the reel has a name; `--pct` is the progress
+  inside the current stage; a thumb is a small JPEG under 200 KB). Call it at every stage change, one plain line, no stage jargon. It goes to
+  POST /api/stage (Worker, D1 `studio_stage`), authenticated by the header X-Stage-Key = secret STAGE_KEY (GitHub + Worker secret, plus a network secret with
+  header X-Stage-Key on the session environment; never written to a file; scripts/qa/stage-test.mjs). The render % and the final Ready / Posted still come from
+  /api/journey. A failed stage call never blocks work.
 - **Today** answers "what needs me" and "where is today's reel": Needs you (the open questions from Owner answers `add`, with their buttons,
   then every reel ready to post due by the end of today: Copy post text, Save video, I posted it), Today's reels and Tomorrow (one row per
   channel, one status in plain words), "All reels and posted", the daily report line (`auditShow`, from /api/cards) and when it updated.

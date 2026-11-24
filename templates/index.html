@@ -380,6 +380,66 @@
   .tsec .lbl{margin-top:20px}
   .dot{display:inline-block;flex:none;width:8px;height:8px;border-radius:50%;background:var(--mute)}
   .d-web{background:var(--c-web)}.d-tech{background:var(--c-tech)}.d-c3{background:var(--c-c3)}
+  /* live studio board (24 Nov 2026): every move under .4s; reduced motion = fades only */
+  .board{margin:0 0 6px}
+  .bhead{display:flex;align-items:center;gap:14px;margin:4px 0 12px}
+  .ring{position:relative;flex:none;width:52px;height:52px}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring circle{fill:none;stroke-width:4}
+  .ring .rt{stroke:var(--line)}.ring .rf{stroke:var(--ok);stroke-linecap:round;transition:stroke-dasharray .35s ease}
+  .ring b{position:absolute;inset:0;display:grid;place-items:center;font:800 1.05rem system-ui,sans-serif}
+  .bt{display:flex;flex-direction:column;gap:1px}.bt b{font:700 1rem system-ui,sans-serif}.bt span{color:var(--mute);font-size:.82rem}
+  .bcard{position:relative;margin:0 0 10px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:border-color .3s ease,box-shadow .3s ease,transform .3s ease}
+  .bcard.ready,.bcard.posted{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok),0 6px 22px -8px var(--ok)}
+  .bcard.lift{animation:blift .38s ease-out}
+  @keyframes blift{0%{transform:translateY(0)}45%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+  .bcard.skipped{opacity:.78}
+  .bmain{display:flex;align-items:stretch;gap:12px;width:100%;padding:12px 12px 14px;border:0;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+  .bthumb{flex:none;width:56px;height:100px;border-radius:10px;background:var(--well);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;transition:width .35s ease,height .35s ease}
+  .bthumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .bthumb .dot{width:12px;height:12px}
+  .bcard.open .bthumb{width:44px;height:78px}
+  .bbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+  .btop{display:flex;align-items:center;gap:8px;min-width:0}
+  .btop b{font:700 .92rem system-ui,sans-serif;white-space:nowrap}
+  .bstate{margin-left:auto;font:700 .72rem system-ui,sans-serif;padding:3px 9px;border-radius:99px;background:var(--soft);color:var(--ink);white-space:nowrap}
+  .ready .bstate,.posted .bstate{background:var(--okbg);color:var(--ok)}
+  .bline{min-height:1.35em;font-size:.88rem;line-height:1.35;color:var(--ink);overflow-wrap:anywhere}
+  .bline.draw{animation:bdraw .32s ease-out}
+  @keyframes bdraw{from{clip-path:inset(0 100% 0 0);opacity:.2}to{clip-path:inset(0 0 0 0);opacity:1}}
+  .bdots{display:flex;gap:5px}
+  .bdots i{width:9px;height:9px;border-radius:50%;background:var(--line);transition:background .25s ease,transform .25s ease}
+  .bdots i.on{background:var(--ok)}.bdots i.now{background:var(--act);transform:scale(1.15)}
+  .bdots i.pop,.bstages i.pop{animation:bpop .36s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes bpop{0%{transform:scale(.4)}100%{transform:scale(1)}}
+  .bbar{display:flex;align-items:center;gap:8px}
+  .bbar .tr{flex:1;height:5px;border-radius:99px;background:var(--soft);overflow:hidden}
+  .bbar .tr i{display:block;height:100%;border-radius:99px;background:var(--ok);transition:width .35s ease}
+  .bbar span{font:600 .72rem system-ui,sans-serif;color:var(--mute);min-width:34px;text-align:right}
+  .bmeta{font-size:.74rem;color:var(--mute)}
+  .bmore{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+  .bcard.open .bmore{grid-template-rows:1fr}
+  .bmore>div{overflow:hidden;min-height:0}
+  .bstages{list-style:none;margin:0;padding:2px 14px 4px;border-top:1px solid var(--line)}
+  .bstages li{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:.86rem;border-top:1px solid var(--line)}
+  .bstages li:first-child{border-top:0}
+  .bstages i{flex:none;width:11px;height:11px;border-radius:50%;background:var(--line)}
+  .bstages .on i{background:var(--ok)}.bstages .now i{background:var(--act)}
+  .bstages em{font-style:normal}
+  .bstages li span{margin-left:auto;color:var(--mute);font-size:.76rem;text-align:right}
+  .bstages .now span{color:var(--ink)}
+  .bopen{display:block;margin:4px 14px 14px;min-height:40px}
+  .bedge{position:absolute;left:0;right:0;bottom:0;height:3px;opacity:0;transition:opacity .25s ease}
+  .bcard.making .bedge{opacity:1}
+  .bedge i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--c-tech));transition:width .35s ease;position:relative}
+  .bedge i::after{content:'';position:absolute;right:0;top:0;bottom:0;width:36px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7));animation:brun 1.2s ease-in-out infinite}
+  @keyframes brun{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+  @media (prefers-reduced-motion: reduce){
+    .bcard,.bcard *{transition:opacity .25s ease!important;animation:none!important}
+    .bmore{transition:none}.bcard.lift,.bline.draw{animation:bfade .25s ease!important}
+    @keyframes bfade{from{opacity:0}to{opacity:1}}
+    .bthumb,.bcard.open .bthumb{transition:none}
+  }
   .tlist{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px}
   .trow{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:11px 0;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
   .trow:first-child{border-top:0}
@@ -486,6 +546,11 @@
     <h1 id="t-title">Today</h1>
     <p class="lede" id="t-sub">Loading…</p>
     <button type="button" class="chk on" id="t-chk" hidden></button>
+    <section class="board" id="board" aria-label="Studio board">
+      <div class="bhead"><div class="ring" id="b-ring" role="img" aria-label="0 of 3 reels ready"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="rt" cx="22" cy="22" r="18"/><circle class="rf" id="b-arc" cx="22" cy="22" r="18" pathLength="100" stroke-dasharray="0 100"/></svg><b id="b-n">0</b></div>
+        <div class="bt"><b id="b-t">0 of 3 ready</b><span id="b-s">Waiting for the studio</span></div></div>
+      <div id="b-cards"></div>
+    </section>
     <section class="tsec" id="needs" hidden><h2 class="lbl">Needs you</h2><div id="needs-list"></div><div id="t-ready"></div></section>
     <h2 class="lbl">Today’s reels <span>post 13:00–21:00 IST</span></h2>
     <div class="tlist" id="t-today"><p class="empty">Loading…</p></div>
@@ -966,6 +1031,7 @@
     if (s === 'growth') gShow();
     if (s === 'reels' && DATA) render();
     if (s === 'reel' && reelName) rPage(reelName);
+    if (s === 'today') sLoad(); else clearTimeout(sTimer);
     if (s === 'today' || s === 'reel') { if (!jLast || Date.now() - jAt > 30000) jLoad(); else jSchedule(); }
     else clearTimeout(jTimer);
     window.scrollTo(0, 0); }
@@ -1075,6 +1141,76 @@
         .sort(function(x, y){ return dueOf(x, c[x.name] || {}) - dueOf(y, c[y.name] || {}); })
         .forEach(function(x){ var card = reelCard(x, c[x.name] || {}, true); card.classList.add('rdy'); rBox.appendChild(card); }); }
     syncNeeds(); }
+  // ---- the live studio board (owner, 24 Nov 2026): one card per channel's reel today. Stages come from GET /api/stage (sessions and workflows call
+  // scripts/stage.mjs); the render % and the final Ready / Posted come from the journey data above. Cards are built once and updated in place.
+  var BST = [['researching', 'Researching'], ['topic', 'Topic picked'], ['building', 'Building'], ['stills', 'Stills check'], ['video', 'Making the video'], ['checking', 'Checking']],
+      BFIN = { ready: 'Ready to post', skipped: 'Skipped today', posted: 'Posted' }, SROWS = [], sTimer = null, bCards = {}, bOpen = null;
+  var MODEL = [[/fable/i, 'Fable'], [/opus/i, 'Opus'], [/sonnet/i, 'Sonnet'], [/haiku/i, 'Haiku']];
+  function modelName(m){ for (var i = 0; i < MODEL.length; i++) if (MODEL[i][0].test(m || '')) return MODEL[i][1]; return m || ''; }
+  function bIndex(id){ for (var i = 0; i < BST.length; i++) if (BST[i][0] === id) return i; return -1; }
+  // what a channel's card says now: { fin, idx, pct (inside the stage), line, model, thumb, name, making }
+  function bState(k){
+    var row = SROWS.filter(function(x){ return x.ch === k; })[0] || null, j = jLast && jLast.today, r = jLast ? (jLast.reels || []).filter(function(x){ return x.ch === k && x.day === j; })[0] : null,
+        stt = r ? status(r) : null, o = { fin: null, idx: -1, pct: null, line: '', model: row ? modelName(row.model) : '', thumb: row && row.thumb, name: r ? r.name : (row && /^showreel-/.test(row.reel) ? row.reel : null), making: false };
+    if (row) { if (BFIN[row.stage]) o.fin = row.stage; else o.idx = bIndex(row.stage); o.pct = row.pct; o.line = row.line || ''; }
+    if (stt) {
+      if (stt.k === 'posted') { o.fin = 'posted'; o.line = o.line || 'Posted'; }
+      else if (stt.k === 'ready') { if (o.fin !== 'posted') o.fin = 'ready'; o.line = (row && row.stage === 'ready' && row.line) || 'Ready to post'; }
+      else if (o.fin !== 'skipped') {
+        if (stt.k === 'making') { o.fin = null; o.idx = 4; o.pct = stt.pct; o.making = true; o.line = 'Rendering' + (stt.pct != null ? ' ' + stt.pct + '%' : ''); }
+        else if (!row || (row.at && Date.now() - Date.parse(row.at) > 3 * 36e5)) {
+          if (stt.k === 'checking') { o.idx = 5; o.line = 'Checking the video'; }
+          else if (stt.k === 'fixing') { o.idx = 5; o.line = 'Fixing: ' + (stt.why || '').slice(0, 90); }
+          else if (stt.k === 'building') { o.idx = 2; o.line = stt.t; } } } }
+    if (!o.line) o.line = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Not started yet';
+    return o; }
+  function bPct(o){ if (o.fin === 'ready' || o.fin === 'posted') return 100; if (o.idx < 0) return 0; return Math.round((o.idx + (o.pct != null ? Math.max(0, Math.min(100, o.pct)) / 100 : 0)) / BST.length * 100); }
+  function bCard(k){
+    var card = el('article', 'bcard'), main = el('button', 'bmain'), th = el('span', 'bthumb'), body = el('span', 'bbody'), top = el('span', 'btop'), st = el('span', 'bstate'),
+        line = el('span', 'bline'), dots = el('span', 'bdots'), bar = el('span', 'bbar'), tr = el('span', 'tr'), bi = el('i'), bp = el('span'), meta = el('span', 'bmeta'),
+        more = el('div', 'bmore'), inner = el('div'), ol = el('ol', 'bstages'), open = el('button', 'btn g bopen', 'Open reel'), edge = el('span', 'bedge'), ei = el('i');
+    main.type = 'button'; main.setAttribute('aria-expanded', 'false'); open.type = 'button';
+    top.appendChild(chDot(k)); top.appendChild(el('b', null, CH[k].name)); top.appendChild(st);
+    BST.forEach(function(){ dots.appendChild(el('i')); });
+    tr.appendChild(bi); bar.appendChild(tr); bar.appendChild(bp); edge.appendChild(ei);
+    body.appendChild(top); body.appendChild(line); body.appendChild(dots); body.appendChild(bar); body.appendChild(meta);
+    main.appendChild(th); main.appendChild(body); inner.appendChild(ol); inner.appendChild(open); more.appendChild(inner);
+    card.appendChild(main); card.appendChild(more); card.appendChild(edge);
+    var c = { k: k, card: card, th: th, st: st, line: line, dots: dots, bi: bi, bp: bp, meta: meta, ol: ol, open: open, ei: ei, main: main, prev: null, img: null };
+    main.addEventListener('click', function(){ var on = !card.classList.contains('open'); card.classList.toggle('open', on); main.setAttribute('aria-expanded', String(on)); });
+    open.addEventListener('click', function(){ if (c.name) openReel(c.name); });
+    return c; }
+  function bUpdate(c, o){
+    var prev = c.prev, p = bPct(o), cur = o.fin ? (o.fin === 'skipped' ? Math.max(o.idx, 0) : BST.length) : o.idx;
+    c.name = o.name; c.open.hidden = !o.name;
+    c.card.className = 'bcard' + (o.fin ? ' ' + o.fin : '') + (o.making ? ' making' : '') + (c.card.classList.contains('open') ? ' open' : '');
+    if (o.fin === 'ready' && prev && prev.fin !== 'ready' && prev.fin !== 'posted') { c.card.classList.add('lift'); setTimeout(function(){ c.card.classList.remove('lift'); }, 420); }
+    c.st.textContent = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Waiting';
+    if (!prev || prev.line !== o.line) { c.line.textContent = o.line; if (prev) { c.line.classList.remove('draw'); void c.line.offsetWidth; c.line.classList.add('draw'); } }
+    var kids = c.dots.children, rows = c.ol.children, built = rows.length === BST.length + 1;
+    if (!built) { c.ol.textContent = ''; BST.concat([['fin', '']]).forEach(function(s2){ var li = el('li'); li.appendChild(el('i')); li.appendChild(el('em', null, s2[1])); li.appendChild(el('span')); c.ol.appendChild(li); }); rows = c.ol.children; }
+    for (var i = 0; i < BST.length; i++) { var done = i < cur, now = !o.fin && i === o.idx, was = prev ? (prev.fin ? (prev.fin === 'skipped' ? i < Math.max(prev.idx, 0) : true) : i < prev.idx) : false;
+      kids[i].className = done ? 'on' : now ? 'now' : ''; if (done && !was && prev) { kids[i].classList.add('pop'); rows[i].querySelector('i').classList.add('pop'); }
+      rows[i].className = done ? 'on' : now ? 'now' : ''; rows[i].lastChild.textContent = done ? 'done' : now ? (i === 4 && o.pct != null ? o.pct + '%' : o.line) : ''; }
+    var fr = rows[BST.length]; fr.className = o.fin === 'skipped' ? '' : o.fin ? 'on' : ''; fr.querySelector('em').textContent = o.fin === 'skipped' ? 'Skipped today' : o.fin === 'posted' ? 'Posted' : 'Ready to post'; fr.lastChild.textContent = o.fin ? (o.fin === 'skipped' ? 'not today' : 'done') : '';
+    c.bi.style.width = p + '%'; c.bp.textContent = p + '%';
+    c.ei.style.width = (o.making && o.pct != null ? Math.max(3, o.pct) : 0) + '%';
+    c.meta.textContent = o.fin ? (o.model ? 'Last worked on by ' + o.model : '') : o.model ? o.model + ' is working on it' : '';
+    var want = o.thumb ? o.thumb + '?v=' + encodeURIComponent((SROWS.filter(function(x){ return x.ch === c.k; })[0] || {}).at || '') : null;
+    if (want !== c.img) { c.img = want; c.th.textContent = ''; if (want) { var im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.src = want; im.onerror = function(){ im.remove(); c.th.appendChild(chDot(c.k)); }; c.th.appendChild(im); } else c.th.appendChild(chDot(c.k)); }
+    c.prev = o; }
+  function bRender(){
+    var box = document.getElementById('b-cards'), ready = 0, running = 0;
+    ['web', 'tech', 'c3'].forEach(function(k){ var c = bCards[k]; if (!c) { c = bCards[k] = bCard(k); box.appendChild(c.card); } var o = bState(k); bUpdate(c, o);
+      if (o.fin === 'ready' || o.fin === 'posted') ready++; else if (!o.fin && o.idx >= 0) running++; });
+    document.getElementById('b-n').textContent = ready; document.getElementById('b-arc').setAttribute('stroke-dasharray', Math.round(ready / 3 * 100) + ' 100');
+    document.getElementById('b-ring').setAttribute('aria-label', ready + ' of 3 reels ready');
+    document.getElementById('b-t').textContent = ready + ' of 3 ready';
+    document.getElementById('b-s').textContent = ready === 3 ? 'All three are ready to post' : running ? running + ' being made now' : 'Nothing running right now'; }
+  function sLoad(){ clearTimeout(sTimer);
+    return fetch('/api/stage', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
+      .then(function(j){ SROWS = j.rows || []; }, function(){}).then(function(){ bRender();
+        if (sec === 'today' && !document.hidden) { var live = SROWS.some(function(x){ return !BFIN[x.stage]; }); sTimer = setTimeout(sLoad, live ? 20000 : 120000); } }); }
   // ---- a reel's own page: the video, its status in plain words, post text and buttons, sources, and how it was made
   function rPage(name){ var box = document.getElementById('reel-page'); box.textContent = '';
     var c = DATA ? DATA.c : {}, m = c[name] || {}, s = DATA ? ((DATA.d && DATA.d.showreels) || []).filter(function(x){ return x.name === name; })[0] : null;
@@ -1104,12 +1240,12 @@
     var live = jLast && (jLast.reels || []).some(function(r){ return r.live; }); jTimer = setTimeout(jLoad, live ? 60000 : 300000); }
   // the last journey shows at once from this device (21 Nov 2026: "Journey takes time in populating"); the fresh one replaces it when it lands
   try { var jc = JSON.parse(localStorage.getItem('studio-journey') || 'null'); if (jc && jc.reels) { jLast = jc; } } catch (e) {}
-  function jShow(){ tRender(); if (sec === 'reel' && reelName) rPage(reelName); }
+  function jShow(){ tRender(); bRender(); if (sec === 'reel' && reelName) rPage(reelName); }
   function jLoad(){ clearTimeout(jTimer); if (jLast && !jAt) jShow();
     return fetch('/api/journey', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
       .then(function(j){ jLast = j; jAt = Date.now(); jShow(); try { localStorage.setItem('studio-journey', JSON.stringify(j)); } catch (e) {} }, function(){ if (!jLast) { var tb = document.getElementById('t-today'); tb.textContent = ''; tb.appendChild(el('p', 'empty', 'Could not load today’s reels right now. Try again in a minute.')); } })
       .then(jSchedule); }
-  document.addEventListener('visibilitychange', function(){ if (document.hidden) clearTimeout(jTimer); else if (sec === 'today' || sec === 'reel') { if (Date.now() - jAt > 60000) jLoad(); else jSchedule(); } });
+  document.addEventListener('visibilitychange', function(){ if (document.hidden) { clearTimeout(jTimer); clearTimeout(sTimer); } else if (sec === 'today' || sec === 'reel') { if (sec === 'today') sLoad(); if (Date.now() - jAt > 60000) jLoad(); else jSchedule(); } });
   go(sec);
   // "Needs you": each item has buttons that fit it (Yes / No, Done, or a short reply); the reply is stored and the item leaves the list
   function askEl(a){ var box = el('div', 'ask'), row = el('div', 'row'), ta = null;

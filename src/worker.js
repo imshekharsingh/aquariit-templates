@@ -475,6 +475,64 @@ async function refsApi(request, env, p, url) {
   return jres({ error: 'bad-request' }, 400);
 }
 
+// ---- Live studio board (owner, 24 Nov 2026): sessions and workflows tell the app which stage each channel's reel of today is in, with
+// POST /api/stage {reel, stage, model, line, pct, thumb?}. Auth is the secret STAGE_KEY, sent as the header X-Stage-Key (a header of its own, so
+// it never clashes with REELS_READ_KEY; unset or empty secret = off). `reel` is a reel name or a channel (web / tech / c3), as early as the
+// research, before the reel has a name. The app reads GET /api/stage (signed in): today's rows, newest first. Render % still comes from /api/journey.
+// thumb = a small JPEG as base64 (at most 200 KB), kept in R2 under stage/ and shown on the card.
+const STAGE_IDS = ['researching', 'topic', 'building', 'stills', 'video', 'checking', 'ready', 'skipped', 'posted'], STAGE_THUMB_MAX = 200 * 1024;
+let stageReady = null;
+async function stageDb(env) {
+  if (!env.DB) return null;
+  stageReady = stageReady || env.DB.exec('CREATE TABLE IF NOT EXISTS studio_stage (reel TEXT PRIMARY KEY, ch TEXT NOT NULL, day TEXT NOT NULL, stage TEXT NOT NULL, model TEXT, line TEXT, pct INTEGER, thumb INTEGER NOT NULL DEFAULT 0, at TEXT NOT NULL)')
+    .catch((e) => { stageReady = null; throw e; });
+  await stageReady;
+  return env.DB;
+}
+async function stageKeyOk(request, env) {
+  const key = typeof env.STAGE_KEY === 'string' ? env.STAGE_KEY.trim() : '', got = (request.headers.get('X-Stage-Key') || '').trim();
+  if (!key || !got) return false;
+  return safeEqual(got, key);
+}
+const istDayNow = () => new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
+const stageKey = (reel) => String(reel).replace(/[^a-z0-9-]/g, '');
+async function stageApi(request, env, p, ctx) {
+  let db;
+  try { db = await stageDb(env); } catch { return jres({ error: 'db-unavailable' }, 503); }
+  if (!db) return jres({ error: 'no-db' }, 501);
+  if (request.method === 'GET' && p === '/api/stage') {
+    const { results } = await db.prepare('SELECT reel, ch, day, stage, model, line, pct, thumb, at FROM studio_stage WHERE day = ?1 ORDER BY at DESC LIMIT 12').bind(istDayNow()).all();
+    return jres({ day: istDayNow(), rows: (results || []).map((r) => ({ reel: r.reel, ch: r.ch, stage: r.stage, model: r.model, line: r.line, pct: r.pct, thumb: r.thumb ? `/api/stage/thumb/${r.reel}` : null, at: r.at })) });
+  }
+  const th = /^\/api\/stage\/thumb\/([a-z0-9-]{1,80})$/.exec(p);
+  if (request.method === 'GET' && th) {
+    if (!env.REELS) return jres({ error: 'no-store' }, 503);
+    const o = await env.REELS.get(`stage/${th[1]}.jpg`);
+    if (!o) return jres({ error: 'not-found' }, 404);
+    return new Response(o.body, { headers: { 'Content-Type': 'image/jpeg', 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff' } });
+  }
+  if (request.method === 'POST' && p === '/api/stage') {
+    let b = null; try { b = await request.json(); } catch { /* handled below */ }
+    const reel = b && typeof b.reel === 'string' ? stageKey(b.reel.trim().toLowerCase()) : '';
+    if (!reel || reel.length > 80 || !STAGE_IDS.includes(b.stage)) return jres({ error: 'bad-request', stages: STAGE_IDS }, 400);
+    const ch = ['web', 'tech', 'c3'].includes(reel) ? reel : chOfReel(reel, null);
+    const pct = Number.isFinite(Number(b.pct)) && b.pct !== null && b.pct !== '' ? Math.max(0, Math.min(100, Math.round(Number(b.pct)))) : null;
+    const model = nStr(b.model, 40), line = nStr(b.line, 140);
+    let thumb = 0;
+    if (typeof b.thumb === 'string' && b.thumb.length > 20 && env.REELS) {
+      try { const bin = Uint8Array.from(atob(b.thumb.replace(/^data:image\/jpeg;base64,/, '')), (c) => c.charCodeAt(0));
+        if (bin.length <= STAGE_THUMB_MAX && bin[0] === 0xff && bin[1] === 0xd8) { await env.REELS.put(`stage/${reel}.jpg`, bin, { httpMetadata: { contentType: 'image/jpeg' } }); thumb = 1; }
+      } catch { /* no thumbnail */ }
+    }
+    const day = istDayNow();
+    // a stage line without a new thumb keeps the one already stored for this reel today
+    await db.prepare('INSERT INTO studio_stage (reel, ch, day, stage, model, line, pct, thumb, at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9) ON CONFLICT(reel) DO UPDATE SET ch = excluded.ch, stage = excluded.stage, model = excluded.model, line = excluded.line, pct = excluded.pct, at = excluded.at, thumb = CASE WHEN excluded.thumb = 1 THEN 1 WHEN studio_stage.day = excluded.day THEN studio_stage.thumb ELSE 0 END, day = excluded.day')
+      .bind(reel, ch, day, b.stage, model || null, line || null, pct, thumb, new Date().toISOString()).run();
+    return jres({ ok: true, reel, ch, stage: b.stage });
+  }
+  return jres({ error: 'bad-request' }, 400);
+}
+
 // ---- Spare-usage night (owner, 1 Nov 2026): the owner's weekly Claude limit resets Wednesday 04:30 IST. From Tuesday 21:00 IST the app shows a card
 // saying Claude uses the spare usage tonight, with one "Skip tonight" button (owner, 3 Nov 2026: opt-out; a skip flag for that week, stored here).
 // /api/spare reports on = not skipped, and the "Spare check" workflow prints SPARE=yes unless skipped. The Worker's cron sends a Web Push reminder
@@ -829,7 +887,8 @@ export default {
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p === '/api/stage' && request.method === 'POST') return (await stageKeyOk(request, env)) ? stageApi(request, env, p, ctx) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/stage') ? stageApi(request, env, p, ctx) : p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     // Read-only reel key (owner, 23 Nov 2026): critic and review sessions fetch the final reel files with Authorization: Bearer <REELS_READ_KEY>.
     // It opens ONLY GET/HEAD of /reels/<file> from R2: no API, no app pages, no writes, no site-copy fallback. Unset or empty secret = off.
     if (!signedIn && (await readKeyOk(request, env))) {
