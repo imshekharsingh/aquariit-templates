@@ -5,6 +5,10 @@ Every new web reel starts as a copy of the gold reel showreel-46-tabwiggle: `nod
 change with "CHANGE:" (the phone's broken and fixed content, the hook words, the measurement, the code, the reaction words, the meter labels and the voice text). Keep the rest as gold (light, framing, type sizes, shot rhythm, motion, sound) unless the review file says
 why. `npm run check` fails while a config still has "_starter" or "CHANGE: ". After the render: Output QA LOOK compares its light with gold,
 and `python3 scripts/qa/side-by-side.py reel-files/<name>.mp4` makes the sheet the critic must view (critic.md question 43).
+Direction card (owner, 24 Nov 2026; design/direction.md): the starter also writes review/<channel>/<name>.direction.md. Fill its 9 lines
+(hook, pacing curve, camera, light, type motion, transitions, sound, rewatch moment, payoff; each a choice and why, never "default",
+"steady" or "simple") BEFORE the build, avoiding this channel's list in design/direction.md; the stills check approves card and stills
+together; no render without "STILLS CHECK: APPROVED".
 
 How to use: before the one render, score the reel rule by rule (pass / fail, one line each) in the stills review. A reel that fails a rule
 is fixed or its topic is swapped. The daily audit adds, changes or drops a rule when the numbers say so, always with the number.
