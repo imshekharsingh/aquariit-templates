@@ -623,3 +623,9 @@ Format (at most 6 lines):
 - Done: pw() in templates/index.html turns codes from the server, review files and the daily report into plain words (video checks, below target, the rule, ...) and is applied to status reasons, Needs you, audit cards, collector alerts; the daily report line says "on target / below target"; Post now's "not switched on" and "key refused" messages and the collector fix lines no longer name secrets or menus (the access-key fix still names the secret to update). scripts/qa/plain-words-test.mjs is in npm run check. sw.js v33.
 - Left: Claude replies and the owner's own words are shown as written (not filtered).
 - For the other account: write plainly in review files, asks and cards; pw() is a net.
+
+## 2026-11-25 · claude/daily-25nov · Daily run: audit, picks, rulebooks (daily studio run)
+- Done: Owner answers read (nothing new); audit card sent (web and tech changes in plain words); Fable picked web W25-2 (:user-invalid, then W25-1, W25-5) and tech T26-1 (battery cycles, then T26-4, T26-3), logged in design/pick-log.md; sources re-read this morning (MDN field-sizing, :user-invalid, scroll-snap-stop; Apple battery page): same. Rulebook and playbook lines for the audit's PROMOTE/DROP/ESCALATE; one lesson line in experiments.md.
+- Builds: tech reel battery-cycles and web reel user-invalid are built by their own build sessions (branches claude/tech-battery-cycles, claude/web-user-invalid); each writes its own entry.
+- Left: nothing for the owner.
+- For the other account: a Fable session started without source_url has no repo checkout; always pass the repo URL to create_session.
