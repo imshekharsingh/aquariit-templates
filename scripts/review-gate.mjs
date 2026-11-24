@@ -40,7 +40,8 @@ export const reviewProblems = (name, e, { render = false, today = todayIST() } =
   if (!existsSync(f)) return [`${p} is missing (the Mandatory Gate review: design/mandatory.md)`];
   const got = new Map(), out = [];
   for (const line of readFileSync(f, 'utf8').split('\n')) { const m = line.match(/^\s*(\d{1,2})\.\s+(.+?):\s+(PASS|FAIL|PENDING)\b:?\s*(.*)$/); if (m && !got.has(+m[1])) got.set(+m[1], { st: m[3], ev: m[4].trim() }); }
-  const items = [...Array(ITEMS).keys()].map((i) => i + 1).concat(e.postOn >= FLOW_FROM ? FLOW_ITEMS : []).concat(e.channel === 'web' && e.postOn >= SOUND_FROM ? [SOUND_ITEM] : []).concat(e.channel === 'c3' && e.postOn >= JOURNEY_FROM ? [JOURNEY_ITEM] : []).concat(e.channel === 'c3' && e.postOn >= DEPTH_FROM ? [DEPTH_ITEM] : []);
+  // item 19 (journey scenes) does not apply to "engine": "design" reels: one live artboard, no scene journey (24 Nov 2026)
+  const items = [...Array(ITEMS).keys()].map((i) => i + 1).concat(e.postOn >= FLOW_FROM ? FLOW_ITEMS : []).concat(e.channel === 'web' && e.postOn >= SOUND_FROM ? [SOUND_ITEM] : []).concat(e.channel === 'c3' && e.engine !== 'design' && e.postOn >= JOURNEY_FROM ? [JOURNEY_ITEM] : []).concat(e.channel === 'c3' && e.postOn >= DEPTH_FROM ? [DEPTH_ITEM] : []);
   for (const i of items) {
     const g = got.get(i);
     if (!g) { if (!(render && i === ITEMS)) out.push(`${p}: item ${i} is missing ("${i}. <item>: PASS: <evidence>")`); continue; }

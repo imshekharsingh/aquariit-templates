@@ -489,3 +489,8 @@ Format (at most 6 lines):
 - Left: the owner posts it in the 13:00-21:00 IST window.
 - For the other account: ffmpeg's fps=1 filter gives the frame at the END of each second (0.98, 1.98 ...), so take frame 0 by number (select='eq(n,0)'); the next web reel shows the whole hook from frame 0 (ENHANCE).
 
+
+## 2026-11-24 · claude/grey-menu-today · Grey menu is today's Turns Out reel (owner chat job, size S)
+- Done: captions.json showreel-c3-grey-text: onGo dropped, postOn 2026-11-24, postAt 13:00, so the app lists it as today's Turns Out reel. scripts/review-gate.mjs: reels with "engine": "design" are exempt from item 19 (journey scenes), with a comment saying why (one live artboard, no scene journey). Video and other reels untouched.
+- Left: confirm the merge and deploy are green.
+- For the other account: a dated design-engine c3 entry no longer needs item 19 in its review file.
