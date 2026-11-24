@@ -6,6 +6,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+
+## 2026-11-24 · claude/what-works-24nov · What works + posting slots from real numbers (owner chat job, size M)
+- Done: design/what-works.md (per channel, top 5 vs bottom 5, do more / stop doing; weak evidence marked) and design/posting-slots.md. Data: one read-only dry collect (up to 50 posts per account). Strongest: web = fixes visible at a glance (Nov top 5 median 2,753 vs bottom 867); tech = gadget "worth it" questions (median 119 before 15 Nov, 1,206 since) with ~0 saves; Turns Out = 8 reels, too thin. Skip in 3 s (last 7 only) separates hits from misses on all channels.
+- Slots: online_followers returns no rows for all three accounts, so the slots (tech 15:00, Turns Out 17:00, web 19:00) are from post time vs reach, low confidence.
+- Left: length, pace, look and hero object are not stored per reel; add duration and a look tag to captions.json to rank them next time. Instagram gives no follows per reel.
+
 ## 2026-11-24 23:55 IST · claude/topic-bank-24nov · topic bank for 25-27 Nov (Sonnet research, Fable only picks)
 - Done: design/topic-bank.md: web 15 options (25, 26, 27 Nov), tech 10 (26, 27 Nov; 25 Nov skipped), each with hook, the one lesson, 2 facts with URLs, gold-look fit, a prop and the 2 picks per day. Web facts read in MDN's page source and browser-compat-data; tech facts read on apple.com, support.apple.com and developer.android.com (the only maker hosts reachable from here).
 - Not done: the CV critic verdict was NOT written into the review file; the write was blocked (it needs the critic's own session to write it, not a copy). Turns Out's task on 25 Nov re-checks and records it.
