@@ -31,6 +31,7 @@ const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-un
 p.on('pageerror', (e) => errors.push(e.message));
 await p.goto('file://' + resolve(scene)); await p.waitForSelector('html[data-ready]');
 const cover = await p.evaluate((ws) => { if (ws.length && window.setVoice) window.setVoice({ words: ws }); return window.COVER ?? 0; }, words);
+const badCues = await p.evaluate(() => ((window.CUES && window.CUES.cues) || []).filter((c) => !Number.isFinite(Number(c.t))).length);   // a cue without a time breaks sound.py after the whole capture (24 Nov 2026)
 const hookBug = await p.evaluate(() => window.HOOK || null);   // KM.bugs (scripts/explainer/kithook.js): when the bug happens (rules-web.md rule 20)
 const ts = [cover]; if (String(n).includes(',')) ts.push(...String(n).split(',').map(Number)); else for (let i = 0; i < +n; i++) ts.push(+(cover + .3 + i * (cfg.dur - cover - .6) / (+n - 1)).toFixed(2));
 const shots = [];
@@ -83,6 +84,8 @@ console.log(`STATIC STRETCH: ${stretches.length ? stretches.join(', ') + ' (unde
 console.log(`SUBJECT FILL: ${fill}% at frame 0${fill < FILL_MIN * 100 ? ' (UNDER ' + FILL_MIN * 100 + '%: push the camera in so the subject fills the frame)' : ''}`);
 if (/^(scripts\/explainer|scripts\/previews\/web-)/.test(cfgPath.replace(/\\/g, '/'))) console.log('HOOK BUG: ' + (!hookBug ? 'not declared (new web reels call KM.bugs([t1, t2]); rules-web.md rule 20)' :
   `first at ${hookBug.first.toFixed(2)} s, second at ${hookBug.second == null ? 'none' : hookBug.second.toFixed(2) + ' s'}: ${hookBug.ok ? 'ok' : 'LATE (the bug must happen by 0.6 s and again by 2.0 s)'}`));
+console.log('CUE TIMES: ' + (badCues ? badCues + ' SOUND CUES HAVE NO TIME (a missing anchor or a swallowed line: fix before the render)' : 'ok'));
+if (badCues) process.exitCode = 1;
 console.log(`TEXT FIT: ${wide.size ? 'TEXT WIDER THAN ITS BOX: ' + [...wide.values()].join(' | ') : 'all text inside its box'}`);
 for (const l of [...lay.lines, ...flow.lines, ...snd.lines]) console.log(l);
 process.exit(lay.bad || flow.bad || snd.bad || errors.length || empty.length || wide.size || stretches.length || fill < FILL_MIN * 100 ? 1 : 0);
