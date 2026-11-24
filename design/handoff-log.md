@@ -6,6 +6,12 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-25 · claude/topic-bank-v2 · topic bank v2 (web 25-30 Nov, tech 26-30 Nov), owner chat job size M
+- Done: design/topic-bank.md rewritten: web 60 options (10 a day), tech 50 (10 a day); v1's good options kept (web 15, tech 10 with Doze, Standby and Lockdown re-placed so no maker is over 2 a day). Each has hook, one lesson, 2 facts with URLs, gold-look fit, prop, 2 PICKs a day. Tech: 10 makers or bodies (Apple 6 of 50 = 12%), Wi-Fi Alliance 8, USB-IF 4, Bluetooth SIG 5, India angle marked.
+- Not covered: jedec.org (403), intel.com (403), qualcomm.com (empty), sony.net and oneplus.com (no reply) did not open, so no JEDEC, Qualcomm, Intel, Sony or OnePlus option; lines marked RE-READ were not read on the page and must be read the morning of the build.
+- Left: builders pick one option per channel and day, re-read its two URLs first; same-week overlaps are marked on the options.
+- For the other account: raw.githubusercontent.com/mdn/browser-compat-data (one file per feature) works for support rows; media features and global attributes sit inside their parent file (css/at-rules/media.json, html/global_attributes.json).
+
 ## 2026-11-24 23:55 IST · claude/topic-bank-24nov · topic bank for 25-27 Nov (Sonnet research, Fable only picks)
 - Done: design/topic-bank.md: web 15 options (25, 26, 27 Nov), tech 10 (26, 27 Nov; 25 Nov skipped), each with hook, the one lesson, 2 facts with URLs, gold-look fit, a prop and the 2 picks per day. Web facts read in MDN's page source and browser-compat-data; tech facts read on apple.com, support.apple.com and developer.android.com (the only maker hosts reachable from here).
 - Not done: the CV critic verdict was NOT written into the review file; the write was blocked (it needs the critic's own session to write it, not a copy). Turns Out's task on 25 Nov re-checks and records it.
