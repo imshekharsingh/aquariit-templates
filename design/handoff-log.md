@@ -494,3 +494,4 @@ Format (at most 6 lines):
 - Done: captions.json showreel-c3-grey-text: onGo dropped, postOn 2026-11-24, postAt 13:00, so the app lists it as today's Turns Out reel. scripts/review-gate.mjs: reels with "engine": "design" are exempt from item 19 (journey scenes), with a comment saying why (one live artboard, no scene journey). Video and other reels untouched.
 - Left: confirm the merge and deploy are green.
 - For the other account: a dated design-engine c3 entry no longer needs item 19 in its review file.
+- Also (owner chat, same branch): Turns Out back to one dated reel a day (CLAUDE.md Schedule and Scheduled tasks; design/c3-plan.md section 0 order); the CV entry showreel-c3-resume is dated 2026-11-25 13:00, onGo dropped, video and hidden/hold flags untouched.
