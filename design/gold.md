@@ -140,3 +140,5 @@ The 5 things that make it good:
 - The hero is a real-looking object that stays the subject; the USB-C cable cross-section held about 10 s.
 - One big number or word at a time, on the spoken word.
 - Output QA LOOK on the USB-C reel vs gold: FAIL, 5 of 6 measures off, 42 of 66 frames washed out (0-5.5, 10.5-24, 31-33 s).
+
+- (owner, 24 Nov 2026, storage-gap) The starter copies the look, light, type and pacing of the gold reel, never its hero object or layout. The critic fails a reel whose main object matches any of our last 5 reels.
