@@ -190,11 +190,11 @@ function shotCam(t, sh) {
   if (sh === 0) { p = V(lerp(17, 14, k), lerp(11.5, 10, k), lerp(19, 21, k)); l = V(lerp(-.4, 0, k), lerp(3.9, 3.6, k), -1.4); }
   else if (sh === 1) { const a = lerp(-.1, .1, k), d = 112 * (1 - hold(.03)); p = V(Math.sin(a) * d, lerp(52, 44, k), Math.cos(a) * d); l = V(lerp(-1, 2, k), 15, 3); fov = 36; }
   else if (sh === 2) { const e = KIT.ease(prog(t, B[2] + .15, B[2] + 2.1)); p = V(lerp(.4, 6.2, e), lerp(.6, 4.4, e), lerp(14.5, 11, e) * (1 - hold(.02))); l = V(0, lerp(-.8, -.5, e), lerp(3.5, 1.8, e)); fov = 31; }
-  else if (sh === 3) { p = V(lerp(-15, 1, k), lerp(7.4, 6.6, k), lerp(11.5, 9.5, k)); l = V(lerp(-4, 8, k), 1.0, 0); }
-  else if (sh === 4) { p = V(lerp(16, 0, k), lerp(6.4, 7.6, k), lerp(9.5, 11.5, k)); l = V(lerp(5, -7, k), 1.0, 0); }
+  else if (sh === 3) { p = V(lerp(-11, -3, k), lerp(7.2, 6.8, k), lerp(11, 10.2, k)); l = V(lerp(-2, 4, k), 1.0, 0); }
+  else if (sh === 4) { p = V(lerp(9, 5, k), lerp(6.8, 7.2, k), lerp(10.2, 10.8, k)); l = V(lerp(1, -3, k), 1.0, 0); }
   else if (sh === 5) { p = V(lerp(-5, 4, k), lerp(11, 16, k), lerp(52, 47, k)); l = V(0, lerp(9, 9.6, k), 1); fov = 32; }
   else { const e = G(prog(t, B[6], TOTAL), .45), A0 = shotCam(0, 0); p = V(12, 12, 36).lerp(A0.pos, e); l = V(-3.2, 6.6, -1).lerp(A0.look, e); fov = lerp(30, 29, e); return { pos: p.add(V(X, 0, 0)), look: l.add(V(X, 0, 0)), fov }; }
-  return { pos: p.add(V(X, 0, 0)), look: l.add(V(X, 0, 0)), fov, ap: sh === 3 || sh === 4 ? .014 : 0, focus: l.clone().add(V(X, 0, 0)) };
+  return { pos: p.add(V(X, 0, 0)), look: l.add(V(X, 0, 0)), fov, ap: 0, focus: l.clone().add(V(X, 0, 0)) };
 }
 const SHAKES = () => [[C.c240, .06], [C.faster, .08]];
 function cutMod(t, k, side) { const d = KIT.DUR[CUTS[k].kind], u = (t - (B[k] - d / 2)) / d; return { ...KIT.cut(CUTS[k].kind, clamp(u), CUTS[k])[side], k, side }; }
@@ -230,7 +230,7 @@ function apply(t, sh = shotAt(t), mod = null) {
     glowC.position.set(0, .3, 5.8 * ex + 3.4); glowC.scale.setScalar(1.3); glowC.material.opacity = .08 + .35 * ease(prog(t, C.data2 - .05, C.data2 + .4)) * (.6 + .4 * Math.sin(t * 7));
     sRing.forEach((s) => { s.visible = false; }); }
   if (w === 3) { runCut(cut3, t, B[3], 18, 1, .8, 1); }
-  if (w === 4) { runCut(cut4, t, B[4], 5, 1, 30, 1); }
+  if (w === 4) { runCut(cut4, t, B[4], 5, 1, 8, 1); }
   if (w === 5) { const on = (i) => barRise(t, i);
     BARS.forEach((b, i) => { const h = Math.max(.05, b.h * on(i)); b.m.scale.y = h; b.m.position.y = .5 + h / 2 - .5 + .5 * 0 + .0; b.m.position.y = .5 + h / 2; b.cap.position.set(b.x, .5 + h + .1, 0); b.cap.scale.setScalar(4.2); b.cap.material.opacity = .35 + .3 * on(i) * (.7 + .3 * Math.sin(t * 4 + i)); }); }
   pose(cam, c);
