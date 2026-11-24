@@ -194,7 +194,7 @@ function shotCam(t, sh) {
   else if (sh === 4) { p = V(lerp(16, 0, k), lerp(6.4, 7.6, k), lerp(9.5, 11.5, k)); l = V(lerp(5, -7, k), 1.0, 0); }
   else if (sh === 5) { p = V(lerp(-5, 4, k), lerp(11, 16, k), lerp(52, 47, k)); l = V(0, lerp(9, 9.6, k), 1); fov = 32; }
   else { const e = G(prog(t, B[6], TOTAL), .45), A0 = shotCam(0, 0); p = V(12, 12, 36).lerp(A0.pos, e); l = V(-3.2, 6.6, -1).lerp(A0.look, e); fov = lerp(30, 29, e); return { pos: p.add(V(X, 0, 0)), look: l.add(V(X, 0, 0)), fov }; }
-  return { pos: p.add(V(X, 0, 0)), look: l.add(V(X, 0, 0)), fov, ap: sh === 2 || sh === 3 || sh === 4 ? .014 : 0, focus: l.clone().add(V(X, 0, 0)) };
+  return { pos: p.add(V(X, 0, 0)), look: l.add(V(X, 0, 0)), fov, ap: sh === 3 || sh === 4 ? .014 : 0, focus: l.clone().add(V(X, 0, 0)) };
 }
 const SHAKES = () => [[C.c240, .06], [C.faster, .08]];
 function cutMod(t, k, side) { const d = KIT.DUR[CUTS[k].kind], u = (t - (B[k] - d / 2)) / d; return { ...KIT.cut(CUTS[k].kind, clamp(u), CUTS[k])[side], k, side }; }
@@ -226,8 +226,8 @@ function apply(t, sh = shotAt(t), mod = null) {
     drvLed.material.opacity = .5 + .35 * Math.sin(t * 2.1); }
   if (w === 2) { const ex = ease(prog(t, B[2] + .5, C.lanes + .1)), pl = ease(prog(t, C.power - .1, C.data2 + .5));
     sA.forEach((m, i) => { m.position.z = 1.6 + 3 * ex; m.position.x = (i ? 1 : -1) * .12 * ex * 0; }); sC.forEach((m) => { m.position.z = 3.2 * ex; m.position.y = .3 * ex; });
-    glowA.position.set(0, 0, 5.6 + 1.8 * ex); glowA.scale.setScalar(6 + 1.2 * Math.sin(t * 6)); glowA.material.opacity = (.12 + .25 * clamp((t - C.power + .15) * 4)) * (1 - ease(prog(t, C.data2 - .1, C.data2 + .25)) * .5);
-    glowC.position.set(0, .3, 5.8 * ex + 3.4); glowC.scale.setScalar(2.6); glowC.material.opacity = .1 + .6 * ease(prog(t, C.data2 - .05, C.data2 + .4)) * (.6 + .4 * Math.sin(t * 7));
+    glowA.position.set(0, 0, 5.6 + 1.8 * ex); glowA.scale.setScalar(2.6 + .4 * Math.sin(t * 6)); glowA.material.opacity = (.08 + .14 * clamp((t - C.power + .15) * 4)) * (1 - ease(prog(t, C.data2 - .1, C.data2 + .25)) * .5);
+    glowC.position.set(0, .3, 5.8 * ex + 3.4); glowC.scale.setScalar(1.3); glowC.material.opacity = .08 + .35 * ease(prog(t, C.data2 - .05, C.data2 + .4)) * (.6 + .4 * Math.sin(t * 7));
     sRing.forEach((s) => { s.visible = false; }); }
   if (w === 3) { runCut(cut3, t, B[3], 18, 1, .8, 1); }
   if (w === 4) { runCut(cut4, t, B[4], 5, 1, 30, 1); }
@@ -244,6 +244,7 @@ const big = (text, kind, color, t, t0, t1, opt = {}) => { const bx = KIT.word(o,
 function typeLayer(t) {
   BOXES = [];
   const sh = shotAt(t);
+  if (sh === 2) { const g = o.createLinearGradient(0, 180, 0, 760); g.addColorStop(0, 'rgba(7,8,12,.92)'); g.addColorStop(.6, 'rgba(7,8,12,.75)'); g.addColorStop(1, 'rgba(7,8,12,0)'); o.fillStyle = g; o.fillRect(0, 0, W, 760); }   // the sliced cable is bright: a dark band keeps the word readable
   if (sh === 0) big('240 W', 'stamp', HEATC, t, -.4, wEnd(1), { size: 232, y: 520, glow: 'rgba(255,150,40,.4)' });
   if (sh === 1) big('CRAWL', 'track', SIGC, t, C.crawl, wEnd(2), { size: 235, y: 510, glow: 'rgba(56,225,255,.4)' });
   if (sh === 2) big('2 LANES', 'drop', WHITE, t, C.lanes, wEnd(3), { size: 180, y: 520 });
