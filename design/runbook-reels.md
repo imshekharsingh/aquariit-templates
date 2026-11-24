@@ -108,6 +108,10 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
 - The reel card and the Post now confirm sheet show it. Post now sends `is_ai_generated=true` with the container when it is true (Meta changelog 22 Jun 2026, Instagram API with Instagram login; scripts/ig-publish.mjs); if Instagram refuses it nothing is posted and the app says to post by hand and turn on AI info. For a post made by hand the card says to turn on AI info in Instagram for that reel.
 - YouTube is reserved for later: its field is `containsSyntheticMedia`; nothing sends it yet.
 
+## Weekly scorecard (owner plan, 24 Nov 2026; built 25 Nov)
+- Growth > All channels opens with "This week": one card per channel, the last 7 days against the 7 before: reach per reel, watched on average (% of the reel), saves per 1,000 reached, new followers, the critic's average score and changes kept or dropped. Anything missing says "not measured yet".
+- Reach, watch, saves and followers come from the nightly collect (/api/perf). **Critic score**: the critic writes `PREMIUM a / b / c` (0-10 each) in the review file's critic line; /api/journey averages the numbers (src/journey.js) and the app averages the week's reels. **Kept or dropped**: when an experiment's 24 h / 72 h verdict is decided, put `"verdict": "keep"` or `"drop"` inside that reel's captions.json `"experiment"` object (the daily run does this at the verdict step; design/runbook-daily.md does not mention it yet).
+
 ## Archiving
 - A reel marked uploaded leaves the main list at once for its channel's compact "Posted" list (cover, title, posted date, its numbers once
   the collector has them; no video) (owner, 1 Nov 2026).

@@ -603,3 +603,8 @@ Format (at most 6 lines):
 - For the 04:47 daily run: storage-gap does NOT cover 25 Nov; build the day's tech reel on the new flow. The ready fix (no rolling numbers, a whole 1 TB box, the box turning from its side) is on branch claude/storage-gap-fix3 and the review file's "Status after render 2" lists every finding; reuse the idea only with one render and a critic.
 - Left: nothing for the owner.
 - For the other account: a rolling counter fails NUMBERS even when it lands on the spoken word under a second; let an object do the counting or switch straight to the value.
+
+## 2026-11-25 · claude/scorecard · Weekly scorecard on Growth (owner chat job, size L, part 4 of 5)
+- Done: "This week" cards at the top of Growth (All channels): per channel, the last 7 days vs the 7 before: reach per reel, watched on average, saves per 1,000, new followers, critic's average score, changes kept or dropped; "not measured yet" where missing. src/journey.js reads the PREMIUM numbers from a review file's critic line (score per reel); kept/dropped counts read "verdict" inside a captions.json experiment. runbook-reels "Weekly scorecard". sw.js v32.
+- Left: critic score and kept/dropped show "not measured yet" until the critic writes PREMIUM numbers on its line and the daily run writes experiment verdicts (design/runbook-daily.md was off limits tonight: add one line there). Hold % and per-reel follows are not available from Instagram.
+- For the other account: put `"verdict": "keep"|"drop"` in the experiment object when the 72 h verdict is decided.

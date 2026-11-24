@@ -100,6 +100,8 @@ async function review(ch, name) {
       for (const l of t.split('\n')) {
         const c = /^\s*(?:20\.\s*)?Critic\b.*?\bCRITIC:\s*(NOT READY|READY)\b(.*)$/i.exec(l);
         if (c) out.critic = criticOf(c[1], c[2]);
+        const pm = /\bPREMIUM\s+(\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?)*)/i.exec(l);   // "PREMIUM 7.5 / 8 / 7.5": the critic's craft scores (0-10); the average goes on the weekly scorecard
+        if (pm) { const v = pm[1].split('/').map(Number).filter((x) => x >= 0 && x <= 10); if (v.length) out.score = Math.round(v.reduce((a, b) => a + b, 0) / v.length * 10) / 10; }
         if (/^\s*13\.\s/.test(l)) { const p = l.lastIndexOf('OUTPUT QA: PASS'), f = Math.max(l.lastIndexOf('OUTPUT QA: FAIL'), l.search(/Output QA[^.]{0,40}fail/i));
           if (p >= 0 && p > f) out.qa = { pass: true }; else if (f >= 0) out.qa = { pass: false, why: l.slice(f).replace(/^OUTPUT QA: FAIL\s*/, '').slice(0, 140) }; }
       }
@@ -188,7 +190,7 @@ export async function journeyApi(env, { captions, postSlot, chOf, uploaded, medi
     for (const k of Object.keys(st)) if (st[k].at) st[k].at = when(st[k].at);
     const cap = hook(m.caption || capR2[name]), con = / · /.test(m.concept || '') ? String(m.concept).split(' · ').pop().split(':')[0].trim() : '';
     const title = (cap || con || short.replace(/-/g, ' ')).slice(0, 90);
-    return { name, ch, day: m.postOn, slot, title, stages: st, live: !!(st.render.live || st.checks.live) };
+    return { name, ch, day: m.postOn, slot, title, score: rv.score == null ? null : rv.score, stages: st, live: !!(st.render.live || st.checks.live) };
   }).sort((a, b) => (a.day === b.day ? ['web', 'tech', 'c3'].indexOf(a.ch) - ['web', 'tech', 'c3'].indexOf(b.ch) : a.day < b.day ? 1 : -1));
   return { now: new Date(now).toISOString(), today, github: g.state, reels: out };
 }
