@@ -11,7 +11,7 @@
  "vignette": false,
  "cover": 0.6,
  "voice": {
-  "text": "This menu is hard to read. The soft grey looked nice, but it's too light. Turns out, text needs contrast. First, darken the words. Next, lighten the board a touch. Then check the ratio. For body text, aim for four and a half to one. Same menu, now easy to read.",
+  "text": "This menu is hard to read. The soft grey looked nice, but it's too light. Turns out, text needs contrast. First, darken the words. Next, lighten the board slightly. Then check the ratio. Aim for four point five. Same menu, now easy to read.",
   "voice": "af_heart",
   "speed": 1,
   "gap": [

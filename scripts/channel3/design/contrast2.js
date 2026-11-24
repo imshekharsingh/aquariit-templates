@@ -30,7 +30,7 @@
 (function(){
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#5ee0a0', '#ffb35a');
   // spoken sentences with breaths (rules-c3.md V1-V3); the before is the common "soft grey looks elegant" choice, about 2.4 : 1 (B1), not text too faint to exist
-  var TEXT = "This menu is hard to read. The soft grey looked nice, but it's too light. Turns out, text needs contrast. First, darken the words. Next, lighten the board a touch. Then check the ratio. For body text, aim for four and a half to one. Same menu, now easy to read.";
+  var TEXT = "This menu is hard to read. The soft grey looked nice, but it's too light. Turns out, text needs contrast. First, darken the words. Next, lighten the board slightly. Then check the ratio. Aim for four point five. Same menu, now easy to read.";
   var DUR = 21.2, BX = 66, BY = 396, V, PH, A = {}, CAM;
   var TA = [158, 152, 142], TB = [43, 36, 30], GA = [238, 231, 216], GB = [250, 246, 238];   // text grey -> near black, board beige -> warm white
   var IDS = ['h0', 'h1', 'i0', 'j0', 'i1', 'j1', 'i2', 'j2', 'i3'];
