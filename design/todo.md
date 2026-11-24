@@ -55,6 +55,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - [ ] Posting through Instagram's content publishing API (roadmap 6; needs Meta's review, owner's call).
 
 ## Done
+- 24 Nov 2026 (spare night): feedback 7 and 8 answered, two answered previews removed, weekly research pass written (design/references.md "R-trend 24 Nov": ranking signals unchanged; next test: a closing line made to be sent to one person, read against sends per reach). Topics, rulebooks and tooling not touched tonight: no new numbers to act on, and the P1 items need the owner or a long build.
 - 15 Nov 2026: the reel journey in the app and the mobile-app layout (owner, Owner chat 15 Nov; Feedback 2 of 14 Nov): bottom tab bar
   Journey | Reels | Growth | Inbox, a side menu with Claude's Feedback replies one at a time (Mark read / Next), and the Journey section
   (seven stages per reel, live render step from GitHub through GH_READ_TOKEN, failed steps red with the reason). design/runbook-reels.md "The app".
