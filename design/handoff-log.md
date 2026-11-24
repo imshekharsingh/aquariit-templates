@@ -494,3 +494,9 @@ Format (at most 6 lines):
 - Done: new topic (a USB-C cable's watts and its data speed are two numbers; Apple product and support pages, read today), techkit/scenes/usbc-two-numbers.html (7 shots, 7 different objects or views, cuts push / rack / wipe / push / rack / wipe), techreel/topics/usbc-two-numbers.json, captions.json entry (postOn 2026-11-24, 20:00), review/tech/showreel-tech-usbc-two-numbers.md (items 1-12, 14-17; item 13 pending the render). Stills checked locally at 0.3 scale four times (floor and plug brightness, bar and laptop framing, tag position fixed).
 - Left: one Tech reel render on GitHub, Output QA (incl. SHOT VARIETY), then the critic (item 20); the reel posts at 20:00 only on CRITIC: READY.
 - For the other account: the scene keeps each shot's object in its own world group at x = 100 * world, so the outgoing and incoming shots of a cut never share a picture.
+
+## 2026-11-24 · claude/grey-menu-today · Grey menu is today's Turns Out reel (owner chat job, size S)
+- Done: captions.json showreel-c3-grey-text: onGo dropped, postOn 2026-11-24, postAt 13:00, so the app lists it as today's Turns Out reel. scripts/review-gate.mjs: reels with "engine": "design" are exempt from item 19 (journey scenes), with a comment saying why (one live artboard, no scene journey). Video and other reels untouched.
+- Left: confirm the merge and deploy are green.
+- For the other account: a dated design-engine c3 entry no longer needs item 19 in its review file.
+- Also (owner chat, same branch): Turns Out back to one dated reel a day (CLAUDE.md Schedule and Scheduled tasks; design/c3-plan.md section 0 order); the CV entry showreel-c3-resume is dated 2026-11-25 13:00, onGo dropped, video and hidden/hold flags untouched.

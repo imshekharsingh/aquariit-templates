@@ -19,7 +19,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - Learning: design/playbook.md, design/experiments.md, design/improvements.md, design/references.md, design/craft-log.md, design/topics.md, design/todo.md
 
 ## Schedule (owner, 18 Nov 2026)
-- ONE reel a day per channel (web, tech, Turns Out), every day, aim for **13:00 IST**; any time in the **13:00-21:00 IST window** is fine (owner, 20 Nov 2026). A reel that fails is fixed and posted inside the window; nothing blocks the next push. Turns Out runs the design series from 21 Nov 2026: one design reel a day, taken in order from the held list (design/c3-research-2026-11-24.md) and rebuilt only on the day it posts, no owner go needed (owner, 24 Nov 2026; design/c3-plan.md section 0).
+- ONE reel a day per channel (web, tech, Turns Out), every day, aim for **13:00 IST**; any time in the **13:00-21:00 IST window** is fine (owner, 20 Nov 2026). A reel that fails is fixed and posted inside the window; nothing blocks the next push. Turns Out posts one dated reel a day like web and tech (postOn + postAt), taken in order from the held design list (design/c3-research-2026-11-24.md), each rebuilt only on its own day; its own daily task builds it (owner, 24 Nov 2026; design/c3-plan.md section 0).
   Every reel needs its entry in templates/showreels/captions.json ("channel", "postOn", "postAt", "concept"; npm run check fails without it).
 - Tech follows design/tech-direction.md (owner approved 22 Nov 2026). The owner is NOT asked to approve a tech preview or render (owner, 24 Nov 2026):
   the critic decides.
@@ -28,7 +28,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 
 ## Scheduled tasks: ON
 Four run from the small "Studio launcher (v2)" session (22 Nov 2026): Daily studio run 06:47, Daily owner chat 08:31, Reel critic 11:17,
-Spare usage night Tue 22:44 IST (design/runbook-studio.md "Scheduled tasks"). Turns Out's daily task stays off; its one reel a day is started from the owner chat.
+Spare usage night Tue 22:44 IST (design/runbook-studio.md "Scheduled tasks"). Turns Out's daily task is ON again at 09:11 IST (the owner chat creates it; owner, 24 Nov 2026).
 
 ## Daily run
 The "Daily studio run" scheduled task (06:47 IST, every day) follows **design/runbook-daily.md** (steps 0-5: Feedback first, Owner answers,
