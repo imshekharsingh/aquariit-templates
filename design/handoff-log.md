@@ -7,6 +7,10 @@ Format (at most 6 lines):
 ```
 
 
+## 2026-11-25 01:25 IST · claude/c3-cv-already-posted · owner chat: Turns Out CV was already posted
+- Done: showreel-c3-resume loses its 25 Nov date (the owner posted the CV reel days ago; resume2 was a rebuild of a posted reel, my mistake). c3-plan section 0: only unposted reels are built; 25 Nov Turns Out = #2 looks-expensive, rebuilt on the improved kit by the 05:11 task.
+- Tech 25 Nov: storage-gap render 2 failed 3 small checks; owner said no third render; the 04:47 run builds today's tech reel on the new flow.
+
 ## 2026-11-25 · claude/fable-decides · "Fable decides" daily flow + plain audit card (owner chat job, size M, part 2)
 - Done: design/runbook-daily.md: the 8-step build flow for web and tech with the exact create_session settings (Fable claude-fable-5-2 for pick, stills check, critic; Sonnet claude-sonnet-5-5 for research and build; Opus claude-opus-5-5 as the fallback), the 25 Nov note (tech storage-gap READY = web only; NOT READY = fresh tech reel today), the rejection watch (8 of 10 rejected two days running = research to Opus); the audit card rewritten to at most 6 plain lines with one example. scripts/pick-sheet.mjs (the day's options on one sheet; --log counts rejects), design/pick-log.md. CLAUDE.md: Fable budget names the two short calls.
 - Left: part 1 (style records in captions.json, check requirement, what-works method) follows in claude/reel-style-records. The app's Today header still reads "OK/ALARM <channel>" lines to show its status; the plain card no longer carries them, so that header shows only the time and changes until the app is changed to read something else.
