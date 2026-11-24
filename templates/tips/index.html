@@ -247,6 +247,10 @@
 #homebar .btn2{position:absolute;left:14px;right:14px;height:38px;border-radius:19px 19px 0 0;background:#f6b94a;color:#201400;font:700 15px/52px system-ui,sans-serif;text-align:center;bottom:0;transition:bottom .6s cubic-bezier(.3,1.4,.5,1);overflow:hidden}
 #homebar .stage.go[data-fix="1"] .btn2{bottom:22px}
 #homebar .pill{position:absolute;left:50%;margin-left:-34px;bottom:5px;width:68px;height:5px;border-radius:3px;background:#fff}
+#tabwiggle .stage{margin:8px 10px;padding:14px 10px;border-radius:12px;background:#10171a;white-space:nowrap;overflow:hidden}
+#tabwiggle .tab{display:inline-block;margin-right:12px;font:400 17px/1.4 system-ui,sans-serif;color:#b9c4c1;text-align:center}
+#tabwiggle .tab.on{font-weight:800;color:#5fe3c0}
+#tabwiggle .fix .tab::after{content:attr(data-text);font-weight:800;display:block;height:0;visibility:hidden}
 </style>
 </head>
 <body>
@@ -256,6 +260,30 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="tabwiggle">
+  <p class="no">Nº 36</p>
+  <h2>Why do your tabs wiggle when you tap them?</h2>
+  <p class="why">The active tab turns bold, and bold letters are wider than regular ones, so the tab grows and pushes the tabs beside it sideways on every tap. Give every tab a hidden bold copy of its label: the tab is then always as wide as its bold self, and a tap moves nothing. The copy is an ::after pseudo-element that reads the label from a data-text attribute (MDN: attr() on a pseudo-element returns the attribute of its originating element). It has no height and is hidden, so nobody sees or hears it. attr() inside content works in every browser (MDN BCD: Chrome 2, Firefox 1, Safari 3.1).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">bold only</span><div class="stage"><span class="tab on" data-text="Following">Following</span><span class="tab" data-text="Popular">Popular</span><span class="tab" data-text="New">New</span></div></div>
+  <div class="pane fix"><span class="tag ok">hidden bold copy</span><div class="stage fix"><span class="tab on" data-text="Following">Following</span><span class="tab" data-text="Popular">Popular</span><span class="tab" data-text="New">New</span></div></div>
+</div>
+<button class="play" type="button">Tap the next tab</button>
+<p class="note">Tap the button a few times. On the left the bold tab is wider, so the tabs after it jump. On the right every tab has a hidden bold copy of its label (::after with content: attr(data-text)), so it is always as wide as its bold self and nothing moves. MDN, attr().</p></div>
+  <div class="code"><pre><code>&lt;button class=&quot;tab&quot; data-text=&quot;Following&quot;&gt;Following&lt;/button&gt;
+
+.tab { display: inline-block; }
+.tab::after {
+  content: attr(data-text);
+  font-weight: 800;   /* the active tab's weight */
+  display: block;
+  height: 0;
+  visibility: hidden;
+}</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/attr" rel="noopener">Source: MDN, attr()</a></p>
+</article>
 
 <article class="tip" id="homebar">
   <p class="no">Nº 35</p>
@@ -894,11 +922,12 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>33 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>34 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "tabwiggle": function(root, btn){ var n = 0; btn.addEventListener('click', function(){ n = (n + 1) % 3; root.querySelectorAll('.stage').forEach(function(st){ st.querySelectorAll('.tab').forEach(function(t, i){ t.classList.toggle('on', i === n); }); }); }); },
     "homebar": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
     "darkflash": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
     "tapzoom": function(root){ root.querySelectorAll('.stage').forEach(function(st){ var last = 0, n = 12; st.querySelector('.like').addEventListener('click', function(){ var now = Date.now(); n++; st.querySelector('.n').textContent = n; if (st.dataset.fix === '0' && now - last < 450) st.classList.toggle('z'); last = now; }); }); },

@@ -6,11 +6,23 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
-## 2026-11-24 04:05 IST · claude/premium-close · premium program: closing notes, CV scene fix, cue-time check
+## 2026-11-24 08:10 IST · claude/premium-close · premium program: closing notes, CV scene fix, cue-time check
 - Done: design/improvements.md has the before/after scores for tech, web and Turns Out; scripts/channel3/design/resume2.js fixed (a comment had swallowed the fix-three sound line, so two cues had no time and sound.py stopped render 2); scripts/showreel/stills.mjs prints "CUE TIMES" and fails on a cue without a time.
-- State: tech r4 preview READY (7.5 / 7.5 / 7.5, QA PASS). Web homebar2 render 2: critic READY (7.5 / 7 / 7) but Output QA FAIL (HUE, CALM) = NOT READY, both renders used, kit kept. Turns Out: grey menu render 2 is in (21.2 s), critic second look asked; CV has no render 2 file (both renders used; one more needs the owner's yes, asked in "Needs you").
-- Next: read the critic's "CRITIC (render 2)" lines in review/previews/c3-design-rebuilds.md and the Output QA run for c3-greytext2; rebuild the other five held Turns Out reels only after one preview passes and the owner has heard the voice.
+- State: tech r4 preview READY (7.5 / 7.5 / 7.5, QA PASS). Web homebar2 render 2: critic READY (7.5 / 7 / 7) but Output QA FAIL (HUE, CALM) = NOT READY, both renders used, kit kept. Turns Out: grey menu render 2: critic READY (7.5 / 7.5 / 7.5, voice 7.5, before 7) but Output QA FAIL (PACE 4.55 words/s on the ratio sentence, limit 4.5; EDGES on the closing push-in, which is by design and is now declared to the end) = NOT READY, both renders used; CV has no render 2 file (both renders used; one more needs the owner's yes, asked in "Needs you").
+- Next: the grey menu needs its ratio sentence slowed or split (PACE) before any new render; rebuild the other five held Turns Out reels only after one preview passes and the owner has heard the voice.
 - Do not: post any of the seven held Turns Out reels; use kithook in a daily web reel before the open points in improvements.md are closed.
+## 2026-11-24 07:20 IST · claude/web-tabwiggle · daily run: audit card + today's web reel (showreel-46-tabwiggle)
+- Done: Feedback first (0 new items, 0 answers, 0 references). The nightly Instagram collect had not started (the 01:44 run was the late post check), so this run dispatched one (run 45304135719) and wrote the audit card from it: web ALARM + ESCALATE (median 1,428 vs 2,000), tech OK, c3 ESCALATE.
+- Web reel: "Why do your tabs wiggle?" (E30 wiggle family, try 1, experiment web-wiggle-family): the tapped tab turns bold and shoves the others (real measured widths, Open Sans 400 vs 800), fixed with a hidden bold copy (::after, content: attr(data-text)); hook kit (rule 20), black look with a mint accent. Local preflight, stills and the Output QA functions all pass (HUE 165, DEMO 35, FOCUS 58 vs 39, CALM 1.2%, MUTE 4.5%).
+- Also: scripts/qa/demo-hues.json had tapzoom and homebar outside "reels", so HUE compared against older reels; fixed. rules-web.md 24 Nov audit note, craft-log, experiments Results log, improvements note, tip demo tabwiggle.
+- Left: the one render after the merge, Output QA, item 13, then the critic (11:17 IST). Tech reel: built next in its own branch; the owner sees stills + a preview before its render.
+- For the other account: a black-look reel needs colour inside the phone to pass DEMO and SUBJECT FILL (a pill, tinted cards); give each black reel its own single accent so HUE passes.
+
+## 2026-11-24 03:50 IST · claude/critic-c3-greytext2-r2 · critic second look: Turns Out grey menu preview, render 2
+- Done: judged the real MP4 (21.2 s, from main 8808421) with its word times; "CRITIC (render 2): READY" in review/previews/c3-design-rebuilds.md. Scores 7.5 / 7.5 / 7.5, voice 7.5 (measured, not heard), before 7. No scene changed.
+- Every fix lands on its word (darken 7.46 s, lighten 9.17 s, ratio 11.18 s, four 12.57 s); pauses 0.5-0.7 s; rings clear of the text; ratio readable.
+- Left: small notes only (fix 2 is faint, the checker card touches one letter at 11.0-15.6 s, FAIL shows for 0.4 s on the fixed menu). The CV (resume2) was not re-scored: its re-render failed, the first-look verdict NOT READY stands until a new file exists.
+- For the other account: nothing.
 
 ## 2026-11-24 03:17 IST · claude/critic-web-homebar2-r2 · critic, second look at the web-homebar2 preview (render 2)
 - Done: judged render 2 on the real MP4 against render 1 and the posted homebar; lines added to review/previews/web-homebar2.md. No scene changed.
