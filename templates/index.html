@@ -498,6 +498,7 @@
   .pscrim{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}
   .psheet{width:min(560px,100%);max-height:88vh;overflow-y:auto;background:var(--card);color:var(--ink);border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.25)}
   .psheet h2{margin:0 0 4px;font:800 1.15rem system-ui,sans-serif}
+  .reel .ai{margin:6px 0 0;font:600 .8rem system-ui,sans-serif;color:var(--mute)}.reel .ai.on{color:var(--ink)}
   .psheet .pwho{color:var(--mute);font-size:.85rem;margin:0 0 10px}
   .psheet .cap{max-height:34vh;overflow-y:auto;margin-top:6px}
   .psheet .prow2{display:flex;gap:10px;margin-top:14px}.psheet .prow2 .btn{flex:1;min-height:50px}
@@ -1017,6 +1018,7 @@
     function close(){ closed = true; clearInterval(timer); if (scrim.parentNode) scrim.parentNode.removeChild(scrim); }
     scrim.addEventListener('click', function(e){ if (e.target === scrim) close(); });
     function confirmView(){ sh.textContent = ''; sh.appendChild(el('h2', null, 'Post this reel now?')); sh.appendChild(el('p', 'pwho', 'It goes live on ' + CH[k].name + ' at once. This cannot be undone from here.'));
+      var mm = DATA && DATA.c ? DATA.c[s.name] || {} : {}; sh.appendChild(el('p', 'pwho', mm.aiLabel === true ? 'AI label: on. Instagram will show “AI info” on this reel.' : mm.aiLabel === false ? 'AI label: off.' : 'AI label: not decided for this reel.'));
       sh.appendChild(el('div', 'cap', text)); var r = el('div', 'prow2'), no = el('button', 'btn g', 'Cancel'), go2 = el('button', 'btn tick post', 'Post now'); no.type = 'button'; go2.type = 'button';
       no.addEventListener('click', close); go2.addEventListener('click', function(){ go2.disabled = true; start(); }); r.appendChild(no); r.appendChild(go2); sh.appendChild(r); }
     function view(row){ sh.textContent = ''; var st = row.state, bad = st === 'failed', ok = st === 'posted';
@@ -1052,6 +1054,7 @@
     else { card.appendChild(player(s));
       b.appendChild(el('div', 'when' + w[1], w[0])); b.appendChild(nm);
       if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a reel's one-line description
+      b.appendChild(el('div', 'ai' + (meta.aiLabel === true ? ' on' : ''), meta.aiLabel === true ? 'AI label: yes. Turn on AI info for this reel on Instagram (Post now does it for you).' : meta.aiLabel === false ? 'AI label: no. Nothing here passes as real footage.' : 'AI label: not decided yet.'));
       b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size))); }
     var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), cv = s.cover ? el('button', 'btn g', 'Save cover') : null, tick = el('button', 'btn tick post', 'I posted it');
     copy.type = 'button'; copy.disabled = true; dl.type = 'button'; tick.type = 'button'; tick.disabled = !trackOk; if (!trackOk) tick.title = 'Upload tracking is unavailable right now';
