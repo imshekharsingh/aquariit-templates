@@ -980,6 +980,105 @@ async function reelFile(request, env, name) {
   return new Response(head ? null : obj.body, { status: 200, headers: h });
 }
 
+// ---- One-tap "Post now" (owner, 24 Nov 2026): the owner taps Post now on a Ready-to-post reel; nothing ever posts by itself. POST /api/post {reel}
+// dispatches the workflow ig-publish.yml through the GitHub API (secret GH_DISPATCH_TOKEN, a fine-grained token with Actions write on this repo
+// only; unset = the button says it is not switched on). The Instagram tokens never leave GitHub: the workflow signs in to this site like the
+// collector does, asks POST /api/post/sign for 1-hour signed links to the reel's MP4 and cover (/pub/<exp>/<sig>/<file>, one file each, GET/HEAD
+// only; Instagram fetches them), publishes through graph.instagram.com and reports each stage with POST /api/post/status. One row per reel in D1
+// ig_publish is the lock: a reel that is Posted is refused, a running one is not started twice (a run silent for 30 minutes counts as dead).
+// When the workflow reports "posted" the reel is also marked Posted (reel_uploaded), the same as "I posted it".
+const POST_REPO = 'imshekharsingh/aquariit-templates', POST_STALE_MS = 30 * 60e3, SIGN_TTL_S = 3600;
+const POST_STATES = ['uploading', 'processing', 'publishing', 'posted', 'failed'], POST_LINE = { queued: 'Starting', uploading: 'Uploading', processing: 'Processing', publishing: 'Publishing', posted: 'Posted', failed: 'Failed' };
+const POST_REEL = /^showreel-[a-z0-9-]{1,60}$/;
+let postReady = null;
+async function postDbOf(env) {
+  if (!env.DB) return null;
+  postReady = postReady || env.DB.exec('CREATE TABLE IF NOT EXISTS ig_publish (reel TEXT PRIMARY KEY, ch TEXT NOT NULL, state TEXT NOT NULL, line TEXT, error TEXT, media_id TEXT, permalink TEXT, at TEXT NOT NULL, started TEXT NOT NULL)')
+    .catch((e) => { postReady = null; throw e; });
+  await postReady;
+  return env.DB;
+}
+async function signKey(env) {
+  const a = accounts(env)[0];
+  if (!a) return null;
+  return crypto.subtle.importKey('raw', await crypto.subtle.digest('SHA-256', enc.encode(`${a.u}\n${a.p}\naquarii-post-sign-v1`)), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+}
+const signFile = async (env, exp, file) => b64u(await crypto.subtle.sign('HMAC', await signKey(env), enc.encode(`${exp}.${file}`)));
+// GET/HEAD /pub/<exp>/<sig>/<file>: a signed link to one reel file (mp4 or jpg), valid until exp (at most 2 h ahead)
+async function pubFile(request, env, p) {
+  const m = /^\/pub\/(\d{9,12})\/([\w-]{20,64})\/(showreel-[a-z0-9-]{1,60}\.(?:mp4|jpg))$/.exec(p), none = () => new Response('Not found', { status: 404, headers: noStore });
+  if (!m || (request.method !== 'GET' && request.method !== 'HEAD') || !(await signKey(env))) return none();
+  const exp = +m[1], now = Date.now() / 1000;
+  if (exp < now || exp > now + 2 * SIGN_TTL_S || !(await safeEqual(m[2], await signFile(env, exp, m[3])))) return none();
+  try { return (await reelFile(request, env, m[3])) || none(); } catch { return none(); }
+}
+const postRow = (r) => r && ({ reel: r.reel, ch: r.ch, state: r.state, line: r.line || POST_LINE[r.state] || r.state, error: r.error || null, permalink: r.permalink || null, at: r.at, started: r.started });
+async function postApi(request, env, p) {
+  let db;
+  try { db = await postDbOf(env); } catch { return jres({ error: 'db-unavailable' }, 503); }
+  if (!db) return jres({ error: 'no-db', message: 'Post now needs the app database, which is not connected.' }, 501);
+  if (request.method === 'GET') {
+    const m = /^\/api\/post\/(showreel-[a-z0-9-]{1,60})$/.exec(p);
+    if (m) { const r = await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(m[1]).first(); return jres({ row: postRow(r) }); }
+    if (p === '/api/post') {
+      const { results } = await db.prepare('SELECT * FROM ig_publish WHERE at > ?1 OR state NOT IN (\'posted\', \'failed\')').bind(new Date(Date.now() - 3 * 864e5).toISOString()).all();
+      return jres({ rows: Object.fromEntries((results || []).map((r) => [r.reel, postRow(r)])) });
+    }
+    return jres({ error: 'not-found' }, 404);
+  }
+  if (request.method !== 'POST' || request.headers.get('X-Requested-With') !== 'reel') return jres({ error: 'forbidden' }, 403);
+  let b = null; try { b = await request.json(); } catch { /* handled below */ }
+  const reel = b && typeof b.reel === 'string' ? b.reel.trim() : '';
+  if (!POST_REEL.test(reel)) return jres({ error: 'bad-request' }, 400);
+  const now = new Date().toISOString();
+
+  if (p === '/api/post') {   // start: every refusal is a plain sentence the app shows as it is
+    const no = (error, message, status = 409) => jres({ error, message }, status);
+    const token = typeof env.GH_DISPATCH_TOKEN === 'string' ? env.GH_DISPATCH_TOKEN.trim() : '';
+    if (!token) return no('not-switched-on', 'Post now is not switched on yet: the GitHub key GH_DISPATCH_TOKEN has not been added.', 503);
+    let caps = {}; try { caps = await captionsOf(env); } catch { /* handled below */ }
+    const m = caps[reel];
+    if (!m || m.hidden || m.sample) return no('not-found', 'This reel is not on the posting list.', 404);
+    if (await db.prepare('SELECT id FROM reel_uploaded WHERE id = ?1').bind(reel).first()) return no('posted', 'This reel is already marked as posted.');
+    if (!env.REELS || !(await env.REELS.head('v/' + reel + '.mp4'))) return no('no-video', 'The video file is not available any more (it is removed 15 days after it is made).');
+    try { const j = await (await journeyFast(env, null)).json(), r = ((j && j.reels) || []).find((x) => x.name === reel);   // the second look must have said READY (when the journey can be read)
+      if (r && !(r.stages && r.stages.ready && r.stages.ready.s === 'done')) return no('not-ready', 'This reel is not ready to post yet.'); } catch { /* the journey is optional */ }
+    const ch = chOfReel(reel, m);
+    const claim = await db.prepare('INSERT INTO ig_publish (reel, ch, state, line, error, media_id, permalink, at, started) VALUES (?1, ?2, \'queued\', \'Starting\', NULL, NULL, NULL, ?3, ?3) ON CONFLICT(reel) DO UPDATE SET state = \'queued\', line = \'Starting\', error = NULL, media_id = NULL, permalink = NULL, at = ?3, started = ?3 WHERE ig_publish.state = \'failed\' OR (ig_publish.state <> \'posted\' AND ig_publish.at < ?4)')
+      .bind(reel, ch, now, new Date(Date.now() - POST_STALE_MS).toISOString()).run();
+    if (!claim || !claim.meta || claim.meta.changes !== 1) { const r = await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(reel).first();
+      return jres({ error: r && r.state === 'posted' ? 'posted' : 'running', message: r && r.state === 'posted' ? 'This reel is already posted.' : 'This reel is already being posted.', row: postRow(r) }, 409); }
+    let res = null;
+    try { res = await fetch(`https://api.github.com/repos/${POST_REPO}/actions/workflows/ig-publish.yml/dispatches`, { method: 'POST',
+      headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json', 'User-Agent': 'studio-app', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ref: 'main', inputs: { reel, channel: ch } }) }); } catch { /* shown below */ }
+    if (!res || res.status !== 204) {
+      const why = !res ? 'GitHub did not answer.' : res.status === 401 || res.status === 403 || res.status === 404 ? 'The GitHub key GH_DISPATCH_TOKEN was refused or cannot start workflows. It needs Actions write on this repo.' : 'GitHub refused to start it (HTTP ' + res.status + ').';
+      await db.prepare('UPDATE ig_publish SET state = \'failed\', line = \'Failed\', error = ?2, at = ?3 WHERE reel = ?1').bind(reel, why, new Date().toISOString()).run();
+      return jres({ error: 'dispatch-failed', message: why, row: postRow(await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(reel).first()) }, 502);
+    }
+    return jres({ ok: true, row: postRow(await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(reel).first()) });
+  }
+
+  const row = await db.prepare('SELECT * FROM ig_publish WHERE reel = ?1').bind(reel).first();
+  if (!row || row.state === 'posted' || row.state === 'failed') return jres({ error: 'not-running', message: 'No post is running for this reel.' }, 409);
+  if (p === '/api/post/sign') {   // links for the workflow to hand to Instagram (a reel being posted only)
+    const exp = Math.floor(Date.now() / 1000) + SIGN_TTL_S, origin = new URL(request.url).origin, link = async (f) => `${origin}/pub/${exp}/${await signFile(env, exp, f)}/${f}`;
+    const cover = env.REELS && (await env.REELS.head('c/' + reel + '-cover.jpg')) ? await link(reel + '-cover.jpg') : null;
+    return jres({ video: await link(reel + '.mp4'), cover, exp });
+  }
+  if (p === '/api/post/status') {
+    const state = b.state, clip = (v, n) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, n) : null);
+    if (!POST_STATES.includes(state)) return jres({ error: 'bad-request', states: POST_STATES }, 400);
+    const permalink = clip(b.permalink, 300), at = new Date().toISOString();
+    await db.prepare('UPDATE ig_publish SET state = ?2, line = ?3, error = ?4, media_id = COALESCE(?5, media_id), permalink = COALESCE(?6, permalink), at = ?7 WHERE reel = ?1')
+      .bind(reel, state, clip(b.line, 120) || POST_LINE[state], state === 'failed' ? clip(b.error, 400) || 'Something went wrong.' : null, clip(b.media_id, 40), permalink && /^https:\/\/(www\.)?instagram\.com\//.test(permalink) ? permalink : null, at).run();
+    if (state === 'posted') await db.prepare('INSERT INTO reel_uploaded (id, at) VALUES (?1, ?2) ON CONFLICT(id) DO UPDATE SET at = excluded.at').bind(reel, at).run();   // same as "I posted it"
+    return jres({ ok: true });
+  }
+  return jres({ error: 'not-found' }, 404);
+}
+
 export default {
   async scheduled(controller, env, ctx) { ctx.waitUntil(runCron(env, controller.cron, controller.scheduledTime)); },
   async fetch(request, env, ctx) {
@@ -1005,12 +1104,13 @@ export default {
       return html(loginPage(next, ''));
     }
 
+    if (p.startsWith('/pub/')) return pubFile(request, env, p);   // signed single-file links for Instagram (Post now)
     if (PUBLIC(p)) return env.ASSETS.fetch(request); // manifest, service worker and icons must load without a session (PWA install)
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
     if (p === '/api/stage' && request.method === 'POST') return (await stageKeyOk(request, env)) ? stageApi(request, env, p, ctx) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/stage') ? stageApi(request, env, p, ctx) : p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/stage') ? stageApi(request, env, p, ctx) : (p === '/api/post' || p.startsWith('/api/post/')) ? postApi(request, env, p) : p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     // Read-only reel key (owner, 23 Nov 2026): critic and review sessions fetch the final reel files with Authorization: Bearer <REELS_READ_KEY>.
     // It opens ONLY GET/HEAD of /reels/<file> from R2: no API, no app pages, no writes, no site-copy fallback. Unset or empty secret = off.
     if (!signedIn && (await readKeyOk(request, env))) {

@@ -1,0 +1,47 @@
+name: Instagram publish
+
+# One-tap "Post now" (owner, 24 Nov 2026): started ONLY by the app's Worker (POST /api/post) when the owner taps Post now on a Ready-to-post reel.
+# Posts that one reel to its channel's Instagram account (scripts/ig-publish.mjs) and reports each stage back to the app. Never scheduled.
+# Needs the GitHub secrets INSTAGRAM_TOKEN (web), INSTAGRAM_TOKEN_2 (tech), INSTAGRAM_TOKEN_3 (Turns Out), BASIC_AUTH_USER, BASIC_AUTH_PASS.
+# The token that starts it (GH_DISPATCH_TOKEN, Actions write on this repo only) lives in the Worker, never here.
+run-name: "Instagram publish · ${{ inputs.reel }}"
+on:
+  workflow_dispatch:
+    inputs:
+      reel:
+        description: Reel name (showreel-...)
+        required: true
+        type: string
+      channel:
+        description: web, tech or c3
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ig-publish-${{ inputs.reel }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Publish
+        env:
+          REEL: ${{ inputs.reel }}
+          CHANNEL: ${{ inputs.channel }}
+          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+          INSTAGRAM_TOKEN_2: ${{ secrets.INSTAGRAM_TOKEN_2 }}
+          INSTAGRAM_TOKEN_3: ${{ secrets.INSTAGRAM_TOKEN_3 }}
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+        run: node scripts/ig-publish.mjs
