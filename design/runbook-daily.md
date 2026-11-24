@@ -14,7 +14,7 @@ Stage board (owner, 24 Nov 2026): at every stage change of a reel build (researc
    and the spare-usage night.
    References (owner, 20 Nov 2026): dispatch "Owner answers" `refs` too: REF lines (link, file, note, channel) and a "B64 ref-<id>.jpg" preview per
    file (`node scripts/media/from-log.mjs <run id> <dir>` makes the files). Study each into design/references.md (reverse-any-video skill: a pattern card,
-   patterns tweaked for our use, never the piece; owner, 23 Nov 2026), then `refs-done` with `{"ids":[..],"state":"studied","note":"what was taken"}` (`"used"` + the reel name once a reel uses it).
+   patterns tweaked for our use, never the piece; owner, 23 Nov 2026), then `refs-done` with `{"ids":[..],"state":"studied","note":"the report: what was taken","checklist":["3-8 short lines the owner marks Keep / Skip / Ask"],"stills":["up to 8 JPEG paths"]}` (owner, 24 Nov 2026; the `refs` read also prints REFCHECK / REFASK lines: honour Keep and Skip, answer each REFASK with `"replies":[{"item":n,"text":"..."}]`) (`"used"` + the reel name once a reel uses it).
 1. Dispatch "Owner answers" with action `read` (the same dispatch as step 0), act on each ANSWER line, then `clear` the ids acted on.
 2. Audit card FIRST (owner, 23 Nov 2026: a skipped audit went unseen): write and dispatch the card BEFORE building any reel (step 4). The app shows
    "Daily report: done at HH:MM · web ESCALATE, tech OK · n changes" on Today (card lines "ESCALATE web" / "OK tech" and points starting
