@@ -10,6 +10,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { cardProblems, DIRECTION_FROM } from './direction.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const GATE_FROM = '2026-11-08', ITEMS = 13, FLOW_FROM = '2026-11-08', FLOW_ITEMS = [14, 15, 16, 17];
@@ -54,6 +55,8 @@ export const reviewProblems = (name, e, { render = false, today = todayIST() } =
     // the design-tutorial scenes (21 Nov 2026, scripts/channel3/design: a live artboard on a context stage, no Kt.plane worlds) take the same evidence ("engine": "design")
     else if (NEED[i] && !(i === 2 && e.channel === 'tech') && !(i === DEPTH_ITEM && (e.engine === 'echoes' || e.engine === 'design')) && !((i === 16 && e.postOn >= CALM_FROM && e.channel === 'web' ? CALM16 : i === 16 && e.postOn >= CALM_FROM && e.channel === 'tech' ? CALM16T : NEED[i]).test(g.ev))) out.push(`${p}: item ${i} must paste its AUTO line (${NEED[i].source})`);
   }
+  // the direction card (owner, 24 Nov 2026; design/direction.md): filled lines whenever it exists; before the render also APPROVED by the stills check
+  if (e.postOn >= DIRECTION_FROM) out.push(...cardProblems(e.channel, name, { render }));
   return out;
 };
 

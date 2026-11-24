@@ -1,0 +1,42 @@
+{
+ "_about": "Gold reel per channel (design/gold.md). \"look\" = scripts/qa/gold_look.py measure() on the posted MP4, 24 Nov 2026. Output QA LOOK compares every reel with these numbers.",
+ "tech": {
+  "name": "showreel-tech-ai-memory",
+  "look": {
+   "bright": 0.154,
+   "bg": 0.076,
+   "dark": 0.51,
+   "grey": 0.109,
+   "contrast": 0.172,
+   "accent": 35,
+   "accent_share": 0.016
+  },
+  "starter": "node scripts/starter.mjs tech <slug>"
+ },
+ "web": {
+  "name": "showreel-46-tabwiggle",
+  "look": {
+   "bright": 0.098,
+   "bg": 0.067,
+   "dark": 0.676,
+   "grey": 0.024,
+   "contrast": 0.144,
+   "accent": 165,
+   "accent_share": 0.0493
+  },
+  "starter": "node scripts/starter.mjs web <slug>"
+ },
+ "c3": {
+  "name": "showreel-c3-grey-text",
+  "look": {
+   "bright": 0.352,
+   "bg": 0.233,
+   "dark": 0.32,
+   "grey": 0.051,
+   "contrast": 0.343,
+   "accent": 25,
+   "accent_share": 0.0973
+  },
+  "starter": "node scripts/starter.mjs c3 <slug>"
+ }
+}
