@@ -511,3 +511,6 @@ Format (at most 6 lines):
 - Lesson: Output QA (VARIETY, DEAD, HERO) passes a motion-blur smear; the stills sheet shows single frames and never the blur. A fast camera move in a close macro needs one real-frame check before the render (render 4 frames at 0.1 s steps with KIT_Q 0.5 on the move). Cause guess: camera pan 12 units in 5.5 s plus depth-of-field and 30 units/s pulses.
 - Left: if the owner wants this topic later, rebuild shot 4 (camera a third as fast, no depth-of-field, pulses at 8 units/s) and render again.
 - For the other account: the critic session could not push (its container had no push access to the repo); its verdict reached the builder through its transcript. The builder wrote the verdict into the review file.
+
+## 2026-11-24 tech-usbc-r3 (branch claude/tech-usbc-r3)
+- usbc-two-numbers render 3 prep: shot 4 camera about a third as fast, no depth blur on shots 3 and 4, cyan pulses 30 to 8 units/s. Checked on stills at 16.5-25 s. Render 3 next, then Output QA and critic.
