@@ -96,6 +96,13 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
 - Topics for each channel and day are planned a week ahead in design/topics.md (spare-usage night); runs take theirs from it, and swap it for
   a better one when the rulebook says so.
 
+## Notifications (owner plan, 24 Nov 2026; built 25 Nov)
+- The Worker cron `*/10 * * * *` runs the plan in src/notify.js (tested by scripts/qa/notify-test.mjs): at a reel's slot "<Channel> reel is ready to post" (tap opens the reel with Post now);
+  45 min later one gentle nudge; 20:30 IST one last call; "Posted ✓" with the link and the plain reason on a failure (sent when Post now reports back); 08:00 IST one morning
+  summary (today's reels, their slots, anything blocked). A reel the second look has not cleared gets no "ready" push.
+- Settings (gear) > "What to be told about": one switch per type (GET/PUT /api/push/prefs, D1 push_prefs; all on until switched off). Every send has a key in D1 notif_log, so a reel
+  never gets more than 1 nudge and 1 last call. The old "10 minutes before" reminder is gone; the 12:50 cron stays only so old 13:00 entries pass `npm run check`.
+
 ## Archiving
 - A reel marked uploaded leaves the main list at once for its channel's compact "Posted" list (cover, title, posted date, its numbers once
   the collector has them; no video) (owner, 1 Nov 2026).
