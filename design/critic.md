@@ -6,6 +6,7 @@ Answer each with the frame times you looked at. First of all, question 43: the s
 
 ## Every channel
 0. Does the reel pass every line of design/safety.md (plagiarism, controversy, disrespect, sentiment, licences, Instagram rules, maps, brands)?
+0b. AI label (owner, 24 Nov 2026): is the reel's "aiLabel" in captions.json right? It must be true when anything looks realistic enough to pass as real footage (a photoreal object, a real-looking person, place or screen recording, a voice that could pass as a real person's), false for flat or clearly drawn graphics. A wrong or missing value = not ready.
 1. Frame 0: does it make a stranger stop? Is the hook readable in under 1 s at phone size?
 2. Does every frame make sense on its own: nothing cut at the frame edges, no stray marks, nothing overlapping, nothing that looks broken?
 3. Does what is on screen match what the voice says at that moment (numbers, names, colours, counts)? Never more or less than the claim.

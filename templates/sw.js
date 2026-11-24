@@ -1,7 +1,7 @@
 // studio app service worker (home = Showreels).
 // Network-first: HTML + the reel and channel lists (cache fallback => offline revisits work).
 // Cache-first: icons and Google Fonts. Bump VERSION to invalidate old caches.
-const VERSION = 'v28';
+const VERSION = 'v33';
 const CACHE = `aquarii-${VERSION}`;
 const SHELL = ['/', '/404.html', '/manifest.webmanifest', '/channels/channels.json', '/showreels/captions.json', '/icons/icon.svg'];
 
@@ -65,6 +65,7 @@ self.addEventListener('push', (e) => {
 self.addEventListener('notificationclick', (e) => {
   e.notification.close();
   const url = new URL((e.notification.data && e.notification.data.url) || '/', self.location.origin).href;
+  if (new URL(url).origin !== self.location.origin) return e.waitUntil(self.clients.openWindow(url));   // "Posted": the Instagram link opens on its own
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
     // an open app gets a message (a post reminder opens /#reel=<name> without a reload); another page of the app navigates
     for (const c of list) if (new URL(c.url).origin === self.location.origin && 'focus' in c) {

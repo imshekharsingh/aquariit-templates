@@ -7,6 +7,13 @@ Format (at most 6 lines):
 ```
 
 
+## 2026-11-25 · claude/style-records · merged main into the style-records branch
+- Done: kept both log entries and main's captions.json flags (c3-resume onGo, no date); added the branch's style fields; check passes.
+
+## 2026-11-25 01:25 IST · claude/c3-cv-already-posted · owner chat: Turns Out CV was already posted
+- Done: showreel-c3-resume loses its 25 Nov date (the owner posted the CV reel days ago; resume2 was a rebuild of a posted reel, my mistake). c3-plan section 0: only unposted reels are built; 25 Nov Turns Out = #2 looks-expensive, rebuilt on the improved kit by the 05:11 task.
+- Tech 25 Nov: storage-gap render 2 failed 3 small checks; owner said no third render; the 04:47 run builds today's tech reel on the new flow.
+
 ## 2026-11-25 · claude/style-records · Reel style records (owner chat job, size M, part 1)
 - Done: every posted web, tech and Turns Out reel of 25 Oct-24 Nov (81) now has a "style" object in captions.json (lengthS, wordsPerS, shotChanges, hookType, look, hero, firstSecondTension, payoff, source). 33 are measured from the real MP4 (the last 15 days; older MP4s are gone), 49 from config and spoken text only; unknown = null. scripts/style-measure.mjs does it (shot changes = frame-difference jumps, look = mean light). npm run check now requires the fields on any visible reel from 25 Nov (planned values with the entry, the three numbers filled by the post day). design/what-works.md has the Style record method for the Sunday review; design/runbook-spare.md points to it.
 - Left: hero is only known for tech (its gadget) and the 25 Nov Turns Out reel; firstSecondTension is null for all older reels (a human call, not guessed). Slow camera moves in 3D reels can read 0 shot changes, so compare shotChanges inside one channel only.
@@ -583,3 +590,36 @@ Format (at most 6 lines):
 - Done: read Feedback 7 and 8 (tech Mini LED reel, one screen all reel; already guarded by Output QA VARIETY, owner-feedback.md 24 Nov); dropped the two answered previews (c3-resume2, miniled-zones-p2) from templates/showreels/previews.json.
 - Answer to Feedback 8: no independent critic ran on that reel; it went to you as a preview and only the builder scored it. Since 24 Nov the critic (a different session) decides and the owner is not asked.
 - Left: growth work from design/runbook-spare.md (research pass, topics, rulebooks, tooling).
+
+## 2026-11-25 · claude/slots-config · Posting slots in one file (owner chat job, size L, part 1 of 5)
+- Done: design/slots.json (tech 15:00, Turns Out 17:00, web 19:00 IST; web is a one-week test, review 2 Dec). The Worker takes channel defaults from it (reels without a postAt), GET /api/slots gives it to the app, the app's slotOf and the board cards show "Posts at HH:MM IST". scripts/check.mjs validates the file (13:00-21:00). One line each in CLAUDE.md "Schedule" and design/runbook-reels.md "Scheduling". sw.js v29.
+- Left: nothing for the owner. Existing captions.json entries are untouched; builders use the file for new ones.
+- For the other account: new entries take postAt from design/slots.json, not 13:00.
+
+## 2026-11-25 · claude/notifications · Notifications per type (owner chat job, size L, part 2 of 5)
+- Done: src/notify.js (the plan) + Worker: ready at the slot, one nudge at +45 min, one last call 20:30 IST, "Posted ✓" with the link and the plain reason on a failure (from Post now), a 08:00 IST morning summary; cron `*/10 * * * *`; one switch per type in Settings (/api/push/prefs, D1 push_prefs; notif_log keys stop repeats). sw.js v30 (an Instagram link opens on its own). scripts/qa/notify-test.mjs is in npm run check. The old 10-minutes-before reminder (postPush) is removed.
+- Left: nothing for the owner; pushes need the device signed up as before. Real pushes have not been seen on a phone yet (the plan and switches are tested, the send path is the existing one).
+- For the other account: a reel gets "ready" only when the journey says the second look cleared it.
+
+## 2026-11-25 · claude/ai-label · AI label per reel (owner chat job, size L, part 3 of 5)
+- Done: "aiLabel" true/false in captions.json (required from 27 Nov, check.mjs); shown on the reel card and the Post now confirm sheet; scripts/ig-publish.mjs sends is_ai_generated=true when it is true (Meta changelog, 22 Jun 2026) and stops with a plain message if Instagram refuses it; critic item 0b (design/critic.md); runbook-reels "AI label" (YouTube containsSyntheticMedia reserved). sw.js v31.
+- Left: the parameter has not been tried on a real post (Post now is still off); the first real post will show it. Builders set aiLabel on new entries from 26 Nov (enforced from 27 Nov).
+- For the other account: existing entries are untouched; no aiLabel yet shows "not decided yet" on the card.
+
+## 2026-11-24 · claude/storage-gap-fix3 · Tech reel for 25 Nov: storage-gap, NOT READY (owner chat job, size L)
+- Done: a new tech reel "A 256 GB phone can show 238" (Apple Support source), built twice: the first version reused ai-memory's phone and was rebuilt with its own props (retail box and ruler, 256-tile wall, three tiered boxes, a storage chip under a lens, a Storage card); direction card (review/tech/showreel-tech-storage-gap.direction.md) with two independent stills checks (the second APPROVED: as rich as ai-memory YES, not a copy YES); starter-rule line added to design/gold.md and design/direction.md. Render 2 (run 45467259029) failed Output QA: NUMBERS (rolling counts), SYNC (931 not readable), EDGES (1 TB box on both sides 18.4-20.2 s), plus a back-of-box grey slab at 26 s. The owner said no third render, so the reel stays hidden with no post day.
+- For the 04:47 daily run: storage-gap does NOT cover 25 Nov; build the day's tech reel on the new flow. The ready fix (no rolling numbers, a whole 1 TB box, the box turning from its side) is on branch claude/storage-gap-fix3 and the review file's "Status after render 2" lists every finding; reuse the idea only with one render and a critic.
+- Left: nothing for the owner.
+- For the other account: a rolling counter fails NUMBERS even when it lands on the spoken word under a second; let an object do the counting or switch straight to the value.
+
+## 2026-11-25 · claude/scorecard · Weekly scorecard on Growth (owner chat job, size L, part 4 of 5)
+- Done: "This week" cards at the top of Growth (All channels): per channel, the last 7 days vs the 7 before: reach per reel, watched on average, saves per 1,000, new followers, critic's average score, changes kept or dropped; "not measured yet" where missing. src/journey.js reads the PREMIUM numbers from a review file's critic line (score per reel); kept/dropped counts read "verdict" inside a captions.json experiment. runbook-reels "Weekly scorecard". sw.js v32.
+- Left: critic score and kept/dropped show "not measured yet" until the critic writes PREMIUM numbers on its line and the daily run writes experiment verdicts (design/runbook-daily.md was off limits tonight: add one line there). Hold % and per-reel follows are not available from Instagram.
+- For the other account: put `"verdict": "keep"|"drop"` in the experiment object when the 72 h verdict is decided.
+
+
+
+## 2026-11-25 · claude/plain-words · Plain words on every screen (owner chat job, size L, part 5 of 5)
+- Done: pw() in templates/index.html turns codes from the server, review files and the daily report into plain words (video checks, below target, the rule, ...) and is applied to status reasons, Needs you, audit cards, collector alerts; the daily report line says "on target / below target"; Post now's "not switched on" and "key refused" messages and the collector fix lines no longer name secrets or menus (the access-key fix still names the secret to update). scripts/qa/plain-words-test.mjs is in npm run check. sw.js v33.
+- Left: Claude replies and the owner's own words are shown as written (not filtered).
+- For the other account: write plainly in review files, asks and cards; pw() is a net.

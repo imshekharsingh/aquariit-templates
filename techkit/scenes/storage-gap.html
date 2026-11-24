@@ -275,7 +275,7 @@ function shotCam(t, sh) {
   if (sh === 2) { const z = -160, k = G(u); return { pos: V(0, lerp(8, 5.5, k), z + lerp(44, 38, k)), look: V(0, lerp(3.0, 2.6, k), z), fov: 34 }; }   // the whole slab from far: the top band stays empty for the word
   if (sh === 3) { const z = -60, hold = KIT.push(Math.max(0, t - B[3]), .012), x0 = -LSP, x1 = 0, x2 = LSP,
       FA = { pos: V(x0 + 1.7, -.9, z + 10 * (1 - hold)), look: V(x0, 1.2, z), fov: 38 }, FB = { pos: V(x1 - 5.4, 2.6, z + 13.5 * (1 - hold)), look: V(x1, 1.2, z), fov: 33 },
-      FC = { pos: V(x2 + .4, 1.5, z + 18.5), look: V(x2, 1.5, z), fov: 31 };
+      FC = { pos: V(x2 + .4, 1.5, z + 21.5), look: V(x2, 1.5, z), fov: 31 };
     const f = KIT.reframe(KIT.reframe(FA, FB, ease(prog(t, C.a512 - .45, C.a512 + .2))), FC, ease(prog(t, C.tb - .45, C.tb + .2)));
     return { ...f, ap: .12, focus: V(lineX(t), 1.0, z) }; }
   if (sh === 4) { const z = -300, k = G(u); return { pos: V(lerp(-.5, .5, k), lerp(1.2, .6, k), z + lerp(27, 23, k)), look: V(lerp(-.2, .5, k), 1.1, z), fov: 30 }; }   // a close view of the package under the ring
@@ -309,7 +309,7 @@ function apply(t, sh = shotAt(t), mod = null) {
   keyL.intensity = sh === 1 ? 1.2 : sh === 2 ? .7 : sh === 4 ? 1.7 : 2.5; rimL.intensity = sh === 1 ? 1.6 : 2.9; rim2L.intensity = 1.5;
   if (boxA.visible) {
     if (sh === 0) boxA.rotation.set(.06, -.3 + .08 * prog(t, 0, B[1]), .01);
-    else { const turn = ease(prog(t, TURN0(), TURN0() + .8)), sway = .3 - .22 * G(prog(t, B[6] - .3, TURN0())); boxA.rotation.set(lerp(.02, .06, turn), lerp(Math.PI - sway, -.3, turn), .01); }
+    else { const turn = ease(prog(t, TURN0(), TURN0() + .8)), sway = .3 - .22 * G(prog(t, B[6] - .3, TURN0())); boxA.rotation.set(lerp(.02, .06, turn), lerp(1.2 - sway * .3, -.3, turn), .01); }
     const f = rulerAt(t, sh); rulerFill.scale.x = Math.max(.001, f); rulerGap.position.x = -BW / 2 + BW * f; rulerGap.scale.x = Math.max(.001, 1 - f) * (f < .999 && f > .5 ? 1 : 0.001); gapGlow.position.set(-BW / 2 + BW * (f + 1) / 2, -BH / 2 - .6, BD / 2 + .2); gapGlow.material.opacity = f < .985 ? .75 : 0;
   }
   if (sh === 1 || sh === 2) { slab.rotation.set(sh === 1 ? -1.2 : -.7, sh === 1 ? .14 : 0, 0); updateSlab(t); }
@@ -350,17 +350,17 @@ const TIERS = () => [[B[3] + .3, 128, 'GB', C.a119, 119], [C.a512, 512, 'GB', C.
 function typeLayer(t) {
   BOXES = [];
   const sh = shotAt(t), Y = 540;
-  if (sh === 0) { const ct = KIT.countTo(t, C.n238, 256, 238); gbNumber(t, ct ? ct.n : 256, ct ? ct.since : 0, Y, 1 - prog(t, B[1] - .15, B[1]), ct ? HEATC : WHITE); }
+  if (sh === 0) { const hit = t >= C.n238; gbNumber(t, hit ? 238 : 256, hit ? C.n238 : 0, Y, 1 - prog(t, B[1] - .15, B[1]), hit ? HEATC : WHITE, 'GB', hit ? 1 : 0); }
   if (sh === 1) {
     if (t < C.billion - .05) big('NOTHING', 'drop', WHITE, t, C.nothing, C.billion - .05, { size: 150, y: 520 });
     big('1 BILLION', 'track', SIGC, t, C.billion, wEnd(2), { size: 150, y: 500, glow: 'rgba(56,225,255,.5)' }); }
   if (sh === 2) { if (t < C.bigger - .05) big('SOFTWARE', 'rise', WHITE, t, C.software, C.bigger - .05, { size: 130, y: 500 });
     big('BIGGER', 'slam', HEATC, t, C.bigger, wEnd(3), { size: 225, y: 520, glow: 'rgba(255,150,40,.6)' }); }
   if (sh === 3) { const T = TIERS(); for (let i = 0; i < 3; i++) { const [t0, b, unit, tr, res] = T[i], end = i < 2 ? T[i + 1][0] - .12 : wEnd(4);
-      if (t < t0 || t >= end) continue; const ct = KIT.countTo(t, tr, b, res), a = prog(t, t0, t0 + .06) * (1 - prog(t, end - .12, end));
-      gbNumber(t, ct ? ct.n : b, ct ? ct.since : t0, Y, a, ct ? HEATC : WHITE, unit, !ct ? 1 : 0); } }
-  if (sh === 4) { if (t < C.n69 - .62) big('GAP', 'rise', HEATC, t, C.gap, C.n69 - .62, { size: 290, y: 500, glow: 'rgba(255,150,40,.4)' });
-    const ct = KIT.countTo(t, C.n69, 0, 69); if (ct) gbNumber(t, ct.n, ct.since, Y, prog(t, C.n69 - .6, C.n69 - .5) * (1 - prog(t, wEnd(5) - .12, wEnd(5))), HEATC); }
+      if (t < t0 || t >= end) continue; const hit = t >= tr, a = prog(t, t0, t0 + .06) * (1 - prog(t, end - .12, end));
+      gbNumber(t, hit ? res : b, hit ? tr : t0, Y, a, hit ? HEATC : WHITE, unit, 1); } }
+  if (sh === 4) { if (t < C.n69 - .1) big('GAP', 'rise', HEATC, t, C.gap, C.n69 - .1, { size: 290, y: 500, glow: 'rgba(255,150,40,.4)' });
+    if (t >= C.n69) gbNumber(t, 69, C.n69, Y, prog(t, C.n69, C.n69 + .05) * (1 - prog(t, wEnd(5) - .12, wEnd(5))), HEATC, 'GB', 1); }
   if (sh === 5) big('SYSTEM', 'rise', WHITE, t, C.system, wEnd(6), { size: 165, y: 480 });
   if (sh === 6) { if (t < C.final + .55) big('7%', 'rise', SIGC, t, C.seven, C.final + .55, { size: 330, y: Y, glow: 'rgba(56,225,255,.5)' });
     else gbNumber(t, 256, 0, Y, prog(t, C.final + .55, C.final + .9)); }

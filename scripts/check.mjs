@@ -108,6 +108,21 @@ if (caps) {
   }
 }
 
+// 4d. posting slots (owner, 24 Nov 2026): design/slots.json has one HH:MM IST slot per channel inside the 13:00-21:00 window; reels without a postAt use it
+{
+  let sl = null;
+  try { sl = JSON.parse(readFileSync(join(root, 'design/slots.json'), 'utf8')); } catch (e) { err(`design/slots.json: cannot read it (${e.message})`); }
+  if (sl) for (const k of ['web', 'tech', 'c3']) { const v = sl.slots && sl.slots[k];
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(v || '') || v < '13:00' || v > '21:00') err(`design/slots.json: slots.${k} must be HH:MM between 13:00 and 21:00 IST (got ${v})`); }
+}
+
+// 4d2. AI label (owner, 24 Nov 2026): from 27 Nov every visible reel has "aiLabel": true or false (true when anything looks realistic enough to pass as real
+// footage); the builder sets it, the critic checks it (design/critic.md), the app shows it and Post now sends it to Instagram
+if (caps) for (const [name, j] of Object.entries(caps)) {
+  if (!j || j.hidden || j.sample || !j.postOn || j.postOn < '2026-11-27') continue;
+  if (typeof j.aiLabel !== 'boolean') err(`captions.json ${name}: add "aiLabel": true or false (true when anything looks realistic enough to pass as real footage; runbook-reels.md "AI label")`);
+}
+
 // 4e. tech rotation (owner, 22 Nov 2026: "every reel looks the same, no variation"; design/rules-tech.md "X" and "Rotation"): every visible tech
 // entry posting from 2026-11-22 has "format" and "device"; no two consecutive posting days share a format or a device class; at most one
 // "charging" (battery or charging) reel in any 7 days

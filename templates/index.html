@@ -247,6 +247,9 @@
   .works li{display:flex;flex-direction:column;gap:2px;padding:9px 0;border-top:1px solid var(--line)}
   .works li span{color:var(--mute);font:700 .72rem system-ui,sans-serif;text-transform:uppercase;letter-spacing:.04em}
   .works li b{font:700 .9rem/1.35 system-ui,sans-serif}
+  .score .row3{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);font:600 .88rem system-ui,sans-serif}
+  .score .row3:first-of-type{border-top:0}.score .row3 span{color:var(--mute)}.score .row3 b{text-align:right;font-variant-numeric:tabular-nums}.score .row3 b.no{color:var(--mute);font-weight:600}
+  .score .who2{display:flex;align-items:center;gap:8px;font:800 .95rem system-ui,sans-serif;margin:0 0 4px}
   .rtiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 8px}
   .rtile{display:flex;flex-direction:column;gap:2px;padding:10px;border:1px solid var(--line);border-radius:12px;min-width:0}
   .rtile span{color:var(--mute);font:700 .72rem system-ui,sans-serif;text-transform:uppercase;letter-spacing:.04em}
@@ -314,6 +317,8 @@
   .mute{color:var(--mute)}
   #s-inbox .lede{margin-bottom:16px}
   .drawer .notify,.drawer .use{margin:0 0 14px}
+  .npr{display:flex;align-items:center;gap:10px;padding:9px 0;font:600 .88rem system-ui,sans-serif;min-height:44px}
+  .npr input{width:20px;height:20px;accent-color:var(--ok,#2a9d5c)}
   .drawer .notify{flex-direction:column;align-items:flex-start}
   /* the reel journey (owner, 15 Nov 2026): each reel's seven stages in order, grouped by post day, newest first */
   .jkey{display:flex;flex-wrap:wrap;gap:6px 14px;margin:10px 0 2px;color:var(--mute);font-size:.75rem}
@@ -496,6 +501,7 @@
   .pscrim{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}
   .psheet{width:min(560px,100%);max-height:88vh;overflow-y:auto;background:var(--card);color:var(--ink);border-radius:22px 22px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(0,0,0,.25)}
   .psheet h2{margin:0 0 4px;font:800 1.15rem system-ui,sans-serif}
+  .reel .ai{margin:6px 0 0;font:600 .8rem system-ui,sans-serif;color:var(--mute)}.reel .ai.on{color:var(--ink)}
   .psheet .pwho{color:var(--mute);font-size:.85rem;margin:0 0 10px}
   .psheet .cap{max-height:34vh;overflow-y:auto;margin-top:6px}
   .psheet .prow2{display:flex;gap:10px;margin-top:14px}.psheet .prow2 .btn{flex:1;min-height:50px}
@@ -585,7 +591,7 @@
       <div id="b-cards"></div>
     </section>
     <section class="tsec" id="needs" hidden><h2 class="lbl">Needs you</h2><div id="needs-list"></div><div id="t-ready"></div></section>
-    <h2 class="lbl">Today’s reels <span>post 13:00–21:00 IST</span></h2>
+    <h2 class="lbl">Today’s reels <span>each has its own time</span></h2>
     <div class="tlist" id="t-today"><p class="empty">Loading…</p></div>
     <h2 class="lbl">Tomorrow</h2>
     <div class="tlist" id="t-tomorrow"></div>
@@ -602,7 +608,7 @@
     </div>
     <details class="prof" id="prof" hidden><summary>Profile</summary></details>
     <h1 id="title">Showreels</h1>
-    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (any time 13:00–21:00 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes 10 minutes before each time. Save the cover too, then on Instagram: Edit cover → Add from camera roll. Turns Out reels have no date: post them when you choose.</p></details></div>
+    <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (tech 15:00, Turns Out 17:00, web 19:00 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes at each time. Save the cover too, then on Instagram: Edit cover → Add from camera roll. Turns Out reels have no date: post them when you choose.</p></details></div>
     <div id="list"><p class="empty">Loading…</p></div>
   </section>
   <section class="pg" id="s-growth" hidden>
@@ -643,7 +649,8 @@
 <div class="scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" aria-label="Settings">
   <div class="dh"><b>Settings</b><button class="ib" id="menu-close" type="button" aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6.2l11.8 11.6M17.9 6.1L6.1 17.9"/></svg></button></div>
-  <div class="notify" id="notify" hidden><span>Get a reminder 10 minutes before each post time on this phone.</span><button class="btn g" id="notify-on" type="button">Turn on notifications</button></div>
+  <div class="notify" id="notify" hidden><span>Get a notification when each reel is ready to post on this phone.</span><button class="btn g" id="notify-on" type="button">Turn on notifications</button></div>
+  <details class="use" id="nprefs"><summary><span class="r"><span>What to be told about</span><span id="np-n"></span></span></summary><div id="np-box"><p class="mute">Loading…</p></div></details>
   <details class="use" id="use" hidden><summary><span class="r"><span>GitHub minutes</span><span id="use-n"></span></span><span class="bar" id="use-bar"><i></i></span></summary><div id="use-note"></div><ul id="use-list"></ul></details>
   <button type="button" class="dlink" id="d-reels"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5.2" y="3.4" width="13.6" height="17.2" rx="3.2"/><path d="M10.4 9.3l4.6 2.8-4.7 2.6z"/></svg><span>All reels and channel profiles</span></button>
   <a class="dlink" href="/logout"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4.4H6.2c-.8 0-1.4.6-1.4 1.4v12.4c0 .8.6 1.4 1.4 1.4H10"/><path d="M10.4 12.1h9.2M16.4 8.6l3.4 3.5-3.4 3.4"/></svg><span>Sign out</span></a>
@@ -736,8 +743,10 @@
   if (CH[location.hash.slice(1)]) ch = location.hash.slice(1);
   // the exact slot (owner, 5 Nov 2026): "postAt" (HH:MM IST) in captions.json, else the channel's default: web 13:00 (19:00 when the note says so),
   // tech 19:00, Turns Out 20:00 (E15 from 6 Nov). The same rule is in src/worker.js (the reminders) and scripts/check.mjs
-  function slotOf(s, m){ if (/^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt; var k = chOf(s, DATA ? DATA.c : {});
-    return k === 'tech' ? '19:00' : k === 'c3' ? '20:00' : /\b19:00\b/.test(m.note || '') ? '19:00' : '13:00'; }
+  // channel defaults come from design/slots.json (25 Nov 2026; GET /api/slots): tech 15:00, Turns Out 17:00, web 19:00
+  var SLOTS = { tech: '15:00', c3: '17:00', web: '19:00' };
+  fetch('/api/slots', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.slots) { SLOTS = j.slots; Object.keys(SLOTS).forEach(function(k){ if (CH[k]) CH[k].slot = SLOTS[k] + ' IST'; }); } }).catch(function(){});
+  function slotOf(s, m){ if (/^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt; return SLOTS[chOf(s, DATA ? DATA.c : {})] || '13:00'; }
   function dueOf(s, m){ return m.postOn ? Date.parse(m.postOn + 'T' + slotOf(s, m) + ':00+05:30') : Infinity; }
   function when(s, m){ if (m.sample) return ['Sample · not scheduled', ''];   // sample (6 Nov 2026, temporary)
     if (!m.postOn) return m.onGo ? ['Ready · post when you choose', ' now'] : ['Not scheduled', '']; var t = slotOf(s, m), diff = Math.round((Date.parse(m.postOn) - Date.parse(istToday())) / DAY);
@@ -938,6 +947,37 @@
     }); }
   // ---- Growth, all channels on one screen (owner, 22 Nov 2026): followers, this week's change, a 30-day line, and the typical reel of the last
   // 7 (reach, seconds watched, saves per reach). Tap a channel (or its chip) for its charts, "What each reel did" and "What works".
+  // ---- the weekly scorecard (owner plan, 24 Nov 2026): per channel, the last 7 days against the 7 before. Reach per reel, watch %, saves per 1,000 reached, new followers,
+  // the critic's average craft score (the PREMIUM numbers in each review file, via /api/journey) and the changes kept vs dropped (captions.json "experiment": {"verdict": "keep"|"drop"}).
+  // Whatever is missing says "not measured yet" in plain words.
+  var NM = 'not measured yet';
+  function weekOf(media, from, to){ return media.filter(function(m){ var t = Date.parse(m.posted_at); return t >= from && t < to; }); }
+  function mean(v){ v = v.filter(function(x){ return x != null && isFinite(x); }); return v.length ? v.reduce(function(a, b){ return a + b; }, 0) / v.length : null; }
+  function arrow(a, b, f){ if (a == null) return NM; var t = f(a); if (b == null || b === 0) return t; var d = Math.round((a - b) / b * 100); return t + (Math.abs(d) < 3 ? ' · level' : ' · ' + (d > 0 ? 'up ' : 'down ') + Math.abs(d) + '% on last week'); }
+  function scoreCard(k, jr){ var c = el('section', 'gcard score'), who = el('div', 'who2'); who.appendChild(chDot(k)); who.appendChild(document.createTextNode(CH[k].name)); c.appendChild(who);
+    var body = el('div'); c.appendChild(body); body.appendChild(el('p', 'sub', 'Loading…'));
+    perfFor(k).then(function(j){ body.textContent = ''; var now = Date.now(), media = ((j && j.media) || []).filter(function(m){ return m.reach != null && m.posted_at; }),
+        cur = weekOf(media, now - 7 * DAY, now + DAY), prev = weekOf(media, now - 14 * DAY, now - 7 * DAY), acc = ((j && j.account) || []).filter(function(r){ return r.followers != null; });
+      function reachOf(a){ return a.length ? mean(a.map(function(m){ return m.reach; })) : null; }
+      function watchOf(a){ return mean(a.map(function(m){ return m.watch_avg_ms != null && m.duration_s ? Math.min(100, m.watch_avg_ms / 10 / m.duration_s) : null; })); }
+      function savesOf(a){ var r = a.reduce(function(x, m){ return x + (m.reach || 0); }, 0), sv2 = a.filter(function(m){ return m.saves != null; }); return r && sv2.length ? sv2.reduce(function(x, m){ return x + m.saves; }, 0) * 1000 / sv2.reduce(function(x, m){ return x + (m.reach || 0); }, 0) : null; }
+      var fol = null; if (acc.length > 1) { var old = acc.filter(function(r){ return r.day <= istDay(new Date(now - 7 * DAY).toISOString()); }).pop() || acc[0]; fol = acc[acc.length - 1].followers - old.followers; }
+      var sc = jr ? (jr.reels || []).filter(function(r){ return r.ch === k && r.score != null && r.day >= istDay(new Date(now - 7 * DAY).toISOString()); }).map(function(r){ return r.score; }) : [],
+          ex = Object.keys((DATA && DATA.c) || {}).map(function(n){ return DATA.c[n]; }).filter(function(m){ return m && m.channel === k && m.postOn && m.postOn >= istDay(new Date(now - 7 * DAY).toISOString()) && m.experiment && m.experiment.verdict; }),
+          kept = ex.filter(function(m){ return m.experiment.verdict === 'keep'; }).length, dropped = ex.filter(function(m){ return m.experiment.verdict === 'drop'; }).length;
+      var f0 = function(v){ return Math.round(v).toLocaleString('en-IN'); };
+      var rows = [['Reach per reel', cur.length ? arrow(reachOf(cur), reachOf(prev), f0) : NM],
+        ['Watched on average', cur.length && watchOf(cur) != null ? arrow(watchOf(cur), watchOf(prev), function(v){ return Math.round(v) + '% of the reel'; }) : NM],
+        ['Saves per 1,000 reached', cur.length && savesOf(cur) != null ? arrow(savesOf(cur), savesOf(prev), function(v){ return v.toFixed(1); }) : NM],
+        ['New followers this week', fol == null ? NM : (fol > 0 ? '+' : '') + fol.toLocaleString('en-IN')],
+        ['Critic’s average score', sc.length ? mean(sc).toFixed(1) + ' out of 10 (' + sc.length + ' reel' + (sc.length === 1 ? '' : 's') + ')' : NM],
+        ['Changes kept or dropped', ex.length ? kept + ' kept, ' + dropped + ' dropped' : NM]];
+      body.appendChild(el('p', 'sub', cur.length + ' reel' + (cur.length === 1 ? '' : 's') + ' in the last 7 days'));
+      rows.forEach(function(r){ var rw = el('div', 'row3'); rw.appendChild(el('span', null, r[0])); rw.appendChild(el('b', r[1] === NM ? 'no' : null, r[1])); body.appendChild(rw); }); });
+    return c; }
+  function scoreAll(){ var box = el('div', 'scoreAll'), h = el('h2', 'sec', 'This week'); box.appendChild(h);
+    fetch('/api/journey', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; }).then(function(jr){ ['web', 'tech', 'c3'].forEach(function(k){ box.appendChild(scoreCard(k, jr)); }); });
+    return box; }
   var gSel = 'all';
   try { var gs = localStorage.getItem('studio-g'); if (gs === 'all' || CH[gs]) gSel = gs; } catch (e) {}
   function med(v){ v = v.filter(function(x){ return x != null && isFinite(x); }).sort(function(a, b){ return a - b; }); if (!v.length) return null; var h = v.length >> 1; return v.length % 2 ? v[h] : (v[h - 1] + v[h]) / 2; }
@@ -964,7 +1004,7 @@
   function gShow(){ var all = document.getElementById('g-all');
     Array.prototype.forEach.call(document.querySelectorAll('#g-seg button'), function(b){ b.setAttribute('aria-selected', String(b.getAttribute('data-g') === gSel)); });
     all.hidden = gSel !== 'all'; gBox.hidden = gSel === 'all';
-    if (gSel === 'all') { all.textContent = ''; ['web', 'tech', 'c3'].forEach(function(k){ all.appendChild(gCard(k)); }); }
+    if (gSel === 'all') { all.textContent = ''; all.appendChild(scoreAll()); ['web', 'tech', 'c3'].forEach(function(k){ all.appendChild(gCard(k)); }); }
     else { ch = gSel; growth(); } }
   Array.prototype.forEach.call(document.querySelectorAll('#g-seg button'), function(b){ b.addEventListener('click', function(){ gPick(b.getAttribute('data-g')); }); });
   function render(){
@@ -1012,6 +1052,7 @@
     function close(){ closed = true; clearInterval(timer); if (scrim.parentNode) scrim.parentNode.removeChild(scrim); }
     scrim.addEventListener('click', function(e){ if (e.target === scrim) close(); });
     function confirmView(){ sh.textContent = ''; sh.appendChild(el('h2', null, 'Post this reel now?')); sh.appendChild(el('p', 'pwho', 'It goes live on ' + CH[k].name + ' at once. This cannot be undone from here.'));
+      var mm = DATA && DATA.c ? DATA.c[s.name] || {} : {}; sh.appendChild(el('p', 'pwho', mm.aiLabel === true ? 'AI label: on. Instagram will show “AI info” on this reel.' : mm.aiLabel === false ? 'AI label: off.' : 'AI label: not decided for this reel.'));
       sh.appendChild(el('div', 'cap', text)); var r = el('div', 'prow2'), no = el('button', 'btn g', 'Cancel'), go2 = el('button', 'btn tick post', 'Post now'); no.type = 'button'; go2.type = 'button';
       no.addEventListener('click', close); go2.addEventListener('click', function(){ go2.disabled = true; start(); }); r.appendChild(no); r.appendChild(go2); sh.appendChild(r); }
     function view(row){ sh.textContent = ''; var st = row.state, bad = st === 'failed', ok = st === 'posted';
@@ -1047,6 +1088,7 @@
     else { card.appendChild(player(s));
       b.appendChild(el('div', 'when' + w[1], w[0])); b.appendChild(nm);
       if (meta.about) b.appendChild(el('p', 'about', meta.about));   // a reel's one-line description
+      b.appendChild(el('div', 'ai' + (meta.aiLabel === true ? ' on' : ''), meta.aiLabel === true ? 'AI label: yes. Turn on AI info for this reel on Instagram (Post now does it for you).' : meta.aiLabel === false ? 'AI label: no. Nothing here passes as real footage.' : 'AI label: not decided yet.'));
       b.appendChild(el('div', 'meta', 'Rendered ' + new Date(s.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · ' + mb(s.size))); }
     var cap = el('div', 'cap'), row = el('div', 'row'), copy = el('button', 'btn', 'Copy post text'), dl = el('button', 'btn g', 'Save video'), cv = s.cover ? el('button', 'btn g', 'Save cover') : null, tick = el('button', 'btn tick post', 'I posted it');
     copy.type = 'button'; copy.disabled = true; dl.type = 'button'; tick.type = 'button'; tick.disabled = !trackOk; if (!trackOk) tick.title = 'Upload tracking is unavailable right now';
@@ -1151,6 +1193,14 @@
     if (state === 'fail') i.appendChild(sv('path', { d: 'M8.8 8.9l6.4 6.2M15.2 8.8l-6.3 6.4' }));
     if (state === 'now') i.appendChild(sv('path', { d: 'M12 2.5a9.5 9.5 0 0 1 9.5 9.5' }));
     return i; }
+  // plain words (owner plan, 25 Nov 2026): codes and jargon that reach the screen from the server, the review files or the daily report are replaced here, so a screen never shows
+  // ALARM, ESCALATE, OQA, run numbers or rule ids. New jargon: add a line here and tell the writer to say it plainly.
+  var PW = [[/\bOutput QA\b/gi, 'the video checks'], [/\bOQA\b/g, 'video checks'], [/\bSHOT VARIETY\b|\bVARIETY\b/g, 'too much of one shot'], [/\bSYNC\b/g, 'words and picture out of step'], [/\bDEAD\b/g, 'a frozen stretch'],
+    [/\bHERO\b/g, 'main subject'], [/\bSTRAY\b/g, 'stray words'], [/\bPACE\b/g, 'voice speed'], [/\bLOUD\b/g, 'loudness'], [/\bESCALATE\b/g, 'below target two days running'], [/\bALARM\b/g, 'below target'],
+    [/\bPROMOTE\b/g, 'make it a rule'], [/\bDROP\b/g, 'drop it'], [/\bNOT READY\b/g, 'not ready'], [/\bCRITIC:?\s*/g, 'Second look: '], [/\bPR #\d+\b/g, 'the change'],
+    [/\b(?:run|render)\s+#?\d{6,}\b/gi, 'the run'], [/\bitem \d+\b/gi, 'the checklist'], [/\brules? \d+\b/gi, 'the rule'], [/\bR-[A-Za-z0-9-]+\b/g, 'the rule'], [/\bE\d{1,2}\b/g, 'the experiment'], [/\bGH_DISPATCH_TOKEN\b/g, 'the GitHub key'],
+    [/\b[a-z]+\.(?:json|mjs)\b/gi, 'the settings file']];
+  function pw(t){ t = String(t == null ? '' : t); for (var i = 0; i < PW.length; i++) t = t.replace(PW[i][0], PW[i][1]); return t.replace(/^([a-z])/, function(c){ return c.toUpperCase(); }).replace(/(: ){2,}/g, ': '); }
   var SAY = { done: 'done', now: 'working now', fail: 'needs a fix', wait: 'not yet' };
   // ---- one status in plain words per reel (owner, 22 Nov 2026: "no stage jargon"), from the seven stages /api/journey gives:
   // Planned -> Building -> Making the video (n%) -> Checking -> Ready to post -> Posted; Fixing (with the reason) when a check or the second
@@ -1159,10 +1209,10 @@
     if (g('posted').s === 'done') return { k: 'posted', t: 'Posted', c: 'ok', step: 5 };
     if (g('ready').s === 'done') return { k: 'ready', t: 'Ready to post', c: 'ok', step: 3, why: g('posted').s === 'fail' ? 'The slot passed. If it went out, tap I posted it.' : '' };
     if (g('render').s === 'now') return { k: 'making', t: 'Making the video' + (g('render').pct != null ? ' · ' + g('render').pct + '%' : ''), c: 'run', step: 1, pct: g('render').pct };
-    if (g('render').s === 'fail') return { k: 'fixing', t: 'Fixing', c: '', step: 1, why: 'The video did not finish: ' + (g('render').why || g('render').t) };
+    if (g('render').s === 'fail') return { k: 'fixing', t: 'Fixing', c: '', step: 1, why: 'The video did not finish: ' + pw(g('render').why || g('render').t) };
     if (g('checks').s === 'now') return { k: 'checking', t: 'Checking', c: 'run', step: 2 };
-    if (g('checks').s === 'fail') return { k: 'fixing', t: 'Fixing', c: '', step: 2, why: 'A check found a problem: ' + String(g('checks').t || '').replace(/^Failed:\s*/, '') + '.' };
-    if (g('critic').s === 'fail') return { k: 'fixing', t: 'Not ready yet', c: 'act', step: 2, why: g('critic').why || '', more: g('critic').more || '' };
+    if (g('checks').s === 'fail') return { k: 'fixing', t: 'Fixing', c: '', step: 2, why: 'A check found a problem: ' + pw(String(g('checks').t || '').replace(/^Failed:\s*/, '')) + '.' };
+    if (g('critic').s === 'fail') return { k: 'fixing', t: 'Not ready yet', c: 'act', step: 2, why: pw(g('critic').why || ''), more: pw(g('critic').more || '') };
     if (g('render').s === 'done') return { k: 'checking', t: 'Checking', c: 'run', step: 2 };
     if (r.day > today) return { k: 'planned', t: 'Planned', c: '', step: 0, why: g('built').s === 'done' ? '' : 'Made on the day it posts.' };
     return { k: 'building', t: g('built').s === 'done' ? 'Built, video next' : 'Building', c: 'run', step: 1 }; }
@@ -1178,10 +1228,10 @@
   var STAGE = { planned: 'Planned', built: 'Built', render: 'Video', checks: 'Machine checks', critic: 'Second look', ready: 'Ready to post', posted: 'Posted' };
   function plain(k, x){ var t = String(x.t || '');
     if (k === 'built' && /^PR #|^Merged|^On main/.test(t)) return 'Done';
-    if (k === 'checks') return t === 'Output QA PASS' ? 'All passed' : t.replace(/^Failed: /, 'Problem: ');
-    if (k === 'critic') return t === 'READY' ? 'Looks good' : t === 'Not ready' ? 'Found a problem' : t.replace('the critic', 'the second look');
-    if (k === 'render') return t.replace('Output QA', 'checks');
-    return t.replace(/ IST$/, ''); }
+    if (k === 'checks') return t === 'Output QA PASS' ? 'All passed' : pw(t.replace(/^Failed: /, 'Problem: '));
+    if (k === 'critic') return t === 'READY' ? 'Looks good' : t === 'Not ready' ? 'Found a problem' : pw(t.replace('the critic', 'the second look'));
+    if (k === 'render') return pw(t);
+    return pw(t.replace(/ IST$/, '')); }
   function chDot(k){ return el('i', 'dot d-' + k); }
   function trow(r){ var stt = status(r), b = el('button', 'trow'), m = el('span', 'm'); b.type = 'button';
     b.appendChild(chDot(r.ch)); m.appendChild(el('span', 'n', headline(r.title))); m.appendChild(el('span', 's', CH[r.ch].name + (stt.why && stt.k !== 'planned' ? ' · ' + stt.why : stt.why ? ' · ' + stt.why : '')));
@@ -1203,7 +1253,7 @@
         b.forEach(function(r){ mBox.appendChild(trow(r)); });
         if (!b.length) mBox.appendChild(tEmpty(k, 'Nothing planned yet')); });
       var t = new Date(j.now).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' });
-      jNote.textContent = 'Updated ' + t + ' IST' + (j.github === 'ok' ? '.' : j.github === 'no-token' ? '. Live video progress needs the GitHub read key.' : '. GitHub did not answer; finished steps still show.'); }
+      jNote.textContent = 'Updated ' + t + ' IST' + (j.github === 'ok' ? '.' : j.github === 'no-token' ? '. Live video progress needs a GitHub key.' : '. GitHub did not answer; finished steps still show.'); }
     // ready to post, at the top: every reel with a video, not posted, due by the end of today (or overdue), that the checks passed
     rBox.textContent = '';
     if (DATA) { var c = DATA.c, end = Date.parse(today + 'T00:00:00+05:30') + DAY;
@@ -1266,7 +1316,9 @@
     var fr = rows[BST.length]; fr.className = o.fin === 'skipped' ? '' : o.fin ? 'on' : ''; fr.querySelector('em').textContent = o.fin === 'skipped' ? 'Skipped today' : o.fin === 'posted' ? 'Posted' : 'Ready to post'; fr.lastChild.textContent = o.fin ? (o.fin === 'skipped' ? 'not today' : 'done') : '';
     c.bi.style.width = p + '%'; c.bp.textContent = p + '%';
     c.ei.style.width = (o.making && o.pct != null ? Math.max(3, o.pct) : 0) + '%';
-    c.meta.textContent = o.fin ? (o.model ? 'Last worked on by ' + o.model : '') : o.model ? o.model + ' is working on it' : '';
+    var sm = o.name && DATA && DATA.c ? DATA.c[o.name] : null, slot = sm && /^\d{2}:\d{2}$/.test(sm.postAt || '') ? sm.postAt : SLOTS[c.k],
+        mm = o.fin === 'posted' ? '' : o.fin ? (o.model ? 'Last worked on by ' + o.model : '') : o.model ? o.model + ' is working on it' : '';
+    c.meta.textContent = (o.fin === 'posted' ? 'Posted' : 'Posts at ' + slot + ' IST') + (mm ? ' · ' + mm : '');   // the slot comes from design/slots.json
     var want = o.thumb ? o.thumb + '?v=' + encodeURIComponent((SROWS.filter(function(x){ return x.ch === c.k; })[0] || {}).at || '') : null;
     if (want !== c.img) { c.img = want; c.th.textContent = ''; if (want) { var im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.src = want; im.onerror = function(){ im.remove(); c.th.appendChild(chDot(c.k)); }; c.th.appendChild(im); } else c.th.appendChild(chDot(c.k)); }
     c.prev = o; }
@@ -1320,7 +1372,7 @@
   go(sec);
   // "Needs you": each item has buttons that fit it (Yes / No, Done, or a short reply); the reply is stored and the item leaves the list
   function askEl(a){ var box = el('div', 'ask'), row = el('div', 'row'), ta = null;
-    box.appendChild(el('b', null, (a.channel && CH[a.channel] ? CH[a.channel].name + ': ' : '') + a.question)); if (a.why) box.appendChild(el('p', null, a.why));
+    box.appendChild(el('b', null, (a.channel && CH[a.channel] ? CH[a.channel].name + ': ' : '') + pw(a.question))); if (a.why) box.appendChild(el('p', null, pw(a.why)));
     function answer(v, btn){ if (!v || !v.trim()) { if (ta) ta.focus(); return; } btn.disabled = true;
       fetch('/api/asks/' + encodeURIComponent(a.id) + '/answer', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ answer: v.trim() }) })
         .then(function(r){ if (!r.ok) throw 0; box.remove(); syncNeeds(); }).catch(function(){ btn.disabled = false; btn.textContent = 'Try again'; }); }
@@ -1484,7 +1536,7 @@
   var cardsBox = document.getElementById('cards'), CC = { web: 'var(--c-web)', tech: 'var(--c-tech)', c3: 'var(--c-c3)' };
   function cardEl(cd){ var box = el('section', 'card'), hd = el('div', 'hd');
     hd.appendChild(el('b', null, cd.title || 'Daily audit')); hd.appendChild(el('span', null, nice(cd.day))); box.appendChild(hd);
-    function ul(a){ var u = el('ul'); a.forEach(function(t){ u.appendChild(el('li', null, t)); }); return u; }
+    function ul(a){ var u = el('ul'); a.forEach(function(t){ u.appendChild(el('li', null, pw(t))); }); return u; }
     if (cd.points && cd.points.length) box.appendChild(ul(cd.points));
     ['web', 'tech', 'c3'].forEach(function(k){ var a = cd.channels && cd.channels[k]; if (!a || !a.length) return;
       var h = el('h3', null, CH[k].name + ' · last 7 days'); h.style.setProperty('--cc', CC[k]); box.appendChild(h); box.appendChild(ul(a)); });
@@ -1499,7 +1551,7 @@
   function istNow(){ var d = new Date(Date.now() + 5.5 * 36e5); return { day: d.toISOString().slice(0, 10), h: d.getUTCHours() }; }
   function auditSum(cd){ var all = (cd.points || []).concat([].concat.apply([], ['web', 'tech', 'c3'].map(function(k){ return (cd.channels && cd.channels[k]) || []; }))), seen = {}, out = [], n = 0;
     all.forEach(function(t){ var m = /^\s*(ALARM|ESCALATE|OK)\s+(web|tech|c3)\b/i.exec(t); if (m) { var k = m[2].toLowerCase(); if (!seen[k] || /ESCALATE/i.test(m[1])) seen[k] = m[1].toUpperCase(); } if (/^\s*change/i.test(t)) n++; });
-    Object.keys(seen).forEach(function(k){ out.push(k + ' ' + seen[k]); });
+    Object.keys(seen).forEach(function(k){ out.push(CH[k].name + ' ' + (seen[k] === 'OK' ? 'on target' : seen[k] === 'ESCALATE' ? 'below target two days running' : 'below target')); });
     var at = cd.at && new Date(Date.parse(cd.at) + 5.5 * 36e5), hm = at && !isNaN(at) ? ' at ' + at.toISOString().slice(11, 16) : '';
     return 'done' + hm + (out.length ? ' · ' + out.join(', ') : '') + (n ? ' · ' + n + ' change' + (n === 1 ? '' : 's') : ''); }
   function auditKeep(cd){ try { localStorage.setItem('studio-audit', JSON.stringify({ day: cd.day, text: auditSum(cd) })); } catch (e) {} }
@@ -1529,6 +1581,19 @@
     show(sp.on !== false); row.appendChild(b); box.appendChild(row); cardsBox.insertBefore(box, cardsBox.firstChild); inboxCount();
     var left = Date.parse(sp.until) - Date.now(); if (left > 0) setTimeout(function(){ box.remove(); inboxCount(); }, Math.min(left, 2e9));   // gone at the reset
   }).catch(function(){});
+  // one switch per notification type (25 Nov 2026): GET/PUT /api/push/prefs; every type is on until switched off
+  var NP = [['ready', 'A reel is ready to post (at its time)'], ['nudge', 'A gentle nudge, 45 minutes later'], ['last', 'A last call at 8:30 PM'], ['posted', 'Posted, with the link'], ['failed', 'Posting failed, and why'], ['digest', 'A morning summary at 8:00 AM']];
+  function npLoad(){ var box = document.getElementById('np-box');
+    fetch('/api/push/prefs', { credentials: 'same-origin' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(j){
+      box.textContent = ''; var on = 0;
+      NP.forEach(function(t){ var row = el('label', 'npr'), cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = j.prefs[t[0]] !== false; if (cb.checked) on++;
+        cb.addEventListener('change', function(){ cb.disabled = true;
+          fetch('/api/push/prefs', { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ type: t[0], on: cb.checked }) })
+            .then(function(r){ if (!r.ok) throw 0; cb.disabled = false; }).catch(function(){ cb.checked = !cb.checked; cb.disabled = false; }); });
+        row.appendChild(cb); row.appendChild(el('span', null, t[1])); box.appendChild(row); });
+      document.getElementById('np-n').textContent = on + ' of ' + NP.length + ' on'; })
+      .catch(function(){ box.textContent = ''; box.appendChild(el('p', 'mute', 'The switches could not load. Try again in a moment.')); }); }
+  npLoad();
   // notifications: the service worker (offline copies + push) and one line that always says where this device stands (owner, 1 Nov 2026:
   // "turn on notifications doesn't do anything"): never silent. iPhone: iOS 16.4+ and the app added to the Home Screen (Safari in a tab has no push)
   var nBox = document.getElementById('notify'), nTxt = nBox.querySelector('span'), nBtn = document.getElementById('notify-on'), nMode = null, nReg = null, nKey = null;
@@ -1563,19 +1628,19 @@
       if (!nKey) return nState('Notifications: not ready yet, the server key is missing (see "Needs you" on Today).', null);
       if (Notification.permission === 'denied') return nState(BLOCKED, null);
       if (sub && Notification.permission === 'granted') { pushPost('/api/push/subscribe?quiet=1', sub.toJSON()).catch(function(){}); return nState('Notifications are on for this device.', 'Send a test notification', 'test'); }
-      nState('Get a reminder 10 minutes before each post time on this phone.', 'Turn on notifications', 'on');
+      nState('Get a notification when each reel is ready to post on this phone.', 'Turn on notifications', 'on');
     });
   }).catch(function(e){ nState('Notifications: ' + ((e && e.message) || 'not available here') + '.', null); });
   // Instagram collector health: an open alert per account, or no new numbers for 36+ hours (the run itself failed or stopped)
   fetch('/api/perf/status', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(st){
     var ACC = { 1: '@webin20sec', 2: '@techin20sec', 3: '@itturns.out' }, box = document.getElementById('alert'), lines = [];
     (st.alerts || []).forEach(function(a){
-      var fix = /^INSTAGRAM_TOKEN/.test(a.secret) ? 'Fix: Meta developer app → Instagram → API setup with Instagram login → Generate token for ' + (ACC[a.slot] || 'this account') + ', then GitHub → Settings → Secrets and variables → Actions → update ' + a.secret + '.'
-        : a.secret === 'BASIC_AUTH' ? 'Fix: check the GitHub secrets BASIC_AUTH_USER and BASIC_AUTH_PASS.' : 'Fix: the site could not store the numbers; ask Claude to look at the "Instagram collect" run.';
-      lines.push({ t: (ACC[a.slot] || 'Account ' + a.slot) + ': numbers are not being collected', m: a.message, f: fix, at: a.at }); });
+      var fix = /^INSTAGRAM_TOKEN/.test(a.secret) ? 'Fix: make a new Instagram access key for ' + (ACC[a.slot] || 'this account') + ', then give it to Claude, or paste it on GitHub (Settings, Secrets, update ' + a.secret + ').'
+        : a.secret === 'BASIC_AUTH' ? 'Fix: the sign-in details saved for the numbers collection no longer match the app. Ask Claude to look.' : 'Fix: the app could not save the numbers. Ask Claude to look.';
+      lines.push({ t: (ACC[a.slot] || 'Account ' + a.slot) + ': numbers are not being collected', m: pw(a.message), f: fix, at: a.at }); });
     var newest = (st.last || []).reduce(function(m, x){ return x.day > m ? x.day : m; }, '');
     if (newest && Date.now() - new Date(newest + 'T23:59:00+05:30').getTime() > 36 * 3600e3 && !lines.length)
-      lines.push({ t: 'No new Instagram numbers since ' + newest, m: 'The nightly "Instagram collect" run has not saved anything for over a day.', f: 'Fix: ask Claude to check the "Instagram collect" workflow.' });
+      lines.push({ t: 'No new Instagram numbers since ' + newest, m: 'The nightly numbers collection has not saved anything for over a day.', f: 'Fix: ask Claude to check it.' });
     if (!lines.length) return;
     lines.forEach(function(x){ box.appendChild(el('b', null, '⚠ ' + x.t)); box.appendChild(el('p', null, x.m)); box.appendChild(el('p', null, x.f));
       if (x.at) box.appendChild(el('small', null, 'Since ' + new Date(x.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · clears itself after the next good run')); });

@@ -1,0 +1,6 @@
+{
+  "slots": { "tech": "15:00", "c3": "17:00", "web": "19:00" },
+  "setOn": "2026-11-25",
+  "reviewOn": "2026-12-02",
+  "note": "Posting slots (IST), one per channel, spread through the day. Set by the owner plan of 24 Nov 2026. Web at 19:00 is a one-week test: the data says web did better later (design/posting-slots.md). Review each week from the numbers, then change this file only. Builders take postAt for every new captions.json entry from here; the Worker and the app read it for any reel that has no postAt."
+}

@@ -89,11 +89,33 @@ Channel briefs: web design/rules-web.md, tech design/rules-tech.md ("Channel bri
   made), "postAt" (the exact IST slot, HH:MM: 13:00 for every channel; the app's "Up next" shows it and a push reminder goes out 10 minutes
   before, so a new slot needs its cron in wrangler.jsonc; the only reminder cron is 12:50 IST) and "concept", in the push that makes it;
   npm run check fails without it.
-- One reel a day per channel, all at 13:00 IST (owner, 8 Nov 2026). Learn-then-build (owner, 5 Nov 2026): every reel is built the day it
+- **Slots (owner plan, 24 Nov 2026): every new captions.json entry takes its "postAt" from design/slots.json (tech 15:00, Turns Out 17:00, web 19:00 IST); one config file, reviewed weekly from the numbers (web 19:00 is a one-week test, review 2 Dec). The app and the Worker use the same file for any reel without a postAt. Reminders and nudges: see "Notifications" below.**
+- One reel a day per channel (owner, 8 Nov 2026; the 13:00 slot is now replaced by the file above). Learn-then-build (owner, 5 Nov 2026): every reel is built the day it
   posts (or the evening before at most), from the latest numbers and its channel's rulebook. No reels ahead. Before building, a run reads
   captions.json and never builds a second reel for a channel and slot that already has one.
 - Topics for each channel and day are planned a week ahead in design/topics.md (spare-usage night); runs take theirs from it, and swap it for
   a better one when the rulebook says so.
+
+## Notifications (owner plan, 24 Nov 2026; built 25 Nov)
+- The Worker cron `*/10 * * * *` runs the plan in src/notify.js (tested by scripts/qa/notify-test.mjs): at a reel's slot "<Channel> reel is ready to post" (tap opens the reel with Post now);
+  45 min later one gentle nudge; 20:30 IST one last call; "Posted ✓" with the link and the plain reason on a failure (sent when Post now reports back); 08:00 IST one morning
+  summary (today's reels, their slots, anything blocked). A reel the second look has not cleared gets no "ready" push.
+- Settings (gear) > "What to be told about": one switch per type (GET/PUT /api/push/prefs, D1 push_prefs; all on until switched off). Every send has a key in D1 notif_log, so a reel
+  never gets more than 1 nudge and 1 last call. The old "10 minutes before" reminder is gone; the 12:50 cron stays only so old 13:00 entries pass `npm run check`.
+
+## AI label (owner plan, 24 Nov 2026; built 25 Nov)
+- Every reel posting from 27 Nov has `"aiLabel": true|false` in its captions.json entry (npm run check fails without it). **true when anything looks realistic enough to pass as real footage** (photoreal 3D or media, a real-looking person, place or screen, a voice that could pass as a real person); false for clearly drawn or flat graphics. The builder sets it; the critic checks it (design/critic.md item 0b).
+- The reel card and the Post now confirm sheet show it. Post now sends `is_ai_generated=true` with the container when it is true (Meta changelog 22 Jun 2026, Instagram API with Instagram login; scripts/ig-publish.mjs); if Instagram refuses it nothing is posted and the app says to post by hand and turn on AI info. For a post made by hand the card says to turn on AI info in Instagram for that reel.
+- YouTube is reserved for later: its field is `containsSyntheticMedia`; nothing sends it yet.
+
+## Weekly scorecard (owner plan, 24 Nov 2026; built 25 Nov)
+- Growth > All channels opens with "This week": one card per channel, the last 7 days against the 7 before: reach per reel, watched on average (% of the reel), saves per 1,000 reached, new followers, the critic's average score and changes kept or dropped. Anything missing says "not measured yet".
+- Reach, watch, saves and followers come from the nightly collect (/api/perf). **Critic score**: the critic writes `PREMIUM a / b / c` (0-10 each) in the review file's critic line; /api/journey averages the numbers (src/journey.js) and the app averages the week's reels. **Kept or dropped**: when an experiment's 24 h / 72 h verdict is decided, put `"verdict": "keep"` or `"drop"` inside that reel's captions.json `"experiment"` object (the daily run does this at the verdict step; design/runbook-daily.md does not mention it yet).
+
+## Plain words on every screen (owner plan, 24 Nov 2026; built 25 Nov)
+- No screen shows a code or jargon (ALARM, ESCALATE, OQA, run numbers, PR numbers, rule or item ids, secret names). Text that comes from the server, the review files or the daily report goes through `pw()` in templates/index.html (the PW list; add a line there when new jargon appears); the daily report line says "on target" or "below target".
+- scripts/qa/plain-words-test.mjs (in `npm run check`) fails if the page's own text has a code or `pw()` lets one through. Writers (builders, critics, the audit) should still write plainly: the filter is a net, not a licence.
+- The one place that still names a secret is the access-key fix line (Settings alert), because the owner needs the exact name to update it.
 
 ## Archiving
 - A reel marked uploaded leaves the main list at once for its channel's compact "Posted" list (cover, title, posted date, its numbers once
