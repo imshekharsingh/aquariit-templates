@@ -2,7 +2,7 @@
 
 Judge the REAL video (owner chat, 23 Nov 2026): `node scripts/reel-fetch.mjs <reel-name>` downloads the final MP4, cover and json from the app into reel-files/ (git-ignored; never commit or upload them); then `ffmpeg -i reel-files/<name>.mp4 -vf "fps=4,scale=390:-2" reel-files/f-%04d.png` gives frames at phone size every 0.25 s (look closely around every cut), and listen to the audio (`ffmpeg -i reel-files/<name>.mp4 -af ebur128 -f null -` for levels, then the words against the voice script). If reel-fetch says "read key not set up yet", fall back to the scene stills and say so in the review.
 
-Answer each with the frame times you looked at. Any "no" = not ready. Add a question here the same day the critic or the owner finds a new kind of miss.
+Answer each with the frame times you looked at. First of all, question 43: the side-by-side sheet against the gold reel (design/gold.md). Any "no" = not ready. Add a question here the same day the critic or the owner finds a new kind of miss.
 
 ## Every channel
 0. Does the reel pass every line of design/safety.md (plagiarism, controversy, disrespect, sentiment, licences, Instagram rules, maps, brands)?
@@ -79,6 +79,12 @@ D4. Does the last frame show both the before (thumbnail, tagged) and the after, 
 41. (22 Nov, critic, tech heart-green) Freeze every frame of a live chart or trace panel: does its label sit outside the line's range, never struck through by it (15-27 s: "LIGHT BACK" crossed out by the trace for 12 s)? On the end card: is the subject still whole and the payoff plate in the empty lower half, not laid over the subject's body?
 
 42. (24 Nov, critic, web tabwiggle) Read frame 0 alone at phone size: is the WHOLE hook question on screen (dim words that light up as they are spoken are fine), not built word by word so that frame 0 shows one word ("Why" until 1.2 s)? Does the touch dot rest clear of every label and reaction word between taps, and does no pointer line end right after a word like a cursor?
+
+43. (24 Nov, owner: the tech USB-C reel passed every check and an Opus critic, and was "horrible"; design/gold.md) Run
+`python3 scripts/qa/side-by-side.py reel-files/<name>.mp4` and VIEW the sheet: the new reel and its channel's gold reel at the same 8 relative
+times, with both LOOK numbers. Read Output QA LOOK (brightness, background, dark share, washed-out grey, contrast vs gold). **Rule: CRITIC:
+NOT READY unless the reel matches or beats gold on the sheet** (as dark and deep, one lit hero, one accent, the shot changing as often, the
+number or word as bold). Write one line: `GOLD: matches | beats | below (<the frame, what is weaker>)`.
 
 ## Premium check (owner, 23 Nov 2026): before any verdict
 Load the skills frontend-design and hyperframes (.claude/skills/; Skill tool) and read hyperframes/references/motion.md and review.md, plus
