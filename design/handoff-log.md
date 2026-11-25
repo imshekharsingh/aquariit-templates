@@ -784,3 +784,8 @@ Format (at most 6 lines):
 - Done: six voice lines (new: "Each app and each tool talks to the hub once." and "A new tool is one more cable, not three."), hub cables brighten on "talks", a new tile plus ONE cable on "new", camera keys for both; stills review/tech/study-25nov/kit-phase2-20s.jpg (the six stills fixes from the owner chat are in it).
 - Left: render once (Tech reel, gold3d-sample, preview v2), then the independent critic (opus, tag critic).
 - For the other account: nothing new.
+
+## 2026-11-26 · claude/tech-3d-kit-sample-pace · 3D kit sample: shorten the fast voice line (owner's yes for render 3)
+- Done: render v2 (21 s) passed every Output QA check except PACE (one line at 4.63 words/s, limit 4.5); the line is now "Everything talks to the hub once." (6 words, key word "hub").
+- Left: render 3 (preview v3), Output QA, the independent critic (opus, tag critic), the app list entry for the final video.
+- For the other account: a 10-word line over 4.5 words/s fails PACE; keep lines to 6-9 words.

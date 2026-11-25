@@ -49,7 +49,7 @@ const fig24 = L.figure(THREE, '3x8=24', { height: .72, color: 0xffa23a, radius: 
 const shadows = [...apps.map((m) => W3D.contactShadow(S, m, { w: 2.4, d: .6, strength: .9 })), ...tools.map((m) => W3D.contactShadow(S, m, { w: 1.8, d: .5, strength: .8 })), W3D.contactShadow(S, hub, { w: 3.4, d: 2.2, rest: 0, strength: .7 })];
 
 // ---------- captions from the timeline ----------
-const KEYS = [[3, 3], [8, 9], [8, 8], [8, 8], [4, 6], [5, 6]];
+const KEYS = [[3, 3], [8, 9], [8, 8], [4, 4], [4, 6], [5, 6]];
 const cap = W3D.captions({ y: 190, size: 60, lines: TL.scenes.map((s, i) => ({ t0: i === 0 ? -.2 : s.start, t1: s.end, words: s.words.map((w) => w.w), times: s.words.map((w) => w.t0), keyIdx: KEYS[i] })) });
 const CAPBAND = [60, 150, 1020, 420];
 

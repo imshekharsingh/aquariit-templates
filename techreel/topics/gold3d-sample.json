@@ -34,7 +34,7 @@
    "source": 0
   },
   {
-   "text": "Each app and each tool talks to the hub once.",
+   "text": "Everything talks to the hub once.",
    "beat": "why",
    "source": 0
   },
