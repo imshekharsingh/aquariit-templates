@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>kit3d-phase1-demo (hidden sample, never posted)</title>
+<!-- 3D KIT PHASE 1 DEMO (owner chat, 25 Nov 2026). Hidden sample, never posted, no voice. 7 s built only from techkit/world3d.js:
+     lit floor + haze + blurred background props, contact shadows, a thick glowing cable with a travelling pulse, depth of field that follows the hero,
+     the layout helper (nothing touches the label), word-by-word captions with a blue selection box. window.render(t) is a pure function of t. -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0b0a16}
+.lbl{position:absolute;left:96px;top:1560px;padding:16px 30px;border-radius:40px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.28);color:#e9ecf4;font:600 34px "Inter Display",Inter,system-ui,sans-serif;z-index:4;letter-spacing:.02em}
+</style></head><body>
+<!--THREE-->
+<!--WORLD3D-->
+<script>
+(() => {
+const THREE_ = THREE, { clamp, lerp } = W3D, DUR = 7;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = (u) => (u = clamp(u), u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+const eout = (u) => 1 - Math.pow(1 - clamp(u), 3);
+const S = W3D.stage(THREE, { W: 1080, H: 1920, haze: 0x1c1738 });
+const world = W3D.world(S, { seed: 11, props: 34, radius: [7, 26], palette: [0x6b3cff, 0x00b6a4, 0xff5a7a, 0xffb23d, 0x2f7bff, 0x22c55e], heroZone: 8 });
+
+// ---------- the hero: a purple block with an invented tile, a green chip that drops on it, a plug ----------
+const BLK = { w: 3.2, d: 3.2, h: 1.1 }, CHIP = { w: 1.5, d: 1.5, h: .36 };
+const block = new THREE.Mesh(W3D.roundBox(THREE, BLK.w, BLK.d, BLK.h, .36, .1, 6), W3D.gloss(THREE, 0x3a0fa8, { roughness: .22 })); block.castShadow = block.receiveShadow = true; S.scene.add(block);
+const logoTex = W3D.tex(THREE, 512, 512, (c, w, h) => { const g = c.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#ff5a7a'); g.addColorStop(1, '#ffb23d'); c.fillStyle = g; c.fillRect(0, 0, w, h);
+  c.fillStyle = '#fff6ea'; c.beginPath(); c.moveTo(110, 400); c.lineTo(110, 130); c.lineTo(256, 270); c.lineTo(402, 130); c.lineTo(402, 400); c.lineTo(340, 400); c.lineTo(340, 250); c.lineTo(256, 340); c.lineTo(172, 250); c.lineTo(172, 400); c.closePath(); c.fill(); });
+const logoGeo = new THREE.ShapeGeometry(W3D.roundedShape(THREE, 1.45, 1.45, .3), 12);
+{ const p = logoGeo.attributes.position, uv = new Float32Array(p.count * 2); for (let i = 0; i < p.count; i++) { uv[i * 2] = p.getX(i) / 1.45 + .5; uv[i * 2 + 1] = p.getY(i) / 1.45 + .5; } logoGeo.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); }
+const logo = new THREE.Mesh(logoGeo, W3D.gloss(THREE, 0xffffff, { map: logoTex, roughness: .3 })); logo.rotation.x = -Math.PI / 2; logo.position.set(.55, BLK.h + .004, .55); S.scene.add(logo);
+const chip = new THREE.Mesh(W3D.roundBox(THREE, CHIP.w, CHIP.d, CHIP.h, .16, .05, 5), W3D.gloss(THREE, 0x0aa84f, { roughness: .28 })); chip.castShadow = true; chip.position.set(-.55, BLK.h, -.6); S.scene.add(chip);
+const metal = new THREE.MeshStandardMaterial({ color: 0xd8dde6, roughness: .22, metalness: 1, envMapIntensity: 1.2 });
+for (let i = 0; i < 6; i++) for (const s of [-1, 1]) { const pin = new THREE.Mesh(new THREE.BoxGeometry(.07, .05, .16), metal); pin.position.set(-.55 + i * .22, .13, s * (CHIP.d / 2 + .02)); chip.add(pin); }
+const PORT = new THREE.Vector3(BLK.w / 2 + .15, .55, -.5);
+const port = new THREE.Mesh(W3D.roundBox(THREE, .52, .8, .14, .1, .03, 3), new THREE.MeshStandardMaterial({ color: 0x120a22, roughness: .6, metalness: .4 })); port.rotation.z = -Math.PI / 2; port.position.set(BLK.w / 2 + .02, .55, -.5); S.scene.add(port);
+const plug = new THREE.Mesh(W3D.roundBox(THREE, .6, .6, .5, .12, .04, 3), metal); plug.rotation.z = -Math.PI / 2; plug.position.set(PORT.x + .2, PORT.y, PORT.z); plug.castShadow = true; S.scene.add(plug);
+
+// ---------- supporting objects placed by the layout helper (row of three, from their real sizes) ----------
+const tileMk = (c) => new THREE.Mesh(W3D.roundBox(THREE, 1.5, 1.5, .5, .36, .08, 4), W3D.gloss(THREE, c)); const tiles = [tileMk(0x00b6a4), tileMk(0xff5a7a), tileMk(0x2f7bff)];
+tiles.forEach((m) => { m.castShadow = true; S.scene.add(m); });
+W3D.place(THREE, tiles, { mode: 'row', gap: .5, at: [-1.2, 0, -5.2] });
+
+// ---------- shadows, cable, focus ----------
+const shBlock = W3D.contactShadow(S, block, { w: BLK.w, d: BLK.d }), shChip = W3D.contactShadow(S, chip, { surfaceY: BLK.h, rest: BLK.h, w: CHIP.w, d: CHIP.d, dx: 0, dz: 0 });
+const shTiles = tiles.map((m) => W3D.contactShadow(S, m, { w: 1.5, d: 1.5, strength: .9 }));
+const cab = W3D.cable(S, [[10.5, .2, 8.6], [8.2, .2, 5.4], [6.4, .2, 1.8], [5.0, .24, -.4], [4.2, .4, -.5], [PORT.x + .35, PORT.y, PORT.z]], { color: 0xff7a1a, radius: .13, glow: 3.4, pulse: { speed: .42, width: .06 }, floorGlow: 2.6 });
+S.focus = block;      // depth of field follows the hero; the chip and cable are inside its focus range, the props are not
+
+// ---------- captions ----------
+const cap = W3D.captions({ y: 190, size: 60, lines: [
+  { t0: .35, t1: 3.0, text: 'One cable carries all the power', key: 'power' },
+  { t0: 3.3, t1: 6.6, text: 'and the chip decides how much arrives', key: 'chip' } ] });
+// the label pill is a screen rectangle the 3D objects must not cover
+const lab = document.createElement('div'); lab.className = 'lbl'; lab.textContent = 'USB-C  POWER IN'; document.body.appendChild(lab);
+const LABEL = [96 - 12, 1560 - 12, 96 + 380 + 12, 1560 + 76 + 12], CAPBAND = [60, 150, 1020, 360];
+
+let cur = -1;
+window.render = (t) => {
+  t = clamp(t, 0, DUR);
+  // chip drop: gravity, a tiny squash on landing
+  const u = prog(t, .9, 1.55), y = lerp(BLK.h + 3.2, BLK.h, u * u), landed = t - 1.55, bounce = landed > 0 ? Math.exp(-landed * 7) * Math.sin(landed * 24) * .09 : 0, sq = landed > 0 ? 1 - Math.exp(-landed * 9) * Math.sin(landed * 22) * .09 : 1;
+  chip.position.y = y + Math.max(0, bounce); chip.scale.set(1 + (1 - sq) * .5, sq, 1 + (1 - sq) * .5); chip.rotation.y = lerp(.9, 0, eout(prog(t, .9, 1.7))) * 1.4; chip.visible = t >= .88;
+  // a continuous camera move: a slow orbit that also dollies in and eases down, so the background props slide in parallax
+  const k = ease(t / DUR), a = lerp(-.5, -.12, k), rad = lerp(30, 22, k), hgt = lerp(11, 7, k), tx = lerp(1.2, .8, k);
+  S.cam.position.set(tx + Math.sin(a) * rad * .72, hgt, Math.cos(a) * rad * .78 + 1.4); S.cam.lookAt(lerp(.9,.5,k), lerp(1.0, 1.1, k), -.2); S.cam.updateMatrixWorld();
+  // the pool of light and the stage glow follow the hero; the cable comes alive when the chip lands
+  const on = .72 + .28 * prog(t, 1.5, 2.0); cab.update(t, on);
+  [shBlock, shChip, ...shTiles].forEach((s) => s.update());
+  S.draw(t);
+};
+window.seek = window.render; window.DUR = DUR;
+// layout check for the stills sheet: which 3D objects touch the label or the caption band at the given time (should print an empty list)
+window.__layoutCheck = (t) => { window.render(t); cap(t); return W3D.check(S, [block, chip, ...tiles], [LABEL, CAPBAND], 0).map((o) => o.uuid); };
+const baseRender = window.render; window.render = (t) => { baseRender(t); cap(clamp(t, 0, DUR)); };
+window.__S = S;
+window.render(0);
+})();
+</script></body></html>
