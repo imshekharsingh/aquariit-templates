@@ -3,6 +3,7 @@
 Judge the REAL video (owner chat, 23 Nov 2026): `node scripts/reel-fetch.mjs <reel-name>` downloads the final MP4, cover and json from the app into reel-files/ (git-ignored; never commit or upload them); then `ffmpeg -i reel-files/<name>.mp4 -vf "fps=4,scale=390:-2" reel-files/f-%04d.png` gives frames at phone size every 0.25 s (look closely around every cut), and listen to the audio (`ffmpeg -i reel-files/<name>.mp4 -af ebur128 -f null -` for levels, then the words against the voice script). If reel-fetch says "read key not set up yet", fall back to the scene stills and say so in the review.
 
 Answer each with the frame times you looked at. First of all, question 43: the side-by-side sheet against the gold reel (design/gold.md). Any "no" = not ready. Add a question here the same day the critic or the owner finds a new kind of miss.
+**NOT READY is never a skip (owner, 25 Nov 2026: no skip days).** After a NOT READY the critic writes "EXACT FIX:" in the review file (the numbered changes, the frames or lines they touch). The builder applies it and the reel posts the same day; render 3 needs the owner's yes via the owner chat, with a cost estimate.
 
 ## Every channel
 0. Does the reel pass every line of design/safety.md (plagiarism, controversy, disrespect, sentiment, licences, Instagram rules, maps, brands)?
