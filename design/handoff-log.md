@@ -789,3 +789,8 @@ Format (at most 6 lines):
 - Done: render v2 (21 s) passed every Output QA check except PACE (one line at 4.63 words/s, limit 4.5); the line is now "Everything talks to the hub once." (6 words, key word "hub").
 - Left: render 3 (preview v3), Output QA, the independent critic (opus, tag critic), the app list entry for the final video.
 - For the other account: a 10-word line over 4.5 words/s fails PACE; keep lines to 6-9 words.
+
+## 2026-11-26 · claude/critic-gold3d-sample · Independent critic of the 3D kit sample render v3
+- Done: review/tech/showreel-tech-gold3d-sample.md, verdict NOT READY on the real MP4 (contact sheet + side-by-side with the tech gold). Strong colour, materials, cable maths and captions; weak hook at frame 0, one tower framing for 9.8-18.4 s, no payoff or loop at the end, unreadable code card over the tool column, hub cables over the tool names, apps and tools share names. Seven-step EXACT FIX in the file. PREMIUM 5.5 / 6.5 / 7.
+- Left: the owner chat decides on a 4th render of this sample (owner's yes and cost estimate); it is not the gold for the 3D look until a critic writes READY.
+- For the other account: nothing new.
