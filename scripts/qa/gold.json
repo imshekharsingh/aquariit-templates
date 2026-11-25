@@ -38,5 +38,19 @@
    "accent_share": 0.0973
   },
   "starter": "node scripts/starter.mjs c3 <slug>"
+ },
+ "tech3d": {
+  "name": "showreel-tech-gold3d-sample",
+  "look": {
+   "bright": 0.19,
+   "bg": 0.124,
+   "dark": 0.428,
+   "grey": 0.019,
+   "contrast": 0.225,
+   "accent": 45,
+   "accent_share": 0.058
+  },
+  "starter": "node scripts/starter.mjs tech3d <slug>",
+  "_note": "candidate (26 Nov 2026): measured on the 13.8 s sample render v1 of the 3D colour-world kit; replace when a critic-READY reel in this look beats it"
  }
 }

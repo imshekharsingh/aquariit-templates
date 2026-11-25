@@ -774,3 +774,8 @@ Format (at most 6 lines):
 - Left: render the sample on GitHub (Tech reel, preview), measure its LOOK numbers into gold.json "tech3d", critic session for READY.
 - For the other account: nothing new.
 - Update (same session): the owner chat's review of the first stills is folded in (fuller opening, tall tool wall with labels inside the tiles, hub raised, nothing cut at the edges, crisper numbers); kit-phase2.jpg replaced.
+
+## 2026-11-26 · claude/tech-3d-kit-phase2-result · 3D kit sample rendered, LOOK gold measured, app entry (same side job)
+- Done: sample render v1 passed Output QA (13.8 s; runner time about 12 min wall); gold.json "tech3d" LOOK numbers measured from that MP4; previews.json entry "3D kit sample reel" (Studio log, Watch); gold.md note.
+- Left: the owner chat decides on a longer 20 s version (two more voice lines) and whether the critic session runs on it; HERO has no subject box (kit scenes report one with __subject; the 3D scene does not yet).
+- For the other account: nothing new.
