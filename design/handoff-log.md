@@ -697,4 +697,4 @@ Format (at most 6 lines):
 - Done: finished label now keeps the honey line and 500 g in a quiet size, a bigger spaced name, a green frame and rule; the BEFORE flashback is smaller and sits under the "Same product" chip (the stray line was the rule copied into the BEFORE picture). captions.json: postOn 25 Nov, postAt 19:45, aiLabel false, hidden until READY.
 - Left: render 3 on GitHub, Output QA, then the independent critic (started by the owner chat).
 - For the other account: elements added inside the board are copied into the BEFORE picture; hide them (display none) at the first seek.
-
+- Gate: render 3 stopped at the review gate (items 14-17 need their FLOW lines once postOn is set); lines pasted, no frames were rendered, so the render count is unchanged.
