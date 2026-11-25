@@ -18,10 +18,11 @@ Facts: Apple Support "iPhone battery and performance" (https://support.apple.com
 13. After the render: PENDING
 14. Cuts: PASS: FLOW: cuts 0 undeclared (11 declared transitions: six camera cuts push, rack, wipe, whip, rack, push, and five jolts)
 15. Dead runs: PASS: FLOW: dead runs none; window.HOLDS: the last 1.2 s (the loop frame)
-16. Continuity: PASS: FLOW: continuity 88% (median step 1.5)
+16. Continuity: PASS: FLOW: continuity 83% (median step 1.4)
 17. Strobes: PASS: FLOW: strobes 0
 
 PREMIUM: PENDING (the critic writes the line)
 References used (design/references.md): none (gold look from showreel-tech-ai-memory)
 
-Stills sheet: review/tech/showreel-tech-battery-cycles.stills.jpg (17 stills, 0.05-33 s). Local look on 12 stills: median brightness .227 (gold .154, limit .244), background .078 (gold .076), dark share .51 (gold .51), grey .12 (gold .109).
+Stills sheet 2 (after the stills-check fixes of 25 Nov): review/tech/showreel-tech-battery-cycles.stills2.jpg (18 stills, 0.05-33 s). Fixes: health card moved above the caption band; shot F is a receding row of four worn cells with a second, closer view from 27 s, kept inside the frame; C has its own lit room (cyan edge-lit cells and light shafts, amber glow) and E an amber target space, with a warm kicker light and fine electrode lines in the glass; frame 0 starts with three rows of marks and sparks; clear gaps under TARGET and 1000; the side-by-side pair scaled down for margins. Older sheet: Local look on 12 stills: median brightness .227 (gold .154, limit .244), background .078 (gold .076), dark share .51 (gold .51), grey .12 (gold .109).
+Median brightness after the fixes: about .23 on the local stills (gold .154, limit .244); the kicker and fill were toned down to keep it under.

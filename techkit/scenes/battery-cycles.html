@@ -90,7 +90,9 @@ function tallySet(tex, r1, r2, one) { const key = Math.round(r1 * 100) + '/' + M
 const M_COPPER = new THREE.MeshStandardMaterial({ color: 0xb87333, metalness: 1, roughness: .35, envMapIntensity: .9 });
 const foil = new THREE.MeshPhysicalMaterial({ color: 0x6c7b8e, metalness: .92, roughness: .34, clearcoat: .4, clearcoatRoughness: .3, envMapIntensity: .85 });
 const backPlate = new THREE.MeshStandardMaterial({ color: 0x070a0f, metalness: .2, roughness: .8, envMapIntensity: .05 });
-const fillTex = ctex(8, 256, (c, w, h) => { const g = c.createLinearGradient(0, h, 0, 0); g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(1, 'rgba(255,255,255,.3)'); c.fillStyle = g; c.fillRect(0, 0, w, h); });
+const fillTex = ctex(16, 512, (c, w, h) => { const g = c.createLinearGradient(0, h, 0, 0); g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(1, 'rgba(255,255,255,.28)'); c.fillStyle = g; c.fillRect(0, 0, w, h);
+  c.fillStyle = 'rgba(0,0,0,.45)'; for (let y = 6; y < h; y += 14) c.fillRect(0, y, w, 3);   // the stacked electrode layers as fine lines
+  const d = c.createLinearGradient(0, 0, w, h); d.addColorStop(.3, 'rgba(0,0,0,0)'); d.addColorStop(.5, 'rgba(255,255,255,.12)'); d.addColorStop(.7, 'rgba(0,0,0,0)'); c.fillStyle = d; c.fillRect(0, 0, w, h); });
 fillTex.encoding = THREE.LinearEncoding;
 const IW = FW - .3, IH = FH - .5;   // the inner stack (what the charge fills)
 const edgesGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(CW, CH, CD));
@@ -103,7 +105,7 @@ function makeCell(tex) {
   G.add(new THREE.Mesh(frameGeo, foil));
   const bk = new THREE.Mesh(new THREE.PlaneGeometry(FW, FH), backPlate); bk.position.z = -CD / 2 + .012; bk.rotation.y = Math.PI; G.add(bk);
   for (let i = 0; i < 9; i++) { const p = new THREE.Mesh(plateGeo, new THREE.MeshStandardMaterial({ color: i % 2 ? 0x0b141c : 0x16100c, metalness: .2, roughness: .8, envMapIntensity: .02, transparent: true, opacity: .45, side: THREE.DoubleSide, depthWrite: false })); p.position.z = -CD / 2 + .06 + i * .027; G.add(p); }
-  const fill = new THREE.Mesh(plateGeo, new THREE.MeshBasicMaterial({ map: fillTex, color: 0x0b9bbd, transparent: true, opacity: .62, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); fill.position.z = CD / 2 - .05; fill.renderOrder = 2; G.add(fill);
+  const fill = new THREE.Mesh(plateGeo, new THREE.MeshBasicMaterial({ map: fillTex, color: 0x0b9bbd, transparent: true, opacity: .42, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); fill.position.z = CD / 2 - .05; fill.renderOrder = 2; G.add(fill);
   const surf = new THREE.Mesh(new THREE.PlaneGeometry(IW, .05), new THREE.MeshBasicMaterial({ color: 0x7fe9ff, transparent: true, opacity: .9, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); surf.position.z = CD / 2 - .04; surf.renderOrder = 3; G.add(surf);
   const mk = new THREE.Mesh(new THREE.PlaneGeometry(FW + .25, .03), new THREE.MeshBasicMaterial({ color: 0xff7a00, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); mk.position.z = CD / 2 + .045; mk.renderOrder = 6; G.add(mk);
   const mkg = new THREE.Mesh(new THREE.PlaneGeometry(FW + .5, .3), new THREE.MeshBasicMaterial({ map: glowTex, color: HEAT, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); mkg.position.z = CD / 2 + .05; mkg.renderOrder = 6; G.add(mkg);
@@ -147,6 +149,9 @@ const sprite = (color, op, sx, sy) => { const s = new THREE.Sprite(new THREE.Spr
 // A, C, E, G: the hero cell (its tally is redrawn live)
 const heroTex = tallyTex(0, 0), hero = makeCell(heroTex); scene.add(hero);
 const heroGlow = sprite(0x6aa8d8, .2, 14, 20); scene.add(heroGlow);
+const kick = new THREE.PointLight(0xff9a40, 0, 22, 1.5); scene.add(kick);   // a warm kicker from the front right, so the glass face is not one cool slab
+const bgEdges = new THREE.Group(); bgEdges.position.copy(WORLD[2]); scene.add(bgEdges);
+const shaftsC = []; for (let i = 0; i < 6; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 18), new THREE.MeshBasicMaterial({ map: glowTex, color: 0x0b9bbd, transparent: true, opacity: .16, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, toneMapped: false })); m.position.set(WORLD[2].x + (i - 2.5) * 2.6, 3, WORLD[2].z - 8); m.rotation.z = (i - 2.5) * .07; scene.add(m); shaftsC.push(m); }
 // the gauge beside the hero in C: ticks every 10%, the 80% one in amber
 const gauge = new THREE.Group(); hero.add(gauge);
 { const tm = new THREE.MeshBasicMaterial({ color: 0x9fb4c8, transparent: true, opacity: .7 }), am = new THREE.MeshBasicMaterial({ color: HEAT });
@@ -154,7 +159,8 @@ const gauge = new THREE.Group(); hero.add(gauge);
   const sp = new THREE.Mesh(new THREE.BoxGeometry(.03, IH, .03), tm); sp.position.set(CW / 2 + .33, 0, 0); gauge.add(sp); }
 // C's backdrop: rows of dark cells far behind, out of focus, lit by the rim
 const bgC = new THREE.InstancedMesh(new THREE.BoxGeometry(CW * .7, CH * .7, CD * .7), new THREE.MeshBasicMaterial({ color: 0x010203 }), 21); bgC.position.copy(WORLD[2]); scene.add(bgC);
-{ const d = new THREE.Object3D(); for (let j = 0; j < 3; j++) for (let i = 0; i < 7; i++) { d.position.set((i - 3) * 2.3, (j - 1) * 3.9 + 1, -15 - (j % 2) * 1.6); d.rotation.y = (i - 3) * .05; d.updateMatrix(); bgC.setMatrixAt(j * 7 + i, d.matrix); } }
+{ const d = new THREE.Object3D(), eg = new THREE.EdgesGeometry(new THREE.BoxGeometry(CW * .7, CH * .7, CD * .7)); for (let j = 0; j < 3; j++) for (let i = 0; i < 7; i++) { d.position.set((i - 3) * 2.3, (j - 1) * 3.9 + 1, -15 - (j % 2) * 1.6); d.rotation.y = (i - 3) * .05; d.updateMatrix(); bgC.setMatrixAt(j * 7 + i, d.matrix);
+    const le = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x0b9bbd, transparent: true, opacity: .55 })); le.position.copy(d.position); le.rotation.copy(d.rotation); bgEdges.add(le); } }
 // B: one cycle is a ring of four quarters that closes around a small cell
 const RR = 1.4, ringG = new THREE.Group(); ringG.position.copy(WORLD[1]); scene.add(ringG);
 const bTex = tallyTex(0, 0, 0), cellB = makeCell(bTex); cellB.scale.setScalar(.42); ringG.add(cellB);
@@ -170,10 +176,10 @@ const cellL = makeCell(tallyTex(1, 0)), cellR = makeCell(tallyTex(1, 1)); cellL.
 // E: the target rings behind the hero
 const tgtE = new THREE.Group(); tgtE.position.set(WORLD[4].x, .5, WORLD[4].z - 6); scene.add(tgtE);
 const TG_R = [1.6, 2.3, 3.0].map((r, i) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, .035 + i * .004, 8, 90), new THREE.MeshBasicMaterial({ color: HEAT, transparent: true, opacity: .55 - i * .12, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); tgtE.add(m); return m; });
-const tgtGlow = sprite(HEAT, .22, 12, 12); tgtE.add(tgtGlow);
+const tgtGlow = sprite(HEAT, .4, 14, 14); tgtE.add(tgtGlow);
 // F: three worn cells in a row, going back
 const rowF = new THREE.Group(); rowF.position.copy(WORLD[5]); scene.add(rowF);
-const ROW = [[-.9, 0, .3, .78, .9], [1.1, -6.5, -.3, .6, .55], [-.6, -13, .3, .45, .25]].map(([x, z, ry, lv, r]) => { const c = makeCell(tallyTex(r, 0)); c.position.set(x, 0, z); c.rotation.y = ry; c.userData.setLevel(lv); rowF.add(c); return c; });
+const ROW = [[-.7, 0, .3, .8, .9], [.8, -6.2, -.3, .62, .6], [-.5, -12.4, .3, .5, .35], [.7, -18.6, -.3, .38, .15]].map(([x, z, ry, lv, r]) => { const c = makeCell(tallyTex(r, 0)); c.position.set(x, 0, z); c.rotation.y = ry; c.userData.setLevel(lv); rowF.add(c); return c; });
 ROW[0].userData.tint(HEAT); const rowGlow = sprite(HEAT, .12, 14, 16); rowGlow.position.set(0, .5, -2); rowF.add(rowGlow);
 const FOGF = new THREE.FogExp2(0x090b10, .02);
 // G: the health card in front of the hero (code-drawn, no brand)
@@ -185,13 +191,14 @@ const cardTex = ctex(640, 480, (c, w, h) => {
   c.fillStyle = 'rgba(244,246,248,.14)'; c.fillRect(52, 262, w - 104, 34); c.fillStyle = '#38e1ff'; c.fillRect(52, 262, (w - 104) * .84, 34);
   c.fillStyle = 'rgba(244,246,248,.18)'; c.fillRect(52, 346, 300, 18); c.fillRect(52, 386, 210, 18); });
 cardTex.encoding = THREE.sRGBEncoding;
-const card = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 2.18), new THREE.MeshBasicMaterial({ map: cardTex, transparent: true, depthWrite: false })); card.position.set(0, -.2, CD / 2 + 1.2); card.renderOrder = 9; hero.add(card);
+const card = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 2.18), new THREE.MeshBasicMaterial({ map: cardTex, transparent: true, depthWrite: false })); card.position.set(0, 1.45, CD / 2 + 1.2); card.renderOrder = 9; hero.add(card);
 
 // sparks (the scratch on the face, the single tally on B)
 let CUR = 0;
-const T1 = () => C.n500 + .1, r1A = (t) => lerp(.1, 1, prog(t, 0, T1())), r2A = (t) => prog(t, C.double - .15, C.double + .7);
+const T1 = () => C.n500 + .1, r1A = (t) => lerp(.3, 1, prog(t, 0, T1())), r2A = (t) => prog(t, C.double - .15, C.double + .7);
 const tallyPt = (b, row, f) => V(-FW / 2 + (FW - BLK) / 2 + f * BLK, FH / 2 - (TOP0 + b * (BLK + GAP) + (row + .5) * TG), CD / 2 + .08);
-for (let i = 1; i < 10; i++) BURSTS.push({ t0: T1() * ((i + 1) / 10 - .1) / .9 - .12, at: () => hero.localToWorld(tallyPt(0, i, .5 + .3 * Math.sin(i))), n: 22, seed: 600 + i, sp: 2.4, life: .5, up: .2, g: .8, on: () => CUR === 0 });
+for (let i = 1; i < 10; i++) BURSTS.push({ t0: T1() * ((i + 1) / 10 - .3) / .7 - .12, at: () => hero.localToWorld(tallyPt(0, i, .5 + .3 * Math.sin(i))), n: 22, seed: 600 + i, sp: 2.4, life: .5, up: .2, g: .8, on: () => CUR === 0 });
+[-.15, -.02].forEach((t0, j) => BURSTS.push({ t0, at: () => hero.localToWorld(tallyPt(0, 3, .35 + .3 * j)), n: 34, seed: 650 + j, sp: 2.8, life: .6, up: .25, g: .8, on: () => CUR === 0 }));
 for (let i = 0; i < 10; i++) BURSTS.push({ t0: C.double - .15 + .85 * (i + .5) / 10 - .06, at: () => hero.localToWorld(tallyPt(1, i, .5 + .3 * Math.cos(i))), n: 22, seed: 700 + i, sp: 2.6, life: .5, up: .2, g: .8, on: () => CUR === 0 });
 BURSTS.push({ t0: C.total + .05, at: () => cellB.localToWorld(V(0, .4, CD / 2 + .1)), n: 60, seed: 801, sp: 2.2, life: .7, up: .4, g: .8, on: () => CUR === 1 });
 
@@ -210,21 +217,22 @@ const G = KIT.glide;
 const orb = (w, d, az, el, ly, fov = 31, ox = 0) => ({ pos: V(w.x + ox + Math.sin(az) * Math.cos(el) * d, w.y + ly * .5 + Math.sin(el) * d, w.z + Math.cos(az) * Math.cos(el) * d), look: V(w.x + ox, w.y + ly, w.z), fov });
 function shotCam(t, sh) {
   const u = prog(t, B[sh], B[sh + 1]), g = G(u), w = WORLD[sh];
-  if (sh === 0) { const F0 = orb(w, lerp(15.6, 12.8, g), lerp(-.28, .16, g), .03, 1.55), F1 = { pos: V(1.9, -.7, 10.8), look: V(0, 1.2, 0), fov: 38 };   // the front view, then a low macro looking up at the second block of marks
+  if (sh === 0) { const F0 = orb(w, lerp(15.6, 12.8, g), lerp(-.28, .16, g), .03, 1.85), F1 = { pos: V(1.9, -.6, 10.8), look: V(0, 1.7, 0), fov: 38 };   // the front view, then a low macro looking up at the second block of marks
     return KIT.reframe(F0, F1, ease(prog(t, C.double - .3, C.double + .55))); }
   if (sh === 1) { const hold = KIT.push(Math.max(0, t - B[1]), .012);   // a wide look at the ring, an orbit as it fills, then a push to the cell for the single mark
     const F0 = orb(w, 12.4 * (1 - hold), lerp(-.5, .4, g), .03, 1.0, 32), F1 = { pos: V(w.x + .5, w.y - .1, w.z + 5.6), look: V(w.x, w.y + .15, w.z), fov: 30 };
     return KIT.reframe(F0, F1, ease(prog(t, C.total - .4, C.total + .2))); }
-  if (sh === 2) { const F0 = { pos: V(w.x + lerp(-4.6, -2.6, g), -.7, w.z + 13.4), look: V(w.x + .1, 1.35, w.z), fov: 33 }, F1 = orb(w, 13.4, .12, .02, 1.6, 31, .55), F2 = { pos: V(w.x + 3.2, 1.9, w.z + 6.4), look: V(w.x, .9, w.z), fov: 36 };   // a low three-quarter, the front with the gauge, a slide across the marks
+  if (sh === 2) { const F0 = { pos: V(w.x + lerp(-4.6, -2.6, g), -.7, w.z + 13.4), look: V(w.x + .1, 1.35, w.z), fov: 33 }, F1 = orb(w, 13.4, .12, .02, 2.0, 31, .55), F2 = { pos: V(w.x + 3.2, 1.9, w.z + 6.4), look: V(w.x, .9, w.z), fov: 36 };   // a low three-quarter, the front with the gauge, a slide across the marks
     const a = KIT.reframe(F0, F1, ease(prog(t, C.p80 - .5, C.p80 + .35))); return KIT.reframe(a, F2, ease(prog(t, C.c500 - .4, C.c500 + .45))); }
   if (sh === 3) { const hold = KIT.push(Math.max(0, t - B[3]), .012), F0 = { pos: V(w.x - 1.0, .9, w.z + 11.5 * (1 - hold)), look: V(w.x - 1.3, 1.2, w.z), fov: 31 },
-      F1 = { pos: V(w.x, 1.0, w.z + 17.8 * (1 - KIT.push(Math.max(0, t - C.i15 - .6), .02))), look: V(w.x, 1.1, w.z), fov: 31 };   // the 500 cell whole, a pull back as the 1000 cell arrives, both side by side (a saveable frame) held
+      F1 = { pos: V(w.x, 1.0, w.z + 19.8 * (1 - KIT.push(Math.max(0, t - C.i15 - .6), .02))), look: V(w.x, 1.1, w.z), fov: 31 };   // the 500 cell whole, a pull back as the 1000 cell arrives, both side by side (a saveable frame) held
     const F2 = { pos: V(w.x + 2.3, .7, w.z + 13.8), look: V(w.x + 1.3, 1.3, w.z - .3), fov: 31 };   // then a push on the 1000 cell's marks, and back out to both
     const x = KIT.reframe(F0, F1, ease(prog(t, C.i15 - .15, C.i15 + .7))), y = KIT.reframe(x, F2, ease(prog(t, C.c1000 - 1.7, C.c1000 - .7)));
     return KIT.reframe(y, F1, ease(prog(t, C.c1000 + .75, C.c1000 + 1.5))); }
-  if (sh === 4) return orb(w, lerp(13.8, 12.2, g), lerp(-.5, .45, g), .03, 1.3);   // an orbit round the cell in front of the target rings
-  if (sh === 5) return { pos: V(w.x + .5, .4, w.z + lerp(15.5, 12.5, g)), look: V(w.x + .1, 1.5, w.z - 8), fov: 36 };   // a dolly down the row of worn cells
-  const k = G(prog(t, B[6], TOTAL - .05), .45), A0 = shotCam(0, 0), F = orb(WORLD[0], 13.6, .05, .03, 1.6);   // G settles on A's framing (the loop)
+  if (sh === 4) return orb(w, lerp(14.4, 12.8, g), lerp(-.5, .45, g), .03, 1.8);   // an orbit round the cell in front of the target rings
+  if (sh === 5) { const F0 = { pos: V(w.x + .2, .4, w.z + lerp(17.2, 15.6, g)), look: V(w.x, 1.5, w.z - 9), fov: 36 }, F1 = { pos: V(w.x - .4, .5, w.z + 12.8), look: V(w.x + .1, 1.9, w.z - 13), fov: 36 };   // a row of four worn cells going back, then a closer look down the row
+    return KIT.reframe(F0, F1, ease(prog(t, C.use - .3, C.use + .6))); }
+  const k = G(prog(t, B[6], TOTAL - .05), .45), A0 = shotCam(0, 0), F = orb(WORLD[0], 13.6, .05, .03, 1.85);   // G settles on A's framing (the loop)
   return { pos: F.pos.clone().lerp(A0.pos, k), look: F.look.clone().lerp(A0.look, k), fov: 31 };
 }
 const SHAKES = () => [[C.n500, .16], [C.double, .13], [C.c500, .07], [C.c1000, .13], [C.deadline, .07]];
@@ -247,9 +255,10 @@ function pose(cm, c) { cm.fov = c.fov; cm.updateProjectionMatrix(); cm.position.
 const FLOORS = [FLOOR_Y, -1.62, FLOOR_Y, FLOOR_Y, FLOOR_Y, FLOOR_Y, FLOOR_Y];
 function apply(t, sh = shotAt(t), mod = null) {
   CUR = sh; const c = camAt(t, sh, mod), w = WORLD[sh], hv = sh === 0 || sh === 2 || sh === 4 || sh === 6;
-  hero.visible = hv; heroGlow.visible = hv; ringG.visible = sh === 1; cellsD.visible = sh === 3; rowF.visible = sh === 5; bgC.visible = sh === 2; tgtE.visible = sh === 4; gauge.visible = sh === 2; card.visible = sh === 6;
+  hero.visible = hv; heroGlow.visible = hv; bgEdges.visible = sh === 2; shaftsC.forEach((m, i) => { m.visible = sh === 2; m.material.opacity = .13 + .05 * Math.sin(t * 1.4 + i); });
+  kick.intensity = hv || sh === 3 ? 3.5 : 0; kick.position.set(w.x + 3.4, w.y + .6, w.z + 4.5); heroGlow.material.color.setHex(sh === 2 ? 0xd9822b : sh === 4 ? 0xff9a40 : 0x6aa8d8); heroGlow.material.opacity = sh === 2 ? .16 : sh === 4 ? .2 : .2; ringG.visible = sh === 1; cellsD.visible = sh === 3; rowF.visible = sh === 5; bgC.visible = sh === 2; tgtE.visible = sh === 4; gauge.visible = sh === 2; card.visible = sh === 6;
   scene.fog = sh === 5 ? FOGF : null;
-  keyL.intensity = sh === 5 ? 1.6 : sh === 1 ? 2.1 : 2.5; rimL.intensity = sh === 5 ? 2.2 : 2.9; rim2L.intensity = sh === 5 ? .8 : 1.5;
+  keyL.intensity = sh === 5 ? 1.5 : sh === 1 ? 1.9 : 2.2; rimL.intensity = sh === 5 ? 2.2 : 2.9; rim2L.intensity = sh === 5 ? .8 : 1.5;
   const U = hero.userData;
   if (hv) { hero.position.copy(w); heroGlow.position.set(w.x, w.y + .6, w.z - 3.2); U.tint(SIG); U.mark(.8, 0); hero.rotation.set(0, 0, 0);
     if (sh === 0) { tallySet(heroTex, r1A(t), r2A(t)); U.setLevel(1); hero.rotation.set(.05, lerp(-.3, -.2, prog(t, 0, B[1])) + .07 * Math.sin(t * 1.9), .015); }
@@ -257,7 +266,7 @@ function apply(t, sh = shotAt(t), mod = null) {
     if (sh === 4) { tallySet(heroTex, 1, 1); const d = ease(prog(t, C.deadline - .05, C.deadline + .9)); U.setLevel(lerp(.8, .7, d)); U.mark(.8, 1); hero.rotation.set(0, 0, 0);
       TG_R.forEach((r, i) => { r.material.opacity = (.55 - i * .12) * (.7 + .3 * Math.sin(t * 2.2 + i)) * (1 - .35 * d); r.scale.setScalar(1 + .015 * Math.sin(t * 1.6 + i)); }); }
     if (sh === 6) { const wipe = ease(prog(t, C.final + .3, TOTAL - .15)); tallySet(heroTex, 1 - wipe, 1 - wipe); U.setLevel(lerp(.8, .86, prog(t, B[6], C.health))); hero.rotation.set(lerp(.05, .05, 1), lerp(.55, -.3, ease(prog(t, B[6], TOTAL - .1))), .015);
-      const a = prog(t, C.health - .1, C.health + .3) * (1 - prog(t, C.final + .1, C.final + .6)); card.material.opacity = a; card.position.y = -.2 + .25 * (1 - eout(prog(t, C.health - .1, C.health + .5))); } }
+      const a = prog(t, C.health - .1, C.health + .3) * (1 - prog(t, C.final + .1, C.final + .6)); card.material.opacity = a; card.position.y = 1.45 + .25 * (1 - eout(prog(t, C.health - .1, C.health + .5))); } }
   if (sh === 1) {   // the ring: four quarters light as the charge drains; at "total" it closes, the cell refills and one mark is scratched in
     const tk = [C.using, C.full, C.bat, C.worth]; let used = 0;
     ARC.forEach(({ a, h }, k) => { const p = ease(prog(t, tk[k], tk[k] + .5)); used += p / 4; a.material.opacity = p; h.material.opacity = .22 * p * (1 - .6 * prog(t, C.total, C.total + .8)); });
