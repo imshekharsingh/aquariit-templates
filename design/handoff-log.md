@@ -654,3 +654,8 @@ Format (at most 6 lines):
 - Done: render 2 (run 45538594185) succeeded, so Output QA passed; the MP4 is fetched, the style record measured (15 s, 2.27 words/s, 0 shot changes), review item 13 written. Two renders used.
 - Left: the critic (a different session), then post at 19:00 IST. Listen to the hook word: the voice check heard "red" as "read".
 - For the other account: style-measure.mjs needs --from and --to for today's date, and it nulls hero and firstSecondTension; put them back.
+
+## 2026-11-25 · claude/critic-user-invalid · Web reel 47 critic: READY (critic session)
+- Done: the final render judged on its real frames (every 0.25 s at phone size), its sound levels and the sheet against the gold reel; CRITIC: READY, PREMIUM 7.5 / 7.5 / 7.5, GOLD matches, STOP 7.5, REWATCH 7 written in the review file.
+- Left: post at 19:00 IST. Optional, no render: a cover at 0.75 s (the 1.39 s one has the touch dot on the name), form-specific hashtags.
+- For the next web reel: ENHANCE line (dimmer placeholders, the first tap on empty space).
