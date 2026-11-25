@@ -19,7 +19,11 @@ What is still missing against the reference: a thicker visible glow bloom on the
 rim light and floor reflection, visible depth of field (needs a closer, lower camera), and finer detail on the objects.
 
 ## Time for a 30 s reel
-Frames: 30 s x 60 fps = 1800 (the kit blurs 60 to 30 fps). Local figures; the GitHub runner result for the test is added below.
+Frames: 30 s x 60 fps = 1800 (the kit blurs 60 to 30 fps).
+**GitHub runner, all effects on (measured 25 Nov):** 6 parts of 40 frames each took 93 to 141 s per part (browser start and shader compile included),
+so about 2.3 to 3.5 s a frame, median ~2.5 s; the whole 4 s (240 frames) frame stage took 2.5 min wall. That is about 1.25x the local figure.
+A 30 s reel at that cost: 1800 x ~2.5 s = ~75 min of frames, ~13 min wall over 6 parts (+ ~2 min join), ~80 runner-minutes. Over 8 parts: ~10 min wall.
+(The first join step failed only because ffmpeg was not installed on that runner; fixed in test-3d.yml.) The local figures below are the estimate by step:
 - Steps 0-3 (gloss + shadow, no post): ~0.55 s x 1800 = 16.5 min of frames; over 6 parts ~3 min plus start-up.
 - All on (bloom + DOF + ACES): ~2.0 s x 1800 = 60 min of frames; over 6 parts ~10 min per part plus start-up (about 15 min wall), but 6 runner-jobs of 10 min each.
 - Cheapest good look: steps 0-4 (no DOF) ~1.0 s x 1800 = 30 min, 5 min per part over 6 parts. Suggest this; add DOF only on hero shots (render those frames with it).
