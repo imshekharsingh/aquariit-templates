@@ -763,3 +763,8 @@ Format (at most 6 lines):
 - Done: the first preview run failed at the join (no ffmpeg on the runner; the frames were fine); the join now installs ffmpeg and a new store job puts the MP4 and stills in R2 under study/showreel-pv-tech-kit3d-phase1-preview*; previews.json entry (needsOwner false, Studio log "Watch"). An earlier push of this conflicted after the squash merge, so it was redone from main.
 - Left: run the workflow once on main for the new look; the owner chat gets the stills path and how to open the video.
 - For the other account: nothing new.
+
+## 2026-11-25 · claude/tech-colour-world-grid · Colour world preview render and 2x4 grid (builder session)
+- Done: the one preview render of the sample (11.5 s) finished; Output QA FAILs only COLOUR and LOOK-vs-gold, which measure the old grey look. grid.png (8 frames) and notes in review/tech/study-25nov/.
+- Left: owner chat decides whether to adopt the colour look; if yes, re-baseline COLOUR and LOOK in scripts/qa (gold.json) before any daily tech reel is built on it.
+- For the other account: a preview run that fails Output QA still keeps its MP4 in R2 study/ (readable with the session's key at /reels/study/).
