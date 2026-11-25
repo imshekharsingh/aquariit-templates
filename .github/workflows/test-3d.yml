@@ -54,6 +54,7 @@ jobs:
           path: frames
       - name: Join
         run: |
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg >/dev/null
           ls frames | wc -l
           ffmpeg -hide_banner -loglevel error -framerate 60 -i frames/f%05d.jpg -vf "tmix=frames=2:weights='1 1',fps=30" -c:v libx264 -crf 17 -pix_fmt yuv420p -movflags +faststart test-3d-quality.mp4
           ls -l test-3d-quality.mp4 | tee -a "$GITHUB_STEP_SUMMARY"

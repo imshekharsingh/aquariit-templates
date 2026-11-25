@@ -748,3 +748,8 @@ Format (at most 6 lines):
 - Done: the first preview run stopped in the voice job (sound.py needs a "final" cue; no frames were rendered, so no render was used). Added the cue to techreel/topics/colour-world-sample.json.
 - Left: dispatch the one preview render after this merges, then the 2x4 grid in review/tech/study-25nov/.
 - For the other account: every kit topic needs a "final" cue (sound.py reads it); copy it from the starter.
+
+## 2026-11-25 · claude/3d-kit-test-result · 3D kit test: runner timings and join fix
+- Done: first Test 3D quality run rendered all 240 frames on GitHub (93-141 s per 40-frame part); the join step failed only for a missing ffmpeg; added the install and filled the runner numbers into design/3d-kit-test.md. Re-dispatching once for the MP4.
+- Left: the MP4 artifact (7 days) and the owner chat verdict.
+- For the other account: a workflow dispatched by name must be on main first; the branch pipeline merges it. The frames step is the only costly part.
