@@ -187,3 +187,10 @@ word-by-word captions with the colour word in its colour; three brands in 13 s; 
 - [ ] Realistic photo-grade product imagery: the reference uses AI-generated images; our rule is code-drawn only. Owner decision.
 Fits: Turns Out design series (design fixes) and web first; tech can borrow split screen + live transformation (spec card on top, the
 gadget changing below).
+
+
+## R-ref 25 Nov 2026 · owner reference: explainer "Why do we need MCP if we already have APIs" (5 clips, app References ids 4-8; studied by the owner chat)
+Showed: one continuous 3D world (glossy product block, chips, server racks, glowing cables with real materials, soft depth of field, rim light) the camera travels through; dark ground with colourful objects (purple, warm amber cables, neon green, app tiles); real artifacts (readable code cards, JSON request / response, a login dialog, a dated announcement page, real app logos); "3 x 8 = 24 integrations" as a cable tangle between 3 clients and 8 tiles; an API as layers on a block; the spoken line shown word by word near the top at about 54-64 px, grey spoken words, white current word, key word in a thin blue selection box with square handles. Narrated by an avatar presenter.
+- WE TAKE (patterns): one world with recurring objects; colour on the objects against a dark ground; glowing cables as the story carrier; real artifact cards; ideas as pictures; word-by-word captions near the top with a selection-box key word; roughly one new state a second.
+- WE DO NOT TAKE: their avatar or any presenter (owner: no mascot), their footage, their exact look, layout or object arrangement, their script or words, their music. A stranger must not take our frame for theirs (safety.md item 1 check).
+- Used: rules-tech.md section L; test scene techkit/scenes/sample-colour-world.html and review/tech/study-25nov/ (side-by-side of our frames).
