@@ -729,3 +729,8 @@ Format (at most 6 lines):
 - Done: judged render 4 on the real MP4 (one contact sheet, frame 0 at phone size, a 0.125 s strip of the DEADLINE strike); verdict READY with PREMIUM 7.5 / 7.5 / 7.5 in review/tech/showreel-tech-battery-cycles.md. Seven different pictures, a big "500" at frame 0, the strike crosses the whole word, nothing touches the edges. captions.json: "hidden" removed, posts 25 Nov 20:45.
 - Left: 14-16 s the phone's own "80%" sits dimmed under the caption line (not worth a render); keep screen numbers above the caption band on the next tech build. Voice not heard; no new side-by-side sheet with the gold reel (lean run).
 - For the other account: nothing new.
+
+## 2026-11-25 · claude/3d-kit-quality-test · 3D kit quality test: scene, stills, timings (owner-approved side job, cap $15)
+- Done: hidden sample techkit/scenes/test-3d-quality.html (glossy purple block, invented tile, green chip drop, orange cable, orbit; flags window.FX switch each technique), local bench techkit/3dtest-bench.cjs, one-off workflow test-3d.yml, stills review/tech/study-25nov/3d-test.jpg. Findings in design/3d-kit-test.md.
+- Left: the one preview render result (see the note) and the owner chat verdict.
+- For the other account: the clear colour is written as-is on screen but encoded in a post pass: linearise it or the background turns grey.

@@ -1,0 +1,64 @@
+name: Test 3D quality
+
+# One-off look test (owner, 25 Nov 2026): renders techkit/scenes/test-3d-quality.html (4 s, hidden sample, never posted, no voice) like the Tech reel
+# frames jobs do (headless Chrome on the runner's software GPU, 60 fps, parts side by side), joins with the same tmix blur to 30 fps and keeps the MP4
+# as an artifact. The log prints seconds per frame per part. Run by hand: Actions -> Test 3D quality.
+run-name: "Test 3D quality"
+on:
+  workflow_dispatch:
+    inputs:
+      parts:
+        description: Frame jobs side by side (1-8)
+        default: '6'
+
+permissions:
+  contents: read
+
+jobs:
+  frames:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: true
+      matrix:
+        part: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Frames
+        run: |
+          npm i --no-save --no-audit --no-fund playwright-core@1.49.1
+          export CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          python3 scripts/3dtest-assemble.py
+          mkdir -p frames
+          # 240 frames (4 s at 60 fps) in 6 parts of 40
+          S=$(( ${{ matrix.part }} * 40 )); E=$(( S + 40 ))
+          START=$(date +%s); node techkit/capture.cjs out/3dtest/scene.html frames 60 $S $E 2>&1 | tee cap.log
+          echo "PART ${{ matrix.part }}: $(( $(date +%s) - START )) s wall for 40 frames incl. browser start" | tee -a "$GITHUB_STEP_SUMMARY"
+          tail -1 cap.log | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frames-${{ matrix.part }}
+          path: frames
+          retention-days: 1
+          compression-level: 0
+
+  join:
+    needs: frames
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frames-*
+          merge-multiple: true
+          path: frames
+      - name: Join
+        run: |
+          ls frames | wc -l
+          ffmpeg -hide_banner -loglevel error -framerate 60 -i frames/f%05d.jpg -vf "tmix=frames=2:weights='1 1',fps=30" -c:v libx264 -crf 17 -pix_fmt yuv420p -movflags +faststart test-3d-quality.mp4
+          ls -l test-3d-quality.mp4 | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: test-3d-quality
+          path: test-3d-quality.mp4
+          retention-days: 7
