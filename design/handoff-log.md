@@ -753,3 +753,8 @@ Format (at most 6 lines):
 - Done: first Test 3D quality run rendered all 240 frames on GitHub (93-141 s per 40-frame part); the join step failed only for a missing ffmpeg; added the install and filled the runner numbers into design/3d-kit-test.md. Re-dispatching once for the MP4.
 - Left: the MP4 artifact (7 days) and the owner chat verdict.
 - For the other account: a workflow dispatched by name must be on main first; the branch pipeline merges it. The frames step is the only costly part.
+
+## 2026-11-25 · claude/tech-3d-kit-phase1-findings · 3D kit phase 1: fold in the test-render findings (same side job)
+- Done: full-length cable halo, stronger default depth of field, details and a second material on the demo block; stills kit-phase1-v2.jpg; notes in design/3d-kit-phase1.md.
+- Left: the first preview render (older look) is already running; a second preview of this look needs the owner chat's yes; getting the MP4 into the app needs an upload step.
+- For the other account: nothing new.
