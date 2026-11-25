@@ -734,3 +734,7 @@ Format (at most 6 lines):
 - Done: hidden sample techkit/scenes/test-3d-quality.html (glossy purple block, invented tile, green chip drop, orange cable, orbit; flags window.FX switch each technique), local bench techkit/3dtest-bench.cjs, one-off workflow test-3d.yml, stills review/tech/study-25nov/3d-test.jpg. Findings in design/3d-kit-test.md.
 - Left: the one preview render result (see the note) and the owner chat verdict.
 - For the other account: the clear colour is written as-is on screen but encoded in a post pass: linearise it or the background turns grey.
+## 2026-11-25 · claude/tech-colour-world-rules · Tech colour world look: rules, logo permission, test scene (builder session)
+- Done: rules-tech.md section L and tech-direction.md section 7 replace the near-black + two-accent look and the top keyword band (dark ground, colourful materials, one world with recurring objects, real artifacts, word-by-word captions with a blue selection box); real product logos allowed on tech and web (safety.md 7, CLAUDE.md); owner-feedback lines; references.md entry. Test scene techkit/scenes/sample-colour-world.html (sample + hidden in captions.json), ONE preview render.
+- Left: owner chat decides whether the look is adopted for the daily tech builds; real logos need a licensed file via the Media workflow; gold.md still describes the old look.
+- For the other account: a cables-and-tiles scene reads best with the camera 14+ units back; hex colours need to be darker than they look (exposure .85) or blocks wash to pastel.

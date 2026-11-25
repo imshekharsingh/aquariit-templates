@@ -1,0 +1,138 @@
+{
+ "slug": "colour-world-sample",
+ "engine": "kit",
+ "scene": "techkit/scenes/sample-colour-world.html",
+ "topic": "TEST SCENE: 3 apps x 8 tools = 24 integrations (colour world look study, never posted)",
+ "format": "xray",
+ "audience": "global",
+ "gadget": "ai tools",
+ "device": "laptop",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.4,
+ "max_end": 11.5,
+ "experiment": {
+  "id": "tech-colour-world",
+  "change": "test scene for the 25 Nov colour world look (rules-tech.md L): dark floor grid, glossy blocks, amber then green glowing cables, 8 app tiles, a JSON card, word-by-word captions with a selection box; one world, the camera travels through it",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Three apps, eight tools.",
+   "beat": "question",
+   "source": 0
+  },
+  {
+   "text": "Connect each pair by hand, and that is twenty four integrations.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "Add one shared standard, and it drops to eleven.",
+   "beat": "takeaway",
+   "source": 0
+  }
+ ],
+ "cues": {
+  "three": [
+   0,
+   "three"
+  ],
+  "eight": [
+   0,
+   "eight"
+  ],
+  "tools": [
+   0,
+   "tools"
+  ],
+  "connect": [
+   1,
+   "connect"
+  ],
+  "twenty": [
+   1,
+   "twenty"
+  ],
+  "add": [
+   2,
+   "add"
+  ],
+  "eleven": [
+   2,
+   "eleven"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "three",
+   "pop",
+   0.5,
+   -0.3
+  ],
+  [
+   "eight",
+   "pop",
+   0.5,
+   0.3
+  ],
+  [
+   "connect",
+   "whoosh",
+   0.4,
+   0
+  ],
+  [
+   "twenty",
+   "impact",
+   0.55,
+   0
+  ],
+  [
+   "add",
+   "whoosh",
+   0.4,
+   0
+  ],
+  [
+   "eleven",
+   "chime",
+   0.45,
+   0
+  ]
+ ],
+ "post": {
+  "title": "colour world sample",
+  "caption": "Test scene, never posted.",
+  "keywords": [],
+  "hashtags": []
+ },
+ "qa": {
+  "sync": [],
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 12,
+    "sides": [
+     "left",
+     "right",
+     "bottom",
+     "top"
+    ],
+    "why": "a test scene in one full-bleed world"
+   }
+  ]
+ },
+ "say": {},
+ "fps": 30
+}
