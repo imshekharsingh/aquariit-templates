@@ -16,10 +16,10 @@ Scene scripts/channel3/design/looks-expensive.js (copy: scripts/channel3/looks-e
 11. Post data: PASS: captions.json entry (c3, engine design, concept); caption: claim, the 3 fixes as a numbered list, a save ask and one question; 6 keywords, 5 hashtags, 2 sources
 12. Review file: PASS: this file, direction card with STILLS CHECK: APPROVED
 13. After the render (render 2): PASS: OUTPUT QA PASS (Showreel run 45535868004, Output QA step success: FILL and ELEMENTS fixed; LOOK, VARIETY, NUMBERS, DEAD, GRADE as on render 1); render 1 (run 45529832138) failed FILL and ELEMENTS, see below
-14. Cuts: PASS: no cuts (one board, camera pushes)
-15. Dead runs: PASS: STATIC STRETCH none
-16. Continuity: PASS: one stage, one object changing in place
-17. Strobes: PASS: none by construction
+14. Cuts: PASS: FLOW: cuts 0 (one board, camera pushes)
+15. Dead runs: PASS: FLOW: dead runs none (STATIC STRETCH none)
+16. Continuity: PASS: FLOW: continuity 100% (median step 1.1, 0 declared transitions); one stage, one object changing in place
+17. Strobes: PASS: FLOW: strobes 0
 18. Element sound (web): n/a (Turns Out)
 19. Journey: PASS: claim, rings on the mistakes, each fix done on screen (clutter leaves with margin guides, the name shrinks and spreads inside a selection, an eyedropper samples the colours and the colour card counts them down), then the proof
 20. Depth and life: PASS: design engine: shop shelf behind the label, mood brightening as fixes land, camera push per fix, spark bursts
