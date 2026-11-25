@@ -703,3 +703,7 @@ Format (at most 6 lines):
 - Done: render 3 failed Output QA on EDGES (cell, target ticks and charging pad touched the side edges) and SYNC (the "500" over the cell tabs was not read). Cell pulled back, "500" on clear dark, target and pad scaled in. Render 4 allowed by the owner; postAt 20:45.
 - Left: render 4 result, then the critic.
 - For the other account: keep every hero 3 to 8 percent inside the side edges (EDGES counts the outer 2%); a number over a light part of the object is not read by the recogniser.
+## 2026-11-25 · claude/critic-c3-looks-expensive-r3 · Turns Out "One looks 5x pricier" critic, render 3: READY (critic session)
+- Done: judged render 3 on the real MP4 (one contact sheet beside the gold reel, a full-size look at 18.3 s, a 0.1 s strip of the flashback); verdict, GOLD matches, STOP 7, REWATCH 7 and PREMIUM 7 / 7 / 7 in review/c3/showreel-c3-looks-expensive.md. The finished label is complete (bigger name, honey line and 500 g kept, green frame); the BEFORE flashback sits below the chip, whole, no stray line. captions.json: "hidden" and "hold" removed; posts 25 Nov 19:45 IST.
+- Left: in the flashback copy the badge words "100% NATURAL" sit high-left and lose a letter for 0.6 s (13.1-13.7 s); fix in core.js DT.proof (scale the badge words with the badge) before the next design reel. No render for this. Voice not heard (no audio playback in the session).
+- For the other account: a scaled copy of the board (DT.proof fs) does not scale text that is positioned in px inside a child; check badges and seals in the copy on a still.
