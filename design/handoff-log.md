@@ -7,6 +7,14 @@ Format (at most 6 lines):
 ```
 
 
+## 2026-11-25 20:15 IST · claude/owner-chat-25nov · owner chat: decisions, waiting on owner, tomorrow
+- Day: all three posted-ready after a rescue. Web 47 user-invalid READY 09:30 (19:00). Turns Out looks-expensive failed critic on render 2, fixed and READY on render 3 (19:45, ~$15). Tech battery-cycles failed critic on render 2 (one battery all reel); rebuilt to 7 shots, outside stills check, render 3 failed EDGES+SYNC, render 4 (owner yes) READY 7.5/7.5/7.5 (20:45, ~$24 + morning $32).
+- Decisions (owner, 25 Nov): NO SKIP DAYS; ask the owner before anything costly (>~$5, any render past 2, any side/tooling job), with a cost estimate; Turns Out gets an outside stills check; stage updates to the owner unasked; smaller morning run (all in CLAUDE.md + runbooks, merged). App fix: the board read only "Critic ... CRITIC:" lines, so "20. CRITIC: READY" reels stayed on Checking and out of Ready to post (fixed).
+- What went wrong (owner's gap list): owner chat idle 08:30-16:40 while two reels failed at 09:30; stills checks approve dull ideas; SHOT VARIETY passed a one-battery reel (check measures the wrong thing, still to fix); render 1 spent on mechanical faults (pace, hue, fill, review-file lines) that a local preflight could catch; tech failed 4 days running on one object all reel; Turns Out self-approved stills.
+- Cost: about $83 by 09:45 for 1 reel, plus ~$45 for the evening rescue and rules. Big context sessions cost ~$2 per wake-up; tech builder alone $17.
+- Waiting on owner: STAGE_KEY (GitHub secret + network secret X-Stage-Key for templates.aquariit.com) so the board shows stage lines; Post now keys (GH_DISPATCH_TOKEN, Instagram publish tokens).
+- Tomorrow: confirm all three posted from the Instagram collect; propose (with cost) the SHOT VARIETY check fix and a local preflight for pace/hue/fill/edges/review lines before render 1; tech builds start from today's 7-shot battery reel, not the one-object starter; small bits for the kit: phone 80% under the caption (tech 14-16 s), off-centre badge in the Turns Out flashback.
+
 ## 2026-11-25 17:30 IST · claude/fix-critic-line-25nov · owner chat: app showed a READY reel as "Checking"
 - Done: src/journey.js read only "Critic ... CRITIC: READY" lines; critics write "20. CRITIC: READY", so web 47 (and 46 yesterday) stayed on Checking and out of Ready to post, and Post now would refuse it. The parser now takes both forms (tested on today's three review files: READY, NOT READY, NOT READY).
 - For every session: after any review-file format change, check the app's Today board shows the verdict.
