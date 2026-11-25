@@ -794,3 +794,8 @@ Format (at most 6 lines):
 - Done: render v3 (18.4 s) Output QA PASS; previews.json "3D kit sample reel" now points at v3; gold.json "tech3d" LOOK numbers measured from the v3 MP4; gold.md note. Runner time about 17 min wall for 6 parts.
 - Left: the independent critic's verdict (review/tech/showreel-tech-gold3d-sample.md, "20. CRITIC: READY / NOT READY"); then the owner decides whether it becomes the gold for this look.
 - For the other account: nothing new.
+
+## 2026-11-26 · claude/daily-25nov · Daily studio run 26 Nov (smaller morning run)
+- Done: Feedback read (none new) and owner answers (none); audit numbers read from a dry Instagram collect; rules-tech.md 26 Nov audit line; experiments.md lesson line; started one build session each for web (:has, the researcher's pick) and tech (fresh-news research first, old bank is stale).
+- Left: both builders own their reel to READY (Fable pick, stills check, at most 2 renders, Output QA, critic). The audit card was dispatched from the numbers above.
+- For the other account: the Instagram collect's scheduled run skips the audit step except at 05:23 and 20:14 UTC; a dry dispatch prints it.

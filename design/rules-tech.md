@@ -179,3 +179,5 @@ Why: the 22 Nov look made tech reels grey and flat; the owner's reference (an ex
 - **L6. No presenter, no mascot** (owner). Length stays 20-35 s.
 - **L7. Real product logos may be shown** (owner, 25 Nov 2026) to identify the product being explained: unaltered, never distorted or recoloured into a mock-up, no implied endorsement, educational context, a licensed or official file via the Media workflow when one exists, otherwise a coloured tile with the name as text. F3 still holds for tone (diplomatic, at their strengths, no winner / loser); product photos, marketing art and trade dress stay out.
 - **L8. Check on the stills sheet:** is the ground dark and the things colourful? is it one world with a recurring object? is one real artifact readable at phone size? is the key word boxed in blue? is no top band and no presenter on screen?
+
+**26 Nov audit:** tech OK (median reach 1,200 over the last 7 vs target 300). PROMOTE tech-kit-engine and tech-myth-verdict printed again; both are already rules (18 Nov, F5), no change. Today's tech reel is built from fresh news (N1-N4) by its own builder.
