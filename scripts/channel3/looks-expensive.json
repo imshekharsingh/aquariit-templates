@@ -2,7 +2,8 @@
  "name": "showreel-c3-looks-expensive",
  "seek": "scripts/channel3/looks-expensive.html",
  "engine": "design",
- "dur": 15,
+ "dt": 2,
+ "dur": 19.5,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -10,16 +11,24 @@
  "vignette": false,
  "cover": 0.6,
  "voice": {
-  "text": "One looks five times pricier. Which would you pay more for? The answer is B. Turns out, three things make it look expensive. Empty space. Small, spaced-out letters. And only two colours. Quiet costs more.",
+  "text": "Too much is going on. It looks cheap. Turns out, quiet looks expensive. First, give it room. Next, shrink and space the name. Then, keep just two colours. Same product, now it looks premium.",
   "voice": "af_heart",
-  "speed": 1
+  "speed": 1,
+  "gap": [
+   0.3,
+   0.35,
+   0.3,
+   0.3,
+   0.3,
+   0.4
+  ]
  },
  "experiment": {
   "id": "c3-design-series",
-  "change": "design-tutorial format",
+  "change": "design-tutorial format (queue of 10)",
   "vs": "median"
  },
- "caption": "One of these looks 5× pricier. Same product, same shelf. 🛍️\n\n1. Empty space. Room around the name says nothing is fighting for attention.\n2. Small, spaced-out letters. Capitals with a little extra spacing read calm and confident.\n3. Only two colours. Fewer colours read as a choice, not a mix.\n\nSave this for your next label, logo or price tag. Did you pick B too?",
+ "caption": "Too much is going on. This label looks cheap. 🍯\n\n1. Give it room. Empty space around the name says nothing is fighting for attention.\n2. Shrink and space the name. Small capitals with a little extra spacing read calm and confident.\n3. Keep just two colours. Fewer colours read as a choice, not a mix.\n\nSave this for your next label, logo or price tag. Which of these does your own label break?",
  "keywords": [
   "how to make design look expensive",
   "premium packaging design",
@@ -49,21 +58,26 @@
   "edges_ok": [
    {
     "from": 0,
-    "to": 18,
+    "to": 19.5,
     "sides": [
      "left",
      "right",
      "top",
      "bottom"
     ],
-    "why": "the design-tutorial stage (the shop shelf) fills the frame by design"
+    "why": "the design-tutorial stage (a shop shelf) fills the frame by design"
    }
   ],
   "subject": [
-   50,
-   452,
-   250,
-   752
+   66,
+   400,
+   474,
+   764
   ]
- }
+ },
+ "before": {
+  "mistake": "a first-draft label: a big bold name, four colours, a badge and a banner, everything touching the edges",
+  "source": "https://cxl.com/blog/optimize-luxury-brand/"
+ },
+ "note": "Rebuilt on the improved design kit (25 Nov 2026; rules-c3.md V1-V3, B1-B3, P1-P2) from the gold reel showreel-c3-grey-text."
 }

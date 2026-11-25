@@ -4,6 +4,7 @@
 
 ## 0. Turns Out design series (live from 21 Nov 2026)
 **24 Nov 2026 (owner, 23 Nov night): read design/c3-research-2026-11-24.md and rules-c3.md V1-V3, B1-B3, P1-P2 before building or posting a design reel. The seven unposted reels are held until rebuilt.**
+**25 Nov 2026 (owner): no skip days; Turns Out posts every day 13:00-21:00 IST. A reel the critic marks NOT READY is fixed (the critic writes the exact fix) and posted the same day; a 3rd render needs the owner's yes with its cost. Outside picture check: like web and tech, its stills are checked by a separate session (Fable, tag stills) before any render, and the builder never approves its own stills (on 25 Nov the builder self-approved and the reel failed); the review file needs that session's "STILLS CHECK: APPROVED" line (design/runbook-daily.md).**
 **Promise:** one design fix a day you can use on your own menu, poster, slide or invite. "Turns out, it's not the colours. It's the spacing."
 Why it can grow where the fun facts did not: each reel is something the viewer *has* (their own menu, invite, slide) to save and send,
 the same reason @webin20sec gets saves. Owner, 21 Nov: "I actually liked all five ... defining design across usage".
@@ -13,7 +14,7 @@ the same reason @webin20sec gets saves. Owner, 21 Nov: "I actually liked all fiv
 fully lit, its problems ringed. Then 2-3 fixes with cursor, guides and a "FIX n OF N" dial; the score turns from tense to bright as the
 fixes land; ends on the fixed design. Caption: the 3 fixes as a numbered list, "Save this for your next ...", one question. No CTA on screen.
 
-**Order (daily and dated, in order; owner, 24 Nov 2026: Turns Out goes back to one reel a day like web and tech, each built only on its own day). Next is the CV (showreel-c3-resume / resume2, critic READY on 24 Nov) on 25 Nov:**
+**Order (daily and dated, in order; owner, 24 Nov 2026: Turns Out goes back to one reel a day like web and tech, each built only on its own day). Only reels NOT yet posted are built (check the posted marks first; the CV reel was already posted, so it is never rebuilt for posting; owner, 25 Nov 2026). Next on 25 Nov is #2, One looks 5x pricier (showreel-c3-looks-expensive, held), rebuilt on the improved kit:**
 | # | Reel | Preview config | Status |
 |---|---|---|---|
 | 1 | It's the spacing (café menu) | design/spacing.json → menu-spacing.json | full reel, render 3 |

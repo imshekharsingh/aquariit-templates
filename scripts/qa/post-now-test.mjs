@@ -28,7 +28,7 @@ const gh = []; const realFetch = globalThis.fetch; let ghStatus = 204;
 globalThis.fetch = async (u, init) => { if (String(u).startsWith('https://api.github.com/')) { gh.push({ u: String(u), init }); return new Response(null, { status: ghStatus }); } return realFetch(u, init); };
 
 let r = await call('/api/post', { method: 'POST', body: { reel: 'showreel-1-demo' }, e: { ...env, GH_DISPATCH_TOKEN: '' } });
-ok('no GH_DISPATCH_TOKEN: a plain "not switched on" message and nothing started', r.s === 503 && /not switched on/.test(r.j.message) && gh.length === 0);
+ok('no dispatch key: a plain "not switched on" message and nothing started', r.s === 503 && /not switched on/.test(r.j.message) && gh.length === 0);
 r = await call('/api/post', { method: 'POST', body: { reel: 'showreel-hid' } }); ok('a hidden reel is refused', r.s === 404);
 r = await call('/api/post', { method: 'POST', body: { reel: 'showreel-nope' } }); ok('an unknown reel is refused', r.s === 404);
 r = await call('/api/post', { method: 'POST', body: { reel: '../x' } }); ok('a bad name is refused', r.s === 400);
@@ -56,7 +56,7 @@ r = await call('/api/post/status', { method: 'POST', body: { reel: 'showreel-1-d
 r = await call('/api/post/status', { method: 'POST', body: { reel: 'showreel-1-demo', state: 'failed', error: 'Instagram said no.' } }); ok('status: failed with a reason', r.s === 200);
 r = await call('/api/post/sign', { method: 'POST', body: { reel: 'showreel-1-demo' } }); ok('no links once the run has ended', r.s === 409);
 ghStatus = 401; r = await call('/api/post', { method: 'POST', body: { reel: 'showreel-1-demo' } });
-ok('a failed reel can be tried again; a refused GitHub key is said in plain words and unlocks it', r.s === 502 && /GH_DISPATCH_TOKEN/.test(r.j.message) && r.j.row.state === 'failed');
+ok('a failed reel can be tried again; a refused GitHub key is said in plain words and unlocks it', r.s === 502 && /GitHub refused the key/.test(r.j.message) && r.j.row.state === 'failed');
 ghStatus = 204; r = await call('/api/post', { method: 'POST', body: { reel: 'showreel-1-demo' } }); ok('Try again starts a new run', r.s === 200 && gh.length === 3);
 r = await call('/api/post/status', { method: 'POST', body: { reel: 'showreel-1-demo', state: 'posted', media_id: '123', permalink: 'https://www.instagram.com/reel/abc/' } }); ok('status: posted', r.s === 200);
 r = await call('/api/uploaded'); ok('Posted also marks the reel like "I posted it"', !!r.j.ids['showreel-1-demo']);

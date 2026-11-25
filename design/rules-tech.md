@@ -162,8 +162,9 @@ ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voic
   AI features, wearables, laptops, cameras, home and car tech. Phones are one category among many, never two days running. The daily tech research
   pulls news from the last 7 days from primary sources (maker announcements, official pages); every option names its date.
 - **N2. Freshness.** Every fact names the newest models or versions on sale today (say "iPhone 15 and newer", never only an older generation). A fact that
-  would make a viewer think "this is old" fails. Critic question 45 asks it.
+  would make a viewer think "this is old" fails. Critic question 46 asks it.
 - **N3. No big keyword bar at the top of the screen.** Words sit inside the scene or in the subtitle line; the frame-0 hook word is part of the picture,
   not a top banner. (Overrides the header rows in the K0 frame and D/P rules above.)
 - **N4. Every shot alive.** In showreel-tech-battery-cycles (25 Nov) the owner liked the "habits" and "cycle" moments (more expressive frames, felt
   premium) and found the rest not premium. Every shot needs that level of motion and expression; the critic marks any shot flatter than those as a fix.
+**25 Nov audit:** tech OK (median reach 1,199 over the last 7). PROMOTE: tech-kit-engine (4 WINs, 0 LOSEs, +312% to +1,104%) and tech-myth-verdict (3 WINs, 0 LOSEs) stay as the way tech reels are built. ai-memory (the gold) reached 1,199 at 24 h, level with the median (-1%): the look is not the lever, the topic and the first second are. Today: a new device type (battery cycles), the 500 to 1000 number changing on the spoken word.

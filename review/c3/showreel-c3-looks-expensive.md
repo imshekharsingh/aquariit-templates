@@ -1,32 +1,79 @@
-# Review: showreel-c3-looks-expensive (c3, no date: onGo, the owner posts on response)
+# Review: showreel-c3-looks-expensive (c3, rebuilt 25 Nov 2026, posts 25 Nov at 17:00 IST once the critic says READY)
 
-Turns Out design series (owner, 21 Nov 2026: "Move the finished ones to Turns Out section, we need all captions etc."), the full reel of the approved
-preview scripts/channel3/design/expensive.js (copy for the tools: scripts/channel3/looks-expensive.html). AUTO lines from preflight.mjs, stills.mjs, flow.mjs and
-qa/align.mjs on scripts/channel3/looks-expensive.json.
+Turns Out design series #2 (design/c3-plan.md section 0), rebuilt on the improved kit (rules-c3.md V1-V3, B1-B3, P1-P2) from the gold reel showreel-c3-grey-text.
+Scene scripts/channel3/design/looks-expensive.js (copy: scripts/channel3/looks-expensive.html). AUTO lines from stills.mjs on scripts/channel3/looks-expensive.json.
 
-1. Topic: PASS: two labels for the same invented product (no real brand) on a shop shelf; which looks pricier, then the three reasons: empty space, small spaced-out capitals, only two colours; one fix anyone can use the same day; invented names only, no real brand, logo or person (design/safety.md); the design series the owner approved (21 Nov)
-2. Frame 0: PASS: SUBJECT FILL: 97% at frame 0; the claim alone in the top band from frame 0, the design fully lit on its stage, its problems marked; title, captions and dial wait for the claim
-3. Safe zone: PASS: SAFE ZONE: ok (dial, title, captions, hook, chips, labels, rulers and the design inside x 60-960, y 250-1570 on the 0.5 s scan)
+1. Topic: PASS: an invented honey label on a shop shelf, fixed in three moves (room, a small spaced name, two colours); one fix anyone can use on a label, logo or price tag; invented name, no real brand (design/safety.md)
+2. Frame 0: PASS: SUBJECT FILL: 94% at frame 0; the claim alone in the top band ("Too much going on."), the crowded label fully lit, its problems ringed (TOO BIG, TOO MANY COLOURS)
+3. Safe zone: PASS: SAFE ZONE: ok (title, dial, captions, chips, rings, label and colour card inside x 60-960, y 250-1570 on the 0.5 s scan)
 4. No overlap: PASS: OVERLAP: none; BAND: clear; HOOK: clear of the subject
-5. Motion: PASS: STATIC STRETCH: none (least change 1.2 at 1 s, median 5.7); EMPTY FRAMES: none (scanned 30 moments, least detail 52.8 at 6 s); TEXT FIT: all text inside its box
-6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; phrases of up to 4 words, spoken words white, key words amber
-7. Voice: PASS: PREFLIGHT voice: 159 letters, 8 sentences, about 12.4 s at speed 1 in one take (reel 15 s, voice must end by 14.4 s): fits; HOOK PACE: the first sentence has 5 words: ok (6 or fewer); PRONUNCIATION: 0 overrides used; check: spaced-out; every sentence over 6 words reads under 4.5 words/s at speed 1
-8. Sound: PASS: the design vocabulary (core.js DT.S, drum-free, synth cues) on the tense-to-bright score (DT.score): opening sting, cursor clicks and drags, tuned plucks as things snap, shimmer on the payoff
-9. Payoff: PASS: ends on the fixed design, fully lit, with the reel's last line and a light sweep; no call to action on screen
-10. Facts: PASS: design guidance, not statistics: white space and fewer colours read as premium (CXL's summary of a luxury-perception study); capitals read better with a little extra letterspacing (Butterick, Letterspacing); "5× pricier" is the reel's framing of two made-up labels, no number is claimed as measured; sources: How to Create a Luxurious User Experience (CXL): white space, fewer products, fewer colours; Letterspacing (Butterick's Practical Typography)
-11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
-12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (1 groups)
-13. After the render: PASS: render 2 (run 44926321583): OUTPUT QA PASS (PACE 2.75 words/s, GRADE 0.42, FILL median 95%, ELEMENTS longest gap 2.1 s, NUMBERS none past the voice, DEAD none). Before: render 1 (run 44922107723) failed Output QA PACE ("Which one would you pay more for?" 5.83 words/s; "It's B." not heard), GRADE (0.07: the box held both labels and the shelf), FILL (median 64%: one small label in the middle) and ELEMENTS (5.4 s with nothing new at the end of an 18 s reel); fixed: shorter lines, the subject box is label A, both labels stay side by side, design-tool rulers on both sides, 15 s; a local copy of Output QA FILL and GRADE on the scene's frames now passes (FILL median 95%)
-14. Cuts: PASS: FLOW: cuts 0
-15. Dead runs: PASS: FLOW: dead runs none
-16. Continuity: PASS: FLOW: continuity 97% (median step 0.9, 0 declared transitions)
+5. Motion: PASS: STATIC STRETCH: none (least change 0.9, median 4.6); EMPTY FRAMES: none; TEXT FIT: all text inside its box
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; key words amber
+7. Voice: PASS: PREFLIGHT voice: 145 letters, 7 sentences, about 12.0 s at speed 1 with 1.95 s of breaths (reel 21 s, voice must end by 20.4 s): fits; HOOK PACE: the first sentence has 5 words: ok (6 or fewer); PRONUNCIATION: 0 overrides used; no unchecked words; one short sentence ("It looks cheap."); c3-script check in npm run check
+8. Sound: PASS: the design vocabulary (DT.S, drum-free): sting, stamp on "cheap", lands as the clutter leaves, drag on the name, two eyedropper clicks, reveal chord on "premium"
+9. Payoff: PASS: ends on the fixed label with BEFORE as a tilted thumbnail, two ticks and a green frame; no call to action on screen
+10. Facts: PASS: white space, fewer colours and restrained type read as premium (CXL, How to Create a Luxurious User Experience; Butterick, Letterspacing: spaced capitals); the reel claims no number
+11. Post data: PASS: captions.json entry (c3, engine design, concept); caption: claim, the 3 fixes as a numbered list, a save ask and one question; 6 keywords, 5 hashtags, 2 sources
+12. Review file: PASS: this file, direction card with STILLS CHECK: APPROVED
+13. After the render (render 2): PASS: OUTPUT QA PASS (Showreel run 45535868004, Output QA step success: FILL and ELEMENTS fixed; LOOK, VARIETY, NUMBERS, DEAD, GRADE as on render 1); render 1 (run 45529832138) failed FILL and ELEMENTS, see below
+14. Cuts: PASS: FLOW: cuts 0 (one board, camera pushes)
+15. Dead runs: PASS: FLOW: dead runs none (STATIC STRETCH none)
+16. Continuity: PASS: FLOW: continuity 100% (median step 1.1, 0 declared transitions); one stage, one object changing in place
 17. Strobes: PASS: FLOW: strobes 0
-18. Element sound (web): n/a (Turns Out; every effect in item 8)
-19. Journey: PASS: the claim over the flawed design, each fix done on screen with cursor, guides and snaps, then the fixed design lit
-20. Depth and life: PASS: the design engine (captions.json "engine": "design"): the shop shelf behind the design moving from dim to lit as fixes land, the camera drifting with a push per fix, spark bursts, motion blur in the render
+18. Element sound (web): n/a (Turns Out)
+19. Journey: PASS: claim, rings on the mistakes, each fix done on screen (clutter leaves with margin guides, the name shrinks and spreads inside a selection, an eyedropper samples the colours and the colour card counts them down), then the proof
+20. Depth and life: PASS: design engine: shop shelf behind the label, mood brightening as fixes land, camera push per fix, spark bursts
 
-Owner feedback (design/owner-feedback.md) against the stills: "doesn't look aligned": ALIGN where the scene declares groups; "drum-like sounds": no drum kinds; "frame 0": one message first; numbers on screen never run ahead of the voice (21 Nov: end states as words); "same background": its own stage.
+Owner feedback (design/owner-feedback.md) against the stills: natural spoken sentences with breaths; the before is a believable first draft (big bold centred name, four colours, a badge and banner), not a strawman; the colour count on screen appears only after the voice says "two"; no rolling numbers.
 
-Critic: PENDING (an independent session writes CRITIC: READY or NOT READY; the owner's watch decides the post).
+Render 1 (run 45529832138, 25 Nov 2026): Output QA FAIL on FILL (71%: the label alone was a small centred picture; the gold's rulers beside the board were left out) and ELEMENTS (4.2 s with nothing new after the last tick: reel 21 s too long for its voice). Fix before render 2: the rulers are back (FILL 0.90 median on a local frame scan, none under 0.80) and the reel is 19.5 s (the tail after the last element is about 2.7 s). LOOK, VARIETY, NUMBERS, DEAD, GRADE passed on render 1.
 
-Owner, 21 Nov 2026 (after render 2): label B sat unchanged beside A through the lesson and "feels useless". Fixed in the scene (B steps aside after the vote, A moves to the centre at 1.3x and changes; stills OVERLAP none, SAFE ok, local FILL median 95%, GRADE 0.43). Render 3 (run 44949072234, owner's go): OUTPUT QA PASS (PACE 2.75 words/s, GRADE 0.42, FILL median 94%, ELEMENTS longest gap 2.1 s, NUMBERS none past the voice, DEAD none).
+## Critic (independent session, 25 Nov 2026, render 2, run 45535868004)
+Judged on the real MP4 (reel-fetch), the side-by-side sheet with the gold reel showreel-c3-grey-text (8 times: 1.2, 3.7, 6.1, 8.5, 11.0, 13.4, 15.8, 18.3 s) and one strip at 0.5 s steps over 9.5-14.0 s. Voice: I could not listen to it (no audio playback or speech-to-text here); judged from loudness, breath gaps and on-screen subtitles only.
+- 0 Safety: yes (invented brand, no real marks, sources cited). 0b AI label: "aiLabel" missing in captions.json; it should be false (flat drawn graphics). Not enforced until 27 Nov, but set it when the reel is rebuilt.
+- 1 Frame 0: yes. The crowded label is lit at 1.2 s with TOO BIG / TOO MANY COLOURS rings; "Busy, so cheap" reads in under 1 s.
+- 2 Every frame whole: NO. At 13.5-14.0 s the BEFORE flashback is drawn in front of the "SAME PRODUCT · PREMIUM" chip and cuts it off at the top; its green badge is clipped to "00% ATURAL" and a stray grey line sits mid-label (14.0 s strip).
+- 3 Screen matches voice: yes ("two colours" at 10.0 s with the TWO COLOURS card; no rolling numbers).
+- 4 One focus: yes, except the 13.5-14.0 s flashback, where the chip, thumbnail and label compete.
+- 5 Lines shown and finished: subtitles show every line; pace about 12 s of voice for 34 words, below 2.6 words/s.
+- 6 Sound and mix: -14.0 LUFS integrated, LRA 1.5 LU; six dips of -20 to -25 LUFS at 1.4, 2.7, 5.1, 6.7, 8.8, 10.9 s match the six breaths. I could not judge by ear whether each tool sound can be heard.
+- 7 Payoff: weak. 15.8-19.5 s holds a cream square with a small spaced name; the payoff does not make you want to send it to a friend.
+- D1 Voice like a person: the script is seven full sentences with a breath after each (config gaps 0.3-0.4 s, seen as loudness dips). Not heard.
+- D2 Lines land on their change: fix 1 room at 6.1 s ("give it room", clutter leaving, guides); fix 2 at 8.5 s ("space the name", name small and spaced); fix 3 at 9.5-10.5 s ("two colours", eyedropper, name red to dark grey). At 2-4 fps all three are within the line; I cannot prove 0.3 s at this frame rate.
+- D3 Believable before: yes. A big bold red name, four colours, a badge and a BUY 2 GET 1 banner is a common first-draft label (CXL).
+- D4 Last frame BEFORE + AFTER: yes. The tagged thumbnail and the tagged after are held 15.8-19.5 s (3.7 s).
+- 43 GOLD: below (15.8-18.3 s: gold's after is a full, readable menu with a tick on each line; ours is an almost empty square whose name is about 8 px cap height and whose "PURE · NATURAL · BEST" line cannot be read at phone size; LOOK numbers are level: bright 0.380 vs 0.352, contrast 0.346 vs 0.343, dark 32% both).
+- 44 Direction card: hook shown in frame 0 yes; pause held 15.8-19.5 s yes; rewatch moment (the name shrinking at 8-9 s) delivered but small; payoff delivered as a layout, but it reads unfinished rather than premium. The after also deletes what a real label must keep (honey type and 500 g weight), so "give it room" turns into "delete everything": the wrong lesson for a design fix reel.
+- STOP: 7/10 (0-1 s: the crowded label and red rings stop the thumb; the title is clear)
+- REWATCH: 5/10 (8.5 s: the name shrink is the only surprise, and it ends on a blank card nobody scrubs back to)
+PREMIUM: animation 7/10 (t 6.1-11.0 pushes and the eyedropper land cleanly; 14.0-14.5 s flashback pops in and doubles), cleanliness 6/10 (t 13.5-14.0 chip covered, badge clipped, stray line), premium 5/10 (t 15.8-19.5 the after is a near-empty cream square); weakest: t 15.8-19.5, the after label looks empty, fix: keep the product line and weight as a quiet second size, make the spaced name 2x larger, give the label one rich detail in the second colour (a thin rule or seal) so it looks 5x pricier, not unfinished.
+ENHANCE: open on the honey jar itself on the shelf with the price tag, so "5x pricier" is a price the viewer can see change at the end.
+CRITIC: NOT READY: the finished label at 15-19.5 s looks empty and unfinished rather than expensive (tiny name, unreadable second line, the honey type and weight deleted), and at 13.5-14 s the old label pops in over the "Same product" tag. Detail: questions 2, 7, 43, 44 (REWATCH 5/10) and PREMIUM (cleanliness 6, premium 5). Fix: the after keeps the product line and 500 g in a quiet second size, the name about 2x larger, one detail in the second colour; the BEFORE flashback sits behind or below the chip and is scaled to stay whole (badge not clipped, no stray line). Both renders are used, so the reel is skipped for today.
+
+## Render 3 notes (25 Nov 2026, owner approved one render past the 2-render limit for today only)
+Fix from the critic, nothing else changed: (1) the finished label keeps the product line and 500 g as a quiet second size (85% strength), the spaced name is bigger (34 px against 20 px), the tagline is 13 px and readable, and a thin green frame plus rule (the second colour) make it a complete label; the two ticks moved beside the lines so they no longer touch the name. (2) The BEFORE flashback (13.5-14 s) now starts scaled to 78% and lower, under the "Same product" chip, so the badge is whole; the stray line was the label rule copied into the BEFORE picture, now hidden when the copy is made (core.js DT.proof takes optional fs/fx/fy; other reels unchanged). Local stills at 13.6, 13.9, 14.3, 15.5 and 18 s checked; preflight fits (voice ends by 18.9 s); stills checks all pass except ELEMENT SOUND, which applies to web scenes only. captions.json: postOn 2026-11-25, postAt 19:45, aiLabel false, still hidden until the critic writes READY.
+
+## Critic (independent session, 25 Nov 2026, render 3, run 45611473358)
+Judged on the real MP4 (reel-fetch, 19.5 s): one contact sheet (14 frames of ours at 0.1, 1.2, 3.7, 6.1, 8.5, 10.2, 11.0, 13.5, 13.75, 14.0, 14.3, 14.8, 15.8, 18.3 s beside 4 frames of the gold reel showreel-c3-grey-text), a full-size look at 18.3 s and a 0.1 s strip over 12.9-13.9 s. Voice: not heard (no audio playback here); judged from loudness, breath gaps and the subtitles.
+- Did the fix land, finished label (15.8-19.5 s): yes. The name is now the biggest thing on the label (about 2x the render 2 size, readable at phone size), "PURE · NATURAL · BEST" and "Raw wildflower honey, 500 g" are kept as a quiet, readable second size, and the thin green frame is the one detail in the second colour. It reads as a finished, calm label, not an empty card; the two ticks sit beside the lines and touch nothing.
+- Did the fix land, BEFORE flashback (13.1-13.7 s): mostly. The old label now sits below the "SAME PRODUCT · PREMIUM" chip, whole inside the board, and the stray grey line is gone. One small flaw is left: inside the green badge the words "100% NATURAL" sit high and left and lose the "1" at the badge edge (13.1-13.7 s; in frame 0 the same words are centred). At phone size the words are about 6 px tall and on screen for 0.6 s, so it does not read as broken; noted for the kit, not a reason to hold the reel.
+- 0 Safety: yes (invented brand, no real marks, two sources). 0b AI label: false, correct (flat drawn graphics).
+- 1 Frame 0: yes. The crowded label is lit at 0.1 s; "Busy, so cheap" reads in under 1 s; rings and TOO BIG / TOO MANY COLOURS at 1.2 s.
+- 2 Every frame whole: yes, with the badge note above (13.1-13.7 s). 13.75 s is the flashback shrinking with motion blur, a move, not a defect.
+- 3 Screen matches voice: yes ("two colours" at 10.2 s with the TWO COLOURS card and four swatches going to two; no rolling numbers).
+- 4 One focus: yes; the chip, the flashback and the label no longer compete at 13.5 s.
+- 5 Lines shown and finished: every line is in the subtitles; 34 words in about 12 s.
+- 6 Sound and mix: -14.0 LUFS integrated, LRA 1.5 LU. Tool sounds not judged by ear.
+- 7 Payoff: yes. 14.8-19.5 s holds a complete label with the tilted BEFORE thumbnail, BEFORE / AFTER tags, two ticks and the green frame.
+- D1: seven full sentences with a breath after each (config gaps 0.3-0.4 s). Not heard.
+- D2: fix 1 at 6.1 s ("give it room", guides and clutter leaving), fix 2 at 8.5 s ("space the name", small spaced name), fix 3 at 10.2 s ("two colours", name dark, colour card). Within the line at this frame rate.
+- D3 Believable before: yes (big red name, four colours, a badge and an offer banner).
+- D4 Last frame BEFORE + AFTER: yes, tagged and held 14.8-19.5 s.
+- 43 GOLD: matches (15.8-18.3 s against gold 17.2-19.9 s: same board, rulers, chip, ticks, green frame and tilted BEFORE thumbnail; gold's menu has more lines and four ticks, ours has one bold name and two ticks, which suits the lesson; same dark, deep look).
+- 44 Direction card: hook shown in frame 0 yes; fixes every 1.5-2.5 s; the held pause on the finished label yes (14.8-19.5 s); rewatch moment at 8.5 s (the name going small and spaced) and again at 13.1-14.0 s (the old label flashing back and dropping to a thumbnail); payoff delivered, and the after now keeps what a real label needs.
+- STOP: 7/10 (0-1 s: the loud label and red rings; the title is clear)
+- REWATCH: 7/10 (13.1-14.8 s: old against new in one second is the moment to scrub back to, and it now ends on a label worth copying)
+PREMIUM: animation 7/10 (t 6.1-10.2 pushes and morphs land cleanly; t 13.7-14.0 the flashback drops to the corner in one move), cleanliness 7/10 (t 13.1-13.7 badge words off-centre in the flashback; everything else whole and in clear space), premium 7/10 (t 15.8-19.5 a finished, quiet label under a warm lamp with a green frame); weakest: t 13.1-13.7, the badge words in the BEFORE flashback sit high-left and lose a letter, fix: in the copy made for the flashback (core.js DT.proof) scale the badge words with the badge so they stay centred, before the next design reel uses it. No render for this.
+PREMIUM 7 / 7 / 7
+ENHANCE: put a small price tag under the label that changes at the end (same honey, higher price), so "looks expensive" is something the viewer sees, not only hears.
+20. CRITIC: READY (render 3: the finished label now looks complete and expensive, and the old label flashes back below the "Same product" tag, whole, with no stray line. Detail: one small flaw left for the kit, the badge words in the 0.6 s flashback at 13.1-13.7 s sit off-centre; not worth a render.)

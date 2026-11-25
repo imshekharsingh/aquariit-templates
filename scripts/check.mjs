@@ -108,6 +108,21 @@ if (caps) {
   }
 }
 
+// 4d. posting slots (owner, 24 Nov 2026): design/slots.json has one HH:MM IST slot per channel inside the 13:00-21:00 window; reels without a postAt use it
+{
+  let sl = null;
+  try { sl = JSON.parse(readFileSync(join(root, 'design/slots.json'), 'utf8')); } catch (e) { err(`design/slots.json: cannot read it (${e.message})`); }
+  if (sl) for (const k of ['web', 'tech', 'c3']) { const v = sl.slots && sl.slots[k];
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(v || '') || v < '13:00' || v > '21:00') err(`design/slots.json: slots.${k} must be HH:MM between 13:00 and 21:00 IST (got ${v})`); }
+}
+
+// 4d2. AI label (owner, 24 Nov 2026): from 27 Nov every visible reel has "aiLabel": true or false (true when anything looks realistic enough to pass as real
+// footage); the builder sets it, the critic checks it (design/critic.md), the app shows it and Post now sends it to Instagram
+if (caps) for (const [name, j] of Object.entries(caps)) {
+  if (!j || j.hidden || j.sample || !j.postOn || j.postOn < '2026-11-27') continue;
+  if (typeof j.aiLabel !== 'boolean') err(`captions.json ${name}: add "aiLabel": true or false (true when anything looks realistic enough to pass as real footage; runbook-reels.md "AI label")`);
+}
+
 // 4e. tech rotation (owner, 22 Nov 2026: "every reel looks the same, no variation"; design/rules-tech.md "X" and "Rotation"): every visible tech
 // entry posting from 2026-11-22 has "format" and "device"; no two consecutive posting days share a format or a device class; at most one
 // "charging" (battery or charging) reel in any 7 days
@@ -130,6 +145,30 @@ if (caps) {
   }
   const chg = tech.filter(([, e]) => e.device === 'charging');
   for (let i = 1; i < chg.length; i++) if (day(chg[i][1].postOn) - day(chg[i - 1][1].postOn) < 7) err(`captions.json ${chg[i][0]}: a second battery / charging reel within 7 days of ${chg[i - 1][0]} (at most one a week)`);
+}
+
+// 4f. style record (owner chat, 25 Nov 2026; design/what-works.md "Style record"): every visible web / tech / Turns Out entry posting from 2026-11-25
+// carries a "style" object so the Sunday review can rank hooks, length, pace, look and hero. Planned values go in with the entry (hookType, look, hero,
+// firstSecondTension, payoff); the three measured numbers (lengthS, wordsPerS, shotChanges) may be null until the reel's post day, then they must be
+// filled from the MP4 (scripts/style-measure.mjs). null is only for a value that is truly unknown, never a guess.
+if (caps) {
+  const HOOKS = ['question', 'claim', 'number', 'contrast'], LOOKS = ['dark', 'light'], YN = ['yes', 'no'], PAY = ['tip', 'fact'];
+  const nowIST = new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
+  for (const [n, e] of Object.entries(caps)) {
+    if (!e || e.hidden || e.sample || !['web', 'tech', 'c3'].includes(e.channel) || !/^\d{4}-\d{2}-\d{2}$/.test(e.postOn || '') || e.postOn < '2026-11-25') continue;
+    const st = e.style;
+    if (!st || typeof st !== 'object') { err(`captions.json ${n}: add a "style" object (lengthS, wordsPerS, shotChanges, hookType, look, hero, firstSecondTension, payoff; design/what-works.md "Style record")`); continue; }
+    const num = (k) => st[k] === null || (typeof st[k] === 'number' && st[k] >= 0);
+    for (const k of ['lengthS', 'wordsPerS', 'shotChanges']) {
+      if (!num(k)) err(`captions.json ${n}: style.${k} must be a number or null`);
+      else if (st[k] === null && e.postOn <= nowIST) err(`captions.json ${n}: style.${k} is still null on its post day: run scripts/style-measure.mjs on the rendered MP4`);
+    }
+    if (!HOOKS.includes(st.hookType)) err(`captions.json ${n}: style.hookType must be one of ${HOOKS.join(' / ')}`);
+    if (!LOOKS.includes(st.look)) err(`captions.json ${n}: style.look must be dark or light`);
+    if (typeof st.hero !== 'string' || !st.hero.trim()) err(`captions.json ${n}: style.hero must name the main object (a short phrase)`);
+    if (!YN.includes(st.firstSecondTension)) err(`captions.json ${n}: style.firstSecondTension must be yes or no`);
+    if (!PAY.includes(st.payoff)) err(`captions.json ${n}: style.payoff must be tip or fact`);
+  }
 }
 
 // 4d. the Mandatory Gate (owner, 7 Nov 2026; design/mandatory.md): every reel posting from 2026-11-08 on has review/<channel>/<name>.md with

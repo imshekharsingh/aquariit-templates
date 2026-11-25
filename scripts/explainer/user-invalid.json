@@ -1,0 +1,89 @@
+{
+ "name": "showreel-47-user-invalid",
+ "seek": "scripts/explainer/user-invalid.html",
+ "style": "A sign-up form that is already red before anyone types: three fields lit like warning lamps flare, the counter reads 3, then user-invalid keeps it dark until the finger leaves a field (black look, a blue accent).",
+ "dur": 15,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.39,
+ "palette": "black",
+ "voice": {
+  "text": "Why is it red before typing? Empty fields count as invalid from the start. So the form paints red at once. The fix: swap invalid for user invalid. Now red waits until you leave.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "qa": {
+  "focus": {
+   "demo": [
+    28,
+    444,
+    512,
+    666
+   ],
+   "subject": [
+    38,
+    456,
+    502,
+    660
+   ],
+   "from": 0.3,
+   "to": 1.3
+  },
+  "mute": {
+   "before": {
+    "say": "paints"
+   },
+   "after": {
+    "say": "waits"
+   },
+   "span": 1.5
+  }
+ },
+ "caption": "Why is your form red before you type anything? 🔴 You open it and every field is already shouting.\n\nAn empty required field counts as invalid from the first paint, so input:invalid colours it at once. The fix: style input:user-invalid instead. It matches only after the person has interacted with the field, so the red waits until they leave it with a bad value. MDN: :user-invalid matches an invalid control after the user has interacted with it. Chrome 119, Firefox 88, Safari 16.5 (MDN browser compatibility).\n\nWatch the counter: RED FIELDS reads 3 before the fix and 0 after it.\n\nSave it for your next sign-up form, or send it to whoever builds yours.",
+ "keywords": [
+  "CSS user-invalid",
+  "form validation CSS",
+  "invalid vs user-invalid",
+  "form shows red before typing",
+  "input:user-invalid",
+  "CSS form styling",
+  "CSS tips"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#css",
+  "#webdev",
+  "#uidesign",
+  "#frontenddev"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:user-invalid",
+   "note": "MDN :user-invalid (page source mdn/content, read 25 Nov 2026): represents any validated form element whose value isn't valid based on its validation constraints, after the user has interacted with it; it must match an :invalid, :out-of-range, or blank-but :required element between the time the user has attempted to submit the form and before the user has interacted again with the form element"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/selectors/user-invalid.json",
+   "note": "MDN BCD css.selectors.user-invalid (read 25 Nov 2026): Chrome 119, Edge 119, Firefox 88, Safari 16.5"
+  }
+ ],
+ "tip": {
+  "title": "Why is your form red before you type anything?",
+  "why": "An empty required field is invalid from the first paint, so an input:invalid rule colours it red before anyone has touched the form. input:user-invalid matches the same fields only after the person has interacted with them (MDN: an invalid control after the user has interacted with it), so the red waits until they leave a field with a bad value. Supported in Chrome 119, Firefox 88 and Safari 16.5 (MDN browser compatibility data).",
+  "code": "<input required>\n<input type=\"email\" required>\n\n/* red before anyone types */\ninput:invalid { border-color: red; }\n\n/* red only after the person has interacted */\ninput:user-invalid { border-color: red; }",
+  "demo": "userinvalid",
+  "source": {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:user-invalid",
+   "label": "MDN :user-invalid"
+  }
+ },
+ "format": "single",
+ "say": {},
+ "experiment": {
+  "id": "web-load-state",
+  "change": "web ESCALATE (fourth day) answered with a new topic type: a form that is already red before anyone types (:user-invalid); frame 0 shows three red fields, the counter reads 3 and drops to 0 on the fix; black look with a blue accent, a small camera push and pull, and the reel loops into frame 0",
+  "vs": "median"
+ }
+}
