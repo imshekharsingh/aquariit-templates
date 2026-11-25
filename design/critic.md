@@ -72,7 +72,7 @@ D4. Does the last frame show both the before (thumbnail, tagged) and the after, 
 
 38. (22 Nov, critic, tech cold-shutdown render 3) Read the topic's cue list for the recap: is any recap pill cued on the same word as the end card (cue "warm2" = cue "final"), so it appears only while the scene fades out? Does every recap pill hold 1 s+ in clear space before the end card, and does the end card sit on a solid plate (no ghosted scene under its words) with the lower half used?
 
-39. (22 Nov, owner: "every reel looks the same, no variation, no detail") Tech Detail bar (rules-tech.md D1-D8): put the stills sheet next to night-mode's. Is the subject a drawn world with its own materials (not a rounded rect standing for it)? Do 6+ named parts arrive on their words, does it open up at least once, are there 3+ depth planes moving at their own speeds, 2+ loops of secondary motion that belong to the object in every chapter, two kinds of camera move, and 10+ micro-details at phone size? Does each chapter look different from the one before? Is its format (xray, showdown, quickmyth, indiapick) visible in the look, not only the chip?
+39. (22 Nov, owner: "every reel looks the same, no variation, no detail") Tech Detail bar (rules-tech.md D1-D8): put the stills sheet next to night-mode's. Is the subject a drawn world with its own materials (not a rounded rect standing for it)? Do 6+ named parts arrive on their words, does it open up at least once, are there 3+ depth planes moving at their own speeds, 2+ loops of secondary motion that belong to the object in every chapter, two kinds of camera move, and 10+ micro-details at phone size? Does each chapter look different from the one before? Is its format (xray, showdown, quickmyth) visible in the look, not only the chip?
 
 40. (22 Nov, owner: "no audience pull ... I'm not hooked to my own content") Tech audience pull (rules-tech.md P1-P4): does frame 0-1 s show a picture a stranger has not seen? Does the first line open a question that only the end answers? Does the last frame return to the opening picture so the replay loops? Does the caption ask one easy comment question (and never claim a viewer asked)?
 
@@ -91,6 +91,8 @@ number or word as bold). Write one line: `GOLD: matches | beats | below (<the fr
 and its one pause, the rewatch moment (give its time), the payoff. Then score, beside the defects:
 `STOP: n/10 (would I stop scrolling in the first second? frames 0-1 s)` and `REWATCH: n/10 (would I watch it twice? the moment and its time)`.
 Under 7 on either = CRITIC: NOT READY. **A reel that is clean but safe is NOT READY**: no defects is the floor, not the bar.
+
+45. (25 Nov, owner, tech: all global, fresh news, every shot alive; rules-tech.md N1-N4) Would a viewer today think any line is dated (an older model named alone, an old price, a feature that is no longer new)? Is any rupee price or "in India" line left? Is the topic news from the last 7 days with its date in the review file, and not a phone two days running? Is there a big keyword bar at the top of the screen (it fails; the hook word belongs to the picture)? Go shot by shot against the "habits" and "cycle" moments of showreel-tech-battery-cycles (the ones the owner liked): **mark every shot flatter than those as a fix**, with its time.
 
 ## Premium check (owner, 23 Nov 2026): before any verdict
 Load the skills frontend-design and hyperframes (.claude/skills/; Skill tool) and read hyperframes/references/motion.md and review.md, plus

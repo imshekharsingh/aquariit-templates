@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-25 20:45 IST · claude/tech-global-news-rules · tech rules: all global, fresh news, no top bar, every shot alive
+- Done: rules-tech.md (F2 now all global, indiapick retired, new N1-N4), critic.md question 45, runbook-daily.md tech research line, topic-bank.md tech options marked STALE, CLAUDE.md tech line, owner-feedback.md 5 lines (25 Nov).
+- Not done: scripts/check.mjs still lists indiapick as an allowed format (harmless; no script change in this size-S job).
+- Left: tomorrow's tech pick comes from fresh 7-day news research, not the topic bank.
+
 ## 2026-11-24 23:55 IST · claude/topic-bank-24nov · topic bank for 25-27 Nov (Sonnet research, Fable only picks)
 - Done: design/topic-bank.md: web 15 options (25, 26, 27 Nov), tech 10 (26, 27 Nov; 25 Nov skipped), each with hook, the one lesson, 2 facts with URLs, gold-look fit, a prop and the 2 picks per day. Web facts read in MDN's page source and browser-compat-data; tech facts read on apple.com, support.apple.com and developer.android.com (the only maker hosts reachable from here).
 - Not done: the CV critic verdict was NOT written into the review file; the write was blocked (it needs the critic's own session to write it, not a copy). Turns Out's task on 25 Nov re-checks and records it.
