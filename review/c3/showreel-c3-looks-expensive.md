@@ -5,11 +5,11 @@ Scene scripts/channel3/design/looks-expensive.js (copy: scripts/channel3/looks-e
 
 1. Topic: PASS: an invented honey label on a shop shelf, fixed in three moves (room, a small spaced name, two colours); one fix anyone can use on a label, logo or price tag; invented name, no real brand (design/safety.md)
 2. Frame 0: PASS: SUBJECT FILL: 94% at frame 0; the claim alone in the top band ("Too much going on."), the crowded label fully lit, its problems ringed (TOO BIG, TOO MANY COLOURS)
-3. Safe zone: PASS: SAFE ZONE: ok
+3. Safe zone: PASS: SAFE ZONE: ok (title, dial, captions, chips, rings, label and colour card inside x 60-960, y 250-1570 on the 0.5 s scan)
 4. No overlap: PASS: OVERLAP: none; BAND: clear; HOOK: clear of the subject
 5. Motion: PASS: STATIC STRETCH: none (least change 0.9, median 4.6); EMPTY FRAMES: none; TEXT FIT: all text inside its box
 6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; key words amber
-7. Voice: PASS: seven spoken sentences with breaths (voice.gap), first sentence 5 words, one short sentence ("It looks cheap."), contractions not needed; c3-script check in npm run check
+7. Voice: PASS: PREFLIGHT voice: 145 letters, 7 sentences, about 12.0 s at speed 1 with 1.95 s of breaths (reel 21 s, voice must end by 20.4 s): fits; HOOK PACE: the first sentence has 5 words: ok (6 or fewer); PRONUNCIATION: 0 overrides used; no unchecked words; one short sentence ("It looks cheap."); c3-script check in npm run check
 8. Sound: PASS: the design vocabulary (DT.S, drum-free): sting, stamp on "cheap", lands as the clutter leaves, drag on the name, two eyedropper clicks, reveal chord on "premium"
 9. Payoff: PASS: ends on the fixed label with BEFORE as a tilted thumbnail, two ticks and a green frame; no call to action on screen
 10. Facts: PASS: white space, fewer colours and restrained type read as premium (CXL, How to Create a Luxurious User Experience; Butterick, Letterspacing: spaced capitals); the reel claims no number
