@@ -5,6 +5,8 @@
    design), the before mistake, the three fixes in the script, the check chip. */
 /* the board's CSS (sizes of this topic's design). */
 /*css:begin*/
+.rul{position:absolute;width:24px;border-radius:6px;background:repeating-linear-gradient(180deg,rgba(24,26,36,.9) 0 2px,transparent 2px 12px) left/9px 100% no-repeat,repeating-linear-gradient(180deg,rgba(24,26,36,.75) 0 2px,transparent 2px 60px) left/16px 100% no-repeat,linear-gradient(90deg,#ece7dd,#dcd5c7);box-shadow:0 10px 26px rgba(0,0,0,.35);z-index:1}
+.rul.r{transform:scaleX(-1)}
 #board{left:66px;top:396px;width:408px;height:368px;border-radius:14px;border:10px solid #8a6a46}
 .sp{position:absolute;white-space:nowrap;font-family:'Space Grotesk'}
 .c{left:0;right:0;text-align:center}
@@ -22,6 +24,7 @@
 /*css:end*/
 /* the board markup: this topic's design as a believable first draft (rules-c3.md B1-B2). */
 /*board:begin*/
+<div class="rul" style="left:8px;top:400px;height:246px"></div><div class="rul r" style="left:508px;top:400px;height:246px"></div>
 <div id="board" class="board">
   <div class="sp c" id="nm">GOLDEN HONEY</div>
   <div class="sp c" id="tg">Pure · Natural · Best</div>
@@ -39,7 +42,7 @@
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#5ee0a0', '#ffb35a');
   // spoken sentences with breaths (rules-c3.md V1-V3); the before is a default first draft: big bold centred name, four colours, a badge and a banner, text touching the edges (B1)
   var TEXT = "Too much is going on. It looks cheap. Turns out, quiet looks expensive. First, give it room. Next, shrink and space the name. Then, keep just two colours. Same product, now it looks premium.";
-  var DUR = 21, BX = 66, BY = 396, V, PH, A = {}, CAM;
+  var DUR = 19.5, BX = 66, BY = 396, V, PH, A = {}, CAM;
   var NA = [214, 47, 47], NB = [32, 57, 44], TA_ = [238, 138, 28], SA = [51, 51, 51], GA = [255, 255, 255], GB = [246, 240, 228];
   function rgb(a){ return 'rgb(' + a.map(function(v){ return Math.round(v); }).join(',') + ')'; }
   function mixc(a, b, k){ return [mix(a[0], b[0], k), mix(a[1], b[1], k), mix(a[2], b[2], k)]; }
