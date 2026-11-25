@@ -2841,6 +2841,7 @@
   "hold": "Not ready, no post day (owner, 24 Nov 2026 night: no third render). Render 2 failed Output QA (NUMBERS rolling counts, SYNC 931, EDGES 1 TB box) and has a 26 s back-of-box slip; the fix is on branch claude/storage-gap-fix3 and in review/tech/showreel-tech-storage-gap.md item 13."
  },
  "showreel-tech-battery-cycles": {
+  "hidden": true,
   "channel": "tech",
   "postOn": "2026-11-25",
   "postAt": "15:00",
@@ -2907,8 +2908,8 @@
    "#csstips",
    "#css",
    "#webdev",
-   "#uidesign",
-   "#frontenddev"
+   "#htmlforms",
+   "#frontend"
   ],
   "channel": "web",
   "concept": "input:user-invalid { border-color: red } (an invalid field is styled only after the person has interacted with it, so a form is no longer red before anyone types); black look with a blue accent (rule 19), hook kit (rule 20), the reel loops into frame 0",
