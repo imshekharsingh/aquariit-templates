@@ -11,6 +11,11 @@ Moved from CLAUDE.md on 14 Nov 2026.
   owner's Feedback is read first when it resumes (Wednesday 04:30 IST).
 - Leftover branches that are not claude/ or never merged are listed for the owner (sessions cannot delete branches).
 
+## Owner decisions of 25 Nov 2026 (replace anything below that says otherwise)
+- Ask before anything costly: any job over about $5, any render past 2, any new side job or tooling job: the owner chat asks in chat with a plain cost estimate and moves only on a yes (still no taste or preview questions). A session that would pass its stated cap stops and messages the owner chat.
+- Stage updates: every build session sends the owner chat session a one-line message at each stage (build pushed, stills approved, render started, Output QA result, critic verdict). The owner chat tells the owner each stage in one line, unasked, and sets a wake-up (send_later) so it never waits for the owner to ask. If a builder cannot start the critic, the owner chat starts it at once (create_session, tag critic, model claude-opus-5-5).
+- No skip days (design/runbook-daily.md): a NOT READY reel is fixed and posted the same day; the owner chat asks the owner to approve the fix render with its cost.
+
 ## Working with the owner (owner, 3-4 Nov 2026)
 - Claude is the decision maker: decide and act on topics, formats, design, the app, tooling and process; tell the owner what changed on a
   card, not before. Ask the owner (one yes/no in the app's "Needs you" list, design/runbook-daily.md) only for what needs them: spending

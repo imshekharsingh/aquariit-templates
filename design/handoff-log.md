@@ -7,6 +7,10 @@ Format (at most 6 lines):
 ```
 
 
+## 2026-11-25 · claude/no-skip-days · owner decisions written into the rules (size S, text only)
+- Done: no skip days, ask before costly (over about $5, render past 2, side jobs), Turns Out outside stills check, unasked stage updates, smaller morning run. In CLAUDE.md (lean), runbook-daily, runbook-reels, runbook-studio, critic, c3-plan; four lines in owner-feedback.
+- Left: scripts/stage.mjs still accepts a "skipped" stage (unused now); scheduled tasks untouched, so the 06:47 task prompt is unchanged (it follows runbook-daily.md).
+
 ## 2026-11-25 · claude/style-records · merged main into the style-records branch
 - Done: kept both log entries and main's captions.json flags (c3-resume onGo, no date); added the branch's style fields; check passes.
 

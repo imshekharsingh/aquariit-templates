@@ -4,6 +4,7 @@
 
 ## 0. Turns Out design series (live from 21 Nov 2026)
 **24 Nov 2026 (owner, 23 Nov night): read design/c3-research-2026-11-24.md and rules-c3.md V1-V3, B1-B3, P1-P2 before building or posting a design reel. The seven unposted reels are held until rebuilt.**
+**25 Nov 2026 (owner): no skip days; Turns Out posts every day 13:00-21:00 IST. A reel the critic marks NOT READY is fixed (the critic writes the exact fix) and posted the same day; a 3rd render needs the owner's yes with its cost. Outside picture check: like web and tech, its stills are checked by a separate session (Fable, tag stills) before any render, and the builder never approves its own stills (on 25 Nov the builder self-approved and the reel failed); the review file needs that session's "STILLS CHECK: APPROVED" line (design/runbook-daily.md).**
 **Promise:** one design fix a day you can use on your own menu, poster, slide or invite. "Turns out, it's not the colours. It's the spacing."
 Why it can grow where the fun facts did not: each reel is something the viewer *has* (their own menu, invite, slide) to save and send,
 the same reason @webin20sec gets saves. Owner, 21 Nov: "I actually liked all five ... defining design across usage".
