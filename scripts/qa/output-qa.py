@@ -1099,6 +1099,8 @@ def main():
     voice_checks(text, speeds, heard) if text else line('PACE', 'SKIP', 'no narration in the config')
     sound_checks(mp4, logs)
     F = frames(mp4, fps, 270, 480)
+    look3d = c.get('look') == '3d'   # the colour-world 3D look (26 Nov 2026, design/3d-kit-phase2.md): its LOOK gold is gold.json "tech3d", and saturated fill may cover more of the frame
+    if look3d: T['sat_frac'] = .5
     colour_checks(F, fps, cover)
     edge_checks(F, fps, qa.get('edges_ok', []), heard, mp4)
     if ch == 'c3': grade_check(F, fps, cover, qa.get('subject') or (qa.get('guess') or {}).get('box'), (qa.get('guess') or {}).get('css_width', 540))
@@ -1112,7 +1114,7 @@ def main():
     else: line('HERO', 'SKIP', 'tech only')
     G = frames(mp4, fps, 135, 240, gray=True); del F
     variety_check(mp4, qa.get('subs') or T['subs'][ch])
-    look_check(mp4, ch, name)
+    look_check(mp4, 'tech3d' if look3d else ch, name)
     numbers_check(mp4, text, heard, qa.get('subs') or T['subs'][ch])
     sync_check(mp4, *sync_words(c, qa, ch), heard, dur, qa.get('subs') or T['subs'][ch])
     dead_check(G, fps, mp4, dur)

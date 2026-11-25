@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>kit3d-library-demo (hidden, never posted)</title>
+<!-- One of every object in techkit/lib3d.js on the stage, placed with W3D.place (row/column), for a stills check of the library (design/3d-kit-phase2.md). -->
+<style>*{margin:0;padding:0;box-sizing:border-box}html,body{width:1080px;height:1920px;overflow:hidden;background:#090a0e}</style></head><body>
+<!--THREE-->
+<!--WORLD3D-->
+<script>
+(() => {
+const S = W3D.stage(THREE, { W: 1080, H: 1920 }); S.dof.on = false; W3D.world(S, { seed: 5, props: 20, heroZone: 12, maxZ: -9 }); const L = W3D.lib;
+const rows = [
+  [L.phone(THREE, { screen: (c, w, h) => { c.fillStyle = '#fff'; c.font = '700 40px sans-serif'; c.fillText('9:41', 30, 80); } }), L.laptop(THREE, { screen: (c, w, h) => { c.fillStyle = '#42ff8c'; c.font = '700 40px monospace'; c.fillText('$ build ok', 40, 80); } }), L.chip(THREE)],
+  [L.rack(THREE), L.productBlock(THREE, { name: 'Core', sub: 'v2', led: true }), L.appTile(THREE, { name: 'Pay', color: 0x6b3cff, glyph: L.appGlyphs.pay })],
+  [L.codeCard(THREE, { title: 'POST /x', lines: [[['{', '#c7c9d1']], [['  "ok"', '#9ad1ff'], [': true', '#ffb86b']], [['}', '#c7c9d1']]], footer: '200 OK' }), L.dialog(THREE, {}), L.figure(THREE, '0123456789+x=', { height: .9 })],
+];
+rows.forEach((r, k) => { r.forEach((o) => S.scene.add(o)); W3D.place(THREE, r, { mode: 'row', gap: .7, at: [0, 0, 3.2 - k * 4.2] }); });
+S.cam.position.set(0, 9.5, 17); S.cam.fov = 52; S.cam.updateProjectionMatrix(); S.cam.lookAt(0, 0, -1.5); S.focus = null;
+window.render = () => { S.draw(0); }; window.render(0);
+})();
+</script></body></html>

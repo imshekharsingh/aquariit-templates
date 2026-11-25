@@ -73,7 +73,7 @@ def main():
             if '<!--KIT3D-->' in html:   # the shared 3D craft (shot changes, motion blur, words, materials): techkit/kit3d.js
                 html = html.replace('<!--KIT3D-->', '<script>' + open(os.path.join(HERE, 'kit3d.js')).read() + '</script>', 1)
             if '<!--WORLD3D-->' in html:   # the colour-world 3D kit (stage, floor, shadows, cables, depth of field, layout, captions): techkit/world3d.js
-                html = html.replace('<!--WORLD3D-->', '<script>' + open(os.path.join(HERE, 'world3d.js')).read() + '</script>', 1)
+                html = html.replace('<!--WORLD3D-->', '<script>' + open(os.path.join(HERE, 'world3d.js')).read() + '\n' + open(os.path.join(HERE, 'lib3d.js')).read() + '</script>', 1)
             open(os.path.join(out, 'scene.html'), 'w').write(html)
         words = sum(len(l['text'].split()) for l in topic['lines'])
         print(f'TIMELINE: {len(TL["scenes"])} chapters, {words} words, voice {TL["scenes"][0]["start"]:.2f}-{TL["scenes"][-1]["end"]:.2f} s, total {TL["total"]:.2f} s')

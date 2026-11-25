@@ -68,3 +68,18 @@ A standalone 3D scene (three.js at `<!--THREE-->`) puts `<!--KIT3D-->` after it;
 - Render: the Tech reel workflow splits the frames over `parts` jobs (default 6) and joins them; `preview: r2` keeps the result only in R2 study/ for the app's Previews.
 - **Counts, framings, places, cut sound (24 Nov 2026; rules-tech.md M7-M10)**: `KIT3D.countTo(t, t1, a, b)` (a count in 0.55 s that lands on the spoken word), `KIT3D.reframe(A, B, k)` (a second framing inside a shot), `materials().server()` (a rack face that reads as servers), the topic's `"cutsound": {"payoff": "<cue>"}` (sound.py: swell + low hit on every shot change, a riser that crests on the payoff).
 - **A preview with its own scene**: `techreel/previews/<slug>-<tag>.json` (keys replace the topic's when the Tech reel run has `preview: <tag>`; locally `PREVIEW=<tag>`). A posted reel's scene and topic are never edited for a study render: copy the scene (scenes/ai-memory-r4.html is the example).
+
+## 3D colour-world kit (26 Nov 2026; design/3d-kit-phase1.md, design/3d-kit-phase2.md)
+Files: `world3d.js` (window.W3D: stage, world, contactShadow, cable, place/check/clearOf, captions) and `lib3d.js` (W3D.lib objects, figures, camPath). A scene puts `<!--THREE-->` then `<!--WORLD3D-->`
+(both files) in its html; techkit/make.py and scripts/3dkit-assemble.py inline them. Starter: `node scripts/starter.mjs tech3d <slug>` (copy of techkit/scenes/gold3d-sample.html).
+Frame order: set objects and camera from t (`cam(t)`), `cable.update(t)` / `reveal(u)`, `shadow.update()`, `S.draw(t)`, caption fn(t). A scene is a pure function of t.
+- `S = W3D.stage(THREE, {W,H})`: renderer, environment, lights, post chain. `S.dof = {on, aperture, focusRange, maxR}`, `S.focus = obj | Vector3` (DOF follows the hero), `S.bloom`, `S.exposure`.
+- `W3D.world(S, {seed, props, palette, radius, heroZone, maxZ})`: dark neutral floor with a pool of light and haze, blurred racks / tiles / phones behind the hero (`maxZ` keeps them behind it).
+- `W3D.contactShadow(S, obj, {w, d, surfaceY, rest})`: shadow + occlusion under an object; call `update()` each frame.
+- `W3D.cable(S, points, {color, radius, glow, halo, pulse, floorGlow, light, segments})`: `update(t, on)`, `reveal(0..1)` grows or retracts it. With many cables use `light: 0` and `segments: 90`.
+- `W3D.lib.appTile / phone / laptop / chip / rack / productBlock / codeCard / dialog`, all standing on y = 0, size in `userData.size`; `appTile` has a logo slot (`userData.logoSlot`, or pass `logo: texture` from a licensed file).
+- `W3D.lib.figure(THREE, '3x8=24', {height, color})`: 3D number figures (0-9 + x = -). Ride the camera for a fixed screen spot (see gold3d-sample).
+- `W3D.camPath(S, keys)`: one continuous move through keys `{t, pos, look, fov}`; `W3D.place(THREE, objs, {mode: row|column|stack|ring})`; `W3D.check(S, objs, rects)` / `W3D.clearOf` for logo and label overlap.
+- `W3D.captions({lines: [{t0, t1, words, times, keyIdx}]})`: grey words, current white, key words in the blue selection box with padding.
+Portrait frame: the view is narrow (width = 0.56 x height), so use fov 50-55 and keep the cast within about 6 units of width at the hero's distance.
+Cost: about 2 s a frame at 1080x1920 (local software GPU); the 20 s sample at 60 fps is 1200 frames, run in 6 parts.

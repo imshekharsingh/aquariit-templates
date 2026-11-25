@@ -142,3 +142,8 @@ The 5 things that make it good:
 - Output QA LOOK on the USB-C reel vs gold: FAIL, 5 of 6 measures off, 42 of 66 frames washed out (0-5.5, 10.5-24, 31-33 s).
 
 - (owner, 24 Nov 2026, storage-gap) The starter copies the look, light, type and pacing of the gold reel, never its hero object or layout. The critic fails a reel whose main object matches any of our last 5 reels.
+
+## Tech, the colour-world 3D look: showreel-tech-gold3d-sample (candidate, 26 Nov 2026)
+Built by the phase 2 3D kit (design/3d-kit-phase2.md, techkit/README.md "3D colour-world kit"). Candidate until the critic writes READY and the owner likes it; then it becomes the gold for tech reels in this look and
+scripts/qa/gold.json "tech3d" holds its LOOK numbers. Start a reel in this look with `node scripts/starter.mjs tech3d <slug>` (config key `"look": "3d"` makes Output QA LOOK use "tech3d" and lets saturated fill cover up to 50 %).
+What makes it the model: a neutral dark world with blurred background props, glossy colourful objects, thin separate glowing cables, number figures in 3D, one camera path, words boxed in blue.
