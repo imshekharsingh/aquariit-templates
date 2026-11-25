@@ -78,7 +78,7 @@ function drawTally(c, w, h, r1, r2, one) {
   [[r1, 0], [r2, 1]].forEach(([r, b]) => {
     const R = rng(90 + b), g0 = Math.round(r * 100), x0 = (FW - BLK) / 2, y0 = TOP0 + b * (BLK + GAP), s = TG * PXU;
     for (let g = 0; g < g0; g++) { const col = g % 10, row = Math.floor(g / 10), gx = (x0 + col * TG) * PXU, gy = (y0 + row * TG) * PXU, hot = r < 1 && g > g0 - 9;
-      c.strokeStyle = hot ? '#ffb347' : 'rgba(255,238,205,.95)'; c.lineWidth = hot ? 5.5 : 4.5; c.shadowColor = hot ? '#ff9a2e' : 'rgba(255,200,120,.8)'; c.shadowBlur = hot ? 14 : 5;
+      c.strokeStyle = hot ? '#ffb347' : 'rgba(255,238,205,.95)'; c.lineWidth = hot ? 8.5 : 7.5; c.shadowColor = hot ? '#ff9a2e' : 'rgba(255,200,120,.8)'; c.shadowBlur = hot ? 14 : 5;
       for (let k = 0; k < 4; k++) { const xx = gx + s * (.13 + k * .2) + (R() - .5) * 2.5, j = (R() - .5) * 5; c.beginPath(); c.moveTo(xx + j, gy + s * .12); c.lineTo(xx - j * .6, gy + s * .88); c.stroke(); }
       c.beginPath(); c.moveTo(gx + s * .02, gy + s * .78 + (R() - .5) * 4); c.lineTo(gx + s * .98, gy + s * .2); c.stroke(); } });
   c.shadowBlur = 0;
@@ -152,11 +152,6 @@ const heroGlow = sprite(0x6aa8d8, .2, 14, 20); scene.add(heroGlow);
 const kick = new THREE.PointLight(0xff9a40, 0, 22, 1.5); scene.add(kick);   // a warm kicker from the front right, so the glass face is not one cool slab
 const bgEdges = new THREE.Group(); bgEdges.position.copy(WORLD[2]); scene.add(bgEdges);
 const shaftsC = []; for (let i = 0; i < 6; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 18), new THREE.MeshBasicMaterial({ map: glowTex, color: 0x0b9bbd, transparent: true, opacity: .16, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, toneMapped: false })); m.position.set(WORLD[2].x + (i - 2.5) * 2.6, 3, WORLD[2].z - 8); m.rotation.z = (i - 2.5) * .07; scene.add(m); shaftsC.push(m); }
-// the gauge beside the hero in C: ticks every 10%, the 80% one in amber
-const gauge = new THREE.Group(); hero.add(gauge);
-{ const tm = new THREE.MeshBasicMaterial({ color: 0x9fb4c8, transparent: true, opacity: .7 }), am = new THREE.MeshBasicMaterial({ color: HEAT });
-  for (let i = 0; i <= 10; i++) { const major = i % 5 === 0, m = new THREE.Mesh(new THREE.BoxGeometry(i === 8 ? .62 : major ? .46 : .26, i === 8 ? .06 : .035, .03), i === 8 ? am : tm); m.position.set(CW / 2 + .5 + (i === 8 ? .15 : 0), -IH / 2 + IH * i / 10, 0); gauge.add(m); }
-  const sp = new THREE.Mesh(new THREE.BoxGeometry(.03, IH, .03), tm); sp.position.set(CW / 2 + .33, 0, 0); gauge.add(sp); }
 // C's backdrop: rows of dark cells far behind, out of focus, lit by the rim
 const bgC = new THREE.InstancedMesh(new THREE.BoxGeometry(CW * .7, CH * .7, CD * .7), new THREE.MeshBasicMaterial({ color: 0x010203 }), 21); bgC.position.copy(WORLD[2]); scene.add(bgC);
 { const d = new THREE.Object3D(), eg = new THREE.EdgesGeometry(new THREE.BoxGeometry(CW * .7, CH * .7, CD * .7)); for (let j = 0; j < 3; j++) for (let i = 0; i < 7; i++) { d.position.set((i - 3) * 2.3, (j - 1) * 3.9 + 1, -15 - (j % 2) * 1.6); d.rotation.y = (i - 3) * .05; d.updateMatrix(); bgC.setMatrixAt(j * 7 + i, d.matrix);
@@ -171,27 +166,76 @@ for (let k = 0; k < 4; k++) { const g = new THREE.Group(), a = new THREE.Mesh(ne
 const bead = sprite(0xffffff, 0, 1.3, 1.3); ringG.add(bead); const ringGlow = sprite(SIG, 0, 9, 9); ringGlow.position.z = -.5; ringG.add(ringGlow);
 // D: two cells side by side, 500 marks and 1000 marks
 const cellsD = new THREE.Group(); cellsD.position.copy(WORLD[3]); scene.add(cellsD);
-const cellL = makeCell(tallyTex(1, 0)), cellR = makeCell(tallyTex(1, 1)); cellL.position.set(-1.3, 0, 0); cellL.rotation.y = .3; cellR.position.set(6, 0, -.3); cellR.rotation.y = -.3; cellL.scale.setScalar(.88); cellR.scale.setScalar(.88); cellsD.add(cellL, cellR);
-[cellL, cellR].forEach((c) => { c.userData.setLevel(.8); c.userData.mark(.8, .9); }); const dGlow = sprite(0x6aa8d8, .16, 22, 16); dGlow.position.set(0, .5, -3); cellsD.add(dGlow);
-// E: the target rings behind the hero
-const tgtE = new THREE.Group(); tgtE.position.set(WORLD[4].x, .5, WORLD[4].z - 6); scene.add(tgtE);
-const TG_R = [1.6, 2.3, 3.0].map((r, i) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, .035 + i * .004, 8, 90), new THREE.MeshBasicMaterial({ color: HEAT, transparent: true, opacity: .55 - i * .12, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); tgtE.add(m); return m; });
-const tgtGlow = sprite(HEAT, .4, 14, 14); tgtE.add(tgtGlow);
-// F: three worn cells in a row, going back
-const rowF = new THREE.Group(); rowF.position.copy(WORLD[5]); scene.add(rowF);
-const ROW = [[-.7, 0, .3, .8, .9], [.8, -6.2, -.3, .62, .6], [-.5, -12.4, .3, .5, .35], [.7, -18.6, -.3, .38, .15]].map(([x, z, ry, lv, r]) => { const c = makeCell(tallyTex(r, 0)); c.position.set(x, 0, z); c.rotation.y = ry; c.userData.setLevel(lv); rowF.add(c); return c; });
-ROW[0].userData.tint(HEAT); const rowGlow = sprite(HEAT, .12, 14, 16); rowGlow.position.set(0, .5, -2); rowF.add(rowGlow);
+const dGlow = sprite(0x6aa8d8, .16, 22, 16); dGlow.position.set(0, .5, -3); cellsD.add(dGlow);
+const rowGlow = sprite(HEAT, .12, 14, 16);
 const FOGF = new THREE.FogExp2(0x090b10, .02);
-// G: the health card in front of the hero (code-drawn, no brand)
-const cardTex = ctex(640, 480, (c, w, h) => {
-  c.fillStyle = 'rgba(8,14,22,.9)'; c.beginPath(); c.roundRect ? c.roundRect(8, 8, w - 16, h - 16, 40) : c.rect(8, 8, w - 16, h - 16); c.fill();
-  c.strokeStyle = 'rgba(56,225,255,.85)'; c.lineWidth = 5; c.stroke();
-  c.fillStyle = '#f4f6f8'; c.font = '800 54px "Inter Display", Inter, sans-serif'; c.fillText('Battery health', 52, 118);
-  c.fillStyle = 'rgba(244,246,248,.6)'; c.font = '600 36px "Inter Display", Inter, sans-serif'; c.fillText('Maximum capacity', 52, 218);
-  c.fillStyle = 'rgba(244,246,248,.14)'; c.fillRect(52, 262, w - 104, 34); c.fillStyle = '#38e1ff'; c.fillRect(52, 262, (w - 104) * .84, 34);
-  c.fillStyle = 'rgba(244,246,248,.18)'; c.fillRect(52, 346, 300, 18); c.fillRect(52, 386, 210, 18); });
-cardTex.encoding = THREE.sRGBEncoding;
-const card = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 2.18), new THREE.MeshBasicMaterial({ map: cardTex, transparent: true, depthWrite: false })); card.position.set(0, 1.45, CD / 2 + 1.2); card.renderOrder = 9; hero.add(card);
+// ---------- phones (code-drawn, no brand): C, D, F, G each get their own picture ----------
+const PW = 2.2, PH = 4.6, PD = .2, SWd = PW - .14, SHt = PH - .14, SCW = 520, SCH = Math.round(SCW * SHt / SWd);
+const bodyGeo = (() => { const g = new THREE.ExtrudeGeometry(rrShape(PW, PH, .36), { depth: PD, bevelEnabled: true, bevelThickness: .035, bevelSize: .035, bevelSegments: 5, curveSegments: 24 }); g.translate(0, 0, -PD / 2); return g; })();
+const scrGeo = (() => { const g = new THREE.ShapeGeometry(rrShape(SWd, SHt, .3), 24), uv = g.attributes.uv, pos = g.attributes.position; for (let i = 0; i < uv.count; i++) uv.setXY(i, pos.getX(i) / SWd + .5, pos.getY(i) / SHt + .5); return g; })();
+const M_BODY = new THREE.MeshPhysicalMaterial({ color: 0x59616c, metalness: .9, roughness: .3, clearcoat: .35, clearcoatRoughness: .3, envMapIntensity: .95 });
+function rrect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r); c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h); c.lineTo(x + r, y + h); c.quadraticCurveTo(x, y + h, x, y + h - r); c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y); c.closePath(); }
+function batIcon(c, x, y, w, h, level, col, line) {   // a battery drawn on the phone's screen, with an amber 80% line
+  c.lineWidth = 9; c.strokeStyle = 'rgba(244,246,248,.85)'; rrect(c, x, y, w, h, h * .22); c.stroke(); c.fillStyle = 'rgba(244,246,248,.85)'; rrect(c, x + w + 8, y + h * .3, 16, h * .4, 6); c.fill();
+  c.fillStyle = col; c.shadowColor = col; c.shadowBlur = 24; rrect(c, x + 14, y + 14, Math.max(2, (w - 28) * level), h - 28, h * .12); c.fill(); c.shadowBlur = 0;
+  if (line) { c.fillStyle = '#ffae3d'; c.fillRect(x + 14 + (w - 28) * .8 - 4, y - 16, 8, h + 32); } }
+function drawScreen(c, w, h, s) {
+  const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#0c1c2b'); g.addColorStop(1, '#070a10'); c.fillStyle = g; c.fillRect(0, 0, w, h); c.textAlign = 'center';
+  c.fillStyle = '#000'; rrect(c, w / 2 - 62, 30, 124, 38, 19); c.fill();
+  const F = (px, wt) => `${wt || 800} ${px}px "Inter Display", Inter, sans-serif`;
+  if (s.kind === 'pct') { c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(40, 700); c.fillText('Battery', w / 2, 170);
+    batIcon(c, 70, 250, w - 170, 210, s.level, '#0b9bbd', true);
+    c.fillStyle = '#f4f6f8'; c.font = F(s.text.length > 3 ? 190 : 230, 900); c.fillText(s.text, w / 2, 760);
+    c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(42, 700); c.fillText('Maximum capacity', w / 2, 850);
+    if (s.cyc) { c.fillStyle = '#ffb347'; c.font = F(84, 900); c.fillText(s.cyc, w / 2, 1010); c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(38, 700); c.fillText('charge cycles', w / 2, 1066); } }
+  else if (s.kind === 'cycles') { c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(42, 700); c.fillText(s.title, w / 2, 190);
+    c.fillStyle = s.col; c.shadowColor = s.col; c.shadowBlur = 40; c.font = F(s.big.length > 3 ? 200 : 260, 900); c.fillText(s.big, w / 2, 560); c.shadowBlur = 0;
+    c.fillStyle = 'rgba(244,246,248,.7)'; c.font = F(58, 800); c.fillText('cycles', w / 2, 650);
+    batIcon(c, 70, 800, w - 170, 150, .8, s.col === '#38e1ff' ? '#0b9bbd' : '#7d97ab', true); c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(40, 700); c.fillText('keeps 80%', w / 2, 1040); }
+  else if (s.kind === 'charge') { c.fillStyle = '#f4f6f8'; c.font = F(230, 900); c.fillText('3:12', w / 2, 400); c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(44, 700); c.fillText('Charging overnight', w / 2, 480);
+    batIcon(c, 70, 640, w - 170, 230, s.level, '#d0780a', false); c.fillStyle = '#ffb347'; c.font = F(130, 900); c.fillText(Math.round(s.level * 100) + '%', w / 2, 1060); }
+  else { c.textAlign = 'left'; c.fillStyle = '#f4f6f8'; c.font = F(60, 800); c.fillText('Battery health', 52, 230); c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(40, 700); c.fillText('Maximum capacity', 52, 350);
+    c.fillStyle = 'rgba(244,246,248,.14)'; rrect(c, 52, 400, w - 104, 56, 28); c.fill(); c.fillStyle = '#38e1ff'; c.shadowColor = '#38e1ff'; c.shadowBlur = 24; rrect(c, 52, 400, Math.max(30, (w - 104) * s.level), 56, 28); c.fill(); c.shadowBlur = 0;
+    c.fillStyle = 'rgba(244,246,248,.2)'; rrect(c, 52, 560, 330, 26, 13); c.fill(); rrect(c, 52, 620, 240, 26, 13); c.fill(); rrect(c, 52, 700, w - 104, 150, 30); c.fill(); }
+}
+function makePhone(init) {
+  const G = new THREE.Group(), U = { key: '' };
+  G.add(new THREE.Mesh(bodyGeo, M_BODY));
+  const c = document.createElement('canvas'); c.width = SCW; c.height = SCH; const tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding; tex.anisotropy = 4;
+  const scr = new THREE.Mesh(scrGeo, new THREE.MeshBasicMaterial({ map: tex, toneMapped: false })); scr.position.z = PD / 2 + .04; G.add(scr);
+  const bt = (y, h) => { const b = new THREE.Mesh(new THREE.BoxGeometry(.05, h, .1), M_BODY); b.position.set(PW / 2 + .02, y, 0); G.add(b); }; bt(1.1, .5); bt(.35, .34); bt(-.15, .34);
+  const ed = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(PW + .02, PH + .02, PD + .02)), new THREE.LineBasicMaterial({ color: SIG, transparent: true, opacity: .35 })); G.add(ed);
+  U.set = (s) => { const key = JSON.stringify(s, (k, v) => typeof v === 'number' ? Math.round(v * 40) : v); if (key === U.key) return; U.key = key; drawScreen(c.getContext('2d'), SCW, SCH, s); tex.needsUpdate = true; };
+  U.set(init); G.userData = U; return G;
+}
+// C: one phone, its battery screen
+const phoneC = makePhone({ kind: 'pct', level: 1, text: '100%' }); phoneC.position.copy(WORLD[2]); scene.add(phoneC);
+// the gauge beside the phone in C: ticks every 10%, the 80% one in amber
+const gauge = new THREE.Group(); phoneC.add(gauge);
+{ const tm = new THREE.MeshBasicMaterial({ color: 0x9fb4c8, transparent: true, opacity: .7 }), am = new THREE.MeshBasicMaterial({ color: HEAT });
+  for (let i = 0; i <= 10; i++) { const major = i % 5 === 0, m = new THREE.Mesh(new THREE.BoxGeometry(i === 8 ? .5 : major ? .38 : .2, i === 8 ? .06 : .035, .03), i === 8 ? am : tm); m.position.set(-PW / 2 - .34 - (i === 8 ? .1 : 0), -PH / 2 + .3 + (PH - .6) * i / 10, 0); gauge.add(m); }
+  const sp = new THREE.Mesh(new THREE.BoxGeometry(.03, PH - .6, .03), tm); sp.position.set(-PW / 2 - .22, 0, 0); gauge.add(sp); }
+// F: a phone lying on a charging pad overnight, heat rings rising
+const phoneF = makePhone({ kind: 'charge', level: .8 }), padG = new THREE.Group(); padG.position.copy(WORLD[5]); scene.add(padG);
+phoneF.rotation.x = -Math.PI / 2; phoneF.position.y = .1; padG.add(phoneF);
+const HR = [0, 1, 2].map((i) => { const m = new THREE.Mesh(new THREE.TorusGeometry(1.9 + i * .0, .05, 8, 90), new THREE.MeshBasicMaterial({ color: HEAT, transparent: true, opacity: .5, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); m.rotation.x = Math.PI / 2; padG.add(m); return m; });
+const padDisc = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 2.6, .08, 64), new THREE.MeshStandardMaterial({ color: 0x1a1d22, metalness: .8, roughness: .35 })); padDisc.position.y = -.25; padG.add(padDisc);
+const padGlow = sprite(HEAT, .35, 9, 9); padGlow.position.set(0, -.1, 0); padG.add(padGlow);
+// G: the health screen, big
+const phoneG = makePhone({ kind: 'health', level: .1 }); phoneG.position.copy(WORLD[6]); scene.add(phoneG);
+// D: two phones side by side, 500 and 1000
+const phoneL = makePhone({ kind: 'cycles', title: 'iPhone 14', big: '500', col: '#f4f6f8' }), phoneR = makePhone({ kind: 'cycles', title: 'iPhone 15', big: '1000', col: '#38e1ff' });
+cellsD.add(phoneL, phoneR); phoneL.position.set(-1.3, 0, 0); phoneL.rotation.y = .3; phoneR.position.set(6, 0, -.3); phoneR.rotation.y = -.3;
+// E: a big target, a dart lands in it (the design target)
+const tgtE = new THREE.Group(); tgtE.position.set(WORLD[4].x, 1.2, WORLD[4].z); tgtE.rotation.x = -.18; scene.add(tgtE);
+const TG_R = [.5, 1.05, 1.6, 2.1].map((r, i) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, .05 + i * .006, 10, 100), new THREE.MeshBasicMaterial({ color: i === 0 ? 0xffe2b0 : HEAT, transparent: true, opacity: .95 - i * .14, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); tgtE.add(m); return m; });
+[[.52, .14], [1.07, .1], [1.62, .07]].forEach(([r, op], i) => { const d = new THREE.Mesh(new THREE.CircleGeometry(r, 60), new THREE.MeshBasicMaterial({ color: HEAT, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); d.position.z = -.02 - i * .01; tgtE.add(d); });
+{ const tm = new THREE.MeshBasicMaterial({ color: 0xf4f6f8, transparent: true, opacity: .75 }); for (let i = 0; i < 60; i++) { const a = i / 60 * Math.PI * 2, big = i % 5 === 0, m = new THREE.Mesh(new THREE.BoxGeometry(.03, big ? .24 : .12, .02), tm); m.position.set(Math.cos(a) * 2.38, Math.sin(a) * 2.38, 0); m.rotation.z = a - Math.PI / 2; tgtE.add(m); } }
+const dart = new THREE.Group(); { const shaft = new THREE.Mesh(new THREE.CylinderGeometry(.045, .045, 3.2, 12), new THREE.MeshStandardMaterial({ color: 0xaab6c3, metalness: .9, roughness: .3 })), tip = new THREE.Mesh(new THREE.ConeGeometry(.12, .45, 16), new THREE.MeshBasicMaterial({ color: SIG, toneMapped: false }));
+  shaft.rotation.x = Math.PI / 2; shaft.position.z = 1.85; tip.rotation.x = -Math.PI / 2; tip.position.z = .2; dart.add(shaft, tip);
+  for (let i = 0; i < 3; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(.03, .5, .6), new THREE.MeshBasicMaterial({ color: SIG, toneMapped: false })); f.position.z = 3.2; f.rotation.z = i * Math.PI / 3; dart.add(f); } }
+tgtE.add(dart);
+const tgtGlow = sprite(HEAT, .4, 10, 10); tgtGlow.position.z = -.3; tgtE.add(tgtGlow);
 
 // sparks (the scratch on the face, the single tally on B)
 let CUR = 0;
@@ -204,7 +248,7 @@ BURSTS.push({ t0: C.total + .05, at: () => cellB.localToWorld(V(0, .4, CD / 2 + 
 
 // ---------- shot timing (from the voice) ----------
 const S = SC.map((s) => s.start);
-const B = [0, S[1] - .2, S[2] - .2, S[3] - .2, S[4] - .2, S[5] - .2, S[6] - .2, TOTAL];   // shot k runs B[k]..B[k+1]
+const B = [0, S[1] - .2, S[2] - .2, S[3] - .2, S[4] - .2, Math.max(S[5] - .2, C.deadline + 1.15), S[6] - .2, TOTAL];   // shot k runs B[k]..B[k+1]
 const shotAt = (t) => { for (let k = B.length - 2; k >= 0; k--) if (t >= B[k]) return k; return 0; };
 // the six shot changes, each a different kind where it has a cause (techkit/kit3d.js): CUTS[k] is the change at B[k]
 const CUTS = [null, { kind: 'push', color: '56,225,255', depth: .82, flash: .6 }, { kind: 'rack' }, { kind: 'wipe', dir: 1 }, { kind: 'whip', dir: 1, yaw: .3 }, { kind: 'rack' }, { kind: 'push', color: '255,206,150', depth: .7, flash: .6 }];
@@ -217,27 +261,27 @@ const G = KIT.glide;
 const orb = (w, d, az, el, ly, fov = 31, ox = 0) => ({ pos: V(w.x + ox + Math.sin(az) * Math.cos(el) * d, w.y + ly * .5 + Math.sin(el) * d, w.z + Math.cos(az) * Math.cos(el) * d), look: V(w.x + ox, w.y + ly, w.z), fov });
 function shotCam(t, sh) {
   const u = prog(t, B[sh], B[sh + 1]), g = G(u), w = WORLD[sh];
-  if (sh === 0) { const F0 = orb(w, lerp(15.6, 12.8, g), lerp(-.28, .16, g), .03, 1.85), F1 = { pos: V(1.9, -.6, 10.8), look: V(0, 1.7, 0), fov: 38 };   // the front view, then a low macro looking up at the second block of marks
-    return KIT.reframe(F0, F1, ease(prog(t, C.double - .3, C.double + .55))); }
+  if (sh === 0) { const u0 = prog(t, 0, C.double - .3), M = { pos: V(lerp(-.15, .25, u0), 1.5, lerp(6.4, 5.9, u0)), look: V(0, 1.47, 0), fov: 31 }, F0 = orb(w, lerp(14.6, 12.8, g), lerp(-.2, .16, g), .03, 1.85);   // frame 0: a macro on the tally being scratched in, then a pull back to the whole cell as the second 500 arrives
+    return KIT.reframe(M, F0, ease(prog(t, C.double - .35, C.double + .5))); }
   if (sh === 1) { const hold = KIT.push(Math.max(0, t - B[1]), .012);   // a wide look at the ring, an orbit as it fills, then a push to the cell for the single mark
-    const F0 = orb(w, 12.4 * (1 - hold), lerp(-.5, .4, g), .03, 1.0, 32), F1 = { pos: V(w.x + .5, w.y - .1, w.z + 5.6), look: V(w.x, w.y + .15, w.z), fov: 30 };
+    const F0 = orb(w, 11.6 * (1 - hold), lerp(-.5, .4, g), .03, 1.0, 32), F1 = { pos: V(w.x + .5, w.y - .1, w.z + 5.6), look: V(w.x, w.y + .15, w.z), fov: 30 };
     return KIT.reframe(F0, F1, ease(prog(t, C.total - .4, C.total + .2))); }
-  if (sh === 2) { const F0 = { pos: V(w.x + lerp(-4.6, -2.6, g), -.7, w.z + 13.4), look: V(w.x + .1, 1.35, w.z), fov: 33 }, F1 = orb(w, 13.4, .12, .02, 2.0, 31, .55), F2 = { pos: V(w.x + 2.7, 1.7, w.z + 9.6), look: V(w.x, 1.9, w.z), fov: 36 };   // a low three-quarter, the front with the gauge, a slide across the marks
+  if (sh === 2) { const F0 = { pos: V(w.x + lerp(-4.4, -2.6, g), -.7, w.z + 13.0), look: V(w.x + .1, 1.3, w.z), fov: 33 }, F1 = orb(w, 12.6, .12, .02, 1.7, 31, .3), F2 = { pos: V(w.x + 1.2, 1.6, w.z + 8.4), look: V(w.x, 1.7, w.z), fov: 34 };   // a low three-quarter on the phone, the front, a push onto its screen
     const a = KIT.reframe(F0, F1, ease(prog(t, C.p80 - .5, C.p80 + .35))); return KIT.reframe(a, F2, ease(prog(t, C.c500 - .4, C.c500 + .45))); }
   if (sh === 3) { const hold = KIT.push(Math.max(0, t - B[3]), .012), F0 = { pos: V(w.x - 1.0, .9, w.z + 11.5 * (1 - hold)), look: V(w.x - 1.3, 1.2, w.z), fov: 31 },
-      F1 = { pos: V(w.x, 1.0, w.z + 19.8 * (1 - KIT.push(Math.max(0, t - C.i15 - .6), .02))), look: V(w.x, 1.1, w.z), fov: 31 };   // the 500 cell whole, a pull back as the 1000 cell arrives, both side by side (a saveable frame) held
-    const F2 = { pos: V(w.x + 2.3, .7, w.z + 13.8), look: V(w.x + 1.3, 1.3, w.z - .3), fov: 31 };   // then a push on the 1000 cell's marks, and back out to both
+      F1 = { pos: V(w.x, 1.0, w.z + 19.8 * (1 - KIT.push(Math.max(0, t - C.i15 - .6), .02))), look: V(w.x, 1.1, w.z), fov: 31 };   // the 500 phone whole, a pull back as the 1000 phone arrives, both side by side (a saveable frame) held
+    const F2 = { pos: V(w.x + 2.3, .7, w.z + 13.8), look: V(w.x + 1.3, 1.3, w.z - .3), fov: 31 };   // then a push on the 1000 phone's screen, and back out to both
     const x = KIT.reframe(F0, F1, ease(prog(t, C.i15 - .15, C.i15 + .7))), y = KIT.reframe(x, F2, ease(prog(t, C.c1000 - 1.7, C.c1000 - .7)));
     return KIT.reframe(y, F1, ease(prog(t, C.c1000 + .75, C.c1000 + 1.5))); }
-  if (sh === 4) return orb(w, lerp(14.4, 12.8, g), lerp(-.5, .45, g), .03, 1.8);   // an orbit round the cell in front of the target rings
-  if (sh === 5) { const F0 = { pos: V(w.x + .2, .4, w.z + lerp(17.2, 15.6, g)), look: V(w.x, 1.5, w.z - 9), fov: 36 }, F1 = { pos: V(w.x - .4, .5, w.z + 12.8), look: V(w.x + .1, 1.9, w.z - 13), fov: 36 };   // a row of four worn cells going back, then a closer look down the row
+  if (sh === 4) return orb(w, lerp(14.2, 12.0, g), lerp(-.55, .5, g), .12, 1.75);   // an orbit round the target the dart lands in
+  if (sh === 5) { const F0 = orb(w, 13.2, lerp(-.7, -.2, g), .62, .2, 34), F1 = orb(w, 8.6, lerp(.3, .9, g), .5, .3, 34);   // a high look down on the phone on its pad, then closer, across the heat rings
     return KIT.reframe(F0, F1, ease(prog(t, C.use - .3, C.use + .6))); }
-  const k = G(prog(t, B[6], TOTAL - .05), .45), A0 = shotCam(0, 0), F = orb(WORLD[0], 13.6, .05, .03, 1.85);   // G settles on A's framing (the loop)
-  return { pos: F.pos.clone().lerp(A0.pos, k), look: F.look.clone().lerp(A0.look, k), fov: 31 };
+  const k = G(prog(t, B[6], TOTAL - .05), .45), F = orb(WORLD[6], lerp(13.4, 11.4, k), lerp(.5, -.12, k), .03, 1.8);   // the health screen, a slow orbit and push
+  return F;
 }
 const SHAKES = () => [[C.n500, .16], [C.double, .13], [C.c500, .07], [C.c1000, .13], [C.deadline, .07]];
 // what a cut asks of one side's camera (KIT.cut): a push toward a part, a pull back, a truck, a yaw
-const pushTarget = (k) => k === 1 ? V(0, .4, 0) : V(WORLD[5].x, .5, WORLD[5].z - 15);
+const pushTarget = (k) => k === 1 ? V(0, .4, 0) : V(WORLD[5].x, .3, WORLD[5].z);
 function cutMod(t, k, side) { const d = KIT.DUR[CUTS[k].kind], u = (t - (B[k] - d / 2)) / d; return { ...KIT.cut(CUTS[k].kind, clamp(u), CUTS[k])[side], k, side }; }
 function camAt(t, sh, mod) {
   const c = shotCam(t, sh), pos = c.pos.clone(), look = c.look.clone(); let fov = c.fov, yaw = 0;
@@ -254,27 +298,28 @@ function camAt(t, sh, mod) {
 function pose(cm, c) { cm.fov = c.fov; cm.updateProjectionMatrix(); cm.position.copy(c.pos); cm.lookAt(c.look); if (c.yaw) cm.rotateY(c.yaw); cm.updateMatrixWorld(true); }
 const FLOORS = [FLOOR_Y, -1.62, FLOOR_Y, FLOOR_Y, FLOOR_Y, FLOOR_Y, FLOOR_Y];
 function apply(t, sh = shotAt(t), mod = null) {
-  CUR = sh; const c = camAt(t, sh, mod), w = WORLD[sh], hv = sh === 0 || sh === 2 || sh === 4 || sh === 6;
-  hero.visible = hv; heroGlow.visible = hv; bgEdges.visible = sh === 2; shaftsC.forEach((m, i) => { m.visible = sh === 2; m.material.opacity = .13 + .05 * Math.sin(t * 1.4 + i); });
-  kick.intensity = hv || sh === 3 ? 3.5 : 0; kick.position.set(w.x + 3.4, w.y + .6, w.z + 4.5); heroGlow.material.color.setHex(sh === 2 ? 0xd9822b : sh === 4 ? 0xff9a40 : 0x6aa8d8); heroGlow.material.opacity = sh === 2 ? .16 : sh === 4 ? .2 : .2; ringG.visible = sh === 1; cellsD.visible = sh === 3; rowF.visible = sh === 5; bgC.visible = sh === 2; tgtE.visible = sh === 4; gauge.visible = sh === 2; card.visible = sh === 6;
+  CUR = sh; const c = camAt(t, sh, mod), w = WORLD[sh], hv = sh === 0;
+  hero.visible = hv; heroGlow.visible = hv || sh === 2 || sh === 6; bgEdges.visible = sh === 2; shaftsC.forEach((m, i) => { m.visible = sh === 2; m.material.opacity = .13 + .05 * Math.sin(t * 1.4 + i); });
+  kick.intensity = sh === 1 ? 0 : 3.5; kick.position.set(w.x + 3.4, w.y + .6, w.z + 4.5); heroGlow.material.color.setHex(sh === 2 ? 0xd9822b : 0x6aa8d8); heroGlow.material.opacity = .2; ringG.visible = sh === 1; cellsD.visible = sh === 3; padG.visible = sh === 5; bgC.visible = sh === 2; tgtE.visible = sh === 4; gauge.visible = sh === 2; phoneC.visible = sh === 2; phoneG.visible = sh === 6;
   scene.fog = sh === 5 ? FOGF : null;
   keyL.intensity = sh === 5 ? 1.5 : sh === 1 ? 1.9 : 2.2; rimL.intensity = sh === 5 ? 2.2 : 2.9; rim2L.intensity = sh === 5 ? .8 : 1.5;
   const U = hero.userData;
-  if (hv) { hero.position.copy(w); heroGlow.position.set(w.x, w.y + .6, w.z - 3.2); U.tint(SIG); U.mark(.8, 0); hero.rotation.set(0, 0, 0);
-    if (sh === 0) { tallySet(heroTex, r1A(t), r2A(t)); U.setLevel(1); hero.rotation.set(.05, lerp(-.3, -.2, prog(t, 0, B[1])) + .07 * Math.sin(t * 1.9), .015); }
-    if (sh === 2) { tallySet(heroTex, 1, 0); const lv = lerp(1, .8, ease(prog(t, C.p80 - .1, C.p80 + .55))); U.setLevel(lv); U.mark(.8, ease(prog(t, C.p80 - .1, C.p80 + .3))); hero.rotation.set(.07, .38 + .1 * Math.sin(t * 1.5), .0); }
-    if (sh === 4) { tallySet(heroTex, 1, 1); const d = ease(prog(t, C.deadline - .05, C.deadline + .9)); U.setLevel(lerp(.8, .7, d)); U.mark(.8, 1); hero.rotation.set(0, 0, 0);
-      TG_R.forEach((r, i) => { r.material.opacity = (.55 - i * .12) * (.7 + .3 * Math.sin(t * 2.2 + i)) * (1 - .35 * d); r.scale.setScalar(1 + .015 * Math.sin(t * 1.6 + i)); }); }
-    if (sh === 6) { const wipe = ease(prog(t, C.final + .3, TOTAL - .15)); tallySet(heroTex, 1 - wipe, 1 - wipe); U.setLevel(lerp(.8, .86, prog(t, B[6], C.health))); hero.rotation.set(lerp(.05, .05, 1), lerp(.55, -.3, ease(prog(t, B[6], TOTAL - .1))), .015);
-      const a = prog(t, C.health - .1, C.health + .3) * (1 - prog(t, C.final + .1, C.final + .6)); card.material.opacity = a; card.position.y = 1.45 + .25 * (1 - eout(prog(t, C.health - .1, C.health + .5))); } }
+  if (hv) { hero.position.copy(w); heroGlow.position.set(w.x, w.y + .6, w.z - 3.2); U.tint(SIG); U.mark(.8, 0); tallySet(heroTex, r1A(t), r2A(t)); U.setLevel(1); hero.rotation.set(.04, lerp(-.1, -.25, prog(t, 0, B[1])) + .04 * Math.sin(t * 1.9), .01); }
+  if (sh === 2) { heroGlow.position.set(w.x, w.y + .6, w.z - 3.2); const lv = lerp(1, .8, ease(prog(t, C.p80 - .1, C.p80 + .55))); phoneC.userData.set({ kind: 'pct', level: lv, text: t >= C.p80 ? '80%' : '100%', cyc: t >= C.c500 ? '500' : '' }); phoneC.rotation.set(.05, .42 + .1 * Math.sin(t * 1.5), 0); gauge.visible = true; phoneC.updateMatrixWorld(true); }
+  if (sh === 6) { heroGlow.position.set(w.x, w.y + .6, w.z - 3.2); phoneG.userData.set({ kind: 'health', level: lerp(.06, .84, ease(prog(t, C.health - .1, C.health + .8))) }); phoneG.rotation.set(.04, lerp(.5, -.25, ease(prog(t, B[6], TOTAL - .1))), 0); phoneG.updateMatrixWorld(true); }
+  if (sh === 4) { const d = ease(prog(t, C.deadline - .05, C.deadline + .9)), hit = ease(prog(t, C.target - .1, C.target + .3)), pulse = Math.exp(-Math.max(0, t - C.target - .3) * 3) * (t > C.target + .3 ? 1 : 0);
+    dart.position.z = lerp(9, 0, hit) + .02 * Math.sin(t * 40) * (1 - hit) + .05 * pulse * Math.sin(t * 60); dart.rotation.set(0, 0, 0); dart.visible = t > C.target - .4;
+    TG_R.forEach((r, i) => { r.material.opacity = (.95 - i * .14) * (.8 + .2 * Math.sin(t * 2.2 + i)) * (1 - .3 * d); r.scale.setScalar(1 + .015 * Math.sin(t * 1.6 + i) + .08 * pulse * (i + 1) / 4); });
+    tgtE.rotation.set(-.18, .1 * Math.sin(t * .9), 0); tgtGlow.material.opacity = .4 + .3 * pulse; tgtE.updateMatrixWorld(true); }
   if (sh === 1) {   // the ring: four quarters light as the charge drains; at "total" it closes, the cell refills and one mark is scratched in
     const tk = [C.using, C.full, C.bat, C.worth]; let used = 0;
     ARC.forEach(({ a, h }, k) => { const p = ease(prog(t, tk[k], tk[k] + .5)); used += p / 4; a.material.opacity = p; h.material.opacity = .22 * p * (1 - .6 * prog(t, C.total, C.total + .8)); });
     const ang = Math.PI / 2 - used * Math.PI * 2; bead.position.set(Math.cos(ang) * RR, Math.sin(ang) * RR, .05); bead.material.opacity = used > .01 && used < .999 ? .95 : 0;
     const back = ease(prog(t, C.total - .05, C.total + .5)); cellB.userData.setLevel(used < .999 ? 1 - used : back); cellB.userData.tint(used >= .999 && back < 1 ? HEAT : SIG);
     tallySet(bTex, 0, 0, prog(t, C.total, C.total + .55)); ringGlow.material.opacity = .5 * Math.sin(Math.PI * prog(t, C.p100 - .05, C.p100 + .6)); ringG.rotation.set(0, 0, 0); cellB.rotation.y = .55 * Math.sin(t * 1.3) * (1 - prog(t, C.total - .3, C.total)); baseRing.material.opacity = .45 + .2 * Math.sin(t * 4); }
-  if (sh === 3) { cellL.userData.mark(.8, .9); cellR.userData.mark(.8, .9); cellR.position.x = lerp(6, 1.3, eout(prog(t, C.i15 - .1, C.i15 + .75))); cellR.visible = t > C.i15 - .2; { const s = .88 * (1 - ease(prog(t, C.c1000 - 1.7, C.c1000 - 1.3)) + ease(prog(t, C.c1000 + .9, C.c1000 + 1.3))); cellL.scale.setScalar(Math.max(.001, Math.min(.88, s))); } cellsD.updateMatrixWorld(true); }
-  if (sh === 5) { const a = 1 + .12 * Math.sin(t * 3); rowGlow.material.opacity = .12 * a; }
+  if (sh === 3) { phoneR.position.x = lerp(6, 1.3, eout(prog(t, C.i15 - .1, C.i15 + .75))); phoneR.visible = t > C.i15 - .2; { const s = .88 * (1 - ease(prog(t, C.c1000 - 1.7, C.c1000 - 1.3)) + ease(prog(t, C.c1000 + .9, C.c1000 + 1.3))); phoneL.scale.setScalar(Math.max(.001, Math.min(.88, s))); phoneR.scale.setScalar(.88); } cellsD.updateMatrixWorld(true); }
+  if (sh === 5) { phoneF.userData.set({ kind: 'charge', level: lerp(.6, .98, prog(t, B[5], B[6])) }); padG.rotation.y = .5 * Math.sin(t * .6);
+    HR.forEach((r, i) => { const ph = ((t * .45 + i / 3) % 1); r.position.y = .2 + ph * 2.2; r.material.opacity = .55 * (1 - ph) * (1 - ph); r.scale.setScalar(1 + ph * .3); }); padGlow.material.opacity = .3 + .08 * Math.sin(t * 3); padG.updateMatrixWorld(true); }
   hero.updateMatrixWorld(true); cellB.updateMatrixWorld(true); updateSparks(t);
   pose(cam, c);
   return c;
@@ -292,7 +337,7 @@ function numCard(t, text, color, since, y, size, a = 1) {   // a number that CHA
 function typeLayer(t) {
   BOXES = [];
   const sh = shotAt(t), Y = 540;
-  if (sh === 0 && t >= C.n500 - .02) { const dbl = t >= C.double; numCard(t, dbl ? '1000' : '500', dbl ? SIGC : WHITE, dbl ? C.double : C.n500, Y, 270, prog(t, C.n500 - .02, C.n500 + .05) * (1 - prog(t, B[1] - .2, B[1] - .02))); }
+  if (sh === 0) { const dbl = t >= C.double; numCard(t, dbl ? '1000' : '500', dbl ? SIGC : WHITE, dbl ? C.double : 0, Y, 300, prog(t, 0, .04) * (1 - prog(t, B[1] - .2, B[1] - .02))); }   // the hook number is on screen at frame 0
   if (sh === 1) { if (t < C.p100 - .08) big('CYCLE', 'track', WHITE, t, C.cycle, C.p100 - .08, { size: 200, y: 500 });
     if (t >= C.p100) numCard(t, '100%', WHITE, C.p100, Y, 270, prog(t, C.p100, C.p100 + .06) * (1 - prog(t, wEnd(2) - .16, wEnd(2)))); }
   if (sh === 2) { if (t < C.p80 - .04) big('iPHONE 14', 'track', WHITE, t, C.i14, C.p80 - .04, { size: 150, y: 500 });
@@ -301,16 +346,16 @@ function typeLayer(t) {
     else numCard(t, '1000', SIGC, C.c1000, Y, 270, prog(t, C.c1000 - .02, C.c1000 + .05) * (1 - prog(t, wEnd(4) - .16, wEnd(4)))); }
   if (sh === 4) { if (t < C.deadline - .06) big('TARGET', 'stamp', HEATC, t, C.target, C.deadline - .06, { size: 190, y: 500, glow: 'rgba(255,150,40,.4)' });
     const bx = big('DEADLINE', 'drop', WHITE, t, C.deadline, wEnd(5), { size: 160, y: 510 });
-    if (bx) { const p = ease(prog(t, C.deadline + .3, C.deadline + .65)); o.save(); o.strokeStyle = HEATC; o.lineWidth = 14; o.lineCap = 'round'; o.shadowColor = 'rgba(255,150,40,.7)'; o.shadowBlur = 24; o.beginPath();
+    if (bx) { const p = ease(prog(t, C.deadline + .22, C.deadline + .6)); o.save(); o.strokeStyle = HEATC; o.lineWidth = 14; o.lineCap = 'round'; o.shadowColor = 'rgba(255,150,40,.7)'; o.shadowBlur = 24; o.beginPath();
       const ym = (bx[3] + bx[4]) / 2 + 6; o.moveTo(bx[1] - 20, ym + 8); o.lineTo(bx[1] - 20 + (bx[2] - bx[1] + 40) * p, ym + 8 - 14 * p); o.stroke(); o.restore(); } }
-  if (sh === 5) big('HABITS', 'wipe', WHITE, t, C.real, wEnd(6), { size: 190, y: 510 });
+  if (sh === 5) big('HABITS', 'wipe', WHITE, t, Math.max(C.real, B[5] + .1), wEnd(6), { size: 190, y: 510 });
   if (sh === 6 && t < TOTAL - .45) big('CHECK', 'rise', SIGC, t, C.check, TOTAL - .45, { size: 200, y: Y, glow: 'rgba(56,225,255,.5)' });
 }
 
 // ---------- the subject's box (Output QA HERO) ----------
 let SUBJ = null; window.__subject = () => SUBJ;
 function subjectBox(sh) {
-  const obj = [hero, cellB, hero, cellsD, hero, rowF, hero][sh], bx = new THREE.Box3(); bx.setFromObject(obj);
+  const obj = [hero, cellB, phoneC, cellsD, tgtE, padG, phoneG][sh], bx = new THREE.Box3(); bx.setFromObject(obj);
   let l = 1e9, r = -1e9, tp = 1e9, b = -1e9;
   for (const x of [bx.min.x, bx.max.x]) for (const y of [bx.min.y, bx.max.y]) for (const z of [bx.min.z, bx.max.z]) { const p = V(x, y, z).project(cam); const sx = (p.x + 1) / 2 * W, sy = (1 - p.y) / 2 * H; l = Math.min(l, sx); r = Math.max(r, sx); tp = Math.min(tp, sy); b = Math.max(b, sy); }
   SUBJ = [clamp(l, 0, W), clamp(tp, 0, H), clamp(r, 0, W), clamp(b, 0, H)];
