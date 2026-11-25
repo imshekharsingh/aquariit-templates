@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-25 23:45 IST · claude/owner-chat-25nov-late · owner chat: tech not posted, colour, reference method
+- Owner did not post tech battery-cycles (dated iPhone 14/15 framing, India line, top keyword bar, flat shots). Tech rules changed (all global, last-7-days tech news, freshness, no top bar, every shot alive; merged).
+- Owner: tech reels are not colour rich. Cause: design/tech-direction.md (22 Nov) near-black ground, white/grey, two accents max. Under review.
+- Approved (~$16): reference study of the owner's profile (adilet.fndr), owner uploads 4-5 reels to the app's References; full end-to-end measured style sheet, one test scene side by side with reference frames, owner sees that one comparison before tech adopts it. Waiting on owner: the uploads.
+
 ## 2026-11-25 20:45 IST · claude/tech-global-news-rules · tech rules: all global, fresh news, no top bar, every shot alive
 - Done: rules-tech.md (F2 now all global, indiapick retired, new N1-N4), critic.md question 45, runbook-daily.md tech research line, topic-bank.md tech options marked STALE, CLAUDE.md tech line, owner-feedback.md 5 lines (25 Nov).
 - Not done: scripts/check.mjs still lists indiapick as an allowed format (harmless; no script change in this size-S job).
