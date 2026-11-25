@@ -649,3 +649,8 @@ Format (at most 6 lines):
 - Done: render 1 failed Output QA (the label alone was a small centred picture; 4 s with nothing new at the end). Rulers back, reel cut to 19.5 s; render 2 passed Output QA. Critic session started (claude-opus-5-5, tags critic and c3).
 - Left: the critic's verdict; on READY the reel gets postOn 2026-11-25, postAt 17:00 and loses "hidden" and "hold".
 - For the other account: the review gate wants real evidence text on items 3 and 7 (the preflight "fits" line); a plain "SAFE ZONE: ok" is refused as a template line.
+
+## 2026-11-25 · claude/web-user-invalid-4 · Web reel 47 render 2 passed Output QA (web build session)
+- Done: render 2 (run 45538594185) succeeded, so Output QA passed; the MP4 is fetched, the style record measured (15 s, 2.27 words/s, 0 shot changes), review item 13 written. Two renders used.
+- Left: the critic (a different session), then post at 19:00 IST. Listen to the hook word: the voice check heard "red" as "read".
+- For the other account: style-measure.mjs needs --from and --to for today's date, and it nulls hero and firstSecondTension; put them back.

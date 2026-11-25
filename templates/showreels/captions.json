@@ -2921,14 +2921,14 @@
   "palette": "black",
   "style": {
    "lengthS": 15,
-   "wordsPerS": 2.4,
+   "wordsPerS": 2.27,
    "shotChanges": 0,
    "hookType": "question",
    "look": "dark",
    "hero": "sign-up form with three red fields",
    "firstSecondTension": "yes",
-   "payoff": "tip",
-   "source": "plan"
+   "payoff": "fact",
+   "source": "mp4"
   }
  }
 }
