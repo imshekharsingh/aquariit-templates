@@ -773,3 +773,4 @@ Format (at most 6 lines):
 - Done: techkit/lib3d.js (appTile with logo slot, phone, laptop, chip, rack, productBlock, codeCard, dialog, 3D number figures, camPath), world3d.js fixes (neutral ground, DOF sparkle clamp, caption padding, cable reveal), gold3d-sample scene + topic (never posted), starter `tech3d`, techkit/README.md, design/3d-kit-phase2.md, design/gold.md candidate section, Output QA key `"look": "3d"` (gold.json "tech3d" entry to be filled from the real MP4).
 - Left: render the sample on GitHub (Tech reel, preview), measure its LOOK numbers into gold.json "tech3d", critic session for READY.
 - For the other account: nothing new.
+- Update (same session): the owner chat's review of the first stills is folded in (fuller opening, tall tool wall with labels inside the tiles, hub raised, nothing cut at the edges, crisper numbers); kit-phase2.jpg replaced.
