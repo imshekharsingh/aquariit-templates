@@ -629,3 +629,8 @@ Format (at most 6 lines):
 - Builds: tech reel battery-cycles and web reel user-invalid are built by their own build sessions (branches claude/tech-battery-cycles, claude/web-user-invalid); each writes its own entry.
 - Left: nothing for the owner.
 - For the other account: a Fable session started without source_url has no repo checkout; always pass the repo URL to create_session.
+
+## 2026-11-25 · claude/c3-looks-expensive-25nov · Turns Out reel "One looks 5x pricier" rebuilt (Turns Out daily build)
+- Done: showreel-c3-looks-expensive rebuilt from the gold Turns Out reel (starter): a crowded honey label fixed in three moves (room, a small spaced name, two colours), seven spoken sentences with breaths, direction card and review file written, captions entry kept hidden until the critic says READY. The old A/B scene is no longer built (COPIES entry removed).
+- Left: render, Output QA, critic; then postOn 2026-11-25, postAt 17:00.
+- For the other account: the 05:11 run lost its work because it had no repo access; always pass the repo URL to create_session.
