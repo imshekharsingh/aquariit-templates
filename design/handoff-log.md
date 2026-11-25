@@ -645,6 +645,21 @@ Format (at most 6 lines):
 - Left: render 2, Output QA, critic, style-measure.
 - For the other account: a render can read HUE differently from the local frames; leave blue at 2x the red weight, not 1.1x.
 
+## 2026-11-25 · claude/c3-looks-expensive-25nov-d · Turns Out "One looks 5x pricier": render 2 passed Output QA (Turns Out daily build)
+- Done: render 1 failed Output QA (the label alone was a small centred picture; 4 s with nothing new at the end). Rulers back, reel cut to 19.5 s; render 2 passed Output QA. Critic session started (claude-opus-5-5, tags critic and c3).
+- Left: the critic's verdict; on READY the reel gets postOn 2026-11-25, postAt 17:00 and loses "hidden" and "hold".
+- For the other account: the review gate wants real evidence text on items 3 and 7 (the preflight "fits" line); a plain "SAFE ZONE: ok" is refused as a template line.
+
+## 2026-11-25 · claude/web-user-invalid-4 · Web reel 47 render 2 passed Output QA (web build session)
+- Done: render 2 (run 45538594185) succeeded, so Output QA passed; the MP4 is fetched, the style record measured (15 s, 2.27 words/s, 0 shot changes), review item 13 written. Two renders used.
+- Left: the critic (a different session), then post at 19:00 IST. Listen to the hook word: the voice check heard "red" as "read".
+- For the other account: style-measure.mjs needs --from and --to for today's date, and it nulls hero and firstSecondTension; put them back.
+
+## 2026-11-25 · claude/critic-user-invalid · Web reel 47 critic: READY (critic session)
+- Done: the final render judged on its real frames (every 0.25 s at phone size), its sound levels and the sheet against the gold reel; CRITIC: READY, PREMIUM 7.5 / 7.5 / 7.5, GOLD matches, STOP 7.5, REWATCH 7 written in the review file.
+- Left: post at 19:00 IST. Optional, no render: a cover at 0.75 s (the 1.39 s one has the touch dot on the name), form-specific hashtags.
+- For the next web reel: ENHANCE line (dimmer placeholders, the first tap on empty space).
+
 ## 2026-11-25 · claude/critic-c3-looks-expensive-25nov · Turns Out "One looks 5x pricier" critic: NOT READY (critic session)
 - Done: judged render 2 (run 45535868004) on the real MP4 next to the gold reel (side-by-side sheet) and one 9.5-14 s strip; verdict and PREMIUM line in review/c3/showreel-c3-looks-expensive.md. The finished label looks empty (tiny name, unreadable second line, honey type and weight deleted), below gold; at 13.5-14 s the before flashback covers the "Same product" chip and clips its badge. Voice not heard (no playback here); loudness -14.0 LUFS with six breath dips.
 - Left: two renders used, so the reel is skipped today and stays hidden; captions.json, scene and config untouched. A rebuild keeps the product line in a quiet second size, a larger spaced name and one detail in the second colour, and sets aiLabel false.
