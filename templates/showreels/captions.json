@@ -2397,9 +2397,18 @@
   "postAt": "19:45",
   "aiLabel": false,
   "concept": "Design series · This label looks cheap. Too much is going on. 🍯 (an invented honey label on a shop shelf, fixed in three moves: room, a small spaced name, two colours; the last frame shows BEFORE next to AFTER)",
-  "note": "Rebuilt on the improved design kit (25 Nov 2026) from the gold reel showreel-c3-grey-text; render 3 after the critic fix (finished label, BEFORE flashback); waits for Output QA and the critic.",
-  "hidden": true,
-  "hold": "Rebuilt 25 Nov 2026; waiting for the render, Output QA and the critic's READY before it gets a post day."
+  "note": "Rebuilt on the improved design kit (25 Nov 2026) from the gold reel showreel-c3-grey-text; render 3 after the critic fix (finished label, BEFORE flashback); Output QA passed, critic READY 25 Nov 2026.",
+  "style": {
+   "lengthS": 19.5,
+   "wordsPerS": 1.74,
+   "shotChanges": 2,
+   "hookType": "claim",
+   "look": "light",
+   "hero": "a honey label on a shop shelf",
+   "firstSecondTension": "yes",
+   "payoff": "fact",
+   "source": "mp4"
+  }
  },
  "showreel-c3-optical-centre": {
   "channel": "c3",
