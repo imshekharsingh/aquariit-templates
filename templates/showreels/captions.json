@@ -2879,14 +2879,15 @@
    "#gadgets"
   ],
   "style": {
-   "lengthS": 33.9,
-   "wordsPerS": 2.36,
-   "shotChanges": 7,
-   "hookType": "number",
+   "lengthS": 34.4,
+   "wordsPerS": 2.33,
+   "shotChanges": 12,
+   "hookType": "claim",
    "look": "dark",
    "hero": "battery cell",
    "firstSecondTension": "yes",
-   "payoff": "tip"
+   "payoff": "tip",
+   "source": "mp4"
   }
  },
  "showreel-47-user-invalid": {
