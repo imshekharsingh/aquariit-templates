@@ -183,15 +183,15 @@ function drawScreen(c, w, h, s) {
   const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#0c1c2b'); g.addColorStop(1, '#070a10'); c.fillStyle = g; c.fillRect(0, 0, w, h); c.textAlign = 'center';
   c.fillStyle = '#000'; rrect(c, w / 2 - 62, 30, 124, 38, 19); c.fill();
   const F = (px, wt) => `${wt || 800} ${px}px "Inter Display", Inter, sans-serif`;
-  if (s.kind === 'pct') { c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(40, 700); c.fillText('Battery', w / 2, 170);
-    batIcon(c, 70, 250, w - 170, 210, s.level, '#0b9bbd', true);
-    c.fillStyle = '#f4f6f8'; c.font = F(s.text.length > 3 ? 190 : 230, 900); c.fillText(s.text, w / 2, 760);
-    c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(42, 700); c.fillText('Maximum capacity', w / 2, 850);
-    if (s.cyc) { c.fillStyle = '#ffb347'; c.font = F(84, 900); c.fillText(s.cyc, w / 2, 1010); c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(38, 700); c.fillText('charge cycles', w / 2, 1066); } }
+  if (s.kind === 'pct') { c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(40, 700); c.fillText('Battery', w / 2, 150);
+    batIcon(c, 70, 200, w - 170, 190, s.level, '#0b9bbd', true);
+    c.fillStyle = '#f4f6f8'; c.font = F(s.text.length > 3 ? 190 : 230, 900); c.fillText(s.text, w / 2, 610);
+    c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(42, 700); c.fillText('Maximum capacity', w / 2, 690);
+    if (s.cyc) { c.fillStyle = '#ffb347'; c.font = F(84, 900); c.fillText(s.cyc, w / 2, 810); c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(38, 700); c.fillText('charge cycles', w / 2, 866); } }
   else if (s.kind === 'cycles') { c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(42, 700); c.fillText(s.title, w / 2, 190);
     c.fillStyle = s.col; c.shadowColor = s.col; c.shadowBlur = 40; c.font = F(s.big.length > 3 ? 200 : 260, 900); c.fillText(s.big, w / 2, 560); c.shadowBlur = 0;
     c.fillStyle = 'rgba(244,246,248,.7)'; c.font = F(58, 800); c.fillText('cycles', w / 2, 650);
-    batIcon(c, 70, 800, w - 170, 150, .8, s.col === '#38e1ff' ? '#0b9bbd' : '#7d97ab', true); c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(40, 700); c.fillText('keeps 80%', w / 2, 1040); }
+    batIcon(c, 70, 730, w - 170, 140, .8, s.col === '#38e1ff' ? '#0b9bbd' : '#7d97ab', true); }
   else if (s.kind === 'charge') { c.fillStyle = '#f4f6f8'; c.font = F(230, 900); c.fillText('3:12', w / 2, 400); c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(44, 700); c.fillText('Charging overnight', w / 2, 480);
     batIcon(c, 70, 640, w - 170, 230, s.level, '#d0780a', false); c.fillStyle = '#ffb347'; c.font = F(130, 900); c.fillText(Math.round(s.level * 100) + '%', w / 2, 1060); }
   else { c.textAlign = 'left'; c.fillStyle = '#f4f6f8'; c.font = F(60, 800); c.fillText('Battery health', 52, 230); c.fillStyle = 'rgba(244,246,248,.6)'; c.font = F(40, 700); c.fillText('Maximum capacity', 52, 350);
@@ -266,7 +266,7 @@ function shotCam(t, sh) {
   if (sh === 1) { const hold = KIT.push(Math.max(0, t - B[1]), .012);   // a wide look at the ring, an orbit as it fills, then a push to the cell for the single mark
     const F0 = orb(w, 11.6 * (1 - hold), lerp(-.5, .4, g), .03, 1.0, 32), F1 = { pos: V(w.x + .5, w.y - .1, w.z + 5.6), look: V(w.x, w.y + .15, w.z), fov: 30 };
     return KIT.reframe(F0, F1, ease(prog(t, C.total - .4, C.total + .2))); }
-  if (sh === 2) { const F0 = { pos: V(w.x + lerp(-4.4, -2.6, g), -.7, w.z + 13.0), look: V(w.x + .1, 1.3, w.z), fov: 33 }, F1 = orb(w, 12.6, .12, .02, 1.7, 31, .3), F2 = { pos: V(w.x + 1.2, 1.6, w.z + 8.4), look: V(w.x, 1.7, w.z), fov: 34 };   // a low three-quarter on the phone, the front, a push onto its screen
+  if (sh === 2) { const F0 = { pos: V(w.x + lerp(-4.4, -2.6, g), -.7, w.z + 13.0), look: V(w.x + .1, 1.3, w.z), fov: 33 }, F1 = orb(w, 12.6, .12, .02, 1.7, 31, .3), F2 = { pos: V(w.x + 1.0, 1.2, w.z + 10.4), look: V(w.x, 1.9, w.z), fov: 34 };   // a low three-quarter on the phone, the front, a push onto its screen
     const a = KIT.reframe(F0, F1, ease(prog(t, C.p80 - .5, C.p80 + .35))); return KIT.reframe(a, F2, ease(prog(t, C.c500 - .4, C.c500 + .45))); }
   if (sh === 3) { const hold = KIT.push(Math.max(0, t - B[3]), .012), F0 = { pos: V(w.x - 1.0, .9, w.z + 11.5 * (1 - hold)), look: V(w.x - 1.3, 1.2, w.z), fov: 31 },
       F1 = { pos: V(w.x, 1.0, w.z + 19.8 * (1 - KIT.push(Math.max(0, t - C.i15 - .6), .02))), look: V(w.x, 1.1, w.z), fov: 31 };   // the 500 phone whole, a pull back as the 1000 phone arrives, both side by side (a saveable frame) held
