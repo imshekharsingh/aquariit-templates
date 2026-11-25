@@ -2879,13 +2879,13 @@
    "#gadgets"
   ],
   "style": {
-   "lengthS": null,
-   "wordsPerS": null,
-   "shotChanges": null,
+   "lengthS": 33.9,
+   "wordsPerS": 2.36,
+   "shotChanges": 7,
    "hookType": "number",
    "look": "dark",
    "hero": "battery cell",
-   "firstSecondTension": "a tally of marks being scratched into a battery cell by amber sparks",
+   "firstSecondTension": "yes",
    "payoff": "tip"
   }
  }

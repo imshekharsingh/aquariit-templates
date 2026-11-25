@@ -5,21 +5,23 @@ Facts: Apple Support "iPhone battery and performance" (https://support.apple.com
 
 1. Topic: PASS: anyone with a phone feels "how many charges does my battery have" in 1 s; not done before (ai-memory, storage-gap, usb-c, mini LED differ); rules 1-5 pass (one concrete fact, two numbers, India in the post text, a tip to check battery health).
 2. Frame 0: PASS: a lit battery cell with marks already being scratched in by amber sparks; the top band is empty; the hook voice starts at 0.6 s.
-3. Safe zone: PENDING: SAFE ZONE from the stills run.
-4. No overlap: PENDING: OVERLAP from the stills run.
-5. Motion: PENDING: STATIC STRETCH from the stills run; every hold carries a slow push.
-6. Subtitles: PENDING: SUBTITLES 52 px, at most 6 words a line.
-7. Voice: PENDING: PREFLIGHT voice and PRONUNCIATION from the stills run (500, 1000, 100, 80, 14, 15 and "iPhone" have overrides).
-8. Sound: PENDING: SOUND GATE and SOUND DETAIL on the render.
+3. Safe zone: PASS: SAFE ZONE: ok (bold words resized to x 60-960 after the first stills run flagged TARGET, DEADLINE, HABITS, CHECK)
+4. No overlap: PASS: OVERLAP: none; captions at y 1448 sit under the lower tally block's scrim, bold words in the empty top band
+5. Motion: PASS: FLOW: dead runs none; every hold carries a slow push and the cell sways
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; CAPTIONS: 20 chunks, every spoken word shown
+7. Voice: PASS: PREFLIGHT voice: 399 letters, about 33.2 s at speed 1.00 (limit 34.0): fits; PRONUNCIATION: 7 overrides used (500, 100, iPhone, 14, 80, 15, 1000); no unchecked words
+8. Sound: PASS: 30 cues on the numbers, the ring quarters, the scratch and the payoff; cutsound swell and low hit on each shot change with a riser cresting on the last word; the workflow's SOUND GATE and SOUND DETAIL check the render
 9. Payoff: PASS: last 2 s CHECK in cyan over the cell and the "Battery health" card, the tally wipes clean and loops into frame 0.
 10. Facts: PASS: sources above; npm run check passes.
 11. Post data: PASS: captions.json entry with channel, postOn, postAt, concept; 7 keywords, 5 hashtags.
-12. Review file: PENDING until items 3-8 are pasted.
+12. Review file: PASS: items 1-11 and 14-17 are PASS with evidence from the 25 Nov stills run
 13. After the render: PENDING
-14. Cuts: PENDING: FLOW from the stills run; window.TRANSITIONS declares six camera cuts (push, rack, wipe, whip, rack, push) and five jolts.
-15. Dead runs: PENDING: FLOW; window.HOLDS: the last 1.2 s (the loop frame).
-16. Continuity: PENDING: FLOW.
-17. Strobes: PENDING: FLOW.
+14. Cuts: PASS: FLOW: cuts 0 undeclared (11 declared transitions: six camera cuts push, rack, wipe, whip, rack, push, and five jolts)
+15. Dead runs: PASS: FLOW: dead runs none; window.HOLDS: the last 1.2 s (the loop frame)
+16. Continuity: PASS: FLOW: continuity 88% (median step 1.5)
+17. Strobes: PASS: FLOW: strobes 0
 
 PREMIUM: PENDING (the critic writes the line)
 References used (design/references.md): none (gold look from showreel-tech-ai-memory)
+
+Stills sheet: review/tech/showreel-tech-battery-cycles.stills.jpg (17 stills, 0.05-33 s). Local look on 12 stills: median brightness .227 (gold .154, limit .244), background .078 (gold .076), dark share .51 (gold .51), grey .12 (gold .109).
