@@ -743,3 +743,8 @@ Format (at most 6 lines):
 - Done: techkit/world3d.js (W3D.stage / world / contactShadow / cable / place / check / clearOf / captions), make.py marker `<!--WORLD3D-->`, hidden 7 s demo techkit/scenes/kit3d-phase1-demo.html, scripts/3dkit-assemble.py, workflow kit3d-phase1.yml for the one preview render, stills review/tech/study-25nov/kit-phase1.jpg, notes design/3d-kit-phase1.md.
 - Left: the one preview render (run the workflow after merge), then the owner chat's go for phase 2 (object library, camera path, starter, README, 20 s sample).
 - For the other account: nothing new.
+
+## 2026-11-25 · claude/tech-colour-world-render · Colour world sample: voice job failed on a missing "final" cue (builder session)
+- Done: the first preview run stopped in the voice job (sound.py needs a "final" cue; no frames were rendered, so no render was used). Added the cue to techreel/topics/colour-world-sample.json.
+- Left: dispatch the one preview render after this merges, then the 2x4 grid in review/tech/study-25nov/.
+- For the other account: every kit topic needs a "final" cue (sound.py reads it); copy it from the starter.
