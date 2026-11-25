@@ -685,6 +685,10 @@ Format (at most 6 lines):
 - Left: web cover still the automatic 1.39 s frame (the critic prefers 0.75 s; fix via Actions -> R2 -> cover). Tech lesson for the next tech build: one hero object in one place cannot match gold's seven worlds; give every shot its own place (design/direction.md "Tech: the defaults to avoid").
 - For the other account: run the stills check on the FIRST sheet only after frame 0 and the opening second are on it; the checker missed the dull first second and the flat middle that the critic caught on the MP4.
 
+## 2026-11-25 · claude/tech-battery-cycles-rescue · Tech battery-cycles rescue: new pictures, render 3 (rescue session)
+- Done: after the critic's NOT READY, the scene now has seven different pictures (tally macro with "500" on screen at frame 0, cycle ring, phone battery screen, two phones 500 vs 1000, target and dart, phone charging on a pad, health screen) and the DEADLINE strike has time to cross the whole word. postAt 20:30, still hidden until the critic says READY. Render 3 allowed by the owner for today only.
+- Left: render 3 on GitHub, Output QA, then the independent critic (started by the owner chat).
+- For the other account: a battery-shaped hero in every shot reads as one picture; give each idea its own object (phone, target, pad). Keep screen numbers above the caption band at y 1448.
 ## 2026-11-25 · claude/c3-looks-expensive-fix · Turns Out "One looks 5x pricier": critic fix for render 3 (builder session)
 - Done: finished label now keeps the honey line and 500 g in a quiet size, a bigger spaced name, a green frame and rule; the BEFORE flashback is smaller and sits under the "Same product" chip (the stray line was the rule copied into the BEFORE picture). captions.json: postOn 25 Nov, postAt 19:45, aiLabel false, hidden until READY.
 - Left: render 3 on GitHub, Output QA, then the independent critic (started by the owner chat).
