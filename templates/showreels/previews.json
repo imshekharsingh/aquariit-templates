@@ -56,11 +56,11 @@
   {
    "name": "showreel-pv-tech-gold3d-sample",
    "channel": "tech",
-   "title": "3D kit sample reel: 3 apps x 8 tools = 24, one hub = 11 (13.8 s)",
-   "about": "The phase 2 3D kit end to end: neutral dark world, glossy app tiles, 24 separate glowing cables that collapse into one hub, 3D number figures, word-by-word captions with the blue box. Gold candidate for the new look, never posted.",
+   "title": "3D kit sample reel: 3 apps x 8 tools = 24, one hub = 11 (18 s)",
+   "about": "The phase 2 3D kit end to end: neutral dark world, glossy app tiles, 24 separate glowing cables that collapse into one hub, a new tool plugs in with one cable, 3D number figures, word-by-word captions with the blue box. Output QA passes; gold candidate for the new look, never posted.",
    "techniques": "",
-   "src": "/reels/study/showreel-tech-gold3d-sample-v1-preview.mp4",
-   "stills": "/reels/study/showreel-tech-gold3d-sample-v1-preview-stills.png",
+   "src": "/reels/study/showreel-tech-gold3d-sample-v3-preview.mp4",
+   "stills": "/reels/study/showreel-tech-gold3d-sample-v3-preview-stills.png",
    "added": "2026-11-26",
    "needsOwner": false,
    "ask": "Nothing to check: a studio sample of the new 3D look (watch it if you like)."

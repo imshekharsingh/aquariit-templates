@@ -789,3 +789,8 @@ Format (at most 6 lines):
 - Done: render v2 (21 s) passed every Output QA check except PACE (one line at 4.63 words/s, limit 4.5); the line is now "Everything talks to the hub once." (6 words, key word "hub").
 - Left: render 3 (preview v3), Output QA, the independent critic (opus, tag critic), the app list entry for the final video.
 - For the other account: a 10-word line over 4.5 words/s fails PACE; keep lines to 6-9 words.
+
+## 2026-11-26 · claude/tech-3d-kit-sample-final · 3D kit sample v3 passed Output QA; app entry and gold numbers (same side job)
+- Done: render v3 (18.4 s) Output QA PASS; previews.json "3D kit sample reel" now points at v3; gold.json "tech3d" LOOK numbers measured from the v3 MP4; gold.md note. Runner time about 17 min wall for 6 parts.
+- Left: the independent critic's verdict (review/tech/showreel-tech-gold3d-sample.md, "20. CRITIC: READY / NOT READY"); then the owner decides whether it becomes the gold for this look.
+- For the other account: nothing new.
