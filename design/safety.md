@@ -21,7 +21,7 @@ policy change, a comment storm, a removed post anywhere in our niche). Each line
 5. Images and footage only from allowed free licences (PD, CC0, CC BY with credit), licence recorded per file (Output QA LICENCE).
 6. Music and sound only from our own code or CC0 samples (no trending audio added by us; the owner may add Instagram's library audio,
    which Instagram licenses).
-7. No logos, trademarks, product marketing photos, app screenshots of real brands, film/TV/game characters, sports team marks.
+7. No product marketing photos, app screenshots of real brands, film/TV/game characters, sports team marks. Logos and trademarks: Turns Out keeps invented brands only. EXCEPTION (owner, 25 Nov 2026): @techin20sec and @webin20sec may show a real product's logo, unaltered, to identify the product being explained, in an educational context, with no implied endorsement or partnership and the same diplomatic tone (item 17); official or licensed file, else a coloured tile with the name as text. Never a logo as decoration, never altered, never next to a claim that a brand is worse. Check: the critic asks "does each logo identify a product the line names, unaltered?".
 8. Fonts only Google Fonts / open licence.
 
 ## Instagram Community Guidelines and recommendation rules (reach and removal risk)
@@ -61,7 +61,7 @@ overlays, our type and sound). This overrides "Images: code only" for these two 
   Openverse with licence cc0/pdm), and CC BY (credit in the caption's sources line). Never non-commercial (NC), no-derivatives (ND),
   "editorial use only", stock-site watermarks, or anything taken from another creator's reel or video. Output QA LICENCE checks it.
 - Real media is a raw ingredient, always reframed and animated into our own design; never re-post someone's reel or a recognisable edit.
-- Tech: real photos of generic gadgets and parts; brand logos, product marketing photos and trade dress stay out.
+- Tech: real photos of generic gadgets and parts; product marketing photos and trade dress stay out; real logos only under item 7's exception (25 Nov 2026).
 - No identifiable private people; historical figures only under the Turns Out exception.
 - GitHub does the fetching and processing: the session writes search terms or file URLs into the config; the "Media" workflow (Openverse /
   Wikimedia / NASA / LoC APIs, no keys) downloads, checks the licence, cuts/resizes, stores in R2 and the render pulls it. Sessions do not

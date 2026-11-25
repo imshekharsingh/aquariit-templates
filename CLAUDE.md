@@ -95,7 +95,8 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 
 ## Copyright and safety (strict)
 - All copy original; invented fictional brands only; no real company names, logos, trademarks or characters (exception: @techin20sec may
-  name real brands and products as text for factual, diplomatic comparisons; design/rules-tech.md).
+  name real brands and products as text for factual, diplomatic comparisons; design/rules-tech.md). Exception 2 (owner, 25 Nov 2026): @techin20sec and
+  @webin20sec may show a real product's logo, unaltered, to identify the product being explained (educational, no implied endorsement; design/safety.md item 7). Turns Out keeps invented brands.
 - Learning and reusing design patterns (layout, motion, pacing, type, transitions) from any reel or video is encouraged, tweaked for our use;
   never republish someone's actual footage, copy, art or a near-identical look of one specific piece (owner, 23 Nov 2026).
 - Craft skills live in .claude/skills/ (frontend-design, canvas-design, hyperframes, reverse-any-video, style-sampling; .claude/skills/THIRD_PARTY.md).

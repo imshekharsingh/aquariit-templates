@@ -1,5 +1,7 @@
 # @techin20sec direction (22 Nov 2026, after the owner rejected heart-green)
 
+> **SUPERSEDED IN PART (owner, 25 Nov 2026):** the look in sections 2 (ground, colour, type) and the top band of rules-tech.md M5 are replaced by design/rules-tech.md section L "The colour world look": dark ground with colourful materials (purple, amber cables, neon green, app tiles), ONE continuous 3D world per reel with recurring objects, real artifacts (code and JSON cards), word-by-word captions near the top with a blue selection box on the key word, real product logos allowed to identify the product. Sections 1 (topic), 3 (camera), 4 (story) and 6 (craft check, except its questions 2 and 5) stay. Reason: the near-black + white/grey + two accents look made reels grey; the owner did not post the 25 Nov reel.
+
 Owner, 22 Nov: "pick up technological aspects that are discussed in the market today and design such an animation around it that people
 get hooked to knowing better." Research: design/tech-research-2026-11-22.md. Prototype: techkit/scenes/proto-ram-squeeze.html (first 6 s).
 Status: owner approved (22 Nov 2026, owner chat: 'I like this though ... go with your plan'): the owner's own words in the Owner chat at ~21:10-21:14 IST
@@ -12,7 +14,7 @@ This page sets the look; design/rules-tech.md keeps the facts, brand and safety 
   trivia ("why the light is green") only when a launch makes it news.
 - The test: can a stranger say why it matters to *their* next purchase in one sentence? If not, pick another.
 
-## 2. The look: one bold, elegant visual system
+## 2. The look (RETIRED 25 Nov 2026, see the note at the top and rules-tech.md L; kept as history)
 - **Ground**: near-black ink `#07080c` with one soft key light (a single radial glow behind the hero). No grids, no blobs, no background noise.
 - **Colour**: white and greys for form, plus **at most two accents**: *signal* (electric cyan `#38e1ff`, what the topic is about) and
   *heat* (amber `#ffae3d`, the force acting on it). Nothing else is coloured.
@@ -56,3 +58,11 @@ This page sets the look; design/rules-tech.md keeps the facts, brand and safety 
 3. Do four consecutive stills show four different framings?
 4. Muted, does the 0-3 s strip make you want to know why?
 5. Is anything on screen that is not white, grey, signal or heat?
+
+## 7. Update 25 Nov 2026: the colour world look (replaces section 2)
+- Ground dark, objects colourful (purple, warm orange / amber glowing cables, neon green, colourful app tiles); no two-accent cap.
+- One continuous 3D world per reel; the camera travels through it; objects recur (product block, chip, cables).
+- Real artifacts (code cards, JSON, login dialog, dated announcement page); ideas drawn as pictures (3 x 8 = 24 as cables).
+- Captions: the spoken line word by word near the top, 54-64 px, grey spoken words, white current word, key word in a thin #4a8cff selection box with square handles; no keyword bar.
+- Real product logos allowed to identify the product (rules-tech.md L7). No presenter.
+- Craft check questions 2 ("one bold word outside the object") and 5 ("only white, grey, signal, heat") now read: "is the key word boxed in the caption line?" and "is the ground dark with colour on the objects?".
