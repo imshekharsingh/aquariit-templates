@@ -644,3 +644,8 @@ Format (at most 6 lines):
 - Done: render 1 (run 45535361039): PACE 4.60 words/s on the last sentence and HUE 355 (red won against a thin navy); everything else passed. Last line shortened to "Now red waits until you leave.", fields brighter navy, red glow and counter fill lighter (blue 2.1x red locally). Render 2 dispatched from main after the merge.
 - Left: render 2, Output QA, critic, style-measure.
 - For the other account: a render can read HUE differently from the local frames; leave blue at 2x the red weight, not 1.1x.
+
+## 2026-11-25 · claude/critic-c3-looks-expensive-25nov · Turns Out "One looks 5x pricier" critic: NOT READY (critic session)
+- Done: judged render 2 (run 45535868004) on the real MP4 next to the gold reel (side-by-side sheet) and one 9.5-14 s strip; verdict and PREMIUM line in review/c3/showreel-c3-looks-expensive.md. The finished label looks empty (tiny name, unreadable second line, honey type and weight deleted), below gold; at 13.5-14 s the before flashback covers the "Same product" chip and clips its badge. Voice not heard (no playback here); loudness -14.0 LUFS with six breath dips.
+- Left: two renders used, so the reel is skipped today and stays hidden; captions.json, scene and config untouched. A rebuild keeps the product line in a quiet second size, a larger spaced name and one detail in the second colour, and sets aiLabel false.
+- For the other account: "give it room" must not become "delete everything"; the after of a design fix must still be a complete, real label.
