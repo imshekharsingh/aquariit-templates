@@ -227,7 +227,7 @@ const phoneG = makePhone({ kind: 'health', level: .1 }); phoneG.position.copy(WO
 const phoneL = makePhone({ kind: 'cycles', title: 'iPhone 14', big: '500', col: '#f4f6f8' }), phoneR = makePhone({ kind: 'cycles', title: 'iPhone 15', big: '1000', col: '#38e1ff' });
 cellsD.add(phoneL, phoneR); phoneL.position.set(-1.3, 0, 0); phoneL.rotation.y = .3; phoneR.position.set(6, 0, -.3); phoneR.rotation.y = -.3;
 // E: a big target, a dart lands in it (the design target)
-const tgtE = new THREE.Group(); tgtE.position.set(WORLD[4].x, 1.2, WORLD[4].z); tgtE.rotation.x = -.18; scene.add(tgtE);
+const tgtE = new THREE.Group(); tgtE.position.set(WORLD[4].x, .85, WORLD[4].z); tgtE.rotation.x = -.18; scene.add(tgtE);
 const TG_R = [.5, 1.05, 1.6, 2.1].map((r, i) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, .05 + i * .006, 10, 100), new THREE.MeshBasicMaterial({ color: i === 0 ? 0xffe2b0 : HEAT, transparent: true, opacity: .95 - i * .14, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); tgtE.add(m); return m; });
 [[.52, .14], [1.07, .1], [1.62, .07]].forEach(([r, op], i) => { const d = new THREE.Mesh(new THREE.CircleGeometry(r, 60), new THREE.MeshBasicMaterial({ color: HEAT, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); d.position.z = -.02 - i * .01; tgtE.add(d); });
 { const tm = new THREE.MeshBasicMaterial({ color: 0xf4f6f8, transparent: true, opacity: .75 }); for (let i = 0; i < 60; i++) { const a = i / 60 * Math.PI * 2, big = i % 5 === 0, m = new THREE.Mesh(new THREE.BoxGeometry(.03, big ? .24 : .12, .02), tm); m.position.set(Math.cos(a) * 2.38, Math.sin(a) * 2.38, 0); m.rotation.z = a - Math.PI / 2; tgtE.add(m); } }
@@ -261,16 +261,16 @@ const G = KIT.glide;
 const orb = (w, d, az, el, ly, fov = 31, ox = 0) => ({ pos: V(w.x + ox + Math.sin(az) * Math.cos(el) * d, w.y + ly * .5 + Math.sin(el) * d, w.z + Math.cos(az) * Math.cos(el) * d), look: V(w.x + ox, w.y + ly, w.z), fov });
 function shotCam(t, sh) {
   const u = prog(t, B[sh], B[sh + 1]), g = G(u), w = WORLD[sh];
-  if (sh === 0) { const u0 = prog(t, 0, C.double - .3), M = { pos: V(lerp(-.15, .25, u0), 1.5, lerp(6.4, 5.9, u0)), look: V(0, 1.47, 0), fov: 31 }, F0 = orb(w, lerp(14.6, 12.8, g), lerp(-.2, .16, g), .03, 1.85);   // frame 0: a macro on the tally being scratched in, then a pull back to the whole cell as the second 500 arrives
+  if (sh === 0) { const u0 = prog(t, 0, C.double - .3), M = { pos: V(lerp(-.15, .25, u0), 2.1, lerp(6.7, 6.2, u0)), look: V(0, 2.07, 0), fov: 31 }, F0 = orb(w, lerp(14.6, 12.8, g), lerp(-.2, .16, g), .03, 1.85);   // frame 0: a macro on the tally being scratched in, then a pull back to the whole cell as the second 500 arrives
     return KIT.reframe(M, F0, ease(prog(t, C.double - .35, C.double + .5))); }
   if (sh === 1) { const hold = KIT.push(Math.max(0, t - B[1]), .012);   // a wide look at the ring, an orbit as it fills, then a push to the cell for the single mark
     const F0 = orb(w, 11.6 * (1 - hold), lerp(-.5, .4, g), .03, 1.0, 32), F1 = { pos: V(w.x + .5, w.y - .1, w.z + 5.6), look: V(w.x, w.y + .15, w.z), fov: 30 };
     return KIT.reframe(F0, F1, ease(prog(t, C.total - .4, C.total + .2))); }
   if (sh === 2) { const F0 = { pos: V(w.x + lerp(-4.4, -2.6, g), -.7, w.z + 13.0), look: V(w.x + .1, 1.3, w.z), fov: 33 }, F1 = orb(w, 12.6, .12, .02, 1.7, 31, .3), F2 = { pos: V(w.x + 1.0, 1.2, w.z + 10.4), look: V(w.x, 1.9, w.z), fov: 34 };   // a low three-quarter on the phone, the front, a push onto its screen
     const a = KIT.reframe(F0, F1, ease(prog(t, C.p80 - .5, C.p80 + .35))); return KIT.reframe(a, F2, ease(prog(t, C.c500 - .4, C.c500 + .45))); }
-  if (sh === 3) { const hold = KIT.push(Math.max(0, t - B[3]), .012), F0 = { pos: V(w.x - 1.0, .9, w.z + 11.5 * (1 - hold)), look: V(w.x - 1.3, 1.2, w.z), fov: 31 },
-      F1 = { pos: V(w.x, 1.0, w.z + 19.8 * (1 - KIT.push(Math.max(0, t - C.i15 - .6), .02))), look: V(w.x, 1.1, w.z), fov: 31 };   // the 500 phone whole, a pull back as the 1000 phone arrives, both side by side (a saveable frame) held
-    const F2 = { pos: V(w.x + 2.3, .7, w.z + 13.8), look: V(w.x + 1.3, 1.3, w.z - .3), fov: 31 };   // then a push on the 1000 phone's screen, and back out to both
+  if (sh === 3) { const hold = KIT.push(Math.max(0, t - B[3]), .012), F0 = { pos: V(w.x - 1.0, .5, w.z + 11.5 * (1 - hold)), look: V(w.x - 1.3, .75, w.z), fov: 31 },
+      F1 = { pos: V(w.x, .55, w.z + 19.8 * (1 - KIT.push(Math.max(0, t - C.i15 - .6), .02))), look: V(w.x, .65, w.z), fov: 31 };   // the 500 phone whole, a pull back as the 1000 phone arrives, both side by side (a saveable frame) held
+    const F2 = { pos: V(w.x + 2.3, .3, w.z + 13.8), look: V(w.x + 1.3, .85, w.z - .3), fov: 31 };   // then a push on the 1000 phone's screen, and back out to both
     const x = KIT.reframe(F0, F1, ease(prog(t, C.i15 - .15, C.i15 + .7))), y = KIT.reframe(x, F2, ease(prog(t, C.c1000 - 1.7, C.c1000 - .7)));
     return KIT.reframe(y, F1, ease(prog(t, C.c1000 + .75, C.c1000 + 1.5))); }
   if (sh === 4) return orb(w, lerp(14.2, 12.0, g), lerp(-.55, .5, g), .12, 1.75);   // an orbit round the target the dart lands in
@@ -337,7 +337,7 @@ function numCard(t, text, color, since, y, size, a = 1) {   // a number that CHA
 function typeLayer(t) {
   BOXES = [];
   const sh = shotAt(t), Y = 540;
-  if (sh === 0) { const dbl = t >= C.double; numCard(t, dbl ? '1000' : '500', dbl ? SIGC : WHITE, dbl ? C.double : 0, Y, 300, prog(t, 0, .04) * (1 - prog(t, B[1] - .2, B[1] - .02))); }   // the hook number is on screen at frame 0
+  if (sh === 0) { const dbl = t >= C.double; numCard(t, dbl ? '1000' : '500', dbl ? SIGC : WHITE, dbl ? C.double : 0, Y, 300, (1 - prog(t, B[1] - .2, B[1] - .02))); }   // the hook number is on screen at frame 0
   if (sh === 1) { if (t < C.p100 - .08) big('CYCLE', 'track', WHITE, t, C.cycle, C.p100 - .08, { size: 200, y: 500 });
     if (t >= C.p100) numCard(t, '100%', WHITE, C.p100, Y, 270, prog(t, C.p100, C.p100 + .06) * (1 - prog(t, wEnd(2) - .16, wEnd(2)))); }
   if (sh === 2) { if (t < C.p80 - .04) big('iPHONE 14', 'track', WHITE, t, C.i14, C.p80 - .04, { size: 150, y: 500 });
