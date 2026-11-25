@@ -758,3 +758,8 @@ Format (at most 6 lines):
 - Done: full-length cable halo, stronger default depth of field, details and a second material on the demo block; stills kit-phase1-v2.jpg; notes in design/3d-kit-phase1.md.
 - Left: the first preview render (older look) is already running; a second preview of this look needs the owner chat's yes; getting the MP4 into the app needs an upload step.
 - For the other account: nothing new.
+
+## 2026-11-25 · claude/tech-3d-kit-phase1-findings · 3D kit phase 1: preview workflow fixed, upload to the app (same side job)
+- Done: first preview run failed at the join (no ffmpeg on the runner; frames were fine); join now installs ffmpeg and a new store job puts the MP4 and stills in R2 under study/showreel-pv-tech-kit3d-phase1-preview*; previews.json entry (needsOwner false, Studio log "Watch").
+- Left: run the workflow once on main for the new look; owner chat gets the stills path and how to open the video.
+- For the other account: nothing new.

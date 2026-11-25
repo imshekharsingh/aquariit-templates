@@ -55,6 +55,7 @@ jobs:
       - name: Join
         run: |
           ls frames | wc -l
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg >/dev/null
           ffmpeg -hide_banner -loglevel error -framerate 60 -i frames/f%05d.jpg -vf "tmix=frames=2:weights='1 1',fps=30" -c:v libx264 -crf 17 -pix_fmt yuv420p -movflags +faststart kit3d-phase1.mp4
           ls -l kit3d-phase1.mp4 | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
@@ -62,3 +63,29 @@ jobs:
           name: kit3d-phase1
           path: kit3d-phase1.mp4
           retention-days: 7
+
+  store:
+    # puts the preview in the private R2 store so the app can play it (study/<name>-preview.mp4, stills beside it); the app's Studio log lists it
+    needs: join
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: kit3d-phase1
+          path: out
+      - name: Store
+        run: |
+          bash scripts/r2.sh put out/kit3d-phase1.mp4 study/showreel-pv-tech-kit3d-phase1-preview.mp4
+          bash scripts/r2.sh put review/tech/study-25nov/kit-phase1-v2.jpg study/showreel-pv-tech-kit3d-phase1-preview-stills.jpg
