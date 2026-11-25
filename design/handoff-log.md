@@ -659,3 +659,8 @@ Format (at most 6 lines):
 - Done: the final render judged on its real frames (every 0.25 s at phone size), its sound levels and the sheet against the gold reel; CRITIC: READY, PREMIUM 7.5 / 7.5 / 7.5, GOLD matches, STOP 7.5, REWATCH 7 written in the review file.
 - Left: post at 19:00 IST. Optional, no render: a cover at 0.75 s (the 1.39 s one has the touch dot on the name), form-specific hashtags.
 - For the next web reel: ENHANCE line (dimmer placeholders, the first tap on empty space).
+
+## 2026-11-25 · claude/critic-c3-looks-expensive-25nov · Turns Out "One looks 5x pricier" critic: NOT READY (critic session)
+- Done: judged render 2 (run 45535868004) on the real MP4 next to the gold reel (side-by-side sheet) and one 9.5-14 s strip; verdict and PREMIUM line in review/c3/showreel-c3-looks-expensive.md. The finished label looks empty (tiny name, unreadable second line, honey type and weight deleted), below gold; at 13.5-14 s the before flashback covers the "Same product" chip and clips its badge. Voice not heard (no playback here); loudness -14.0 LUFS with six breath dips.
+- Left: two renders used, so the reel is skipped today and stays hidden; captions.json, scene and config untouched. A rebuild keeps the product line in a quiet second size, a larger spaced name and one detail in the second colour, and sets aiLabel false.
+- For the other account: "give it room" must not become "delete everything"; the after of a design fix must still be a complete, real label.
