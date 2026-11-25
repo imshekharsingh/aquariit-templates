@@ -164,11 +164,11 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
     c.setAttribute('aria-hidden', 'true'); board.parentNode.appendChild(c); WAS = c; WAS._b = { x: board.offsetLeft, y: board.offsetTop, w: board.offsetWidth, h: board.offsetHeight };
     var mk = function(txt, col){ var e = document.createElement('div'); e.textContent = txt; e.style.cssText = 'position:absolute;left:0;top:0;padding:7px 12px;border-radius:9px;font:900 15px/1 var(--d);letter-spacing:.1em;color:#0b0d16;background:' + col + ';opacity:0;z-index:28;white-space:nowrap;box-shadow:0 8px 18px rgba(0,0,0,.4)'; board.parentNode.appendChild(e); return e; };
     if (!TAG) { TAG = mk('BEFORE', '#ff6b6b'); TAG2 = mk('AFTER', '#5ee0a0'); } };
-  DT.proof = function(t, t0, o){ if (!WAS) return 0; o = o || {}; var b = WAS._b, fl = o.flash || .5, sx = o.x == null ? 44 : o.x, sy = o.y == null ? b.y + b.h + 26 : o.y, sc = o.s || .36;
+  DT.proof = function(t, t0, o){ if (!WAS) return 0; o = o || {}; var b = WAS._b, fl = o.flash || .5, sx = o.x == null ? 44 : o.x, sy = o.y == null ? b.y + b.h + 26 : o.y, sc = o.s || .36, fs = o.fs || 1, fx = o.fx || 0, fy = o.fy || 0;   // fs/fx/fy: the flash can start smaller and lower (all optional; default = over the whole design)
     var on = P(t, t0, t0 + .07), k = E.inOut3(P(t, t0 + fl, t0 + fl + .55)), sh = (1 - P(t, t0, t0 + .25)) * 4 * (t >= t0 ? 1 : 0);
     WAS.style.opacity = on.toFixed(3); WAS.style.filter = 'grayscale(' + (.5 * k).toFixed(3) + ') brightness(' + (1 - .14 * k).toFixed(3) + ')';
-    WAS.style.transform = 'translate(' + (mix(0, sx - b.x, k) + Math.sin(t * 70) * sh).toFixed(2) + 'px,' + mix(0, sy - b.y, k).toFixed(2) + 'px) rotate(' + (-5 * k).toFixed(2) + 'deg) scale(' + mix(1, sc, k).toFixed(4) + ')';
-    var bx = mix(b.x + 14, o.tx == null ? sx + b.w * sc + 10 : o.tx, k), by = mix(b.y + b.h - 18, o.ty == null ? sy + 10 : o.ty, k);   // the tags sit on the design's lower edge: the chips own its top edge
+    WAS.style.transform = 'translate(' + (mix(fx, sx - b.x, k) + Math.sin(t * 70) * sh).toFixed(2) + 'px,' + mix(fy, sy - b.y, k).toFixed(2) + 'px) rotate(' + (-5 * k).toFixed(2) + 'deg) scale(' + mix(fs, sc, k).toFixed(4) + ')';
+    var bx = mix(b.x + 14 + fx, o.tx == null ? sx + b.w * sc + 10 : o.tx, k), by = mix(b.y + fy + b.h * fs - 18, o.ty == null ? sy + 10 : o.ty, k);   // the tags sit on the design's lower edge: the chips own its top edge
     TAG.style.opacity = on.toFixed(3); TAG.style.transform = 'translate(' + bx.toFixed(1) + 'px,' + by.toFixed(1) + 'px) scale(' + (1 + .5 * (1 - E.out3(P(t, t0, t0 + .3)))).toFixed(3) + ')';
     var a = E.back(P(t, t0 + fl + .1, t0 + fl + .5), 2.2); TAG2.style.opacity = cl(a * 3).toFixed(3); TAG2.style.transform = 'translate(' + (b.x + b.w - 96).toFixed(1) + 'px,' + (b.y + b.h - 18).toFixed(1) + 'px) scale(' + (.6 + .4 * a).toFixed(3) + ')';
     return k; };
