@@ -98,7 +98,7 @@ async function review(ch, name) {
       if (!r.ok) return { exists: false };
       const t = await r.text(), out = { exists: true, critic: null, qa: null };
       for (const l of t.split('\n')) {
-        const c = /^\s*(?:20\.\s*)?Critic\b.*?\bCRITIC:\s*(NOT READY|READY)\b(.*)$/i.exec(l);
+        const c = /^\s*(?:20\.\s*)?(?:Critic\b.*?\b)?CRITIC:\s*(NOT READY|READY)\b(.*)$/i.exec(l);   // both "20. CRITIC: READY" and "Critic ... CRITIC: READY" (25 Nov: the first form was missed, so READY reels stayed on Checking)
         if (c) out.critic = criticOf(c[1], c[2]);
         const pm = /\bPREMIUM\s+(\d+(?:\.\d+)?(?:\s*\/\s*\d+(?:\.\d+)?)*)/i.exec(l);   // "PREMIUM 7.5 / 8 / 7.5": the critic's craft scores (0-10); the average goes on the weekly scorecard
         if (pm) { const v = pm[1].split('/').map(Number).filter((x) => x >= 0 && x <= 10); if (v.length) out.score = Math.round(v.reduce((a, b) => a + b, 0) / v.length * 10) / 10; }

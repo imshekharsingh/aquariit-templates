@@ -7,6 +7,10 @@ Format (at most 6 lines):
 ```
 
 
+## 2026-11-25 17:30 IST · claude/fix-critic-line-25nov · owner chat: app showed a READY reel as "Checking"
+- Done: src/journey.js read only "Critic ... CRITIC: READY" lines; critics write "20. CRITIC: READY", so web 47 (and 46 yesterday) stayed on Checking and out of Ready to post, and Post now would refuse it. The parser now takes both forms (tested on today's three review files: READY, NOT READY, NOT READY).
+- For every session: after any review-file format change, check the app's Today board shows the verdict.
+
 ## 2026-11-25 · claude/no-skip-days · owner decisions written into the rules (size S, text only)
 - Done: no skip days, ask before costly (over about $5, render past 2, side jobs), Turns Out outside stills check, unasked stage updates, smaller morning run. In CLAUDE.md (lean), runbook-daily, runbook-reels, runbook-studio, critic, c3-plan; four lines in owner-feedback.
 - Left: scripts/stage.mjs still accepts a "skipped" stage (unused now); scheduled tasks untouched, so the 06:47 task prompt is unchanged (it follows runbook-daily.md).
