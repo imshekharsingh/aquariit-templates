@@ -217,7 +217,7 @@ const gauge = new THREE.Group(); phoneC.add(gauge);
   const sp = new THREE.Mesh(new THREE.BoxGeometry(.03, PH - .6, .03), tm); sp.position.set(-PW / 2 - .22, 0, 0); gauge.add(sp); }
 // F: a phone lying on a charging pad overnight, heat rings rising
 const phoneF = makePhone({ kind: 'charge', level: .8 }), padG = new THREE.Group(); padG.position.copy(WORLD[5]); scene.add(padG);
-phoneF.rotation.x = -Math.PI / 2; phoneF.position.y = .1; padG.add(phoneF);
+phoneF.rotation.x = -Math.PI / 2; phoneF.position.y = .1; padG.add(phoneF); padG.scale.setScalar(.66);
 const HR = [0, 1, 2].map((i) => { const m = new THREE.Mesh(new THREE.TorusGeometry(1.9 + i * .0, .05, 8, 90), new THREE.MeshBasicMaterial({ color: HEAT, transparent: true, opacity: .5, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); m.rotation.x = Math.PI / 2; padG.add(m); return m; });
 const padDisc = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 2.6, .08, 64), new THREE.MeshStandardMaterial({ color: 0x1a1d22, metalness: .8, roughness: .35 })); padDisc.position.y = -.25; padG.add(padDisc);
 const padGlow = sprite(HEAT, .35, 9, 9); padGlow.position.set(0, -.1, 0); padG.add(padGlow);
@@ -235,7 +235,7 @@ const dart = new THREE.Group(); { const shaft = new THREE.Mesh(new THREE.Cylinde
   shaft.rotation.x = Math.PI / 2; shaft.position.z = 1.85; tip.rotation.x = -Math.PI / 2; tip.position.z = .2; dart.add(shaft, tip);
   for (let i = 0; i < 3; i++) { const f = new THREE.Mesh(new THREE.BoxGeometry(.03, .5, .6), new THREE.MeshBasicMaterial({ color: SIG, toneMapped: false })); f.position.z = 3.2; f.rotation.z = i * Math.PI / 3; dart.add(f); } }
 tgtE.add(dart);
-const tgtGlow = sprite(HEAT, .4, 10, 10); tgtGlow.position.z = -.3; tgtE.add(tgtGlow);
+const tgtGlow = sprite(HEAT, .4, 10, 10); tgtGlow.position.z = -.3; tgtE.add(tgtGlow); tgtE.scale.setScalar(.7);
 
 // sparks (the scratch on the face, the single tally on B)
 let CUR = 0;
@@ -261,7 +261,7 @@ const G = KIT.glide;
 const orb = (w, d, az, el, ly, fov = 31, ox = 0) => ({ pos: V(w.x + ox + Math.sin(az) * Math.cos(el) * d, w.y + ly * .5 + Math.sin(el) * d, w.z + Math.cos(az) * Math.cos(el) * d), look: V(w.x + ox, w.y + ly, w.z), fov });
 function shotCam(t, sh) {
   const u = prog(t, B[sh], B[sh + 1]), g = G(u), w = WORLD[sh];
-  if (sh === 0) { const u0 = prog(t, 0, C.double - .3), M = { pos: V(lerp(-.15, .25, u0), 2.1, lerp(6.7, 6.2, u0)), look: V(0, 2.07, 0), fov: 31 }, F0 = orb(w, lerp(14.6, 12.8, g), lerp(-.2, .16, g), .03, 1.85);   // frame 0: a macro on the tally being scratched in, then a pull back to the whole cell as the second 500 arrives
+  if (sh === 0) { const u0 = prog(t, 0, C.double - .3), M = { pos: V(lerp(-.1, .1, u0), 1.95, lerp(9.8, 9.2, u0)), look: V(0, 1.95, 0), fov: 31 }, F0 = orb(w, lerp(14.6, 12.8, g), lerp(-.2, .16, g), .03, 1.85);   // frame 0: a macro on the tally being scratched in, then a pull back to the whole cell as the second 500 arrives
     return KIT.reframe(M, F0, ease(prog(t, C.double - .35, C.double + .5))); }
   if (sh === 1) { const hold = KIT.push(Math.max(0, t - B[1]), .012);   // a wide look at the ring, an orbit as it fills, then a push to the cell for the single mark
     const F0 = orb(w, 11.6 * (1 - hold), lerp(-.5, .4, g), .03, 1.0, 32), F1 = { pos: V(w.x + .5, w.y - .1, w.z + 5.6), look: V(w.x, w.y + .15, w.z), fov: 30 };
@@ -274,7 +274,7 @@ function shotCam(t, sh) {
     const x = KIT.reframe(F0, F1, ease(prog(t, C.i15 - .15, C.i15 + .7))), y = KIT.reframe(x, F2, ease(prog(t, C.c1000 - 1.7, C.c1000 - .7)));
     return KIT.reframe(y, F1, ease(prog(t, C.c1000 + .75, C.c1000 + 1.5))); }
   if (sh === 4) return orb(w, lerp(14.2, 12.0, g), lerp(-.55, .5, g), .12, 1.75);   // an orbit round the target the dart lands in
-  if (sh === 5) { const F0 = orb(w, 13.2, lerp(-.7, -.2, g), .62, .2, 34), F1 = orb(w, 8.6, lerp(.3, .9, g), .5, .3, 34);   // a high look down on the phone on its pad, then closer, across the heat rings
+  if (sh === 5) { const F0 = orb(w, 14.6, lerp(-.7, -.2, g), .62, .2, 34), F1 = orb(w, 12.4, lerp(.3, .9, g), .5, .3, 34);   // a high look down on the phone on its pad, then closer, across the heat rings
     return KIT.reframe(F0, F1, ease(prog(t, C.use - .3, C.use + .6))); }
   const k = G(prog(t, B[6], TOTAL - .05), .45), F = orb(WORLD[6], lerp(13.4, 11.4, k), lerp(.5, -.12, k), .03, 1.8);   // the health screen, a slow orbit and push
   return F;
