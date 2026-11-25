@@ -7,6 +7,10 @@ Format (at most 6 lines):
 ```
 
 
+## 2026-11-25 · claude/no-skip-days · owner decisions written into the rules (size S, text only)
+- Done: no skip days, ask before costly (over about $5, render past 2, side jobs), Turns Out outside stills check, unasked stage updates, smaller morning run. In CLAUDE.md (lean), runbook-daily, runbook-reels, runbook-studio, critic, c3-plan; four lines in owner-feedback.
+- Left: scripts/stage.mjs still accepts a "skipped" stage (unused now); scheduled tasks untouched, so the 06:47 task prompt is unchanged (it follows runbook-daily.md).
+
 ## 2026-11-25 · claude/style-records · merged main into the style-records branch
 - Done: kept both log entries and main's captions.json flags (c3-resume onGo, no date); added the branch's style fields; check passes.
 
@@ -685,3 +689,8 @@ Format (at most 6 lines):
 - Done: after the critic's NOT READY, the scene now has seven different pictures (tally macro with "500" on screen at frame 0, cycle ring, phone battery screen, two phones 500 vs 1000, target and dart, phone charging on a pad, health screen) and the DEADLINE strike has time to cross the whole word. postAt 20:30, still hidden until the critic says READY. Render 3 allowed by the owner for today only.
 - Left: render 3 on GitHub, Output QA, then the independent critic (started by the owner chat).
 - For the other account: a battery-shaped hero in every shot reads as one picture; give each idea its own object (phone, target, pad). Keep screen numbers above the caption band at y 1448.
+## 2026-11-25 · claude/c3-looks-expensive-fix · Turns Out "One looks 5x pricier": critic fix for render 3 (builder session)
+- Done: finished label now keeps the honey line and 500 g in a quiet size, a bigger spaced name, a green frame and rule; the BEFORE flashback is smaller and sits under the "Same product" chip (the stray line was the rule copied into the BEFORE picture). captions.json: postOn 25 Nov, postAt 19:45, aiLabel false, hidden until READY.
+- Left: render 3 on GitHub, Output QA, then the independent critic (started by the owner chat).
+- For the other account: elements added inside the board are copied into the BEFORE picture; hide them (display none) at the first seek.
+

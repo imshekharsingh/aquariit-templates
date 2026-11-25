@@ -3,7 +3,7 @@
 Moved from CLAUDE.md "Daily run", "Daily improvement loop" and "Accounts and data" on 14 Nov 2026. A fresh session, lean, no subagents,
 in this order:
 
-Stage board (owner, 24 Nov 2026): at every stage change of a reel build (research, topic, build, stills, video, checking, ready or skipped) run
+Stage board (owner, 24 Nov 2026): at every stage change of a reel build (research, topic, build, stills, video, checking, ready) run
 `node scripts/stage.mjs <channel> <stage> --model <name> --line "plain words"` (design/runbook-reels.md "Live studio board"). Never blocks work.
 
 0. Feedback first (owner, 11 Nov 2026): the "Owner answers" `read` prints the app's new Feedback items as FEEDBACK lines (id, time, channel,
@@ -50,6 +50,18 @@ Stage board (owner, 24 Nov 2026): at every stage change of a reel build (researc
    Turns Out keeps its own scheduled task (09:11 IST for the 13:00 reel), under the same rulebook gate (design/channel3.md, "Channel brief").
 5. One lesson line in design/experiments.md "Results log" (`- DD Mon: lesson`), in the same push as the day's first reel.
 
+## Owner decisions of 25 Nov 2026 (they replace anything above that says otherwise)
+- **Smaller morning run.** The daily studio run only (a) does Feedback first, owner answers and the audit card, (b) picks the day's topics, (c) starts one build session
+  per channel (web, tech) with the full brief, and ends. It does not read whole rulebooks, build, or follow the builds (it cost $26 on 25 Nov). Each builder owns its reel to READY:
+  rulebooks, direction card, stills, renders 1-2, Output QA, starting the critic, the fix.
+- **No skip days.** Every channel posts every day in 13:00-21:00 IST. NOT READY = the critic writes the exact fix, the builder applies it and the reel posts the same day. Renders 1-2 are the
+  builder's; a 3rd (the fix render) needs the owner's yes from the owner chat, with a plain cost estimate.
+- **Turns Out gets an outside picture check.** Its stills are checked by a separate session (Fable, tag stills) before any render, like web and tech; the builder never approves its own stills
+  (25 Nov: the builder self-approved and the reel failed). The review file needs that session's "STILLS CHECK: APPROVED" line.
+- **Stage updates, unasked.** Every build session sends the owner chat session one short message at each stage: build pushed, stills approved, render started, Output QA result, critic verdict.
+  If a builder cannot start the critic, the owner chat starts it at once (design/runbook-studio.md).
+- **Ask before costly.** A builder that would pass its stated cap, or needs a render past 2, stops and messages the owner chat; it moves on only after the owner's yes.
+
 ## Fable decides: the build steps for web and tech (owner chat, 25 Nov 2026)
 Step 4 above (build the day's web and tech reels) runs in these eight steps. Sonnet does the work, Fable makes the three calls that matter
 (what to make, whether the stills are good, whether it beats gold). The Turns Out task keeps its fixed design order and does not use steps 1-2.
@@ -82,8 +94,8 @@ reel today from design/topic-bank.md (steps 1-8, the first KEEP of the tech list
 7. **Output QA** runs on the final MP4 (every FAIL = NOT READY), then the style record is measured:
    `node scripts/reel-fetch.mjs <name> reel-files && node scripts/style-measure.mjs reel-files --names <name> --write`.
 8. **Fable critic**, a different session from the builder, tag critic, side by side with gold (`python3 scripts/qa/side-by-side.py`). It writes
-   CRITIC: READY only if all four are yes: as rich as gold; not a copy of it; would stop a scroll; would be watched twice. Anything else is NOT READY and the reel is skipped for the day
-   (two renders used) or fixed once (a render left).
+   CRITIC: READY only if all four are yes: as rich as gold; not a copy of it; would stop a scroll; would be watched twice. Anything else is NOT READY: the critic writes the exact fix, and the reel is fixed and posted the same day
+   (no skip days, owner 25 Nov 2026). The fix is render 3 when two are used: the owner chat asks the owner to approve it with its cost estimate before it runs.
 
 Rejection watch: `node scripts/pick-sheet.mjs --log` counts the options Fable rejected on each of the last two logged days. At 8 or more rejected
 of the 10 on both days, the research of the options moves from Sonnet to Opus until a day passes with 3 or fewer rejected; write the switch
