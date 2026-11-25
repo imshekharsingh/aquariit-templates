@@ -738,3 +738,8 @@ Format (at most 6 lines):
 - Done: rules-tech.md section L and tech-direction.md section 7 replace the near-black + two-accent look and the top keyword band (dark ground, colourful materials, one world with recurring objects, real artifacts, word-by-word captions with a blue selection box); real product logos allowed on tech and web (safety.md 7, CLAUDE.md); owner-feedback lines; references.md entry. Test scene techkit/scenes/sample-colour-world.html (sample + hidden in captions.json), ONE preview render.
 - Left: owner chat decides whether the look is adopted for the daily tech builds; real logos need a licensed file via the Media workflow; gold.md still describes the old look.
 - For the other account: a cables-and-tiles scene reads best with the camera 14+ units back; hex colours need to be darker than they look (exposure .85) or blocks wash to pastel.
+
+## 2026-11-25 · claude/tech-3d-kit-phase1 · 3D kit phase 1: world, shadows, cable, DOF, layout, captions (owner-approved side job, phase 1 cap ~$30)
+- Done: techkit/world3d.js (W3D.stage / world / contactShadow / cable / place / check / clearOf / captions), make.py marker `<!--WORLD3D-->`, hidden 7 s demo techkit/scenes/kit3d-phase1-demo.html, scripts/3dkit-assemble.py, workflow kit3d-phase1.yml for the one preview render, stills review/tech/study-25nov/kit-phase1.jpg, notes design/3d-kit-phase1.md.
+- Left: the one preview render (run the workflow after merge), then the owner chat's go for phase 2 (object library, camera path, starter, README, 20 s sample).
+- For the other account: nothing new.
