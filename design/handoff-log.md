@@ -779,3 +779,8 @@ Format (at most 6 lines):
 - Done: sample render v1 passed Output QA (13.8 s; runner time about 12 min wall); gold.json "tech3d" LOOK numbers measured from that MP4; previews.json entry "3D kit sample reel" (Studio log, Watch); gold.md note.
 - Left: the owner chat decides on a longer 20 s version (two more voice lines) and whether the critic session runs on it; HERO has no subject box (kit scenes report one with __subject; the 3D scene does not yet).
 - For the other account: nothing new.
+
+## 2026-11-26 · claude/tech-3d-kit-sample-20s · 3D kit sample extended to about 20 s (owner chat: two more voice lines)
+- Done: six voice lines (new: "Each app and each tool talks to the hub once." and "A new tool is one more cable, not three."), hub cables brighten on "talks", a new tile plus ONE cable on "new", camera keys for both; stills review/tech/study-25nov/kit-phase2-20s.jpg (the six stills fixes from the owner chat are in it).
+- Left: render once (Tech reel, gold3d-sample, preview v2), then the independent critic (opus, tag critic).
+- For the other account: nothing new.

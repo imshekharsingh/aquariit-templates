@@ -2,7 +2,7 @@
  "slug": "gold3d-sample",
  "engine": "kit",
  "scene": "techkit/scenes/gold3d-sample.html",
- "topic": "SAMPLE (never posted): 3 apps x 8 tools = 24 connections, then one shared hub = 11 (the colour-world 3D kit, gold candidate)",
+ "topic": "SAMPLE (never posted): 3 apps x 8 tools = 24 connections, then one shared hub = 11, a new tool is one more cable (the colour-world 3D kit, gold candidate, 20 s)",
  "format": "xray",
  "audience": "global",
  "gadget": "ai tools",
@@ -11,7 +11,7 @@
  "speed": 1.0,
  "max_speed": 1.0,
  "gap": 0.35,
- "max_end": 20.5,
+ "max_end": 23,
  "experiment": {
   "id": "tech-3d-kit-gold",
   "change": "first reel on the phase 2 3D kit (techkit/world3d.js + lib3d.js): neutral dark world, glossy app tiles, 3D number figures, separate glowing cables that multiply then collapse into one hub, camera path through one world",
@@ -31,6 +31,16 @@
   {
    "text": "Add one shared hub, and it drops to eleven.",
    "beat": "takeaway",
+   "source": 0
+  },
+  {
+   "text": "Each app and each tool talks to the hub once.",
+   "beat": "why",
+   "source": 0
+  },
+  {
+   "text": "A new tool is one more cable, not three.",
+   "beat": "surprise",
    "source": 0
   },
   {
@@ -68,12 +78,20 @@
    2,
    "eleven"
   ],
-  "same": [
+  "talks": [
    3,
+   "talks"
+  ],
+  "newt": [
+   4,
+   "new"
+  ],
+  "same": [
+   5,
    "same"
   ],
   "final": [
-   3,
+   5,
    "wiring"
   ]
  },
@@ -121,6 +139,12 @@
    "eleven",
    "chime",
    0.45,
+   0
+  ],
+  [
+   "newt",
+   "pop",
+   0.5,
    0
   ]
  ],

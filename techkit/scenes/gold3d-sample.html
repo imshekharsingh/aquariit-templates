@@ -49,7 +49,7 @@ const fig24 = L.figure(THREE, '3x8=24', { height: .72, color: 0xffa23a, radius: 
 const shadows = [...apps.map((m) => W3D.contactShadow(S, m, { w: 2.4, d: .6, strength: .9 })), ...tools.map((m) => W3D.contactShadow(S, m, { w: 1.8, d: .5, strength: .8 })), W3D.contactShadow(S, hub, { w: 3.4, d: 2.2, rest: 0, strength: .7 })];
 
 // ---------- captions from the timeline ----------
-const KEYS = [[3, 3], [8, 9], [8, 8], [5, 6]];
+const KEYS = [[3, 3], [8, 9], [8, 8], [8, 8], [4, 6], [5, 6]];
 const cap = W3D.captions({ y: 190, size: 60, lines: TL.scenes.map((s, i) => ({ t0: i === 0 ? -.2 : s.start, t1: s.end, words: s.words.map((w) => w.w), times: s.words.map((w) => w.t0), keyIdx: KEYS[i] })) });
 const CAPBAND = [60, 150, 1020, 420];
 
@@ -61,9 +61,15 @@ const cam = W3D.camPath(S, [
   { t: C.twenty + .6, pos: [-3.4, 7.6, 17], look: [0, 3.0, -3], fov: 52 },
   { t: C.add + .4, pos: [0, 8.8, 18], look: [0, 2.8, -2.5], fov: 52 },
   { t: C.eleven + .4, pos: [2.2, 6.4, 16], look: [0, 3.0, -3], fov: 52 },
+  { t: C.talks + .2, pos: [.6, 5.8, 15.5], look: [0, 2.3, -2.8], fov: 52 },
+  { t: C.newt + .3, pos: [1.2, 5.6, 15.5], look: [.5, 2.4, -3], fov: 52 },
   { t: TOTAL, pos: [0, 7, 19], look: [0, 2.8, -3], fov: 52 },
 ]);
 
+// the new tool (line 5): one more tile and ONE cable from the hub
+const newTool = L.appTile(THREE, { size: 1.5, color: 0x00c2a8, glyph: L.appGlyphs.maps, name: 'New', label: 'inside' }); newTool.position.set(3.0, 0, -3.8); S.scene.add(newTool); newTool.visible = false;
+const newCable = W3D.cable(S, [[1.0, HUB_P.y + .1, HUB_P.z - .3], [2.0, 1.2, -3.2], [3.0, .5, -3.7], [3.0, .1, -3.5]], { color: 0x42ff8c, radius: .06, glow: 1.6, halo: .22, haloSize: 2.6, segments: 60, light: 0, floorGlow: .9, floorStrength: .55, pulse: { speed: .5, width: .06 } });
+shadows.push(W3D.contactShadow(S, newTool, { w: 1.5, d: .5, strength: .8 }));
 const focus = V(0, 1.6, -3); S.focus = focus;
 const heroes = [...apps, ...tools, hub];
 function frame(t) {
@@ -73,7 +79,9 @@ function frame(t) {
   // 24 cables draw on from "wire" (staggered), keep pulsing, retract when the hub arrives
   tubes.forEach((q) => { const dr = ease(prog(t, C.wire + .05 + q.k * .035, C.wire + .65 + q.k * .035)), ret = ease(prog(t, C.add + .05 + q.k * .018, C.add + .7 + q.k * .018)); q.c.reveal(Math.max(0, dr - ret * 1.0) > 0 ? dr * (1 - ret) : 0); q.c.update(t + q.ph, 1); });
   const ha = eback(prog(t, C.add + .25, C.add + .85)); hub.scale.setScalar(Math.max(.001, ha)); hub.visible = ha > .005;
-  hubTubes.forEach((q) => { const u = ease(prog(t, C.hub + .1 + q.k * .05, C.hub + .75 + q.k * .05)); q.c.reveal(u); q.c.update(t + q.ph, 1); });
+  const talk = 1 + .6 * Math.exp(-Math.pow((t - C.talks - .5) * 1.6, 2));   // the hub's cables brighten while the line says each talks once
+  hubTubes.forEach((q) => { const u = ease(prog(t, C.hub + .1 + q.k * .05, C.hub + .75 + q.k * .05)); q.c.reveal(u); q.c.update(t + q.ph, talk); });
+  { const a = eback(prog(t, C.newt, C.newt + .5)); newTool.visible = a > .005; newTool.scale.setScalar(Math.max(.001, a)); newCable.reveal(ease(prog(t, C.newt + .15, C.newt + .8))); newCable.update(t, talk); }
   const ca = eback(prog(t, C.hub + .5, C.hub + 1.1)); card.visible = ca > .005; card.scale.setScalar(Math.max(.001, ca)); card.position.set(2.2, 3.6, -1.5); card.rotation.y = -.3;
   // number figures: 24 on "twenty", 11 on "eleven"
   const a24 = eback(prog(t, C.twenty - .05, C.twenty + .4)), out24 = 1 - sm(prog(t, C.eleven - .05, C.eleven + .15)), a11 = eback(prog(t, C.eleven - .02, C.eleven + .45));
