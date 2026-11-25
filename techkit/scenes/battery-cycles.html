@@ -222,7 +222,7 @@ function shotCam(t, sh) {
   if (sh === 1) { const hold = KIT.push(Math.max(0, t - B[1]), .012);   // a wide look at the ring, an orbit as it fills, then a push to the cell for the single mark
     const F0 = orb(w, 12.4 * (1 - hold), lerp(-.5, .4, g), .03, 1.0, 32), F1 = { pos: V(w.x + .5, w.y - .1, w.z + 5.6), look: V(w.x, w.y + .15, w.z), fov: 30 };
     return KIT.reframe(F0, F1, ease(prog(t, C.total - .4, C.total + .2))); }
-  if (sh === 2) { const F0 = { pos: V(w.x + lerp(-4.6, -2.6, g), -.7, w.z + 13.4), look: V(w.x + .1, 1.35, w.z), fov: 33 }, F1 = orb(w, 13.4, .12, .02, 2.0, 31, .55), F2 = { pos: V(w.x + 3.2, 1.9, w.z + 6.4), look: V(w.x, .9, w.z), fov: 36 };   // a low three-quarter, the front with the gauge, a slide across the marks
+  if (sh === 2) { const F0 = { pos: V(w.x + lerp(-4.6, -2.6, g), -.7, w.z + 13.4), look: V(w.x + .1, 1.35, w.z), fov: 33 }, F1 = orb(w, 13.4, .12, .02, 2.0, 31, .55), F2 = { pos: V(w.x + 2.7, 1.7, w.z + 9.6), look: V(w.x, 1.9, w.z), fov: 36 };   // a low three-quarter, the front with the gauge, a slide across the marks
     const a = KIT.reframe(F0, F1, ease(prog(t, C.p80 - .5, C.p80 + .35))); return KIT.reframe(a, F2, ease(prog(t, C.c500 - .4, C.c500 + .45))); }
   if (sh === 3) { const hold = KIT.push(Math.max(0, t - B[3]), .012), F0 = { pos: V(w.x - 1.0, .9, w.z + 11.5 * (1 - hold)), look: V(w.x - 1.3, 1.2, w.z), fov: 31 },
       F1 = { pos: V(w.x, 1.0, w.z + 19.8 * (1 - KIT.push(Math.max(0, t - C.i15 - .6), .02))), look: V(w.x, 1.1, w.z), fov: 31 };   // the 500 cell whole, a pull back as the 1000 cell arrives, both side by side (a saveable frame) held
@@ -296,7 +296,7 @@ function typeLayer(t) {
   if (sh === 1) { if (t < C.p100 - .08) big('CYCLE', 'track', WHITE, t, C.cycle, C.p100 - .08, { size: 200, y: 500 });
     if (t >= C.p100) numCard(t, '100%', WHITE, C.p100, Y, 270, prog(t, C.p100, C.p100 + .06) * (1 - prog(t, wEnd(2) - .16, wEnd(2)))); }
   if (sh === 2) { if (t < C.p80 - .04) big('iPHONE 14', 'track', WHITE, t, C.i14, C.p80 - .04, { size: 150, y: 500 });
-    else numCard(t, t >= C.c500 ? '500' : '80%', t >= C.c500 ? WHITE : HEATC, t >= C.c500 ? C.c500 : C.p80, Y, 270, prog(t, C.p80, C.p80 + .05) * (1 - prog(t, wEnd(3) - .16, wEnd(3)))); }
+    else numCard(t, t >= C.c500 ? '500' : '80%', WHITE, t >= C.c500 ? C.c500 : C.p80, Y, 270, prog(t, C.p80, C.p80 + .05) * (1 - prog(t, wEnd(3) - .16, wEnd(3)))); }
   if (sh === 3) { if (t < C.c1000 - .04) big('iPHONE 15', 'rise', WHITE, t, C.i15, C.c1000 - .04, { size: 150, y: 500 });
     else numCard(t, '1000', SIGC, C.c1000, Y, 270, prog(t, C.c1000 - .02, C.c1000 + .05) * (1 - prog(t, wEnd(4) - .16, wEnd(4)))); }
   if (sh === 4) { if (t < C.deadline - .06) big('TARGET', 'stamp', HEATC, t, C.target, C.deadline - .06, { size: 190, y: 500, glow: 'rgba(255,150,40,.4)' });
