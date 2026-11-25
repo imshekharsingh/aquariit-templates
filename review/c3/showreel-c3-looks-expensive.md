@@ -25,3 +25,5 @@ Scene scripts/channel3/design/looks-expensive.js (copy: scripts/channel3/looks-e
 20. Depth and life: PASS: design engine: shop shelf behind the label, mood brightening as fixes land, camera push per fix, spark bursts
 
 Owner feedback (design/owner-feedback.md) against the stills: natural spoken sentences with breaths; the before is a believable first draft (big bold centred name, four colours, a badge and banner), not a strawman; the colour count on screen appears only after the voice says "two"; no rolling numbers.
+
+Render 1 (run 45529832138, 25 Nov 2026): Output QA FAIL on FILL (71%: the label alone was a small centred picture; the gold's rulers beside the board were left out) and ELEMENTS (4.2 s with nothing new after the last tick: reel 21 s too long for its voice). Fix before render 2: the rulers are back (FILL 0.90 median on a local frame scan, none under 0.80) and the reel is 19.5 s (the tail after the last element is about 2.7 s). LOOK, VARIETY, NUMBERS, DEAD, GRADE passed on render 1.
