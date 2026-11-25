@@ -637,4 +637,19 @@ export const demos = {
 <p class="note">Tap the button a few times. On the left the bold tab is wider, so the tabs after it jump. On the right every tab has a hidden bold copy of its label (::after with content: attr(data-text)), so it is always as wide as its bold self and nothing moves. MDN, attr().</p>`,
     js: `function(root, btn){ var n = 0; btn.addEventListener('click', function(){ n = (n + 1) % 3; root.querySelectorAll('.stage').forEach(function(st){ st.querySelectorAll('.tab').forEach(function(t, i){ t.classList.toggle('on', i === n); }); }); }); }`,
   },
+  // the user-invalid demo (showreel-47-user-invalid, 25 Nov 2026): real CSS, two sign-up forms; the left one styles input:invalid, so its empty required fields are red at once; the right one styles input:user-invalid, so a field turns red only after you type a bad value and leave it
+  userinvalid: {
+    css: `
+#userinvalid .stage{margin:8px 10px;padding:12px 10px;border-radius:12px;background:#10171a}
+#userinvalid input{display:block;width:100%;margin:0 0 8px;padding:8px 10px;border-radius:8px;border:2px solid #3a4448;background:#161d20;color:#e8efed;font:500 15px/1.2 system-ui,sans-serif}
+#userinvalid .bad input:invalid{border-color:#ff5f6d;background:#2a171b}
+#userinvalid .fix input:user-invalid{border-color:#ff5f6d;background:#2a171b}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">input:invalid</span><div class="stage bad"><input type="text" required placeholder="Name" aria-label="Name"><input type="email" required placeholder="Email" aria-label="Email"></div></div>
+  <div class="pane fix"><span class="tag ok">input:user-invalid</span><div class="stage fix"><input type="text" required placeholder="Name" aria-label="Name"><input type="email" required placeholder="Email" aria-label="Email"></div></div>
+</div>
+<p class="note">The left form is red before you touch it: an empty required field is invalid from the first paint. The right form stays dark. Type "ada@" in its email field and click away: only then does it turn red. MDN, :user-invalid (Chrome 119, Firefox 88, Safari 16.5).</p>`,
+    js: `function(root){}`,
+  },
 };

@@ -251,6 +251,10 @@
 #tabwiggle .tab{display:inline-block;margin-right:12px;font:400 17px/1.4 system-ui,sans-serif;color:#b9c4c1;text-align:center}
 #tabwiggle .tab.on{font-weight:800;color:#5fe3c0}
 #tabwiggle .fix .tab::after{content:attr(data-text);font-weight:800;display:block;height:0;visibility:hidden}
+#userinvalid .stage{margin:8px 10px;padding:12px 10px;border-radius:12px;background:#10171a}
+#userinvalid input{display:block;width:100%;margin:0 0 8px;padding:8px 10px;border-radius:8px;border:2px solid #3a4448;background:#161d20;color:#e8efed;font:500 15px/1.2 system-ui,sans-serif}
+#userinvalid .bad input:invalid{border-color:#ff5f6d;background:#2a171b}
+#userinvalid .fix input:user-invalid{border-color:#ff5f6d;background:#2a171b}
 </style>
 </head>
 <body>
@@ -260,6 +264,27 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="userinvalid">
+  <p class="no">Nº 37</p>
+  <h2>Why is your form red before you type anything?</h2>
+  <p class="why">An empty required field is invalid from the first paint, so an input:invalid rule colours it red before anyone has touched the form. input:user-invalid matches the same fields only after the person has interacted with them (MDN: an invalid control after the user has interacted with it), so the red waits until they leave a field with a bad value. Supported in Chrome 119, Firefox 88 and Safari 16.5 (MDN browser compatibility data).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">input:invalid</span><div class="stage bad"><input type="text" required placeholder="Name" aria-label="Name"><input type="email" required placeholder="Email" aria-label="Email"></div></div>
+  <div class="pane fix"><span class="tag ok">input:user-invalid</span><div class="stage fix"><input type="text" required placeholder="Name" aria-label="Name"><input type="email" required placeholder="Email" aria-label="Email"></div></div>
+</div>
+<p class="note">The left form is red before you touch it: an empty required field is invalid from the first paint. The right form stays dark. Type "ada@" in its email field and click away: only then does it turn red. MDN, :user-invalid (Chrome 119, Firefox 88, Safari 16.5).</p></div>
+  <div class="code"><pre><code>&lt;input required&gt;
+&lt;input type=&quot;email&quot; required&gt;
+
+/* red before anyone types */
+input:invalid { border-color: red; }
+
+/* red only after the person has interacted */
+input:user-invalid { border-color: red; }</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:user-invalid" rel="noopener">Source: MDN :user-invalid</a></p>
+</article>
 
 <article class="tip" id="tabwiggle">
   <p class="no">Nº 36</p>
@@ -922,11 +947,12 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>34 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>35 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "userinvalid": function(root){},
     "tabwiggle": function(root, btn){ var n = 0; btn.addEventListener('click', function(){ n = (n + 1) % 3; root.querySelectorAll('.stage').forEach(function(st){ st.querySelectorAll('.tab').forEach(function(t, i){ t.classList.toggle('on', i === n); }); }); }); },
     "homebar": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
     "darkflash": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },

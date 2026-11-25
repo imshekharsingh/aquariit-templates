@@ -634,3 +634,8 @@ Format (at most 6 lines):
 - Done: showreel-c3-looks-expensive rebuilt from the gold Turns Out reel (starter): a crowded honey label fixed in three moves (room, a small spaced name, two colours), seven spoken sentences with breaths, direction card and review file written, captions entry kept hidden until the critic says READY. The old A/B scene is no longer built (COPIES entry removed).
 - Left: render, Output QA, critic; then postOn 2026-11-25, postAt 17:00.
 - For the other account: the 05:11 run lost its work because it had no repo access; always pass the repo URL to create_session.
+
+## 2026-11-25 · claude/web-user-invalid · Web reel for 25 Nov: user-invalid, built to the stills check (web build session)
+- Done: showreel-47-user-invalid ("Why is it red before typing?", :user-invalid; MDN and BCD re-read 25 Nov): a sign-up form whose three fields are lit red like warning lamps from frame 0, RED FIELDS 3 and TYPED 0 under them, the lamps flaring at 0.25 s and 1.45 s; the fix card (input:user-invalid), the lamps go dark on the spoken "user invalid" (3 -> 0), then name, email and age are tapped and only the email lights red once the finger has left it with "ada@"; the last 0.45 s reload the page into frame 0 (loop). New hue (navy fields, blue accent, 225), direction card, review file, stills sheet, captions entry (postAt 19:00), tip demo, demo-hues line.
+- Left: the Fable stills check (APPROVED line in the direction card), then one render, Output QA, critic, style-measure.
+- For the other account: a red demo fails Output QA HUE (red is within 40 deg of 25 and 315); put a base hue under it. KM.mixCol returns rgb(), so chain hex mixes with your own helper.

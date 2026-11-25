@@ -48,6 +48,10 @@
   "showreel-46-tabwiggle": {
    "hue": 165,
    "world": "black, mint accent"
+  },
+  "showreel-47-user-invalid": {
+   "hue": 225,
+   "world": "black,blueaccent"
   }
  }
 }
