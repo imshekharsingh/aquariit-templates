@@ -698,3 +698,8 @@ Format (at most 6 lines):
 - Left: render 3 on GitHub, Output QA, then the independent critic (started by the owner chat).
 - For the other account: elements added inside the board are copied into the BEFORE picture; hide them (display none) at the first seek.
 - Gate: render 3 stopped at the review gate (items 14-17 need their FLOW lines once postOn is set); lines pasted, no frames were rendered, so the render count is unchanged.
+
+## 2026-11-25 · claude/critic-c3-looks-expensive-r3 · Turns Out "One looks 5x pricier" critic, render 3: READY (critic session)
+- Done: judged render 3 on the real MP4 (one contact sheet beside the gold reel, a full-size look at 18.3 s, a 0.1 s strip of the flashback); verdict, GOLD matches, STOP 7, REWATCH 7 and PREMIUM 7 / 7 / 7 in review/c3/showreel-c3-looks-expensive.md. The finished label is complete (bigger name, honey line and 500 g kept, green frame); the BEFORE flashback sits below the chip, whole, no stray line. captions.json: "hidden" and "hold" removed; posts 25 Nov 19:45 IST.
+- Left: in the flashback copy the badge words "100% NATURAL" sit high-left and lose a letter for 0.6 s (13.1-13.7 s); fix in core.js DT.proof (scale the badge words with the badge) before the next design reel. No render for this. Voice not heard (no audio playback in the session).
+- For the other account: a scaled copy of the board (DT.proof fs) does not scale text that is positioned in px inside a child; check badges and seals in the copy on a still.
