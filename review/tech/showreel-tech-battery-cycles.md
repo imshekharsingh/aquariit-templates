@@ -15,7 +15,7 @@ Facts: Apple Support "iPhone battery and performance" (https://support.apple.com
 10. Facts: PASS: sources above; npm run check passes.
 11. Post data: PASS: captions.json entry with channel, postOn, postAt, concept; 7 keywords, 5 hashtags.
 12. Review file: PASS: items 1-11 and 14-17 are PASS with evidence from the 25 Nov stills run
-13. After the render: PENDING
+13. After the render: PASS: render 2 (run 45538181782), OUTPUT QA: PASS on the final MP4 (34.4 s, -14.5 LUFS, true peak -1.4 dBTP): PACE, STRAY, LOUD, SOUND (21 of 21 element cues audible), COLOUR, EDGES (none), HERO 88%, VARIETY 6% one shot, LOOK (bright .206 vs gold .154, background .076, dark 54%, 0 washed-out frames), NUMBERS (no counter rolled), SYNC (500, 100%, 80% read on screen), DEAD (none), SHEEN 0; LICENCE only a warning (no real media, as for the gold reel's code-drawn objects)
 14. Cuts: PASS: FLOW: cuts 0 undeclared (11 declared transitions: six camera cuts push, rack, wipe, whip, rack, push, and five jolts)
 15. Dead runs: PASS: FLOW: dead runs none; window.HOLDS: the last 1.2 s (the loop frame)
 16. Continuity: PASS: FLOW: continuity 83% (median step 1.4)
@@ -30,3 +30,5 @@ Stills sheet 2 (after the stills-check fixes of 25 Nov): review/tech/showreel-te
 Median brightness after the fixes: about .23 on the local stills (gold .154, limit .244); the kicker and fill were toned down to keep it under.
 
 Render 1 (run 45533363626): every Output QA check passed except SYNC: the amber "80%" was not read by the text recogniser, and the speech recogniser does not hear "1000" (it hears "one" and a zero). Fix for render 2: "80%" in white, "1000" removed from the SYNC list (the voice still says one thousand and the word is on screen from 20 s), and the macro in shot C pulled back so "500" stays clear of the cell.
+
+Output QA, render 2: PASS. Style record measured from the MP4: 34.4 s, 2.33 words/s, 12 shot changes, look dark, payoff tip. First-second tension: yes (a tally already scratched into the cell by amber sparks at frame 0).
