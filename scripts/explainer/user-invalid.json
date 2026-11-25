@@ -11,7 +11,7 @@
  "cover": 1.39,
  "palette": "black",
  "voice": {
-  "text": "Why is it red before typing? Empty fields count as invalid from the start. So the form paints red at once. The fix: swap invalid for user invalid. Now red waits until you leave the field.",
+  "text": "Why is it red before typing? Empty fields count as invalid from the start. So the form paints red at once. The fix: swap invalid for user invalid. Now red waits until you leave.",
   "voice": "af_heart",
   "speed": 1
  },

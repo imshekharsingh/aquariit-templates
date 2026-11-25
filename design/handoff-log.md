@@ -639,3 +639,8 @@ Format (at most 6 lines):
 - Done: showreel-47-user-invalid ("Why is it red before typing?", :user-invalid; MDN and BCD re-read 25 Nov): a sign-up form whose three fields are lit red like warning lamps from frame 0, RED FIELDS 3 and TYPED 0 under them, the lamps flaring at 0.25 s and 1.45 s; the fix card (input:user-invalid), the lamps go dark on the spoken "user invalid" (3 -> 0), then name, email and age are tapped and only the email lights red once the finger has left it with "ada@"; the last 0.45 s reload the page into frame 0 (loop). New hue (navy fields, blue accent, 225), direction card, review file, stills sheet, captions entry (postAt 19:00), tip demo, demo-hues line.
 - Left: the Fable stills check (APPROVED line in the direction card), then one render, Output QA, critic, style-measure.
 - For the other account: a red demo fails Output QA HUE (red is within 40 deg of 25 and 315); put a base hue under it. KM.mixCol returns rgb(), so chain hex mixes with your own helper.
+
+## 2026-11-25 · claude/web-user-invalid-3 · Web reel 47 render 1 failed Output QA (PACE, HUE); fixed for render 2 (web build session)
+- Done: render 1 (run 45535361039): PACE 4.60 words/s on the last sentence and HUE 355 (red won against a thin navy); everything else passed. Last line shortened to "Now red waits until you leave.", fields brighter navy, red glow and counter fill lighter (blue 2.1x red locally). Render 2 dispatched from main after the merge.
+- Left: render 2, Output QA, critic, style-measure.
+- For the other account: a render can read HUE differently from the local frames; leave blue at 2x the red weight, not 1.1x.
