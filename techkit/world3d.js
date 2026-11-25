@@ -33,7 +33,7 @@ window.W3D = (() => {
     gl.setPixelRatio(1); gl.setSize(W, H, false); gl.outputEncoding = THREE.sRGBEncoding; gl.shadowMap.type = THREE.PCFSoftShadowMap; gl.shadowMap.enabled = true; gl.domElement.style.cssText = `position:absolute;left:0;top:0;width:${W}px;height:${H}px`;
     document.body.appendChild(gl.domElement);
     const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(o.fov || 30, W / H, .1, 120);
-    const S = { THREE, W, H, gl, scene, cam, ink, haze, focus: null, dof: { on: true, aperture: o.aperture ?? 1.5, maxR: o.maxR ?? 16, focusRange: o.focusRange ?? 3.2 }, bloom: o.bloom ?? .62, exposure: o.exposure ?? .8, vign: o.vign ?? .42, post: true };
+    const S = { THREE, W, H, gl, scene, cam, ink, haze, focus: null, dof: { on: true, aperture: o.aperture ?? 3.4, maxR: o.maxR ?? 22, focusRange: o.focusRange ?? 2.2 }, bloom: o.bloom ?? .62, exposure: o.exposure ?? .8, vign: o.vign ?? .42, post: true };
     // environment: a dark studio with coloured soft boxes (deterministic PMREM), the source of every gloss highlight
     { const env = new THREE.Scene(); env.background = new THREE.Color(0x0a0814);
       const box = (w, h, x, y, z, c, k) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(k), side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m); };
@@ -162,11 +162,15 @@ window.W3D = (() => {
     const col = new THREE.Color(o.color ?? 0xff7a1a), rad = o.radius ?? .13, glow = o.glow ?? 2.2, pw = o.pulse === false ? 0 : (o.pulse?.width ?? .07), speed = o.pulse?.speed ?? .45;
     const strip = (w, h, draw) => tex(THREE, w, h, draw, false);
     // tube texture: a dim cable body along its length and one bright travelling pulse (a gaussian), brightest at the centre of the tube's uv.v
-    const tubeMap = strip(1024, 8, (c, w, h) => { const im = c.createImageData(w, h); for (let x = 0; x < w; x++) { const u = x / w, g = Math.exp(-Math.pow((u - .5) / pw, 2)); const v = 255 * clamp(.38 + .62 * (pw ? g : 0)); for (let y = 0; y < h; y++) { const i = (y * w + x) * 4; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; } } c.putImageData(im, 0, 0); });
+    const tubeMap = strip(1024, 8, (c, w, h) => { const im = c.createImageData(w, h); for (let x = 0; x < w; x++) { const u = x / w, g = Math.exp(-Math.pow((u - .5) / pw, 2)); const v = 255 * clamp(.7 + .3 * (pw ? g : 0)); for (let y = 0; y < h; y++) { const i = (y * w + x) * 4; im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; } } c.putImageData(im, 0, 0); });
     tubeMap.wrapS = THREE.RepeatWrapping;
     const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, o.segments ?? 260, rad, 18, false), new THREE.MeshBasicMaterial({ color: 0xffffff, map: tubeMap, toneMapped: false, fog: false })); S.scene.add(tube);
     // a lighter inner core sits inside slightly over the surface so bloom has a white-hot centre line
     const core = new THREE.Mesh(new THREE.TubeGeometry(curve, o.segments ?? 260, rad * .38, 10, false), new THREE.MeshBasicMaterial({ color: 0xffffff, map: tubeMap, toneMapped: false, fog: false, transparent: true, opacity: .9 })); S.scene.add(core);
+    // a soft halo sheath along the WHOLE tube (owner chat, 25 Nov: the glow was a hot spot at the port, not a halo): additive, fades to nothing at its silhouette
+    const hal = new THREE.Mesh(new THREE.TubeGeometry(curve, o.segments ?? 260, rad * (o.haloSize ?? 3.4), 18, false), new THREE.ShaderMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
+      uniforms: { col: { value: new THREE.Color(1, 1, 1) } }, vertexShader: 'varying vec3 vN; varying vec3 vP; void main(){ vN = normalize(normalMatrix * normal); vec4 mv = modelViewMatrix * vec4(position, 1.); vP = mv.xyz; gl_Position = projectionMatrix * mv; }',
+      fragmentShader: 'uniform vec3 col; varying vec3 vN; varying vec3 vP; void main(){ float f = abs(dot(normalize(vN), normalize(-vP))); gl_FragColor = vec4(col * pow(f, 3.0), 1.); }' })); hal.renderOrder = 4; S.scene.add(hal);
     // the light the cable throws on the floor: a ribbon under the path, soft across, with the same pulse
     let ribbon = null, ribMap = null;
     if (o.floorGlow !== 0) {
@@ -180,9 +184,10 @@ window.W3D = (() => {
     }
     // a point light that rides the pulse: it lights the floor and the nearby objects as it passes
     const lamp = new THREE.PointLight(col, 0, 7, 1.5); S.scene.add(lamp);
-    const api = { curve, tube, core, ribbon, lamp, speed, update(t, on = 1) {
+    const api = { curve, tube, core, ribbon, lamp, halo: hal, speed, update(t, on = 1) {
       const c = pw ? (((t * speed) % 1) + 1) % 1 : .5, off = .5 - c; tubeMap.offset.x = off; if (ribMap) ribMap.offset.x = off;
       const k = glow * on; tube.material.color.setRGB(col.r * k, col.g * k, col.b * k); core.material.color.setRGB(Math.min(4, col.r * k * 1.9 + .5), Math.min(4, col.g * k * 1.6 + .35), Math.min(4, col.b * k * 1.4 + .2));
+      hal.material.uniforms.col.value.copy(col).multiplyScalar((o.halo ?? .55) * on);
       if (ribbon) ribbon.material.color.copy(col).multiplyScalar((o.floorStrength ?? 1.1) * on);
       lamp.position.copy(curve.getPointAt(c)).y += .55; lamp.intensity = (o.light ?? 2.2) * on; api.pulseAt = c; } };
     api.update(0); return api;
