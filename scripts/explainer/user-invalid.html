@@ -21,12 +21,12 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #scr{position:absolute;left:10px;top:10px;width:484px;height:426px;border-radius:52px;overflow:hidden;background:var(--pg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 #sb{position:absolute;left:0;right:0;top:0;height:44px;background:var(--pg);color:var(--paper);font:500 15px/44px var(--m);padding:0 34px;z-index:4}
 .pg{position:absolute;left:0;top:44px;width:484px;height:382px;background:var(--pg);overflow:hidden}
-.fld{position:absolute;left:20px;width:444px;height:58px;border-radius:16px;background:#233a73;box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
+.fld{position:absolute;left:20px;width:444px;height:58px;border-radius:16px;background:#2a4a9a;box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
 .fl{position:absolute;left:18px;top:9px;font:500 12px/1 var(--m);letter-spacing:.14em;color:var(--dim);font-style:normal}
 .fv{position:absolute;left:18px;top:27px;font:600 22px/1 var(--f);color:var(--paper);white-space:nowrap}
 .fp{position:absolute;left:18px;top:27px;font:500 22px/1 var(--f);color:#8a867f;white-space:nowrap}
 .fm{position:absolute;right:48px;top:9px;font:500 12px/1 var(--m);letter-spacing:.1em;color:var(--red);font-style:normal;white-space:nowrap;opacity:0}
-.lamp{position:absolute;right:18px;top:21px;width:16px;height:16px;border-radius:50%;background:#3b538f}
+.lamp{position:absolute;right:18px;top:21px;width:16px;height:16px;border-radius:50%;background:#4a68b8}
 #pill{position:absolute;left:167px;bottom:9px;width:150px;height:6px;border-radius:3px;background:#fff;opacity:.85}
 #fg{position:absolute;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.75);z-index:6;opacity:0}
 .tr{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid var(--red);z-index:6;opacity:0}
@@ -55,7 +55,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #hud{position:absolute;left:0;bottom:0;width:484px;height:160px;background:#111114;box-shadow:inset 0 1px 0 rgba(255,255,255,.1);z-index:5}
 #meter{position:absolute;left:10px;top:9px;width:440px;display:flex;gap:22px}
 .km-m{padding:11px 18px 13px 16px;border-radius:18px;min-width:96px}
-.km-bad{background:rgba(255,95,109,.32);min-width:160px}.km-good{background:rgba(111,179,255,.27);min-width:160px}
+.km-bad{background:rgba(255,95,109,.2);min-width:160px}.km-good{background:rgba(111,179,255,.27);min-width:160px}
 .km-m small{display:block;font:500 15px/1 var(--m);letter-spacing:.14em;color:var(--dim);margin-bottom:10px}
 .km-m b{display:inline-block;font:800 72px/.9 var(--f);letter-spacing:-.05em;transform-origin:0 100%;font-variant-numeric:tabular-nums}
 .km-bad b{color:var(--red)}.km-good b{color:var(--acc)}
@@ -632,7 +632,7 @@ var KM = (function(){
 /*kithook:end*/
   var $ = function(id){ return document.getElementById(id); }, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, TH = KM.black({ acc: '#6fb3ff' });   // the black look (rules-web.md rule 19) with a blue accent: one accent a reel, a new one each time (rule 17, Output QA HUE)
   [['--soft', 'rgba(111,179,255,.16)'], ['--ring', 'rgba(111,179,255,.55)'], ['--on', '#04101f']].forEach(function(q){ document.documentElement.style.setProperty(q[0], q[1]); });
-  var TEXT = "Why is it red before typing? Empty fields count as invalid from the start. So the form paints red at once. The fix: swap invalid for user invalid. Now red waits until you leave the field.", DUR = 15, HOOK_N = 6, FIX_S = 3, LP = DUR - .5;
+  var TEXT = "Why is it red before typing? Empty fields count as invalid from the start. So the form paints red at once. The fix: swap invalid for user invalid. Now red waits until you leave.", DUR = 15, HOOK_N = 6, FIX_S = 3, LP = DUR - .5;
   // the code: the one lit word is the fix; the dim lines keep the rest in place, the last line says what it replaces
   var CODE = '<span class="dim">input:</span><b>user-invalid</b><span class="dim"> {</span>\n  <span class="dim">border-color: red;</span>\n<span class="dim">}</span>\n\n<span class="dim">/* was input:invalid */</span>';
   var V, PH, A = {}, CAM, T = {}, TB = [], TG = [], TY = [], WW = 0;
@@ -689,10 +689,10 @@ var KM = (function(){
   function hx(a, b, k){ var x = parseInt(a.slice(1), 16), y = parseInt(b.slice(1), 16), o = 0, q; for (q = 16; q >= 0; q -= 8) { var v = Math.round(mix(x >> q & 255, y >> q & 255, cl(k))); o = o * 256 + v; } return '#' + ('000000' + o.toString(16)).slice(-6); }
   // one field: r = how red (0-1), fl = the flare, fc = focus; a lamp that lights, a ring, a glow
   function paint(i, r, fl, fc){
-    var base = hx('#3b538f', '#ff5f6d', r), col = fc > .01 ? hx(base, '#6fb3ff', fc) : base, w = 2 + 1.5 * r + 1.5 * fl + .5 * fc;
-    FLD[i].style.boxShadow = 'inset 0 0 0 ' + w.toFixed(2) + 'px ' + col + ', 0 0 ' + (8 + 24 * fl + 10 * r).toFixed(1) + 'px rgba(255,95,109,' + (.3 * r + .45 * fl).toFixed(3) + ')';
-    FLD[i].style.background = hx(hx('#233a73', '#5a2343', .5 * r), '#5a2030', .6 * fl);
-    LMP[i].style.background = hx('#3b538f', '#ff5f6d', r); LMP[i].style.boxShadow = '0 0 ' + (18 * r + 16 * fl).toFixed(1) + 'px rgba(255,95,109,' + (.9 * r).toFixed(2) + ')'; LMP[i].style.transform = 'scale(' + (1 + .45 * fl).toFixed(3) + ')';
+    var base = hx('#4a68b8', '#ff5f6d', r), col = fc > .01 ? hx(base, '#6fb3ff', fc) : base, w = 2 + 1.5 * r + 1.5 * fl + .5 * fc;
+    FLD[i].style.boxShadow = 'inset 0 0 0 ' + w.toFixed(2) + 'px ' + col + ', 0 0 ' + (8 + 24 * fl + 10 * r).toFixed(1) + 'px rgba(255,95,109,' + (.12 * r + .3 * fl).toFixed(3) + ')';
+    FLD[i].style.background = hx(hx('#2a4a9a', '#5a2343', .5 * r), '#5a2030', .6 * fl);
+    LMP[i].style.background = hx('#4a68b8', '#ff5f6d', r); LMP[i].style.boxShadow = '0 0 ' + (18 * r + 16 * fl).toFixed(1) + 'px rgba(255,95,109,' + (.9 * r).toFixed(2) + ')'; LMP[i].style.transform = 'scale(' + (1 + .45 * fl).toFixed(3) + ')';
     MSG[i].style.opacity = P(r, .35, .85).toFixed(3); }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t));

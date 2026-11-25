@@ -9,7 +9,7 @@ Eye path (rule 14), one line per beat: 0-2 s hook top-left, then straight down t
 4. No overlap: PASS: OVERLAP: none; BAND: clear (reaction words in the status bar, the payoff label right of the counter, nothing in the subtitle band)
 5. Motion: PASS: STATIC STRETCH: none (least change 0.0 at 4 s, median 2.0)
 6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; every spoken line shown and finished on the 12-frame sheet
-7. Voice: PASS: PREFLIGHT voice: 146 letters, 5 sentences, about 11.4 s at speed 1 in one take (reel 15 s, voice must end by 14.4 s): fits; PRONUNCIATION: 0 overrides used; no unchecked words; HOOK PACE 6 words ok (the first draft had 7 and was cut to 6); 36 words, 2.4 words/s over the reel; CONTRAST: 6.0:1 (black)
+7. Voice: PASS: PREFLIGHT voice: 138 letters, 5 sentences, about 10.8 s at speed 1 in one take (reel 15 s, voice must end by 14.4 s): fits; PRONUNCIATION: 0 overrides used; no unchecked words; HOOK PACE 6 words ok (the first draft had 7 and was cut to 6); 35 words, 2.3 words/s over the reel; CONTRAST: 6.0:1 (black)
 8. Sound: PASS (by design; measured on the render at item 13): a hit and a whoosh at 0.0 s, a hit at each flare, a pop on each tap, typing ticks (the code, "Ada", "ada@"), a resolve chord when the lamps go dark, a low hit when the email lights, a swish into the reload; speed 1.0, recorded samples
 9. Payoff: PASS: from about 13 s the email is lit red with MISSING AFTER @, RED FIELDS 1 in red, TYPED 7, the label AFTER YOU LEAVE and the code card with user-invalid on screen for the save; at 14.5 s the page reloads into frame 0 (the loop)
 10. Facts: PASS: MDN :user-invalid (page source mdn/content, read 25 Nov 2026: matches a validated form element whose value isn't valid, after the user has interacted with it; it must match an :invalid, :out-of-range, or blank-but :required element between the time the user has attempted to submit the form and before the user has interacted again), MDN BCD css.selectors.user-invalid (Chrome 119, Edge 119, Firefox 88, Safari 16.5; the caption names the versions, the video shows none); no real brands; npm run check passes
@@ -18,9 +18,9 @@ Eye path (rule 14), one line per beat: 0-2 s hook top-left, then straight down t
 13. After the render: PENDING
 14. Cuts: PASS: FLOW: cuts 0 (3 declared transitions: morph of the cause picture into the code card, sharedElement glide of the fix word onto the form, morph of the end state back into frame 0 for the loop)
 15. Dead runs: PASS: FLOW: dead runs none
-16. Continuity: PASS: FLOW: continuity 52% (web: 35% or more)
+16. Continuity: PASS: FLOW: continuity 53% (web: 35% or more)
 17. Strobes: PASS: FLOW: strobes 0
-18. Element sound (web): PASS: ELEMENT SOUND: 55 of 55 animated elements have a cue (100%): ok
+18. Element sound (web): PASS: ELEMENT SOUND: 56 of 56 animated elements have a cue (100%): ok
 
 Local look (scene frames at 10 fps, scripts/qa/frames.mjs + look.py): HUE pass (225 deg vs 46-tabwiggle 165, 45-homebar 25, 44-darkflash 315; the first drafts measured 355 and failed, the red lamp was the main hue: the fields now carry navy as the base hue and red is only the ring, lamp and glow), CALM 0.9% median / 2.3% mean, SPREAD 0% empty, FOCUS pass (2 hues, subject 51 vs rest 32), demo-hues.json line added.
 PREMIUM (builder, on the stills, design/critic.md "Premium check"): animation 7.5/10 (t 0.25 and 1.45: the three lamps flare in a ripple and settle; t 2.2-3.3 a 3.5% push in; t 9.5 the lamps go dark one by one; t 13 the email lights red), cleanliness 7.5/10 (one focus a beat, reaction words in the status bar's empty side, nothing over text but the finger's ring on a placeholder for 0.3 s), premium 7.5/10 (near-black with navy fields, one blue accent, red only as the bug; a measured counter 3 -> 0 -> 1 -> 3 as the through-line); weakest: the fields are short UI rows (three 58 px bars), so the hero reads smaller than gold's tab bar; the HUD counter carries the weight.
@@ -28,3 +28,5 @@ Researched improvement (design/improvements.md web, the next unused item: "Seaml
 Craft improvement (design/craft-log.md): a form drawn as warning lamps, an end state that is the start state, and the counter as the through-line (RED FIELDS 3 -> 0 -> 1 -> 3).
 References used: none (patterns from our own numbers and tabwiggle reels: rules 19 and 20).
 Deliberate differences from the brief, for the critic: (a) the accent is blue, not mint (the mint accent is tabwiggle's; Output QA HUE needs a new hue and a red demo can never be the main hue), so the fixed state is blue; (b) after 0 the counter goes to 1 in red when the email lights, because that late red IS the lesson (red only after the person has interacted); (c) the first bug at 0.25 s is the page's own load with no tap (nobody taps to cause it), the finger appears from 1.45 s.
+
+Render 1 (run 45535361039, 25 Nov): Output QA failed on PACE (last sentence "Now red waits until you leave the field." 4.60 words/s, limit 4.5) and HUE (the render measured 355 deg: red 14% against a thin navy). Fixed for render 2: the last line is "Now red waits until you leave." (6 words); the fields are a brighter navy-blue (#2a4a9a, hue 225) and the red glow and the counter's red fill are lighter; locally blue weighs 2.1x red over the reel and HUE reads 225.
