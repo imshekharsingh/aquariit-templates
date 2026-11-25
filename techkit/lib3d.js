@@ -29,9 +29,12 @@
   function appTile(THREE, o = {}) {
     const s = o.size ?? 1.7, g = new THREE.Group(), col = o.color ?? 0x6b3cff, hex = '#' + new THREE.Color(col).getHexString();
     g.add(new THREE.Mesh(standingSlab(THREE, s, .34, s * .24), gloss(THREE, col, { roughness: .24 })));
-    const map = o.logo ? null : tex(THREE, 256, 256, (c, w, h) => { const gr = c.createLinearGradient(0, 0, w, h); gr.addColorStop(0, 'rgba(255,255,255,.22)'); gr.addColorStop(1, 'rgba(0,0,0,.18)'); c.fillStyle = gr; rr(c, 0, 0, w, h, 60); c.fill(); c.translate(w / 2, h / 2); (o.glyph || appGlyphs.notes)(c, hex); });
+    const inside = o.label === 'inside' && o.name;   // the name sits inside the tile at its top, so nothing in front of the tile can cover it
+    const map = o.logo ? null : tex(THREE, 256, 256, (c, w, h) => { const gr = c.createLinearGradient(0, 0, w, h); gr.addColorStop(0, 'rgba(255,255,255,.22)'); gr.addColorStop(1, 'rgba(0,0,0,.18)'); c.fillStyle = gr; rr(c, 0, 0, w, h, 60); c.fill();
+      c.save(); c.translate(w / 2, h / 2 + (inside ? 18 : 0)); if (inside) c.scale(.8, .8); (o.glyph || appGlyphs.notes)(c, hex); c.restore();
+      if (inside) { c.fillStyle = 'rgba(255,255,255,.95)'; c.font = `800 40px ${SANS}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(o.name, w / 2, 38); } });
     const f = face(THREE, s * .9, s * .9, o.logo || map); f.position.set(0, s / 2, .175); g.add(f); g.userData.logoSlot = f;   // the logo slot: swap f.material.map for a licensed logo texture
-    if (o.name) { const lab = face(THREE, s * 1.4, s * .34, tex(THREE, 512, 128, (c, w, h) => { c.fillStyle = '#e9ecf4'; c.font = `700 56px ${SANS}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(o.name, w / 2, h / 2); })); lab.position.set(0, -s * .2, .02); lab.userData.label = true; g.add(lab); }
+    if (o.name && !inside) { const lab = face(THREE, s * 1.4, s * .34, tex(THREE, 512, 128, (c, w, h) => { c.fillStyle = '#e9ecf4'; c.font = `700 56px ${SANS}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(o.name, w / 2, h / 2); })); lab.position.set(0, -s * .2, .02); lab.userData.label = true; g.add(lab); }
     return finish(THREE, g);
   }
   // a thin standing rounded slab: footprint s x s in x/y, thickness d in z, base at y = 0 (extruded rounded rectangle)
