@@ -93,6 +93,8 @@ and its one pause, the rewatch moment (give its time), the payoff. Then score, b
 `STOP: n/10 (would I stop scrolling in the first second? frames 0-1 s)` and `REWATCH: n/10 (would I watch it twice? the moment and its time)`.
 Under 7 on either = CRITIC: NOT READY. **A reel that is clean but safe is NOT READY**: no defects is the floor, not the bar.
 
+45. (25 Nov, critic, tech battery-cycles) Cover the bold word and the caption on the contact sheet: do the shots still look different, or is it the same object in the same place at the same size with a new backdrop (one battery cell for 25 of 34 s; shot variety measured 6% because the angle changed)? Count the shots where the main object fills the same part of the frame: more than half the reel = NOT READY. Is a mark that stands for a count (tally strokes, dots) thick enough to read as that at phone size, and does a strike-through cross the whole word and hold 0.5 s before the word leaves (25.7 s: it stopped after the "D")?
+
 ## Premium check (owner, 23 Nov 2026): before any verdict
 Load the skills frontend-design and hyperframes (.claude/skills/; Skill tool) and read hyperframes/references/motion.md and review.md, plus
 types/vertical.md. Then score the reel on its stills and the render (frame times for every point), each out of 10:
