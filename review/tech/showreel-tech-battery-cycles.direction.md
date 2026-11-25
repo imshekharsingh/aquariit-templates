@@ -12,4 +12,4 @@ Fill before the build (design/direction.md: the card, and this channel's default
 8. Rewatch moment: 4.0-5.0 s, the second block of 500 marks scratches in row by row in under a second while the camera drops to a low macro, doubling the tally | Why: viewers scrub back to count that the marks really did double.
 9. Payoff: last 2 s: CHECK in cyan over the cell with a "Battery health" card, then the tally wipes clean so the cell loops straight back into frame 0, where scratching starts again | Why: the viewer keeps one action (check your battery health) and the loop restarts the count.
 
-STILLS CHECK: PENDING
+STILLS CHECK: APPROVED (session_01AYvWRg9UjWpURauGssSskM, 2026-11-25): all six fixes hold on the second sheet; the reel reads as a dark room with one lit cell, a big word that changes on each beat and its own tally-mark idea rather than a copy of gold, so it can go to its one render.

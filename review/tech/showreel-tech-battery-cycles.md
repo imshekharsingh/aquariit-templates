@@ -21,6 +21,8 @@ Facts: Apple Support "iPhone battery and performance" (https://support.apple.com
 16. Continuity: PASS: FLOW: continuity 83% (median step 1.4)
 17. Strobes: PASS: FLOW: strobes 0
 
+Stills check: APPROVED 25 Nov 2026 (second sheet; line written in the direction card). To check on the render: "500" after 80%, the struck-through DEADLINE, the tally wiping clean for the loop, and shot variety.
+
 PREMIUM: PENDING (the critic writes the line)
 References used (design/references.md): none (gold look from showreel-tech-ai-memory)
 
