@@ -1,0 +1,10 @@
+# 3D kit phase 2 (26 Nov 2026, owner-approved side job, cap ~$40)
+Code: techkit/lib3d.js (object library, figures, camera path) on top of techkit/world3d.js. Sample: techkit/scenes/gold3d-sample.html + techreel/topics/gold3d-sample.json (never posted).
+Stills: review/tech/study-25nov/kit-phase2.jpg (the sample at 0.3, 2.5, 4.8, 6.8, 8.5, 9.5, 11.5, 13.5 s on a placeholder voice), kit-library.jpg (every library object).
+
+Owner chat's notes, and what changed:
+1. Ground: neutral charcoal floor, haze and sky (no purple wash), weak pool light, no white glow on frame 0; the floating sparkle was a hot highlight spread by the depth-of-field taps (the DOF input is now clamped).
+2. Caption selection box: 14 px padding and 10 px margin each side of the boxed words.
+3. From the style test: colourful app tiles with a logo slot, numbers as big 3D figures ("3 x 8 = 24" then "3 + 8 = 11"), cables that multiply then collapse into one hub. Faults avoided: 24 separate tubes (one colour per app, thin, not blown out), nothing cut at the frame edges by the cast, captions clear of objects (the layout check reports 0), the figures sit in their own screen area under the cast.
+4. Library, camera path, starter (`node scripts/starter.mjs tech3d <slug>`), README, one 20 s sample, Output QA: topic key `"look": "3d"` switches LOOK to the gold.json "tech3d" entry and lifts the COLOUR saturated-fill limit to 50 % (the old numbers measure the grey look).
+Known limits: the sample's pace follows the voice cues (about 18 s with the real voice); fps 60 with the join's frame blend is the only motion blur; the hub label is partly hidden behind the front apps at low camera angles.

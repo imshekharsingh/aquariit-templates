@@ -768,3 +768,8 @@ Format (at most 6 lines):
 - Done: the one preview render of the sample (11.5 s) finished; Output QA FAILs only COLOUR and LOOK-vs-gold, which measure the old grey look. grid.png (8 frames) and notes in review/tech/study-25nov/.
 - Left: owner chat decides whether to adopt the colour look; if yes, re-baseline COLOUR and LOOK in scripts/qa (gold.json) before any daily tech reel is built on it.
 - For the other account: a preview run that fails Output QA still keeps its MP4 in R2 study/ (readable with the session's key at /reels/study/).
+
+## 2026-11-26 · claude/tech-3d-kit-phase2 · 3D kit phase 2: library, camera path, starter, 20 s sample, QA look key (owner-approved side job, cap ~$40)
+- Done: techkit/lib3d.js (appTile with logo slot, phone, laptop, chip, rack, productBlock, codeCard, dialog, 3D number figures, camPath), world3d.js fixes (neutral ground, DOF sparkle clamp, caption padding, cable reveal), gold3d-sample scene + topic (never posted), starter `tech3d`, techkit/README.md, design/3d-kit-phase2.md, design/gold.md candidate section, Output QA key `"look": "3d"` (gold.json "tech3d" entry to be filled from the real MP4).
+- Left: render the sample on GitHub (Tech reel, preview), measure its LOOK numbers into gold.json "tech3d", critic session for READY.
+- For the other account: nothing new.

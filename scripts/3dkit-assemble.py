@@ -5,7 +5,7 @@ import os, sys
 src = sys.argv[1] if len(sys.argv) > 1 else 'techkit/scenes/kit3d-phase1-demo.html'
 os.makedirs('out/3dkit', exist_ok=True)
 html = open(src).read()
-for marker, f in (('<!--THREE-->', 'vendor/three-0.149.0.min.js'), ('<!--KIT3D-->', 'kit3d.js'), ('<!--WORLD3D-->', 'world3d.js')):
-    if marker in html: html = html.replace(marker, '<script>' + open('techkit/' + f).read() + '</script>', 1)
+for marker, f in (('<!--THREE-->', 'vendor/three-0.149.0.min.js'), ('<!--KIT3D-->', 'kit3d.js'), ('<!--WORLD3D-->', 'world3d.js+lib3d.js')):
+    if marker in html: html = html.replace(marker, '<script>' + '\n'.join(open('techkit/' + x).read() for x in f.split('+')) + '</script>', 1)
 open('out/3dkit/scene.html', 'w').write(html)
 print('out/3dkit/scene.html')

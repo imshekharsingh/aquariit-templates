@@ -4,6 +4,8 @@
 //
 //   node scripts/starter.mjs tech <slug>   techkit/scenes/ai-memory-r4.html -> techkit/scenes/<slug>.html, techreel/topics/ai-memory.json
 //                                          (+ the r4 preview keys) -> techreel/topics/<slug>.json
+//   node scripts/starter.mjs tech3d <slug> the colour-world 3D look (design/3d-kit-phase2.md): techkit/scenes/gold3d-sample.html (world3d.js + lib3d.js) and
+//                                          techreel/topics/gold3d-sample.json -> techkit/scenes/<slug>.html, techreel/topics/<slug>.json
 //   node scripts/starter.mjs web <slug>    scripts/explainer/tabwiggle.html/.json -> scripts/explainer/<slug>.html/.json
 //                                          (also: node scripts/explainer/newweb.mjs <slug> --gold)
 //   node scripts/starter.mjs c3 <slug>     scripts/channel3/design/contrast2.js -> scripts/channel3/design/<slug>.js, scripts/channel3/grey-text.json
@@ -24,8 +26,8 @@ import { cardTemplate, cardPath } from './direction.mjs';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2), force = args.includes('--force');
 const [ch, slug] = args.filter((a) => !a.startsWith('--'));
-if (!['tech', 'web', 'c3'].includes(ch) || !/^[a-z0-9-]{2,40}$/.test(slug || '')) {
-  console.error('usage: node scripts/starter.mjs tech|web|c3 <slug> [--force]'); process.exit(1);
+if (!['tech', 'tech3d', 'web', 'c3'].includes(ch) || !/^[a-z0-9-]{2,40}$/.test(slug || '')) {
+  console.error('usage: node scripts/starter.mjs tech|tech3d|web|c3 <slug> [--force]'); process.exit(1);
 }
 const rd = (p) => readFileSync(join(root, p), 'utf8');
 const put = (p, s) => {
@@ -38,7 +40,7 @@ const mark = (src, anchor, note, file) => {
   if (i < 0 || src.indexOf(anchor, i + 1) >= 0) { console.error(`starter: anchor not found once in ${file}: ${anchor.slice(0, 60)}`); process.exit(1); }
   return src.slice(0, i) + note + src.slice(i);
 };
-const gold = { name: { tech: 'showreel-tech-ai-memory', web: 'showreel-46-tabwiggle', c3: 'showreel-c3-grey-text' }[ch] };   // = scripts/qa/gold.json
+const gold = { name: { tech: 'showreel-tech-ai-memory', tech3d: 'showreel-tech-gold3d-sample', web: 'showreel-46-tabwiggle', c3: 'showreel-c3-grey-text' }[ch] };   // = scripts/qa/gold.json
 const TODO = 'CHANGE: ';
 
 if (ch === 'tech') {
@@ -75,6 +77,23 @@ if (ch === 'tech') {
     post: { ...t.post, title: `${TODO}${t.post.title}`, caption: `${TODO}${t.post.caption}` },
     qa: r4.qa, say: t.say, fps: t.fps,
   };
+  put(`techreel/topics/${slug}.json`, JSON.stringify(out, null, 1) + '\n');
+}
+
+if (ch === 'tech3d') {
+  const F = 'techkit/scenes/gold3d-sample.html'; let h = rd(F);
+  h = h.replace(/<title>[^<]*<\/title>/, `<title>${slug}</title>`);
+  h = mark(h, '<!-- 3D KIT GOLD CANDIDATE', `<!-- STARTER (node scripts/starter.mjs tech3d ${slug}) from the 3D gold candidate ${gold.name} (design/gold.md "Tech, the colour-world 3D look"). Keep: the stage,
+     the neutral dark world and its blurred props, depth of field that follows the hero, contact shadows, glowing cables, the captions, the camera path method.
+     Change only the places marked "${TODO}" below: the objects (apps, tools, hub, cards, figures), the cables, the camera keys, the cue-driven timing. -->
+`, F);
+  put(`techkit/scenes/${slug}.html`, h);
+  const t = JSON.parse(rd('techreel/topics/gold3d-sample.json'));
+  const out = { ...t, slug, scene: `techkit/scenes/${slug}.html`, topic: `${TODO}one line: the topic`,
+    _starter: { gold: gold.name, from: ['techkit/scenes/gold3d-sample.html', 'techreel/topics/gold3d-sample.json'],
+      change: ['topic', 'format', 'gadget', 'device', 'lines (3-5 lines, one idea each)', 'cues (words the scene keys on)', 'sfx (cue names)', 'post (title, caption, keywords, hashtags, sources)', 'qa.edges_ok', 'the CHANGE: places in the scene (objects, cables, camera keys)'],
+      keep: 'look "3d", voice, speed, gap, the world, light, DOF, captions, the scene outside its CHANGE: places' },
+    lines: t.lines.map((l) => ({ ...l, text: `${TODO}${l.text}` })), post: { ...t.post, title: `${TODO}${t.post.title}`, caption: `${TODO}${t.post.caption}` } };
   put(`techreel/topics/${slug}.json`, JSON.stringify(out, null, 1) + '\n');
 }
 
@@ -132,7 +151,7 @@ if (ch === 'c3') {
   put(`scripts/channel3/${slug}.json`, JSON.stringify(out, null, 1) + '\n');
 }
 // the direction card (owner, 24 Nov 2026; design/direction.md): filled BEFORE the build, approved with the stills
-{ const name = ch === 'tech' ? `showreel-tech-${slug}` : ch === 'c3' ? `showreel-c3-${slug}` : `showreel-NN-${slug}`;
-  put(cardPath(ch, name), cardTemplate(ch, name));
+{ const name = ch === 'tech' || ch === 'tech3d' ? `showreel-tech-${slug}` : ch === 'c3' ? `showreel-c3-${slug}` : `showreel-NN-${slug}`;
+  put(cardPath(ch === 'tech3d' ? 'tech' : ch, name), cardTemplate(ch === 'tech3d' ? 'tech' : ch, name));
   if (ch === 'web') console.log(`  (web: rename ${cardPath(ch, name)} with the reel's Nº once it has one)`); }
 console.log(`starter: ${ch} ${slug} from gold ${gold.name}. Fill every "CHANGE:" (grep -n CHANGE: on the new files), delete "_starter", then the captions.json entry and review file.`);
