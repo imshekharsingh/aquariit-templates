@@ -133,10 +133,13 @@ number that changes when the voice says it, amber for the problem and cyan for t
 
 ## TECH (25 Nov skipped: storage-gap is built)
 
+**STALE (owner, 25 Nov 2026): every tech option below (T26-1 to T27-5) is marked stale: older facts and phone-heavy. Do not pick from it.** The daily tech
+research pulls fresh news (last 7 days, primary sources, each option names its date; rules-tech.md N1-N4) and tomorrow's pick comes from that.
+
 Every tech fact below is read on the maker's own page tonight. Brands may be named as text (rules-tech.md).
 
 ### Thu 26 Nov
-**T26-1 PICK: your phone battery has a number of lives (500 vs 1000 cycles)**
+**[STALE] T26-1 PICK your phone battery has a number of lives (500 vs 1000 cycles)**
 - Hook: "Your battery is rated for 500 charges. On newer phones, double." Tension: a number that changed.
 - Learn: what a "complete charge cycle" is, and that an 80% capacity rating is a design target, not a deadline.
 - Fact 1: iPhone 14 and earlier batteries "are designed to retain 80 percent of their original capacity at 500 complete charge cycles under ideal conditions". https://support.apple.com/en-us/101575
@@ -145,7 +148,7 @@ Every tech fact below is read on the maker's own page tonight. Brands may be nam
 - Prop: a battery cell with a tally scratched into it, 500 marks then 1000.
 - Not a repeat: charge-80, heat-battery and drain-zero covered habits; this is the rated lifespan.
 
-**T26-2 PICK: your phone can measure how far the router is (Wi-Fi ranging, RTT)**
+**[STALE] T26-2 PICK your phone can measure how far the router is (Wi-Fi ranging, RTT)**
 - Hook: "Your phone can measure the distance to your router, with no GPS." Tension: indoor position without satellites.
 - Learn: with Wi-Fi RTT a phone times the round trip of a signal to three or more access points and works out where it is, within about 1-2 m, without joining those networks.
 - Fact 1: "The result is typically accurate within 1-2 meters" when you measure three or more access points. https://developer.android.com/develop/connectivity/wifi/wifi-rtt
@@ -153,21 +156,21 @@ Every tech fact below is read on the maker's own page tonight. Brands may be nam
 - Fit: dark room, a phone hero, three routers as small lit towers, rings that tighten on the spoken number. Prop: three rings meeting at one dot, the phone.
 - Why pick: nothing like it was posted; real 3D props (rings in space) suit the gold look.
 
-**T26-3: the phone that measures to 10 cm (ultra-wideband)**
+**[STALE] T26-3 the phone that measures to 10 cm (ultra-wideband)**
 - Hook: "Your phone can tell which way you are standing to 10 centimetres." Tension: the precision number.
 - Learn: UWB is a radio for ranging between devices, much finer than Bluetooth.
 - Fact 1: UWB is "a radio technology focused on precise ranging (measuring the location to an accuracy of 10 cm) between devices". https://developer.android.com/develop/connectivity/uwb
 - Fact 2: its bandwidth is greater than 500 MHz (or over 20% fractional bandwidth) (same page). Make the claim about Android's UWB API only; no iPhone claim from this page.
 - Fit: two phones facing, a cone of rings between them. Weakness: the second fact is a spec the viewer will not feel.
 
-**T26-4: why your Android notification arrives late (Doze)**
+**[STALE] T26-4 why your Android notification arrives late (Doze)**
 - Hook: "Your phone delays your messages on purpose." Tension: it is a design choice, not a bug.
 - Learn: while a phone sits still, unplugged, with the screen off, Android bunches network, jobs and syncs into rare windows; messages sent with the right push priority can come through.
 - Fact 1: in Doze the system "prevents apps from accessing the network and defers their jobs, syncs, and standard alarms". https://developer.android.com/training/monitoring-device-state/doze-standby
 - Fact 2: it runs pending work in a "maintenance window", and "over time" schedules them less often (same page).
 - Fit: the phone on a night table, a window of light opening now and then. Weakness: the fix is for app makers; the viewer's fix (battery settings per app) must be checked on the maker's page that morning.
 
-**T26-5: Android ranks your apps (App Standby Buckets)**
+**[STALE] T26-5 Android ranks your apps (App Standby Buckets)**
 - Hook: "Your phone has put every app in a bucket. Yours may be in the worst one." Tension: a hidden ranking.
 - Learn: apps you open rarely get fewer background jobs and alarms, but only while the phone is on battery.
 - Fact 1: the bucket "determines how frequently the app's jobs run and how often the app can trigger alarms". https://developer.android.com/topic/performance/appstandby
@@ -175,7 +178,7 @@ Every tech fact below is read on the maker's own page tonight. Brands may be nam
 - Fit: buckets as lit glass jars. Weakness: the viewer cannot see their own bucket, so there is nothing to act on; lowest rank.
 
 ### Fri 27 Nov
-**T27-1 PICK: the switch almost nobody should turn on (Lockdown Mode)**
+**[STALE] T27-1 PICK the switch almost nobody should turn on (Lockdown Mode)**
 - Hook: "Apple built a mode that breaks your phone on purpose." Tension: protection that removes features.
 - Learn: what Lockdown Mode turns off, and that it is for the very few people who may be targeted.
 - Fact 1: "an optional, extreme protection that's designed for the very few individuals who, because of who they are or what they do, might be personally targeted". https://support.apple.com/en-us/105120
@@ -183,28 +186,28 @@ Every tech fact below is read on the maker's own page tonight. Brands may be nam
 - Fit: a phone in a vault of dark glass, a list of switches turning off one by one on the spoken word; cyan on "calls and SOS still work". Prop: a phone behind bank-vault doors.
 - Why pick: a surprise with a purpose (most people should not use it), safe, factual; keep the tone calm, no fear.
 
-**T27-2 PICK: your earbuds have a new codec (LE Audio, LC3)**
+**[STALE] T27-2 PICK your earbuds have a new codec (LE Audio, LC3)**
 - Hook: "Your earbuds' audio codec is about to change." Tension: the codec every pair uses is being replaced; say only what the page says (LC3 replaces SBC).
 - Learn: Bluetooth LE Audio brings LC3, broadcast audio (one source, many listeners) and better mic quality.
 - Fact 1: "LC3 ... replaces the SBC codec used for A2DP (media) and mSBC in HFP (voice). LC3 is more efficient, reconfigurable, and higher quality." https://developer.android.com/develop/connectivity/bluetooth/ble-audio/overview
 - Fact 2: with BLE Audio, input and output sampling can reach 32 kHz on headsets using microphones, where Bluetooth classic lowers audio quality (same page); Broadcast Audio lets users broadcast to friends and family or join public broadcasts.
 - Fit: a pair of earbuds as the lit hero, sound rings; a huge number 32 kHz.
 
-**T27-3: that battery claim is a recipe (Apple Watch Ultra 4, over 2 days)**
+**[STALE] T27-3 that battery claim is a recipe (Apple Watch Ultra 4, over 2 days)**
 - Hook: "'Over 2 days' on a watch means 630 time checks." Tension: the claim has a script.
 - Learn: how to read a battery claim: the test list is on the maker's page.
 - Fact 1: "Over 2 days (up to 50 hours)"; the test includes 630 time checks, 190 notifications, 30 minutes of app use, two 60-minute workouts, 12 hours of sleep tracking. https://www.apple.com/watch/battery/
 - Fact 2: "Over 3 days (up to 84 hours) in Low Power Mode" with 1100 time checks and 330 notifications (same page); charging "about 45 minutes to 80%".
 - Fit: a watch hero, the counters ticking on the spoken number. Weakness: same format as showreel-tech-phone-claim (22 hours); use only if the audit asks for a wearable.
 
-**T27-4: earbuds that are also a hearing test (AirPods Pro 3)**
+**[STALE] T27-4 earbuds that are also a hearing test (AirPods Pro 3)**
 - Hook: "Your earbuds can run a hearing test at home." Tension: a gadget crossing into health.
 - Learn: what the feature is for (mild to moderate hearing loss) and where it is available.
 - Fact 1: users can take a "scientifically validated Hearing Test" and use a Hearing Aid feature for "mild to moderate hearing loss". https://www.apple.com/airpods-pro/
 - Fact 2: up to 8 hours of listening time with Active Noise Cancellation on a single charge (same page). Check the footnotes about countries before saying "available in India" (not read tonight).
 - Fit: earbuds in a dark room with a waveform. Weakness: the feature varies by country and the page is marketing; a diplomatic framing is needed (rules-tech.md).
 
-**T27-5: why you must touch the pay terminal (NFC range)**
+**[STALE] T27-5 why you must touch the pay terminal (NFC range)**
 - Hook: "Tap to pay is not wireless. It is 4 centimetres." Tension: the "wireless" you have to touch.
 - Learn: NFC needs about 4 cm or less, which is why a case or a wallet in between can stop it.
 - Fact 1: "NFC is a set of short-range wireless technologies, typically requiring a distance of 4 cm or less to initiate a connection". https://developer.android.com/develop/connectivity/nfc
@@ -217,7 +220,7 @@ Every tech fact below is read on the maker's own page tonight. Brands may be nam
 | 25 Nov | web | W25-1 field-sizing: one visible bug, one line, a counter that goes to 0 | W25-2 :user-invalid: the form is red in frame 0 |
 | 26 Nov | web | W26-1 :has: a myth that changed, a big visible result | W26-2 will-change: a tip that backfires |
 | 27 Nov | web | W27-1 animation-timeline: great motion, all engines | W27-2 inert: a bug behind the popup (weaker on a phone) |
-| 26 Nov | tech | T26-1 battery cycles: a number that doubled, fits the x-ray phone | T26-2 Wi-Fi ranging: new to the channel, 3D rings |
+| 26 Nov | tech | STALE: T26-1 battery cycles: a number that doubled, fits the x-ray phone | T26-2 Wi-Fi ranging: new to the channel, 3D rings |
 | 27 Nov | tech | T27-1 Lockdown Mode: surprise with a purpose, safe | T27-2 LE Audio codec: a real change on screen, re-word the hook |
 
 ## Open checks before a build (do these the morning of the build, they take a minute)

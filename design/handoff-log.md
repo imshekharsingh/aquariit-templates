@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-25 20:45 IST · claude/tech-global-news-rules · tech rules: all global, fresh news, no top bar, every shot alive
+- Done: rules-tech.md (F2 now all global, indiapick retired, new N1-N4), critic.md question 45, runbook-daily.md tech research line, topic-bank.md tech options marked STALE, CLAUDE.md tech line, owner-feedback.md 5 lines (25 Nov).
+- Not done: scripts/check.mjs still lists indiapick as an allowed format (harmless; no script change in this size-S job).
+- Left: tomorrow's tech pick comes from fresh 7-day news research, not the topic bank.
+
 
 ## 2026-11-25 20:15 IST · claude/owner-chat-25nov · owner chat: decisions, waiting on owner, tomorrow
 - Day: all three posted-ready after a rescue. Web 47 user-invalid READY 09:30 (19:00). Turns Out looks-expensive failed critic on render 2, fixed and READY on render 3 (19:45, ~$15). Tech battery-cycles failed critic on render 2 (one battery all reel); rebuilt to 7 shots, outside stills check, render 3 failed EDGES+SYNC, render 4 (owner yes) READY 7.5/7.5/7.5 (20:45, ~$24 + morning $32).

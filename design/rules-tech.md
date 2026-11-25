@@ -57,19 +57,18 @@ last 8 were phone, charger or battery topics. The two richest early kit reels ar
 - **P4. A comment question**: the caption's first or last line asks one easy question the viewer can answer in a word (and the end card may
   show it). Never claim a viewer asked (owner, 21 Nov).
 
-### X. Four formats, each with its own look, pacing and length (replaces the three-format F1 rotation)
+### X. Three formats, each with its own look, pacing and length (replaces the three-format F1 rotation)
 | format (captions "format") | look | pacing and length |
 |---|---|---|
 | **xray**: X-ray / teardown | the gadget opens up: the case goes clear, layers lift, parts get labels on leaders; the camera dives in and pulls out | 30-40 s, 6-7 lines, a new part every 2-3 s |
 | **showdown**: head-to-head | the frame split in two (two products or two settings), rounds with a scoreboard that fills on each word, both at their strengths (F3) | 35-45 s, 3 rounds + a verdict |
 | **quickmyth**: quick myth-bust | MYTH / TRUE stamp in frame 0 (F5), one demo on the object, the verdict stamped | 15-20 s, 3-4 lines, 45-60 words |
-| **indiapick**: India "worth the price" | a price tag in ₹ as the hero, what the money buys built up part by part, the verdict on the tag | 25-35 s, 5 lines, F2 India |
 Each format has its own chapter chips and its own colour world (xray: cool clear blues with one warm accent; showdown: two hues, one per
-side; quickmyth: stamp red / green on dark; indiapick: saffron and teal on deep navy). The 7-beat arc of K0 is now one option inside a format,
+side; quickmyth: stamp red / green on dark). The indiapick format is retired (owner, 25 Nov 2026: all global). The 7-beat arc of K0 is now one option inside a format,
 not the default.
 
 ### Rotation (scripts/check.mjs enforces it from 22 Nov; design/runbook-daily.md step 4)
-- Every tech entry in templates/showreels/captions.json has `"format"` (xray, showdown, quickmyth, indiapick) and `"device"` (audio, camera,
+- Every tech entry in templates/showreels/captions.json has `"format"` (xray, showdown, quickmyth) and `"device"` (audio, camera,
   wearables, laptop, home, car, phone, charging; a battery or charging topic is `charging` whatever the device).
 - No two consecutive posting days with the same format or the same device class; at most one `charging` reel in any 7 days.
 - design/topics.md plans the week across all eight device classes.
@@ -120,8 +119,8 @@ ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voic
   glow, particles) may run from frame 0 (loosened 22 Nov: "keep the subject still until the hold ends" removed).
 
 ## Format rules kept (F2-F5)
-- **F2. Audience mix**: 7 reels a week, 3 for India (prices in ₹, brands and models sold in India, Indian buying questions) and 4 global;
-  the topic file carries `"audience": "india" | "global"`, `"format"` and `"gadget"`, and the audit reads reach by audience.
+- **F2. All global** (owner, 25 Nov 2026, replaces the India/global mix): every tech reel speaks to a worldwide viewer. No rupee prices, no "in India"
+  lines, no India-only models or buying questions; prices only in a global form (USD, or none).
 - **F3. Brands, diplomatically** (owner, 13 Nov 2026): real brand and model names only as text and voice, for facts; every product at its
   strengths, no winner / loser, no mocking, no "X is worse"; never logos, trade dress, product photos or marketing art (products drawn
   generically by us); every spec from the maker's official spec or support page (or the standard), cited in the topic's "sources" with the date read.
@@ -131,7 +130,7 @@ ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voic
   stamped MYTH (or TRUE) in frame 0 and the stamp returns on the verdict.
 
 ## Voice, length and gates (V1-V4, kept from the old rulebook)
-- **V1. Natural voice, speed 1.0**, about 3 words/s; the length is the format's (X: quickmyth 15-20 s, indiapick 25-35, xray 30-40,
+- **V1. Natural voice, speed 1.0**, about 3 words/s; the length is the format's (X: quickmyth 15-20 s, xray 30-40,
   showdown 35-45); `max_end` in the topic matches it.
 - **V2. Tech terms said the way people say them** (scripts/voice/say.json or the topic's "say"; PRONUNCIATION: no "check:" words).
 - **V3. FLOW** (cuts 0, no dead runs, continuity 55%+ (K1), at most one declared strobe), SAFE ZONE ok, OVERLAP none, SOUND GATE, SOUND DETAIL, and
@@ -141,16 +140,14 @@ ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voic
 ## Channel brief (moved from CLAUDE.md, 14 Nov 2026)
 - Gadget channel built for brand collabs (owner, 13 Nov 2026: "Can we make it around something so that electronic gadget brands contact me
   for collab when my followers grow?"). The channel helps viewers understand and choose gadgets (phones, earbuds, watches, chargers,
-  laptops, cameras, home and car gadgets) in four formats (X: xray, showdown, quickmyth, indiapick), rotating device classes. Faceless;
+  laptops, cameras, home and car gadgets) in three formats (X: xray, showdown, quickmyth), rotating device classes. Faceless;
   drawn in code on the kit engine (K0; real media retired with R0, attic/design/rules-tech-2026-11-22.md).
 - Brands (owner, 13 Nov 2026: "We don't demean any brand or make them look bad compared to the good one; we highlight pros conservatively
   and diplomatically so people learn where they stand"): real brand and product names may be said and shown as text for factual
   comparisons, every product shown at its strengths, no "winner/loser", no mocking, no negative framing of any brand; never their logos,
   trade dress, product photos or marketing art; every spec from the maker's official spec page or a primary source, cited in the config.
   This overrides CLAUDE.md's "no real company names" for @techin20sec only.
-- Audience mix (owner, 13 Nov 2026): 7 reels a week, 3 for India (prices in ₹, brands and models sold in India, Indian buying questions) and
-  4 global; formats and categories rotate so no two days in a row repeat the same format or gadget type; design/topics.md plans the week
-  with an "audience: india|global" column, and the mix carries over week to week (the audit reads reach by audience).
+- Audience (owner, 25 Nov 2026): ALL GLOBAL, see F2. Formats and categories rotate so no two days in a row repeat the same format or gadget type.
 - One reel EVERY day (13:00-21:00 IST), built that day by the daily run. Engine: techkit/ (K0).
 - Account Status checked by the owner on 1 Nov 2026: no issues (no reach limit), so low reach is distribution, not a restriction; don't ask again.
 
@@ -160,4 +157,14 @@ ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voic
 - The owner is not asked to approve a tech preview or render; the critic decides (tech-direction.md's "stills + a short preview to the owner" no longer applies).
 - Never one subject or view for more than a few seconds: Output QA VARIETY fails a reel when over 60% of its one-second frames look like one shot (owner on miniled-zones: "one screen across the reel"). Plan a new subject or view every 2-4 s.
 
+## Owner decisions, 25 Nov 2026 (replace anything above that contradicts them)
+- **N1. Tech news, not phone-centric.** The channel covers what is happening in the tech market now: launches, announcements, price moves, new chips,
+  AI features, wearables, laptops, cameras, home and car tech. Phones are one category among many, never two days running. The daily tech research
+  pulls news from the last 7 days from primary sources (maker announcements, official pages); every option names its date.
+- **N2. Freshness.** Every fact names the newest models or versions on sale today (say "iPhone 15 and newer", never only an older generation). A fact that
+  would make a viewer think "this is old" fails. Critic question 46 asks it.
+- **N3. No big keyword bar at the top of the screen.** Words sit inside the scene or in the subtitle line; the frame-0 hook word is part of the picture,
+  not a top banner. (Overrides the header rows in the K0 frame and D/P rules above.)
+- **N4. Every shot alive.** In showreel-tech-battery-cycles (25 Nov) the owner liked the "habits" and "cycle" moments (more expressive frames, felt
+  premium) and found the rest not premium. Every shot needs that level of motion and expression; the critic marks any shot flatter than those as a fix.
 **25 Nov audit:** tech OK (median reach 1,199 over the last 7). PROMOTE: tech-kit-engine (4 WINs, 0 LOSEs, +312% to +1,104%) and tech-myth-verdict (3 WINs, 0 LOSEs) stay as the way tech reels are built. ai-memory (the gold) reached 1,199 at 24 h, level with the median (-1%): the look is not the lever, the topic and the first second are. Today: a new device type (battery cycles), the 500 to 1000 number changing on the spoken word.
