@@ -698,3 +698,8 @@ Format (at most 6 lines):
 - Left: render 3 on GitHub, Output QA, then the independent critic (started by the owner chat).
 - For the other account: elements added inside the board are copied into the BEFORE picture; hide them (display none) at the first seek.
 - Gate: render 3 stopped at the review gate (items 14-17 need their FLOW lines once postOn is set); lines pasted, no frames were rendered, so the render count is unchanged.
+
+## 2026-11-25 · claude/tech-battery-cycles-r3-qa · Tech battery-cycles render 4: edge and "500" fixes (rescue session)
+- Done: render 3 failed Output QA on EDGES (cell, target ticks and charging pad touched the side edges) and SYNC (the "500" over the cell tabs was not read). Cell pulled back, "500" on clear dark, target and pad scaled in. Render 4 allowed by the owner; postAt 20:45.
+- Left: render 4 result, then the critic.
+- For the other account: keep every hero 3 to 8 percent inside the side edges (EDGES counts the outer 2%); a number over a light part of the object is not read by the recogniser.
