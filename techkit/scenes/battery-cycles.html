@@ -210,12 +210,12 @@ const G = KIT.glide;
 const orb = (w, d, az, el, ly, fov = 31, ox = 0) => ({ pos: V(w.x + ox + Math.sin(az) * Math.cos(el) * d, w.y + ly * .5 + Math.sin(el) * d, w.z + Math.cos(az) * Math.cos(el) * d), look: V(w.x + ox, w.y + ly, w.z), fov });
 function shotCam(t, sh) {
   const u = prog(t, B[sh], B[sh + 1]), g = G(u), w = WORLD[sh];
-  if (sh === 0) { const F0 = orb(w, lerp(14.8, 13.4, g), lerp(-.12, .1, g), .03, 1.55), F1 = { pos: V(1.9, -.7, 10.8), look: V(0, 1.2, 0), fov: 38 };   // the front view, then a low macro looking up at the second block of marks
+  if (sh === 0) { const F0 = orb(w, lerp(15.6, 12.8, g), lerp(-.28, .16, g), .03, 1.55), F1 = { pos: V(1.9, -.7, 10.8), look: V(0, 1.2, 0), fov: 38 };   // the front view, then a low macro looking up at the second block of marks
     return KIT.reframe(F0, F1, ease(prog(t, C.double - .3, C.double + .55))); }
   if (sh === 1) { const hold = KIT.push(Math.max(0, t - B[1]), .012);   // a wide look at the ring, an orbit as it fills, then a push to the cell for the single mark
-    const F0 = orb(w, 12.4 * (1 - hold), lerp(-.25, .2, g), .03, 1.0, 32), F1 = { pos: V(w.x + .5, w.y - .1, w.z + 5.6), look: V(w.x, w.y + .15, w.z), fov: 30 };
+    const F0 = orb(w, 12.4 * (1 - hold), lerp(-.5, .4, g), .03, 1.0, 32), F1 = { pos: V(w.x + .5, w.y - .1, w.z + 5.6), look: V(w.x, w.y + .15, w.z), fov: 30 };
     return KIT.reframe(F0, F1, ease(prog(t, C.total - .4, C.total + .2))); }
-  if (sh === 2) { const F0 = { pos: V(w.x - 4.2, -.7, w.z + 13.4), look: V(w.x + .1, 1.35, w.z), fov: 33 }, F1 = orb(w, 13.4, .12, .02, 1.6, 31, .55), F2 = { pos: V(w.x + 3.2, 1.9, w.z + 6.4), look: V(w.x, .9, w.z), fov: 36 };   // a low three-quarter, the front with the gauge, a slide across the marks
+  if (sh === 2) { const F0 = { pos: V(w.x + lerp(-4.6, -2.6, g), -.7, w.z + 13.4), look: V(w.x + .1, 1.35, w.z), fov: 33 }, F1 = orb(w, 13.4, .12, .02, 1.6, 31, .55), F2 = { pos: V(w.x + 3.2, 1.9, w.z + 6.4), look: V(w.x, .9, w.z), fov: 36 };   // a low three-quarter, the front with the gauge, a slide across the marks
     const a = KIT.reframe(F0, F1, ease(prog(t, C.p80 - .5, C.p80 + .35))); return KIT.reframe(a, F2, ease(prog(t, C.c500 - .4, C.c500 + .45))); }
   if (sh === 3) { const hold = KIT.push(Math.max(0, t - B[3]), .012), F0 = { pos: V(w.x - 1.0, .9, w.z + 11.5 * (1 - hold)), look: V(w.x - 1.3, 1.2, w.z), fov: 31 },
       F1 = { pos: V(w.x, 1.0, w.z + 17.8 * (1 - KIT.push(Math.max(0, t - C.i15 - .6), .02))), look: V(w.x, 1.1, w.z), fov: 31 };   // the 500 cell whole, a pull back as the 1000 cell arrives, both side by side (a saveable frame) held
@@ -252,8 +252,8 @@ function apply(t, sh = shotAt(t), mod = null) {
   keyL.intensity = sh === 5 ? 1.6 : sh === 1 ? 2.1 : 2.5; rimL.intensity = sh === 5 ? 2.2 : 2.9; rim2L.intensity = sh === 5 ? .8 : 1.5;
   const U = hero.userData;
   if (hv) { hero.position.copy(w); heroGlow.position.set(w.x, w.y + .6, w.z - 3.2); U.tint(SIG); U.mark(.8, 0); hero.rotation.set(0, 0, 0);
-    if (sh === 0) { tallySet(heroTex, r1A(t), r2A(t)); U.setLevel(1); hero.rotation.set(.05, lerp(-.3, -.2, prog(t, 0, B[1])), .015); }
-    if (sh === 2) { tallySet(heroTex, 1, 0); const lv = lerp(1, .8, ease(prog(t, C.p80 - .1, C.p80 + .55))); U.setLevel(lv); U.mark(.8, ease(prog(t, C.p80 - .1, C.p80 + .3))); hero.rotation.set(.07, .38, .0); }
+    if (sh === 0) { tallySet(heroTex, r1A(t), r2A(t)); U.setLevel(1); hero.rotation.set(.05, lerp(-.3, -.2, prog(t, 0, B[1])) + .07 * Math.sin(t * 1.9), .015); }
+    if (sh === 2) { tallySet(heroTex, 1, 0); const lv = lerp(1, .8, ease(prog(t, C.p80 - .1, C.p80 + .55))); U.setLevel(lv); U.mark(.8, ease(prog(t, C.p80 - .1, C.p80 + .3))); hero.rotation.set(.07, .38 + .1 * Math.sin(t * 1.5), .0); }
     if (sh === 4) { tallySet(heroTex, 1, 1); const d = ease(prog(t, C.deadline - .05, C.deadline + .9)); U.setLevel(lerp(.8, .7, d)); U.mark(.8, 1); hero.rotation.set(0, 0, 0);
       TG_R.forEach((r, i) => { r.material.opacity = (.55 - i * .12) * (.7 + .3 * Math.sin(t * 2.2 + i)) * (1 - .35 * d); r.scale.setScalar(1 + .015 * Math.sin(t * 1.6 + i)); }); }
     if (sh === 6) { const wipe = ease(prog(t, C.final + .3, TOTAL - .15)); tallySet(heroTex, 1 - wipe, 1 - wipe); U.setLevel(lerp(.8, .86, prog(t, B[6], C.health))); hero.rotation.set(lerp(.05, .05, 1), lerp(.55, -.3, ease(prog(t, B[6], TOTAL - .1))), .015);
@@ -263,7 +263,7 @@ function apply(t, sh = shotAt(t), mod = null) {
     ARC.forEach(({ a, h }, k) => { const p = ease(prog(t, tk[k], tk[k] + .5)); used += p / 4; a.material.opacity = p; h.material.opacity = .22 * p * (1 - .6 * prog(t, C.total, C.total + .8)); });
     const ang = Math.PI / 2 - used * Math.PI * 2; bead.position.set(Math.cos(ang) * RR, Math.sin(ang) * RR, .05); bead.material.opacity = used > .01 && used < .999 ? .95 : 0;
     const back = ease(prog(t, C.total - .05, C.total + .5)); cellB.userData.setLevel(used < .999 ? 1 - used : back); cellB.userData.tint(used >= .999 && back < 1 ? HEAT : SIG);
-    tallySet(bTex, 0, 0, prog(t, C.total, C.total + .55)); ringGlow.material.opacity = .5 * Math.sin(Math.PI * prog(t, C.p100 - .05, C.p100 + .6)); ringG.rotation.set(0, 0, 0); }
+    tallySet(bTex, 0, 0, prog(t, C.total, C.total + .55)); ringGlow.material.opacity = .5 * Math.sin(Math.PI * prog(t, C.p100 - .05, C.p100 + .6)); ringG.rotation.set(0, 0, 0); cellB.rotation.y = .55 * Math.sin(t * 1.3) * (1 - prog(t, C.total - .3, C.total)); baseRing.material.opacity = .45 + .2 * Math.sin(t * 4); }
   if (sh === 3) { cellL.userData.mark(.8, .9); cellR.userData.mark(.8, .9); cellR.position.x = lerp(6, 1.3, eout(prog(t, C.i15 - .1, C.i15 + .75))); cellR.visible = t > C.i15 - .2; { const s = .88 * (1 - ease(prog(t, C.c1000 - 1.7, C.c1000 - 1.3)) + ease(prog(t, C.c1000 + .9, C.c1000 + 1.3))); cellL.scale.setScalar(Math.max(.001, Math.min(.88, s))); } cellsD.updateMatrixWorld(true); }
   if (sh === 5) { const a = 1 + .12 * Math.sin(t * 3); rowGlow.material.opacity = .12 * a; }
   hero.updateMatrixWorld(true); cellB.updateMatrixWorld(true); updateSparks(t);
@@ -290,12 +290,12 @@ function typeLayer(t) {
     else numCard(t, t >= C.c500 ? '500' : '80%', t >= C.c500 ? WHITE : HEATC, t >= C.c500 ? C.c500 : C.p80, Y, 270, prog(t, C.p80, C.p80 + .05) * (1 - prog(t, wEnd(3) - .16, wEnd(3)))); }
   if (sh === 3) { if (t < C.c1000 - .04) big('iPHONE 15', 'rise', WHITE, t, C.i15, C.c1000 - .04, { size: 150, y: 500 });
     else numCard(t, '1000', SIGC, C.c1000, Y, 270, prog(t, C.c1000 - .02, C.c1000 + .05) * (1 - prog(t, wEnd(4) - .16, wEnd(4)))); }
-  if (sh === 4) { if (t < C.deadline - .06) big('TARGET', 'stamp', HEATC, t, C.target, C.deadline - .06, { size: 230, y: 500, glow: 'rgba(255,150,40,.4)' });
-    const bx = big('DEADLINE', 'drop', WHITE, t, C.deadline, wEnd(5), { size: 190, y: 510 });
+  if (sh === 4) { if (t < C.deadline - .06) big('TARGET', 'stamp', HEATC, t, C.target, C.deadline - .06, { size: 190, y: 500, glow: 'rgba(255,150,40,.4)' });
+    const bx = big('DEADLINE', 'drop', WHITE, t, C.deadline, wEnd(5), { size: 160, y: 510 });
     if (bx) { const p = ease(prog(t, C.deadline + .3, C.deadline + .65)); o.save(); o.strokeStyle = HEATC; o.lineWidth = 14; o.lineCap = 'round'; o.shadowColor = 'rgba(255,150,40,.7)'; o.shadowBlur = 24; o.beginPath();
       const ym = (bx[3] + bx[4]) / 2 + 6; o.moveTo(bx[1] - 20, ym + 8); o.lineTo(bx[1] - 20 + (bx[2] - bx[1] + 40) * p, ym + 8 - 14 * p); o.stroke(); o.restore(); } }
-  if (sh === 5) big('HABITS', 'wipe', WHITE, t, C.real, wEnd(6), { size: 230, y: 510 });
-  if (sh === 6 && t < TOTAL - .45) big('CHECK', 'rise', SIGC, t, C.check, TOTAL - .45, { size: 260, y: Y, glow: 'rgba(56,225,255,.5)' });
+  if (sh === 5) big('HABITS', 'wipe', WHITE, t, C.real, wEnd(6), { size: 190, y: 510 });
+  if (sh === 6 && t < TOTAL - .45) big('CHECK', 'rise', SIGC, t, C.check, TOTAL - .45, { size: 200, y: Y, glow: 'rgba(56,225,255,.5)' });
 }
 
 // ---------- the subject's box (Output QA HERO) ----------
