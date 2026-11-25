@@ -2943,5 +2943,13 @@
    "payoff": "fact",
    "source": "mp4"
   }
+ },
+ "showreel-tech-colour-world-sample": {
+  "channel": "tech",
+  "sample": true,
+  "hidden": true,
+  "concept": "TEST SCENE for the 25 Nov colour world look (design/rules-tech.md section L), never posted: 3 apps x 8 tools = 24 integrations, then 3 + 8 = 11 with one shared standard.",
+  "format": "xray",
+  "device": "laptop"
  }
 }

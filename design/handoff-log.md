@@ -729,3 +729,8 @@ Format (at most 6 lines):
 - Done: judged render 4 on the real MP4 (one contact sheet, frame 0 at phone size, a 0.125 s strip of the DEADLINE strike); verdict READY with PREMIUM 7.5 / 7.5 / 7.5 in review/tech/showreel-tech-battery-cycles.md. Seven different pictures, a big "500" at frame 0, the strike crosses the whole word, nothing touches the edges. captions.json: "hidden" removed, posts 25 Nov 20:45.
 - Left: 14-16 s the phone's own "80%" sits dimmed under the caption line (not worth a render); keep screen numbers above the caption band on the next tech build. Voice not heard; no new side-by-side sheet with the gold reel (lean run).
 - For the other account: nothing new.
+
+## 2026-11-25 · claude/tech-colour-world-rules · Tech colour world look: rules, logo permission, test scene (builder session)
+- Done: rules-tech.md section L and tech-direction.md section 7 replace the near-black + two-accent look and the top keyword band (dark ground, colourful materials, one world with recurring objects, real artifacts, word-by-word captions with a blue selection box); real product logos allowed on tech and web (safety.md 7, CLAUDE.md); owner-feedback lines; references.md entry. Test scene techkit/scenes/sample-colour-world.html (sample + hidden in captions.json), ONE preview render.
+- Left: owner chat decides whether the look is adopted for the daily tech builds; real logos need a licensed file via the Media workflow; gold.md still describes the old look.
+- For the other account: a cables-and-tiles scene reads best with the camera 14+ units back; hex colours need to be darker than they look (exposure .85) or blocks wash to pastel.
