@@ -644,3 +644,8 @@ Format (at most 6 lines):
 - Done: render 1 (run 45535361039): PACE 4.60 words/s on the last sentence and HUE 355 (red won against a thin navy); everything else passed. Last line shortened to "Now red waits until you leave.", fields brighter navy, red glow and counter fill lighter (blue 2.1x red locally). Render 2 dispatched from main after the merge.
 - Left: render 2, Output QA, critic, style-measure.
 - For the other account: a render can read HUE differently from the local frames; leave blue at 2x the red weight, not 1.1x.
+
+## 2026-11-25 · claude/c3-looks-expensive-25nov-d · Turns Out "One looks 5x pricier": render 2 passed Output QA (Turns Out daily build)
+- Done: render 1 failed Output QA (the label alone was a small centred picture; 4 s with nothing new at the end). Rulers back, reel cut to 19.5 s; render 2 passed Output QA. Critic session started (claude-opus-5-5, tags critic and c3).
+- Left: the critic's verdict; on READY the reel gets postOn 2026-11-25, postAt 17:00 and loses "hidden" and "hold".
+- For the other account: the review gate wants real evidence text on items 3 and 7 (the preflight "fits" line); a plain "SAFE ZONE: ok" is refused as a template line.

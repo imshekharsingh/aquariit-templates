@@ -15,7 +15,7 @@ Scene scripts/channel3/design/looks-expensive.js (copy: scripts/channel3/looks-e
 10. Facts: PASS: white space, fewer colours and restrained type read as premium (CXL, How to Create a Luxurious User Experience; Butterick, Letterspacing: spaced capitals); the reel claims no number
 11. Post data: PASS: captions.json entry (c3, engine design, concept); caption: claim, the 3 fixes as a numbered list, a save ask and one question; 6 keywords, 5 hashtags, 2 sources
 12. Review file: PASS: this file, direction card with STILLS CHECK: APPROVED
-13. After the render: (filled after the render)
+13. After the render (render 2): PASS: OUTPUT QA PASS (Showreel run 45535868004, Output QA step success: FILL and ELEMENTS fixed; LOOK, VARIETY, NUMBERS, DEAD, GRADE as on render 1); render 1 (run 45529832138) failed FILL and ELEMENTS, see below
 14. Cuts: PASS: no cuts (one board, camera pushes)
 15. Dead runs: PASS: STATIC STRETCH none
 16. Continuity: PASS: one stage, one object changing in place
