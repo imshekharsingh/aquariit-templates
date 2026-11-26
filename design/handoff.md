@@ -74,6 +74,7 @@ Take it up after the 3D task is DONE (or now, if the 3D task is waiting on the o
 - 26 Nov 11:13 IST, other account: sound fix merged (the line above marked 10:55 was really 11:07); render 6 started on GitHub (preview v5, about 20 min). Cost so far: about $12.
 - 26 Nov 11:33 IST, other account: render 6 PASSED (18.45 s, sound -14.6 LUFS on the first try; Output QA PASS, the same two warnings as v4: no real media, no subject box). Video: R2 study/showreel-tech-gold3d-sample-v5-preview.mp4. Separate critic session started (tag critic). Cost so far: about $13.
 - 26 Nov 11:45 IST, other account: the critic could not judge v5: this account's cloud environment cannot reach templates.aquariit.com (the network proxy refuses the host), so the MP4 cannot be fetched; it wrote "not judged", no picture changes, no 6th render. Needs the owner (once): in this account's environment settings allow templates.aquariit.com and add the REELS_READ_KEY network secret for it (as the main account's environment has), or have the main account run the critic. The 3D task waits on that; Queued task 2 starts now. Cost so far: about $14.
+- 26 Nov 11:42 IST, main account critic: READY: all six fixes are in the v5 video, no name cut or covered, the camera never holds and the end returns to the opening; the 3D task continues from here.
 
 ---
 
