@@ -5,10 +5,10 @@
    "id": "3d-kit-v7",
    "name": "3D kit v7: the last sample",
    "account": "other",
-   "stage": "render",
-   "line": "Render 1 of 2 is being made (about 25 min).",
-   "pct": 65,
-   "updatedAt": "2026-11-26T16:29:00Z",
+   "stage": "building",
+   "line": "Render 1 failed one colour check; fixed, render 2 (the last) is next.",
+   "pct": 70,
+   "updatedAt": "2026-11-26T17:09:00Z",
    "history": [
     {
      "at": "2026-11-26T13:12:00Z",
@@ -29,6 +29,11 @@
      "at": "2026-11-26T16:29:00Z",
      "stage": "render",
      "line": "Render 1 of 2 is being made (about 25 min)."
+    },
+    {
+     "at": "2026-11-26T17:09:00Z",
+     "stage": "building",
+     "line": "Render 1 failed one colour check; fixed, render 2 (the last) is next."
     }
    ]
   },
