@@ -26,7 +26,7 @@ Moved from CLAUDE.md on 14 Nov 2026.
 - Daily owner chat (owner, 22 Nov 2026; was weekly): the owner chats in ONE "Owner chat <date>" session, started every day 08:31 IST by the
   "Daily owner chat" scheduled task (default model). It archives the previous chat, reads the newest "owner chat" entry in
   design/handoff-log.md first, and before the day ends pushes its own entry there (decisions, waiting on owner, tomorrow). It only talks,
-  decides and plans; it never builds.
+  decides and plans; it never builds. Its Feedback read prints PRIORITY items (the app's Fix button) first: it handles or routes those before anything else and says so to the owner in one line.
 
 ## Scheduled tasks (ON)
 - Owner, 22 Nov 2026: all tasks fire into the small "Studio launcher (v2)" session (session_01AYvWRj8v5WCccLWfHsSWNz, cheaper model),

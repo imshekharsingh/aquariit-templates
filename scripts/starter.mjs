@@ -83,11 +83,15 @@ if (ch === 'tech') {
 if (ch === 'tech3d') {
   const F = 'techkit/scenes/gold3d-sample.html'; let h = rd(F);
   h = h.replace(/<title>[^<]*<\/title>/, `<title>${slug}</title>`);
-  h = mark(h, '<!-- 3D KIT GOLD CANDIDATE', `<!-- STARTER (node scripts/starter.mjs tech3d ${slug}) from the 3D gold candidate ${gold.name} (design/gold.md "Tech, the colour-world 3D look"). Keep: the stage,
+  h = mark(h, '<!-- 3D KIT GOLD (render v5', `<!-- STARTER (node scripts/starter.mjs tech3d ${slug}) from the tech 3D gold ${gold.name} render v5 (design/gold.md "Tech, the colour-world 3D look"; critic READY 26 Nov 2026). Keep: the stage,
      the neutral dark world and its blurred props, depth of field that follows the hero, contact shadows, glowing cables, the captions, the camera path method.
      Change only the places marked "${TODO}" below: the objects (apps, tools, hub, figures), the cables, the camera keys, the cue-driven timing.
      Rules (design/rules-tech.md D1-D8): frame 0 is the hook (busy picture + question or number), 3 distinct camera moves and a loop home, no framing over 3 s,
-     cables end on tile side edges (never across a name), names never repeat, numbers ride the camera, captions on the dark fade, payoff held to the last frame, lines 6-9 words, aiLabel false. -->
+     cables end on tile side edges (never across a name), names never repeat, numbers ride the camera, captions on the dark fade, payoff held to the last frame, lines 6-9 words, aiLabel false.
+     Critic lessons v3-v5 (techkit/README.md "3D colour-world kit"): nothing in front of the hero row may hide a middle object (check the hub against the apps, not only the wall); a close
+     shot keeps every name whole; the opening moves within 3 s too; the last 2 s need an event; when a new item joins, the number on screen agrees with the picture; glow stays calm
+     (bloom about .28, thin halos); give every tile its own icon; a daily reel is 20-35 s and carries one readable artifact (34 px+) in its own space. Keep window.__dbg current and
+     copy techkit/check-gold3d.cjs for a no-render check of names, covers and cables. -->
 `, F);
   put(`techkit/scenes/${slug}.html`, h);
   const t = JSON.parse(rd('techreel/topics/gold3d-sample.json'));
