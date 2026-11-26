@@ -417,6 +417,15 @@
   .bcard.ready,.bcard.posted{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok),0 6px 22px -8px var(--ok)}
   .bcard.lift{animation:blift .38s ease-out}
   .bfix{padding:0 14px 12px}
+  /* projects on the board (owner, 26 Nov 2026): same card as a channel row; waiting on the owner is amber, a failed stage red */
+  .pbox{margin-top:16px}
+  .pcard .bthumb{width:44px;height:44px;border-radius:12px}
+  .pcard .btop{align-items:flex-start}.pcard .btop b{white-space:normal;flex:1;min-width:0;line-height:1.3}.pcard .bstate{margin-left:8px}.pcard .bthumb{align-self:flex-start}
+  .pcard.wait{border-color:var(--act)}.pcard.wait .bstate{background:var(--actbg);color:var(--act)}
+  .pcard.failed{border-color:var(--bad)}.pcard.failed .bstate{background:var(--badbg);color:var(--bad)}
+  .pcard.done .bstate{background:var(--okbg);color:var(--ok)}
+  .phist{list-style:none;margin:0;padding:0 14px 12px;display:flex;flex-direction:column;gap:8px}
+  .phist li{display:flex;flex-direction:column;gap:1px;font-size:.84rem;line-height:1.35}.phist li b{font:700 .74rem system-ui,sans-serif;color:var(--mute)}
   .bfixb{width:100%;min-height:44px}
   @keyframes blift{0%{transform:translateY(0)}45%{transform:translateY(-4px)}100%{transform:translateY(0)}}
   .bcard.skipped{opacity:.78}
@@ -591,6 +600,7 @@
       <div class="bhead"><div class="ring" id="b-ring" role="img" aria-label="0 of 3 reels ready"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="rt" cx="22" cy="22" r="18"/><circle class="rf" id="b-arc" cx="22" cy="22" r="18" pathLength="100" stroke-dasharray="0 100"/></svg><b id="b-n">0</b></div>
         <div class="bt"><b id="b-t">0 of 3 ready</b><span id="b-s">Waiting for the studio</span></div></div>
       <div id="b-cards"></div>
+      <div class="pbox" id="p-box" hidden><h2 class="lbl">Projects</h2><div id="p-cards"></div></div>
     </section>
     <section class="tsec" id="needs" hidden><h2 class="lbl">Needs you</h2><div id="needs-list"></div></section>
     <div class="tlist tlinks"><button type="button" class="trow" id="t-all"><span class="m"><span class="n">All reels and posted</span><span class="s">Every reel by channel, post text, channel profiles</span></span><span class="chev" aria-hidden="true">›</span></button></div>
@@ -1342,7 +1352,38 @@
     document.getElementById('b-ring').setAttribute('aria-label', ready + ' of 3 reels ready');
     document.getElementById('b-t').textContent = ready + ' of 3 ready';
     document.getElementById('b-s').textContent = jOld(jLast) ? 'Status is old, rebuilding' : ready === 3 ? 'All three are ready to post' : running ? running + ' being made now' : 'Nothing running right now'; }
-  function sLoad(){ clearTimeout(sTimer);
+  // ---- projects (owner, 26 Nov 2026): work that is not a channel reel, from GET /api/projects (design/projects.json + project stage lines)
+  var PST = { planned: 'Planned', building: 'Building', stills: 'Stills check', render: 'Making the video', checking: 'Checking', critic: 'Second look', done: 'Done', waiting: 'Waiting on you', failed: 'Found a problem' },
+      PORDER = ['planned', 'building', 'stills', 'render', 'checking', 'critic', 'done'], pCards = {}, PROWS = [];
+  function pWhen(at){ if (!at) return ''; var d = new Date(at); return isNaN(d) ? '' : d.toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+  function pRender(){
+    var box = document.getElementById('p-cards'), wrap = document.getElementById('p-box'); wrap.hidden = !PROWS.length;
+    Object.keys(pCards).forEach(function(id){ if (!PROWS.some(function(x){ return x.id === id; })) { pCards[id].card.remove(); delete pCards[id]; } });
+    PROWS.forEach(function(x){ var c = pCards[x.id];
+      if (!c) { var card = el('article', 'bcard pcard'), main = el('button', 'bmain'), th = el('span', 'bthumb'), body = el('span', 'bbody'), top = el('span', 'btop'), st = el('span', 'bstate'),
+          line = el('span', 'bline'), bar = el('span', 'bbar'), tr = el('span', 'tr'), bi = el('i'), bp = el('span'), meta = el('span', 'bmeta'), more = el('div', 'bmore'), inner = el('div'), ol = el('ol', 'phist'),
+          fix = el('div', 'bfix'), fixb = el('button', 'btn bfixb', 'Fix');
+        main.type = 'button'; main.setAttribute('aria-expanded', 'false'); fixb.type = 'button'; th.appendChild(el('span', 'dot'));
+        top.appendChild(el('b', null, '')); top.appendChild(st); tr.appendChild(bi); bar.appendChild(tr); bar.appendChild(bp);
+        body.appendChild(top); body.appendChild(line); body.appendChild(bar); body.appendChild(meta); main.appendChild(th); main.appendChild(body);
+        inner.appendChild(ol); more.appendChild(inner); fix.appendChild(fixb); card.appendChild(main); card.appendChild(fix); card.appendChild(more);
+        c = pCards[x.id] = { card: card, name: top.firstChild, st: st, line: line, bar: bar, bi: bi, bp: bp, meta: meta, ol: ol, fix: fix, fixb: fixb, main: main };
+        main.addEventListener('click', function(){ var on = !card.classList.contains('open'); card.classList.toggle('open', on); main.setAttribute('aria-expanded', String(on)); });
+        (function(c){ c.fixb.addEventListener('click', function(){ if (!c.fail) return; c.fixb.disabled = true; c.fixb.textContent = 'Sending';
+          fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ priority: true, text: 'FIX (from the board, top priority) ' + c.fail }) })
+            .then(function(r){ if (!r.ok) throw 0; c.sent = c.fail; c.fixb.textContent = 'Sent to the studio'; }).catch(function(){ c.fixb.disabled = false; c.fixb.textContent = 'Try again'; }); }); })(c);
+        box.appendChild(card); }
+      var wait = x.stage === 'waiting', idx = PORDER.indexOf(x.stage), pct = x.pct != null ? x.pct : idx >= 0 ? Math.round(idx / (PORDER.length - 1) * 100) : null;
+      c.card.className = 'bcard pcard' + (wait ? ' wait' : x.stage === 'failed' ? ' failed' : x.stage === 'done' ? ' done' : '') + (c.card.classList.contains('open') ? ' open' : '');
+      c.name.textContent = x.name; c.st.textContent = PST[x.stage] || x.stage; c.line.textContent = x.line || PST[x.stage] || '';
+      c.bar.style.display = pct == null ? 'none' : ''; if (pct != null) { c.bi.style.width = pct + '%'; c.bp.textContent = pct + '%'; }
+      c.meta.textContent = (x.account === 'main' ? 'Main account' : 'Other account') + (x.updatedAt ? ' · updated ' + pWhen(x.updatedAt) : '');
+      c.ol.textContent = ''; (x.history || []).slice().reverse().forEach(function(h){ var li = el('li'); li.appendChild(el('b', null, pWhen(h.at) + ' · ' + (PST[h.stage] || h.stage))); li.appendChild(el('span', null, h.line || '')); c.ol.appendChild(li); });
+      var fail = x.stage === 'failed' ? 'Project ' + x.name + ', why: ' + String(x.line || '').slice(0, 400) : null; c.fix.hidden = !fail;
+      if (fail) { if (c.fail !== fail) { c.fail = fail; c.sent = null; } c.fixb.disabled = c.sent === c.fail; c.fixb.textContent = c.sent === c.fail ? 'Sent to the studio' : 'Fix'; } else c.fail = null; }); }
+  function pLoad(){ return fetch('/api/projects', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
+      .then(function(j){ PROWS = (j && j.projects) || []; pRender(); }, function(){}); }
+  function sLoad(){ clearTimeout(sTimer); pLoad();
     return fetch('/api/stage', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
       .then(function(j){ SROWS = j.rows || []; }, function(){}).then(function(){ bRender();
         if (sec === 'today' && !document.hidden) { var live = SROWS.some(function(x){ return !BFIN[x.stage]; }); sTimer = setTimeout(sLoad, live ? 20000 : 120000); } }); }

@@ -16,6 +16,7 @@ here or in chat. Ask the owner only before something the task does not already c
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
 critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 2, 5, 3
 (later numbers after these, in order); report each in Progress.
+Every task here is also a project on the app's board: update its entry in design/projects.json at each stage, in the same push as the work (design/runbook-studio.md "Projects on the board").
 
 ## Read first (only the parts you need)
 CLAUDE.md; the last 5 entries of design/handoff-log.md; design/3d-kit-phase2.md; design/rules-tech.md (section L, rules D1-D8).
@@ -140,6 +141,7 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 - 26 Nov 12:50 IST, other account: task 3 started (size L). Step 1 done: rules-tech.md D9-D12 (beats, own entrance per object, each connection a beat, believable wires and light), critic.md questions 48-51, and an Output QA GLOW check for the 3D look (white-hot area below the captions; fails over 4 % median or 8 % in any second; the v5 sample measures about 9 %, so v5 would fail it). scripts/qa/look.py runs GLOW on local frames before a render. Next: the v6 scene.
 - 26 Nov 13:05 IST, other account: task 0 done: both branches are on main (claude/3d-kit-rules merged on its retry). Task 3 step 2: the v6 sample is built (techkit/scenes/gold3d-v6.html; new kit parts W3D.enter for entrances and W3D.wire for matte sagging cables with plugs, in techkit/lib3d.js; the New tile has its own icon; 3+9=12 when it connects). GLOW was re-made to measure bloom haze (a pale tile or a lit floor no longer counts): v5 4.0 %, v6 1.7 % on its scene frames. One stills sheet: review/tech/study-25nov/kit-phase2-v6.jpg. Builder notes for the critic: review/tech/showreel-tech-gold3d-v6.md. Next: render 1 of v6 once this is merged.
 - 26 Nov 13:11 IST, other account: task 3: the v6 sample is on main; render 1 of v6 started on GitHub (preview r1, about 25 min).
+- 26 Nov 13:35 IST, other account: task 5 done (projects on the board): design/projects.json (3d-kit-v6, minutes-meter, this one); the Worker serves GET /api/projects from the file on main merged with newer project stage lines (`node scripts/stage.mjs project:<id> <stage>`); the Today board has a Projects section (stage, line, bar, amber when waiting on the owner, red with Fix when failed, tap for history; done leaves after 2 days); the status sheet lists projects and raises one stuck 6 h; the rule is in design/runbook-studio.md and above. Checked at phone width on a local build; stage-test covers the new paths. Task 3 continues: v6 render 1 is running.
 
 ---
 

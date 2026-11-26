@@ -657,7 +657,7 @@ async function stageApi(request, env, p, ctx) {
   try { db = await stageDb(env); } catch { return jres({ error: 'db-unavailable' }, 503); }
   if (!db) return jres({ error: 'no-db' }, 501);
   if (request.method === 'GET' && p === '/api/stage') {
-    const { results } = await db.prepare('SELECT reel, ch, day, stage, model, line, pct, thumb, at FROM studio_stage WHERE day = ?1 ORDER BY at DESC LIMIT 12').bind(istDayNow()).all();
+    const { results } = await db.prepare("SELECT reel, ch, day, stage, model, line, pct, thumb, at FROM studio_stage WHERE day = ?1 AND ch <> 'project' ORDER BY at DESC LIMIT 12").bind(istDayNow()).all();
     return jres({ day: istDayNow(), rows: (results || []).map((r) => ({ reel: r.reel, ch: r.ch, stage: r.stage, model: r.model, line: r.line, pct: r.pct, thumb: r.thumb ? `/api/stage/thumb/${r.reel}` : null, at: r.at })) });
   }
   const th = /^\/api\/stage\/thumb\/([a-z0-9-]{1,80})$/.exec(p);
@@ -669,9 +669,10 @@ async function stageApi(request, env, p, ctx) {
   }
   if (request.method === 'POST' && p === '/api/stage') {
     let b = null; try { b = await request.json(); } catch { /* handled below */ }
-    const reel = b && typeof b.reel === 'string' ? stageKey(b.reel.trim().toLowerCase()) : '';
-    if (!reel || reel.length > 80 || !STAGE_IDS.includes(b.stage)) return jres({ error: 'bad-request', stages: STAGE_IDS }, 400);
-    const ch = ['web', 'tech', 'c3'].includes(reel) ? reel : chOfReel(reel, null);
+    const raw = b && typeof b.reel === 'string' ? b.reel.trim().toLowerCase() : '', pj = /^project:([a-z0-9-]{1,40})$/.exec(raw);   // project:<id> (owner, 26 Nov 2026): a project row
+    const reel = pj ? 'project-' + pj[1] : stageKey(raw);
+    if (pj ? !PROJECT_STAGES.includes(b.stage) : (!reel || reel.length > 80 || !STAGE_IDS.includes(b.stage))) return jres({ error: 'bad-request', stages: pj ? PROJECT_STAGES : STAGE_IDS }, 400);
+    const ch = pj ? 'project' : ['web', 'tech', 'c3'].includes(reel) ? reel : chOfReel(reel, null);
     const pct = Number.isFinite(Number(b.pct)) && b.pct !== null && b.pct !== '' ? Math.max(0, Math.min(100, Math.round(Number(b.pct)))) : null;
     const model = nStr(b.model, 40), line = nStr(b.line, 140);
     let thumb = 0;
@@ -687,6 +688,39 @@ async function stageApi(request, env, p, ctx) {
     return jres({ ok: true, reel, ch, stage: b.stage });
   }
   return jres({ error: 'bad-request' }, 400);
+}
+
+// ---- Projects (owner, 26 Nov 2026): work that is not a channel reel (the 3D kit, an app fix) gets a row on the Today board. Its session keeps
+// design/projects.json up to date in the same push as the work; this reads that file from main (no site access needed, so the second account can
+// report too) and merges any newer `node scripts/stage.mjs project:<id> <stage>` row (D1 studio_stage, ch 'project'). The newer of the two wins.
+// A done project leaves the board 2 days after its last update. GET /api/projects (signed in): { projects: [{ id, name, account, stage, line, pct, updatedAt, history }] }
+const PROJECT_STAGES = ['planned', 'building', 'stills', 'render', 'checking', 'critic', 'done', 'waiting', 'failed'];
+const PROJECTS_RAW = 'https://raw.githubusercontent.com/imshekharsingh/aquariit-templates/main/design/projects.json', PROJECTS_TTL = 120;
+async function projectsApi(request, env, fetchFile = fetch) {
+  if (request.method !== 'GET') return jres({ error: 'bad-request' }, 400);
+  let list = [];
+  try { const r = await fetchFile(PROJECTS_RAW, { cf: { cacheTtl: PROJECTS_TTL, cacheEverything: true } }); if (r.ok) { const j = await r.json(); if (Array.isArray(j.projects)) list = j.projects; } } catch { /* the file is not reachable: the D1 rows only */ }
+  let rows = [];
+  try { const db = await stageDb(env); if (db) rows = (await db.prepare("SELECT reel, stage, line, pct, at FROM studio_stage WHERE ch = 'project' ORDER BY at DESC LIMIT 40").all()).results || []; } catch { /* no rows */ }
+  const ok = (st) => PROJECT_STAGES.includes(st), by = new Map();
+  for (const x of list) {
+    if (!x || typeof x.id !== 'string' || !/^[a-z0-9-]{1,40}$/.test(x.id) || !ok(x.stage)) continue;
+    by.set(x.id, { id: x.id, name: nStr(x.name, 80) || x.id, account: x.account === 'main' ? 'main' : 'other', stage: x.stage, line: nStr(x.line, 160) || '',
+      pct: Number.isFinite(x.pct) ? Math.max(0, Math.min(100, Math.round(x.pct))) : null, updatedAt: typeof x.updatedAt === 'string' ? x.updatedAt : null,
+      history: (Array.isArray(x.history) ? x.history : []).filter((h) => h && ok(h.stage)).slice(-20).map((h) => ({ at: typeof h.at === 'string' ? h.at : null, stage: h.stage, line: nStr(h.line, 160) || '' })) });
+  }
+  for (const r of rows) {
+    const id = String(r.reel).replace(/^project-/, ''); if (!ok(r.stage)) continue;
+    const p = by.get(id) || { id, name: id, account: 'main', stage: r.stage, line: '', pct: null, updatedAt: null, history: [] };
+    if (!p.updatedAt || Date.parse(r.at) > Date.parse(p.updatedAt)) {
+      p.stage = r.stage; p.line = r.line || p.line; p.pct = r.pct ?? null; p.updatedAt = r.at;
+      p.history = p.history.concat([{ at: r.at, stage: r.stage, line: r.line || '' }]).slice(-20);
+    }
+    by.set(id, p);
+  }
+  const now = Date.now();
+  const out = [...by.values()].filter((p) => !(p.stage === 'done' && p.updatedAt && now - Date.parse(p.updatedAt) > 2 * 864e5));
+  return new Response(JSON.stringify({ projects: out }), { headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } });
 }
 
 // ---- Spare-usage night (owner, 1 Nov 2026): the owner's weekly Claude limit resets Wednesday 04:30 IST. From Tuesday 21:00 IST the app shows a card
@@ -1214,6 +1248,7 @@ async function postApi(request, env, p) {
   return jres({ error: 'not-found' }, 404);
 }
 
+export { projectsApi };
 export default {
   async scheduled(controller, env, ctx) { ctx.waitUntil(runCron(env, controller.cron, controller.scheduledTime)); },
   async fetch(request, env, ctx) {
@@ -1247,7 +1282,7 @@ export default {
     if (p === '/api/probe-log') return (await stageKeyOk(request, env)) ? probeApi(request, env, url) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
     if (p === '/api/stage' && request.method === 'POST') return (await stageKeyOk(request, env)) ? stageApi(request, env, p, ctx) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
     if (p === '/api/slots' && request.method === 'GET') return signedIn ? jres({ slots: SLOT_CONFIG.slots, reviewOn: SLOT_CONFIG.reviewOn }) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
-    if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/stage') ? stageApi(request, env, p, ctx) : (p === '/api/post' || p.startsWith('/api/post/')) ? postApi(request, env, p) : p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
+    if (p.startsWith('/api/')) return signedIn ? (p === '/api/projects' ? projectsApi(request, env) : p.startsWith('/api/stage') ? stageApi(request, env, p, ctx) : (p === '/api/post' || p.startsWith('/api/post/')) ? postApi(request, env, p) : p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     // Read-only reel key (owner, 23 Nov 2026): critic and review sessions fetch the final reel files with Authorization: Bearer <REELS_READ_KEY>.
     // It opens ONLY GET/HEAD of /reels/<file> from R2: no API, no app pages, no writes, no site-copy fallback. Unset or empty secret = off.
     if (!signedIn && (await readKeyOk(request, env))) {

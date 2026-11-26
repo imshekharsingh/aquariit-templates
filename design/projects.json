@@ -1,0 +1,66 @@
+{
+ "_about": "Projects on the app's Today board (owner, 26 Nov 2026): work that is not a channel reel. The project's session updates its entry at every stage in the same push as the work (design/runbook-studio.md \"Projects\"). stage: planned | building | stills | render | checking | critic | done | waiting (on the owner) | failed. line: one plain sentence. pct: optional 0-100. history: newest last, at most 20. The Worker reads this file from main (GET /api/projects, about 2 min cache) and merges any newer `node scripts/stage.mjs project:<id> <stage>` line. A done project leaves the board 2 days after its last update.",
+ "projects": [
+  {
+   "id": "3d-kit-v6",
+   "name": "3D kit v6: the tech look as a told story",
+   "account": "other",
+   "stage": "render",
+   "line": "The v6 sample is built and its first video is being made.",
+   "pct": 60,
+   "updatedAt": "2026-11-26T07:41:00Z",
+   "history": [
+    {
+     "at": "2026-11-26T07:20:00Z",
+     "stage": "building",
+     "line": "New rules for beats, entrances and real-looking wires, and a glow check."
+    },
+    {
+     "at": "2026-11-26T07:35:00Z",
+     "stage": "stills",
+     "line": "The v6 sample is built; one stills sheet checked."
+    },
+    {
+     "at": "2026-11-26T07:41:00Z",
+     "stage": "render",
+     "line": "The v6 sample is built and its first video is being made."
+    }
+   ]
+  },
+  {
+   "id": "minutes-meter",
+   "name": "GitHub minutes meter in the app",
+   "account": "other",
+   "stage": "done",
+   "line": "The meter always shows now, and says why if the count cannot be read.",
+   "updatedAt": "2026-11-26T06:17:00Z",
+   "history": [
+    {
+     "at": "2026-11-26T06:11:00Z",
+     "stage": "building",
+     "line": "Found the meter was hidden on any error."
+    },
+    {
+     "at": "2026-11-26T06:17:00Z",
+     "stage": "done",
+     "line": "The meter always shows now, and says why if the count cannot be read."
+    }
+   ]
+  },
+  {
+   "id": "app-projects",
+   "name": "Projects on the app's board",
+   "account": "other",
+   "stage": "done",
+   "line": "Projects like the 3D kit now show on the Today board with their stage and history.",
+   "updatedAt": "2026-11-26T08:05:00Z",
+   "history": [
+    {
+     "at": "2026-11-26T08:05:00Z",
+     "stage": "done",
+     "line": "Projects like the 3D kit now show on the Today board with their stage and history."
+    }
+   ]
+  }
+ ]
+}
