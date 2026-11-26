@@ -45,6 +45,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'blackbg': '23 Nov web owner grid: the three plain black reels (165K, 10K, 6.2K) beat every coloured, framed reel (1.7K-2.9K); web reels use the black look, never a coloured frame or glow (rules-web.md rule 19)',
     'hue': '15 Nov web "main frame where we see the changes seem to show similar colour grading so doesn\'t look different from other videos"',
     'sheen': '15 Nov tech "covering the wave like coming in from left top corner to the right of the frame, it\'s happening in all videos" (a glass sheen swept the hero every 2.7 s)',
+    'glow': '26 Nov tech 3D sample v5 "it still glows more than a user\'s eye should expect" (glowing cables and number figures over about 9 % of the frame)',
     'hero': '15 Nov tech "I don\'t see much happening animation wise around watch in 5 ATM video" (a small static watch, only the water moved)',
     'elements': '16 Nov Turns Out Liberty arm "elements are few and are spread ... through the whole video. We should design it such that there are more elements to show on screen as the storyline moves forward"',
     'reuse': '16 Nov Turns Out Liberty arm (one photo used 3 times; "elements are few")',
@@ -70,6 +71,7 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          calm_px=20, calm_band=(288, 392), calm_med=.035, calm_mean=.05, calm_step=.10,
          hue_s=.25, hue_v=.2, hue_min=40, hue_last=3, black_v=32,
          focus_s=.3, focus_v=.3, focus_share=.05, focus_gap=30, focus_hues=3, focus_pad=1.0,
+         glow_v=.7, glow_s=.3, glow_top=.25, glow_fail=4.0, glow_warn=3.0, glow_peak=8.0,
          sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=4,
          hero_lag=.5, hero_shift=3, hero_px=30, hero_on=.02, hero_active=.55, hero_w=.33, hero_inset=.2,
          var_ssim=.65, var_max=.60,
@@ -1031,6 +1033,19 @@ def hue_check(F, fps, mp4, qa, name):
          + (': too close to ' + ', '.join(f'{k} ({d} deg)' for k, h, d in near) if near else ''))
 
 
+def glow_check(F, fps):
+    # GLOW (owner, 26 Nov 2026): white-hot area below the caption band. A pixel counts when it is bright (V > glow_v) and nearly colourless (S < glow_s):
+    # bloomed cable cores, halos and emissive number figures read that way, coloured matte objects do not. Measured on 3D-look frames at 270x480: v5 before
+    # the glow cut 10 % (median), v5 after it 9 % (still too much for the owner). Fails over glow_fail % median or glow_peak % in any 1 s; warns over glow_warn %.
+    H = F.shape[1]; z = F[:, int(H * T['glow_top']):].astype(np.float32) / 255
+    mx, mn = z.max(-1), z.min(-1); S = (mx - mn) / np.maximum(mx, 1e-6)
+    share = ((mx > T['glow_v']) & (S < T['glow_s'])).mean(axis=(1, 2)) * 100
+    k = max(1, int(fps)); win = np.convolve(share, np.ones(k) / k, 'valid') if len(share) >= k else share
+    med, peak = float(np.median(share)), float(win.max() if len(win) else 0); at = (int(np.argmax(win)) / fps) if len(win) else 0
+    st = 'FAIL' if med > T['glow_fail'] or peak > T['glow_peak'] else 'WARN' if med > T['glow_warn'] else 'PASS'
+    line('GLOW', st, f'white-hot area below the captions: median {med:.1f} % of the frame, worst 1 s {peak:.1f} % at {at:.1f} s '
+         f'(fail over {T["glow_fail"]} % median or {T["glow_peak"]} % in 1 s; the v5 sample measured about 9 %)')
+
 def sheen_check(G, fps):
     H, W = G.shape[1:]; y0, y1 = int(H * T['sheen_y'][0]), int(H * T['sheen_y'][1]); lag = max(1, int(round(.2 * fps)))
     yy, xx = np.mgrid[0:y1 - y0, 0:W]; proj = []
@@ -1115,6 +1130,8 @@ def main():
     if qa.get('guess'): guess_check(F, fps, qa['guess'], heard)
     elif ch == 'c3' and (c.get('experiment') or {}).get('id', '').startswith('c3-guess'): line('GUESS', 'FAIL', 'a guess reel without "qa": {"guess": {answer, reveal, box}} in its config')
     else: line('GUESS', 'SKIP', 'not a guess reel')
+    if look3d: glow_check(F, fps)
+    else: line('GLOW', 'SKIP', '3D look only')
     if ch == 'tech': hero_check(F, fps, mp4)
     else: line('HERO', 'SKIP', 'tech only')
     G = frames(mp4, fps, 135, 240, gray=True); del F
