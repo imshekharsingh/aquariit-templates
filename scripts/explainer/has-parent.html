@@ -21,7 +21,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #scr{position:absolute;left:10px;top:10px;width:484px;height:426px;border-radius:52px;overflow:hidden;background:var(--pg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 #sb{position:absolute;left:0;right:0;top:0;height:44px;background:var(--pg);color:var(--paper);font:500 15px/44px var(--m);padding:0 34px;z-index:4}
 .pg{position:absolute;left:0;top:44px;width:484px;height:382px;background:var(--pg);overflow:hidden}
-.fld{position:absolute;top:12px;width:136px;height:196px;border-radius:24px;background:#38284f;box-shadow:inset 0 0 0 2px #4d3a6e}
+.fld{position:absolute;top:12px;width:136px;height:196px;border-radius:24px;background:#34273f;box-shadow:inset 0 0 0 2px #50406e}
 .fp{position:absolute;left:0;right:0;top:160px;text-align:center;font:700 20px/1 var(--f);letter-spacing:-.02em;color:var(--paper);white-space:nowrap}
 .ic{position:absolute;left:36px;top:84px;width:64px;height:64px;fill:none;stroke:#cfcbe6;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
 .lamp{position:absolute;left:40px;top:16px;width:56px;height:56px;border-radius:16px;border:3px solid #8a867f;background:transparent}
@@ -81,7 +81,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
       </div>
       <div id="hud"><div id="meter"></div><div id="mtag">AFTER THE FIX</div><div id="pill"><i></i><i></i><i></i><i></i></div></div>
       <div class="tr" id="tr0"></div><div class="tr" id="tr1"></div><div class="tr" id="tr2"></div><div class="tr" id="tr3"></div><div class="tr" id="tr4"></div>
-      <div class="rp" id="rp0"></div><div class="rp" id="rp1"></div><div class="rp" id="rp2"></div><div class="rp" id="rp3"></div><div class="rp" id="rp4"></div><div class="rp" id="rp5"></div><div id="fg"></div>
+      <div class="rp" id="rp0"></div><div class="rp" id="rp1"></div><div class="rp" id="rp2"></div><div class="rp" id="rp3"></div><div class="rp" id="rp4"></div><div class="rp" id="rp5"></div><div class="rp" id="rp6"></div><div class="rp" id="rp7"></div><div id="fg"></div>
     </div>
   </div>
 </div></div>
@@ -656,13 +656,17 @@ var KM = (function(){
     var tb = [.25, 1.45, at('select', 1, S[1] + 1.4) - .05], i;
     for (i = 1; i < tb.length; i++) tb[i] = Math.max(tb[i], tb[i - 1] + .8);
     TB = KM.bugs(tb.filter(function(x){ return x < A.fix - .6; }), { g: .4 });
+    TB.forEach(function(x){ for (var j = 0; j < 3; j++) KM.cue({ t: x + .06 * j + .05, k: 'blip', g: .1, p: -2 + 2 * j }); });   // a short fizzle per tile, left to right
     window.COVER = +(Math.min(TB[1] - .06, A.leave - .02)).toFixed(2);   // the cover: the hook, three ticked boxes, three dull cards, no reaction word
     // after the fix the cards light together; then the finger unticks the middle box and its card dims at once, and ticks it again
     // (card 1 off and on, card 2 off and on, card 0 off and on: every change is the page answering with no script; the pairs fill the tail so nothing sits still)
     var e1 = Math.max(A.wipe + 1.0, at('line', 1, A.wipe + 1.2) - .1), LAST = DUR - 2.5, n = 6, gap = (LAST - e1) / 5;
     if (gap < .9) { n = 4; gap = (LAST - e1) / 3; } if (gap < .85) { n = 2; gap = Math.min(1.15, LAST - e1); } gap = Math.min(gap, 1.3);
-    TD = [1, 1, 2, 2, 0, 0].slice(0, n); TG = TD.map(function(c2, q){ return +(e1 + q * gap).toFixed(3); }); TC = [[], [], []]; TG.forEach(function(x, q){ TC[TD[q]].push(x); });
-    A.lab = Math.min(Math.max(TG[1] + .4, A.end + 1.25), LP - 1.7);   // big NO JAVASCRIPT in the band once the subtitles have left
+    var TDp = [1, 1, 2, 2, 0, 0].slice(0, n), TGp = TDp.map(function(c2, q){ return +(e1 + q * gap).toFixed(3); });
+    // before the fix the finger unticks and reticks the middle box twice: TICKED 3 -> 2 -> 3, the tile does not react, LIT stays 0 (the mirror of the proof beat)
+    var tp1 = Math.max(A.leave + .35, 2.65), TPRE = (tp1 + 1.0 + .6 < A.fix - .5) ? [+tp1.toFixed(3), +(tp1 + 1.0).toFixed(3)] : [];
+    TD = TPRE.map(function(){ return 1; }).concat(TDp); TG = TPRE.concat(TGp); TC = [[], [], []]; TG.forEach(function(x, q){ TC[TD[q]].push(x); });
+    A.lab = Math.min(Math.max(TGp[1] + .4, A.end + 1.25), LP - 1.7);   // big NO JAVASCRIPT in the band once the subtitles have left
     TG.forEach(function(x, q){ KM.tap(x, 28 + TXc[TD[q]]); KM.cue({ t: x + .08, k: 'pop', g: .2, p: 3 }); });
     CAM.creep(A.lab, LP - A.lab - .05, .025);   // the held payoff still breathes (FLOW dead runs)
     TG.forEach(function(x, q){ KM.cue(q % 2 ? { t: x + .14, k: 'blip', g: .2, p: 4 } : { t: x + .14, k: 'hit', g: .3, p: -.4 }); });
@@ -672,7 +676,7 @@ var KM = (function(){
     KM.cue({ t: LP, k: 'swish', d: .45, g: .4, p: -.6 }); KM.cue({ t: LP + .25, k: 'hit', g: .3, p: -.3 });
     // element sound (scripts/explainer/kitsfx.js): every element that enters, moves or changes has a cue by its size, or is marked with the cue that covers it
     KM.mark($('ph'), 'tree', 'the boxes follow the bug cues, the lit cards have the resolve chord, the dim and the tick-again have theirs; the loop has its swish');
-    KM.mark($('fg'), 'self', 'the tap cue'); ['tr0', 'tr1', 'tr2', 'tr3', 'tr4', 'rp0', 'rp1', 'rp2', 'rp3', 'rp4', 'rp5'].forEach(function(id){ KM.mark($(id), 'self', 'the tap cue'); });
+    KM.mark($('fg'), 'self', 'the tap cue'); ['tr0', 'tr1', 'tr2', 'tr3', 'tr4', 'rp0', 'rp1', 'rp2', 'rp3', 'rp4', 'rp5', 'rp6', 'rp7'].forEach(function(id){ KM.mark($(id), 'self', 'the tap cue'); });
     KM.sfx($('lbl'), A.leave - .2, 'exit', { size: 'small' }); KM.sfx($('band'), A.leave - .1, 'enter', { size: 'medium', g: .6 });
     KM.mark($('pill'), 'tree', 'it fills with the beats, which have their own cues'); KM.mark($('meter'), 'tree', 'each number steps on its bug, tap or fix cue'); KM.sfx($('mtag'), A.wipe + .5, 'enter', { size: 'small', g: .5 });
     KM.sfx($('wide'), A.wideIn, 'enter', { size: 'medium', g: .6 }); KM.sfx($('wl'), A.wider, 'enter', { size: 'small', g: .8, deg: 2 });
@@ -687,10 +691,11 @@ var KM = (function(){
   // hex colours mixed in steps (KM.mixCol returns an rgb() string, so it cannot be chained)
   function hx(a, b, k){ var x = parseInt(a.slice(1), 16), y = parseInt(b.slice(1), 16), o = 0, q; for (q = 16; q >= 0; q -= 8) { var v = Math.round(mix(x >> q & 255, y >> q & 255, cl(k))); o = o * 256 + v; } return '#' + ('000000' + o.toString(16)).slice(-6); }
   // one card: lit = how lit (0-1), fl = the red NOT LIT flare, raw = how ticked its box is, pop = the box's pop
-  function paint(i, lit, fl, raw, pop){
-    var ring = hx('#4d3a6e', '#d79bff', lit), w = 2 + 2 * lit, bg = hx(hx('#38284f', '#5c2fa8', lit), '#1a1226', .55 * fl * (1 - lit)), bx = hx('#9a94c4', '#d79bff', lit);
-    FLD[i].style.boxShadow = 'inset 0 0 0 ' + w.toFixed(2) + 'px ' + ring + ', 0 0 ' + (6 + 24 * lit).toFixed(1) + 'px rgba(215,155,255,' + (.38 * lit).toFixed(3) + ')';
-    FLD[i].style.background = bg; FLD[i].style.transform = 'translateY(' + (7 * fl * (1 - lit)).toFixed(2) + 'px)';
+  function paint(i, lit, fl, raw, pop, flick, red){
+    var L = Math.max(lit, .85 * flick), ring = hx(hx('#50406e', '#d79bff', L), '#ff5f6d', red), w = 2 + 2 * L + 1.5 * red, bg = hx(hx('#34273f', '#5c2fa8', L), '#1a1226', .55 * fl * (1 - L)), bx = hx('#9a94c4', '#d79bff', lit);
+    FLD[i].style.boxShadow = 'inset 0 0 0 ' + w.toFixed(2) + 'px ' + ring + ', 0 0 ' + (6 + 24 * L + 14 * red).toFixed(1) + 'px rgba(215,155,255,' + (.38 * L).toFixed(3) + '), 0 0 ' + (16 * red).toFixed(1) + 'px rgba(255,95,109,' + (.32 * red).toFixed(3) + ')';
+    FLD[i].style.background = bg; FLD[i].style.transform = 'translateY(' + (6 * fl * (1 - L)).toFixed(2) + 'px)';
+    FLD[i].querySelector('svg').style.stroke = hx('#8a869c', '#cfcbe6', L); $('p' + i).style.color = hx('#9a97ab', '#f2efe8', L);   // dull tiles: icon and name at about 60% white
     LMP[i].style.background = hx(bg, bx, raw); LMP[i].style.borderColor = hx('#8a867f', bx, raw); LMP[i].style.transform = 'scale(' + (1 + .3 * pop).toFixed(3) + ')';
     TK[i].style.opacity = P(raw, .3, .9).toFixed(3);
   }
@@ -705,10 +710,11 @@ var KM = (function(){
     // ---- the cards: boxes ticked and cards dull from frame 0, a red NOT LIT flare on every bug beat; the fix lights them; the middle one follows its box; dull again on the reload ----
     for (i = 0; i < 3; i++) {
       var fl = 0; if (t < W) for (k = 0; k < TB.length; k++) { var s = TB[k] + .06 * i; fl = Math.max(fl, E.out3(P(t, s, s + .1)) * (1 - E.inOut3(P(t, s + .1, s + .7)))); }
+      var flick = 0, red = 0; if (t < W) for (k = 0; k < TB.length; k++) { var s2 = TB[k] + .06 * i; flick = Math.max(flick, E.out3(P(t, s2, s2 + .06)) * (1 - E.inOut3(P(t, s2 + .06, s2 + .18)))); red = Math.max(red, E.out3(P(t, s2 + .12, s2 + .2)) * (1 - P(t, s2 + .2, s2 + .55))); }   // each tile flickers toward lit for 0.12 s, then drops back dull with a red outline flash
       var raw = rawAt(i, t);
       var lit = Math.min(E.out3(P(t, W, W + .3)), raw) * (1 - E.out3(P(t, LP + .05 * i, LP + .2 + .05 * i)));
       var pop = Math.max(fl, bumpAt(i, t));
-      paint(i, lit, fl, raw, pop); }
+      paint(i, lit, fl, raw, pop, flick, red); }
     // ---- the finger: it unticks the middle box, then ticks it again ----
     var taps = [], fx = 300, fy = 300, fo = 0;
     TG.forEach(function(x, q){ taps.push([x, TD[q]]); });
@@ -741,14 +747,14 @@ var KM = (function(){
     $('wl').style.opacity = cl(wp * 4).toFixed(3); $('wl').style.transform = 'scale(' + mix(.5, 1, E.back(wp, 2.2)).toFixed(4) + ')';
     // ---- the fix: the cause's place becomes the code card; the has part is typed and swept ----
     var mk = T.morph(t), cd = $('code'), BOX = { x: 30, y: 150, w: 450, h: 110, r: 20 }, CARD = { x: 30, y: 124, w: 450, h: 164, r: 20 };
-    KM.morph(cd, BOX, CARD, mk); cd.style.opacity = (P(t, A.fix - .1, A.fix + .1) * (1 - E.out3(P(t, LP, LP + .25)))).toFixed(3);
+    KM.morph(cd, BOX, CARD, mk); cd.style.opacity = (P(t, A.fix - .1, A.fix + .1) * (1 - E.out3(P(t, LP - .3, LP - .05)))).toFixed(3);
     KM.type($('cd'), CODE, t, A.fix + .35, A.typeEnd); $('cd').style.opacity = P(mk, .6, 1).toFixed(3);
     [].forEach.call($('cd').querySelectorAll('b'), function(b, k2){ KM.sweep(b, t, A.typeEnd + .05 + k2 * .12, .4, 'var(--soft)'); });
     // the fix selector glides from the code card onto the cards (a copy: the card keeps it on screen for the save)
     var g = T.glide(t), gh = $('ghost'), a = { x: 62, y: 164, w: 300, h: 32, r: 12 }, sc = CAM.toScreen(c, 270, 560), b = { x: sc[0] - 130, y: sc[1] - 16, w: 260, h: 32, r: 14 };
     KM.shared(gh, a, b, g); gh.style.opacity = (t >= A.typeEnd + .1 && g < 1 ? 1 - P(g, .8, 1) : 0).toFixed(3);
     // ---- payoff: the label right of the counter ----
-    var lk = P(t, A.lab, A.lab + .3) * (1 - P(t, LP, LP + .2));
+    var lk = P(t, A.lab, A.lab + .3) * (1 - P(t, LP - .3, LP - .1));
     $('lab').style.opacity = lk.toFixed(3); $('lab').style.transform = 'translateY(' + ((1 - E.back(P(t, A.lab, A.lab + .3), 1.4)) * 10).toFixed(2) + 'px)';
     // ---- the subtitles sit between the top zone and the phone ----
     KM.cutBelow($('vp'), $('fe'), 960, 0);

@@ -1,7 +1,7 @@
 {
  "name": "showreel-48-has-parent",
  "seek": "scripts/explainer/has-parent.html",
- "style": "Three add-on cards on a phone with every box ticked and every card still dull grey: a red NOT LIT flare, then one CSS line, .card:has(input:checked), and the cards light by themselves (black look, a violet accent).",
+ "style": "Three tall add-on tiles on a phone, every box ticked and every tile dull grey-plum: each tile flickers toward lit and dies on every bug beat with a red outline flash, the finger unticks and reticks a box and nothing reacts (LIT 0), then one CSS line, .card:has(input:checked), and the tiles light by themselves (black look, a violet accent).",
  "dur": 15,
  "fps": 60,
  "blur": 3,
