@@ -105,3 +105,4 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
 - 18 Nov 2026 (web): a frame-0 loop for details reels (the recap's last 0.4 s returns to the hook frame: design/improvements.md "Seamless loop"); build it in starterdetails.html before the next details reel.
 
 - (owner, 23 Nov 2026) NEXT ROUND: AI-generated photo imagery for web/Turns Out/tech (the reference reel's quality gap). Parked by the owner; bring back with a side-by-side preview plan and cost.
+- (owner, 26 Nov 2026, Turns Out text overlap) Tooling: a QA check on the final MP4 that finds overlaps between chips, tags, rings and text lines and the subtitle pill's bottom edge (OCR boxes plus the scene's element boxes per 0.25 s), and a chip-band rule in core.js (DT.chip currently forces y 374 for any y in 380-420, which lands chips on a board top edge at y 396). Not built; needs the owner chat's go.
