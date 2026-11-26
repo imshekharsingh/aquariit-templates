@@ -3073,5 +3073,14 @@
    "payoff": "fact",
    "source": "plan"
   }
+ },
+ "showreel-tech-gold3d-v6": {
+  "channel": "tech",
+  "sample": true,
+  "hidden": true,
+  "concept": "SAMPLE v6 of the 3D kit, never posted: the v5 gold told as a story (beats, own entrances, each connection a beat, believable wires, calm glow). Replaces v5 as the tech 3D gold if a critic writes READY.",
+  "format": "xray",
+  "device": "laptop",
+  "aiLabel": false
  }
 }
