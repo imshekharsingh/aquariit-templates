@@ -52,6 +52,7 @@ If the v5 critic says NOT READY: stop, write the critic's fix list in Progress a
 - 26 Nov 10:20 IST, other account: owner asked to fix the glow all around. Done before the render: softer bloom, thinner cable halos, dimmer cable cores and floor light, smaller brightness swells; the picture is the same, only calmer (review/tech/study-25nov/kit-phase2-v5-glow.jpg). Cost so far: about $8.
 - Render 5 estimate (for the owner): about $5 in all (the GitHub render itself is free on this public repo, about 20 min; then Output QA and the separate critic session). It is the 5th render of this sample, past the 2-render cap.
 - 26 Nov 10:15 IST, other account: owner said yes; render 5 started on GitHub (preview v5, about 20 min). Times above at 10:10 and 10:20 were approximate. Cost so far: about $9.
+- 26 Nov 10:27 IST, other account: render 5 FAILED at the last step, the sound loudness gate (-16.4 LUFS, need -15 to -13). The picture rendered fine (all six frame jobs passed, 18.45 s); nothing went to R2, so there is no v5 video to judge. Cause: techkit/make.py's mux loop cut the limiter by 4.9 dB after a +3.3 dBTP peak and stopped once the peak was safe, without checking loudness (v4 passed the same loop by luck). Stopped as the rules say: no 6th render. Proposed fix (size S, about $1): keep trying while the loudness is under -15 LUFS, raising the limiter halfway back; then render 6 needs the owner's yes (about $5). Cost so far: about $10.
 
 ---
 
