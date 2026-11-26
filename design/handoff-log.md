@@ -828,3 +828,8 @@ Format (at most 6 lines):
 - Left: one render, Output QA, critic; then postOn 2026-11-26, postAt 17:00.
 - For the other account: the reversal beat from the references was not added (script length kept).
 - 26 Nov 07:45 IST: refs 9-14 studied whole (design/references.md "R-ref 26 Nov"), routed per channel; today's three builders held before render 1 and sent their lessons.
+
+## 2026-11-26 · claude/critic-gold3d-sample-v4 · Independent critic (second pass) of the 3D kit sample render v4
+- Done: review/tech/showreel-tech-gold3d-sample.md, verdict NOT READY on the real v4 MP4 (one contact sheet, two full frames). Of the v3 fix list: hook, code card, distinct names and aiLabel DONE; camera path, cables and held payoff PARTLY. Still failing D2 (0.6-5.2 s and 13.3-18.5 s each one framing, about 5 s), the hub hides two of the eight tools from 7.5 s (the picture says 3+8 but shows 6 tools), "Notes" cut at the edge in the 9.8 s push-in. Six-step EXACT FIX in the file. PREMIUM 6.5 / 7 / 7.5.
+- Left: the owner chat asks the owner about a 5th render of this sample (with its cost); not the 3D gold until a critic writes READY. The v3 critic branch (claude/critic-gold3d-sample) was never merged; this file replaces it.
+- For the other account: the 3D look's camera keys must also cover the opening and the last 5 s, not only the middle beat.
