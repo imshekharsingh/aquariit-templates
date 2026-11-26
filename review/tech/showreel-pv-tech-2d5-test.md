@@ -1,0 +1,15 @@
+# Review: showreel-pv-tech-2d5-test (@techin20sec, preview for comparison, never posted)
+Owner-approved test (owner chat, 27 Nov 2026; cap about $10, one render). Spec: design/references.md "R-ref 27 Nov 2026" (branch claude/ref-nodemap-27nov). Scene: scripts/previews/tech-2d5-test.html (+ .json). Direction card: showreel-pv-tech-2d5-test.direction.md. Not in captions.json (never posted).
+
+## Facts and sources (read 27 Nov 2026 through search; the sites themselves were not reachable from the build session)
+1. TOKEN: EMVCo, "EMV Payment Tokenisation" (emvco.com/emv-technologies/payment-tokenisation/ and /knowledge-hub/emv-payment-tokenisation/): tokenisation replaces the card number (PAN) with a unique alternative value, the token; the token is restricted to specific merchants, devices or payment scenarios; the consumer device sends it to the terminal by a proximity technology such as EMV Contactless. On screen: "TOKEN", "LIMITED TO THIS DEVICE". Voice: "your phone sends a token, never your real card number".
+2. TERMINAL -> ACQUIRER -> NETWORK -> ISSUER, reply back the same way: Mastercard, "How Credit Card Transactions Work" (mastercard.com/us/en/for-the-world/prosperity/.../how-credit-card-transactions-work.html): the acquirer is the merchant's bank and passes the request on; the network routes between acquirer and issuer, neither of which it is; the response returns along the same path. Also a Federal Reserve paper (FEDS 2009-23, federalreserve.gov/pubs/feds/2009/200923): merchant -> acquirer -> network -> issuer, reply returned the same way, issuer posts to the account within about a day for credit and signature debit (voice: "money settles later").
+3. BANK DECISION: Visa developer guide, "A Detailed Look at the Payments Ecosystem from Visa Payment..." (community.developer.visa.com): the issuer checks examples such as available funds and spending limits and approves or declines. On screen: FUNDS COVER IT, WITHIN YOUR LIMIT, CARD IS ACTIVE (card active is a generic check; not claimed as Visa's list), RISK CHECK · LOW (illustrative).
+4. "USUALLY A FEW SECONDS": the same Visa developer page says usually under three seconds.
+5. Millisecond counters (38 ms, 52 ms) are labelled EXAMPLE TIME: an illustration, not a measurement. The shop name "Corner Cafe", the app "Orbit Pay", "BANK A/B/D" and the amount 18.40 are invented.
+No logos, no real card brands on screen. Gap: the 4 cm style distance claim was not found in a primary source, so it is not used.
+
+## Rulebook (design/rules-tech.md): scored
+- F3 brands: none named. PASS. Safety (design/safety.md): all invented, nothing sensitive. PASS.
+- D1 world: not applicable in the 2.5D grammar (owner: not the 3D kit); the map is the world. D2 parts built one by one: PASS in the stills (every interface builds element by element). D3 depth: far dot grid + near motes + glow + cards at three speeds. D4 secondary motion: pulses, ripples, needle, blinking cursor. D5: push, six flights, pull-back. M3 never fully still. M6 words: captions word by word.
+- P1 surprising frame 0 / P3 loop: hub alive in frame 0, last frame = whole map (not the same framing; stated).

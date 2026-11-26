@@ -147,6 +147,27 @@
           "line": "An hourly check now starts the next open task by itself."
         }
       ]
+    },
+    {
+      "id": "tech-2d5-test",
+      "name": "Tech 2.5D map test (tap to pay), preview only",
+      "account": "main",
+      "stage": "stills",
+      "line": "Stills sheet ready, preflight checks pass. An outside session checks the stills next.",
+      "pct": 55,
+      "updatedAt": "2026-11-26T22:30:00Z",
+      "history": [
+        {
+          "at": "2026-11-26T22:00:00Z",
+          "stage": "building",
+          "line": "Scene built in the node-map grammar; stills sheet made."
+        },
+        {
+          "at": "2026-11-26T22:30:00Z",
+          "stage": "stills",
+          "line": "Stills sheet ready; the full preflight checks pass except the review file lines."
+        }
+      ]
     }
   ]
 }

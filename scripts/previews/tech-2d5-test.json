@@ -1,0 +1,39 @@
+{
+ "name": "showreel-pv-tech-2d5-test",
+ "seek": "scripts/previews/tech-2d5-test.html",
+ "dur": 30,
+ "fps": 60,
+ "blur": 2,
+ "shutter": 0.4,
+ "width": 540,
+ "height": 960,
+ "vignette": false,
+ "grain": 2,
+ "cover": 0.9,
+ "voice": {
+  "text": "You tap your phone. Here is what happens next. One: your phone sends a token, never your real card number. Two: the terminal reads it and builds the payment request. Three: the shop's bank, the acquirer, passes it on. Four: the card network routes it to your bank. Five: your bank checks funds and limits, then decides. Six: approved, and the answer runs back the same way. Money settles later.",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "at": [
+   0.3,
+   null,
+   4.0,
+   8.5,
+   12.6,
+   16.6,
+   20.4,
+   24.2,
+   27.6
+  ]
+ },
+ "note": "Preview for comparison (owner chat 27 Nov 2026, cap about $10, one render), never posted: no captions.json entry. Rendered with Showreel 'seconds' 30 into R2 study/.",
+ "qa": {
+  "textclear_ok": [
+   [
+    5.5,
+    9.5,
+    "the old card number is struck through on purpose (the token replaces it)"
+   ]
+  ]
+ }
+}

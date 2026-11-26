@@ -3093,5 +3093,14 @@
   "format": "xray",
   "device": "laptop",
   "aiLabel": false
+ },
+ "showreel-pv-tech-2d5-test": {
+  "channel": "tech",
+  "sample": true,
+  "hidden": true,
+  "concept": "TEST SCENE for the 2.5D system-map look (owner chat 27 Nov 2026), never posted: what happens in the seconds after you tap to pay, as a node map: token, terminal, acquirer, card network, issuing bank, approved.",
+  "format": "xray",
+  "device": "phone",
+  "aiLabel": false
  }
 }

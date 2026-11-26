@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=540, initial-scale=1">
+<title>What happens after you tap to pay</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Preview (owner chat 27 Nov 2026, 2.5D test): @techin20sec, the "system map" grammar from design/references.md "R-ref 27 Nov 2026" in OUR look
+   (graphite ink, soft colour worlds, glass cards). One continuous camera over one canvas: hub -> 6 steps -> pull-back. Each step owns a colour and a
+   spotlight, the rest dims to 20%. Fixed two-line title, a section pill, word-by-word captions, a small working interface per step, light pulses on
+   the lines. Pure function of t (window.seek). Facts: EMVCo payment tokenisation (token replaces the card number, limited to a device or merchant,
+   sent by contactless), Mastercard "How credit card transactions work" (acquirer -> network -> issuer, reply back), Visa developer guide (issuer
+   checks funds and limits); see review/tech/showreel-pv-tech-2d5-test.md. Millisecond counters are labelled EXAMPLE (illustration, not a measurement). */
+:root{--ink:#07080c;--f:'Inter Tight',system-ui,sans-serif;--m:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0}
+html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);font-family:var(--f);-webkit-font-smoothing:antialiased;color:#fff}
+.a{position:absolute}
+#stage{left:0;top:0;width:540px;height:694px;overflow:hidden;background:var(--ink)}
+#bgc{left:0;top:240px;width:540px;height:454px;-webkit-mask-image:linear-gradient(rgba(0,0,0,0) 0,#000 26px);mask-image:linear-gradient(rgba(0,0,0,0) 0,#000 26px)}
+#inner{left:0;top:0;width:540px;height:454px;-webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,0) 0,#000 26px,#000 514px,rgba(0,0,0,0) 540px);mask-image:linear-gradient(90deg,rgba(0,0,0,0) 0,#000 26px,#000 514px,rgba(0,0,0,0) 540px)}
+#world{left:0;top:0;width:1800px;height:1800px;transform-origin:0 0;will-change:transform}
+#lines{left:0;top:0}
+.glow{border-radius:50%}
+.cone{clip-path:polygon(38% 0,62% 0,100% 100%,0 100%)}
+.nd{width:440px;height:360px}
+.nd.hub{width:300px;height:300px}
+.card{left:0;top:0;width:100%;height:100%;border-radius:30px;background:linear-gradient(160deg,var(--ct),rgba(12,14,20,.98) 70%);border:2px solid var(--c);box-shadow:0 30px 60px rgba(0,0,0,.55)}
+.badge{left:20px;top:16px;width:44px;height:44px;border-radius:50%;border:2.5px solid var(--c);color:var(--c);font:800 22px/39px var(--f);text-align:center}
+.nm{left:76px;top:17px;font:800 23px/1 var(--f);letter-spacing:.01em;white-space:nowrap}
+.sb{left:76px;top:46px;font:500 11px/1 var(--m);letter-spacing:.14em;color:rgba(255,255,255,.55);white-space:nowrap}
+.mono{font-family:var(--m)}
+.pill2{border-radius:999px;border:1.5px solid var(--c);color:var(--c);font:700 12px/1 var(--m);letter-spacing:.1em;padding:9px 14px;white-space:nowrap;background:rgba(0,0,0,.35)}
+#view{color:#fff;-webkit-text-fill-color:#fff;left:0;top:240px;width:540px;height:454px;overflow:hidden;-webkit-mask-image:linear-gradient(rgba(0,0,0,0) 0,#000 26px);mask-image:linear-gradient(rgba(0,0,0,0) 0,#000 26px)}
+#band{left:0;top:694px;width:540px;height:266px;background:var(--ink)}
+#title{left:0;top:128px;width:540px;text-align:center;font:900 34px/1.04 var(--f);letter-spacing:-.01em;white-space:nowrap}
+#title b{font-weight:900}
+#pillw{left:50%;top:205px;width:300px;margin-left:-150px;height:28px;overflow:hidden;border-radius:999px;border:1.5px solid var(--c);background:rgba(7,8,12,.9)}
+#pillw span{left:0;top:0;width:100%;text-align:center;font:700 13px/25px var(--m);letter-spacing:.12em;color:var(--c);white-space:nowrap}
+#cap{left:40px;top:708px;width:460px;text-align:center;font:800 27px/1.2 var(--f);letter-spacing:-.01em}
+#cap .w{display:inline-block;margin:0 .13em;white-space:nowrap}
+#cap .bx{display:inline-block;padding:10px 16px 12px;border-radius:16px;background:rgba(20,22,29,.94);border:1px solid rgba(255,255,255,.08);box-shadow:0 12px 28px rgba(0,0,0,.5)}
+</style>
+</head>
+<body>
+<div id="stage" class="a">
+  <canvas id="bgc" class="a" width="1080" height="908"></canvas>
+  <div id="view" class="a" data-subject data-fit="free"><div id="inner" class="a"><div id="world" class="a">
+    <div id="spots" class="a"></div>
+    <svg id="lines" class="a" width="1800" height="1800" viewBox="0 0 1800 1800"></svg>
+    <div id="nodes" class="a"></div>
+  </div></div></div>
+</div>
+<div id="band" class="a" data-band></div>
+<div id="title" class="a" data-hook><div>WHAT HAPPENS AFTER</div><div>YOU <b id="tacc">TAP TO PAY</b></div></div>
+<div id="pillw" class="a"><span id="p0" class="a"></span><span id="p1" class="a"></span></div>
+<div id="cap" class="a" data-subs></div>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var cl = function(v, a, b){ a = a == null ? 0 : a; b = b == null ? 1 : b; return v < a ? a : v > b ? b : v; }, P = function(t, a, b){ return cl((t - a) / (b - a)); }, mix = function(a, b, k){ return a + (b - a) * k; };
+  var out = function(k){ return 1 - Math.pow(1 - k, 3); }, io = function(k){ return k * k * k * (k * (k * 6 - 15) + 10); };
+  var back = function(k){ var c = 1.9; return k <= 0 ? 0 : k >= 1 ? 1 : 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+  var hh = function(a, b){ var x = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return x - Math.floor(x); };
+  var DUR = 30;
+  // ---- the map: hub + six steps on a ring in one world of 1800 x 1800
+  var CXW = 900, CYW = 900, RR = 470, SY = 500;
+  var COL = [[255,222,160],[64,214,255],[160,236,72],[198,128,255],[255,108,98],[255,184,60],[64,236,160]];
+  var NAME = ['THE TAP','TOKEN','TERMINAL','ACQUIRER','CARD NETWORK','YOUR BANK','APPROVED'];
+  var SUBT = ['YOU HOLD YOUR PHONE TO THE READER','YOUR PHONE','THE SHOP\'S READER','THE SHOP\'S BANK','ROUTES BETWEEN BANKS','YOUR CARD\'S BANK','THE ANSWER COMES BACK'];
+  var PTS = [[CXW, CYW]]; for (var i = 1; i <= 6; i++){ var an = (-120 + 60 * (i - 1)) * Math.PI / 180; PTS.push([CXW + RR * Math.cos(an), CYW + RR * Math.sin(an)]); }
+  var DEP = [2.9, 7.5, 11.6, 15.6, 19.4, 23.3], FL = 2.0, ARR = [0, 4.9, 9.5, 13.6, 17.6, 21.4, 25.3], PB0 = 27.6, PB1 = 29.7;
+  var rgb = function(c, a){ return 'rgba(' + c.map(Math.round).join(',') + ',' + (a == null ? 1 : a) + ')'; };
+  var cmix = function(a, b, k){ return [mix(a[0], b[0], k), mix(a[1], b[1], k), mix(a[2], b[2], k)]; };
+  // ---- the camera: stops, one fly between each pair with the scale dipping mid-flight (a reason for every move: the next step)
+  function stopAt(i){ return i === 0 ? [CXW, CYW, 1.12] : [PTS[i][0], PTS[i][1], .95]; }
+  function cam(t){
+    var x, y, s, a, b, k;
+    if (t < DEP[0]){   // opening: a wide view of the map pushes into the hub
+      k = io(P(t, 0, 2.2)); x = CXW; y = CYW; s = mix(.84, 1.12, k) + .03 * P(t, 2.2, DEP[0]); return [x, y, s];
+    }
+    if (t >= PB0){ k = io(P(t, PB0, PB1)); a = stopAt(6); x = mix(a[0] + 6, CXW, k); y = mix(a[1], CYW, k); s = mix(.98, .3, k) ; return [x, y, s - .09 * Math.sin(Math.PI * k) * 0]; }
+    for (var i = 0; i < 6; i++){
+      if (t >= DEP[i] && t < DEP[i] + FL){ k = io(P(t, DEP[i], DEP[i] + FL)); a = stopAt(i); b = stopAt(i + 1); var dh = .03;
+        x = mix(a[0] + (i ? 6 : 0), b[0], k); y = mix(a[1], b[1], k); s = mix(a[2] + dh, b[2], k) - .0 * Math.sin(Math.PI * k); return [x, y, s]; }
+      if (t >= DEP[i] + FL && t < (i < 5 ? DEP[i + 1] : PB0)){ b = stopAt(i + 1); var hold = t - ARR[i + 1] + .0; k = P(t, ARR[i + 1], i < 5 ? DEP[i + 1] : PB0);
+        return [b[0] + 6 * k, b[1] - 4 * k, b[2] + .035 * k]; }
+    }
+    return [CXW, CYW, .5];
+  }
+  // focus of each node 0..6: 1 while the camera is on it, eased through the flights
+  function focus(i, t){
+    if (t >= PB0) return mix(i === 6 ? 1 : 0, .92, io(P(t, PB0, PB1 - .3)));
+    if (i === 0) return 1 - io(P(t, DEP[0], DEP[0] + FL * .8));
+    var f = io(P(t, DEP[i - 1] + FL * .15, ARR[i])), g = i < 6 ? io(P(t, DEP[i] + FL * .1, DEP[i] + FL * .9)) : 0; return cl(f - g);
+  }
+  // ---- build the world
+  var nodes = $('nodes'), spots = $('spots'), lines = $('lines'), SVGNS = 'http://www.w3.org/2000/svg';
+  function E(par, cls, css, html){ var d = document.createElement('div'); d.className = 'a ' + (cls || ''); d.setAttribute('data-ui', ''); if (css) d.style.cssText = css; if (html != null) d.innerHTML = html; par.appendChild(d); return d; }
+  function S(par, tag, at){ var e = document.createElementNS(SVGNS, tag); for (var k in at) e.setAttribute(k, at[k]); par.appendChild(e); return e; }
+  // an element's own entrance: kind = how it comes in (each element its own way), delay and duration in s; stays after
+  function ent(el, lt, delay, kind, dur){
+    var k = cl((lt - delay) / (dur || .5)), b = back(k), tr = '';
+    if (kind === 'up') tr = 'translateY(' + (1 - b) * 30 + 'px)'; else if (kind === 'dn') tr = 'translateY(' + -(1 - b) * 30 + 'px)';
+    else if (kind === 'l') tr = 'translateX(' + -(1 - b) * 46 + 'px)'; else if (kind === 'r') tr = 'translateX(' + (1 - b) * 46 + 'px)';
+    else if (kind === 'pop') tr = 'scale(' + (.5 + .5 * b) + ')'; else if (kind === 'tilt') tr = 'rotate(' + -(1 - b) * 16 + 'deg) scale(' + (.7 + .3 * b) + ')';
+    else if (kind === 'slam') tr = 'scale(' + (1 + (1 - out(k)) * 1.6) + ') rotate(' + (-8 - (1 - out(k)) * 10) + 'deg)';
+    el.style.opacity = k <= 0 ? 0 : Math.min(1, k * 3.2).toFixed(3); el.style.transform = tr; return k;
+  }
+  var ND = [], UPD = [];
+  for (var i = 0; i <= 6; i++){
+    var c = COL[i], w = i ? 440 : 300, h = i ? 360 : 300, px = PTS[i][0], py = PTS[i][1];
+    var sp = E(spots, '', 'left:' + (px - 450) + 'px;top:' + (py - 450) + 'px;width:900px;height:900px;opacity:0;background:radial-gradient(circle,' + rgb(c, .5) + ' 0,' + rgb(c, .18) + ' 40%,rgba(0,0,0,0) 68%)', '');
+    var cone = E(spots, 'cone', 'left:' + (px - 300) + 'px;top:' + (py - 760) + 'px;width:600px;height:900px;opacity:0;background:linear-gradient(rgba(0,0,0,0),' + rgb(c, .32) + ')', '');
+    var nd = E(nodes, 'nd' + (i ? '' : ' hub'), 'left:' + (px - w / 2) + 'px;top:' + (py - h / 2) + 'px;--c:' + rgb(c), '');
+    E(nd, 'card', '', '');
+    if (i){ E(nd, 'badge', '', '0' + i); E(nd, 'nm', '', NAME[i]); E(nd, 'sb', '', SUBT[i]); }
+    else { E(nd, 'nm', 'left:50%;top:18px;transform:translateX(-50%);color:' + rgb(c), 'THE TAP'); E(nd, 'sb', 'left:50%;top:48px;transform:translateX(-50%)', 'CONTACTLESS'); }
+    ND.push({ el: nd, sp: sp, cone: cone, i: i });
+  }
+  // lines: hub -> 1 -> ... -> 6, each lit in the colour of the step it leads to
+  var LN = [];
+  for (var j = 0; j < 6; j++){
+    var A0 = PTS[j], B0 = PTS[j + 1], ddx = B0[0] - A0[0], ddy = B0[1] - A0[1], L0 = Math.hypot(ddx, ddy), ux = ddx / L0, uy = ddy / L0;
+    var ex = function(w, h){ return Math.min(Math.abs(ux) < 1e-6 ? 1e9 : (w / 2 + 10) / Math.abs(ux), Math.abs(uy) < 1e-6 ? 1e9 : (h / 2 + 10) / Math.abs(uy)); };
+    var sa = ex(j ? 440 : 300, j ? 360 : 300), sb = ex(440, 360), A = [A0[0] + ux * sa, A0[1] + uy * sa], B = [B0[0] - ux * sb, B0[1] - uy * sb], L = Math.hypot(B[0] - A[0], B[1] - A[1]), cc = COL[j + 1];
+    var base = S(lines, 'line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], stroke: 'rgba(255,255,255,.16)', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-dasharray': L, 'stroke-dashoffset': L });
+    var gl = S(lines, 'line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], stroke: rgb(cc, .5), 'stroke-width': 16, 'stroke-linecap': 'round', opacity: 0 });
+    var lit = S(lines, 'line', { x1: A[0], y1: A[1], x2: B[0], y2: B[1], stroke: rgb(cc, 1), 'stroke-width': 4, 'stroke-linecap': 'round', opacity: 0 });
+    LN.push({ base: base, gl: gl, lit: lit, A: A, B: B, L: L, c: cc, pulses: [] });
+  }
+  var PUL = [];   // pulse dots (each a head and a short tail), reused every frame
+  for (var q = 0; q < 6 * 3 + 8; q++){ var pg = S(lines, 'g', { opacity: 0 }); var tl = []; for (var z = 0; z < 4; z++) tl.push(S(pg, 'circle', { r: 7 - z * 1.4, fill: '#fff' })); PUL.push({ g: pg, dots: tl }); }
+  function pulse(pp, A, B, k, c, a){   // k 0-1 along A->B; tail trails behind
+    pp.g.setAttribute('opacity', a.toFixed(3));
+    for (var z = 0; z < 4; z++){ var kk = cl(k - z * .02); pp.dots[z].setAttribute('cx', mix(A[0], B[0], kk).toFixed(1)); pp.dots[z].setAttribute('cy', mix(A[1], B[1], kk).toFixed(1)); pp.dots[z].setAttribute('fill', z ? rgb(c, .75 - z * .18) : '#fff'); }
+  }
+
+  // ---- the mini interfaces (each is a function of its local time lt; they keep moving after they land)
+  var X = {};
+  function icon(kind, col){
+    var s = 'fill="none" stroke="' + col + '" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"';
+    if (kind === 'lock') return '<svg width="22" height="22" viewBox="0 0 24 24" ' + s + '><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+    if (kind === 'tick') return '<svg width="18" height="18" viewBox="0 0 24 24" ' + s + '><path d="M4 12l5 5L20 6"/></svg>';
+    return '';
+  }
+  // 0 hub: a phone met by the reader, ripples
+  (function(){ var nd = ND[0].el, c = COL[0];
+    var rings = [0, 1, 2].map(function(){ return E(nd, '', 'left:90px;top:100px;width:120px;height:120px;border-radius:50%;border:2.5px solid ' + rgb(c, .8), ''); });
+    var ph = E(nd, '', 'left:112px;top:92px;width:76px;height:136px;border-radius:16px;border:3px solid #fff;background:linear-gradient(160deg,#272b38,#12141c)', '<div class="a" style="left:22px;top:5px;width:32px;height:5px;border-radius:3px;background:rgba(255,255,255,.4)"></div><div class="a" style="left:12px;top:50px;width:52px;height:30px;border-radius:8px;background:' + rgb(c, .9) + '"></div><div class="a mono" style="left:0;width:100%;top:56px;text-align:center;font:800 14px/1 var(--m);color:#1a1a1a">TAP</div>');
+    var rd = E(nd, '', 'left:120px;top:236px;width:60px;height:34px;border-radius:12px;background:linear-gradient(#3a3f50,#1e212b);border:2px solid ' + rgb(c, .8), '');
+    X[0] = function(lt, t){ rings.forEach(function(r, n){ var k = ((t * .8 + n / 3) % 1); r.style.transform = 'scale(' + (.5 + 1.5 * k) + ')'; r.style.opacity = (1 - k) * cl(lt * 2) * .9; });
+      ent(ph, lt, .25, 'tilt', .7); ph.style.transform += ' translateY(' + (Math.sin(t * 3.1) * 5 - 6 * out(P(lt, .8, 1.6))) + 'px)'; ent(rd, lt, .5, 'up', .5); };
+  })();
+  // 1 token
+  (function(){ var nd = ND[1].el, c = COL[1], cs = rgb(c);
+    var wal = E(nd, '', 'left:22px;top:100px;width:190px;height:122px;border-radius:16px;background:linear-gradient(135deg,#3a4357,#1c2130);border:1.5px solid rgba(255,255,255,.22);overflow:hidden',
+      '<div class="a mono" style="right:12px;top:10px;font:700 11px/1 var(--m);color:rgba(255,255,255,.7)">ORBIT PAY</div><div class="a" style="left:14px;top:34px;width:34px;height:26px;border-radius:6px;background:linear-gradient(135deg,#e8c97a,#a98a38)"></div><div class="a mono" style="left:14px;top:80px;font:500 16px/1 var(--m);letter-spacing:.06em">&bull;&bull;&bull;&bull; 4821</div><div class="a" id="strk" style="left:10px;top:87px;height:3px;width:0;background:' + cs + '"></div>');
+    var arr = E(nd, '', 'left:216px;top:146px;width:34px;height:30px;font:800 24px/30px var(--f);color:' + cs, '&rsaquo;&rsaquo;');
+    var tok = E(nd, '', 'left:252px;top:100px;width:168px;height:122px;border-radius:16px;background:rgba(64,214,255,.1);border:2px solid ' + cs, '<div class="a mono" style="left:14px;top:12px;font:700 11px/1 var(--m);letter-spacing:.14em;color:' + cs + '">TOKEN</div><div class="a" style="right:12px;top:8px">' + icon('lock', cs) + '</div><div id="tk0" class="a mono" style="left:14px;top:46px;font:700 19px/1 var(--m);letter-spacing:.04em"></div><div id="tk1" class="a mono" style="left:14px;top:76px;font:700 19px/1 var(--m);letter-spacing:.04em"></div>');
+    var bar = E(nd, '', 'left:22px;top:244px;width:396px;height:10px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden', '<div id="tbar" class="a" style="left:0;top:0;height:10px;width:0;border-radius:5px;background:' + cs + '"></div>');
+    var chip = E(nd, 'pill2', 'left:22px;top:276px;--c:' + cs, icon('lock', cs).replace('width="22" height="22"', 'width="14" height="14"') + ' &nbsp;LIMITED TO THIS DEVICE');
+    chip.style.display = 'flex'; chip.style.alignItems = 'center';
+    var s1 = 'TK 9F3A 71C2 D08E 5B64', hexs = '0123456789ABCDEF', a0 = nd.querySelector('#strk'), tb = nd.querySelector('#tbar'), t0 = nd.querySelector('#tk0'), t1 = nd.querySelector('#tk1');
+    X[1] = function(lt, t){ ent(wal, lt, .3, 'l', .6); ent(arr, lt, 1.0, 'pop', .4); arr.style.left = 216 + (Math.sin(t * 5) * 4) + 'px'; ent(tok, lt, 1.1, 'r', .6); ent(bar, lt, 1.0, 'up', .4); ent(chip, lt, 3.0, 'pop', .5);
+      a0.style.width = 150 * out(P(lt, 1.2, 1.7)) + 'px'; wal.style.opacity = Math.min(wal.style.opacity, 1 - .5 * P(lt, 1.4, 2) ).toFixed(3);
+      tb.style.width = 100 * out(P(lt, 1.3, 3.0)) + '%'; var str = ['', ''], ch = ['9F3A 71C2', 'D08E 5B64'];
+      for (var r = 0; r < 2; r++) for (var n = 0; n < 9; n++){ var rs = 1.3 + (r * 9 + n) * .11, ccc = ch[r][n]; str[r] += (ccc === ' ' ? ' ' : (lt > rs + .35 ? ccc : (lt > 1.1 ? hexs[Math.floor(hh(n + r * 9, Math.floor(lt * 22)) * 16)] : '&middot;'))); }
+      t0.innerHTML = str[0]; t1.innerHTML = str[1]; };
+  })();
+  // 2 terminal
+  (function(){ var nd = ND[2].el, c = COL[2], cs = rgb(c);
+    var term = E(nd, '', 'left:24px;top:92px;width:150px;height:244px;border-radius:20px;background:linear-gradient(#2c303d,#171a23);border:2px solid rgba(255,255,255,.25)', '');
+    var scr = E(term, '', 'left:14px;top:14px;width:122px;height:88px;border-radius:9px;background:#0b1a10;border:1.5px solid ' + rgb(c, .6) + ';overflow:hidden', '<div id="sc0" class="a mono" style="left:9px;top:9px;font:700 11px/1.5 var(--m);color:' + cs + ';white-space:pre"></div>');
+    var keys = ''; for (var k = 0; k < 9; k++) keys += '<div class="a" style="left:' + (22 + (k % 3) * 32) + 'px;top:' + (122 + Math.floor(k / 3) * 22) + 'px;width:24px;height:14px;border-radius:5px;background:rgba(255,255,255,.14)"></div>';
+    E(term, '', 'left:0;top:0;width:100%;height:100%', keys);
+    var arcs = [0, 1, 2].map(function(n){ return E(term, '', 'left:' + (60 - n * 14) + 'px;top:' + (194 - n * 10) + 'px;width:' + (28 + n * 28) + 'px;height:' + (28 + n * 28) + 'px;border-radius:50%;border:3px solid ' + cs + ';border-color:' + cs + ' transparent transparent transparent;transform:rotate(-45deg)', ''); });
+    var pk = E(nd, '', 'left:200px;top:98px;width:218px;height:156px;border-radius:14px;background:rgba(160,236,72,.08);border:2px solid ' + cs, '<div class="a mono" style="left:14px;top:12px;font:700 11px/1 var(--m);letter-spacing:.14em;color:' + cs + '">PAYMENT REQUEST</div>');
+    var rows = ['AMOUNT   18.40', 'TOKEN    9F3A..D08E', 'SHOP     CORNER CAFE'].map(function(s, n){ return E(pk, 'mono', 'left:14px;top:' + (42 + n * 32) + 'px;font:700 14px/1 var(--m);white-space:pre;color:rgba(255,255,255,.92)', s); });
+    var go = E(nd, 'pill2', 'left:200px;top:278px;--c:' + cs, 'SEND TO SHOP\'S BANK &rsaquo;');
+    var sc = nd.querySelector('#sc0');
+    X[2] = function(lt, t){ ent(term, lt, .3, 'up', .6); arcs.forEach(function(a, n){ var k = (t * 1.1 + n * .22) % 1; a.style.opacity = (.25 + .75 * Math.sin(Math.PI * k)) * cl(lt * 3); });
+      var tx = ['AMOUNT 18.40', '', 'HOLD...', 'READ OK', 'SENDING >>'], idx = lt < .8 ? 0 : lt < 1.6 ? 2 : lt < 2.6 ? 3 : 4; sc.textContent = tx[0] + '\n' + (lt < .8 ? '' : tx[idx]) + (Math.floor(t * 3) % 2 && idx === 4 ? '_' : '');
+      ent(pk, lt, 1.0, 'r', .55); rows.forEach(function(r, n){ ent(r, lt, 1.5 + n * .35, n % 2 ? 'l' : 'up', .4); }); ent(go, lt, 2.8, 'pop', .45); go.style.transform += ' translateX(' + (lt > 3.2 ? Math.sin(t * 6) * 3 : 0) + 'px)'; };
+  })();
+  // 3 acquirer
+  (function(){ var nd = ND[3].el, c = COL[3], cs = rgb(c);
+    var bk = E(nd, '', 'left:22px;top:94px;width:130px;height:130px', '<svg width="130" height="130" viewBox="0 0 130 130" fill="none" stroke="' + cs + '" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"><path d="M12 48 65 14l53 34z"/><path d="M24 56v44M50 56v44M80 56v44M106 56v44M12 112h106"/></svg>');
+    var lab = E(nd, 'mono', 'left:22px;top:226px;font:700 11px/1 var(--m);letter-spacing:.14em;color:' + cs, 'THE SHOP\'S BANK');
+    var rt = E(nd, '', 'left:170px;top:140px;width:250px;height:30px', '<svg width="250" height="30"><line x1="0" y1="15" x2="250" y2="15" stroke="rgba(255,255,255,.2)" stroke-width="3" stroke-dasharray="6 7"/><circle cx="4" cy="15" r="7" fill="' + cs + '"/><circle cx="246" cy="15" r="7" fill="none" stroke="' + cs + '" stroke-width="3"/></svg><div id="dot3" class="a" style="left:0;top:7px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 0 14px ' + cs + '"></div>');
+    var tg = E(nd, 'mono', 'left:170px;top:112px;font:700 11px/1 var(--m);letter-spacing:.12em;color:rgba(255,255,255,.6)', 'TO THE CARD NETWORK');
+    var ms = E(nd, '', 'left:262px;top:186px;width:158px;height:62px;border-radius:12px;border:1.5px solid ' + rgb(c, .6) + ';background:rgba(198,128,255,.08)', '<div id="ms3" class="a mono" style="left:12px;top:8px;font:800 30px/1 var(--m)"></div><div class="a mono" style="left:12px;top:44px;font:500 10px/1 var(--m);letter-spacing:.12em;color:rgba(255,255,255,.55)">EXAMPLE TIME</div>');
+    var r1 = E(nd, 'mono', 'left:22px;top:270px;font:700 14px/1 var(--m);white-space:nowrap', '<span style="color:' + cs + '">&#10003;</span> RECEIVES THE REQUEST');
+    var r2 = E(nd, 'mono', 'left:22px;top:302px;font:700 14px/1 var(--m);white-space:nowrap', '<span style="color:' + cs + '">&#10003;</span> PASSES IT TO THE NETWORK');
+    var d3 = nd.querySelector('#dot3'), m3 = nd.querySelector('#ms3');
+    X[3] = function(lt, t){ ent(bk, lt, .3, 'tilt', .6); ent(lab, lt, .6, 'up', .4); ent(rt, lt, .9, 'l', .5); ent(tg, lt, 1.0, 'dn', .4); ent(ms, lt, 1.4, 'pop', .5);
+      d3.style.left = (230 * ((t * .55) % 1)) + 'px'; m3.textContent = Math.round(38 * io(P(lt, 1.6, 3.2))) + ' ms'; ent(r1, lt, 1.8, 'l', .4); ent(r2, lt, 2.7, 'l', .4); };
+  })();
+  // 4 card network: a switch picks one bank
+  (function(){ var nd = ND[4].el, c = COL[4], cs = rgb(c);
+    var BY = [104, 150, 196, 242], names = ['BANK A', 'BANK B', 'YOUR BANK', 'BANK D'], sel = 2;
+    var svg = E(nd, '', 'left:0;top:0;width:440px;height:360px', '');
+    var sv = S(svg, 'svg', { width: 440, height: 360, viewBox: '0 0 440 360' }); svg.appendChild(sv);
+    var ln = BY.map(function(y, n){ return S(sv, 'path', { d: 'M150 176 C 220 176 230 ' + (y + 18) + ' 300 ' + (y + 18), fill: 'none', stroke: n === sel ? cs : 'rgba(255,255,255,.2)', 'stroke-width': n === sel ? 5 : 2.5, 'stroke-linecap': 'round' }); });
+    S(sv, 'circle', { cx: 150, cy: 176, r: 20, fill: 'rgba(255,108,98,.18)', stroke: cs, 'stroke-width': 3 }); S(sv, 'path', { d: 'M142 176h16M152 168l8 8-8 8', fill: 'none', stroke: cs, 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+    var sh = E(nd, 'mono', 'left:22px;top:160px;width:90px;height:34px;border-radius:10px;border:1.5px solid rgba(255,255,255,.4);font:700 12px/31px var(--m);text-align:center', 'SHOP\'S BANK');
+    var bks = BY.map(function(y, n){ return E(nd, 'mono', 'left:300px;top:' + y + 'px;width:122px;height:36px;border-radius:10px;border:2px solid ' + (n === sel ? cs : 'rgba(255,255,255,.22)') + ';font:700 12px/32px var(--m);text-align:center;letter-spacing:.06em;' + (n === sel ? 'background:' + rgb(c, .18) : 'color:rgba(255,255,255,.55)'), names[n]); });
+    var ms = E(nd, '', 'left:22px;top:262px;width:170px;height:62px;border-radius:12px;border:1.5px solid ' + rgb(c, .6) + ';background:rgba(255,108,98,.08)', '<div id="ms4" class="a mono" style="left:12px;top:8px;font:800 30px/1 var(--m)"></div><div class="a mono" style="left:12px;top:44px;font:500 10px/1 var(--m);letter-spacing:.12em;color:rgba(255,255,255,.55)">EXAMPLE TIME</div>');
+    var dt = E(nd, '', 'left:0;top:0;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 0 14px ' + cs, ''), m4 = nd.querySelector('#ms4');
+    var bez = function(k, y){ var p0 = [150, 176], p1 = [220, 176], p2 = [230, y + 18], p3 = [300, y + 18], u = 1 - k; return [u*u*u*p0[0] + 3*u*u*k*p1[0] + 3*u*k*k*p2[0] + k*k*k*p3[0], u*u*u*p0[1] + 3*u*u*k*p1[1] + 3*u*k*k*p2[1] + k*k*k*p3[1]]; };
+    X[4] = function(lt, t){ ent(svg, lt, .3, 'l', .5); ent(sh, lt, .3, 'l', .5); bks.forEach(function(b, n){ ent(b, lt, .7 + n * .16, 'r', .45); });
+      var k = P(lt, 1.4, 2.4), tgt = k < 1 ? (Math.floor(lt * 7) % 4) : sel; var yy = BY[k < 1 ? Math.min(3, Math.floor(k * 4 + hh(1, Math.floor(lt * 9)) * 2) % 4) : sel], q = bez(((t * .7) % 1), yy);
+      dt.style.opacity = P(lt, 1.0, 1.3); dt.style.transform = 'translate(' + (q[0] - 8) + 'px,' + (q[1] - 8) + 'px)';
+      ln.forEach(function(l, n){ l.setAttribute('opacity', k < 1 ? .35 + .65 * (n === sel ? k : .5) : (n === sel ? 1 : .25)); });
+      ent(ms, lt, 1.8, 'pop', .45); m4.textContent = Math.round(52 * io(P(lt, 2.0, 3.4))) + ' ms'; };
+  })();
+  // 5 issuer: risk gauge + checks + decision
+  (function(){ var nd = ND[5].el, c = COL[5], cs = rgb(c);
+    var g = E(nd, '', 'left:20px;top:96px;width:210px;height:140px', '<svg width="210" height="140" viewBox="0 0 210 140" fill="none" stroke-linecap="round"><path d="M20 120A85 85 0 0 1 190 120" stroke="rgba(255,255,255,.14)" stroke-width="16"/><path d="M20 120A85 85 0 0 1 72 44" stroke="#58e69b" stroke-width="16"/><path d="M72 44A85 85 0 0 1 138 44" stroke="' + cs + '" stroke-width="16"/><path d="M138 44A85 85 0 0 1 190 120" stroke="#ff6a5c" stroke-width="16"/></svg><div id="ndl" class="a" style="left:103px;top:36px;width:4px;height:84px;background:#fff;border-radius:2px;transform-origin:50% 100%"></div><div class="a" style="left:94px;top:112px;width:22px;height:22px;border-radius:50%;background:#fff"></div>');
+    var gl = E(nd, 'mono', 'left:20px;top:244px;width:210px;text-align:center;font:700 12px/1 var(--m);letter-spacing:.12em;color:rgba(255,255,255,.75)', 'RISK CHECK &middot; LOW');
+    var ck = ['FUNDS COVER IT', 'WITHIN YOUR LIMIT', 'CARD IS ACTIVE'].map(function(s, n){ return E(nd, 'mono', 'left:246px;top:' + (104 + n * 44) + 'px;width:180px;height:34px;border-radius:9px;border:1.5px solid rgba(255,255,255,.2);font:700 11px/31px var(--m);padding-left:10px;letter-spacing:.04em;white-space:nowrap', s + '<span class="a" style="right:8px;top:0;color:' + cs + '">' + icon('tick', cs).replace('width="18" height="18"', 'width="16" height="16"') + '</span>'); });
+    var dc = E(nd, '', 'left:20px;top:284px;width:400px;height:52px;border-radius:14px;border:2px solid ' + cs + ';background:' + rgb(c, .08), '<div id="dtx" class="a mono" style="left:0;width:100%;text-align:center;top:0;font:800 20px/48px var(--m);letter-spacing:.08em"></div>');
+    var nl = nd.querySelector('#ndl'), dtx = nd.querySelector('#dtx');
+    X[5] = function(lt, t){ ent(g, lt, .3, 'tilt', .55); ent(gl, lt, .6, 'up', .4); var ang = lt < .9 ? 70 : mix(70, -58, back(P(lt, .9, 1.9))) + (lt > 1.9 ? Math.sin(t * 2.4) * 3 : 0); nl.style.transform = 'rotate(' + ang + 'deg)';
+      ck.forEach(function(e, n){ ent(e, lt, 1.4 + n * .5, n % 2 ? 'l' : 'r', .45); });
+      ent(dc, lt, 2.9, 'up', .45); dtx.textContent = lt < 3.9 ? 'DECIDING' + '...'.slice(0, 1 + Math.floor(t * 4) % 3) : 'APPROVE'; dc.style.background = lt < 3.9 ? rgb(c, .08) : rgb(c, .3); };
+  })();
+  // 6 approved: stamp, tick, the answer comes back
+  (function(){ var nd = ND[6].el, c = COL[6], cs = rgb(c);
+    var tm = E(nd, '', 'left:24px;top:96px;width:116px;height:210px;border-radius:18px;background:linear-gradient(#2c303d,#171a23);border:2px solid rgba(255,255,255,.25)', '<div id="scr6" class="a" style="left:12px;top:12px;width:92px;height:78px;border-radius:8px;background:#0b1a10;border:1.5px solid ' + rgb(c, .6) + '"><svg class="a" style="left:25px;top:14px" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="' + cs + '" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg><div class="a mono" style="left:0;width:100%;top:60px;text-align:center;font:700 9px/1 var(--m);color:' + cs + '">APPROVED</div></div>');
+    var ring = E(nd, '', 'left:218px;top:150px;width:140px;height:140px;margin-left:-70px;margin-top:-70px;border-radius:50%;border:4px solid ' + cs, '');
+    var st = E(nd, 'mono', 'left:160px;top:128px;width:250px;height:80px;border:5px solid ' + cs + ';border-radius:14px;color:' + cs + ';font:900 34px/70px var(--m);letter-spacing:.06em;text-align:center;background:' + rgb(c, .12), 'APPROVED');
+    var bk = E(nd, 'mono', 'left:160px;top:226px;font:800 22px/1 var(--m);color:' + cs + ';letter-spacing:.14em;white-space:nowrap', '');
+    var c1 = E(nd, 'pill2', 'left:24px;top:318px;--c:' + cs + ';font-size:11px;padding:8px 12px', 'MONEY SETTLES LATER');
+    var c2 = E(nd, 'pill2', 'left:210px;top:318px;--c:rgba(255,255,255,.5);font-size:11px;padding:8px 12px;color:rgba(255,255,255,.75)', 'USUALLY A FEW SECONDS');
+    X[6] = function(lt, t){ ent(tm, lt, .3, 'l', .55); var k = ent(st, lt, .75, 'slam', .4); var rk = P(lt, 1.1, 1.8); ring.style.opacity = rk > 0 && rk < 1 ? (1 - rk) * .9 : 0; ring.style.transform = 'scale(' + (.4 + 2.1 * out(rk)) + ')';
+      bk.innerHTML = lt > 1.4 ? '<span style="opacity:' + (.3 + .7 * ((Math.floor(t * 5) % 3 === 0) ? 1 : .35)) + '">&lsaquo;</span><span style="opacity:' + ((Math.floor(t * 5) % 3 === 1) ? 1 : .35) + '">&lsaquo;</span><span style="opacity:' + ((Math.floor(t * 5) % 3 === 2) ? 1 : .35) + '">&lsaquo;</span> THE ANSWER COMES BACK'.slice(0, 0) + ' BACK TO THE SHOP' : ''; bk.style.opacity = P(lt, 1.4, 1.8);
+      ent(c1, lt, 3.2, 'up', .45); ent(c2, lt, 3.6, 'up', .45); };
+  })();
+
+  // ---- depth: two layers of dust on a canvas (far grid, near motes), parallax to the camera
+  var bg = $('bgc').getContext('2d');
+  function drawBg(t, cm, fc){
+    bg.setTransform(2, 0, 0, 2, 0, 0); bg.clearRect(0, 0, 540, 454); var cc = fc;
+    var far = 90, ox = -cm[0] * cm[2] * .3, oy = -cm[1] * cm[2] * .3;   // far layer: a faint dot grid moves at under half the camera
+    bg.fillStyle = 'rgba(255,255,255,.07)';
+    for (var gx = ((ox % far) + far) % far - far; gx < 560; gx += far) for (var gy = ((oy % far) + far) % far - far; gy < 480; gy += far){ bg.beginPath(); bg.arc(gx, gy, 1.6, 0, 6.3); bg.fill(); }
+    for (var n = 0; n < 26; n++){   // near motes: slow drift, move faster than the world, tinted by the lit step
+      var px = hh(n, 1) * 900, py = hh(n, 2) * 900, sp = .5 + hh(n, 3) * .9, x = ((px - cm[0] * cm[2] * (.2 + sp * .2) + Math.sin(t * .4 + n) * 12) % 640 + 640) % 640 - 50, y = ((py - cm[1] * cm[2] * (.2 + sp * .2) - t * 6 * sp) % 760 + 760) % 760 - 50;
+      var r = .8 + hh(n, 4) * 2.4, al = .12 + .28 * hh(n, 5); bg.fillStyle = rgb(cc, al * (r > 2 ? .6 : 1)); bg.beginPath(); bg.arc(x, y, r, 0, 6.3); bg.fill(); }
+  }
+
+  // ---- captions: word by word from the real voice (window.setVoice), the key word in the step's colour
+  var WORDS = [], KEY = { tap: 1, token: 1, terminal: 1, acquirer: 1, network: 1, bank: 1, decides: 1, approved: 1, settles: 1, tapping: 1 }, GR = [], capG = -1, capEls = [];
+  function groups(){ GR = []; var cur = null; WORDS.forEach(function(w, n){ var prev = WORDS[n - 1]; if (!cur || (prev && w.s - prev.e > .28)) { cur = []; GR.push(cur); } cur.push(w); }); }
+  window.setVoice = function(v){ if (v && v.words && v.words.length){ WORDS = v.words.map(function(w){ return { w: String(w.w).replace(/[‘’]/g, "'"), s: +w.s, e: +w.e }; }); groups(); capG = -1; } };
+  function caption(t, col){
+    var gi = -1; for (var g = 0; g < GR.length; g++) if (GR[g][0].s - .04 <= t) gi = g;
+    var el = $('cap');
+    if (gi < 0 || (gi === GR.length - 1 && t > GR[gi][GR[gi].length - 1].e + 1.1 && t > PB1)){ el.style.opacity = 0; return; } el.style.opacity = 1;
+    if (gi !== capG){ capG = gi; el.innerHTML = '<span class="bx"></span>'; capEls = GR[gi].map(function(w){ var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w.w; el.firstChild.appendChild(sp); return sp; }); }
+    GR[gi].forEach(function(w, n){ var k = P(t, w.s - .02, w.s + .16), s = capEls[n], key = KEY[w.w.toLowerCase().replace(/[^a-z]/g, '')];
+      s.style.opacity = k; s.style.transform = 'translateY(' + (1 - out(k)) * 10 + 'px) scale(' + (.88 + .12 * back(k)) + ')'; s.style.color = key ? rgb(col) : '#fff'; });
+  }
+  // sound: movement on every flight, a click on each arrival, small blips where the interface parts land
+  var cues = [], cue = function(o){ cues.push(o); };
+  for (var f = 0; f < 6; f++){ cue({ t: DEP[f], k: 'move', d: FL, g: .3, dir: 1, x: 270, r: .25 }); cue({ t: DEP[f] + FL, k: 'snap', g: .3, p: 5 + f, x: 270, r: .2 }); }
+  cue({ t: 0, k: 'swell', d: 1.4, g: .3 }); cue({ t: 2.0, k: 'snap', g: .25, p: 3 }); cue({ t: PB0, k: 'swell', d: 1.6, g: .34 }); cue({ t: PB1, k: 'resolve', notes: [48, 60, 64, 67, 71], g: .3 });
+  [[.3,'l'],[1.0,'r'],[1.4,'blip'],[3.0,'blip']].forEach(function(a, n){ for (var s = 1; s <= 6; s++) cue({ t: ARR[s] + a[0], k: 'blip', g: .16, p: 2 + n * 3 + s, x: 120 + n * 90, r: .15 }); });
+  [1.5,1.9,2.3,3.1].forEach(function(d, n){ cue({ t: ARR[2] + d, k: 'tick', g: .1, p: n * 2 }); cue({ t: ARR[5] + d, k: 'tick', g: .1, p: n * 2 + 1 }); });
+  cue({ t: ARR[6] + .75, k: 'thud', g: .5, x: 270, r: .2 }); cue({ t: ARR[6] + 1.1, k: 'shimmer', g: .2 });
+  cue({ t: .2, k: 'pop', g: .2, p: 4 });
+  window.CUES = { dur: DUR, cues: cues.sort(function(a, b){ return a.t - b.t; }), mix: { duck: 8 }, bed: { bpm: 96, origin: 0, gain: .22, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [45, 57, 64, 67, 71]] } };
+  window.COVER = .9; window.HOLDS = [[2.2, 3.0]]; window.TRANSITIONS = DEP.map(function(d){ return [d, d + FL, 'fly']; }).concat([[PB0, PB1, 'pullback']]);
+
+  // ---- one frame
+  function seek(t){
+    t = cl(t, 0, DUR); var cm = cam(t), W = $('world');
+    W.style.transform = 'translate(' + (270 - cm[0] * cm[2]).toFixed(2) + 'px,' + (SY - 240 - cm[1] * cm[2]).toFixed(2) + 'px) scale(' + cm[2].toFixed(4) + ')';
+    // which step owns the colour now (switches while the camera flies)
+    var cur = 0, ck = 0; for (var i = 1; i <= 6; i++) if (t >= DEP[i - 1] + FL * .2) { cur = i; }
+    var prevI = Math.max(0, cur - 1), kc = cur === 0 ? 1 : io(P(t, DEP[cur - 1] + FL * .1, DEP[cur - 1] + FL * .9)), col = cmix(COL[prevI], COL[cur], kc);
+    if (t >= PB0) col = cmix(COL[6], [255, 255, 255], io(P(t, PB0, PB1)) * .75);
+    document.documentElement.style.setProperty('--c', rgb(col));
+    $('tacc').style.color = rgb(col);
+    // pill: rolls to the new step
+    var pi = cur, ptxt = pi === 0 ? '00 / 06 · THE TAP' : '0' + pi + ' / 06 · ' + NAME[pi]; if (t >= PB0) ptxt = '06 / 06 · THE WHOLE TRIP';
+    var st = pi === 0 ? 0 : DEP[pi - 1] + FL * .2, rk = t >= PB0 ? out(P(t, PB0, PB0 + .45)) : (pi === 0 ? 1 : out(P(t, st, st + .4)));
+    var p0 = $('p0'), p1 = $('p1'), key = ptxt; if (p1.dataset.k !== key) { p0.textContent = p1.textContent || ptxt; p1.textContent = ptxt; p1.dataset.k = key; p1._t = t; }
+    if (p1._t === undefined) p1._t = -9; var rr = t >= PB0 ? out(P(t, PB0, PB0 + .45)) : out(P(t, st, st + .4)); if (t < .01) rr = 1;
+    p0.style.transform = 'translateY(' + (-rr * 28) + 'px)'; p0.style.opacity = 1 - rr; p1.style.transform = 'translateY(' + ((1 - rr) * 28) + 'px)'; p1.style.opacity = rr;
+    // nodes: intro pop in sequence, then dim to 20% unless in focus
+    var cat = [0, 1, 2, 3, 4, 5, 6];
+    cat.forEach(function(i){ var n = ND[i], f = focus(i, t), intro = P(t, .1 + i * .14, .75 + i * .14), bi = back(intro), ang = i ? (-120 + 60 * (i - 1)) * Math.PI / 180 : 0, off = (1 - bi) * 120;
+      var op = (.2 + .8 * f) * Math.min(1, intro * 2.5); n.el.style.opacity = op.toFixed(3);
+      n.el.style.transform = 'translate(' + (Math.cos(ang) * off) + 'px,' + (Math.sin(ang) * off) + 'px) scale(' + (.7 + .3 * bi) + ')';
+      n.sp.style.opacity = (f * .95).toFixed(3); n.cone.style.opacity = (f * .8).toFixed(3);
+      X[i](t - ARR[i] + .1 + (i === 0 ? 0.2 : 0), t); });
+    // lines draw in during the intro; the line into a step lights as the camera flies down it
+    LN.forEach(function(l, j){ var d = out(P(t, .3 + j * .14, 1.5 + j * .14)); l.base.setAttribute('stroke-dashoffset', (l.L * (1 - d)).toFixed(1));
+      var lk = P(t, DEP[j], DEP[j] + FL), lit = t < DEP[j] ? 0 : (t < ARR[j + 1] + .4 ? 1 : .5); if (t >= PB0) lit = mix(.5, .8, P(t, PB0, PB1));
+      l.lit.setAttribute('opacity', (lit * (t < DEP[j] + FL ? out(lk) : 1)).toFixed(3)); l.gl.setAttribute('opacity', (lit * .45).toFixed(3)); });
+    // pulses: a lead comet on the line the camera is flying along, small ones running on the lit lines, the reply running back at the end
+    var pi2 = 0; PUL.forEach(function(p){ p.g.setAttribute('opacity', 0); });
+    for (var j = 0; j < 6; j++){ var l = LN[j];
+      if (t >= DEP[j] && t < DEP[j] + FL + .1){ pulse(PUL[pi2++], l.A, l.B, io(P(t, DEP[j], DEP[j] + FL)), l.c, 1); }
+      else if (t < DEP[j] + FL + .1 && t > .9 + j * .1){ pulse(PUL[pi2++], l.A, l.B, (t * .33 + j * .21) % 1, l.c, .35); }
+      else if (t >= DEP[j] + FL){ var k1 = (t * .3 + j * .17) % 1; pulse(PUL[pi2++], l.A, l.B, k1, l.c, t >= PB0 ? .55 : .75); pulse(PUL[pi2++], l.A, l.B, (k1 + .5) % 1, l.c, t >= PB0 ? .35 : .45); } }
+    var rs = ARR[6] + 1.5; if (t >= rs){ var u = ((t - rs) / 2.7) % 1; var seg = Math.min(5, Math.floor(u * 6)), kk = u * 6 - seg, l = LN[5 - seg]; pulse(PUL[pi2++], l.B, l.A, kk, COL[6], 1); if (t - rs > 1.3){ var u2 = (((t - rs - 1.3) / 2.7) % 1), s2 = Math.min(5, Math.floor(u2 * 6)), l2 = LN[5 - s2]; pulse(PUL[pi2++], l2.B, l2.A, u2 * 6 - s2, COL[6], .8); } }
+    drawBg(t, cm, col); caption(t, col);
+  }
+  window.seek = seek;
+  document.fonts.load("900 34px 'Inter Tight'").then(function(){ return document.fonts.load("700 12px 'JetBrains Mono'"); }).then(function(){ return document.fonts.ready; })
+    .then(function(){ seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+})();
+</script>
+</body>
+</html>
