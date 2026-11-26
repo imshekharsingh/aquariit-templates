@@ -69,8 +69,8 @@ const fig60 = mkFig('60', 0x42ff8c, 'm'), fig3 = mkFig('3x', 0xffa23a, ''), fig2
 
 // ---------- captions ----------
 const KEYS = [[4, 4], [3, 3], [0, 1], [7, 8], [3, 4], [3, 3], [3, 3]];
-const cap = W3D.captions({ y: 190, size: 60, lines: TL.scenes.map((s, i) => ({ t0: i === 0 ? -.2 : s.start, t1: s.end, words: s.words.map((w) => w.w), times: s.words.map((w) => w.t0), keyIdx: KEYS[i] })) });
-const CAPBAND = [60, 150, 1020, 420];
+const cap = W3D.captions({ x: 100, w: 860, y: 258, size: 58, lines: TL.scenes.map((s, i) => ({ t0: i === 0 ? -.2 : s.start, t1: s.end, words: s.words.map((w) => w.w), times: s.words.map((w) => w.t0), keyIdx: KEYS[i] })) });
+const CAPBAND = [60, 240, 1020, 470];
 document.body.lastElementChild.id = 'caps';
 window.CHUNKS = TL.scenes.map((sc) => ({ t0: sc.start, t1: sc.end, words: sc.words }));
 // declared camera moves (every shot change is one continuous camera move on the path) for FLOW
