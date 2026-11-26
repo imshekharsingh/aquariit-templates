@@ -108,3 +108,74 @@ EXACT FIX:
 4. 9.0-11.0 s: the tangle's light sweep runs along the cables for about 1 s, not 0.3 s.
 5. 13.5 s: "Notes" whole on the wide (crop the tile or keep its name inside the frame).
 STABLE: no (cleanliness 6.5, under 7.5). This was the last render of the loop (2 of 2): the owner decides.
+
+## Upgrade critic (main account, 26 Nov)
+Judged the same real MP4 again (study/showreel-tech-gold3d-v7-r2-preview.mp4, 22.87 s): one 24-frame contact sheet at phone size, full frames at 0.0, 4.2, 10.3 and 17.0 s, the topic's sound list (6 cues), against the owner's references (R-ref 26 Nov ids 9-14, SHARED GRAMMAR, design/references.md) and the "Ambition pass" (design/critic.md) and "Motion-design pass" (design/direction.md). The question is no longer "is anything broken" but "what separates this from a premium motion-design reel". Honest summary: v7 is a clean 3D diagram that moves well, but its SET does not build, its GROUPS do not flow, it has no headline type, the problem never breaks and the light never changes. Those are the things the references do every second.
+
+### 1. The five faults already found (kept, unchanged)
+F1. 3.9-4.6 s: an empty dark wall panel, no lit object (seen again at 4.2 s: a grey slab and the floor grid only).
+F2. 9.3-11.4 s: the "3 x 8 / 24 / cables" block sits on top of the cables.
+F3. Frame 0 is an empty floor with a pole; the dolly home does not end on it, so the loop jumps.
+F4. 9.0-11.0 s: the tangle's light sweep lasts 0.3 s, not about 1 s.
+F5. 13.5 s: "Notes" cut at the left edge on the wide.
+
+### 2. The owner's two notes, made concrete
+N1. The 8 tools cascade as ONE flow (3.9-5.2 s, on "eight tools" at 4.47). Today they pop in as separate tiles. Make it a stack: tool 1 (Files) drops onto the top-left slot of the board; each next tool starts 0.15 s after the one before (offsets 0.12-0.2 s, so all 8 are in within about 1.3 s), arrives from just above and behind the previous tile, lands against it with a 4-6 % squash and a 1-frame contact flash on the shared edge, and nudges the tile it lands against by 2-3 px (a domino ripple, not 8 pops). Order: down the left column, then up the right column (an S path, so the eye travels one line). The camera rides it: a crane down of about 1 tile height per tool from 3.9 to 5.2 s, keeping the newest tile at the upper third, then settles as tile 8 lands. One rising "tick" per tile on the sound track, pitch up each step (8 ticks), the last a soft thunk.
+N2. The board builds itself before the tools land (3.0-3.9 s), and stays alive after. Today it is a grey slab that is just there. Build: (a) 3.0 s a thin lit line draws the board's outline on the floor (0.25 s); (b) the back panel rises out of the floor along that line (0.3 s, ease-out, slight overshoot); (c) the 8 slot recesses unfold left-right like shutters, 0.04 s apart (0.3 s); (d) a light runs once round the board's edge (0.4 s) and stops at slot 1, which is where Files drops (hand-off to N1). After: the edge light runs again at each section change (9.0 tangle, 12.3 hub, 18.2 payoff); each slot's base glows for 0.2 s when its tool's cable plugs in; a slow 1 % breathing of the edge light the rest of the time. This also fixes F1 (the board is moving from 3.0 s, so no empty frame).
+
+### 3. UPGRADES (element by element; HIGH / MED / LOW)
+Apps (Notes, Chat, Mail)
+- U1 HIGH, 0.0-3.0 s: the three apps arrive as a CHAIN, not three single entrances: Chat is launched off Notes' landing (Notes squashes at 0.45 s, Chat rises from behind it 0.1 s later), Mail slides in pushed by Chat's overshoot. Each lands with a contact shadow that grows in (shadow first, tile second: it reads as weight).
+- U2 MED, 0.0-22.9 s: each app shows a tiny live screen (Notes: a line types; Chat: a bubble pops; Mail: an envelope count 3 -> 4) on a 2-3 s loop. "Real interface rebuilt as the set" (ref 12, 10) at the smallest cost; it is what keeps them alive after landing.
+Tools (8)
+- N1 above. U3 MED, 7.8-9.0 s: when the cascade of 23 cables lands, each tool's bump follows the cable order (a ripple down the board), not all at once.
+Board / wall
+- N2 above. U4 LOW: a thin rim light on the board's top edge so it separates from the dark background (at 4.2 s it melts into it).
+Floor
+- U5 MED, 3.0 s and 12.3 s: the floor is part of the build. The grid lines draw outward from Notes at 0.0-1.0 s (radial reveal, 0.8 s) instead of being pre-set; at the hub's landing (12.3 s) a ring wave runs across the floor grid from the hub's pillar (0.6 s). Background props (the pole, the blue box at 4.2 s) go: they read as clutter, not world.
+Cables
+- U6 HIGH, 9.0-11.4 s: the PROBLEM BREAKS (shared grammar: "problem shown breaking first, then fixed"). At the tangle's worst, 2-3 cables flash red where they cross, one plug pops half out of its socket with a spark and the tool above it (Pay) flickers grey for 0.3 s; the 24 turns red for 0.4 s as it lands. Then at 12.3 s the hub's arrival is visibly the fix: the red cables are the first to retract.
+- U7 HIGH, 12.9-13.9 s: the collapse 24 -> 11 is one motion, not "24 retract, 11 unroll": every old cable is pulled back into its socket in a fast wave (0.04 s apart, from the farthest to the nearest, a little whip at the end), and the 11 green ones shoot out of the hub in a fan (3 down to the apps, 8 up to the tools) as the last old one is gone. The counter ticks down with each retraction, so the number IS the motion.
+- U8 MED: F4's sweep made a feature: the light sweep along the tangle travels plug to plug (from Notes to Photos) for 1.0 s, and the same sweep, green, runs along the 11 at 14.0 s: the before/after rhyme.
+Numbers
+- U9 HIGH, 9.0, 13.1, 18.0 s: numbers get a home and a build. One fixed number spot per section (top-left on dark, clear of cables: fixes F2), the small line types in first ("3 x 8"), then the big number counts with a rolling-digit (odometer) motion, then "cables" slides up under it; on a change (24 -> 11) the old digits roll away, never fade. Add a thin progress bar under it that shrinks from 24 to 11 (the size of the saving, at a glance).
+Hub
+- U10 HIGH, 11.0-12.9 s: the hub's landing is the reel's turn, so it gets the light flip (refs 9 and 11: light/dark flips only at a section change): as it lands, the key light warms from cold blue-grey to a warm white over 0.5 s, the floor's ring wave (U5) runs, apps and tools lean (kept), and the scene stays in that warmer light to the end. Problem world cold, fixed world warm.
+- U11 MED: the hub's face shows its port count filling 0 -> 11 as the green cables plug in (small LEDs along the front), so it is alive after landing.
+Captions and headline type
+- U12 HIGH, every beat: a kinetic headline word, 120+ px at 1080 wide, in the upper third, one per beat, building the sentence (shared grammar: "1-3 words appear per beat ... the newest word carries the accent, older words go grey"). Words: 0.0 "ONE TOOL" -> 1.4 "3 APPS" -> 3.9 "8 TOOLS" -> 6.5 "EVERY" -> 9.0 "24 CABLES" (red) -> 12.3 "ONE HUB" -> 13.5 "11" handled by the number -> 15.1 "+1" -> 18.2 "LESS WIRING" (accent). Today the only words are the 30 px subtitles with a box on the spoken word: direction card point 5 says subtitles alone never carry a beat. Keep the subtitles; the headline sits above them and clear of the number spot.
+- U13 LOW: the spoken-word box on the subtitles (blue corner brackets) is a UI-selection look; replace with the accent colour on the word.
+Camera
+- U14 MED: the camera rides events, not just beats: the crane rides the cascade (N1); a 2-frame shake and a 3 % push on the red spark (U6); a whip pan from the tangle to the hub on "hub" at 12.3 s (motion blur on the whip only), replacing the truck in.
+- U15 LOW: one rack focus, 15.1-16.0 s, from the hub (foreground) to New as it pops in (fixes "New small and see-through" in the render 2 verdict).
+Light
+- U10 above (the flip). U16 LOW: at the payoff pulse (20.0 s) the board edge light (N2) and the 11 + 1 cable pulse fire together, one bright moment that rhymes with the opening sweep.
+Sound cues
+- U17 HIGH (cheap): today 6 cues (impact, pop, impact, whoosh, chime, pop). The references hit something every second. Add: the board build riser 3.0-3.9 s ending on a soft click; 8 rising ticks on the tool cascade (N1); a plug click at 7.2 s; a quick rattle under the 23-cable cascade; an electrical crackle on the red spark (U6, about 10.0 s); a low thump on the hub landing (12.3 s, replacing the whoosh); a reverse-zip for the 24-cable retraction; a bright chime on 11 (kept) and on 12. All quiet under the voice (ducked about 8 dB).
+End and loop
+- U18 MED, 21.2-22.9 s: the end returns home by a story move, not only the camera: the New tile's cable pulses, the camera dollies to the frame-0 framing (F3), and the scene's last 0.3 s match frame 0's light so the loop is seamless.
+
+### 4. PREMIUM, re-graded against the owner's references (not our past reels)
+Next to refs 9, 11 and 12 v7 looks like a well-lit 3D diagram, not a motion-design piece: no headline type, no build of the set, groups that pop instead of flowing, a problem that never breaks, one light world from start to end, and 6 sound hits in 23 s.
+PREMIUM: animation 6.5/10 (entrances are individual pops; the refs chain and cascade everything), cleanliness 6.5/10 (F1-F3, F5 unchanged), premium 6.5/10 (materials, cables and colour are at the refs' level; type, light change and sound are far below). The 8 / 6.5 / 7.5 of the earlier pass judged v7 against v5 and v6; against the references it is lower.
+
+### 5. RENDER 3 FIX LIST (in build order; one render)
+1. Board build 3.0-3.9 s: outline draws, panel rises, slots unfold, edge light runs to slot 1 (N2; fixes F1).
+2. Tool cascade 3.9-5.2 s: 8 tools stack one after another along an S path, 0.15 s apart, each landing against the previous one with squash, contact flash and a nudge; camera cranes down with it (N1).
+3. Board alive after: slot base glows on each plug-in, edge light at 9.0 / 12.3 / 18.2 s, slow breathing otherwise (N2).
+4. Apps as a chain 0.0-3.0 s, shadow first then tile (U1); Notes already in frame on frame 0 (F3).
+5. Floor grid draws outward from Notes 0.0-1.0 s; background props removed (U5 first half).
+6. The problem breaks 9.0-11.4 s: red crossings, one half-unplugged spark, Pay flickers, the 24 flashes red (U6).
+7. Tangle light sweep plug to plug for 1.0 s (F4, U8 first half).
+8. Number spot top-left on dark, clear of all cables: typed small line, odometer count, a shrinking bar 24 -> 11 -> 12 (U9; fixes F2).
+9. Hub landing 12.3 s: whip pan in, key light flips cold to warm and stays warm, ring wave across the floor (U10, U14 whip, U5 second half).
+10. Collapse 12.9-13.9 s as one motion: old cables retract in a wave as the counter ticks down, then the 11 fan out of the hub (U7).
+11. 13.5 s: "Notes" whole on the wide (F5).
+12. Green sweep along the 11 at 14.0 s (U8 second half); hub LEDs fill 0 -> 11 (U11).
+13. Kinetic headline words, 120+ px, one per beat, newest word in the accent, older words grey (U12).
+14. Sound: board riser, 8 rising ticks, plug click, cascade rattle, crackle, hub thump, reverse-zip, chimes on 11 and 12, ducked under the voice (U17).
+15. End: payoff pulse with the board edge light (U16), dolly home to the exact frame-0 framing and light at 22.9 s (F3, U18).
+Moved to the first real tech reel (not render 3, too much for one render or not needed to prove the kit): U2 live app screens, U3 ripple bumps, U4 rim light, U13 subtitle word style, U14 shake, U15 rack focus.
+Check before the render: preflight-all PASS (TEXT CLEAR covers the headline and the number spot), check-wires, last-4 s frame change 5+, frame 0 and 22.9 s side by side on one stills sheet.
+
+CRITIC: NOT READY: v7 moves cleanly but does not yet look like a premium motion-design reel: the board is just there, the tools pop in one by one instead of stacking as one flow, there is no big headline type, the problem never visibly breaks and the light never changes; render 3 fixes 15 items at once. Detail: faults F1-F5, owner notes N1-N2, upgrades U1, U5-U12, U14 (whip), U16-U18; PREMIUM against the references 6.5 / 6.5 / 6.5.
