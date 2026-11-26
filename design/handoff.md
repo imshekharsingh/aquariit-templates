@@ -14,8 +14,8 @@ here or in chat. Ask the owner only before something the task does not already c
 
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
-critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in number order
-unless a task says otherwise; report each in Progress.
+critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 2, 5, 3
+(later numbers after these, in order); report each in Progress.
 
 ## Read first (only the parts you need)
 CLAUDE.md; the last 5 entries of design/handoff-log.md; design/3d-kit-phase2.md; design/rules-tech.md (section L, rules D1-D8).
@@ -94,6 +94,23 @@ object? each connection its own beat? would the wires pass as real? is any frame
 render under the owner's render rule above, Output QA. For the critic: this account cannot fetch videos, so write in Progress
 "v6 ready for critic" and stop; the main account runs the critic and writes its verdict in Progress. If READY, v6 replaces v5 as the
 tech 3D gold (design/gold.md, scripts/qa/gold.json, the tech3d starter).
+
+## Queued task 5 (owner, 26 Nov 2026): Projects on the app's board (do it BEFORE task 3)
+Owner: "introduce workflow for any design process we are running apart from channel so that we have that progress and status in app,
+such as 3d kit". Size M.
+1. design/projects.json: one entry per running project that is not a channel reel (first ones: "3d-kit-v6" for task 3, "minutes-meter"
+   for task 2): id, name, account ("other" or "main"), stages (planned, building, stills, render, checking, critic, done; plus
+   "waiting on owner"), current stage, one plain line, pct (optional), updatedAt, and a short history (time, stage, line).
+2. The Worker reads it from the repo the same way it reads review files (raw main, short cache), so a project updates when its session
+   pushes, with no site access needed (this account cannot reach the app). The main account may also post `node scripts/stage.mjs
+   project:<id> <stage> --line "..."` (extend /api/stage to accept project ids); the newer of the two wins.
+3. The app's Today board: a "Projects" section under the channel rows, one row per active project, same look as a channel row (stage in
+   plain words, the line, a progress bar when pct is set, "waiting on you" in amber). Tap opens its history. A project marked done shows
+   for 2 days, then leaves the board. A red stage gets the Fix button like reel rows.
+4. Rule for every project session (both accounts): update projects.json at each stage in the same push as the work; write it in
+   design/runbook-studio.md and in this file's owner rule. The Studio status sheet (scripts/studio-status.mjs) lists projects too, so
+   the probe notices a stuck one (no update in 6 h while not waiting on the owner).
+Phone-width check on a local build, npm run check, merge. Then use it yourself from task 3 onward.
 
 ## Queued task 4: DONE on main (26 Nov), skip it.
 
