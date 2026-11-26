@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-3d-v6 · owner chat: 3D kit v6 queued for the other account
+- design/handoff.md: task 0 (fix the two unmerged 3d-kit branches), task 3 (v6: beats, one entrance per object, per-app wiring beat then cascade, hook first, believable cables, far less glow; kit rules D9-D12, 4 critic questions, a GLOW check; the main account runs the critic). Owner agreed the four adjustments (length, hook, readability, believable not photoreal).
+
 ## 2026-11-26 · claude/todo-handoff-readonly · owner chat: critical to-do, read-only handoff account
 - design/todo.md P1 CRITICAL: the owner's three questions on running the other account read-only (no commits, kept out of the reel pipeline and app, still heavy lifting). Not acted on yet (owner).
 ## 2026-11-26 11:49 IST · claude/3d-kit-done · other account: 3D kit finalised, handoff CLOSED
