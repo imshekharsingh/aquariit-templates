@@ -39,6 +39,7 @@ Move types in order: hold, pull back, crane up, dolly in, arc, pull back, truck 
 ## Local checks (scene frames, not the render)
 - techkit/check-wires.cjs: no cable through the floor or an object.
 - techkit/check-gold3d.cjs: no name under a number or the hub on the wides; the close shots crop neighbouring tiles at the frame edge by design.
-- COLOUR, GLOW and frame change: written below when the 10 fps pass finishes.
+- The whole reel at 10 fps with the real cue times (scene frames, not the render): COLOUR pass, no hard colour cuts; GLOW pass, median 1.2 % (v6 render 2: 2.0 %, v5 4.0 %), worst 1 s 6.3 % at 8.4 s (limit 8 %); pale frames (median luma over .40) 21 of 228 (9 %; v6 17 %), almost all the close-ups where a pastel tile fills the frame (0-1.5 s Notes, 12.4-13.1 s Mail), not the floor; median luma .18.
+- Frame change: median 8.7 per 0.1 s; the last 4 s median 2.2 (calmer, with the 12 tick, a cable pulse, the orbit and the dolly home). For the critic to judge: is the end lively enough, or should the orbit be larger?
 
 (No verdict line here: the builder never writes one. The critic adds its own.)

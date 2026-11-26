@@ -2,13 +2,34 @@
  "_about": "Projects on the app's Today board (owner, 26 Nov 2026): work that is not a channel reel. The project's session updates its entry at every stage in the same push as the work (design/runbook-studio.md \"Projects\"). stage: planned | building | stills | render | checking | critic | done | waiting (on the owner) | failed. line: one plain sentence. pct: optional 0-100. history: newest last, at most 20. The Worker reads this file from main (GET /api/projects, about 2 min cache) and merges any newer `node scripts/stage.mjs project:<id> <stage>` line. A done project leaves the board 2 days after its last update.",
  "projects": [
   {
+   "id": "3d-kit-v7",
+   "name": "3D kit v7: the last sample",
+   "account": "other",
+   "stage": "critic",
+   "line": "The plan and one stills sheet are ready. Main account's critic checks them before any render.",
+   "pct": 40,
+   "updatedAt": "2026-11-26T13:12:00Z",
+   "history": [
+    {
+     "at": "2026-11-26T13:12:00Z",
+     "stage": "stills",
+     "line": "The v7 scene is built to the critic's faults and the owner's notes; one stills sheet."
+    },
+    {
+     "at": "2026-11-26T13:12:00Z",
+     "stage": "critic",
+     "line": "The plan and one stills sheet are ready. Main account's critic checks them before any render."
+    }
+   ]
+  },
+  {
    "id": "3d-kit-v6",
    "name": "3D kit v6: the tech look as a told story",
    "account": "other",
-   "stage": "critic",
-   "line": "Render 2 passed every check. Main account runs the critic on the v6 video.",
+   "stage": "done",
+   "line": "Closed at render 2 (critic NOT READY); v7 replaces it.",
    "pct": 85,
-   "updatedAt": "2026-11-26T09:57:00Z",
+   "updatedAt": "2026-11-26T13:12:00Z",
    "history": [
     {
      "at": "2026-11-26T07:20:00Z",
@@ -39,6 +60,11 @@
      "at": "2026-11-26T09:57:00Z",
      "stage": "critic",
      "line": "Render 2 passed every check. Main account runs the critic on the v6 video."
+    },
+    {
+     "at": "2026-11-26T13:12:00Z",
+     "stage": "done",
+     "line": "Closed at render 2 (critic NOT READY); v7 replaces it."
     }
    ]
   },

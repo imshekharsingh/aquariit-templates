@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 18:42 IST · claude/3d-kit-v7-plan · other account: 3D kit v7 plan and stills (task 10, step a)
+- Done: techkit/scenes/gold3d-v7.html + techreel/topics/gold3d-v7.json; kit: W3D.numbers (flat counting numbers + leader line), 'slam' entrance, wire floorY (never through the floor), soft pulses; techkit/check-wires.cjs; check-gold3d.cjs reads hubBox; plan review/tech/showreel-tech-gold3d-v7.md; stills review/tech/study-25nov/kit-phase2-v7.jpg.
+- Left: the main account's critic checks the plan and stills (points 1-7), then ONE render on its OK. The reference clips were not measured (no video access here); a main-account measurement against v6 would settle point 3.
+- For the main account: a glossy floor seen at low angles reads as a pale wash whatever its colour; v7 uses a matte floor (roughness .93).
+
 ## 2026-11-26 · claude/handoff-3d-v7 · owner chat: v7 replaces render 3 of v6; discuss-first practice
 - v6 critic NOT READY (7.5/6/6.5). Owner notes discussed and agreed: design/handoff.md task 10 GO now (v7, last sample: no floor clipping, flat counting numbers tied to objects, measure colour and light first, camera with a reason, drama on 3 moments, tense hook, elements stay alive, the critic's faults; plan + stills checked by the critic before the render). Then task 9. CLAUDE.md: tech restarts after v7 with a real reel; DISCUSS, DON'T JUST FOLLOW rule.
 
