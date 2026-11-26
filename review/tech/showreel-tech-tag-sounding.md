@@ -52,3 +52,21 @@ ENHANCE: open the payoff on the needle snapping onto the tag with a click sound 
 - Render 1 (run 45747481173): Output QA PASS (23.57 s, -14.5 LUFS, PACE ok, NUMBERS ok, EDGES ok, VARIETY 17%, LOOK ok; warnings: no real media, no hero box, one SHEEN band at 9.8 s). Independent critic (Opus): NOT READY (see the CRITIC line above).
 - Fix for render 2 (the last render; a third needs the owner chat's yes), all five points of the critic: (1) the 60 m / 3x / 20 m numbers are smaller and sit in the lower right of the frame, off the phone; (2) the three-times shot is now a true high top-down with a small amber ring (old range) and a mint-cyan ring three times its size, "3x" outside the dial; (3) 20 m sits clear of the phone; (4) the phone screen shows only the green arrow (the text "60 m" is gone); (5) captions.json aiLabel is false. Stills of the fix checked by the builder on frames 2.8, 12.5, 14.2, 17.3 and 19.5.
 - After render 2: Output QA, then a second critic session (new session, Opus).
+
+CRITIC 2: READY: all five render-1 fixes show in the render 2 MP4, the numbers now sit in clear space off the phone, and the 3x beat plays out as a small amber old ring against a ring three times its size.
+Detail (second independent critic, 26 Nov 2026; judged the fetched render 2: 23.57 s, 1080x1920, -14.5 LUFS, no silence gap over 0.5 s; frames every 1 s from 0 to 23.4 s, close frames at 12.6-19.6 s, caption crops at 17.3-23.5 s):
+- Fix 1 PASS: 12.6-14.2 s the "60 m" sits lower right, off the phone; the pointer line and the arrow pass above it and never cross it. 14.8-16.8 s the "3x" is clear of the needle line.
+- Fix 2 PASS: 14.8 s small amber ring, 15.6 s a cyan ring about three times its size grows out on "three times". The idea now plays out on screen.
+- Fix 3 PASS: 16.8-19.6 s the "20 m" sits on the floor in front of the green ring, below the phone; the phone is whole.
+- Fix 4 PASS: the phone screen shows only the green arrow from 2 s to the end; no "60 m" text.
+- Fix 5 PASS: templates/showreels/captions.json "aiLabel": false.
+- Four questions: as rich as the 3D gold: yes (one lit colour world, 7 distinct camera moves, glow and depth all through); not a copy of it: yes (its own subject, waves and dial); would stop a scroll: yes (0 s: glowing tag, rings and the full question on screen); would be watched twice: yes (the guess cloud at 4-6 s and the six channel waves at 7-10 s, now with clean number beats).
+- Readable at phone size, nothing over the captions, nothing touching the frame edges, payoff held 20-23.5 s on the tag, phone and needle. Facts: the on-screen claims (60 m, about three times the last tag, UWB inside 20 m, phase and time of flight rather than signal strength) are the ones critic 1 checked against the Samsung Newsroom page (23 Nov 2026); the wording is unchanged in render 2.
+STOP: 7/10. REWATCH: 7/10. PREMIUM: animation 7/10, cleanliness 7/10, premium 7/10.
+NITS (minor, no render; for the next tech reel on this kit):
+1. 15.6-16.4 s the amber old-range ring runs through the "3" of "3x" once the camera tilts. Keep figures outside every ring's screen path for the whole beat.
+2. 16.8-19.6 s the green UWB ring glow passes behind "20" and the "m" (still readable, pink on green). A darker plate or a short step-aside would keep it cleaner.
+3. 12.6 s the "60" touches the dial's tick ring on its left edge.
+4. Around 17.6 s the caption re-wraps with a crossfade of about 0.15 s, so two layouts of the same line ghost on top of each other. Swap the layout in one frame, with no crossfade.
+5. 22-23.5 s there is no caption over the held payoff. The last line was shown in full first, so this passes, but holding "More pointing." to the end would land better.
+6. Critic 1's ENHANCE (the needle snapping onto the tag with a click at 19.8 s) was not added. It is optional.
