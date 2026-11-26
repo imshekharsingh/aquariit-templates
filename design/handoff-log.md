@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 07:15 IST · claude/source-url-26nov · owner chat: morning builders stalled (no repo)
+- The 04:49 daily run made the web and tech builders without source_url, so they had no repo, add_repo was refused, and both stalled; the 05:11 Turns Out task produced nothing. Owner chat restarted all three at 07:12 with the repo. runbook-daily.md now requires source_url on every child session; the Turns Out task prompt was updated (source_url, outside stills check, no skip days). The Daily studio task prompt still says "dark look with one accent" (stale) and can only be changed from the launcher conversation; runbook and rules-tech.md section L win.
+
 ## 2026-11-25 23:45 IST · claude/owner-chat-25nov-late · owner chat: tech not posted, colour, reference method
 - Owner did not post tech battery-cycles (dated iPhone 14/15 framing, India line, top keyword bar, flat shots). Tech rules changed (all global, last-7-days tech news, freshness, no top bar, every shot alive; merged).
 - Owner: tech reels are not colour rich. Cause: design/tech-direction.md (22 Nov) near-black ground, white/grey, two accents max. Under review.
@@ -804,3 +807,12 @@ Format (at most 6 lines):
 - Done: scene rebuilt (hook = wired tangle + 24 + question from frame 0, camera path with three distinct moves and a loop home, cables on tile side edges, names inside tiles and distinct, no code card, held payoff, captions on a dark fade, numbers step aside in close shots); topic lines/cues/sfx for six lines; aiLabel false; rules-tech.md D1-D8, techkit/README.md, starter note; stills review/tech/study-25nov/kit-phase2-v4.jpg.
 - Left: ONE render (Tech reel, gold3d-sample, preview v4), Output QA, then the independent critic (opus, tag critic).
 - For the other account: nothing new.
+## 2026-11-26 · claude/c3-fix-invite-26nov · Turns Out reel "You asked: fix this invite" rebuilt (Turns Out daily build)
+- Done: showreel-c3-fix-invite rebuilt on the improved kit from the gold reel (optical-centre was withdrawn and stop-centring was posted on 21 Nov, so fix-invite is next in the plan): a party invite on a fridge door (four fonts, all centred, confetti, no hero) fixed in three moves (the age as the hero, one font in two sizes, one colour once), seven spoken sentences with breaths, direction card and review file written, captions entry kept hidden until the critic says READY. Nothing the invite needs is deleted; the 7 is hidden while the before is kept.
+- Left: outside stills check, one render, Output QA, critic; then postOn 2026-11-26, postAt 17:00.
+- For the other account: check c3-plan.md against captions.json posted marks before picking a held reel (stop-centring was already posted).
+
+## 26 Nov 2026 02:10 IST+: owner chat, reference previews only showed the first 8 seconds
+- Found: the refs preview was `fps=1,tile=4x2`, so every clip preview was its first 8 seconds only; references 4-14 were judged from openings.
+- Fix: scripts/asks.mjs refs preview now spreads 8 frames over the whole clip; `asks.yml refs` with ASKS {"full":[ids]} adds time-stamped sheets of the whole clip at 1 frame a second (24 s a sheet). Timeout 20 min.
+- Owner (26 Nov): full study of refs 9-14 approved (~$4); today's reels move only after it; the studio decides which reference goes to which channel.

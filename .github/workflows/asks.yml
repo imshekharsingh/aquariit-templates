@@ -11,7 +11,7 @@ on:
         options: [read, list, tidy, add, clear, mark, unmark, feedback, feedback-done, refs, refs-done]
         default: read
       asks:
-        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"] · mark: {"showreel-x":"ISO time"} · unmark: ["showreel-x"] · feedback-done: {"ids":[3],"note":"what was done"} · refs-done: {"ids":[3],"state":"studied|used","note":"..."}'
+        description: 'add: [{"id":"x","question":"...","why":"...","kind":"yesno|done|text"}] · clear: ["x"] · mark: {"showreel-x":"ISO time"} · unmark: ["showreel-x"] · feedback-done: {"ids":[3],"note":"what was done"} · refs-done: {"ids":[3],"state":"studied|used","note":"..."} · refs: {"full":[9,10]} (whole clip, 1 frame a second)'
         type: string
         required: false
 
@@ -21,7 +21,7 @@ permissions:
 jobs:
   asks:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
