@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-3d-kit-final · owner chat: the other account also finalises the 3D kit
+- design/handoff.md: after a READY v5, the same session makes it the tech 3D gold, updates the starter, closes the known limits, switches tech daily builds to the 3D look, then closes the handoff (cap ~$15 more, owner asked first past it).
+
 ## 2026-11-26 · claude/handoff-3d-kit-v5 · owner chat: 3D kit v5 handed to another account
 - design/handoff.md reopened for one task (owner): the 3D tech look sample v5 (six critic fixes, render 5 only on the owner's yes). The other account's session writes each stage in its Progress section; the owner chat reads it there. The blocked 3D kit session is archived once that session starts.
 
