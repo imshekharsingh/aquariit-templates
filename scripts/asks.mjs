@@ -7,9 +7,9 @@
 //   feedback-done: ASKS = {"ids": [3, 4], "note": "what was done, short"} marks those items done; the app shows the note under each
 //   refs:          prints the owner's new References (owner, 20 Nov 2026: links, screenshots, short clips), one line each:
 //                  REF <id> <time> <channel|-> <url|-> <file type|-> <note>; for each file a small JPEG preview (an image scaled to 720 px, a clip as
-//                  a 4x2 sheet of one frame a second) as a "B64 ref-<id>.jpg <base64>" log line (stderr, not the summary):
+//                  a 4x2 sheet of 8 frames spread over the whole clip; ASKS {"full": [ids]} adds time-stamped sheets of the whole clip at 1 frame a second) as a "B64 ref-<id>.jpg <base64>" log line (stderr, not the summary):
 //                  node scripts/media/from-log.mjs <run id> <dir> turns them back into files. Study each into design/references.md, then refs-done
-//   refs-done:     (also "checklist", "stills", "replies", see below) ASKS = {"ids": [3], "state": "studied" | "used", "note": "what was taken, or the reel it went into"}; the app shows the note
+//   refs-done:     (also "checklist", "stills", "replies", "close": true, see below) ASKS = {"ids": [3], "state": "studied" | "used", "note": "what was taken, or the reel it went into"}; the app shows the note
 //   add:   ASKS = [{ "id": "tech-bio", "question": "plain English", "why": "why it matters", "kind": "yesno" | "done" | "text", "channel": "web"|"tech"|"c3" }]
 //   clear: ASKS = ["tech-bio", ...] (after acting on the replies; removes them for good)
 //   mark:  ASKS = {"showreel-19-numbers": "2026-10-31T07:51:00Z", ...} marks reels uploaded at their real post time (an answer such as
@@ -74,6 +74,7 @@ if (ACTION === 'refs') {
   const { execFileSync } = await import('node:child_process'), { mkdtempSync, writeFileSync, readFileSync, existsSync } = await import('node:fs'), { tmpdir } = await import('node:os'), { join } = await import('node:path');
   let ff = true; try { execFileSync('ffmpeg', ['-version'], { stdio: 'ignore' }); } catch { ff = false; }
   const td = mkdtempSync(join(tmpdir(), 'refs-'));
+  let fullIds = []; try { fullIds = ((JSON.parse(process.env.ASKS || '{}') || {}).full || []).map(Number); } catch { /* none */ }
   for (const f of refs) {
     console.log(`REF ${f.id} ${f.created} ${f.channel || '-'} ${f.url || '-'} ${f.file ? f.file.type + ' ' + JSON.stringify(f.file.name) + ' ' + f.file.size + ' B' : '-'} ${JSON.stringify(f.note || '')}`);
     if (!f.file || !ff) continue;
@@ -82,9 +83,21 @@ if (ACTION === 'refs') {
     const src = join(td, `in-${f.id}`), out = join(td, `ref-${f.id}.jpg`);
     { const { createWriteStream } = await import('node:fs'), { Readable } = await import('node:stream'), { pipeline } = await import('node:stream/promises');   // files up to 1 GB: stream to disk, never into memory
       await pipeline(Readable.fromWeb(g.body), createWriteStream(src)); }
-    const vf = /^video\//.test(f.file.type) ? 'fps=1,scale=240:-2,tile=4x2' : "scale='min(720,iw)':-2";
+    const video = /^video\//.test(f.file.type);
+    let dur = 0; if (video) try { dur = parseFloat(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', src]).toString()) || 0; } catch { /* unknown */ }
+    if (video) console.log(`  length ${dur.toFixed(1)} s`);
+    // 26 Nov 2026: the sheet was fps=1 tile=4x2, i.e. only the first 8 seconds of a clip. Now 8 frames spread over the whole clip;
+    // ASKS {"full": [ids]} also prints the whole clip at 1 frame a second, 24 frames (24 s) per sheet: ref-<id>-s01.jpg, -s02.jpg, ...
+    const vf = video ? `fps=${dur > 8 ? (8 / dur).toFixed(4) : 1},scale=240:-2,tile=4x2` : "scale='min(720,iw)':-2";
     try { execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', src, '-vf', vf, '-frames:v', '1', '-q:v', '5', out], { stdio: 'ignore', timeout: 60000 }); } catch { /* no preview */ }
     if (existsSync(out)) console.error(`B64 ref-${f.id}.jpg ${readFileSync(out).toString('base64')}`); else console.log(`  (no preview for ${f.id})`);
+    if (video && fullIds.includes(Number(f.id))) {
+      const pat = join(td, `ref-${f.id}-s%02d.jpg`);
+      try { execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', src, '-vf', "fps=1,scale=180:-2,drawtext=text='%{pts\\:hms}':x=4:y=4:fontsize=18:fontcolor=yellow:box=1:boxcolor=black@0.6,tile=6x4", '-q:v', '6', pat], { stdio: 'ignore', timeout: 300000 }); } catch (e) { console.log(`  (full sheets ${f.id} failed: ${e.message.split('\n')[0]})`); }
+      const { readdirSync } = await import('node:fs'); let n = 0;
+      for (const s of readdirSync(td).filter((x) => x.startsWith(`ref-${f.id}-s`)).sort()) { console.error(`B64 ${s} ${readFileSync(join(td, s)).toString('base64')}`); n++; }
+      console.log(`  full study: ${n} sheets (1 frame a second, 24 s a sheet, time stamped)`);
+    }
   }
   console.log(`${refs.length} new reference${refs.length === 1 ? '' : 's'}${ff ? '' : ' (ffmpeg missing: no previews)'} (study each into design/references.md, then refs-done with a note)`);
   // the owner's answers on earlier reports (owner, 24 Nov 2026): Keep / Skip on each checklist line, and the Ask questions waiting for a reply
@@ -101,6 +114,8 @@ if (ACTION === 'refs-done') for (const id of refDone.ids) {
     : await fetch(`${SITE}/api/refs/${id}/state`, { method: 'POST', headers: H, body: JSON.stringify({ state: refDone.state, note: refDone.note.trim() }) });
   if (!r.ok) die(`could not set reference ${id} (HTTP ${r.status})`); const j = await r.json(); console.log(j.stored ? `✓ reference ${id} ${refDone.state}${rich ? ` (${j.items || 0} checklist lines, ${j.stills || 0} stills)` : ''}` : `✗ no reference ${id}`);
   for (const q of refDone.replies || []) { const t = await fetch(`${SITE}/api/refs/${id}/thread`, { method: 'POST', headers: H, body: JSON.stringify({ item: q.item, text: q.text, who: 'claude' }) }); console.log(t.ok ? `✓ reference ${id} line ${q.item} answered` : `✗ reference ${id} line ${q.item} (HTTP ${t.status})`); }
+  // "close": true (owner, 26 Nov 2026: the studio decides what to take; the owner only reads what was taken, then it is closed; the video is deleted, the note stays)
+  if (refDone.close) { const c = await fetch(`${SITE}/api/refs/${id}/close`, { method: 'POST', headers: H, body: '{}' }); console.log(c.ok ? `✓ reference ${id} closed` : `✗ reference ${id} not closed (HTTP ${c.status})`); }
 }
 if (ACTION === 'add') for (const a of items) {
   const r = await fetch(`${SITE}/api/asks/${a.id}`, { method: 'PUT', headers: H, body: JSON.stringify(a) });

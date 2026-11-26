@@ -2,7 +2,7 @@
  "slug": "gold3d-sample",
  "engine": "kit",
  "scene": "techkit/scenes/gold3d-sample.html",
- "topic": "SAMPLE (never posted): 3 apps x 8 tools = 24 connections, then one shared hub = 11, a new tool is one more cable (the colour-world 3D kit, gold candidate, 20 s)",
+ "topic": "SAMPLE v4 (never posted): why one new tool adds three cables; 3 apps x 8 tools = 24 connections, one shared hub = 11, a new tool is one more cable (the colour-world 3D kit, gold candidate)",
  "format": "xray",
  "audience": "global",
  "gadget": "ai tools",
@@ -19,12 +19,12 @@
  },
  "lines": [
   {
-   "text": "Three apps, eight tools.",
+   "text": "Why does one new tool add three cables?",
    "beat": "question",
    "source": 0
   },
   {
-   "text": "Wire each pair by hand, and that is twenty four connections.",
+   "text": "Three apps, eight tools, twenty four connections.",
    "beat": "problem",
    "source": 0
   },
@@ -50,18 +50,6 @@
   }
  ],
  "cues": {
-  "three": [
-   0,
-   "three"
-  ],
-  "eight": [
-   0,
-   "eight"
-  ],
-  "wire": [
-   1,
-   "wire"
-  ],
   "twenty": [
    1,
    "twenty"
@@ -104,24 +92,6 @@
    {
     "at": 0.05
    }
-  ],
-  [
-   "three",
-   "pop",
-   0.5,
-   -0.3
-  ],
-  [
-   "eight",
-   "pop",
-   0.5,
-   0.3
-  ],
-  [
-   "wire",
-   "whoosh",
-   0.4,
-   0
   ],
   [
    "twenty",

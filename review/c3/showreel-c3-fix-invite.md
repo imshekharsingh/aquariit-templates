@@ -1,30 +1,29 @@
-# Review: showreel-c3-fix-invite (c3, no date: onGo, the owner posts on response)
+# Review: showreel-c3-fix-invite (c3, rebuilt 26 Nov 2026, posts 26 Nov at 17:00 IST once the critic says READY)
 
-Turns Out design series (owner, 21 Nov 2026: "Move the finished ones to Turns Out section, we need all captions etc."), the full reel of the approved
-preview scripts/channel3/design/fixit.js (copy for the tools: scripts/channel3/fix-invite.html). AUTO lines from preflight.mjs, stills.mjs, flow.mjs and
-qa/align.mjs on scripts/channel3/fix-invite.json.
+Turns Out design series #5 (design/c3-plan.md section 0; #3 was withdrawn on 21 Nov and #4 was posted on 21 Nov), rebuilt on the improved kit (rules-c3.md V1-V3, B1-B3, P1-P2) from the gold reel showreel-c3-grey-text.
+Scene scripts/channel3/design/fix-invite.js (copy: scripts/channel3/fix-invite.html). AUTO lines from preflight.mjs, stills.mjs, flow.mjs and qa/align.mjs on scripts/channel3/fix-invite.json.
 
-1. Topic: PASS: a cluttered kids' birthday invite on a fridge door fixed in three moves: one hero (the age), one font in two sizes, one colour used once; one fix anyone can use the same day; invented names only, no real brand, logo or person (design/safety.md); the design series the owner approved (21 Nov)
-2. Frame 0: PASS: SUBJECT FILL: 100% at frame 0; the claim alone in the top band from frame 0, the design fully lit on its stage, its problems marked; title, captions and dial wait for the claim
-3. Safe zone: PASS: SAFE ZONE: ok (dial, title, captions, hook, chips, labels, rulers and the design inside x 60-960, y 250-1570 on the 0.5 s scan)
+1. Topic: PASS: a kids' birthday invite on a fridge door fixed in three moves (one hero, the age; one font in two sizes; one colour used once); one fix anyone can use on an invite, poster or flyer; invented name (Aarav), no real brand, logo or person (design/safety.md)
+2. Frame 0: PASS: SUBJECT FILL: 61% at frame 0 (stills check; Output QA FILL measures the picture's width with the rulers); the claim alone in the top band ("No hero, so no read"), the invite fully lit, its problems ringed (NO HERO, 4 FONTS, 6 COLOURS)
+3. Safe zone: PASS: SAFE ZONE: ok (title, dial, captions, chips, rings, invite and rulers inside x 60-960, y 250-1570 on the 0.5 s scan)
 4. No overlap: PASS: OVERLAP: none; BAND: clear; HOOK: clear of the subject
-5. Motion: PASS: STATIC STRETCH: none (least change 0.8 at 14 s, median 5.0); EMPTY FRAMES: none (scanned 32 moments, least detail 77.0 at 2 s); TEXT FIT: all text inside its box
-6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; phrases of up to 4 words, spoken words white, key words amber
-7. Voice: PASS: PREFLIGHT voice: 150 letters, 6 sentences, about 11.7 s at speed 1 in one take (reel 16 s, voice must end by 15.4 s): fits; HOOK PACE: the first sentence has 5 words: ok (6 or fewer); PRONUNCIATION: 1 overrides used: colour; no unchecked words; every sentence over 6 words reads under 4.5 words/s at speed 1
-8. Sound: PASS: the design vocabulary (core.js DT.S, drum-free, synth cues) on the tense-to-bright score (DT.score): opening sting, cursor clicks and drags, tuned plucks as things snap, shimmer on the payoff
-9. Payoff: PASS: ends on the fixed design, fully lit, with the reel's last line and a light sweep; no call to action on screen
-10. Facts: PASS: one focal element and fewer sizes and colours make a clear hierarchy (Nielsen Norman Group, Visual hierarchy); few fonts and sizes keep text calm (Butterick, Typography in ten minutes); the invite and child's name are invented; sources: Visual Hierarchy in UX: Definition (Nielsen Norman Group); Typography in ten minutes (Butterick's Practical Typography)
-11. Post data: PASS: captions.json entry (c3, engine design, concept, onGo: no date, owner posts on response); caption: the claim, the fixes as a numbered list, a save ask and one question; 6 keywords, 5 hashtags; 2 sources
-12. Review file: PASS: this file, items 1-12 and 14-20 before the one render; ALIGN: ok (2 groups)
-13. After the render: PASS: render 2 (run 44926328347): OUTPUT QA PASS (PACE 2.77 words/s, GRADE 0.47, FILL median 95%, ELEMENTS longest gap 2.1 s, NUMBERS none past the voice, DEAD none). Before: render 1 (run 44922113506) failed Output QA FILL (median 79%) and ELEMENTS (4.1 s with nothing new at the end); fixed: design-tool rulers on both sides, 16 s; a local copy of Output QA FILL and GRADE on the scene's frames now passes (FILL median 95%)
+5. Motion: PASS: STATIC STRETCH: none (least change 1.2 at 17.5 s, median 5.4); EMPTY FRAMES: none (scanned 42 moments, least detail 82.6 at 17 s); TEXT FIT: all text inside its box
+6. Subtitles: PASS: SUBTITLES: at least 52 px, at most 6 words a line; key words amber
+7. Voice: PASS: PREFLIGHT voice: 185 letters, 7 sentences, about 14.7 s at speed 1 with 1.95 s of breaths (reel 20 s, voice must end by 19.4 s): fits; HOOK PACE: the first sentence has 4 words: ok (6 or fewer); PRONUNCIATION: 1 override used: colour; no unchecked words; seven spoken sentences with breaths (voice.gap), no label sentences, contractions not needed
+8. Sound: PASS: the design vocabulary (DT.S, drum-free): sting, stamp on "nothing stands out", lands as the old lines step down, a swell and three notes as the 7 grows, a scan roll as the fonts flip, plucks as the confetti flies into the 7, reveal chord and paper flip at the proof
+9. Payoff: PASS: ends on the fixed invite with BEFORE as a tilted thumbnail below the design, three ticks (7, name, date) and a green frame; no call to action on screen; the BEFORE flashback sits under the chip and never covers a tag
+10. Facts: PASS: one focal element and fewer fonts, sizes and colours make a clear hierarchy (Nielsen Norman Group, Visual hierarchy in UX; Butterick, Typography in ten minutes); the reel claims no number beyond what is drawn
+11. Post data: PASS: captions.json entry (c3, engine design, concept, aiLabel false); caption: claim, the 3 fixes as a numbered list, a save ask and one question; 6 keywords, 5 hashtags, 2 sources
+12. Review file: PASS: this file, direction card with its stills check line
+13. After the render: (filled after the render)
 14. Cuts: PASS: FLOW: cuts 0
 15. Dead runs: PASS: FLOW: dead runs none
-16. Continuity: PASS: FLOW: continuity 97% (median step 0.9, 0 declared transitions)
+16. Continuity: PASS: FLOW: continuity 99% (median step 1.0, 0 declared transitions)
 17. Strobes: PASS: FLOW: strobes 0
-18. Element sound (web): n/a (Turns Out; every effect in item 8)
-19. Journey: PASS: the claim over the flawed design, each fix done on screen with cursor, guides and snaps, then the fixed design lit
-20. Depth and life: PASS: the design engine (captions.json "engine": "design"): the fridge door behind the design moving from dim to lit as fixes land, the camera drifting with a push per fix, spark bursts, motion blur in the render
+18. Element sound (web): n/a (Turns Out)
+19. Journey: PASS: claim, rings on the mistakes, each fix done on screen (the lines step down and the 7 grows with read-order badges 1-2-3, a scan flips every line into one font in two sizes, the confetti flies into the 7 which takes the one colour), then the proof
+20. Depth and life: PASS: design engine: a lit steel fridge door behind the invite, mood brightening as fixes land, camera push per fix, spark bursts
 
-Owner feedback (design/owner-feedback.md) against the stills: "doesn't look aligned": ALIGN where the scene declares groups; "drum-like sounds": no drum kinds; "frame 0": one message first; numbers on screen never run ahead of the voice (21 Nov: end states as words); "same background": its own stage.
+Owner feedback (design/owner-feedback.md) against the stills: natural spoken sentences with breaths; the before is a believable first draft (four fonts, all centred, confetti, no hero), not a strawman; nothing the invite needs is deleted (name, age, date, place and RSVP all stay); the 7 and any added element are hidden while the BEFORE picture is kept; the BEFORE flashback never covers a chip or tag; no CTA on screen.
 
-Critic: PENDING (an independent session writes CRITIC: READY or NOT READY; the owner's watch decides the post).
+Critic: PENDING (an independent session writes CRITIC: READY or NOT READY).

@@ -85,7 +85,9 @@ if (ch === 'tech3d') {
   h = h.replace(/<title>[^<]*<\/title>/, `<title>${slug}</title>`);
   h = mark(h, '<!-- 3D KIT GOLD CANDIDATE', `<!-- STARTER (node scripts/starter.mjs tech3d ${slug}) from the 3D gold candidate ${gold.name} (design/gold.md "Tech, the colour-world 3D look"). Keep: the stage,
      the neutral dark world and its blurred props, depth of field that follows the hero, contact shadows, glowing cables, the captions, the camera path method.
-     Change only the places marked "${TODO}" below: the objects (apps, tools, hub, cards, figures), the cables, the camera keys, the cue-driven timing. -->
+     Change only the places marked "${TODO}" below: the objects (apps, tools, hub, figures), the cables, the camera keys, the cue-driven timing.
+     Rules (design/rules-tech.md D1-D8): frame 0 is the hook (busy picture + question or number), 3 distinct camera moves and a loop home, no framing over 3 s,
+     cables end on tile side edges (never across a name), names never repeat, numbers ride the camera, captions on the dark fade, payoff held to the last frame, lines 6-9 words, aiLabel false. -->
 `, F);
   put(`techkit/scenes/${slug}.html`, h);
   const t = JSON.parse(rd('techreel/topics/gold3d-sample.json'));

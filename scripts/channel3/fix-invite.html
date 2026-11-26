@@ -57,34 +57,28 @@ body:not(.ctx) #topband{display:none}
 .chip.sm{font-size:15px!important;padding:8px 12px!important}
 .rul{position:absolute;width:24px;border-radius:6px;background:repeating-linear-gradient(180deg,rgba(24,26,36,.9) 0 2px,transparent 2px 12px) left/9px 100% no-repeat,repeating-linear-gradient(180deg,rgba(24,26,36,.75) 0 2px,transparent 2px 60px) left/16px 100% no-repeat,linear-gradient(90deg,#ece7dd,#dcd5c7);box-shadow:0 10px 26px rgba(0,0,0,.35);z-index:1}
 .rul.r{transform:scaleX(-1)}
-#inv{left:90px;top:440px;width:360px;height:340px;border-radius:16px;background:#d6f0ff}
+#board{left:66px;top:396px;width:408px;height:368px;border-radius:14px;border:10px solid #8f9aa3;background:#d6f0ff}
 .iv{position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 0}
-#big7{position:absolute;left:0;top:0;font:900 132px/1 'Unbounded';color:#1d1a16;transform-origin:0 0}
+#big7{position:absolute;left:0;top:0;font:900 124px/1 'Unbounded';color:#1d1a16;transform-origin:0 0;opacity:0;display:none}
 .cf{position:absolute;width:16px;height:16px;border-radius:50%}
-#cmt{left:40px;top:470px;width:460px;padding:16px 20px;border-radius:20px;background:#1c2133;border:1.5px solid #2a3150;display:flex;gap:14px;align-items:center;z-index:28;opacity:0}
-#cmt i{flex:none;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#ffb35a,#7a3d9a)}
-#cmt small{display:block;font:500 15px/1.2 var(--f);color:#9aa1b8}
-#cmt b{display:block;font:700 22px/1.25 var(--f);color:#fff;white-space:nowrap}
 .rk{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:#7aa2ff;color:#fff;font:900 16px/34px var(--d);text-align:center;z-index:26;opacity:0;box-shadow:0 6px 16px rgba(0,0,0,.4)}
-#ask{left:60px;top:396px;width:420px;height:50px;border-radius:25px;background:#141827;border:1.5px solid #ffb35a;padding:0 20px;font:600 19px/50px var(--f);color:#fff;white-space:nowrap;overflow:hidden;opacity:0;z-index:28}
 </style>
 </head>
 <body>
 <div id="vp" class="a" data-fit="free"><div id="world" class="a" data-fit="free">
-  <div id="ctx" class="a"><div style="position:absolute;inset:0;background:linear-gradient(90deg,#e8efee 0%,#f6f8f7 40%,#eef3f2 100%)"></div>
-<div style="position:absolute;left:60px;top:380px;width:14px;height:520px;border-radius:7px;background:linear-gradient(90deg,#c9d2d1,#f4f7f6,#b9c3c2);box-shadow:4px 6px 12px rgba(0,0,0,.18)"></div>
-<div style="position:absolute;left:470px;top:440px;width:34px;height:34px;border-radius:50%;background:#ff6b6b;box-shadow:0 6px 10px rgba(0,0,0,.25)"></div>
-<div style="position:absolute;left:520px;top:860px;width:30px;height:30px;border-radius:50%;background:#4fc3f7;box-shadow:0 6px 10px rgba(0,0,0,.25)"></div>
-<div style="position:absolute;left:96px;top:870px;width:44px;height:26px;border-radius:8px;background:#ffd54f;box-shadow:0 6px 10px rgba(0,0,0,.25)"></div>
-<div class="lit" style="background:radial-gradient(60% 45% at 60% 45%,rgba(255,255,255,.7),transparent 75%)"></div>
-<div class="lit" style="background:linear-gradient(160deg,rgba(255,236,200,.18),transparent 50%)"></div></div>
+  <div id="ctx" class="a"><div style="position:absolute;inset:0;background:linear-gradient(175deg,#2b343b 0%,#222a30 55%,#1a2024 100%)"></div>
+<div style="position:absolute;left:36px;top:352px;width:468px;height:470px;border-radius:26px;background:linear-gradient(160deg,#46525b,#2d363d 60%,#262e34);box-shadow:inset 0 2px 0 rgba(255,255,255,.14),0 18px 40px rgba(0,0,0,.4);opacity:.75"></div>
+<div style="position:absolute;left:14px;top:430px;width:12px;height:300px;border-radius:6px;background:linear-gradient(90deg,#8a959d,#d4dbe0,#7c868e);opacity:.55"></div>
+<div style="position:absolute;left:0;right:0;top:850px;height:190px;background:linear-gradient(180deg,#4a3c30,#342a21);box-shadow:0 -3px 0 rgba(255,235,200,.2)"></div>
+<div class="lit" style="background:radial-gradient(55% 40% at 50% 55%,rgba(255,225,185,.4),transparent 75%)"></div>
+<div class="lit" style="background:linear-gradient(180deg,rgba(255,210,150,.12),rgba(255,180,110,.05))"></div></div>
   <div id="spot" class="a"></div>
   <div id="grid" class="a" data-fit="free"></div>
   <svg id="ring" class="a" viewBox="-320 -320 640 640"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--tint);stop-opacity:0"/><stop offset="1" style="stop-color:var(--tint);stop-opacity:.55"/></linearGradient></defs><circle r="300" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="26"/><g id="ringarc"><path d="M-212 -212 A300 300 0 1 1 -300 0" fill="none" stroke="url(#rg)" stroke-width="26" stroke-linecap="round"/></g></svg>
   <div id="floor" class="a"></div>
   <div id="sbox" data-subject style="position:absolute;left:40px;top:412px;width:460px;height:366px"></div>
   <div class="rul" style="left:8px;top:400px;height:246px"></div><div class="rul r" style="left:508px;top:400px;height:246px"></div>
-<div id="inv" class="board">
+<div id="board" class="board">
   <div class="iv" id="v0">Aarav is 7!!</div>
   <div class="iv" id="v1">PARTY TIME</div>
   <div class="iv" id="v2">Sunday · 4 PM</div>
@@ -95,8 +89,6 @@ body:not(.ctx) #topband{display:none}
   <div class="cf" id="c4" style="background:#ff9800"></div><div class="cf" id="c5" style="background:#9c27b0"></div><div class="cf" id="c6" style="background:#ffeb3b"></div><div class="cf" id="c7" style="background:#e91e63"></div>
 </div>
 <div class="rk" id="k1">1</div><div class="rk" id="k2">2</div><div class="rk" id="k3">3</div>
-<div id="cmt" class="a"><i></i><div><small>the invite</small><b id="cmtT"></b></div></div>
-<div id="ask" class="a"></div>
   <div id="sweep" class="a"></div>
   <svg id="ov" class="a" viewBox="0 0 540 960"></svg>
   <svg id="cur" class="a" viewBox="0 0 30 30" style="filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))"><path d="M4 2 L4 24 L10 18 L14 27 L18 25 L14 16 L22 16 Z" fill="#fff" stroke="#0b0d16" stroke-width="1.6" stroke-linejoin="round"/></svg>
@@ -750,82 +742,117 @@ KM.WORLDS.turnsout = { c: { ink: '#0b0d16', dim: '#9aa1b8', acc: '#ffb35a', red:
   DT.S.reveal = function(t){ c({ t: t, k: 'riser', d: .9, g: .14 }); c({ t: t, k: 'snap', g: .2, x: 270 }); [0, 4, 7, 12].forEach(function(n, j){ pl(t + .02 + j * .03, 180 + j * 60, n, .13); }); c({ t: t + .05, k: 'shimmer', g: .16, x: 270, r: .6 }); };
 })();
 
+// ---- premium program, 24 Nov 2026: the before/after proof and the fix seen close ----
+// Why: on resume and card-margins the fixed design is the only thing on the last frame; a viewer who joins late or sends the frame on
+// cannot see what changed, and each fix is a small change on a small page. So:
+//   DT.keep(board)             call once when the design is in its "before" state (after fonts, e.g. after a first seek): keeps a still copy
+//   DT.proof(t, t0, o)         the payoff: at t0 the kept "before" flashes back over the design for o.flash (0.5 s) under a red BEFORE tag,
+//                              then shrinks to a tilted thumbnail at the design's lower corner (o.x, o.y, o.s; its tag beside it, inside the safe zone) and stays, while
+//                              the design itself is tagged AFTER: the last frame shows both. Returns 0..1 (the thumbnail's way down).
+//   DT.S.flip(t)               its sound: paper back, paper forward, a bright snap
+//   DT.close(CAM, t0, z, top)  a fix seen close: the camera goes in (z, default 1.1) before the fix lands and comes back after
 (function(){
-  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ff8a5a', '#ff5f7a');
-  var TEXT = "Let's fix this birthday invite. Move one: pick one hero, the age. Move two: one font, two sizes. Move three: one colour, used once. Turns out, a kids' party can look this good. Comment what we fix next.";
-  var DUR = 16, V, PH, A = {}, CAM, CUR = [], IX = 90, IY = 440, W = {};
-  var ST = {   // A: everything shouts (four fonts, all centred, one size); B: one hero, one font in two sizes, one colour
-    v0: { A: { f: "400 30px/1.2 'Pacifico'", c: '#e91e63', y: 26 }, B: { f: "700 26px/1 'Space Grotesk'", c: '#1d1a16', y: 176 } },
-    v1: { A: { f: "400 26px/1 'Anton'", c: '#ff9800', y: 84 }, B: { f: "700 13px/1 'Space Grotesk'", c: '#8a7f70', y: 212, ls: '.2em' } },
-    v2: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 136 }, B: { f: "500 18px/1 'Space Grotesk'", c: '#1d1a16', y: 244 } },
-    v3: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 162 }, B: { f: "500 18px/1 'Space Grotesk'", c: '#1d1a16', y: 270 } },
-    v4: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 188 }, B: { f: "700 13px/1 'Space Grotesk'", c: '#ff7a45', y: 306, ls: '.2em' } } };
-  var IDS = ['v0', 'v1', 'v2', 'v3', 'v4'], CF = [[40, 250], [300, 236], [70, 300], [250, 296], [160, 240], [320, 120], [26, 110], [200, 300]];
+  var P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl, WAS = null, TAG = null, TAG2 = null;
+  DT.keep = function(board){ if (WAS) WAS.remove(); var cs = getComputedStyle(board), c = board.cloneNode(true); c.removeAttribute('id'); c.id = 'dt-was';
+    // the copy carries its look inline and drops ids and classes, so no rule, selector or check (ALIGN, OVERLAP) takes it for the live design
+    var src = board.querySelectorAll('*'), dst = c.querySelectorAll('*'), KEEP = ['position', 'left', 'top', 'right', 'bottom', 'width', 'height', 'display', 'whiteSpace', 'font', 'color', 'letterSpacing', 'lineHeight', 'textAlign',
+      'background', 'border', 'borderRadius', 'padding', 'margin', 'boxSizing', 'transform', 'transformOrigin', 'boxShadow', 'opacity'];
+    for (var i = 0; i < src.length; i++) { var q = getComputedStyle(src[i]), d = dst[i]; KEEP.forEach(function(k){ d.style[k] = q[k]; }); d.removeAttribute('class'); if (src[i].parentNode === board) d.style.opacity = src[i].id === 'stamp' ? '0' : '1'; d.removeAttribute('id'); }
+    c.style.cssText = 'position:absolute;left:' + board.offsetLeft + 'px;top:' + board.offsetTop + 'px;width:' + board.offsetWidth + 'px;height:' + board.offsetHeight + 'px;background:' + cs.backgroundColor + ';background-image:' + cs.backgroundImage +
+      ';border-radius:' + cs.borderRadius + ';overflow:hidden;transform-origin:0 0;opacity:0;z-index:27;pointer-events:none;box-shadow:0 18px 40px rgba(0,0,0,.5)';
+    c.setAttribute('aria-hidden', 'true'); board.parentNode.appendChild(c); WAS = c; WAS._b = { x: board.offsetLeft, y: board.offsetTop, w: board.offsetWidth, h: board.offsetHeight };
+    var mk = function(txt, col){ var e = document.createElement('div'); e.textContent = txt; e.style.cssText = 'position:absolute;left:0;top:0;padding:7px 12px;border-radius:9px;font:900 15px/1 var(--d);letter-spacing:.1em;color:#0b0d16;background:' + col + ';opacity:0;z-index:28;white-space:nowrap;box-shadow:0 8px 18px rgba(0,0,0,.4)'; board.parentNode.appendChild(e); return e; };
+    if (!TAG) { TAG = mk('BEFORE', '#ff6b6b'); TAG2 = mk('AFTER', '#5ee0a0'); } };
+  DT.proof = function(t, t0, o){ if (!WAS) return 0; o = o || {}; var b = WAS._b, fl = o.flash || .5, sx = o.x == null ? 44 : o.x, sy = o.y == null ? b.y + b.h + 26 : o.y, sc = o.s || .36, fs = o.fs || 1, fx = o.fx || 0, fy = o.fy || 0;   // fs/fx/fy: the flash can start smaller and lower (all optional; default = over the whole design)
+    var on = P(t, t0, t0 + .07), k = E.inOut3(P(t, t0 + fl, t0 + fl + .55)), sh = (1 - P(t, t0, t0 + .25)) * 4 * (t >= t0 ? 1 : 0);
+    WAS.style.opacity = on.toFixed(3); WAS.style.filter = 'grayscale(' + (.5 * k).toFixed(3) + ') brightness(' + (1 - .14 * k).toFixed(3) + ')';
+    WAS.style.transform = 'translate(' + (mix(fx, sx - b.x, k) + Math.sin(t * 70) * sh).toFixed(2) + 'px,' + mix(fy, sy - b.y, k).toFixed(2) + 'px) rotate(' + (-5 * k).toFixed(2) + 'deg) scale(' + mix(fs, sc, k).toFixed(4) + ')';
+    var bx = mix(b.x + 14 + fx, o.tx == null ? sx + b.w * sc + 10 : o.tx, k), by = mix(b.y + fy + b.h * fs - 18, o.ty == null ? sy + 10 : o.ty, k);   // the tags sit on the design's lower edge: the chips own its top edge
+    TAG.style.opacity = on.toFixed(3); TAG.style.transform = 'translate(' + bx.toFixed(1) + 'px,' + by.toFixed(1) + 'px) scale(' + (1 + .5 * (1 - E.out3(P(t, t0, t0 + .3)))).toFixed(3) + ')';
+    var a = E.back(P(t, t0 + fl + .1, t0 + fl + .5), 2.2); TAG2.style.opacity = cl(a * 3).toFixed(3); TAG2.style.transform = 'translate(' + (b.x + b.w - 96).toFixed(1) + 'px,' + (b.y + b.h - 18).toFixed(1) + 'px) scale(' + (.6 + .4 * a).toFixed(3) + ')';
+    return k; };
+  DT.S.flip = function(t, fl){ fl = fl || .5; KM.cue({ t: t, k: 'rustle', d: .12, g: .14, x: 270 }); KM.cue({ t: t + .02, k: 'snap', g: .16, x: 200 }); KM.cue({ t: t + fl, k: 'rustle', d: .14, g: .12, x: 270 }); KM.cue({ t: t + fl + .05, k: 'swish', d: .4, g: .14, x: 160, r: .3 }); KM.cue({ t: t + fl + .5, k: 'click', g: .1, x: 120 }); };
+  // (the zoom is anchored on the design's top edge, so the design grows down into the stage and never up into the words; slow enough to be a move, not a jump)
+  DT.close = function(CAM, t0, z, top){ z = z || 1.1; top = top == null ? 396 : top; return CAM.pushIn(t0 - .9, .8, 270, top + (480 - top) / z, z).pull(t0 + .7, .7, 270, 490, 1); };
+})();
+
+(function(){
+  var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ff8a5a', '#ffb35a');
+  // spoken sentences with breaths (rules-c3.md V1-V3); the before is a believable first draft: four fonts, everything centred, confetti, nothing is the hero (B1)
+  var TEXT = "Everything here is shouting. Nothing stands out, so nothing gets read. Turns out, it needs one hero. First, make the age the biggest thing. Next, keep one font in two sizes. Then, use one colour, just once. Same party, and now you can read it.";
+  var DUR = 20, BX = 66, BY = 396, OX = BX + 10, OY = BY + 10, IW = 388, V, PH, A = {}, CAM;
+  var ST = {   // A: everything shouts (four fonts, all centred); B: one hero, one font in two sizes, one colour
+    v0: { A: { f: "400 30px/1.2 'Pacifico'", c: '#e91e63', y: 26 }, B: { f: "700 32px/1 'Space Grotesk'", c: '#1d1a16', y: 164 } },
+    v1: { A: { f: "400 26px/1 'Anton'", c: '#ff9800', y: 84 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#8a7f70', y: 208, ls: '.14em' } },
+    v2: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 136 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#1d1a16', y: 242 } },
+    v3: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 162 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#1d1a16', y: 274 } },
+    v4: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 188 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#1d1a16', y: 306 } } };
+  var IDS = ['v0', 'v1', 'v2', 'v3', 'v4'], CF = [[300, 250], [345, 230], [280, 300], [350, 300], [315, 165], [345, 110], [300, 120], [250, 318]];
   function font(el, s){ el.style.font = s.f; el.style.color = s.c; el.style.letterSpacing = s.ls || 'normal'; }
   function at(w, n){ return V.at(w, n); }
   function anchors(words){
-    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR); A.hook = at('Move') - .2;
-    A.m1 = at('Move'); A.hero = at('hero'); A.m2 = at('Move', 2); A.sizes = at('sizes'); A.m3 = at('Move', 3); A.once = at('once'); A.turns = at('Turns'); A.cmt = at('Comment'); A.end = Math.min(DUR - .2, V.end + 1.2);
+    V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
+    A.hook = at('Everything') - .1; A.nothing = at('Nothing'); A.turns = at('Turns'); A.con = at('hero'); A.f1 = at('First'); A.age = at('age'); A.big = at('biggest');
+    A.f2 = at('Next'); A.font = at('font'); A.sizes = at('sizes'); A.f3 = at('Then'); A.col = at('colour'); A.once = at('once');
+    A.same = at('Same'); A.readable = at('read', 2); A.proof = A.readable + .8; A.e1 = A.proof + 1.2; A.e2 = A.e1 + .9; A.end = Math.min(DUR - .2, A.e2 + 1.5);
     window.COVER = .6;
-    CAM = KM.rig({ x: 255, y: 480, z: 1.14, drift: 1 }).pull(0, .55, 255, 480, 1).pushIn(A.m1, 1, 255, 486, 1.03).pull(A.turns - .2, .8, 255, 480, 1);
-    var S = DT.S; S.sting(0); [.35, .65, .95].forEach(function(t0, i){ S.land(t0 + .05, 270, i + 1); KM.cue({ t: t0, k: 'tick', g: .08, p: i, x: 270, synth: true }); }); S.whoosh(0, 270, .4); S.land(.1, 270, 0); 
-    S.whoosh(A.m1 - .9, 270, .3); IDS.forEach(function(id, i){ S.land(A.m1 - .7 + i * .06, 270, i); });
-    // move 1: the hero grows (a swell and a shimmer), the read order lands 1-2-3 as rising notes
-    S.rise(A.hero - .4, .45); S.tint(A.hero + .35, 150); [0, 1, 2].forEach(function(n){ S.land(A.hero + .6 + n * .12, 200 + n * 60, n * 2); }); A.d1 = A.hero + .95; S.done(A.d1, 150, 0);
-    // move 2: the scan flips every line, letter by letter, into one font
-    S.rise(A.m2 - .1, .4); IDS.forEach(function(id, i){ S.swap(A.m2 + .4 + i * .14, .4, 270, 6); }); S.roll(A.m2 + .35, .75, 400, 4); S.land(A.sizes, 180, 6); A.d2 = A.m2 + 1.25; S.done(A.d2, 270, 2);
-    // move 3: the confetti flies into the 7 (a run of plucks), the 7 takes the colour (shimmer)
-    S.rise(A.m3 - .1, .4); for (var i = 0; i < 8; i++) S.land(A.m3 + .35 + i * .05, 120 + i * 40, i); S.tint(A.m3 + .7, 150); A.d3 = A.once + .1; S.done(A.d3, 150, 4);
-    S.reveal(A.turns + .2); S.roll(A.cmt + .4, 1.2, 270, 15); S.click(A.cmt + .2, 270);
+    var S = DT.S; S.sting(0); [.35, .65, .95].forEach(function(t0, i){ S.land(t0 + .05, 270, i + 1); KM.cue({ t: t0, k: 'tick', g: .08, p: i, x: 270, synth: true }); }); S.whoosh(0, 270, .4);
+    S.stamp(A.nothing + .1, 270); S.tint(A.turns, 270);
+    S.rise(A.f1 - .4, .45); IDS.forEach(function(id, i){ S.land(A.age + .05 + i * .07, 200 + i * 40, i); }); S.tint(A.big + .1, 150); [0, 1, 2].forEach(function(n){ S.land(A.big + .35 + n * .12, 200 + n * 60, n * 2); }); A.d1 = A.big + .8; S.done(A.d1, 150, 0);
+    S.rise(A.f2 - .1, .4); IDS.forEach(function(id, i){ S.swap(A.font + .05 + i * .14, .4, 270, 6); }); S.roll(A.font, .75, 400, 4); S.land(A.sizes, 180, 6); A.d2 = Math.max(A.sizes + .3, A.font + 1.1); S.done(A.d2, 270, 2);
+    S.rise(A.f3 - .1, .4); for (var i = 0; i < 8; i++) S.land(A.col + .05 + i * .05, 120 + i * 40, i); S.tint(A.col + .5, 150); A.d3 = Math.max(A.once + .1, A.col + .9); S.done(A.d3, 150, 4);
+    S.reveal(A.readable); S.flip(A.proof, .5); S.land(A.e1, 200, 5); S.done(A.e2, 270, 6);
+    CAM = KM.rig({ x: 270, y: 490, z: 1.06, drift: 1 }).pull(0, .55, 270, 490, 1);
+    DT.close(CAM, A.d1, 1.08); DT.close(CAM, A.d2, 1.08); DT.close(CAM, A.d3, 1.07);
     window.ALIGN = [{ at: A.end - .05, sel: '.iv > span:first-child', edge: 'left', why: 'every line starts on one edge' }, { at: A.end - .05, sel: 'span', each: '.iv', edge: 'bottom', why: 'every letter on its line' }];
-    window.HOLDS = [[A.end, DUR]]; KM.publish(DT.score(A.turns, A.m1));
+    window.HOLDS = [[A.end, DUR]];
+    KM.publish(DT.score(A.same, A.f1));
   }
   function seek(t){
     t = Math.max(0, Math.min(DUR, t)); var c = CAM.apply($('world'), t, null); KM.lights(t, c);
-    DT.mood(t, (.34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5)))); DT.sweep(t, [A.d1, A.d2, A.d3, A.turns + .2]); DT.hook(t, '<i>Let\'s</i> <em><i>fix</i> <i>this</i> <i>invite.</i></em>', A.hook);
-    // the request: a comment types in, holds, then lifts away as the invite arrives
-    var cm = $('cmt'), ci = 0, co = E.inOut3(P(t, A.m1 - .25, A.m1 + .15)), txt = 'Fix a birthday invite, please!';
-    cm.style.opacity = (ci * (1 - co)).toFixed(3); cm.style.transform = 'translateY(' + ((1 - ci) * 20 - 60 * co).toFixed(1) + 'px)';
-    $('cmtT').textContent = txt.slice(0, Math.round(txt.length * P(t, A.hook + .15, A.hook + 1.2))) + (t < A.hook + 1.3 ? '|' : '');
-    var inv = $('inv'), ia = E.out3(P(t, A.m1 - .15, A.m1 + .35)); inv.style.opacity = mix(.35, 1, Math.max(ia, 1 - P(t, A.hook, A.hook + .3))).toFixed(3);   // fully there under the claim, dimmed behind the comment, back for the moves inv.style.transform = 'translateY(' + ((1 - ia) * 30).toFixed(1) + 'px)';
-    // move 1: the 7 grows into the hero; everything else steps down; read-order badges
-    var k1 = DT.spring(t, A.hero, .8), k2 = P(t, A.m2 + .35, A.m2 + 1.1), k3 = DT.spring(t, A.m3 + .3, .7);
-    IDS.forEach(function(id, i){ var el = $(id), a = ST[id].A, b = ST[id].B, t0f = A.m2 + .4 + i * .14, kf = P(t, t0f, t0f + .45);
+    var inv = $('board'); DT.intro(inv, t + .6, .55);
+    DT.mood(t, .34 * E.out3(P(t, A.d1 - .2, A.d1 + .5)) + .33 * E.out3(P(t, A.d2 - .2, A.d2 + .5)) + .33 * E.out3(P(t, A.d3 - .2, A.d3 + .5)));
+    DT.sweep(t, [A.d1, A.d2, A.d3, A.readable]);
+    DT.hook(t, '<i>Everything</i> <em><i>shouts.</i></em>', A.hook);
+    // fix 1: the age becomes the hero; the old lines step down; read-order badges 1-2-3
+    var k1 = DT.spring(t, A.age, .8), k2 = P(t, A.font, A.font + .75), k3 = DT.spring(t, A.col + .3, .7);
+    IDS.forEach(function(id, i){ var el = $(id), a = ST[id].A, b = ST[id].B, t0f = A.font + .05 + i * .14, kf = P(t, t0f, t0f + .45);
       font(el, kf >= .5 ? b : a); DT.flipChars(el, t, t0f, .45, a, b);
-      var w = el.offsetWidth, xA = (360 - w) / 2, x = mix(xA, 30, k1), y = mix(a.y, b.y, k1);
+      var w = el.offsetWidth, xA = (IW - w) / 2, x = mix(xA, 30, k1), y = mix(a.y, b.y, k1);
       var sh = kf >= 1 ? 1 : mix(1, id === 'v0' ? .72 : .66, k1); el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + sh.toFixed(3) + ')'; });
-    { var ro = 1 - P(t, A.hook - .3, A.hook); [[.35, { x: IX + 14, y: IY + 14, w: 332, h: 56, r: 14 }, 'NO HERO', IX + 20], [.65, { x: IX + 40, y: IY + 74, w: 280, h: 140, r: 16 }, '4 FONTS', IX + 128], [.95, { x: IX + 6, y: IY + 228, w: 348, h: 90, r: 16 }, '6 COLOURS', IX + 236]].forEach(function(r, i){
-      DT.box('fr' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); DT.chip('frl' + i, r[2], r[3], IY + 302, P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); }); }
-    var k7 = DT.spring(t, A.hero + .45, .7), b7 = $('big7'), s = mix(.2, 1, k7); b7.style.transform = 'translate(26px,10px) scale(' + s.toFixed(3) + ')'; b7.style.opacity = P(t, A.hero + .35, A.hero + .55).toFixed(3);   /* the 7 grows once the old lines have stepped down (no crossing) */
+    { var ro = 1 - P(t, A.turns - .3, A.turns); [[.35, { x: OX + 20, y: OY + 26, w: 348, h: 48, r: 14 }, 'NO HERO', BX + 22], [.65, { x: OX + 54, y: OY + 74, w: 280, h: 140, r: 16 }, '4 FONTS', BX + 150], [.95, { x: OX + 8, y: OY + 226, w: 372, h: 92, r: 16 }, '6 COLOURS', BX + 266]].forEach(function(r, i){
+      DT.box('fr' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); DT.chip('frl' + i, r[2], r[3], BY + 350, P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); }); }
+    var k7 = DT.spring(t, A.age + .22, Math.max(.5, A.big - A.age - .1)), b7 = $('big7'), s = mix(.2, 1, k7); b7.style.display = t >= A.age - .05 ? 'block' : 'none';   // display none while the before is kept, so the BEFORE picture has no 7
+    b7.style.transform = 'translate(26px,22px) scale(' + s.toFixed(3) + ')'; b7.style.opacity = (P(t, A.age - .05, A.age + .15) * (1 - (P(t, A.proof - .02, A.proof + .03) - P(t, A.proof + .55, A.proof + .65)))).toFixed(3);   // hidden while the BEFORE flashback is up
     b7.style.color = 'rgb(' + [Math.round(mix(29, 255, k3)), Math.round(mix(26, 122, k3)), Math.round(mix(22, 69, k3))].join(',') + ')';
-    // the read order: 1 the hero, 2 whose party, 3 when and where
-    [[1, IX + 178, IY + 40], [2, IX + 300, IY + 186], [3, IX + 250, IY + 256]].forEach(function(r, i){ var e = $('k' + r[0]), k = E.back(P(t, A.hero + .55 + i * .12, A.hero + .9 + i * .12), 2), o = k * (1 - P(t, A.m3 - .2, A.m3 + .1));
+    [[1, OX + 190, OY + 70], [2, OX + 330, OY + 178], [3, OX + 290, OY + 248]].forEach(function(r, i){ var e = $('k' + r[0]), k = E.back(P(t, A.big + .35 + i * .12, A.big + .7 + i * .12), 2), o = k * (1 - P(t, A.f2 - .2, A.f2 + .1));
       e.style.left = r[1] + 'px'; e.style.top = r[2] + 'px'; e.style.opacity = cl(o).toFixed(3); e.style.transform = 'scale(' + (.5 + .5 * k).toFixed(3) + ')'; });
-    DT.chip('h', 'ONE <b>HERO</b>', 300, 412, P(t, A.hero, A.hero + .3) - P(t, A.m2 - .1, A.m2 + .2));
-    // move 2: the scan, the font count, the two sizes
-    var sk = P(t, A.m2 + .35, A.m2 + 1.1); DT.line('scan', IX + 4, IY + 10 + sk * 320, IX + 356, IY + 10 + sk * 320, sk > 0 && sk < 1 ? 1 : 0, '#ffb35a', 3);
-    DT.chip('f', 'ONE <b>FONT</b>', 300, 412, P(t, A.m2 + .2, A.m2 + .5) - P(t, A.m3 - .1, A.m3 + .2));
-    DT.chip('s', 'SIZES <b>2</b>', 180, 412, P(t, A.sizes, A.sizes + .3) - P(t, A.m3 - .1, A.m3 + .2));
-    // move 3: the confetti flies into the 7, which takes the one colour; the background calms
-    for (var i = 0; i < 8; i++) { var e = $('c' + i), fk = E.inOut3(P(t, A.m3 + .3 + i * .05, A.m3 + .75 + i * .05)), x0 = CF[i][0], y0 = CF[i][1];
+    DT.chip('rd', 'NOTHING <b>STANDS OUT</b>', 130, 396, P(t, A.nothing - .1, A.nothing + .2) - P(t, A.turns - .2, A.turns + .1), 'r');
+    DT.chip('con', 'IT NEEDS ONE <b>HERO</b>', 120, 396, P(t, A.con - .1, A.con + .2) - P(t, A.f1 - .2, A.f1 + .1));
+    DT.chip('h', 'THE AGE IS <b>THE HERO</b>', 110, 396, P(t, A.big, A.big + .3) - P(t, A.f2 - .1, A.f2 + .2));
+    // fix 2: the scan flips every line, letter by letter, into one font; then two sizes
+    var sk = P(t, A.font, A.font + .8); DT.line('scan', BX + 6, BY + 16 + sk * 340, BX + 402, BY + 16 + sk * 340, sk > 0 && sk < 1 ? 1 : 0, '#ffb35a', 3);
+    DT.chip('f', 'ONE <b>FONT</b>', 150, 396, P(t, A.font, A.font + .3) - P(t, A.sizes - .1, A.sizes + .15));
+    DT.chip('s', 'TWO <b>SIZES</b>', 150, 396, P(t, A.sizes, A.sizes + .3) - P(t, A.f3 - .1, A.f3 + .2));
+    // fix 3: the confetti flies into the 7, which takes the one colour; the board calms
+    for (var i = 0; i < 8; i++) { var e = $('c' + i), fk = E.inOut3(P(t, A.col + .05 + i * .05, A.col + .5 + i * .05)), x0 = CF[i][0], y0 = CF[i][1];
       e.style.left = mix(x0, 80, fk).toFixed(1) + 'px'; e.style.top = mix(y0, 80, fk).toFixed(1) + 'px'; e.style.opacity = (1 - P(fk, .8, 1)).toFixed(3); e.style.transform = 'scale(' + mix(1, .4, fk).toFixed(3) + ')'; }
     inv.style.background = 'rgb(' + [Math.round(mix(214, 255, k3)), Math.round(mix(240, 246, k3)), Math.round(mix(255, 232, k3))].join(',') + ')';
-    DT.chip('c', 'ONE <b>COLOUR</b>', 300, 412, P(t, A.m3 + .2, A.m3 + .5) - P(t, A.turns - .1, A.turns + .2));
-    [[A.d1, IX + 90, IY + 90], [A.d2, IX + 180, IY + 230], [A.d3, IX + 90, IY + 90]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], i === 2 ? '#ff7a45' : '#ffb35a'); });
+    DT.chip('c', 'ONE <b>COLOUR</b>', 150, 396, P(t, A.col, A.col + .3) - P(t, A.same - .2, A.same + .1));
+    [[A.d1, OX + 100, OY + 90], [A.d2, OX + 190, OY + 230], [A.d3, OX + 100, OY + 90]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], i === 2 ? '#ff7a45' : '#ffb35a'); });
     var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35))); inv.style.boxShadow = '0 30px 70px rgba(0,0,0,.55),0 0 0 ' + (3 * br).toFixed(1) + 'px rgba(255,179,90,.55)';
-    DT.chip('done', 'DONE · <b>3 MOVES</b>', 300, 412, P(t, A.turns, A.turns + .3) - P(t, A.cmt - .2, A.cmt), 'g');
-    // the ask: a comment box types the next request
-    var ak = E.out3(P(t, A.cmt, A.cmt + .3)), ask = $('ask'), q = 'Fix my CV next!'; ask.style.opacity = ak.toFixed(3); ask.style.transform = 'translateY(' + ((1 - ak) * 16).toFixed(1) + 'px)';
-    ask.textContent = 'Add a comment… ' + q.slice(0, Math.round(q.length * P(t, A.cmt + .4, A.cmt + 1.6))) + (Math.floor(t * 3) % 2 ? '|' : '');
-    DT.cursor(t, CUR);
-    DT.dial(t, [{ t: 0, sym: '?', label: 'YOU ASKED' }, { t: A.m1, n: 1, word: 'MOVE' }, { t: A.m2, n: 2, word: 'MOVE' }, { t: A.m3, n: 3, word: 'MOVE' }, { t: A.turns, end: 1, sym: '✓', label: 'FIXED' }]);
-    DT.title(t, [{ t: A.m1, html: 'Move 1 · <em>one hero</em>' }, { t: A.m2, html: 'Move 2 · <em>one font</em>' }, { t: A.m3, html: 'Move 3 · <em>one colour</em>' }, { t: A.cmt, html: 'What do we fix <em>next</em>?' }]);
-    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), A.end, function(w){ return /^(invite|hero|age|font|sizes|colour|once|good|comment|next)/i.test(w) ? 'var(--amb)' : null; });
+    DT.proof(t, A.proof, { flash: .5, x: 30, y: 772, s: .34, tx: 180, ty: 752, fs: .85, fx: 30, fy: 44 });
+    DT.chip('win', 'SAME <b>PARTY</b>', 100, 396, P(t, A.readable - .2, A.readable + .1) - P(t, A.proof + .5, A.proof + .7), 'g'); DT.chip('win3', 'NOW <b>READABLE</b>', 120, 396, P(t, A.proof + .6, A.proof + .9) - P(t, A.e2 - .2, A.e2 + .1), 'g'); DT.chip('win2', 'FONTS 1 · COLOUR 1', 120, 396, P(t, A.e2, A.e2 + .3), 'g');
+    [[A.e1, OX + 200, OY + 56], [A.e1 + .12, OX + 345, OY + 176], [A.e1 + .24, OX + 345, OY + 250]].forEach(function(d, j){ DT.line('tk' + j + 'a', d[1], d[2], d[1] + 8, d[2] + 8, P(t, d[0], d[0] + .15), '#2fb37a', 4); DT.line('tk' + j + 'b', d[1] + 8, d[2] + 8, d[1] + 24, d[2] - 10, P(t, d[0] + .1, d[0] + .25), '#2fb37a', 4); });
+    DT.box('ok', { x: BX + 14, y: BY + 14, w: 380, h: 340, r: 14 }, P(t, A.e2, A.e2 + .5), '#5ee0a0');
+    DT.dial(t, [{ t: 0, sym: '3', label: '3 FIXES' }, { t: A.f1, n: 1 }, { t: A.f2, n: 2 }, { t: A.f3, n: 3 }, { t: A.same, end: 1, sym: '✓', label: 'READABLE' }]);
+    DT.title(t, [{ t: A.hook, html: 'No hero, so <em>no read</em>' }, { t: A.f1, html: 'Fix 1 · <em>one hero</em>' }, { t: A.f2, html: 'Fix 2 · <em>one font</em>' }, { t: A.f3, html: 'Fix 3 · <em>one colour</em>' }, { t: A.same, html: 'Now <em>readable</em>' }]);
+    KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), Math.min(A.end, V.end + .6), function(w){ return /^(shouting|stands|hero|age|biggest|font|sizes|colour|once|read)/i.test(w) ? 'var(--amb)' : null; });
   }
   window.setVoice = function(v){ if (v && v.words && v.words.length) anchors(v.words); };
-  window.seek = seek; window.DURATION = DUR;
+  window.seek = seek; window.DURATION = DUR; window.__A = A;
   Promise.all(["400 30px 'Pacifico'", "400 26px 'Anton'", "400 18px 'Courier Prime'", "700 26px 'Space Grotesk'", "500 18px 'Space Grotesk'", "900 150px 'Unbounded'"].map(function(f){ return document.fonts.load(f); }))
-    .then(function(){ IDS.forEach(function(id){ font($(id), ST[id].A); }); anchors(); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
+    .then(function(){ IDS.forEach(function(id){ font($(id), ST[id].A); }); anchors(); seek(1.2); DT.keep($('board')); seek(+(new URLSearchParams(location.search).get('t') || 0)); document.documentElement.dataset.ready = 1; });
 })();
 </script>
 </body>
