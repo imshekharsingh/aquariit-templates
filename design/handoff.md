@@ -24,6 +24,15 @@ when the owner asks). The hourly "Handoff queue check" starts a session only for
 "task N started" Progress line in the last 3 hours); otherwise it ends at once. When a GO task is done, write "task N done" and stop.
 Current GO list, in this order: task 10 (3D kit v7; task 3's v6 is closed at render 2, no render 3), then task 9 (references). Every other open task waits until it is marked GO.
 
+## Owner rule for task 10: keep going until stable (owner, 26 Nov 2026)
+Task 10 (3D kit v7) continues on its own through the hourly queue check until it is STABLE or capped, without waiting to be told:
+- STABLE = the main account's critic writes CRITIC: READY on a v7 render AND its PREMIUM scores are all 7.5 or more AND Output QA passes.
+- The loop: make the critic's exact changes -> refresh stills -> ONE render -> Output QA -> write "v7 ready for critic" in Progress and
+  update projects.json (stage critic). The main account's probe starts the critic by itself; its verdict lands in Progress.
+- Cap: at most 2 v7 renders in this loop (this replaces the owner's "stop after a working render" rule for task 10 only). If v7 is not
+  STABLE after render 2, stop, write "v7 capped: <one line>" in Progress and wait for the owner.
+- When STABLE: v7 becomes the tech 3D gold (design/gold.md, scripts/qa/gold.json, the tech3d starter), write "task 10 done", and stop.
+
 ## Read first (only the parts you need)
 CLAUDE.md; the last 5 entries of design/handoff-log.md; design/3d-kit-phase2.md; design/rules-tech.md (section L, rules D1-D8).
 Never create, change or fire scheduled tasks (main account only). Model: the cheaper one (sonnet). Size M; say so in chat first.
