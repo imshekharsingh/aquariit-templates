@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-queue-hourly · owner chat: queue check hourly
+- design/handoff.md task 8: the other account's queue check runs hourly (owner), not every 30 minutes.
+
 ## 2026-11-26 · claude/handoff-queue-watch · owner chat: the other account watches its queue on a schedule
 - design/handoff.md: owner rule (pick up any queued task unasked; open/started/done markers in Progress) and task 8 (do now): a scheduled "Handoff queue check" in that account, every 30 min if allowed else hourly, cheapest model, starts one work session per open task. Order now 0, 8, 6, 7, 2, 5, 3.
 

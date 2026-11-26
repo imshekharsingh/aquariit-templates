@@ -120,8 +120,7 @@ app: regular upload notifications; test window notification change". Today the o
 
 ## Queued task 8 (owner, 26 Nov 2026): a scheduled check of this queue (do it NOW, before the next task)
 Owner: "pick up anything that's added to the job and run a periodic check on it like every 30 mins so that it knows there's something to
-pick up". In THIS account, create one recurring scheduled task "Handoff queue check": every 30 minutes if the scheduler allows it, else
-hourly (the main account's scheduler refuses steps under 1 hour; say which you got in Progress). Each fire starts a fresh, small
+pick up" (owner then: "hourly, not 30 mins"). In THIS account, create one recurring scheduled task "Handoff queue check": HOURLY (owner, 26 Nov 2026: once an hour, not every 30 minutes). Each fire starts a fresh, small
 session (the cheapest model) with the repo, which: reads this file from main; finds the next open task in the stated order (rule above);
 if none is open or one is already started within 3 hours, ends at once; otherwise starts ONE work session for it (a normal model, with
 the repo) whose prompt is "Read design/handoff.md and do Queued task N; write 'task N started' in Progress first". Keep it quiet: no
