@@ -5,10 +5,10 @@
    "id": "3d-kit-v6",
    "name": "3D kit v6: the tech look as a told story",
    "account": "other",
-   "stage": "render",
-   "line": "Render 2 is being made (about 25 min).",
-   "pct": 70,
-   "updatedAt": "2026-11-26T09:23:00Z",
+   "stage": "critic",
+   "line": "Render 2 passed every check. Main account runs the critic on the v6 video.",
+   "pct": 85,
+   "updatedAt": "2026-11-26T09:57:00Z",
    "history": [
     {
      "at": "2026-11-26T07:20:00Z",
@@ -34,6 +34,11 @@
      "at": "2026-11-26T09:23:00Z",
      "stage": "render",
      "line": "Render 2 is being made (about 25 min)."
+    },
+    {
+     "at": "2026-11-26T09:57:00Z",
+     "stage": "critic",
+     "line": "Render 2 passed every check. Main account runs the critic on the v6 video."
     }
    ]
   },
