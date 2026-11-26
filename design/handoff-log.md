@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/critic-3d-v6 · Independent critic (main account) of the 3D kit sample v6 render 2: NOT READY
+- Done: fetched the real v6 MP4 and v5, one contact sheet each, three full frames, frame-change and brightness strips. v6 beats v5 on movement (about 2x frame change) and glow; own entrances, the first-cable beat and the hook all show. NOT READY on four defects: empty pale frame 1.4-2.1 s, doubled see-through HUB 11.5-12 s, straight straw-like cascade cables 8-9.3 s, near-still end 18.3-22.9 s. PREMIUM 7.5 / 6 / 6.5. Verdict and EXACT FIX in review/tech/showreel-tech-gold3d-v6.md; Progress line in design/handoff.md.
+- Left: the other account applies the five-step EXACT FIX; render 3 needs the owner's yes; then a new critic here.
+- For the other account: run a brightness strip on the preview (a frame far brighter than the reel's median is an empty or washed shot).
+
 ## 2026-11-26 · claude/handoff-go-only · owner chat: the other account works only on GO tasks
 - Owner: it must not pick up the next item on its own. design/handoff.md rule: only tasks marked GO are worked on (the queue check starts only open GO tasks). GO now: task 3, then task 9. Tasks 6 and 7 wait until marked GO.
 
