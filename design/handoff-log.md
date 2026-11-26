@@ -1020,3 +1020,7 @@ Format (at most 6 lines):
 ## 2026-11-26 · claude/app-dup-ready-26nov · App: no repeat of a ready reel under Up next; channel line shows the slot (tooling, owner asked)
 - Done: render() leaves reels that readyReels() lists out of Up next/Later (all channels share the path); the page re-renders when the journey arrives. The channel line and profile card use slotLine() from /api/slots (tech "paused", others "at 14:00 IST, slot test until 2 Dec"). Phone-width check (390 px, mocked data): before 2 cards, after 1 under Ready and only tomorrow's under Up next. check.mjs "ready dup".
 - Left: nothing; owner confirms on the phone after the deploy.
+## 2026-11-26 · claude/critic-3d-v7-plan · Plan critic: 3D kit v7 plan, CHANGE FIRST
+- Done: independent plan critic (no render) on review/tech/showreel-tech-gold3d-v7.md and its stills sheet against task 10 points 1-7 and critic questions 47-52; measured the v6 render 2 MP4 and the tech gold MP4 (luma, colour, pale frames): the builder's numbers hold and the floor fix is the right and only light change. Verdict PLAN: CHANGE FIRST with seven exact changes (readable hook frame, whole apps after the pull-back, wall fills the frame, a real tangle at moment 2, leader lines clear of tiles, New the subject of its shot, a moving end and loop home).
+- Left: the other account makes changes 1-7, refreshes the stills sheet and runs the one render; the render critic checks idle motion, light sweeps and the loop on the real MP4.
+- For the other account: last-4 s median frame change at least 5 locally before rendering.

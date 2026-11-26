@@ -43,3 +43,31 @@ Move types in order: hold, pull back, crane up, dolly in, arc, pull back, truck 
 - Frame change: median 8.7 per 0.1 s; the last 4 s median 2.2 (calmer, with the 12 tick, a cable pulse, the orbit and the dolly home). For the critic to judge: is the end lively enough, or should the orbit be larger?
 
 (No verdict line here: the builder never writes one. The critic adds its own.)
+
+## Plan critic (main account, 26 Nov)
+Judged: the shot-by-shot plan above, the stills sheet review/tech/study-25nov/kit-phase2-v7.jpg (14 scene frames at the real cue times), the v6 verdict, task 10 points 1-7, critic questions 47-52 and the owner's 26 Nov notes. No render, no scene edits.
+Colour measured from this account on the real MP4s (2 fps, below the caption band): v6 render 2 luma p5 .01, median .20, p95 .73, colourful 18 %, 6 of 46 frames pale (median over .40); the tech gold showreel-tech-ai-memory p5 .03, median .10, p95 .63, colourful 4 %, 0 pale frames. The reference clips 9-14 are closed (videos deleted), so the written notes stand in for them. v6 render 2 matches the builder's local numbers, so the builder's measurement is sound: the one gap against our best reel is pale frames, and the floor fix is the right change. No grading or key/rim change is needed. Pale close-ups that are left (0-1.5 s Notes, 12.4-13.1 s Mail) are dealt with in change 1.
+
+Point by point:
+1. Cables, no clipping: OK. The 7.2 s and 8.4 s stills show cables lying on the floor and draping up the wall with plugs; check-wires.cjs covers all 36. Keep it in the render's QA.
+2. Numbers: OK on style: flat, white, one size, small line above and below, counting, readable in half a second at 9.8, 14.0, 18.9 and 21.6 s. CHANGE on leaders: at 18.9 s and 21.6 s the leader from "12" to the New tile cuts across the Chat and Mail tiles. On the 9.8 s still the leader to the tangle cannot be seen at all (change 5).
+3. Colour and light: OK (see the measurement above).
+4. Camera: OK on the list (a reason for each move, no type twice in a row, one push-in onto Notes). CHANGE where the stills do not deliver the move's reason: beat 2 is meant to pull back but still crops Notes and Mail (change 2); beat 3 wastes the frame (change 3); beat 10 is meant to be about New but the hub fills it (change 6).
+5. Drama on 3 moments: OK in the plan. CHANGE on moment 2: at 9.8 s the "tangle at its worst" reads as tidy rainbow arches either side of the wall, using the middle third of the frame. It does not look like a tangle (change 4).
+6. Hook and life: CHANGE. Frame 0.3 s is a cropped, out-of-focus cyan slab with no readable name or icon, and it is a pale frame. A first second that cannot be read is not tension (change 1). "All apps in by ~4 s" OK (by ~3 s); nothing pre-set OK; idle motion cannot be judged from stills, so the render critic will check it.
+7. v6 faults: empty frame OK (Notes from frame 0, darker floor); doubled HUB label OK (12.2 and 12.7 s: one opaque label); stiff cables OK (7.2-8.4 s drape). CHANGE on the still ending: the 18.9 s and 21.6 s stills have the same framing, and the builder's own last-4 s frame change is a median of 2.2. That is below v6's near-still end that failed (2-10). To the builder's question: no, it is not lively enough (change 7).
+Questions 48-52: own entrance per object yes (slam, rise, slide-turn, pops, drop, pop-in); each connection its own beat yes; wires would pass as real on 7.2/8.4 s yes; over-glow none visible, GLOW 1.2 % median locally; references named with times yes (counting numbers, one evolving object). Q47: captions are clear of the objects in every still; the leader lines are the only crossing found.
+
+Would v7 as written beat v6? Realism (cables on the floor, opaque hub, matte floor) and storytelling (a hook that is no longer pre-set, counting numbers on their words) yes. Movement: yes from 0 to 18 s, but it repeats v6's failed still end. v5/v6 strengths kept: colours, materials, own entrances, whole names on the wides, low glow. Fix the seven points below and it should clear v6 everywhere.
+
+CHANGES (exact):
+1. 0-0.5 s hook: start the slam with Notes whole in frame (the tile at most about 70 % of the frame width, the name and icon sharp by 0.3 s, the dark floor visible under it, frame median luma under .40); keep the scale 1.45 to 1, overshoot and light sweep at that framing.
+2. 1.4-3.0 s: the pull-back must end with Notes, Chat and Mail all whole, names uncut, by 3.0 s (stills 1.9 and 2.9 s still crop "otes" and Mail).
+3. 3.0-5.2 s (still 4.4 s): the wall fills about 70 % of the frame width so each tool's entrance and name read at phone size. Keep the apps out of frame or whole, never cut at the bottom edge ("tes", "Mail").
+4. 9.0-11.0 s, big moment 2: make the tangle look like a tangle. Cables cross and overlap on the floor between the apps and the wall with varied sag (still on the floor, check-wires still passing). The camera goes lower and closer so the tangle fills the frame width, not the middle third.
+5. Leader lines: every leader runs through empty space and never crosses another object or a name (one bend, or the number placed beside its object). The 24's leader visibly lands on the tangle with its ring.
+6. 15.1-18.2 s: New is the subject. The New tile is at least about 25 % of the frame width; the hub is foreground at the edge, not the main mass (still 15.9 s: New about 5 %, hub about 40 %).
+7. 18.2-22.9 s: the end moves. An arc of about 20-30 degrees from about 19.0 s, then the dolly home landing exactly on the frame-0 framing at 22.9 s, with idle motion visible on every tile. Last-4 s median frame change at least 5 on the local check, and the 18.9 s and 21.6 s frames framed differently.
+After these: one render, Output QA, and the render critic judges idle motion, the three light sweeps and the loop on the real MP4.
+
+PLAN: CHANGE FIRST: the plan fixes v6's cables, hub and floor, but the hook frame is an unreadable blur, the tangle does not look tangled, two shots miss their subject, leader lines cross tiles and the end is as still as v6's; make changes 1-7 above, refresh the stills sheet, then render.
