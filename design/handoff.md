@@ -45,6 +45,16 @@ If the v5 critic says NOT READY: stop, write the critic's fix list in Progress a
 ## Owner rule for more renders (owner, 26 Nov 2026, in the other account's chat)
 If a render FAILS, fix it and run the next render without asking. If a render SUCCEEDS and the critic's verdict needs another render, stop: the owner checks that result and confirms before the next render.
 
+## Queued task 2 (owner, 26 Nov 2026): the GitHub minutes meter is missing from the app
+Take it up after the 3D task is DONE (or now, if the 3D task is waiting on the owner). Size S, cap about $3, no renders.
+- The owner cannot see the "GitHub minutes" meter in the app's settings sheet. It is hidden until /api data loads: templates/index.html
+  (id "use", ~line 651; loader ~line 1646-1656, which hides it silently on any error), fed by the nightly "Actions usage" workflow
+  (.github/workflows/actions-usage.yml, scripts/actions-usage.mjs) writing c/showreel-usage-actions.json to R2.
+- Find why it stays hidden (workflow failing? file missing in R2? the loader's request or field names?) and fix it; if the data cannot load,
+  show the meter with a plain "minutes not counted yet" line instead of hiding it.
+- Why the owner needs it: deciding whether to make the repo private (private repos get 2,000 free minutes a month, then pay per minute).
+- Write each stage in Progress below; one handoff-log entry.
+
 ## Owner yes for render 5: YES (owner, in the other account's chat, 26 Nov 10:14 IST)
 
 ## Progress (newest last)

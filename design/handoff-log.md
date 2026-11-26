@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-minutes-meter · owner chat: minutes meter fix queued for the other account
+- design/handoff.md "Queued task 2": the app's GitHub minutes meter is not showing; the other account finds and fixes it (size S, cap ~$3).
+
 ## 2026-11-26 · claude/todo-preflight-all · owner chat: write-up, full check before render 1
 - design/todo.md P1 NEXT: preflight-all (cheap local preview + Output QA thresholds + text clear space against everything + review-file lint, gate in review-gate.mjs), size M, $5-8. Waits on the owner's yes.
 
