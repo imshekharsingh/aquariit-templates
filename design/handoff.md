@@ -12,6 +12,10 @@ When the task is done, the session marks it DONE here and the file goes back to 
 Do only the tasks written in this file, in the order given, and report each stage in Progress. No cost estimates, cost lines or cost talk,
 here or in chat. Ask the owner only before something the task does not already cover (for example an extra render).
 
+## HOLD (owner, 27 Nov 2026): do no work until the owner lifts this
+The other account is near its weekly limit. Start nothing, continue nothing; the hourly queue check ends at once while this HOLD is here.
+Next when lifted: task 10, make the 7 changes of "Render 3 plan critic" in review/tech/showreel-tech-gold3d-v7.md, then render 3.
+
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
 critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Only GO tasks are worked on (rule below): now task 10, then task 9

@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-hold · owner chat: other account on HOLD (weekly limit)
+- design/handoff.md HOLD at the top: no work until the owner lifts it. Waiting next: task 10, the 7 render 3 plan changes, then render 3.
+
 ## 2026-11-27 · claude/lesson-focus-structure · owner chat: focus, structure, reason in every plan and critic
 - Owner: include the system-map lesson where it fits. design/direction.md "Focus, structure, reason" (one subject lit, a fixed frame, a reason for every move; more motion is not better), with where it fits per channel and kit; design/critic.md Ambition pass point 4.
 
