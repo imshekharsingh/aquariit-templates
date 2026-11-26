@@ -1,7 +1,6 @@
-# Handoff: CLOSED (26 Nov 2026, 11:49 IST)
+# Handoff: OPEN (26 Nov 2026): queued tasks 0, 2, 3 (task 3 is the 3D kit v6)
 
-Both tasks below are DONE: the 3D tech look sample v5 (the tech 3D gold, finalised) and Queued task 2 (the GitHub minutes meter).
-The second account takes a new task only when the owner writes one here and sets this file to OPEN again. History follows.
+Tasks 0, 2 and 3 are below under their own headings; the v5 task and its history follow. Progress is at the end of the v5 section.
 
 # History: 3D tech look sample v5 (owner, 26 Nov 2026), DONE
 
@@ -112,6 +111,9 @@ tech 3D gold (design/gold.md, scripts/qa/gold.json, the tech3d starter).
 - 26 Nov 11:48 IST, other account: finalise step 3 done: design/3d-kit-phase2.md known limits: the hub label behind the apps is closed (v5 layout, checked every 0.25 s); the 18 s pace and the frame-blend motion blur are accepted, with the reasons written there.
 - 26 Nov 11:48 IST, other account: finalise step 4 done: design/rules-tech.md L0 and design/runbook-daily.md step 3 say tech daily builds start from `node scripts/starter.mjs tech3d <slug>` from the next build on; design/3d-kit-phase2.md has its DONE line.
 - 26 Nov 11:49 IST, other account: DONE. Finalise steps 1-5 done: v5 is the tech 3D gold, the starter copies it with the v3-v5 lessons, known limits closed or accepted, tech daily builds use the 3D look from the next build on. Queued task 2 was done earlier (meter always shows). This file is CLOSED.
+- 26 Nov 12:50 IST, other account: task 0: both branches had nothing left that main lacked (the step 5 merge carried them); main merged into each and pushed. claude/3d-kit-limits merged; claude/3d-kit-rules lost a merge race and was pushed again.
+- 26 Nov 12:50 IST, other account: task 2 was already done and is live (merged and deployed 26 Nov 11:47 IST): the meter always shows and says why if the count cannot be read.
+- 26 Nov 12:50 IST, other account: task 3 started (size L). Step 1 done: rules-tech.md D9-D12 (beats, own entrance per object, each connection a beat, believable wires and light), critic.md questions 48-51, and an Output QA GLOW check for the 3D look (white-hot area below the captions; fails over 4 % median or 8 % in any second; the v5 sample measures about 9 %, so v5 would fail it). scripts/qa/look.py runs GLOW on local frames before a render. Next: the v6 scene.
 
 ---
 
