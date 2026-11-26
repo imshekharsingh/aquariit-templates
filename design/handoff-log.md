@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/c3-invite-hold-26nov · owner chat: Turns Out invite withdrawn until render 2
+- Owner saw text overlaps in showreel-c3-fix-invite (render 1, critic READY). A NOT READY line (owner) is appended to its review file, so the app shows it as "Found a problem" with no Post now, still visible on the board; the fix session (render 2 + new critic) appends the new verdict.
+
 ## 2026-11-26 10:10 IST · claude/3d-kit-v5 · other account: 3D kit sample v5, the six critic fixes (no render yet)
 - Done: merged both critic branches (review file holds v3 + v4); scene fixes 1-6 (opening move, hub between apps and wall with all 8 tools whole, push-in pulled back, tangle outside the wall, end turn home + New cable pulse, hub sub-line dropped); stills review/tech/study-25nov/kit-phase2-v5.jpg; techkit/check-gold3d.cjs (no-render name/cover check); scripts/tech-assemble.py now inlines the 3D kit (it did not, so a 3D scene failed locally).
 - Left: render 5 only on the owner's yes (design/handoff.md Progress), Output QA, separate critic; then the "finalise the 3D kit" steps if READY.
