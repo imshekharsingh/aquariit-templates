@@ -954,3 +954,6 @@ Format (at most 6 lines):
 ## 2026-11-26 · claude/app-stage-bearer-26nov · App: /api/stage also accepts Authorization: Bearer (tooling, owner approved key reset)
 - Done: POST /api/stage opens with X-Stage-Key (workflows) or Authorization: Bearer matching STAGE_KEY or REELS_READ_KEY (sessions hold one network secret per host); stage.mjs sends no placeholder header when STAGE_KEY env is empty; stage-test.mjs covers both; runbook-reels updated.
 - Left: owner sets the new key as both GitHub secrets and the session network secret; then test reel-fetch and stage.mjs together.
+## 2026-11-26 · claude/critic-c3-fix-invite-r3 · Critic 3: showreel-c3-fix-invite render 3 READY
+- Done: independent critic on the real render 3 MP4; all three EXACT FIX items measured fixed (tags 36/34 px apart, 16 px from the confetti ring; BEFORE 52 px from the thumbnail; dial edge x 64 on the text edge x 65); verdict CRITIC: READY in review/c3/showreel-c3-fix-invite.md.
+- Left: post today in the Turns Out slot. Next invite-style reel: keep rings 16 px+ apart (13 px here, outline to outline).
