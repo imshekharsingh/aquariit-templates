@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 23:41 IST · claude/3d-kit-v7-ready · other account: 3D kit v7 render 2 passed Output QA (task 10)
+- Done: the plan critic's seven changes; render 1 failed only COLOUR (a hard cut in the crane to the wall); fixed (the crane is a rise then a push, tools start on "tools", edge props hidden in that shot); render 2 Output QA PASS (GLOW 1.0 %). Kit: W3D.numbers with placement, wire floorY, softer pulses, check-wires.cjs; a leader-line check in the scene.
+- Left: the main account's critic on study/showreel-tech-gold3d-v7-r2-preview.mp4. Cap reached (2 renders): if not STABLE, the owner decides.
+- For the main account: when the critic writes READY with every PREMIUM 7.5+, v7 becomes the tech 3D gold (gold.md, gold.json "tech3d", the tech3d starter) and task 10 is done.
+
 ## 2026-11-26 · claude/handoff-v7-loop · owner chat: v7 runs until stable, capped at 2 renders
 - Owner: the other account keeps working v7 through its hourly check until stable (critic READY, all PREMIUM 7.5+, QA pass), at most 2 v7 renders, then the owner decides. The main account's probe will start the v7 critic by itself (status sheet change, separate job). Then v7 becomes the tech gold and tech restarts the next day.
 

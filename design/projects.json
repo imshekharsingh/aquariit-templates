@@ -5,10 +5,10 @@
    "id": "3d-kit-v7",
    "name": "3D kit v7: the last sample",
    "account": "other",
-   "stage": "render",
-   "line": "Render 2 (the last) is being made (about 25 min).",
-   "pct": 80,
-   "updatedAt": "2026-11-26T17:37:00Z",
+   "stage": "critic",
+   "line": "Render 2 passed every check. Main account's critic judges it.",
+   "pct": 90,
+   "updatedAt": "2026-11-26T18:11:00Z",
    "history": [
     {
      "at": "2026-11-26T13:12:00Z",
@@ -39,6 +39,11 @@
      "at": "2026-11-26T17:37:00Z",
      "stage": "render",
      "line": "Render 2 (the last) is being made (about 25 min)."
+    },
+    {
+     "at": "2026-11-26T18:11:00Z",
+     "stage": "critic",
+     "line": "Render 2 passed every check. Main account's critic judges it."
     }
    ]
   },
