@@ -9,6 +9,11 @@ Format (at most 6 lines):
 ## 2026-11-26 · claude/handoff-v7-loop · owner chat: v7 runs until stable, capped at 2 renders
 - Owner: the other account keeps working v7 through its hourly check until stable (critic READY, all PREMIUM 7.5+, QA pass), at most 2 v7 renders, then the owner decides. The main account's probe will start the v7 critic by itself (status sheet change, separate job). Then v7 becomes the tech gold and tech restarts the next day.
 
+## 2026-11-26 · claude/probe-start-critic · Probe starts the critic for the other account's projects (owner chat job, size S)
+- Done: scripts/studio-status.mjs raises `START-CRITIC project:<id> <plan or render, MP4 / review file>` when a project is at the critic stage or the newest "other account ... ready for critic" Progress line (design/handoff.md) has no "main account ... critic" line after it; keyed on that line's time, so once per line (STATUS_HANDOFF=<file> tests it). design/probe.md has the exact create_session step and critic prompt (opus, tags critic and 3d, verdict line, PREMIUM scores, one Progress line, owner chat message, STABLE call for a render). Tested: today's state gives no START-CRITIC (the v7 plan has its verdict); a fake render-ready line gives one with the MP4 path; a verdict line after it clears it.
+- Left: nothing; the probe's next fire uses the new step.
+- For the other account: write "<who>, other account: ... ready for critic" in Progress with the R2 MP4 path (or the review file for a plan); the sheet reads exactly that wording.
+
 ## 2026-11-26 · claude/handoff-v7-go-changes · owner chat: owner decision on the v7 plan
 - Owner saw the v7 plan stills and the 7 changes: make the 7 changes first, refresh the stills, then one render (no render on the known faults). Written in design/handoff.md Progress.
 
