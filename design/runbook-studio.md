@@ -26,13 +26,14 @@ Moved from CLAUDE.md on 14 Nov 2026.
 - Daily owner chat (owner, 22 Nov 2026; was weekly): the owner chats in ONE "Owner chat <date>" session, started every day 08:31 IST by the
   "Daily owner chat" scheduled task (default model). It archives the previous chat, reads the newest "owner chat" entry in
   design/handoff-log.md first, and before the day ends pushes its own entry there (decisions, waiting on owner, tomorrow). It only talks,
-  decides and plans; it never builds.
+  decides and plans; it never builds. Its Feedback read prints PRIORITY items (the app's Fix button) first: it handles or routes those before anything else and says so to the owner in one line.
 
 ## Scheduled tasks (ON)
 - Owner, 22 Nov 2026: all tasks fire into the small "Studio launcher (v2)" session (session_01AYvWRj8v5WCccLWfHsSWNz, cheaper model),
   which only starts sessions and replies one line, so each wake costs cents, not dollars. Tasks: "Daily studio run" 06:47 IST (web + tech,
-  cheaper model), "Daily owner chat" 08:31 IST, "Reel critic" 11:17 IST, "Spare usage night" Tue 22:44 IST (design/runbook-spare.md).
+  cheaper model), "Daily owner chat" 08:31 IST, "Spare usage night" Tue 22:44 IST (design/runbook-spare.md). The 11:17 "Reel critic" task is retired (26 Nov 2026): the owner chat turns it off (update_trigger enabled=false, never delete: deleting a task deletes its sessions).
   Each task names the model of the session it starts (a started session otherwise inherits the launcher's cheaper model).
+- **Studio probe** (owner, 26 Nov 2026; design/probe.md): ONE cheap check that replaces the 11:17 critic fallback, post checks and one-off reminders. It is NOT a launcher task: the owner chat creates it as its own scheduled task that starts a fresh session on claude-haiku-5-5 each fire (~$0.10-0.20), prompt = "The scheduled-task prompt" in design/probe.md, cron lines from `node scripts/probe-tune.mjs` (times in design/probe-schedule.json: every 30 min 06:00-14:00 IST, then hourly to 21:00; 24 a day). Each fire dispatches "Studio status", acts only on its ACTIONS line (start the critic/builder/fixer, or message the owner chat) and logs one line to the app (scripts/probe-log.mjs). Weekly tune: every Sunday the owner chat (or spare night) runs scripts/probe-tune.mjs, tells the owner "Probe this week: N checks, M acted, now X a day, saving $Y" and applies it with --apply.
 - The old launcher (session_01AYvWRhkLkGsLRZfbwikeyL) and its tasks are switched off, not deleted (deleting a task deletes the sessions it
   started). Turns Out's daily task stays off. A task's prompt can only be edited from the session it fires into. Check list_triggers,
   never a note, to see what is on.

@@ -8,11 +8,40 @@ Format (at most 6 lines):
 
 ## 2026-11-26 · claude/todo-handoff-readonly · owner chat: critical to-do, read-only handoff account
 - design/todo.md P1 CRITICAL: the owner's three questions on running the other account read-only (no commits, kept out of the reel pipeline and app, still heavy lifting). Not acted on yet (owner).
+## 2026-11-26 11:49 IST · claude/3d-kit-done · other account: 3D kit finalised, handoff CLOSED
+- Done: v5 critic READY (main account, 7.5 / 8 / 8) -> v5 is the tech 3D gold (design/gold.md, scripts/qa/gold.json "tech3d" from the v5 Output QA numbers, app preview plays v5); `node scripts/starter.mjs tech3d <slug>` copies it with the v3-v5 lessons (techkit/README.md); design/3d-kit-phase2.md known limits closed or accepted and DONE; design/rules-tech.md L0 + runbook-daily.md step 3: tech daily builds use the 3D look from the next build on. design/handoff.md is CLOSED.
+- Left: gold.json "tech3d" accent hue and share are still v4's (the v5 log does not print them); re-measure with scripts/qa/gold_look.py from the main account, which can fetch the MP4.
+- For the main account: the Daily studio task prompt may still name `starter.mjs tech`; the runbook (now `tech3d`) wins. Sessions on the second account cannot reach templates.aquariit.com, so its critics cannot fetch reels.
+
+## 2026-11-26 11:58 IST · claude/minutes-meter · other account: GitHub minutes meter always shows (queued task 2)
+- Done: templates/index.html: the meter in Settings no longer hides on an error; it shows "Minutes not counted yet" with the reason (HTTP code, empty or old file) and flags a count over 2 days old; a line says the limit counts only if the repo goes private. The nightly count and the R2 file were fine (9,730 of 2,000 min this month); the page works with that file in a browser test.
+- Left: the owner's next look tells which error the live app gets, if any. 3D kit v5: the critic could not fetch the MP4 (this account's environment cannot reach templates.aquariit.com); waits on the owner (design/handoff.md Progress).
+- For the other account: sessions on this account cannot fetch reel files or the app; a critic here needs that host allowed plus the REELS_READ_KEY network secret.
+
+## 2026-11-26 · claude/handoff-no-cost · owner chat: handoff account does the tasks and reports, no cost talk
+- design/handoff.md: owner rule added (only the written tasks, report each stage, no cost lines or estimates); cost wording and caps removed from the task steps.
+
+## 2026-11-26 · claude/critic-gold3d-sample-v5 · critic: 3D kit sample v5 not judged (fetch refused)
+- This critic session could not fetch the v5 MP4 (network refused templates.aquariit.com, 403 policy denial). Review file: v4 verdict kept as "20. CRITIC (v4)"; v5 section notes the six fixes look done on the builder's stills (motion items unchecked), no scores, verdict NOT READY (not judged).
+- Next: re-run the critic from a session that has the read key on its network; no 6th render before that verdict.
+
+## 2026-11-26 · claude/handoff-minutes-meter · owner chat: minutes meter fix queued for the other account
+- design/handoff.md "Queued task 2": the app's GitHub minutes meter is not showing; the other account finds and fixes it (size S, cap ~$3).
+
+## 2026-11-26 · claude/todo-preflight-all · owner chat: write-up, full check before render 1
+- design/todo.md P1 NEXT: preflight-all (cheap local preview + Output QA thresholds + text clear space against everything + review-file lint, gate in review-gate.mjs), size M, $5-8. Waits on the owner's yes.
+
+## 2026-11-26 · claude/critic-owner-26nov · owner chat: today's owner feedback into the critic rules
+- design/critic.md: question 47 (text clear space and one alignment per screen, from the owner's Turns Out note) and the verdict line format rule (exact "CRITIC: READY / NOT READY", appended last). The owner's notes are already in design/owner-feedback.md, which every critic reads.
+
+## 2026-11-26 · claude/c3-invite-hold-26nov · owner chat: Turns Out invite withdrawn until render 2
+- Owner saw text overlaps in showreel-c3-fix-invite (render 1, critic READY). A NOT READY line (owner) is appended to its review file, so the app shows it as "Found a problem" with no Post now, still visible on the board; the fix session (render 2 + new critic) appends the new verdict.
 
 ## 2026-11-26 10:10 IST · claude/3d-kit-v5 · other account: 3D kit sample v5, the six critic fixes (no render yet)
 - Done: merged both critic branches (review file holds v3 + v4); scene fixes 1-6 (opening move, hub between apps and wall with all 8 tools whole, push-in pulled back, tangle outside the wall, end turn home + New cable pulse, hub sub-line dropped); stills review/tech/study-25nov/kit-phase2-v5.jpg; techkit/check-gold3d.cjs (no-render name/cover check); scripts/tech-assemble.py now inlines the 3D kit (it did not, so a 3D scene failed locally).
 - Left: render 5 only on the owner's yes (design/handoff.md Progress), Output QA, separate critic; then the "finalise the 3D kit" steps if READY.
 - Update (owner, 10:20 IST): too much glow; bloom .45 to .28, cable halos and floor light cut by about half (claude/3d-kit-v5-glow).
+- Update 10:55 IST: render 5 failed the sound loudness gate (-16.4 LUFS; the mux loop stopped on a safe peak without checking loudness). techkit/make.py now loops on both and has a gain step; owner rule: a failed render goes straight to the next one, a passed render that the critic sends back waits for the owner.
 - For the other account: a comment pasted before code on one line silently drops that code (the hub was missing from the scene for a while); the stills caught it, the box check did not.
 
 ## 2026-11-26 · claude/handoff-3d-kit-final · owner chat: the other account also finalises the 3D kit
@@ -881,3 +910,44 @@ Format (at most 6 lines):
 - Left: confirm on the live board after the deploy (sign-in needed); if the board still says old, the stale mark now carries the real failure note.
 - For the other account: never treat missing or old status as ready.
 
+
+## 2026-11-26 · claude/c3-fix-invite-26nov-r2 · Turns Out fix-invite: owner text overlap and alignment fix, render 2 (builder session)
+- Done: contact sheet of render 1 and full-size scene frames showed 7 overlap groups (chips on the board's top edge and the subtitle pill, ring tags and BEFORE/AFTER tags on board edges, touching rings, confetti under text, badges on confetti) and 3 off-grid items; scene fixed (chip band centred on the board between pill and board, board 424-744, one left edge x 32 for dial, headline and subtitle text, confetti in a clear column, tags inside or under the board); stills OVERLAP none, SAFE ZONE ok, ALIGN ok; reel hidden until the critic says READY again; owner-feedback and todo lines added.
+- Left: independent stills check, render 2 (the last one without the owner's yes), Output QA, critic (opus, tag critic) checking overlap and alignment, then unhide for the 17:00 post.
+- For the other account: DT.chip forces y 374 for any y in 380-420, so chips land on a board whose top is 396; keep chips in their own band above the board (board top at least 420) and centre them; test with the stills OVERLAP line and look at the sheet.
+## 2026-11-26 · claude/app-today-board-26nov · App: Today shows the workflow board only (tooling, owner-approved via owner chat)
+- Done: Today = the board (one row per channel: Building / Rendering % / Checking / Found a problem: why / Ready, post at slot / Posted; "old status" shown when the journey is over 15 min old or marked stale). Reel lists, Post now and the reel cards left Today; Needs you holds only questions. Ready-to-post cards (all buttons) are at the top of "All reels and posted", critic-READY and fresh status only; a Ready row's "Open to post" button goes there. Badge = questions + ready reels. Checked at phone width with Playwright on a local build (fresh and stale mock data); npm run check has the updated ready-filter check.
+- Left: confirm on the live app after the deploy (sign-in needed).
+- For the other account: Today never lists reels; ready reels live in the reels menu.
+## 2026-11-26 · claude/web-26nov-verdict3 · Web reel showreel-48-has-parent: render 3 passed Output QA, critic READY
+- Done: render 3 (run 45755239976) Output QA PASS; independent critic CRITIC: READY (STOP 7.5, REWATCH 7.5); verdict and notes added to the review file. Posts 26 Nov 19:00 IST.
+- Left: the owner posts it. No further renders. Next web reel: give the reaction word its own row clear of the subtitle; start the code card typing on "fix".
+- Update (same session, 26 Nov): the independent stills check passed with four near-misses (chips edge to edge, rings 5 px apart, thumbnail 3 px from the board); cleared them in branch claude/c3-fix-invite-26nov-r3 (chips spaced, ring gap 14 px, thumbnail lower) before render 2. For the other account: a stills-check session needs the repo as a source at creation (source_url), or it cannot run.
+
+## 2026-11-26 · claude/preflight-all · Tooling: the full check before render 1 (owner-approved, "yes, build the check")
+- Done: scripts/preflight-all.mjs <reel> for every channel: 360x640 10 fps preview (seek.mjs --preview; techkit capture at 1/3 scale with a smaller 3D drawing buffer, window.KITSCALE in world3d.js; techreel/make.py --preview), Output QA on it (OQA_PREVIEW: sound checks are SKIP), TEXT CLEAR (scripts/showreel/textclear.mjs + .py: the frame with and without its text every 0.25 s, 6 px of room, chips and tags judged by their outline, text against text), review lint, one PREFLIGHT-ALL line with a fingerprint of config and scene; review-gate.mjs refuses render 1 without a matching PASS for reels posting from 27 Nov. Tested: tech tag-sounding render 1 FAIL (figures over the phone 11.5-17.5 s), final only the figures over the dial ring; Turns Out fix-invite render 1 FAIL (19 problems: tags on borders, pills touching, confetti under text), final 4 small ones. Run time: web 21 s, Turns Out about 1 min, tech 3D 2-3 min.
+- Left: the older tech picture engine's TEXT CLEAR is not calibrated (older reels only); a real voice (--voice) is only a mux here, voice and loudness checks stay on the render; first builders to use it should tell the owner chat about false alarms (waive a deliberate overlap with "qa": {"textclear_ok": [[t0, t1, "why"]]}).
+- For the other account: run it after the stills check and before render 1, and paste nothing by hand: --write puts the line in the review file. Tech kit scenes: a 3D number or word figure must come from lib3d figure() so TEXT CLEAR can hide it; other 3D text is not seen.
+## 2026-11-26 · claude/c3-fix-invite-26nov-r3b · Turns Out fix-invite: critic 2 NOT READY, three spacing fixes for render 3 (builder session)
+- Done: render 2 passed Output QA; the independent critic (Opus) said NOT READY on three small items (the NO HERO and 4 FONTS tags touched, the BEFORE tag 6-9 px from the thumbnail, the dial 13 px right of the headline edge). Scene fixed: tags 13 px, laid out from their measured widths with 18 px between each pair, BEFORE tag 25 px from the thumbnail, dial moved so its ring sits on the headline edge; stills OVERLAP none, SAFE ZONE ok.
+- Left: render 3 needs the owner's yes (asked via the owner chat; NOT started), Output QA, a third critic, then unhide for the post.
+- For the other account: lay tag rows out from measured widths (offsetWidth) with the gap in code, not by fixed x positions; check dial and headline ring edges, not box edges.
+## 2026-11-26 · claude/critic-c3-fix-invite-r2 · Turns Out showreel-c3-fix-invite: critic of render 2, NOT READY
+- Done: independent critic on the real render 2 MP4. The owner's overlap fix mostly landed (chips in their own band, rings spaced, confetti clear, tags off the board border), but the NO HERO and 4 FONTS tags share one border at 1.8-4.2 s; BEFORE tag 6-9 px from the thumbnail at 17-20 s; dial 13 px right of the text edge. Verdict and EXACT FIX in the review file.
+- Left: the builder applies the 3-step EXACT FIX; render 3 needs the owner's yes with its cost estimate; then a new critic.
+## 2026-11-26 · claude/critic-gold3d-v5 · Independent critic (main account) of the 3D kit sample render v5: READY
+- Done: fetched the real v5 MP4 (the other account's critic could not reach the app host) and judged it: one contact sheet, two full frames, a frame-difference strip. All six v4 fixes DONE (opening moves, hub clear of all eight tools, names whole in the push-in, tangle off the tool row, end returns to the frame-0 framing, hub sub-line dropped). PREMIUM 7.5 / 8 / 8; CRITIC: READY in review/tech/showreel-tech-gold3d-sample.md; Progress line in design/handoff.md.
+- Left: the other account finalises the 3D kit (handoff.md "Then"), with the critic's notes: a "+1" by the New cable, its own icon for the New tile, 20-35 s and one readable artifact in daily reels.
+- For the other account: study previews live at /reels/study/<name>.mp4; scripts/reel-fetch.mjs takes only showreel names, so fetch a study file with curl on that path.
+## 2026-11-26 · claude/app-journey-26nov · App: board freeze fix, Fix button, stage-line rules (tooling, owner-approved via owner chat)
+- Done: the journey answer now lives in D1 (journey_answer) instead of only the data centre's cache, where a failed save was swallowed and an old copy stayed with nothing saying so (most likely cause of the 00:48 freeze; not provable without logs). /api/journey carries builtAt, buildMs, age, warn (swallowed GitHub / subrequest failures) and error {note, at, n} for the last failed build. Fix button on a red board row: /api/feedback with priority, "Sent to the studio"; asks.mjs feedback prints PRIORITY items first. Runbooks name which session posts which stage. todo.md "Journey you can drive" moved to Done (Approve plan / Approve to post / Build next dropped). Phone-width check on a local build with mocked data; npm run check has "journey store" and "fix button".
+- Left: after the deploy, confirm stage lines with scripts/stage.mjs on today's reel (before the deploy it returned 401: the key is synced on deploy) and read /api/journey's builtAt on the live board.
+- For the other account: if the board freezes again, read error and warn in /api/journey first.
+
+## 2026-11-26 · claude/studio-probe · Studio probe: status sheet, probe log, weekly tune (tooling, owner-approved via owner chat)
+- Done: scripts/studio-status.mjs + workflow "Studio status" (read-only: feedback with priority Fix first, owner answers, today's and tomorrow's reels with stage, failed or stuck runs in 3 h, reels due within 2 h not ready, posts 20-90 min old with first numbers, last line ACTIONS: none | items with keys; keys handled in the last 6 h are left out). Probe log in the app: /api/probe-log (STAGE_KEY, D1 table probe_log, 45 days) + scripts/probe-log.mjs add|list. Weekly tune: scripts/probe-tune.mjs + design/probe-schedule.json. design/probe.md holds the exact steps and the scheduled-task prompt. Docs: CLAUDE.md and runbook-studio "Scheduled tasks", runbook-reels critic line (11:17 Reel critic retired).
+- Left: after the merge and deploy the owner chat creates the probe task (prompt in design/probe.md, cron lines from probe-tune.mjs; the scheduler may refuse 30-minute steps: then report), turns the 11:17 "Reel critic" task off (enabled=false, not deleted), and confirms probe-log.mjs add works from a session (before the deploy /api/probe-log answers 401/404). Sunday: run probe-tune.mjs, tell the owner its line.
+- For the other account: nothing; the probe never builds or renders.
+## 2026-11-26 · claude/app-stage-bearer-26nov · App: /api/stage also accepts Authorization: Bearer (tooling, owner approved key reset)
+- Done: POST /api/stage opens with X-Stage-Key (workflows) or Authorization: Bearer matching STAGE_KEY or REELS_READ_KEY (sessions hold one network secret per host); stage.mjs sends no placeholder header when STAGE_KEY env is empty; stage-test.mjs covers both; runbook-reels updated.
+- Left: owner sets the new key as both GitHub secrets and the session network secret; then test reel-fetch and stage.mjs together.

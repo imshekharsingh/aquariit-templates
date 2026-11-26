@@ -28,8 +28,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - One experiment and one researched improvement per channel per day (design/runbook-daily.md).
 
 ## Scheduled tasks: ON
-Four run from the small "Studio launcher (v2)" session (22 Nov 2026): Daily studio run 06:47, Daily owner chat 08:31, Reel critic 11:17,
-Spare usage night Tue 22:44 IST (design/runbook-studio.md "Scheduled tasks"). Turns Out's daily task is ON again at 09:11 IST (the owner chat creates it; owner, 24 Nov 2026).
+Three run from the small "Studio launcher (v2)" session (22 Nov 2026): Daily studio run 06:47, Daily owner chat 08:31, Spare usage night Tue 22:44 IST; the Studio probe (fresh haiku session, every 30 min 06:00-14:00 then hourly to 21:00 IST, replaces the 11:17 Reel critic fallback, owner 26 Nov 2026) follows design/probe.md (design/runbook-studio.md "Scheduled tasks"). Turns Out's daily task is ON again at 09:11 IST (the owner chat creates it; owner, 24 Nov 2026).
 
 ## Daily run
 The "Daily studio run" scheduled task (06:47 IST, every day) follows **design/runbook-daily.md** (steps 0-5: Feedback first, Owner answers,
@@ -47,7 +46,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
   SHOT VARIETY (24 Nov 2026) fails a reel when over 60% of it looks like one shot.
 - Independent critic: a different session must write "CRITIC: READY" in the review file; nobody approves their own reel. The builder starts
   that critic session (tag critic, model claude-opus-5-5) the moment the final render passes Output QA (owner, 24 Nov 2026). The 11:17 IST
-  "Reel critic" task is only a fallback for reels with no verdict.
+  Studio probe (design/probe.md) is the fallback for reels with no verdict.
 - The owner is asked nothing about taste (owner, 24 Nov 2026): no preview yes/no gates. The critic decides; a NOT READY reel is fixed and posted the
   same day (the critic writes the exact fix). Inbox: Ready to post reels and Claude's replies only (previews.json needsOwner is always false; npm run check fails otherwise).
 - ASK BEFORE ANYTHING COSTLY (owner, 25 Nov 2026): any job over about $5, any render past 2 (the fix render), any new side job or tooling job: the owner chat asks

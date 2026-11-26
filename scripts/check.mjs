@@ -224,13 +224,22 @@ for (const dir of ['scripts/explainer', 'scripts/explainer/styles', 'scripts/sho
 
 // ready filter (owner, 26 Nov 2026): Post now cards may only show for a reel whose journey status is ready; no or old journey data shows none
 {
-  const idx = readFileSync(join(T, 'index.html'), 'utf8'), m = /\.filter\(function\(x\)\{ var m = c\[x\.name\][^\n]*\n[^\n]*return ([^\n]*?)\; \}\)/.exec(idx);
-  if (!m) err('ready filter: the Ready-to-post filter in templates/index.html was not found');
-  else if (!/!!r\s*&&/.test(m[1]) || !/status\(r\)\.k === 'ready'/.test(m[1]) || !/!j\.stale/.test(m[1])) err('ready filter: Ready to post must need a journey reel (!!r) with status ready and a fresh journey, found: ' + m[1].slice(0, 120));
+  const idx = readFileSync(join(T, 'index.html'), 'utf8'), m = /function readyReels\(\)\{([\s\S]*?)\n    return out; \}/.exec(idx);
+  if (!m) err('ready filter: readyReels() (the Ready-to-post list) was not found in templates/index.html');
+  else if (!/!j \|\| jOld\(j\)/.test(m[1]) || !/return !!r && status\(r\)\.k === 'ready'/.test(m[1])) err('ready filter: the Ready-to-post list must need a journey reel (!!r) with status ready and a fresh journey');
+  if (/id="t-today"|id="t-tomorrow"/.test(idx)) err('Today must show the workflow board only: the reel lists below it were removed (owner, 26 Nov 2026)');
+  if (!/id="r-ready"/.test(idx)) err('the reels menu needs its "Ready to post" section (id r-ready)');
   const wk = readFileSync(join(root, 'src/worker.js'), 'utf8');
   if (!/if \(j && j\.stale\) return no\('status-old'/.test(wk) || !/if \(r && !\(r\.stages && r\.stages\.ready/.test(wk)) err('ready filter: /api/post must refuse a reel whose journey status is not READY, and any reel while the journey is stale');
   const caps = readJSON(join(T, 'showreels/captions.json'), 'captions.json');
   if (caps && caps['showreel-tech-battery-cycles'] && !caps['showreel-tech-battery-cycles'].hidden) err('showreel-tech-battery-cycles must stay hidden (owner did not post it, 25 Nov)');
+}
+// journey store + fix button (owner, 26 Nov 2026)
+{
+  const wk = readFileSync(join(root, 'src/worker.js'), 'utf8'), idx = readFileSync(join(T, 'index.html'), 'utf8');
+  if (!/journey_answer/.test(wk) || !/builtAt/.test(wk) || !/err_note/.test(wk)) err('journey store: /api/journey must keep its answer in D1 (journey_answer) with builtAt and the last failure reason');
+  if (/journey\.cache\/answer-v1/.test(wk)) err('journey store: the answer must not live only in the per-data-centre cache again');
+  if (!/priority: true/.test(idx) || !/Sent to the studio/.test(idx) || !/priority IS NOT NULL/.test(wk)) err('fix button: a red board row needs Fix -> /api/feedback priority, "Sent to the studio", priority items listed first');
 }
 if (errors.length) {
   console.error(`✗ ${errors.length} problem(s):\n` + errors.map((e) => '  - ' + e).join('\n'));

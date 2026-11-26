@@ -77,4 +77,71 @@ PREMIUM 6.5 / 7 / 7.5 (animation 6.5: t 7.5-13.3 collapse, push-in, orbit and pu
 5. End, 13.3-18.5 s: one event inside the last 2 s with the caption still held: from about 16.3 s ease the camera back to the exact frame-0 camera (small orbit), and pulse the New tile's single cable once.
 6. Hub sub-line: 34 px or more at 1080 wide, or drop it (the word HUB is enough).
 
+20. CRITIC (v4): NOT READY
+
+---
+
+# showreel-tech-gold3d-sample · independent critic, third pass (render v5, preview, 18.45 s, never posted)
+
+v4 verdict (second critic, 26 Nov 2026): NOT READY (held 5 s framings at the start and end, hub over two tools, "Notes" cut in the push-in, tangle over the bottom tool row, end drift, 24 px hub sub-line).
+
+**The MP4 was NOT judged: the fetch was refused.** This critic session's network refused the app host (templates.aquariit.com: the proxy answered 403 to the tunnel, a policy denial, so it was not retried). The read key is not set up for this session's environment. Per the brief, I do not judge from scene frames silently and I do not pass a reel I have not seen. Output QA on v5 (builder's run): PASS (LOUD -14.6 LUFS, PACE, VARIETY 11 %, LOOK, NUMBERS, DEAD, SHEEN, EDGES), WARN LICENCE and WARN HERO as on v4.
+
+What I did look at, openly and NOT as the verdict: the builder's scene stills sheet review/tech/study-25nov/kit-phase2-v5-glow.jpg (5 stills, not the rendered MP4, no times).
+
+## The v4 EXACT FIX list, item by item (stills only; each needs the MP4 to confirm)
+1. Opening camera move at about 2.6 s: **NOT CHECKED.** A move cannot be seen on stills; stills 1 and 2 do differ in scale (about 10 %), which suggests it is there.
+2. Hub between the wall and the apps, all eight tools whole: **LOOKS DONE** on the stills (hub sits under the wall, above Notes / Chat / Mail; Tasks, Music, Calendar, Docs, Files, Maps, Pay, Photos all whole).
+3. Push-in shows Notes, Chat and Mail whole: **LOOKS DONE** on still 4 (all three names whole, Notes and Mail near the edges but not cut). Needs the MP4 for the 9.8-11.0 s span.
+4. Tangle off the bottom tool row: **LOOKS DONE** on stills 1-2 (cables loop outside the wall; no name under a cable).
+5. End event in the last 2 s (turn home, New cable pulse): **NOT CHECKED** (motion; still 5 shows the New tile with its one cable and the held caption).
+6. Hub sub-line 34 px or dropped: **DONE** (dropped; only "HUB" on the block).
+
+## Provisional notes from the stills (no times, to check on the MP4)
+- Glow is down as the owner asked: cables read as clean coloured lines, no halo wash; the floor is darker. Good.
+- The word "HUB" on the block is small on the wides (stills 3 and 5, roughly 20 px at 1080 wide); the 3D numbers and the captions carry the idea, so it is secondary, but it should be checked on a phone frame.
+- Tool names on the wides stay tiny (secondary labels, as on v4).
+- The "New" tile at the right of the hub (still 5) is small on the wide; it should be clearly bigger in the 12.1 s orbit.
+
+PREMIUM: not scored (no MP4 seen). Animation, cleanliness and premium scores need the rendered video at phone size with times; scores from stills would be guesses.
+
+## EXACT FIX (no v6 render)
+Nothing in the picture is asked to change yet. The fix is the review, not the reel:
+1. Re-run this critic in a session whose environment can reach the app host (the read key as a network secret for templates.aquariit.com, as the v3 and v4 critics had), fetch R2 study/showreel-tech-gold3d-sample-v5-preview.mp4, and judge it (4x4 contact sheet + up to two full frames), replacing this section's verdict.
+2. Do not spend a 6th render on this sample before that verdict.
+
 20. CRITIC: NOT READY
+
+---
+
+# showreel-tech-gold3d-sample · independent critic, fourth pass (render v5, preview, 18.47 s, never posted; main account)
+
+The third pass could not fetch the MP4; this pass judged the real video (R2 study/showreel-tech-gold3d-sample-v5-preview.mp4, 1080x1920, 30 fps, 18.47 s) from the main account: one 4x4 contact sheet at phone size (0.0-18.3 s), two full frames (1.3 s, 12.1 s) and a frame-difference strip every 0.5 s (picture change, a text check for held framings). Audio NOT heard (the critic cannot listen): Output QA LOUD -14.6 LUFS and PACE pass; questions 5, 6 and 16 rest on that.
+
+## The v4 EXACT FIX list, item by item
+1. Opening camera move, no framing over 3 s: **DONE.** 0.0-1.5 s pull-back with a turn, a short settle at 2.0-2.6 s, a second move from 3.0 s (3.9 s and 5.2 s are framed wider than 2.6 s). The difference strip never stays quiet for more than about 1 s anywhere in the reel. The frame-0 hook is unchanged ("3x8=24", the question caption, the full tangle).
+2. Hub clear of the tools: **DONE.** From 7.5 s to the end the hub floats between the wall and the apps; Tasks, Music, Calendar, Docs, Files, Maps, Pay and Photos are all visible and whole on every sheet frame. The picture now shows 3 app cables and 8 tool cables under "3+8=11".
+3. Push-in names whole: **DONE.** 9.8-11.0 s: "Notes", "Chat" and "Mail" are whole; the Notes and Mail tiles touch the frame edges but no name is cut. 12.1 s (full frame): all three names whole.
+4. Tangle off the bottom tool row: **DONE.** 0.0-6.3 s (full frame 1.3 s): the cables loop outside the wall's sides and land on the tile edges; Pay and Photos are clear.
+5. End event in the last 2 s: **DONE.** 14.4 s wide, 16.3 s closer, 17.4 s turned, 18.3 s back on the frame-0 framing (wall and apps in the same place as 0.0 s); "Same apps, same tools, far less wiring." held. The New cable pulse is too small to confirm on stills; the camera event alone answers the fix.
+6. Hub sub-line: **DONE** (dropped; "HUB" only).
+
+## The whole reel
+- Hook in the first second: yes (busy colourful tangle, "3x8=24", the question).
+- One clear idea, the picture does the maths (L4): yes; the 24 cables collapse into a hub and 11 cables, and the number changes with it at 8.7 s.
+- Readable at phone size: captions yes (two-tone, key word boxed in blue); the 3D numbers yes. Tool names and "HUB" are small secondary labels (about 16-20 px at 1080 wide): fine for a sample, not for a fact a viewer must read.
+- Question 47 (text spacing and alignment): captions top-centre, number bottom-centre, tile names inside their tiles; no text touches another text, a cable or a border on any sheet frame. Pass.
+- Cut or overlap: none. A small specular glint sits on the Mail tile's top edge at 12.1 s; "Mail" stays readable.
+- Pacing and shot variety: the camera keeps moving (push-in 9.0-10.5 s, orbit to New 11.5-13.0 s, pull-back 13.5-14.5 s, return 16.3-18.3 s). Output QA VARIETY 11 %.
+- Look: dark floor, jewel tiles, clean coloured cables with the calmer glow, depth of field on the props. Premium, above the flat tech gold.
+- Safety: invented app names, no logos, no people, no claims to cite. Pass.
+
+## Notes for the gold and the next 3D builds (not blockers)
+- From 12.1 s the New tile adds a 12th cable while the figure still reads "3+8=11"; the caption says "one more cable", so it reads, but a small "+1" by the New cable (or "3+9=12" at 13.3 s) would make the picture and the number agree exactly.
+- The New tile reuses the music-note icon of the Music tool; give it its own icon.
+- The sample is 18.5 s; daily 3D reels keep L6's 20-35 s.
+- No readable real artifact (L3) since the code card was dropped; a daily reel needs one at 34 px or more in its own space (D4).
+
+PREMIUM 7.5 / 8 / 8 (animation 7.5: a move in every part, the loop return at 16.3-18.3 s, the 2.0-2.6 s settle is the quietest moment; cleanliness 8: no name cut or covered, nothing over the captions, all eight tools whole after the hub; premium 8: materials, colour and calmer glow). Weakest: 2.0-2.6 s, the short settle before the second opening move.
+
+20. CRITIC: READY

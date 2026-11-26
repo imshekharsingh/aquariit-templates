@@ -416,6 +416,8 @@
   .bcard{position:relative;margin:0 0 10px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:border-color .3s ease,box-shadow .3s ease,transform .3s ease}
   .bcard.ready,.bcard.posted{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok),0 6px 22px -8px var(--ok)}
   .bcard.lift{animation:blift .38s ease-out}
+  .bfix{padding:0 14px 12px}
+  .bfixb{width:100%;min-height:44px}
   @keyframes blift{0%{transform:translateY(0)}45%{transform:translateY(-4px)}100%{transform:translateY(0)}}
   .bcard.skipped{opacity:.78}
   .bmain{display:flex;align-items:stretch;gap:12px;width:100%;padding:12px 12px 14px;border:0;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
@@ -590,11 +592,7 @@
         <div class="bt"><b id="b-t">0 of 3 ready</b><span id="b-s">Waiting for the studio</span></div></div>
       <div id="b-cards"></div>
     </section>
-    <section class="tsec" id="needs" hidden><h2 class="lbl">Needs you</h2><div id="needs-list"></div><div id="t-ready"></div></section>
-    <h2 class="lbl">Today’s reels <span>each has its own time</span></h2>
-    <div class="tlist" id="t-today"><p class="empty">Loading…</p></div>
-    <h2 class="lbl">Tomorrow</h2>
-    <div class="tlist" id="t-tomorrow"></div>
+    <section class="tsec" id="needs" hidden><h2 class="lbl">Needs you</h2><div id="needs-list"></div></section>
     <div class="tlist tlinks"><button type="button" class="trow" id="t-all"><span class="m"><span class="n">All reels and posted</span><span class="s">Every reel by channel, post text, channel profiles</span></span><span class="chev" aria-hidden="true">›</span></button></div>
     <button type="button" class="astat" id="astat" aria-label="Today's audit, open the daily report"><b>Daily report:</b> <span id="astat-t">checking…</span></button>
     <p class="foot" id="j-note"></p>
@@ -609,6 +607,7 @@
     <details class="prof" id="prof" hidden><summary>Profile</summary></details>
     <h1 id="title">Showreels</h1>
     <div class="lede" id="lede"><p>Tap a cover to play. Copy the post text, save the video, post it, then tap <b>I posted it</b>.</p><details class="how"><summary>How posting works</summary><p>Up next shows each reel with its time to post (tech 15:00, Turns Out 17:00, web 19:00 IST). Paste its sources as the first comment when it has them. I posted it moves it to the Posted list below; a reminder comes at each time. Save the cover too, then on Instagram: Edit cover → Add from camera roll. Turns Out reels have no date: post them when you choose.</p></details></div>
+    <section class="tsec" id="r-ready"><h2 class="lbl">Ready to post</h2><div id="t-ready"></div></section>
     <div id="list"><p class="empty">Loading…</p></div>
   </section>
   <section class="pg" id="s-growth" hidden>
@@ -1181,8 +1180,8 @@
     b.textContent = n; b.hidden = !n; document.getElementById('inbox-empty').hidden = !!(n || c); document.getElementById('cards-h').hidden = !c;
     top.textContent = say; top.className = 'chk' + (n ? ' on' : ''); tc.hidden = !n; tc.textContent = say + ' in Inbox'; tc.className = 'chk on'; }
   document.getElementById('t-chk').addEventListener('click', function(){ go('inbox'); });
-  function syncNeeds(){ var n = needsList.children.length + document.getElementById('t-ready').children.length, b = document.getElementById('today-n');
-    needs.hidden = !n; b.textContent = n; b.hidden = !n; tSub(n); }
+  function syncNeeds(){ var q = needsList.children.length, rd = (typeof readyReels === 'function' ? readyReels().length : 0), n = q + rd, b = document.getElementById('today-n');   // questions + reels that are ready
+    needs.hidden = !q; b.textContent = n; b.hidden = !n; tSub(n); }
   // ---- the reel journey (owner, 15 Nov 2026: "cover the whole flow of reel making in the app"): GET /api/journey, one card per reel, its seven
   // stages in order. The Worker caches GitHub for a minute; this page asks again every minute only while a reel is rendering and Journey is open.
   var STAGES = [['planned', 'Planned'], ['built', 'Built'], ['render', 'Rendering'], ['checks', 'Checks'], ['critic', 'Critic'], ['ready', 'Ready to post'], ['posted', 'Posted']];
@@ -1242,27 +1241,26 @@
   var tSubN = 0;
   function tSub(n){ if (n != null) tSubN = n; var d = jLast ? jLast.today : istToday();
     document.getElementById('t-sub').textContent = nice(d) + ' · ' + (tSubN ? tSubN + ' need' + (tSubN === 1 ? 's' : '') + ' you' : 'nothing needs you right now'); }
-  function tRender(){ var j = jLast, tBox = document.getElementById('t-today'), mBox = document.getElementById('t-tomorrow'), rBox = document.getElementById('t-ready');
-    var today = j ? j.today : istToday(), tom = new Date(Date.parse(today + 'T00:00:00Z') + DAY).toISOString().slice(0, 10), reels = (j && j.reels) || [];
-    if (j) { tBox.textContent = ''; mBox.textContent = '';
-      ['web', 'tech', 'c3'].forEach(function(k){
-        var a = reels.filter(function(r){ return r.ch === k && r.day === today; }), b = reels.filter(function(r){ return r.ch === k && r.day === tom; });
-        a.forEach(function(r){ tBox.appendChild(trow(r)); });
-        if (!a.length) { var n = onGoCount(k); if (n) { var x = el('button', 'trow'), m = el('span', 'm'); x.type = 'button'; x.appendChild(chDot(k)); m.appendChild(el('span', 'n', n + ' reel' + (n === 1 ? '' : 's') + ' ready, post when you choose')); m.appendChild(el('span', 's', CH[k].name)); x.appendChild(m); x.appendChild(el('span', 'chev', '›'));
-            x.addEventListener('click', function(){ ch = k; go('reels'); }); tBox.appendChild(x); } else tBox.appendChild(tEmpty(k, 'No reel today')); }
-        b.forEach(function(r){ mBox.appendChild(trow(r)); });
-        if (!b.length) mBox.appendChild(tEmpty(k, 'Nothing planned yet')); });
-      var t = new Date(j.now).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' });
-      jNote.textContent = 'Updated ' + t + ' IST' + (j.github === 'ok' ? '.' : j.github === 'no-token' ? '. Live video progress needs a GitHub key.' : '. GitHub did not answer; finished steps still show.'); }
-    // ready to post, at the top: every reel with a video, not posted, due by the end of today (or overdue), that the checks passed
-    rBox.textContent = '';
-    var stale = !j || j.stale; rBox.appendChild(stale ? el('p', 'empty', j ? 'Status not up to date' + (j.age ? ' (' + Math.round(j.age / 60) + ' min old)' : '') + ', so nothing is shown here. It rebuilds on its own.' : 'Status not loaded yet, so nothing is shown here.') : document.createTextNode(''));
-    if (DATA) { var c = DATA.c, end = Date.parse(today + 'T00:00:00+05:30') + DAY;
-      ((DATA.d && DATA.d.showreels) || []).filter(function(x){ var m = c[x.name] || {}; if (ticks[x.name] || !x.video || m.hidden || m.sample || dueOf(x, m) >= end) return false;
-        var r = reels.filter(function(y){ return y.name === x.name; })[0]; return !!r && !j.stale && status(r).k === 'ready'; })   // only a reel whose journey status is ready (critic READY on main); no data or old data = none (26 Nov 2026)
-        .sort(function(x, y){ return dueOf(x, c[x.name] || {}) - dueOf(y, c[y.name] || {}); })
-        .forEach(function(x){ var card = reelCard(x, c[x.name] || {}, true); card.classList.add('rdy'); rBox.appendChild(card); }); }
+  // Today = the workflow board only (owner, 26 Nov 2026); the ready reels live at the top of the reels menu. A reel counts only when its journey
+  // status is ready (critic READY on main); no data or old data = none, with a plain line saying why.
+  function jOld(j){ return !!j && (!!j.stale || Date.now() - Date.parse(j.now) > 15 * 60e3); }   // marked stale by the server, or older than 15 minutes (a copy kept on this phone)
+  function readyReels(){ var j = jLast, out = [];
+    if (!j || jOld(j) || !DATA) return out;
+    var c = DATA.c, end = Date.parse(j.today + 'T00:00:00+05:30') + DAY, reels = j.reels || [];
+    ((DATA.d && DATA.d.showreels) || []).filter(function(x){ var m = c[x.name] || {}; if (ticks[x.name] || !x.video || m.hidden || m.sample || dueOf(x, m) >= end) return false;
+      var r = reels.filter(function(y){ return y.name === x.name; })[0]; return !!r && status(r).k === 'ready'; })
+      .sort(function(x, y){ return dueOf(x, c[x.name] || {}) - dueOf(y, c[y.name] || {}); }).forEach(function(x){ out.push(x); });
+    return out; }
+  function readyRender(){ var rBox = document.getElementById('t-ready'), j = jLast, list = readyReels(); rBox.textContent = '';
+    if (!j || jOld(j)) rBox.appendChild(el('p', 'empty', j ? 'Status not up to date' + ', so nothing is shown here. It rebuilds on its own.' : 'Status not loaded yet, so nothing is shown here.'));
+    else if (!list.length) rBox.appendChild(el('p', 'empty', 'Nothing is ready to post yet.'));
+    list.forEach(function(x){ var card = reelCard(x, DATA.c[x.name] || {}, true); card.classList.add('rdy'); rBox.appendChild(card); });
     syncNeeds(); }
+  function tRender(){ var j = jLast;
+    if (j) { var t = new Date(j.now).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' });
+      jNote.textContent = (jOld(j) ? 'Status is old (last update ' + t + ' IST); it is being rebuilt. ' : 'Updated ' + t + ' IST') + (jOld(j) ? '' : j.github === 'ok' ? '.' : j.github === 'no-token' ? '. Live video progress needs a GitHub key.' : '. GitHub did not answer; finished steps still show.'); }
+    else jNote.textContent = 'Status not loaded yet.';
+    readyRender(); }
   // ---- the live studio board (owner, 24 Nov 2026): one card per channel's reel today. Stages come from GET /api/stage (sessions and workflows call
   // scripts/stage.mjs); the render % and the final Ready / Posted come from the journey data above. Cards are built once and updated in place.
   var BST = [['researching', 'Researching'], ['topic', 'Topic picked'], ['building', 'Building'], ['stills', 'Stills check'], ['video', 'Making the video'], ['checking', 'Checking']],
@@ -1277,14 +1275,17 @@
     if (row) { if (BFIN[row.stage]) o.fin = row.stage; else o.idx = bIndex(row.stage); o.pct = row.pct; o.line = row.line || ''; }
     if (stt) {
       if (stt.k === 'posted') { o.fin = 'posted'; o.line = o.line || 'Posted'; }
-      else if (stt.k === 'ready') { if (o.fin !== 'posted') o.fin = 'ready'; o.line = (row && row.stage === 'ready' && row.line) || 'Ready to post'; }
+      else if (stt.k === 'ready') { if (o.fin !== 'posted') o.fin = 'ready'; o.slot = r.slot; o.line = 'Ready, post at ' + r.slot; }
       else if (o.fin !== 'skipped') {
         if (stt.k === 'making') { o.fin = null; o.idx = 4; o.pct = stt.pct; o.making = true; o.line = 'Rendering' + (stt.pct != null ? ' ' + stt.pct + '%' : ''); }
         else if (!row || (row.at && Date.now() - Date.parse(row.at) > 3 * 36e5)) {
           if (stt.k === 'checking') { o.idx = 5; o.line = 'Checking the video'; }
-          else if (stt.k === 'fixing') { o.idx = 5; o.line = 'Fixing: ' + (stt.why || '').slice(0, 90); }
+          else if (stt.k === 'fixing') { o.idx = 5; o.line = 'Found a problem: ' + (stt.why || '').slice(0, 90); }
           else if (stt.k === 'building') { o.idx = 2; o.line = stt.t; } } } }
+    if (stt && stt.k === 'fixing') { var sg = r.stages || {}, stp = sg.render && sg.render.s === 'fail' ? 'making the video' : sg.checks && sg.checks.s === 'fail' ? 'machine checks' : 'second look';
+      o.fail = 'Reel ' + r.name + ', step: ' + stp + ', why: ' + String(stt.why || '').slice(0, 400); }
     if (!o.line) o.line = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Not started yet';
+    if (jOld(jLast)) o.line += ' (old status)';
     return o; }
   function bPct(o){ if (o.fin === 'ready' || o.fin === 'posted') return 100; if (o.idx < 0) return 0; return Math.round((o.idx + (o.pct != null ? Math.max(0, Math.min(100, o.pct)) / 100 : 0)) / BST.length * 100); }
   function bCard(k){
@@ -1298,13 +1299,17 @@
     body.appendChild(top); body.appendChild(line); body.appendChild(dots); body.appendChild(bar); body.appendChild(meta);
     main.appendChild(th); main.appendChild(body); inner.appendChild(ol); inner.appendChild(open); more.appendChild(inner);
     card.appendChild(main); card.appendChild(more); card.appendChild(edge);
-    var c = { k: k, card: card, th: th, st: st, line: line, dots: dots, bi: bi, bp: bp, meta: meta, ol: ol, open: open, ei: ei, main: main, prev: null, img: null };
+    var fix = el('div', 'bfix'), fixb = el('button', 'btn bfixb', 'Fix'), c = { k: k, card: card, th: th, st: st, line: line, dots: dots, bi: bi, bp: bp, meta: meta, ol: ol, open: open, ei: ei, main: main, fix: fix, fixb: fixb, prev: null, img: null };
+    fixb.type = 'button'; fix.hidden = true; fix.appendChild(fixb); card.insertBefore(fix, more);
+    fixb.addEventListener('click', function(){ if (!c.fail) return; fixb.disabled = true; fixb.textContent = 'Sending';
+      fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ channel: k, priority: true, text: 'FIX (from the board, top priority) ' + c.fail }) })
+        .then(function(r){ if (!r.ok) throw 0; c.sent = c.fail; fixb.textContent = 'Sent to the studio'; }).catch(function(){ fixb.disabled = false; fixb.textContent = 'Try again'; }); });
     main.addEventListener('click', function(){ var on = !card.classList.contains('open'); card.classList.toggle('open', on); main.setAttribute('aria-expanded', String(on)); });
-    open.addEventListener('click', function(){ if (c.name) openReel(c.name); });
+    open.addEventListener('click', function(){ if (c.ready) { ch = k; go('reels'); } else if (c.name) openReel(c.name); });
     return c; }
   function bUpdate(c, o){
     var prev = c.prev, p = bPct(o), cur = o.fin ? (o.fin === 'skipped' ? Math.max(o.idx, 0) : BST.length) : o.idx;
-    c.name = o.name; c.open.hidden = !o.name;
+    c.name = o.name; c.ready = o.fin === 'ready'; c.open.textContent = c.ready ? 'Open to post' : 'Open reel'; c.open.hidden = !o.name && !c.ready;
     c.card.className = 'bcard' + (o.fin ? ' ' + o.fin : '') + (o.making ? ' making' : '') + (c.card.classList.contains('open') ? ' open' : '');
     if (o.fin === 'ready' && prev && prev.fin !== 'ready' && prev.fin !== 'posted') { c.card.classList.add('lift'); setTimeout(function(){ c.card.classList.remove('lift'); }, 420); }
     c.st.textContent = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Waiting';
@@ -1322,6 +1327,9 @@
     c.meta.textContent = (o.fin === 'posted' ? 'Posted' : 'Posts at ' + slot + ' IST') + (mm ? ' · ' + mm : '');   // the slot comes from design/slots.json
     var want = o.thumb ? o.thumb + '?v=' + encodeURIComponent((SROWS.filter(function(x){ return x.ch === c.k; })[0] || {}).at || '') : null;
     if (want !== c.img) { c.img = want; c.th.textContent = ''; if (want) { var im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.src = want; im.onerror = function(){ im.remove(); c.th.appendChild(chDot(c.k)); }; c.th.appendChild(im); } else c.th.appendChild(chDot(c.k)); }
+    // Fix (owner, 26 Nov 2026): a red step sends its failure line (reel, step, why) as a top-priority Feedback item
+    var bad = o.fail && !o.fin; c.fix.hidden = !bad;
+    if (bad) { if (c.fail !== o.fail) { c.fail = o.fail; c.sent = null; } c.fixb.disabled = c.sent === c.fail; c.fixb.textContent = c.sent === c.fail ? 'Sent to the studio' : 'Fix'; } else c.fail = null;
     c.prev = o; }
   function bRender(){
     var box = document.getElementById('b-cards'), ready = 0, running = 0;
@@ -1330,7 +1338,7 @@
     document.getElementById('b-n').textContent = ready; document.getElementById('b-arc').setAttribute('stroke-dasharray', Math.round(ready / 3 * 100) + ' 100');
     document.getElementById('b-ring').setAttribute('aria-label', ready + ' of 3 reels ready');
     document.getElementById('b-t').textContent = ready + ' of 3 ready';
-    document.getElementById('b-s').textContent = ready === 3 ? 'All three are ready to post' : running ? running + ' being made now' : 'Nothing running right now'; }
+    document.getElementById('b-s').textContent = jOld(jLast) ? 'Status is old, rebuilding' : ready === 3 ? 'All three are ready to post' : running ? running + ' being made now' : 'Nothing running right now'; }
   function sLoad(){ clearTimeout(sTimer);
     return fetch('/api/stage', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
       .then(function(j){ SROWS = j.rows || []; }, function(){}).then(function(){ bRender();
@@ -1367,7 +1375,7 @@
   function jShow(){ tRender(); bRender(); if (sec === 'reel' && reelName) rPage(reelName); }
   function jLoad(){ clearTimeout(jTimer); if (jLast && !jAt) jShow();
     return fetch('/api/journey', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
-      .then(function(j){ jLast = j; jAt = Date.now(); jShow(); try { localStorage.setItem('studio-journey', JSON.stringify(j)); } catch (e) {} }, function(){ if (!jLast) { var tb = document.getElementById('t-today'); tb.textContent = ''; tb.appendChild(el('p', 'empty', 'Could not load today’s reels right now. Try again in a minute.')); } })
+      .then(function(j){ jLast = j; jAt = Date.now(); jShow(); try { localStorage.setItem('studio-journey', JSON.stringify(j)); } catch (e) {} }, function(){ if (!jLast) jNote.textContent = 'Could not load the status right now. Try again in a minute.'; else tRender(); })
       .then(jSchedule); }
   document.addEventListener('visibilitychange', function(){ if (document.hidden) { clearTimeout(jTimer); clearTimeout(sTimer); } else if (sec === 'today' || sec === 'reel') { if (sec === 'today') sLoad(); if (Date.now() - jAt > 60000) jLoad(); else jSchedule(); } });
   go(sec);
@@ -1647,16 +1655,22 @@
       if (x.at) box.appendChild(el('small', null, 'Since ' + new Date(x.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · clears itself after the next good run')); });
     box.hidden = false; }).catch(function(){});
   // the minutes meter: used / allowance this month, the pace to month end, and the biggest workflows
-  fetch('/reels/showreel-usage-actions.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(u){
-    if (!u || !u.allowance) return;
+  // (26 Nov 2026: the owner could not see it; it was hidden on any error. Now it always shows, and says why when the count cannot be read)
+  var useBox = document.getElementById('use'), useMiss = function(why){ document.getElementById('use-n').textContent = 'not counted yet';
+    document.getElementById('use-note').textContent = 'Minutes not counted yet: ' + why + ' The count runs every night at about 02:10.'; useBox.hidden = false; };
+  fetch('/reels/showreel-usage-actions.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){
+    if (!r.ok) throw new Error(r.status === 404 ? 'the app has no count saved (error 404).' : 'the app could not read the count (error ' + r.status + ').');
+    return r.json().catch(function(){ throw new Error('the saved count could not be read.'); }); }).then(function(u){
+    if (!u || !u.allowance || typeof u.used !== 'number') return useMiss('the saved count is empty or in an old format.');
     var pct = Math.round(100 * u.used / u.allowance), bar = document.getElementById('use-bar'), n = u.used.toLocaleString('en-IN'), a = u.allowance.toLocaleString('en-IN');
     document.getElementById('use-n').textContent = n + ' / ' + a + ' min · ' + pct + '%';
     bar.firstChild.style.width = Math.min(100, pct) + '%'; bar.className = 'bar' + (u.pace > u.allowance ? ' over' : u.pace > .8 * u.allowance ? ' warn' : '');
     document.getElementById('use-note').textContent = 'On pace for ' + u.pace.toLocaleString('en-IN') + ' by month end · last 7 days ' + u.last7.toLocaleString('en-IN') +
-      ' · counted ' + new Date(u.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + (u.allowance === 2000 ? ' · limit: GitHub Free' : '');
+      ' · counted ' + new Date(u.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + (u.allowance === 2000 ? ' · limit: GitHub Free' : '') + ' · free while the repo is public; the limit counts only if it goes private';
     var ul = document.getElementById('use-list');
     (u.workflows || []).slice(0, 5).forEach(function(w){ var li = el('li'); li.appendChild(el('span', null, w.name)); li.appendChild(el('span', null, w.minutes + ' min · ' + w.runs + ' runs')); ul.appendChild(li); });
-    document.getElementById('use').hidden = false; }).catch(function(){});
+    if (Date.now() - new Date(u.at).getTime() > 48 * 3600e3) document.getElementById('use-note').textContent += ' · this count is over 2 days old';
+    useBox.hidden = false; }).catch(function(e){ useMiss((e && e.message) || 'the app could not reach the count.'); });
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
     // a re-render keeps the file name, so the Worker's video, play and cover URLs carry each object's upload time (?v=): the phone never plays a cached older cut
     DATA = { d: r[0], c: r[1] }; if (!fromLink(location.hash)) { if (pendingReel) openReel(pendingReel, true); else render(); } tRender();
