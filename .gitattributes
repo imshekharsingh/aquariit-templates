@@ -1,0 +1,3 @@
+# Shared logs many sessions write at once: keep both sides on merge (owner, 27 Nov 2026; pipeline merge job)
+design/handoff-log.md merge=union
+design/owner-feedback.md merge=union
