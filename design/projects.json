@@ -5,10 +5,10 @@
    "id": "3d-kit-v7",
    "name": "3D kit v7: the last sample",
    "account": "other",
-   "stage": "building",
-   "line": "The critic's seven plan changes are made; checks run, then render 1 of 2.",
-   "pct": 55,
-   "updatedAt": "2026-11-26T16:18:00Z",
+   "stage": "render",
+   "line": "Render 1 of 2 is being made (about 25 min).",
+   "pct": 65,
+   "updatedAt": "2026-11-26T16:29:00Z",
    "history": [
     {
      "at": "2026-11-26T13:12:00Z",
@@ -24,6 +24,11 @@
      "at": "2026-11-26T16:18:00Z",
      "stage": "building",
      "line": "The critic's seven plan changes are made; checks run, then render 1 of 2."
+    },
+    {
+     "at": "2026-11-26T16:29:00Z",
+     "stage": "render",
+     "line": "Render 1 of 2 is being made (about 25 min)."
     }
    ]
   },
