@@ -1,4 +1,9 @@
-# Handoff: OPEN for one task (owner, 26 Nov 2026): 3D tech look sample v5
+# Handoff: CLOSED (26 Nov 2026, 11:49 IST)
+
+Both tasks below are DONE: the 3D tech look sample v5 (the tech 3D gold, finalised) and Queued task 2 (the GitHub minutes meter).
+The second account takes a new task only when the owner writes one here and sets this file to OPEN again. History follows.
+
+# History: 3D tech look sample v5 (owner, 26 Nov 2026), DONE
 
 The owner runs this task from another Claude account. That session reads this file, does the task, and writes every stage in
 "Progress" below (in its pushes). The main account's owner chat reads Progress; there is no other channel between the two.
@@ -77,11 +82,9 @@ Take it up after the 3D task is DONE (or now, if the 3D task is waiting on the o
 - 26 Nov 11:41 IST, other account: Queued task 2 (minutes meter) done, size S. Found: the nightly count works (last run today, 9,730 of 2,000 minutes this month, on pace for about 11,100) and the file is in R2 where the app reads it; the page shows the meter when that file loads (tested in a browser), but it hid the meter silently on any error, and this account cannot reach the live app to see which error. Fix: the meter always shows now; if the count cannot be read it says "Minutes not counted yet" with the reason (for example error 404 or 401), and it warns when the count is over 2 days old. Plain line added: the limit only counts if the repo goes private. If the owner still sees "not counted yet", the reason it shows says what to fix next.
 - 26 Nov 11:47 IST, other account: finalise step 1 done: the v5 sample is the tech 3D gold (design/gold.md entry; scripts/qa/gold.json "tech3d" numbers from the v5 render's Output QA: bright 0.218, background 0.147, dark 40 %, grey 2 %, contrast 0.229; accent kept from v4, same colours); the app's preview entry now plays v5.
 - 26 Nov 11:48 IST, other account: finalise step 2 done: `node scripts/starter.mjs tech3d <slug>` copies the v5 gold scene and its note now carries the v3-v5 critic lessons; techkit/README.md lists what each critic found, what fixed it in v5, the v5 critic's notes for daily reels (number agrees when a new item joins, own icon per tile, 20-35 s, one readable artifact) and the no-render check (techkit/check-gold3d.cjs). Rules D1-D8 stay in design/rules-tech.md.
-<<<<<<< HEAD
-=======
 - 26 Nov 11:48 IST, other account: finalise step 3 done: design/3d-kit-phase2.md known limits: the hub label behind the apps is closed (v5 layout, checked every 0.25 s); the 18 s pace and the frame-blend motion blur are accepted, with the reasons written there.
 - 26 Nov 11:48 IST, other account: finalise step 4 done: design/rules-tech.md L0 and design/runbook-daily.md step 3 say tech daily builds start from `node scripts/starter.mjs tech3d <slug>` from the next build on; design/3d-kit-phase2.md has its DONE line.
->>>>>>> origin/claude/3d-kit-rules
+- 26 Nov 11:49 IST, other account: DONE. Finalise steps 1-5 done: v5 is the tech 3D gold, the starter copies it with the v3-v5 lessons, known limits closed or accepted, tech daily builds use the 3D look from the next build on. Queued task 2 was done earlier (meter always shows). This file is CLOSED.
 
 ---
 

@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 11:49 IST · claude/3d-kit-done · other account: 3D kit finalised, handoff CLOSED
+- Done: v5 critic READY (main account, 7.5 / 8 / 8) -> v5 is the tech 3D gold (design/gold.md, scripts/qa/gold.json "tech3d" from the v5 Output QA numbers, app preview plays v5); `node scripts/starter.mjs tech3d <slug>` copies it with the v3-v5 lessons (techkit/README.md); design/3d-kit-phase2.md known limits closed or accepted and DONE; design/rules-tech.md L0 + runbook-daily.md step 3: tech daily builds use the 3D look from the next build on. design/handoff.md is CLOSED.
+- Left: gold.json "tech3d" accent hue and share are still v4's (the v5 log does not print them); re-measure with scripts/qa/gold_look.py from the main account, which can fetch the MP4.
+- For the main account: the Daily studio task prompt may still name `starter.mjs tech`; the runbook (now `tech3d`) wins. Sessions on the second account cannot reach templates.aquariit.com, so its critics cannot fetch reels.
+
 ## 2026-11-26 11:58 IST · claude/minutes-meter · other account: GitHub minutes meter always shows (queued task 2)
 - Done: templates/index.html: the meter in Settings no longer hides on an error; it shows "Minutes not counted yet" with the reason (HTTP code, empty or old file) and flags a count over 2 days old; a line says the limit counts only if the repo goes private. The nightly count and the R2 file were fine (9,730 of 2,000 min this month); the page works with that file in a browser test.
 - Left: the owner's next look tells which error the live app gets, if any. 3D kit v5: the critic could not fetch the MP4 (this account's environment cannot reach templates.aquariit.com); waits on the owner (design/handoff.md Progress).
