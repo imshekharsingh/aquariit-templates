@@ -61,6 +61,8 @@ const nm = new THREE.MeshBasicMaterial({ color: new THREE.Color(.4, 2.6, 1.5), t
 const NEEDLE_YAW = Math.atan2(-(TG.z - PH.z), TG.x - PH.x);
 const dirBeam = W3D.cable(S, [[PH.x, .12, PH.z], [lerp(PH.x, TG.x, .5), .12, lerp(PH.z, TG.z, .5)], [TG.x, .12, TG.z + 1.2]], { color: 0x42ff8c, radius: .045, glow: 1.6, segments: 60, light: 0, halo: .2, floorGlow: .5, pulse: { speed: .5, width: .05 } });
 
+// the one persistent glowing line that carries the story: the radio path phone -> tag (grows at "point", stays to the end)
+const pathLine = W3D.cable(S, [[PH.x, .1, PH.z - .2], [lerp(PH.x, TG.x, .4), .1, lerp(PH.z, TG.z, .4) + .3], [lerp(PH.x, TG.x, .75), .1, lerp(PH.z, TG.z, .75) - .2], [TG.x, .1, TG.z + 1.1]], { color: 0xb08cff, radius: .055, glow: 1.5, segments: 80, light: 0, halo: .22, floorGlow: .7, floorStrength: .5, pulse: { speed: .4, width: .06 } });
 // ---------- number figures (ride the camera, lower part of the frame) ----------
 const mkFig = (txt, col, unit) => { const g = new THREE.Group(), f = L.figure(THREE, txt, { height: 1.45, color: col, radius: .1, emissive: .18 }); g.add(f); if (unit) { const u = new THREE.Mesh(new THREE.PlaneGeometry(1.3, 1.3), new THREE.MeshBasicMaterial({ map: W3D.tex(THREE, 128, 128, (c, w, h) => { c.fillStyle = '#fff'; c.font = '800 100px Inter, DejaVu Sans, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(unit, w / 2, h / 2); }), transparent: true, toneMapped: false, fog: false })); u.position.set(f.userData.size.x / 2 + .55, -.35, 0); g.add(u); g.userData.w = f.userData.size.x + 1.1; } else g.userData.w = f.userData.size.x; g.visible = false; S.scene.add(g); g.traverse((m) => { if (m.isMesh) m.castShadow = false; }); return g; };
 const fig60 = mkFig('60', 0x42ff8c, 'm'), fig3 = mkFig('3x', 0xffa23a, ''), fig20 = mkFig('20', 0x22d3ee, 'm');
@@ -99,6 +101,7 @@ function frame(t) {
   const hook = 1 - sm(prog(t, C.guess - .2, C.guess + .5));
   hookRings.forEach((m, i) => { const ph = ((t * .5 + i / 3) % 1 + 1) % 1; setRing(m, TG.x, TG.z, hook * (1 - ph) * 1.0, 1 + ph * 3.6, 2.0); });
   faceRing.material.color.setRGB(.3 * (1 + .4 * Math.sin(t * 6)) * 1.0, 2.4, 1.3);
+  pathLine.reveal(ease(prog(t, C.point + .1, C.point + 1.3))); pathLine.update(t, 1 + .5 * Math.exp(-Math.pow((t - C.sixty) * 2, 2)));
   // phone pops in at "point"
   const pa = eback(prog(t, C.point - .4, C.point + .35)); phone.scale.setScalar(Math.max(.001, pa)); phone.visible = pa > .005; phone.position.y = Math.sin(t * 1.4) * .04;
   // old Bluetooth: a fuzzy cloud + "?" + signal bars (guess .. sounding)
