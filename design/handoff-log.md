@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-ref-upload-bar · owner chat: reference upload progress bar queued (GO)
+- design/handoff.md task 11 GO: progress bar with percent and part count, retry and resume of failed parts, a clear "Added" finish; done during v7 render waits or right after task 10, before task 9.
+
 ## 2026-11-26 23:41 IST · claude/3d-kit-v7-ready · other account: 3D kit v7 render 2 passed Output QA (task 10)
 - Done: the plan critic's seven changes; render 1 failed only COLOUR (a hard cut in the crane to the wall); fixed (the crane is a rise then a push, tools start on "tools", edge props hidden in that shot); render 2 Output QA PASS (GLOW 1.0 %). Kit: W3D.numbers with placement, wire floorY, softer pulses, check-wires.cjs; a leader-line check in the scene.
 - Left: the main account's critic on study/showreel-tech-gold3d-v7-r2-preview.mp4. Cap reached (2 renders): if not STABLE, the owner decides.

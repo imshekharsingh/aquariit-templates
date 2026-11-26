@@ -22,7 +22,7 @@ Every task here is also a project on the app's board: update its entry in design
 Do NOT pick up the next task on your own. A task is worked on only when its heading carries "GO" (the owner or the main account adds it
 when the owner asks). The hourly "Handoff queue check" starts a session only for an open GO task that is not already started (a
 "task N started" Progress line in the last 3 hours); otherwise it ends at once. When a GO task is done, write "task N done" and stop.
-Current GO list, in this order: task 10 (3D kit v7; task 3's v6 is closed at render 2, no render 3), then task 9 (references). Every other open task waits until it is marked GO.
+Current GO list, in this order: task 10 (3D kit v7; task 3's v6 is closed at render 2, no render 3; task 11 may be done while a v7 render runs), then task 11 (upload progress bar) if not done yet, then task 9 (references). Every other open task waits until it is marked GO.
 
 ## Owner rule for task 10: keep going until stable (owner, 26 Nov 2026)
 Task 10 (3D kit v7) continues on its own through the hourly queue check until it is STABLE or capped, without waiting to be told:
@@ -159,6 +159,16 @@ how numbers show) and ONE stills sheet; write "v7 plan ready for critic" in Prog
 and stills against points 1-7 before any render. (b) On its OK: one render, Output QA, then "v7 ready for critic" and stop again.
 v7 is the last sample: if READY it becomes the tech 3D gold (gold.md, gold.json, the tech3d starter) and tech restarts with a real reel;
 if NOT READY the owner decides. Update projects.json at each step.
+
+## Queued task 11 GO, during v7's render waits or right after task 10 (owner, 26 Nov 2026): progress bar for reference uploads
+Owner: "reference upload should have progress bar". Agreed after discussion. Size S. templates/index.html (References upload, ~line 1541;
+it uploads large files in parts) and the Worker's refs upload route if needed:
+1. A progress bar with the percentage and the part count ("62% · part 5 of 8"), so a stalled upload is obvious.
+2. Resume: a failed part is retried (up to 3 times, short back-off) instead of restarting the whole file; on a final failure, a plain
+   message and a "Try again" that continues from the last good part.
+3. A clear finish: "Added" with a small preview, and the reference shows in the list at once.
+Not in scope: uploading in the background after the page closes. Phone-width check on a local build with a large test file, npm run
+check, one owner-feedback.md line, merge. Write "task 11 live, owner to try an upload" in Progress.
 
 ## Queued task 9 GO, after task 10 (owner, 26 Nov 2026): references, measured (do it right after task 3)
 Owner: reference work must show in the reels and in the numbers. The critic check (a named pattern must be visible in the video) is
