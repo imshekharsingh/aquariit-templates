@@ -86,7 +86,7 @@ reel today from design/topic-bank.md (steps 1-8, the first KEEP of the tech list
 2. **Fable picks.** One short Fable call on the pick sheet only (`node scripts/pick-sheet.mjs`, about one screen; do not paste the bank). It answers one line
    per channel: `KEEP <ids in the order to use>` and `REJECT <ids>`. Keep one or more; the reel uses ONE at a time, the other kept ones wait for
    later days and need a re-check the morning they are used. Log the answer in design/pick-log.md (line format in that file).
-3. **Build from gold (Sonnet).** `node scripts/starter.mjs <web|tech> <slug>`. It copies the gold look (light, framing, type sizes, shot rhythm, cuts, motion,
+3. **Build from gold (Sonnet).** `node scripts/starter.mjs <web|tech3d> <slug>` (tech builds use the 3D look from 26 Nov 2026: `tech3d`, rules-tech.md L0). It copies the gold look (light, framing, type sizes, shot rhythm, cuts, motion,
    sound) and never the hero object: the gold reel's phone, card or cable does not appear; the new topic brings its own hero, drawn new.
    The captions.json entry carries the "style" record (design/what-works.md "Style record"); the fields are planned now and re-measured from the MP4 after the render.
 4. **Direction card and stills (Sonnet).** Fill review/<channel>/<name>.direction.md (design/direction.md) before the build, then render the stills
