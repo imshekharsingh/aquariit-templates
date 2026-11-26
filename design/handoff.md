@@ -115,6 +115,7 @@ tech 3D gold (design/gold.md, scripts/qa/gold.json, the tech3d starter).
 - 26 Nov 12:50 IST, other account: task 2 was already done and is live (merged and deployed 26 Nov 11:47 IST): the meter always shows and says why if the count cannot be read.
 - 26 Nov 12:50 IST, other account: task 3 started (size L). Step 1 done: rules-tech.md D9-D12 (beats, own entrance per object, each connection a beat, believable wires and light), critic.md questions 48-51, and an Output QA GLOW check for the 3D look (white-hot area below the captions; fails over 4 % median or 8 % in any second; the v5 sample measures about 9 %, so v5 would fail it). scripts/qa/look.py runs GLOW on local frames before a render. Next: the v6 scene.
 - 26 Nov 13:05 IST, other account: task 0 done: both branches are on main (claude/3d-kit-rules merged on its retry). Task 3 step 2: the v6 sample is built (techkit/scenes/gold3d-v6.html; new kit parts W3D.enter for entrances and W3D.wire for matte sagging cables with plugs, in techkit/lib3d.js; the New tile has its own icon; 3+9=12 when it connects). GLOW was re-made to measure bloom haze (a pale tile or a lit floor no longer counts): v5 4.0 %, v6 1.7 % on its scene frames. One stills sheet: review/tech/study-25nov/kit-phase2-v6.jpg. Builder notes for the critic: review/tech/showreel-tech-gold3d-v6.md. Next: render 1 of v6 once this is merged.
+- 26 Nov 13:11 IST, other account: task 3: the v6 sample is on main; render 1 of v6 started on GitHub (preview r1, about 25 min).
 
 ---
 
