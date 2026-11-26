@@ -5,6 +5,8 @@
 //   joined with ffmpeg's concat demuxer (same encoder settings, so -c copy). Name the parts <name>.partI.mp4; the cover time and the cues
 //   go next to <name>.mp4 (written by part 0 only).
 //   config: { seek: "path/to/page.html", dur, fps, width, height, blur, shutter, grain, vignette }
+// --preview (preflight-all, 26 Nov 2026): the cheap local check video: 10 fps, 360x640, no blur or grain, a fast encode, no sound track here
+//   (preflight-all adds the voice or silence); the scene is still laid out at its own width (deviceScaleFactor 360/width), so every check sees the same picture.
 // Film look (owner, 22 Oct 2026: "we are missing motion design"): blur = sub-frames per frame (real motion blur: the page is drawn at
 // several instants inside the shutter and ffmpeg averages them), shutter = fraction of a frame the shutter is open (0.5 = 180 degrees),
 // grain = temporal film grain strength (0-20), vignette = a soft edge falloff. All off by default, so older configs render as before.
@@ -15,16 +17,17 @@ import { join, resolve } from 'path';
 const require = createRequire(process.env.PW_FROM || join(process.cwd(), 'node_modules/'));
 const { chromium } = require('playwright');
 const [cfgPath, out] = process.argv.slice(2), R = JSON.parse(readFileSync(cfgPath, 'utf8'));
-const FPS = R.fps || 60, W = R.width || 540, H = R.height || 960, K = Math.max(1, R.blur | 0), SH = R.shutter ?? .5;
+const PREVIEW = process.argv.includes('--preview');
+const FPS = PREVIEW ? 10 : R.fps || 60, W = R.width || 540, H = R.height || 960, K = PREVIEW ? 1 : Math.max(1, R.blur | 0), SH = R.shutter ?? .5;
 const sec = process.argv.indexOf('--seconds'), DUR = sec > 0 ? +process.argv[sec + 1] : (R.dur || 30), N = Math.round(DUR * FPS);   // --seconds: quick local test
 const pa = process.argv.indexOf('--part'), [PI, PN] = pa > 0 ? process.argv[pa + 1].split('/').map(Number) : [0, 1];
 const F0 = Math.floor(N * PI / PN), F1 = Math.floor(N * (PI + 1) / PN), base = out.replace(/(\.part\d+)?\.mp4$/, '');
 const vf = [];
 if (K > 1) vf.push(`tmix=frames=${K}`, `select='eq(mod(n\\,${K})\\,${K - 1})'`, `setpts=N/(${FPS}*TB)`);
-if (R.grain) vf.push(`noise=alls=${R.grain}:allf=t`);
-if (R.vignette) vf.push('vignette=angle=PI/12');
+if (R.grain && !PREVIEW) vf.push(`noise=alls=${R.grain}:allf=t`);
+if (R.vignette && !PREVIEW) vf.push('vignette=angle=PI/12');
 const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });   // software WebGL for shader scenes
-const p = await (await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1080 / W })).newPage();
+const p = await (await b.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: (PREVIEW ? 360 : 1080) / W })).newPage();
 const errs = []; p.on('pageerror', (e) => errs.push(e.message));
 await p.goto('file://' + resolve(R.seek)); await p.waitForSelector('html[data-ready]', { timeout: 30000 });
 if (process.env.VOICE_WORDS) {   // narrated reels: the scene times its beats and captions to the real voice (scripts/showreel/voice.py)
@@ -38,14 +41,14 @@ if (PI === 0) { const cov = await p.evaluate(() => window.COVER); if (typeof cov
 const cues = await p.evaluate(() => window.CUES || null);   // sound cues for scripts/showreel/sound.py (owner, 23 Oct: sound supports the hook)
 if (cues && PI === 0) writeFileSync(base + '.cues.json', JSON.stringify(Object.assign(cues, { dur: Math.min(cues.dur || DUR, DUR) })));
 const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS * K), '-c:v', 'mjpeg', '-i', '-',
-  ...(vf.length ? ['-vf', vf.join(',')] : []), '-r', String(FPS), '-c:v', 'libx264', '-preset', 'slow', '-crf', '16', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
+  ...(vf.length ? ['-vf', vf.join(',')] : []), '-r', String(FPS), '-c:v', 'libx264', '-preset', PREVIEW ? 'ultrafast' : 'slow', '-crf', PREVIEW ? '23' : '16', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
 const done = new Promise((ok, no) => ff.on('close', (c) => c === 0 ? ok() : no(new Error('ffmpeg exited ' + c))));
 const SUBJ = [], PANES = [];
 for (let i = F0; i < F1; i++) {
   for (let j = 0; j < K; j++) {   // K sub-frames spread over the open shutter, centred on the frame's time
     const t = Math.min(DUR, Math.max(0, (i + (K > 1 ? SH * (j / (K - 1) - .5) : 0)) / FPS));
     await p.evaluate((t) => window.seek(t), t);
-    const jpg = await p.screenshot({ type: 'jpeg', quality: 95 });
+    const jpg = await p.screenshot({ type: 'jpeg', quality: PREVIEW ? 85 : 95 });
     if (!ff.stdin.write(jpg)) await new Promise((r) => ff.stdin.once('drain', r));
   }
   if (i % (FPS * 5) === 0) console.log(`frame ${i}/${N}`);

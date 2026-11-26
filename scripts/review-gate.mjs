@@ -11,6 +11,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { cardProblems, DIRECTION_FROM } from './direction.mjs';
+import { resolveReel, reelHash } from './showreel/resolve.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const GATE_FROM = '2026-11-08', ITEMS = 13, FLOW_FROM = '2026-11-08', FLOW_ITEMS = [14, 15, 16, 17];
@@ -26,6 +27,9 @@ const CALM16T = /FLOW: continuity (5[5-9]|[6-9]\d|100)%/;
 export const JOURNEY_FROM = '2026-11-09', JOURNEY_ITEM = 19;
 // DEPTH (owner, 8-9 Nov 2026, design/rules-c3.md rule 11): item 20, Turns Out reels posting from DEPTH_FROM: the qa.mjs DEPTH lines pasted, every world 4+ planes
 export const DEPTH_FROM = '2026-11-11', DEPTH_ITEM = 20;
+// FULL CHECK (owner, 26 Nov 2026; scripts/preflight-all.mjs): reels posting from PREFLIGHT_FROM need "PREFLIGHT-ALL: PASS <fingerprint>" in the review file before
+// render 1, the fingerprint being the config and scene as they are now (a PASS goes stale when either changes). Reels posting before it were already rendered.
+export const PREFLIGHT_FROM = '2026-11-27';
 export const reviewPath = (channel, name) => `review/${channel}/${name}.md`;
 const NEED = { 2: /SUBJECT FILL/, 3: /SAFE ZONE: ok/, 4: /OVERLAP: none/, 7: /fits/,
   // FLOW (owner, 7 Nov 2026: the gate is a floor, motion quality is the ceiling; scripts/showreel/flow.mjs): pasted from stills.mjs, qa.mjs or make.py --stills
@@ -36,7 +40,7 @@ const TEMPLATE = (() => { try { return new Set(readFileSync(join(root, 'review/T
 export const todayIST = () => new Date(Date.now() + 330 * 60000).toISOString().slice(0, 10);
 
 // problems with one reel's review file; render = true: only what must hold before the render (items 1-12)
-export const reviewProblems = (name, e, { render = false, today = todayIST() } = {}) => {
+export const reviewProblems = (name, e, { render = false, today = todayIST(), preflight = render } = {}) => {
   const p = reviewPath(e.channel, name), f = join(root, p);
   if (!existsSync(f)) return [`${p} is missing (the Mandatory Gate review: design/mandatory.md)`];
   const got = new Map(), out = [];
@@ -54,6 +58,13 @@ export const reviewProblems = (name, e, { render = false, today = todayIST() } =
     // item 20 takes the film finish and the per-shot motion as its evidence instead of qa.mjs DEPTH lines (captions.json "engine": "echoes")
     // the design-tutorial scenes (21 Nov 2026, scripts/channel3/design: a live artboard on a context stage, no Kt.plane worlds) take the same evidence ("engine": "design")
     else if (NEED[i] && !(i === 2 && e.channel === 'tech') && !(i === DEPTH_ITEM && (e.engine === 'echoes' || e.engine === 'design')) && !((i === 16 && e.postOn >= CALM_FROM && e.channel === 'web' ? CALM16 : i === 16 && e.postOn >= CALM_FROM && e.channel === 'tech' ? CALM16T : NEED[i]).test(g.ev))) out.push(`${p}: item ${i} must paste its AUTO line (${NEED[i].source})`);
+  }
+  if (render && preflight && e.postOn >= PREFLIGHT_FROM) {
+    const pf = readFileSync(f, 'utf8').split('\n').find((l) => /^PREFLIGHT-ALL: /.test(l));
+    let now = ''; try { now = reelHash(resolveReel(name)); } catch (err) { out.push(`${p}: PREFLIGHT-ALL cannot find the reel's config (${err.message})`); }
+    if (!pf) out.push(`${p}: no "PREFLIGHT-ALL: PASS" line: run node scripts/preflight-all.mjs ${name} --write before render 1 (the full check: preview, Output QA, TEXT CLEAR, review lint)`);
+    else if (!/^PREFLIGHT-ALL: PASS\b/.test(pf)) out.push(`${p}: ${pf.slice(0, 160)}: fix it and run node scripts/preflight-all.mjs ${name} --write again`);
+    else if (now && !pf.startsWith(`PREFLIGHT-ALL: PASS ${now}`)) out.push(`${p}: the PREFLIGHT-ALL: PASS is stale (the config or scene changed after it): run node scripts/preflight-all.mjs ${name} --write again`);
   }
   // the direction card (owner, 24 Nov 2026; design/direction.md): filled lines whenever it exists; before the render also APPROVED by the stills check
   if (e.postOn >= DIRECTION_FROM) out.push(...cardProblems(e.channel, name, { render }));
