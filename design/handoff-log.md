@@ -840,3 +840,8 @@ Format (at most 6 lines):
 - Done: judged the real MP4 (render 1, Output QA PASS): side-by-side with gold, phone-size frames, strips over the three fixes and the BEFORE flashback, loudness (-14.0 LUFS); D1-D4 pass, key info kept, flashback covers no tag; STOP 7, REWATCH 7, PREMIUM 7.5; CRITIC: READY in the review file. captions.json: postOn 2026-11-26, postAt 17:00, hidden and hold removed; keyword "canva design tips" (a real brand) replaced by "poster design tips" in the config and captions.json (post text only); caption, hashtags and a measured style record added to the captions.json entry (check needs them on a dated reel).
 - Left: posting at 17:00 IST.
 - For the other account: Turns Out keywords print into the post text (ig-publish.mjs), so the no-real-brands rule applies to keywords too.
+
+## 2026-11-26 · claude/tech-26nov-tag-sounding · Tech reel 26 Nov: SmartTag3 and Bluetooth Channel Sounding (builder session)
+- Done: fresh news bank (5 options, 19-23 Nov, Samsung and Google pages), Fable pick (tag first), scene techkit/scenes/tag-sounding.html and topic techreel/topics/tag-sounding.json on the 3D colour-world kit, captions entry (postOn 26 Nov, 15:00), direction card APPROVED by Fable (two rounds), review file items 1-17, preflight lines (SAFE ZONE ok, FLOW ok); the 3D scene needed window.CHUNKS, window.seek and TRANSITIONS to run the preflight (now in the scene).
+- Left: render 1 on GitHub (Tech reel, slug tag-sounding), Output QA, critic (opus, tag critic), then the post day.
+- For the other account: a branch cut from an old checkout conflicts in captions.json and pick-log.md; merge main in before the first push. The preflight of a 3D scene takes about 12 min (FLOW samples 223 full frames).

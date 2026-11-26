@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>tag-sounding</title>
+<!-- 26 Nov 2026 tech news reel on the phase 2 3D colour-world kit (starter tech3d). Samsung Newsroom, 23 Nov 2026: Galaxy SmartTag3 + Bluetooth 6.0 Channel Sounding.
+     One world: dark floor, a purple tag on a plinth, a phone, six coloured waves (channels), a compass needle, rings on the floor (old range vs 3x, UWB inside). window.render(t) is a pure function of t. -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#090a0e}
+</style></head><body>
+<script src="timeline.js"></script>
+<!--THREE-->
+<!--WORLD3D-->
+<script>
+(() => {
+const W = 1080, H = 1920, TL = window.TL, C = TL.cues, TOTAL = TL.total;
+const { clamp, lerp } = W3D, prog = (t, a, b) => clamp((t - a) / (b - a));
+const sm = (u) => (u = clamp(u), u * u * (3 - 2 * u)), ease = (u) => (u = clamp(u), u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2), eout = (u) => 1 - Math.pow(1 - clamp(u), 3);
+const eback = (u) => { u = clamp(u); const c = 1.6; return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); };
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const S = W3D.stage(THREE, { W, H });
+S.dof.aperture = 2.0; S.dof.focusRange = 8; S.dof.maxR = 18;
+const world = W3D.world(S, { seed: 33, props: 30, radius: [14, 40], heroZone: 14, maxZ: -12, palette: [0x6b3cff, 0x16b8d6, 0xff4f8a, 0xffb62e, 0x2f7bff, 0x22c55e] });
+const L = W3D.lib, gloss = W3D.gloss;
+
+// ---------- the cast: a phone (you), the tag on a plinth (your keys) ----------
+const PH = V(-0.5, 0, 3.2), TG = V(2.0, 0, -3.6), TAGY = 1.9;
+const phone = L.phone(THREE, { w: 1.5, h: 3.1, screenA: '#3a1f9e', screenB: '#120a2c', screen: (c, w, h) => { c.save(); c.translate(w / 2, h * .42); c.rotate(-1.0); c.fillStyle = '#42ff8c'; c.beginPath(); c.moveTo(w * .3, 0); c.lineTo(-w * .05, -w * .25); c.lineTo(-w * .05, -w * .09); c.lineTo(-w * .32, -w * .09); c.lineTo(-w * .32, w * .09); c.lineTo(-w * .05, w * .09); c.lineTo(-w * .05, w * .25); c.closePath(); c.fill(); c.restore(); c.fillStyle = '#fff'; c.font = '800 ' + Math.round(w * .2) + 'px Inter, DejaVu Sans, sans-serif'; c.textAlign = 'center'; c.fillText('60 m', w / 2, h * .82); } }); phone.position.copy(PH); phone.rotation.y = .5; S.scene.add(phone);
+const tag = new THREE.Group(); tag.position.copy(TG); S.scene.add(tag);
+const plinth = new THREE.Mesh(new THREE.CylinderGeometry(.85, 1.0, .4, 48), gloss(THREE, 0x1b1d27, { roughness: .3, metalness: .4 })); plinth.position.y = .2; tag.add(plinth);
+const disc = new THREE.Group(); disc.position.y = TAGY; tag.add(disc);
+const body = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, .28, 64), gloss(THREE, 0x6b3cff, { roughness: .2 })); body.rotation.x = Math.PI / 2; disc.add(body);
+const rim = new THREE.Mesh(new THREE.TorusGeometry(1.0, .07, 14, 72), gloss(THREE, 0xc9b8ff, { roughness: .15, metalness: .6 })); rim.position.z = .0; disc.add(rim);
+const faceRing = new THREE.Mesh(new THREE.TorusGeometry(.5, .05, 12, 56), new THREE.MeshBasicMaterial({ color: new THREE.Color(.3, 2.4, 1.3), toneMapped: false })); faceRing.position.z = .16; faceRing.userData.noShadow = true; disc.add(faceRing);
+const hole = new THREE.Mesh(new THREE.TorusGeometry(.2, .06, 12, 30), gloss(THREE, 0xe7e2ff, { roughness: .2, metalness: .7 })); hole.position.set(0, .78, .0); disc.add(hole);
+disc.traverse((m) => { if (m.isMesh && !m.userData.noShadow) m.castShadow = true; });
+const sh = [W3D.contactShadow(S, plinth, { w: 2.3, d: 2.3, strength: .9 }), W3D.contactShadow(S, phone, { w: 1.9, d: .8, strength: .9 })];
+
+// ---------- floor rings ----------
+const mkRing = (r, col, w = .09) => { const m = new THREE.Mesh(new THREE.RingGeometry(r - w, r + w, 160), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false, fog: false, side: THREE.DoubleSide })); m.rotation.x = -Math.PI / 2; m.position.y = .03; m.userData.col = new THREE.Color(col); S.scene.add(m); return m; };
+const setRing = (m, x, z, k, s = 1, str = 1.6) => { m.visible = k > .01; m.position.x = x; m.position.z = z; m.scale.setScalar(Math.max(.001, s)); m.material.color.copy(m.userData.col).multiplyScalar(k * str); };
+const hookRings = [0, 1, 2].map((i) => mkRing(1, [0x8a5cff, 0x22d3ee, 0xff6ac1][i], .06));
+const oldRing = mkRing(2.6, 0x9aa0b4, .06), newRing = mkRing(7.8, 0x22d3ee, .1), uwbRing = mkRing(2.6, 0x42ff8c, .12), uwbRing2 = mkRing(2.6, 0x42ff8c, .05);
+
+// ---------- old Bluetooth: a fuzzy "somewhere in here" cloud of dots + a question mark ----------
+const cloud = new THREE.Group(); cloud.position.set(TG.x, TAGY, TG.z); S.scene.add(cloud);
+const rr = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+const dots = Array.from({ length: 46 }, () => { const m = new THREE.Mesh(new THREE.SphereGeometry(.09 + rr() * .07, 10, 8), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.4, 1.2, .2), toneMapped: false, transparent: true })); m.userData = { a: rr() * 6.28, b: rr() * 6.28, r: 1.2 + rr() * 1.7, sp: .4 + rr() * .9 }; cloud.add(m); return m; });
+const qm = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.2), new THREE.MeshBasicMaterial({ map: W3D.tex(THREE, 256, 256, (c, w, h) => { c.fillStyle = '#ffb62e'; c.font = '900 230px Inter, DejaVu Sans, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('?', w / 2, h / 2 + 8); }), transparent: true, toneMapped: false, fog: false })); qm.position.set(TG.x, TAGY + 2.0, TG.z + .6); S.scene.add(qm);
+const bars = new THREE.Group(); [0, 1, 2, 3].forEach((i) => { const b = new THREE.Mesh(new THREE.BoxGeometry(.22, .3 + i * .28, .18), new THREE.MeshBasicMaterial({ color: new THREE.Color(2.4, 1.2, .2), toneMapped: false })); b.position.set(i * .34, (.3 + i * .28) / 2, 0); bars.add(b); }); bars.position.set(PH.x - 2.3, 3.2, PH.z + 1.0); S.scene.add(bars);
+
+// ---------- Channel Sounding: six coloured waves from the phone to the tag (one per channel) ----------
+const LANES = [0x22d3ee, 0xff6ac1, 0xffb62e, 0x42ff8c, 0x4a8cff, 0xb08cff];
+const waveCables = LANES.map((col, k) => { const pts = [], N = 34, A = V(PH.x + .4, 1.9, PH.z - .6), B = V(TG.x - .8, TAGY - .2, TG.z + .9), dir = B.clone().sub(A), side = V(-dir.z, 0, dir.x).normalize(), off = (k - 2.5) * .22;
+  for (let i = 0; i <= N; i++) { const u = i / N, p = A.clone().lerp(B, u).addScaledVector(side, off); p.y += Math.sin(u * Math.PI * (3 + k * 1.1) + k * 1.3) * (.34 + .02 * k) * Math.sin(Math.PI * u * .98 + .1) + .25 * Math.sin(Math.PI * u); pts.push(p.toArray()); }
+  return W3D.cable(S, pts, { color: col, radius: .05, glow: 1.7, segments: 120, light: 0, haloSize: 2.8, halo: .24, floorGlow: .6, floorStrength: .45, pulse: { speed: .32 + .05 * k, width: .06 } }); });
+
+// ---------- compass: a flat dial under the phone and a glowing needle that finds the tag ----------
+const dial = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 5.2), new THREE.MeshBasicMaterial({ map: W3D.tex(THREE, 512, 512, (c, w, h) => { c.translate(w / 2, h / 2); c.strokeStyle = 'rgba(160,190,255,.85)'; c.lineWidth = 6; c.beginPath(); c.arc(0, 0, 232, 0, 7); c.stroke(); c.lineWidth = 3; c.beginPath(); c.arc(0, 0, 170, 0, 7); c.stroke(); for (let i = 0; i < 48; i++) { const a = i * Math.PI / 24, l = i % 6 === 0 ? 40 : 18; c.lineWidth = i % 6 === 0 ? 7 : 3; c.beginPath(); c.moveTo(Math.cos(a) * 232, Math.sin(a) * 232); c.lineTo(Math.cos(a) * (232 - l), Math.sin(a) * (232 - l)); c.stroke(); } }), transparent: true, toneMapped: false, fog: false, depthWrite: false, blending: THREE.AdditiveBlending }));
+dial.rotation.x = -Math.PI / 2; dial.position.set(PH.x, .04, PH.z); S.scene.add(dial);
+const needle = new THREE.Group(); needle.position.set(PH.x, 3.2, PH.z); S.scene.add(needle);
+const nm = new THREE.MeshBasicMaterial({ color: new THREE.Color(.4, 2.6, 1.5), toneMapped: false }); const nshaft = new THREE.Mesh(new THREE.CylinderGeometry(.07, .07, 1.6, 14), nm); nshaft.rotation.z = Math.PI / 2; nshaft.position.x = .8; const ncone = new THREE.Mesh(new THREE.ConeGeometry(.28, .7, 24), nm); ncone.rotation.z = -Math.PI / 2; ncone.position.x = 1.9; needle.add(nshaft, ncone); const nback = new THREE.Mesh(new THREE.SphereGeometry(.2, 16, 12), nm); needle.add(nback);
+const NEEDLE_YAW = Math.atan2(-(TG.z - PH.z), TG.x - PH.x);
+const dirBeam = W3D.cable(S, [[PH.x, .12, PH.z], [lerp(PH.x, TG.x, .5), .12, lerp(PH.z, TG.z, .5)], [TG.x, .12, TG.z + 1.2]], { color: 0x42ff8c, radius: .045, glow: 1.6, segments: 60, light: 0, halo: .2, floorGlow: .5, pulse: { speed: .5, width: .05 } });
+
+// the one persistent glowing line that carries the story: the radio path phone -> tag (grows at "point", stays to the end)
+const pathLine = W3D.cable(S, [[PH.x, .1, PH.z - .2], [lerp(PH.x, TG.x, .4), .1, lerp(PH.z, TG.z, .4) + .3], [lerp(PH.x, TG.x, .75), .1, lerp(PH.z, TG.z, .75) - .2], [TG.x, .1, TG.z + 1.1]], { color: 0xb08cff, radius: .055, glow: 1.5, segments: 80, light: 0, halo: .22, floorGlow: .7, floorStrength: .5, pulse: { speed: .4, width: .06 } });
+// ---------- number figures (ride the camera, lower part of the frame) ----------
+const mkFig = (txt, col, unit) => { const g = new THREE.Group(), f = L.figure(THREE, txt, { height: 1.45, color: col, radius: .1, emissive: .18 }); g.add(f); if (unit) { const u = new THREE.Mesh(new THREE.PlaneGeometry(1.3, 1.3), new THREE.MeshBasicMaterial({ map: W3D.tex(THREE, 128, 128, (c, w, h) => { c.fillStyle = '#fff'; c.font = '800 100px Inter, DejaVu Sans, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(unit, w / 2, h / 2); }), transparent: true, toneMapped: false, fog: false })); u.position.set(f.userData.size.x / 2 + .55, -.35, 0); g.add(u); g.userData.w = f.userData.size.x + 1.1; } else g.userData.w = f.userData.size.x; g.visible = false; S.scene.add(g); g.traverse((m) => { if (m.isMesh) m.castShadow = false; }); return g; };
+const fig60 = mkFig('60', 0x42ff8c, 'm'), fig3 = mkFig('3x', 0x22d3ee, ''), fig20 = mkFig('20', 0xff6ac1, 'm');
+
+// ---------- captions ----------
+const KEYS = [[4, 4], [3, 3], [0, 1], [7, 8], [3, 4], [3, 3], [3, 3]];
+const cap = W3D.captions({ x: 100, w: 860, y: 258, size: 58, lines: TL.scenes.map((s, i) => ({ t0: i === 0 ? -.2 : s.start, t1: s.end, words: s.words.map((w) => w.w), times: s.words.map((w) => w.t0), keyIdx: KEYS[i] })) });
+const CAPBAND = [60, 240, 1020, 470];
+document.body.lastElementChild.id = 'caps';
+window.CHUNKS = TL.scenes.map((sc) => ({ t0: sc.start, t1: sc.end, words: sc.words }));
+// declared camera moves (every shot change is one continuous camera move on the path) for FLOW
+window.TRANSITIONS = [[C.point - .3, C.point + 1.0, 'camera'], [C.guess - .3, C.guess + .8, 'camera'], [C.sounding - .3, C.sounding + .9, 'camera'], [C.dir - .3, C.dir + .8, 'camera'], [C.sixty + .2, C.sixty + 1.2, 'camera'], [C.three - .3, C.three + .8, 'camera'], [C.twenty - .3, C.twenty + .7, 'camera'], [C.less - .2, C.less + .9, 'camera']];
+window.HOLDS = [[TOTAL - 1.6, TOTAL]];
+window.seek = (t) => window.render(t);
+
+// ---------- camera: one path through one world, six different moves ----------
+const cam = W3D.camPath(S, [
+  { t: 0, pos: [3.6, 3.4, 5.2], look: [2, 2.2, -3.6], fov: 50 },                        // 1 close on the tag, already moving
+  { t: C.point + .9, pos: [.4, 4.6, 13.5], look: [.3, 1.9, -.6], fov: 52 },             // 2 pull back: phone and tag
+  { t: C.guess + .5, pos: [6.2, 5.2, 5.2], look: [2, 1.8, -3.6], fov: 50 },            // 3 swing round the fuzzy zone
+  { t: C.sounding + .4, pos: [10.4, 5.0, 12.0], look: [.2, 2.3, -.4], fov: 60 },        // 4 low side track along the waves
+  { t: C.dir + .3, pos: [-3.8, 8.2, 9.2], look: [-.8, 1.7, .6], fov: 52 },            // 5 high over the phone: the compass
+  { t: C.sixty + .8, pos: [1.0, 10.5, 12.5], look: [.2, 0, -.6], fov: 54 },             // wide high: the whole line
+  { t: C.three + .5, pos: [0, 17.5, 1.5], look: [0, 0, -1.6], fov: 52 },             // 6 top-down: rings
+  { t: C.twenty + .3, pos: [-3.2, 5.4, 10.6], look: [-1.7, 1.2, 2.8], fov: 52 },         // 7 close on the phone, UWB ring
+  { t: C.less + .3, pos: [.8, 6.2, 15.5], look: [.2, 1.1, -.2], fov: 52 },              // 8 back to the tag
+  { t: TOTAL, pos: [.5, 6.0, 15.0], look: [.2, 1.1, -.2], fov: 52 },                    // held payoff
+]);
+const focus = V(0, 1.6, -3); S.focus = focus;
+const heroes = [phone, tag];
+
+function frame(t) {
+  const p = cam(t); focus.copy(p.look);
+  // tag: floats and turns slowly; rings pulse from frame 0
+  tag.position.y = 0; disc.position.y = TAGY + Math.sin(t * 1.9) * .08; disc.rotation.y = Math.sin(t * .9) * .35 + .25; disc.rotation.z = Math.sin(t * 1.3) * .05;
+  const hook = 1 - sm(prog(t, C.guess - .2, C.guess + .5));
+  hookRings.forEach((m, i) => { const ph = ((t * .5 + i / 3) % 1 + 1) % 1; setRing(m, TG.x, TG.z, hook * (1 - ph) * 1.0, 1 + ph * 3.6, 2.0); });
+  faceRing.material.color.setRGB(.3 * (1 + .4 * Math.sin(t * 6)) * 1.0, 2.4, 1.3);
+  pathLine.reveal(ease(prog(t, C.point + .1, C.point + 1.3))); pathLine.update(t, 1 + .5 * Math.exp(-Math.pow((t - C.sixty) * 2, 2)));
+  // phone pops in at "point"
+  const pa = eback(prog(t, C.point - .4, C.point + .35)); phone.scale.setScalar(Math.max(.001, pa)); phone.visible = pa > .005; phone.position.y = Math.sin(t * 1.4) * .04;
+  // old Bluetooth: a fuzzy cloud + "?" + signal bars (guess .. sounding)
+  const ga = sm(prog(t, C.guess - .15, C.guess + .35)) * (1 - sm(prog(t, C.sounding - .1, C.sounding + .3)));
+  cloud.visible = ga > .01; dots.forEach((m) => { const u = m.userData, a = u.a + t * u.sp, b = u.b + t * u.sp * .7, r = u.r * (.5 + .5 * ga); m.position.set(Math.cos(a) * Math.cos(b) * r, Math.sin(b) * r * .8, Math.sin(a) * Math.cos(b) * r); m.material.opacity = ga * .9; });
+  qm.visible = ga > .01; qm.position.y = TAGY + 1.9 + Math.sin(t * 2.2) * .1; qm.scale.setScalar((.2 + .8 * ga) * .75); qm.quaternion.copy(S.cam.quaternion); qm.material.opacity = ga;
+  bars.visible = ga > .01; bars.children.forEach((b, i) => { const h = .3 + i * .28, wob = 1 + .45 * Math.sin(t * (4 + i) + i), s = Math.max(.001, wob * ga); b.scale.y = s; b.position.y = (h * s) / 2; }); bars.quaternion.copy(S.cam.quaternion);
+  // waves: draw on at "Sounding", flow, then fade out at "direction"
+  const wv = prog(t, C.sounding, C.sounding + .9), wout = sm(prog(t, C.dir + .9, C.dir + 1.7));
+  waveCables.forEach((c, k) => { const u = ease(prog(t, C.sounding + .05 + k * .08, C.sounding + .85 + k * .08)); c.reveal(u * (1 - wout)); c.update(t + k * .13, 1 + .35 * Math.exp(-Math.pow((t - C.waves) * 2.2, 2))); });
+  // needle + dial + beam: appear on "direction", wobble, then lock on the tag
+  const na = eback(prog(t, C.dir - .1, C.dir + .5)), nOut = 1 - sm(prog(t, C.three + .3, C.three + .8)) * 0;
+  needle.visible = na > .005; needle.scale.setScalar(Math.max(.001, na)); needle.position.y = 3.2 + Math.sin(t * 1.7) * .06;
+  const wob = .9 * Math.exp(-(t - C.dir) * 1.8) * Math.cos((t - C.dir) * 13); needle.rotation.y = NEEDLE_YAW + (t > C.dir - .1 ? wob : 0);
+  dial.visible = na > .01; dial.material.opacity = 1; dial.scale.setScalar(Math.max(.001, na)); dial.rotation.z = (t - C.dir) * .25;
+  dirBeam.reveal(ease(prog(t, C.dir + .5, C.dir + 1.3))); dirBeam.update(t, 1);
+  // figures follow the camera in the lower part of the frame
+  S.cam.updateMatrixWorld(); const ray = V(.0, -.34, .5).unproject(S.cam).sub(S.cam.position).normalize();
+  const f60 = eback(prog(t, C.sixty - .05, C.sixty + .45)) * (1 - sm(prog(t, C.three - .1, C.three + .1))), f3 = eback(prog(t, C.three - .05, C.three + .45)) * (1 - sm(prog(t, C.twenty - .1, C.twenty + .1))), f20 = eback(prog(t, C.twenty - .05, C.twenty + .45)) * (1 - sm(prog(t, C.less - .1, C.less + .1)));
+  [[fig60, f60], [fig3, f3], [fig20, f20]].forEach(([f, a]) => { f.visible = a > .01; f.scale.setScalar(Math.max(.001, a)); f.position.copy(S.cam.position).addScaledVector(ray, 7); f.scale.multiplyScalar(.62); f.quaternion.copy(S.cam.quaternion); f.translateX(-f.userData.w * .5 * f.scale.x * 0 + 0); });
+  // rings on the floor: old range (grey) -> 3x (cyan) at "three"; UWB (green, inside) at "twenty"
+  const oldK = sm(prog(t, C.three - .5, C.three - .1)) * (1 - sm(prog(t, C.twenty - .2, C.twenty + .2)) * .8);
+  setRing(oldRing, PH.x, PH.z, oldK, 1, 1.5);
+  const nr = ease(prog(t, C.three - .05, C.three + .9)); setRing(newRing, PH.x, PH.z, nr * (1 - sm(prog(t, C.less, C.less + .5)) * .7), .34 + .66 * nr, 1.8 + .4 * Math.sin(t * 5));
+  const ua = sm(prog(t, C.twenty - .05, C.twenty + .4)), ph2 = ((t * .8) % 1 + 1) % 1; setRing(uwbRing, PH.x, PH.z, ua, 1, 2.2); setRing(uwbRing2, PH.x, PH.z, ua * (1 - ph2) * .8, .35 + ph2 * .65, 2.0);
+  // final: needle and beam stay, the tag glows
+  sh.forEach((s) => s.update());
+}
+window.render = (t) => { t = clamp(t, 0, TOTAL); frame(t); S.draw(t); cap(t); };
+window.__layoutCheck = (t) => { frame(clamp(t, 0, TOTAL)); S.cam.updateMatrixWorld(); const vis = [phone, tag, fig60, fig3, fig20, qm].filter((f) => f.visible); const bad = W3D.check(S, vis, [CAPBAND], 0).length; return { bad }; };
+window.__boxes = () => [];
+window.render(0);
+})();
+</script></body></html>
