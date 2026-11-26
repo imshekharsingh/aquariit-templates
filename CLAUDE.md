@@ -22,7 +22,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 - ONE reel a day per channel (web, tech, Turns Out), every day, aim for **13:00 IST**; any time in the **13:00-21:00 IST window** is fine (owner, 20 Nov 2026). NO SKIP DAYS (owner, 25 Nov 2026): every channel posts every day; a reel that fails the critic is fixed and posted the same day; renders 1-2 are the builder's, a 3rd needs the owner's yes with its cost estimate; nothing blocks the next push. Turns Out posts one dated reel a day like web and tech (postOn + postAt), taken in order from the held design list (design/c3-research-2026-11-24.md), each rebuilt only on its own day; its own daily task builds it (owner, 24 Nov 2026; design/c3-plan.md section 0).
   Every reel needs its entry in templates/showreels/captions.json ("channel", "postOn", "postAt", "concept"; npm run check fails without it).
 - Posting slots come from design/slots.json (Turns Out 14:00, web 19:00 IST, both running TESTS until 2 Dec 2026, owner 26 Nov: growth validation first; tech paused). The owner chat reminds the owner at each slot and checks the post went out.
-- TECH PAUSED (owner, 26 Nov 2026): no tech reel is built or posted until the 3D kit v6 passes its critic (design/handoff.md task 3); the first reel after that is built on the v6 kit. Today's tag-sounding reel is held (hidden).
+- TECH PAUSED (owner, 26 Nov 2026): no tech reel is built or posted until the 3D kit v7 (the last sample) passes its critic (design/handoff.md task 10); then tech restarts with a real reel in that look, judged by its numbers. Today's tag-sounding reel is held (hidden).
 - Tech follows design/tech-direction.md (owner approved 22 Nov 2026). The owner is NOT asked to approve a tech preview or render (owner, 24 Nov 2026):
   the critic decides.
 - Learn-then-build: each reel is built the day it posts (evening before at most), never ahead, never a second reel for a channel and day.
@@ -72,6 +72,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - No subagents; no polling (one check-in per GitHub job); never end a turn while waiting on a merge or render without a send_later wake-up for when it should be done (owner, 22 Nov 2026: a session stopped after its merge and never rendered); one stills sheet and one contact sheet per reel; text checks before viewing frames;
   stop and report instead of retrying a failing approach more than twice. Heavy work runs on GitHub.
 - Say a task's size first (S < 15 min / M 30-60 min / L 1-3 h) and wait for a go-ahead on M or bigger unless already approved.
+- DISCUSS, DON'T JUST FOLLOW (owner, 26 Nov 2026): for every owner request the owner chat says what will work, what will not and why, and recommends; then the owner decides. Agreeing to everything has not grown the channels.
 - Questions for the owner go to the app's "Needs you" list (Owner answers `add`), never into chat; never ask whether something was posted
   (read the Instagram collect POSTED lines). Every message to the owner (chat, app, reports; owner, 24 Nov 2026): the answer in one line first,
   then numbered steps or short bullets, plain words with no tool names, run numbers, branch names or check codes, and anything that needs the

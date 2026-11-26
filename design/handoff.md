@@ -14,7 +14,7 @@ here or in chat. Ask the owner only before something the task does not already c
 
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
-critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Only GO tasks are worked on (rule below): now task 3, then task 9
+critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Only GO tasks are worked on (rule below): now task 10, then task 9
 (later numbers after these, in order); report each in Progress.
 Every task here is also a project on the app's board: update its entry in design/projects.json at each stage, in the same push as the work (design/runbook-studio.md "Projects on the board").
 
@@ -22,7 +22,7 @@ Every task here is also a project on the app's board: update its entry in design
 Do NOT pick up the next task on your own. A task is worked on only when its heading carries "GO" (the owner or the main account adds it
 when the owner asks). The hourly "Handoff queue check" starts a session only for an open GO task that is not already started (a
 "task N started" Progress line in the last 3 hours); otherwise it ends at once. When a GO task is done, write "task N done" and stop.
-Current GO list, in this order: task 3 (3D kit v6), then task 9 (references). Every other open task waits until it is marked GO.
+Current GO list, in this order: task 10 (3D kit v7; task 3's v6 is closed at render 2, no render 3), then task 9 (references). Every other open task waits until it is marked GO.
 
 ## Read first (only the parts you need)
 CLAUDE.md; the last 5 entries of design/handoff-log.md; design/3d-kit-phase2.md; design/rules-tech.md (section L, rules D1-D8).
@@ -126,7 +126,32 @@ if none is open or one is already started within 3 hours, ends at once; otherwis
 the repo) whose prompt is "Read design/handoff.md and do Queued task N; write 'task N started' in Progress first". Keep it quiet: no
 message unless it starts work. Write in Progress the schedule you set and the first check's result.
 
-## Queued task 9 GO, after task 3 (owner, 26 Nov 2026): references, measured (do it right after task 3)
+## Queued task 10 GO, NOW (owner, 26 Nov 2026): 3D kit v7, the LAST sample; replaces render 3 of v6
+v6 (render 2) critic: NOT READY (animation 7.5, cleanliness 6, premium 6.5; review/tech/showreel-tech-gold3d-v6.md). Do NOT run render 3 of
+v6. Build v7 from v6 with the critic's faults AND the owner's notes, as agreed after a discussion with the owner chat:
+1. Cables never pass through the floor or any object: they rest on the floor, drape over edges, contact shadows (a bug, must fix).
+2. Numbers: ONE consistent number style that is flat and crisp, readable at phone size in half a second, that counts and glides in and
+   is tied to its object by a thin leader line (like the owner's reference reels 10 and 11). Not extruded 3D numbers. No pop-ins.
+3. Colour and light: first MEASURE v6 against the owner's references (R-ref 26 Nov ids 9-14) and our best reels: colour range,
+   contrast, lighting (key, rim, separation). Change grading or lights only where the numbers show a gap; write the measurements in the
+   review file.
+4. Camera: a reason for every move: close when the detail is the story (the plug clicks in), wide when the relationship is the story
+   (the tangle grows); no move type twice in a row; fewer push-ins on the same object; use the whole frame (depth, foreground to
+   background).
+5. Drama with hierarchy: three big moments only (the first app's arrival, the tangle at its worst, the hub's arrival) with scale,
+   overshoot and a light sweep; every other element enters quick and clean.
+6. Hook and life: frame 0 already has tension (the question on screen + the first app arriving dramatically); all apps in by ~4 s;
+   nothing pre-set. Every element, once in, stays alive to the end (a subtle idle motion, reacts when its cable connects, shifts when the
+   hub arrives); idle motion never hurts reading.
+7. The critic's v6 faults: no empty frame (v6 1.4-2.1 s), no doubled or see-through label (11.5-12 s), no straight stiff cables (8-9.3 s),
+   no near-still ending (last 4.5 s).
+Process: (a) write a shot-by-shot plan in review/tech/showreel-tech-gold3d-v7.md (each beat: what enters, how, the camera move and why,
+how numbers show) and ONE stills sheet; write "v7 plan ready for critic" in Progress and STOP: the main account's critic checks the plan
+and stills against points 1-7 before any render. (b) On its OK: one render, Output QA, then "v7 ready for critic" and stop again.
+v7 is the last sample: if READY it becomes the tech 3D gold (gold.md, gold.json, the tech3d starter) and tech restarts with a real reel;
+if NOT READY the owner decides. Update projects.json at each step.
+
+## Queued task 9 GO, after task 10 (owner, 26 Nov 2026): references, measured (do it right after task 3)
 Owner: reference work must show in the reels and in the numbers. The critic check (a named pattern must be visible in the video) is
 already added on main (design/critic.md question 52). This task is the measuring part. Size M.
 1. Side-by-side gap: scripts/ref-compare.mjs <reel> <ref-id>: from our final MP4 and the reference clip (the app References file),
