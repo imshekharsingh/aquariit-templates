@@ -19,6 +19,7 @@ Format (at most 6 lines):
 - Done: merged both critic branches (review file holds v3 + v4); scene fixes 1-6 (opening move, hub between apps and wall with all 8 tools whole, push-in pulled back, tangle outside the wall, end turn home + New cable pulse, hub sub-line dropped); stills review/tech/study-25nov/kit-phase2-v5.jpg; techkit/check-gold3d.cjs (no-render name/cover check); scripts/tech-assemble.py now inlines the 3D kit (it did not, so a 3D scene failed locally).
 - Left: render 5 only on the owner's yes (design/handoff.md Progress), Output QA, separate critic; then the "finalise the 3D kit" steps if READY.
 - Update (owner, 10:20 IST): too much glow; bloom .45 to .28, cable halos and floor light cut by about half (claude/3d-kit-v5-glow).
+- Update 10:55 IST: render 5 failed the sound loudness gate (-16.4 LUFS; the mux loop stopped on a safe peak without checking loudness). techkit/make.py now loops on both and has a gain step; owner rule: a failed render goes straight to the next one, a passed render that the critic sends back waits for the owner.
 - For the other account: a comment pasted before code on one line silently drops that code (the hub was missing from the scene for a while); the stills caught it, the box check did not.
 
 ## 2026-11-26 · claude/handoff-3d-kit-final · owner chat: the other account also finalises the 3D kit
