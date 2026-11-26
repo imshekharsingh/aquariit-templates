@@ -164,6 +164,13 @@ viewer. **The builder starts that critic the moment the final render passes Outp
 
 ## Preflight: one render per reel, no blind runs (owner, 27 Oct 2026)
 Every render, workflow run and push costs usage; a failed or repeated one is waste. Before any of them:
+- FULL CHECK before render 1 (owner, 26 Nov 2026; reels posting from 27 Nov): `node scripts/preflight-all.mjs <reel name> --write` after the stills
+  and the review file are done. All local, all channels: a 360x640 10 fps preview, Output QA on it (the sound checks wait for the render), TEXT CLEAR
+  every 0.25 s (every text against every other element, the subtitle pill and other text, 8 px of room; a 3D tech scene is looked at every 0.5 s),
+  and a review-file lint (items filled, direction card APPROVED, PREMIUM line with three scores 7+, CRITIC lines in the exact form). It prints
+  `PREFLIGHT-ALL: PASS <fingerprint>` or `PREFLIGHT-ALL: FAIL <check> <time> <what>`; --write puts the line in the review file and scripts/review-gate.mjs
+  refuses render 1 without a PASS for the current config and scene. Fix every FAIL, run again; a demo that overlaps on purpose is waived in its
+  config: "qa": {"textclear_ok": [[t0, t1, "why"]]}. Run time: web and Turns Out a few minutes, a 3D tech scene longer (software GPU).
 - Script, pacing, hook and every visual fix are settled first, then ONE render. Run the local preview (`--fake-vo --stills` for techreel,
   which also prints SAFE ZONE and OVERLAP; `node scripts/showreel/preflight.mjs <config>` plus `node scripts/showreel/stills.mjs <config> <out>`
   for showreels, one sheet to review) and clear all of it:

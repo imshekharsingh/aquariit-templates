@@ -1,5 +1,5 @@
 """@techin20sec kit engine (owner, 15 Nov 2026: "port the owner's kit as it is"; design/kits/motion_kit.zip + motion_content_prompt.md).
-python3 techkit/make.py <slug> [--fake-vo] [--stills t1,t2,...]   (topic: techreel/topics/<slug>.json with "engine": "kit")
+python3 techkit/make.py <slug> [--fake-vo] [--stills t1,t2,...] [--build-only]   (topic: techreel/topics/<slug>.json with "engine": "kit")
 
 1. Voice: Kokoro af_heart line by line (techreel/vo/tts.py: real word times from the model, the shared lexicon, PREFLIGHT in --fake-vo).
 2. Timeline (the kit's timeline.py): lines placed with a 0.6 s lead and the topic's gap, a 2.2 s tail; named cues W(scene, "word", n) from the
@@ -78,6 +78,7 @@ def main():
         words = sum(len(l['text'].split()) for l in topic['lines'])
         print(f'TIMELINE: {len(TL["scenes"])} chapters, {words} words, voice {TL["scenes"][0]["start"]:.2f}-{TL["scenes"][-1]["end"]:.2f} s, total {TL["total"]:.2f} s')
         print('CUES: ' + ', '.join(f'{k} {v:.2f}' for k, v in order))
+        if '--build-only' in sys.argv: return   # the scene, timeline.js and vo.json in out/ for scripts/preflight-all.mjs (its preview and TEXT CLEAR); no checks, no frames
         if '--stills' in sys.argv:
             ts = sys.argv[sys.argv.index('--stills') + 1]
             r = subprocess.run(['node', os.path.join(HERE, 'preflight.mjs'), out, ts])

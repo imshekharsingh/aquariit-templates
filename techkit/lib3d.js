@@ -125,6 +125,8 @@
   function figure(THREE, text, o = {}) {
     const hgt = o.height ?? 2, r = (o.radius ?? .085) * hgt, g = new THREE.Group(), col = o.color ?? 0xffa23a;
     const mat = new THREE.MeshPhysicalMaterial({ color: col, roughness: .22, metalness: 0, clearcoat: 1, clearcoatRoughness: .06, envMapIntensity: 1.1, emissive: col, emissiveIntensity: o.emissive ?? .35 });
+    // TEXT CLEAR (scripts/showreel/textclear.py): the figures are text; with window.__noText set they are not drawn, so the check can see what they sit on
+    let shown = true; Object.defineProperty(g, 'visible', { get: () => shown && !window.__noText, set: (v) => { shown = v; } }); g.userData.isText = true; g.userData.on = () => shown; (window.__figs = window.__figs || []).push(g);
     g.userData.mat = mat; let x = 0; const adv = .86 * hgt, sp = .7 * hgt;
     [...text].forEach((ch) => { if (ch === ' ') { x += .5 * hgt; return; } const gl = GL[ch]; if (!gl) return; const wide = ('+x×=-'.includes(ch)) ? sp : adv;
       for (const s of gl) { const v = s.pts.map(([px, py]) => new THREE.Vector3(x + px * hgt * .95, py * hgt, 0)); const cu = new THREE.CatmullRomCurve3(v, s.closed, 'centripetal');

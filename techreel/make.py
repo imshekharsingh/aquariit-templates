@@ -343,6 +343,31 @@ def main():
     vo = tts.generate(topic, vo_wav, fake=fake)
     json.dump(vo, open(vo_json, 'w'), indent=1)
     hook_out, scenes = timeline(topic, vo)
+    if '--preview' in sys.argv or '--textclear' in sys.argv:   # scripts/preflight-all.mjs: the cheap local video and the TEXT CLEAR pictures (no sound, no checks)
+        if '--textclear' in sys.argv:
+            dump = sys.argv[sys.argv.index('--textclear') + 1]; os.makedirs(dump, exist_ok=True); samples, i, t = [], 0, 0.0
+            while t <= DUR - .05:
+                B.NO_TEXT[0] = False
+                fr, img = draw(t, topic, vo, hook_out, scenes)
+                Image.fromarray(img).resize((540, 960), Image.LANCZOS).save(os.path.join(dump, f'A_{i}.png'))
+                boxes = [dict(s=s_[:40], l=l, t=tp, r=r, b=bt, a=a, g=-1) for s_, l, tp, r, bt, a in fr.boxes]
+                B.NO_TEXT[0] = True
+                _, img = draw(t, topic, vo, hook_out, scenes)
+                B.NO_TEXT[0] = False
+                Image.fromarray(img).resize((540, 960), Image.LANCZOS).save(os.path.join(dump, f'B_{i}.png'))
+                samples.append(dict(t=t, boxes=boxes, own=[])); i += 1; t = round(t + .25, 2)
+            json.dump(dict(step=.25, samples=samples, waive=[], errors=[]), open(os.path.join(dump, 'meta.json'), 'w'))
+            print(f'TEXT CLEAR dump: {len(samples)} moments in {dump}')
+        else:
+            sil = os.path.join(out, 'preview-silent.mp4')
+            pf = subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '360x640', '-r', '10', '-i', '-', '-c:v', 'libx264',
+                                   '-preset', 'ultrafast', '-crf', '23', '-pix_fmt', 'yuv420p', sil], stdin=subprocess.PIPE)
+            for f in range(int(round(DUR * 10))):
+                _, img = draw(f / 10, topic, vo, hook_out, scenes)
+                pf.stdin.write(np.asarray(Image.fromarray(img).resize((360, 640), Image.LANCZOS)).tobytes())
+            pf.stdin.close(); pf.wait()
+            print(f'wrote {sil}: {int(round(DUR * 10))} frames at 10 fps, 360x640')
+        sys.exit(0)
     if '--stills' in sys.argv:
         ts = [float(x) for x in sys.argv[sys.argv.index('--stills') + 1].split(',')]
         for t in ts:
