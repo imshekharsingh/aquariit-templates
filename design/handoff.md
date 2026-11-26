@@ -14,9 +14,15 @@ here or in chat. Ask the owner only before something the task does not already c
 
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
-critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 6, 7, 2, 5, 3 (3 may continue while a render runs)
+critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 8, 6, 7, 2, 5, 3 (3 may continue while a render runs)
 (later numbers after these, in order); report each in Progress.
 Every task here is also a project on the app's board: update its entry in design/projects.json at each stage, in the same push as the work (design/runbook-studio.md "Projects on the board").
+
+## Owner rule: watch this queue (owner, 26 Nov 2026)
+This account picks up ANY task added to this file without being told. Every queued task is a "## Queued task N" heading; it is open until
+Progress has a line "task N done" (or the heading says DONE). Set up, once, in THIS account (task 8 below), a scheduled check that looks
+here regularly and starts work on the next open task in the stated order. Never two sessions on the same task: a running session writes
+"task N started" in Progress first, and the check skips a task whose last Progress line is "started" from the last 3 hours.
 
 ## Read first (only the parts you need)
 CLAUDE.md; the last 5 entries of design/handoff-log.md; design/3d-kit-phase2.md; design/rules-tech.md (section L, rules D1-D8).
@@ -111,6 +117,15 @@ app: regular upload notifications; test window notification change". Today the o
    with the on/off switches per type it already has. Keep the existing "server key missing" message when push is not set up.
 4. Tests for src/notify.js (the plan function is pure: add cases for test days, before-slot ready, late, logged), npm run check, merge.
    Then design/runbook-studio.md: the owner chat stops sending its own slot reminders once this is live and only checks the post went out.
+
+## Queued task 8 (owner, 26 Nov 2026): a scheduled check of this queue (do it NOW, before the next task)
+Owner: "pick up anything that's added to the job and run a periodic check on it like every 30 mins so that it knows there's something to
+pick up". In THIS account, create one recurring scheduled task "Handoff queue check": every 30 minutes if the scheduler allows it, else
+hourly (the main account's scheduler refuses steps under 1 hour; say which you got in Progress). Each fire starts a fresh, small
+session (the cheapest model) with the repo, which: reads this file from main; finds the next open task in the stated order (rule above);
+if none is open or one is already started within 3 hours, ends at once; otherwise starts ONE work session for it (a normal model, with
+the repo) whose prompt is "Read design/handoff.md and do Queued task N; write 'task N started' in Progress first". Keep it quiet: no
+message unless it starts work. Write in Progress the schedule you set and the first check's result.
 
 ## Queued task 7 (owner, 26 Nov 2026): Projects show their workflow and the next action (do it right after task 6)
 Owner: "App's projects section I was hoping to have a workflow and next action being taken on it so that I'll know when it's done". Size S-M.

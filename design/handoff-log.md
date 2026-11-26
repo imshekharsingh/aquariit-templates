@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-queue-watch · owner chat: the other account watches its queue on a schedule
+- design/handoff.md: owner rule (pick up any queued task unasked; open/started/done markers in Progress) and task 8 (do now): a scheduled "Handoff queue check" in that account, every 30 min if allowed else hourly, cheapest model, starts one work session per open task. Order now 0, 8, 6, 7, 2, 5, 3.
+
 ## 2026-11-26 · claude/handoff-projects-flow · owner chat: projects get steps and a next action
 - design/handoff.md task 7 (after task 6): per-project ordered steps with states, a "next" (who, action, expected time), step bar and Next line on the Today row, a project-done push. Order now 0, 6, 7, 2, 5, 3.
 
