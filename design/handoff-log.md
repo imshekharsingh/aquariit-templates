@@ -881,3 +881,8 @@ Format (at most 6 lines):
 - Left: confirm on the live board after the deploy (sign-in needed); if the board still says old, the stale mark now carries the real failure note.
 - For the other account: never treat missing or old status as ready.
 
+
+## 2026-11-26 · claude/app-today-board-26nov · App: Today shows the workflow board only (tooling, owner-approved via owner chat)
+- Done: Today = the board (one row per channel: Building / Rendering % / Checking / Found a problem: why / Ready, post at slot / Posted; "old status" shown when the journey is over 15 min old or marked stale). Reel lists, Post now and the reel cards left Today; Needs you holds only questions. Ready-to-post cards (all buttons) are at the top of "All reels and posted", critic-READY and fresh status only; a Ready row's "Open to post" button goes there. Badge = questions + ready reels. Checked at phone width with Playwright on a local build (fresh and stale mock data); npm run check has the updated ready-filter check.
+- Left: confirm on the live app after the deploy (sign-in needed).
+- For the other account: Today never lists reels; ready reels live in the reels menu.
