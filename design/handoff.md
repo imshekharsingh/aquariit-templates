@@ -95,14 +95,7 @@ render under the owner's render rule above, Output QA. For the critic: this acco
 "v6 ready for critic" and stop; the main account runs the critic and writes its verdict in Progress. If READY, v6 replaces v5 as the
 tech 3D gold (design/gold.md, scripts/qa/gold.json, the tech3d starter).
 
-## Queued task 4 (owner, 26 Nov 2026): duplicate reel card in the reels menu
-Size S. Owner's phone recording, channel page "@itturns.out" (13:12 IST): today's reel "Everything on this birthday invite is shouting."
-(showreel-c3-fix-invite, Today 14:00) appears TWICE with the full card and all buttons: under "READY TO POST" and again under "UP NEXT".
-Fix in templates/index.html: a reel shown in "Ready to post" must not appear again under "Up next" (Up next = reels not yet ready, or
-later days). Also the channel header says "posts 13:00-21:00 IST": show the channel's slot from design/slots.json instead (Turns Out
-"posts at 14:00 IST, slot test until 2 Dec", web "19:00 IST, slot test until 2 Dec", tech "paused"). Check the other channel pages and
-"All reels" for the same duplication. Phone-width check on a local build, npm run check, one owner-feedback.md line, merge.
-You cannot sign in to the live app: write "task 4 live, owner to check the channel page" in Progress.
+## Queued task 4: DONE on main (26 Nov), skip it.
 
 ## Owner yes for render 5: YES (owner, in the other account's chat, 26 Nov 10:14 IST)
 
