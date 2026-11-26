@@ -22,4 +22,17 @@ const r = await worker.fetch(new Request('https://app.test/api/stage', { method:
 if (r.status !== 400) { bad++; console.log('FAIL bad stage name is 400: ' + r.status); } else console.log('PASS bad stage name is 400');
 const g = await worker.fetch(new Request('https://app.test/api/stage', { headers: { 'X-Stage-Key': KEY } }), { ...base, STAGE_KEY: KEY }, { waitUntil() {} });
 if (g.status === 200) { bad++; console.log('FAIL the stage key must not read the board'); } else console.log('PASS the stage key does not read the board: ' + g.status);
+// projects (owner, 26 Nov 2026): POST accepts project:<id> with a project stage (not a reel stage); GET /api/projects merges the file with newer rows
+const post = (body) => worker.fetch(new Request('https://app.test/api/stage', { method: 'POST', headers: { 'X-Stage-Key': KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }), { ...base, STAGE_KEY: KEY }, { waitUntil() {} });
+for (const [name, body, want] of [['project stage stores', { reel: 'project:3d-kit-v6', stage: 'critic' }, 200], ['reel stage on a project is 400', { reel: 'project:3d-kit-v6', stage: 'video' }, 400], ['bad project id is 400', { reel: 'project:Bad Id!', stage: 'done' }, 400]]) {
+  const r2 = await post(body); const pass = r2.status === want; if (!pass) bad++; console.log(`${pass ? 'PASS' : 'FAIL'} ${name}: ${r2.status}`); }
+{ const { projectsApi } = await import('../../src/worker.js');
+  const file = { projects: [{ id: 'kit', name: 'Kit', account: 'other', stage: 'render', line: 'from the file', updatedAt: '2026-11-26T07:00:00Z', history: [] },
+    { id: 'old', name: 'Old', account: 'other', stage: 'done', line: 'done long ago', updatedAt: '2020-01-01T00:00:00Z', history: [] }] };
+  const rows = [{ reel: 'project-kit', stage: 'critic', line: 'from a stage call', pct: 90, at: '2026-11-26T08:00:00Z' }, { reel: 'project-new', stage: 'building', line: 'only a row', pct: null, at: '2026-11-26T08:00:00Z' }];
+  const env = { DB: { exec: async () => {}, prepare: () => ({ bind() { return this; }, all: async () => ({ results: rows }) }) } };
+  const j = await (await projectsApi(new Request('https://app.test/api/projects'), env, async () => new Response(JSON.stringify(file)))).json();
+  const kit = j.projects.find((x) => x.id === 'kit'), checks = [['the newer row wins', kit && kit.stage === 'critic' && kit.line === 'from a stage call' && kit.history.length === 1],
+    ['a done project older than 2 days leaves the board', !j.projects.some((x) => x.id === 'old')], ['a row without a file entry shows', j.projects.some((x) => x.id === 'new' && x.account === 'main')]];
+  for (const [n, pass] of checks) { if (!pass) bad++; console.log(`${pass ? 'PASS' : 'FAIL'} ${n}`); } }
 process.exit(bad ? 1 : 0);

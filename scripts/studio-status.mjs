@@ -4,7 +4,7 @@
 //   test: STATUS_NOW=<ISO time> pretends it is that moment; STATUS_FIXTURE=<json file> {"/api/feedback?state=new": {...}, ...} replaces the site; --no-log skips the probe log
 //   node scripts/studio-status.mjs
 // Sections: FEEDBACK + ANSWERS (Fix items first), REELS (today and tomorrow per channel with their stage), RUNS (failed or stuck, last 3 h), DUE (within 2 h
-// and not READY), POSTS (made 20-90 min ago with first numbers), then ONE last line: "ACTIONS: none" or "ACTIONS: <item> || <item>".
+// and not READY), POSTS (made 20-90 min ago with first numbers), PROJECTS (stuck = no update in 6 h while not waiting on the owner), then ONE last line: "ACTIONS: none" or "ACTIONS: <item> || <item>".
 // Each item is "<KIND> <plain detail> [key]"; the key is what the probe logs so the next check does not raise it twice.
 // KIND: START-BUILDER, START-CRITIC, START-FIX (probe starts a session) · OWNER-CHAT (probe messages the owner chat). The sheet never builds or renders.
 import { readFileSync, existsSync } from 'node:fs';
@@ -145,6 +145,21 @@ for (const [ch, media] of Object.entries(perf)) for (const m of media || []) {
   if (!m.template_id) act('OWNER-CHAT', `${ch}: a post at ${hm(Date.parse(m.posted_at))} matches no reel`, 'unmatched:' + m.ig_id);
 }
 if (!np) say('  none');
+
+// ---- 6. projects (owner, 26 Nov 2026): work that is not a channel reel; stuck = no update in 6 h while not waiting on the owner or done
+say('PROJECTS');
+let projects = null;
+try { projects = (await site('/api/projects')).projects; } catch { /* fall back to the file in this checkout */ }
+if (!projects) { try { projects = JSON.parse(readFileSync('design/projects.json', 'utf8')).projects || []; } catch { projects = []; blind.push('projects'); } }
+for (const p of projects) {
+  const at = Date.parse(p.updatedAt || ''), age = Number.isFinite(at) ? NOW - at : Infinity;
+  if (p.stage === 'done' && age > 2 * 24 * HOUR) continue;
+  const stuck = !['waiting', 'done'].includes(p.stage) && age > 6 * HOUR;
+  say(`  ${p.id} (${p.account || 'other'} account): ${p.stage}${p.pct != null ? ' ' + p.pct + '%' : ''}${Number.isFinite(at) ? ', updated ' + hm(at) + (age > 24 * HOUR ? ' ' + dm(istDay(p.updatedAt)) : '') : ''}${stuck ? ' (stuck)' : ''}: ${String(p.line || '').slice(0, 90)}`);
+  if (stuck) act('OWNER-CHAT', `project ${p.name || p.id} has not moved for ${Math.round(age / HOUR)} h (${p.stage})`, `project-stuck:${p.id}:${p.updatedAt}`);
+  else if (p.stage === 'failed') act('OWNER-CHAT', `project ${p.name || p.id} found a problem: ${String(p.line || '').slice(0, 90)}`, `project-failed:${p.id}:${p.updatedAt}`);
+}
+if (!projects.length) say('  none');
 
 // ---- actions (minus what an earlier check already handled)
 if (blind.length) act('OWNER-CHAT', `the status sheet cannot read: ${[...new Set(blind)].join(', ')}`, 'blind:' + [...new Set(blind)].sort().join('+'));

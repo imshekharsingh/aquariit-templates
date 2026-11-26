@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 13:35 IST · claude/app-projects · other account: projects on the app's board (queued task 5)
+- Done: design/projects.json + GET /api/projects (file on main merged with newer `stage.mjs project:<id>` rows; done leaves after 2 days); Today board "Projects" section (stage, line, bar, amber waiting, red + Fix, history on tap); scripts/stage.mjs and /api/stage accept project:<id>; GET /api/stage now shows channel rows only; studio-status.mjs PROJECTS (stuck = 6 h without update); rule in design/runbook-studio.md "Projects on the board".
+- Left: the board shows the file's data about 2 min after a merge (cache). Task 3 (3D kit v6) continues; its render 1 is running.
+- For the main account: any project you run (not a channel reel) gets an entry in design/projects.json or a `node scripts/stage.mjs project:<id> <stage>` line at each stage.
+
 ## 2026-11-26 · claude/handoff-projects-board · owner chat: Projects on the app board, queued for the other account
 - design/handoff.md task 5 (before task 3): design/projects.json + Worker read from the repo + a "Projects" section on Today (stage, line, bar, history, Fix), stage.mjs project ids, probe watches stuck projects. Order now 0, 2, 5, 3.
 

@@ -16,6 +16,12 @@ Moved from CLAUDE.md on 14 Nov 2026.
 - Stage updates: every build session sends the owner chat session a one-line message at each stage (build pushed, stills approved, render started, Output QA result, critic verdict). The owner chat tells the owner each stage in one line, unasked, and sets a wake-up (send_later) so it never waits for the owner to ask. If a builder cannot start the critic, the owner chat starts it at once (create_session, tag critic, model claude-opus-5-5).
 - No skip days (design/runbook-daily.md): a NOT READY reel is fixed and posted the same day; the owner chat asks the owner to approve the fix render with its cost.
 
+## Projects on the board (owner, 26 Nov 2026)
+Any running work that is not a channel reel (the 3D kit, an app or tooling fix) is a project on the app's Today board, so its progress and status show without asking.
+- Its session keeps its entry in design/projects.json (id, name, account "other" or "main", stage, one plain line, pct optional, updatedAt, history newest last) and updates it at EVERY stage in the same push as the work. Stages: planned, building, stills, render, checking, critic, done, waiting (on the owner), failed (red: the board shows a Fix button).
+- The Worker reads the file from main (GET /api/projects), so the second account needs no site access. A session that can reach the site may also send `node scripts/stage.mjs project:<id> <stage> --line "..."`; the newer of the two shows.
+- A done project leaves the board 2 days after its last update. The Studio status sheet lists projects; one with no update in 6 h, not waiting on the owner and not done, is raised to the owner chat.
+
 ## Working with the owner (owner, 3-4 Nov 2026)
 - Claude is the decision maker: decide and act on topics, formats, design, the app, tooling and process; tell the owner what changed on a
   card, not before. Ask the owner (one yes/no in the app's "Needs you" list, design/runbook-daily.md) only for what needs them: spending

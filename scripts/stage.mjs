@@ -1,5 +1,7 @@
 // Tell the app's live studio board which stage today's reel is in (owner, 24 Nov 2026). Sessions and workflows call it.
 //   node scripts/stage.mjs <reel|web|tech|c3> <stage> [--model fable] [--line "Rendering 62%"] [--pct 40] [--thumb frame.jpg]
+//   node scripts/stage.mjs project:<id> <planned|building|stills|render|checking|critic|done|waiting|failed> [--line "..."] [--pct n]   a project row
+//   (owner, 26 Nov 2026; the project's entry in design/projects.json is the main record: the newer of the two shows on the board)
 // stage: researching | topic | building | stills | video | checking | ready | skipped | posted
 // Use the channel (web, tech, c3) until the reel has a name. --thumb is a small JPEG (at most 200 KB; make one with
 // ffmpeg -i frame.png -vf scale=360:-1 -q:v 5 thumb.jpg). The key: in a workflow set env STAGE_KEY from the secret; in a session the
@@ -13,7 +15,9 @@ const pos = a.filter((x, i) => !x.startsWith('--') && !(i > 0 && a[i - 1].starts
 const opt = (n) => { const i = a.indexOf('--' + n); return i >= 0 ? a[i + 1] : undefined; };
 const [reel, stage] = pos;
 const STAGES = ['researching', 'topic', 'building', 'stills', 'video', 'checking', 'ready', 'skipped', 'posted'];
-if (!reel || !STAGES.includes(stage)) { console.error('Usage: node scripts/stage.mjs <reel|web|tech|c3> <' + STAGES.join('|') + '> [--model m] [--line text] [--pct n] [--thumb file.jpg]'); process.exit(2); }
+const PSTAGES = ['planned', 'building', 'stills', 'render', 'checking', 'critic', 'done', 'waiting', 'failed'], isProject = /^project:[a-z0-9-]{1,40}$/.test(reel || '');
+if (isProject && !PSTAGES.includes(stage)) { console.error('Usage: node scripts/stage.mjs project:<id> <' + PSTAGES.join('|') + '> [--line text] [--pct n]'); process.exit(2); }
+if (!isProject && (!reel || !STAGES.includes(stage))) { console.error('Usage: node scripts/stage.mjs <reel|web|tech|c3> <' + STAGES.join('|') + '> [--model m] [--line text] [--pct n] [--thumb file.jpg]'); process.exit(2); }
 const body = { reel, stage };
 if (opt('model')) body.model = opt('model');
 if (opt('line')) body.line = opt('line');
