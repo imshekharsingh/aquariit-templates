@@ -361,7 +361,7 @@ async function fbDb(env) {
     // read_at (owner, 14 Nov 2026: the side menu shows one reply at a time with "Mark read"): when the owner has read Claude's note
     .then(() => env.DB.prepare('ALTER TABLE owner_feedback ADD COLUMN read_at TEXT').run().catch(() => {}))
     // flow (owner, 24 Nov 2026): flag = received | reviewed | in_progress | done | closed; reviewed_by = Fable / Opus; report + proof (a check name, or an image in R2 fb/<id>.jpg)
-    .then(() => Promise.all(['flag', 'reviewed_by', 'report', 'proof', 'proof_img', 'closed_at'].map((c) => env.DB.prepare(`ALTER TABLE owner_feedback ADD COLUMN ${c} TEXT`).run().catch(() => {}))))
+    .then(() => Promise.all(['flag', 'reviewed_by', 'report', 'proof', 'proof_img', 'closed_at'].concat(['priority']).map((c) => env.DB.prepare(`ALTER TABLE owner_feedback ADD COLUMN ${c} TEXT`).run().catch(() => {}))))
     .catch((e) => { fbReady = null; throw e; });
   await fbReady;
   return env.DB;
@@ -376,9 +376,9 @@ async function feedbackApi(request, env, p, url) {
   if (request.method === 'GET' && p === '/api/feedback') {   // newest first; ?state=new gives only the items waiting for Claude
     const onlyNew = url.searchParams.get('state') === 'new';
     const FL = "COALESCE(flag, CASE WHEN state = 'done' THEN 'done' ELSE 'received' END)";   // old rows have no flag yet
-    const { results } = await db.prepare(`SELECT id, created, channel, body, state, note, done_at, read_at, ${FL} AS fl, reviewed_by, report, proof, proof_img FROM owner_feedback WHERE ${FL} <> 'closed'${onlyNew ? " AND state = 'new'" : ''} ORDER BY id DESC LIMIT 50`).all();   // closed items leave the app
+    const { results } = await db.prepare(`SELECT id, created, channel, body, state, note, done_at, read_at, ${FL} AS fl, reviewed_by, report, proof, proof_img, priority FROM owner_feedback WHERE ${FL} <> 'closed'${onlyNew ? " AND state = 'new'" : ''} ORDER BY (priority IS NOT NULL) DESC, id DESC LIMIT 50`).all();   // closed items leave the app
     return jres({ feedback: (results || []).map((r) => ({ id: r.id, created: r.created, channel: r.channel, text: r.body, state: r.state, note: r.note, done_at: r.done_at, read_at: r.read_at,
-      flag: r.fl, by: r.reviewed_by || null, report: r.report || r.note || null, proof: r.proof || null, proofImg: r.proof_img ? `/api/feedback/${r.id}/proof` : null })) });
+      flag: r.fl, priority: !!r.priority, by: r.reviewed_by || null, report: r.report || r.note || null, proof: r.proof || null, proofImg: r.proof_img ? `/api/feedback/${r.id}/proof` : null })) });
   }
   const pf = /^\/api\/feedback\/([0-9]{1,9})\/proof$/.exec(p);
   if (request.method === 'GET' && pf) {
@@ -393,7 +393,8 @@ async function feedbackApi(request, env, p, url) {
     const text = b && nStr(b.text, 2000);
     if (!text || !text.trim()) return jres({ error: 'bad-request' }, 400);
     const ch = b && FB_CH.includes(b.channel) ? b.channel : null;
-    const r = await db.prepare('INSERT INTO owner_feedback (created, channel, body) VALUES (?1, ?2, ?3)').bind(new Date().toISOString(), ch, text.trim()).run();
+    // priority (owner, 26 Nov 2026): the app's Fix button on a red board row sends the failure line as a top-priority item; every reader lists these first
+    const r = await db.prepare('INSERT INTO owner_feedback (created, channel, body, priority) VALUES (?1, ?2, ?3, ?4)').bind(new Date().toISOString(), ch, text.trim(), b.priority ? '1' : null).run();
     return jres({ ok: true, id: r.meta && r.meta.last_row_id });
   }
   const rd = FB_READ.exec(p);
@@ -972,34 +973,52 @@ async function uploadedApi(request, env, p) {
 // stale-while-revalidate (owner, 21 Nov 2026: "Journey takes time in populating, why?"): building the journey asks GitHub for the run
 // lists, each reel's jobs and review files (several round trips, 3-8 s on a cold minute). The last answer is kept in this data centre's
 // cache for a day and served at once; when it is over 60 s old a fresh one is built in the background for the next open.
-const J_KEY = 'https://journey.cache/answer-v1', J_FRESH = 60e3, J_STALE = 300e3;
-// Owner, 26 Nov 2026: the board froze at 00:48 IST because a failed rebuild (journey-failed, or a background job that never finished) left the old
-// answer in the cache with nothing to say it was old. Now: a failed build is remembered (note + time) and shown; an answer over 5 minutes old is
-// rebuilt IN the request (the open waits a few seconds, a background job is not trusted), and if that fails the old answer is returned marked
-// stale:true with the reason, so the app never treats it as current.
+const J_FRESH = 60e3, J_STALE = 300e3;
+// Owner, 26 Nov 2026: the board froze at 00:48 IST for ~10 h. The answer lived only in this data centre's Cache API, and every cache failure was
+// swallowed (a put that threw left the 00:48 copy in place with nothing saying so). Now the answer lives in D1 (one row, the same for every phone and
+// data centre) with its build time, and a failed build records WHY (note, time, count) next to it. Every answer carries builtAt, buildMs, age, and
+// error {note, at, n} while the last build failed (stale:true once over 5 minutes old), plus warn (swallowed GitHub / subrequest failures of the
+// build). An answer over 5 minutes old is rebuilt in the request; 1-5 minutes old is served and rebuilt in the background.
+let jReady = null;
+async function journeyDb(env) {
+  if (!env.DB) return null;
+  jReady = jReady || env.DB.exec('CREATE TABLE IF NOT EXISTS journey_answer (id INTEGER PRIMARY KEY, body TEXT, built_at TEXT, build_ms INTEGER, err_note TEXT, err_at TEXT, err_n INTEGER NOT NULL DEFAULT 0)')
+    .catch((e) => { jReady = null; throw e; });
+  await jReady;
+  return env.DB;
+}
+const jHead = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' };
 async function journeyFast(env, ctx) {
-  const c = typeof caches !== 'undefined' ? caches.default : null, ERR = 'https://journey.cache/error-v1';
-  const build = async () => { let r;
-    try { r = await journey(env); } catch (e) { r = jres({ error: 'journey-failed', note: String(e && e.message || e).slice(0, 80) }, 500); }
-    if (c) { try {
-      if (r.ok) { const body = await r.clone().text();
-        await c.put(J_KEY, new Response(body, { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=86400', 'X-Built': String(Date.now()) } })); await c.delete(ERR); }
-      else { let note = 'journey ' + r.status; try { note = (await r.clone().json()).note || note; } catch { /* plain */ }
-        await c.put(ERR, new Response(JSON.stringify({ note, at: new Date().toISOString() }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=86400' } })); }
-    } catch { /* no cache */ } }
-    return r; };
-  if (!c) return build();
-  let hit = null; try { hit = await c.match(J_KEY); } catch { /* build */ }
-  if (!hit) return build();
-  const age = Date.now() - +(hit.headers.get('X-Built') || 0);
-  let fresh = null;
-  if (age > J_STALE) { try { const r = await build(); if (r.ok) fresh = r; } catch { /* serve the old answer, marked stale */ } }
-  else if (age > J_FRESH && ctx) ctx.waitUntil(build().catch(() => {}));
-  if (fresh) return new Response(fresh.body, { headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Journey-Age': '0' } });
-  let j = null; try { j = await hit.json(); } catch { /* unreadable */ }
-  let err = null; try { const e = await c.match(ERR); if (e) err = await e.json(); } catch { /* none */ }
-  if (j && age > J_STALE) { j.stale = true; j.age = Math.round(age / 1000); if (err) j.error = err; }
-  return new Response(JSON.stringify(j || { error: 'journey-unreadable' }), { status: j ? 200 : 500, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Journey-Age': String(Math.round(age / 1000)) } });
+  let db = null, dbNote = null;
+  try { db = await journeyDb(env); } catch (e) { dbNote = 'journey store: ' + String(e && e.message || e).slice(0, 60); }
+  const build = async () => {   // -> { j } on success, { fail: note } on failure; records the outcome in D1
+    const t0 = Date.now(); let r, note = null;
+    try { r = await journey(env); } catch (e) { r = null; note = String(e && e.message || e).slice(0, 100); }
+    let j = null;
+    if (r && r.ok) { try { j = await r.json(); } catch (e) { note = 'unreadable journey: ' + String(e && e.message || e).slice(0, 60); } }
+    else if (r) { try { note = (await r.json()).note; } catch { /* plain */ } note = note || 'journey ' + r.status; }
+    if (j) { j.builtAt = new Date().toISOString(); j.buildMs = Date.now() - t0;
+      if (db) { try { await db.prepare('INSERT INTO journey_answer (id, body, built_at, build_ms, err_note, err_at, err_n) VALUES (1, ?1, ?2, ?3, NULL, NULL, 0) ON CONFLICT(id) DO UPDATE SET body = excluded.body, built_at = excluded.built_at, build_ms = excluded.build_ms, err_note = NULL, err_at = NULL, err_n = 0')
+        .bind(JSON.stringify(j), j.builtAt, j.buildMs).run(); } catch (e) { j.warn = (j.warn || []).concat('save failed: ' + String(e && e.message || e).slice(0, 60)); } }
+      return { j }; }
+    if (db) { try { await db.prepare('INSERT INTO journey_answer (id, err_note, err_at, err_n) VALUES (1, ?1, ?2, 1) ON CONFLICT(id) DO UPDATE SET err_note = excluded.err_note, err_at = excluded.err_at, err_n = journey_answer.err_n + 1')
+      .bind(note, new Date().toISOString()).run(); } catch { /* the response still carries the note */ } }
+    return { fail: note }; };
+  const send = (j, status, age) => new Response(JSON.stringify(j), { status, headers: { ...jHead, 'X-Journey-Age': String(age) } });
+  let row = null;
+  if (db) { try { row = await db.prepare('SELECT body, built_at, build_ms, err_note, err_at, err_n FROM journey_answer WHERE id = 1').first(); } catch (e) { dbNote = 'journey store: ' + String(e && e.message || e).slice(0, 60); } }
+  let old = null; try { old = row && row.body ? JSON.parse(row.body) : null; } catch { /* rebuild */ }
+  const age = old && row.built_at ? Date.now() - Date.parse(row.built_at) : Infinity;
+  if (old && age <= J_STALE) {
+    if (age > J_FRESH && ctx) ctx.waitUntil(build().catch(() => {}));
+    old.age = Math.round(age / 1000); if (row.err_note) old.error = { note: row.err_note, at: row.err_at, n: row.err_n };
+    return send(old, 200, old.age);
+  }
+  const res = await build();
+  if (res.j) { res.j.age = 0; return send(res.j, 200, 0); }
+  const error = { note: res.fail || dbNote || 'build failed', at: new Date().toISOString(), n: (row && row.err_n || 0) + 1 };
+  if (old) { old.stale = true; old.age = Math.round(age / 1000); old.error = error; return send(old, 200, old.age); }
+  return send({ error: 'journey-failed', note: error.note, at: error.at }, 500, 0);
 }
 async function journey(env) {
   let captions = {}, uploaded = {}, media = {};

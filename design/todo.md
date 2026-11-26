@@ -19,14 +19,7 @@ Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Resu
   Test: run it on today's three render 1 scenes (web 48 v2, tech tag-sounding r1, Turns Out invite r1); it must flag the tech numbers and the
   Turns Out overlaps. The web "nothing happens in the first 7 s" fault is a taste call: it stays with the stills check and the critic.
   Size M, one cheaper-model session, estimate $5-8, no renders.
-- [ ] 21 Nov 2026 (owner: "mark it to-do, we pick this up soon"; second account, not for the spare night): **Journey you can drive**. Four
-  buttons, not seven manual stages (render and checks already run themselves): (1) **Approve plan** on a planned reel: topic, script and 3 stills
-  shown, Approve or Change + note, before any render (saves the 2-render budget); (2) **Approve to post** after Output QA: the owner's watch
-  replaces the critic that keeps not running, the reel moves to Ready; (3) **Fix** on any red stage: sends the failure line as a top-priority
-  Feedback item; (4) **Build next** for Turns Out (design series, no dates): queues the next design reel in design/c3-plan.md section 0.
-  Needs: a Worker route that stores the approvals (like /api/asks), the daily runs reading them first, and the owner adding a GitHub token
-  that can start workflows (Needs you, never in a file). Option later: an instant build via a GitHub workflow with a Claude API key (owner's
-  cost call). Size L (1-3 h).
+- [x] 21 Nov 2026 (done 26 Nov 2026): **Journey you can drive**. Now only **Fix** (a red board row sends its failure line, reel + step + why, as a top-priority Feedback item: /api/feedback `priority`, shown "Sent to the studio", read first by `asks.mjs feedback`, the daily run and the owner chat). Dropped by the owner's rules: Approve plan, Approve to post (24 Nov: the critic decides, no taste gates) and Build next (Turns Out posts daily now).
 - [ ] 18 Nov 2026 (owner: "new ones don't get much visibility"): **run design/c3-strategy.md for Turns Out** from Mon 23 Nov: 20-26 s reels, frame 0 = the wrong-looking icon, a send line, series "NOT HOW YOU PICTURE IT"; add targets.md rows for E27 (week 1) and E28 (week 2); check the Echoes config can be 5 lines, else use the story engine. Size S per reel.
 - [x] 16 Nov 2026 (done 21 Nov, second account: Inbox "References", /api/refs, Owner answers `refs` / `refs-done`): **"Add reference" in the app's Inbox tab**: paste a link (Instagram reel, site), upload a
   screenshot or a short clip (private R2 under refs/, size cap per file, never in the repo), optional note and channel. The daily run reads new
