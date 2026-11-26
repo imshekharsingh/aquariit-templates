@@ -713,8 +713,8 @@ var KM = (function(){
     var taps = [], fx = 300, fy = 300, fo = 0;
     TG.forEach(function(x, q){ taps.push([x, TD[q]]); });
     TG.forEach(function(x, k2){ KM.ripple($('rp' + k2), t, x, TXc[TD[k2]], TYc); });
-    taps.forEach(function(q){ var yy = TYc, TX = TXc[q[1]], a1 = E.inOut3(P(t, q[0] - .4, q[0] - .04)), l1 = E.inOut3(P(t, q[0] + .12, q[0] + .5)), o = cl((t - q[0] + .4) * 5) * (1 - l1);
-      if (o > fo) { fo = o; fx = mix(TX + 60, TX, a1) + l1 * 20; fy = mix(yy + 90, yy, a1) + l1 * 20; } });
+    taps.forEach(function(q){ var yy = TYc, TX = TXc[q[1]], a1 = E.inOut3(P(t, q[0] - .4, q[0] - .04)), l1 = E.inOut3(P(t, q[0] + .1, q[0] + .3)), o = cl((t - q[0] + .4) * 5) * (1 - l1);
+      if (o > fo) { fo = o; fx = mix(TX + 60, TX, a1); fy = mix(yy + 90, yy, a1); } });
     $('fg').style.left = (fx - 23).toFixed(1) + 'px'; $('fg').style.top = (fy - 23).toFixed(1) + 'px'; $('fg').style.opacity = fo.toFixed(3);
     // the reaction words sit in the status bar's empty right side, never in the subtitle band
     [['rx1', 150, 0, .4], ['rx2', 70, 1, .22]].forEach(function(q){ var s3 = CAM.toScreen(c, q[1], 326); $(q[0]).style.left = s3[0].toFixed(1) + 'px'; $(q[0]).style.top = s3[1].toFixed(1) + 'px'; KM.react($(q[0]), t, (TB[q[2]] == null ? 99 : TB[q[2]]) + .05, { rot: q[2] % 2 ? 5 : -7, hold: q[3] }); });
