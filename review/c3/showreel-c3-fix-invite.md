@@ -78,3 +78,18 @@ EXACT FIX (scene scripts/channel3/design/fix-invite.js only; story, voice, timin
 Then a local check on stills at 2.5 s and 18.5 s with a pixel read of the gaps (every text block 16 px clear) before render 3. Render 3 needs the owner's yes with its cost estimate.
 
 CRITIC: NOT READY: two of the red tags under the invite touch each other at 2-4 s (NO HERO and 4 FONTS share one border). Detail: question 47 at 1.8-4.2 s; also the BEFORE tag is 6-9 px from the thumbnail at 17-20 s and the dial sits 13 px right of the text edge; fix as in EXACT FIX above.
+
+## Critic 3 (independent session, 26 Nov 2026, render 3)
+Judged on the real render 3 MP4 (reel-fetch, 20.0 s, 1080x1920, 30 fps, -14.0 LUFS integrated): one 1 s contact sheet at phone size, full-size frames at 2.5, 3.5, 8.4, 12.8, 17.2, 18.5 and 19.8 s, and a 0.1 s strip over 1.8-4.3 s with pixel reads of every gap at output size. Voice not heard (no playback here); script, voice and timing unchanged from render 1.
+- EXACT FIX 1, ring tags (1.8-4.2 s): FIXED. Row y 1330: NO HERO x 144-323, 4 FONTS x 360-527, 6 COLOURS x 562-775. NO HERO to 4 FONTS 36 px, 4 FONTS to 6 COLOURS 34 px (both were 0 and 8 px). 6 COLOURS to the confetti ring 16-18 px on every 0.1 s frame (least 16 px at 2.5-2.8 s: tag border ends x 775, ring starts x 792, clean board between). Middle ring bottom to tag top about 44 px.
+- EXACT FIX 2, end frame (17-20 s): FIXED. BEFORE tag 52 px clear of the tilted thumbnail (was 6-9 px); BEFORE/AFTER tops at y 1493, board bottom at y 1458: 34 px off the border.
+- EXACT FIX 3, dial (6-20 s): FIXED. Ring stroke outer edge x 64, headline and subtitle text x 65-66 (was 78).
+- 47 Held frames: chips clear of the pill and board (2.5 s: pill ends about y 665, chip 686-773, board 821; 8.4 s and 12.8 s chips 40+ px from both); the 7 about 70 px above the name line (18.5 s); green frame 17 px under RSVP to Mum (text bottom y 1412, frame y 1430); read-order badges on clear board (8.4 s); confetti in its own column, never under a text line on a held frame; nothing under the subtitles; nothing on the frame edge but the rulers, which bleed off by design as in gold. Near-miss, not a fail: the name ring and the middle ring are 13 px apart (y 982 to 996 at 2.5 s), outline to outline with no text between, the same as render 2's critic passed; tighten on the next invite-style reel. Mid-animation only: the shrinking BEFORE flashback crosses the after at about 16 s, as in render 1.
+- 43 Gold: matches showreel-c3-grey-text (stage, light, pacing, before/after end frame).
+- 0 Safety: yes. 0b AI label false: correct. 1 Frame 0: yes, the claim and the whole lit invite. 2 Every frame whole: yes. 3-5: unchanged and right (each fix lands on its line; every line shown in the pill and finished). 6 Mix -14.0 LUFS. 7 Payoff: yes, 17-20 s holds BEFORE and AFTER 3 s. D1-D4: unchanged from render 1, all yes.
+- Story and look: intact; the render 1 READY points all still hold, and the owner's overlap complaint is answered on every held frame.
+STOP: 7/10. REWATCH: 7/10 (font scan 9.8-10.2 s, confetti into the 7 at 12.2-12.6 s).
+PREMIUM: animation 7.5/10 (t 7.4-12.6), cleanliness 8/10 (t 2.5: even tag row), premium 7.5/10 (t 18.5); weakest: t 2.5, the two upper rings 13 px apart.
+ENHANCE: let the frame-0 headline name the object ("This invite has no hero") so a stranger knows what they are looking at in the first half second.
+
+CRITIC: READY
