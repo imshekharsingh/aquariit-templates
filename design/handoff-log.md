@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/critic-owner-26nov · owner chat: today's owner feedback into the critic rules
+- design/critic.md: question 47 (text clear space and one alignment per screen, from the owner's Turns Out note) and the verdict line format rule (exact "CRITIC: READY / NOT READY", appended last). The owner's notes are already in design/owner-feedback.md, which every critic reads.
+
 ## 2026-11-26 · claude/c3-invite-hold-26nov · owner chat: Turns Out invite withdrawn until render 2
 - Owner saw text overlaps in showreel-c3-fix-invite (render 1, critic READY). A NOT READY line (owner) is appended to its review file, so the app shows it as "Found a problem" with no Post now, still visible on the board; the fix session (render 2 + new critic) appends the new verdict.
 
