@@ -9,7 +9,7 @@
 //                  REF <id> <time> <channel|-> <url|-> <file type|-> <note>; for each file a small JPEG preview (an image scaled to 720 px, a clip as
 //                  a 4x2 sheet of 8 frames spread over the whole clip; ASKS {"full": [ids]} adds time-stamped sheets of the whole clip at 1 frame a second) as a "B64 ref-<id>.jpg <base64>" log line (stderr, not the summary):
 //                  node scripts/media/from-log.mjs <run id> <dir> turns them back into files. Study each into design/references.md, then refs-done
-//   refs-done:     (also "checklist", "stills", "replies", see below) ASKS = {"ids": [3], "state": "studied" | "used", "note": "what was taken, or the reel it went into"}; the app shows the note
+//   refs-done:     (also "checklist", "stills", "replies", "close": true, see below) ASKS = {"ids": [3], "state": "studied" | "used", "note": "what was taken, or the reel it went into"}; the app shows the note
 //   add:   ASKS = [{ "id": "tech-bio", "question": "plain English", "why": "why it matters", "kind": "yesno" | "done" | "text", "channel": "web"|"tech"|"c3" }]
 //   clear: ASKS = ["tech-bio", ...] (after acting on the replies; removes them for good)
 //   mark:  ASKS = {"showreel-19-numbers": "2026-10-31T07:51:00Z", ...} marks reels uploaded at their real post time (an answer such as
@@ -114,6 +114,8 @@ if (ACTION === 'refs-done') for (const id of refDone.ids) {
     : await fetch(`${SITE}/api/refs/${id}/state`, { method: 'POST', headers: H, body: JSON.stringify({ state: refDone.state, note: refDone.note.trim() }) });
   if (!r.ok) die(`could not set reference ${id} (HTTP ${r.status})`); const j = await r.json(); console.log(j.stored ? `✓ reference ${id} ${refDone.state}${rich ? ` (${j.items || 0} checklist lines, ${j.stills || 0} stills)` : ''}` : `✗ no reference ${id}`);
   for (const q of refDone.replies || []) { const t = await fetch(`${SITE}/api/refs/${id}/thread`, { method: 'POST', headers: H, body: JSON.stringify({ item: q.item, text: q.text, who: 'claude' }) }); console.log(t.ok ? `✓ reference ${id} line ${q.item} answered` : `✗ reference ${id} line ${q.item} (HTTP ${t.status})`); }
+  // "close": true (owner, 26 Nov 2026: the studio decides what to take; the owner only reads what was taken, then it is closed; the video is deleted, the note stays)
+  if (refDone.close) { const c = await fetch(`${SITE}/api/refs/${id}/close`, { method: 'POST', headers: H, body: '{}' }); console.log(c.ok ? `✓ reference ${id} closed` : `✗ reference ${id} not closed (HTTP ${c.status})`); }
 }
 if (ACTION === 'add') for (const a of items) {
   const r = await fetch(`${SITE}/api/asks/${a.id}`, { method: 'PUT', headers: H, body: JSON.stringify(a) });
