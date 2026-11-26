@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 10:10 IST · claude/3d-kit-v5 · other account: 3D kit sample v5, the six critic fixes (no render yet)
+- Done: merged both critic branches (review file holds v3 + v4); scene fixes 1-6 (opening move, hub between apps and wall with all 8 tools whole, push-in pulled back, tangle outside the wall, end turn home + New cable pulse, hub sub-line dropped); stills review/tech/study-25nov/kit-phase2-v5.jpg; techkit/check-gold3d.cjs (no-render name/cover check); scripts/tech-assemble.py now inlines the 3D kit (it did not, so a 3D scene failed locally).
+- Left: render 5 only on the owner's yes (design/handoff.md Progress), Output QA, separate critic; then the "finalise the 3D kit" steps if READY.
+- For the other account: a comment pasted before code on one line silently drops that code (the hub was missing from the scene for a while); the stills caught it, the box check did not.
+
 ## 2026-11-26 · claude/handoff-3d-kit-final · owner chat: the other account also finalises the 3D kit
 - design/handoff.md: after a READY v5, the same session makes it the tech 3D gold, updates the starter, closes the known limits, switches tech daily builds to the 3D look, then closes the handoff (cap ~$15 more, owner asked first past it).
 
