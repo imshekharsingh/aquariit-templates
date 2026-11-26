@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-go-only · owner chat: the other account works only on GO tasks
+- Owner: it must not pick up the next item on its own. design/handoff.md rule: only tasks marked GO are worked on (the queue check starts only open GO tasks). GO now: task 3, then task 9. Tasks 6 and 7 wait until marked GO.
+
 ## 2026-11-26 · claude/refs-loop-26nov · owner chat: references must show in reels and numbers; other account priority 3 then 9
 - design/critic.md question 52: the two key named reference patterns must be visible in the real video, with times. design/handoff.md task 9 (measuring: ref-compare script, refs tag per reel, with/without reference numbers in the weekly review). Owner priority for the other account: task 3 (3D kit), then 9, then the rest in number order.
 
