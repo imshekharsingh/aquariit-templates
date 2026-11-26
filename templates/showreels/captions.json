@@ -2881,6 +2881,8 @@
   "hold": "Not ready, no post day (owner, 24 Nov 2026 night: no third render). Render 2 failed Output QA (NUMBERS rolling counts, SYNC 931, EDGES 1 TB box) and has a 26 s back-of-box slip; the fix is on branch claude/storage-gap-fix3 and in review/tech/showreel-tech-storage-gap.md item 13."
  },
  "showreel-tech-battery-cycles": {
+  "hidden": true,
+  "note": "owner did not post it, 25 Nov",
   "channel": "tech",
   "postOn": "2026-11-25",
   "postAt": "20:45",

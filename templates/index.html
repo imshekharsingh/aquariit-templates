@@ -1256,9 +1256,10 @@
       jNote.textContent = 'Updated ' + t + ' IST' + (j.github === 'ok' ? '.' : j.github === 'no-token' ? '. Live video progress needs a GitHub key.' : '. GitHub did not answer; finished steps still show.'); }
     // ready to post, at the top: every reel with a video, not posted, due by the end of today (or overdue), that the checks passed
     rBox.textContent = '';
+    var stale = !j || j.stale; rBox.appendChild(stale ? el('p', 'empty', j ? 'Status not up to date' + (j.age ? ' (' + Math.round(j.age / 60) + ' min old)' : '') + ', so nothing is shown here. It rebuilds on its own.' : 'Status not loaded yet, so nothing is shown here.') : document.createTextNode(''));
     if (DATA) { var c = DATA.c, end = Date.parse(today + 'T00:00:00+05:30') + DAY;
       ((DATA.d && DATA.d.showreels) || []).filter(function(x){ var m = c[x.name] || {}; if (ticks[x.name] || !x.video || m.hidden || m.sample || dueOf(x, m) >= end) return false;
-        var r = reels.filter(function(y){ return y.name === x.name; })[0]; return !r || status(r).k === 'ready'; })
+        var r = reels.filter(function(y){ return y.name === x.name; })[0]; return !!r && !j.stale && status(r).k === 'ready'; })   // only a reel whose journey status is ready (critic READY on main); no data or old data = none (26 Nov 2026)
         .sort(function(x, y){ return dueOf(x, c[x.name] || {}) - dueOf(y, c[y.name] || {}); })
         .forEach(function(x){ var card = reelCard(x, c[x.name] || {}, true); card.classList.add('rdy'); rBox.appendChild(card); }); }
     syncNeeds(); }

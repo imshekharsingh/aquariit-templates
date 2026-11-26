@@ -222,6 +222,16 @@ for (const dir of ['scripts/explainer', 'scripts/explainer/styles', 'scripts/sho
   }
 }
 
+// ready filter (owner, 26 Nov 2026): Post now cards may only show for a reel whose journey status is ready; no or old journey data shows none
+{
+  const idx = readFileSync(join(T, 'index.html'), 'utf8'), m = /\.filter\(function\(x\)\{ var m = c\[x\.name\][^\n]*\n[^\n]*return ([^\n]*?)\; \}\)/.exec(idx);
+  if (!m) err('ready filter: the Ready-to-post filter in templates/index.html was not found');
+  else if (!/!!r\s*&&/.test(m[1]) || !/status\(r\)\.k === 'ready'/.test(m[1]) || !/!j\.stale/.test(m[1])) err('ready filter: Ready to post must need a journey reel (!!r) with status ready and a fresh journey, found: ' + m[1].slice(0, 120));
+  const wk = readFileSync(join(root, 'src/worker.js'), 'utf8');
+  if (!/if \(j && j\.stale\) return no\('status-old'/.test(wk) || !/if \(r && !\(r\.stages && r\.stages\.ready/.test(wk)) err('ready filter: /api/post must refuse a reel whose journey status is not READY, and any reel while the journey is stale');
+  const caps = readJSON(join(T, 'showreels/captions.json'), 'captions.json');
+  if (caps && caps['showreel-tech-battery-cycles'] && !caps['showreel-tech-battery-cycles'].hidden) err('showreel-tech-battery-cycles must stay hidden (owner did not post it, 25 Nov)');
+}
 if (errors.length) {
   console.error(`✗ ${errors.length} problem(s):\n` + errors.map((e) => '  - ' + e).join('\n'));
   process.exit(1);
