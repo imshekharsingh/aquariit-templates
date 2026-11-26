@@ -42,7 +42,7 @@ Also done by this session, same branch rules, one push per step. Cap: about $15 
 5. Write DONE in Progress with the total cost, add the handoff-log entry, and set this file back to CLOSED (keep the history below).
 If the v5 critic says NOT READY: stop, write the critic's fix list in Progress and ask the owner. No 6th render without the owner's yes.
 
-## Owner yes for render 5: NOT YET
+## Owner yes for render 5: YES (owner, in the other account's chat, 26 Nov 10:14 IST)
 
 ## Progress (newest last)
 - 26 Nov, owner chat: task written here; nothing started.
@@ -51,6 +51,7 @@ If the v5 critic says NOT READY: stop, write the critic's fix list in Progress a
 - 26 Nov 10:10 IST, other account: Progress: fixes pushed. All six done: (1) the opening now moves at about 2.6 s, an 11 % pull-back with a 12 degree turn, the frame-0 picture is unchanged; (2) the wall sits higher and the hub floats between the apps and the wall, all eight tools whole from the hub to the end; (3) the push-in is 12 % further back and the apps sit closer, Notes, Chat and Mail whole; (4) the tangle runs outside the wall's sides, nothing over Photos or Pay; (5) from about 16.3 s the camera makes a small turn and eases back to the exact frame-0 camera while the New cable pulses once, last caption held; (6) the hub sub-line is dropped. New tile now floats beside the hub with its one short cable. Text check on every 0.25 s: no name cut, covered or under the caption fade, hub never hidden. One stills sheet: review/tech/study-25nov/kit-phase2-v5.jpg. Cost so far: about $7. Next: waiting for the owner's yes for render 5 (estimate below).
 - 26 Nov 10:20 IST, other account: owner asked to fix the glow all around. Done before the render: softer bloom, thinner cable halos, dimmer cable cores and floor light, smaller brightness swells; the picture is the same, only calmer (review/tech/study-25nov/kit-phase2-v5-glow.jpg). Cost so far: about $8.
 - Render 5 estimate (for the owner): about $5 in all (the GitHub render itself is free on this public repo, about 20 min; then Output QA and the separate critic session). It is the 5th render of this sample, past the 2-render cap.
+- 26 Nov 10:15 IST, other account: owner said yes; render 5 started on GitHub (preview v5, about 20 min). Times above at 10:10 and 10:20 were approximate. Cost so far: about $9.
 
 ---
 
