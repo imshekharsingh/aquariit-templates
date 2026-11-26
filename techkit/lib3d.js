@@ -3,7 +3,7 @@
 //   W3D.lib.figure(THREE, '3x8=24', { height, color, radius })     big glossy 3D number figures built from tubes (digits 0-9 and + x = -), centred, facing +z
 //   W3D.camPath(S, keys, { glide })(t)                             one continuous camera move through the world: keys [{ t, pos:[x,y,z], look:[x,y,z], fov }]
 //   W3D.lib.appGlyphs                                              hand-drawn glyph painters for generic app tiles (pay, photos, notes, maps, files, chat, mail, calendar)
-//   W3D.enter(obj, kind, u, { side })                              v6 (26 Nov 2026, rules-tech.md D10): a motion-design entrance at progress u 0..1 (u <= 0 hidden, 1 home):
+//   W3D.enter(obj, kind, u, { side, amp })                            v6 (26 Nov 2026, rules-tech.md D10): a motion-design entrance at progress u 0..1 (u <= 0 hidden, 1 home):
 //                                                                  'slideTurn' | 'drop' | 'rise' | 'swing' | 'flip' | 'pop'; run u from 1 to 0 for an exit or a rewind
 //   W3D.wire(S, pts, { color, radius, plugs, shadow })             v6 (D12): a matte cable through pts (let it lie on the floor to sag), plugs at both ends, a floor shadow;
 //                                                                  .reveal(u) unrolls it (the end plug clicks in at the end), .pulse(k) the only glow (a bead along it), .curve / .tube
@@ -164,11 +164,11 @@
   function enter(obj, kind, u, o = {}) {
     const h = obj.userData.home || (obj.userData.home = { p: obj.position.clone(), r: obj.rotation.clone(), s: obj.scale.x || 1 });
     u = clamp(u); obj.visible = u > .002; obj.position.copy(h.p); obj.rotation.copy(h.r); let sc = h.s;
-    const side = o.side ?? 1, e = back(u), w = 1 - u;
-    if (kind === 'slideTurn') { obj.position.x += side * 3.2 * (1 - ease3(u)); obj.rotation.y += side * 1.15 * (1 - e); sc *= .7 + .3 * ease3(u); }
-    else if (kind === 'drop') { obj.position.y += 3.6 * (1 - bounce(u)); obj.rotation.z += side * .25 * w * w; }
-    else if (kind === 'rise') { obj.position.y -= 1.8 * (1 - e); obj.rotation.x -= 1.25 * (1 - ease3(u)); sc *= .55 + .45 * ease3(u); }
-    else if (kind === 'swing') { const th = side * 1.35 * (1 - e); obj.position.x += Math.sin(th) * 3; obj.position.z += (Math.cos(th) - 1) * 3; obj.rotation.y += th; }
+    const side = o.side ?? 1, e = back(u), w = 1 - u, A = o.amp ?? 1;   // amp: how far the entrance travels (smaller objects: smaller moves, so they do not fly across the frame edge)
+    if (kind === 'slideTurn') { obj.position.x += side * 3.2 * A * (1 - ease3(u)); obj.rotation.y += side * 1.15 * (1 - e); sc *= .7 + .3 * ease3(u); }
+    else if (kind === 'drop') { obj.position.y += 3.6 * A * (1 - bounce(u)); obj.rotation.z += side * .25 * w * w; }
+    else if (kind === 'rise') { obj.position.y -= 1.8 * A * (1 - e); obj.rotation.x -= 1.25 * (1 - ease3(u)); sc *= .55 + .45 * ease3(u); }
+    else if (kind === 'swing') { const th = side * 1.35 * (1 - e); obj.position.x += Math.sin(th) * 3 * A; obj.position.z += (Math.cos(th) - 1) * 3 * A; obj.rotation.y += th; }
     else if (kind === 'flip') { obj.rotation.y += side * Math.PI * 2 * (1 - ease3(u)); sc *= .3 + .7 * e; }
     else { sc *= Math.max(.001, e); }
     obj.scale.setScalar(Math.max(.001, sc));
