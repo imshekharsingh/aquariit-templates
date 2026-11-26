@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/handoff-v7-r3-yes · owner chat: owner yes to v7 render 3 with a plan check first
+- 15-item render 3 list (upgrade critic, premium re-graded 6.5/6.5/6.5 against the owner's references). Plan + stills critic first (probe starts it), then the last render; tech restarts with a real reel either way.
+
 ## 2026-11-26 · claude/critic-ambition-26nov · owner chat: the critic becomes the design lead too
 - Owner: spoon-feeding design notes must stop. design/critic.md "Ambition pass" (premium judged against the owner's references; at least 3 graded UPGRADES every verdict; HIGH ones go into the next fix); design/direction.md "Motion-design pass" in every plan. An upgrade critic re-grades v7 render 2 now for render 3.
 
