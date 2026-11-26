@@ -29,4 +29,21 @@ Known risks for Output QA: the tag and phone come near the frame edge mid-move (
 
 STILLS CHECK: APPROVED is in the direction card (Fable, second round). Final stills: review/tech/showreel-tech-tag-sounding.stills.jpg.
 
-CRITIC: PENDING (starts when the final render passes Output QA)
+CRITIC: NOT READY: the big 60, 3x and 20 numbers sit on top of the phone and are crossed by the pointer line at 12.5-19 s, and the 3x shot never shows the old range against the new one.
+Detail (independent critic, 26 Nov 2026; judged the fetched render: 23.57 s, 1080x1920, -14.5 LUFS; frames at 0, every 1 s, 20.6-23.5 s at 2 fps, close frames at 12.5 / 14.5 / 17.5 s; side-by-side sheet run, the script still pairs with the old gold ai-memory, so the 3D gold was judged from design/gold.md's description and numbers):
+- Q2, Q35, D5 (FAIL): 12.5-14.5 s the "60" figure is drawn over the phone body (the phone's own "60" label shows through the 6) and the mint pointer line runs through the 6; 14.5-16.5 s the needle line strikes through the "3x" between the 3 and the x; 17-19.5 s the "20" covers the phone's lower half and the "m" sits on the green ring. D5 says nothing overlaps a number.
+- Q16, Q21 (FAIL): "about three times the last tag's range" shows a compass dial and a needle, not two ranges. No small old ring and big new ring, so the 3x is a label and the idea never plays out.
+- Q3 (weak): the phone screen reads "60 m" from 1.7 s to the end, including the payoff, while the tag sits about 1 m away. The finder reads as the distance to the tag, so it shows the range limit as if it were a measured distance.
+- Q0b (FAIL, file only): captions.json "aiLabel" is true; this is clearly rendered 3D with no photoreal person, place or screen, and gold.md / rules-tech D8 require false. Fix in captions.json, no render needed.
+- Passes: frame 0 has the moving tag, rings and the full question on screen (Q1, Q42); captions word by word with the blue box, no top bar, no India line (N3, Q46); the guess cloud 4-6.5 s and the six channel waves 7-10.5 s are the strongest shots; camera moves: push, pull-back, swing, low side track, look-down, top-down, dolly (7 distinct); nothing touches the edges; payoff held 20-23.5 s with the last caption on. Facts match the Samsung Newsroom page (23 Nov 2026): 60 m, about 3x, UWB inside 20 m, phase and time of flight vs signal strength. Samsung is named as text only, with no logo (safety OK).
+GOLD: below (13-19 s: number beats are cluttered over the hero, where the gold keeps numbers in their own clear lower-fifth space; colour, depth and darkness match: bright 0.21, dark 30 %).
+STOP: 7/10 (0-1 s: the glowing tag and rings plus the question work). REWATCH: 6/10 (the waves at 7-10 s are worth a second look; the 60 / 3x / 20 beats are a mess at phone size, so they lose it).
+PREMIUM: animation 7/10 (t 4-10 s good arrivals), cleanliness 5/10 (t 12.5-19.5 s overlaps), premium 7/10 (t 20-23 s held payoff); weakest: 12.5-19.5 s, numbers over the phone, fix below.
+EXACT FIX (render 2):
+1. 60 m beat (cue "sixty", about 12-14.5 s): place the 60 m figure in its own lower-fifth space, left of and below the compass dial (lib.figure with D5's step-aside), so no part of the phone, needle or pointer line crosses it; or move the camera keyframe so the phone sits in the upper-right third while the figure shows.
+2. 3x beat (cue "three", about 14.5-16.5 s): replace the dial-only top-down with two floor rings round the tag: a small amber ring (old range, labelled "old") and a mint ring three times its radius that grows out on "three times". Put the "3x" figure outside both rings in clear floor space; the needle line must not cross it.
+3. 20 m beat (cue "twenty", about 16.5-19.5 s): keep the green UWB ring but put the "20 m" figure on the floor in front of the ring, clear of the phone body; the phone stays whole and uncovered.
+4. Phone finder screen: show a live distance that counts down to a short value (for example "1.2 m"), or only the arrow, never "60 m" while the tag is beside it. No rolling counter: set it as one value.
+5. captions.json: "aiLabel": false.
+Then re-check frames 12-20 s at phone size for any line or object crossing a number before calling it done.
+ENHANCE: open the payoff on the needle snapping onto the tag with a click sound at 19.8 s, so the answer to "can it point?" is one visible snap.
