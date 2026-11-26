@@ -39,3 +39,10 @@ UPGRADES
 Focus: yes (one card lit, colour world per step). Structure: yes (title, pill, numbered cards), but the pill desync breaks it. Reason for every move: yes (pulse leads each flight), weaker in the hook and the reply.
 Facts: match the sources listed above; counters labelled EXAMPLE TIME; shop, app and bank names invented; no real brand or logo seen.
 
+
+## Render and Output QA (27 Nov 2026, builder)
+- The one render: Showreel run 45891261534 (preview, 30 s, with voice), file study/showreel-pv-tech-2d5-test-preview.mp4 in R2 (app path /reels/study/showreel-pv-tech-2d5-test-preview.mp4). It is built from the scene on main as merged (opening start 0.76, calmer light, pill rolling mid-flight).
+- Output QA run by the builder on the final MP4 (the preview workflow skips it): OUTPUT QA: PASS. LOUD -14.8 LUFS, true peak -3.7; COLOUR, EDGES, SPREAD (5 % empty), DEMO, VIBRANCY, VARIETY (33 %), LOOK, DEAD, CALM (3.2 % median, 4.4 % average) pass. SKIP (no recogniser on this machine): PACE, NUMBERS, SOUND source; WARN: FOCUS and MUTE need config blocks (web checks, not used by this preview).
+- preflight-all on the preview (local): Output QA 12 pass 0 fail, TEXT CLEAR ok; its review lint stays FAIL on items 1-12 and PREMIUM lines because this is a preview study, not a posting reel (previews skip the Mandatory Gate).
+- Stills check: REDO from the outside session (see the direction card, builder reply there). Not met by the builder: hold framing 15 % wider, mono labels 22 px at 1080 (they are about 21), the mint reply pulse visible during 25.6-27.4 s, chips attached in the pull-back.
+- PREMIUM (builder, from the stills; the critic scores the render): animation 7, cleanliness 7.5, premium feel 6.5.

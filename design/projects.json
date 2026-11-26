@@ -152,10 +152,10 @@
       "id": "tech-2d5-test",
       "name": "Tech 2.5D map test (tap to pay), preview only",
       "account": "main",
-      "stage": "stills",
-      "line": "Stills sheet ready, preflight checks pass. An outside session checks the stills next.",
-      "pct": 55,
-      "updatedAt": "2026-11-26T22:30:00Z",
+      "stage": "critic",
+      "line": "Rendered once; Output QA passes. The independent critic is checking it against the reference and the 3D v7 render.",
+      "pct": 90,
+      "updatedAt": "2026-11-26T21:25:00Z",
       "history": [
         {
           "at": "2026-11-26T22:00:00Z",
@@ -166,6 +166,16 @@
           "at": "2026-11-26T22:30:00Z",
           "stage": "stills",
           "line": "Stills sheet ready; the full preflight checks pass except the review file lines."
+        },
+        {
+          "at": "2026-11-26T21:25:00Z",
+          "stage": "render",
+          "line": "The one render finished: study/showreel-pv-tech-2d5-test-preview.mp4."
+        },
+        {
+          "at": "2026-11-26T21:25:00Z",
+          "stage": "critic",
+          "line": "Output QA passes; the independent critic starts."
         }
       ]
     }
