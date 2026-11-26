@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/ref-nodemap-27nov · owner chat: reference study, 2.5D system map (owner's new target look)
+- design/references.md R-ref 27 Nov: one continuous camera over a node map, a colour world + spotlight per step, fixed title + section pill, mini interfaces per node, measured motion vs 3D v7. Owner: test it on tech; 3D v7 continues as a kit. A tech test scene (preview, not posted) is being built.
+
 ## 2026-11-27 01:25 IST · claude/3d-kit-v7-r3-build + claude/3d-kit-v7-plan-ready · other account: 3D kit v7 render 3 built, plan ready for critic (task 10)
 - Done: the upgrade critic's 15 items built in techkit/scenes/gold3d-v7.html and lib3d.js (W3D.numbers odometer, W3D.headline); plan + checks in review/tech/showreel-tech-gold3d-v7.md "Render 3 plan"; stills refreshed. Fixed two hard colour cuts found locally (hub whip from above the apps, 0.75 s; slow-start crane, camera `ease`; neutral blacks; world3d captions take `scrimRGB`).
 - Left: the plan critic (main account's probe); on "PLAN: OK TO RENDER", ONE render 3 (preview r3), Output QA, "v7 ready for critic". Open point: headline over board tiles in close shots.
