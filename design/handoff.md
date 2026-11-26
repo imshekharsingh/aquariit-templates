@@ -78,6 +78,7 @@ Take it up after the 3D task is DONE (or now, if the 3D task is waiting on the o
 - 26 Nov 11:47 IST, other account: finalise step 1 done: the v5 sample is the tech 3D gold (design/gold.md entry; scripts/qa/gold.json "tech3d" numbers from the v5 render's Output QA: bright 0.218, background 0.147, dark 40 %, grey 2 %, contrast 0.229; accent kept from v4, same colours); the app's preview entry now plays v5.
 - 26 Nov 11:48 IST, other account: finalise step 2 done: `node scripts/starter.mjs tech3d <slug>` copies the v5 gold scene and its note now carries the v3-v5 critic lessons; techkit/README.md lists what each critic found, what fixed it in v5, the v5 critic's notes for daily reels (number agrees when a new item joins, own icon per tile, 20-35 s, one readable artifact) and the no-render check (techkit/check-gold3d.cjs). Rules D1-D8 stay in design/rules-tech.md.
 - 26 Nov 11:48 IST, other account: finalise step 3 done: design/3d-kit-phase2.md known limits: the hub label behind the apps is closed (v5 layout, checked every 0.25 s); the 18 s pace and the frame-blend motion blur are accepted, with the reasons written there.
+- 26 Nov 11:48 IST, other account: finalise step 4 done: design/rules-tech.md L0 and design/runbook-daily.md step 3 say tech daily builds start from `node scripts/starter.mjs tech3d <slug>` from the next build on; design/3d-kit-phase2.md has its DONE line.
 
 ---
 
