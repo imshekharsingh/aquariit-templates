@@ -66,6 +66,21 @@
      "line": "Projects like the 3D kit now show on the Today board with their stage and history."
     }
    ]
+  },
+  {
+   "id": "queue-check",
+   "name": "Hourly check of the other account's task queue",
+   "account": "other",
+   "stage": "done",
+   "line": "An hourly check now starts the next open task by itself.",
+   "updatedAt": "2026-11-26T09:04:00Z",
+   "history": [
+    {
+     "at": "2026-11-26T09:04:00Z",
+     "stage": "done",
+     "line": "An hourly check now starts the next open task by itself."
+    }
+   ]
   }
  ]
 }

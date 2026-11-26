@@ -14,9 +14,15 @@ here or in chat. Ask the owner only before something the task does not already c
 
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
-critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 2, 5, 3
+critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 8, 6, 7, 2, 5, 3 (3 may continue while a render runs)
 (later numbers after these, in order); report each in Progress.
 Every task here is also a project on the app's board: update its entry in design/projects.json at each stage, in the same push as the work (design/runbook-studio.md "Projects on the board").
+
+## Owner rule: watch this queue (owner, 26 Nov 2026)
+This account picks up ANY task added to this file without being told. Every queued task is a "## Queued task N" heading; it is open until
+Progress has a line "task N done" (or the heading says DONE). Set up, once, in THIS account (task 8 below), a scheduled check that looks
+here regularly and starts work on the next open task in the stated order. Never two sessions on the same task: a running session writes
+"task N started" in Progress first, and the check skips a task whose last Progress line is "started" from the last 3 hours.
 
 ## Read first (only the parts you need)
 CLAUDE.md; the last 5 entries of design/handoff-log.md; design/3d-kit-phase2.md; design/rules-tech.md (section L, rules D1-D8).
@@ -96,6 +102,44 @@ render under the owner's render rule above, Output QA. For the critic: this acco
 "v6 ready for critic" and stop; the main account runs the critic and writes its verdict in Progress. If READY, v6 replaces v5 as the
 tech 3D gold (design/gold.md, scripts/qa/gold.json, the tech3d starter).
 
+## Queued task 6 (owner, 26 Nov 2026): one notification policy the app follows (do it right after task 0)
+Owner: "design control for notifications ... if we are running tests, we should have defined notifications approach which is used by
+app: regular upload notifications; test window notification change". Today the owner chat sent its own 13:58 reminder and the app's
+"ready" push came later from a separate rule; two systems, no shared plan. Size M.
+1. design/notify-policy.json (the single source; src/notify.js and the Worker read it, the owner chat's reminders follow it): per type
+   when it fires and its words. Regular upload: "ready" 2 min BEFORE the slot (not after), "nudge" 15 min after the slot if not posted,
+   "last call" at 20:30 IST, the 08:00 morning summary. Slots always come from design/slots.json, never a fixed list.
+2. Test windows: while design/slots.json marks a slot as a test (add "tests": {"c3": {"slot": "14:00", "until": "2026-12-02"}, "web": {...}}),
+   that channel's pushes say so ("Slot test day 2 of 7: post Turns Out at 14:00"), the nudge comes 10 min after the slot, and a "late"
+   push at 30 min says the test day is weakened; when posted, a "logged" push confirms the time counted. When the test ends, the
+   pushes return to the regular plan by themselves. The weekly review reads the test log (slot, actual post time, on time yes/no).
+3. Settings > Notifications shows the active plan in plain words (each type, its time today, which channels are in a test and until when),
+   with the on/off switches per type it already has. Keep the existing "server key missing" message when push is not set up.
+4. Tests for src/notify.js (the plan function is pure: add cases for test days, before-slot ready, late, logged), npm run check, merge.
+   Then design/runbook-studio.md: the owner chat stops sending its own slot reminders once this is live and only checks the post went out.
+
+## Queued task 8 (owner, 26 Nov 2026): a scheduled check of this queue (do it NOW, before the next task)
+Owner: "pick up anything that's added to the job and run a periodic check on it like every 30 mins so that it knows there's something to
+pick up" (owner then: "hourly, not 30 mins"). In THIS account, create one recurring scheduled task "Handoff queue check": HOURLY (owner, 26 Nov 2026: once an hour, not every 30 minutes). Each fire starts a fresh, small
+session (the cheapest model) with the repo, which: reads this file from main; finds the next open task in the stated order (rule above);
+if none is open or one is already started within 3 hours, ends at once; otherwise starts ONE work session for it (a normal model, with
+the repo) whose prompt is "Read design/handoff.md and do Queued task N; write 'task N started' in Progress first". Keep it quiet: no
+message unless it starts work. Write in Progress the schedule you set and the first check's result.
+
+## Queued task 7 (owner, 26 Nov 2026): Projects show their workflow and the next action (do it right after task 6)
+Owner: "App's projects section I was hoping to have a workflow and next action being taken on it so that I'll know when it's done". Size S-M.
+1. Each project in design/projects.json gets its own ordered steps (e.g. 3D kit v6: Rules, Build, Stills, Render, Checks, Critic, Kit
+   final, Done; minutes meter: Find cause, Fix, Live, Done), each with state done / now / next / failed, like the reel journey.
+2. Each project carries "next": who does it (other account, main account, owner, GitHub), the action in plain words ("Render 1 running,
+   about 25 min", "Main account runs the critic", "Owner: watch the v6 video"), and an expected time when known.
+3. The Today row shows the step bar (done steps filled, the current one highlighted) plus the "Next:" line; tap opens the full steps and
+   history. "Waiting on you" stays amber and names the one action.
+4. When a project reaches Done, the app sends one push ("3D kit v6 is done: <one line>"), using task 6's notification plan (a new type
+   "project-done", on by default, switchable in Settings).
+5. Rule for every project session (add to the owner rule above and design/runbook-studio.md): at each step, update the step states and
+   "next" in projects.json in the same push. Backfill the current projects now (3d-kit-v6 at its real step).
+Phone-width check on a local build, npm run check, merge.
+
 ## Queued task 5 (owner, 26 Nov 2026): Projects on the app's board (do it BEFORE task 3)
 Owner: "introduce workflow for any design process we are running apart from channel so that we have that progress and status in app,
 such as 3d kit". Size M.
@@ -142,6 +186,8 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 - 26 Nov 13:05 IST, other account: task 0 done: both branches are on main (claude/3d-kit-rules merged on its retry). Task 3 step 2: the v6 sample is built (techkit/scenes/gold3d-v6.html; new kit parts W3D.enter for entrances and W3D.wire for matte sagging cables with plugs, in techkit/lib3d.js; the New tile has its own icon; 3+9=12 when it connects). GLOW was re-made to measure bloom haze (a pale tile or a lit floor no longer counts): v5 4.0 %, v6 1.7 % on its scene frames. One stills sheet: review/tech/study-25nov/kit-phase2-v6.jpg. Builder notes for the critic: review/tech/showreel-tech-gold3d-v6.md. Next: render 1 of v6 once this is merged.
 - 26 Nov 13:11 IST, other account: task 3: the v6 sample is on main; render 1 of v6 started on GitHub (preview r1, about 25 min).
 - 26 Nov 13:35 IST, other account: task 5 done (projects on the board): design/projects.json (3d-kit-v6, minutes-meter, this one); the Worker serves GET /api/projects from the file on main merged with newer project stage lines (`node scripts/stage.mjs project:<id> <stage>`); the Today board has a Projects section (stage, line, bar, amber when waiting on the owner, red with Fix when failed, tap for history; done leaves after 2 days); the status sheet lists projects and raises one stuck 6 h; the rule is in design/runbook-studio.md and above. Checked at phone width on a local build; stage-test covers the new paths. Task 3 continues: v6 render 1 is running.
+- 26 Nov 14:34 IST, other account: task 8 done: scheduled task "Handoff queue check" created in this account, hourly at minute 04 (first run 15:34 IST), each run a fresh session on the cheapest model: it reads this file from main, finds the first open task in the stated order (open = no "task N done" line and no DONE heading), skips it if a Progress line for it is from the last 3 hours or a "Queue task N" session is still working, else starts ONE work session (sonnet, with the repo) told to write "task N started" first and "task N done" at the end. It notifies only when it reports something. First check result: not run yet (its first run is 15:34 IST; the next open task then is task 6).
+- 26 Nov 14:34 IST, other account: for the queue check's reading: task 2 done (11:41 IST line above); task 5 done (14:00 IST line above). Task 3 continues in this session (render 2 fix in progress: the voice-paced beats).
 - 26 Nov 14:47 IST, other account: task 3: v6 render 1 rendered (20.7 s, sound in range, GLOW 1.2 %) but failed two checks: PACE (line 2 at 4.93 words/s) and COLOUR (hard colour cuts at 11.4 and 12.0 s). Cause of the cuts: the beat times were fixed, so with the real voice (faster than the placeholder) two camera shots swapped order and the camera jumped. Fixed: line 2 is now "Three apps, and eight tools."; every beat follows the voice cues and shots can never swap; gentler camera moves; longer pauses between lines (the reel is about 23 s); tool entrances travel less; Chat rises in instead of dropping through the caption. Checked locally with the real cue times on the whole reel at 10 fps: COLOUR no cuts, GLOW 2.2 %. Render 2 starts once this is merged (owner rule: a failed render is fixed and re-run without asking).
 
 ---
