@@ -14,7 +14,7 @@ here or in chat. Ask the owner only before something the task does not already c
 
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
-critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 2, 5, 3
+critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 6, 2, 5, 3
 (later numbers after these, in order); report each in Progress.
 Every task here is also a project on the app's board: update its entry in design/projects.json at each stage, in the same push as the work (design/runbook-studio.md "Projects on the board").
 
@@ -95,6 +95,22 @@ object? each connection its own beat? would the wires pass as real? is any frame
 render under the owner's render rule above, Output QA. For the critic: this account cannot fetch videos, so write in Progress
 "v6 ready for critic" and stop; the main account runs the critic and writes its verdict in Progress. If READY, v6 replaces v5 as the
 tech 3D gold (design/gold.md, scripts/qa/gold.json, the tech3d starter).
+
+## Queued task 6 (owner, 26 Nov 2026): one notification policy the app follows (do it right after task 0)
+Owner: "design control for notifications ... if we are running tests, we should have defined notifications approach which is used by
+app: regular upload notifications; test window notification change". Today the owner chat sent its own 13:58 reminder and the app's
+"ready" push came later from a separate rule; two systems, no shared plan. Size M.
+1. design/notify-policy.json (the single source; src/notify.js and the Worker read it, the owner chat's reminders follow it): per type
+   when it fires and its words. Regular upload: "ready" 2 min BEFORE the slot (not after), "nudge" 15 min after the slot if not posted,
+   "last call" at 20:30 IST, the 08:00 morning summary. Slots always come from design/slots.json, never a fixed list.
+2. Test windows: while design/slots.json marks a slot as a test (add "tests": {"c3": {"slot": "14:00", "until": "2026-12-02"}, "web": {...}}),
+   that channel's pushes say so ("Slot test day 2 of 7: post Turns Out at 14:00"), the nudge comes 10 min after the slot, and a "late"
+   push at 30 min says the test day is weakened; when posted, a "logged" push confirms the time counted. When the test ends, the
+   pushes return to the regular plan by themselves. The weekly review reads the test log (slot, actual post time, on time yes/no).
+3. Settings > Notifications shows the active plan in plain words (each type, its time today, which channels are in a test and until when),
+   with the on/off switches per type it already has. Keep the existing "server key missing" message when push is not set up.
+4. Tests for src/notify.js (the plan function is pure: add cases for test days, before-slot ready, late, logged), npm run check, merge.
+   Then design/runbook-studio.md: the owner chat stops sending its own slot reminders once this is live and only checks the post went out.
 
 ## Queued task 5 (owner, 26 Nov 2026): Projects on the app's board (do it BEFORE task 3)
 Owner: "introduce workflow for any design process we are running apart from channel so that we have that progress and status in app,
