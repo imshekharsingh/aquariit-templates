@@ -177,7 +177,7 @@
   function wire(S, points, o = {}) {
     const THREE = S.THREE, pts = points.map((p) => (p.isVector3 ? p : new THREE.Vector3(...p))), curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', o.tension ?? .5);
     const SEG = o.segments ?? 120, RAD = 8, r = o.radius ?? .045, col = new THREE.Color(o.color ?? 0x8a5cff);
-    const mat = new THREE.MeshPhysicalMaterial({ color: col, roughness: .5, metalness: 0, clearcoat: .35, clearcoatRoughness: .45, emissive: col, emissiveIntensity: 0 });
+    const mat = new THREE.MeshPhysicalMaterial({ color: col.clone().multiplyScalar(o.tone ?? .72), roughness: .62, metalness: 0, clearcoat: .2, clearcoatRoughness: .5, emissive: col, emissiveIntensity: 0 });   // matte rubber, a soft sheen
     const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, SEG, r, RAD, false), mat); tube.castShadow = false; S.scene.add(tube);
     // the floor shadow: a dark strip under the parts that lie low (wider and darker the nearer the floor)
     let strip = null;

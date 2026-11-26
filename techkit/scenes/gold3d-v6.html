@@ -73,12 +73,12 @@ const CAPBAND = [60, 150, 1020, 420];
 const START = { pos: [0, 5.4, 15.5], look: [0, 3.0, -3.2], fov: 52 };
 const SH = [
   { t: 0, ...START },                                                                   // hook: the finished tangle, 3x8=24
-  { t: A_IN[0] + .45, pos: [-4.6, 1.7, 6.6], look: [-1.9, 1.0, 2], fov: 46 },            // Notes slides and turns in: three-quarter, low
-  { t: A_IN[1] + .45, pos: [1.6, 3.9, 7.4], look: [0, .9, 2], fov: 46 },                 // Chat drops in: a little above
-  { t: A_IN[2] + .45, pos: [5.2, 1.5, 6.8], look: [1.9, 1.0, 2], fov: 46 },              // Mail swings in: three-quarter from the right
-  { t: T_IN + .8, pos: [.6, 4.6, 10.5], look: [0, 4.5, -6.5], fov: 50 },                 // the tools cascade in: the wall, face on
-  { t: W1 + .35, pos: [-4.4, 2.5, -3.6], look: [-1.85, 2.85, -6.45], fov: 44 },          // the first cable: low close-up on Pay's plug as it clicks in
-  { t: CASC[0] + .6, pos: [.6, 13.5, 4.2], look: [0, 0, -2.4], fov: 52 },               // the cascade: top-down on the tangle growing on the floor
+  { t: A_IN[0] + .45, pos: [-4.8, 1.7, 6.4], look: [-2.05, 1.0, 2], fov: 38 },            // Notes slides and turns in: three-quarter, low
+  { t: A_IN[1] + .45, pos: [1.5, 3.7, 7.6], look: [.25, .95, 2], fov: 36 },                 // Chat drops in: a little above
+  { t: A_IN[2] + .45, pos: [5.6, 1.6, 6.4], look: [2.15, 1.0, 2], fov: 36 },              // Mail swings in: three-quarter from the right
+  { t: T_IN + .8, pos: [.6, 5.6, 8.4], look: [0, 4.5, -6.5], fov: 50 },                 // the tools cascade in: the wall, face on
+  { t: W1 + .35, pos: [-4.9, 2.4, -4.5], look: [-1.85, 2.9, -6.45], fov: 40 },          // the first cable: low close-up on Pay's plug as it clicks in
+  { t: CASC[0] + .6, pos: [-6.2, 8.2, 7.4], look: [0, .6, -2.6], fov: 50 },             // the cascade: a high three-quarter on the tangle growing across the floor
   { t: CASC[1] + .5, ...START, pos: [1.6, 6.3, 15.8] },                                  // "twenty four": the wide with its number
   { t: HUB_IN + .55, pos: [3.8, 3.4, 7.2], look: [0, 1.8, -2.2], fov: 48 },              // the hub drops in: three-quarter
   { t: COLLAPSE[1] + .2, pos: [0, 7.4, 16.6], look: [0, 2.6, -3.0], fov: 52 },           // the collapse: high wide
@@ -115,7 +115,7 @@ function frame(t) {
   W3D.enter(newTool, 'flip', ease(prog(t, NEW_IN, NEW_IN + .8)), { side: 1 });
   newW.reveal(ease(prog(t, NEW_W[0], NEW_W[1]))); newW.pulse(Math.max(prog(t, NEW_W[1], NEW_W[1] + .6), prog(t, TOTAL - 1.4, TOTAL - .8)));   // and one last pulse in the final 2 s
   // the numbers: 24 in the hook, back on "twenty four", 11 on "eleven", 12 when the new tool connects; only on the wide shots
-  const wide = sm(prog(S.cam.position.distanceTo(hub.position), 16.4, 18.2));
+  const wide = sm(prog(S.cam.position.distanceTo(hub.position), 15.8, 17.4));
   const vis = { f24: (t < HOOK + .25 ? 1 - prog(t, HOOK, HOOK + .25) : eback(prog(t, C.twenty - .1, C.twenty + .4))) * (1 - sm(prog(t, C.eleven - .05, C.eleven + .15))),
     f11: eback(prog(t, C.eleven - .02, C.eleven + .45)) * (1 - sm(prog(t, NEW_W[1], NEW_W[1] + .2))), f12: eback(prog(t, NEW_W[1] + .1, NEW_W[1] + .55)) };
   S.cam.updateMatrixWorld(); const ray = V(0, -.78, .5).unproject(S.cam).sub(S.cam.position).normalize();

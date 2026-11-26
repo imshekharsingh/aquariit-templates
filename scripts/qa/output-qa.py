@@ -45,7 +45,7 @@ FB = {   # the owner-feedback.md lines each check guards
     'blackbg': '23 Nov web owner grid: the three plain black reels (165K, 10K, 6.2K) beat every coloured, framed reel (1.7K-2.9K); web reels use the black look, never a coloured frame or glow (rules-web.md rule 19)',
     'hue': '15 Nov web "main frame where we see the changes seem to show similar colour grading so doesn\'t look different from other videos"',
     'sheen': '15 Nov tech "covering the wave like coming in from left top corner to the right of the frame, it\'s happening in all videos" (a glass sheen swept the hero every 2.7 s)',
-    'glow': '26 Nov tech 3D sample v5 "it still glows more than a user\'s eye should expect" (glowing cables and number figures over about 9 % of the frame)',
+    'glow': '26 Nov tech 3D sample v5 "it still glows more than a user\'s eye should expect" (bloom haze round the cables and number figures, about 4 % of the frame)',
     'hero': '15 Nov tech "I don\'t see much happening animation wise around watch in 5 ATM video" (a small static watch, only the water moved)',
     'elements': '16 Nov Turns Out Liberty arm "elements are few and are spread ... through the whole video. We should design it such that there are more elements to show on screen as the storyline moves forward"',
     'reuse': '16 Nov Turns Out Liberty arm (one photo used 3 times; "elements are few")',
@@ -71,7 +71,7 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
          calm_px=20, calm_band=(288, 392), calm_med=.035, calm_mean=.05, calm_step=.10,
          hue_s=.25, hue_v=.2, hue_min=40, hue_last=3, black_v=32,
          focus_s=.3, focus_v=.3, focus_share=.05, focus_gap=30, focus_hues=3, focus_pad=1.0,
-         glow_v=.7, glow_s=.3, glow_top=.25, glow_fail=4.0, glow_warn=3.0, glow_peak=8.0,
+         glow_v=.8, glow_s=.35, glow_lo=.22, glow_hi=.6, glow_top=.25, glow_fail=3.5, glow_warn=3.0, glow_peak=8.0,
          sheen_y=(.24, .64), sheen_d=10, sheen_score=.7, sheen_steps=3, sheen_events=4,
          hero_lag=.5, hero_shift=3, hero_px=30, hero_on=.02, hero_active=.55, hero_w=.33, hero_inset=.2,
          var_ssim=.65, var_max=.60,
@@ -1034,17 +1034,24 @@ def hue_check(F, fps, mp4, qa, name):
 
 
 def glow_check(F, fps):
-    # GLOW (owner, 26 Nov 2026): white-hot area below the caption band. A pixel counts when it is bright (V > glow_v) and nearly colourless (S < glow_s):
-    # bloomed cable cores, halos and emissive number figures read that way, coloured matte objects do not. Measured on 3D-look frames at 270x480: v5 before
-    # the glow cut 10 % (median), v5 after it 9 % (still too much for the owner). Fails over glow_fail % median or glow_peak % in any 1 s; warns over glow_warn %.
-    H = F.shape[1]; z = F[:, int(H * T['glow_top']):].astype(np.float32) / 255
-    mx, mn = z.max(-1), z.min(-1); S = (mx - mn) / np.maximum(mx, 1e-6)
-    share = ((mx > T['glow_v']) & (S < T['glow_s'])).mean(axis=(1, 2)) * 100
-    k = max(1, int(fps)); win = np.convolve(share, np.ones(k) / k, 'valid') if len(share) >= k else share
+    # GLOW (owner, 26 Nov 2026): bloom haze below the caption band. Bloom shows as dim, washed-out pixels (V glow_lo-glow_hi, S < glow_s) right round
+    # white-hot cores (V > glow_v, S < glow_s): a pale tile or a lit floor is not counted, the haze round a glowing cable or number is. Measured at 270x480:
+    # v5 before the glow cut 4.6 % (median), v5 after it 4.0 % (still too much for the owner), the v6 draft 2.7 %.
+    # Fails over glow_fail % median or glow_peak % in any 1 s; warns over glow_warn %.
+    def box(x, k):
+        p = k // 2; c = np.pad(x, ((p + 1, p), (p + 1, p)), mode='edge').cumsum(0).cumsum(1)
+        return (c[k:, k:] - c[:-k, k:] - c[k:, :-k] + c[:-k, :-k]) / (k * k)
+    H = F.shape[1]; share = []
+    for f in F:
+        z = f[int(H * T['glow_top']):].astype(np.float32) / 255; mx, mn = z.max(-1), z.min(-1); S = (mx - mn) / np.maximum(mx, 1e-6)
+        hot = ((mx > T['glow_v']) & (S < T['glow_s'])).astype(np.float32)
+        haze = (mx > T['glow_lo']) & (mx < T['glow_hi']) & (S < T['glow_s'] + .05) & (box(hot, 9) > .02) & (hot == 0)
+        share.append(float(haze.mean() * 100))
+    share = np.array(share); k = max(1, int(fps)); win = np.convolve(share, np.ones(k) / k, 'valid') if len(share) >= k else share
     med, peak = float(np.median(share)), float(win.max() if len(win) else 0); at = (int(np.argmax(win)) / fps) if len(win) else 0
     st = 'FAIL' if med > T['glow_fail'] or peak > T['glow_peak'] else 'WARN' if med > T['glow_warn'] else 'PASS'
-    line('GLOW', st, f'white-hot area below the captions: median {med:.1f} % of the frame, worst 1 s {peak:.1f} % at {at:.1f} s '
-         f'(fail over {T["glow_fail"]} % median or {T["glow_peak"]} % in 1 s; the v5 sample measured about 9 %)')
+    line('GLOW', st, f'bloom haze below the captions: median {med:.1f} % of the frame, worst 1 s {peak:.1f} % at {at:.1f} s '
+         f'(fail over {T["glow_fail"]} % median or {T["glow_peak"]} % in 1 s; the v5 sample measured about 4.0 %)')
 
 def sheen_check(G, fps):
     H, W = G.shape[1:]; y0, y1 = int(H * T['sheen_y'][0]), int(H * T['sheen_y'][1]); lag = max(1, int(round(.2 * fps)))
