@@ -3034,6 +3034,8 @@
   "aiLabel": false
  },
  "showreel-tech-tag-sounding": {
+  "hidden": true,
+  "note": "owner held it, 26 Nov: tech waits for the 3D kit v6",
   "channel": "tech",
   "postOn": "2026-11-26",
   "postAt": "15:00",
