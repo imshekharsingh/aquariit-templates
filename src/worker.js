@@ -626,8 +626,8 @@ async function probeApi(request, env, url) {
 }
 
 // ---- Live studio board (owner, 24 Nov 2026): sessions and workflows tell the app which stage each channel's reel of today is in, with
-// POST /api/stage {reel, stage, model, line, pct, thumb?}. Auth is the secret STAGE_KEY, sent as the header X-Stage-Key (a header of its own, so
-// it never clashes with REELS_READ_KEY; unset or empty secret = off). `reel` is a reel name or a channel (web / tech / c3), as early as the
+// POST /api/stage {reel, stage, model, line, pct, thumb?}. Auth is the secret STAGE_KEY as the header X-Stage-Key (workflows), or Authorization: Bearer <STAGE_KEY or REELS_READ_KEY>
+// (sessions: one network secret per host; 26 Nov 2026); unset or empty secret = off). `reel` is a reel name or a channel (web / tech / c3), as early as the
 // research, before the reel has a name. The app reads GET /api/stage (signed in): today's rows, newest first. Render % still comes from /api/journey.
 // thumb = a small JPEG as base64 (at most 200 KB), kept in R2 under stage/ and shown on the card.
 const STAGE_IDS = ['researching', 'topic', 'building', 'stills', 'video', 'checking', 'ready', 'skipped', 'posted'], STAGE_THUMB_MAX = 200 * 1024;
@@ -640,9 +640,15 @@ async function stageDb(env) {
   return env.DB;
 }
 async function stageKeyOk(request, env) {
-  const key = typeof env.STAGE_KEY === 'string' ? env.STAGE_KEY.trim() : '', got = (request.headers.get('X-Stage-Key') || '').trim();
-  if (!key || !got) return false;
-  return safeEqual(got, key);
+  // two ways in (owner, 26 Nov 2026: a session environment holds ONE network secret per host, so sessions send Authorization: Bearer <key>):
+  // the header X-Stage-Key (workflows) or Authorization: Bearer matching STAGE_KEY or REELS_READ_KEY. Unset or empty secrets open nothing.
+  const clean = (v) => (typeof v === 'string' ? v.trim() : ''), key = clean(env.STAGE_KEY), rk = clean(env.REELS_READ_KEY), got = (request.headers.get('X-Stage-Key') || '').trim();
+  const m = /^Bearer\s+(\S+)\s*$/i.exec(request.headers.get('Authorization') || ''), bearer = m ? m[1] : '';
+  let ok = false;
+  if (key && got && (await safeEqual(got, key))) ok = true;
+  if (key && bearer && (await safeEqual(bearer, key))) ok = true;
+  if (rk && bearer && (await safeEqual(bearer, rk))) ok = true;
+  return ok;
 }
 const istDayNow = () => new Date(Date.now() + 5.5 * 3600e3).toISOString().slice(0, 10);
 const stageKey = (reel) => String(reel).replace(/[^a-z0-9-]/g, '');
