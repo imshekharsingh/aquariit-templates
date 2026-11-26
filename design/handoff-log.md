@@ -835,3 +835,8 @@ Format (at most 6 lines):
 - For the other account: nothing new.
 - Update (same session, 26 Nov): render 1 of web 48 failed Output QA on BULK (near-white ticked boxes) and DEMO (colourfulness 30 of 32); colours fixed and both checks pass on the scene frames; render 2 next. For the other account: scripts/qa/look.py does not run BULK or DEMO; call oqa.bulk_check and oqa.demo_check on the frames before the render.
 
+
+## 2026-11-26 · claude/critic-c3-fix-invite-26nov · Independent critic: Turns Out fix-invite render 1 READY
+- Done: judged the real MP4 (render 1, Output QA PASS): side-by-side with gold, phone-size frames, strips over the three fixes and the BEFORE flashback, loudness (-14.0 LUFS); D1-D4 pass, key info kept, flashback covers no tag; STOP 7, REWATCH 7, PREMIUM 7.5; CRITIC: READY in the review file. captions.json: postOn 2026-11-26, postAt 17:00, hidden and hold removed; keyword "canva design tips" (a real brand) replaced by "poster design tips" in the config and captions.json (post text only); caption, hashtags and a measured style record added to the captions.json entry (check needs them on a dated reel).
+- Left: posting at 17:00 IST.
+- For the other account: Turns Out keywords print into the post text (ig-publish.mjs), so the no-real-brands rule applies to keywords too.

@@ -2428,10 +2428,37 @@
   "channel": "c3",
   "engine": "design",
   "concept": "Design series · Everything on this birthday invite is shouting. Nothing stands out. 🎈 (a kids' party invite on a fridge door fixed in three moves: one hero (the age), one font in two sizes, one colour used once; the last frame shows BEFORE next to AFTER)",
-  "note": "Rebuilt on the improved design kit (26 Nov 2026) from the gold reel showreel-c3-grey-text; waits for Output QA and the critic.",
-  "hidden": true,
-  "hold": "Rebuilt 26 Nov 2026; waiting for the render, Output QA and the critic's READY before it gets a post day.",
-  "aiLabel": false
+  "note": "Rebuilt on the improved design kit (26 Nov 2026) from the gold reel showreel-c3-grey-text; render 1 passed Output QA; critic READY 26 Nov.",
+  "aiLabel": false,
+  "postOn": "2026-11-26",
+  "postAt": "17:00",
+  "keywords": [
+   "invitation design tips",
+   "birthday invite design",
+   "visual hierarchy",
+   "typography tips",
+   "graphic design for beginners",
+   "poster design tips"
+  ],
+  "style": {
+   "lengthS": 20,
+   "wordsPerS": 2.2,
+   "shotChanges": 0,
+   "hookType": "claim",
+   "look": "dark",
+   "hero": "party invite on a fridge door",
+   "firstSecondTension": "yes",
+   "payoff": "tip",
+   "source": "mp4"
+  },
+  "caption": "Everything on this birthday invite is shouting. Nothing stands out, so nothing gets read. 🎈\n\n1. Make the age the biggest thing. One hero.\n2. Keep one font in two sizes.\n3. Use one colour, just once.\n\nSave this for your next invite, poster or flyer. Which of these does yours break?",
+  "hashtags": [
+   "#designtips",
+   "#graphicdesign",
+   "#invitationdesign",
+   "#typography",
+   "#designhacks"
+  ]
  },
  "showreel-c3-text-on-photo": {
   "channel": "c3",
