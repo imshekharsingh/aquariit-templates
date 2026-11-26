@@ -53,3 +53,5 @@ Judged on the real MP4 (reel-fetch, 20.0 s): the side-by-side sheet with the gol
 STOP 7/10 (a familiar messy invite and a bold claim from frame 0), REWATCH 7/10 (the font scan at 9.8-10.2 s and the confetti flying into the 7), PREMIUM 7.5/10 (animation 7.5, cleanliness 8, premium 7).
 
 CRITIC: READY
+
+CRITIC: NOT READY (owner, 26 Nov 2026, 10:30 IST): texts slightly overlap; fix the spacing and alignment on render 2, then a new critic. The render 1 READY above is withdrawn.
