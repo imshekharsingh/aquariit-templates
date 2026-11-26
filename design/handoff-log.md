@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-notify-policy · owner chat: one notification policy, queued for the other account
+- Owner posted Turns Out at the 14:00 test slot. design/handoff.md task 6 (right after task 0): design/notify-policy.json as the single source (ready before the slot, nudge, last call, summary), test-window pushes (day N of 7, late, logged), Settings shows the active plan. Order now 0, 6, 2, 5, 3.
+
 ## 2026-11-26 13:35 IST · claude/app-projects · other account: projects on the app's board (queued task 5)
 - Done: design/projects.json + GET /api/projects (file on main merged with newer `stage.mjs project:<id>` rows; done leaves after 2 days); Today board "Projects" section (stage, line, bar, amber waiting, red + Fix, history on tap); scripts/stage.mjs and /api/stage accept project:<id>; GET /api/stage now shows channel rows only; studio-status.mjs PROJECTS (stuck = 6 h without update); rule in design/runbook-studio.md "Projects on the board".
 - Left: the board shows the file's data about 2 min after a merge (cache). Task 3 (3D kit v6) continues; its render 1 is running.
