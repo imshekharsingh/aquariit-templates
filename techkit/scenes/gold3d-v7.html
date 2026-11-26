@@ -25,6 +25,8 @@ S.dof.aperture = 2.4; S.dof.focusRange = 7; S.dof.maxR = 20; S.bloom = .12;
 // light and grade (v6 measured: 8 of 46 frames had a pale floor, median luma over .40 at low angles): a darker floor, a weaker pool and stage glow
 const world = W3D.world(S, { seed: 21, props: 36, radius: [14, 40], heroZone: 17, maxZ: -14, floor: 0x4c4f58, poolPower: .1, palette: [0x6b3cff, 0x16b8d6, 0xff4f8a, 0xffb62e, 0x2f7bff, 0x22c55e] });
 world.floor.material.envMapIntensity = .1; world.floor.material.roughness = .93; world.floor.material.metalness = 0; if (world.glow) world.glow.visible = false;   // v7: a matte floor: at low angles the glossy floor caught the lights and read as a pale wash   // v7: no additive stage glow (it read as a pale floor at low angles)
+// background props are matte (v7: a glossy prop lying on the floor caught the light and bloomed, GLOW peak at 8.5 s)
+world.props.traverse((m) => { if (m.isMesh && m.material && 'roughness' in m.material) { m.material.roughness = Math.max(m.material.roughness, .75); if ('clearcoat' in m.material) m.material.clearcoat = 0; } });
 const L = W3D.lib;
 
 // ---------- the beats, all from the voice cues ----------
@@ -69,7 +71,7 @@ APPS.forEach((a, i) => TOOLS.forEach((t, j) => { const k = i * 8 + j, p0 = appPl
   // the dense path: every low point kept at least 1.0 from the pillar's axis, so the cable bends round it instead of through it
   const dense = new THREE.CatmullRomCurve3(pts.map((q) => V(...q)), false, 'centripetal').getSpacedPoints(220).map((q) => { const dx = q.x - HUB_P.x, dz = q.z - HUB_P.z, d = Math.hypot(dx, dz);
     if (q.y < .35 && d < 1.0) { const f = 1.0 / Math.max(d, .01); q.x = HUB_P.x + (d < .01 ? SIDE(j) * .01 : dx) * f; q.z = HUB_P.z + dz * f; } return q; });
-  tangle.push({ w: W3D.wire(S, dense, { color: a.c, radius: R, curve: 'catmullrom', tension: 0, floorY: 0, segments: 180 }), i, j, k }); }));
+  tangle.push({ w: W3D.wire(S, dense, { color: a.c, radius: R, curve: 'catmullrom', tension: 0, floorY: 0, segments: 180, tone: .52 }), i, j, k }); }));
 const hubW = [];
 APPS.forEach((a, i) => { const p0 = appPlug(i, 3.5), x1 = AX(i) * .3;
   hubW.push({ w: W3D.wire(S, [p0, [p0[0] * .95, FL, 1.4], [lerp(p0[0], x1, .6), FL, .2], [x1, FL, HUB_P.z + 1.0], [x1, HUB_P.y - .2, HUB_P.z + .8], [x1, HUB_P.y + .22, HUB_P.z + .76]], { color: 0x2fd27a, radius: .05, curve: 'centripetal', floorY: 0, segments: 140 }), k: i }); });
@@ -105,7 +107,7 @@ const SH = [
   { t: HUB_IN + .6, pos: [3.8, 2.8, 6.8], look: [0, 1.8, -2.2], fov: 46, mv: 'truck-in' },     // 7 the hub lands (big moment 3): low three-quarter
   { t: COLLAPSE[1] + .3, pos: [0, 7.4, 16.6], look: [0, 2.6, -3.0], fov: 52, mv: 'crane-up' }, // 8 the 24 collapse and 11 unroll: high wide
   { t: C.eleven + .6, pos: [-1.4, 6.2, 17.0], look: [0, 2.7, -3.1], fov: 52, mv: 'orbit' },     // 9 the clean picture, 11
-  { t: NEW_IN + .05, pos: [5.6, 1.95, 3.6], look: [2.75, 1.45, -1.7], fov: 42, mv: 'truck' },   // change 6: New is the subject (about 40 % of the width), the hub at the edge      // 10 the new tool and its one cable
+  { t: NEW_IN + .05, pos: [3.9, 3.2, 4.6], look: [2.75, 1.3, -1.7], fov: 42, mv: 'truck' },   // change 6: New is the subject (about 40 % of the width), the hub at the edge      // 10 the new tool and its one cable
   { t: PAY, pos: [0, 6.5, 17.0], look: [0, 2.8, -3.2], fov: 52, mv: 'pull-back' },             // 11 the payoff wide: 12
   { t: TOTAL - 1.9, pos: [-8.7, 6.0, 15.5], look: [0, 2.8, -3.2], fov: 52, mv: 'arc' },   // change 7: a 25 degree arc from about 19 s, then the dolly home      // 12 a small turn
   { t: TOTAL, ...START, mv: 'dolly-in' },                                                      // 13 home to the first frame (the loop)
@@ -136,7 +138,7 @@ function frame(t) {
   tangle.forEach((q) => { const u = q.k === 0 ? ease(prog(t, W1, W1 + 1.0)) : ease(prog(t, landT(q.k) - .55, landT(q.k)));
     const ret = ease(prog(t, COLLAPSE[0] + q.k * .012, COLLAPSE[0] + .5 + q.k * .012)); q.w.reveal(u * (1 - ret));
     const pk = prog(t, landT(q.k), landT(q.k) + (q.k === 0 ? .6 : .35)), pw = prog(t, WORST - .1 + q.k * .02, WORST + .35 + q.k * .02);
-    q.w.pulse(Math.max(pk, pw), t, q.k === 0 && pk > 0 && pk < 1 ? 1 : .45); });   // only the first cable's pulse carries a bead; the cascade and the sweep are soft   // big moment 2: one light sweep along all 24
+    q.w.pulse(Math.max(pk, pw), t, q.k === 0 && pk > 0 && pk < 1 ? 1 : .25); });   // only the first cable's pulse carries a bead; the cascade and the sweep are soft   // big moment 2: one light sweep along all 24
   // the hub: big moment 3 (falls a short way, scale overshoot, lands, light sweep); opaque from its first frame
   W3D.enter(hub, 'slam', prog(t, HUB_IN, HUB_IN + .85), { amp: .5 }); if (prog(t, HUB_IN, HUB_IN + .85) >= 1) hub.position.y = HUB_P.y + Math.sin(t * 1.1) * .02;
   hubW.forEach((q) => { const s0 = HUBW[0] + q.k * ((HUBW[1] - HUBW[0] - .5) / 10); q.w.reveal(ease(prog(t, s0, s0 + .5))); q.w.pulse(Math.max(prog(t, s0 + .5, s0 + .85), prog(t, PAY + 1.6 + q.k * .03, PAY + 2.0 + q.k * .03)), t, prog(t, PAY + 1.6 + q.k * .03, PAY + 2.0 + q.k * .03) > 0 ? .45 : 1); });
