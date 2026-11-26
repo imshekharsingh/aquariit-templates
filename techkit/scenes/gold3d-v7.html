@@ -23,7 +23,7 @@ const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const S = W3D.stage(THREE, { W, H });
 S.dof.aperture = 2.4; S.dof.focusRange = 7; S.dof.maxR = 20; S.bloom = .12;
 // light and grade (v6 measured: 8 of 46 frames had a pale floor, median luma over .40 at low angles): a darker floor, a weaker pool and stage glow
-const world = W3D.world(S, { seed: 21, props: 36, radius: [14, 40], heroZone: 17, maxZ: -14, floor: 0x4c4f58, poolPower: .1, palette: [0x6b3cff, 0x16b8d6, 0xff4f8a, 0xffb62e, 0x2f7bff, 0x22c55e] });
+const world = W3D.world(S, { seed: 21, props: 36, radius: [14, 40], heroZone: 17, maxZ: -14, floor: 0x4e4e50, poolPower: .1, palette: [0x6b3cff, 0x16b8d6, 0xff4f8a, 0xffb62e, 0x2f7bff, 0x22c55e] });
 world.floor.material.envMapIntensity = .1; world.floor.material.roughness = .93; world.floor.material.metalness = 0; if (world.glow) world.glow.visible = false;   // v7: a matte floor: at low angles the glossy floor caught the lights and read as a pale wash   // v7: no additive stage glow (it read as a pale floor at low angles)
 // background props are matte (v7: a glossy prop lying on the floor caught the light and bloomed, GLOW peak at 8.5 s)
 world.props.traverse((m) => { if (m.isMesh && m.material && 'roughness' in m.material) { m.material.roughness = Math.max(m.material.roughness, .75); if ('clearcoat' in m.material) m.material.clearcoat = 0; if (m.material.color) { const hsl = {}; m.material.color.getHSL(hsl); m.material.color.setHSL(hsl.h, hsl.s * .75, hsl.l); } } });   // and a quarter less saturated (render 1: props sweeping the frame edge in the crane made a hard colour cut)
@@ -31,7 +31,7 @@ const L = W3D.lib;
 
 // ---------- the beats, all from the voice cues ----------
 const A_IN = [0, 1.45, 2.25];                                         // Notes slams in at frame 0 (big moment 1), Chat and Mail quick and clean; all in by about 3 s
-const T_IN = Math.max(3.4, C.tools - .35);                            // the tools cascade in on "eight tools"
+const T_IN = Math.max(3.4, C.tools + .05);   // the tools start on "tools" (render 1 COLOUR fix: the crane before them gets more time, so the apps leave the frame bottom gradually)                            // the tools cascade in on "eight tools"
 const W1 = Math.max(T_IN + 1.7, C.wires - .1), W1_END = W1 + 1.4;     // the first cable: unrolls along the floor, up the wall, the plug clicks in
 const CASC = [W1_END + .1, Math.max(W1_END + 1.3, C.twenty - .35)];    // the other 23 follow as a fast cascade, done on "twenty four"
 const WORST = CASC[1] + .2;                                           // big moment 2: the tangle at its worst
@@ -99,9 +99,10 @@ const CAPBAND = [60, 150, 1020, 420];
 const START = { pos: [-5.5, 2.1, 9.6], look: [-1.88, .95, 2], fov: 42 };   // change 1: Notes whole in frame (about 46 % of the width once landed), the dark floor around it
 const SH = [
   { t: 0, ...START, mv: 'hold' },                                                             // 1 frame 0: Notes slams in, close and low (the first big moment)
-  { t: A_IN[2] + .5, pos: [0, 3.4, 15.2], look: [0, .95, 2], fov: 44, mv: 'pull-back' },   // change 2: all three whole by 3.0 s     // 2 Chat and Mail join: pull back to see the three side by side
-  { t: T_IN + .05, pos: [.3, 5.3, 3.0], look: [0, 5.0, -6.5], fov: 50, mv: 'crane-up', frac: .95 },   // render 1 COLOUR fix: the camera lands on the wall before the first tool pops in (no tile appears at the frame edge mid-move)   // change 3: the wall fills about 70 % of the width; the apps are below the frame        // 3 the tools arrive on the wall: crane up to it
-  { t: W1 + .5, pos: [-5.0, 2.4, -3.8], look: [-1.75, 2.9, -6.45], fov: 42, mv: 'dolly-in' },  // 4 the first plug clicks in: close, low, on the plug
+  { t: A_IN[2] + .4, pos: [0, 3.4, 15.2], look: [0, .95, 2], fov: 44, mv: 'pull-back' },   // change 2: all three whole by 3.0 s     // 2 Chat and Mail join: pull back to see the three side by side
+  { t: (A_IN[2] + .4 + T_IN) / 2, pos: [0, 7.8, 13.6], look: [0, 2.4, -4.0], fov: 46, mv: 'crane-up', frac: .9 },   // render 1 COLOUR fix: rise first, so the apps sink slowly out of the bottom of the frame
+  { t: T_IN + .05, pos: [.3, 5.3, 3.0], look: [0, 5.0, -6.5], fov: 50, mv: 'dolly-in', frac: .9 },   // then push to the wall, no app in view   // render 1 COLOUR fix: the camera lands on the wall before the first tool pops in (no tile appears at the frame edge mid-move)   // change 3: the wall fills about 70 % of the width; the apps are below the frame        // 3 the tools arrive on the wall: crane up to it
+  { t: W1 + .5, pos: [-5.0, 2.4, -3.8], look: [-1.75, 2.9, -6.45], fov: 42, mv: 'truck-down' },  // 4 the first plug clicks in: close, low, on the plug
   { t: CASC[0] + .9, pos: [-6.2, 4.6, 6.6], look: [0, 1.4, -3.4], fov: 50, mv: 'arc' },         // 5 the tangle grows on the floor: a high arc over it
   { t: WORST, pos: [.6, 4.6, 2.9], look: [0, .1, -3.2], fov: 56, mv: 'pull-back' },   // change 4: from behind the apps, looking down: the tangle on the floor fills the width   // change 4: low and close, the tangle fills the width   // 6 the tangle at its worst (big moment 2): the whole picture, 24
   { t: HUB_IN + .6, pos: [3.8, 2.8, 6.8], look: [0, 1.8, -2.2], fov: 46, mv: 'truck-in' },     // 7 the hub lands (big moment 3): low three-quarter
@@ -123,6 +124,10 @@ function camAt(t) {
   S.cam.position.copy(pos); if (S.cam.fov !== fov) { S.cam.fov = fov; S.cam.updateProjectionMatrix(); } S.cam.lookAt(look); S.cam.updateMatrixWorld(); return { pos, look, fov };
 }
 
+// the frame edge in the wall shot stays calm (render 1 COLOUR fix): a colourful background prop that touches the frame edge there is not shown
+{ camAt(SH[3].t); for (const it of world.items) { const b = W3D.screenBox(S, it.g); const inF = b[2] > 0 && b[0] < W && b[3] > 0 && b[1] < H, edge = b[0] < W * .1 || b[2] > W * .9 || b[3] > H * .9;
+    let c = null; it.g.traverse((m) => { if (!c && m.isMesh && m.material && m.material.color) c = m.material.color; }); const hsl = {}; if (c) c.getHSL(hsl);
+    if (inF && edge && c && hsl.s > .3 && hsl.l > .2) it.g.visible = false; } }
 // when each tool's (and each app's) first cable lands: they bump once (they react)
 const landT = (k) => (k === 0 ? W1 + 1.0 : lerp(CASC[0], CASC[1] - .55, (k - 1) / 22) + .55);
 const focus = V(0, 1.6, -3); S.focus = focus;
