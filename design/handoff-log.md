@@ -963,3 +963,6 @@ Format (at most 6 lines):
 ## 2026-11-26 · claude/critic-c3-fix-invite-r3 · Critic 3: showreel-c3-fix-invite render 3 READY
 - Done: independent critic on the real render 3 MP4; all three EXACT FIX items measured fixed (tags 36/34 px apart, 16 px from the confetti ring; BEFORE 52 px from the thumbnail; dial edge x 64 on the text edge x 65); verdict CRITIC: READY in review/c3/showreel-c3-fix-invite.md.
 - Left: post today in the Turns Out slot. Next invite-style reel: keep rings 16 px+ apart (13 px here, outline to outline).
+## 2026-11-26 · claude/app-dup-ready-26nov · App: no repeat of a ready reel under Up next; channel line shows the slot (tooling, owner asked)
+- Done: render() leaves reels that readyReels() lists out of Up next/Later (all channels share the path); the page re-renders when the journey arrives. The channel line and profile card use slotLine() from /api/slots (tech "paused", others "at 14:00 IST, slot test until 2 Dec"). Phone-width check (390 px, mocked data): before 2 cards, after 1 under Ready and only tomorrow's under Up next. check.mjs "ready dup".
+- Left: nothing; owner confirms on the phone after the deploy.

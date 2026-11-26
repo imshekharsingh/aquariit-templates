@@ -743,8 +743,10 @@
   // the exact slot (owner, 5 Nov 2026): "postAt" (HH:MM IST) in captions.json, else the channel's default: web 13:00 (19:00 when the note says so),
   // tech 19:00, Turns Out 20:00 (E15 from 6 Nov). The same rule is in src/worker.js (the reminders) and scripts/check.mjs
   // channel defaults come from design/slots.json (25 Nov 2026; GET /api/slots): tech 15:00, Turns Out 17:00, web 19:00
-  var SLOTS = { tech: '15:00', c3: '17:00', web: '19:00' };
-  fetch('/api/slots', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.slots) { SLOTS = j.slots; Object.keys(SLOTS).forEach(function(k){ if (CH[k]) CH[k].slot = SLOTS[k] + ' IST'; }); } }).catch(function(){});
+  var SLOTS = { tech: '15:00', c3: '14:00', web: '19:00' }, REVIEW = '2026-12-02';
+  // the channel's slot line from design/slots.json (owner, 26 Nov 2026): tech is paused until the 3D kit v6; the others are tests until the review day
+  function slotLine(k, p){ if (k === 'tech') return 'paused'; var t = SLOTS[k]; if (!t) return p.slot; var d = new Date(REVIEW + 'T12:00:00+05:30'); return 'at ' + t + ' IST' + (isFinite(d) && Date.now() < d.getTime() + DAY ? ', slot test until ' + d.getDate() + ' ' + d.toLocaleString('en-GB', { month: 'short', timeZone: 'Asia/Kolkata' }) : ''); }
+  fetch('/api/slots', { credentials: 'same-origin' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.slots) { SLOTS = j.slots; if (j.reviewOn) REVIEW = j.reviewOn; Object.keys(SLOTS).forEach(function(k){ if (CH[k]) CH[k].slot = SLOTS[k] + ' IST'; }); if (typeof profile === 'function' && prof) profile(); if (DATA) render(); } }).catch(function(){});
   function slotOf(s, m){ if (/^\d{2}:\d{2}$/.test(m.postAt || '')) return m.postAt; return SLOTS[chOf(s, DATA ? DATA.c : {})] || '13:00'; }
   function dueOf(s, m){ return m.postOn ? Date.parse(m.postOn + 'T' + slotOf(s, m) + ':00+05:30') : Infinity; }
   function when(s, m){ if (m.sample) return ['Sample · not scheduled', ''];   // sample (6 Nov 2026, temporary)
@@ -766,11 +768,11 @@
   function profile(){ var p = PROF[ch]; prof.textContent = ''; prof.hidden = !p; if (!p) return;
     var sm = el('summary'), img = document.createElement('img'), who = el('span', 'who');
     if (p.logo) { img.src = p.logo; img.alt = ''; sm.appendChild(img); } else sm.appendChild(el('span', 'ph', '?'));   // no logo yet: a placeholder
-    who.appendChild(el('b', null, p.name)); who.appendChild(el('span', null, p.logo ? p.username + ' · posts ' + (p.days ? p.days + ', ' : '') + p.slot : 'Name, username and bio to be decided')); sm.appendChild(who); sm.appendChild(el('span', 'chev', 'Profile'));
+    who.appendChild(el('b', null, p.name)); who.appendChild(el('span', null, p.logo ? p.username + ' · posts ' + (p.days ? p.days + ', ' : '') + slotLine(ch, p) : 'Name, username and bio to be decided')); sm.appendChild(who); sm.appendChild(el('span', 'chev', 'Profile'));
     var inn = el('div', 'in'), dl = el('button', 'btn g', 'Download logo'); dl.type = 'button';
     dl.addEventListener('click', function(){ saveFile(p.logo, p.username.replace(/^@/, '') + '-logo.png', 'image/png', dl, 'Download logo'); });
     inn.appendChild(field('Name', p.name)); inn.appendChild(field('Username', p.username + (p.fallbacks ? ' (if taken: ' + p.fallbacks.join(', ') + ')' : ''), copyBtn(p.username)));
-    inn.appendChild(field('Bio', p.bio)); inn.appendChild(field('Post', p.logo ? (p.days || 'Daily') + ', ' + p.slot : p.slot, el('span')));
+    inn.appendChild(field('Bio', p.bio)); inn.appendChild(field('Post', p.logo ? (p.days || 'Daily') + ', ' + slotLine(ch, p) : p.slot, el('span')));
     inn.appendChild(field('Profile picture', p.logo ? '1080 × 1080 PNG' : 'to be decided', p.logo ? dl : el('span')));
     prof.appendChild(sm); prof.appendChild(inn); }
   // the logo goes to the share sheet ("Save Image") where files can be shared, otherwise it downloads
@@ -1014,7 +1016,8 @@
     if (!items.length) { list.appendChild(el('p', 'empty', d && d.error ? 'Could not load the list right now. Try again in a minute.' : 'No reels for ' + CH[ch].name + ' yet.')); return; }
     // to post, by exact due time: "Up next" = anything overdue plus everything due today or tomorrow (owner, 5 Nov 2026), each compact with its own
     // buttons (tap the cover to play); "Later" = the rest as tiles. A tap or a reminder opens one. A reel marked posted leaves both at once for the compact "Posted" list (owner, 1 Nov 2026)
-    var todo = items.filter(function(s){ return !ticks[s.name] && s.video; }), done = items.filter(function(s){ return ticks[s.name]; });
+    var rdy = readyReels().map(function(x){ return x.name; });   // shown under "Ready to post" at the top: not again here (owner, 26 Nov 2026)
+    var todo = items.filter(function(s){ return !ticks[s.name] && s.video && rdy.indexOf(s.name) < 0; }), done = items.filter(function(s){ return ticks[s.name]; });
     todo.sort(function(x, y){ var mx = c[x.name] || {}, my = c[y.name] || {}, dx = dueOf(x, mx), dy = dueOf(y, my); if (dx !== dy) return dx < dy ? -1 : 1; var cx = mx.concept || '', cy = my.concept || ''; return cx < cy ? -1 : cx > cy ? 1 : 0; });   // unscheduled pilots in concept order
     done.sort(function(x, y){ return ticks[x.name] < ticks[y.name] ? 1 : -1; });
     if (!todo.length) list.appendChild(el('p', 'empty', 'Nothing to post for ' + CH[ch].name + ' right now.'));
@@ -1372,7 +1375,7 @@
     var live = jLast && (jLast.reels || []).some(function(r){ return r.live; }); jTimer = setTimeout(jLoad, live ? 60000 : 300000); }
   // the last journey shows at once from this device (21 Nov 2026: "Journey takes time in populating"); the fresh one replaces it when it lands
   try { var jc = JSON.parse(localStorage.getItem('studio-journey') || 'null'); if (jc && jc.reels) { jLast = jc; } } catch (e) {}
-  function jShow(){ tRender(); bRender(); if (sec === 'reel' && reelName) rPage(reelName); }
+  function jShow(){ tRender(); bRender(); if (sec === 'reels' && DATA) render(); if (sec === 'reel' && reelName) rPage(reelName); }
   function jLoad(){ clearTimeout(jTimer); if (jLast && !jAt) jShow();
     return fetch('/api/journey', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); })
       .then(function(j){ jLast = j; jAt = Date.now(); jShow(); try { localStorage.setItem('studio-journey', JSON.stringify(j)); } catch (e) {} }, function(){ if (!jLast) jNote.textContent = 'Could not load the status right now. Try again in a minute.'; else tRender(); })

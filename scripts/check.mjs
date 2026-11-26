@@ -246,3 +246,10 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(`✓ checks passed — ${pages.length} pages, app shell and reel configs OK`);
+
+// no duplicate ready reel (owner, 26 Nov 2026): a reel under "Ready to post" is not listed again under "Up next"; the channel line shows the slot from slots.json
+{
+  const html = readFileSync('templates/index.html', 'utf8');
+  if (!/rdy = readyReels\(\)\.map/.test(html) || !/rdy\.indexOf\(s\.name\) < 0/.test(html)) err('ready dup: render() must leave reels in the Ready-to-post list out of Up next');
+  if (!/function slotLine\(/.test(html) || /posts 13:00/.test(html)) err('ready dup: the channel line must come from slotLine (slots.json)');
+}
