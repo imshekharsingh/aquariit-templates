@@ -117,6 +117,16 @@ Under 7 on any of the three = CRITIC: NOT READY, unless the owner says otherwise
 score because the owner asked, and still write its P0/P1 notes with times.) Also check question 0 against design/safety.md rule 1: a reel
 built from a pattern card uses the patterns, not the piece.
 
+## Ambition pass (owner, 26 Nov 2026: "I'm spoon feeding even after sharing lots of references"): every verdict, READY or not
+The critic is also the design lead. After the fault check, always:
+1. Judge PREMIUM against the owner's reference reels (design/references.md, newest R-ref entries), not against our own past reels.
+   A reel that would look plain next to them is not premium 7.5+.
+2. Write "UPGRADES:" with at least 3 concrete motion-design improvements, graded by impact (HIGH / MED / LOW), each with where (seconds)
+   and what (e.g. "the board builds itself: panels slide in, a light runs along its edge, before the tools stack onto it"; "tools cascade
+   onto each other as one flow, not separate pop-ins"). Ask for every element: how it arrives, how groups stack or cascade, how the set
+   itself (board, wall, floor) builds, what keeps moving after it lands. Nothing may simply appear.
+3. HIGH upgrades go into the next render's EXACT FIX list together with the faults ("when we know what's missing, fix it").
+
 ## Item 20 format (owner, 22 Nov 2026)
 The verdict line must contain exactly `CRITIC: READY` or `CRITIC: NOT READY` (26 Nov: a critic wrote "CRITIC 2: READY", the app could not read it and showed a READY tech reel as failed). A later pass appends a new line BELOW the old ones; the app reads the last one.
 The app's Journey shows only the start of the critic line to the owner, so write it plain first: `CRITIC: NOT READY: <one plain sentence the owner understands: what is wrong, and where in seconds>` and only then `Detail: ...` with question numbers, frames and the fix. No question numbers in the first sentence. Example: `CRITIC: NOT READY: the "10:00" time prints over the BEFORE label at 11-13 s. Detail: questions 2 and 35, ...`. `CRITIC: READY` needs no sentence. The app shows the first sentence (up to "Detail:") and the rest under "More"; older files without "Detail:" still work.
