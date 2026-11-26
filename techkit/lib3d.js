@@ -5,7 +5,8 @@
 //   W3D.lib.appGlyphs                                              hand-drawn glyph painters for generic app tiles (pay, photos, notes, maps, files, chat, mail, calendar)
 //   W3D.enter(obj, kind, u, { side, amp })                            v6 (26 Nov 2026, rules-tech.md D10): a motion-design entrance at progress u 0..1 (u <= 0 hidden, 1 home):
 //                                                                  'slideTurn' | 'drop' | 'rise' | 'swing' | 'flip' | 'pop' | 'slam' (v7, for the 2-3 big moments); run u from 1 to 0 for an exit or a rewind
-//   W3D.numbers({ y }).set(t, { show, from, to, k, top, label, anchor, tick })   v7: flat counting numbers with a leader line to their object (one style for all numbers)
+//   W3D.numbers({ y, w }).set(t, { show, from, to, k, top, typed, label, labelIn, bar, color, anchor, at, tick })   v7: flat odometer numbers with a bar and a leader line (one style)
+//   W3D.headline({ y, words: [{ t, text, color }] })(t)   v7 render 3: one big headline word per beat, the one before it grey
 //   W3D.wire(S, pts, { color, radius, plugs, shadow, curve })             v6 (D12): a matte cable through pts (let it lie on the floor to sag), plugs at both ends, a floor shadow;
 //                                                                  .reveal(u) unrolls it (the end plug clicks in at the end), .pulse(k) the only glow (a bead along it), .curve / .tube
 // Real product logos: appTile takes { logo: THREE.Texture } (a licensed file fetched by the Media workflow, design/safety.md item 7) in its logo slot; without one it draws the generic glyph.
@@ -207,25 +208,37 @@
   }
 
   // ---------- v7: flat counting numbers tied to their object by a thin leader line (owner, 26 Nov 2026; references 10 and 11) ----------
-  // numbers({ y }) -> set(t, { show 0..1, value, from, to, k (count progress 0..1), top: small line above, label: small line below, anchor: [x,y] px | null, at: [x,y] block centre px, tick 0..1 }) -> { box, leader }
-  // One style for every number: flat, crisp white, counting (never popping in), gliding up as it shows, a hairline to the object it is about.
+  // numbers({ y, w }) -> set(t, { show 0..1, from, to, k (count 0..1), top, typed 0..1 (how much of the top line is typed), label, labelIn 0..1,
+  //   bar 0..1 (a thin bar under the number, its length = the value's share), color, anchor: [x,y] px | null, at: [x,y] block centre px, tick 0..1 })
+  //   -> { box, leader, value }. One style for every number: flat, crisp white, an odometer count (the digits roll, never pop), a hairline to its object.
   function numbers(o = {}) {
-    const box = document.createElement('div'), y = o.y ?? 1530, BW = o.w ?? 300, BH = 250;
-    box.style.cssText = `position:absolute;left:0;top:${y}px;width:${BW}px;text-align:center;pointer-events:none;z-index:6;font-family:"Inter Display",Inter,system-ui,sans-serif;color:#fff;text-shadow:0 2px 14px rgba(5,4,12,.7)`;
-    box.innerHTML = '<div data-top style="font-weight:600;font-size:40px;line-height:1;color:#c9cfdb;letter-spacing:.01em"></div><div data-n style="font-weight:800;font-size:148px;line-height:1.04;letter-spacing:-.03em;font-variant-numeric:tabular-nums"></div><div data-lab style="font-weight:600;font-size:38px;line-height:1;color:#c9cfdb"></div>';
+    const box = document.createElement('div'), y = o.y ?? 1530, BW = o.w ?? 300, BH = 270;
+    box.style.cssText = `position:absolute;left:0;top:${y}px;width:${BW}px;text-align:center;pointer-events:none;z-index:6;font-family:"Inter Display",Inter,system-ui,sans-serif;color:#fff;text-shadow:0 2px 14px rgba(5,4,12,.7);padding:14px 0 12px;border-radius:28px;background:${o.back === false ? 'none' : 'rgba(9,10,14,.8)'}`;   // a dark backing: the number never sits on a busy picture
+    box.innerHTML = '<div data-top style="font-weight:600;font-size:40px;line-height:1;height:42px;color:#c9cfdb;letter-spacing:.01em;white-space:pre"></div>'
+      + '<div data-n style="font-weight:800;font-size:148px;line-height:1.04;height:154px;letter-spacing:-.03em;display:flex;justify-content:center;overflow:hidden"></div>'
+      + '<div data-bar style="height:8px;margin:6px auto 10px;width:260px;border-radius:4px;background:rgba(255,255,255,.16);overflow:hidden"><i style="display:block;height:100%;width:0;background:#fff;border-radius:4px"></i></div>'
+      + '<div data-lab style="font-weight:600;font-size:38px;line-height:1;color:#c9cfdb"></div>';
     const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('width', '1080'); svg.setAttribute('height', '1920');
     svg.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;z-index:6';
     const ln = document.createElementNS(ns, 'line'), dot = document.createElementNS(ns, 'circle');
     ln.setAttribute('stroke', 'rgba(255,255,255,.78)'); ln.setAttribute('stroke-width', '3'); ln.setAttribute('stroke-linecap', 'round');
     dot.setAttribute('r', '11'); dot.setAttribute('fill', 'none'); dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', '3'); svg.appendChild(ln); svg.appendChild(dot);
     document.body.appendChild(svg); document.body.appendChild(box);
-    const top = box.querySelector('[data-top]'), n = box.querySelector('[data-n]'), lab = box.querySelector('[data-lab]');
+    const top = box.querySelector('[data-top]'), n = box.querySelector('[data-n]'), lab = box.querySelector('[data-lab]'), barI = box.querySelector('[data-bar] i');
+    // the odometer: two digit columns (tens, ones), each a strip of 0-9 that slides; the tens roll only when the ones pass 9 -> 0
+    const col = () => { const c = document.createElement('div'); c.style.cssText = 'height:154px;overflow:hidden'; const st = document.createElement('div'); st.style.cssText = 'display:flex;flex-direction:column';
+      for (let d = 0; d < 11; d++) { const e = document.createElement('div'); e.style.cssText = 'height:154px;line-height:154px'; e.textContent = String(d % 10); st.appendChild(e); } c.appendChild(st); n.appendChild(c); return { c, st }; };
+    const tens = col(), ones = col();
     return { el: box, set(t, q) {
-      const sh = clamp(q.show ?? 0), v = Math.round(lerp(q.from ?? q.value, q.to ?? q.value, 1 - Math.pow(1 - clamp(q.k ?? 1), 3)));
-      const at = q.at || [540, y + BH / 2], bx = [at[0] - BW / 2, at[1] - BH / 2, at[0] + BW / 2, at[1] + BH / 2];   // at: the number block's centre (v7: placed beside its object, in empty space)
+      const sh = clamp(q.show ?? 0), kk = 1 - Math.pow(1 - clamp(q.k ?? 1), 3), vf = lerp(q.from ?? q.value, q.to ?? q.value, kk), v = Math.round(vf);
+      const at = q.at || [540, y + BH / 2], bx = [at[0] - BW / 2, at[1] - BH / 2, at[0] + BW / 2, at[1] + BH / 2];   // at: the number block's centre (placed beside its object, in empty space)
       box.style.left = bx[0] + 'px'; box.style.top = bx[1] + 'px';
       box.style.opacity = sh.toFixed(3); box.style.transform = `translateY(${(1 - sh) * 46}px) scale(${(1 + .1 * Math.sin(Math.PI * clamp(q.tick ?? 0))).toFixed(3)})`;
-      top.textContent = q.top || ''; n.textContent = String(v); lab.textContent = q.label || '';
+      const tl = q.top || ''; top.textContent = tl.slice(0, Math.round(tl.length * clamp(q.typed ?? 1)));
+      const op = ((vf % 10) + 10) % 10, tp = Math.floor(Math.max(0, vf) / 10) + Math.max(0, op - 9);   // continuous: the ones slide every unit, the tens on the 9 -> 0 roll
+      ones.st.style.transform = `translateY(${(-op * 154).toFixed(1)}px)`; tens.st.style.transform = `translateY(${(-(tp % 10) * 154).toFixed(1)}px)`; tens.c.style.display = vf >= 9.5 ? '' : 'none';
+      n.style.color = q.color || '#fff'; barI.style.width = (clamp(q.bar ?? (v / 24)) * 100).toFixed(1) + '%'; barI.style.background = q.color || '#fff';
+      lab.textContent = q.label || ''; const li = clamp(q.labelIn ?? 1); lab.style.opacity = li.toFixed(3); lab.style.transform = `translateY(${((1 - li) * 22).toFixed(1)}px)`;
       const ax = q.anchor, ok = ax && sh > .02 && ax[0] > 30 && ax[0] < 1050 && ax[1] > 430 && ax[1] < 1890 && !(ax[0] > bx[0] && ax[0] < bx[2] && ax[1] > bx[1] && ax[1] < bx[3]);
       svg.style.opacity = ok ? sh.toFixed(3) : '0';
       let seg = null;
@@ -236,6 +249,21 @@
       return { box: bx, leader: seg, value: v }; } };
   }
 
+  // ---------- v7 render 3: a kinetic headline (references' shared grammar): one big word per beat in the upper third, the newest in the accent, the one before it grey ----------
+  // headline({ y, words: [{ t, text, color }] }) -> fn(t) -> { box }
+  function headline(o = {}) {
+    const el = document.createElement('div'), y = o.y ?? 360, words = o.words || [];
+    el.style.cssText = `position:absolute;left:40px;top:${y}px;width:1000px;text-align:center;pointer-events:none;z-index:5;font-family:"Inter Display",Inter,system-ui,sans-serif;text-shadow:0 3px 22px rgba(5,4,12,.85)`;
+    el.innerHTML = '<div style="height:58px"><span data-prev style="font-weight:800;font-size:54px;line-height:1.05;color:#7f8694;letter-spacing:.02em"></span></div><div style="height:132px"><span data-now style="display:inline-block;font-weight:900;font-size:128px;line-height:1;letter-spacing:-.02em"></span></div>';
+    document.body.appendChild(el); const pv = el.querySelector('[data-prev]'), nw = el.querySelector('[data-now]');
+    return (t) => { let i = -1; for (let k = 0; k < words.length; k++) if (t >= words[k].t) i = k;
+      if (i < 0) { el.style.opacity = '0'; return { box: null }; }
+      const w = words[i], u = clamp((t - w.t) / .28), e = 1 - Math.pow(1 - u, 3);
+      el.style.opacity = '1'; nw.textContent = w.text; nw.style.color = w.color || '#ffffff'; nw.style.transform = `translateY(${((1 - e) * 40).toFixed(1)}px)`; nw.style.opacity = e.toFixed(3);
+      pv.textContent = i > 0 ? words[i - 1].text : ''; pv.style.opacity = (i > 0 ? .9 : 0).toFixed(2);
+      const r1 = nw.getBoundingClientRect(), r0 = pv.getBoundingClientRect(); return { box: [Math.min(r1.left, i > 0 ? r0.left : 1e9), y, Math.max(r1.right, i > 0 ? r0.right : 0), y + 190] }; };
+  }
+
   W3.lib = { appTile, phone, laptop, chip, rack, productBlock, codeCard, dialog, figure, appGlyphs, rr, standingSlab };
-  W3.camPath = camPath; W3.enter = enter; W3.wire = wire; W3.numbers = numbers;
+  W3.camPath = camPath; W3.enter = enter; W3.wire = wire; W3.numbers = numbers; W3.headline = headline;
 })();
