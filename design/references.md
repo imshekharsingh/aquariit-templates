@@ -217,3 +217,4 @@ WHICH CHANNEL (studio decision, 26 Nov; the owner left the routing to us):
 - All three: the word-build headline, a change every ~1 s, counting numbers, one persistent evolving object.
 - WE DO NOT TAKE: any mascot (owner: none), their product names, logos, screens or palettes as they are, their scripts, their 37-68 s length (we keep ours), the comment-for-DM ask (no DM automation on our side).
 - Used: 26 Nov web (:has), tech (SmartTag3 channel sounding), Turns Out (fix this invite) builds, before their render.
+- Closed 26 Nov (owner: the studio decides what to keep; references are reported as "what we took" and closed, no Keep/Skip list).
