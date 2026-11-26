@@ -3102,5 +3102,47 @@
   "format": "xray",
   "device": "phone",
   "aiLabel": false
+ },
+ "showreel-49-scrollbar": {
+  "postOn": "2026-11-27",
+  "postAt": "19:00",
+  "caption": "Why is your scroll bar late? 📏 The page scrolls, the bar trails behind it.\n\nThe usual way: a script listens to every scroll event and then moves the bar. That is code running on each scroll, and the bar can lag behind the page. The fix: tie the animation to the scroll itself with animation-timeline: scroll(); (put it after the animation shorthand). Then no script runs: watch JS CALLS climb before the fix and stay at 0 after.\n\nMDN: animation-timeline specifies the timeline that controls a CSS animation, and scroll() is an anonymous scroll progress timeline. Support: Chrome 115, Firefox 159, Safari 26 (MDN browser compatibility).\n\nSave it for your next reading progress bar, or send it to whoever still has a scroll listener for this.",
+  "keywords": [
+   "animation-timeline scroll",
+   "CSS scroll progress bar",
+   "scroll driven animations",
+   "reading progress bar CSS",
+   "no JavaScript scroll bar",
+   "CSS animation timeline",
+   "CSS tips"
+  ],
+  "hashtags": [
+   "#csstips",
+   "#css",
+   "#webdev",
+   "#frontend",
+   "#uidesign"
+  ],
+  "channel": "web",
+  "concept": "a scroll progress bar that a script moves late (steps, a hatched gap, JS CALLS climbing) against animation-timeline: scroll() tying the bar to the scroll itself (JS CALLS 0); black look with a lime accent (rule 19), hook kit (rule 20), the reel does not need a loop",
+  "about": "27 Nov: web a CSS feature that replaces a script (W27-1, Fable pick); visible on mute (rule 15): the page scrolls and the red bar trails it with a hatched gap, then the lime bar sits exactly on the page with JS CALLS 0",
+  "aiLabel": false,
+  "experiment": {
+   "id": "web-bug-first-second",
+   "change": "the broken thing moves in the first second: a thumb flicks the page at 0.25 s and the script's bar crawls after it with a hatched gap and the red word 'late!' before 0.8 s (rules-web.md 14-15, 20); black look with a new lime accent",
+   "vs": "median"
+  },
+  "palette": "black",
+  "style": {
+   "lengthS": 15,
+   "wordsPerS": 2.1,
+   "shotChanges": 0,
+   "hookType": "question",
+   "look": "dark",
+   "hero": "a feed of cards with a scroll bar on top",
+   "firstSecondTension": "yes",
+   "payoff": "tip",
+   "source": "plan"
+  }
  }
 }

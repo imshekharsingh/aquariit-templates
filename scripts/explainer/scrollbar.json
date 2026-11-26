@@ -1,0 +1,72 @@
+{
+ "name": "showreel-49-scrollbar",
+ "seek": "scripts/explainer/scrollbar.html",
+ "style": "Black look (rule 19) with a lime accent: near-black, no frame or glow, one accent word, whole frame, calm. E30 wiggle family, scroll-driven: a feed scrolls on every flick; BEFORE a script moves the bar in late steps (hatched gap + white tick show where it should be), JS CALLS climbs; AFTER animation-timeline: scroll() locks the bar to the scroll, JS CALLS stays 0",
+ "dur": 15,
+ "fps": 60,
+ "blur": 3,
+ "shutter": 0.45,
+ "grain": 2,
+ "vignette": false,
+ "cover": 1.39,
+ "palette": "black",
+ "voice": {
+  "text": "Why is your scroll bar late? A script catches every scroll, so the bar can lag behind the page. The fix: animation timeline scroll. Now the scroll itself drives the bar, so no code runs, and nothing is late.",
+  "voice": "af_heart",
+  "speed": 1
+ },
+ "qa": {
+  "focus": {
+   "demo": [
+    28,
+    444,
+    512,
+    640
+   ],
+   "subject": [
+    28,
+    444,
+    512,
+    458
+   ],
+   "from": 0.3,
+   "to": 2.3
+  },
+  "mute": {
+   "before": {
+    "say": "lag"
+   },
+   "after": {
+    "say": "nothing"
+   },
+   "span": 1.5
+  }
+ },
+ "caption": "Why is your scroll bar late? 📏 The page scrolls, the bar trails behind it.\n\nThe usual way: a script listens to every scroll event and then moves the bar. That is code running on each scroll, and the bar can lag behind the page. The fix: tie the animation to the scroll itself with animation-timeline: scroll(); (put it after the animation shorthand). Then no script runs: watch JS CALLS climb before the fix and stay at 0 after.\n\nMDN: animation-timeline specifies the timeline that controls a CSS animation, and scroll() is an anonymous scroll progress timeline. Support: Chrome 115, Firefox 159, Safari 26 (MDN browser compatibility).\n\nSave it for your next reading progress bar, or send it to whoever still has a scroll listener for this.",
+ "keywords": [
+  "animation-timeline scroll",
+  "CSS scroll progress bar",
+  "scroll driven animations",
+  "reading progress bar CSS",
+  "no JavaScript scroll bar",
+  "CSS animation timeline",
+  "CSS tips"
+ ],
+ "hashtags": [
+  "#csstips",
+  "#css",
+  "#webdev",
+  "#frontend",
+  "#uidesign"
+ ],
+ "sources": [
+  {
+   "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-timeline",
+   "note": "MDN animation-timeline (read 27 Nov 2026): the property specifies the timeline used to control the progress of a CSS animation; scroll() is an anonymous scroll progress timeline"
+  },
+  {
+   "url": "https://github.com/mdn/browser-compat-data/blob/main/css/properties/animation-timeline.json",
+   "note": "MDN BCD css.properties.animation-timeline (read 27 Nov 2026): Chrome 115, Firefox 159, Safari 26"
+  }
+ ]
+}
