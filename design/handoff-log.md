@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/slot-test-c3-14 · owner chat: Turns Out slot test at 14:00, web 19:00 test kept
+- Owner: complete both slot tests (growth validation first) and hold the owner to the times. design/slots.json c3 14:00 (test to 2 Dec), web 19:00 (test to 2 Dec); today's Turns Out postAt 14:00; CLAUDE.md slot line. The owner chat reminds at each slot and checks the post.
+
 ## 2026-11-26 · claude/tech-pause-26nov · owner chat: tech paused until the 3D kit v6
 - Owner: hold today's tech reel and every tech reel until the 3D kit v6 passes its critic. showreel-tech-tag-sounding hidden (READY, not posted); CLAUDE.md Schedule line TECH PAUSED; probe line corrected to hourly (the scheduler refuses 30-min steps); owner-feedback line. The Daily studio task prompt now builds web only.
 

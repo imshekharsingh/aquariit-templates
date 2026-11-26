@@ -1,6 +1,10 @@
 {
-  "slots": { "tech": "15:00", "c3": "17:00", "web": "19:00" },
-  "setOn": "2026-11-25",
+  "slots": {
+    "tech": "15:00",
+    "c3": "14:00",
+    "web": "19:00"
+  },
+  "setOn": "2026-11-26",
   "reviewOn": "2026-12-02",
-  "note": "Posting slots (IST), one per channel, spread through the day. Set by the owner plan of 24 Nov 2026. Web at 19:00 is a one-week test: the data says web did better later (design/posting-slots.md). Review each week from the numbers, then change this file only. Builders take postAt for every new captions.json entry from here; the Worker and the app read it for any reel that has no postAt."
+  "note": "Posting slots (IST). TESTS until the review on 2026-12-02 (owner, 26 Nov 2026: 'growth validation is primary'): web 19:00 (one-week test against the 12-13h median), Turns Out 14:00 (moved from 17:00, against its 17:00 posts). Tech paused until the 3D kit v6. The owner is reminded at each slot and held to it; complete both tests before changing a slot. Builders take postAt for every new captions.json entry from here."
 }

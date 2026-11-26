@@ -21,7 +21,7 @@ the detail lives in the files indexed below. Read only the parts your task needs
 ## Schedule (owner, 18 Nov 2026)
 - ONE reel a day per channel (web, tech, Turns Out), every day, aim for **13:00 IST**; any time in the **13:00-21:00 IST window** is fine (owner, 20 Nov 2026). NO SKIP DAYS (owner, 25 Nov 2026): every channel posts every day; a reel that fails the critic is fixed and posted the same day; renders 1-2 are the builder's, a 3rd needs the owner's yes with its cost estimate; nothing blocks the next push. Turns Out posts one dated reel a day like web and tech (postOn + postAt), taken in order from the held design list (design/c3-research-2026-11-24.md), each rebuilt only on its own day; its own daily task builds it (owner, 24 Nov 2026; design/c3-plan.md section 0).
   Every reel needs its entry in templates/showreels/captions.json ("channel", "postOn", "postAt", "concept"; npm run check fails without it).
-- Posting slots come from design/slots.json (tech 15:00, Turns Out 17:00, web 19:00 IST; owner plan, 24 Nov 2026), reviewed weekly from the numbers.
+- Posting slots come from design/slots.json (Turns Out 14:00, web 19:00 IST, both running TESTS until 2 Dec 2026, owner 26 Nov: growth validation first; tech paused). The owner chat reminds the owner at each slot and checks the post went out.
 - TECH PAUSED (owner, 26 Nov 2026): no tech reel is built or posted until the 3D kit v6 passes its critic (design/handoff.md task 3); the first reel after that is built on the v6 kit. Today's tag-sounding reel is held (hidden).
 - Tech follows design/tech-direction.md (owner approved 22 Nov 2026). The owner is NOT asked to approve a tech preview or render (owner, 24 Nov 2026):
   the critic decides.
