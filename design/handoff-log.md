@@ -6,6 +6,10 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/critic-gold3d-sample-v5 · critic: 3D kit sample v5 not judged (fetch refused)
+- This critic session could not fetch the v5 MP4 (network refused templates.aquariit.com, 403 policy denial). Review file: v4 verdict kept as "20. CRITIC (v4)"; v5 section notes the six fixes look done on the builder's stills (motion items unchecked), no scores, verdict NOT READY (not judged).
+- Next: re-run the critic from a session that has the read key on its network; no 6th render before that verdict.
+
 ## 2026-11-26 · claude/handoff-minutes-meter · owner chat: minutes meter fix queued for the other account
 - design/handoff.md "Queued task 2": the app's GitHub minutes meter is not showing; the other account finds and fixes it (size S, cap ~$3).
 

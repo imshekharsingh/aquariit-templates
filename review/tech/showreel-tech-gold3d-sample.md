@@ -77,4 +77,37 @@ PREMIUM 6.5 / 7 / 7.5 (animation 6.5: t 7.5-13.3 collapse, push-in, orbit and pu
 5. End, 13.3-18.5 s: one event inside the last 2 s with the caption still held: from about 16.3 s ease the camera back to the exact frame-0 camera (small orbit), and pulse the New tile's single cable once.
 6. Hub sub-line: 34 px or more at 1080 wide, or drop it (the word HUB is enough).
 
+20. CRITIC (v4): NOT READY
+
+---
+
+# showreel-tech-gold3d-sample · independent critic, third pass (render v5, preview, 18.45 s, never posted)
+
+v4 verdict (second critic, 26 Nov 2026): NOT READY (held 5 s framings at the start and end, hub over two tools, "Notes" cut in the push-in, tangle over the bottom tool row, end drift, 24 px hub sub-line).
+
+**The MP4 was NOT judged: the fetch was refused.** This critic session's network refused the app host (templates.aquariit.com: the proxy answered 403 to the tunnel, a policy denial, so it was not retried). The read key is not set up for this session's environment. Per the brief, I do not judge from scene frames silently and I do not pass a reel I have not seen. Output QA on v5 (builder's run): PASS (LOUD -14.6 LUFS, PACE, VARIETY 11 %, LOOK, NUMBERS, DEAD, SHEEN, EDGES), WARN LICENCE and WARN HERO as on v4.
+
+What I did look at, openly and NOT as the verdict: the builder's scene stills sheet review/tech/study-25nov/kit-phase2-v5-glow.jpg (5 stills, not the rendered MP4, no times).
+
+## The v4 EXACT FIX list, item by item (stills only; each needs the MP4 to confirm)
+1. Opening camera move at about 2.6 s: **NOT CHECKED.** A move cannot be seen on stills; stills 1 and 2 do differ in scale (about 10 %), which suggests it is there.
+2. Hub between the wall and the apps, all eight tools whole: **LOOKS DONE** on the stills (hub sits under the wall, above Notes / Chat / Mail; Tasks, Music, Calendar, Docs, Files, Maps, Pay, Photos all whole).
+3. Push-in shows Notes, Chat and Mail whole: **LOOKS DONE** on still 4 (all three names whole, Notes and Mail near the edges but not cut). Needs the MP4 for the 9.8-11.0 s span.
+4. Tangle off the bottom tool row: **LOOKS DONE** on stills 1-2 (cables loop outside the wall; no name under a cable).
+5. End event in the last 2 s (turn home, New cable pulse): **NOT CHECKED** (motion; still 5 shows the New tile with its one cable and the held caption).
+6. Hub sub-line 34 px or dropped: **DONE** (dropped; only "HUB" on the block).
+
+## Provisional notes from the stills (no times, to check on the MP4)
+- Glow is down as the owner asked: cables read as clean coloured lines, no halo wash; the floor is darker. Good.
+- The word "HUB" on the block is small on the wides (stills 3 and 5, roughly 20 px at 1080 wide); the 3D numbers and the captions carry the idea, so it is secondary, but it should be checked on a phone frame.
+- Tool names on the wides stay tiny (secondary labels, as on v4).
+- The "New" tile at the right of the hub (still 5) is small on the wide; it should be clearly bigger in the 12.1 s orbit.
+
+PREMIUM: not scored (no MP4 seen). Animation, cleanliness and premium scores need the rendered video at phone size with times; scores from stills would be guesses.
+
+## EXACT FIX (no v6 render)
+Nothing in the picture is asked to change yet. The fix is the review, not the reel:
+1. Re-run this critic in a session whose environment can reach the app host (the read key as a network secret for templates.aquariit.com, as the v3 and v4 critics had), fetch R2 study/showreel-tech-gold3d-sample-v5-preview.mp4, and judge it (4x4 contact sheet + up to two full frames), replacing this section's verdict.
+2. Do not spend a 6th render on this sample before that verdict.
+
 20. CRITIC: NOT READY
