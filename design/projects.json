@@ -5,10 +5,10 @@
    "id": "3d-kit-v6",
    "name": "3D kit v6: the tech look as a told story",
    "account": "other",
-   "stage": "building",
-   "line": "Render 1 failed two checks (one fast line, colour jumps in fast camera moves); fixing for render 2.",
-   "pct": 55,
-   "updatedAt": "2026-11-26T09:04:00Z",
+   "stage": "render",
+   "line": "Render 1 failed two checks; both fixed, render 2 is next.",
+   "pct": 65,
+   "updatedAt": "2026-11-26T09:17:00Z",
    "history": [
     {
      "at": "2026-11-26T07:20:00Z",
@@ -26,9 +26,9 @@
      "line": "The v6 sample is built and its first video is being made."
     },
     {
-     "at": "2026-11-26T09:04:00Z",
-     "stage": "building",
-     "line": "Render 1 failed two checks (one fast line, colour jumps in fast camera moves); fixing for render 2."
+     "at": "2026-11-26T09:17:00Z",
+     "stage": "render",
+     "line": "Render 1 failed two checks; both fixed, render 2 is next."
     }
    ]
   },

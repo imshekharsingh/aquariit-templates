@@ -10,7 +10,7 @@
  "voice": "af_heart",
  "speed": 1.0,
  "max_speed": 1.0,
- "gap": 0.5,
+ "gap": 0.9,
  "max_end": 30,
  "experiment": {
   "id": "tech-3d-kit-v6",
@@ -24,7 +24,7 @@
    "source": 0
   },
   {
-   "text": "Here are three apps and eight tools.",
+   "text": "Three apps, and eight tools.",
    "beat": "setup",
    "source": 0
   },
