@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 · claude/log-no-conflicts · owner chat: shared log clashes no longer turn runs red
+- Most red pipeline runs on 26-27 Nov were several sessions writing the top of this file at once (PRs "not mergeable"). .gitattributes: union merge for design/handoff-log.md and design/owner-feedback.md; pipeline merge job: when a PR cannot merge, it merges main into the branch (union keeps both sides' lines), pushes and retries; any other conflict still fails loudly.
+
 ## 2026-11-27 01:38 IST · claude/handoff-queue-check-paused · other account: owner paused the hourly queue check
 - Done: the "Handoff queue check" scheduled task is disabled (owner, until they say so); one Progress line in design/handoff.md.
 - Left: render 3 of v7 waits for "PLAN: OK TO RENDER" and the owner telling this account.
