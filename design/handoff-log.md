@@ -6,6 +6,13 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 19:00 IST · claude/owner-chat-26nov · owner chat: decisions, waiting on owner, tomorrow
+- Day: Turns Out invite posted at the 14:00 slot test (render 3 after the owner's overlap note); web 48 READY for the 19:00 slot test (render 3); tech tag-sounding READY but HELD (tech paused until the 3D kit v7). Fixed today: stale board + false Post now, Today = workflow board, Projects section, Fix button, single studio key (one network secret per host), full check before render 1 (preflight-all), studio probe (hourly via launcher; the first two fires had no repo and did nothing, fixed 14:38).
+- Decisions (owner): slot tests Turns Out 14:00 and web 19:00 until 2 Dec, owner reminded at each slot; tech paused until 3D v7 (the last sample), then a real reel judged by numbers; code fixes go to the other account, which works only on GO tasks (now task 10 v7, then task 9 references); DISCUSS, DON'T JUST FOLLOW; references must show in reels (critic Q52) and in numbers (task 9).
+- Waiting on owner: GH_DISPATCH_TOKEN (Post now); GO for handoff tasks 6 (notification plan) and 7 (project steps); the other account to pick up task 10.
+- Open: the launcher has not yet applied the web-only change to the Daily studio prompt (CLAUDE.md says tech is paused, so the build should skip tech); minutes ~930/day (going private waits on cutting them).
+- Tomorrow: confirm the probe logs lines; remind Turns Out 14:00 and web 19:00; run the v7 plan critic when the other account writes "v7 plan ready for critic".
+
 ## 2026-11-26 18:42 IST · claude/3d-kit-v7-plan · other account: 3D kit v7 plan and stills (task 10, step a)
 - Done: techkit/scenes/gold3d-v7.html + techreel/topics/gold3d-v7.json; kit: W3D.numbers (flat counting numbers + leader line), 'slam' entrance, wire floorY (never through the floor), soft pulses; techkit/check-wires.cjs; check-gold3d.cjs reads hubBox; plan review/tech/showreel-tech-gold3d-v7.md; stills review/tech/study-25nov/kit-phase2-v7.jpg.
 - Left: the main account's critic checks the plan and stills (points 1-7), then ONE render on its OK. The reference clips were not measured (no video access here); a main-account measurement against v6 would settle point 3.
