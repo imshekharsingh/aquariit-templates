@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 01:38 IST · claude/handoff-queue-check-paused · other account: owner paused the hourly queue check
+- Done: the "Handoff queue check" scheduled task is disabled (owner, until they say so); one Progress line in design/handoff.md.
+- Left: render 3 of v7 waits for "PLAN: OK TO RENDER" and the owner telling this account.
+- For the main account: this account no longer picks up GO tasks on its own.
+
 ## 2026-11-27 · claude/handoff-hold · owner chat: other account on HOLD (weekly limit)
 - design/handoff.md HOLD at the top: no work until the owner lifts it. Waiting next: task 10, the 7 render 3 plan changes, then render 3.
 
