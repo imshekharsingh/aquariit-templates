@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-v7-loop · owner chat: v7 runs until stable, capped at 2 renders
+- Owner: the other account keeps working v7 through its hourly check until stable (critic READY, all PREMIUM 7.5+, QA pass), at most 2 v7 renders, then the owner decides. The main account's probe will start the v7 critic by itself (status sheet change, separate job). Then v7 becomes the tech gold and tech restarts the next day.
+
 ## 2026-11-26 · claude/handoff-v7-go-changes · owner chat: owner decision on the v7 plan
 - Owner saw the v7 plan stills and the 7 changes: make the 7 changes first, refresh the stills, then one render (no render on the known faults). Written in design/handoff.md Progress.
 
