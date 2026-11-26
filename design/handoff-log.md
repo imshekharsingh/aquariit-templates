@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/todo-preflight-all · owner chat: write-up, full check before render 1
+- design/todo.md P1 NEXT: preflight-all (cheap local preview + Output QA thresholds + text clear space against everything + review-file lint, gate in review-gate.mjs), size M, $5-8. Waits on the owner's yes.
+
 ## 2026-11-26 · claude/critic-owner-26nov · owner chat: today's owner feedback into the critic rules
 - design/critic.md: question 47 (text clear space and one alignment per screen, from the owner's Turns Out note) and the verdict line format rule (exact "CRITIC: READY / NOT READY", appended last). The owner's notes are already in design/owner-feedback.md, which every critic reads.
 
