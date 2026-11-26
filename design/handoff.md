@@ -4,6 +4,10 @@ The owner runs this task from another Claude account. That session reads this fi
 "Progress" below (in its pushes). The main account's owner chat reads Progress; there is no other channel between the two.
 When the task is done, the session marks it DONE here and the file goes back to CLOSED.
 
+## Owner rule for this account (26 Nov 2026)
+Do only the tasks written in this file, in the order given, and report each stage in Progress. No cost estimates, cost lines or cost talk,
+here or in chat. Ask the owner only before something the task does not already cover (for example an extra render).
+
 ## Read first (only the parts you need)
 CLAUDE.md; the last 5 entries of design/handoff-log.md; design/3d-kit-phase2.md; design/rules-tech.md (section L, rules D1-D8).
 Never create, change or fire scheduled tasks (main account only). Model: the cheaper one (sonnet). Size M; say so in chat first.
@@ -26,27 +30,27 @@ The six fixes:
 ## Steps
 1. Make the six fixes. Text checks first, then ONE stills sheet at phone size: every fix shows, no name cut or covered.
 2. `npm run check`, push the claude/ branch, the pipeline merges. Write "Progress: fixes pushed" in the same push.
-3. STOP before the render. Ask the owner in your chat with a plain cost estimate (render 5 is past the 2-render cap). Render only on the
+3. STOP before the render. Ask the owner in your chat (render 5 is past the 2-render cap). Render only on the
    owner's yes (in your chat, or "Owner yes for render 5: YES" below). Read .github/workflows/techreel.yml first (it renders main, so merge first).
    ONE render; if it fails, stop and report, no 6th.
 4. Output QA on the MP4, then a separate critic session (tag critic, model claude-opus-5-5) on the v5 MP4. Never approve your own work.
-5. Each stage gets one plain line in Progress (date, IST time, what happened, cost so far). One entry at the top of design/handoff-log.md
+5. Each stage gets one plain line in Progress (date, IST time, what happened). One entry at the top of design/handoff-log.md
    in the final push. No subagents, no polling (one check-in per GitHub job, with a send_later wake-up), no secrets, no model names in files.
 
 ## Then: finalise the 3D kit (only after the v5 critic says READY)
-Also done by this session, same branch rules, one push per step. Cap: about $15 on top of the v5 render; stop and ask the owner before passing it.
+Also done by this session, same branch rules, one push per step.
 1. Make the v5 sample the tech 3D gold: design/gold.md (tech 3D entry), scripts/qa/gold.json "tech3d" numbers from the v5 render.
 2. Starter: `node scripts/starter.mjs tech3d <slug>` starts from the v5 sample, with the lessons from the v3/v4/v5 critics written in techkit README (D1-D8 kept in design/rules-tech.md).
 3. Close the known limits in design/3d-kit-phase2.md (hub label behind the apps at low angles) or mark each one as accepted, with the reason.
 4. Rules: design/rules-tech.md and design/runbook-daily.md say tech daily builds use the 3D look from the next build on; design/3d-kit-phase2.md gets a "DONE" line.
-5. Write DONE in Progress with the total cost, add the handoff-log entry, and set this file back to CLOSED (keep the history below).
+5. Write DONE in Progress, add the handoff-log entry, and set this file back to CLOSED (keep the history below).
 If the v5 critic says NOT READY: stop, write the critic's fix list in Progress and ask the owner. No 6th render without the owner's yes.
 
 ## Owner rule for more renders (owner, 26 Nov 2026, in the other account's chat)
 If a render FAILS, fix it and run the next render without asking. If a render SUCCEEDS and the critic's verdict needs another render, stop: the owner checks that result and confirms before the next render.
 
 ## Queued task 2 (owner, 26 Nov 2026): the GitHub minutes meter is missing from the app
-Take it up after the 3D task is DONE (or now, if the 3D task is waiting on the owner). Size S, cap about $3, no renders.
+Take it up after the 3D task is DONE (or now, if the 3D task is waiting on the owner). Size S, no renders.
 - The owner cannot see the "GitHub minutes" meter in the app's settings sheet. It is hidden until /api data loads: templates/index.html
   (id "use", ~line 651; loader ~line 1646-1656, which hides it silently on any error), fed by the nightly "Actions usage" workflow
   (.github/workflows/actions-usage.yml, scripts/actions-usage.mjs) writing c/showreel-usage-actions.json to R2.
