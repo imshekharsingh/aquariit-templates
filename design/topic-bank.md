@@ -105,6 +105,7 @@ number that changes when the voice says it, amber for the problem and cyan for t
 - Fact 2: support: Chrome 115, Firefox 159, Safari 26 (same page).
 - Fit: black look, one phone with a long article scrolling, the bar on top filling in mint; a SCROLL EVENTS counter stays at 0. Prop: a thermometer along the screen edge. Not a copy of tabwiggle: here the motion is the point and the scroll drives the whole reel.
 - Why pick: great motion for a video, a real number (0 listeners), all three engines.
+- re-checked 27 Nov: same (browser-compat-data: Chrome 115, Firefox 159, Safari 26; MDN page reachable).
 
 **W27-2 PICK: the hidden page behind the popup still takes taps (inert)**
 - Hook: "The popup is open. You can still tab into the page behind it." Tension: showreel-13-popup fixed the scroll, not the focus.
@@ -112,6 +113,7 @@ number that changes when the voice says it, amber for the problem and cyan for t
 - Fact 1: `inert` makes an element and its descendants non-focusable and non-clickable, links, buttons and form controls included. https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/inert
 - Fact 2: a modal `<dialog>` opened with `showModal()` escapes inertness (same page). Support: re-read `html.global_attributes.inert` before building (not read tonight).
 - Fit: black look; a phone with a popup and a focus dot that jumps behind it. Weakness: needs a keyboard/screen reader view, which is faint on a phone; second pick only.
+- re-checked 27 Nov: not changed in the text; support row of `inert` not re-read (browser-compat-data path not reachable from the session), so W27-2 stays a backup.
 
 **W27-3: Hindi words hyphenate in Chrome only (hyphens: auto and lang)**
 - Hook: "Why does your text break words in half in one browser and not another?" Tension: `hyphens: auto` does nothing without `lang`.
