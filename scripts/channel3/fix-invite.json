@@ -3,7 +3,7 @@
  "seek": "scripts/channel3/fix-invite.html",
  "engine": "design",
  "dt": 2,
- "dur": 21,
+ "dur": 20,
  "fps": 30,
  "blur": 3,
  "shutter": 0.45,
@@ -58,7 +58,7 @@
   "edges_ok": [
    {
     "from": 0,
-    "to": 21,
+    "to": 20,
     "sides": [
      "left",
      "right",
