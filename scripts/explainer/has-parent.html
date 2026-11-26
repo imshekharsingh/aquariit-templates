@@ -21,7 +21,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #scr{position:absolute;left:10px;top:10px;width:484px;height:426px;border-radius:52px;overflow:hidden;background:var(--pg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 #sb{position:absolute;left:0;right:0;top:0;height:44px;background:var(--pg);color:var(--paper);font:500 15px/44px var(--m);padding:0 34px;z-index:4}
 .pg{position:absolute;left:0;top:44px;width:484px;height:382px;background:var(--pg);overflow:hidden}
-.fld{position:absolute;top:12px;width:136px;height:196px;border-radius:24px;background:#2a2744;box-shadow:inset 0 0 0 2px #3d3a5e}
+.fld{position:absolute;top:12px;width:136px;height:196px;border-radius:24px;background:#38284f;box-shadow:inset 0 0 0 2px #4d3a6e}
 .fp{position:absolute;left:0;right:0;top:160px;text-align:center;font:700 20px/1 var(--f);letter-spacing:-.02em;color:var(--paper);white-space:nowrap}
 .ic{position:absolute;left:36px;top:84px;width:64px;height:64px;fill:none;stroke:#cfcbe6;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
 .lamp{position:absolute;left:40px;top:16px;width:56px;height:56px;border-radius:16px;border:3px solid #8a867f;background:transparent}
@@ -688,7 +688,7 @@ var KM = (function(){
   function hx(a, b, k){ var x = parseInt(a.slice(1), 16), y = parseInt(b.slice(1), 16), o = 0, q; for (q = 16; q >= 0; q -= 8) { var v = Math.round(mix(x >> q & 255, y >> q & 255, cl(k))); o = o * 256 + v; } return '#' + ('000000' + o.toString(16)).slice(-6); }
   // one card: lit = how lit (0-1), fl = the red NOT LIT flare, raw = how ticked its box is, pop = the box's pop
   function paint(i, lit, fl, raw, pop){
-    var ring = hx('#3d3a5e', '#d79bff', lit), w = 2 + 2 * lit, bg = hx(hx('#2a2744', '#4b2d86', lit), '#17152a', .55 * fl * (1 - lit)), bx = hx('#f2efe8', '#d79bff', lit);
+    var ring = hx('#4d3a6e', '#d79bff', lit), w = 2 + 2 * lit, bg = hx(hx('#38284f', '#5c2fa8', lit), '#1a1226', .55 * fl * (1 - lit)), bx = hx('#9a94c4', '#d79bff', lit);
     FLD[i].style.boxShadow = 'inset 0 0 0 ' + w.toFixed(2) + 'px ' + ring + ', 0 0 ' + (6 + 24 * lit).toFixed(1) + 'px rgba(215,155,255,' + (.38 * lit).toFixed(3) + ')';
     FLD[i].style.background = bg; FLD[i].style.transform = 'translateY(' + (7 * fl * (1 - lit)).toFixed(2) + 'px)';
     LMP[i].style.background = hx(bg, bx, raw); LMP[i].style.borderColor = hx('#8a867f', bx, raw); LMP[i].style.transform = 'scale(' + (1 + .3 * pop).toFixed(3) + ')';

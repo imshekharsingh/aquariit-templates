@@ -833,3 +833,5 @@ Format (at most 6 lines):
 - Done: render v4 (18.5 s, runner time about 20 min wall) Output QA PASS (HERO warns: no subject box; LOOK passes, one washed-out frame at 11.5-12.0 s, the close-up on the hub); previews.json entry points at v4; gold.json "tech3d" numbers re-measured from v4 (brighter than v3 because of the close-ups).
 - Left: the second independent critic's verdict (review/tech/showreel-tech-gold3d-sample.md, branch claude/critic-gold3d-sample-v4).
 - For the other account: nothing new.
+- Update (same session, 26 Nov): render 1 of web 48 failed Output QA on BULK (near-white ticked boxes) and DEMO (colourfulness 30 of 32); colours fixed and both checks pass on the scene frames; render 2 next. For the other account: scripts/qa/look.py does not run BULK or DEMO; call oqa.bulk_check and oqa.demo_check on the frames before the render.
+
