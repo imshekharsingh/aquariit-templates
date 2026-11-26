@@ -6,9 +6,9 @@
    "name": "3D kit v6: the tech look as a told story",
    "account": "other",
    "stage": "render",
-   "line": "Render 1 failed two checks; both fixed, render 2 is next.",
-   "pct": 65,
-   "updatedAt": "2026-11-26T09:17:00Z",
+   "line": "Render 2 is being made (about 25 min).",
+   "pct": 70,
+   "updatedAt": "2026-11-26T09:23:00Z",
    "history": [
     {
      "at": "2026-11-26T07:20:00Z",
@@ -29,6 +29,11 @@
      "at": "2026-11-26T09:17:00Z",
      "stage": "render",
      "line": "Render 1 failed two checks; both fixed, render 2 is next."
+    },
+    {
+     "at": "2026-11-26T09:23:00Z",
+     "stage": "render",
+     "line": "Render 2 is being made (about 25 min)."
     }
    ]
   },
