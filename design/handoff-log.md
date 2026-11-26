@@ -807,3 +807,8 @@ Format (at most 6 lines):
 - Done: showreel-c3-fix-invite rebuilt on the improved kit from the gold reel (optical-centre was withdrawn and stop-centring was posted on 21 Nov, so fix-invite is next in the plan): a party invite on a fridge door (four fonts, all centred, confetti, no hero) fixed in three moves (the age as the hero, one font in two sizes, one colour once), seven spoken sentences with breaths, direction card and review file written, captions entry kept hidden until the critic says READY. Nothing the invite needs is deleted; the 7 is hidden while the before is kept.
 - Left: outside stills check, one render, Output QA, critic; then postOn 2026-11-26, postAt 17:00.
 - For the other account: check c3-plan.md against captions.json posted marks before picking a held reel (stop-centring was already posted).
+
+## 26 Nov 2026 02:10 IST+: owner chat, reference previews only showed the first 8 seconds
+- Found: the refs preview was `fps=1,tile=4x2`, so every clip preview was its first 8 seconds only; references 4-14 were judged from openings.
+- Fix: scripts/asks.mjs refs preview now spreads 8 frames over the whole clip; `asks.yml refs` with ASKS {"full":[ids]} adds time-stamped sheets of the whole clip at 1 frame a second (24 s a sheet). Timeout 20 min.
+- Owner (26 Nov): full study of refs 9-14 approved (~$4); today's reels move only after it; the studio decides which reference goes to which channel.
