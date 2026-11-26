@@ -893,3 +893,4 @@ Format (at most 6 lines):
 ## 2026-11-26 · claude/web-26nov-verdict3 · Web reel showreel-48-has-parent: render 3 passed Output QA, critic READY
 - Done: render 3 (run 45755239976) Output QA PASS; independent critic CRITIC: READY (STOP 7.5, REWATCH 7.5); verdict and notes added to the review file. Posts 26 Nov 19:00 IST.
 - Left: the owner posts it. No further renders. Next web reel: give the reaction word its own row clear of the subtitle; start the code card typing on "fix".
+- Update (same session, 26 Nov): the independent stills check passed with four near-misses (chips edge to edge, rings 5 px apart, thumbnail 3 px from the board); cleared them in branch claude/c3-fix-invite-26nov-r3 (chips spaced, ring gap 14 px, thumbnail lower) before render 2. For the other account: a stills-check session needs the repo as a source at creation (source_url), or it cannot run.
