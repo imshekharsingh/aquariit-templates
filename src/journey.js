@@ -54,7 +54,8 @@ async function jobsOf(get, run) {
     return jobs;
   });
 }
-async function github(env, names, reels) {
+async function github(env, names, reels, warns) {
+  const warn = (w, e) => { if (warns && warns.length < 12) warns.push(w + ': ' + String(e && e.message || e).slice(0, 70)); };
   if (!env.GH_READ_TOKEN) return { state: 'no-token' };
   const get = gh(env);
   try {
@@ -69,16 +70,16 @@ async function github(env, names, reels) {
     const latest = {};
     for (const r of base.runs) { const n = runReel(r, names); if (!n) continue; const k = n + '|' + r.kind; if (!latest[k] || r.started > latest[k].started) latest[k] = r; }
     const runs = {};
-    await Promise.all(Object.entries(latest).map(async ([k, r]) => { let jobs = []; try { jobs = await jobsOf(get, r); } catch { /* stage from the run alone */ } runs[k] = { ...r, jobs }; }));
+    await Promise.all(Object.entries(latest).map(async ([k, r]) => { let jobs = []; try { jobs = await jobsOf(get, r); } catch (e) { warn('jobs ' + k, e); /* stage from the run alone */ } runs[k] = { ...r, jobs }; }));
     // built: the commit that first added the reel's review file (its squash message ends with the PR number), cached 30 minutes
     const built = {};
     await Promise.all(reels.map(async ([n, ch]) => { try { built[n] = await cached('built-' + n, 1800, async () => {
       const c = await get(`/commits?path=${encodeURIComponent(`review/${ch}/${n}.md`)}&per_page=100`), first = Array.isArray(c) && c.length ? c[c.length - 1] : null;
       if (!first) return { none: true };
       const pr = /\(#(\d+)\)\s*$/m.exec(String(first.commit.message).split('\n')[0]);
-      return { pr: pr ? +pr[1] : null, at: first.commit.committer.date }; }); } catch { /* fall back */ } }));
+      return { pr: pr ? +pr[1] : null, at: first.commit.committer.date }; }); } catch (e) { warn('built ' + n, e); /* fall back */ } }));
     return { state: 'ok', runs, built };
-  } catch (e) { return { state: 'error', note: String(e.message || e).slice(0, 80) }; }
+  } catch (e) { warn('github lists', e); return { state: 'error', note: String(e.message || e).slice(0, 80) }; }
 }
 // the critic's reason: the first plain sentence (up to "Detail:" or the first ". " after 20 chars), ~220 chars, never cut at ")"; the full text (~1200 chars) is kept for "More"
 export function criticOf(verdict, rest) {
@@ -91,11 +92,11 @@ export function criticOf(verdict, rest) {
   return { ready, why, more: !ready && full.length > why.length ? full.slice(0, 1200) : '' };
 }
 // the review file: CRITIC: READY / NOT READY on the critic line (item 20), and item 13 (the render's Output QA line) as a fallback for checks
-async function review(ch, name) {
+async function review(ch, name, warns) {
   return cached(`review-${name}`, REVIEW_TTL, async () => {
     try {
       const r = await fetch(RAW + `review/${ch}/${name}.md`, { cf: { cacheTtl: REVIEW_TTL, cacheEverything: true } });
-      if (!r.ok) return { exists: false };
+      if (!r.ok) { if (warns && r.status !== 404 && warns.length < 12) warns.push('review ' + name + ': HTTP ' + r.status); return { exists: false }; }
       const t = await r.text(), out = { exists: true, critic: null, qa: null };
       for (const l of t.split('\n')) {
         const c = /^\s*(?:20\.\s*)?(?:Critic\b.*?\b)?CRITIC:\s*(NOT READY|READY)\b(.*)$/i.exec(l);   // both "20. CRITIC: READY" and "Critic ... CRITIC: READY" (25 Nov: the first form was missed, so READY reels stayed on Checking)
@@ -106,7 +107,7 @@ async function review(ch, name) {
           if (p >= 0 && p > f) out.qa = { pass: true }; else if (f >= 0) out.qa = { pass: false, why: l.slice(f).replace(/^OUTPUT QA: FAIL\s*/, '').slice(0, 140) }; }
       }
       return out;
-    } catch { return { exists: null }; }
+    } catch (e) { if (warns && warns.length < 12) warns.push('review ' + name + ': ' + String(e && e.message || e).slice(0, 70)); return { exists: null }; }
   });
 }
 const hook = (c) => String(c || '').split('\n')[0].replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\uFE0F]/gu, '').trim();
@@ -168,7 +169,8 @@ export async function journeyApi(env, { captions, postSlot, chOf, uploaded, medi
   // the post text's first line names the reel; tech and Turns Out keep their caption in R2 (c/<name>.json)
   const capR2 = {};
   if (env.REELS) await Promise.all(reels.filter(([, m]) => !m.caption).map(async ([n]) => { try { const o = await env.REELS.get('c/' + n + '.json'); if (o) capR2[n] = (await o.json()).caption || ''; } catch { /* name instead */ } }));
-  const [g, reviews] = await Promise.all([github(env, names, reels.map(([n, m]) => [n, chOf(n, m)])), Promise.all(reels.map(([n, m]) => review(chOf(n, m), n)))]);
+  const warns = [];   // swallowed failures (GitHub errors, "Too many subrequests"): returned as warn so a stuck board says why
+  const [g, reviews] = await Promise.all([github(env, names, reels.map(([n, m]) => [n, chOf(n, m)]), warns), Promise.all(reels.map(([n, m]) => review(chOf(n, m), n, warns)))]);
   const out = reels.map(([name, m], i) => {
     const ch = chOf(name, m), slot = postSlot(name, m), due = Date.parse(`${m.postOn}T${slot}:00+05:30`), rv = reviews[i] || {};
     const run = g.runs && g.runs[name + '|render'], qaRun = g.runs && g.runs[name + '|qa'];
@@ -192,5 +194,5 @@ export async function journeyApi(env, { captions, postSlot, chOf, uploaded, medi
     const title = (cap || con || short.replace(/-/g, ' ')).slice(0, 90);
     return { name, ch, day: m.postOn, slot, title, score: rv.score == null ? null : rv.score, stages: st, live: !!(st.render.live || st.checks.live) };
   }).sort((a, b) => (a.day === b.day ? ['web', 'tech', 'c3'].indexOf(a.ch) - ['web', 'tech', 'c3'].indexOf(b.ch) : a.day < b.day ? 1 : -1));
-  return { now: new Date(now).toISOString(), today, github: g.state, reels: out };
+  return { now: new Date(now).toISOString(), today, github: g.state, warn: warns, reels: out };
 }

@@ -28,9 +28,10 @@ window.W3D = (() => {
 
   // ---------- the stage: renderer, scene, camera, environment, lights, post ----------
   function stage(THREE, o = {}) {
-    const W = o.W || 1080, H = o.H || 1920, ink = o.ink ?? 0x090a0e, haze = o.haze ?? 0x171a22;
+    // KITSCALE (scripts/preflight-all.mjs preview): the drawing buffers at a fraction of the page size; the page, the camera and the layout stay W x H
+    const W = o.W || 1080, H = o.H || 1920, SC = +window.KITSCALE || 1, RW = Math.round(W * SC), RH = Math.round(H * SC), ink = o.ink ?? 0x090a0e, haze = o.haze ?? 0x171a22;
     const gl = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
-    gl.setPixelRatio(1); gl.setSize(W, H, false); gl.outputEncoding = THREE.sRGBEncoding; gl.shadowMap.type = THREE.PCFSoftShadowMap; gl.shadowMap.enabled = true; gl.domElement.style.cssText = `position:absolute;left:0;top:0;width:${W}px;height:${H}px`;
+    gl.setPixelRatio(1); gl.setSize(RW, RH, false); gl.outputEncoding = THREE.sRGBEncoding; gl.shadowMap.type = THREE.PCFSoftShadowMap; gl.shadowMap.enabled = true; gl.domElement.style.cssText = `position:absolute;left:0;top:0;width:${W}px;height:${H}px`;
     document.body.appendChild(gl.domElement);
     const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(o.fov || 30, W / H, .1, 120);
     const S = { THREE, W, H, gl, scene, cam, ink, haze, focus: null, dof: { on: true, aperture: o.aperture ?? 3.4, maxR: o.maxR ?? 22, focusRange: o.focusRange ?? 2.2 }, bloom: o.bloom ?? .45, exposure: o.exposure ?? .8, vign: o.vign ?? .42, post: true };
@@ -50,11 +51,11 @@ window.W3D = (() => {
 
     // ---- post chain: HDR scene target -> depth of field -> bloom mips -> ACES + sRGB + vignette ----
     const rtOpt = { type: THREE.HalfFloatType, format: THREE.RGBAFormat, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: true };
-    const rtScene = new THREE.WebGLRenderTarget(W, H, Object.assign({ samples: 4 }, rtOpt));
-    rtScene.depthTexture = new THREE.DepthTexture(W, H); rtScene.depthTexture.type = THREE.UnsignedIntType;
-    const BL = [[W / 2, H / 2], [W / 4, H / 4], [W / 8, H / 8], [W / 16, H / 16]], rtB = [], rtB2 = [];
+    const rtScene = new THREE.WebGLRenderTarget(RW, RH, Object.assign({ samples: 4 }, rtOpt));
+    rtScene.depthTexture = new THREE.DepthTexture(RW, RH); rtScene.depthTexture.type = THREE.UnsignedIntType;
+    const BL = [[RW / 2, RH / 2], [RW / 4, RH / 4], [RW / 8, RH / 8], [RW / 16, RH / 16]], rtB = [], rtB2 = [];
     for (const [w, h] of BL) { const q = { type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: false }; rtB.push(new THREE.WebGLRenderTarget(w, h, q)); rtB2.push(new THREE.WebGLRenderTarget(w, h, q)); }
-    const rtDof = new THREE.WebGLRenderTarget(W, H, { type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: false });
+    const rtDof = new THREE.WebGLRenderTarget(RW, RH, { type: THREE.HalfFloatType, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, depthBuffer: false });
     const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2)), qs = new THREE.Scene(); qs.add(quad); const qc = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const VS = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }';
     const sm = (fs, u) => new THREE.ShaderMaterial({ vertexShader: VS, fragmentShader: fs, uniforms: u, depthTest: false, depthWrite: false });

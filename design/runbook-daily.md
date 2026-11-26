@@ -68,6 +68,7 @@ Stage board (owner, 24 Nov 2026): at every stage change of a reel build (researc
 Step 4 above (build the day's web and tech reels) runs in these eight steps. Sonnet does the work, Fable makes the three calls that matter
 (what to make, whether the stills are good, whether it beats gold). The Turns Out task keeps its fixed design order and does not use steps 1-2.
 Stage board: `node scripts/stage.mjs <channel> <stage> ...` at each step as before.
+**Every session on a reel posts its stage (owner, 26 Nov 2026):** the builder (`building` at start, `video --pct n` while the render runs, `checking` after the render, `ready` when the critic says READY), the stills check session (`stills --line "Stills check: ..."`), and the critic (`checking --line "Second look"`, then `ready` or a plain line with the fix). Use the reel name once it has one. Never blocks work.
 **Sessions and models (the run starts them itself; nothing is pasted by the owner).** Each call is a child session made with `create_session` (same environment as
 this run), one task, one channel, one at a time; its result comes back as the reply or the pushed file. Settings:
 - ALWAYS pass `source_url: "https://github.com/imshekharsingh/aquariit-templates"` (26 Nov: builders made without it started with no repo, could not attach it, and stalled from 04:49 until the owner chat restarted them at 07:12).

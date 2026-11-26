@@ -100,6 +100,9 @@ def wrap(words, size, max_w, weight=700):
 EVENTS = None   # make.py sets a dict to collect the element events ((scene, key) -> {t, size, x, g}) while frames are drawn
 
 
+NO_TEXT = [False]   # set by techreel/make.py --textclear
+
+
 class Frame:
     """One output frame: a sharp RGB layer at SS x and a glow layer at 1/GQ. Colors may carry alpha (blended)."""
 
@@ -207,6 +210,8 @@ class Frame:
         ca = (color[3] / 255 if color is not None and len(color) == 4 else 1) * self.alpha
         if ca >= .05:
             self.boxes.append((s, x0, y0, x0 + w, y0 + size * .95, ca))
+        if NO_TEXT[0]:   # TEXT CLEAR (scripts/showreel/textclear.py): the same frame without its text, to see what the text sits on
+            return w
         f = font(size, weight)
         y = y + self.dy
         color = self._c(color)

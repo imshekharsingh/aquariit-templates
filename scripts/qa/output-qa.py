@@ -143,7 +143,12 @@ T = dict(full_wps=4.5, short_wps=4.0, short_words=6, min_overall=2.0, min_speed=
 out, fails = [], []
 
 
+PREVIEW = bool(os.environ.get('OQA_PREVIEW'))   # scripts/preflight-all.mjs: a 360x640, 10 fps preview with no mixed sound; the checks that need the sound are not judged on it (the render's own Output QA judges them)
+NO_SOUND = {'LOUD', 'SOUND', 'DEAD', 'MUTE', 'PACE', 'STRAY', 'SYNC', 'NUMBERS'}
+
+
 def line(check, status, msg):
+    if PREVIEW and check in NO_SOUND and status in ('FAIL', 'WARN'): status, msg = 'SKIP', '(preview: not judged without the real sound) ' + msg
     s = f'OQA {check}: {status} {msg} [guards: {FB.get(check.lower(), "")}]'
     out.append(s); print(s, flush=True)
     if status == 'FAIL': fails.append(f'{check}: {msg}')
