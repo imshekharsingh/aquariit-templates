@@ -151,13 +151,49 @@ say('PROJECTS');
 let projects = null;
 try { projects = (await site('/api/projects')).projects; } catch { /* fall back to the file in this checkout */ }
 if (!projects) { try { projects = JSON.parse(readFileSync('design/projects.json', 'utf8')).projects || []; } catch { projects = []; blind.push('projects'); } }
+// The other account cannot judge videos: it writes "... ready for critic" in design/handoff.md Progress (and sets its project to the critic stage).
+// Only the main account critic can answer; a line "main account (plan) critic: ..." after it is the verdict. Keyed on the ready line's time, so once per line.
+const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
+const progressLines = () => {
+  let t; try { t = readFileSync(process.env.STATUS_HANDOFF || 'design/handoff.md', 'utf8'); } catch { return []; }
+  const i = t.indexOf('\n## Progress'); if (i < 0) return [];
+  const rows = [];
+  for (const line of t.slice(i).split('\n')) {
+    if (/^---\s*$/.test(line)) break;
+    if (!/^- /.test(line)) continue;
+    const m = /(\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?: (\d{4}))? (\d{1,2}):(\d{2}) IST/i.exec(line);
+    const at = m ? Date.parse(`${m[3] || 2026}-${String(MONTHS[m[2].toLowerCase()]).padStart(2, '0')}-${m[1].padStart(2, '0')}T${m[4].padStart(2, '0')}:${m[5]}:00+05:30`) : null;
+    rows.push({ line, at });
+  }
+  return rows;
+};
+const progress = progressLines();
+const tokenOf = (p) => { const last = String(p.id).split('-').pop(); return (/^v\d+$/i.test(last) ? last : p.id).toLowerCase(); };
+function criticNeeded(p) {
+  if (p.stage === 'done' || p.stage === 'failed') return null;
+  const tok = tokenOf(p), t0 = Date.parse(p.updatedAt || '');
+  let ri = -1;
+  progress.forEach((r, i) => { if (/ready for critic/i.test(r.line) && /IST,?\s*other account/i.test(r.line) && r.line.toLowerCase().includes(tok)) ri = i; });
+  const ready = ri >= 0 ? progress[ri] : null;
+  if (!ready && p.stage !== 'critic') return null;
+  const anchor = Math.max(ready && ready.at != null ? ready.at : 0, p.stage === 'critic' && Number.isFinite(t0) ? t0 : 0);
+  if (!anchor) return null;
+  const answered = progress.some((r, i) => /main account\b[^:]*\bcritic/i.test(r.line) && (r.at != null ? r.at > anchor : ri >= 0 && i > ri));
+  if (answered) return null;
+  const text = ready ? ready.line : '', isPlan = /\bplan\b/i.test(text.split(/ready for critic/i)[0].slice(-40)) || (!ready && /plan/i.test(p.line || ''));
+  const mp4 = /(?:R2 |reels\/)?((?:study|reels)\/[\w./-]+\.mp4|[\w./-]+\.mp4)/.exec(text), rev = /(review\/[\w./-]+\.md)/.exec(text);
+  const what = isPlan ? `plan, review file ${rev ? rev[1] : 'named in handoff.md Progress'}` : `render, MP4 ${mp4 ? mp4[1] : 'named in handoff.md Progress'}${rev ? ', review file ' + rev[1] : ''}`;
+  return { what, key: `critic-project:${p.id}:${new Date(anchor).toISOString()}` };
+}
 for (const p of projects) {
   const at = Date.parse(p.updatedAt || ''), age = Number.isFinite(at) ? NOW - at : Infinity;
+  const need = criticNeeded(p);
+  if (need) act('START-CRITIC', `project:${p.id} ${need.what}`, need.key);
   if (p.stage === 'done' && age > 2 * 24 * HOUR) continue;
   const stuck = !['waiting', 'done'].includes(p.stage) && age > 6 * HOUR;
   say(`  ${p.id} (${p.account || 'other'} account): ${p.stage}${p.pct != null ? ' ' + p.pct + '%' : ''}${Number.isFinite(at) ? ', updated ' + hm(at) + (age > 24 * HOUR ? ' ' + dm(istDay(p.updatedAt)) : '') : ''}${stuck ? ' (stuck)' : ''}: ${String(p.line || '').slice(0, 90)}`);
-  if (stuck) act('OWNER-CHAT', `project ${p.name || p.id} has not moved for ${Math.round(age / HOUR)} h (${p.stage})`, `project-stuck:${p.id}:${p.updatedAt}`);
-  else if (p.stage === 'failed') act('OWNER-CHAT', `project ${p.name || p.id} found a problem: ${String(p.line || '').slice(0, 90)}`, `project-failed:${p.id}:${p.updatedAt}`);
+  if (stuck && !need) act('OWNER-CHAT', `project ${p.name || p.id} has not moved for ${Math.round(age / HOUR)} h (${p.stage})`, `project-stuck:${p.id}:${p.updatedAt}`);
+  else if (!stuck && p.stage === 'failed') act('OWNER-CHAT', `project ${p.name || p.id} found a problem: ${String(p.line || '').slice(0, 90)}`, `project-failed:${p.id}:${p.updatedAt}`);
 }
 if (!projects.length) say('  none');
 
