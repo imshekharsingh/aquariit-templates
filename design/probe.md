@@ -22,7 +22,8 @@ It starts the right session or messages the owner chat, nothing more. No subagen
 3. **RUNS (last 3 h)**: failed or stuck render, Output QA and pipeline runs (the newest run of each job decides, so a fixed one is not listed).
 4. **DUE within 2 h, not ready**: a reel due within 2 h (or up to 3 h late) that is not READY or POSTED.
 5. **POSTS made 20-90 min ago** with their first numbers if the collect has them.
-6. Last line: `ACTIONS: none` or `ACTIONS: <item> || <item>`; each item is `<KIND> <plain detail> [key,key]`. The keys of anything an earlier check
+6. **PROJECTS** (work that is not a reel; stuck = no update in 6 h; a project at the critic stage, or a "ready for critic" Progress line with no main-account critic line after it, raises START-CRITIC).
+7. Last line: `ACTIONS: none` or `ACTIONS: <item> || <item>`; each item is `<KIND> <plain detail> [key,key]`. The keys of anything an earlier check
    handled in the last 6 h are left out by the sheet itself, so nothing is raised twice.
 
 ## The probe's exact steps (one fresh haiku session per fire)
@@ -32,10 +33,20 @@ It starts the right session or messages the owner chat, nothing more. No subagen
 2. Read only the last line `ACTIONS: ...` (and the sheet if you need a name).
 3. **ACTIONS: none** -> `node scripts/probe-log.mjs add --found "<one line: reels/stages seen>" --acted no` and END. No other call.
 4. Otherwise handle each item, in order, and only these kinds:
-   - `START-CRITIC <ch> <reel>`: `create_session` with source_url `https://github.com/imshekharsingh/aquariit-templates`, model `claude-opus-5-5`, tags `["critic"]`,
+   - `START-CRITIC <ch> <reel>` (a channel reel): `create_session` with source_url `https://github.com/imshekharsingh/aquariit-templates`, model `claude-opus-5-5`, tags `["critic"]`,
      title `Critic <reel>`, prompt: "Independent critic for <reel> (<ch>). Read CLAUDE.md, design/runbook-reels.md 'Independent critic' and design/critic.md; fetch the
      final MP4 with scripts/reel-fetch.mjs; write the verdict (CRITIC: READY or NOT READY with the exact fix) in review/<ch>/<reel>.md, push a claude/critic-<reel> branch,
      post the board stage with scripts/stage.mjs, message the owner chat session in one line." (The builder normally starts the critic itself; this is the fallback.)
+   - `START-CRITIC project:<id> <plan or render, MP4 path or review file> [critic-project:<id>:<time>]` (owner, 26 Nov 2026): the other account cannot judge videos, so
+     when it writes "ready for critic" in design/handoff.md Progress (or sets its project to the critic stage) and no main-account critic line follows, the sheet raises this
+     ONCE per ready line (the key carries that line's time). Start ONE session: `create_session` with source_url `https://github.com/imshekharsingh/aquariit-templates`,
+     model `claude-opus-5-5`, tags `["critic","3d"]`, title `Critic: <id> (<IST date time>)`, prompt (standalone): "Independent critic for the project <id>. Read CLAUDE.md,
+     design/critic.md, design/owner-feedback.md (the 26 Nov lines) and design/handoff.md task 10 with its Progress. Judge <what the item says>: a PLAN means the plan and stills
+     sheet in the review file; a RENDER means the real MP4: download https://templates.aquariit.com/reels/<path> with curl (the network proxy adds the key; the path is the
+     R2 key from the Progress line, e.g. study/...mp4) and look at real frames. Write the verdict in the project's review file ending with the exact verdict line (CRITIC: READY
+     or NOT READY for a render; PLAN: OK TO RENDER or PLAN: CHANGE FIRST for a plan) and the PREMIUM scores, with the exact fix when it is not READY. Add ONE line to design/handoff.md Progress
+     ('- <date> <time> IST, main account critic: ...', no cost lines). Merge through the pipeline (branch claude/critic-<id>). Then message the owner chat session in one plain
+     line with the verdict; for a render verdict also say whether v7 is STABLE (READY and every PREMIUM score 7.5 or more and Output QA passed)." Never start a second critic for the same key.
    - `START-BUILDER <ch> <reel>`: `create_session`, same source_url, model `claude-sonnet-5-5` (Fable only if CLAUDE.md "Sessions" says so for the day), tags `["builder"]`, title
      `<ch> reel <reel>`; prompt: "Build today's <ch> reel <reel>. Follow CLAUDE.md and design/runbook-daily.md steps for that channel, one render, at most 2 renders, post
      board stages, message the owner chat at each stage. The probe started you because it was due <time> and nothing was building."
