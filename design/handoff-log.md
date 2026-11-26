@@ -6,6 +6,14 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-27 01:38 IST · claude/handoff-queue-check-paused · other account: owner paused the hourly queue check
+- Done: the "Handoff queue check" scheduled task is disabled (owner, until they say so); one Progress line in design/handoff.md.
+- Left: render 3 of v7 waits for "PLAN: OK TO RENDER" and the owner telling this account.
+- For the main account: this account no longer picks up GO tasks on its own.
+
+## 2026-11-27 · claude/handoff-hold · owner chat: other account on HOLD (weekly limit)
+- design/handoff.md HOLD at the top: no work until the owner lifts it. Waiting next: task 10, the 7 render 3 plan changes, then render 3.
+
 ## 2026-11-27 · claude/lesson-focus-structure · owner chat: focus, structure, reason in every plan and critic
 - Owner: include the system-map lesson where it fits. design/direction.md "Focus, structure, reason" (one subject lit, a fixed frame, a reason for every move; more motion is not better), with where it fits per channel and kit; design/critic.md Ambition pass point 4.
 
@@ -1074,3 +1082,6 @@ Format (at most 6 lines):
 - Done: scene scripts/previews/tech-2d5-test.html (+ .json): one camera over one canvas, hub -> six steps -> pull-back, colour world and spotlight per step, fixed title + section pill, word-by-word captions, a working mini interface per step, light pulses on the lines, English voice config. Direction card with the Motion-design pass, review file with sources (EMVCo tokenisation, Mastercard card-flow page, a Federal Reserve paper, a Visa developer guide; the sites were not reachable from the session, read through search), previews.json and captions.json (hidden sample) entries, projects.json entry. preflight-all passes Output QA and TEXT CLEAR on the preview.
 - Left: outside stills check (opus, tag stills) with the Ambition pass, preflight-all PASS line, ONE render on the preview path (R2 study/), Output QA, independent critic (opus, tag critic) against the reference notes and the 3D v7 render 2.
 - For the other account: textclear hides every text outside [data-subject]; a root element outside the subject that gets color:transparent makes the subject's text inherit it, so a scene that wraps its subject must give the subject its own color (symptom: UI text flagged "touches something" in TEXT CLEAR). The OQA CALM average (5%) is the check a camera-flight scene fights: shorter travel and no zoom dip fixed it.
+## 2026-11-27 · claude/critic-3d-v7-r3-plan · Plan critic: 3D kit v7 render 3 plan, CHANGE FIRST
+- Done: independent plan critic (no render) on the builder's "Render 3 plan" and the refreshed stills sheet against the 15-item RENDER 3 FIX LIST, the Ambition pass (incl. focus, structure, reason) and questions 46-52. 12 items OK, items 4, 13 and 15 CHANGE; plus focus (dim the non-subjects at 5.3-7.8, 9.0-11.4, 15.1-18.2 s), structure (a step pill 01-04 instead of the grey older words), reason (a still hold for the orbit at 13.9-15.1 s, one move home at the end) and a clean New shot. Open points decided: headline words on the wide shots only, no band; "TANGLED" at 9.0 s so 24 shows once.
+- Left: the other account makes the seven changes, checks them locally (TEXT CLEAR, frame 0 vs 22.86 s, last-4 s change 5+) and runs render 3 with no further plan check.

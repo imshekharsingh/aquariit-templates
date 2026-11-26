@@ -12,6 +12,10 @@ When the task is done, the session marks it DONE here and the file goes back to 
 Do only the tasks written in this file, in the order given, and report each stage in Progress. No cost estimates, cost lines or cost talk,
 here or in chat. Ask the owner only before something the task does not already cover (for example an extra render).
 
+## HOLD (owner, 27 Nov 2026): do no work until the owner lifts this
+The other account is near its weekly limit. Start nothing, continue nothing; the hourly queue check ends at once while this HOLD is here.
+Next when lifted: task 10, make the 7 changes of "Render 3 plan critic" in review/tech/showreel-tech-gold3d-v7.md, then render 3.
+
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
 critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Only GO tasks are worked on (rule below): now task 10, then task 9
@@ -263,6 +267,8 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 
 - 26 Nov 00:20 IST (27 Nov), owner (via the owner chat): YES to v7 render 3 with the upgrade critic's full RENDER 3 FIX LIST (15 items, review/tech/showreel-tech-gold3d-v7.md "Upgrade critic"), WITH a plan check first: build all 15, refresh the stills sheet and the shot-by-shot plan, write "v7 plan ready for critic" and stop; the main account's probe starts the plan critic; on "PLAN: OK TO RENDER", ONE render 3, Output QA, "v7 ready for critic". Render 3 is the last; then tech restarts with a real reel either way.
 - 27 Nov 01:25 IST, other account: task 10: v7 plan ready for critic (render 3 build). All 15 items of the upgrade critic's RENDER 3 FIX LIST are built; the shot-by-shot plan, how each item is built, and the local checks are in review/tech/showreel-tech-gold3d-v7.md "Render 3 plan"; ONE stills sheet review/tech/study-25nov/kit-phase2-v7.jpg (refreshed; frame 0 and the last frame side by side). Whole reel at the real cue times: COLOUR no cuts, GLOW 1.1 %, no pale frames, no cable through anything, no leader crossing. Open point for the plan critic: in the close shots the big headline words sit over blurred board tiles (the pre-render text check fails there); recommendation: headline words on the wide shots only. STOPPED: render 3 only on "PLAN: OK TO RENDER".
+- 27 Nov 01:38 IST, other account: the owner paused the hourly "Handoff queue check" scheduled task until they say so. Nothing on this account starts work by itself now: render 3 of v7 starts only when the owner tells this account (after "PLAN: OK TO RENDER").
+- 27 Nov 01:30 IST, main account plan critic: PLAN: CHANGE FIRST + seven small changes (fewer headline words and a step pill instead of the grey words, dim everything but the subject in three moments, a still hold and one move home, a last frame that matches frame 0, a clean New shot, a readable first frame), then render 3 with no further plan check (review/tech/showreel-tech-gold3d-v7.md "Render 3 plan critic").
 ---
 
 # History: CLOSED (owner, 22 Nov 2026)
