@@ -14,7 +14,8 @@ here or in chat. Ask the owner only before something the task does not already c
 
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
-critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in this order: 0, 8, 6, 7, 2, 5, 3 (3 may continue while a render runs)
+critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. PRIORITY (owner, 26 Nov 2026): task 3 (the 3D kit) first, then task 9 (references), then any other open task in number order; open
+means not yet marked done in Progress
 (later numbers after these, in order); report each in Progress.
 Every task here is also a project on the app's board: update its entry in design/projects.json at each stage, in the same push as the work (design/runbook-studio.md "Projects on the board").
 
@@ -125,6 +126,19 @@ session (the cheapest model) with the repo, which: reads this file from main; fi
 if none is open or one is already started within 3 hours, ends at once; otherwise starts ONE work session for it (a normal model, with
 the repo) whose prompt is "Read design/handoff.md and do Queued task N; write 'task N started' in Progress first". Keep it quiet: no
 message unless it starts work. Write in Progress the schedule you set and the first check's result.
+
+## Queued task 9 (owner, 26 Nov 2026): references, measured (do it right after task 3)
+Owner: reference work must show in the reels and in the numbers. The critic check (a named pattern must be visible in the video) is
+already added on main (design/critic.md question 52). This task is the measuring part. Size M.
+1. Side-by-side gap: scripts/ref-compare.mjs <reel> <ref-id>: from our final MP4 and the reference clip (the app References file),
+   measure picture-change rate (cuts or big changes per 10 s), words per beat on screen, how often numbers move, longest still stretch,
+   colour count; print both rows and the gap in plain words ("ours changes every 2.4 s, the reference every 1.0 s"). The main account runs
+   it for each reel built from a reference (it can fetch videos; write the runbook line for that), and the result goes in the review file.
+2. Reel tag: each captions.json entry gets "refs": ["R-ref 26 Nov: 10", ...] (the patterns used); npm run check warns when a review file
+   names reference patterns but the entry has no refs tag.
+3. Numbers: the weekly review (and the Studio status sheet's weekly part) compares reach, watch time and saves of reels WITH a reference
+   pattern against reels without, per channel, and per pattern once a pattern has 3+ reels. One plain line per channel.
+4. Runbook: design/runbook-daily.md references step gets the three items above. npm run check, merge.
 
 ## Queued task 7 (owner, 26 Nov 2026): Projects show their workflow and the next action (do it right after task 6)
 Owner: "App's projects section I was hoping to have a workflow and next action being taken on it so that I'll know when it's done". Size S-M.
