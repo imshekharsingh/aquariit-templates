@@ -117,17 +117,21 @@ def main():
     ln = (f"loudnorm=I=-14.5:TP=-1.5:LRA=7:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
           f":measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
     final = os.path.join(out, slug + '.mp4'); dur = TL['total']; lim = .75
-    for k in range(4):
-        af = ln + f',afade=t=out:st={dur - .4:.2f}:d=0.4,alimiter=limit={lim:.4f}:attack=1:release=60:level=disabled'
+    # tries until BOTH the true peak and the loudness are in range (26 Nov 2026: one cut after a +3.3 dBTP peak left the reel at -16.4 LUFS and the loop
+    # stopped on the safe peak): a too-high peak lowers the limiter; a too-quiet (or too-loud) mix moves a gain step before the limiter, which holds the peaks
+    gain = 0.0
+    for k in range(6):
+        af = ln + f',volume={gain:.2f}dB,afade=t=out:st={dur - .4:.2f}:d=0.4,alimiter=limit={lim:.4f}:attack=1:release=60:level=disabled'
         subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', silent, '-i', mix_wav, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-af', af, '-ar', '48000',
                         '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', final], check=True)
         eb = subprocess.run(['ffmpeg', '-hide_banner', '-i', final, '-af', 'ebur128=peak=true', '-f', 'null', '-'], capture_output=True, text=True).stderr
         summ = eb[eb.rfind('Summary:'):]
         tp = re.search(r'Peak:\s+(-?[\d.]+) dBFS', summ); tpv = float(tp.group(1)) if tp else 0.0
-        print(f'mux try {k + 1}: limiter {20 * math.log10(lim):.1f} dBFS, true peak {tpv} dBTP', flush=True)
-        if tpv <= -1.2: break
-        lim *= 10 ** ((-1.6 - tpv) / 20)
-    lu = re.search(r'I:\s+(-?[\d.]+) LUFS', summ); li = float(lu.group(1)) if lu else 0.0
+        lu = re.search(r'I:\s+(-?[\d.]+) LUFS', summ); li = float(lu.group(1)) if lu else 0.0
+        print(f'mux try {k + 1}: gain {gain:+.1f} dB, limiter {20 * math.log10(lim):.1f} dBFS, true peak {tpv} dBTP, {li} LUFS', flush=True)
+        if tpv <= -1.2 and -15 <= li <= -13: break
+        if tpv > -1.2: lim *= 10 ** ((-1.6 - tpv) / 20)
+        if not -14.8 <= li <= -13.4: gain = max(-6.0, min(8.0, gain + (-14.2 - li)))
     loud_ok = -15 <= li <= -13 and tpv <= -1
     # contact sheet: one frame every ~4 s
     sheet = os.path.join(out, 'contact.png')

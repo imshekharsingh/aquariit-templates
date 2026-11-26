@@ -42,6 +42,9 @@ Also done by this session, same branch rules, one push per step. Cap: about $15 
 5. Write DONE in Progress with the total cost, add the handoff-log entry, and set this file back to CLOSED (keep the history below).
 If the v5 critic says NOT READY: stop, write the critic's fix list in Progress and ask the owner. No 6th render without the owner's yes.
 
+## Owner rule for more renders (owner, 26 Nov 2026, in the other account's chat)
+If a render FAILS, fix it and run the next render without asking. If a render SUCCEEDS and the critic's verdict needs another render, stop: the owner checks that result and confirms before the next render.
+
 ## Owner yes for render 5: YES (owner, in the other account's chat, 26 Nov 10:14 IST)
 
 ## Progress (newest last)
@@ -53,6 +56,7 @@ If the v5 critic says NOT READY: stop, write the critic's fix list in Progress a
 - Render 5 estimate (for the owner): about $5 in all (the GitHub render itself is free on this public repo, about 20 min; then Output QA and the separate critic session). It is the 5th render of this sample, past the 2-render cap.
 - 26 Nov 10:15 IST, other account: owner said yes; render 5 started on GitHub (preview v5, about 20 min). Times above at 10:10 and 10:20 were approximate. Cost so far: about $9.
 - 26 Nov 10:27 IST, other account: render 5 FAILED at the last step, the sound loudness gate (-16.4 LUFS, need -15 to -13). The picture rendered fine (all six frame jobs passed, 18.45 s); nothing went to R2, so there is no v5 video to judge. Cause: techkit/make.py's mux loop cut the limiter by 4.9 dB after a +3.3 dBTP peak and stopped once the peak was safe, without checking loudness (v4 passed the same loop by luck). Stopped as the rules say: no 6th render. Proposed fix (size S, about $1): keep trying while the loudness is under -15 LUFS, raising the limiter halfway back; then render 6 needs the owner's yes (about $5). Cost so far: about $10.
+- 26 Nov 10:55 IST, other account: owner rule written above. Sound fix in techkit/make.py: the mux now tries until both the peak and the loudness are in range, with a gain step before the limiter for a quiet mix (tested locally on two peaky test mixes: -14.4 and -14.3 LUFS, peaks under -1.9 dBTP). Render 6 starts once this is merged. Cost so far: about $11.
 
 ---
 
