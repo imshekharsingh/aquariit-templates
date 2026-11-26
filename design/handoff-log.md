@@ -828,3 +828,8 @@ Format (at most 6 lines):
 - Left: one render, Output QA, critic; then postOn 2026-11-26, postAt 17:00.
 - For the other account: the reversal beat from the references was not added (script length kept).
 - 26 Nov 07:45 IST: refs 9-14 studied whole (design/references.md "R-ref 26 Nov"), routed per channel; today's three builders held before render 1 and sent their lessons.
+
+## 2026-11-26 · claude/tech-3d-kit-sample-v4-result · 3D kit sample v4 rendered: Output QA PASS, app entry, gold numbers (owner chat, one render)
+- Done: render v4 (18.5 s, runner time about 20 min wall) Output QA PASS (HERO warns: no subject box; LOOK passes, one washed-out frame at 11.5-12.0 s, the close-up on the hub); previews.json entry points at v4; gold.json "tech3d" numbers re-measured from v4 (brighter than v3 because of the close-ups).
+- Left: the second independent critic's verdict (review/tech/showreel-tech-gold3d-sample.md, branch claude/critic-gold3d-sample-v4).
+- For the other account: nothing new.
