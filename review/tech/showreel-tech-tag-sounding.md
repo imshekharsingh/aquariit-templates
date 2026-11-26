@@ -27,4 +27,6 @@ Researched improvement (design/improvements.md): owner chat reference lessons 26
 Craft: the tag, phone, waves, compass and rings all come from techkit lib3d / world3d; one camera path through one world.
 Known risks for Output QA: the tag and phone come near the frame edge mid-move (EDGES), the floor reads grey in the wide shots (LOOK vs gold tech3d).
 
-STILLS CHECK and CRITIC lines are in the direction card and below.
+STILLS CHECK: APPROVED is in the direction card (Fable, second round). Final stills: review/tech/showreel-tech-tag-sounding.stills.jpg.
+
+CRITIC: PENDING (starts when the final render passes Output QA)

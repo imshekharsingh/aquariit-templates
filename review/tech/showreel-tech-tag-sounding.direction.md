@@ -12,4 +12,4 @@ Fill before the build (design/direction.md: the card, and this channel's default
 8. Rewatch moment: the six waves with different frequencies drifting and pulsing (6.7-11 s), and the needle settling on the tag after its wobble (10-11 s) | Why: a detailed motion worth seeing twice
 9. Payoff: the last 3.5 s is held: tag on its plinth, the phone with the mint needle aimed at it, the beam on the floor and the UWB ring; caption 'Less guessing. More pointing.' | Why: closes the opening question with the picture of a needle pointing at the tag
 
-STILLS CHECK: PENDING
+STILLS CHECK: APPROVED (separate Fable session, tag stills, second round 26 Nov 2026 after one fix round by the builder; round 1 asked for a readable finder screen on the phone, numbers clear of labels, a 20 m number, a true top-down for the three-times shot, a wider wave shot; nits left: the tag glow near a caption line in one tilt-up shot)
