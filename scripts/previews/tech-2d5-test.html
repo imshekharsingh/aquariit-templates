@@ -28,7 +28,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);font-fa
 .card{left:0;top:0;width:100%;height:100%;border-radius:30px;background:linear-gradient(160deg,var(--ct),rgba(12,14,20,.98) 70%);border:2px solid var(--c);box-shadow:0 30px 60px rgba(0,0,0,.55)}
 .badge{left:20px;top:16px;width:44px;height:44px;border-radius:50%;border:2.5px solid var(--c);color:var(--c);font:800 22px/39px var(--f);text-align:center}
 .nm{left:76px;top:17px;font:800 23px/1 var(--f);letter-spacing:.01em;white-space:nowrap}
-.sb{left:76px;top:46px;font:500 11px/1 var(--m);letter-spacing:.14em;color:rgba(255,255,255,.55);white-space:nowrap}
+.sb{left:76px;top:46px;font:500 12px/1 var(--m);letter-spacing:.12em;color:rgba(255,255,255,.6);white-space:nowrap}
 .mono{font-family:var(--m)}
 .pill2{border-radius:999px;border:1.5px solid var(--c);color:var(--c);font:700 12px/1 var(--m);letter-spacing:.1em;padding:9px 14px;white-space:nowrap;background:rgba(0,0,0,.35)}
 #view{color:#fff;-webkit-text-fill-color:#fff;left:0;top:240px;width:540px;height:454px;overflow:hidden;-webkit-mask-image:linear-gradient(rgba(0,0,0,0) 0,#000 26px);mask-image:linear-gradient(rgba(0,0,0,0) 0,#000 26px)}
@@ -77,7 +77,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);font-fa
   function cam(t){
     var x, y, s, a, b, k;
     if (t < DEP[0]){   // opening: a wide view of the map pushes into the hub
-      k = io(P(t, 0, 2.2)); x = CXW; y = CYW; s = mix(.84, 1.12, k) + .03 * P(t, 2.2, DEP[0]); return [x, y, s];
+      k = io(P(t, 0, 2.6)); x = CXW; y = CYW; s = mix(.76, 1.12, k) + .03 * P(t, 2.2, DEP[0]); return [x, y, s];
     }
     if (t >= PB0){ k = io(P(t, PB0, PB1)); a = stopAt(6); x = mix(a[0] + 6, CXW, k); y = mix(a[1], CYW, k); s = mix(.98, .3, k) ; return [x, y, s - .09 * Math.sin(Math.PI * k) * 0]; }
     for (var i = 0; i < 6; i++){
@@ -111,7 +111,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);font-fa
   for (var i = 0; i <= 6; i++){
     var c = COL[i], w = i ? 440 : 300, h = i ? 360 : 300, px = PTS[i][0], py = PTS[i][1];
     var sp = E(spots, '', 'left:' + (px - 450) + 'px;top:' + (py - 450) + 'px;width:900px;height:900px;opacity:0;background:radial-gradient(circle,' + rgb(c, .5) + ' 0,' + rgb(c, .18) + ' 40%,rgba(0,0,0,0) 68%)', '');
-    var cone = E(spots, 'cone', 'left:' + (px - 300) + 'px;top:' + (py - 760) + 'px;width:600px;height:900px;opacity:0;background:linear-gradient(rgba(0,0,0,0),' + rgb(c, .32) + ')', '');
+    var cone = E(spots, 'cone', 'left:' + (px - 300) + 'px;top:' + (py - 760) + 'px;width:600px;height:900px;opacity:0;background:linear-gradient(rgba(0,0,0,0),' + rgb(c, .22) + ')', '');
     var nd = E(nodes, 'nd' + (i ? '' : ' hub'), 'left:' + (px - w / 2) + 'px;top:' + (py - h / 2) + 'px;--c:' + rgb(c), '');
     E(nd, 'card', '', '');
     if (i){ E(nd, 'badge', '', '0' + i); E(nd, 'nm', '', NAME[i]); E(nd, 'sb', '', SUBT[i]); }
@@ -189,7 +189,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);font-fa
     var lab = E(nd, 'mono', 'left:22px;top:226px;font:700 11px/1 var(--m);letter-spacing:.14em;color:' + cs, 'THE SHOP\'S BANK');
     var rt = E(nd, '', 'left:170px;top:140px;width:250px;height:30px', '<svg width="250" height="30"><line x1="0" y1="15" x2="250" y2="15" stroke="rgba(255,255,255,.2)" stroke-width="3" stroke-dasharray="6 7"/><circle cx="4" cy="15" r="7" fill="' + cs + '"/><circle cx="246" cy="15" r="7" fill="none" stroke="' + cs + '" stroke-width="3"/></svg><div id="dot3" class="a" style="left:0;top:7px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 0 14px ' + cs + '"></div>');
     var tg = E(nd, 'mono', 'left:170px;top:112px;font:700 11px/1 var(--m);letter-spacing:.12em;color:rgba(255,255,255,.6)', 'TO THE CARD NETWORK');
-    var ms = E(nd, '', 'left:262px;top:186px;width:158px;height:62px;border-radius:12px;border:1.5px solid ' + rgb(c, .6) + ';background:rgba(198,128,255,.08)', '<div id="ms3" class="a mono" style="left:12px;top:8px;font:800 30px/1 var(--m)"></div><div class="a mono" style="left:12px;top:44px;font:500 10px/1 var(--m);letter-spacing:.12em;color:rgba(255,255,255,.55)">EXAMPLE TIME</div>');
+    var ms = E(nd, '', 'left:262px;top:186px;width:158px;height:62px;border-radius:12px;border:1.5px solid ' + rgb(c, .6) + ';background:rgba(198,128,255,.08)', '<div id="ms3" class="a mono" style="left:12px;top:8px;font:800 30px/1 var(--m)"></div><div class="a mono" style="left:12px;top:44px;font:500 11px/1 var(--m);letter-spacing:.12em;color:rgba(255,255,255,.55)">EXAMPLE TIME</div>');
     var r1 = E(nd, 'mono', 'left:22px;top:270px;font:700 14px/1 var(--m);white-space:nowrap', '<span style="color:' + cs + '">&#10003;</span> RECEIVES THE REQUEST');
     var r2 = E(nd, 'mono', 'left:22px;top:302px;font:700 14px/1 var(--m);white-space:nowrap', '<span style="color:' + cs + '">&#10003;</span> PASSES IT TO THE NETWORK');
     var d3 = nd.querySelector('#dot3'), m3 = nd.querySelector('#ms3');
@@ -205,7 +205,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);font-fa
     S(sv, 'circle', { cx: 150, cy: 176, r: 20, fill: 'rgba(255,108,98,.18)', stroke: cs, 'stroke-width': 3 }); S(sv, 'path', { d: 'M142 176h16M152 168l8 8-8 8', fill: 'none', stroke: cs, 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
     var sh = E(nd, 'mono', 'left:22px;top:160px;width:90px;height:34px;border-radius:10px;border:1.5px solid rgba(255,255,255,.4);font:700 12px/31px var(--m);text-align:center', 'SHOP\'S BANK');
     var bks = BY.map(function(y, n){ return E(nd, 'mono', 'left:300px;top:' + y + 'px;width:122px;height:36px;border-radius:10px;border:2px solid ' + (n === sel ? cs : 'rgba(255,255,255,.22)') + ';font:700 12px/32px var(--m);text-align:center;letter-spacing:.06em;' + (n === sel ? 'background:' + rgb(c, .18) : 'color:rgba(255,255,255,.55)'), names[n]); });
-    var ms = E(nd, '', 'left:22px;top:262px;width:170px;height:62px;border-radius:12px;border:1.5px solid ' + rgb(c, .6) + ';background:rgba(255,108,98,.08)', '<div id="ms4" class="a mono" style="left:12px;top:8px;font:800 30px/1 var(--m)"></div><div class="a mono" style="left:12px;top:44px;font:500 10px/1 var(--m);letter-spacing:.12em;color:rgba(255,255,255,.55)">EXAMPLE TIME</div>');
+    var ms = E(nd, '', 'left:22px;top:262px;width:170px;height:62px;border-radius:12px;border:1.5px solid ' + rgb(c, .6) + ';background:rgba(255,108,98,.08)', '<div id="ms4" class="a mono" style="left:12px;top:8px;font:800 30px/1 var(--m)"></div><div class="a mono" style="left:12px;top:44px;font:500 11px/1 var(--m);letter-spacing:.12em;color:rgba(255,255,255,.55)">EXAMPLE TIME</div>');
     var dt = E(nd, '', 'left:0;top:0;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 0 14px ' + cs, ''), m4 = nd.querySelector('#ms4');
     var bez = function(k, y){ var p0 = [150, 176], p1 = [220, 176], p2 = [230, y + 18], p3 = [300, y + 18], u = 1 - k; return [u*u*u*p0[0] + 3*u*u*k*p1[0] + 3*u*k*k*p2[0] + k*k*k*p3[0], u*u*u*p0[1] + 3*u*u*k*p1[1] + 3*u*k*k*p2[1] + k*k*k*p3[1]]; };
     X[4] = function(lt, t){ ent(svg, lt, .3, 'l', .5); ent(sh, lt, .3, 'l', .5); bks.forEach(function(b, n){ ent(b, lt, .7 + n * .16, 'r', .45); });
@@ -245,7 +245,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);font-fa
     var far = 90, ox = -cm[0] * cm[2] * .3, oy = -cm[1] * cm[2] * .3;   // far layer: a faint dot grid moves at under half the camera
     bg.fillStyle = 'rgba(255,255,255,.07)';
     for (var gx = ((ox % far) + far) % far - far; gx < 560; gx += far) for (var gy = ((oy % far) + far) % far - far; gy < 480; gy += far){ bg.beginPath(); bg.arc(gx, gy, 1.6, 0, 6.3); bg.fill(); }
-    for (var n = 0; n < 26; n++){   // near motes: slow drift, move faster than the world, tinted by the lit step
+    for (var n = 0; n < 12; n++){   // near motes: slow drift, move faster than the world, tinted by the lit step
       var px = hh(n, 1) * 900, py = hh(n, 2) * 900, sp = .5 + hh(n, 3) * .9, x = ((px - cm[0] * cm[2] * (.2 + sp * .2) + Math.sin(t * .4 + n) * 12) % 640 + 640) % 640 - 50, y = ((py - cm[1] * cm[2] * (.2 + sp * .2) - t * 6 * sp) % 760 + 760) % 760 - 50;
       var r = .8 + hh(n, 4) * 2.4, al = .12 + .28 * hh(n, 5); bg.fillStyle = rgb(cc, al * (r > 2 ? .6 : 1)); bg.beginPath(); bg.arc(x, y, r, 0, 6.3); bg.fill(); }
   }
@@ -271,21 +271,22 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);font-fa
   cue({ t: ARR[6] + .75, k: 'thud', g: .5, x: 270, r: .2 }); cue({ t: ARR[6] + 1.1, k: 'shimmer', g: .2 });
   cue({ t: .2, k: 'pop', g: .2, p: 4 });
   window.CUES = { dur: DUR, cues: cues.sort(function(a, b){ return a.t - b.t; }), mix: { duck: 8 }, bed: { bpm: 96, origin: 0, gain: .22, chords: [[45, 57, 64, 67, 71], [41, 57, 60, 64, 69], [43, 55, 62, 67, 71], [45, 57, 64, 67, 71]] } };
-  window.COVER = .9; window.HOLDS = [[2.2, 3.0]]; window.TRANSITIONS = DEP.map(function(d){ return [d, d + FL, 'fly']; }).concat([[PB0, PB1, 'pullback']]);
+  window.COVER = .9; window.HOLDS = [[2.6, 2.9]]; window.TRANSITIONS = DEP.map(function(d){ return [d, d + FL, 'fly']; }).concat([[PB0, PB1, 'pullback']]);
 
   // ---- one frame
   function seek(t){
     t = cl(t, 0, DUR); var cm = cam(t), W = $('world');
     W.style.transform = 'translate(' + (270 - cm[0] * cm[2]).toFixed(2) + 'px,' + (SY - 240 - cm[1] * cm[2]).toFixed(2) + 'px) scale(' + cm[2].toFixed(4) + ')';
     // which step owns the colour now (switches while the camera flies)
-    var cur = 0, ck = 0; for (var i = 1; i <= 6; i++) if (t >= DEP[i - 1] + FL * .2) { cur = i; }
-    var prevI = Math.max(0, cur - 1), kc = cur === 0 ? 1 : io(P(t, DEP[cur - 1] + FL * .1, DEP[cur - 1] + FL * .9)), col = cmix(COL[prevI], COL[cur], kc);
+    var cur = 0, ck = 0; for (var i = 1; i <= 6; i++) if (t >= DEP[i - 1] + FL * .55) { cur = i; }
+    var ci = 0; for (var i2 = 1; i2 <= 6; i2++) if (t >= DEP[i2 - 1] + FL * .1) ci = i2;
+    var prevI = Math.max(0, ci - 1), kc = ci === 0 ? 1 : io(P(t, DEP[ci - 1] + FL * .1, DEP[ci - 1] + FL * .9)), col = cmix(COL[prevI], COL[ci], kc);
     if (t >= PB0) col = cmix(COL[6], [255, 255, 255], io(P(t, PB0, PB1)) * .75);
     document.documentElement.style.setProperty('--c', rgb(col));
     $('tacc').style.color = rgb(col);
     // pill: rolls to the new step
     var pi = cur, ptxt = pi === 0 ? '00 / 06 · THE TAP' : '0' + pi + ' / 06 · ' + NAME[pi]; if (t >= PB0) ptxt = '06 / 06 · THE WHOLE TRIP';
-    var st = pi === 0 ? 0 : DEP[pi - 1] + FL * .2, rk = t >= PB0 ? out(P(t, PB0, PB0 + .45)) : (pi === 0 ? 1 : out(P(t, st, st + .4)));
+    var st = pi === 0 ? 0 : DEP[pi - 1] + FL * .55, rk = t >= PB0 ? out(P(t, PB0, PB0 + .45)) : (pi === 0 ? 1 : out(P(t, st, st + .4)));
     var p0 = $('p0'), p1 = $('p1'), key = ptxt; if (p1.dataset.k !== key) { p0.textContent = p1.textContent || ptxt; p1.textContent = ptxt; p1.dataset.k = key; p1._t = t; }
     if (p1._t === undefined) p1._t = -9; var rr = t >= PB0 ? out(P(t, PB0, PB0 + .45)) : out(P(t, st, st + .4)); if (t < .01) rr = 1;
     p0.style.transform = 'translateY(' + (-rr * 28) + 'px)'; p0.style.opacity = 1 - rr; p1.style.transform = 'translateY(' + ((1 - rr) * 28) + 'px)'; p1.style.opacity = rr;
