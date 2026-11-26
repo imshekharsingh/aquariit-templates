@@ -2964,8 +2964,8 @@
   "channel": "tech",
   "postOn": "2026-11-26",
   "postAt": "15:00",
-  "format": "xray",
-  "device": "tracker tag",
+  "format": "quickmyth",
+  "device": "wearables",
   "aiLabel": true,
   "concept": "A tiny tag that points to your keys: SmartTag3 on a dark colour-world floor, old Bluetooth as a fuzzy 'somewhere here' zone, Channel Sounding as six coloured waves between phone and tag, a compass needle and a 60 distance figure, a 3x ring versus the old range, ultra-wideband as the inner green ring, held payoff on the tag with the needle aimed. Samsung Newsroom, 23 Nov 2026.",
   "experiment": {
@@ -2994,10 +2994,10 @@
    "wordsPerS": 2.6,
    "shotChanges": 6,
    "hookType": "question",
-   "look": "3d colour world",
+   "look": "dark",
    "hero": "tracker tag",
    "firstSecondTension": "yes",
-   "payoff": "takeaway",
+   "payoff": "fact",
    "source": "plan"
   }
  }
