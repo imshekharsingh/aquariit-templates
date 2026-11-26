@@ -942,3 +942,6 @@ Format (at most 6 lines):
 - Left: after the deploy, confirm stage lines with scripts/stage.mjs on today's reel (before the deploy it returned 401: the key is synced on deploy) and read /api/journey's builtAt on the live board.
 - For the other account: if the board freezes again, read error and warn in /api/journey first.
 
+## 2026-11-26 · claude/app-stage-bearer-26nov · App: /api/stage also accepts Authorization: Bearer (tooling, owner approved key reset)
+- Done: POST /api/stage opens with X-Stage-Key (workflows) or Authorization: Bearer matching STAGE_KEY or REELS_READ_KEY (sessions hold one network secret per host); stage.mjs sends no placeholder header when STAGE_KEY env is empty; stage-test.mjs covers both; runbook-reels updated.
+- Left: owner sets the new key as both GitHub secrets and the session network secret; then test reel-fetch and stage.mjs together.
