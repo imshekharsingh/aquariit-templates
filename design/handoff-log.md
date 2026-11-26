@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 11:58 IST · claude/minutes-meter · other account: GitHub minutes meter always shows (queued task 2)
+- Done: templates/index.html: the meter in Settings no longer hides on an error; it shows "Minutes not counted yet" with the reason (HTTP code, empty or old file) and flags a count over 2 days old; a line says the limit counts only if the repo goes private. The nightly count and the R2 file were fine (9,730 of 2,000 min this month); the page works with that file in a browser test.
+- Left: the owner's next look tells which error the live app gets, if any. 3D kit v5: the critic could not fetch the MP4 (this account's environment cannot reach templates.aquariit.com); waits on the owner (design/handoff.md Progress).
+- For the other account: sessions on this account cannot fetch reel files or the app; a critic here needs that host allowed plus the REELS_READ_KEY network secret.
+
 ## 2026-11-26 · claude/handoff-no-cost · owner chat: handoff account does the tasks and reports, no cost talk
 - design/handoff.md: owner rule added (only the written tasks, report each stage, no cost lines or estimates); cost wording and caps removed from the task steps.
 
