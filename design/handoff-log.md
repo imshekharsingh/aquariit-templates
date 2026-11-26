@@ -847,3 +847,8 @@ Format (at most 6 lines):
 - For the other account: a branch cut from an old checkout conflicts in captions.json and pick-log.md; merge main in before the first push. The preflight of a 3D scene takes about 12 min (FLOW samples 223 full frames).
 - Update (same session, 26 Nov): render 2 of web 48 passed Output QA; the independent critic (Opus) said NOT READY: the first 7 s do not show a bug (dull tiles read as selected, dips of 5%). The fix (flicker and fail on each bug beat, two ignored taps, plum-grey tiles, code card faded before the loop) is built and checked on the scene frames; render 3 needs the owner's yes (about 16 GitHub minutes, under $1) and is NOT started; the posted reel is still render 2 until then. For the other account: a dull state must be visibly broken in the first second; a tile that looks half selected does not read as a bug.
 
+
+## 2026-11-26 · claude/tech-26nov-tag-sounding-fix · Tech reel 26 Nov: critic NOT READY on render 1, fix for render 2 (builder session)
+- Done: render 1 passed Output QA; critic (Opus) NOT READY (numbers over the phone, no old-vs-new range, misleading 60 m on the phone screen, AI label); scene fixed (numbers smaller and clear, amber old ring vs 3x ring from a top-down, phone screen arrow only), aiLabel false.
+- Left: render 2 (the last one), Output QA, second critic, then the post day; a third render needs the owner chat's yes.
+- For the other account: three big camera-riding numbers cover the product; keep them in a fixed clear screen spot and check them against the phone in the stills before render 1. The critic branch is merged and deleted by the pipeline, so a verdict file appears on main.

@@ -47,3 +47,8 @@ EXACT FIX (render 2):
 5. captions.json: "aiLabel": false.
 Then re-check frames 12-20 s at phone size for any line or object crossing a number before calling it done.
 ENHANCE: open the payoff on the needle snapping onto the tag with a click sound at 19.8 s, so the answer to "can it point?" is one visible snap.
+
+## Render 1 result and render 2 fix (26 Nov 2026)
+- Render 1 (run 45747481173): Output QA PASS (23.57 s, -14.5 LUFS, PACE ok, NUMBERS ok, EDGES ok, VARIETY 17%, LOOK ok; warnings: no real media, no hero box, one SHEEN band at 9.8 s). Independent critic (Opus): NOT READY (see the CRITIC line above).
+- Fix for render 2 (the last render; a third needs the owner chat's yes), all five points of the critic: (1) the 60 m / 3x / 20 m numbers are smaller and sit in the lower right of the frame, off the phone; (2) the three-times shot is now a true high top-down with a small amber ring (old range) and a mint-cyan ring three times its size, "3x" outside the dial; (3) 20 m sits clear of the phone; (4) the phone screen shows only the green arrow (the text "60 m" is gone); (5) captions.json aiLabel is false. Stills of the fix checked by the builder on frames 2.8, 12.5, 14.2, 17.3 and 19.5.
+- After render 2: Output QA, then a second critic session (new session, Opus).

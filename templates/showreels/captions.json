@@ -3037,7 +3037,7 @@
   "postAt": "15:00",
   "format": "quickmyth",
   "device": "wearables",
-  "aiLabel": true,
+  "aiLabel": false,
   "concept": "A tiny tag that points to your keys: SmartTag3 on a dark colour-world floor, old Bluetooth as a fuzzy 'somewhere here' zone, Channel Sounding as six coloured waves between phone and tag, a compass needle and a 60 distance figure, a 3x ring versus the old range, ultra-wideband as the inner green ring, held payoff on the tag with the needle aimed. Samsung Newsroom, 23 Nov 2026.",
   "experiment": {
    "id": "tech-3d-news-tag",
