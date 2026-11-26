@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-3d-kit-v5 · owner chat: 3D kit v5 handed to another account
+- design/handoff.md reopened for one task (owner): the 3D tech look sample v5 (six critic fixes, render 5 only on the owner's yes). The other account's session writes each stage in its Progress section; the owner chat reads it there. The blocked 3D kit session is archived once that session starts.
+
 ## 2026-11-26 07:15 IST · claude/source-url-26nov · owner chat: morning builders stalled (no repo)
 - The 04:49 daily run made the web and tech builders without source_url, so they had no repo, add_repo was refused, and both stalled; the 05:11 Turns Out task produced nothing. Owner chat restarted all three at 07:12 with the repo. runbook-daily.md now requires source_url on every child session; the Turns Out task prompt was updated (source_url, outside stills check, no skip days). The Daily studio task prompt still says "dark look with one accent" (stale) and can only be changed from the launcher conversation; runbook and rules-tech.md section L win.
 
