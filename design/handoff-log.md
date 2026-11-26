@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 14:34 IST · claude/queue-check · other account: hourly queue check (queued task 8)
+- Done: scheduled task "Handoff queue check" (this account, hourly at :04, cheapest model, fresh session each run) starts the next open queued task in the order of design/handoff.md, one session at a time, skipping a task touched in the last 3 hours.
+- Left: its first run is 15:34 IST (next open task: 6). Task 3 (3D kit v6) continues in its own session.
+- For the main account: write "task N done" in Progress when you close a task by hand, or the check will start it again.
+
 ## 2026-11-26 · claude/handoff-queue-hourly · owner chat: queue check hourly
 - design/handoff.md task 8: the other account's queue check runs hourly (owner), not every 30 minutes.
 

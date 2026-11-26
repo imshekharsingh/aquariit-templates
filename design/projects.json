@@ -5,10 +5,10 @@
    "id": "3d-kit-v6",
    "name": "3D kit v6: the tech look as a told story",
    "account": "other",
-   "stage": "render",
-   "line": "The v6 sample is built and its first video is being made.",
-   "pct": 60,
-   "updatedAt": "2026-11-26T07:41:00Z",
+   "stage": "building",
+   "line": "Render 1 failed two checks (one fast line, colour jumps in fast camera moves); fixing for render 2.",
+   "pct": 55,
+   "updatedAt": "2026-11-26T09:04:00Z",
    "history": [
     {
      "at": "2026-11-26T07:20:00Z",
@@ -24,6 +24,11 @@
      "at": "2026-11-26T07:41:00Z",
      "stage": "render",
      "line": "The v6 sample is built and its first video is being made."
+    },
+    {
+     "at": "2026-11-26T09:04:00Z",
+     "stage": "building",
+     "line": "Render 1 failed two checks (one fast line, colour jumps in fast camera moves); fixing for render 2."
     }
    ]
   },
@@ -59,6 +64,21 @@
      "at": "2026-11-26T08:05:00Z",
      "stage": "done",
      "line": "Projects like the 3D kit now show on the Today board with their stage and history."
+    }
+   ]
+  },
+  {
+   "id": "queue-check",
+   "name": "Hourly check of the other account's task queue",
+   "account": "other",
+   "stage": "done",
+   "line": "An hourly check now starts the next open task by itself.",
+   "updatedAt": "2026-11-26T09:04:00Z",
+   "history": [
+    {
+     "at": "2026-11-26T09:04:00Z",
+     "stage": "done",
+     "line": "An hourly check now starts the next open task by itself."
     }
    ]
   }
