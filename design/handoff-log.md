@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-code-fixes · owner chat: code fixes go to the other account
+- Owner rule: app/tooling code fixes are queued in design/handoff.md for the other account (CLAUDE.md Sessions line). Queued task 4: duplicate reel card (Ready to post + Up next) and the channel slot line. The session started here for it was stopped before any change.
+
 ## 2026-11-26 · claude/slot-test-c3-14 · owner chat: Turns Out slot test at 14:00, web 19:00 test kept
 - Owner: complete both slot tests (growth validation first) and hold the owner to the times. design/slots.json c3 14:00 (test to 2 Dec), web 19:00 (test to 2 Dec); today's Turns Out postAt 14:00; CLAUDE.md slot line. The owner chat reminds at each slot and checks the post.
 

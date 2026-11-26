@@ -12,6 +12,11 @@ When the task is done, the session marks it DONE here and the file goes back to 
 Do only the tasks written in this file, in the order given, and report each stage in Progress. No cost estimates, cost lines or cost talk,
 here or in chat. Ask the owner only before something the task does not already cover (for example an extra render).
 
+## Owner rule: code fixes come here (owner, 26 Nov 2026)
+App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
+critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Take queued tasks in number order
+unless a task says otherwise; report each in Progress.
+
 ## Read first (only the parts you need)
 CLAUDE.md; the last 5 entries of design/handoff-log.md; design/3d-kit-phase2.md; design/rules-tech.md (section L, rules D1-D8).
 Never create, change or fire scheduled tasks (main account only). Model: the cheaper one (sonnet). Size M; say so in chat first.
@@ -89,6 +94,8 @@ object? each connection its own beat? would the wires pass as real? is any frame
 render under the owner's render rule above, Output QA. For the critic: this account cannot fetch videos, so write in Progress
 "v6 ready for critic" and stop; the main account runs the critic and writes its verdict in Progress. If READY, v6 replaces v5 as the
 tech 3D gold (design/gold.md, scripts/qa/gold.json, the tech3d starter).
+
+## Queued task 4: DONE on main (26 Nov), skip it.
 
 ## Owner yes for render 5: YES (owner, in the other account's chat, 26 Nov 10:14 IST)
 
