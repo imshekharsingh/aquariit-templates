@@ -70,3 +70,5 @@ NITS (minor, no render; for the next tech reel on this kit):
 4. Around 17.6 s the caption re-wraps with a crossfade of about 0.15 s, so two layouts of the same line ghost on top of each other. Swap the layout in one frame, with no crossfade.
 5. 22-23.5 s there is no caption over the held payoff. The last line was shown in full first, so this passes, but holding "More pointing." to the end would land better.
 6. Critic 1's ENHANCE (the needle snapping onto the tag with a click at 19.8 s) was not added. It is optional.
+
+CRITIC: READY (render 2; the second independent critic's verdict "CRITIC 2: READY" above, restated in the form the app reads; owner chat, 26 Nov 2026)
