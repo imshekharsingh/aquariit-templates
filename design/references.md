@@ -218,3 +218,19 @@ WHICH CHANNEL (studio decision, 26 Nov; the owner left the routing to us):
 - WE DO NOT TAKE: any mascot (owner: none), their product names, logos, screens or palettes as they are, their scripts, their 37-68 s length (we keep ours), the comment-for-DM ask (no DM automation on our side).
 - Used: 26 Nov web (:has), tech (SmartTag3 channel sounding), Turns Out (fix this invite) builds, before their render.
 - Closed 26 Nov (owner: the studio decides what to keep; references are reported as "what we took" and closed, no Keep/Skip list).
+
+## R-ref 27 Nov 2026 · owner upload in chat: a 34 s "system map" explainer (owner: "amazingly designed ... where I want to get our reels to"; reference for tech, web and Turns Out)
+Studied from two screen recordings (0-12 s and 12-21 s of the reel, 4 fps measurements, the reel's caption band excluded). The videos stay in the owner chat; nothing of them is in this repo.
+- FORMAT: a 2.5D motion-graphics MAP (flat vector shapes, glow, depth by blur and dimming), not 3D. One hub in the centre, 6 numbered nodes around it, lines between them.
+- CAMERA: one continuous camera over one big canvas, no hard cuts (scene-cut detector found none); it flies hub -> node 1 -> node 2 ... -> pulls back to the whole map at the end. Every move has a reason: it goes to the next step of the story.
+- COLOUR WORLDS: each node owns a colour and a spotlight cone (measured hue per 0.5 s: warm hub, then blue ~214 for 6 s, amber ~35 for 4 s, violet ~252, magenta ~327, teal ~162, crimson ~344); everything not in focus dims to ~20 % but stays visible as context.
+- PERSISTENT FRAME: a fixed two-line title at the top for the whole reel; a section pill under it ("03 / 06 · VIDEO GENERATOR") that changes per node; word-by-word captions at the bottom with the key word in the accent colour.
+- MINI INTERFACES at each node: a "viral topics" card with a number, a line chart drawing itself, an edit timeline, an approval card with buttons, platform icons fanning out with check badges. Each node shows something WORKING, not an icon alone.
+- LIFE: light pulses travel along the lines; numbered badges; neighbours dim but keep their position; the final pull-back reveals the whole system (the payoff).
+- MEASURED vs our 3D v7 render 2: motion per frame (mean abs diff) reference 10.8-12.9, v7 21.1; still frames reference 8-13 %, v7 1 %. The reference moves LESS than v7 but reads as far more designed: the quality comes from focus (one subject lit, the rest dimmed), structure (fixed title, section pill, numbered steps) and a reason for every move, not from more motion.
+WHICH CHANNEL (studio decision; owner: test on tech first):
+- Tech: "how a system works" topics as a node map (e.g. what happens after you tap to pay). Test scene first (owner chat, 27 Nov).
+- Web: "how the browser does X" topics as a node map; single-fix topics take only the grammar (colour world per step, spotlight focus, persistent title + section pill, mini UI).
+- Turns Out: the grammar only (spotlight focus, colour world per step, section pill, mini UI cards), never the map format; before -> after stays the spine.
+- WE DO NOT TAKE: their hub disc look, any brand name or logo, their exact neon palette, their Hinglish captions (we stay in English), their 34 s length as a rule.
+
