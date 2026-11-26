@@ -22,8 +22,8 @@ const world = W3D.world(S, { seed: 33, props: 30, radius: [14, 40], heroZone: 14
 const L = W3D.lib, gloss = W3D.gloss;
 
 // ---------- the cast: a phone (you), the tag on a plinth (your keys) ----------
-const PH = V(-1.0, 0, 3.2), TG = V(2.0, 0, -3.6), TAGY = 1.9;
-const phone = L.phone(THREE, { w: 1.5, h: 3.1, screenA: '#3a1f9e', screenB: '#120a2c' }); phone.position.copy(PH); phone.rotation.y = .5; S.scene.add(phone);
+const PH = V(-0.5, 0, 3.2), TG = V(2.0, 0, -3.6), TAGY = 1.9;
+const phone = L.phone(THREE, { w: 1.5, h: 3.1, screenA: '#3a1f9e', screenB: '#120a2c', screen: (c, w, h) => { c.save(); c.translate(w / 2, h * .42); c.rotate(-1.0); c.fillStyle = '#42ff8c'; c.beginPath(); c.moveTo(w * .3, 0); c.lineTo(-w * .05, -w * .25); c.lineTo(-w * .05, -w * .09); c.lineTo(-w * .32, -w * .09); c.lineTo(-w * .32, w * .09); c.lineTo(-w * .05, w * .09); c.lineTo(-w * .05, w * .25); c.closePath(); c.fill(); c.restore(); c.fillStyle = '#fff'; c.font = '800 ' + Math.round(w * .2) + 'px Inter, DejaVu Sans, sans-serif'; c.textAlign = 'center'; c.fillText('60 m', w / 2, h * .82); } }); phone.position.copy(PH); phone.rotation.y = .5; S.scene.add(phone);
 const tag = new THREE.Group(); tag.position.copy(TG); S.scene.add(tag);
 const plinth = new THREE.Mesh(new THREE.CylinderGeometry(.85, 1.0, .4, 48), gloss(THREE, 0x1b1d27, { roughness: .3, metalness: .4 })); plinth.position.y = .2; tag.add(plinth);
 const disc = new THREE.Group(); disc.position.y = TAGY; tag.add(disc);
@@ -65,7 +65,7 @@ const dirBeam = W3D.cable(S, [[PH.x, .12, PH.z], [lerp(PH.x, TG.x, .5), .12, ler
 const pathLine = W3D.cable(S, [[PH.x, .1, PH.z - .2], [lerp(PH.x, TG.x, .4), .1, lerp(PH.z, TG.z, .4) + .3], [lerp(PH.x, TG.x, .75), .1, lerp(PH.z, TG.z, .75) - .2], [TG.x, .1, TG.z + 1.1]], { color: 0xb08cff, radius: .055, glow: 1.5, segments: 80, light: 0, halo: .22, floorGlow: .7, floorStrength: .5, pulse: { speed: .4, width: .06 } });
 // ---------- number figures (ride the camera, lower part of the frame) ----------
 const mkFig = (txt, col, unit) => { const g = new THREE.Group(), f = L.figure(THREE, txt, { height: 1.45, color: col, radius: .1, emissive: .18 }); g.add(f); if (unit) { const u = new THREE.Mesh(new THREE.PlaneGeometry(1.3, 1.3), new THREE.MeshBasicMaterial({ map: W3D.tex(THREE, 128, 128, (c, w, h) => { c.fillStyle = '#fff'; c.font = '800 100px Inter, DejaVu Sans, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(unit, w / 2, h / 2); }), transparent: true, toneMapped: false, fog: false })); u.position.set(f.userData.size.x / 2 + .55, -.35, 0); g.add(u); g.userData.w = f.userData.size.x + 1.1; } else g.userData.w = f.userData.size.x; g.visible = false; S.scene.add(g); g.traverse((m) => { if (m.isMesh) m.castShadow = false; }); return g; };
-const fig60 = mkFig('60', 0x42ff8c, 'm'), fig3 = mkFig('3x', 0xffa23a, ''), fig20 = mkFig('20', 0x22d3ee, 'm');
+const fig60 = mkFig('60', 0x42ff8c, 'm'), fig3 = mkFig('3x', 0x22d3ee, ''), fig20 = mkFig('20', 0xff6ac1, 'm');
 
 // ---------- captions ----------
 const KEYS = [[4, 4], [3, 3], [0, 1], [7, 8], [3, 4], [3, 3], [3, 3]];
@@ -83,10 +83,10 @@ const cam = W3D.camPath(S, [
   { t: 0, pos: [3.6, 3.4, 5.2], look: [2, 2.2, -3.6], fov: 50 },                        // 1 close on the tag, already moving
   { t: C.point + .9, pos: [.4, 4.6, 13.5], look: [.3, 1.9, -.6], fov: 52 },             // 2 pull back: phone and tag
   { t: C.guess + .5, pos: [6.2, 5.2, 5.2], look: [2, 1.8, -3.6], fov: 50 },            // 3 swing round the fuzzy zone
-  { t: C.sounding + .4, pos: [9.2, 4.6, 10.2], look: [.2, 2.4, -.4], fov: 58 },        // 4 low side track along the waves
+  { t: C.sounding + .4, pos: [10.4, 5.0, 12.0], look: [.2, 2.3, -.4], fov: 60 },        // 4 low side track along the waves
   { t: C.dir + .3, pos: [-3.8, 8.2, 9.2], look: [-.8, 1.7, .6], fov: 52 },            // 5 high over the phone: the compass
   { t: C.sixty + .8, pos: [1.0, 10.5, 12.5], look: [.2, 0, -.6], fov: 54 },             // wide high: the whole line
-  { t: C.three + .5, pos: [-.5, 14.5, 9.5], look: [-.2, 0, -.2], fov: 52 },             // 6 top-down: rings
+  { t: C.three + .5, pos: [0, 17.5, 1.5], look: [0, 0, -1.6], fov: 52 },             // 6 top-down: rings
   { t: C.twenty + .3, pos: [-3.2, 5.4, 10.6], look: [-1.7, 1.2, 2.8], fov: 52 },         // 7 close on the phone, UWB ring
   { t: C.less + .3, pos: [.8, 6.2, 15.5], look: [.2, 1.1, -.2], fov: 52 },              // 8 back to the tag
   { t: TOTAL, pos: [.5, 6.0, 15.0], look: [.2, 1.1, -.2], fov: 52 },                    // held payoff
@@ -119,9 +119,9 @@ function frame(t) {
   dial.visible = na > .01; dial.material.opacity = 1; dial.scale.setScalar(Math.max(.001, na)); dial.rotation.z = (t - C.dir) * .25;
   dirBeam.reveal(ease(prog(t, C.dir + .5, C.dir + 1.3))); dirBeam.update(t, 1);
   // figures follow the camera in the lower part of the frame
-  S.cam.updateMatrixWorld(); const ray = V(0, -.7, .5).unproject(S.cam).sub(S.cam.position).normalize();
+  S.cam.updateMatrixWorld(); const ray = V(0, -.38, .5).unproject(S.cam).sub(S.cam.position).normalize();
   const f60 = eback(prog(t, C.sixty - .05, C.sixty + .45)) * (1 - sm(prog(t, C.three - .1, C.three + .1))), f3 = eback(prog(t, C.three - .05, C.three + .45)) * (1 - sm(prog(t, C.twenty - .1, C.twenty + .1))), f20 = eback(prog(t, C.twenty - .05, C.twenty + .45)) * (1 - sm(prog(t, C.less - .1, C.less + .1)));
-  [[fig60, f60], [fig3, f3], [fig20, f20]].forEach(([f, a]) => { f.visible = a > .01; f.scale.setScalar(Math.max(.001, a)); f.position.copy(S.cam.position).addScaledVector(ray, 10); f.quaternion.copy(S.cam.quaternion); f.translateX(-f.userData.w * .5 * f.scale.x * 0 + 0); });
+  [[fig60, f60], [fig3, f3], [fig20, f20]].forEach(([f, a]) => { f.visible = a > .01; f.scale.setScalar(Math.max(.001, a)); f.position.copy(S.cam.position).addScaledVector(ray, 7); f.scale.multiplyScalar(.7); f.quaternion.copy(S.cam.quaternion); f.translateX(-f.userData.w * .5 * f.scale.x * 0 + 0); });
   // rings on the floor: old range (grey) -> 3x (cyan) at "three"; UWB (green, inside) at "twenty"
   const oldK = sm(prog(t, C.three - .5, C.three - .1)) * (1 - sm(prog(t, C.twenty - .2, C.twenty + .2)) * .8);
   setRing(oldRing, PH.x, PH.z, oldK, 1, 1.5);
