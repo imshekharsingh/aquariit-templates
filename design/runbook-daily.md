@@ -68,6 +68,7 @@ Stage board (owner, 24 Nov 2026): at every stage change of a reel build (researc
 Step 4 above (build the day's web and tech reels) runs in these eight steps. Sonnet does the work, Fable makes the three calls that matter
 (what to make, whether the stills are good, whether it beats gold). The Turns Out task keeps its fixed design order and does not use steps 1-2.
 Stage board: `node scripts/stage.mjs <channel> <stage> ...` at each step as before.
+**Every session on a reel posts its stage (owner, 26 Nov 2026):** the builder (`building` at start, `video --pct n` while the render runs, `checking` after the render, `ready` when the critic says READY), the stills check session (`stills --line "Stills check: ..."`), and the critic (`checking --line "Second look"`, then `ready` or a plain line with the fix). Use the reel name once it has one. Never blocks work.
 **Sessions and models (the run starts them itself; nothing is pasted by the owner).** Each call is a child session made with `create_session` (same environment as
 this run), one task, one channel, one at a time; its result comes back as the reply or the pushed file. Settings:
 - ALWAYS pass `source_url: "https://github.com/imshekharsingh/aquariit-templates"` (26 Nov: builders made without it started with no repo, could not attach it, and stalled from 04:49 until the owner chat restarted them at 07:12).
@@ -86,7 +87,7 @@ reel today from design/topic-bank.md (steps 1-8, the first KEEP of the tech list
 2. **Fable picks.** One short Fable call on the pick sheet only (`node scripts/pick-sheet.mjs`, about one screen; do not paste the bank). It answers one line
    per channel: `KEEP <ids in the order to use>` and `REJECT <ids>`. Keep one or more; the reel uses ONE at a time, the other kept ones wait for
    later days and need a re-check the morning they are used. Log the answer in design/pick-log.md (line format in that file).
-3. **Build from gold (Sonnet).** `node scripts/starter.mjs <web|tech> <slug>`. It copies the gold look (light, framing, type sizes, shot rhythm, cuts, motion,
+3. **Build from gold (Sonnet).** `node scripts/starter.mjs <web|tech3d> <slug>` (tech builds use the 3D look from 26 Nov 2026: `tech3d`, rules-tech.md L0). It copies the gold look (light, framing, type sizes, shot rhythm, cuts, motion,
    sound) and never the hero object: the gold reel's phone, card or cable does not appear; the new topic brings its own hero, drawn new.
    The captions.json entry carries the "style" record (design/what-works.md "Style record"); the fields are planned now and re-measured from the MP4 after the render.
 4. **Direction card and stills (Sonnet).** Fill review/<channel>/<name>.direction.md (design/direction.md) before the build, then render the stills

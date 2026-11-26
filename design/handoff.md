@@ -1,4 +1,9 @@
-# Handoff: OPEN for one task (owner, 26 Nov 2026): 3D tech look sample v5
+# Handoff: CLOSED (26 Nov 2026, 11:49 IST)
+
+Both tasks below are DONE: the 3D tech look sample v5 (the tech 3D gold, finalised) and Queued task 2 (the GitHub minutes meter).
+The second account takes a new task only when the owner writes one here and sets this file to OPEN again. History follows.
+
+# History: 3D tech look sample v5 (owner, 26 Nov 2026), DONE
 
 The owner runs this task from another Claude account. That session reads this file, does the task, and writes every stage in
 "Progress" below (in its pushes). The main account's owner chat reads Progress; there is no other channel between the two.
@@ -50,7 +55,7 @@ If the v5 critic says NOT READY: stop, write the critic's fix list in Progress a
 If a render FAILS, fix it and run the next render without asking. If a render SUCCEEDS and the critic's verdict needs another render, stop: the owner checks that result and confirms before the next render.
 
 ## Queued task 2 (owner, 26 Nov 2026): the GitHub minutes meter is missing from the app
-Take it up after the 3D task is DONE (or now, if the 3D task is waiting on the owner). Size S, no renders.
+Take it up after task 0. Size S, no renders.
 - The owner cannot see the "GitHub minutes" meter in the app's settings sheet. It is hidden until /api data loads: templates/index.html
   (id "use", ~line 651; loader ~line 1646-1656, which hides it silently on any error), fed by the nightly "Actions usage" workflow
   (.github/workflows/actions-usage.yml, scripts/actions-usage.mjs) writing c/showreel-usage-actions.json to R2.
@@ -58,6 +63,33 @@ Take it up after the 3D task is DONE (or now, if the 3D task is waiting on the o
   show the meter with a plain "minutes not counted yet" line instead of hiding it.
 - Why the owner needs it: deciding whether to make the repo private (private repos get 2,000 free minutes a month, then pay per minute).
 - Write each stage in Progress below; one handoff-log entry.
+
+## Queued task 0 (do first): two of your saved changes did not merge
+The pipeline runs for your branches claude/3d-kit-rules and claude/3d-kit-limits failed (26 Nov). Merge origin/main into each, fix what
+failed (npm run check), push again until they merge. Write one Progress line when both are on main.
+
+## Queued task 3 (owner, 26 Nov 2026): 3D kit v6, a told story instead of a still scene
+After task 0 and task 2. The owner watched v5 (critic READY) and wants more. Owner's notes: "it still glows more than a user's eye
+should expect, wiring doesn't give realistic feeling, movement through the 18.5 s video is really limited". The owner's direction, agreed:
+1. Beats: one beat = one action = one shot, 1.5-3 s each; every beat has something entering or changing. We are telling a story.
+2. Entrances: the three apps flow in one after another, each with its own motion-design entrance (slide + turn to camera + settle, a
+   different move each); tools likewise. Make each entrance a reusable kit entrance per object type, so reels do not all look alike.
+3. Wiring per app: the first app's cable is its own beat (it unrolls, the plug clicks in, one short pulse); the remaining cables follow
+   as a fast cascade, so the reel stays 20-35 s. The tangle grows beat by beat; then the hub arrives, cables collapse into one, the
+   camera pulls back to the clean picture.
+4. Detail and angles: each element shows its own detail (icon, screen, plug), shot at its own angle (low close-up on a plug,
+   three-quarter on a tile, top-down on the tangle). The camera travels between subjects on top of the objects' own motion.
+5. Hook first: frame 0 is still the finished tangle with "3x8 = 24" for about 1 s, then a quick rewind and the build-up.
+6. Readability: one big move at a time; a short settle (about 0.5 s) whenever a name or number must be read; nothing held over ~2 s.
+7. Realism, believable not photoreal: cables sag with gravity, have real plugs at both ends, matte with a soft sheen, contact shadows;
+   a cable glows only for the short pulse when it connects. Only screens and lights emit light. Much less bloom than v5.
+8. Do not downgrade: keep v5's colour and materials, clean names, nothing cut at edges, the hook frame and the loop home.
+Write these as kit rules (design/rules-tech.md section L, a D9-D12 block) and four new critic questions in design/critic.md (own entrance per
+object? each connection its own beat? would the wires pass as real? is any frame over-glowing?), plus a GLOW check in Output QA
+(fail when emissive/bloomed area is above a small share of the frame). Then rebuild the sample as v6 on these rules, one stills sheet,
+render under the owner's render rule above, Output QA. For the critic: this account cannot fetch videos, so write in Progress
+"v6 ready for critic" and stop; the main account runs the critic and writes its verdict in Progress. If READY, v6 replaces v5 as the
+tech 3D gold (design/gold.md, scripts/qa/gold.json, the tech3d starter).
 
 ## Owner yes for render 5: YES (owner, in the other account's chat, 26 Nov 10:14 IST)
 
@@ -78,6 +110,8 @@ Take it up after the 3D task is DONE (or now, if the 3D task is waiting on the o
 - 26 Nov 11:47 IST, other account: finalise step 1 done: the v5 sample is the tech 3D gold (design/gold.md entry; scripts/qa/gold.json "tech3d" numbers from the v5 render's Output QA: bright 0.218, background 0.147, dark 40 %, grey 2 %, contrast 0.229; accent kept from v4, same colours); the app's preview entry now plays v5.
 - 26 Nov 11:48 IST, other account: finalise step 2 done: `node scripts/starter.mjs tech3d <slug>` copies the v5 gold scene and its note now carries the v3-v5 critic lessons; techkit/README.md lists what each critic found, what fixed it in v5, the v5 critic's notes for daily reels (number agrees when a new item joins, own icon per tile, 20-35 s, one readable artifact) and the no-render check (techkit/check-gold3d.cjs). Rules D1-D8 stay in design/rules-tech.md.
 - 26 Nov 11:48 IST, other account: finalise step 3 done: design/3d-kit-phase2.md known limits: the hub label behind the apps is closed (v5 layout, checked every 0.25 s); the 18 s pace and the frame-blend motion blur are accepted, with the reasons written there.
+- 26 Nov 11:48 IST, other account: finalise step 4 done: design/rules-tech.md L0 and design/runbook-daily.md step 3 say tech daily builds start from `node scripts/starter.mjs tech3d <slug>` from the next build on; design/3d-kit-phase2.md has its DONE line.
+- 26 Nov 11:49 IST, other account: DONE. Finalise steps 1-5 done: v5 is the tech 3D gold, the starter copies it with the v3-v5 lessons, known limits closed or accepted, tech daily builds use the 3D look from the next build on. Queued task 2 was done earlier (meter always shows). This file is CLOSED.
 
 ---
 

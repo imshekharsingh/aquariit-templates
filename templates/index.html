@@ -416,6 +416,8 @@
   .bcard{position:relative;margin:0 0 10px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:border-color .3s ease,box-shadow .3s ease,transform .3s ease}
   .bcard.ready,.bcard.posted{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok),0 6px 22px -8px var(--ok)}
   .bcard.lift{animation:blift .38s ease-out}
+  .bfix{padding:0 14px 12px}
+  .bfixb{width:100%;min-height:44px}
   @keyframes blift{0%{transform:translateY(0)}45%{transform:translateY(-4px)}100%{transform:translateY(0)}}
   .bcard.skipped{opacity:.78}
   .bmain{display:flex;align-items:stretch;gap:12px;width:100%;padding:12px 12px 14px;border:0;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
@@ -1280,6 +1282,8 @@
           if (stt.k === 'checking') { o.idx = 5; o.line = 'Checking the video'; }
           else if (stt.k === 'fixing') { o.idx = 5; o.line = 'Found a problem: ' + (stt.why || '').slice(0, 90); }
           else if (stt.k === 'building') { o.idx = 2; o.line = stt.t; } } } }
+    if (stt && stt.k === 'fixing') { var sg = r.stages || {}, stp = sg.render && sg.render.s === 'fail' ? 'making the video' : sg.checks && sg.checks.s === 'fail' ? 'machine checks' : 'second look';
+      o.fail = 'Reel ' + r.name + ', step: ' + stp + ', why: ' + String(stt.why || '').slice(0, 400); }
     if (!o.line) o.line = o.fin ? BFIN[o.fin] : o.idx >= 0 ? BST[o.idx][1] : 'Not started yet';
     if (jOld(jLast)) o.line += ' (old status)';
     return o; }
@@ -1295,7 +1299,11 @@
     body.appendChild(top); body.appendChild(line); body.appendChild(dots); body.appendChild(bar); body.appendChild(meta);
     main.appendChild(th); main.appendChild(body); inner.appendChild(ol); inner.appendChild(open); more.appendChild(inner);
     card.appendChild(main); card.appendChild(more); card.appendChild(edge);
-    var c = { k: k, card: card, th: th, st: st, line: line, dots: dots, bi: bi, bp: bp, meta: meta, ol: ol, open: open, ei: ei, main: main, prev: null, img: null };
+    var fix = el('div', 'bfix'), fixb = el('button', 'btn bfixb', 'Fix'), c = { k: k, card: card, th: th, st: st, line: line, dots: dots, bi: bi, bp: bp, meta: meta, ol: ol, open: open, ei: ei, main: main, fix: fix, fixb: fixb, prev: null, img: null };
+    fixb.type = 'button'; fix.hidden = true; fix.appendChild(fixb); card.insertBefore(fix, more);
+    fixb.addEventListener('click', function(){ if (!c.fail) return; fixb.disabled = true; fixb.textContent = 'Sending';
+      fetch('/api/feedback', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'reel' }, body: JSON.stringify({ channel: k, priority: true, text: 'FIX (from the board, top priority) ' + c.fail }) })
+        .then(function(r){ if (!r.ok) throw 0; c.sent = c.fail; fixb.textContent = 'Sent to the studio'; }).catch(function(){ fixb.disabled = false; fixb.textContent = 'Try again'; }); });
     main.addEventListener('click', function(){ var on = !card.classList.contains('open'); card.classList.toggle('open', on); main.setAttribute('aria-expanded', String(on)); });
     open.addEventListener('click', function(){ if (c.ready) { ch = k; go('reels'); } else if (c.name) openReel(c.name); });
     return c; }
@@ -1319,6 +1327,9 @@
     c.meta.textContent = (o.fin === 'posted' ? 'Posted' : 'Posts at ' + slot + ' IST') + (mm ? ' · ' + mm : '');   // the slot comes from design/slots.json
     var want = o.thumb ? o.thumb + '?v=' + encodeURIComponent((SROWS.filter(function(x){ return x.ch === c.k; })[0] || {}).at || '') : null;
     if (want !== c.img) { c.img = want; c.th.textContent = ''; if (want) { var im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.src = want; im.onerror = function(){ im.remove(); c.th.appendChild(chDot(c.k)); }; c.th.appendChild(im); } else c.th.appendChild(chDot(c.k)); }
+    // Fix (owner, 26 Nov 2026): a red step sends its failure line (reel, step, why) as a top-priority Feedback item
+    var bad = o.fail && !o.fin; c.fix.hidden = !bad;
+    if (bad) { if (c.fail !== o.fail) { c.fail = o.fail; c.sent = null; } c.fixb.disabled = c.sent === c.fail; c.fixb.textContent = c.sent === c.fail ? 'Sent to the studio' : 'Fix'; } else c.fail = null;
     c.prev = o; }
   function bRender(){
     var box = document.getElementById('b-cards'), ready = 0, running = 0;

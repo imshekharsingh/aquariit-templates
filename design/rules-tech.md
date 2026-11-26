@@ -1,7 +1,7 @@
 # @techin20sec rulebook (the gate every tech reel passes before its one render)
 
 ## Start from gold (owner chat, 24 Nov 2026; design/gold.md)
-Every new tech reel starts as a copy of the gold reel showreel-tech-ai-memory: `node scripts/starter.mjs tech <slug>` copies techkit/scenes/ai-memory-r4.html and techreel/topics/ai-memory.json (+ the r4 preview keys) and marks the only places to
+From 26 Nov 2026 every new tech daily reel starts from the 3D gold: `node scripts/starter.mjs tech3d <slug>` (section L0). Before that, every new tech reel started as a copy of the gold reel showreel-tech-ai-memory: `node scripts/starter.mjs tech <slug>` copies techkit/scenes/ai-memory-r4.html and techreel/topics/ai-memory.json (+ the r4 preview keys) and marks the only places to
 change with "CHANGE:" (the objects in each world, the bold words and numbers, the hook motion, the screen card, the 7 voice lines, cues, sfx and post text). Keep the rest as gold (light, framing, type sizes, shot rhythm, motion, sound) unless the review file says
 why. `npm run check` fails while a config still has "_starter" or "CHANGE: ". After the render: Output QA LOOK compares its light with gold,
 and `python3 scripts/qa/side-by-side.py reel-files/<name>.mp4` makes the sheet the critic must view (critic.md question 43).
@@ -168,6 +168,9 @@ ZONE, OVERLAP, SUBTITLES, CAPTIONS, FLOW (techkit/preflight.mjs), PREFLIGHT voic
 - **N4. Every shot alive.** In showreel-tech-battery-cycles (25 Nov) the owner liked the "habits" and "cycle" moments (more expressive frames, felt
   premium) and found the rest not premium. Every shot needs that level of motion and expression; the critic marks any shot flatter than those as a fix.
 **25 Nov audit:** tech OK (median reach 1,199 over the last 7). PROMOTE: tech-kit-engine (4 WINs, 0 LOSEs, +312% to +1,104%) and tech-myth-verdict (3 WINs, 0 LOSEs) stay as the way tech reels are built. ai-memory (the gold) reached 1,199 at 24 h, level with the median (-1%): the look is not the lever, the topic and the first second are. Today: a new device type (battery cycles), the 500 to 1000 number changing on the spoken word.
+
+## L0. Tech daily builds use the 3D look (26 Nov 2026, from the next tech build on)
+Every tech daily reel starts with `node scripts/starter.mjs tech3d <slug>` from the 3D gold (showreel-tech-gold3d-sample render v5, critic READY; design/gold.md "Tech, the colour-world 3D look"), keeps `"look": "3d"` in its topic file and follows section L and D1-D8 below. The old `tech` starter (ai-memory) is only for a reel the owner asks for in that look.
 
 ## L. The colour world look (owner, 25 Nov 2026; replaces the 22 Nov near-black + white/grey + two accents look and M5's top keyword band; study: design/references.md "R-ref 25 Nov")
 Why: the 22 Nov look made tech reels grey and flat; the owner's reference (an explainer on why MCP is needed when APIs exist) is premium because of the points below. Where this contradicts K0-K3, D6, M4's "cyan or amber only", M5 and tech-direction.md section 2, THIS wins.
