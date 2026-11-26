@@ -822,4 +822,9 @@ Format (at most 6 lines):
 - Found: the refs preview was `fps=1,tile=4x2`, so every clip preview was its first 8 seconds only; references 4-14 were judged from openings.
 - Fix: scripts/asks.mjs refs preview now spreads 8 frames over the whole clip; `asks.yml refs` with ASKS {"full":[ids]} adds time-stamped sheets of the whole clip at 1 frame a second (24 s a sheet). Timeout 20 min.
 - Owner (26 Nov): full study of refs 9-14 approved (~$4); today's reels move only after it; the studio decides which reference goes to which channel.
+
+## 2026-11-26 · claude/c3-fix-invite-26nov-c · Turns Out fix-invite: reference type treatment (same build)
+- Done: serif headline with italic accent word and pill subtitles from the 26 Nov references; stills checks (overlap, safe zone, text fit, band) pass.
+- Left: one render, Output QA, critic; then postOn 2026-11-26, postAt 17:00.
+- For the other account: the reversal beat from the references was not added (script length kept).
 - 26 Nov 07:45 IST: refs 9-14 studied whole (design/references.md "R-ref 26 Nov"), routed per channel; today's three builders held before render 1 and sent their lessons.
