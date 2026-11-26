@@ -27,3 +27,5 @@ Scene scripts/channel3/design/fix-invite.js (copy: scripts/channel3/fix-invite.h
 Owner feedback (design/owner-feedback.md) against the stills: natural spoken sentences with breaths; the before is a believable first draft (four fonts, all centred, confetti, no hero), not a strawman; nothing the invite needs is deleted (name, age, date, place and RSVP all stay); the 7 and any added element are hidden while the BEFORE picture is kept; the BEFORE flashback never covers a chip or tag; no CTA on screen.
 
 Critic: PENDING (an independent session writes CRITIC: READY or NOT READY).
+
+Reference lessons applied 26 Nov (owner chat, refs 10 and 14): serif headline with the key word in italic accent, subtitles as a pill; check chips and before-to-after in one frame were already in the reel. Not applied: the reversal beat and a script change (the owner chat said keep our length).
