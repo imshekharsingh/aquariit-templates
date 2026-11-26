@@ -14,16 +14,15 @@ here or in chat. Ask the owner only before something the task does not already c
 
 ## Owner rule: code fixes come here (owner, 26 Nov 2026)
 App and tooling CODE fixes are queued in this file for this account ("Queued task N"), in order. The main account keeps only reel builds,
-critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. PRIORITY (owner, 26 Nov 2026): task 3 (the 3D kit) first, then task 9 (references), then any other open task in number order; open
-means not yet marked done in Progress
+critics, anything that needs reel videos or the signed-in site, and fixes needed for today's posts. Only GO tasks are worked on (rule below): now task 3, then task 9
 (later numbers after these, in order); report each in Progress.
 Every task here is also a project on the app's board: update its entry in design/projects.json at each stage, in the same push as the work (design/runbook-studio.md "Projects on the board").
 
-## Owner rule: watch this queue (owner, 26 Nov 2026)
-This account picks up ANY task added to this file without being told. Every queued task is a "## Queued task N" heading; it is open until
-Progress has a line "task N done" (or the heading says DONE). Set up, once, in THIS account (task 8 below), a scheduled check that looks
-here regularly and starts work on the next open task in the stated order. Never two sessions on the same task: a running session writes
-"task N started" in Progress first, and the check skips a task whose last Progress line is "started" from the last 3 hours.
+## Owner rule: work only on tasks marked GO (owner, 26 Nov 2026)
+Do NOT pick up the next task on your own. A task is worked on only when its heading carries "GO" (the owner or the main account adds it
+when the owner asks). The hourly "Handoff queue check" starts a session only for an open GO task that is not already started (a
+"task N started" Progress line in the last 3 hours); otherwise it ends at once. When a GO task is done, write "task N done" and stop.
+Current GO list, in this order: task 3 (3D kit v6), then task 9 (references). Every other open task waits until it is marked GO.
 
 ## Read first (only the parts you need)
 CLAUDE.md; the last 5 entries of design/handoff-log.md; design/3d-kit-phase2.md; design/rules-tech.md (section L, rules D1-D8).
@@ -80,7 +79,7 @@ Take it up after task 0. Size S, no renders.
 The pipeline runs for your branches claude/3d-kit-rules and claude/3d-kit-limits failed (26 Nov). Merge origin/main into each, fix what
 failed (npm run check), push again until they merge. Write one Progress line when both are on main.
 
-## Queued task 3 (owner, 26 Nov 2026): 3D kit v6, a told story instead of a still scene
+## Queued task 3 GO (owner, 26 Nov 2026): 3D kit v6, a told story instead of a still scene
 After task 0 and task 2. The owner watched v5 (critic READY) and wants more. Owner's notes: "it still glows more than a user's eye
 should expect, wiring doesn't give realistic feeling, movement through the 18.5 s video is really limited". The owner's direction, agreed:
 1. Beats: one beat = one action = one shot, 1.5-3 s each; every beat has something entering or changing. We are telling a story.
@@ -127,7 +126,7 @@ if none is open or one is already started within 3 hours, ends at once; otherwis
 the repo) whose prompt is "Read design/handoff.md and do Queued task N; write 'task N started' in Progress first". Keep it quiet: no
 message unless it starts work. Write in Progress the schedule you set and the first check's result.
 
-## Queued task 9 (owner, 26 Nov 2026): references, measured (do it right after task 3)
+## Queued task 9 GO, after task 3 (owner, 26 Nov 2026): references, measured (do it right after task 3)
 Owner: reference work must show in the reels and in the numbers. The critic check (a named pattern must be visible in the video) is
 already added on main (design/critic.md question 52). This task is the measuring part. Size M.
 1. Side-by-side gap: scripts/ref-compare.mjs <reel> <ref-id>: from our final MP4 and the reference clip (the app References file),
