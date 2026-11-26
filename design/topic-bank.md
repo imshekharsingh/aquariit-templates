@@ -138,6 +138,32 @@ research pulls fresh news (last 7 days, primary sources, each option names its d
 
 Every tech fact below is read on the maker's own page tonight. Brands may be named as text (rules-tech.md).
 
+### FRESH, researched 26 Nov 2026 (news from 19-25 Nov, primary pages read 26 Nov; all global; N1-N4)
+Only one phone-category option (T26N-5) and battery cycles (25 Nov, a phone) was yesterday, so it is the weakest.
+**T26N-1 PICK your tag can now tell which way your keys are, from 60 m (Galaxy SmartTag3, Bluetooth 6.0 Channel Sounding)** (news 23 Nov 2026)
+- Hook: "Old trackers say 'near'. This one points." Tension: the same Bluetooth, a new way to measure distance.
+- Learn: Bluetooth 6.0 Channel Sounding measures phase and time of flight across many channels instead of signal strength, so the tag can show direction and distance from up to about 60 m (UWB takes over for finer finding within 20 m).
+- Fact 1: Compass View "extends the maximum finding range to approximately three times that of its predecessor"; Channel Sounding "measures changes in radio wave phase and time of flight across multiple channels to calculate distance more precisely", conventional BLE uses RSSI. https://news.samsung.com/global/the-technology-behind-more-precise-finding-with-galaxy-smarttag3-and-smartthings (23 Nov 2026)
+- Fact 2: tag weighs 9.15 g, about 33% lighter and 35% smaller by volume than its predecessor, battery up to 550 days standard, 790 in Power Saving Mode (same page). Also Location History keeps 7 days; Galaxy Find Network of more than 900 million devices.
+- Fit: colour world: a purple tag on a dark floor, glowing rings that tighten and a compass needle, a 3D number 60 m counting up on the spoken word; cables are not needed, the rings are the picture. Not a phone topic.
+- Why pick: an accessory with a real mechanism change (RSSI to phase and time), a big number, and a picture (rings, compass) that does the explaining. Say "Samsung's SmartTag3"; no winner/loser versus other trackers.
+**T26N-2 the first 1,100 Hz monitor (Samsung Odyssey G6)** (news 23 Nov 2026)
+- Hook: "A new screen draws 1,100 pictures every second." Tension: how fast is fast enough.
+- Fact 1: 27-inch Odyssey G6 (G60H), "world's first gaming monitor to support a refresh rate of up to 1,100Hz in HD"; Dual Mode: HD up to 1,100Hz or QHD (2,560 x 1,440) up to 600Hz; 1ms GtG. https://news.samsung.com/global/samsung-launches-odyssey-g6-the-worlds-first-1100hz-gaming-monitor
+- Fact 2: Odyssey Clear Motion reduces motion blur; availability and price vary by market (same page). Maths: 1,100 Hz is one picture every 0.91 ms (ours, say "about 0.9 ms").
+- Fit: a giant 3D number 1100 and a ruler of frames; close to screen-120hz (posted 17 Nov), so lower rank.
+**T26N-3 Google plans data-center racks in space (Project Suncatcher, Blue Origin)** (news 19 Nov 2026)
+- Hook: "Google is planning to launch AI computers into orbit." Tension: why put a data center above the sky.
+- Fact 1: Blue Origin's New Glenn will deploy satellites, "each with roughly the capacity of a data center rack", into sun-synchronous orbit, targeted for Q1 2029. https://blog.google/innovation-and-ai/models-and-research/google-research/blue-origin-project-suncatcher-partnership/ (19 Nov 2026)
+- Fact 2: the goal is to "scale AI infrastructure in space by tapping into the abundant solar power in orbit" (same page). It is a long-term moonshot: say "plans", never "will".
+- Fit: racks drifting over a dark curved floor, a sun rim light; weakness: far from a purchase; the viewer cannot act on it.
+**T26N-4 smart glasses go on sale 10 Dec (Samsung intelligent eyewear)** (announced 12 Nov, 14 days old: borderline, not in the 7-day window)
+- Fact 1: release in the US and South Korea on Dec. 10, pre-orders open, 30 designs with Gentle Monster and Warby Parker, about 41 g, Gemini built in. https://news.samsung.com/global/samsung-announces-december-release-for-intelligent-eyewear-bringing-a-smarter-way-to-see-the-world
+- Weakness: older than 7 days; only the release date is the news.
+**T26N-5 One UI 9.5 beta opens (Samsung, phone)** (18 Nov, 8 days: borderline)
+- Fact 1: beta open to Galaxy S26 series users in select markets including Germany, India, Korea, Poland, the UK and the U.S.; new camera controls. https://news.samsung.com/global/samsung-begins-one-ui-9-5-beta-program
+- Weakness: software menu changes, a phone, and nothing a stranger can picture. Lowest rank.
+
 ### Thu 26 Nov
 **[STALE] T26-1 PICK your phone battery has a number of lives (500 vs 1000 cycles)**
 - Hook: "Your battery is rated for 500 charges. On newer phones, double." Tension: a number that changed.
