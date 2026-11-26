@@ -15,10 +15,10 @@
 #ttl em{font-style:italic}
 #cap{left:14px;top:278px;width:512px;min-height:0;padding:10px 18px 12px;border-radius:24px;background:rgba(12,14,24,.74);box-shadow:0 8px 24px rgba(0,0,0,.35)}
 /* owner 26 Nov: no overlaps, one alignment. Left edge x 32 for the dial, headline and subtitle text; the chips sit in their own band (y 350-395) between the subtitle pill and the board, centred on the board; the ring tags live inside the board's empty lower part */
-#dial{left:32px}
+#dial{left:25px}   /* the ring's outer edge sits on the headline edge (x 32) */
 #ttl{left:32px;width:476px}
 #hook{left:26px}
-.chip.sm{font-size:14px!important;padding:6px 9px!important}
+.chip.sm{font-size:13px!important;padding:6px 8px!important;letter-spacing:.04em!important}
 /*css:end*/
 /*board:begin*/
 <div class="rul" style="left:8px;top:400px;height:246px"></div><div class="rul r" style="left:508px;top:400px;height:246px"></div>
@@ -81,8 +81,8 @@
       font(el, kf >= .5 ? b : a); DT.flipChars(el, t, t0f, .45, a, b);
       var w = el.offsetWidth, xA = (IW - w) / 2, x = mix(xA, 30, k1), y = mix(a.y, b.y, k1);
       var sh = kf >= 1 ? 1 : mix(1, id === 'v0' ? .72 : .66, k1); el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + sh.toFixed(3) + ')'; });
-    { var ro = 1 - P(t, A.turns - .3, A.turns); [[.35, { x: OX + 20, y: OY + 18, w: 348, h: 52, r: 14 }, 'NO HERO', OX + 12], [.65, { x: OX + 64, y: OY + 78, w: 260, h: 132, r: 16 }, '4 FONTS', OX + 110], [.95, { x: OX + 338, y: OY + 90, w: 42, h: 184, r: 16 }, '6 COLOURS', OX + 208]].forEach(function(r, i){
-      DT.box('fr' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); DT.chip('frl' + i, r[2], r[3], OY + 232, P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); }); }
+    { var tagX = OX + 14, ro = 1 - P(t, A.turns - .3, A.turns); [[.35, { x: OX + 20, y: OY + 18, w: 348, h: 52, r: 14 }, 'NO HERO', OX + 12], [.65, { x: OX + 64, y: OY + 78, w: 260, h: 132, r: 16 }, '4 FONTS', OX + 110], [.95, { x: OX + 338, y: OY + 90, w: 42, h: 184, r: 16 }, '6 COLOURS', OX + 208]].forEach(function(r, i){
+      DT.box('fr' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); var tg = DT.chip('frl' + i, r[2], r[3], OY + 232, P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); tg.style.left = tagX + 'px'; tagX += tg.offsetWidth + 18; }); }   // tags laid out from their measured widths, 18 px clear between each pair
     var k7 = DT.spring(t, A.age + .22, Math.max(.5, A.big - A.age - .1)), b7 = $('big7'), s = mix(.2, 1, k7); b7.style.display = t >= A.age - .05 ? 'block' : 'none';   // display none while the before is kept, so the BEFORE picture has no 7
     b7.style.transform = 'translate(26px,8px) scale(' + s.toFixed(3) + ')'; b7.style.opacity = (P(t, A.age - .05, A.age + .15) * (1 - (P(t, A.proof - .02, A.proof + .03) - P(t, A.proof + .55, A.proof + .65)))).toFixed(3);   // hidden while the BEFORE flashback is up
     b7.style.color = 'rgb(' + [Math.round(mix(29, 255, k3)), Math.round(mix(26, 122, k3)), Math.round(mix(22, 69, k3))].join(',') + ')';
@@ -102,7 +102,7 @@
     CHIP('c', 'ONE <b>COLOUR</b>', P(t, A.col, A.col + .3) - P(t, A.same - .2, A.same + .1));
     [[A.d1, OX + 100, OY + 90], [A.d2, OX + 190, OY + 200], [A.d3, OX + 100, OY + 90]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], i === 2 ? '#ff7a45' : '#ffb35a'); });
     var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35))); inv.style.boxShadow = '0 30px 70px rgba(0,0,0,.55),0 0 0 ' + (3 * br).toFixed(1) + 'px rgba(255,179,90,.55)';
-    DT.proof(t, A.proof, { flash: .5, x: 32, y: BY + BH + 22, s: .34, tx: 176, ty: BY + BH + 16, fs: .85, fx: 30, fy: 44 });
+    DT.proof(t, A.proof, { flash: .5, x: 32, y: BY + BH + 22, s: .34, tx: 198, ty: BY + BH + 16, fs: .85, fx: 30, fy: 44 });
     if (!A.tg2) A.tg2 = [].filter.call(document.querySelectorAll('#world div'), function(d){ return d.textContent === 'AFTER'; })[0];
     if (A.tg2) A.tg2.style.transform = A.tg2.style.transform.replace(/translate\([^)]*\)/, 'translate(' + (BX + 408 - 96) + 'px,' + (BY + BH + 16) + 'px)');   // the AFTER tag sits under the invite, never on its border
     CHIP('win', 'SAME <b>PARTY</b>', P(t, A.readable - .2, A.readable + .1) - P(t, A.proof + .5, A.proof + .7), 'g'); CHIP('win3', 'NOW <b>READABLE</b>', P(t, A.proof + .6, A.proof + .9) - P(t, A.e2 - .2, A.e2 + .1), 'g'); CHIP('win2', 'FONTS 1 · COLOUR 1', P(t, A.e2, A.e2 + .3), 'g');
