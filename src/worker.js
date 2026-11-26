@@ -600,6 +600,31 @@ async function refsApi(request, env, p, url) {
   return jres({ error: 'bad-request' }, 400);
 }
 
+// ---- Probe log (owner, 26 Nov 2026): the studio probe (design/probe.md) appends one line per check, so the next check and the weekly tune can read
+// the week without a repo push per check. Auth is STAGE_KEY (header X-Stage-Key), like POST /api/stage. POST {found, acted, what, keys?, at?};
+// GET ?hours=N (default 24, at most 840) gives the rows oldest first. `keys` = the action keys the check handled (the status sheet skips those for 6 h).
+let probeReady = null;
+async function probeApi(request, env, url) {
+  if (!env.DB) return jres({ error: 'no-db' }, 501);
+  try { probeReady = probeReady || env.DB.exec('CREATE TABLE IF NOT EXISTS probe_log (id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT NOT NULL, found TEXT NOT NULL, acted INTEGER NOT NULL DEFAULT 0, what TEXT, keys TEXT)').catch((e) => { probeReady = null; throw e; }); await probeReady; } catch { return jres({ error: 'db-unavailable' }, 503); }
+  if (request.method === 'GET') {
+    const hours = Math.max(1, Math.min(840, Number(url.searchParams.get('hours')) || 24)), since = new Date(Date.now() - hours * 3600e3).toISOString();
+    const { results } = await env.DB.prepare('SELECT id, at, found, acted, what, keys FROM probe_log WHERE at >= ?1 ORDER BY at, id LIMIT 2000').bind(since).all();
+    return jres({ rows: (results || []).map((r) => ({ id: r.id, at: r.at, found: r.found, acted: !!r.acted, what: r.what || '', keys: r.keys ? r.keys.split(',') : [] })) });
+  }
+  if (request.method === 'POST') {
+    let b = null; try { b = await request.json(); } catch { /* below */ }
+    const found = b && nStr(b.found, 200);
+    if (!found) return jres({ error: 'bad-request' }, 400);
+    const at = b.at && !isNaN(Date.parse(b.at)) ? new Date(b.at).toISOString() : new Date().toISOString();
+    const keys = Array.isArray(b.keys) ? b.keys.map((k) => String(k).replace(/[^A-Za-z0-9:_.-]/g, '').slice(0, 80)).filter(Boolean).slice(0, 12).join(',') : '';
+    await env.DB.prepare('INSERT INTO probe_log (at, found, acted, what, keys) VALUES (?1, ?2, ?3, ?4, ?5)').bind(at, found, b.acted ? 1 : 0, nStr(b.what, 300) || null, keys || null).run();
+    await env.DB.prepare('DELETE FROM probe_log WHERE at < ?1').bind(new Date(Date.now() - 45 * 864e5).toISOString()).run();
+    return jres({ ok: true });
+  }
+  return jres({ error: 'bad-request' }, 400);
+}
+
 // ---- Live studio board (owner, 24 Nov 2026): sessions and workflows tell the app which stage each channel's reel of today is in, with
 // POST /api/stage {reel, stage, model, line, pct, thumb?}. Auth is the secret STAGE_KEY as the header X-Stage-Key (workflows), or Authorization: Bearer <STAGE_KEY or REELS_READ_KEY>
 // (sessions: one network secret per host; 26 Nov 2026); unset or empty secret = off). `reel` is a reel name or a channel (web / tech / c3), as early as the
@@ -1219,6 +1244,7 @@ export default {
 
     if (!configured) return new Response('Site is locked: authentication is not configured.', { status: 503, headers: noStore });
     const signedIn = await authed(request, env);
+    if (p === '/api/probe-log') return (await stageKeyOk(request, env)) ? probeApi(request, env, url) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
     if (p === '/api/stage' && request.method === 'POST') return (await stageKeyOk(request, env)) ? stageApi(request, env, p, ctx) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });   // STAGE_KEY only
     if (p === '/api/slots' && request.method === 'GET') return signedIn ? jres({ slots: SLOT_CONFIG.slots, reviewOn: SLOT_CONFIG.reviewOn }) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
     if (p.startsWith('/api/')) return signedIn ? (p.startsWith('/api/stage') ? stageApi(request, env, p, ctx) : (p === '/api/post' || p.startsWith('/api/post/')) ? postApi(request, env, p) : p.startsWith('/api/uploaded') ? uploadedApi(request, env, p) : p.startsWith('/api/perf') ? perfApi(request, env, p, url) : p.startsWith('/api/cards') ? cardsApi(request, env, p) : p.startsWith('/api/asks') ? asksApi(request, env, p, url) : p.startsWith('/api/feedback') ? feedbackApi(request, env, p, url) : p.startsWith('/api/refs') ? refsApi(request, env, p, url) : (p === '/api/spare' || p.startsWith('/api/push/')) ? spareApi(request, env, p, url) : p === '/api/showreels' ? showreelList(env) : p === '/api/journey' && request.method === 'GET' ? journeyFast(env, ctx) : jres({ error: 'not-found' }, 404)) : new Response('{"error":"unauthorized"}', { status: 401, headers: jsonHeaders });
