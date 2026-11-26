@@ -855,3 +855,7 @@ Format (at most 6 lines):
 - Done: render 1 passed Output QA; critic (Opus) NOT READY (numbers over the phone, no old-vs-new range, misleading 60 m on the phone screen, AI label); scene fixed (numbers smaller and clear, amber old ring vs 3x ring from a top-down, phone screen arrow only), aiLabel false.
 - Left: render 2 (the last one), Output QA, second critic, then the post day; a third render needs the owner chat's yes.
 - For the other account: three big camera-riding numbers cover the product; keep them in a fixed clear screen spot and check them against the phone in the stills before render 1. The critic branch is merged and deleted by the pipeline, so a verdict file appears on main.
+## 2026-11-26 · claude/critic-gold3d-sample · Independent critic of the 3D kit sample render v3
+- Done: review/tech/showreel-tech-gold3d-sample.md, verdict NOT READY on the real MP4 (contact sheet + side-by-side with the tech gold). Strong colour, materials, cable maths and captions; weak hook at frame 0, one tower framing for 9.8-18.4 s, no payoff or loop at the end, unreadable code card over the tool column, hub cables over the tool names, apps and tools share names. Seven-step EXACT FIX in the file. PREMIUM 5.5 / 6.5 / 7.
+- Left: the owner chat decides on a 4th render of this sample (owner's yes and cost estimate); it is not the gold for the 3D look until a critic writes READY.
+- For the other account: nothing new.
