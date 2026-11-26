@@ -26,7 +26,8 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 .ic{position:absolute;left:36px;top:84px;width:64px;height:64px;fill:none;stroke:#cfcbe6;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
 .lamp{position:absolute;left:40px;top:16px;width:56px;height:56px;border-radius:16px;border:3px solid #8a867f;background:transparent}
 .tk{position:absolute;left:17px;top:5px;width:14px;height:27px;border:solid #1b1230;border-width:0 6px 6px 0;transform:rotate(45deg);opacity:0}
-#pill{position:absolute;left:167px;bottom:9px;width:150px;height:6px;border-radius:3px;background:#fff;opacity:.85}
+#pill{position:absolute;left:112px;bottom:9px;width:260px;height:6px;display:flex;gap:6px}
+#pill i{flex:1;border-radius:3px;background:rgba(255,255,255,.24)}
 #fg{position:absolute;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.75);z-index:6;opacity:0}
 .tr{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid var(--red);z-index:6;opacity:0}
 .rp{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid var(--acc);z-index:6;opacity:0}
@@ -78,7 +79,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
         <div class="fld" id="f1" style="left:174px"><i class="lamp" id="l1"><i class="tk" id="k1"></i></i><svg class="ic" viewBox="0 0 64 64"><path d="M14 28h30v12a12 12 0 0 1-12 12h-6a12 12 0 0 1-12-12z"/><path d="M44 31h4a6 6 0 0 1 0 12h-5"/><path d="M24 14c-3 3 3 5 0 8M34 14c-3 3 3 5 0 8"/></svg><span class="fp" id="p1">Extra shot</span></div>
         <div class="fld" id="f2" style="left:322px"><i class="lamp" id="l2"><i class="tk" id="k2"></i></i><svg class="ic" viewBox="0 0 64 64"><path d="M32 10C22 24 16 32 16 40a16 16 0 0 0 32 0c0-8-6-16-16-30z"/><path d="M24 42a8 8 0 0 0 8 8"/></svg><span class="fp" id="p2">Vanilla</span></div>
       </div>
-      <div id="hud"><div id="meter"></div><div id="mtag">AFTER THE FIX</div><i id="pill"></i></div>
+      <div id="hud"><div id="meter"></div><div id="mtag">AFTER THE FIX</div><div id="pill"><i></i><i></i><i></i><i></i></div></div>
       <div class="tr" id="tr0"></div><div class="tr" id="tr1"></div><div class="tr" id="tr2"></div><div class="tr" id="tr3"></div><div class="tr" id="tr4"></div>
       <div class="rp" id="rp0"></div><div class="rp" id="rp1"></div><div class="rp" id="rp2"></div><div class="rp" id="rp3"></div><div class="rp" id="rp4"></div><div class="rp" id="rp5"></div><div id="fg"></div>
     </div>
@@ -673,7 +674,7 @@ var KM = (function(){
     KM.mark($('ph'), 'tree', 'the boxes follow the bug cues, the lit cards have the resolve chord, the dim and the tick-again have theirs; the loop has its swish');
     KM.mark($('fg'), 'self', 'the tap cue'); ['tr0', 'tr1', 'tr2', 'tr3', 'tr4', 'rp0', 'rp1', 'rp2', 'rp3', 'rp4', 'rp5'].forEach(function(id){ KM.mark($(id), 'self', 'the tap cue'); });
     KM.sfx($('lbl'), A.leave - .2, 'exit', { size: 'small' }); KM.sfx($('band'), A.leave - .1, 'enter', { size: 'medium', g: .6 });
-    KM.mark($('meter'), 'tree', 'each number steps on its bug, tap or fix cue'); KM.sfx($('mtag'), A.wipe + .5, 'enter', { size: 'small', g: .5 });
+    KM.mark($('pill'), 'tree', 'it fills with the beats, which have their own cues'); KM.mark($('meter'), 'tree', 'each number steps on its bug, tap or fix cue'); KM.sfx($('mtag'), A.wipe + .5, 'enter', { size: 'small', g: .5 });
     KM.sfx($('wide'), A.wideIn, 'enter', { size: 'medium', g: .6 }); KM.sfx($('wl'), A.wider, 'enter', { size: 'small', g: .8, deg: 2 });
     ['wa', 'ww', 'ws'].forEach(function(id){ KM.mark($(id), 'self', 'with the cause picture'); });
     ['rx1', 'rx2'].forEach(function(id, k){ KM.sfx($(id), (TB[k] || 1) + .1, 'enter', { size: 'small', g: .7, deg: k }); });
@@ -726,6 +727,9 @@ var KM = (function(){
     mh = tile('LIT', lc, lastL, after ? 'good' : 'bad') + tile('TICKED', tk, lastT, null);
     $('meter').innerHTML = mh;
     $('meter').style.opacity = dip.toFixed(3); $('mtag').style.opacity = (P(t, W + .5, W + .8) * (1 - P(t, LP, LP + .2))).toFixed(3);
+    // ---- the step pill (reference lesson, 26 Nov): four beats, bug / cause / fix / proof, each segment fills as its beat runs ----
+    var be = [0, A.wideIn, A.fix, W, LP], ps = $('pill').children;
+    for (i = 0; i < 4; i++) { var pf = lp ? 0 : Math.round(100 * P(t, be[i], be[i + 1])); ps[i].style.background = 'linear-gradient(90deg,#d79bff ' + pf + '%,rgba(255,255,255,.24) ' + pf + '%)'; }
     // ---- the hook: whole at frame 0; it lifts away before the first sentence and comes back on the reload ----
     var back2 = E.out3(P(t, LP, LP + .3)), gone = E.inOut3(P(t, A.leave, A.leave + .25)) * (1 - back2), st = [];
     for (i = 0; i < HOOK_N; i++) st.push(-1);
