@@ -921,6 +921,11 @@ Format (at most 6 lines):
 - Done: render 3 (run 45755239976) Output QA PASS; independent critic CRITIC: READY (STOP 7.5, REWATCH 7.5); verdict and notes added to the review file. Posts 26 Nov 19:00 IST.
 - Left: the owner posts it. No further renders. Next web reel: give the reaction word its own row clear of the subtitle; start the code card typing on "fix".
 - Update (same session, 26 Nov): the independent stills check passed with four near-misses (chips edge to edge, rings 5 px apart, thumbnail 3 px from the board); cleared them in branch claude/c3-fix-invite-26nov-r3 (chips spaced, ring gap 14 px, thumbnail lower) before render 2. For the other account: a stills-check session needs the repo as a source at creation (source_url), or it cannot run.
+
+## 2026-11-26 · claude/c3-fix-invite-26nov-r3b · Turns Out fix-invite: critic 2 NOT READY, three spacing fixes for render 3 (builder session)
+- Done: render 2 passed Output QA; the independent critic (Opus) said NOT READY on three small items (the NO HERO and 4 FONTS tags touched, the BEFORE tag 6-9 px from the thumbnail, the dial 13 px right of the headline edge). Scene fixed: tags 13 px, laid out from their measured widths with 18 px between each pair, BEFORE tag 25 px from the thumbnail, dial moved so its ring sits on the headline edge; stills OVERLAP none, SAFE ZONE ok.
+- Left: render 3 needs the owner's yes (asked via the owner chat; NOT started), Output QA, a third critic, then unhide for the post.
+- For the other account: lay tag rows out from measured widths (offsetWidth) with the gap in code, not by fixed x positions; check dial and headline ring edges, not box edges.
 ## 2026-11-26 · claude/critic-c3-fix-invite-r2 · Turns Out showreel-c3-fix-invite: critic of render 2, NOT READY
 - Done: independent critic on the real render 2 MP4. The owner's overlap fix mostly landed (chips in their own band, rings spaced, confetti clear, tags off the board border), but the NO HERO and 4 FONTS tags share one border at 1.8-4.2 s; BEFORE tag 6-9 px from the thumbnail at 17-20 s; dial 13 px right of the text edge. Verdict and EXACT FIX in the review file.
 - Left: the builder applies the 3-step EXACT FIX; render 3 needs the owner's yes with its cost estimate; then a new critic.
