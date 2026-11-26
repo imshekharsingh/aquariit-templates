@@ -33,10 +33,20 @@ The six fixes:
 5. Each stage gets one plain line in Progress (date, IST time, what happened, cost so far). One entry at the top of design/handoff-log.md
    in the final push. No subagents, no polling (one check-in per GitHub job, with a send_later wake-up), no secrets, no model names in files.
 
+## Then: finalise the 3D kit (only after the v5 critic says READY)
+Also done by this session, same branch rules, one push per step. Cap: about $15 on top of the v5 render; stop and ask the owner before passing it.
+1. Make the v5 sample the tech 3D gold: design/gold.md (tech 3D entry), scripts/qa/gold.json "tech3d" numbers from the v5 render.
+2. Starter: `node scripts/starter.mjs tech3d <slug>` starts from the v5 sample, with the lessons from the v3/v4/v5 critics written in techkit README (D1-D8 kept in design/rules-tech.md).
+3. Close the known limits in design/3d-kit-phase2.md (hub label behind the apps at low angles) or mark each one as accepted, with the reason.
+4. Rules: design/rules-tech.md and design/runbook-daily.md say tech daily builds use the 3D look from the next build on; design/3d-kit-phase2.md gets a "DONE" line.
+5. Write DONE in Progress with the total cost, add the handoff-log entry, and set this file back to CLOSED (keep the history below).
+If the v5 critic says NOT READY: stop, write the critic's fix list in Progress and ask the owner. No 6th render without the owner's yes.
+
 ## Owner yes for render 5: NOT YET
 
 ## Progress (newest last)
 - 26 Nov, owner chat: task written here; nothing started.
+- 26 Nov, owner chat: owner added "finalise the 3D kit" to this task (section above).
 
 ---
 
