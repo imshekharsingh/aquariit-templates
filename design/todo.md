@@ -5,6 +5,20 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
+- [ ] **NEXT (owner asked for the write-up, 26 Nov 2026; waits on the owner's yes with the cost)**: **Full check before render 1** (`scripts/preflight-all.mjs <reel>`).
+  Why: on 25-26 Nov most render 1s failed on things a local check could catch, and each extra render plus its session costs about $8-15
+  (web 48 took 3 renders, about $27; tech 2 renders, about $26). Today's preflight checks only marked elements, and Output QA runs only on the final MP4.
+  What it does, all locally in the builder's session, under 2 minutes, no GitHub render:
+  1. A cheap preview: the scene at 360x640, 10 fps, with the real voice if made, else the fake voice.
+  2. Output QA on that preview with the same thresholds (scripts/qa/output-qa.py: PACE, HUE/LOOK, COLOUR, FILL, EDGES, VARIETY, NUMBERS, SYNC, BULK).
+  3. TEXT CLEAR: every text box against every other visible element and the subtitle band every 0.25 s, not only the marked ones
+     (today's misses: numbers over the phone and the pointer line in tech; chips on borders and the subtitle pill in Turns Out).
+  4. Review-file lint: direction card APPROVED, items 1-19 filled, PREMIUM line, no stale CRITIC line format.
+  5. Prints one line `PREFLIGHT-ALL: PASS` or `PREFLIGHT-ALL: FAIL <check> <time> <what>`, and the builder pastes it in the review file.
+  Gate: scripts/review-gate.mjs refuses render 1 without `PREFLIGHT-ALL: PASS`. Runbook line in design/runbook-reels.md "Preflight".
+  Test: run it on today's three render 1 scenes (web 48 v2, tech tag-sounding r1, Turns Out invite r1); it must flag the tech numbers and the
+  Turns Out overlaps. The web "nothing happens in the first 7 s" fault is a taste call: it stays with the stills check and the critic.
+  Size M, one cheaper-model session, estimate $5-8, no renders.
 - [ ] 21 Nov 2026 (owner: "mark it to-do, we pick this up soon"; second account, not for the spare night): **Journey you can drive**. Four
   buttons, not seven manual stages (render and checks already run themselves): (1) **Approve plan** on a planned reel: topic, script and 3 stills
   shown, Approve or Change + note, before any render (saves the 2-render budget); (2) **Approve to post** after Output QA: the owner's watch
