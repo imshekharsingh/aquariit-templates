@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-projects-board · owner chat: Projects on the app board, queued for the other account
+- design/handoff.md task 5 (before task 3): design/projects.json + Worker read from the repo + a "Projects" section on Today (stage, line, bar, history, Fix), stage.mjs project ids, probe watches stuck projects. Order now 0, 2, 5, 3.
+
 ## 2026-11-26 · claude/handoff-code-fixes · owner chat: code fixes go to the other account
 - Owner rule: app/tooling code fixes are queued in design/handoff.md for the other account (CLAUDE.md Sessions line). Queued task 4: duplicate reel card (Ready to post + Up next) and the channel slot line. The session started here for it was stopped before any change.
 
