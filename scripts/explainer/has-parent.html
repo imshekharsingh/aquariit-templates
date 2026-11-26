@@ -21,12 +21,11 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #scr{position:absolute;left:10px;top:10px;width:484px;height:426px;border-radius:52px;overflow:hidden;background:var(--pg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 #sb{position:absolute;left:0;right:0;top:0;height:44px;background:var(--pg);color:var(--paper);font:500 15px/44px var(--m);padding:0 34px;z-index:4}
 .pg{position:absolute;left:0;top:44px;width:484px;height:382px;background:var(--pg);overflow:hidden}
-.fld{position:absolute;left:20px;width:444px;height:62px;border-radius:18px;background:#2a2744;box-shadow:inset 0 0 0 2px #3d3a5e}
-.fl{position:absolute;left:20px;top:11px;font:500 12px/1 var(--m);letter-spacing:.14em;color:var(--dim);font-style:normal}
-.fp{position:absolute;left:20px;top:29px;font:700 24px/1 var(--f);letter-spacing:-.02em;color:var(--paper);white-space:nowrap}
-.fm{position:absolute;right:68px;top:11px;font:500 12px/1 var(--m);letter-spacing:.1em;color:var(--red);font-style:normal;white-space:nowrap;opacity:0}
-.lamp{position:absolute;right:18px;top:15px;width:32px;height:32px;border-radius:10px;border:2px solid #8a867f;background:transparent}
-.tk{position:absolute;left:9px;top:3px;width:9px;height:17px;border:solid #1b1230;border-width:0 4px 4px 0;transform:rotate(45deg);opacity:0}
+.fld{position:absolute;top:12px;width:136px;height:196px;border-radius:24px;background:#2a2744;box-shadow:inset 0 0 0 2px #3d3a5e}
+.fp{position:absolute;left:0;right:0;top:160px;text-align:center;font:700 20px/1 var(--f);letter-spacing:-.02em;color:var(--paper);white-space:nowrap}
+.ic{position:absolute;left:36px;top:84px;width:64px;height:64px;fill:none;stroke:#cfcbe6;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.lamp{position:absolute;left:40px;top:16px;width:56px;height:56px;border-radius:16px;border:3px solid #8a867f;background:transparent}
+.tk{position:absolute;left:17px;top:5px;width:14px;height:27px;border:solid #1b1230;border-width:0 6px 6px 0;transform:rotate(45deg);opacity:0}
 #pill{position:absolute;left:167px;bottom:9px;width:150px;height:6px;border-radius:3px;background:#fff;opacity:.85}
 #fg{position:absolute;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.75);z-index:6;opacity:0}
 .tr{position:absolute;width:64px;height:64px;border-radius:50%;border:3px solid var(--red);z-index:6;opacity:0}
@@ -47,11 +46,12 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 #cd{position:absolute;left:22px;top:13px;font:500 19px/1.42 var(--m);white-space:pre;color:var(--paper)}
 #cd b{font-weight:500;color:var(--acc);border-radius:4px}#cd .dim{color:var(--dim)}
 .km-caret{display:inline-block;width:3px;height:21px;margin-left:2px;vertical-align:-4px;background:var(--acc)}
-#lab{left:330px;top:724px;font:500 14px/1 var(--m);letter-spacing:.1em;color:var(--on);background:var(--acc);padding:9px 12px;border-radius:9px;white-space:nowrap;opacity:0;z-index:7}
+#lab{left:34px;top:300px;font:800 52px/1 var(--f);letter-spacing:-.03em;color:var(--paper);white-space:nowrap;opacity:0;z-index:7}
+#lab b{color:var(--acc);font-weight:800}
 #band{left:0;top:292px;width:540px;height:96px;background:transparent}
 #cap{left:34px;top:296px;width:450px;min-height:80px;padding:6px 0 0;font:600 30px/1.16 var(--f);letter-spacing:-.025em}
 #cap span{display:inline-block;margin-right:.24em}
-.rx{font:800 italic 38px/1 var(--f);letter-spacing:-.03em;color:var(--red);white-space:nowrap;opacity:0;transform-origin:0 100%;text-shadow:0 2px 14px rgba(0,0,0,.8);z-index:7}
+.rx{font:800 italic 56px/1 var(--f);letter-spacing:-.03em;color:var(--red);white-space:nowrap;opacity:0;transform-origin:0 100%;text-shadow:0 2px 14px rgba(0,0,0,.8);z-index:7}
 #hud{position:absolute;left:0;bottom:0;width:484px;height:160px;background:#111114;box-shadow:inset 0 1px 0 rgba(255,255,255,.1);z-index:5}
 #meter{position:absolute;left:10px;top:9px;width:440px;display:flex;gap:22px}
 .km-m{padding:11px 18px 13px 16px;border-radius:18px;min-width:96px}
@@ -74,9 +74,9 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
     <div id="scr">
       <div id="sb">9:41</div>
       <div class="pg" id="pg">
-        <div class="fld" id="f0" style="top:12px"><em class="fl">COFFEE ADD-ON</em><em class="fm" id="m0">NOT LIT</em><span class="fp" id="p0">Oat milk</span><i class="lamp" id="l0"><i class="tk" id="k0"></i></i></div>
-        <div class="fld" id="f1" style="top:82px"><em class="fl">COFFEE ADD-ON</em><em class="fm" id="m1">NOT LIT</em><span class="fp" id="p1">Extra shot</span><i class="lamp" id="l1"><i class="tk" id="k1"></i></i></div>
-        <div class="fld" id="f2" style="top:152px"><em class="fl">COFFEE ADD-ON</em><em class="fm" id="m2">NOT LIT</em><span class="fp" id="p2">Vanilla</span><i class="lamp" id="l2"><i class="tk" id="k2"></i></i></div>
+        <div class="fld" id="f0" style="left:26px"><i class="lamp" id="l0"><i class="tk" id="k0"></i></i><svg class="ic" viewBox="0 0 64 64"><path d="M20 14h24l4 10v30a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4V24z"/><path d="M16 24h32"/><path d="M26 38h12M26 46h12"/></svg><span class="fp" id="p0">Oat milk</span></div>
+        <div class="fld" id="f1" style="left:174px"><i class="lamp" id="l1"><i class="tk" id="k1"></i></i><svg class="ic" viewBox="0 0 64 64"><path d="M14 28h30v12a12 12 0 0 1-12 12h-6a12 12 0 0 1-12-12z"/><path d="M44 31h4a6 6 0 0 1 0 12h-5"/><path d="M24 14c-3 3 3 5 0 8M34 14c-3 3 3 5 0 8"/></svg><span class="fp" id="p1">Extra shot</span></div>
+        <div class="fld" id="f2" style="left:322px"><i class="lamp" id="l2"><i class="tk" id="k2"></i></i><svg class="ic" viewBox="0 0 64 64"><path d="M32 10C22 24 16 32 16 40a16 16 0 0 0 32 0c0-8-6-16-16-30z"/><path d="M24 42a8 8 0 0 0 8 8"/></svg><span class="fp" id="p2">Vanilla</span></div>
       </div>
       <div id="hud"><div id="meter"></div><div id="mtag">AFTER THE FIX</div><i id="pill"></i></div>
       <div class="tr" id="tr0"></div><div class="tr" id="tr1"></div><div class="tr" id="tr2"></div><div class="tr" id="tr3"></div><div class="tr" id="tr4"></div>
@@ -89,7 +89,7 @@ html,body{width:540px;height:960px;overflow:hidden;background:var(--ink);color:v
 <div id="hook" class="a" data-hook><span class="ln"><span>Why</span> <span class="rd">won't</span> <span>the</span></span><span class="ln"><span>card</span> <span>light</span> <span>up?</span></span></div>
 <div id="wide" class="a"><span id="wa">&lt;input type="checkbox"&gt; ticked</span><span id="ww">.card</span><em id="wl">→ NO CHANGE</em><small id="ws">A PARENT CSS COULD NOT SELECT</small></div>
 <div id="code" class="a"><div id="cd"></div></div>
-<div id="lab" class="a">NO JAVASCRIPT</div>
+<div id="lab" class="a"><b>NO</b> JAVASCRIPT</div>
 <div id="rx1" class="a rx">nothing?!</div><div id="rx2" class="a rx">still dull?!</div>
 <div id="fe" class="a" aria-hidden="true"></div>
 <div id="band" class="a" data-band></div>
@@ -636,14 +636,14 @@ var KM = (function(){
   // the code: the one lit part is the fix; the dim lines keep the rest in place, the last line says what it replaces
   var CODE = '<span class="dim">.card</span><b>:has(input:checked)</b><span class="dim"> {</span>\n  <span class="dim">background: violet;</span>\n<span class="dim">}</span>\n\n<span class="dim">/* was: JS toggling a class */</span>';
   var V, PH, A = {}, CAM, T = {}, TB = [], TG = [], TD = [], TC = [[], [], []], WW = 0;
-  var TX = 150, FY = function(i){ return 87 + 70 * i; };   // a tap lands at x 150 of the screen, on card i's middle
-  var FLD = [0, 1, 2].map(function(i){ return $('f' + i); }), LMP = [0, 1, 2].map(function(i){ return $('l' + i); }), MSG = [0, 1, 2].map(function(i){ return $('m' + i); }), TK = [0, 1, 2].map(function(i){ return $('k' + i); });
+  var TXc = [94, 242, 390], TYc = 100;   // a tap lands on tile i's checkbox (screen coordinates)
+  var FLD = [0, 1, 2].map(function(i){ return $('f' + i); }), LMP = [0, 1, 2].map(function(i){ return $('l' + i); }), TK = [0, 1, 2].map(function(i){ return $('k' + i); });
   function measure(){ var m = $('msr'); m.style.fontFamily = "'Sora',system-ui,sans-serif"; m.style.fontSize = '62px'; m.style.letterSpacing = '-.03em'; m.style.fontWeight = 800; m.textContent = '.card';
     WW = m.getBoundingClientRect().width; $('wl').style.left = (WW + 22).toFixed(1) + 'px'; }
   function anchors(words){
     V = KM.voice(TEXT, .15, words); PH = V.phrases(6); KM.reset(DUR); measure();
     var S = V.starts(), W = V.words, at = function(w, n, fb){ var x = V.at(w, n); return x < 90 ? x : fb; };
-    A.hookIn = (W[HOOK_N - 1] ? W[HOOK_N - 1].s - V.lead : 1.2) + .3; A.leave = Math.max(S[1] - .1, A.hookIn + .45);
+    A.hookIn = (W[HOOK_N - 1] ? W[HOOK_N - 1].s - V.lead : 1.2) + .3; A.leave = Math.max(S[1] - .1, A.hookIn + .45, 2.3);
     A.fix = S[FIX_S]; A.wipe = Math.max(at('lights', 1, A.fix + 2.3) - .05, A.fix + 1.9); A.typeEnd = A.wipe - .75; A.pay = S[S.length - 1]; A.end = V.end;
     A.wideIn = Math.max(A.leave + .2, at('ticked', 1, S[1]) - .1); A.wider = Math.max(A.wideIn + .5, at('select', 1, S[1] + 1.4) - .05);
     CAM = KM.rig({ x: 270, y: 480, z: 1, drift: 0 });
@@ -661,8 +661,8 @@ var KM = (function(){
     var e1 = Math.max(A.wipe + 1.0, at('line', 1, A.wipe + 1.2) - .1), LAST = DUR - 2.5, n = 6, gap = (LAST - e1) / 5;
     if (gap < .9) { n = 4; gap = (LAST - e1) / 3; } if (gap < .85) { n = 2; gap = Math.min(1.15, LAST - e1); } gap = Math.min(gap, 1.3);
     TD = [1, 1, 2, 2, 0, 0].slice(0, n); TG = TD.map(function(c2, q){ return +(e1 + q * gap).toFixed(3); }); TC = [[], [], []]; TG.forEach(function(x, q){ TC[TD[q]].push(x); });
-    A.lab = Math.min(Math.max(TG[1] + .4, at('javascript', 1, TG[1] + .5) - .05), LP - 1.2);
-    TG.forEach(function(x){ KM.tap(x, 28 + TX); KM.cue({ t: x + .08, k: 'pop', g: .2, p: 3 }); });
+    A.lab = Math.min(Math.max(TG[1] + .4, A.end + 1.25), LP - 1.7);   // big NO JAVASCRIPT in the band once the subtitles have left
+    TG.forEach(function(x, q){ KM.tap(x, 28 + TXc[TD[q]]); KM.cue({ t: x + .08, k: 'pop', g: .2, p: 3 }); });
     CAM.creep(A.lab, LP - A.lab - .05, .025);   // the held payoff still breathes (FLOW dead runs)
     TG.forEach(function(x, q){ KM.cue(q % 2 ? { t: x + .14, k: 'blip', g: .2, p: 4 } : { t: x + .14, k: 'hit', g: .3, p: -.4 }); });
     KM.cue({ t: 0, k: 'hit', g: .45, p: -.3 }); KM.cue({ t: 0, k: 'whoosh', d: .5, g: .35 });
@@ -676,7 +676,7 @@ var KM = (function(){
     KM.mark($('meter'), 'tree', 'each number steps on its bug, tap or fix cue'); KM.sfx($('mtag'), A.wipe + .5, 'enter', { size: 'small', g: .5 });
     KM.sfx($('wide'), A.wideIn, 'enter', { size: 'medium', g: .6 }); KM.sfx($('wl'), A.wider, 'enter', { size: 'small', g: .8, deg: 2 });
     ['wa', 'ww', 'ws'].forEach(function(id){ KM.mark($(id), 'self', 'with the cause picture'); });
-    ['rx1', 'rx2'].forEach(function(id, k){ KM.sfx($(id), (TB[k] || 1) + .28, 'enter', { size: 'small', g: .7, deg: k }); });
+    ['rx1', 'rx2'].forEach(function(id, k){ KM.sfx($(id), (TB[k] || 1) + .1, 'enter', { size: 'small', g: .7, deg: k }); });
     KM.sfx($('code'), A.fix - .1, 'enter', { size: 'medium' }); KM.mark($('cd'), 'tree', 'the typing ticks');
     KM.sfx($('ghost'), A.typeEnd + .1, 'enter', { size: 'small', g: .7 }); KM.sfx($('ghost'), A.typeEnd + .78, 'land', { size: 'small', g: .6 });
     KM.sfx($('lab'), A.lab, 'enter', { size: 'small', deg: 1 });
@@ -687,12 +687,12 @@ var KM = (function(){
   function hx(a, b, k){ var x = parseInt(a.slice(1), 16), y = parseInt(b.slice(1), 16), o = 0, q; for (q = 16; q >= 0; q -= 8) { var v = Math.round(mix(x >> q & 255, y >> q & 255, cl(k))); o = o * 256 + v; } return '#' + ('000000' + o.toString(16)).slice(-6); }
   // one card: lit = how lit (0-1), fl = the red NOT LIT flare, raw = how ticked its box is, pop = the box's pop
   function paint(i, lit, fl, raw, pop){
-    var red = fl * (1 - lit), ring = hx(hx('#3d3a5e', '#d79bff', lit), '#ff5f6d', red), w = 2 + 1.5 * lit + 1.5 * red, bg = hx(hx('#2a2744', '#4b2d86', lit), '#3a1f2a', .5 * red), bx = hx('#f2efe8', '#d79bff', lit);
-    FLD[i].style.boxShadow = 'inset 0 0 0 ' + w.toFixed(2) + 'px ' + ring + ', 0 0 ' + (6 + 24 * lit + 18 * red).toFixed(1) + 'px rgba(215,155,255,' + (.38 * lit).toFixed(3) + '), 0 0 ' + (18 * red).toFixed(1) + 'px rgba(255,95,109,' + (.3 * red).toFixed(3) + ')';
-    FLD[i].style.background = bg;
+    var ring = hx('#3d3a5e', '#d79bff', lit), w = 2 + 2 * lit, bg = hx(hx('#2a2744', '#4b2d86', lit), '#17152a', .55 * fl * (1 - lit)), bx = hx('#f2efe8', '#d79bff', lit);
+    FLD[i].style.boxShadow = 'inset 0 0 0 ' + w.toFixed(2) + 'px ' + ring + ', 0 0 ' + (6 + 24 * lit).toFixed(1) + 'px rgba(215,155,255,' + (.38 * lit).toFixed(3) + ')';
+    FLD[i].style.background = bg; FLD[i].style.transform = 'translateY(' + (7 * fl * (1 - lit)).toFixed(2) + 'px)';
     LMP[i].style.background = hx(bg, bx, raw); LMP[i].style.borderColor = hx('#8a867f', bx, raw); LMP[i].style.transform = 'scale(' + (1 + .3 * pop).toFixed(3) + ')';
     TK[i].style.opacity = P(raw, .3, .9).toFixed(3);
-    MSG[i].style.opacity = cl(red * 1.6).toFixed(3); }
+  }
   function rawAt(i, t){ var st = 1, xs = TC[i], q; for (q = 0; q < xs.length; q++) { if (t < xs[q]) return st; var kk = E.out3(P(t, xs[q], xs[q] + .18)); if (kk < 1) return mix(st, 1 - st, kk); st = 1 - st; } return st; }
   function stAt(i, t){ var st = 1; TC[i].forEach(function(x){ if (t >= x) st = 1 - st; }); return st; }
   function bumpAt(i, t){ var m = 0; TC[i].forEach(function(x){ m = Math.max(m, bump(t, x)); }); return m; }
@@ -705,22 +705,22 @@ var KM = (function(){
     for (i = 0; i < 3; i++) {
       var fl = 0; if (t < W) for (k = 0; k < TB.length; k++) { var s = TB[k] + .06 * i; fl = Math.max(fl, E.out3(P(t, s, s + .1)) * (1 - E.inOut3(P(t, s + .1, s + .7)))); }
       var raw = rawAt(i, t);
-      var lit = Math.min(E.out3(P(t, W + .1 * i, W + .1 * i + .35)), raw) * (1 - E.out3(P(t, LP + .05 * i, LP + .2 + .05 * i)));
+      var lit = Math.min(E.out3(P(t, W, W + .3)), raw) * (1 - E.out3(P(t, LP + .05 * i, LP + .2 + .05 * i)));
       var pop = Math.max(fl, bumpAt(i, t));
       paint(i, lit, fl, raw, pop); }
     // ---- the finger: it unticks the middle box, then ticks it again ----
     var taps = [], fx = 300, fy = 300, fo = 0;
     TG.forEach(function(x, q){ taps.push([x, TD[q]]); });
-    TG.forEach(function(x, k2){ KM.ripple($('rp' + k2), t, x, TX, FY(TD[k2])); });
-    taps.forEach(function(q){ var yy = FY(q[1]), a1 = E.inOut3(P(t, q[0] - .4, q[0] - .04)), l1 = E.inOut3(P(t, q[0] + .12, q[0] + .5)), o = cl((t - q[0] + .4) * 5) * (1 - l1);
-      if (o > fo) { fo = o; fx = mix(TX + 70, TX, a1) + l1 * 30; fy = mix(yy + 110, yy + 24, a1) + l1 * 60; } });
+    TG.forEach(function(x, k2){ KM.ripple($('rp' + k2), t, x, TXc[TD[k2]], TYc); });
+    taps.forEach(function(q){ var yy = TYc, TX = TXc[q[1]], a1 = E.inOut3(P(t, q[0] - .4, q[0] - .04)), l1 = E.inOut3(P(t, q[0] + .12, q[0] + .5)), o = cl((t - q[0] + .4) * 5) * (1 - l1);
+      if (o > fo) { fo = o; fx = mix(TX + 60, TX, a1) + l1 * 20; fy = mix(yy + 90, yy, a1) + l1 * 20; } });
     $('fg').style.left = (fx - 23).toFixed(1) + 'px'; $('fg').style.top = (fy - 23).toFixed(1) + 'px'; $('fg').style.opacity = fo.toFixed(3);
     // the reaction words sit in the status bar's empty right side, never in the subtitle band
-    [['rx1', 290, 0, .5], ['rx2', 268, 1, .55]].forEach(function(q){ var s3 = CAM.toScreen(c, q[1], 402); $(q[0]).style.left = s3[0].toFixed(1) + 'px'; $(q[0]).style.top = s3[1].toFixed(1) + 'px'; KM.react($(q[0]), t, (TB[q[2]] == null ? 99 : TB[q[2]]) + .28, { rot: q[2] % 2 ? 5 : -7, hold: q[3] }); });
+    [['rx1', 150, 0, .4], ['rx2', 70, 1, .22]].forEach(function(q){ var s3 = CAM.toScreen(c, q[1], 326); $(q[0]).style.left = s3[0].toFixed(1) + 'px'; $(q[0]).style.top = s3[1].toFixed(1) + 'px'; KM.react($(q[0]), t, (TB[q[2]] == null ? 99 : TB[q[2]]) + .05, { rot: q[2] % 2 ? 5 : -7, hold: q[3] }); });
     // ---- the measurement, from frame 0 to the last frame: LIT and TICKED ----
-    var after = t >= W + .35 && !lp, back = t >= LP + .15, dip = Math.min(cl(Math.abs(t - (W + .35)) / .22), cl(Math.abs(t - (LP + .15)) / .2));
+    var after = t >= W + .15 && !lp, back = t >= LP + .15, dip = Math.min(cl(Math.abs(t - (W + .15)) / .22), cl(Math.abs(t - (LP + .15)) / .2));
     var tk = stAt(0, t) + stAt(1, t) + stAt(2, t), lc = back || !after ? 0 : tk, lastT = -9;
-    TG.forEach(function(x){ if (t >= x) lastT = x; }); var lastL = Math.max(lastT, W + .35);
+    TG.forEach(function(x){ if (t >= x) lastT = x; }); var lastL = Math.max(lastT, W + .15);
     if (back) { tk = 3; lastT = -9; lastL = LP + .15; }
     var mh = '', tile = function(label, n, last, tone){ var pp = 1 + .22 * (1 - E.out3(P(t, last, last + .3))); return '<div class="km-m' + (tone ? ' km-' + tone : '') + '"><small>' + label + '</small><b style="transform:scale(' + pp.toFixed(3) + ')">' + n + '</b></div>'; };
     mh = tile('LIT', lc, lastL, after ? 'good' : 'bad') + tile('TICKED', tk, lastT, null);
@@ -741,11 +741,11 @@ var KM = (function(){
     KM.type($('cd'), CODE, t, A.fix + .35, A.typeEnd); $('cd').style.opacity = P(mk, .6, 1).toFixed(3);
     [].forEach.call($('cd').querySelectorAll('b'), function(b, k2){ KM.sweep(b, t, A.typeEnd + .05 + k2 * .12, .4, 'var(--soft)'); });
     // the fix selector glides from the code card onto the cards (a copy: the card keeps it on screen for the save)
-    var g = T.glide(t), gh = $('ghost'), a = { x: 62, y: 164, w: 300, h: 32, r: 12 }, sc = CAM.toScreen(c, 330, 567), b = { x: sc[0] - 130, y: sc[1] - 16, w: 260, h: 32, r: 14 };
+    var g = T.glide(t), gh = $('ghost'), a = { x: 62, y: 164, w: 300, h: 32, r: 12 }, sc = CAM.toScreen(c, 270, 560), b = { x: sc[0] - 130, y: sc[1] - 16, w: 260, h: 32, r: 14 };
     KM.shared(gh, a, b, g); gh.style.opacity = (t >= A.typeEnd + .1 && g < 1 ? 1 - P(g, .8, 1) : 0).toFixed(3);
     // ---- payoff: the label right of the counter ----
-    var lq = CAM.toScreen(c, 340, 724), lk = P(t, A.lab, A.lab + .3) * (1 - P(t, LP, LP + .2));
-    $('lab').style.left = lq[0].toFixed(1) + 'px'; $('lab').style.top = lq[1].toFixed(1) + 'px'; $('lab').style.opacity = lk.toFixed(3); $('lab').style.transform = 'translateY(' + ((1 - E.back(P(t, A.lab, A.lab + .3), 1.4)) * 10).toFixed(2) + 'px)';
+    var lk = P(t, A.lab, A.lab + .3) * (1 - P(t, LP, LP + .2));
+    $('lab').style.opacity = lk.toFixed(3); $('lab').style.transform = 'translateY(' + ((1 - E.back(P(t, A.lab, A.lab + .3), 1.4)) * 10).toFixed(2) + 'px)';
     // ---- the subtitles sit between the top zone and the phone ----
     KM.cutBelow($('vp'), $('fe'), 960, 0);
     var bk = E.out3(P(t, A.leave - .1, A.leave + .35)) * (1 - E.out3(P(t, A.end + 1.1, A.end + 1.6)));
