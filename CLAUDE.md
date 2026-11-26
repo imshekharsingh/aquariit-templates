@@ -66,6 +66,7 @@ The "Spare usage night" scheduled task (Tue ~22:44 IST) follows **design/runbook
 - No side programs while the weekly limit is low (owner, 24 Nov 2026): the Improvement lab task is paused; no preview studies, no kit programs.
   One reel per channel a day, and that is it.
 - Read the last 5 entries of design/handoff-log.md before starting; a session that changes the repo adds one entry there in its push.
+- App and tooling CODE fixes go to the other account's queue in design/handoff.md (owner, 26 Nov 2026); this account keeps reel builds, critics, anything needing reel videos or the signed-in site, and fixes for today's posts.
 - One session = one task, one channel, one branch; finish it (pushed, merged, checked) and archive it before the next starts. One heavy
   session at a time. The owner chats in the daily "Owner chat <date>" session, which never builds.
 - No subagents; no polling (one check-in per GitHub job); never end a turn while waiting on a merge or render without a send_later wake-up for when it should be done (owner, 22 Nov 2026: a session stopped after its merge and never rendered); one stills sheet and one contact sheet per reel; text checks before viewing frames;
