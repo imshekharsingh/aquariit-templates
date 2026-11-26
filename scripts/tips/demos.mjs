@@ -652,4 +652,18 @@ export const demos = {
 <p class="note">The left form is red before you touch it: an empty required field is invalid from the first paint. The right form stays dark. Type "ada@" in its email field and click away: only then does it turn red. MDN, :user-invalid (Chrome 119, Firefox 88, Safari 16.5).</p>`,
     js: `function(root){}`,
   },
+  // the has-parent demo (showreel-48-has-parent, 26 Nov 2026): real CSS, two option lists; the left one has no parent rule, so a ticked card looks the same; the right one styles .card:has(input:checked), so the whole card lights when its box is ticked
+  hasparent: {
+    css: `
+#hasparent .stage{margin:8px 10px;padding:12px 10px;border-radius:12px;background:#10171a}
+#hasparent label{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px;padding:10px 12px;border-radius:10px;border:2px solid #3a4448;background:#161d20;color:#e8efed;font:600 15px/1.2 system-ui,sans-serif}
+#hasparent .fix label:has(input:checked){border-color:#d79bff;background:#3b2468}`,
+    html: `
+<div class="pair">
+  <div class="pane"><span class="tag">no parent rule</span><div class="stage bad"><label>Oat milk<input type="checkbox" checked></label><label>Extra shot<input type="checkbox" checked></label></div></div>
+  <div class="pane fix"><span class="tag ok">.card:has(input:checked)</span><div class="stage fix"><label>Oat milk<input type="checkbox" checked></label><label>Extra shot<input type="checkbox" checked></label></div></div>
+</div>
+<p class="note">Both lists have every box ticked. On the left the cards stay dull, because CSS could not style a parent from its child. On the right label:has(input:checked) lights the whole card; untick a box and its card dims at once. MDN, :has() (Chrome 105, Firefox 121, Safari 15.4).</p>`,
+    js: `function(root){}`,
+  },
 };

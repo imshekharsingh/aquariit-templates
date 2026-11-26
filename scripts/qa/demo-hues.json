@@ -52,6 +52,10 @@
   "showreel-47-user-invalid": {
    "hue": 225,
    "world": "black,blueaccent"
+  },
+  "showreel-48-has-parent": {
+   "hue": 265,
+   "world": "black,violetaccent"
   }
  }
 }
