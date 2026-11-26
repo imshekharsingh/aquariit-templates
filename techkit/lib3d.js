@@ -207,11 +207,11 @@
   }
 
   // ---------- v7: flat counting numbers tied to their object by a thin leader line (owner, 26 Nov 2026; references 10 and 11) ----------
-  // numbers({ y }) -> set(t, { show 0..1, value, from, to, k (count progress 0..1), top: small line above, label: small line below, anchor: [x,y] px | null, tick 0..1 })
+  // numbers({ y }) -> set(t, { show 0..1, value, from, to, k (count progress 0..1), top: small line above, label: small line below, anchor: [x,y] px | null, at: [x,y] block centre px, tick 0..1 }) -> { box, leader }
   // One style for every number: flat, crisp white, counting (never popping in), gliding up as it shows, a hairline to the object it is about.
   function numbers(o = {}) {
-    const box = document.createElement('div'), y = o.y ?? 1530;
-    box.style.cssText = `position:absolute;left:0;top:${y}px;width:100%;text-align:center;pointer-events:none;z-index:6;font-family:"Inter Display",Inter,system-ui,sans-serif;color:#fff;text-shadow:0 2px 14px rgba(5,4,12,.7)`;
+    const box = document.createElement('div'), y = o.y ?? 1530, BW = o.w ?? 300, BH = 250;
+    box.style.cssText = `position:absolute;left:0;top:${y}px;width:${BW}px;text-align:center;pointer-events:none;z-index:6;font-family:"Inter Display",Inter,system-ui,sans-serif;color:#fff;text-shadow:0 2px 14px rgba(5,4,12,.7)`;
     box.innerHTML = '<div data-top style="font-weight:600;font-size:40px;line-height:1;color:#c9cfdb;letter-spacing:.01em"></div><div data-n style="font-weight:800;font-size:148px;line-height:1.04;letter-spacing:-.03em;font-variant-numeric:tabular-nums"></div><div data-lab style="font-weight:600;font-size:38px;line-height:1;color:#c9cfdb"></div>';
     const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('width', '1080'); svg.setAttribute('height', '1920');
     svg.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;z-index:6';
@@ -222,12 +222,18 @@
     const top = box.querySelector('[data-top]'), n = box.querySelector('[data-n]'), lab = box.querySelector('[data-lab]');
     return { el: box, set(t, q) {
       const sh = clamp(q.show ?? 0), v = Math.round(lerp(q.from ?? q.value, q.to ?? q.value, 1 - Math.pow(1 - clamp(q.k ?? 1), 3)));
+      const at = q.at || [540, y + BH / 2], bx = [at[0] - BW / 2, at[1] - BH / 2, at[0] + BW / 2, at[1] + BH / 2];   // at: the number block's centre (v7: placed beside its object, in empty space)
+      box.style.left = bx[0] + 'px'; box.style.top = bx[1] + 'px';
       box.style.opacity = sh.toFixed(3); box.style.transform = `translateY(${(1 - sh) * 46}px) scale(${(1 + .1 * Math.sin(Math.PI * clamp(q.tick ?? 0))).toFixed(3)})`;
       top.textContent = q.top || ''; n.textContent = String(v); lab.textContent = q.label || '';
-      const ax = q.anchor, ok = ax && sh > .02 && ax[1] < y - 40 && ax[0] > 30 && ax[0] < 1050 && ax[1] > 430;
+      const ax = q.anchor, ok = ax && sh > .02 && ax[0] > 30 && ax[0] < 1050 && ax[1] > 430 && ax[1] < 1890 && !(ax[0] > bx[0] && ax[0] < bx[2] && ax[1] > bx[1] && ax[1] < bx[3]);
       svg.style.opacity = ok ? sh.toFixed(3) : '0';
-      if (ok) { const x0 = 540, y0 = y - 10, k = clamp((sh - .2) / .8); ln.setAttribute('x1', x0); ln.setAttribute('y1', y0); ln.setAttribute('x2', lerp(x0, ax[0], k)); ln.setAttribute('y2', lerp(y0, ax[1], k)); dot.setAttribute('cx', ax[0]); dot.setAttribute('cy', ax[1]); dot.style.opacity = k > .95 ? '1' : '0'; }
-      return { box: [0, y - 50, 1080, y + 250], value: v }; } };
+      let seg = null;
+      if (ok) { // the leader leaves the block's edge on the side that faces the anchor
+        const dx = ax[0] - at[0], dy = ax[1] - at[1], tx = dx ? (BW / 2 + 8) / Math.abs(dx) : 1e9, ty = dy ? (BH / 2 + 8) / Math.abs(dy) : 1e9, f = Math.min(tx, ty, 1);
+        const x0 = at[0] + dx * f, y0 = at[1] + dy * f, k = clamp((sh - .2) / .8); seg = [x0, y0, lerp(x0, ax[0], k), lerp(y0, ax[1], k)];
+        ln.setAttribute('x1', x0); ln.setAttribute('y1', y0); ln.setAttribute('x2', seg[2]); ln.setAttribute('y2', seg[3]); dot.setAttribute('cx', ax[0]); dot.setAttribute('cy', ax[1]); dot.style.opacity = k > .95 ? '1' : '0'; }
+      return { box: bx, leader: seg, value: v }; } };
   }
 
   W3.lib = { appTile, phone, laptop, chip, rack, productBlock, codeCard, dialog, figure, appGlyphs, rr, standingSlab };
