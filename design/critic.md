@@ -126,6 +126,7 @@ The critic is also the design lead. After the fault check, always:
    onto each other as one flow, not separate pop-ins"). Ask for every element: how it arrives, how groups stack or cascade, how the set
    itself (board, wall, floor) builds, what keeps moving after it lands. Nothing may simply appear.
 3. HIGH upgrades go into the next render's EXACT FIX list together with the faults ("when we know what's missing, fix it").
+4. Ask the three of design/direction.md "Focus, structure, reason" (one subject lit, the rest dimmed; a fixed frame to hold on to; a reason for every move). More motion is not better: judge clarity, not movement count.
 
 ## Item 20 format (owner, 22 Nov 2026)
 The verdict line must contain exactly `CRITIC: READY` or `CRITIC: NOT READY` (26 Nov: a critic wrote "CRITIC 2: READY", the app could not read it and showed a READY tech reel as failed). A later pass appends a new line BELOW the old ones; the app reads the last one.
