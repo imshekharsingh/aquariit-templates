@@ -802,3 +802,8 @@ Format (at most 6 lines):
 - Done: Feedback read (none new) and owner answers (none); audit numbers read from a dry Instagram collect; rules-tech.md 26 Nov audit line; experiments.md lesson line; started one build session each for web (:has, the researcher's pick) and tech (fresh-news research first, old bank is stale).
 - Left: both builders own their reel to READY (Fable pick, stills check, at most 2 renders, Output QA, critic). The audit card was dispatched from the numbers above.
 - For the other account: the Instagram collect's scheduled run skips the audit step except at 05:23 and 20:14 UTC; a dry dispatch prints it.
+
+## 2026-11-26 · claude/c3-fix-invite-26nov · Turns Out reel "You asked: fix this invite" rebuilt (Turns Out daily build)
+- Done: showreel-c3-fix-invite rebuilt on the improved kit from the gold reel (optical-centre was withdrawn and stop-centring was posted on 21 Nov, so fix-invite is next in the plan): a party invite on a fridge door (four fonts, all centred, confetti, no hero) fixed in three moves (the age as the hero, one font in two sizes, one colour once), seven spoken sentences with breaths, direction card and review file written, captions entry kept hidden until the critic says READY. Nothing the invite needs is deleted; the 7 is hidden while the before is kept.
+- Left: outside stills check, one render, Output QA, critic; then postOn 2026-11-26, postAt 17:00.
+- For the other account: check c3-plan.md against captions.json posted marks before picking a held reel (stop-centring was already posted).
