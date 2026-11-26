@@ -1644,16 +1644,22 @@
       if (x.at) box.appendChild(el('small', null, 'Since ' + new Date(x.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' · clears itself after the next good run')); });
     box.hidden = false; }).catch(function(){});
   // the minutes meter: used / allowance this month, the pace to month end, and the biggest workflows
-  fetch('/reels/showreel-usage-actions.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(u){
-    if (!u || !u.allowance) return;
+  // (26 Nov 2026: the owner could not see it; it was hidden on any error. Now it always shows, and says why when the count cannot be read)
+  var useBox = document.getElementById('use'), useMiss = function(why){ document.getElementById('use-n').textContent = 'not counted yet';
+    document.getElementById('use-note').textContent = 'Minutes not counted yet: ' + why + ' The count runs every night at about 02:10.'; useBox.hidden = false; };
+  fetch('/reels/showreel-usage-actions.json', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){
+    if (!r.ok) throw new Error(r.status === 404 ? 'the app has no count saved (error 404).' : 'the app could not read the count (error ' + r.status + ').');
+    return r.json().catch(function(){ throw new Error('the saved count could not be read.'); }); }).then(function(u){
+    if (!u || !u.allowance || typeof u.used !== 'number') return useMiss('the saved count is empty or in an old format.');
     var pct = Math.round(100 * u.used / u.allowance), bar = document.getElementById('use-bar'), n = u.used.toLocaleString('en-IN'), a = u.allowance.toLocaleString('en-IN');
     document.getElementById('use-n').textContent = n + ' / ' + a + ' min · ' + pct + '%';
     bar.firstChild.style.width = Math.min(100, pct) + '%'; bar.className = 'bar' + (u.pace > u.allowance ? ' over' : u.pace > .8 * u.allowance ? ' warn' : '');
     document.getElementById('use-note').textContent = 'On pace for ' + u.pace.toLocaleString('en-IN') + ' by month end · last 7 days ' + u.last7.toLocaleString('en-IN') +
-      ' · counted ' + new Date(u.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + (u.allowance === 2000 ? ' · limit: GitHub Free' : '');
+      ' · counted ' + new Date(u.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + (u.allowance === 2000 ? ' · limit: GitHub Free' : '') + ' · free while the repo is public; the limit counts only if it goes private';
     var ul = document.getElementById('use-list');
     (u.workflows || []).slice(0, 5).forEach(function(w){ var li = el('li'); li.appendChild(el('span', null, w.name)); li.appendChild(el('span', null, w.minutes + ' min · ' + w.runs + ' runs')); ul.appendChild(li); });
-    document.getElementById('use').hidden = false; }).catch(function(){});
+    if (Date.now() - new Date(u.at).getTime() > 48 * 3600e3) document.getElementById('use-note').textContent += ' · this count is over 2 days old';
+    useBox.hidden = false; }).catch(function(e){ useMiss((e && e.message) || 'the app could not reach the count.'); });
   Promise.all([fetch('/api/showreels', { credentials: 'same-origin', cache: 'no-store' }).then(function(r){ return r.json(); }), caps, load()]).then(function(r){
     // a re-render keeps the file name, so the Worker's video, play and cover URLs carry each object's upload time (?v=): the phone never plays a cached older cut
     DATA = { d: r[0], c: r[1] }; if (!fromLink(location.hash)) { if (pendingReel) openReel(pendingReel, true); else render(); } tRender();
