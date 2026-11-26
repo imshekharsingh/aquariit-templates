@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/critic-ambition-26nov · owner chat: the critic becomes the design lead too
+- Owner: spoon-feeding design notes must stop. design/critic.md "Ambition pass" (premium judged against the owner's references; at least 3 graded UPGRADES every verdict; HIGH ones go into the next fix); design/direction.md "Motion-design pass" in every plan. An upgrade critic re-grades v7 render 2 now for render 3.
+
 ## 2026-11-26 23:50 IST · claude/critic-3d-v7-r2 · Independent critic (main account) of 3D kit v7 render 2: NOT READY, not stable
 - Done: judged the real v7 render 2 MP4 beside v6 (one contact sheet each, three full frames, frame-change and brightness at 10 fps). Plan changes 2, 4, 6 DONE; 1, 3, 5, 7 PARTLY. Faults: empty dark wall 3.9-4.6 s, the 24 block on top of the cables 9.3-11.4 s, an empty first frame (the loop jumps), a short tangle sweep. PREMIUM 8 / 6.5 / 7.5; verdict and five-step EXACT FIX in review/tech/showreel-tech-gold3d-v7.md; Progress line in design/handoff.md.
 - Left: both v7 renders used; the owner decides (a third render with the five fixes, or accept as is). Tech stays paused.

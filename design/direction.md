@@ -13,6 +13,11 @@ How:
   The Tech reel and Showreel workflows refuse to render a reel that posts from 25 Nov without the APPROVED line (scripts/review-gate.mjs).
 - The critic checks that the reel delivers the card: the rewatch moment really happens, and so do the hook and payoff (critic.md question 44).
 
+## Motion-design pass (owner, 26 Nov 2026), part of every direction card and 3D plan
+Before the critic sees a plan, the builder writes, per element and per set piece: its entrance (how it arrives), how groups stack or
+cascade, how the set itself builds (boards, walls, floors are animated in, never pre-set), and its life after landing. Taken from the
+owner's references (design/references.md), named per line. Nothing may simply appear.
+
 ## The card (all channels)
 1. Hook: the tension or contrast SHOWN in the first second (a thing breaking, two things side by side, a number that should not be), not a label or a title.
 2. Pacing curve: a new visual idea every 1.5-2 s; say where it speeds up (times) and where the ONE held pause sits (time, how long, why).
