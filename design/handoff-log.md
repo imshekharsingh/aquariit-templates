@@ -6,6 +6,11 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 10:10 IST · claude/3d-kit-v5 · other account: 3D kit sample v5, the six critic fixes (no render yet)
+- Done: merged both critic branches (review file holds v3 + v4); scene fixes 1-6 (opening move, hub between apps and wall with all 8 tools whole, push-in pulled back, tangle outside the wall, end turn home + New cable pulse, hub sub-line dropped); stills review/tech/study-25nov/kit-phase2-v5.jpg; techkit/check-gold3d.cjs (no-render name/cover check); scripts/tech-assemble.py now inlines the 3D kit (it did not, so a 3D scene failed locally).
+- Left: render 5 only on the owner's yes (design/handoff.md Progress), Output QA, separate critic; then the "finalise the 3D kit" steps if READY.
+- For the other account: a comment pasted before code on one line silently drops that code (the hub was missing from the scene for a while); the stills caught it, the box check did not.
+
 ## 2026-11-26 · claude/handoff-3d-kit-final · owner chat: the other account also finalises the 3D kit
 - design/handoff.md: after a READY v5, the same session makes it the tech 3D gold, updates the starter, closes the known limits, switches tech daily builds to the 3D look, then closes the handoff (cap ~$15 more, owner asked first past it).
 
@@ -858,3 +863,11 @@ Format (at most 6 lines):
 - Done: render 1 passed Output QA; critic (Opus) NOT READY (numbers over the phone, no old-vs-new range, misleading 60 m on the phone screen, AI label); scene fixed (numbers smaller and clear, amber old ring vs 3x ring from a top-down, phone screen arrow only), aiLabel false.
 - Left: render 2 (the last one), Output QA, second critic, then the post day; a third render needs the owner chat's yes.
 - For the other account: three big camera-riding numbers cover the product; keep them in a fixed clear screen spot and check them against the phone in the stills before render 1. The critic branch is merged and deleted by the pipeline, so a verdict file appears on main.
+## 2026-11-26 · claude/critic-gold3d-sample · Independent critic of the 3D kit sample render v3
+- Done: review/tech/showreel-tech-gold3d-sample.md, verdict NOT READY on the real MP4 (contact sheet + side-by-side with the tech gold). Strong colour, materials, cable maths and captions; weak hook at frame 0, one tower framing for 9.8-18.4 s, no payoff or loop at the end, unreadable code card over the tool column, hub cables over the tool names, apps and tools share names. Seven-step EXACT FIX in the file. PREMIUM 5.5 / 6.5 / 7.
+- Left: the owner chat decides on a 4th render of this sample (owner's yes and cost estimate); it is not the gold for the 3D look until a critic writes READY.
+- For the other account: nothing new.
+## 2026-11-26 · claude/critic-gold3d-sample-v4 · Independent critic (second pass) of the 3D kit sample render v4
+- Done: review/tech/showreel-tech-gold3d-sample.md, verdict NOT READY on the real v4 MP4 (one contact sheet, two full frames). Of the v3 fix list: hook, code card, distinct names and aiLabel DONE; camera path, cables and held payoff PARTLY. Still failing D2 (0.6-5.2 s and 13.3-18.5 s each one framing, about 5 s), the hub hides two of the eight tools from 7.5 s (the picture says 3+8 but shows 6 tools), "Notes" cut at the edge in the 9.8 s push-in. Six-step EXACT FIX in the file. PREMIUM 6.5 / 7 / 7.5.
+- Left: the owner chat asks the owner about a 5th render of this sample (with its cost); not the 3D gold until a critic writes READY. The v3 critic branch (claude/critic-gold3d-sample) was never merged; this file replaces it.
+- For the other account: the 3D look's camera keys must also cover the opening and the last 5 s, not only the middle beat.
