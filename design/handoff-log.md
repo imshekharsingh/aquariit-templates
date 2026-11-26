@@ -858,3 +858,8 @@ Format (at most 6 lines):
 - Done: render 1 passed Output QA; critic (Opus) NOT READY (numbers over the phone, no old-vs-new range, misleading 60 m on the phone screen, AI label); scene fixed (numbers smaller and clear, amber old ring vs 3x ring from a top-down, phone screen arrow only), aiLabel false.
 - Left: render 2 (the last one), Output QA, second critic, then the post day; a third render needs the owner chat's yes.
 - For the other account: three big camera-riding numbers cover the product; keep them in a fixed clear screen spot and check them against the phone in the stills before render 1. The critic branch is merged and deleted by the pipeline, so a verdict file appears on main.
+
+## 2026-11-26 · claude/tech-26nov-ready · Tech reel 26 Nov: SmartTag3 READY (builder session)
+- Done: render 2 (run 45752646144) passed Output QA; second critic (Opus) wrote CRITIC 2: READY; review file item 13 PASS; captions entry stays postOn 2026-11-26 postAt 15:00 IST (format quickmyth, device wearables).
+- Left: the post at 15:00 IST (the owner posts; nothing else), then the 7-day numbers in the next audit. Minor nits for the next reel on this kit are listed under CRITIC 2 in the review file.
+- For the other account: ask the critic to check the numbers' clear space in stills BEFORE render 1; two critics and two renders cost about three hours on this reel.
