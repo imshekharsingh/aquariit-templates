@@ -88,6 +88,16 @@
    "added": "2026-11-26",
    "needsOwner": false,
    "ask": "Nothing to check: the critic decides (watch it if you like)."
+  },
+  {
+   "name": "showreel-pv-tech-2d5-test",
+   "channel": "tech",
+   "title": "Tech test: the tap-to-pay node map (2.5D)",
+   "about": "A 30 s test of the owner's system-map look on a tech topic: one camera flies hub, six steps and a pull-back; each step has its own colour and a small working interface. Preview for comparison with the 3D v7 render, never posted.",
+   "techniques": "one continuous camera, a colour world and spotlight per step, fixed title and section pill, word-by-word captions, travelling light pulses.",
+   "added": "2026-11-27",
+   "needsOwner": false,
+   "ask": "Nothing to check: a study record (critic decides)."
   }
  ],
  "v": 20
