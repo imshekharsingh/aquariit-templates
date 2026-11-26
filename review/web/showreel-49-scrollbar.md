@@ -24,8 +24,9 @@ Eye path (rule 14), one line per beat: 0-2.4 s hook top-left, then down to the b
 17. Strobes: PASS: FLOW: strobes 0
 18. Element sound (web): PASS: ELEMENT SOUND: 49 of 49 animated elements have a cue (100%): ok
 
-PREMIUM (builder, on the stills, design/critic.md "Premium check"): animation 7.5/10 (t 0.25 and 1.45 the bar trails the page; t 8.4 it goes lime; t 11-12.5 the long flick back), cleanliness 7.5/10 (nothing cut at the edges, no text over text), reference fit 7/10 (the tabwiggle structure, a new hero).
+PREMIUM: animation 7.5/10 (t 0.25 and 1.45 the bar trails the page; t 8.4 it goes lime; t 11-12.5 the long flick back), cleanliness 7.5/10 (t 5.7 and 13.5 nothing cut at the edges, no text over text), premium 7/10 (t 12 the lime bar, the label and the code card; builder, on the stills, design/critic.md "Premium check")
 Researched improvement (design/improvements.md web, no unused item left, one standard search on 27 Nov found only marketing blogs): a counter of what the old way costs on screen from frame 0 (JS CALLS), frozen at 0 in the accent after the fix; thin evidence, to be read on the retention curve.
 Craft improvement (design/craft-log.md): see the 27 Nov web line.
 References used: none (rules 19 and 20; the tabwiggle gold).
 Deliberate differences from the brief, for the critic: (a) the accent is lime (hue 75, new against 165, 225, 265); (b) the page has no text (skeleton cards and header), so nothing collides with the code card or reaction words; (c) the meter counts SCROLLS and JS CALLS, and the BEFORE bar is deliberately a stepped, lagging bar (the real lag depends on the page).
+PREFLIGHT-ALL: PASS 2cb140f5 (showreel-49-scrollbar, 15 s)

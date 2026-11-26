@@ -14,4 +14,4 @@ Fill before the build (design/direction.md: the card, and this channel's default
 
 Stills check round 1 (Fable, session_01AYvWRgnRjMz2sFWFQTauDU, 2026-11-27): REDO (blank top third at 5.7 s before the code card; the gliding pill doubled code lines at 7.7 s; the hatched gap shrank at 4.7-5.7 s; "the" alone on a subtitle line at 8.7 s). Fixed in one round: the cause picture stays until the code card morphs out of it on "The fix"; the glide pill starts exactly on its source line with a solid fill; the bar's lag step 0.3 -> 0.4 s and delay 0.1 -> 0.2 s so the gap stays wide; "itself" dropped from the voice text so the phrase fits one line.
 
-STILLS CHECK: PENDING
+STILLS CHECK: APPROVED (session_01AYvWRiVzpSHPnLgQCRmT69, 2026-11-27): all four round-1 points are fixed (the cause picture holds through 5.7 s, the 7.7 s pill is a solid fill over the card, the hatched gap is wide at 4.7 s, and "Now the scroll drives the bar," sits on one line at 8.7 s), and nothing is clipped, overlapping, empty or unreadable at phone size. (Weakest frame, not blocking: the simulated-voice subtitle "The fix: animation timeline scroll." wraps at 6.7-7.7 s.)
