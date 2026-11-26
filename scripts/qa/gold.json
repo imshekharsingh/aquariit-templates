@@ -42,15 +42,15 @@
  "tech3d": {
   "name": "showreel-tech-gold3d-sample",
   "look": {
-   "bright": 0.264,
-   "bg": 0.168,
-   "dark": 0.343,
-   "grey": 0.032,
-   "contrast": 0.25,
+   "bright": 0.218,
+   "bg": 0.147,
+   "dark": 0.4,
+   "grey": 0.02,
+   "contrast": 0.229,
    "accent": 275,
    "accent_share": 0.082
   },
   "starter": "node scripts/starter.mjs tech3d <slug>",
-  "_note": "candidate (26 Nov 2026): measured on the 18.5 s sample render v4 (Output QA PASS) of the 3D colour-world kit; replace when a critic-READY reel in this look beats it"
+  "_note": "THE GOLD for the tech 3D look (26 Nov 2026): measured on the 18.5 s sample render v5 (Output QA PASS, critic READY, PREMIUM 7.5/8/8). Accent hue and share kept from v4 (same colours; the v5 run log does not print them); re-measure them with scripts/qa/gold_look.py when the MP4 is at hand"
  }
 }
