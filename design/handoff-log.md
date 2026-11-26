@@ -799,3 +799,8 @@ Format (at most 6 lines):
 - Done: Feedback read (none new) and owner answers (none); audit numbers read from a dry Instagram collect; rules-tech.md 26 Nov audit line; experiments.md lesson line; started one build session each for web (:has, the researcher's pick) and tech (fresh-news research first, old bank is stale).
 - Left: both builders own their reel to READY (Fable pick, stills check, at most 2 renders, Output QA, critic). The audit card was dispatched from the numbers above.
 - For the other account: the Instagram collect's scheduled run skips the audit step except at 05:23 and 20:14 UTC; a dry dispatch prints it.
+
+## 2026-11-26 · claude/web-26nov-has-parent · Web reel 48 has-parent (W26-1 CSS :has parent selector): build, direction card, review file, stills (pending stills check)
+- Done: Fable pick (KEEP W26-1 W26-3 W26-5, rejected W26-2 W26-4; design/pick-log.md), sources re-checked (MDN :has(), BCD: Chrome 105, Firefox 121, Safari 15.4), scene scripts/explainer/has-parent.html/.json built from the sibling reel 47 (three add-on cards, boxes ticked and cards dull, LIT 0 / TICKED 3, then .card:has(input:checked) lights them; violet accent hue 265), direction card, review file items 1-12 and 14-18 PASS, stills sheet, captions.json entry (postOn 2026-11-26, postAt 19:00), tip demo hasparent, demo-hues.json line, improvements and craft log lines.
+- Left: the Fable stills check (APPROVED line in the direction card), then render 1 on GitHub (Showreel), Output QA, the critic (opus, tag critic).
+- For the other account: a web FOCUS check measures colour on lit pixels, so a reel whose subject is grey cards fails it; give the demo one slate-violet base hue and put the whole screen in the subject box.
