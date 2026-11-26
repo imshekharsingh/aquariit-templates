@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 07:15 IST · claude/source-url-26nov · owner chat: morning builders stalled (no repo)
+- The 04:49 daily run made the web and tech builders without source_url, so they had no repo, add_repo was refused, and both stalled; the 05:11 Turns Out task produced nothing. Owner chat restarted all three at 07:12 with the repo. runbook-daily.md now requires source_url on every child session; the Turns Out task prompt was updated (source_url, outside stills check, no skip days). The Daily studio task prompt still says "dark look with one accent" (stale) and can only be changed from the launcher conversation; runbook and rules-tech.md section L win.
+
 ## 2026-11-25 23:45 IST · claude/owner-chat-25nov-late · owner chat: tech not posted, colour, reference method
 - Owner did not post tech battery-cycles (dated iPhone 14/15 framing, India line, top keyword bar, flat shots). Tech rules changed (all global, last-7-days tech news, freshness, no top bar, every shot alive; merged).
 - Owner: tech reels are not colour rich. Cause: design/tech-direction.md (22 Nov) near-black ground, white/grey, two accents max. Under review.

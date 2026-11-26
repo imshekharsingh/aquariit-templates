@@ -70,6 +70,7 @@ Step 4 above (build the day's web and tech reels) runs in these eight steps. Son
 Stage board: `node scripts/stage.mjs <channel> <stage> ...` at each step as before.
 **Sessions and models (the run starts them itself; nothing is pasted by the owner).** Each call is a child session made with `create_session` (same environment as
 this run), one task, one channel, one at a time; its result comes back as the reply or the pushed file. Settings:
+- ALWAYS pass `source_url: "https://github.com/imshekharsingh/aquariit-templates"` (26 Nov: builders made without it started with no repo, could not attach it, and stalled from 04:49 until the owner chat restarted them at 07:12).
 - Research re-check (step 1), build (steps 3-4, 6), style record (step 7): `model: "claude-sonnet-5-5"`, tag `build`.
 - Pick (step 2), stills check (step 5), critic (step 8): `model: "claude-fable-5-2"`, tag `pick` / `stills` / `critic`.
 - If a Fable call hits a limit or fails to start, make the same call with `model: "claude-opus-5-5"` (same prompt) and say so in the review file; never skip the call.
