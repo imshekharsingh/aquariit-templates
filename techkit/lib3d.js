@@ -21,6 +21,8 @@
     files: (c) => { c.fillStyle = '#fff'; rr(c, -62, -34, 124, 82, 12); c.fill(); c.beginPath(); c.moveTo(-62, -34); c.lineTo(-62, -52); c.lineTo(-14, -52); c.lineTo(4, -34); c.closePath(); c.fill(); },
     chat: (c) => { c.fillStyle = '#fff'; rr(c, -62, -48, 124, 82, 24); c.fill(); c.beginPath(); c.moveTo(-30, 30); c.lineTo(-40, 62); c.lineTo(0, 32); c.closePath(); c.fill(); c.fillStyle = 'rgba(0,0,0,.3)'; for (let i = -1; i <= 1; i++) { c.beginPath(); c.arc(i * 30, -8, 8, 0, 7); c.fill(); } },
     mail: (c) => { c.fillStyle = '#fff'; rr(c, -64, -42, 128, 84, 12); c.fill(); c.strokeStyle = 'rgba(0,0,0,.35)'; c.lineWidth = 8; c.lineJoin = 'round'; c.beginPath(); c.moveTo(-56, -34); c.lineTo(0, 12); c.lineTo(56, -34); c.stroke(); },
+    tasks: (c) => { c.fillStyle = '#fff'; rr(c, -56, -56, 112, 112, 22); c.fill(); c.strokeStyle = 'rgba(0,0,0,.4)'; c.lineWidth = 14; c.lineCap = 'round'; c.lineJoin = 'round'; c.beginPath(); c.moveTo(-28, 2); c.lineTo(-6, 26); c.lineTo(32, -26); c.stroke(); },
+    music: (c) => { c.fillStyle = '#fff'; c.beginPath(); c.ellipse(-22, 38, 22, 17, -.3, 0, 7); c.fill(); c.fillRect(-4, -50, 12, 90); c.beginPath(); c.moveTo(8, -50); c.quadraticCurveTo(52, -40, 46, -4); c.lineTo(36, -8); c.quadraticCurveTo(38, -30, 8, -34); c.closePath(); c.fill(); },
     calendar: (c) => { c.fillStyle = '#fff'; rr(c, -58, -54, 116, 112, 14); c.fill(); c.fillStyle = 'rgba(0,0,0,.35)'; c.fillRect(-58, -54, 116, 28); for (let i = 0; i < 6; i++) c.fillRect(-42 + (i % 3) * 32, -10 + Math.floor(i / 3) * 30, 20, 16); },
   };
 

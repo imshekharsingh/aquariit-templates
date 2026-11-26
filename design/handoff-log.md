@@ -803,6 +803,10 @@ Format (at most 6 lines):
 - Left: both builders own their reel to READY (Fable pick, stills check, at most 2 renders, Output QA, critic). The audit card was dispatched from the numbers above.
 - For the other account: the Instagram collect's scheduled run skips the audit step except at 05:23 and 20:14 UTC; a dry dispatch prints it.
 
+## 2026-11-26 · claude/tech-3d-kit-sample-v4 · 3D kit sample v4: all of the critic's fixes, lessons into rules, README and starter (owner chat, cap ~$13)
+- Done: scene rebuilt (hook = wired tangle + 24 + question from frame 0, camera path with three distinct moves and a loop home, cables on tile side edges, names inside tiles and distinct, no code card, held payoff, captions on a dark fade, numbers step aside in close shots); topic lines/cues/sfx for six lines; aiLabel false; rules-tech.md D1-D8, techkit/README.md, starter note; stills review/tech/study-25nov/kit-phase2-v4.jpg.
+- Left: ONE render (Tech reel, gold3d-sample, preview v4), Output QA, then the independent critic (opus, tag critic).
+- For the other account: nothing new.
 ## 2026-11-26 · claude/c3-fix-invite-26nov · Turns Out reel "You asked: fix this invite" rebuilt (Turns Out daily build)
 - Done: showreel-c3-fix-invite rebuilt on the improved kit from the gold reel (optical-centre was withdrawn and stop-centring was posted on 21 Nov, so fix-invite is next in the plan): a party invite on a fridge door (four fonts, all centred, confetti, no hero) fixed in three moves (the age as the hero, one font in two sizes, one colour once), seven spoken sentences with breaths, direction card and review file written, captions entry kept hidden until the critic says READY. Nothing the invite needs is deleted; the 7 is hidden while the before is kept.
 - Left: outside stills check, one render, Output QA, critic; then postOn 2026-11-26, postAt 17:00.
