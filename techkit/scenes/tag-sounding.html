@@ -119,9 +119,9 @@ function frame(t) {
   dial.visible = na > .01; dial.material.opacity = 1; dial.scale.setScalar(Math.max(.001, na)); dial.rotation.z = (t - C.dir) * .25;
   dirBeam.reveal(ease(prog(t, C.dir + .5, C.dir + 1.3))); dirBeam.update(t, 1);
   // figures follow the camera in the lower part of the frame
-  S.cam.updateMatrixWorld(); const ray = V(0, -.38, .5).unproject(S.cam).sub(S.cam.position).normalize();
+  S.cam.updateMatrixWorld(); const ray = V(.0, -.34, .5).unproject(S.cam).sub(S.cam.position).normalize();
   const f60 = eback(prog(t, C.sixty - .05, C.sixty + .45)) * (1 - sm(prog(t, C.three - .1, C.three + .1))), f3 = eback(prog(t, C.three - .05, C.three + .45)) * (1 - sm(prog(t, C.twenty - .1, C.twenty + .1))), f20 = eback(prog(t, C.twenty - .05, C.twenty + .45)) * (1 - sm(prog(t, C.less - .1, C.less + .1)));
-  [[fig60, f60], [fig3, f3], [fig20, f20]].forEach(([f, a]) => { f.visible = a > .01; f.scale.setScalar(Math.max(.001, a)); f.position.copy(S.cam.position).addScaledVector(ray, 7); f.scale.multiplyScalar(.7); f.quaternion.copy(S.cam.quaternion); f.translateX(-f.userData.w * .5 * f.scale.x * 0 + 0); });
+  [[fig60, f60], [fig3, f3], [fig20, f20]].forEach(([f, a]) => { f.visible = a > .01; f.scale.setScalar(Math.max(.001, a)); f.position.copy(S.cam.position).addScaledVector(ray, 7); f.scale.multiplyScalar(.62); f.quaternion.copy(S.cam.quaternion); f.translateX(-f.userData.w * .5 * f.scale.x * 0 + 0); });
   // rings on the floor: old range (grey) -> 3x (cyan) at "three"; UWB (green, inside) at "twenty"
   const oldK = sm(prog(t, C.three - .5, C.three - .1)) * (1 - sm(prog(t, C.twenty - .2, C.twenty + .2)) * .8);
   setRing(oldRing, PH.x, PH.z, oldK, 1, 1.5);
