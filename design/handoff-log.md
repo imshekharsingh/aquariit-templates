@@ -890,3 +890,6 @@ Format (at most 6 lines):
 - Done: Today = the board (one row per channel: Building / Rendering % / Checking / Found a problem: why / Ready, post at slot / Posted; "old status" shown when the journey is over 15 min old or marked stale). Reel lists, Post now and the reel cards left Today; Needs you holds only questions. Ready-to-post cards (all buttons) are at the top of "All reels and posted", critic-READY and fresh status only; a Ready row's "Open to post" button goes there. Badge = questions + ready reels. Checked at phone width with Playwright on a local build (fresh and stale mock data); npm run check has the updated ready-filter check.
 - Left: confirm on the live app after the deploy (sign-in needed).
 - For the other account: Today never lists reels; ready reels live in the reels menu.
+## 2026-11-26 · claude/web-26nov-verdict3 · Web reel showreel-48-has-parent: render 3 passed Output QA, critic READY
+- Done: render 3 (run 45755239976) Output QA PASS; independent critic CRITIC: READY (STOP 7.5, REWATCH 7.5); verdict and notes added to the review file. Posts 26 Nov 19:00 IST.
+- Left: the owner posts it. No further renders. Next web reel: give the reaction word its own row clear of the subtitle; start the code card typing on "fix".
