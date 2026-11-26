@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/tech-pause-26nov · owner chat: tech paused until the 3D kit v6
+- Owner: hold today's tech reel and every tech reel until the 3D kit v6 passes its critic. showreel-tech-tag-sounding hidden (READY, not posted); CLAUDE.md Schedule line TECH PAUSED; probe line corrected to hourly (the scheduler refuses 30-min steps); owner-feedback line. The Daily studio task prompt now builds web only.
+
 ## 2026-11-26 · claude/handoff-3d-v6 · owner chat: 3D kit v6 queued for the other account
 - design/handoff.md: task 0 (fix the two unmerged 3d-kit branches), task 3 (v6: beats, one entrance per object, per-app wiring beat then cascade, hook first, believable cables, far less glow; kit rules D9-D12, 4 critic questions, a GLOW check; the main account runs the critic). Owner agreed the four adjustments (length, hook, readability, believable not photoreal).
 
