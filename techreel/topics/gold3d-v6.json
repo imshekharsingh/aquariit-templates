@@ -1,0 +1,164 @@
+{
+ "slug": "gold3d-v6",
+ "engine": "kit",
+ "scene": "techkit/scenes/gold3d-v6.html",
+ "topic": "SAMPLE v6 (never posted): the 3D gold told as a story (rules-tech.md D9-D12): hook on the finished tangle, rewind, apps and tools enter one by one, the first cable plugs in, the rest cascade to 24, one hub collapses them to 11, a new tool is one more cable",
+ "format": "xray",
+ "audience": "global",
+ "gadget": "ai tools",
+ "device": "laptop",
+ "voice": "af_heart",
+ "speed": 1.0,
+ "max_speed": 1.0,
+ "gap": 0.5,
+ "max_end": 30,
+ "experiment": {
+  "id": "tech-3d-kit-v6",
+  "change": "a told story: one beat per action, own entrance per object, each connection a beat, matte sagging wires with plugs, glow only on the connect pulse",
+  "vs": "showreel-tech-gold3d-sample v5"
+ },
+ "lines": [
+  {
+   "text": "Why does one new tool add three cables?",
+   "beat": "question",
+   "source": 0
+  },
+  {
+   "text": "Here are three apps and eight tools.",
+   "beat": "setup",
+   "source": 0
+  },
+  {
+   "text": "Each app wires to every tool.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "That is twenty four connections to keep.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "Add one shared hub, and it drops to eleven.",
+   "beat": "takeaway",
+   "source": 0
+  },
+  {
+   "text": "A new tool is one more cable, not three.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Same apps, same tools, far less wiring.",
+   "beat": "payoff",
+   "source": 0
+  }
+ ],
+ "cues": {
+  "apps": [
+   1,
+   "apps"
+  ],
+  "tools": [
+   1,
+   "tools"
+  ],
+  "wires": [
+   2,
+   "wires"
+  ],
+  "twenty": [
+   3,
+   "twenty"
+  ],
+  "add": [
+   4,
+   "add"
+  ],
+  "hub": [
+   4,
+   "hub"
+  ],
+  "eleven": [
+   4,
+   "eleven"
+  ],
+  "newt": [
+   5,
+   "new"
+  ],
+  "same": [
+   6,
+   "same"
+  ],
+  "final": [
+   6,
+   "wiring"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "wires",
+   "pop",
+   0.45,
+   0
+  ],
+  [
+   "twenty",
+   "impact",
+   0.5,
+   0
+  ],
+  [
+   "hub",
+   "whoosh",
+   0.4,
+   0
+  ],
+  [
+   "eleven",
+   "chime",
+   0.45,
+   0
+  ],
+  [
+   "newt",
+   "pop",
+   0.5,
+   0
+  ]
+ ],
+ "post": {
+  "title": "3D kit sample v6",
+  "caption": "Sample, never posted.",
+  "keywords": [],
+  "hashtags": []
+ },
+ "qa": {
+  "sync": [],
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 25,
+    "sides": [
+     "left",
+     "right",
+     "bottom",
+     "top"
+    ],
+    "why": "a sample in one full-bleed world"
+   }
+  ]
+ },
+ "say": {},
+ "look": "3d"
+}

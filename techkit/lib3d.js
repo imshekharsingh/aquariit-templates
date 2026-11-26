@@ -3,6 +3,10 @@
 //   W3D.lib.figure(THREE, '3x8=24', { height, color, radius })     big glossy 3D number figures built from tubes (digits 0-9 and + x = -), centred, facing +z
 //   W3D.camPath(S, keys, { glide })(t)                             one continuous camera move through the world: keys [{ t, pos:[x,y,z], look:[x,y,z], fov }]
 //   W3D.lib.appGlyphs                                              hand-drawn glyph painters for generic app tiles (pay, photos, notes, maps, files, chat, mail, calendar)
+//   W3D.enter(obj, kind, u, { side })                              v6 (26 Nov 2026, rules-tech.md D10): a motion-design entrance at progress u 0..1 (u <= 0 hidden, 1 home):
+//                                                                  'slideTurn' | 'drop' | 'rise' | 'swing' | 'flip' | 'pop'; run u from 1 to 0 for an exit or a rewind
+//   W3D.wire(S, pts, { color, radius, plugs, shadow })             v6 (D12): a matte cable through pts (let it lie on the floor to sag), plugs at both ends, a floor shadow;
+//                                                                  .reveal(u) unrolls it (the end plug clicks in at the end), .pulse(k) the only glow (a bead along it), .curve / .tube
 // Real product logos: appTile takes { logo: THREE.Texture } (a licensed file fetched by the Media workflow, design/safety.md item 7) in its logo slot; without one it draws the generic glyph.
 (() => {
   const W3 = window.W3D, { clamp, lerp, tex, roundBox, roundedShape, gloss } = W3;
@@ -23,6 +27,7 @@
     mail: (c) => { c.fillStyle = '#fff'; rr(c, -64, -42, 128, 84, 12); c.fill(); c.strokeStyle = 'rgba(0,0,0,.35)'; c.lineWidth = 8; c.lineJoin = 'round'; c.beginPath(); c.moveTo(-56, -34); c.lineTo(0, 12); c.lineTo(56, -34); c.stroke(); },
     tasks: (c) => { c.fillStyle = '#fff'; rr(c, -56, -56, 112, 112, 22); c.fill(); c.strokeStyle = 'rgba(0,0,0,.4)'; c.lineWidth = 14; c.lineCap = 'round'; c.lineJoin = 'round'; c.beginPath(); c.moveTo(-28, 2); c.lineTo(-6, 26); c.lineTo(32, -26); c.stroke(); },
     music: (c) => { c.fillStyle = '#fff'; c.beginPath(); c.ellipse(-22, 38, 22, 17, -.3, 0, 7); c.fill(); c.fillRect(-4, -50, 12, 90); c.beginPath(); c.moveTo(8, -50); c.quadraticCurveTo(52, -40, 46, -4); c.lineTo(36, -8); c.quadraticCurveTo(38, -30, 8, -34); c.closePath(); c.fill(); },
+    spark: (c) => { c.fillStyle = '#fff'; c.beginPath(); for (let i = 0; i < 8; i++) { const r = i % 2 ? 18 : 58, a = i * Math.PI / 4 - Math.PI / 2; c.lineTo(Math.cos(a) * r, Math.sin(a) * r); } c.closePath(); c.fill(); },
     calendar: (c) => { c.fillStyle = '#fff'; rr(c, -58, -54, 116, 112, 14); c.fill(); c.fillStyle = 'rgba(0,0,0,.35)'; c.fillRect(-58, -54, 116, 28); for (let i = 0; i < 6; i++) c.fillRect(-42 + (i % 3) * 32, -10 + Math.floor(i / 3) * 30, 20, 16); },
   };
 
@@ -152,6 +157,47 @@
     };
   }
 
+  // ---------- v6: entrances (D10) ----------
+  const ease3 = (u) => (u = clamp(u), u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+  const back = (u, c = 1.5) => { u = clamp(u); return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); };
+  const bounce = (u) => { u = clamp(u); const n = 7.5625, d = 2.75; if (u < 1 / d) return n * u * u; if (u < 2 / d) return n * (u -= 1.5 / d) * u + .75; if (u < 2.5 / d) return n * (u -= 2.25 / d) * u + .9375; return n * (u -= 2.625 / d) * u + .984375; };
+  function enter(obj, kind, u, o = {}) {
+    const h = obj.userData.home || (obj.userData.home = { p: obj.position.clone(), r: obj.rotation.clone(), s: obj.scale.x || 1 });
+    u = clamp(u); obj.visible = u > .002; obj.position.copy(h.p); obj.rotation.copy(h.r); let sc = h.s;
+    const side = o.side ?? 1, e = back(u), w = 1 - u;
+    if (kind === 'slideTurn') { obj.position.x += side * 3.2 * (1 - ease3(u)); obj.rotation.y += side * 1.15 * (1 - e); sc *= .7 + .3 * ease3(u); }
+    else if (kind === 'drop') { obj.position.y += 3.6 * (1 - bounce(u)); obj.rotation.z += side * .25 * w * w; }
+    else if (kind === 'rise') { obj.position.y -= 1.8 * (1 - e); obj.rotation.x -= 1.25 * (1 - ease3(u)); sc *= .55 + .45 * ease3(u); }
+    else if (kind === 'swing') { const th = side * 1.35 * (1 - e); obj.position.x += Math.sin(th) * 3; obj.position.z += (Math.cos(th) - 1) * 3; obj.rotation.y += th; }
+    else if (kind === 'flip') { obj.rotation.y += side * Math.PI * 2 * (1 - ease3(u)); sc *= .3 + .7 * e; }
+    else { sc *= Math.max(.001, e); }
+    obj.scale.setScalar(Math.max(.001, sc));
+  }
+  // ---------- v6: believable wires (D12) ----------
+  function wire(S, points, o = {}) {
+    const THREE = S.THREE, pts = points.map((p) => (p.isVector3 ? p : new THREE.Vector3(...p))), curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', o.tension ?? .5);
+    const SEG = o.segments ?? 120, RAD = 8, r = o.radius ?? .045, col = new THREE.Color(o.color ?? 0x8a5cff);
+    const mat = new THREE.MeshPhysicalMaterial({ color: col.clone().multiplyScalar(o.tone ?? .72), roughness: .62, metalness: 0, clearcoat: .2, clearcoatRoughness: .5, emissive: col, emissiveIntensity: 0 });   // matte rubber, a soft sheen
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, SEG, r, RAD, false), mat); tube.castShadow = false; S.scene.add(tube);
+    // the floor shadow: a dark strip under the parts that lie low (wider and darker the nearer the floor)
+    let strip = null;
+    if (o.shadow !== false) { const pos = [], col4 = [], idx = []; for (let i = 0; i <= SEG; i++) { const u = i / SEG, p = curve.getPointAt(u), tg = curve.getTangentAt(u), k = clamp(1 - p.y / .28), hw = .03 + .09 * k, nx = -tg.z, nz = tg.x, l = Math.hypot(nx, nz) || 1;
+        pos.push(p.x + nx / l * hw, .006, p.z + nz / l * hw, p.x - nx / l * hw, .006, p.z - nz / l * hw); col4.push(0, 0, 0, .55 * k, 0, 0, 0, .55 * k); if (i < SEG) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); } }
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col4, 4)); g.setIndex(idx);
+      strip = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, fog: false })); strip.renderOrder = 2; S.scene.add(strip); }
+    // plugs: a metal sleeve and a coloured boot, along the cable's own direction at each end
+    const metal = new THREE.MeshStandardMaterial({ color: 0xcfd5de, roughness: .3, metalness: 1 }), boot = new THREE.MeshPhysicalMaterial({ color: col.clone().multiplyScalar(.75), roughness: .45, clearcoat: .4 });
+    const plug = (u, dir) => { const g = new THREE.Group(), b = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.9, r * 1.6, .17, 14), boot), m = new THREE.Mesh(new THREE.CylinderGeometry(r * 1.15, r * 1.15, .11, 12), metal);
+      b.position.y = -.02; m.position.y = .11; g.add(b, m); const p = curve.getPointAt(u), t = curve.getTangentAt(u).multiplyScalar(dir); g.position.copy(p); g.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), t.normalize()); g.userData.at = p.clone(); g.userData.dir = t.clone(); S.scene.add(g); return g; };
+    const pA = o.plugs === false ? null : plug(0, -1), pB = o.plugs === false ? null : plug(1, 1);
+    const bead = new THREE.Mesh(new THREE.SphereGeometry(r * 1.35, 12, 8), new THREE.MeshBasicMaterial({ color: col.clone().multiplyScalar(2.2), toneMapped: false })); bead.visible = false; S.scene.add(bead);
+    const api = { curve, tube, strip, plugs: [pA, pB], bead,
+      reveal(u) { u = clamp(u); const n = Math.floor(u * SEG); tube.geometry.setDrawRange(0, n * RAD * 6); if (strip) strip.geometry.setDrawRange(0, n * 6); const on = u > .001; tube.visible = on; if (strip) strip.visible = on;
+        if (pA) pA.visible = on; if (pB) { const k = clamp((u - .94) / .06); pB.visible = k > 0; pB.position.copy(pB.userData.at).addScaledVector(pB.userData.dir, .14 * (1 - k)); } },   // the end plug slides the last 0.14 in: the click
+      pulse(k, t = 0) { k = clamp(k); mat.emissiveIntensity = .35 * Math.sin(Math.PI * k); bead.visible = k > 0 && k < 1 && tube.visible; if (bead.visible) bead.position.copy(curve.getPointAt(k)); } };
+    api.reveal(0); return api;
+  }
+
   W3.lib = { appTile, phone, laptop, chip, rack, productBlock, codeCard, dialog, figure, appGlyphs, rr, standingSlab };
-  W3.camPath = camPath;
+  W3.camPath = camPath; W3.enter = enter; W3.wire = wire;
 })();

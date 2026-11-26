@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>gold3d-v6</title>
+<!-- 3D KIT SAMPLE v6 (26 Nov 2026; design/rules-tech.md D9-D12, design/3d-kit-phase2.md). Sample, never posted. The v5 gold ("3 apps x 8 tools = 24, one hub = 11")
+     told as a story: frame 0 is the finished tangle with 3x8=24 for about 1 s, a quick rewind, then one beat per action: each app enters with its own entrance,
+     the tools cascade in, the first cable unrolls and its plug clicks in, the rest cascade to 24, the hub drops in, the cables collapse and 11 unroll, a new
+     tool flips in with one more cable (3+9=12), the payoff, and the camera turns home to the first frame. Matte cables that lie on the floor and sag, plugs at
+     both ends, floor shadows; a cable glows only for its short connect pulse. Only the hub's LED and the pulse beads emit; much less bloom than v5.
+     Kit parts: W3D.enter (entrances), W3D.wire (cables), lib.figure, captions. window.render(t) is a pure function of t and the timeline cues. -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#090a0e}
+</style></head><body>
+<script src="timeline.js"></script>
+<!--THREE-->
+<!--WORLD3D-->
+<script>
+(() => {
+const W = 1080, H = 1920, TL = window.TL, C = TL.cues, TOTAL = TL.total;
+const { clamp, lerp } = W3D, prog = (t, a, b) => clamp((t - a) / (b - a));
+const sm = (u) => (u = clamp(u), u * u * (3 - 2 * u)), ease = (u) => (u = clamp(u), u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
+const eback = (u) => { u = clamp(u); const c = 1.6; return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); };
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const S = W3D.stage(THREE, { W, H });
+S.dof.aperture = 2.4; S.dof.focusRange = 7; S.dof.maxR = 20; S.bloom = .12;   // D12: much less bloom than v5 (.28)
+const world = W3D.world(S, { seed: 21, props: 36, radius: [14, 40], heroZone: 17, maxZ: -14, palette: [0x6b3cff, 0x16b8d6, 0xff4f8a, 0xffb62e, 0x2f7bff, 0x22c55e] });
+const L = W3D.lib;
+
+// ---------- the beats (D9): times from the voice cues; the hook and the rewind come first ----------
+const HOOK = 1.0, RW = [1.0, 1.5];                                   // frame 0 = the finished tangle for about 1 s, then a quick rewind
+const A_IN = [1.6, 1.6 + 1.5, 1.6 + 3.0];                            // the three apps, one beat each
+const T_IN = Math.max(A_IN[2] + 1.3, C.tools - .9);                  // the tools cascade in on "eight tools"
+const W1 = Math.max(T_IN + 1.9, C.wires - .2), W1_END = W1 + 1.5;    // the first cable: unrolls, plug clicks in, one pulse
+const CASC = [W1_END + .1, Math.max(W1_END + 1.6, C.twenty - .3)];   // the other 23 cables, a fast cascade, done on "twenty four"
+const HUB_IN = C.hub - .35, COLLAPSE = [C.hub + .5, C.hub + 1.3], HUBW = [C.hub + 1.2, C.eleven + .3];
+const NEW_IN = C.newt, NEW_W = [C.newt + .5, C.newt + 1.3];
+
+// ---------- the cast (v5 layout: apps in front, the 2 x 4 tool wall, the hub floating between them) ----------
+const APPS = [{ n: 'Notes', c: 0x16b8d6, g: 'notes', e: 'slideTurn', s: -1 }, { n: 'Chat', c: 0xff4f8a, g: 'chat', e: 'drop', s: 1 }, { n: 'Mail', c: 0xffb62e, g: 'mail', e: 'swing', s: 1 }];
+const TOOLS = [['Pay', 0x6b3cff, 'pay', 'drop', -1], ['Photos', 0xe0449a, 'photos', 'flip', 1], ['Files', 0x2f7bff, 'files', 'swing', -1], ['Maps', 0x1fb86a, 'maps', 'rise', 1],
+  ['Calendar', 0xff6a3c, 'calendar', 'slideTurn', -1], ['Docs', 0x7a4cff, 'files', 'pop', 1], ['Tasks', 0x1294d6, 'tasks', 'rise', -1], ['Music', 0xd9a21b, 'music', 'swing', 1]];
+const WALL_Y = 2.3, WALL_Z = -6.5, HUB_P = V(0, 1.25, -2.2), NEW_P = [2.85, HUB_P.y - .05, -1.7];
+const AX = (i) => (i - 1) * 1.88, TX = (j) => (j % 2 - .5) * 2.2, TY = (j) => WALL_Y + Math.floor(j / 2) * 1.45, SIDE = (j) => (j % 2 ? 1 : -1);
+const EDGE = (j, k = 1, n = 3) => [TX(j) + SIDE(j) * .71, TY(j) + .65 + (k - (n - 1) / 2) * .2, WALL_Z + .02];
+const apps = APPS.map((a, i) => { const g = L.appTile(THREE, { size: 1.7, color: a.c, glyph: L.appGlyphs[a.g], name: a.n, label: 'inside' }); g.position.set(AX(i), 0, 2); S.scene.add(g); return g; });
+const tools = TOOLS.map((t, i) => { const g = L.appTile(THREE, { size: 1.3, color: t[1], glyph: L.appGlyphs[t[2]], name: t[0], label: 'inside' }); g.position.set(TX(i), TY(i), WALL_Z); S.scene.add(g); return g; });
+const hub = L.productBlock(THREE, { w: 2.6, d: 1.5, h: 1.05, color: 0x4a14c8, name: 'HUB', led: true }); hub.position.copy(HUB_P); S.scene.add(hub);
+const newTool = L.appTile(THREE, { size: 1.2, color: 0x00c2a8, glyph: L.appGlyphs.spark, name: 'New', label: 'inside' }); newTool.position.set(...NEW_P); S.scene.add(newTool);
+
+// ---------- wires (D11, D12): from the back of each app, down to the floor, along it, up the outside of the wall into the tile's side edge ----------
+const appPlug = (i, j) => [AX(i) + (j - 3.5) * .16, .34, 1.78];
+const tangle = [];
+APPS.forEach((a, i) => TOOLS.forEach((t, j) => { const p0 = appPlug(i, j), e = EDGE(j, i), sx = SIDE(j) * (2.25 + .1 * i + .035 * j), jit = ((i * 8 + j) * 37 % 11) / 11 - .5;
+  const pts = [p0, [p0[0] * .95, .05, 1.15], [lerp(p0[0], sx, .45) + jit * .4, .03, -1.6 + jit * .5], [sx, .03, -5.4], [sx * .985, e[1] * .55, -6.28], [e[0] + SIDE(j) * .22, e[1], WALL_Z + .02], e];
+  tangle.push({ w: W3D.wire(S, pts, { color: a.c, radius: .04 }), i, j, k: i * 8 + j }); }));
+const hubW = [];
+APPS.forEach((a, i) => { const p0 = appPlug(i, 3.5); hubW.push({ w: W3D.wire(S, [p0, [p0[0] * .8, .2, 1.0], [AX(i) * .55, .45, -.4], [AX(i) * .38, HUB_P.y + .22, HUB_P.z + .78]], { color: 0x2fd27a, radius: .05 }), k: i }); });
+TOOLS.forEach((t, j) => { const e = EDGE(j), row = Math.floor(j / 2), sx = SIDE(j) * (2.3 + .05 * j);
+  hubW.push({ w: W3D.wire(S, [[SIDE(j) * (.35 + .22 * row), HUB_P.y + .3, HUB_P.z - .76], [SIDE(j) * (.9 + .25 * row), HUB_P.y - .35, -3.6], [sx, .6 + e[1] * .35, -5.6], [sx * .985, e[1] * .8, -6.28], [e[0] + SIDE(j) * .22, e[1], WALL_Z + .02], e], { color: 0x2fd27a, radius: .05 }), k: 3 + j }); });
+const newW = W3D.wire(S, [[1.32, HUB_P.y + .4, HUB_P.z + .25], [1.75, HUB_P.y - .05, -1.95], [NEW_P[0] - .82, HUB_P.y + .45, NEW_P[2] + .02], [NEW_P[0] - .62, HUB_P.y + .5, NEW_P[2]]], { color: 0x2fd27a, radius: .05 });
+
+// ---------- numbers as glossy 3D figures (no glow, D12) ----------
+const figs = { f24: L.figure(THREE, '3x8=24', { height: .72, color: 0xffa23a, radius: .1, emissive: 0 }), f11: L.figure(THREE, '3+8=11', { height: .72, color: 0x42ff8c, radius: .1, emissive: 0 }), f12: L.figure(THREE, '3+9=12', { height: .72, color: 0x2fe0c8, radius: .1, emissive: 0 }) };
+Object.values(figs).forEach((f) => { S.scene.add(f); f.visible = false; f.traverse((m) => { if (m.isMesh) m.castShadow = false; }); });
+
+const shadows = [...apps.map((m) => W3D.contactShadow(S, m, { w: 2.4, d: .6, strength: .9 })), ...tools.map((m) => W3D.contactShadow(S, m, { w: 1.6, d: .5, strength: .8 })), W3D.contactShadow(S, hub, { w: 3.0, d: 1.8, rest: 0, strength: .7 }), W3D.contactShadow(S, newTool, { w: 1.4, d: .5, rest: 0, strength: .7 })];
+
+// ---------- captions ----------
+const KEYS = [[4, 4], [5, 6], [4, 5], [2, 3], [8, 8], [4, 6], [5, 6]];
+const cap = W3D.captions({ y: 190, size: 60, lines: TL.scenes.map((s, i) => ({ t0: i === 0 ? -.2 : s.start, t1: i === TL.scenes.length - 1 ? TOTAL + 1 : s.end, words: s.words.map((w) => w.w), times: s.words.map((w) => w.t0), keyIdx: KEYS[i] })) });
+const CAPBAND = [60, 150, 1020, 420];
+
+// ---------- camera: one shot per beat (D9). Each key is where a shot sits; the camera holds with a slow drift, then makes ONE eased move to the next ----------
+const START = { pos: [0, 5.4, 15.5], look: [0, 3.0, -3.2], fov: 52 };
+const SH = [
+  { t: 0, ...START },                                                                   // hook: the finished tangle, 3x8=24
+  { t: A_IN[0] + .45, pos: [-4.8, 1.7, 6.4], look: [-2.05, 1.0, 2], fov: 38 },            // Notes slides and turns in: three-quarter, low
+  { t: A_IN[1] + .45, pos: [1.5, 3.7, 7.6], look: [.25, .95, 2], fov: 36 },                 // Chat drops in: a little above
+  { t: A_IN[2] + .45, pos: [5.6, 1.6, 6.4], look: [2.15, 1.0, 2], fov: 36 },              // Mail swings in: three-quarter from the right
+  { t: T_IN + .8, pos: [.6, 5.6, 8.4], look: [0, 4.5, -6.5], fov: 50 },                 // the tools cascade in: the wall, face on
+  { t: W1 + .35, pos: [-4.9, 2.4, -4.5], look: [-1.85, 2.9, -6.45], fov: 40 },          // the first cable: low close-up on Pay's plug as it clicks in
+  { t: CASC[0] + .6, pos: [-6.2, 8.2, 7.4], look: [0, .6, -2.6], fov: 50 },             // the cascade: a high three-quarter on the tangle growing across the floor
+  { t: CASC[1] + .5, ...START, pos: [1.6, 6.3, 15.8] },                                  // "twenty four": the wide with its number
+  { t: HUB_IN + .55, pos: [3.8, 3.4, 7.2], look: [0, 1.8, -2.2], fov: 48 },              // the hub drops in: three-quarter
+  { t: COLLAPSE[1] + .2, pos: [0, 7.4, 16.6], look: [0, 2.6, -3.0], fov: 52 },           // the collapse: high wide
+  { t: C.eleven + .5, pos: [-1.3, 6.2, 17.0], look: [0, 2.7, -3.1], fov: 52 },           // "eleven": pulled back to the clean picture
+  { t: NEW_IN + .6, pos: [5.6, 3.3, 4.6], look: [2.6, 1.6, -1.8], fov: 46 },             // the new tool flips in with its one cable
+  { t: C.same + .3, pos: [0, 6.5, 17.0], look: [0, 2.8, -3.2], fov: 52 },                // the payoff wide
+  { t: TOTAL - 1.7, pos: [-2.8, 6.1, 16.3], look: [0, 2.9, -3.2], fov: 52 },             // a small turn...
+  { t: TOTAL, ...START },                                                               // ...home to the first frame (the loop)
+];
+const VA = (a) => new THREE.Vector3(...a);
+function camAt(t) {
+  let i = 0; while (i < SH.length - 2 && t >= SH[i + 1].t) i++;
+  const a = SH[i], b = SH[i + 1], gap = b.t - a.t, dur = Math.min(1.15, gap * .62), ms = b.t - dur;
+  const u = ease(prog(t, ms, b.t)), hold = prog(t, a.t, ms);
+  const drift = (k) => VA(k.pos).lerp(VA(k.look), .025 * hold);                         // a slow push during the hold, so nothing sits dead
+  const pos = drift(a).lerp(VA(b.pos), u), look = VA(a.look).lerp(VA(b.look), u), fov = lerp(a.fov, b.fov, u);
+  S.cam.position.copy(pos); if (S.cam.fov !== fov) { S.cam.fov = fov; S.cam.updateProjectionMatrix(); } S.cam.lookAt(look); S.cam.updateMatrixWorld(); return { pos, look, fov };
+}
+
+const focus = V(0, 1.6, -3); S.focus = focus;
+function frame(t) {
+  const p = camAt(t); focus.copy(p.look);
+  const rw = ease(prog(t, RW[0], RW[1]));                                               // the rewind: everything leaves fast, backwards
+  apps.forEach((m, i) => { const inn = t < RW[1] ? 1 - rw : ease(prog(t, A_IN[i], A_IN[i] + .95)); W3D.enter(m, APPS[i].e, inn, { side: APPS[i].s }); if (m.visible) m.position.y += Math.sin(t * 1.3 + i * 2) * .04 * inn; });
+  tools.forEach((m, j) => { const t0 = T_IN + j * .2, inn = t < RW[1] ? 1 - clamp(rw * 1.3 - j * .04) : ease(prog(t, t0, t0 + .85)); W3D.enter(m, TOOLS[j][3], inn, { side: TOOLS[j][4] }); });
+  // the 24 cables: all on at frame 0; rewound; the first (Notes -> Pay) is its own beat; the rest cascade; all retract when the hub arrives
+  tangle.forEach((q) => { let u; if (t < RW[1]) u = 1 - clamp(rw * 1.25 - q.k * .01);
+      else if (q.k === 0) u = ease(prog(t, W1, W1 + 1.0));
+      else { const s0 = lerp(CASC[0], CASC[1] - .55, (q.k - 1) / 22); u = ease(prog(t, s0, s0 + .55)); }
+      const ret = ease(prog(t, COLLAPSE[0] + q.k * .012, COLLAPSE[0] + .5 + q.k * .012)); q.w.reveal(u * (1 - ret));
+      const pt0 = q.k === 0 ? W1 + 1.0 : lerp(CASC[0], CASC[1] - .55, (q.k - 1) / 22) + .55; q.w.pulse(t < RW[1] ? 0 : prog(t, pt0, pt0 + (q.k === 0 ? .6 : .35))); });
+  W3D.enter(hub, 'drop', ease(prog(t, HUB_IN, HUB_IN + .9)), { side: 1 });
+  hubW.forEach((q) => { const s0 = HUBW[0] + q.k * ((HUBW[1] - HUBW[0] - .5) / 10); q.w.reveal(ease(prog(t, s0, s0 + .5))); q.w.pulse(prog(t, s0 + .5, s0 + .85)); });
+  W3D.enter(newTool, 'flip', ease(prog(t, NEW_IN, NEW_IN + .8)), { side: 1 });
+  newW.reveal(ease(prog(t, NEW_W[0], NEW_W[1]))); newW.pulse(Math.max(prog(t, NEW_W[1], NEW_W[1] + .6), prog(t, TOTAL - 1.4, TOTAL - .8)));   // and one last pulse in the final 2 s
+  // the numbers: 24 in the hook, back on "twenty four", 11 on "eleven", 12 when the new tool connects; only on the wide shots
+  const wide = sm(prog(S.cam.position.distanceTo(hub.position), 15.8, 17.4));
+  const vis = { f24: (t < HOOK + .25 ? 1 - prog(t, HOOK, HOOK + .25) : eback(prog(t, C.twenty - .1, C.twenty + .4))) * (1 - sm(prog(t, C.eleven - .05, C.eleven + .15))),
+    f11: eback(prog(t, C.eleven - .02, C.eleven + .45)) * (1 - sm(prog(t, NEW_W[1], NEW_W[1] + .2))), f12: eback(prog(t, NEW_W[1] + .1, NEW_W[1] + .55)) };
+  S.cam.updateMatrixWorld(); const ray = V(0, -.78, .5).unproject(S.cam).sub(S.cam.position).normalize();
+  Object.entries(figs).forEach(([k, f]) => { const a = vis[k] * wide; f.visible = a > .01; f.scale.setScalar(Math.max(.001, a)); f.position.copy(S.cam.position).addScaledVector(ray, 10); f.quaternion.copy(S.cam.quaternion); f.rotateY(Math.sin(t * .9) * .1); });
+  shadows.forEach((s) => s.update());
+}
+window.render = (t) => { t = clamp(t, 0, TOTAL); frame(t); S.draw(t); cap(t); };
+window.__layoutCheck = (t) => { frame(clamp(t, 0, TOTAL)); S.cam.updateMatrixWorld(); const f = Object.values(figs).filter((x) => x.visible); return { band: W3D.check(S, f, [CAPBAND], 0).length, wall: f.some((x) => [...tools, ...apps, hub].some((m) => m.visible && W3D.overlaps(W3D.screenBox(S, x), W3D.screenBox(S, m)))) }; };
+window.__boxes = () => [];
+// for techkit/check-gold3d.cjs (names whole, not covered, no cable in front of a name, the hub not hidden)
+window.__dbg = { frame, S, apps, tools, hub, newTool, tubes: tangle.map((q) => ({ c: q.w })), hubTubes: hubW.map((q) => ({ c: q.w })), newCable: newW, figs: Object.values(figs), C, TOTAL };
+window.render(0);
+})();
+</script></body></html>
