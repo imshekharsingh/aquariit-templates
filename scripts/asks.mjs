@@ -59,8 +59,8 @@ if (ACTION === 'read') {
 if (ACTION === 'read' || ACTION === 'feedback') {
   const r = await fetch(SITE + '/api/feedback?state=new', { headers: { Cookie: cookie } });
   if (!r.ok) die(`could not read the feedback (HTTP ${r.status})`);
-  const fb = ((await r.json()).feedback || []).slice().reverse();   // oldest first
-  for (const f of fb) console.log(`FEEDBACK ${f.id} ${f.created} ${f.channel || '-'} ${JSON.stringify(f.text)}`);
+  const fb = ((await r.json()).feedback || []).slice().reverse().sort((a, b) => (b.priority ? 1 : 0) - (a.priority ? 1 : 0));   // PRIORITY items first (the app's Fix button), then oldest first
+  for (const f of fb) console.log(`${f.priority ? 'PRIORITY ' : ''}FEEDBACK ${f.id} ${f.created} ${f.channel || '-'} ${JSON.stringify(f.text)}`);
   console.log(`${fb.length} new feedback item${fb.length === 1 ? '' : 's'} (act on each or file it in design/todo.md, then feedback-done with a note)`);
 }
 if (ACTION === 'feedback-done') for (const id of fbDone.ids) {
@@ -151,7 +151,7 @@ if (ACTION === 'list' || ACTION === 'tidy' || ACTION === 'read') {
   if (ACTION === 'list') {
     for (const a of open) console.log(`ASK ${a.id} ${a.created} ${a.channel || '-'} until ${a.until || '-'} ${JSON.stringify(a.question)}`);
     for (const a of answered) console.log(`ANSWERED ${a.id} ${a.answered_at} ${JSON.stringify(a.answer)}`);
-    for (const f of fb) if (f.state === 'done' && f.note) console.log(`REPLY ${f.id} done ${f.done_at} ${f.read_at ? 'read' : 'UNREAD'} ${JSON.stringify(f.text.slice(0, 80))}`); else console.log(`MESSAGE ${f.id} ${f.created} ${f.state} ${JSON.stringify(f.text.slice(0, 80))}`);
+    for (const f of fb.slice().sort((a, b) => (b.priority ? 1 : 0) - (a.priority ? 1 : 0))) if (f.state === 'done' && f.note) console.log(`REPLY ${f.id} done ${f.done_at} ${f.read_at ? 'read' : 'UNREAD'} ${JSON.stringify(f.text.slice(0, 80))}`); else console.log(`MESSAGE ${f.id} ${f.created} ${f.state} ${JSON.stringify(f.text.slice(0, 80))}`);
     for (const r of refs) console.log(`REF ${r.id} ${r.created} ${r.state} ${r.done_at || '-'} ${r.url || (r.file && r.file.name) || '-'}`);
     for (const c of cards) console.log(`CARD ${c.id} ${c.day} ${c.kind || 'audit'} ${JSON.stringify(c.title)}`);
     for (const p of pv) console.log(`PREVIEW ${p.name} added ${p.added || '-'} ${said.get(p.name) ? 'answered: ' + said.get(p.name) : 'waiting'}`);

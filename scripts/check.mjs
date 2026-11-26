@@ -234,6 +234,13 @@ for (const dir of ['scripts/explainer', 'scripts/explainer/styles', 'scripts/sho
   const caps = readJSON(join(T, 'showreels/captions.json'), 'captions.json');
   if (caps && caps['showreel-tech-battery-cycles'] && !caps['showreel-tech-battery-cycles'].hidden) err('showreel-tech-battery-cycles must stay hidden (owner did not post it, 25 Nov)');
 }
+// journey store + fix button (owner, 26 Nov 2026)
+{
+  const wk = readFileSync(join(root, 'src/worker.js'), 'utf8'), idx = readFileSync(join(T, 'index.html'), 'utf8');
+  if (!/journey_answer/.test(wk) || !/builtAt/.test(wk) || !/err_note/.test(wk)) err('journey store: /api/journey must keep its answer in D1 (journey_answer) with builtAt and the last failure reason');
+  if (/journey\.cache\/answer-v1/.test(wk)) err('journey store: the answer must not live only in the per-data-centre cache again');
+  if (!/priority: true/.test(idx) || !/Sent to the studio/.test(idx) || !/priority IS NOT NULL/.test(wk)) err('fix button: a red board row needs Fix -> /api/feedback priority, "Sent to the studio", priority items listed first');
+}
 if (errors.length) {
   console.error(`✗ ${errors.length} problem(s):\n` + errors.map((e) => '  - ' + e).join('\n'));
   process.exit(1);
