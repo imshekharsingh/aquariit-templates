@@ -71,3 +71,40 @@ CHANGES (exact):
 After these: one render, Output QA, and the render critic judges idle motion, the three light sweeps and the loop on the real MP4.
 
 PLAN: CHANGE FIRST: the plan fixes v6's cables, hub and floor, but the hook frame is an unreadable blur, the tangle does not look tangled, two shots miss their subject, leader lines cross tiles and the end is as still as v6's; make changes 1-7 above, refresh the stills sheet, then render.
+
+## Render critic, render 2 (main account, 26 Nov 23:50 IST)
+Judged the real MP4 study/showreel-tech-gold3d-v7-r2-preview.mp4 (22.87 s, 1080x1920, 30 fps) beside v6 render 2: one contact sheet each at phone size (24 frames, same times), three full frames (0.0, 10.3, 16.5 s), frame-change and brightness numbers at 10 fps above the caption band. Output QA: PASS (builder's render 2 run; not re-run here).
+Measured: frame change median 7.6 per 0.1 s (v6 8.4); last 4 s median 6.4 (v6 2.3, the target was 5+); longest near-still stretch 0.6 s (v6 1.0 s); pale frames 0 of 229 (v6 18); median luma about .17 (gold .10, v6 .20).
+
+Plan critic's 7 changes:
+1. Readable hook frame: PARTLY. From 0.03 s Notes slams in at about 65 % of the width over the dark floor, light sweep at about 1.0 s. But frame 0 itself (the first frame and the thumbnail) is an empty floor with a pole and the question only, and the "Notes" name stays soft under the blur and sweep until about 1.2 s.
+2. Whole apps after the pull-back: DONE (2.9 s: Notes, Chat, Mail whole, names uncut).
+3. Wall fills the frame: PARTLY. At 5.2 s the wall and tools fill about 75 % of the width and read well, but from 3.9 to 4.6 s the frame is an empty dark wall panel with nothing on it (brightest 1 % of the frame drops from 200 to about 55; tools appear at 4.7 s).
+4. A real tangle at moment 2: DONE (9.3-11.4 s: cables cross and overlap on the floor across the full width, varied sag).
+5. Leaders clear of tiles: PARTLY. The 24's leader lands on the tangle with its ring (10.3 s); the 11 (14.5 s) and 12 (18.9 s) leaders run through empty space. But the 24 block itself sits on top of the cables: "3 x 8" and "cables" are crossed by a yellow and a pink cable 9.3-11.4 s.
+6. New the subject: DONE from about 16.2 s (New about 45 % of the width at 16.5 s, the hub a foreground edge); 15.1-16.0 s it is still small and see-through while it pops in.
+7. A moving end and loop home: PARTLY. The arc (19.0-21.6 s, framed differently) and the last-4 s change (6.4) are DONE. The home is not frame 0: the last frame is close on Notes, Chat, the hub and New, frame 0 is the empty floor, so the loop jumps.
+
+Task 10 points 1-7:
+1. Cables never through the floor or an object: DONE (7.2 s plug into Pay's side, cables lie on the floor and drape at 8.0-11.4 s; nothing through a tile seen).
+2. One flat counting number style with leaders: DONE in style (24, 11, 12 flat white, small line above and below, readable in half a second); the 24 sits on cables (change 5).
+3. Colour and light: DONE (no pale frames, matte floor, dark and deep; colours and materials kept from v5/v6).
+4. Camera with a reason, no move twice in a row, whole frame used: DONE (pull back 1.4-2.9, rise and push to the wall, dolly to the plug, arc over the tangle, truck in on the hub, crane to the wide, truck to New, arc and dolly home).
+5. Three big moments with a light sweep: PARTLY. Sweep 1 on Notes (about 1.0 s) and sweep 3 on the hub (11.5-12.1 s, the brightest frame of the reel) show; sweep 2 on the tangle lasts only about 0.3 s (9.0-9.2 s), the rest of moment 2 is flat.
+6. Hook and life: PARTLY. Frame 0 has no object (change 1). Idle motion: nothing looks frozen (no near-still stretch over 0.6 s), tiles bump when cables land (7.2 s) and lean at the hub (12.4 s), but at phone size the idle is not separable from the camera move; it never hurts reading.
+7. v6 faults: doubled or see-through HUB label: DONE (12.4 s, one opaque label). Straight stiff cables: DONE. Near-still ending: DONE. No empty frame: NOT DONE, a new one at 3.9-4.6 s.
+
+Q47 text: the 24 block crossed by cables 9.3-11.4 s; "Notes" cut at the left edge on the 13.5 s wide; captions clear everywhere else. Q48 own entrance per object: yes (slam, rise, slide-turn, tool pops, drop, pop-in). Q49 each connection its own beat: yes (first cable and plug 5.2-7.8 s, cascade 7.8-9.0 s, green cables 12.9-13.9 s); the 3.9-4.6 s gap is the one stretch where nothing reads. Q50 wires real at phone size: yes (sag, plugs, matte, floor contact). Q51 over-glow: none; brightest frame 12.1 s (the hub sweep), no haze. Q52 references: "numbers count" seen (24 at 9.5 s, 11 at 14.5 s, 12 at 18.9 s); "one persistent object that evolves" seen (the wall and its cables 5.2-22.8 s).
+GOLD: below the tech gold on depth only at 3.9-4.6 s (empty panel) and 9.3-11.4 s (number on a busy background); otherwise matches.
+Against v6: better on every point except the new empty frame at 3.9-4.6 s.
+
+PREMIUM: animation 8/10 (t 0-3 slam and pull-back, 7.2 plug, 19-21.6 arc), cleanliness 6.5/10 (t 3.9-4.6 empty dark wall; t 9.3-11.4 the 24 on top of cables; t 0.0 empty first frame), premium 7.5/10 (t 9.5-11.4 a real tangle, t 16.5 New, matte cables, no glow); weakest: 3.9-4.6 s an empty wall panel, start the tool pops at 3.9 s.
+
+CRITIC: NOT READY: v7 is the best 3D sample so far, but at 3.9-4.6 s the screen is an empty dark wall, at 9.3-11.4 s the 24 and its labels sit on top of the cables, and the first frame is an empty floor so the loop jumps. Detail: changes 1, 3, 5, 7; task 10 points 5-7; question 47; animation 8, cleanliness 6.5, premium 7.5.
+EXACT FIX:
+1. 3.9-4.6 s: the first tool pops onto the wall by 3.9 s (or the apps stay in frame until it lands): no frame without a lit object.
+2. 9.3-11.4 s: place the 24 block over dark empty space (above the tangle, beside the wall frame) with no cable under "3 x 8", "24" or "cables"; keep the leader and ring on the tangle.
+3. Frame 0: Notes already in frame on the first frame (the slam starts at frame 0), and the dolly home ends on that same framing at 22.9 s so the loop joins.
+4. 9.0-11.0 s: the tangle's light sweep runs along the cables for about 1 s, not 0.3 s.
+5. 13.5 s: "Notes" whole on the wide (crop the tile or keep its name inside the frame).
+STABLE: no (cleanliness 6.5, under 7.5). This was the last render of the loop (2 of 2): the owner decides.
