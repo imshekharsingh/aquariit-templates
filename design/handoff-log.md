@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/refs-loop-26nov · owner chat: references must show in reels and numbers; other account priority 3 then 9
+- design/critic.md question 52: the two key named reference patterns must be visible in the real video, with times. design/handoff.md task 9 (measuring: ref-compare script, refs tag per reel, with/without reference numbers in the weekly review). Owner priority for the other account: task 3 (3D kit), then 9, then the rest in number order.
+
 ## 2026-11-26 14:34 IST · claude/queue-check · other account: hourly queue check (queued task 8)
 - Done: scheduled task "Handoff queue check" (this account, hourly at :04, cheapest model, fresh session each run) starts the next open queued task in the order of design/handoff.md, one session at a time, skipping a task touched in the last 3 hours.
 - Left: its first run is 15:34 IST (next open task: 6). Task 3 (3D kit v6) continues in its own session.

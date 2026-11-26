@@ -101,6 +101,7 @@ Under 7 on either = CRITIC: NOT READY. **A reel that is clean but safe is NOT RE
 49. (26 Nov, owner, 3D look; D9, D11) Is each connection its own beat (the first cable unrolls, its plug clicks in, one pulse; the rest a fast cascade), and does every 1.5-3 s beat have something entering or changing? Mark any stretch over about 2 s where nothing new happens.
 50. (26 Nov, owner, 3D look; D12) Would the wires pass as real at phone size: sag under gravity, plugs at both ends, matte with a soft sheen, shadows on the floor? A cable that glows all the time fails.
 51. (26 Nov, owner, 3D look; D12 and Output QA GLOW) Is any frame over-glowing: bloom haze round cables, tiles or numbers, light from anything that is not a screen or a lamp? Give the time of the worst frame.
+52. (26 Nov, owner, references) The review file names the reference patterns this reel uses (design/references.md). Pick the two most important and find each in the real video, with its time. A named pattern that does not show on screen = NOT READY (write the time it should appear and what it should look like).
 
 ## Premium check (owner, 23 Nov 2026): before any verdict
 Load the skills frontend-design and hyperframes (.claude/skills/; Skill tool) and read hyperframes/references/motion.md and review.md, plus
