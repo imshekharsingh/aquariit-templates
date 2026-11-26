@@ -244,6 +244,7 @@ Phone-width check on a local build, npm run check, merge. Then use it yourself f
 
 - 26 Nov 20:05 IST, owner (via the owner chat): make the plan critic's 7 changes first, refresh the stills sheet, then ONE render of v7; then "v7 ready for critic" and stop.
 - 26 Nov 21:48 IST, other account: task 10 started (the stable loop): the plan critic's seven changes are made: (1) Notes whole and sharp from frame 0, the dark floor around it (first half second median luma .25); (2) the pull-back ends with all three apps whole; (3) the wall fills about 70 % of the width, apps below the frame; (4) a real tangle: cables swing across each other on the floor, shot from behind the apps looking down; (5) every number beside its object with its leader through empty space (new leader check: no crossings at 24, 11, 12); (6) New is the subject (about 45 % of the width); (7) a 25 degree arc then the dolly home (last-4 s frame change 5.0, was 2.2). Also: matte background props and deeper cable colours (GLOW), the New shot reached from above the apps (COLOUR). Local checks with the real cue times running before render 1 of 2.
+- 26 Nov 21:59 IST, other account: task 10: local checks passed on the whole reel at the real cue times (COLOUR no cuts; GLOW 1.2 % median, worst 1 s 5.8 %; last-4 s frame change 5.0; pale frames 15 of 228; no cable through the floor or an object; no leader crossing). Stills sheet refreshed (review/tech/study-25nov/kit-phase2-v7.jpg). v7 render 1 of 2 started on GitHub (preview r1).
 
 ---
 
