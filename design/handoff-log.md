@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/handoff-v7-go-changes · owner chat: owner decision on the v7 plan
+- Owner saw the v7 plan stills and the 7 changes: make the 7 changes first, refresh the stills, then one render (no render on the known faults). Written in design/handoff.md Progress.
+
 ## 2026-11-26 19:00 IST · claude/owner-chat-26nov · owner chat: decisions, waiting on owner, tomorrow
 - Day: Turns Out invite posted at the 14:00 slot test (render 3 after the owner's overlap note); web 48 READY for the 19:00 slot test (render 3); tech tag-sounding READY but HELD (tech paused until the 3D kit v7). Fixed today: stale board + false Post now, Today = workflow board, Projects section, Fix button, single studio key (one network secret per host), full check before render 1 (preflight-all), studio probe (hourly via launcher; the first two fires had no repo and did nothing, fixed 14:38).
 - Decisions (owner): slot tests Turns Out 14:00 and web 19:00 until 2 Dec, owner reminded at each slot; tech paused until 3D v7 (the last sample), then a real reel judged by numbers; code fixes go to the other account, which works only on GO tasks (now task 10 v7, then task 9 references); DISCUSS, DON'T JUST FOLLOW; references must show in reels (critic Q52) and in numbers (task 9).
