@@ -20,7 +20,7 @@ const sm = (u) => (u = clamp(u), u * u * (3 - 2 * u)), ease = (u) => (u = clamp(
 const eback = (u) => { u = clamp(u); const c = 1.6; return 1 + (c + 1) * Math.pow(u - 1, 3) + c * Math.pow(u - 1, 2); };
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const S = W3D.stage(THREE, { W, H });
-S.dof.aperture = 2.4; S.dof.focusRange = 7; S.dof.maxR = 20;
+S.dof.aperture = 2.4; S.dof.focusRange = 7; S.dof.maxR = 20; S.bloom = .28;   // v5 (owner, 26 Nov: too much glow all around): softer bloom, thinner halos, dimmer cable cores and floor light
 const world = W3D.world(S, { seed: 21, props: 36, radius: [14, 40], heroZone: 17, maxZ: -14, palette: [0x6b3cff, 0x16b8d6, 0xff4f8a, 0xffb62e, 0x2f7bff, 0x22c55e] });
 const L = W3D.lib;
 
@@ -28,20 +28,23 @@ const L = W3D.lib;
 // names never repeat between the apps and the tools (critic 26 Nov); cables meet each tile at its SIDE edge (left column: left edge, right column: right edge), so no beam ever crosses a tile or its name
 const APPS = [{ n: 'Notes', c: 0x16b8d6, g: 'notes' }, { n: 'Chat', c: 0xff4f8a, g: 'chat' }, { n: 'Mail', c: 0xffb62e, g: 'mail' }];
 const TOOLS = [['Pay', 0x6b3cff, 'pay'], ['Photos', 0xe0449a, 'photos'], ['Files', 0x2f7bff, 'files'], ['Maps', 0x1fb86a, 'maps'], ['Calendar', 0xff6a3c, 'calendar'], ['Docs', 0x7a4cff, 'files'], ['Tasks', 0x1294d6, 'tasks'], ['Music', 0xd9a21b, 'music']];
-const AX = (i) => (i - 1) * 2.05, TX = (j) => (j % 2 - .5) * 2.5, TY = (j) => .1 + Math.floor(j / 2) * 1.95, SIDE = (j) => (j % 2 ? 1 : -1), WALL_Z = -6.5, HUB_P = V(0, 1.7, -2.4);
-const EDGE = (j, k = 0, n = 1) => [TX(j) + SIDE(j) * .86, TY(j) + .8 + (k - (n - 1) / 2) * .26, WALL_Z + .08];   // where a cable meets tool j (k of n cables on that edge)
+const WALL_Y = 2.3;   // v5 (critic 26 Nov): the wall sits one tile higher and the hub floats between the apps and the wall (above the apps, under the wall), so all eight tools stay whole above the hub
+const AX = (i) => (i - 1) * 1.88,   // v5: the apps sit closer, so the push-in keeps all three names whole
+      TX = (j) => (j % 2 - .5) * 2.2, TY = (j) => WALL_Y + Math.floor(j / 2) * 1.45, SIDE = (j) => (j % 2 ? 1 : -1), WALL_Z = -6.5, HUB_P = V(0, 1.25, -2.2);
+const EDGE = (j, k = 0, n = 1) => [TX(j) + SIDE(j) * .71, TY(j) + .65 + (k - (n - 1) / 2) * .2, WALL_Z + .08];   // where a cable meets tool j (k of n cables on that edge)
 const APPROACH = (j, k = 0, n = 1) => { const e = EDGE(j, k, n); return [e[0] + SIDE(j) * 1.25, e[1], WALL_Z + 1.2]; };
-const apps = APPS.map((a, i) => { const g = L.appTile(THREE, { size: 1.8, color: a.c, glyph: L.appGlyphs[a.g], name: a.n, label: 'inside' }); g.position.set(AX(i), 0, 2); S.scene.add(g); return g; });
-const tools = TOOLS.map((t, i) => { const g = L.appTile(THREE, { size: 1.6, color: t[1], glyph: L.appGlyphs[t[2]], name: t[0], label: 'inside' }); g.position.set(TX(i), TY(i), WALL_Z); S.scene.add(g); return g; });
-const hub = L.productBlock(THREE, { w: 3.0, d: 2.0, h: 1.3, color: 0x4a14c8, name: 'HUB', sub: 'one shared standard', led: true }); hub.position.copy(HUB_P); S.scene.add(hub);
+const apps = APPS.map((a, i) => { const g = L.appTile(THREE, { size: 1.7, color: a.c, glyph: L.appGlyphs[a.g], name: a.n, label: 'inside' }); g.position.set(AX(i), 0, 2); S.scene.add(g); return g; });
+const tools = TOOLS.map((t, i) => { const g = L.appTile(THREE, { size: 1.3, color: t[1], glyph: L.appGlyphs[t[2]], name: t[0], label: 'inside' }); g.position.set(TX(i), TY(i), WALL_Z); S.scene.add(g); return g; });
+const hub = L.productBlock(THREE, { w: 2.6, d: 1.5, h: 1.05, color: 0x4a14c8, name: 'HUB', led: true }); hub.position.copy(HUB_P); S.scene.add(hub);   // v5: no small sub-line (24 px was unreadable on a phone)
 
 // ---------- cables: 24 separate tubes, one colour per app; then 3 + 8 through the hub ----------
 const tubes = [], hubTubes = [];
 APPS.forEach((a, i) => TOOLS.forEach((t, j) => { const lift = .4 + .2 * ((i * 3 + j) % 5), e = EDGE(j, i, 3), ap = APPROACH(j, i, 3);
-  const pts = [[AX(i), .9, 1.5], [AX(i) * .9, .8 + lift * .5, -.8], [lerp(AX(i), ap[0], .65), .5 + lift + ap[1] * .2, -3.6], ap, e];
-  tubes.push({ c: W3D.cable(S, pts, { color: a.c, radius: .045, glow: 1.5, segments: 90, light: 0, haloSize: 2.6, halo: .2, floorGlow: .8, floorStrength: .5, pulse: { speed: .3 + .02 * j, width: .05 } }), ph: (i * 8 + j) * .137, k: i * 8 + j }); }));
-APPS.forEach((a, i) => { hubTubes.push({ c: W3D.cable(S, [[AX(i), .9, 1.5], [AX(i) * .55, 1.5, -.1], [(i - 1) * .9, HUB_P.y + .1, HUB_P.z + 1.0]], { color: 0x42ff8c, radius: .06, glow: 1.6, halo: .22, haloSize: 2.6, segments: 70, light: 0, floorGlow: .9, floorStrength: .55, pulse: { speed: .5, width: .06 } }), ph: i * .3, k: i }); });
-TOOLS.forEach((t, j) => { const e = EDGE(j), ap = APPROACH(j); hubTubes.push({ c: W3D.cable(S, [[SIDE(j) * .9, HUB_P.y + .2, HUB_P.z - .6], [SIDE(j) * 2.2, HUB_P.y + .1 + e[1] * .15, -4.5], ap, e], { color: 0x42ff8c, radius: .06, glow: 1.6, halo: .22, haloSize: 2.6, segments: 70, light: 0, floorGlow: .9, floorStrength: .55, pulse: { speed: .5, width: .06 } }), ph: j * .11, k: 3 + j }); });
+  const sx = SIDE(j) * (3.15 + .12 * i + .04 * j);   // v5: every cable runs outside the wall's side, never in front of a tile (critic: Photos was under the tangle)
+  const pts = [[AX(i), .9, 1.5], [lerp(AX(i), sx, .55), .7 + lift * .4, -1.4], [sx, .6 + e[1] * .55, -4.4], ap, e];
+  tubes.push({ c: W3D.cable(S, pts, { color: a.c, radius: .045, glow: 1.0, segments: 90, light: 0, haloSize: 1.9, halo: .08, floorGlow: .55, floorStrength: .25, pulse: { speed: .3 + .02 * j, width: .05 } }), ph: (i * 8 + j) * .137, k: i * 8 + j }); }));
+APPS.forEach((a, i) => { hubTubes.push({ c: W3D.cable(S, [[AX(i), .9, 1.5], [AX(i) * .7, .85, .2], [(i - 1) * .8, HUB_P.y + .55, HUB_P.z + .85]], { color: 0x42ff8c, radius: .06, glow: 1.1, halo: .09, haloSize: 1.9, segments: 70, light: 0, floorGlow: .6, floorStrength: .28, pulse: { speed: .5, width: .06 } }), ph: i * .3, k: i }); });
+TOOLS.forEach((t, j) => { const e = EDGE(j), ap = APPROACH(j); hubTubes.push({ c: W3D.cable(S, [[SIDE(j) * .95, HUB_P.y + .6, HUB_P.z - .65], [SIDE(j) * (2.7 + .05 * j), HUB_P.y + .3 + e[1] * .12, -4.1], [SIDE(j) * (3.2 + .04 * j), e[1] * .85, -5.3], ap, e], { color: 0x42ff8c, radius: .06, glow: 1.1, halo: .09, haloSize: 1.9, segments: 70, light: 0, floorGlow: .6, floorStrength: .28, pulse: { speed: .5, width: .06 } }), ph: j * .11, k: 3 + j }); });
 
 // ---------- numbers as 3D figures ----------
 const fig24 = L.figure(THREE, '3x8=24', { height: .72, color: 0xffa23a, radius: .1, emissive: .12 }), fig11 = L.figure(THREE, '3+8=11', { height: .72, color: 0x42ff8c, radius: .1, emissive: .12 });
@@ -56,22 +59,25 @@ const cap = W3D.captions({ y: 190, size: 60, lines: TL.scenes.map((s, i) => ({ t
 const CAPBAND = [60, 150, 1020, 420];
 
 // ---------- camera: one path through the one world (CHANGE: keys follow the cues) ----------
-const START = { pos: [0, 5.4, 15.5], look: [0, 2.6, -3.2], fov: 52 };
+const START = { pos: [0, 5.4, 15.5], look: [0, 3.0, -3.2], fov: 52 };
 const cam = W3D.camPath(S, [
   { t: 0, ...START },
-  { t: C.twenty + .1, pos: [1.8, 6.4, 15], look: [0, 2.7, -3.2], fov: 52 },                // the tangle, a slow turn
-  { t: C.add + .3, pos: [0, 7.2, 16.5], look: [0, 2.2, -3], fov: 52 },                    // high wide: the tangle collapses into the hub
-  { t: C.eleven + .4, pos: [1.4, 6.2, 16.8], look: [0, 2.2, -3.1], fov: 52 },                // the eleven stays on a wide, with its number
-  { t: C.talks + .3, pos: [.4, 3.6, 10.8], look: [0, 2.7, -3.2], fov: 50 },                  // 1: a low push-in, the hub and its name fill a third of the frame
-  { t: C.newt - .3, pos: [-1.8, 3.8, 11], look: [0, 2.7, -3.2], fov: 50 },              // keeps moving round the hub
-  { t: C.newt + .5, pos: [4.0, 4.0, 7.6], look: [.8, 1.5, -3.5], fov: 50 },              // 2: a side orbit to the new tool as its ONE cable draws
-  { t: C.same + .2, pos: [0, 6.6, 17], look: [0, 2.2, -3.2], fov: 52 },                   // 3: the pull back to the full wide
+  { t: C.twenty * .55, pos: [4.3, 5.7, 17.1], look: [0, 2.9, -3.2], fov: 52 },               // v5: the opening moves too: a slow pull back, 11 % wider, with a 12 degree turn round the tangle (no framing over 3 s)
+  { t: C.twenty + .1, pos: [1.8, 6.4, 15], look: [0, 2.85, -3.2], fov: 52 },                // the tangle, a slow turn
+  { t: C.add + .3, pos: [0, 7.2, 16.5], look: [0, 2.6, -3], fov: 52 },                    // high wide: the tangle collapses into the hub
+  { t: C.eleven + .4, pos: [1.4, 6.2, 16.8], look: [0, 2.6, -3.1], fov: 52 },                // the eleven stays on a wide, with its number
+  { t: C.talks + .3, pos: [.4, 3.85, 12.3], look: [0, 3.5, -3.2], fov: 50 },                  // 1: a low push-in on the hub (v5: 12 % further back, so Notes, Chat and Mail stay whole)
+  { t: C.newt - .3, pos: [-.9, 4.1, 12.9], look: [.25, 3.4, -3.2], fov: 50 },              // keeps moving round the hub
+  { t: C.newt + .5, pos: [2.6, 5.6, 12.8], look: [-.85, 3.2, -4.6], fov: 50 },              // 2: a side orbit to the new tool as its ONE cable draws
+  { t: C.same + .2, pos: [0, 6.6, 17], look: [0, 2.6, -3.2], fov: 52 },                   // 3: the pull back to the full wide
+  { t: TOTAL - 2.15, pos: [-2.9, 6.2, 16.4], look: [0, 2.8, -3.2], fov: 52 },          // v5: the last 2 s are an event: a small orbit that eases home while the New cable pulses once
   { t: TOTAL, ...START },                                                                 // and home: the last frame is the first frame's framing (a loop)
 ]);
 
-// the new tool (line 5): one more tile and ONE cable from the hub
-const newTool = L.appTile(THREE, { size: 1.7, color: 0x00c2a8, glyph: L.appGlyphs.music, name: 'New', label: 'inside' }); newTool.position.set(2.6, 0, -3.8); S.scene.add(newTool); newTool.visible = false;
-const newCable = W3D.cable(S, [[1.0, HUB_P.y + .1, HUB_P.z - .2], [1.6, 1.3, -3.0], [1.75, 1.0, -3.6], [1.78, .85, -3.75]], { color: 0x42ff8c, radius: .06, glow: 1.6, halo: .22, haloSize: 2.6, segments: 60, light: 0, floorGlow: .9, floorStrength: .55, pulse: { speed: .5, width: .06 } });
+// the new tool (line 5): one more tile and ONE cable from the hub (v5: beside the hub, its one short cable into its side edge)
+const NEW_P = [2.85, 0, -1.7];   // floats beside the hub, at the hub's height; the hub's tool cables leave from its back, behind this tile
+const newTool = L.appTile(THREE, { size: 1.2, color: 0x00c2a8, glyph: L.appGlyphs.music, name: 'New', label: 'inside' }); newTool.position.set(NEW_P[0], HUB_P.y - .05, NEW_P[2]); S.scene.add(newTool); newTool.visible = false;
+const newCable = W3D.cable(S, [[1.28, HUB_P.y + .45, HUB_P.z + .1], [1.75, HUB_P.y + .5, (HUB_P.z + NEW_P[2]) / 2 + .1], [NEW_P[0] - .72, HUB_P.y + .55, NEW_P[2] + .05]], { color: 0x42ff8c, radius: .06, glow: 1.1, halo: .09, haloSize: 1.9, segments: 60, light: 0, floorGlow: .6, floorStrength: .28, pulse: { speed: .5, width: .06 } });
 shadows.push(W3D.contactShadow(S, newTool, { w: 1.5, d: .5, strength: .8 }));
 const focus = V(0, 1.6, -3); S.focus = focus;
 const heroes = [...apps, ...tools, hub];
@@ -80,14 +86,14 @@ function frame(t) {
   apps.forEach((m, i) => { const a = eback(prog(t, -1.4 + i * .1, -.6 + i * .1)); m.scale.setScalar(Math.max(.001, a)); m.position.y = Math.sin(t * 1.3 + i * 2) * .06; m.visible = a > .005; });
   tools.forEach((m, i) => { const a = eback(prog(t, -1.2 + i * .05, -.5 + i * .05)); m.scale.setScalar(Math.max(.001, a)); m.visible = a > .005; });
   // 24 cables are already wired at frame 0 (the hook is the tangle), keep pulsing, and retract when the hub arrives
-  tubes.forEach((q) => { const dr = ease(prog(t, -1.4 + q.k * .02, -.3 + q.k * .02)), ret = ease(prog(t, C.add + .05 + q.k * .018, C.add + .7 + q.k * .018)); q.c.reveal(dr * (1 - ret)); q.c.update(t + q.ph, 1 + .5 * Math.exp(-Math.pow((t - C.twenty - .3) * 1.5, 2))); });
+  tubes.forEach((q) => { const dr = ease(prog(t, -1.4 + q.k * .02, -.3 + q.k * .02)), ret = ease(prog(t, C.add + .05 + q.k * .018, C.add + .7 + q.k * .018)); q.c.reveal(dr * (1 - ret)); q.c.update(t + q.ph, 1 + .3 * Math.exp(-Math.pow((t - C.twenty - .3) * 1.5, 2))); });
   const ha = eback(prog(t, C.add + .25, C.add + .85)); hub.scale.setScalar(Math.max(.001, ha)); hub.visible = ha > .005;
-  const talk = 1 + .6 * Math.exp(-Math.pow((t - C.talks - .5) * 1.6, 2));   // the hub's cables brighten while the line says each talks once
+  const talk = 1 + .35 * Math.exp(-Math.pow((t - C.talks - .5) * 1.6, 2));   // the hub's cables brighten while the line says each talks once
   hubTubes.forEach((q) => { const u = ease(prog(t, C.hub + .1 + q.k * .05, C.hub + .75 + q.k * .05)); q.c.reveal(u); q.c.update(t + q.ph, talk); });
-  { const a = eback(prog(t, C.newt, C.newt + .5)); newTool.visible = a > .005; newTool.scale.setScalar(Math.max(.001, a)); newCable.reveal(ease(prog(t, C.newt + .15, C.newt + .8))); newCable.update(t, talk); }
+  { const a = eback(prog(t, C.newt, C.newt + .5)); newTool.visible = a > .005; newTool.scale.setScalar(Math.max(.001, a)); newCable.reveal(ease(prog(t, C.newt + .15, C.newt + .8))); newCable.update(t, talk * (1 + 1.4 * Math.exp(-Math.pow((t - (TOTAL - 1.1)) * 2.2, 2)))); }   // v5: the New cable pulses once in the last 2 s
   // number figures: 24 on "twenty", 11 on "eleven"
   const a24 = eback(prog(t, -.6, -.1)), out24 = 1 - sm(prog(t, C.eleven - .05, C.eleven + .15)), a11 = eback(prog(t, C.eleven - .02, C.eleven + .45));
-  const near = sm(prog(S.cam.position.distanceTo(hub.position), 15.2, 17.2));   // the numbers step aside in the close shots (the front apps would cover them) and return on the wide ones
+  const near = t < C.add ? 1 : sm(prog(S.cam.position.distanceTo(hub.position), 16.6, 18.4));   // v5: the 24 stays through the opening move   // the numbers step aside in the close shots (the front apps would cover them) and return on the wide ones
   fig24.visible = a24 > .005 && out24 > .01 && near > .01; fig24.scale.setScalar(Math.max(.001, a24) * Math.max(.001, out24) * Math.max(.001, near)); fig11.visible = a11 > .005 && near > .01; fig11.scale.setScalar(Math.max(.001, a11) * Math.max(.001, near));
   // the figures ride the camera: centred in the lower fifth of the frame, 9 units ahead, always facing it (nothing else is ever there)
   S.cam.updateMatrixWorld(); const ray = V(0, -.78, .5).unproject(S.cam).sub(S.cam.position).normalize(); [fig24, fig11].forEach((f) => { f.position.copy(S.cam.position).addScaledVector(ray, 10); f.quaternion.copy(S.cam.quaternion); f.rotateY(Math.sin(t * .9) * .1); });
@@ -97,6 +103,7 @@ window.render = (t) => { t = clamp(t, 0, TOTAL); frame(t); S.draw(t); cap(t); };
 // layout assertion for the stills: which 3D objects touch the caption band (should be none); figures must also stay clear of the tool wall
 window.__layoutCheck = (t) => { frame(clamp(t, 0, TOTAL)); S.cam.updateMatrixWorld(); const bad = W3D.check(S, [fig24, fig11].filter((f) => f.visible), [CAPBAND], 0).length, hit = [fig24, fig11].filter((f) => f.visible).some((f) => [...tools, ...apps, hub].some((m) => W3D.overlaps(W3D.screenBox(S, f), W3D.screenBox(S, m)))); return { band: bad, wall: hit }; };
 window.__boxes = () => [];
+window.__dbg = { frame, S, apps, tools, hub, newTool, tubes, hubTubes, newCable, figs: [fig24, fig11], C, TOTAL };   // for the text checks (scripts/qa-free: names whole, not covered, no cable across a name)
 window.render(0);
 })();
 </script></body></html>

@@ -5,15 +5,20 @@
 /*css:begin*/
 .rul{position:absolute;width:24px;border-radius:6px;background:repeating-linear-gradient(180deg,rgba(24,26,36,.9) 0 2px,transparent 2px 12px) left/9px 100% no-repeat,repeating-linear-gradient(180deg,rgba(24,26,36,.75) 0 2px,transparent 2px 60px) left/16px 100% no-repeat,linear-gradient(90deg,#ece7dd,#dcd5c7);box-shadow:0 10px 26px rgba(0,0,0,.35);z-index:1}
 .rul.r{transform:scaleX(-1)}
-#board{left:66px;top:396px;width:408px;height:368px;border-radius:14px;border:10px solid #8f9aa3;background:#d6f0ff}
+#board{left:66px;top:424px;width:408px;height:320px;border-radius:14px;border:10px solid #8f9aa3;background:#d6f0ff}
 .iv{position:absolute;left:0;top:0;white-space:nowrap;transform-origin:0 0}
-#big7{position:absolute;left:0;top:0;font:900 124px/1 'Unbounded';color:#1d1a16;transform-origin:0 0;opacity:0;display:none}
+#big7{position:absolute;left:0;top:0;font:900 112px/1 'Unbounded';color:#1d1a16;transform-origin:0 0;opacity:0;display:none}
 .cf{position:absolute;width:16px;height:16px;border-radius:50%}
 .rk{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:#7aa2ff;color:#fff;font:900 16px/34px var(--d);text-align:center;z-index:26;opacity:0;box-shadow:0 6px 16px rgba(0,0,0,.4)}
 /* reference lessons 26 Nov (owner chat; refs 10 and 14): a large serif headline with the key word in italic accent, subtitles as a pill */
 #ttl{font:700 36px/1.08 Georgia,'Times New Roman',serif;letter-spacing:-.01em}
 #ttl em{font-style:italic}
-#cap{left:24px;width:492px;padding:10px 18px 12px;border-radius:24px;background:rgba(12,14,24,.74);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+#cap{left:14px;top:278px;width:512px;min-height:0;padding:10px 18px 12px;border-radius:24px;background:rgba(12,14,24,.74);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+/* owner 26 Nov: no overlaps, one alignment. Left edge x 32 for the dial, headline and subtitle text; the chips sit in their own band (y 350-395) between the subtitle pill and the board, centred on the board; the ring tags live inside the board's empty lower part */
+#dial{left:32px}
+#ttl{left:32px;width:476px}
+#hook{left:26px}
+.chip.sm{font-size:14px!important;padding:6px 9px!important}
 /*css:end*/
 /*board:begin*/
 <div class="rul" style="left:8px;top:400px;height:246px"></div><div class="rul r" style="left:508px;top:400px;height:246px"></div>
@@ -35,16 +40,17 @@
   var $ = DT.$, P = KM.P, mix = KM.mix, E = KM.ease, cl = KM.cl; KM.theme('dark', 'turnsout'); DT.ctx(); DT.tint('#ff8a5a', '#ffb35a');
   // spoken sentences with breaths (rules-c3.md V1-V3); the before is a believable first draft: four fonts, everything centred, confetti, nothing is the hero (B1)
   var TEXT = "Everything here is shouting. Nothing stands out, so nothing gets read. Turns out, it needs one hero. First, make the age the biggest thing. Next, keep one font in two sizes. Then, use one colour, just once. Same party, and now you can read it.";
-  var DUR = 20, BX = 66, BY = 396, OX = BX + 10, OY = BY + 10, IW = 388, V, PH, A = {}, CAM;
+  var DUR = 20, BX = 66, BY = 424, BH = 320, OX = BX + 10, OY = BY + 10, IW = 388, V, PH, A = {}, CAM;
   var ST = {   // A: everything shouts (four fonts, all centred); B: one hero, one font in two sizes, one colour
-    v0: { A: { f: "400 30px/1.2 'Pacifico'", c: '#e91e63', y: 26 }, B: { f: "700 32px/1 'Space Grotesk'", c: '#1d1a16', y: 164 } },
-    v1: { A: { f: "400 26px/1 'Anton'", c: '#ff9800', y: 84 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#8a7f70', y: 208, ls: '.14em' } },
-    v2: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 136 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#1d1a16', y: 242 } },
-    v3: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 162 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#1d1a16', y: 274 } },
-    v4: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 188 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#1d1a16', y: 306 } } };
-  var IDS = ['v0', 'v1', 'v2', 'v3', 'v4'], CF = [[300, 250], [345, 230], [280, 300], [350, 300], [315, 165], [345, 110], [300, 120], [250, 318]];
+    v0: { A: { f: "400 30px/1.2 'Pacifico'", c: '#e91e63', y: 26 }, B: { f: "700 32px/1 'Space Grotesk'", c: '#1d1a16', y: 138 } },
+    v1: { A: { f: "400 26px/1 'Anton'", c: '#ff9800', y: 84 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#8a7f70', y: 180, ls: '.14em' } },
+    v2: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 136 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#1d1a16', y: 212 } },
+    v3: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 162 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#1d1a16', y: 240 } },
+    v4: { A: { f: "400 18px/1 'Courier Prime'", c: '#333', y: 188 }, B: { f: "500 21px/1 'Space Grotesk'", c: '#1d1a16', y: 268 } } };
+  var IDS = ['v0', 'v1', 'v2', 'v3', 'v4'], CF = [0, 1, 2, 3, 4, 5, 6, 7].map(function(i){ return [i % 2 ? 358 : 344, 100 + i * 21]; });   // a clear column on the right: never under a text line
   function font(el, s){ el.style.font = s.f; el.style.color = s.c; el.style.letterSpacing = s.ls || 'normal'; }
   function at(w, n){ return V.at(w, n); }
+  function CHIP(id, html, k, cls){ var e = DT.chip(id, html, 0, 356, k, cls); e.style.left = (270 - e.offsetWidth / 2).toFixed(1) + 'px'; return e; }   // one centred band for the chips
   function anchors(words){
     V = KM.voice(TEXT, .12, words); PH = V.phrases(4); KM.reset(DUR);
     A.hook = at('Everything') - .1; A.nothing = at('Nothing'); A.turns = at('Turns'); A.con = at('hero'); A.f1 = at('First'); A.age = at('age'); A.big = at('biggest');
@@ -57,8 +63,8 @@
     S.rise(A.f2 - .1, .4); IDS.forEach(function(id, i){ S.swap(A.font + .05 + i * .14, .4, 270, 6); }); S.roll(A.font, .75, 400, 4); S.land(A.sizes, 180, 6); A.d2 = Math.max(A.sizes + .3, A.font + 1.1); S.done(A.d2, 270, 2);
     S.rise(A.f3 - .1, .4); for (var i = 0; i < 8; i++) S.land(A.col + .05 + i * .05, 120 + i * 40, i); S.tint(A.col + .5, 150); A.d3 = Math.max(A.once + .1, A.col + .9); S.done(A.d3, 150, 4);
     S.reveal(A.readable); S.flip(A.proof, .5); S.land(A.e1, 200, 5); S.done(A.e2, 270, 6);
-    CAM = KM.rig({ x: 270, y: 490, z: 1.06, drift: 1 }).pull(0, .55, 270, 490, 1);
-    DT.close(CAM, A.d1, 1.08); DT.close(CAM, A.d2, 1.08); DT.close(CAM, A.d3, 1.07);
+    CAM = KM.rig({ x: 270, y: 490, z: 1.02, drift: .3 }).pull(0, .55, 270, 490, 1);
+    DT.close(CAM, A.d1, 1.03, BY); DT.close(CAM, A.d2, 1.03, BY); DT.close(CAM, A.d3, 1.03, BY);
     window.ALIGN = [{ at: A.end - .05, sel: '.iv > span:first-child', edge: 'left', why: 'every line starts on one edge' }, { at: A.end - .05, sel: 'span', each: '.iv', edge: 'bottom', why: 'every letter on its line' }];
     window.HOLDS = [[A.end, DUR]];
     KM.publish(DT.score(A.same, A.f1));
@@ -75,31 +81,33 @@
       font(el, kf >= .5 ? b : a); DT.flipChars(el, t, t0f, .45, a, b);
       var w = el.offsetWidth, xA = (IW - w) / 2, x = mix(xA, 30, k1), y = mix(a.y, b.y, k1);
       var sh = kf >= 1 ? 1 : mix(1, id === 'v0' ? .72 : .66, k1); el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + sh.toFixed(3) + ')'; });
-    { var ro = 1 - P(t, A.turns - .3, A.turns); [[.35, { x: OX + 20, y: OY + 26, w: 348, h: 48, r: 14 }, 'NO HERO', BX + 22], [.65, { x: OX + 54, y: OY + 74, w: 280, h: 140, r: 16 }, '4 FONTS', BX + 150], [.95, { x: OX + 8, y: OY + 226, w: 372, h: 92, r: 16 }, '6 COLOURS', BX + 266]].forEach(function(r, i){
-      DT.box('fr' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); DT.chip('frl' + i, r[2], r[3], BY + 350, P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); }); }
+    { var ro = 1 - P(t, A.turns - .3, A.turns); [[.35, { x: OX + 20, y: OY + 18, w: 348, h: 52, r: 14 }, 'NO HERO', OX + 12], [.65, { x: OX + 64, y: OY + 78, w: 260, h: 132, r: 16 }, '4 FONTS', OX + 110], [.95, { x: OX + 338, y: OY + 90, w: 42, h: 184, r: 16 }, '6 COLOURS', OX + 208]].forEach(function(r, i){
+      DT.box('fr' + i, r[1], P(t, r[0], r[0] + .3) * ro, '#ff5f5f'); DT.chip('frl' + i, r[2], r[3], OY + 232, P(t, r[0] + .1, r[0] + .35) * ro, 'r sm'); }); }
     var k7 = DT.spring(t, A.age + .22, Math.max(.5, A.big - A.age - .1)), b7 = $('big7'), s = mix(.2, 1, k7); b7.style.display = t >= A.age - .05 ? 'block' : 'none';   // display none while the before is kept, so the BEFORE picture has no 7
-    b7.style.transform = 'translate(26px,22px) scale(' + s.toFixed(3) + ')'; b7.style.opacity = (P(t, A.age - .05, A.age + .15) * (1 - (P(t, A.proof - .02, A.proof + .03) - P(t, A.proof + .55, A.proof + .65)))).toFixed(3);   // hidden while the BEFORE flashback is up
+    b7.style.transform = 'translate(26px,8px) scale(' + s.toFixed(3) + ')'; b7.style.opacity = (P(t, A.age - .05, A.age + .15) * (1 - (P(t, A.proof - .02, A.proof + .03) - P(t, A.proof + .55, A.proof + .65)))).toFixed(3);   // hidden while the BEFORE flashback is up
     b7.style.color = 'rgb(' + [Math.round(mix(29, 255, k3)), Math.round(mix(26, 122, k3)), Math.round(mix(22, 69, k3))].join(',') + ')';
-    [[1, OX + 190, OY + 70], [2, OX + 330, OY + 178], [3, OX + 290, OY + 248]].forEach(function(r, i){ var e = $('k' + r[0]), k = E.back(P(t, A.big + .35 + i * .12, A.big + .7 + i * .12), 2), o = k * (1 - P(t, A.f2 - .2, A.f2 + .1));
+    [[1, OX + 190, OY + 60], [2, OX + 250, OY + 154], [3, OX + 250, OY + 240]].forEach(function(r, i){ var e = $('k' + r[0]), k = E.back(P(t, A.big + .35 + i * .12, A.big + .7 + i * .12), 2), o = k * (1 - P(t, A.f2 - .2, A.f2 + .1));
       e.style.left = r[1] + 'px'; e.style.top = r[2] + 'px'; e.style.opacity = cl(o).toFixed(3); e.style.transform = 'scale(' + (.5 + .5 * k).toFixed(3) + ')'; });
-    DT.chip('rd', 'NOTHING <b>STANDS OUT</b>', 130, 396, P(t, A.nothing - .1, A.nothing + .2) - P(t, A.turns - .2, A.turns + .1), 'r');
-    DT.chip('con', 'IT NEEDS ONE <b>HERO</b>', 120, 396, P(t, A.con - .1, A.con + .2) - P(t, A.f1 - .2, A.f1 + .1));
-    DT.chip('h', 'THE AGE IS <b>THE HERO</b>', 110, 396, P(t, A.big, A.big + .3) - P(t, A.f2 - .1, A.f2 + .2));
+    CHIP('rd', 'NOTHING <b>STANDS OUT</b>', P(t, A.nothing - .1, A.nothing + .2) - P(t, A.turns - .2, A.turns + .1), 'r');
+    CHIP('con', 'IT NEEDS ONE <b>HERO</b>', P(t, A.con - .1, A.con + .2) - P(t, A.f1 - .2, A.f1 + .1));
+    CHIP('h', 'THE AGE IS <b>THE HERO</b>', P(t, A.big, A.big + .3) - P(t, A.f2 - .1, A.f2 + .2));
     // fix 2: the scan flips every line, letter by letter, into one font; then two sizes
-    var sk = P(t, A.font, A.font + .8); DT.line('scan', BX + 6, BY + 16 + sk * 340, BX + 402, BY + 16 + sk * 340, sk > 0 && sk < 1 ? 1 : 0, '#ffb35a', 3);
-    DT.chip('f', 'ONE <b>FONT</b>', 150, 396, P(t, A.font, A.font + .3) - P(t, A.sizes - .1, A.sizes + .15));
-    DT.chip('s', 'TWO <b>SIZES</b>', 150, 396, P(t, A.sizes, A.sizes + .3) - P(t, A.f3 - .1, A.f3 + .2));
+    var sk = P(t, A.font, A.font + .8); DT.line('scan', BX + 6, BY + 16 + sk * (BH - 32), BX + 402, BY + 16 + sk * (BH - 32), sk > 0 && sk < 1 ? 1 : 0, '#ffb35a', 3);
+    CHIP('f', 'ONE <b>FONT</b>', P(t, A.font, A.font + .3) - P(t, A.sizes - .1, A.sizes + .15));
+    CHIP('s', 'TWO <b>SIZES</b>', P(t, A.sizes, A.sizes + .3) - P(t, A.f3 - .1, A.f3 + .2));
     // fix 3: the confetti flies into the 7, which takes the one colour; the board calms
     for (var i = 0; i < 8; i++) { var e = $('c' + i), fk = E.inOut3(P(t, A.col + .05 + i * .05, A.col + .5 + i * .05)), x0 = CF[i][0], y0 = CF[i][1];
       e.style.left = mix(x0, 80, fk).toFixed(1) + 'px'; e.style.top = mix(y0, 80, fk).toFixed(1) + 'px'; e.style.opacity = (1 - P(fk, .8, 1)).toFixed(3); e.style.transform = 'scale(' + mix(1, .4, fk).toFixed(3) + ')'; }
     inv.style.background = 'rgb(' + [Math.round(mix(214, 255, k3)), Math.round(mix(240, 246, k3)), Math.round(mix(255, 232, k3))].join(',') + ')';
-    DT.chip('c', 'ONE <b>COLOUR</b>', 150, 396, P(t, A.col, A.col + .3) - P(t, A.same - .2, A.same + .1));
-    [[A.d1, OX + 100, OY + 90], [A.d2, OX + 190, OY + 230], [A.d3, OX + 100, OY + 90]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], i === 2 ? '#ff7a45' : '#ffb35a'); });
+    CHIP('c', 'ONE <b>COLOUR</b>', P(t, A.col, A.col + .3) - P(t, A.same - .2, A.same + .1));
+    [[A.d1, OX + 100, OY + 90], [A.d2, OX + 190, OY + 200], [A.d3, OX + 100, OY + 90]].forEach(function(d, i){ DT.burst('b' + i, d[1], d[2], t, d[0], i === 2 ? '#ff7a45' : '#ffb35a'); });
     var br = Math.max(Math.sin(Math.PI * P(t, A.d1, A.d1 + .35)), Math.sin(Math.PI * P(t, A.d2, A.d2 + .35)), Math.sin(Math.PI * P(t, A.d3, A.d3 + .35))); inv.style.boxShadow = '0 30px 70px rgba(0,0,0,.55),0 0 0 ' + (3 * br).toFixed(1) + 'px rgba(255,179,90,.55)';
-    DT.proof(t, A.proof, { flash: .5, x: 30, y: 772, s: .34, tx: 180, ty: 752, fs: .85, fx: 30, fy: 44 });
-    DT.chip('win', 'SAME <b>PARTY</b>', 100, 396, P(t, A.readable - .2, A.readable + .1) - P(t, A.proof + .5, A.proof + .7), 'g'); DT.chip('win3', 'NOW <b>READABLE</b>', 120, 396, P(t, A.proof + .6, A.proof + .9) - P(t, A.e2 - .2, A.e2 + .1), 'g'); DT.chip('win2', 'FONTS 1 · COLOUR 1', 120, 396, P(t, A.e2, A.e2 + .3), 'g');
-    [[A.e1, OX + 200, OY + 56], [A.e1 + .12, OX + 345, OY + 176], [A.e1 + .24, OX + 345, OY + 250]].forEach(function(d, j){ DT.line('tk' + j + 'a', d[1], d[2], d[1] + 8, d[2] + 8, P(t, d[0], d[0] + .15), '#2fb37a', 4); DT.line('tk' + j + 'b', d[1] + 8, d[2] + 8, d[1] + 24, d[2] - 10, P(t, d[0] + .1, d[0] + .25), '#2fb37a', 4); });
-    DT.box('ok', { x: BX + 14, y: BY + 14, w: 380, h: 340, r: 14 }, P(t, A.e2, A.e2 + .5), '#5ee0a0');
+    DT.proof(t, A.proof, { flash: .5, x: 32, y: BY + BH + 22, s: .34, tx: 176, ty: BY + BH + 16, fs: .85, fx: 30, fy: 44 });
+    if (!A.tg2) A.tg2 = [].filter.call(document.querySelectorAll('#world div'), function(d){ return d.textContent === 'AFTER'; })[0];
+    if (A.tg2) A.tg2.style.transform = A.tg2.style.transform.replace(/translate\([^)]*\)/, 'translate(' + (BX + 408 - 96) + 'px,' + (BY + BH + 16) + 'px)');   // the AFTER tag sits under the invite, never on its border
+    CHIP('win', 'SAME <b>PARTY</b>', P(t, A.readable - .2, A.readable + .1) - P(t, A.proof + .5, A.proof + .7), 'g'); CHIP('win3', 'NOW <b>READABLE</b>', P(t, A.proof + .6, A.proof + .9) - P(t, A.e2 - .2, A.e2 + .1), 'g'); CHIP('win2', 'FONTS 1 · COLOUR 1', P(t, A.e2, A.e2 + .3), 'g');
+    [[A.e1, OX + 200, OY + 50], [A.e1 + .12, OX + 345, OY + 144], [A.e1 + .24, OX + 345, OY + 216]].forEach(function(d, j){ DT.line('tk' + j + 'a', d[1], d[2], d[1] + 8, d[2] + 8, P(t, d[0], d[0] + .15), '#2fb37a', 4); DT.line('tk' + j + 'b', d[1] + 8, d[2] + 8, d[1] + 24, d[2] - 10, P(t, d[0] + .1, d[0] + .25), '#2fb37a', 4); });
+    DT.box('ok', { x: BX + 14, y: BY + 14, w: 380, h: BH - 28, r: 14 }, P(t, A.e2, A.e2 + .5), '#5ee0a0');
     DT.dial(t, [{ t: 0, sym: '3', label: '3 FIXES' }, { t: A.f1, n: 1 }, { t: A.f2, n: 2 }, { t: A.f3, n: 3 }, { t: A.same, end: 1, sym: '✓', label: 'READABLE' }]);
     DT.title(t, [{ t: A.hook, html: 'No hero, so <em>no read</em>' }, { t: A.f1, html: 'Fix 1 · <em>one hero</em>' }, { t: A.f2, html: 'Fix 2 · <em>one font</em>' }, { t: A.f3, html: 'Fix 3 · <em>one colour</em>' }, { t: A.same, html: 'Now <em>readable</em>' }]);
     KM.subs($('cap'), t, V, PH, Math.max(0, V.words.findIndex(function(w){ return w.s - V.lead >= A.hook - .25; })), Math.min(A.end, V.end + .6), function(w){ return /^(shouting|stands|hero|age|biggest|font|sizes|colour|once|read)/i.test(w) ? 'var(--amb)' : null; });

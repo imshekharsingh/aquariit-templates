@@ -6,6 +6,15 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/c3-invite-hold-26nov · owner chat: Turns Out invite withdrawn until render 2
+- Owner saw text overlaps in showreel-c3-fix-invite (render 1, critic READY). A NOT READY line (owner) is appended to its review file, so the app shows it as "Found a problem" with no Post now, still visible on the board; the fix session (render 2 + new critic) appends the new verdict.
+
+## 2026-11-26 10:10 IST · claude/3d-kit-v5 · other account: 3D kit sample v5, the six critic fixes (no render yet)
+- Done: merged both critic branches (review file holds v3 + v4); scene fixes 1-6 (opening move, hub between apps and wall with all 8 tools whole, push-in pulled back, tangle outside the wall, end turn home + New cable pulse, hub sub-line dropped); stills review/tech/study-25nov/kit-phase2-v5.jpg; techkit/check-gold3d.cjs (no-render name/cover check); scripts/tech-assemble.py now inlines the 3D kit (it did not, so a 3D scene failed locally).
+- Left: render 5 only on the owner's yes (design/handoff.md Progress), Output QA, separate critic; then the "finalise the 3D kit" steps if READY.
+- Update (owner, 10:20 IST): too much glow; bloom .45 to .28, cable halos and floor light cut by about half (claude/3d-kit-v5-glow).
+- For the other account: a comment pasted before code on one line silently drops that code (the hub was missing from the scene for a while); the stills caught it, the box check did not.
+
 ## 2026-11-26 · claude/handoff-3d-kit-final · owner chat: the other account also finalises the 3D kit
 - design/handoff.md: after a READY v5, the same session makes it the tech 3D gold, updates the starter, closes the known limits, switches tech daily builds to the 3D look, then closes the handoff (cap ~$15 more, owner asked first past it).
 
@@ -858,6 +867,33 @@ Format (at most 6 lines):
 - Done: render 1 passed Output QA; critic (Opus) NOT READY (numbers over the phone, no old-vs-new range, misleading 60 m on the phone screen, AI label); scene fixed (numbers smaller and clear, amber old ring vs 3x ring from a top-down, phone screen arrow only), aiLabel false.
 - Left: render 2 (the last one), Output QA, second critic, then the post day; a third render needs the owner chat's yes.
 - For the other account: three big camera-riding numbers cover the product; keep them in a fixed clear screen spot and check them against the phone in the stills before render 1. The critic branch is merged and deleted by the pipeline, so a verdict file appears on main.
+## 2026-11-26 · claude/critic-gold3d-sample · Independent critic of the 3D kit sample render v3
+- Done: review/tech/showreel-tech-gold3d-sample.md, verdict NOT READY on the real MP4 (contact sheet + side-by-side with the tech gold). Strong colour, materials, cable maths and captions; weak hook at frame 0, one tower framing for 9.8-18.4 s, no payoff or loop at the end, unreadable code card over the tool column, hub cables over the tool names, apps and tools share names. Seven-step EXACT FIX in the file. PREMIUM 5.5 / 6.5 / 7.
+- Left: the owner chat decides on a 4th render of this sample (owner's yes and cost estimate); it is not the gold for the 3D look until a critic writes READY.
+- For the other account: nothing new.
+## 2026-11-26 · claude/critic-gold3d-sample-v4 · Independent critic (second pass) of the 3D kit sample render v4
+- Done: review/tech/showreel-tech-gold3d-sample.md, verdict NOT READY on the real v4 MP4 (one contact sheet, two full frames). Of the v3 fix list: hook, code card, distinct names and aiLabel DONE; camera path, cables and held payoff PARTLY. Still failing D2 (0.6-5.2 s and 13.3-18.5 s each one framing, about 5 s), the hub hides two of the eight tools from 7.5 s (the picture says 3+8 but shows 6 tools), "Notes" cut at the edge in the 9.8 s push-in. Six-step EXACT FIX in the file. PREMIUM 6.5 / 7 / 7.5.
+- Left: the owner chat asks the owner about a 5th render of this sample (with its cost); not the 3D gold until a critic writes READY. The v3 critic branch (claude/critic-gold3d-sample) was never merged; this file replaces it.
+- For the other account: the 3D look's camera keys must also cover the opening and the last 5 s, not only the middle beat.
+
+## 2026-11-26 · claude/app-ready-fix-26nov · App: stale status and Post now on unready reels (tooling, owner-approved)
+- Done: the journey cache kept serving its last answer when a rebuild failed (no mark, no error); now an answer over 5 min old is rebuilt in the request, a failed build is remembered, and if it fails the old answer comes back marked stale with the reason. The Ready-to-post list now needs a journey reel with status ready and a fresh journey (no data = a "status not loaded" line); /api/post refuses while stale. showreel-tech-battery-cycles hidden. npm run check has a "ready filter" check; owner-feedback line added.
+- Left: confirm on the live board after the deploy (sign-in needed); if the board still says old, the stale mark now carries the real failure note.
+- For the other account: never treat missing or old status as ready.
+
+
+## 2026-11-26 · claude/c3-fix-invite-26nov-r2 · Turns Out fix-invite: owner text overlap and alignment fix, render 2 (builder session)
+- Done: contact sheet of render 1 and full-size scene frames showed 7 overlap groups (chips on the board's top edge and the subtitle pill, ring tags and BEFORE/AFTER tags on board edges, touching rings, confetti under text, badges on confetti) and 3 off-grid items; scene fixed (chip band centred on the board between pill and board, board 424-744, one left edge x 32 for dial, headline and subtitle text, confetti in a clear column, tags inside or under the board); stills OVERLAP none, SAFE ZONE ok, ALIGN ok; reel hidden until the critic says READY again; owner-feedback and todo lines added.
+- Left: independent stills check, render 2 (the last one without the owner's yes), Output QA, critic (opus, tag critic) checking overlap and alignment, then unhide for the 17:00 post.
+- For the other account: DT.chip forces y 374 for any y in 380-420, so chips land on a board whose top is 396; keep chips in their own band above the board (board top at least 420) and centre them; test with the stills OVERLAP line and look at the sheet.
+## 2026-11-26 · claude/app-today-board-26nov · App: Today shows the workflow board only (tooling, owner-approved via owner chat)
+- Done: Today = the board (one row per channel: Building / Rendering % / Checking / Found a problem: why / Ready, post at slot / Posted; "old status" shown when the journey is over 15 min old or marked stale). Reel lists, Post now and the reel cards left Today; Needs you holds only questions. Ready-to-post cards (all buttons) are at the top of "All reels and posted", critic-READY and fresh status only; a Ready row's "Open to post" button goes there. Badge = questions + ready reels. Checked at phone width with Playwright on a local build (fresh and stale mock data); npm run check has the updated ready-filter check.
+- Left: confirm on the live app after the deploy (sign-in needed).
+- For the other account: Today never lists reels; ready reels live in the reels menu.
+## 2026-11-26 · claude/web-26nov-verdict3 · Web reel showreel-48-has-parent: render 3 passed Output QA, critic READY
+- Done: render 3 (run 45755239976) Output QA PASS; independent critic CRITIC: READY (STOP 7.5, REWATCH 7.5); verdict and notes added to the review file. Posts 26 Nov 19:00 IST.
+- Left: the owner posts it. No further renders. Next web reel: give the reaction word its own row clear of the subtitle; start the code card typing on "fix".
+- Update (same session, 26 Nov): the independent stills check passed with four near-misses (chips edge to edge, rings 5 px apart, thumbnail 3 px from the board); cleared them in branch claude/c3-fix-invite-26nov-r3 (chips spaced, ring gap 14 px, thumbnail lower) before render 2. For the other account: a stills-check session needs the repo as a source at creation (source_url), or it cannot run.
 
 ## 2026-11-26 · claude/tech-26nov-ready · Tech reel 26 Nov: SmartTag3 READY (builder session)
 - Done: render 2 (run 45752646144) passed Output QA; second critic (Opus) wrote CRITIC 2: READY; review file item 13 PASS; captions entry stays postOn 2026-11-26 postAt 15:00 IST (format quickmyth, device wearables).

@@ -6,5 +6,6 @@ pv = f"techreel/previews/{slug}-{os.environ.get('PREVIEW', '')}.json"   # a prev
 if os.path.exists(pv): t.update(json.load(open(pv)))
 html = open(t['scene']).read()
 html = html.replace('<!--THREE-->', '<script>' + open('techkit/vendor/three-0.149.0.min.js').read() + '</script>', 1)
+html = html.replace('<!--WORLD3D-->', '<script>' + open('techkit/world3d.js').read() + '\n' + open('techkit/lib3d.js').read() + '</script>', 1)   # the colour-world 3D kit (as techkit/make.py)
 html = html.replace('<!--KIT3D-->', '<script>' + open('techkit/kit3d.js').read() + '</script>', 1)
 open(f'out/techreel/{slug}/scene.html', 'w').write(html)

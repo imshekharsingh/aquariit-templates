@@ -29,6 +29,9 @@ Owner feedback (design/owner-feedback.md) against the stills: natural spoken sen
 
 Reference lessons applied 26 Nov (owner chat, refs 10 and 14): serif headline with the key word in italic accent, subtitles as a pill; check chips and before-to-after in one frame were already in the reel. Not applied: the reversal beat and a script change (the owner chat said keep our length).
 
+## Owner fix, 26 Nov 2026 (render 2): text overlap and alignment
+Owner watched render 1 (critic READY) and said the texts overlap slightly and want a cleaner alignment. Found on the real MP4 contact sheet: (1) chips on the board's top edge and on the subtitle pill, (2) ring tags on the board's bottom edge, (3) the three red rings touching, (4) confetti dots under text lines, (5) read-order badges on confetti, (6) BEFORE/AFTER tags on the board border, (7) the 7 near the name line; off grid: headline x 30 vs subtitle text x 42, chips on nine x positions, thumbnail on x 30. Fix in the scene only (story, voice, timing, look unchanged): subtitle pill 278-333 with text on x 32 like the dial and headline; chip band 356-401 centred on the board; board 424-744; rings spaced with 8 px gaps; confetti in a clear right column; ring tags inside the board's empty lower part; BEFORE/AFTER tags under the board; 7 at 112 px. Local: OVERLAP none, SAFE ZONE ok, TEXT FIT ok, ALIGN ok. The critic of render 2 must check overlap and alignment explicitly.
+
 ## Critic (independent session, 26 Nov 2026, render 1, run 45742683066)
 Judged on the real MP4 (reel-fetch, 20.0 s): the side-by-side sheet with the gold reel showreel-c3-grey-text (8 times: 1.2, 3.8, 6.2, 8.8, 11.2, 13.8, 16.2, 18.8 s), 10 phone-size frames (0.0, 0.6, 2.5, 5.0, 7.0, 9.0, 10.0, 12.0, 14.0, 19.5 s), 0.2 s strips over 7.0-9.4 s and 11.6-14.0 s, a 0.1 s strip over 15.9-17.7 s (the BEFORE flashback) and a full-size look at 18.5 s. Voice: not heard (no audio playback here); judged from loudness and the word-by-word subtitles.
 - 43 Side by side with gold: matches. Same stage, light and pacing; the after (cream invite, one orange 7) is as calm and finished as gold's menu, and the before/after end frame matches gold's layout.
@@ -53,3 +56,5 @@ Judged on the real MP4 (reel-fetch, 20.0 s): the side-by-side sheet with the gol
 STOP 7/10 (a familiar messy invite and a bold claim from frame 0), REWATCH 7/10 (the font scan at 9.8-10.2 s and the confetti flying into the 7), PREMIUM 7.5/10 (animation 7.5, cleanliness 8, premium 7).
 
 CRITIC: READY
+
+CRITIC: NOT READY (owner, 26 Nov 2026, 10:30 IST): texts slightly overlap; fix the spacing and alignment on render 2, then a new critic. The render 1 READY above is withdrawn.
