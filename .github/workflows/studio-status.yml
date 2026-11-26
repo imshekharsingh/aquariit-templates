@@ -1,0 +1,36 @@
+name: Studio status
+
+# The studio probe's status sheet (owner, 26 Nov 2026; design/probe.md). A fresh Claude session dispatches this every 30-60 min, reads the log and
+# acts only on the last line ("ACTIONS: none" or "ACTIONS: <item> || <item>"). Read-only: it never builds, renders, posts or changes anything,
+# and never prints a secret. About 30 seconds.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: studio-status
+  cancel-in-progress: true
+
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 60
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Status sheet
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BASIC_AUTH_USER: ${{ secrets.BASIC_AUTH_USER }}
+          BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
+          STAGE_KEY: ${{ secrets.STAGE_KEY }}
+        run: node scripts/studio-status.mjs | tee -a "$GITHUB_STEP_SUMMARY"

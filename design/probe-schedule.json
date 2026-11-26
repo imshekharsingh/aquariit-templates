@@ -1,0 +1,7 @@
+{
+  "slots": ["06:00","06:30","07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00"],
+  "tz": "Asia/Kolkata",
+  "setOn": "2026-11-26",
+  "costPerCheck": 0.15,
+  "note": "The studio probe's check times (IST), set by the owner on 26 Nov 2026: every 30 min 06:00-14:00, then hourly to 21:00 (24 a day). Changed only by scripts/probe-tune.mjs --apply (design/probe.md, weekly tune) after the owner chat has told the owner. The scheduled task's cron lines come from the same script."
+}
