@@ -5,6 +5,15 @@ night") works this list top-down, one item per push, and updates it: done items 
 Sources: design/webin20sec.md "Automation roadmap", design/channel3.md, the Results log (design/experiments.md) and the owner's brief of 1 Nov 2026.
 
 ## P1
+- [ ] **CRITICAL** 26 Nov 2026 (owner: "don't act on it right away, mark it critical"; owner chat picks it up, not the spare night):
+  **Handoff account works read-only.** The owner's three questions, to answer with a plan and cost before any change:
+  (1) Can the other account's session only READ the repo and never commit? Possible: it works in its own checkout and hands back a patch
+  file plus notes; the main account reviews, commits and merges. Cost: no push means it cannot dispatch renders or GitHub jobs itself.
+  (2) Its work should not show up as reel work: no entries on the app's board, no reel pipeline runs, no reel-style commits from it.
+  Read as: keep its changes out of the studio app and the reel pipeline. Its work is NOT disguised from anyone; commits made by the
+  main account say plainly what changed.
+  (3) Can it still do heavy lifting read-only? Yes for code, scenes, research and reviews done in its own checkout; no for renders, QA
+  runs or merges (those need repo write); the main account runs them from its patch.
 - [ ] 21 Nov 2026 (owner: "mark it to-do, we pick this up soon"; second account, not for the spare night): **Journey you can drive**. Four
   buttons, not seven manual stages (render and checks already run themselves): (1) **Approve plan** on a planned reel: topic, script and 3 stills
   shown, Approve or Change + note, before any render (saves the 2-render budget); (2) **Approve to post** after Output QA: the owner's watch
