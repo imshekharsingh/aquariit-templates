@@ -6,6 +6,9 @@ Every session on either account that changes the repo adds ONE entry at the top,
 Format (at most 6 lines):
 ```
 
+## 2026-11-26 · claude/c3-invite-hold-26nov · owner chat: Turns Out invite withdrawn until render 2
+- Owner saw text overlaps in showreel-c3-fix-invite (render 1, critic READY). A NOT READY line (owner) is appended to its review file, so the app shows it as "Found a problem" with no Post now, still visible on the board; the fix session (render 2 + new critic) appends the new verdict.
+
 ## 2026-11-26 10:10 IST · claude/3d-kit-v5 · other account: 3D kit sample v5, the six critic fixes (no render yet)
 - Done: merged both critic branches (review file holds v3 + v4); scene fixes 1-6 (opening move, hub between apps and wall with all 8 tools whole, push-in pulled back, tangle outside the wall, end turn home + New cable pulse, hub sub-line dropped); stills review/tech/study-25nov/kit-phase2-v5.jpg; techkit/check-gold3d.cjs (no-render name/cover check); scripts/tech-assemble.py now inlines the 3D kit (it did not, so a 3D scene failed locally).
 - Left: render 5 only on the owner's yes (design/handoff.md Progress), Output QA, separate critic; then the "finalise the 3D kit" steps if READY.
@@ -879,7 +882,14 @@ Format (at most 6 lines):
 - For the other account: never treat missing or old status as ready.
 
 
+<<<<<<< HEAD
 ## 2026-11-26 · claude/c3-fix-invite-26nov-r2 · Turns Out fix-invite: owner text overlap and alignment fix, render 2 (builder session)
 - Done: contact sheet of render 1 and full-size scene frames showed 7 overlap groups (chips on the board's top edge and the subtitle pill, ring tags and BEFORE/AFTER tags on board edges, touching rings, confetti under text, badges on confetti) and 3 off-grid items; scene fixed (chip band centred on the board between pill and board, board 424-744, one left edge x 32 for dial, headline and subtitle text, confetti in a clear column, tags inside or under the board); stills OVERLAP none, SAFE ZONE ok, ALIGN ok; reel hidden until the critic says READY again; owner-feedback and todo lines added.
 - Left: independent stills check, render 2 (the last one without the owner's yes), Output QA, critic (opus, tag critic) checking overlap and alignment, then unhide for the 17:00 post.
 - For the other account: DT.chip forces y 374 for any y in 380-420, so chips land on a board whose top is 396; keep chips in their own band above the board (board top at least 420) and centre them; test with the stills OVERLAP line and look at the sheet.
+=======
+## 2026-11-26 · claude/app-today-board-26nov · App: Today shows the workflow board only (tooling, owner-approved via owner chat)
+- Done: Today = the board (one row per channel: Building / Rendering % / Checking / Found a problem: why / Ready, post at slot / Posted; "old status" shown when the journey is over 15 min old or marked stale). Reel lists, Post now and the reel cards left Today; Needs you holds only questions. Ready-to-post cards (all buttons) are at the top of "All reels and posted", critic-READY and fresh status only; a Ready row's "Open to post" button goes there. Badge = questions + ready reels. Checked at phone width with Playwright on a local build (fresh and stale mock data); npm run check has the updated ready-filter check.
+- Left: confirm on the live app after the deploy (sign-in needed).
+- For the other account: Today never lists reels; ready reels live in the reels menu.
+>>>>>>> origin/main

@@ -2426,10 +2426,9 @@
  },
  "showreel-c3-fix-invite": {
   "channel": "c3",
-  "hidden": true,
   "engine": "design",
   "concept": "Design series · Everything on this birthday invite is shouting. Nothing stands out. 🎈 (a kids' party invite on a fridge door fixed in three moves: one hero (the age), one font in two sizes, one colour used once; the last frame shows BEFORE next to AFTER)",
-  "note": "Rebuilt on the improved design kit (26 Nov 2026) from the gold reel showreel-c3-grey-text; render 1 passed Output QA and the critic; the owner asked for a text overlap and alignment fix (26 Nov), render 2 is hidden until a critic writes READY again.",
+  "note": "Rebuilt on the improved design kit (26 Nov 2026) from the gold reel showreel-c3-grey-text; render 1 passed Output QA and the critic; the owner asked for a text overlap and alignment fix (26 Nov), render 2 stays NOT READY on the board until a critic writes READY again.",
   "aiLabel": false,
   "postOn": "2026-11-26",
   "postAt": "17:00",
