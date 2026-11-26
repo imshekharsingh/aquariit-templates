@@ -2958,6 +2958,7 @@
   "hidden": true,
   "concept": "SAMPLE for the phase 2 3D kit (design/3d-kit-phase2.md), never posted: 3 apps x 8 tools = 24 connections, then one shared hub = 11. Gold candidate for the colour-world 3D look.",
   "format": "xray",
-  "device": "laptop"
+  "device": "laptop",
+  "aiLabel": false
  }
 }

@@ -799,3 +799,8 @@ Format (at most 6 lines):
 - Done: Feedback read (none new) and owner answers (none); audit numbers read from a dry Instagram collect; rules-tech.md 26 Nov audit line; experiments.md lesson line; started one build session each for web (:has, the researcher's pick) and tech (fresh-news research first, old bank is stale).
 - Left: both builders own their reel to READY (Fable pick, stills check, at most 2 renders, Output QA, critic). The audit card was dispatched from the numbers above.
 - For the other account: the Instagram collect's scheduled run skips the audit step except at 05:23 and 20:14 UTC; a dry dispatch prints it.
+
+## 2026-11-26 · claude/tech-3d-kit-sample-v4 · 3D kit sample v4: all of the critic's fixes, lessons into rules, README and starter (owner chat, cap ~$13)
+- Done: scene rebuilt (hook = wired tangle + 24 + question from frame 0, camera path with three distinct moves and a loop home, cables on tile side edges, names inside tiles and distinct, no code card, held payoff, captions on a dark fade, numbers step aside in close shots); topic lines/cues/sfx for six lines; aiLabel false; rules-tech.md D1-D8, techkit/README.md, starter note; stills review/tech/study-25nov/kit-phase2-v4.jpg.
+- Left: ONE render (Tech reel, gold3d-sample, preview v4), Output QA, then the independent critic (opus, tag critic).
+- For the other account: nothing new.

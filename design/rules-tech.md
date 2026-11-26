@@ -181,3 +181,14 @@ Why: the 22 Nov look made tech reels grey and flat; the owner's reference (an ex
 - **L8. Check on the stills sheet:** is the ground dark and the things colourful? is it one world with a recurring object? is one real artifact readable at phone size? is the key word boxed in blue? is no top band and no presenter on screen?
 
 **26 Nov audit:** tech OK (median reach 1,200 over the last 7 vs target 300). PROMOTE tech-kit-engine and tech-myth-verdict printed again; both are already rules (18 Nov, F5), no change. Today's tech reel is built from fresh news (N1-N4) by its own builder.
+
+## Colour-world 3D look: rules from the first critic (26 Nov 2026, showreel-tech-gold3d-sample v3 NOT READY; kit: techkit/world3d.js + lib3d.js)
+The first 3D sample had the right look (neutral dark world, glossy colour, separate cables, 3D numbers) and failed on camera and story. Every reel in this look (starter: `node scripts/starter.mjs tech3d <slug>`) follows these, and the stills sheet is checked against them:
+- **D1. Frame 0 is the hook.** Open on the finished, busy picture (here the wired tangle with the big number), not on a calm intro; the first line is a question or a number; the caption is on screen from frame 0 and something already moves.
+- **D2. Never hold one framing over 3 s.** The camera path has at least three distinct moves after the middle beat (a push-in on the hero, a side orbit to the new thing, a pull-back to the wide), and the last frame returns to the first frame's framing so the replay loops.
+- **D3. Cables meet objects at their edge, never across a face or a name.** Names sit inside the tile at its top; cables land on the side edges. A name never repeats between two rows of objects (apps and tools get different names).
+- **D4. Anything shown as a "real artifact" is readable at phone size** (at least 34 px at 1080 wide, at most 4 short lines) in its own clear space, never over a tile; otherwise drop it.
+- **D5. Numbers ride the camera in their own screen area** (`lib.figure`, 10 units ahead, lower fifth), step aside in close shots and come back on the wides. Nothing overlaps a number.
+- **D6. Captions sit on a dark fade** (`W3D.captions` scrim) so tiles behind them never fight the words; no object may reach the caption band in a still.
+- **D7. The payoff is held**: the last caption stays on screen through the last frame; no drift without an event in the final 2 s.
+- **D8. A voice line over 4.5 words a second fails PACE**: keep lines to 6-9 words (the 10-word line failed v2). The reel's config needs `"aiLabel": false` in captions.json.
