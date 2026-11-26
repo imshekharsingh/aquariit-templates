@@ -803,6 +803,12 @@ Format (at most 6 lines):
 - Left: both builders own their reel to READY (Fable pick, stills check, at most 2 renders, Output QA, critic). The audit card was dispatched from the numbers above.
 - For the other account: the Instagram collect's scheduled run skips the audit step except at 05:23 and 20:14 UTC; a dry dispatch prints it.
 
+## 2026-11-26 · claude/web-26nov-has-parent · Web reel 48 has-parent (W26-1 CSS :has parent selector): build, direction card, review file, stills (pending stills check)
+- Done: Fable pick (KEEP W26-1 W26-3 W26-5, rejected W26-2 W26-4; design/pick-log.md), sources re-checked (MDN :has(), BCD: Chrome 105, Firefox 121, Safari 15.4), scene scripts/explainer/has-parent.html/.json built from the sibling reel 47 (three add-on cards, boxes ticked and cards dull, LIT 0 / TICKED 3, then .card:has(input:checked) lights them; violet accent hue 265), direction card, review file items 1-12 and 14-18 PASS, stills sheet, captions.json entry (postOn 2026-11-26, postAt 19:00), tip demo hasparent, demo-hues.json line, improvements and craft log lines.
+- Left: the Fable stills check (APPROVED line in the direction card), then render 1 on GitHub (Showreel), Output QA, the critic (opus, tag critic).
+- For the other account: a web FOCUS check measures colour on lit pixels, so a reel whose subject is grey cards fails it; give the demo one slate-violet base hue and put the whole screen in the subject box.
+- Update (same session): Fable stills check round 1 said REDO (the reel read as 47 in violet); all five fixes made in one round (three tall icon tiles side by side, no red ring, 56 px reaction words, taps on the checkbox, LIT 0 -> 3 in one step, NO JAVASCRIPT at 52 px in the band); a short Fable confirmation of the new sheet is the next step.
+
 ## 2026-11-26 · claude/tech-3d-kit-sample-v4 · 3D kit sample v4: all of the critic's fixes, lessons into rules, README and starter (owner chat, cap ~$13)
 - Done: scene rebuilt (hook = wired tangle + 24 + question from frame 0, camera path with three distinct moves and a loop home, cables on tile side edges, names inside tiles and distinct, no code card, held payoff, captions on a dark fade, numbers step aside in close shots); topic lines/cues/sfx for six lines; aiLabel false; rules-tech.md D1-D8, techkit/README.md, starter note; stills review/tech/study-25nov/kit-phase2-v4.jpg.
 - Left: ONE render (Tech reel, gold3d-sample, preview v4), Output QA, then the independent critic (opus, tag critic).
@@ -821,3 +827,4 @@ Format (at most 6 lines):
 - Done: serif headline with italic accent word and pill subtitles from the 26 Nov references; stills checks (overlap, safe zone, text fit, band) pass.
 - Left: one render, Output QA, critic; then postOn 2026-11-26, postAt 17:00.
 - For the other account: the reversal beat from the references was not added (script length kept).
+- 26 Nov 07:45 IST: refs 9-14 studied whole (design/references.md "R-ref 26 Nov"), routed per channel; today's three builders held before render 1 and sent their lessons.

@@ -255,6 +255,9 @@
 #userinvalid input{display:block;width:100%;margin:0 0 8px;padding:8px 10px;border-radius:8px;border:2px solid #3a4448;background:#161d20;color:#e8efed;font:500 15px/1.2 system-ui,sans-serif}
 #userinvalid .bad input:invalid{border-color:#ff5f6d;background:#2a171b}
 #userinvalid .fix input:user-invalid{border-color:#ff5f6d;background:#2a171b}
+#hasparent .stage{margin:8px 10px;padding:12px 10px;border-radius:12px;background:#10171a}
+#hasparent label{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px;padding:10px 12px;border-radius:10px;border:2px solid #3a4448;background:#161d20;color:#e8efed;font:600 15px/1.2 system-ui,sans-serif}
+#hasparent .fix label:has(input:checked){border-color:#d79bff;background:#3b2468}
 </style>
 </head>
 <body>
@@ -264,6 +267,25 @@
     <h1>One web fix a day, in 20 seconds</h1>
     <p>Every fix from the reels, working: try the problem and the fix side by side, then copy the code.</p>
   </header>
+
+<article class="tip" id="hasparent">
+  <p class="no">Nº 38</p>
+  <h2>Why won't the card light up when you tick its checkbox?</h2>
+  <p class="why">CSS selectors used to stop at the element itself, so a card could not react to the checkbox inside it and pages added JavaScript to toggle a class. :has() represents an element if any of the relative selectors passed to it match (MDN: a way of selecting a parent element), so .card:has(input:checked) styles the whole card when its checkbox is checked. Supported in Chrome 105, Firefox 121 and Safari 15.4 (MDN browser compatibility data).</p>
+  <div class="demo">
+<div class="pair">
+  <div class="pane"><span class="tag">no parent rule</span><div class="stage bad"><label>Oat milk<input type="checkbox" checked></label><label>Extra shot<input type="checkbox" checked></label></div></div>
+  <div class="pane fix"><span class="tag ok">.card:has(input:checked)</span><div class="stage fix"><label>Oat milk<input type="checkbox" checked></label><label>Extra shot<input type="checkbox" checked></label></div></div>
+</div>
+<p class="note">Both lists have every box ticked. On the left the cards stay dull, because CSS could not style a parent from its child. On the right label:has(input:checked) lights the whole card; untick a box and its card dims at once. MDN, :has() (Chrome 105, Firefox 121, Safari 15.4).</p></div>
+  <div class="code"><pre><code>&lt;label class=&quot;card&quot;&gt;
+  &lt;input type=&quot;checkbox&quot;&gt; Oat milk
+&lt;/label&gt;
+
+/* the card lights when its box is ticked */
+.card:has(input:checked) { background: violet; }</code></pre><button class="copy" type="button">Copy</button></div>
+  <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has" rel="noopener">Source: MDN :has()</a></p>
+</article>
 
 <article class="tip" id="userinvalid">
   <p class="no">Nº 37</p>
@@ -947,11 +969,12 @@ img.loaded { opacity: 1; scale: 1; }
 }</code></pre><button class="copy" type="button">Copy</button></div>
   <p class="links"><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@starting-style" rel="noopener">Source: MDN, @starting-style</a> · <a href="https://www.instagram.com/reel/De6oisZRkWG/" rel="noopener">Watch the reel</a></p>
 </article>
-  <footer>35 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
+  <footer>36 fixes so far. New ones arrive with each reel on <a href="https://www.instagram.com/webin20sec/" rel="noopener">Instagram</a>.</footer>
 </main>
 <script>
 (function(){
   var wire = {
+    "hasparent": function(root){},
     "userinvalid": function(root){},
     "tabwiggle": function(root, btn){ var n = 0; btn.addEventListener('click', function(){ n = (n + 1) % 3; root.querySelectorAll('.stage').forEach(function(st){ st.querySelectorAll('.tab').forEach(function(t, i){ t.classList.toggle('on', i === n); }); }); }); },
     "homebar": function(root, btn){ btn.addEventListener('click', function(){ root.querySelectorAll('.stage').forEach(function(st){ st.classList.remove('go'); void st.offsetWidth; st.classList.add('go'); }); }); },
