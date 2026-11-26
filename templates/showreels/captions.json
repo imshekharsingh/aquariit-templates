@@ -2959,5 +2959,46 @@
   "concept": "SAMPLE for the phase 2 3D kit (design/3d-kit-phase2.md), never posted: 3 apps x 8 tools = 24 connections, then one shared hub = 11. Gold candidate for the colour-world 3D look.",
   "format": "xray",
   "device": "laptop"
+ },
+ "showreel-tech-tag-sounding": {
+  "channel": "tech",
+  "postOn": "2026-11-26",
+  "postAt": "15:00",
+  "format": "xray",
+  "device": "tracker tag",
+  "aiLabel": true,
+  "concept": "A tiny tag that points to your keys: SmartTag3 on a dark colour-world floor, old Bluetooth as a fuzzy 'somewhere here' zone, Channel Sounding as six coloured waves between phone and tag, a compass needle and a 60 distance figure, a 3x ring versus the old range, ultra-wideband as the inner green ring, held payoff on the tag with the needle aimed. Samsung Newsroom, 23 Nov 2026.",
+  "experiment": {
+   "id": "tech-3d-news-tag",
+   "change": "first daily news reel on the phase 2 3D colour-world kit: object already moving + question in frame 0, 3 distinct camera moves, held payoff",
+   "vs": "median"
+  },
+  "caption": "Samsung's SmartTag3 uses Bluetooth 6.0 Channel Sounding: instead of guessing from signal strength, it measures radio phase and time of flight across many channels. That shows direction and distance from up to about 60 metres, roughly three times the range of the last tag, and ultra-wideband takes over within 20 metres.\n\nWould you use a tag that points?\n\nSource: Samsung Newsroom, 23 Nov 2026.",
+  "keywords": [
+   "bluetooth channel sounding",
+   "smarttag3",
+   "how trackers work",
+   "bluetooth 6.0",
+   "find my keys",
+   "uwb explained"
+  ],
+  "hashtags": [
+   "#tech",
+   "#bluetooth",
+   "#samsung",
+   "#gadgets",
+   "#techexplained"
+  ],
+  "style": {
+   "lengthS": 24,
+   "wordsPerS": 2.6,
+   "shotChanges": 6,
+   "hookType": "question",
+   "look": "3d colour world",
+   "hero": "tracker tag",
+   "firstSecondTension": "yes",
+   "payoff": "takeaway",
+   "source": "plan"
+  }
  }
 }

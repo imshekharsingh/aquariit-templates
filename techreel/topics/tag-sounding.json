@@ -1,0 +1,191 @@
+{
+ "slug": "tag-sounding",
+ "engine": "kit",
+ "scene": "techkit/scenes/tag-sounding.html",
+ "topic": "Samsung SmartTag3: Bluetooth 6.0 Channel Sounding lets a tag point to your keys from 60 m",
+ "format": "xray",
+ "audience": "global",
+ "gadget": "tracker tag",
+ "device": "wearable",
+ "voice": "af_heart",
+ "speed": 1,
+ "max_speed": 1,
+ "gap": 0.35,
+ "max_end": 30,
+ "experiment": {
+  "id": "tech-3d-news-tag",
+  "change": "first daily news reel on the phase 2 3D colour-world kit: object already moving + question in frame 0, 3 distinct camera moves, held payoff",
+  "vs": "median"
+ },
+ "lines": [
+  {
+   "text": "Can a tiny tag point to your keys?",
+   "beat": "question",
+   "source": 0
+  },
+  {
+   "text": "Old Bluetooth only guessed, from signal strength.",
+   "beat": "problem",
+   "source": 0
+  },
+  {
+   "text": "Channel Sounding times radio waves across many channels.",
+   "beat": "why",
+   "source": 0
+  },
+  {
+   "text": "So it shows direction and distance, from sixty metres.",
+   "beat": "takeaway",
+   "source": 0
+  },
+  {
+   "text": "That is about three times the last tag's range.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Within twenty metres, ultra-wideband takes over.",
+   "beat": "surprise",
+   "source": 0
+  },
+  {
+   "text": "Less guessing. More pointing.",
+   "beat": "payoff",
+   "source": 0
+  }
+ ],
+ "cues": {
+  "tag": [
+   0,
+   "tiny"
+  ],
+  "point": [
+   0,
+   "point"
+  ],
+  "guess": [
+   1,
+   "guessed"
+  ],
+  "sounding": [
+   2,
+   "Sounding"
+  ],
+  "waves": [
+   2,
+   "waves"
+  ],
+  "dir": [
+   3,
+   "direction"
+  ],
+  "sixty": [
+   3,
+   "sixty"
+  ],
+  "three": [
+   4,
+   "three"
+  ],
+  "twenty": [
+   5,
+   "twenty"
+  ],
+  "uwb": [
+   5,
+   "takes"
+  ],
+  "less": [
+   6,
+   "Less"
+  ],
+  "final": [
+   6,
+   "pointing"
+  ]
+ },
+ "sfx": [
+  [
+   "start",
+   "impact",
+   0.5,
+   0,
+   {
+    "at": 0.05
+   }
+  ],
+  [
+   "guess",
+   "thud",
+   0.45,
+   0
+  ],
+  [
+   "sounding",
+   "whoosh",
+   0.45,
+   0
+  ],
+  [
+   "sixty",
+   "impact",
+   0.55,
+   0
+  ],
+  [
+   "three",
+   "pop",
+   0.5,
+   0
+  ],
+  [
+   "twenty",
+   "chime",
+   0.45,
+   0
+  ],
+  [
+   "less",
+   "pop",
+   0.45,
+   0
+  ]
+ ],
+ "post": {
+  "title": "This tag can point to your keys",
+  "caption": "Samsung's SmartTag3 uses Bluetooth 6.0 Channel Sounding: instead of guessing from signal strength, it measures radio phase and time of flight across many channels. That shows direction and distance from up to about 60 metres, roughly three times the range of the last tag, and ultra-wideband takes over within 20 metres.\n\nWould you use a tag that points?\n\nSource: Samsung Newsroom, 23 Nov 2026.",
+  "keywords": [
+   "tracker",
+   "bluetooth 6.0",
+   "smarttag3"
+  ],
+  "hashtags": [
+   "#tech",
+   "#bluetooth",
+   "#samsung",
+   "#gadgets",
+   "#techexplained"
+  ],
+  "sources": [
+   "https://news.samsung.com/global/the-technology-behind-more-precise-finding-with-galaxy-smarttag3-and-smartthings"
+  ]
+ },
+ "qa": {
+  "sync": [],
+  "edges_ok": [
+   {
+    "from": 0,
+    "to": 25,
+    "sides": [
+     "left",
+     "right",
+     "bottom",
+     "top"
+    ],
+    "why": "a sample in one full-bleed world"
+   }
+  ]
+ },
+ "say": {},
+ "look": "3d"
+}
