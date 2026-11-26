@@ -37,6 +37,8 @@ jobs:
       BRANCH: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Open PR if needed, then merge
         run: |
           # Only an OPEN pull request counts: a merged one from an earlier push of the same branch name must never be reused.
@@ -55,6 +57,22 @@ jobs:
               --title "Daily template: ${BRANCH##*/}" \
               --body "Automated daily template. Sanity checks passed in run ${{ github.run_id }}."
             n=$(gh pr list --head "$BRANCH" --state open --json number -q '.[0].number')
+          fi
+          # Shared log files (design/handoff-log.md, design/owner-feedback.md) are written by many sessions at once; when the PR
+          # cannot merge, merge main into the branch here with the union driver (.gitattributes keeps both sides' lines), push, retry.
+          # Any other conflict still fails loudly (owner, 27 Nov 2026: most red runs were log-file clashes).
+          if [ "$(gh pr view "$n" --json mergeable -q .mergeable)" != "MERGEABLE" ]; then
+            git fetch -q origin main "$BRANCH"
+            git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git checkout -q -B "$BRANCH" "origin/$BRANCH"
+            if git merge -q --no-edit origin/main; then
+              git push -q origin "$BRANCH"
+              echo "Merged main into $BRANCH (shared log lines kept from both sides)."
+            else
+              git merge --abort || true
+              echo "::error::$BRANCH conflicts with main outside the shared log files; merge main into it and push again"; exit 1
+            fi
+            for i in 1 2 3 4 5 6; do sleep 5; s=$(gh pr view "$n" --json mergeable -q .mergeable); [ "$s" = "MERGEABLE" ] && break; done
           fi
           gh pr merge "$n" --squash
           git push origin --delete "$BRANCH" || true
