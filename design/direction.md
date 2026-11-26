@@ -13,6 +13,18 @@ How:
   The Tech reel and Showreel workflows refuse to render a reel that posts from 25 Nov without the APPROVED line (scripts/review-gate.mjs).
 - The critic checks that the reel delivers the card: the rewatch moment really happens, and so do the hook and payoff (critic.md question 44).
 
+## Focus, structure, reason (owner, 27 Nov 2026; measured on the R-ref 27 Nov system-map reel)
+The reel the owner wants to reach moves LESS than our 3D v7 (motion per frame ~11-13 vs 21; still frames 8-13 % vs 1 %) yet reads far more
+designed. Quality comes from three things, not from more motion; every plan, every channel, every kit (2.5D, 3D, web, Turns Out) answers them:
+1. FOCUS: one subject lit per beat (spotlight or colour world), everything else dimmed to ~20 % but kept as context.
+2. STRUCTURE: a fixed frame the viewer can hold on to (a title that stays, a step pill "0N / 0M · NAME", numbered steps, one map or set
+   that persists), so each beat has a place in the whole.
+3. REASON: every camera move goes to the next thing in the story; no move for its own sake; a calm hold is allowed when the beat needs
+   reading (a still 0.5-1 s is fine), motion is not a score to maximise.
+Where it fits: tech 3D kit (spotlight + dimming instead of glow everywhere; a step pill; a fixed title; camera only between story
+beats), tech/web node maps (the full grammar), Turns Out (spotlight on the part being fixed, step pill over the before/after spine).
+The critic's Ambition pass asks these three for every reel.
+
 ## Motion-design pass (owner, 26 Nov 2026), part of every direction card and 3D plan
 Before the critic sees a plan, the builder writes, per element and per set piece: its entrance (how it arrives), how groups stack or
 cascade, how the set itself builds (boards, walls, floors are animated in, never pre-set), and its life after landing. Taken from the
